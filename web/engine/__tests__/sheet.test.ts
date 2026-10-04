@@ -51,11 +51,28 @@ describe('sheet', () => {
     expect(typo).toMatchObject({ scale: null, error: 'unknown scale "Dorain"', chord: [{ kind: 'text', text: 'C–7' }] })
   })
 
+  it('rejects a pitch that does not match its spelling', () => {
+    expect(() => toVexKey({ letter: 0, acc: 0, midi: 61 })).toThrow(/does not match/)
+  })
+
+  it('never throws for a bad start note or page size', () => {
+    const rows = [row('Cm7'), row('F7')]
+    expect(buildSheet(rows, CONCERT, 'root', 'H', 12)[0]?.pages.flat()).toHaveLength(2) // start unused in root mode
+    const [from] = buildSheet(rows, CONCERT, 'from', 'H', 12)
+    expect(from?.heading).toBe('Spelled from H')
+    expect(from?.pages.flat().map((s) => s.error)).toEqual(['bad start note "H" (try C, Eb, F#3)', 'bad start note "H" (try C, Eb, F#3)'])
+    for (const perPage of [0, -3, Number.NaN, 1.5])
+      expect(buildSheet(rows, CONCERT, 'root', 'C', perPage)[0]?.pages.map((p) => p.length)).toEqual([1, 1])
+    expect(buildSheet([], CONCERT, 'both', 'C', 12).map((p) => p.pages)).toEqual([[], []])
+  })
+
   it('gives staves stable ids that change with their content', () => {
     const id = (rows: readonly Row[]): string[] => staves(rows).map((s) => s.id)
     expect(id([row('Cm7')])).toEqual(id([row('Cm7')]))
     expect(id([row('Cm7')])).not.toEqual(id([row('Cm7', 'C Aeolian')]))
     const [a, b] = id([row('Cm7'), row('Cm7')])
     expect(a).not.toBe(b)
+    const bb = buildSheet([row('Cm7')], { clef: 'treble', trans: 'Bb' }, 'root', 'C', 12)[0]?.pages.flat()[0]?.id
+    expect(bb).not.toBe(id([row('Cm7')])[0]) // a different instrument redraws
   })
 })
