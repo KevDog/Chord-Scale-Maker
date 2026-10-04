@@ -10,7 +10,7 @@ counterpart of `jazz_scales.py`.
 
 - Stack: Nuxt 4, TypeScript strict, Tailwind CSS, VexFlow, deployed on Vercel.
 - Rendering: in browser (VexFlow). No server-side LilyPond (unsupported on Vercel; revisit if that changes).
-- Domain: build on default `*.vercel.app`; custom domain attached later. No hardcoded URL; canonical URL via env/config.
+- Domain: `chordscalemaker.com` (custom domain, attached once deployed; build first on the default `*.vercel.app`). No hardcoded URL; canonical URL via env/config.
 - Local CLI: `jazz_scales.py` + LilyPond stays for the maintainer's local use, stdlib-only. Only change: optional scale column via `chord_scales.json`.
 - Public, no accounts, no per-user data, no share links, no playback.
 
