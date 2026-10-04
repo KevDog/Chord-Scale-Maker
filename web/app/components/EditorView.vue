@@ -44,8 +44,9 @@
       </button>
     </div>
 
-    <p v-if="part.trans !== 'C' || part.clef === 'bass'" class="text-sm text-slate-500 print:hidden dark:text-slate-400">
-      The chart is in concert pitch; the preview is written for {{ instrumentOption(prefs.instrument.value).toLowerCase() }}.
+    <p class="text-sm text-slate-500 print:hidden dark:text-slate-400" aria-live="polite">
+      <template v-if="part.trans !== 'C'">The chart is in concert pitch; the preview is transposed for {{ instrumentOption(prefs.instrument.value).toLowerCase() }}.</template>
+      <template v-else-if="part.clef === 'bass'">The preview is in bass clef, concert pitch, for {{ instrumentOption(prefs.instrument.value).toLowerCase() }}.</template>
     </p>
     <p v-if="editor.fatal.value" class="text-sm text-rose-600">Preview paused: the chart is over a size limit.</p>
     <ScaleSheet

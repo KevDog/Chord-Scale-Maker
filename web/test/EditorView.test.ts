@@ -20,7 +20,7 @@ describe('EditorView', () => {
   it('previews in concert pitch by default', async () => {
     const w = await mount()
     expect(sheet(w).props()).toMatchObject({ part: { clef: 'treble', trans: 'C' }, instrumentLabel: '', start: 'C' })
-    expect(w.text()).not.toContain('concert pitch; the preview is written for')
+    expect(w.text()).not.toContain('the preview is')
   })
 
   it('transposes the preview for the chosen instrument and start note', async () => {
@@ -28,7 +28,7 @@ describe('EditorView', () => {
     await control(w, 'Instrument').setValue('tenor-sax')
     await control(w, 'Start on').setValue('Eb')
     expect(sheet(w).props()).toMatchObject({ part: { clef: 'treble', trans: 'Bb' }, instrumentLabel: 'Tenor Sax (Bb)', start: 'Eb' })
-    expect(w.text()).toContain('the preview is written for tenor sax')
+    expect(w.text()).toContain('the preview is transposed for tenor sax')
     expect(w.text()).toContain('From E♭')
   })
 
@@ -36,5 +36,6 @@ describe('EditorView', () => {
     const w = await mount()
     await control(w, 'Instrument').setValue('trombone')
     expect(sheet(w).props('part')).toEqual({ clef: 'bass', trans: 'C' })
+    expect(w.text()).toContain('The preview is in bass clef, concert pitch, for trombone')
   })
 })

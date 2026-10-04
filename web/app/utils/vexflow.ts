@@ -25,14 +25,23 @@ export function loadVexFlow(): Promise<VexFlowModule> {
 // viewBox is cropped to what was drawn, so its height depends on how far notes go above or
 // below the staff: about 45px in print for most scales, at most about 65px (three ledger
 // lines, e.g. bass clef from B), so 12 staves and their labels fit on a letter page.
-export const STAFF_WIDTH = 1200
+const STAFF_WIDTH = 1200
 const STAFF_HEIGHT = 200
 const STAVE_Y = 40 // staff lines at y 80-120, with room for ledger lines on both sides
-const MIN_TOP = 55 // always show the clef and a ledger line's space above and below the staff
-const MIN_BOTTOM = 140
+export const MIN_TOP = 55 // always show the clef and a ledger line's space above and below the staff
+export const MIN_BOTTOM = 140
 // room around a note head for its accidental: a flat rises about two spaces, a sharp hangs 1.5
 const ABOVE_HEAD = 24
 const BELOW_HEAD = 18
+
+/** vertical band to show, from note-head y positions (drawing units); never smaller than the staff band */
+export function cropBand(headYs: readonly number[]): Readonly<{ top: number; bottom: number }> {
+  if (headYs.length === 0) return { top: MIN_TOP, bottom: MIN_BOTTOM }
+  return {
+    top: Math.min(MIN_TOP, Math.min(...headYs) - ABOVE_HEAD),
+    bottom: Math.max(MIN_BOTTOM, Math.max(...headYs) + BELOW_HEAD),
+  }
+}
 
 /** draw one staff of whole notes into el, replacing what was there; colors follow CSS `color` */
 export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel, clef: 'treble' | 'bass'): void {
@@ -59,9 +68,7 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
 
   // crop to the notes' actual range (SVG getBBox measures glyphs by font ascent, not ink),
   // and scale with the container instead of a fixed pixel size
-  const heads = notes.flatMap((n) => n.getYs())
-  const top = Math.min(MIN_TOP, Math.min(...heads) - ABOVE_HEAD)
-  const bottom = Math.max(MIN_BOTTOM, Math.max(...heads) + BELOW_HEAD)
+  const { top, bottom } = cropBand(notes.flatMap((n) => n.getYs()))
   const svg = el.querySelector('svg')
   svg?.setAttribute('viewBox', `0 ${top} ${STAFF_WIDTH} ${bottom - top}`)
   svg?.setAttribute('width', '100%')
