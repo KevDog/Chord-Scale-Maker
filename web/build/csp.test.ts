@@ -27,13 +27,24 @@ describe('csp', () => {
     expect(policy).not.toMatch(/script-src[^;]*unsafe/)
   })
 
-  it('puts the policy first in <head>, before any script it governs', () => {
+  it('puts the policy in <head> before any script it governs', () => {
     const out = addCspMeta(PAGE)
     const meta = out.indexOf('http-equiv="Content-Security-Policy"')
     expect(meta).toBeGreaterThan(out.indexOf('<head>'))
     expect(meta).toBeLessThan(out.indexOf('<script'))
     expect(out).toContain(sha('window.__NUXT__={};window.__NUXT__.config={public:{}}'))
     expect(addCspMeta(out)).toBe(out) // idempotent
+  })
+
+  it('ignores look-alike attributes and odd closing tags, and hashes CRLF as browsers do', () => {
+    const page = '<head><script data-src="x">a()</script ><script data-type="x">b()</script></head>'
+    expect(inlineScriptHashes(page)).toEqual([sha('a()'), sha('b()')])
+    expect(inlineScriptHashes('<script>a()\r\nb()</script>')).toEqual([sha('a()\nb()')])
+  })
+
+  it('keeps <meta charset> first, inside the first 1024 bytes', () => {
+    const out = addCspMeta(PAGE)
+    expect(out.indexOf('<meta charset')).toBeLessThan(out.indexOf('Content-Security-Policy'))
   })
 
   it('leaves non-HTML untouched', () => {

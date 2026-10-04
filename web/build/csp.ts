@@ -10,14 +10,16 @@ import { createHash } from 'node:crypto'
 /** script types the browser executes (CSP script-src applies); data blocks like application/json don't */
 const EXECUTABLE = new Set(['', 'module', 'text/javascript', 'application/javascript', 'importmap'])
 
-const sha256 = (text: string): string => `'sha256-${createHash('sha256').update(text, 'utf8').digest('base64')}'`
+/** browsers hash the script text after normalising line endings to LF */
+const sha256 = (text: string): string =>
+  `'sha256-${createHash('sha256').update(text.replace(/\r\n?/g, '\n'), 'utf8').digest('base64')}'`
 
 export function inlineScriptHashes(html: string): string[] {
   const hashes: string[] = []
-  for (const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script>/gi)) {
+  for (const m of html.matchAll(/<script\b([^>]*)>([\s\S]*?)<\/script\s*>/gi)) {
     const attrs = m[1] ?? ''
-    if (/\bsrc\s*=/i.test(attrs)) continue
-    const type = (/\btype\s*=\s*["']?([^"'\s>]+)/i.exec(attrs)?.[1] ?? '').toLowerCase()
+    if (/(?:^|\s)src\s*=/i.test(attrs)) continue // not data-src
+    const type = (/(?:^|\s)type\s*=\s*["']?([^"'\s>]+)/i.exec(attrs)?.[1] ?? '').toLowerCase()
     if (EXECUTABLE.has(type)) hashes.push(sha256(m[2] ?? ''))
   }
   return hashes
@@ -38,9 +40,13 @@ export function contentSecurityPolicy(scriptHashes: readonly string[]): string {
   ].join('; ')
 }
 
-/** add the CSP <meta> as the first element of <head>; non-HTML and pages that have one are unchanged */
+/**
+ * add the CSP <meta> to <head>, after <meta charset> (which must stay in the first 1024 bytes)
+ * and so before every script; non-HTML and pages that already have one are unchanged
+ */
 export function addCspMeta(html: string): string {
   if (!/<head[^>]*>/i.test(html) || html.includes('http-equiv="Content-Security-Policy"')) return html
   const meta = `<meta http-equiv="Content-Security-Policy" content="${contentSecurityPolicy(inlineScriptHashes(html))}">`
+  if (/<meta charset[^>]*>/i.test(html)) return html.replace(/(<meta charset[^>]*>)/i, `$1${meta}`)
   return html.replace(/<head([^>]*)>/i, `<head$1>${meta}`)
 }

@@ -42,6 +42,7 @@ test('the mode toggle shows one spelling or both', async ({ page }) => {
 
 test('the draft is kept, and New chart starts over', async ({ page }) => {
   await page.getByLabel('chord for row 1').fill('F7')
+  await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 1 \| F7/) // saved with the text
   await page.goto('/editor')
   await expect(page.getByLabel('chord for row 1')).toHaveValue('F7')
   await page.getByRole('link', { name: 'New chart' }).click()

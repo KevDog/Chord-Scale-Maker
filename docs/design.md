@@ -226,7 +226,11 @@ The site is static with no server code, so most of the attack surface is gone. R
   - Nuxt's two inline scripts, the import map and the runtime config, change per build, so they are hashed at build time. There is no `'unsafe-inline'` for scripts.
   - `style-src` allows inline styles, because Vue and VexFlow set style attributes.
   - The E2E tests fail on any CSP violation.
-- **Headers** (`routeRules` in `nuxt.config.ts`, which Nitro writes into Vercel's build output):
+  - Not-found and error pages use `app/error.vue`. Nuxt's built-in error page injects an inline script, which the CSP blocks.
+- **Headers** (`web/build/headers.ts`, applied by `routeRules` to `/**` and `/_nuxt/**`, because
+  Nitro's separate asset cache route would otherwise end Vercel's routing first). Nitro writes them
+  into Vercel's build output. CI checks that output with `npm run check:headers`, since
+  `nuxt preview` ignores `routeRules`:
   HSTS (2 years, subdomains), `X-Content-Type-Options: nosniff`,
   `Referrer-Policy: strict-origin-when-cross-origin`, a `Permissions-Policy` denying camera,
   microphone, geolocation, payment and USB, `X-Frame-Options: DENY`, and

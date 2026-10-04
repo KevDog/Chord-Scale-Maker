@@ -1,15 +1,6 @@
 import tailwindcss from '@tailwindcss/vite'
 import { addCspMeta } from './build/csp'
-
-/** sent with every response (Nitro writes these into Vercel's build output); the CSP itself is a <meta> per page */
-const SECURITY_HEADERS = {
-  'Strict-Transport-Security': 'max-age=63072000; includeSubDomains',
-  'X-Content-Type-Options': 'nosniff',
-  'Referrer-Policy': 'strict-origin-when-cross-origin',
-  'Permissions-Policy': 'camera=(), microphone=(), geolocation=(), payment=(), usb=(), interest-cohort=()',
-  'X-Frame-Options': 'DENY',
-  'Content-Security-Policy': "frame-ancestors 'none'", // not allowed in <meta>
-}
+import { SECURITY_HEADERS } from './build/headers'
 
 // Fully static site (nuxt generate). Engine + rendering run in the browser; see docs/design.md.
 export default defineNuxtConfig({
@@ -33,7 +24,8 @@ export default defineNuxtConfig({
       issuesUrl: 'https://github.com/KevDog/Chord-Scale-Maker/issues/new',
     },
   },
-  routeRules: { '/**': { headers: SECURITY_HEADERS } },
+  // '/_nuxt/**' too: Nitro emits a separate cache-header route for assets that ends Vercel's routing
+  routeRules: { '/**': { headers: SECURITY_HEADERS }, '/_nuxt/**': { headers: SECURITY_HEADERS } },
   nitro: {
     prerender: { routes: ['/', '/editor'] },
     hooks: {

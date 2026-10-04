@@ -2,15 +2,19 @@ import { test as base, expect } from '@playwright/test'
 
 /**
  * Every test fails on a page error, a console error or a CSP violation: the site must run
- * under its own Content-Security-Policy.
+ * under its own Content-Security-Policy. A spec can allow specific expected console errors
+ * (e.g. the 404 itself) with test.use({ expectedConsoleError: /.../ }); CSP violations never are.
  */
-export const test = base.extend<{ problems: string[] }>({
+export const test = base.extend<{ expectedConsoleError: RegExp | null; problems: string[] }>({
+  expectedConsoleError: [null, { option: true }],
   problems: [
-    async ({ page }, use) => {
+    async ({ page, expectedConsoleError }, use) => {
       const problems: string[] = []
       page.on('pageerror', (e) => problems.push(`pageerror: ${e.message}`))
       page.on('console', (m) => {
-        if (m.type() === 'error') problems.push(`console: ${m.text()}`)
+        const text = m.text()
+        const expected = !text.includes('CSP violation') && !!expectedConsoleError?.test(text)
+        if (m.type() === 'error' && !expected) problems.push(`console: ${text}`)
       })
       await page.addInitScript(() => {
         document.addEventListener('securitypolicyviolation', (e) =>
