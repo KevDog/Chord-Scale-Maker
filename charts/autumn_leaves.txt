@@ -1,0 +1,35 @@
+title: Autumn Leaves
+subtitle: Full Form, Alternate Changes
+
+# section | bar | chord | scale
+A1 | 1 | Cm7    | C Dorian
+A1 | 2 | F7     | F Mixolydian
+A1 | 3 | Bm7    | B Dorian
+A1 | 3 | E7     | E Mixolydian
+A1 | 4 | Bbm7   | Bb Dorian
+A1 | 4 | Eb7    | Eb Mixolydian
+A1 | 5 | Am7b5  | A Locrian
+A1 | 6 | D7     | D Half-Whole
+A1 | 7 | Gm     | G Dorian
+A1 | 8 | Gm     | G Dorian
+@copy A1 A2 8
+
+B | 17 | Am7b5  | A Locrian
+B | 18 | D7     | D Half-Whole
+B | 19 | Gm     | G Dorian
+B | 20 | Gm     | G Dorian
+B | 21 | Cm7    | C Dorian
+B | 22 | F7     | F Mixolydian
+B | 23 | Bm7    | B Dorian
+B | 23 | E7     | E Mixolydian
+B | 24 | EbMaj7 | Eb Lydian
+B | 25 | Am7b5  | A Locrian
+B | 26 | D7     | D Half-Whole
+B | 27 | Gm     | G Dorian
+B | 27 | D7/F#  | D Half-Whole
+B | 28 | Fm7    | F Dorian
+B | 28 | Bb7    | Bb Mixolydian
+B | 29 | Am7b5  | A Locrian
+B | 30 | D7     | D Half-Whole
+B | 31 | Gm     | G Dorian
+B | 32 | G7     | G Half-Whole

@@ -1,0 +1,9 @@
+output/*
+!output/.gitkeep
+*.pdf
+*.ly
+__pycache__/
+.pytest_cache/
+.claude/settings.local.json
+.venv/
+web/node_modules/

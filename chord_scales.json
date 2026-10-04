@@ -1,0 +1,109 @@
+{
+  "$schema_note": "Chord-scale options keyed by chord quality. Each option's root is an interval above the chord root ('1' = same root). Scale names match jazz_scales.py (see --list-scales). The first option with default=true is used when a chart row omits the scale.",
+  "quality_aliases": {
+    "maj": ["", "M", "ma", "major"],
+    "m": ["-", "mi", "min"],
+    "Maj7": ["ma7", "MA7", "M7", "maj7", "Δ7", "Δ", "maj9", "Maj9"],
+    "6": ["maj6", "Maj6", "6/9", "69"],
+    "m7": ["-7", "mi7", "min7", "m9", "-9", "mi9", "m11", "-11"],
+    "m6": ["-6", "mi6", "min6", "m6/9"],
+    "mMaj7": ["-Maj7", "mM7", "-Δ7", "miMa7", "minMaj7"],
+    "7": ["9", "13", "7(13)", "9(13)"],
+    "7sus4": ["sus4", "7sus", "9sus4", "9sus", "11"],
+    "7b9": ["7(b9)", "7b9b13", "7(b9,b13)", "7b13", "7(b13)", "13b9"],
+    "7#11": ["7(#11)", "9#11", "7b5", "7(b5)", "13#11"],
+    "7alt": ["alt", "7#9", "7(#9)", "7#5", "7(#5)", "7+", "+7", "7#9b13", "7#5#9", "7b9#9", "7(#9,b13)"],
+    "m7b5": ["-7b5", "m7(b5)", "-7(b5)", "ø7", "ø", "mi7b5", "min7b5", "half-dim"],
+    "dim7": ["°7", "o7", "°", "o", "dim"]
+  },
+  "qualities": {
+    "maj": [
+      { "root": "1",  "scale": "Ionian",            "default": true },
+      { "root": "1",  "scale": "Lydian" },
+      { "root": "1",  "scale": "Major Pentatonic" }
+    ],
+    "m": [
+      { "root": "1",  "scale": "Dorian",            "default": true },
+      { "root": "1",  "scale": "Aeolian",           "note": "when the chord is vi or iv" },
+      { "root": "1",  "scale": "Minor Pentatonic" },
+      { "root": "1",  "scale": "Melodic Minor" }
+    ],
+    "Maj7": [
+      { "root": "1",  "scale": "Ionian",            "default": true },
+      { "root": "1",  "scale": "Lydian" },
+      { "root": "1",  "scale": "Major Pentatonic" },
+      { "root": "5",  "scale": "Major Pentatonic",  "note": "no 4th; 7 and 9 emphasised" },
+      { "root": "6",  "scale": "Minor Pentatonic" },
+      { "root": "1",  "scale": "Bebop Major" },
+      { "root": "1",  "scale": "Lydian Augmented",  "note": "for Maj7#5" }
+    ],
+    "6": [
+      { "root": "1",  "scale": "Ionian",            "default": true },
+      { "root": "1",  "scale": "Lydian" },
+      { "root": "1",  "scale": "Major Pentatonic" },
+      { "root": "1",  "scale": "Bebop Major" }
+    ],
+    "m7": [
+      { "root": "1",  "scale": "Dorian",            "default": true },
+      { "root": "1",  "scale": "Aeolian",           "note": "when the chord is vi or iv" },
+      { "root": "1",  "scale": "Minor Pentatonic" },
+      { "root": "1",  "scale": "Blues" },
+      { "root": "b3", "scale": "Major Pentatonic" },
+      { "root": "1",  "scale": "Bebop Dorian" }
+    ],
+    "m6": [
+      { "root": "1",  "scale": "Melodic Minor",     "default": true },
+      { "root": "1",  "scale": "Dorian" },
+      { "root": "1",  "scale": "Minor Pentatonic" }
+    ],
+    "mMaj7": [
+      { "root": "1",  "scale": "Melodic Minor",     "default": true },
+      { "root": "1",  "scale": "Harmonic Minor" }
+    ],
+    "7": [
+      { "root": "1",  "scale": "Mixolydian",        "default": true },
+      { "root": "1",  "scale": "Bebop Dominant" },
+      { "root": "1",  "scale": "Lydian Dominant" },
+      { "root": "1",  "scale": "Half-Whole Diminished" },
+      { "root": "1",  "scale": "Altered",           "note": "resolving dominants" },
+      { "root": "1",  "scale": "Blues" },
+      { "root": "1",  "scale": "Major Pentatonic" },
+      { "root": "5",  "scale": "Minor Pentatonic",  "note": "9 and 13 colour" },
+      { "root": "1",  "scale": "Whole Tone",        "note": "for 7#5" }
+    ],
+    "7sus4": [
+      { "root": "1",  "scale": "Mixolydian",        "default": true },
+      { "root": "b7", "scale": "Major Pentatonic" },
+      { "root": "1",  "scale": "Dorian",            "note": "sus with a minor colour" },
+      { "root": "5",  "scale": "Minor Pentatonic" }
+    ],
+    "7b9": [
+      { "root": "1",  "scale": "Half-Whole Diminished", "default": true },
+      { "root": "1",  "scale": "Phrygian Dominant", "note": "V7 to minor, b9 b13" },
+      { "root": "1",  "scale": "Altered" }
+    ],
+    "7#11": [
+      { "root": "1",  "scale": "Lydian Dominant",   "default": true },
+      { "root": "1",  "scale": "Whole Tone" },
+      { "root": "1",  "scale": "Half-Whole Diminished" },
+      { "root": "5",  "scale": "Melodic Minor",     "note": "same notes as Lydian Dominant" }
+    ],
+    "7alt": [
+      { "root": "1",  "scale": "Altered",           "default": true },
+      { "root": "b2", "scale": "Melodic Minor",     "note": "same notes as Altered" },
+      { "root": "1",  "scale": "Half-Whole Diminished", "note": "b9 #9 #11, natural 13" },
+      { "root": "1",  "scale": "Whole Tone",        "note": "#5 without b9" },
+      { "root": "1",  "scale": "Phrygian Dominant" }
+    ],
+    "m7b5": [
+      { "root": "1",  "scale": "Locrian",           "default": true },
+      { "root": "1",  "scale": "Locrian natural 2" },
+      { "root": "b3", "scale": "Melodic Minor",     "note": "same notes as Locrian natural 2" },
+      { "root": "b6", "scale": "Major Pentatonic" }
+    ],
+    "dim7": [
+      { "root": "1",  "scale": "Whole-Half Diminished", "default": true },
+      { "root": "b2", "scale": "Harmonic Minor",    "note": "dim7 as vii of the minor key a half step up" }
+    ]
+  }
+}
