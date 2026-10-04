@@ -105,6 +105,7 @@ def test_scale_options_interval_roots():
     assert [o["scale"] for o in opts if o["default"]] == ["C Dorian"]
     assert "Eb Major Pentatonic" in [o["scale"] for o in opts]
     assert "D Major Pentatonic" in [o["scale"] for o in j.scale_options("Gbm7b5")]   # b6 of Gb = Ebb -> D
+    assert "B Melodic Minor" in [o["scale"] for o in j.scale_options("Bb7alt")]      # b2 of Bb = Cb -> B
 
 
 def test_every_json_scale_is_known():
@@ -130,7 +131,7 @@ Insert this block between `parse_scale` and `spell_scale`:
 ```python
 # --- chord qualities -> default/alternate scales (chord_scales.json) -------
 CHORD_RE = r"([A-G])([b#♭♯]?)(.*?)(?:/([A-G])([b#♭♯]?))?"
-_qdata = json.loads(Path(__file__).with_name("chord_scales.json").read_text(encoding="utf-8"))
+_qdata = json.loads(Path(__file__).resolve().with_name("chord_scales.json").read_text(encoding="utf-8"))
 QUALITIES = _qdata["qualities"]
 QUALITY_LOOKUP = {q: q for q in QUALITIES}
 for _q, _names in _qdata["quality_aliases"].items():
@@ -151,7 +152,7 @@ def scale_options(chord):
         key = norm(opt["scale"])
         key = ALIASES.get(key, key)
         l, a, _ = spell_from(li, acc, opt["root"])[0]
-        if abs(a) > 1:
+        if opt["root"] != "1":      # interval-derived root: friendliest spelling for its scale
             l, a = simplify_root(l, a, key)
         out.append({"scale": f"{root_name(l, a)} {opt['scale']}",
                     "note": opt.get("note", ""), "default": bool(opt.get("default"))})
@@ -175,7 +176,7 @@ with
         m = re.fullmatch(CHORD_RE, txt.strip())
 ```
 
-Why it works: the lazy quality group plus the optional `/[A-G]` bass means `C6/9` gives quality `6/9` (no bass), while `D7/F#` gives quality `7` and bass `F#`. That's design decision 3, with no extra code. The interval root (`"b3"`) is spelled by reusing `spell_from` with a one-degree formula.
+Why it works: the lazy quality group plus the optional `/[A-G]` bass means `C6/9` gives quality `6/9` (no bass), while `D7/F#` gives quality `7` and bass `F#`. That's design decision 3, with no extra code. The interval root (`"b3"`) is spelled by reusing `spell_from` with a one-degree formula, then respelled by `simplify_root` for its scale (so `b2` over Bb gives B Melodic Minor, not Cb). A root the user wrote (`"1"`) is kept as written.
 
 - [ ] **Step 4: Run tests**
 
@@ -1180,6 +1181,7 @@ describe('qualities', () => {
     const scales = resolveQuality('Cm7')?.options.map((o) => o.scale)
     expect(scales).toContain('Eb Major Pentatonic')
     expect(resolveQuality('Gbm7b5')?.options.map((o) => o.scale)).toContain('D Major Pentatonic')
+    expect(resolveQuality('Bb7alt')?.options.map((o) => o.scale)).toContain('B Melodic Minor')
   })
 
   it('every quality has exactly one default and known scales', () => {
@@ -1232,7 +1234,7 @@ export function resolveQuality(chord: string): QualityMatch | null {
   const options = (DATA.qualities[quality] ?? []).map((opt): ScaleOption => {
     const key = scaleKey(opt.scale)
     const r: Spelled = spellFrom(c.root, opt.root)[0]
-    const root = Math.abs(r.acc) > 1 ? simplifyRoot(r, key) : r
+    const root = opt.root === '1' ? r : simplifyRoot(r, key) // interval-derived: friendliest spelling
     return { scale: `${rootName(root)} ${opt.scale}`, note: opt.note ?? '', default: opt.default ?? false }
   })
   return { quality, options }
