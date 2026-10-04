@@ -614,7 +614,7 @@ Ports `SCALES`, `ALIASES`, `norm`, `spell_from`, `simplify_root`, `parse_scale`,
 ```ts
 import { describe, expect, it } from 'vitest'
 import { parseRoot, rootName } from '../pitch'
-import { parseScale, scaleKey, simplifyRoot, spellScale } from '../scales'
+import { parseScale, scaleKey, simplifyRoot, spellFrom, spellScale } from '../scales'
 
 const spelled = (text: string): string => {
   const { root, key } = parseScale(text)
@@ -639,6 +639,7 @@ describe('scales', () => {
     expect(() => parseScale('C Dorain')).toThrow(/unknown scale/)
     expect(() => parseScale('C constructor')).toThrow(/unknown scale/)
     expect(() => parseScale('C')).toThrow(/root and a name/)
+    expect(spellFrom(parseRoot('C'), '0')).toEqual([{ letter: 6, acc: 0, semis: 11 }]) // degree 0 wraps like Python
   })
 
   it('simplifies roots by looking at the whole scale', () => {
@@ -736,7 +737,7 @@ export function spellFrom(root: Spelled, formula: string): ScaleNote[] {
     .map((tok) => {
       const m = /^([b#]*)(\d+)$/.exec(tok)
       if (!m) throw new Error(`bad scale degree: ${JSON.stringify(tok)}`)
-      const idx = (Number(m[2]) - 1) % 7
+      const idx = mod(Number(m[2]) - 1, 7)
       const semis = NAT_PC[idx] + count(m[1], '#') - count(m[1], 'b')
       const letter = toLetter(root.letter + idx)
       return { letter, acc: accFor(mod(rootPc + semis, 12), letter), semis }
