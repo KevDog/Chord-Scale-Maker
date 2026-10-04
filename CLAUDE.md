@@ -9,8 +9,11 @@ chart format and options.
 ## Working here
 - No third-party Python packages. Keep it that way unless there is a strong reason.
 - LilyPond must be installed to produce PDFs; `--no-pdf` writes the `.ly` only.
-- Run `python3 -m pytest tests` after changes. The tests cover scale spelling,
-  transposition, enharmonic choice and chart parsing without needing LilyPond.
+- `make setup` once, then `make test` after changes: pytest (scale spelling, transposition,
+  enharmonic choice, chart parsing, fixture freshness) plus the TS engine's typecheck and vitest.
+- `web/engine/` is a TS port of the Python engine. After changing `jazz_scales.py`,
+  `chord_scales.json` or `charts/`, run `make fixtures` and port the change to TS. The golden
+  parity test (`web/engine/__tests__/golden.test.ts`) fails until both agree.
 - Generated `.ly`/`.pdf` files belong in `output/` and are git-ignored.
 
 ## Design rules
@@ -22,6 +25,7 @@ chart format and options.
   share a root; a slash bass keeps its interval from the root.
 - Page fitting: `--per-page` unset means the script compiles with decreasing
   staves per page until no page overflows.
+- Chart rows may omit the scale; both engines use the quality's default from `chord_scales.json`.
 
 ## Typical requests
 - "Make a chart for <tune>": create `charts/<tune>.txt` in concert pitch, one row
