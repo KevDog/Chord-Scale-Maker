@@ -202,7 +202,7 @@ def parse_scale(scale_text):
 
 # --- chord qualities -> default/alternate scales (chord_scales.json) -------
 CHORD_RE = r"([A-G])([b#♭♯]?)(.*?)(?:/([A-G])([b#♭♯]?))?"
-_qdata = json.loads(Path(__file__).with_name("chord_scales.json").read_text(encoding="utf-8"))
+_qdata = json.loads(Path(__file__).resolve().with_name("chord_scales.json").read_text(encoding="utf-8"))
 QUALITIES = _qdata["qualities"]
 QUALITY_LOOKUP = {q: q for q in QUALITIES}
 for _q, _names in _qdata["quality_aliases"].items():
@@ -223,7 +223,7 @@ def scale_options(chord):
         key = norm(opt["scale"])
         key = ALIASES.get(key, key)
         l, a, _ = spell_from(li, acc, opt["root"])[0]
-        if abs(a) > 1:
+        if opt["root"] != "1":      # interval-derived root: friendliest spelling for its scale
             l, a = simplify_root(l, a, key)
         out.append({"scale": f"{root_name(l, a)} {opt['scale']}",
                     "note": opt.get("note", ""), "default": bool(opt.get("default"))})

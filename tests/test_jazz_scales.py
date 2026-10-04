@@ -91,6 +91,7 @@ def test_scale_options_interval_roots():
     assert [o["scale"] for o in opts if o["default"]] == ["C Dorian"]
     assert "Eb Major Pentatonic" in [o["scale"] for o in opts]
     assert "D Major Pentatonic" in [o["scale"] for o in j.scale_options("Gbm7b5")]   # b6 of Gb = Ebb -> D
+    assert "B Melodic Minor" in [o["scale"] for o in j.scale_options("Bb7alt")]      # b2 of Bb = Cb -> B
 
 
 def test_every_json_scale_is_known():
