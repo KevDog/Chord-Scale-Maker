@@ -32,3 +32,9 @@ export { expect }
 
 /** count of drawn staves (VexFlow SVGs) */
 export const staves = (page: import('@playwright/test').Page) => page.locator('svg[role=img]')
+
+/** pick an instrument from the editor's Instrument listbox by its visible name */
+export async function chooseInstrument(page: import('@playwright/test').Page, name: string): Promise<void> {
+  await page.getByRole('button', { name: 'Instrument' }).click()
+  await page.getByRole('option', { name: new RegExp(`^${name}`) }).click()
+}

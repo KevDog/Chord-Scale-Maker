@@ -1,15 +1,16 @@
 <template>
-  <div class="flex h-full flex-col gap-2">
-    <textarea
-      :value="text"
+  <div class="flex h-full flex-col gap-3">
+    <UiTextarea
+      :model-value="text"
       spellcheck="false"
       aria-label="Chart text"
-      class="h-[60vh] min-h-60 resize-y rounded-lg border border-slate-300 bg-white p-3 font-mono text-sm leading-6 dark:border-slate-700 dark:bg-slate-900"
-      @input="emit('update:text', ($event.target as HTMLTextAreaElement).value)"
+      class="h-[60vh] min-h-60 font-mono text-sm/6!"
+      @update:model-value="emit('update:text', $event)"
     />
-    <ul v-if="diagnostics.length" class="space-y-1 text-sm" aria-live="polite">
-      <li v-for="(d, i) in diagnostics" :key="i" :class="d.fatal ? 'text-rose-600 dark:text-rose-400' : 'text-amber-700 dark:text-amber-400'">
-        {{ d.line ? `Line ${d.line}: ` : '' }}{{ d.message }}
+    <ul v-if="diagnostics.length" class="space-y-1.5" aria-live="polite">
+      <li v-for="(d, i) in diagnostics" :key="i" class="flex items-baseline gap-2 text-sm/6 text-zinc-700 dark:text-zinc-300">
+        <UiBadge :color="d.fatal ? 'red' : 'amber'" class="shrink-0">{{ d.line ? `Line ${d.line}` : 'Chart' }}</UiBadge>
+        <span>{{ d.message }}</span>
       </li>
     </ul>
   </div>

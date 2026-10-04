@@ -30,6 +30,7 @@ test('text edits update the grid and preview; unknown chords prompt for a scale'
   await page.getByLabel('Scale name').selectOption('Altered')
   await page.getByRole('button', { name: 'Set scale' }).click()
   await expect(text).toHaveValue(/Cm7#5#9x \| C Altered/)
+  await expect(page.getByLabel('Scale for Cm7#5#9x')).toBeFocused() // focus returns to the row
   await expect(staves(page)).toHaveCount(8)
 })
 

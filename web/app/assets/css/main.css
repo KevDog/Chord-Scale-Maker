@@ -3,7 +3,7 @@
 /* dark mode follows the .dark class on <html> (toggle in the header, default light) */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* cool palette: slate neutrals, teal accent, sky for focus.
+/* palette: zinc neutrals (Catalyst), teal accent, sky for focus.
    Light accent is teal-700 so small text meets WCAG AA (about 5.5:1 on white). */
 @theme {
   --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
@@ -14,10 +14,10 @@
 
 @layer base {
   html {
-    @apply bg-slate-50 text-slate-800 antialiased;
+    @apply bg-zinc-50 text-zinc-800 antialiased;
   }
   html.dark {
-    @apply bg-slate-950 text-slate-200;
+    @apply bg-zinc-950 text-zinc-200;
     --color-accent: var(--color-teal-400);
     --color-accent-strong: var(--color-teal-300);
     color-scheme: dark;
