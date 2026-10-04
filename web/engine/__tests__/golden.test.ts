@@ -41,6 +41,12 @@ type Golden = {
 const repo = (path: string): string => readFileSync(new URL(`../../../${path}`, import.meta.url), 'utf8')
 const G = JSON.parse(repo('fixtures/golden.json')) as Golden
 
+function partFor(id: string): Part {
+  const part = G.parts[id]
+  if (!part) throw new Error(`fixture has no part ${id}`)
+  return part
+}
+
 /** engine domain errors are plain Errors (Python's ValueError); anything else is a bug and must fail */
 const isDomainError = (e: unknown): boolean => e instanceof Error && e.constructor === Error
 
@@ -95,7 +101,7 @@ describe('golden parity with jazz_scales.py', () => {
 
   for (const [partId, cases] of Object.entries(G.scales)) {
     it(`scales, ${partId}`, () => {
-      const part = G.parts[partId]
+      const part = partFor(partId)
       expect(mismatches(Object.entries(cases).map(([t, want]) => [t, want, scaleCase(part, t)] as const))).toEqual([])
     })
   }
@@ -106,7 +112,7 @@ describe('golden parity with jazz_scales.py', () => {
         [
           `${c.part} ${c.chord} / ${c.scale}`,
           c.tokens,
-          attempt(() => chordTokens(G.parts[c.part], c.chord, c.scale ?? undefined)),
+          attempt(() => chordTokens(partFor(c.part), c.chord, c.scale ?? undefined)),
         ] as const,
     )
     expect(mismatches(cases)).toEqual([])

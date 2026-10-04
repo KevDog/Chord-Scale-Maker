@@ -35,17 +35,23 @@ web/                      # Nuxt app (Vercel root directory)
     chord.ts              # parseChord -> ChordParts, chordTokens
     qualities.ts          # resolve quality via chord_scales.json, options + defaults
     chart.ts              # parse/serialize chart text <-> ChartDoc, expand @copy
+    edit.ts               # grid edits on a ChartDoc (pure), cell validation
+    sheet.ts              # rows -> pages of StaffModel (labels, notes, errors), toVexKey
     limits.ts             # input caps
     index.ts
     __tests__/            # vitest, incl. golden parity
   app/
-    pages/index.vue       # library + search
-    pages/editor.vue      # editor (?chart=<slug> to load from library)
-    components/ChartGrid.vue, ChartText.vue, ScaleStaff.vue, ChordSymbol.vue,
-               ScalePicker.vue, InstrumentPicker.vue, PrintSheet.vue
-    composables/useChart.ts   # single source of editor state
-    composables/useLibrary.ts
-  nuxt.config.ts, vercel.json, vitest.config.ts, tsconfig.json
+    pages/index.vue       # library + title search
+    pages/editor.vue      # ?chart=<slug> | ?new=1 | this browser's draft
+    components/           # AppHeader, EditorView, ChartGrid, GridCell, ScaleCell, ChartText,
+                          # ScaleSheet, ScaleStaff, ChordSymbol, NoteName
+    composables/          # useChartEditor (editor state), useDraft, useTheme
+    utils/                # library (build-time charts), scaleChoices, vexflow (drawing)
+    assets/css/main.css   # Tailwind, theme tokens, print rules
+  public/theme-init.js    # applies the saved theme before first paint
+  test/                   # app tests (@nuxt/test-utils, happy-dom)
+  nuxt.config.ts, vitest.config.ts (engine + app projects), eslint.config.mjs,
+  tsconfig.json (Nuxt's generated configs), tsconfig.engine.json (engine + its tests)
 ```
 
 Python stays at the repo root so the existing CLI, Makefile and tests are
@@ -133,10 +139,11 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - Grid shows each `ChartLine` as a row: data rows are editable cells, `@copy` is
   a compact directive row, comments are collapsed. Expanded copies are shown
   read-only in the preview, not the grid.
-- Cell validation: values may not contain `|` or line breaks, or start with `#`, `@`, `title:` or `subtitle:`. Otherwise the serialized text would re-parse as a different line.
-- Chord cell: free text with validation. Scale cell: dropdown of the chord
-  quality's options (with notes) plus "Other…" → `ScalePicker` (root + any of
-  the 23 scales). Unknown quality → cell is flagged and shows `ScalePicker`.
+- Cell validation (`cellError`): values may not contain `|` or line breaks, start or end with spaces, or start with `#`, `@`, `title:` or `subtitle:`. Otherwise the serialized text would re-parse as a different line. A rejected value stays visible and flagged in its cell (`GridCell`), and the doc keeps the last good value.
+- Chord cell: free text with validation. Scale cell (`ScaleCell`): a dropdown of
+  "Default · …", the quality's alternates (with notes), and "Other…", which opens an inline
+  picker (root + any of the 23 scales). Unknown quality → amber border and "Choose a scale…",
+  with "Other…" still available.
 
 ## 5. Rendering
 
@@ -149,13 +156,21 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - Two parts as in the CLI: "Spelled from X" and "Spelled from the Root", each
   with its own title header. Mode selector: both / from / root; start-note input
   (written pitch).
-- VexFlow is loaded client-only (`<ClientOnly>` / dynamic import) and bundled,
-  not from a CDN, so the CSP stays `script-src 'self'`.
-- Live preview re-renders only changed staves (keyed by row content + part).
+- VexFlow is loaded client-only (dynamic import of `vexflow/bravura`, editor page only) and bundled,
+  not from a CDN, so the CSP stays `script-src 'self'`. Its Bravura font is embedded as a
+  `data:` URL, so the CSP needs `font-src 'self' data:`. Drawing waits for `document.fonts.load`.
+- The staff SVG uses `currentColor`, so it follows light/dark mode and prints black.
+  It is drawn in a 960-unit-wide space and cropped to the band notes can reach, so in print
+  each staff is about 58px tall and 12 fit on a letter page with their labels.
+- `engine/sheet.ts` builds the view model (`StaffModel`: labels, notes, or an error such as
+  "Choose a scale"); components only draw it. Live preview re-renders only changed staves
+  (each staff's `id` combines its position, its row content and the mode).
 
 ## 6. Styling
 
 - Tailwind CSS v4 through `@tailwindcss/vite` in `nuxt.config.ts`. Styles live in utility classes on components, with a single `app/assets/css/main.css` for `@import "tailwindcss"` and theme tokens.
+- Palette: cool slate neutrals with a teal accent (`--color-accent`: teal-700 for AA contrast, teal-400 in dark mode) and sky focus rings (sky-600, sky-400 in dark mode). The look is clean and minimal.
+- Dark mode is a `.dark` class on `<html>`, toggled in the header. The default is light, and the choice is saved per browser. `public/theme-init.js` applies it before first paint; it is a file, not an inline script, so the CSP needs no `unsafe-inline` for scripts. Print is always light.
 - Tailwind generates its CSS at build time and serves it as a static file, so the CSP stays the same.
 - The print layout uses Tailwind's `print:` variant (`print:hidden`, `print:break-after-page`) plus a small `@page` rule in `main.css`.
 
@@ -169,17 +184,18 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 ## 7. Library
 
-- `import.meta.glob('../../charts/*.txt', { query: '?raw', eager: true })` →
+- `import.meta.glob('../../../charts/*.txt', { query: '?raw', eager: true })` in `app/utils/library.ts` →
   `{ slug, title, subtitle, text }[]` at build time. The same parser runs, and
   the build fails if any library chart has errors (via a test).
 - Title search: case- and accent-insensitive substring filter, client-side.
 - "Open in editor" copies the chart into editor state; library files are never mutated.
-- Contact line ("request a chart: email …") on the library page. The address comes from config.
+- Contact: a "request a chart" link to the repo's new-issue page, in the footer. The URL is `runtimeConfig.public.issuesUrl`.
 
 ## 8. State
 
-- `useChart` composable: `doc`, `diagnostics`, `part`, `mode`, `start`,
-  `perPage`; derived `rows`, `staves`. Immutable updates only.
+- `useChartEditor(initialText)`: `text`, `doc`, `diagnostics`, `fatal`, `rows`, `meta`,
+  `setText` (debounced re-parse) and `setDoc` (grid edit → canonical text). Immutable updates only.
+  Mode (both/from/root) is page state; part is fixed to concert until phase 3.
 - Editor draft is kept in `localStorage` (try/catch) as a per-browser convenience.
   Nothing is sent anywhere.
 - Instrument picker (phase 3) only changes `part`. The engine already supports
@@ -199,6 +215,10 @@ The site is static with no server code, so most of the attack surface is gone. R
 - **Input:** caps in `limits.ts`: 20,000 chars of text, 500 rows, 40 chars per
   cell, `@copy` expansion ≤ 1,000 rows. These are enforced in the parser before
   any work runs.
+- **CSP and Nuxt's inline scripts:** the static HTML contains Nuxt's inline
+  `window.__NUXT__` config script and an inline import map, so `script-src 'self'` alone
+  would block hydration. Phase 4 must allow them by hash, generated at build time (for example
+  with `nuxt-security`'s SSG hashes), or remove them via Nuxt options. Don't fall back to `'unsafe-inline'`.
 - **XSS:** no `v-html` anywhere (lint rule `vue/no-v-html: error`). Chart text
   is only ever rendered as text nodes or VexFlow-escaped SVG text.
 - **Supply chain:** lockfile committed, exact versions, Dependabot, `npm audit`
@@ -219,12 +239,19 @@ The site is static with no server code, so most of the attack surface is gone. R
   pytest checks that the file is up to date. vitest checks that TS output matches it exactly.
 - **Engine unit tests (vitest):** written test-first, alongside each module.
   They cover what fixtures can't: quality resolution, interval roots, diagnostics, limits.
-- **Components:** `@nuxt/test-utils` + Vue Test Utils for grid ⇄ text round-trip
-  (`serialize(parse(t))` idempotent; grid edit → text) and the scale dropdown.
+- **App (`web/test/`):** `@nuxt/test-utils` (Nuxt runtime, happy-dom) + Vue Test Utils:
+  `useChartEditor` sync and debounce, library build/search, scale choices, `ChartGrid`
+  edits and validation, `ScaleCell` dropdown and picker, and `ScaleSheet` pagination with
+  `ScaleStaff` stubbed. VexFlow drawing needs a real browser, so it is covered by the phase 4 E2E tests.
+- **Local preview:** `make dev` (live reload) and `make preview` (the production static
+  build, served locally).
 - **E2E (Playwright, smoke):** library search → open → preview staves count →
   print media emulation shows N staves/page.
-- **CI (GitHub Actions):** pytest, fixture freshness, typecheck (`nuxi typecheck`),
-  lint, vitest, `nuxt generate`. Vercel's Git integration builds a preview deploy per PR.
+- **CI (GitHub Actions):** pytest, fixture freshness, lint, typecheck (`nuxt typecheck`
+  + engine tsconfig), vitest, `nuxt generate`, and `npm audit --omit=dev` (gating).
+  A full `npm audit` is reported but does not block: build-tooling advisories don't ship.
+  `vue` and `vexflow` are the only `dependencies`; everything else is build-time `devDependencies`.
+  Vercel's Git integration builds a preview deploy per PR.
 
 ## 11. Phases
 

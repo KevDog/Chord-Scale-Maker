@@ -74,8 +74,9 @@ export function spellFrom(root: Spelled, formula: string): ScaleNote[] {
     .map((tok) => {
       const m = /^([b#]*)(\d+)$/.exec(tok)
       if (!m) throw new Error(`bad scale degree: ${JSON.stringify(tok)}`)
-      const idx = mod(Number(m[2]) - 1, 7)
-      const semis = NAT_PC[idx] + count(m[1], '#') - count(m[1], 'b')
+      const [, accs = '', degree = ''] = m
+      const idx = toLetter(Number(degree) - 1) // degree's offset in letters, wrapping like Python's %
+      const semis = NAT_PC[idx] + count(accs, '#') - count(accs, 'b')
       const letter = toLetter(root.letter + idx)
       return { letter, acc: accFor(mod(rootPc + semis, 12), letter), semis }
     })
@@ -87,13 +88,19 @@ const isUgly = (n: Spelled): boolean =>
   (n.acc === -1 && (n.letter === 0 || n.letter === 3)) // Cb, Fb
 
 function lexLess(a: readonly number[], b: readonly number[]): boolean {
-  for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return a[i] < b[i]
+  for (let i = 0; i < a.length; i++) {
+    const x = a[i] ?? 0
+    const y = b[i] ?? 0
+    if (x !== y) return x < y
+  }
   return false
 }
 
 /** first element with the smallest key (lexicographic), like Python's min() */
 function minBy<T>(xs: readonly T[], key: (x: T) => readonly number[]): T {
-  return xs.slice(1).reduce((best, x) => (lexLess(key(x), key(best)) ? x : best), xs[0])
+  const [first, ...rest] = xs
+  if (first === undefined) throw new Error('minBy of an empty list')
+  return rest.reduce((best, x) => (lexLess(key(x), key(best)) ? x : best), first)
 }
 
 /**
@@ -118,7 +125,7 @@ const isScaleKey = (k: string): k is ScaleKey => Object.hasOwn(SCALES, k)
 /** scale name ("Half-Whole Dim.", "hw", "Locrian ♮2") -> SCALES key */
 export function scaleKey(name: string): ScaleKey {
   const k = norm(name)
-  const key = Object.hasOwn(ALIASES, k) ? ALIASES[k] : k
+  const key = (Object.hasOwn(ALIASES, k) ? ALIASES[k] : undefined) ?? k
   if (!isScaleKey(key)) throw new Error(`unknown scale ${JSON.stringify(name.trim())}`)
   return key
 }
@@ -135,7 +142,7 @@ export function spellScale(root: Spelled, key: ScaleKey): ScaleNote[] {
   const notes = spellFrom(root, SCALES[key][0])
   if (notes.some((n) => Math.abs(n.acc) > 2))
     throw new Error(`${rootName(root)} ${key} needs a triple accidental; pick an enharmonic root`)
-  if (notes.some((n, i) => i > 0 && n.semis <= notes[i - 1].semis))
+  if (notes.some((n, i) => i > 0 && n.semis <= (notes[i - 1]?.semis ?? -1)))
     throw new Error(`scale formula not ascending: ${key}`)
   return notes
 }

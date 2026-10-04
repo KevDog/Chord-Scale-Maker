@@ -7,3 +7,7 @@ __pycache__/
 .claude/settings.local.json
 .venv/
 web/node_modules/
+web/.nuxt/
+web/.output/
+web/.data/
+web/dist

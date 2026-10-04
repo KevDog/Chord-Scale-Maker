@@ -10,7 +10,7 @@ counterpart of `jazz_scales.py`.
 
 - Stack: Nuxt 4, TypeScript strict, Tailwind CSS, VexFlow, deployed on Vercel.
 - Rendering: in browser (VexFlow). No server-side LilyPond (unsupported on Vercel; revisit if that changes).
-- Domain: build on default `*.vercel.app`; custom domain attached later. No hardcoded URL; canonical URL via env/config.
+- Domain: `chordscalemaker.com` (custom domain, attached once deployed; build first on the default `*.vercel.app`). No hardcoded URL; canonical URL via env/config.
 - Local CLI: `jazz_scales.py` + LilyPond stays for the maintainer's local use, stdlib-only. Only change: optional scale column via `chord_scales.json`.
 - Public, no accounts, no per-user data, no share links, no playback.
 
@@ -23,7 +23,7 @@ counterpart of `jazz_scales.py`.
 ## Functional requirements
 
 1. Scale engine (TS port of `jazz_scales.py`): degree formulas from `SCALES`, `simplify_root` enharmonic rules, transposition, chart parsing. Behaviour parity with Python.
-2. Chart library: charts are files in the repo, built into the site; search by title only. No public submissions (users email the maintainer).
+2. Chart library: charts are files in the repo, built into the site; search by title only. No public submissions (users request charts via a GitHub issue link).
 3. Chart editor: free text and grid (section / bar / chord / scale) synced both ways.
 4. Chord → scale: resolve quality via `quality_aliases`; use the default scale unless one is given. Unrecognized chord → prompt for scale.
 5. Alternates: per-chord dropdown listing alternate scales (root interval, scale, note).

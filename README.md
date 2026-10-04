@@ -111,6 +111,18 @@ Both live in dictionaries near the top of `jazz_scales.py`:
   `"lydian dominant": ("1 2 3 #4 5 6 b7", "Lydian Dominant")`.
 - `INSTRUMENTS`: `"name": ("clef", "key", "description")`.
 
+## Web app
+
+The web version lives in `web/` (Nuxt 4, Tailwind CSS, VexFlow) and is deployed as a static site.
+
+```bash
+make setup     # once
+make dev       # live-reloading dev server at http://localhost:3000
+make preview   # build the production static site and serve it at http://localhost:3000
+```
+
+The library lists every chart in `charts/`; add a `.txt` file there and it appears on the next build.
+
 ## Tests
 
 ```bash

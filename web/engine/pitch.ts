@@ -11,8 +11,9 @@ export const toLetter = (n: number): Letter => mod(n, 7) as Letter
 export function parseRoot(tok: string): Spelled {
   const m = /^([A-Ga-g])([b#♭♯]*)$/.exec(tok)
   if (!m) throw new Error(`bad note name: ${JSON.stringify(tok)}`)
-  const acc = [...m[2]].reduce((s, c) => s + (c === '#' || c === '♯' ? 1 : -1), 0)
-  return { letter: 'CDEFGAB'.indexOf(m[1].toUpperCase()) as Letter, acc }
+  const [, letter = '', accs = ''] = m
+  const acc = [...accs].reduce((s, c) => s + (c === '#' || c === '♯' ? 1 : -1), 0)
+  return { letter: 'CDEFGAB'.indexOf(letter.toUpperCase()) as Letter, acc }
 }
 
 export const accText = (acc: number): string => (acc > 0 ? '#'.repeat(acc) : 'b'.repeat(-acc))

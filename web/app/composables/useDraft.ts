@@ -1,0 +1,30 @@
+import { LIMITS } from '~~/engine'
+
+const KEY = 'csm-draft'
+
+export const STARTER_CHART = `title: Untitled
+subtitle:
+
+# section | bar | chord | scale (optional)
+A | 1 | Dm7
+A | 2 | G7
+A | 3 | CMaj7
+`
+
+/** the editor's last text, kept in this browser only (nothing is sent anywhere) */
+export function loadDraft(): string | null {
+  try {
+    return localStorage.getItem(KEY)
+  } catch {
+    return null
+  }
+}
+
+export function saveDraft(text: string): void {
+  if (text.length > LIMITS.maxChars) return // keep the last draft that fit; don't write megabytes per keystroke
+  try {
+    localStorage.setItem(KEY, text)
+  } catch {
+    // storage full or unavailable: drafts are a convenience only
+  }
+}

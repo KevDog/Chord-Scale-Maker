@@ -1,6 +1,6 @@
 import raw from '../../chord_scales.json'
 import { parseChord } from './chord'
-import { type Spelled, rootName } from './pitch'
+import { rootName } from './pitch'
 import { scaleKey, simplifyRoot, spellFrom } from './scales'
 
 type RawOption = Readonly<{ root: string; scale: string; default?: boolean; note?: string }>
@@ -27,7 +27,8 @@ export function resolveQuality(chord: string): QualityMatch | null {
   if (quality === undefined) return null
   const options = (DATA.qualities[quality] ?? []).map((opt): ScaleOption => {
     const key = scaleKey(opt.scale)
-    const r: Spelled = spellFrom(c.root, opt.root)[0]
+    const [r] = spellFrom(c.root, opt.root)
+    if (!r) throw new Error(`bad interval ${JSON.stringify(opt.root)} in chord_scales.json`)
     const root = opt.root === '1' ? r : simplifyRoot(r, key) // interval-derived: friendliest spelling
     return { scale: `${rootName(root)} ${opt.scale}`, note: opt.note ?? '', default: opt.default ?? false }
   })
