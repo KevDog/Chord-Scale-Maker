@@ -28,11 +28,11 @@ tests/                    # pytest
 docs/
 web/                      # Nuxt app (Vercel root directory)
   engine/                 # pure TS, no Vue/DOM imports
-    pitch.ts              # letters, pitch classes, acc_for, enharmonics, simplify
-    scales.ts             # SCALES, ALIASES, spellFrom, spellScale, parseScale
+    pitch.ts              # letters, pitch classes, accFor, enharmonics
+    scales.ts             # SCALES, ALIASES, spellFrom, simplifyRoot, spellScale, parseScale
     instruments.ts        # TRANSPOSITIONS, INSTRUMENTS, clef ranges
-    part.ts               # writtenRoot, scaleNotes, scaleLabel (functional "Part")
-    chord.ts              # parseChord -> ChordSymbol, transposeChord
+    part.ts               # writtenRoot, scaleNotes, scaleLabel, lilyNote, resolveStart (functional "Part")
+    chord.ts              # parseChord -> ChordParts, chordTokens
     qualities.ts          # resolve quality via chord_scales.json, options + defaults
     chart.ts              # parse/serialize chart text <-> ChartDoc, expand @copy
     limits.ts             # input caps
@@ -70,9 +70,9 @@ type Clef = 'treble' | 'bass'
 type Part = Readonly<{ clef: Clef; trans: Transposition }>
 type Mode = 'from' | 'root'
 
-type ChordSymbol = Readonly<{
+type ChordParts = Readonly<{
   root: Spelled
-  quality: string          // raw text after the root, e.g. "m7b5"
+  quality: string          // raw text between root and /bass, e.g. "m7b5", "6/9"
   bass?: Spelled
 }>
 // display tokens, rendered by ChordSymbol.vue (replaces LilyPond markup)
@@ -86,22 +86,24 @@ type ChordToken =
 | Python | TS | Notes |
 |---|---|---|
 | `parse_root`, `root_name`, `pc_of`, `acc_for`, `enharmonics` | `pitch.ts` | identical arithmetic; JS `%` needs a `mod()` helper for negatives |
-| `simplify_root` | `pitch.ts` `simplifyRoot` | same cost tuple `(ugly, total, sameDir)`; tie order = order of `enharmonics()` |
+| `simplify_root` | `scales.ts` `simplifyRoot` | same cost tuple `(ugly, total, sameDir)`; tie order = order of `enharmonics()` |
 | `spell_from`, `spell_scale`, `parse_scale`, `norm` | `scales.ts` | formulas copied verbatim from `SCALES` |
 | `Part.written_root/scale/scale_notes/scale_label` | `part.ts` | functions taking a `Part` value |
 | `Part.chord_markup` | `chord.ts` `chordTokens(part, chord, scaleText?)` | returns `ChordToken[]`, not LilyPond |
-| `lily_note` | `part.ts` `toVexKey` | `{letter, acc, midi}` → `"eb/4"` |
-| `parse_start` | `part.ts` `parseStart` | |
+| `lily_note` | `part.ts` `lilyNote` | used for parity tests; phase 2 adds `toVexKey` (`{letter, acc, midi}` → `"eb/4"`) |
+| `parse_start` + start logic in `main()` | `part.ts` `parseStart`, `resolveStart` | |
 | `read_chart` | `chart.ts` | returns errors, never exits |
 
 ### New beyond Python
 
-- `qualities.ts`: split a chord into root / quality / bass, look the quality up in
-  `chord_scales.json` aliases, return `{ quality, options[], defaultIndex }` or
-  `unknown`. An option's scale root = chord root + interval (letter-step
-  arithmetic, e.g. `b3` over C → Eb), so `"root": "b3", "scale": "Major Pentatonic"` over Cm7 → `Eb Major Pentatonic`.
-- Effective scale for a row = explicit scale cell, else default option, else
-  `needs-scale` (UI prompts).
+- `qualities.ts`: `resolveQuality(chord)` looks the quality up in `chord_scales.json`
+  aliases and returns `{ quality, options: { scale, note, default }[] }`, or `null`
+  for an unknown quality. It throws on an unparseable chord. An option's scale root = chord root +
+  interval (letter-step arithmetic, e.g. `b3` over C → Eb). Interval-derived roots
+  are respelled by `simplifyRoot` for their scale (`b2` over Bb → B, not Cb).
+  `defaultScale(chord)` gives the default option's scale text.
+- `chart.ts` `resolveScale(row)`: explicit scale cell, else the default, else
+  `null` (UI prompts).
 
 ## 4. Chart model and text ⇄ grid sync
 
@@ -112,15 +114,19 @@ type ChartLine =
   | { kind: 'meta'; key: 'title' | 'subtitle'; value: string }
   | { kind: 'row'; section: string; bar: string; chord: string; scale: string }  // scale '' = default
   | { kind: 'copy'; src: string; dst: string; offset: number }
-  | { kind: 'comment' | 'blank'; text: string }
+  | { kind: 'comment'; text: string }
+  | { kind: 'blank' }
+  | { kind: 'invalid'; text: string }     // bad line, kept verbatim so text round-trips
 
 type ChartDoc = Readonly<{ lines: readonly ChartLine[] }>
-type Diagnostic = { line: number; message: string; severity: 'error' | 'warning' }
+type Diagnostic = Readonly<{ line: number; message: string; fatal?: true }>  // line 0 = whole chart
+type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 ```
 
-- `parseChart(text) → { doc, diagnostics }`: tolerant; bad lines become diagnostics, not exceptions.
+- `parseChart(text) → Parsed<ChartDoc>`: tolerant; bad lines become `invalid` lines plus a diagnostic, never exceptions.
+- `fatal` diagnostics (`isFatal`) mean a hard input limit was exceeded (length, rows, expanded rows). The UI must not render or write back such a chart. Non-fatal ones are per-line errors shown inline.
 - `serializeChart(doc) → text`: canonical, column-aligned.
-- `expandRows(doc) → Row[]`: applies `@copy` in order (as Python does).
+- `expandRows(doc) → Parsed<Row[]>`: applies `@copy` in order (as Python does), capped at 1,000 rows.
 - Single source of truth is `ChartDoc` in `useChart`.
   - Text edits → debounce (~150 ms) → parse → replace doc. Text is not reformatted while you type; the canonical form applies only after a grid edit.
   - Grid edits → new doc (immutable update) → serialize → text.
@@ -237,6 +243,7 @@ The site is static with no server code, so most of the attack surface is gone. R
    web app prompts.
 2. **Triads.** `chord_scales.json` now has `maj` (`""`, `M`, `ma`, `major` →
    Ionian) and `m` (`-`, `mi`, `min` → Dorian).
-3. **Slash-bass parsing.** The quality is matched against the known aliases
-   (longest first, e.g. `6/9`, `m6/9`) before splitting off a `/bass` note.
+3. **Slash-bass parsing.** `CHORD_RE` takes the quality lazily and the bass only
+   as `/` + a note letter at the end, so `C6/9` gives quality `6/9` and `D7/F#`
+   gives quality `7` with bass F#. The quality is then matched exactly against the aliases.
 4. **Staves per page.** N = 12.

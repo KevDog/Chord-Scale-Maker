@@ -1,6 +1,6 @@
 CHART ?= charts/autumn_leaves.txt
 INST  ?= concert
-PY    ?= .venv/bin/python
+PY    ?= $(if $(wildcard .venv/bin/python),.venv/bin/python,python3)
 
 .PHONY: pdf setup test fixtures clean
 pdf:

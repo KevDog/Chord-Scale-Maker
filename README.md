@@ -114,5 +114,10 @@ Both live in dictionaries near the top of `jazz_scales.py`:
 ## Tests
 
 ```bash
-python3 -m pytest tests
+make setup   # once: .venv with pytest, npm ci in web/
+make test    # pytest + the TypeScript engine (typecheck, vitest)
 ```
+
+`web/engine/` is a TypeScript port of the engine for the web app. `fixtures/golden.json`
+records the Python engine's answers and the TS tests must match them; run `make fixtures`
+after changing `jazz_scales.py`, `chord_scales.json` or `charts/`.

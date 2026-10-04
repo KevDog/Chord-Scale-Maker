@@ -34,6 +34,7 @@ Chart format (plain text):
   A1 | 1 | Cm7   | C Dorian
   A1 | 3 | Bm7   | B Dorian
   A1 | 3 | E7    | E Mixolydian       <- two chords in one bar = two rows
+  A1 | 4 | Bbm7                        <- scale omitted: quality default from chord_scales.json
   @copy A1 A2 8                        <- repeat section A1 as A2, bars +8
 Chords: Cm7, Bbm7, Am7b5, D7#5, EbMaj7, D7/F#, C9 ... (m = minor, shown as -)
 Scales: "<root> <name>", e.g. "Bb Dorian", "D Half-Whole", "G Altered".
