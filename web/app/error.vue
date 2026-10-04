@@ -1,17 +1,14 @@
 <template>
-  <div class="flex min-h-screen flex-col">
-    <AppHeader />
-    <main class="mx-auto w-full max-w-2xl flex-1 px-4 py-16 text-center">
-      <p class="text-sm font-medium text-accent">{{ error.statusCode }}</p>
-      <h1 class="mt-2 text-2xl font-semibold tracking-tight">{{ notFound ? 'Page not found' : 'Something went wrong' }}</h1>
-      <p class="mt-2 text-zinc-600 dark:text-zinc-400">
-        {{ notFound ? "There's nothing at this address." : 'Please try again.' }}
-      </p>
-      <button type="button" class="mt-6 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-strong dark:text-zinc-950" @click="home">
-        Go to the chart library
-      </button>
-    </main>
-  </div>
+  <AppShell>
+    <div class="mx-auto max-w-xl py-16 text-center">
+      <p class="text-sm font-semibold text-accent">{{ error.statusCode }}</p>
+      <UiHeading class="mt-2">{{ notFound ? 'Page not found' : 'Something went wrong' }}</UiHeading>
+      <UiText class="mt-2">{{ notFound ? "There's nothing at this address." : 'Please try again.' }}</UiText>
+      <div class="mt-6">
+        <UiButton color="teal" @click="home">Go to the chart library</UiButton>
+      </div>
+    </div>
+  </AppShell>
 </template>
 
 <script setup lang="ts">

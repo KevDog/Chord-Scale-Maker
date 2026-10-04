@@ -35,7 +35,8 @@ describe('display components', () => {
     const w = await mountSuspended(UiNavbarItem, { props: { href: '/', current: true }, slots: { default: 'Library' } })
     expect(w.find('a').attributes('aria-current')).toBe('page')
     expect(w.findAll('span.absolute').length).toBeGreaterThan(0)
-    const plain = await mountSuspended(UiNavbarItem, { slots: { default: 'Menu' } })
-    expect(plain.find('button').exists()).toBe(true)
+    const plain = await mountSuspended(UiNavbarItem, { attrs: { 'aria-label': 'Menu', class: 'max-lg:hidden' }, slots: { default: 'M' } })
+    expect(plain.find('button').attributes('aria-label')).toBe('Menu') // attributes reach the button
+    expect(plain.classes()).toContain('max-lg:hidden') // class stays on the wrapper
   })
 })

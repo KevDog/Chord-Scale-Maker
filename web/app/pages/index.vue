@@ -1,31 +1,56 @@
 <template>
-  <div class="mx-auto max-w-2xl">
-    <h1 class="text-2xl font-semibold tracking-tight">Chart library</h1>
-    <p class="mt-1 text-zinc-600 dark:text-zinc-400">
-      Pick a tune to open it in the editor, or start a <NuxtLink to="/editor?new=1" class="text-accent hover:underline">new chart</NuxtLink>.
-    </p>
-    <label class="mt-6 block">
-      <span class="sr-only">Search by title</span>
-      <input
-        v-model="query"
-        type="search"
-        placeholder="Search by title"
-        class="w-full rounded-lg border border-zinc-300 bg-white px-3 py-2 dark:border-zinc-700 dark:bg-zinc-900"
-      >
-    </label>
-    <ul class="mt-4 divide-y divide-zinc-200 rounded-lg border border-zinc-200 bg-white dark:divide-zinc-800 dark:border-zinc-800 dark:bg-zinc-900">
-      <li v-for="chart in charts" :key="chart.slug">
-        <NuxtLink :to="`/editor?chart=${chart.slug}`" class="block px-4 py-3 hover:bg-zinc-50 dark:hover:bg-zinc-800">
-          <span class="font-medium">{{ chart.title }}</span>
-          <span v-if="chart.subtitle" class="block text-sm text-zinc-500 dark:text-zinc-400">{{ chart.subtitle }}</span>
-        </NuxtLink>
-      </li>
-      <li v-if="charts.length === 0" class="px-4 py-3 text-zinc-500">No charts match "{{ query }}".</li>
-    </ul>
+  <div>
+    <div class="flex flex-wrap items-end justify-between gap-4">
+      <div class="max-w-xl">
+        <UiHeading>Chart library</UiHeading>
+        <UiText class="mt-1">Pick a tune to open it in the editor, or start a new chart. Charts are written in concert pitch.</UiText>
+      </div>
+      <div class="flex gap-3">
+        <UiButton outline :href="issuesUrl" target="_blank" rel="noopener noreferrer">Request a chart</UiButton>
+        <UiButton color="teal" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
+      </div>
+    </div>
+
+    <div class="mt-8 max-w-md">
+      <UiInputGroup>
+        <MagnifyingGlassIcon data-slot="icon" />
+        <UiInput v-model="query" type="search" placeholder="Search by title" aria-label="Search by title" />
+      </UiInputGroup>
+    </div>
+
+    <UiTable v-if="charts.length" class="mt-6 [--gutter:--spacing(6)] lg:[--gutter:--spacing(10)]">
+      <UiTableHead>
+        <UiTableRow>
+          <UiTableHeader>Title</UiTableHeader>
+          <UiTableHeader>Details</UiTableHeader>
+        </UiTableRow>
+      </UiTableHead>
+      <UiTableBody>
+        <UiTableRow v-for="chart in charts" :key="chart.slug">
+          <UiTableCell class="font-medium">
+            <UiLink :href="`/editor?chart=${chart.slug}`" class="hover:underline">{{ chart.title }}</UiLink>
+          </UiTableCell>
+          <UiTableCell class="text-zinc-500 dark:text-zinc-400">{{ chart.subtitle }}</UiTableCell>
+        </UiTableRow>
+      </UiTableBody>
+    </UiTable>
+
+    <div v-else class="mt-12 text-center">
+      <MusicalNoteIcon class="mx-auto size-12 text-zinc-400 dark:text-zinc-500" aria-hidden="true" />
+      <UiSubheading class="mt-2" :level="2">No charts match "{{ query }}"</UiSubheading>
+      <UiText class="mt-1">Try another title, or start a new chart.</UiText>
+      <div class="mt-6">
+        <UiButton color="teal" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
+      </div>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/16/solid'
+import { MusicalNoteIcon } from '@heroicons/vue/24/outline'
+
 const query = ref('')
 const charts = computed(() => searchLibrary(LIBRARY, query.value))
+const issuesUrl = useRuntimeConfig().public.issuesUrl
 </script>
