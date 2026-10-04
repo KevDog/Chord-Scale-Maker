@@ -9,10 +9,15 @@ let loading: Promise<VexFlowModule> | undefined
  * The font ships inside the bundle as a data: URL, so nothing is fetched from a CDN.
  */
 export function loadVexFlow(): Promise<VexFlowModule> {
-  loading ??= import('vexflow/bravura').then(async (vf) => {
-    await document.fonts.load('30px Bravura')
-    return vf
-  })
+  loading ??= import('vexflow/bravura')
+    .then(async (vf) => {
+      await document.fonts?.load('30px Bravura').catch(() => undefined) // draw with fallback metrics rather than not at all
+      return vf
+    })
+    .catch((e: unknown) => {
+      loading = undefined // let the next staff retry
+      throw e
+    })
   return loading
 }
 

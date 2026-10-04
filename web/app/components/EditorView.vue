@@ -20,7 +20,7 @@
       <h2 class="text-sm font-medium uppercase tracking-wide text-slate-500">Preview</h2>
       <fieldset class="flex overflow-hidden rounded-md border border-slate-300 text-sm dark:border-slate-700">
         <legend class="sr-only">Which spellings to show</legend>
-        <label v-for="m in MODES" :key="m.value" class="cursor-pointer px-3 py-1 has-checked:bg-accent has-checked:text-white dark:has-checked:text-slate-950">
+        <label v-for="m in MODES" :key="m.value" class="cursor-pointer px-3 py-1 has-checked:bg-accent has-checked:text-white has-focus-visible:outline-2 has-focus-visible:-outline-offset-2 has-focus-visible:outline-sky-600 dark:has-checked:text-slate-950 dark:has-focus-visible:outline-sky-400">
           <input v-model="mode" type="radio" name="mode" :value="m.value" class="sr-only" >{{ m.label }}
         </label>
       </fieldset>
@@ -52,6 +52,7 @@ const mode = ref<ModeChoice>('both')
 watch(editor.text, (t) => saveDraft(t))
 
 function print(): void {
-  window.print()
+  editor.flush() // include anything typed in the last moment
+  nextTick(() => window.print())
 }
 </script>
