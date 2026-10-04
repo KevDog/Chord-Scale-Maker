@@ -154,14 +154,22 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   accidental on every altered note (matches `\accidentalStyle forget`), double
   bar line, final bar line on the last staff.
 - Two parts as in the CLI: "Spelled from X" and "Spelled from the Root", each
-  with its own title header. Mode selector: both / from / root; start-note input
-  (written pitch).
+  with its own title header. Mode selector: both / from / root; start-note select
+  (written pitch, any of the picker's 17 roots, default C). Page subtitles follow the CLI
+  (`pageSubtitle`): "Subtitle – Tenor Sax (Bb) (Spelled from C)".
+- Instrument select: the CLI's 16 presets, grouped by what they read (C treble, B♭, E♭, F,
+  bass clef). The choice sets the `Part` (clef + transposition) for the whole preview: notes,
+  chord symbols and scale names are all written for that instrument. The chart stays concert pitch.
 - VexFlow is loaded client-only (dynamic import of `vexflow/bravura`, editor page only) and bundled,
   not from a CDN, so the CSP stays `script-src 'self'`. Its Bravura font is embedded as a
   `data:` URL, so the CSP needs `font-src 'self' data:`. Drawing waits for `document.fonts.load`.
 - The staff SVG uses `currentColor`, so it follows light/dark mode and prints black.
-  It is drawn in a 960-unit-wide space and cropped to the band notes can reach, so in print
-  each staff is about 58px tall and 12 fit on a letter page with their labels.
+  It is drawn in a 1200-unit-wide space, and each staff's viewBox is cropped to its notes'
+  vertical range, measured from VexFlow's note-head positions plus room for accidentals.
+  SVG `getBBox` can't be used, because it measures glyphs by font ascent, not ink. There is
+  a minimum band around the staff so ordinary staves line up. In print, staves are about
+  45–65px tall, so 12 fit on a letter page even when every note has ledger lines
+  (e.g. bass clef from B).
 - `engine/sheet.ts` builds the view model (`StaffModel`: labels, notes, or an error such as
   "Choose a scale"); components only draw it. Live preview re-renders only changed staves
   (each staff's `id` combines its position, its row content and the mode).
@@ -195,11 +203,13 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 - `useChartEditor(initialText)`: `text`, `doc`, `diagnostics`, `fatal`, `rows`, `meta`,
   `setText` (debounced re-parse) and `setDoc` (grid edit → canonical text). Immutable updates only.
-  Mode (both/from/root) is page state; part is fixed to concert until phase 3.
+  Mode (both/from/root) is page state.
+- `usePreferences()`: the instrument and start note, saved per browser. Stored values that
+  aren't a known instrument or picker root are ignored.
 - Editor draft is kept in `localStorage` (try/catch) as a per-browser convenience.
   Nothing is sent anywhere.
-- Instrument picker (phase 3) only changes `part`. The engine already supports
-  every transposition, so phase 3 is UI only.
+- The instrument picker only changes `part` and the subtitle label (`partFor`,
+  `instrumentLabel` in the engine). The engine already supported every transposition.
 
 ## 9. Security
 
