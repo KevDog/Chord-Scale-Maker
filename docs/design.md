@@ -127,6 +127,7 @@ type Diagnostic = { line: number; message: string; severity: 'error' | 'warning'
 - Grid shows each `ChartLine` as a row: data rows are editable cells, `@copy` is
   a compact directive row, comments are collapsed. Expanded copies are shown
   read-only in the preview, not the grid.
+- Cell validation: values may not contain `|` or line breaks, or start with `#`, `@`, `title:` or `subtitle:`. Otherwise the serialized text would re-parse as a different line.
 - Chord cell: free text with validation. Scale cell: dropdown of the chord
   quality's options (with notes) plus "Other…" → `ScalePicker` (root + any of
   the 23 scales). Unknown quality → cell is flagged and shows `ScalePicker`.

@@ -1355,6 +1355,18 @@ describe('chart', () => {
     expect(parseChart(many).diagnostics.at(-1)?.message).toMatch(/more than 500 rows/)
   })
 
+  it('caps expanded rows even without @copy', () => {
+    const many = Array.from({ length: LIMITS.maxExpandedRows + 5 }, () => '|1|C').join('\n')
+    const { value: rows, diagnostics } = expandRows(parseChart(many).value)
+    expect(rows).toHaveLength(LIMITS.maxExpandedRows)
+    expect(diagnostics.map((d) => d.line)).toEqual([LIMITS.maxExpandedRows + 1])
+  })
+
+  it('caps @copy section names and offsets', () => {
+    const { diagnostics } = parseChart(`@copy A ${'B'.repeat(LIMITS.maxCell + 1)} 8\n@copy A B 12345\n@copy A B -8`)
+    expect(diagnostics.map((d) => d.line)).toEqual([1, 2])
+  })
+
   it('caps @copy expansion before it can grow exponentially', () => {
     const bomb = 'A | 1 | C\n' + '@copy A A 1\n'.repeat(1_000)
     const { value: rows, diagnostics } = expandRows(parseChart(bomb).value)
@@ -1406,6 +1418,7 @@ export type Row = Readonly<{ section: string; bar: string; chord: string; scale:
 export type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 const INT_RE = /^[+-]?\d+$/
+const OFFSET_RE = /^[+-]?\d{1,4}$/ // bar offsets stay well inside safe integers
 
 function parseLine(line: string): ChartLine | string {
   if (!line) return { kind: 'blank' }
@@ -1419,7 +1432,9 @@ function parseLine(line: string): ChartLine | string {
   }
   if (low.startsWith('@copy')) {
     const parts = line.split(/\s+/)
-    if (parts.length !== 4 || !INT_RE.test(parts[3])) return 'use  @copy SRC DST BAR_OFFSET'
+    if (parts.length !== 4 || !OFFSET_RE.test(parts[3])) return 'use  @copy SRC DST BAR_OFFSET'
+    if (parts[1].length > LIMITS.maxCell || parts[2].length > LIMITS.maxCell)
+      return `section name longer than ${LIMITS.maxCell} characters`
     return { kind: 'copy', src: parts[1], dst: parts[2], offset: Number(parts[3]) }
   }
   const cells = line.split('|').map((c) => c.trim())
@@ -1478,12 +1493,19 @@ export function chartMeta(doc: ChartDoc): Readonly<{ title: string; subtitle: st
   return { title: meta('title', 'Untitled'), subtitle: meta('subtitle', '') }
 }
 
-/** chart rows in order with @copy applied (a copy repeats the rows seen so far) */
+/** chart rows in order with @copy applied (a copy repeats the rows seen so far); at most maxExpandedRows */
 export function expandRows(doc: ChartDoc): Parsed<readonly Row[]> {
   const diagnostics: Diagnostic[] = []
   const rows: Row[] = []
+  const tooMany = (line: number): Diagnostic => ({ line, message: `more than ${LIMITS.maxExpandedRows} rows after @copy` })
   for (const [i, l] of doc.lines.entries()) {
-    if (l.kind === 'row') rows.push({ section: l.section, bar: l.bar, chord: l.chord, scale: l.scale })
+    if (l.kind === 'row') {
+      if (rows.length >= LIMITS.maxExpandedRows) {
+        diagnostics.push(tooMany(i + 1))
+        break
+      }
+      rows.push({ section: l.section, bar: l.bar, chord: l.chord, scale: l.scale })
+    }
     if (l.kind !== 'copy') continue
     const src = rows.filter((r) => r.section === l.src)
     if (src.some((r) => !INT_RE.test(r.bar))) {
@@ -1492,7 +1514,7 @@ export function expandRows(doc: ChartDoc): Parsed<readonly Row[]> {
     }
     if (rows.length + src.length > LIMITS.maxExpandedRows) {
       // checked before growing: chained copies would otherwise double the rows each time
-      diagnostics.push({ line: i + 1, message: `more than ${LIMITS.maxExpandedRows} rows after @copy` })
+      diagnostics.push(tooMany(i + 1))
       break
     }
     rows.push(...src.map((r) => ({ ...r, section: l.dst, bar: String(Number(r.bar) + l.offset) })))
@@ -1514,7 +1536,7 @@ export function resolveScale(row: Row): string | null {
 - [ ] **Step 5: Run tests + typecheck**
 
 Run: `cd web && npx vitest run engine/__tests__/chart.test.ts && npx tsc --noEmit`
-Expected: `8 passed`
+Expected: `10 passed`
 
 - [ ] **Step 6: Commit**
 
@@ -1577,20 +1599,24 @@ type Golden = {
 const repo = (path: string): string => readFileSync(new URL(`../../../${path}`, import.meta.url), 'utf8')
 const G = JSON.parse(repo('fixtures/golden.json')) as Golden
 
+/** engine domain errors are plain Errors (Python's ValueError); anything else is a bug and must fail */
+const isDomainError = (e: unknown): boolean => e instanceof Error && e.constructor === Error
+
 function attempt<T>(f: () => T): T | null {
   try {
     return f()
-  } catch {
-    return null
+  } catch (e) {
+    if (isDomainError(e)) return null
+    throw e
   }
 }
 
-/** compare each [label, want, got] and return readable mismatches */
+/** compare each [label, want, got]; return the first 20 readable mismatches plus a count */
 function mismatches(cases: Iterable<readonly [string, unknown, unknown]>): string[] {
   const bad: string[] = []
   for (const [label, want, got] of cases)
     if (!isDeepStrictEqual(want, got)) bad.push(`${label}\n  want ${JSON.stringify(want)}\n  got  ${JSON.stringify(got)}`)
-  return bad
+  return bad.length > 20 ? [...bad.slice(0, 20), `... and ${bad.length - 20} more`] : bad
 }
 
 function scaleCase(part: Part, text: string): ScaleCase {
@@ -1604,12 +1630,20 @@ function scaleCase(part: Part, text: string): ScaleCase {
         G.from_starts.map((s) => [s, scaleNotes(part, text, 'from', resolveStart(part.clef, s)).map(lilyNote)]),
       ),
     }
-  } catch {
-    return { error: true }
+  } catch (e) {
+    if (isDomainError(e)) return { error: true }
+    throw e
   }
 }
 
 describe('golden parity with jazz_scales.py', () => {
+  it('fixture has every section', () => {
+    expect(Object.keys(G.parts)).toHaveLength(5)
+    expect(Object.keys(G.scales)).toEqual(Object.keys(G.parts))
+    for (const section of [G.from_starts, G.chords, Object.keys(G.options), Object.keys(G.charts)])
+      expect(section.length).toBeGreaterThan(0)
+  })
+
   it('start notes', () => {
     const cases = Object.entries(G.starts).flatMap(([clef, starts]) =>
       Object.entries(starts).map(([s, want]) => [`${clef} ${s}`, want, resolveStart(clef as Clef, s)] as const),
@@ -1682,7 +1716,7 @@ export * from './scales'
 - [ ] **Step 4: Run the full suite**
 
 Run: `cd web && npx vitest run && npx tsc --noEmit`
-Expected: `Test Files 7 passed`, `Tests 37 passed`
+Expected: `Test Files 7 passed`, `Tests 40 passed`
 
 - [ ] **Step 5: Prove the parity test bites.** Corrupt one expected value:
 
@@ -1784,7 +1818,7 @@ and under "Design rules" add
 - [ ] **Step 4: Verify everything from clean**
 
 Run: `make test`
-Expected: `12 passed`, then `Test Files 7 passed`, `Tests 37 passed`
+Expected: `12 passed`, then `Test Files 7 passed`, `Tests 40 passed`
 
 - [ ] **Step 5: Commit**
 
@@ -1799,4 +1833,5 @@ git commit -m "chore: make targets, CI, project notes for the TS engine"
 
 - **Stack:** Nuxt 4 (decided) with Tailwind CSS v4 via `@tailwindcss/vite` (see design §6).
 - **Imports outside `web/`.** The engine imports `../../chord_scales.json`, and the library will import `../../charts/*.txt`. The Vite dev server only serves files inside its root, so set `vite.server.fs.allow: ['..']`, and enable Vercel's "include files outside root directory" setting.
+- **Grid cell validation.** `serializeChart` doesn't sanitize. The grid editor must reject cell values containing `|`, `\r`/`\n`, or a leading `#`, `@`, `title:` or `subtitle:`, or the text round-trip breaks. A `maxChars` diagnostic returns an empty doc, so the editor must not write it back over the user's text.
 - **Engine boundaries.** `web/engine/` must stay free of Vue/DOM imports. A future lint rule (`no-restricted-imports` for `vue`, `#app`) will enforce it.
