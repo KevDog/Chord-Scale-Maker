@@ -288,7 +288,7 @@ def test_golden_fixture_is_up_to_date():
 Run: `.venv/bin/python -m pytest -q tests/test_fixtures.py`
 Expected: FAIL with `ModuleNotFoundError: No module named 'export_fixtures'`
 
-- [ ] **Step 3: Write the exporter.** It covers 21 roots × 23 scales plus aliases, JSON scale names and invalid inputs, across 5 parts and 3 `from` starts; start-note resolution; 36 chords × 5 parts with and without their default scale; quality options/defaults; and every chart in `charts/`.
+- [ ] **Step 3: Write the exporter.** It covers 21 roots × 23 scales plus aliases, JSON scale names and invalid inputs, across 5 parts and 5 `from` starts; start-note resolution; 40 chords (4 unparseable) × 5 parts with and without their default scale, plus chord/scale pairs whose roots differ or are spelled differently; quality options/defaults; and every chart in `charts/` plus two inline charts (3-cell rows, CRLF, `TITLE:`, negative/zero `@copy`). Each chart's text is stored in the fixture so the TS test parses the same input. The token converter asserts that it consumed the whole markup, so a new LilyPond construct fails loudly instead of being dropped.
 
 `tools/export_fixtures.py`:
 
@@ -299,7 +299,7 @@ Expected: FAIL with `ModuleNotFoundError: No module named 'export_fixtures'`
 Run after any change to jazz_scales.py, chord_scales.json or charts/:
   python3 tools/export_fixtures.py
 """
-import json, re, sys
+import json, re, sys, tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -310,7 +310,7 @@ FIXTURE = ROOT / "fixtures" / "golden.json"
 PARTS = {f"{c}/{t}": (c, t) for c, t in
          [("treble", "C"), ("treble", "Bb"), ("treble", "Eb"), ("treble", "F"), ("bass", "C")]}
 ROOTS = [l + a for l in "CDEFGAB" for a in ("b", "", "#")]
-FROM_STARTS = ["C", "Eb", "F#3"]
+FROM_STARTS = ["C", "Eb", "F#3", "G2", "Bb5"]
 START_TEXTS = ["C", "Eb", "F#3", "Cb", "B#", "G2", "Bb5", "f#"]
 SCALE_TEXTS = ([f"{r} {k}" for r in ROOTS for k in j.SCALES]
                + [f"D {a}" for a in j.ALIASES]
@@ -319,7 +319,16 @@ SCALE_TEXTS = ([f"{r} {k}" for r in ROOTS for k in j.SCALES]
 CHORDS = ["Cm7", "C-7", "Cmi7", "Cmin7", "Bbm7", "Am7b5", "D7#5", "G7#9b13", "EbMaj7", "Cmaj7",
           "CMaj7", "C9", "D7/F#", "Cm6/Eb", "C6/9", "Cm6/9", "F#m7", "Gm", "C", "Bm7", "Db7(b9)",
           "Abmin7", "E7alt", "Bb7sus4", "F#ø7", "Cdim7", "Gbm7b5", "C#m7", "B7b9", "E7(#11)",
-          "Fmaj7#11", "Bb13", "Ebm(maj7)", "Ab7/Gb", "G/B", "Cm7#5#9x"]
+          "Fmaj7#11", "Bb13", "Ebm(maj7)", "Ab7/Gb", "G/B", "Cm7#5#9x",
+          "H7", "C7/", "", "Cmaj7/x"]                                  # unparseable
+# chord + scale whose roots differ, or share a pitch but not a spelling
+CHORD_SCALE_PAIRS = [("C7", "F# Locrian"), ("Db7", "C# Mixolydian"), ("C#m7", "Db Dorian"),
+                     ("Gb7/Bb", "F# Mixolydian"), ("D7/F#", "Ab Altered")]
+# inline charts for parser paths the library files don't hit
+CHART_TEXTS = {
+    "inline_defaults": "TITLE: Defaults\r\nA | 1 | Cm7\r\nA | 2 | F7 |\r\nA | 3 | Bbmaj7 | Bb Lydian\r\n",
+    "inline_copy": "title: Copy\nsubtitle: Neg\n# c\nA | 9 | Dm7b5\nA | 10 | G7alt\n@copy A B -8\n@copy B C 0\n",
+}
 
 
 def start_for(clef, text):
@@ -340,8 +349,11 @@ def scale_case(part, text):
 
 def tokens(markup):
     """LilyPond chord markup -> [{kind: text|acc}], adjacent text merged"""
+    body = re.fullmatch(r"\\concat \{ (.*) \}", markup).group(1)
+    pieces = list(re.finditer(r'"([^"]*)"|\\(fl|sh)', body))
+    assert re.sub(r'"[^"]*"|\\(fl|sh)', "", body).strip() == "", f"unexpected markup: {markup}"
     out = []
-    for m in re.finditer(r'"([^"]*)"|\\(fl|sh)', markup):
+    for m in pieces:
         if m.group(1) is None:
             out.append({"kind": "acc", "acc": "b" if m.group(2) == "fl" else "#"})
         elif out and out[-1]["kind"] == "text":
@@ -366,10 +378,18 @@ def build():
             for scale in dict.fromkeys([None, maybe(j.default_scale, chord)]):
                 toks = maybe(lambda: tokens(part.chord_markup(chord, scale)))
                 chords.append({"part": pid, "chord": chord, "scale": scale, "tokens": toks})
+        for chord, scale in CHORD_SCALE_PAIRS:
+            chords.append({"part": pid, "chord": chord, "scale": scale,
+                           "tokens": maybe(lambda: tokens(part.chord_markup(chord, scale)))})
+    texts = {f.stem: f.read_text(encoding="utf-8") for f in sorted((ROOT / "charts").glob("*.txt"))}
+    texts.update(CHART_TEXTS)
     charts = {}
-    for f in sorted((ROOT / "charts").glob("*.txt")):
-        title, subtitle, rows = j.read_chart(f)
-        charts[f.stem] = {"title": title, "subtitle": subtitle, "rows": [list(r) for r in rows]}
+    with tempfile.TemporaryDirectory() as tmp:
+        for name, text in texts.items():
+            f = Path(tmp) / f"{name}.txt"
+            f.write_bytes(text.encode("utf-8"))      # bytes: keep \r\n as written
+            title, subtitle, rows = j.read_chart(f)
+            charts[name] = {"text": text, "title": title, "subtitle": subtitle, "rows": [list(r) for r in rows]}
     return {
         "parts": {pid: {"clef": c, "trans": t} for pid, (c, t) in PARTS.items()},
         "from_starts": FROM_STARTS,
@@ -395,7 +415,7 @@ if __name__ == "__main__":
 - [ ] **Step 4: Generate and verify**
 
 Run: `.venv/bin/python tools/export_fixtures.py && .venv/bin/python -m pytest -q tests`
-Expected: `wrote fixtures/golden.json`, then `12 passed`. The file is about 750 KB.
+Expected: `wrote fixtures/golden.json`, then `12 passed`. The file is about 1 MB.
 
 - [ ] **Step 5: Commit**
 
@@ -1550,7 +1570,7 @@ type Golden = {
   scales: Record<string, Record<string, ScaleCase>>
   chords: { part: string; chord: string; scale: string | null; tokens: ChordToken[] | null }[]
   options: Record<string, { options: ScaleOption[] | null; default: string | null }>
-  charts: Record<string, { title: string; subtitle: string; rows: string[][] }>
+  charts: Record<string, { text: string; title: string; subtitle: string; rows: string[][] }>
 }
 
 const repo = (path: string): string => readFileSync(new URL(`../../../${path}`, import.meta.url), 'utf8')
@@ -1617,15 +1637,15 @@ describe('golden parity with jazz_scales.py', () => {
 
   it('quality options and defaults', () => {
     const cases = Object.entries(G.options).flatMap(([chord, want]) => [
-      [`${chord} options`, want.options, resolveQuality(chord)?.options ?? null] as const,
-      [`${chord} default`, want.default, defaultScale(chord)] as const,
+      [`${chord} options`, want.options, attempt(() => resolveQuality(chord)?.options ?? null)] as const,
+      [`${chord} default`, want.default, attempt(() => defaultScale(chord))] as const,
     ])
     expect(mismatches(cases)).toEqual([])
   })
 
   it('library charts', () => {
     const cases = Object.entries(G.charts).flatMap(([name, want]) => {
-      const { value: doc, diagnostics } = parseChart(repo(`charts/${name}.txt`))
+      const { value: doc, diagnostics } = parseChart(want.text)
       const rows = expandRows(doc)
       return [
         [`${name} diagnostics`, [], [...diagnostics, ...rows.diagnostics]] as const,
