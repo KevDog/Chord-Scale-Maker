@@ -4,7 +4,7 @@
       :value="text"
       spellcheck="false"
       aria-label="Chart text"
-      class="h-[60vh] min-h-60 resize-y rounded-lg border border-slate-300 bg-white p-3 font-mono text-sm leading-6 dark:border-slate-700 dark:bg-slate-900"
+      class="h-[60vh] min-h-60 resize-y rounded-lg border border-zinc-300 bg-white p-3 font-mono text-sm leading-6 dark:border-zinc-700 dark:bg-zinc-900"
       @input="emit('update:text', ($event.target as HTMLTextAreaElement).value)"
     />
     <ul v-if="diagnostics.length" class="space-y-1 text-sm" aria-live="polite">

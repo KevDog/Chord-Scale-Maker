@@ -2,13 +2,13 @@
   <div class="space-y-3">
     <div class="grid grid-cols-2 gap-2">
       <label v-for="key in META_KEYS" :key="key" class="text-sm">
-        <span class="mb-1 block capitalize text-slate-500 dark:text-slate-400">{{ key }}</span>
+        <span class="mb-1 block capitalize text-zinc-500 dark:text-zinc-400">{{ key }}</span>
         <GridCell :value="meta[key]" :field="`${field} w-full`" :max-length="LIMITS.maxMeta" @update="(v) => emitDoc(setMeta(doc, key, v))" />
       </label>
     </div>
 
     <table class="w-full border-separate border-spacing-y-1 text-sm">
-      <thead class="text-left text-slate-500 dark:text-slate-400">
+      <thead class="text-left text-zinc-500 dark:text-zinc-400">
         <tr>
           <th class="w-16 font-normal">Section</th>
           <th class="w-14 font-normal">Bar</th>
@@ -36,10 +36,10 @@
               <button type="button" :class="iconButton" :aria-label="`Delete row ${rowNumber[i]}`" @click="emitDoc(removeLine(doc, i))">−</button>
             </td>
           </tr>
-          <tr v-else-if="line.kind === 'copy'" class="text-slate-500 dark:text-slate-400">
+          <tr v-else-if="line.kind === 'copy'" class="text-zinc-500 dark:text-zinc-400">
             <td colspan="4" class="py-1 pl-1 font-mono text-xs">
               repeat section <b>{{ line.src }}</b> as <b>{{ line.dst }}</b>, bars {{ line.offset >= 0 ? '+' : '' }}{{ line.offset }}
-              <span class="ml-1 text-slate-400">(edit in text)</span>
+              <span class="ml-1 text-zinc-400">(edit in text)</span>
             </td>
             <td class="text-right">
               <button type="button" :class="iconButton" :aria-label="`Delete line ${i + 1}`" @click="emitDoc(removeLine(doc, i))">−</button>
@@ -53,7 +53,7 @@
         </template>
       </tbody>
     </table>
-    <button type="button" class="rounded-md border border-slate-300 px-3 py-1 text-sm hover:border-accent dark:border-slate-700" @click="emitDoc(insertRowAfter(doc, doc.lines.length - 1))">
+    <button type="button" class="rounded-md border border-zinc-300 px-3 py-1 text-sm hover:border-accent dark:border-zinc-700" @click="emitDoc(insertRowAfter(doc, doc.lines.length - 1))">
       Add row
     </button>
   </div>
@@ -67,8 +67,8 @@ const emit = defineEmits<{ 'update:doc': [doc: ChartDoc] }>()
 
 const META_KEYS: readonly MetaKey[] = ['title', 'subtitle']
 const TEXT_FIELDS: readonly Exclude<RowField, 'scale'>[] = ['section', 'bar', 'chord']
-const field = 'rounded border border-slate-300 bg-white px-2 py-1 dark:border-slate-700 dark:bg-slate-900'
-const iconButton = 'h-7 w-7 rounded text-slate-500 hover:bg-slate-100 hover:text-accent dark:hover:bg-slate-800'
+const field = 'rounded border border-zinc-300 bg-white px-2 py-1 dark:border-zinc-700 dark:bg-zinc-900'
+const iconButton = 'h-7 w-7 rounded text-zinc-500 hover:bg-zinc-100 hover:text-accent dark:hover:bg-zinc-800'
 
 const meta = computed(() => chartMeta(props.doc))
 /** line index -> 1-based number among chord rows, for labels */

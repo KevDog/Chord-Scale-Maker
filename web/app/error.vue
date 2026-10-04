@@ -4,10 +4,10 @@
     <main class="mx-auto w-full max-w-2xl flex-1 px-4 py-16 text-center">
       <p class="text-sm font-medium text-accent">{{ error.statusCode }}</p>
       <h1 class="mt-2 text-2xl font-semibold tracking-tight">{{ notFound ? 'Page not found' : 'Something went wrong' }}</h1>
-      <p class="mt-2 text-slate-600 dark:text-slate-400">
+      <p class="mt-2 text-zinc-600 dark:text-zinc-400">
         {{ notFound ? "There's nothing at this address." : 'Please try again.' }}
       </p>
-      <button type="button" class="mt-6 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-strong dark:text-slate-950" @click="home">
+      <button type="button" class="mt-6 rounded-md bg-accent px-4 py-2 text-sm font-medium text-white hover:bg-accent-strong dark:text-zinc-950" @click="home">
         Go to the chart library
       </button>
     </main>

@@ -2,7 +2,7 @@
   <ClientOnly>
     <!-- keyed by URL: "New chart" or another library chart must start a fresh editor -->
     <EditorView :key="route.fullPath" :initial-text="initialText" />
-    <template #fallback><p class="text-slate-500">Loading editor…</p></template>
+    <template #fallback><p class="text-zinc-500">Loading editor…</p></template>
   </ClientOnly>
 </template>
 

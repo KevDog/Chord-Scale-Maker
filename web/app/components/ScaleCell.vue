@@ -20,8 +20,8 @@
       <select v-model="pickName" aria-label="Scale name" :class="[field, 'min-w-0 flex-1']">
         <option v-for="n in PICKER_SCALES" :key="n" :value="n">{{ n }}</option>
       </select>
-      <button type="button" aria-label="Set scale" class="rounded bg-accent px-2 text-sm text-white dark:text-slate-950" @click="apply">Set</button>
-      <button type="button" class="px-1 text-sm text-slate-500" aria-label="Cancel" @click="closePicker">✕</button>
+      <button type="button" aria-label="Set scale" class="rounded bg-accent px-2 text-sm text-white dark:text-zinc-950" @click="apply">Set</button>
+      <button type="button" class="px-1 text-sm text-zinc-500" aria-label="Cancel" @click="closePicker">✕</button>
     </div>
   </div>
 </template>

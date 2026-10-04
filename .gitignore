@@ -14,3 +14,7 @@ web/dist
 web/.vercel/
 web/test-results/
 web/playwright-report/
+
+# Tailwind Plus kits (commercial licence): reference only, never committed
+design/tailwind-plus/
+.DS_Store
