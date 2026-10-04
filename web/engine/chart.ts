@@ -10,11 +10,12 @@ export type ChartLine =
   | Readonly<{ kind: 'blank' }>
   | Readonly<{ kind: 'invalid'; text: string }> // kept verbatim so text round-trips
 export type ChartDoc = Readonly<{ lines: readonly ChartLine[] }>
-export type Diagnostic = Readonly<{ line: number; message: string }> // line is 1-based
+/** line is 1-based (0 = whole chart); fatal = over a hard input limit: don't render it or write it back */
+export type Diagnostic = Readonly<{ line: number; message: string; fatal?: true }>
 export type Row = Readonly<{ section: string; bar: string; chord: string; scale: string }>
 export type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
-const INT_RE = /^[+-]?\d+$/
+const INT_RE = /^[+-]?\d{1,6}$/ // bar numbers; longer would lose precision as Number
 const OFFSET_RE = /^[+-]?\d{1,4}$/ // bar offsets stay well inside safe integers
 
 function parseLine(line: string): ChartLine | string {
@@ -44,7 +45,7 @@ function parseLine(line: string): ChartLine | string {
 /** tolerant parse: bad lines become 'invalid' lines plus a diagnostic, never an exception */
 export function parseChart(text: string): Parsed<ChartDoc> {
   if (text.length > LIMITS.maxChars)
-    return { value: { lines: [] }, diagnostics: [{ line: 0, message: `chart longer than ${LIMITS.maxChars} characters` }] }
+    return { value: { lines: [] }, diagnostics: [{ line: 0, message: `chart longer than ${LIMITS.maxChars} characters`, fatal: true }] }
   const diagnostics: Diagnostic[] = []
   const lines = text.split(/\r?\n/).map((raw, i): ChartLine => {
     const t = raw.trim()
@@ -55,9 +56,11 @@ export function parseChart(text: string): Parsed<ChartDoc> {
   })
   if (lines.length > 0 && lines[lines.length - 1].kind === 'blank') lines.pop() // trailing newline
   if (lines.filter((l) => l.kind === 'row').length > LIMITS.maxRows)
-    diagnostics.push({ line: 0, message: `more than ${LIMITS.maxRows} rows` })
+    diagnostics.push({ line: 0, message: `more than ${LIMITS.maxRows} rows`, fatal: true })
   return { value: { lines }, diagnostics }
 }
+
+export const isFatal = (diagnostics: readonly Diagnostic[]): boolean => diagnostics.some((d) => d.fatal)
 
 /** canonical text: chord rows column-aligned, everything else verbatim */
 export function serializeChart(doc: ChartDoc): string {
@@ -94,7 +97,11 @@ export function chartMeta(doc: ChartDoc): Readonly<{ title: string; subtitle: st
 export function expandRows(doc: ChartDoc): Parsed<readonly Row[]> {
   const diagnostics: Diagnostic[] = []
   const rows: Row[] = []
-  const tooMany = (line: number): Diagnostic => ({ line, message: `more than ${LIMITS.maxExpandedRows} rows after @copy` })
+  const tooMany = (line: number): Diagnostic => ({
+    line,
+    message: `more than ${LIMITS.maxExpandedRows} rows after @copy`,
+    fatal: true,
+  })
   for (const [i, l] of doc.lines.entries()) {
     if (l.kind === 'row') {
       if (rows.length >= LIMITS.maxExpandedRows) {

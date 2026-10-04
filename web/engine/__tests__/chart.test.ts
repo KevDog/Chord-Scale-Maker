@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { chartMeta, expandRows, parseChart, resolveScale, serializeChart } from '../chart'
+import { chartMeta, expandRows, isFatal, parseChart, resolveScale, serializeChart } from '../chart'
 import { LIMITS } from '../limits'
 
 const SAMPLE = `title: T
@@ -48,6 +48,17 @@ describe('chart', () => {
     expect(text).toContain('A | 1 | Cm7 | C Dorian\nA | 2 | F7\n')
     expect(parseChart(text).value).toEqual(doc)
     expect(serializeChart(parseChart(text).value)).toBe(text)
+  })
+
+  it('marks hard-limit diagnostics as fatal, line errors as not', () => {
+    expect(isFatal(parseChart('x'.repeat(LIMITS.maxChars + 1)).diagnostics)).toBe(true)
+    const many = Array.from({ length: LIMITS.maxRows + 1 }, () => '|1|C').join('\n')
+    expect(isFatal(parseChart(many).diagnostics)).toBe(true)
+    const bomb = 'A | 1 | C\n' + '@copy A A 1\n'.repeat(20)
+    expect(isFatal(expandRows(parseChart(bomb).value).diagnostics)).toBe(true)
+    expect(isFatal(parseChart('A | 1\nA | 2 | C').diagnostics)).toBe(false)
+    expect(parseChart('A | 1234567 | C\n@copy A B 1').value.lines.length).toBe(2)
+    expect(expandRows(parseChart('A | 1234567 | C\n@copy A B 1').value).diagnostics[0].message).toMatch(/whole-number/)
   })
 
   it('enforces input limits', () => {
