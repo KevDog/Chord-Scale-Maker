@@ -118,7 +118,8 @@ The web version lives in `web/` (Nuxt 4, Tailwind CSS, VexFlow) and is deployed 
 ```bash
 make setup     # once
 make dev       # live-reloading dev server at http://localhost:3000
-make preview   # build the production static site and serve it at http://localhost:3000
+make preview   # build the production static site and serve it locally
+make e2e       # browser tests (Playwright, Chromium) against the production build
 ```
 
 The library lists every chart in `charts/`; add a `.txt` file there and it appears on the next build.

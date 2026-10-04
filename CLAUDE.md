@@ -15,7 +15,9 @@ chart format and options.
   `chord_scales.json` or `charts/`, run `make fixtures` and port the change to TS. The golden
   parity test (`web/engine/__tests__/golden.test.ts`) fails until both agree.
 - Generated `.ly`/`.pdf` files belong in `output/` and are git-ignored.
-- Web app: `make dev` / `make preview`; `make lint`. App code is in `web/app/`, its tests in `web/test/`.
+- Web app: `make dev` / `make preview`; `make lint`; `make e2e` (Playwright). App code is in `web/app/`, its unit
+  tests in `web/test/`, browser tests in `web/e2e/`. Pages must run under the hashed CSP (`web/build/csp.ts`):
+  no inline `<script>` of our own, no `eval`, no third-party origins.
   Keep `web/engine/` free of Vue/DOM imports; put view logic that can be pure in the engine (`sheet.ts`, `edit.ts`).
 - Runtime `dependencies` are only what ships to browsers (`vue`, `vexflow`); CI gates on `npm audit --omit=dev`.
 

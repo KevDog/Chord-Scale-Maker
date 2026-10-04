@@ -9,12 +9,15 @@
     "postinstall": "nuxt prepare",
     "test": "vitest run",
     "test:watch": "vitest",
-    "typecheck": "nuxt typecheck && tsc -p tsconfig.engine.json",
-    "lint": "eslint ."
+    "typecheck": "nuxt typecheck && tsc -p tsconfig.engine.json && tsc -p tsconfig.e2e.json",
+    "lint": "eslint .",
+    "e2e": "nuxt generate && playwright test",
+    "check:headers": "NITRO_PRESET=vercel-static nuxt generate && node build/check-headers.ts"
   },
   "devDependencies": {
     "@nuxt/eslint": "1.17.0",
     "@nuxt/test-utils": "4.3.3",
+    "@playwright/test": "1.63.0",
     "@tailwindcss/vite": "4.3.3",
     "@types/node": "26.6.4",
     "@vue/test-utils": "2.5.1",

@@ -1,0 +1,30 @@
+import { expect, staves, test } from './fixtures'
+
+test('searches the library and opens a chart', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.getByRole('heading', { name: 'Chart library' })).toBeVisible()
+  await page.getByPlaceholder('Search by title').fill('zzz')
+  await expect(page.getByText('No charts match')).toBeVisible()
+  await page.getByPlaceholder('Search by title').fill('autumn')
+  await page.getByRole('link', { name: /Autumn Leaves/ }).click()
+  await expect(page).toHaveURL(/editor\?chart=autumn_leaves/)
+  await expect(staves(page)).toHaveCount(78) // 39 rows, both spellings
+  await expect(page.getByText('Page 1 of 8')).toBeVisible()
+})
+
+test('every page carries a hashed Content-Security-Policy', async ({ page }) => {
+  for (const path of ['/', '/editor']) {
+    await page.goto(path)
+    const csp = await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content')
+    expect(csp).toMatch(/script-src 'self' 'sha256-[^']+' 'sha256-[^']+'/)
+    expect(csp).not.toMatch(/script-src[^;]*unsafe/)
+  }
+})
+
+test('dark mode toggles and survives a reload', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('button', { name: /dark mode/ }).click()
+  await expect(page.locator('html')).toHaveClass(/dark/)
+  await page.reload()
+  await expect(page.locator('html')).toHaveClass(/dark/)
+})

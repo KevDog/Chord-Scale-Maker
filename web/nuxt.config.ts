@@ -1,4 +1,6 @@
 import tailwindcss from '@tailwindcss/vite'
+import { addCspMeta } from './build/csp'
+import { SECURITY_HEADERS } from './build/headers'
 
 // Fully static site (nuxt generate). Engine + rendering run in the browser; see docs/design.md.
 export default defineNuxtConfig({
@@ -22,7 +24,17 @@ export default defineNuxtConfig({
       issuesUrl: 'https://github.com/KevDog/Chord-Scale-Maker/issues/new',
     },
   },
-  nitro: { prerender: { routes: ['/', '/editor'] } },
+  // '/_nuxt/**' too: Nitro emits a separate cache-header route for assets that ends Vercel's routing
+  routeRules: { '/**': { headers: SECURITY_HEADERS }, '/_nuxt/**': { headers: SECURITY_HEADERS } },
+  nitro: {
+    prerender: { routes: ['/', '/editor'] },
+    hooks: {
+      // hash each page's inline scripts into a CSP <meta> (build/csp.ts)
+      'prerender:generate'(route) {
+        if (route.fileName?.endsWith('.html') && typeof route.contents === 'string') route.contents = addCspMeta(route.contents)
+      },
+    },
+  },
   vite: {
     plugins: [tailwindcss()],
     // the engine imports ../chord_scales.json and the library reads ../charts

@@ -15,7 +15,8 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true, // build/check-headers.ts runs directly under node
     "types": ["node"]
   },
-  "include": ["engine/**/*.ts"]
+  "include": ["engine/**/*.ts", "build/**/*.ts"]
 }
