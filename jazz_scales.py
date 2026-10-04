@@ -34,11 +34,12 @@ Chart format (plain text):
   A1 | 1 | Cm7   | C Dorian
   A1 | 3 | Bm7   | B Dorian
   A1 | 3 | E7    | E Mixolydian       <- two chords in one bar = two rows
+  A1 | 4 | Bbm7                        <- scale omitted: quality default from chord_scales.json
   @copy A1 A2 8                        <- repeat section A1 as A2, bars +8
 Chords: Cm7, Bbm7, Am7b5, D7#5, EbMaj7, D7/F#, C9 ... (m = minor, shown as -)
 Scales: "<root> <name>", e.g. "Bb Dorian", "D Half-Whole", "G Altered".
 """
-import argparse, math, re, shutil, subprocess, sys
+import argparse, json, math, re, shutil, subprocess, sys
 from pathlib import Path
 
 LETTERS = "CDEFGAB"
@@ -200,6 +201,41 @@ def parse_scale(scale_text):
     return li, racc, key
 
 
+# --- chord qualities -> default/alternate scales (chord_scales.json) -------
+CHORD_RE = r"([A-G])([b#♭♯]?)(.*?)(?:/([A-G])([b#♭♯]?))?"
+_qdata = json.loads(Path(__file__).resolve().with_name("chord_scales.json").read_text(encoding="utf-8"))
+QUALITIES = _qdata["qualities"]
+QUALITY_LOOKUP = {q: q for q in QUALITIES}
+for _q, _names in _qdata["quality_aliases"].items():
+    QUALITY_LOOKUP.update({n: _q for n in _names})
+
+
+def scale_options(chord):
+    """-> [{'scale': 'Eb Major Pentatonic', 'note': '...', 'default': bool}] for a chord symbol"""
+    m = re.fullmatch(CHORD_RE, chord.strip())
+    if not m:
+        raise ValueError(f"cannot parse chord {chord!r}")
+    quality = QUALITY_LOOKUP.get(m.group(3))
+    if quality is None:
+        raise ValueError(f"unknown chord quality {m.group(3)!r} in {chord!r}; give a scale")
+    li, acc = parse_root(m.group(1) + m.group(2))
+    out = []
+    for opt in QUALITIES[quality]:
+        key = norm(opt["scale"])
+        key = ALIASES.get(key, key)
+        l, a, _ = spell_from(li, acc, opt["root"])[0]
+        if opt["root"] != "1":      # interval-derived root: friendliest spelling for its scale
+            l, a = simplify_root(l, a, key)
+        out.append({"scale": f"{root_name(l, a)} {opt['scale']}",
+                    "note": opt.get("note", ""), "default": bool(opt.get("default"))})
+    return out
+
+
+def default_scale(chord):
+    opts = scale_options(chord)
+    return next((o for o in opts if o["default"]), opts[0])["scale"]
+
+
 def spell_scale(li, racc, key):
     notes = spell_from(li, racc, SCALES[key][0])
     if any(abs(n[1]) > 2 for n in notes):
@@ -261,7 +297,7 @@ class Part:
         return r"\concat { " + " ".join(parts) + " }"
 
     def chord_markup(self, txt, scale_text=None):
-        m = re.fullmatch(r"([A-G])([b#\u266d\u266f]?)(.*?)(?:/([A-G])([b#\u266d\u266f]?))?", txt.strip())
+        m = re.fullmatch(CHORD_RE, txt.strip())
         if not m:
             raise ValueError(f"cannot parse chord {txt!r}")
         root, racc, rest, bass, bacc = m.groups()
@@ -336,8 +372,15 @@ def read_chart(path):
                 sys.exit(f"line {n}: use  @copy SRC DST BAR_OFFSET")
         else:
             cells = [c.strip() for c in line.split("|")]
+            if len(cells) == 3:
+                cells.append("")
             if len(cells) != 4:
-                sys.exit(f"line {n}: expected  section | bar | chord | scale")
+                sys.exit(f"line {n}: expected  section | bar | chord [| scale]")
+            if not cells[3]:
+                try:
+                    cells[3] = default_scale(cells[2])
+                except ValueError as e:
+                    sys.exit(f"line {n}: {e}")
             rows.append(tuple(cells))
     if not rows:
         sys.exit("chart has no rows")

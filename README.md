@@ -43,6 +43,7 @@ A1 | 3 | E7    | E Mixolydian
 | Element | Meaning |
 | --- | --- |
 | `section \| bar \| chord \| scale` | One row per chord. Two chords in a bar are two rows with the same bar number. |
+| `section \| bar \| chord` | Scale omitted: the chord quality's default from `chord_scales.json` is used (e.g. `Cm7` → `C Dorian`). |
 | `@copy SRC DST OFFSET` | Repeat section `SRC` as `DST`, adding `OFFSET` to each bar number. |
 | `title:`, `subtitle:` | Printed at the top of each page. |
 | `#` | Comment line. |
@@ -113,5 +114,10 @@ Both live in dictionaries near the top of `jazz_scales.py`:
 ## Tests
 
 ```bash
-python3 -m pytest tests
+make setup   # once: .venv with pytest, npm ci in web/
+make test    # pytest + the TypeScript engine (typecheck, vitest)
 ```
+
+`web/engine/` is a TypeScript port of the engine for the web app. `fixtures/golden.json`
+records the Python engine's answers and the TS tests must match them; run `make fixtures`
+after changing `jazz_scales.py`, `chord_scales.json` or `charts/`.

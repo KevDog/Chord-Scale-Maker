@@ -67,3 +67,42 @@ def test_chart_parsing(tmp_path):
     title, sub, rows = j.read_chart(f)
     assert title == "T" and len(rows) == 4
     assert rows[2] == ("B", "9", "Cm7", "C Dorian")
+
+
+def test_default_scale_from_quality():
+    assert j.default_scale("Cm7") == "C Dorian"
+    assert j.default_scale("F7") == "F Mixolydian"
+    assert j.default_scale("Gm") == "G Dorian"
+    assert j.default_scale("C") == "C Ionian"
+    assert j.default_scale("EbMaj7") == "Eb Ionian"
+    assert j.default_scale("C6/9") == "C Ionian"
+    assert j.default_scale("D7/F#") == "D Mixolydian"
+    assert j.default_scale("Am7b5") == "A Locrian"
+    assert j.default_scale("Bb-7") == "Bb Dorian"
+    try:
+        j.default_scale("Cm7#5#9x")
+        assert False
+    except ValueError:
+        pass
+
+
+def test_scale_options_interval_roots():
+    opts = j.scale_options("Cm7")
+    assert [o["scale"] for o in opts if o["default"]] == ["C Dorian"]
+    assert "Eb Major Pentatonic" in [o["scale"] for o in opts]
+    assert "D Major Pentatonic" in [o["scale"] for o in j.scale_options("Gbm7b5")]   # b6 of Gb = Ebb -> D
+    assert "B Melodic Minor" in [o["scale"] for o in j.scale_options("Bb7alt")]      # b2 of Bb = Cb -> B
+
+
+def test_every_json_scale_is_known():
+    for quality, opts in j.QUALITIES.items():
+        for o in opts:
+            j.parse_scale("C " + o["scale"])
+        assert sum(1 for o in opts if o.get("default")) == 1, quality
+
+
+def test_chart_rows_may_omit_scale(tmp_path):
+    f = tmp_path / "t.txt"
+    f.write_text("A | 1 | Cm7\nA | 2 | F7 |\nA | 3 | Gm | G Aeolian\n")
+    _, _, rows = j.read_chart(f)
+    assert [r[3] for r in rows] == ["C Dorian", "F Mixolydian", "G Aeolian"]

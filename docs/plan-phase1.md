@@ -105,6 +105,7 @@ def test_scale_options_interval_roots():
     assert [o["scale"] for o in opts if o["default"]] == ["C Dorian"]
     assert "Eb Major Pentatonic" in [o["scale"] for o in opts]
     assert "D Major Pentatonic" in [o["scale"] for o in j.scale_options("Gbm7b5")]   # b6 of Gb = Ebb -> D
+    assert "B Melodic Minor" in [o["scale"] for o in j.scale_options("Bb7alt")]      # b2 of Bb = Cb -> B
 
 
 def test_every_json_scale_is_known():
@@ -130,7 +131,7 @@ Insert this block between `parse_scale` and `spell_scale`:
 ```python
 # --- chord qualities -> default/alternate scales (chord_scales.json) -------
 CHORD_RE = r"([A-G])([b#♭♯]?)(.*?)(?:/([A-G])([b#♭♯]?))?"
-_qdata = json.loads(Path(__file__).with_name("chord_scales.json").read_text(encoding="utf-8"))
+_qdata = json.loads(Path(__file__).resolve().with_name("chord_scales.json").read_text(encoding="utf-8"))
 QUALITIES = _qdata["qualities"]
 QUALITY_LOOKUP = {q: q for q in QUALITIES}
 for _q, _names in _qdata["quality_aliases"].items():
@@ -151,7 +152,7 @@ def scale_options(chord):
         key = norm(opt["scale"])
         key = ALIASES.get(key, key)
         l, a, _ = spell_from(li, acc, opt["root"])[0]
-        if abs(a) > 1:
+        if opt["root"] != "1":      # interval-derived root: friendliest spelling for its scale
             l, a = simplify_root(l, a, key)
         out.append({"scale": f"{root_name(l, a)} {opt['scale']}",
                     "note": opt.get("note", ""), "default": bool(opt.get("default"))})
@@ -175,7 +176,7 @@ with
         m = re.fullmatch(CHORD_RE, txt.strip())
 ```
 
-Why it works: the lazy quality group plus the optional `/[A-G]` bass means `C6/9` gives quality `6/9` (no bass), while `D7/F#` gives quality `7` and bass `F#`. That's design decision 3, with no extra code. The interval root (`"b3"`) is spelled by reusing `spell_from` with a one-degree formula.
+Why it works: the lazy quality group plus the optional `/[A-G]` bass means `C6/9` gives quality `6/9` (no bass), while `D7/F#` gives quality `7` and bass `F#`. That's design decision 3, with no extra code. The interval root (`"b3"`) is spelled by reusing `spell_from` with a one-degree formula, then respelled by `simplify_root` for its scale (so `b2` over Bb gives B Melodic Minor, not Cb). A root the user wrote (`"1"`) is kept as written.
 
 - [ ] **Step 4: Run tests**
 
@@ -287,7 +288,7 @@ def test_golden_fixture_is_up_to_date():
 Run: `.venv/bin/python -m pytest -q tests/test_fixtures.py`
 Expected: FAIL with `ModuleNotFoundError: No module named 'export_fixtures'`
 
-- [ ] **Step 3: Write the exporter.** It covers 21 roots × 23 scales plus aliases, JSON scale names and invalid inputs, across 5 parts and 3 `from` starts; start-note resolution; 36 chords × 5 parts with and without their default scale; quality options/defaults; and every chart in `charts/`.
+- [ ] **Step 3: Write the exporter.** It covers 21 roots × 23 scales plus aliases, JSON scale names and invalid inputs, across 5 parts and 5 `from` starts; start-note resolution; 40 chords (4 unparseable) × 5 parts with and without their default scale, plus chord/scale pairs whose roots differ or are spelled differently; quality options/defaults; and every chart in `charts/` plus two inline charts (3-cell rows, CRLF, `TITLE:`, negative/zero `@copy`). Each chart's text is stored in the fixture so the TS test parses the same input. The token converter asserts that it consumed the whole markup, so a new LilyPond construct fails loudly instead of being dropped.
 
 `tools/export_fixtures.py`:
 
@@ -298,7 +299,7 @@ Expected: FAIL with `ModuleNotFoundError: No module named 'export_fixtures'`
 Run after any change to jazz_scales.py, chord_scales.json or charts/:
   python3 tools/export_fixtures.py
 """
-import json, re, sys
+import json, re, sys, tempfile
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parents[1]
@@ -309,7 +310,7 @@ FIXTURE = ROOT / "fixtures" / "golden.json"
 PARTS = {f"{c}/{t}": (c, t) for c, t in
          [("treble", "C"), ("treble", "Bb"), ("treble", "Eb"), ("treble", "F"), ("bass", "C")]}
 ROOTS = [l + a for l in "CDEFGAB" for a in ("b", "", "#")]
-FROM_STARTS = ["C", "Eb", "F#3"]
+FROM_STARTS = ["C", "Eb", "F#3", "G2", "Bb5"]
 START_TEXTS = ["C", "Eb", "F#3", "Cb", "B#", "G2", "Bb5", "f#"]
 SCALE_TEXTS = ([f"{r} {k}" for r in ROOTS for k in j.SCALES]
                + [f"D {a}" for a in j.ALIASES]
@@ -318,7 +319,16 @@ SCALE_TEXTS = ([f"{r} {k}" for r in ROOTS for k in j.SCALES]
 CHORDS = ["Cm7", "C-7", "Cmi7", "Cmin7", "Bbm7", "Am7b5", "D7#5", "G7#9b13", "EbMaj7", "Cmaj7",
           "CMaj7", "C9", "D7/F#", "Cm6/Eb", "C6/9", "Cm6/9", "F#m7", "Gm", "C", "Bm7", "Db7(b9)",
           "Abmin7", "E7alt", "Bb7sus4", "F#ø7", "Cdim7", "Gbm7b5", "C#m7", "B7b9", "E7(#11)",
-          "Fmaj7#11", "Bb13", "Ebm(maj7)", "Ab7/Gb", "G/B", "Cm7#5#9x"]
+          "Fmaj7#11", "Bb13", "Ebm(maj7)", "Ab7/Gb", "G/B", "Cm7#5#9x",
+          "H7", "C7/", "", "Cmaj7/x"]                                  # unparseable
+# chord + scale whose roots differ, or share a pitch but not a spelling
+CHORD_SCALE_PAIRS = [("C7", "F# Locrian"), ("Db7", "C# Mixolydian"), ("C#m7", "Db Dorian"),
+                     ("Gb7/Bb", "F# Mixolydian"), ("D7/F#", "Ab Altered")]
+# inline charts for parser paths the library files don't hit
+CHART_TEXTS = {
+    "inline_defaults": "TITLE: Defaults\r\nA | 1 | Cm7\r\nA | 2 | F7 |\r\nA | 3 | Bbmaj7 | Bb Lydian\r\n",
+    "inline_copy": "title: Copy\nsubtitle: Neg\n# c\nA | 9 | Dm7b5\nA | 10 | G7alt\n@copy A B -8\n@copy B C 0\n",
+}
 
 
 def start_for(clef, text):
@@ -339,8 +349,11 @@ def scale_case(part, text):
 
 def tokens(markup):
     """LilyPond chord markup -> [{kind: text|acc}], adjacent text merged"""
+    body = re.fullmatch(r"\\concat \{ (.*) \}", markup).group(1)
+    pieces = list(re.finditer(r'"([^"]*)"|\\(fl|sh)', body))
+    assert re.sub(r'"[^"]*"|\\(fl|sh)', "", body).strip() == "", f"unexpected markup: {markup}"
     out = []
-    for m in re.finditer(r'"([^"]*)"|\\(fl|sh)', markup):
+    for m in pieces:
         if m.group(1) is None:
             out.append({"kind": "acc", "acc": "b" if m.group(2) == "fl" else "#"})
         elif out and out[-1]["kind"] == "text":
@@ -365,10 +378,18 @@ def build():
             for scale in dict.fromkeys([None, maybe(j.default_scale, chord)]):
                 toks = maybe(lambda: tokens(part.chord_markup(chord, scale)))
                 chords.append({"part": pid, "chord": chord, "scale": scale, "tokens": toks})
+        for chord, scale in CHORD_SCALE_PAIRS:
+            chords.append({"part": pid, "chord": chord, "scale": scale,
+                           "tokens": maybe(lambda: tokens(part.chord_markup(chord, scale)))})
+    texts = {f.stem: f.read_text(encoding="utf-8") for f in sorted((ROOT / "charts").glob("*.txt"))}
+    texts.update(CHART_TEXTS)
     charts = {}
-    for f in sorted((ROOT / "charts").glob("*.txt")):
-        title, subtitle, rows = j.read_chart(f)
-        charts[f.stem] = {"title": title, "subtitle": subtitle, "rows": [list(r) for r in rows]}
+    with tempfile.TemporaryDirectory() as tmp:
+        for name, text in texts.items():
+            f = Path(tmp) / f"{name}.txt"
+            f.write_bytes(text.encode("utf-8"))      # bytes: keep \r\n as written
+            title, subtitle, rows = j.read_chart(f)
+            charts[name] = {"text": text, "title": title, "subtitle": subtitle, "rows": [list(r) for r in rows]}
     return {
         "parts": {pid: {"clef": c, "trans": t} for pid, (c, t) in PARTS.items()},
         "from_starts": FROM_STARTS,
@@ -394,7 +415,7 @@ if __name__ == "__main__":
 - [ ] **Step 4: Generate and verify**
 
 Run: `.venv/bin/python tools/export_fixtures.py && .venv/bin/python -m pytest -q tests`
-Expected: `wrote fixtures/golden.json`, then `12 passed`. The file is about 750 KB.
+Expected: `wrote fixtures/golden.json`, then `12 passed`. The file is about 1 MB.
 
 - [ ] **Step 5: Commit**
 
@@ -593,7 +614,7 @@ Ports `SCALES`, `ALIASES`, `norm`, `spell_from`, `simplify_root`, `parse_scale`,
 ```ts
 import { describe, expect, it } from 'vitest'
 import { parseRoot, rootName } from '../pitch'
-import { parseScale, scaleKey, simplifyRoot, spellScale } from '../scales'
+import { parseScale, scaleKey, simplifyRoot, spellFrom, spellScale } from '../scales'
 
 const spelled = (text: string): string => {
   const { root, key } = parseScale(text)
@@ -618,6 +639,7 @@ describe('scales', () => {
     expect(() => parseScale('C Dorain')).toThrow(/unknown scale/)
     expect(() => parseScale('C constructor')).toThrow(/unknown scale/)
     expect(() => parseScale('C')).toThrow(/root and a name/)
+    expect(spellFrom(parseRoot('C'), '0')).toEqual([{ letter: 6, acc: 0, semis: 11 }]) // degree 0 wraps like Python
   })
 
   it('simplifies roots by looking at the whole scale', () => {
@@ -715,7 +737,7 @@ export function spellFrom(root: Spelled, formula: string): ScaleNote[] {
     .map((tok) => {
       const m = /^([b#]*)(\d+)$/.exec(tok)
       if (!m) throw new Error(`bad scale degree: ${JSON.stringify(tok)}`)
-      const idx = (Number(m[2]) - 1) % 7
+      const idx = mod(Number(m[2]) - 1, 7)
       const semis = NAT_PC[idx] + count(m[1], '#') - count(m[1], 'b')
       const letter = toLetter(root.letter + idx)
       return { letter, acc: accFor(mod(rootPc + semis, 12), letter), semis }
@@ -1180,6 +1202,7 @@ describe('qualities', () => {
     const scales = resolveQuality('Cm7')?.options.map((o) => o.scale)
     expect(scales).toContain('Eb Major Pentatonic')
     expect(resolveQuality('Gbm7b5')?.options.map((o) => o.scale)).toContain('D Major Pentatonic')
+    expect(resolveQuality('Bb7alt')?.options.map((o) => o.scale)).toContain('B Melodic Minor')
   })
 
   it('every quality has exactly one default and known scales', () => {
@@ -1232,7 +1255,7 @@ export function resolveQuality(chord: string): QualityMatch | null {
   const options = (DATA.qualities[quality] ?? []).map((opt): ScaleOption => {
     const key = scaleKey(opt.scale)
     const r: Spelled = spellFrom(c.root, opt.root)[0]
-    const root = Math.abs(r.acc) > 1 ? simplifyRoot(r, key) : r
+    const root = opt.root === '1' ? r : simplifyRoot(r, key) // interval-derived: friendliest spelling
     return { scale: `${rootName(root)} ${opt.scale}`, note: opt.note ?? '', default: opt.default ?? false }
   })
   return { quality, options }
@@ -1332,6 +1355,18 @@ describe('chart', () => {
     expect(parseChart(many).diagnostics.at(-1)?.message).toMatch(/more than 500 rows/)
   })
 
+  it('caps expanded rows even without @copy', () => {
+    const many = Array.from({ length: LIMITS.maxExpandedRows + 5 }, () => '|1|C').join('\n')
+    const { value: rows, diagnostics } = expandRows(parseChart(many).value)
+    expect(rows).toHaveLength(LIMITS.maxExpandedRows)
+    expect(diagnostics.map((d) => d.line)).toEqual([LIMITS.maxExpandedRows + 1])
+  })
+
+  it('caps @copy section names and offsets', () => {
+    const { diagnostics } = parseChart(`@copy A ${'B'.repeat(LIMITS.maxCell + 1)} 8\n@copy A B 12345\n@copy A B -8`)
+    expect(diagnostics.map((d) => d.line)).toEqual([1, 2])
+  })
+
   it('caps @copy expansion before it can grow exponentially', () => {
     const bomb = 'A | 1 | C\n' + '@copy A A 1\n'.repeat(1_000)
     const { value: rows, diagnostics } = expandRows(parseChart(bomb).value)
@@ -1383,6 +1418,7 @@ export type Row = Readonly<{ section: string; bar: string; chord: string; scale:
 export type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 const INT_RE = /^[+-]?\d+$/
+const OFFSET_RE = /^[+-]?\d{1,4}$/ // bar offsets stay well inside safe integers
 
 function parseLine(line: string): ChartLine | string {
   if (!line) return { kind: 'blank' }
@@ -1396,7 +1432,9 @@ function parseLine(line: string): ChartLine | string {
   }
   if (low.startsWith('@copy')) {
     const parts = line.split(/\s+/)
-    if (parts.length !== 4 || !INT_RE.test(parts[3])) return 'use  @copy SRC DST BAR_OFFSET'
+    if (parts.length !== 4 || !OFFSET_RE.test(parts[3])) return 'use  @copy SRC DST BAR_OFFSET'
+    if (parts[1].length > LIMITS.maxCell || parts[2].length > LIMITS.maxCell)
+      return `section name longer than ${LIMITS.maxCell} characters`
     return { kind: 'copy', src: parts[1], dst: parts[2], offset: Number(parts[3]) }
   }
   const cells = line.split('|').map((c) => c.trim())
@@ -1455,12 +1493,19 @@ export function chartMeta(doc: ChartDoc): Readonly<{ title: string; subtitle: st
   return { title: meta('title', 'Untitled'), subtitle: meta('subtitle', '') }
 }
 
-/** chart rows in order with @copy applied (a copy repeats the rows seen so far) */
+/** chart rows in order with @copy applied (a copy repeats the rows seen so far); at most maxExpandedRows */
 export function expandRows(doc: ChartDoc): Parsed<readonly Row[]> {
   const diagnostics: Diagnostic[] = []
   const rows: Row[] = []
+  const tooMany = (line: number): Diagnostic => ({ line, message: `more than ${LIMITS.maxExpandedRows} rows after @copy` })
   for (const [i, l] of doc.lines.entries()) {
-    if (l.kind === 'row') rows.push({ section: l.section, bar: l.bar, chord: l.chord, scale: l.scale })
+    if (l.kind === 'row') {
+      if (rows.length >= LIMITS.maxExpandedRows) {
+        diagnostics.push(tooMany(i + 1))
+        break
+      }
+      rows.push({ section: l.section, bar: l.bar, chord: l.chord, scale: l.scale })
+    }
     if (l.kind !== 'copy') continue
     const src = rows.filter((r) => r.section === l.src)
     if (src.some((r) => !INT_RE.test(r.bar))) {
@@ -1469,7 +1514,7 @@ export function expandRows(doc: ChartDoc): Parsed<readonly Row[]> {
     }
     if (rows.length + src.length > LIMITS.maxExpandedRows) {
       // checked before growing: chained copies would otherwise double the rows each time
-      diagnostics.push({ line: i + 1, message: `more than ${LIMITS.maxExpandedRows} rows after @copy` })
+      diagnostics.push(tooMany(i + 1))
       break
     }
     rows.push(...src.map((r) => ({ ...r, section: l.dst, bar: String(Number(r.bar) + l.offset) })))
@@ -1491,7 +1536,7 @@ export function resolveScale(row: Row): string | null {
 - [ ] **Step 5: Run tests + typecheck**
 
 Run: `cd web && npx vitest run engine/__tests__/chart.test.ts && npx tsc --noEmit`
-Expected: `8 passed`
+Expected: `10 passed`
 
 - [ ] **Step 6: Commit**
 
@@ -1548,26 +1593,30 @@ type Golden = {
   scales: Record<string, Record<string, ScaleCase>>
   chords: { part: string; chord: string; scale: string | null; tokens: ChordToken[] | null }[]
   options: Record<string, { options: ScaleOption[] | null; default: string | null }>
-  charts: Record<string, { title: string; subtitle: string; rows: string[][] }>
+  charts: Record<string, { text: string; title: string; subtitle: string; rows: string[][] }>
 }
 
 const repo = (path: string): string => readFileSync(new URL(`../../../${path}`, import.meta.url), 'utf8')
 const G = JSON.parse(repo('fixtures/golden.json')) as Golden
 
+/** engine domain errors are plain Errors (Python's ValueError); anything else is a bug and must fail */
+const isDomainError = (e: unknown): boolean => e instanceof Error && e.constructor === Error
+
 function attempt<T>(f: () => T): T | null {
   try {
     return f()
-  } catch {
-    return null
+  } catch (e) {
+    if (isDomainError(e)) return null
+    throw e
   }
 }
 
-/** compare each [label, want, got] and return readable mismatches */
+/** compare each [label, want, got]; return the first 20 readable mismatches plus a count */
 function mismatches(cases: Iterable<readonly [string, unknown, unknown]>): string[] {
   const bad: string[] = []
   for (const [label, want, got] of cases)
     if (!isDeepStrictEqual(want, got)) bad.push(`${label}\n  want ${JSON.stringify(want)}\n  got  ${JSON.stringify(got)}`)
-  return bad
+  return bad.length > 20 ? [...bad.slice(0, 20), `... and ${bad.length - 20} more`] : bad
 }
 
 function scaleCase(part: Part, text: string): ScaleCase {
@@ -1581,12 +1630,20 @@ function scaleCase(part: Part, text: string): ScaleCase {
         G.from_starts.map((s) => [s, scaleNotes(part, text, 'from', resolveStart(part.clef, s)).map(lilyNote)]),
       ),
     }
-  } catch {
-    return { error: true }
+  } catch (e) {
+    if (isDomainError(e)) return { error: true }
+    throw e
   }
 }
 
 describe('golden parity with jazz_scales.py', () => {
+  it('fixture has every section', () => {
+    expect(Object.keys(G.parts)).toHaveLength(5)
+    expect(Object.keys(G.scales)).toEqual(Object.keys(G.parts))
+    for (const section of [G.from_starts, G.chords, Object.keys(G.options), Object.keys(G.charts)])
+      expect(section.length).toBeGreaterThan(0)
+  })
+
   it('start notes', () => {
     const cases = Object.entries(G.starts).flatMap(([clef, starts]) =>
       Object.entries(starts).map(([s, want]) => [`${clef} ${s}`, want, resolveStart(clef as Clef, s)] as const),
@@ -1615,15 +1672,15 @@ describe('golden parity with jazz_scales.py', () => {
 
   it('quality options and defaults', () => {
     const cases = Object.entries(G.options).flatMap(([chord, want]) => [
-      [`${chord} options`, want.options, resolveQuality(chord)?.options ?? null] as const,
-      [`${chord} default`, want.default, defaultScale(chord)] as const,
+      [`${chord} options`, want.options, attempt(() => resolveQuality(chord)?.options ?? null)] as const,
+      [`${chord} default`, want.default, attempt(() => defaultScale(chord))] as const,
     ])
     expect(mismatches(cases)).toEqual([])
   })
 
   it('library charts', () => {
     const cases = Object.entries(G.charts).flatMap(([name, want]) => {
-      const { value: doc, diagnostics } = parseChart(repo(`charts/${name}.txt`))
+      const { value: doc, diagnostics } = parseChart(want.text)
       const rows = expandRows(doc)
       return [
         [`${name} diagnostics`, [], [...diagnostics, ...rows.diagnostics]] as const,
@@ -1659,7 +1716,7 @@ export * from './scales'
 - [ ] **Step 4: Run the full suite**
 
 Run: `cd web && npx vitest run && npx tsc --noEmit`
-Expected: `Test Files 7 passed`, `Tests 37 passed`
+Expected: `Test Files 7 passed`, `Tests 40 passed`
 
 - [ ] **Step 5: Prove the parity test bites.** Corrupt one expected value:
 
@@ -1761,7 +1818,7 @@ and under "Design rules" add
 - [ ] **Step 4: Verify everything from clean**
 
 Run: `make test`
-Expected: `12 passed`, then `Test Files 7 passed`, `Tests 37 passed`
+Expected: `12 passed`, then `Test Files 7 passed`, `Tests 40 passed`
 
 - [ ] **Step 5: Commit**
 
@@ -1776,4 +1833,5 @@ git commit -m "chore: make targets, CI, project notes for the TS engine"
 
 - **Stack:** Nuxt 4 (decided) with Tailwind CSS v4 via `@tailwindcss/vite` (see design §6).
 - **Imports outside `web/`.** The engine imports `../../chord_scales.json`, and the library will import `../../charts/*.txt`. The Vite dev server only serves files inside its root, so set `vite.server.fs.allow: ['..']`, and enable Vercel's "include files outside root directory" setting.
+- **Grid cell validation.** `serializeChart` doesn't sanitize. The grid editor must reject cell values containing `|`, `\r`/`\n`, or a leading `#`, `@`, `title:` or `subtitle:`, or the text round-trip breaks. A `maxChars` diagnostic returns an empty doc, so the editor must not write it back over the user's text.
 - **Engine boundaries.** `web/engine/` must stay free of Vue/DOM imports. A future lint rule (`no-restricted-imports` for `vue`, `#app`) will enforce it.
