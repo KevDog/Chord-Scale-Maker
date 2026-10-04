@@ -10,7 +10,7 @@
         <p class="text-sm text-slate-600 dark:text-slate-400 print:text-slate-700">{{ page.subtitle }}</p>
       </header>
       <div class="space-y-1 print:space-y-0">
-        <ScaleStaff v-for="s in page.staves" :key="s.id" :staff="s" :clef="clef" />
+        <ScaleStaff v-for="s in page.staves" :key="s.id" :staff="s" :clef="part.clef" />
       </div>
       <p class="mt-3 text-right text-xs text-slate-400 print:hidden">Page {{ page.number }} of {{ pages.length }}</p>
     </section>
@@ -18,21 +18,27 @@
 </template>
 
 <script setup lang="ts">
-import { buildSheet, CONCERT, type ModeChoice, type Row } from '~~/engine'
+import { buildSheet, type ModeChoice, type Part, pageSubtitle, type Row } from '~~/engine'
 
-const props = defineProps<{ rows: readonly Row[]; title: string; subtitle: string; mode: ModeChoice; perPage: number }>()
-
-const part = CONCERT // phase 3 adds the instrument picker
-const clef = part.clef
+const props = defineProps<{
+  rows: readonly Row[]
+  title: string
+  subtitle: string
+  part: Part
+  instrumentLabel: string // e.g. "Tenor Sax (Bb)"; '' for concert
+  start: string // written start note for the "from" part
+  mode: ModeChoice
+  perPage: number
+}>()
 
 /** every printed page, in order, with its own heading (the CLI's bookparts flattened) */
 const pages = computed(() =>
-  buildSheet(props.rows, part, props.mode, 'C', props.perPage)
+  buildSheet(props.rows, props.part, props.mode, props.start, props.perPage)
     .flatMap((sheetPart) =>
       sheetPart.pages.map((staves) => ({
         mode: sheetPart.mode,
         staves,
-        subtitle: [props.subtitle, `(${sheetPart.heading})`].filter(Boolean).join(' '),
+        subtitle: pageSubtitle(props.subtitle, props.instrumentLabel, sheetPart.heading),
       })),
     )
     .map((page, i) => ({ ...page, number: i + 1 })),
