@@ -25,6 +25,12 @@ export default defineNuxtConfig({
     },
   },
   // '/_nuxt/**' too: Nitro emits a separate cache-header route for assets that ends Vercel's routing
+  hooks: {
+    // the /ui component showcase is for development only
+    'pages:extend'(pages) {
+      if (process.env.NODE_ENV === 'production') pages.splice(0, pages.length, ...pages.filter((p) => p.path !== '/ui'))
+    },
+  },
   routeRules: { '/**': { headers: SECURITY_HEADERS }, '/_nuxt/**': { headers: SECURITY_HEADERS } },
   nitro: {
     prerender: { routes: ['/', '/editor'] },
