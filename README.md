@@ -122,6 +122,7 @@ make preview   # build the production static site and serve it at http://localho
 ```
 
 The library lists every chart in `charts/`; add a `.txt` file there and it appears on the next build.
+In the editor, pick an instrument to write the sheet for it (clef, key, chord symbols); the chart itself stays in concert pitch.
 
 ## Tests
 

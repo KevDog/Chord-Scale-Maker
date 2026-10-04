@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { Row } from '../chart'
 import { CONCERT } from '../part'
-import { type ModeChoice, type StaffModel, buildSheet, noteText, toVexKey } from '../sheet'
+import { type ModeChoice, type StaffModel, buildSheet, noteText, pageSubtitle, toVexKey } from '../sheet'
 
 const row = (chord: string, scale = '', bar = '1'): Row => ({ section: 'A', bar, chord, scale })
 
@@ -74,5 +74,21 @@ describe('sheet', () => {
     expect(a).not.toBe(b)
     const bb = buildSheet([row('Cm7')], { clef: 'treble', trans: 'Bb' }, 'root', 'C', 12)[0]?.pages.flat()[0]?.id
     expect(bb).not.toBe(id([row('Cm7')])[0]) // a different instrument redraws
+  })
+
+  it('builds page subtitles like the CLI', () => {
+    expect(pageSubtitle('Full Form', 'Tenor Sax (Bb)', 'Spelled from C')).toBe('Full Form – Tenor Sax (Bb) (Spelled from C)')
+    expect(pageSubtitle('Full Form', '', 'Spelled from the Root')).toBe('Full Form (Spelled from the Root)')
+    expect(pageSubtitle('', 'Trombone', 'Spelled from C')).toBe('Trombone (Spelled from C)')
+    expect(pageSubtitle('', '', 'Spelled from C')).toBe('Spelled from C')
+  })
+
+  it('writes the sheet for a transposing instrument', () => {
+    const [s] = buildSheet([row('Cm7')], { clef: 'treble', trans: 'Bb' }, 'root', 'C', 12)[0]?.pages.flat() ?? []
+    expect(s?.chord).toEqual([{ kind: 'text', text: 'D–7' }])
+    expect(s?.scale?.name).toBe('Dorian')
+    expect(s?.notes.map(toVexKey)).toEqual(['d/4', 'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5'])
+    const [b] = buildSheet([row('Cm7')], { clef: 'bass', trans: 'C' }, 'from', 'C', 12)[0]?.pages.flat() ?? []
+    expect(b?.notes.map(toVexKey)[0]).toBe('c/3') // bass clef starts an octave lower
   })
 })

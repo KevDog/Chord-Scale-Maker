@@ -32,6 +32,16 @@ export const INSTRUMENTS = {
 
 export type InstrumentName = keyof typeof INSTRUMENTS
 
+export const isInstrumentName = (name: string): name is InstrumentName => Object.hasOwn(INSTRUMENTS, name)
+
+/** "tenor-sax" -> "Tenor Sax (Bb)"; concert -> "" (the CLI's page-subtitle label) */
+export function instrumentLabel(name: InstrumentName): string {
+  if (name === 'concert') return ''
+  const words = name.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1))
+  const { trans } = INSTRUMENTS[name]
+  return words.join(' ') + (trans === 'C' ? '' : ` (${trans})`)
+}
+
 /** default 'from' pitch: C4 / C3 (MIDI, middle C = 60) */
 export const CLEF_START: Readonly<Record<Clef, number>> = { treble: 60, bass: 48 }
 /** root-spelled scales start in Bb3..A4 / G2..F#3 */

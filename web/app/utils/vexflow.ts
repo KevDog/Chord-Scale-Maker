@@ -21,14 +21,27 @@ export function loadVexFlow(): Promise<VexFlowModule> {
   return loading
 }
 
-// Drawing units. The SVG scales to its container width; in print that is about 650px,
-// which makes each staff about 58px tall so 12 fit on a letter page with their labels.
-export const STAFF_WIDTH = 960
-const STAFF_HEIGHT = 120
-const STAVE_Y = 10 // staff lines at y 50-90
-// visible band: notes in either mode stay within about two ledger lines of the staff
-const VIEW_TOP = 30
-const VIEW_HEIGHT = 85
+// Drawing units. The SVG scales to its container width (about 650px in print). Each staff's
+// viewBox is cropped to what was drawn, so its height depends on how far notes go above or
+// below the staff: about 45px in print for most scales, at most about 65px (three ledger
+// lines, e.g. bass clef from B), so 12 staves and their labels fit on a letter page.
+const STAFF_WIDTH = 1200
+const STAFF_HEIGHT = 200
+const STAVE_Y = 40 // staff lines at y 80-120, with room for ledger lines on both sides
+export const MIN_TOP = 55 // always show the clef and a ledger line's space above and below the staff
+export const MIN_BOTTOM = 140
+// room around a note head for its accidental: a flat rises about two spaces, a sharp hangs 1.5
+const ABOVE_HEAD = 24
+const BELOW_HEAD = 18
+
+/** vertical band to show, from note-head y positions (drawing units); never smaller than the staff band */
+export function cropBand(headYs: readonly number[]): Readonly<{ top: number; bottom: number }> {
+  if (headYs.length === 0) return { top: MIN_TOP, bottom: MIN_BOTTOM }
+  return {
+    top: Math.min(MIN_TOP, Math.min(...headYs) - ABOVE_HEAD),
+    bottom: Math.max(MIN_BOTTOM, Math.max(...headYs) + BELOW_HEAD),
+  }
+}
 
 /** draw one staff of whole notes into el, replacing what was there; colors follow CSS `color` */
 export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel, clef: 'treble' | 'bass'): void {
@@ -47,14 +60,17 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
     if (n.acc) note.addModifier(new vf.Accidental(accText(n.acc)), 0) // explicit on every altered note
     return note
   })
-  if (notes.length === 0) return
-  const voice = new vf.Voice({ numBeats: notes.length * 4, beatValue: 4 }).setMode(vf.Voice.Mode.SOFT).addTickables(notes)
-  new vf.Formatter().joinVoices([voice]).format([voice], STAFF_WIDTH - stave.getNoteStartX() - 24)
-  voice.draw(ctx, stave)
+  if (notes.length > 0) {
+    const voice = new vf.Voice({ numBeats: notes.length * 4, beatValue: 4 }).setMode(vf.Voice.Mode.SOFT).addTickables(notes)
+    new vf.Formatter().joinVoices([voice]).format([voice], STAFF_WIDTH - stave.getNoteStartX() - 24)
+    voice.draw(ctx, stave)
+  }
 
-  // scale with the container instead of a fixed pixel size
+  // crop to the notes' actual range (SVG getBBox measures glyphs by font ascent, not ink),
+  // and scale with the container instead of a fixed pixel size
+  const { top, bottom } = cropBand(notes.flatMap((n) => n.getYs()))
   const svg = el.querySelector('svg')
-  svg?.setAttribute('viewBox', `0 ${VIEW_TOP} ${STAFF_WIDTH} ${VIEW_HEIGHT}`)
+  svg?.setAttribute('viewBox', `0 ${top} ${STAFF_WIDTH} ${bottom - top}`)
   svg?.setAttribute('width', '100%')
   svg?.removeAttribute('height')
   svg?.style.removeProperty('width') // VexFlow's resize() sets a fixed pixel size
