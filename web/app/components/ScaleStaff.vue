@@ -23,7 +23,8 @@ async function draw(): Promise<void> {
   if (props.staff.error) return
   try {
     const vf = await loadVexFlow()
-    if (el.value) drawStaff(vf, el.value, props.staff, props.clef)
+    if (!el.value) return // still showing a previous draw error; keep it
+    drawStaff(vf, el.value, props.staff, props.clef)
     drawError.value = null
   } catch (e) {
     drawError.value = `Couldn't draw this staff (${e instanceof Error ? e.message : String(e)})`

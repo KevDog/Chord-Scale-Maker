@@ -20,6 +20,6 @@ export function scaleChoices(chord: string): ScaleChoices {
   } catch {
     // unparseable chord: no suggestions, the picker is still available
   }
-  const def = options.find((o) => o.default) ?? null
+  const def = options.find((o) => o.default) ?? options[0] ?? null // same fallback as engine defaultScale
   return { known: options.length > 0, defaultScale: def?.scale ?? null, alternates: options.filter((o) => o !== def) }
 }

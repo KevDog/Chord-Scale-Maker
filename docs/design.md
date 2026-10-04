@@ -139,10 +139,11 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - Grid shows each `ChartLine` as a row: data rows are editable cells, `@copy` is
   a compact directive row, comments are collapsed. Expanded copies are shown
   read-only in the preview, not the grid.
-- Cell validation: values may not contain `|` or line breaks, or start with `#`, `@`, `title:` or `subtitle:`. Otherwise the serialized text would re-parse as a different line.
-- Chord cell: free text with validation. Scale cell: dropdown of the chord
-  quality's options (with notes) plus "Other…" → `ScalePicker` (root + any of
-  the 23 scales). Unknown quality → cell is flagged and shows `ScalePicker`.
+- Cell validation (`cellError`): values may not contain `|` or line breaks, start or end with spaces, or start with `#`, `@`, `title:` or `subtitle:`. Otherwise the serialized text would re-parse as a different line. A rejected value stays visible and flagged in its cell (`GridCell`), and the doc keeps the last good value.
+- Chord cell: free text with validation. Scale cell (`ScaleCell`): a dropdown of
+  "Default · …", the quality's alternates (with notes), and "Other…", which opens an inline
+  picker (root + any of the 23 scales). Unknown quality → amber border and "Choose a scale…",
+  with "Other…" still available.
 
 ## 5. Rendering
 
@@ -168,7 +169,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 ## 6. Styling
 
 - Tailwind CSS v4 through `@tailwindcss/vite` in `nuxt.config.ts`. Styles live in utility classes on components, with a single `app/assets/css/main.css` for `@import "tailwindcss"` and theme tokens.
-- Palette: cool slate neutrals with a teal accent (`--color-accent`: teal-600, teal-400 in dark mode) and sky focus rings. The look is clean and minimal.
+- Palette: cool slate neutrals with a teal accent (`--color-accent`: teal-700 for AA contrast, teal-400 in dark mode) and sky focus rings (sky-600, sky-400 in dark mode). The look is clean and minimal.
 - Dark mode is a `.dark` class on `<html>`, toggled in the header. The default is light, and the choice is saved per browser. `public/theme-init.js` applies it before first paint; it is a file, not an inline script, so the CSP needs no `unsafe-inline` for scripts. Print is always light.
 - Tailwind generates its CSS at build time and serves it as a static file, so the CSP stays the same.
 - The print layout uses Tailwind's `print:` variant (`print:hidden`, `print:break-after-page`) plus a small `@page` rule in `main.css`.
@@ -183,7 +184,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 ## 7. Library
 
-- `import.meta.glob('../../charts/*.txt', { query: '?raw', eager: true })` →
+- `import.meta.glob('../../../charts/*.txt', { query: '?raw', eager: true })` in `app/utils/library.ts` →
   `{ slug, title, subtitle, text }[]` at build time. The same parser runs, and
   the build fails if any library chart has errors (via a test).
 - Title search: case- and accent-insensitive substring filter, client-side.
