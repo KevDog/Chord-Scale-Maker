@@ -1,0 +1,20 @@
+title: Bb Jazz Blues
+subtitle: 12-Bar Blues with ii–V Turnarounds
+
+# section | bar | chord | scale
+A | 1  | Bb7   | Bb Mixolydian
+A | 2  | Eb7   | Eb Mixolydian
+A | 3  | Bb7   | Bb Mixolydian
+A | 4  | Fm7   | F Dorian
+A | 4  | Bb7   | Bb Mixolydian
+A | 5  | Eb7   | Eb Mixolydian
+A | 6  | Edim7 | E Whole-Half
+A | 7  | Bb7   | Bb Mixolydian
+A | 8  | Dm7   | D Dorian
+A | 8  | G7b9  | G Half-Whole
+A | 9  | Cm7   | C Dorian
+A | 10 | F7    | F Mixolydian
+A | 11 | Bb7   | Bb Mixolydian
+A | 11 | G7b9  | G Half-Whole
+A | 12 | Cm7   | C Dorian
+A | 12 | F7    | F Mixolydian
