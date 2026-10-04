@@ -3,12 +3,7 @@
     <div class="grid grid-cols-2 gap-2">
       <label v-for="key in META_KEYS" :key="key" class="text-sm">
         <span class="mb-1 block capitalize text-slate-500 dark:text-slate-400">{{ key }}</span>
-        <input
-          :value="meta[key]"
-          :class="[field, 'w-full', errors[`meta:${key}`] && invalid]"
-          :title="errors[`meta:${key}`]"
-          @input="onMeta(key, ($event.target as HTMLInputElement).value)"
-        >
+        <GridCell :value="meta[key]" :field="`${field} w-full`" :max-length="LIMITS.maxMeta" @update="(v) => emitDoc(setMeta(doc, key, v))" />
       </label>
     </div>
 
@@ -26,13 +21,12 @@
         <template v-for="(line, i) in doc.lines" :key="i">
           <tr v-if="line.kind === 'row'">
             <td v-for="f in TEXT_FIELDS" :key="f" class="pr-1">
-              <input
+              <GridCell
                 :value="line[f]"
-                :aria-label="`${f} for row ${rowNumber[i]}`"
-                :class="[field, 'w-full', errors[`${i}:${f}`] && invalid]"
-                :title="errors[`${i}:${f}`]"
-                @input="onCell(i, f, ($event.target as HTMLInputElement).value)"
-              >
+                :label="`${f} for row ${rowNumber[i]}`"
+                :field="`${field} w-full`"
+                @update="(v) => emitDoc(setRowField(doc, i, f, v))"
+              />
             </td>
             <td class="pr-1">
               <ScaleCell :chord="line.chord" :scale="line.scale" :field="`${field} w-full`" @update="(s) => emitDoc(setRowField(doc, i, 'scale', s))" />
@@ -66,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { type ChartDoc, type MetaKey, type RowField, cellError, chartMeta, insertRowAfter, LIMITS, removeLine, setMeta, setRowField } from '~~/engine'
+import { type ChartDoc, type MetaKey, type RowField, chartMeta, insertRowAfter, LIMITS, removeLine, setMeta, setRowField } from '~~/engine'
 
 const props = defineProps<{ doc: ChartDoc }>()
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc] }>()
@@ -74,7 +68,6 @@ const emit = defineEmits<{ 'update:doc': [doc: ChartDoc] }>()
 const META_KEYS: readonly MetaKey[] = ['title', 'subtitle']
 const TEXT_FIELDS: readonly Exclude<RowField, 'scale'>[] = ['section', 'bar', 'chord']
 const field = 'rounded border border-slate-300 bg-white px-2 py-1 dark:border-slate-700 dark:bg-slate-900'
-const invalid = 'border-rose-500 dark:border-rose-500'
 const iconButton = 'h-7 w-7 rounded text-slate-500 hover:bg-slate-100 hover:text-accent dark:hover:bg-slate-800'
 
 const meta = computed(() => chartMeta(props.doc))
@@ -83,25 +76,5 @@ const rowNumber = computed(() => {
   let n = 0
   return props.doc.lines.map((l) => (l.kind === 'row' ? ++n : 0))
 })
-/** cell key -> why the typed value was not applied */
-const errors = ref<Readonly<Record<string, string>>>({})
-
 const emitDoc = (doc: ChartDoc): void => emit('update:doc', doc)
-
-/** only values that survive serialize -> parse are applied; others stay in the input, flagged */
-function guarded(key: string, value: string, maxLength: number, apply: () => ChartDoc): void {
-  const error = cellError(value, maxLength)
-  if (error) {
-    errors.value = { ...errors.value, [key]: error }
-    return
-  }
-  const { [key]: _cleared, ...rest } = errors.value
-  errors.value = rest
-  emitDoc(apply())
-}
-
-const onCell = (i: number, f: RowField, value: string): void =>
-  guarded(`${i}:${f}`, value, LIMITS.maxCell, () => setRowField(props.doc, i, f, value))
-const onMeta = (key: MetaKey, value: string): void =>
-  guarded(`meta:${key}`, value, LIMITS.maxMeta, () => setMeta(props.doc, key, value))
 </script>

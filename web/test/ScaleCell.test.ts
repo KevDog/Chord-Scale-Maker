@@ -30,7 +30,22 @@ describe('ScaleCell', () => {
     expect(w.find('option').text()).toBe('Choose a scale…')
     await w.find('select').setValue('__other')
     await w.find('[aria-label="Scale name"]').setValue('Altered')
-    await w.find('button').trigger('click')
+    await w.find('[aria-label="Set scale"]').trigger('click')
     expect(w.emitted('update')).toEqual([['C Altered']])
+  })
+
+  it('starts the picker on a playable spelling of the chord root, and cancels with Escape', async () => {
+    const w = await mount('Cb7#5#9x')
+    await w.find('select').setValue('__other')
+    expect((w.find('[aria-label="Scale root"]').element as HTMLSelectElement).value).toBe('B')
+    await w.find('[aria-label="Scale root"]').trigger('keydown', { key: 'Escape' })
+    expect(w.find('[aria-label="Scale root"]').exists()).toBe(false)
+    expect(w.emitted('update')).toBeUndefined()
+  })
+
+  it('treats a typed scale equal to the default as the default', async () => {
+    const w = await mount('Cm7', 'C Dorian')
+    expect((w.find('select').element as HTMLSelectElement).value).toBe('')
+    expect(w.findAll('option').filter((o) => o.text().includes('C Dorian'))).toHaveLength(1)
   })
 })

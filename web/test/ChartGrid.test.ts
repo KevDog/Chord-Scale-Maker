@@ -21,12 +21,26 @@ describe('ChartGrid', () => {
     expect(lastDoc(w)?.lines[1]).toMatchObject({ kind: 'row', chord: 'Dm7' })
   })
 
-  it('keeps invalid values out of the doc and explains why', async () => {
+  it('keeps invalid values out of the doc but leaves them visible to fix', async () => {
     const w = await mountSuspended(ChartGrid, { props: { doc } })
     const input = w.find('[aria-label="chord for row 1"]')
     await input.setValue('C|7')
     expect(w.emitted('update:doc')).toBeUndefined()
     expect(input.attributes('title')).toMatch(/\|/)
+    expect(input.attributes('aria-invalid')).toBe('true')
+    expect((input.element as HTMLInputElement).value).toBe('C|7') // not snapped back
+    await input.setValue('C7')
+    expect(input.attributes('aria-invalid')).toBeUndefined()
+    expect(lastDoc(w)?.lines[1]).toMatchObject({ chord: 'C7' })
+  })
+
+  it('drops a stale error when the row changes underneath it', async () => {
+    const w = await mountSuspended(ChartGrid, { props: { doc } })
+    await w.find('[aria-label="chord for row 1"]').setValue('C|7')
+    await w.setProps({ doc: parseChart('title: T\nA | 1 | Gm7\n').value })
+    const input = w.find('[aria-label="chord for row 1"]')
+    expect(input.attributes('aria-invalid')).toBeUndefined()
+    expect((input.element as HTMLInputElement).value).toBe('Gm7')
   })
 
   it('edits the title and adds rows', async () => {
