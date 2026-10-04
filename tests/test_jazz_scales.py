@@ -99,3 +99,10 @@ def test_every_json_scale_is_known():
         for o in opts:
             j.parse_scale("C " + o["scale"])
         assert sum(1 for o in opts if o.get("default")) == 1, quality
+
+
+def test_chart_rows_may_omit_scale(tmp_path):
+    f = tmp_path / "t.txt"
+    f.write_text("A | 1 | Cm7\nA | 2 | F7 |\nA | 3 | Gm | G Aeolian\n")
+    _, _, rows = j.read_chart(f)
+    assert [r[3] for r in rows] == ["C Dorian", "F Mixolydian", "G Aeolian"]

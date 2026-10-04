@@ -371,8 +371,15 @@ def read_chart(path):
                 sys.exit(f"line {n}: use  @copy SRC DST BAR_OFFSET")
         else:
             cells = [c.strip() for c in line.split("|")]
+            if len(cells) == 3:
+                cells.append("")
             if len(cells) != 4:
-                sys.exit(f"line {n}: expected  section | bar | chord | scale")
+                sys.exit(f"line {n}: expected  section | bar | chord [| scale]")
+            if not cells[3]:
+                try:
+                    cells[3] = default_scale(cells[2])
+                except ValueError as e:
+                    sys.exit(f"line {n}: {e}")
             rows.append(tuple(cells))
     if not rows:
         sys.exit("chart has no rows")

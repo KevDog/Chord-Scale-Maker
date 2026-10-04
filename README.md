@@ -43,6 +43,7 @@ A1 | 3 | E7    | E Mixolydian
 | Element | Meaning |
 | --- | --- |
 | `section \| bar \| chord \| scale` | One row per chord. Two chords in a bar are two rows with the same bar number. |
+| `section \| bar \| chord` | Scale omitted: the chord quality's default from `chord_scales.json` is used (e.g. `Cm7` → `C Dorian`). |
 | `@copy SRC DST OFFSET` | Repeat section `SRC` as `DST`, adding `OFFSET` to each bar number. |
 | `title:`, `subtitle:` | Printed at the top of each page. |
 | `#` | Comment line. |
