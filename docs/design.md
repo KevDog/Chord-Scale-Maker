@@ -215,24 +215,29 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 The site is static with no server code, so most of the attack surface is gone. Remaining measures:
 
-- **Edge:** Vercel's automatic DDoS mitigation plus a Firewall rate-limit
-  rule per IP on `/*` (e.g. 300 req/min) to stop scraping and floods.
-- **Headers** (`vercel.json`): CSP `default-src 'self'; script-src 'self';
-  style-src 'self' 'unsafe-inline'; img-src 'self' data:; object-src 'none';
-  base-uri 'none'; frame-ancestors 'none'`, HSTS, `X-Content-Type-Options:
-  nosniff`, `Referrer-Policy: strict-origin-when-cross-origin`,
-  `Permissions-Policy` denying all.
+- **Edge:** Vercel's automatic DDoS mitigation, plus a Firewall rate-limit rule per IP
+  (see the README's deploy notes for its current settings).
+- **Content-Security-Policy** (`web/build/csp.ts`, run by a Nitro `prerender:generate` hook):
+  each prerendered page gets a `<meta http-equiv="Content-Security-Policy">` as the first
+  element of `<head>`:
+  `default-src 'self'; script-src 'self' <sha256 of each inline script>; style-src 'self' 'unsafe-inline';
+  img-src 'self' data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none';
+  form-action 'none'; upgrade-insecure-requests`.
+  - Nuxt's two inline scripts, the import map and the runtime config, change per build, so they are hashed at build time. There is no `'unsafe-inline'` for scripts.
+  - `style-src` allows inline styles, because Vue and VexFlow set style attributes.
+  - The E2E tests fail on any CSP violation.
+- **Headers** (`routeRules` in `nuxt.config.ts`, which Nitro writes into Vercel's build output):
+  HSTS (2 years, subdomains), `X-Content-Type-Options: nosniff`,
+  `Referrer-Policy: strict-origin-when-cross-origin`, a `Permissions-Policy` denying camera,
+  microphone, geolocation, payment and USB, `X-Frame-Options: DENY`, and
+  `Content-Security-Policy: frame-ancestors 'none'`, which `<meta>` can't express.
 - **Input:** caps in `limits.ts`: 20,000 chars of text, 500 rows, 40 chars per
   cell, `@copy` expansion ≤ 1,000 rows. These are enforced in the parser before
   any work runs.
-- **CSP and Nuxt's inline scripts:** the static HTML contains Nuxt's inline
-  `window.__NUXT__` config script and an inline import map, so `script-src 'self'` alone
-  would block hydration. Phase 4 must allow them by hash, generated at build time (for example
-  with `nuxt-security`'s SSG hashes), or remove them via Nuxt options. Don't fall back to `'unsafe-inline'`.
 - **XSS:** no `v-html` anywhere (lint rule `vue/no-v-html: error`). Chart text
   is only ever rendered as text nodes or VexFlow-escaped SVG text.
-- **Supply chain:** lockfile committed, exact versions, Dependabot, `npm audit`
-  in CI, minimal deps (nuxt, vexflow, tailwindcss + @tailwindcss/vite; dev: vitest, @nuxt/test-utils,
+- **Supply chain:** lockfile committed, exact versions, and CI actions pinned to commit SHAs.
+  Dependabot updates npm (grouped minor/patch) and the Actions weekly. `npm audit --omit=dev` gates CI, minimal deps (nuxt, vexflow, tailwindcss + @tailwindcss/vite; dev: vitest, @nuxt/test-utils,
   playwright, eslint).
 - If an API route is ever added: Zod validation, body-size cap, and its own
   Firewall rate-limit rule.
@@ -252,13 +257,22 @@ The site is static with no server code, so most of the attack surface is gone. R
 - **App (`web/test/`):** `@nuxt/test-utils` (Nuxt runtime, happy-dom) + Vue Test Utils:
   `useChartEditor` sync and debounce, library build/search, scale choices, `ChartGrid`
   edits and validation, `ScaleCell` dropdown and picker, and `ScaleSheet` pagination with
-  `ScaleStaff` stubbed. VexFlow drawing needs a real browser, so it is covered by the phase 4 E2E tests.
+  `ScaleStaff` stubbed. VexFlow drawing needs a real browser, so it is covered by the E2E tests.
 - **Local preview:** `make dev` (live reload) and `make preview` (the production static
   build, served locally).
-- **E2E (Playwright, smoke):** library search → open → preview staves count →
-  print media emulation shows N staves/page.
+- **E2E (`web/e2e/`, Playwright + Chromium, against the production static build):**
+  - library search and open, and the staff count
+  - grid ⇄ text sync, rejected cells, and the scale prompt and picker
+  - the mode toggle, the draft, and New chart
+  - transposition and the bass clef, and that the choices persist
+  - dark mode
+  - print pagination of 8 letter pages, including the tallest staves
+  - the CSP meta on every page
+
+  Every test fails on a page error, a console error or a CSP violation. Run with `make e2e`.
 - **CI (GitHub Actions):** pytest, fixture freshness, lint, typecheck (`nuxt typecheck`
-  + engine tsconfig), vitest, `nuxt generate`, and `npm audit --omit=dev` (gating).
+  plus the engine and e2e tsconfigs), vitest, `nuxt generate`, `npm audit --omit=dev` (gating),
+  and an e2e job. The Playwright report is uploaded when it fails.
   A full `npm audit` is reported but does not block: build-tooling advisories don't ship.
   `vue` and `vexflow` are the only `dependencies`; everything else is build-time `devDependencies`.
   Vercel's Git integration builds a preview deploy per PR.
@@ -269,7 +283,7 @@ The site is static with no server code, so most of the attack surface is gone. R
 2. **App:** library, editor (text ⇄ grid), quality defaults and alternates, scale
    prompt, live preview, print. Concert pitch only.
 3. **Transposition:** instrument picker, clef, start note.
-4. **Hardening/deploy:** headers, Firewall rules, Playwright, Vercel project, domain later.
+4. **Hardening:** CSP and security headers, the Firewall rate limit, Playwright E2E in CI, SHA-pinned actions, and Dependabot.
 
 ## 12. Decisions
 

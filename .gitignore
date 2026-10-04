@@ -11,3 +11,6 @@ web/.nuxt/
 web/.output/
 web/.data/
 web/dist
+web/.vercel/
+web/test-results/
+web/playwright-report/
