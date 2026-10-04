@@ -38,7 +38,7 @@ Chart format (plain text):
 Chords: Cm7, Bbm7, Am7b5, D7#5, EbMaj7, D7/F#, C9 ... (m = minor, shown as -)
 Scales: "<root> <name>", e.g. "Bb Dorian", "D Half-Whole", "G Altered".
 """
-import argparse, math, re, shutil, subprocess, sys
+import argparse, json, math, re, shutil, subprocess, sys
 from pathlib import Path
 
 LETTERS = "CDEFGAB"
@@ -200,6 +200,41 @@ def parse_scale(scale_text):
     return li, racc, key
 
 
+# --- chord qualities -> default/alternate scales (chord_scales.json) -------
+CHORD_RE = r"([A-G])([b#♭♯]?)(.*?)(?:/([A-G])([b#♭♯]?))?"
+_qdata = json.loads(Path(__file__).with_name("chord_scales.json").read_text(encoding="utf-8"))
+QUALITIES = _qdata["qualities"]
+QUALITY_LOOKUP = {q: q for q in QUALITIES}
+for _q, _names in _qdata["quality_aliases"].items():
+    QUALITY_LOOKUP.update({n: _q for n in _names})
+
+
+def scale_options(chord):
+    """-> [{'scale': 'Eb Major Pentatonic', 'note': '...', 'default': bool}] for a chord symbol"""
+    m = re.fullmatch(CHORD_RE, chord.strip())
+    if not m:
+        raise ValueError(f"cannot parse chord {chord!r}")
+    quality = QUALITY_LOOKUP.get(m.group(3))
+    if quality is None:
+        raise ValueError(f"unknown chord quality {m.group(3)!r} in {chord!r}; give a scale")
+    li, acc = parse_root(m.group(1) + m.group(2))
+    out = []
+    for opt in QUALITIES[quality]:
+        key = norm(opt["scale"])
+        key = ALIASES.get(key, key)
+        l, a, _ = spell_from(li, acc, opt["root"])[0]
+        if abs(a) > 1:
+            l, a = simplify_root(l, a, key)
+        out.append({"scale": f"{root_name(l, a)} {opt['scale']}",
+                    "note": opt.get("note", ""), "default": bool(opt.get("default"))})
+    return out
+
+
+def default_scale(chord):
+    opts = scale_options(chord)
+    return next((o for o in opts if o["default"]), opts[0])["scale"]
+
+
 def spell_scale(li, racc, key):
     notes = spell_from(li, racc, SCALES[key][0])
     if any(abs(n[1]) > 2 for n in notes):
@@ -261,7 +296,7 @@ class Part:
         return r"\concat { " + " ".join(parts) + " }"
 
     def chord_markup(self, txt, scale_text=None):
-        m = re.fullmatch(r"([A-G])([b#\u266d\u266f]?)(.*?)(?:/([A-G])([b#\u266d\u266f]?))?", txt.strip())
+        m = re.fullmatch(CHORD_RE, txt.strip())
         if not m:
             raise ValueError(f"cannot parse chord {txt!r}")
         root, racc, rest, bass, bacc = m.groups()
