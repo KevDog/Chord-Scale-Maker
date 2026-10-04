@@ -38,6 +38,16 @@ describe('UiField and controls', () => {
     expect(input.attributes('aria-describedby')?.split(' ')).toContain(w.find('[data-slot=error]').attributes('id'))
   })
 
+  it("keeps the caller's aria-describedby alongside the field's", async () => {
+    const w = await mountSuspended(UiSelect, { attrs: { 'aria-describedby': 'help' } })
+    expect(w.find('select').attributes('aria-describedby')).toBe('help')
+    const f = await mountSuspended(defineComponent({
+      components: { UiField, UiDescription, UiInput },
+      template: '<UiField><UiDescription>d</UiDescription><UiInput aria-describedby="help" /></UiField>',
+    }))
+    expect(f.find('input').attributes('aria-describedby')).toBe(`${f.find('[data-slot=description]').attributes('id')} help`)
+  })
+
   it('disables the control from the field', async () => {
     const w = await mountSuspended(Form, { props: { disabled: true } })
     expect(w.find('input').attributes('disabled')).toBeDefined()

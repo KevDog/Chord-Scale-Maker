@@ -16,9 +16,12 @@ export type FieldContext = Readonly<{
 export const FIELD: InjectionKey<FieldContext> = Symbol('field')
 
 /** aria-describedby for a control inside a field: its description and error, if present */
-export function describedBy(field: FieldContext | undefined): string | undefined {
-  if (!field) return undefined
-  const ids = [field.descriptions.value > 0 && field.descriptionId, field.errors.value > 0 && field.errorId].filter(Boolean)
+export function describedBy(field: FieldContext | undefined, own?: unknown): string | undefined {
+  const ids = [
+    field && field.descriptions.value > 0 && field.descriptionId,
+    field && field.errors.value > 0 && field.errorId,
+    typeof own === 'string' && own,
+  ].filter(Boolean)
   return ids.length ? ids.join(' ') : undefined
 }
 

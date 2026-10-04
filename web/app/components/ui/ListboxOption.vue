@@ -34,7 +34,7 @@ const OPTION = [
   // Typography
   'text-base/6 text-zinc-950 sm:text-sm/6 dark:text-white forced-colors:text-[CanvasText]',
   // Focus
-  'outline-hidden data-focus:bg-blue-500 data-focus:text-white',
+  'outline-hidden data-focus:bg-blue-600 data-focus:text-white',
   // Forced colors mode
   'forced-color-adjust-none forced-colors:data-focus:bg-[Highlight] forced-colors:data-focus:text-[HighlightText]',
   // Disabled

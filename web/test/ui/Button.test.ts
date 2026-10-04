@@ -14,7 +14,7 @@ describe('UiButton', () => {
 
   it('takes a colour, or the outline / plain styles', async () => {
     const teal = await mountSuspended(UiButton, { props: { color: 'teal' }, slots: { default: 'Go' } })
-    expect(teal.find('button').classes()).toContain('[--btn-bg:var(--color-teal-600)]')
+    expect(teal.find('button').classes()).toContain('[--btn-bg:var(--color-teal-700)]')
     const outline = await mountSuspended(UiButton, { props: { outline: true }, slots: { default: 'Go' } })
     expect(outline.find('button').classes()).toContain('border-zinc-950/10')
     expect(outline.find('button').classes()).not.toContain('[--btn-bg:var(--color-zinc-900)]')

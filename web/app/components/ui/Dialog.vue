@@ -1,5 +1,5 @@
 <template>
-  <HTransitionRoot :show="open" as="template">
+  <HTransitionRoot :show="open" as="template" @after-leave="emit('closed')">
     <HDialog class="relative z-50" @close="emit('close')">
       <HTransitionChild
         as="template"
@@ -44,7 +44,8 @@ import { Dialog as HDialog, DialogPanel as HDialogPanel, TransitionChild as HTra
 
 /** Catalyst Dialog on @headlessui/vue: focus is trapped while open; Escape or the backdrop emits close */
 withDefaults(defineProps<{ open: boolean; size?: keyof typeof SIZES }>(), { size: 'lg' })
-const emit = defineEmits<{ close: [] }>()
+/** `close` asks to close; `closed` fires once the leave transition is done */
+const emit = defineEmits<{ close: []; closed: [] }>()
 </script>
 
 <script lang="ts">

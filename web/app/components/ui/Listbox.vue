@@ -90,7 +90,7 @@ const OPTIONS = [
   // Positioning (Headless UI Vue has no anchor): below the button, at least its width
   'absolute z-20 mt-1 max-h-80 min-w-full',
   // Base styles
-  'isolate w-max scroll-py-1 rounded-xl p-1 select-none',
+  'isolate w-max max-w-[calc(100vw-3rem)] scroll-py-1 rounded-xl p-1 select-none',
   // Invisible border that is only visible in `forced-colors` mode for accessibility purposes
   'outline outline-transparent focus:outline-hidden',
   // Handle scrolling when menu won't fit in viewport

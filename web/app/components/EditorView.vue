@@ -54,7 +54,7 @@
               <label
                 v-for="m in modes"
                 :key="m.value"
-                class="relative -ml-px inline-flex cursor-default items-center bg-white px-3 py-2 text-sm/5 font-semibold text-zinc-950 ring-1 ring-zinc-950/10 ring-inset first:ml-0 first:rounded-l-lg last:rounded-r-lg hover:bg-zinc-50 has-checked:z-10 has-checked:bg-teal-600 has-checked:text-white has-checked:ring-teal-700 has-focus-visible:z-20 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-blue-500 dark:bg-white/5 dark:text-white dark:ring-white/10 dark:hover:bg-white/10 dark:has-checked:bg-teal-500 dark:has-checked:text-zinc-950"
+                class="relative -ml-px inline-flex cursor-default items-center bg-white px-3 py-2 text-sm/5 font-semibold text-zinc-950 ring-1 ring-zinc-950/10 ring-inset first:ml-0 first:rounded-l-lg last:rounded-r-lg hover:bg-zinc-50 has-checked:z-10 has-checked:bg-teal-700 has-checked:text-white has-checked:ring-teal-800 has-focus-visible:z-20 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-blue-500 dark:bg-white/5 dark:text-white dark:ring-white/10 dark:hover:bg-white/10 dark:has-checked:bg-teal-500 dark:has-checked:text-zinc-950"
               >
                 <input v-model="mode" type="radio" name="mode" :value="m.value" class="sr-only">{{ m.label }}
               </label>
@@ -68,7 +68,7 @@
         </UiText>
       </div>
 
-      <UiText v-if="editor.fatal.value" class="text-red-600!">Preview paused: the chart is over a size limit.</UiText>
+      <UiText v-if="editor.fatal.value" class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
       <ScaleSheet
         v-else
         :rows="editor.rows.value"

@@ -1,19 +1,21 @@
 <template>
-  <UiSelect
-    :key="resetKey"
-    :model-value="selectValue"
-    :aria-label="`Scale for ${chord || 'this row'}`"
-    :class="['sm:py-1 sm:text-sm/5', needsScale && 'border-amber-500! dark:border-amber-500!']"
-    @update:model-value="onSelect"
-  >
-    <option v-if="choices.defaultScale" value="">Default · {{ choices.defaultScale }}</option>
-    <option v-else value="" disabled>Choose a scale…</option>
-    <option v-for="o in choices.alternates" :key="o.scale" :value="o.scale">{{ o.scale }}{{ o.note ? ` (${o.note})` : '' }}</option>
-    <option v-if="custom" :value="scale">{{ scale }}</option>
-    <option value="__other">Other…</option>
-  </UiSelect>
+  <span ref="cell" class="contents">
+    <UiSelect
+      :key="resetKey"
+      :model-value="selectValue"
+      :aria-label="`Scale for ${chord || 'this row'}`"
+      :class="['sm:py-1 sm:text-sm/5', needsScale && 'border-amber-500! dark:border-amber-500!']"
+      @update:model-value="onSelect"
+    >
+      <option v-if="choices.defaultScale" value="">Default · {{ choices.defaultScale }}</option>
+      <option v-else value="" disabled>Choose a scale…</option>
+      <option v-for="o in choices.alternates" :key="o.scale" :value="o.scale">{{ o.scale }}{{ o.note ? ` (${o.note})` : '' }}</option>
+      <option v-if="custom" :value="scale">{{ scale }}</option>
+      <option value="__other">Other…</option>
+    </UiSelect>
+  </span>
 
-  <UiDialog :open="picking" size="md" @close="closePicker">
+  <UiDialog :open="picking" size="md" @close="closePicker" @closed="refocus">
     <UiDialogTitle>Choose a scale</UiDialogTitle>
     <UiDialogDescription>For {{ chord || 'this row' }}: any root and any of the {{ PICKER_SCALES.length }} scales.</UiDialogDescription>
     <UiDialogBody>
@@ -58,6 +60,7 @@ const pickRoot = ref<string>('C')
 const pickName = ref<string>(PICKER_SCALES[0] ?? 'Ionian')
 /** re-creates the select after "Other…", which is never a value of its own */
 const resetKey = ref(0)
+const cell = ref<HTMLElement>()
 
 /** the chord's root as one of the picker's spellings (Cb -> B, E# -> F), else C */
 function pickerRoot(chord: string): string {
@@ -72,6 +75,11 @@ function pickerRoot(chord: string): string {
 
 function closePicker(): void {
   picking.value = false
+}
+
+/** the select was re-created, so Headless UI can't return focus to it; this runs after its own restore */
+function refocus(): void {
+  setTimeout(() => cell.value?.querySelector('select')?.focus())
 }
 
 function onSelect(value: string): void {

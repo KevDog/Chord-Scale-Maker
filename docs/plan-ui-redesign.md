@@ -1,6 +1,6 @@
 # UI redesign with Catalyst and Application UI: plan
 
-Status: **decided.** The repo is now private, and every other recommendation in section 1 is accepted: kits git-ignored under `design/tailwind-plus/`, Catalyst ported to Vue, StackedLayout, zinc + teal, and the scale picker in a Dialog. After they're made, this becomes a task-by-task plan with
+Status: **implemented** on branch `ui-redesign`. The repo is now private, and every other recommendation in section 1 is accepted: kits git-ignored under `design/tailwind-plus/`, Catalyst ported to Vue, StackedLayout, zinc + teal, and the scale picker in a Dialog. After they're made, this becomes a task-by-task plan with
 verified code, as in phases 1–4, built in a scratch copy first and then executed by subagents.
 
 ## 0. What's in `web/app/assets/`
@@ -14,9 +14,9 @@ Two facts shape the approach:
 
 1. **Catalyst's styling depends on Headless UI React v2's `data-*` state attributes** (`data-hover`, `data-focus`,
    `data-active`, `data-disabled`, `data-checked`, `data-open`). The latest Vue Headless UI (1.7.23) doesn't emit them.
-   A Vue port therefore keeps Catalyst's look (its Tailwind class strings, colour variables and sizing) but rewrites
-   the state selectors. They become `hover:`, `focus-visible:`, `active:`, `disabled:`, `aria-checked:`, and Headless
-   UI Vue slot props where a state isn't native. `motion` is only used by the navbar and sidebar's animated "current"
+   *As built:* rather than rewriting the selectors, a `v-interactive` directive sets `data-hover`, `data-focus` and
+   `data-active` on the element (skipping disabled ones), and Headless UI Vue slot props are mapped to `data-*`
+   attributes, so Catalyst's class strings are kept verbatim. `motion` is only used by the navbar and sidebar's animated "current"
    indicator; we drop the animation.
 2. **The kits now break the build.** Inside `web/app/` they're in scope for Nuxt's type-check (559 errors from the
    React and Vue blocks) and for ESLint (it crashes on them). They have to move out of `web/app/` before anything else.

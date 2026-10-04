@@ -43,10 +43,12 @@ web/                      # Nuxt app (Vercel root directory)
   app/
     pages/index.vue       # library + title search
     pages/editor.vue      # ?chart=<slug> | ?new=1 | this browser's draft
-    components/           # AppHeader, EditorView, ChartGrid, GridCell, ScaleCell, ChartText,
+    components/           # AppShell, EditorView, ChartGrid, GridCell, ScaleCell, ChartText,
                           # ScaleSheet, ScaleStaff, ChordSymbol, NoteName
+    components/ui/        # Catalyst ported to Vue (<UiButton>, <UiListbox>, <UiDialog>, …)
     composables/          # useChartEditor (editor state), useDraft, useTheme
-    utils/                # library (build-time charts), scaleChoices, vexflow (drawing)
+    utils/                # library (build-time charts), scaleChoices, vexflow (drawing),
+                          # catalyst/ (button and badge styles), field, table, interactive
     assets/css/main.css   # Tailwind, theme tokens, print rules
   public/theme-init.js    # applies the saved theme before first paint
   test/                   # app tests (@nuxt/test-utils, happy-dom)
@@ -177,8 +179,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 ## 6. Styling
 
 - Tailwind CSS v4 through `@tailwindcss/vite` in `nuxt.config.ts`. Styles live in utility classes on components, with a single `app/assets/css/main.css` for `@import "tailwindcss"` and theme tokens.
-- Palette: cool slate neutrals with a teal accent (`--color-accent`: teal-700 for AA contrast, teal-400 in dark mode) and sky focus rings (sky-600, sky-400 in dark mode). The look is clean and minimal.
-- Dark mode is a `.dark` class on `<html>`, toggled in the header. The default is light, and the choice is saved per browser. `public/theme-init.js` applies it before first paint; it is a file, not an inline script, so the CSP needs no `unsafe-inline` for scripts. Print is always light.
+- Palette: zinc neutrals (Catalyst's) with a teal accent (`--color-accent`: teal-700 for AA contrast, teal-400 in dark mode; `<UiButton color="teal">`) and sky focus rings (sky-600, sky-400 in dark mode).
+- Components: Tailwind Plus Catalyst, ported to Vue in `components/ui/` on `@headlessui/vue` and `@heroicons/vue`. Catalyst's class strings are kept verbatim; the `v-interactive` directive (`utils/interactive.ts`) sets the `data-hover`/`data-focus`/`data-active` attributes they rely on, which Headless UI Vue doesn't emit. Field/Label/Description wire ids through provide/inject (`utils/field.ts`). The licensed kits live git-ignored in `design/tailwind-plus/` and are never committed. A dev-only `/ui` page shows every component; it is removed from the production build.
+- Dark mode is a `.dark` class on `<html>`, toggled in the navbar. The default is light, and the choice is saved per browser. `public/theme-init.js` applies it before first paint; it is a file, not an inline script, so the CSP needs no `unsafe-inline` for scripts. Print is always light.
 - Tailwind generates its CSS at build time and serves it as a static file, so the CSP stays the same.
 - The print layout uses Tailwind's `print:` variant (`print:hidden`, `print:break-after-page`) plus a small `@page` rule in `main.css`.
 

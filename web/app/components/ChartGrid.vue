@@ -34,7 +34,7 @@
           <UiTableRow v-else-if="line.kind === 'copy'">
             <UiTableCell colspan="4" class="text-zinc-500 dark:text-zinc-400">
               <UiBadge color="sky" class="mr-2">@copy</UiBadge>repeat section <UiStrong>{{ line.src }}</UiStrong> as <UiStrong>{{ line.dst }}</UiStrong>, bars {{ line.offset >= 0 ? '+' : '' }}{{ line.offset }}
-              <span class="ml-1 text-zinc-400 dark:text-zinc-500">(edit in text)</span>
+              <span class="ml-1">(edit in text)</span>
             </UiTableCell>
             <UiTableCell class="px-1! py-1! text-right">
               <UiButton plain :aria-label="`Delete line ${i + 1}`" @click="emitDoc(removeLine(doc, i))"><TrashIcon data-slot="icon" /></UiButton>

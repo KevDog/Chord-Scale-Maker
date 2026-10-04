@@ -8,7 +8,7 @@
       :type="type"
       :disabled="isDisabled"
       :aria-invalid="invalid ? 'true' : undefined"
-      :aria-describedby="describedBy(field)"
+      :aria-describedby="describedBy(field, attrs['aria-describedby'])"
       :data-invalid="dataFlag(invalid)"
       :data-disabled="dataFlag(isDisabled)"
       :class="CONTROL"
