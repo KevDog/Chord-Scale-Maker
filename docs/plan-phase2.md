@@ -2678,7 +2678,7 @@ web/                      # Nuxt app (Vercel root directory)
   app/
     pages/index.vue       # library + title search
     pages/editor.vue      # ?chart=<slug> | ?new=1 | this browser's draft
-    components/           # AppHeader, EditorView, ChartGrid, ScaleCell, ChartText,
+    components/           # AppHeader, EditorView, ChartGrid, GridCell, ScaleCell, ChartText,
                           # ScaleSheet, ScaleStaff, ChordSymbol, NoteName
     composables/          # useChartEditor (editor state), useDraft, useTheme
     utils/                # library (build-time charts), scaleChoices, vexflow (drawing)
@@ -3095,7 +3095,7 @@ chart format and options.
 - [ ] **Step 4: Verify**
 
 Run: `make test && make lint`
-Expected: `12 passed`, then `Test Files 15 passed`, `Tests 75 passed`; lint clean.
+Expected: `12 passed`, then `Test Files 15 passed`, `Tests 78 passed`; lint clean.
 
 - [ ] **Step 5: Commit**
 
@@ -3104,6 +3104,15 @@ git add Makefile .github/workflows/ci.yml docs README.md CLAUDE.md && git commit
 ```
 
 ---
+
+## Review changes made during execution
+
+Reviews between tasks led to these changes. They are in the repo, and their tests are counted above:
+- **`sheet.ts`:** never throws on a bad start note or page size, and staff ids include the part.
+- **Styling:** the accent is teal-700 for AA contrast, and the focus ring is sky-600.
+- **Editor state:** typed text always wins over a grid edit made from a stale doc, and drafts over the size limit aren't saved.
+- **`GridCell.vue`:** a rejected value stays visible and flagged instead of snapping back.
+- **`ScaleCell`:** picker roots map to playable spellings, the picker gets focus and closes on Escape, and a typed default isn't listed twice.
 
 ## After the tasks (controller)
 
