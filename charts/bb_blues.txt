@@ -1,0 +1,16 @@
+title: Bb Blues
+subtitle: Basic 12-Bar Blues
+
+# section | bar | chord | scale
+A | 1  | Bb7 | Bb Mixolydian
+A | 2  | Eb7 | Eb Mixolydian
+A | 3  | Bb7 | Bb Mixolydian
+A | 4  | Bb7 | Bb Mixolydian
+A | 5  | Eb7 | Eb Mixolydian
+A | 6  | Eb7 | Eb Mixolydian
+A | 7  | Bb7 | Bb Mixolydian
+A | 8  | Bb7 | Bb Mixolydian
+A | 9  | F7  | F Mixolydian
+A | 10 | Eb7 | Eb Mixolydian
+A | 11 | Bb7 | Bb Mixolydian
+A | 12 | F7  | F Mixolydian

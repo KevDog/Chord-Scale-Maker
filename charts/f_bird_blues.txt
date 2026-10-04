@@ -1,0 +1,24 @@
+title: F Bird Blues
+subtitle: Blues for Alice Changes
+
+# section | bar | chord | scale
+A | 1  | FMaj7 | F Ionian
+A | 2  | Em7b5 | E Locrian
+A | 2  | A7b9  | A Phrygian Dominant
+A | 3  | Dm7   | D Dorian
+A | 3  | G7    | G Mixolydian
+A | 4  | Cm7   | C Dorian
+A | 4  | F7    | F Mixolydian
+A | 5  | Bb7   | Bb Mixolydian
+A | 6  | Bbm7  | Bb Dorian
+A | 6  | Eb7   | Eb Mixolydian
+A | 7  | Am7   | A Dorian
+A | 7  | D7    | D Mixolydian
+A | 8  | Abm7  | Ab Dorian
+A | 8  | Db7   | Db Mixolydian
+A | 9  | Gm7   | G Dorian
+A | 10 | C7    | C Mixolydian
+A | 11 | FMaj7 | F Ionian
+A | 11 | D7b9  | D Half-Whole
+A | 12 | Gm7   | G Dorian
+A | 12 | C7    | C Mixolydian

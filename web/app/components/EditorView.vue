@@ -6,8 +6,12 @@
         <UiHeading>{{ editor.meta.value.title || 'Untitled' }}</UiHeading>
         <UiText v-if="editor.meta.value.subtitle" class="mt-1">{{ editor.meta.value.subtitle }}</UiText>
       </div>
-      <UiButton color="teal" :disabled="editor.fatal.value" @click="print"><PrinterIcon data-slot="icon" />Print / Save PDF</UiButton>
+      <div class="flex flex-wrap gap-3 *:whitespace-nowrap">
+        <ChartTranspose v-if="!editor.fatal.value" :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
+        <UiButton color="teal" :disabled="editor.fatal.value" @click="print"><PrinterIcon data-slot="icon" />Print / Save PDF</UiButton>
+      </div>
     </div>
+    <UiText v-if="transposed" role="status" class="-mt-6 print:hidden">{{ transposed }}</UiText>
 
     <div class="grid gap-8 print:hidden lg:grid-cols-2">
       <section aria-labelledby="grid-heading" class="min-w-0">
@@ -86,7 +90,7 @@
 
 <script setup lang="ts">
 import { PrinterIcon } from '@heroicons/vue/16/solid'
-import { INSTRUMENTS, instrumentLabel, type ModeChoice, noteText, partFor } from '~~/engine'
+import { type ChartDoc, INSTRUMENTS, instrumentLabel, type ModeChoice, noteText, partFor } from '~~/engine'
 
 const props = defineProps<{ initialText: string }>()
 
@@ -96,6 +100,7 @@ const editor = useChartEditor(props.initialText)
 const prefs = usePreferences()
 const part = computed(() => partFor(prefs.instrument.value))
 const mode = ref<ModeChoice>('both')
+const transposed = ref('')
 const modes = computed((): readonly { value: ModeChoice; label: string }[] => [
   { value: 'both', label: 'Both' },
   { value: 'from', label: `From ${noteText(prefs.start.value)}` },
@@ -103,6 +108,12 @@ const modes = computed((): readonly { value: ModeChoice; label: string }[] => [
 ])
 
 watch(editor.text, (t) => saveDraft(t))
+
+/** the doc with anything typed in the last moment parsed in */
+function currentDoc(): ChartDoc {
+  editor.flush()
+  return editor.doc.value
+}
 
 function print(): void {
   editor.flush() // include anything typed in the last moment

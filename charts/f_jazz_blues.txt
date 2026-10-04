@@ -1,0 +1,20 @@
+title: F Jazz Blues
+subtitle: 12-Bar Blues with ii–V Turnarounds
+
+# section | bar | chord | scale
+A | 1  | F7    | F Mixolydian
+A | 2  | Bb7   | Bb Mixolydian
+A | 3  | F7    | F Mixolydian
+A | 4  | Cm7   | C Dorian
+A | 4  | F7    | F Mixolydian
+A | 5  | Bb7   | Bb Mixolydian
+A | 6  | Bdim7 | B Whole-Half
+A | 7  | F7    | F Mixolydian
+A | 8  | Am7   | A Dorian
+A | 8  | D7b9  | D Half-Whole
+A | 9  | Gm7   | G Dorian
+A | 10 | C7    | C Mixolydian
+A | 11 | F7    | F Mixolydian
+A | 11 | D7b9  | D Half-Whole
+A | 12 | Gm7   | G Dorian
+A | 12 | C7    | C Mixolydian
