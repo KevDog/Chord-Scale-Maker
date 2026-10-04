@@ -41,20 +41,24 @@ type Golden = {
 const repo = (path: string): string => readFileSync(new URL(`../../../${path}`, import.meta.url), 'utf8')
 const G = JSON.parse(repo('fixtures/golden.json')) as Golden
 
+/** engine domain errors are plain Errors (Python's ValueError); anything else is a bug and must fail */
+const isDomainError = (e: unknown): boolean => e instanceof Error && e.constructor === Error
+
 function attempt<T>(f: () => T): T | null {
   try {
     return f()
-  } catch {
-    return null
+  } catch (e) {
+    if (isDomainError(e)) return null
+    throw e
   }
 }
 
-/** compare each [label, want, got] and return readable mismatches */
+/** compare each [label, want, got]; return the first 20 readable mismatches plus a count */
 function mismatches(cases: Iterable<readonly [string, unknown, unknown]>): string[] {
   const bad: string[] = []
   for (const [label, want, got] of cases)
     if (!isDeepStrictEqual(want, got)) bad.push(`${label}\n  want ${JSON.stringify(want)}\n  got  ${JSON.stringify(got)}`)
-  return bad
+  return bad.length > 20 ? [...bad.slice(0, 20), `... and ${bad.length - 20} more`] : bad
 }
 
 function scaleCase(part: Part, text: string): ScaleCase {
@@ -68,12 +72,20 @@ function scaleCase(part: Part, text: string): ScaleCase {
         G.from_starts.map((s) => [s, scaleNotes(part, text, 'from', resolveStart(part.clef, s)).map(lilyNote)]),
       ),
     }
-  } catch {
-    return { error: true }
+  } catch (e) {
+    if (isDomainError(e)) return { error: true }
+    throw e
   }
 }
 
 describe('golden parity with jazz_scales.py', () => {
+  it('fixture has every section', () => {
+    expect(Object.keys(G.parts)).toHaveLength(5)
+    expect(Object.keys(G.scales)).toEqual(Object.keys(G.parts))
+    for (const section of [G.from_starts, G.chords, Object.keys(G.options), Object.keys(G.charts)])
+      expect(section.length).toBeGreaterThan(0)
+  })
+
   it('start notes', () => {
     const cases = Object.entries(G.starts).flatMap(([clef, starts]) =>
       Object.entries(starts).map(([s, want]) => [`${clef} ${s}`, want, resolveStart(clef as Clef, s)] as const),
