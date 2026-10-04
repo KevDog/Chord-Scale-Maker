@@ -57,6 +57,18 @@ describe('chart', () => {
     expect(parseChart(many).diagnostics.at(-1)?.message).toMatch(/more than 500 rows/)
   })
 
+  it('caps expanded rows even without @copy', () => {
+    const many = Array.from({ length: LIMITS.maxExpandedRows + 5 }, () => '|1|C').join('\n')
+    const { value: rows, diagnostics } = expandRows(parseChart(many).value)
+    expect(rows).toHaveLength(LIMITS.maxExpandedRows)
+    expect(diagnostics.map((d) => d.line)).toEqual([LIMITS.maxExpandedRows + 1])
+  })
+
+  it('caps @copy section names and offsets', () => {
+    const { diagnostics } = parseChart(`@copy A ${'B'.repeat(LIMITS.maxCell + 1)} 8\n@copy A B 12345\n@copy A B -8`)
+    expect(diagnostics.map((d) => d.line)).toEqual([1, 2])
+  })
+
   it('caps @copy expansion before it can grow exponentially', () => {
     const bomb = 'A | 1 | C\n' + '@copy A A 1\n'.repeat(1_000)
     const { value: rows, diagnostics } = expandRows(parseChart(bomb).value)

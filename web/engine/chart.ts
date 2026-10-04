@@ -15,6 +15,7 @@ export type Row = Readonly<{ section: string; bar: string; chord: string; scale:
 export type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 const INT_RE = /^[+-]?\d+$/
+const OFFSET_RE = /^[+-]?\d{1,4}$/ // bar offsets stay well inside safe integers
 
 function parseLine(line: string): ChartLine | string {
   if (!line) return { kind: 'blank' }
@@ -28,7 +29,9 @@ function parseLine(line: string): ChartLine | string {
   }
   if (low.startsWith('@copy')) {
     const parts = line.split(/\s+/)
-    if (parts.length !== 4 || !INT_RE.test(parts[3])) return 'use  @copy SRC DST BAR_OFFSET'
+    if (parts.length !== 4 || !OFFSET_RE.test(parts[3])) return 'use  @copy SRC DST BAR_OFFSET'
+    if (parts[1].length > LIMITS.maxCell || parts[2].length > LIMITS.maxCell)
+      return `section name longer than ${LIMITS.maxCell} characters`
     return { kind: 'copy', src: parts[1], dst: parts[2], offset: Number(parts[3]) }
   }
   const cells = line.split('|').map((c) => c.trim())
@@ -87,12 +90,19 @@ export function chartMeta(doc: ChartDoc): Readonly<{ title: string; subtitle: st
   return { title: meta('title', 'Untitled'), subtitle: meta('subtitle', '') }
 }
 
-/** chart rows in order with @copy applied (a copy repeats the rows seen so far) */
+/** chart rows in order with @copy applied (a copy repeats the rows seen so far); at most maxExpandedRows */
 export function expandRows(doc: ChartDoc): Parsed<readonly Row[]> {
   const diagnostics: Diagnostic[] = []
   const rows: Row[] = []
+  const tooMany = (line: number): Diagnostic => ({ line, message: `more than ${LIMITS.maxExpandedRows} rows after @copy` })
   for (const [i, l] of doc.lines.entries()) {
-    if (l.kind === 'row') rows.push({ section: l.section, bar: l.bar, chord: l.chord, scale: l.scale })
+    if (l.kind === 'row') {
+      if (rows.length >= LIMITS.maxExpandedRows) {
+        diagnostics.push(tooMany(i + 1))
+        break
+      }
+      rows.push({ section: l.section, bar: l.bar, chord: l.chord, scale: l.scale })
+    }
     if (l.kind !== 'copy') continue
     const src = rows.filter((r) => r.section === l.src)
     if (src.some((r) => !INT_RE.test(r.bar))) {
@@ -101,7 +111,7 @@ export function expandRows(doc: ChartDoc): Parsed<readonly Row[]> {
     }
     if (rows.length + src.length > LIMITS.maxExpandedRows) {
       // checked before growing: chained copies would otherwise double the rows each time
-      diagnostics.push({ line: i + 1, message: `more than ${LIMITS.maxExpandedRows} rows after @copy` })
+      diagnostics.push(tooMany(i + 1))
       break
     }
     rows.push(...src.map((r) => ({ ...r, section: l.dst, bar: String(Number(r.bar) + l.offset) })))
