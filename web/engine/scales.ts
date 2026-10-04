@@ -74,7 +74,7 @@ export function spellFrom(root: Spelled, formula: string): ScaleNote[] {
     .map((tok) => {
       const m = /^([b#]*)(\d+)$/.exec(tok)
       if (!m) throw new Error(`bad scale degree: ${JSON.stringify(tok)}`)
-      const idx = (Number(m[2]) - 1) % 7
+      const idx = mod(Number(m[2]) - 1, 7)
       const semis = NAT_PC[idx] + count(m[1], '#') - count(m[1], 'b')
       const letter = toLetter(root.letter + idx)
       return { letter, acc: accFor(mod(rootPc + semis, 12), letter), semis }
