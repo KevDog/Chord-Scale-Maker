@@ -78,6 +78,15 @@ export function noteText(text: string): string {
   }
 }
 
+/**
+ * page subtitle as the CLI builds it: "Subtitle – Tenor Sax (Bb) (Spelled from C)";
+ * just the heading when there is neither a subtitle nor an instrument label
+ */
+export function pageSubtitle(subtitle: string, instrument: string, heading: string): string {
+  const bits = [subtitle, instrument].filter(Boolean)
+  return bits.length ? `${bits.join(' – ')} (${heading})` : heading
+}
+
 /** split into pages of n (n is clamped to a whole number of at least 1) */
 function chunk<T>(xs: readonly T[], n: number): T[][] {
   const size = Math.max(1, Math.floor(n) || 1)

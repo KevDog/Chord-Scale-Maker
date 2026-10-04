@@ -1,4 +1,4 @@
-import { type Clef, type Transposition, CLEF_ROOT_LOW, CLEF_START, TRANSPOSITIONS } from './instruments'
+import { type Clef, type InstrumentName, type Transposition, CLEF_ROOT_LOW, CLEF_START, INSTRUMENTS, TRANSPOSITIONS } from './instruments'
 import { type Spelled, accFor, LETTERS, mod, NAT_PC, parseRoot, pcOf, toLetter } from './pitch'
 import { type ScaleKey, type ScaleNote, parseScale, SCALES, simplifyRoot, spellScale } from './scales'
 
@@ -10,6 +10,12 @@ export type WrittenScale = Readonly<{ root: Spelled; key: ScaleKey; notes: reado
 export type ScaleLabel = Readonly<{ root: Spelled; name: string }>
 
 export const CONCERT: Part = { clef: 'treble', trans: 'C' }
+
+/** the clef and transposition an instrument reads in */
+export const partFor = (name: InstrumentName): Part => {
+  const { clef, trans } = INSTRUMENTS[name]
+  return { clef, trans }
+}
 
 /** move a spelled note up by the transposition interval */
 export function transposeRoot(n: Spelled, trans: Transposition): Spelled {
