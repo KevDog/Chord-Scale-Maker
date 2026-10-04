@@ -1,6 +1,16 @@
+import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
+import type { Plugin } from 'vite'
 import { addCspMeta } from './build/csp'
 import { SECURITY_HEADERS } from './build/headers'
+
+/** dev: charts/ and chord_scales.json sit outside Vite's root, so it doesn't watch them by itself */
+const watchRepoData = (): Plugin => ({
+  name: 'watch-repo-data',
+  configureServer(server) {
+    server.watcher.add([fileURLToPath(new URL('../charts', import.meta.url)), fileURLToPath(new URL('../chord_scales.json', import.meta.url))])
+  },
+})
 
 // Fully static site (nuxt generate). Engine + rendering run in the browser; see docs/design.md.
 export default defineNuxtConfig({
@@ -22,6 +32,10 @@ export default defineNuxtConfig({
     public: {
       siteUrl: '', // NUXT_PUBLIC_SITE_URL, e.g. https://www.chordscalemaker.com
       issuesUrl: 'https://github.com/KevDog/Chord-Scale-Maker/issues/new',
+      // feature flags (useFeature): off by default; NUXT_PUBLIC_FEATURES_<NAME>=true turns one on
+      features: {
+        newChart: false, // blank charts and this browser's draft; library charts stay editable
+      },
     },
   },
   // '/_nuxt/**' too: Nitro emits a separate cache-header route for assets that ends Vercel's routing
@@ -42,7 +56,7 @@ export default defineNuxtConfig({
     },
   },
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [tailwindcss(), watchRepoData()],
     // the engine imports ../chord_scales.json and the library reads ../charts
     server: { fs: { allow: ['..'] } },
   },

@@ -122,10 +122,11 @@ make preview   # build the production static site and serve it locally
 make e2e       # browser tests (Playwright, Chromium) against the production build
 ```
 
-The library lists every chart in `charts/`; add a `.txt` file there and it appears on the next build.
+The library lists every chart in `charts/`; add a `.txt` file there and it appears on the next build (or at once in `make dev`).
 In the editor, pick an instrument to write the sheet for it (clef, key, chord symbols); the chart itself stays in concert pitch.
 To play a chart in another key, use **Transpose…**: it rewrites the chart's chords and scale roots in the new concert key
 (spelled by the same rules as `simplify_root`). The editor has this; the CLI doesn't.
+Unfinished features are behind flags (off by default): `NUXT_PUBLIC_FEATURES_NEW_CHART=true make dev` shows **New chart**.
 
 ## Tests
 

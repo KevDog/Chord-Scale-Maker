@@ -8,7 +8,7 @@
         <UiNavbarDivider class="max-lg:hidden" />
         <UiNavbarSection class="max-lg:hidden" aria-label="Main">
           <UiNavbarItem href="/" :current="route.path === '/'">Library</UiNavbarItem>
-          <UiNavbarItem href="/editor?new=1">New chart</UiNavbarItem>
+          <UiNavbarItem v-if="newChart" href="/editor?new=1">New chart</UiNavbarItem>
         </UiNavbarSection>
         <UiNavbarSpacer />
         <UiNavbarSection>
@@ -21,7 +21,7 @@
     </template>
     <template #sidebar>
       <UiNavbarItem href="/"><BookOpenIcon data-slot="icon" />Library</UiNavbarItem>
-      <UiNavbarItem href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiNavbarItem>
+      <UiNavbarItem v-if="newChart" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiNavbarItem>
     </template>
     <slot />
   </UiStackedLayout>
@@ -33,4 +33,5 @@ import { BookOpenIcon, MoonIcon, PlusIcon, SunIcon } from '@heroicons/vue/20/sol
 /** the site chrome (Catalyst StackedLayout): navbar, mobile menu, theme toggle */
 const route = useRoute()
 const { theme, toggle } = useTheme()
+const newChart = useFeature('newChart')
 </script>
