@@ -4,7 +4,7 @@
       <NuxtLink to="/" class="text-lg font-semibold tracking-tight">
         Chord <span class="text-accent">Scale</span> Maker
       </NuxtLink>
-      <nav class="flex gap-4 text-sm">
+      <nav aria-label="Main" class="flex gap-4 text-sm">
         <NuxtLink to="/" class="hover:text-accent" active-class="text-accent">Library</NuxtLink>
         <NuxtLink to="/editor?new=1" class="hover:text-accent">New chart</NuxtLink>
       </nav>

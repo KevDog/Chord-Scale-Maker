@@ -8,7 +8,6 @@ import {
   parseChart,
   serializeChart,
 } from '~~/engine'
-import { computed, onScopeDispose, readonly, ref, shallowRef } from 'vue'
 
 export const TEXT_DEBOUNCE_MS = 150
 

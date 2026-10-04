@@ -12,7 +12,7 @@ export function toLibrary(entries: Readonly<Record<string, string>>): LibraryCha
       ...chartMeta(parseChart(text).value),
       text,
     }))
-    .sort((a, b) => a.title.localeCompare(b.title))
+    .sort((a, b) => a.title.localeCompare(b.title, 'en') || a.slug.localeCompare(b.slug, 'en')) // fixed locale: same order in prerender and browser
 }
 
 export const LIBRARY: readonly LibraryChart[] = toLibrary(files)

@@ -11,7 +11,8 @@ export default defineNuxtConfig({
       htmlAttrs: { lang: 'en' },
       title: 'Chord Scale Maker',
       meta: [{ name: 'description', content: 'Chord-scale practice sheets from a chord chart.' }],
-      // sets the dark class before first paint; a file (not inline) so the CSP can stay script-src 'self'
+      // sets the dark class before first paint. A file, not inline, so it needs no CSP hash
+      // (Nuxt's own inline scripts still do: see docs/design.md §9)
       script: [{ src: '/theme-init.js' }],
     },
   },

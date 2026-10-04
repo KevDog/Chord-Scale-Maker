@@ -199,6 +199,10 @@ The site is static with no server code, so most of the attack surface is gone. R
 - **Input:** caps in `limits.ts`: 20,000 chars of text, 500 rows, 40 chars per
   cell, `@copy` expansion ≤ 1,000 rows. These are enforced in the parser before
   any work runs.
+- **CSP and Nuxt's inline scripts:** the static HTML contains Nuxt's inline
+  `window.__NUXT__` config script and an inline import map, so `script-src 'self'` alone
+  would block hydration. Phase 4 must allow them by hash, generated at build time (for example
+  with `nuxt-security`'s SSG hashes), or remove them via Nuxt options. Don't fall back to `'unsafe-inline'`.
 - **XSS:** no `v-html` anywhere (lint rule `vue/no-v-html: error`). Chart text
   is only ever rendered as text nodes or VexFlow-escaped SVG text.
 - **Supply chain:** lockfile committed, exact versions, Dependabot, `npm audit`
