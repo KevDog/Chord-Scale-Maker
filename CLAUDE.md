@@ -19,7 +19,10 @@ chart format and options.
   tests in `web/test/`, browser tests in `web/e2e/`. Pages must run under the hashed CSP (`web/build/csp.ts`):
   no inline `<script>` of our own, no `eval`, no third-party origins.
   Keep `web/engine/` free of Vue/DOM imports; put view logic that can be pure in the engine (`sheet.ts`, `edit.ts`).
-- Runtime `dependencies` are only what ships to browsers (`vue`, `vexflow`); CI gates on `npm audit --omit=dev`.
+- Runtime `dependencies` are only what ships to browsers (`vue`, `vexflow`, `@headlessui/vue`, `@heroicons/vue`);
+  CI gates on `npm audit --omit=dev`.
+- UI is Tailwind Plus Catalyst ported to Vue in `web/app/components/ui/` (`<UiButton>`, `<UiListbox>`, …); build
+  screens from these. The licensed kits live git-ignored in `design/tailwind-plus/`; never commit them.
 
 ## Design rules
 - Charts are always concert pitch; `--from` is always a written pitch.
