@@ -184,7 +184,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 ## 6a. Print / PDF
 
-- `@page { size: letter; margin: 10mm }`; print stylesheet hides the editor.
+- `@page { size: letter; margin: 1in 10mm 10mm }`: a full page of 12 staves leaves about 1.5in spare, so the extra space goes at the top, not the bottom. The print stylesheet hides the editor.
 - Fixed N staves per page (default 12, the CLI's `--no-pdf` default),
   implemented as page containers of N staves with `break-after: page`. The
   title/subtitle header repeats on each page.
