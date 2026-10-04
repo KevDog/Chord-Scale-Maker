@@ -17,5 +17,5 @@
     "noEmit": true,
     "types": ["node"]
   },
-  "include": ["engine/**/*.ts"]
+  "include": ["engine/**/*.ts", "build/**/*.ts"]
 }
