@@ -11,10 +11,9 @@ export type ChordToken = Readonly<{ kind: 'text'; text: string } | { kind: 'acc'
 export function parseChord(text: string): ChordParts {
   const m = CHORD_RE.exec(text.trim())
   if (!m) throw new Error(`cannot parse chord ${JSON.stringify(text)}`)
-  const root = parseRoot(m[1] + m[2])
-  return m[4] === undefined
-    ? { root, quality: m[3] }
-    : { root, quality: m[3], bass: parseRoot(m[4] + (m[5] ?? '')) }
+  const [, letter = '', acc = '', quality = '', bassLetter, bassAcc = ''] = m
+  const root = parseRoot(letter + acc)
+  return bassLetter === undefined ? { root, quality } : { root, quality, bass: parseRoot(bassLetter + bassAcc) }
 }
 
 const text = (t: string): ChordToken => ({ kind: 'text', text: t })

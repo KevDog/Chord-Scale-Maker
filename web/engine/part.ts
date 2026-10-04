@@ -60,9 +60,10 @@ export function lilyNote(n: Pitched): string {
 export function parseStart(text: string): Readonly<{ exact: number | null; pc: number }> {
   const m = /^([A-Ga-g][b#♭♯]*)(\d)?$/.exec(text.trim())
   if (!m) throw new Error(`bad start note ${JSON.stringify(text)} (try C, Eb, F#3)`)
-  const r = parseRoot(m[1])
+  const [, note = '', octave] = m
+  const r = parseRoot(note)
   const pc = NAT_PC[r.letter] + r.acc
-  return { exact: m[2] === undefined ? null : 12 * (Number(m[2]) + 1) + pc, pc }
+  return { exact: octave === undefined ? null : 12 * (Number(octave) + 1) + pc, pc }
 }
 
 /** written start pitch: exact octave if given, else the first one at/above the clef's default */

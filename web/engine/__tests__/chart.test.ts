@@ -58,12 +58,12 @@ describe('chart', () => {
     expect(isFatal(expandRows(parseChart(bomb).value).diagnostics)).toBe(true)
     expect(isFatal(parseChart('A | 1\nA | 2 | C').diagnostics)).toBe(false)
     expect(parseChart('A | 1234567 | C\n@copy A B 1').value.lines.length).toBe(2)
-    expect(expandRows(parseChart('A | 1234567 | C\n@copy A B 1').value).diagnostics[0].message).toMatch(/whole-number/)
+    expect(expandRows(parseChart('A | 1234567 | C\n@copy A B 1').value).diagnostics[0]?.message).toMatch(/whole-number/)
   })
 
   it('enforces input limits', () => {
-    expect(parseChart('x'.repeat(LIMITS.maxChars + 1)).diagnostics[0].message).toMatch(/longer than/)
-    expect(parseChart(`A | 1 | ${'C'.repeat(LIMITS.maxCell + 1)}`).diagnostics[0].message).toMatch(/cell longer/)
+    expect(parseChart('x'.repeat(LIMITS.maxChars + 1)).diagnostics[0]?.message).toMatch(/longer than/)
+    expect(parseChart(`A | 1 | ${'C'.repeat(LIMITS.maxCell + 1)}`).diagnostics[0]?.message).toMatch(/cell longer/)
     const many = Array.from({ length: LIMITS.maxRows + 1 }, (_, i) => `A | ${i} | C`).join('\n')
     expect(parseChart(many).diagnostics.at(-1)?.message).toMatch(/more than 500 rows/)
   })

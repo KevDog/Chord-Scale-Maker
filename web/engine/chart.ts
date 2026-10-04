@@ -29,16 +29,16 @@ function parseLine(line: string): ChartLine | string {
     }
   }
   if (low.startsWith('@copy')) {
-    const parts = line.split(/\s+/)
-    if (parts.length !== 4 || !OFFSET_RE.test(parts[3])) return 'use  @copy SRC DST BAR_OFFSET'
-    if (parts[1].length > LIMITS.maxCell || parts[2].length > LIMITS.maxCell)
+    const [, src = '', dst = '', offset = '', ...extra] = line.split(/\s+/)
+    if (extra.length > 0 || !OFFSET_RE.test(offset)) return 'use  @copy SRC DST BAR_OFFSET'
+    if (src.length > LIMITS.maxCell || dst.length > LIMITS.maxCell)
       return `section name longer than ${LIMITS.maxCell} characters`
-    return { kind: 'copy', src: parts[1], dst: parts[2], offset: Number(parts[3]) }
+    return { kind: 'copy', src, dst, offset: Number(offset) }
   }
   const cells = line.split('|').map((c) => c.trim())
   if (cells.length !== 3 && cells.length !== 4) return 'expected  section | bar | chord [| scale]'
   if (cells.some((c) => c.length > LIMITS.maxCell)) return `cell longer than ${LIMITS.maxCell} characters`
-  const [section, bar, chord, scale = ''] = cells
+  const [section = '', bar = '', chord = '', scale = ''] = cells
   return { kind: 'row', section, bar, chord, scale }
 }
 
@@ -54,7 +54,7 @@ export function parseChart(text: string): Parsed<ChartDoc> {
     diagnostics.push({ line: i + 1, message: parsed })
     return { kind: 'invalid', text: t }
   })
-  if (lines.length > 0 && lines[lines.length - 1].kind === 'blank') lines.pop() // trailing newline
+  if (lines.at(-1)?.kind === 'blank') lines.pop() // trailing newline
   if (lines.filter((l) => l.kind === 'row').length > LIMITS.maxRows)
     diagnostics.push({ line: 0, message: `more than ${LIMITS.maxRows} rows`, fatal: true })
   return { value: { lines }, diagnostics }
