@@ -40,5 +40,5 @@ export function defaultScale(chord: string): string | null {
   return (options.find((o) => o.default) ?? options[0])?.scale ?? null
 }
 
-/** every quality's options, for validating chord_scales.json */
+/** canonical quality names, for validating chord_scales.json */
 export const QUALITY_NAMES: readonly string[] = Object.keys(DATA.qualities)
