@@ -1713,12 +1713,21 @@ describe('useChartEditor', () => {
     expect(e.rows.value.map((r) => r.chord)).toEqual(['Dm7', 'Dm7'])
   })
 
-  it('a grid edit cancels a pending text parse', () => {
+  it('ignores a grid edit made from a doc older than the typed text', () => {
     const { e } = editor()
     e.setText('A | 1 | X')
-    e.setDoc(setRowField(e.doc.value, 1, 'chord', 'Dm7'))
+    e.setDoc(setRowField(e.doc.value, 1, 'chord', 'Dm7')) // computed before the text was parsed
+    expect(e.text.value).toBe('A | 1 | X') // the typing wins
+    expect(e.rows.value.map((r) => r.chord)).toEqual(['X']) // and is parsed now
+  })
+
+  it('never writes the grid over a chart too long to load', () => {
+    const { e } = editor()
+    const huge = 'x'.repeat(20_001)
+    e.setText(huge)
     vi.advanceTimersByTime(TEXT_DEBOUNCE_MS)
-    expect(e.rows.value[0]?.chord).toBe('Dm7')
+    e.setDoc({ lines: [{ kind: 'blank' }] })
+    expect(e.text.value).toBe(huge)
   })
 
   it('flags charts over a hard limit as fatal and keeps the text', () => {
@@ -1763,26 +1772,39 @@ import {
 
 export const TEXT_DEBOUNCE_MS = 150
 
+/** over the character limit: the parser returned an empty doc, so the grid shows nothing real */
+const tooLongToLoad = (p: Parsed<ChartDoc>): boolean => isFatal(p.diagnostics) && p.value.lines.length === 0
+
 /**
  * Single source of truth for the editor: chart text and the parsed ChartDoc kept in sync.
  * Text edits re-parse after a short pause (the text is not reformatted while typing);
  * grid edits produce a new doc, which is serialized into canonical text at once.
+ * The text always wins: a grid edit is dropped if it was made from a doc older than the
+ * typed text, or if the text is too long to load (its doc is empty).
  */
 export function useChartEditor(initialText: string) {
   const text = ref(initialText)
   const parsed = shallowRef<Parsed<ChartDoc>>(parseChart(initialText))
   let timer: ReturnType<typeof setTimeout> | undefined
 
+  /** parse the typed text now if a parse is pending; true if one was */
+  function flush(): boolean {
+    if (timer === undefined) return false
+    clearTimeout(timer)
+    timer = undefined
+    parsed.value = parseChart(text.value)
+    return true
+  }
+
   function setText(next: string): void {
     text.value = next
     clearTimeout(timer)
-    timer = setTimeout(() => {
-      parsed.value = parseChart(next)
-    }, TEXT_DEBOUNCE_MS)
+    timer = setTimeout(flush, TEXT_DEBOUNCE_MS)
   }
 
   function setDoc(next: ChartDoc): void {
-    clearTimeout(timer)
+    if (flush()) return // the edit was made from a doc older than the typed text
+    if (tooLongToLoad(parsed.value)) return
     text.value = serializeChart(next)
     parsed.value = parseChart(text.value) // re-parse so diagnostics describe the new text
   }
@@ -1803,6 +1825,7 @@ export function useChartEditor(initialText: string) {
     fatal: computed(() => isFatal(diagnostics.value)),
     setText,
     setDoc,
+    flush,
   }
 }
 ```
@@ -1810,6 +1833,8 @@ export function useChartEditor(initialText: string) {
 `web/app/composables/useDraft.ts`:
 
 ```ts
+import { LIMITS } from '~~/engine'
+
 const KEY = 'csm-draft'
 
 export const STARTER_CHART = `title: Untitled
@@ -1831,6 +1856,7 @@ export function loadDraft(): string | null {
 }
 
 export function saveDraft(text: string): void {
+  if (text.length > LIMITS.maxChars) return // keep the last draft that fit; don't write megabytes per keystroke
   try {
     localStorage.setItem(KEY, text)
   } catch {
@@ -1842,7 +1868,7 @@ export function saveDraft(text: string): void {
 - [ ] **Step 4: Verify**
 
 Run: `cd web && npx vitest run && npm run typecheck && npm run lint`
-Expected: `Tests 62 passed`, typecheck and lint clean
+Expected: `Tests 63 passed`, typecheck and lint clean
 
 - [ ] **Step 5: Commit**
 
@@ -2191,7 +2217,7 @@ const onMeta = (key: MetaKey, value: string): void =>
 - [ ] **Step 4: Verify**
 
 Run: `cd web && npx nuxi prepare && npx vitest run && npm run typecheck && npm run lint`
-Expected: `Tests 73 passed`, typecheck and lint clean
+Expected: `Tests 74 passed`, typecheck and lint clean
 
 - [ ] **Step 5: Commit**
 
@@ -2536,7 +2562,7 @@ useHead({ title: 'Editor · Chord Scale Maker' })
 
 Run: `cd web && npx nuxi prepare && npx vitest run && npm run typecheck && npm run lint && npm run generate`
 Expected:
-- `Tests 74 passed`, typecheck and lint clean
+- `Tests 75 passed`, typecheck and lint clean
 - `nuxt generate` prerenders `/`, `/editor`, `/200.html` and `/404.html`
 
 - [ ] **Step 5: Check it by hand in a browser.** Run `cd web && npm run preview`, open http://localhost:3000, and confirm:
@@ -3069,7 +3095,7 @@ chart format and options.
 - [ ] **Step 4: Verify**
 
 Run: `make test && make lint`
-Expected: `12 passed`, then `Test Files 15 passed`, `Tests 74 passed`; lint clean.
+Expected: `12 passed`, then `Test Files 15 passed`, `Tests 75 passed`; lint clean.
 
 - [ ] **Step 5: Commit**
 
