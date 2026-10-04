@@ -34,6 +34,9 @@ chart format and options.
   share a root; a slash bass keeps its interval from the root.
 - Page fitting: `--per-page` unset means the script compiles with decreasing
   staves per page until no page overflows.
+- Transposing a chart to another key (editor only, `web/engine/transpose.ts`) spells roots on the target key's
+  side (Dbm7 Gb7 in Bb, even with Cb/Fb in the scale); `simplify_root` decides in C, or if that side needs double
+  accidentals. Instrument parts still use `simplify_root` alone.
 - Chart rows may omit the scale; both engines use the quality's default from `chord_scales.json`.
 
 ## Typical requests

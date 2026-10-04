@@ -14,8 +14,8 @@ A | 6  | Ebm7   | Eb Dorian
 A | 6  | Ab7    | Ab Mixolydian
 A | 7  | Dm7    | D Dorian
 A | 7  | G7     | G Mixolydian
-A | 8  | C#m7   | C# Dorian
-A | 8  | F#7    | F# Mixolydian
+A | 8  | Dbm7   | Db Dorian
+A | 8  | Gb7    | Gb Mixolydian
 A | 9  | Cm7    | C Dorian
 A | 10 | F7     | F Mixolydian
 A | 11 | BbMaj7 | Bb Ionian

@@ -213,6 +213,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   Nothing is sent anywhere.
 - The instrument picker only changes `part` and the subtitle label (`partFor`,
   `instrumentLabel` in the engine). The engine already supported every transposition.
+- Transposing a chart (editor "Transpose…", `engine/transpose.ts`): every row moves by the key interval in letters
+  and semitones. Roots are spelled on the target key's side (`spellInKey`: Dbm7 Gb7 in Bb, B not Cb); `simplifyRoot`
+  decides in C or when that side would put double accidentals in the scale. A chord follows its scale's root, and a
+  slash bass keeps its interval. Instrument parts are unchanged (plain `simplifyRoot`).
 - Feature flags: `runtimeConfig.public.features` in `nuxt.config.ts`, read with `useFeature(name)`. They are off by
   default and fixed at build time; `NUXT_PUBLIC_FEATURES_<NAME>=true` turns one on for a build or `make dev`.
   `npm run e2e` builds with every flag on. `newChart` (blank charts, this browser's draft) is off in production:
