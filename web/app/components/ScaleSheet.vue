@@ -9,7 +9,7 @@
         <h2 class="text-xl font-semibold">{{ title }}</h2>
         <p class="text-sm text-slate-600 dark:text-slate-400 print:text-slate-700">{{ page.subtitle }}</p>
       </header>
-      <div class="space-y-1 print:space-y-0">
+      <div class="space-y-1 print:space-y-2">
         <ScaleStaff v-for="s in page.staves" :key="s.id" :staff="s" :clef="part.clef" />
       </div>
       <p class="mt-3 text-right text-xs text-slate-400 print:hidden">Page {{ page.number }} of {{ pages.length }}</p>

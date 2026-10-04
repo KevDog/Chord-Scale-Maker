@@ -30,9 +30,9 @@
 /* print: letter pages, light colors, only the sheet */
 @page {
   size: letter;
-  /* a full page of 12 staves is about 8.7in tall, so it sits 1in down rather than leaving
-     the slack at the bottom; the tallest pages (ledger lines on every staff) still fit */
-  margin: 1in 10mm 10mm;
+  /* a full page of 12 staves with 8px between them is about 9.6in, so it fills a letter page
+     with a 0.5in top margin; the tallest pages (ledger lines on every staff) still fit */
+  margin: 0.5in 10mm 10mm;
 }
 @media print {
   html,
