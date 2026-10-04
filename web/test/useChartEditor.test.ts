@@ -40,12 +40,21 @@ describe('useChartEditor', () => {
     expect(e.rows.value.map((r) => r.chord)).toEqual(['Dm7', 'Dm7'])
   })
 
-  it('a grid edit cancels a pending text parse', () => {
+  it('ignores a grid edit made from a doc older than the typed text', () => {
     const { e } = editor()
     e.setText('A | 1 | X')
-    e.setDoc(setRowField(e.doc.value, 1, 'chord', 'Dm7'))
+    e.setDoc(setRowField(e.doc.value, 1, 'chord', 'Dm7')) // computed before the text was parsed
+    expect(e.text.value).toBe('A | 1 | X') // the typing wins
+    expect(e.rows.value.map((r) => r.chord)).toEqual(['X']) // and is parsed now
+  })
+
+  it('never writes the grid over a chart too long to load', () => {
+    const { e } = editor()
+    const huge = 'x'.repeat(20_001)
+    e.setText(huge)
     vi.advanceTimersByTime(TEXT_DEBOUNCE_MS)
-    expect(e.rows.value[0]?.chord).toBe('Dm7')
+    e.setDoc({ lines: [{ kind: 'blank' }] })
+    expect(e.text.value).toBe(huge)
   })
 
   it('flags charts over a hard limit as fatal and keeps the text', () => {

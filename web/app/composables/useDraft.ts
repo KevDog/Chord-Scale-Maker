@@ -1,3 +1,5 @@
+import { LIMITS } from '~~/engine'
+
 const KEY = 'csm-draft'
 
 export const STARTER_CHART = `title: Untitled
@@ -19,6 +21,7 @@ export function loadDraft(): string | null {
 }
 
 export function saveDraft(text: string): void {
+  if (text.length > LIMITS.maxChars) return // keep the last draft that fit; don't write megabytes per keystroke
   try {
     localStorage.setItem(KEY, text)
   } catch {
