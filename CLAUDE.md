@@ -21,6 +21,7 @@ chart format and options.
   Keep `web/engine/` free of Vue/DOM imports; put view logic that can be pure in the engine (`sheet.ts`, `edit.ts`).
 - Runtime `dependencies` are only what ships to browsers (`vue`, `vexflow`, `@headlessui/vue`, `@heroicons/vue`);
   CI gates on `npm audit --omit=dev`.
+- Feature flags: `runtimeConfig.public.features` + `useFeature()`, off by default; e2e builds with all on.
 - UI is Tailwind Plus Catalyst ported to Vue in `web/app/components/ui/` (`<UiButton>`, `<UiListbox>`, …); build
   screens from these. The licensed kits live git-ignored in `design/tailwind-plus/`; never commit them.
 

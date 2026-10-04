@@ -213,6 +213,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   Nothing is sent anywhere.
 - The instrument picker only changes `part` and the subtitle label (`partFor`,
   `instrumentLabel` in the engine). The engine already supported every transposition.
+- Feature flags: `runtimeConfig.public.features` in `nuxt.config.ts`, read with `useFeature(name)`. They are off by
+  default and fixed at build time; `NUXT_PUBLIC_FEATURES_<NAME>=true` turns one on for a build or `make dev`.
+  `npm run e2e` builds with every flag on. `newChart` (blank charts, this browser's draft) is off in production:
+  the "New chart" links are hidden, and `/editor` without a library chart goes back to the library.
 
 ## 9. Security
 
