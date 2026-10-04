@@ -1,22 +1,23 @@
 <template>
-  <input
-    :value="error ? draft : value"
+  <UiInput
+    :model-value="error ? draft : value"
+    :invalid="!!error"
     :aria-label="label"
-    :aria-invalid="error ? 'true' : undefined"
     :title="error ?? undefined"
-    :class="[field, error && '!border-rose-500']"
-    @input="onInput(($event.target as HTMLInputElement).value)"
-  >
+    :class="dense && 'sm:py-1 sm:text-sm/5'"
+    @update:model-value="onInput"
+  />
 </template>
 
 <script setup lang="ts">
 import { cellError, LIMITS } from '~~/engine'
 
 /**
- * A grid text cell. Values that pass cellError are emitted; others stay visible in the input,
- * flagged, so the user can fix them (the doc keeps the last good value).
+ * A grid text cell (Catalyst Input). Values that pass cellError are emitted; others stay visible in
+ * the input, marked invalid with the reason in its tooltip, so the user can fix them (the doc keeps
+ * the last good value).
  */
-const props = withDefaults(defineProps<{ value: string; field: string; label?: string; maxLength?: number }>(), {
+const props = withDefaults(defineProps<{ value: string; label?: string; maxLength?: number; dense?: boolean }>(), {
   label: undefined,
   maxLength: LIMITS.maxCell,
 })

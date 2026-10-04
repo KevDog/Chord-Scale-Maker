@@ -1,35 +1,49 @@
 <template>
-  <div class="flex flex-col gap-1">
-    <select
-      v-if="!picking"
-      :value="selectValue"
-      :aria-label="`Scale for ${chord || 'this row'}`"
-      :class="[field, needsScale && 'border-amber-500 dark:border-amber-500']"
-      @change="onSelect(($event.target as HTMLSelectElement).value)"
-    >
-      <option v-if="choices.defaultScale" value="">Default · {{ choices.defaultScale }}</option>
-      <option v-else value="" disabled>Choose a scale…</option>
-      <option v-for="o in choices.alternates" :key="o.scale" :value="o.scale">{{ o.scale }}{{ o.note ? ` (${o.note})` : '' }}</option>
-      <option v-if="custom" :value="scale">{{ scale }}</option>
-      <option value="__other">Other…</option>
-    </select>
-    <div v-else class="flex gap-1" @keydown.esc="closePicker">
-      <select ref="rootSelect" v-model="pickRoot" aria-label="Scale root" :class="field">
-        <option v-for="r in PICKER_ROOTS" :key="r" :value="r">{{ r }}</option>
-      </select>
-      <select v-model="pickName" aria-label="Scale name" :class="[field, 'min-w-0 flex-1']">
-        <option v-for="n in PICKER_SCALES" :key="n" :value="n">{{ n }}</option>
-      </select>
-      <button type="button" aria-label="Set scale" class="rounded bg-accent px-2 text-sm text-white dark:text-zinc-950" @click="apply">Set</button>
-      <button type="button" class="px-1 text-sm text-zinc-500" aria-label="Cancel" @click="closePicker">✕</button>
-    </div>
-  </div>
+  <UiSelect
+    :key="resetKey"
+    :model-value="selectValue"
+    :aria-label="`Scale for ${chord || 'this row'}`"
+    :class="['sm:py-1 sm:text-sm/5', needsScale && 'border-amber-500! dark:border-amber-500!']"
+    @update:model-value="onSelect"
+  >
+    <option v-if="choices.defaultScale" value="">Default · {{ choices.defaultScale }}</option>
+    <option v-else value="" disabled>Choose a scale…</option>
+    <option v-for="o in choices.alternates" :key="o.scale" :value="o.scale">{{ o.scale }}{{ o.note ? ` (${o.note})` : '' }}</option>
+    <option v-if="custom" :value="scale">{{ scale }}</option>
+    <option value="__other">Other…</option>
+  </UiSelect>
+
+  <UiDialog :open="picking" size="md" @close="closePicker">
+    <UiDialogTitle>Choose a scale</UiDialogTitle>
+    <UiDialogDescription>For {{ chord || 'this row' }}: any root and any of the {{ PICKER_SCALES.length }} scales.</UiDialogDescription>
+    <UiDialogBody>
+      <div class="grid grid-cols-[7rem_1fr] gap-4">
+        <UiField>
+          <UiLabel>Root</UiLabel>
+          <UiSelect v-model="pickRoot" aria-label="Scale root">
+            <option v-for="r in PICKER_ROOTS" :key="r" :value="r">{{ noteText(r) }}</option>
+          </UiSelect>
+        </UiField>
+        <UiField>
+          <UiLabel>Scale</UiLabel>
+          <UiSelect v-model="pickName" aria-label="Scale name">
+            <option v-for="n in PICKER_SCALES" :key="n" :value="n">{{ n }}</option>
+          </UiSelect>
+        </UiField>
+      </div>
+    </UiDialogBody>
+    <UiDialogActions>
+      <UiButton plain @click="closePicker">Cancel</UiButton>
+      <UiButton color="teal" @click="apply">Set scale</UiButton>
+    </UiDialogActions>
+  </UiDialog>
 </template>
 
 <script setup lang="ts">
-import { enharmonics, parseChord, rootName } from '~~/engine'
+import { enharmonics, noteText, parseChord, rootName } from '~~/engine'
 
-const props = defineProps<{ chord: string; scale: string; field: string }>()
+/** a row's scale: the chord's default, its alternates, or "Other…" (any scale, in a dialog) */
+const props = defineProps<{ chord: string; scale: string }>()
 const emit = defineEmits<{ update: [scale: string] }>()
 
 const choices = computed(() => scaleChoices(props.chord))
@@ -42,7 +56,8 @@ const needsScale = computed(() => props.scale === '' && !choices.value.defaultSc
 const picking = ref(false)
 const pickRoot = ref<string>('C')
 const pickName = ref<string>(PICKER_SCALES[0] ?? 'Ionian')
-const rootSelect = useTemplateRef<HTMLSelectElement>('rootSelect')
+/** re-creates the select after "Other…", which is never a value of its own */
+const resetKey = ref(0)
 
 /** the chord's root as one of the picker's spellings (Cb -> B, E# -> F), else C */
 function pickerRoot(chord: string): string {
@@ -55,20 +70,15 @@ function pickerRoot(chord: string): string {
   }
 }
 
-async function openPicker(): Promise<void> {
-  pickRoot.value = pickerRoot(props.chord)
-  picking.value = true
-  await nextTick()
-  rootSelect.value?.focus()
-}
-
 function closePicker(): void {
   picking.value = false
 }
 
 function onSelect(value: string): void {
-  if (value === '__other') openPicker()
-  else emit('update', value)
+  if (value !== '__other') return emit('update', value)
+  pickRoot.value = pickerRoot(props.chord)
+  picking.value = true
+  resetKey.value++
 }
 
 function apply(): void {

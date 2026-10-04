@@ -32,6 +32,14 @@ describe('v-interactive', () => {
     w.unmount()
   })
 
+  it('ignores hover and press on disabled elements', async () => {
+    const Disabled = defineComponent({ render: () => withDirectives(h('button', { disabled: true }, 'x'), [[vInteractive]]) })
+    const el = mount(Disabled).find('button')
+    await el.trigger('pointerenter', { pointerType: 'mouse' })
+    await el.trigger('pointerdown')
+    expect([el.attributes('data-hover'), el.attributes('data-active')]).toEqual([undefined, undefined])
+  })
+
   it('dataFlag renders an empty attribute or none', () => {
     expect([dataFlag(true), dataFlag(false), dataFlag(undefined)]).toEqual(['', undefined, undefined])
   })

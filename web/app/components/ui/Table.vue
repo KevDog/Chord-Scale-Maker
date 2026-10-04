@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { TABLE } from '~/utils/field'
+import { TABLE } from '~/utils/table'
 
 const props = defineProps<{ bleed?: boolean; dense?: boolean; grid?: boolean; striped?: boolean }>()
 provide(

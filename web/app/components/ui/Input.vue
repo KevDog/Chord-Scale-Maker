@@ -1,8 +1,8 @@
 <template>
-  <span data-slot="control" :class="WRAPPER">
+  <span data-slot="control" :class="[attrs.class, WRAPPER]">
     <input
-      v-bind="$attrs"
-      :id="($attrs.id as string | undefined) ?? field?.controlId"
+      v-bind="rest"
+      :id="field?.controlId ?? (attrs.id as string | undefined)"
       v-model="model"
       v-interactive:any-focus
       :type="type"
@@ -20,11 +20,18 @@
 import { describedBy, FIELD } from '~/utils/field'
 import { dataFlag, vInteractive } from '~/utils/interactive'
 
-/** Catalyst Input; attributes (aria-label, placeholder, title…) go to the <input> */
+/** Catalyst Input */
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<{ type?: 'email' | 'number' | 'password' | 'search' | 'tel' | 'text' | 'url'; invalid?: boolean; disabled?: boolean }>(), { type: 'text' })
 const model = defineModel<string>({ default: '' })
 const field = inject(FIELD, undefined)
+// like Catalyst's className, `class` sizes the wrapper (with its background and focus layers);
+// everything else (aria-label, placeholder, title…) goes on the control
+const attrs = useAttrs()
+const rest = computed(() => {
+  const { class: _class, id: _id, ...others } = attrs
+  return others
+})
 const isDisabled = computed(() => props.disabled || !!field?.disabled.value)
 
 const WRAPPER = [

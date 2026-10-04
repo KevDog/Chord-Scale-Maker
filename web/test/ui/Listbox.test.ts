@@ -3,18 +3,19 @@ import { describe, expect, it } from 'vitest'
 import { defineComponent, nextTick, ref } from 'vue'
 import UiListbox from '~/components/ui/Listbox.vue'
 import UiListboxDescription from '~/components/ui/ListboxDescription.vue'
-import UiListboxHeader from '~/components/ui/ListboxHeader.vue'
+import UiListboxGroup from '~/components/ui/ListboxGroup.vue'
 import UiListboxLabel from '~/components/ui/ListboxLabel.vue'
 import UiListboxOption from '~/components/ui/ListboxOption.vue'
 
 const Picker = defineComponent({
-  components: { UiListbox, UiListboxOption, UiListboxLabel, UiListboxDescription, UiListboxHeader },
+  components: { UiListbox, UiListboxOption, UiListboxLabel, UiListboxDescription, UiListboxGroup },
   setup: () => ({ value: ref('trumpet') }),
   template: `<UiListbox v-model="value" aria-label="Instrument">
       <template #selected="{ value }"><UiListboxLabel>{{ value }}</UiListboxLabel></template>
-      <UiListboxHeader>B♭ instruments</UiListboxHeader>
-      <UiListboxOption value="trumpet"><UiListboxLabel>Trumpet</UiListboxLabel></UiListboxOption>
-      <UiListboxOption value="tenor-sax"><UiListboxLabel>Tenor sax</UiListboxLabel><UiListboxDescription>octave lower</UiListboxDescription></UiListboxOption>
+      <UiListboxGroup label="B♭ instruments">
+        <UiListboxOption value="trumpet"><UiListboxLabel>Trumpet</UiListboxLabel></UiListboxOption>
+        <UiListboxOption value="tenor-sax"><UiListboxLabel>Tenor sax</UiListboxLabel><UiListboxDescription>octave lower</UiListboxDescription></UiListboxOption>
+      </UiListboxGroup>
     </UiListbox>`,
 })
 

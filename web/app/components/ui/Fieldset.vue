@@ -5,7 +5,9 @@
 </template>
 
 <script setup lang="ts">
+import { FIELDSET_DISABLED } from '~/utils/field'
 import { dataFlag } from '~/utils/interactive'
 
-defineProps<{ disabled?: boolean }>()
+const props = defineProps<{ disabled?: boolean }>()
+provide(FIELDSET_DISABLED, toRef(() => props.disabled))
 </script>

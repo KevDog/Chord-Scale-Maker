@@ -1,15 +1,21 @@
 <template>
-  <HListbox v-model="model" :disabled="disabled" as="div" class="relative">
+  <HListbox v-model="model" :disabled="isDisabled" as="div" data-slot="control" class="relative">
     <HListboxButton
+      :id="field?.controlId"
+      v-slot="{ open }"
       v-interactive
-      data-slot="control"
       :aria-label="ariaLabel"
+      :aria-invalid="invalid ? 'true' : undefined"
+      :aria-describedby="describedBy(field)"
       :data-invalid="dataFlag(invalid)"
-      :data-disabled="dataFlag(disabled)"
+      :data-disabled="dataFlag(isDisabled)"
       :class="BUTTON"
+      as="button"
     >
+      <!-- Headless UI React marks the button active while pressed or open -->
+      <span :data-open="dataFlag(open)" class="contents" />
       <span :class="SELECTED">
-        <slot v-if="model !== undefined && model !== null" name="selected" :value="model" />
+        <span v-if="model !== undefined && model !== null" :class="SELECTED_CONTENT"><slot name="selected" :value="model" /></span>
         <span v-else class="block truncate text-zinc-500">{{ placeholder }}</span>
       </span>
       <span class="pointer-events-none absolute inset-y-0 right-0 flex items-center pr-2">
@@ -20,7 +26,7 @@
       </span>
     </HListboxButton>
     <transition leave-active-class="transition-opacity duration-100 ease-in" leave-to-class="opacity-0">
-      <HListboxOptions :class="OPTIONS">
+      <HListboxOptions as="div" :class="OPTIONS">
         <slot />
       </HListboxOptions>
     </transition>
@@ -29,14 +35,18 @@
 
 <script setup lang="ts" generic="T extends string | number | boolean | object | null">
 import { Listbox as HListbox, ListboxButton as HListboxButton, ListboxOptions as HListboxOptions } from '@headlessui/vue'
+import { describedBy, FIELD } from '~/utils/field'
 import { dataFlag, vInteractive } from '~/utils/interactive'
 
 /**
- * Catalyst Listbox on @headlessui/vue. Options are UiListboxOption children; the button shows the
- * #selected slot ({ value }). Headless UI Vue has no anchor positioning, so the menu opens below.
+ * Catalyst Listbox on @headlessui/vue. Options are UiListboxOption children (optionally inside
+ * UiListboxGroup); the button shows the #selected slot ({ value }). Inside a UiField the label
+ * names the button. Headless UI Vue has no anchor positioning, so the menu opens below.
  */
-defineProps<{ placeholder?: string; ariaLabel?: string; invalid?: boolean; disabled?: boolean }>()
+const props = defineProps<{ placeholder?: string; ariaLabel?: string; invalid?: boolean; disabled?: boolean }>()
 const model = defineModel<T>()
+const field = inject(FIELD, undefined)
+const isDisabled = computed(() => props.disabled || !!field?.disabled.value)
 
 const BUTTON = [
   // Basic layout
@@ -61,14 +71,20 @@ const SELECTED = [
   'pr-[calc(--spacing(7)-1px)] pl-[calc(--spacing(3.5)-1px)] sm:pl-[calc(--spacing(3)-1px)]',
   // Typography
   'text-left text-base/6 text-zinc-950 placeholder:text-zinc-500 sm:text-sm/6 dark:text-white forced-colors:text-[CanvasText]',
-  // Border
-  'border border-zinc-950/10 group-data-active:border-zinc-950/20 group-data-hover:border-zinc-950/20 dark:border-white/10 dark:group-data-active:border-white/20 dark:group-data-hover:border-white/20',
+  // Border (has-data-open: Headless UI React's data-active while the menu is open)
+  'border border-zinc-950/10 group-data-active:border-zinc-950/20 group-has-data-open:border-zinc-950/20 group-data-hover:border-zinc-950/20 dark:border-white/10 dark:group-data-active:border-white/20 dark:group-has-data-open:border-white/20 dark:group-data-hover:border-white/20',
   // Background color
   'bg-transparent dark:bg-white/5',
   // Invalid state
   'group-data-invalid:border-red-500 group-data-hover:group-data-invalid:border-red-500 dark:group-data-invalid:border-red-600 dark:data-hover:group-data-invalid:border-red-600',
   // Disabled state
   'group-data-disabled:border-zinc-950/20 group-data-disabled:opacity-100 dark:group-data-disabled:border-white/15 dark:group-data-disabled:bg-white/2.5 dark:group-data-disabled:data-hover:border-white/15',
+]
+/** ListboxOption's shared classes, for the selected value shown in the button */
+const SELECTED_CONTENT = [
+  'flex min-w-0 items-center',
+  '*:data-[slot=icon]:size-5 *:data-[slot=icon]:shrink-0 sm:*:data-[slot=icon]:size-4',
+  '*:data-[slot=icon]:text-zinc-500 dark:*:data-[slot=icon]:text-zinc-400',
 ]
 const OPTIONS = [
   // Positioning (Headless UI Vue has no anchor): below the button, at least its width
@@ -78,7 +94,7 @@ const OPTIONS = [
   // Invisible border that is only visible in `forced-colors` mode for accessibility purposes
   'outline outline-transparent focus:outline-hidden',
   // Handle scrolling when menu won't fit in viewport
-  'overflow-y-auto overscroll-contain',
+  'overflow-y-scroll overscroll-contain',
   // Popover background
   'bg-white/75 backdrop-blur-xl dark:bg-zinc-800/75',
   // Shadows

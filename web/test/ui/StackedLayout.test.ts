@@ -20,7 +20,7 @@ describe('UiStackedLayout', () => {
     expect(w.text()).toContain('NAVBAR')
     expect(w.text()).toContain('CONTENT')
     expect(document.body.textContent).not.toContain('Library')
-    await w.find('[aria-label="Open navigation"]').trigger('click')
+    await w.find('button[aria-label="Open navigation"]').trigger('click') // the name is on the button itself
     await settle()
     expect(document.querySelector('[role=dialog]')?.textContent).toContain('Library')
     ;(document.querySelector('[role=dialog] a') as HTMLElement).click() // following a link closes the menu

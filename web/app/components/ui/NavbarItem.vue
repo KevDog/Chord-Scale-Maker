@@ -2,10 +2,10 @@
   <span :class="[attrs.class, 'relative']">
     <!-- Catalyst animates this indicator between items with motion; here it is static -->
     <span v-if="current" class="absolute inset-x-2 -bottom-2.5 h-0.5 rounded-full bg-zinc-950 dark:bg-white" />
-    <NuxtLink v-if="href !== undefined" v-bind="rest" v-interactive :to="href" :data-current="current ? 'true' : undefined" :aria-current="current ? 'page' : undefined" :class="CLASSES">
+    <NuxtLink v-if="href !== undefined" v-interactive v-bind="rest" :to="href" :data-current="current ? 'true' : undefined" :aria-current="current ? 'page' : undefined" :class="CLASSES">
       <UiTouchTarget><slot /></UiTouchTarget>
     </NuxtLink>
-    <button v-else v-bind="rest" v-interactive type="button" :data-current="current ? 'true' : undefined" :class="['cursor-default', CLASSES]">
+    <button v-else v-interactive v-bind="rest" type="button" :data-current="current ? 'true' : undefined" :class="['cursor-default', CLASSES]">
       <UiTouchTarget><slot /></UiTouchTarget>
     </button>
   </span>

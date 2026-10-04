@@ -3,6 +3,10 @@ import { describe, expect, it } from 'vitest'
 import { defineComponent, ref } from 'vue'
 import UiDescription from '~/components/ui/Description.vue'
 import UiErrorMessage from '~/components/ui/ErrorMessage.vue'
+import UiFieldset from '~/components/ui/Fieldset.vue'
+import UiLegend from '~/components/ui/Legend.vue'
+import UiListbox from '~/components/ui/Listbox.vue'
+import UiListboxOption from '~/components/ui/ListboxOption.vue'
 import UiField from '~/components/ui/Field.vue'
 import UiInput from '~/components/ui/Input.vue'
 import UiLabel from '~/components/ui/Label.vue'
@@ -54,5 +58,40 @@ describe('UiField and controls', () => {
     })
     await select.find('select').setValue('Eb')
     expect(select.emitted('update:modelValue')).toEqual([['Eb']])
+  })
+})
+
+describe('Field wiring for Listbox, Fieldset and spacing', () => {
+  it('labels a Listbox from its Field and keeps Catalyst spacing', async () => {
+    const F = defineComponent({
+      components: { UiField, UiLabel, UiListbox, UiListboxOption },
+      setup: () => ({ v: ref('a') }),
+      template: `<UiField><UiLabel>Instrument</UiLabel><UiListbox v-model="v"><template #selected="{ value }">{{ value }}</template>
+        <UiListboxOption value="a">A</UiListboxOption></UiListbox></UiField>`,
+    })
+    const w = await mountSuspended(F)
+    const button = w.find('button')
+    expect(w.find('label').attributes('for')).toBe(button.attributes('id'))
+    expect(button.element.previousElementSibling).toBeNull() // the control slot is the Listbox wrapper…
+    expect(button.element.parentElement?.getAttribute('data-slot')).toBe('control') // …so label + control spacing applies
+  })
+
+  it('a disabled Fieldset disables its fields, labels and legend', async () => {
+    const F = defineComponent({
+      components: { UiFieldset, UiLegend, UiField, UiLabel, UiInput },
+      template: `<UiFieldset disabled><UiLegend>Preview</UiLegend><UiField><UiLabel>Title</UiLabel><UiInput /></UiField></UiFieldset>`,
+    })
+    const w = await mountSuspended(F)
+    expect(w.find('legend').attributes('data-disabled')).toBe('')
+    expect(w.find('label').attributes('data-disabled')).toBe('')
+    expect(w.find('input').attributes('data-disabled')).toBe('')
+  })
+
+  it('puts class on the Catalyst wrapper and other attributes on the control', async () => {
+    const w = await mountSuspended(UiInput, { attrs: { class: 'w-24', 'aria-label': 'Bar', id: 'mine' } })
+    expect(w.classes()).toContain('w-24')
+    expect(w.find('input').classes()).not.toContain('w-24')
+    expect(w.find('input').attributes('aria-label')).toBe('Bar')
+    expect(w.find('input').attributes('id')).toBe('mine') // outside a Field, an explicit id is kept
   })
 })

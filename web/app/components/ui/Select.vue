@@ -1,10 +1,10 @@
 <template>
-  <span data-slot="control" :class="WRAPPER">
+  <span data-slot="control" :class="[attrs.class, WRAPPER]">
     <select
-      v-bind="$attrs"
-      :id="($attrs.id as string | undefined) ?? field?.controlId"
+      v-bind="rest"
+      :id="field?.controlId ?? (attrs.id as string | undefined)"
       v-model="model"
-      v-interactive:any-focus
+      v-interactive
       :disabled="isDisabled"
       :aria-invalid="invalid ? 'true' : undefined"
       :aria-describedby="describedBy(field)"
@@ -27,11 +27,18 @@
 import { describedBy, FIELD } from '~/utils/field'
 import { dataFlag, vInteractive } from '~/utils/interactive'
 
-/** Catalyst Select (native, single); options go in the default slot; attributes go to the <select> */
+/** Catalyst Select (native, single); options go in the default slot */
 defineOptions({ inheritAttrs: false })
 const props = defineProps<{ invalid?: boolean; disabled?: boolean }>()
 const model = defineModel<string>({ default: '' })
 const field = inject(FIELD, undefined)
+// like Catalyst's className, `class` sizes the wrapper (with its background and focus layers);
+// everything else (aria-label, placeholder, title…) goes on the control
+const attrs = useAttrs()
+const rest = computed(() => {
+  const { class: _class, id: _id, ...others } = attrs
+  return others
+})
 const isDisabled = computed(() => props.disabled || !!field?.disabled.value)
 
 const WRAPPER = [

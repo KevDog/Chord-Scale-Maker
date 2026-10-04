@@ -63,16 +63,18 @@
       <div class="space-y-8">
         <UiField>
           <UiLabel>Instrument (Listbox with groups)</UiLabel>
-          <UiListbox v-model="instrument" aria-label="Instrument">
+          <UiListbox v-model="instrument">
             <template #selected="{ value }"><UiListboxLabel>{{ value }}</UiListboxLabel></template>
-            <UiListboxHeader>Concert pitch (C)</UiListboxHeader>
-            <UiListboxOption value="concert"><UiListboxLabel>Concert</UiListboxLabel></UiListboxOption>
-            <UiListboxOption value="piano"><UiListboxLabel>Piano</UiListboxLabel></UiListboxOption>
-            <UiListboxHeader>B♭ instruments</UiListboxHeader>
-            <UiListboxOption value="trumpet"><UiListboxLabel>Trumpet</UiListboxLabel></UiListboxOption>
-            <UiListboxOption value="tenor-sax">
-              <UiListboxLabel>Tenor sax</UiListboxLabel><UiListboxDescription>sounds an octave lower</UiListboxDescription>
-            </UiListboxOption>
+            <UiListboxGroup label="Concert pitch (C)">
+              <UiListboxOption value="concert"><UiListboxLabel>Concert</UiListboxLabel></UiListboxOption>
+              <UiListboxOption value="piano"><UiListboxLabel>Piano</UiListboxLabel></UiListboxOption>
+            </UiListboxGroup>
+            <UiListboxGroup label="B♭ instruments">
+              <UiListboxOption value="trumpet"><UiListboxLabel>Trumpet</UiListboxLabel></UiListboxOption>
+              <UiListboxOption value="tenor-sax">
+                <UiListboxLabel>Tenor sax</UiListboxLabel><UiListboxDescription>sounds an octave lower</UiListboxDescription>
+              </UiListboxOption>
+            </UiListboxGroup>
           </UiListbox>
         </UiField>
 

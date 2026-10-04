@@ -14,6 +14,6 @@ import { FIELD } from '~/utils/field'
 import { dataFlag } from '~/utils/interactive'
 
 const field = inject(FIELD, undefined)
-onMounted(() => field && (field.hasError.value = true))
-onUnmounted(() => field && (field.hasError.value = false))
+onMounted(() => field && field.errors.value++)
+onUnmounted(() => field && field.errors.value--)
 </script>

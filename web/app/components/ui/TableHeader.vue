@@ -11,7 +11,7 @@
 </template>
 
 <script setup lang="ts">
-import { TABLE } from '~/utils/field'
+import { TABLE } from '~/utils/table'
 
-const table = inject(TABLE, undefined)?.value
+const table = inject(TABLE, undefined) // a ref, unwrapped in the template, so options stay reactive
 </script>

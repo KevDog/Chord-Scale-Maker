@@ -31,6 +31,18 @@ describe('display components', () => {
     expect(w.find('tr').classes()).toContain('even:bg-zinc-950/2.5')
   })
 
+  it('Table options stay reactive', async () => {
+    const T = defineComponent({
+      components: { UiTable, UiTableBody, UiTableRow, UiTableCell },
+      props: { dense: Boolean },
+      template: '<UiTable :dense="dense"><UiTableBody><UiTableRow><UiTableCell>x</UiTableCell></UiTableRow></UiTableBody></UiTable>',
+    })
+    const w = await mountSuspended(T)
+    expect(w.find('td').classes()).toContain('py-4')
+    await w.setProps({ dense: true })
+    expect(w.find('td').classes()).toContain('py-2.5')
+  })
+
   it('NavbarItem marks the current page', async () => {
     const w = await mountSuspended(UiNavbarItem, { props: { href: '/', current: true }, slots: { default: 'Library' } })
     expect(w.find('a').attributes('aria-current')).toBe('page')

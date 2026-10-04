@@ -14,6 +14,6 @@ import { FIELD } from '~/utils/field'
 import { dataFlag } from '~/utils/interactive'
 
 const field = inject(FIELD, undefined)
-onMounted(() => field && (field.hasDescription.value = true))
-onUnmounted(() => field && (field.hasDescription.value = false))
+onMounted(() => field && field.descriptions.value++)
+onUnmounted(() => field && field.descriptions.value--)
 </script>

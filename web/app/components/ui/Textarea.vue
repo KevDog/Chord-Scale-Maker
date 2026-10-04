@@ -1,8 +1,8 @@
 <template>
-  <span data-slot="control" :class="WRAPPER">
+  <span data-slot="control" :class="[attrs.class, WRAPPER]">
     <textarea
-      v-bind="$attrs"
-      :id="($attrs.id as string | undefined) ?? field?.controlId"
+      v-bind="rest"
+      :id="field?.controlId ?? (attrs.id as string | undefined)"
       v-model="model"
       v-interactive:any-focus
       :disabled="isDisabled"
@@ -19,11 +19,18 @@
 import { describedBy, FIELD } from '~/utils/field'
 import { dataFlag, vInteractive } from '~/utils/interactive'
 
-/** Catalyst Textarea; attributes go to the <textarea> */
+/** Catalyst Textarea */
 defineOptions({ inheritAttrs: false })
 const props = withDefaults(defineProps<{ resizable?: boolean; invalid?: boolean; disabled?: boolean }>(), { resizable: true })
 const model = defineModel<string>({ default: '' })
 const field = inject(FIELD, undefined)
+// like Catalyst's className, `class` sizes the wrapper (with its background and focus layers);
+// everything else (aria-label, placeholder, title…) goes on the control
+const attrs = useAttrs()
+const rest = computed(() => {
+  const { class: _class, id: _id, ...others } = attrs
+  return others
+})
 const isDisabled = computed(() => props.disabled || !!field?.disabled.value)
 
 const WRAPPER = [

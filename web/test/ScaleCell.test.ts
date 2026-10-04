@@ -1,8 +1,12 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it } from 'vitest'
+import { describe, expect, it, vi } from 'vitest'
+import { nextTick } from 'vue'
 import ScaleCell from '~/components/ScaleCell.vue'
 
-const mount = (chord: string, scale = '') => mountSuspended(ScaleCell, { props: { chord, scale, field: '' } })
+const mount = (chord: string, scale = '') => mountSuspended(ScaleCell, { props: { chord, scale } })
+const settle = async () => {
+  for (let i = 0; i < 3; i++) await nextTick()
+}
 
 describe('ScaleCell', () => {
   it('offers the default, the alternates and Other', async () => {
@@ -25,22 +29,32 @@ describe('ScaleCell', () => {
     expect((w.find('select').element as HTMLSelectElement).value).toBe('C Bebop Dominant')
   })
 
-  it('prompts for unknown chords and picks any scale via Other', async () => {
-    const w = await mount('Cm7#5#9x')
+  it('prompts for unknown chords and picks any scale in a dialog', async () => {
+    const w = await mountSuspended(ScaleCell, { props: { chord: 'Cm7#5#9x', scale: '' }, attachTo: document.body })
     expect(w.find('option').text()).toBe('Choose a scale…')
     await w.find('select').setValue('__other')
-    await w.find('[aria-label="Scale name"]').setValue('Altered')
-    await w.find('[aria-label="Set scale"]').trigger('click')
+    await settle()
+    const dialog = document.querySelector('[role=dialog]')
+    expect(dialog?.textContent).toContain('Choose a scale')
+    const name = dialog?.querySelector('[aria-label="Scale name"]') as HTMLSelectElement
+    name.value = 'Altered'
+    name.dispatchEvent(new Event('change'))
+    ;[...(dialog?.querySelectorAll('button') ?? [])].find((b) => b.textContent?.includes('Set scale'))?.click()
+    await settle()
     expect(w.emitted('update')).toEqual([['C Altered']])
+    w.unmount()
   })
 
-  it('starts the picker on a playable spelling of the chord root, and cancels with Escape', async () => {
-    const w = await mount('Cb7#5#9x')
+  it('starts the picker on a playable spelling of the chord root, and cancels without a change', async () => {
+    const w = await mountSuspended(ScaleCell, { props: { chord: 'Cb7#5#9x', scale: '' }, attachTo: document.body })
     await w.find('select').setValue('__other')
-    expect((w.find('[aria-label="Scale root"]').element as HTMLSelectElement).value).toBe('B')
-    await w.find('[aria-label="Scale root"]').trigger('keydown', { key: 'Escape' })
-    expect(w.find('[aria-label="Scale root"]').exists()).toBe(false)
+    await settle()
+    expect((document.querySelector('[aria-label="Scale root"]') as HTMLSelectElement).value).toBe('B')
+    ;[...document.querySelectorAll('[role=dialog] button')].find((b) => b.textContent?.includes('Cancel'))?.dispatchEvent(new MouseEvent('click', { bubbles: true }))
+    await vi.waitFor(() => expect(document.querySelector('[role=dialog]')).toBeNull())
     expect(w.emitted('update')).toBeUndefined()
+    expect((w.find('select').element as HTMLSelectElement).value).toBe('') // back from "Other…"
+    w.unmount()
   })
 
   it('treats a typed scale equal to the default as the default', async () => {
