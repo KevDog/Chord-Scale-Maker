@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { parseChart, serializeChart } from '../chart'
 import { parseRoot } from '../pitch'
-import { chartKey, shiftNote, keyShift, TRANSPOSE_KEYS, transposeChart } from '../transpose'
+import { chartKey, keySide, shiftNote, keyShift, spellInKey, TRANSPOSE_KEYS, transposeChart } from '../transpose'
 
 const rowsOf = (text: string, from: string, to: string): string[] =>
   transposeChart(parseChart(text).value, from, to)
@@ -25,11 +25,20 @@ describe('transpose', () => {
     ])
   })
 
-  it('spells roots by the design rule: no Cb/Fb/E#/B# or double accidentals in the scale', () => {
-    // Db Dorian would need Fb and Cb, so the chord follows C# Dorian
-    expect(rowsOf('A | 8 | Abm7 | Ab Dorian\nA | 8 | Db7', 'F', 'Bb')).toEqual(['C#m7 | C# Dorian', 'F#7'])
-    // the key's spelling wins ties (Gb Ionian, like F# Ionian, has one of them) but not clear cases
-    expect(rowsOf('A | 1 | C | C Ionian\nA | 1 | C7 | C Mixolydian', 'C', 'Gb')).toEqual(['Gb | Gb Ionian', 'F#7 | F# Mixolydian'])
+  it('spells roots on the target key\'s side, as jazz charts do', () => {
+    // Bird blues bar 8 in Bb: Dbm7 Gb7, though Db Dorian has Fb and Cb
+    expect(rowsOf('A | 8 | Abm7 | Ab Dorian\nA | 8 | Db7', 'F', 'Bb')).toEqual(['Dbm7 | Db Dorian', 'Gb7'])
+    expect(rowsOf('A | 1 | C | C Ionian\nA | 1 | C7 | C Mixolydian', 'C', 'Gb')).toEqual(['Gb | Gb Ionian', 'Gb7 | Gb Mixolydian'])
+    expect(rowsOf('A | 1 | C7 | C Mixolydian', 'C', 'F#')).toEqual(['F#7 | F# Mixolydian'])
+  })
+
+  it('knows each key\'s side, and falls back to the plain rule in C or to avoid double accidentals', () => {
+    expect(['C', 'F', 'Bb', 'Gb', 'G', 'B', 'F#'].map(keySide)).toEqual([0, -1, -1, -1, 1, 1, 1])
+    expect(spellInKey(parseRoot('F#'), 'mixolydian', -1)).toEqual(parseRoot('Gb'))
+    expect(spellInKey(parseRoot('Gb'), 'mixolydian', 1)).toEqual(parseRoot('F#'))
+    expect(spellInKey(parseRoot('Cb'), 'ionian', -1)).toEqual(parseRoot('B')) // a natural beats a flat
+    expect(spellInKey(parseRoot('A#'), 'mixolydian', 1)).toEqual(parseRoot('Bb')) // A# Mixolydian needs C## and F##
+    expect(spellInKey(parseRoot('Gb'), 'mixolydian', 0)).toEqual(parseRoot('F#')) // C: simplifyRoot decides
   })
 
   it('keeps a slash bass at its interval from the root', () => {

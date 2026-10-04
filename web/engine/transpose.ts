@@ -2,8 +2,8 @@ import type { ChartDoc, ChartLine } from './chart'
 import { resolveScale } from './chart'
 import { parseChord } from './chord'
 import type { RowLine } from './edit'
-import { type Spelled, accFor, mod, parseRoot, pcOf, rootName, toLetter } from './pitch'
-import { type ScaleKey, parseScale, simplifyRoot } from './scales'
+import { type Spelled, accFor, enharmonics, mod, parseRoot, pcOf, rootName, toLetter } from './pitch'
+import { type ScaleKey, parseScale, SCALES, simplifyRoot, spellFrom } from './scales'
 
 /** an interval as letter steps plus semitones, so spellings move with it (F -> Bb is up a 4th) */
 export type KeyShift = Readonly<{ steps: number; semis: number }>
@@ -21,6 +21,25 @@ export function shiftNote(n: Spelled, s: KeyShift): Spelled {
   return { letter, acc: accFor(mod(pcOf(n) + s.semis, 12), letter) }
 }
 
+/** -1 for a flat key (F, Bb … Gb), 1 for a sharp key (G, D … F#), 0 for C */
+export type KeySide = -1 | 0 | 1
+export function keySide(key: string): KeySide {
+  const acc = spellFrom(parseRoot(key), SCALES.ionian[0]).reduce((sum, n) => sum + n.acc, 0)
+  return acc < 0 ? -1 : acc > 0 ? 1 : 0
+}
+
+/**
+ * a transposed root, spelled on the target key's side: Db, not C#, in Bb (Dbm7 Gb7 in a Bb Bird blues),
+ * even when its scale then has a Cb or Fb. A natural beats an accidental (B, not Cb). The plain
+ * simplifyRoot rule decides in C, and when the key's side would put double accidentals in the scale.
+ */
+export function spellInKey(n: Spelled, scale: ScaleKey, side: KeySide): Spelled {
+  const fits = (o: Spelled): boolean =>
+    (side < 0 ? o.acc <= 0 : o.acc >= 0) && spellFrom(o, SCALES[scale][0]).every((x) => Math.abs(x.acc) <= 1)
+  const onSide = side === 0 ? [] : enharmonics(n).filter(fits).sort((a, b) => Math.abs(a.acc) - Math.abs(b.acc))
+  return onSide[0] ?? simplifyRoot(n, scale)
+}
+
 /** the row's scale key when that scale is built on the chord root, else Ionian */
 function rootScaleKey(row: RowLine, root: Spelled): ScaleKey {
   const text = resolveScale(row)
@@ -30,17 +49,17 @@ function rootScaleKey(row: RowLine, root: Spelled): ScaleKey {
 }
 
 /**
- * one row moved by the shift (throws if its chord or scale can't be read). Roots are respelled by
- * the design rule (simplifyRoot over the scale); the chord follows its scale's root when they share
- * a pitch, and a slash bass keeps its interval from the root.
+ * one row moved by the shift (throws if its chord or scale can't be read). Roots are spelled for the
+ * target key (spellInKey); the chord follows its scale's root when they share a pitch, and a slash
+ * bass keeps its interval from the root.
  */
-function transposeRow(row: RowLine, s: KeyShift): RowLine {
+function transposeRow(row: RowLine, s: KeyShift, side: KeySide): RowLine {
   const c = parseChord(row.chord)
   let scale = row.scale
-  let root = simplifyRoot(shiftNote(c.root, s), rootScaleKey(row, c.root))
+  let root = spellInKey(shiftNote(c.root, s), rootScaleKey(row, c.root), side)
   if (row.scale) {
     const parsed = parseScale(row.scale)
-    const scaleRoot = simplifyRoot(shiftNote(parsed.root, s), parsed.key)
+    const scaleRoot = spellInKey(shiftNote(parsed.root, s), parsed.key, side)
     const name = row.scale.trim().slice(row.scale.trim().search(/\s/))
     scale = rootName(scaleRoot) + name
     if (pcOf(parsed.root) === pcOf(c.root)) root = scaleRoot
@@ -57,11 +76,12 @@ function transposeRow(row: RowLine, s: KeyShift): RowLine {
 /** move every row from one key to another; lines that aren't rows, and rows it can't read, stay as they are */
 export function transposeChart(doc: ChartDoc, from: string, to: string): Readonly<{ doc: ChartDoc; skipped: number }> {
   const s = keyShift(parseRoot(from), parseRoot(to))
+  const side = keySide(to)
   let skipped = 0
   const lines = doc.lines.map((l): ChartLine => {
     if (l.kind !== 'row') return l
     try {
-      return transposeRow(l, s)
+      return transposeRow(l, s, side)
     } catch {
       skipped++
       return l
