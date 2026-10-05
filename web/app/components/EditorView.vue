@@ -33,6 +33,7 @@
       <div class="space-y-4 print:hidden">
         <UiSubheading id="preview-heading">Preview</UiSubheading>
         <div class="flex flex-wrap items-end gap-4">
+          <SegmentedControl v-if="guideTones" v-model="sheet" legend="Sheet" name="sheet" :options="SHEETS" />
           <UiField class="w-60">
             <UiLabel>Instrument</UiLabel>
             <UiListbox v-model="prefs.instrument.value">
@@ -45,25 +46,13 @@
               </UiListboxGroup>
             </UiListbox>
           </UiField>
-          <UiField class="w-28">
+          <UiField v-if="sheet === 'scales'" class="w-28">
             <UiLabel>Start on</UiLabel>
             <UiSelect v-model="prefs.start.value" aria-describedby="start-help">
               <option v-for="r in PICKER_ROOTS" :key="r" :value="r">{{ noteText(r) }}</option>
             </UiSelect>
           </UiField>
-          <!-- segmented control (Application UI button-group pattern) over native radios -->
-          <fieldset>
-            <legend class="sr-only">Which spellings to show</legend>
-            <span class="isolate inline-flex rounded-lg shadow-xs dark:shadow-none">
-              <label
-                v-for="m in modes"
-                :key="m.value"
-                class="relative -ml-px inline-flex cursor-default items-center bg-white px-3 py-2 text-sm/5 font-semibold text-zinc-950 ring-1 ring-zinc-950/10 ring-inset first:ml-0 first:rounded-l-lg last:rounded-r-lg hover:bg-zinc-50 has-checked:z-10 has-checked:bg-teal-700 has-checked:text-white has-checked:ring-teal-800 has-focus-visible:z-20 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-blue-500 dark:bg-white/5 dark:text-white dark:ring-white/10 dark:hover:bg-white/10 dark:has-checked:bg-teal-500 dark:has-checked:text-zinc-950"
-              >
-                <input v-model="mode" type="radio" name="mode" :value="m.value" class="sr-only">{{ m.label }}
-              </label>
-            </span>
-          </fieldset>
+          <SegmentedControl v-if="sheet === 'scales'" v-model="mode" legend="Which spellings to show" name="mode" :options="modes" />
           <UiButton v-bind="prefs.intervals.value ? { color: 'teal' } : { outline: true }" :aria-pressed="prefs.intervals.value" title="Label each note against the chord root (on screen only)" @click="prefs.intervals.value = !prefs.intervals.value">
             Intervals
           </UiButton>
@@ -76,6 +65,15 @@
       </div>
 
       <UiText v-if="editor.fatal.value" class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
+      <GuideToneSheet
+        v-else-if="sheet === 'guideTones'"
+        :rows="editor.rows.value"
+        :title="editor.meta.value.title"
+        :subtitle="editor.meta.value.subtitle"
+        :part="part"
+        :instrument-label="instrumentLabel(prefs.instrument.value)"
+        :intervals="prefs.intervals.value"
+      />
       <ScaleSheet
         v-else
         :rows="editor.rows.value"
@@ -105,6 +103,13 @@ const prefs = usePreferences()
 const part = computed(() => partFor(prefs.instrument.value))
 const mode = ref<ModeChoice>('both')
 const transposed = ref('')
+const guideTones = useFeature('guideTones')
+type Sheet = 'scales' | 'guideTones'
+const SHEETS: readonly { value: Sheet; label: string }[] = [
+  { value: 'scales', label: 'Scales' },
+  { value: 'guideTones', label: 'Guide tones' },
+]
+const sheet = ref<Sheet>('scales')
 const modes = computed((): readonly { value: ModeChoice; label: string }[] => [
   { value: 'both', label: 'Both' },
   { value: 'from', label: `From ${noteText(prefs.start.value)}` },

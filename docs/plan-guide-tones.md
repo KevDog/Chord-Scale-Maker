@@ -1,6 +1,6 @@
 # Guide tone lines: plan
 
-Status: **phase 1 (engine) built.** Web-only, like Transpose; the Python CLI is unchanged. Behind a `guideTones` feature flag
+Status: **phases 1 (engine) and 2 (rendering, UI behind the flag) built.** Web-only, like Transpose; the Python CLI is unchanged. Behind a `guideTones` feature flag
 until it is signed off.
 
 ## Decisions
@@ -49,8 +49,10 @@ part's range: treble written C4–A5 (comfortable E4–D5), bass written E2–C4
 - **Cost of a move:** the semitones moved, plus a penalty for a leap of more than 2 semitones, plus a penalty for
   each semitone outside the comfortable range.
 - **Ties:** a common tone wins, then a step, then staying nearer the middle of the range.
-- **Two runs:** line 1 must start on the 3rd and line 2 on the 7th. After that, the cheapest path decides, which
-  gives the familiar 3rd↔7th trade on ii–V–I.
+- **Both lines at once:** the search runs over *pairs* of notes, one line on the 3rd and the other on the 7th of
+  every chord, minimising their combined motion. Line 1 starts on the 3rd. Voicing each line on its own let the two
+  drift onto the same notes, and voicing line 2 around line 1 forced leaps on line 2. No library chart's lines leap
+  more than a perfect 4th (a test checks every chart).
 
 **Output.** One `GuideToneSheet` per part:
 - **Systems** of 4 bars each. Every bar has chord symbols with their beat positions, and notes for both lines.
@@ -71,7 +73,7 @@ part's range: treble written C4–A5 (comfortable E4–D5), bass written E2–C4
 
 ## 2. Rendering: `drawGuideToneSystem` in `app/utils/vexflow.ts`
 
-- **Layout:** a two-stave system, 4 measures wide, with barlines aligned across both staves. Each stave has a clef
+- **Layout:** a two-stave system, 4 measures wide (2 on phones, drawn at the same size per bar; print always 4), with barlines aligned across both staves. Each stave has a clef
   and a 4/4 time signature on the first system only.
 - **Notes:** half, quarter and whole notes; ties across barlines.
 - **Chord symbols:** above the top stave, at each chord's beat. VexFlow `ChordSymbol` gives the same glyphs as

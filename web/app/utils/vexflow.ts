@@ -1,4 +1,4 @@
-import { accText, type StaffModel, toVexKey } from '~~/engine'
+import { accText, type GuideSystem, type StaffModel, toVexKey } from '~~/engine'
 
 type VexFlowModule = typeof import('vexflow/bravura')
 
@@ -81,4 +81,113 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
   svg?.setAttribute('role', 'img')
   svg?.setAttribute('aria-label', staff.notes.map((n) => toVexKey(n).replace('/', '')).join(' '))
   return notes.map((n) => (n.getNoteHeadBeginX() + n.getNoteHeadEndX()) / 2 / STAFF_WIDTH)
+}
+
+// --- guide tone systems (engine/guideTones.ts) ------------------------------------------------------------------
+
+const DURATIONS = { 4: 'w', 2: 'h', 1: 'q' } as const
+const REST_KEY = { treble: 'b/4', bass: 'd/3' } as const
+const CLEF_SPACE = 70 // the first bar of a system also holds the clef
+const TIME_SPACE = 40 // and, on the first system, the time signature
+const BAR_UNITS = 300 // drawing width per bar, so 2-bar systems on phones draw as large as 4-bar ones elsewhere
+
+export type SystemLayout = Readonly<{
+  /** per line, per bar: each note's centre as a fraction of the width */
+  xs: readonly (readonly (readonly number[])[])[]
+}>
+
+/**
+ * draw one guide tone system: line 1 into els[0], line 2 into els[1], one staff each, bars aligned across both
+ * (each bar's two voices are formatted together). Every system uses the same bar width, so a short last system
+ * is left-aligned rather than stretched. Colors follow CSS `color`.
+ */
+export function drawGuideToneSystem(
+  vf: VexFlowModule,
+  els: readonly [HTMLElement, HTMLElement],
+  system: GuideSystem,
+  clef: 'treble' | 'bass',
+  opts: Readonly<{ timeSignature: boolean; finalBar: boolean; barsPerSystem: number }>,
+): SystemLayout {
+  const lead = CLEF_SPACE + (opts.timeSignature ? TIME_SPACE : 0)
+  const total = BAR_UNITS * opts.barsPerSystem
+  const barWidth = (total - 1 - lead) / opts.barsPerSystem
+  const ctxs = els.map((el) => {
+    el.replaceChildren()
+    const r = new vf.Renderer(el as HTMLDivElement, vf.Renderer.Backends.SVG)
+    r.resize(total, STAFF_HEIGHT)
+    return r.getContext().setFillStyle('currentColor').setStrokeStyle('currentColor')
+  })
+
+  const allNotes: InstanceType<typeof vf.StaveNote>[][] = [[], []]
+  const ties: boolean[][] = [[], []]
+  const xsNotes: InstanceType<typeof vf.StaveNote>[][][] = [[], []]
+  let x = 0
+  system.bars.forEach((bar, b) => {
+    const width = b === 0 ? barWidth + lead : barWidth
+    const isLast = b === system.bars.length - 1
+    const staves = ([0, 1] as const).map((l) => {
+      const stave = new vf.Stave(x, STAVE_Y, width)
+      if (b === 0) stave.addClef(clef)
+      if (b === 0 && opts.timeSignature) stave.addTimeSignature('4/4')
+      if (isLast && opts.finalBar) stave.setEndBarType(vf.BarlineType.END)
+      const ctx = ctxs[l]
+      if (ctx) stave.setContext(ctx).draw()
+      return stave
+    })
+    const voices = ([0, 1] as const).map((l) => {
+      const shown = new Map<string, number>() // accidentals so far in this bar, by letter + octave
+      const notes = bar.lines[l].map((n, i) => {
+        const tiedIn = i === 0 ? (ties[l]?.at(-1) ?? false) : (bar.lines[l][i - 1]?.tie ?? false)
+        if (!n.pitch) return new vf.StaveNote({ keys: [REST_KEY[clef]], duration: `${DURATIONS[n.beats]}r`, clef })
+        const key = toVexKey(n.pitch)
+        const note = new vf.StaveNote({ keys: [key], duration: DURATIONS[n.beats], clef })
+        const place = `${n.pitch.letter}/${key.split('/')[1]}`
+        const before = shown.get(place) ?? 0
+        if (!tiedIn && (n.pitch.acc !== 0 || before !== 0)) note.addModifier(new vf.Accidental(n.pitch.acc === 0 ? 'n' : accText(n.pitch.acc)), 0)
+        shown.set(place, n.pitch.acc)
+        return note
+      })
+      allNotes[l]?.push(...notes)
+      ties[l]?.push(...bar.lines[l].map((n) => n.tie))
+      xsNotes[l]?.push(notes)
+      return new vf.Voice({ numBeats: 4, beatValue: 4 }).setMode(vf.Voice.Mode.SOFT).addTickables(notes)
+    })
+    const [s0] = staves
+    const room = width - ((s0?.getNoteStartX() ?? x) - x) - 20
+    new vf.Formatter().joinVoices([voices[0] as InstanceType<typeof vf.Voice>]).joinVoices([voices[1] as InstanceType<typeof vf.Voice>]).format(voices as InstanceType<typeof vf.Voice>[], room)
+    voices.forEach((v, l) => {
+      const ctx = ctxs[l]
+      const stave = staves[l]
+      if (ctx && stave) v.draw(ctx, stave)
+    })
+    x += width
+  })
+
+  // ties, including one left open at the end of the system (it continues on the next)
+  ;([0, 1] as const).forEach((l) => {
+    const ctx = ctxs[l]
+    const notes = allNotes[l] ?? []
+    notes.forEach((n, i) => {
+      if (!ties[l]?.[i] || !ctx) return
+      new vf.StaveTie({ firstNote: n, lastNote: notes[i + 1] ?? null, firstIndexes: [0], lastIndexes: [0] }).setContext(ctx).draw()
+    })
+  })
+
+  // crop both staves to the same band, so the two lines look alike
+  const heads = [...(allNotes[0] ?? []), ...(allNotes[1] ?? [])].filter((n) => !n.isRest()).flatMap((n) => n.getYs())
+  const { top, bottom } = cropBand(heads)
+  els.forEach((el, l) => {
+    const svg = el.querySelector('svg')
+    svg?.setAttribute('viewBox', `0 ${top} ${total} ${bottom - top}`)
+    svg?.setAttribute('width', '100%')
+    svg?.removeAttribute('height')
+    svg?.style.removeProperty('width')
+    svg?.style.removeProperty('height')
+    svg?.setAttribute('role', 'img')
+    const keys = system.bars.map((b) => b.lines[l as 0 | 1].map((n) => (n.pitch ? toVexKey(n.pitch).replace('/', '') : 'rest')).join(' '))
+    svg?.setAttribute('aria-label', `Line ${l + 1}: ${keys.join(' | ')}`)
+  })
+  return {
+    xs: xsNotes.map((bars) => bars.map((notes) => notes.map((n) => (n.getNoteHeadBeginX() + n.getNoteHeadEndX()) / 2 / total))),
+  }
 }

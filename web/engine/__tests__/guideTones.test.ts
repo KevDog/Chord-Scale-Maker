@@ -1,3 +1,4 @@
+import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import type { Row } from '../chart'
 import { expandRows, parseChart } from '../chart'
@@ -113,6 +114,30 @@ describe('guide tone lines', () => {
       const pitches = sheet.systems.flatMap((s) => s.bars).flatMap((b) => b.lines[i]).flatMap((n) => (n.pitch ? [n.pitch.midi] : []))
       const leaps = pitches.slice(1).map((m, j) => Math.abs(m - (pitches[j] ?? m)))
       expect(Math.max(...leaps), `line ${i + 1}`).toBeLessThanOrEqual(2)
+    }
+  })
+
+  it('keeps the two lines complementary: where one plays the 3rd, the other plays the 7th', () => {
+    const text = readFileSync('../charts/autumn_leaves.txt', 'utf8')
+    const bars = buildGuideTones(rowsOf(text), CONCERT).systems.flatMap((s) => s.bars)
+    bars.forEach((b, i) =>
+      b.lines[0].forEach((n, j) => {
+        const other = b.lines[1][j]
+        if (n.pitch && other?.pitch) expect(n.label, `bar ${i + 1}`).not.toBe(other.label)
+      }),
+    )
+  })
+
+  it('never leaps more than a perfect 4th in any library chart, in either line', () => {
+    for (const f of readdirSync('../charts')) {
+      const sheet = buildGuideTones(rowsOf(readFileSync(`../charts/${f}`, 'utf8')), CONCERT)
+      for (const i of [0, 1] as const) {
+        const notes = sheet.systems.flatMap((s) => s.bars).flatMap((b) => b.lines[i])
+        const midis = notes.filter((_, j) => !notes[j - 1]?.tie).flatMap((n) => (n.pitch ? [n.pitch.midi] : []))
+        const leaps = midis.slice(1).map((m, j) => Math.abs(m - (midis[j] ?? m)))
+        expect(Math.max(0, ...leaps), `${f} line ${i + 1}`).toBeLessThanOrEqual(5)
+      }
+      expect(sheet.diagnostics, f).toEqual([])
     }
   })
 

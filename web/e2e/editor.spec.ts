@@ -74,3 +74,15 @@ test('interval labels show on screen, against the chord root', async ({ page }) 
   await page.reload()
   await expect(page.getByRole('button', { name: 'Intervals' })).toHaveAttribute('aria-pressed', 'true') // remembered
 })
+
+test('guide tones draw both lines, four bars a system, without the scale controls', async ({ page }) => {
+  await page.goto('/editor?chart=autumn_leaves')
+  await page.getByText('Guide tones', { exact: true }).click()
+  await expect(page.getByText('Full Form, Alternate Changes (Guide Tone Lines)')).toBeVisible()
+  await expect(page.locator('svg[aria-label^="Line 1:"]')).toHaveCount(8) // 32 bars
+  await expect(page.locator('svg[aria-label^="Line 2:"]')).toHaveCount(8)
+  await expect(page.getByLabel('Start on')).toHaveCount(0)
+  await expect(page.getByText('From root', { exact: true })).toHaveCount(0)
+  await page.getByText('Scales', { exact: true }).click()
+  await expect(staves(page)).toHaveCount(78)
+})

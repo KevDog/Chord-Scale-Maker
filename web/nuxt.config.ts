@@ -35,6 +35,7 @@ export default defineNuxtConfig({
       // feature flags (useFeature): off by default; NUXT_PUBLIC_FEATURES_<NAME>=true turns one on
       features: {
         newChart: false, // blank charts and this browser's draft; library charts stay editable
+        guideTones: false, // the Guide tones sheet in the preview (docs/plan-guide-tones.md)
       },
     },
   },
