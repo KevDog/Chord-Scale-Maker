@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import type { ComponentPublicInstance } from 'vue'
-import type { GuideSystem } from '~~/engine'
+import { glyphs, type GuideSystem } from '~~/engine'
 
 /** one guide tone system: chord symbols, then line 1 and line 2 on their own staves, bars aligned */
 const props = defineProps<{
@@ -47,9 +47,6 @@ function setEl(l: 0 | 1, el: Element | ComponentPublicInstance | null): void {
 }
 const xs = ref<readonly (readonly (readonly number[])[])[]>([[], []])
 const drawError = ref<string | null>(null)
-
-/** "b7" -> "♭7" */
-const glyphs = (label: string): string => label.replaceAll('b', '♭').replaceAll('#', '♯')
 
 const labelsFor = (l: 0 | 1): { x: number; label: string }[] =>
   props.system.bars.flatMap((bar, b) =>

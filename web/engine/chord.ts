@@ -1,6 +1,7 @@
 import { type Part, writtenRoot } from './part'
 import { type Spelled, accFor, LETTERS, mod, parseRoot, pcOf, toLetter } from './pitch'
 import { parseScale, simplifyRoot } from './scales'
+import { orNull } from './util'
 
 /** root, quality (everything between root and /bass), optional bass; same regex as jazz_scales.py */
 export const CHORD_RE = /^([A-G])([b#♭♯]?)(.*?)(?:\/([A-G])([b#♭♯]?))?$/
@@ -76,3 +77,11 @@ export function chordTokens(part: Part, chord: string, scaleText?: string): Chor
   }
   return mergeText(tokens)
 }
+
+/** chordTokens for display: a scale that can't be read is ignored; null only if the chord itself can't be read */
+export const chordTokensOrNull = (part: Part, chord: string, scaleText?: string | null): readonly ChordToken[] | null =>
+  orNull(() => chordTokens(part, chord, scaleText ?? undefined)) ?? orNull(() => chordTokens(part, chord))
+
+/** writtenChordRoot, ignoring a scale that can't be read (throws only if the chord can't be read) */
+export const writtenChordRootLenient = (part: Part, chord: string, scaleText?: string | null): Spelled =>
+  orNull(() => writtenChordRoot(part, chord, scaleText ?? undefined)) ?? writtenChordRoot(part, chord)

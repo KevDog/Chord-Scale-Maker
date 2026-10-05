@@ -20,15 +20,13 @@
 </template>
 
 <script setup lang="ts">
-import type { StaffModel } from '~~/engine'
+import { glyphs, type StaffModel } from '~~/engine'
 
 /** intervals: label each note against the chord root (b9, #11…) */
 const props = defineProps<{ staff: StaffModel; clef: 'treble' | 'bass'; intervals?: boolean }>()
 const el = useTemplateRef<HTMLDivElement>('el')
 const drawError = ref<string | null>(null)
 const xs = ref<number[]>([])
-/** "b9" -> "♭9", like the chord symbols */
-const glyphs = (label: string): string => label.replaceAll('b', '♭').replaceAll('#', '♯')
 
 async function draw(): Promise<void> {
   if (props.staff.error) return

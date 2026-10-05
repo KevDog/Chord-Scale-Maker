@@ -16,6 +16,9 @@ export function parseRoot(tok: string): Spelled {
   return { letter: 'CDEFGAB'.indexOf(letter.toUpperCase()) as Letter, acc }
 }
 
+/** "Eb" -> "E♭", "b9" -> "♭9": typed accidentals as music glyphs, for display */
+export const glyphs = (text: string): string => text.replaceAll('b', '♭').replaceAll('#', '♯')
+
 export const accText = (acc: number): string => (acc > 0 ? '#'.repeat(acc) : 'b'.repeat(-acc))
 export const rootName = (n: Spelled): string => LETTERS[n.letter] + accText(n.acc)
 export const pcOf = (n: Spelled): number => mod(NAT_PC[n.letter] + n.acc, 12)
