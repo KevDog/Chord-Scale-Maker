@@ -140,7 +140,7 @@ What the editor does:
 - **Scales sheet:** one staff per chord, either every scale from one start note (**From C**) or each from its
   root (**From root**). **Intervals** labels every note against the chord root (b9, #11, b13…) on screen.
 - **Guide tones sheet:** each chord's 3rd and 7th, voice-led into two complementary lines (one starting on the
-  3rd, one on the 7th), in 4/4 systems of 4 bars.
+  3rd, one on the 7th), in 4/4 systems of 4 bars (2 on phones).
 - **Print / Save PDF:** the browser's print dialog, 12 staves or 8 guide tone systems a letter page.
 
 Unfinished features are behind flags, off by default: `NUXT_PUBLIC_FEATURES_NEW_CHART=true make dev` shows

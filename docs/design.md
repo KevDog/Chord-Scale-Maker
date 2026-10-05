@@ -375,7 +375,7 @@ The site is static with no server code, so most of the attack surface is gone. R
 ## 10. Testing
 
 - **Golden parity:** `tools/export_fixtures.py` imports `jazz_scales` and writes `fixtures/golden.json`:
-  - every scale × 21 roots (7 letters × ♭/♮/♯) × 4 transpositions → written root, notes, label, or error
+  - every scale × 21 roots (7 letters × ♭/♮/♯) × 5 parts (treble in C, B♭, E♭ and F, plus bass clef in C) → written root, notes, label, or error
   - `scale_notes` for both modes, both clefs, and several start notes
   - chord-symbol tokens for a chord corpus, including slash chords
   - scale options (with `note`, `default`, `outside`) and defaults for a chord corpus
