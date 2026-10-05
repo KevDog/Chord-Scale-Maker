@@ -36,6 +36,19 @@ export function resolveQuality(chord: string): QualityMatch | null {
   return { quality, options }
 }
 
+/**
+ * a quality symbol read as the known quality it starts with, when the rest is only alterations
+ * ("Maj7#11" -> "Maj7", "7sus4b9" -> "7sus4"); exact names win. null if it doesn't fit ("m7#5#9x").
+ */
+export function baseQuality(text: string): string | null {
+  const exact = LOOKUP.get(text)
+  if (exact !== undefined) return exact
+  const alterations = /^(?:[b#]\d{1,2}|\((?:[b#]?\d{1,2},?)+\))+$/ // natural tensions only in parentheses: M9 is not M + 9
+  const prefixes = [...LOOKUP.keys()].filter((k) => k && text.startsWith(k) && alterations.test(text.slice(k.length)))
+  const longest = prefixes.sort((a, b) => b.length - a.length)[0]
+  return longest === undefined ? null : (LOOKUP.get(longest) ?? null)
+}
+
 /** the quality's default scale ("Cm7" -> "C Dorian"); null if the quality is unknown */
 export function defaultScale(chord: string): string | null {
   const options = resolveQuality(chord)?.options ?? []
