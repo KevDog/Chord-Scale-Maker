@@ -10,7 +10,7 @@
         <p class="text-sm text-zinc-600 dark:text-zinc-400 print:text-zinc-700">{{ page.subtitle }}</p>
       </header>
       <div class="space-y-1 print:space-y-2">
-        <ScaleStaff v-for="s in page.staves" :key="s.id" :staff="s" :clef="part.clef" />
+        <ScaleStaff v-for="s in page.staves" :key="s.id" :staff="s" :clef="part.clef" :intervals="intervals" />
       </div>
       <p class="mt-3 text-right text-xs text-zinc-500 print:hidden dark:text-zinc-400">Page {{ page.number }} of {{ pages.length }}</p>
     </section>
@@ -29,6 +29,7 @@ const props = defineProps<{
   start: string // written start note for the "from" part
   mode: ModeChoice
   perPage: number
+  intervals?: boolean // label notes against the chord root, on screen only
 }>()
 
 /** every printed page, in order, with its own heading (the CLI's bookparts flattened) */

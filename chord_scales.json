@@ -1,5 +1,5 @@
 {
-  "$schema_note": "Chord-scale options keyed by chord quality. Each option's root is an interval above the chord root ('1' = same root). Scale names match jazz_scales.py (see --list-scales). The first option with default=true is used when a chart row omits the scale.",
+  "$schema_note": "Chord-scale options keyed by chord quality. Each option's root is an interval above the chord root ('1' = same root). Scale names match jazz_scales.py (see --list-scales). The first option with default=true is used when a chart row omits the scale. outside=true marks a deliberate outside sound (tension to resolve); the editor lists those separately.",
   "quality_aliases": {
     "maj": ["", "M", "ma", "major"],
     "m": ["-", "mi", "min"],
@@ -49,7 +49,11 @@
       { "root": "1",  "scale": "Minor Pentatonic" },
       { "root": "1",  "scale": "Blues" },
       { "root": "b3", "scale": "Major Pentatonic" },
-      { "root": "1",  "scale": "Bebop Dorian" }
+      { "root": "1",  "scale": "Bebop Dorian" },
+      { "root": "2",  "scale": "Minor Pentatonic",  "note": "9, 11 and 13 colour" },
+      { "root": "5",  "scale": "Minor Pentatonic",  "note": "no 3rd: 9 and 11" },
+      { "root": "b2", "scale": "Minor Pentatonic",  "note": "side-slip a half step up", "outside": true },
+      { "root": "b5", "scale": "Minor Pentatonic",  "note": "a tritone away: most tension", "outside": true }
     ],
     "m6": [
       { "root": "1",  "scale": "Melodic Minor",     "default": true },
@@ -69,7 +73,8 @@
       { "root": "1",  "scale": "Blues" },
       { "root": "1",  "scale": "Major Pentatonic" },
       { "root": "5",  "scale": "Minor Pentatonic",  "note": "9 and 13 colour" },
-      { "root": "1",  "scale": "Whole Tone",        "note": "for 7#5" }
+      { "root": "1",  "scale": "Whole Tone",        "note": "for 7#5" },
+      { "root": "b5", "scale": "Major Pentatonic",  "note": "tritone sub: b9 #9 #11 b13", "outside": true }
     ],
     "7sus4": [
       { "root": "1",  "scale": "Mixolydian",        "default": true },
@@ -93,7 +98,8 @@
       { "root": "b2", "scale": "Melodic Minor",     "note": "same notes as Altered" },
       { "root": "1",  "scale": "Half-Whole Diminished", "note": "b9 #9 #11, natural 13" },
       { "root": "1",  "scale": "Whole Tone",        "note": "#5 without b9" },
-      { "root": "1",  "scale": "Phrygian Dominant" }
+      { "root": "1",  "scale": "Phrygian Dominant" },
+      { "root": "b5", "scale": "Major Pentatonic",  "note": "all altered tensions: b9 #9 #11 b13" }
     ],
     "m7b5": [
       { "root": "1",  "scale": "Locrian",           "default": true },

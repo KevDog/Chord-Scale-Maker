@@ -1,6 +1,8 @@
 import type { Row } from './chart'
 import { resolveScale } from './chart'
-import { type ChordToken, chordTokens } from './chord'
+import { type ChordToken, chordTokens, writtenChordRoot } from './chord'
+import { intervalLabels } from './intervals'
+import { resolveQuality } from './qualities'
 import { type Mode, type Part, type Pitched, type ScaleLabel, resolveStart, scaleLabel, scaleNotes } from './part'
 import { accText, LETTERS, mod, NAT_PC, parseRoot, rootName } from './pitch'
 
@@ -12,6 +14,7 @@ export type StaffModel = Readonly<{
   chord: readonly ChordToken[] | null // null: chord can't be read
   scale: ScaleLabel | null
   notes: readonly Pitched[]
+  intervals: readonly string[] | null // each note against the chord root (b9, #11…); null if the chord can't be read
   error: string | null // shown instead of notes
   last: boolean // final bar line
 }>
@@ -41,6 +44,14 @@ function chordOrNull(part: Part, chord: string, scale: string | null): readonly 
   }
 }
 
+function intervalsOrNull(part: Part, chord: string, scale: string, notes: readonly Pitched[]): readonly string[] | null {
+  try {
+    return intervalLabels(writtenChordRoot(part, chord, scale), notes, resolveQuality(chord)?.quality ?? null)
+  } catch {
+    return null
+  }
+}
+
 /** the written start pitch for 'from' mode; 'root' mode ignores it, so a bad start text only matters there */
 type Start = Readonly<{ midi: number } | { error: string }>
 
@@ -59,13 +70,15 @@ function staff(row: Row, index: number, part: Part, mode: Mode, start: Start, la
   const id = [index, row.section, row.bar, row.chord, row.scale, part.clef, part.trans, mode, startKey].join('|')
   const base = { id, section: row.section, bar: row.bar, last }
   const chord = chordOrNull(part, row.chord, scale)
-  if (scale === null) return { ...base, chord, scale: null, notes: [], error: chord ? 'Choose a scale' : "Can't read this chord" }
+  const none = { notes: [], intervals: null }
+  if (scale === null) return { ...base, ...none, chord, scale: null, error: chord ? 'Choose a scale' : "Can't read this chord" }
   try {
     const label = scaleLabel(part, scale)
-    if ('error' in start) return { ...base, chord, scale: label, notes: [], error: start.error }
-    return { ...base, chord, scale: label, notes: scaleNotes(part, scale, mode, start.midi), error: null }
+    if ('error' in start) return { ...base, ...none, chord, scale: label, error: start.error }
+    const notes = scaleNotes(part, scale, mode, start.midi)
+    return { ...base, chord, scale: label, notes, intervals: intervalsOrNull(part, row.chord, scale, notes), error: null }
   } catch (e) {
-    return { ...base, chord, scale: null, notes: [], error: message(e) }
+    return { ...base, ...none, chord, scale: null, error: message(e) }
   }
 }
 

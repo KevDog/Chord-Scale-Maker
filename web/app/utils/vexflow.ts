@@ -43,8 +43,11 @@ export function cropBand(headYs: readonly number[]): Readonly<{ top: number; bot
   }
 }
 
-/** draw one staff of whole notes into el, replacing what was there; colors follow CSS `color` */
-export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel, clef: 'treble' | 'bass'): void {
+/**
+ * draw one staff of whole notes into el, replacing what was there; colors follow CSS `color`.
+ * Returns each note head's centre as a fraction of the width, for labels placed under it.
+ */
+export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel, clef: 'treble' | 'bass'): number[] {
   el.replaceChildren()
   const renderer = new vf.Renderer(el as HTMLDivElement, vf.Renderer.Backends.SVG)
   renderer.resize(STAFF_WIDTH, STAFF_HEIGHT)
@@ -77,4 +80,5 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
   svg?.style.removeProperty('height')
   svg?.setAttribute('role', 'img')
   svg?.setAttribute('aria-label', staff.notes.map((n) => toVexKey(n).replace('/', '')).join(' '))
+  return notes.map((n) => (n.getNoteHeadBeginX() + n.getNoteHeadEndX()) / 2 / STAFF_WIDTH)
 }

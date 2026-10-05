@@ -64,6 +64,9 @@
               </label>
             </span>
           </fieldset>
+          <UiButton v-bind="prefs.intervals.value ? { color: 'teal' } : { outline: true }" :aria-pressed="prefs.intervals.value" title="Label each note against the chord root (on screen only)" @click="prefs.intervals.value = !prefs.intervals.value">
+            Intervals
+          </UiButton>
         </div>
         <UiText id="start-help" class="sr-only">Written pitch the "from" part starts on</UiText>
         <UiText aria-live="polite">
@@ -83,6 +86,7 @@
         :start="prefs.start.value"
         :mode="mode"
         :per-page="PER_PAGE"
+        :intervals="prefs.intervals.value"
       />
     </section>
   </div>
