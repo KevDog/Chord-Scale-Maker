@@ -168,54 +168,68 @@ function moveCost(from: number, to: number): number {
   return d + LEAP_COST * Math.max(0, d - 2) // a held note costs 0, a step 1-2
 }
 
-/** the smoothest path through consecutive chords (Viterbi), starting on the given role */
-function smoothest(steps: readonly Candidate[][], startRole: 0 | 1, clef: Clef): Candidate[] {
-  const first = (steps[0] ?? []).filter((c) => c.role === startRole)
-  let costs = first.map((c) => placeCost(c.pitch.midi, clef))
+type Pair = readonly [Candidate, Candidate] // line 1, line 2: always one 3rd and one 7th
+
+/**
+ * the smoothest pair of lines through consecutive chords (Viterbi over pairs): the two lines are complementary
+ * (one on the 3rd, one on the 7th), line 1 starts on the 3rd, and their combined motion is as small as possible,
+ * so neither line pays for the other's smoothness
+ */
+function smoothestPairs(steps: readonly Candidate[][], clef: Clef): Pair[] {
+  const pairsOf = (cands: readonly Candidate[], first: boolean): Pair[] =>
+    cands.flatMap((a) => (first && a.role !== 0 ? [] : cands.filter((b) => b.role !== a.role).map((b): Pair => [a, b])))
+  const place = (p: Pair): number => placeCost(p[0].pitch.midi, clef) + placeCost(p[1].pitch.midi, clef)
+  const move = (from: Pair, to: Pair): number => moveCost(from[0].pitch.midi, to[0].pitch.midi) + moveCost(from[1].pitch.midi, to[1].pitch.midi)
+
+  const states = steps.map((c, s) => pairsOf(c, s === 0))
+  let costs = (states[0] ?? []).map(place)
   const back: number[][] = []
-  let prev = first
-  for (const step of steps.slice(1)) {
-    const best = step.map((c) => {
+  for (let s = 1; s < states.length; s++) {
+    const prev = states[s - 1] ?? []
+    const best = (states[s] ?? []).map((st) => {
       let min = Infinity
       let arg = 0
       prev.forEach((p, j) => {
-        const cost = (costs[j] ?? Infinity) + moveCost(p.pitch.midi, c.pitch.midi)
+        const cost = (costs[j] ?? Infinity) + move(p, st)
         if (cost < min) [min, arg] = [cost, j]
       })
-      return [min + placeCost(c.pitch.midi, clef), arg] as const
+      return [min + place(st), arg] as const
     })
     costs = best.map(([c]) => c)
     back.push(best.map(([, a]) => a))
-    prev = step
   }
   let at = costs.indexOf(Math.min(...costs))
-  const path: Candidate[] = []
-  for (let s = steps.length - 1; s >= 0; s--) {
-    const step = s === 0 ? first : (steps[s] ?? [])
-    const c = step[at]
-    if (c) path.unshift(c)
+  const path: Pair[] = []
+  for (let s = states.length - 1; s >= 0; s--) {
+    const st = states[s]?.[at]
+    if (st) path.unshift(st)
     at = s > 0 ? (back[s - 1]?.[at] ?? 0) : 0
   }
   return path
 }
 
-/** one guide tone (or a rest) per event, for the line starting on the 3rd (0) or the 7th (1) */
-function line(tones: readonly (GuideTones | null)[], startRole: 0 | 1, clef: Clef): (Candidate | null)[] {
-  const out: (Candidate | null)[] = []
+/** both lines, one guide tone (or a rest) per event; runs between rests are voice-led separately */
+function lines(tones: readonly (GuideTones | null)[], clef: Clef): readonly [(Candidate | null)[], (Candidate | null)[]] {
+  const one: (Candidate | null)[] = []
+  const two: (Candidate | null)[] = []
   let run: Candidate[][] = []
   const flush = (): void => {
-    if (run.length) out.push(...smoothest(run, startRole, clef))
+    for (const [a, b] of smoothestPairs(run, clef)) {
+      one.push(a)
+      two.push(b)
+    }
     run = []
   }
   for (const t of tones) {
     if (t) run.push(candidates(t, clef))
     else {
       flush()
-      out.push(null) // a rest; the line starts again on its role after it
+      one.push(null) // a rest; both lines start again after it
+      two.push(null)
     }
   }
   flush()
-  return out
+  return [one, two]
 }
 
 // --- sheet ------------------------------------------------------------------------------------------------------
@@ -280,7 +294,7 @@ export function buildGuideTones(rows: readonly Row[], part: Part, barsPerSystem 
     }
     return t
   })
-  const lines = [line(tones, 0, part.clef), line(tones, 1, part.clef)] as const
+  const voiced = lines(tones, part.clef)
   const end = events.reduce((m, e) => Math.max(m, e.start + e.beats), 0)
   const bars = Array.from({ length: Math.ceil(end / BEATS) }, (_, i) => {
     const starting = events.filter((e) => Math.floor(e.start / BEATS) === i)
@@ -289,7 +303,7 @@ export function buildGuideTones(rows: readonly Row[], part: Part, barsPerSystem 
       (e): GuideChord => ({ beat: e.start - i * BEATS, text: e.chord, tokens: tokensOrNull(part, e.chord, resolveScale(e.row)) }),
     )
     const notesIn = (l: 0 | 1): GuideNote[] =>
-      events.flatMap((e, j) => notesFor(lines[l][j] ?? null, e.start, e.beats)).filter((n) => n.bar === i).map((n) => n.note)
+      events.flatMap((e, j) => notesFor(voiced[l][j] ?? null, e.start, e.beats)).filter((n) => n.bar === i).map((n) => n.note)
     return { label: firstRow ? `${firstRow.section} · Bar ${firstRow.bar}` : '', chords, lines: [notesIn(0), notesIn(1)] as const }
   })
   const systems: GuideSystem[] = []
