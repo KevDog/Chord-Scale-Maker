@@ -2,11 +2,11 @@
   <div class="grid grid-cols-1 gap-x-3 break-inside-avoid sm:grid-cols-[4.5rem_1fr] print:grid-cols-[4rem_1fr]">
     <!-- chord symbols over their beats, with the section and bar where a bar starts a chord -->
     <div class="max-sm:hidden print:block" />
-    <div class="relative h-10">
+    <div class="relative h-10 print:h-5">
       <template v-for="c in chordMarks" :key="c.key">
         <div class="absolute bottom-0 whitespace-nowrap" :style="{ left: `${c.x * 100}%` }">
-          <div v-if="c.label" class="text-[0.65rem] text-zinc-500 dark:text-zinc-400 print:text-zinc-600">{{ c.label }}</div>
-          <div class="text-base font-semibold"><ChordSymbol v-if="c.tokens" :tokens="c.tokens" /><span v-else>{{ c.text }}</span></div>
+          <div v-if="c.label" class="text-[0.65rem] text-zinc-500 dark:text-zinc-400 print:text-[0.55rem]/3 print:text-zinc-600">{{ c.label }}</div>
+          <div class="text-base font-semibold print:text-sm/4"><ChordSymbol v-if="c.tokens" :tokens="c.tokens" /><span v-else>{{ c.text }}</span></div>
         </div>
       </template>
     </div>

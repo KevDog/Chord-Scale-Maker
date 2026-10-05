@@ -1,6 +1,6 @@
 # Guide tone lines: plan
 
-Status: **phases 1 (engine) and 2 (rendering, UI behind the flag) built.** Web-only, like Transpose; the Python CLI is unchanged. Behind a `guideTones` feature flag
+Status: **phases 1–3 built** (engine, rendering and UI, print), behind the flag until sign-off. Web-only, like Transpose; the Python CLI is unchanged. Behind a `guideTones` feature flag
 until it is signed off.
 
 ## Decisions
@@ -91,10 +91,16 @@ part's range: treble written C4–A5 (comfortable E4–D5), bass written E2–C4
 
 ## 4. Print
 
-- **Pages:** guide tone pages hold 8 systems (32 bars) each, under the chart's title.
-- **Header:** the subtitle reads "Guide Tone Lines (Concert)", or the instrument's name for a transposing part.
-- **Tests:** a new print test, Autumn Leaves guide tones, checks the page count and that nothing overflows.
-  Scale-sheet printing stays unchanged.
+- **Pages:** 8 four-bar systems a letter page, so a 32-bar tune prints on one page and Milestones (40 bars) on two.
+- **Fitting:** guide tones stay near the middle of the staff, so their staves use a tighter minimum crop band
+  (just the clef; ledger lines still widen it). The chord row and spacing are shorter in print. The tallest library
+  page measures 927 of about 970 px (Autumn Leaves for trombone or bass).
+- **Overflow:** systems never split across pages, so a chart with unusually wide lines gets an extra page, not a
+  broken system.
+- **Header:** the chart's title, and a subtitle ending "(Guide Tone Lines)", with the instrument for a transposing
+  part.
+- **Tests:** print E2E for Autumn Leaves (concert and trombone, 1 page) and Milestones (2 pages). Scale-sheet
+  printing is unchanged (still 8 pages for Autumn Leaves).
 
 ## 5. Phases (each one a PR)
 

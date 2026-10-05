@@ -35,11 +35,11 @@ const ABOVE_HEAD = 24
 const BELOW_HEAD = 18
 
 /** vertical band to show, from note-head y positions (drawing units); never smaller than the staff band */
-export function cropBand(headYs: readonly number[]): Readonly<{ top: number; bottom: number }> {
-  if (headYs.length === 0) return { top: MIN_TOP, bottom: MIN_BOTTOM }
+export function cropBand(headYs: readonly number[], minTop = MIN_TOP, minBottom = MIN_BOTTOM): Readonly<{ top: number; bottom: number }> {
+  if (headYs.length === 0) return { top: minTop, bottom: minBottom }
   return {
-    top: Math.min(MIN_TOP, Math.min(...headYs) - ABOVE_HEAD),
-    bottom: Math.max(MIN_BOTTOM, Math.max(...headYs) + BELOW_HEAD),
+    top: Math.min(minTop, Math.min(...headYs) - ABOVE_HEAD),
+    bottom: Math.max(minBottom, Math.max(...headYs) + BELOW_HEAD),
   }
 }
 
@@ -90,6 +90,9 @@ const REST_KEY = { treble: 'b/4', bass: 'd/3' } as const
 const CLEF_SPACE = 70 // the first bar of a system also holds the clef
 const TIME_SPACE = 40 // and, on the first system, the time signature
 const BAR_UNITS = 300 // drawing width per bar, so 2-bar systems on phones draw as large as 4-bar ones elsewhere
+// guide tones sit near the middle of the staff, so their minimum band is just the clef: 8 systems fit a letter page
+export const GUIDE_MIN_TOP = 64
+export const GUIDE_MIN_BOTTOM = 134
 
 export type SystemLayout = Readonly<{
   /** per line, per bar: each note's centre as a fraction of the width */
@@ -175,7 +178,7 @@ export function drawGuideToneSystem(
 
   // crop both staves to the same band, so the two lines look alike
   const heads = [...(allNotes[0] ?? []), ...(allNotes[1] ?? [])].filter((n) => !n.isRest()).flatMap((n) => n.getYs())
-  const { top, bottom } = cropBand(heads)
+  const { top, bottom } = cropBand(heads, GUIDE_MIN_TOP, GUIDE_MIN_BOTTOM)
   els.forEach((el, l) => {
     const svg = el.querySelector('svg')
     svg?.setAttribute('viewBox', `0 ${top} ${total} ${bottom - top}`)
