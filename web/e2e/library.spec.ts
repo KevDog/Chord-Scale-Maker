@@ -28,3 +28,15 @@ test('dark mode toggles and survives a reload', async ({ page }) => {
   await page.reload()
   await expect(page.locator('html')).toHaveClass(/dark/)
 })
+
+test('a quote in the header, kept while navigating', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/')
+  const quote = page.locator('nav figure')
+  await expect(quote).toBeVisible()
+  await expect(quote.locator('figcaption')).toHaveText(/^— .+( · .+)?$/) // author and topic only
+  const text = await quote.textContent()
+  await page.getByRole('link', { name: /Autumn Leaves/ }).click()
+  await expect(page).toHaveURL(/editor/)
+  await expect(page.locator('nav figure')).toHaveText(text ?? '')
+})

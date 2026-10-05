@@ -3,9 +3,11 @@ import tailwindcss from '@tailwindcss/vite'
 import type { Plugin } from 'vite'
 import { analyticsScripts } from './build/analytics'
 import { addCspMeta } from './build/csp'
+import { quotesPlugin } from './build/quotes'
 import { SECURITY_HEADERS } from './build/headers'
 
-/** dev: charts/ and chord_scales.json sit outside Vite's root, so it doesn't watch them by itself */
+/** dev: charts/ and chord_scales.json sit outside Vite's root, so it doesn't watch them by itself (quotes.json is
+ *  watched by its own plugin) */
 const watchRepoData = (): Plugin => ({
   name: 'watch-repo-data',
   configureServer(server) {
@@ -59,8 +61,8 @@ export default defineNuxtConfig({
     },
   },
   vite: {
-    plugins: [tailwindcss(), watchRepoData()],
-    // the engine imports ../chord_scales.json and the library reads ../charts
+    plugins: [tailwindcss(), watchRepoData(), quotesPlugin(fileURLToPath(new URL('../data/quotes.json', import.meta.url)))],
+    // the engine imports ../chord_scales.json, the library reads ../charts, the navbar quotes ../data
     server: { fs: { allow: ['..'] } },
   },
 })
