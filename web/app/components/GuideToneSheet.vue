@@ -8,11 +8,11 @@
       :key="page.number"
       class="rounded-xl bg-white p-6 shadow-xs ring-1 ring-zinc-950/10 dark:bg-zinc-950 dark:ring-white/10 print:break-after-page print:last:break-after-auto print:rounded-none print:bg-white print:p-0 print:shadow-none print:ring-0"
     >
-      <header class="mb-4 text-center">
+      <header class="mb-4 text-center print:mb-1">
         <h2 class="text-xl/8 font-semibold text-zinc-950 dark:text-white print:text-black">{{ title }}</h2>
         <p class="text-sm text-zinc-600 dark:text-zinc-400 print:text-zinc-700">{{ subtitleText }}</p>
       </header>
-      <div class="space-y-6 print:space-y-3">
+      <div class="space-y-6 print:space-y-1">
         <GuideToneSystem
           v-for="s in page.systems"
           :key="s.index"
