@@ -46,13 +46,13 @@
               </UiListboxGroup>
             </UiListbox>
           </UiField>
-          <UiField v-if="sheet === 'scales'" class="w-28">
+          <SegmentedControl v-if="sheet === 'scales'" v-model="mode" legend="Where each scale starts" name="mode" :options="modes" />
+          <UiField v-if="sheet === 'scales' && mode === 'from'" class="w-28">
             <UiLabel>Start on</UiLabel>
             <UiSelect v-model="prefs.start.value" aria-describedby="start-help">
               <option v-for="r in PICKER_ROOTS" :key="r" :value="r">{{ noteText(r) }}</option>
             </UiSelect>
           </UiField>
-          <SegmentedControl v-if="sheet === 'scales'" v-model="mode" legend="Which spellings to show" name="mode" :options="modes" />
           <UiButton v-bind="prefs.intervals.value ? { color: 'teal' } : { outline: true }" :aria-pressed="prefs.intervals.value" title="Label each note against the chord root (on screen only)" @click="prefs.intervals.value = !prefs.intervals.value">
             Intervals
           </UiButton>
@@ -92,7 +92,7 @@
 
 <script setup lang="ts">
 import { PrinterIcon } from '@heroicons/vue/16/solid'
-import { type ChartDoc, INSTRUMENTS, instrumentLabel, type ModeChoice, noteText, partFor } from '~~/engine'
+import { type ChartDoc, INSTRUMENTS, instrumentLabel, type Mode, noteText, partFor } from '~~/engine'
 
 const props = defineProps<{ initialText: string }>()
 
@@ -101,7 +101,8 @@ const PER_PAGE = 12
 const editor = useChartEditor(props.initialText)
 const prefs = usePreferences()
 const part = computed(() => partFor(prefs.instrument.value))
-const mode = ref<ModeChoice>('both')
+/** one spelling at a time: every scale from the Start on note, or each from its own root */
+const mode = ref<Mode>('root')
 const transposed = ref('')
 const guideTones = useFeature('guideTones')
 type Sheet = 'scales' | 'guideTones'
@@ -110,8 +111,7 @@ const SHEETS: readonly { value: Sheet; label: string }[] = [
   { value: 'guideTones', label: 'Guide tones' },
 ]
 const sheet = ref<Sheet>('scales')
-const modes = computed((): readonly { value: ModeChoice; label: string }[] => [
-  { value: 'both', label: 'Both' },
+const modes = computed((): readonly { value: Mode; label: string }[] => [
   { value: 'from', label: `From ${noteText(prefs.start.value)}` },
   { value: 'root', label: 'From root' },
 ])

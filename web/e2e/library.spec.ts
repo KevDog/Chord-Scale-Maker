@@ -8,8 +8,8 @@ test('searches the library and opens a chart', async ({ page }) => {
   await page.getByPlaceholder('Search by title').fill('autumn')
   await page.getByRole('link', { name: /Autumn Leaves/ }).click()
   await expect(page).toHaveURL(/editor\?chart=autumn_leaves/)
-  await expect(staves(page)).toHaveCount(78) // 39 rows, both spellings
-  await expect(page.getByText('Page 1 of 8')).toBeVisible()
+  await expect(staves(page)).toHaveCount(39) // 39 rows, from the root
+  await expect(page.getByText('Page 1 of 4')).toBeVisible()
 })
 
 test('every page carries a hashed Content-Security-Policy', async ({ page }) => {

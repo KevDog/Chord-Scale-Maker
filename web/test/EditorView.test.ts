@@ -30,13 +30,23 @@ describe('EditorView', () => {
 
   it('previews in concert pitch by default', async () => {
     const w = await mount()
-    expect(sheet(w).props()).toMatchObject({ part: { clef: 'treble', trans: 'C' }, instrumentLabel: '', start: 'C' })
+    expect(sheet(w).props()).toMatchObject({ part: { clef: 'treble', trans: 'C' }, instrumentLabel: '', start: 'C', mode: 'root' })
     expect(w.text()).not.toContain('the preview is')
+  })
+
+  it('offers one spelling at a time, with Start on only for From', async () => {
+    const w = await mount()
+    expect(w.findAll('input[name=mode]').map((i) => i.attributes('value'))).toEqual(['from', 'root'])
+    expect(w.findAll('label').some((l) => l.text() === 'Start on')).toBe(false)
+    await w.find('input[name=mode][value=from]').setValue(true)
+    expect(sheet(w).props('mode')).toBe('from')
+    expect(w.findAll('label').some((l) => l.text() === 'Start on')).toBe(true)
   })
 
   it('transposes the preview for the chosen instrument and start note', async () => {
     const w = await mount()
     await chooseInstrument(w, 'Tenor sax')
+    await w.find('input[name=mode][value=from]').setValue(true)
     await control(w, 'Start on').setValue('Eb')
     expect(sheet(w).props()).toMatchObject({ part: { clef: 'treble', trans: 'Bb' }, instrumentLabel: 'Tenor Sax (Bb)', start: 'Eb' })
     expect(w.text()).toContain('the preview is transposed for tenor sax')

@@ -2,7 +2,7 @@ import { expect, staves, test } from './fixtures'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/editor?new=1')
-  await expect(staves(page)).toHaveCount(6) // starter chart: 3 rows x 2 spellings
+  await expect(staves(page)).toHaveCount(3) // starter chart: 3 rows, from the root
 })
 
 test('grid edits update the text at once', async ({ page }) => {
@@ -24,21 +24,27 @@ test('a value that would corrupt the text is rejected but stays visible', async 
 test('text edits update the grid and preview; unknown chords prompt for a scale', async ({ page }) => {
   const text = page.getByLabel('Chart text')
   await text.fill(`${await text.inputValue()}B | 9 | Cm7#5#9x\n`)
-  await expect(staves(page)).toHaveCount(6) // the new row has no scale yet, so it isn't drawn
-  await expect(page.getByText('Choose a scale', { exact: true })).toHaveCount(2)
+  await expect(staves(page)).toHaveCount(3) // the new row has no scale yet, so it isn't drawn
+  await expect(page.getByText('Choose a scale', { exact: true })).toHaveCount(1)
   await page.getByLabel('Scale for Cm7#5#9x').selectOption('__other')
   await page.getByLabel('Scale name').selectOption('Altered')
   await page.getByRole('button', { name: 'Set scale' }).click()
   await expect(text).toHaveValue(/Cm7#5#9x \| C Altered/)
   await expect(page.getByLabel('Scale for Cm7#5#9x')).toBeFocused() // focus returns to the row
-  await expect(staves(page)).toHaveCount(8)
+  await expect(staves(page)).toHaveCount(4)
 })
 
-test('the mode toggle shows one spelling or both', async ({ page }) => {
-  await page.getByText('From root', { exact: true }).click()
+test('the mode toggle shows one spelling at a time, and Start on only for From', async ({ page }) => {
+  await expect(page.getByLabel('From root')).toBeChecked() // the default
+  await expect(page.getByLabel('Start on')).toHaveCount(0)
+  await expect(page.getByText('Both', { exact: true })).toHaveCount(0)
+  await page.getByText('From C', { exact: true }).click()
   await expect(staves(page)).toHaveCount(3)
-  await page.getByText('Both', { exact: true }).click()
-  await expect(staves(page)).toHaveCount(6)
+  await expect(page.locator('section header p').first()).toHaveText('Spelled from C')
+  await page.getByLabel('Start on').selectOption('Eb')
+  await expect(page.getByText('From E♭', { exact: true })).toBeVisible()
+  await page.getByText('From root', { exact: true }).click()
+  await expect(page.locator('section header p').first()).toHaveText('Spelled from the Root')
 })
 
 test('the draft is kept, and New chart starts over', async ({ page }) => {
@@ -84,5 +90,5 @@ test('guide tones draw both lines, four bars a system, without the scale control
   await expect(page.getByLabel('Start on')).toHaveCount(0)
   await expect(page.getByText('From root', { exact: true })).toHaveCount(0)
   await page.getByText('Scales', { exact: true }).click()
-  await expect(staves(page)).toHaveCount(78)
+  await expect(staves(page)).toHaveCount(39)
 })

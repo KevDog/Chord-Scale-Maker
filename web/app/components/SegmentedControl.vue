@@ -15,7 +15,7 @@
 </template>
 
 <script setup lang="ts" generic="T extends string">
-/** a row of joined toggle buttons for one choice (Both / From C / From root) */
+/** a row of joined toggle buttons for one choice (From C / From root) */
 defineProps<{ legend: string; name: string; options: readonly { value: T; label: string }[] }>()
 const model = defineModel<T>({ required: true })
 </script>
