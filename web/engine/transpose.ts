@@ -5,6 +5,11 @@ import type { RowLine } from './edit'
 import { type Spelled, accFor, enharmonics, mod, parseRoot, pcOf, rootName, toLetter } from './pitch'
 import { type ScaleKey, parseScale, SCALES, simplifyRoot, spellFrom } from './scales'
 
+/**
+ * Transposing a whole chart to another concert key (the editor's Transpose…). Web-only: roots are spelled on the
+ * target key's side (spellInKey), unlike instrument parts, which use plain simplifyRoot.
+ */
+
 /** an interval as letter steps plus semitones, so spellings move with it (F -> Bb is up a 4th) */
 export type KeyShift = Readonly<{ steps: number; semis: number }>
 

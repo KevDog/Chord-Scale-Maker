@@ -7,6 +7,11 @@ import { chunk, orNull } from './util'
 import { type Mode, type Part, type Pitched, type ScaleLabel, resolveStart, scaleLabel, scaleNotes } from './part'
 import { accText, glyphs, LETTERS, mod, NAT_PC, parseRoot, rootName } from './pitch'
 
+/**
+ * The scale sheet's view model: every chart row becomes a StaffModel (labels, written notes, interval labels or an
+ * error), split into pages, one part per mode. Components only draw it.
+ */
+
 /** one staff on the page: everything a component needs, no DOM */
 export type StaffModel = Readonly<{
   id: string // unique per sheet; stable while the row and its position are unchanged

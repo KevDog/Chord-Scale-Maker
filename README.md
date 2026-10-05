@@ -111,6 +111,10 @@ Both live in dictionaries near the top of `jazz_scales.py`:
   `"lydian dominant": ("1 2 3 #4 5 6 b7", "Lydian Dominant")`.
 - `INSTRUMENTS`: `"name": ("clef", "key", "description")`.
 
+The web app has its own copy in `web/engine/scales.ts` and `web/engine/instruments.ts`. Add the same entry there,
+then run `make fixtures` and `make test`: the parity test fails until the two engines agree. Default and
+alternate scales per chord quality live in `chord_scales.json`, which both engines read.
+
 ## Web app
 
 The web version lives in `web/` (Nuxt 4, Tailwind CSS, VexFlow) and is deployed as a static site.
@@ -122,15 +126,25 @@ make preview   # build the production static site and serve it locally
 make e2e       # browser tests (Playwright, Chromium) against the production build
 ```
 
-The library lists every chart in `charts/`; add a `.txt` file there and it appears on the next build (or at once in `make dev`).
-In the editor, pick an instrument to write the sheet for it (clef, key, chord symbols); the chart itself stays in concert pitch.
-To play a chart in another key, use **Transpose…**: it rewrites the chart's chords and scale roots in the new concert key
-(spelled for the new key: flats in flat keys, sharps in sharp keys). The editor has this; the CLI doesn't.
-The scale menu separates **outside** options (tension to resolve, such as a pentatonic off the b5), and **Intervals**
-labels every note against the chord root (b9, #11, b13…) on screen.
-Switch the preview to **Guide tones** for the chart's guide tone lines: each chord's 3rd and 7th, voice-led into two
-complementary lines (one starting on the 3rd, one on the 7th), 4/4, in systems of 4 bars.
-Unfinished features are behind flags (off by default): `NUXT_PUBLIC_FEATURES_NEW_CHART=true make dev` shows **New chart**.
+What the editor does:
+
+- **Library:** every chart in `charts/`. Add a `.txt` file there and it appears on the next build (or at once in
+  `make dev`). **Request a chart** opens a GitHub issue labelled `Add Chart`.
+- **Editing:** a grid and the chart text side by side, kept in sync. Each chord gets its quality's default scale
+  or one of its alternates. **Outside** options (tension to resolve, such as a pentatonic off the b5) are listed
+  separately, and **Other…** picks any root and scale.
+- **Instrument:** the sheet is written for the chosen instrument (clef, key, chord symbols); the chart itself
+  stays in concert pitch.
+- **Transpose…** rewrites the chart's chords and scale roots in another concert key, spelled for that key: flats
+  in flat keys, sharps in sharp keys. The CLI has no equivalent.
+- **Scales sheet:** one staff per chord, either every scale from one start note (**From C**) or each from its
+  root (**From root**). **Intervals** labels every note against the chord root (b9, #11, b13…) on screen.
+- **Guide tones sheet:** each chord's 3rd and 7th, voice-led into two complementary lines (one starting on the
+  3rd, one on the 7th), in 4/4 systems of 4 bars.
+- **Print / Save PDF:** the browser's print dialog, 12 staves or 8 guide tone systems a letter page.
+
+Unfinished features are behind flags, off by default: `NUXT_PUBLIC_FEATURES_NEW_CHART=true make dev` shows
+**New chart**. The design is in [docs/design.md](docs/design.md).
 
 ## Tests
 

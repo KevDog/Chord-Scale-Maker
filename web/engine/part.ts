@@ -2,6 +2,11 @@ import { type Clef, type InstrumentName, type Transposition, CLEF_ROOT_LOW, CLEF
 import { type Spelled, accFor, LETTERS, mod, NAT_PC, parseRoot, pcOf, toLetter } from './pitch'
 import { type ScaleKey, type ScaleNote, parseScale, SCALES, simplifyRoot, spellScale } from './scales'
 
+/**
+ * A Part (clef + transposition) is how the sheet is written for one instrument: written roots and scales, scale
+ * notes from the root or from a start note, labels. Port of jazz_scales.py's Part class as plain functions.
+ */
+
 /** an instrument "view" of the chart */
 export type Part = Readonly<{ clef: Clef; trans: Transposition }>
 export type Mode = 'from' | 'root'

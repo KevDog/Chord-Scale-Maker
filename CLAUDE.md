@@ -11,9 +11,11 @@ chart format and options.
 - LilyPond must be installed to produce PDFs; `--no-pdf` writes the `.ly` only.
 - `make setup` once, then `make test` after changes: pytest (scale spelling, transposition,
   enharmonic choice, chart parsing, fixture freshness) plus the TS engine's typecheck and vitest.
+- The web app's design is in `docs/design.md` (kept current; the `docs/plan-*.md` files are historical).
 - `web/engine/` is a TS port of the Python engine. After changing `jazz_scales.py`,
   `chord_scales.json` or `charts/`, run `make fixtures` and port the change to TS. The golden
-  parity test (`web/engine/__tests__/golden.test.ts`) fails until both agree.
+  parity test (`web/engine/__tests__/golden.test.ts`) fails until both agree. A stale fixture also makes pytest
+  very slow (it diffs the large JSON), so run `make fixtures` first.
 - Generated `.ly`/`.pdf` files belong in `output/` and are git-ignored.
 - Web app: `make dev` / `make preview`; `make lint`; `make e2e` (Playwright). App code is in `web/app/`, its unit
   tests in `web/test/`, browser tests in `web/e2e/`. Pages must run under the hashed CSP (`web/build/csp.ts`):
@@ -42,5 +44,6 @@ chart format and options.
 ## Typical requests
 - "Make a chart for <tune>": create `charts/<tune>.txt` in concert pitch, one row
   per chord with a sensible scale, then run the script for the requested instrument.
-- "Add scale X": add a formula to `SCALES` (and an alias if common), add a test.
+- "Add scale X": add a formula to `SCALES` in both `jazz_scales.py` and `web/engine/scales.ts` (and an alias if
+  common), add tests in both, then `make fixtures`.
 - "Add instrument X": add to `INSTRUMENTS` with clef and key.

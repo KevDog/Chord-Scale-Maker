@@ -3,6 +3,11 @@ import { type Spelled, accFor, LETTERS, mod, parseRoot, pcOf, toLetter } from '.
 import { parseScale, simplifyRoot } from './scales'
 import { orNull } from './util'
 
+/**
+ * Chord symbols: parsing (the same CHORD_RE as jazz_scales.py) and display tokens written for a Part. A chord
+ * symbol follows its scale's spelling when they share a root; a slash bass keeps its interval from the root.
+ */
+
 /** root, quality (everything between root and /bass), optional bass; same regex as jazz_scales.py */
 export const CHORD_RE = /^([A-G])([b#♭♯]?)(.*?)(?:\/([A-G])([b#♭♯]?))?$/
 

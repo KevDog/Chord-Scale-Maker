@@ -3,6 +3,11 @@ import { parseChord } from './chord'
 import { rootName } from './pitch'
 import { scaleKey, simplifyRoot, spellFrom } from './scales'
 
+/**
+ * Chord qualities from chord_scales.json (shared with jazz_scales.py): aliases, default and alternate scales per
+ * quality, and baseQuality for extended symbols.
+ */
+
 type RawOption = Readonly<{ root: string; scale: string; default?: boolean; note?: string; outside?: boolean }>
 type QualityData = Readonly<{
   quality_aliases: Readonly<Record<string, readonly string[]>>
