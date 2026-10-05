@@ -1,5 +1,9 @@
 import { accText, mod, NAT_PC, pcOf, type Spelled } from './pitch'
 
+/**
+ * Interval names of notes against a chord root, as jazz players say them (b9, #9, #11, b13), for the Intervals labels.
+ */
+
 /** names by letter distance from the root: chord tones 1 3 5 7, the rest as tensions 9 11 13 */
 const NAMES = ['1', '9', '3', '11', '5', '13', '7'] as const
 const MAJOR_THIRD = new Set(['maj', 'Maj7', '6', '7', '7b9', '7#11', '7alt'])

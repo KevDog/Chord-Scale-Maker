@@ -1,5 +1,11 @@
 import { type Spelled, accFor, enharmonics, mod, NAT_PC, parseRoot, pcOf, rootName, toLetter } from './pitch'
 
+/**
+ * Scales from degree formulas (never hand-typed note lists), their names and aliases, and simplifyRoot: the
+ * project's enharmonic rule (avoid double accidentals and B#/E#/Cb/Fb, then fewest accidentals, then keep the
+ * typed direction). Port of SCALES, ALIASES and the spelling functions in jazz_scales.py.
+ */
+
 /** name: [degree formula, label printed on the page]; copied verbatim from jazz_scales.py */
 export const SCALES = {
   ionian: ['1 2 3 4 5 6 7', 'Ionian'],

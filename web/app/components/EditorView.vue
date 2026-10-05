@@ -32,36 +32,13 @@
     <section aria-labelledby="preview-heading" class="space-y-6">
       <div class="space-y-4 print:hidden">
         <UiSubheading id="preview-heading">Preview</UiSubheading>
-        <div class="flex flex-wrap items-end gap-4">
-          <SegmentedControl v-if="guideTones" v-model="sheet" legend="Sheet" name="sheet" :options="SHEETS" />
-          <UiField class="w-60">
-            <UiLabel>Instrument</UiLabel>
-            <UiListbox v-model="prefs.instrument.value">
-              <template #selected="{ value }"><UiListboxLabel>{{ instrumentOption(value) }}</UiListboxLabel></template>
-              <UiListboxGroup v-for="g in INSTRUMENT_GROUPS" :key="g.label" :label="g.label">
-                <UiListboxOption v-for="name in g.instruments" :key="name" :value="name">
-                  <UiListboxLabel>{{ instrumentOption(name) }}</UiListboxLabel>
-                  <UiListboxDescription>{{ INSTRUMENTS[name].description }}</UiListboxDescription>
-                </UiListboxOption>
-              </UiListboxGroup>
-            </UiListbox>
-          </UiField>
-          <SegmentedControl v-if="sheet === 'scales'" v-model="mode" legend="Where each scale starts" name="mode" :options="modes" />
-          <UiField v-if="sheet === 'scales' && mode === 'from'" class="w-28">
-            <UiLabel>Start on</UiLabel>
-            <UiSelect v-model="prefs.start.value" aria-describedby="start-help">
-              <option v-for="r in PICKER_ROOTS" :key="r" :value="r">{{ noteText(r) }}</option>
-            </UiSelect>
-          </UiField>
-          <UiButton v-bind="prefs.intervals.value ? { color: 'teal' } : { outline: true }" :aria-pressed="prefs.intervals.value" title="Label each note against the chord root (on screen only)" @click="prefs.intervals.value = !prefs.intervals.value">
-            Intervals
-          </UiButton>
-        </div>
-        <UiText id="start-help" class="sr-only">Written pitch the "from" part starts on</UiText>
-        <UiText aria-live="polite">
-          <template v-if="part.trans !== 'C'">The chart is in concert pitch; the preview is transposed for {{ instrumentOption(prefs.instrument.value).toLowerCase() }}.</template>
-          <template v-else-if="part.clef === 'bass'">The preview is in bass clef, concert pitch, for {{ instrumentOption(prefs.instrument.value).toLowerCase() }}.</template>
-        </UiText>
+        <PreviewControls
+          v-model:sheet="sheet"
+          v-model:instrument="prefs.instrument.value"
+          v-model:mode="mode"
+          v-model:start="prefs.start.value"
+          v-model:intervals="prefs.intervals.value"
+        />
       </div>
 
       <UiText v-if="editor.fatal.value" class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
@@ -92,7 +69,8 @@
 
 <script setup lang="ts">
 import { PrinterIcon } from '@heroicons/vue/16/solid'
-import { type ChartDoc, INSTRUMENTS, instrumentLabel, type Mode, noteText, partFor } from '~~/engine'
+import { type ChartDoc, instrumentLabel, type Mode, partFor } from '~~/engine'
+import type { SheetKind } from '~/utils/sheets'
 
 const props = defineProps<{ initialText: string }>()
 
@@ -103,18 +81,8 @@ const prefs = usePreferences()
 const part = computed(() => partFor(prefs.instrument.value))
 /** one spelling at a time: every scale from the Start on note, or each from its own root */
 const mode = ref<Mode>('root')
+const sheet = ref<SheetKind>('scales')
 const transposed = ref('')
-const guideTones = useFeature('guideTones')
-type Sheet = 'scales' | 'guideTones'
-const SHEETS: readonly { value: Sheet; label: string }[] = [
-  { value: 'scales', label: 'Scales' },
-  { value: 'guideTones', label: 'Guide tones' },
-]
-const sheet = ref<Sheet>('scales')
-const modes = computed((): readonly { value: Mode; label: string }[] => [
-  { value: 'from', label: `From ${noteText(prefs.start.value)}` },
-  { value: 'root', label: 'From root' },
-])
 
 watch(editor.text, (t) => saveDraft(t))
 

@@ -1,10 +1,16 @@
 import type { Row } from './chart'
 import { resolveScale } from './chart'
-import { type ChordToken, chordTokens, writtenChordRoot } from './chord'
+import { type ChordToken, chordTokensOrNull, writtenChordRoot } from './chord'
 import { intervalLabels } from './intervals'
 import { resolveQuality } from './qualities'
+import { chunk, orNull } from './util'
 import { type Mode, type Part, type Pitched, type ScaleLabel, resolveStart, scaleLabel, scaleNotes } from './part'
-import { accText, LETTERS, mod, NAT_PC, parseRoot, rootName } from './pitch'
+import { accText, glyphs, LETTERS, mod, NAT_PC, parseRoot, rootName } from './pitch'
+
+/**
+ * The scale sheet's view model: every chart row becomes a StaffModel (labels, written notes, interval labels or an
+ * error), split into pages, one part per mode. Components only draw it.
+ */
 
 /** one staff on the page: everything a component needs, no DOM */
 export type StaffModel = Readonly<{
@@ -32,25 +38,9 @@ export function toVexKey(n: Pitched): string {
 
 const message = (e: unknown): string => (e instanceof Error ? e.message : String(e))
 
-function chordOrNull(part: Part, chord: string, scale: string | null): readonly ChordToken[] | null {
-  try {
-    return chordTokens(part, chord, scale ?? undefined)
-  } catch {
-    try {
-      return chordTokens(part, chord) // scale is bad but the chord may be fine
-    } catch {
-      return null
-    }
-  }
-}
 
-function intervalsOrNull(part: Part, chord: string, scale: string, notes: readonly Pitched[]): readonly string[] | null {
-  try {
-    return intervalLabels(writtenChordRoot(part, chord, scale), notes, resolveQuality(chord)?.quality ?? null)
-  } catch {
-    return null
-  }
-}
+const intervalsOrNull = (part: Part, chord: string, scale: string, notes: readonly Pitched[]): readonly string[] | null =>
+  orNull(() => intervalLabels(writtenChordRoot(part, chord, scale), notes, resolveQuality(chord)?.quality ?? null))
 
 /** the written start pitch for 'from' mode; 'root' mode ignores it, so a bad start text only matters there */
 type Start = Readonly<{ midi: number } | { error: string }>
@@ -69,7 +59,7 @@ function staff(row: Row, index: number, part: Part, mode: Mode, start: Start, la
   const startKey = 'midi' in start ? start.midi : start.error
   const id = [index, row.section, row.bar, row.chord, row.scale, part.clef, part.trans, mode, startKey].join('|')
   const base = { id, section: row.section, bar: row.bar, last }
-  const chord = chordOrNull(part, row.chord, scale)
+  const chord = chordTokensOrNull(part, row.chord, scale)
   const none = { notes: [], intervals: null }
   if (scale === null) return { ...base, ...none, chord, scale: null, error: chord ? 'Choose a scale' : "Can't read this chord" }
   try {
@@ -85,7 +75,7 @@ function staff(row: Row, index: number, part: Part, mode: Mode, start: Start, la
 /** "Eb" -> "E♭" for headings; text that isn't a note is shown as typed */
 export function noteText(text: string): string {
   try {
-    return rootName(parseRoot(text.trim().replace(/\d$/, ''))).replace(/b/g, '♭').replace(/#/g, '♯')
+    return glyphs(rootName(parseRoot(text.trim().replace(/\d$/, ''))))
   } catch {
     return text.trim()
   }
@@ -100,11 +90,6 @@ export function pageSubtitle(subtitle: string, instrument: string, heading: stri
   return bits.length ? `${bits.join(' – ')} (${heading})` : heading
 }
 
-/** split into pages of n (n is clamped to a whole number of at least 1) */
-function chunk<T>(xs: readonly T[], n: number): T[][] {
-  const size = Math.max(1, Math.floor(n) || 1)
-  return Array.from({ length: Math.ceil(xs.length / size) }, (_, i) => xs.slice(i * size, i * size + size))
-}
 
 /** the printable sheet: one part per mode, each split into pages of perPage staves; never throws */
 export function buildSheet(

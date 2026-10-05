@@ -1,3 +1,8 @@
+/**
+ * Spelled notes: a letter (C=0 … B=6) plus an accidental count, their pitch classes and enharmonic spellings.
+ * Port of the note arithmetic in jazz_scales.py.
+ */
+
 export type Letter = 0 | 1 | 2 | 3 | 4 | 5 | 6 // C D E F G A B
 export type Spelled = Readonly<{ letter: Letter; acc: number }>
 
@@ -15,6 +20,9 @@ export function parseRoot(tok: string): Spelled {
   const acc = [...accs].reduce((s, c) => s + (c === '#' || c === '♯' ? 1 : -1), 0)
   return { letter: 'CDEFGAB'.indexOf(letter.toUpperCase()) as Letter, acc }
 }
+
+/** "Eb" -> "E♭", "b9" -> "♭9": typed accidentals as music glyphs, for display */
+export const glyphs = (text: string): string => text.replaceAll('b', '♭').replaceAll('#', '♯')
 
 export const accText = (acc: number): string => (acc > 0 ? '#'.repeat(acc) : 'b'.repeat(-acc))
 export const rootName = (n: Spelled): string => LETTERS[n.letter] + accText(n.acc)

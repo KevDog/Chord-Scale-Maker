@@ -1,6 +1,11 @@
 import { LIMITS } from './limits'
 import { defaultScale } from './qualities'
 
+/**
+ * The chart text format (docs/design.md §4): a tolerant parser to a ChartDoc that keeps every line, the canonical
+ * serializer, @copy expansion and the default-scale lookup. Port of read_chart, minus its exits.
+ */
+
 export type MetaKey = 'title' | 'subtitle'
 export type ChartLine =
   | Readonly<{ kind: 'meta'; key: MetaKey; value: string }>

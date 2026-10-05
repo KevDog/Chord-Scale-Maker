@@ -13,11 +13,7 @@ export function useTheme() {
   function setTheme(next: Theme): void {
     theme.value = next
     document.documentElement.classList.toggle('dark', next === 'dark')
-    try {
-      localStorage.setItem(KEY, next)
-    } catch {
-      // storage unavailable (private mode): the toggle still works for this visit
-    }
+    writeStored(KEY, next)
   }
 
   return { theme, toggle: () => setTheme(theme.value === 'dark' ? 'light' : 'dark') }

@@ -1,37 +1,18 @@
+import type { Ref } from 'vue'
 import { type InstrumentName, isInstrumentName } from '~~/engine'
 
-const INSTRUMENT_KEY = 'csm-instrument'
-const START_KEY = 'csm-start'
-const INTERVALS_KEY = 'csm-intervals'
-
-function read(key: string): string | null {
-  try {
-    return localStorage.getItem(key)
-  } catch {
-    return null
-  }
-}
-
-function write(key: string, value: string): void {
-  try {
-    localStorage.setItem(key, value)
-  } catch {
-    // storage unavailable: the choice still applies for this visit
-  }
+/** a ref kept in this browser's storage; a stored value that doesn't parse falls back */
+function storedRef<T>(key: string, parse: (raw: string) => T | undefined, fallback: T, store: (v: T) => string = String): Ref<T> {
+  const raw = readStored(key)
+  const value = ref((raw === null ? undefined : parse(raw)) ?? fallback) as Ref<T>
+  watch(value, (v) => writeStored(key, store(v)))
+  return value
 }
 
 /** the preview's instrument, start note and interval labels, remembered in this browser (client-only) */
 export function usePreferences() {
-  const stored = read(INSTRUMENT_KEY) ?? ''
-  const storedStart = read(START_KEY) ?? ''
-  const instrument = ref<InstrumentName>(isInstrumentName(stored) ? stored : 'concert')
-  const start = ref<string>((PICKER_ROOTS as readonly string[]).includes(storedStart) ? storedStart : 'C')
-
-  watch(instrument, (v) => write(INSTRUMENT_KEY, v))
-  const intervals = ref(read(INTERVALS_KEY) === 'on')
-
-  watch(start, (v) => write(START_KEY, v))
-  watch(intervals, (v) => write(INTERVALS_KEY, v ? 'on' : 'off'))
-
+  const instrument = storedRef<InstrumentName>('csm-instrument', (s) => (isInstrumentName(s) ? s : undefined), 'concert')
+  const start = storedRef<string>('csm-start', (s) => ((PICKER_ROOTS as readonly string[]).includes(s) ? s : undefined), 'C')
+  const intervals = storedRef<boolean>('csm-intervals', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   return { instrument, start, intervals }
 }

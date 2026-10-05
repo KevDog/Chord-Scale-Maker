@@ -1,3 +1,7 @@
+/**
+ * Instrument presets (clef, transposition, description) and clef ranges. Port of INSTRUMENTS and TRANSPOSITIONS.
+ */
+
 export type Transposition = 'C' | 'Bb' | 'Eb' | 'F'
 export type Clef = 'treble' | 'bass'
 export type Instrument = Readonly<{ clef: Clef; trans: Transposition; description: string }>
