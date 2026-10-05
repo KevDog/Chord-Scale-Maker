@@ -1,0 +1,12 @@
+title: Modes of the Major Scale
+subtitle: C Major from Each Degree
+
+# section | bar | chord | scale
+# "bar" is the scale degree. "From C" shows all seven share one set of notes; "From root" shows each mode
+C | 1 | CMaj7    | C Ionian
+C | 2 | Dm7      | D Dorian
+C | 3 | Em7      | E Phrygian
+C | 4 | FMaj7#11 | F Lydian
+C | 5 | G7       | G Mixolydian
+C | 6 | Am7      | A Aeolian
+C | 7 | Bm7b5    | B Locrian

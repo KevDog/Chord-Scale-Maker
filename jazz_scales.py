@@ -63,6 +63,8 @@ SCALES = {
     "lydian augmented":     ("1 2 3 #4 #5 6 7",      "Lydian Augmented"),
     "altered":              ("1 b2 b3 3 #4 b6 b7",   "Altered"),
     "phrygian dominant":    ("1 b2 3 4 5 b6 b7",     "Phrygian Dominant"),
+    "dorian b2":            ("1 b2 b3 4 5 6 b7",     "Dorian \u266d2"),
+    "mixolydian b6":        ("1 2 3 4 5 b6 b7",      "Mixolydian \u266d6"),
     "half whole diminished":("1 b2 b3 3 #4 5 6 b7",  "Half-Whole Dim."),
     "whole half diminished":("1 2 b3 4 b5 b6 6 7",   "Whole-Half Dim."),
     "whole tone":           ("1 2 3 #4 #5 b7",       "Whole Tone"),
@@ -82,7 +84,8 @@ ALIASES = {
     "half whole dim": "half whole diminished", "dominant diminished": "half whole diminished",
     "whole half": "whole half diminished", "wh": "whole half diminished",
     "whole half dim": "whole half diminished", "diminished": "whole half diminished",
-    "mixolydian b6": "phrygian dominant", "bebop": "bebop dominant",
+    "phrygian natural 6": "dorian b2", "aeolian dominant": "mixolydian b6",
+    "bebop": "bebop dominant",
 }
 
 # --- instruments ------------------------------------------------------------
@@ -115,7 +118,7 @@ CLEF_ROOT_LOW = {"treble": 58, "bass": 43}    # root-spelled scales start in Bb3
 
 # --- pitch helpers ----------------------------------------------------------
 def norm(s):
-    return re.sub(r"\s+", " ", s.lower().replace("-", " ").replace("\u266e", "natural ").replace(".", "")).strip()
+    return re.sub(r"\s+", " ", s.lower().replace("-", " ").replace("\u266e", "natural ").replace("\u266d", "b").replace("\u266f", "#").replace(".", "")).strip()
 
 
 def parse_root(tok):

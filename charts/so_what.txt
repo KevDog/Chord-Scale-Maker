@@ -1,0 +1,8 @@
+title: So What
+subtitle: AABA, 32 Bars
+
+# section | bar | chord | scale
+A1 | 1  | Dm7  | D Dorian
+@copy A1 A2 8
+B  | 17 | Ebm7 | Eb Dorian
+@copy A1 A3 24

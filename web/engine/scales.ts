@@ -16,6 +16,8 @@ export const SCALES = {
   'lydian augmented': ['1 2 3 #4 #5 6 7', 'Lydian Augmented'],
   altered: ['1 b2 b3 3 #4 b6 b7', 'Altered'],
   'phrygian dominant': ['1 b2 3 4 5 b6 b7', 'Phrygian Dominant'],
+  'dorian b2': ['1 b2 b3 4 5 6 b7', 'Dorian ♭2'],
+  'mixolydian b6': ['1 2 3 4 5 b6 b7', 'Mixolydian ♭6'],
   'half whole diminished': ['1 b2 b3 3 #4 5 6 b7', 'Half-Whole Dim.'],
   'whole half diminished': ['1 2 b3 4 b5 b6 6 7', 'Whole-Half Dim.'],
   'whole tone': ['1 2 3 #4 #5 b7', 'Whole Tone'],
@@ -47,7 +49,8 @@ export const ALIASES: Readonly<Record<string, ScaleKey>> = {
   wh: 'whole half diminished',
   'whole half dim': 'whole half diminished',
   diminished: 'whole half diminished',
-  'mixolydian b6': 'phrygian dominant',
+  'phrygian natural 6': 'dorian b2',
+  'aeolian dominant': 'mixolydian b6',
   bebop: 'bebop dominant',
 }
 
@@ -59,6 +62,8 @@ export const norm = (s: string): string =>
     .toLowerCase()
     .replaceAll('-', ' ')
     .replaceAll('♮', 'natural ')
+    .replaceAll('♭', 'b')
+    .replaceAll('♯', '#')
     .replaceAll('.', '')
     .replace(/\s+/g, ' ')
     .trim()
