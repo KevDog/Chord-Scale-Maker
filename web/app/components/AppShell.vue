@@ -11,7 +11,7 @@
           <UiNavbarItem v-if="newChart" href="/editor?new=1">New chart</UiNavbarItem>
         </UiNavbarSection>
         <UiNavbarSpacer />
-        <HeaderQuote class="max-w-md max-md:hidden" />
+        <HeaderQuote class="max-w-xl max-md:hidden" />
         <UiNavbarSection>
           <UiNavbarItem :aria-label="`Switch to ${theme === 'dark' ? 'light' : 'dark'} mode`" @click="toggle">
             <SunIcon v-if="theme === 'dark'" data-slot="icon" />

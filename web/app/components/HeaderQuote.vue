@@ -1,7 +1,7 @@
 <template>
-  <figure v-if="quote" class="min-w-0 text-xs/4 text-zinc-500 dark:text-zinc-400">
+  <figure v-if="quote" class="min-w-0 text-sm/5 text-zinc-700 dark:text-zinc-300">
     <blockquote class="line-clamp-2 italic">“{{ quote.quote }}”</blockquote>
-    <figcaption class="mt-0.5 truncate">— {{ quote.author }}<template v-if="quote.topic"> · {{ quote.topic }}</template></figcaption>
+    <figcaption class="mt-0.5 truncate text-zinc-600 dark:text-zinc-400">— {{ quote.author }}<template v-if="quote.topic"> · {{ quote.topic }}</template></figcaption>
   </figure>
 </template>
 
