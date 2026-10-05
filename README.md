@@ -126,6 +126,8 @@ The library lists every chart in `charts/`; add a `.txt` file there and it appea
 In the editor, pick an instrument to write the sheet for it (clef, key, chord symbols); the chart itself stays in concert pitch.
 To play a chart in another key, use **Transpose…**: it rewrites the chart's chords and scale roots in the new concert key
 (spelled for the new key: flats in flat keys, sharps in sharp keys). The editor has this; the CLI doesn't.
+The scale menu separates **outside** options (tension to resolve, such as a pentatonic off the b5), and **Intervals**
+labels every note against the chord root (b9, #11, b13…) on screen.
 Unfinished features are behind flags (off by default): `NUXT_PUBLIC_FEATURES_NEW_CHART=true make dev` shows **New chart**.
 
 ## Tests

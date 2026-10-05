@@ -9,7 +9,10 @@
     >
       <option v-if="choices.defaultScale" value="">Default · {{ choices.defaultScale }}</option>
       <option v-else value="" disabled>Choose a scale…</option>
-      <option v-for="o in choices.alternates" :key="o.scale" :value="o.scale">{{ o.scale }}{{ o.note ? ` (${o.note})` : '' }}</option>
+      <option v-for="o in inside" :key="o.scale" :value="o.scale">{{ o.scale }}{{ o.note ? ` (${o.note})` : '' }}</option>
+      <optgroup v-if="outside.length" label="Outside (tension to resolve)">
+        <option v-for="o in outside" :key="o.scale" :value="o.scale">{{ o.scale }}{{ o.note ? ` (${o.note})` : '' }}</option>
+      </optgroup>
       <option v-if="custom" :value="scale">{{ scale }}</option>
       <option value="__other">Other…</option>
     </UiSelect>
@@ -49,6 +52,8 @@ const props = defineProps<{ chord: string; scale: string }>()
 const emit = defineEmits<{ update: [scale: string] }>()
 
 const choices = computed(() => scaleChoices(props.chord))
+const inside = computed(() => choices.value.alternates.filter((o) => !o.outside))
+const outside = computed(() => choices.value.alternates.filter((o) => o.outside))
 /** a scale typed in the text that equals the default shows as the default */
 const isDefault = computed(() => props.scale === choices.value.defaultScale)
 const custom = computed(() => props.scale !== '' && !isDefault.value && !choices.value.alternates.some((o) => o.scale === props.scale))

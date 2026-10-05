@@ -214,7 +214,7 @@ for _q, _names in _qdata["quality_aliases"].items():
 
 
 def scale_options(chord):
-    """-> [{'scale': 'Eb Major Pentatonic', 'note': '...', 'default': bool}] for a chord symbol"""
+    """-> [{'scale': 'Eb Major Pentatonic', 'note': '...', 'default': bool, 'outside': bool}] for a chord symbol"""
     m = re.fullmatch(CHORD_RE, chord.strip())
     if not m:
         raise ValueError(f"cannot parse chord {chord!r}")
@@ -230,7 +230,8 @@ def scale_options(chord):
         if opt["root"] != "1":      # interval-derived root: friendliest spelling for its scale
             l, a = simplify_root(l, a, key)
         out.append({"scale": f"{root_name(l, a)} {opt['scale']}",
-                    "note": opt.get("note", ""), "default": bool(opt.get("default"))})
+                    "note": opt.get("note", ""), "default": bool(opt.get("default")),
+                    "outside": bool(opt.get("outside"))})
     return out
 
 

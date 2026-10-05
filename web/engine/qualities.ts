@@ -3,7 +3,7 @@ import { parseChord } from './chord'
 import { rootName } from './pitch'
 import { scaleKey, simplifyRoot, spellFrom } from './scales'
 
-type RawOption = Readonly<{ root: string; scale: string; default?: boolean; note?: string }>
+type RawOption = Readonly<{ root: string; scale: string; default?: boolean; note?: string; outside?: boolean }>
 type QualityData = Readonly<{
   quality_aliases: Readonly<Record<string, readonly string[]>>
   qualities: Readonly<Record<string, readonly RawOption[]>>
@@ -17,7 +17,8 @@ const LOOKUP: ReadonlyMap<string, string> = new Map([
   ...Object.entries(DATA.quality_aliases).flatMap(([q, names]) => names.map((n) => [n, q] as const)),
 ])
 
-export type ScaleOption = Readonly<{ scale: string; note: string; default: boolean }>
+/** outside: a deliberate outside sound (tension to resolve), listed apart from the inside options */
+export type ScaleOption = Readonly<{ scale: string; note: string; default: boolean; outside: boolean }>
 export type QualityMatch = Readonly<{ quality: string; options: readonly ScaleOption[] }>
 
 /** scale options for a chord, roots spelled from the chord root; null if the quality is unknown */
@@ -30,7 +31,7 @@ export function resolveQuality(chord: string): QualityMatch | null {
     const [r] = spellFrom(c.root, opt.root)
     if (!r) throw new Error(`bad interval ${JSON.stringify(opt.root)} in chord_scales.json`)
     const root = opt.root === '1' ? r : simplifyRoot(r, key) // interval-derived: friendliest spelling
-    return { scale: `${rootName(root)} ${opt.scale}`, note: opt.note ?? '', default: opt.default ?? false }
+    return { scale: `${rootName(root)} ${opt.scale}`, note: opt.note ?? '', default: opt.default ?? false, outside: opt.outside ?? false }
   })
   return { quality, options }
 }

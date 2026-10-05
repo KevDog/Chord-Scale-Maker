@@ -1,0 +1,24 @@
+import { accText, mod, NAT_PC, pcOf, type Spelled } from './pitch'
+
+/** names by letter distance from the root: chord tones 1 3 5 7, the rest as tensions 9 11 13 */
+const NAMES = ['1', '9', '3', '11', '5', '13', '7'] as const
+const MAJOR_THIRD = new Set(['maj', 'Maj7', '6', '7', '7b9', '7#11', '7alt'])
+const SIXTH = new Set(['6', 'm6'])
+
+/**
+ * a note's interval from the chord root, spelled as written (Db over G is b5, C# is #11).
+ * quality is the canonical chord quality (resolveQuality), or null if unknown: on chords with a
+ * major 3rd a minor 3rd is #9; sus chords have a 4, not an 11; sixth chords a 6, not a 13.
+ */
+export function intervalLabel(root: Spelled, note: Spelled, quality: string | null): string {
+  const steps = mod(note.letter - root.letter, 7)
+  const semis = mod(pcOf(note) - pcOf(root), 12)
+  const acc = mod(semis - (NAT_PC[steps] ?? 0) + 6, 12) - 6 // against the major-scale degree
+  if (steps === 2 && acc === -1 && quality !== null && MAJOR_THIRD.has(quality)) return '#9'
+  if (steps === 3 && acc === 0 && quality === '7sus4') return '4'
+  if (steps === 5 && acc === 0 && quality !== null && SIXTH.has(quality)) return '6'
+  return accText(acc) + NAMES[steps]
+}
+
+export const intervalLabels = (root: Spelled, notes: readonly Spelled[], quality: string | null): string[] =>
+  notes.map((n) => intervalLabel(root, n, quality))

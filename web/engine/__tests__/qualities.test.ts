@@ -25,6 +25,13 @@ describe('qualities', () => {
     expect(resolveQuality('Bb7alt')?.options.map((o) => o.scale)).toContain('B Melodic Minor')
   })
 
+  it('marks outside pentatonics apart from inside ones', () => {
+    const outside = (chord: string) => Object.fromEntries((resolveQuality(chord)?.options ?? []).map((o) => [o.scale, o.outside]))
+    expect(outside('Dm7')).toMatchObject({ 'E Minor Pentatonic': false, 'A Minor Pentatonic': false, 'Eb Minor Pentatonic': true, 'G# Minor Pentatonic': true })
+    expect(outside('G7')).toMatchObject({ 'Db Major Pentatonic': true }) // off the b5
+    expect(outside('G7alt')).toMatchObject({ 'Db Major Pentatonic': false }) // all altered tensions: inside on an alt chord
+  })
+
   it('every quality has exactly one default and known scales', () => {
     for (const q of QUALITY_NAMES) {
       const options = resolveQuality(`C${q}`)?.options ?? []

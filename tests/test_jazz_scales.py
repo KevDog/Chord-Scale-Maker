@@ -99,6 +99,15 @@ def test_scale_options_interval_roots():
     assert "B Melodic Minor" in [o["scale"] for o in j.scale_options("Bb7alt")]      # b2 of Bb = Cb -> B
 
 
+def test_inside_and_outside_pentatonics():
+    dm = {o["scale"]: o["outside"] for o in j.scale_options("Dm7")}
+    assert dm["E Minor Pentatonic"] is False and dm["A Minor Pentatonic"] is False
+    assert dm["Eb Minor Pentatonic"] is True and dm["G# Minor Pentatonic"] is True   # Ab minor pent would need Cb
+    g7 = {o["scale"]: o["outside"] for o in j.scale_options("G7")}
+    assert g7["Db Major Pentatonic"] is True           # off the b5
+    assert {o["scale"]: o["outside"] for o in j.scale_options("G7alt")}["Db Major Pentatonic"] is False
+
+
 def test_every_json_scale_is_known():
     for quality, opts in j.QUALITIES.items():
         for o in opts:

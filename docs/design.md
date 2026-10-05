@@ -217,6 +217,12 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   and semitones. Roots are spelled on the target key's side (`spellInKey`: Dbm7 Gb7 in Bb, B not Cb); `simplifyRoot`
   decides in C or when that side would put double accidentals in the scale. A chord follows its scale's root, and a
   slash bass keeps its interval. Instrument parts are unchanged (plain `simplifyRoot`).
+- Scale options (`chord_scales.json`): an option with `"outside": true` is a deliberate outside sound (e.g. minor
+  pentatonic a half step up over m7, major pentatonic off the b5 over 7). The grid's scale menu lists those in an
+  "Outside" group. Both engines pass the flag through; it doesn't affect defaults.
+- Interval labels: the "Intervals" toggle (saved per browser) labels each note against the chord's written root
+  (`engine/intervals.ts`: b9, #9, #11, b13…; 4 on sus chords, 6 on sixth chords). On screen only, so print layout
+  and its 12 staves a page are unchanged.
 - Feature flags: `runtimeConfig.public.features` in `nuxt.config.ts`, read with `useFeature(name)`. They are off by
   default and fixed at build time; `NUXT_PUBLIC_FEATURES_<NAME>=true` turns one on for a build or `make dev`.
   `npm run e2e` builds with every flag on. `newChart` (blank charts, this browser's draft) is off in production:

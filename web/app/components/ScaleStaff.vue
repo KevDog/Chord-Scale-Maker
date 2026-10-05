@@ -8,23 +8,34 @@
     <div v-if="staff.error || drawError" class="rounded border border-dashed border-amber-500 px-3 py-6 text-sm text-amber-700 dark:text-amber-400">
       {{ staff.error || drawError }}
     </div>
-    <div v-else ref="el" class="text-zinc-900 dark:text-zinc-100 print:text-black" />
+    <div v-else>
+      <div ref="el" class="text-zinc-900 dark:text-zinc-100 print:text-black" />
+      <!-- on screen only, so print keeps its 12 staves a page -->
+      <p v-if="intervals && staff.intervals && xs.length" class="relative h-4 text-xs/4 text-zinc-600 tabular-nums dark:text-zinc-400 print:hidden">
+        <span class="sr-only">Intervals from the chord root:</span>
+        <span v-for="(label, i) in staff.intervals" :key="i" class="absolute -translate-x-1/2" :style="{ left: `${(xs[i] ?? 0) * 100}%` }">{{ glyphs(label) }}</span>
+      </p>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import type { StaffModel } from '~~/engine'
 
-const props = defineProps<{ staff: StaffModel; clef: 'treble' | 'bass' }>()
+/** intervals: label each note against the chord root (b9, #11…) */
+const props = defineProps<{ staff: StaffModel; clef: 'treble' | 'bass'; intervals?: boolean }>()
 const el = useTemplateRef<HTMLDivElement>('el')
 const drawError = ref<string | null>(null)
+const xs = ref<number[]>([])
+/** "b9" -> "♭9", like the chord symbols */
+const glyphs = (label: string): string => label.replaceAll('b', '♭').replaceAll('#', '♯')
 
 async function draw(): Promise<void> {
   if (props.staff.error) return
   try {
     const vf = await loadVexFlow()
     if (!el.value) return // still showing a previous draw error; keep it
-    drawStaff(vf, el.value, props.staff, props.clef)
+    xs.value = drawStaff(vf, el.value, props.staff, props.clef)
     drawError.value = null
   } catch (e) {
     drawError.value = `Couldn't draw this staff (${e instanceof Error ? e.message : String(e)})`

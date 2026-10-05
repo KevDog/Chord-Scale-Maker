@@ -43,6 +43,16 @@ describe('sheet', () => {
     expect(s.error).toBeNull()
   })
 
+  it('labels each note against the chord root, in any mode and for any instrument', () => {
+    expect(staves([row('G7', 'Db Major Pentatonic')])[0]?.intervals).toEqual(['b5', 'b13', 'b7', 'b9', '#9'])
+    const [from] = staves([row('Dm7')], 'from') // D Dorian from C: C D E F G A B
+    expect(from?.intervals).toEqual(['b7', '1', '9', 'b3', '11', '5', '13'])
+    const tenor = buildSheet([row('C7#9', 'C Altered')], { clef: 'treble', trans: 'Bb' }, 'root', 'C', 12)[0]?.pages[0]?.[0]
+    expect(tenor?.intervals).toEqual(['1', 'b9', '#9', '3', '#11', 'b13', 'b7']) // written D Altered over D7#9
+    expect(staves([row('Cm7#5#9x', 'C Dorian')])[0]?.intervals).toEqual(['1', '9', 'b3', '11', '5', '13', 'b7']) // unknown quality
+    expect(staves([row('???', 'C Dorian')])[0]?.intervals).toBeNull()
+  })
+
   it('reports staves that need attention instead of throwing', () => {
     const [unknown, bad, typo] = staves([row('Cm7#5#9x'), row('Xyz'), row('Cm7', 'C Dorain')])
     expect(unknown).toMatchObject({ error: 'Choose a scale' })

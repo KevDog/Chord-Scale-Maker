@@ -53,14 +53,20 @@ const mergeText = (tokens: readonly ChordToken[]): ChordToken[] =>
       : [...out, t]
   }, [])
 
+/** the chord's written root: its scale's spelling when they share a pitch (throws if either can't be read) */
+export function writtenChordRoot(part: Part, chord: string, scaleText?: string): Spelled {
+  const c = parseChord(chord)
+  const s = scaleText ? parseScale(scaleText) : undefined
+  return s && pcOf(s.root) === pcOf(c.root) ? writtenRoot(part, s.root, s.key) : writtenRoot(part, c.root)
+}
+
 /**
  * written chord symbol as display tokens. The root follows the scale's spelling when
  * they share a pitch; a slash bass keeps its interval from the root (D7/F# -> E7/G# on Bb).
  */
 export function chordTokens(part: Part, chord: string, scaleText?: string): ChordToken[] {
   const c = parseChord(chord)
-  const s = scaleText ? parseScale(scaleText) : undefined
-  const root = s && pcOf(s.root) === pcOf(c.root) ? writtenRoot(part, s.root, s.key) : writtenRoot(part, c.root)
+  const root = writtenChordRoot(part, chord, scaleText)
   const tokens = [text(LETTERS[root.letter]), ...accTokens(root.acc), ...qualityTokens(c.quality)]
   if (c.bass) {
     const letter = toLetter(root.letter + (c.bass.letter - c.root.letter))
