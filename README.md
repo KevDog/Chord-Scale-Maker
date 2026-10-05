@@ -128,6 +128,8 @@ To play a chart in another key, use **Transpose…**: it rewrites the chart's ch
 (spelled for the new key: flats in flat keys, sharps in sharp keys). The editor has this; the CLI doesn't.
 The scale menu separates **outside** options (tension to resolve, such as a pentatonic off the b5), and **Intervals**
 labels every note against the chord root (b9, #11, b13…) on screen.
+Switch the preview to **Guide tones** for the chart's guide tone lines: each chord's 3rd and 7th, voice-led into two
+complementary lines (one starting on the 3rd, one on the 7th), 4/4, in systems of 4 bars.
 Unfinished features are behind flags (off by default): `NUXT_PUBLIC_FEATURES_NEW_CHART=true make dev` shows **New chart**.
 
 ## Tests
