@@ -1,0 +1,9 @@
+title: Milestones
+subtitle: AABBA, 40 Bars
+
+# section | bar | chord | scale
+A1 | 1  | Gm7 | G Dorian
+@copy A1 A2 8
+B1 | 17 | Am7 | A Aeolian
+@copy B1 B2 8
+@copy A1 A3 32

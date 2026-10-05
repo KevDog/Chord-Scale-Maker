@@ -15,6 +15,8 @@ def test_scale_spelling_from_root():
     assert notes(p, "D Half-Whole") == "d' ees' f' fis' gis' a' b' c''"
     assert notes(p, "F Altered") == "f' ges' aes' a' b' des'' ees''"
     assert notes(p, "G Altered") == "g' aes' bes' b' cis'' ees'' f''"
+    assert notes(p, "D Dorian b2") == "d' ees' f' g' a' b' c''"        # mode 2 of C melodic minor
+    assert notes(p, "G Mixolydian b6") == "g' a' b' c'' d'' ees'' f''"   # mode 5, not Phrygian Dominant
 
 
 def test_spelling_from_fixed_note():
@@ -27,6 +29,9 @@ def test_spelling_from_fixed_note():
 def test_aliases_and_unknown():
     assert j.parse_scale("G Half Whole Dim")[2] == "half whole diminished"
     assert j.parse_scale("C major")[2] == "ionian"
+    assert j.parse_scale("D Phrygian \u266e6")[2] == "dorian b2"
+    assert j.parse_scale("G Aeolian Dominant")[2] == "mixolydian b6"
+    assert j.parse_scale("D Dorian \u266d2")[2] == "dorian b2"     # page labels parse back
     try:
         j.parse_scale("C Dorain")
         assert False
