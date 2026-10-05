@@ -267,8 +267,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - A dev-only `/ui` page shows every component; it's removed from the production build.
 - **Header quote:** a random quote in the navbar on tablet and desktop widths, kept for the visit
   (`HeaderQuote`, `useQuote`).
-  - It shows the quote, its author and its topic.
-  - `build/quotes.ts` reduces `data/quotes.json` at build time to `cited` entries with those three fields. The
+  - It shows the quote and its author.
+  - `build/quotes.ts` reduces `data/quotes.json` at build time to `cited` entries with those two fields. The
     file marks the rest "unverified".
   - The list is served as the separate `virtual:quotes` chunk, about 20 KB gzipped, fetched after mount. So the
     prerendered HTML is the same for everyone.

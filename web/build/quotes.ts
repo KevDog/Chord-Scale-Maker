@@ -2,14 +2,13 @@ import { readFileSync } from 'node:fs'
 import type { Plugin } from 'vite'
 
 /**
- * Quotes for the navbar (data/quotes.json), reduced at build time to what's shown: the quote, its author and its
- * topic. Only entries with a recorded source ("cited") are used: the file marks the rest "unverified" and notes
+ * Quotes for the navbar (data/quotes.json), reduced at build time to what's shown: the quote and its author. Only entries with a recorded source ("cited") are used: the file marks the rest "unverified" and notes
  * some may be misattributed. The list is served as its own chunk (`virtual:quotes`), loaded after the page, so it
  * adds nothing to first load.
  */
-export type Quote = Readonly<{ quote: string; author: string; topic: string }>
+export type Quote = Readonly<{ quote: string; author: string }>
 
-type RawQuote = { quote?: unknown; author?: unknown; topic?: unknown; source_status?: unknown }
+type RawQuote = { quote?: unknown; author?: unknown; source_status?: unknown }
 
 const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '')
 
@@ -18,7 +17,7 @@ export function shownQuotes(raw: unknown): Quote[] {
   if (!Array.isArray(list)) return []
   return (list as RawQuote[])
     .filter((q) => q.source_status === 'cited')
-    .map((q) => ({ quote: text(q.quote), author: text(q.author), topic: text(q.topic) }))
+    .map((q) => ({ quote: text(q.quote), author: text(q.author) }))
     .filter((q) => q.quote && q.author)
 }
 
