@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { shownQuotes } from './quotes'
 
 describe('shownQuotes', () => {
-  it('keeps cited quotes, trimmed to quote, author and topic', () => {
+  it('keeps cited quotes, trimmed to the quote and its author', () => {
     const raw = {
       quotes: [
         { id: 1, author: 'Miles Davis', topic: 'improvisation', quote: "I'll play it and tell you what it is later.", source: 'Szwed', source_status: 'cited', url: 'x' },
@@ -13,8 +13,8 @@ describe('shownQuotes', () => {
       ],
     }
     expect(shownQuotes(raw)).toEqual([
-      { quote: "I'll play it and tell you what it is later.", author: 'Miles Davis', topic: 'improvisation' },
-      { quote: 'Spaced.', author: 'Bill Evans', topic: 'practice' },
+      { quote: "I'll play it and tell you what it is later.", author: 'Miles Davis' },
+      { quote: 'Spaced.', author: 'Bill Evans' },
     ])
   })
 
