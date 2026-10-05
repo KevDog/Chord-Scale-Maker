@@ -156,7 +156,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   accidental on every altered note (matches `\accidentalStyle forget`), double
   bar line, final bar line on the last staff.
 - Two parts as in the CLI: "Spelled from X" and "Spelled from the Root", each
-  with its own title header. Mode selector: both / from / root; start-note select
+  with its own title header. Mode selector: From <note> / From root (one spelling at a time, default From root; the engine still supports
+  both, for the CLI); start-note select, shown only for From
   (written pitch, any of the picker's 17 roots, default C). Page subtitles follow the CLI
   (`pageSubtitle`): "Subtitle – Tenor Sax (Bb) (Spelled from C)".
 - Instrument select: the CLI's 16 presets, grouped by what they read (C treble, B♭, E♭, F,
@@ -206,7 +207,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 - `useChartEditor(initialText)`: `text`, `doc`, `diagnostics`, `fatal`, `rows`, `meta`,
   `setText` (debounced re-parse) and `setDoc` (grid edit → canonical text). Immutable updates only.
-  Mode (both/from/root) is page state.
+  Mode (from/root) is page state.
 - `usePreferences()`: the instrument and start note, saved per browser. Stored values that
   aren't a known instrument or picker root are ignored.
 - Editor draft is kept in `localStorage` (try/catch) as a per-browser convenience.
