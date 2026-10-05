@@ -334,6 +334,15 @@ The site is static with no server code, so most of the attack surface is gone. R
 
 - **Edge:** Vercel's automatic DDoS mitigation, plus a Firewall rate-limit rule per IP (600 requests per minute,
   answered with 429).
+- **Analytics:** Vercel Web Analytics (`web/build/analytics.ts`).
+  - It's cookieless, with no cross-site tracking or advertising IDs, so there's no cookie banner. Visitors are
+    counted with a daily-rotating hash.
+  - It's one deferred script tag served from the site's own origin, under `VERCEL_OBSERVABILITY_BASEPATH` or
+    `/_vercel`, so the CSP needs no new sources.
+  - It's added to Vercel production builds only, so local builds and the e2e tests never request it.
+  - It's written as a plain tag because `@vercel/analytics` declares a peer dependency on vue-router 4, which
+    conflicts with Nuxt 4's vue-router 5.
+  - Web Analytics has to be enabled for the project in the Vercel dashboard.
 - **Content-Security-Policy:**
   - **Where:** `web/build/csp.ts`, run by a Nitro `prerender:generate` hook, gives each prerendered page a
     `<meta http-equiv="Content-Security-Policy">` as the first element of `<head>`:

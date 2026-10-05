@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import type { Plugin } from 'vite'
+import { analyticsScripts } from './build/analytics'
 import { addCspMeta } from './build/csp'
 import { SECURITY_HEADERS } from './build/headers'
 
@@ -25,7 +26,8 @@ export default defineNuxtConfig({
       meta: [{ name: 'description', content: 'Chord-scale practice sheets from a chord chart.' }],
       // sets the dark class before first paint. A file, not inline, so it needs no CSP hash
       // (Nuxt's own inline scripts still do: see docs/design.md §9)
-      script: [{ src: '/theme-init.js' }],
+      // + Vercel Web Analytics in production builds (build/analytics.ts): same-origin files, so no CSP change
+      script: [{ src: '/theme-init.js' }, ...analyticsScripts(process.env)],
     },
   },
   runtimeConfig: {

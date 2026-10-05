@@ -143,6 +143,8 @@ What the editor does:
   3rd, one on the 7th), in 4/4 systems of 4 bars (2 on phones).
 - **Print / Save PDF:** the browser's print dialog, 12 staves or 8 guide tone systems a letter page.
 
+The live site counts page views with Vercel Web Analytics (cookieless, no cross-site tracking), in production
+builds only.
 Unfinished features are behind flags, off by default: `NUXT_PUBLIC_FEATURES_NEW_CHART=true make dev` shows
 **New chart**. The design is in [docs/design.md](docs/design.md).
 
