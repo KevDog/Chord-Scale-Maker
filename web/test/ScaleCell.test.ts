@@ -17,6 +17,15 @@ describe('ScaleCell', () => {
     expect(labels.at(-1)).toBe('Other…')
   })
 
+  it('lists outside sounds in their own group', async () => {
+    const w = await mount('Dm7')
+    const group = w.find('optgroup')
+    expect(group.attributes('label')).toMatch(/^Outside/)
+    expect(group.findAll('option').map((o) => o.attributes('value'))).toEqual(['Eb Minor Pentatonic', 'G# Minor Pentatonic'])
+    expect(w.findAll('select > option').map((o) => o.attributes('value'))).toContain('E Minor Pentatonic')
+    expect((await mount('Cmaj7')).find('optgroup').exists()).toBe(false)
+  })
+
   it('emits the chosen alternate, or empty for the default', async () => {
     const w = await mount('Cm7')
     await w.find('select').setValue('C Aeolian')
