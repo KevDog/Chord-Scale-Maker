@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { defaultScale, QUALITY_NAMES, resolveQuality } from '../qualities'
+import { baseQuality, defaultScale, QUALITY_NAMES, resolveQuality } from '../qualities'
 import { parseScale } from '../scales'
 
 describe('qualities', () => {
@@ -23,6 +23,12 @@ describe('qualities', () => {
     expect(scales).toContain('Eb Major Pentatonic')
     expect(resolveQuality('Gbm7b5')?.options.map((o) => o.scale)).toContain('D Major Pentatonic')
     expect(resolveQuality('Bb7alt')?.options.map((o) => o.scale)).toContain('B Melodic Minor')
+  })
+
+  it('reads extended symbols as their base quality when the rest is only alterations', () => {
+    expect(['Maj7#11', '7sus4b9', 'Maj7#5', '-7', 'maj9', 'm7(b5)', '7(9)', 'Maj7(9)', 'm7(11)', 'm7#5#9x', '', 'x'].map(baseQuality)).toEqual([
+      'Maj7', '7sus4', 'Maj7', 'm7', 'Maj7', 'm7b5', '7', 'Maj7', 'm7', null, 'maj', null,
+    ])
   })
 
   it('marks outside pentatonics apart from inside ones', () => {
