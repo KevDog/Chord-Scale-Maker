@@ -24,7 +24,14 @@
         </div>
       </section>
       <section aria-labelledby="text-heading" class="min-w-0">
-        <UiSubheading id="text-heading" class="mb-3">Text</UiSubheading>
+        <div class="mb-3 flex items-center gap-2">
+          <UiSubheading id="text-heading">Text</UiSubheading>
+          <HelpTip label="How the text editor works">
+            <span class="block">One line per chord: <code class="font-mono text-xs whitespace-nowrap">section | bar | chord | scale</code>, in concert pitch. Leave the scale out to use the chord's default.</span>
+            <span class="mt-2 block"><code class="font-mono text-xs">title:</code> and <code class="font-mono text-xs">subtitle:</code> set the heading, lines starting with <code class="font-mono text-xs">#</code> are comments, and <code class="font-mono text-xs">@copy A B 8</code> repeats section A as B, 8 bars later.</span>
+            <span class="mt-2 block">The text and the grid stay in sync: edit either one. Problems are listed under the text.</span>
+          </HelpTip>
+        </div>
         <ChartText :text="editor.text.value" :diagnostics="editor.diagnostics.value" @update:text="editor.setText" />
       </section>
     </div>

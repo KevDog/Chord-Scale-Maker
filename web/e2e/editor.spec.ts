@@ -92,3 +92,18 @@ test('guide tones draw both lines, four bars a system, without the scale control
   await page.getByText('Scales', { exact: true }).click()
   await expect(staves(page)).toHaveCount(39)
 })
+
+test('the text editor explains itself on hover and on focus', async ({ page }) => {
+  const help = page.getByRole('button', { name: 'How the text editor works' })
+  const tip = page.getByRole('tooltip')
+  await expect(tip).toBeHidden()
+  await help.hover()
+  await expect(tip).toBeVisible()
+  await expect(tip).toContainText('section | bar | chord | scale')
+  await page.mouse.move(0, 0)
+  await expect(tip).toBeHidden()
+  await help.focus()
+  await expect(tip).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(tip).toBeHidden()
+})
