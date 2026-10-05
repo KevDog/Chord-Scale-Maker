@@ -1,6 +1,6 @@
 # Guide tone lines: plan
 
-Status: **phases 1–3 built** (engine, rendering and UI, print), behind the flag until sign-off. Web-only, like Transpose; the Python CLI is unchanged. Behind a `guideTones` feature flag
+Status: **done.** Phases 1–3 built (engine, rendering and UI, print); the `guideTones` flag is on in production. Web-only, like Transpose; the Python CLI is unchanged. Behind a `guideTones` feature flag
 until it is signed off.
 
 ## Decisions

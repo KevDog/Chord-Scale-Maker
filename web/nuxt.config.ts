@@ -32,10 +32,10 @@ export default defineNuxtConfig({
     public: {
       siteUrl: '', // NUXT_PUBLIC_SITE_URL, e.g. https://www.chordscalemaker.com
       issuesUrl: 'https://github.com/KevDog/Chord-Scale-Maker/issues/new',
-      // feature flags (useFeature): off by default; NUXT_PUBLIC_FEATURES_<NAME>=true turns one on
+      // feature flags (useFeature): new ones start off; NUXT_PUBLIC_FEATURES_<NAME>=true|false overrides one
       features: {
         newChart: false, // blank charts and this browser's draft; library charts stay editable
-        guideTones: false, // the Guide tones sheet in the preview (docs/plan-guide-tones.md)
+        guideTones: true, // the Guide tones sheet in the preview (docs/plan-guide-tones.md); on since sign-off
       },
     },
   },

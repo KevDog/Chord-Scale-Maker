@@ -223,10 +223,12 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - Interval labels: the "Intervals" toggle (saved per browser) labels each note against the chord's written root
   (`engine/intervals.ts`: b9, #9, #11, b13…; 4 on sus chords, 6 on sixth chords). On screen only, so print layout
   and its 12 staves a page are unchanged.
-- Feature flags: `runtimeConfig.public.features` in `nuxt.config.ts`, read with `useFeature(name)`. They are off by
-  default and fixed at build time; `NUXT_PUBLIC_FEATURES_<NAME>=true` turns one on for a build or `make dev`.
-  `npm run e2e` builds with every flag on. `newChart` (blank charts, this browser's draft) is off in production:
-  the "New chart" links are hidden, and `/editor` without a library chart goes back to the library.
+- Feature flags: `runtimeConfig.public.features` in `nuxt.config.ts`, read with `useFeature(name)`. New flags start
+  off and are fixed at build time; `NUXT_PUBLIC_FEATURES_<NAME>=true|false` overrides one for a build or `make dev`.
+  `npm run e2e` builds with every flag on.
+  - `newChart` (blank charts, this browser's draft) is off in production: the "New chart" links are hidden, and
+    `/editor` without a library chart goes back to the library.
+  - `guideTones` (the Guide tones sheet, docs/plan-guide-tones.md) is on.
 
 ## 9. Security
 

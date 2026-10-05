@@ -8,11 +8,11 @@ mockNuxtImport('navigateTo', () => navigate)
 
 const newChartLinks = (html: string) => html.match(/editor\?new=1/g) ?? []
 
-describe('features off by default', () => {
+describe('feature flags', () => {
   beforeEach(() => navigate.mockClear())
 
   it('reads flags from runtime config', () => {
-    expect(useRuntimeConfig().public.features).toEqual({ newChart: false, guideTones: false })
+    expect(useRuntimeConfig().public.features).toEqual({ newChart: false, guideTones: true })
     expect(useFeature('newChart')).toBe(false)
   })
 
