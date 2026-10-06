@@ -59,4 +59,29 @@ describe('EditorView', () => {
     expect(sheet(w).props('part')).toEqual({ clef: 'bass', trans: 'C' })
     expect(w.text()).toContain('The preview is in bass clef, concert pitch, for trombone')
   })
+
+  it('focus mode shows the sheet alone; Escape or Exit focus leaves it, back to the Focus button', async () => {
+    const w = await mount()
+    const button = (name: string) => w.findAll('button').find((b) => b.text().startsWith(name))
+    const dialog = () => w.find('[role=dialog]')
+    button('Focus')?.element.focus()
+    await button('Focus')?.trigger('click')
+    await nextTick()
+    expect(dialog().attributes('aria-label')).toBe('Focus mode')
+    expect(dialog().find('fieldset').isVisible()).toBe(false) // the preview controls are hidden
+    expect(dialog().findComponent({ name: 'ScaleSheet' }).exists()).toBe(true)
+    expect(document.activeElement?.textContent).toContain('Exit focus')
+    expect(document.documentElement.classList.contains('overflow-hidden')).toBe(true)
+
+    window.dispatchEvent(new KeyboardEvent('keydown', { key: 'Escape' }))
+    await nextTick()
+    await nextTick()
+    expect(dialog().exists()).toBe(false)
+    expect(document.documentElement.classList.contains('overflow-hidden')).toBe(false)
+    expect(document.activeElement?.textContent).toBe('Focus')
+
+    await button('Focus')?.trigger('click')
+    await button('Exit focus')?.trigger('click')
+    expect(dialog().exists()).toBe(false)
+  })
 })

@@ -18,6 +18,7 @@
                 <div class="flex flex-wrap gap-3 *:whitespace-nowrap">
                   <ChartTranspose :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
                   <UiButton color="note" @click="print"><PrinterIcon data-slot="icon" />Print / Save PDF</UiButton>
+                  <UiButton outline :disabled="editor.fatal.value" title="Show only the sheet music (Esc to leave)" @click="enterFocus"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
                 </div>
                 <UiText v-if="transposed" role="status">{{ transposed }}</UiText>
               </div>
@@ -38,8 +39,18 @@
       </section>
     </div>
 
-    <section aria-labelledby="preview-heading" class="space-y-6">
-      <div class="space-y-4 print:hidden">
+    <!-- focus mode: this section alone, over the whole page (and printed as usual) -->
+    <section
+      v-bind="focus.on.value ? { role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Focus mode' } : { 'aria-labelledby': 'preview-heading' }"
+      :class="[
+        'space-y-6',
+        focus.on.value && 'fixed inset-0 z-50 overflow-y-auto bg-zinc-100 px-4 pb-8 dark:bg-zinc-900 print:static print:overflow-visible print:bg-white print:p-0',
+      ]"
+    >
+      <div v-if="focus.on.value" ref="focusBar" class="sticky top-0 z-10 -mx-4 flex justify-end bg-zinc-100/90 px-4 py-3 backdrop-blur-sm dark:bg-zinc-900/90 print:hidden">
+        <UiButton outline @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-500 dark:text-zinc-400">Esc</kbd></UiButton>
+      </div>
+      <div v-show="!focus.on.value" class="space-y-4 print:hidden">
         <UiSubheading id="preview-heading">Preview</UiSubheading>
         <PreviewControls
           v-model:sheet="sheet"
@@ -59,35 +70,37 @@
         />
       </div>
 
-      <UiText v-if="editor.fatal.value" class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
-      <GuideToneSheet
-        v-else-if="sheet === 'guideTones'"
-        :rows="editor.rows.value"
-        :title="editor.meta.value.title"
-        :subtitle="editor.meta.value.subtitle"
-        :part="part"
-        :instrument-label="instrumentLabel(prefs.instrument.value)"
-        :intervals="prefs.intervals.value"
-      />
-      <ScaleSheet
-        v-else
-        :rows="editor.rows.value"
-        :title="editor.meta.value.title"
-        :subtitle="editor.meta.value.subtitle"
-        :part="part"
-        :instrument-label="instrumentLabel(prefs.instrument.value)"
-        :start="prefs.start.value"
-        :mode="mode"
-        :per-page="PER_PAGE"
-        :intervals="prefs.intervals.value"
-        :practice="selection"
-      />
+      <div :class="focus.on.value && 'mx-auto max-w-6xl print:max-w-none'">
+        <UiText v-if="editor.fatal.value" class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
+        <GuideToneSheet
+          v-else-if="sheet === 'guideTones'"
+          :rows="editor.rows.value"
+          :title="editor.meta.value.title"
+          :subtitle="editor.meta.value.subtitle"
+          :part="part"
+          :instrument-label="instrumentLabel(prefs.instrument.value)"
+          :intervals="prefs.intervals.value"
+        />
+        <ScaleSheet
+          v-else
+          :rows="editor.rows.value"
+          :title="editor.meta.value.title"
+          :subtitle="editor.meta.value.subtitle"
+          :part="part"
+          :instrument-label="instrumentLabel(prefs.instrument.value)"
+          :start="prefs.start.value"
+          :mode="mode"
+          :per-page="PER_PAGE"
+          :intervals="prefs.intervals.value"
+          :practice="selection"
+        />
+      </div>
     </section>
   </div>
 </template>
 
 <script setup lang="ts">
-import { PrinterIcon } from '@heroicons/vue/16/solid'
+import { ArrowsPointingOutIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import { buildSheet, type ChartDoc, instrumentLabel, LIMITS, litKeys, type Mode, partFor, practiceBoxes } from '~~/engine'
 import type { SheetKind } from '~/utils/sheets'
 
@@ -112,6 +125,8 @@ const practiceStaves = computed(() =>
 const practiceBoxesNow = computed(() => practiceBoxes(practiceStaves.value, mode.value, prefs.start.value))
 const litNow = computed(() => litKeys(practiceStaves.value))
 const transposed = ref('')
+const focus = useFocusMode()
+const focusBar = ref<HTMLElement | null>(null)
 
 watch(editor.text, (t) => saveDraft(t))
 
@@ -119,6 +134,13 @@ watch(editor.text, (t) => saveDraft(t))
 function currentDoc(): ChartDoc {
   editor.flush()
   return editor.doc.value
+}
+
+/** focus mode, with keyboard focus on its exit button */
+function enterFocus(): void {
+  editor.flush()
+  focus.enter()
+  nextTick(() => focusBar.value?.querySelector('button')?.focus())
 }
 
 function print(): void {
