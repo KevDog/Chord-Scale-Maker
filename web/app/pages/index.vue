@@ -8,7 +8,7 @@
         <UiText class="mt-1">Pick a tune to open it in the editor{{ newChart ? ', or start a new chart' : '' }}. Charts are written in concert pitch.</UiText>
       </div>
       <div class="flex gap-3">
-        <UiButton outline :href="requestUrl" target="_blank" rel="noopener noreferrer">Request a chart</UiButton>
+        <UiButton outline href="/contact">Request a chart</UiButton>
         <UiButton v-if="newChart" color="note" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
       </div>
     </div>
@@ -54,7 +54,5 @@ import { MusicalNoteIcon } from '@heroicons/vue/24/outline'
 
 const query = ref('')
 const charts = computed(() => searchLibrary(LIBRARY, query.value))
-/** a new GitHub issue with the "Add Chart" label (applied for users who may label issues) */
-const requestUrl = `${useRuntimeConfig().public.issuesUrl}?${new URLSearchParams({ labels: 'Add Chart' })}`
 const newChart = useFeature('newChart')
 </script>

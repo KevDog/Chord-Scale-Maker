@@ -51,3 +51,10 @@ test('the icons are linked and served, and the mark leads the navbar', async ({ 
   await expect(mark).toHaveAttribute('src', '/favicon.svg')
   expect(await mark.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0)
 })
+
+test('Request a chart opens the contact form', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('link', { name: 'Request a chart' }).click()
+  await expect(page).toHaveURL(/\/contact$/)
+  await expect(page.getByRole('heading', { name: 'Contact' })).toBeVisible()
+})
