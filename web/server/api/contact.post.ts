@@ -11,7 +11,7 @@ export default defineEventHandler(async (event) => {
   if (origin && new URL(origin).host !== getRequestHost(event, { xForwardedHost: true }))
     throw createError({ statusCode: 403, statusMessage: 'Cross-site request' })
   if (Number(getRequestHeader(event, 'content-length') ?? 0) > CONTACT_LIMITS.maxBytes)
-    throw createError({ statusCode: 413, statusMessage: 'Message too large' })
+    throw createError({ statusCode: 413, statusMessage: 'Message too large' }) // Vercel's own cap is 4.5 MB
 
   const check = checkContact(await readBody(event), Date.now())
   if (!check.ok && check.spam) return { ok: true } // say nothing useful to a bot
@@ -25,7 +25,7 @@ export default defineEventHandler(async (event) => {
   const sent = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
-    body: JSON.stringify({ from, to: [to], reply_to: mail.replyTo, subject: mail.subject, text: mail.text }),
+    body: JSON.stringify({ from, to: [to], reply_to: mail.replyTo, subject: mail.subject, text: mail.text, attachments: mail.attachments }),
   }).catch(() => null)
   if (!sent?.ok) throw createError({ statusCode: 502, statusMessage: 'The message could not be sent' })
   return { ok: true }

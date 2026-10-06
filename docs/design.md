@@ -68,7 +68,7 @@ web/                      # Nuxt app (Vercel root directory)
                           # field, table, interactive (Catalyst wiring)
     assets/css/main.css   # Tailwind, theme tokens, print rules
   build/                  # csp.ts, headers.ts, analytics.ts, quotes.ts (+ tests, check-headers)
-  server/                 # api/contact.post.ts, utils/contactMessage.ts (+ test), plugins/csp.ts
+  server/                 # api/contact.post.ts, utils/contactMessage.ts (+ test: message and attachment checks), plugins/csp.ts
   public/theme-init.js    # applies the saved theme before first paint
   test/                   # app tests (@nuxt/test-utils, happy-dom)
   e2e/                    # Playwright tests against the production build
@@ -422,7 +422,14 @@ Pages are static, and the only server code is the contact function, so the attac
     `@heroicons/vue` and `@fontsource-variable/jost` (the heading font). Everything else (Nuxt, Tailwind, the test and lint tools) is a build-time `devDependency`.
 - **The contact function** (`server/api/contact.post.ts`):
   - **Validation:** a pure, tested `checkContact` checks the length and form of name, email and message.
-  - **Requests:** posts from another site are refused (403), as are bodies over 16 KB (413).
+  - **Requests:** posts from another site are refused (403), as are bodies over about 4 MB (413): 16 KB of text
+    plus one base64 attachment. Vercel's own cap is 4.5 MB.
+  - **Attachment** (optional, `FileDrop`, `utils/attachment.ts`): one JPG, PNG or PDF, browsed for or dropped,
+    up to 10 MB as chosen. At most 3 MB is sent: the browser shrinks a bigger photo (2500 px on its long side,
+    JPEG on white, the best quality that fits) and turns away a bigger PDF. The server checks the type against the
+    file's first bytes, the size, and the base64, and makes the file name header-safe (`checkAttachment`). It's
+    attached through Resend and never stored. Everything is in the browser and the function, with no storage
+    service and no extra CSP origin.
   - **Bots:** a honeypot field, and a minimum time between showing the form and submitting it. Bots get a quiet
     200, so they learn nothing.
   - **The email:** plain text only, a one-line subject (no header injection), and the sender as reply-to.

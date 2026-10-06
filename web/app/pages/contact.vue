@@ -30,6 +30,7 @@
             <UiTextarea v-model="form.message" name="message" rows="6" :invalid="!!errors.message" :maxlength="CONTACT_LIMITS.message" required />
             <UiErrorMessage v-if="errors.message">{{ errors.message }}</UiErrorMessage>
           </UiField>
+          <FileDrop v-model="attachment" v-model:preparing="preparing" :disabled="sending" :error="errors.attachment" />
         </UiFieldGroup>
       </UiFieldset>
 
@@ -39,7 +40,7 @@
       </div>
 
       <div class="flex flex-wrap items-center gap-4">
-        <UiButton type="submit" color="note" :disabled="sending">{{ sending ? 'Sending…' : 'Send message' }}</UiButton>
+        <UiButton type="submit" color="note" :disabled="sending || preparing">{{ sending ? 'Sending…' : 'Send message' }}</UiButton>
         <UiText v-if="failure" role="alert" class="text-red-700! dark:text-red-400!">{{ failure }}</UiText>
       </div>
       <UiText class="text-sm/6!">Your message is emailed to me and used only to reply; see <UiTextLink href="/privacy">Privacy</UiTextLink>.</UiText>
@@ -48,17 +49,24 @@
 </template>
 
 <script setup lang="ts">
-import { CONTACT_LIMITS } from '../../server/utils/contactMessage'
+import type { ReadyAttachment } from '~/utils/attachment'
+import { CONTACT_LIMITS, type ContactField as Field } from '../../server/utils/contactMessage'
 
 /** the contact form: posts to /api/contact, which emails the message (server/api/contact.post.ts) */
-type Field = 'name' | 'email' | 'message'
 const blank = () => ({ name: '', email: '', message: '', website: '' })
 const form = reactive(blank())
+const attachment = ref<ReadyAttachment | null>(null)
+const preparing = ref(false)
 const errors = ref<Partial<Record<Field, string>>>({})
 const sending = ref(false)
 const sent = ref(false)
 const failure = ref('')
 let startedAt = 0
+
+watch(attachment, () => {
+  const { attachment: _, ...rest } = errors.value
+  errors.value = rest
+})
 
 onMounted(() => {
   startedAt = Date.now()
@@ -76,10 +84,10 @@ function localErrors(): Partial<Record<Field, string>> {
 async function send(): Promise<void> {
   failure.value = ''
   errors.value = localErrors()
-  if (Object.keys(errors.value).length) return
+  if (Object.keys(errors.value).length || preparing.value) return
   sending.value = true
   try {
-    await $fetch('/api/contact', { method: 'POST', body: { ...form, startedAt } })
+    await $fetch('/api/contact', { method: 'POST', body: { ...form, startedAt, attachment: attachment.value?.attachment } })
     sent.value = true
   } catch (e: unknown) {
     // a 400 carries the server's field errors (the error's data); anything else is a sending problem
@@ -93,6 +101,7 @@ async function send(): Promise<void> {
 
 function reset(): void {
   Object.assign(form, blank())
+  attachment.value = null
   errors.value = {}
   sent.value = false
   startedAt = Date.now()

@@ -8,9 +8,9 @@
     <section class="space-y-3" aria-labelledby="contact">
       <UiSubheading id="contact">The contact form</UiSubheading>
       <UiText>
-        If you send a message, your name, email address and message are emailed to me (sent through the email
-        service Resend) so I can read and answer it. They aren't used for anything else, added to a mailing list or
-        shared.
+        If you send a message, your name, email address and message, and any file you attach, are emailed to me
+        (sent through the email service Resend) so I can read and answer it. Nothing is kept on this site. They
+        aren't used for anything else, added to a mailing list or shared.
       </UiText>
     </section>
 
