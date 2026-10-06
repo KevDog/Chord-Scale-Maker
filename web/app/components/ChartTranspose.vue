@@ -22,7 +22,7 @@
     </UiDialogBody>
     <UiDialogActions>
       <UiButton plain @click="open = false">Cancel</UiButton>
-      <UiButton color="teal" :disabled="from === to" @click="apply">Transpose</UiButton>
+      <UiButton color="note" :disabled="from === to" @click="apply">Transpose</UiButton>
     </UiDialogActions>
   </UiDialog>
 </template>

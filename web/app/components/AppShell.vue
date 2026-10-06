@@ -3,7 +3,7 @@
     <template #navbar>
       <UiNavbar>
         <UiNavbarItem href="/" aria-label="Chord Scale Maker, home">
-          <UiNavbarLabel class="text-base font-semibold tracking-tight">Chord <span class="text-accent">Scale</span> Maker</UiNavbarLabel>
+          <UiNavbarLabel class="font-display text-lg font-bold tracking-tight">Chord <span class="text-accent">Scale</span> Maker</UiNavbarLabel>
         </UiNavbarItem>
         <UiNavbarDivider class="max-lg:hidden" />
         <UiNavbarSection class="max-lg:hidden" aria-label="Main">

@@ -5,14 +5,14 @@
     <div class="relative h-10 print:h-5">
       <template v-for="c in chordMarks" :key="c.key">
         <div class="absolute bottom-0 whitespace-nowrap" :style="{ left: `${c.x * 100}%` }">
-          <div v-if="c.label" class="text-[0.65rem] text-zinc-500 dark:text-zinc-400 print:text-[0.55rem]/3 print:text-zinc-600">{{ c.label }}</div>
+          <div v-if="c.label" class="text-[0.65rem] text-zinc-500 dark:text-zinc-400 print:text-[0.55rem]/3 print:text-neutral-600">{{ c.label }}</div>
           <div class="text-base font-semibold print:text-sm/4"><ChordSymbol v-if="c.tokens" :tokens="c.tokens" /><span v-else>{{ c.text }}</span></div>
         </div>
       </template>
     </div>
 
     <template v-for="l in [0, 1] as const" :key="l">
-      <div class="text-xs leading-tight text-zinc-500 sm:self-center sm:text-right dark:text-zinc-400 print:self-center print:text-right print:text-zinc-600">
+      <div class="text-xs leading-tight text-zinc-500 sm:self-center sm:text-right dark:text-zinc-400 print:self-center print:text-right print:text-neutral-600">
         Line {{ l + 1 }}<br class="max-sm:hidden print:inline"><span class="text-[0.65rem]"><span class="sm:hidden print:hidden"> · </span>from the {{ l === 0 ? '3rd' : '7th' }}</span>
       </div>
       <div>

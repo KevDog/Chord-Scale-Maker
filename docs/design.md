@@ -255,9 +255,16 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Tailwind CSS v4** through `@tailwindcss/vite` in `nuxt.config.ts`. Styles are utility classes on
   components. A single `app/assets/css/main.css` holds `@import "tailwindcss"`, the theme tokens and the print
   rules.
-- **Palette:** zinc neutrals (Catalyst's) with a teal accent and sky focus rings. The accent is
-  `--color-accent`, teal-700 for AA contrast and teal-400 in dark mode; `<UiButton color="teal">` uses it. Focus
-  rings are sky-600, or sky-400 in dark mode.
+- **Palette: Duotone Blue**, Blue Note-inspired (chosen from three mocked directions).
+  - **Neutrals:** `zinc` is retuned in `main.css` to cool, navy-tinted greys (paper `#F3F6FB` to night `#08111F`).
+    Catalyst's `zinc-*` class strings therefore stay verbatim and recolour together.
+  - **Accent:** a `note` blue scale. `note-800` navy is the primary button (`<UiButton color="note">`). `note-500`
+    marks selected toggles, the current page and focus rings. A `note-100` tint backs the library's heading tab.
+  - **Dark mode:** a brighter `note-600` for buttons, and `note-300` for selected toggles, links and the brand.
+  - **Contrast** (AA): white on `note-500` is 4.7:1, `note-600` text on paper 5.9:1, `zinc-500` text on white 5.0:1.
+- **Headings:** Jost, a geometric typeface in the style of Futura (`font-display`). It's bundled from
+  `@fontsource-variable/jost` (OFL), so the CSP's `font-src 'self'` covers it. Body text stays the system font.
+- **Print** stays black on white. Its few grey labels use `neutral`, not the tinted `zinc`.
 - **Components:** Tailwind Plus Catalyst, ported to Vue in `components/ui/` on `@headlessui/vue` and
   `@heroicons/vue`.
   - Catalyst's class strings are kept verbatim. The `v-interactive` directive (`utils/interactive.ts`) sets the
@@ -384,8 +391,8 @@ The site is static with no server code, so most of the attack surface is gone. R
   - Dependabot updates npm weekly, with minor and patch updates grouped, and the Actions. It skips TypeScript
     major updates until typescript-eslint and vue-tsc support TypeScript 7.
   - `npm audit --omit=dev` gates CI.
-  - Runtime `dependencies` are only what ships to browsers: `vue`, `vexflow`, `@headlessui/vue` and
-    `@heroicons/vue`. Everything else (Nuxt, Tailwind, the test and lint tools) is a build-time `devDependency`.
+  - Runtime `dependencies` are only what ships to browsers: `vue`, `vexflow`, `@headlessui/vue`,
+    `@heroicons/vue` and `@fontsource-variable/jost` (the heading font). Everything else (Nuxt, Tailwind, the test and lint tools) is a build-time `devDependency`.
 - **API routes:** if one is ever added, it needs Zod validation, a body-size cap, and its own Firewall rate-limit
   rule.
 

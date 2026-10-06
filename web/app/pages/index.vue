@@ -2,12 +2,14 @@
   <div>
     <div class="flex flex-wrap items-end justify-between gap-4">
       <div class="max-w-xl">
+        <!-- an album-cover style tab over the heading -->
+        <p class="mb-2 inline-block bg-note-100 px-2 py-0.5 font-display text-xs font-bold tracking-[0.2em] text-note-800 uppercase dark:bg-note-900 dark:text-note-200" aria-hidden="true">Library</p>
         <UiHeading>Chart library</UiHeading>
         <UiText class="mt-1">Pick a tune to open it in the editor{{ newChart ? ', or start a new chart' : '' }}. Charts are written in concert pitch.</UiText>
       </div>
       <div class="flex gap-3">
         <UiButton outline :href="requestUrl" target="_blank" rel="noopener noreferrer">Request a chart</UiButton>
-        <UiButton v-if="newChart" color="teal" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
+        <UiButton v-if="newChart" color="note" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
       </div>
     </div>
 
@@ -28,7 +30,7 @@
       <UiTableBody>
         <UiTableRow v-for="chart in charts" :key="chart.slug">
           <UiTableCell class="font-medium">
-            <UiLink :href="`/editor?chart=${chart.slug}`" class="hover:underline">{{ chart.title }}</UiLink>
+            <UiLink :href="`/editor?chart=${chart.slug}`" class="text-note-800 hover:underline dark:text-note-300">{{ chart.title }}</UiLink>
           </UiTableCell>
           <UiTableCell class="text-zinc-500 dark:text-zinc-400">{{ chart.subtitle }}</UiTableCell>
         </UiTableRow>
@@ -40,7 +42,7 @@
       <UiSubheading class="mt-2" :level="2">No charts match "{{ query }}"</UiSubheading>
       <UiText class="mt-1">Try another title, or {{ newChart ? 'start a new chart' : 'request one' }}.</UiText>
       <div v-if="newChart" class="mt-6">
-        <UiButton v-if="newChart" color="teal" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
+        <UiButton v-if="newChart" color="note" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
       </div>
     </div>
   </div>

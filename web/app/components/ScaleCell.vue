@@ -39,7 +39,7 @@
     </UiDialogBody>
     <UiDialogActions>
       <UiButton plain @click="closePicker">Cancel</UiButton>
-      <UiButton color="teal" @click="apply">Set scale</UiButton>
+      <UiButton color="note" @click="apply">Set scale</UiButton>
     </UiDialogActions>
   </UiDialog>
 </template>

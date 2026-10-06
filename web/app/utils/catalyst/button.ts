@@ -87,8 +87,10 @@ export const buttonStyles = {
       'text-white [--btn-hover-overlay:var(--color-white)]/10 [--btn-bg:var(--color-red-600)] [--btn-border:var(--color-red-700)]/90',
       '[--btn-icon:var(--color-red-300)] data-active:[--btn-icon:var(--color-red-200)] data-hover:[--btn-icon:var(--color-red-200)]',
     ],
-    teal: [
-      'text-white [--btn-hover-overlay:var(--color-white)]/10 [--btn-bg:var(--color-teal-700)] [--btn-border:var(--color-teal-800)]/90',
+    // the app's primary (Duotone Blue): navy, a brighter blue in dark mode
+    note: [
+      'text-white [--btn-hover-overlay:var(--color-white)]/10 [--btn-bg:var(--color-note-800)] [--btn-border:var(--color-note-900)]/90',
+      'dark:[--btn-bg:var(--color-note-600)] dark:[--btn-border:var(--color-note-700)]/90',
       '[--btn-icon:var(--color-white)]/60 data-active:[--btn-icon:var(--color-white)]/80 data-hover:[--btn-icon:var(--color-white)]/80',
     ],
   },

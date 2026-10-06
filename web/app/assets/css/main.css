@@ -1,15 +1,46 @@
 @import 'tailwindcss';
+@import '@fontsource-variable/jost'; /* bundled (OFL), so the CSP's font-src 'self' covers it */
 
 /* dark mode follows the .dark class on <html> (toggle in the header, default light) */
 @custom-variant dark (&:where(.dark, .dark *));
 
-/* palette: zinc neutrals (Catalyst), teal accent, sky for focus.
-   Light accent is teal-700 so small text meets WCAG AA (about 5.5:1 on white). */
+/* Duotone Blue palette (Blue Note-inspired; docs/design.md §6).
+   - zinc is retuned to cool, navy-tinted neutrals, so Catalyst's class strings stay verbatim and recolour as one.
+   - note is the blue accent scale: note-800 navy for primary buttons, note-500 for selected toggles and the
+     current-page marker, note-100 tint for highlights.
+   Contrast (WCAG AA): white on note-500 4.7:1, on note-800 10:1; note-600 text on zinc-50 5.9:1;
+   note-300 on zinc-950 8.9:1; zinc-500 text on white 5.0:1. */
 @theme {
   --font-sans: ui-sans-serif, system-ui, -apple-system, 'Segoe UI', sans-serif;
   --font-mono: ui-monospace, 'SF Mono', Menlo, Consolas, monospace;
-  --color-accent: var(--color-teal-700);
-  --color-accent-strong: var(--color-teal-800);
+  --font-display: 'Jost Variable', ui-sans-serif, system-ui, sans-serif; /* headings: geometric, Futura-like */
+
+  --color-zinc-50: #f3f6fb;
+  --color-zinc-100: #e6ecf5;
+  --color-zinc-200: #d3ddec;
+  --color-zinc-300: #b3c1d6;
+  --color-zinc-400: #8395b1;
+  --color-zinc-500: #5e6f8d;
+  --color-zinc-600: #4a5a75;
+  --color-zinc-700: #34445e;
+  --color-zinc-800: #1f3150;
+  --color-zinc-900: #0f1c30;
+  --color-zinc-950: #08111f;
+
+  --color-note-50: #eef3fc;
+  --color-note-100: #dce6f8;
+  --color-note-200: #bcd0f4;
+  --color-note-300: #8fb4f8;
+  --color-note-400: #6393ec;
+  --color-note-500: #2f6fe0;
+  --color-note-600: #2659c2;
+  --color-note-700: #1d4aa3;
+  --color-note-800: #123e85;
+  --color-note-900: #0e2f66;
+  --color-note-950: #0a2148;
+
+  --color-accent: var(--color-note-600);
+  --color-accent-strong: var(--color-note-800);
 }
 
 @layer base {
@@ -18,12 +49,12 @@
   }
   html.dark {
     @apply bg-zinc-950 text-zinc-200;
-    --color-accent: var(--color-teal-400);
-    --color-accent-strong: var(--color-teal-300);
+    --color-accent: var(--color-note-300);
+    --color-accent-strong: var(--color-note-200);
     color-scheme: dark;
   }
   :focus-visible {
-    @apply outline-2 outline-offset-2 outline-sky-600 dark:outline-sky-400;
+    @apply outline-2 outline-offset-2 outline-note-500 dark:outline-note-300;
   }
 }
 

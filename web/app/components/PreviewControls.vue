@@ -21,7 +21,7 @@
           <option v-for="r in PICKER_ROOTS" :key="r" :value="r">{{ noteText(r) }}</option>
         </UiSelect>
       </UiField>
-      <UiButton v-bind="intervals ? { color: 'teal' } : { outline: true }" :aria-pressed="intervals" title="Label each note against the chord root (on screen only)" @click="intervals = !intervals">
+      <UiButton v-bind="intervals ? { color: 'note' } : { outline: true }" :aria-pressed="intervals" title="Label each note against the chord root (on screen only)" @click="intervals = !intervals">
         Intervals
       </UiButton>
     </div>

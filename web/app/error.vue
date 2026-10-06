@@ -5,7 +5,7 @@
       <UiHeading class="mt-2">{{ notFound ? 'Page not found' : 'Something went wrong' }}</UiHeading>
       <UiText class="mt-2">{{ notFound ? "There's nothing at this address." : 'Please try again.' }}</UiText>
       <div class="mt-6">
-        <UiButton color="teal" @click="home">Go to the chart library</UiButton>
+        <UiButton color="note" @click="home">Go to the chart library</UiButton>
       </div>
     </div>
   </AppShell>

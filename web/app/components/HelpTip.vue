@@ -6,7 +6,7 @@
       type="button"
       :aria-label="label"
       :aria-describedby="id"
-      class="rounded-full text-zinc-500 hover:text-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-sky-600 dark:text-zinc-400 dark:hover:text-zinc-200 dark:focus-visible:outline-sky-400"
+      class="rounded-full text-zinc-500 hover:text-zinc-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-note-500 dark:text-zinc-400 dark:hover:text-zinc-200 dark:focus-visible:outline-note-300"
     >
       <QuestionMarkCircleIcon class="size-5" aria-hidden="true" />
     </button>

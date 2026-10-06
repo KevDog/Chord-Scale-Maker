@@ -9,15 +9,15 @@
       <UiSubheading>Buttons</UiSubheading>
       <div class="flex flex-wrap items-center gap-3">
         <UiButton>Dark/zinc</UiButton>
-        <UiButton color="teal">Teal</UiButton>
+        <UiButton color="note">Teal</UiButton>
         <UiButton color="white">White</UiButton>
         <UiButton color="red">Red</UiButton>
         <UiButton outline>Outline</UiButton>
         <UiButton plain>Plain</UiButton>
-        <UiButton color="teal" disabled>Disabled</UiButton>
+        <UiButton color="note" disabled>Disabled</UiButton>
         <UiButton href="/">As a link</UiButton>
         <UiButton plain aria-label="Add row"><PlusIcon data-slot="icon" /></UiButton>
-        <UiButton color="teal"><PrinterIcon data-slot="icon" />Print</UiButton>
+        <UiButton color="note"><PrinterIcon data-slot="icon" />Print</UiButton>
       </div>
     </section>
 
@@ -102,7 +102,7 @@
             <UiDialogBody><UiText>Body content.</UiText></UiDialogBody>
             <UiDialogActions>
               <UiButton plain @click="dialog = false">Cancel</UiButton>
-              <UiButton color="teal" @click="dialog = false">Set</UiButton>
+              <UiButton color="note" @click="dialog = false">Set</UiButton>
             </UiDialogActions>
           </UiDialog>
         </div>
@@ -138,7 +138,7 @@ const start = ref('C')
 const text = ref('A | 1 | Cm7\nA | 2 | F7\n')
 const instrument = ref('tenor-sax')
 const dialog = ref(false)
-const BADGES: readonly BadgeColor[] = ['zinc', 'teal', 'sky', 'amber', 'red', 'green']
+const BADGES: readonly BadgeColor[] = ['zinc', 'note', 'sky', 'amber', 'red', 'green']
 const ROWS = [
   ['A1', '1', 'Cm7', 'C Dorian'],
   ['A1', '2', 'F7', 'F Mixolydian'],
