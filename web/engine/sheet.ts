@@ -1,7 +1,8 @@
 import type { Row } from './chart'
 import { resolveScale } from './chart'
-import { type ChordToken, chordTokensOrNull, writtenChordRoot } from './chord'
+import { type ChordToken, chordTokensOrNull, writtenChordRoot, writtenChordRootLenient } from './chord'
 import { intervalLabels } from './intervals'
+import { type PracticeSelection, practiceKeys, selectedNotes, startReference } from './practice'
 import { resolveQuality } from './qualities'
 import { chunk, orNull } from './util'
 import { type Mode, type Part, type Pitched, type ScaleLabel, resolveStart, scaleLabel, scaleNotes } from './part'
@@ -21,6 +22,8 @@ export type StaffModel = Readonly<{
   scale: ScaleLabel | null
   notes: readonly Pitched[]
   intervals: readonly string[] | null // each note against the chord root (b9, #11…); null if the chord can't be read
+  keys: readonly string[] | null // practice keys: each note's spelled interval from the mode's reference
+  selected: readonly boolean[] | null // practice: which notes are picked; null when practice is off
   error: string | null // shown instead of notes
   last: boolean // final bar line
 }>
@@ -54,19 +57,51 @@ function startFor(part: Part, mode: Mode, text: string): Start {
   }
 }
 
-function staff(row: Row, index: number, part: Part, mode: Mode, start: Start, last: boolean): StaffModel {
+/** practice keys and selection for one staff's notes (keys null if the reference can't be read) */
+function practiceFor(
+  row: Row,
+  part: Part,
+  mode: Mode,
+  startText: string,
+  scale: string,
+  notes: readonly Pitched[],
+  practice: PracticeSelection | null,
+): Pick<StaffModel, 'keys' | 'selected'> {
+  const reference = mode === 'from' ? startReference(startText) : orNull(() => writtenChordRootLenient(part, row.chord, scale))
+  const keys = reference ? practiceKeys(reference, notes) : null
+  return { keys, selected: practice && keys ? selectedNotes(practice, row.chord, keys) : null }
+}
+
+function staff(
+  row: Row,
+  index: number,
+  part: Part,
+  mode: Mode,
+  start: Start,
+  last: boolean,
+  startText: string,
+  practice: PracticeSelection | null,
+): StaffModel {
   const scale = resolveScale(row)
   const startKey = 'midi' in start ? start.midi : start.error
   const id = [index, row.section, row.bar, row.chord, row.scale, part.clef, part.trans, mode, startKey].join('|')
   const base = { id, section: row.section, bar: row.bar, last }
   const chord = chordTokensOrNull(part, row.chord, scale)
-  const none = { notes: [], intervals: null }
+  const none = { notes: [], intervals: null, keys: null, selected: null }
   if (scale === null) return { ...base, ...none, chord, scale: null, error: chord ? 'Choose a scale' : "Can't read this chord" }
   try {
     const label = scaleLabel(part, scale)
     if ('error' in start) return { ...base, ...none, chord, scale: label, error: start.error }
     const notes = scaleNotes(part, scale, mode, start.midi)
-    return { ...base, chord, scale: label, notes, intervals: intervalsOrNull(part, row.chord, scale, notes), error: null }
+    return {
+      ...base,
+      chord,
+      scale: label,
+      notes,
+      intervals: intervalsOrNull(part, row.chord, scale, notes),
+      ...practiceFor(row, part, mode, startText, scale, notes, practice),
+      error: null,
+    }
   } catch (e) {
     return { ...base, ...none, chord, scale: null, error: message(e) }
   }
@@ -98,6 +133,7 @@ export function buildSheet(
   choice: ModeChoice,
   startText: string,
   perPage: number,
+  practice: PracticeSelection | null = null,
 ): SheetPart[] {
   return modesFor(choice).map((mode) => {
     const start = startFor(part, mode, startText)
@@ -105,7 +141,7 @@ export function buildSheet(
       mode,
       heading: mode === 'from' ? `Spelled from ${noteText(startText)}` : 'Spelled from the Root',
       pages: chunk(
-        rows.map((r, i) => staff(r, i, part, mode, start, i === rows.length - 1)),
+        rows.map((r, i) => staff(r, i, part, mode, start, i === rows.length - 1, startText, practice)),
         perPage,
       ),
     }
