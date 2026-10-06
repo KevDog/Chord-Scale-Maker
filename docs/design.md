@@ -348,8 +348,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - Modes of the major scale and of melodic minor.
 - **Search:** a case- and accent-insensitive substring filter on the title, client-side.
 - **Opening a chart** copies it into the editor's state; library files are never changed.
-- **Requests:** "Request a chart" opens a new GitHub issue with the `Add Chart` label. The base URL is
-  `runtimeConfig.public.issuesUrl`.
+- **Requests:** "Request a chart" opens the contact form, where a photo or PDF of the changes can be attached.
 
 ## 8. State
 

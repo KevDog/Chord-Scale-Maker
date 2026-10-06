@@ -174,8 +174,9 @@
           <UiTextLink href="/privacy">privacy page</UiTextLink> has the details.
         </li>
         <li>
-          Missing a tune? Use <strong class="font-semibold text-zinc-950 dark:text-white">Request a chart</strong> in
-          the library, or send me a photo or PDF of the changes through the <UiTextLink href="/contact">contact form</UiTextLink>.
+          Missing a tune? <strong class="font-semibold text-zinc-950 dark:text-white">Request a chart</strong> in the
+          library takes you to the <UiTextLink href="/contact">contact form</UiTextLink>. Tell me the tune, and if you
+          can, attach a photo or PDF of the changes.
         </li>
         <li>It works on a phone, but the staves are small. A tablet or a laptop is nicer.</li>
       </ul>

@@ -1,6 +1,6 @@
 // Writes the site's icons into public/ from one drawing: four note heads climbing a navy tile, the top one cut out
 // of a blue corner. Run `npm run icons` after changing it (needs rsvg-convert and ImageMagick: brew install librsvg imagemagick).
-// `npm run icons -- --brand <dir>` also writes 1024 px PNGs for profile pictures elsewhere (Patreon, Ko-fi): a
+// `npm run icons -- --brand ../design/brand` also writes 1024 px PNGs for profile pictures elsewhere (Patreon, Ko-fi): a
 // full-bleed square that survives a circle crop, the rounded tile on transparent, and a 3000×750 cover (logo and
 // wordmark, drawn in Chromium so it can use the site's Jost; the middle survives a phone's crop).
 import { execFileSync } from 'node:child_process'

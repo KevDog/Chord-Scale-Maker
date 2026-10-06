@@ -48,7 +48,6 @@ export default defineNuxtConfig({
     contact: { resendApiKey: '', to: '', from: '', dryRun: false },
     public: {
       siteUrl: '', // NUXT_PUBLIC_SITE_URL, e.g. https://www.chordscalemaker.com
-      issuesUrl: 'https://github.com/KevDog/Chord-Scale-Maker/issues/new',
       // feature flags (useFeature): new ones start off; NUXT_PUBLIC_FEATURES_<NAME>=true|false overrides one
       features: {
         newChart: false, // blank charts and this browser's draft; library charts stay editable
