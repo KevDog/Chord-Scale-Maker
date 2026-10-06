@@ -65,7 +65,8 @@ switches to a custom selection, starting from what the preset showed. From X mod
   - The boxes, in a row that wraps on phones.
   - **Clear**.
 - **Highlight:** `drawStaff` gives each note a class (`vf-selected` or `vf-dimmed`), and CSS colours them. On screen
-  a selected note is accent blue and a dimmed one is faint. In print a selected note is black and a dimmed one is
+  a selected note keeps the staff's ink in light mode (the clef's colour) and is pale blue in dark mode;
+  a dimmed one is faint (25% opacity, 35% in dark mode). In print a selected note is black and a dimmed one is
   light grey. Interval labels follow.
 - **Screen readers:** each staff's label adds "selected: …".
 - **Storage:** through `utils/storage.ts`, per chart slug and mode, with keys stored relative to their reference.
