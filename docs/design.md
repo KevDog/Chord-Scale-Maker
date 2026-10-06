@@ -61,7 +61,7 @@ web/                      # Nuxt app (Vercel root directory)
                           # GuideToneSheet, GuideToneSystem, ChordSymbol, NoteName
     components/ui/        # Catalyst ported to Vue (<UiButton>, <UiListbox>, <UiDialog>, …)
     composables/          # useChartEditor (editor state), usePreferences, useDraft, useTheme, useFeature,
-                          # useMediaQuery
+                          # useMediaQuery, useFocusMode
     utils/                # library (build-time charts), scaleChoices, instrumentChoices, sheets,
                           # vexflow (loader, scale staves, shared SVG helpers), guideToneDrawing,
                           # storage (safe localStorage), catalyst/ (button and badge styles),
@@ -192,6 +192,11 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     accidentals in the scale.
   - A chord follows its scale's root, and a slash bass keeps its interval.
   - Titles stay as typed. To undo, transpose back.
+- **Focus** (`useFocusMode`) shows the current sheet alone, over the whole page, with its practice highlighting.
+  - A dialog (`aria-modal`) holding the preview section itself, so the sheet isn't drawn twice; the toolbar and
+    practice panel are hidden, and the page behind doesn't scroll.
+  - **Exit focus** (it takes keyboard focus) or Escape leaves, and focus goes back to the Focus button.
+  - Printing from focus mode prints the usual pages.
 
 ## 5. Rendering
 

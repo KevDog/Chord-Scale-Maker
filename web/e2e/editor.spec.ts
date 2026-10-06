@@ -136,3 +136,27 @@ test('practice highlights the chosen notes, remembers them per chart, and prints
   const pdf = await page.pdf({ format: 'Letter' })
   expect((pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length).toBe(4) // still 12 staves a page
 })
+
+test('focus mode shows only the sheet, leaves on Escape or its button, and still prints 4 pages', async ({ page }) => {
+  await page.goto('/editor?chart=autumn_leaves')
+  const focus = page.getByRole('button', { name: 'Focus', exact: true })
+  const dialog = page.getByRole('dialog', { name: 'Focus mode' })
+  const exit = page.getByRole('button', { name: /Exit focus/ })
+  await focus.click()
+  await expect(dialog).toBeVisible()
+  await expect(dialog.locator('svg[aria-label]')).toHaveCount(39)
+  await expect(exit).toBeFocused()
+  await expect(page.getByRole('group', { name: 'Sheet' })).toBeHidden()
+  // the overlay covers the page: nothing behind it takes a click
+  expect(await page.evaluate(() => document.elementFromPoint(20, 200)?.closest('[role=dialog]') != null)).toBe(true)
+  await page.emulateMedia({ media: 'print' })
+  expect((await page.pdf({ format: 'Letter' })).toString('latin1').match(/\/Type\s*\/Page[^s]/g)?.length).toBe(4)
+  await page.emulateMedia({ media: 'screen' })
+  await page.keyboard.press('Escape')
+  await expect(dialog).toHaveCount(0)
+  await expect(focus).toBeFocused()
+  await focus.click()
+  await exit.click()
+  await expect(dialog).toHaveCount(0)
+  await expect(page.getByRole('group', { name: 'Sheet' })).toBeVisible()
+})
