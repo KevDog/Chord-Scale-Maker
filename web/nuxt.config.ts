@@ -67,7 +67,7 @@ export default defineNuxtConfig({
   routeRules: { '/**': { headers: SECURITY_HEADERS }, '/_nuxt/**': { headers: SECURITY_HEADERS } },
   nitro: {
     // every page is prerendered and served as a static file; only /api/contact (and unknown URLs) run on the server
-    prerender: { routes: ['/', '/editor', '/about', '/contact', '/privacy'] },
+    prerender: { routes: ['/', '/editor', '/help', '/about', '/contact', '/privacy'] },
     hooks: {
       // hash each page's inline scripts into a CSP <meta> (build/csp.ts)
       'prerender:generate'(route) {

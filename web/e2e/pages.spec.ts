@@ -93,3 +93,13 @@ test('the footer links the About, Contact and Privacy pages', async ({ page }) =
   await expect(page.getByRole('heading', { name: 'Privacy' })).toBeVisible()
   await expect(page.getByText('Vercel Web Analytics')).toBeVisible()
 })
+
+test('Help is in the navbar and footer, and its contents jump to each section', async ({ page }) => {
+  await page.goto('/')
+  await page.getByRole('banner').getByRole('link', { name: 'Help', exact: true }).click()
+  await expect(page.getByRole('heading', { name: 'How it all works' })).toBeVisible()
+  await page.getByRole('navigation', { name: 'On this page' }).getByRole('link', { name: 'Editing a chart' }).click()
+  await expect(page).toHaveURL(/#editing$/)
+  await expect(page.getByRole('heading', { name: 'Editing a chart' })).toBeInViewport()
+  await expect(page.getByRole('contentinfo').getByRole('link', { name: 'Help' })).toHaveAttribute('href', '/help')
+})
