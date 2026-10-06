@@ -69,12 +69,16 @@
 .vf-dimmed {
   opacity: 0.25;
 }
+.dark .vf-dimmed {
+  opacity: 0.35; /* a little more present on the dark ground */
+}
 @media print {
   .vf-selected,
   .dark .vf-selected {
     color: #000;
   }
-  .vf-dimmed {
+  .vf-dimmed,
+  .dark .vf-dimmed {
     opacity: 1;
     color: #b3b3b3;
   }
