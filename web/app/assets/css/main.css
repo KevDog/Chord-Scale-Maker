@@ -58,11 +58,9 @@
   }
 }
 
-/* practice selection on the scale staves (utils/vexflow.ts tags each note): picked notes in the accent, the rest
-   faint; in print, picked notes black and the rest light grey */
-.vf-selected {
-  color: var(--color-note-500);
-}
+/* practice selection on the scale staves (utils/vexflow.ts tags each note): the rest are faint. Picked notes keep the
+   staff's ink in light mode (the clef's colour) and take the accent in dark mode; in print they're black and the
+   rest light grey */
 .dark .vf-selected {
   color: var(--color-note-300);
 }

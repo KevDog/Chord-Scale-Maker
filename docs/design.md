@@ -225,7 +225,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   table), and tensions (the rest). From X mode has All.
 - **Storage:** `usePractice` remembers a selection per library chart and per mode in this browser.
 - **Highlighting:** `drawStaff` tags each note's group `vf-selected` or `vf-dimmed`, and `main.css` colours them:
-  accent and faint on screen, black and light grey in print.
+  on screen, picked notes keep the staff's ink in light mode (as the clef) and take the accent in dark mode, while
+  the rest are faint (35% opacity in dark mode). In print, picked notes are black and the rest light grey.
 
 ### Guide tone sheet
 
