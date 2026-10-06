@@ -427,6 +427,13 @@ Pages are static, and the only server code is the contact function, so the attac
   - **Rate limit:** a Vercel Firewall rule for `/api/contact` (a few requests per IP every few minutes) sits on top of
     the site-wide rule.
 - **Pages rendered at request time** (the 404 page) get the same hashed CSP meta from `server/plugins/csp.ts`.
+- **Error pages** (`app/error.vue`) cover unknown addresses and server errors in the site's own look:
+  - an "Error 404" tab, a large status code, and plain words on what happened;
+  - the way back to the library, plus "Try again" and a contact link for errors other than 404;
+  - a quote from the library at heading size, different from the navbar's (`useQuote` slots).
+
+  Nuxt's built-in page is never used, because it injects an inline script the CSP blocks. The one exception is
+  Nuxt's last-resort fallback, shown only if rendering this page itself fails.
 - **The one framed origin:** the About video, from `https://www.youtube-nocookie.com` (`frame-src`). It loads only
   when played (`VideoEmbed`).
 
