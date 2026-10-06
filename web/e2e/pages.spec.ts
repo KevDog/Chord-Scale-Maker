@@ -120,4 +120,7 @@ test('Help is in the navbar and footer, and its contents jump to each section', 
   await expect(page).toHaveURL(/#editing$/)
   await expect(page.getByRole('heading', { name: 'Editing a chart' })).toBeInViewport()
   await expect(page.getByRole('contentinfo').getByRole('link', { name: 'Help' })).toHaveAttribute('href', '/help')
+  const footer = page.getByRole('contentinfo')
+  await expect(footer.getByRole('link', { name: 'Support me on Ko-fi' })).toHaveAttribute('href', 'https://ko-fi.com/kcstevens90266')
+  await expect(footer.getByRole('link', { name: 'Support me on Patreon' })).toHaveAttribute('href', 'https://www.patreon.com/kcstevens')
 })

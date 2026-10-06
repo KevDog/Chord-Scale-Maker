@@ -71,14 +71,6 @@
 </template>
 
 <script setup lang="ts">
-import { HeartIcon, StarIcon } from '@heroicons/vue/16/solid'
-
-/** ways to chip in, each a link to my page there */
-const SUPPORT = [
-  { name: 'ko-fi', label: 'Buy me a coffee on Ko-fi', url: 'https://ko-fi.com/kcstevens90266', icon: HeartIcon },
-  { name: 'patreon', label: 'Become a patron on Patreon', url: 'https://www.patreon.com/kcstevens', icon: StarIcon },
-] as const
-
 const CREDITS = [
   { name: 'VexFlow', what: 'music notation', licence: 'MIT', url: 'https://www.vexflow.com/' },
   { name: 'Bravura', what: 'the music font, by Steinberg', licence: 'SIL Open Font License', url: 'https://github.com/steinbergmedia/bravura' },
