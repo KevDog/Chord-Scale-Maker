@@ -8,6 +8,7 @@ import { cropBand, fitSvg, headCentre, STAVE_Y, svgContext, type VexFlowModule }
 
 const DURATIONS = { 4: 'w', 2: 'h', 1: 'q' } as const
 const REST_KEY = { treble: 'b/4', bass: 'd/3' } as const
+const INK = { fillStyle: 'currentColor', strokeStyle: 'currentColor' } // follows light/dark mode, prints black
 const CLEF_SPACE = 70 // the first bar of a system also holds the clef
 const TIME_SPACE = 40 // and, on the first system, the time signature
 const BAR_UNITS = 300 // drawing width per bar, so 2-bar systems on phones draw as large as 4-bar ones elsewhere
@@ -60,6 +61,7 @@ export function drawGuideToneSystem(
         if (!n.pitch) return new vf.StaveNote({ keys: [REST_KEY[clef]], duration: `${DURATIONS[n.beats]}r`, clef })
         const key = toVexKey(n.pitch)
         const note = new vf.StaveNote({ keys: [key], duration: DURATIONS[n.beats], clef })
+        note.setStemStyle(INK) // stems carry their own default (black), not the context's currentColor
         const place = `${n.pitch.letter}/${key.split('/')[1]}`
         const before = shown.get(place) ?? 0
         if (!tiedIn && (n.pitch.acc !== 0 || before !== 0)) note.addModifier(new vf.Accidental(n.pitch.acc === 0 ? 'n' : accText(n.pitch.acc)), 0)

@@ -107,3 +107,12 @@ test('the text editor explains itself on hover and on focus', async ({ page }) =
   await page.keyboard.press('Escape')
   await expect(tip).toBeHidden()
 })
+
+test('guide tone notation follows dark mode (no hard-coded black)', async ({ page }) => {
+  await page.goto('/editor?chart=f_jazz_blues')
+  await page.getByRole('button', { name: /Switch to dark mode/ }).click()
+  await page.getByText('Guide tones', { exact: true }).click()
+  await expect(page.locator('svg[aria-label^="Line 1:"]').first()).toBeVisible()
+  const black = page.locator('svg[aria-label^="Line"] [stroke="black"], svg[aria-label^="Line"] [fill="black"], svg[aria-label^="Line"] [stroke="#000000"], svg[aria-label^="Line"] [fill="#000000"]')
+  await expect(black).toHaveCount(0)
+})
