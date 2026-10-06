@@ -369,8 +369,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 Pages are static, and the only server code is the contact function, so the attack surface is small. The measures:
 
-- **Edge:** Vercel's automatic DDoS mitigation, plus a Firewall rate-limit rule per IP (600 requests per minute,
-  answered with 429).
+- **Edge:** Vercel's automatic DDoS mitigation in front of everything. Pages are static files on the CDN, so they need
+  no rate limit of their own. The plan allows one rate-limit rule, and it guards the contact form (below).
 - **Analytics:** Vercel Web Analytics (`web/build/analytics.ts`).
   - It's cookieless, with no cross-site tracking or advertising IDs, so there's no cookie banner. Visitors are
     counted with a daily-rotating hash.
@@ -424,8 +424,9 @@ Pages are static, and the only server code is the contact function, so the attac
   - **Secrets:** the destination address, sender and Resend API key are server-only runtime config
     (`NUXT_CONTACT_*`), never in the page. `NUXT_CONTACT_DRY_RUN=true` validates without sending (local builds and
     e2e).
-  - **Rate limit:** a Vercel Firewall rule for `/api/contact` (a few requests per IP every few minutes) sits on top of
-    the site-wide rule.
+  - **Rate limit:** the Vercel Firewall's one rate-limit rule. Path equals `/api/contact`, 2 requests per 60 s per IP
+    (fixed window), answered with 429. Resend's free plan (100 emails a day) is the hard ceiling behind it.
+  - **If spam gets through anyway:** Vercel BotID, or a daily send cap in the function (it needs a small store).
 - **Pages rendered at request time** (the 404 page) get the same hashed CSP meta from `server/plugins/csp.ts`.
 - **Error pages** (`app/error.vue`) cover unknown addresses and server errors in the site's own look:
   - an "Error 404" tab, a large status code, and plain words on what happened;
