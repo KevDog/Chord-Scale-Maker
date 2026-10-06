@@ -35,6 +35,20 @@
     <template #footer>
       <footer class="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 pt-4 pb-6 text-sm text-zinc-500 print:hidden lg:px-12 dark:text-zinc-400">
         <p>© {{ year }} Kevin Stevens. Provided as is, for practice and education.</p>
+        <div class="flex gap-2">
+          <a
+            v-for="s in SUPPORT"
+            :key="s.name"
+            :href="s.url"
+            target="_blank"
+            rel="noopener noreferrer"
+            :aria-label="`Support me on ${s.name}`"
+            :title="s.label"
+            class="inline-flex items-center gap-1 rounded-md bg-note-800 px-2 py-0.5 text-xs/5 font-semibold text-white hover:bg-note-700 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-note-500 dark:bg-note-300 dark:text-zinc-950 dark:hover:bg-note-200"
+          >
+            <component :is="s.icon" class="size-3.5 opacity-80" aria-hidden="true" />{{ s.name }}
+          </a>
+        </div>
         <nav aria-label="Site" class="flex gap-4">
           <NuxtLink to="/help" class="hover:text-zinc-950 dark:hover:text-white">Help</NuxtLink>
           <NuxtLink to="/about" class="hover:text-zinc-950 dark:hover:text-white">About</NuxtLink>
