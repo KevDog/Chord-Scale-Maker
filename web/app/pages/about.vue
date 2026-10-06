@@ -43,8 +43,8 @@
       <UiSubheading id="support">Support the site</UiSubheading>
       <UiText>
         Chord Scale Maker is free, with no ads and no accounts, and I'd like to keep it that way. If it's helped your
-        practice and you'd like to chip in toward hosting (and the occasional new pair of mallets), thank you. It means
-        a lot.
+        practice and you'd like to chip in toward hosting (and the occasional new pair of mallets), a one-off coffee or
+        a monthly bit on Patreon both help. Thank you, it means a lot.
       </UiText>
       <!-- plain links, not the sites' widgets: nothing from them loads here, so the CSP stays first-party -->
       <div class="flex flex-wrap gap-3">
@@ -71,10 +71,13 @@
 </template>
 
 <script setup lang="ts">
-import { HeartIcon } from '@heroicons/vue/16/solid'
+import { HeartIcon, StarIcon } from '@heroicons/vue/16/solid'
 
-/** ways to chip in, each a link to the site's own page there (add Patreon here) */
-const SUPPORT = [{ name: 'ko-fi', label: 'Buy me a coffee on Ko-fi', url: 'https://ko-fi.com/kcstevens90266', icon: HeartIcon }] as const
+/** ways to chip in, each a link to my page there */
+const SUPPORT = [
+  { name: 'ko-fi', label: 'Buy me a coffee on Ko-fi', url: 'https://ko-fi.com/kcstevens90266', icon: HeartIcon },
+  { name: 'patreon', label: 'Become a patron on Patreon', url: 'https://www.patreon.com/kcstevens', icon: StarIcon },
+] as const
 
 const CREDITS = [
   { name: 'VexFlow', what: 'music notation', licence: 'MIT', url: 'https://www.vexflow.com/' },

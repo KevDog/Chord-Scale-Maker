@@ -42,8 +42,8 @@
     <section class="space-y-3" aria-labelledby="support">
       <UiSubheading id="support">Support links</UiSubheading>
       <UiText>
-        The support button on the About page is a plain link to Ko-fi. Nothing from Ko-fi loads on this site; if you
-        follow it, you're on Ko-fi's site, under its own privacy policy.
+        The support buttons on the About page are plain links to Ko-fi and Patreon. Nothing from either loads on this
+        site; if you follow one, you're on that site, under its own privacy policy.
       </UiText>
     </section>
 
