@@ -14,7 +14,7 @@ describe('GuideToneSheet', () => {
     expect(w.find('header p').text()).toBe('S (Guide Tone Lines)')
     expect(w.text()).toContain('Line 1')
     expect(w.text()).toContain('from the 7th')
-    expect(w.text()).toContain('Page 1 of 1')
+    expect(w.findAll('[role=separator]')).toHaveLength(0) // one page: no dividers
   })
 
   it('lists what it could not voice', async () => {

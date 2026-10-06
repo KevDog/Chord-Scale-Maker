@@ -55,7 +55,7 @@ web/                      # Nuxt app (Vercel root directory)
     pages/editor.vue      # ?chart=<slug> (| ?new=1 | this browser's draft, behind the newChart flag)
     pages/ui.vue          # dev-only showcase of the Catalyst components (removed from production builds)
     components/           # AppShell, EditorView, ChartGrid, GridCell, ScaleCell, ChartText, ChartTranspose,
-                          # PreviewControls, SegmentedControl, SheetPage, ScaleSheet, ScaleStaff,
+                          # PreviewControls, SegmentedControl, SheetPages, ScaleSheet, ScaleStaff,
                           # GuideToneSheet, GuideToneSystem, ChordSymbol, NoteName
     components/ui/        # Catalyst ported to Vue (<UiButton>, <UiListbox>, <UiDialog>, …)
     composables/          # useChartEditor (editor state), usePreferences, useDraft, useTheme, useFeature,
@@ -280,7 +280,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - The list is served as the separate `virtual:quotes` chunk, about 20 KB gzipped, fetched after mount. So the
     prerendered HTML is the same for everyone.
 - **App components** compose the Catalyst ones:
-  - `SheetPage`, the printed-page card both sheets use.
+  - `SheetPages`, which lays out both sheets' printed pages. On screen they form one continuous card, with a dashed
+    "Page N" divider where each printed page starts and the header shown once. In print each page is a bare letter
+    page with its own header.
   - `SegmentedControl`, the joined toggles (Scales | Guide tones, From | From root).
   - `PreviewControls`, the preview toolbar.
 - **Dark mode** is a `.dark` class on `<html>`, toggled in the navbar.
@@ -294,7 +296,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 ## 6a. Print / PDF
 
 - **Page:** `@page { size: letter; margin: 0.5in 10mm 10mm }`. The print stylesheet hides the editor and the
-  toolbar, and each `SheetPage` breaks after itself.
+  toolbar, and each page of `SheetPages` breaks after itself with its own header. On screen the pages run
+  together as one card, with "Page N" dividers marking the breaks.
 - **Scale sheets:** 12 staves a page, the CLI's `--no-pdf` default, with 8px between staves. A full page fills
   about 9.6in, even when every note has ledger lines (e.g. trombone from B). Autumn Leaves prints on 4 pages.
 - **Guide tones:** 8 four-bar systems a page, so a 32-bar tune prints on one page and Milestones on two.
