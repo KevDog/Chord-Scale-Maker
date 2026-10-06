@@ -33,6 +33,9 @@ export default defineNuxtConfig({
     },
   },
   runtimeConfig: {
+    // the contact form (server/api/contact.post.ts): NUXT_CONTACT_RESEND_API_KEY, NUXT_CONTACT_TO, NUXT_CONTACT_FROM;
+    // NUXT_CONTACT_DRY_RUN=true validates without sending (local builds, e2e). Server-only: never sent to the page.
+    contact: { resendApiKey: '', to: '', from: '', dryRun: false },
     public: {
       siteUrl: '', // NUXT_PUBLIC_SITE_URL, e.g. https://www.chordscalemaker.com
       issuesUrl: 'https://github.com/KevDog/Chord-Scale-Maker/issues/new',
@@ -53,7 +56,8 @@ export default defineNuxtConfig({
   },
   routeRules: { '/**': { headers: SECURITY_HEADERS }, '/_nuxt/**': { headers: SECURITY_HEADERS } },
   nitro: {
-    prerender: { routes: ['/', '/editor'] },
+    // every page is prerendered and served as a static file; only /api/contact (and unknown URLs) run on the server
+    prerender: { routes: ['/', '/editor', '/about', '/contact', '/privacy'] },
     hooks: {
       // hash each page's inline scripts into a CSP <meta> (build/csp.ts)
       'prerender:generate'(route) {

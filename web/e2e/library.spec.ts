@@ -13,7 +13,7 @@ test('searches the library and opens a chart', async ({ page }) => {
 })
 
 test('every page carries a hashed Content-Security-Policy', async ({ page }) => {
-  for (const path of ['/', '/editor']) {
+  for (const path of ['/', '/editor', '/about', '/contact', '/privacy']) {
     await page.goto(path)
     const csp = await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content')
     expect(csp).toMatch(/script-src 'self' 'sha256-[^']+' 'sha256-[^']+'/)

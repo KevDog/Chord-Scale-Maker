@@ -5,9 +5,10 @@ records of how each phase was built (see [README.md](README.md)).
 
 ## 1. Overview
 
-A fully static Nuxt 4 site, styled with Tailwind CSS and built with `nuxt generate`, on Vercel. The scale engine,
-chart parser and renderer all run in the browser. The chart library is built into the site at build time from
-`charts/*.txt`. There is no server runtime, database or API.
+A Nuxt 4 site, styled with Tailwind CSS and built with `nuxt build`, on Vercel (`web/vercel.json`). Every page is
+prerendered and served as a static file; the scale engine, chart parser and renderer all run in the browser. The chart
+library is built into the site at build time from `charts/*.txt`. The only server code is one function,
+`/api/contact` (the contact form). Unknown URLs are also rendered there, as the 404 page. There is no database.
 
 ```text
 charts/*.txt ───────┐                          ┌─> Library page (title search)
@@ -53,6 +54,7 @@ web/                      # Nuxt app (Vercel root directory)
   app/
     pages/index.vue       # library + title search
     pages/editor.vue      # ?chart=<slug> (| ?new=1 | this browser's draft, behind the newChart flag)
+    pages/about.vue, contact.vue, privacy.vue  # About (Jazz Lab thanks, the video, credits), the form, privacy
     pages/ui.vue          # dev-only showcase of the Catalyst components (removed from production builds)
     components/           # AppShell, EditorView, ChartGrid, GridCell, ScaleCell, ChartText, ChartTranspose,
                           # PreviewControls, SegmentedControl, SheetPages, ScaleSheet, ScaleStaff,
@@ -65,7 +67,8 @@ web/                      # Nuxt app (Vercel root directory)
                           # storage (safe localStorage), catalyst/ (button and badge styles),
                           # field, table, interactive (Catalyst wiring)
     assets/css/main.css   # Tailwind, theme tokens, print rules
-  build/                  # csp.ts, headers.ts (+ tests, check-headers)
+  build/                  # csp.ts, headers.ts, analytics.ts, quotes.ts (+ tests, check-headers)
+  server/                 # api/contact.post.ts, utils/contactMessage.ts (+ test), plugins/csp.ts
   public/theme-init.js    # applies the saved theme before first paint
   test/                   # app tests (@nuxt/test-utils, happy-dom)
   e2e/                    # Playwright tests against the production build
@@ -364,10 +367,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 ## 9. Security
 
-The site is static with no server code, so most of the attack surface is gone. Remaining measures:
+Pages are static, and the only server code is the contact function, so the attack surface is small. The measures:
 
-- **Edge:** Vercel's automatic DDoS mitigation, plus a Firewall rate-limit rule per IP (600 requests per minute,
-  answered with 429).
+- **Edge:** Vercel's automatic DDoS mitigation in front of everything. Pages are static files on the CDN, so they need
+  no rate limit of their own. The plan allows one rate-limit rule, and it guards the contact form (below).
 - **Analytics:** Vercel Web Analytics (`web/build/analytics.ts`).
   - It's cookieless, with no cross-site tracking or advertising IDs, so there's no cookie banner. Visitors are
     counted with a daily-rotating hash.
@@ -381,7 +384,7 @@ The site is static with no server code, so most of the attack surface is gone. R
   - **Where:** `web/build/csp.ts`, run by a Nitro `prerender:generate` hook, gives each prerendered page a
     `<meta http-equiv="Content-Security-Policy">` as the first element of `<head>`:
     `default-src 'self'; script-src 'self' <sha256 of each inline script>; style-src 'self' 'unsafe-inline';
-    img-src 'self' data:; font-src 'self' data:; connect-src 'self'; object-src 'none'; base-uri 'none';
+    img-src 'self' data:; font-src 'self' data:; connect-src 'self'; frame-src https://www.youtube-nocookie.com; object-src 'none'; base-uri 'none';
     form-action 'none'; upgrade-insecure-requests`.
   - **Scripts:** Nuxt's two inline scripts (the import map and the runtime config) change per build, so they are
     hashed at build time. There is no `'unsafe-inline'` for scripts.
@@ -412,8 +415,28 @@ The site is static with no server code, so most of the attack surface is gone. R
   - `npm audit --omit=dev` gates CI.
   - Runtime `dependencies` are only what ships to browsers: `vue`, `vexflow`, `@headlessui/vue`,
     `@heroicons/vue` and `@fontsource-variable/jost` (the heading font). Everything else (Nuxt, Tailwind, the test and lint tools) is a build-time `devDependency`.
-- **API routes:** if one is ever added, it needs Zod validation, a body-size cap, and its own Firewall rate-limit
-  rule.
+- **The contact function** (`server/api/contact.post.ts`):
+  - **Validation:** a pure, tested `checkContact` checks the length and form of name, email and message.
+  - **Requests:** posts from another site are refused (403), as are bodies over 16 KB (413).
+  - **Bots:** a honeypot field, and a minimum time between showing the form and submitting it. Bots get a quiet
+    200, so they learn nothing.
+  - **The email:** plain text only, a one-line subject (no header injection), and the sender as reply-to.
+  - **Secrets:** the destination address, sender and Resend API key are server-only runtime config
+    (`NUXT_CONTACT_*`), never in the page. `NUXT_CONTACT_DRY_RUN=true` validates without sending (local builds and
+    e2e).
+  - **Rate limit:** the Vercel Firewall's one rate-limit rule. Path equals `/api/contact`, 2 requests per 60 s per IP
+    (fixed window), answered with 429. Resend's free plan (100 emails a day) is the hard ceiling behind it.
+  - **If spam gets through anyway:** Vercel BotID, or a daily send cap in the function (it needs a small store).
+- **Pages rendered at request time** (the 404 page) get the same hashed CSP meta from `server/plugins/csp.ts`.
+- **Error pages** (`app/error.vue`) cover unknown addresses and server errors in the site's own look:
+  - an "Error 404" tab, a large status code, and plain words on what happened;
+  - the way back to the library, plus "Try again" and a contact link for errors other than 404;
+  - a quote from the library at heading size, different from the navbar's (`useQuote` slots).
+
+  Nuxt's built-in page is never used, because it injects an inline script the CSP blocks. The one exception is
+  Nuxt's last-resort fallback, shown only if rendering this page itself fails.
+- **The one framed origin:** the About video, from `https://www.youtube-nocookie.com` (`frame-src`). It loads only
+  when played (`VideoEmbed`).
 
 ## 10. Testing
 
@@ -461,7 +484,7 @@ The site is static with no server code, so most of the attack surface is gone. R
   Every test fails on a page error, a console error or a CSP violation. Run them with `make e2e`.
 - **CI (GitHub Actions):**
   - The jobs: pytest, fixture freshness, lint, typecheck (`nuxt typecheck` plus the engine and e2e tsconfigs),
-    vitest, `nuxt generate`, the header check, `npm audit --omit=dev` (gating), and an e2e job.
+    vitest, `nuxt build`, the header check, `npm audit --omit=dev` (gating), and an e2e job.
   - The Playwright report is uploaded when the e2e job fails.
   - A full `npm audit` is reported but doesn't block, because build-tooling advisories don't ship.
   - Vercel's Git integration builds a preview deploy per PR.

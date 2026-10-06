@@ -29,7 +29,7 @@ jobs:
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
-      - run: npm run generate
+      - run: npm run build
       # what Vercel will serve: headers on pages and assets, CSP meta on every page
       - run: npm run check:headers
       # gate on what ships to browsers (vue, vexflow); build tooling advisories are reported, not blocking

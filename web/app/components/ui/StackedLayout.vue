@@ -44,6 +44,9 @@
         <div class="mx-auto max-w-6xl print:max-w-none"><slot /></div>
       </div>
     </main>
+
+    <!-- outside <main>, so it is the page's footer landmark -->
+    <slot name="footer" />
   </div>
 </template>
 

@@ -12,6 +12,7 @@ export default defineConfig({
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
   use: { baseURL: `http://localhost:${PORT}`, trace: 'retain-on-failure' },
   projects: [{ name: 'chromium', use: { ...devices['Desktop Chrome'], viewport: { width: 1400, height: 1000 } } }],
-  // nuxt preview serves a static build with `serve`, which takes its port from PORT (not --port)
-  webServer: { command: 'npx nuxt preview', env: { PORT: String(PORT) }, port: PORT, reuseExistingServer: !process.env.CI },
+  // nuxt preview runs the built server (prerendered pages + /api/contact), which takes its port from PORT;
+  // the contact form validates without sending email (NUXT_CONTACT_DRY_RUN)
+  webServer: { command: 'npx nuxt preview', env: { PORT: String(PORT), NUXT_CONTACT_DRY_RUN: 'true' }, port: PORT, reuseExistingServer: !process.env.CI },
 })

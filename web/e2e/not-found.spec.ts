@@ -8,6 +8,11 @@ test('unknown addresses get a themed not-found page under the same CSP', async (
   await expect(page.getByRole('heading', { name: 'Page not found' })).toBeVisible()
   const csp = await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content')
   expect(csp).toMatch(/script-src 'self' 'sha256-[^']+' 'sha256-[^']+'/)
+  await expect(page.getByText('Error 404')).toBeVisible()
+  // a quote from the library, not the one already in the navbar
+  const quote = page.locator('main figure blockquote')
+  await expect(quote).toBeVisible()
+  expect(await quote.textContent()).not.toBe(await page.locator('nav figure blockquote').textContent())
   await page.getByRole('button', { name: 'Go to the chart library' }).click()
   await expect(page.getByRole('heading', { name: 'Chart library' })).toBeVisible()
 })

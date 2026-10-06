@@ -23,6 +23,7 @@ describe('csp', () => {
     expect(policy).toContain("script-src 'self' 'sha256-x'")
     expect(policy).toContain("default-src 'self'")
     expect(policy).toContain("object-src 'none'")
+    expect(policy).toContain('frame-src https://www.youtube-nocookie.com') // the About video only
     expect(policy).toContain("font-src 'self' data:") // VexFlow's embedded Bravura font
     expect(policy).not.toMatch(/script-src[^;]*unsafe/)
   })

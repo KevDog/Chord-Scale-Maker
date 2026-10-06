@@ -19,7 +19,8 @@ chart format and options.
 - Generated `.ly`/`.pdf` files belong in `output/` and are git-ignored.
 - Web app: `make dev` / `make preview`; `make lint`; `make e2e` (Playwright). App code is in `web/app/`, its unit
   tests in `web/test/`, browser tests in `web/e2e/`. Pages must run under the hashed CSP (`web/build/csp.ts`):
-  no inline `<script>` of our own, no `eval`, no third-party origins.
+  no inline `<script>` of our own, no `eval`, no third-party origins (one exception: the About video's frame from
+  `youtube-nocookie.com`). Pages are prerendered; the only server code is `web/server/` (the contact form).
   Keep `web/engine/` free of Vue/DOM imports; put view logic that can be pure in the engine (`sheet.ts`, `edit.ts`).
 - Runtime `dependencies` are only what ships to browsers (`vue`, `vexflow`, `@headlessui/vue`, `@heroicons/vue`, `@fontsource-variable/jost`);
   CI gates on `npm audit --omit=dev`.
