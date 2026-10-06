@@ -40,3 +40,14 @@ test('a quote in the header, kept while navigating', async ({ page }) => {
   await expect(page).toHaveURL(/editor/)
   await expect(page.locator('nav figure')).toHaveText(text ?? '')
 })
+
+test('the icons are linked and served, and the mark leads the navbar', async ({ page, request }) => {
+  await page.goto('/')
+  const hrefs = await page.locator('head link[rel=icon], head link[rel=apple-touch-icon], head link[rel=manifest]').evaluateAll((ls) => ls.map((l) => l.getAttribute('href')))
+  expect(hrefs).toEqual(['/favicon.ico', '/favicon.svg', '/apple-touch-icon.png', '/site.webmanifest'])
+  const manifest = (await (await request.get('/site.webmanifest')).json()) as { icons: { src: string }[] }
+  for (const href of [...hrefs, ...manifest.icons.map((i) => i.src)]) expect((await request.get(href ?? '')).status(), href ?? '').toBe(200)
+  const mark = page.getByRole('link', { name: 'Chord Scale Maker, home' }).locator('img')
+  await expect(mark).toHaveAttribute('src', '/favicon.svg')
+  expect(await mark.evaluate((img: HTMLImageElement) => img.naturalWidth)).toBeGreaterThan(0)
+})
