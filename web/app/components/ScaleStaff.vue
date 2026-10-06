@@ -13,7 +13,12 @@
       <!-- on screen only, so print keeps its 12 staves a page -->
       <p v-if="intervals && staff.intervals && xs.length" class="relative h-4 text-xs/4 text-zinc-600 tabular-nums dark:text-zinc-400 print:hidden">
         <span class="sr-only">Intervals from the chord root:</span>
-        <span v-for="(label, i) in staff.intervals" :key="i" class="absolute -translate-x-1/2" :style="{ left: `${(xs[i] ?? 0) * 100}%` }">{{ glyphs(label) }}</span>
+        <span
+          v-for="(label, i) in staff.intervals"
+          :key="i"
+          :class="['absolute -translate-x-1/2', staff.selected?.[i] === false && 'opacity-25 dark:opacity-35 print:opacity-100 print:text-neutral-400']"
+          :style="{ left: `${(xs[i] ?? 0) * 100}%` }"
+        >{{ glyphs(label) }}</span>
       </p>
     </div>
   </div>
@@ -42,5 +47,5 @@ async function draw(): Promise<void> {
 
 onMounted(draw)
 // a primitive key: re-parses create new staff objects, but only real changes should redraw
-watch(() => `${props.staff.id}|${props.staff.last}|${props.clef}`, () => nextTick(draw))
+watch(() => `${props.staff.id}|${props.staff.last}|${props.clef}|${props.staff.selected?.join() ?? ''}`, () => nextTick(draw))
 </script>

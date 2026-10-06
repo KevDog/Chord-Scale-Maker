@@ -93,6 +93,14 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
     voice.draw(ctx, stave)
   }
 
-  fitSvg(el, cropBand(notes.flatMap((n) => n.getYs())), STAFF_WIDTH, staff.notes.map((n) => toVexKey(n).replace('/', '')).join(' '))
+  // practice: VexFlow keeps an element's classes off its drawn group, so tag the groups after drawing (main.css styles them)
+  notes.forEach((n, i) => {
+    const pick = staff.selected?.[i]
+    if (pick !== undefined) n.getSVGElement()?.classList.add(pick ? 'vf-selected' : 'vf-dimmed')
+  })
+  const names = staff.notes.map((n) => toVexKey(n).replace('/', ''))
+  const picked = staff.selected ? names.filter((_, i) => staff.selected?.[i]) : null
+  const label = names.join(' ') + (picked ? `; practice: ${picked.length ? picked.join(' ') : 'none'}` : '')
+  fitSvg(el, cropBand(notes.flatMap((n) => n.getYs())), STAFF_WIDTH, label)
   return notes.map((n) => headCentre(n, STAFF_WIDTH))
 }

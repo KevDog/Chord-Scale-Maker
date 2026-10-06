@@ -40,6 +40,7 @@ export default defineNuxtConfig({
       features: {
         newChart: false, // blank charts and this browser's draft; library charts stay editable
         guideTones: true, // the Guide tones sheet in the preview (docs/plan-guide-tones.md); on since sign-off
+        practice: true, // highlight a chosen subset of each scale's notes (docs/plan-practice.md); on since sign-off
       },
     },
   },

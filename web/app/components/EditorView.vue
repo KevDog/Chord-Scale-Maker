@@ -46,6 +46,15 @@
           v-model:start="prefs.start.value"
           v-model:intervals="prefs.intervals.value"
         />
+        <PracticePanel
+          v-if="practiceOn && sheet === 'scales' && !editor.fatal.value"
+          :mode="mode"
+          :start-text="prefs.start.value"
+          :boxes="practiceBoxesNow"
+          :selection="selection"
+          :lit="litNow"
+          @update:selection="practice.setSelection(mode, $event)"
+        />
       </div>
 
       <UiText v-if="editor.fatal.value" class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
@@ -69,6 +78,7 @@
         :mode="mode"
         :per-page="PER_PAGE"
         :intervals="prefs.intervals.value"
+        :practice="selection"
       />
     </section>
   </div>
@@ -76,10 +86,11 @@
 
 <script setup lang="ts">
 import { PrinterIcon } from '@heroicons/vue/16/solid'
-import { type ChartDoc, instrumentLabel, type Mode, partFor } from '~~/engine'
+import { buildSheet, type ChartDoc, instrumentLabel, LIMITS, litKeys, type Mode, partFor, practiceBoxes } from '~~/engine'
 import type { SheetKind } from '~/utils/sheets'
 
-const props = defineProps<{ initialText: string }>()
+/** chartSlug: the library chart being edited, if any (practice selections are remembered per chart) */
+const props = defineProps<{ initialText: string; chartSlug?: string }>()
 
 const PER_PAGE = 12
 
@@ -89,6 +100,15 @@ const part = computed(() => partFor(prefs.instrument.value))
 /** one spelling at a time: every scale from the Start on note, or each from its own root */
 const mode = ref<Mode>('root')
 const sheet = ref<SheetKind>('scales')
+const practiceOn = useFeature('practice')
+const practice = usePractice(props.chartSlug)
+const selection = computed(() => (practiceOn ? practice.selection(mode.value) : null))
+// every staff with its practice keys, for the panel's boxes and what the selection lights
+const practiceStaves = computed(() =>
+  practiceOn ? buildSheet(editor.rows.value, part.value, mode.value, prefs.start.value, LIMITS.maxExpandedRows, selection.value).flatMap((p) => p.pages.flat()) : [],
+)
+const practiceBoxesNow = computed(() => practiceBoxes(practiceStaves.value, mode.value, prefs.start.value))
+const litNow = computed(() => litKeys(practiceStaves.value))
 const transposed = ref('')
 
 watch(editor.text, (t) => saveDraft(t))

@@ -83,7 +83,7 @@ test('interval labels show on screen, against the chord root', async ({ page }) 
 
 test('guide tones draw both lines, four bars a system, without the scale controls', async ({ page }) => {
   await page.goto('/editor?chart=autumn_leaves')
-  await page.getByText('Guide tones', { exact: true }).click()
+  await page.getByRole('group', { name: 'Sheet' }).getByText('Guide tones', { exact: true }).click()
   await expect(page.getByText('Full Form, Alternate Changes (Guide Tone Lines)')).toBeVisible()
   await expect(page.locator('svg[aria-label^="Line 1:"]')).toHaveCount(8) // 32 bars
   await expect(page.locator('svg[aria-label^="Line 2:"]')).toHaveCount(8)
@@ -111,8 +111,28 @@ test('the text editor explains itself on hover and on focus', async ({ page }) =
 test('guide tone notation follows dark mode (no hard-coded black)', async ({ page }) => {
   await page.goto('/editor?chart=f_jazz_blues')
   await page.getByRole('button', { name: /Switch to dark mode/ }).click()
-  await page.getByText('Guide tones', { exact: true }).click()
+  await page.getByRole('group', { name: 'Sheet' }).getByText('Guide tones', { exact: true }).click()
   await expect(page.locator('svg[aria-label^="Line 1:"]').first()).toBeVisible()
   const black = page.locator('svg[aria-label^="Line"] [stroke="black"], svg[aria-label^="Line"] [fill="black"], svg[aria-label^="Line"] [stroke="#000000"], svg[aria-label^="Line"] [fill="#000000"]')
   await expect(black).toHaveCount(0)
+})
+
+test('practice highlights the chosen notes, remembers them per chart, and prints them', async ({ page }) => {
+  await page.goto('/editor?chart=autumn_leaves')
+  const panel = page.locator('fieldset', { hasText: 'Practice' })
+  await panel.getByRole('button', { name: 'Guide tones' }).click()
+  await expect(page.locator('.vf-selected')).toHaveCount(78) // two per staff, 39 staves
+  await expect(page.locator('svg[aria-label*="; practice:"]').first()).toBeAttached()
+  await page.reload()
+  await expect(page.locator('fieldset', { hasText: 'Practice' }).getByRole('button', { name: 'Guide tones' })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.locator('.vf-selected')).toHaveCount(78)
+  // From C keeps its own selection
+  await page.getByText('From C', { exact: true }).click()
+  await expect(page.locator('.vf-selected')).toHaveCount(0)
+  await page.locator('fieldset', { hasText: 'Practice' }).locator('label', { hasText: /^E♭$/ }).click()
+  await expect(page.locator('.vf-selected').first()).toBeAttached()
+  await page.getByText('From root', { exact: true }).click()
+  await page.emulateMedia({ media: 'print' })
+  const pdf = await page.pdf({ format: 'Letter' })
+  expect((pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length).toBe(4) // still 12 staves a page
 })

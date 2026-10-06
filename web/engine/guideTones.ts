@@ -31,6 +31,9 @@ const TONES: Readonly<Record<string, readonly [string, string]>> = {
   dim7: ['b3', 'bb7'],
 }
 
+/** the degrees standing for a quality's "3rd" and "7th" (canonical or extended symbol), or null if unknown */
+export const guideToneDegrees = (quality: string): readonly [string, string] | null => TONES[baseQuality(quality) ?? ''] ?? null
+
 /**
  * a chord's two guide tones, spelled from its written root; null if the chord or its quality is unknown.
  * Extended symbols count as their base quality (Maj7#11 as Maj7).
