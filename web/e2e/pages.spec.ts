@@ -19,6 +19,19 @@ test('About credits Jazz Lab and loads the video only when played, from the no-c
   await expect(page.locator('iframe')).toHaveAttribute('src', /^https:\/\/www\.youtube-nocookie\.com\/embed\/2SwqlkX-_HE/)
 })
 
+test('About links to Ko-fi in a new tab, loading nothing from it', async ({ page }) => {
+  const kofi: string[] = []
+  page.on('request', (r) => {
+    if (r.url().includes('ko-fi')) kofi.push(r.url())
+  })
+  await page.goto('/about')
+  const link = page.getByRole('link', { name: 'Buy me a coffee on Ko-fi' })
+  await expect(link).toHaveAttribute('href', 'https://ko-fi.com/kcstevens90266')
+  await expect(link).toHaveAttribute('target', '_blank')
+  await expect(link).toHaveAttribute('rel', /noopener/)
+  expect(kofi).toEqual([])
+})
+
 test('Contact sends a message, and points out what is missing first', async ({ page }) => {
   await page.goto('/contact')
   await page.getByRole('button', { name: 'Send message' }).click()

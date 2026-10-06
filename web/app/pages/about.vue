@@ -39,6 +39,21 @@
       </UiText>
     </section>
 
+    <section class="space-y-4" aria-labelledby="support">
+      <UiSubheading id="support">Support the site</UiSubheading>
+      <UiText>
+        Chord Scale Maker is free, with no ads and no accounts, and I'd like to keep it that way. If it's helped your
+        practice and you'd like to chip in toward hosting (and the occasional new pair of mallets), thank you. It means
+        a lot.
+      </UiText>
+      <!-- plain links, not the sites' widgets: nothing from them loads here, so the CSP stays first-party -->
+      <div class="flex flex-wrap gap-3">
+        <UiButton v-for="s in SUPPORT" :key="s.name" color="note" :href="s.url" target="_blank" rel="noopener noreferrer">
+          <component :is="s.icon" data-slot="icon" />{{ s.label }}
+        </UiButton>
+      </div>
+    </section>
+
     <section class="space-y-4" aria-labelledby="credits">
       <UiSubheading id="credits">Credits</UiSubheading>
       <UiText>Chord Scale Maker is built with open-source software, with thanks to its authors.</UiText>
@@ -56,6 +71,11 @@
 </template>
 
 <script setup lang="ts">
+import { HeartIcon } from '@heroicons/vue/16/solid'
+
+/** ways to chip in, each a link to the site's own page there (add Patreon here) */
+const SUPPORT = [{ name: 'ko-fi', label: 'Buy me a coffee on Ko-fi', url: 'https://ko-fi.com/kcstevens90266', icon: HeartIcon }] as const
+
 const CREDITS = [
   { name: 'VexFlow', what: 'music notation', licence: 'MIT', url: 'https://www.vexflow.com/' },
   { name: 'Bravura', what: 'the music font, by Steinberg', licence: 'SIL Open Font License', url: 'https://github.com/steinbergmedia/bravura' },

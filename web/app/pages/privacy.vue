@@ -39,6 +39,14 @@
       </UiText>
     </section>
 
+    <section class="space-y-3" aria-labelledby="support">
+      <UiSubheading id="support">Support links</UiSubheading>
+      <UiText>
+        The support button on the About page is a plain link to Ko-fi. Nothing from Ko-fi loads on this site; if you
+        follow it, you're on Ko-fi's site, under its own privacy policy.
+      </UiText>
+    </section>
+
     <section class="space-y-3" aria-labelledby="questions">
       <UiSubheading id="questions">Questions</UiSubheading>
       <UiText>Ask through the <UiTextLink href="/contact">contact form</UiTextLink>.</UiText>
