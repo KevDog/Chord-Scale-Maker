@@ -39,6 +39,14 @@
       </UiText>
     </section>
 
+    <section class="space-y-3" aria-labelledby="support">
+      <UiSubheading id="support">Support links</UiSubheading>
+      <UiText>
+        The support buttons on the About page are plain links to Ko-fi and Patreon. Nothing from either loads on this
+        site; if you follow one, you're on that site, under its own privacy policy.
+      </UiText>
+    </section>
+
     <section class="space-y-3" aria-labelledby="questions">
       <UiSubheading id="questions">Questions</UiSubheading>
       <UiText>Ask through the <UiTextLink href="/contact">contact form</UiTextLink>.</UiText>
