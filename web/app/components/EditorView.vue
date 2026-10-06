@@ -8,7 +8,7 @@
       </div>
       <div class="flex flex-wrap gap-3 *:whitespace-nowrap">
         <ChartTranspose v-if="!editor.fatal.value" :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
-        <UiButton color="teal" :disabled="editor.fatal.value" @click="print"><PrinterIcon data-slot="icon" />Print / Save PDF</UiButton>
+        <UiButton color="note" :disabled="editor.fatal.value" @click="print"><PrinterIcon data-slot="icon" />Print / Save PDF</UiButton>
       </div>
     </div>
     <UiText v-if="transposed" role="status" class="-mt-6 print:hidden">{{ transposed }}</UiText>

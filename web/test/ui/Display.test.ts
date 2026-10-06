@@ -11,8 +11,8 @@ import UiTableRow from '~/components/ui/TableRow.vue'
 
 describe('display components', () => {
   it('Badge takes a colour', async () => {
-    const w = await mountSuspended(UiBadge, { props: { color: 'teal' }, slots: { default: 'copy' } })
-    expect(w.classes()).toContain('bg-teal-500/15')
+    const w = await mountSuspended(UiBadge, { props: { color: 'note' }, slots: { default: 'copy' } })
+    expect(w.classes()).toContain('bg-note-500/15')
   })
 
   it('Heading renders the requested level', async () => {

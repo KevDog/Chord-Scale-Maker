@@ -1,7 +1,7 @@
 <template>
   <div class="grid grid-cols-[8rem_1fr] items-center gap-3 break-inside-avoid print:grid-cols-[8.5rem_1fr]">
     <div class="text-right leading-tight">
-      <div class="text-xs text-zinc-500 dark:text-zinc-400 print:text-zinc-600">{{ staff.section }} · Bar {{ staff.bar }}</div>
+      <div class="text-xs text-zinc-500 dark:text-zinc-400 print:text-neutral-600">{{ staff.section }} · Bar {{ staff.bar }}</div>
       <div class="text-lg font-semibold"><ChordSymbol v-if="staff.chord" :tokens="staff.chord" /><span v-else>—</span></div>
       <div v-if="staff.scale" class="whitespace-nowrap text-sm italic"><NoteName :note="staff.scale.root" /> {{ staff.scale.name }}</div>
     </div>

@@ -21,7 +21,7 @@ chart format and options.
   tests in `web/test/`, browser tests in `web/e2e/`. Pages must run under the hashed CSP (`web/build/csp.ts`):
   no inline `<script>` of our own, no `eval`, no third-party origins.
   Keep `web/engine/` free of Vue/DOM imports; put view logic that can be pure in the engine (`sheet.ts`, `edit.ts`).
-- Runtime `dependencies` are only what ships to browsers (`vue`, `vexflow`, `@headlessui/vue`, `@heroicons/vue`);
+- Runtime `dependencies` are only what ships to browsers (`vue`, `vexflow`, `@headlessui/vue`, `@heroicons/vue`, `@fontsource-variable/jost`);
   CI gates on `npm audit --omit=dev`.
 - Feature flags: `runtimeConfig.public.features` + `useFeature()`; new flags start off; e2e builds with all on.
 - UI is Tailwind Plus Catalyst ported to Vue in `web/app/components/ui/` (`<UiButton>`, `<UiListbox>`, …); build

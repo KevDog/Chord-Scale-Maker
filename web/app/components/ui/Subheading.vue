@@ -1,5 +1,5 @@
 <template>
-  <component :is="`h${level}`" class="text-base/7 font-semibold text-zinc-950 sm:text-sm/6 dark:text-white"><slot /></component>
+  <component :is="`h${level}`" class="font-display text-lg/7 font-semibold text-zinc-950 sm:text-base/7 dark:text-white"><slot /></component>
 </template>
 
 <script setup lang="ts">
