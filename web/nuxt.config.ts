@@ -25,7 +25,17 @@ export default defineNuxtConfig({
     head: {
       htmlAttrs: { lang: 'en' },
       title: 'Chord Scale Maker',
-      meta: [{ name: 'description', content: 'Chord-scale practice sheets from a chord chart.' }],
+      meta: [
+        { name: 'description', content: 'Chord-scale practice sheets from a chord chart.' },
+        { name: 'theme-color', content: '#123e85' },
+      ],
+      // the icons are drawn by scripts/icons.mjs (npm run icons)
+      link: [
+        { rel: 'icon', href: '/favicon.ico', sizes: '48x48' },
+        { rel: 'icon', href: '/favicon.svg', type: 'image/svg+xml' },
+        { rel: 'apple-touch-icon', href: '/apple-touch-icon.png' },
+        { rel: 'manifest', href: '/site.webmanifest' },
+      ],
       // sets the dark class before first paint. A file, not inline, so it needs no CSP hash
       // (Nuxt's own inline scripts still do: see docs/design.md §9)
       // + Vercel Web Analytics in production builds (build/analytics.ts): same-origin files, so no CSP change

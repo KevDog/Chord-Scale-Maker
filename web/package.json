@@ -12,6 +12,7 @@
     "typecheck": "nuxt typecheck && tsc -p tsconfig.engine.json && tsc -p tsconfig.e2e.json",
     "lint": "eslint .",
     "e2e": "NUXT_PUBLIC_FEATURES_NEW_CHART=true NUXT_PUBLIC_FEATURES_GUIDE_TONES=true NUXT_PUBLIC_FEATURES_PRACTICE=true nuxt build && playwright test",
+    "icons": "node scripts/icons.mjs",
     "check:headers": "NITRO_PRESET=vercel nuxt build && node build/check-headers.ts"
   },
   "devDependencies": {

@@ -70,6 +70,10 @@ web/                      # Nuxt app (Vercel root directory)
   build/                  # csp.ts, headers.ts, analytics.ts, quotes.ts (+ tests, check-headers)
   server/                 # api/contact.post.ts, utils/contactMessage.ts (+ test: message and attachment checks), plugins/csp.ts
   public/theme-init.js    # applies the saved theme before first paint
+  public/favicon.*, icon-*.png, apple-touch-icon.png, site.webmanifest
+                          # the mark (four note heads climbing a navy tile, the top one in a blue corner), drawn
+                          # by scripts/icons.mjs (`npm run icons`; needs rsvg-convert and ImageMagick); the navbar
+                          # shows favicon.svg before the wordmark
   test/                   # app tests (@nuxt/test-utils, happy-dom)
   e2e/                    # Playwright tests against the production build
   nuxt.config.ts, vitest.config.ts (engine + app projects), playwright.config.ts, eslint.config.mjs,

@@ -3,6 +3,7 @@
     <template #navbar>
       <UiNavbar>
         <UiNavbarItem href="/" aria-label="Chord Scale Maker, home">
+          <img src="/favicon.svg" alt="" width="28" height="28" class="size-7 shrink-0">
           <UiNavbarLabel class="font-display text-lg font-bold tracking-tight">Chord <span class="text-accent">Scale</span> Maker</UiNavbarLabel>
         </UiNavbarItem>
         <UiNavbarDivider class="max-lg:hidden" />
