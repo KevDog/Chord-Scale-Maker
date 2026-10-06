@@ -212,7 +212,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   "Choose a scale"), and components only draw it. The live preview re-renders only staves that changed: each
   staff's `id` combines its position, its row content, the part and the mode.
 
-### Practice selection (behind the `practice` flag; [plan-practice.md](plan-practice.md))
+### Practice selection ([plan-practice.md](plan-practice.md))
 
 - **What it does:** a subset of each scale's notes to improvise with. The chosen notes are highlighted on the
   Scales sheet and the rest dimmed, on screen and in print.
@@ -360,7 +360,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - `npm run e2e` builds with every flag on.
   - `newChart` (blank charts, this browser's draft) is off in production: the "New chart" links are hidden, and
     `/editor` without a library chart goes back to the library.
-  - `guideTones` (the Guide tones sheet) is on.
+  - `guideTones` (the Guide tones sheet) and `practice` (the Practice panel) are on.
 
 ## 9. Security
 
