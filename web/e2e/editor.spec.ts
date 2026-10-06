@@ -69,16 +69,16 @@ test('transposing rewrites the chart in another key', async ({ page }) => {
   await expect(page.getByLabel('chord for row 1', { exact: true })).toHaveValue('Bb7')
 })
 
-test('interval labels show on screen, against the chord root', async ({ page }) => {
+test('interval labels show on screen, against the chord root, on until turned off', async ({ page }) => {
   await page.goto('/editor?chart=footprints')
   const toggle = page.getByRole('button', { name: 'Intervals' })
+  await expect(toggle).toHaveAttribute('aria-pressed', 'true') // on by default
+  await expect(page.getByText('Intervals from the chord root:').first()).toBeAttached()
+  await toggle.click()
   await expect(toggle).toHaveAttribute('aria-pressed', 'false')
   await expect(page.getByText('Intervals from the chord root:')).toHaveCount(0)
-  await toggle.click()
-  await expect(toggle).toHaveAttribute('aria-pressed', 'true')
-  await expect(page.getByText('Intervals from the chord root:').first()).toBeAttached()
   await page.reload()
-  await expect(page.getByRole('button', { name: 'Intervals' })).toHaveAttribute('aria-pressed', 'true') // remembered
+  await expect(page.getByRole('button', { name: 'Intervals' })).toHaveAttribute('aria-pressed', 'false') // remembered
 })
 
 test('guide tones draw both lines, four bars a system, without the scale controls', async ({ page }) => {

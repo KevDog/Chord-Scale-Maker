@@ -13,6 +13,6 @@ function storedRef<T>(key: string, parse: (raw: string) => T | undefined, fallba
 export function usePreferences() {
   const instrument = storedRef<InstrumentName>('csm-instrument', (s) => (isInstrumentName(s) ? s : undefined), 'concert')
   const start = storedRef<string>('csm-start', (s) => ((PICKER_ROOTS as readonly string[]).includes(s) ? s : undefined), 'C')
-  const intervals = storedRef<boolean>('csm-intervals', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
+  const intervals = storedRef<boolean>('csm-intervals', (s) => s === 'on', true, (v) => (v ? 'on' : 'off')) // on until turned off: they show each note's job over the chord
   return { instrument, start, intervals }
 }

@@ -64,7 +64,8 @@
           <dt class="font-semibold text-zinc-950 dark:text-white">Intervals</dt>
           <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
             Labels each note against the chord's root (1, 9, ♭3, 11 and so on). Handy while you're learning what each
-            note does. It's on screen only, so printed sheets stay clean.
+            note does. It starts on; switch it off if you don't need it (that's remembered too). It's on screen only,
+            so printed sheets stay clean.
           </dd>
         </div>
       </dl>
@@ -85,7 +86,9 @@
         </li>
         <li>
           <strong class="font-semibold text-zinc-950 dark:text-white">The boxes</strong> pick notes by interval: tick
-          ♭3 and every minor 3rd lights up. In From C mode the boxes are pitches instead (tick E♭ and every E♭ lights
+          ♭3 and every minor 3rd lights up. They count from the chord's root, not the scale's first note, so with
+          C minor pentatonic over B♭–7, B♭ is 1 and C is 2 (the 9th). The interval labels under the notes show the
+          same numbers. In From C mode the boxes are pitches instead (tick E♭ and every E♭ lights
           up), which shows you where a note survives a chord change and where it doesn't.
         </li>
         <li>Tick or untick a box while a preset's on and you get your own mix, starting from what the preset showed.</li>
