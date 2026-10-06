@@ -28,7 +28,7 @@ test('About links to Ko-fi and Patreon in a new tab, loading nothing from either
   for (const [name, href] of [
     ['Buy me a coffee on Ko-fi', 'https://ko-fi.com/kcstevens90266'],
     ['Become a patron on Patreon', 'https://www.patreon.com/kcstevens'],
-  ]) {
+  ] as const) {
     const link = page.getByRole('link', { name })
     await expect(link).toHaveAttribute('href', href)
     await expect(link).toHaveAttribute('target', '_blank')
