@@ -32,7 +32,9 @@ export function contentSecurityPolicy(scriptHashes: readonly string[]): string {
     "style-src 'self' 'unsafe-inline'", // Vue and VexFlow set style attributes
     "img-src 'self' data:",
     "font-src 'self' data:", // VexFlow's Bravura font is embedded as a data: URL
-    "connect-src 'self'",
+    "connect-src 'self'", // the contact form posts to /api/contact, same origin
+    // the About page's video, loaded only when played, from YouTube's no-cookie domain; nothing else may be framed
+    'frame-src https://www.youtube-nocookie.com',
     "object-src 'none'",
     "base-uri 'none'",
     "form-action 'none'",

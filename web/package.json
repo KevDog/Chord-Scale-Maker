@@ -4,15 +4,15 @@
   "type": "module",
   "scripts": {
     "dev": "nuxt dev",
-    "generate": "nuxt generate",
-    "preview": "nuxt generate && nuxt preview",
+    "build": "nuxt build",
+    "preview": "NUXT_CONTACT_DRY_RUN=true nuxt build && NUXT_CONTACT_DRY_RUN=true nuxt preview",
     "postinstall": "nuxt prepare",
     "test": "vitest run",
     "test:watch": "vitest",
     "typecheck": "nuxt typecheck && tsc -p tsconfig.engine.json && tsc -p tsconfig.e2e.json",
     "lint": "eslint .",
-    "e2e": "NUXT_PUBLIC_FEATURES_NEW_CHART=true NUXT_PUBLIC_FEATURES_GUIDE_TONES=true NUXT_PUBLIC_FEATURES_PRACTICE=true nuxt generate && playwright test",
-    "check:headers": "NITRO_PRESET=vercel-static nuxt generate && node build/check-headers.ts"
+    "e2e": "NUXT_PUBLIC_FEATURES_NEW_CHART=true NUXT_PUBLIC_FEATURES_GUIDE_TONES=true NUXT_PUBLIC_FEATURES_PRACTICE=true nuxt build && playwright test",
+    "check:headers": "NITRO_PRESET=vercel nuxt build && node build/check-headers.ts"
   },
   "devDependencies": {
     "@nuxt/eslint": "1.17.0",
