@@ -218,7 +218,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   default is From root, and the Start on select only appears for From. The engine still supports `both`,
   for the CLI's `--mode both`.
 - **Subtitles** follow the CLI (`pageSubtitle`): "Subtitle – Tenor Sax (Bb) (Spelled from C)".
-- **Interval labels:** the Intervals toggle, saved per browser, labels every note against the chord's written
+- **Interval labels:** the Intervals toggle, on by default and saved per browser, labels every note against the chord's written
   root (`engine/intervals.ts`). Labels read b9, #9, #11 and b13, a minor 3rd reads #9 on chords with a major
   3rd, sus chords get a 4, and sixth chords a 6. They are HTML placed under the note heads, on screen only, so
   the print layout doesn't change.

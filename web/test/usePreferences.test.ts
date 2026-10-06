@@ -12,9 +12,15 @@ function prefs() {
 describe('usePreferences', () => {
   afterEach(() => localStorage.clear())
 
-  it('defaults to concert pitch starting on C', () => {
+  it('defaults to concert pitch starting on C, with interval labels on', () => {
     const p = prefs()
-    expect([p.instrument.value, p.start.value]).toEqual(['concert', 'C'])
+    expect([p.instrument.value, p.start.value, p.intervals.value]).toEqual(['concert', 'C', true])
+  })
+
+  it('keeps interval labels off once turned off', async () => {
+    prefs().intervals.value = false
+    await nextTick()
+    expect(prefs().intervals.value).toBe(false)
   })
 
   it('remembers choices in this browser', async () => {

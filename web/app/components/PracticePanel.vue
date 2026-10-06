@@ -3,7 +3,7 @@
     <legend class="px-1 font-display text-base/7 font-semibold text-zinc-950 dark:text-white">Practice</legend>
     <UiText class="-mt-1">
       Pick the notes to improvise with; the rest are dimmed, on screen and in print.
-      {{ mode === 'root' ? 'Boxes are intervals from each chord’s root.' : `Boxes are pitches spelled from ${startName}.` }}
+      {{ mode === 'root' ? 'Boxes are intervals from each chord’s root, even when its scale starts elsewhere: over B♭–7, B♭ is 1.' : `Boxes are pitches spelled from ${startName}.` }}
     </UiText>
 
     <div class="flex flex-wrap items-center gap-2">
