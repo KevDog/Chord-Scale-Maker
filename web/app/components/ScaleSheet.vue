@@ -1,11 +1,11 @@
 <template>
-  <div class="space-y-8 print:space-y-0">
-    <SheetPage v-for="(page, p) in pages" :key="`${page.mode}-${p}`" :title="title" :subtitle="page.subtitle" :number="page.number" :total="pages.length">
+  <SheetPages :title="title" :pages="pages">
+    <template #default="{ page }">
       <div class="space-y-1 print:space-y-2">
         <ScaleStaff v-for="s in page.staves" :key="s.id" :staff="s" :clef="part.clef" :intervals="intervals" />
       </div>
-    </SheetPage>
-  </div>
+    </template>
+  </SheetPages>
 </template>
 
 <script setup lang="ts">
@@ -32,7 +32,6 @@ const pages = computed(() =>
         staves,
         subtitle: pageSubtitle(props.subtitle, props.instrumentLabel, sheetPart.heading),
       })),
-    )
-    .map((page, i) => ({ ...page, number: i + 1 })),
+    ),
 )
 </script>

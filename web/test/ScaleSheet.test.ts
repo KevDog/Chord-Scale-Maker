@@ -20,7 +20,15 @@ describe('ScaleSheet', () => {
       'S (Spelled from the Root)',
       'S (Spelled from the Root)',
     ])
-    expect(w.text()).toContain('Page 4 of 4')
+    // one continuous card on screen: a divider where each printed page starts, and the header only where the
+    // subtitle changes (every printed page still has its own, for print)
+    expect(w.findAll('[role=separator]').map((d) => d.attributes('aria-label'))).toEqual([
+      'Printed page 2 starts here',
+      'Printed page 3 starts here',
+      'Printed page 4 starts here',
+    ])
+    expect(pages.map((p) => p.find('header').classes().includes('hidden'))).toEqual([false, true, false, true])
+    expect(pages.every((p) => p.classes().includes('print:break-after-page'))).toBe(true)
   })
 
   it('names the instrument and start note, and passes the clef to every staff', async () => {

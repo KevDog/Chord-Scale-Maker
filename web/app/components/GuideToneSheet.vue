@@ -3,20 +3,22 @@
     <ul v-if="sheet.diagnostics.length" class="space-y-1 text-sm text-amber-700 print:hidden dark:text-amber-400">
       <li v-for="d in sheet.diagnostics" :key="d">{{ d }}</li>
     </ul>
-    <SheetPage v-for="page in pages" :key="page.number" :title="title" :subtitle="subtitleText" :number="page.number" :total="pages.length" compact>
-      <div class="space-y-6 print:space-y-1">
-        <GuideToneSystem
-          v-for="s in page.systems"
-          :key="s.index"
-          :system="s.system"
-          :clef="part.clef"
-          :first="s.index === 0"
-          :last="s.index === sheet.systems.length - 1"
-          :bars-per-system="barsPerSystem"
-          :intervals="intervals"
-        />
-      </div>
-    </SheetPage>
+    <SheetPages :title="title" :pages="pages" compact>
+      <template #default="{ page }">
+        <div class="space-y-6 print:space-y-1">
+          <GuideToneSystem
+            v-for="s in page.systems"
+            :key="s.index"
+            :system="s.system"
+            :clef="part.clef"
+            :first="s.index === 0"
+            :last="s.index === sheet.systems.length - 1"
+            :bars-per-system="barsPerSystem"
+            :intervals="intervals"
+          />
+        </div>
+      </template>
+    </SheetPages>
   </div>
 </template>
 
@@ -45,6 +47,6 @@ const pages = computed(() =>
   chunk(
     sheet.value.systems.map((system, index) => ({ system, index })),
     SYSTEMS_PER_PAGE,
-  ).map((systems, i) => ({ number: i + 1, systems })),
+  ).map((systems) => ({ subtitle: subtitleText.value, systems })),
 )
 </script>

@@ -9,7 +9,7 @@ test('searches the library and opens a chart', async ({ page }) => {
   await page.getByRole('link', { name: /Autumn Leaves/ }).click()
   await expect(page).toHaveURL(/editor\?chart=autumn_leaves/)
   await expect(staves(page)).toHaveCount(39) // 39 rows, from the root
-  await expect(page.getByText('Page 1 of 4')).toBeVisible()
+  await expect(page.getByRole('separator', { name: /Printed page \d starts here/ })).toHaveCount(3) // 4 printed pages
 })
 
 test('every page carries a hashed Content-Security-Policy', async ({ page }) => {
