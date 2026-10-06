@@ -61,13 +61,15 @@ test('Contact attaches a dropped PDF, and shrinks a big photo to send', async ({
     dt.items.add(new File(['%PDF-1.7 a chart'], 'Peace Piece.pdf', { type: 'application/pdf' }))
     return dt
   })
-  await page.getByText('or drag and drop a file here').dispatchEvent('drop', { dataTransfer: drop })
+  await page.getByText('or drag and drop it here').dispatchEvent('drop', { dataTransfer: drop })
   await expect(page.getByText('Peace Piece.pdf')).toBeVisible()
   await page.getByRole('button', { name: 'Remove Peace Piece.pdf' }).click()
-  // browse for a 4.8 MB PNG: it is sent as a JPEG of at most 3 MB
+  // choose a 4.8 MB PNG with the button: it is sent as a JPEG of at most 3 MB
   const png = noisePng(1600, 1000)
   expect(png.length).toBeGreaterThan(3_000_000)
-  await page.getByLabel('Attachment').setInputFiles({ name: 'noise.png', mimeType: 'image/png', buffer: png })
+  const chooser = page.waitForEvent('filechooser')
+  await page.getByText('Choose a file').click()
+  await (await chooser).setFiles({ name: 'noise.png', mimeType: 'image/png', buffer: png })
   await expect(page.getByText('shrunk to send')).toBeVisible()
   await expect(page.getByText('noise.jpg')).toBeVisible()
   await page.getByLabel('Name').fill('Bill Evans')

@@ -26,28 +26,33 @@
       @drop.prevent="onDrop"
     >
       <DocumentArrowUpIcon class="size-10 text-zinc-400 dark:text-zinc-500" aria-hidden="true" />
-      <p class="mt-3 text-sm/6 text-zinc-600 dark:text-zinc-400">
-        <span v-if="preparing" role="status">Preparing the file…</span>
-        <template v-else>
-          <label
-            class="cursor-pointer rounded-sm font-semibold text-note-700 focus-within:outline-2 focus-within:outline-offset-2 focus-within:outline-note-500 hover:text-note-600 dark:text-note-300 dark:hover:text-note-200"
+      <p v-if="preparing" role="status" class="mt-3 text-sm/6 text-zinc-600 dark:text-zinc-400">Preparing the file…</p>
+      <div v-else class="mt-4 flex flex-wrap items-center justify-center gap-x-3 gap-y-2 text-sm/6 text-zinc-600 dark:text-zinc-400">
+        <!-- a label styled as Catalyst's outline button: clicking it opens the file picker; the input inside takes keyboard focus -->
+        <label
+          v-interactive
+          :class="[
+            buttonStyles.base,
+            buttonStyles.outline,
+            'cursor-pointer has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-blue-500',
+            disabled && 'pointer-events-none opacity-50',
+          ]"
+        >
+          <ArrowUpTrayIcon data-slot="icon" />Choose a file
+          <input
+            ref="input"
+            type="file"
+            class="sr-only"
+            :accept="ACCEPT"
+            :disabled="disabled"
+            aria-labelledby="attachment-label"
+            :aria-describedby="`attachment-help attachment-types${problem ? ' attachment-error' : ''}`"
+            :aria-invalid="problem ? 'true' : undefined"
+            @change="onPick"
           >
-            <span>Browse</span>
-            <input
-              ref="input"
-              type="file"
-              class="sr-only"
-              :accept="ACCEPT"
-              :disabled="disabled"
-              aria-labelledby="attachment-label"
-              :aria-describedby="`attachment-help attachment-types${problem ? ' attachment-error' : ''}`"
-              :aria-invalid="problem ? 'true' : undefined"
-              @change="onPick"
-            >
-          </label>
-          or drag and drop a file here
-        </template>
-      </p>
+        </label>
+        <span>or drag and drop it here</span>
+      </div>
       <p id="attachment-types" class="mt-1 text-xs/5 text-zinc-500 dark:text-zinc-400">JPG, PNG or PDF, up to 10 MB. Large photos are shrunk to send; PDFs up to 3 MB.</p>
     </div>
 
@@ -57,11 +62,13 @@
 
 <script setup lang="ts">
 import { DocumentArrowUpIcon, PaperClipIcon } from '@heroicons/vue/24/outline'
-import { XMarkIcon } from '@heroicons/vue/16/solid'
+import { ArrowUpTrayIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import { formatSize, prepareAttachment, type ReadyAttachment } from '~/utils/attachment'
+import { buttonStyles } from '~/utils/catalyst/button'
+import { vInteractive } from '~/utils/interactive'
 import { ATTACHMENT_TYPES } from '../../server/utils/contactMessage'
 
-/** the contact form's optional attachment: browse or drag and drop one JPG, PNG or PDF (utils/attachment.ts) */
+/** the contact form's optional attachment: choose or drag and drop one JPG, PNG or PDF (utils/attachment.ts) */
 const props = defineProps<{ disabled?: boolean; error?: string }>()
 const model = defineModel<ReadyAttachment | null>({ required: true })
 const preparing = defineModel<boolean>('preparing', { default: false })
