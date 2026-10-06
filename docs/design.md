@@ -54,6 +54,7 @@ web/                      # Nuxt app (Vercel root directory)
   app/
     pages/index.vue       # library + title search
     pages/editor.vue      # ?chart=<slug> (| ?new=1 | this browser's draft, behind the newChart flag)
+    pages/help.vue        # how it all works, in the owner's voice: sheets, controls, practice, editing, printing
     pages/about.vue, contact.vue, privacy.vue  # About (Jazz Lab thanks, the video, credits), the form, privacy
     pages/ui.vue          # dev-only showcase of the Catalyst components (removed from production builds)
     components/           # AppShell, EditorView, ChartGrid, GridCell, ScaleCell, ChartText, ChartTranspose,

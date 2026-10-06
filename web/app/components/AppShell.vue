@@ -10,6 +10,7 @@
         <UiNavbarSection class="max-lg:hidden" aria-label="Main">
           <UiNavbarItem href="/" :current="route.path === '/'">Library</UiNavbarItem>
           <UiNavbarItem v-if="newChart" href="/editor?new=1">New chart</UiNavbarItem>
+          <UiNavbarItem href="/help" :current="route.path === '/help'">Help</UiNavbarItem>
           <UiNavbarItem href="/about" :current="route.path === '/about'">About</UiNavbarItem>
           <UiNavbarItem href="/contact" :current="route.path === '/contact'">Contact</UiNavbarItem>
         </UiNavbarSection>
@@ -26,6 +27,7 @@
     <template #sidebar>
       <UiNavbarItem href="/"><BookOpenIcon data-slot="icon" />Library</UiNavbarItem>
       <UiNavbarItem v-if="newChart" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiNavbarItem>
+      <UiNavbarItem href="/help"><QuestionMarkCircleIcon data-slot="icon" />Help</UiNavbarItem>
       <UiNavbarItem href="/about"><InformationCircleIcon data-slot="icon" />About</UiNavbarItem>
       <UiNavbarItem href="/contact"><EnvelopeIcon data-slot="icon" />Contact</UiNavbarItem>
     </template>
@@ -34,6 +36,7 @@
       <footer class="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 pt-4 pb-6 text-sm text-zinc-500 print:hidden lg:px-12 dark:text-zinc-400">
         <p>© {{ year }} Kevin Stevens. Provided as is, for practice and education.</p>
         <nav aria-label="Site" class="flex gap-4">
+          <NuxtLink to="/help" class="hover:text-zinc-950 dark:hover:text-white">Help</NuxtLink>
           <NuxtLink to="/about" class="hover:text-zinc-950 dark:hover:text-white">About</NuxtLink>
           <NuxtLink to="/contact" class="hover:text-zinc-950 dark:hover:text-white">Contact</NuxtLink>
           <NuxtLink to="/privacy" class="hover:text-zinc-950 dark:hover:text-white">Privacy</NuxtLink>
@@ -44,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { BookOpenIcon, EnvelopeIcon, InformationCircleIcon, MoonIcon, PlusIcon, SunIcon } from '@heroicons/vue/20/solid'
+import { BookOpenIcon, EnvelopeIcon, InformationCircleIcon, MoonIcon, PlusIcon, QuestionMarkCircleIcon, SunIcon } from '@heroicons/vue/20/solid'
 
 /** the site chrome (Catalyst StackedLayout): navbar, mobile menu, theme toggle, footer */
 const route = useRoute()
