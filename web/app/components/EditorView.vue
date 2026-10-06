@@ -1,17 +1,9 @@
 <template>
   <div class="space-y-10">
-    <!-- page heading with actions (Application UI page-heading pattern, Catalyst parts) -->
-    <div class="flex flex-wrap items-end justify-between gap-4 print:hidden">
-      <div class="min-w-0">
-        <UiHeading>{{ editor.meta.value.title || 'Untitled' }}</UiHeading>
-        <UiText v-if="editor.meta.value.subtitle" class="mt-1">{{ editor.meta.value.subtitle }}</UiText>
-      </div>
-      <div class="flex flex-wrap gap-3 *:whitespace-nowrap">
-        <ChartTranspose v-if="!editor.fatal.value" :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
-        <UiButton color="note" :disabled="editor.fatal.value" @click="print"><PrinterIcon data-slot="icon" />Print / Save PDF</UiButton>
-      </div>
+    <div class="min-w-0 print:hidden">
+      <UiHeading>{{ editor.meta.value.title || 'Untitled' }}</UiHeading>
+      <UiText v-if="editor.meta.value.subtitle" class="mt-1">{{ editor.meta.value.subtitle }}</UiText>
     </div>
-    <UiText v-if="transposed" role="status" class="-mt-6 print:hidden">{{ transposed }}</UiText>
 
     <div class="grid gap-8 print:hidden lg:grid-cols-2">
       <section aria-labelledby="grid-heading" class="min-w-0">
@@ -20,7 +12,17 @@
           This chart is over a size limit. Shorten it in the text editor to edit it here.
         </div>
         <div v-else class="max-h-[60vh] overflow-auto pr-1">
-          <ChartGrid :doc="editor.doc.value" @update:doc="editor.setDoc" />
+          <ChartGrid :doc="editor.doc.value" @update:doc="editor.setDoc">
+            <template #actions>
+              <div class="space-y-2">
+                <div class="flex flex-wrap gap-3 *:whitespace-nowrap">
+                  <ChartTranspose :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
+                  <UiButton color="note" @click="print"><PrinterIcon data-slot="icon" />Print / Save PDF</UiButton>
+                </div>
+                <UiText v-if="transposed" role="status">{{ transposed }}</UiText>
+              </div>
+            </template>
+          </ChartGrid>
         </div>
       </section>
       <section aria-labelledby="text-heading" class="min-w-0">
