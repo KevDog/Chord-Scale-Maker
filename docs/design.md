@@ -314,7 +314,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     "Page N" divider where each printed page starts and the header shown once. In print each page is a bare letter
     page with its own header.
   - `SegmentedControl`, the joined toggles (Scales | Guide tones, From | From root).
-  - `PreviewControls`, the preview toolbar.
+  - `PreviewControls`, the preview toolbar: Sheet, Instrument, From root/From X, then Intervals with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
 - **Dark mode** is a `.dark` class on `<html>`, toggled in the navbar.
   - The default is light, and the choice is saved per browser.
   - `public/theme-init.js` applies it before first paint. It's a file, not an inline script, so the CSP needs no

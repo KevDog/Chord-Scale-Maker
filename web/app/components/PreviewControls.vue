@@ -21,9 +21,13 @@
           <option v-for="r in PICKER_ROOTS" :key="r" :value="r">{{ noteText(r) }}</option>
         </UiSelect>
       </UiField>
-      <UiButton v-bind="intervals ? { color: 'note' } : { outline: true }" :aria-pressed="intervals" title="Label each note against the chord root (on screen only)" @click="intervals = !intervals">
-        Intervals
-      </UiButton>
+      <!-- Intervals and the chart's actions: one group, its own row below lg, two by two on a phone -->
+      <div class="flex flex-wrap items-end gap-3 *:whitespace-nowrap max-lg:w-full max-sm:grid max-sm:grid-cols-2">
+        <UiButton v-bind="intervals ? { color: 'note' } : { outline: true }" :aria-pressed="intervals" title="Label each note against the chord root (on screen only)" @click="intervals = !intervals">
+          Intervals
+        </UiButton>
+        <slot name="actions" />
+      </div>
     </div>
     <UiText id="start-help" class="sr-only">Written pitch the "from" part starts on</UiText>
     <UiText aria-live="polite">
@@ -37,7 +41,7 @@
 import { INSTRUMENTS, type InstrumentName, type Mode, noteText, partFor } from '~~/engine'
 import type { SheetKind } from '~/utils/sheets'
 
-/** the preview toolbar: which sheet, the instrument, where scales start, and interval labels */
+/** the preview toolbar: which sheet, the instrument, where scales start, interval labels, then the #actions slot */
 const sheet = defineModel<SheetKind>('sheet', { required: true })
 const instrument = defineModel<InstrumentName>('instrument', { required: true })
 const mode = defineModel<Mode>('mode', { required: true })

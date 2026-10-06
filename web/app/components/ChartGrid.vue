@@ -6,9 +6,6 @@
         <GridCell :value="meta[key]" :max-length="LIMITS.maxMeta" @update="(v) => emitDoc(setMeta(doc, key, v))" />
       </UiField>
     </div>
-    <!-- the editor's chart actions (Transpose, Print) sit under the title fields -->
-    <slot name="actions" />
-
     <UiTable dense bleed class="[--gutter:--spacing(1)]">
       <UiTableHead>
         <UiTableRow>

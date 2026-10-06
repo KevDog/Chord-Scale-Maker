@@ -12,18 +12,7 @@
           This chart is over a size limit. Shorten it in the text editor to edit it here.
         </div>
         <div v-else class="max-h-[60vh] overflow-auto pr-1">
-          <ChartGrid :doc="editor.doc.value" @update:doc="editor.setDoc">
-            <template #actions>
-              <div class="space-y-2">
-                <div class="flex flex-wrap gap-3 *:whitespace-nowrap">
-                  <ChartTranspose :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
-                  <UiButton color="note" @click="print"><PrinterIcon data-slot="icon" />Print / Save PDF</UiButton>
-                  <UiButton outline :disabled="editor.fatal.value" title="Show only the sheet music (Esc to leave)" @click="enterFocus"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
-                </div>
-                <UiText v-if="transposed" role="status">{{ transposed }}</UiText>
-              </div>
-            </template>
-          </ChartGrid>
+          <ChartGrid :doc="editor.doc.value" @update:doc="editor.setDoc" />
         </div>
       </section>
       <section aria-labelledby="text-heading" class="min-w-0">
@@ -58,7 +47,15 @@
           v-model:mode="mode"
           v-model:start="prefs.start.value"
           v-model:intervals="prefs.intervals.value"
-        />
+        >
+          <!-- the chart's actions, after Intervals (none while the chart is over a size limit) -->
+          <template v-if="!editor.fatal.value" #actions>
+            <ChartTranspose :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
+            <UiButton outline title="Show only the sheet music (Esc to leave)" @click="enterFocus"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
+            <UiButton color="note" @click="print"><PrinterIcon data-slot="icon" />Print / Save PDF</UiButton>
+          </template>
+        </PreviewControls>
+        <UiText v-if="transposed" role="status">{{ transposed }}</UiText>
         <PracticePanel
           v-if="practiceOn && sheet === 'scales' && !editor.fatal.value"
           :mode="mode"
