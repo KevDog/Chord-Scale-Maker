@@ -18,3 +18,11 @@ export function writeStored(key: string, value: string): void {
     // unavailable or full: the setting still applies for this visit
   }
 }
+
+export function removeStored(key: string): void {
+  try {
+    localStorage.removeItem(key)
+  } catch {
+    // unavailable: nothing was stored
+  }
+}

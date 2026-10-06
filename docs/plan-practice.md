@@ -1,6 +1,6 @@
 # Practice selection: plan
 
-Status: **proposed.** Web-only; the Python CLI is unchanged. Behind a `practice` feature flag until signed off.
+Status: **phases 1–2 built** (engine; panel, highlighting, storage, print), behind the flag until sign-off. Web-only; the Python CLI is unchanged. Behind a `practice` feature flag until signed off.
 
 Choose a subset of each scale's notes to improvise with. The chosen notes are highlighted on the Scales sheet and
 the rest are dimmed, on screen and in print.

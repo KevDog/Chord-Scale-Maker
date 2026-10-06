@@ -212,6 +212,21 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   "Choose a scale"), and components only draw it. The live preview re-renders only staves that changed: each
   staff's `id` combines its position, its row content, the part and the mode.
 
+### Practice selection (behind the `practice` flag; [plan-practice.md](plan-practice.md))
+
+- **What it does:** a subset of each scale's notes to improvise with. The chosen notes are highlighted on the
+  Scales sheet and the rest dimmed, on screen and in print.
+- **The engine** (`engine/practice.ts`) gives every staff's notes a key, a spelled interval:
+  - **From root:** from each chord's written root, so ♭3 and 3, and ♯4 and ♭5, are separate keys.
+  - **From X:** from the start note, so "♭3" is E♭ from C.
+
+  `buildSheet` takes the selection and sets `StaffModel.selected`.
+- **Presets** (From root only) work per chord, from the chord quality: chord tones, guide tones (the guide tone
+  table), and tensions (the rest). From X mode has All.
+- **Storage:** `usePractice` remembers a selection per library chart and per mode in this browser.
+- **Highlighting:** `drawStaff` tags each note's group `vf-selected` or `vf-dimmed`, and `main.css` colours them:
+  accent and faint on screen, black and light grey in print.
+
 ### Guide tone sheet
 
 - **Model:** `engine/guideTones.ts` builds a `GuideToneSheet` (see [plan-guide-tones.md](plan-guide-tones.md)).

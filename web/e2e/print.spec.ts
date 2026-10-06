@@ -31,7 +31,7 @@ for (const [chart, instrument, pages] of [
   test(`prints guide tones 8 systems per page (${chart}, ${instrument})`, async ({ page }) => {
     await page.goto(`/editor?chart=${chart}`)
     await chooseInstrument(page, instrument)
-    await page.getByText('Guide tones', { exact: true }).click()
+    await page.getByRole('group', { name: 'Sheet' }).getByText('Guide tones', { exact: true }).click()
     await expect(page.locator('svg[aria-label^="Line 1:"]').first()).toBeVisible()
     await page.emulateMedia({ media: 'print' })
     await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()

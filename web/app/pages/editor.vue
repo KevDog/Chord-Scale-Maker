@@ -1,7 +1,7 @@
 <template>
   <ClientOnly>
     <!-- keyed by URL: "New chart" or another library chart must start a fresh editor -->
-    <EditorView :key="route.fullPath" :initial-text="initialText" />
+    <EditorView :key="route.fullPath" :initial-text="initialText" :chart-slug="findChart(slug) ? slug : undefined" />
     <template #fallback><p class="text-zinc-500">Loading editor…</p></template>
   </ClientOnly>
 </template>

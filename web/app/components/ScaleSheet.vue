@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { buildSheet, type ModeChoice, type Part, pageSubtitle, type Row } from '~~/engine'
+import { buildSheet, type ModeChoice, type Part, pageSubtitle, type PracticeSelection, type Row } from '~~/engine'
 
 const props = defineProps<{
   rows: readonly Row[]
@@ -21,11 +21,12 @@ const props = defineProps<{
   mode: ModeChoice
   perPage: number
   intervals?: boolean // label notes against the chord root, on screen only
+  practice?: PracticeSelection | null // highlight these notes, dim the rest
 }>()
 
 /** every printed page, in order, with its own heading (the CLI's bookparts flattened) */
 const pages = computed(() =>
-  buildSheet(props.rows, props.part, props.mode, props.start, props.perPage)
+  buildSheet(props.rows, props.part, props.mode, props.start, props.perPage, props.practice ?? null)
     .flatMap((sheetPart) =>
       sheetPart.pages.map((staves) => ({
         mode: sheetPart.mode,
