@@ -58,3 +58,18 @@ test('Request a chart opens the contact form', async ({ page }) => {
   await expect(page).toHaveURL(/\/contact$/)
   await expect(page.getByRole('heading', { name: 'Contact' })).toBeVisible()
 })
+
+test('pages carry a link preview: Open Graph tags and a 1200×630 image', async ({ page, request }) => {
+  for (const path of ['/', '/help', '/about']) {
+    await page.goto(path)
+    const og = (p: string) => page.locator(`head meta[property="${p}"]`).getAttribute('content')
+    expect(await og('og:title')).toBe('Chord Scale Maker')
+    expect(await og('og:description')).toMatch(/jazz improvisation/)
+    expect(await og('og:image')).toBe('https://www.chordscalemaker.com/og-image.png')
+    expect(await page.locator('head meta[name="twitter:card"]').getAttribute('content')).toBe('summary_large_image')
+  }
+  const image = await request.get('/og-image.png')
+  expect(image.status()).toBe(200)
+  const png = await image.body()
+  expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1200, 630]) // the PNG header's width and height
+})

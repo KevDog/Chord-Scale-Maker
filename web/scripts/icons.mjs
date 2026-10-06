@@ -1,5 +1,5 @@
 // Writes the site's icons into public/ from one drawing: four note heads climbing a navy tile, the top one cut out
-// of a blue corner. Run `npm run icons` after changing it (needs rsvg-convert and ImageMagick: brew install librsvg imagemagick).
+// of a blue corner, plus public/og-image.png, the link preview social sites show. Run `npm run icons` after changing it (needs rsvg-convert and ImageMagick: brew install librsvg imagemagick).
 // `npm run icons -- --brand ../design/brand` also writes 1024 px PNGs for profile pictures elsewhere (Patreon, Ko-fi): a
 // full-bleed square that survives a circle crop, the rounded tile on transparent, and a 3000×750 cover (logo and
 // wordmark, drawn in Chromium so it can use the site's Jost; the middle survives a phone's crop).
@@ -17,6 +17,11 @@ const HEADS = [
   [18.9, 14.1, '#ffffff'],
   [24.6, 9.4, NAVY],
 ]
+
+/** banner layouts: the Patreon cover (a row, its middle survives a phone's crop), and the link preview that
+ * Facebook, Slack, iMessage and the like show (Open Graph's 1200×630, stacked so it reads small too) */
+const COVER = { width: 3000, height: 750, row: true, mark: 300, title: 168, tagline: 50, gap: 72, corner: [2280, 720], heads: [260, 640, 430, 90, 120] }
+const SHARE = { width: 1200, height: 630, row: false, mark: 168, title: 92, tagline: 30, gap: 36, corner: [860, 340], heads: [90, 560, 190, 52, 54] }
 
 /** the 32×32 drawing; rounded: a tile with corners (favicon), else full bleed (iOS and Android crop their own); scale shrinks the notes toward the middle */
 function svg({ rounded = true, scale = 1 } = {}) {
@@ -42,45 +47,49 @@ try {
   png(join(pub, 'favicon.svg'), 192, join(pub, 'icon-192.png'))
   png(join(pub, 'favicon.svg'), 512, join(pub, 'icon-512.png'))
   png(join(tmp, 'maskable.svg'), 512, join(pub, 'icon-maskable-512.png'))
+  await banner(join(pub, 'og-image.png'), SHARE)
   const brand = process.argv.indexOf('--brand')
   if (brand > 0 && process.argv[brand + 1]) {
     const dir = process.argv[brand + 1]
     writeFileSync(join(tmp, 'circle.svg'), svg({ rounded: false, scale: 0.85 }))
     png(join(tmp, 'circle.svg'), 1024, join(dir, 'chord-scale-maker-profile.png'))
     png(join(pub, 'favicon.svg'), 1024, join(dir, 'chord-scale-maker-logo.png'))
-    await cover(join(dir, 'chord-scale-maker-cover.png'))
+    await banner(join(dir, 'chord-scale-maker-cover.png'), COVER)
   }
 } finally {
   rmSync(tmp, { recursive: true, force: true })
 }
 
-/** the wordmark beside the mark on navy, with the mark's blue corner echoed at the right */
-async function cover(out) {
+/** the wordmark with the mark on navy, the mark's blue corner echoed in a corner and faint note heads climbing behind */
+async function banner(out, l) {
   const font = new URL('../node_modules/@fontsource-variable/jost/files/jost-latin-wght-normal.woff2', import.meta.url).href
   const mark = new URL('../public/favicon.svg', import.meta.url).href
+  const [x0, y0, dx, dy, rx] = l.heads
+  const heads = [0, 1, 2, 3, 4, 5, 6]
+    .map((i) => [x0 + i * dx, y0 - i * dy])
+    .map(([x, y]) => `<ellipse cx="${x}" cy="${y}" rx="${rx}" ry="${rx * 0.72}" transform="rotate(-20 ${x} ${y})" fill="#fff"/>`)
+    .join('')
   const html = `<!doctype html><html><head><style>
     @font-face { font-family: Jost; src: url(${font}) format('woff2'); font-weight: 100 900; }
     html, body { margin: 0; }
-    body { width: 3000px; height: 750px; overflow: hidden; position: relative; background: ${NAVY}; font-family: Jost, sans-serif; }
-    .corner { position: absolute; inset: 0; background: ${BLUE}; clip-path: polygon(2280px 0, 3000px 0, 3000px 720px); }
+    body { width: ${l.width}px; height: ${l.height}px; overflow: hidden; position: relative; background: ${NAVY}; font-family: Jost, sans-serif; }
+    .corner { position: absolute; inset: 0; background: ${BLUE}; clip-path: polygon(${l.corner[0]}px 0, ${l.width}px 0, ${l.width}px ${l.corner[1]}px); }
     .heads { position: absolute; inset: 0; opacity: 0.05; }
-    .lockup { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; gap: 72px; }
-    .lockup img { width: 300px; height: 300px; border-radius: 66px; box-shadow: 0 0 0 4px rgb(255 255 255 / 0.18), 0 24px 60px rgb(0 0 0 / 0.35); }
-    h1 { margin: 0; color: #fff; font-size: 168px; font-weight: 800; letter-spacing: -0.025em; line-height: 1; }
+    .lockup { position: absolute; inset: 0; display: flex; flex-direction: ${l.row ? 'row' : 'column'}; align-items: center; justify-content: center; gap: ${l.gap}px; text-align: ${l.row ? 'left' : 'center'}; }
+    .lockup img { width: ${l.mark}px; height: ${l.mark}px; border-radius: ${l.mark * 0.22}px; box-shadow: 0 0 0 ${l.mark / 75}px rgb(255 255 255 / 0.18), 0 ${l.mark / 12}px ${l.mark / 5}px rgb(0 0 0 / 0.35); }
+    h1 { margin: 0; color: #fff; font-size: ${l.title}px; font-weight: 800; letter-spacing: -0.025em; line-height: 1; }
     h1 span { color: #8fb4f8; }
-    p { margin: 28px 0 0 6px; color: #bcd0f4; font-size: 50px; font-weight: 500; letter-spacing: 0.01em; }
+    p { margin: ${l.tagline * 0.56}px 0 0 ${l.row ? 6 : 0}px; color: #bcd0f4; font-size: ${l.tagline}px; font-weight: 500; letter-spacing: 0.01em; }
   </style></head><body>
     <div class="corner"></div>
-    <svg class="heads" viewBox="0 0 3000 750">${[0, 1, 2, 3, 4, 5, 6]
-      .map((i) => `<ellipse cx="${260 + i * 430}" cy="${640 - i * 90}" rx="120" ry="86" transform="rotate(-20 ${260 + i * 430} ${640 - i * 90})" fill="#fff"/>`)
-      .join('')}</svg>
+    <svg class="heads" viewBox="0 0 ${l.width} ${l.height}">${heads}</svg>
     <div class="lockup"><img src="${mark}" alt=""><div><h1>Chord <span>Scale</span> Maker</h1><p>Practice sheets for jazz improvisation · chordscalemaker.com</p></div></div>
   </body></html>`
-  const file = join(tmp, 'cover.html')
+  const file = join(tmp, 'banner.html')
   writeFileSync(file, html)
   const browser = await chromium.launch()
   try {
-    const page = await browser.newPage({ viewport: { width: 3000, height: 750 } })
+    const page = await browser.newPage({ viewport: { width: l.width, height: l.height } })
     await page.goto(`file://${file}`)
     await page.evaluate(() => document.fonts.ready)
     await page.screenshot({ path: out })

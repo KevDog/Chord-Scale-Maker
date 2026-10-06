@@ -16,6 +16,10 @@ const watchRepoData = (): Plugin => ({
 })
 
 // Fully static site (nuxt generate). Engine + rendering run in the browser; see docs/design.md.
+/** where the site lives: link previews need absolute image URLs (previews of preview deployments show production's) */
+const SITE_URL = 'https://www.chordscalemaker.com'
+const DESCRIPTION = 'Practice sheets for jazz improvisation: every chord’s scale, guide tone lines and practice picks, written for your instrument.'
+
 export default defineNuxtConfig({
   compatibilityDate: '2026-10-01',
   devtools: { enabled: false },
@@ -26,8 +30,20 @@ export default defineNuxtConfig({
       htmlAttrs: { lang: 'en' },
       title: 'Chord Scale Maker',
       meta: [
-        { name: 'description', content: 'Chord-scale practice sheets from a chord chart.' },
+        { name: 'description', content: DESCRIPTION },
         { name: 'theme-color', content: '#123e85' },
+        // the link preview on Facebook, Slack, iMessage and the like (Open Graph); the image is drawn by
+        // scripts/icons.mjs. No og:url, so each page shares as its own address.
+        { property: 'og:type', content: 'website' },
+        { property: 'og:site_name', content: 'Chord Scale Maker' },
+        { property: 'og:title', content: 'Chord Scale Maker' },
+        { property: 'og:description', content: DESCRIPTION },
+        { property: 'og:image', content: `${SITE_URL}/og-image.png` },
+        { property: 'og:image:type', content: 'image/png' },
+        { property: 'og:image:width', content: '1200' },
+        { property: 'og:image:height', content: '630' },
+        { property: 'og:image:alt', content: 'Chord Scale Maker: practice sheets for jazz improvisation' },
+        { name: 'twitter:card', content: 'summary_large_image' },
       ],
       // the icons are drawn by scripts/icons.mjs (npm run icons)
       link: [
@@ -47,7 +63,6 @@ export default defineNuxtConfig({
     // NUXT_CONTACT_DRY_RUN=true validates without sending (local builds, e2e). Server-only: never sent to the page.
     contact: { resendApiKey: '', to: '', from: '', dryRun: false },
     public: {
-      siteUrl: '', // NUXT_PUBLIC_SITE_URL, e.g. https://www.chordscalemaker.com
       // feature flags (useFeature): new ones start off; NUXT_PUBLIC_FEATURES_<NAME>=true|false overrides one
       features: {
         newChart: false, // blank charts and this browser's draft; library charts stay editable

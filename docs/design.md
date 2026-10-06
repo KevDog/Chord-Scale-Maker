@@ -75,6 +75,7 @@ web/                      # Nuxt app (Vercel root directory)
                           # the mark (four note heads climbing a navy tile, the top one in a blue corner), drawn
                           # by scripts/icons.mjs (`npm run icons`; needs rsvg-convert and ImageMagick); the navbar
                           # shows favicon.svg before the wordmark
+  public/og-image.png     # the 1200×630 link preview (Open Graph tags in nuxt.config.ts), drawn by the same script
   test/                   # app tests (@nuxt/test-utils, happy-dom)
   e2e/                    # Playwright tests against the production build
   nuxt.config.ts, vitest.config.ts (engine + app projects), playwright.config.ts, eslint.config.mjs,
