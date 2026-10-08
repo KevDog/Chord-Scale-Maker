@@ -25,6 +25,16 @@ test('the Text pane is hidden until shown, remembered, and flags problems while 
   await expect(page.getByRole('status').filter({ hasText: 'text has a problem' })).toBeVisible()
 })
 
+test('scale menus show the formula where there is room: with the Text pane hidden, not beside it', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto('/editor?chart=blue_bossa')
+  const dorian = page.getByText('1, 2, ♭3, 4, 5, 6, ♭7', { exact: true })
+  await expect(dorian.first()).toBeVisible()
+  await expect(page.getByText('1, ♭2, ♭3, 3, ♯4, ♭6, ♭7', { exact: true }).first()).toBeVisible() // G Altered
+  await page.getByRole('button', { name: 'Show text' }).click()
+  await expect(dorian).toHaveCount(0)
+})
+
 test('grid edits update the text at once', async ({ page }) => {
   await page.getByLabel('chord for row 1').fill('Ebm7b5')
   await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 1 \| Ebm7b5/)
