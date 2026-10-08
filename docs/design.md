@@ -183,7 +183,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   A rejected value stays visible and flagged in its cell (`GridCell`), and the doc keeps the last good value.
 - **Chord cell:** free text, validated as above.
 - **Scale cell** (`ScaleCell`): a dropdown with these entries.
-  - "Default · …". Choosing it writes the default's name into the text (`C Dorian`), and a default scale follows
+  - The quality's default first, unlabelled (with levels, "Default" read as a level). Choosing it writes its name into the text (`C Dorian`), and a default scale follows
     when the chord changes (`setRowChord`: Cm7 → F7 takes C Dorian to F Mixolydian); a scale you chose stays.
   - The scale's formula (1, 2, ♭3, …) shows inside the select where the cell is wide enough for the whole label and
     the formula (measured with `utils/textWidth.ts`), typically with the Text pane hidden.
@@ -193,6 +193,18 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     closes.
 
   An unknown quality gives an amber border and "Choose a scale…", with "Other…" still available.
+- **Scale level** (the `scaleLevels` flag, on; `engine/levels.ts`): Basic / Standard / Advanced / Random, above the
+  chart grid. Choosing one writes the scales into the chart (`relevel`), so they save, print and share with it.
+  - Options in `chord_scales.json` carry `level: basic|advanced`; Standard is the default, and a quality without a
+    tag keeps it. Random picks among the inside options, from a seed (Shuffle deals a new one).
+  - The level **owns** the rows that played their default when the chart left Standard (`line:chord` keys), and
+    moves only those, while they still play the old level's scale. So a hand-picked scale stays, even one that is
+    also a level's choice (B♭ Lydian on a Maj7), and Standard puts the owned rows back.
+  - A library chart's own choices (the Bird Blues' A7♭9 on Phrygian Dominant) are its Standard: levels take them
+    over too, and Standard brings them back (`baseline`: the library chart, for itself and for copies of it).
+  - `useScaleLevel` remembers the level, seed and owned rows per chart in this browser (Save as a copy and Save to
+    My charts carry them; Revert resets them). Share links carry the level and seed; without the owned rows, a
+    recipient's next change matches rows by scale.
 - **Slash readings** (`slash_chords` in `chord_scales.json`): a chord whose bass makes it another
   chord takes that chord's options on the bass. DbMaj7/C is a sus♭9 on C: C Phrygian (default), C Spanish
   Phrygian, C Dorian ♭2. Only the options change; the symbol, interval labels and practice presets read DbMaj7.
@@ -388,8 +400,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - New flags start off, and every flag is fixed at build time. `NUXT_PUBLIC_FEATURES_<NAME>=true|false`
     overrides one for a build or `make dev`.
   - `npm run e2e` builds with every flag on.
-  - `myCharts` (My charts, New chart, Download/Open, share links), `guideTones` (the Guide tones sheet) and
-    `practice` (the Practice panel) are on, since sign-off.
+  - `myCharts` (My charts, New chart, Download/Open, share links), `guideTones` (the Guide tones sheet),
+    `practice` (the Practice panel) and `scaleLevels` (the Scale level control) are on, since sign-off.
 
 ## 9. Security
 

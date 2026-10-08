@@ -39,7 +39,7 @@ test('grid edits update the text at once', async ({ page }) => {
   await page.getByLabel('chord for row 1').fill('Ebm7b5')
   await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 1 \| Ebm7b5/)
   const scale = page.getByLabel('Scale for Ebm7b5')
-  await expect(scale.locator('option').first()).toHaveText('Default · Eb Locrian')
+  await expect(scale.locator('option').first()).toHaveText('Eb Locrian') // the usual choice, first
   await expect(scale.locator('option', { hasText: 'B Major Pentatonic' })).toHaveCount(1)
 })
 
@@ -182,4 +182,42 @@ test('focus mode shows only the sheet, leaves on Escape or its button, and still
   await exit.click()
   await expect(dialog).toHaveCount(0)
   await expect(page.getByRole('group', { name: 'Sheet' })).toBeVisible()
+})
+
+test('the scale level writes its scales into the chart, keeps your own picks, and goes back', async ({ page }) => {
+  await page.goto('/editor?chart=autumn_leaves')
+  await page.getByRole('button', { name: 'Show text' }).click()
+  const text = page.getByLabel('Chart text')
+  const status = page.getByRole('status').filter({ hasText: /in this browser/ })
+  await page.getByLabel('Scale for D7').first().selectOption('D Lydian Dominant') // a pick of your own
+  await page.getByText('Basic', { exact: true }).click()
+  await expect(text).toHaveValue(/Cm7 +\| C Minor Pentatonic/)
+  await expect(text).toHaveValue(/D7 +\| D Lydian Dominant/) // yours: kept
+  await expect(page.getByRole('status').filter({ hasText: /chords moved to basic scales/ })).toBeVisible()
+  await expect(status).toHaveText(/^Your edited version of Autumn Leaves/)
+  await page.reload()
+  await expect(page.getByLabel('Basic')).toBeChecked() // remembered with the chart
+  await page.getByText('Advanced', { exact: true }).click()
+  await expect(text).toHaveValue(/Cm7 +\| C Bebop Dorian/)
+  await page.getByText('Random', { exact: true }).click()
+  const dealt = await text.inputValue()
+  await page.getByRole('button', { name: 'Shuffle' }).click()
+  await expect.poll(() => text.inputValue()).not.toEqual(dealt)
+  await expect(text).toHaveValue(/D7 +\| D Lydian Dominant/)
+  await page.getByText('Standard', { exact: true }).click()
+  await expect(text).toHaveValue(/Cm7 +\| C Dorian/)
+  await page.getByLabel('Scale for D7').first().selectOption('D Half-Whole Diminished') // back to the library's own
+  await expect(status).toHaveText('Edits are saved in this browser as your version.') // the library version again
+})
+
+test('levels take over a library chart’s own scale choices, and Standard brings them back', async ({ page }) => {
+  await page.goto('/editor?chart=f_bird_blues')
+  await page.getByRole('button', { name: 'Show text' }).click()
+  const text = page.getByLabel('Chart text')
+  await expect(text).toHaveValue(/A7b9 +\| A Phrygian Dominant/)
+  await page.getByText('Advanced', { exact: true }).click()
+  await expect(text).toHaveValue(/A7b9 +\| A Spanish Phrygian/)
+  await page.getByText('Standard', { exact: true }).click()
+  await expect(text).toHaveValue(/A7b9 +\| A Phrygian Dominant/) // the chart's choice, not Half-Whole
+  await expect(page.getByRole('status').filter({ hasText: /in this browser/ })).toHaveText('Edits are saved in this browser as your version.')
 })

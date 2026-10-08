@@ -68,6 +68,18 @@
             so printed sheets stay clean.
           </dd>
         </div>
+        <div v-if="levelsOn">
+          <dt class="font-semibold text-zinc-950 dark:text-white">Scale level</dt>
+          <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+            How fancy the scales get, per chart. <strong class="font-semibold">Basic</strong> leans on pentatonics
+            (five notes, hard to land on a wrong one), <strong class="font-semibold">Standard</strong> is the usual
+            chord-scale for each chord, and <strong class="font-semibold">Advanced</strong> reaches for bebop,
+            Lydian and altered colours. <strong class="font-semibold">Random</strong> deals a different inside scale
+            to every chord, so you can't coast; hit <strong class="font-semibold">Shuffle</strong> for a new hand.
+            It's above the chart grid, and it writes the scales into the chart, so they save, print and share with
+            it. Scales you picked yourself stay put, and Standard puts everything else back.
+          </dd>
+        </div>
       </dl>
     </section>
 
@@ -112,9 +124,8 @@
         <li>One row per chord: section, bar, chord and scale. Two chords in a bar are two rows with the same bar number.</li>
         <li>Use the row buttons to add a row after this one, or delete it.</li>
         <li>
-          The scale dropdown starts with <strong class="font-semibold">Default</strong>, the usual choice for that
-          chord, then the other scales that fit, then an <strong class="font-semibold">Outside</strong> group for when
-          you want some tension to resolve. <strong class="font-semibold">Other…</strong> lets you pick any root and any
+          The scale dropdown starts with the usual choice for that chord, then the other scales that fit, then an
+          <strong class="font-semibold">Outside</strong> group for when you want some tension to resolve. <strong class="font-semibold">Other…</strong> lets you pick any root and any
           scale.
         </li>
         <li>If a chord comes up amber, I don't recognise it. Pick a scale for it and it'll draw.</li>
@@ -223,6 +234,7 @@
 
 <script setup lang="ts">
 const myCharts = useFeature('myCharts')
+const levelsOn = useFeature('scaleLevels')
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },
   { id: 'sheets', title: 'The two sheets' },

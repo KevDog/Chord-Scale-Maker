@@ -41,6 +41,13 @@
             <CodeBracketIcon data-slot="icon" />{{ textShown ? 'Hide text' : 'Show text' }}
           </UiButton>
         </div>
+        <!-- Level: how sophisticated each chord's scale is, written into the chart (engine/levels.ts) -->
+        <div v-if="levelsOn && !editor.fatal.value" class="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+          <span id="scale-level-label" class="text-sm/6 font-medium text-zinc-950 dark:text-white">Scale level</span>
+          <SegmentedControl :model-value="scaleLevel.level.value" legend="Scale level" name="scale-level" :options="LEVEL_OPTIONS" @update:model-value="setLevel" />
+          <UiButton v-if="scaleLevel.level.value === 'random'" outline title="Deal a new random scale for each chord" @click="shuffle"><ArrowPathIcon data-slot="icon" />Shuffle</UiButton>
+          <UiText v-if="levelNote" role="status" class="text-sm/6!">{{ levelNote }}</UiText>
+        </div>
         <UiText v-if="!textShown && editor.diagnostics.value.length" role="status" class="mb-3 text-amber-700! dark:text-amber-400!">
           The chart's text has {{ editor.diagnostics.value.length === 1 ? 'a problem' : `${editor.diagnostics.value.length} problems` }}.
           <button type="button" class="font-semibold underline" @click="prefs.showText.value = true">Show text</button> to see {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
@@ -134,8 +141,27 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowDownTrayIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, BookmarkIcon, CodeBracketIcon, DocumentDuplicateIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
-import { buildSheet, type ChartDoc, encodeShare, instrumentLabel, LIMITS, litKeys, type Mode, partFor, practiceBoxes, serializeChart, setMeta, type ShareView } from '~~/engine'
+import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, BookmarkIcon, CodeBracketIcon, DocumentDuplicateIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
+import {
+  buildSheet,
+  type ChartDoc,
+  encodeShare,
+  instrumentLabel,
+  LEVEL_LABELS,
+  parseChart,
+  LIMITS,
+  litKeys,
+  type Mode,
+  partFor,
+  practiceBoxes,
+  relevel,
+  SCALE_LEVELS,
+  type LevelState,
+  type ScaleLevel,
+  serializeChart,
+  setMeta,
+  type ShareView,
+} from '~~/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 import type { SheetKind } from '~/utils/sheets'
 
@@ -159,6 +185,37 @@ const mode = ref<Mode>(props.shared?.mode ?? 'root')
 const sheet = ref<SheetKind>(props.shared?.sheet === 'guideTones' && useFeature('guideTones') ? 'guideTones' : 'scales')
 const practiceOn = useFeature('practice')
 const practice = usePractice(props.practiceKey)
+const levelsOn = useFeature('scaleLevels')
+const scaleLevel = useScaleLevel(props.practiceKey, props.shared)
+const LEVEL_OPTIONS = SCALE_LEVELS.map((value) => ({ value, label: LEVEL_LABELS[value] }))
+const level = computed(() => (levelsOn ? scaleLevel.level.value : 'standard'))
+const levelNote = ref('')
+
+/** move the chart's scales to another level: rows playing the old level's scale take the new one's */
+/** the library chart this one came from (itself, or the source of a copy): its own scale choices are its Standard */
+const baseline = ((): ChartDoc | undefined => {
+  const t = props.saveTarget
+  const slug = t?.kind === 'library' ? t.slug : t?.kind === 'mine' ? loadChart(t.id)?.meta.basedOn : t?.kind === 'new' ? t.basedOn : undefined
+  const text = slug ? findChart(slug)?.text : undefined
+  return text === undefined ? undefined : parseChart(text).value
+})()
+const levelState = (): LevelState => ({ level: scaleLevel.level.value, seed: scaleLevel.seed.value, ...(scaleLevel.owned.value ? { owned: scaleLevel.owned.value } : {}) })
+function moveLevel(to: ScaleLevel, seed: number, from: LevelState = levelState()): void {
+  editor.flush()
+  const result = relevel(editor.doc.value, from, { level: to, seed }, baseline)
+  if (result.changed) editor.setDoc(result.doc)
+  scaleLevel.owned.value = to === 'standard' ? undefined : result.owned
+  scaleLevel.level.value = to
+  levelNote.value = result.changed
+    ? `${result.changed === 1 ? '1 chord' : `${result.changed} chords`} moved to ${LEVEL_LABELS[to].toLowerCase()} scales; any you chose yourself stay.`
+    : 'No scales to change: they’re all your own choices, or already at this level.'
+}
+const setLevel = (to: ScaleLevel): void => moveLevel(to, scaleLevel.seed.value)
+function shuffle(): void {
+  const from = levelState()
+  scaleLevel.shuffle()
+  moveLevel('random', scaleLevel.seed.value, from)
+}
 if (props.shared?.practice) practice.setSelection(mode.value, props.shared.practice)
 const selection = computed(() => (practiceOn ? practice.selection(mode.value) : null))
 // every staff with its practice keys, for the panel's boxes and what the selection lights
@@ -203,7 +260,9 @@ function saveCopy(): void {
   const id = newChartId()
   const result = saveChart({ id, text: serializeChart(doc), kind: 'copy', ...(basedOn ? { basedOn } : {}) })
   copyError.value = result.ok ? '' : "Couldn't save a copy: this browser's storage is full, or My charts is at its limit."
-  if (result.ok) navigateTo({ path: '/editor', query: { mine: id } })
+  if (!result.ok) return
+  scaleLevel.carryTo(`mine:${id}`)
+  navigateTo({ path: '/editor', query: { mine: id } })
 }
 
 const shareOpen = ref(false)
@@ -222,6 +281,7 @@ async function openShare(): Promise<void> {
     intervals: prefs.intervals.value,
     sheet: sheet.value,
     ...(selection.value ? { practice: selection.value } : {}),
+    ...(level.value !== 'standard' ? { level: level.value, seed: scaleLevel.seed.value } : {}),
   }
   shareLink.value = `${location.origin}/editor#s=${await encodeShare({ chart: editor.text.value, view })}`
 }
@@ -235,6 +295,7 @@ function saveShared(): void {
   if (!result.ok) return
   const kept = usePractice(`mine:${id}`)
   for (const m of ['root', 'from'] as const) kept.setSelection(m, practice.selection(m))
+  scaleLevel.carryTo(`mine:${id}`)
   navigateTo({ path: '/editor', query: { mine: id } })
 }
 
@@ -250,6 +311,7 @@ function revert(): void {
   const id = saved?.id()
   if (id) deleteChart(id)
   saved?.forget()
+  scaleLevel.reset() // the library's scales are at Standard
   emit('reload')
 }
 

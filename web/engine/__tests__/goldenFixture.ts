@@ -68,6 +68,7 @@ const CHORDS = [
   ...['Abmin7', 'E7alt', 'Bb7sus4', 'F#ø7', 'Cdim7', 'Gbm7b5', 'C#m7', 'B7b9', 'E7(#11)'],
   ...['Fmaj7#11', 'Bb13', 'Ebm(maj7)', 'Ab7/Gb', 'G/B', 'Cm7#5#9x'],
   ...['Csus', 'C7sus4b9', 'Ephryg', 'DbMaj7/C', 'Gbmaj7/F', 'Dbmaj7/B#', 'DbMaj7/F'], // sus b9, slash readings
+  ...['G7b13', 'G7(b13)', 'G7b9b13', 'Am7/D', 'Am7/G'], // 7b13 apart from 7b9; m7 over its 4th is a sus chord
   ...['H7', 'C7/', '', 'Cmaj7/x'], // unparseable
 ]
 /** chord + scale whose roots differ, or share a pitch but not a spelling */
