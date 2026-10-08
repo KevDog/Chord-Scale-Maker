@@ -21,7 +21,7 @@ export default defineEventHandler(async (event) => {
   if (dryRun) return { ok: true }
   if (!resendApiKey || !to || !from) throw createError({ statusCode: 503, statusMessage: 'The contact form is not set up yet' })
 
-  const mail = contactEmail(check.value)
+  const mail = contactEmail(check.value, useRuntimeConfig().public.version) // so a bug report names its build
   const sent = await fetch('https://api.resend.com/emails', {
     method: 'POST',
     headers: { Authorization: `Bearer ${resendApiKey}`, 'Content-Type': 'application/json' },
