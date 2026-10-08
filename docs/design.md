@@ -207,6 +207,11 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     also a level's choice (B♭ Lydian on a Maj7), and Standard puts the owned rows back.
   - A library chart's own choices (the Bird Blues' A7♭9 on Phrygian Dominant) are its Standard: levels take them
     over too, and Standard brings them back (`baseline`: the library chart, for itself and for copies of it).
+  - **Ladders** (`ladders` in `chord_scales.json`, plan-analysis.md §11): a row whose Standard is not its
+    quality's default climbs that scale's ladder instead of the quality's tags, so the analysis's choice keeps its
+    colour: D7 on Phrygian Dominant (V7 of G minor) goes to G Minor Pentatonic at Basic and Spanish Phrygian at
+    Advanced, not to D Major Pentatonic and Bebop Dominant. A ladder without a rung keeps the Standard
+    (`ladderScale`).
   - `useScaleLevel` remembers the level, seed and owned rows per chart in this browser (Save as a copy and Save to
     My charts carry them; Revert resets them). Share links carry the level and seed; without the owned rows, a
     recipient's next change matches rows by scale.

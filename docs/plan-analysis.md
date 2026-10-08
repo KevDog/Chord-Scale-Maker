@@ -585,8 +585,12 @@ Proposed ladders (roots relative to the chord root; a blank keeps the Standard s
 
 Random keeps picking among the quality's inside options; the ladder doesn't change it.
 
-This is a follow-up change to `chord_scales.json` (a `ladders` table replacing the `level` tags) and
-`engine/levels.ts` (look up by the row's Standard scale). It can ship with the analyser or before it.
+Built (after the analyser) as a `ladders` table in `chord_scales.json` beside the `level` tags rather than
+replacing them: a row whose Standard is its quality's default keeps the tags (so nothing built before changes,
+and `7sus4`'s Mixolydian keeps its own rungs), and a row whose Standard the analysis chose climbs that scale's
+ladder (`engine/levels.ts`, `ladderScale`). The tonic-minor nuance (Aeolian at Basic, decision 7) needs the row's
+function, which the level control doesn't have; Dorian's ladder gives Minor Pentatonic for now. Lydian's and
+Lydian Dominant's Advanced rungs are blank, as in the table.
 
 ## 12. The tool
 

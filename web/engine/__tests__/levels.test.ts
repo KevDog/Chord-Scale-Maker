@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import raw from '../../../chord_scales.json'
 import { expandRows, parseChart, resolveScale } from '../chart'
-import { type LevelState, relevel, scaleAtLevel, seededUnit } from '../levels'
+import { ladderScale, type LevelState, relevel, scaleAtLevel, seededUnit } from '../levels'
 import { resolveQuality } from '../qualities'
+import { scaleKey } from '../scales'
 
 
 describe('scale levels', () => {
@@ -59,6 +60,30 @@ describe('scale levels', () => {
     const back = relevel(advanced.doc, { ...at('advanced'), owned: advanced.owned }, at('standard'), library)
     expect(scales(back.doc)).toEqual(['A Phrygian Dominant', 'D Dorian']) // the chart's choice, not Half-Whole
     expect(scales(relevel(library, at('standard'), at('advanced')).doc)[0]).toBe('A Phrygian Dominant') // without it: a chosen scale, kept
+  })
+
+  it('climb the Standard scale’s ladder when the chart’s Standard isn’t the quality’s (§11)', () => {
+    expect(['D Phrygian Dominant', 'G Mixolydian b6', 'A Altered', 'C Whole Tone', 'Eb Lydian', 'F# Locrian natural 2'].map((s) => [ladderScale(s, 'basic'), ladderScale(s, 'advanced')])).toEqual([
+      ['G Minor Pentatonic', 'D Spanish Phrygian'], // the minor key's pentatonic over its V7
+      ['C Minor Pentatonic', 'G Altered'],
+      ['Eb Major Pentatonic', 'A Half-Whole Diminished'],
+      ['C Whole Tone', 'C Altered'], // no simpler rung: the Standard stays
+      ['Eb Major Pentatonic', 'Eb Lydian'],
+      ['D Major Pentatonic', 'F# Locrian natural 2'],
+    ])
+    expect(scaleAtLevel('D7', 'basic', 0, '', 'D Phrygian Dominant')).toBe('G Minor Pentatonic')
+    expect(scaleAtLevel('D7', 'basic', 0, '', 'D Mixolydian')).toBe('D Major Pentatonic') // the quality's own default: its tags
+    // Autumn Leaves as the analysis wrote it: V7 of G minor, and V7/iv
+    const library = parseChart('A | 6 | D7 | D Phrygian Dominant\nA | 32 | G7 | G Mixolydian b6\nA | 33 | Cm7 | C Dorian\n').value
+    expect(scales(relevel(library, at('standard'), at('basic'), library).doc)).toEqual(['G Minor Pentatonic', 'C Minor Pentatonic', 'C Minor Pentatonic'])
+    expect(scales(relevel(library, at('standard'), at('advanced'), library).doc)).toEqual(['D Spanish Phrygian', 'G Altered', 'C Bebop Dorian'])
+  })
+
+  it('ladders name real scales, and every rung root is an interval', () => {
+    for (const [name, rungs] of Object.entries(raw.ladders)) {
+      expect(() => scaleKey(name), name).not.toThrow()
+      for (const rung of Object.values(rungs)) expect(() => scaleKey(rung[1] ?? ''), `${name}: ${rung[1]}`).not.toThrow()
+    }
   })
 
   it('leave a scale you changed by hand alone on the next move', () => {
