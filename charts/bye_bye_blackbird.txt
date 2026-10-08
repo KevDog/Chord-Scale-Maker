@@ -1,0 +1,49 @@
+title: Bye Bye Blackbird
+subtitle: Medium, F, 32 bars (solo changes)
+composer: Ray Henderson
+style: Medium
+key: F
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 46
+
+# section | bar | chord | scale
+A | 1  | FMaj7
+A | 2  | BbMaj7
+A | 2  | Am7
+A | 2  | D7
+A | 3  | Gm7
+A | 3  | C7
+A | 4  | FMaj7
+A | 5  | Dm7/A
+A | 6  | Abdim7
+A | 7  | Gm7
+A | 8  | C7
+B | 9  | Gm
+B | 10 | Abm
+B | 11 | Am
+B | 12 | Abm
+B | 13 | Gm7
+B | 14 | C7
+B | 15 | FMaj7
+C | 17 | Cm7
+C | 17 | F7
+C | 18 | Bm7
+C | 18 | E7
+C | 19 | Bbm7
+C | 19 | Eb7
+C | 20 | Am7
+C | 20 | D7
+C | 21 | Gm
+C | 23 | Abm7
+C | 23 | Db7
+C | 24 | Gm7
+C | 24 | C7b9
+D | 25 | FMaj7
+D | 26 | BbMaj7
+D | 27 | Am7b5
+D | 28 | D7b9
+D | 29 | Gm7
+D | 30 | C7
+D | 31 | FMaj7
+D | 32 | Gm7
+D | 32 | C7

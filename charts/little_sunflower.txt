@@ -1,0 +1,16 @@
+title: Little Sunflower
+subtitle: Latin, D minor, AABBA
+composer: Freddie Hubbard
+style: Even 8ths
+key: Dm
+form: AABBA
+source: Colorado Cookbook, p. 126
+
+# section | bar | chord | scale
+A1 | 1  | Dm
+A2 | 9  | Dm
+B1 | 17 | EbMaj7
+B1 | 21 | DMaj7
+B2 | 25 | EbMaj7
+B2 | 29 | DMaj7
+A3 | 33 | Dm

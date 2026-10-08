@@ -1,0 +1,33 @@
+title: Woody'n You
+subtitle: Medium up, Db, 32 bars (Algo Bueno)
+composer: Dizzy Gillespie
+style: Medium up
+key: Db
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 271
+
+# section | bar | chord | scale
+# the bridge can also start Am7 D7 | Bm7 E7 over its first and fifth bars
+A1 | 1  | Gm7b5
+A1 | 2  | C7alt
+A1 | 3  | Fm7b5
+A1 | 4  | Bb7alt
+A1 | 5  | Ebm7b5
+A1 | 6  | Ab7alt
+A1 | 7  | DbMaj7
+@copy A1 A2 8
+B  | 17 | Abm7
+B  | 17 | Db7
+B  | 18 | Abm7
+B  | 18 | Db7
+B  | 19 | Abm7
+B  | 19 | Db7
+B  | 20 | GbMaj7
+B  | 21 | Bbm7
+B  | 21 | Eb7
+B  | 22 | Bbm7
+B  | 22 | Eb7
+B  | 23 | Bbm7
+B  | 23 | Eb7
+B  | 24 | Ab7
+@copy A1 A3 24

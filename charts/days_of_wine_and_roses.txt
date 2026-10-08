@@ -1,0 +1,45 @@
+title: Days of Wine and Roses
+subtitle: Medium, F, 32 bars
+composer: Henry Mancini
+style: Medium
+key: F
+form: AB, 32 bars
+source: Colorado Cookbook, p. 59
+
+# section | bar | chord | scale
+A | 1  | FMaj7
+A | 2  | Eb7#11
+A | 3  | Am7
+A | 4  | D7#9
+A | 5  | Gm
+A | 7  | Eb7#11
+A | 9  | Am7
+A | 10 | Dm
+A | 11 | Gm
+A | 12 | Gm
+A | 12 | Gm/F
+A | 13 | Em7b5
+A | 13 | A7#9
+A | 14 | Dm7
+A | 14 | G7
+A | 15 | Gm7/C
+A | 16 | C7b9
+B | 17 | FMaj7
+B | 18 | Eb7#11
+B | 19 | Am7
+B | 20 | D7#9
+B | 21 | Gm
+B | 23 | Eb7#11
+B | 25 | Am7
+B | 26 | Dm
+B | 26 | Dm/C
+B | 27 | Bm7b5
+B | 28 | E7#9
+B | 29 | Am
+B | 29 | Dm
+B | 30 | Gm7
+B | 30 | C7
+B | 31 | FMaj7
+B | 31 | D7#9
+B | 32 | Gm7
+B | 32 | C7b9

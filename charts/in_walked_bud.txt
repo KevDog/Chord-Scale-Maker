@@ -1,0 +1,34 @@
+title: In Walked Bud
+subtitle: Medium, Ab, AABA
+composer: Thelonious Monk
+style: Medium
+key: Ab
+form: AABA
+source: Colorado Cookbook, p. 109
+
+# section | bar | chord | scale
+A1 | 1  | Fm
+A1 | 2  | FmMaj7
+A1 | 3  | Fm7
+A1 | 4  | Bb7
+A1 | 4  | Eb7
+A1 | 5  | Ab6
+A1 | 6  | Bb7
+A1 | 6  | Eb7#11
+A1 | 7  | Ab6
+A1 | 8  | Ab6
+A1 | 8  | C7#9
+A2 | 9  | Fm
+A2 | 10 | FmMaj7
+A2 | 11 | Fm7
+A2 | 12 | Bb7
+A2 | 12 | Eb7
+A2 | 13 | Ab6
+A2 | 14 | Bb7
+A2 | 14 | Eb7#11
+A2 | 15 | Ab6
+B  | 17 | Fm
+B  | 19 | Db7
+B  | 21 | Fm
+B  | 23 | Db7
+@copy A2 A3 16

@@ -1,0 +1,57 @@
+title: Yardbird Suite
+subtitle: Medium, C, 32 bars
+composer: Charlie Parker
+style: Medium
+key: C
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 273
+
+# section | bar | chord | scale
+# the horn intro is left out
+A1 | 1  | CMaj7
+A1 | 2  | Fm7
+A1 | 2  | Bb7
+A1 | 3  | C7
+A1 | 3  | Bb7
+A1 | 4  | A7
+A1 | 5  | D7
+A1 | 6  | G7
+A1 | 7  | Em7
+A1 | 7  | A7
+A1 | 8  | Dm7
+A1 | 8  | G7
+A2 | 9  | CMaj7
+A2 | 10 | Fm7
+A2 | 10 | Bb7
+A2 | 11 | C7
+A2 | 11 | Bb7
+A2 | 12 | A7
+A2 | 13 | D7
+A2 | 14 | G7
+A2 | 15 | CMaj7
+A2 | 16 | CMaj7
+A2 | 16 | B7
+B  | 17 | Em
+B  | 18 | F#m7b5
+B  | 18 | B7alt
+B  | 19 | Em7
+B  | 20 | A7
+B  | 21 | Dm7
+B  | 22 | Em7b5
+B  | 22 | A7alt
+B  | 23 | D7
+B  | 24 | Dm7
+B  | 24 | G7
+A3 | 25 | CMaj7
+A3 | 26 | Fm7
+A3 | 26 | Bb7
+A3 | 27 | C7
+A3 | 27 | Bb7
+A3 | 28 | A7
+A3 | 29 | D7
+A3 | 30 | Dm7
+A3 | 30 | G7
+A3 | 31 | CMaj7
+A3 | 31 | A7alt
+A3 | 32 | Dm7
+A3 | 32 | G7alt

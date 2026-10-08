@@ -1,0 +1,39 @@
+title: This Is New
+subtitle: Medium, C minor, 32 bars
+composer: Kurt Weill
+style: Medium up
+key: Cm
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 248
+
+# section | bar | chord | scale
+# the 8-bar Abm tag after the head is left out
+A | 1  | Cm
+A | 2  | G7alt
+A | 3  | Cm
+A | 4  | F7
+A | 5  | Bbm
+A | 6  | F7b9
+A | 7  | Bbm
+A | 8  | Fm7b5
+A | 8  | Bb7alt
+B | 9  | Ebm
+B | 11 | Ab7
+B | 13 | C#m
+B | 15 | G7alt
+C | 17 | Cm
+C | 18 | G7alt
+C | 19 | Cm
+C | 20 | Ebm11
+C | 20 | Ab7
+C | 21 | DbMaj7
+C | 22 | C7alt
+C | 23 | Fm
+C | 24 | F7alt
+D | 25 | Bbm7
+D | 26 | Eb7alt
+D | 27 | Cm7
+D | 28 | F7alt
+D | 29 | Bbm7
+D | 30 | Eb7alt
+D | 31 | Abm

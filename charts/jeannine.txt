@@ -1,0 +1,37 @@
+title: Jeannine
+subtitle: Medium up, Ab, AABA, 56 bars
+composer: Duke Pearson
+style: Medium up
+key: Ab
+form: AABA, 56 bars
+source: Colorado Cookbook, p. 113
+
+# section | bar | chord | scale
+# the standard 16-bar A; the lead sheet condenses the Ab minor vamp
+A1 | 1  | Abm
+A1 | 9  | F#m7
+A1 | 10 | B7
+A1 | 11 | EMaj7
+A1 | 12 | A7#11
+A1 | 13 | Bbm7
+A1 | 14 | Eb7
+A1 | 15 | AbMaj7
+A2 | 17 | Abm
+A2 | 25 | F#m7
+A2 | 26 | B7
+A2 | 27 | EMaj7
+A2 | 28 | A7#11
+A2 | 29 | Bbm7
+A2 | 30 | Eb7
+A2 | 31 | AbMaj7
+A2 | 32 | Ebm7
+A2 | 32 | Ab7
+B  | 33 | DbMaj7
+B  | 35 | Gm7
+B  | 35 | C7
+B  | 36 | FMaj7
+B  | 38 | Fm7
+B  | 38 | Bb7
+B  | 39 | Bbm7
+B  | 40 | Eb7
+@copy A1 A3 40

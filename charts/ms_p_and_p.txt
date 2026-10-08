@@ -1,0 +1,25 @@
+title: Ms. P & P
+subtitle: Latin / swing, Eb, 24 bars (Ken Walker)
+composer: Ken Walker
+style: Medium
+key: Gb
+form: ABC, 24 bars
+source: Colorado Cookbook, p. 142
+
+# section | bar | chord | scale
+A | 1  | Eb7sus4
+A | 5  | Db7sus4
+B | 9  | Eb7sus4
+B | 13 | Db7sus4
+C | 17 | Bm7
+C | 18 | Dm7
+C | 18 | G7
+C | 19 | Am7
+C | 20 | Cm7
+C | 20 | F7
+C | 21 | Gm7
+C | 22 | Bbm7
+C | 22 | Eb7
+C | 23 | Fm7
+C | 24 | Abm7
+C | 24 | Db7

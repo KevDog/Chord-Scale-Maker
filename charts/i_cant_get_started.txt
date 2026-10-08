@@ -1,0 +1,83 @@
+title: I Can't Get Started
+subtitle: Ballad, C, AABA
+composer: Vernon Duke
+style: Ballad
+key: C
+form: AABC
+source: Colorado Cookbook, p. 92
+
+# section | bar | chord | scale
+A1 | 1  | CMaj7
+A1 | 1  | Am7
+A1 | 2  | Dm7
+A1 | 2  | G7
+A1 | 3  | Bm7
+A1 | 3  | E7
+A1 | 3  | Bbm7
+A1 | 3  | Eb7
+A1 | 4  | Am7
+A1 | 4  | D7
+A1 | 4  | Abm7
+A1 | 4  | Db7
+A1 | 5  | CMaj7
+A1 | 5  | Am7
+A1 | 6  | Dm7
+A1 | 6  | G7b9
+A1 | 7  | Em7b5
+A1 | 7  | A7#9
+A1 | 8  | Dm7
+A1 | 8  | G7
+A2 | 9  | CMaj7
+A2 | 9  | Am7
+A2 | 10 | Dm7
+A2 | 10 | G7
+A2 | 11 | Bm7
+A2 | 11 | E7
+A2 | 11 | Bbm7
+A2 | 11 | Eb7
+A2 | 12 | Am7
+A2 | 12 | D7
+A2 | 12 | Abm7
+A2 | 12 | Db7
+A2 | 13 | CMaj7
+A2 | 13 | Am7
+A2 | 14 | Dm7
+A2 | 14 | G7b9
+A2 | 15 | CMaj7
+A2 | 15 | Bb7
+A2 | 16 | CMaj7
+B  | 17 | Em7
+B  | 17 | A7
+B  | 18 | Em7
+B  | 18 | A7
+B  | 19 | DMaj7
+B  | 19 | GMaj9
+B  | 20 | DMaj7
+B  | 20 | GMaj9
+B  | 21 | Dm7
+B  | 21 | G7
+B  | 22 | Dm7
+B  | 22 | G7
+B  | 23 | Em7
+B  | 23 | A7
+B  | 24 | Dm7
+B  | 24 | G7
+C  | 25 | CMaj7
+C  | 25 | Am7
+C  | 26 | Dm7
+C  | 26 | G7
+C  | 27 | Bm7
+C  | 27 | E7
+C  | 27 | Bbm7
+C  | 27 | Eb7
+C  | 28 | Am7
+C  | 28 | D7
+C  | 28 | Abm7
+C  | 28 | Db7
+C  | 29 | CMaj7
+C  | 29 | A7alt
+C  | 30 | Dm7
+C  | 30 | G7
+C  | 31 | CMaj7
+C  | 32 | Dm7
+C  | 32 | G7

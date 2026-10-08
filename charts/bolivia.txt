@@ -1,0 +1,30 @@
+title: Bolivia
+subtitle: Mixed feel, G vamp then swing and Latin, 24 bars
+composer: Cedar Walton
+style: Mixed
+key: G
+form: AB, 24 bars
+source: Colorado Cookbook, p. 42
+
+# section | bar | chord | scale
+A | 1  | G7
+A | 8  | G7b9
+B | 9  | EbMaj7
+B | 10 | Em7
+B | 10 | A7
+B | 11 | DMaj7
+B | 12 | Ab7b9
+B | 13 | GMaj7
+B | 14 | F#7alt
+B | 15 | Bm7
+B | 16 | CMaj7#11
+B | 17 | Bm7
+B | 18 | Bm7/A
+B | 19 | Abm7b5
+B | 20 | Gm7
+B | 20 | C7
+B | 21 | FMaj7
+B | 22 | Bb7b9
+B | 22 | B7b9
+B | 23 | BbMaj7
+B | 24 | A7#9

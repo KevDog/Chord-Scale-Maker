@@ -1,0 +1,51 @@
+title: Strollin'
+subtitle: Medium, Db, 32 bars
+composer: Horace Silver
+style: Medium
+key: Db
+form: AB, 32 bars
+source: Colorado Cookbook, p. 226
+
+# section | bar | chord | scale
+# the coda is left out
+A | 1  | DbMaj7
+A | 3  | Em7
+A | 3  | A7
+A | 4  | Ebm7
+A | 4  | Ab7
+A | 5  | DbMaj7
+A | 7  | Abm7
+A | 7  | Db7
+A | 8  | Gm7
+A | 8  | C7
+A | 9  | Fm
+A | 10 | Bbm
+A | 11 | Ebm7
+A | 12 | Ab7
+A | 13 | DbMaj7
+A | 14 | Bbm7
+A | 15 | Eb7#11
+A | 16 | D7alt
+B | 17 | DbMaj7
+B | 19 | Em7
+B | 19 | A7
+B | 20 | Ebm7
+B | 20 | Ab7
+B | 21 | DbMaj7
+B | 23 | Abm7
+B | 23 | Db7
+B | 24 | Gm7
+B | 24 | C7
+B | 25 | Fm
+B | 26 | Bbm7
+B | 27 | Eb7#11
+B | 28 | F#m7
+B | 28 | B7
+B | 29 | Fm7
+B | 29 | Bb7
+B | 30 | Ebm7
+B | 30 | Ab7
+B | 31 | DbMaj7
+B | 31 | Fm7
+B | 32 | Ebm7
+B | 32 | Ab7

@@ -1,0 +1,54 @@
+title: Tangerine
+subtitle: Samba, F, 32 bars
+composer: Victor Schertzinger
+style: Latin
+key: F
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 232
+
+# section | bar | chord | scale
+# the horn intro is left out
+A | 1  | Gm9
+A | 2  | C7
+A | 3  | FMaj7
+A | 3  | BbMaj7
+A | 4  | Am7
+A | 4  | D7b9
+A | 5  | Gm7
+A | 5  | C7
+A | 6  | Gm7
+A | 6  | C7
+A | 7  | FMaj7
+A | 8  | Am7b5
+A | 8  | D7alt
+B | 9  | Gm9
+B | 10 | C7
+B | 11 | FMaj7
+B | 12 | Bm7b5
+B | 12 | E7alt
+B | 13 | AMaj7
+B | 14 | Bm7
+B | 14 | E7
+B | 15 | A7
+B | 16 | D7b9
+C | 17 | Gm9
+C | 18 | C7
+C | 19 | FMaj7
+C | 19 | BbMaj7
+C | 20 | Am7
+C | 20 | D7b9
+C | 21 | Gm7
+C | 21 | C7
+C | 22 | Gm7
+C | 22 | C7
+C | 23 | Eb7
+C | 24 | D7alt
+D | 25 | Gm9
+D | 26 | Em7b5
+D | 26 | A7alt
+D | 27 | Dm7
+D | 28 | G7
+D | 29 | Gm7
+D | 30 | C7
+D | 31 | FMaj7
+D | 32 | D7alt

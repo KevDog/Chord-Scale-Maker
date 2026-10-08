@@ -1,0 +1,59 @@
+title: Have You Met Miss Jones
+subtitle: Medium up, F, AABA
+composer: Richard Rodgers
+style: Medium up
+key: F
+form: AABC
+source: Colorado Cookbook, p. 85
+
+# section | bar | chord | scale
+A1 | 1  | FMaj7
+A1 | 1  | Bb7
+A1 | 2  | Am7
+A1 | 2  | D7b9
+A1 | 3  | Gm7
+A1 | 4  | C7
+A1 | 5  | Am
+A1 | 6  | Dm
+A1 | 7  | Abm7
+A1 | 7  | Db7
+A1 | 8  | Gm7
+A1 | 8  | C7
+A2 | 9  | FMaj7
+A2 | 9  | Bb7
+A2 | 10 | Am7
+A2 | 10 | D7b9
+A2 | 11 | Gm7
+A2 | 12 | C7
+A2 | 13 | Am
+A2 | 14 | Dm
+A2 | 15 | Cm7
+A2 | 16 | F7
+B  | 17 | BbMaj7
+B  | 17 | A7alt
+B  | 18 | Abm7
+B  | 18 | Db7
+B  | 19 | GbMaj7
+B  | 19 | F7alt
+B  | 20 | Em7
+B  | 20 | A7
+B  | 21 | DMaj7
+B  | 22 | Abm7
+B  | 22 | Db7
+B  | 23 | GbMaj7
+B  | 24 | Gm7
+B  | 24 | C7
+C  | 25 | FMaj7
+C  | 25 | Bb7
+C  | 26 | Am7
+C  | 26 | D7b9
+C  | 27 | Gm7
+C  | 28 | Bm7b5
+C  | 28 | Bb7
+C  | 29 | Am7
+C  | 29 | D7
+C  | 30 | Gm7
+C  | 30 | C7
+C  | 31 | FMaj7
+C  | 32 | Gm7
+C  | 32 | C7

@@ -1,0 +1,20 @@
+title: Blues for Willie
+subtitle: Medium up blues, Bb, 12 bars
+composer: Bob Montgomery
+style: Blues
+key: Bb
+form: A, 12 bars
+source: Colorado Cookbook, p. 38
+
+# section | bar | chord | scale
+A | 1  | Bb7
+A | 2  | Eb7
+A | 3  | Bb7
+A | 5  | Eb7
+A | 7  | Bb7
+A | 9  | Dbm7
+A | 9  | Gb7
+A | 10 | Cm7
+A | 10 | F7
+A | 11 | B7#11
+A | 12 | F13

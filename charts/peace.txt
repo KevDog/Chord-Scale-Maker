@@ -1,0 +1,27 @@
+title: Peace
+subtitle: Jazz ballad, Bb, 10 bars
+composer: Horace Silver
+style: Ballad
+key: Bb
+form: A, 10 bars
+source: Colorado Cookbook, p. 173
+
+# section | bar | chord | scale
+A | 1  | Am7b5
+A | 1  | D7b9
+A | 2  | Gm7
+A | 2  | C7
+A | 3  | CbMaj7
+A | 4  | Cm7b5
+A | 4  | F7b9
+A | 5  | BbMaj7
+A | 5  | Bm7
+A | 5  | E9
+A | 6  | AMaj7
+A | 6  | F#m7
+A | 7  | Ebm7b5
+A | 7  | D7alt
+A | 8  | DbMaj7
+A | 9  | Cm7b5
+A | 9  | Cb7alt
+A | 10 | BbMaj7

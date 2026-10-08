@@ -1,0 +1,67 @@
+title: Waltz for Ellington
+subtitle: Jazz waltz, 58 bars (Jeff Jenkins)
+composer: Jeff Jenkins
+style: Waltz
+key: Bb
+form: AB, 58 bars
+source: Colorado Cookbook, p. 257
+
+# section | bar | chord | scale
+A | 1  | Gm7
+A | 2  | C7
+A | 3  | Cm7/F
+A | 4  | F7
+A | 5  | Fm7
+A | 6  | Bb7
+A | 7  | EbMaj7
+A | 8  | AbMaj7
+A | 9  | Dm7b5
+A | 10 | G7alt
+A | 11 | Cm7
+A | 12 | Cm7/Bb
+A | 13 | E/A
+A | 14 | D7alt
+A | 15 | GMaj7
+A | 16 | Em7
+A | 17 | Am7
+A | 18 | D7
+A | 19 | GMaj7
+A | 20 | Em7
+A | 21 | F#m7
+A | 22 | B7#11
+A | 23 | EMaj7
+A | 25 | F#m7
+A | 26 | B7
+A | 27 | EMaj7
+A | 28 | AMaj7
+A | 29 | D#m7b5
+A | 30 | G#7alt
+A | 31 | C#m7
+A | 32 | C#m7/B
+B | 33 | Bbm7b5
+B | 34 | Eb7alt
+B | 35 | AbMaj7
+B | 36 | F7alt
+B | 37 | Bbm7
+B | 38 | Eb7
+B | 39 | AbMaj7
+B | 40 | Fm7
+B | 40 | Fm7/Eb
+B | 41 | Dm7b5
+B | 42 | Dbm7
+B | 42 | Gb7#11
+B | 43 | Cm7
+B | 44 | F7alt
+B | 45 | Bbm7
+B | 46 | Eb7
+B | 47 | Cm7
+B | 48 | Fm7
+B | 49 | Dbm7
+B | 50 | Gb7#11
+B | 51 | Cm7
+B | 52 | BMaj7
+B | 53 | EMaj7
+B | 54 | AMaj7
+B | 55 | AbMaj9
+B | 57 | Am7b5
+B | 58 | D7alt

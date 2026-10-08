@@ -1,0 +1,43 @@
+title: My Baby Just Cares for Me
+subtitle: Medium, Eb, 32 bars
+composer: Walter Donaldson
+style: Medium
+key: Eb
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 145
+
+# section | bar | chord | scale
+A | 1  | EbMaj7
+A | 2  | Ab7#11
+A | 3  | EbMaj7
+A | 4  | Ab7#11
+A | 5  | EbMaj7/G
+A | 6  | Gbdim7
+A | 7  | Fm
+B | 9  | Dm7b5
+B | 10 | G7
+B | 11 | Cm
+B | 12 | Dm7b5
+B | 12 | G7
+B | 13 | Cm
+B | 14 | F7#11
+B | 15 | Fm7
+B | 16 | Bb7
+C | 17 | EbMaj7
+C | 18 | Ab7#11
+C | 19 | EbMaj7
+C | 20 | Ab7#11
+C | 21 | Gm7b5
+C | 22 | Gbdim7
+C | 23 | Fm
+D | 25 | AbMaj7
+D | 26 | Am7b5
+D | 26 | D7
+D | 27 | Abm7
+D | 27 | Db7
+D | 28 | Gm7
+D | 28 | C7
+D | 29 | Fm7
+D | 30 | Bb7
+D | 31 | EMaj7
+D | 32 | EbMaj7

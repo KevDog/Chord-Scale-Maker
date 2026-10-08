@@ -17,6 +17,7 @@ const RANGES: Readonly<Record<Clef, Readonly<{ lo: number; hi: number; comfortLo
 }
 const OUTSIDE_COST = 3 // per semitone outside the comfortable range
 const LEAP_COST = 2 // per semitone beyond a whole step
+const WIDE_LEAP_COST = 0.1 // and a little more the wider it is: two 4ths over an octave and a step (strollin: F- Bb-)
 const CENTRE_COST = 0.01 // ties: nearer the middle of the range
 
 /** a guide tone at one octave; role 0 = the chord's "3rd", 1 = its "7th" */
@@ -41,7 +42,8 @@ function placeCost(midi: number, clef: Clef): number {
 
 function moveCost(from: number, to: number): number {
   const d = Math.abs(to - from)
-  return d + LEAP_COST * Math.max(0, d - 2) // a held note costs 0, a step 1-2
+  const beyond = Math.max(0, d - 2)
+  return d + LEAP_COST * beyond + WIDE_LEAP_COST * beyond * beyond // a held note costs 0, a step 1-2
 }
 
 type Pair = readonly [Candidate, Candidate] // line 1, line 2: always one 3rd and one 7th

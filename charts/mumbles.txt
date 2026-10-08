@@ -1,0 +1,17 @@
+title: Mumbles
+subtitle: Medium blues, Eb, 12 bars
+composer: Clark Terry
+style: Blues
+key: Eb
+form: A, 12 bars
+source: Colorado Cookbook, p. 144
+
+# section | bar | chord | scale
+A | 1  | Eb7
+A | 2  | Ab7
+A | 3  | Eb7
+A | 5  | Ab7
+A | 7  | Eb7
+A | 9  | Fm7
+A | 10 | Bb7
+A | 11 | Eb7

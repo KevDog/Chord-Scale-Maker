@@ -1,0 +1,50 @@
+title: Corner Pocket
+subtitle: Medium, Bb, AABA (Until I Met You)
+composer: Freddie Green
+style: Medium
+key: Bb
+form: AABA
+source: Colorado Cookbook, p. 55
+
+# section | bar | chord | scale
+A1 | 1  | Cm7
+A1 | 1  | F7
+A1 | 2  | Cm7
+A1 | 2  | F7
+A1 | 3  | Dm7
+A1 | 3  | G7
+A1 | 4  | Dm7
+A1 | 4  | G7
+A1 | 5  | Cm7
+A1 | 5  | F7
+A1 | 6  | Cm7
+A1 | 6  | F7
+A1 | 7  | Bb6
+A1 | 8  | Dm7
+A1 | 8  | G7
+A2 | 9  | Cm7
+A2 | 9  | F7
+A2 | 10 | Cm7
+A2 | 10 | F7
+A2 | 11 | Dm7
+A2 | 11 | G7
+A2 | 12 | Dm7
+A2 | 12 | G7
+A2 | 13 | Cm7
+A2 | 13 | F7
+A2 | 14 | Cm7
+A2 | 14 | F7
+A2 | 15 | Bb6
+B  | 17 | Fm7
+B  | 17 | Bb7
+B  | 18 | Fm7
+B  | 18 | Bb7
+B  | 19 | EbMaj7
+B  | 21 | Gm7
+B  | 21 | C7
+B  | 22 | Gm7
+B  | 22 | C7
+B  | 23 | F7
+B  | 24 | Cm7
+B  | 24 | F7
+@copy A1 A3 24

@@ -1,0 +1,19 @@
+title: Shifting Down
+subtitle: Medium up blues, Bb, 12 bars
+composer: Kenny Dorham
+style: Blues
+key: Bb
+form: A, 12 bars
+source: Colorado Cookbook, p. 197
+
+# section | bar | chord | scale
+A | 1  | Bb7
+A | 2  | Eb7
+A | 3  | Bb7
+A | 5  | Eb7
+A | 6  | Ebm
+A | 7  | Dm
+A | 8  | Dbm
+A | 9  | Cm7
+A | 10 | F7
+A | 11 | Bb7

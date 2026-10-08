@@ -1,0 +1,68 @@
+title: Moment's Notice
+subtitle: Up tempo, Eb, 36 bars
+composer: John Coltrane
+style: Medium up
+key: Eb
+form: 36 bars
+source: Colorado Cookbook, p. 136
+
+# section | bar | chord | scale
+A1  | 1  | Em7
+A1  | 1  | A7
+A1  | 2  | Fm7
+A1  | 2  | Bb7
+A1  | 3  | EbMaj7
+A1  | 4  | Abm7
+A1  | 4  | Db7
+A1  | 5  | Dm7
+A1  | 5  | G7
+A1  | 6  | Ebm7
+A1  | 6  | Ab7
+A1  | 7  | DbMaj7
+A1  | 8  | Dm7
+A1  | 8  | G7
+A1  | 9  | Cm
+A1  | 10 | Bbm7
+A1  | 10 | Eb7
+A1  | 11 | AbMaj7
+A1  | 12 | Abm7
+A1  | 12 | Db7
+A1  | 13 | Gm
+A1  | 14 | Abm7
+A1  | 14 | Db7
+A1  | 15 | GbMaj7
+A1  | 16 | Fm7
+A1  | 16 | Bb7
+A2  | 17 | Em7
+A2  | 17 | A7
+A2  | 18 | Fm7
+A2  | 18 | Bb7
+A2  | 19 | EbMaj7
+A2  | 20 | Abm7
+A2  | 20 | Db7
+A2  | 21 | Dm7
+A2  | 21 | G7
+A2  | 22 | Ebm7
+A2  | 22 | Ab7
+A2  | 23 | DbMaj7
+A2  | 24 | Dm7
+A2  | 24 | G7
+A2  | 25 | Cm
+A2  | 26 | Bbm7
+A2  | 26 | Eb7
+A2  | 27 | AbMaj7
+A2  | 28 | Abm7
+A2  | 28 | Db7
+A2  | 29 | Gm7
+A2  | 29 | C7
+A2  | 30 | Fm7
+A2  | 30 | Bb7
+Tag | 31 | EbMaj7
+Tag | 31 | Fm7
+Tag | 32 | Gm7
+Tag | 32 | Fm7
+Tag | 33 | EbMaj7
+Tag | 33 | Fm7
+Tag | 34 | Gm7
+Tag | 34 | Fm7
+Tag | 35 | Eb

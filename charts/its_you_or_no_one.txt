@@ -1,0 +1,48 @@
+title: It's You or No One
+subtitle: Up tempo, F, 32 bars
+composer: Jule Styne
+style: Up
+key: F
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 111
+
+# section | bar | chord | scale
+# the horn intro and coda are left out
+A | 1  | Gm7
+A | 2  | C7
+A | 3  | FMaj7
+A | 3  | Bb7
+A | 4  | Am7
+A | 4  | D7
+A | 5  | Gm7
+A | 6  | C7
+A | 7  | FMaj7
+B | 9  | Bbm7
+B | 10 | Eb7
+B | 11 | AbMaj7
+B | 12 | G7
+B | 13 | CMaj7
+B | 14 | Dm7
+B | 14 | G7
+B | 15 | CMaj7
+B | 16 | Am7
+B | 16 | D7
+C | 17 | Gm7
+C | 18 | C7
+C | 19 | FMaj7
+C | 20 | D7
+C | 21 | Gm7
+C | 22 | C7
+C | 23 | Cm7
+C | 24 | F7
+D | 25 | Bm7b5
+D | 25 | E7alt
+D | 26 | Bbm7
+D | 26 | Eb7
+D | 27 | Am7
+D | 27 | D7
+D | 28 | Abm7
+D | 28 | Db7
+D | 29 | Gm7
+D | 30 | C7
+D | 31 | FMaj7

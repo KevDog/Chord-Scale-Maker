@@ -34,6 +34,7 @@ A1 | 3 | E7    | E Mixolydian
 | `section \| bar \| chord` | Scale omitted: the chord quality's default from `chord_scales.json` (`Cm7` → `C Dorian`). |
 | `@copy SRC DST OFFSET` | Repeat section `SRC` as `DST`, adding `OFFSET` to each bar number. |
 | `title:`, `subtitle:` | The heading on each page. |
+| `composer:`, `style:`, `key:`, `form:`, `source:` | About the tune: who wrote it, the feel (`Ballad`, `Medium up`, `Latin`…), the key (`Eb`, `Fm`), the form (`AABA, 32 bars`) and where the chart came from. Kept with the chart, not shown; `key:` is the analyser's starting point. |
 | `#` | Comment line. |
 
 Chord symbols: `Cm7`, `C-7`, `Cmi7`, `Bbm7`, `Am7b5`, `D7#5`, `G7#9b13`, `EbMaj7`, `C9`, `Csus`, `C7sus4b9`,

@@ -1,0 +1,41 @@
+title: There Will Never Be Another You
+subtitle: Medium, Eb, 32 bars
+composer: Harry Warren
+style: Medium up
+key: Eb
+form: AB, 32 bars
+source: Colorado Cookbook, p. 242
+
+# section | bar | chord | scale
+# the "standard" chords; the lead sheet offers Ebm7 Ab7 Dm7 G7 (bars 3–4), Db7#11 (14) and F#m7 B7 Fm7 Bb7 (15–16)
+A | 1  | EbMaj7
+A | 3  | Dm7b5
+A | 4  | G7b9
+A | 5  | Cm
+A | 7  | Bbm7
+A | 8  | Eb7
+A | 9  | AbMaj7
+A | 10 | Db7#11
+A | 11 | EbMaj7
+A | 12 | Cm7
+A | 13 | F7#11
+A | 15 | Fm7
+A | 16 | Bb7b9
+B | 17 | EbMaj7
+B | 19 | Dm7b5
+B | 20 | G7b9
+B | 21 | Cm
+B | 23 | Bbm7
+B | 24 | Eb7
+B | 25 | AbMaj7
+B | 26 | Db7#11
+B | 27 | EbMaj7
+B | 28 | Am7
+B | 28 | D7
+B | 29 | Gm7
+B | 29 | Ab7
+B | 30 | Gm7
+B | 30 | C7b9
+B | 31 | Fm7
+B | 31 | Bb7b9
+B | 32 | EbMaj7

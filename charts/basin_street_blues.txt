@@ -1,0 +1,33 @@
+title: Basin Street Blues
+subtitle: Slow swing, Bb, the solo form (B and C)
+composer: Spencer Williams
+style: Medium
+key: Bb
+form: BC
+source: Colorado Cookbook, p. 27
+
+# section | bar | chord | scale
+# the head's call-and-response A section is left out; solos are on B and C
+B | 1  | BbMaj7
+B | 2  | Am7
+B | 2  | D7
+B | 3  | G7
+B | 4  | Ab7
+B | 4  | G7
+B | 5  | C7
+B | 6  | F7
+B | 7  | Dm7
+B | 7  | Dbdim7
+B | 8  | Cm7
+B | 8  | F7
+C | 9  | BbMaj7
+C | 10 | Am7
+C | 10 | D7
+C | 11 | G7
+C | 12 | Ab7
+C | 12 | G7
+C | 13 | C7
+C | 14 | F7
+C | 15 | BbMaj7
+C | 16 | Cm7
+C | 16 | F7

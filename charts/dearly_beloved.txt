@@ -1,0 +1,35 @@
+title: Dearly Beloved
+subtitle: Latin and swing, C, 32 bars
+composer: Jerome Kern
+style: Mixed
+key: C
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 62
+
+# section | bar | chord | scale
+A | 1  | Dm7/G
+A | 3  | G9
+A | 5  | Dm7/G
+A | 7  | G9
+B | 9  | CMaj7
+B | 9  | F7
+B | 10 | Em7
+B | 10 | A7
+B | 11 | Dm7
+B | 12 | G7
+B | 13 | Em7
+B | 14 | Am7
+B | 15 | Ebm7
+B | 16 | Ab7
+@copy A C 16
+D | 25 | CMaj7
+D | 25 | F7
+D | 26 | Em7
+D | 26 | A7
+D | 27 | D7
+D | 28 | Ebdim7
+D | 29 | Dm7
+D | 30 | G7
+D | 31 | CMaj7
+D | 32 | Em7
+D | 32 | A7#9

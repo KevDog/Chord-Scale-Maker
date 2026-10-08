@@ -1,0 +1,20 @@
+title: Just Around the Corner
+subtitle: Up blues, Bb, 12 bars
+composer: John McNeil
+style: Up
+key: Bb
+form: A, 12 bars
+source: Colorado Cookbook, p. 117
+
+# section | bar | chord | scale
+A | 1  | Bb7
+A | 2  | Ab7
+A | 2  | A7
+A | 3  | B7
+A | 4  | Bb7
+A | 5  | Eb7
+A | 6  | F7
+A | 7  | Gb7
+A | 8  | Ab7
+A | 9  | Em7/A
+A | 12 | B7

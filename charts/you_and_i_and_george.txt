@@ -1,0 +1,39 @@
+title: You and I and George
+subtitle: Medium, C, 18 bars (8 + 10)
+composer: Matt Dennis
+style: Ballad
+key: C
+form: AB, 18 bars
+source: Colorado Cookbook, p. 274
+
+# section | bar | chord | scale
+A | 1  | C
+A | 1  | CMaj7
+A | 2  | C7
+A | 3  | F
+A | 3  | F#dim7
+A | 4  | CMaj7/G
+A | 5  | Dm7
+A | 5  | G7
+A | 6  | CMaj7
+A | 6  | C#dim7
+A | 7  | D7
+A | 8  | Dm7
+A | 8  | G7b9
+B | 9  | C
+B | 9  | CMaj7
+B | 10 | C7
+B | 11 | F
+B | 11 | F#dim7
+B | 12 | CMaj7/G
+B | 13 | Dm7
+B | 13 | G7
+B | 14 | CMaj7
+B | 14 | C#dim7
+B | 15 | D7
+B | 16 | Dm7
+B | 16 | G7b9
+B | 17 | C7sus4
+B | 17 | C/G
+B | 17 | G7sus4
+B | 18 | C

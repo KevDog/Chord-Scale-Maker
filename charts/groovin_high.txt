@@ -1,0 +1,38 @@
+title: Groovin' High
+subtitle: Medium up, Eb, 32 bars
+composer: Dizzy Gillespie
+style: Medium up
+key: Eb
+form: AA, 32 bars
+source: Colorado Cookbook, p. 82
+
+# section | bar | chord | scale
+# the horn intro is left out
+A1 | 1  | EbMaj7
+A1 | 3  | Am7
+A1 | 4  | D7
+A1 | 5  | EbMaj7
+A1 | 7  | Gm7
+A1 | 8  | C7
+A1 | 9  | F7
+A1 | 11 | Fm7
+A1 | 12 | Bb7
+A1 | 13 | Gm7
+A1 | 14 | F#m7
+A1 | 14 | Fm7
+A1 | 15 | Bb7b9
+A2 | 17 | EbMaj7
+A2 | 19 | Am7
+A2 | 20 | D7
+A2 | 21 | EbMaj7
+A2 | 23 | Gm7
+A2 | 24 | C7
+A2 | 25 | F7
+A2 | 27 | Fm7
+A2 | 28 | Bb7
+A2 | 29 | Fm
+A2 | 30 | Abm7
+A2 | 30 | Db7
+A2 | 31 | EbMaj7
+A2 | 32 | Fm7
+A2 | 32 | Bb7

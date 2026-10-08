@@ -4,6 +4,8 @@
     "maj": ["", "M", "ma", "major"],
     "m": ["-", "mi", "min"],
     "Maj7": ["ma7", "MA7", "M7", "maj7", "Δ7", "Δ", "maj9", "Maj9"],
+    "Maj7#11": ["maj7#11", "M7#11", "Δ#11", "Maj7+11", "maj7+11", "Maj7(#11)", "Maj9#11"],
+    "Maj7#5": ["maj7#5", "M7#5", "Δ#5", "Maj7+5", "maj7+5", "Maj7+", "Δ+5", "Δ+", "+Maj7"],
     "6": ["maj6", "Maj6", "6/9", "69"],
     "m7": ["-7", "mi7", "min7", "m9", "-9", "mi9", "m11", "-11"],
     "m6": ["-6", "mi6", "min6", "m6/9"],
@@ -40,6 +42,14 @@
       { "root": "6",  "scale": "Minor Pentatonic" },
       { "root": "1",  "scale": "Bebop Major" },
       { "root": "1",  "scale": "Lydian Augmented",  "note": "for Maj7#5" }
+    ],
+    "Maj7#11": [
+      { "root": "1",  "scale": "Lydian",            "default": true },
+      { "root": "1",  "scale": "Lydian Augmented",  "level": "advanced" }
+    ],
+    "Maj7#5": [
+      { "root": "1",  "scale": "Lydian Augmented",  "default": true },
+      { "root": "1",  "scale": "Lydian" }
     ],
     "6": [
       { "root": "1",  "scale": "Ionian",            "default": true },

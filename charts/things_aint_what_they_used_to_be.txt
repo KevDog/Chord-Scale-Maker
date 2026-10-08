@@ -1,0 +1,18 @@
+title: Things Ain't What They Used to Be
+subtitle: Medium blues, Db, 12 bars
+composer: Duke Ellington
+style: Blues
+key: Db
+form: A, 12 bars
+source: Colorado Cookbook, p. 235
+
+# section | bar | chord | scale
+A | 1  | Db7
+A | 5  | Gb7
+A | 7  | Db7
+A | 9  | Ebm7
+A | 10 | Ab7
+A | 11 | Db7
+A | 11 | E7
+A | 12 | Eb7
+A | 12 | D7

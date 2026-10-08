@@ -1,0 +1,31 @@
+title: Avalon
+subtitle: Up tempo, F, 32 bars
+composer: Vincent Rose
+style: Up
+key: F
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 25
+
+# section | bar | chord | scale
+A | 1  | Gm7
+A | 3  | C7
+A | 5  | FMaj7
+A | 6  | Bb7
+A | 7  | Am7
+A | 8  | D7
+B | 9  | C7
+B | 11 | Gm7
+B | 12 | C7
+B | 13 | FMaj7
+C | 17 | Am7b5
+C | 19 | D7
+C | 21 | Gm7
+C | 23 | Bbm7
+C | 24 | Eb7
+D | 25 | FMaj7
+D | 26 | Bb7
+D | 27 | Am7
+D | 28 | D7
+D | 29 | Gm7
+D | 30 | C7
+D | 31 | FMaj7

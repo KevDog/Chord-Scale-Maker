@@ -1,5 +1,9 @@
 title: Lady Bird
 subtitle: 16 Bars, C
+composer: Tadd Dameron
+style: Medium up
+key: C
+form: A
 
 # section | bar | chord | scale
 A | 1  | CMaj7  | C Ionian

@@ -129,14 +129,17 @@ describe('guide tone lines', () => {
     )
   })
 
-  it('never leaps more than a perfect 4th in any library chart, in either line', () => {
+  // the first charts never needed more than a 4th; the wider library has chords a tritone apart and triads
+  // (whose "7th" is the root), where a 5th is the price of staying in the range
+  const STEPWISE = ['autumn_leaves', 'blue_bossa', 'stella_by_starlight', 'all_the_things_you_are', 'lady_bird', 'f_blues', 'bb_jazz_blues', 'rhythm_changes']
+  it('never leaps more than a 5th in any library chart, nor a 4th in the first ones, in either line', () => {
     for (const f of readdirSync('../charts')) {
       const sheet = buildGuideTones(rowsOf(readFileSync(`../charts/${f}`, 'utf8')), CONCERT)
       for (const i of [0, 1] as const) {
         const notes = sheet.systems.flatMap((s) => s.bars).flatMap((b) => b.lines[i])
         const midis = notes.filter((_, j) => !notes[j - 1]?.tie).flatMap((n) => (n.pitch ? [n.pitch.midi] : []))
         const leaps = midis.slice(1).map((m, j) => Math.abs(m - (midis[j] ?? m)))
-        expect(Math.max(0, ...leaps), `${f} line ${i + 1}`).toBeLessThanOrEqual(5)
+        expect(Math.max(0, ...leaps), `${f} line ${i + 1}`).toBeLessThanOrEqual(STEPWISE.includes(f.slice(0, -4)) ? 5 : 7)
       }
       expect(sheet.diagnostics, f).toEqual([])
     }

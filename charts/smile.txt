@@ -1,0 +1,33 @@
+title: Smile
+subtitle: Samba, F, 32 bars
+composer: Charles Chaplin
+style: Latin
+key: F
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 202
+
+# section | bar | chord | scale
+A | 1  | FMaj7
+A | 5  | FMaj7
+A | 6  | Abdim7
+A | 7  | Gm7
+A | 8  | D7b9
+B | 9  | Gm
+B | 11 | Bbm7
+B | 12 | Eb7
+B | 13 | FMaj7
+B | 15 | Gm7
+B | 16 | C7b9
+B | 16 | Gb7
+C | 17 | FMaj7
+C | 21 | FMaj7
+C | 22 | Abdim7
+C | 23 | Gm7
+C | 24 | D7b9
+D | 25 | Gm7
+D | 26 | C7b9
+D | 27 | Abm7
+D | 28 | Db7b9
+D | 29 | Gm7
+D | 30 | C7b9
+D | 31 | F

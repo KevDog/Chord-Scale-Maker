@@ -1,0 +1,52 @@
+title: Miss Premise
+subtitle: Jazz waltz, 32 bars (Bob Gillis)
+composer: Bob Gillis
+style: Waltz
+key: Eb
+form: AB, 32 bars
+source: Colorado Cookbook, p. 135
+
+# section | bar | chord | scale
+A | 1  | EbMaj7#11
+A | 2  | GbMaj7#5
+A | 3  | Fm11
+A | 4  | C#m7
+A | 4  | F#7
+A | 5  | A7#11
+A | 6  | F#7
+A | 6  | Gdim7
+A | 7  | Abm7
+A | 8  | Abm7/Bb
+A | 9  | Bm7
+A | 10 | Bb7alt
+A | 11 | Fm7
+A | 11 | Fm7/Eb
+A | 12 | Dm11
+A | 12 | Db7
+A | 13 | Cm7
+A | 13 | Cm7/Bb
+A | 14 | Am7b5
+A | 14 | D7/F#
+A | 15 | Fm7
+A | 15 | Fm7/Eb
+A | 16 | Db13#11
+B | 17 | EbMaj7#11
+B | 18 | GbMaj7#5
+B | 19 | Fm11
+B | 20 | C#m7
+B | 20 | F#7
+B | 21 | A7#11
+B | 22 | F#7
+B | 22 | Gdim7
+B | 23 | Abm7
+B | 24 | Am7
+B | 24 | D7
+B | 25 | GMaj7#11
+B | 26 | Eb7alt
+B | 27 | DMaj7#11
+B | 28 | Bb7alt
+B | 29 | Fm7
+B | 29 | Gm7
+B | 30 | AbMaj7
+B | 30 | DbMaj7#11
+B | 31 | EMaj7#11

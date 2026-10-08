@@ -1,0 +1,53 @@
+title: Don't Take Your Love from Me
+subtitle: Medium, C, 32 bars
+composer: Henry Nemo
+style: Medium
+key: C
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 63
+
+# section | bar | chord | scale
+A | 1  | CMaj7
+A | 1  | Dm7
+A | 2  | Em7
+A | 2  | Ebdim7
+A | 3  | Dm7
+A | 3  | G7
+A | 4  | Dm7
+A | 4  | G7
+A | 5  | Dm7
+A | 6  | G7
+A | 7  | CMaj7
+B | 9  | CMaj7/E
+B | 10 | Ebdim7
+B | 11 | Dm7
+B | 11 | A7
+B | 12 | Dm7
+B | 13 | Dm7
+B | 13 | A7
+B | 14 | Dm7b5
+B | 14 | G7
+B | 15 | C
+B | 15 | Ab7
+B | 16 | G7
+C | 17 | CMaj7
+C | 17 | Dm7
+C | 18 | Em7
+C | 18 | Ebdim7
+C | 19 | Dm7
+C | 19 | G7
+C | 20 | Dm7
+C | 20 | G7
+C | 21 | Dm7
+C | 22 | G7
+C | 23 | CMaj7
+C | 24 | Gm7
+C | 24 | C7
+D | 25 | FMaj7
+D | 26 | Bb7
+D | 27 | CMaj7
+D | 28 | Em7b5
+D | 28 | A7b9
+D | 29 | Dm7
+D | 30 | G7
+D | 31 | CMaj7

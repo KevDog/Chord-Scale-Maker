@@ -1,0 +1,29 @@
+title: Well You Needn't
+subtitle: Medium up, F, 32 bars (Monk's bridge)
+composer: Thelonious Monk
+style: Medium
+key: F
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 263
+
+# section | bar | chord | scale
+# Miles' bridge: G7 | G7 | Ab7 | Ab7 | A7 Bb7 | B7 Bb7 | A7 Ab7 | G7 Gb7
+A1 | 1  | FMaj7
+A1 | 2  | GbMaj7
+A1 | 3  | FMaj7
+A1 | 4  | GbMaj7
+A1 | 5  | FMaj7
+A1 | 6  | GbMaj7
+A1 | 7  | FMaj7
+@copy A1 A2 8
+B  | 17 | Db7
+B  | 19 | D7
+B  | 21 | Eb7
+B  | 21 | E7
+B  | 22 | Eb7
+B  | 22 | D7
+B  | 23 | Db7
+B  | 23 | C7
+B  | 24 | B7
+B  | 24 | C7
+@copy A1 A3 24

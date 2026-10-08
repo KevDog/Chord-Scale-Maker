@@ -1,0 +1,34 @@
+title: Relaxin'
+subtitle: Medium, Ab, 32 bars (Jimmy Guinn)
+composer: Jimmy Guinn
+style: Medium
+key: Ab
+form: AB, 32 bars
+source: Colorado Cookbook, p. 179
+
+# section | bar | chord | scale
+A | 1  | Bb7
+A | 2  | Eb7
+A | 3  | AbMaj7
+A | 5  | Ebm7
+A | 6  | Ab7
+A | 7  | DbMaj7
+A | 10 | Dbm7
+A | 11 | AbMaj7
+A | 12 | F7
+A | 13 | Bb7
+A | 15 | Eb7
+A | 16 | F7
+B | 17 | Bb7
+B | 18 | Eb7
+B | 19 | AbMaj7
+B | 21 | Ebm7
+B | 22 | Ab7
+B | 23 | DbMaj7
+B | 26 | Ddim7
+B | 27 | AbMaj7
+B | 28 | F7
+B | 29 | Bb7
+B | 30 | Bbm7
+B | 30 | Eb7
+B | 31 | Ab6

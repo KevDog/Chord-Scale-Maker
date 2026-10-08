@@ -1,0 +1,61 @@
+title: Once I Loved
+subtitle: Bossa nova, F, 44 bars (O Amor em Paz)
+composer: Antonio Carlos Jobim
+style: Latin
+key: F
+form: AAB, 44 bars
+source: Colorado Cookbook, p. 168
+
+# section | bar | chord | scale
+A1 | 1  | Gm7
+A1 | 2  | C7
+A1 | 3  | FMaj7
+A1 | 4  | Am7b5
+A1 | 4  | D7alt
+A1 | 5  | Gm7
+A1 | 6  | Bm7b5
+A1 | 6  | E7alt
+A1 | 7  | Am7
+A1 | 7  | D7
+A1 | 8  | Gm7
+A1 | 8  | C7
+A1 | 9  | Fm7
+A1 | 10 | Bb7
+A1 | 11 | EbMaj7
+A1 | 13 | Em7b5
+A1 | 14 | A7b9
+A1 | 15 | DMaj7
+A1 | 16 | D7b9
+A2 | 17 | Gm7
+A2 | 18 | C7
+A2 | 19 | FMaj7
+A2 | 20 | Am7b5
+A2 | 20 | D7alt
+A2 | 21 | Gm7
+A2 | 22 | Bm7b5
+A2 | 22 | E7alt
+A2 | 23 | Am7
+A2 | 23 | D7
+A2 | 24 | Gm7
+A2 | 24 | C7
+A2 | 25 | Fm7
+A2 | 26 | Bb7
+A2 | 27 | EbMaj7
+A2 | 29 | Em7b5
+A2 | 30 | A7b9
+A2 | 31 | DMaj7
+A2 | 32 | Dm7
+A2 | 32 | G7
+B  | 33 | CMaj7
+B  | 34 | Cm7
+B  | 34 | F7
+B  | 35 | BbMaj7
+B  | 37 | Bm7b5
+B  | 38 | Bbm6/9
+B  | 39 | Am7
+B  | 40 | Ab7#11
+B  | 41 | G7
+B  | 42 | Gm7
+B  | 42 | A7b9
+B  | 43 | Dm6/9
+B  | 44 | D7alt

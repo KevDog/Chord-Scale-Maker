@@ -1,0 +1,55 @@
+title: Waltzing Matilda
+subtitle: Samba or Afro-Cuban, Eb, 32 bars
+composer: Traditional (Australian)
+style: Latin
+key: Eb
+form: AABC, 32 bars
+source: Colorado Cookbook, p. 256
+
+# section | bar | chord | scale
+# the coda is left out
+A1 | 1  | EbMaj7
+A1 | 2  | Dm7b5
+A1 | 2  | G7
+A1 | 3  | Cm7
+A1 | 3  | Cm7/Bb
+A1 | 4  | Am7b5
+A1 | 4  | D7b9
+A1 | 5  | Gm7
+A1 | 6  | C7
+A1 | 7  | Fm7
+A1 | 8  | Bb7
+A2 | 9  | EbMaj7
+A2 | 10 | Dm7b5
+A2 | 10 | G7
+A2 | 11 | Cm7
+A2 | 11 | Cm7/Bb
+A2 | 12 | Am7b5
+A2 | 12 | D7b9
+A2 | 13 | Gm7
+A2 | 14 | C7
+A2 | 15 | Fm7
+A2 | 15 | Bb7
+A2 | 16 | EbMaj7
+B  | 17 | EbMaj7
+B  | 18 | Bbm7
+B  | 18 | Eb7
+B  | 19 | AbMaj7
+B  | 20 | Am7b5
+B  | 20 | D7
+B  | 21 | Gm7
+B  | 22 | C7
+B  | 23 | Fm7
+B  | 24 | Bb7
+C  | 25 | EbMaj7
+C  | 26 | Dm7b5
+C  | 26 | G7
+C  | 27 | Cm7
+C  | 27 | Cm7/Bb
+C  | 28 | Am7b5
+C  | 28 | D7
+C  | 29 | Gm7
+C  | 30 | C7
+C  | 31 | Fm7
+C  | 31 | Bb7
+C  | 32 | Eb

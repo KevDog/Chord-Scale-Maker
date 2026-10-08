@@ -1,5 +1,9 @@
 title: Blue Bossa
 subtitle: AB, 16 Bars
+composer: Kenny Dorham
+style: Latin
+key: Cm
+form: AB
 
 # section | bar | chord | scale
 A | 1  | Cm7    | C Dorian

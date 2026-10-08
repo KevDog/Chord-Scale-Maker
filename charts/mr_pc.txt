@@ -1,0 +1,15 @@
+title: Mr. P.C.
+subtitle: Up tempo minor blues, C minor, 12 bars
+composer: John Coltrane
+style: Blues
+key: Cm
+form: A, 12 bars
+source: Colorado Cookbook, p. 141
+
+# section | bar | chord | scale
+A | 1  | Cm7
+A | 5  | Fm7
+A | 7  | Cm7
+A | 9  | Dm7b5
+A | 10 | G7alt
+A | 11 | Cm7

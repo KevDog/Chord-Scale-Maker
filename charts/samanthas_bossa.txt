@@ -1,0 +1,36 @@
+title: Samantha's Bossa
+subtitle: Bossa nova, Eb, 16 bars (Bob Montgomery)
+composer: Bob Montgomery
+style: Latin
+key: Eb
+form: AB, 16 bars
+source: Colorado Cookbook, p. 186
+
+# section | bar | chord | scale
+# the coda is left out
+A | 1  | BMaj7
+A | 1  | D7
+A | 2  | GMaj7
+A | 2  | Bb7
+A | 3  | EbMaj7
+A | 4  | Am7
+A | 4  | D7
+A | 5  | GMaj7
+A | 5  | Bb7
+A | 6  | EbMaj7
+A | 6  | F#7
+A | 7  | BMaj7
+A | 8  | Fm7
+A | 8  | Bb7
+B | 9  | EbMaj7
+B | 10 | Am7
+B | 10 | D7
+B | 11 | GMaj7
+B | 12 | C#m7
+B | 12 | F#7
+B | 13 | BMaj7
+B | 14 | Fm7
+B | 14 | Bb7
+B | 15 | EbMaj7
+B | 16 | C#m7
+B | 16 | F#7

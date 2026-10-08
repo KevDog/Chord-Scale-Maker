@@ -1,0 +1,17 @@
+title: Coté d'Azur
+subtitle: Minor blues, Bb minor, 12 bars
+composer: Clark Terry
+style: Blues
+key: Bbm
+form: A, 12 bars
+source: Colorado Cookbook, p. 73
+
+# section | bar | chord | scale
+A | 1  | Bbm
+A | 5  | Ebm
+A | 7  | Bbm
+A | 9  | Cm7b5
+A | 10 | F7
+A | 11 | Bbm
+A | 12 | Cm7b5
+A | 12 | F7

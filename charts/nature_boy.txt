@@ -1,0 +1,32 @@
+title: Nature Boy
+subtitle: Ballad in 3, D minor, 32 bars
+composer: Eden Ahbez
+style: Ballad
+key: Dm
+form: AA, 32 bars
+source: Colorado Cookbook, p. 153
+
+# section | bar | chord | scale
+A1 | 1  | Dm
+A1 | 2  | Gm
+A1 | 3  | Dm
+A1 | 4  | Gm
+A1 | 5  | DmMaj7
+A1 | 6  | Dm7
+A1 | 7  | Dm6
+A1 | 8  | Gm
+A1 | 11 | Dm
+A1 | 13 | E7b9
+A1 | 15 | A7b9
+A2 | 17 | Dm
+A2 | 18 | Gm
+A2 | 19 | Dm
+A2 | 20 | Gm
+A2 | 21 | DmMaj7
+A2 | 22 | Dm7
+A2 | 23 | Dm6
+A2 | 24 | Gm
+A2 | 27 | Dm
+A2 | 29 | E7b9
+A2 | 30 | A7alt
+A2 | 31 | Dm

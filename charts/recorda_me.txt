@@ -1,0 +1,25 @@
+title: Recorda-Me
+subtitle: Latin, A minor, 16 bars
+composer: Joe Henderson
+style: Latin
+key: Am
+form: AB, 16 bars
+source: Colorado Cookbook, p. 178
+
+# section | bar | chord | scale
+# the bass intro is left out
+A | 1  | Am
+A | 5  | Cm
+A | 8  | Cm7
+A | 8  | F7
+B | 9  | BbMaj7
+B | 10 | Bbm7
+B | 10 | Eb7
+B | 11 | AbMaj7
+B | 12 | Abm7
+B | 12 | Db7
+B | 13 | GbMaj7
+B | 14 | Gm7
+B | 14 | C7
+B | 15 | FMaj7
+B | 16 | E7alt

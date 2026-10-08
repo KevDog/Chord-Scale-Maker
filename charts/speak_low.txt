@@ -1,0 +1,70 @@
+title: Speak Low
+subtitle: Up tempo, F, 56 bars (A A B C)
+composer: Kurt Weill
+style: Up
+key: F
+form: AABC, 56 bars
+source: Colorado Cookbook, p. 215
+
+# section | bar | chord | scale
+# the solo changes; the bridge's last two bars can also be Db7 | C7
+A1 | 1  | Gm7
+A1 | 2  | C7
+A1 | 3  | Gm7
+A1 | 4  | C7
+A1 | 5  | Gm7
+A1 | 6  | C7
+A1 | 7  | Am7
+A1 | 8  | D7
+A1 | 9  | Bbm7
+A1 | 10 | Eb7
+A1 | 11 | Bbm7
+A1 | 12 | Eb7
+A1 | 13 | Am7
+A1 | 13 | D7
+A1 | 14 | Gm7
+A1 | 14 | C7
+A1 | 15 | FMaj7
+A1 | 16 | Am7
+A1 | 16 | D7
+A2 | 17 | Gm7
+A2 | 18 | C7
+A2 | 19 | Gm7
+A2 | 20 | C7
+A2 | 21 | Gm7
+A2 | 22 | C7
+A2 | 23 | Am7
+A2 | 24 | D7
+A2 | 25 | Bbm7
+A2 | 26 | Eb7
+A2 | 27 | Bbm7
+A2 | 28 | Eb7
+A2 | 29 | Am7
+A2 | 29 | D7
+A2 | 30 | Gm7
+A2 | 30 | C7
+A2 | 31 | FMaj7
+B  | 33 | AbMaj7
+B  | 35 | Db7#11
+B  | 37 | EbMaj7
+B  | 39 | Bm7b5
+B  | 39 | E7alt
+B  | 40 | Am7
+B  | 40 | D7
+C  | 41 | Gm7
+C  | 42 | C7
+C  | 43 | Gm7
+C  | 44 | C7
+C  | 45 | Gm7
+C  | 46 | C7
+C  | 47 | Am7
+C  | 48 | D7
+C  | 49 | Bbm7
+C  | 50 | Eb7
+C  | 51 | Am7
+C  | 52 | D7b9
+C  | 53 | Gm7
+C  | 54 | C7
+C  | 55 | FMaj7
+C  | 56 | Am7
+C  | 56 | D7

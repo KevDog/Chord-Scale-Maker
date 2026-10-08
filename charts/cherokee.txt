@@ -1,0 +1,46 @@
+title: Cherokee
+subtitle: Up tempo, Bb, AABA, 64 bars
+composer: Ray Noble
+style: Up
+key: Bb
+form: AABA, 64 bars
+source: Colorado Cookbook, p. 52
+
+# section | bar | chord | scale
+# the standard changes; the lead sheet's alternates (Eb7, Dm7 G7b9, Db7, Gb7#11, F7alt) are left out
+A1 | 1  | BbMaj7
+A1 | 3  | Fm7
+A1 | 3  | Bb7
+A1 | 4  | EbMaj7
+A1 | 6  | Ab7#11
+A1 | 7  | BbMaj7
+A1 | 9  | C7
+A1 | 11 | Cm7
+A1 | 12 | F7
+A1 | 13 | BbMaj7
+A1 | 15 | Cm7
+A1 | 16 | F7
+A2 | 17 | BbMaj7
+A2 | 19 | Fm7
+A2 | 19 | Bb7
+A2 | 20 | EbMaj7
+A2 | 22 | Ab7#11
+A2 | 23 | BbMaj7
+A2 | 25 | C7
+A2 | 27 | Cm7
+A2 | 28 | F7
+A2 | 29 | BbMaj7
+B  | 33 | C#m7
+B  | 34 | F#7
+B  | 35 | BMaj7
+B  | 37 | Bm7
+B  | 38 | E7
+B  | 39 | AMaj7
+B  | 41 | Am7
+B  | 42 | D7
+B  | 43 | GMaj7
+B  | 45 | Gm7
+B  | 46 | C7
+B  | 47 | Cm7
+B  | 48 | F7
+@copy A2 A3 32

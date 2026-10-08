@@ -1,0 +1,48 @@
+title: Along Came Betty
+subtitle: Medium, Ab
+composer: Benny Golson
+style: Medium
+key: Ab
+form: ABCD
+source: Colorado Cookbook, p. 19
+
+# section | bar | chord | scale
+# as the lead sheet lays it out; the last bar is the turnaround into the top
+A | 1  | Bbm7
+A | 2  | Bm7
+A | 3  | Bbm7
+A | 4  | Bm7
+A | 4  | E7
+A | 5  | AMaj7
+A | 6  | Ab7
+A | 7  | GMaj7
+A | 8  | F#7
+B | 9  | F#m7
+B | 10 | Gm7
+B | 11 | F#m7
+B | 12 | Gm7
+B | 12 | C7#9
+B | 13 | FMaj7
+B | 14 | A7#9
+B | 15 | Dm7
+B | 16 | G9
+C | 17 | Cm7
+C | 19 | Am7b5
+C | 19 | D7#9
+C | 20 | Gm7
+C | 21 | Em7b5
+C | 21 | A7
+C | 22 | Fm7
+C | 23 | Bb7
+D | 24 | Bbm7
+D | 25 | Bm7
+D | 26 | Bbm7
+D | 27 | Bm7
+D | 27 | E7
+D | 28 | Cm7b5
+D | 29 | F7#9
+D | 30 | Bbm7b5
+D | 31 | Eb7#9
+D | 32 | AbMaj7
+D | 33 | Bm7
+D | 33 | E7

@@ -1,0 +1,24 @@
+title: Smatter
+subtitle: Medium, Eb minor, 20 bars (bars 17–19 are in 3)
+composer: Kenny Wheeler
+style: Medium
+key: Bbm
+form: AB, 20 bars
+source: Colorado Cookbook, p. 201
+
+# section | bar | chord | scale
+A | 1  | EMaj7#11
+A | 3  | Ebm
+A | 5  | BMaj7#11
+A | 7  | Bbm
+B | 9  | Cm
+B | 11 | AbMaj7#11
+B | 13 | Gm
+B | 15 | Dm
+B | 17 | BbMaj7
+B | 17 | A7
+B | 18 | AbMaj7
+B | 18 | Gm
+B | 19 | GbMaj7
+B | 19 | F7
+B | 20 | Bbm

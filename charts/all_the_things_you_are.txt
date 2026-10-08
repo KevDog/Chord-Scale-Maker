@@ -1,5 +1,9 @@
 title: All the Things You Are
 subtitle: AABA, 36 Bars
+composer: Jerome Kern
+style: Medium up
+key: Ab
+form: AABC
 
 # section | bar | chord | scale
 # the intro vamp (Db7#9 C7#9) and the optional cue chords in parentheses are left out

@@ -1,0 +1,13 @@
+title: Cantaloupe Island
+subtitle: Jazz-rock, F minor, 16 bars
+composer: Herbie Hancock
+style: Even 8ths
+key: Fm
+form: A, 16 bars
+source: Colorado Cookbook, p. 47
+
+# section | bar | chord | scale
+A | 1  | Fm
+A | 5  | Db7
+A | 9  | Dm
+A | 13 | Fm

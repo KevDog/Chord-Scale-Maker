@@ -1,0 +1,67 @@
+title: Mean to Me
+subtitle: Medium, F, 32 bars
+composer: Fats Waller
+style: Medium
+key: F
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 132
+
+# section | bar | chord | scale
+A1 | 1  | FMaj7
+A1 | 1  | Ab7#11
+A1 | 2  | Gm7
+A1 | 2  | C7
+A1 | 3  | FMaj7
+A1 | 3  | B7#11
+A1 | 4  | BbMaj7
+A1 | 4  | Eb7
+A1 | 5  | Am7
+A1 | 5  | Ab7
+A1 | 6  | Gm7
+A1 | 6  | Gb7alt
+A1 | 7  | FMaj7
+A1 | 7  | D7alt
+A1 | 8  | Gm7
+A1 | 8  | Gb9
+A2 | 9  | FMaj7
+A2 | 9  | Ab7#11
+A2 | 10 | Gm7
+A2 | 10 | C7
+A2 | 11 | FMaj7
+A2 | 11 | B7#11
+A2 | 12 | BbMaj7
+A2 | 12 | Eb7
+A2 | 13 | Am7
+A2 | 13 | Ab7
+A2 | 14 | Gm7
+A2 | 14 | Gb7alt
+A2 | 15 | FMaj7
+A2 | 16 | Cm7
+A2 | 16 | F7b9
+B  | 17 | BbMaj7
+B  | 18 | C7
+B  | 18 | F7b9
+B  | 19 | BbMaj7
+B  | 20 | Eb7
+B  | 20 | D7
+B  | 21 | Gm7
+B  | 22 | Eb7
+B  | 22 | D7
+B  | 23 | G7
+B  | 24 | Gm7
+B  | 24 | Gb9
+A3 | 25 | FMaj7
+A3 | 25 | Ab7#11
+A3 | 26 | Gm7
+A3 | 26 | C7
+A3 | 27 | FMaj7
+A3 | 27 | B7#11
+A3 | 28 | BbMaj7
+A3 | 28 | Eb7
+A3 | 29 | Am7
+A3 | 29 | Ab7
+A3 | 30 | Gm7
+A3 | 30 | Gb7alt
+A3 | 31 | FMaj7
+A3 | 32 | Gm7
+A3 | 32 | C7

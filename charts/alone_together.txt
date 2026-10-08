@@ -1,0 +1,48 @@
+title: Alone Together
+subtitle: Medium, D minor, 44 bars
+composer: Arthur Schwartz
+style: Medium
+key: Dm
+form: AABC, 44 bars
+source: Colorado Cookbook, p. 18
+
+# section | bar | chord | scale
+A1 | 1  | Dm
+A1 | 2  | Em7b5
+A1 | 2  | A7#9
+A1 | 3  | Dm
+A1 | 4  | Em7b5
+A1 | 4  | A7#9
+A1 | 5  | Dm
+A1 | 6  | Am7b5
+A1 | 6  | D7#9
+A1 | 7  | Gm
+A1 | 9  | Bm7
+A1 | 9  | E7
+A1 | 10 | Gm7
+A1 | 10 | C7
+A1 | 11 | FMaj7
+A1 | 12 | Em7
+A1 | 12 | A7
+A1 | 13 | DMaj7
+@copy A1 A2 14
+B  | 29 | Am7b5
+B  | 30 | D7b9
+B  | 31 | Gm
+B  | 33 | Gm7b5
+B  | 34 | C7b9
+B  | 35 | FMaj7
+B  | 36 | Em7b5
+B  | 36 | A7#9
+C  | 37 | Dm
+C  | 38 | Em7b5
+C  | 38 | A7#9
+C  | 39 | Dm
+C  | 40 | Em7b5
+C  | 40 | A7#9
+C  | 41 | Dm
+C  | 42 | Bb7
+C  | 42 | A7#9
+C  | 43 | Dm
+C  | 44 | Em7b5
+C  | 44 | A7#9

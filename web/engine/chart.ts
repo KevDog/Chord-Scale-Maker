@@ -6,7 +6,13 @@ import { defaultScale } from './qualities'
  * serializer, @copy expansion and the default-scale lookup. Port of read_chart, minus its exits.
  */
 
-export type MetaKey = 'title' | 'subtitle'
+/**
+ * title: and subtitle: are the heading. key: and bars: are hints for the analyser (docs/plan-analysis.md §12);
+ * composer:, style:, form: and source: describe the tune (where the chart came from). The site keeps the rest and
+ * shows only the heading.
+ */
+export type MetaKey = 'title' | 'subtitle' | 'key' | 'bars' | 'composer' | 'style' | 'form' | 'source'
+export const META_KEYS: readonly MetaKey[] = ['title', 'subtitle', 'key', 'bars', 'composer', 'style', 'form', 'source']
 export type ChartLine =
   | Readonly<{ kind: 'meta'; key: MetaKey; value: string }>
   | Readonly<{ kind: 'row'; section: string; bar: string; chord: string; scale: string }> // scale '' = default
@@ -27,7 +33,7 @@ function parseLine(line: string): ChartLine | string {
   if (!line) return { kind: 'blank' }
   if (line.startsWith('#')) return { kind: 'comment', text: line }
   const low = line.toLowerCase()
-  for (const key of ['title', 'subtitle'] as const) {
+  for (const key of META_KEYS) {
     if (low.startsWith(`${key}:`)) {
       const value = line.slice(key.length + 1).trim()
       return value.length > LIMITS.maxMeta ? `${key} longer than ${LIMITS.maxMeta} characters` : { kind: 'meta', key, value }

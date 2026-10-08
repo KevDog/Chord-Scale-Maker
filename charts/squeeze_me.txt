@@ -1,0 +1,45 @@
+title: Squeeze Me
+subtitle: Medium, F, 32 bars (Just Squeeze Me)
+composer: Duke Ellington
+style: Medium
+key: F
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 218
+
+# section | bar | chord | scale
+A1 | 1  | FMaj7
+A1 | 1  | Gm7
+A1 | 2  | Am7
+A1 | 2  | Gm7
+A1 | 3  | FMaj7
+A1 | 3  | Gm7
+A1 | 4  | Am7
+A1 | 4  | D7
+A1 | 5  | Gm7
+A1 | 6  | C7
+A1 | 7  | FMaj7
+A1 | 8  | Gm7
+A1 | 8  | C7
+A2 | 9  | FMaj7
+A2 | 9  | Gm7
+A2 | 10 | Am7
+A2 | 10 | Gm7
+A2 | 11 | FMaj7
+A2 | 11 | Gm7
+A2 | 12 | Am7
+A2 | 12 | D7
+A2 | 13 | Gm7
+A2 | 14 | C7
+A2 | 15 | FMaj7
+B  | 17 | F7
+B  | 17 | Cm7
+B  | 18 | F7
+B  | 18 | Cm7
+B  | 19 | BbMaj7
+B  | 21 | G7
+B  | 21 | Dm7
+B  | 22 | G7
+B  | 22 | Dm7
+B  | 23 | Gm7
+B  | 24 | C7
+@copy A1 A3 24

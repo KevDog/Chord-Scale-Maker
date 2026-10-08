@@ -1,0 +1,60 @@
+title: Honeysuckle Rose
+subtitle: Medium, F, AABA
+composer: Fats Waller
+style: Medium
+key: F
+form: AABA
+source: Colorado Cookbook, p. 91
+
+# section | bar | chord | scale
+A1 | 1  | Gm7
+A1 | 1  | C7
+A1 | 2  | Gm7
+A1 | 2  | C7
+A1 | 3  | Gm7
+A1 | 3  | C7
+A1 | 4  | C7
+A1 | 5  | F6
+A1 | 5  | Gm7b5
+A1 | 5  | F6
+A1 | 6  | G7
+A1 | 6  | C7
+A1 | 7  | F6
+A1 | 8  | Am7
+A1 | 8  | D7
+A2 | 9  | Gm7
+A2 | 9  | C7
+A2 | 10 | Gm7
+A2 | 10 | C7
+A2 | 11 | Gm7
+A2 | 11 | C7
+A2 | 12 | C7
+A2 | 13 | F6
+A2 | 13 | Gm7b5
+A2 | 13 | F6
+A2 | 14 | G7
+A2 | 14 | C7
+A2 | 15 | F6
+A2 | 15 | Gm7b5
+A2 | 15 | F6
+A2 | 16 | Gm7b5
+A2 | 16 | C7b9
+B  | 17 | F7
+B  | 19 | Bb7
+B  | 21 | G7
+B  | 23 | C7
+A3 | 25 | Gm7
+A3 | 25 | C7
+A3 | 26 | Gm7
+A3 | 26 | C7
+A3 | 27 | Gm7
+A3 | 27 | C7
+A3 | 28 | C7
+A3 | 29 | F6
+A3 | 29 | Gm7b5
+A3 | 29 | F6
+A3 | 30 | G7
+A3 | 30 | C7
+A3 | 31 | F6
+A3 | 31 | Gm7b5
+A3 | 31 | F6

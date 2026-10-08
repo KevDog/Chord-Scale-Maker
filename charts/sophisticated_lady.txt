@@ -1,0 +1,76 @@
+title: Sophisticated Lady
+subtitle: Ballad, Ab, 32 bars
+composer: Duke Ellington
+style: Ballad
+key: Ab
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 213
+
+# section | bar | chord | scale
+# bar 24 on the lead sheet passes through Cm7 Eb7 Db7 Cm7b5 F7b9
+A1 | 1  | Bbm
+A1 | 2  | Gb7
+A1 | 2  | F7
+A1 | 2  | E7
+A1 | 2  | Eb7
+A1 | 3  | AbMaj7
+A1 | 4  | Ab7
+A1 | 4  | G7
+A1 | 4  | Gb7
+A1 | 4  | F7
+A1 | 5  | Bb7
+A1 | 6  | Bbm7
+A1 | 6  | Eb7
+A1 | 7  | AbMaj7
+A1 | 7  | Db7
+A1 | 8  | Cm7b5
+A1 | 8  | F7b9
+A2 | 9  | Bbm
+A2 | 10 | Gb7
+A2 | 10 | F7
+A2 | 10 | E7
+A2 | 10 | Eb7
+A2 | 11 | AbMaj7
+A2 | 12 | Ab7
+A2 | 12 | G7
+A2 | 12 | Gb7
+A2 | 12 | F7
+A2 | 13 | Bb7
+A2 | 14 | Bbm7
+A2 | 14 | Eb7
+A2 | 15 | AbMaj7
+A2 | 16 | Am7
+A2 | 16 | D7
+B  | 17 | GMaj7
+B  | 17 | Em7
+B  | 18 | Am7
+B  | 18 | D7
+B  | 19 | Bm7b5
+B  | 19 | E7b9
+B  | 20 | Am7
+B  | 20 | D7b9
+B  | 21 | GMaj7
+B  | 21 | Em7
+B  | 22 | Am7
+B  | 22 | D7
+B  | 23 | GMaj7
+B  | 23 | G7alt/Db
+B  | 24 | Cm7
+B  | 24 | F7b9
+A3 | 25 | Bbm
+A3 | 26 | Gb7
+A3 | 26 | F7
+A3 | 26 | E7
+A3 | 26 | Eb7
+A3 | 27 | AbMaj7
+A3 | 28 | Ab7
+A3 | 28 | G7
+A3 | 28 | Gb7
+A3 | 28 | F7
+A3 | 29 | Bb7
+A3 | 30 | Bbm7
+A3 | 30 | Eb7
+A3 | 31 | AbMaj9
+A3 | 31 | Db7
+A3 | 32 | Cm7
+A3 | 32 | F7b9

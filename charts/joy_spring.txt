@@ -1,0 +1,61 @@
+title: Joy Spring
+subtitle: Medium, F, 32 bars
+composer: Clifford Brown
+style: Medium
+key: F
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 115
+
+# section | bar | chord | scale
+# the horn intro and coda are left out
+A | 1  | FMaj7
+A | 2  | Gm7
+A | 2  | C7
+A | 3  | FMaj7
+A | 4  | Bbm7
+A | 4  | Eb7
+A | 5  | Am7
+A | 5  | D7#9
+A | 6  | Gm7
+A | 6  | C7
+A | 7  | FMaj7
+A | 8  | Abm7
+A | 8  | Db7
+B | 9  | GbMaj7
+B | 10 | Abm7
+B | 10 | Db7
+B | 11 | GbMaj7
+B | 12 | Bm7
+B | 12 | E7
+B | 13 | Bbm7
+B | 13 | Eb7#9
+B | 14 | Abm7
+B | 14 | Db7
+B | 15 | GbMaj7
+B | 16 | Am7
+B | 16 | D7
+C | 17 | GMaj7
+C | 18 | Gm7
+C | 18 | C7
+C | 19 | FMaj7
+C | 20 | Fm7
+C | 20 | Bb7
+C | 21 | EbMaj7
+C | 22 | Abm7
+C | 22 | Db7
+C | 23 | GbMaj7
+C | 24 | Gm7
+C | 24 | C7
+D | 25 | FMaj7
+D | 26 | Gm7
+D | 26 | C7
+D | 27 | FMaj7
+D | 28 | Bbm7
+D | 28 | Eb7
+D | 29 | Am7
+D | 29 | D7#9
+D | 30 | Gm7
+D | 30 | C7
+D | 31 | FMaj7
+D | 32 | Gm7
+D | 32 | C7

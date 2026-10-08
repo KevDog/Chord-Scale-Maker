@@ -1,0 +1,53 @@
+title: Time After Time
+subtitle: Medium, C, 32 bars
+composer: Jule Styne
+style: Medium
+key: C
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 250
+
+# section | bar | chord | scale
+A | 1  | CMaj7
+A | 2  | Dm7
+A | 2  | G7
+A | 3  | CMaj7
+A | 4  | Dm7
+A | 4  | G7
+A | 5  | CMaj7
+A | 6  | Am7
+A | 7  | Bm7b5
+A | 8  | E7alt
+B | 9  | Am7
+B | 9  | Am7/G
+B | 10 | F#m7b5
+B | 10 | B7alt
+B | 11 | Em7
+B | 12 | A7b9
+B | 13 | Dm7
+B | 14 | Em7b5
+B | 14 | A7alt
+B | 15 | Ab7#11
+B | 16 | G7
+C | 17 | CMaj7
+C | 18 | Dm7
+C | 18 | G7
+C | 19 | CMaj7
+C | 20 | Dm7
+C | 20 | G7
+C | 21 | CMaj7
+C | 22 | Gm7
+C | 22 | C7
+C | 23 | FMaj7
+C | 24 | Bb7
+D | 25 | CMaj7
+D | 26 | Gbdim7
+D | 26 | Fm6
+D | 27 | Em7
+D | 27 | Am7/G
+D | 28 | Gbdim7
+D | 28 | Fm7
+D | 29 | Em7
+D | 29 | A7alt
+D | 30 | Dm7/G
+D | 30 | G7
+D | 31 | CMaj7

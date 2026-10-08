@@ -1,0 +1,50 @@
+title: One Note Samba
+subtitle: Samba, Bb, 40 bars (Samba de Uma Nota Só)
+composer: Antonio Carlos Jobim
+style: Latin
+key: Bb
+form: ABC, 40 bars
+source: Colorado Cookbook, p. 170
+
+# section | bar | chord | scale
+A | 1  | Dm7
+A | 2  | Db7
+A | 3  | Cm7
+A | 4  | B7#11
+A | 5  | Dm7
+A | 6  | Db7
+A | 7  | Cm7
+A | 8  | B7#11
+A | 9  | Fm7
+A | 10 | Bb7
+A | 11 | EbMaj7
+A | 12 | Ab7
+A | 13 | Dm7
+A | 14 | Db7
+A | 15 | Cm7
+A | 15 | B7#11
+A | 16 | BbMaj7
+B | 17 | Ebm7
+B | 18 | Ab7
+B | 19 | DbMaj7
+B | 21 | Dbm7
+B | 22 | Gb7
+B | 23 | CbMaj7
+B | 24 | Cm7b5
+B | 24 | F7
+C | 25 | Dm7
+C | 26 | Db7
+C | 27 | Cm7
+C | 28 | B7#11
+C | 29 | Dm7
+C | 30 | Db7
+C | 31 | Cm7
+C | 32 | B7#11
+C | 33 | Fm7
+C | 34 | Bb7
+C | 35 | EbMaj7
+C | 36 | Ab7
+C | 37 | DbMaj7
+C | 38 | C7
+C | 39 | CbMaj7
+C | 40 | Bb

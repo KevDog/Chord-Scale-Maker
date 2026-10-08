@@ -1,0 +1,45 @@
+title: Satellite
+subtitle: Up tempo, G, 32 bars
+composer: John Coltrane
+style: Medium up
+key: G
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 190
+
+# section | bar | chord | scale
+# the ending (D9sus4 vamp, AbMaj7#11 GMaj7) is left out
+A | 1  | GMaj7
+A | 1  | Bb7
+A | 2  | EbMaj7
+A | 2  | F#7
+A | 3  | BMaj7
+A | 3  | D7
+A | 4  | Gm7
+A | 4  | C7
+A | 5  | FMaj7
+A | 5  | Ab7
+A | 6  | DbMaj7
+A | 6  | E7
+A | 7  | AMaj7
+A | 7  | C7
+A | 8  | Fm7
+A | 8  | Bb7
+B | 9  | EbMaj7
+B | 10 | Am7b5
+B | 10 | D7
+B | 11 | Gm
+B | 13 | GMaj7
+B | 14 | Fm7
+B | 14 | Bb7
+B | 15 | EbMaj7
+B | 15 | Gb7
+B | 16 | BMaj7
+B | 16 | D7
+@copy A C 16
+D | 25 | EbMaj7
+D | 26 | Am7b5
+D | 26 | D7
+D | 27 | G
+D | 28 | Cm7
+D | 28 | F7
+D | 29 | D9sus4

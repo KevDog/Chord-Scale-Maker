@@ -1,0 +1,57 @@
+title: Stompin' at the Savoy
+subtitle: Medium, Db, 32 bars
+composer: Benny Goodman & Chick Webb
+style: Medium
+key: Db
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 225
+
+# section | bar | chord | scale
+A1 | 1  | DbMaj7
+A1 | 2  | DbMaj7
+A1 | 2  | Ab7
+A1 | 3  | DbMaj7
+A1 | 3  | Gb7
+A1 | 4  | Fm7
+A1 | 4  | Bb7b9
+A1 | 5  | Ebm7
+A1 | 6  | Ab7
+A1 | 7  | DbMaj7
+A1 | 7  | Bb7
+A1 | 8  | Ebm7
+A1 | 8  | Ab7
+A2 | 9  | DbMaj7
+A2 | 10 | DbMaj7
+A2 | 10 | Ab7
+A2 | 11 | DbMaj7
+A2 | 11 | Gb7
+A2 | 12 | Fm7
+A2 | 12 | Bb7b9
+A2 | 13 | Ebm7
+A2 | 14 | Ab7
+A2 | 15 | DbMaj7
+A2 | 16 | DbMaj7
+A2 | 16 | Db7
+B  | 17 | Gb7
+B  | 18 | G7
+B  | 18 | Gb7
+B  | 19 | B7
+B  | 20 | D7
+B  | 20 | B7
+B  | 21 | E7
+B  | 22 | F7
+B  | 22 | E7
+B  | 23 | Em7
+B  | 23 | A7
+B  | 24 | Ebm7
+B  | 24 | Ab7
+A3 | 25 | DbMaj7
+A3 | 26 | DbMaj7
+A3 | 26 | Ab7
+A3 | 27 | DbMaj7
+A3 | 27 | Gb7
+A3 | 28 | Fm7
+A3 | 28 | Bb7
+A3 | 29 | Ebm7
+A3 | 30 | Ab7
+A3 | 31 | DbMaj7

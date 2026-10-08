@@ -1,0 +1,74 @@
+title: My Romance
+subtitle: Ballad or medium swing, Bb, 32 bars
+composer: Richard Rodgers
+style: Medium
+key: Bb
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 149
+
+# section | bar | chord | scale
+# the solo changes in bars 13–14 (the head has Dm7 Db7 | Csus4 C7)
+A | 1  | BbMaj7
+A | 1  | Cm7
+A | 2  | Dm7
+A | 2  | Dbdim7
+A | 3  | Cm7
+A | 3  | F7
+A | 4  | BbMaj7
+A | 4  | Am7b5
+A | 4  | D7b9
+A | 5  | Gm
+A | 5  | GmMaj7
+A | 6  | Gm7
+A | 6  | G7
+A | 7  | Cm7
+A | 7  | F7
+A | 8  | BbMaj7
+A | 8  | Bb7
+B | 9  | EbMaj7
+B | 9  | Ab7
+B | 10 | BbMaj7
+B | 10 | Bb7
+B | 11 | EbMaj7
+B | 11 | Ab7
+B | 12 | BbMaj7
+B | 13 | Em7b5
+B | 13 | A7b9
+B | 14 | Dm7
+B | 14 | G7
+B | 15 | Dbm7
+B | 15 | Gb7
+B | 16 | Cm7
+B | 16 | F7
+C | 17 | BbMaj7
+C | 17 | Cm7
+C | 18 | Dm7
+C | 18 | Dbdim7
+C | 19 | Cm7
+C | 19 | F7
+C | 20 | BbMaj7
+C | 20 | Am7b5
+C | 20 | D7b9
+C | 21 | Gm
+C | 21 | GmMaj7
+C | 22 | Gm7
+C | 22 | G7
+C | 23 | Cm7
+C | 23 | F7
+C | 24 | Fm7
+C | 24 | Bb7
+D | 25 | EbMaj7
+D | 25 | G7
+D | 26 | Cm7
+D | 26 | Cm7/Bb
+D | 27 | Am7b5
+D | 27 | D7b9
+D | 28 | Gm
+D | 28 | Ebm7
+D | 28 | Ab7
+D | 29 | BbMaj7/F
+D | 30 | Cm7/F
+D | 30 | F7
+D | 31 | BbMaj7
+D | 32 | Cm7
+D | 32 | F7

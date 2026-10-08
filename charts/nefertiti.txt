@@ -1,0 +1,24 @@
+title: Nefertiti
+subtitle: Slow, 16 bars
+composer: Wayne Shorter
+style: Medium
+key: C
+form: A, 16 bars
+source: Colorado Cookbook, p. 155
+
+# section | bar | chord | scale
+A | 1  | AbMaj7#11
+A | 2  | DbMaj7
+A | 3  | Gm7b5
+A | 4  | C7
+A | 5  | BMaj7
+A | 6  | BMaj7#11
+A | 7  | Bbm7b5
+A | 8  | Eb7#11
+A | 9  | EMaj7
+A | 10 | Em/A
+A | 11 | Ab13/Bb
+A | 12 | E/F#
+A | 13 | Em7
+A | 14 | Eb7#11
+A | 15 | A13b9

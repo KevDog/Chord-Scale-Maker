@@ -1,0 +1,44 @@
+title: Seven Steps to Heaven
+subtitle: Up tempo, F, 32 bars
+composer: Victor Feldman & Miles Davis
+style: Up
+key: F
+form: ABC, 32 bars
+source: Colorado Cookbook, p. 193
+
+# section | bar | chord | scale
+# the solo changes; the intro and the Eb6/9 E7b9 F6 vamp are left out
+A | 1  | FMaj7
+A | 2  | Em7b5
+A | 2  | A7alt
+A | 3  | Dm7
+A | 4  | G7
+A | 5  | Gm7
+A | 6  | C7
+A | 7  | Am7
+A | 7  | D7
+A | 8  | Gm7
+A | 8  | C7
+B | 9  | CMaj7
+B | 10 | Dm7
+B | 10 | G7
+B | 11 | CMaj7
+B | 12 | Fm7
+B | 12 | Bb7
+B | 13 | EbMaj7
+B | 14 | Abm7
+B | 14 | Db7
+B | 15 | GbMaj7
+B | 16 | Gm7
+B | 16 | C7
+C | 17 | FMaj7
+C | 18 | Em7b5
+C | 18 | A7alt
+C | 19 | Dm7
+C | 20 | G7
+C | 21 | Gm7
+C | 22 | C7
+C | 23 | Eb6/9
+C | 23 | E7b9
+C | 23 | F6
+C | 24 | F6

@@ -1,0 +1,41 @@
+title: Invitation
+subtitle: Latin and swing, C minor, 48 bars
+composer: Bronisław Kaper
+style: Mixed
+key: Ebm
+form: ABCDEF, 48 bars
+source: Colorado Cookbook, p. 110
+
+# section | bar | chord | scale
+A | 1  | Cm
+A | 5  | F7
+A | 7  | Bb7#11
+B | 9  | Ebm
+B | 13 | Ab7
+B | 15 | Db7#11
+C | 17 | C#m7
+C | 18 | F#7
+C | 18 | F#7#9
+C | 19 | BMaj7
+C | 21 | Bm7
+C | 22 | E7
+C | 22 | E7#9
+C | 23 | AMaj7
+D | 25 | Am7
+D | 26 | D7
+D | 26 | D7#9
+D | 27 | GMaj7
+D | 29 | Em7b5
+D | 30 | A7alt
+D | 31 | D7#9
+D | 32 | G7#9
+E | 33 | Cm
+E | 37 | F7
+E | 39 | Bb7#11
+F | 41 | Ebm
+F | 43 | B7#11
+F | 44 | F7alt
+F | 45 | Bb7#9
+F | 46 | EbmMaj7
+F | 48 | D7#9
+F | 48 | G7#9

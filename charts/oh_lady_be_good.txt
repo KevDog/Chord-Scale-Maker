@@ -1,0 +1,44 @@
+title: Oh, Lady Be Good
+subtitle: Medium, F, 32 bars
+composer: George Gershwin
+style: Medium up
+key: F
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 161
+
+# section | bar | chord | scale
+A1 | 1  | FMaj7
+A1 | 2  | Bb7
+A1 | 3  | FMaj7
+A1 | 3  | Bb7
+A1 | 4  | Am7
+A1 | 4  | D7
+A1 | 5  | Gm7
+A1 | 6  | C7
+A1 | 7  | FMaj7
+A1 | 7  | D7
+A1 | 8  | Gm7
+A1 | 8  | C7
+A2 | 9  | FMaj7
+A2 | 10 | Bb7
+A2 | 11 | FMaj7
+A2 | 11 | Bb7
+A2 | 12 | Am7
+A2 | 12 | D7
+A2 | 13 | Gm7
+A2 | 14 | C7
+A2 | 15 | FMaj7
+A2 | 16 | Cm7
+A2 | 16 | F7
+B  | 17 | BbMaj7
+B  | 18 | Bdim7
+B  | 19 | FMaj7
+B  | 20 | Em7b5
+B  | 20 | A7alt
+B  | 21 | Dm
+B  | 21 | DmMaj7
+B  | 22 | Dm7
+B  | 22 | G7
+B  | 23 | Gm7
+B  | 24 | C7
+@copy A1 A3 24

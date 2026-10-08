@@ -1,0 +1,51 @@
+title: Thinking Out Loud
+subtitle: Latin, 32 bars (Steve Swallow)
+composer: Steve Swallow
+style: Latin
+key: Db
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 246
+
+# section | bar | chord | scale
+# the coda is left out
+A | 1  | Ebm7
+A | 2  | Abm7
+A | 2  | F7alt
+A | 3  | Bbm7
+A | 4  | GbMaj7
+A | 4  | Eb7alt
+A | 5  | Abm7
+A | 6  | F7alt
+A | 7  | BbMaj7
+A | 8  | G7b9
+B | 9  | Cm7
+B | 10 | AbMaj7
+B | 10 | G7alt
+B | 11 | GbMaj7
+B | 12 | Bbm7
+B | 12 | Eb7alt
+B | 13 | Abm7
+B | 14 | F7alt
+B | 15 | BbMaj7
+B | 16 | E7alt
+C | 17 | EbMaj7
+C | 18 | Am7b5
+C | 18 | D7alt
+C | 19 | Gm11
+C | 20 | Cm7
+C | 20 | A7alt
+C | 21 | Dm11
+C | 22 | G7
+C | 22 | G7alt
+C | 23 | GbMaj7
+C | 23 | CbMaj7
+C | 24 | Bbm7
+C | 24 | G7alt
+D | 25 | Cm7
+D | 26 | A7alt
+D | 27 | Dm7
+D | 28 | Ab7
+D | 29 | DbMaj7
+D | 30 | C7alt
+D | 31 | Fm7
+D | 32 | Bb7alt

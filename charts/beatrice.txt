@@ -1,0 +1,27 @@
+title: Beatrice
+subtitle: Medium, F, 16 bars
+composer: Sam Rivers
+style: Medium
+key: Fm
+form: A, 16 bars
+source: Colorado Cookbook, p. 29
+
+# section | bar | chord | scale
+A | 1  | FMaj7
+A | 2  | GbMaj7
+A | 3  | FMaj7
+A | 4  | EbMaj7
+A | 5  | Dm
+A | 6  | EbMaj7
+A | 7  | Dm
+A | 7  | Cm
+A | 8  | Bbm
+A | 9  | Am
+A | 10 | BbMaj7
+A | 11 | Em7b5
+A | 11 | A7
+A | 12 | Dm
+A | 13 | Gm
+A | 14 | GbMaj7
+A | 15 | Fm
+A | 16 | GbMaj7

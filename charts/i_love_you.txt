@@ -1,0 +1,51 @@
+title: I Love You
+subtitle: Up tempo, F, 32 bars
+composer: Cole Porter
+style: Up
+key: F
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 94
+
+# section | bar | chord | scale
+A | 1  | Gm7b5
+A | 2  | C7b9
+A | 3  | FMaj7
+A | 3  | BbMaj7
+A | 4  | Am7
+A | 4  | D7#9
+A | 5  | Gm7
+A | 6  | C7
+A | 7  | FMaj7
+A | 7  | BbMaj7
+A | 8  | Am7b5
+A | 8  | D7
+B | 9  | Gm7b5
+B | 10 | C7b9
+B | 11 | FMaj7
+B | 12 | Bm7b5
+B | 12 | E7#9
+B | 13 | AMaj7
+B | 13 | F#m7
+B | 14 | Bm7
+B | 14 | E7
+B | 15 | AMaj7
+B | 16 | Am7
+B | 16 | D7
+C | 17 | Gm7
+C | 18 | C7
+C | 19 | FMaj7
+C | 21 | Am7b5
+C | 22 | D7#9
+C | 23 | Gm7
+C | 24 | C7b9
+D | 25 | Gm7b5
+D | 26 | C7b9
+D | 27 | Am7b5
+D | 28 | D7#9
+D | 29 | G7
+D | 30 | Gm7
+D | 30 | C7
+D | 31 | FMaj7
+D | 31 | BbMaj7
+D | 32 | Am7
+D | 32 | D7

@@ -1,0 +1,45 @@
+title: Triste
+subtitle: Bossa nova, Bb, 32 bars
+composer: Antonio Carlos Jobim
+style: Latin
+key: Bb
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 251
+
+# section | bar | chord | scale
+# the lead sheet repeats Bbm7 Eb7 for two more bars before going back to the top
+A | 1  | BbMaj7
+A | 3  | GbMaj7
+A | 4  | B7#11
+A | 5  | BbMaj7
+A | 7  | Dm7
+A | 8  | G7b9
+B | 9  | Cm
+B | 9  | Cm/Bb
+B | 10 | Am7b5
+B | 10 | D7alt
+B | 11 | Gm
+B | 11 | Gm/F
+B | 12 | Em7b5
+B | 12 | A7alt
+B | 13 | DMaj7
+B | 14 | Em7
+B | 14 | A7
+B | 15 | Dm7
+B | 15 | G7
+B | 16 | Cm7
+B | 16 | F7
+C | 17 | BbMaj7
+C | 19 | GbMaj7
+C | 20 | B7#11
+C | 21 | BbMaj7
+C | 23 | Fm7
+C | 24 | Bb7b9
+D | 25 | EbMaj7
+D | 26 | Ab7#11
+D | 27 | Gm7
+D | 28 | C7#11
+D | 29 | Cm7
+D | 30 | F7
+D | 31 | Bbm7
+D | 32 | Eb7

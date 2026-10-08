@@ -1,0 +1,39 @@
+title: Yours Is My Heart Alone
+subtitle: Medium, C, 32 bars
+composer: Franz Lehár
+style: Medium
+key: C
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 277
+
+# section | bar | chord | scale
+A | 1  | F#m7b5
+A | 2  | B7b9
+A | 3  | Em7
+A | 4  | A7
+A | 5  | Dm7
+A | 6  | G7
+A | 7  | Em7
+A | 7  | A7
+A | 8  | Dm7
+A | 8  | G7
+B | 9  | F#m7b5
+B | 10 | B7b9
+B | 11 | Em7
+B | 12 | A7
+B | 13 | Am7
+B | 14 | D7
+B | 15 | Dm7
+B | 16 | G7
+C | 17 | Em7b5
+C | 18 | A7b9
+C | 19 | Dm
+C | 21 | Bb7
+C | 23 | CMaj7
+D | 25 | F#m7b5
+D | 26 | B7b9
+D | 27 | Em7
+D | 28 | A7
+D | 29 | Dm7
+D | 30 | G7
+D | 31 | CMaj7

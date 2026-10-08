@@ -1,0 +1,54 @@
+title: Con Alma
+subtitle: 12/8, E and C, AABA
+composer: Dizzy Gillespie
+style: Mixed
+key: D
+form: AABA
+source: Colorado Cookbook, p. 53
+
+# section | bar | chord | scale
+# the bridge is in 4/4 on the sheet; the chart counts its bars as written
+A1 | 1  | EMaj7
+A1 | 1  | Ab7/Eb
+A1 | 2  | Dbm7
+A1 | 2  | B7
+A1 | 3  | Bb7
+A1 | 3  | E7
+A1 | 4  | EbMaj7
+A1 | 4  | Ebm7
+A1 | 4  | Ab7
+A1 | 5  | DbMaj7
+A1 | 5  | F7/C
+A1 | 6  | Bbm7
+A1 | 6  | Ab7
+A1 | 7  | G7
+A1 | 7  | Db7
+A1 | 8  | CMaj7
+A1 | 8  | F#m7
+A1 | 8  | B7
+A2 | 9  | EMaj7
+A2 | 9  | Ab7/Eb
+A2 | 10 | Dbm7
+A2 | 10 | B7
+A2 | 11 | Bb7
+A2 | 11 | E7
+A2 | 12 | EbMaj7
+A2 | 12 | Ebm7
+A2 | 12 | Ab7
+A2 | 13 | DbMaj7
+A2 | 13 | F7/C
+A2 | 14 | Bbm7
+A2 | 14 | Ab7
+A2 | 15 | G7
+A2 | 15 | Db7
+A2 | 16 | CMaj7
+B  | 17 | Cm7b5
+B  | 18 | F7b9
+B  | 19 | F#m7
+B  | 20 | B7
+B  | 21 | EMaj7
+B  | 23 | Fm7
+B  | 24 | Bb7
+B  | 24 | F#m7
+B  | 24 | B7
+@copy A2 A3 16

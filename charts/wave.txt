@@ -1,0 +1,35 @@
+title: Wave
+subtitle: Bossa nova, D, 44 bars (12 12 8 12)
+composer: Antonio Carlos Jobim
+style: Latin
+key: D
+form: AABC, 44 bars
+source: Colorado Cookbook, p. 261
+
+# section | bar | chord | scale
+A1 | 1  | DMaj7
+A1 | 2  | Bbdim7
+A1 | 3  | Am7
+A1 | 4  | D7
+A1 | 5  | GMaj7
+A1 | 6  | Gm7
+A1 | 7  | F#7
+A1 | 8  | B7
+A1 | 9  | Bm7
+A1 | 9  | E7
+A1 | 10 | Bb7
+A1 | 10 | A7alt
+A1 | 11 | Dm7
+A1 | 11 | G7
+A1 | 12 | Dm7
+A1 | 12 | G7
+@copy A1 A2 12
+B  | 25 | Gm7
+B  | 26 | C7
+B  | 27 | FMaj7
+B  | 29 | Fm7
+B  | 30 | Bb7
+B  | 31 | EbMaj7
+B  | 32 | Em7b5
+B  | 32 | A7b9
+@copy A1 C 32

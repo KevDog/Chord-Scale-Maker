@@ -1,0 +1,36 @@
+title: A Night in Tunisia
+subtitle: Latin, D minor, AABA with the interlude
+composer: Dizzy Gillespie
+style: Latin
+key: Dm
+source: Colorado Cookbook, p. 9
+
+# section | bar | chord | scale
+# the tag (interlude) follows the head; the 4-bar solo break is left out
+A1  | 1  | Eb7
+A1  | 2  | Dm6/9
+A1  | 3  | Eb7
+A1  | 4  | Dm6/9
+A1  | 5  | Eb7
+A1  | 6  | Dm6/9
+A1  | 7  | Em7b5
+A1  | 7  | A7#9
+A1  | 8  | Dm
+@copy A1 A2 8
+B   | 17 | Am7b5
+B   | 18 | D7#9
+B   | 19 | Gm
+B   | 21 | Gm7b5
+B   | 22 | C7#9
+B   | 23 | FMaj7
+B   | 24 | Em7b5
+B   | 24 | A7#9
+@copy A1 A3 24
+Tag | 33 | Em7
+Tag | 35 | Eb7#11
+Tag | 37 | Dm7
+Tag | 39 | G7#11
+Tag | 41 | C7#11
+Tag | 42 | Gm/C
+Tag | 43 | F#7#9
+Tag | 44 | F

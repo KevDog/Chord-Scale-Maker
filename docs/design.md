@@ -151,7 +151,7 @@ The text format needs a document model that preserves comments and `@copy`.
 
 ```ts
 type ChartLine =
-  | { kind: 'meta'; key: 'title' | 'subtitle'; value: string }
+  | { kind: 'meta'; key: MetaKey; value: string }  // title, subtitle (the heading); key, bars (analyser hints); composer, style, form, source
   | { kind: 'row'; section: string; bar: string; chord: string; scale: string }  // scale '' = default
   | { kind: 'copy'; src: string; dst: string; offset: number }
   | { kind: 'comment'; text: string }
@@ -357,9 +357,12 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Loading:** `import.meta.glob('../../../charts/*.txt', { query: '?raw', eager: true })` in
   `app/utils/library.ts` gives `{ slug, title, subtitle, text }[]` at build time. The same parser runs, and a
   test fails the build if any library chart has errors.
-- **Contents:** 19 charts.
+- **Contents:** 241 charts.
   - Autumn Leaves, Blue Bossa, Stella by Starlight, All the Things You Are, Lady Bird.
   - F and B♭ blues, jazz blues and Bird blues.
+  - 222 tunes transcribed (chords only; `composer:`, `style:`, `key:`, `form:`, `source:` from its index) from the
+    Colorado Cookbook, a lead-sheet collection kept out of the repo in `design/leadsheets/`. Their scales are the
+    qualities' defaults until the analyser (plan-analysis.md) writes them.
   - Rhythm changes.
   - Modal tunes: So What, Impressions, Milestones, Maiden Voyage, Footprints.
   - Modes of the major scale and of melodic minor.

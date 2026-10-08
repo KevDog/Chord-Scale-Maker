@@ -1,0 +1,29 @@
+title: Take the "A" Train
+subtitle: Medium, C, 32 bars
+composer: Duke Ellington
+style: Latin
+key: C
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 231
+
+# section | bar | chord | scale
+# the D7alt intro is left out
+A1 | 1  | CMaj7
+A1 | 3  | D7alt
+A1 | 5  | Dm7
+A1 | 6  | G7
+A1 | 7  | CMaj7
+A1 | 8  | Dm7
+A1 | 8  | G7
+A2 | 9  | CMaj7
+A2 | 11 | D7alt
+A2 | 13 | Dm7
+A2 | 14 | G7
+A2 | 15 | CMaj7
+A2 | 16 | Gm7
+A2 | 16 | C7
+B  | 17 | FMaj7
+B  | 21 | D7
+B  | 23 | Dm7
+B  | 24 | G7b9
+@copy A1 A3 24

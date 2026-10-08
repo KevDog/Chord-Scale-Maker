@@ -1,0 +1,16 @@
+title: All Blues
+subtitle: Blues in 6/8, G, 12 bars
+composer: Miles Davis
+style: Blues
+key: G
+form: A, 12 bars
+source: Colorado Cookbook, p. 15
+
+# section | bar | chord | scale
+A | 1  | G7
+A | 5  | C7/G
+A | 7  | G7
+A | 9  | D7#9
+A | 10 | Eb7#9
+A | 10 | D7#9
+A | 11 | G7

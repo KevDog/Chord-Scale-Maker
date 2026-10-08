@@ -1,0 +1,50 @@
+title: Ceora
+subtitle: Bossa nova, Ab, 32 bars
+composer: Lee Morgan
+style: Latin
+key: Ab
+form: AB, 32 bars
+source: Colorado Cookbook, p. 51
+
+# section | bar | chord | scale
+A | 1  | AbMaj7
+A | 2  | Bbm7
+A | 2  | Eb7
+A | 3  | AbMaj7
+A | 4  | Ebm7
+A | 4  | Ab7
+A | 5  | DbMaj7
+A | 6  | Dm7b5
+A | 6  | G7#9
+A | 7  | Cm7
+A | 8  | F7#9
+A | 9  | Bbm7
+A | 10 | Eb7
+A | 11 | Cm7
+A | 12 | F7
+A | 13 | Dm7
+A | 14 | G7
+A | 15 | Cm7
+A | 15 | F7
+A | 16 | Bbm7
+A | 16 | Eb7
+B | 17 | AbMaj7
+B | 18 | Bbm7
+B | 18 | Eb7
+B | 19 | AbMaj7
+B | 20 | Ebm7
+B | 20 | Ab7
+B | 21 | DbMaj7
+B | 22 | Dm7b5
+B | 22 | G7#9
+B | 23 | Cm7
+B | 24 | F7#9
+B | 25 | Bbm7
+B | 26 | Eb7
+B | 27 | Cm7b5
+B | 28 | F7#9
+B | 29 | Bbm7
+B | 30 | Eb7
+B | 31 | AbMaj7
+B | 32 | Bbm7
+B | 32 | Eb7

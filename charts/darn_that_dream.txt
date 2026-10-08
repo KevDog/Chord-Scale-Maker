@@ -1,0 +1,87 @@
+title: Darn That Dream
+subtitle: Ballad, G, AABA
+composer: Jimmy Van Heusen
+style: Ballad
+key: G
+form: AABC
+source: Colorado Cookbook, p. 61
+
+# section | bar | chord | scale
+A1 | 1  | GMaj7
+A1 | 1  | Bbm7
+A1 | 1  | Eb7
+A1 | 2  | Am7
+A1 | 2  | B7
+A1 | 3  | Em
+A1 | 3  | Em/D#
+A1 | 3  | D7
+A1 | 3  | D7/C
+A1 | 4  | Bm7b5
+A1 | 4  | E7
+A1 | 5  | Am7
+A1 | 5  | F9
+A1 | 6  | Bm7
+A1 | 6  | Bbm7
+A1 | 7  | Am7
+A1 | 7  | D7
+A1 | 8  | Bm7
+A1 | 8  | Bb7
+A1 | 8  | Am7
+A1 | 8  | D7
+A2 | 9  | GMaj7
+A2 | 9  | Bbm7
+A2 | 9  | Eb7
+A2 | 10 | Am7
+A2 | 10 | B7
+A2 | 11 | Em
+A2 | 11 | Em/D#
+A2 | 11 | D7
+A2 | 11 | D7/C
+A2 | 12 | Bm7b5
+A2 | 12 | E7
+A2 | 13 | Am7
+A2 | 13 | F9
+A2 | 14 | Bm7
+A2 | 14 | Bbm7
+A2 | 15 | Am7
+A2 | 15 | D13
+A2 | 16 | Fm7
+A2 | 16 | Bb7
+B  | 17 | EbMaj7
+B  | 17 | Cm7
+B  | 18 | Fm7
+B  | 18 | Bb7
+B  | 19 | Gm7
+B  | 19 | F#m7
+B  | 19 | B7
+B  | 20 | Fm7
+B  | 20 | Bb7
+B  | 21 | EbMaj7
+B  | 21 | Cm7
+B  | 22 | Am7b5
+B  | 22 | D7
+B  | 22 | Gm
+B  | 23 | Am7
+B  | 23 | D7
+B  | 24 | Bbm7
+B  | 24 | Eb7
+B  | 24 | Am9
+B  | 24 | D13
+C  | 25 | GMaj7
+C  | 25 | Bbm7
+C  | 25 | Eb7
+C  | 26 | Am7
+C  | 26 | B7
+C  | 27 | Em
+C  | 27 | Em/D#
+C  | 27 | D7
+C  | 27 | D7/C
+C  | 28 | Bm7b5
+C  | 28 | E7
+C  | 29 | Am7
+C  | 29 | F9
+C  | 30 | Bm7
+C  | 30 | Bbm7
+C  | 31 | Am7
+C  | 31 | D13
+C  | 32 | GMaj7

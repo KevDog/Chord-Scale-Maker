@@ -1,0 +1,43 @@
+title: Just Friends
+subtitle: Up tempo, F, 32 bars
+composer: John Klenner & Sam Lewis
+style: Up
+key: F
+form: AA, 32 bars
+source: Colorado Cookbook, p. 118
+
+# section | bar | chord | scale
+# the horn intro is left out; the form starts on BbMaj7
+A1 | 1  | BbMaj7
+A1 | 3  | Bbm7
+A1 | 4  | Eb7
+A1 | 5  | FMaj7
+A1 | 7  | Abm7
+A1 | 8  | Db7
+A1 | 9  | Gm7
+A1 | 10 | C7
+A1 | 11 | Em7b5
+A1 | 11 | A7#9
+A1 | 12 | Dm7
+A1 | 13 | G7#11
+A1 | 15 | Gm7
+A1 | 15 | C7
+A1 | 16 | Cm7
+A1 | 16 | F7
+A2 | 17 | BbMaj7
+A2 | 19 | Bbm7
+A2 | 20 | Eb7
+A2 | 21 | FMaj7
+A2 | 23 | Abm7
+A2 | 24 | Db7
+A2 | 25 | Gm7
+A2 | 26 | C7
+A2 | 27 | Em7b5
+A2 | 27 | A7#9
+A2 | 28 | Dm7
+A2 | 29 | G7
+A2 | 30 | Gm7
+A2 | 30 | C7
+A2 | 31 | FMaj7
+A2 | 32 | Cm7
+A2 | 32 | F7
