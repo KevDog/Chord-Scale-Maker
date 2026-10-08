@@ -20,7 +20,7 @@
         <template v-for="(line, i) in doc.lines" :key="i">
           <UiTableRow v-if="line.kind === 'row'">
             <UiTableCell v-for="f in TEXT_FIELDS" :key="f" class="px-1! py-1!">
-              <GridCell dense :value="line[f]" :label="`${f} for row ${rowNumber[i]}`" @update="(v) => emitDoc(setRowField(doc, i, f, v))" />
+              <GridCell dense :value="line[f]" :label="`${f} for row ${rowNumber[i]}`" @update="(v) => emitDoc(f === 'chord' ? setRowChord(doc, i, v) : setRowField(doc, i, f, v))" />
             </UiTableCell>
             <UiTableCell class="min-w-56 px-1! py-1!">
               <ScaleCell :chord="line.chord" :scale="line.scale" @update="(s) => emitDoc(setRowField(doc, i, 'scale', s))" />
@@ -55,7 +55,7 @@
 
 <script setup lang="ts">
 import { PlusIcon, TrashIcon } from '@heroicons/vue/16/solid'
-import { type ChartDoc, type MetaKey, type RowField, chartMeta, insertRowAfter, LIMITS, removeLine, setMeta, setRowField } from '~~/engine'
+import { type ChartDoc, type MetaKey, type RowField, chartMeta, insertRowAfter, LIMITS, removeLine, setMeta, setRowChord, setRowField } from '~~/engine'
 
 const props = defineProps<{ doc: ChartDoc }>()
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc] }>()

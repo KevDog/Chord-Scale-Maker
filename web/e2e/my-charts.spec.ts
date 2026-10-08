@@ -122,3 +122,17 @@ test('a damaged share link says so', async ({ page }) => {
   await page.goto('/editor#s=not-a-real-chart')
   await expect(page.getByRole('heading', { name: 'That link doesn’t open a chart' })).toBeVisible()
 })
+
+test('choosing a scale and then Default again writes the scale name, and leaves the library chart unedited', async ({ page }) => {
+  await page.goto('/editor?chart=autumn_leaves')
+  const scale = page.getByLabel('Scale for Cm7').first()
+  await scale.selectOption('C Aeolian')
+  await expect(status(page)).toHaveText(/^Your edited version of Autumn Leaves/)
+  await scale.selectOption('')
+  await page.getByRole('button', { name: 'Show text' }).click()
+  await expect(page.getByLabel('Chart text')).toHaveValue(/A1 \| 1 +\| Cm7 +\| C Dorian/) // the name, not an empty cell
+  await expect(status(page)).toHaveText('Edits are saved in this browser as your version.') // back to the library version
+  await expect(page.getByRole('button', { name: 'Revert to library version' })).toHaveCount(0)
+  await page.goto('/')
+  await expect(page.getByRole('region', { name: 'My charts' })).toHaveCount(0)
+})

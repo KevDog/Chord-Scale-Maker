@@ -183,7 +183,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   A rejected value stays visible and flagged in its cell (`GridCell`), and the doc keeps the last good value.
 - **Chord cell:** free text, validated as above.
 - **Scale cell** (`ScaleCell`): a dropdown with these entries.
-  - "Default · …".
+  - "Default · …". Choosing it writes the default's name into the text (`C Dorian`), and a default scale follows
+    when the chord changes (`setRowChord`: Cm7 → F7 takes C Dorian to F Mixolydian); a scale you chose stays.
+  - The scale's formula (1, 2, ♭3, …) shows inside the select where the cell is wide enough for the whole label and
+    the formula (measured with `utils/textWidth.ts`), typically with the Text pane hidden.
   - The quality's inside alternates, with their notes.
   - An "Outside (tension to resolve)" group, for options marked `outside`.
   - "Other…", which opens a dialog with a root and any of the 26 scales. Focus returns to the cell after it
@@ -370,7 +373,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     Kinds: `edited` (your version of a library chart, one per slug), `copy`, `new`. At most 200 charts of
     `LIMITS.maxChars` each; a failed write reports `full` and never leaves an index entry without its text.
   - `useSavedChart`: saves 800 ms after typing stops, on `pagehide` and when the editor closes. Editing a library
-    chart back to its library text removes your version. A new chart's first save moves the address to
+    chart back to its library text removes your version (`sameChart`: same lines, ignoring spacing and whether a
+    default scale is written out). A new chart's first save moves the address to
     `?mine=<id>` without restarting the editor.
   - Download writes the text as a Blob; Open (`readChartFile`) takes a `.txt` up to the size limit.
   - Share links (`engine/share.ts`): `{ v: 1, chart, view }` as deflate-raw JSON in base64url after `#s=`. The view

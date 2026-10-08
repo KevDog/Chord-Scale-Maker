@@ -17,7 +17,7 @@
       <option v-if="custom" :value="scale">{{ scale }}</option>
       <option value="__other">Other…</option>
     </UiSelect>
-    <span v-if="showFormula" class="pointer-events-none absolute inset-y-0 right-8 flex items-center text-xs/5 text-zinc-500 tabular-nums dark:text-zinc-400" aria-hidden="true">{{ formula }}</span>
+    <span v-if="showFormula" class="pointer-events-none absolute inset-y-0 right-8 flex items-center text-xs/5 text-zinc-950 tabular-nums dark:text-white" aria-hidden="true">{{ formula }}</span>
   </span>
 
   <UiDialog :open="picking" size="md" @close="closePicker" @closed="refocus">
@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { enharmonics, glyphs, noteText, parseChord, parseScale, rootName, SCALES } from '~~/engine'
+import { enharmonics, glyphs, noteText, parseChord, parseScale, rootName, sameScale, SCALES } from '~~/engine'
 
 /** a row's scale: the chord's default, its alternates, or "Other…" (any scale, in a dialog) */
 const props = defineProps<{ chord: string; scale: string }>()
@@ -56,10 +56,11 @@ const emit = defineEmits<{ update: [scale: string] }>()
 const choices = computed(() => scaleChoices(props.chord))
 const inside = computed(() => choices.value.alternates.filter((o) => !o.outside))
 const outside = computed(() => choices.value.alternates.filter((o) => o.outside))
-/** a scale typed in the text that equals the default shows as the default */
-const isDefault = computed(() => props.scale === choices.value.defaultScale)
-const custom = computed(() => props.scale !== '' && !isDefault.value && !choices.value.alternates.some((o) => o.scale === props.scale))
-const selectValue = computed(() => (isDefault.value ? '' : props.scale))
+/** a scale typed in the text that equals the default shows as the default, and one equal to an alternate as it */
+const isDefault = computed(() => props.scale !== '' && sameScale(props.scale, choices.value.defaultScale))
+const matching = computed(() => choices.value.alternates.find((o) => sameScale(props.scale, o.scale)))
+const custom = computed(() => props.scale !== '' && !isDefault.value && !matching.value)
+const selectValue = computed(() => (props.scale === '' || isDefault.value ? '' : (matching.value?.scale ?? props.scale)))
 const needsScale = computed(() => props.scale === '' && !choices.value.defaultScale)
 /** the shown scale's degree formula, "1, 2, ♭3, 4, 5, 6, ♭7"; null if there's no scale (or it can't be read) */
 const formula = computed((): string | null => {
@@ -74,8 +75,8 @@ const formula = computed((): string | null => {
 /** the selected option's text, as the select shows it */
 const label = computed((): string => {
   if (isDefault.value || props.scale === '') return choices.value.defaultScale ? `Default · ${choices.value.defaultScale}` : 'Choose a scale…'
-  const alt = choices.value.alternates.find((o) => o.scale === props.scale)
-  return alt?.note ? `${alt.scale} (${alt.note})` : props.scale
+  const alt = matching.value
+  return alt ? (alt.note ? `${alt.scale} (${alt.note})` : alt.scale) : props.scale
 })
 /** the cell's width, so the formula shows only where it fits beside the label (wide cells: Text hidden, bigger screens) */
 const width = ref(0)
@@ -128,6 +129,7 @@ function refocus(): void {
 }
 
 function onSelect(value: string): void {
+  if (value === '') return emit('update', choices.value.defaultScale ?? '') // the default, by name, so the text shows it
   if (value !== '__other') return emit('update', value)
   pickRoot.value = pickerRoot(props.chord)
   picking.value = true

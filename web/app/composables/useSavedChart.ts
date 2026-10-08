@@ -1,4 +1,5 @@
 import type { Ref } from 'vue'
+import { sameChart } from '~~/engine'
 import type { SavedKind } from '~/utils/myCharts'
 
 /**
@@ -39,7 +40,7 @@ export function useSavedChart(text: Readonly<Ref<string>>, target: SaveTarget, c
     if (!dirty) return
     dirty = false
     const now = text.value
-    if (target.kind === 'library' && now === target.libraryText) {
+    if (target.kind === 'library' && sameChart(now, target.libraryText)) {
       if (id) deleteChart(id) // edited back to the library version: nothing of yours to keep
       id = undefined
       edited.value = false
