@@ -1,0 +1,41 @@
+title: All the Things You Are
+subtitle: AABA, 36 Bars
+
+# section | bar | chord | scale
+# the intro vamp (Db7#9 C7#9) and the optional cue chords in parentheses are left out
+A1 | 1  | Fm7    | F Aeolian
+A1 | 2  | Bbm7   | Bb Dorian
+A1 | 3  | Eb7    | Eb Mixolydian
+A1 | 4  | AbMaj7 | Ab Ionian
+A1 | 5  | DbMaj7 | Db Lydian
+A1 | 6  | Dm7    | D Dorian
+A1 | 6  | G7     | G Mixolydian
+A1 | 7  | CMaj7  | C Ionian
+A2 | 9  | Cm7    | C Dorian
+A2 | 10 | Fm7    | F Dorian
+A2 | 11 | Bb7    | Bb Mixolydian
+A2 | 12 | EbMaj7 | Eb Ionian
+A2 | 13 | AbMaj7 | Ab Lydian
+A2 | 14 | Am7b5  | A Locrian
+A2 | 14 | D7     | D Mixolydian
+A2 | 15 | GMaj7  | G Ionian
+B  | 17 | Am7    | A Dorian
+B  | 18 | D7     | D Mixolydian
+B  | 19 | GMaj7  | G Ionian
+B  | 21 | F#m7b5 | F# Locrian
+B  | 22 | B7     | B Mixolydian
+B  | 23 | EMaj7  | E Ionian
+B  | 24 | C7#5   | C Altered
+C  | 25 | Fm7    | F Aeolian
+C  | 26 | Bbm7   | Bb Dorian
+C  | 27 | Eb7    | Eb Mixolydian
+C  | 28 | AbMaj7 | Ab Ionian
+C  | 29 | DbMaj7 | Db Lydian
+C  | 30 | Gb13   | Gb Lydian Dominant
+C  | 31 | Cm7    | C Dorian
+C  | 32 | Bdim7  | B Whole-Half
+C  | 33 | Bbm7   | Bb Dorian
+C  | 34 | Eb7    | Eb Mixolydian
+C  | 35 | Ab6    | Ab Ionian
+C  | 36 | Gm7b5  | G Locrian
+C  | 36 | C7     | C Phrygian Dominant
