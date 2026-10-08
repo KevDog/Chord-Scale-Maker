@@ -93,6 +93,13 @@
           </template>
         </PreviewControls>
         <UiText v-if="transposed" role="status">{{ transposed }}</UiText>
+        <!-- Level: how sophisticated each chord's scale is, for this chart (engine/levels.ts) -->
+        <div v-if="levelsOn && sheet === 'scales' && !editor.fatal.value" class="flex flex-wrap items-end gap-3">
+          <SegmentedControl v-model="scaleLevel.level.value" legend="Scale level" name="scale-level" :options="LEVEL_OPTIONS" />
+          <UiButton v-if="scaleLevel.level.value === 'random'" outline title="Deal a new random scale for each chord" @click="scaleLevel.shuffle()"><ArrowPathIcon data-slot="icon" />Shuffle</UiButton>
+          <UiButton v-if="levelCount > 0" outline :title="`Write these ${levelCount} scales into the chart`" @click="saveLevel"><CheckIcon data-slot="icon" />Save to chart</UiButton>
+          <UiText v-if="levelCount > 0" class="text-sm/6!">{{ levelCount === 1 ? '1 chord plays' : `${levelCount} chords play` }} a {{ LEVEL_LABELS[scaleLevel.level.value].toLowerCase() }} scale; scales you chose yourself stay.</UiText>
+        </div>
         <PracticePanel
           v-if="practiceOn && sheet === 'scales' && !editor.fatal.value"
           :mode="mode"
@@ -117,7 +124,7 @@
         />
         <ScaleSheet
           v-else
-          :rows="editor.rows.value"
+          :rows="scaleRows"
           :title="editor.meta.value.title"
           :subtitle="editor.meta.value.subtitle"
           :part="part"
@@ -134,8 +141,26 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowDownTrayIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, BookmarkIcon, CodeBracketIcon, DocumentDuplicateIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
-import { buildSheet, type ChartDoc, encodeShare, instrumentLabel, LIMITS, litKeys, type Mode, partFor, practiceBoxes, serializeChart, setMeta, type ShareView } from '~~/engine'
+import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, BookmarkIcon, CheckIcon, CodeBracketIcon, DocumentDuplicateIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
+import {
+  applyLevel,
+  buildSheet,
+  type ChartDoc,
+  encodeShare,
+  expandRows,
+  instrumentLabel,
+  LEVEL_LABELS,
+  levelChanges,
+  LIMITS,
+  litKeys,
+  type Mode,
+  partFor,
+  practiceBoxes,
+  SCALE_LEVELS,
+  serializeChart,
+  setMeta,
+  type ShareView,
+} from '~~/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 import type { SheetKind } from '~/utils/sheets'
 
@@ -159,11 +184,26 @@ const mode = ref<Mode>(props.shared?.mode ?? 'root')
 const sheet = ref<SheetKind>(props.shared?.sheet === 'guideTones' && useFeature('guideTones') ? 'guideTones' : 'scales')
 const practiceOn = useFeature('practice')
 const practice = usePractice(props.practiceKey)
+const levelsOn = useFeature('scaleLevels')
+const scaleLevel = useScaleLevel(props.practiceKey, props.shared)
+const LEVEL_OPTIONS = SCALE_LEVELS.map((value) => ({ value, label: LEVEL_LABELS[value] }))
+const level = computed(() => (levelsOn ? scaleLevel.level.value : 'standard'))
+/** the chart as the scale sheet plays it: every row that follows its default takes the level's scale */
+const levelDoc = computed(() => applyLevel(editor.doc.value, level.value, scaleLevel.seed.value))
+const scaleRows = computed(() => (level.value === 'standard' ? editor.rows.value : expandRows(levelDoc.value).value))
+const levelCount = computed(() => (level.value === 'standard' ? 0 : levelChanges(editor.doc.value, level.value, scaleLevel.seed.value)))
+
+/** write the level's scales into the chart, which then plays them at Standard */
+function saveLevel(): void {
+  editor.flush()
+  editor.setDoc(applyLevel(editor.doc.value, level.value, scaleLevel.seed.value))
+  scaleLevel.level.value = 'standard'
+}
 if (props.shared?.practice) practice.setSelection(mode.value, props.shared.practice)
 const selection = computed(() => (practiceOn ? practice.selection(mode.value) : null))
 // every staff with its practice keys, for the panel's boxes and what the selection lights
 const practiceStaves = computed(() =>
-  practiceOn ? buildSheet(editor.rows.value, part.value, mode.value, prefs.start.value, LIMITS.maxExpandedRows, selection.value).flatMap((p) => p.pages.flat()) : [],
+  practiceOn ? buildSheet(scaleRows.value, part.value, mode.value, prefs.start.value, LIMITS.maxExpandedRows, selection.value).flatMap((p) => p.pages.flat()) : [],
 )
 const practiceBoxesNow = computed(() => practiceBoxes(practiceStaves.value, mode.value, prefs.start.value))
 const litNow = computed(() => litKeys(practiceStaves.value))
@@ -222,6 +262,7 @@ async function openShare(): Promise<void> {
     intervals: prefs.intervals.value,
     sheet: sheet.value,
     ...(selection.value ? { practice: selection.value } : {}),
+    ...(level.value !== 'standard' ? { level: level.value, seed: scaleLevel.seed.value } : {}),
   }
   shareLink.value = `${location.origin}/editor#s=${await encodeShare({ chart: editor.text.value, view })}`
 }

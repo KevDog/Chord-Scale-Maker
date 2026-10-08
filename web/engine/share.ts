@@ -1,4 +1,5 @@
 import { type InstrumentName, isInstrumentName } from './instruments'
+import { isScaleLevel, type ScaleLevel } from './levels'
 import { LIMITS } from './limits'
 import type { Mode } from './part'
 import { type PracticeSelection, practiceSelectionFrom } from './practice'
@@ -18,6 +19,8 @@ export type ShareView = Readonly<{
   intervals?: boolean
   sheet?: ShareSheet
   practice?: PracticeSelection
+  level?: ScaleLevel
+  seed?: number
 }>
 export type SharePayload = Readonly<{ chart: string; view?: ShareView }>
 
@@ -87,6 +90,8 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(typeof o.intervals === 'boolean' ? { intervals: o.intervals } : {}),
     ...(o.sheet === 'scales' || o.sheet === 'guideTones' ? { sheet: o.sheet } : {}),
     ...(practice ? { practice } : {}),
+    ...(isScaleLevel(o.level) ? { level: o.level } : {}),
+    ...(Number.isInteger(o.seed) && (o.seed as number) >= 0 && (o.seed as number) < 2 ** 32 ? { seed: o.seed as number } : {}),
   }
   return Object.keys(view).length ? view : undefined
 }

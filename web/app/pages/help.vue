@@ -68,6 +68,18 @@
             so printed sheets stay clean.
           </dd>
         </div>
+        <div v-if="levelsOn">
+          <dt class="font-semibold text-zinc-950 dark:text-white">Scale level</dt>
+          <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+            How fancy the scales get, per chart. <strong class="font-semibold">Basic</strong> leans on pentatonics
+            (five notes, hard to land on a wrong one), <strong class="font-semibold">Standard</strong> is the usual
+            chord-scale for each chord, and <strong class="font-semibold">Advanced</strong> reaches for bebop,
+            Lydian and altered colours. <strong class="font-semibold">Random</strong> deals a different inside scale
+            to every chord, so you can't coast; hit <strong class="font-semibold">Shuffle</strong> for a new hand.
+            Scales you picked yourself stay put, and <strong class="font-semibold">Save to chart</strong> writes the
+            level's scales into the chart if you want to keep them.
+          </dd>
+        </div>
       </dl>
     </section>
 
@@ -223,6 +235,7 @@
 
 <script setup lang="ts">
 const myCharts = useFeature('myCharts')
+const levelsOn = useFeature('scaleLevels')
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },
   { id: 'sheets', title: 'The two sheets' },

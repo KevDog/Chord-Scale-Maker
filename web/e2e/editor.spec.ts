@@ -183,3 +183,25 @@ test('focus mode shows only the sheet, leaves on Escape or its button, and still
   await expect(dialog).toHaveCount(0)
   await expect(page.getByRole('group', { name: 'Sheet' })).toBeVisible()
 })
+
+test('the scale level changes the sheet, deals random scales, and can be saved into the chart', async ({ page }) => {
+  await page.goto('/editor?chart=autumn_leaves')
+  const preview = page.locator('section', { has: page.getByRole('heading', { name: 'Autumn Leaves', level: 2 }) }).last()
+  await expect(preview.getByText('C Dorian', { exact: true }).first()).toBeVisible()
+  await page.getByText('Basic', { exact: true }).click()
+  await expect(preview.getByText('C Minor Pentatonic', { exact: true }).first()).toBeVisible()
+  await expect(page.getByText(/chords play a basic scale/)).toBeVisible()
+  await page.reload()
+  await expect(page.getByLabel('Basic')).toBeChecked() // remembered for this chart
+  await page.getByText('Random', { exact: true }).click()
+  const scales = () => preview.locator('[class*="italic"]').allTextContents()
+  const dealt = await scales()
+  await page.getByRole('button', { name: 'Shuffle' }).click()
+  await expect.poll(scales).not.toEqual(dealt)
+  await page.getByText('Advanced', { exact: true }).click()
+  await page.getByRole('button', { name: 'Save to chart' }).click()
+  await expect(page.getByLabel('Standard')).toBeChecked() // the chart now holds those scales
+  await page.getByRole('button', { name: 'Show text' }).click()
+  await expect(page.getByLabel('Chart text')).toHaveValue(/Cm7 +\| C Bebop Dorian/)
+  await expect(page.getByRole('status').filter({ hasText: 'Your edited version' })).toBeVisible()
+})

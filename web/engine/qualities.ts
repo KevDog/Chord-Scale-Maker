@@ -8,7 +8,7 @@ import { scaleKey, simplifyRoot, spellFrom } from './scales'
  * quality, and baseQuality for extended symbols.
  */
 
-type RawOption = Readonly<{ root: string; scale: string; default?: boolean; note?: string; outside?: boolean }>
+type RawOption = Readonly<{ root: string; scale: string; default?: boolean; note?: string; outside?: boolean; level?: string }>
 /** a chord of `quality` whose bass is the interval `bass` above its root takes `as`'s options on the bass */
 type SlashRule = Readonly<{ quality: string; bass: string; as: string; note?: string }>
 type QualityData = Readonly<{
@@ -25,8 +25,11 @@ const LOOKUP: ReadonlyMap<string, string> = new Map([
   ...Object.entries(DATA.quality_aliases).flatMap(([q, names]) => names.map((n) => [n, q] as const)),
 ])
 
-/** outside: a deliberate outside sound (tension to resolve), listed apart from the inside options */
-export type ScaleOption = Readonly<{ scale: string; note: string; default: boolean; outside: boolean }>
+/**
+ * outside: a deliberate outside sound (tension to resolve), listed apart from the inside options.
+ * level: the quality's Basic or Advanced choice for the Level control (engine/levels.ts), if it is one.
+ */
+export type ScaleOption = Readonly<{ scale: string; note: string; default: boolean; outside: boolean; level?: 'basic' | 'advanced' }>
 export type QualityMatch = Readonly<{ quality: string; options: readonly ScaleOption[] }>
 
 const same = (a: Spelled | undefined, b: Spelled): boolean => a !== undefined && a.letter === b.letter && a.acc === b.acc
@@ -51,7 +54,9 @@ export function resolveQuality(chord: string): QualityMatch | null {
     const [r] = spellFrom(reading.root, opt.root)
     if (!r) throw new Error(`bad interval ${JSON.stringify(opt.root)} in chord_scales.json`)
     const root = opt.root === '1' ? r : simplifyRoot(r, key) // interval-derived: friendliest spelling
-    return { scale: `${rootName(root)} ${opt.scale}`, note: opt.note ?? '', default: opt.default ?? false, outside: opt.outside ?? false }
+    const tag = opt.level
+    const level: { level?: 'basic' | 'advanced' } = tag === 'basic' || tag === 'advanced' ? { level: tag } : {}
+    return { scale: `${rootName(root)} ${opt.scale}`, note: opt.note ?? '', default: opt.default ?? false, outside: opt.outside ?? false, ...level }
   })
   return { quality, options }
 }
