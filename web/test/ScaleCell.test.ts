@@ -69,6 +69,6 @@ describe('ScaleCell', () => {
   it('treats a typed scale equal to the default as the default', async () => {
     const w = await mount('Cm7', 'C Dorian')
     expect((w.find('select').element as HTMLSelectElement).value).toBe('')
-    expect(w.findAll('option').filter((o) => o.text().includes('C Dorian'))).toHaveLength(1)
+    expect(w.findAll('option').filter((o) => o.text() === 'C Dorian')).toHaveLength(1)
   })
 })

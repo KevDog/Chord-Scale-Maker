@@ -1,12 +1,17 @@
+import raw from '../../chord_scales.json'
 import type { ChartDoc } from './chart'
+import { rootName } from './pitch'
 import { resolveQuality, type ScaleOption } from './qualities'
-import { sameScale } from './scales'
+import { parseScale, sameScale, scaleKey, simplifyRoot, spellFrom } from './scales'
 
 /**
  * The Level control: how sophisticated each chord's scale is, written into the chart. Standard is the quality's
  * default (chord_scales.json); Basic and Advanced are the options tagged `level`, falling back to the default where a
- * quality has none; Random picks among the quality's inside options, repeatably from a seed. Changing level moves
- * only the rows that play the old level's scale (relevel), so a scale you chose yourself stays.
+ * quality has none; Random picks among the quality's inside options, repeatably from a seed. A row whose Standard is
+ * not its quality's default (the analysis chose it: D7 → D Phrygian Dominant) climbs that scale's ladder instead
+ * (chord_scales.json `ladders`, docs/plan-analysis.md §11), so Basic over a V7 of a minor chord is the minor key's
+ * pentatonic, not the major one. Changing level moves only the rows that play the old level's scale (relevel), so a
+ * scale you chose yourself stays.
  */
 export type ScaleLevel = 'basic' | 'standard' | 'advanced' | 'random'
 export const SCALE_LEVELS: readonly ScaleLevel[] = ['basic', 'standard', 'advanced', 'random']
@@ -32,12 +37,36 @@ export function seededUnit(seed: number, key: string): number {
   return ((t ^ (t >>> 14)) >>> 0) / 4294967296
 }
 
-/** the chord's scale at a level, or null if the chord has no options; `key` makes a Random pick repeatable */
-export function scaleAtLevel(chord: string, level: ScaleLevel, seed = 0, key = ''): string | null {
+type Rung = readonly [string, string] // interval above the Standard root, scale name
+const LADDERS: Readonly<Record<string, Readonly<{ basic?: Rung; advanced?: Rung }>>> = raw.ladders as never
+const LADDER_BY_KEY = new Map(Object.entries(LADDERS).map(([name, rungs]) => [scaleKey(name), rungs]))
+
+/** Basic or Advanced on a Standard scale's ladder; the Standard itself where the ladder has no rung; null if unreadable */
+export function ladderScale(standard: string, level: 'basic' | 'advanced'): string | null {
+  try {
+    const s = parseScale(standard)
+    const rung = LADDER_BY_KEY.get(s.key)?.[level]
+    if (!rung) return standard
+    const [interval, name] = rung
+    const [r] = spellFrom(s.root, interval)
+    if (!r) return standard
+    return `${rootName(interval === '1' ? r : simplifyRoot(r, scaleKey(name)))} ${name}`
+  } catch {
+    return null
+  }
+}
+
+/**
+ * the chord's scale at a level, or null if the chord has no options; `key` makes a Random pick repeatable.
+ * `standard`: the row's Standard when it isn't the quality's default (a library chart's own choice), whose ladder
+ * then gives Basic and Advanced.
+ */
+export function scaleAtLevel(chord: string, level: ScaleLevel, seed = 0, key = '', standard?: string): string | null {
   const options = optionsFor(chord)
   const def = options.find((o) => o.default) ?? options[0]
   if (!def) return null
-  if (level === 'standard') return def.scale
+  if (level === 'standard') return standard || def.scale
+  if ((level === 'basic' || level === 'advanced') && standard && !sameScale(standard, def.scale)) return ladderScale(standard, level) ?? def.scale
   if (level === 'random') {
     const pool = options.filter((o) => !o.outside)
     return pool[Math.floor(seededUnit(seed, key) * pool.length)]?.scale ?? def.scale
@@ -74,7 +103,7 @@ export function relevel(
     return b?.kind === 'row' && b.chord === chord && b.scale ? b.scale : defaultOf(chord)
   }
   const at = (state: LevelState, i: number, chord: string): string | null =>
-    state.level === 'standard' ? standard(i, chord) || null : scaleAtLevel(chord, state.level, state.seed, rowKey(i, chord))
+    state.level === 'standard' ? standard(i, chord) || null : scaleAtLevel(chord, state.level, state.seed, rowKey(i, chord), standard(i, chord))
   const owns = (i: number, chord: string, scale: string): boolean => {
     const mine = from.level === 'standard' || !from.owned || from.owned.includes(rowKey(i, chord)) // no record (an old share link): any match counts
     return mine && (scale === '' || sameScale(scale, at(from, i, chord)))
