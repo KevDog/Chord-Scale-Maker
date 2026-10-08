@@ -19,3 +19,6 @@ design/tailwind-plus/
 
 # duplicates a sync tool (iCloud, Finder) makes beside a changed file: "favicon 2.svg"
 * [0-9].*
+
+# lead sheets used as references for charts (copyrighted): never committed
+design/leadsheets/
