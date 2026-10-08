@@ -22,6 +22,9 @@ const SITE_URL = 'https://www.chordscalemaker.com'
 const DESCRIPTION = 'Practice sheets for jazz improvisation: every chord’s scale, guide tone lines and practice picks, written for your instrument.'
 
 export default defineNuxtConfig({
+  // copies a sync tool (iCloud, Finder) makes beside changed files, "arrivalHash.client 2.ts": never load them as
+  // plugins, components or pages (that one ran on the server and broke every page in `make dev`)
+  ignore: ['**/* [0-9].*'],
   compatibilityDate: '2026-10-01',
   devtools: { enabled: false },
   modules: ['@nuxt/eslint'],
