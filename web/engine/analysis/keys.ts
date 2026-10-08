@@ -84,12 +84,18 @@ export function findCadences(stream: readonly Entry[]): Cadence[] {
     const tritone = !fifth && e.family === 'dominant' && downHalf(e, n)
     if (!(fifth || tritone) || !n?.root || !isTonicType(n)) return
     // back over a chain of dominants each resolving down a fifth into the next, then a ii a fifth above its start
+    // (never back across the top of the form)
+    const back = (k: number): number | null => {
+      const p = stream[k]?.prev
+      return p !== null && p !== undefined && p < k ? p : null
+    }
     let a = i
-    while (a > 0 && isDominantLike(stream[a - 1]) && downFifth(stream[a - 1] as Entry, stream[a])) a--
-    const before = a > 0 ? stream[a - 1] : undefined
+    for (let p = back(a); p !== null && isDominantLike(stream[p]) && downFifth(stream[p] as Entry, stream[a]); p = back(a)) a = p
+    const b = back(a)
+    const before = b === null ? undefined : stream[b]
     const start = stream[a] as Entry
     const ii = !!before && (before.family === 'minor' || before.family === 'halfdim') && interval(start.pc, before.pc) === 7
-    out.push({ dominant: i, target: (i + 1) % stream.length, key: makeKey(n.root, n.family === 'minor'), approach: ii ? a - 1 : a, ii, tritone })
+    out.push({ dominant: i, target: e.next ?? i, key: makeKey(n.root, n.family === 'minor'), approach: ii && b !== null ? b : a, ii, tritone })
   })
   return out
 }

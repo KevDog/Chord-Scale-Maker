@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { analyse, applyAnalysis, parseKey, pins } from '../analysis'
-import { parseChart, serializeChart } from '../chart'
+import { formPart, parseChart, serializeChart } from '../chart'
 
 /** a chart from `key` and `bar chord` pairs: "1 Dm7, 2 G7, 3 CMaj7" */
 const chart = (key: string, rows: string, extra = ''): string =>
@@ -177,6 +177,20 @@ describe('analysis: keys (§5)', () => {
   it('finds modal tunes', () => {
     for (const name of ['so_what', 'maiden_voyage', 'footprints']) expect(analyse(parseChart(library(name)).value).context, name).toBe('modal')
     expect(analyse(parseChart(library('stella_by_starlight')).value).context).toBe('functional')
+  })
+})
+
+describe('analysis: intros and codas outside the form', () => {
+  const text = 'title: T\nkey: C\nIntro | 1 | Dm7\nIntro | 2 | G7\nA | 1 | CMaj7\nA | 2 | A7\nA | 3 | Dm7\nA | 4 | G7\nCoda | 1 | Db7\nCoda | 2 | CMaj7\n'
+  const rows = () => analyse(parseChart(text).value).rows
+
+  it('an intro leads into bar 1, the form wraps to its own top, a coda follows the form and leads nowhere', () => {
+    const fn = (section: number) => rows()[section]?.fn
+    expect([fn(1), fn(5), fn(6), fn(7)]).toEqual(['V7 of C', 'V7 of C', 'subV7 of CMaj7', 'I in C'])
+  })
+
+  it('names them by section: Intro, Coda, Tag, Ending, with a number or not', () => {
+    expect(['Intro', 'coda', 'Tag 2', 'Ending', 'A', 'Introduction', 'B2'].map(formPart)).toEqual(['before', 'after', 'after', 'after', 'form', 'form', 'form'])
   })
 })
 

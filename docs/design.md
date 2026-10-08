@@ -170,6 +170,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Serializing:** `serializeChart(doc) → text` gives the canonical, column-aligned form.
 - **Expanding:** `expandRows(doc) → Parsed<Row[]>` applies `@copy` in order, capped at 1,000 rows;
   `expandRowLines` is the same with each row's source line (a repeat points at the row it copies).
+- **Outside the form** (`isOutsideForm`, `formPart`): sections named `Intro`, `Coda`, `Tag` or `Ending` (with an
+  optional number). They print where they stand; the analysis links an intro into the form's first chord and a coda
+  after its last (the form itself wraps to its own top), and the guide tone timeline times each on its own, so their
+  bars can be numbered from 1.
 - **Trailing comments:** a row may end in `# …` (a `#` with space on both sides, so `F#m7` and `C# Lydian` are
   safe). It holds the analysis (§7a), is kept verbatim through every edit, and is column-aligned when serialized;
   the grid doesn't show it.

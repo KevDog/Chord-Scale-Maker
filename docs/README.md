@@ -4,7 +4,7 @@
 |---|---|
 | [design.md](design.md) | **Current design of the web app**: architecture, engine, rendering, print, security, testing, decisions. Start here. |
 | [requirements.md](requirements.md) | The original requirements for the web app. |
-| [roadmap.md](roadmap.md) | Ideas agreed in principle but not yet scheduled (intros, codas and tags outside the form). |
+| [roadmap.md](roadmap.md) | Work in progress (the Changes sheet) and ideas agreed but not yet scheduled. |
 | [plan-phase1.md](plan-phase1.md) … [plan-phase4.md](plan-phase4.md) | Historical records of how phases 1–4 were built (engine port, app, transposition, hardening). |
 | [plan-ui-redesign.md](plan-ui-redesign.md) | Historical record of the Catalyst UI redesign. |
 | [plan-guide-tones.md](plan-guide-tones.md) | Guide tone lines: the decisions, algorithm and print layout (done). |

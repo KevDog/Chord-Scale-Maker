@@ -2,6 +2,7 @@ title: A Night in Tunisia
 subtitle: Latin, AABA with the interlude
 composer: Dizzy Gillespie
 style: Latin
+form: AABA, 32 bars
 key: Dm
 source: Colorado Cookbook, p. 9
 # analysis: 2026-10-08, rules v1; D minor

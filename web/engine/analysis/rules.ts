@@ -144,13 +144,13 @@ function dominantDecision(e: Entry, rule: string, fn: string, base: Slots, why: 
 
 /** the end of a chain of dominants each resolving down a fifth into the next */
 function chainEnd(ctx: Context, i: number): Entry | undefined {
-  let j = i
-  for (let guard = 0; guard < ctx.stream.length; guard++) {
+  let j: number | null = i
+  for (let guard = 0; guard < ctx.stream.length && j !== null; guard++) {
     const n = nextOf(ctx.stream, j)
-    const here = ctx.stream[j]
+    const here: Entry | undefined = ctx.stream[j]
     if (!here || !n || !downFifth(here, n)) return undefined
     if (!isDominantLike(n)) return n
-    j = (j + 1) % ctx.stream.length
+    j = here.next
   }
   return undefined
 }
@@ -242,7 +242,7 @@ function minor(ctx: Context, i: number): Decision {
   if (/b6|b13/.test(e.symbol)) return { scale: named(e, NAME.aeolian), rule: 'm3', fn, reason: 'from the symbol: b6' }
   if (ctx.modal) return { scale: named(e, NAME.dorian), rule: 'm6', fn: 'modal minor', reason: 'modal minor: Dorian' }
   if (n && isDominantLike(n) && interval(e.pc, n.pc) === 5) {
-    const end = n.root ? nextOf(ctx.stream, (i + 1) % ctx.stream.length) : undefined
+    const end = n.root ? nextOf(ctx.stream, ctx.stream[i]?.next) : undefined
     const lands = end && downFifth(n, end) && (end.family === 'major' || end.family === 'minor')
     const to = lands && end?.root ? keyText(makeKey(end.root, end.family === 'minor')) : null
     return { scale: named(e, NAME.dorian), rule: 'm4', fn: to ? `ii of the ii–V to ${to}` : `ii of ${n.chord}`, reason: to ? `ii of the ii–V to ${to}` : `ii of ${n.chord}: Dorian` }
@@ -263,7 +263,7 @@ function halfDiminished(ctx: Context, i: number): Decision {
   if (ctx.modal) return { scale: named(e, NAME.locrianN2), rule: 'h1', fn: 'modal half-diminished', reason: 'modal: the melodic-minor colour, with a 9 to lean on' }
   const n = nextOf(ctx.stream, i)
   const related = n && isDominantLike(n) && interval(e.pc, n.pc) === 5
-  const end = related ? nextOf(ctx.stream, (i + 1) % ctx.stream.length) : undefined
+  const end = related ? nextOf(ctx.stream, ctx.stream[i]?.next) : undefined
   const to = related && end?.root && n && downFifth(n, end) && (end.family === 'minor' || end.family === 'major') ? keyText(makeKey(end.root, end.family === 'minor')) : null
   const fn = to ? `iiø7 of the ii–V to ${to}` : related ? `iiø7 of ${n?.chord}` : `${roman(e, key)}ø7 in ${keyText(key)}`
   return { scale: named(e, NAME.locrian), rule: 'h2', fn, reason: `${fn}: the b9 is in the key` }

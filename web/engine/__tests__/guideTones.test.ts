@@ -119,6 +119,15 @@ describe('guide tone lines', () => {
     }
   })
 
+  it('times an intro and a coda on their own, each numbered from bar 1', () => {
+    const text = 'Intro | 1 | Dm7\nIntro | 3 | G7\nA | 1 | CMaj7\nA | 3 | Am7\nA | 5 | Dm7\nA | 7 | G7\nCoda | 1 | Db7\nCoda | 2 | CMaj7\n'
+    expect(guideToneTimeline(rowsOf(text)).events.map((e) => [e.chord, e.start / 4, e.beats / 4])).toEqual([
+      ['Dm7', 0, 2], ['G7', 2, 2], // the intro: 4 bars
+      ['CMaj7', 4, 2], ['Am7', 6, 2], ['Dm7', 8, 2], ['G7', 10, 2], // the form, from bar 1
+      ['Db7', 12, 1], ['CMaj7', 13, 3], // the coda, rounded to 4 bars
+    ])
+  })
+
   it('keeps the two lines complementary: where one plays the 3rd, the other plays the 7th', () => {
     const text = readFileSync('../charts/autumn_leaves.txt', 'utf8')
     const bars = buildGuideTones(rowsOf(text), CONCERT).systems.flatMap((s) => s.bars)
