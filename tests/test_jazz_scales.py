@@ -1,4 +1,3 @@
-import re
 import sys, pathlib
 sys.path.insert(0, str(pathlib.Path(__file__).resolve().parents[1]))
 import jazz_scales as j
@@ -140,7 +139,3 @@ def test_chart_rows_may_omit_scale(tmp_path):
     f.write_text("A | 1 | Cm7\nA | 2 | F7 |\nA | 3 | Gm | G Aeolian\n")
     _, _, rows = j.read_chart(f)
     assert [r[3] for r in rows] == ["C Dorian", "F Mixolydian", "G Aeolian"]
-
-
-def test_version_is_commit_date_and_commit():
-    assert re.fullmatch(r"\d{4}\.\d{2}\.\d{2} · [0-9a-f]{7}|unknown \(not a git checkout\)", j.version())

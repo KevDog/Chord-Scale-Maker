@@ -39,7 +39,7 @@ Chart format (plain text):
 Chords: Cm7, Bbm7, Am7b5, D7#5, EbMaj7, D7/F#, C9 ... (m = minor, shown as -)
 Scales: "<root> <name>", e.g. "Bb Dorian", "D Half-Whole", "G Altered".
 """
-import argparse, json, math, os, re, shutil, subprocess, sys
+import argparse, json, math, re, shutil, subprocess, sys
 from pathlib import Path
 
 LETTERS = "CDEFGAB"
@@ -441,23 +441,8 @@ def count_pages(pdf):
     return n or None
 
 
-def version():
-    """the commit this file came from and its date, as the web app shows it: "2026.10.07 · 1e2bea5" (UTC)"""
-    def git(*args):
-        try:
-            out = subprocess.run(["git", *args], cwd=Path(__file__).resolve().parent, capture_output=True,
-                                 text=True, timeout=5, env={**os.environ, "TZ": "UTC"})
-        except (OSError, subprocess.SubprocessError):
-            return ""
-        return out.stdout.strip() if out.returncode == 0 else ""
-    commit = git("rev-parse", "--short=7", "HEAD")
-    date = git("log", "-1", "--date=format-local:%Y.%m.%d", "--format=%cd", "HEAD") if commit else ""
-    return f"{date} · {commit}" if commit else "unknown (not a git checkout)"
-
-
 def main():
     ap = argparse.ArgumentParser(description="Chord-scale staff paper from a chord chart")
-    ap.add_argument("--version", action="version", version=f"%(prog)s {version()}")
     ap.add_argument("chart", nargs="?")
     ap.add_argument("-o", "--output", help="output basename (default: from title and instrument)")
     ap.add_argument("--instrument", "-i", default="concert", metavar="NAME",

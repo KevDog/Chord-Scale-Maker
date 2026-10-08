@@ -104,7 +104,6 @@ range.
 --no-pdf                write the LilyPond file only
 --list-scales           show supported scales and aliases
 --list-instruments      show instrument presets
---version               the commit this copy is from, with its date (e.g. 2026.10.07 · 1e2bea5)
 ```
 
 ## Adding a scale or instrument
