@@ -157,7 +157,13 @@ export function localKeys(stream: readonly Entry[], cadences: readonly Cadence[]
     // a minor chord that is itself the ii of the next ii–V passes through (Dm7 G7 | Cm7 F7 | Bb7): no area of its own
     const after = nextOf(stream, c.target)
     if (target.family === 'minor' && isDominantLike(after) && after && interval(target.pc, after.pc) === 5) continue
-    const next = diatonic(target, current) ? current : diatonic(target, global) ? global : c.key
+    // a cadence into the home tonic always comes home (Gm7 C7 | FMaj7 after a bridge in C); otherwise one into a
+    // chord of the key of the moment stays there, and one into a chord of the global key returns to it
+    const home = sameKey(c.key, global) && target.pc === global.tonic
+    // in a minor key, a full ii–V–I into a major chord (its relative major, its bVI) tonicizes it: Bernie's Tune's
+    // bridge is in Bb, not on bVI of D minor
+    const tonicized = current.minor && c.ii && !c.tritone && !c.key.minor && !sameKey(c.key, current)
+    const next = home ? global : tonicized ? c.key : diatonic(target, current) ? current : diatonic(target, global) ? global : c.key
     if (!sameKey(next, current)) changes.push({ at: c.approach, key: next })
     current = next
   }

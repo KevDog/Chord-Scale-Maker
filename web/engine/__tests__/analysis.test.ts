@@ -97,7 +97,9 @@ describe('analysis: dominants (§7.1)', () => {
     expect(pins('13b9')).toEqual({ n9: 'b9', n13: '13' })
     expect(pins('7#5')).toEqual({ n11: '#11', n13: 'b13' })
     expect(pins('7(#9)')).toEqual({ n9: 'b9#9', n11: '#11' })
-    expect(pins('9#11')).toEqual({ n9: '9', n11: '#11' })
+    expect(pins('9#11')).toEqual({ n9: '9', n11: '#11', n13: '13' })
+    expect(pins('7#11')).toEqual({ n9: '9', n11: '#11', n13: '13' }) // Lydian Dominant, whatever the key
+    expect(pins('7b9#11')).toEqual({ n9: 'b9', n11: '#11', n13: '13' })
     expect(pins('7')).toEqual({})
   })
 })
@@ -158,6 +160,15 @@ describe('analysis: keys (§5)', () => {
     expect(verdict(library('f_bird_blues'), '3 G7')).toBe('G Mixolydian (D4)')
   })
 
+  it('a cadence into the home tonic comes home (Long Ago and Far Away: C7 | FMaj7 after a bridge in C)', () => {
+    expect(verdict(library('long_ago_and_far_away'), '17 FMaj7')).toBe('F Ionian (M3)')
+  })
+
+  it('in a minor key, a ii–V–I into a major chord opens its key (Bernie’s Tune’s bridge is in Bb)', () => {
+    expect(verdict(library('bernies_tune'), '19 G7')).toBe('G Mixolydian b6 (D4)') // V7/ii in Bb
+    expect(verdict(library('autumn_leaves'), '24 EbMaj7')).toBe('Eb Lydian (M4)') // a tritone cadence doesn't
+  })
+
   it('finds modal tunes', () => {
     for (const name of ['so_what', 'maiden_voyage', 'footprints']) expect(analyse(parseChart(library(name)).value).context, name).toBe('modal')
     expect(analyse(parseChart(library('stella_by_starlight')).value).context).toBe('functional')
@@ -192,5 +203,6 @@ describe('analysis: writing it back (§12.1)', () => {
     // the first G7 goes to the repeat's Dm7 (V7 in C, implied); the repeat's resolves to Cm7 (V7 of C minor)
     const t = 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\n@copy A B 2\nC | 5 | Cm7\nC | 7 | Ab7\n'
     expect(run(t, 'fill', false).conflicts.map((c) => `${c.chord}: ${c.source} / ${c.copy}`)).toEqual(['G7: G Mixolydian / G Phrygian Dominant'])
+    expect(serializeChart(run(t, 'fill', true).doc)).toContain('the repeat at bar 4 would be G Phrygian Dominant')
   })
 })

@@ -152,7 +152,7 @@ The text format needs a document model that preserves comments and `@copy`.
 ```ts
 type ChartLine =
   | { kind: 'meta'; key: MetaKey; value: string }  // title, subtitle (the heading); key, bars (analyser hints); composer, style, form, source
-  | { kind: 'row'; section: string; bar: string; chord: string; scale: string }  // scale '' = default
+  | { kind: 'row'; section: string; bar: string; chord: string; scale: string; comment?: string }  // scale '' = default; comment: a trailing # …
   | { kind: 'copy'; src: string; dst: string; offset: number }
   | { kind: 'comment'; text: string }
   | { kind: 'blank' }
@@ -168,7 +168,11 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Fatal diagnostics** (`isFatal`) mean a hard input limit was exceeded: length, rows or expanded rows. The UI
   must not render or write back such a chart. Non-fatal diagnostics are per-line errors shown inline.
 - **Serializing:** `serializeChart(doc) → text` gives the canonical, column-aligned form.
-- **Expanding:** `expandRows(doc) → Parsed<Row[]>` applies `@copy` in order, capped at 1,000 rows.
+- **Expanding:** `expandRows(doc) → Parsed<Row[]>` applies `@copy` in order, capped at 1,000 rows;
+  `expandRowLines` is the same with each row's source line (a repeat points at the row it copies).
+- **Trailing comments:** a row may end in `# …` (a `#` with space on both sides, so `F#m7` and `C# Lydian` are
+  safe). It holds the analysis (§7a), is kept verbatim through every edit, and is column-aligned when serialized;
+  the grid doesn't show it.
 - **One source of truth:** the `ChartDoc` in `useChartEditor`.
   - Text edits are debounced (about 150 ms), parsed, and replace the doc. Text isn't reformatted while you type;
     the canonical form applies only after a grid edit.
@@ -179,7 +183,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - `@copy` is a compact directive row, and invalid lines show their error.
   - Expanded copies appear in the preview, not the grid.
 - **Cell validation** (`cellError`): a value may not contain `|` or line breaks, start or end with spaces, or
-  start with `#`, `@`, `title:` or `subtitle:`. Otherwise the serialized text would re-parse as a different line.
+  start with `#`, `@`, `title:` or `subtitle:`; a row cell may not contain a `#` after a space (it would start a
+  trailing comment). Otherwise the serialized text would re-parse as a different line.
   A rejected value stays visible and flagged in its cell (`GridCell`), and the doc keeps the last good value.
 - **Chord cell:** free text, validated as above.
 - **Scale cell** (`ScaleCell`): a dropdown with these entries.
@@ -375,6 +380,32 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Opening a chart** copies it into the editor's state; library files are never changed.
 - **Requests:** "Request a chart" opens the contact form, where a photo or PDF of the changes can be attached.
 
+## 7a. Harmonic analysis
+
+The rule set in [plan-analysis.md](plan-analysis.md), built as `web/engine/analysis/` (pure TypeScript) and the
+script `web/scripts/analyse.ts`. The site doesn't run it: it fills in the charts' scales, and their comments say
+why.
+
+- **Passes:** `stream.ts` (chords as heard, slash readings applied, with durations; the form wraps), `keys.ts`
+  (cadences, the global key from `key:` or by score, key areas, the modal and blues contexts), `rules.ts` (each
+  chord's function in its local key and its scale, by family, with the rule's id and a reason). Dominants derive
+  their tensions from the key's reference scale under the symbol's pins; the other families read the scale off the
+  function.
+- **`analyse(doc)`** reports; **`applyAnalysis(doc, analysis, options)`** fills blank scale cells (`fill`), or
+  rewrites every cell but `# keep:` rows (`force`), and with `save` writes the reason as each row's trailing
+  comment, `# area:` lines where the key area changes, and an `# analysis: <date>, rules v<N>; <key>` header (kept
+  as it was when nothing else changed, so a rerun is a no-op). A `@copy` repeat whose verdict differs from its
+  source row is reported and noted in the source row's comment; only the source line can be written.
+- **The CLI:** `npm run analyse -- charts/<tune>.txt` (or `--all`) prints a report per row: ✓ agrees with the
+  chart, ≠ differs, blank, ? unreached. `--write`, `--force`, `--save` as above; `--quiet` gives the summary and
+  the disagreements only.
+- **The library:** every chart but the two modes charts is analysed and saved (`--force --save`); Milestones'
+  Aeolian bridge is a `# keep:` (the melody says so). After a rule change, `npm run analyse -- --all --force
+  --save`, then `make golden`, and read both diffs.
+- **Menus:** every scale the rules give a quality is among that quality's options in `chord_scales.json`
+  (Phrygian Dominant and Mixolydian ♭6 on `7`, Phrygian on minor chords, Mixolydian ♭6 on `7sus4`), so a scale
+  you change can be changed back from the menu.
+
 ## 8. State
 
 - **`useChartEditor(initialText)`:**
@@ -503,6 +534,9 @@ Pages are static, and the only server code is the contact function, so the attac
   - scale options (with `note`, `default`, `outside`) and defaults for a chord corpus
   - the parsed rows of each chart in `charts/`, and two inline charts for parser edge cases
 
+  `fixtures/analysis.json` is the analyser's report over every library chart, one row per line (key, areas, and
+  each row's scale, rule, function and reason); `make golden` rewrites both fixtures.
+
   The golden test compares each section with readable mismatches, then checks that the file is exactly what the
   engine writes now (so a new chart or scale can't go uncovered). After an intended change to the engine,
   `chord_scales.json` or `charts/`: `make golden`, then review the diff. The file was first written by the Python
@@ -512,7 +546,9 @@ Pages are static, and the only server code is the contact function, so the attac
   - transposition spelling
   - interval names
   - guide tones: the textbook ii–V–I, form lengths, ties, transposition, and a check that no library chart's
-    lines leap more than a perfect 4th
+    lines leap more than a 5th (a 4th in the first charts)
+  - the analyser: one test per rule (`analysis.test.ts`, named for the rule, from a real tune), key finding,
+    key areas and contexts, and writing back (fill, force, keep, save, rerun, `@copy` conflicts)
 - **App tests (`web/test/`):** `@nuxt/test-utils` (Nuxt runtime, happy-dom) with Vue Test Utils. They cover:
   - `useChartEditor` sync and debounce
   - library build and search

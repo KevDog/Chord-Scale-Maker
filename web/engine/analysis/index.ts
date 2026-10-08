@@ -123,7 +123,9 @@ export function applyAnalysis(
       if (areaAt.has(i) && analysis.areas.length > 1) out.push({ kind: 'comment', text: areaAt.get(i) ?? '' })
       if (!isKept(l)) {
         const differs = r.scale && row.scale && !sameScale(row.scale, r.scale)
-        const reason = differs ? `≠ rules: ${r.scale} (${r.reason})` : r.held ? undefined : r.reason
+        const repeat = conflicts.find((c) => c.line === i)
+        const base = differs ? `≠ rules: ${r.scale} (${r.reason})` : r.held ? undefined : r.reason
+        const reason = repeat ? `${base ?? r.reason}; the repeat at bar ${repeat.bar} would be ${repeat.copy}` : base
         const { comment: _, ...bare } = row
         row = reason === undefined ? bare : { ...bare, comment: reason }
       }

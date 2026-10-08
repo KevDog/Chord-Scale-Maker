@@ -35,7 +35,7 @@ A1 | 3 | E7    | E Mixolydian
 | `@copy SRC DST OFFSET` | Repeat section `SRC` as `DST`, adding `OFFSET` to each bar number. |
 | `title:`, `subtitle:` | The heading on each page. |
 | `composer:`, `style:`, `key:`, `form:`, `source:` | About the tune: who wrote it, the feel (`Ballad`, `Medium up`, `Latin`…), the key (`Eb`, `Fm`), the form (`AABA, 32 bars`) and where the chart came from. Kept with the chart, not shown; `key:` is the analyser's starting point. |
-| `#` | Comment line. |
+| `#` | Comment line. A row may also end in a comment: `A \| 6 \| D7 \| D Phrygian Dominant  # V7 of G minor: b9 and b13 are in the key` (the `#` needs a space before it). |
 
 Chord symbols: `Cm7`, `C-7`, `Cmi7`, `Bbm7`, `Am7b5`, `D7#5`, `G7#9b13`, `EbMaj7`, `C9`, `Csus`, `C7sus4b9`,
 `D7/F#`, `Cm6/Eb`. Minor chords are shown with an en dash (`C–7`).
@@ -44,6 +44,19 @@ Scales are written `<root> <name>`, such as `Bb Dorian`, `D Half-Whole` or `G Al
 `web/engine/scales.ts`. Each chord quality's default and alternate scales are in `chord_scales.json`, with
 **outside** options (tension to resolve) marked. A slash chord can take its scales from another chord on its
 bass: `DbMaj7/C` is a sus♭9 chord on C, so it defaults to `C Phrygian` (`slash_chords` in `chord_scales.json`).
+
+## Filling in the scales
+
+The library's scales come from a harmonic analysis of each chart (the rules are in
+[docs/plan-analysis.md](docs/plan-analysis.md)): each chord's function in its key decides its scale, and the
+reason is saved as the row's comment. To fill in a new chart written with chords only:
+
+```sh
+cd web && npm run analyse -- ../charts/<tune>.txt --write --save
+```
+
+`--write` fills blank scale cells only; `--force` rewrites every cell the rules reach except rows whose comment
+starts `# keep:`; `--save` writes the comments; `--all` runs over every chart. Without flags it only reports.
 
 ## Instruments
 

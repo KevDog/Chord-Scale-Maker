@@ -30,6 +30,7 @@
     "m": [
       { "root": "1",  "scale": "Dorian",            "default": true },
       { "root": "1",  "scale": "Aeolian",           "note": "when the chord is vi or iv" },
+      { "root": "1",  "scale": "Phrygian",          "note": "v of a minor key" },
       { "root": "1",  "scale": "Minor Pentatonic", "level": "basic" },
       { "root": "1",  "scale": "Melodic Minor" },
       { "root": "1",  "scale": "Bebop Dorian", "level": "advanced" }
@@ -60,6 +61,7 @@
     "m7": [
       { "root": "1",  "scale": "Dorian",            "default": true },
       { "root": "1",  "scale": "Aeolian",           "note": "when the chord is vi or iv" },
+      { "root": "1",  "scale": "Phrygian",          "note": "v of a minor key" },
       { "root": "1",  "scale": "Minor Pentatonic", "level": "basic" },
       { "root": "1",  "scale": "Blues" },
       { "root": "b3", "scale": "Major Pentatonic" },
@@ -82,6 +84,8 @@
       { "root": "1",  "scale": "Mixolydian",        "default": true },
       { "root": "1",  "scale": "Bebop Dominant", "level": "advanced" },
       { "root": "1",  "scale": "Lydian Dominant" },
+      { "root": "1",  "scale": "Phrygian Dominant", "note": "V7 of a minor chord" },
+      { "root": "1",  "scale": "Mixolydian b6",     "note": "V7/ii or V7/iv" },
       { "root": "1",  "scale": "Half-Whole Diminished" },
       { "root": "1",  "scale": "Altered",           "note": "resolving dominants" },
       { "root": "1",  "scale": "Blues" },
@@ -93,6 +97,7 @@
     ],
     "7sus4": [
       { "root": "1",  "scale": "Mixolydian",        "default": true },
+      { "root": "1",  "scale": "Mixolydian b6",     "note": "resolving to a minor chord" },
       { "root": "b7", "scale": "Major Pentatonic", "level": "basic" },
       { "root": "1",  "scale": "Dorian",            "note": "sus with a minor colour", "level": "advanced" },
       { "root": "5",  "scale": "Minor Pentatonic" },

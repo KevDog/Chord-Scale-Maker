@@ -206,7 +206,7 @@ test('the scale level writes its scales into the chart, keeps your own picks, an
   await expect(text).toHaveValue(/D7 +\| D Lydian Dominant/)
   await page.getByText('Standard', { exact: true }).click()
   await expect(text).toHaveValue(/Cm7 +\| C Dorian/)
-  await page.getByLabel('Scale for D7').first().selectOption('D Half-Whole Diminished') // back to the library's own
+  await page.getByLabel('Scale for D7').first().selectOption('D Phrygian Dominant') // back to the library's own
   await expect(status).toHaveText('Edits are saved in this browser as your version.') // the library version again
 })
 

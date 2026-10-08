@@ -40,8 +40,12 @@ retired after the `v1-launch` tag.
 - Chart rows may omit the scale; the quality's default from `chord_scales.json` is used.
 
 ## Typical requests
-- "Make a chart for <tune>": create `charts/<tune>.txt` in concert pitch, one row per chord change with a sensible
-  scale, then `make golden` (the fixture covers every library chart).
+- "Make a chart for <tune>": create `charts/<tune>.txt` in concert pitch, one row per chord change, chords only, with
+  `key:` (and `composer:`, `style:`, `form:`, `source:` when known); then `cd web && npm run analyse --
+  ../charts/<tune>.txt --write --save` to fill the scales and their reasons, read the report, and `make golden`
+  (the fixtures cover every library chart). A scale the melody demands over the rules: write it, with `# keep: …`.
+- Changing an analysis rule (`web/engine/analysis/`, docs/plan-analysis.md): a test first, then
+  `npm run analyse -- --all --force --save`, `make golden`, and read both diffs.
 - "Add scale X": add a formula to `SCALES` in `web/engine/scales.ts` (and an alias if common), pair it with chord
   qualities in `chord_scales.json`, add tests, then `make golden`.
 - "Add instrument X": add to `INSTRUMENTS` in `web/engine/instruments.ts` with clef and key.

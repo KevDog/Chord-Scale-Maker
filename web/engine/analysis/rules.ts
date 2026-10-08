@@ -71,7 +71,12 @@ export function pins(symbol: string): Pins {
   if (/#9/.test(s)) Object.assign(p, { n9: 'b9#9', n11: '#11' })
   else if (/b9/.test(s)) p.n9 = 'b9'
   else if (/(^|[^b#\d])9/.test(s)) p.n9 = '9'
-  if (/#11|b5/.test(s)) p.n11 = '#11'
+  if (/#11|b5/.test(s)) {
+    // a #11 written on its own means Lydian Dominant (the plan's D1): natural 9 and 13 unless the symbol says otherwise
+    p.n11 = '#11'
+    p.n9 ??= '9'
+    if (!/b13|#5|\+/.test(s)) p.n13 = '13'
+  }
   if (/#5|\+/.test(s)) Object.assign(p, { n13: 'b13', n11: '#11' }) // no natural 5th: the #5 is the b13
   else if (/b13/.test(s)) p.n13 = 'b13'
   else if (/(^|[^b#\d])13/.test(s)) p.n13 = '13'
