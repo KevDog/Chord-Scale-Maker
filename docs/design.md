@@ -342,7 +342,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   `app/utils/library.ts` gives `{ slug, title, subtitle, text }[]` at build time. The same parser runs, and a
   test fails the build if any library chart has errors.
 - **Contents:** 15 charts.
-  - Autumn Leaves.
+  - Autumn Leaves, Blue Bossa.
   - F and B♭ blues, jazz blues and Bird blues.
   - Rhythm changes.
   - Modal tunes: So What, Impressions, Milestones, Maiden Voyage, Footprints.
