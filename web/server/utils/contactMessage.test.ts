@@ -43,6 +43,9 @@ describe('contactEmail', () => {
     const e = contactEmail({ name: 'Bill', email: 'bill@example.com', message: 'Here', attachment })
     expect(e.attachments).toEqual([{ filename: 'chart.pdf', content: PDF }])
     expect(e.text).toContain('Attached: chart.pdf')
+    expect(contactEmail({ name: 'Bill', email: 'bill@example.com', message: 'Hi', attachment: null }, '2026.10.07 · 1e2bea5').text).toContain(
+      'chordscalemaker.com (version 2026.10.07 · 1e2bea5)',
+    )
   })
 })
 

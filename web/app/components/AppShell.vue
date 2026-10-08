@@ -34,7 +34,10 @@
     <slot />
     <template #footer>
       <footer class="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 pt-4 pb-6 text-sm text-zinc-500 print:hidden lg:px-12 dark:text-zinc-400">
-        <p>© {{ year }} Kevin Stevens. Provided as is, for practice and education.</p>
+        <p>
+          © {{ year }} Kevin Stevens. Provided as is, for practice and education.
+          <span class="ml-1 text-xs whitespace-nowrap tabular-nums" :title="`Version ${version}: the date and commit this site was built from`">{{ version }}</span>
+        </p>
         <div class="flex gap-2">
           <a
             v-for="s in SUPPORT"
@@ -68,4 +71,5 @@ const route = useRoute()
 const { theme, toggle } = useTheme()
 const newChart = useFeature('newChart')
 const year = new Date().getFullYear() // the build's year: pages are prerendered
+const version = useRuntimeConfig().public.version
 </script>

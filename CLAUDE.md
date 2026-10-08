@@ -25,6 +25,8 @@ chart format and options.
 - Runtime `dependencies` are only what ships to browsers (`vue`, `vexflow`, `@headlessui/vue`, `@heroicons/vue`, `@fontsource-variable/jost`);
   CI gates on `npm audit --omit=dev`.
 - Feature flags: `runtimeConfig.public.features` + `useFeature()`; new flags start off; e2e builds with all on.
+- Versions are the commit's date and hash (`web/build/version.ts`); no number to bump.
+  Milestones are annotated tags (`v1-launch`).
 - UI is Tailwind Plus Catalyst ported to Vue in `web/app/components/ui/` (`<UiButton>`, `<UiListbox>`, …); build
   screens from these. The licensed kits live git-ignored in `design/tailwind-plus/`; never commit them.
 
