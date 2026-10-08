@@ -81,5 +81,5 @@ make golden    # rewrite fixtures/golden.json after an intended engine change
 began as the Python engine's answers, and the TypeScript engine reproduces them exactly; any change in behaviour
 now shows up as a diff to review.
 
-Unfinished features are behind flags, off by default: `NUXT_PUBLIC_FEATURES_NEW_CHART=true make dev` shows
+Unfinished features are behind flags, off by default: `NUXT_PUBLIC_FEATURES_MY_CHARTS=true make dev` shows
 **New chart**. The design is in [docs/design.md](docs/design.md).

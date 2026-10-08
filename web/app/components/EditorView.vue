@@ -3,7 +3,23 @@
     <div class="min-w-0 print:hidden">
       <UiHeading>{{ editor.meta.value.title || 'Untitled' }}</UiHeading>
       <UiText v-if="editor.meta.value.subtitle" class="mt-1">{{ editor.meta.value.subtitle }}</UiText>
+      <!-- My charts: where this chart is saved, and what you can do with it -->
+      <div v-if="saved" class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <UiText role="status" :class="['text-sm/6!', saved.status.value.state === 'failed' && 'text-red-700! dark:text-red-400!']">{{ saveText }}</UiText>
+        <UiButton v-if="saved.edited.value" plain @click="revertOpen = true"><ArrowUturnLeftIcon data-slot="icon" />Revert to library version</UiButton>
+        <UiButton outline :disabled="editor.fatal.value" @click="saveCopy"><DocumentDuplicateIcon data-slot="icon" />Save as a copy</UiButton>
+      </div>
+      <UiText v-if="copyError" role="alert" class="mt-2 text-sm/6! text-red-700! dark:text-red-400!">{{ copyError }}</UiText>
     </div>
+
+    <UiDialog :open="revertOpen" size="md" @close="revertOpen = false">
+      <UiDialogTitle>Revert to the library version?</UiDialogTitle>
+      <UiDialogDescription>Your edits to {{ libraryTitle }} are removed from this browser. To keep them as well, Save as a copy first.</UiDialogDescription>
+      <UiDialogActions>
+        <UiButton plain @click="revertOpen = false">Cancel</UiButton>
+        <UiButton color="note" @click="revert">Revert</UiButton>
+      </UiDialogActions>
+    </UiDialog>
 
     <div class="grid gap-8 print:hidden lg:grid-cols-2">
       <section aria-labelledby="grid-heading" class="min-w-0">
@@ -97,12 +113,17 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowsPointingOutIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
-import { buildSheet, type ChartDoc, instrumentLabel, LIMITS, litKeys, type Mode, partFor, practiceBoxes } from '~~/engine'
+import { ArrowsPointingOutIcon, ArrowUturnLeftIcon, DocumentDuplicateIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
+import { buildSheet, type ChartDoc, instrumentLabel, LIMITS, litKeys, type Mode, partFor, practiceBoxes, serializeChart, setMeta } from '~~/engine'
+import type { SaveTarget } from '~/composables/useSavedChart'
 import type { SheetKind } from '~/utils/sheets'
 
-/** chartSlug: the library chart being edited, if any (practice selections are remembered per chart) */
-const props = defineProps<{ initialText: string; chartSlug?: string }>()
+/**
+ * practiceKey: what practice selections are remembered under (a library slug, or mine:<id>); none for the visit only.
+ * saveTarget: where edits save (My charts); none when the feature is off. libraryTitle: the library chart's title.
+ */
+const props = defineProps<{ initialText: string; practiceKey?: string; saveTarget?: SaveTarget; libraryTitle?: string }>()
+const emit = defineEmits<{ created: [id: string]; reload: [] }>()
 
 const PER_PAGE = 12
 
@@ -113,7 +134,7 @@ const part = computed(() => partFor(prefs.instrument.value))
 const mode = ref<Mode>('root')
 const sheet = ref<SheetKind>('scales')
 const practiceOn = useFeature('practice')
-const practice = usePractice(props.chartSlug)
+const practice = usePractice(props.practiceKey)
 const selection = computed(() => (practiceOn ? practice.selection(mode.value) : null))
 // every staff with its practice keys, for the panel's boxes and what the selection lights
 const practiceStaves = computed(() =>
@@ -125,7 +146,48 @@ const transposed = ref('')
 const focus = useFocusMode()
 const focusBar = ref<HTMLElement | null>(null)
 
-watch(editor.text, (t) => saveDraft(t))
+const saved = props.saveTarget ? useSavedChart(editor.text, props.saveTarget, (id) => emit('created', id)) : null
+const revertOpen = ref(false)
+const copyError = ref('')
+
+const timeText = (at: number): string => {
+  const d = new Date(at)
+  const today = d.toDateString() === new Date().toDateString()
+  return today ? `at ${d.toLocaleTimeString([], { hour: 'numeric', minute: '2-digit' })}` : `on ${d.toLocaleDateString([], { month: 'short', day: 'numeric' })}`
+}
+const saveText = computed((): string => {
+  const s = saved?.status.value
+  if (!s) return ''
+  if (s.state === 'pending') return 'Saving…'
+  if (s.state === 'failed')
+    return s.reason === 'tooLong'
+      ? `Not saved: it's over ${LIMITS.maxChars.toLocaleString()} characters.`
+      : "Not saved: this browser's storage is full, or My charts is at its limit. Delete a chart you don't need."
+  if (s.state === 'saved')
+    return props.libraryTitle ? `Your edited version of ${props.libraryTitle}, saved in this browser ${timeText(s.at)}.` : `Saved in this browser ${timeText(s.at)}.`
+  return props.saveTarget?.kind === 'library' ? 'Edits are saved in this browser as your version.' : 'Saved in this browser once you start editing.'
+})
+
+/** a copy of the chart as it is now, opened in its place */
+function saveCopy(): void {
+  editor.flush()
+  saved?.flush()
+  const doc = setMeta(editor.doc.value, 'title', `${editor.meta.value.title || 'Untitled'} (copy)`)
+  const target = props.saveTarget
+  const basedOn = target?.kind === 'library' ? target.slug : target?.kind === 'mine' ? loadChart(target.id)?.meta.basedOn : undefined
+  const id = newChartId()
+  const result = saveChart({ id, text: serializeChart(doc), kind: 'copy', ...(basedOn ? { basedOn } : {}) })
+  copyError.value = result.ok ? '' : "Couldn't save a copy: this browser's storage is full, or My charts is at its limit."
+  if (result.ok) navigateTo({ path: '/editor', query: { mine: id } })
+}
+
+function revert(): void {
+  revertOpen.value = false
+  const id = saved?.id()
+  if (id) deleteChart(id)
+  saved?.forget()
+  emit('reload')
+}
 
 /** the doc with anything typed in the last moment parsed in */
 function currentDoc(): ChartDoc {

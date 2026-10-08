@@ -78,9 +78,11 @@ export function saveChart(input: Readonly<{ id: string; text: string; kind: Save
   return { ok: true, meta }
 }
 
+/** remove a chart, with its practice picks */
 export function deleteChart(id: string): void {
   writeStored(INDEX, JSON.stringify(readIndex().filter((m) => m.id !== id)))
   removeStored(textKey(id))
+  for (const mode of ['root', 'from']) removeStored(`csm-practice:mine:${id}:${mode}`)
 }
 
 /** the old single draft (the hidden New chart's), moved into My charts once */

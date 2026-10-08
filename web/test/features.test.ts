@@ -6,20 +6,20 @@ import Index from '~/pages/index.vue'
 const { navigate } = vi.hoisted(() => ({ navigate: vi.fn() }))
 mockNuxtImport('navigateTo', () => navigate)
 
-const newChartLinks = (html: string) => html.match(/editor\?new=1/g) ?? []
+const myChartsLinks = (html: string) => html.match(/editor\?new=1/g) ?? []
 
 describe('feature flags', () => {
   beforeEach(() => navigate.mockClear())
 
   it('reads flags from runtime config', () => {
-    expect(useRuntimeConfig().public.features).toEqual({ newChart: false, guideTones: true, practice: true })
-    expect(useFeature('newChart')).toBe(false)
+    expect(useRuntimeConfig().public.features).toEqual({ myCharts: false, guideTones: true, practice: true })
+    expect(useFeature('myCharts')).toBe(false)
   })
 
   it('hides New chart in the navbar, the mobile menu and the library', async () => {
-    expect(newChartLinks((await mountSuspended(AppShell)).html())).toEqual([])
+    expect(myChartsLinks((await mountSuspended(AppShell)).html())).toEqual([])
     const index = await mountSuspended(Index)
-    expect(newChartLinks(index.html())).toEqual([])
+    expect(myChartsLinks(index.html())).toEqual([])
     expect(index.text()).not.toContain('start a new chart')
   })
 

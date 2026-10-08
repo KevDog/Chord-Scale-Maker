@@ -67,7 +67,7 @@ export default defineNuxtConfig({
       version: buildVersion(process.env), // "2026.10.07 · 1e2bea5": the commit's date and the commit (build/version.ts)
       // feature flags (useFeature): new ones start off; NUXT_PUBLIC_FEATURES_<NAME>=true|false overrides one
       features: {
-        newChart: false, // blank charts and this browser's draft; library charts stay editable
+        myCharts: false, // My charts: edits and new charts saved in this browser, files, share links (docs/plan-saving.md)
         guideTones: true, // the Guide tones sheet in the preview (docs/plan-guide-tones.md); on since sign-off
         practice: true, // highlight a chosen subset of each scale's notes (docs/plan-practice.md); on since sign-off
       },

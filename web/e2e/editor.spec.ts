@@ -47,22 +47,13 @@ test('the mode toggle shows one spelling at a time, and Start on only for From',
   await expect(page.locator('section header p').first()).toHaveText('Spelled from the Root')
 })
 
-test('the draft is kept, and New chart starts over', async ({ page }) => {
-  await page.getByLabel('chord for row 1').fill('F7')
-  await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 1 \| F7/) // saved with the text
-  await page.goto('/editor')
-  await expect(page.getByLabel('chord for row 1')).toHaveValue('F7')
-  await page.getByRole('link', { name: 'New chart' }).click()
-  await expect(page.getByLabel('chord for row 1')).toHaveValue('Dm7')
-})
-
 test('transposing rewrites the chart in another key', async ({ page }) => {
   await page.goto('/editor?chart=f_jazz_blues')
   await page.getByRole('button', { name: 'Transpose…' }).click()
   await expect(page.getByLabel('From key')).toHaveValue('F')
   await page.getByLabel('To key').selectOption('Bb')
   await page.getByRole('button', { name: 'Transpose', exact: true }).click()
-  await expect(page.getByRole('status')).toHaveText('Transposed from F to B♭.')
+  await expect(page.getByRole('status').filter({ hasText: 'Transposed' })).toHaveText('Transposed from F to B♭.')
   const text = page.getByLabel('Chart text')
   await expect(text).toHaveValue(/A \| 6 +\| Edim7 +\| E Whole-Half/)
   await expect(text).toHaveValue(/title: F Jazz Blues/) // titles stay as typed

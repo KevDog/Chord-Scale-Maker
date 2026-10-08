@@ -5,11 +5,11 @@
         <!-- an album-cover style tab over the heading -->
         <p class="mb-2 inline-block bg-note-100 px-2 py-0.5 font-display text-xs font-bold tracking-[0.2em] text-note-800 uppercase dark:bg-note-900 dark:text-note-200" aria-hidden="true">Library</p>
         <UiHeading>Chart library</UiHeading>
-        <UiText class="mt-1">Pick a tune to open it in the editor{{ newChart ? ', or start a new chart' : '' }}. Charts are written in concert pitch.</UiText>
+        <UiText class="mt-1">Pick a tune to open it in the editor{{ myCharts ? ', or start a new chart' : '' }}. Charts are written in concert pitch.</UiText>
       </div>
       <div class="flex gap-3">
         <UiButton outline href="/contact">Request a chart</UiButton>
-        <UiButton v-if="newChart" color="note" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
+        <UiButton v-if="myCharts" color="note" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
       </div>
     </div>
 
@@ -20,7 +20,10 @@
       </UiInputGroup>
     </div>
 
-    <UiTable v-if="charts.length" class="mt-6 [--gutter:--spacing(6)] lg:[--gutter:--spacing(10)]">
+    <ClientOnly v-if="myCharts"><MyChartsList :query="query" /></ClientOnly>
+    <UiSubheading v-if="myCharts && charts.length" :level="2" class="mt-8">Library</UiSubheading>
+
+    <UiTable v-if="charts.length" :class="[myCharts ? 'mt-3' : 'mt-6', '[--gutter:--spacing(6)] lg:[--gutter:--spacing(10)]']">
       <UiTableHead>
         <UiTableRow>
           <UiTableHeader>Title</UiTableHeader>
@@ -40,9 +43,9 @@
     <div v-else class="mt-12 text-center">
       <MusicalNoteIcon class="mx-auto size-12 text-zinc-400 dark:text-zinc-500" aria-hidden="true" />
       <UiSubheading class="mt-2" :level="2">No charts match "{{ query }}"</UiSubheading>
-      <UiText class="mt-1">Try another title, or {{ newChart ? 'start a new chart' : 'request one' }}.</UiText>
-      <div v-if="newChart" class="mt-6">
-        <UiButton v-if="newChart" color="note" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
+      <UiText class="mt-1">Try another title, or {{ myCharts ? 'start a new chart' : 'request one' }}.</UiText>
+      <div v-if="myCharts" class="mt-6">
+        <UiButton v-if="myCharts" color="note" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
       </div>
     </div>
   </div>
@@ -54,5 +57,5 @@ import { MusicalNoteIcon } from '@heroicons/vue/24/outline'
 
 const query = ref('')
 const charts = computed(() => searchLibrary(LIBRARY, query.value))
-const newChart = useFeature('newChart')
+const myCharts = useFeature('myCharts')
 </script>
