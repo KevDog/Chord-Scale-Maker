@@ -1,7 +1,7 @@
 # Saving charts without accounts: plan
 
-Status: **built, awaiting sign-off.** Phases 1–5 are done behind the `myCharts` flag (it replaces `newChart`);
-turning it on is the last step.
+Status: **done.** Phases 1–5 built behind the `myCharts` flag (it replaced `newChart`); on in production since
+sign-off.
 
 People can keep their work three ways, none of which needs an account or a server:
 

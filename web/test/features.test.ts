@@ -12,22 +12,24 @@ describe('feature flags', () => {
   beforeEach(() => navigate.mockClear())
 
   it('reads flags from runtime config', () => {
-    expect(useRuntimeConfig().public.features).toEqual({ myCharts: false, guideTones: true, practice: true })
-    expect(useFeature('myCharts')).toBe(false)
+    expect(useRuntimeConfig().public.features).toEqual({ myCharts: true, guideTones: true, practice: true })
+    expect(useFeature('myCharts')).toBe(true)
   })
 
-  it('hides New chart (the header never has it; the library does with myCharts)', async () => {
+  it('offers New chart in the library, not the header', async () => {
     expect(myChartsLinks((await mountSuspended(AppShell)).html())).toEqual([])
     const index = await mountSuspended(Index)
-    expect(myChartsLinks(index.html())).toEqual([])
-    expect(index.text()).not.toContain('start a new chart')
+    expect(myChartsLinks(index.html())).toHaveLength(1)
+    expect(index.text()).toContain('start a new chart')
   })
 
-  it('sends the editor home unless it opens a library chart', async () => {
-    await mountSuspended((await import('~/pages/editor.vue')).default, { route: '/editor?new=1' })
+  it('opens library, new and saved charts, and sends a bare /editor home', async () => {
+    const editor = (await import('~/pages/editor.vue')).default
+    for (const route of ['/editor?new=1', '/editor?chart=f_blues', '/editor?mine=abcdef123456']) {
+      await mountSuspended(editor, { route })
+      expect(navigate, route).not.toHaveBeenCalled()
+    }
+    await mountSuspended(editor, { route: '/editor' })
     expect(navigate).toHaveBeenCalledWith('/', { replace: true })
-    navigate.mockClear()
-    await mountSuspended((await import('~/pages/editor.vue')).default, { route: '/editor?chart=f_blues' })
-    expect(navigate).not.toHaveBeenCalled()
   })
 })

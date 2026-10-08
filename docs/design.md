@@ -368,7 +368,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Browser storage** goes through `utils/storage.ts` (`readStored`, `writeStored`). It's best-effort, because
   storage can be blocked or full. It holds the theme, the preferences, practice picks and My charts. Nothing is
   sent anywhere.
-- **My charts** (behind `myCharts`; [plan-saving.md](plan-saving.md)):
+- **My charts** (the `myCharts` flag, on; [plan-saving.md](plan-saving.md)):
   - `utils/myCharts.ts`: an index of small records (`csm-charts`) plus one key per chart text (`csm-chart:<id>`).
     Kinds: `edited` (your version of a library chart, one per slug), `copy`, `new`. At most 200 charts of
     `LIMITS.maxChars` each; a failed write reports `full` and never leaves an index entry without its text.
@@ -388,9 +388,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - New flags start off, and every flag is fixed at build time. `NUXT_PUBLIC_FEATURES_<NAME>=true|false`
     overrides one for a build or `make dev`.
   - `npm run e2e` builds with every flag on.
-  - `myCharts` (My charts, New chart, Download/Open, share links) is off in production: those controls are hidden,
-    and `/editor` without a library chart goes back to the library.
-  - `guideTones` (the Guide tones sheet) and `practice` (the Practice panel) are on.
+  - `myCharts` (My charts, New chart, Download/Open, share links), `guideTones` (the Guide tones sheet) and
+    `practice` (the Practice panel) are on, since sign-off.
 
 ## 9. Security
 
