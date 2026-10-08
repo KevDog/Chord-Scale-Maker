@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { chartHeading, chartMeta, expandRows, isFatal, keyLabel, parseChart, resolveScale, serializeChart } from '../chart'
+import { chartHeading, chartMeta, expandRowLines, expandRows, isFatal, keyLabel, parseChart, resolveScale, serializeChart } from '../chart'
 import { LIMITS } from '../limits'
 
 const SAMPLE = `title: T
@@ -95,5 +95,25 @@ describe('chart', () => {
     const { value: rows, diagnostics } = expandRows(parseChart(bomb).value)
     expect(rows.length).toBeLessThanOrEqual(LIMITS.maxExpandedRows)
     expect(diagnostics).toHaveLength(1)
+  })
+
+  it('keeps a trailing comment on a row, apart from sharps', () => {
+    const text = 'A | 1 | F#m7 | F# Dorian  # ii of the ii–V to E\nA | 2 | B7 #\nA | 3 | C#7\n'
+    const { value: doc, diagnostics } = parseChart(text)
+    expect(diagnostics).toEqual([])
+    expect(doc.lines).toEqual([
+      { kind: 'row', section: 'A', bar: '1', chord: 'F#m7', scale: 'F# Dorian', comment: 'ii of the ii–V to E' },
+      { kind: 'row', section: 'A', bar: '2', chord: 'B7', scale: '', comment: '' },
+      { kind: 'row', section: 'A', bar: '3', chord: 'C#7', scale: '' },
+    ])
+    const out = serializeChart(doc)
+    expect(out).toBe('A | 1 | F#m7 | F# Dorian  # ii of the ii–V to E\nA | 2 | B7    #\nA | 3 | C#7\n')
+    expect(serializeChart(parseChart(out).value)).toBe(out) // round-trips
+    expect(parseChart(`A | 1 | C # ${'x'.repeat(LIMITS.maxMeta + 1)}`).diagnostics).toHaveLength(1)
+  })
+
+  it('expands rows with the line each came from', () => {
+    const rows = expandRowLines(parseChart(SAMPLE).value).value
+    expect(rows.map((r) => `${r.section}${r.bar}@${r.line}`)).toEqual(['A1@4', 'A2@5', 'B9@4', 'B10@5'])
   })
 })

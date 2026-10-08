@@ -2,7 +2,7 @@ title: Autumn Leaves
 subtitle: Full Form, Alternate Changes
 composer: Joseph Kosma
 style: Medium
-key: Fm
+key: Gm
 form: AAB
 
 # section | bar | chord | scale

@@ -14,6 +14,8 @@ describe('edit', () => {
     expect(cellError('Title: x')).toMatch(/start with/)
     expect(cellError(' A')).toMatch(/spaces/)
     expect(cellError('x'.repeat(41))).toMatch(/longer/)
+    expect(cellError('C Dorian # mine')).toMatch(/comment/) // would re-parse as a trailing comment
+    expect([cellError('F#m7'), cellError('C# Lydian'), cellError('We\'re # 1', 120, true)]).toEqual([null, null, null])
     expect(cellError('x'.repeat(100), 120)).toBeNull()
   })
 

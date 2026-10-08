@@ -3,7 +3,7 @@
     <div class="grid gap-4 sm:grid-cols-2">
       <UiField v-for="key in META_KEYS" :key="key">
         <UiLabel class="capitalize">{{ key }}</UiLabel>
-        <GridCell :value="meta[key]" :max-length="LIMITS.maxMeta" @update="(v) => emitDoc(setMeta(doc, key, v))" />
+        <GridCell meta :value="meta[key]" :max-length="LIMITS.maxMeta" @update="(v) => emitDoc(setMeta(doc, key, v))" />
       </UiField>
     </div>
     <UiTable dense bleed class="[--gutter:--spacing(1)]">
