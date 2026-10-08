@@ -99,11 +99,12 @@ export function checkAttachment(v: unknown): ContactAttachment | null | string {
 /** the email: plain text only (no HTML to inject into), and a one-line subject (no header injection) */
 export function contactEmail(
   m: ContactMessage,
+  version = '',
 ): Readonly<{ subject: string; text: string; replyTo: string; attachments: readonly Readonly<{ filename: string; content: string }>[] }> {
   const name = m.name.replace(/[\r\n]+/g, ' ').slice(0, 80)
   return {
     subject: `Chord Scale Maker: message from ${name}`,
-    text: `${m.message}\n\n— ${name} <${m.email}>${m.attachment ? `\nAttached: ${m.attachment.filename}` : ''}\nSent from the contact form at chordscalemaker.com`,
+    text: `${m.message}\n\n— ${name} <${m.email}>${m.attachment ? `\nAttached: ${m.attachment.filename}` : ''}\nSent from the contact form at chordscalemaker.com${version ? ` (version ${version})` : ''}`,
     replyTo: m.email,
     attachments: m.attachment ? [{ filename: m.attachment.filename, content: m.attachment.content }] : [],
   }

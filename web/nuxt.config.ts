@@ -5,6 +5,7 @@ import { analyticsScripts } from './build/analytics'
 import { addCspMeta } from './build/csp'
 import { quotesPlugin } from './build/quotes'
 import { SECURITY_HEADERS } from './build/headers'
+import { buildVersion } from './build/version'
 
 /** dev: charts/ and chord_scales.json sit outside Vite's root, so it doesn't watch them by itself (quotes.json is
  *  watched by its own plugin) */
@@ -63,6 +64,7 @@ export default defineNuxtConfig({
     // NUXT_CONTACT_DRY_RUN=true validates without sending (local builds, e2e). Server-only: never sent to the page.
     contact: { resendApiKey: '', to: '', from: '', dryRun: false },
     public: {
+      version: buildVersion(process.env), // "2026.10.07 · 1e2bea5": the commit's date and the commit (build/version.ts)
       // feature flags (useFeature): new ones start off; NUXT_PUBLIC_FEATURES_<NAME>=true|false overrides one
       features: {
         newChart: false, // blank charts and this browser's draft; library charts stay editable

@@ -547,3 +547,8 @@ Pages are static, and the only server code is the contact function, so the attac
 8. **One spelling at a time** in the web preview (From X or From root). The CLI keeps `--mode both`.
 9. **Web-only features** (Transpose, interval labels, guide tones) need no CLI parity. They're built on the
    ported engine, so they inherit its spelling rules.
+10. **Versioning: the commit is the release.** Every merge to main deploys, so there's no number to bump. The
+    version is the commit's date (UTC) and short hash, e.g. `2026.10.07 · 1e2bea5` (`build/version.ts`, in
+    `runtimeConfig.public.version`): shown in the footer, added to each contact-form email, and printed by
+    `jazz_scales.py --version`. Named milestones are annotated git tags (`v1-launch`). Revisit SemVer only if the
+    engine is published as a package or the CLI gains outside users.
