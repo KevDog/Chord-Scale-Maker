@@ -13,6 +13,16 @@ describe('qualities', () => {
     expect(defaultScale('Am7b5')).toBe('A Locrian')
   })
 
+  it('keeps b13 dominants off Half-Whole, whose 13 is natural', () => {
+    expect(['G7b9', 'G13b9', 'G7b9b13', 'G7(b9,b13)', 'G7b13'].map(defaultScale)).toEqual([
+      'G Half-Whole Diminished',
+      'G Half-Whole Diminished',
+      'G Phrygian Dominant',
+      'G Phrygian Dominant',
+      'G Mixolydian b6',
+    ])
+  })
+
   it('returns null for unknown qualities so the UI can prompt', () => {
     expect(resolveQuality('Cm7#5#9x')).toBeNull()
     expect(defaultScale('Cm7#5#9x')).toBeNull()

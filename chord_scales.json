@@ -11,7 +11,8 @@
     "7": ["9", "13", "7(13)", "9(13)"],
     "7sus4": ["sus", "sus4", "7sus", "9sus4", "9sus", "11"],
     "7sus4b9": ["7susb9", "susb9", "sus4b9", "7sus4(b9)", "7sus(b9)", "sus(b9)", "9sus4b9", "phryg"],
-    "7b9": ["7(b9)", "7b9b13", "7(b9,b13)", "13b9"],
+    "7b9": ["7(b9)", "13b9"],
+    "7b9b13": ["7(b9,b13)", "7b13b9", "7(b13,b9)"],
     "7b13": ["7(b13)", "9b13", "9(b13)"],
     "7#11": ["7(#11)", "9#11", "7b5", "7(b5)", "13#11"],
     "7alt": ["alt", "7#9", "7(#9)", "7#5", "7(#5)", "7+", "+7", "7#9b13", "7#5#9", "7b9#9", "7(#9,b13)"],
@@ -96,6 +97,11 @@
       { "root": "1",  "scale": "Half-Whole Diminished", "default": true },
       { "root": "1",  "scale": "Phrygian Dominant", "note": "V7 to minor, b9 b13", "level": "basic" },
       { "root": "1",  "scale": "Spanish Phrygian",  "note": "Phrygian Dominant with the #9 too", "level": "advanced" },
+      { "root": "1",  "scale": "Altered" }
+    ],
+    "7b9b13": [
+      { "root": "1",  "scale": "Phrygian Dominant", "default": true, "note": "V7 to minor" },
+      { "root": "1",  "scale": "Spanish Phrygian",  "note": "with the #9 too", "level": "advanced" },
       { "root": "1",  "scale": "Altered" }
     ],
     "7b13": [
