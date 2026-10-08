@@ -21,7 +21,7 @@ B | 14 | Em7b5  | E Locrian
 B | 14 | A7b9   | A Phrygian Dominant
 B | 15 | Am7b5  | A Locrian
 B | 16 | D7b9   | D Phrygian Dominant
-C | 17 | G7#5   | G Whole Tone
+C | 17 | G7#5   | G Altered
 C | 19 | Cm7    | C Dorian
 C | 21 | Ab7#11 | Ab Lydian Dominant
 C | 23 | BbMaj7 | Bb Ionian
