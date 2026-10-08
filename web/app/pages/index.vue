@@ -1,5 +1,5 @@
 <template>
-  <div>
+  <div @dragover="onDragOver" @drop="onDrop">
     <div class="flex flex-wrap items-end justify-between gap-4">
       <div class="max-w-xl">
         <!-- an album-cover style tab over the heading -->
@@ -7,11 +7,16 @@
         <UiHeading>Chart library</UiHeading>
         <UiText class="mt-1">Pick a tune to open it in the editor{{ myCharts ? ', or start a new chart' : '' }}. Charts are written in concert pitch.</UiText>
       </div>
-      <div class="flex gap-3">
+      <div class="flex flex-wrap gap-3">
         <UiButton outline href="/contact">Request a chart</UiButton>
-        <UiButton v-if="myCharts" color="note" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
+        <template v-if="myCharts">
+          <UiButton outline :disabled="opener.busy.value" title="Open a chart saved as a .txt file (or drop one on this page)" @click="fileInput?.click()"><FolderOpenIcon data-slot="icon" />Open chart…</UiButton>
+          <UiButton color="note" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
+        </template>
       </div>
     </div>
+    <input v-if="myCharts" ref="fileInput" type="file" accept=".txt,text/plain" class="sr-only" tabindex="-1" aria-hidden="true" @change="pick">
+    <UiText v-if="opener.error.value" role="alert" class="mt-3 text-red-700! dark:text-red-400!">{{ opener.error.value }}</UiText>
 
     <div class="mt-8 max-w-md">
       <UiInputGroup>
@@ -52,10 +57,28 @@
 </template>
 
 <script setup lang="ts">
-import { MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/16/solid'
+import { FolderOpenIcon, MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/16/solid'
 import { MusicalNoteIcon } from '@heroicons/vue/24/outline'
 
 const query = ref('')
 const charts = computed(() => searchLibrary(LIBRARY, query.value))
 const myCharts = useFeature('myCharts')
+const opener = useOpenChart()
+const fileInput = ref<HTMLInputElement | null>(null)
+
+function pick(e: Event): void {
+  const input = e.target as HTMLInputElement
+  void opener.open(input.files?.[0])
+  input.value = '' // the same file again still fires change
+}
+/** with My charts, a chart file dropped anywhere on the page opens it */
+const hasFile = (e: DragEvent): boolean => myCharts && (e.dataTransfer?.types.includes('Files') ?? false)
+function onDragOver(e: DragEvent): void {
+  if (hasFile(e)) e.preventDefault() // allow the drop
+}
+function onDrop(e: DragEvent): void {
+  if (!hasFile(e)) return
+  e.preventDefault()
+  void opener.open(e.dataTransfer?.files[0])
+}
 </script>

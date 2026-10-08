@@ -8,6 +8,7 @@
         <UiText role="status" :class="['text-sm/6!', saved.status.value.state === 'failed' && 'text-red-700! dark:text-red-400!']">{{ saveText }}</UiText>
         <UiButton v-if="saved.edited.value" plain @click="revertOpen = true"><ArrowUturnLeftIcon data-slot="icon" />Revert to library version</UiButton>
         <UiButton outline :disabled="editor.fatal.value" @click="saveCopy"><DocumentDuplicateIcon data-slot="icon" />Save as a copy</UiButton>
+        <UiButton outline @click="download"><ArrowDownTrayIcon data-slot="icon" />Download</UiButton>
       </div>
       <UiText v-if="copyError" role="alert" class="mt-2 text-sm/6! text-red-700! dark:text-red-400!">{{ copyError }}</UiText>
     </div>
@@ -113,7 +114,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowsPointingOutIcon, ArrowUturnLeftIcon, DocumentDuplicateIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
+import { ArrowDownTrayIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, DocumentDuplicateIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import { buildSheet, type ChartDoc, instrumentLabel, LIMITS, litKeys, type Mode, partFor, practiceBoxes, serializeChart, setMeta } from '~~/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 import type { SheetKind } from '~/utils/sheets'
@@ -179,6 +180,13 @@ function saveCopy(): void {
   const result = saveChart({ id, text: serializeChart(doc), kind: 'copy', ...(basedOn ? { basedOn } : {}) })
   copyError.value = result.ok ? '' : "Couldn't save a copy: this browser's storage is full, or My charts is at its limit."
   if (result.ok) navigateTo({ path: '/editor', query: { mine: id } })
+}
+
+/** the chart as a .txt file, as it is now */
+function download(): void {
+  editor.flush()
+  saved?.flush()
+  downloadText(filenameFor(editor.meta.value.title || 'Untitled'), editor.text.value)
 }
 
 function revert(): void {

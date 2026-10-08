@@ -20,7 +20,8 @@
           </UiTableCell>
           <UiTableCell class="text-zinc-500 dark:text-zinc-400">{{ changed(c.updatedAt) }}</UiTableCell>
           <UiTableCell class="text-right">
-            <UiButton plain :aria-label="`Delete ${c.title}`" @click="toDelete = c"><TrashIcon data-slot="icon" /></UiButton>
+            <UiButton plain :aria-label="`Download ${c.title}`" title="Download as a .txt file" @click="download(c)"><ArrowDownTrayIcon data-slot="icon" /></UiButton>
+            <UiButton plain :aria-label="`Delete ${c.title}`" title="Delete" @click="toDelete = c"><TrashIcon data-slot="icon" /></UiButton>
           </UiTableCell>
         </UiTableRow>
       </UiTableBody>
@@ -39,7 +40,7 @@
 </template>
 
 <script setup lang="ts">
-import { TrashIcon } from '@heroicons/vue/16/solid'
+import { ArrowDownTrayIcon, TrashIcon } from '@heroicons/vue/16/solid'
 import type { BadgeColor } from '~/utils/catalyst/badge'
 import type { SavedMeta } from '~/utils/myCharts'
 
@@ -78,6 +79,11 @@ const deleteText = computed(() =>
     ? 'Your edits are removed from this browser, and the library version stays. This can’t be undone.'
     : 'It’s removed from this browser. This can’t be undone; download it first to keep a copy.',
 )
+
+function download(c: SavedMeta): void {
+  const saved = loadChart(c.id)
+  if (saved) downloadText(filenameFor(c.title), saved.text)
+}
 
 function confirmDelete(): void {
   if (toDelete.value) deleteChart(toDelete.value.id)

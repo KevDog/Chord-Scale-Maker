@@ -50,3 +50,36 @@ test('a chart that isn’t saved here says so', async ({ page }) => {
   await page.goto('/editor?mine=doesnotexist')
   await expect(page.getByRole('heading', { name: 'That chart isn’t here' })).toBeVisible()
 })
+
+test('Download saves the chart as text, scales included, and Open brings it back as a new chart', async ({ page }) => {
+  await page.goto('/editor?chart=blue_bossa')
+  const downloading = page.waitForEvent('download')
+  await page.getByRole('button', { name: 'Download' }).click()
+  const file = await downloading
+  expect(file.suggestedFilename()).toBe('Blue Bossa.txt')
+  const text = await (await file.createReadStream()).toArray().then((chunks) => Buffer.concat(chunks).toString('utf8'))
+  expect(text).toContain('A | 6  | G7#5#9 | G Altered')
+  await page.goto('/')
+  const chooser = page.waitForEvent('filechooser')
+  await page.getByRole('button', { name: 'Open chart…' }).click()
+  await (await chooser).setFiles({ name: 'Blue Bossa.txt', mimeType: 'text/plain', buffer: Buffer.from(text.replace('title: Blue Bossa', 'title: Blue Bossa (mine)')) })
+  await expect(page).toHaveURL(/\/editor\?mine=/)
+  await expect(page.getByRole('heading', { name: 'Blue Bossa (mine)', level: 1 })).toBeVisible()
+  await expect(page.getByLabel('Chart text')).toHaveValue(/G7#5#9 \| G Altered/) // the scale choices came with it
+})
+
+test('a file dropped on the library opens, and a wrong one says why', async ({ page }) => {
+  await page.goto('/')
+  const drop = async (name: string, body: string, type: string) => {
+    const dt = await page.evaluateHandle(([n, b, t]) => {
+      const d = new DataTransfer()
+      d.items.add(new File([b ?? ''], n ?? '', { type: t ?? '' }))
+      return d
+    }, [name, body, type])
+    await page.getByRole('heading', { name: 'Chart library' }).dispatchEvent('drop', { dataTransfer: dt })
+  }
+  await drop('photo.png', 'x', 'image/png')
+  await expect(page.getByRole('alert')).toHaveText('Please open a chart saved as a .txt file.')
+  await drop('tune.txt', 'title: Dropped\nA | 1 | Cm7\n', 'text/plain')
+  await expect(page.getByRole('heading', { name: 'Dropped', level: 1 })).toBeVisible()
+})
