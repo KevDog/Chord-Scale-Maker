@@ -5,35 +5,36 @@ style: Ballad
 key: C
 form: AB, 18 bars
 source: Colorado Cookbook, p. 274
+# analysis: 2026-10-08, rules v1; C
 
 # section | bar | chord | scale
-A | 1  | C
-A | 1  | CMaj7
-A | 2  | C7
-A | 3  | F
-A | 3  | F#dim7
-A | 4  | CMaj7/G
-A | 5  | Dm7
-A | 5  | G7
-A | 6  | CMaj7
-A | 6  | C#dim7
-A | 7  | D7
-A | 8  | Dm7
-A | 8  | G7b9
-B | 9  | C
-B | 9  | CMaj7
-B | 10 | C7
-B | 11 | F
-B | 11 | F#dim7
-B | 12 | CMaj7/G
-B | 13 | Dm7
-B | 13 | G7
-B | 14 | CMaj7
-B | 14 | C#dim7
-B | 15 | D7
-B | 16 | Dm7
-B | 16 | G7b9
-B | 17 | C7sus4
-B | 17 | C/G
-B | 17 | G7sus4
-B | 18 | C
+A | 1  | C       | C Ionian                  # tonic: the 4th is in the key
+A | 1  | CMaj7   | C Ionian                  # tonic: the 4th is in the key
+A | 2  | C7      | C Mixolydian              # V7/IV in C: natural tensions
+A | 3  | F       | F Lydian                  # IV: the #4 is the key’s 7th
+A | 3  | F#dim7  | F# Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+A | 4  | CMaj7/G | C Ionian                  # tonic: the 4th is in the key
+A | 5  | Dm7     | D Dorian                  # ii of the ii–V to C
+A | 5  | G7      | G Mixolydian              # V7 of C: natural tensions
+A | 6  | CMaj7   | C Ionian                  # tonic: the 4th is in the key
+A | 6  | C#dim7  | C# Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+A | 7  | D7      | D Mixolydian              # II7 in C, not resolving: natural tensions
+A | 8  | Dm7     | D Dorian                  # ii of the ii–V to C
+A | 8  | G7b9    | G Half-Whole Diminished   # V7 of C: the b9 from the symbol
+B | 9  | C       | C Ionian                  # tonic: the 4th is in the key
+B | 9  | CMaj7   | C Ionian                  # tonic: the 4th is in the key
+B | 10 | C7      | C Mixolydian              # V7/IV in C: natural tensions
+B | 11 | F       | F Lydian                  # IV: the #4 is the key’s 7th
+B | 11 | F#dim7  | F# Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+B | 12 | CMaj7/G | C Ionian                  # tonic: the 4th is in the key
+B | 13 | Dm7     | D Dorian                  # ii of the ii–V to C
+B | 13 | G7      | G Mixolydian              # V7 of C: natural tensions
+B | 14 | CMaj7   | C Ionian                  # tonic: the 4th is in the key
+B | 14 | C#dim7  | C# Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+B | 15 | D7      | D Mixolydian              # II7 in C, not resolving: natural tensions
+B | 16 | Dm7     | D Dorian                  # ii of G7b9: Dorian
+B | 16 | G7b9    | G Half-Whole Diminished   # extended dominant: V7 of C7sus4; b9 from the symbol
+B | 17 | C7sus4  | C Mixolydian              # static sus: Mixolydian
+B | 17 | C/G     | C Ionian                  # tonic: the 4th is in the key
+B | 17 | G7sus4  | G Mixolydian              # V7sus4 of C: natural tensions
+B | 18 | C       | C Ionian                  # tonic: the 4th is in the key

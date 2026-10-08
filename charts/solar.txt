@@ -5,17 +5,23 @@ style: Medium up
 key: Cm
 form: A, 12 bars
 source: Colorado Cookbook, p. 207
+# analysis: 2026-10-08, rules v1; C minor
 
 # section | bar | chord | scale
-A | 1  | Cm
-A | 3  | Gm7
-A | 4  | C7alt
-A | 5  | FMaj7
-A | 7  | Fm7
-A | 8  | Bb7alt
-A | 9  | EbMaj7
-A | 10 | Ebm7
-A | 10 | Ab7alt
-A | 11 | DbMaj7
-A | 12 | Dm7b5
-A | 12 | G7alt
+# area: C minor (bar 1)
+A | 1  | Cm     | C Dorian    # tonic minor: Dorian by convention
+# area: F major (bars 3–5)
+A | 3  | Gm7    | G Dorian    # ii of the ii–V to F
+A | 4  | C7alt  | C Altered   # from the symbol: altered
+A | 5  | FMaj7  | F Ionian    # tonic: the 4th is in the key
+# area: C minor (bars 7–9)
+A | 7  | Fm7    | F Dorian    # ii of the ii–V to Eb
+A | 8  | Bb7alt | Bb Altered  # from the symbol: altered
+A | 9  | EbMaj7 | Eb Ionian   # bIII of C minor: the relative major itself
+# area: Db major (bars 10–11)
+A | 10 | Ebm7   | Eb Dorian   # ii of the ii–V to Db
+A | 10 | Ab7alt | Ab Altered  # from the symbol: altered
+A | 11 | DbMaj7 | Db Ionian   # tonic: the 4th is in the key
+# area: C minor (bar 12)
+A | 12 | Dm7b5  | D Locrian   # iiø7 of the ii–V to C minor: the b9 is in the key
+A | 12 | G7alt  | G Altered   # from the symbol: altered

@@ -4,27 +4,28 @@ style: Up
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 25
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
-A | 1  | Gm7
-A | 3  | C7
-A | 5  | FMaj7
-A | 6  | Bb7
-A | 7  | Am7
-A | 8  | D7
-B | 9  | C7
-B | 11 | Gm7
-B | 12 | C7
-B | 13 | FMaj7
-C | 17 | Am7b5
-C | 19 | D7
-C | 21 | Gm7
-C | 23 | Bbm7
-C | 24 | Eb7
-D | 25 | FMaj7
-D | 26 | Bb7
-D | 27 | Am7
-D | 28 | D7
-D | 29 | Gm7
-D | 30 | C7
-D | 31 | FMaj7
+A | 1  | Gm7   | G Dorian            # ii of the ii–V to F
+A | 3  | C7    | C Mixolydian        # V7 of F: natural tensions
+A | 5  | FMaj7 | F Ionian            # tonic: the 4th is in the key
+A | 6  | Bb7   | Bb Lydian Dominant  # tritone substitute: resolves down a half step to Am7
+A | 7  | Am7   | A Dorian            # ii of D7: Dorian
+A | 8  | D7    | D Mixolydian        # passing ii–V: its own key
+B | 9  | C7    | C Mixolydian        # V7 in F, not resolving: natural tensions
+B | 11 | Gm7   | G Dorian            # ii of the ii–V to F
+B | 12 | C7    | C Mixolydian        # V7 of F: natural tensions
+B | 13 | FMaj7 | F Ionian            # tonic: the 4th is in the key
+C | 17 | Am7b5 | A Locrian           # iiø7 of the ii–V to G minor: the b9 is in the key
+C | 19 | D7    | D Mixolydian b6     # V7/ii in F: the b13 is in the key
+C | 21 | Gm7   | G Dorian            # ii: Dorian, the key’s own notes
+C | 23 | Bbm7  | Bb Dorian           # ii of Eb7: Dorian
+C | 24 | Eb7   | Eb Lydian Dominant  # back door bVII7 to FMaj7: the #11 is in the key
+D | 25 | FMaj7 | F Ionian            # tonic: the 4th is in the key
+D | 26 | Bb7   | Bb Lydian Dominant  # tritone substitute: resolves down a half step to Am7
+D | 27 | Am7   | A Dorian            # ii of the ii–V to G minor
+D | 28 | D7    | D Mixolydian b6     # V7/ii in F: the b13 is in the key
+D | 29 | Gm7   | G Dorian            # ii of the ii–V to F
+D | 30 | C7    | C Mixolydian        # V7 of F: natural tensions
+D | 31 | FMaj7 | F Ionian            # tonic: the 4th is in the key

@@ -4,83 +4,87 @@ style: Ballad
 key: G
 form: AABC
 source: Colorado Cookbook, p. 61
+# analysis: 2026-10-08, rules v1; G
 
 # section | bar | chord | scale
-A1 | 1  | GMaj7
-A1 | 1  | Bbm7
-A1 | 1  | Eb7
-A1 | 2  | Am7
-A1 | 2  | B7
-A1 | 3  | Em
-A1 | 3  | Em/D#
-A1 | 3  | D7
-A1 | 3  | D7/C
-A1 | 4  | Bm7b5
-A1 | 4  | E7
-A1 | 5  | Am7
-A1 | 5  | F9
-A1 | 6  | Bm7
-A1 | 6  | Bbm7
-A1 | 7  | Am7
-A1 | 7  | D7
-A1 | 8  | Bm7
-A1 | 8  | Bb7
-A1 | 8  | Am7
-A1 | 8  | D7
-A2 | 9  | GMaj7
-A2 | 9  | Bbm7
-A2 | 9  | Eb7
-A2 | 10 | Am7
-A2 | 10 | B7
-A2 | 11 | Em
-A2 | 11 | Em/D#
-A2 | 11 | D7
-A2 | 11 | D7/C
-A2 | 12 | Bm7b5
-A2 | 12 | E7
-A2 | 13 | Am7
-A2 | 13 | F9
-A2 | 14 | Bm7
-A2 | 14 | Bbm7
-A2 | 15 | Am7
-A2 | 15 | D13
-A2 | 16 | Fm7
-A2 | 16 | Bb7
-B  | 17 | EbMaj7
-B  | 17 | Cm7
-B  | 18 | Fm7
-B  | 18 | Bb7
-B  | 19 | Gm7
-B  | 19 | F#m7
-B  | 19 | B7
-B  | 20 | Fm7
-B  | 20 | Bb7
-B  | 21 | EbMaj7
-B  | 21 | Cm7
-B  | 22 | Am7b5
-B  | 22 | D7
-B  | 22 | Gm
-B  | 23 | Am7
-B  | 23 | D7
-B  | 24 | Bbm7
-B  | 24 | Eb7
-B  | 24 | Am9
-B  | 24 | D13
-C  | 25 | GMaj7
-C  | 25 | Bbm7
-C  | 25 | Eb7
-C  | 26 | Am7
-C  | 26 | B7
-C  | 27 | Em
-C  | 27 | Em/D#
-C  | 27 | D7
-C  | 27 | D7/C
-C  | 28 | Bm7b5
-C  | 28 | E7
-C  | 29 | Am7
-C  | 29 | F9
-C  | 30 | Bm7
-C  | 30 | Bbm7
-C  | 31 | Am7
-C  | 31 | D13
-C  | 32 | GMaj7
+# area: G major (bars 1–15)
+A1 | 1  | GMaj7  | G Ionian             # tonic: the 4th is in the key
+A1 | 1  | Bbm7   | Bb Dorian            # ii of Eb7: Dorian
+A1 | 1  | Eb7    | Eb Mixolydian        # passing ii–V: its own key
+A1 | 2  | Am7    | A Dorian             # ii: Dorian, the key’s own notes
+A1 | 2  | B7     | B Phrygian Dominant  # V7/vi in G: b9 and b13 are in the key
+A1 | 3  | Em     | E Aeolian            # vi: the b13 is in the key
+A1 | 3  | Em/D#  | E Aeolian            # vi: the b13 is in the key
+A1 | 3  | D7     | D Mixolydian         # V7 in G, not resolving: natural tensions
+A1 | 3  | D7/C   | D Mixolydian         # V7 in G, not resolving: natural tensions
+A1 | 4  | Bm7b5  | B Locrian            # iiø7 of the ii–V to A minor: the b9 is in the key
+A1 | 4  | E7     | E Mixolydian b6      # V7/ii in G: the b13 is in the key
+A1 | 5  | Am7    | A Dorian             # ii: Dorian, the key’s own notes
+A1 | 5  | F9     | F Lydian Dominant    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A1 | 6  | Bm7    | B Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
+A1 | 6  | Bbm7   | Bb Dorian            # a borrowed minor chord: Dorian, its own key
+A1 | 7  | Am7    | A Dorian             # ii of D7: Dorian
+A1 | 7  | D7     | D Mixolydian         # V7/I in G: natural tensions
+A1 | 8  | Bm7    | B Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
+A1 | 8  | Bb7    | Bb Lydian Dominant   # tritone substitute: resolves down a half step to Am7
+A1 | 8  | Am7    | A Dorian             # ii of the ii–V to G
+A1 | 8  | D7     | D Mixolydian         # V7 of G: natural tensions
+A2 | 9  | GMaj7  | G Ionian             # tonic: the 4th is in the key
+A2 | 9  | Bbm7   | Bb Dorian            # ii of Eb7: Dorian
+A2 | 9  | Eb7    | Eb Mixolydian        # passing ii–V: its own key
+A2 | 10 | Am7    | A Dorian             # ii: Dorian, the key’s own notes
+A2 | 10 | B7     | B Phrygian Dominant  # V7/vi in G: b9 and b13 are in the key
+A2 | 11 | Em     | E Aeolian            # vi: the b13 is in the key
+A2 | 11 | Em/D#  | E Aeolian            # vi: the b13 is in the key
+A2 | 11 | D7     | D Mixolydian         # V7 in G, not resolving: natural tensions
+A2 | 11 | D7/C   | D Mixolydian         # V7 in G, not resolving: natural tensions
+A2 | 12 | Bm7b5  | B Locrian            # iiø7 of the ii–V to A minor: the b9 is in the key
+A2 | 12 | E7     | E Mixolydian b6      # V7/ii in G: the b13 is in the key
+A2 | 13 | Am7    | A Dorian             # ii: Dorian, the key’s own notes
+A2 | 13 | F9     | F Lydian Dominant    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A2 | 14 | Bm7    | B Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
+A2 | 14 | Bbm7   | Bb Dorian            # a borrowed minor chord: Dorian, its own key
+A2 | 15 | Am7    | A Dorian             # ii of D13: Dorian
+A2 | 15 | D13    | D Mixolydian         # V7/I in G: natural tensions
+# area: Eb major (bars 16–24)
+A2 | 16 | Fm7    | F Dorian             # ii of the ii–V to Eb
+A2 | 16 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
+B  | 17 | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
+B  | 17 | Cm7    | C Aeolian            # vi: the b13 is in the key
+B  | 18 | Fm7    | F Dorian             # ii of Bb7: Dorian
+B  | 18 | Bb7    | Bb Mixolydian        # V7/I in Eb: natural tensions
+B  | 19 | Gm7    | G Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
+B  | 19 | F#m7   | F# Dorian            # ii of B7: Dorian
+B  | 19 | B7     | B Mixolydian         # passing ii–V: its own key
+B  | 20 | Fm7    | F Dorian             # ii of the ii–V to Eb
+B  | 20 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
+B  | 21 | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
+B  | 21 | Cm7    | C Aeolian            # vi: the b13 is in the key
+B  | 22 | Am7b5  | A Locrian            # iiø7 of the ii–V to G minor: the b9 is in the key
+B  | 22 | D7     | D Phrygian Dominant  # V7/iii in Eb: b9 and b13 are in the key
+B  | 22 | Gm     | G Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
+B  | 23 | Am7    | A Dorian             # ii of D7: Dorian
+B  | 23 | D7     | D Mixolydian         # passing ii–V: its own key
+B  | 24 | Bbm7   | Bb Dorian            # ii of Eb7: Dorian
+B  | 24 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
+# area: G major (bars 24–32)
+B  | 24 | Am9    | A Dorian             # ii of the ii–V to G
+B  | 24 | D13    | D Mixolydian         # V7 of G: natural tensions
+C  | 25 | GMaj7  | G Ionian             # tonic: the 4th is in the key
+C  | 25 | Bbm7   | Bb Dorian            # ii of Eb7: Dorian
+C  | 25 | Eb7    | Eb Mixolydian        # passing ii–V: its own key
+C  | 26 | Am7    | A Dorian             # ii: Dorian, the key’s own notes
+C  | 26 | B7     | B Phrygian Dominant  # V7/vi in G: b9 and b13 are in the key
+C  | 27 | Em     | E Aeolian            # vi: the b13 is in the key
+C  | 27 | Em/D#  | E Aeolian            # vi: the b13 is in the key
+C  | 27 | D7     | D Mixolydian         # V7 in G, not resolving: natural tensions
+C  | 27 | D7/C   | D Mixolydian         # V7 in G, not resolving: natural tensions
+C  | 28 | Bm7b5  | B Locrian            # iiø7 of the ii–V to A minor: the b9 is in the key
+C  | 28 | E7     | E Mixolydian b6      # V7/ii in G: the b13 is in the key
+C  | 29 | Am7    | A Dorian             # ii: Dorian, the key’s own notes
+C  | 29 | F9     | F Lydian Dominant    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+C  | 30 | Bm7    | B Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
+C  | 30 | Bbm7   | Bb Dorian            # a borrowed minor chord: Dorian, its own key
+C  | 31 | Am7    | A Dorian             # ii of the ii–V to G
+C  | 31 | D13    | D Mixolydian         # V7 of G: natural tensions
+C  | 32 | GMaj7  | G Ionian             # tonic: the 4th is in the key

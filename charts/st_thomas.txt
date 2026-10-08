@@ -4,26 +4,27 @@ style: Latin
 key: C
 form: AABC, 16 bars
 source: Colorado Cookbook, p. 65
+# analysis: 2026-10-08, rules v1; C
 
 # section | bar | chord | scale
-A1 | 1  | C6/9
-A1 | 1  | F7
-A1 | 2  | Em7
-A1 | 2  | A7
-A1 | 3  | Dm7
-A1 | 3  | G7
-A1 | 4  | C6/9
+A1 | 1  | C6/9   | C Ionian                  # tonic: the 4th is in the key
+A1 | 1  | F7     | F Lydian Dominant         # tritone substitute: resolves down a half step to Em7
+A1 | 2  | Em7    | E Dorian                  # ii of the ii–V to D minor
+A1 | 2  | A7     | A Mixolydian b6           # V7/ii in C: the b13 is in the key
+A1 | 3  | Dm7    | D Dorian                  # ii of the ii–V to C
+A1 | 3  | G7     | G Mixolydian              # V7 of C: natural tensions
+A1 | 4  | C6/9   | C Ionian                  # tonic: the 4th is in the key
 @copy A1 A2 4
-B  | 9  | Em7b5
-B  | 9  | Bb7#11
-B  | 10 | A7#9
-B  | 11 | Ab7#11
-B  | 11 | Dm7
-B  | 12 | G7
-C  | 13 | C6/9
-C  | 13 | C7/E
-C  | 14 | F
-C  | 14 | F#dim7
-C  | 15 | C/G
-C  | 15 | G7
-C  | 16 | C6/9
+B  | 9  | Em7b5  | E Locrian                 # iiiø7 in C: the b9 is in the key
+B  | 9  | Bb7#11 | Bb Lydian Dominant        # tritone substitute: resolves down a half step to A7#9
+B  | 10 | A7#9   | A Half-Whole Diminished   # tritone substitute: resolves down a half step to Ab7#11; b9 and #9 from the symbol
+B  | 11 | Ab7#11 | Ab Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 11 | Dm7    | D Dorian                  # ii of the ii–V to C
+B  | 12 | G7     | G Mixolydian              # V7 of C: natural tensions
+C  | 13 | C6/9   | C Ionian                  # tonic: the 4th is in the key
+C  | 13 | C7/E   | C Mixolydian              # V7/IV in C: natural tensions
+C  | 14 | F      | F Lydian                  # IV: the #4 is the key’s 7th
+C  | 14 | F#dim7 | F# Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+C  | 15 | C/G    | C Ionian                  # tonic: the 4th is in the key
+C  | 15 | G7     | G Mixolydian              # V7 of C: natural tensions
+C  | 16 | C6/9   | C Ionian                  # tonic: the 4th is in the key

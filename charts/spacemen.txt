@@ -4,23 +4,24 @@ style: Up
 key: Bb
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 214
+# analysis: 2026-10-08, rules v1; Bb
 
 # section | bar | chord | scale
-A1 | 1  | BbMaj7
-A1 | 2  | Cm7
-A1 | 2  | F7
-A1 | 3  | BbMaj7
-A1 | 4  | Cm7
-A1 | 4  | F7
-A1 | 5  | Bb7
-A1 | 6  | Cm7
-A1 | 6  | F7
-A1 | 7  | Bb7
-A1 | 7  | F7
-A1 | 8  | BbMaj7
+A1 | 1  | BbMaj7 | Bb Ionian      # tonic: the 4th is in the key
+A1 | 2  | Cm7    | C Dorian       # ii of the ii–V to Bb
+A1 | 2  | F7     | F Mixolydian   # V7 of Bb: natural tensions
+A1 | 3  | BbMaj7 | Bb Ionian      # tonic: the 4th is in the key
+A1 | 4  | Cm7    | C Dorian       # ii of F7: Dorian
+A1 | 4  | F7     | F Mixolydian   # extended dominant: V7 of Bb7
+A1 | 5  | Bb7    | Bb Mixolydian  # I7 in Bb, not resolving: natural tensions
+A1 | 6  | Cm7    | C Dorian       # ii of F7: Dorian
+A1 | 6  | F7     | F Mixolydian   # extended dominant: V7 of Bb7
+A1 | 7  | Bb7    | Bb Mixolydian  # I7 in Bb, not resolving: natural tensions
+A1 | 7  | F7     | F Mixolydian   # V7 of Bb: natural tensions
+A1 | 8  | BbMaj7 | Bb Ionian      # tonic: the 4th is in the key
 @copy A1 A2 8
-B  | 17 | D7
-B  | 19 | G7
-B  | 21 | C7
-B  | 23 | F7
+B  | 17 | D7     | D Mixolydian   # extended dominant: V7 of G7
+B  | 19 | G7     | G Mixolydian   # extended dominant: V7 of C7
+B  | 21 | C7     | C Mixolydian   # extended dominant: V7 of F7
+B  | 23 | F7     | F Mixolydian   # V7 of Bb: natural tensions
 @copy A1 A3 24

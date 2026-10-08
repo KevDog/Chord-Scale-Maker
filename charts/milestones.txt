@@ -1,9 +1,10 @@
 title: Milestones
 subtitle: AABBA, 40 Bars
+# analysis: 2026-10-08, rules v1; G minor, modal
 
 # section | bar | chord | scale
-A1 | 1  | Gm7 | G Dorian
+A1 | 1  | Gm7 | G Dorian   # modal minor: Dorian
 @copy A1 A2 8
-B1 | 17 | Am7 | A Aeolian
+B1 | 17 | Am7 | A Aeolian  # keep: the bridge is A Aeolian; the melody says so
 @copy B1 B2 8
 @copy A1 A3 32

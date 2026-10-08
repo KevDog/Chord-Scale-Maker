@@ -4,44 +4,54 @@ style: Medium
 key: Ab
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 160
+# analysis: 2026-10-08, rules v1; Ab
 
 # section | bar | chord | scale
-A1 | 1  | AbMaj7
-A1 | 2  | GbMaj7
-A1 | 3  | AbMaj7
-A1 | 4  | Db9#11
-A1 | 5  | GbMaj7
-A1 | 6  | E9#11
-A1 | 7  | Bbm7
-A1 | 8  | Eb7
-A2 | 9  | AbMaj7
-A2 | 10 | GbMaj7
-A2 | 11 | AbMaj7
-A2 | 12 | Db9#11
-A2 | 13 | GbMaj7
-A2 | 14 | E9#11
-A2 | 15 | Bbm7
-A2 | 15 | Eb7
-A2 | 16 | AbMaj7
-A2 | 16 | Ab7alt
-B  | 17 | Dbm
-B  | 18 | Ab7alt
-B  | 19 | Dbm7
-B  | 19 | Gb7
-B  | 20 | AbMaj7
-B  | 21 | Dbm7
-B  | 21 | Gb7
-B  | 22 | AbMaj7
-B  | 23 | Bm7
-B  | 23 | E7
-B  | 24 | Bbm7
-B  | 24 | Eb7
-C  | 25 | AbMaj7
-C  | 26 | GbMaj7
-C  | 27 | AbMaj7
-C  | 28 | Db9#11
-C  | 29 | GbMaj7
-C  | 30 | E9#11
-C  | 31 | Bbm7
-C  | 31 | Eb7
-C  | 32 | AbMaj7
+# area: Ab major (bars 1–3)
+A1 | 1  | AbMaj7 | Ab Ionian           # tonic: the 4th is in the key
+A1 | 2  | GbMaj7 | Gb Lydian           # a non-tonic major chord: Lydian
+A1 | 3  | AbMaj7 | Ab Ionian           # tonic: the 4th is in the key
+# area: Gb major (bars 4–6)
+A1 | 4  | Db9#11 | Db Lydian Dominant  # V7 of Gb: the #11 from the symbol
+A1 | 5  | GbMaj7 | Gb Ionian           # tonic: the 4th is in the key
+A1 | 6  | E9#11  | E Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+# area: Ab major (bars 7–11)
+A1 | 7  | Bbm7   | Bb Dorian           # ii of the ii–V to Ab
+A1 | 8  | Eb7    | Eb Mixolydian       # V7 of Ab: natural tensions
+A2 | 9  | AbMaj7 | Ab Ionian           # tonic: the 4th is in the key
+A2 | 10 | GbMaj7 | Gb Lydian           # a non-tonic major chord: Lydian
+A2 | 11 | AbMaj7 | Ab Ionian           # tonic: the 4th is in the key
+# area: Gb major (bars 12–14)
+A2 | 12 | Db9#11 | Db Lydian Dominant  # V7 of Gb: the #11 from the symbol
+A2 | 13 | GbMaj7 | Gb Ionian           # tonic: the 4th is in the key
+A2 | 14 | E9#11  | E Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+# area: Ab major (bars 15–16)
+A2 | 15 | Bbm7   | Bb Dorian           # ii of the ii–V to Ab
+A2 | 15 | Eb7    | Eb Mixolydian       # V7 of Ab: natural tensions
+A2 | 16 | AbMaj7 | Ab Ionian           # tonic: the 4th is in the key
+# area: Db minor (bars 16–23)
+A2 | 16 | Ab7alt | Ab Altered          # from the symbol: altered
+B  | 17 | Dbm    | Db Dorian           # tonic minor: Dorian by convention
+B  | 18 | Ab7alt | Ab Altered          # from the symbol: altered
+B  | 19 | Dbm7   | Db Dorian           # ii of Gb7: Dorian
+B  | 19 | Gb7    | Gb Mixolydian       # back door bVII7 to AbMaj7: natural tensions
+B  | 20 | AbMaj7 | Ab Lydian           # a non-tonic major chord: Lydian
+B  | 21 | Dbm7   | Db Dorian           # ii of Gb7: Dorian
+B  | 21 | Gb7    | Gb Mixolydian       # back door bVII7 to AbMaj7: natural tensions
+B  | 22 | AbMaj7 | Ab Lydian           # a non-tonic major chord: Lydian
+B  | 23 | Bm7    | B Dorian            # ii of E7: Dorian
+B  | 23 | E7     | E Mixolydian        # V7/bVI in Db minor: natural tensions
+# area: Ab major (bars 24–27)
+B  | 24 | Bbm7   | Bb Dorian           # ii of the ii–V to Ab
+B  | 24 | Eb7    | Eb Mixolydian       # V7 of Ab: natural tensions
+C  | 25 | AbMaj7 | Ab Ionian           # tonic: the 4th is in the key
+C  | 26 | GbMaj7 | Gb Lydian           # a non-tonic major chord: Lydian
+C  | 27 | AbMaj7 | Ab Ionian           # tonic: the 4th is in the key
+# area: Gb major (bars 28–30)
+C  | 28 | Db9#11 | Db Lydian Dominant  # V7 of Gb: the #11 from the symbol
+C  | 29 | GbMaj7 | Gb Ionian           # tonic: the 4th is in the key
+C  | 30 | E9#11  | E Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+# area: Ab major (bars 31–32)
+C  | 31 | Bbm7   | Bb Dorian           # ii of the ii–V to Ab
+C  | 31 | Eb7    | Eb Mixolydian       # V7 of Ab: natural tensions
+C  | 32 | AbMaj7 | Ab Ionian           # tonic: the 4th is in the key

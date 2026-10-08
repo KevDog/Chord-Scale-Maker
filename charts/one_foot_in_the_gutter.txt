@@ -5,40 +5,41 @@ style: Medium
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 169
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
-A | 1  | F7
-A | 3  | Bb7
-A | 4  | Bdim7
-A | 5  | F7
-A | 6  | D7
-A | 7  | G7
-A | 8  | C7
-B | 9  | F7
-B | 11 | Bb7
-B | 12 | Bdim7
-B | 13 | Am7
-B | 13 | D7
-B | 14 | Gm7
-B | 14 | C7
-B | 15 | F7
-B | 15 | Bb7
-B | 16 | F7
-C | 17 | C7
-C | 19 | F7
-C | 21 | Bb7
-C | 22 | Bdim7
-C | 23 | Am7
-C | 23 | D7
-C | 24 | Gm7
-C | 24 | C7
-D | 25 | F7
-D | 27 | Bb7
-D | 28 | Bdim7
-D | 29 | Am7
-D | 29 | D7
-D | 30 | Gm7
-D | 30 | C7
-D | 31 | F7
-D | 31 | Bb7
-D | 32 | F7
+A | 1  | F7    | F Mixolydian             # extended dominant: V7 of Bb7
+A | 3  | Bb7   | Bb Lydian Dominant       # IV7 in F, not resolving: the #11 is in the key
+A | 4  | Bdim7 | B Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+A | 5  | F7    | F Mixolydian             # I7 in F, not resolving: natural tensions
+A | 6  | D7    | D Mixolydian             # extended dominant: V7 of G7
+A | 7  | G7    | G Mixolydian             # extended dominant: V7 of C7
+A | 8  | C7    | C Mixolydian             # extended dominant: V7 of F7
+B | 9  | F7    | F Mixolydian             # extended dominant: V7 of Bb7
+B | 11 | Bb7   | Bb Lydian Dominant       # IV7 in F, not resolving: the #11 is in the key
+B | 12 | Bdim7 | B Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+B | 13 | Am7   | A Dorian                 # ii of the ii–V to G minor
+B | 13 | D7    | D Mixolydian b6          # V7/ii in F: the b13 is in the key
+B | 14 | Gm7   | G Dorian                 # ii of C7: Dorian
+B | 14 | C7    | C Mixolydian             # extended dominant: V7 of F7
+B | 15 | F7    | F Mixolydian             # extended dominant: V7 of Bb7
+B | 15 | Bb7   | Bb Lydian Dominant       # IV7 in F, not resolving: the #11 is in the key
+B | 16 | F7    | F Mixolydian             # I7 in F, not resolving: natural tensions
+C | 17 | C7    | C Mixolydian             # extended dominant: V7 of F7
+C | 19 | F7    | F Mixolydian             # extended dominant: V7 of Bb7
+C | 21 | Bb7   | Bb Lydian Dominant       # IV7 in F, not resolving: the #11 is in the key
+C | 22 | Bdim7 | B Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+C | 23 | Am7   | A Dorian                 # ii of the ii–V to G minor
+C | 23 | D7    | D Mixolydian b6          # V7/ii in F: the b13 is in the key
+C | 24 | Gm7   | G Dorian                 # ii of C7: Dorian
+C | 24 | C7    | C Mixolydian             # extended dominant: V7 of F7
+D | 25 | F7    | F Mixolydian             # extended dominant: V7 of Bb7
+D | 27 | Bb7   | Bb Lydian Dominant       # IV7 in F, not resolving: the #11 is in the key
+D | 28 | Bdim7 | B Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+D | 29 | Am7   | A Dorian                 # ii of the ii–V to G minor
+D | 29 | D7    | D Mixolydian b6          # V7/ii in F: the b13 is in the key
+D | 30 | Gm7   | G Dorian                 # ii of C7: Dorian
+D | 30 | C7    | C Mixolydian             # extended dominant: V7 of F7
+D | 31 | F7    | F Mixolydian             # extended dominant: V7 of Bb7
+D | 31 | Bb7   | Bb Lydian Dominant       # IV7 in F, not resolving: the #11 is in the key
+D | 32 | F7    | F Mixolydian             # I7 in F, not resolving: natural tensions

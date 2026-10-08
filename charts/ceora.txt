@@ -5,46 +5,47 @@ style: Latin
 key: Ab
 form: AB, 32 bars
 source: Colorado Cookbook, p. 51
+# analysis: 2026-10-08, rules v1; Ab
 
 # section | bar | chord | scale
-A | 1  | AbMaj7
-A | 2  | Bbm7
-A | 2  | Eb7
-A | 3  | AbMaj7
-A | 4  | Ebm7
-A | 4  | Ab7
-A | 5  | DbMaj7
-A | 6  | Dm7b5
-A | 6  | G7#9
-A | 7  | Cm7
-A | 8  | F7#9
-A | 9  | Bbm7
-A | 10 | Eb7
-A | 11 | Cm7
-A | 12 | F7
-A | 13 | Dm7
-A | 14 | G7
-A | 15 | Cm7
-A | 15 | F7
-A | 16 | Bbm7
-A | 16 | Eb7
-B | 17 | AbMaj7
-B | 18 | Bbm7
-B | 18 | Eb7
-B | 19 | AbMaj7
-B | 20 | Ebm7
-B | 20 | Ab7
-B | 21 | DbMaj7
-B | 22 | Dm7b5
-B | 22 | G7#9
-B | 23 | Cm7
-B | 24 | F7#9
-B | 25 | Bbm7
-B | 26 | Eb7
-B | 27 | Cm7b5
-B | 28 | F7#9
-B | 29 | Bbm7
-B | 30 | Eb7
-B | 31 | AbMaj7
-B | 32 | Bbm7
-B | 32 | Eb7
+A | 1  | AbMaj7 | Ab Ionian            # tonic: the 4th is in the key
+A | 2  | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
+A | 2  | Eb7    | Eb Mixolydian        # V7 of Ab: natural tensions
+A | 3  | AbMaj7 | Ab Ionian            # tonic: the 4th is in the key
+A | 4  | Ebm7   | Eb Dorian            # ii of the ii–V to Db
+A | 4  | Ab7    | Ab Mixolydian        # V7/IV in Ab: natural tensions
+A | 5  | DbMaj7 | Db Lydian            # IV: the #4 is the key’s 7th
+A | 6  | Dm7b5  | D Locrian            # iiø7 of the ii–V to C minor: the b9 is in the key
+A | 6  | G7#9   | G Altered            # V7/iii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
+A | 7  | Cm7    | C Dorian             # ii of the ii–V to Bb minor
+A | 8  | F7#9   | F Altered            # V7/ii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
+A | 9  | Bbm7   | Bb Dorian            # ii of Eb7: Dorian
+A | 10 | Eb7    | Eb Mixolydian        # V7/I in Ab: natural tensions
+A | 11 | Cm7    | C Dorian             # ii of F7: Dorian
+A | 12 | F7     | F Mixolydian         # passing ii–V: its own key
+A | 13 | Dm7    | D Dorian             # ii of the ii–V to C minor
+A | 14 | G7     | G Phrygian Dominant  # V7/iii in Ab: b9 and b13 are in the key
+A | 15 | Cm7    | C Dorian             # ii of the ii–V to Bb minor
+A | 15 | F7     | F Mixolydian b6      # V7/ii in Ab: the b13 is in the key
+A | 16 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
+A | 16 | Eb7    | Eb Mixolydian        # V7 of Ab: natural tensions
+B | 17 | AbMaj7 | Ab Ionian            # tonic: the 4th is in the key
+B | 18 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
+B | 18 | Eb7    | Eb Mixolydian        # V7 of Ab: natural tensions
+B | 19 | AbMaj7 | Ab Ionian            # tonic: the 4th is in the key
+B | 20 | Ebm7   | Eb Dorian            # ii of the ii–V to Db
+B | 20 | Ab7    | Ab Mixolydian        # V7/IV in Ab: natural tensions
+B | 21 | DbMaj7 | Db Lydian            # IV: the #4 is the key’s 7th
+B | 22 | Dm7b5  | D Locrian            # iiø7 of the ii–V to C minor: the b9 is in the key
+B | 22 | G7#9   | G Altered            # V7/iii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
+B | 23 | Cm7    | C Dorian             # ii of the ii–V to Bb minor
+B | 24 | F7#9   | F Altered            # V7/ii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
+B | 25 | Bbm7   | Bb Dorian            # ii of Eb7: Dorian
+B | 26 | Eb7    | Eb Mixolydian        # V7/I in Ab: natural tensions
+B | 27 | Cm7b5  | C Locrian            # iiø7 of the ii–V to Bb minor: the b9 is in the key
+B | 28 | F7#9   | F Altered            # V7/ii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
+B | 29 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
+B | 30 | Eb7    | Eb Mixolydian        # V7 of Ab: natural tensions
+B | 31 | AbMaj7 | Ab Ionian            # tonic: the 4th is in the key
+B | 32 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
+B | 32 | Eb7    | Eb Mixolydian        # V7 of Ab: natural tensions

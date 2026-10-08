@@ -5,29 +5,30 @@ style: Medium up
 key: Db
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 271
+# analysis: 2026-10-08, rules v1; Db
 
 # section | bar | chord | scale
 # the bridge can also start Am7 D7 | Bm7 E7 over its first and fifth bars
-A1 | 1  | Gm7b5
-A1 | 2  | C7alt
-A1 | 3  | Fm7b5
-A1 | 4  | Bb7alt
-A1 | 5  | Ebm7b5
-A1 | 6  | Ab7alt
-A1 | 7  | DbMaj7
+A1 | 1  | Gm7b5  | G Locrian      # iiø7 of C7alt: the b9 is in the key
+A1 | 2  | C7alt  | C Altered      # from the symbol: altered
+A1 | 3  | Fm7b5  | F Locrian      # iiø7 of Bb7alt: the b9 is in the key
+A1 | 4  | Bb7alt | Bb Altered     # from the symbol: altered
+A1 | 5  | Ebm7b5 | Eb Locrian     # iiø7 of the ii–V to Db: the b9 is in the key
+A1 | 6  | Ab7alt | Ab Altered     # from the symbol: altered
+A1 | 7  | DbMaj7 | Db Ionian      # tonic: the 4th is in the key
 @copy A1 A2 8
-B  | 17 | Abm7
-B  | 17 | Db7
-B  | 18 | Abm7
-B  | 18 | Db7
-B  | 19 | Abm7
-B  | 19 | Db7
-B  | 20 | GbMaj7
-B  | 21 | Bbm7
-B  | 21 | Eb7
-B  | 22 | Bbm7
-B  | 22 | Eb7
-B  | 23 | Bbm7
-B  | 23 | Eb7
-B  | 24 | Ab7
+B  | 17 | Abm7   | Ab Dorian      # ii of Db7: Dorian
+B  | 17 | Db7    | Db Mixolydian  # V7/IV in Db: natural tensions
+B  | 18 | Abm7   | Ab Dorian      # ii of Db7: Dorian
+B  | 18 | Db7    | Db Mixolydian  # V7/IV in Db: natural tensions
+B  | 19 | Abm7   | Ab Dorian      # ii of the ii–V to Gb
+B  | 19 | Db7    | Db Mixolydian  # V7/IV in Db: natural tensions
+B  | 20 | GbMaj7 | Gb Lydian      # IV: the #4 is the key’s 7th
+B  | 21 | Bbm7   | Bb Dorian      # ii of Eb7: Dorian
+B  | 21 | Eb7    | Eb Mixolydian  # V7/V in Db: natural tensions
+B  | 22 | Bbm7   | Bb Dorian      # ii of Eb7: Dorian
+B  | 22 | Eb7    | Eb Mixolydian  # V7/V in Db: natural tensions
+B  | 23 | Bbm7   | Bb Dorian      # ii of Eb7: Dorian
+B  | 23 | Eb7    | Eb Mixolydian  # extended dominant: V7 of Ab7
+B  | 24 | Ab7    | Ab Mixolydian  # V7 in Db, not resolving: natural tensions
 @copy A1 A3 24

@@ -5,16 +5,17 @@ style: Up
 key: Bb
 form: A, 12 bars
 source: Colorado Cookbook, p. 117
+# analysis: 2026-10-08, rules v1; Bb, blues
 
 # section | bar | chord | scale
-A | 1  | Bb7
-A | 2  | Ab7
-A | 2  | A7
-A | 3  | B7
-A | 4  | Bb7
-A | 5  | Eb7
-A | 6  | F7
-A | 7  | Gb7
-A | 8  | Ab7
-A | 9  | Em7/A
-A | 12 | B7
+A | 1  | Bb7   | Bb Mixolydian        # I7 of the blues: natural tensions
+A | 2  | Ab7   | Ab Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A | 2  | A7    | A Phrygian Dominant  # VII7 in Bb, not resolving: b9 and b13 are in the key
+A | 3  | B7    | B Lydian Dominant    # tritone substitute: resolves down a half step to Bb7
+A | 4  | Bb7   | Bb Mixolydian        # extended dominant: V7 of Eb7
+A | 5  | Eb7   | Eb Lydian Dominant   # IV7 of the blues: the #11 is in the key
+A | 6  | F7    | F Mixolydian         # V7 in Bb, not resolving: natural tensions
+A | 7  | Gb7   | Gb Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A | 8  | Ab7   | Ab Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A | 9  | Em7/A | A Mixolydian         # static sus: Mixolydian
+A | 12 | B7    | B Lydian Dominant    # tritone substitute: resolves down a half step to Bb7

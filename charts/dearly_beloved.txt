@@ -5,31 +5,32 @@ style: Mixed
 key: C
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 62
+# analysis: 2026-10-08, rules v1; C
 
 # section | bar | chord | scale
-A | 1  | Dm7/G
-A | 3  | G9
-A | 5  | Dm7/G
-A | 7  | G9
-B | 9  | CMaj7
-B | 9  | F7
-B | 10 | Em7
-B | 10 | A7
-B | 11 | Dm7
-B | 12 | G7
-B | 13 | Em7
-B | 14 | Am7
-B | 15 | Ebm7
-B | 16 | Ab7
+A | 1  | Dm7/G  | G Mixolydian              # static sus: Mixolydian
+A | 3  | G9     | G Mixolydian              # V7 in C, not resolving: natural tensions
+A | 5  | Dm7/G  | G Mixolydian              # static sus: Mixolydian
+A | 7  | G9     | G Mixolydian              # V7 of C: natural tensions
+B | 9  | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+B | 9  | F7     | F Lydian Dominant         # tritone substitute: resolves down a half step to Em7
+B | 10 | Em7    | E Dorian                  # ii of the ii–V to D minor
+B | 10 | A7     | A Mixolydian b6           # V7/ii in C: the b13 is in the key
+B | 11 | Dm7    | D Dorian                  # ii of G7: Dorian
+B | 12 | G7     | G Mixolydian              # V7/I in C: natural tensions
+B | 13 | Em7    | E Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+B | 14 | Am7    | A Aeolian                 # vi: the b13 is in the key
+B | 15 | Ebm7   | Eb Dorian                 # ii of Ab7: Dorian
+B | 16 | Ab7    | Ab Lydian Dominant        # tritone substitute: resolves down a half step to Dm7/G
 @copy A C 16
-D | 25 | CMaj7
-D | 25 | F7
-D | 26 | Em7
-D | 26 | A7
-D | 27 | D7
-D | 28 | Ebdim7
-D | 29 | Dm7
-D | 30 | G7
-D | 31 | CMaj7
-D | 32 | Em7
-D | 32 | A7#9
+D | 25 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+D | 25 | F7     | F Lydian Dominant         # tritone substitute: resolves down a half step to Em7
+D | 26 | Em7    | E Dorian                  # ii of A7: Dorian
+D | 26 | A7     | A Mixolydian              # extended dominant: V7 of D7
+D | 27 | D7     | D Mixolydian              # II7 in C, not resolving: natural tensions
+D | 28 | Ebdim7 | Eb Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+D | 29 | Dm7    | D Dorian                  # ii of the ii–V to C
+D | 30 | G7     | G Mixolydian              # V7 of C: natural tensions
+D | 31 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+D | 32 | Em7    | E Dorian                  # ii of A7#9: Dorian
+D | 32 | A7#9   | A Half-Whole Diminished   # passing ii–V: its own key; b9, #9 and #11 from the symbol

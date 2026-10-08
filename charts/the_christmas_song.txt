@@ -4,88 +4,95 @@ style: Christmas
 key: Eb
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 279
+# analysis: 2026-10-08, rules v1; Eb
 
 # section | bar | chord | scale
-A1 | 1  | EbMaj7
-A1 | 1  | Fm7
-A1 | 2  | Gm7
-A1 | 2  | C7
-A1 | 2  | Fm7
-A1 | 2  | Bb7
-A1 | 3  | EbMaj7
-A1 | 3  | Bbm7
-A1 | 3  | Eb7
-A1 | 4  | AbMaj7
-A1 | 4  | Db7
-A1 | 5  | Cm7
-A1 | 5  | Db7
-A1 | 6  | Cm7
-A1 | 6  | Cm7/Bb
-A1 | 6  | Am7
-A1 | 6  | D7
-A1 | 7  | GMaj7
-A1 | 7  | Abm7
-A1 | 7  | Db7
-A1 | 8  | GbMaj7
-A1 | 8  | Fm7
-A1 | 8  | Bb7
-A2 | 9  | EbMaj7
-A2 | 9  | Fm7
-A2 | 10 | Gm7
-A2 | 10 | C7
-A2 | 10 | Fm7
-A2 | 10 | Bb7
-A2 | 11 | EbMaj7
-A2 | 11 | Bbm7
-A2 | 11 | Eb7
-A2 | 12 | AbMaj7
-A2 | 12 | Db7
-A2 | 13 | Cm7
-A2 | 13 | Db7
-A2 | 14 | Cm7
-A2 | 14 | Cm7/Bb
-A2 | 14 | Am7
-A2 | 14 | D7
-A2 | 15 | Gm7
-A2 | 15 | C7
-A2 | 15 | Fm7
-A2 | 15 | Bb7
-A2 | 16 | EbMaj7
-B  | 17 | Bbm7
-B  | 17 | Eb7
-B  | 18 | AbMaj7
-B  | 18 | Cm7
-B  | 18 | F7
-B  | 19 | Bbm7
-B  | 19 | Eb7
-B  | 20 | AbMaj7
-B  | 21 | Abm7
-B  | 21 | Db7
-B  | 22 | GbMaj7
-B  | 22 | B7
-B  | 23 | Cm7
-B  | 23 | F7
-B  | 24 | Fm7
-B  | 24 | Bb7
-A3 | 25 | EbMaj7
-A3 | 25 | Fm7
-A3 | 26 | Gm7
-A3 | 26 | C7
-A3 | 26 | Fm7
-A3 | 26 | Bb7
-A3 | 27 | EbMaj7
-A3 | 27 | Bbm7
-A3 | 27 | Eb7
-A3 | 28 | AbMaj7
-A3 | 28 | Db7
-A3 | 29 | Cm7
-A3 | 29 | Db7
-A3 | 30 | Cm7
-A3 | 30 | Cm7/Bb
-A3 | 30 | Am7
-A3 | 30 | D7
-A3 | 31 | Gm7
-A3 | 31 | C7
-A3 | 31 | Fm7
-A3 | 31 | Bb7
-A3 | 32 | Eb6/9
+# area: Eb major (bars 1–6)
+A1 | 1  | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
+A1 | 1  | Fm7    | F Dorian             # ii: Dorian, the key’s own notes
+A1 | 2  | Gm7    | G Dorian             # ii of the ii–V to F minor
+A1 | 2  | C7     | C Mixolydian b6      # V7/ii in Eb: the b13 is in the key
+A1 | 2  | Fm7    | F Dorian             # ii of the ii–V to Eb
+A1 | 2  | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
+A1 | 3  | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
+A1 | 3  | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
+A1 | 3  | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
+A1 | 4  | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
+A1 | 4  | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
+A1 | 5  | Cm7    | C Aeolian            # vi: the b13 is in the key
+A1 | 5  | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
+A1 | 6  | Cm7    | C Aeolian            # vi: the b13 is in the key
+A1 | 6  | Cm7/Bb | C Aeolian            # vi: the b13 is in the key
+# area: G major (bars 6–7)
+A1 | 6  | Am7    | A Dorian             # ii of the ii–V to G
+A1 | 6  | D7     | D Mixolydian         # V7 of G: natural tensions
+A1 | 7  | GMaj7  | G Ionian             # tonic: the 4th is in the key
+# area: Gb major (bars 7–8)
+A1 | 7  | Abm7   | Ab Dorian            # ii of the ii–V to Gb
+A1 | 7  | Db7    | Db Mixolydian        # V7 of Gb: natural tensions
+A1 | 8  | GbMaj7 | Gb Ionian            # tonic: the 4th is in the key
+# area: Eb major (bars 8–20)
+A1 | 8  | Fm7    | F Dorian             # ii of the ii–V to Eb
+A1 | 8  | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
+A2 | 9  | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
+A2 | 9  | Fm7    | F Dorian             # ii: Dorian, the key’s own notes
+A2 | 10 | Gm7    | G Dorian             # ii of the ii–V to F minor
+A2 | 10 | C7     | C Mixolydian b6      # V7/ii in Eb: the b13 is in the key
+A2 | 10 | Fm7    | F Dorian             # ii of the ii–V to Eb
+A2 | 10 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
+A2 | 11 | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
+A2 | 11 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
+A2 | 11 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
+A2 | 12 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
+A2 | 12 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
+A2 | 13 | Cm7    | C Aeolian            # vi: the b13 is in the key
+A2 | 13 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
+A2 | 14 | Cm7    | C Aeolian            # vi: the b13 is in the key
+A2 | 14 | Cm7/Bb | C Aeolian            # vi: the b13 is in the key
+A2 | 14 | Am7    | A Dorian             # ii of the ii–V to G minor
+A2 | 14 | D7     | D Phrygian Dominant  # V7/iii in Eb: b9 and b13 are in the key
+A2 | 15 | Gm7    | G Dorian             # ii of the ii–V to F minor
+A2 | 15 | C7     | C Mixolydian b6      # V7/ii in Eb: the b13 is in the key
+A2 | 15 | Fm7    | F Dorian             # ii of the ii–V to Eb
+A2 | 15 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
+A2 | 16 | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
+B  | 17 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
+B  | 17 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
+B  | 18 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
+B  | 18 | Cm7    | C Dorian             # ii of the ii–V to Bb minor
+B  | 18 | F7     | F Mixolydian         # V7/v in Eb: natural tensions
+B  | 19 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
+B  | 19 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
+B  | 20 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
+# area: Gb major (bars 21–23)
+B  | 21 | Abm7   | Ab Dorian            # ii of the ii–V to Gb
+B  | 21 | Db7    | Db Mixolydian        # V7 of Gb: natural tensions
+B  | 22 | GbMaj7 | Gb Ionian            # tonic: the 4th is in the key
+B  | 22 | B7     | B Lydian Dominant    # IV7 in Gb, not resolving: the #11 is in the key
+B  | 23 | Cm7    | C Dorian             # ii of F7: Dorian
+B  | 23 | F7     | F Mixolydian         # passing ii–V: its own key
+# area: Eb major (bars 24–32)
+B  | 24 | Fm7    | F Dorian             # ii of the ii–V to Eb
+B  | 24 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
+A3 | 25 | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
+A3 | 25 | Fm7    | F Dorian             # ii: Dorian, the key’s own notes
+A3 | 26 | Gm7    | G Dorian             # ii of the ii–V to F minor
+A3 | 26 | C7     | C Mixolydian b6      # V7/ii in Eb: the b13 is in the key
+A3 | 26 | Fm7    | F Dorian             # ii of the ii–V to Eb
+A3 | 26 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
+A3 | 27 | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
+A3 | 27 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
+A3 | 27 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
+A3 | 28 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
+A3 | 28 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
+A3 | 29 | Cm7    | C Aeolian            # vi: the b13 is in the key
+A3 | 29 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
+A3 | 30 | Cm7    | C Aeolian            # vi: the b13 is in the key
+A3 | 30 | Cm7/Bb | C Aeolian            # vi: the b13 is in the key
+A3 | 30 | Am7    | A Dorian             # ii of the ii–V to G minor
+A3 | 30 | D7     | D Phrygian Dominant  # V7/iii in Eb: b9 and b13 are in the key
+A3 | 31 | Gm7    | G Dorian             # ii of the ii–V to F minor
+A3 | 31 | C7     | C Mixolydian b6      # V7/ii in Eb: the b13 is in the key
+A3 | 31 | Fm7    | F Dorian             # ii of the ii–V to Eb
+A3 | 31 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
+A3 | 32 | Eb6/9  | Eb Ionian            # tonic: the 4th is in the key

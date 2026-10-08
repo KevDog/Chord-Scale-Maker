@@ -5,23 +5,30 @@ style: Ballad
 key: Bb
 form: A, 10 bars
 source: Colorado Cookbook, p. 173
+# analysis: 2026-10-08, rules v1; Bb
 
 # section | bar | chord | scale
-A | 1  | Am7b5
-A | 1  | D7b9
-A | 2  | Gm7
-A | 2  | C7
-A | 3  | CbMaj7
-A | 4  | Cm7b5
-A | 4  | F7b9
-A | 5  | BbMaj7
-A | 5  | Bm7
-A | 5  | E9
-A | 6  | AMaj7
-A | 6  | F#m7
-A | 7  | Ebm7b5
-A | 7  | D7alt
-A | 8  | DbMaj7
-A | 9  | Cm7b5
-A | 9  | Cb7alt
-A | 10 | BbMaj7
+# area: Bb major (bar 1)
+A | 1  | Am7b5  | A Locrian                # iiø7 of the ii–V to G minor: the b9 is in the key
+A | 1  | D7b9   | D Phrygian Dominant      # V7/vi in Bb: b9 and b13 are in the key
+# area: Cb major (bars 2–3)
+A | 2  | Gm7    | G Dorian                 # ii of C7: Dorian
+A | 2  | C7     | C Lydian Dominant        # tritone substitute: resolves down a half step to CbMaj7
+A | 3  | CbMaj7 | Cb Ionian                # tonic: the 4th is in the key
+# area: Bb major (bars 4–5)
+A | 4  | Cm7b5  | C Locrian                # iiø7 of the ii–V to Bb: the b9 is in the key
+A | 4  | F7b9   | F Half-Whole Diminished  # V7 of Bb: the b9 from the symbol
+A | 5  | BbMaj7 | Bb Ionian                # tonic: the 4th is in the key
+# area: A major (bars 5–7)
+A | 5  | Bm7    | B Dorian                 # ii of the ii–V to A
+A | 5  | E9     | E Mixolydian             # V7 of A: natural tensions
+A | 6  | AMaj7  | A Ionian                 # tonic: the 4th is in the key
+A | 6  | F#m7   | F# Aeolian               # vi: the b13 is in the key
+A | 7  | Ebm7b5 | Eb Locrian               # #ivø7 in A: the b9 is in the key
+# area: Db major (bars 7–9)
+A | 7  | D7alt  | D Altered                # from the symbol: altered
+A | 8  | DbMaj7 | Db Ionian                # tonic: the 4th is in the key
+A | 9  | Cm7b5  | C Locrian                # viiø7 in Db: the b9 is in the key
+# area: Bb major (bars 9–10)
+A | 9  | Cb7alt | Cb Altered               # from the symbol: altered
+A | 10 | BbMaj7 | Bb Ionian                # tonic: the 4th is in the key

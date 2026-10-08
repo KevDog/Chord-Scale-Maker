@@ -4,54 +4,55 @@ style: Medium
 key: Eb
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 245
+# analysis: 2026-10-08, rules v1; Eb
 
 # section | bar | chord | scale
-A1 | 1  | EbMaj7
-A1 | 2  | Am7b5
-A1 | 2  | D7b9
-A1 | 3  | Abm7
-A1 | 3  | Db7
-A1 | 4  | Gm7
-A1 | 4  | C7b9
-A1 | 5  | F#m7
-A1 | 5  | B7b9
-A1 | 6  | Fm7
-A1 | 6  | Bb7b9
-A1 | 7  | Gm7
-A1 | 7  | C7b9
-A1 | 8  | Fm7
-A1 | 8  | Bb7b9
-A2 | 9  | EbMaj7
-A2 | 10 | Am7b5
-A2 | 10 | D7b9
-A2 | 11 | Abm7
-A2 | 11 | Db7
-A2 | 12 | Gm7
-A2 | 12 | C7b9
-A2 | 13 | F#m7
-A2 | 13 | B7b9
-A2 | 14 | Fm7
-A2 | 14 | Bb7b9
-A2 | 15 | EbMaj7
-A2 | 16 | Dm7b5
-A2 | 16 | G7alt
-B  | 17 | Cm
-B  | 19 | Gm
-B  | 21 | Bbm7
-B  | 21 | Eb7
-B  | 22 | AbMaj7
-B  | 23 | Dm7b5
-B  | 23 | G7b9
-B  | 24 | Db7#11
-A3 | 25 | EbMaj7
-A3 | 26 | Am7b5
-A3 | 26 | D7b9
-A3 | 27 | Abm7
-A3 | 27 | Db7
-A3 | 28 | Gm7
-A3 | 28 | C7b9
-A3 | 29 | F#m7
-A3 | 29 | B7b9
-A3 | 30 | Fm7
-A3 | 30 | Bb7b9
-A3 | 31 | EbMaj7
+A1 | 1  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A1 | 2  | Am7b5  | A Locrian                 # iiø7 of D7b9: the b9 is in the key
+A1 | 2  | D7b9   | D Phrygian Dominant       # V7/iii in Eb: b9 and b13 are in the key
+A1 | 3  | Abm7   | Ab Dorian                 # ii of Db7: Dorian
+A1 | 3  | Db7    | Db Mixolydian             # passing ii–V: its own key
+A1 | 4  | Gm7    | G Dorian                  # ii of C7b9: Dorian
+A1 | 4  | C7b9   | C Half-Whole Diminished   # passing ii–V: its own key; b9 from the symbol
+A1 | 5  | F#m7   | F# Dorian                 # ii of B7b9: Dorian
+A1 | 5  | B7b9   | B Half-Whole Diminished   # passing ii–V: its own key; b9 from the symbol
+A1 | 6  | Fm7    | F Dorian                  # ii of Bb7b9: Dorian
+A1 | 6  | Bb7b9  | Bb Half-Whole Diminished  # V7/I in Eb: the b9 from the symbol
+A1 | 7  | Gm7    | G Dorian                  # ii of the ii–V to F minor
+A1 | 7  | C7b9   | C Phrygian Dominant       # V7/ii in Eb: the b13 is in the key, the b9 from the symbol
+A1 | 8  | Fm7    | F Dorian                  # ii of the ii–V to Eb
+A1 | 8  | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+A2 | 9  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A2 | 10 | Am7b5  | A Locrian                 # iiø7 of D7b9: the b9 is in the key
+A2 | 10 | D7b9   | D Phrygian Dominant       # V7/iii in Eb: b9 and b13 are in the key
+A2 | 11 | Abm7   | Ab Dorian                 # ii of Db7: Dorian
+A2 | 11 | Db7    | Db Mixolydian             # passing ii–V: its own key
+A2 | 12 | Gm7    | G Dorian                  # ii of C7b9: Dorian
+A2 | 12 | C7b9   | C Half-Whole Diminished   # passing ii–V: its own key; b9 from the symbol
+A2 | 13 | F#m7   | F# Dorian                 # ii of B7b9: Dorian
+A2 | 13 | B7b9   | B Half-Whole Diminished   # passing ii–V: its own key; b9 from the symbol
+A2 | 14 | Fm7    | F Dorian                  # ii of the ii–V to Eb
+A2 | 14 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+A2 | 15 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A2 | 16 | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+A2 | 16 | G7alt  | G Altered                 # from the symbol: altered
+B  | 17 | Cm     | C Aeolian                 # vi: the b13 is in the key
+B  | 19 | Gm     | G Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+B  | 21 | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
+B  | 21 | Eb7    | Eb Mixolydian             # V7/IV in Eb: natural tensions
+B  | 22 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+B  | 23 | Dm7b5  | D Locrian                 # iiø7 of G7b9: the b9 is in the key
+B  | 23 | G7b9   | G Phrygian Dominant       # V7/vi in Eb: b9 and b13 are in the key
+B  | 24 | Db7#11 | Db Lydian Dominant        # back door bVII7 to EbMaj7: the #11 is in the key
+A3 | 25 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A3 | 26 | Am7b5  | A Locrian                 # iiø7 of D7b9: the b9 is in the key
+A3 | 26 | D7b9   | D Phrygian Dominant       # V7/iii in Eb: b9 and b13 are in the key
+A3 | 27 | Abm7   | Ab Dorian                 # ii of Db7: Dorian
+A3 | 27 | Db7    | Db Mixolydian             # passing ii–V: its own key
+A3 | 28 | Gm7    | G Dorian                  # ii of C7b9: Dorian
+A3 | 28 | C7b9   | C Half-Whole Diminished   # passing ii–V: its own key; b9 from the symbol
+A3 | 29 | F#m7   | F# Dorian                 # ii of B7b9: Dorian
+A3 | 29 | B7b9   | B Half-Whole Diminished   # passing ii–V: its own key; b9 from the symbol
+A3 | 30 | Fm7    | F Dorian                  # ii of the ii–V to Eb
+A3 | 30 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+A3 | 31 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key

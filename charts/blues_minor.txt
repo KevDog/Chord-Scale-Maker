@@ -5,8 +5,9 @@ style: Medium up
 key: Fm
 form: A, 12 bars
 source: Colorado Cookbook, p. 278
+# analysis: 2026-10-08, rules v1; F minor, modal
 
 # section | bar | chord | scale
-A | 1 | Fm
-A | 5 | Bbm
-A | 9 | Fm
+A | 1 | Fm  | F Dorian   # modal minor: Dorian
+A | 5 | Bbm | Bb Dorian  # modal minor: Dorian
+A | 9 | Fm  | F Dorian   # modal minor: Dorian

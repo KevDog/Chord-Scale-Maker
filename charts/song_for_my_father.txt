@@ -5,17 +5,18 @@ style: Even 8ths
 key: Fm
 form: AAB, 24 bars
 source: Colorado Cookbook, p. 212
+# analysis: 2026-10-08, rules v1; F minor
 
 # section | bar | chord | scale
-A1 | 1  | Fm
-A1 | 3  | Eb7
-A1 | 5  | Db7
-A1 | 6  | Gm7/C
-A1 | 7  | Fm
+A1 | 1  | Fm    | F Dorian            # tonic minor: Dorian by convention
+A1 | 3  | Eb7   | Eb Mixolydian       # bVII7 in F minor, not resolving: natural tensions
+A1 | 5  | Db7   | Db Lydian Dominant  # tritone substitute: resolves down a half step to Gm7/C
+A1 | 6  | Gm7/C | C Mixolydian b6     # V7sus4 of Fm: the b13 is in the key
+A1 | 7  | Fm    | F Dorian            # tonic minor: Dorian by convention
 @copy A1 A2 8
-B  | 17 | Eb7
-B  | 19 | Fm
-B  | 21 | Eb7
-B  | 21 | Db7
-B  | 22 | C7alt
-B  | 23 | Fm
+B  | 17 | Eb7   | Eb Mixolydian       # bVII7 in F minor, not resolving: natural tensions
+B  | 19 | Fm    | F Dorian            # tonic minor: Dorian by convention
+B  | 21 | Eb7   | Eb Mixolydian       # bVII7 in F minor, not resolving: natural tensions
+B  | 21 | Db7   | Db Lydian Dominant  # tritone substitute: resolves down a half step to C7alt
+B  | 22 | C7alt | C Altered           # from the symbol: altered
+B  | 23 | Fm    | F Dorian            # tonic minor: Dorian by convention

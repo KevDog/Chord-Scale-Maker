@@ -4,40 +4,44 @@ style: Up
 key: Cm
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 206
+# analysis: 2026-10-08, rules v1; C minor
 
 # section | bar | chord | scale
 # the horn intro is left out
-A1 | 1  | Cm
-A1 | 2  | Dm7b5
-A1 | 2  | G7b9
-A1 | 3  | Cm
-A1 | 4  | Dm7b5
-A1 | 4  | G7b9
-A1 | 5  | Cm
-A1 | 6  | Dm7b5
-A1 | 6  | G7b9
-A1 | 7  | Cm
-A1 | 8  | Dm7b5
-A1 | 8  | G7b9
-A2 | 9  | Cm
-A2 | 10 | Dm7b5
-A2 | 10 | G7b9
-A2 | 11 | Cm
-A2 | 12 | Dm7b5
-A2 | 12 | G7b9
-A2 | 13 | Cm
-A2 | 14 | Dm7b5
-A2 | 14 | G7b9
-A2 | 15 | Cm
-A2 | 16 | Fm7
-A2 | 16 | Bb7b9
-B  | 17 | EbMaj7
-B  | 18 | AbMaj7
-B  | 19 | Gm7
-B  | 20 | C7
-B  | 21 | Fm7
-B  | 22 | Am7b5
-B  | 22 | D7
-B  | 23 | Dm7b5
-B  | 24 | G7b9
+# area: C minor (bars 1–15)
+A1 | 1  | Cm     | C Dorian                  # tonic minor: Dorian by convention
+A1 | 2  | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+A1 | 2  | G7b9   | G Phrygian Dominant       # V7 of C minor: b9 and b13 are in the key
+A1 | 3  | Cm     | C Dorian                  # tonic minor: Dorian by convention
+A1 | 4  | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+A1 | 4  | G7b9   | G Phrygian Dominant       # V7 of C minor: b9 and b13 are in the key
+A1 | 5  | Cm     | C Dorian                  # tonic minor: Dorian by convention
+A1 | 6  | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+A1 | 6  | G7b9   | G Phrygian Dominant       # V7 of C minor: b9 and b13 are in the key
+A1 | 7  | Cm     | C Dorian                  # tonic minor: Dorian by convention
+A1 | 8  | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+A1 | 8  | G7b9   | G Phrygian Dominant       # V7 of C minor: b9 and b13 are in the key
+A2 | 9  | Cm     | C Dorian                  # tonic minor: Dorian by convention
+A2 | 10 | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+A2 | 10 | G7b9   | G Phrygian Dominant       # V7 of C minor: b9 and b13 are in the key
+A2 | 11 | Cm     | C Dorian                  # tonic minor: Dorian by convention
+A2 | 12 | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+A2 | 12 | G7b9   | G Phrygian Dominant       # V7 of C minor: b9 and b13 are in the key
+A2 | 13 | Cm     | C Dorian                  # tonic minor: Dorian by convention
+A2 | 14 | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+A2 | 14 | G7b9   | G Phrygian Dominant       # V7 of C minor: b9 and b13 are in the key
+A2 | 15 | Cm     | C Dorian                  # tonic minor: Dorian by convention
+# area: Eb major (bars 16–22)
+A2 | 16 | Fm7    | F Dorian                  # ii of the ii–V to Eb
+A2 | 16 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+B  | 17 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+B  | 18 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+B  | 19 | Gm7    | G Dorian                  # ii of the ii–V to F minor
+B  | 20 | C7     | C Mixolydian b6           # V7/ii in Eb: the b13 is in the key
+B  | 21 | Fm7    | F Dorian                  # ii: Dorian, the key’s own notes
+B  | 22 | Am7b5  | A Locrian                 # iiø7 of D7: the b9 is in the key
+B  | 22 | D7     | D Phrygian Dominant       # V7/iii in Eb: b9 and b13 are in the key
+# area: C minor (bars 23–32)
+B  | 23 | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+B  | 24 | G7b9   | G Phrygian Dominant       # V7 of C minor: b9 and b13 are in the key
 @copy A1 A3 24

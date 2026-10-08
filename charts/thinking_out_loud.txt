@@ -4,47 +4,58 @@ style: Latin
 key: Db
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 246
+# analysis: 2026-10-08, rules v1; Db
 
 # section | bar | chord | scale
 # the coda is left out
-A | 1  | Ebm7
-A | 2  | Abm7
-A | 2  | F7alt
-A | 3  | Bbm7
-A | 4  | GbMaj7
-A | 4  | Eb7alt
-A | 5  | Abm7
-A | 6  | F7alt
-A | 7  | BbMaj7
-A | 8  | G7b9
-B | 9  | Cm7
-B | 10 | AbMaj7
-B | 10 | G7alt
-B | 11 | GbMaj7
-B | 12 | Bbm7
-B | 12 | Eb7alt
-B | 13 | Abm7
-B | 14 | F7alt
-B | 15 | BbMaj7
-B | 16 | E7alt
-C | 17 | EbMaj7
-C | 18 | Am7b5
-C | 18 | D7alt
-C | 19 | Gm11
-C | 20 | Cm7
-C | 20 | A7alt
-C | 21 | Dm11
-C | 22 | G7
-C | 22 | G7alt
-C | 23 | GbMaj7
-C | 23 | CbMaj7
-C | 24 | Bbm7
-C | 24 | G7alt
-D | 25 | Cm7
-D | 26 | A7alt
-D | 27 | Dm7
-D | 28 | Ab7
-D | 29 | DbMaj7
-D | 30 | C7alt
-D | 31 | Fm7
-D | 32 | Bb7alt
+# area: Db major (bars 1–4)
+A | 1  | Ebm7   | Eb Dorian            # ii: Dorian, the key’s own notes
+A | 2  | Abm7   | Ab Dorian            # a borrowed minor chord: Dorian, its own key
+A | 2  | F7alt  | F Altered            # from the symbol: altered
+A | 3  | Bbm7   | Bb Aeolian           # vi: the b13 is in the key
+A | 4  | GbMaj7 | Gb Lydian            # IV: the #4 is the key’s 7th
+# area: Ab minor (bars 4–5)
+A | 4  | Eb7alt | Eb Altered           # from the symbol: altered
+A | 5  | Abm7   | Ab Dorian            # tonic minor: Dorian by convention
+# area: Bb major (bars 6–10)
+A | 6  | F7alt  | F Altered            # from the symbol: altered
+A | 7  | BbMaj7 | Bb Ionian            # tonic: the 4th is in the key
+A | 8  | G7b9   | G Phrygian Dominant  # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+B | 9  | Cm7    | C Dorian             # ii: Dorian, the key’s own notes
+B | 10 | AbMaj7 | Ab Lydian            # a non-tonic major chord: Lydian
+# area: Db major (bars 10–11)
+B | 10 | G7alt  | G Altered            # from the symbol: altered
+B | 11 | GbMaj7 | Gb Lydian            # IV: the #4 is the key’s 7th
+# area: Ab minor (bars 12–13)
+B | 12 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab minor
+B | 12 | Eb7alt | Eb Altered           # from the symbol: altered
+B | 13 | Abm7   | Ab Dorian            # tonic minor: Dorian by convention
+# area: Bb major (bars 14–22)
+B | 14 | F7alt  | F Altered            # from the symbol: altered
+B | 15 | BbMaj7 | Bb Ionian            # tonic: the 4th is in the key
+B | 16 | E7alt  | E Altered            # from the symbol: altered
+C | 17 | EbMaj7 | Eb Lydian            # IV: the #4 is the key’s 7th
+C | 18 | Am7b5  | A Locrian            # iiø7 of the ii–V to G minor: the b9 is in the key
+C | 18 | D7alt  | D Altered            # from the symbol: altered
+C | 19 | Gm11   | G Aeolian            # vi: the b13 is in the key
+C | 20 | Cm7    | C Dorian             # ii: Dorian, the key’s own notes
+C | 20 | A7alt  | A Altered            # from the symbol: altered
+C | 21 | Dm11   | D Dorian             # ii of G7: Dorian
+C | 22 | G7     | G Mixolydian         # passing ii–V: its own key
+# area: Db major (bars 22–24)
+C | 22 | G7alt  | G Altered            # from the symbol: altered
+C | 23 | GbMaj7 | Gb Lydian            # IV: the #4 is the key’s 7th
+C | 23 | CbMaj7 | Cb Lydian            # a non-tonic major chord: Lydian
+C | 24 | Bbm7   | Bb Aeolian           # vi: the b13 is in the key
+# area: C minor (bars 24–25)
+C | 24 | G7alt  | G Altered            # from the symbol: altered
+D | 25 | Cm7    | C Dorian             # tonic minor: Dorian by convention
+# area: D minor (bars 26–27)
+D | 26 | A7alt  | A Altered            # from the symbol: altered
+D | 27 | Dm7    | D Dorian             # tonic minor: Dorian by convention
+# area: Db major (bars 28–32)
+D | 28 | Ab7    | Ab Mixolydian        # V7 of Db: natural tensions
+D | 29 | DbMaj7 | Db Ionian            # tonic: the 4th is in the key
+D | 30 | C7alt  | C Altered            # from the symbol: altered
+D | 31 | Fm7    | F Dorian             # ii of the ii–V to Eb minor
+D | 32 | Bb7alt | Bb Altered           # from the symbol: altered

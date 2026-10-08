@@ -5,25 +5,26 @@ style: Medium
 key: F
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 263
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
 # Miles' bridge: G7 | G7 | Ab7 | Ab7 | A7 Bb7 | B7 Bb7 | A7 Ab7 | G7 Gb7
-A1 | 1  | FMaj7
-A1 | 2  | GbMaj7
-A1 | 3  | FMaj7
-A1 | 4  | GbMaj7
-A1 | 5  | FMaj7
-A1 | 6  | GbMaj7
-A1 | 7  | FMaj7
+A1 | 1  | FMaj7  | F Ionian            # tonic: the 4th is in the key
+A1 | 2  | GbMaj7 | Gb Lydian           # a non-tonic major chord: Lydian
+A1 | 3  | FMaj7  | F Ionian            # tonic: the 4th is in the key
+A1 | 4  | GbMaj7 | Gb Lydian           # a non-tonic major chord: Lydian
+A1 | 5  | FMaj7  | F Ionian            # tonic: the 4th is in the key
+A1 | 6  | GbMaj7 | Gb Lydian           # a non-tonic major chord: Lydian
+A1 | 7  | FMaj7  | F Ionian            # tonic: the 4th is in the key
 @copy A1 A2 8
-B  | 17 | Db7
-B  | 19 | D7
-B  | 21 | Eb7
-B  | 21 | E7
-B  | 22 | Eb7
-B  | 22 | D7
-B  | 23 | Db7
-B  | 23 | C7
-B  | 24 | B7
-B  | 24 | C7
+B  | 17 | Db7    | Db Lydian Dominant  # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 19 | D7     | D Mixolydian b6     # VI7 in F, not resolving: the b13 is in the key
+B  | 21 | Eb7    | Eb Lydian Dominant  # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 21 | E7     | E Lydian Dominant   # tritone substitute: resolves down a half step to Eb7
+B  | 22 | Eb7    | Eb Lydian Dominant  # tritone substitute: resolves down a half step to D7
+B  | 22 | D7     | D Lydian Dominant   # tritone substitute: resolves down a half step to Db7
+B  | 23 | Db7    | Db Lydian Dominant  # tritone substitute: resolves down a half step to C7
+B  | 23 | C7     | C Lydian Dominant   # tritone substitute: resolves down a half step to B7
+B  | 24 | B7     | B Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 24 | C7     | C Mixolydian        # V7 of F: natural tensions
 @copy A1 A3 24

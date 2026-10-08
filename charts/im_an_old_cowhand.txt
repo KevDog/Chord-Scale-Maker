@@ -4,32 +4,33 @@ style: Medium
 key: Eb
 form: ABAB
 source: Colorado Cookbook, p. 101
+# analysis: 2026-10-08, rules v1; Eb
 
 # section | bar | chord | scale
-A1 | 1  | Fm7
-A1 | 2  | Bb7
-A1 | 3  | EbMaj7
-A1 | 3  | Ab7
-A1 | 4  | Gm7
-A1 | 4  | C7#9
-A1 | 5  | Fm7
-A1 | 6  | Bb7
-A1 | 7  | EbMaj7
-A1 | 8  | Dm7b5
-A1 | 8  | G7alt
-B1 | 9  | Cm7
-B1 | 10 | Gm7
-B1 | 11 | Cm7
-B1 | 12 | Gm7
-B1 | 13 | Cm7
-B1 | 14 | Gm7
-B1 | 14 | C7#9
-B1 | 15 | Fm7
-B1 | 15 | Bb7
-B1 | 16 | EbMaj7
-B1 | 16 | C7#9
-B1 | 17 | Fm7
-B1 | 17 | Bb7
-B1 | 18 | EbMaj7
+A1 | 1  | Fm7    | F Dorian            # ii of the ii–V to Eb
+A1 | 2  | Bb7    | Bb Mixolydian       # V7 of Eb: natural tensions
+A1 | 3  | EbMaj7 | Eb Ionian           # tonic: the 4th is in the key
+A1 | 3  | Ab7    | Ab Lydian Dominant  # tritone substitute: resolves down a half step to Gm7
+A1 | 4  | Gm7    | G Dorian            # ii of the ii–V to F minor
+A1 | 4  | C7#9   | C Altered           # V7/ii in Eb: the b13 is in the key, b9, #9 and #11 from the symbol
+A1 | 5  | Fm7    | F Dorian            # ii of the ii–V to Eb
+A1 | 6  | Bb7    | Bb Mixolydian       # V7 of Eb: natural tensions
+A1 | 7  | EbMaj7 | Eb Ionian           # tonic: the 4th is in the key
+A1 | 8  | Dm7b5  | D Locrian           # iiø7 of the ii–V to C minor: the b9 is in the key
+A1 | 8  | G7alt  | G Altered           # from the symbol: altered
+B1 | 9  | Cm7    | C Aeolian           # vi: the b13 is in the key
+B1 | 10 | Gm7    | G Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)
+B1 | 11 | Cm7    | C Aeolian           # vi: the b13 is in the key
+B1 | 12 | Gm7    | G Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)
+B1 | 13 | Cm7    | C Aeolian           # vi: the b13 is in the key
+B1 | 14 | Gm7    | G Dorian            # ii of the ii–V to F minor
+B1 | 14 | C7#9   | C Altered           # V7/ii in Eb: the b13 is in the key, b9, #9 and #11 from the symbol
+B1 | 15 | Fm7    | F Dorian            # ii of the ii–V to Eb
+B1 | 15 | Bb7    | Bb Mixolydian       # V7 of Eb: natural tensions
+B1 | 16 | EbMaj7 | Eb Ionian           # tonic: the 4th is in the key
+B1 | 16 | C7#9   | C Altered           # V7/ii in Eb: the b13 is in the key, b9, #9 and #11 from the symbol
+B1 | 17 | Fm7    | F Dorian            # ii of the ii–V to Eb
+B1 | 17 | Bb7    | Bb Mixolydian       # V7 of Eb: natural tensions
+B1 | 18 | EbMaj7 | Eb Ionian           # tonic: the 4th is in the key
 @copy A1 A2 18
 @copy B1 B2 18

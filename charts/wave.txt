@@ -5,31 +5,36 @@ style: Latin
 key: D
 form: AABC, 44 bars
 source: Colorado Cookbook, p. 261
+# analysis: 2026-10-08, rules v1; D
 
 # section | bar | chord | scale
-A1 | 1  | DMaj7
-A1 | 2  | Bbdim7
-A1 | 3  | Am7
-A1 | 4  | D7
-A1 | 5  | GMaj7
-A1 | 6  | Gm7
-A1 | 7  | F#7
-A1 | 8  | B7
-A1 | 9  | Bm7
-A1 | 9  | E7
-A1 | 10 | Bb7
-A1 | 10 | A7alt
-A1 | 11 | Dm7
-A1 | 11 | G7
-A1 | 12 | Dm7
-A1 | 12 | G7
+# area: D major (bars 1–24)
+A1 | 1  | DMaj7  | D Ionian                  # tonic: the 4th is in the key
+A1 | 2  | Bbdim7 | Bb Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+A1 | 3  | Am7    | A Dorian                  # ii of the ii–V to G
+A1 | 4  | D7     | D Mixolydian              # V7/IV in D: natural tensions
+A1 | 5  | GMaj7  | G Lydian                  # IV: the #4 is the key’s 7th
+A1 | 6  | Gm7    | G Dorian                  # a borrowed minor chord: Dorian, its own key
+A1 | 7  | F#7    | F# Mixolydian             # extended dominant: V7 of B7
+A1 | 8  | B7     | B Mixolydian b6           # VI7 in D, not resolving: the b13 is in the key
+A1 | 9  | Bm7    | B Dorian                  # ii of E7: Dorian
+A1 | 9  | E7     | E Mixolydian              # V7/V in D: natural tensions
+A1 | 10 | Bb7    | Bb Lydian Dominant        # tritone substitute: resolves down a half step to A7alt
+A1 | 10 | A7alt  | A Altered                 # from the symbol: altered
+A1 | 11 | Dm7    | D Dorian                  # ii of G7: Dorian
+A1 | 11 | G7     | G Mixolydian              # passing ii–V: its own key
+A1 | 12 | Dm7    | D Dorian                  # ii of G7: Dorian
+A1 | 12 | G7     | G Mixolydian              # passing ii–V: its own key
 @copy A1 A2 12
-B  | 25 | Gm7
-B  | 26 | C7
-B  | 27 | FMaj7
-B  | 29 | Fm7
-B  | 30 | Bb7
-B  | 31 | EbMaj7
-B  | 32 | Em7b5
-B  | 32 | A7b9
+# area: F major (bars 25–27)
+B  | 25 | Gm7    | G Dorian                  # ii of the ii–V to F
+B  | 26 | C7     | C Mixolydian              # V7 of F: natural tensions
+B  | 27 | FMaj7  | F Ionian                  # tonic: the 4th is in the key
+# area: Eb major (bars 29–31)
+B  | 29 | Fm7    | F Dorian                  # ii of the ii–V to Eb
+B  | 30 | Bb7    | Bb Mixolydian             # V7 of Eb: natural tensions
+B  | 31 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+# area: D major (bars 32–44)
+B  | 32 | Em7b5  | E Locrian                 # iiø7 of the ii–V to D: the b9 is in the key
+B  | 32 | A7b9   | A Half-Whole Diminished   # V7 of D: the b9 from the symbol
 @copy A1 C 32

@@ -5,21 +5,22 @@ style: Medium up
 key: F
 form: A
 source: Colorado Cookbook, p. 58
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
 # the intro, piano vamp and tag are left out; solos are on this 12-bar A section
-A | 1  | FMaj7
-A | 2  | Bbm7
-A | 2  | Eb7
-A | 3  | Am
-A | 3  | Gm
-A | 4  | F#m7
-A | 4  | B7
-A | 5  | Fm7
-A | 6  | Bb7
-A | 7  | Am
-A | 8  | Abm
-A | 9  | Gm
-A | 10 | Dbm7
-A | 10 | Gb7
-A | 11 | FMaj7
+A | 1  | FMaj7 | F Ionian            # tonic: the 4th is in the key
+A | 2  | Bbm7  | Bb Dorian           # ii of Eb7: Dorian
+A | 2  | Eb7   | Eb Mixolydian       # passing ii–V: its own key
+A | 3  | Am    | A Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)
+A | 3  | Gm    | G Dorian            # ii: Dorian, the key’s own notes
+A | 4  | F#m7  | F# Dorian           # ii of B7: Dorian
+A | 4  | B7    | B Mixolydian        # passing ii–V: its own key
+A | 5  | Fm7   | F Dorian            # ii of Bb7: Dorian
+A | 6  | Bb7   | Bb Lydian Dominant  # tritone substitute: resolves down a half step to Am
+A | 7  | Am    | A Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)
+A | 8  | Abm   | Ab Dorian           # a borrowed minor chord: Dorian, its own key
+A | 9  | Gm    | G Dorian            # ii: Dorian, the key’s own notes
+A | 10 | Dbm7  | Db Dorian           # ii of Gb7: Dorian
+A | 10 | Gb7   | Gb Lydian Dominant  # tritone substitute: resolves down a half step to FMaj7
+A | 11 | FMaj7 | F Ionian            # tonic: the 4th is in the key

@@ -1,11 +1,12 @@
 title: Maiden Voyage
 subtitle: AABA, 32 Bars, Four Bars per Chord
+# analysis: 2026-10-08, rules v1; Eb, modal
 
 # section | bar | chord  | scale
 # sus chords as minor 7ths over a bass a 5th below (Am7/D = D7sus4)
-A1 | 1  | Am7/D   | D Mixolydian
-A1 | 5  | Cm7/F   | F Mixolydian
+A1 | 1  | Am7/D   | D Mixolydian   # static sus: Mixolydian
+A1 | 5  | Cm7/F   | F Mixolydian   # static sus: Mixolydian
 @copy A1 A2 8
-B  | 17 | Bbm7/Eb | Eb Mixolydian
-B  | 21 | C#m7    | C# Dorian
+B  | 17 | Bbm7/Eb | Eb Mixolydian  # static sus: Mixolydian
+B  | 21 | C#m7    | C# Dorian      # modal minor: Dorian
 @copy A1 A3 24

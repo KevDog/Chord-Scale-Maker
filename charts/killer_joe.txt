@@ -4,23 +4,24 @@ style: Medium
 key: C
 form: AABA
 source: Colorado Cookbook, p. 119
+# analysis: 2026-10-08, rules v1; C
 
 # section | bar | chord | scale
-A1 | 1  | C7
-A1 | 2  | Bb7
-A1 | 3  | C7
-A1 | 4  | Bb7
-A1 | 5  | C7
-A1 | 6  | Bb7
-A1 | 7  | C7
-A1 | 8  | Bb7
+A1 | 1  | C7    | C Mixolydian         # I7 in C, not resolving: natural tensions
+A1 | 2  | Bb7   | Bb Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A1 | 3  | C7    | C Mixolydian         # I7 in C, not resolving: natural tensions
+A1 | 4  | Bb7   | Bb Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A1 | 5  | C7    | C Mixolydian         # I7 in C, not resolving: natural tensions
+A1 | 6  | Bb7   | Bb Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A1 | 7  | C7    | C Mixolydian         # I7 in C, not resolving: natural tensions
+A1 | 8  | Bb7   | Bb Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
 @copy A1 A2 8
-B  | 17 | Em7b5
-B  | 18 | A7b9
-B  | 19 | Ebm7
-B  | 20 | Ab7
-B  | 21 | A7
-B  | 22 | Ab7
-B  | 23 | Em7
-B  | 24 | A7
+B  | 17 | Em7b5 | E Locrian            # iiø7 of A7b9: the b9 is in the key
+B  | 18 | A7b9  | A Phrygian Dominant  # V7/ii in C: the b13 is in the key, the b9 from the symbol
+B  | 19 | Ebm7  | Eb Dorian            # ii of Ab7: Dorian
+B  | 20 | Ab7   | Ab Mixolydian        # passing ii–V: its own key
+B  | 21 | A7    | A Lydian Dominant    # tritone substitute: resolves down a half step to Ab7
+B  | 22 | Ab7   | Ab Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 23 | Em7   | E Dorian             # ii of A7: Dorian
+B  | 24 | A7    | A Mixolydian         # passing ii–V: its own key
 @copy A1 A3 24

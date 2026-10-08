@@ -5,12 +5,13 @@ style: Even 8ths
 key: Dm
 form: AABBA
 source: Colorado Cookbook, p. 126
+# analysis: 2026-10-08, rules v1; D minor, modal
 
 # section | bar | chord | scale
-A1 | 1  | Dm
-A2 | 9  | Dm
-B1 | 17 | EbMaj7
-B1 | 21 | DMaj7
-B2 | 25 | EbMaj7
-B2 | 29 | DMaj7
-A3 | 33 | Dm
+A1 | 1  | Dm     | D Dorian   # modal minor: Dorian
+A2 | 9  | Dm     | D Dorian
+B1 | 17 | EbMaj7 | Eb Lydian  # modal major: Lydian
+B1 | 21 | DMaj7  | D Lydian   # modal major: Lydian
+B2 | 25 | EbMaj7 | Eb Lydian  # modal major: Lydian
+B2 | 29 | DMaj7  | D Lydian   # modal major: Lydian
+A3 | 33 | Dm     | D Dorian   # modal minor: Dorian

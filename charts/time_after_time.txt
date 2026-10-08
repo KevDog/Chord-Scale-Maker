@@ -4,49 +4,50 @@ style: Medium
 key: C
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 250
+# analysis: 2026-10-08, rules v1; C
 
 # section | bar | chord | scale
-A | 1  | CMaj7
-A | 2  | Dm7
-A | 2  | G7
-A | 3  | CMaj7
-A | 4  | Dm7
-A | 4  | G7
-A | 5  | CMaj7
-A | 6  | Am7
-A | 7  | Bm7b5
-A | 8  | E7alt
-B | 9  | Am7
-B | 9  | Am7/G
-B | 10 | F#m7b5
-B | 10 | B7alt
-B | 11 | Em7
-B | 12 | A7b9
-B | 13 | Dm7
-B | 14 | Em7b5
-B | 14 | A7alt
-B | 15 | Ab7#11
-B | 16 | G7
-C | 17 | CMaj7
-C | 18 | Dm7
-C | 18 | G7
-C | 19 | CMaj7
-C | 20 | Dm7
-C | 20 | G7
-C | 21 | CMaj7
-C | 22 | Gm7
-C | 22 | C7
-C | 23 | FMaj7
-C | 24 | Bb7
-D | 25 | CMaj7
-D | 26 | Gbdim7
-D | 26 | Fm6
-D | 27 | Em7
-D | 27 | Am7/G
-D | 28 | Gbdim7
-D | 28 | Fm7
-D | 29 | Em7
-D | 29 | A7alt
-D | 30 | Dm7/G
-D | 30 | G7
-D | 31 | CMaj7
+A | 1  | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+A | 2  | Dm7    | D Dorian                  # ii of the ii–V to C
+A | 2  | G7     | G Mixolydian              # V7 of C: natural tensions
+A | 3  | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+A | 4  | Dm7    | D Dorian                  # ii of the ii–V to C
+A | 4  | G7     | G Mixolydian              # V7 of C: natural tensions
+A | 5  | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+A | 6  | Am7    | A Aeolian                 # vi: the b13 is in the key
+A | 7  | Bm7b5  | B Locrian                 # iiø7 of the ii–V to A minor: the b9 is in the key
+A | 8  | E7alt  | E Altered                 # from the symbol: altered
+B | 9  | Am7    | A Aeolian                 # vi: the b13 is in the key
+B | 9  | Am7/G  | A Aeolian                 # vi: the b13 is in the key
+B | 10 | F#m7b5 | F# Locrian                # iiø7 of the ii–V to E minor: the b9 is in the key
+B | 10 | B7alt  | B Altered                 # from the symbol: altered
+B | 11 | Em7    | E Dorian                  # ii of the ii–V to D minor
+B | 12 | A7b9   | A Phrygian Dominant       # V7/ii in C: the b13 is in the key, the b9 from the symbol
+B | 13 | Dm7    | D Dorian                  # ii: Dorian, the key’s own notes
+B | 14 | Em7b5  | E Locrian                 # iiø7 of A7alt: the b9 is in the key
+B | 14 | A7alt  | A Altered                 # from the symbol: altered
+B | 15 | Ab7#11 | Ab Lydian Dominant        # tritone substitute: resolves down a half step to G7
+B | 16 | G7     | G Mixolydian              # V7 of C: natural tensions
+C | 17 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+C | 18 | Dm7    | D Dorian                  # ii of the ii–V to C
+C | 18 | G7     | G Mixolydian              # V7 of C: natural tensions
+C | 19 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+C | 20 | Dm7    | D Dorian                  # ii of the ii–V to C
+C | 20 | G7     | G Mixolydian              # V7 of C: natural tensions
+C | 21 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+C | 22 | Gm7    | G Dorian                  # ii of the ii–V to F
+C | 22 | C7     | C Mixolydian              # V7/IV in C: natural tensions
+C | 23 | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
+C | 24 | Bb7    | Bb Lydian Dominant        # back door bVII7 to CMaj7: the #11 is in the key
+D | 25 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+D | 26 | Gbdim7 | Gb Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+D | 26 | Fm6    | F Dorian                  # a minor sixth chord: Dorian
+D | 27 | Em7    | E Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+D | 27 | Am7/G  | A Aeolian                 # vi: the b13 is in the key
+D | 28 | Gbdim7 | Gb Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+D | 28 | Fm7    | F Dorian                  # a borrowed minor chord: Dorian, its own key
+D | 29 | Em7    | E Dorian                  # ii of A7alt: Dorian
+D | 29 | A7alt  | A Altered                 # from the symbol: altered
+D | 30 | Dm7/G  | G Mixolydian              # static sus: Mixolydian
+D | 30 | G7     | G Mixolydian              # V7 of C: natural tensions
+D | 31 | CMaj7  | C Ionian                  # tonic: the 4th is in the key

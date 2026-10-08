@@ -1,36 +1,38 @@
 title: This I Dig of You
 composer: Hank Mobley
 style: Medium up
-key: Ab
+key: Bb
+# key: the book's index says Ab; the lead sheet is in Bb (two flats, Bb to Bb)
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 247
+# analysis: 2026-10-08, rules v1; Bb
 
 # section | bar | chord | scale
 # the A sections sit over an F pedal
-A | 1  | BbMaj7
-A | 2  | Cm
-A | 3  | BbMaj7
-A | 4  | Cm
-A | 5  | BbMaj7
-A | 6  | Cm
-A | 7  | BbMaj7
-A | 8  | Fm7
-A | 8  | Bb7
-B | 9  | EbMaj7
-B | 10 | Em7b5
-B | 10 | A7alt
-B | 11 | Dm7
-B | 12 | G7
-B | 13 | Dbm7
-B | 14 | Gb7
-B | 15 | Cm7
-B | 16 | F7
+A | 1  | BbMaj7 | Bb Ionian        # tonic: the 4th is in the key
+A | 2  | Cm     | C Dorian         # ii: Dorian, the key’s own notes
+A | 3  | BbMaj7 | Bb Ionian        # tonic: the 4th is in the key
+A | 4  | Cm     | C Dorian         # ii: Dorian, the key’s own notes
+A | 5  | BbMaj7 | Bb Ionian        # tonic: the 4th is in the key
+A | 6  | Cm     | C Dorian         # ii: Dorian, the key’s own notes
+A | 7  | BbMaj7 | Bb Ionian        # tonic: the 4th is in the key
+A | 8  | Fm7    | F Dorian         # ii of the ii–V to Eb
+A | 8  | Bb7    | Bb Mixolydian    # V7/IV in Bb: natural tensions
+B | 9  | EbMaj7 | Eb Lydian        # IV: the #4 is the key’s 7th
+B | 10 | Em7b5  | E Locrian        # iiø7 of the ii–V to D minor: the b9 is in the key
+B | 10 | A7alt  | A Altered        # from the symbol: altered
+B | 11 | Dm7    | D Dorian         # ii of G7: Dorian
+B | 12 | G7     | G Mixolydian     # passing ii–V: its own key
+B | 13 | Dbm7   | Db Dorian        # ii of Gb7: Dorian
+B | 14 | Gb7    | Gb Mixolydian    # passing ii–V: its own key
+B | 15 | Cm7    | C Dorian         # ii of the ii–V to Bb
+B | 16 | F7     | F Mixolydian     # V7 of Bb: natural tensions
 @copy A C 16
-D | 25 | EbMaj7
-D | 26 | Em7b5
-D | 26 | A7alt
-D | 27 | Dm7
-D | 28 | G7
-D | 29 | Cm7
-D | 30 | F7
-D | 31 | BbMaj7
+D | 25 | EbMaj7 | Eb Lydian        # IV: the #4 is the key’s 7th
+D | 26 | Em7b5  | E Locrian        # iiø7 of the ii–V to D minor: the b9 is in the key
+D | 26 | A7alt  | A Altered        # from the symbol: altered
+D | 27 | Dm7    | D Dorian         # ii of the ii–V to C minor
+D | 28 | G7     | G Mixolydian b6  # V7/ii in Bb: the b13 is in the key
+D | 29 | Cm7    | C Dorian         # ii of the ii–V to Bb
+D | 30 | F7     | F Mixolydian     # V7 of Bb: natural tensions
+D | 31 | BbMaj7 | Bb Ionian        # tonic: the 4th is in the key

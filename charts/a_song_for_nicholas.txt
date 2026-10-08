@@ -5,17 +5,18 @@ style: Medium
 key: C
 form: AB, 16 bars
 source: Colorado Cookbook, p. 11
+# analysis: 2026-10-08, rules v1; C
 
 # section | bar | chord | scale
-A | 1  | CMaj7
-A | 2  | EbMaj7
-A | 3  | AbMaj7
-A | 4  | DbMaj7
-A | 5  | CMaj7
-A | 6  | EbMaj7
-A | 7  | AbMaj7
-A | 8  | DbMaj7
-B | 9  | CMaj7
-B | 11 | GbMaj7
-B | 13 | CMaj7
-B | 15 | DbMaj7
+A | 1  | CMaj7  | C Ionian   # tonic: the 4th is in the key
+A | 2  | EbMaj7 | Eb Lydian  # a non-tonic major chord: Lydian
+A | 3  | AbMaj7 | Ab Lydian  # a non-tonic major chord: Lydian
+A | 4  | DbMaj7 | Db Lydian  # a non-tonic major chord: Lydian
+A | 5  | CMaj7  | C Ionian   # tonic: the 4th is in the key
+A | 6  | EbMaj7 | Eb Lydian  # a non-tonic major chord: Lydian
+A | 7  | AbMaj7 | Ab Lydian  # a non-tonic major chord: Lydian
+A | 8  | DbMaj7 | Db Lydian  # a non-tonic major chord: Lydian
+B | 9  | CMaj7  | C Ionian   # tonic: the 4th is in the key
+B | 11 | GbMaj7 | Gb Lydian  # a non-tonic major chord: Lydian
+B | 13 | CMaj7  | C Ionian   # tonic: the 4th is in the key
+B | 15 | DbMaj7 | Db Lydian  # a non-tonic major chord: Lydian

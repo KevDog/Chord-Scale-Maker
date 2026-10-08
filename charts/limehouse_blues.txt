@@ -4,26 +4,27 @@ style: Medium up
 key: Ab
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 125
+# analysis: 2026-10-08, rules v1; Ab
 
 # section | bar | chord | scale
 # the parenthesised passing D7s are left out
-A | 1  | Db7
-A | 5  | Bb7
-B | 9  | AbMaj7
-B | 10 | DbMaj7
-B | 11 | Gm7
-B | 11 | C7
-B | 12 | Fm6
-B | 13 | Bb7
-B | 15 | Eb7
-C | 17 | Db7
-C | 21 | Bb7
-C | 24 | Dbm7
-C | 24 | Gb7
-D | 25 | Ab7
-D | 25 | G7
-D | 26 | Gb7
-D | 26 | F7
-D | 27 | Bbm7
-D | 30 | Eb7
-D | 31 | Ab7
+A | 1  | Db7    | Db Mixolydian        # static dominant: its own mode
+A | 5  | Bb7    | Bb Mixolydian        # static dominant: its own mode
+B | 9  | AbMaj7 | Ab Ionian            # tonic: the 4th is in the key
+B | 10 | DbMaj7 | Db Lydian            # IV: the #4 is the key’s 7th
+B | 11 | Gm7    | G Dorian             # ii of the ii–V to F minor
+B | 11 | C7     | C Phrygian Dominant  # V7/vi in Ab: b9 and b13 are in the key
+B | 12 | Fm6    | F Dorian             # a minor sixth chord: Dorian
+B | 13 | Bb7    | Bb Mixolydian        # extended dominant: V7 of Eb7
+B | 15 | Eb7    | Eb Mixolydian        # V7 in Ab, not resolving: natural tensions
+C | 17 | Db7    | Db Mixolydian        # static dominant: its own mode
+C | 21 | Bb7    | Bb Mixolydian        # II7 in Ab, not resolving: natural tensions
+C | 24 | Dbm7   | Db Dorian            # ii of Gb7: Dorian
+C | 24 | Gb7    | Gb Mixolydian        # passing ii–V: its own key
+D | 25 | Ab7    | Ab Lydian Dominant   # tritone substitute: resolves down a half step to G7
+D | 25 | G7     | G Lydian Dominant    # tritone substitute: resolves down a half step to Gb7
+D | 26 | Gb7    | Gb Lydian Dominant   # tritone substitute: resolves down a half step to F7
+D | 26 | F7     | F Mixolydian b6      # V7/ii in Ab: the b13 is in the key
+D | 27 | Bbm7   | Bb Dorian            # ii of Eb7: Dorian
+D | 30 | Eb7    | Eb Mixolydian        # extended dominant: V7 of Ab7
+D | 31 | Ab7    | Ab Mixolydian        # extended dominant: V7 of Db7

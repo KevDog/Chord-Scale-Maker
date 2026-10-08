@@ -4,40 +4,46 @@ style: Up
 key: F
 form: ABC, 32 bars
 source: Colorado Cookbook, p. 193
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
 # the solo changes; the intro and the Eb6/9 E7b9 F6 vamp are left out
-A | 1  | FMaj7
-A | 2  | Em7b5
-A | 2  | A7alt
-A | 3  | Dm7
-A | 4  | G7
-A | 5  | Gm7
-A | 6  | C7
-A | 7  | Am7
-A | 7  | D7
-A | 8  | Gm7
-A | 8  | C7
-B | 9  | CMaj7
-B | 10 | Dm7
-B | 10 | G7
-B | 11 | CMaj7
-B | 12 | Fm7
-B | 12 | Bb7
-B | 13 | EbMaj7
-B | 14 | Abm7
-B | 14 | Db7
-B | 15 | GbMaj7
-B | 16 | Gm7
-B | 16 | C7
-C | 17 | FMaj7
-C | 18 | Em7b5
-C | 18 | A7alt
-C | 19 | Dm7
-C | 20 | G7
-C | 21 | Gm7
-C | 22 | C7
-C | 23 | Eb6/9
-C | 23 | E7b9
-C | 23 | F6
-C | 24 | F6
+# area: F major (bars 1–9)
+A | 1  | FMaj7  | F Ionian             # tonic: the 4th is in the key
+A | 2  | Em7b5  | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
+A | 2  | A7alt  | A Altered            # from the symbol: altered
+A | 3  | Dm7    | D Dorian             # ii of G7: Dorian
+A | 4  | G7     | G Mixolydian         # V7/V in F: natural tensions
+A | 5  | Gm7    | G Dorian             # ii of C7: Dorian
+A | 6  | C7     | C Mixolydian         # V7/I in F: natural tensions
+A | 7  | Am7    | A Dorian             # ii of the ii–V to G minor
+A | 7  | D7     | D Mixolydian b6      # V7/ii in F: the b13 is in the key
+A | 8  | Gm7    | G Dorian             # ii of C7: Dorian
+A | 8  | C7     | C Mixolydian         # V7/I in F: natural tensions
+B | 9  | CMaj7  | C Lydian             # a non-tonic major chord: Lydian
+# area: C major (bars 10–11)
+B | 10 | Dm7    | D Dorian             # ii of the ii–V to C
+B | 10 | G7     | G Mixolydian         # V7 of C: natural tensions
+B | 11 | CMaj7  | C Ionian             # tonic: the 4th is in the key
+# area: Eb major (bars 12–13)
+B | 12 | Fm7    | F Dorian             # ii of the ii–V to Eb
+B | 12 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
+B | 13 | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
+# area: Gb major (bars 14–15)
+B | 14 | Abm7   | Ab Dorian            # ii of the ii–V to Gb
+B | 14 | Db7    | Db Mixolydian        # V7 of Gb: natural tensions
+B | 15 | GbMaj7 | Gb Ionian            # tonic: the 4th is in the key
+# area: F major (bars 16–24)
+B | 16 | Gm7    | G Dorian             # ii of the ii–V to F
+B | 16 | C7     | C Mixolydian         # V7 of F: natural tensions
+C | 17 | FMaj7  | F Ionian             # tonic: the 4th is in the key
+C | 18 | Em7b5  | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
+C | 18 | A7alt  | A Altered            # from the symbol: altered
+C | 19 | Dm7    | D Dorian             # ii of G7: Dorian
+C | 20 | G7     | G Mixolydian         # V7/V in F: natural tensions
+C | 21 | Gm7    | G Dorian             # ii of C7: Dorian
+C | 22 | C7     | C Mixolydian         # V7/I in F: natural tensions
+C | 23 | Eb6/9  | Eb Lydian            # a non-tonic major chord: Lydian
+C | 23 | E7b9   | E Phrygian Dominant  # VII7 in F, not resolving: b9 and b13 are in the key
+C | 23 | F6     | F Ionian             # tonic: the 4th is in the key
+C | 24 | F6     | F Ionian

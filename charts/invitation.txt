@@ -5,37 +5,42 @@ style: Mixed
 key: Ebm
 form: ABCDEF, 48 bars
 source: Colorado Cookbook, p. 110
+# analysis: 2026-10-08, rules v1; Eb minor
 
 # section | bar | chord | scale
-A | 1  | Cm
-A | 5  | F7
-A | 7  | Bb7#11
-B | 9  | Ebm
-B | 13 | Ab7
-B | 15 | Db7#11
-C | 17 | C#m7
-C | 18 | F#7
-C | 18 | F#7#9
-C | 19 | BMaj7
-C | 21 | Bm7
-C | 22 | E7
-C | 22 | E7#9
-C | 23 | AMaj7
-D | 25 | Am7
-D | 26 | D7
-D | 26 | D7#9
-D | 27 | GMaj7
-D | 29 | Em7b5
-D | 30 | A7alt
-D | 31 | D7#9
-D | 32 | G7#9
-E | 33 | Cm
-E | 37 | F7
-E | 39 | Bb7#11
-F | 41 | Ebm
-F | 43 | B7#11
-F | 44 | F7alt
-F | 45 | Bb7#9
-F | 46 | EbmMaj7
-F | 48 | D7#9
-F | 48 | G7#9
+# area: Eb minor (bars 1–22)
+A | 1  | Cm      | C Dorian                  # ii of F7: Dorian
+A | 5  | F7      | F Phrygian Dominant       # V7 of Bb7#11, on the way to Eb minor: b9 and b13 are in the key
+A | 7  | Bb7#11  | Bb Lydian Dominant        # V7 of Eb minor, the chain's last link: 9, #11 and 13 from the symbol
+B | 9  | Ebm     | Eb Dorian                 # ii of Ab7: Dorian
+B | 13 | Ab7     | Ab Mixolydian             # extended dominant: V7 of Db7#11
+B | 15 | Db7#11  | Db Lydian Dominant        # bVII7 in Eb minor, not resolving: the #11 from the symbol
+C | 17 | C#m7    | C# Dorian                 # ii of F#7: Dorian
+C | 18 | F#7     | F# Mixolydian             # V7/bVI in Eb minor: natural tensions
+C | 18 | F#7#9   | F# Half-Whole Diminished  # V7/bVI in Eb minor: b9, #9 and #11 from the symbol
+C | 19 | BMaj7   | B Lydian                  # a non-tonic major chord: Lydian
+C | 21 | Bm7     | B Dorian                  # ii of E7: Dorian
+C | 22 | E7      | E Mixolydian              # passing ii–V: its own key
+# area: A major (bars 22–26)
+C | 22 | E7#9    | E Half-Whole Diminished   # V7 of A: b9, #9 and #11 from the symbol
+C | 23 | AMaj7   | A Ionian                  # tonic: the 4th is in the key
+D | 25 | Am7     | A Dorian                  # ii of D7: Dorian
+D | 26 | D7      | D Mixolydian              # passing ii–V: its own key
+# area: G major (bars 26–32)
+D | 26 | D7#9    | D Half-Whole Diminished   # V7 of G: b9, #9 and #11 from the symbol
+D | 27 | GMaj7   | G Ionian                  # tonic: the 4th is in the key
+D | 29 | Em7b5   | E Locrian                 # iiø7 of A7alt: the b9 is in the key
+D | 30 | A7alt   | A Altered                 # from the symbol: altered
+D | 31 | D7#9    | D Altered                 # V7 of G7#9, on the way to C minor: the b13 is in the key, b9, #9 and #11 from the symbol
+D | 32 | G7#9    | G Altered                 # V7 of C minor, the chain's last link: the b13 is in the key, b9, #9 and #11 from the symbol
+# area: Eb minor (bars 33–48)
+E | 33 | Cm      | C Dorian                  # ii of F7: Dorian
+E | 37 | F7      | F Phrygian Dominant       # V7 of Bb7#11, on the way to Eb minor: b9 and b13 are in the key
+E | 39 | Bb7#11  | Bb Lydian Dominant        # V7 of Eb minor, the chain's last link: 9, #11 and 13 from the symbol
+F | 41 | Ebm     | Eb Dorian                 # tonic minor: Dorian by convention
+F | 43 | B7#11   | B Lydian Dominant         # bVI7 in Eb minor, not resolving: the #11 is in the key
+F | 44 | F7alt   | F Altered                 # from the symbol: altered
+F | 45 | Bb7#9   | Bb Altered                # V7 of Eb minor, the chain's last link: the b13 is in the key, b9, #9 and #11 from the symbol
+F | 46 | EbmMaj7 | Eb Melodic Minor          # from the symbol: minor-major 7th
+F | 48 | D7#9    | D Altered                 # V7 of G7#9, on the way to C minor: the b13 is in the key, b9, #9 and #11 from the symbol
+F | 48 | G7#9    | G Altered                 # V7 of C minor, the chain's last link: the b13 is in the key, b9, #9 and #11 from the symbol

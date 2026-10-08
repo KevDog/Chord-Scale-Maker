@@ -5,13 +5,14 @@ style: Up
 key: Gm
 form: A
 source: Colorado Cookbook, p. 43
+# analysis: 2026-10-08, rules v1; G minor
 
 # section | bar | chord | scale
 # the head's pedal intro and horn line are left out; these are the solo changes
-A | 1  | Gm7
-A | 5  | Fm7
-A | 7  | Gm7
-A | 9  | Bbm9
-A | 10 | Dbm7
-A | 11 | Bb/Gb
-A | 12 | C/Db
+A | 1  | Gm7   | G Dorian   # tonic minor: Dorian by convention
+A | 5  | Fm7   | F Dorian   # a borrowed minor chord: Dorian, its own key
+A | 7  | Gm7   | G Dorian   # tonic minor: Dorian by convention
+A | 9  | Bbm9  | Bb Dorian  # a borrowed minor chord: Dorian, its own key
+A | 10 | Dbm7  | Db Dorian  # a borrowed minor chord: Dorian, its own key
+A | 11 | Bb/Gb | Bb Ionian  # bIII of G minor: the relative major itself
+A | 12 | C/Db  | C Lydian   # a non-tonic major chord: Lydian

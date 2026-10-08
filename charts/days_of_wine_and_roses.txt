@@ -4,41 +4,42 @@ style: Medium
 key: F
 form: AB, 32 bars
 source: Colorado Cookbook, p. 59
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
-A | 1  | FMaj7
-A | 2  | Eb7#11
-A | 3  | Am7
-A | 4  | D7#9
-A | 5  | Gm
-A | 7  | Eb7#11
-A | 9  | Am7
-A | 10 | Dm
-A | 11 | Gm
-A | 12 | Gm
-A | 12 | Gm/F
-A | 13 | Em7b5
-A | 13 | A7#9
-A | 14 | Dm7
-A | 14 | G7
-A | 15 | Gm7/C
-A | 16 | C7b9
-B | 17 | FMaj7
-B | 18 | Eb7#11
-B | 19 | Am7
-B | 20 | D7#9
-B | 21 | Gm
-B | 23 | Eb7#11
-B | 25 | Am7
-B | 26 | Dm
-B | 26 | Dm/C
-B | 27 | Bm7b5
-B | 28 | E7#9
-B | 29 | Am
-B | 29 | Dm
-B | 30 | Gm7
-B | 30 | C7
-B | 31 | FMaj7
-B | 31 | D7#9
-B | 32 | Gm7
-B | 32 | C7b9
+A | 1  | FMaj7  | F Ionian                 # tonic: the 4th is in the key
+A | 2  | Eb7#11 | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A | 3  | Am7    | A Dorian                 # ii of the ii–V to G minor
+A | 4  | D7#9   | D Altered                # V7/ii in F: the b13 is in the key, b9, #9 and #11 from the symbol
+A | 5  | Gm     | G Dorian                 # ii: Dorian, the key’s own notes
+A | 7  | Eb7#11 | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A | 9  | Am7    | A Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
+A | 10 | Dm     | D Aeolian                # vi: the b13 is in the key
+A | 11 | Gm     | G Dorian                 # ii: Dorian, the key’s own notes
+A | 12 | Gm     | G Dorian
+A | 12 | Gm/F   | G Dorian                 # ii: Dorian, the key’s own notes
+A | 13 | Em7b5  | E Locrian                # iiø7 of the ii–V to D minor: the b9 is in the key
+A | 13 | A7#9   | A Altered                # V7/vi in F: the b13 is in the key, b9, #9 and #11 from the symbol
+A | 14 | Dm7    | D Dorian                 # ii of G7: Dorian
+A | 14 | G7     | G Mixolydian             # extended dominant: V7 of Gm7/C
+A | 15 | Gm7/C  | C Mixolydian             # static sus: Mixolydian
+A | 16 | C7b9   | C Half-Whole Diminished  # V7 of F: the b9 from the symbol
+B | 17 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
+B | 18 | Eb7#11 | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B | 19 | Am7    | A Dorian                 # ii of the ii–V to G minor
+B | 20 | D7#9   | D Altered                # V7/ii in F: the b13 is in the key, b9, #9 and #11 from the symbol
+B | 21 | Gm     | G Dorian                 # ii: Dorian, the key’s own notes
+B | 23 | Eb7#11 | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B | 25 | Am7    | A Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
+B | 26 | Dm     | D Aeolian                # vi: the b13 is in the key
+B | 26 | Dm/C   | D Aeolian                # vi: the b13 is in the key
+B | 27 | Bm7b5  | B Locrian                # iiø7 of the ii–V to A minor: the b9 is in the key
+B | 28 | E7#9   | E Altered                # V7/iii in F: the b13 is in the key, b9, #9 and #11 from the symbol
+B | 29 | Am     | A Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
+B | 29 | Dm     | D Aeolian                # vi: the b13 is in the key
+B | 30 | Gm7    | G Dorian                 # ii of the ii–V to F
+B | 30 | C7     | C Mixolydian             # V7 of F: natural tensions
+B | 31 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
+B | 31 | D7#9   | D Altered                # V7/ii in F: the b13 is in the key, b9, #9 and #11 from the symbol
+B | 32 | Gm7    | G Dorian                 # ii of the ii–V to F
+B | 32 | C7b9   | C Half-Whole Diminished  # V7 of F: the b9 from the symbol

@@ -5,29 +5,30 @@ style: Latin
 key: F
 form: AABA
 source: Colorado Cookbook, p. 79
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
-A1 | 1  | FMaj7
-A1 | 3  | G7
-A1 | 5  | Gm7
-A1 | 6  | Gb7
-A1 | 7  | FMaj7
-A1 | 8  | Gb7
-A2 | 9  | FMaj7
-A2 | 11 | G7
-A2 | 13 | Gm7
-A2 | 14 | Gb7
-A2 | 15 | FMaj7
-B  | 17 | GbMaj7
-B  | 19 | B7#11
-B  | 21 | F#m
-B  | 23 | Am7/D
-B  | 24 | D7
-B  | 25 | Gm
-B  | 27 | Bbm/Eb
-B  | 28 | Eb7
-B  | 29 | Am7
-B  | 30 | D7alt
-B  | 31 | Gm7
-B  | 32 | C7alt
+A1 | 1  | FMaj7  | F Ionian            # tonic: the 4th is in the key
+A1 | 3  | G7     | G Mixolydian        # II7 in F, not resolving: natural tensions
+A1 | 5  | Gm7    | G Dorian            # ii: Dorian, the key’s own notes
+A1 | 6  | Gb7    | Gb Lydian Dominant  # tritone substitute: resolves down a half step to FMaj7
+A1 | 7  | FMaj7  | F Ionian            # tonic: the 4th is in the key
+A1 | 8  | Gb7    | Gb Lydian Dominant  # tritone substitute: resolves down a half step to FMaj7
+A2 | 9  | FMaj7  | F Ionian            # tonic: the 4th is in the key
+A2 | 11 | G7     | G Mixolydian        # II7 in F, not resolving: natural tensions
+A2 | 13 | Gm7    | G Dorian            # ii: Dorian, the key’s own notes
+A2 | 14 | Gb7    | Gb Lydian Dominant  # tritone substitute: resolves down a half step to FMaj7
+A2 | 15 | FMaj7  | F Ionian            # tonic: the 4th is in the key
+B  | 17 | GbMaj7 | Gb Lydian           # a non-tonic major chord: Lydian
+B  | 19 | B7#11  | B Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 21 | F#m    | F# Dorian           # a borrowed minor chord: Dorian, its own key
+B  | 23 | Am7/D  | D Mixolydian        # static sus: Mixolydian
+B  | 24 | D7     | D Mixolydian b6     # V7/ii in F: the b13 is in the key
+B  | 25 | Gm     | G Dorian            # ii: Dorian, the key’s own notes
+B  | 27 | Bbm/Eb | Bb Dorian           # ii of Eb7: Dorian
+B  | 28 | Eb7    | Eb Mixolydian       # passing ii–V: its own key
+B  | 29 | Am7    | A Dorian            # ii of the ii–V to G minor
+B  | 30 | D7alt  | D Altered           # from the symbol: altered
+B  | 31 | Gm7    | G Dorian            # ii of the ii–V to F
+B  | 32 | C7alt  | C Altered           # from the symbol: altered
 @copy A1 A3 24

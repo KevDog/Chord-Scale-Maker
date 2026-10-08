@@ -5,47 +5,48 @@ style: Latin
 key: F
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 22
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
-A1 | 1  | Dm
-A1 | 2  | Em7b5
-A1 | 2  | A7
-A1 | 3  | Dm
-A1 | 4  | Em7b5
-A1 | 4  | A7
-A1 | 5  | Dm
-A1 | 6  | Em7b5
-A1 | 6  | A7
-A1 | 7  | Dm
-A1 | 8  | Em7b5
-A1 | 8  | A7
-A2 | 9  | Dm
-A2 | 10 | Em7b5
-A2 | 10 | A7
-A2 | 11 | Dm
-A2 | 12 | Em7b5
-A2 | 12 | A7
-A2 | 13 | Dm
-A2 | 14 | Gm7
-A2 | 14 | C7
-A2 | 15 | FMaj7
-A2 | 16 | Cm7
-A2 | 16 | F7
-B  | 17 | BbMaj7
-B  | 18 | Bdim7
-B  | 19 | Am7
-B  | 20 | D7
-B  | 21 | Gm7
-B  | 22 | C7
-B  | 23 | F
-B  | 24 | Cm7
-B  | 24 | F7
-C  | 25 | BbMaj7
-C  | 26 | Bdim7
-C  | 27 | Am7
-C  | 28 | D7
-C  | 29 | Gm7
-C  | 30 | C7
-C  | 31 | F
-C  | 32 | Em7b5
-C  | 32 | A7
+A1 | 1  | Dm     | D Aeolian                # vi: the b13 is in the key
+A1 | 2  | Em7b5  | E Locrian                # iiø7 of the ii–V to D minor: the b9 is in the key
+A1 | 2  | A7     | A Phrygian Dominant      # V7/vi in F: b9 and b13 are in the key
+A1 | 3  | Dm     | D Aeolian                # vi: the b13 is in the key
+A1 | 4  | Em7b5  | E Locrian                # iiø7 of the ii–V to D minor: the b9 is in the key
+A1 | 4  | A7     | A Phrygian Dominant      # V7/vi in F: b9 and b13 are in the key
+A1 | 5  | Dm     | D Aeolian                # vi: the b13 is in the key
+A1 | 6  | Em7b5  | E Locrian                # iiø7 of the ii–V to D minor: the b9 is in the key
+A1 | 6  | A7     | A Phrygian Dominant      # V7/vi in F: b9 and b13 are in the key
+A1 | 7  | Dm     | D Aeolian                # vi: the b13 is in the key
+A1 | 8  | Em7b5  | E Locrian                # iiø7 of the ii–V to D minor: the b9 is in the key
+A1 | 8  | A7     | A Phrygian Dominant      # V7/vi in F: b9 and b13 are in the key
+A2 | 9  | Dm     | D Aeolian                # vi: the b13 is in the key
+A2 | 10 | Em7b5  | E Locrian                # iiø7 of the ii–V to D minor: the b9 is in the key
+A2 | 10 | A7     | A Phrygian Dominant      # V7/vi in F: b9 and b13 are in the key
+A2 | 11 | Dm     | D Aeolian                # vi: the b13 is in the key
+A2 | 12 | Em7b5  | E Locrian                # iiø7 of the ii–V to D minor: the b9 is in the key
+A2 | 12 | A7     | A Phrygian Dominant      # V7/vi in F: b9 and b13 are in the key
+A2 | 13 | Dm     | D Aeolian                # vi: the b13 is in the key
+A2 | 14 | Gm7    | G Dorian                 # ii of the ii–V to F
+A2 | 14 | C7     | C Mixolydian             # V7 of F: natural tensions
+A2 | 15 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
+A2 | 16 | Cm7    | C Dorian                 # ii of the ii–V to Bb
+A2 | 16 | F7     | F Mixolydian             # V7/IV in F: natural tensions
+B  | 17 | BbMaj7 | Bb Lydian                # IV: the #4 is the key’s 7th
+B  | 18 | Bdim7  | B Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+B  | 19 | Am7    | A Dorian                 # ii of the ii–V to G minor
+B  | 20 | D7     | D Mixolydian b6          # V7/ii in F: the b13 is in the key
+B  | 21 | Gm7    | G Dorian                 # ii of the ii–V to F
+B  | 22 | C7     | C Mixolydian             # V7 of F: natural tensions
+B  | 23 | F      | F Ionian                 # tonic: the 4th is in the key
+B  | 24 | Cm7    | C Dorian                 # ii of the ii–V to Bb
+B  | 24 | F7     | F Mixolydian             # V7/IV in F: natural tensions
+C  | 25 | BbMaj7 | Bb Lydian                # IV: the #4 is the key’s 7th
+C  | 26 | Bdim7  | B Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+C  | 27 | Am7    | A Dorian                 # ii of the ii–V to G minor
+C  | 28 | D7     | D Mixolydian b6          # V7/ii in F: the b13 is in the key
+C  | 29 | Gm7    | G Dorian                 # ii of the ii–V to F
+C  | 30 | C7     | C Mixolydian             # V7 of F: natural tensions
+C  | 31 | F      | F Ionian                 # tonic: the 4th is in the key
+C  | 32 | Em7b5  | E Locrian                # iiø7 of the ii–V to D minor: the b9 is in the key
+C  | 32 | A7     | A Phrygian Dominant      # V7/vi in F: b9 and b13 are in the key

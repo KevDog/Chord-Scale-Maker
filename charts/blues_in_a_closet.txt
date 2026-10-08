@@ -4,14 +4,15 @@ style: Blues
 key: F
 form: A, 12 bars
 source: Colorado Cookbook, p. 40
+# analysis: 2026-10-08, rules v1; F, blues
 
 # section | bar | chord | scale
-A | 1  | F7
-A | 2  | Bb7
-A | 3  | F7
-A | 5  | Bb7
-A | 7  | F7
-A | 9  | Gm7
-A | 10 | C7
-A | 11 | F7
-A | 12 | C7
+A | 1  | F7  | F Mixolydian        # extended dominant: V7 of Bb7
+A | 2  | Bb7 | Bb Lydian Dominant  # IV7 of the blues: the #11 is in the key
+A | 3  | F7  | F Mixolydian        # extended dominant: V7 of Bb7
+A | 5  | Bb7 | Bb Lydian Dominant  # IV7 of the blues: the #11 is in the key
+A | 7  | F7  | F Mixolydian        # I7 of the blues: natural tensions
+A | 9  | Gm7 | G Dorian            # ii of C7: Dorian
+A | 10 | C7  | C Mixolydian        # extended dominant: V7 of F7
+A | 11 | F7  | F Mixolydian        # I7 of the blues: natural tensions
+A | 12 | C7  | C Mixolydian        # extended dominant: V7 of F7

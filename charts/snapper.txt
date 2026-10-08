@@ -2,20 +2,22 @@ title: Snapper
 subtitle: Medium up (12 12 8 12)
 composer: Clark Terry
 style: Medium up
-key: Bbm
+key: Fm
+# key: the book's index says Bbm; the lead sheet is in Fm (four flats, F- to F-)
 form: AABC, 44 bars
 source: Colorado Cookbook, p. 203
+# analysis: 2026-10-08, rules v1; F minor
 
 # section | bar | chord | scale
-A1 | 1  | Fm
-A1 | 5  | Bbm
-A1 | 7  | Fm
-A1 | 9  | Gm7b5
-A1 | 10 | C7
-A1 | 11 | Fm
+A1 | 1  | Fm    | F Dorian             # tonic minor: Dorian by convention
+A1 | 5  | Bbm   | Bb Dorian            # iv: Dorian, the key’s own notes
+A1 | 7  | Fm    | F Dorian             # tonic minor: Dorian by convention
+A1 | 9  | Gm7b5 | G Locrian            # iiø7 of the ii–V to F minor: the b9 is in the key
+A1 | 10 | C7    | C Phrygian Dominant  # V7 of F minor: b9 and b13 are in the key
+A1 | 11 | Fm    | F Dorian             # tonic minor: Dorian by convention
 @copy A1 A2 12
-B  | 25 | Bbm
-B  | 27 | Fm
-B  | 29 | Gm7b5
-B  | 31 | C7
+B  | 25 | Bbm   | Bb Dorian            # iv: Dorian, the key’s own notes
+B  | 27 | Fm    | F Dorian             # tonic minor: Dorian by convention
+B  | 29 | Gm7b5 | G Locrian            # iiø7 of the ii–V to F minor: the b9 is in the key
+B  | 31 | C7    | C Phrygian Dominant  # V7 of F minor: b9 and b13 are in the key
 @copy A1 C 32

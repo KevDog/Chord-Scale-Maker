@@ -5,66 +5,70 @@ style: Waltz
 key: Bb
 form: AABC, 56 bars
 source: Colorado Cookbook, p. 253
+# analysis: 2026-10-08, rules v1; Bb
 
 # section | bar | chord | scale
-A1 | 1  | BbMaj7
-A1 | 2  | G7alt
-A1 | 3  | Cm7
-A1 | 4  | F7
-A1 | 4  | F#dim7
-A1 | 5  | Gm7
-A1 | 6  | Fm7
-A1 | 7  | Em7
-A1 | 8  | A7
-A1 | 9  | Dm7
-A1 | 10 | Ebm7
-A1 | 11 | Dm7
-A1 | 12 | Ebm7
-A1 | 13 | Bm7b5
-A1 | 14 | E7alt
-A1 | 15 | Cm7b5
-A1 | 16 | F7alt
-A2 | 17 | BbMaj7
-A2 | 18 | G7alt
-A2 | 19 | Cm7
-A2 | 20 | F7
-A2 | 20 | F#dim7
-A2 | 21 | Gm7
-A2 | 22 | Fm7
-A2 | 23 | Em7
-A2 | 24 | A7
-A2 | 25 | Dm7
-A2 | 26 | Ebm7
-A2 | 27 | Dm7
-A2 | 28 | Ebm7
-A2 | 29 | Cm7
-A2 | 30 | F7
-A2 | 31 | BbMaj7
-A2 | 32 | Am7
-A2 | 32 | D7
-B  | 33 | Gm7
-B  | 34 | C7
-B  | 35 | FMaj7
-B  | 36 | Dm7
-B  | 37 | Abm7
-B  | 38 | Db7
-B  | 39 | Cm7
-B  | 40 | F7
-C  | 41 | BbMaj7
-C  | 42 | G7alt
-C  | 43 | Cm7
-C  | 44 | F7
-C  | 44 | F#dim7
-C  | 45 | Gm7
-C  | 46 | Fm7
-C  | 47 | Em7
-C  | 48 | A7
-C  | 49 | Dm7
-C  | 50 | Ebm7
-C  | 51 | Dm7
-C  | 52 | Ebm7
-C  | 53 | Cm7
-C  | 54 | F7
-C  | 55 | BMaj7
-C  | 56 | BMaj7
-C  | 56 | BbMaj7
+# area: Bb major (bars 1–32)
+A1 | 1  | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
+A1 | 2  | G7alt  | G Altered                 # from the symbol: altered
+A1 | 3  | Cm7    | C Dorian                  # ii of F7: Dorian
+A1 | 4  | F7     | F Mixolydian              # V7/I in Bb: natural tensions
+A1 | 4  | F#dim7 | F# Whole-Half Diminished  # vii°7 of Gm7: the rootless V7b9 of the next chord
+A1 | 5  | Gm7    | G Aeolian                 # vi: the b13 is in the key
+A1 | 6  | Fm7    | F Dorian                  # a borrowed minor chord: Dorian, its own key
+A1 | 7  | Em7    | E Dorian                  # ii of the ii–V to D minor
+A1 | 8  | A7     | A Phrygian Dominant       # V7/iii in Bb: b9 and b13 are in the key
+A1 | 9  | Dm7    | D Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+A1 | 10 | Ebm7   | Eb Dorian                 # a borrowed minor chord: Dorian, its own key
+A1 | 11 | Dm7    | D Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+A1 | 12 | Ebm7   | Eb Dorian                 # a borrowed minor chord: Dorian, its own key
+A1 | 13 | Bm7b5  | B Locrian                 # iiø7 of E7alt: the b9 is in the key
+A1 | 14 | E7alt  | E Altered                 # from the symbol: altered
+A1 | 15 | Cm7b5  | C Locrian                 # iiø7 of the ii–V to Bb: the b9 is in the key
+A1 | 16 | F7alt  | F Altered                 # from the symbol: altered
+A2 | 17 | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
+A2 | 18 | G7alt  | G Altered                 # from the symbol: altered
+A2 | 19 | Cm7    | C Dorian                  # ii of F7: Dorian
+A2 | 20 | F7     | F Mixolydian              # V7/I in Bb: natural tensions
+A2 | 20 | F#dim7 | F# Whole-Half Diminished  # vii°7 of Gm7: the rootless V7b9 of the next chord
+A2 | 21 | Gm7    | G Aeolian                 # vi: the b13 is in the key
+A2 | 22 | Fm7    | F Dorian                  # a borrowed minor chord: Dorian, its own key
+A2 | 23 | Em7    | E Dorian                  # ii of the ii–V to D minor
+A2 | 24 | A7     | A Phrygian Dominant       # V7/iii in Bb: b9 and b13 are in the key
+A2 | 25 | Dm7    | D Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+A2 | 26 | Ebm7   | Eb Dorian                 # a borrowed minor chord: Dorian, its own key
+A2 | 27 | Dm7    | D Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+A2 | 28 | Ebm7   | Eb Dorian                 # a borrowed minor chord: Dorian, its own key
+A2 | 29 | Cm7    | C Dorian                  # ii of the ii–V to Bb
+A2 | 30 | F7     | F Mixolydian              # V7 of Bb: natural tensions
+A2 | 31 | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
+A2 | 32 | Am7    | A Dorian                  # ii of the ii–V to G minor
+A2 | 32 | D7     | D Phrygian Dominant       # V7/vi in Bb: b9 and b13 are in the key
+# area: F major (bars 33–38)
+B  | 33 | Gm7    | G Dorian                  # ii of the ii–V to F
+B  | 34 | C7     | C Mixolydian              # V7 of F: natural tensions
+B  | 35 | FMaj7  | F Ionian                  # tonic: the 4th is in the key
+B  | 36 | Dm7    | D Aeolian                 # vi: the b13 is in the key
+B  | 37 | Abm7   | Ab Dorian                 # ii of Db7: Dorian
+B  | 38 | Db7    | Db Lydian Dominant        # tritone substitute: resolves down a half step to Cm7
+# area: Bb major (bars 39–56)
+B  | 39 | Cm7    | C Dorian                  # ii of the ii–V to Bb
+B  | 40 | F7     | F Mixolydian              # V7 of Bb: natural tensions
+C  | 41 | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
+C  | 42 | G7alt  | G Altered                 # from the symbol: altered
+C  | 43 | Cm7    | C Dorian                  # ii of F7: Dorian
+C  | 44 | F7     | F Mixolydian              # V7/I in Bb: natural tensions
+C  | 44 | F#dim7 | F# Whole-Half Diminished  # vii°7 of Gm7: the rootless V7b9 of the next chord
+C  | 45 | Gm7    | G Aeolian                 # vi: the b13 is in the key
+C  | 46 | Fm7    | F Dorian                  # a borrowed minor chord: Dorian, its own key
+C  | 47 | Em7    | E Dorian                  # ii of the ii–V to D minor
+C  | 48 | A7     | A Phrygian Dominant       # V7/iii in Bb: b9 and b13 are in the key
+C  | 49 | Dm7    | D Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+C  | 50 | Ebm7   | Eb Dorian                 # a borrowed minor chord: Dorian, its own key
+C  | 51 | Dm7    | D Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+C  | 52 | Ebm7   | Eb Dorian                 # a borrowed minor chord: Dorian, its own key
+C  | 53 | Cm7    | C Dorian                  # ii of F7: Dorian
+C  | 54 | F7     | F Mixolydian              # V7/I in Bb: natural tensions
+C  | 55 | BMaj7  | B Lydian                  # a non-tonic major chord: Lydian
+C  | 56 | BMaj7  | B Lydian
+C  | 56 | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key

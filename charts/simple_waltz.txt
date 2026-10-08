@@ -5,14 +5,15 @@ style: Waltz
 key: F
 form: A, 16 bars
 source: Colorado Cookbook, p. 199
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
-A | 1  | F7
-A | 5  | Bb7
-A | 7  | F7
-A | 11 | Gm7
-A | 12 | C7
-A | 13 | F
-A | 14 | Bb
-A | 15 | F
-A | 16 | C7
+A | 1  | F7  | F Mixolydian        # extended dominant: V7 of Bb7
+A | 5  | Bb7 | Bb Lydian Dominant  # IV7 in F, not resolving: the #11 is in the key
+A | 7  | F7  | F Mixolydian        # static dominant: its own mode
+A | 11 | Gm7 | G Dorian            # ii of the ii–V to F
+A | 12 | C7  | C Mixolydian        # V7 of F: natural tensions
+A | 13 | F   | F Ionian            # tonic: the 4th is in the key
+A | 14 | Bb  | Bb Lydian           # IV: the #4 is the key’s 7th
+A | 15 | F   | F Ionian            # tonic: the 4th is in the key
+A | 16 | C7  | C Mixolydian        # extended dominant: V7 of F7

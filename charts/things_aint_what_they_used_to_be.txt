@@ -5,14 +5,15 @@ style: Blues
 key: Db
 form: A, 12 bars
 source: Colorado Cookbook, p. 235
+# analysis: 2026-10-08, rules v1; Db, blues
 
 # section | bar | chord | scale
-A | 1  | Db7
-A | 5  | Gb7
-A | 7  | Db7
-A | 9  | Ebm7
-A | 10 | Ab7
-A | 11 | Db7
-A | 11 | E7
-A | 12 | Eb7
-A | 12 | D7
+A | 1  | Db7  | Db Mixolydian       # extended dominant: V7 of Gb7
+A | 5  | Gb7  | Gb Lydian Dominant  # IV7 of the blues: the #11 is in the key
+A | 7  | Db7  | Db Mixolydian       # I7 of the blues: natural tensions
+A | 9  | Ebm7 | Eb Dorian           # ii of Ab7: Dorian
+A | 10 | Ab7  | Ab Mixolydian       # extended dominant: V7 of Db7
+A | 11 | Db7  | Db Mixolydian       # I7 of the blues: natural tensions
+A | 11 | E7   | E Lydian Dominant   # tritone substitute: resolves down a half step to Eb7
+A | 12 | Eb7  | Eb Lydian Dominant  # tritone substitute: resolves down a half step to D7
+A | 12 | D7   | D Lydian Dominant   # tritone substitute: resolves down a half step to Db7

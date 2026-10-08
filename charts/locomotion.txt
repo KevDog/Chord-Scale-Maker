@@ -5,29 +5,30 @@ style: Blues
 key: Bb
 form: AABC, 44 bars
 source: Colorado Cookbook, p. 127
+# analysis: 2026-10-08, rules v1; Bb, modal
 
 # section | bar | chord | scale
-A1 | 1  | Bb7
-A1 | 5  | Eb7
-A1 | 7  | Bb7
-A1 | 9  | Cm7
-A1 | 10 | F7
-A1 | 11 | Bb7
-A1 | 12 | Cm7
-A1 | 12 | F7
-A2 | 13 | Bb7
-A2 | 17 | Eb7
-A2 | 19 | Bb7
-A2 | 21 | Cm7
-A2 | 22 | F7
-A2 | 23 | Bb7
-B  | 25 | Ab7
-B  | 27 | G7
-B  | 29 | Gb7
-B  | 31 | F7
-C  | 33 | Bb7
-C  | 37 | Eb7
-C  | 39 | Bb7
-C  | 41 | Cm7
-C  | 42 | F7
-C  | 43 | Bb7
+A1 | 1  | Bb7 | Bb Mixolydian  # modal: its own mode
+A1 | 5  | Eb7 | Eb Mixolydian  # modal: its own mode
+A1 | 7  | Bb7 | Bb Mixolydian  # modal: its own mode
+A1 | 9  | Cm7 | C Dorian       # modal minor: Dorian
+A1 | 10 | F7  | F Mixolydian   # modal: its own mode
+A1 | 11 | Bb7 | Bb Mixolydian  # modal: its own mode
+A1 | 12 | Cm7 | C Dorian       # modal minor: Dorian
+A1 | 12 | F7  | F Mixolydian   # modal: its own mode
+A2 | 13 | Bb7 | Bb Mixolydian  # modal: its own mode
+A2 | 17 | Eb7 | Eb Mixolydian  # modal: its own mode
+A2 | 19 | Bb7 | Bb Mixolydian  # modal: its own mode
+A2 | 21 | Cm7 | C Dorian       # modal minor: Dorian
+A2 | 22 | F7  | F Mixolydian   # modal: its own mode
+A2 | 23 | Bb7 | Bb Mixolydian  # modal: its own mode
+B  | 25 | Ab7 | Ab Mixolydian  # modal: its own mode
+B  | 27 | G7  | G Mixolydian   # modal: its own mode
+B  | 29 | Gb7 | Gb Mixolydian  # modal: its own mode
+B  | 31 | F7  | F Mixolydian   # modal: its own mode
+C  | 33 | Bb7 | Bb Mixolydian  # modal: its own mode
+C  | 37 | Eb7 | Eb Mixolydian  # modal: its own mode
+C  | 39 | Bb7 | Bb Mixolydian  # modal: its own mode
+C  | 41 | Cm7 | C Dorian       # modal minor: Dorian
+C  | 42 | F7  | F Mixolydian   # modal: its own mode
+C  | 43 | Bb7 | Bb Mixolydian  # modal: its own mode

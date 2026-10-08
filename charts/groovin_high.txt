@@ -4,34 +4,35 @@ style: Medium up
 key: Eb
 form: AA, 32 bars
 source: Colorado Cookbook, p. 82
+# analysis: 2026-10-08, rules v1; Eb
 
 # section | bar | chord | scale
 # the horn intro is left out
-A1 | 1  | EbMaj7
-A1 | 3  | Am7
-A1 | 4  | D7
-A1 | 5  | EbMaj7
-A1 | 7  | Gm7
-A1 | 8  | C7
-A1 | 9  | F7
-A1 | 11 | Fm7
-A1 | 12 | Bb7
-A1 | 13 | Gm7
-A1 | 14 | F#m7
-A1 | 14 | Fm7
-A1 | 15 | Bb7b9
-A2 | 17 | EbMaj7
-A2 | 19 | Am7
-A2 | 20 | D7
-A2 | 21 | EbMaj7
-A2 | 23 | Gm7
-A2 | 24 | C7
-A2 | 25 | F7
-A2 | 27 | Fm7
-A2 | 28 | Bb7
-A2 | 29 | Fm
-A2 | 30 | Abm7
-A2 | 30 | Db7
-A2 | 31 | EbMaj7
-A2 | 32 | Fm7
-A2 | 32 | Bb7
+A1 | 1  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A1 | 3  | Am7    | A Dorian                  # ii of D7: Dorian
+A1 | 4  | D7     | D Mixolydian              # passing ii–V: its own key
+A1 | 5  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A1 | 7  | Gm7    | G Dorian                  # ii of C7: Dorian
+A1 | 8  | C7     | C Mixolydian              # extended dominant: V7 of F7
+A1 | 9  | F7     | F Mixolydian              # II7 in Eb, not resolving: natural tensions
+A1 | 11 | Fm7    | F Dorian                  # ii of Bb7: Dorian
+A1 | 12 | Bb7    | Bb Mixolydian             # V7/I in Eb: natural tensions
+A1 | 13 | Gm7    | G Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+A1 | 14 | F#m7   | F# Dorian                 # a borrowed minor chord: Dorian, its own key
+A1 | 14 | Fm7    | F Dorian                  # ii of the ii–V to Eb
+A1 | 15 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+A2 | 17 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A2 | 19 | Am7    | A Dorian                  # ii of D7: Dorian
+A2 | 20 | D7     | D Mixolydian              # passing ii–V: its own key
+A2 | 21 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A2 | 23 | Gm7    | G Dorian                  # ii of C7: Dorian
+A2 | 24 | C7     | C Mixolydian              # extended dominant: V7 of F7
+A2 | 25 | F7     | F Mixolydian              # II7 in Eb, not resolving: natural tensions
+A2 | 27 | Fm7    | F Dorian                  # ii of Bb7: Dorian
+A2 | 28 | Bb7    | Bb Mixolydian             # V7/I in Eb: natural tensions
+A2 | 29 | Fm     | F Dorian                  # ii: Dorian, the key’s own notes
+A2 | 30 | Abm7   | Ab Dorian                 # ii of Db7: Dorian
+A2 | 30 | Db7    | Db Lydian Dominant        # back door bVII7 to EbMaj7: the #11 is in the key
+A2 | 31 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A2 | 32 | Fm7    | F Dorian                  # ii of the ii–V to Eb
+A2 | 32 | Bb7    | Bb Mixolydian             # V7 of Eb: natural tensions

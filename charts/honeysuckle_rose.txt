@@ -4,56 +4,57 @@ style: Medium
 key: F
 form: AABA
 source: Colorado Cookbook, p. 91
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
-A1 | 1  | Gm7
-A1 | 1  | C7
-A1 | 2  | Gm7
-A1 | 2  | C7
-A1 | 3  | Gm7
-A1 | 3  | C7
-A1 | 4  | C7
-A1 | 5  | F6
-A1 | 5  | Gm7b5
-A1 | 5  | F6
-A1 | 6  | G7
-A1 | 6  | C7
-A1 | 7  | F6
-A1 | 8  | Am7
-A1 | 8  | D7
-A2 | 9  | Gm7
-A2 | 9  | C7
-A2 | 10 | Gm7
-A2 | 10 | C7
-A2 | 11 | Gm7
-A2 | 11 | C7
-A2 | 12 | C7
-A2 | 13 | F6
-A2 | 13 | Gm7b5
-A2 | 13 | F6
-A2 | 14 | G7
-A2 | 14 | C7
-A2 | 15 | F6
-A2 | 15 | Gm7b5
-A2 | 15 | F6
-A2 | 16 | Gm7b5
-A2 | 16 | C7b9
-B  | 17 | F7
-B  | 19 | Bb7
-B  | 21 | G7
-B  | 23 | C7
-A3 | 25 | Gm7
-A3 | 25 | C7
-A3 | 26 | Gm7
-A3 | 26 | C7
-A3 | 27 | Gm7
-A3 | 27 | C7
-A3 | 28 | C7
-A3 | 29 | F6
-A3 | 29 | Gm7b5
-A3 | 29 | F6
-A3 | 30 | G7
-A3 | 30 | C7
-A3 | 31 | F6
-A3 | 31 | Gm7b5
-A3 | 31 | F6
+A1 | 1  | Gm7   | G Dorian                 # ii of C7: Dorian
+A1 | 1  | C7    | C Mixolydian             # V7/I in F: natural tensions
+A1 | 2  | Gm7   | G Dorian                 # ii of C7: Dorian
+A1 | 2  | C7    | C Mixolydian             # V7/I in F: natural tensions
+A1 | 3  | Gm7   | G Dorian                 # ii of the ii–V to F
+A1 | 3  | C7    | C Mixolydian             # V7 of F: natural tensions
+A1 | 4  | C7    | C Mixolydian
+A1 | 5  | F6    | F Ionian                 # tonic: the 4th is in the key
+A1 | 5  | Gm7b5 | G Locrian                # iiø7 in F: the b9 is in the key
+A1 | 5  | F6    | F Ionian                 # tonic: the 4th is in the key
+A1 | 6  | G7    | G Mixolydian             # extended dominant: V7 of C7
+A1 | 6  | C7    | C Mixolydian             # V7 of F: natural tensions
+A1 | 7  | F6    | F Ionian                 # tonic: the 4th is in the key
+A1 | 8  | Am7   | A Dorian                 # ii of the ii–V to G minor
+A1 | 8  | D7    | D Mixolydian b6          # V7/ii in F: the b13 is in the key
+A2 | 9  | Gm7   | G Dorian                 # ii of C7: Dorian
+A2 | 9  | C7    | C Mixolydian             # V7/I in F: natural tensions
+A2 | 10 | Gm7   | G Dorian                 # ii of C7: Dorian
+A2 | 10 | C7    | C Mixolydian             # V7/I in F: natural tensions
+A2 | 11 | Gm7   | G Dorian                 # ii of the ii–V to F
+A2 | 11 | C7    | C Mixolydian             # V7 of F: natural tensions
+A2 | 12 | C7    | C Mixolydian
+A2 | 13 | F6    | F Ionian                 # tonic: the 4th is in the key
+A2 | 13 | Gm7b5 | G Locrian                # iiø7 in F: the b9 is in the key
+A2 | 13 | F6    | F Ionian                 # tonic: the 4th is in the key
+A2 | 14 | G7    | G Mixolydian             # extended dominant: V7 of C7
+A2 | 14 | C7    | C Mixolydian             # V7 of F: natural tensions
+A2 | 15 | F6    | F Ionian                 # tonic: the 4th is in the key
+A2 | 15 | Gm7b5 | G Locrian                # iiø7 in F: the b9 is in the key
+A2 | 15 | F6    | F Ionian                 # tonic: the 4th is in the key
+A2 | 16 | Gm7b5 | G Locrian                # iiø7 of C7b9: the b9 is in the key
+A2 | 16 | C7b9  | C Half-Whole Diminished  # extended dominant: V7 of F7; b9 from the symbol
+B  | 17 | F7    | F Mixolydian             # extended dominant: V7 of Bb7
+B  | 19 | Bb7   | Bb Lydian Dominant       # IV7 in F, not resolving: the #11 is in the key
+B  | 21 | G7    | G Mixolydian             # extended dominant: V7 of C7
+B  | 23 | C7    | C Mixolydian             # V7 in F, not resolving: natural tensions
+A3 | 25 | Gm7   | G Dorian                 # ii of C7: Dorian
+A3 | 25 | C7    | C Mixolydian             # V7/I in F: natural tensions
+A3 | 26 | Gm7   | G Dorian                 # ii of C7: Dorian
+A3 | 26 | C7    | C Mixolydian             # V7/I in F: natural tensions
+A3 | 27 | Gm7   | G Dorian                 # ii of the ii–V to F
+A3 | 27 | C7    | C Mixolydian             # V7 of F: natural tensions
+A3 | 28 | C7    | C Mixolydian
+A3 | 29 | F6    | F Ionian                 # tonic: the 4th is in the key
+A3 | 29 | Gm7b5 | G Locrian                # iiø7 in F: the b9 is in the key
+A3 | 29 | F6    | F Ionian                 # tonic: the 4th is in the key
+A3 | 30 | G7    | G Mixolydian             # extended dominant: V7 of C7
+A3 | 30 | C7    | C Mixolydian             # V7 of F: natural tensions
+A3 | 31 | F6    | F Ionian                 # tonic: the 4th is in the key
+A3 | 31 | Gm7b5 | G Locrian                # iiø7 in F: the b9 is in the key
+A3 | 31 | F6    | F Ionian                 # tonic: the 4th is in the key

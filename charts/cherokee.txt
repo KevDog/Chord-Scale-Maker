@@ -4,42 +4,48 @@ style: Up
 key: Bb
 form: AABA, 64 bars
 source: Colorado Cookbook, p. 52
+# analysis: 2026-10-08, rules v1; Bb
 
 # section | bar | chord | scale
 # the standard changes; the lead sheet's alternates (Eb7, Dm7 G7b9, Db7, Gb7#11, F7alt) are left out
-A1 | 1  | BbMaj7
-A1 | 3  | Fm7
-A1 | 3  | Bb7
-A1 | 4  | EbMaj7
-A1 | 6  | Ab7#11
-A1 | 7  | BbMaj7
-A1 | 9  | C7
-A1 | 11 | Cm7
-A1 | 12 | F7
-A1 | 13 | BbMaj7
-A1 | 15 | Cm7
-A1 | 16 | F7
-A2 | 17 | BbMaj7
-A2 | 19 | Fm7
-A2 | 19 | Bb7
-A2 | 20 | EbMaj7
-A2 | 22 | Ab7#11
-A2 | 23 | BbMaj7
-A2 | 25 | C7
-A2 | 27 | Cm7
-A2 | 28 | F7
-A2 | 29 | BbMaj7
-B  | 33 | C#m7
-B  | 34 | F#7
-B  | 35 | BMaj7
-B  | 37 | Bm7
-B  | 38 | E7
-B  | 39 | AMaj7
-B  | 41 | Am7
-B  | 42 | D7
-B  | 43 | GMaj7
-B  | 45 | Gm7
-B  | 46 | C7
-B  | 47 | Cm7
-B  | 48 | F7
+# area: Bb major (bars 1–29)
+A1 | 1  | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
+A1 | 3  | Fm7    | F Dorian            # ii of the ii–V to Eb
+A1 | 3  | Bb7    | Bb Mixolydian       # V7/IV in Bb: natural tensions
+A1 | 4  | EbMaj7 | Eb Lydian           # IV: the #4 is the key’s 7th
+A1 | 6  | Ab7#11 | Ab Lydian Dominant  # back door bVII7 to BbMaj7: the #11 is in the key
+A1 | 7  | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
+A1 | 9  | C7     | C Mixolydian        # II7 in Bb, not resolving: natural tensions
+A1 | 11 | Cm7    | C Dorian            # ii of the ii–V to Bb
+A1 | 12 | F7     | F Mixolydian        # V7 of Bb: natural tensions
+A1 | 13 | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
+A1 | 15 | Cm7    | C Dorian            # ii of the ii–V to Bb
+A1 | 16 | F7     | F Mixolydian        # V7 of Bb: natural tensions
+A2 | 17 | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
+A2 | 19 | Fm7    | F Dorian            # ii of the ii–V to Eb
+A2 | 19 | Bb7    | Bb Mixolydian       # V7/IV in Bb: natural tensions
+A2 | 20 | EbMaj7 | Eb Lydian           # IV: the #4 is the key’s 7th
+A2 | 22 | Ab7#11 | Ab Lydian Dominant  # back door bVII7 to BbMaj7: the #11 is in the key
+A2 | 23 | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
+A2 | 25 | C7     | C Mixolydian        # II7 in Bb, not resolving: natural tensions
+A2 | 27 | Cm7    | C Dorian            # ii of the ii–V to Bb
+A2 | 28 | F7     | F Mixolydian        # V7 of Bb: natural tensions
+A2 | 29 | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
+# area: B major (bars 33–35)
+B  | 33 | C#m7   | C# Dorian           # ii of the ii–V to B
+B  | 34 | F#7    | F# Mixolydian       # V7 of B: natural tensions
+B  | 35 | BMaj7  | B Ionian            # tonic: the 4th is in the key
+# area: A major (bars 37–39)
+B  | 37 | Bm7    | B Dorian            # ii of the ii–V to A
+B  | 38 | E7     | E Mixolydian        # V7 of A: natural tensions
+B  | 39 | AMaj7  | A Ionian            # tonic: the 4th is in the key
+# area: G major (bars 41–46)
+B  | 41 | Am7    | A Dorian            # ii of the ii–V to G
+B  | 42 | D7     | D Mixolydian        # V7 of G: natural tensions
+B  | 43 | GMaj7  | G Ionian            # tonic: the 4th is in the key
+B  | 45 | Gm7    | G Dorian            # ii of C7: Dorian
+B  | 46 | C7     | C Mixolydian        # passing ii–V: its own key
+# area: Bb major (bars 47–61)
+B  | 47 | Cm7    | C Dorian            # ii of the ii–V to Bb
+B  | 48 | F7     | F Mixolydian        # V7 of Bb: natural tensions
 @copy A2 A3 32

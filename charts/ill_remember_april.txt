@@ -5,30 +5,36 @@ style: Mixed
 key: G
 form: ABA, 48 bars
 source: Colorado Cookbook, p. 100
+# analysis: 2026-10-08, rules v1; G
 
 # section | bar | chord | scale
 # the standard 48-bar form; the lead sheet condenses the A sections
-A1 | 1  | GMaj7
-A1 | 5  | Gm
-A1 | 9  | Am7b5
-A1 | 10 | D7#9
-A1 | 11 | Bm7b5
-A1 | 12 | E7#9
-A1 | 13 | Am7
-A1 | 14 | D7
-A1 | 15 | GMaj7
-B  | 17 | Cm7
-B  | 18 | F7
-B  | 19 | BbMaj7
-B  | 21 | Cm7
-B  | 22 | F7
-B  | 23 | BbMaj7
-B  | 25 | Am7
-B  | 26 | D7#9
-B  | 27 | GMaj7
-B  | 29 | F#m7
-B  | 30 | B7
-B  | 31 | EMaj7
-B  | 32 | Am7
-B  | 32 | D7
+# area: G major (bars 1–15)
+A1 | 1  | GMaj7  | G Ionian                 # tonic: the 4th is in the key
+A1 | 5  | Gm     | G Dorian                 # a borrowed minor chord: Dorian, its own key
+A1 | 9  | Am7b5  | A Locrian                # iiø7 of D7#9: the b9 is in the key
+A1 | 10 | D7#9   | D Altered                # passing ii–V: its own key: the b13 is in the key, b9, #9 and #11 from the symbol
+A1 | 11 | Bm7b5  | B Locrian                # iiø7 of the ii–V to A minor: the b9 is in the key
+A1 | 12 | E7#9   | E Altered                # V7/ii in G: the b13 is in the key, b9, #9 and #11 from the symbol
+A1 | 13 | Am7    | A Dorian                 # ii of the ii–V to G
+A1 | 14 | D7     | D Mixolydian             # V7 of G: natural tensions
+A1 | 15 | GMaj7  | G Ionian                 # tonic: the 4th is in the key
+# area: Bb major (bars 17–23)
+B  | 17 | Cm7    | C Dorian                 # ii of the ii–V to Bb
+B  | 18 | F7     | F Mixolydian             # V7 of Bb: natural tensions
+B  | 19 | BbMaj7 | Bb Ionian                # tonic: the 4th is in the key
+B  | 21 | Cm7    | C Dorian                 # ii of the ii–V to Bb
+B  | 22 | F7     | F Mixolydian             # V7 of Bb: natural tensions
+B  | 23 | BbMaj7 | Bb Ionian                # tonic: the 4th is in the key
+# area: G major (bars 25–27)
+B  | 25 | Am7    | A Dorian                 # ii of the ii–V to G
+B  | 26 | D7#9   | D Half-Whole Diminished  # V7 of G: b9, #9 and #11 from the symbol
+B  | 27 | GMaj7  | G Ionian                 # tonic: the 4th is in the key
+# area: E major (bars 29–31)
+B  | 29 | F#m7   | F# Dorian                # ii of the ii–V to E
+B  | 30 | B7     | B Mixolydian             # V7 of E: natural tensions
+B  | 31 | EMaj7  | E Ionian                 # tonic: the 4th is in the key
+# area: G major (bars 32–47)
+B  | 32 | Am7    | A Dorian                 # ii of the ii–V to G
+B  | 32 | D7     | D Mixolydian             # V7 of G: natural tensions
 @copy A1 A2 32

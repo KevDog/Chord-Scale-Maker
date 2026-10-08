@@ -4,23 +4,26 @@ style: Medium
 key: Fm
 form: A, 16 bars
 source: Colorado Cookbook, p. 29
+# analysis: 2026-10-08, rules v1; F minor
 
 # section | bar | chord | scale
-A | 1  | FMaj7
-A | 2  | GbMaj7
-A | 3  | FMaj7
-A | 4  | EbMaj7
-A | 5  | Dm
-A | 6  | EbMaj7
-A | 7  | Dm
-A | 7  | Cm
-A | 8  | Bbm
-A | 9  | Am
-A | 10 | BbMaj7
-A | 11 | Em7b5
-A | 11 | A7
-A | 12 | Dm
-A | 13 | Gm
-A | 14 | GbMaj7
-A | 15 | Fm
-A | 16 | GbMaj7
+# area: F minor (bars 1–10)
+A | 1  | FMaj7  | F Lydian             # a non-tonic major chord: Lydian
+A | 2  | GbMaj7 | Gb Lydian            # a non-tonic major chord: Lydian
+A | 3  | FMaj7  | F Lydian             # a non-tonic major chord: Lydian
+A | 4  | EbMaj7 | Eb Lydian            # a non-tonic major chord: Lydian
+A | 5  | Dm     | D Dorian             # a borrowed minor chord: Dorian, its own key
+A | 6  | EbMaj7 | Eb Lydian            # a non-tonic major chord: Lydian
+A | 7  | Dm     | D Dorian             # a borrowed minor chord: Dorian, its own key
+A | 7  | Cm     | C Phrygian           # v of a minor key: the b9 is in the key
+A | 8  | Bbm    | Bb Dorian            # iv: Dorian, the key’s own notes
+A | 9  | Am     | A Dorian             # a borrowed minor chord: Dorian, its own key
+A | 10 | BbMaj7 | Bb Lydian            # a non-tonic major chord: Lydian
+# area: D minor (bars 11–16)
+A | 11 | Em7b5  | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
+A | 11 | A7     | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key
+A | 12 | Dm     | D Dorian             # tonic minor: Dorian by convention
+A | 13 | Gm     | G Dorian             # iv: Dorian, the key’s own notes
+A | 14 | GbMaj7 | Gb Lydian            # a non-tonic major chord: Lydian
+A | 15 | Fm     | F Dorian             # a borrowed minor chord: Dorian, its own key
+A | 16 | GbMaj7 | Gb Lydian            # a non-tonic major chord: Lydian

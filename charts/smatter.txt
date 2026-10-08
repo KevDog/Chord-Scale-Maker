@@ -5,20 +5,21 @@ style: Medium
 key: Bbm
 form: AB, 20 bars
 source: Colorado Cookbook, p. 201
+# analysis: 2026-10-08, rules v1; Bb minor, modal
 
 # section | bar | chord | scale
-A | 1  | EMaj7#11
-A | 3  | Ebm
-A | 5  | BMaj7#11
-A | 7  | Bbm
-B | 9  | Cm
-B | 11 | AbMaj7#11
-B | 13 | Gm
-B | 15 | Dm
-B | 17 | BbMaj7
-B | 17 | A7
-B | 18 | AbMaj7
-B | 18 | Gm
-B | 19 | GbMaj7
-B | 19 | F7
-B | 20 | Bbm
+A | 1  | EMaj7#11  | E Lydian      # from the symbol: #11
+A | 3  | Ebm       | Eb Dorian     # modal minor: Dorian
+A | 5  | BMaj7#11  | B Lydian      # from the symbol: #11
+A | 7  | Bbm       | Bb Dorian     # modal minor: Dorian
+B | 9  | Cm        | C Dorian      # modal minor: Dorian
+B | 11 | AbMaj7#11 | Ab Lydian     # from the symbol: #11
+B | 13 | Gm        | G Dorian      # modal minor: Dorian
+B | 15 | Dm        | D Dorian      # modal minor: Dorian
+B | 17 | BbMaj7    | Bb Lydian     # modal major: Lydian
+B | 17 | A7        | A Mixolydian  # modal: its own mode
+B | 18 | AbMaj7    | Ab Lydian     # modal major: Lydian
+B | 18 | Gm        | G Dorian      # modal minor: Dorian
+B | 19 | GbMaj7    | Gb Lydian     # modal major: Lydian
+B | 19 | F7        | F Mixolydian  # modal: its own mode
+B | 20 | Bbm       | Bb Dorian     # modal minor: Dorian

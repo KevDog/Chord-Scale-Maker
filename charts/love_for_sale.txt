@@ -5,58 +5,68 @@ style: Mixed
 key: Bbm
 form: AABC, 64 bars
 source: Colorado Cookbook, p. 129
+# analysis: 2026-10-08, rules v1; Bb minor
 
 # section | bar | chord | scale
 # the lead sheet offers Eb7 for EbMaj7 and Bb7 for Bbm in the A sections; the Maj7 / minor reading is written
-A1 | 1  | EbMaj7
-A1 | 3  | Bbm
-A1 | 5  | EbMaj7
-A1 | 7  | Bbm
-A1 | 9  | Ebm7
-A1 | 10 | Ab7
-A1 | 11 | DbMaj7
-A1 | 12 | Gb7
-A1 | 13 | Cm7b5
-A1 | 14 | F7alt
-A1 | 15 | Bbm
-A2 | 17 | EbMaj7
-A2 | 19 | Bbm
-A2 | 21 | EbMaj7
-A2 | 23 | Bbm
-A2 | 25 | Ebm7
-A2 | 26 | Ab7
-A2 | 27 | DbMaj7
-A2 | 28 | Gb7
-A2 | 29 | Cm7b5
-A2 | 30 | F7alt
-A2 | 31 | BbMaj7
-A2 | 32 | Fm7
-A2 | 32 | Bb7
-B  | 33 | Ebm7
-B  | 34 | Ab7b9
-B  | 35 | DbMaj7
-B  | 36 | Fm7
-B  | 36 | Bb7
-B  | 37 | Ebm7
-B  | 38 | Ab7
-B  | 39 | DbMaj7
-B  | 41 | Fm7
-B  | 42 | Bb7b9
-B  | 43 | Ebm
-B  | 45 | Gm7b5
-B  | 46 | C7b9
-B  | 47 | F#m7
-B  | 47 | B7
-B  | 48 | Fm7b5
-B  | 48 | Bb7b9
-C  | 49 | EbMaj7
-C  | 51 | Bbm
-C  | 53 | EbMaj7
-C  | 55 | Bbm
-C  | 57 | Ebm7
-C  | 58 | Ab7
-C  | 59 | Db7
-C  | 60 | Gb7
-C  | 61 | Cm7b5
-C  | 62 | F7alt
-C  | 63 | Bbm
+# area: Bb minor (bars 1–7)
+A1 | 1  | EbMaj7 | Eb Lydian                 # a non-tonic major chord: Lydian
+A1 | 3  | Bbm    | Bb Dorian                 # tonic minor: Dorian by convention
+A1 | 5  | EbMaj7 | Eb Lydian                 # a non-tonic major chord: Lydian
+A1 | 7  | Bbm    | Bb Dorian                 # tonic minor: Dorian by convention
+# area: Db major (bars 9–12)
+A1 | 9  | Ebm7   | Eb Dorian                 # ii of the ii–V to Db
+A1 | 10 | Ab7    | Ab Mixolydian             # V7 of Db: natural tensions
+A1 | 11 | DbMaj7 | Db Ionian                 # tonic: the 4th is in the key
+A1 | 12 | Gb7    | Gb Lydian Dominant        # IV7 in Db, not resolving: the #11 is in the key
+# area: Bb minor (bars 13–23)
+A1 | 13 | Cm7b5  | C Locrian                 # iiø7 of the ii–V to Bb minor: the b9 is in the key
+A1 | 14 | F7alt  | F Altered                 # from the symbol: altered
+A1 | 15 | Bbm    | Bb Dorian                 # tonic minor: Dorian by convention
+A2 | 17 | EbMaj7 | Eb Lydian                 # a non-tonic major chord: Lydian
+A2 | 19 | Bbm    | Bb Dorian                 # tonic minor: Dorian by convention
+A2 | 21 | EbMaj7 | Eb Lydian                 # a non-tonic major chord: Lydian
+A2 | 23 | Bbm    | Bb Dorian                 # tonic minor: Dorian by convention
+# area: Db major (bars 25–28)
+A2 | 25 | Ebm7   | Eb Dorian                 # ii of the ii–V to Db
+A2 | 26 | Ab7    | Ab Mixolydian             # V7 of Db: natural tensions
+A2 | 27 | DbMaj7 | Db Ionian                 # tonic: the 4th is in the key
+A2 | 28 | Gb7    | Gb Lydian Dominant        # IV7 in Db, not resolving: the #11 is in the key
+# area: Bb major (bars 29–32)
+A2 | 29 | Cm7b5  | C Locrian                 # iiø7 of the ii–V to Bb: the b9 is in the key
+A2 | 30 | F7alt  | F Altered                 # from the symbol: altered
+A2 | 31 | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
+A2 | 32 | Fm7    | F Dorian                  # ii of the ii–V to Eb minor
+A2 | 32 | Bb7    | Bb Mixolydian             # V7/iv in Bb: natural tensions
+# area: Bb minor (bars 33–36)
+B  | 33 | Ebm7   | Eb Dorian                 # ii of the ii–V to Db
+B  | 34 | Ab7b9  | Ab Half-Whole Diminished  # V7/bIII in Bb minor: the b9 from the symbol
+B  | 35 | DbMaj7 | Db Ionian                 # bIII of Bb minor: the relative major itself
+B  | 36 | Fm7    | F Dorian                  # ii of the ii–V to Eb minor
+B  | 36 | Bb7    | Bb Mixolydian b6          # V7/iv in Bb minor: the b13 is in the key
+# area: Db major (bars 37–47)
+B  | 37 | Ebm7   | Eb Dorian                 # ii of the ii–V to Db
+B  | 38 | Ab7    | Ab Mixolydian             # V7 of Db: natural tensions
+B  | 39 | DbMaj7 | Db Ionian                 # tonic: the 4th is in the key
+B  | 41 | Fm7    | F Dorian                  # ii of the ii–V to Eb minor
+B  | 42 | Bb7b9  | Bb Phrygian Dominant      # V7/ii in Db: the b13 is in the key, the b9 from the symbol
+B  | 43 | Ebm    | Eb Dorian                 # ii: Dorian, the key’s own notes
+B  | 45 | Gm7b5  | G Locrian                 # iiø7 of C7b9: the b9 is in the key
+B  | 46 | C7b9   | C Phrygian Dominant       # V7/iii in Db: b9 and b13 are in the key
+B  | 47 | F#m7   | F# Dorian                 # ii of B7: Dorian
+B  | 47 | B7     | B Mixolydian              # passing ii–V: its own key
+# area: Eb major (bars 48–60)
+B  | 48 | Fm7b5  | F Locrian                 # iiø7 of the ii–V to Eb: the b9 is in the key
+B  | 48 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+C  | 49 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+C  | 51 | Bbm    | Bb Dorian                 # a borrowed minor chord: Dorian, its own key
+C  | 53 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+C  | 55 | Bbm    | Bb Dorian                 # a borrowed minor chord: Dorian, its own key
+C  | 57 | Ebm7   | Eb Dorian                 # ii of Ab7: Dorian
+C  | 58 | Ab7    | Ab Mixolydian             # extended dominant: V7 of Db7
+C  | 59 | Db7    | Db Mixolydian             # extended dominant: V7 of Gb7
+C  | 60 | Gb7    | Gb Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+# area: Bb minor (bars 61–63)
+C  | 61 | Cm7b5  | C Locrian                 # iiø7 of the ii–V to Bb minor: the b9 is in the key
+C  | 62 | F7alt  | F Altered                 # from the symbol: altered
+C  | 63 | Bbm    | Bb Dorian                 # tonic minor: Dorian by convention

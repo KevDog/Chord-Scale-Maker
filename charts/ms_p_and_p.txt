@@ -5,21 +5,22 @@ style: Medium
 key: Gb
 form: ABC, 24 bars
 source: Colorado Cookbook, p. 142
+# analysis: 2026-10-08, rules v1; Gb
 
 # section | bar | chord | scale
-A | 1  | Eb7sus4
-A | 5  | Db7sus4
-B | 9  | Eb7sus4
-B | 13 | Db7sus4
-C | 17 | Bm7
-C | 18 | Dm7
-C | 18 | G7
-C | 19 | Am7
-C | 20 | Cm7
-C | 20 | F7
-C | 21 | Gm7
-C | 22 | Bbm7
-C | 22 | Eb7
-C | 23 | Fm7
-C | 24 | Abm7
-C | 24 | Db7
+A | 1  | Eb7sus4 | Eb Mixolydian  # static sus: Mixolydian
+A | 5  | Db7sus4 | Db Mixolydian  # static sus: Mixolydian
+B | 9  | Eb7sus4 | Eb Mixolydian  # static sus: Mixolydian
+B | 13 | Db7sus4 | Db Mixolydian  # static sus: Mixolydian
+C | 17 | Bm7     | B Dorian       # a borrowed minor chord: Dorian, its own key
+C | 18 | Dm7     | D Dorian       # ii of G7: Dorian
+C | 18 | G7      | G Mixolydian   # passing ii–V: its own key
+C | 19 | Am7     | A Dorian       # a borrowed minor chord: Dorian, its own key
+C | 20 | Cm7     | C Dorian       # ii of F7: Dorian
+C | 20 | F7      | F Mixolydian   # passing ii–V: its own key
+C | 21 | Gm7     | G Dorian       # a borrowed minor chord: Dorian, its own key
+C | 22 | Bbm7    | Bb Dorian      # ii of Eb7: Dorian
+C | 22 | Eb7     | Eb Mixolydian  # passing ii–V: its own key
+C | 23 | Fm7     | F Dorian       # a borrowed minor chord: Dorian, its own key
+C | 24 | Abm7    | Ab Dorian      # ii of Db7: Dorian
+C | 24 | Db7     | Db Mixolydian  # V7/I in Gb: natural tensions

@@ -5,28 +5,29 @@ style: Medium
 key: Bb
 form: ABC, 16 bars
 source: Colorado Cookbook, p. 65
+# analysis: 2026-10-08, rules v1; Bb
 
 # section | bar | chord | scale
-A | 1  | Bb7
-A | 1  | Eb7
-A | 2  | D7
-A | 2  | G7
-A | 3  | C7
-A | 3  | F7
-A | 4  | Bb7
-A | 5  | Bb7
-A | 5  | Eb7
-A | 6  | D7
-A | 6  | G7
-A | 7  | C7
-A | 8  | F7
-B | 9  | Bb7
-B | 11 | Eb7
-B | 12 | Edim7
-C | 13 | Bb7
-C | 13 | Eb7
-C | 14 | D7
-C | 14 | G7
-C | 15 | C7
-C | 15 | F7
-C | 16 | Bb
+A | 1  | Bb7   | Bb Mixolydian            # extended dominant: V7 of Eb7
+A | 1  | Eb7   | Eb Lydian Dominant       # tritone substitute: resolves down a half step to D7
+A | 2  | D7    | D Mixolydian             # extended dominant: V7 of G7
+A | 2  | G7    | G Mixolydian             # extended dominant: V7 of C7
+A | 3  | C7    | C Mixolydian             # extended dominant: V7 of F7
+A | 3  | F7    | F Mixolydian             # extended dominant: V7 of Bb7
+A | 4  | Bb7   | Bb Mixolydian            # extended dominant: V7 of Eb7
+A | 5  | Bb7   | Bb Mixolydian
+A | 5  | Eb7   | Eb Lydian Dominant       # tritone substitute: resolves down a half step to D7
+A | 6  | D7    | D Mixolydian             # extended dominant: V7 of G7
+A | 6  | G7    | G Mixolydian             # extended dominant: V7 of C7
+A | 7  | C7    | C Mixolydian             # extended dominant: V7 of F7
+A | 8  | F7    | F Mixolydian             # extended dominant: V7 of Bb7
+B | 9  | Bb7   | Bb Mixolydian            # extended dominant: V7 of Eb7
+B | 11 | Eb7   | Eb Lydian Dominant       # IV7 in Bb, not resolving: the #11 is in the key
+B | 12 | Edim7 | E Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+C | 13 | Bb7   | Bb Mixolydian            # extended dominant: V7 of Eb7
+C | 13 | Eb7   | Eb Lydian Dominant       # tritone substitute: resolves down a half step to D7
+C | 14 | D7    | D Mixolydian             # extended dominant: V7 of G7
+C | 14 | G7    | G Mixolydian             # extended dominant: V7 of C7
+C | 15 | C7    | C Mixolydian             # extended dominant: V7 of F7
+C | 15 | F7    | F Mixolydian             # V7 of Bb: natural tensions
+C | 16 | Bb    | Bb Ionian                # tonic: the 4th is in the key

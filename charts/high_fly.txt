@@ -5,57 +5,58 @@ style: Medium
 key: Bb
 form: AABC
 source: Colorado Cookbook, p. 89
+# analysis: 2026-10-08, rules v1; Bb
 
 # section | bar | chord | scale
-A1 | 1  | Dm
-A1 | 2  | G7
-A1 | 3  | Cm7
-A1 | 3  | F7
-A1 | 4  | Em7
-A1 | 4  | A7
-A1 | 4  | Dm7
-A1 | 4  | G7
-A1 | 5  | Dbm7
-A1 | 5  | Gb7
-A1 | 6  | Cm7
-A1 | 6  | F7
-A1 | 7  | Bb7
-A1 | 8  | B7
-A2 | 9  | Dm
-A2 | 10 | G7
-A2 | 11 | Cm7
-A2 | 11 | F7
-A2 | 12 | Em7
-A2 | 12 | A7
-A2 | 12 | Dm7
-A2 | 12 | G7
-A2 | 13 | Dbm7
-A2 | 13 | Gb7
-A2 | 14 | Cm7
-A2 | 14 | F7
-A2 | 15 | Dm7b5
-A2 | 16 | G7#9
-B  | 17 | Cm7b5
-B  | 18 | F7b9
-B  | 19 | Dm
-B  | 20 | G7b9
-B  | 21 | Cm7b5
-B  | 22 | F7b9
-B  | 23 | Em
-B  | 23 | A7
-B  | 24 | Ebm
-B  | 24 | Ab7
-C  | 25 | Dm
-C  | 26 | G7
-C  | 27 | Cm7
-C  | 27 | F7
-C  | 28 | Em7
-C  | 28 | A7
-C  | 28 | Dm7
-C  | 28 | G7
-C  | 29 | Dbm7
-C  | 29 | Gb7
-C  | 30 | Cm7
-C  | 30 | F7
-C  | 31 | Bb6/9
-C  | 32 | B7
+A1 | 1  | Dm    | D Dorian                 # ii of the ii–V to C minor
+A1 | 2  | G7    | G Mixolydian b6          # V7/ii in Bb: the b13 is in the key
+A1 | 3  | Cm7   | C Dorian                 # ii of F7: Dorian
+A1 | 3  | F7    | F Lydian Dominant        # tritone substitute: resolves down a half step to Em7
+A1 | 4  | Em7   | E Dorian                 # ii of the ii–V to D minor
+A1 | 4  | A7    | A Phrygian Dominant      # V7/iii in Bb: b9 and b13 are in the key
+A1 | 4  | Dm7   | D Dorian                 # ii of G7: Dorian
+A1 | 4  | G7    | G Mixolydian             # passing ii–V: its own key
+A1 | 5  | Dbm7  | Db Dorian                # ii of Gb7: Dorian
+A1 | 5  | Gb7   | Gb Mixolydian            # passing ii–V: its own key
+A1 | 6  | Cm7   | C Dorian                 # ii of F7: Dorian
+A1 | 6  | F7    | F Mixolydian             # extended dominant: V7 of Bb7
+A1 | 7  | Bb7   | Bb Mixolydian            # I7 in Bb, not resolving: natural tensions
+A1 | 8  | B7    | B Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A2 | 9  | Dm    | D Dorian                 # ii of the ii–V to C minor
+A2 | 10 | G7    | G Mixolydian b6          # V7/ii in Bb: the b13 is in the key
+A2 | 11 | Cm7   | C Dorian                 # ii of F7: Dorian
+A2 | 11 | F7    | F Lydian Dominant        # tritone substitute: resolves down a half step to Em7
+A2 | 12 | Em7   | E Dorian                 # ii of the ii–V to D minor
+A2 | 12 | A7    | A Phrygian Dominant      # V7/iii in Bb: b9 and b13 are in the key
+A2 | 12 | Dm7   | D Dorian                 # ii of G7: Dorian
+A2 | 12 | G7    | G Mixolydian             # passing ii–V: its own key
+A2 | 13 | Dbm7  | Db Dorian                # ii of Gb7: Dorian
+A2 | 13 | Gb7   | Gb Mixolydian            # passing ii–V: its own key
+A2 | 14 | Cm7   | C Dorian                 # ii of F7: Dorian
+A2 | 14 | F7    | F Mixolydian             # V7/I in Bb: natural tensions
+A2 | 15 | Dm7b5 | D Locrian                # iiø7 of G7#9: the b9 is in the key
+A2 | 16 | G7#9  | G Altered                # V7/ii in Bb: the b13 is in the key, b9, #9 and #11 from the symbol
+B  | 17 | Cm7b5 | C Locrian                # iiø7 of F7b9: the b9 is in the key
+B  | 18 | F7b9  | F Phrygian Dominant      # passing ii–V: its own key: b9 and b13 are in the key
+B  | 19 | Dm    | D Dorian                 # ii of G7b9: Dorian
+B  | 20 | G7b9  | G Phrygian Dominant      # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+B  | 21 | Cm7b5 | C Locrian                # iiø7 of F7b9: the b9 is in the key
+B  | 22 | F7b9  | F Half-Whole Diminished  # tritone substitute: resolves down a half step to Em; b9 from the symbol
+B  | 23 | Em    | E Dorian                 # ii of A7: Dorian
+B  | 23 | A7    | A Mixolydian             # passing ii–V: its own key
+B  | 24 | Ebm   | Eb Dorian                # ii of Ab7: Dorian
+B  | 24 | Ab7   | Ab Mixolydian            # passing ii–V: its own key
+C  | 25 | Dm    | D Dorian                 # ii of the ii–V to C minor
+C  | 26 | G7    | G Mixolydian b6          # V7/ii in Bb: the b13 is in the key
+C  | 27 | Cm7   | C Dorian                 # ii of F7: Dorian
+C  | 27 | F7    | F Lydian Dominant        # tritone substitute: resolves down a half step to Em7
+C  | 28 | Em7   | E Dorian                 # ii of the ii–V to D minor
+C  | 28 | A7    | A Phrygian Dominant      # V7/iii in Bb: b9 and b13 are in the key
+C  | 28 | Dm7   | D Dorian                 # ii of G7: Dorian
+C  | 28 | G7    | G Mixolydian             # passing ii–V: its own key
+C  | 29 | Dbm7  | Db Dorian                # ii of Gb7: Dorian
+C  | 29 | Gb7   | Gb Mixolydian            # passing ii–V: its own key
+C  | 30 | Cm7   | C Dorian                 # ii of the ii–V to Bb
+C  | 30 | F7    | F Mixolydian             # V7 of Bb: natural tensions
+C  | 31 | Bb6/9 | Bb Ionian                # tonic: the 4th is in the key
+C  | 32 | B7    | B Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key

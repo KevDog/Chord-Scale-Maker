@@ -5,50 +5,54 @@ style: Latin
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 232
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
 # the horn intro is left out
-A | 1  | Gm9
-A | 2  | C7
-A | 3  | FMaj7
-A | 3  | BbMaj7
-A | 4  | Am7
-A | 4  | D7b9
-A | 5  | Gm7
-A | 5  | C7
-A | 6  | Gm7
-A | 6  | C7
-A | 7  | FMaj7
-A | 8  | Am7b5
-A | 8  | D7alt
-B | 9  | Gm9
-B | 10 | C7
-B | 11 | FMaj7
-B | 12 | Bm7b5
-B | 12 | E7alt
-B | 13 | AMaj7
-B | 14 | Bm7
-B | 14 | E7
-B | 15 | A7
-B | 16 | D7b9
-C | 17 | Gm9
-C | 18 | C7
-C | 19 | FMaj7
-C | 19 | BbMaj7
-C | 20 | Am7
-C | 20 | D7b9
-C | 21 | Gm7
-C | 21 | C7
-C | 22 | Gm7
-C | 22 | C7
-C | 23 | Eb7
-C | 24 | D7alt
-D | 25 | Gm9
-D | 26 | Em7b5
-D | 26 | A7alt
-D | 27 | Dm7
-D | 28 | G7
-D | 29 | Gm7
-D | 30 | C7
-D | 31 | FMaj7
-D | 32 | D7alt
+# area: F major (bars 1–11)
+A | 1  | Gm9    | G Dorian             # ii of the ii–V to F
+A | 2  | C7     | C Mixolydian         # V7 of F: natural tensions
+A | 3  | FMaj7  | F Ionian             # tonic: the 4th is in the key
+A | 3  | BbMaj7 | Bb Lydian            # IV: the #4 is the key’s 7th
+A | 4  | Am7    | A Dorian             # ii of the ii–V to G minor
+A | 4  | D7b9   | D Phrygian Dominant  # V7/ii in F: the b13 is in the key, the b9 from the symbol
+A | 5  | Gm7    | G Dorian             # ii of C7: Dorian
+A | 5  | C7     | C Mixolydian         # V7/I in F: natural tensions
+A | 6  | Gm7    | G Dorian             # ii of the ii–V to F
+A | 6  | C7     | C Mixolydian         # V7 of F: natural tensions
+A | 7  | FMaj7  | F Ionian             # tonic: the 4th is in the key
+A | 8  | Am7b5  | A Locrian            # iiø7 of the ii–V to G minor: the b9 is in the key
+A | 8  | D7alt  | D Altered            # from the symbol: altered
+B | 9  | Gm9    | G Dorian             # ii of the ii–V to F
+B | 10 | C7     | C Mixolydian         # V7 of F: natural tensions
+B | 11 | FMaj7  | F Ionian             # tonic: the 4th is in the key
+# area: A major (bars 12–16)
+B | 12 | Bm7b5  | B Locrian            # iiø7 of the ii–V to A: the b9 is in the key
+B | 12 | E7alt  | E Altered            # from the symbol: altered
+B | 13 | AMaj7  | A Ionian             # tonic: the 4th is in the key
+B | 14 | Bm7    | B Dorian             # ii of E7: Dorian
+B | 14 | E7     | E Phrygian Dominant  # V7 of A7, on the way to G minor: b9 and b13 are in the key
+B | 15 | A7     | A Phrygian Dominant  # V7 of D7b9, on the way to G minor: b9 and b13 are in the key
+B | 16 | D7b9   | D Phrygian Dominant  # V7 of G minor, the chain's last link: b9 and b13 are in the key
+# area: F major (bars 17–32)
+C | 17 | Gm9    | G Dorian             # ii of the ii–V to F
+C | 18 | C7     | C Mixolydian         # V7 of F: natural tensions
+C | 19 | FMaj7  | F Ionian             # tonic: the 4th is in the key
+C | 19 | BbMaj7 | Bb Lydian            # IV: the #4 is the key’s 7th
+C | 20 | Am7    | A Dorian             # ii of the ii–V to G minor
+C | 20 | D7b9   | D Phrygian Dominant  # V7/ii in F: the b13 is in the key, the b9 from the symbol
+C | 21 | Gm7    | G Dorian             # ii of C7: Dorian
+C | 21 | C7     | C Mixolydian         # V7/I in F: natural tensions
+C | 22 | Gm7    | G Dorian             # ii of C7: Dorian
+C | 22 | C7     | C Mixolydian         # V7/I in F: natural tensions
+C | 23 | Eb7    | Eb Lydian Dominant   # tritone substitute: resolves down a half step to D7alt
+C | 24 | D7alt  | D Altered            # from the symbol: altered
+D | 25 | Gm9    | G Dorian             # ii: Dorian, the key’s own notes
+D | 26 | Em7b5  | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
+D | 26 | A7alt  | A Altered            # from the symbol: altered
+D | 27 | Dm7    | D Dorian             # ii of G7: Dorian
+D | 28 | G7     | G Mixolydian         # V7/V in F: natural tensions
+D | 29 | Gm7    | G Dorian             # ii of the ii–V to F
+D | 30 | C7     | C Mixolydian         # V7 of F: natural tensions
+D | 31 | FMaj7  | F Ionian             # tonic: the 4th is in the key
+D | 32 | D7alt  | D Altered            # from the symbol: altered

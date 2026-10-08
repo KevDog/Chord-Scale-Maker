@@ -5,41 +5,45 @@ style: Latin
 key: Bb
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 251
+# analysis: 2026-10-08, rules v1; Bb
 
 # section | bar | chord | scale
 # the lead sheet repeats Bbm7 Eb7 for two more bars before going back to the top
-A | 1  | BbMaj7
-A | 3  | GbMaj7
-A | 4  | B7#11
-A | 5  | BbMaj7
-A | 7  | Dm7
-A | 8  | G7b9
-B | 9  | Cm
-B | 9  | Cm/Bb
-B | 10 | Am7b5
-B | 10 | D7alt
-B | 11 | Gm
-B | 11 | Gm/F
-B | 12 | Em7b5
-B | 12 | A7alt
-B | 13 | DMaj7
-B | 14 | Em7
-B | 14 | A7
-B | 15 | Dm7
-B | 15 | G7
-B | 16 | Cm7
-B | 16 | F7
-C | 17 | BbMaj7
-C | 19 | GbMaj7
-C | 20 | B7#11
-C | 21 | BbMaj7
-C | 23 | Fm7
-C | 24 | Bb7b9
-D | 25 | EbMaj7
-D | 26 | Ab7#11
-D | 27 | Gm7
-D | 28 | C7#11
-D | 29 | Cm7
-D | 30 | F7
-D | 31 | Bbm7
-D | 32 | Eb7
+# area: Bb major (bars 1–11)
+A | 1  | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
+A | 3  | GbMaj7 | Gb Lydian                 # a non-tonic major chord: Lydian
+A | 4  | B7#11  | B Lydian Dominant         # tritone substitute: resolves down a half step to BbMaj7
+A | 5  | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
+A | 7  | Dm7    | D Dorian                  # ii of the ii–V to C minor
+A | 8  | G7b9   | G Phrygian Dominant       # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+B | 9  | Cm     | C Dorian                  # ii: Dorian, the key’s own notes
+B | 9  | Cm/Bb  | C Dorian                  # ii: Dorian, the key’s own notes
+B | 10 | Am7b5  | A Locrian                 # iiø7 of the ii–V to G minor: the b9 is in the key
+B | 10 | D7alt  | D Altered                 # from the symbol: altered
+B | 11 | Gm     | G Aeolian                 # vi: the b13 is in the key
+B | 11 | Gm/F   | G Aeolian                 # vi: the b13 is in the key
+# area: D major (bars 12–15)
+B | 12 | Em7b5  | E Locrian                 # iiø7 of the ii–V to D: the b9 is in the key
+B | 12 | A7alt  | A Altered                 # from the symbol: altered
+B | 13 | DMaj7  | D Ionian                  # tonic: the 4th is in the key
+B | 14 | Em7    | E Dorian                  # ii of the ii–V to D minor
+B | 14 | A7     | A Mixolydian              # V7 of D: natural tensions
+B | 15 | Dm7    | D Dorian                  # ii of the ii–V to C minor
+B | 15 | G7     | G Lydian Dominant         # V7/bvii in D: the #11 is in the key
+# area: Bb major (bars 16–32)
+B | 16 | Cm7    | C Dorian                  # ii of the ii–V to Bb
+B | 16 | F7     | F Mixolydian              # V7 of Bb: natural tensions
+C | 17 | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
+C | 19 | GbMaj7 | Gb Lydian                 # a non-tonic major chord: Lydian
+C | 20 | B7#11  | B Lydian Dominant         # tritone substitute: resolves down a half step to BbMaj7
+C | 21 | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
+C | 23 | Fm7    | F Dorian                  # ii of the ii–V to Eb
+C | 24 | Bb7b9  | Bb Half-Whole Diminished  # V7/IV in Bb: the b9 from the symbol
+D | 25 | EbMaj7 | Eb Lydian                 # IV: the #4 is the key’s 7th
+D | 26 | Ab7#11 | Ab Lydian Dominant        # tritone substitute: resolves down a half step to Gm7
+D | 27 | Gm7    | G Dorian                  # ii of C7#11: Dorian
+D | 28 | C7#11  | C Lydian Dominant         # V7/V in Bb: the #11 from the symbol
+D | 29 | Cm7    | C Dorian                  # ii of the ii–V to Bb minor
+D | 30 | F7     | F Mixolydian              # V7 of Bb: natural tensions
+D | 31 | Bbm7   | Bb Dorian                 # ii of Eb7: Dorian
+D | 32 | Eb7    | Eb Mixolydian             # passing ii–V: its own key

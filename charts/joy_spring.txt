@@ -4,57 +4,65 @@ style: Medium
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 115
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
 # the horn intro and coda are left out
-A | 1  | FMaj7
-A | 2  | Gm7
-A | 2  | C7
-A | 3  | FMaj7
-A | 4  | Bbm7
-A | 4  | Eb7
-A | 5  | Am7
-A | 5  | D7#9
-A | 6  | Gm7
-A | 6  | C7
-A | 7  | FMaj7
-A | 8  | Abm7
-A | 8  | Db7
-B | 9  | GbMaj7
-B | 10 | Abm7
-B | 10 | Db7
-B | 11 | GbMaj7
-B | 12 | Bm7
-B | 12 | E7
-B | 13 | Bbm7
-B | 13 | Eb7#9
-B | 14 | Abm7
-B | 14 | Db7
-B | 15 | GbMaj7
-B | 16 | Am7
-B | 16 | D7
-C | 17 | GMaj7
-C | 18 | Gm7
-C | 18 | C7
-C | 19 | FMaj7
-C | 20 | Fm7
-C | 20 | Bb7
-C | 21 | EbMaj7
-C | 22 | Abm7
-C | 22 | Db7
-C | 23 | GbMaj7
-C | 24 | Gm7
-C | 24 | C7
-D | 25 | FMaj7
-D | 26 | Gm7
-D | 26 | C7
-D | 27 | FMaj7
-D | 28 | Bbm7
-D | 28 | Eb7
-D | 29 | Am7
-D | 29 | D7#9
-D | 30 | Gm7
-D | 30 | C7
-D | 31 | FMaj7
-D | 32 | Gm7
-D | 32 | C7
+# area: F major (bars 1–7)
+A | 1  | FMaj7  | F Ionian       # tonic: the 4th is in the key
+A | 2  | Gm7    | G Dorian       # ii of the ii–V to F
+A | 2  | C7     | C Mixolydian   # V7 of F: natural tensions
+A | 3  | FMaj7  | F Ionian       # tonic: the 4th is in the key
+A | 4  | Bbm7   | Bb Dorian      # ii of Eb7: Dorian
+A | 4  | Eb7    | Eb Mixolydian  # passing ii–V: its own key
+A | 5  | Am7    | A Dorian       # ii of the ii–V to G minor
+A | 5  | D7#9   | D Altered      # V7/ii in F: the b13 is in the key, b9, #9 and #11 from the symbol
+A | 6  | Gm7    | G Dorian       # ii of the ii–V to F
+A | 6  | C7     | C Mixolydian   # V7 of F: natural tensions
+A | 7  | FMaj7  | F Ionian       # tonic: the 4th is in the key
+# area: Gb major (bars 8–15)
+A | 8  | Abm7   | Ab Dorian      # ii of the ii–V to Gb
+A | 8  | Db7    | Db Mixolydian  # V7 of Gb: natural tensions
+B | 9  | GbMaj7 | Gb Ionian      # tonic: the 4th is in the key
+B | 10 | Abm7   | Ab Dorian      # ii of the ii–V to Gb
+B | 10 | Db7    | Db Mixolydian  # V7 of Gb: natural tensions
+B | 11 | GbMaj7 | Gb Ionian      # tonic: the 4th is in the key
+B | 12 | Bm7    | B Dorian       # ii of E7: Dorian
+B | 12 | E7     | E Mixolydian   # passing ii–V: its own key
+B | 13 | Bbm7   | Bb Dorian      # ii of the ii–V to Ab minor
+B | 13 | Eb7#9  | Eb Altered     # V7/ii in Gb: the b13 is in the key, b9, #9 and #11 from the symbol
+B | 14 | Abm7   | Ab Dorian      # ii of the ii–V to Gb
+B | 14 | Db7    | Db Mixolydian  # V7 of Gb: natural tensions
+B | 15 | GbMaj7 | Gb Ionian      # tonic: the 4th is in the key
+# area: G major (bars 16–17)
+B | 16 | Am7    | A Dorian       # ii of the ii–V to G
+B | 16 | D7     | D Mixolydian   # V7 of G: natural tensions
+C | 17 | GMaj7  | G Ionian       # tonic: the 4th is in the key
+# area: F major (bars 18–19)
+C | 18 | Gm7    | G Dorian       # ii of the ii–V to F
+C | 18 | C7     | C Mixolydian   # V7 of F: natural tensions
+C | 19 | FMaj7  | F Ionian       # tonic: the 4th is in the key
+# area: Eb major (bars 20–21)
+C | 20 | Fm7    | F Dorian       # ii of the ii–V to Eb
+C | 20 | Bb7    | Bb Mixolydian  # V7 of Eb: natural tensions
+C | 21 | EbMaj7 | Eb Ionian      # tonic: the 4th is in the key
+# area: Gb major (bars 22–23)
+C | 22 | Abm7   | Ab Dorian      # ii of the ii–V to Gb
+C | 22 | Db7    | Db Mixolydian  # V7 of Gb: natural tensions
+C | 23 | GbMaj7 | Gb Ionian      # tonic: the 4th is in the key
+# area: F major (bars 24–32)
+C | 24 | Gm7    | G Dorian       # ii of the ii–V to F
+C | 24 | C7     | C Mixolydian   # V7 of F: natural tensions
+D | 25 | FMaj7  | F Ionian       # tonic: the 4th is in the key
+D | 26 | Gm7    | G Dorian       # ii of the ii–V to F
+D | 26 | C7     | C Mixolydian   # V7 of F: natural tensions
+D | 27 | FMaj7  | F Ionian       # tonic: the 4th is in the key
+D | 28 | Bbm7   | Bb Dorian      # ii of Eb7: Dorian
+D | 28 | Eb7    | Eb Mixolydian  # passing ii–V: its own key
+D | 29 | Am7    | A Dorian       # ii of the ii–V to G minor
+D | 29 | D7#9   | D Altered      # V7/ii in F: the b13 is in the key, b9, #9 and #11 from the symbol
+D | 30 | Gm7    | G Dorian       # ii of the ii–V to F
+D | 30 | C7     | C Mixolydian   # V7 of F: natural tensions
+D | 31 | FMaj7  | F Ionian       # tonic: the 4th is in the key
+D | 32 | Gm7    | G Dorian       # ii of the ii–V to F
+D | 32 | C7     | C Mixolydian   # V7 of F: natural tensions

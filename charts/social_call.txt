@@ -4,30 +4,33 @@ style: Medium
 key: Db
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 204
+# analysis: 2026-10-08, rules v1; Db
 
 # section | bar | chord | scale
 # the head ends with two extra bars (Ebm7 Ab7 | Db) and a drum tag; the solo form is written
-A1 | 1  | Fm7b5
-A1 | 1  | Bb7b9
-A1 | 2  | Ebm7
-A1 | 3  | Ebm7
-A1 | 3  | Ab7b9b13
-A1 | 4  | DbMaj7
-A1 | 5  | Fm7
-A1 | 5  | Em7
-A1 | 6  | Ebm7
-A1 | 7  | Eb7
-A1 | 7  | D7
-A1 | 8  | DbMaj7
+# area: Db major (bars 1–20)
+A1 | 1  | Fm7b5    | F Locrian             # iiø7 of the ii–V to Eb minor: the b9 is in the key
+A1 | 1  | Bb7b9    | Bb Phrygian Dominant  # V7/ii in Db: the b13 is in the key, the b9 from the symbol
+A1 | 2  | Ebm7     | Eb Dorian             # ii of the ii–V to Db
+A1 | 3  | Ebm7     | Eb Dorian
+A1 | 3  | Ab7b9b13 | Ab Phrygian Dominant  # V7 of Db: b9 and b13 from the symbol
+A1 | 4  | DbMaj7   | Db Ionian             # tonic: the 4th is in the key
+A1 | 5  | Fm7      | F Dorian              # iii: Dorian (its Phrygian would put a b9 over the root)
+A1 | 5  | Em7      | E Dorian              # a borrowed minor chord: Dorian, its own key
+A1 | 6  | Ebm7     | Eb Dorian             # ii: Dorian, the key’s own notes
+A1 | 7  | Eb7      | Eb Lydian Dominant    # tritone substitute: resolves down a half step to D7
+A1 | 7  | D7       | D Lydian Dominant     # tritone substitute: resolves down a half step to DbMaj7
+A1 | 8  | DbMaj7   | Db Ionian             # tonic: the 4th is in the key
 @copy A1 A2 8
-B  | 17 | Abm7
-B  | 18 | Db7
-B  | 19 | GbMaj7
-B  | 19 | Abm7
-B  | 20 | Bbm7
-B  | 21 | F#m7
-B  | 22 | B7
-B  | 23 | EMaj7
-B  | 24 | Ebm7
-B  | 24 | Ab7alt
+B  | 17 | Abm7     | Ab Dorian             # ii of the ii–V to Gb
+B  | 18 | Db7      | Db Mixolydian         # V7/IV in Db: natural tensions
+B  | 19 | GbMaj7   | Gb Lydian             # IV: the #4 is the key’s 7th
+B  | 19 | Abm7     | Ab Dorian             # a borrowed minor chord: Dorian, its own key
+B  | 20 | Bbm7     | Bb Aeolian            # vi: the b13 is in the key
+# area: E major (bars 21–25)
+B  | 21 | F#m7     | F# Dorian             # ii of the ii–V to E
+B  | 22 | B7       | B Mixolydian          # V7 of E: natural tensions
+B  | 23 | EMaj7    | E Ionian              # tonic: the 4th is in the key
+B  | 24 | Ebm7     | Eb Dorian             # ii of Ab7alt: Dorian
+B  | 24 | Ab7alt   | Ab Altered            # from the symbol: altered
 @copy A1 A3 24
