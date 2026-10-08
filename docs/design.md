@@ -549,5 +549,5 @@ Pages are static, and the only server code is the contact function, so the attac
    ported engine, so they inherit its spelling rules.
 10. **Versioning: the commit is the release.** Every merge to main deploys, so there's no number to bump. The
     version is the commit's date (UTC) and short hash, e.g. `2026.10.07 · 1e2bea5` (`build/version.ts`, in
-    `runtimeConfig.public.version`): shown in the footer and added to each contact-form email. Named milestones are annotated git tags (`v1-launch`). Revisit SemVer only if the
-    engine is published as a package.
+    `runtimeConfig.public.version`): shown in the footer and added to each contact-form email. Named milestones
+    are annotated git tags (`v1-launch`). Revisit SemVer only if the engine is published as a package.
