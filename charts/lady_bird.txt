@@ -1,0 +1,19 @@
+title: Lady Bird
+subtitle: 16 Bars, C
+
+# section | bar | chord | scale
+A | 1  | CMaj7  | C Ionian
+A | 3  | Fm7    | F Dorian
+A | 4  | Bb7    | Bb Lydian Dominant
+A | 5  | CMaj7  | C Ionian
+A | 7  | Bbm7   | Bb Dorian
+A | 8  | Eb7    | Eb Mixolydian
+A | 9  | AbMaj7 | Ab Ionian
+A | 11 | Am7    | A Dorian
+A | 12 | D7     | D Mixolydian
+A | 13 | Dm7    | D Dorian
+A | 14 | G7     | G Mixolydian
+A | 15 | CMaj7  | C Ionian
+A | 15 | Eb7    | Eb Mixolydian
+A | 16 | AbMaj7 | Ab Ionian
+A | 16 | G7#5   | G Whole Tone

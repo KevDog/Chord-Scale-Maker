@@ -1,0 +1,34 @@
+title: Stella by Starlight
+subtitle: 32 Bars, Bb
+
+# section | bar | chord | scale
+A | 1  | Em7b5  | E Locrian
+A | 2  | A7b9   | A Phrygian Dominant
+A | 3  | Cm7    | C Dorian
+A | 4  | F7     | F Mixolydian
+A | 5  | Fm7    | F Dorian
+A | 6  | Bb7    | Bb Mixolydian
+A | 7  | EbMaj7 | Eb Lydian
+A | 8  | Ab7    | Ab Lydian Dominant
+B | 9  | BbMaj7 | Bb Ionian
+B | 10 | Em7b5  | E Locrian
+B | 10 | A7b9   | A Phrygian Dominant
+B | 11 | Dm7    | D Dorian
+B | 12 | Bbm7   | Bb Dorian
+B | 12 | Eb7    | Eb Lydian Dominant
+B | 13 | FMaj7  | F Lydian
+B | 14 | Em7b5  | E Locrian
+B | 14 | A7b9   | A Phrygian Dominant
+B | 15 | Am7b5  | A Locrian
+B | 16 | D7b9   | D Phrygian Dominant
+C | 17 | G7#5   | G Altered
+C | 19 | Cm7    | C Dorian
+C | 21 | Ab7#11 | Ab Lydian Dominant
+C | 23 | BbMaj7 | Bb Ionian
+D | 25 | Em7b5  | E Locrian
+D | 26 | A7b9   | A Phrygian Dominant
+D | 27 | Dm7b5  | D Locrian
+D | 28 | G7b9   | G Phrygian Dominant
+D | 29 | Cm7b5  | C Locrian
+D | 30 | F7b9   | F Half-Whole
+D | 31 | BbMaj7 | Bb Ionian
