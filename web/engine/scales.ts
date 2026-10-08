@@ -150,6 +150,18 @@ export function parseScale(text: string): ParsedScale {
   return { root: parseRoot(t.slice(0, i)), key: scaleKey(t.slice(i)) }
 }
 
+/** the same scale however it's written ("D Half-Whole" and "D Half-Whole Diminished"); false if either can't be read */
+export function sameScale(a: string, b: string | null | undefined): boolean {
+  if (!b) return false
+  if (a === b) return true
+  try {
+    const [x, y] = [parseScale(a), parseScale(b)]
+    return x.key === y.key && x.root.letter === y.root.letter && x.root.acc === y.root.acc
+  } catch {
+    return false
+  }
+}
+
 export function spellScale(root: Spelled, key: ScaleKey): ScaleNote[] {
   const notes = spellFrom(root, SCALES[key][0])
   if (notes.some((n) => Math.abs(n.acc) > 2))

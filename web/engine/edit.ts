@@ -1,5 +1,8 @@
-import type { ChartDoc, ChartLine, MetaKey } from './chart'
+import { type ChartDoc, type ChartLine, type MetaKey, parseChart, serializeChart } from './chart'
 import { LIMITS } from './limits'
+import { defaultScale } from './qualities'
+import { rootName } from './pitch'
+import { parseScale, sameScale, SCALES } from './scales'
 
 export type RowLine = Extract<ChartLine, { kind: 'row' }>
 export type RowField = 'section' | 'bar' | 'chord' | 'scale'
@@ -26,6 +29,45 @@ export function setRowField(doc: ChartDoc, i: number, field: RowField, value: st
   if (line?.kind !== 'row') return doc
   return { lines: replaceAt(doc.lines, i, { ...line, [field]: value }) }
 }
+
+const defaultOr = (chord: string): string | null => {
+  try {
+    return defaultScale(chord)
+  } catch {
+    return null // a chord that can't be parsed yet (mid-typing)
+  }
+}
+
+/**
+ * set a row's chord; a scale that was the old chord's default follows to the new chord's default (Cm7 → F7 takes
+ * C Dorian to F Mixolydian), while a scale you chose yourself stays
+ */
+export function setRowChord(doc: ChartDoc, i: number, chord: string): ChartDoc {
+  const line = doc.lines[i]
+  if (line?.kind !== 'row') return doc
+  const next = defaultOr(chord)
+  const follows = line.scale !== '' && next !== null && sameScale(line.scale, defaultOr(line.chord))
+  return { lines: replaceAt(doc.lines, i, { ...line, chord, scale: follows ? next : line.scale }) }
+}
+
+/** a scale's one written form ("D Half-Whole" → "D Half-Whole Diminished"), or the text as is if it can't be read */
+function canonicalScale(text: string): string {
+  try {
+    const { root, key } = parseScale(text)
+    return `${rootName(root)} ${SCALES[key][1]}`
+  } catch {
+    return text
+  }
+}
+
+/** each row's scale as it plays, in one written form: an empty cell becomes the chord's default */
+function withResolvedScales(doc: ChartDoc): ChartDoc {
+  return { lines: doc.lines.map((l) => (l.kind === 'row' ? { ...l, scale: canonicalScale(l.scale || (defaultOr(l.chord) ?? '')) } : l)) }
+}
+
+/** two chart texts that say the same thing: the same lines, ignoring spacing and whether a default scale is written */
+export const sameChart = (a: string, b: string): boolean =>
+  a === b || serializeChart(withResolvedScales(parseChart(a).value)) === serializeChart(withResolvedScales(parseChart(b).value))
 
 /** insert a row after line index i (-1 = at the top), copying section and bar from the row above */
 export function insertRowAfter(doc: ChartDoc, i: number): ChartDoc {

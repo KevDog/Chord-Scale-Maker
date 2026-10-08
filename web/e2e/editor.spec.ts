@@ -5,6 +5,36 @@ test.beforeEach(async ({ page }) => {
   await expect(staves(page)).toHaveCount(3) // starter chart: 3 rows, from the root
 })
 
+test('the Text pane is hidden until shown, remembered, and flags problems while hidden', async ({ page }) => {
+  const toggle = page.getByRole('button', { name: 'Show text' })
+  await expect(page.getByLabel('Chart text')).toBeHidden()
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  await toggle.click()
+  await expect(page.getByLabel('Chart text')).toBeVisible()
+  await page.getByLabel('Chart text').fill('title: T\nA | 1 | Cm7 | C Dorian | extra\n')
+  await page.reload()
+  await expect(page.getByLabel('Chart text')).toBeVisible() // remembered
+  await page.getByRole('button', { name: 'Hide text' }).click()
+  await expect(page.getByLabel('Chart text')).toBeHidden()
+  await page.goto('/editor?chart=autumn_leaves')
+  await expect(page.getByLabel('Chart text')).toBeHidden()
+  await page.goto('/editor?new=1')
+  await page.getByRole('button', { name: 'Show text' }).click()
+  await page.getByLabel('Chart text').fill('title: T\nA | 1\n')
+  await page.getByRole('button', { name: 'Hide text' }).click()
+  await expect(page.getByRole('status').filter({ hasText: 'text has a problem' })).toBeVisible()
+})
+
+test('scale menus show the formula where there is room: with the Text pane hidden, not beside it', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto('/editor?chart=blue_bossa')
+  const dorian = page.getByText('1, 2, ♭3, 4, 5, 6, ♭7', { exact: true })
+  await expect(dorian.first()).toBeVisible()
+  await expect(page.getByText('1, ♭2, ♭3, 3, ♯4, ♭6, ♭7', { exact: true }).first()).toBeVisible() // G Altered
+  await page.getByRole('button', { name: 'Show text' }).click()
+  await expect(dorian).toHaveCount(0)
+})
+
 test('grid edits update the text at once', async ({ page }) => {
   await page.getByLabel('chord for row 1').fill('Ebm7b5')
   await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 1 \| Ebm7b5/)
@@ -22,6 +52,7 @@ test('a value that would corrupt the text is rejected but stays visible', async 
 })
 
 test('text edits update the grid and preview; unknown chords prompt for a scale', async ({ page }) => {
+  await page.getByRole('button', { name: 'Show text' }).click()
   const text = page.getByLabel('Chart text')
   await text.fill(`${await text.inputValue()}B | 9 | Cm7#5#9x\n`)
   await expect(staves(page)).toHaveCount(3) // the new row has no scale yet, so it isn't drawn
@@ -47,22 +78,13 @@ test('the mode toggle shows one spelling at a time, and Start on only for From',
   await expect(page.locator('section header p').first()).toHaveText('Spelled from the Root')
 })
 
-test('the draft is kept, and New chart starts over', async ({ page }) => {
-  await page.getByLabel('chord for row 1').fill('F7')
-  await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 1 \| F7/) // saved with the text
-  await page.goto('/editor')
-  await expect(page.getByLabel('chord for row 1')).toHaveValue('F7')
-  await page.getByRole('link', { name: 'New chart' }).click()
-  await expect(page.getByLabel('chord for row 1')).toHaveValue('Dm7')
-})
-
 test('transposing rewrites the chart in another key', async ({ page }) => {
   await page.goto('/editor?chart=f_jazz_blues')
   await page.getByRole('button', { name: 'Transpose…' }).click()
   await expect(page.getByLabel('From key')).toHaveValue('F')
   await page.getByLabel('To key').selectOption('Bb')
   await page.getByRole('button', { name: 'Transpose', exact: true }).click()
-  await expect(page.getByRole('status')).toHaveText('Transposed from F to B♭.')
+  await expect(page.getByRole('status').filter({ hasText: 'Transposed' })).toHaveText('Transposed from F to B♭.')
   const text = page.getByLabel('Chart text')
   await expect(text).toHaveValue(/A \| 6 +\| Edim7 +\| E Whole-Half/)
   await expect(text).toHaveValue(/title: F Jazz Blues/) // titles stay as typed
@@ -94,6 +116,7 @@ test('guide tones draw both lines, four bars a system, without the scale control
 })
 
 test('the text editor explains itself on hover and on focus', async ({ page }) => {
+  await page.getByRole('button', { name: 'Show text' }).click()
   const help = page.getByRole('button', { name: 'How the text editor works' })
   const tip = page.getByRole('tooltip')
   await expect(tip).toBeHidden()

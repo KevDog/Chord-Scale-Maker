@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
-import { chartMeta, parseChart, serializeChart } from '../chart'
-import { cellError, insertRowAfter, removeLine, setMeta, setRowField } from '../edit'
+import { type ChartDoc, chartMeta, parseChart, serializeChart } from '../chart'
+import { cellError, insertRowAfter, removeLine, sameChart, setMeta, setRowChord, setRowField } from '../edit'
 
 const doc = parseChart('title: T\nA | 1 | Cm7\n# note\nA | 2 | F7 | F Mixolydian\n').value
 
@@ -38,5 +38,24 @@ describe('edit', () => {
     const withSub = setMeta(doc, 'subtitle', 'S')
     expect(serializeChart(withSub).split('\n').slice(0, 2)).toEqual(['title: T', 'subtitle: S'])
     expect(setMeta(parseChart('A | 1 | C').value, 'title', 'X').lines[0]).toEqual({ kind: 'meta', key: 'title', value: 'X' })
+  })
+})
+
+describe('chord changes and comparing charts', () => {
+  const doc = (text: string) => parseChart(text).value
+  const rowOf = (d: ChartDoc) => d.lines.find((l) => l.kind === 'row')
+
+  it('moves a default scale to the new chord, and keeps one you chose', () => {
+    expect(rowOf(setRowChord(doc('A | 1 | Cm7 | C Dorian\n'), 0, 'F7'))).toMatchObject({ chord: 'F7', scale: 'F Mixolydian' })
+    expect(rowOf(setRowChord(doc('A | 1 | Cm7 | C Aeolian\n'), 0, 'F7'))).toMatchObject({ scale: 'C Aeolian' })
+    expect(rowOf(setRowChord(doc('A | 1 | Cm7\n'), 0, 'F7'))).toMatchObject({ scale: '' }) // empty stays empty: still the default
+    expect(rowOf(setRowChord(doc('A | 1 | Cm7 | C Dorian\n'), 0, 'Cm7#5#9x'))).toMatchObject({ scale: 'C Dorian' }) // unknown: kept
+  })
+
+  it('treats charts as the same when only spacing or a written-out default differs', () => {
+    expect(sameChart('A | 1 | Cm7 | C Dorian\n', 'A | 1  |  Cm7\n')).toBe(true)
+    expect(sameChart('A | 6 | D7 | D Half-Whole\n', 'A | 6 | D7 | D Half-Whole Diminished\n')).toBe(true)
+    expect(sameChart('A | 1 | Cm7 | C Dorian\n', 'A | 1 | Cm7 | C Aeolian\n')).toBe(false)
+    expect(sameChart('# note\nA | 1 | Cm7\n', 'A | 1 | Cm7\n')).toBe(false) // comments count
   })
 })

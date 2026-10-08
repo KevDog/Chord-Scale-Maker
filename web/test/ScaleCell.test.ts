@@ -26,11 +26,11 @@ describe('ScaleCell', () => {
     expect((await mount('Cmaj7')).find('optgroup').exists()).toBe(false)
   })
 
-  it('emits the chosen alternate, or empty for the default', async () => {
+  it('emits the chosen alternate, or the default by name (so the text shows it)', async () => {
     const w = await mount('Cm7')
     await w.find('select').setValue('C Aeolian')
     await w.find('select').setValue('')
-    expect(w.emitted('update')).toEqual([['C Aeolian'], ['']])
+    expect(w.emitted('update')).toEqual([['C Aeolian'], ['C Dorian']])
   })
 
   it('shows a scale typed in the text even if it is not an option', async () => {

@@ -1,5 +1,5 @@
 /**
- * This browser's localStorage, for conveniences only (theme, preferences, the editor draft): nothing is sent
+ * This browser's localStorage, for conveniences (theme, preferences) and My charts (utils/myCharts.ts): nothing is sent
  * anywhere. Storage can be unavailable (private mode, blocked, full), so reads fall back to null and writes are
  * best-effort; every caller keeps working for the visit without it.
  */
@@ -16,6 +16,16 @@ export function writeStored(key: string, value: string): void {
     localStorage.setItem(key, value)
   } catch {
     // unavailable or full: the setting still applies for this visit
+  }
+}
+
+/** like writeStored, but says whether it stuck (false when storage is full or unavailable) */
+export function tryWriteStored(key: string, value: string): boolean {
+  try {
+    localStorage.setItem(key, value)
+    return true
+  } catch {
+    return false
   }
 }
 

@@ -50,7 +50,7 @@ web/                      # Nuxt app (Vercel root directory)
     __tests__/            # vitest, incl. the golden fixture
   app/
     pages/index.vue       # library + title search
-    pages/editor.vue      # ?chart=<slug> (| ?new=1 | this browser's draft, behind the newChart flag)
+    pages/editor.vue      # ?chart=<slug>; with myCharts also ?mine=<id>, ?new=1 and share links (#s=…)
     pages/help.vue        # how it all works, in the owner's voice: sheets, controls, practice, editing, printing
     pages/about.vue, contact.vue, privacy.vue  # About (Jazz Lab thanks, the video, credits), the form, privacy
     pages/ui.vue          # dev-only showcase of the Catalyst components (removed from production builds)
@@ -58,16 +58,18 @@ web/                      # Nuxt app (Vercel root directory)
                           # PreviewControls, SegmentedControl, SheetPages, ScaleSheet, ScaleStaff,
                           # GuideToneSheet, GuideToneSystem, ChordSymbol, NoteName
     components/ui/        # Catalyst ported to Vue (<UiButton>, <UiListbox>, <UiDialog>, …)
-    composables/          # useChartEditor (editor state), usePreferences, useDraft, useTheme, useFeature,
-                          # useMediaQuery, useFocusMode
+    composables/          # useChartEditor (editor state), usePreferences, useTheme, useFeature, useMediaQuery,
+                          # useFocusMode, useSavedChart (auto-save), useOpenChart
     utils/                # library (build-time charts), scaleChoices, instrumentChoices, sheets,
                           # vexflow (loader, scale staves, shared SVG helpers), guideToneDrawing,
-                          # storage (safe localStorage), catalyst/ (button and badge styles),
+                          # storage (safe localStorage), myCharts (saved charts), chartFile (Download/Open),
+                          # starterChart, catalyst/ (button and badge styles),
                           # field, table, interactive (Catalyst wiring)
     assets/css/main.css   # Tailwind, theme tokens, print rules
   build/                  # csp.ts, headers.ts, analytics.ts, quotes.ts (+ tests, check-headers)
   server/                 # api/contact.post.ts, utils/contactMessage.ts (+ test: message and attachment checks), plugins/csp.ts
   public/theme-init.js    # applies the saved theme before first paint
+  public/analytics-before-send.js  # strips a share link's #… before Web Analytics sends a page view
   public/favicon.*, icon-*.png, apple-touch-icon.png, site.webmanifest
                           # the mark (four note heads climbing a navy tile, the top one in a blue corner), drawn
                           # by scripts/icons.mjs (`npm run icons`; needs rsvg-convert and ImageMagick); the navbar
@@ -181,7 +183,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   A rejected value stays visible and flagged in its cell (`GridCell`), and the doc keeps the last good value.
 - **Chord cell:** free text, validated as above.
 - **Scale cell** (`ScaleCell`): a dropdown with these entries.
-  - "Default · …".
+  - "Default · …". Choosing it writes the default's name into the text (`C Dorian`), and a default scale follows
+    when the chord changes (`setRowChord`: Cm7 → F7 takes C Dorian to F Mixolydian); a scale you chose stays.
+  - The scale's formula (1, 2, ♭3, …) shows inside the select where the cell is wide enough for the whole label and
+    the formula (measured with `utils/textWidth.ts`), typically with the Text pane hidden.
   - The quality's inside alternates, with their notes.
   - An "Outside (tension to resolve)" group, for options marked `outside`.
   - "Other…", which opens a dialog with a root and any of the 26 scales. Focus returns to the cell after it
@@ -361,8 +366,21 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **`usePreferences()`:** the instrument, the start note and the Intervals toggle, each a `storedRef` saved per
   browser. A stored value that isn't a known instrument or picker root falls back to the default.
 - **Browser storage** goes through `utils/storage.ts` (`readStored`, `writeStored`). It's best-effort, because
-  storage can be blocked or full. It holds the theme, the preferences and the editor draft. Nothing is sent
-  anywhere.
+  storage can be blocked or full. It holds the theme, the preferences, practice picks and My charts. Nothing is
+  sent anywhere.
+- **My charts** (the `myCharts` flag, on; [plan-saving.md](plan-saving.md)):
+  - `utils/myCharts.ts`: an index of small records (`csm-charts`) plus one key per chart text (`csm-chart:<id>`).
+    Kinds: `edited` (your version of a library chart, one per slug), `copy`, `new`. At most 200 charts of
+    `LIMITS.maxChars` each; a failed write reports `full` and never leaves an index entry without its text.
+  - `useSavedChart`: saves 800 ms after typing stops, on `pagehide` and when the editor closes. Editing a library
+    chart back to its library text removes your version (`sameChart`: same lines, ignoring spacing and whether a
+    default scale is written out). A new chart's first save moves the address to
+    `?mine=<id>` without restarting the editor.
+  - Download writes the text as a Blob; Open (`readChartFile`) takes a `.txt` up to the size limit.
+  - Share links (`engine/share.ts`): `{ v: 1, chart, view }` as deflate-raw JSON in base64url after `#s=`. The view
+    applies for that visit only (`linkPreferences`), and nothing is saved until **Save to My charts**. The router
+    rewrites the address without its `#` while a prerendered page hydrates, so `plugins/arrivalHash.client.ts`
+    keeps the original.
 - **The instrument picker** only changes `part` and the subtitle label (`partFor` and `instrumentLabel` in the
   engine).
 - **Feature flags:**
@@ -370,9 +388,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - New flags start off, and every flag is fixed at build time. `NUXT_PUBLIC_FEATURES_<NAME>=true|false`
     overrides one for a build or `make dev`.
   - `npm run e2e` builds with every flag on.
-  - `newChart` (blank charts, this browser's draft) is off in production: the "New chart" links are hidden, and
-    `/editor` without a library chart goes back to the library.
-  - `guideTones` (the Guide tones sheet) and `practice` (the Practice panel) are on.
+  - `myCharts` (My charts, New chart, Download/Open, share links), `guideTones` (the Guide tones sheet) and
+    `practice` (the Practice panel) are on, since sign-off.
 
 ## 9. Security
 
@@ -386,6 +403,8 @@ Pages are static, and the only server code is the contact function, so the attac
   - It's one deferred script tag served from the site's own origin, under `VERCEL_OBSERVABILITY_BASEPATH` or
     `/_vercel`, so the CSP needs no new sources.
   - It's added to Vercel production builds only, so local builds and the e2e tests never request it.
+  - It sends the full page address, so `public/analytics-before-send.js` (deferred, before it) queues a
+    `beforeSend` that removes the `#…`: a share link's chart never leaves the browser.
   - It's written as a plain tag because `@vercel/analytics` declares a peer dependency on vue-router 4, which
     conflicts with Nuxt 4's vue-router 5.
   - Web Analytics has to be enabled for the project in the Vercel dashboard.
@@ -488,7 +507,9 @@ Pages are static, and the only server code is the contact function, so the attac
 - **E2E (`web/e2e/`, Playwright with Chromium, against the production static build, all flags on):**
   - library search and open, and the staff count
   - grid ⇄ text sync, rejected cells, and the scale prompt and dialog (with focus return)
-  - the mode toggle, the draft and New chart
+  - the mode toggle
+  - My charts: auto-save and reload, your version and Revert, Save as a copy, Delete, Download and Open (file
+    picker and drop), share links in a fresh browser context, damaged links
   - Transpose
   - interval labels
   - guide tones

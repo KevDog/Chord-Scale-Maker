@@ -10,10 +10,13 @@
  */
 export type AnalyticsScript = Readonly<{ src: string; defer: true; 'data-endpoint'?: string }>
 
+/** first, so the page address it sends never includes a share link's "#…" (public/analytics-before-send.js) */
+const BEFORE_SEND: AnalyticsScript = { src: '/analytics-before-send.js', defer: true }
+
 export function analyticsScripts(env: Readonly<Record<string, string | undefined>>): AnalyticsScript[] {
   if (env.VERCEL_ENV !== 'production') return []
   const base = env.VERCEL_OBSERVABILITY_BASEPATH?.replace(/\/+$/, '')
-  if (!base) return [{ src: '/_vercel/insights/script.js', defer: true }]
+  if (!base) return [BEFORE_SEND, { src: '/_vercel/insights/script.js', defer: true }]
   const path = base.startsWith('/') ? base : `/${base}`
-  return [{ src: `${path}/insights/script.js`, defer: true, 'data-endpoint': `${path}/insights` }]
+  return [BEFORE_SEND, { src: `${path}/insights/script.js`, defer: true, 'data-endpoint': `${path}/insights` }]
 }

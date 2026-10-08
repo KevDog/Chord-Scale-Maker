@@ -1,23 +1,13 @@
-import { type Mode, type PracticeSelection, PRESETS } from '~~/engine'
-
-const KEY = /^(?:b{1,2}|#{1,2})?[1-7]$/
-const ALL_PRESETS = new Set<string>(Object.values(PRESETS).flat())
+import { type Mode, type PracticeSelection, practiceSelectionFrom } from '~~/engine'
 
 /** a stored selection, if it is one (anything else in storage is ignored) */
 function parse(raw: string | null): PracticeSelection | null {
   if (raw === null) return null
   try {
-    const v: unknown = JSON.parse(raw)
-    if (v && typeof v === 'object' && 'preset' in v && typeof v.preset === 'string' && ALL_PRESETS.has(v.preset))
-      return { preset: v.preset as PracticeSelection extends { preset: infer P } ? P : never }
-    if (v && typeof v === 'object' && 'keys' in v && Array.isArray(v.keys)) {
-      const keys = v.keys.filter((k): k is string => typeof k === 'string' && KEY.test(k))
-      return keys.length ? { keys } : null
-    }
+    return practiceSelectionFrom(JSON.parse(raw))
   } catch {
-    // not JSON
+    return null // not JSON
   }
-  return null
 }
 
 /**
