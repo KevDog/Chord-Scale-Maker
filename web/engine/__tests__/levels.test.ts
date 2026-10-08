@@ -1,10 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import raw from '../../../chord_scales.json'
-import { expandRows, parseChart } from '../chart'
-import { applyLevel, followsLevel, levelChanges, scaleAtLevel, seededUnit } from '../levels'
+import { expandRows, parseChart, resolveScale } from '../chart'
+import { type LevelState, relevel, scaleAtLevel, seededUnit } from '../levels'
 import { resolveQuality } from '../qualities'
 
-const rows = (text: string) => expandRows(parseChart(text).value).value.map((r) => r.scale)
 
 describe('scale levels', () => {
   it('pick the Basic, Standard and Advanced scale for each kind of chord', () => {
@@ -29,31 +28,53 @@ describe('scale levels', () => {
     expect(resolveQuality('Cm7')?.options.find((o) => o.level === 'basic')?.scale).toBe('C Minor Pentatonic')
   })
 
-  it('change only rows that follow their default, and leave Standard as written', () => {
-    const doc = parseChart('A | 1 | Cm7\nA | 2 | F7 | F Mixolydian\nA | 3 | Bbmaj7 | Bb Lydian\n').value
-    expect(followsLevel('F7', 'F Mixolydian')).toBe(true)
-    expect(followsLevel('Bbmaj7', 'Bb Lydian')).toBe(false) // chosen: stays
-    const basic = expandRows(applyLevel(doc, 'basic')).value.map((r) => r.scale)
-    expect(basic).toEqual(['C Minor Pentatonic', 'F Major Pentatonic', 'Bb Lydian'])
-    expect(applyLevel(doc, 'standard')).toBe(doc)
-    expect(levelChanges(doc, 'basic')).toBe(2)
-    expect(levelChanges(doc, 'standard')).toBe(0)
+  const at = (level: LevelState['level'], seed = 0): LevelState => ({ level, seed })
+  const scales = (doc: ReturnType<typeof parseChart>['value']) => expandRows(doc).value.map(resolveScale) // a blank cell plays the default
+
+  it('write the level into the chart, moving only rows that play the old level’s scale', () => {
+    const doc = parseChart('A | 1 | Cm7\nA | 2 | F7 | F Mixolydian\nA | 3 | Bbmaj7 | Bb Bebop Major\n').value
+    const basic = relevel(doc, at('standard'), at('basic'))
+    expect(scales(basic.doc)).toEqual(['C Minor Pentatonic', 'F Major Pentatonic', 'Bb Bebop Major']) // chosen: stays
+    expect(basic.changed).toBe(2)
+    const advanced = relevel(basic.doc, at('basic'), at('advanced'))
+    expect(scales(advanced.doc)).toEqual(['C Bebop Dorian', 'F Bebop Dominant', 'Bb Bebop Major'])
+    const back = relevel(advanced.doc, at('advanced'), at('standard'))
+    expect(scales(back.doc)).toEqual(['C Dorian', 'F Mixolydian', 'Bb Bebop Major'])
   })
 
-  it('share a pick across @copy repeats', () => {
-    expect(rows('A | 1 | Cm7\n@copy A B 8\n').length).toBe(2)
-    const levelled = expandRows(applyLevel(parseChart('A | 1 | Cm7\n@copy A B 8\n').value, 'random', 7)).value
-    expect(levelled[0]?.scale).toBe(levelled[1]?.scale)
+  it('own only the rows that played their default, so a chosen scale that is also a level’s choice stays', () => {
+    const doc = parseChart('A | 1 | Cm7\nA | 2 | Bbmaj7 | Bb Lydian\n').value // Lydian: chosen, and Maj7's Advanced
+    const advanced = relevel(doc, at('standard'), at('advanced'))
+    expect(advanced.owned).toEqual(['0:Cm7'])
+    const random = relevel(advanced.doc, { ...at('advanced'), owned: advanced.owned }, at('random', 3))
+    const back = relevel(random.doc, { ...at('random', 3), owned: random.owned }, at('standard'))
+    expect(scales(back.doc)).toEqual(['C Dorian', 'Bb Lydian'])
+    expect(back.owned).toEqual([])
   })
 
-  it('pick at random repeatably, only among inside options, and differently for another seed', () => {
+  it('leave a scale you changed by hand alone on the next move', () => {
+    const basic = relevel(parseChart('A | 1 | Cm7\nA | 2 | F7\n').value, at('standard'), at('basic')).doc
+    const lines = basic.lines.map((l, i) => (l.kind === 'row' && i === 0 ? { ...l, scale: 'C Aeolian' } : l))
+    expect(scales(relevel({ lines }, at('basic'), at('advanced')).doc)).toEqual(['C Aeolian', 'F Bebop Dominant'])
+  })
+
+  it('change nothing at the same level, and keep @copy repeats on their source row', () => {
+    const doc = parseChart('A | 1 | Cm7\n@copy A B 8\n').value
+    expect(relevel(doc, at('standard'), at('standard'))).toMatchObject({ doc, changed: 0, owned: [] })
+    const random = scales(relevel(doc, at('standard'), at('random', 7)).doc)
+    expect(random[0]).toBe(random[1])
+  })
+
+  it('pick at random repeatably, only among inside options, and redeal on a new seed', () => {
     const doc = parseChart(Array.from({ length: 24 }, (_, i) => `A | ${i + 1} | Dm7`).join('\n')).value
-    const picks = (seed: number) => expandRows(applyLevel(doc, 'random', seed)).value.map((r) => r.scale)
-    expect(picks(42)).toEqual(picks(42))
-    expect(picks(42)).not.toEqual(picks(43))
+    const dealt = (seed: number) => scales(relevel(doc, at('standard'), at('random', seed)).doc)
+    expect(dealt(42)).toEqual(dealt(42))
+    expect(dealt(42)).not.toEqual(dealt(43))
     const inside = (resolveQuality('Dm7')?.options ?? []).filter((o) => !o.outside).map((o) => o.scale)
-    for (const s of [...picks(1), ...picks(2)]) expect(inside).toContain(s)
-    expect(new Set(picks(1)).size).toBeGreaterThan(2) // it really varies
+    for (const s of [...dealt(1), ...dealt(2)]) expect(inside).toContain(s)
+    expect(new Set(dealt(1)).size).toBeGreaterThan(2)
+    const shuffled = relevel(relevel(doc, at('standard'), at('random', 1)).doc, at('random', 1), at('random', 2)).doc
+    expect(scales(shuffled)).toEqual(dealt(2)) // Shuffle: every random pick moves to the new deal
     for (const k of ['a', 'b', 'c']) expect(seededUnit(9, k)).toBeGreaterThanOrEqual(0)
   })
 })

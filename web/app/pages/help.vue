@@ -76,8 +76,8 @@
             chord-scale for each chord, and <strong class="font-semibold">Advanced</strong> reaches for bebop,
             Lydian and altered colours. <strong class="font-semibold">Random</strong> deals a different inside scale
             to every chord, so you can't coast; hit <strong class="font-semibold">Shuffle</strong> for a new hand.
-            Scales you picked yourself stay put, and <strong class="font-semibold">Save to chart</strong> writes the
-            level's scales into the chart if you want to keep them.
+            It's above the chart grid, and it writes the scales into the chart, so they save, print and share with
+            it. Scales you picked yourself stay put, and Standard puts everything else back.
           </dd>
         </div>
       </dl>

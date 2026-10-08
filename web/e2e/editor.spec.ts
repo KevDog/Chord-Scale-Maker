@@ -184,24 +184,28 @@ test('focus mode shows only the sheet, leaves on Escape or its button, and still
   await expect(page.getByRole('group', { name: 'Sheet' })).toBeVisible()
 })
 
-test('the scale level changes the sheet, deals random scales, and can be saved into the chart', async ({ page }) => {
+test('the scale level writes its scales into the chart, keeps your own picks, and goes back', async ({ page }) => {
   await page.goto('/editor?chart=autumn_leaves')
-  const preview = page.locator('section', { has: page.getByRole('heading', { name: 'Autumn Leaves', level: 2 }) }).last()
-  await expect(preview.getByText('C Dorian', { exact: true }).first()).toBeVisible()
-  await page.getByText('Basic', { exact: true }).click()
-  await expect(preview.getByText('C Minor Pentatonic', { exact: true }).first()).toBeVisible()
-  await expect(page.getByText(/chords play a basic scale/)).toBeVisible()
-  await page.reload()
-  await expect(page.getByLabel('Basic')).toBeChecked() // remembered for this chart
-  await page.getByText('Random', { exact: true }).click()
-  const scales = () => preview.locator('[class*="italic"]').allTextContents()
-  const dealt = await scales()
-  await page.getByRole('button', { name: 'Shuffle' }).click()
-  await expect.poll(scales).not.toEqual(dealt)
-  await page.getByText('Advanced', { exact: true }).click()
-  await page.getByRole('button', { name: 'Save to chart' }).click()
-  await expect(page.getByLabel('Standard')).toBeChecked() // the chart now holds those scales
   await page.getByRole('button', { name: 'Show text' }).click()
-  await expect(page.getByLabel('Chart text')).toHaveValue(/Cm7 +\| C Bebop Dorian/)
-  await expect(page.getByRole('status').filter({ hasText: 'Your edited version' })).toBeVisible()
+  const text = page.getByLabel('Chart text')
+  const status = page.getByRole('status').filter({ hasText: /in this browser/ })
+  await page.getByLabel('Scale for D7').first().selectOption('D Lydian Dominant') // a pick of your own
+  await page.getByText('Basic', { exact: true }).click()
+  await expect(text).toHaveValue(/Cm7 +\| C Minor Pentatonic/)
+  await expect(text).toHaveValue(/D7 +\| D Lydian Dominant/) // yours: kept
+  await expect(page.getByRole('status').filter({ hasText: /chords moved to basic scales/ })).toBeVisible()
+  await expect(status).toHaveText(/^Your edited version of Autumn Leaves/)
+  await page.reload()
+  await expect(page.getByLabel('Basic')).toBeChecked() // remembered with the chart
+  await page.getByText('Advanced', { exact: true }).click()
+  await expect(text).toHaveValue(/Cm7 +\| C Bebop Dorian/)
+  await page.getByText('Random', { exact: true }).click()
+  const dealt = await text.inputValue()
+  await page.getByRole('button', { name: 'Shuffle' }).click()
+  await expect.poll(() => text.inputValue()).not.toEqual(dealt)
+  await expect(text).toHaveValue(/D7 +\| D Lydian Dominant/)
+  await page.getByText('Standard', { exact: true }).click()
+  await expect(text).toHaveValue(/Cm7 +\| C Dorian/)
+  await page.getByLabel('Scale for D7').first().selectOption('D Half-Whole Diminished') // back to the library's own
+  await expect(status).toHaveText('Edits are saved in this browser as your version.') // the library version again
 })

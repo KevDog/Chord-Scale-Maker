@@ -3,11 +3,10 @@ import { resolveQuality, type ScaleOption } from './qualities'
 import { sameScale } from './scales'
 
 /**
- * The Level control: how sophisticated each chord's scale is. Standard is the quality's default (chord_scales.json);
- * Basic and Advanced are the options tagged `level`, falling back to the default where a quality has none; Random
- * picks among the quality's inside options, repeatably from a seed. Only rows that follow their chord's default
- * (an empty scale cell, or the default written out) change: a scale you chose yourself stays. Applied to the
- * chart's own lines, so @copy repeats share a pick, and Save to chart can write the result back as it is.
+ * The Level control: how sophisticated each chord's scale is, written into the chart. Standard is the quality's
+ * default (chord_scales.json); Basic and Advanced are the options tagged `level`, falling back to the default where a
+ * quality has none; Random picks among the quality's inside options, repeatably from a seed. Changing level moves
+ * only the rows that play the old level's scale (relevel), so a scale you chose yourself stays.
  */
 export type ScaleLevel = 'basic' | 'standard' | 'advanced' | 'random'
 export const SCALE_LEVELS: readonly ScaleLevel[] = ['basic', 'standard', 'advanced', 'random']
@@ -21,13 +20,6 @@ const optionsFor = (chord: string): readonly ScaleOption[] => {
   } catch {
     return [] // a chord that can't be parsed: nothing to choose from
   }
-}
-
-/** whether a row takes the level: its scale cell is empty, or names the chord's default */
-export function followsLevel(chord: string, scale: string): boolean {
-  if (scale === '') return true
-  const def = optionsFor(chord).find((o) => o.default)
-  return def !== undefined && sameScale(scale, def.scale)
 }
 
 /** a number in [0, 1) from a seed and a key, the same every time (FNV-1a, then a mulberry32 step) */
@@ -53,25 +45,38 @@ export function scaleAtLevel(chord: string, level: ScaleLevel, seed = 0, key = '
   return options.find((o) => o.level === level)?.scale ?? def.scale
 }
 
-/** the chart with every following row's scale at the level (Standard leaves the chart as it is) */
-export function applyLevel(doc: ChartDoc, level: ScaleLevel, seed = 0): ChartDoc {
-  if (level === 'standard') return doc
-  return {
-    lines: doc.lines.map((l, i) => {
-      if (l.kind !== 'row' || !followsLevel(l.chord, l.scale)) return l
-      const scale = scaleAtLevel(l.chord, level, seed, `${i}:${l.chord}`)
-      return scale ? { ...l, scale } : l
-    }),
-  }
-}
+/**
+ * where a chart's scales stand: the level, its Random seed, and the rows the level owns (`line:chord` keys). A row
+ * is owned when the chart leaves Standard and the row plays its default; a hand edit takes it back.
+ */
+export type LevelState = Readonly<{ level: ScaleLevel; seed: number; owned?: readonly string[] }>
 
-/** how many rows play a different scale at the level (for Save to chart) */
-export function levelChanges(doc: ChartDoc, level: ScaleLevel, seed = 0): number {
-  const next = applyLevel(doc, level, seed).lines
-  return doc.lines.filter((before, i) => {
-    const after = next[i]
-    if (before.kind !== 'row' || after?.kind !== 'row') return false
-    const played = (scale: string, chord: string): string => scale || (optionsFor(chord).find((o) => o.default)?.scale ?? '')
-    return !sameScale(played(after.scale, after.chord), played(before.scale, before.chord))
-  }).length
+const defaultOf = (chord: string): string => optionsFor(chord).find((o) => o.default)?.scale ?? ''
+const rowKey = (i: number, chord: string): string => `${i}:${chord}`
+
+/**
+ * move a chart from one level to another, writing the scales into its rows. Only rows the level owns move, and only
+ * while they still play the old level's scale; a scale you chose yourself stays, even one that happens to be a
+ * level's choice (Autumn Leaves' B♭ Lydian). @copy repeats follow their source rows. Returns the chart, how many
+ * rows changed, and the rows the level owns now (none back at Standard).
+ */
+export function relevel(doc: ChartDoc, from: LevelState, to: LevelState): Readonly<{ doc: ChartDoc; changed: number; owned: readonly string[] }> {
+  const owns = (i: number, chord: string, scale: string): boolean => {
+    const key = rowKey(i, chord)
+    if (from.level === 'standard') return scale === '' || sameScale(scale, defaultOf(chord))
+    const mine = from.owned ? from.owned.includes(key) : true // without a record (an old share link), any match counts
+    return mine && (scale === '' || sameScale(scale, scaleAtLevel(chord, from.level, from.seed, key)))
+  }
+  let changed = 0
+  const owned: string[] = []
+  const lines = doc.lines.map((l, i) => {
+    if (l.kind !== 'row' || !owns(i, l.chord, l.scale)) return l
+    const key = rowKey(i, l.chord)
+    if (to.level !== 'standard') owned.push(key)
+    const next = scaleAtLevel(l.chord, to.level, to.seed, key)
+    if (!next || sameScale(next, l.scale || defaultOf(l.chord))) return l
+    changed++
+    return { ...l, scale: next }
+  })
+  return { doc: changed ? { lines } : doc, changed, owned }
 }

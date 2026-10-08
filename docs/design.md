@@ -193,12 +193,16 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     closes.
 
   An unknown quality gives an amber border and "Choose a scale…", with "Other…" still available.
-- **Scale level** (behind `scaleLevels`; `engine/levels.ts`): Basic / Standard / Advanced / Random, per chart
-  (`useScaleLevel`, remembered in this browser and carried in share links). Options in `chord_scales.json` carry
-  `level: basic|advanced`; Standard is the default, and a quality without a tag keeps it. Random picks among the
-  inside options, from a seed (Shuffle deals a new one). Only rows that follow their default change, and the
-  level is applied to the chart's own lines (so `@copy` repeats share a pick); **Save to chart** writes the result
-  in and returns to Standard. The sheet and the practice boxes use the levelled rows; guide tones don't use scales.
+- **Scale level** (behind `scaleLevels`; `engine/levels.ts`): Basic / Standard / Advanced / Random, above the
+  chart grid. Choosing one writes the scales into the chart (`relevel`), so they save, print and share with it.
+  - Options in `chord_scales.json` carry `level: basic|advanced`; Standard is the default, and a quality without a
+    tag keeps it. Random picks among the inside options, from a seed (Shuffle deals a new one).
+  - The level **owns** the rows that played their default when the chart left Standard (`line:chord` keys), and
+    moves only those, while they still play the old level's scale. So a hand-picked scale stays, even one that is
+    also a level's choice (Autumn Leaves' B♭ Lydian), and Standard puts the owned rows back.
+  - `useScaleLevel` remembers the level, seed and owned rows per chart in this browser (Save as a copy and Save to
+    My charts carry them; Revert resets them). Share links carry the level and seed; without the owned rows, a
+    recipient's next change matches rows by scale.
 - **Slash readings** (`slash_chords` in `chord_scales.json`): a chord whose bass makes it another
   chord takes that chord's options on the bass. DbMaj7/C is a sus♭9 on C: C Phrygian (default), C Spanish
   Phrygian, C Dorian ♭2. Only the options change; the symbol, interval labels and practice presets read DbMaj7.

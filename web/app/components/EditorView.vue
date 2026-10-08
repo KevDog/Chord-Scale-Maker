@@ -41,6 +41,13 @@
             <CodeBracketIcon data-slot="icon" />{{ textShown ? 'Hide text' : 'Show text' }}
           </UiButton>
         </div>
+        <!-- Level: how sophisticated each chord's scale is, written into the chart (engine/levels.ts) -->
+        <div v-if="levelsOn && !editor.fatal.value" class="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2">
+          <span id="scale-level-label" class="text-sm/6 font-medium text-zinc-950 dark:text-white">Scale level</span>
+          <SegmentedControl :model-value="scaleLevel.level.value" legend="Scale level" name="scale-level" :options="LEVEL_OPTIONS" @update:model-value="setLevel" />
+          <UiButton v-if="scaleLevel.level.value === 'random'" outline title="Deal a new random scale for each chord" @click="shuffle"><ArrowPathIcon data-slot="icon" />Shuffle</UiButton>
+          <UiText v-if="levelNote" role="status" class="text-sm/6!">{{ levelNote }}</UiText>
+        </div>
         <UiText v-if="!textShown && editor.diagnostics.value.length" role="status" class="mb-3 text-amber-700! dark:text-amber-400!">
           The chart's text has {{ editor.diagnostics.value.length === 1 ? 'a problem' : `${editor.diagnostics.value.length} problems` }}.
           <button type="button" class="font-semibold underline" @click="prefs.showText.value = true">Show text</button> to see {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
@@ -93,13 +100,6 @@
           </template>
         </PreviewControls>
         <UiText v-if="transposed" role="status">{{ transposed }}</UiText>
-        <!-- Level: how sophisticated each chord's scale is, for this chart (engine/levels.ts) -->
-        <div v-if="levelsOn && sheet === 'scales' && !editor.fatal.value" class="flex flex-wrap items-end gap-3">
-          <SegmentedControl v-model="scaleLevel.level.value" legend="Scale level" name="scale-level" :options="LEVEL_OPTIONS" />
-          <UiButton v-if="scaleLevel.level.value === 'random'" outline title="Deal a new random scale for each chord" @click="scaleLevel.shuffle()"><ArrowPathIcon data-slot="icon" />Shuffle</UiButton>
-          <UiButton v-if="levelCount > 0" outline :title="`Write these ${levelCount} scales into the chart`" @click="saveLevel"><CheckIcon data-slot="icon" />Save to chart</UiButton>
-          <UiText v-if="levelCount > 0" class="text-sm/6!">{{ levelCount === 1 ? '1 chord plays' : `${levelCount} chords play` }} a {{ LEVEL_LABELS[scaleLevel.level.value].toLowerCase() }} scale; scales you chose yourself stay.</UiText>
-        </div>
         <PracticePanel
           v-if="practiceOn && sheet === 'scales' && !editor.fatal.value"
           :mode="mode"
@@ -124,7 +124,7 @@
         />
         <ScaleSheet
           v-else
-          :rows="scaleRows"
+          :rows="editor.rows.value"
           :title="editor.meta.value.title"
           :subtitle="editor.meta.value.subtitle"
           :part="part"
@@ -141,22 +141,22 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, BookmarkIcon, CheckIcon, CodeBracketIcon, DocumentDuplicateIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
+import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, BookmarkIcon, CodeBracketIcon, DocumentDuplicateIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import {
-  applyLevel,
   buildSheet,
   type ChartDoc,
   encodeShare,
-  expandRows,
   instrumentLabel,
   LEVEL_LABELS,
-  levelChanges,
   LIMITS,
   litKeys,
   type Mode,
   partFor,
   practiceBoxes,
+  relevel,
   SCALE_LEVELS,
+  type LevelState,
+  type ScaleLevel,
   serializeChart,
   setMeta,
   type ShareView,
@@ -188,22 +188,31 @@ const levelsOn = useFeature('scaleLevels')
 const scaleLevel = useScaleLevel(props.practiceKey, props.shared)
 const LEVEL_OPTIONS = SCALE_LEVELS.map((value) => ({ value, label: LEVEL_LABELS[value] }))
 const level = computed(() => (levelsOn ? scaleLevel.level.value : 'standard'))
-/** the chart as the scale sheet plays it: every row that follows its default takes the level's scale */
-const levelDoc = computed(() => applyLevel(editor.doc.value, level.value, scaleLevel.seed.value))
-const scaleRows = computed(() => (level.value === 'standard' ? editor.rows.value : expandRows(levelDoc.value).value))
-const levelCount = computed(() => (level.value === 'standard' ? 0 : levelChanges(editor.doc.value, level.value, scaleLevel.seed.value)))
+const levelNote = ref('')
 
-/** write the level's scales into the chart, which then plays them at Standard */
-function saveLevel(): void {
+/** move the chart's scales to another level: rows playing the old level's scale take the new one's */
+const levelState = (): LevelState => ({ level: scaleLevel.level.value, seed: scaleLevel.seed.value, ...(scaleLevel.owned.value ? { owned: scaleLevel.owned.value } : {}) })
+function moveLevel(to: ScaleLevel, seed: number, from: LevelState = levelState()): void {
   editor.flush()
-  editor.setDoc(applyLevel(editor.doc.value, level.value, scaleLevel.seed.value))
-  scaleLevel.level.value = 'standard'
+  const result = relevel(editor.doc.value, from, { level: to, seed })
+  if (result.changed) editor.setDoc(result.doc)
+  scaleLevel.owned.value = to === 'standard' ? undefined : result.owned
+  scaleLevel.level.value = to
+  levelNote.value = result.changed
+    ? `${result.changed === 1 ? '1 chord' : `${result.changed} chords`} moved to ${LEVEL_LABELS[to].toLowerCase()} scales; any you chose yourself stay.`
+    : 'No scales to change: they’re all your own choices, or already at this level.'
+}
+const setLevel = (to: ScaleLevel): void => moveLevel(to, scaleLevel.seed.value)
+function shuffle(): void {
+  const from = levelState()
+  scaleLevel.shuffle()
+  moveLevel('random', scaleLevel.seed.value, from)
 }
 if (props.shared?.practice) practice.setSelection(mode.value, props.shared.practice)
 const selection = computed(() => (practiceOn ? practice.selection(mode.value) : null))
 // every staff with its practice keys, for the panel's boxes and what the selection lights
 const practiceStaves = computed(() =>
-  practiceOn ? buildSheet(scaleRows.value, part.value, mode.value, prefs.start.value, LIMITS.maxExpandedRows, selection.value).flatMap((p) => p.pages.flat()) : [],
+  practiceOn ? buildSheet(editor.rows.value, part.value, mode.value, prefs.start.value, LIMITS.maxExpandedRows, selection.value).flatMap((p) => p.pages.flat()) : [],
 )
 const practiceBoxesNow = computed(() => practiceBoxes(practiceStaves.value, mode.value, prefs.start.value))
 const litNow = computed(() => litKeys(practiceStaves.value))
@@ -243,7 +252,9 @@ function saveCopy(): void {
   const id = newChartId()
   const result = saveChart({ id, text: serializeChart(doc), kind: 'copy', ...(basedOn ? { basedOn } : {}) })
   copyError.value = result.ok ? '' : "Couldn't save a copy: this browser's storage is full, or My charts is at its limit."
-  if (result.ok) navigateTo({ path: '/editor', query: { mine: id } })
+  if (!result.ok) return
+  scaleLevel.carryTo(`mine:${id}`)
+  navigateTo({ path: '/editor', query: { mine: id } })
 }
 
 const shareOpen = ref(false)
@@ -276,6 +287,7 @@ function saveShared(): void {
   if (!result.ok) return
   const kept = usePractice(`mine:${id}`)
   for (const m of ['root', 'from'] as const) kept.setSelection(m, practice.selection(m))
+  scaleLevel.carryTo(`mine:${id}`)
   navigateTo({ path: '/editor', query: { mine: id } })
 }
 
@@ -291,6 +303,7 @@ function revert(): void {
   const id = saved?.id()
   if (id) deleteChart(id)
   saved?.forget()
+  scaleLevel.reset() // the library's scales are at Standard
   emit('reload')
 }
 
