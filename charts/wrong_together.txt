@@ -1,5 +1,5 @@
 title: Wrong Together
-subtitle: Walking ballad, F, 16 bars (Steve Swallow)
+subtitle: Walking ballad
 composer: Steve Swallow
 style: Ballad
 key: F

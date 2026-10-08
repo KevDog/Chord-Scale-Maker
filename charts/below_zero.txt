@@ -1,5 +1,5 @@
 title: Below Zero
-subtitle: Straight-eighth Latin, Bb
+subtitle: Straight-eighth Latin
 composer: Stefan Karlsson
 style: Even 8ths
 key: Bb

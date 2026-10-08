@@ -3,10 +3,10 @@ subtitle: C Melodic Minor from Each Degree
 
 # section | bar | chord | scale
 # "bar" is the scale degree. "From C" shows all seven share one set of notes; "From root" shows each mode
-C | 1 | CmMaj7    | C Melodic Minor
-C | 2 | D7sus4b9  | D Dorian ♭2
-C | 3 | EbMaj7#5  | Eb Lydian Augmented
-C | 4 | F7#11     | F Lydian Dominant
-C | 5 | G7b13     | G Mixolydian ♭6
-C | 6 | Am7b5     | A Locrian ♮2
-C | 7 | B7alt     | B Altered
+C | 1 | CmMaj7   | C Melodic Minor
+C | 2 | D7sus4b9 | D Dorian ♭2
+C | 3 | EbMaj7#5 | Eb Lydian Augmented
+C | 4 | F7#11    | F Lydian Dominant
+C | 5 | G7b13    | G Mixolydian ♭6
+C | 6 | Am7b5    | A Locrian ♮2
+C | 7 | B7alt    | B Altered

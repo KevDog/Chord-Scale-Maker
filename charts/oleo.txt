@@ -1,5 +1,5 @@
 title: Oleo
-subtitle: Up tempo rhythm changes, Bb, 32 bars
+subtitle: Up tempo rhythm changes
 composer: Sonny Rollins
 style: Medium up
 key: Bb

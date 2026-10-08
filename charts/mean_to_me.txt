@@ -1,6 +1,5 @@
 title: Mean to Me
-subtitle: Medium, F, 32 bars
-composer: Fats Waller
+composer: Fred E. Ahlert
 style: Medium
 key: F
 form: AABA, 32 bars

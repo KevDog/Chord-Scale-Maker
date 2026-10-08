@@ -1,5 +1,5 @@
 title: Blues for Willie
-subtitle: Medium up blues, Bb, 12 bars
+subtitle: Medium up blues
 composer: Bob Montgomery
 style: Blues
 key: Bb

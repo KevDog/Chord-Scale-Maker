@@ -1,5 +1,4 @@
 title: Coral
-subtitle: Ballad, F minor, 12 bars
 composer: Keith Jarrett
 style: Ballad
 key: Fm

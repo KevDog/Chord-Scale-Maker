@@ -1,5 +1,5 @@
 title: Centerpiece
-subtitle: Blues, Bb, 12 bars (Keester Parade)
+subtitle: Blues (Keester Parade)
 composer: Harry "Sweets" Edison
 style: Blues
 key: Bb

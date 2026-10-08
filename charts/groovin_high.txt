@@ -1,5 +1,4 @@
 title: Groovin' High
-subtitle: Medium up, Eb, 32 bars
 composer: Dizzy Gillespie
 style: Medium up
 key: Eb

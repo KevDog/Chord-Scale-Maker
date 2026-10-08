@@ -1,6 +1,5 @@
 title: This I Dig of You
-subtitle: Medium up, Bb, 32 bars
-composer: Lee Morgan & Hank Mobley
+composer: Hank Mobley
 style: Medium up
 key: Ab
 form: ABCD, 32 bars

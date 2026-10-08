@@ -1,5 +1,4 @@
 title: My Old Flame
-subtitle: Ballad, G, 32 bars
 composer: Sam Coslow
 style: Ballad
 key: G

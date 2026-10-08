@@ -1,5 +1,4 @@
 title: Fingers
-subtitle: Medium up, Bb, AABA
 composer: Thad Jones
 style: Medium up
 key: Bb

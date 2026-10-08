@@ -1,5 +1,5 @@
 title: Cantaloupe Island
-subtitle: Jazz-rock, F minor, 16 bars
+subtitle: Jazz-rock
 composer: Herbie Hancock
 style: Even 8ths
 key: Fm

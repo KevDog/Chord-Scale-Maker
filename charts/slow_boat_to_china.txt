@@ -1,5 +1,5 @@
 title: Slow Boat to China
-subtitle: Medium, Bb, 32 bars (On a Slow Boat to China)
+subtitle: Medium (On a Slow Boat to China)
 composer: Frank Loesser
 style: Medium
 key: Bb

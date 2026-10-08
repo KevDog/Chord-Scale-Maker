@@ -1,5 +1,4 @@
 title: Joy Spring
-subtitle: Medium, F, 32 bars
 composer: Clifford Brown
 style: Medium
 key: F

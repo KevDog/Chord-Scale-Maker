@@ -1,6 +1,5 @@
 title: Nardis
-subtitle: Medium, E minor, 32 bars
-composer: Bill Evans
+composer: Miles Davis
 style: Medium
 key: Em
 form: AABA, 32 bars

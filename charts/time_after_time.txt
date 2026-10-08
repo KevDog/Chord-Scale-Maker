@@ -1,5 +1,4 @@
 title: Time After Time
-subtitle: Medium, C, 32 bars
 composer: Jule Styne
 style: Medium
 key: C

@@ -1,5 +1,5 @@
 title: On the Sunny Side of the Street
-subtitle: Medium swing, C, 32 bars
+subtitle: Medium swing
 composer: Jimmy McHugh
 style: Medium
 key: C

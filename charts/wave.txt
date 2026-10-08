@@ -1,5 +1,5 @@
 title: Wave
-subtitle: Bossa nova, D, 44 bars (12 12 8 12)
+subtitle: Bossa nova (12 12 8 12)
 composer: Antonio Carlos Jobim
 style: Latin
 key: D

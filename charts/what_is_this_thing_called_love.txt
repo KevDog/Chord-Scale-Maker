@@ -1,5 +1,4 @@
 title: What Is This Thing Called Love
-subtitle: Medium up, C, 32 bars
 composer: Cole Porter
 style: Medium up
 key: C

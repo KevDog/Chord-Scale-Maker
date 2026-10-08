@@ -1,5 +1,5 @@
 title: Doxy
-subtitle: Slow to medium swing, Bb, 16 bars
+subtitle: Slow to medium swing
 composer: Sonny Rollins
 style: Medium
 key: Bb

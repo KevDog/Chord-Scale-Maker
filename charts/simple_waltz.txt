@@ -1,5 +1,5 @@
 title: Simple Waltz
-subtitle: Jazz waltz, F, 16 bars (Clark Terry)
+subtitle: Jazz waltz
 composer: Clark Terry
 style: Waltz
 key: F

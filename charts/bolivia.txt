@@ -1,5 +1,5 @@
 title: Bolivia
-subtitle: Mixed feel, G vamp then swing and Latin, 24 bars
+subtitle: Mixed feel, G vamp then swing and Latin
 composer: Cedar Walton
 style: Mixed
 key: G

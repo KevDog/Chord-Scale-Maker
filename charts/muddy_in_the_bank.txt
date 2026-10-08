@@ -1,5 +1,5 @@
 title: Muddy in the Bank
-subtitle: Medium up, Ab, 26 bars (8 8 10)
+subtitle: Medium up (8 8 10)
 composer: Steve Swallow
 style: Medium up
 key: Ab

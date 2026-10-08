@@ -1,5 +1,5 @@
 title: The Night Has a Thousand Eyes
-subtitle: Latin and swing, G, 48 bars (A B A B C D)
+subtitle: Latin and swing
 composer: Jerry Brainin
 style: Mixed
 key: G

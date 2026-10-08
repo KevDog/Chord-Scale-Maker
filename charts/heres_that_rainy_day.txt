@@ -1,5 +1,5 @@
 title: Here's That Rainy Day
-subtitle: Bossa nova, G, 32 bars
+subtitle: Bossa nova
 composer: Jimmy Van Heusen
 style: Ballad
 key: G

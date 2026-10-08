@@ -1,5 +1,4 @@
 title: Summertime
-subtitle: Medium, D minor, 16 bars
 composer: George Gershwin
 style: Medium
 key: Dm

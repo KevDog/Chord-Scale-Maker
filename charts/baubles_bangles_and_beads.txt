@@ -1,5 +1,5 @@
 title: Baubles, Bangles and Beads
-subtitle: Jazz waltz, Ab, 36 bars
+subtitle: Jazz waltz
 composer: Borodin, Wright & Forrest
 style: Waltz
 key: Ab

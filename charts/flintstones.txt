@@ -1,5 +1,4 @@
 title: Flintstones
-subtitle: Up tempo, Bb, AABA
 composer: Hoyt Curtin
 style: Up
 key: Bb

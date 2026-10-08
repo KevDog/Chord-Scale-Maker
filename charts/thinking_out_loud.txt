@@ -1,5 +1,4 @@
 title: Thinking Out Loud
-subtitle: Latin, 32 bars (Steve Swallow)
 composer: Steve Swallow
 style: Latin
 key: Db

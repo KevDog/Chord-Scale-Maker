@@ -1,5 +1,5 @@
 title: Smatter
-subtitle: Medium, Eb minor, 20 bars (bars 17–19 are in 3)
+subtitle: Medium (bars 17–19 are in 3)
 composer: Kenny Wheeler
 style: Medium
 key: Bbm

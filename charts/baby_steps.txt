@@ -1,5 +1,4 @@
 title: Baby Steps
-subtitle: Medium up, Eb, AAB
 composer: Jeff Jenkins
 style: Medium up
 key: Eb

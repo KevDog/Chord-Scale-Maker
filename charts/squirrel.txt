@@ -1,5 +1,4 @@
 title: Squirrel
-subtitle: Blues, F, 12 bars
 composer: Tadd Dameron
 style: Blues
 key: F

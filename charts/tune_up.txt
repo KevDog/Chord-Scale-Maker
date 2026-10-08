@@ -1,6 +1,6 @@
 title: Tune Up
-subtitle: Medium up, D, 16 bars
-composer: Eddie Vinson
+composer: Miles Davis
+# composer: credited to Miles Davis; Eddie Vinson is often said to have written it
 style: Medium
 key: D
 form: A, 16 bars

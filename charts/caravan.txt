@@ -1,5 +1,5 @@
 title: Caravan
-subtitle: Latin and swing, F minor, AABA
+subtitle: Latin and swing
 composer: Juan Tizol
 style: Latin
 key: Fm

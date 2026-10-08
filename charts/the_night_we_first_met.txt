@@ -1,5 +1,4 @@
 title: The Night We First Met
-subtitle: Ballad, F minor, 33 bars (Stefan Karlsson)
 composer: Stefan Karlsson
 style: Ballad
 key: Fm

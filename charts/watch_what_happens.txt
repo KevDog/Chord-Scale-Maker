@@ -1,5 +1,5 @@
 title: Watch What Happens
-subtitle: Bossa nova, Eb, 36 bars
+subtitle: Bossa nova
 composer: Michel Legrand
 style: Latin
 key: Eb

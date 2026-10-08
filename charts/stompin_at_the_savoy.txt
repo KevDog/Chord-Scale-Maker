@@ -1,6 +1,5 @@
 title: Stompin' at the Savoy
-subtitle: Medium, Db, 32 bars
-composer: Benny Goodman & Chick Webb
+composer: Edgar Sampson
 style: Medium
 key: Db
 form: AABA, 32 bars

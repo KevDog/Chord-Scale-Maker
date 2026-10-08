@@ -1,5 +1,5 @@
 title: Ceora
-subtitle: Bossa nova, Ab, 32 bars
+subtitle: Bossa nova
 composer: Lee Morgan
 style: Latin
 key: Ab

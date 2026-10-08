@@ -1,5 +1,4 @@
 title: Social Call
-subtitle: Medium, Db, 32 bars
 composer: Gigi Gryce
 style: Medium
 key: Db

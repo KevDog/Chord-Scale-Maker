@@ -1,5 +1,5 @@
 title: Teach Me Tonight
-subtitle: Slow swing, C, 33 bars (the second A has a 3-bar ending)
+subtitle: Slow swing (the second A has a 3-bar ending)
 composer: Gene de Paul
 style: Medium
 key: C

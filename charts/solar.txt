@@ -1,6 +1,6 @@
 title: Solar
-subtitle: Medium up, C minor, 12 bars
 composer: Miles Davis
+# composer: credited to Miles Davis; it is close to Chuck Wayne's "Sonny"
 style: Medium up
 key: Cm
 form: A, 12 bars

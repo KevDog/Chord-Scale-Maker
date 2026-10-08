@@ -1,5 +1,4 @@
 title: Blues Walk
-subtitle: Blues, Bb, 12 bars
 composer: Clifford Brown
 style: Blues
 key: Bb

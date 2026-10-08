@@ -1,5 +1,5 @@
 title: Invitation
-subtitle: Latin and swing, C minor, 48 bars
+subtitle: Latin and swing
 composer: Bronisław Kaper
 style: Mixed
 key: Ebm

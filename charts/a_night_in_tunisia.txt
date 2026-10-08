@@ -1,5 +1,5 @@
 title: A Night in Tunisia
-subtitle: Latin, D minor, AABA with the interlude
+subtitle: Latin, AABA with the interlude
 composer: Dizzy Gillespie
 style: Latin
 key: Dm

@@ -1,5 +1,5 @@
 <template>
-  <SheetPages :title="title" :pages="pages">
+  <SheetPages :title="title" :composer="composer" :pages="pages">
     <template #default="{ page }">
       <div class="space-y-1 print:space-y-2">
         <ScaleStaff v-for="s in page.staves" :key="s.id" :staff="s" :clef="part.clef" :intervals="intervals" />
@@ -15,6 +15,7 @@ const props = defineProps<{
   rows: readonly Row[]
   title: string
   subtitle: string
+  composer?: string
   part: Part
   instrumentLabel: string // e.g. "Tenor Sax (Bb)"; '' for concert
   start: string // written start note for the "from" part

@@ -1,5 +1,4 @@
 title: I Remember You
-subtitle: Medium, F, 36 bars
 composer: Victor Schertzinger
 style: Medium
 key: F

@@ -1,5 +1,4 @@
 title: My Funny Valentine
-subtitle: Ballad, C minor, 36 bars
 composer: Richard Rodgers
 style: Ballad
 key: Cm

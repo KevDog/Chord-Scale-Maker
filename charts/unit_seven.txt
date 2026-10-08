@@ -1,5 +1,5 @@
 title: Unit Seven
-subtitle: Swing and Latin, C, 44 bars (12 12 8 12)
+subtitle: Swing and Latin (12 12 8 12)
 composer: Sam Jones
 style: Mixed
 key: C

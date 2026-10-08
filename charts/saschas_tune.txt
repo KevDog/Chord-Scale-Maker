@@ -1,5 +1,5 @@
 title: Sascha's Tune
-subtitle: Medium up bebop and Latin, F minor, 16 bars (Bob Montgomery)
+subtitle: Medium up bebop and Latin
 composer: Bob Montgomery
 style: Mixed
 key: Fm

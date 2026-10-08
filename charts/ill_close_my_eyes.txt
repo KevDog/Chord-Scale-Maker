@@ -1,5 +1,4 @@
 title: I'll Close My Eyes
-subtitle: Medium, F, 32 bars
 composer: Billy Reid
 style: Medium
 key: F

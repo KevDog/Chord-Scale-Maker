@@ -1,5 +1,5 @@
 title: I'll Remember April
-subtitle: Latin and swing, G, ABA, 48 bars
+subtitle: Latin and swing
 composer: Gene de Paul, Patricia Johnston & Don Raye
 style: Mixed
 key: G

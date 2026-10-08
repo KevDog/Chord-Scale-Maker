@@ -1,5 +1,5 @@
 title: Rhythm-a-ning
-subtitle: Up tempo rhythm changes, Bb, 32 bars
+subtitle: Up tempo rhythm changes
 composer: Thelonious Monk
 style: Medium up
 key: Bb

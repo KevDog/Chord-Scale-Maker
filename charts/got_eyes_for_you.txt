@@ -1,5 +1,5 @@
 title: Got Eyes for You
-subtitle: Bossa nova, Eb, 32 bars
+subtitle: Bossa nova
 composer: Bob Montgomery
 style: Latin
 key: Eb

@@ -1,5 +1,4 @@
 title: In Walked Bud
-subtitle: Medium, Ab, AABA
 composer: Thelonious Monk
 style: Medium
 key: Ab

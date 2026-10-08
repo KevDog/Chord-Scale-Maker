@@ -1,5 +1,5 @@
 title: Love for Sale
-subtitle: Latin / swing, Bb minor, 64 bars
+subtitle: Latin / swing
 composer: Cole Porter
 style: Mixed
 key: Bbm

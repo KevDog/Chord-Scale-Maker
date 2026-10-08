@@ -1,5 +1,4 @@
 title: There Is No Greater Love
-subtitle: Medium, Bb, 32 bars
 composer: Isham Jones
 style: Medium up
 key: Bb

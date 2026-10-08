@@ -1,5 +1,4 @@
 title: Everything I Love
-subtitle: Medium, Eb, 32 bars
 composer: Cole Porter
 style: Medium
 key: Eb

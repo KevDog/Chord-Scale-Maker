@@ -1,5 +1,4 @@
 title: On the Trail
-subtitle: Medium, F, 16 bars
 composer: Ferde Grofé
 style: Medium
 key: F

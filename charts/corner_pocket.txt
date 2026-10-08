@@ -1,5 +1,5 @@
 title: Corner Pocket
-subtitle: Medium, Bb, AABA (Until I Met You)
+subtitle: Medium (Until I Met You)
 composer: Freddie Green
 style: Medium
 key: Bb

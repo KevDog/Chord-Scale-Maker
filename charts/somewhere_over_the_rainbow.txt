@@ -1,5 +1,5 @@
 title: Somewhere Over the Rainbow
-subtitle: Ballad or samba, Eb, 32 bars
+subtitle: Ballad or samba
 composer: Harold Arlen
 style: Ballad
 key: Eb

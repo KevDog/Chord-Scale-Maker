@@ -1,5 +1,4 @@
 title: Yours Is My Heart Alone
-subtitle: Medium, C, 32 bars
 composer: Franz Lehár
 style: Medium
 key: C

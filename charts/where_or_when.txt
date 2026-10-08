@@ -1,5 +1,5 @@
 title: Where or When
-subtitle: Medium, Eb, 40 bars (10 10 8 12)
+subtitle: Medium (10 10 8 12)
 composer: Richard Rodgers
 style: Medium
 key: Eb

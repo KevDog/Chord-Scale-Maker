@@ -1,5 +1,4 @@
 title: Relaxin'
-subtitle: Medium, Ab, 32 bars (Jimmy Guinn)
 composer: Jimmy Guinn
 style: Medium
 key: Ab

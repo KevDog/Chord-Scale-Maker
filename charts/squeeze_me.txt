@@ -1,5 +1,5 @@
 title: Squeeze Me
-subtitle: Medium, F, 32 bars (Just Squeeze Me)
+subtitle: Medium (Just Squeeze Me)
 composer: Duke Ellington
 style: Medium
 key: F

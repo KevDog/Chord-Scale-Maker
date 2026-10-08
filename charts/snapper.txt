@@ -1,5 +1,5 @@
 title: Snapper
-subtitle: Medium, F minor, 44 bars (12 12 8 12)
+subtitle: Medium up (12 12 8 12)
 composer: Clark Terry
 style: Medium up
 key: Bbm

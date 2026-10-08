@@ -1,5 +1,4 @@
 title: Days of Wine and Roses
-subtitle: Medium, F, 32 bars
 composer: Henry Mancini
 style: Medium
 key: F

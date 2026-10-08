@@ -106,7 +106,7 @@ test('interval labels show on screen, against the chord root, on until turned of
 test('guide tones draw both lines, four bars a system, without the scale controls', async ({ page }) => {
   await page.goto('/editor?chart=autumn_leaves')
   await page.getByRole('group', { name: 'Sheet' }).getByText('Guide tones', { exact: true }).click()
-  await expect(page.getByText('Full Form, Alternate Changes (Guide Tone Lines)')).toBeVisible()
+  await expect(page.getByText('Full Form, Alternate Changes · F minor · AAB (Guide Tone Lines)')).toBeVisible()
   await expect(page.locator('svg[aria-label^="Line 1:"]')).toHaveCount(8) // 32 bars
   await expect(page.locator('svg[aria-label^="Line 2:"]')).toHaveCount(8)
   await expect(page.getByLabel('Start on')).toHaveCount(0)

@@ -1,5 +1,4 @@
 title: Limehouse Blues
-subtitle: Up tempo, Ab, 32 bars
 composer: Philip Braham
 style: Medium up
 key: Ab

@@ -1,5 +1,5 @@
 title: Up Jumped Spring
-subtitle: Jazz waltz, Bb, 56 bars (16 16 8 16)
+subtitle: Jazz waltz (16 16 8 16)
 composer: Freddie Hubbard
 style: Waltz
 key: Bb

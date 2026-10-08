@@ -1,5 +1,5 @@
 title: Bessie's Blues
-subtitle: Bright blues, Eb, 12 bars
+subtitle: Bright blues
 composer: John Coltrane
 style: Blues
 key: Eb

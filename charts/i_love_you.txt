@@ -1,5 +1,4 @@
 title: I Love You
-subtitle: Up tempo, F, 32 bars
 composer: Cole Porter
 style: Up
 key: F

@@ -1,5 +1,5 @@
 title: Woody'n You
-subtitle: Medium up, Db, 32 bars (Algo Bueno)
+subtitle: Medium up (Algo Bueno)
 composer: Dizzy Gillespie
 style: Medium up
 key: Db

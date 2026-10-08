@@ -1,5 +1,5 @@
 title: A Song for Nicholas
-subtitle: Medium swing, C, 16 bars
+subtitle: Medium swing
 composer: Bob Montgomery
 style: Medium
 key: C

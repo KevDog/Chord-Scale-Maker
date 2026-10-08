@@ -1,5 +1,4 @@
 title: Darn That Dream
-subtitle: Ballad, G, AABA
 composer: Jimmy Van Heusen
 style: Ballad
 key: G

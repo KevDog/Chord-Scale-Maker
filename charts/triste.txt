@@ -1,5 +1,5 @@
 title: Triste
-subtitle: Bossa nova, Bb, 32 bars
+subtitle: Bossa nova
 composer: Antonio Carlos Jobim
 style: Latin
 key: Bb

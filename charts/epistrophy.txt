@@ -1,5 +1,4 @@
 title: Epistrophy
-subtitle: Medium, C, AABA
 composer: Thelonious Monk & Kenny Clarke
 style: Medium
 key: C

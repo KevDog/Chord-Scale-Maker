@@ -1,5 +1,4 @@
 title: Work Song
-subtitle: Medium, F minor, 16 bars
 composer: Nat Adderley
 style: Medium
 key: Fm

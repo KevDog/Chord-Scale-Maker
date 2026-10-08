@@ -1,5 +1,5 @@
 title: On Green Dolphin Street
-subtitle: Latin / swing, C, 32 bars
+subtitle: Latin / swing
 composer: Bronisław Kaper
 style: Mixed
 key: C

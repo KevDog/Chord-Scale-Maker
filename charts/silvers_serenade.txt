@@ -1,5 +1,4 @@
 title: Silver's Serenade
-subtitle: Medium, E minor, 16 bars
 composer: Horace Silver
 style: Medium
 key: Em

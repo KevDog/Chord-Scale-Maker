@@ -1,5 +1,5 @@
 title: Dance of the Infidels
-subtitle: Fast, F, the 12-bar solo form
+subtitle: Fast, the 12-bar solo form
 composer: Bud Powell
 style: Medium up
 key: F

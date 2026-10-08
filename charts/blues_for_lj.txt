@@ -1,5 +1,4 @@
 title: Blues for LJ
-subtitle: Blues, Bb, 12 bars
 composer: Ken Walker
 style: Blues
 key: Bb

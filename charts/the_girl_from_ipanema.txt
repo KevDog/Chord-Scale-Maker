@@ -1,5 +1,5 @@
 title: The Girl from Ipanema
-subtitle: Bossa nova, F, AABA
+subtitle: Bossa nova
 composer: Antonio Carlos Jobim
 style: Latin
 key: F

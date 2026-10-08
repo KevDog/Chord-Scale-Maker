@@ -1,5 +1,4 @@
 title: It's You or No One
-subtitle: Up tempo, F, 32 bars
 composer: Jule Styne
 style: Up
 key: F

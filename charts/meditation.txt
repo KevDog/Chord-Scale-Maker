@@ -1,5 +1,5 @@
 title: Meditation
-subtitle: Bossa nova, C, 40 bars (Meditação)
+subtitle: Bossa nova (Meditação)
 composer: Antonio Carlos Jobim
 style: Latin
 key: C

@@ -1,5 +1,4 @@
 title: Confirmation
-subtitle: Medium, F, AABA
 composer: Charlie Parker
 style: Medium
 key: F

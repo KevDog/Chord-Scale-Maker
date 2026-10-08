@@ -1,5 +1,4 @@
 title: Voyage
-subtitle: Medium up, F minor, 32 bars
 composer: Kenny Barron
 style: Medium up
 key: Ab

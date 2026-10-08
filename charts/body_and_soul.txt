@@ -1,5 +1,4 @@
 title: Body and Soul
-subtitle: Ballad, Db, AABA
 composer: Johnny Green
 style: Ballad
 key: Db

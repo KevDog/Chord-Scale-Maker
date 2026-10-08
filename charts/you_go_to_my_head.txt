@@ -1,5 +1,4 @@
 title: You Go to My Head
-subtitle: Ballad, Eb, 40 bars
 composer: J. Fred Coots
 style: Ballad
 key: Eb

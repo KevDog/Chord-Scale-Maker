@@ -1,5 +1,4 @@
 title: In a Sentimental Mood
-subtitle: Ballad, F, AABA
 composer: Duke Ellington
 style: Ballad
 key: F

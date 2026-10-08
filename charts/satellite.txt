@@ -1,5 +1,4 @@
 title: Satellite
-subtitle: Up tempo, G, 32 bars
 composer: John Coltrane
 style: Medium up
 key: G

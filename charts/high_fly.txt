@@ -1,5 +1,5 @@
 title: High Fly
-subtitle: Medium, Bb, AABA (solo changes)
+subtitle: Medium (solo changes)
 composer: Randy Weston
 style: Medium
 key: Bb

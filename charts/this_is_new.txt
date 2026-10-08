@@ -1,5 +1,4 @@
 title: This Is New
-subtitle: Medium, C minor, 32 bars
 composer: Kurt Weill
 style: Medium up
 key: Cm

@@ -1,5 +1,4 @@
 title: Seven Steps to Heaven
-subtitle: Up tempo, F, 32 bars
 composer: Victor Feldman & Miles Davis
 style: Up
 key: F

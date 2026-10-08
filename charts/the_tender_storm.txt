@@ -1,5 +1,5 @@
 title: The Tender Storm
-subtitle: Bebop, medium up, D, 20 bars
+subtitle: Bebop, medium up
 composer: Eddie Harris
 style: Medium up
 key: D

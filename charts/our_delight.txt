@@ -1,5 +1,4 @@
 title: Our Delight
-subtitle: Medium up, Ab, 32 bars
 composer: Tadd Dameron
 style: Medium
 key: Ab

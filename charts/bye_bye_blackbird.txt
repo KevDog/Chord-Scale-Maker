@@ -1,5 +1,5 @@
 title: Bye Bye Blackbird
-subtitle: Medium, F, 32 bars (solo changes)
+subtitle: Medium (solo changes)
 composer: Ray Henderson
 style: Medium
 key: F

@@ -3,7 +3,7 @@
     <ul v-if="sheet.diagnostics.length" class="space-y-1 text-sm text-amber-700 print:hidden dark:text-amber-400">
       <li v-for="d in sheet.diagnostics" :key="d">{{ d }}</li>
     </ul>
-    <SheetPages :title="title" :pages="pages" compact>
+    <SheetPages :title="title" :composer="composer" :pages="pages" compact>
       <template #default="{ page }">
         <div class="space-y-6 print:space-y-1">
           <GuideToneSystem
@@ -30,6 +30,7 @@ const props = defineProps<{
   rows: readonly Row[]
   title: string
   subtitle: string
+  composer?: string
   part: Part
   instrumentLabel: string // '' for concert
   intervals?: boolean

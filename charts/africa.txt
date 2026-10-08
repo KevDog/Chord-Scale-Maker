@@ -1,5 +1,5 @@
 title: Africa
-subtitle: Afro-Latin, D minor, one chord
+subtitle: Afro-Latin, one chord
 composer: John Coltrane
 style: Even 8ths
 key: Dm

@@ -1,5 +1,4 @@
 title: Avalon
-subtitle: Up tempo, F, 32 bars
 composer: Vincent Rose
 style: Up
 key: F

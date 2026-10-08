@@ -1,5 +1,4 @@
 title: Mood Indigo
-subtitle: Slow, Ab, 32 bars
 composer: Duke Ellington
 style: Ballad
 key: Ab

@@ -1,5 +1,4 @@
 title: Honeysuckle Rose
-subtitle: Medium, F, AABA
 composer: Fats Waller
 style: Medium
 key: F

@@ -1,5 +1,5 @@
 title: Some Other Blues
-subtitle: Medium up blues, F, 12 bars
+subtitle: Medium up blues
 composer: John Coltrane
 style: Blues
 key: F

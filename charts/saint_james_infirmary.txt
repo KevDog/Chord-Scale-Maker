@@ -1,5 +1,4 @@
 title: Saint James Infirmary
-subtitle: Slow, D minor, 8 bars
 composer: Traditional
 style: Medium
 key: Dm

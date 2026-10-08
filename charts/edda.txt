@@ -1,5 +1,5 @@
 title: Edda
-subtitle: Jazz waltz, G, 32 bars
+subtitle: Jazz waltz
 composer: Wayne Shorter
 style: Waltz
 key: G

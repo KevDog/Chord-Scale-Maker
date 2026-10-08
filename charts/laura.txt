@@ -1,5 +1,4 @@
 title: Laura
-subtitle: Ballad, C, 32 bars
 composer: David Raksin
 style: Ballad
 key: C

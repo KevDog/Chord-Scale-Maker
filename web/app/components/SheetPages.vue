@@ -14,6 +14,8 @@
       <header :class="['mb-4 text-center', compact && 'print:mb-1', !headerOnScreen(i) && 'hidden print:block']">
         <h2 class="font-display text-2xl/8 font-bold tracking-tight text-zinc-950 dark:text-white print:text-black">{{ title }}</h2>
         <p class="text-sm text-zinc-600 dark:text-zinc-400 print:text-neutral-700">{{ page.subtitle }}</p>
+        <!-- the composer, right-aligned under the heading as on a lead sheet: the first page only -->
+        <p v-if="composer && i === 0" class="mt-1 text-right text-sm text-zinc-600 italic dark:text-zinc-400 print:text-neutral-700">{{ composer }}</p>
       </header>
       <slot :page="page" :index="i" />
     </section>
@@ -24,6 +26,7 @@
 /** a sheet's printed pages: continuous on screen, one letter page each in print */
 const props = defineProps<{
   title: string
+  composer?: string
   pages: readonly T[]
   compact?: boolean // less space under the header in print (guide tones fit 8 systems a page)
 }>()

@@ -1,5 +1,5 @@
 title: Sugar
-subtitle: Jazz shuffle, C minor, 16 bars
+subtitle: Jazz shuffle
 composer: Stanley Turrentine
 style: Medium
 key: Cm

@@ -1,5 +1,5 @@
 title: Smile
-subtitle: Samba, F, 32 bars
+subtitle: Samba
 composer: Charles Chaplin
 style: Latin
 key: F

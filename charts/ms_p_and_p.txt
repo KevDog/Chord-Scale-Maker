@@ -1,5 +1,5 @@
 title: Ms. P & P
-subtitle: Latin / swing, Eb, 24 bars (Ken Walker)
+subtitle: Latin / swing
 composer: Ken Walker
 style: Medium
 key: Gb

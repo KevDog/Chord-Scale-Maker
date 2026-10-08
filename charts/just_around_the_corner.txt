@@ -1,5 +1,5 @@
 title: Just Around the Corner
-subtitle: Up blues, Bb, 12 bars
+subtitle: Up blues
 composer: John McNeil
 style: Up
 key: Bb

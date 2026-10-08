@@ -1,6 +1,6 @@
 title: Four
-subtitle: Medium up, Eb, 32 bars
-composer: Eddie Vinson
+composer: Miles Davis
+# composer: credited to Miles Davis; Eddie Vinson is often said to have written it
 style: Medium up
 key: Eb
 form: AA, 32 bars

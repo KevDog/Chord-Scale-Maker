@@ -1,5 +1,5 @@
 title: Blue Trane
-subtitle: Medium blues, Eb, 12 bars
+subtitle: Medium blues
 composer: John Coltrane
 style: Blues
 key: Eb

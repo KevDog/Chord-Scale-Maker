@@ -1,6 +1,5 @@
 title: Satin Doll
-subtitle: Medium, C, 32 bars
-composer: Billy Strayhorn
+composer: Duke Ellington & Billy Strayhorn
 style: Medium
 key: C
 form: AABA, 32 bars

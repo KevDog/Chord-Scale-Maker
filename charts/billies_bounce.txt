@@ -1,5 +1,4 @@
 title: Billie's Bounce
-subtitle: Blues, F, 12 bars
 composer: Charlie Parker
 style: Blues
 key: F

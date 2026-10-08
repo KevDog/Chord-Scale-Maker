@@ -1,5 +1,4 @@
 title: Spacemen
-subtitle: Medium up, Bb, 32 bars (Clark Terry)
 composer: Clark Terry
 style: Up
 key: Bb

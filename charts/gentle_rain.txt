@@ -1,5 +1,4 @@
 title: Gentle Rain
-subtitle: Latin, A minor, 38 bars
 composer: Luiz Bonfá
 style: Latin
 key: Am

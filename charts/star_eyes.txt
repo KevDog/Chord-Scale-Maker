@@ -1,5 +1,4 @@
 title: Star Eyes
-subtitle: Latin, Eb, 36 bars
 composer: Gene de Paul
 style: Latin
 key: Eb

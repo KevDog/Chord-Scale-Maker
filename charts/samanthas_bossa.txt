@@ -1,5 +1,5 @@
 title: Samantha's Bossa
-subtitle: Bossa nova, Eb, 16 bars (Bob Montgomery)
+subtitle: Bossa nova
 composer: Bob Montgomery
 style: Latin
 key: Eb

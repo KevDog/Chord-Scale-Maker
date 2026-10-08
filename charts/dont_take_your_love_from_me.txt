@@ -1,5 +1,4 @@
 title: Don't Take Your Love from Me
-subtitle: Medium, C, 32 bars
 composer: Henry Nemo
 style: Medium
 key: C

@@ -1,5 +1,4 @@
 title: What's New
-subtitle: Ballad, C, 32 bars
 composer: Bob Haggart
 style: Ballad
 key: C

@@ -1,5 +1,4 @@
 title: Oh, Lady Be Good
-subtitle: Medium, F, 32 bars
 composer: George Gershwin
 style: Medium up
 key: F

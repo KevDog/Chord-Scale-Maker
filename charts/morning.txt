@@ -1,5 +1,4 @@
 title: Morning
-subtitle: Latin, A minor, 32 bars
 composer: Clare Fischer
 style: Latin
 key: Am

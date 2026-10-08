@@ -1,5 +1,4 @@
 title: Thinking of You
-subtitle: Medium, Eb, 32 bars
 composer: Harry Ruby
 style: Medium
 key: Eb

@@ -1,5 +1,4 @@
 title: Have You Met Miss Jones
-subtitle: Medium up, F, AABA
 composer: Richard Rodgers
 style: Medium up
 key: F
