@@ -52,6 +52,15 @@ describe('scale levels', () => {
     expect(back.owned).toEqual([])
   })
 
+  it('take over a library chart’s own choices, and bring them back at Standard', () => {
+    const library = parseChart('A | 1 | A7b9 | A Phrygian Dominant\nA | 2 | Dm7\n').value // the Bird Blues' V7♭9 → ii
+    const advanced = relevel(library, at('standard'), at('advanced'), library)
+    expect(scales(advanced.doc)).toEqual(['A Spanish Phrygian', 'D Bebop Dorian'])
+    const back = relevel(advanced.doc, { ...at('advanced'), owned: advanced.owned }, at('standard'), library)
+    expect(scales(back.doc)).toEqual(['A Phrygian Dominant', 'D Dorian']) // the chart's choice, not Half-Whole
+    expect(scales(relevel(library, at('standard'), at('advanced')).doc)[0]).toBe('A Phrygian Dominant') // without it: a chosen scale, kept
+  })
+
   it('leave a scale you changed by hand alone on the next move', () => {
     const basic = relevel(parseChart('A | 1 | Cm7\nA | 2 | F7\n').value, at('standard'), at('basic')).doc
     const lines = basic.lines.map((l, i) => (l.kind === 'row' && i === 0 ? { ...l, scale: 'C Aeolian' } : l))

@@ -11,7 +11,8 @@
     "7": ["9", "13", "7(13)", "9(13)"],
     "7sus4": ["sus", "sus4", "7sus", "9sus4", "9sus", "11"],
     "7sus4b9": ["7susb9", "susb9", "sus4b9", "7sus4(b9)", "7sus(b9)", "sus(b9)", "9sus4b9", "phryg"],
-    "7b9": ["7(b9)", "7b9b13", "7(b9,b13)", "7b13", "7(b13)", "13b9"],
+    "7b9": ["7(b9)", "7b9b13", "7(b9,b13)", "13b9"],
+    "7b13": ["7(b13)", "9b13", "9(b13)"],
     "7#11": ["7(#11)", "9#11", "7b5", "7(b5)", "13#11"],
     "7alt": ["alt", "7#9", "7(#9)", "7#5", "7(#5)", "7+", "+7", "7#9b13", "7#5#9", "7b9#9", "7(#9,b13)"],
     "m7b5": ["-7b5", "m7(b5)", "-7(b5)", "ø7", "ø", "mi7b5", "min7b5", "half-dim"],
@@ -97,6 +98,12 @@
       { "root": "1",  "scale": "Spanish Phrygian",  "note": "Phrygian Dominant with the #9 too", "level": "advanced" },
       { "root": "1",  "scale": "Altered" }
     ],
+    "7b13": [
+      { "root": "1",  "scale": "Mixolydian b6",     "default": true },
+      { "root": "1",  "scale": "Phrygian Dominant", "note": "with a b9 too" },
+      { "root": "1",  "scale": "Whole Tone",        "note": "b13 as #5" },
+      { "root": "1",  "scale": "Altered",           "level": "advanced" }
+    ],
     "7#11": [
       { "root": "1",  "scale": "Lydian Dominant",   "default": true },
       { "root": "1",  "scale": "Whole Tone", "level": "basic" },
@@ -123,6 +130,7 @@
     ]
   },
   "slash_chords": [
-    { "quality": "Maj7", "bass": "7", "as": "7sus4b9", "note": "a major 7th chord over the note a half step below (DbMaj7/C) is a sus b9 chord on the bass" }
+    { "quality": "Maj7", "bass": "7", "as": "7sus4b9", "note": "a major 7th chord over the note a half step below (DbMaj7/C) is a sus b9 chord on the bass" },
+    { "quality": "m7", "bass": "4", "as": "7sus4", "note": "a minor 7th chord over the note a 4th above its root (Am7/D) is a 9sus4 chord on the bass" }
   ]
 }

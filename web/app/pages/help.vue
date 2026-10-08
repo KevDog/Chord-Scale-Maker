@@ -124,9 +124,8 @@
         <li>One row per chord: section, bar, chord and scale. Two chords in a bar are two rows with the same bar number.</li>
         <li>Use the row buttons to add a row after this one, or delete it.</li>
         <li>
-          The scale dropdown starts with <strong class="font-semibold">Default</strong>, the usual choice for that
-          chord, then the other scales that fit, then an <strong class="font-semibold">Outside</strong> group for when
-          you want some tension to resolve. <strong class="font-semibold">Other…</strong> lets you pick any root and any
+          The scale dropdown starts with the usual choice for that chord, then the other scales that fit, then an
+          <strong class="font-semibold">Outside</strong> group for when you want some tension to resolve. <strong class="font-semibold">Other…</strong> lets you pick any root and any
           scale.
         </li>
         <li>If a chord comes up amber, I don't recognise it. Pick a scale for it and it'll draw.</li>

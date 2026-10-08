@@ -183,7 +183,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   A rejected value stays visible and flagged in its cell (`GridCell`), and the doc keeps the last good value.
 - **Chord cell:** free text, validated as above.
 - **Scale cell** (`ScaleCell`): a dropdown with these entries.
-  - "Default · …". Choosing it writes the default's name into the text (`C Dorian`), and a default scale follows
+  - The quality's default first, unlabelled (with levels, "Default" read as a level). Choosing it writes its name into the text (`C Dorian`), and a default scale follows
     when the chord changes (`setRowChord`: Cm7 → F7 takes C Dorian to F Mixolydian); a scale you chose stays.
   - The scale's formula (1, 2, ♭3, …) shows inside the select where the cell is wide enough for the whole label and
     the formula (measured with `utils/textWidth.ts`), typically with the Text pane hidden.
@@ -199,7 +199,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     tag keeps it. Random picks among the inside options, from a seed (Shuffle deals a new one).
   - The level **owns** the rows that played their default when the chart left Standard (`line:chord` keys), and
     moves only those, while they still play the old level's scale. So a hand-picked scale stays, even one that is
-    also a level's choice (Autumn Leaves' B♭ Lydian), and Standard puts the owned rows back.
+    also a level's choice (B♭ Lydian on a Maj7), and Standard puts the owned rows back.
+  - A library chart's own choices (the Bird Blues' A7♭9 on Phrygian Dominant) are its Standard: levels take them
+    over too, and Standard brings them back (`baseline`: the library chart, for itself and for copies of it).
   - `useScaleLevel` remembers the level, seed and owned rows per chart in this browser (Save as a copy and Save to
     My charts carry them; Revert resets them). Share links carry the level and seed; without the owned rows, a
     recipient's next change matches rows by scale.

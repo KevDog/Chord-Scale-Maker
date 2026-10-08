@@ -12,7 +12,7 @@ describe('ScaleCell', () => {
   it('offers the default, the alternates and Other', async () => {
     const w = await mount('Cm7')
     const labels = w.findAll('option').map((o) => o.text())
-    expect(labels[0]).toBe('Default · C Dorian')
+    expect(labels[0]).toBe('C Dorian') // the usual choice comes first, unlabelled
     expect(labels).toContain('C Aeolian (when the chord is vi or iv)')
     expect(labels.at(-1)).toBe('Other…')
   })

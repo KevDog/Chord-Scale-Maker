@@ -57,23 +57,34 @@ const rowKey = (i: number, chord: string): string => `${i}:${chord}`
 /**
  * move a chart from one level to another, writing the scales into its rows. Only rows the level owns move, and only
  * while they still play the old level's scale; a scale you chose yourself stays, even one that happens to be a
- * level's choice (Autumn Leaves' B♭ Lydian). @copy repeats follow their source rows. Returns the chart, how many
- * rows changed, and the rows the level owns now (none back at Standard).
+ * level's choice (B♭ Lydian on a Maj7). `baseline` is the library chart this one came from: its own scale choices
+ * (A7♭9 on Phrygian Dominant in the Bird Blues) are the chart's Standard, so levels take them over too and Standard
+ * brings them back. @copy repeats follow their source rows. Returns the chart, how many rows changed, and the rows
+ * the level owns now (none back at Standard).
  */
-export function relevel(doc: ChartDoc, from: LevelState, to: LevelState): Readonly<{ doc: ChartDoc; changed: number; owned: readonly string[] }> {
+export function relevel(
+  doc: ChartDoc,
+  from: LevelState,
+  to: LevelState,
+  baseline?: ChartDoc,
+): Readonly<{ doc: ChartDoc; changed: number; owned: readonly string[] }> {
+  /** the row's Standard: the library's own choice for this line, else the chord's default */
+  const standard = (i: number, chord: string): string => {
+    const b = baseline?.lines[i]
+    return b?.kind === 'row' && b.chord === chord && b.scale ? b.scale : defaultOf(chord)
+  }
+  const at = (state: LevelState, i: number, chord: string): string | null =>
+    state.level === 'standard' ? standard(i, chord) || null : scaleAtLevel(chord, state.level, state.seed, rowKey(i, chord))
   const owns = (i: number, chord: string, scale: string): boolean => {
-    const key = rowKey(i, chord)
-    if (from.level === 'standard') return scale === '' || sameScale(scale, defaultOf(chord))
-    const mine = from.owned ? from.owned.includes(key) : true // without a record (an old share link), any match counts
-    return mine && (scale === '' || sameScale(scale, scaleAtLevel(chord, from.level, from.seed, key)))
+    const mine = from.level === 'standard' || !from.owned || from.owned.includes(rowKey(i, chord)) // no record (an old share link): any match counts
+    return mine && (scale === '' || sameScale(scale, at(from, i, chord)))
   }
   let changed = 0
   const owned: string[] = []
   const lines = doc.lines.map((l, i) => {
     if (l.kind !== 'row' || !owns(i, l.chord, l.scale)) return l
-    const key = rowKey(i, l.chord)
-    if (to.level !== 'standard') owned.push(key)
-    const next = scaleAtLevel(l.chord, to.level, to.seed, key)
+    if (to.level !== 'standard') owned.push(rowKey(i, l.chord))
+    const next = at(to, i, l.chord)
     if (!next || sameScale(next, l.scale || defaultOf(l.chord))) return l
     changed++
     return { ...l, scale: next }

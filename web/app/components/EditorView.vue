@@ -148,6 +148,7 @@ import {
   encodeShare,
   instrumentLabel,
   LEVEL_LABELS,
+  parseChart,
   LIMITS,
   litKeys,
   type Mode,
@@ -191,10 +192,17 @@ const level = computed(() => (levelsOn ? scaleLevel.level.value : 'standard'))
 const levelNote = ref('')
 
 /** move the chart's scales to another level: rows playing the old level's scale take the new one's */
+/** the library chart this one came from (itself, or the source of a copy): its own scale choices are its Standard */
+const baseline = ((): ChartDoc | undefined => {
+  const t = props.saveTarget
+  const slug = t?.kind === 'library' ? t.slug : t?.kind === 'mine' ? loadChart(t.id)?.meta.basedOn : t?.kind === 'new' ? t.basedOn : undefined
+  const text = slug ? findChart(slug)?.text : undefined
+  return text === undefined ? undefined : parseChart(text).value
+})()
 const levelState = (): LevelState => ({ level: scaleLevel.level.value, seed: scaleLevel.seed.value, ...(scaleLevel.owned.value ? { owned: scaleLevel.owned.value } : {}) })
 function moveLevel(to: ScaleLevel, seed: number, from: LevelState = levelState()): void {
   editor.flush()
-  const result = relevel(editor.doc.value, from, { level: to, seed })
+  const result = relevel(editor.doc.value, from, { level: to, seed }, baseline)
   if (result.changed) editor.setDoc(result.doc)
   scaleLevel.owned.value = to === 'standard' ? undefined : result.owned
   scaleLevel.level.value = to

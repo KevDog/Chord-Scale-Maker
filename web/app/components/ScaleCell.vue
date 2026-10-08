@@ -8,7 +8,7 @@
       :class="['sm:py-1 sm:text-sm/5', showFormula && '[&>select]:pr-(--formula-w)', needsScale && 'border-amber-500! dark:border-amber-500!']"
       @update:model-value="onSelect"
     >
-      <option v-if="choices.defaultScale" value="">Default · {{ choices.defaultScale }}</option>
+      <option v-if="choices.defaultScale" value="">{{ choices.defaultScale }}</option>
       <option v-else value="" disabled>Choose a scale…</option>
       <option v-for="o in inside" :key="o.scale" :value="o.scale">{{ o.scale }}{{ o.note ? ` (${o.note})` : '' }}</option>
       <optgroup v-if="outside.length" label="Outside (tension to resolve)">
@@ -74,7 +74,7 @@ const formula = computed((): string | null => {
 })
 /** the selected option's text, as the select shows it */
 const label = computed((): string => {
-  if (isDefault.value || props.scale === '') return choices.value.defaultScale ? `Default · ${choices.value.defaultScale}` : 'Choose a scale…'
+  if (isDefault.value || props.scale === '') return choices.value.defaultScale ?? 'Choose a scale…'
   const alt = matching.value
   return alt ? (alt.note ? `${alt.scale} (${alt.note})` : alt.scale) : props.scale
 })

@@ -39,7 +39,7 @@ test('grid edits update the text at once', async ({ page }) => {
   await page.getByLabel('chord for row 1').fill('Ebm7b5')
   await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 1 \| Ebm7b5/)
   const scale = page.getByLabel('Scale for Ebm7b5')
-  await expect(scale.locator('option').first()).toHaveText('Default · Eb Locrian')
+  await expect(scale.locator('option').first()).toHaveText('Eb Locrian') // the usual choice, first
   await expect(scale.locator('option', { hasText: 'B Major Pentatonic' })).toHaveCount(1)
 })
 
@@ -208,4 +208,16 @@ test('the scale level writes its scales into the chart, keeps your own picks, an
   await expect(text).toHaveValue(/Cm7 +\| C Dorian/)
   await page.getByLabel('Scale for D7').first().selectOption('D Half-Whole Diminished') // back to the library's own
   await expect(status).toHaveText('Edits are saved in this browser as your version.') // the library version again
+})
+
+test('levels take over a library chart’s own scale choices, and Standard brings them back', async ({ page }) => {
+  await page.goto('/editor?chart=f_bird_blues')
+  await page.getByRole('button', { name: 'Show text' }).click()
+  const text = page.getByLabel('Chart text')
+  await expect(text).toHaveValue(/A7b9 +\| A Phrygian Dominant/)
+  await page.getByText('Advanced', { exact: true }).click()
+  await expect(text).toHaveValue(/A7b9 +\| A Spanish Phrygian/)
+  await page.getByText('Standard', { exact: true }).click()
+  await expect(text).toHaveValue(/A7b9 +\| A Phrygian Dominant/) // the chart's choice, not Half-Whole
+  await expect(page.getByRole('status').filter({ hasText: /in this browser/ })).toHaveText('Edits are saved in this browser as your version.')
 })

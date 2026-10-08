@@ -123,7 +123,7 @@ test('a damaged share link says so', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'That link doesn’t open a chart' })).toBeVisible()
 })
 
-test('choosing a scale and then Default again writes the scale name, and leaves the library chart unedited', async ({ page }) => {
+test('choosing a scale and then the usual one again writes the scale name, and leaves the library chart unedited', async ({ page }) => {
   await page.goto('/editor?chart=autumn_leaves')
   const scale = page.getByLabel('Scale for Cm7').first()
   await scale.selectOption('C Aeolian')
