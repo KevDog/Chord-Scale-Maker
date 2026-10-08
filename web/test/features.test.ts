@@ -16,7 +16,7 @@ describe('feature flags', () => {
     expect(useFeature('myCharts')).toBe(false)
   })
 
-  it('hides New chart in the navbar, the mobile menu and the library', async () => {
+  it('hides New chart (the header never has it; the library does with myCharts)', async () => {
     expect(myChartsLinks((await mountSuspended(AppShell)).html())).toEqual([])
     const index = await mountSuspended(Index)
     expect(myChartsLinks(index.html())).toEqual([])

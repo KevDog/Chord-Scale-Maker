@@ -103,7 +103,8 @@
         Every library chart opens in the editor, and you can change anything: a reharmonisation, a different scale
         choice, a bridge you play differently. The <strong class="font-semibold text-zinc-950 dark:text-white">Chart</strong>
         grid and the <strong class="font-semibold text-zinc-950 dark:text-white">Text</strong> box are two views of the
-        same chart; edit either and the other (and the preview) keeps up.
+        same chart; edit either and the other (and the preview) keeps up. The Text box is tucked away until you press
+        <strong class="font-semibold text-zinc-950 dark:text-white">Show text</strong>, and it stays out once you do.
       </UiText>
 
       <UiSubheading :level="3" class="pt-2">The grid</UiSubheading>

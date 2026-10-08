@@ -27,9 +27,24 @@
       </UiDialogActions>
     </UiDialog>
 
-    <div class="grid gap-8 print:hidden lg:grid-cols-2">
+    <div :class="['grid gap-8 print:hidden', textShown && 'lg:grid-cols-2']">
       <section aria-labelledby="grid-heading" class="min-w-0">
-        <UiSubheading id="grid-heading" class="mb-3">Chart</UiSubheading>
+        <div class="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+          <UiSubheading id="grid-heading">Chart</UiSubheading>
+          <UiButton
+            plain
+            :aria-expanded="textShown"
+            aria-controls="text-pane"
+            :disabled="editor.fatal.value"
+            @click="prefs.showText.value = !prefs.showText.value"
+          >
+            <CodeBracketIcon data-slot="icon" />{{ textShown ? 'Hide text' : 'Show text' }}
+          </UiButton>
+        </div>
+        <UiText v-if="!textShown && editor.diagnostics.value.length" role="status" class="mb-3 text-amber-700! dark:text-amber-400!">
+          The chart's text has {{ editor.diagnostics.value.length === 1 ? 'a problem' : `${editor.diagnostics.value.length} problems` }}.
+          <button type="button" class="font-semibold underline" @click="prefs.showText.value = true">Show text</button> to see {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
+        </UiText>
         <div v-if="editor.fatal.value" class="rounded-lg bg-red-500/10 p-4 text-sm/6 text-red-700 dark:text-red-400">
           This chart is over a size limit. Shorten it in the text editor to edit it here.
         </div>
@@ -37,7 +52,7 @@
           <ChartGrid :doc="editor.doc.value" @update:doc="editor.setDoc" />
         </div>
       </section>
-      <section aria-labelledby="text-heading" class="min-w-0">
+      <section v-show="textShown" id="text-pane" aria-labelledby="text-heading" class="min-w-0">
         <div class="mb-3 flex items-center gap-2">
           <UiSubheading id="text-heading">Text</UiSubheading>
           <HelpTip label="How the text editor works">
@@ -119,7 +134,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowDownTrayIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, BookmarkIcon, DocumentDuplicateIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
+import { ArrowDownTrayIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, BookmarkIcon, CodeBracketIcon, DocumentDuplicateIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import { buildSheet, type ChartDoc, encodeShare, instrumentLabel, LIMITS, litKeys, type Mode, partFor, practiceBoxes, serializeChart, setMeta, type ShareView } from '~~/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 import type { SheetKind } from '~/utils/sheets'
@@ -137,6 +152,8 @@ const PER_PAGE = 12
 const editor = useChartEditor(props.initialText)
 const prefs = props.shared ? linkPreferences(props.shared) : usePreferences()
 const part = computed(() => partFor(prefs.instrument.value))
+/** the Text pane: hidden by default, and always shown for a chart over a size limit (only the text can fix it) */
+const textShown = computed(() => prefs.showText.value || editor.fatal.value)
 /** one spelling at a time: every scale from the Start on note, or each from its own root */
 const mode = ref<Mode>(props.shared?.mode ?? 'root')
 const sheet = ref<SheetKind>(props.shared?.sheet === 'guideTones' && useFeature('guideTones') ? 'guideTones' : 'scales')

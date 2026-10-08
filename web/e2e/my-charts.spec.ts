@@ -103,9 +103,11 @@ test('a share link carries the chart and the view to a browser that has never se
   await expect(visitor.getByLabel('chord for row 1', { exact: true })).toHaveValue('Cm9')
   await expect(visitor.locator('section header p').first()).toHaveText(/Tenor Sax \(Bb\) \(Spelled from C\)/)
   await expect(visitor.locator('.vf-selected').first()).toBeAttached() // the practice picks came too
-  await visitor.getByRole('link', { name: 'New chart' }).first().click() // a new chart, not the shared one again
+  await visitor.getByRole('banner').getByRole('link', { name: 'Library' }).click()
+  await visitor.getByRole('link', { name: 'New chart' }).click() // a new chart, not the shared one again
   await expect(visitor.getByLabel('chord for row 1', { exact: true })).toHaveValue('Dm7')
-  await visitor.goBack()
+  await visitor.goBack() // the library
+  await visitor.goBack() // the shared chart again
   await expect(visitor.getByLabel('chord for row 1', { exact: true })).toHaveValue('Cm9')
   await visitor.getByRole('button', { name: 'Save to My charts' }).click()
   await expect(visitor).toHaveURL(/\/editor\?mine=/)

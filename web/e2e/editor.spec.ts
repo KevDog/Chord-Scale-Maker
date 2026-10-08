@@ -5,6 +5,26 @@ test.beforeEach(async ({ page }) => {
   await expect(staves(page)).toHaveCount(3) // starter chart: 3 rows, from the root
 })
 
+test('the Text pane is hidden until shown, remembered, and flags problems while hidden', async ({ page }) => {
+  const toggle = page.getByRole('button', { name: 'Show text' })
+  await expect(page.getByLabel('Chart text')).toBeHidden()
+  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
+  await toggle.click()
+  await expect(page.getByLabel('Chart text')).toBeVisible()
+  await page.getByLabel('Chart text').fill('title: T\nA | 1 | Cm7 | C Dorian | extra\n')
+  await page.reload()
+  await expect(page.getByLabel('Chart text')).toBeVisible() // remembered
+  await page.getByRole('button', { name: 'Hide text' }).click()
+  await expect(page.getByLabel('Chart text')).toBeHidden()
+  await page.goto('/editor?chart=autumn_leaves')
+  await expect(page.getByLabel('Chart text')).toBeHidden()
+  await page.goto('/editor?new=1')
+  await page.getByRole('button', { name: 'Show text' }).click()
+  await page.getByLabel('Chart text').fill('title: T\nA | 1\n')
+  await page.getByRole('button', { name: 'Hide text' }).click()
+  await expect(page.getByRole('status').filter({ hasText: 'text has a problem' })).toBeVisible()
+})
+
 test('grid edits update the text at once', async ({ page }) => {
   await page.getByLabel('chord for row 1').fill('Ebm7b5')
   await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 1 \| Ebm7b5/)
@@ -22,6 +42,7 @@ test('a value that would corrupt the text is rejected but stays visible', async 
 })
 
 test('text edits update the grid and preview; unknown chords prompt for a scale', async ({ page }) => {
+  await page.getByRole('button', { name: 'Show text' }).click()
   const text = page.getByLabel('Chart text')
   await text.fill(`${await text.inputValue()}B | 9 | Cm7#5#9x\n`)
   await expect(staves(page)).toHaveCount(3) // the new row has no scale yet, so it isn't drawn
@@ -85,6 +106,7 @@ test('guide tones draw both lines, four bars a system, without the scale control
 })
 
 test('the text editor explains itself on hover and on focus', async ({ page }) => {
+  await page.getByRole('button', { name: 'Show text' }).click()
   const help = page.getByRole('button', { name: 'How the text editor works' })
   const tip = page.getByRole('tooltip')
   await expect(tip).toBeHidden()

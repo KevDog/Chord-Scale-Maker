@@ -9,7 +9,6 @@
         <UiNavbarDivider class="max-lg:hidden" />
         <UiNavbarSection class="max-lg:hidden" aria-label="Main">
           <UiNavbarItem href="/" :current="route.path === '/'">Library</UiNavbarItem>
-          <UiNavbarItem v-if="myCharts" href="/editor?new=1">New chart</UiNavbarItem>
           <UiNavbarItem href="/help" :current="route.path === '/help'">Help</UiNavbarItem>
           <UiNavbarItem href="/about" :current="route.path === '/about'">About</UiNavbarItem>
           <UiNavbarItem href="/contact" :current="route.path === '/contact'">Contact</UiNavbarItem>
@@ -26,7 +25,6 @@
     </template>
     <template #sidebar>
       <UiNavbarItem href="/"><BookOpenIcon data-slot="icon" />Library</UiNavbarItem>
-      <UiNavbarItem v-if="myCharts" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiNavbarItem>
       <UiNavbarItem href="/help"><QuestionMarkCircleIcon data-slot="icon" />Help</UiNavbarItem>
       <UiNavbarItem href="/about"><InformationCircleIcon data-slot="icon" />About</UiNavbarItem>
       <UiNavbarItem href="/contact"><EnvelopeIcon data-slot="icon" />Contact</UiNavbarItem>
@@ -64,12 +62,11 @@
 </template>
 
 <script setup lang="ts">
-import { BookOpenIcon, EnvelopeIcon, InformationCircleIcon, MoonIcon, PlusIcon, QuestionMarkCircleIcon, SunIcon } from '@heroicons/vue/20/solid'
+import { BookOpenIcon, EnvelopeIcon, InformationCircleIcon, MoonIcon, QuestionMarkCircleIcon, SunIcon } from '@heroicons/vue/20/solid'
 
 /** the site chrome (Catalyst StackedLayout): navbar, mobile menu, theme toggle, footer */
 const route = useRoute()
 const { theme, toggle } = useTheme()
-const myCharts = useFeature('myCharts')
 const year = new Date().getFullYear() // the build's year: pages are prerendered
 const version = useRuntimeConfig().public.version
 </script>
