@@ -5,6 +5,11 @@
       <UiText>It isn’t saved in this browser. Saved charts stay in the browser they were made in; on another device, open it from a share link or a downloaded file.</UiText>
       <UiButton color="note" href="/">Go to the chart library</UiButton>
     </div>
+    <div v-else-if="source.kind === 'badLink'" class="max-w-xl space-y-4">
+      <UiHeading>That link doesn’t open a chart</UiHeading>
+      <UiText>It may have been cut short when it was copied or sent. Ask for it again, or for the chart as a downloaded file.</UiText>
+      <UiButton color="note" href="/">Go to the chart library</UiButton>
+    </div>
     <!-- keyed by the chart being edited: another chart, or a revert, starts a fresh editor -->
     <EditorView
       v-else
@@ -13,6 +18,7 @@
       :practice-key="source.practiceKey"
       :save-target="source.target"
       :library-title="source.libraryTitle"
+      :shared="source.shared"
       @created="adopt"
       @reload="reload"
     />
@@ -21,6 +27,7 @@
 </template>
 
 <script setup lang="ts">
+import { decodeShare, type ShareView } from '~~/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 
 /**
@@ -28,11 +35,13 @@ import type { SaveTarget } from '~/composables/useSavedChart'
  * - ?chart=<slug>: a library chart, or your edited version of it (My charts)
  * - ?mine=<id>: one of your saved charts
  * - ?new=1: a blank chart, saved on its first edit (the address then becomes ?mine=<id>)
+ * - #s=<payload>: a share link (engine/share.ts): the chart and its view, not saved until you save it
  * Without the myCharts feature only library charts open, and nothing is saved.
  */
 type Source =
-  | Readonly<{ kind: 'chart'; text: string; practiceKey?: string; target?: SaveTarget; libraryTitle?: string }>
+  | Readonly<{ kind: 'chart'; text: string; practiceKey?: string; target?: SaveTarget; libraryTitle?: string; shared?: ShareView }>
   | Readonly<{ kind: 'missing' }>
+  | Readonly<{ kind: 'badLink' }>
 
 const route = useRoute()
 const router = useRouter()
@@ -42,9 +51,13 @@ const generation = ref(0)
 /** the id our own first save put in the address: the editor stays as it is */
 let adopted = ''
 
+/** a share link's chart: undefined without one, null if it's damaged */
+const hash = import.meta.client ? (route.hash || (useNuxtApp().$arrivalHash as string | undefined) || location.hash) : ''
+const link = myCharts && hash.startsWith('#s=') ? await decodeShare(hash.slice(3)) : undefined
+
 // without My charts the editor only opens library charts; with it, a bare /editor has nothing to open
 // (not on the prerender, which has no query)
-if (import.meta.client && !findChart(query('chart')) && (!myCharts || (!query('mine') && route.query.new === undefined)))
+if (import.meta.client && !findChart(query('chart')) && (!myCharts || (!query('mine') && route.query.new === undefined && link === undefined)))
   await navigateTo('/', { replace: true })
 if (import.meta.client && myCharts) migrateDraft(STARTER_CHART)
 
@@ -64,6 +77,8 @@ const source = computed((): Source => {
     const saved = loadChart(mine)
     return saved ? { kind: 'chart', text: saved.text, practiceKey: `mine:${mine}`, target: { kind: 'mine', id: mine } } : { kind: 'missing' }
   }
+  if (route.query.new === undefined && link === null) return { kind: 'badLink' }
+  if (route.query.new === undefined && link) return { kind: 'chart', text: link.chart, shared: link.view ?? {} }
   const id = newChartId()
   return { kind: 'chart', text: STARTER_CHART, practiceKey: `mine:${id}`, target: { kind: 'new', id, savedKind: 'new' } }
 })

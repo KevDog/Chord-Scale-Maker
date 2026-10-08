@@ -4,14 +4,19 @@
       <UiHeading>{{ editor.meta.value.title || 'Untitled' }}</UiHeading>
       <UiText v-if="editor.meta.value.subtitle" class="mt-1">{{ editor.meta.value.subtitle }}</UiText>
       <!-- My charts: where this chart is saved, and what you can do with it -->
-      <div v-if="saved" class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-        <UiText role="status" :class="['text-sm/6!', saved.status.value.state === 'failed' && 'text-red-700! dark:text-red-400!']">{{ saveText }}</UiText>
-        <UiButton v-if="saved.edited.value" plain @click="revertOpen = true"><ArrowUturnLeftIcon data-slot="icon" />Revert to library version</UiButton>
-        <UiButton outline :disabled="editor.fatal.value" @click="saveCopy"><DocumentDuplicateIcon data-slot="icon" />Save as a copy</UiButton>
+      <div v-if="saved || shared" class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
+        <UiText v-if="saved" role="status" :class="['text-sm/6!', saved.status.value.state === 'failed' && 'text-red-700! dark:text-red-400!']">{{ saveText }}</UiText>
+        <UiText v-else role="status" class="text-sm/6!">A shared chart. It isn’t saved in this browser until you save it.</UiText>
+        <UiButton v-if="shared" color="note" :disabled="editor.fatal.value" @click="saveShared"><BookmarkIcon data-slot="icon" />Save to My charts</UiButton>
+        <UiButton v-if="saved?.edited.value" plain @click="revertOpen = true"><ArrowUturnLeftIcon data-slot="icon" />Revert to library version</UiButton>
+        <UiButton v-if="saved" outline :disabled="editor.fatal.value" @click="saveCopy"><DocumentDuplicateIcon data-slot="icon" />Save as a copy</UiButton>
         <UiButton outline @click="download"><ArrowDownTrayIcon data-slot="icon" />Download</UiButton>
+        <UiButton outline :disabled="editor.fatal.value" @click="openShare"><LinkIcon data-slot="icon" />Share</UiButton>
       </div>
       <UiText v-if="copyError" role="alert" class="mt-2 text-sm/6! text-red-700! dark:text-red-400!">{{ copyError }}</UiText>
     </div>
+
+    <ShareDialog :open="shareOpen" :link="shareLink" @close="shareOpen = false" />
 
     <UiDialog :open="revertOpen" size="md" @close="revertOpen = false">
       <UiDialogTitle>Revert to the library version?</UiDialogTitle>
@@ -114,28 +119,30 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowDownTrayIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, DocumentDuplicateIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
-import { buildSheet, type ChartDoc, instrumentLabel, LIMITS, litKeys, type Mode, partFor, practiceBoxes, serializeChart, setMeta } from '~~/engine'
+import { ArrowDownTrayIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, BookmarkIcon, DocumentDuplicateIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
+import { buildSheet, type ChartDoc, encodeShare, instrumentLabel, LIMITS, litKeys, type Mode, partFor, practiceBoxes, serializeChart, setMeta, type ShareView } from '~~/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 import type { SheetKind } from '~/utils/sheets'
 
 /**
  * practiceKey: what practice selections are remembered under (a library slug, or mine:<id>); none for the visit only.
  * saveTarget: where edits save (My charts); none when the feature is off. libraryTitle: the library chart's title.
+ * shared: opened from a share link, with the view it carried (applied for this visit, not saved).
  */
-const props = defineProps<{ initialText: string; practiceKey?: string; saveTarget?: SaveTarget; libraryTitle?: string }>()
+const props = defineProps<{ initialText: string; practiceKey?: string; saveTarget?: SaveTarget; libraryTitle?: string; shared?: ShareView }>()
 const emit = defineEmits<{ created: [id: string]; reload: [] }>()
 
 const PER_PAGE = 12
 
 const editor = useChartEditor(props.initialText)
-const prefs = usePreferences()
+const prefs = props.shared ? linkPreferences(props.shared) : usePreferences()
 const part = computed(() => partFor(prefs.instrument.value))
 /** one spelling at a time: every scale from the Start on note, or each from its own root */
-const mode = ref<Mode>('root')
-const sheet = ref<SheetKind>('scales')
+const mode = ref<Mode>(props.shared?.mode ?? 'root')
+const sheet = ref<SheetKind>(props.shared?.sheet === 'guideTones' && useFeature('guideTones') ? 'guideTones' : 'scales')
 const practiceOn = useFeature('practice')
 const practice = usePractice(props.practiceKey)
+if (props.shared?.practice) practice.setSelection(mode.value, props.shared.practice)
 const selection = computed(() => (practiceOn ? practice.selection(mode.value) : null))
 // every staff with its practice keys, for the panel's boxes and what the selection lights
 const practiceStaves = computed(() =>
@@ -180,6 +187,38 @@ function saveCopy(): void {
   const result = saveChart({ id, text: serializeChart(doc), kind: 'copy', ...(basedOn ? { basedOn } : {}) })
   copyError.value = result.ok ? '' : "Couldn't save a copy: this browser's storage is full, or My charts is at its limit."
   if (result.ok) navigateTo({ path: '/editor', query: { mine: id } })
+}
+
+const shareOpen = ref(false)
+const shareLink = ref<string | null>(null)
+
+/** a link carrying the chart as it is now, and how it's being viewed */
+async function openShare(): Promise<void> {
+  editor.flush()
+  saved?.flush()
+  shareLink.value = null
+  shareOpen.value = true
+  const view: ShareView = {
+    instrument: prefs.instrument.value,
+    mode: mode.value,
+    start: prefs.start.value,
+    intervals: prefs.intervals.value,
+    sheet: sheet.value,
+    ...(selection.value ? { practice: selection.value } : {}),
+  }
+  shareLink.value = `${location.origin}/editor#s=${await encodeShare({ chart: editor.text.value, view })}`
+}
+
+/** a shared chart, kept: into My charts with its practice picks, then opened at its own address */
+function saveShared(): void {
+  editor.flush()
+  const id = newChartId()
+  const result = saveChart({ id, text: editor.text.value, kind: 'new' })
+  copyError.value = result.ok ? '' : "Couldn't save it: this browser's storage is full, or My charts is at its limit."
+  if (!result.ok) return
+  const kept = usePractice(`mine:${id}`)
+  for (const m of ['root', 'from'] as const) kept.setSelection(m, practice.selection(m))
+  navigateTo({ path: '/editor', query: { mine: id } })
 }
 
 /** the chart as a .txt file, as it is now */

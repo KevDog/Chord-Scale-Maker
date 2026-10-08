@@ -1,4 +1,4 @@
-import { expect, test } from './fixtures'
+import { chooseInstrument, expect, test } from './fixtures'
 
 const status = (page: import('@playwright/test').Page) => page.getByRole('status').filter({ hasText: /in this browser|Saving/ })
 
@@ -82,4 +82,41 @@ test('a file dropped on the library opens, and a wrong one says why', async ({ p
   await expect(page.getByRole('alert')).toHaveText('Please open a chart saved as a .txt file.')
   await drop('tune.txt', 'title: Dropped\nA | 1 | Cm7\n', 'text/plain')
   await expect(page.getByRole('heading', { name: 'Dropped', level: 1 })).toBeVisible()
+})
+
+test('a share link carries the chart and the view to a browser that has never seen it', async ({ page, browser }) => {
+  await page.goto('/editor?chart=autumn_leaves')
+  await page.getByLabel('chord for row 1', { exact: true }).fill('Cm9')
+  await chooseInstrument(page, 'Tenor')
+  await page.getByText('From C', { exact: true }).click()
+  await page.locator('fieldset', { hasText: 'Practice' }).getByRole('button', { name: 'All' }).click()
+  await page.getByRole('button', { name: 'Share' }).click()
+  const box = page.getByRole('dialog').getByLabel('Link')
+  await expect(box).toHaveValue(/\/editor#s=[A-Za-z0-9_-]+$/)
+  const link = await box.inputValue()
+  expect(link.length).toBeLessThan(2_000)
+
+  const other = await browser.newContext() // fresh storage: nothing saved there
+  const visitor = await other.newPage()
+  await visitor.goto(link)
+  await expect(visitor.getByRole('status').filter({ hasText: 'A shared chart' })).toBeVisible()
+  await expect(visitor.getByLabel('chord for row 1', { exact: true })).toHaveValue('Cm9')
+  await expect(visitor.locator('section header p').first()).toHaveText(/Tenor Sax \(Bb\) \(Spelled from C\)/)
+  await expect(visitor.locator('.vf-selected').first()).toBeAttached() // the practice picks came too
+  await visitor.getByRole('link', { name: 'New chart' }).first().click() // a new chart, not the shared one again
+  await expect(visitor.getByLabel('chord for row 1', { exact: true })).toHaveValue('Dm7')
+  await visitor.goBack()
+  await expect(visitor.getByLabel('chord for row 1', { exact: true })).toHaveValue('Cm9')
+  await visitor.getByRole('button', { name: 'Save to My charts' }).click()
+  await expect(visitor).toHaveURL(/\/editor\?mine=/)
+  await visitor.goto('/editor?chart=so_what')
+  await expect(visitor.locator('section header p').first()).not.toContainText('Tenor') // the link didn't change their own settings
+  await visitor.goto('/')
+  await expect(visitor.getByRole('region', { name: 'My charts' }).getByRole('link', { name: 'Autumn Leaves' })).toBeVisible()
+  await other.close()
+})
+
+test('a damaged share link says so', async ({ page }) => {
+  await page.goto('/editor#s=not-a-real-chart')
+  await expect(page.getByRole('heading', { name: 'That link doesn’t open a chart' })).toBeVisible()
 })
