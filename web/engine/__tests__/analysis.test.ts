@@ -164,6 +164,11 @@ describe('analysis: keys (§5)', () => {
     expect(verdict(library('long_ago_and_far_away'), '17 FMaj7')).toBe('F Ionian (M3)')
   })
 
+  it('a section that starts on the home tonic is home again (Nardis: the last A after a bridge in C)', () => {
+    expect(verdict(library('nardis'), '28 CMaj7')).toBe('C Lydian (M4)')
+    expect(verdict(library('nardis'), '23 CMaj7')).toBe('C Ionian (M3)') // the bridge's own C
+  })
+
   it('in a minor key, a ii–V–I into a major chord opens its key (Bernie’s Tune’s bridge is in Bb)', () => {
     expect(verdict(library('bernies_tune'), '19 G7')).toBe('G Mixolydian b6 (D4)') // V7/ii in Bb
     expect(verdict(library('autumn_leaves'), '24 EbMaj7')).toBe('Eb Lydian (M4)') // a tritone cadence doesn't

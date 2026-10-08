@@ -35,6 +35,8 @@ const FAMILY: Readonly<Record<string, Family>> = {
 export type Entry = Readonly<{
   /** the expanded rows this entry covers (identical consecutive rows are one entry) */
   rows: readonly number[]
+  /** the section label of its first row */
+  section: string
   chord: string
   /** null: a chord the analyser can't read (unparseable, or an unknown quality); it gets no rule */
   root: Spelled | null
@@ -84,6 +86,7 @@ export function buildStream(rows: readonly LinedRow[], formBars?: number): Entry
     const reading = readChord(row.chord)
     out.push({
       rows: [i],
+      section: row.section,
       chord: row.chord,
       root: reading?.root ?? null,
       pc: reading ? pcOf(reading.root) : -1,

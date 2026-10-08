@@ -112,7 +112,8 @@ A chord gets its **local key** from its key area. Within an area, a chord is eit
 key (§5.5), or **chromatic**: a borrowed chord, a substitute, a passing chord, or a chord of a passing ii–V that
 never lands (§7.5). Chromatic chords stay in the area; they don't open a new one.
 
-A cadence **into the global key's tonic** always returns home (§16). In a **minor** key, a full ii–V–I into a
+A cadence **into the global key's tonic** always returns home (§16), and so does a section that starts on the
+home tonic chord. In a **minor** key, a full ii–V–I into a
 major chord (not a tritone cadence) **tonicizes** it and opens that key's area (§16). A minor chord that is
 itself the ii of the next ii–V (`Dm7 G7 | Cm7 F7 | B♭7`) opens no area. A turnaround that resolves into the top of
 the form carries its key into the opening bars (Giant Steps' `F♯7 | BMaj7`).
@@ -588,8 +589,8 @@ Random keeps picking among the quality's inside options; the ladder doesn't chan
 Built (after the analyser) as a `ladders` table in `chord_scales.json` beside the `level` tags rather than
 replacing them: a row whose Standard is its quality's default keeps the tags (so nothing built before changes,
 and `7sus4`'s Mixolydian keeps its own rungs), and a row whose Standard the analysis chose climbs that scale's
-ladder (`engine/levels.ts`, `ladderScale`). The tonic-minor nuance (Aeolian at Basic, decision 7) needs the row's
-function, which the level control doesn't have; Dorian's ladder gives Minor Pentatonic for now. Lydian's and
+ladder (`engine/levels.ts`, `ladderScale`). A tonic minor chord (rule m5) is Aeolian at Basic (decision 7): the
+level control runs the analysis on the chart to find those rows. Lydian's and
 Lydian Dominant's Advanced rungs are blank, as in the table.
 
 ## 12. The tool
@@ -720,14 +721,15 @@ hand-scaled chart was read. Each refinement below has a test named for it (`web/
 | A minor ii of the next ii–V opens no area | Bird Blues, `Dm7 G7 \| Cm7 F7 \| B♭7` | G Phrygian Dominant (V7 of C minor) | G Mixolydian (V7/V, as §9 has it) |
 | A cadence into the home tonic comes home | Long Ago and Far Away, `Gm7 C7 \| FMaj7` after a bridge in C | F Lydian (IV of C) | F Ionian |
 | In a minor key, a ii–V–I into a major chord tonicizes it | Bernie's Tune's bridge (B♭ in D minor) | `G7 → Cm7` as "V7/♭vii in D minor" | V7/ii in B♭, Mixolydian ♭6 |
+| A section that starts on the home tonic is home again | Nardis' last A, after a bridge in C, with no cadence back | C Ionian, A Aeolian (in C) | C Lydian, A Dorian (in E minor) |
 | A turnaround into the top carries its key into bar 1 | Giant Steps, `F♯7 \| BMaj7` | B Lydian | B Ionian |
 | An implied ii–V target counts when its triad is in the key | There Will Never Be Another You, `Cm7 F7♯11` | passing ii–V | V7/V in E♭ |
 | A form without a stated length rounds up to four bars | Footprints (12 bars, last chord two) | read functional | modal (F♯ø7 Locrian ♮2, as the chart has it) |
 
 After these, the hand-scaled charts agree with the rules on every row except the decisions in §10 (now applied to
 the charts) and Milestones' Aeolian bridge (kept, `# keep:`). The cookbook's 222 charts were filled from the rules
-(`--force --save`). Three rows are `@copy` repeats whose function differs from their source row's (Epistrophy,
-Nardis); the source row's comment says what the repeat would be.
+(`--force --save`). Where a `@copy` repeat's function differed from its source row's, the repeat is written out
+(Epistrophy's last section); the section-start rule settled Nardis'.
 
 Four `key:` lines from the book's index were wrong for its own lead sheets (This I Dig of You, Voyage, Snapper,
 Bernie's Tune) and are corrected, with a comment. Key scoring alone (§5.2) is weak on these tunes: it disagrees

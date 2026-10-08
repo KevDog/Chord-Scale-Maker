@@ -255,8 +255,8 @@
   "areas": [
    "D minor 1–9",
    "F major 10–11",
-   "D major 12–15",
-   "D minor 16–23",
+   "D major 12–13",
+   "D minor 15–23",
    "F major 24–25",
    "D major 26–27",
    "D minor 29–31",
@@ -282,7 +282,7 @@
    "12 Em7 → E Dorian (m4) ii of the ii–V to D",
    "12 A7 → A Mixolydian (D4) V7 of D: natural tensions",
    "13 DMaj7 → D Ionian (M3) I in D — tonic: the 4th is in the key",
-   "15 Dm → D Dorian (m8) borrowed i in D — a borrowed minor chord: Dorian, its own key",
+   "15 Dm → D Dorian (m5) i in D minor — tonic minor: Dorian by convention",
    "16 Em7b5 → E Locrian (h2) iiø7 of the ii–V to D minor: the b9 is in the key",
    "16 A7#9 → A Altered (D1+D4) V7 of D minor: the b13 is in the key, b9, #9 and #11 from the symbol",
    "17 Dm → D Dorian (m5) i in D minor — tonic minor: Dorian by convention",
@@ -2624,8 +2624,8 @@
   "key": "Eb major (key:, functional)",
   "areas": [
    "Eb major 1–15",
-   "C major 16–26",
-   "Eb major 27–32"
+   "C major 16–24",
+   "Eb major 25–32"
   ],
   "rows": [
    "1 EbMaj7 → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
@@ -2648,8 +2648,8 @@
    "22 Am7 → A Aeolian (m7) vi in C — vi: the b13 is in the key",
    "23 FMaj7 → F Lydian (M4) IV in C — IV: the #4 is the key’s 7th",
    "24 Em7 → E Dorian (m7') iii in C — iii: Dorian (its Phrygian would put a b9 over the root)",
-   "25 EbMaj7 → Eb Lydian (M4) bIII in C — a non-tonic major chord: Lydian",
-   "26 AbMaj7 → Ab Lydian (M4) bVI in C — a non-tonic major chord: Lydian",
+   "25 EbMaj7 → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "26 AbMaj7 → Ab Lydian (M4) IV in Eb — IV: the #4 is the key’s 7th",
    "27 Fm7 → F Dorian (m4) ii of the ii–V to Eb",
    "28 Bb7b9 → Bb Half-Whole Diminished (D1+D4) V7 of Eb: the b9 from the symbol",
    "29 EbMaj7 → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
@@ -5352,7 +5352,8 @@
   "key": "E minor (key:, functional)",
   "areas": [
    "E minor 1–20",
-   "C major 21–32"
+   "C major 21–24",
+   "E minor 25–32"
   ],
   "rows": [
    "1 Em → E Dorian (m5) i in E minor — tonic minor: Dorian by convention",
@@ -5379,14 +5380,14 @@
    "22 G7 → G Mixolydian (D4) V7 of C: natural tensions",
    "23 CMaj7 → C Ionian (M3) I in C — tonic: the 4th is in the key",
    "24 FMaj7#11 → F Lydian (M1) IV in C — from the symbol: #11",
-   "25 Em → E Dorian (m7') iii in C — iii: Dorian (its Phrygian would put a b9 over the root)",
-   "26 FMaj7 → F Lydian (M4) IV in C — IV: the #4 is the key’s 7th",
-   "27 B7 → B Phrygian Dominant (D5) VII7 in C, not resolving: b9 and b13 are in the key",
-   "28 CMaj7 → C Ionian (M3) I in C — tonic: the 4th is in the key",
-   "29 Am → A Aeolian (m7) vi in C — vi: the b13 is in the key",
-   "30 FMaj7 → F Lydian (M4) IV in C — IV: the #4 is the key’s 7th",
-   "31 EMaj7 → E Lydian (M4) III in C — a non-tonic major chord: Lydian",
-   "32 Em → E Dorian (m7') iii in C — iii: Dorian (its Phrygian would put a b9 over the root)"
+   "25 Em → E Dorian (m5) i in E minor — tonic minor: Dorian by convention",
+   "26 FMaj7 → F Lydian (M4) bII in E minor — a non-tonic major chord: Lydian",
+   "27 B7 → B Phrygian Dominant (D5) V7 in E minor, not resolving: b9 and b13 are in the key",
+   "28 CMaj7 → C Lydian (M4) bVI in E minor — a non-tonic major chord: Lydian",
+   "29 Am → A Dorian (m7) iv in E minor — iv: Dorian, the key’s own notes",
+   "30 FMaj7 → F Lydian (M4) bII in E minor — a non-tonic major chord: Lydian",
+   "31 EMaj7 → E Lydian (M4) I in E minor — a non-tonic major chord: Lydian",
+   "32 Em → E Dorian (m5) i in E minor — tonic minor: Dorian by convention"
   ]
  },
  "nature_boy": {
