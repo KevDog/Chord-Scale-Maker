@@ -1,5 +1,4 @@
 title: Alone Together
-subtitle: Medium, D minor, 44 bars
 composer: Arthur Schwartz
 style: Medium
 key: Dm

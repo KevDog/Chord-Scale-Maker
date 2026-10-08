@@ -1,5 +1,4 @@
 title: Ow
-subtitle: Up tempo, Bb, 32 bars
 composer: Dizzy Gillespie
 style: Medium up
 key: Bb

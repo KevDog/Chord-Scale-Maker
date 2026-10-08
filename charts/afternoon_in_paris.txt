@@ -1,5 +1,4 @@
 title: Afternoon in Paris
-subtitle: Medium, C, 32 bars
 composer: John Lewis
 style: Medium
 key: C

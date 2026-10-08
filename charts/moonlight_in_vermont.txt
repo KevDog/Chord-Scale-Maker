@@ -1,5 +1,5 @@
 title: Moonlight in Vermont
-subtitle: Ballad, Eb, 26 bars (6 6 8 6)
+subtitle: Ballad (6 6 8 6)
 composer: Karl Suessdorf
 style: Ballad
 key: Eb

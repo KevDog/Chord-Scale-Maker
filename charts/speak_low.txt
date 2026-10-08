@@ -1,5 +1,4 @@
 title: Speak Low
-subtitle: Up tempo, F, 56 bars (A A B C)
 composer: Kurt Weill
 style: Up
 key: F

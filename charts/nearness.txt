@@ -1,5 +1,5 @@
 title: Nearness
-subtitle: Bright swing, 32 bars (Bob Gillis)
+subtitle: Bright swing
 composer: Bob Gillis
 style: Medium up
 key: Bm

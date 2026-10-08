@@ -1,5 +1,5 @@
 title: Peace
-subtitle: Jazz ballad, Bb, 10 bars
+subtitle: Jazz ballad
 composer: Horace Silver
 style: Ballad
 key: Bb

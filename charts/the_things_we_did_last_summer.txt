@@ -1,5 +1,4 @@
 title: The Things We Did Last Summer
-subtitle: Medium, F, 32 bars
 composer: Jule Styne
 style: Ballad
 key: F

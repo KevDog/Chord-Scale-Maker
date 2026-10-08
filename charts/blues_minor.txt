@@ -1,5 +1,5 @@
 title: Blues Minor
-subtitle: Modal minor blues, F minor, 12 bars
+subtitle: Modal minor blues
 composer: John Coltrane
 style: Medium up
 key: Fm

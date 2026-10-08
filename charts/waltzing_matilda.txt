@@ -1,5 +1,5 @@
 title: Waltzing Matilda
-subtitle: Samba or Afro-Cuban, Eb, 32 bars
+subtitle: Samba or Afro-Cuban
 composer: Traditional (Australian)
 style: Latin
 key: Eb

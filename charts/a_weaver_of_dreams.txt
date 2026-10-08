@@ -1,5 +1,4 @@
 title: A Weaver of Dreams
-subtitle: Medium, C, 32 bars
 composer: Victor Young
 style: Medium
 key: C

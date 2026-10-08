@@ -1,5 +1,4 @@
 title: There Will Never Be Another You
-subtitle: Medium, Eb, 32 bars
 composer: Harry Warren
 style: Medium up
 key: Eb

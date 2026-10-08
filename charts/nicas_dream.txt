@@ -1,5 +1,5 @@
 title: Nica's Dream
-subtitle: Latin and swing, Bb minor, 64 bars (A A B B C)
+subtitle: Latin and swing
 composer: Horace Silver
 style: Mixed
 key: Bbm

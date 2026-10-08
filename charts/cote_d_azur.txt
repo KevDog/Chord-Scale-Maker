@@ -1,5 +1,5 @@
 title: Coté d'Azur
-subtitle: Minor blues, Bb minor, 12 bars
+subtitle: Minor blues
 composer: Clark Terry
 style: Blues
 key: Bbm

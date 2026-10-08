@@ -1,5 +1,4 @@
 title: Offshore
-subtitle: Medium, Ab, 32 bars (Booker Little)
 composer: Booker Little
 style: Medium
 key: Ab

@@ -1,5 +1,5 @@
 title: Once I Loved
-subtitle: Bossa nova, F, 44 bars (O Amor em Paz)
+subtitle: Bossa nova (O Amor em Paz)
 composer: Antonio Carlos Jobim
 style: Latin
 key: F

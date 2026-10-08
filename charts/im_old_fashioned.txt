@@ -1,5 +1,4 @@
 title: I'm Old Fashioned
-subtitle: Medium, F, 36 bars
 composer: Jerome Kern
 style: Medium
 key: F

@@ -1,5 +1,4 @@
 title: Jive at Five
-subtitle: Medium, Eb, AABA
 composer: Harry "Sweets" Edison & Count Basie
 style: Medium
 key: Eb

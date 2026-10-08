@@ -1,5 +1,5 @@
 title: All Blues
-subtitle: Blues in 6/8, G, 12 bars
+subtitle: Blues in 6/8
 composer: Miles Davis
 style: Blues
 key: G

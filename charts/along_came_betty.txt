@@ -1,5 +1,4 @@
 title: Along Came Betty
-subtitle: Medium, Ab
 composer: Benny Golson
 style: Medium
 key: Ab

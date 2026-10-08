@@ -1,5 +1,5 @@
 title: Little Boat
-subtitle: Bossa nova, Bb, 16 bars (O Barquinho)
+subtitle: Bossa nova (O Barquinho)
 composer: Roberto Menescal
 style: Latin
 key: Bb

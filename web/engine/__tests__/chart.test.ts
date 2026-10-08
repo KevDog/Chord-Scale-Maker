@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { chartMeta, expandRows, isFatal, parseChart, resolveScale, serializeChart } from '../chart'
+import { chartHeading, chartMeta, expandRows, isFatal, keyLabel, parseChart, resolveScale, serializeChart } from '../chart'
 import { LIMITS } from '../limits'
 
 const SAMPLE = `title: T
@@ -22,6 +22,16 @@ describe('chart', () => {
 
   it('defaults the title', () => {
     expect(chartMeta(parseChart('A | 1 | C').value).title).toBe('Untitled')
+  })
+
+  it('builds the heading from the tune metadata', () => {
+    const heading = (text: string) => chartHeading(parseChart(text).value)
+    const tune = 'title: T\ncomposer: C. Porter\nstyle: Latin\nkey: Bbm\nform: AABA, 32 bars\n'
+    expect(heading(tune)).toEqual({ title: 'T', subtitle: 'Latin · B♭ minor · AABA, 32 bars', composer: 'C. Porter' })
+    expect(heading(`${tune}subtitle: Bossa nova\n`).subtitle).toBe('Bossa nova · B♭ minor · AABA, 32 bars') // the subtitle says more than the style
+    expect(heading('subtitle: S\n')).toEqual({ title: 'Untitled', subtitle: 'S', composer: '' })
+    expect(heading('title: T\nkey: G modal\n').subtitle).toBe('G modal')
+    expect(['C', 'F#', 'Ebm', 'f', 'Dorian'].map(keyLabel)).toEqual(['C', 'F♯', 'E♭ minor', 'f', 'Dorian'])
   })
 
   it('expands @copy with bar offsets', () => {

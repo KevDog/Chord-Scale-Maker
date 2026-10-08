@@ -1,5 +1,4 @@
 title: Recorda-Me
-subtitle: Latin, A minor, 16 bars
 composer: Joe Henderson
 style: Latin
 key: Am

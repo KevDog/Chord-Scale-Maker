@@ -1,5 +1,5 @@
 title: Jingle Bells
-subtitle: Medium, F, 24 bars (solos on the chorus and the vamp)
+subtitle: Christmas (solos on the chorus and the vamp)
 composer: James Lord Pierpont
 style: Christmas
 key: F

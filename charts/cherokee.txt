@@ -1,5 +1,4 @@
 title: Cherokee
-subtitle: Up tempo, Bb, AABA, 64 bars
 composer: Ray Noble
 style: Up
 key: Bb

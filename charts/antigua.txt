@@ -1,5 +1,5 @@
 title: Antigua
-subtitle: Samba, F, 32 bars
+subtitle: Samba
 composer: Roland Prince
 style: Latin
 key: F

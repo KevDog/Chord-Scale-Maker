@@ -1,5 +1,4 @@
 title: My Baby Just Cares for Me
-subtitle: Medium, Eb, 32 bars
 composer: Walter Donaldson
 style: Medium
 key: Eb

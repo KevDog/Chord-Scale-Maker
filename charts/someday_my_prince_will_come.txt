@@ -1,5 +1,5 @@
 title: Someday My Prince Will Come
-subtitle: Jazz waltz, F, 32 bars
+subtitle: Jazz waltz
 composer: Frank Churchill
 style: Waltz
 key: F

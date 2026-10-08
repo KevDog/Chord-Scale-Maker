@@ -1,5 +1,4 @@
 title: Naima
-subtitle: Ballad, Ab, 20 bars
 composer: John Coltrane
 style: Ballad
 key: Ab

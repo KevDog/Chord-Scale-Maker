@@ -2,6 +2,7 @@ import {
   type ChartDoc,
   type Diagnostic,
   type Parsed,
+  chartHeading,
   chartMeta,
   expandRows,
   isFatal,
@@ -59,6 +60,8 @@ export function useChartEditor(initialText: string) {
     doc,
     rows: computed(() => expanded.value.value),
     meta: computed(() => chartMeta(doc.value)),
+    /** what the sheets show: title, a line from the subtitle or style, key and form, and the composer */
+    heading: computed(() => chartHeading(doc.value)),
     diagnostics,
     /** over a hard input limit: don't render, and don't let the grid write back over the text */
     fatal: computed(() => isFatal(diagnostics.value)),

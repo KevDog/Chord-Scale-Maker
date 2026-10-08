@@ -2,7 +2,7 @@
   <div class="space-y-10">
     <div class="min-w-0 print:hidden">
       <UiHeading>{{ editor.meta.value.title || 'Untitled' }}</UiHeading>
-      <UiText v-if="editor.meta.value.subtitle" class="mt-1">{{ editor.meta.value.subtitle }}</UiText>
+      <UiText v-if="byline" class="mt-1">{{ byline }}</UiText>
       <!-- My charts: where this chart is saved, and what you can do with it -->
       <div v-if="saved || shared" class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
         <UiText v-if="saved" role="status" :class="['text-sm/6!', saved.status.value.state === 'failed' && 'text-red-700! dark:text-red-400!']">{{ saveText }}</UiText>
@@ -64,7 +64,7 @@
           <UiSubheading id="text-heading">Text</UiSubheading>
           <HelpTip label="How the text editor works">
             <span class="block">One line per chord: <code class="font-mono text-xs whitespace-nowrap">section | bar | chord | scale</code>, in concert pitch. Leave the scale out to use the chord's default.</span>
-            <span class="mt-2 block"><code class="font-mono text-xs">title:</code> and <code class="font-mono text-xs">subtitle:</code> set the heading, lines starting with <code class="font-mono text-xs">#</code> are comments, and <code class="font-mono text-xs">@copy A B 8</code> repeats section A as B, 8 bars later.</span>
+            <span class="mt-2 block"><code class="font-mono text-xs">title:</code>, <code class="font-mono text-xs">subtitle:</code>, <code class="font-mono text-xs">composer:</code>, <code class="font-mono text-xs">key:</code> and <code class="font-mono text-xs">form:</code> set the heading, lines starting with <code class="font-mono text-xs">#</code> are comments, and <code class="font-mono text-xs">@copy A B 8</code> repeats section A as B, 8 bars later.</span>
             <span class="mt-2 block">The text and the grid stay in sync: edit either one. Problems are listed under the text.</span>
           </HelpTip>
         </div>
@@ -117,7 +117,8 @@
           v-else-if="sheet === 'guideTones'"
           :rows="editor.rows.value"
           :title="editor.meta.value.title"
-          :subtitle="editor.meta.value.subtitle"
+          :subtitle="editor.heading.value.subtitle"
+          :composer="editor.heading.value.composer"
           :part="part"
           :instrument-label="instrumentLabel(prefs.instrument.value)"
           :intervals="prefs.intervals.value"
@@ -126,7 +127,8 @@
           v-else
           :rows="editor.rows.value"
           :title="editor.meta.value.title"
-          :subtitle="editor.meta.value.subtitle"
+          :subtitle="editor.heading.value.subtitle"
+          :composer="editor.heading.value.composer"
           :part="part"
           :instrument-label="instrumentLabel(prefs.instrument.value)"
           :start="prefs.start.value"
@@ -176,6 +178,8 @@ const emit = defineEmits<{ created: [id: string]; reload: [] }>()
 const PER_PAGE = 12
 
 const editor = useChartEditor(props.initialText)
+/** under the heading: "Ballad · E♭ · AABA, 32 bars — Johnny Green" */
+const byline = computed(() => [editor.heading.value.subtitle, editor.heading.value.composer].filter(Boolean).join(' — '))
 const prefs = props.shared ? linkPreferences(props.shared) : usePreferences()
 const part = computed(() => partFor(prefs.instrument.value))
 /** the Text pane: hidden by default, and always shown for a chart over a size limit (only the text can fix it) */

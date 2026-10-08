@@ -1,5 +1,4 @@
 title: Bags' Groove
-subtitle: Blues, F, 12 bars
 composer: Milt Jackson
 style: Blues
 key: F

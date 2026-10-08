@@ -1,5 +1,5 @@
 title: My Shining Hour
-subtitle: Samba, Eb, 32 bars
+subtitle: Samba
 composer: Harold Arlen
 style: Latin
 key: Eb

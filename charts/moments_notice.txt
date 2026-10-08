@@ -1,5 +1,4 @@
 title: Moment's Notice
-subtitle: Up tempo, Eb, 36 bars
 composer: John Coltrane
 style: Medium up
 key: Eb

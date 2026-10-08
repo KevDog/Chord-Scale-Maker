@@ -1,5 +1,4 @@
 title: Beatrice
-subtitle: Medium, F, 16 bars
 composer: Sam Rivers
 style: Medium
 key: Fm

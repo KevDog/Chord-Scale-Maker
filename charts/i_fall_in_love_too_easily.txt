@@ -1,5 +1,4 @@
 title: I Fall in Love Too Easily
-subtitle: Ballad, Eb, 16 bars
 composer: Jule Styne
 style: Ballad
 key: Eb

@@ -1,5 +1,5 @@
 title: Waltz for Ellington
-subtitle: Jazz waltz, 58 bars (Jeff Jenkins)
+subtitle: Jazz waltz
 composer: Jeff Jenkins
 style: Waltz
 key: Bb

@@ -1,5 +1,5 @@
 title: My Romance
-subtitle: Ballad or medium swing, Bb, 32 bars
+subtitle: Ballad or medium swing
 composer: Richard Rodgers
 style: Medium
 key: Bb

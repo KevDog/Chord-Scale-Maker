@@ -1,5 +1,4 @@
 title: Long Ago and Far Away
-subtitle: Medium, F, 32 bars
 composer: Jerome Kern
 style: Medium
 key: F

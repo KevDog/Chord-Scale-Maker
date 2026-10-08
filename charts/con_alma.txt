@@ -1,5 +1,5 @@
 title: Con Alma
-subtitle: 12/8, E and C, AABA
+subtitle: 12/8, E and C
 composer: Dizzy Gillespie
 style: Mixed
 key: D

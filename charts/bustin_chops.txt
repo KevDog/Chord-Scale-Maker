@@ -1,5 +1,5 @@
 title: Bustin' Chops
-subtitle: Fast swing, G minor, the solo changes
+subtitle: Fast swing, the solo changes
 composer: Stefan Karlsson
 style: Up
 key: Gm

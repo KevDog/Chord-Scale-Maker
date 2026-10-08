@@ -1,5 +1,4 @@
 title: In and Out
-subtitle: Up tempo, F, 32 bars
 composer: Bob Montgomery
 style: Up
 key: F

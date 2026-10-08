@@ -1,5 +1,5 @@
 title: Nature Boy
-subtitle: Ballad in 3, D minor, 32 bars
+subtitle: Ballad in 3
 composer: Eden Ahbez
 style: Ballad
 key: Dm

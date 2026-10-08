@@ -1,5 +1,5 @@
 title: One Note Samba
-subtitle: Samba, Bb, 40 bars (Samba de Uma Nota Só)
+subtitle: Samba (Samba de Uma Nota Só)
 composer: Antonio Carlos Jobim
 style: Latin
 key: Bb

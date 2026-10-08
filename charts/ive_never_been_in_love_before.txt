@@ -1,5 +1,4 @@
 title: I've Never Been in Love Before
-subtitle: Medium, Bb, AABA
 composer: Frank Loesser
 style: Medium
 key: Bb

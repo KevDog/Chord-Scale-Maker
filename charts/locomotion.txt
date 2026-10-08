@@ -1,5 +1,5 @@
 title: Locomotion
-subtitle: Medium up, Bb, 44 bars (12 12 8 12)
+subtitle: Blues (12 12 8 12)
 composer: John Coltrane
 style: Blues
 key: Bb

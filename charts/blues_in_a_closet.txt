@@ -1,5 +1,4 @@
 title: Blues in a Closet
-subtitle: Blues, F, 12 bars
 composer: Oscar Pettiford
 style: Blues
 key: F

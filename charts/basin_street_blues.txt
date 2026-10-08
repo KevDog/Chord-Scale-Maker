@@ -1,5 +1,5 @@
 title: Basin Street Blues
-subtitle: Slow swing, Bb, the solo form (B and C)
+subtitle: Slow swing, the solo form (B and C)
 composer: Spencer Williams
 style: Medium
 key: Bb

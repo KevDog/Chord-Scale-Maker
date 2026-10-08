@@ -1,5 +1,4 @@
 title: Pent Up House
-subtitle: Medium up, G, 16 bars
 composer: Sonny Rollins
 style: Medium up
 key: G

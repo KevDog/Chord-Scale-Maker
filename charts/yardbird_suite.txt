@@ -1,5 +1,4 @@
 title: Yardbird Suite
-subtitle: Medium, C, 32 bars
 composer: Charlie Parker
 style: Medium
 key: C

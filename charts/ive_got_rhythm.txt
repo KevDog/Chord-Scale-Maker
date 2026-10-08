@@ -1,5 +1,5 @@
 title: I've Got Rhythm
-subtitle: Rhythm changes, Bb, AABA
+subtitle: Rhythm changes
 composer: George Gershwin
 style: Up
 key: Bb

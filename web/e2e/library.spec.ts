@@ -12,6 +12,17 @@ test('searches the library and opens a chart', async ({ page }) => {
   await expect(page.getByRole('separator', { name: /Printed page \d starts here/ })).toHaveCount(3) // 4 printed pages
 })
 
+test('finds a tune by its composer, and the sheet carries the composer and the tune line', async ({ page }) => {
+  await page.goto('/')
+  await page.getByPlaceholder('Search by title or composer').fill('kaper')
+  await expect(page.getByRole('link', { name: 'Invitation' })).toBeVisible()
+  await page.getByRole('link', { name: 'On Green Dolphin Street' }).click()
+  await expect(page.getByText('Latin / swing · C · ABCD, 32 bars — Bronisław Kaper')).toBeVisible() // under the editor heading
+  const header = page.locator('section header').first()
+  await expect(header).toContainText('Latin / swing · C · ABCD, 32 bars')
+  await expect(header.getByText('Bronisław Kaper')).toBeVisible()
+})
+
 test('every page carries a hashed Content-Security-Policy', async ({ page }) => {
   for (const path of ['/', '/editor', '/help', '/about', '/contact', '/privacy']) {
     await page.goto(path)

@@ -1,5 +1,4 @@
 title: Giant Steps
-subtitle: Medium up, Eb, 16 bars
 composer: John Coltrane
 style: Medium up
 key: Eb

@@ -1,5 +1,4 @@
 title: Stardust
-subtitle: Ballad, Db, 32 bars
 composer: Hoagy Carmichael
 style: Ballad
 key: Db

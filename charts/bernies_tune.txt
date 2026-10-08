@@ -1,5 +1,4 @@
 title: Bernie's Tune
-subtitle: Medium up, D minor, AABA
 composer: Bernie Miller
 style: Medium up
 key: Bb

@@ -1,5 +1,4 @@
 title: On a Misty Night
-subtitle: Medium, Eb, 32 bars
 composer: Tadd Dameron
 style: Medium
 key: Eb

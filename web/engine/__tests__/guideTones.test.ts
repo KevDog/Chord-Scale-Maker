@@ -7,6 +7,7 @@ import { guideToneTimeline } from '../guideToneTimeline'
 import { CONCERT, type Part } from '../part'
 import { rootName } from '../pitch'
 import { toVexKey } from '../sheet'
+import { isSyncCopy } from '../util'
 
 const row = (bar: string, chord: string, scale = ''): Row => ({ section: 'A', bar, chord, scale })
 const rowsOf = (text: string): readonly Row[] => expandRows(parseChart(text).value).value
@@ -133,7 +134,7 @@ describe('guide tone lines', () => {
   // (whose "7th" is the root), where a 5th is the price of staying in the range
   const STEPWISE = ['autumn_leaves', 'blue_bossa', 'stella_by_starlight', 'all_the_things_you_are', 'lady_bird', 'f_blues', 'bb_jazz_blues', 'rhythm_changes']
   it('never leaps more than a 5th in any library chart, nor a 4th in the first ones, in either line', () => {
-    for (const f of readdirSync('../charts')) {
+    for (const f of readdirSync('../charts').filter((name) => !isSyncCopy(name))) {
       const sheet = buildGuideTones(rowsOf(readFileSync(`../charts/${f}`, 'utf8')), CONCERT)
       for (const i of [0, 1] as const) {
         const notes = sheet.systems.flatMap((s) => s.bars).flatMap((b) => b.lines[i])

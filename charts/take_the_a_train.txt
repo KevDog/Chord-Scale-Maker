@@ -1,6 +1,5 @@
 title: Take the "A" Train
-subtitle: Medium, C, 32 bars
-composer: Duke Ellington
+composer: Billy Strayhorn
 style: Latin
 key: C
 form: AABA, 32 bars

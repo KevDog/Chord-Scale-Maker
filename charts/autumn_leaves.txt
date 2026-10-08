@@ -1,6 +1,6 @@
 title: Autumn Leaves
 subtitle: Full Form, Alternate Changes
-composer: Johnny Mercer
+composer: Joseph Kosma
 style: Medium
 key: Fm
 form: AAB

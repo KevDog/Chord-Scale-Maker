@@ -1,5 +1,5 @@
 title: Tee Pee Time
-subtitle: Medium, Bb, 44 bars (12 12 8 12)
+subtitle: Blues (12 12 8 12)
 composer: Clark Terry
 style: Blues
 key: Bb

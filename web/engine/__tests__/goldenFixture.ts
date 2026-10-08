@@ -15,6 +15,7 @@ import {
   chordTokens,
   defaultScale,
   expandRows,
+  isSyncCopy,
   lilyNote,
   type Part,
   parseChart,
@@ -117,7 +118,7 @@ export const GOLDEN_FILE = repo('fixtures/golden.json')
 
 function libraryCharts(): Record<string, string> {
   const files = readdirSync(repo('charts'))
-    .filter((f) => f.endsWith('.txt'))
+    .filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
     .sort()
   return Object.fromEntries(files.map((f) => [f.slice(0, -4), readFileSync(repo(`charts/${f}`), 'utf8')]))
 }

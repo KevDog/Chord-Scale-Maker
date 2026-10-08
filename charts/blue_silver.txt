@@ -1,5 +1,4 @@
 title: Blue Silver
-subtitle: Medium up, Bb, 20 bars
 composer: Blue Mitchell
 style: Medium up
 key: Bb

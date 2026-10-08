@@ -1,5 +1,4 @@
 title: Minority
-subtitle: Medium up, F minor, 16 bars
 composer: Gigi Gryce
 style: Medium up
 key: Fm

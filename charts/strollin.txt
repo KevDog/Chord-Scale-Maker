@@ -1,5 +1,4 @@
 title: Strollin'
-subtitle: Medium, Db, 32 bars
 composer: Horace Silver
 style: Medium
 key: Db

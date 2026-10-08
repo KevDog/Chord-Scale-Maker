@@ -1,5 +1,4 @@
 title: Whisper Not
-subtitle: Medium, C minor, 32 bars
 composer: Benny Golson
 style: Medium
 key: Cm

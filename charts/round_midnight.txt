@@ -1,5 +1,4 @@
 title: 'Round Midnight
-subtitle: Ballad, Eb minor, 32 bars (A A B C)
 composer: Thelonious Monk & Cootie Williams
 style: Ballad
 key: Ebm

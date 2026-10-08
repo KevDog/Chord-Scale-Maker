@@ -1,5 +1,5 @@
 title: One Foot in the Gutter
-subtitle: Medium shuffle, F, 32 bars
+subtitle: Medium shuffle
 composer: Clark Terry
 style: Medium
 key: F

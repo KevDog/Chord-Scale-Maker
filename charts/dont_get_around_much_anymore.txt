@@ -1,5 +1,4 @@
 title: Don't Get Around Much Anymore
-subtitle: Medium, C, AABA
 composer: Duke Ellington
 style: Medium
 key: C

@@ -1,6 +1,6 @@
 title: Things Ain't What They Used to Be
-subtitle: Medium blues, Db, 12 bars
-composer: Duke Ellington
+subtitle: Medium blues
+composer: Mercer Ellington
 style: Blues
 key: Db
 form: A, 12 bars

@@ -1,5 +1,4 @@
 title: Jeannine
-subtitle: Medium up, Ab, AABA, 56 bars
 composer: Duke Pearson
 style: Medium up
 key: Ab

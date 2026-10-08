@@ -1,5 +1,5 @@
 title: Cottontail
-subtitle: Rhythm changes, Bb, AABA
+subtitle: Rhythm changes
 composer: Duke Ellington
 style: Medium up
 key: Bb

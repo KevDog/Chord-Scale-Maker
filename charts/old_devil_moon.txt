@@ -1,5 +1,4 @@
 title: Old Devil Moon
-subtitle: Medium, F, 32 bars
 composer: Burton Lane
 style: Medium
 key: F

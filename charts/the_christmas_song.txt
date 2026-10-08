@@ -1,5 +1,4 @@
 title: The Christmas Song
-subtitle: Ballad, Eb, 32 bars
 composer: Mel Tormé
 style: Christmas
 key: Eb

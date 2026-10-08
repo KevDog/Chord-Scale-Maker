@@ -1,5 +1,5 @@
 title: Sandu
-subtitle: Blues shuffle, Eb, 12 bars
+subtitle: Blues shuffle
 composer: Clifford Brown
 style: Blues
 key: Eb

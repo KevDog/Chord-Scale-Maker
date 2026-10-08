@@ -1,5 +1,5 @@
 title: Mr. P.C.
-subtitle: Up tempo minor blues, C minor, 12 bars
+subtitle: Up tempo minor blues
 composer: John Coltrane
 style: Blues
 key: Cm

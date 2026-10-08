@@ -1,5 +1,5 @@
 title: Shifting Down
-subtitle: Medium up blues, Bb, 12 bars
+subtitle: Medium up blues
 composer: Kenny Dorham
 style: Blues
 key: Bb

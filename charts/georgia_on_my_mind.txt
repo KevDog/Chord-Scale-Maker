@@ -1,5 +1,4 @@
 title: Georgia on My Mind
-subtitle: Ballad, F, AABA
 composer: Hoagy Carmichael
 style: Ballad
 key: F

@@ -98,10 +98,30 @@ export function serializeChart(doc: ChartDoc): string {
   return out.join('\n') + '\n'
 }
 
+/** a meta value as written (the last line wins), or the fallback */
+const metaValue = (doc: ChartDoc, key: MetaKey, fallback = ''): string =>
+  doc.lines.reduce((v, l) => (l.kind === 'meta' && l.key === key ? l.value : v), fallback)
+
+/** the title and subtitle as written (what the editor's fields edit) */
 export function chartMeta(doc: ChartDoc): Readonly<{ title: string; subtitle: string }> {
-  const meta = (key: MetaKey, fallback: string): string =>
-    doc.lines.reduce((v, l) => (l.kind === 'meta' && l.key === key ? l.value : v), fallback)
-  return { title: meta('title', 'Untitled'), subtitle: meta('subtitle', '') }
+  return { title: metaValue(doc, 'title', 'Untitled'), subtitle: metaValue(doc, 'subtitle') }
+}
+
+/** "Eb" -> "E♭", "F#m" -> "F♯ minor"; anything else as written */
+export function keyLabel(key: string): string {
+  const m = /^([A-G])([b#]?)(m?)$/.exec(key.trim())
+  if (!m) return key.trim()
+  const [, letter = '', acc, minor] = m
+  return `${letter}${acc === 'b' ? '♭' : acc === '#' ? '♯' : ''}${minor ? ' minor' : ''}`
+}
+
+/**
+ * what a sheet's heading shows: the title, a line under it and the composer. The line is the subtitle (or, without
+ * one, the style), then the key and the form: "Bossa nova · B♭ · AB, 16 bars"
+ */
+export function chartHeading(doc: ChartDoc): Readonly<{ title: string; subtitle: string; composer: string }> {
+  const line = [metaValue(doc, 'subtitle') || metaValue(doc, 'style'), keyLabel(metaValue(doc, 'key')), metaValue(doc, 'form')]
+  return { title: metaValue(doc, 'title', 'Untitled'), subtitle: line.filter(Boolean).join(' · '), composer: metaValue(doc, 'composer') }
 }
 
 /** chart rows in order with @copy applied (a copy repeats the rows seen so far); at most maxExpandedRows */

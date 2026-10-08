@@ -1,5 +1,5 @@
 title: Well You Needn't
-subtitle: Medium up, F, 32 bars (Monk's bridge)
+subtitle: Medium (Monk's bridge)
 composer: Thelonious Monk
 style: Medium
 key: F

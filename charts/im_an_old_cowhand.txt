@@ -1,5 +1,4 @@
 title: I'm an Old Cowhand
-subtitle: Medium, Eb, ABAB
 composer: Johnny Mercer
 style: Medium
 key: Eb

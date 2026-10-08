@@ -1,5 +1,5 @@
 title: Birk's Works
-subtitle: Minor blues, F minor, 12 bars
+subtitle: Minor blues
 composer: Dizzy Gillespie
 style: Blues
 key: Fm

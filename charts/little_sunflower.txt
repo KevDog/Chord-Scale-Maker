@@ -1,5 +1,5 @@
 title: Little Sunflower
-subtitle: Latin, D minor, AABBA
+subtitle: Latin
 composer: Freddie Hubbard
 style: Even 8ths
 key: Dm

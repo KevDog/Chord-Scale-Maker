@@ -1,5 +1,5 @@
 title: Miss Premise
-subtitle: Jazz waltz, 32 bars (Bob Gillis)
+subtitle: Jazz waltz
 composer: Bob Gillis
 style: Waltz
 key: Eb

@@ -1,5 +1,4 @@
 title: Perdido
-subtitle: Medium, Bb, 32 bars
 composer: Juan Tizol
 style: Up
 key: Bb

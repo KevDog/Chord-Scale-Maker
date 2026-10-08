@@ -1,5 +1,5 @@
 title: Tenor Madness
-subtitle: Medium up blues, Bb, 12 bars
+subtitle: Medium up blues
 composer: Sonny Rollins
 style: Blues
 key: Bb

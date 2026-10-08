@@ -1,5 +1,4 @@
 title: Nefertiti
-subtitle: Slow, 16 bars
 composer: Wayne Shorter
 style: Medium
 key: C

@@ -1,5 +1,4 @@
 title: Blue Monk
-subtitle: Blues, Bb, 12 bars
 composer: Thelonious Monk
 style: Blues
 key: Bb

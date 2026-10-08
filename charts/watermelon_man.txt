@@ -1,5 +1,5 @@
 title: Watermelon Man
-subtitle: Latin rock, F, 16 bars
+subtitle: Latin rock
 composer: Herbie Hancock
 style: Even 8ths
 key: F

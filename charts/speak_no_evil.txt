@@ -1,5 +1,5 @@
 title: Speak No Evil
-subtitle: Medium, C minor, 50 bars (14 14 8 14)
+subtitle: Medium (14 14 8 14)
 composer: Wayne Shorter
 style: Medium
 key: Cm

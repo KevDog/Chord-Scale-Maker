@@ -14,3 +14,9 @@ export function chunk<T>(xs: readonly T[], n: number): T[][] {
   const size = Math.max(1, Math.floor(n) || 1)
   return Array.from({ length: Math.ceil(xs.length / size) }, (_, i) => xs.slice(i * size, i * size + size))
 }
+
+/**
+ * a copy a sync tool (iCloud, Finder) makes beside a changed file: "giant_steps 2.txt". Git ignores them
+ * (.gitignore), so does Nuxt (nuxt.config.ts); the chart library and its tests skip them too
+ */
+export const isSyncCopy = (path: string): boolean => / \d+\.[^./]+$/.test(path)

@@ -1,5 +1,5 @@
 title: You'll Never Believe…
-subtitle: Medium up swing, Eb, 43 bars (Stefan Karlsson)
+subtitle: Medium up swing
 composer: Stefan Karlsson
 style: Medium up
 key: Eb

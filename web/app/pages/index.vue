@@ -21,7 +21,7 @@
     <div class="mt-8 max-w-md">
       <UiInputGroup>
         <MagnifyingGlassIcon data-slot="icon" />
-        <UiInput v-model="query" type="search" placeholder="Search by title" aria-label="Search by title" />
+        <UiInput v-model="query" type="search" placeholder="Search by title or composer" aria-label="Search by title or composer" />
       </UiInputGroup>
     </div>
 
@@ -32,6 +32,7 @@
       <UiTableHead>
         <UiTableRow>
           <UiTableHeader>Title</UiTableHeader>
+          <UiTableHeader>Composer</UiTableHeader>
           <UiTableHeader>Details</UiTableHeader>
         </UiTableRow>
       </UiTableHead>
@@ -40,6 +41,7 @@
           <UiTableCell class="font-medium">
             <UiLink :href="`/editor?chart=${chart.slug}`" class="text-note-800 hover:underline dark:text-note-300">{{ chart.title }}</UiLink>
           </UiTableCell>
+          <UiTableCell class="text-zinc-500 dark:text-zinc-400">{{ chart.composer }}</UiTableCell>
           <UiTableCell class="text-zinc-500 dark:text-zinc-400">{{ chart.subtitle }}</UiTableCell>
         </UiTableRow>
       </UiTableBody>
@@ -48,7 +50,7 @@
     <div v-else class="mt-12 text-center">
       <MusicalNoteIcon class="mx-auto size-12 text-zinc-400 dark:text-zinc-500" aria-hidden="true" />
       <UiSubheading class="mt-2" :level="2">No charts match "{{ query }}"</UiSubheading>
-      <UiText class="mt-1">Try another title, or {{ myCharts ? 'start a new chart' : 'request one' }}.</UiText>
+      <UiText class="mt-1">Try another title or composer, or {{ myCharts ? 'start a new chart' : 'request one' }}.</UiText>
       <div v-if="myCharts" class="mt-6">
         <UiButton v-if="myCharts" color="note" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
       </div>

@@ -10,9 +10,15 @@ describe('library', () => {
     ])
   })
 
-  it('searches titles ignoring case and accents', () => {
-    const lib = toLibrary({ 'a.txt': 'title: Álpha', 'b.txt': 'title: Beta' })
+  it('shows the heading line and the composer', () => {
+    const [chart] = toLibrary({ 'a.txt': 'title: A\ncomposer: Bronisław Kaper\nstyle: Ballad\nkey: Ebm\nform: ABAC' })
+    expect([chart?.subtitle, chart?.composer]).toEqual(['Ballad · E♭ minor · ABAC', 'Bronisław Kaper'])
+  })
+
+  it('searches titles and composers ignoring case and accents', () => {
+    const lib = toLibrary({ 'a.txt': 'title: Álpha\ncomposer: Bronisław Kaper', 'b.txt': 'title: Beta' })
     expect(searchLibrary(lib, 'ALP').map((c) => c.slug)).toEqual(['a'])
+    expect(searchLibrary(lib, 'kaper').map((c) => c.slug)).toEqual(['a'])
     expect(searchLibrary(lib, '  ').map((c) => c.slug)).toEqual(['a', 'b'])
     expect(searchLibrary(lib, 'zzz')).toEqual([])
   })

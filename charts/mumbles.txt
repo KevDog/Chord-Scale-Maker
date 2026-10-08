@@ -1,5 +1,5 @@
 title: Mumbles
-subtitle: Medium blues, Eb, 12 bars
+subtitle: Medium blues
 composer: Clark Terry
 style: Blues
 key: Eb

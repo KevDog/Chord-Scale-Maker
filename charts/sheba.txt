@@ -1,5 +1,4 @@
 title: Sheba
-subtitle: Ballad, Bb, 32 bars (Clark Terry)
 composer: Clark Terry
 style: Ballad
 key: Bb

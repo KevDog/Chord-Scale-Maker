@@ -11,7 +11,7 @@ library is built into the site at build time from `charts/*.txt`. The only serve
 `/api/contact` (the contact form). Unknown URLs are also rendered there, as the 404 page. There is no database.
 
 ```text
-charts/*.txt ───────┐                          ┌─> Library page (title search)
+charts/*.txt ───────┐                          ┌─> Library page (title and composer search)
 chord_scales.json ──┼─> build (Vite raw import) ┤
                     │                          └─> Editor: text ⇄ grid ─> engine ─> VexFlow preview ─> browser print
 engine ──> fixtures/golden.json (frozen answers, `make golden`) ──> vitest golden test
@@ -49,7 +49,7 @@ web/                      # Nuxt app (Vercel root directory)
     index.ts
     __tests__/            # vitest, incl. the golden fixture
   app/
-    pages/index.vue       # library + title search
+    pages/index.vue       # library + title/composer search
     pages/editor.vue      # ?chart=<slug>; with myCharts also ?mine=<id>, ?new=1 and share links (#s=…)
     pages/help.vue        # how it all works, in the owner's voice: sheets, controls, practice, editing, printing
     pages/about.vue, contact.vue, privacy.vue  # About (Jazz Lab thanks, the video, credits), the form, privacy
@@ -355,8 +355,13 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 ## 7. Library
 
 - **Loading:** `import.meta.glob('../../../charts/*.txt', { query: '?raw', eager: true })` in
-  `app/utils/library.ts` gives `{ slug, title, subtitle, text }[]` at build time. The same parser runs, and a
-  test fails the build if any library chart has errors.
+  `app/utils/library.ts` gives `{ slug, title, subtitle, composer, text }[]` at build time, skipping sync-tool
+  copies (`giant_steps 2.txt`, `isSyncCopy`). The same parser runs, and a test fails the build if any library
+  chart has errors. Search matches the title or the composer.
+- **Heading:** `chartHeading` (engine/chart.ts) gives what the library, the editor and every sheet show: the title,
+  a line built from the subtitle (or, without one, `style:`), `key:` (`E♭ minor`) and `form:`, and the composer
+  (right-aligned under the heading on a sheet's first page, as on a lead sheet). `chartMeta` stays the title and
+  subtitle as written, which the chart grid edits.
 - **Contents:** 241 charts.
   - Autumn Leaves, Blue Bossa, Stella by Starlight, All the Things You Are, Lady Bird.
   - F and B♭ blues, jazz blues and Bird blues.

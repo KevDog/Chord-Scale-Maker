@@ -1,5 +1,5 @@
 title: Song for My Father
-subtitle: Latin rock, F minor, 24 bars (A A B)
+subtitle: Latin rock
 composer: Horace Silver
 style: Even 8ths
 key: Fm

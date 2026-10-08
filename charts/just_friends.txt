@@ -1,5 +1,4 @@
 title: Just Friends
-subtitle: Up tempo, F, 32 bars
 composer: John Klenner & Sam Lewis
 style: Up
 key: F

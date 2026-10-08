@@ -1,6 +1,6 @@
 title: Anthropology
-subtitle: Rhythm changes, Bb, AABA
-composer: Dizzy Gillespie
+subtitle: Rhythm changes
+composer: Charlie Parker & Dizzy Gillespie
 style: Medium up
 key: Bb
 form: AABA

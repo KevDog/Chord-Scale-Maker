@@ -1,5 +1,5 @@
 title: Dearly Beloved
-subtitle: Latin and swing, C, 32 bars
+subtitle: Latin and swing
 composer: Jerome Kern
 style: Mixed
 key: C

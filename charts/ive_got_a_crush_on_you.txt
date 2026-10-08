@@ -1,5 +1,4 @@
 title: I've Got a Crush on You
-subtitle: Medium, Bb, 18 bars
 composer: George Gershwin
 style: Medium
 key: Bb

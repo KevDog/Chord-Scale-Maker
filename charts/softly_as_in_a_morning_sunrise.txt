@@ -1,5 +1,4 @@
 title: Softly, as in a Morning Sunrise
-subtitle: Medium, C minor, 32 bars
 composer: Sigmund Romberg
 style: Up
 key: Cm

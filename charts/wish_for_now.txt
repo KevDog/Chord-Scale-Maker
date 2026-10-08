@@ -1,5 +1,5 @@
 title: Wish for Now
-subtitle: Loose bossa, 30 bars (Bob Gillis)
+subtitle: Loose bossa
 composer: Bob Gillis
 style: Latin
 key: Am

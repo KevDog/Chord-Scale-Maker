@@ -1,5 +1,5 @@
 title: You and I and George
-subtitle: Medium, C, 18 bars (8 + 10)
+subtitle: Ballad (8 + 10)
 composer: Matt Dennis
 style: Ballad
 key: C

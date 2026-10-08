@@ -1,5 +1,4 @@
 title: Killer Joe
-subtitle: Medium, C, AABA
 composer: Benny Golson
 style: Medium
 key: C
