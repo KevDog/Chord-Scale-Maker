@@ -52,8 +52,11 @@ Chord symbols accepted: `Cm7`, `C-7`, `Cmi7`, `Bbm7`, `Am7b5`, `D7#5`, `G7#9b13`
 `EbMaj7`, `C9`, `D7/F#`, `Cm6/Eb`. Minor chords are printed with an en dash (`C–7`).
 
 Scales are written as `<root> <name>`, for example `Bb Dorian`, `D Half-Whole`,
-`G Altered`. Run `python3 jazz_scales.py --list-scales` for the full list (23
+`G Altered`. Run `python3 jazz_scales.py --list-scales` for the full list (26
 scales plus aliases).
+
+A slash chord can take its scales from another chord on its bass: `DbMaj7/C` is a sus♭9 chord on C, so it
+defaults to `C Phrygian` (rules in `chord_scales.json` under `slash_chords`). The symbol prints as written.
 
 ## Output
 

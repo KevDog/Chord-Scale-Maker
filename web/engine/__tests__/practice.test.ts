@@ -70,6 +70,7 @@ describe('practice selection', () => {
     ])
     expect(picked(staves(rows, 'root', { preset: 'guideTones' }))).toEqual([['B', 'F'], ['C', 'F'], ['E', 'A'], ['D', 'A']])
     expect(picked(staves([row('G7alt')], 'root', { preset: 'tensions' }))).toEqual([['Ab', 'Bb', 'C#', 'Eb']])
+    expect(picked(staves([row('C7sus4b9')], 'root', { preset: 'chordTones' }))).toEqual([['C', 'Db', 'F', 'G', 'Bb']]) // sus b9
     expect(picked(staves([row('Cm7#5#9x', 'C Dorian')], 'root', { preset: 'chordTones' }))).toEqual([[]]) // unknown quality
     expect(picked(staves([row('F7')], 'from', { preset: 'all' }))[0]).toHaveLength(7)
   })

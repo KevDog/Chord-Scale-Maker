@@ -19,6 +19,7 @@ describe('interval labels', () => {
 
   it('uses 4 on sus chords, 6 on sixth chords, and plain names when the quality is unknown', () => {
     expect(intervalLabel(parseRoot('G'), parseRoot('C'), '7sus4')).toBe('4')
+    expect(intervalLabel(parseRoot('G'), parseRoot('C'), '7sus4b9')).toBe('4')
     expect(intervalLabel(parseRoot('C'), parseRoot('A'), '6')).toBe('6')
     expect(intervalLabel(parseRoot('C'), parseRoot('Eb'), null)).toBe('b3')
     expect(intervalLabel(parseRoot('C'), parseRoot('Ab'), 'dim7')).toBe('b13')

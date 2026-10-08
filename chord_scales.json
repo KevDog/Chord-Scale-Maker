@@ -1,5 +1,5 @@
 {
-  "$schema_note": "Chord-scale options keyed by chord quality. Each option's root is an interval above the chord root ('1' = same root). Scale names match jazz_scales.py (see --list-scales). The first option with default=true is used when a chart row omits the scale. outside=true marks a deliberate outside sound (tension to resolve); the editor lists those separately.",
+  "$schema_note": "Chord-scale options keyed by chord quality. Each option's root is an interval above the chord root ('1' = same root). Scale names match jazz_scales.py (see --list-scales). The first option with default=true is used when a chart row omits the scale. outside=true marks a deliberate outside sound (tension to resolve); the editor lists those separately. slash_chords: a chord of `quality` whose bass is the interval `bass` above its root takes its scale options from quality `as` on the bass note (the chord symbol itself is unchanged).",
   "quality_aliases": {
     "maj": ["", "M", "ma", "major"],
     "m": ["-", "mi", "min"],
@@ -9,7 +9,8 @@
     "m6": ["-6", "mi6", "min6", "m6/9"],
     "mMaj7": ["-Maj7", "mM7", "-Δ7", "miMa7", "minMaj7"],
     "7": ["9", "13", "7(13)", "9(13)"],
-    "7sus4": ["sus4", "7sus", "9sus4", "9sus", "11"],
+    "7sus4": ["sus", "sus4", "7sus", "9sus4", "9sus", "11"],
+    "7sus4b9": ["7susb9", "susb9", "sus4b9", "7sus4(b9)", "7sus(b9)", "sus(b9)", "9sus4b9", "phryg"],
     "7b9": ["7(b9)", "7b9b13", "7(b9,b13)", "7b13", "7(b13)", "13b9"],
     "7#11": ["7(#11)", "9#11", "7b5", "7(b5)", "13#11"],
     "7alt": ["alt", "7#9", "7(#9)", "7#5", "7(#5)", "7+", "+7", "7#9b13", "7#5#9", "7b9#9", "7(#9,b13)"],
@@ -74,17 +75,25 @@
       { "root": "1",  "scale": "Major Pentatonic" },
       { "root": "5",  "scale": "Minor Pentatonic",  "note": "9 and 13 colour" },
       { "root": "1",  "scale": "Whole Tone",        "note": "for 7#5" },
+      { "root": "1",  "scale": "Spanish Phrygian",  "note": "b9 #9 and b13 around the 3rd" },
       { "root": "b5", "scale": "Major Pentatonic",  "note": "tritone sub: b9 #9 #11 b13", "outside": true }
     ],
     "7sus4": [
       { "root": "1",  "scale": "Mixolydian",        "default": true },
       { "root": "b7", "scale": "Major Pentatonic" },
       { "root": "1",  "scale": "Dorian",            "note": "sus with a minor colour" },
-      { "root": "5",  "scale": "Minor Pentatonic" }
+      { "root": "5",  "scale": "Minor Pentatonic" },
+      { "root": "1",  "scale": "Spanish Phrygian",  "note": "a Phrygian sus: b9 over the 4th" }
+    ],
+    "7sus4b9": [
+      { "root": "1",  "scale": "Phrygian",          "default": true },
+      { "root": "1",  "scale": "Spanish Phrygian",  "note": "adds the major 3rd, as a passing note" },
+      { "root": "1",  "scale": "Dorian b2",         "note": "mode 2 of melodic minor: natural 13" }
     ],
     "7b9": [
       { "root": "1",  "scale": "Half-Whole Diminished", "default": true },
       { "root": "1",  "scale": "Phrygian Dominant", "note": "V7 to minor, b9 b13" },
+      { "root": "1",  "scale": "Spanish Phrygian",  "note": "Phrygian Dominant with the #9 too" },
       { "root": "1",  "scale": "Altered" }
     ],
     "7#11": [
@@ -111,5 +120,8 @@
       { "root": "1",  "scale": "Whole-Half Diminished", "default": true },
       { "root": "b2", "scale": "Harmonic Minor",    "note": "dim7 as vii of the minor key a half step up" }
     ]
-  }
+  },
+  "slash_chords": [
+    { "quality": "Maj7", "bass": "7", "as": "7sus4b9", "note": "a major 7th chord over the note a half step below (DbMaj7/C) is a sus b9 chord on the bass" }
+  ]
 }

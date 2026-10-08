@@ -24,6 +24,7 @@ const TONES: Readonly<Record<string, readonly [string, string]>> = {
   mMaj7: ['b3', '7'],
   '7': ['3', 'b7'],
   '7sus4': ['4', 'b7'],
+  '7sus4b9': ['4', 'b7'],
   '7b9': ['3', 'b7'],
   '7#11': ['3', 'b7'],
   '7alt': ['3', 'b7'],

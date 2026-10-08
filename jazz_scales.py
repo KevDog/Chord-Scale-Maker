@@ -70,6 +70,7 @@ SCALES = {
     "whole tone":           ("1 2 3 #4 #5 b7",       "Whole Tone"),
     "major pentatonic":     ("1 2 3 5 6",            "Major Pentatonic"),
     "minor pentatonic":     ("1 b3 4 5 b7",          "Minor Pentatonic"),
+    "spanish phrygian":     ("1 b2 b3 3 4 5 b6 b7",  "Spanish Phrygian"),
     "blues":                ("1 b3 4 b5 5 b7",       "Blues"),
     "bebop dominant":       ("1 2 3 4 5 6 b7 7",     "Bebop Dominant"),
     "bebop major":          ("1 2 3 4 5 b6 6 7",     "Bebop Major"),
@@ -211,6 +212,16 @@ QUALITIES = _qdata["qualities"]
 QUALITY_LOOKUP = {q: q for q in QUALITIES}
 for _q, _names in _qdata["quality_aliases"].items():
     QUALITY_LOOKUP.update({n: _q for n in _names})
+SLASH_CHORDS = _qdata.get("slash_chords", [])
+
+
+def slash_reading(quality, li, acc, bass):
+    """a slash chord that is really another chord on its bass (DbMaj7/C -> C 7sus4b9), else the chord as written:
+    -> (quality, root letter, root acc)"""
+    for rule in SLASH_CHORDS:
+        if bass and rule["quality"] == quality and spell_from(li, acc, rule["bass"])[0][:2] == bass:
+            return rule["as"], bass[0], bass[1]
+    return quality, li, acc
 
 
 def scale_options(chord):
@@ -222,6 +233,8 @@ def scale_options(chord):
     if quality is None:
         raise ValueError(f"unknown chord quality {m.group(3)!r} in {chord!r}; give a scale")
     li, acc = parse_root(m.group(1) + m.group(2))
+    bass = parse_root(m.group(4) + (m.group(5) or "")) if m.group(4) else None
+    quality, li, acc = slash_reading(quality, li, acc, bass)
     out = []
     for opt in QUALITIES[quality]:
         key = norm(opt["scale"])

@@ -187,10 +187,13 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - "Default · …".
   - The quality's inside alternates, with their notes.
   - An "Outside (tension to resolve)" group, for options marked `outside`.
-  - "Other…", which opens a dialog with a root and any of the 25 scales. Focus returns to the cell after it
+  - "Other…", which opens a dialog with a root and any of the 26 scales. Focus returns to the cell after it
     closes.
 
   An unknown quality gives an amber border and "Choose a scale…", with "Other…" still available.
+- **Slash readings** (`slash_chords` in `chord_scales.json`, both engines): a chord whose bass makes it another
+  chord takes that chord's options on the bass. DbMaj7/C is a sus♭9 on C: C Phrygian (default), C Spanish
+  Phrygian, C Dorian ♭2. Only the options change; the symbol, interval labels and practice presets read DbMaj7.
 - **Transpose…** (`ChartTranspose`, `engine/transpose.ts`) rewrites the whole chart in another concert key.
   - Every row moves by the key interval in letters and semitones.
   - **Spelling:** roots are spelled on the target key's side by `spellInKey`, so a Bb chart reads Dbm7 Gb7, and

@@ -17,6 +17,7 @@ def test_scale_spelling_from_root():
     assert notes(p, "G Altered") == "g' aes' bes' b' cis'' ees'' f''"
     assert notes(p, "D Dorian b2") == "d' ees' f' g' a' b' c''"        # mode 2 of C melodic minor
     assert notes(p, "G Mixolydian b6") == "g' a' b' c'' d'' ees'' f''"   # mode 5, not Phrygian Dominant
+    assert notes(p, "E Spanish Phrygian") == "e' f' g' gis' a' b' c'' d''"  # Phrygian with the major 3rd too
 
 
 def test_spelling_from_fixed_note():
@@ -97,6 +98,24 @@ def test_scale_options_interval_roots():
     assert "Eb Major Pentatonic" in [o["scale"] for o in opts]
     assert "D Major Pentatonic" in [o["scale"] for o in j.scale_options("Gbm7b5")]   # b6 of Gb = Ebb -> D
     assert "B Melodic Minor" in [o["scale"] for o in j.scale_options("Bb7alt")]      # b2 of Bb = Cb -> B
+
+
+def names_of(chord):
+    return [o["scale"] for o in j.scale_options(chord)]
+
+
+def test_spanish_phrygian_pairings():
+    for chord in ["C7", "C7b9", "Csus", "C7sus4b9"]:
+        assert "C Spanish Phrygian" in names_of(chord), chord
+    assert j.default_scale("Csusb9") == "C Phrygian"
+    assert j.default_scale("Csus") == "C Mixolydian"     # plain sus reads as 7sus4
+
+
+def test_slash_chord_read_on_its_bass():
+    assert names_of("DbMaj7/C") == ["C Phrygian", "C Spanish Phrygian", "C Dorian b2"]   # a sus b9 on C
+    assert j.default_scale("DbMaj7") == "Db Ionian"       # no bass: as written
+    assert j.default_scale("DbMaj7/F") == "Db Ionian"     # another bass: as written
+    assert j.default_scale("Dbmaj7/B#") == "Db Ionian"    # the rule wants the spelled 7th, C
 
 
 def test_inside_and_outside_pentatonics():
