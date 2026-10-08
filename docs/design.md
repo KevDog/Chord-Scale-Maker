@@ -193,7 +193,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     closes.
 
   An unknown quality gives an amber border and "Choose a scale…", with "Other…" still available.
-- **Scale level** (behind `scaleLevels`; `engine/levels.ts`): Basic / Standard / Advanced / Random, above the
+- **Scale level** (the `scaleLevels` flag, on; `engine/levels.ts`): Basic / Standard / Advanced / Random, above the
   chart grid. Choosing one writes the scales into the chart (`relevel`), so they save, print and share with it.
   - Options in `chord_scales.json` carry `level: basic|advanced`; Standard is the default, and a quality without a
     tag keeps it. Random picks among the inside options, from a seed (Shuffle deals a new one).
@@ -400,8 +400,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - New flags start off, and every flag is fixed at build time. `NUXT_PUBLIC_FEATURES_<NAME>=true|false`
     overrides one for a build or `make dev`.
   - `npm run e2e` builds with every flag on.
-  - `myCharts` (My charts, New chart, Download/Open, share links), `guideTones` (the Guide tones sheet) and
-    `practice` (the Practice panel) are on, since sign-off.
+  - `myCharts` (My charts, New chart, Download/Open, share links), `guideTones` (the Guide tones sheet),
+    `practice` (the Practice panel) and `scaleLevels` (the Scale level control) are on, since sign-off.
 
 ## 9. Security
 
