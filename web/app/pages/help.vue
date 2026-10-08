@@ -144,10 +144,43 @@
         sheet is written.
       </UiText>
 
-      <UiText>
+      <UiText v-if="!myCharts">
         <strong class="font-semibold text-zinc-950 dark:text-white">One catch:</strong> your edits aren't saved yet.
         Reload the page or open another tune and the chart is back to the library version. If you've made something you
         want to keep, print it, or copy the text out and keep it somewhere safe.
+      </UiText>
+    </section>
+
+    <section v-if="myCharts" class="scroll-mt-6 space-y-4" aria-labelledby="saving">
+      <UiSubheading id="saving">Saving your work</UiSubheading>
+      <UiText>
+        There are no accounts here, so there's nothing to sign in to. Your work is kept three ways instead, and your
+        scale choices come along every time, because they're part of the chart.
+      </UiText>
+      <ul class="list-disc space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
+        <li>
+          <strong class="font-semibold text-zinc-950 dark:text-white">My charts:</strong> edits save themselves in this
+          browser a moment after you stop typing. Change a library tune and it becomes your version of it, marked
+          Edited, with <strong class="font-semibold">Revert to library version</strong> if you change your mind.
+          <strong class="font-semibold">Save as a copy</strong> keeps a variation beside it, and
+          <strong class="font-semibold">New chart</strong> starts from scratch. They're all listed at the top of the
+          library.
+        </li>
+        <li>
+          <strong class="font-semibold text-zinc-950 dark:text-white">Download</strong> saves the chart as a plain
+          <UiCode>.txt</UiCode> file you can keep anywhere. <strong class="font-semibold">Open chart…</strong> in the
+          library (or dropping the file on it) brings it back.
+        </li>
+        <li>
+          <strong class="font-semibold text-zinc-950 dark:text-white">Share</strong> makes a link with the whole chart
+          packed inside, plus your instrument, From root or From C, and practice picks. Open it on your phone, or
+          send it to your bandmates. Nothing is uploaded: the chart lives in the link itself.
+        </li>
+      </ul>
+      <UiText>
+        <strong class="font-semibold text-zinc-950 dark:text-white">One catch:</strong> My charts lives in this
+        browser only. Another browser or device won't see it, and clearing this site's data wipes it. For anything
+        you'd hate to lose, download it.
       </UiText>
     </section>
 
@@ -188,15 +221,17 @@
 </template>
 
 <script setup lang="ts">
+const myCharts = useFeature('myCharts')
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },
   { id: 'sheets', title: 'The two sheets' },
   { id: 'controls', title: 'Preview controls' },
   { id: 'practice', title: 'Practice' },
   { id: 'editing', title: 'Editing a chart' },
+  ...(myCharts ? [{ id: 'saving', title: 'Saving your work' }] : []),
   { id: 'printing', title: 'Printing and Focus' },
   { id: 'odds', title: 'Odds and ends' },
-] as const
+]
 
 const EXAMPLE = `title: Autumn Leaves
 subtitle: Full Form

@@ -29,6 +29,11 @@
         browser's own storage so they're there next time. They're never sent anywhere. Clearing your browser's data
         for this site removes them.
       </UiText>
+      <UiText v-if="myCharts">
+        That includes My charts: your saved and edited charts stay in this browser only. A share link carries its
+        chart in the part of the address after the <UiCode>#</UiCode>, which browsers don't send to the website, and
+        which is removed before a visit is counted. Downloaded files are yours alone.
+      </UiText>
     </section>
 
     <section class="space-y-3" aria-labelledby="video">
@@ -55,5 +60,6 @@
 </template>
 
 <script setup lang="ts">
+const myCharts = useFeature('myCharts')
 useHead({ title: 'Privacy · Chord Scale Maker' })
 </script>
