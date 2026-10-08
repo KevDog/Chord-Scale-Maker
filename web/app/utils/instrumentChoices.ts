@@ -10,7 +10,7 @@ const GROUP_LABELS: Readonly<Record<string, string>> = {
   'bass/C': 'Bass clef (C)',
 }
 
-/** instruments grouped by what they read (clef + key), in the CLI's preset order */
+/** instruments grouped by what they read (clef + key), in preset order */
 export const INSTRUMENT_GROUPS: readonly InstrumentGroup[] = Object.entries(GROUP_LABELS).map(([id, label]) => ({
   label,
   instruments: (Object.keys(INSTRUMENTS) as InstrumentName[]).filter((n) => {

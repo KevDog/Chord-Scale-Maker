@@ -3,10 +3,10 @@ import { type Spelled, accFor, enharmonics, mod, NAT_PC, parseRoot, pcOf, rootNa
 /**
  * Scales from degree formulas (never hand-typed note lists), their names and aliases, and simplifyRoot: the
  * project's enharmonic rule (avoid double accidentals and B#/E#/Cb/Fb, then fewest accidentals, then keep the
- * typed direction). Port of SCALES, ALIASES and the spelling functions in jazz_scales.py.
+ * typed direction).
  */
 
-/** name: [degree formula, label printed on the page]; copied verbatim from jazz_scales.py */
+/** name: [degree formula, label printed on the page] */
 export const SCALES = {
   ionian: ['1 2 3 4 5 6 7', 'Ionian'],
   dorian: ['1 2 b3 4 5 6 b7', 'Dorian'],
@@ -87,7 +87,7 @@ export function spellFrom(root: Spelled, formula: string): ScaleNote[] {
       const m = /^([b#]*)(\d+)$/.exec(tok)
       if (!m) throw new Error(`bad scale degree: ${JSON.stringify(tok)}`)
       const [, accs = '', degree = ''] = m
-      const idx = toLetter(Number(degree) - 1) // degree's offset in letters, wrapping like Python's %
+      const idx = toLetter(Number(degree) - 1) // degree's offset in letters, wrapping (a true modulo)
       const semis = NAT_PC[idx] + count(accs, '#') - count(accs, 'b')
       const letter = toLetter(root.letter + idx)
       return { letter, acc: accFor(mod(rootPc + semis, 12), letter), semis }
@@ -108,7 +108,7 @@ function lexLess(a: readonly number[], b: readonly number[]): boolean {
   return false
 }
 
-/** first element with the smallest key (lexicographic), like Python's min() */
+/** first element with the smallest key (lexicographic): ties go to the earlier one */
 function minBy<T>(xs: readonly T[], key: (x: T) => readonly number[]): T {
   const [first, ...rest] = xs
   if (first === undefined) throw new Error('minBy of an empty list')

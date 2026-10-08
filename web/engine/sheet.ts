@@ -117,7 +117,7 @@ export function noteText(text: string): string {
 }
 
 /**
- * page subtitle as the CLI builds it: "Subtitle – Tenor Sax (Bb) (Spelled from C)";
+ * the page subtitle: "Subtitle – Tenor Sax (Bb) (Spelled from C)";
  * just the heading when there is neither a subtitle nor an instrument label
  */
 export function pageSubtitle(subtitle: string, instrument: string, heading: string): string {

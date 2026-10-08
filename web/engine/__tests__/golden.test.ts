@@ -1,62 +1,22 @@
 /**
- * Parity with jazz_scales.py: fixtures/golden.json holds the Python engine's answers
- * (regenerate with  python3 tools/export_fixtures.py). Each test collects every
- * mismatch so one run shows them all.
+ * The engine against fixtures/golden.json, its frozen answers over a wide fixed set of inputs (see goldenFixture.ts).
+ * Each test collects every mismatch so one run shows them all. After an intended change: npm run golden, then review
+ * the fixture's diff.
  */
-import { readFileSync } from 'node:fs'
+import { readFileSync, writeFileSync } from 'node:fs'
 import { isDeepStrictEqual } from 'node:util'
 import { describe, expect, it } from 'vitest'
-import {
-  type ChordToken,
-  type Clef,
-  type Part,
-  type ScaleOption,
-  chartMeta,
-  chordTokens,
-  defaultScale,
-  expandRows,
-  lilyNote,
-  parseChart,
-  resolveQuality,
-  resolveScale,
-  resolveStart,
-  rootName,
-  scaleLabel,
-  scaleNotes,
-} from '..'
+import { type Clef, type Part, chartMeta, chordTokens, defaultScale, expandRows, parseChart, resolveQuality, resolveScale, resolveStart } from '..'
+import { attempt, buildGolden, GOLDEN_FILE, type Golden, renderGolden, scaleCase } from './goldenFixture'
 
-type ScaleCase =
-  | { error: true }
-  | { root: string; label: string; root_notes: string[]; from: Record<string, string[]> }
-type Golden = {
-  parts: Record<string, Part>
-  from_starts: string[]
-  starts: Record<Clef, Record<string, number>>
-  scales: Record<string, Record<string, ScaleCase>>
-  chords: { part: string; chord: string; scale: string | null; tokens: ChordToken[] | null }[]
-  options: Record<string, { options: ScaleOption[] | null; default: string | null }>
-  charts: Record<string, { text: string; title: string; subtitle: string; rows: string[][] }>
-}
-
-const repo = (path: string): string => readFileSync(new URL(`../../../${path}`, import.meta.url), 'utf8')
-const G = JSON.parse(repo('fixtures/golden.json')) as Golden
+if (process.env.UPDATE_GOLDEN === '1') writeFileSync(GOLDEN_FILE, renderGolden(buildGolden()))
+const TEXT = readFileSync(GOLDEN_FILE, 'utf8')
+const G = JSON.parse(TEXT) as Golden
 
 function partFor(id: string): Part {
   const part = G.parts[id]
   if (!part) throw new Error(`fixture has no part ${id}`)
   return part
-}
-
-/** engine domain errors are plain Errors (Python's ValueError); anything else is a bug and must fail */
-const isDomainError = (e: unknown): boolean => e instanceof Error && e.constructor === Error
-
-function attempt<T>(f: () => T): T | null {
-  try {
-    return f()
-  } catch (e) {
-    if (isDomainError(e)) return null
-    throw e
-  }
 }
 
 /** compare each [label, want, got]; return the first 20 readable mismatches plus a count */
@@ -67,24 +27,7 @@ function mismatches(cases: Iterable<readonly [string, unknown, unknown]>): strin
   return bad.length > 20 ? [...bad.slice(0, 20), `... and ${bad.length - 20} more`] : bad
 }
 
-function scaleCase(part: Part, text: string): ScaleCase {
-  try {
-    const label = scaleLabel(part, text)
-    return {
-      root: rootName(label.root),
-      label: label.name,
-      root_notes: scaleNotes(part, text, 'root', 0).map(lilyNote),
-      from: Object.fromEntries(
-        G.from_starts.map((s) => [s, scaleNotes(part, text, 'from', resolveStart(part.clef, s)).map(lilyNote)]),
-      ),
-    }
-  } catch (e) {
-    if (isDomainError(e)) return { error: true }
-    throw e
-  }
-}
-
-describe('golden parity with jazz_scales.py', () => {
+describe('golden fixture', () => {
   it('fixture has every section', () => {
     expect(Object.keys(G.parts)).toHaveLength(5)
     expect(Object.keys(G.scales)).toEqual(Object.keys(G.parts))
@@ -102,7 +45,7 @@ describe('golden parity with jazz_scales.py', () => {
   for (const [partId, cases] of Object.entries(G.scales)) {
     it(`scales, ${partId}`, () => {
       const part = partFor(partId)
-      expect(mismatches(Object.entries(cases).map(([t, want]) => [t, want, scaleCase(part, t)] as const))).toEqual([])
+      expect(mismatches(Object.entries(cases).map(([t, want]) => [t, want, scaleCase(part, t, G.from_starts)] as const))).toEqual([])
     })
   }
 
@@ -137,5 +80,9 @@ describe('golden parity with jazz_scales.py', () => {
       ]
     })
     expect(mismatches(cases)).toEqual([])
+  })
+
+  it('covers every current chart, scale and chord (else: npm run golden)', () => {
+    expect(renderGolden(buildGolden()) === TEXT).toBe(true)
   })
 })

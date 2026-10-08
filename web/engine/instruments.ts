@@ -38,7 +38,7 @@ export type InstrumentName = keyof typeof INSTRUMENTS
 
 export const isInstrumentName = (name: string): name is InstrumentName => Object.hasOwn(INSTRUMENTS, name)
 
-/** "tenor-sax" -> "Tenor Sax (Bb)"; concert -> "" (the CLI's page-subtitle label) */
+/** "tenor-sax" -> "Tenor Sax (Bb)"; concert -> "" (the page-subtitle label) */
 export function instrumentLabel(name: InstrumentName): string {
   if (name === 'concert') return ''
   const words = name.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1))

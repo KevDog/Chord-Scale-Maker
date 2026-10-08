@@ -31,7 +31,7 @@ describe('scales', () => {
     expect(() => parseScale('C Dorain')).toThrow(/unknown scale/)
     expect(() => parseScale('C constructor')).toThrow(/unknown scale/)
     expect(() => parseScale('C')).toThrow(/root and a name/)
-    expect(spellFrom(parseRoot('C'), '0')).toEqual([{ letter: 6, acc: 0, semis: 11 }]) // degree 0 wraps like Python
+    expect(spellFrom(parseRoot('C'), '0')).toEqual([{ letter: 6, acc: 0, semis: 11 }]) // degree 0 wraps to the 7th below
   })
 
   it('simplifies roots by looking at the whole scale', () => {

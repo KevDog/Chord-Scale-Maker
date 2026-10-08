@@ -4,7 +4,7 @@ import { rootName, type Spelled } from './pitch'
 import { scaleKey, simplifyRoot, spellFrom } from './scales'
 
 /**
- * Chord qualities from chord_scales.json (shared with jazz_scales.py): aliases, default and alternate scales per
+ * Chord qualities from chord_scales.json: aliases, default and alternate scales per
  * quality, and baseQuality for extended symbols.
  */
 

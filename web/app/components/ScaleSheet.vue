@@ -24,7 +24,7 @@ const props = defineProps<{
   practice?: PracticeSelection | null // highlight these notes, dim the rest
 }>()
 
-/** every printed page, in order, with its own heading (the CLI's bookparts flattened) */
+/** every printed page, in order, with its own heading */
 const pages = computed(() =>
   buildSheet(props.rows, props.part, props.mode, props.start, props.perPage, props.practice ?? null)
     .flatMap((sheetPart) =>

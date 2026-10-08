@@ -1,5 +1,5 @@
 {
-  "$schema_note": "Chord-scale options keyed by chord quality. Each option's root is an interval above the chord root ('1' = same root). Scale names match jazz_scales.py (see --list-scales). The first option with default=true is used when a chart row omits the scale. outside=true marks a deliberate outside sound (tension to resolve); the editor lists those separately. slash_chords: a chord of `quality` whose bass is the interval `bass` above its root takes its scale options from quality `as` on the bass note (the chord symbol itself is unchanged).",
+  "$schema_note": "Chord-scale options keyed by chord quality. Each option's root is an interval above the chord root ('1' = same root). Scale names match SCALES in web/engine/scales.ts. The first option with default=true is used when a chart row omits the scale. outside=true marks a deliberate outside sound (tension to resolve); the editor lists those separately. slash_chords: a chord of `quality` whose bass is the interval `bass` above its root takes its scale options from quality `as` on the bass note (the chord symbol itself is unchanged).",
   "quality_aliases": {
     "maj": ["", "M", "ma", "major"],
     "m": ["-", "mi", "min"],
