@@ -86,7 +86,7 @@ describe('sheet', () => {
     expect(bb).not.toBe(id([row('Cm7')])[0]) // a different instrument redraws
   })
 
-  it('builds page subtitles like the CLI', () => {
+  it('builds page subtitles', () => {
     expect(pageSubtitle('Full Form', 'Tenor Sax (Bb)', 'Spelled from C')).toBe('Full Form – Tenor Sax (Bb) (Spelled from C)')
     expect(pageSubtitle('Full Form', '', 'Spelled from the Root')).toBe('Full Form (Spelled from the Root)')
     expect(pageSubtitle('', 'Trombone', 'Spelled from C')).toBe('Trombone (Spelled from C)')

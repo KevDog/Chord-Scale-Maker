@@ -1,11 +1,9 @@
-output/*
-!output/.gitkeep
+# local leftovers from the retired Python CLI (LilyPond output, its virtualenv), and printed sheets
 *.pdf
-*.ly
-__pycache__/
-.pytest_cache/
-.claude/settings.local.json
+output/
 .venv/
+__pycache__/
+.claude/settings.local.json
 web/node_modules/
 web/.nuxt/
 web/.output/

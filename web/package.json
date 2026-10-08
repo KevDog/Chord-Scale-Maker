@@ -9,6 +9,7 @@
     "postinstall": "nuxt prepare",
     "test": "vitest run",
     "test:watch": "vitest",
+    "golden": "UPDATE_GOLDEN=1 vitest run --project engine engine/__tests__/golden.test.ts",
     "typecheck": "nuxt typecheck && tsc -p tsconfig.engine.json && tsc -p tsconfig.e2e.json",
     "lint": "eslint .",
     "e2e": "NUXT_PUBLIC_FEATURES_NEW_CHART=true NUXT_PUBLIC_FEATURES_GUIDE_TONES=true NUXT_PUBLIC_FEATURES_PRACTICE=true nuxt build && playwright test",

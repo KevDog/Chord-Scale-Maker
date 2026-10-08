@@ -1,3 +1,6 @@
+> **Note (after `v1-launch`):** the Python CLI described below was retired; the web app is the only engine now.
+> See docs/design.md, decision 11.
+
 # jazz-scales web app: requirements
 
 ## Goal

@@ -1,6 +1,5 @@
 /**
  * Spelled notes: a letter (C=0 … B=6) plus an accidental count, their pitch classes and enharmonic spellings.
- * Port of the note arithmetic in jazz_scales.py.
  */
 
 export type Letter = 0 | 1 | 2 | 3 | 4 | 5 | 6 // C D E F G A B

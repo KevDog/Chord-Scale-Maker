@@ -4,7 +4,7 @@ import { type ScaleKey, type ScaleNote, parseScale, SCALES, simplifyRoot, spellS
 
 /**
  * A Part (clef + transposition) is how the sheet is written for one instrument: written roots and scales, scale
- * notes from the root or from a start note, labels. Port of jazz_scales.py's Part class as plain functions.
+ * notes from the root or from a start note, labels.
  */
 
 /** an instrument "view" of the chart */
@@ -58,7 +58,7 @@ export function scaleLabel(part: Part, text: string): ScaleLabel {
   return { root, name: SCALES[key][1] }
 }
 
-/** LilyPond note name, e.g. ees' (used for parity with jazz_scales.py) */
+/** LilyPond note name, e.g. ees': a compact note spelling for the golden fixture */
 export function lilyNote(n: Pitched): string {
   const d = n.midi - NAT_PC[n.letter] - n.acc
   if (mod(d, 12) !== 0) throw new Error(`pitch ${n.midi} does not match its spelling`)
