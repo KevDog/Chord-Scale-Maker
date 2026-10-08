@@ -1,7 +1,7 @@
 # Harmonic analysis for scale choice: the rule set
 
-Status: **proposal, for review.** Nothing here is built. The rules below are meant to be argued with; the
-decisions they need from you are collected in §10.
+Status: **agreed, not yet built.** The decisions in §10 were all taken as recommended (2026-10-08). The analysis
+each run produces is saved into the chart as comments (§12.1), so it can be corrected in a text editor.
 
 ## 1. What this is
 
@@ -492,10 +492,11 @@ three standards added to test them. Every disagreement is one of the decisions i
 chart is plainly right and the rule plainly wrong, except Milestones' Aeolian, which the explicit-choice
 principle handles. The B♭ blues charts mirror the F ones row for row.
 
-## 10. Decisions for you
+## 10. Decisions
 
-Each of these is a place where the sources, common practice and our own charts don't all agree. The analyser
-needs one answer per line. My recommendation is first.
+Each of these is a place where the sources, common practice and our own charts don't all agree. **All were
+decided as recommended** (the first option in each). They are kept here with their reasoning, because they are
+the places a future rule change is most likely to revisit.
 
 1. **V7 resolving to a minor chord: Phrygian Dominant or Half-Whole?** (Autumn Leaves' D7s; every D7♭9 → Gm7 in
    the blues charts.) *Phrygian Dominant.* It is the diatonic answer (♭9 and ♭13 are in the minor key), it is what
@@ -583,6 +584,7 @@ A script, not a page: `npm run analyse -- charts/<tune>.txt`. The site is untouc
 - **Report** (default): the key and key areas found, then one line per row: bar, chord, function, the scale the
   rules give, the reason, and the chart's current scale where it differs (`≠ D Half-Whole`). Rows the rules
   couldn't reach are marked `?`.
+- `--save`: writes the analysis into the chart as comments (§12.1), alongside `--write` or on its own.
 - `--write`: fills **blank** scale cells only, leaving every written scale as it is. The usual way to add a chart:
   write the chords, run `--write`, read the report, fix the chart or the rules.
 - `--force`: rewrites every cell the rules reach, so a chart can be brought back into line with the rules after
@@ -591,10 +593,45 @@ A script, not a page: `npm run analyse -- charts/<tune>.txt`. The site is untouc
 - `--all`: runs the report over every chart in `charts/`, for the regression check in §13.
 - **Hints in the chart:** an optional `key: Gm` meta line fixes the global key when the scoring would get it wrong
   (a tune that ends away from home); `bars: 32` fixes the form length when the last chord's duration matters.
-  Both are plain meta lines the editor already tolerates, and the site ignores them.
+  Both are meta lines; the parser needs to accept them (today only `title:` and `subtitle:` are meta), and the
+  site ignores them.
 
-The analyser writes only scale names into charts, never reasons; reasons live in the report (and in the test
-fixtures), so charts stay clean to edit by hand.
+### 12.1 Saving the analysis in the chart
+
+The analysis is worth keeping with the chart: it records why each scale is what it is, it lets a chart be
+corrected by hand in a text editor, and it makes the analyser's next run start from the corrected version
+instead of from scratch. It is saved as **comments**, which the parser already keeps and the site already
+ignores, so the chart format and the editor don't change.
+
+```text
+title: Autumn Leaves
+key: Gm
+# analysis: 2026-10-08, rules v1
+
+# area: Bb major (bars 1–4)
+A1 | 1 | Cm7    | C Dorian             # ii of the ii–V to Bb
+A1 | 2 | F7     | F Mixolydian         # V7 of Bb: natural tensions
+A1 | 3 | Bm7    | B Dorian             # passing ii–V: its own key
+A1 | 3 | E7     | E Mixolydian         # passing ii–V: its own key
+# area: G minor (bars 5–8)
+A1 | 5 | Am7b5  | A Locrian            # iiø7 of G minor
+A1 | 6 | D7     | D Phrygian Dominant  # V7 of G minor: b9 and b13 are in the key
+A1 | 7 | Gm     | G Dorian             # tonic minor: Dorian by convention
+```
+
+- A **trailing comment** on a row (`# …` after the scale) holds that row's function and reason. The parser treats
+  everything from `#` as a comment today, so this needs one small change: a row may end in a comment, which the
+  text ⇄ grid sync keeps verbatim. The grid doesn't show it.
+- **Area lines** (`# area: …`) and the **header line** (`# analysis: date, rules version`) are ordinary comment
+  lines. The header lets `--all` report which charts were analysed under older rules.
+- **Editing by hand:** change the scale, and the comment, in any text editor. On its next run the analyser
+  compares its answer with the row and, where they differ, reports both; `--write` never touches a filled cell.
+  To make a hand choice permanent and silence the report, write `# keep: …` as the reason; to make it a rule,
+  change the rules (§13).
+- **A dedicated tool** (an analysis view in the editor, or a diff of two runs) can come later; the comments are
+  the format either would read.
+
+The analyser never writes anything but scale names and comments.
 
 The code: `engine/analysis/` with one module per pass (`stream.ts`, `keys.ts`, `functions.ts`, `scales.ts`) and a
 `rules.ts` holding the tables above as data, so a rule change is a table edit with a test. Pure TypeScript, no
