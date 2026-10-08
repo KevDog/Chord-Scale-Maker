@@ -3,6 +3,7 @@ subtitle: Jazz waltz
 composer: Bob Gillis
 style: Waltz
 key: Eb
+time: 3/4
 form: AB, 32 bars
 source: Colorado Cookbook, p. 135
 # analysis: 2026-10-08, rules v1; Eb

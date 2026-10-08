@@ -3,6 +3,7 @@ subtitle: Jazz waltz
 composer: Borodin, Wright & Forrest
 style: Waltz
 key: Ab
+time: 3/4
 form: ABCD, 36 bars
 source: Colorado Cookbook, p. 28
 # analysis: 2026-10-08, rules v1; Ab

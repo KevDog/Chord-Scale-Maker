@@ -3,6 +3,7 @@ subtitle: Jazz waltz (16 16 8 16)
 composer: Freddie Hubbard
 style: Waltz
 key: Bb
+time: 3/4
 form: AABC, 56 bars
 source: Colorado Cookbook, p. 253
 # analysis: 2026-10-08, rules v1; Bb

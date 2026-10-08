@@ -174,6 +174,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   optional number). They print where they stand; the analysis links an intro into the form's first chord and a coda
   after its last (the form itself wraps to its own top), and the guide tone timeline times each on its own, so their
   bars can be numbered from 1.
+- **Metre:** a `time:` meta line, `2/4`, `3/4` or `4/4` (the default; anything else is a diagnostic). `chartBeats`
+  gives the beats a bar; the guide tone timeline splits bars by it (3/4: one chord = 3 beats, two = 2 + 1) and the
+  sheet draws its time signature and dotted halves. The scale sheet doesn't depend on it.
 - **Trailing comments:** a row may end in `# …` (a `#` with space on both sides, so `F#m7` and `C# Lydian` are
   safe). It holds the analysis (§7a), is kept verbatim through every edit, and is column-aligned when serialized;
   the grid doesn't show it.

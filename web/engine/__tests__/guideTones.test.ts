@@ -119,6 +119,16 @@ describe('guide tone lines', () => {
     }
   })
 
+  it('times a waltz in 3/4: three beats a bar, a dotted half for a whole bar', () => {
+    const text = 'A | 1 | Dm7\nA | 2 | G7\nA | 2 | C7\nA | 3 | FMaj7\nA | 5 | Bb\n'
+    expect(guideToneTimeline(rowsOf(text), 3).events.map((e) => [e.chord, e.start, e.beats])).toEqual([
+      ['Dm7', 0, 3], ['G7', 3, 2], ['C7', 5, 1], ['FMaj7', 6, 6], ['Bb', 12, 12], // Bb holds bars 5–8
+    ])
+    const sheet = buildGuideTones(rowsOf(text), CONCERT, 4, 3)
+    const bar1 = sheet.systems[0]?.bars[0]
+    expect([sheet.beats, bar1?.lines[0].map((n) => n.beats)]).toEqual([3, [3]])
+  })
+
   it('times an intro and a coda on their own, each numbered from bar 1', () => {
     const text = 'Intro | 1 | Dm7\nIntro | 3 | G7\nA | 1 | CMaj7\nA | 3 | Am7\nA | 5 | Dm7\nA | 7 | G7\nCoda | 1 | Db7\nCoda | 2 | CMaj7\n'
     expect(guideToneTimeline(rowsOf(text)).events.map((e) => [e.chord, e.start / 4, e.beats / 4])).toEqual([

@@ -38,6 +38,7 @@ const props = defineProps<{
   first: boolean // gets the time signature
   last: boolean // gets the final bar line
   barsPerSystem: number
+  beats?: 2 | 3 | 4 // the time signature, over 4
   intervals?: boolean // label each note (3, b7…), on screen only
 }>()
 
@@ -78,6 +79,7 @@ async function draw(): Promise<void> {
       timeSignature: props.first,
       finalBar: props.last,
       barsPerSystem: props.barsPerSystem,
+      beats: props.beats ?? 4,
     }).xs
     drawError.value = null
   } catch (e) {
@@ -86,5 +88,5 @@ async function draw(): Promise<void> {
 }
 
 onMounted(draw)
-watch(() => [props.system, props.clef, props.first, props.last], () => nextTick(draw))
+watch(() => [props.system, props.clef, props.first, props.last, props.beats], () => nextTick(draw))
 </script>

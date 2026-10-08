@@ -14,6 +14,7 @@
             :first="s.index === 0"
             :last="s.index === sheet.systems.length - 1"
             :bars-per-system="barsPerSystem"
+            :beats="sheet.beats"
             :intervals="intervals"
           />
         </div>
@@ -33,6 +34,7 @@ const props = defineProps<{
   composer?: string
   part: Part
   instrumentLabel: string // '' for concert
+  beats?: 2 | 3 | 4 // the chart's time signature, over 4
   intervals?: boolean
 }>()
 
@@ -42,7 +44,7 @@ const SYSTEMS_PER_PAGE = 8
 const wide = useMediaQuery('(min-width: 640px), print')
 const barsPerSystem = computed(() => (wide.value ? 4 : 2))
 
-const sheet = computed(() => buildGuideTones(props.rows, props.part, barsPerSystem.value))
+const sheet = computed(() => buildGuideTones(props.rows, props.part, barsPerSystem.value, props.beats ?? 4))
 const subtitleText = computed(() => pageSubtitle(props.subtitle, props.instrumentLabel, 'Guide Tone Lines'))
 const pages = computed(() =>
   chunk(

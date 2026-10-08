@@ -121,6 +121,7 @@
           :composer="editor.heading.value.composer"
           :part="part"
           :instrument-label="instrumentLabel(prefs.instrument.value)"
+          :beats="editor.beats.value"
           :intervals="prefs.intervals.value"
         />
         <ScaleSheet

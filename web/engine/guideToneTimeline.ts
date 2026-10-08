@@ -1,14 +1,18 @@
 import { formPart, type Row } from './chart'
 
 /**
- * When each chord of a guide tone sheet starts and how long it lasts, in beats of 4/4 (docs/plan-guide-tones.md):
+ * When each chord of a guide tone sheet starts and how long it lasts, in beats (4/4 unless the chart says 3/4 or 2/4;
+ * docs/plan-guide-tones.md):
  * a chord lasts until the next change, rows that share a bar split it, and the last row runs to the end of the form.
  */
 
-export const BEATS = 4 // 4/4
-const MAX_PER_BAR = 4
-/** how a bar is shared by 1-4 chords, in beats */
-const SPLITS: readonly (readonly number[])[] = [[4], [2, 2], [2, 1, 1], [1, 1, 1, 1]]
+export const BEATS = 4 // 4/4, the default
+/** how a bar is shared by 1 chord, 2, …, in beats, for each metre; a bar holds at most one chord a beat */
+const SPLITS: Readonly<Record<2 | 3 | 4, readonly (readonly number[])[]>> = {
+  4: [[4], [2, 2], [2, 1, 1], [1, 1, 1, 1]],
+  3: [[3], [2, 1], [1, 1, 1]],
+  2: [[2], [1, 1]],
+}
 const WHOLE = /^[+-]?\d{1,6}$/
 
 /** "1" and "01" are the same bar */
@@ -47,7 +51,7 @@ export type GuideEvent = Readonly<{ row: Row; chord: string; start: number; beat
  * when each chord starts and how long it lasts; rows that share a bar split it. An intro, the form and a coda are
  * timed one after another, each to its own end, so an intro or coda can number its bars from 1.
  */
-export function guideToneTimeline(rows: readonly Row[]): Readonly<{ events: readonly GuideEvent[]; diagnostics: readonly string[] }> {
+export function guideToneTimeline(rows: readonly Row[], beats: 2 | 3 | 4 = BEATS): Readonly<{ events: readonly GuideEvent[]; diagnostics: readonly string[] }> {
   const runs: Row[][] = []
   for (const r of rows) {
     const last = runs.at(-1)
@@ -58,7 +62,7 @@ export function guideToneTimeline(rows: readonly Row[]): Readonly<{ events: read
   const diagnostics: string[] = []
   let cursor = 0
   for (const run of runs) {
-    const t = timeRun(run, cursor)
+    const t = timeRun(run, cursor, beats)
     events.push(...t.events)
     diagnostics.push(...t.diagnostics)
     cursor = t.end
@@ -66,7 +70,8 @@ export function guideToneTimeline(rows: readonly Row[]): Readonly<{ events: read
   return { events, diagnostics }
 }
 
-function timeRun(rows: readonly Row[], from: number): Readonly<{ events: GuideEvent[]; diagnostics: string[]; end: number }> {
+function timeRun(rows: readonly Row[], from: number, beats: 2 | 3 | 4): Readonly<{ events: GuideEvent[]; diagnostics: string[]; end: number }> {
+  const MAX_PER_BAR = beats
   const groups: Row[][] = []
   for (const r of rows) {
     const last = groups.at(-1)
@@ -88,15 +93,15 @@ function timeRun(rows: readonly Row[], from: number): Readonly<{ events: GuideEv
     if (!WHOLE.test(first.bar)) diagnostics.push(`bar "${first.bar}" is not a whole number, so ${first.chord} gets one bar`)
     else if (next !== undefined && WHOLE.test(next) && Number(next) > Number(first.bar)) bars = Number(next) - Number(first.bar)
     else if (next === undefined) bars = lastBars
-    const split = SPLITS[kept.length - 1] ?? [BEATS]
+    const split = SPLITS[beats][kept.length - 1] ?? [beats]
     let offset = 0
     kept.forEach((r, i) => {
       const slot = split[i] ?? 1
-      const beats = i === kept.length - 1 ? slot + (bars - 1) * BEATS : slot
-      events.push({ row: r, chord: r.chord, start: cursor + offset, beats })
+      const length = i === kept.length - 1 ? slot + (bars - 1) * beats : slot
+      events.push({ row: r, chord: r.chord, start: cursor + offset, beats: length })
       offset += slot
     })
-    cursor += bars * BEATS
+    cursor += bars * beats
   })
   return { events, diagnostics, end: cursor }
 }

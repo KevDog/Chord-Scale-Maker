@@ -6,7 +6,7 @@ import { cropBand, fitSvg, headCentre, STAVE_Y, svgContext, type VexFlowModule }
  * across both. The scale-staff drawing and the shared SVG helpers live in vexflow.ts.
  */
 
-const DURATIONS = { 4: 'w', 2: 'h', 1: 'q' } as const
+const DURATIONS = { 4: 'w', 3: 'hd', 2: 'h', 1: 'q' } as const // 3 beats: a dotted half
 const REST_KEY = { treble: 'b/4', bass: 'd/3' } as const
 const INK = { fillStyle: 'currentColor', strokeStyle: 'currentColor' } // follows light/dark mode, prints black
 const CLEF_SPACE = 70 // the first bar of a system also holds the clef
@@ -31,8 +31,9 @@ export function drawGuideToneSystem(
   els: readonly [HTMLElement, HTMLElement],
   system: GuideSystem,
   clef: 'treble' | 'bass',
-  opts: Readonly<{ timeSignature: boolean; finalBar: boolean; barsPerSystem: number }>,
+  opts: Readonly<{ timeSignature: boolean; finalBar: boolean; barsPerSystem: number; beats?: 2 | 3 | 4 }>,
 ): SystemLayout {
+  const beats = opts.beats ?? 4
   const lead = CLEF_SPACE + (opts.timeSignature ? TIME_SPACE : 0)
   const total = BAR_UNITS * opts.barsPerSystem
   const barWidth = (total - 1 - lead) / opts.barsPerSystem
@@ -48,7 +49,7 @@ export function drawGuideToneSystem(
     const staves = ([0, 1] as const).map((l) => {
       const stave = new vf.Stave(x, STAVE_Y, width)
       if (b === 0) stave.addClef(clef)
-      if (b === 0 && opts.timeSignature) stave.addTimeSignature('4/4')
+      if (b === 0 && opts.timeSignature) stave.addTimeSignature(`${beats}/4`)
       if (isLast && opts.finalBar) stave.setEndBarType(vf.BarlineType.END)
       const ctx = ctxs[l]
       if (ctx) stave.setContext(ctx).draw()
@@ -58,9 +59,13 @@ export function drawGuideToneSystem(
       const shown = new Map<string, number>() // accidentals so far in this bar, by letter + octave
       const notes = bar.lines[l].map((n, i) => {
         const tiedIn = i === 0 ? (ties[l]?.at(-1) ?? false) : (bar.lines[l][i - 1]?.tie ?? false)
-        if (!n.pitch) return new vf.StaveNote({ keys: [REST_KEY[clef]], duration: `${DURATIONS[n.beats]}r`, clef })
+        const dotted = (note: InstanceType<typeof vf.StaveNote>): InstanceType<typeof vf.StaveNote> => {
+          if (n.beats === 3) vf.Dot.buildAndAttach([note], { all: true })
+          return note
+        }
+        if (!n.pitch) return dotted(new vf.StaveNote({ keys: [REST_KEY[clef]], duration: `${DURATIONS[n.beats]}r`, clef }))
         const key = toVexKey(n.pitch)
-        const note = new vf.StaveNote({ keys: [key], duration: DURATIONS[n.beats], clef })
+        const note = dotted(new vf.StaveNote({ keys: [key], duration: DURATIONS[n.beats], clef }))
         note.setStemStyle(INK) // stems carry their own default (black), not the context's currentColor
         const place = `${n.pitch.letter}/${key.split('/')[1]}`
         const before = shown.get(place) ?? 0
@@ -71,7 +76,7 @@ export function drawGuideToneSystem(
       allNotes[l]?.push(...notes)
       ties[l]?.push(...bar.lines[l].map((n) => n.tie))
       xsNotes[l]?.push(notes)
-      return new vf.Voice({ numBeats: 4, beatValue: 4 }).setMode(vf.Voice.Mode.SOFT).addTickables(notes)
+      return new vf.Voice({ numBeats: beats, beatValue: 4 }).setMode(vf.Voice.Mode.SOFT).addTickables(notes)
     })
     const [s0] = staves
     const room = width - ((s0?.getNoteStartX() ?? x) - x) - 20

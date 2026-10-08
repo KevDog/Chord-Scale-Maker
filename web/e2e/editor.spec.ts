@@ -221,3 +221,12 @@ test('levels take over a library chart’s own scale choices, and Standard bring
   await expect(text).toHaveValue(/A7b9 +\| A Phrygian Dominant/) // the chart's choice, not Half-Whole
   await expect(page.getByRole('status').filter({ hasText: /in this browser/ })).toHaveText('Edits are saved in this browser as your version.')
 })
+
+test('a waltz’s guide tones are in 3/4: dotted halves, three beats a bar', async ({ page }) => {
+  await page.goto('/editor?chart=someday_my_prince_will_come')
+  await page.getByRole('group', { name: 'Sheet' }).getByText('Guide tones', { exact: true }).click()
+  const line1 = page.locator('svg[aria-label^="Line 1:"]').first()
+  await expect(line1).toBeVisible()
+  await expect(line1.locator('.vf-timesignature, g.vf-timesignature').first()).toBeAttached()
+  await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
+})
