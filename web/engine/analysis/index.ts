@@ -40,8 +40,9 @@ export function analyse(doc: ChartDoc): Analysis {
   const bars = formBars(doc)
   const stream = buildStream(rows, bars)
   const cadences = findCadences(stream)
-  const span = stream.length ? Math.round((stream.at(-1)?.start ?? 0) + (stream.at(-1)?.bars ?? 0) - (stream[0]?.start ?? 0)) : 0
-  const blues = bluesKey(stream, bars ?? span)
+  const form = stream.filter((e) => e.part === 'form')
+  const span = form.length ? Math.round((form.at(-1)?.start ?? 0) + (form.at(-1)?.bars ?? 0) - (form[0]?.start ?? 0)) : 0
+  const blues = bluesKey(form, bars ?? span)
   const stated = parseKey(meta(doc, 'key'))
   const global = blues ?? stated ?? scoreKey(stream, cadences)
   const keyFrom = blues ? 'blues' : stated ? 'key:' : global ? 'scored' : 'none'

@@ -109,6 +109,16 @@ export function serializeChart(doc: ChartDoc): string {
   return out.join('\n') + '\n'
 }
 
+/**
+ * sections outside the form: an Intro before it, a Coda, Tag or Ending after it ("Tag 2" too). They print where
+ * they stand; the analysis and the guide tone timeline treat each as its own piece, around the repeating form.
+ */
+const OUTSIDE = /^(intro|coda|tag|ending)(\s*\d+)?$/i
+export const isOutsideForm = (section: string): boolean => OUTSIDE.test(section.trim())
+/** before the form (an intro), the form itself, or after it */
+export type FormPart = 'before' | 'form' | 'after'
+export const formPart = (section: string): FormPart => (!isOutsideForm(section) ? 'form' : /^intro/i.test(section.trim()) ? 'before' : 'after')
+
 /** a meta value as written (the last line wins), or the fallback */
 const metaValue = (doc: ChartDoc, key: MetaKey, fallback = ''): string =>
   doc.lines.reduce((v, l) => (l.kind === 'meta' && l.key === key ? l.value : v), fallback)

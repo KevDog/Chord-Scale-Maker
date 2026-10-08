@@ -1,23 +1,23 @@
 # Roadmap
 
-Ideas agreed in principle but not scheduled. Each gets a plan or a PR of its own when it's picked up.
+Ideas agreed in principle but not scheduled, and work in progress. Each gets a plan or a PR of its own when it's
+picked up.
 
-## Intros, codas, tags and endings
+## In progress
 
-**Today:** a chart has no notion of them. Section labels are free text and the whole chart is one repeating form:
-every row prints, and the analyser (plan-analysis.md) treats the last chord as resolving to the first. The 222
-Colorado Cookbook charts leave intros, codas, tags, vamps and endings out, and 43 of them say so in a comment
-(`# the intro vamp (Db7#9 C7#9) … is left out`).
+### The Changes sheet
 
-**Proposal:** sections named `Intro`, `Coda`, `Tag` or `Ending` (matched case-insensitively, with an optional number:
-`Tag 2`) print like any other, but sit outside the form.
+A third sheet beside Scales and Guide tones: the chart as a study lead sheet, chords over slashes (VexFlow), with
+the Roman numerals and scales from the analysis under each chord and key-area labels. Decisions taken: VexFlow
+slash staves; a study sheet (numerals and scales, each with its own toggle, both on); back-to-back `@copy` as
+repeat signs, later copies written out as "A3 (= A1)"; 1st/2nd endings later; a `time:` meta line (default 4/4,
+3/4 on the waltzes); intros before the form and codas after it under "Coda (after the last chorus)", no segno or
+coda symbols yet; four bars a line (two on phones), each section on a new line; behind a feature flag, off.
 
-- The analyser leaves them out of the repeating form: the turnaround into the top resolves to the form's first bar,
-  not the intro's, and they don't open or close key areas for the form. Each is analysed on its own, in the key it
-  sits next to (an intro in the key of bar 1, a coda or ending in the key of the form's last bar).
-- Sheets print them where they stand in the chart, with the section label as written.
-- The help page and README describe the convention; `form:` counts only the form's bars.
-- The cookbook charts' left-out intros and codas could then be added from the lead sheets.
+## Next
 
-**Open questions:** whether a vamp that repeats "on cue" needs a repeat mark on the sheet, and whether a coda
-should print after a visual break.
+### The cookbook's intros and codas
+
+Intros, codas, tags and endings now have a home (sections named `Intro`, `Coda`, `Tag`, `Ending`: outside the
+form). The 222 Colorado Cookbook charts left them out, and 43 say so in a comment (`# the intro vamp (Db7#9 C7#9)
+… is left out`); they can be transcribed from the lead sheets.

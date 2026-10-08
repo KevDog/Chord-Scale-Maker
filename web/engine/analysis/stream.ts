@@ -1,4 +1,4 @@
-import type { LinedRow } from '../chart'
+import { type FormPart, formPart, type LinedRow } from '../chart'
 import { pcOf, type Spelled } from '../pitch'
 import { readChord } from '../qualities'
 
@@ -35,6 +35,12 @@ const FAMILY: Readonly<Record<string, Family>> = {
 export type Entry = Readonly<{
   /** the expanded rows this entry covers (identical consecutive rows are one entry) */
   rows: readonly number[]
+  /** in the form, or an intro before it or a coda after it (chart.ts formPart) */
+  part: FormPart
+  /** the entries it moves to and comes from: the form wraps, an intro leads into bar 1, a coda follows the form's
+   * last chord and leads nowhere */
+  next: number | null
+  prev: number | null
   /** the section label of its first row */
   section: string
   chord: string
@@ -74,18 +80,31 @@ function timing(rows: readonly LinedRow[], formBars?: number): { start: number; 
 }
 
 export function buildStream(rows: readonly LinedRow[], formBars?: number): Entry[] {
-  const times = timing(rows, formBars)
+  // each part is timed on its own: the form to its stated length, an intro or coda to its own last bar
+  const parts = rows.map((r) => formPart(r.section))
+  const times: { start: number; bars: number }[] = []
+  for (const part of ['before', 'form', 'after'] as const) {
+    const idx = rows.flatMap((_, i) => (parts[i] === part ? [i] : []))
+    timing(
+      idx.map((i) => rows[i] as LinedRow),
+      part === 'form' ? formBars : undefined,
+    ).forEach((t, k) => (times[idx[k] ?? 0] = t))
+  }
   const out: Entry[] = []
   rows.forEach((row, i) => {
     const t = times[i] ?? { start: 1, bars: 1 }
+    const part = parts[i] ?? 'form'
     const prev = out[out.length - 1]
-    if (prev && prev.chord === row.chord) {
+    if (prev && prev.chord === row.chord && prev.part === part) {
       out[out.length - 1] = { ...prev, rows: [...prev.rows, i], bars: prev.bars + t.bars }
       return
     }
     const reading = readChord(row.chord)
     out.push({
       rows: [i],
+      part,
+      next: null,
+      prev: null,
       section: row.section,
       chord: row.chord,
       root: reading?.root ?? null,
@@ -97,12 +116,29 @@ export function buildStream(rows: readonly LinedRow[], formBars?: number): Entry
       bars: t.bars,
     })
   })
-  return out
+  return link(out)
 }
 
-/** the next and previous entries, wrapping around the form */
-export const nextOf = (stream: readonly Entry[], i: number): Entry | undefined => stream[(i + 1) % stream.length]
-export const prevOf = (stream: readonly Entry[], i: number): Entry | undefined => stream[(i - 1 + stream.length) % stream.length]
+function link(entries: Entry[]): Entry[] {
+  const of = (part: FormPart): number[] => entries.flatMap((e, i) => (e.part === part ? [i] : []))
+  const [before, form, after] = [of('before'), of('form'), of('after')]
+  const at = (xs: readonly number[], k: number): number | null => xs[k] ?? null
+  const links = new Map<number, { next: number | null; prev: number | null }>()
+  form.forEach((i, k) => links.set(i, { next: at(form, (k + 1) % form.length), prev: at(form, (k - 1 + form.length) % form.length) }))
+  before.forEach((i, k) => links.set(i, { next: k + 1 < before.length ? at(before, k + 1) : at(form, 0), prev: k > 0 ? at(before, k - 1) : null }))
+  after.forEach((i, k) => links.set(i, { next: at(after, k + 1), prev: k > 0 ? at(after, k - 1) : at(form, form.length - 1) }))
+  return entries.map((e, i) => ({ ...e, ...links.get(i) }))
+}
+
+/** the next and previous entries (the form wraps; see Entry.next) */
+export const nextOf = (stream: readonly Entry[], i: number | null | undefined): Entry | undefined => {
+  const n = i === null || i === undefined ? null : stream[i]?.next
+  return n === null || n === undefined ? undefined : stream[n]
+}
+export const prevOf = (stream: readonly Entry[], i: number | null | undefined): Entry | undefined => {
+  const p = i === null || i === undefined ? null : stream[i]?.prev
+  return p === null || p === undefined ? undefined : stream[p]
+}
 
 /** b - a in semitones, 0..11 */
 export const interval = (a: number, b: number): number => (((b - a) % 12) + 12) % 12

@@ -1,4 +1,4 @@
-import type { Row } from './chart'
+import { formPart, type Row } from './chart'
 
 /**
  * When each chord of a guide tone sheet starts and how long it lasts, in beats of 4/4 (docs/plan-guide-tones.md):
@@ -43,8 +43,30 @@ function finalBars(rows: readonly Row[]): number {
 
 export type GuideEvent = Readonly<{ row: Row; chord: string; start: number; beats: number }> // in beats from 0
 
-/** when each chord starts and how long it lasts; rows that share a bar split it */
+/**
+ * when each chord starts and how long it lasts; rows that share a bar split it. An intro, the form and a coda are
+ * timed one after another, each to its own end, so an intro or coda can number its bars from 1.
+ */
 export function guideToneTimeline(rows: readonly Row[]): Readonly<{ events: readonly GuideEvent[]; diagnostics: readonly string[] }> {
+  const runs: Row[][] = []
+  for (const r of rows) {
+    const last = runs.at(-1)
+    if (last?.[0] && formPart(last[0].section) === formPart(r.section)) last.push(r)
+    else runs.push([r])
+  }
+  const events: GuideEvent[] = []
+  const diagnostics: string[] = []
+  let cursor = 0
+  for (const run of runs) {
+    const t = timeRun(run, cursor)
+    events.push(...t.events)
+    diagnostics.push(...t.diagnostics)
+    cursor = t.end
+  }
+  return { events, diagnostics }
+}
+
+function timeRun(rows: readonly Row[], from: number): Readonly<{ events: GuideEvent[]; diagnostics: string[]; end: number }> {
   const groups: Row[][] = []
   for (const r of rows) {
     const last = groups.at(-1)
@@ -53,7 +75,7 @@ export function guideToneTimeline(rows: readonly Row[]): Readonly<{ events: read
   }
   const diagnostics: string[] = []
   const events: GuideEvent[] = []
-  let cursor = 0
+  let cursor = from
   const lastBars = finalBars(rows)
   groups.forEach((group, g) => {
     const first = group[0]
@@ -76,5 +98,5 @@ export function guideToneTimeline(rows: readonly Row[]): Readonly<{ events: read
     })
     cursor += bars * BEATS
   })
-  return { events, diagnostics }
+  return { events, diagnostics, end: cursor }
 }

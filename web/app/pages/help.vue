@@ -144,6 +144,11 @@
           <UiCode>@copy A1 A2 8</UiCode> repeats section A1 as A2, eight bars later, which saves typing out every AABA
           tune twice.
         </li>
+        <li>
+          Name a section <UiCode>Intro</UiCode>, <UiCode>Coda</UiCode>, <UiCode>Tag</UiCode> or <UiCode>Ending</UiCode>
+          and it sits outside the form: it prints where it stands, but the tune's turnaround still goes back to bar 1,
+          not to the intro. Number its bars from 1 if you like.
+        </li>
         <li><UiCode>title:</UiCode> and <UiCode>subtitle:</UiCode> set the heading. <UiCode>composer:</UiCode>, <UiCode>style:</UiCode>, <UiCode>key:</UiCode> and <UiCode>form:</UiCode> fill in the line under it (the subtitle, if there is one, takes the style's place), and lines starting with <UiCode>#</UiCode> are notes to yourself. A row can end in a note too, after a space and a <UiCode>#</UiCode>: the library's say why each scale was chosen.</li>
         <li>Anything I can't make sense of is listed under the text box, with the line number.</li>
       </ul>
