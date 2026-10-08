@@ -5,9 +5,10 @@ style: Even 8ths
 key: Fm
 form: A, 16 bars
 source: Colorado Cookbook, p. 47
+# analysis: 2026-10-08, rules v1; F minor, modal
 
 # section | bar | chord | scale
-A | 1  | Fm
-A | 5  | Db7
-A | 9  | Dm
-A | 13 | Fm
+A | 1  | Fm  | F Dorian       # modal minor: Dorian
+A | 5  | Db7 | Db Mixolydian  # modal: its own mode
+A | 9  | Dm  | D Dorian       # modal minor: Dorian
+A | 13 | Fm  | F Dorian       # modal minor: Dorian

@@ -4,21 +4,22 @@ style: Medium up
 key: Fm
 form: A, 16 bars
 source: Colorado Cookbook, p. 134
+# analysis: 2026-10-08, rules v1; F minor
 
 # section | bar | chord | scale
-A | 1  | Fm
-A | 2  | Dm7b5
-A | 3  | Gm7
-A | 4  | C7b9
-A | 5  | Fm
-A | 6  | Dm7b5
-A | 7  | Cm7
-A | 8  | F7
-A | 9  | Bbm7
-A | 10 | Eb7
-A | 11 | Abm7
-A | 12 | Db7
-A | 13 | Gbm7
-A | 14 | Cb7
-A | 15 | Gm7
-A | 16 | C7
+A | 1  | Fm    | F Dorian             # tonic minor: Dorian by convention
+A | 2  | Dm7b5 | D Locrian            # viø7 in F minor: the b9 is in the key
+A | 3  | Gm7   | G Dorian             # ii of the ii–V to F minor
+A | 4  | C7b9  | C Phrygian Dominant  # V7 of F minor: b9 and b13 are in the key
+A | 5  | Fm    | F Dorian             # tonic minor: Dorian by convention
+A | 6  | Dm7b5 | D Locrian            # viø7 in F minor: the b9 is in the key
+A | 7  | Cm7   | C Dorian             # ii of the ii–V to Bb minor
+A | 8  | F7    | F Mixolydian b6      # V7/iv in F minor: the b13 is in the key
+A | 9  | Bbm7  | Bb Dorian            # ii of the ii–V to Ab minor
+A | 10 | Eb7   | Eb Mixolydian        # V7/biii in F minor: natural tensions
+A | 11 | Abm7  | Ab Dorian            # ii of the ii–V to Gb minor
+A | 12 | Db7   | Db Lydian Dominant   # V7/bii in F minor: the #11 is in the key
+A | 13 | Gbm7  | Gb Dorian            # ii of Cb7: Dorian
+A | 14 | Cb7   | Cb Mixolydian        # passing ii–V: its own key
+A | 15 | Gm7   | G Dorian             # ii of the ii–V to F minor
+A | 16 | C7    | C Phrygian Dominant  # V7 of F minor: b9 and b13 are in the key

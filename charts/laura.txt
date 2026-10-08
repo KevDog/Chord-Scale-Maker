@@ -4,47 +4,53 @@ style: Ballad
 key: C
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 122
+# analysis: 2026-10-08, rules v1; C
 
 # section | bar | chord | scale
 # the lead sheet offers Bm7 E7 Am7 D7 over bar 4 and Am7 D7 Gm7 C7 over bar 8 as turnarounds;
 # the solo form (repeat to the top) is written, not the ending
-A | 1  | Am9
-A | 2  | D7b9
-A | 3  | GMaj7
-A | 3  | C7
-A | 4  | GMaj7
-A | 5  | Gm9
-A | 6  | C7b9
-A | 7  | FMaj7
-A | 7  | Bb7
-A | 8  | FMaj7
-B | 9  | Fm7
-B | 10 | Bb7b9
-B | 11 | EbMaj7
-B | 12 | Cm7
-B | 13 | Am7b5
-B | 14 | D7b9
-B | 15 | GMaj7
-B | 16 | Bm7
-B | 16 | E7b9
-C | 17 | Am9
-C | 18 | D7b9
-C | 19 | GMaj7
-C | 19 | C7
-C | 20 | GMaj7
-C | 21 | Gm9
-C | 22 | C7b9
-C | 23 | FMaj7
-C | 23 | Bb7
-C | 24 | FMaj7
-D | 25 | Fm7
-D | 26 | G7b9
-D | 27 | CMaj7
-D | 28 | D7
-D | 29 | Ebm7
-D | 29 | Ab7b9
-D | 30 | Dm7
-D | 30 | G9
-D | 31 | C6/9
-D | 32 | Bm7
-D | 32 | E7b9
+# area: G major (bars 1–4)
+A | 1  | Am9    | A Dorian                  # ii of the ii–V to G
+A | 2  | D7b9   | D Half-Whole Diminished   # V7 of G: the b9 from the symbol
+A | 3  | GMaj7  | G Ionian                  # tonic: the 4th is in the key
+A | 3  | C7     | C Lydian Dominant         # IV7 in G, not resolving: the #11 is in the key
+A | 4  | GMaj7  | G Ionian                  # tonic: the 4th is in the key
+# area: C major (bars 5–8)
+A | 5  | Gm9    | G Dorian                  # ii of the ii–V to F
+A | 6  | C7b9   | C Half-Whole Diminished   # V7/IV in C: the b9 from the symbol
+A | 7  | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
+A | 7  | Bb7    | Bb Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A | 8  | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
+# area: Eb major (bars 9–12)
+B | 9  | Fm7    | F Dorian                  # ii of the ii–V to Eb
+B | 10 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+B | 11 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+B | 12 | Cm7    | C Aeolian                 # vi: the b13 is in the key
+# area: G major (bars 13–20)
+B | 13 | Am7b5  | A Locrian                 # iiø7 of the ii–V to G: the b9 is in the key
+B | 14 | D7b9   | D Half-Whole Diminished   # V7 of G: the b9 from the symbol
+B | 15 | GMaj7  | G Ionian                  # tonic: the 4th is in the key
+B | 16 | Bm7    | B Dorian                  # ii of the ii–V to A minor
+B | 16 | E7b9   | E Phrygian Dominant       # V7/ii in G: the b13 is in the key, the b9 from the symbol
+C | 17 | Am9    | A Dorian                  # ii of the ii–V to G
+C | 18 | D7b9   | D Half-Whole Diminished   # V7 of G: the b9 from the symbol
+C | 19 | GMaj7  | G Ionian                  # tonic: the 4th is in the key
+C | 19 | C7     | C Lydian Dominant         # IV7 in G, not resolving: the #11 is in the key
+C | 20 | GMaj7  | G Ionian                  # tonic: the 4th is in the key
+# area: C major (bars 21–32)
+C | 21 | Gm9    | G Dorian                  # ii of the ii–V to F
+C | 22 | C7b9   | C Half-Whole Diminished   # V7/IV in C: the b9 from the symbol
+C | 23 | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
+C | 23 | Bb7    | Bb Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+C | 24 | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
+D | 25 | Fm7    | F Dorian                  # a borrowed minor chord: Dorian, its own key
+D | 26 | G7b9   | G Half-Whole Diminished   # V7 of C: the b9 from the symbol
+D | 27 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+D | 28 | D7     | D Mixolydian              # II7 in C, not resolving: natural tensions
+D | 29 | Ebm7   | Eb Dorian                 # ii of Ab7b9: Dorian
+D | 29 | Ab7b9  | Ab Half-Whole Diminished  # passing ii–V: its own key; b9 from the symbol
+D | 30 | Dm7    | D Dorian                  # ii of the ii–V to C
+D | 30 | G9     | G Mixolydian              # V7 of C: natural tensions
+D | 31 | C6/9   | C Ionian                  # tonic: the 4th is in the key
+D | 32 | Bm7    | B Dorian                  # ii of the ii–V to A minor
+D | 32 | E7b9   | E Phrygian Dominant       # V7/vi in C: b9 and b13 are in the key

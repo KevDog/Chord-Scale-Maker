@@ -5,17 +5,18 @@ style: Mixed
 key: Fm
 form: AB, 16 bars
 source: Colorado Cookbook, p. 189
+# analysis: 2026-10-08, rules v1; F minor
 
 # section | bar | chord | scale
-A | 1  | FmMaj7
-A | 3  | C7b9
-A | 5  | FmMaj7
-A | 7  | F7b9
-B | 9  | Bbm7
-B | 10 | Eb7
-B | 11 | Abm7
-B | 12 | Db7
-B | 13 | Gbm7
-B | 14 | Cb7
-B | 15 | Gm7b5
-B | 16 | C7b9
+A | 1  | FmMaj7 | F Melodic Minor      # from the symbol: minor-major 7th
+A | 3  | C7b9   | C Phrygian Dominant  # V7 of F minor: b9 and b13 are in the key
+A | 5  | FmMaj7 | F Melodic Minor      # from the symbol: minor-major 7th
+A | 7  | F7b9   | F Phrygian Dominant  # V7/iv in F minor: the b13 is in the key, the b9 from the symbol
+B | 9  | Bbm7   | Bb Dorian            # ii of the ii–V to Ab minor
+B | 10 | Eb7    | Eb Mixolydian        # V7/biii in F minor: natural tensions
+B | 11 | Abm7   | Ab Dorian            # ii of the ii–V to Gb minor
+B | 12 | Db7    | Db Lydian Dominant   # V7/bii in F minor: the #11 is in the key
+B | 13 | Gbm7   | Gb Dorian            # ii of Cb7: Dorian
+B | 14 | Cb7    | Cb Mixolydian        # passing ii–V: its own key
+B | 15 | Gm7b5  | G Locrian            # iiø7 of the ii–V to F minor: the b9 is in the key
+B | 16 | C7b9   | C Phrygian Dominant  # V7 of F minor: b9 and b13 are in the key

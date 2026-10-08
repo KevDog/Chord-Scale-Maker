@@ -5,13 +5,14 @@ style: Blues
 key: Bbm
 form: A, 12 bars
 source: Colorado Cookbook, p. 73
+# analysis: 2026-10-08, rules v1; Bb minor
 
 # section | bar | chord | scale
-A | 1  | Bbm
-A | 5  | Ebm
-A | 7  | Bbm
-A | 9  | Cm7b5
-A | 10 | F7
-A | 11 | Bbm
-A | 12 | Cm7b5
-A | 12 | F7
+A | 1  | Bbm   | Bb Dorian            # tonic minor: Dorian by convention
+A | 5  | Ebm   | Eb Dorian            # iv: Dorian, the key’s own notes
+A | 7  | Bbm   | Bb Dorian            # tonic minor: Dorian by convention
+A | 9  | Cm7b5 | C Locrian            # iiø7 of the ii–V to Bb minor: the b9 is in the key
+A | 10 | F7    | F Phrygian Dominant  # V7 of Bb minor: b9 and b13 are in the key
+A | 11 | Bbm   | Bb Dorian            # tonic minor: Dorian by convention
+A | 12 | Cm7b5 | C Locrian            # iiø7 of the ii–V to Bb minor: the b9 is in the key
+A | 12 | F7    | F Phrygian Dominant  # V7 of Bb minor: b9 and b13 are in the key

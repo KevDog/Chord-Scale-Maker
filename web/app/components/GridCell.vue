@@ -17,7 +17,7 @@ import { cellError, LIMITS } from '~~/engine'
  * the input, marked invalid with the reason in its tooltip, so the user can fix them (the doc keeps
  * the last good value).
  */
-const props = withDefaults(defineProps<{ value: string; label?: string; maxLength?: number; dense?: boolean }>(), {
+const props = withDefaults(defineProps<{ value: string; label?: string; maxLength?: number; dense?: boolean; meta?: boolean }>(), {
   label: undefined,
   maxLength: LIMITS.maxCell,
 })
@@ -37,7 +37,7 @@ watch(
 
 function onInput(value: string): void {
   draft.value = value
-  error.value = cellError(value, props.maxLength)
+  error.value = cellError(value, props.maxLength, props.meta)
   if (!error.value) emit('update', value)
 }
 </script>

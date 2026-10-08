@@ -4,36 +4,37 @@ style: Medium
 key: F
 form: AA, 32 bars
 source: Colorado Cookbook, p. 99
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
-A1 | 1  | FMaj7
-A1 | 3  | Em7
-A1 | 4  | A7
-A1 | 5  | Dm7
-A1 | 6  | G7
-A1 | 7  | Cm7
-A1 | 8  | F7
-A1 | 9  | BbMaj7
-A1 | 10 | Eb7
-A1 | 11 | FMaj7
-A1 | 13 | Bm7b5
-A1 | 14 | E7b9
-A1 | 15 | Am7
-A1 | 15 | Abdim7
-A1 | 16 | Gm7
-A1 | 16 | Gb7/C
-A2 | 17 | FMaj7
-A2 | 19 | Em7
-A2 | 20 | A7
-A2 | 21 | Dm7
-A2 | 22 | G7
-A2 | 23 | Cm7
-A2 | 24 | F7
-A2 | 25 | BbMaj7
-A2 | 26 | Eb7
-A2 | 27 | Am7b5
-A2 | 28 | D7b9
-A2 | 29 | G7
-A2 | 30 | Gm7
-A2 | 30 | C7
-A2 | 31 | F6/9
+A1 | 1  | FMaj7  | F Ionian                  # tonic: the 4th is in the key
+A1 | 3  | Em7    | E Dorian                  # ii of the ii–V to D minor
+A1 | 4  | A7     | A Phrygian Dominant       # V7/vi in F: b9 and b13 are in the key
+A1 | 5  | Dm7    | D Dorian                  # ii of the ii–V to C minor
+A1 | 6  | G7     | G Mixolydian              # V7/v in F: natural tensions
+A1 | 7  | Cm7    | C Dorian                  # ii of the ii–V to Bb
+A1 | 8  | F7     | F Mixolydian              # V7/IV in F: natural tensions
+A1 | 9  | BbMaj7 | Bb Lydian                 # IV: the #4 is the key’s 7th
+A1 | 10 | Eb7    | Eb Lydian Dominant        # back door bVII7 to FMaj7: the #11 is in the key
+A1 | 11 | FMaj7  | F Ionian                  # tonic: the 4th is in the key
+A1 | 13 | Bm7b5  | B Locrian                 # iiø7 of the ii–V to A minor: the b9 is in the key
+A1 | 14 | E7b9   | E Phrygian Dominant       # V7/iii in F: b9 and b13 are in the key
+A1 | 15 | Am7    | A Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+A1 | 15 | Abdim7 | Ab Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+A1 | 16 | Gm7    | G Dorian                  # ii: Dorian, the key’s own notes
+A1 | 16 | Gb7/C  | Gb Lydian Dominant        # tritone substitute: resolves down a half step to FMaj7
+A2 | 17 | FMaj7  | F Ionian                  # tonic: the 4th is in the key
+A2 | 19 | Em7    | E Dorian                  # ii of the ii–V to D minor
+A2 | 20 | A7     | A Phrygian Dominant       # V7/vi in F: b9 and b13 are in the key
+A2 | 21 | Dm7    | D Dorian                  # ii of the ii–V to C minor
+A2 | 22 | G7     | G Mixolydian              # V7/v in F: natural tensions
+A2 | 23 | Cm7    | C Dorian                  # ii of the ii–V to Bb
+A2 | 24 | F7     | F Mixolydian              # V7/IV in F: natural tensions
+A2 | 25 | BbMaj7 | Bb Lydian                 # IV: the #4 is the key’s 7th
+A2 | 26 | Eb7    | Eb Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A2 | 27 | Am7b5  | A Locrian                 # iiø7 of D7b9: the b9 is in the key
+A2 | 28 | D7b9   | D Half-Whole Diminished   # extended dominant: V7 of G7; b9 from the symbol
+A2 | 29 | G7     | G Mixolydian              # II7 in F, not resolving: natural tensions
+A2 | 30 | Gm7    | G Dorian                  # ii of the ii–V to F
+A2 | 30 | C7     | C Mixolydian              # V7 of F: natural tensions
+A2 | 31 | F6/9   | F Ionian                  # tonic: the 4th is in the key

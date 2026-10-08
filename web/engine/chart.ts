@@ -15,7 +15,8 @@ export type MetaKey = 'title' | 'subtitle' | 'key' | 'bars' | 'composer' | 'styl
 export const META_KEYS: readonly MetaKey[] = ['title', 'subtitle', 'key', 'bars', 'composer', 'style', 'form', 'source']
 export type ChartLine =
   | Readonly<{ kind: 'meta'; key: MetaKey; value: string }>
-  | Readonly<{ kind: 'row'; section: string; bar: string; chord: string; scale: string }> // scale '' = default
+  // scale '' = default; comment: a trailing "# …" (the analysis, docs/plan-analysis.md §12.1), kept verbatim
+  | Readonly<{ kind: 'row'; section: string; bar: string; chord: string; scale: string; comment?: string }>
   | Readonly<{ kind: 'copy'; src: string; dst: string; offset: number }>
   | Readonly<{ kind: 'comment'; text: string }>
   | Readonly<{ kind: 'blank' }>
@@ -46,11 +47,16 @@ function parseLine(line: string): ChartLine | string {
       return `section name longer than ${LIMITS.maxCell} characters`
     return { kind: 'copy', src, dst, offset: Number(offset) }
   }
-  const cells = line.split('|').map((c) => c.trim())
+  // a trailing comment starts at a # with space on both sides (F#m7 and C# Lydian have none before theirs)
+  const hash = /\s#(?=\s|$)/.exec(line)
+  const body = hash ? line.slice(0, hash.index) : line
+  const comment = hash ? line.slice(hash.index + 2).trim() : undefined
+  const cells = body.split('|').map((c) => c.trim())
   if (cells.length !== 3 && cells.length !== 4) return 'expected  section | bar | chord [| scale]'
   if (cells.some((c) => c.length > LIMITS.maxCell)) return `cell longer than ${LIMITS.maxCell} characters`
+  if (comment !== undefined && comment.length > LIMITS.maxMeta) return `comment longer than ${LIMITS.maxMeta} characters`
   const [section = '', bar = '', chord = '', scale = ''] = cells
-  return { kind: 'row', section, bar, chord, scale }
+  return comment === undefined ? { kind: 'row', section, bar, chord, scale } : { kind: 'row', section, bar, chord, scale, comment }
 }
 
 /** tolerant parse: bad lines become 'invalid' lines plus a diagnostic, never an exception */
@@ -78,12 +84,17 @@ export function serializeChart(doc: ChartDoc): string {
   const rows = doc.lines.filter((l) => l.kind === 'row')
   const width = (f: (r: (typeof rows)[number]) => string): number => Math.max(0, ...rows.map((r) => f(r).length))
   const [ws, wb, wc] = [width((r) => r.section), width((r) => r.bar), width((r) => r.chord)]
+  const wsc = Math.max(0, ...rows.filter((r) => r.comment !== undefined).map((r) => r.scale.length)) // comments line up
   const out = doc.lines.map((l): string => {
     switch (l.kind) {
       case 'meta':
         return `${l.key}: ${l.value}`
       case 'row': {
         const head = `${l.section.padEnd(ws)} | ${l.bar.padEnd(wb)} | `
+        if (l.comment !== undefined) {
+          const cells = l.scale ? `${l.chord.padEnd(wc)} | ${l.scale.padEnd(wsc)}` : l.chord.padEnd(wc)
+          return `${head}${cells}  #${l.comment ? ` ${l.comment}` : ''}`
+        }
         return l.scale ? `${head}${l.chord.padEnd(wc)} | ${l.scale}` : `${head}${l.chord}`
       }
       case 'copy':
@@ -124,10 +135,13 @@ export function chartHeading(doc: ChartDoc): Readonly<{ title: string; subtitle:
   return { title: metaValue(doc, 'title', 'Untitled'), subtitle: line.filter(Boolean).join(' · '), composer: metaValue(doc, 'composer') }
 }
 
-/** chart rows in order with @copy applied (a copy repeats the rows seen so far); at most maxExpandedRows */
-export function expandRows(doc: ChartDoc): Parsed<readonly Row[]> {
+/** an expanded row and the line it came from (a @copy repeat points at its source row's line) */
+export type LinedRow = Row & Readonly<{ line: number }>
+
+/** chart rows in order with @copy applied, each with its source line index; at most maxExpandedRows */
+export function expandRowLines(doc: ChartDoc): Parsed<readonly LinedRow[]> {
   const diagnostics: Diagnostic[] = []
-  const rows: Row[] = []
+  const rows: LinedRow[] = []
   const tooMany = (line: number): Diagnostic => ({
     line,
     message: `more than ${LIMITS.maxExpandedRows} rows after @copy`,
@@ -139,7 +153,7 @@ export function expandRows(doc: ChartDoc): Parsed<readonly Row[]> {
         diagnostics.push(tooMany(i + 1))
         break
       }
-      rows.push({ section: l.section, bar: l.bar, chord: l.chord, scale: l.scale })
+      rows.push({ section: l.section, bar: l.bar, chord: l.chord, scale: l.scale, line: i })
     }
     if (l.kind !== 'copy') continue
     const src = rows.filter((r) => r.section === l.src)
@@ -155,6 +169,12 @@ export function expandRows(doc: ChartDoc): Parsed<readonly Row[]> {
     rows.push(...src.map((r) => ({ ...r, section: l.dst, bar: String(Number(r.bar) + l.offset) })))
   }
   return { value: rows, diagnostics }
+}
+
+/** chart rows in order with @copy applied (a copy repeats the rows seen so far); at most maxExpandedRows */
+export function expandRows(doc: ChartDoc): Parsed<readonly Row[]> {
+  const { value, diagnostics } = expandRowLines(doc)
+  return { value: value.map(({ section, bar, chord, scale }) => ({ section, bar, chord, scale })), diagnostics }
 }
 
 /** the row's scale, else the chord quality's default; null means "ask the user" */

@@ -4,18 +4,22 @@ style: Medium up
 key: C
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 265
+# analysis: 2026-10-08, rules v1; C
 
 # section | bar | chord | scale
-A1 | 1  | Gm7b5
-A1 | 2  | C7b9
-A1 | 3  | Fm
-A1 | 5  | Dm7b5
-A1 | 6  | G7alt
-A1 | 7  | CMaj7
+# area: F minor (bars 1–3)
+A1 | 1  | Gm7b5  | G Locrian            # iiø7 of the ii–V to F minor: the b9 is in the key
+A1 | 2  | C7b9   | C Phrygian Dominant  # V7 of F minor: b9 and b13 are in the key
+A1 | 3  | Fm     | F Dorian             # tonic minor: Dorian by convention
+# area: C major (bars 5–7)
+A1 | 5  | Dm7b5  | D Locrian            # iiø7 of the ii–V to C: the b9 is in the key
+A1 | 6  | G7alt  | G Altered            # from the symbol: altered
+A1 | 7  | CMaj7  | C Ionian             # tonic: the 4th is in the key
 @copy A1 A2 8
-B  | 17 | Cm7
-B  | 18 | F7
-B  | 19 | BbMaj7
-B  | 21 | Ab7#11
-B  | 23 | G7alt
+# area: Bb major (bars 17–23)
+B  | 17 | Cm7    | C Dorian             # ii of the ii–V to Bb
+B  | 18 | F7     | F Mixolydian         # V7 of Bb: natural tensions
+B  | 19 | BbMaj7 | Bb Ionian            # tonic: the 4th is in the key
+B  | 21 | Ab7#11 | Ab Lydian Dominant   # tritone substitute: resolves down a half step to G7alt
+B  | 23 | G7alt  | G Altered            # from the symbol: altered
 @copy A1 A3 24

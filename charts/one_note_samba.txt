@@ -5,46 +5,53 @@ style: Latin
 key: Bb
 form: ABC, 40 bars
 source: Colorado Cookbook, p. 170
+# analysis: 2026-10-08, rules v1; Bb
 
 # section | bar | chord | scale
-A | 1  | Dm7
-A | 2  | Db7
-A | 3  | Cm7
-A | 4  | B7#11
-A | 5  | Dm7
-A | 6  | Db7
-A | 7  | Cm7
-A | 8  | B7#11
-A | 9  | Fm7
-A | 10 | Bb7
-A | 11 | EbMaj7
-A | 12 | Ab7
-A | 13 | Dm7
-A | 14 | Db7
-A | 15 | Cm7
-A | 15 | B7#11
-A | 16 | BbMaj7
-B | 17 | Ebm7
-B | 18 | Ab7
-B | 19 | DbMaj7
-B | 21 | Dbm7
-B | 22 | Gb7
-B | 23 | CbMaj7
-B | 24 | Cm7b5
-B | 24 | F7
-C | 25 | Dm7
-C | 26 | Db7
-C | 27 | Cm7
-C | 28 | B7#11
-C | 29 | Dm7
-C | 30 | Db7
-C | 31 | Cm7
-C | 32 | B7#11
-C | 33 | Fm7
-C | 34 | Bb7
-C | 35 | EbMaj7
-C | 36 | Ab7
-C | 37 | DbMaj7
-C | 38 | C7
-C | 39 | CbMaj7
-C | 40 | Bb
+# area: Bb major (bars 1–16)
+A | 1  | Dm7    | D Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
+A | 2  | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
+A | 3  | Cm7    | C Dorian             # ii: Dorian, the key’s own notes
+A | 4  | B7#11  | B Lydian Dominant    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A | 5  | Dm7    | D Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
+A | 6  | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
+A | 7  | Cm7    | C Dorian             # ii: Dorian, the key’s own notes
+A | 8  | B7#11  | B Lydian Dominant    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A | 9  | Fm7    | F Dorian             # ii of the ii–V to Eb
+A | 10 | Bb7    | Bb Mixolydian        # V7/IV in Bb: natural tensions
+A | 11 | EbMaj7 | Eb Lydian            # IV: the #4 is the key’s 7th
+A | 12 | Ab7    | Ab Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A | 13 | Dm7    | D Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
+A | 14 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
+A | 15 | Cm7    | C Dorian             # ii: Dorian, the key’s own notes
+A | 15 | B7#11  | B Lydian Dominant    # tritone substitute: resolves down a half step to BbMaj7
+A | 16 | BbMaj7 | Bb Ionian            # tonic: the 4th is in the key
+# area: Db major (bars 17–19)
+B | 17 | Ebm7   | Eb Dorian            # ii of the ii–V to Db
+B | 18 | Ab7    | Ab Mixolydian        # V7 of Db: natural tensions
+B | 19 | DbMaj7 | Db Ionian            # tonic: the 4th is in the key
+# area: Cb major (bars 21–25)
+B | 21 | Dbm7   | Db Dorian            # ii of the ii–V to Cb
+B | 22 | Gb7    | Gb Mixolydian        # V7 of Cb: natural tensions
+B | 23 | CbMaj7 | Cb Ionian            # tonic: the 4th is in the key
+B | 24 | Cm7b5  | C Locrian            # iiø7 of F7: the b9 is in the key
+B | 24 | F7     | F Phrygian Dominant  # passing ii–V: its own key: b9 and b13 are in the key
+C | 25 | Dm7    | D Dorian             # a borrowed minor chord: Dorian, its own key
+# area: Bb major (bars 26–35)
+C | 26 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
+C | 27 | Cm7    | C Dorian             # ii: Dorian, the key’s own notes
+C | 28 | B7#11  | B Lydian Dominant    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+C | 29 | Dm7    | D Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
+C | 30 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
+C | 31 | Cm7    | C Dorian             # ii: Dorian, the key’s own notes
+C | 32 | B7#11  | B Lydian Dominant    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+C | 33 | Fm7    | F Dorian             # ii of the ii–V to Eb
+C | 34 | Bb7    | Bb Mixolydian        # V7/IV in Bb: natural tensions
+C | 35 | EbMaj7 | Eb Lydian            # IV: the #4 is the key’s 7th
+# area: Db major (bars 36–37)
+C | 36 | Ab7    | Ab Mixolydian        # V7 of Db: natural tensions
+C | 37 | DbMaj7 | Db Ionian            # tonic: the 4th is in the key
+# area: Cb major (bars 38–40)
+C | 38 | C7     | C Lydian Dominant    # tritone substitute: resolves down a half step to CbMaj7
+C | 39 | CbMaj7 | Cb Ionian            # tonic: the 4th is in the key
+C | 40 | Bb     | Bb Lydian            # a non-tonic major chord: Lydian

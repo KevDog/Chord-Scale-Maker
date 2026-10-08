@@ -106,7 +106,7 @@ test('interval labels show on screen, against the chord root, on until turned of
 test('guide tones draw both lines, four bars a system, without the scale controls', async ({ page }) => {
   await page.goto('/editor?chart=autumn_leaves')
   await page.getByRole('group', { name: 'Sheet' }).getByText('Guide tones', { exact: true }).click()
-  await expect(page.getByText('Full Form, Alternate Changes · F minor · AAB (Guide Tone Lines)')).toBeVisible()
+  await expect(page.getByText('Full Form, Alternate Changes · G minor · AAB (Guide Tone Lines)')).toBeVisible()
   await expect(page.locator('svg[aria-label^="Line 1:"]')).toHaveCount(8) // 32 bars
   await expect(page.locator('svg[aria-label^="Line 2:"]')).toHaveCount(8)
   await expect(page.getByLabel('Start on')).toHaveCount(0)
@@ -206,7 +206,7 @@ test('the scale level writes its scales into the chart, keeps your own picks, an
   await expect(text).toHaveValue(/D7 +\| D Lydian Dominant/)
   await page.getByText('Standard', { exact: true }).click()
   await expect(text).toHaveValue(/Cm7 +\| C Dorian/)
-  await page.getByLabel('Scale for D7').first().selectOption('D Half-Whole Diminished') // back to the library's own
+  await page.getByLabel('Scale for D7').first().selectOption('D Phrygian Dominant') // back to the library's own
   await expect(status).toHaveText('Edits are saved in this browser as your version.') // the library version again
 })
 

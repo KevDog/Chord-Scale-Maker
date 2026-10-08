@@ -5,42 +5,45 @@ style: Mixed
 key: C
 form: AABC, 44 bars
 source: Colorado Cookbook, p. 252
+# analysis: 2026-10-08, rules v1; C
 
 # section | bar | chord | scale
-A1 | 1  | C7
-A1 | 5  | F7
-A1 | 7  | C7
-A1 | 8  | A7alt
-A1 | 9  | AbMaj7
-A1 | 10 | G7alt
-A1 | 11 | C7
-A1 | 11 | A7
-A1 | 12 | D7
-A1 | 12 | G7alt
-A2 | 13 | C7
-A2 | 17 | F7
-A2 | 19 | C7
-A2 | 20 | A7alt
-A2 | 21 | AbMaj7
-A2 | 22 | G7alt
-A2 | 23 | C7
-A2 | 24 | A7alt
-B  | 25 | Dm7
-B  | 26 | G7
-B  | 27 | Em7
-B  | 28 | A7alt
-B  | 29 | Dm7
-B  | 30 | G7
-B  | 31 | Em7
-B  | 31 | A7
-B  | 32 | Dm7
-B  | 32 | G7
-C  | 33 | C7
-C  | 37 | F7
-C  | 39 | C7
-C  | 40 | A7alt
-C  | 41 | AbMaj7
-C  | 42 | G7alt
-C  | 43 | C7
-C  | 43 | A7alt
-C  | 44 | D7
+# area: C major (bars 1–7)
+A1 | 1  | C7     | C Mixolydian         # extended dominant: V7 of F7
+A1 | 5  | F7     | F Lydian Dominant    # IV7 in C, not resolving: the #11 is in the key
+A1 | 7  | C7     | C Mixolydian         # I7 in C, not resolving: natural tensions
+# area: Ab major (bars 8–44)
+A1 | 8  | A7alt  | A Altered            # from the symbol: altered
+A1 | 9  | AbMaj7 | Ab Ionian            # tonic: the 4th is in the key
+A1 | 10 | G7alt  | G Altered            # from the symbol: altered
+A1 | 11 | C7     | C Phrygian Dominant  # III7 in Ab, not resolving: b9 and b13 are in the key
+A1 | 11 | A7     | A Mixolydian         # extended dominant: V7 of D7
+A1 | 12 | D7     | D Mixolydian         # extended dominant: V7 of G7alt
+A1 | 12 | G7alt  | G Altered            # from the symbol: altered
+A2 | 13 | C7     | C Mixolydian         # extended dominant: V7 of F7
+A2 | 17 | F7     | F Mixolydian b6      # VI7 in Ab, not resolving: the b13 is in the key
+A2 | 19 | C7     | C Phrygian Dominant  # III7 in Ab, not resolving: b9 and b13 are in the key
+A2 | 20 | A7alt  | A Altered            # from the symbol: altered
+A2 | 21 | AbMaj7 | Ab Ionian            # tonic: the 4th is in the key
+A2 | 22 | G7alt  | G Altered            # from the symbol: altered
+A2 | 23 | C7     | C Phrygian Dominant  # III7 in Ab, not resolving: b9 and b13 are in the key
+A2 | 24 | A7alt  | A Altered            # from the symbol: altered
+B  | 25 | Dm7    | D Dorian             # ii of G7: Dorian
+B  | 26 | G7     | G Mixolydian         # passing ii–V: its own key
+B  | 27 | Em7    | E Dorian             # ii of the ii–V to D minor
+B  | 28 | A7alt  | A Altered            # from the symbol: altered
+B  | 29 | Dm7    | D Dorian             # ii of G7: Dorian
+B  | 30 | G7     | G Mixolydian         # passing ii–V: its own key
+B  | 31 | Em7    | E Dorian             # ii of the ii–V to D minor
+B  | 31 | A7     | A Altered            # V7/#iv in Ab: b9, #11 and b13 are in the key
+B  | 32 | Dm7    | D Dorian             # ii of G7: Dorian
+B  | 32 | G7     | G Mixolydian         # extended dominant: V7 of C7
+C  | 33 | C7     | C Mixolydian         # extended dominant: V7 of F7
+C  | 37 | F7     | F Mixolydian b6      # VI7 in Ab, not resolving: the b13 is in the key
+C  | 39 | C7     | C Phrygian Dominant  # III7 in Ab, not resolving: b9 and b13 are in the key
+C  | 40 | A7alt  | A Altered            # from the symbol: altered
+C  | 41 | AbMaj7 | Ab Ionian            # tonic: the 4th is in the key
+C  | 42 | G7alt  | G Altered            # from the symbol: altered
+C  | 43 | C7     | C Phrygian Dominant  # III7 in Ab, not resolving: b9 and b13 are in the key
+C  | 43 | A7alt  | A Altered            # from the symbol: altered
+C  | 44 | D7     | D Lydian Dominant    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key

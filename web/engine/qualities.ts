@@ -74,6 +74,24 @@ export function baseQuality(text: string): string | null {
   return longest === undefined ? null : (LOOKUP.get(longest) ?? null)
 }
 
+/**
+ * a chord as the ear hears it: its root and canonical quality, read on the bass when a slash chord is another chord
+ * there (DbMaj7/C -> C 7sus4b9), and the quality text whose tensions the symbol pins ("7#9b13"; for a slash reading,
+ * the reading's own quality). null if the chord can't be read or its quality is unknown.
+ */
+export type ChordReading = Readonly<{ root: Spelled; quality: string; symbol: string }>
+export function readChord(chord: string): ChordReading | null {
+  try {
+    const c = parseChord(chord)
+    const quality = baseQuality(c.quality)
+    if (quality === null) return null
+    const reading = slashReading(quality, c.root, c.bass)
+    return { root: reading.root, quality: reading.quality, symbol: reading.quality === quality ? c.quality : reading.quality }
+  } catch {
+    return null
+  }
+}
+
 /** the quality's default scale ("Cm7" -> "C Dorian"); null if the quality is unknown */
 export function defaultScale(chord: string): string | null {
   const options = resolveQuality(chord)?.options ?? []

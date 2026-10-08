@@ -5,38 +5,41 @@ style: Latin
 key: Am
 form: AB, 30 bars
 source: Colorado Cookbook, p. 270
+# analysis: 2026-10-08, rules v1; A minor
 
 # section | bar | chord | scale
-A | 1  | Dm7
-A | 2  | E7
-A | 3  | F#m7b5
-A | 4  | Fm11
-A | 5  | Em7
-A | 5  | Dm9
-A | 6  | Bb7#11
-A | 7  | Bm7
-A | 8  | C#7alt
-A | 9  | DMaj7#11
-A | 10 | B7/D#
-A | 11 | A/E
-A | 12 | C#7alt/E#
-A | 12 | F#m
-A | 13 | F#m
-A | 14 | GMaj7#11
-A | 15 | F#m
-A | 16 | G7#11
-B | 17 | F#m7
-B | 17 | F#m7/E
-B | 18 | B13b9/D#
-B | 19 | Dm11
-B | 20 | G7b9
-B | 21 | AbMaj7#11
-B | 22 | Bb7sus4
-B | 23 | CMaj7
-B | 24 | FMaj7#11
-B | 25 | F#m11
-B | 25 | F#m11/E
-B | 26 | Ebdim7
-B | 27 | Dm7
-B | 28 | Dm11
-B | 29 | Am9
+# area: A minor (bars 1–11)
+A | 1  | Dm7       | D Dorian                  # iv: Dorian, the key’s own notes
+A | 2  | E7        | E Phrygian Dominant       # V7 in A minor, not resolving: b9 and b13 are in the key
+A | 3  | F#m7b5    | F# Locrian                # viø7 in A minor: the b9 is in the key
+A | 4  | Fm11      | F Dorian                  # a borrowed minor chord: Dorian, its own key
+A | 5  | Em7       | E Phrygian                # v of a minor key: the b9 is in the key
+A | 5  | Dm9       | D Dorian                  # iv: Dorian, the key’s own notes
+A | 6  | Bb7#11    | Bb Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A | 7  | Bm7       | B Dorian                  # a borrowed minor chord: Dorian, its own key
+A | 8  | C#7alt    | C# Altered                # from the symbol: altered
+A | 9  | DMaj7#11  | D Lydian                  # from the symbol: #11
+A | 10 | B7/D#     | B Phrygian Dominant       # II7 in A minor, not resolving: b9 and b13 are in the key
+A | 11 | A/E       | A Lydian                  # a non-tonic major chord: Lydian
+# area: F# minor (bars 12–29)
+A | 12 | C#7alt/E# | C# Altered                # from the symbol: altered
+A | 12 | F#m       | F# Dorian                 # tonic minor: Dorian by convention
+A | 13 | F#m       | F# Dorian
+A | 14 | GMaj7#11  | G Lydian                  # from the symbol: #11
+A | 15 | F#m       | F# Dorian                 # tonic minor: Dorian by convention
+A | 16 | G7#11     | G Lydian Dominant         # tritone substitute: resolves down a half step to F#m7
+B | 17 | F#m7      | F# Dorian                 # tonic minor: Dorian by convention
+B | 17 | F#m7/E    | F# Dorian                 # ii of B13b9/D#: Dorian
+B | 18 | B13b9/D#  | B Half-Whole Diminished   # V7/bVII in F# minor: the b9 from the symbol
+B | 19 | Dm11      | D Dorian                  # ii of G7b9: Dorian
+B | 20 | G7b9      | G Half-Whole Diminished   # passing ii–V: its own key; b9 from the symbol
+B | 21 | AbMaj7#11 | Ab Lydian                 # from the symbol: #11
+B | 22 | Bb7sus4   | Bb Mixolydian             # static sus: Mixolydian
+B | 23 | CMaj7     | C Lydian                  # a non-tonic major chord: Lydian
+B | 24 | FMaj7#11  | F Lydian                  # from the symbol: #11
+B | 25 | F#m11     | F# Dorian                 # tonic minor: Dorian by convention
+B | 25 | F#m11/E   | F# Dorian                 # tonic minor: Dorian by convention
+B | 26 | Ebdim7    | Eb Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+B | 27 | Dm7       | D Dorian                  # a borrowed minor chord: Dorian, its own key
+B | 28 | Dm11      | D Dorian                  # a borrowed minor chord: Dorian, its own key
+B | 29 | Am9       | A Dorian                  # a borrowed minor chord: Dorian, its own key

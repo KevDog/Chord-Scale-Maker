@@ -5,43 +5,47 @@ style: Ballad
 key: Eb
 form: AABC, 26 bars
 source: Colorado Cookbook, p. 138
+# analysis: 2026-10-08, rules v1; Eb
 
 # section | bar | chord | scale
 # the bridge's "standard" chords; the lead sheet also offers Bm7 Bb7 / Cm7 B7 / EMaj7 A7 substitutes.
 # The tag (F7#11 Fm7 E7 EbMaj7) is for the end of the head only.
-A1 | 1  | EbMaj7
-A1 | 1  | Cm7
-A1 | 2  | Fm7
-A1 | 2  | Bb7b9
-A1 | 3  | EbMaj7
-A1 | 3  | Cm7
-A1 | 4  | Db7#11
-A1 | 5  | Fm7
-A1 | 5  | Bb7b9
-A1 | 6  | EbMaj7
+# area: Eb major (bars 1–12)
+A1 | 1  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A1 | 1  | Cm7    | C Aeolian                 # vi: the b13 is in the key
+A1 | 2  | Fm7    | F Dorian                  # ii of the ii–V to Eb
+A1 | 2  | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+A1 | 3  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A1 | 3  | Cm7    | C Aeolian                 # vi: the b13 is in the key
+A1 | 4  | Db7#11 | Db Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A1 | 5  | Fm7    | F Dorian                  # ii of the ii–V to Eb
+A1 | 5  | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+A1 | 6  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 @copy A1 A2 6
-B  | 13 | Am7
-B  | 13 | D7
-B  | 14 | GMaj7
-B  | 14 | Em7
-B  | 15 | Am7
-B  | 15 | D7
-B  | 16 | GMaj7
-B  | 17 | Bbm7
-B  | 17 | Eb7
-B  | 18 | AbMaj7
-B  | 18 | Fm7
-B  | 19 | Bbm7
-B  | 19 | Eb7
-B  | 20 | AbMaj7
-B  | 20 | Bb7b9
-C  | 21 | EbMaj7
-C  | 21 | Cm7
-C  | 22 | Fm7
-C  | 22 | Bb7b9
-C  | 23 | EbMaj7
-C  | 23 | Cm7
-C  | 24 | Db7#11
-C  | 25 | Fm7
-C  | 25 | Bb7
-C  | 26 | Eb6/9
+# area: G major (bars 13–16)
+B  | 13 | Am7    | A Dorian                  # ii of the ii–V to G
+B  | 13 | D7     | D Mixolydian              # V7 of G: natural tensions
+B  | 14 | GMaj7  | G Ionian                  # tonic: the 4th is in the key
+B  | 14 | Em7    | E Aeolian                 # vi: the b13 is in the key
+B  | 15 | Am7    | A Dorian                  # ii of the ii–V to G
+B  | 15 | D7     | D Mixolydian              # V7 of G: natural tensions
+B  | 16 | GMaj7  | G Ionian                  # tonic: the 4th is in the key
+# area: Eb major (bars 17–26)
+B  | 17 | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
+B  | 17 | Eb7    | Eb Mixolydian             # V7/IV in Eb: natural tensions
+B  | 18 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+B  | 18 | Fm7    | F Dorian                  # ii: Dorian, the key’s own notes
+B  | 19 | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
+B  | 19 | Eb7    | Eb Mixolydian             # V7/IV in Eb: natural tensions
+B  | 20 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+B  | 20 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+C  | 21 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+C  | 21 | Cm7    | C Aeolian                 # vi: the b13 is in the key
+C  | 22 | Fm7    | F Dorian                  # ii of the ii–V to Eb
+C  | 22 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+C  | 23 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+C  | 23 | Cm7    | C Aeolian                 # vi: the b13 is in the key
+C  | 24 | Db7#11 | Db Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+C  | 25 | Fm7    | F Dorian                  # ii of the ii–V to Eb
+C  | 25 | Bb7    | Bb Mixolydian             # V7 of Eb: natural tensions
+C  | 26 | Eb6/9  | Eb Ionian                 # tonic: the 4th is in the key

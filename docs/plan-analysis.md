@@ -1,7 +1,9 @@
 # Harmonic analysis for scale choice: the rule set
 
-Status: **agreed, not yet built.** The decisions in §10 were all taken as recommended (2026-10-08). The analysis
-each run produces is saved into the chart as comments (§12.1), so it can be corrected in a text editor.
+Status: **built** (`web/engine/analysis/`, `npm run analyse`; docs/design.md §7a) and run over the library. The
+decisions in §10 were all taken as recommended (2026-10-08). The analysis each run produces is saved into the chart
+as comments (§12.1), so it can be corrected in a text editor. Building it against the library refined a handful
+of rules; §16 lists each one with the tune that forced it, and the tables below are updated to match.
 
 ## 1. What this is
 
@@ -110,6 +112,11 @@ A chord gets its **local key** from its key area. Within an area, a chord is eit
 key (§5.5), or **chromatic**: a borrowed chord, a substitute, a passing chord, or a chord of a passing ii–V that
 never lands (§7.5). Chromatic chords stay in the area; they don't open a new one.
 
+A cadence **into the global key's tonic** always returns home (§16). In a **minor** key, a full ii–V–I into a
+major chord (not a tritone cadence) **tonicizes** it and opens that key's area (§16). A minor chord that is
+itself the ii of the next ii–V (`Dm7 G7 | Cm7 F7 | B♭7`) opens no area. A turnaround that resolves into the top of
+the form carries its key into the opening bars (Giant Steps' `F♯7 | BMaj7`).
+
 A cadence whose target is **diatonic to the global key** returns to the global key, and the target keeps its
 function there: All the Things You Are's `C7♯5 → Fm7` after the E major bridge is V7/vi in A♭, not the start of
 an F minor area, so Fm7 is vi (Aeolian) in bar 25 exactly as in bar 1. Only a target diatonic to neither the
@@ -185,7 +192,8 @@ The reference scale for deriving tensions:
 
 Derivation: for each tension slot, take the form that is in the reference: 9 or ♭9; 11 or ♯11 (a natural 11 is
 an avoid note on a dominant, but it still determines whether the scale is Mixolydian-type or Lydian-type); 13 or
-♭13. If neither form is in the reference, take the natural one. The symbol's own tensions override the
+♭13. If neither form is in the reference, take the natural one; if both are (a chromatic root: A♭7 in B♭ has A and
+B♭), take the natural one too. The symbol's own tensions override the
 derivation for their slot (principle 2), and a written ♯5 or `alt` removes the natural 5th.
 
 Then the scale:
@@ -206,12 +214,12 @@ The rules, in priority order. The first that applies decides.
 
 | | Rule | Scale | Reason text |
 |---|---|---|---|
-| D1 | The symbol pins enough tensions to leave one scale (`7alt`, `7♯5`, `7♯11`, `7sus4♭9`…) | per the table above | "from the symbol" |
-| D2 | **subV7:** resolves down a half step | Lydian Dominant | "tritone substitute of … (resolves down a half step)" |
+| D1 | The symbol pins enough tensions to leave one scale (`7alt`, `7♯5`, `7♯11`, `7sus4♭9`…); a ♯11 written alone pins the natural 9 and 13 with it | per the table above | "from the symbol" |
+| D2 | **subV7:** resolves down a half step, to anything but a ø7 or °7 (`Fm7 B♭7 \| Aø7` is the ii–V of E♭) | Lydian Dominant | "tritone substitute of … (resolves down a half step)" |
 | D3 | **extended:** resolves down a fifth to another dominant, in a chain that ends on a **major** tonic | Mixolydian | "extended dominant: V7 of the next dominant" |
-| D3′ | **extended**, in a chain that ends on a **minor** tonic (`D7♭9 G7♯5 → Cm7` in Stella) | derive each link from that minor key | "V7 of the V7 of C minor: ♭9 and ♭13 are in the key" |
+| D3′ | **extended**, in a chain that ends on a **minor** tonic (`D7♭9 G7♯5 → Cm7` in Stella), the last link included | derive each link from that minor key (harmonic minor for the last) | "V7 of the V7 of C minor: ♭9 and ♭13 are in the key" |
 | D4 | **V7, V7/x, V7 of the chord before, cadence to a new key:** resolves down a fifth to a non-dominant chord | derive from the reference | "V7 of G minor: ♭9 and ♭13 are in the key" / "V7/ii in C: the 9 is in the key, the 13 isn't" |
-| D5 | **I7 / IV7 in a blues**, or a **non-resolving** dominant whose root is diatonic (♭VII7, deceptive V7) | derive from the local key | "IV7 in a blues: the ♯11 is the key's major 7th" / "back-door ♭VII7" |
+| D5 | The **back door** (♭VII7 up a whole step to a major chord), **I7 / IV7 in a blues**, or a **non-resolving** dominant whose root is diatonic (deceptive V7) | derive from the local key | "IV7 in a blues: the ♯11 is the key's major 7th" / "back door ♭VII7 to …" |
 | D6 | **Non-resolving with a chromatic root** (♭VI7 that doesn't resolve, ♭II7 sitting) | Lydian Dominant | "a chromatic dominant with nowhere to go: Lydian Dominant, its own key" |
 | D7 | **Modal or static** (a modal tune, or any dominant lasting four bars or more) | Mixolydian, or Lydian Dominant if the symbol says ♯11 | "static dominant: its own mode" |
 
@@ -293,6 +301,9 @@ A ii–V whose implied target neither follows nor is diatonic to the local key (
 `B♭m7 E♭7`) is a **passing ii–V**: a side-slip, its own key for two beats. Its ii is Dorian (m4) and its dominant
 Mixolydian ("passing ii–V: its own key, natural tensions"). This is D4 with the pair's own key as reference; it is
 listed separately because the report should name it.
+
+A ii–V's implied target counts as diatonic when its triad is in the key (`Cm7 F7` in E♭ implies B♭: B♭ D F), so
+F7 there is V7/V, not a passing ii–V.
 
 A ii–V whose implied target **is** diatonic but doesn't follow (`Am7 D7 | A♭m7 D♭7 | Gm7` in F: D7 implies Gm7,
 which arrives two chords later) is a secondary ii–V to that target: D4 applies with the local key (D7 = V7/ii in
@@ -689,3 +700,33 @@ DOM, like the rest of the engine; `scripts/analyse.ts` is the only thing that to
 - **Back door:** `iv7 ♭VII7 → I` in major (`Fm7 B♭7 → CMaj7`).
 - **Mixolydian ♭9 ♭13, Mixolydian ♭13, Lydian ♭7:** Berklee's names for our Phrygian Dominant, Mixolydian ♭6 and
   Lydian Dominant.
+
+## 16. What building it changed
+
+The rules were run over the library before any chart was written, and every row where they disagreed with a
+hand-scaled chart was read. Each refinement below has a test named for it (`web/engine/__tests__/analysis.test.ts`).
+
+| Refinement | The tune that forced it | Before | After |
+|---|---|---|---|
+| A tritone substitute doesn't fire into a ø7 or °7 | Autumn Leaves, `Fm7 B♭7 \| Aø7` | B♭ Lydian Dominant | B♭ Mixolydian (V7/♭VI, as §9 has it) |
+| The back door is its own case (D5) | Stella, `B♭m7 E♭7 \| FMaj7`; Lady Bird | E♭ Mixolydian (read as a passing ii–V) | E♭ Lydian Dominant |
+| A tension takes its natural form when the key holds both | Stella's A♭7 → B♭Maj7: A and B♭ are both in B♭ | A♭ Half-Whole | A♭ Lydian Dominant |
+| D3′ includes the chain's last link | Stella, `G7♯5 → Cm7` | G Whole Tone (V7/ii in B♭) | G Altered (§9's verdict) |
+| A ♯11 written alone pins the natural 9 and 13 | `D7♯11` resolving to a minor chord | Altered | Lydian Dominant |
+| A minor ii of the next ii–V opens no area | Bird Blues, `Dm7 G7 \| Cm7 F7 \| B♭7` | G Phrygian Dominant (V7 of C minor) | G Mixolydian (V7/V, as §9 has it) |
+| A cadence into the home tonic comes home | Long Ago and Far Away, `Gm7 C7 \| FMaj7` after a bridge in C | F Lydian (IV of C) | F Ionian |
+| In a minor key, a ii–V–I into a major chord tonicizes it | Bernie's Tune's bridge (B♭ in D minor) | `G7 → Cm7` as "V7/♭vii in D minor" | V7/ii in B♭, Mixolydian ♭6 |
+| A turnaround into the top carries its key into bar 1 | Giant Steps, `F♯7 \| BMaj7` | B Lydian | B Ionian |
+| An implied ii–V target counts when its triad is in the key | There Will Never Be Another You, `Cm7 F7♯11` | passing ii–V | V7/V in E♭ |
+| A form without a stated length rounds up to four bars | Footprints (12 bars, last chord two) | read functional | modal (F♯ø7 Locrian ♮2, as the chart has it) |
+
+After these, the hand-scaled charts agree with the rules on every row except the decisions in §10 (now applied to
+the charts) and Milestones' Aeolian bridge (kept, `# keep:`). The cookbook's 222 charts were filled from the rules
+(`--force --save`). Three rows are `@copy` repeats whose function differs from their source row's (Epistrophy,
+Nardis); the source row's comment says what the repeat would be.
+
+Four `key:` lines from the book's index were wrong for its own lead sheets (This I Dig of You, Voyage, Snapper,
+Bernie's Tune) and are corrected, with a comment. Key scoring alone (§5.2) is weak on these tunes: it disagrees
+with the stated key on about a quarter of them, mostly by choosing a relative minor or a key a step away; every
+library chart states its key, so this affects only charts written without one.
+

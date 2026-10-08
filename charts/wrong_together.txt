@@ -5,39 +5,45 @@ style: Ballad
 key: F
 form: AB, 16 bars
 source: Colorado Cookbook, p. 272
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
 # the coda is left out
-A | 1  | Em9
-A | 1  | A7#11
-A | 2  | Gm9
-A | 2  | C7#11
-A | 3  | FMaj7
-A | 3  | Bb7
-A | 4  | Am7
-A | 4  | D7
-A | 5  | Gm9
-A | 5  | C7#11
-A | 6  | Bbm9
-A | 6  | Eb7#11
-A | 7  | AbMaj7
-A | 7  | G7alt
-A | 8  | Cm9
-A | 8  | F7alt
-B | 9  | BbMaj7
-B | 9  | A7alt
-B | 10 | Dm9
-B | 10 | G7#11
-B | 11 | CMaj7
-B | 11 | F7#11
-B | 12 | Em9
-B | 12 | A7#11
-B | 13 | Gm9
-B | 13 | C7#11
-B | 14 | FMaj7
-B | 14 | Bb7#11
-B | 15 | A7b13
-B | 15 | D7b9
-B | 16 | Gm9
-B | 16 | C7sus4
-B | 16 | C7
+# area: F major (bars 1–5)
+A | 1  | Em9    | E Dorian             # ii of A7#11: Dorian
+A | 1  | A7#11  | A Lydian Dominant    # passing ii–V: its own key; #11 from the symbol
+A | 2  | Gm9    | G Dorian             # ii of the ii–V to F
+A | 2  | C7#11  | C Lydian Dominant    # V7 of F: the #11 from the symbol
+A | 3  | FMaj7  | F Ionian             # tonic: the 4th is in the key
+A | 3  | Bb7    | Bb Lydian Dominant   # tritone substitute: resolves down a half step to Am7
+A | 4  | Am7    | A Dorian             # ii of the ii–V to G minor
+A | 4  | D7     | D Mixolydian b6      # V7/ii in F: the b13 is in the key
+A | 5  | Gm9    | G Dorian             # ii of C7#11: Dorian
+A | 5  | C7#11  | C Lydian Dominant    # V7/I in F: the #11 from the symbol
+# area: Ab major (bars 6–7)
+A | 6  | Bbm9   | Bb Dorian            # ii of the ii–V to Ab
+A | 6  | Eb7#11 | Eb Lydian Dominant   # V7 of Ab: the #11 from the symbol
+A | 7  | AbMaj7 | Ab Ionian            # tonic: the 4th is in the key
+A | 7  | G7alt  | G Altered            # from the symbol: altered
+# area: F major (bars 8–9)
+A | 8  | Cm9    | C Dorian             # ii of the ii–V to Bb
+A | 8  | F7alt  | F Altered            # from the symbol: altered
+B | 9  | BbMaj7 | Bb Lydian            # IV: the #4 is the key’s 7th
+B | 9  | A7alt  | A Altered            # from the symbol: altered
+# area: C major (bars 10–12)
+B | 10 | Dm9    | D Dorian             # ii of the ii–V to C
+B | 10 | G7#11  | G Lydian Dominant    # V7 of C: the #11 from the symbol
+B | 11 | CMaj7  | C Ionian             # tonic: the 4th is in the key
+B | 11 | F7#11  | F Lydian Dominant    # tritone substitute: resolves down a half step to Em9
+B | 12 | Em9    | E Dorian             # ii of A7#11: Dorian
+B | 12 | A7#11  | A Lydian Dominant    # passing ii–V: its own key; #11 from the symbol
+# area: F major (bars 13–16)
+B | 13 | Gm9    | G Dorian             # ii of the ii–V to F
+B | 13 | C7#11  | C Lydian Dominant    # V7 of F: the #11 from the symbol
+B | 14 | FMaj7  | F Ionian             # tonic: the 4th is in the key
+B | 14 | Bb7#11 | Bb Lydian Dominant   # tritone substitute: resolves down a half step to A7b13
+B | 15 | A7b13  | A Phrygian Dominant  # V7 of D7b9, on the way to G minor: b9 and b13 are in the key
+B | 15 | D7b9   | D Phrygian Dominant  # V7 of G minor, the chain's last link: b9 and b13 are in the key
+B | 16 | Gm9    | G Dorian             # ii of C7sus4: Dorian
+B | 16 | C7sus4 | C Mixolydian         # static sus: Mixolydian
+B | 16 | C7     | C Mixolydian         # V7 in F, not resolving: natural tensions

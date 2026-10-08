@@ -4,19 +4,20 @@ style: Medium up
 key: G
 form: ABC, 16 bars
 source: Colorado Cookbook, p. 174
+# analysis: 2026-10-08, rules v1; G
 
 # section | bar | chord | scale
 # the solo changes; the head substitutes Ab7 for D7
-A | 1  | Am7
-A | 2  | D7
-A | 3  | GMaj7
-A | 5  | Am7
-A | 6  | D7
-A | 7  | GMaj7
-B | 9  | Dm7
-B | 10 | G7
-B | 11 | Cm7
-B | 12 | F7
-C | 13 | Am7
-C | 14 | D7
-C | 15 | GMaj7
+A | 1  | Am7   | A Dorian      # ii of the ii–V to G
+A | 2  | D7    | D Mixolydian  # V7 of G: natural tensions
+A | 3  | GMaj7 | G Ionian      # tonic: the 4th is in the key
+A | 5  | Am7   | A Dorian      # ii of the ii–V to G
+A | 6  | D7    | D Mixolydian  # V7 of G: natural tensions
+A | 7  | GMaj7 | G Ionian      # tonic: the 4th is in the key
+B | 9  | Dm7   | D Dorian      # ii of the ii–V to C minor
+B | 10 | G7    | G Mixolydian  # V7/iv in G: natural tensions
+B | 11 | Cm7   | C Dorian      # ii of F7: Dorian
+B | 12 | F7    | F Mixolydian  # passing ii–V: its own key
+C | 13 | Am7   | A Dorian      # ii of the ii–V to G
+C | 14 | D7    | D Mixolydian  # V7 of G: natural tensions
+C | 15 | GMaj7 | G Ionian      # tonic: the 4th is in the key

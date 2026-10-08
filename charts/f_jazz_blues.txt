@@ -1,20 +1,21 @@
 title: F Jazz Blues
 subtitle: 12-Bar Blues with ii–V Turnarounds
+# analysis: 2026-10-08, rules v1; F, blues
 
 # section | bar | chord | scale
-A | 1  | F7    | F Mixolydian
-A | 2  | Bb7   | Bb Mixolydian
-A | 3  | F7    | F Mixolydian
-A | 4  | Cm7   | C Dorian
-A | 4  | F7    | F Mixolydian
-A | 5  | Bb7   | Bb Mixolydian
-A | 6  | Bdim7 | B Whole-Half
-A | 7  | F7    | F Mixolydian
-A | 8  | Am7   | A Dorian
-A | 8  | D7b9  | D Half-Whole
-A | 9  | Gm7   | G Dorian
-A | 10 | C7    | C Mixolydian
-A | 11 | F7    | F Mixolydian
-A | 11 | D7b9  | D Half-Whole
-A | 12 | Gm7   | G Dorian
-A | 12 | C7    | C Mixolydian
+A | 1  | F7    | F Mixolydian         # extended dominant: V7 of Bb7
+A | 2  | Bb7   | Bb Lydian Dominant   # IV7 of the blues: the #11 is in the key
+A | 3  | F7    | F Mixolydian         # I7 of the blues: natural tensions
+A | 4  | Cm7   | C Dorian             # ii of F7: Dorian
+A | 4  | F7    | F Mixolydian         # extended dominant: V7 of Bb7
+A | 5  | Bb7   | Bb Lydian Dominant   # IV7 of the blues: the #11 is in the key
+A | 6  | Bdim7 | B Whole-Half         # passing diminished: the rootless V7b9 of the next chord
+A | 7  | F7    | F Mixolydian         # I7 of the blues: natural tensions
+A | 8  | Am7   | A Dorian             # ii of the ii–V to G minor
+A | 8  | D7b9  | D Phrygian Dominant  # V7/ii in F: the b13 is in the key, the b9 from the symbol
+A | 9  | Gm7   | G Dorian             # ii of C7: Dorian
+A | 10 | C7    | C Mixolydian         # extended dominant: V7 of F7
+A | 11 | F7    | F Mixolydian         # I7 of the blues: natural tensions
+A | 11 | D7b9  | D Phrygian Dominant  # V7/ii in F: the b13 is in the key, the b9 from the symbol
+A | 12 | Gm7   | G Dorian             # ii of C7: Dorian
+A | 12 | C7    | C Mixolydian         # extended dominant: V7 of F7

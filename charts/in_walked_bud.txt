@@ -4,30 +4,31 @@ style: Medium
 key: Ab
 form: AABA
 source: Colorado Cookbook, p. 109
+# analysis: 2026-10-08, rules v1; Ab
 
 # section | bar | chord | scale
-A1 | 1  | Fm
-A1 | 2  | FmMaj7
-A1 | 3  | Fm7
-A1 | 4  | Bb7
-A1 | 4  | Eb7
-A1 | 5  | Ab6
-A1 | 6  | Bb7
-A1 | 6  | Eb7#11
-A1 | 7  | Ab6
-A1 | 8  | Ab6
-A1 | 8  | C7#9
-A2 | 9  | Fm
-A2 | 10 | FmMaj7
-A2 | 11 | Fm7
-A2 | 12 | Bb7
-A2 | 12 | Eb7
-A2 | 13 | Ab6
-A2 | 14 | Bb7
-A2 | 14 | Eb7#11
-A2 | 15 | Ab6
-B  | 17 | Fm
-B  | 19 | Db7
-B  | 21 | Fm
-B  | 23 | Db7
+A1 | 1  | Fm     | F Aeolian           # vi: the b13 is in the key
+A1 | 2  | FmMaj7 | F Melodic Minor     # from the symbol: minor-major 7th
+A1 | 3  | Fm7    | F Dorian            # ii of Bb7: Dorian
+A1 | 4  | Bb7    | Bb Mixolydian       # extended dominant: V7 of Eb7
+A1 | 4  | Eb7    | Eb Mixolydian       # V7 of Ab: natural tensions
+A1 | 5  | Ab6    | Ab Ionian           # tonic: the 4th is in the key
+A1 | 6  | Bb7    | Bb Mixolydian       # extended dominant: V7 of Eb7#11
+A1 | 6  | Eb7#11 | Eb Lydian Dominant  # V7 of Ab: the #11 from the symbol
+A1 | 7  | Ab6    | Ab Ionian           # tonic: the 4th is in the key
+A1 | 8  | Ab6    | Ab Ionian
+A1 | 8  | C7#9   | C Altered           # V7/vi in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
+A2 | 9  | Fm     | F Aeolian           # vi: the b13 is in the key
+A2 | 10 | FmMaj7 | F Melodic Minor     # from the symbol: minor-major 7th
+A2 | 11 | Fm7    | F Dorian            # ii of Bb7: Dorian
+A2 | 12 | Bb7    | Bb Mixolydian       # extended dominant: V7 of Eb7
+A2 | 12 | Eb7    | Eb Mixolydian       # V7 of Ab: natural tensions
+A2 | 13 | Ab6    | Ab Ionian           # tonic: the 4th is in the key
+A2 | 14 | Bb7    | Bb Mixolydian       # extended dominant: V7 of Eb7#11
+A2 | 14 | Eb7#11 | Eb Lydian Dominant  # V7 of Ab: the #11 from the symbol
+A2 | 15 | Ab6    | Ab Ionian           # tonic: the 4th is in the key
+B  | 17 | Fm     | F Aeolian           # vi: the b13 is in the key
+B  | 19 | Db7    | Db Lydian Dominant  # IV7 in Ab, not resolving: the #11 is in the key
+B  | 21 | Fm     | F Aeolian           # vi: the b13 is in the key
+B  | 23 | Db7    | Db Lydian Dominant  # IV7 in Ab, not resolving: the #11 is in the key
 @copy A2 A3 16

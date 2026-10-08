@@ -4,65 +4,75 @@ style: Ballad
 key: Eb
 form: AABCD, 40 bars
 source: Colorado Cookbook, p. 275
+# analysis: 2026-10-08, rules v1; Eb
 
 # section | bar | chord | scale
-A1 | 1  | EbMaj7
-A1 | 2  | Abm7
-A1 | 2  | Db7
-A1 | 3  | GbMaj7
-A1 | 4  | F7
-A1 | 4  | Bb7
-A1 | 5  | Ebm
-A1 | 6  | F7
-A1 | 6  | Bb7b9
-A1 | 7  | EbMaj7
-A1 | 8  | Fm7
-A1 | 8  | Bb7b9
-A2 | 9  | EbMaj7
-A2 | 10 | Abm7
-A2 | 10 | Db7
-A2 | 11 | GbMaj7
-A2 | 12 | F7
-A2 | 12 | Bb7
-A2 | 13 | Ebm
-A2 | 14 | F7
-A2 | 14 | Bb7b9
-A2 | 15 | EbMaj7
-A2 | 16 | Bbm7
-A2 | 16 | Eb7
-B  | 17 | AbMaj7
-B  | 18 | D7b9
-B  | 19 | EbMaj7
-B  | 19 | Fm7
-B  | 19 | Bb7
-B  | 20 | EbMaj7
-B  | 21 | Am7
-B  | 21 | D7b9
-B  | 22 | GMaj7
-B  | 22 | G#dim7
-B  | 23 | Am7
-B  | 23 | D7alt
-B  | 24 | Gm7
-B  | 24 | Gbm7
-B  | 24 | Fm7
-B  | 24 | Bb7
-C  | 25 | EbMaj7
-C  | 26 | Abm7
-C  | 26 | Db7
-C  | 27 | GbMaj7
-C  | 28 | F7
-C  | 28 | Bb7
-C  | 29 | Ebm
-C  | 30 | F7
-C  | 30 | Bb7
-C  | 31 | EbMaj7
-C  | 32 | Bbm7
-C  | 32 | Eb7b9
-D  | 33 | AbMaj7
-D  | 34 | Db7
-D  | 35 | EbMaj7
-D  | 36 | Cm7
-D  | 36 | Gbdim7
-D  | 37 | Fm7
-D  | 38 | Bb7b9
-D  | 39 | EbMaj7
+# area: Eb major (bar 1)
+A1 | 1  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+# area: Gb major (bars 2–5)
+A1 | 2  | Abm7   | Ab Dorian                 # ii of the ii–V to Gb
+A1 | 2  | Db7    | Db Mixolydian             # V7 of Gb: natural tensions
+A1 | 3  | GbMaj7 | Gb Ionian                 # tonic: the 4th is in the key
+A1 | 4  | F7     | F Phrygian Dominant       # V7 of Bb7, on the way to Eb minor: b9 and b13 are in the key
+A1 | 4  | Bb7    | Bb Phrygian Dominant      # V7 of Eb minor, the chain's last link: b9 and b13 are in the key
+A1 | 5  | Ebm    | Eb Aeolian                # vi: the b13 is in the key
+# area: Eb major (bars 6–9)
+A1 | 6  | F7     | F Mixolydian              # extended dominant: V7 of Bb7b9
+A1 | 6  | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+A1 | 7  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A1 | 8  | Fm7    | F Dorian                  # ii of the ii–V to Eb
+A1 | 8  | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+A2 | 9  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+# area: Gb major (bars 10–13)
+A2 | 10 | Abm7   | Ab Dorian                 # ii of the ii–V to Gb
+A2 | 10 | Db7    | Db Mixolydian             # V7 of Gb: natural tensions
+A2 | 11 | GbMaj7 | Gb Ionian                 # tonic: the 4th is in the key
+A2 | 12 | F7     | F Phrygian Dominant       # V7 of Bb7, on the way to Eb minor: b9 and b13 are in the key
+A2 | 12 | Bb7    | Bb Phrygian Dominant      # V7 of Eb minor, the chain's last link: b9 and b13 are in the key
+A2 | 13 | Ebm    | Eb Aeolian                # vi: the b13 is in the key
+# area: Eb major (bars 14–20)
+A2 | 14 | F7     | F Mixolydian              # extended dominant: V7 of Bb7b9
+A2 | 14 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+A2 | 15 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A2 | 16 | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
+A2 | 16 | Eb7    | Eb Mixolydian             # V7/IV in Eb: natural tensions
+B  | 17 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+B  | 18 | D7b9   | D Phrygian Dominant       # VII7 in Eb, not resolving: b9 and b13 are in the key
+B  | 19 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+B  | 19 | Fm7    | F Dorian                  # ii of the ii–V to Eb
+B  | 19 | Bb7    | Bb Mixolydian             # V7 of Eb: natural tensions
+B  | 20 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+# area: G major (bars 21–22)
+B  | 21 | Am7    | A Dorian                  # ii of the ii–V to G
+B  | 21 | D7b9   | D Half-Whole Diminished   # V7 of G: the b9 from the symbol
+B  | 22 | GMaj7  | G Ionian                  # tonic: the 4th is in the key
+B  | 22 | G#dim7 | G# Whole-Half Diminished  # vii°7 of Am7: the rootless V7b9 of the next chord
+# area: Eb major (bars 23–25)
+B  | 23 | Am7    | A Dorian                  # ii of the ii–V to G minor
+B  | 23 | D7alt  | D Altered                 # from the symbol: altered
+B  | 24 | Gm7    | G Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+B  | 24 | Gbm7   | Gb Dorian                 # a borrowed minor chord: Dorian, its own key
+B  | 24 | Fm7    | F Dorian                  # ii of the ii–V to Eb
+B  | 24 | Bb7    | Bb Mixolydian             # V7 of Eb: natural tensions
+C  | 25 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+# area: Gb major (bars 26–29)
+C  | 26 | Abm7   | Ab Dorian                 # ii of the ii–V to Gb
+C  | 26 | Db7    | Db Mixolydian             # V7 of Gb: natural tensions
+C  | 27 | GbMaj7 | Gb Ionian                 # tonic: the 4th is in the key
+C  | 28 | F7     | F Phrygian Dominant       # V7 of Bb7, on the way to Eb minor: b9 and b13 are in the key
+C  | 28 | Bb7    | Bb Phrygian Dominant      # V7 of Eb minor, the chain's last link: b9 and b13 are in the key
+C  | 29 | Ebm    | Eb Aeolian                # vi: the b13 is in the key
+# area: Eb major (bars 30–39)
+C  | 30 | F7     | F Mixolydian              # extended dominant: V7 of Bb7
+C  | 30 | Bb7    | Bb Mixolydian             # V7 of Eb: natural tensions
+C  | 31 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+C  | 32 | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
+C  | 32 | Eb7b9  | Eb Half-Whole Diminished  # V7/IV in Eb: the b9 from the symbol
+D  | 33 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+D  | 34 | Db7    | Db Lydian Dominant        # back door bVII7 to EbMaj7: the #11 is in the key
+D  | 35 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+D  | 36 | Cm7    | C Aeolian                 # vi: the b13 is in the key
+D  | 36 | Gbdim7 | Gb Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+D  | 37 | Fm7    | F Dorian                  # ii of the ii–V to Eb
+D  | 38 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+D  | 39 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key

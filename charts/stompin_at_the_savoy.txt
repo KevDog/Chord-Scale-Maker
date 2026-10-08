@@ -4,53 +4,54 @@ style: Medium
 key: Db
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 225
+# analysis: 2026-10-08, rules v1; Db
 
 # section | bar | chord | scale
-A1 | 1  | DbMaj7
-A1 | 2  | DbMaj7
-A1 | 2  | Ab7
-A1 | 3  | DbMaj7
-A1 | 3  | Gb7
-A1 | 4  | Fm7
-A1 | 4  | Bb7b9
-A1 | 5  | Ebm7
-A1 | 6  | Ab7
-A1 | 7  | DbMaj7
-A1 | 7  | Bb7
-A1 | 8  | Ebm7
-A1 | 8  | Ab7
-A2 | 9  | DbMaj7
-A2 | 10 | DbMaj7
-A2 | 10 | Ab7
-A2 | 11 | DbMaj7
-A2 | 11 | Gb7
-A2 | 12 | Fm7
-A2 | 12 | Bb7b9
-A2 | 13 | Ebm7
-A2 | 14 | Ab7
-A2 | 15 | DbMaj7
-A2 | 16 | DbMaj7
-A2 | 16 | Db7
-B  | 17 | Gb7
-B  | 18 | G7
-B  | 18 | Gb7
-B  | 19 | B7
-B  | 20 | D7
-B  | 20 | B7
-B  | 21 | E7
-B  | 22 | F7
-B  | 22 | E7
-B  | 23 | Em7
-B  | 23 | A7
-B  | 24 | Ebm7
-B  | 24 | Ab7
-A3 | 25 | DbMaj7
-A3 | 26 | DbMaj7
-A3 | 26 | Ab7
-A3 | 27 | DbMaj7
-A3 | 27 | Gb7
-A3 | 28 | Fm7
-A3 | 28 | Bb7
-A3 | 29 | Ebm7
-A3 | 30 | Ab7
-A3 | 31 | DbMaj7
+A1 | 1  | DbMaj7 | Db Ionian             # tonic: the 4th is in the key
+A1 | 2  | DbMaj7 | Db Ionian
+A1 | 2  | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
+A1 | 3  | DbMaj7 | Db Ionian             # tonic: the 4th is in the key
+A1 | 3  | Gb7    | Gb Lydian Dominant    # tritone substitute: resolves down a half step to Fm7
+A1 | 4  | Fm7    | F Dorian              # ii of the ii–V to Eb minor
+A1 | 4  | Bb7b9  | Bb Phrygian Dominant  # V7/ii in Db: the b13 is in the key, the b9 from the symbol
+A1 | 5  | Ebm7   | Eb Dorian             # ii of the ii–V to Db
+A1 | 6  | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
+A1 | 7  | DbMaj7 | Db Ionian             # tonic: the 4th is in the key
+A1 | 7  | Bb7    | Bb Mixolydian b6      # V7/ii in Db: the b13 is in the key
+A1 | 8  | Ebm7   | Eb Dorian             # ii of the ii–V to Db
+A1 | 8  | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
+A2 | 9  | DbMaj7 | Db Ionian             # tonic: the 4th is in the key
+A2 | 10 | DbMaj7 | Db Ionian
+A2 | 10 | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
+A2 | 11 | DbMaj7 | Db Ionian             # tonic: the 4th is in the key
+A2 | 11 | Gb7    | Gb Lydian Dominant    # tritone substitute: resolves down a half step to Fm7
+A2 | 12 | Fm7    | F Dorian              # ii of the ii–V to Eb minor
+A2 | 12 | Bb7b9  | Bb Phrygian Dominant  # V7/ii in Db: the b13 is in the key, the b9 from the symbol
+A2 | 13 | Ebm7   | Eb Dorian             # ii of the ii–V to Db
+A2 | 14 | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
+A2 | 15 | DbMaj7 | Db Ionian             # tonic: the 4th is in the key
+A2 | 16 | DbMaj7 | Db Ionian
+A2 | 16 | Db7    | Db Mixolydian         # extended dominant: V7 of Gb7
+B  | 17 | Gb7    | Gb Lydian Dominant    # IV7 in Db, not resolving: the #11 is in the key
+B  | 18 | G7     | G Lydian Dominant     # tritone substitute: resolves down a half step to Gb7
+B  | 18 | Gb7    | Gb Mixolydian         # extended dominant: V7 of B7
+B  | 19 | B7     | B Lydian Dominant     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 20 | D7     | D Lydian Dominant     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 20 | B7     | B Mixolydian          # extended dominant: V7 of E7
+B  | 21 | E7     | E Lydian Dominant     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 22 | F7     | F Lydian Dominant     # tritone substitute: resolves down a half step to E7
+B  | 22 | E7     | E Lydian Dominant     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 23 | Em7    | E Dorian              # ii of A7: Dorian
+B  | 23 | A7     | A Mixolydian          # passing ii–V: its own key
+B  | 24 | Ebm7   | Eb Dorian             # ii of the ii–V to Db
+B  | 24 | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
+A3 | 25 | DbMaj7 | Db Ionian             # tonic: the 4th is in the key
+A3 | 26 | DbMaj7 | Db Ionian
+A3 | 26 | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
+A3 | 27 | DbMaj7 | Db Ionian             # tonic: the 4th is in the key
+A3 | 27 | Gb7    | Gb Lydian Dominant    # tritone substitute: resolves down a half step to Fm7
+A3 | 28 | Fm7    | F Dorian              # ii of the ii–V to Eb minor
+A3 | 28 | Bb7    | Bb Mixolydian b6      # V7/ii in Db: the b13 is in the key
+A3 | 29 | Ebm7   | Eb Dorian             # ii of the ii–V to Db
+A3 | 30 | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
+A3 | 31 | DbMaj7 | Db Ionian             # tonic: the 4th is in the key

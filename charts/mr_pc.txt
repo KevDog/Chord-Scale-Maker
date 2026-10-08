@@ -5,11 +5,12 @@ style: Blues
 key: Cm
 form: A, 12 bars
 source: Colorado Cookbook, p. 141
+# analysis: 2026-10-08, rules v1; C minor
 
 # section | bar | chord | scale
-A | 1  | Cm7
-A | 5  | Fm7
-A | 7  | Cm7
-A | 9  | Dm7b5
-A | 10 | G7alt
-A | 11 | Cm7
+A | 1  | Cm7   | C Dorian   # tonic minor: Dorian by convention
+A | 5  | Fm7   | F Dorian   # iv: Dorian, the key’s own notes
+A | 7  | Cm7   | C Dorian   # tonic minor: Dorian by convention
+A | 9  | Dm7b5 | D Locrian  # iiø7 of the ii–V to C minor: the b9 is in the key
+A | 10 | G7alt | G Altered  # from the symbol: altered
+A | 11 | Cm7   | C Dorian   # tonic minor: Dorian by convention

@@ -5,39 +5,40 @@ style: Christmas
 key: F
 form: BBC, 24 bars
 source: Colorado Cookbook, p. 280
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
 # the 16-bar verse (F | Bb | C7 | F …) is left out
-B1 | 1  | FMaj7
-B1 | 2  | Eb7
-B1 | 3  | D7
-B1 | 3  | Db7
-B1 | 4  | F#m7
-B1 | 4  | B7
-B1 | 5  | BbMaj7
-B1 | 6  | Eb7
-B1 | 7  | D7
-B1 | 7  | G7
-B1 | 8  | Db7
-B1 | 8  | Gb7
-B2 | 9  | FMaj7
-B2 | 10 | Eb7
-B2 | 11 | D7
-B2 | 11 | Db7
-B2 | 12 | F#m7
-B2 | 12 | B7
-B2 | 13 | BbMaj7
-B2 | 13 | Eb7
-B2 | 14 | D7
-B2 | 14 | G7
-B2 | 15 | Gm7
-B2 | 15 | C7
-B2 | 16 | FMaj7
-C  | 17 | Gm7/C
-C  | 18 | FMaj7/C
-C  | 19 | Gm7/C
-C  | 20 | FMaj7/C
-C  | 21 | Gm7/C
-C  | 22 | FMaj7/C
-C  | 23 | Gm7/C
-C  | 24 | Gb7/C
+B1 | 1  | FMaj7   | F Ionian                  # tonic: the 4th is in the key
+B1 | 2  | Eb7     | Eb Lydian Dominant        # tritone substitute: resolves down a half step to D7
+B1 | 3  | D7      | D Lydian Dominant         # tritone substitute: resolves down a half step to Db7
+B1 | 3  | Db7     | Db Half-Whole Diminished  # V7/bii in F: b9 and #11 are in the key
+B1 | 4  | F#m7    | F# Dorian                 # ii of B7: Dorian
+B1 | 4  | B7      | B Lydian Dominant         # tritone substitute: resolves down a half step to BbMaj7
+B1 | 5  | BbMaj7  | Bb Lydian                 # IV: the #4 is the key’s 7th
+B1 | 6  | Eb7     | Eb Lydian Dominant        # tritone substitute: resolves down a half step to D7
+B1 | 7  | D7      | D Mixolydian              # extended dominant: V7 of G7
+B1 | 7  | G7      | G Mixolydian              # II7 in F, not resolving: natural tensions
+B1 | 8  | Db7     | Db Mixolydian             # extended dominant: V7 of Gb7
+B1 | 8  | Gb7     | Gb Lydian Dominant        # tritone substitute: resolves down a half step to FMaj7
+B2 | 9  | FMaj7   | F Ionian                  # tonic: the 4th is in the key
+B2 | 10 | Eb7     | Eb Lydian Dominant        # tritone substitute: resolves down a half step to D7
+B2 | 11 | D7      | D Lydian Dominant         # tritone substitute: resolves down a half step to Db7
+B2 | 11 | Db7     | Db Half-Whole Diminished  # V7/bii in F: b9 and #11 are in the key
+B2 | 12 | F#m7    | F# Dorian                 # ii of B7: Dorian
+B2 | 12 | B7      | B Lydian Dominant         # tritone substitute: resolves down a half step to BbMaj7
+B2 | 13 | BbMaj7  | Bb Lydian                 # IV: the #4 is the key’s 7th
+B2 | 13 | Eb7     | Eb Lydian Dominant        # tritone substitute: resolves down a half step to D7
+B2 | 14 | D7      | D Mixolydian              # extended dominant: V7 of G7
+B2 | 14 | G7      | G Mixolydian              # II7 in F, not resolving: natural tensions
+B2 | 15 | Gm7     | G Dorian                  # ii of the ii–V to F
+B2 | 15 | C7      | C Mixolydian              # V7 of F: natural tensions
+B2 | 16 | FMaj7   | F Ionian                  # tonic: the 4th is in the key
+C  | 17 | Gm7/C   | C Mixolydian              # V7sus4 of FMaj7/C: natural tensions
+C  | 18 | FMaj7/C | F Ionian                  # tonic: the 4th is in the key
+C  | 19 | Gm7/C   | C Mixolydian              # V7sus4 of FMaj7/C: natural tensions
+C  | 20 | FMaj7/C | F Ionian                  # tonic: the 4th is in the key
+C  | 21 | Gm7/C   | C Mixolydian              # V7sus4 of FMaj7/C: natural tensions
+C  | 22 | FMaj7/C | F Ionian                  # tonic: the 4th is in the key
+C  | 23 | Gm7/C   | C Mixolydian              # static sus: Mixolydian
+C  | 24 | Gb7/C   | Gb Lydian Dominant        # tritone substitute: resolves down a half step to FMaj7

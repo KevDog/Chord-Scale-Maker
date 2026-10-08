@@ -5,29 +5,30 @@ style: Latin
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 202
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
-A | 1  | FMaj7
-A | 5  | FMaj7
-A | 6  | Abdim7
-A | 7  | Gm7
-A | 8  | D7b9
-B | 9  | Gm
-B | 11 | Bbm7
-B | 12 | Eb7
-B | 13 | FMaj7
-B | 15 | Gm7
-B | 16 | C7b9
-B | 16 | Gb7
-C | 17 | FMaj7
-C | 21 | FMaj7
-C | 22 | Abdim7
-C | 23 | Gm7
-C | 24 | D7b9
-D | 25 | Gm7
-D | 26 | C7b9
-D | 27 | Abm7
-D | 28 | Db7b9
-D | 29 | Gm7
-D | 30 | C7b9
-D | 31 | F
+A | 1  | FMaj7  | F Ionian                  # tonic: the 4th is in the key
+A | 5  | FMaj7  | F Ionian
+A | 6  | Abdim7 | Ab Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+A | 7  | Gm7    | G Dorian                  # ii: Dorian, the key’s own notes
+A | 8  | D7b9   | D Phrygian Dominant       # V7/ii in F: the b13 is in the key, the b9 from the symbol
+B | 9  | Gm     | G Dorian                  # ii: Dorian, the key’s own notes
+B | 11 | Bbm7   | Bb Dorian                 # ii of Eb7: Dorian
+B | 12 | Eb7    | Eb Lydian Dominant        # back door bVII7 to FMaj7: the #11 is in the key
+B | 13 | FMaj7  | F Ionian                  # tonic: the 4th is in the key
+B | 15 | Gm7    | G Dorian                  # ii of C7b9: Dorian
+B | 16 | C7b9   | C Half-Whole Diminished   # V7/I in F: the b9 from the symbol
+B | 16 | Gb7    | Gb Lydian Dominant        # tritone substitute: resolves down a half step to FMaj7
+C | 17 | FMaj7  | F Ionian                  # tonic: the 4th is in the key
+C | 21 | FMaj7  | F Ionian
+C | 22 | Abdim7 | Ab Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+C | 23 | Gm7    | G Dorian                  # ii: Dorian, the key’s own notes
+C | 24 | D7b9   | D Phrygian Dominant       # V7/ii in F: the b13 is in the key, the b9 from the symbol
+D | 25 | Gm7    | G Dorian                  # ii of C7b9: Dorian
+D | 26 | C7b9   | C Half-Whole Diminished   # V7/I in F: the b9 from the symbol
+D | 27 | Abm7   | Ab Dorian                 # ii of Db7b9: Dorian
+D | 28 | Db7b9  | Db Half-Whole Diminished  # passing ii–V: its own key; b9 from the symbol
+D | 29 | Gm7    | G Dorian                  # ii of the ii–V to F
+D | 30 | C7b9   | C Half-Whole Diminished   # V7 of F: the b9 from the symbol
+D | 31 | F      | F Ionian                  # tonic: the 4th is in the key

@@ -4,39 +4,40 @@ style: Medium
 key: Eb
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 145
+# analysis: 2026-10-08, rules v1; Eb
 
 # section | bar | chord | scale
-A | 1  | EbMaj7
-A | 2  | Ab7#11
-A | 3  | EbMaj7
-A | 4  | Ab7#11
-A | 5  | EbMaj7/G
-A | 6  | Gbdim7
-A | 7  | Fm
-B | 9  | Dm7b5
-B | 10 | G7
-B | 11 | Cm
-B | 12 | Dm7b5
-B | 12 | G7
-B | 13 | Cm
-B | 14 | F7#11
-B | 15 | Fm7
-B | 16 | Bb7
-C | 17 | EbMaj7
-C | 18 | Ab7#11
-C | 19 | EbMaj7
-C | 20 | Ab7#11
-C | 21 | Gm7b5
-C | 22 | Gbdim7
-C | 23 | Fm
-D | 25 | AbMaj7
-D | 26 | Am7b5
-D | 26 | D7
-D | 27 | Abm7
-D | 27 | Db7
-D | 28 | Gm7
-D | 28 | C7
-D | 29 | Fm7
-D | 30 | Bb7
-D | 31 | EMaj7
-D | 32 | EbMaj7
+A | 1  | EbMaj7   | Eb Ionian                 # tonic: the 4th is in the key
+A | 2  | Ab7#11   | Ab Lydian Dominant        # IV7 in Eb, not resolving: the #11 is in the key
+A | 3  | EbMaj7   | Eb Ionian                 # tonic: the 4th is in the key
+A | 4  | Ab7#11   | Ab Lydian Dominant        # IV7 in Eb, not resolving: the #11 is in the key
+A | 5  | EbMaj7/G | Eb Ionian                 # tonic: the 4th is in the key
+A | 6  | Gbdim7   | Gb Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+A | 7  | Fm       | F Dorian                  # ii: Dorian, the key’s own notes
+B | 9  | Dm7b5    | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+B | 10 | G7       | G Phrygian Dominant       # V7/vi in Eb: b9 and b13 are in the key
+B | 11 | Cm       | C Aeolian                 # vi: the b13 is in the key
+B | 12 | Dm7b5    | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+B | 12 | G7       | G Phrygian Dominant       # V7/vi in Eb: b9 and b13 are in the key
+B | 13 | Cm       | C Dorian                  # ii of F7#11: Dorian
+B | 14 | F7#11    | F Lydian Dominant         # V7/V in Eb: the #11 from the symbol
+B | 15 | Fm7      | F Dorian                  # ii of the ii–V to Eb
+B | 16 | Bb7      | Bb Mixolydian             # V7 of Eb: natural tensions
+C | 17 | EbMaj7   | Eb Ionian                 # tonic: the 4th is in the key
+C | 18 | Ab7#11   | Ab Lydian Dominant        # IV7 in Eb, not resolving: the #11 is in the key
+C | 19 | EbMaj7   | Eb Ionian                 # tonic: the 4th is in the key
+C | 20 | Ab7#11   | Ab Lydian Dominant        # IV7 in Eb, not resolving: the #11 is in the key
+C | 21 | Gm7b5    | G Locrian                 # iiiø7 in Eb: the b9 is in the key
+C | 22 | Gbdim7   | Gb Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+C | 23 | Fm       | F Dorian                  # ii: Dorian, the key’s own notes
+D | 25 | AbMaj7   | Ab Lydian                 # IV: the #4 is the key’s 7th
+D | 26 | Am7b5    | A Locrian                 # iiø7 of D7: the b9 is in the key
+D | 26 | D7       | D Phrygian Dominant       # V7/iii in Eb: b9 and b13 are in the key
+D | 27 | Abm7     | Ab Dorian                 # ii of Db7: Dorian
+D | 27 | Db7      | Db Mixolydian             # passing ii–V: its own key
+D | 28 | Gm7      | G Dorian                  # ii of the ii–V to F minor
+D | 28 | C7       | C Mixolydian b6           # V7/ii in Eb: the b13 is in the key
+D | 29 | Fm7      | F Dorian                  # ii of Bb7: Dorian
+D | 30 | Bb7      | Bb Mixolydian             # V7/I in Eb: natural tensions
+D | 31 | EMaj7    | E Lydian                  # a non-tonic major chord: Lydian
+D | 32 | EbMaj7   | Eb Ionian                 # tonic: the 4th is in the key

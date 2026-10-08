@@ -5,14 +5,15 @@ style: Latin
 key: Fm
 form: AABA
 source: Colorado Cookbook, p. 48
+# analysis: 2026-10-08, rules v1; F minor
 
 # section | bar | chord | scale
-A1 | 1  | C7b9
-A1 | 13 | Fm
+A1 | 1  | C7b9 | C Phrygian Dominant  # V7 of F minor: b9 and b13 are in the key
+A1 | 13 | Fm   | F Dorian             # tonic minor: Dorian by convention
 @copy A1 A2 16
-B  | 33 | F7
-B  | 37 | Bb7
-B  | 41 | Eb7
-B  | 45 | Ab7
-B  | 47 | G7#9
+B  | 33 | F7   | F Mixolydian         # extended dominant: V7 of Bb7
+B  | 37 | Bb7  | Bb Mixolydian        # extended dominant: V7 of Eb7
+B  | 41 | Eb7  | Eb Mixolydian        # extended dominant: V7 of Ab7
+B  | 45 | Ab7  | Ab Lydian Dominant   # tritone substitute: resolves down a half step to G7#9
+B  | 47 | G7#9 | G Altered            # V7 of C7b9, on the way to F minor: the b13 is in the key, b9, #9 and #11 from the symbol
 @copy A1 A3 48

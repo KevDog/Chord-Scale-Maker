@@ -5,37 +5,43 @@ style: Ballad
 key: G
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 86
+# analysis: 2026-10-08, rules v1; G
 
 # section | bar | chord | scale
-A | 1  | GMaj7
-A | 1  | Gb7alt
-A | 2  | Fm7
-A | 2  | Bb7
-A | 3  | EbMaj7
-A | 4  | AbMaj7
-A | 5  | Am7
-A | 6  | D7
-A | 7  | GMaj7
-A | 8  | Dm7
-A | 8  | G7
-B | 9  | Cm7
-B | 10 | F7
-B | 11 | BbMaj7
-B | 12 | EbMaj7
-B | 13 | Am7
-B | 14 | D7
-B | 15 | GMaj7
-B | 16 | Am7
-B | 16 | D7
+# area: G major (bar 1)
+A | 1  | GMaj7  | G Ionian                  # tonic: the 4th is in the key
+A | 1  | Gb7alt | Gb Altered                # from the symbol: altered
+# area: Eb major (bars 2–4)
+A | 2  | Fm7    | F Dorian                  # ii of the ii–V to Eb
+A | 2  | Bb7    | Bb Mixolydian             # V7 of Eb: natural tensions
+A | 3  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A | 4  | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+# area: G major (bars 5–8)
+A | 5  | Am7    | A Dorian                  # ii of the ii–V to G
+A | 6  | D7     | D Mixolydian              # V7 of G: natural tensions
+A | 7  | GMaj7  | G Ionian                  # tonic: the 4th is in the key
+A | 8  | Dm7    | D Dorian                  # ii of the ii–V to C minor
+A | 8  | G7     | G Mixolydian              # V7/iv in G: natural tensions
+# area: Bb major (bars 9–12)
+B | 9  | Cm7    | C Dorian                  # ii of the ii–V to Bb
+B | 10 | F7     | F Mixolydian              # V7 of Bb: natural tensions
+B | 11 | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
+B | 12 | EbMaj7 | Eb Lydian                 # IV: the #4 is the key’s 7th
+# area: G major (bars 13–17)
+B | 13 | Am7    | A Dorian                  # ii of the ii–V to G
+B | 14 | D7     | D Mixolydian              # V7 of G: natural tensions
+B | 15 | GMaj7  | G Ionian                  # tonic: the 4th is in the key
+B | 16 | Am7    | A Dorian                  # ii of the ii–V to G
+B | 16 | D7     | D Mixolydian              # V7 of G: natural tensions
 @copy A C 16
-D | 25 | CMaj7
-D | 26 | Am7
-D | 26 | D7
-D | 27 | Bm7
-D | 27 | Em7
-D | 28 | A7#11
-D | 28 | Bbdim7
-D | 29 | Am7
-D | 30 | D7
-D | 31 | EbMaj7
-D | 32 | AbMaj7
+D | 25 | CMaj7  | C Lydian                  # IV: the #4 is the key’s 7th
+D | 26 | Am7    | A Dorian                  # ii of D7: Dorian
+D | 26 | D7     | D Mixolydian              # V7/I in G: natural tensions
+D | 27 | Bm7    | B Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+D | 27 | Em7    | E Dorian                  # ii of A7#11: Dorian
+D | 28 | A7#11  | A Lydian Dominant         # V7/V in G: the #11 from the symbol
+D | 28 | Bbdim7 | Bb Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+D | 29 | Am7    | A Dorian                  # ii of D7: Dorian
+D | 30 | D7     | D Mixolydian              # V7/I in G: natural tensions
+D | 31 | EbMaj7 | Eb Lydian                 # a non-tonic major chord: Lydian
+D | 32 | AbMaj7 | Ab Lydian                 # a non-tonic major chord: Lydian

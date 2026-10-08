@@ -4,50 +4,54 @@ style: Medium
 key: Eb
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 70
+# analysis: 2026-10-08, rules v1; Eb
 
 # section | bar | chord | scale
-A | 1  | Eb
-A | 2  | A7#11
-A | 3  | AbMaj7
-A | 4  | Gm7b5
-A | 4  | C7b9
-A | 5  | Fm7
-A | 6  | Bb7
-A | 7  | EbMaj7
-A | 8  | Dm7b5
-A | 8  | G7b9
-B | 9  | Cm
-B | 10 | Bbm7
-B | 10 | Eb7
-B | 11 | AbMaj7
-B | 12 | Gm7
-B | 12 | C7
-B | 13 | Abm7
-B | 14 | Db7
-B | 15 | GbMaj7
-B | 16 | Fm7
-B | 16 | E7
-C | 17 | EbMaj7
-C | 18 | A7#11
-C | 19 | AbMaj7
-C | 20 | Gm7b5
-C | 20 | C7b9
-C | 21 | Fm7
-C | 22 | Bb7
-C | 23 | EbMaj7
-C | 24 | Dm7b5
-C | 24 | G7b9
-D | 25 | Cm7
-D | 25 | F7
-D | 26 | Bbm7
-D | 26 | Eb7
-D | 27 | AbMaj7
-D | 28 | Abm7
-D | 28 | Db7
-D | 29 | Gm7
-D | 29 | C7
-D | 30 | Fm7
-D | 30 | Bb7
-D | 31 | EbMaj7
-D | 32 | Fm7
-D | 32 | E7
+# area: Eb major (bars 1–12)
+A | 1  | Eb     | Eb Ionian            # tonic: the 4th is in the key
+A | 2  | A7#11  | A Lydian Dominant    # tritone substitute: resolves down a half step to AbMaj7
+A | 3  | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
+A | 4  | Gm7b5  | G Locrian            # iiø7 of the ii–V to F minor: the b9 is in the key
+A | 4  | C7b9   | C Phrygian Dominant  # V7/ii in Eb: the b13 is in the key, the b9 from the symbol
+A | 5  | Fm7    | F Dorian             # ii of the ii–V to Eb
+A | 6  | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
+A | 7  | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
+A | 8  | Dm7b5  | D Locrian            # iiø7 of the ii–V to C minor: the b9 is in the key
+A | 8  | G7b9   | G Phrygian Dominant  # V7/vi in Eb: b9 and b13 are in the key
+B | 9  | Cm     | C Aeolian            # vi: the b13 is in the key
+B | 10 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
+B | 10 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
+B | 11 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
+B | 12 | Gm7    | G Dorian             # ii of C7: Dorian
+B | 12 | C7     | C Mixolydian         # passing ii–V: its own key
+# area: Gb major (bars 13–16)
+B | 13 | Abm7   | Ab Dorian            # ii of the ii–V to Gb
+B | 14 | Db7    | Db Mixolydian        # V7 of Gb: natural tensions
+B | 15 | GbMaj7 | Gb Ionian            # tonic: the 4th is in the key
+B | 16 | Fm7    | F Dorian             # a borrowed minor chord: Dorian, its own key
+# area: Eb major (bars 16–32)
+B | 16 | E7     | E Lydian Dominant    # tritone substitute: resolves down a half step to EbMaj7
+C | 17 | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
+C | 18 | A7#11  | A Lydian Dominant    # tritone substitute: resolves down a half step to AbMaj7
+C | 19 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
+C | 20 | Gm7b5  | G Locrian            # iiø7 of the ii–V to F minor: the b9 is in the key
+C | 20 | C7b9   | C Phrygian Dominant  # V7/ii in Eb: the b13 is in the key, the b9 from the symbol
+C | 21 | Fm7    | F Dorian             # ii of the ii–V to Eb
+C | 22 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
+C | 23 | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
+C | 24 | Dm7b5  | D Locrian            # iiø7 of the ii–V to C minor: the b9 is in the key
+C | 24 | G7b9   | G Phrygian Dominant  # V7/vi in Eb: b9 and b13 are in the key
+D | 25 | Cm7    | C Dorian             # ii of the ii–V to Bb minor
+D | 25 | F7     | F Mixolydian         # V7/v in Eb: natural tensions
+D | 26 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
+D | 26 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
+D | 27 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
+D | 28 | Abm7   | Ab Dorian            # ii of Db7: Dorian
+D | 28 | Db7    | Db Mixolydian        # passing ii–V: its own key
+D | 29 | Gm7    | G Dorian             # ii of the ii–V to F minor
+D | 29 | C7     | C Mixolydian b6      # V7/ii in Eb: the b13 is in the key
+D | 30 | Fm7    | F Dorian             # ii of the ii–V to Eb
+D | 30 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
+D | 31 | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
+D | 32 | Fm7    | F Dorian             # ii: Dorian, the key’s own notes
+D | 32 | E7     | E Lydian Dominant    # tritone substitute: resolves down a half step to Eb

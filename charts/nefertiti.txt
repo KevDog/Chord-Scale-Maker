@@ -4,20 +4,24 @@ style: Medium
 key: C
 form: A, 16 bars
 source: Colorado Cookbook, p. 155
+# analysis: 2026-10-08, rules v1; C
 
 # section | bar | chord | scale
-A | 1  | AbMaj7#11
-A | 2  | DbMaj7
-A | 3  | Gm7b5
-A | 4  | C7
-A | 5  | BMaj7
-A | 6  | BMaj7#11
-A | 7  | Bbm7b5
-A | 8  | Eb7#11
-A | 9  | EMaj7
-A | 10 | Em/A
-A | 11 | Ab13/Bb
-A | 12 | E/F#
-A | 13 | Em7
-A | 14 | Eb7#11
-A | 15 | A13b9
+# area: Ab major (bars 1–2)
+A | 1  | AbMaj7#11 | Ab Lydian                # from the symbol: #11
+A | 2  | DbMaj7    | Db Lydian                # IV: the #4 is the key’s 7th
+# area: B major (bars 3–14)
+A | 3  | Gm7b5     | G Locrian                # iiø7 of C7: the b9 is in the key
+A | 4  | C7        | C Lydian Dominant        # tritone substitute: resolves down a half step to BMaj7
+A | 5  | BMaj7     | B Ionian                 # tonic: the 4th is in the key
+A | 6  | BMaj7#11  | B Lydian                 # from the symbol: #11
+A | 7  | Bbm7b5    | Bb Locrian               # iiø7 of Eb7#11: the b9 is in the key
+A | 8  | Eb7#11    | Eb Lydian Dominant       # V7/vi in B: 9, #11 and 13 from the symbol
+A | 9  | EMaj7     | E Lydian                 # IV: the #4 is the key’s 7th
+A | 10 | Em/A      | E Dorian                 # a borrowed minor chord: Dorian, its own key
+A | 11 | Ab13/Bb   | Ab Mixolydian            # VI7 in B, not resolving: the 13 from the symbol
+A | 12 | E/F#      | E Lydian                 # IV: the #4 is the key’s 7th
+A | 13 | Em7       | E Dorian                 # a borrowed minor chord: Dorian, its own key
+A | 14 | Eb7#11    | Eb Lydian Dominant       # III7 in B, not resolving: 9, #11 and 13 from the symbol
+# area: Ab major (bar 15)
+A | 15 | A13b9     | A Half-Whole Diminished  # tritone substitute: resolves down a half step to AbMaj7#11; b9 from the symbol

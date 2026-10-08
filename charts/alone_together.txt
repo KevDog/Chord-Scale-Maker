@@ -4,44 +4,51 @@ style: Medium
 key: Dm
 form: AABC, 44 bars
 source: Colorado Cookbook, p. 18
+# analysis: 2026-10-08, rules v1; D minor
 
 # section | bar | chord | scale
-A1 | 1  | Dm
-A1 | 2  | Em7b5
-A1 | 2  | A7#9
-A1 | 3  | Dm
-A1 | 4  | Em7b5
-A1 | 4  | A7#9
-A1 | 5  | Dm
-A1 | 6  | Am7b5
-A1 | 6  | D7#9
-A1 | 7  | Gm
-A1 | 9  | Bm7
-A1 | 9  | E7
-A1 | 10 | Gm7
-A1 | 10 | C7
-A1 | 11 | FMaj7
-A1 | 12 | Em7
-A1 | 12 | A7
-A1 | 13 | DMaj7
+# area: D minor (bars 1–9)
+A1 | 1  | Dm    | D Dorian                 # tonic minor: Dorian by convention
+A1 | 2  | Em7b5 | E Locrian                # iiø7 of the ii–V to D minor: the b9 is in the key
+A1 | 2  | A7#9  | A Altered                # V7 of D minor: the b13 is in the key, b9, #9 and #11 from the symbol
+A1 | 3  | Dm    | D Dorian                 # tonic minor: Dorian by convention
+A1 | 4  | Em7b5 | E Locrian                # iiø7 of the ii–V to D minor: the b9 is in the key
+A1 | 4  | A7#9  | A Altered                # V7 of D minor: the b13 is in the key, b9, #9 and #11 from the symbol
+A1 | 5  | Dm    | D Dorian                 # tonic minor: Dorian by convention
+A1 | 6  | Am7b5 | A Locrian                # iiø7 of the ii–V to G minor: the b9 is in the key
+A1 | 6  | D7#9  | D Altered                # V7/iv in D minor: the b13 is in the key, b9, #9 and #11 from the symbol
+A1 | 7  | Gm    | G Dorian                 # iv: Dorian, the key’s own notes
+A1 | 9  | Bm7   | B Dorian                 # ii of E7: Dorian
+A1 | 9  | E7    | E Mixolydian             # passing ii–V: its own key
+# area: F major (bars 10–11)
+A1 | 10 | Gm7   | G Dorian                 # ii of the ii–V to F
+A1 | 10 | C7    | C Mixolydian             # V7 of F: natural tensions
+A1 | 11 | FMaj7 | F Ionian                 # tonic: the 4th is in the key
+# area: D major (bars 12–15)
+A1 | 12 | Em7   | E Dorian                 # ii of the ii–V to D
+A1 | 12 | A7    | A Mixolydian             # V7 of D: natural tensions
+A1 | 13 | DMaj7 | D Ionian                 # tonic: the 4th is in the key
 @copy A1 A2 14
-B  | 29 | Am7b5
-B  | 30 | D7b9
-B  | 31 | Gm
-B  | 33 | Gm7b5
-B  | 34 | C7b9
-B  | 35 | FMaj7
-B  | 36 | Em7b5
-B  | 36 | A7#9
-C  | 37 | Dm
-C  | 38 | Em7b5
-C  | 38 | A7#9
-C  | 39 | Dm
-C  | 40 | Em7b5
-C  | 40 | A7#9
-C  | 41 | Dm
-C  | 42 | Bb7
-C  | 42 | A7#9
-C  | 43 | Dm
-C  | 44 | Em7b5
-C  | 44 | A7#9
+# area: D minor (bars 29–31)
+B  | 29 | Am7b5 | A Locrian                # iiø7 of the ii–V to G minor: the b9 is in the key
+B  | 30 | D7b9  | D Phrygian Dominant      # V7/iv in D minor: the b13 is in the key, the b9 from the symbol
+B  | 31 | Gm    | G Dorian                 # iv: Dorian, the key’s own notes
+# area: F major (bars 33–35)
+B  | 33 | Gm7b5 | G Locrian                # iiø7 of the ii–V to F: the b9 is in the key
+B  | 34 | C7b9  | C Half-Whole Diminished  # V7 of F: the b9 from the symbol
+B  | 35 | FMaj7 | F Ionian                 # tonic: the 4th is in the key
+# area: D minor (bars 36–44)
+B  | 36 | Em7b5 | E Locrian                # iiø7 of the ii–V to D minor: the b9 is in the key
+B  | 36 | A7#9  | A Altered                # V7 of D minor: the b13 is in the key, b9, #9 and #11 from the symbol
+C  | 37 | Dm    | D Dorian                 # tonic minor: Dorian by convention
+C  | 38 | Em7b5 | E Locrian                # iiø7 of the ii–V to D minor: the b9 is in the key
+C  | 38 | A7#9  | A Altered                # V7 of D minor: the b13 is in the key, b9, #9 and #11 from the symbol
+C  | 39 | Dm    | D Dorian                 # tonic minor: Dorian by convention
+C  | 40 | Em7b5 | E Locrian                # iiø7 of the ii–V to D minor: the b9 is in the key
+C  | 40 | A7#9  | A Altered                # V7 of D minor: the b13 is in the key, b9, #9 and #11 from the symbol
+C  | 41 | Dm    | D Dorian                 # tonic minor: Dorian by convention
+C  | 42 | Bb7   | Bb Lydian Dominant       # tritone substitute: resolves down a half step to A7#9
+C  | 42 | A7#9  | A Altered                # V7 of D minor: the b13 is in the key, b9, #9 and #11 from the symbol
+C  | 43 | Dm    | D Dorian                 # tonic minor: Dorian by convention
+C  | 44 | Em7b5 | E Locrian                # iiø7 of the ii–V to D minor: the b9 is in the key
+C  | 44 | A7#9  | A Altered                # V7 of D minor: the b13 is in the key, b9, #9 and #11 from the symbol

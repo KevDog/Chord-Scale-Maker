@@ -5,32 +5,36 @@ style: Latin
 key: Eb
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 81
+# analysis: 2026-10-08, rules v1; Eb
 
 # section | bar | chord | scale
-A1 | 1  | EbMaj7
-A1 | 3  | AbMaj7
-A1 | 5  | Gm7
-A1 | 6  | C7b9
-A1 | 7  | Fm7
-A1 | 8  | Bb7b9
-A2 | 9  | EbMaj7
-A2 | 11 | AbMaj7
-A2 | 13 | Gm7
-A2 | 14 | C7b9
-A2 | 15 | Fm7
-A2 | 16 | G7b9
-B  | 17 | CMaj7
-B  | 19 | FMaj7
-B  | 20 | Dm7
-B  | 20 | G9
-B  | 21 | Em7
-B  | 22 | Am7
-B  | 23 | FMaj7
-B  | 24 | Em7
-C  | 25 | EbMaj7
-C  | 26 | AbMaj7
-C  | 27 | Fm7
-C  | 28 | Bb7b9
-C  | 29 | EbMaj7
-C  | 31 | Fm7
-C  | 32 | Bb7b9
+# area: Eb major (bars 1–15)
+A1 | 1  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A1 | 3  | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+A1 | 5  | Gm7    | G Dorian                  # ii of the ii–V to F minor
+A1 | 6  | C7b9   | C Phrygian Dominant       # V7/ii in Eb: the b13 is in the key, the b9 from the symbol
+A1 | 7  | Fm7    | F Dorian                  # ii of the ii–V to Eb
+A1 | 8  | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+A2 | 9  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A2 | 11 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+A2 | 13 | Gm7    | G Dorian                  # ii of the ii–V to F minor
+A2 | 14 | C7b9   | C Phrygian Dominant       # V7/ii in Eb: the b13 is in the key, the b9 from the symbol
+A2 | 15 | Fm7    | F Dorian                  # ii: Dorian, the key’s own notes
+# area: C major (bars 16–26)
+A2 | 16 | G7b9   | G Half-Whole Diminished   # V7 of C: the b9 from the symbol
+B  | 17 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+B  | 19 | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
+B  | 20 | Dm7    | D Dorian                  # ii of G9: Dorian
+B  | 20 | G9     | G Mixolydian              # V7/I in C: natural tensions
+B  | 21 | Em7    | E Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+B  | 22 | Am7    | A Aeolian                 # vi: the b13 is in the key
+B  | 23 | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
+B  | 24 | Em7    | E Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+C  | 25 | EbMaj7 | Eb Lydian                 # a non-tonic major chord: Lydian
+C  | 26 | AbMaj7 | Ab Lydian                 # a non-tonic major chord: Lydian
+# area: Eb major (bars 27–32)
+C  | 27 | Fm7    | F Dorian                  # ii of the ii–V to Eb
+C  | 28 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+C  | 29 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+C  | 31 | Fm7    | F Dorian                  # ii of the ii–V to Eb
+C  | 32 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol

@@ -5,18 +5,22 @@ style: Medium
 key: D
 form: A, 16 bars
 source: Colorado Cookbook, p. 207
+# analysis: 2026-10-08, rules v1; D
 
 # section | bar | chord | scale
-A | 1  | Em7
-A | 2  | A7
-A | 3  | DMaj7
-A | 5  | Dm7
-A | 6  | G7
-A | 7  | CMaj7
-A | 9  | Cm7
-A | 10 | F7
-A | 11 | BbMaj7
-A | 13 | Em7
-A | 14 | F7
-A | 15 | BbMaj7
-A | 16 | Eb7
+# area: D major (bars 1–3)
+A | 1  | Em7    | E Dorian            # ii of the ii–V to D
+A | 2  | A7     | A Mixolydian        # V7 of D: natural tensions
+A | 3  | DMaj7  | D Ionian            # tonic: the 4th is in the key
+# area: C major (bars 5–7)
+A | 5  | Dm7    | D Dorian            # ii of the ii–V to C
+A | 6  | G7     | G Mixolydian        # V7 of C: natural tensions
+A | 7  | CMaj7  | C Ionian            # tonic: the 4th is in the key
+# area: Bb major (bars 9–16)
+A | 9  | Cm7    | C Dorian            # ii of the ii–V to Bb
+A | 10 | F7     | F Mixolydian        # V7 of Bb: natural tensions
+A | 11 | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
+A | 13 | Em7    | E Dorian            # a borrowed minor chord: Dorian, its own key
+A | 14 | F7     | F Mixolydian        # V7 of Bb: natural tensions
+A | 15 | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
+A | 16 | Eb7    | Eb Lydian Dominant  # IV7 in Bb, not resolving: the #11 is in the key

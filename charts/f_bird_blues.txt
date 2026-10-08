@@ -1,24 +1,25 @@
 title: F Bird Blues
 subtitle: Blues for Alice Changes
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
-A | 1  | FMaj7 | F Ionian
-A | 2  | Em7b5 | E Locrian
-A | 2  | A7b9  | A Phrygian Dominant
-A | 3  | Dm7   | D Dorian
-A | 3  | G7    | G Mixolydian
-A | 4  | Cm7   | C Dorian
-A | 4  | F7    | F Mixolydian
-A | 5  | Bb7   | Bb Mixolydian
-A | 6  | Bbm7  | Bb Dorian
-A | 6  | Eb7   | Eb Mixolydian
-A | 7  | Am7   | A Dorian
-A | 7  | D7    | D Mixolydian
-A | 8  | Abm7  | Ab Dorian
-A | 8  | Db7   | Db Mixolydian
-A | 9  | Gm7   | G Dorian
-A | 10 | C7    | C Mixolydian
-A | 11 | FMaj7 | F Ionian
-A | 11 | D7b9  | D Half-Whole
-A | 12 | Gm7   | G Dorian
-A | 12 | C7    | C Mixolydian
+A | 1  | FMaj7 | F Ionian             # tonic: the 4th is in the key
+A | 2  | Em7b5 | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
+A | 2  | A7b9  | A Phrygian Dominant  # V7/vi in F: b9 and b13 are in the key
+A | 3  | Dm7   | D Dorian             # ii of the ii–V to C minor
+A | 3  | G7    | G Mixolydian         # V7/v in F: natural tensions
+A | 4  | Cm7   | C Dorian             # ii of F7: Dorian
+A | 4  | F7    | F Mixolydian         # extended dominant: V7 of Bb7
+A | 5  | Bb7   | Bb Lydian Dominant   # IV7 in F, not resolving: the #11 is in the key
+A | 6  | Bbm7  | Bb Dorian            # ii of Eb7: Dorian
+A | 6  | Eb7   | Eb Mixolydian        # passing ii–V: its own key
+A | 7  | Am7   | A Dorian             # ii of D7: Dorian
+A | 7  | D7    | D Mixolydian         # passing ii–V: its own key
+A | 8  | Abm7  | Ab Dorian            # ii of Db7: Dorian
+A | 8  | Db7   | Db Mixolydian        # passing ii–V: its own key
+A | 9  | Gm7   | G Dorian             # ii of the ii–V to F
+A | 10 | C7    | C Mixolydian         # V7 of F: natural tensions
+A | 11 | FMaj7 | F Ionian             # tonic: the 4th is in the key
+A | 11 | D7b9  | D Phrygian Dominant  # V7/ii in F: the b13 is in the key, the b9 from the symbol
+A | 12 | Gm7   | G Dorian             # ii of the ii–V to F
+A | 12 | C7    | C Mixolydian         # V7 of F: natural tensions

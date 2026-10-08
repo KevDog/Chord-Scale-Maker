@@ -5,45 +5,49 @@ style: Mixed
 key: C
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 165
+# analysis: 2026-10-08, rules v1; C
 
 # section | bar | chord | scale
-A | 1  | CMaj7
-A | 3  | EbMaj7
-A | 5  | DMaj7
-A | 6  | DbMaj7
-A | 7  | CMaj7
-A | 7  | F7
-A | 8  | Em7b5
-A | 8  | A7b9
-B | 9  | Dm7
-B | 10 | G7b9
-B | 11 | CMaj7
-B | 13 | Fm7
-B | 14 | Bb7b9
-B | 15 | EbMaj7
-B | 16 | Dm7
-B | 16 | G7
-C | 17 | CMaj7
-C | 19 | EbMaj7
-C | 21 | DMaj7
-C | 22 | DbMaj7
-C | 23 | CMaj7
-C | 23 | F7
-C | 24 | Em7b5
-C | 24 | A7b9
-D | 25 | Dm
-D | 25 | Dm/C
-D | 26 | Bm7b5
-D | 26 | E7b9
-D | 27 | Am
-D | 27 | Am/G
-D | 28 | F#m7b5
-D | 28 | B7
-D | 29 | Em7
-D | 29 | A7alt
-D | 30 | Dm7
-D | 30 | G7alt
-D | 31 | CMaj7
-D | 31 | A7
-D | 32 | Dm7
-D | 32 | G7
+# area: C major (bars 1–11)
+A | 1  | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+A | 3  | EbMaj7 | Eb Lydian                 # a non-tonic major chord: Lydian
+A | 5  | DMaj7  | D Lydian                  # a non-tonic major chord: Lydian
+A | 6  | DbMaj7 | Db Lydian                 # a non-tonic major chord: Lydian
+A | 7  | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+A | 7  | F7     | F Lydian Dominant         # IV7 in C, not resolving: the #11 is in the key
+A | 8  | Em7b5  | E Locrian                 # iiø7 of the ii–V to D minor: the b9 is in the key
+A | 8  | A7b9   | A Phrygian Dominant       # V7/ii in C: the b13 is in the key, the b9 from the symbol
+B | 9  | Dm7    | D Dorian                  # ii of the ii–V to C
+B | 10 | G7b9   | G Half-Whole Diminished   # V7 of C: the b9 from the symbol
+B | 11 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+# area: Eb major (bars 13–15)
+B | 13 | Fm7    | F Dorian                  # ii of the ii–V to Eb
+B | 14 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+B | 15 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+# area: C major (bars 16–32)
+B | 16 | Dm7    | D Dorian                  # ii of the ii–V to C
+B | 16 | G7     | G Mixolydian              # V7 of C: natural tensions
+C | 17 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+C | 19 | EbMaj7 | Eb Lydian                 # a non-tonic major chord: Lydian
+C | 21 | DMaj7  | D Lydian                  # a non-tonic major chord: Lydian
+C | 22 | DbMaj7 | Db Lydian                 # a non-tonic major chord: Lydian
+C | 23 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+C | 23 | F7     | F Lydian Dominant         # IV7 in C, not resolving: the #11 is in the key
+C | 24 | Em7b5  | E Locrian                 # iiø7 of the ii–V to D minor: the b9 is in the key
+C | 24 | A7b9   | A Phrygian Dominant       # V7/ii in C: the b13 is in the key, the b9 from the symbol
+D | 25 | Dm     | D Dorian                  # ii: Dorian, the key’s own notes
+D | 25 | Dm/C   | D Dorian                  # ii: Dorian, the key’s own notes
+D | 26 | Bm7b5  | B Locrian                 # iiø7 of the ii–V to A minor: the b9 is in the key
+D | 26 | E7b9   | E Phrygian Dominant       # V7/vi in C: b9 and b13 are in the key
+D | 27 | Am     | A Aeolian                 # vi: the b13 is in the key
+D | 27 | Am/G   | A Aeolian                 # vi: the b13 is in the key
+D | 28 | F#m7b5 | F# Locrian                # iiø7 of the ii–V to E minor: the b9 is in the key
+D | 28 | B7     | B Phrygian Dominant       # V7/iii in C: b9 and b13 are in the key
+D | 29 | Em7    | E Dorian                  # ii of the ii–V to D minor
+D | 29 | A7alt  | A Altered                 # from the symbol: altered
+D | 30 | Dm7    | D Dorian                  # ii of the ii–V to C
+D | 30 | G7alt  | G Altered                 # from the symbol: altered
+D | 31 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+D | 31 | A7     | A Mixolydian b6           # V7/ii in C: the b13 is in the key
+D | 32 | Dm7    | D Dorian                  # ii of the ii–V to C
+D | 32 | G7     | G Mixolydian              # V7 of C: natural tensions

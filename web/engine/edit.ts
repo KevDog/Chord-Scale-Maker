@@ -9,12 +9,13 @@ export type RowField = 'section' | 'bar' | 'chord' | 'scale'
 
 /**
  * why a grid cell value would not survive serialize -> parse as the same line, or null if fine
- * (see docs/design.md §4 "Cell validation")
+ * (see docs/design.md §4 "Cell validation"); `meta`: a title or subtitle, where a " # " is just text
  */
-export function cellError(value: string, maxLength: number = LIMITS.maxCell): string | null {
+export function cellError(value: string, maxLength: number = LIMITS.maxCell, meta = false): string | null {
   if (value.length > maxLength) return `longer than ${maxLength} characters`
   if (/[|\r\n]/.test(value)) return 'may not contain | or line breaks'
   if (value !== value.trim()) return 'may not start or end with spaces'
+  if (!meta && /\s#(?=\s|$)/.test(value)) return 'may not contain a # after a space (that starts a comment)'
   const low = value.toLowerCase()
   if (value.startsWith('#') || value.startsWith('@') || low.startsWith('title:') || low.startsWith('subtitle:'))
     return 'may not start with #, @, title: or subtitle:'

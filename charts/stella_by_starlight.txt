@@ -4,35 +4,36 @@ composer: Victor Young
 style: Medium up
 key: Bb
 form: ABCD
+# analysis: 2026-10-08, rules v1; Bb
 
 # section | bar | chord | scale
-A | 1  | Em7b5  | E Locrian
-A | 2  | A7b9   | A Phrygian Dominant
-A | 3  | Cm7    | C Dorian
-A | 4  | F7     | F Mixolydian
-A | 5  | Fm7    | F Dorian
-A | 6  | Bb7    | Bb Mixolydian
-A | 7  | EbMaj7 | Eb Lydian
-A | 8  | Ab7    | Ab Lydian Dominant
-B | 9  | BbMaj7 | Bb Ionian
-B | 10 | Em7b5  | E Locrian
-B | 10 | A7b9   | A Phrygian Dominant
-B | 11 | Dm7    | D Dorian
-B | 12 | Bbm7   | Bb Dorian
-B | 12 | Eb7    | Eb Lydian Dominant
-B | 13 | FMaj7  | F Lydian
-B | 14 | Em7b5  | E Locrian
-B | 14 | A7b9   | A Phrygian Dominant
-B | 15 | Am7b5  | A Locrian
-B | 16 | D7b9   | D Phrygian Dominant
-C | 17 | G7#5   | G Altered
-C | 19 | Cm7    | C Dorian
-C | 21 | Ab7#11 | Ab Lydian Dominant
-C | 23 | BbMaj7 | Bb Ionian
-D | 25 | Em7b5  | E Locrian
-D | 26 | A7b9   | A Phrygian Dominant
-D | 27 | Dm7b5  | D Locrian
-D | 28 | G7b9   | G Phrygian Dominant
-D | 29 | Cm7b5  | C Locrian
-D | 30 | F7b9   | F Half-Whole
-D | 31 | BbMaj7 | Bb Ionian
+A | 1  | Em7b5  | E Locrian            # iiø7 of A7b9: the b9 is in the key
+A | 2  | A7b9   | A Phrygian Dominant  # V7/iii in Bb: b9 and b13 are in the key
+A | 3  | Cm7    | C Dorian             # ii of F7: Dorian
+A | 4  | F7     | F Mixolydian         # V7/I in Bb: natural tensions
+A | 5  | Fm7    | F Dorian             # ii of the ii–V to Eb
+A | 6  | Bb7    | Bb Mixolydian        # V7/IV in Bb: natural tensions
+A | 7  | EbMaj7 | Eb Lydian            # IV: the #4 is the key’s 7th
+A | 8  | Ab7    | Ab Lydian Dominant   # back door bVII7 to BbMaj7: the #11 is in the key
+B | 9  | BbMaj7 | Bb Ionian            # tonic: the 4th is in the key
+B | 10 | Em7b5  | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
+B | 10 | A7b9   | A Phrygian Dominant  # V7/iii in Bb: b9 and b13 are in the key
+B | 11 | Dm7    | D Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
+B | 12 | Bbm7   | Bb Dorian            # ii of Eb7: Dorian
+B | 12 | Eb7    | Eb Lydian Dominant   # back door bVII7 to FMaj7: the #11 is in the key
+B | 13 | FMaj7  | F Lydian             # a non-tonic major chord: Lydian
+B | 14 | Em7b5  | E Locrian            # iiø7 of A7b9: the b9 is in the key
+B | 14 | A7b9   | A Phrygian Dominant  # V7/iii in Bb: b9 and b13 are in the key
+B | 15 | Am7b5  | A Locrian            # iiø7 of D7b9: the b9 is in the key
+B | 16 | D7b9   | D Phrygian Dominant  # V7 of G7#5, on the way to C minor: b9 and b13 are in the key
+C | 17 | G7#5   | G Altered            # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
+C | 19 | Cm7    | C Dorian             # ii: Dorian, the key’s own notes
+C | 21 | Ab7#11 | Ab Lydian Dominant   # back door bVII7 to BbMaj7: the #11 is in the key
+C | 23 | BbMaj7 | Bb Ionian            # tonic: the 4th is in the key
+D | 25 | Em7b5  | E Locrian            # iiø7 of A7b9: the b9 is in the key
+D | 26 | A7b9   | A Phrygian Dominant  # V7/iii in Bb: b9 and b13 are in the key
+D | 27 | Dm7b5  | D Locrian            # iiø7 of G7b9: the b9 is in the key
+D | 28 | G7b9   | G Phrygian Dominant  # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+D | 29 | Cm7b5  | C Locrian            # iiø7 of the ii–V to Bb: the b9 is in the key
+D | 30 | F7b9   | F Half-Whole         # V7 of Bb: the b9 from the symbol
+D | 31 | BbMaj7 | Bb Ionian            # tonic: the 4th is in the key

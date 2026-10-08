@@ -4,88 +4,97 @@ style: Ballad
 key: Ebm
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 181
+# analysis: 2026-10-08, rules v1; Eb minor
 
 # section | bar | chord | scale
 # the intro, tag and coda are left out
-A1 | 1  | Ebm
-A1 | 1  | Ebm/D
-A1 | 1  | Ebm/Db
-A1 | 2  | Cm7b5
-A1 | 2  | Abm7
-A1 | 2  | Db7
-A1 | 3  | Cm7b5
-A1 | 3  | F7
-A1 | 4  | Bm7
-A1 | 4  | E7
-A1 | 4  | Bbm7
-A1 | 4  | Eb7
-A1 | 5  | Abm7
-A1 | 5  | Db7
-A1 | 6  | GbMaj7
-A1 | 6  | G7
-A1 | 6  | Ab7#11
-A1 | 7  | Cm7b5
-A1 | 7  | F7
-A1 | 8  | Bb7#11
-A2 | 9  | Ebm
-A2 | 9  | Ebm/D
-A2 | 9  | Ebm/Db
-A2 | 10 | Cm7b5
-A2 | 10 | Abm7
-A2 | 10 | Db7
-A2 | 11 | Cm7b5
-A2 | 11 | F7
-A2 | 12 | Bm7
-A2 | 12 | E7
-A2 | 12 | Bbm7
-A2 | 12 | Eb7
-A2 | 13 | Abm7
-A2 | 13 | Db7
-A2 | 14 | GbMaj7
-A2 | 14 | G7
-A2 | 14 | Ab7#11
-A2 | 15 | Cm7b5
-A2 | 15 | F7
-A2 | 15 | Fm7b5/Bb
-A2 | 15 | Bb7
-A2 | 16 | EbMaj7
-B  | 17 | Cm7b5
-B  | 17 | F7b9
-B  | 18 | Bb7#11
-B  | 19 | Cm7b5
-B  | 19 | F7b9
-B  | 20 | Bb7#11
-B  | 21 | Abm7
-B  | 21 | Fm7b5
-B  | 22 | Cm7b5
-B  | 22 | F7b9
-B  | 23 | Bbm7
-B  | 23 | Eb7
-B  | 23 | Abm7
-B  | 23 | Db7
-B  | 24 | Gbm7
-B  | 24 | Cb7
-B  | 24 | Fm7b5
-B  | 24 | Bb7b9
-C  | 25 | Ebm
-C  | 25 | Ebm/D
-C  | 25 | Ebm/Db
-C  | 26 | Cm7b5
-C  | 26 | Abm7
-C  | 26 | Db7
-C  | 27 | Cm7b5
-C  | 27 | F7
-C  | 28 | Bm7
-C  | 28 | E7
-C  | 28 | Bbm7
-C  | 28 | Eb7
-C  | 29 | Abm7
-C  | 29 | Db7
-C  | 30 | GbMaj7
-C  | 30 | G7
-C  | 30 | Ab7#11
-C  | 31 | Cm7b5
-C  | 31 | F7
-C  | 31 | Fm7b5/Bb
-C  | 31 | Bb7
-C  | 32 | EbmMaj7
+# area: Eb minor (bars 1–4)
+A1 | 1  | Ebm      | Eb Dorian                # tonic minor: Dorian by convention
+A1 | 1  | Ebm/D    | Eb Dorian                # tonic minor: Dorian by convention
+A1 | 1  | Ebm/Db   | Eb Dorian                # tonic minor: Dorian by convention
+A1 | 2  | Cm7b5    | C Locrian                # viø7 in Eb minor: the b9 is in the key
+A1 | 2  | Abm7     | Ab Dorian                # ii of Db7: Dorian
+A1 | 2  | Db7      | Db Mixolydian            # V7/bIII in Eb minor: natural tensions
+A1 | 3  | Cm7b5    | C Locrian                # iiø7 of F7: the b9 is in the key
+A1 | 3  | F7       | F Phrygian Dominant      # V7/v in Eb minor: b9 and b13 are in the key
+A1 | 4  | Bm7      | B Dorian                 # ii of E7: Dorian
+A1 | 4  | E7       | E Mixolydian             # passing ii–V: its own key
+A1 | 4  | Bbm7     | Bb Dorian                # ii of the ii–V to Ab minor
+A1 | 4  | Eb7      | Eb Mixolydian b6         # V7/iv in Eb minor: the b13 is in the key
+# area: Gb major (bars 5–6)
+A1 | 5  | Abm7     | Ab Dorian                # ii of the ii–V to Gb
+A1 | 5  | Db7      | Db Mixolydian            # V7 of Gb: natural tensions
+A1 | 6  | GbMaj7   | Gb Ionian                # tonic: the 4th is in the key
+A1 | 6  | G7       | G Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A1 | 6  | Ab7#11   | Ab Lydian Dominant       # II7 in Gb, not resolving: the #11 from the symbol
+# area: Eb minor (bars 7–12)
+A1 | 7  | Cm7b5    | C Locrian                # iiø7 of F7: the b9 is in the key
+A1 | 7  | F7       | F Phrygian Dominant      # V7 of Bb7#11, on the way to Eb minor: b9 and b13 are in the key
+A1 | 8  | Bb7#11   | Bb Lydian Dominant       # V7 of Eb minor, the chain's last link: 9, #11 and 13 from the symbol
+A2 | 9  | Ebm      | Eb Dorian                # tonic minor: Dorian by convention
+A2 | 9  | Ebm/D    | Eb Dorian                # tonic minor: Dorian by convention
+A2 | 9  | Ebm/Db   | Eb Dorian                # tonic minor: Dorian by convention
+A2 | 10 | Cm7b5    | C Locrian                # viø7 in Eb minor: the b9 is in the key
+A2 | 10 | Abm7     | Ab Dorian                # ii of Db7: Dorian
+A2 | 10 | Db7      | Db Mixolydian            # V7/bIII in Eb minor: natural tensions
+A2 | 11 | Cm7b5    | C Locrian                # iiø7 of F7: the b9 is in the key
+A2 | 11 | F7       | F Phrygian Dominant      # V7/v in Eb minor: b9 and b13 are in the key
+A2 | 12 | Bm7      | B Dorian                 # ii of E7: Dorian
+A2 | 12 | E7       | E Mixolydian             # passing ii–V: its own key
+A2 | 12 | Bbm7     | Bb Dorian                # ii of the ii–V to Ab minor
+A2 | 12 | Eb7      | Eb Mixolydian b6         # V7/iv in Eb minor: the b13 is in the key
+# area: Gb major (bars 13–15)
+A2 | 13 | Abm7     | Ab Dorian                # ii of the ii–V to Gb
+A2 | 13 | Db7      | Db Mixolydian            # V7 of Gb: natural tensions
+A2 | 14 | GbMaj7   | Gb Ionian                # tonic: the 4th is in the key
+A2 | 14 | G7       | G Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A2 | 14 | Ab7#11   | Ab Lydian Dominant       # II7 in Gb, not resolving: the #11 from the symbol
+A2 | 15 | Cm7b5    | C Locrian                # iiø7 of F7: the b9 is in the key
+A2 | 15 | F7       | F Phrygian Dominant      # V7/iii in Gb: b9 and b13 are in the key
+# area: Eb major (bars 15–24)
+A2 | 15 | Fm7b5/Bb | F Locrian                # iiø7 of the ii–V to Eb: the b9 is in the key
+A2 | 15 | Bb7      | Bb Mixolydian            # V7 of Eb: natural tensions
+A2 | 16 | EbMaj7   | Eb Ionian                # tonic: the 4th is in the key
+B  | 17 | Cm7b5    | C Locrian                # iiø7 of F7b9: the b9 is in the key
+B  | 17 | F7b9     | F Half-Whole Diminished  # extended dominant: V7 of Bb7#11; b9 from the symbol
+B  | 18 | Bb7#11   | Bb Lydian Dominant       # V7 in Eb, not resolving: the #11 from the symbol
+B  | 19 | Cm7b5    | C Locrian                # iiø7 of F7b9: the b9 is in the key
+B  | 19 | F7b9     | F Half-Whole Diminished  # extended dominant: V7 of Bb7#11; b9 from the symbol
+B  | 20 | Bb7#11   | Bb Lydian Dominant       # V7 in Eb, not resolving: the #11 from the symbol
+B  | 21 | Abm7     | Ab Dorian                # a borrowed minor chord: Dorian, its own key
+B  | 21 | Fm7b5    | F Locrian                # iiø7 in Eb: the b9 is in the key
+B  | 22 | Cm7b5    | C Locrian                # iiø7 of the ii–V to Bb minor: the b9 is in the key
+B  | 22 | F7b9     | F Half-Whole Diminished  # V7/v in Eb: the b9 from the symbol
+B  | 23 | Bbm7     | Bb Dorian                # ii of the ii–V to Ab minor
+B  | 23 | Eb7      | Eb Mixolydian            # V7/iv in Eb: natural tensions
+B  | 23 | Abm7     | Ab Dorian                # ii of the ii–V to Gb minor
+B  | 23 | Db7      | Db Lydian Dominant       # V7/biii in Eb: the #11 is in the key
+B  | 24 | Gbm7     | Gb Dorian                # ii of Cb7: Dorian
+B  | 24 | Cb7      | Cb Mixolydian            # passing ii–V: its own key
+# area: Eb minor (bars 24–28)
+B  | 24 | Fm7b5    | F Locrian                # iiø7 of the ii–V to Eb minor: the b9 is in the key
+B  | 24 | Bb7b9    | Bb Phrygian Dominant     # V7 of Eb minor: b9 and b13 are in the key
+C  | 25 | Ebm      | Eb Dorian                # tonic minor: Dorian by convention
+C  | 25 | Ebm/D    | Eb Dorian                # tonic minor: Dorian by convention
+C  | 25 | Ebm/Db   | Eb Dorian                # tonic minor: Dorian by convention
+C  | 26 | Cm7b5    | C Locrian                # viø7 in Eb minor: the b9 is in the key
+C  | 26 | Abm7     | Ab Dorian                # ii of Db7: Dorian
+C  | 26 | Db7      | Db Mixolydian            # V7/bIII in Eb minor: natural tensions
+C  | 27 | Cm7b5    | C Locrian                # iiø7 of F7: the b9 is in the key
+C  | 27 | F7       | F Phrygian Dominant      # V7/v in Eb minor: b9 and b13 are in the key
+C  | 28 | Bm7      | B Dorian                 # ii of E7: Dorian
+C  | 28 | E7       | E Mixolydian             # passing ii–V: its own key
+C  | 28 | Bbm7     | Bb Dorian                # ii of the ii–V to Ab minor
+C  | 28 | Eb7      | Eb Mixolydian b6         # V7/iv in Eb minor: the b13 is in the key
+# area: Gb major (bars 29–31)
+C  | 29 | Abm7     | Ab Dorian                # ii of the ii–V to Gb
+C  | 29 | Db7      | Db Mixolydian            # V7 of Gb: natural tensions
+C  | 30 | GbMaj7   | Gb Ionian                # tonic: the 4th is in the key
+C  | 30 | G7       | G Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+C  | 30 | Ab7#11   | Ab Lydian Dominant       # II7 in Gb, not resolving: the #11 from the symbol
+C  | 31 | Cm7b5    | C Locrian                # iiø7 of F7: the b9 is in the key
+C  | 31 | F7       | F Phrygian Dominant      # V7/iii in Gb: b9 and b13 are in the key
+# area: Eb minor (bars 31–32)
+C  | 31 | Fm7b5/Bb | F Locrian                # iiø7 of the ii–V to Eb minor: the b9 is in the key
+C  | 31 | Bb7      | Bb Phrygian Dominant     # V7 of Eb minor: b9 and b13 are in the key
+C  | 32 | EbmMaj7  | Eb Melodic Minor         # from the symbol: minor-major 7th

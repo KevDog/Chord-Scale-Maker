@@ -4,19 +4,23 @@ composer: Kenny Dorham
 style: Latin
 key: Cm
 form: AB
+# analysis: 2026-10-08, rules v1; C minor
 
 # section | bar | chord | scale
-A | 1  | Cm7    | C Dorian
-A | 3  | Fm7    | F Dorian
-A | 4  | Bb7    | Bb Mixolydian
-A | 5  | Dm7b5  | D Locrian
-A | 6  | G7#5#9 | G Altered
-A | 7  | CmMaj7 | C Melodic Minor
-B | 9  | Ebm7   | Eb Dorian
-B | 10 | Ab7    | Ab Mixolydian
-B | 11 | DbMaj7 | Db Ionian
-B | 13 | Dm7b5  | D Locrian
-B | 14 | G7#5#9 | G Altered
-B | 15 | Cm     | C Dorian
-B | 16 | Dm7b5  | D Locrian
-B | 16 | G7#5   | G Altered
+# area: C minor (bars 1–7)
+A | 1  | Cm7    | C Dorian         # tonic minor: Dorian by convention
+A | 3  | Fm7    | F Dorian         # ii of Bb7: Dorian
+A | 4  | Bb7    | Bb Mixolydian    # V7/bIII in C minor: natural tensions
+A | 5  | Dm7b5  | D Locrian        # iiø7 of the ii–V to C minor: the b9 is in the key
+A | 6  | G7#5#9 | G Altered        # V7 of C minor: the b13 is in the key, b9, #9 and #11 from the symbol
+A | 7  | CmMaj7 | C Melodic Minor  # from the symbol: minor-major 7th
+# area: Db major (bars 9–11)
+B | 9  | Ebm7   | Eb Dorian        # ii of the ii–V to Db
+B | 10 | Ab7    | Ab Mixolydian    # V7 of Db: natural tensions
+B | 11 | DbMaj7 | Db Ionian        # tonic: the 4th is in the key
+# area: C minor (bars 13–16)
+B | 13 | Dm7b5  | D Locrian        # iiø7 of the ii–V to C minor: the b9 is in the key
+B | 14 | G7#5#9 | G Altered        # V7 of C minor: the b13 is in the key, b9, #9 and #11 from the symbol
+B | 15 | Cm     | C Dorian         # tonic minor: Dorian by convention
+B | 16 | Dm7b5  | D Locrian        # iiø7 of the ii–V to C minor: the b9 is in the key
+B | 16 | G7#5   | G Altered        # V7 of C minor: b9 and b13 are in the key, the #11 from the symbol

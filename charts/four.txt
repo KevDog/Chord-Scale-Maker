@@ -5,35 +5,36 @@ style: Medium up
 key: Eb
 form: AA, 32 bars
 source: Colorado Cookbook, p. 75
+# analysis: 2026-10-08, rules v1; Eb
 
 # section | bar | chord | scale
 # the horn intro is left out
-A1 | 1  | EbMaj7
-A1 | 3  | Ebm7
-A1 | 4  | Ab7
-A1 | 5  | Fm
-A1 | 7  | Abm7
-A1 | 8  | Db7
-A1 | 9  | Gm7
-A1 | 10 | Gbm7
-A1 | 11 | Fm7
-A1 | 12 | Bb7
-A1 | 13 | Gm7
-A1 | 14 | Gbm7
-A1 | 15 | Fm7
-A1 | 16 | Bb7
-A2 | 17 | EbMaj7
-A2 | 19 | Ebm7
-A2 | 20 | Ab7
-A2 | 21 | Fm
-A2 | 23 | Abm7
-A2 | 24 | Db7
-A2 | 25 | Gm7
-A2 | 26 | Gbm7
-A2 | 27 | Fm7
-A2 | 28 | Bb7
-A2 | 29 | Gm7
-A2 | 30 | Gbm7
-A2 | 31 | Fm7
-A2 | 31 | Bb7
-A2 | 32 | EbMaj7
+A1 | 1  | EbMaj7 | Eb Ionian      # tonic: the 4th is in the key
+A1 | 3  | Ebm7   | Eb Dorian      # ii of Ab7: Dorian
+A1 | 4  | Ab7    | Ab Mixolydian  # passing ii–V: its own key
+A1 | 5  | Fm     | F Dorian       # ii: Dorian, the key’s own notes
+A1 | 7  | Abm7   | Ab Dorian      # ii of Db7: Dorian
+A1 | 8  | Db7    | Db Mixolydian  # passing ii–V: its own key
+A1 | 9  | Gm7    | G Dorian       # iii: Dorian (its Phrygian would put a b9 over the root)
+A1 | 10 | Gbm7   | Gb Dorian      # a borrowed minor chord: Dorian, its own key
+A1 | 11 | Fm7    | F Dorian       # ii of Bb7: Dorian
+A1 | 12 | Bb7    | Bb Mixolydian  # V7/I in Eb: natural tensions
+A1 | 13 | Gm7    | G Dorian       # iii: Dorian (its Phrygian would put a b9 over the root)
+A1 | 14 | Gbm7   | Gb Dorian      # a borrowed minor chord: Dorian, its own key
+A1 | 15 | Fm7    | F Dorian       # ii of the ii–V to Eb
+A1 | 16 | Bb7    | Bb Mixolydian  # V7 of Eb: natural tensions
+A2 | 17 | EbMaj7 | Eb Ionian      # tonic: the 4th is in the key
+A2 | 19 | Ebm7   | Eb Dorian      # ii of Ab7: Dorian
+A2 | 20 | Ab7    | Ab Mixolydian  # passing ii–V: its own key
+A2 | 21 | Fm     | F Dorian       # ii: Dorian, the key’s own notes
+A2 | 23 | Abm7   | Ab Dorian      # ii of Db7: Dorian
+A2 | 24 | Db7    | Db Mixolydian  # passing ii–V: its own key
+A2 | 25 | Gm7    | G Dorian       # iii: Dorian (its Phrygian would put a b9 over the root)
+A2 | 26 | Gbm7   | Gb Dorian      # a borrowed minor chord: Dorian, its own key
+A2 | 27 | Fm7    | F Dorian       # ii of Bb7: Dorian
+A2 | 28 | Bb7    | Bb Mixolydian  # V7/I in Eb: natural tensions
+A2 | 29 | Gm7    | G Dorian       # iii: Dorian (its Phrygian would put a b9 over the root)
+A2 | 30 | Gbm7   | Gb Dorian      # a borrowed minor chord: Dorian, its own key
+A2 | 31 | Fm7    | F Dorian       # ii of the ii–V to Eb
+A2 | 31 | Bb7    | Bb Mixolydian  # V7 of Eb: natural tensions
+A2 | 32 | EbMaj7 | Eb Ionian      # tonic: the 4th is in the key

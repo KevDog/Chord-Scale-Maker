@@ -1,41 +1,42 @@
 title: Rhythm Changes
 subtitle: Bb, AABA, Standard Changes
+# analysis: 2026-10-08, rules v1; Bb
 
 # section | bar | chord | scale
-A1 | 1  | Bb6   | Bb Ionian
-A1 | 1  | G7b9  | G Phrygian Dominant
-A1 | 2  | Cm7   | C Dorian
-A1 | 2  | F7    | F Mixolydian
-A1 | 3  | Bb6   | Bb Ionian
-A1 | 3  | G7b9  | G Phrygian Dominant
-A1 | 4  | Cm7   | C Dorian
-A1 | 4  | F7    | F Mixolydian
-A1 | 5  | Bb7   | Bb Mixolydian
-A1 | 6  | Eb7   | Eb Lydian Dominant
-A1 | 6  | Edim7 | E Whole-Half
-A1 | 7  | Bb6   | Bb Ionian
-A1 | 7  | G7b9  | G Phrygian Dominant
-A1 | 8  | Cm7   | C Dorian
-A1 | 8  | F7    | F Mixolydian
+A1 | 1  | Bb6   | Bb Ionian            # tonic: the 4th is in the key
+A1 | 1  | G7b9  | G Phrygian Dominant  # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+A1 | 2  | Cm7   | C Dorian             # ii of the ii–V to Bb
+A1 | 2  | F7    | F Mixolydian         # V7 of Bb: natural tensions
+A1 | 3  | Bb6   | Bb Ionian            # tonic: the 4th is in the key
+A1 | 3  | G7b9  | G Phrygian Dominant  # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+A1 | 4  | Cm7   | C Dorian             # ii of F7: Dorian
+A1 | 4  | F7    | F Mixolydian         # extended dominant: V7 of Bb7
+A1 | 5  | Bb7   | Bb Mixolydian        # extended dominant: V7 of Eb7
+A1 | 6  | Eb7   | Eb Lydian Dominant   # IV7 in Bb, not resolving: the #11 is in the key
+A1 | 6  | Edim7 | E Whole-Half         # passing diminished: the rootless V7b9 of the next chord
+A1 | 7  | Bb6   | Bb Ionian            # tonic: the 4th is in the key
+A1 | 7  | G7b9  | G Phrygian Dominant  # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+A1 | 8  | Cm7   | C Dorian             # ii of the ii–V to Bb
+A1 | 8  | F7    | F Mixolydian         # V7 of Bb: natural tensions
 
-A2 | 9  | Bb6   | Bb Ionian
-A2 | 9  | G7b9  | G Phrygian Dominant
-A2 | 10 | Cm7   | C Dorian
-A2 | 10 | F7    | F Mixolydian
-A2 | 11 | Bb6   | Bb Ionian
-A2 | 11 | G7b9  | G Phrygian Dominant
-A2 | 12 | Cm7   | C Dorian
-A2 | 12 | F7    | F Mixolydian
-A2 | 13 | Bb7   | Bb Mixolydian
-A2 | 14 | Eb7   | Eb Lydian Dominant
-A2 | 14 | Edim7 | E Whole-Half
-A2 | 15 | Cm7   | C Dorian
-A2 | 15 | F7    | F Mixolydian
-A2 | 16 | Bb6   | Bb Ionian
+A2 | 9  | Bb6   | Bb Ionian            # tonic: the 4th is in the key
+A2 | 9  | G7b9  | G Phrygian Dominant  # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+A2 | 10 | Cm7   | C Dorian             # ii of the ii–V to Bb
+A2 | 10 | F7    | F Mixolydian         # V7 of Bb: natural tensions
+A2 | 11 | Bb6   | Bb Ionian            # tonic: the 4th is in the key
+A2 | 11 | G7b9  | G Phrygian Dominant  # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+A2 | 12 | Cm7   | C Dorian             # ii of F7: Dorian
+A2 | 12 | F7    | F Mixolydian         # extended dominant: V7 of Bb7
+A2 | 13 | Bb7   | Bb Mixolydian        # extended dominant: V7 of Eb7
+A2 | 14 | Eb7   | Eb Lydian Dominant   # IV7 in Bb, not resolving: the #11 is in the key
+A2 | 14 | Edim7 | E Whole-Half         # passing diminished: the rootless V7b9 of the next chord
+A2 | 15 | Cm7   | C Dorian             # ii of the ii–V to Bb
+A2 | 15 | F7    | F Mixolydian         # V7 of Bb: natural tensions
+A2 | 16 | Bb6   | Bb Ionian            # tonic: the 4th is in the key
 
-B  | 17 | D7    | D Mixolydian
-B  | 19 | G7    | G Mixolydian
-B  | 21 | C7    | C Mixolydian
-B  | 23 | F7    | F Mixolydian
+B  | 17 | D7    | D Mixolydian         # extended dominant: V7 of G7
+B  | 19 | G7    | G Mixolydian         # extended dominant: V7 of C7
+B  | 21 | C7    | C Mixolydian         # extended dominant: V7 of F7
+B  | 23 | F7    | F Mixolydian         # V7 of Bb: natural tensions
 
 @copy A2 A3 16

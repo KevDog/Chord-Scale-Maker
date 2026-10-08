@@ -5,18 +5,23 @@ style: Latin
 key: Bb
 form: A, 16 bars
 source: Colorado Cookbook, p. 120
+# analysis: 2026-10-08, rules v1; Bb
 
 # section | bar | chord | scale
-A | 1  | BbMaj7
-A | 3  | Em7
-A | 4  | A7
-A | 5  | AbMaj7
-A | 7  | Dm7
-A | 8  | G7
-A | 9  | GbMaj7
-A | 11 | Cm7
-A | 12 | F7
-A | 13 | Dm7
-A | 14 | G7b9
-A | 15 | Cm7
-A | 16 | F7b9
+# area: Bb major (bar 1)
+A | 1  | BbMaj7 | Bb Ionian                # tonic: the 4th is in the key
+# area: Ab major (bars 3–5)
+A | 3  | Em7    | E Dorian                 # ii of A7: Dorian
+A | 4  | A7     | A Lydian Dominant        # tritone substitute: resolves down a half step to AbMaj7
+A | 5  | AbMaj7 | Ab Ionian                # tonic: the 4th is in the key
+# area: Gb major (bars 7–14)
+A | 7  | Dm7    | D Dorian                 # ii of G7: Dorian
+A | 8  | G7     | G Lydian Dominant        # tritone substitute: resolves down a half step to GbMaj7
+A | 9  | GbMaj7 | Gb Ionian                # tonic: the 4th is in the key
+A | 11 | Cm7    | C Dorian                 # ii of F7: Dorian
+A | 12 | F7     | F Mixolydian             # passing ii–V: its own key
+A | 13 | Dm7    | D Dorian                 # ii of the ii–V to C minor
+A | 14 | G7b9   | G Altered                # V7/#iv in Gb: b9, #11 and b13 are in the key
+# area: Bb major (bars 15–16)
+A | 15 | Cm7    | C Dorian                 # ii of the ii–V to Bb
+A | 16 | F7b9   | F Half-Whole Diminished  # V7 of Bb: the b9 from the symbol

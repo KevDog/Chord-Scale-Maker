@@ -4,54 +4,62 @@ style: Ballad
 key: C
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 266
+# analysis: 2026-10-08, rules v1; C
 
 # section | bar | chord | scale
-A1 | 1  | CMaj7
-A1 | 1  | F13
-A1 | 2  | Bbm9
-A1 | 2  | Eb7
-A1 | 3  | AbMaj7
-A1 | 3  | DbMaj7
-A1 | 4  | Dm7b5
-A1 | 4  | G7#11
-A1 | 5  | Cm
-A1 | 5  | Am7b5
-A1 | 6  | Dm7b5
-A1 | 6  | G7alt
-A1 | 7  | CMaj7
-A1 | 7  | Am7
-A1 | 8  | Dm7
-A1 | 8  | G7b9
-A2 | 9  | CMaj7
-A2 | 9  | F13
-A2 | 10 | Bbm9
-A2 | 10 | Eb7
-A2 | 11 | AbMaj7
-A2 | 11 | DbMaj7
-A2 | 12 | Dm7b5
-A2 | 12 | G7#11
-A2 | 13 | Cm
-A2 | 13 | Am7b5
-A2 | 14 | Dm7b5
-A2 | 14 | G7alt
-A2 | 15 | CMaj7
-A2 | 15 | Am7
-A2 | 16 | Gm7
-A2 | 16 | C7b9
-B  | 17 | FMaj7
-B  | 17 | Bb13
-B  | 18 | Ebm9
-B  | 18 | Ab7
-B  | 19 | DbMaj7
-B  | 19 | GbMaj7
-B  | 20 | Gm7b5
-B  | 20 | C7alt
-B  | 21 | Fm
-B  | 21 | Dm7b5
-B  | 22 | Gm7b5
-B  | 22 | C7alt
-B  | 23 | FMaj7
-B  | 23 | F6
-B  | 24 | Dm7b5
-B  | 24 | G7alt
+# area: C major (bar 1)
+A1 | 1  | CMaj7  | C Ionian                 # tonic: the 4th is in the key
+A1 | 1  | F13    | F Lydian Dominant        # V7/bvii in C: the #11 is in the key
+# area: Ab major (bars 2–5)
+A1 | 2  | Bbm9   | Bb Dorian                # ii of the ii–V to Ab
+A1 | 2  | Eb7    | Eb Mixolydian            # V7 of Ab: natural tensions
+A1 | 3  | AbMaj7 | Ab Ionian                # tonic: the 4th is in the key
+A1 | 3  | DbMaj7 | Db Lydian                # IV: the #4 is the key’s 7th
+A1 | 4  | Dm7b5  | D Locrian                # iiø7 of the ii–V to C minor: the b9 is in the key
+A1 | 4  | G7#11  | G Lydian Dominant        # V7/iii in Ab: 9, #11 and 13 from the symbol
+A1 | 5  | Cm     | C Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
+A1 | 5  | Am7b5  | A Locrian                # biiø7 in Ab: the b9 is in the key
+# area: C major (bars 6–9)
+A1 | 6  | Dm7b5  | D Locrian                # iiø7 of the ii–V to C: the b9 is in the key
+A1 | 6  | G7alt  | G Altered                # from the symbol: altered
+A1 | 7  | CMaj7  | C Ionian                 # tonic: the 4th is in the key
+A1 | 7  | Am7    | A Aeolian                # vi: the b13 is in the key
+A1 | 8  | Dm7    | D Dorian                 # ii of the ii–V to C
+A1 | 8  | G7b9   | G Half-Whole Diminished  # V7 of C: the b9 from the symbol
+A2 | 9  | CMaj7  | C Ionian                 # tonic: the 4th is in the key
+A2 | 9  | F13    | F Lydian Dominant        # V7/bvii in C: the #11 is in the key
+# area: Ab major (bars 10–13)
+A2 | 10 | Bbm9   | Bb Dorian                # ii of the ii–V to Ab
+A2 | 10 | Eb7    | Eb Mixolydian            # V7 of Ab: natural tensions
+A2 | 11 | AbMaj7 | Ab Ionian                # tonic: the 4th is in the key
+A2 | 11 | DbMaj7 | Db Lydian                # IV: the #4 is the key’s 7th
+A2 | 12 | Dm7b5  | D Locrian                # iiø7 of the ii–V to C minor: the b9 is in the key
+A2 | 12 | G7#11  | G Lydian Dominant        # V7/iii in Ab: 9, #11 and 13 from the symbol
+A2 | 13 | Cm     | C Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
+A2 | 13 | Am7b5  | A Locrian                # biiø7 in Ab: the b9 is in the key
+# area: C major (bars 14–17)
+A2 | 14 | Dm7b5  | D Locrian                # iiø7 of the ii–V to C: the b9 is in the key
+A2 | 14 | G7alt  | G Altered                # from the symbol: altered
+A2 | 15 | CMaj7  | C Ionian                 # tonic: the 4th is in the key
+A2 | 15 | Am7    | A Aeolian                # vi: the b13 is in the key
+A2 | 16 | Gm7    | G Dorian                 # ii of the ii–V to F
+A2 | 16 | C7b9   | C Half-Whole Diminished  # V7/IV in C: the b9 from the symbol
+B  | 17 | FMaj7  | F Lydian                 # IV: the #4 is the key’s 7th
+B  | 17 | Bb13   | Bb Lydian Dominant       # V7/biii in C: the #11 is in the key
+# area: Db major (bars 18–21)
+B  | 18 | Ebm9   | Eb Dorian                # ii of the ii–V to Db
+B  | 18 | Ab7    | Ab Mixolydian            # V7 of Db: natural tensions
+B  | 19 | DbMaj7 | Db Ionian                # tonic: the 4th is in the key
+B  | 19 | GbMaj7 | Gb Lydian                # IV: the #4 is the key’s 7th
+B  | 20 | Gm7b5  | G Locrian                # iiø7 of the ii–V to F minor: the b9 is in the key
+B  | 20 | C7alt  | C Altered                # from the symbol: altered
+B  | 21 | Fm     | F Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
+B  | 21 | Dm7b5  | D Locrian                # biiø7 in Db: the b9 is in the key
+# area: C major (bars 22–25)
+B  | 22 | Gm7b5  | G Locrian                # iiø7 of the ii–V to F: the b9 is in the key
+B  | 22 | C7alt  | C Altered                # from the symbol: altered
+B  | 23 | FMaj7  | F Lydian                 # IV: the #4 is the key’s 7th
+B  | 23 | F6     | F Lydian                 # IV: the #4 is the key’s 7th
+B  | 24 | Dm7b5  | D Locrian                # iiø7 of the ii–V to C: the b9 is in the key
+B  | 24 | G7alt  | G Altered                # from the symbol: altered
 @copy A1 A3 24

@@ -5,12 +5,13 @@ style: Blues
 key: G
 form: A, 12 bars
 source: Colorado Cookbook, p. 15
+# analysis: 2026-10-08, rules v1; G, blues
 
 # section | bar | chord | scale
-A | 1  | G7
-A | 5  | C7/G
-A | 7  | G7
-A | 9  | D7#9
-A | 10 | Eb7#9
-A | 10 | D7#9
-A | 11 | G7
+A | 1  | G7    | G Mixolydian              # extended dominant: V7 of C7/G
+A | 5  | C7/G  | C Lydian Dominant         # IV7 of the blues: the #11 is in the key
+A | 7  | G7    | G Mixolydian              # I7 of the blues: natural tensions
+A | 9  | D7#9  | D Half-Whole Diminished   # V7 in G, not resolving: b9, #9 and #11 from the symbol
+A | 10 | Eb7#9 | Eb Half-Whole Diminished  # tritone substitute: resolves down a half step to D7#9; b9 and #9 from the symbol
+A | 10 | D7#9  | D Half-Whole Diminished   # extended dominant: V7 of G7; b9, #9 and #11 from the symbol
+A | 11 | G7    | G Mixolydian              # I7 of the blues: natural tensions

@@ -5,31 +5,32 @@ style: Medium up
 key: Bm
 form: AB, 32 bars
 source: Colorado Cookbook, p. 154
+# analysis: 2026-10-08, rules v1; B minor
 
 # section | bar | chord | scale
-A | 1  | Bm7
-A | 5  | BbMaj7#11
-A | 6  | AbMaj7#11
-A | 7  | Gb7#11
-A | 9  | Bm7
-A | 11 | BbMaj7#11
-A | 13 | Am7
-A | 14 | BbMaj7#11
-A | 15 | Am7
-A | 16 | BbMaj7#11
-A | 16 | Am7
-B | 17 | Abm7
-B | 20 | Bbm7
-B | 20 | Bm7
-B | 21 | Bm7
-B | 22 | BbMaj7#11
-B | 22 | Dm7
-B | 23 | Eb7#11
-B | 24 | Eb7/Db
-B | 25 | FMaj7/C
-B | 26 | Gm7/C
-B | 27 | Am7/C
-B | 28 | BbMaj7#11/C
-B | 29 | Bm7b5
-B | 30 | Bbm7
-B | 31 | F7sus4
+A | 1  | Bm7         | B Dorian            # tonic minor: Dorian by convention
+A | 5  | BbMaj7#11   | Bb Lydian           # from the symbol: #11
+A | 6  | AbMaj7#11   | Ab Lydian           # from the symbol: #11
+A | 7  | Gb7#11      | Gb Lydian Dominant  # V7 of B minor: 9, #11 and 13 from the symbol
+A | 9  | Bm7         | B Dorian            # tonic minor: Dorian by convention
+A | 11 | BbMaj7#11   | Bb Lydian           # from the symbol: #11
+A | 13 | Am7         | A Dorian            # a borrowed minor chord: Dorian, its own key
+A | 14 | BbMaj7#11   | Bb Lydian           # from the symbol: #11
+A | 15 | Am7         | A Dorian            # a borrowed minor chord: Dorian, its own key
+A | 16 | BbMaj7#11   | Bb Lydian           # from the symbol: #11
+A | 16 | Am7         | A Dorian            # a borrowed minor chord: Dorian, its own key
+B | 17 | Abm7        | Ab Dorian           # a borrowed minor chord: Dorian, its own key
+B | 20 | Bbm7        | Bb Dorian           # a borrowed minor chord: Dorian, its own key
+B | 20 | Bm7         | B Dorian            # tonic minor: Dorian by convention
+B | 21 | Bm7         | B Dorian
+B | 22 | BbMaj7#11   | Bb Lydian           # from the symbol: #11
+B | 22 | Dm7         | D Dorian            # a borrowed minor chord: Dorian, its own key
+B | 23 | Eb7#11      | Eb Lydian Dominant  # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B | 24 | Eb7/Db      | Eb Altered          # back door bVII7 to FMaj7/C: b9, #11 and b13 are in the key
+B | 25 | FMaj7/C     | F Lydian            # a non-tonic major chord: Lydian
+B | 26 | Gm7/C       | C Mixolydian        # static sus: Mixolydian
+B | 27 | Am7/C       | A Dorian            # a borrowed minor chord: Dorian, its own key
+B | 28 | BbMaj7#11/C | Bb Lydian           # from the symbol: #11
+B | 29 | Bm7b5       | B Locrian           # iø7 in B minor: the b9 is in the key
+B | 30 | Bbm7        | Bb Dorian           # a borrowed minor chord: Dorian, its own key
+B | 31 | F7sus4      | F Mixolydian        # static sus: Mixolydian

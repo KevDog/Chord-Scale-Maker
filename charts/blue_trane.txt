@@ -5,10 +5,11 @@ style: Blues
 key: Eb
 form: A, 12 bars
 source: Colorado Cookbook, p. 33
+# analysis: 2026-10-08, rules v1; Eb, blues
 
 # section | bar | chord | scale
-A | 1  | Eb7#9
-A | 5  | Ab7#11
-A | 7  | Eb7#9
-A | 9  | Bb7#9
-A | 11 | Eb7#9
+A | 1  | Eb7#9  | Eb Half-Whole Diminished  # extended dominant: V7 of Ab7#11; b9, #9 and #11 from the symbol
+A | 5  | Ab7#11 | Ab Lydian Dominant        # IV7 of the blues: the #11 is in the key
+A | 7  | Eb7#9  | Eb Half-Whole Diminished  # I7 of the blues: b9, #9 and #11 from the symbol
+A | 9  | Bb7#9  | Bb Half-Whole Diminished  # extended dominant: V7 of Eb7#9; b9, #9 and #11 from the symbol
+A | 11 | Eb7#9  | Eb Half-Whole Diminished  # I7 of the blues: b9, #9 and #11 from the symbol

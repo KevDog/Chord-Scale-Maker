@@ -1,0 +1,208 @@
+import { readFileSync } from 'node:fs'
+import { describe, expect, it } from 'vitest'
+import { analyse, applyAnalysis, parseKey, pins } from '../analysis'
+import { parseChart, serializeChart } from '../chart'
+
+/** a chart from `key` and `bar chord` pairs: "1 Dm7, 2 G7, 3 CMaj7" */
+const chart = (key: string, rows: string, extra = ''): string =>
+  `title: T\n${key ? `key: ${key}\n` : ''}${extra}` +
+  rows
+    .split(',')
+    .map((r) => r.trim().split(/\s+/))
+    .map(([bar, chord]) => `A | ${bar} | ${chord}`)
+    .join('\n') +
+  '\n'
+
+/** "G7: G Altered (D1)" for every row, or just the chord asked for */
+function verdicts(text: string): Record<string, string> {
+  const out: Record<string, string> = {}
+  for (const r of analyse(parseChart(text).value).rows) out[`${r.bar} ${r.chord}`] ??= `${r.scale} (${r.rule})`
+  return out
+}
+const verdict = (text: string, barChord: string): string | undefined => verdicts(text)[barChord]
+const library = (name: string): string => readFileSync(`../charts/${name}.txt`, 'utf8')
+
+describe('analysis: dominants (§7.1)', () => {
+  it('D1 the symbol pins it: 7alt is Altered anywhere', () => {
+    expect(verdict(chart('C', '1 Dm7, 2 G7alt, 3 CMaj7'), '2 G7alt')).toBe('G Altered (D1)')
+  })
+
+  it('D2 a tritone substitute is Lydian Dominant', () => {
+    expect(verdict(chart('C', '1 Dm7, 2 Db7, 3 CMaj7'), '2 Db7')).toBe('Db Lydian Dominant (D2)')
+  })
+
+  it('D2 not into a half-diminished chord: Fm7 Bb7 | Am7b5 is the ii–V of Eb (Autumn Leaves)', () => {
+    expect(verdict(chart('Gm', '1 Fm7, 1 Bb7, 2 Am7b5, 3 D7, 4 Gm'), '1 Bb7')).toBe('Bb Mixolydian (D4)')
+  })
+
+  it('D3 an extended dominant is Mixolydian (the Rhythm Changes bridge)', () => {
+    const v = verdicts(chart('Bb', '1 D7, 3 G7, 5 C7, 7 F7, 9 BbMaj7'))
+    expect([v['1 D7'], v['3 G7'], v['5 C7'], v['7 F7']]).toEqual(['D Mixolydian (D3)', 'G Mixolydian (D3)', 'C Mixolydian (D3)', 'F Mixolydian (D4)'])
+  })
+
+  it("D3' a chain into a minor chord takes that key, last link included (Stella)", () => {
+    const v = verdicts(chart('Bb', '1 Am7b5, 2 D7b9, 3 G7#5, 5 Cm7, 7 F7, 8 BbMaj7'))
+    expect([v['2 D7b9'], v['3 G7#5']]).toEqual(["D Phrygian Dominant (D3')", "G Altered (D1+D3')"])
+  })
+
+  it('D4 V7 of a minor key is Phrygian Dominant (decision 1)', () => {
+    expect(verdict(chart('Gm', '1 Am7b5, 2 D7, 3 Gm'), '2 D7')).toBe('D Phrygian Dominant (D4)')
+  })
+
+  it('D4 V7/ii in major is Mixolydian b6 (decision 2)', () => {
+    expect(verdict(chart('F', '1 FMaj7, 2 D7, 3 Gm7, 4 C7'), '2 D7')).toBe('D Mixolydian b6 (D4)')
+  })
+
+  it('D4 a 13b9 keeps its natural 13: Half-Whole', () => {
+    expect(verdict(chart('Gm', '1 Am7b5, 2 D13b9, 3 Gm'), '2 D13b9')).toBe('D Half-Whole Diminished (D1+D4)')
+  })
+
+  it('D4 a #5 is Whole Tone where the 9 is in the key, Altered where the b9 is', () => {
+    expect(verdict(chart('C', '1 Dm7, 2 G7#5, 3 CMaj7'), '2 G7#5')).toBe('G Whole Tone (D1+D4)')
+    expect(verdict(chart('Cm', '1 Dm7b5, 2 G7#5, 3 Cm7'), '2 G7#5')).toBe('G Altered (D1+D4)')
+  })
+
+  it('D4 V7 of the chord before it (Autumn Leaves bar 27, decision 3)', () => {
+    expect(verdict(chart('Gm', '1 Gm, 2 D7/F#, 3 Fm7, 3 Bb7, 4 EbMaj7'), '2 D7/F#')).toBe('D Phrygian Dominant (D4)')
+  })
+
+  it('§7.5 a passing ii–V is its own key: Mixolydian', () => {
+    const v = verdicts(chart('Gm', '1 Cm7, 2 F7, 3 Bm7, 3 E7, 4 Bbm7, 4 Eb7, 5 Am7b5, 6 D7, 7 Gm'))
+    expect([v['3 E7'], v['4 Eb7']]).toEqual(['E Mixolydian (D4)', 'Eb Mixolydian (D4)'])
+  })
+
+  it('§7.5 an implied target in the key makes a secondary dominant (Cm7 F7 in Eb is V7/V)', () => {
+    expect(analyse(parseChart(chart('Eb', '1 EbMaj7, 3 Cm7, 4 F7, 5 Fm7, 6 Bb7')).value).rows.find((r) => r.chord === 'F7')?.fn).toBe('V7/V in Eb (the V never arrives)')
+  })
+
+  it('D5 the back door is Lydian Dominant (Lady Bird)', () => {
+    expect(verdict(chart('C', '1 CMaj7, 3 Fm7, 4 Bb7, 5 CMaj7, 7 Dm7, 8 G7'), '4 Bb7')).toBe('Bb Lydian Dominant (D5)')
+  })
+
+  it('D5 IV7 of a blues is Lydian Dominant, I7 Mixolydian (decision 4)', () => {
+    const v = verdicts(library('f_blues').replace(/ \| [A-G][b#]? [A-Za-z ]+$/gm, ''))
+    expect([v['1 F7'], v['2 Bb7']]).toEqual(['F Mixolydian (D3)', 'Bb Lydian Dominant (D5)'])
+    expect(analyse(parseChart(library('f_blues')).value).context).toBe('blues')
+  })
+
+  it('D6 a chromatic dominant that goes nowhere is Lydian Dominant (Killer Joe)', () => {
+    expect(verdict(chart('C', '1 C7, 2 Bb7, 3 C7, 4 Bb7'), '2 Bb7')).toBe('Bb Lydian Dominant (D6)')
+  })
+
+  it('D7 a static dominant is its own mode', () => {
+    expect(verdict(chart('C', '1 CMaj7, 3 E7, 7 CMaj7'), '3 E7')).toBe('E Mixolydian (D7)')
+  })
+
+  it('reads a symbol’s tensions', () => {
+    expect(pins('13b9')).toEqual({ n9: 'b9', n13: '13' })
+    expect(pins('7#5')).toEqual({ n11: '#11', n13: 'b13' })
+    expect(pins('7(#9)')).toEqual({ n9: 'b9#9', n11: '#11' })
+    expect(pins('9#11')).toEqual({ n9: '9', n11: '#11', n13: '13' })
+    expect(pins('7#11')).toEqual({ n9: '9', n11: '#11', n13: '13' }) // Lydian Dominant, whatever the key
+    expect(pins('7b9#11')).toEqual({ n9: 'b9', n11: '#11', n13: '13' })
+    expect(pins('7')).toEqual({})
+  })
+})
+
+describe('analysis: the other families (§7.2–7.6)', () => {
+  it('M1–M4 major chords: tonic Ionian, IV Lydian, bIII of minor Ionian, #11 Lydian', () => {
+    const v = verdicts(chart('C', '1 CMaj7, 2 FMaj7, 3 Dm7, 4 G7, 5 CMaj7#11'))
+    expect([v['1 CMaj7'], v['2 FMaj7'], v['5 CMaj7#11']]).toEqual(['C Ionian (M3)', 'F Lydian (M4)', 'C Lydian (M1)'])
+    expect(verdict(chart('Gm', '1 Cm7, 2 F7, 3 BbMaj7, 4 EbMaj7, 5 Am7b5, 6 D7, 7 Gm'), '3 BbMaj7')).toBe('Bb Ionian (M3)')
+  })
+
+  it('m1–m8 minor chords', () => {
+    const v = verdicts(chart('C', '1 CMaj7, 2 Am7, 3 Dm7, 4 G7, 5 Em7, 6 Fm6, 7 CmMaj7'))
+    expect([v['2 Am7'], v['3 Dm7'], v['5 Em7'], v['6 Fm6'], v['7 CmMaj7']]).toEqual([
+      'A Aeolian (m7)', // vi: the b13 is in the key
+      'D Dorian (m4)', // related ii
+      "E Dorian (m7')", // iii
+      'F Dorian (m2)',
+      'C Melodic Minor (m1)',
+    ])
+    expect(verdict(chart('Gm', '1 Am7b5, 2 D7, 3 Gm'), '3 Gm')).toBe('G Dorian (m5)')
+    expect(verdict(chart('Gm', '1 Gm, 2 Dm7, 3 Gm'), '2 Dm7')).toBe('D Phrygian (m7)') // v of a minor key
+  })
+
+  it('h1 h2 half-diminished: Locrian, Locrian natural 2 when modal (Footprints)', () => {
+    expect(verdict(chart('Gm', '1 Am7b5, 2 D7, 3 Gm'), '1 Am7b5')).toBe('A Locrian (h2)')
+    expect(verdict(library('footprints'), '9 F#m7b5')).toBe('F# Locrian natural 2 (h1)')
+  })
+
+  it('d1 diminished: Whole-Half', () => {
+    expect(verdict(chart('Bb', '1 BbMaj7, 2 Bdim7, 3 Cm7, 4 F7'), '2 Bdim7')).toBe('B Whole-Half Diminished (d1)')
+  })
+
+  it('s1–s3 sus chords', () => {
+    expect(verdict(chart('C', '1 DbMaj7/C, 3 CMaj7'), '1 DbMaj7/C')).toBe('C Phrygian (s1)')
+    expect(verdict(chart('C', '1 Dm7, 2 G7sus4, 3 CMaj7'), '2 G7sus4')).toBe('G Mixolydian (s2)')
+    expect(verdict(chart('', '1 D7sus4, 5 F7sus4, 9 D7sus4, 13 F7sus4'), '1 D7sus4')).toBe('D Mixolydian (s3)')
+  })
+})
+
+describe('analysis: keys (§5)', () => {
+  it('reads key: lines', () => {
+    expect(['Eb', 'F#m', 'Bb minor', 'C-', 'NC'].map((k) => parseKey(k)?.name ?? null)).toEqual(['Eb major', 'F# minor', 'Bb minor', 'C minor', null])
+  })
+
+  it('scores the key when the chart doesn’t say (Autumn Leaves: G minor)', () => {
+    const a = analyse(parseChart(library('autumn_leaves').replace(/^key:.*\n/m, '')).value)
+    expect([a.key?.name, a.keyFrom]).toEqual(['G minor', 'scored'])
+  })
+
+  it('opens key areas from cadences, and the top of the form takes the turnaround’s key (Giant Steps)', () => {
+    const a = analyse(parseChart(library('giant_steps')).value)
+    expect(new Set(a.areas.map((x) => x.key.name))).toEqual(new Set(['Eb major', 'G major', 'B major']))
+    expect(verdict(library('giant_steps'), '1 BMaj7')).toBe('B Ionian (M3)')
+  })
+
+  it('a minor ii of the next ii–V opens no area (Bird Blues: G7 | Cm7 F7 is V7/V)', () => {
+    expect(verdict(library('f_bird_blues'), '3 G7')).toBe('G Mixolydian (D4)')
+  })
+
+  it('a cadence into the home tonic comes home (Long Ago and Far Away: C7 | FMaj7 after a bridge in C)', () => {
+    expect(verdict(library('long_ago_and_far_away'), '17 FMaj7')).toBe('F Ionian (M3)')
+  })
+
+  it('in a minor key, a ii–V–I into a major chord opens its key (Bernie’s Tune’s bridge is in Bb)', () => {
+    expect(verdict(library('bernies_tune'), '19 G7')).toBe('G Mixolydian b6 (D4)') // V7/ii in Bb
+    expect(verdict(library('autumn_leaves'), '24 EbMaj7')).toBe('Eb Lydian (M4)') // a tritone cadence doesn't
+  })
+
+  it('finds modal tunes', () => {
+    for (const name of ['so_what', 'maiden_voyage', 'footprints']) expect(analyse(parseChart(library(name)).value).context, name).toBe('modal')
+    expect(analyse(parseChart(library('stella_by_starlight')).value).context).toBe('functional')
+  })
+})
+
+describe('analysis: writing it back (§12.1)', () => {
+  const text = 'title: T\nkey: C\n\nA | 1 | Dm7\nA | 2 | G7 | G Bebop Dominant\nA | 3 | CMaj7\nA | 4 | Am7 | A Dorian  # keep: the melody\n'
+  const run = (t: string, scales: 'fill' | 'force' | 'none', save: boolean, date = '2026-10-08') => {
+    const doc = parseChart(t).value
+    return applyAnalysis(doc, analyse(doc), { scales, save, date })
+  }
+
+  it('fills blank cells only, or forces all but # keep rows', () => {
+    const fill = serializeChart(run(text, 'fill', false).doc)
+    expect(fill).toContain('A | 1 | Dm7   | D Dorian\n')
+    expect(fill).toContain('G Bebop Dominant')
+    const force = run(text, 'force', false)
+    expect(force.changes.map((c) => `${c.chord} ${c.from || '-'} -> ${c.to}`)).toEqual(['Dm7 - -> D Dorian', 'G7 G Bebop Dominant -> G Mixolydian', 'CMaj7 - -> C Ionian'])
+    expect(serializeChart(force.doc)).toContain('A Dorian  # keep: the melody')
+  })
+
+  it('saves reasons, marks where a written scale differs, and reruns as a no-op', () => {
+    const saved = serializeChart(run(text, 'fill', true).doc)
+    expect(saved).toContain('# analysis: 2026-10-08, rules v1; C')
+    expect(saved).toMatch(/Dm7\s+\| D Dorian\s+# ii of the ii–V to C\n/)
+    expect(saved).toMatch(/G Bebop Dominant\s+# ≠ rules: G Mixolydian \(V7 of C: natural tensions\)/)
+    expect(serializeChart(run(saved, 'fill', true, '2027-01-01').doc)).toBe(saved) // same analysis: the old date stays
+  })
+
+  it('reports a @copy repeat whose analysis differs from its source row', () => {
+    // the first G7 goes to the repeat's Dm7 (V7 in C, implied); the repeat's resolves to Cm7 (V7 of C minor)
+    const t = 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\n@copy A B 2\nC | 5 | Cm7\nC | 7 | Ab7\n'
+    expect(run(t, 'fill', false).conflicts.map((c) => `${c.chord}: ${c.source} / ${c.copy}`)).toEqual(['G7: G Mixolydian / G Phrygian Dominant'])
+    expect(serializeChart(run(t, 'fill', true).doc)).toContain('the repeat at bar 4 would be G Phrygian Dominant')
+  })
+})

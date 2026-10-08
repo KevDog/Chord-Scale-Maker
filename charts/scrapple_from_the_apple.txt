@@ -4,35 +4,36 @@ style: Medium
 key: F
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 192
+# analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale
-A1 | 1  | Gm7
-A1 | 2  | C7
-A1 | 3  | Gm7
-A1 | 4  | C7b9
-A1 | 5  | FMaj7
-A1 | 6  | BbMaj7
-A1 | 6  | Bdim7
-A1 | 7  | FMaj7
-A1 | 7  | Gm7
-A1 | 8  | Am7
-A1 | 8  | D7
-A2 | 9  | Gm7
-A2 | 10 | C7
-A2 | 11 | Gm7
-A2 | 12 | C7b9
-A2 | 13 | FMaj7
-A2 | 14 | BbMaj7
-A2 | 14 | Bdim7
-A2 | 15 | FMaj7
-A2 | 15 | C7
-A2 | 16 | FMaj7
-B  | 17 | Em7
-B  | 18 | A7
-B  | 19 | Am7
-B  | 20 | D7
-B  | 21 | Dm7
-B  | 22 | G7
-B  | 23 | Gm7
-B  | 24 | C7
+A1 | 1  | Gm7    | G Dorian                 # ii of C7: Dorian
+A1 | 2  | C7     | C Mixolydian             # V7/I in F: natural tensions
+A1 | 3  | Gm7    | G Dorian                 # ii of the ii–V to F
+A1 | 4  | C7b9   | C Half-Whole Diminished  # V7 of F: the b9 from the symbol
+A1 | 5  | FMaj7  | F Ionian                 # tonic: the 4th is in the key
+A1 | 6  | BbMaj7 | Bb Lydian                # IV: the #4 is the key’s 7th
+A1 | 6  | Bdim7  | B Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+A1 | 7  | FMaj7  | F Ionian                 # tonic: the 4th is in the key
+A1 | 7  | Gm7    | G Dorian                 # ii: Dorian, the key’s own notes
+A1 | 8  | Am7    | A Dorian                 # ii of the ii–V to G minor
+A1 | 8  | D7     | D Mixolydian b6          # V7/ii in F: the b13 is in the key
+A2 | 9  | Gm7    | G Dorian                 # ii of C7: Dorian
+A2 | 10 | C7     | C Mixolydian             # V7/I in F: natural tensions
+A2 | 11 | Gm7    | G Dorian                 # ii of the ii–V to F
+A2 | 12 | C7b9   | C Half-Whole Diminished  # V7 of F: the b9 from the symbol
+A2 | 13 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
+A2 | 14 | BbMaj7 | Bb Lydian                # IV: the #4 is the key’s 7th
+A2 | 14 | Bdim7  | B Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+A2 | 15 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
+A2 | 15 | C7     | C Mixolydian             # V7 of F: natural tensions
+A2 | 16 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
+B  | 17 | Em7    | E Dorian                 # ii of A7: Dorian
+B  | 18 | A7     | A Mixolydian             # passing ii–V: its own key
+B  | 19 | Am7    | A Dorian                 # ii of D7: Dorian
+B  | 20 | D7     | D Mixolydian             # passing ii–V: its own key
+B  | 21 | Dm7    | D Dorian                 # ii of G7: Dorian
+B  | 22 | G7     | G Mixolydian             # V7/V in F: natural tensions
+B  | 23 | Gm7    | G Dorian                 # ii of C7: Dorian
+B  | 24 | C7     | C Mixolydian             # V7/I in F: natural tensions
 @copy A2 A3 16

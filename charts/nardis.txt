@@ -4,23 +4,26 @@ style: Medium
 key: Em
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 152
+# analysis: 2026-10-08, rules v1; E minor
 
 # section | bar | chord | scale
-A1 | 1  | Em
-A1 | 2  | FMaj7
-A1 | 3  | B7
-A1 | 4  | CMaj7
-A1 | 5  | Am
-A1 | 6  | FMaj7
-A1 | 7  | EMaj7
-A1 | 8  | Em
+# area: E minor (bars 1–20)
+A1 | 1  | Em       | E Dorian             # tonic minor: Dorian by convention
+A1 | 2  | FMaj7    | F Lydian             # a non-tonic major chord: Lydian
+A1 | 3  | B7       | B Phrygian Dominant  # V7 in E minor, not resolving: b9 and b13 are in the key
+A1 | 4  | CMaj7    | C Lydian             # a non-tonic major chord: Lydian; the repeat at bar 28 would be C Ionian
+A1 | 5  | Am       | A Dorian             # iv: Dorian, the key’s own notes; the repeat at bar 29 would be A Aeolian
+A1 | 6  | FMaj7    | F Lydian             # a non-tonic major chord: Lydian
+A1 | 7  | EMaj7    | E Lydian             # a non-tonic major chord: Lydian
+A1 | 8  | Em       | E Dorian             # tonic minor: Dorian by convention
 @copy A1 A2 8
-B  | 17 | Am
-B  | 18 | FMaj7#11
-B  | 19 | Am
-B  | 20 | FMaj7#11
-B  | 21 | Dm
-B  | 22 | G7
-B  | 23 | CMaj7
-B  | 24 | FMaj7#11
+B  | 17 | Am       | A Dorian             # iv: Dorian, the key’s own notes
+B  | 18 | FMaj7#11 | F Lydian             # from the symbol: #11
+B  | 19 | Am       | A Dorian             # iv: Dorian, the key’s own notes
+B  | 20 | FMaj7#11 | F Lydian             # from the symbol: #11
+# area: C major (bars 21–32)
+B  | 21 | Dm       | D Dorian             # ii of the ii–V to C
+B  | 22 | G7       | G Mixolydian         # V7 of C: natural tensions
+B  | 23 | CMaj7    | C Ionian             # tonic: the 4th is in the key
+B  | 24 | FMaj7#11 | F Lydian             # from the symbol: #11
 @copy A1 A3 24

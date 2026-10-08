@@ -5,47 +5,52 @@ style: Waltz
 key: Ab
 form: ABCD, 36 bars
 source: Colorado Cookbook, p. 28
+# analysis: 2026-10-08, rules v1; Ab
 
 # section | bar | chord | scale
-A | 1  | Bbm7
-A | 2  | Eb9
-A | 3  | AbMaj7
-A | 4  | Fm7
-A | 4  | Cm7
-A | 4  | Bdim7
-A | 5  | Bbm7
-A | 6  | Eb9
-A | 7  | AbMaj7
-A | 8  | Ab6
-B | 9  | Dm7
-B | 10 | G9
-B | 11 | CMaj7
-B | 12 | Am7
-B | 12 | Em7
-B | 12 | Ebdim7
-B | 13 | Dm7
-B | 14 | G9
-B | 15 | CMaj7
-B | 16 | C6
-C | 17 | F#m7
-C | 18 | B9
-C | 19 | EMaj7
-C | 20 | Bb9#11
-C | 21 | AMaj7
-C | 22 | Bbm11
-C | 22 | Eb7
-C | 23 | AbMaj7
-C | 24 | Cm7
-C | 24 | Bm11
-D | 25 | Bbm7
-D | 26 | Eb9
-D | 27 | AbMaj7
-D | 28 | Cm7b5
-D | 28 | F7alt
-D | 29 | Bbm7
-D | 30 | Eb9
-D | 31 | Cm7b5
-D | 32 | F7alt
-D | 33 | Bbm9
-D | 34 | Eb9
-D | 35 | AbMaj7
+# area: Ab major (bars 1–8)
+A | 1  | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
+A | 2  | Eb9    | Eb Mixolydian             # V7 of Ab: natural tensions
+A | 3  | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key
+A | 4  | Fm7    | F Aeolian                 # vi: the b13 is in the key
+A | 4  | Cm7    | C Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+A | 4  | Bdim7  | B Whole-Half Diminished   # passing diminished: the rootless V7b9 of the next chord
+A | 5  | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
+A | 6  | Eb9    | Eb Mixolydian             # V7 of Ab: natural tensions
+A | 7  | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key
+A | 8  | Ab6    | Ab Ionian                 # tonic: the 4th is in the key
+# area: C major (bars 9–16)
+B | 9  | Dm7    | D Dorian                  # ii of the ii–V to C
+B | 10 | G9     | G Mixolydian              # V7 of C: natural tensions
+B | 11 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+B | 12 | Am7    | A Aeolian                 # vi: the b13 is in the key
+B | 12 | Em7    | E Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+B | 12 | Ebdim7 | Eb Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+B | 13 | Dm7    | D Dorian                  # ii of the ii–V to C
+B | 14 | G9     | G Mixolydian              # V7 of C: natural tensions
+B | 15 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
+B | 16 | C6     | C Ionian                  # tonic: the 4th is in the key
+# area: E major (bars 17–21)
+C | 17 | F#m7   | F# Dorian                 # ii of the ii–V to E
+C | 18 | B9     | B Mixolydian              # V7 of E: natural tensions
+C | 19 | EMaj7  | E Ionian                  # tonic: the 4th is in the key
+C | 20 | Bb9#11 | Bb Lydian Dominant        # tritone substitute: resolves down a half step to AMaj7
+C | 21 | AMaj7  | A Lydian                  # IV: the #4 is the key’s 7th
+# area: Ab major (bars 22–35)
+C | 22 | Bbm11  | Bb Dorian                 # ii of the ii–V to Ab
+C | 22 | Eb7    | Eb Mixolydian             # V7 of Ab: natural tensions
+C | 23 | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key
+C | 24 | Cm7    | C Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+C | 24 | Bm11   | B Dorian                  # a borrowed minor chord: Dorian, its own key
+D | 25 | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
+D | 26 | Eb9    | Eb Mixolydian             # V7 of Ab: natural tensions
+D | 27 | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key
+D | 28 | Cm7b5  | C Locrian                 # iiø7 of the ii–V to Bb minor: the b9 is in the key
+D | 28 | F7alt  | F Altered                 # from the symbol: altered
+D | 29 | Bbm7   | Bb Dorian                 # ii of Eb9: Dorian
+D | 30 | Eb9    | Eb Mixolydian             # V7/I in Ab: natural tensions
+D | 31 | Cm7b5  | C Locrian                 # iiø7 of the ii–V to Bb minor: the b9 is in the key
+D | 32 | F7alt  | F Altered                 # from the symbol: altered
+D | 33 | Bbm9   | Bb Dorian                 # ii of the ii–V to Ab
+D | 34 | Eb9    | Eb Mixolydian             # V7 of Ab: natural tensions
+D | 35 | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key

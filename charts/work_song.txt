@@ -4,13 +4,14 @@ style: Medium
 key: Fm
 form: A, 16 bars
 source: Colorado Cookbook, p. 260
+# analysis: 2026-10-08, rules v1; F minor
 
 # section | bar | chord | scale
-A | 1  | Fm
-A | 7  | C7
-A | 9  | Fm
-A | 13 | F7
-A | 14 | Bb7
-A | 15 | Db7
-A | 15 | C7
-A | 16 | Fm
+A | 1  | Fm  | F Dorian             # tonic minor: Dorian by convention
+A | 7  | C7  | C Phrygian Dominant  # V7 of F minor: b9 and b13 are in the key
+A | 9  | Fm  | F Dorian             # tonic minor: Dorian by convention
+A | 13 | F7  | F Mixolydian         # extended dominant: V7 of Bb7
+A | 14 | Bb7 | Bb Mixolydian        # IV7 in F minor, not resolving: natural tensions
+A | 15 | Db7 | Db Lydian Dominant   # tritone substitute: resolves down a half step to C7
+A | 15 | C7  | C Phrygian Dominant  # V7 of F minor: b9 and b13 are in the key
+A | 16 | Fm  | F Dorian             # tonic minor: Dorian by convention

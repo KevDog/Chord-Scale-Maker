@@ -4,56 +4,69 @@ style: Latin
 key: Eb
 form: AABC, 36 bars
 source: Colorado Cookbook, p. 220
+# analysis: 2026-10-08, rules v1; Eb
 
 # section | bar | chord | scale
 # the vamp intro and coda are left out
-A1 | 1  | EbMaj7
-A1 | 2  | Fm7
-A1 | 2  | Bb7
-A1 | 3  | EbMaj7
-A1 | 4  | Ebm7
-A1 | 4  | Ab7
-A1 | 5  | DbMaj7
-A1 | 6  | Gm7b5
-A1 | 6  | C7alt
-A1 | 7  | FMaj7
-A1 | 8  | Fm7b5
-A1 | 8  | Bb7
-A2 | 9  | EbMaj7
-A2 | 10 | Fm7
-A2 | 10 | Bb7
-A2 | 11 | EbMaj7
-A2 | 12 | Ebm7
-A2 | 12 | Ab7
-A2 | 13 | DbMaj7
-A2 | 14 | Gm7b5
-A2 | 14 | C7alt
-A2 | 15 | FMaj7
-A2 | 16 | Fm7b5
-A2 | 16 | Bb7
-A2 | 16 | A7
-B  | 17 | AbMaj7
-B  | 19 | Abm7
-B  | 19 | Db7
-B  | 20 | GbMaj7
-B  | 22 | Fm7
-B  | 24 | Bb7
-C  | 25 | EbMaj7
-C  | 26 | Fm7
-C  | 26 | Bb7
-C  | 27 | EbMaj7
-C  | 28 | Ebm7
-C  | 28 | Ab7
-C  | 29 | DbMaj7
-C  | 30 | Gm7b5
-C  | 30 | C7alt
-C  | 31 | FMaj7
-C  | 32 | Fm7b5
-C  | 32 | Bb7
-C  | 33 | Eb7
-C  | 33 | D7
-C  | 34 | Db7
-C  | 34 | C7b9
-C  | 35 | Fm7
-C  | 35 | Fm7/Bb
-C  | 36 | EbMaj7
+# area: Eb major (bars 1–3)
+A1 | 1  | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
+A1 | 2  | Fm7    | F Dorian                 # ii of the ii–V to Eb
+A1 | 2  | Bb7    | Bb Mixolydian            # V7 of Eb: natural tensions
+A1 | 3  | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
+# area: Db major (bars 4–5)
+A1 | 4  | Ebm7   | Eb Dorian                # ii of the ii–V to Db
+A1 | 4  | Ab7    | Ab Mixolydian            # V7 of Db: natural tensions
+A1 | 5  | DbMaj7 | Db Ionian                # tonic: the 4th is in the key
+# area: F major (bars 6–7)
+A1 | 6  | Gm7b5  | G Locrian                # iiø7 of the ii–V to F: the b9 is in the key
+A1 | 6  | C7alt  | C Altered                # from the symbol: altered
+A1 | 7  | FMaj7  | F Ionian                 # tonic: the 4th is in the key
+# area: Eb major (bars 8–11)
+A1 | 8  | Fm7b5  | F Locrian                # iiø7 of the ii–V to Eb: the b9 is in the key
+A1 | 8  | Bb7    | Bb Mixolydian            # V7 of Eb: natural tensions
+A2 | 9  | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
+A2 | 10 | Fm7    | F Dorian                 # ii of the ii–V to Eb
+A2 | 10 | Bb7    | Bb Mixolydian            # V7 of Eb: natural tensions
+A2 | 11 | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
+# area: Db major (bars 12–13)
+A2 | 12 | Ebm7   | Eb Dorian                # ii of the ii–V to Db
+A2 | 12 | Ab7    | Ab Mixolydian            # V7 of Db: natural tensions
+A2 | 13 | DbMaj7 | Db Ionian                # tonic: the 4th is in the key
+# area: F major (bars 14–16)
+A2 | 14 | Gm7b5  | G Locrian                # iiø7 of the ii–V to F: the b9 is in the key
+A2 | 14 | C7alt  | C Altered                # from the symbol: altered
+A2 | 15 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
+A2 | 16 | Fm7b5  | F Locrian                # iiø7 of Bb7: the b9 is in the key
+A2 | 16 | Bb7    | Bb Lydian Dominant       # tritone substitute: resolves down a half step to A7
+# area: Eb major (bars 16–17)
+A2 | 16 | A7     | A Lydian Dominant        # tritone substitute: resolves down a half step to AbMaj7
+B  | 17 | AbMaj7 | Ab Lydian                # IV: the #4 is the key’s 7th
+# area: Gb major (bars 19–20)
+B  | 19 | Abm7   | Ab Dorian                # ii of the ii–V to Gb
+B  | 19 | Db7    | Db Mixolydian            # V7 of Gb: natural tensions
+B  | 20 | GbMaj7 | Gb Ionian                # tonic: the 4th is in the key
+# area: Eb major (bars 22–27)
+B  | 22 | Fm7    | F Dorian                 # ii of the ii–V to Eb
+B  | 24 | Bb7    | Bb Mixolydian            # V7 of Eb: natural tensions
+C  | 25 | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
+C  | 26 | Fm7    | F Dorian                 # ii of the ii–V to Eb
+C  | 26 | Bb7    | Bb Mixolydian            # V7 of Eb: natural tensions
+C  | 27 | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
+# area: Db major (bars 28–29)
+C  | 28 | Ebm7   | Eb Dorian                # ii of the ii–V to Db
+C  | 28 | Ab7    | Ab Mixolydian            # V7 of Db: natural tensions
+C  | 29 | DbMaj7 | Db Ionian                # tonic: the 4th is in the key
+# area: F major (bars 30–34)
+C  | 30 | Gm7b5  | G Locrian                # iiø7 of the ii–V to F: the b9 is in the key
+C  | 30 | C7alt  | C Altered                # from the symbol: altered
+C  | 31 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
+C  | 32 | Fm7b5  | F Locrian                # iiø7 of Bb7: the b9 is in the key
+C  | 32 | Bb7    | Bb Mixolydian            # extended dominant: V7 of Eb7
+C  | 33 | Eb7    | Eb Lydian Dominant       # tritone substitute: resolves down a half step to D7
+C  | 33 | D7     | D Lydian Dominant        # tritone substitute: resolves down a half step to Db7
+C  | 34 | Db7    | Db Lydian Dominant       # tritone substitute: resolves down a half step to C7b9
+C  | 34 | C7b9   | C Half-Whole Diminished  # V7 of F: the b9 from the symbol
+# area: Eb major (bars 35–36)
+C  | 35 | Fm7    | F Dorian                 # ii of the ii–V to Eb
+C  | 35 | Fm7/Bb | Bb Mixolydian            # V7sus4 of EbMaj7: natural tensions
+C  | 36 | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
