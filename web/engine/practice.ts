@@ -17,6 +17,19 @@ export type Preset = 'chordTones' | 'guideTones' | 'tensions' | 'all'
 /** a preset, or explicit keys; keys are relative to the mode's reference, so they survive instrument changes */
 export type PracticeSelection = Readonly<{ preset: Preset }> | Readonly<{ keys: readonly string[] }>
 
+const PRACTICE_KEY = /^(?:b{1,2}|#{1,2})?[1-7]$/
+
+/** a practice selection read from untrusted data (storage, a share link), or null if it isn't one */
+export function practiceSelectionFrom(v: unknown): PracticeSelection | null {
+  if (!v || typeof v !== 'object') return null
+  if ('preset' in v && typeof v.preset === 'string' && Object.values(PRESETS).flat().includes(v.preset as Preset)) return { preset: v.preset as Preset }
+  if ('keys' in v && Array.isArray(v.keys)) {
+    const keys = v.keys.filter((k): k is string => typeof k === 'string' && PRACTICE_KEY.test(k))
+    return keys.length ? { keys } : null
+  }
+  return null
+}
+
 /** the presets each mode offers: function-based ones only make sense from the root */
 export const PRESETS: Readonly<Record<Mode, readonly Preset[]>> = {
   root: ['chordTones', 'guideTones', 'tensions'],
