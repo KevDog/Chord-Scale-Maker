@@ -29,6 +29,7 @@ export const SCALES = {
   'whole tone': ['1 2 3 #4 #5 b7', 'Whole Tone'],
   'major pentatonic': ['1 2 3 5 6', 'Major Pentatonic'],
   'minor pentatonic': ['1 b3 4 5 b7', 'Minor Pentatonic'],
+  'spanish phrygian': ['1 b2 b3 3 4 5 b6 b7', 'Spanish Phrygian'],
   blues: ['1 b3 4 b5 5 b7', 'Blues'],
   'bebop dominant': ['1 2 3 4 5 6 b7 7', 'Bebop Dominant'],
   'bebop major': ['1 2 3 4 5 b6 6 7', 'Bebop Major'],

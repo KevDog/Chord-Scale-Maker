@@ -26,9 +26,22 @@ describe('qualities', () => {
   })
 
   it('reads extended symbols as their base quality when the rest is only alterations', () => {
-    expect(['Maj7#11', '7sus4b9', 'Maj7#5', '-7', 'maj9', 'm7(b5)', '7(9)', 'Maj7(9)', 'm7(11)', 'm7#5#9x', '', 'x'].map(baseQuality)).toEqual([
+    expect(['Maj7#11', '7sus4#9', 'Maj7#5', '-7', 'maj9', 'm7(b5)', '7(9)', 'Maj7(9)', 'm7(11)', 'm7#5#9x', '', 'x'].map(baseQuality)).toEqual([
       'Maj7', '7sus4', 'Maj7', 'm7', 'Maj7', 'm7b5', '7', 'Maj7', 'm7', null, 'maj', null,
     ])
+  })
+
+  it('pairs Spanish Phrygian with dominant and sus chords, and reads sus b9 as its own chord', () => {
+    const scales = (chord: string) => resolveQuality(chord)?.options.map((o) => o.scale) ?? []
+    for (const chord of ['C7', 'C7b9', 'Csus', 'C7sus4b9']) expect(scales(chord)).toContain('C Spanish Phrygian')
+    expect(['Csusb9', 'Ephryg', 'Csus'].map(defaultScale)).toEqual(['C Phrygian', 'E Phrygian', 'C Mixolydian'])
+  })
+
+  it('reads a major 7th chord over the note a half step below as a sus b9 on the bass', () => {
+    const match = resolveQuality('DbMaj7/C')
+    expect(match?.quality).toBe('Maj7') // the chord as written: labels and presets measure from Db
+    expect(match?.options.map((o) => o.scale)).toEqual(['C Phrygian', 'C Spanish Phrygian', 'C Dorian b2'])
+    expect(['DbMaj7', 'DbMaj7/F', 'Dbmaj7/B#', 'Gbmaj7/F'].map(defaultScale)).toEqual(['Db Ionian', 'Db Ionian', 'Db Ionian', 'F Phrygian'])
   })
 
   it('marks outside pentatonics apart from inside ones', () => {

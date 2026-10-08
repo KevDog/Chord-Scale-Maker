@@ -98,7 +98,7 @@
           <UiButton outline @click="dialog = true">Open dialog</UiButton>
           <UiDialog :open="dialog" @close="dialog = false">
             <UiDialogTitle>Choose a scale</UiDialogTitle>
-            <UiDialogDescription>Any root and any of the 23 scales.</UiDialogDescription>
+            <UiDialogDescription>Any root and any of the 26 scales.</UiDialogDescription>
             <UiDialogBody><UiText>Body content.</UiText></UiDialogBody>
             <UiDialogActions>
               <UiButton plain @click="dialog = false">Cancel</UiButton>

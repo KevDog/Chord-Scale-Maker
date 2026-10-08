@@ -25,6 +25,7 @@ CHORDS = ["Cm7", "C-7", "Cmi7", "Cmin7", "Bbm7", "Am7b5", "D7#5", "G7#9b13", "Eb
           "CMaj7", "C9", "D7/F#", "Cm6/Eb", "C6/9", "Cm6/9", "F#m7", "Gm", "C", "Bm7", "Db7(b9)",
           "Abmin7", "E7alt", "Bb7sus4", "F#ø7", "Cdim7", "Gbm7b5", "C#m7", "B7b9", "E7(#11)",
           "Fmaj7#11", "Bb13", "Ebm(maj7)", "Ab7/Gb", "G/B", "Cm7#5#9x",
+          "Csus", "C7sus4b9", "Ephryg", "DbMaj7/C", "Gbmaj7/F", "Dbmaj7/B#", "DbMaj7/F",  # sus b9, slash readings
           "H7", "C7/", "", "Cmaj7/x"]                                  # unparseable
 # chord + scale whose roots differ, or share a pitch but not a spelling
 CHORD_SCALE_PAIRS = [("C7", "F# Locrian"), ("Db7", "C# Mixolydian"), ("C#m7", "Db Dorian"),

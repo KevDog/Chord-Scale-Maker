@@ -34,7 +34,9 @@ chart format and options.
 - Enharmonic spelling is decided per scale by `simplify_root` (avoid double
   accidentals and B#/E#/Cb/Fb, then fewest accidentals, then keep the original
   sharp/flat direction). A chord symbol follows its scale's spelling when they
-  share a root; a slash bass keeps its interval from the root.
+  share a root; a slash bass keeps its interval from the root. A slash chord may take its scale options from
+  another chord on its bass (`slash_chords` in `chord_scales.json`: DbMaj7/C → C 7sus4b9); its symbol, labels and
+  practice presets still read the chord as written.
 - Page fitting: `--per-page` unset means the script compiles with decreasing
   staves per page until no page overflows.
 - Transposing a chart to another key (editor only, `web/engine/transpose.ts`) spells roots on the target key's

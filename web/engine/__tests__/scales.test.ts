@@ -14,6 +14,7 @@ describe('scales', () => {
     expect(spelled('G Altered')).toBe('G Ab Bb B C# Eb F')
     expect(spelled('D Dorian b2')).toBe('D Eb F G A B C')
     expect(spelled('G Mixolydian b6')).toBe('G A B C D Eb F') // mode 5 of melodic minor, not Phrygian Dominant
+    expect(spelled('E Spanish Phrygian')).toBe('E F G G# A B C D') // Phrygian with the major 3rd too
   })
 
   it('normalises names and resolves aliases', () => {

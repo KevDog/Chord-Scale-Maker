@@ -1,6 +1,6 @@
 import raw from '../../chord_scales.json'
 import { parseChord } from './chord'
-import { rootName } from './pitch'
+import { rootName, type Spelled } from './pitch'
 import { scaleKey, simplifyRoot, spellFrom } from './scales'
 
 /**
@@ -9,9 +9,12 @@ import { scaleKey, simplifyRoot, spellFrom } from './scales'
  */
 
 type RawOption = Readonly<{ root: string; scale: string; default?: boolean; note?: string; outside?: boolean }>
+/** a chord of `quality` whose bass is the interval `bass` above its root takes `as`'s options on the bass */
+type SlashRule = Readonly<{ quality: string; bass: string; as: string; note?: string }>
 type QualityData = Readonly<{
   quality_aliases: Readonly<Record<string, readonly string[]>>
   qualities: Readonly<Record<string, readonly RawOption[]>>
+  slash_chords: readonly SlashRule[]
 }>
 
 const DATA: QualityData = raw
@@ -26,14 +29,26 @@ const LOOKUP: ReadonlyMap<string, string> = new Map([
 export type ScaleOption = Readonly<{ scale: string; note: string; default: boolean; outside: boolean }>
 export type QualityMatch = Readonly<{ quality: string; options: readonly ScaleOption[] }>
 
-/** scale options for a chord, roots spelled from the chord root; null if the quality is unknown */
+const same = (a: Spelled | undefined, b: Spelled): boolean => a !== undefined && a.letter === b.letter && a.acc === b.acc
+
+/** the chord its scales come from: a slash chord that is really another chord on its bass (DbMaj7/C -> C 7sus4b9) */
+function slashReading(quality: string, root: Spelled, bass: Spelled | undefined): Readonly<{ quality: string; root: Spelled }> {
+  const rule = bass && DATA.slash_chords.find((r) => r.quality === quality && same(spellFrom(root, r.bass)[0], bass))
+  return rule && bass ? { quality: rule.as, root: bass } : { quality, root }
+}
+
+/**
+ * scale options for a chord, roots spelled from the chord root (or from the bass, for a slash chord read on it);
+ * null if the quality is unknown. `quality` is the chord's own, as written.
+ */
 export function resolveQuality(chord: string): QualityMatch | null {
   const c = parseChord(chord)
   const quality = LOOKUP.get(c.quality)
   if (quality === undefined) return null
-  const options = (DATA.qualities[quality] ?? []).map((opt): ScaleOption => {
+  const reading = slashReading(quality, c.root, c.bass)
+  const options = (DATA.qualities[reading.quality] ?? []).map((opt): ScaleOption => {
     const key = scaleKey(opt.scale)
-    const [r] = spellFrom(c.root, opt.root)
+    const [r] = spellFrom(reading.root, opt.root)
     if (!r) throw new Error(`bad interval ${JSON.stringify(opt.root)} in chord_scales.json`)
     const root = opt.root === '1' ? r : simplifyRoot(r, key) // interval-derived: friendliest spelling
     return { scale: `${rootName(root)} ${opt.scale}`, note: opt.note ?? '', default: opt.default ?? false, outside: opt.outside ?? false }
@@ -43,7 +58,7 @@ export function resolveQuality(chord: string): QualityMatch | null {
 
 /**
  * a quality symbol read as the known quality it starts with, when the rest is only alterations
- * ("Maj7#11" -> "Maj7", "7sus4b9" -> "7sus4"); exact names win. null if it doesn't fit ("m7#5#9x").
+ * ("Maj7#11" -> "Maj7", "7sus4#9" -> "7sus4"); exact names win. null if it doesn't fit ("m7#5#9x").
  */
 export function baseQuality(text: string): string | null {
   const exact = LOOKUP.get(text)

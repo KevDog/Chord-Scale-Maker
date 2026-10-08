@@ -21,6 +21,7 @@ export function spelledInterval(root: Spelled, note: Spelled): string {
 const NAMES = ['1', '9', '3', '11', '5', '13', '7'] as const
 const MAJOR_THIRD = new Set(['maj', 'Maj7', '6', '7', '7b9', '7#11', '7alt'])
 const SIXTH = new Set(['6', 'm6'])
+const SUS = new Set(['7sus4', '7sus4b9'])
 
 /**
  * a note's interval from the chord root, spelled as written (Db over G is b5, C# is #11).
@@ -30,7 +31,7 @@ const SIXTH = new Set(['6', 'm6'])
 export function intervalLabel(root: Spelled, note: Spelled, quality: string | null): string {
   const { steps, acc } = interval(root, note)
   if (steps === 2 && acc === -1 && quality !== null && MAJOR_THIRD.has(quality)) return '#9'
-  if (steps === 3 && acc === 0 && quality === '7sus4') return '4'
+  if (steps === 3 && acc === 0 && quality !== null && SUS.has(quality)) return '4'
   if (steps === 5 && acc === 0 && quality !== null && SIXTH.has(quality)) return '6'
   return accText(acc) + NAMES[steps]
 }
