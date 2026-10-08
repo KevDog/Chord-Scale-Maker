@@ -1,0 +1,18 @@
+title: Blue Bossa
+subtitle: AB, 16 Bars
+
+# section | bar | chord | scale
+A | 1  | Cm7    | C Dorian
+A | 3  | Fm7    | F Dorian
+A | 4  | Bb7    | Bb Mixolydian
+A | 5  | Dm7b5  | D Locrian
+A | 6  | G7#5#9 | G Altered
+A | 7  | CmMaj7 | C Melodic Minor
+B | 9  | Ebm7   | Eb Dorian
+B | 10 | Ab7    | Ab Mixolydian
+B | 11 | DbMaj7 | Db Ionian
+B | 13 | Dm7b5  | D Locrian
+B | 14 | G7#5#9 | G Altered
+B | 15 | Cm     | C Dorian
+B | 16 | Dm7b5  | D Locrian
+B | 16 | G7#5   | G Altered
