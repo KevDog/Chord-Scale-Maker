@@ -38,9 +38,25 @@ B | 14 | D7   | D Lydian Dominant    # tritone substitute: resolves down a half 
 B | 15 | Db7  | Db Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
 B | 15 | D7   | D Lydian Dominant    # tritone substitute: resolves down a half step to Db7
 B | 16 | Db7  | Db Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-B | 16 | D7   | D Mixolydian         # II7 in C, not resolving: natural tensions; the repeat at bar 32 would be D Lydian Dominant
+B | 16 | D7   | D Mixolydian         # II7 in C, not resolving: natural tensions
 C | 17 | F#m6 | F# Dorian            # a minor sixth chord: Dorian
 C | 21 | B7   | B Mixolydian         # passing ii–V: its own key
 C | 23 | Db7  | Db Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
 C | 24 | D7   | D Mixolydian         # II7 in C, not resolving: natural tensions
-@copy B D 16
+# the last section, written out: its last D7 falls a half step to the top (Db7); B's leads on to F#m6
+D | 25 | Eb7  | Eb Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+D | 25 | E7   | E Lydian Dominant    # tritone substitute: resolves down a half step to Eb7
+D | 26 | Eb7  | Eb Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+D | 26 | E7   | E Lydian Dominant    # tritone substitute: resolves down a half step to Eb7
+D | 27 | Eb7  | Eb Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+D | 27 | E7   | E Lydian Dominant    # tritone substitute: resolves down a half step to Eb7
+D | 28 | Eb7  | Eb Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+D | 28 | E7   | E Phrygian Dominant  # III7 in C, not resolving: b9 and b13 are in the key
+D | 29 | Db7  | Db Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+D | 29 | D7   | D Lydian Dominant    # tritone substitute: resolves down a half step to Db7
+D | 30 | Db7  | Db Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+D | 30 | D7   | D Lydian Dominant    # tritone substitute: resolves down a half step to Db7
+D | 31 | Db7  | Db Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+D | 31 | D7   | D Lydian Dominant    # tritone substitute: resolves down a half step to Db7
+D | 32 | Db7  | Db Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+D | 32 | D7   | D Lydian Dominant    # tritone substitute: resolves down a half step to Db7

@@ -173,8 +173,18 @@ export function localKeys(stream: readonly Entry[], cadences: readonly Cadence[]
   const wraps = ordered.some((c) => c.target < c.dominant)
   const opening = changes[0]?.at ?? keys.length
   if (wraps && !sameKey(current, global)) for (let i = 0; i < opening; i++) keys[i] = current
+  // a section that starts on the home tonic is home again, until the next change (Nardis: the last A after a
+  // bridge in C is in E minor, with no cadence to say so)
+  stream.forEach((e, i) => {
+    const prev = stream[i - 1]
+    const away = keys[i]
+    if (!prev || prev.section === e.section || !away || sameKey(away, global) || !isHomeTonic(e, global)) return
+    for (let j = i; j < keys.length && keys[j] === away; j++) keys[j] = global
+  })
   return keys
 }
+
+const isHomeTonic = (e: Entry, key: Key): boolean => e.pc === key.tonic && e.family === (key.minor ? 'minor' : 'major')
 
 /** a chord that isn't there, only implied by a ii–V, is in the key when its triad is (Bb in Eb: Bb D F) */
 export function impliedDiatonic(pc: number, minor: boolean, key: Key): boolean {

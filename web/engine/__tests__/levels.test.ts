@@ -79,6 +79,15 @@ describe('scale levels', () => {
     expect(scales(relevel(library, at('standard'), at('advanced'), library).doc)).toEqual(['D Spanish Phrygian', 'G Altered', 'C Bebop Dorian'])
   })
 
+  it('make a tonic minor chord Aeolian at Basic (decision 7), and bring it back', () => {
+    const doc = parseChart('key: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm\nA | 4 | Gm\nA | 5 | Cm7\nA | 6 | F7\n').value
+    const basic = relevel(doc, at('standard'), at('basic'))
+    expect(scales(basic.doc)).toEqual(['F Major Pentatonic', 'D Major Pentatonic', 'G Aeolian', 'G Aeolian', 'C Minor Pentatonic', 'F Major Pentatonic'])
+    const back = relevel(basic.doc, { ...at('basic'), owned: basic.owned }, at('standard'))
+    expect(scales(back.doc)).toEqual(['A Locrian', 'D Mixolydian', 'G Dorian', 'G Dorian', 'C Dorian', 'F Mixolydian'])
+    expect(scales(relevel(doc, at('standard'), at('advanced')).doc)[2]).toBe('G Bebop Dorian') // Basic only
+  })
+
   it('ladders name real scales, and every rung root is an interval', () => {
     for (const [name, rungs] of Object.entries(raw.ladders)) {
       expect(() => scaleKey(name), name).not.toThrow()

@@ -20,7 +20,7 @@ A2 | 11 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
 A2 | 13 | Gm7    | G Dorian                  # ii of the ii–V to F minor
 A2 | 14 | C7b9   | C Phrygian Dominant       # V7/ii in Eb: the b13 is in the key, the b9 from the symbol
 A2 | 15 | Fm7    | F Dorian                  # ii: Dorian, the key’s own notes
-# area: C major (bars 16–26)
+# area: C major (bars 16–24)
 A2 | 16 | G7b9   | G Half-Whole Diminished   # V7 of C: the b9 from the symbol
 B  | 17 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
 B  | 19 | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
@@ -30,9 +30,9 @@ B  | 21 | Em7    | E Dorian                  # iii: Dorian (its Phrygian would p
 B  | 22 | Am7    | A Aeolian                 # vi: the b13 is in the key
 B  | 23 | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
 B  | 24 | Em7    | E Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
-C  | 25 | EbMaj7 | Eb Lydian                 # a non-tonic major chord: Lydian
-C  | 26 | AbMaj7 | Ab Lydian                 # a non-tonic major chord: Lydian
-# area: Eb major (bars 27–32)
+# area: Eb major (bars 25–32)
+C  | 25 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+C  | 26 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
 C  | 27 | Fm7    | F Dorian                  # ii of the ii–V to Eb
 C  | 28 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
 C  | 29 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key

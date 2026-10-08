@@ -212,6 +212,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     colour: D7 on Phrygian Dominant (V7 of G minor) goes to G Minor Pentatonic at Basic and Spanish Phrygian at
     Advanced, not to D Major Pentatonic and Bebop Dominant. A ladder without a rung keeps the Standard
     (`ladderScale`).
+  - A tonic minor chord (the analysis's rule m5; `relevel` runs `analyse` on the chart) is Aeolian at Basic.
   - `useScaleLevel` remembers the level, seed and owned rows per chart in this browser (Save as a copy and Save to
     My charts carry them; Revert resets them). Share links carry the level and seed; without the owned rows, a
     recipient's next change matches rows by scale.
@@ -400,7 +401,8 @@ why.
   rewrites every cell but `# keep:` rows (`force`), and with `save` writes the reason as each row's trailing
   comment, `# area:` lines where the key area changes, and an `# analysis: <date>, rules v<N>; <key>` header (kept
   as it was when nothing else changed, so a rerun is a no-op). A `@copy` repeat whose verdict differs from its
-  source row is reported and noted in the source row's comment; only the source line can be written.
+  source row is reported and noted in the source row's comment; only the source line can be written, so the
+library writes such a repeat out instead.
 - **The CLI:** `npm run analyse -- charts/<tune>.txt` (or `--all`) prints a report per row: ✓ agrees with the
   chart, ≠ differs, blank, ? unreached. `--write`, `--force`, `--save` as above; `--quiet` gives the summary and
   the disagreements only.

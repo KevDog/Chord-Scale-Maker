@@ -24,7 +24,7 @@ A1 | 9  | E7    | E Mixolydian             # passing ii–V: its own key
 A1 | 10 | Gm7   | G Dorian                 # ii of the ii–V to F
 A1 | 10 | C7    | C Mixolydian             # V7 of F: natural tensions
 A1 | 11 | FMaj7 | F Ionian                 # tonic: the 4th is in the key
-# area: D major (bars 12–15)
+# area: D major (bars 12–13)
 A1 | 12 | Em7   | E Dorian                 # ii of the ii–V to D
 A1 | 12 | A7    | A Mixolydian             # V7 of D: natural tensions
 A1 | 13 | DMaj7 | D Ionian                 # tonic: the 4th is in the key

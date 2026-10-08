@@ -1,7 +1,8 @@
 import raw from '../../chord_scales.json'
+import { analyse } from './analysis'
 import type { ChartDoc } from './chart'
 import { rootName } from './pitch'
-import { resolveQuality, type ScaleOption } from './qualities'
+import { readChord, resolveQuality, type ScaleOption } from './qualities'
 import { parseScale, sameScale, scaleKey, simplifyRoot, spellFrom } from './scales'
 
 /**
@@ -10,8 +11,9 @@ import { parseScale, sameScale, scaleKey, simplifyRoot, spellFrom } from './scal
  * quality has none; Random picks among the quality's inside options, repeatably from a seed. A row whose Standard is
  * not its quality's default (the analysis chose it: D7 → D Phrygian Dominant) climbs that scale's ladder instead
  * (chord_scales.json `ladders`, docs/plan-analysis.md §11), so Basic over a V7 of a minor chord is the minor key's
- * pentatonic, not the major one. Changing level moves only the rows that play the old level's scale (relevel), so a
- * scale you chose yourself stays.
+ * pentatonic, not the major one. A tonic minor chord (the analysis's rule m5) is Aeolian at Basic, the natural
+ * minor beginners learn first (decision 7). Changing level moves only the rows that play the old level's scale
+ * (relevel), so a scale you chose yourself stays.
  */
 export type ScaleLevel = 'basic' | 'standard' | 'advanced' | 'random'
 export const SCALE_LEVELS: readonly ScaleLevel[] = ['basic', 'standard', 'advanced', 'random']
@@ -102,8 +104,18 @@ export function relevel(
     const b = baseline?.lines[i]
     return b?.kind === 'row' && b.chord === chord && b.scale ? b.scale : defaultOf(chord)
   }
+  // the rows that are a tonic minor chord, from the analysis (it reads the chords, so it's the same at every level)
+  const tonicMinor = new Set(analyse(doc).rows.filter((r) => r.rule === 'm5').map((r) => r.line))
+  const aeolian = (chord: string): string | null => {
+    const r = readChord(chord)
+    return r ? `${rootName(r.root)} Aeolian` : null
+  }
   const at = (state: LevelState, i: number, chord: string): string | null =>
-    state.level === 'standard' ? standard(i, chord) || null : scaleAtLevel(chord, state.level, state.seed, rowKey(i, chord), standard(i, chord))
+    state.level === 'standard'
+      ? standard(i, chord) || null
+      : state.level === 'basic' && tonicMinor.has(i)
+        ? aeolian(chord)
+        : scaleAtLevel(chord, state.level, state.seed, rowKey(i, chord), standard(i, chord))
   const owns = (i: number, chord: string, scale: string): boolean => {
     const mine = from.level === 'standard' || !from.owned || from.owned.includes(rowKey(i, chord)) // no record (an old share link): any match counts
     return mine && (scale === '' || sameScale(scale, at(from, i, chord)))
