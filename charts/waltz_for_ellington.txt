@@ -3,6 +3,7 @@ subtitle: Jazz waltz
 composer: Jeff Jenkins
 style: Waltz
 key: Bb
+time: 3/4
 form: AB, 58 bars
 source: Colorado Cookbook, p. 257
 # analysis: 2026-10-08, rules v1; Bb

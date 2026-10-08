@@ -1,6 +1,6 @@
 import { type Row, resolveScale } from './chart'
 import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRootLenient } from './chord'
-import { BEATS, guideToneTimeline } from './guideToneTimeline'
+import { guideToneTimeline } from './guideToneTimeline'
 import type { Part, Pitched } from './part'
 import { baseQuality } from './qualities'
 import { spellFrom } from './scales'
@@ -55,7 +55,7 @@ export function guideTonesFor(part: Part, chord: string, scale?: string): GuideT
   }
 }
 
-export type GuideNote = Readonly<{ pitch: Pitched | null; beats: 1 | 2 | 4; tie: boolean; label: string }> // tie: into the next note
+export type GuideNote = Readonly<{ pitch: Pitched | null; beats: 1 | 2 | 3 | 4; tie: boolean; label: string }> // tie: into the next note
 export type GuideChord = Readonly<{ beat: number; text: string; tokens: readonly ChordToken[] | null }>
 export type GuideBar = Readonly<{
   label: string // "A · Bar 9" where a chord starts, else ''
@@ -63,20 +63,21 @@ export type GuideBar = Readonly<{
   lines: readonly [readonly GuideNote[], readonly GuideNote[]]
 }>
 export type GuideSystem = Readonly<{ bars: readonly GuideBar[] }>
-export type GuideToneSheet = Readonly<{ systems: readonly GuideSystem[]; diagnostics: readonly string[] }>
+/** beats: a bar's beats (its time signature over 4) */
+export type GuideToneSheet = Readonly<{ systems: readonly GuideSystem[]; diagnostics: readonly string[]; beats: 2 | 3 | 4 }>
 
 /** split [start, start + beats) at barlines into notes, tying a held pitch across them */
-function notesFor(c: Candidate | null, start: number, beats: number): { bar: number; note: GuideNote }[] {
+function notesFor(c: Candidate | null, start: number, length: number, beats: number): { bar: number; note: GuideNote }[] {
   const out: { bar: number; note: GuideNote }[] = []
   let at = start
-  const end = start + beats
+  const end = start + length
   while (at < end) {
-    const barEnd = (Math.floor(at / BEATS) + 1) * BEATS
+    const barEnd = (Math.floor(at / beats) + 1) * beats
     const len = Math.min(end, barEnd) - at
     const last = at + len >= end
     out.push({
-      bar: Math.floor(at / BEATS),
-      note: { pitch: c?.pitch ?? null, beats: len as 1 | 2 | 4, tie: !!c && !last, label: c?.label ?? '' },
+      bar: Math.floor(at / beats),
+      note: { pitch: c?.pitch ?? null, beats: len as 1 | 2 | 3 | 4, tie: !!c && !last, label: c?.label ?? '' },
     })
     at += len
   }
@@ -86,8 +87,8 @@ function notesFor(c: Candidate | null, start: number, beats: number): { bar: num
 const readable = (chord: string): boolean => orNull(() => parseChord(chord)) !== null
 
 /** both guide tone lines for a chart, in systems of barsPerSystem bars */
-export function buildGuideTones(rows: readonly Row[], part: Part, barsPerSystem = 4): GuideToneSheet {
-  const { events, diagnostics } = guideToneTimeline(rows)
+export function buildGuideTones(rows: readonly Row[], part: Part, barsPerSystem = 4, beats: 2 | 3 | 4 = 4): GuideToneSheet {
+  const { events, diagnostics } = guideToneTimeline(rows, beats)
   const missing: string[] = []
   const tones = events.map((e) => {
     const t = guideTonesFor(part, e.chord, resolveScale(e.row) ?? undefined)
@@ -99,18 +100,18 @@ export function buildGuideTones(rows: readonly Row[], part: Part, barsPerSystem 
   })
   const voiced = voiceLead(tones, part.clef)
   const end = events.reduce((m, e) => Math.max(m, e.start + e.beats), 0)
-  const barCount = Math.ceil(end / BEATS)
+  const barCount = Math.ceil(end / beats)
   // each line's notes, split at barlines once, then grouped by bar
   const byBar = ([0, 1] as const).map((l) => {
     const out: GuideNote[][] = Array.from({ length: barCount }, () => [])
-    events.forEach((e, j) => notesFor(voiced[l][j] ?? null, e.start, e.beats).forEach((n) => out[n.bar]?.push(n.note)))
+    events.forEach((e, j) => notesFor(voiced[l][j] ?? null, e.start, e.beats, beats).forEach((n) => out[n.bar]?.push(n.note)))
     return out
   })
   const bars = Array.from({ length: barCount }, (_, i): GuideBar => {
-    const starting = events.filter((e) => Math.floor(e.start / BEATS) === i)
+    const starting = events.filter((e) => Math.floor(e.start / beats) === i)
     const firstRow = starting[0]?.row
     const chords = starting.map(
-      (e): GuideChord => ({ beat: e.start - i * BEATS, text: e.chord, tokens: chordTokensOrNull(part, e.chord, resolveScale(e.row)) }),
+      (e): GuideChord => ({ beat: e.start - i * beats, text: e.chord, tokens: chordTokensOrNull(part, e.chord, resolveScale(e.row)) }),
     )
     return {
       label: firstRow ? `${firstRow.section} · Bar ${firstRow.bar}` : '',
@@ -118,5 +119,5 @@ export function buildGuideTones(rows: readonly Row[], part: Part, barsPerSystem 
       lines: [byBar[0]?.[i] ?? [], byBar[1]?.[i] ?? []],
     }
   })
-  return { systems: chunk(bars, barsPerSystem).map((b) => ({ bars: b })), diagnostics: [...diagnostics, ...missing] }
+  return { systems: chunk(bars, barsPerSystem).map((b) => ({ bars: b })), diagnostics: [...diagnostics, ...missing], beats }
 }

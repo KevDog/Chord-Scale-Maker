@@ -3,6 +3,7 @@ subtitle: Jazz waltz
 composer: Frank Churchill
 style: Waltz
 key: F
+time: 3/4
 form: AA, 32 bars
 source: Colorado Cookbook, p. 211
 # analysis: 2026-10-08, rules v1; F

@@ -3,6 +3,7 @@ subtitle: Jazz waltz
 composer: Clark Terry
 style: Waltz
 key: F
+time: 3/4
 form: A, 16 bars
 source: Colorado Cookbook, p. 199
 # analysis: 2026-10-08, rules v1; F

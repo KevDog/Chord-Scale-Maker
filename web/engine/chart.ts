@@ -11,8 +11,16 @@ import { defaultScale } from './qualities'
  * composer:, style:, form: and source: describe the tune (where the chart came from). The site keeps the rest and
  * shows only the heading.
  */
-export type MetaKey = 'title' | 'subtitle' | 'key' | 'bars' | 'composer' | 'style' | 'form' | 'source'
-export const META_KEYS: readonly MetaKey[] = ['title', 'subtitle', 'key', 'bars', 'composer', 'style', 'form', 'source']
+export type MetaKey = 'title' | 'subtitle' | 'key' | 'bars' | 'time' | 'composer' | 'style' | 'form' | 'source'
+export const META_KEYS: readonly MetaKey[] = ['title', 'subtitle', 'key', 'bars', 'time', 'composer', 'style', 'form', 'source']
+
+/** `time:` 2/4, 3/4 or 4/4 (the default): beats a bar for the guide tone and Changes sheets; null if it's another */
+export function beatsPerBar(time: string): 2 | 3 | 4 | null {
+  const t = time.trim()
+  if (!t) return 4
+  const m = /^([234])\/4$/.exec(t)
+  return m ? (Number(m[1]) as 2 | 3 | 4) : null
+}
 export type ChartLine =
   | Readonly<{ kind: 'meta'; key: MetaKey; value: string }>
   // scale '' = default; comment: a trailing "# …" (the analysis, docs/plan-analysis.md §12.1), kept verbatim
@@ -37,7 +45,9 @@ function parseLine(line: string): ChartLine | string {
   for (const key of META_KEYS) {
     if (low.startsWith(`${key}:`)) {
       const value = line.slice(key.length + 1).trim()
-      return value.length > LIMITS.maxMeta ? `${key} longer than ${LIMITS.maxMeta} characters` : { kind: 'meta', key, value }
+      if (value.length > LIMITS.maxMeta) return `${key} longer than ${LIMITS.maxMeta} characters`
+      if (key === 'time' && beatsPerBar(value) === null) return 'time: 2/4, 3/4 or 4/4'
+      return { kind: 'meta', key, value }
     }
   }
   if (low.startsWith('@copy')) {
@@ -122,6 +132,9 @@ export const formPart = (section: string): FormPart => (!isOutsideForm(section) 
 /** a meta value as written (the last line wins), or the fallback */
 const metaValue = (doc: ChartDoc, key: MetaKey, fallback = ''): string =>
   doc.lines.reduce((v, l) => (l.kind === 'meta' && l.key === key ? l.value : v), fallback)
+
+/** the chart's beats a bar, from its `time:` line (4 without one) */
+export const chartBeats = (doc: ChartDoc): 2 | 3 | 4 => beatsPerBar(metaValue(doc, 'time')) ?? 4
 
 /** the title and subtitle as written (what the editor's fields edit) */
 export function chartMeta(doc: ChartDoc): Readonly<{ title: string; subtitle: string }> {

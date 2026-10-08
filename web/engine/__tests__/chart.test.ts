@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { chartHeading, chartMeta, expandRowLines, expandRows, isFatal, keyLabel, parseChart, resolveScale, serializeChart } from '../chart'
+import { beatsPerBar, chartBeats, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, keyLabel, parseChart, resolveScale, serializeChart } from '../chart'
 import { LIMITS } from '../limits'
 
 const SAMPLE = `title: T
@@ -115,5 +115,11 @@ describe('chart', () => {
   it('expands rows with the line each came from', () => {
     const rows = expandRowLines(parseChart(SAMPLE).value).value
     expect(rows.map((r) => `${r.section}${r.bar}@${r.line}`)).toEqual(['A1@4', 'A2@5', 'B9@4', 'B10@5'])
+  })
+
+  it('reads a time: line, and flags one it can’t use', () => {
+    expect(['3/4', '2/4', '4/4', '', '6/8', 'waltz'].map(beatsPerBar)).toEqual([3, 2, 4, 4, null, null])
+    expect(chartBeats(parseChart('time: 3/4\nA | 1 | C').value)).toBe(3)
+    expect(parseChart('time: 6/8\nA | 1 | C').diagnostics.map((d) => d.message)).toEqual(['time: 2/4, 3/4 or 4/4'])
   })
 })

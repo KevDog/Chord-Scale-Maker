@@ -149,6 +149,10 @@
           and it sits outside the form: it prints where it stands, but the tune's turnaround still goes back to bar 1,
           not to the intro. Number its bars from 1 if you like.
         </li>
+        <li>
+          <UiCode>time: 3/4</UiCode> makes it a waltz (<UiCode>2/4</UiCode> and <UiCode>4/4</UiCode> work too; 4/4 is
+          what you get without it). The guide tone sheet writes its rhythm in it.
+        </li>
         <li><UiCode>title:</UiCode> and <UiCode>subtitle:</UiCode> set the heading. <UiCode>composer:</UiCode>, <UiCode>style:</UiCode>, <UiCode>key:</UiCode> and <UiCode>form:</UiCode> fill in the line under it (the subtitle, if there is one, takes the style's place), and lines starting with <UiCode>#</UiCode> are notes to yourself. A row can end in a note too, after a space and a <UiCode>#</UiCode>: the library's say why each scale was chosen.</li>
         <li>Anything I can't make sense of is listed under the text box, with the line number.</li>
       </ul>
