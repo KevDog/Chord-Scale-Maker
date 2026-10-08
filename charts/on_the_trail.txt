@@ -1,0 +1,35 @@
+title: On the Trail
+subtitle: Medium, F, 16 bars
+composer: Ferde Grofé
+style: Medium
+key: F
+form: AB, 16 bars
+source: Colorado Cookbook, p. 167
+
+# section | bar | chord | scale
+# the horn intro and coda are left out; bar 7 can also be Gm Em7b5 A7b9
+A | 1  | FMaj7
+A | 1  | Dm7
+A | 2  | Gm7
+A | 2  | C7
+A | 3  | FMaj7
+A | 3  | Dm7
+A | 4  | Gm7
+A | 4  | C7
+A | 5  | FMaj7
+A | 5  | BbMaj7
+A | 6  | Am7
+A | 6  | D7
+A | 7  | Gm
+A | 7  | GmMaj7
+A | 8  | Gm7
+A | 8  | C7
+B | 9  | Abm7
+B | 10 | Db7
+B | 11 | Abm7
+B | 12 | Db7
+B | 13 | Gm7
+B | 14 | C7
+B | 15 | FMaj7
+B | 16 | Gm7
+B | 16 | C7

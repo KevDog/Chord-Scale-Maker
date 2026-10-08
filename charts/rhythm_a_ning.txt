@@ -1,0 +1,28 @@
+title: Rhythm-a-ning
+subtitle: Up tempo rhythm changes, Bb, 32 bars
+composer: Thelonious Monk
+style: Medium up
+key: Bb
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 180
+
+# section | bar | chord | scale
+A1 | 1  | Bb
+A1 | 1  | Bb7/D
+A1 | 2  | Eb7
+A1 | 2  | Edim7
+A1 | 3  | Bb/F
+A1 | 3  | G7
+A1 | 4  | Cm7
+A1 | 4  | F7
+A1 | 5  | Bb
+A1 | 5  | Bb7/D
+A1 | 6  | Eb7
+A1 | 6  | Edim7
+A1 | 7  | Bb7
+@copy A1 A2 8
+B  | 17 | D7
+B  | 19 | G7
+B  | 21 | C7
+B  | 23 | F7
+@copy A1 A3 24

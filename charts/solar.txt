@@ -1,0 +1,21 @@
+title: Solar
+subtitle: Medium up, C minor, 12 bars
+composer: Miles Davis
+style: Medium up
+key: Cm
+form: A, 12 bars
+source: Colorado Cookbook, p. 207
+
+# section | bar | chord | scale
+A | 1  | Cm
+A | 3  | Gm7
+A | 4  | C7alt
+A | 5  | FMaj7
+A | 7  | Fm7
+A | 8  | Bb7alt
+A | 9  | EbMaj7
+A | 10 | Ebm7
+A | 10 | Ab7alt
+A | 11 | DbMaj7
+A | 12 | Dm7b5
+A | 12 | G7alt

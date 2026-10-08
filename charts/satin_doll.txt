@@ -1,0 +1,61 @@
+title: Satin Doll
+subtitle: Medium, C, 32 bars
+composer: Billy Strayhorn
+style: Medium
+key: C
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 191
+
+# section | bar | chord | scale
+# the intro vamp is left out
+A1 | 1  | Dm7
+A1 | 1  | G7
+A1 | 2  | Dm7
+A1 | 2  | G7
+A1 | 3  | Em7
+A1 | 3  | A7
+A1 | 4  | Em7
+A1 | 4  | A7
+A1 | 5  | Am7
+A1 | 5  | D7
+A1 | 6  | Abm7
+A1 | 6  | Db7
+A1 | 7  | C7
+A1 | 7  | B7
+A1 | 8  | Bb7
+A1 | 8  | A7
+A2 | 9  | Dm7
+A2 | 9  | G7
+A2 | 10 | Dm7
+A2 | 10 | G7
+A2 | 11 | Em7
+A2 | 11 | A7
+A2 | 12 | Em7
+A2 | 12 | A7
+A2 | 13 | Am7
+A2 | 13 | D7
+A2 | 14 | Abm7
+A2 | 14 | Db7
+A2 | 15 | CMaj7
+B  | 17 | Gm7
+B  | 18 | C7
+B  | 19 | FMaj7
+B  | 21 | Am7
+B  | 22 | D7
+B  | 23 | Dm7
+B  | 24 | G7
+A3 | 25 | Dm7
+A3 | 25 | G7
+A3 | 26 | Dm7
+A3 | 26 | G7
+A3 | 27 | Em7
+A3 | 27 | A7
+A3 | 28 | Em7
+A3 | 28 | A7
+A3 | 29 | Am7
+A3 | 29 | D7
+A3 | 30 | Abm7
+A3 | 30 | Db7
+A3 | 31 | CMaj7
+A3 | 32 | Dm7
+A3 | 32 | G7

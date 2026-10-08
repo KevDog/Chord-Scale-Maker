@@ -1,0 +1,72 @@
+title: I'm Old Fashioned
+subtitle: Medium, F, 36 bars
+composer: Jerome Kern
+style: Medium
+key: F
+form: ABCD, 36 bars
+source: Colorado Cookbook, p. 102
+
+# section | bar | chord | scale
+# the lead sheet writes the A sections in half time (four chords a bar); this counts two chords a bar
+A | 1  | FMaj7
+A | 1  | Dm7
+A | 2  | Gm7
+A | 2  | C7b9
+A | 3  | FMaj7
+A | 3  | Dm7
+A | 4  | Gm7
+A | 4  | C7b9
+A | 5  | FMaj7
+A | 6  | FMaj7
+A | 6  | Dm7
+A | 7  | Em7b5
+A | 8  | A7#9
+B | 9  | Dm11
+B | 10 | G7#11
+B | 11 | Dm11
+B | 12 | G7#11
+B | 13 | Gm7
+B | 13 | A7#9
+B | 14 | Dm7
+B | 14 | G7b9
+B | 15 | Gm7
+B | 16 | C7b9
+C | 17 | FMaj7
+C | 17 | Dm7
+C | 18 | Gm7
+C | 18 | C7
+C | 19 | FMaj7
+C | 19 | Dm7
+C | 20 | Bm7b5
+C | 20 | E7#9
+C | 21 | AMaj7
+C | 21 | Bm7
+C | 22 | C#m7
+C | 22 | DMaj7
+C | 23 | E7
+C | 23 | F#m7b5
+C | 24 | Gm7
+C | 24 | C7b9
+D | 25 | FMaj7
+D | 25 | Dm7
+D | 26 | Gm7
+D | 26 | C7
+D | 27 | FMaj7
+D | 27 | Dm7
+D | 28 | Gm7
+D | 28 | C7
+D | 29 | Cm7
+D | 29 | F7
+D | 30 | BbMaj7
+D | 30 | Eb7
+D | 31 | Am7
+D | 31 | Dm7
+D | 32 | Bm7b5
+D | 32 | Bbm6
+D | 33 | Am7
+D | 33 | Ab7
+D | 34 | Gm7
+D | 34 | C7
+D | 35 | FMaj7
+D | 36 | Gm7
+D | 36 | C7

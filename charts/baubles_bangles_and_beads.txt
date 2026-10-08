@@ -1,0 +1,51 @@
+title: Baubles, Bangles and Beads
+subtitle: Jazz waltz, Ab, 36 bars
+composer: Borodin, Wright & Forrest
+style: Waltz
+key: Ab
+form: ABCD, 36 bars
+source: Colorado Cookbook, p. 28
+
+# section | bar | chord | scale
+A | 1  | Bbm7
+A | 2  | Eb9
+A | 3  | AbMaj7
+A | 4  | Fm7
+A | 4  | Cm7
+A | 4  | Bdim7
+A | 5  | Bbm7
+A | 6  | Eb9
+A | 7  | AbMaj7
+A | 8  | Ab6
+B | 9  | Dm7
+B | 10 | G9
+B | 11 | CMaj7
+B | 12 | Am7
+B | 12 | Em7
+B | 12 | Ebdim7
+B | 13 | Dm7
+B | 14 | G9
+B | 15 | CMaj7
+B | 16 | C6
+C | 17 | F#m7
+C | 18 | B9
+C | 19 | EMaj7
+C | 20 | Bb9#11
+C | 21 | AMaj7
+C | 22 | Bbm11
+C | 22 | Eb7
+C | 23 | AbMaj7
+C | 24 | Cm7
+C | 24 | Bm11
+D | 25 | Bbm7
+D | 26 | Eb9
+D | 27 | AbMaj7
+D | 28 | Cm7b5
+D | 28 | F7alt
+D | 29 | Bbm7
+D | 30 | Eb9
+D | 31 | Cm7b5
+D | 32 | F7alt
+D | 33 | Bbm9
+D | 34 | Eb9
+D | 35 | AbMaj7

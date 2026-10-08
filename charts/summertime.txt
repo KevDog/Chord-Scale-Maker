@@ -1,0 +1,25 @@
+title: Summertime
+subtitle: Medium, D minor, 16 bars
+composer: George Gershwin
+style: Medium
+key: Dm
+form: AB, 16 bars
+source: Colorado Cookbook, p. 228
+
+# section | bar | chord | scale
+# the horn intro and the Dm DmMaj7 Dm7 Dm6 vamp are left out; bar 4 can also be Gm7 C7, bar 5 FMaj7 BbMaj7
+A | 1  | Dm
+A | 5  | Gm
+A | 7  | Em7b5
+A | 8  | A7
+B | 9  | Dm
+B | 11 | Gm7
+B | 11 | C7
+B | 12 | FMaj7
+B | 12 | Bb7
+B | 13 | Em7b5
+B | 13 | A7
+B | 14 | Dm
+B | 15 | Em7b5
+B | 15 | A7
+B | 16 | Dm

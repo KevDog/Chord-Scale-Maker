@@ -1,0 +1,41 @@
+title: I've Got a Crush on You
+subtitle: Medium, Bb, 18 bars
+composer: George Gershwin
+style: Medium
+key: Bb
+form: AB, 18 bars
+source: Colorado Cookbook, p. 103
+
+# section | bar | chord | scale
+A | 1  | Dm7
+A | 1  | Dbdim7
+A | 2  | Cm7
+A | 2  | F7
+A | 3  | Dm7
+A | 3  | Dbdim7
+A | 4  | Cm7
+A | 4  | F7
+A | 5  | BbMaj7
+A | 5  | Gm7
+A | 6  | C7
+A | 7  | Gm7
+A | 7  | C7
+A | 8  | Cm7
+A | 8  | F7
+B | 9  | Dm7
+B | 9  | Dbdim7
+B | 10 | Cm7
+B | 10 | F7
+B | 11 | Dm7
+B | 11 | Dbdim7
+B | 12 | Cm7
+B | 12 | Ebm7
+B | 12 | Ab7
+B | 13 | Dm7
+B | 13 | Gm7
+B | 14 | C7
+B | 15 | Bb/F
+B | 15 | Gm7
+B | 16 | C7
+B | 16 | F7
+B | 17 | BbMaj7

@@ -1,0 +1,49 @@
+title: Long Ago and Far Away
+subtitle: Medium, F, 32 bars
+composer: Jerome Kern
+style: Medium
+key: F
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 128
+
+# section | bar | chord | scale
+A | 1  | FMaj7
+A | 1  | Dm7
+A | 2  | Gm7
+A | 2  | C7
+A | 3  | FMaj7
+A | 3  | Dm7
+A | 4  | Gm7
+A | 4  | C7
+A | 5  | FMaj7
+A | 5  | Dm7
+A | 6  | Gm7
+A | 6  | C7
+A | 7  | Am7
+A | 7  | D7
+A | 8  | Gm7
+A | 8  | C7
+B | 9  | AbMaj7
+B | 9  | Fm7
+B | 10 | Bbm7
+B | 10 | Eb7
+B | 11 | AbMaj7
+B | 12 | Dm7
+B | 12 | G7
+B | 13 | CMaj7
+B | 14 | Am7
+B | 14 | D7alt
+B | 15 | Gm7
+B | 16 | C7
+@copy A C 16
+D | 25 | Cm7
+D | 26 | F7
+D | 27 | BbMaj7
+D | 28 | Eb7
+D | 29 | Am7
+D | 29 | D7
+D | 30 | Gm7
+D | 30 | C7
+D | 31 | FMaj7
+D | 32 | Gm7
+D | 32 | C7

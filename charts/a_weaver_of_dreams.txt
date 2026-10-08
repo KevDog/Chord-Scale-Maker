@@ -1,0 +1,43 @@
+title: A Weaver of Dreams
+subtitle: Medium, C, 32 bars
+composer: Victor Young
+style: Medium
+key: C
+form: AA, 32 bars
+source: Colorado Cookbook, p. 262
+
+# section | bar | chord | scale
+# the "standard" chords; the lead sheet offers Bbm7 Eb7 | Am7 D7 | Abm7 Db7 | Gm7 C7 for bars 5–8
+A1 | 1  | CMaj7
+A1 | 3  | Bm7b5
+A1 | 4  | E7b9
+A1 | 5  | Am7
+A1 | 6  | D7
+A1 | 7  | Gm7
+A1 | 8  | C7
+A1 | 9  | FMaj7
+A1 | 10 | Bb7#11
+A1 | 11 | Em7
+A1 | 12 | A7
+A1 | 13 | Am7
+A1 | 14 | D7
+A1 | 15 | Dm7
+A1 | 16 | G7
+A2 | 17 | CMaj7
+A2 | 19 | Bm7b5
+A2 | 20 | E7b9
+A2 | 21 | Am7
+A2 | 22 | D7
+A2 | 23 | Gm7
+A2 | 24 | C7
+A2 | 25 | FMaj7
+A2 | 26 | Bb7#11
+A2 | 27 | Em7
+A2 | 27 | A7
+A2 | 28 | Ebm7
+A2 | 28 | Ab7
+A2 | 29 | Dm7
+A2 | 30 | G7
+A2 | 31 | CMaj7
+A2 | 32 | Dm7
+A2 | 32 | G7

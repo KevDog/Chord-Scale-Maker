@@ -1,0 +1,70 @@
+title: Up Jumped Spring
+subtitle: Jazz waltz, Bb, 56 bars (16 16 8 16)
+composer: Freddie Hubbard
+style: Waltz
+key: Bb
+form: AABC, 56 bars
+source: Colorado Cookbook, p. 253
+
+# section | bar | chord | scale
+A1 | 1  | BbMaj7
+A1 | 2  | G7alt
+A1 | 3  | Cm7
+A1 | 4  | F7
+A1 | 4  | F#dim7
+A1 | 5  | Gm7
+A1 | 6  | Fm7
+A1 | 7  | Em7
+A1 | 8  | A7
+A1 | 9  | Dm7
+A1 | 10 | Ebm7
+A1 | 11 | Dm7
+A1 | 12 | Ebm7
+A1 | 13 | Bm7b5
+A1 | 14 | E7alt
+A1 | 15 | Cm7b5
+A1 | 16 | F7alt
+A2 | 17 | BbMaj7
+A2 | 18 | G7alt
+A2 | 19 | Cm7
+A2 | 20 | F7
+A2 | 20 | F#dim7
+A2 | 21 | Gm7
+A2 | 22 | Fm7
+A2 | 23 | Em7
+A2 | 24 | A7
+A2 | 25 | Dm7
+A2 | 26 | Ebm7
+A2 | 27 | Dm7
+A2 | 28 | Ebm7
+A2 | 29 | Cm7
+A2 | 30 | F7
+A2 | 31 | BbMaj7
+A2 | 32 | Am7
+A2 | 32 | D7
+B  | 33 | Gm7
+B  | 34 | C7
+B  | 35 | FMaj7
+B  | 36 | Dm7
+B  | 37 | Abm7
+B  | 38 | Db7
+B  | 39 | Cm7
+B  | 40 | F7
+C  | 41 | BbMaj7
+C  | 42 | G7alt
+C  | 43 | Cm7
+C  | 44 | F7
+C  | 44 | F#dim7
+C  | 45 | Gm7
+C  | 46 | Fm7
+C  | 47 | Em7
+C  | 48 | A7
+C  | 49 | Dm7
+C  | 50 | Ebm7
+C  | 51 | Dm7
+C  | 52 | Ebm7
+C  | 53 | Cm7
+C  | 54 | F7
+C  | 55 | BMaj7
+C  | 56 | BMaj7
+C  | 56 | BbMaj7

@@ -87,6 +87,6 @@ export function removeLine(doc: ChartDoc, i: number): ChartDoc {
 export function setMeta(doc: ChartDoc, key: MetaKey, value: string): ChartDoc {
   const i = doc.lines.findLastIndex((l) => l.kind === 'meta' && l.key === key)
   if (i >= 0) return { lines: replaceAt(doc.lines, i, { kind: 'meta', key, value }) }
-  const at = key === 'subtitle' ? doc.lines.findIndex((l) => l.kind === 'meta' && l.key === 'title') + 1 : 0
+  const at = key === 'title' ? 0 : doc.lines.findLastIndex((l) => l.kind === 'meta') + 1 // after the last meta line
   return { lines: [...doc.lines.slice(0, at), { kind: 'meta', key, value }, ...doc.lines.slice(at)] }
 }

@@ -1,0 +1,23 @@
+title: Pent Up House
+subtitle: Medium up, G, 16 bars
+composer: Sonny Rollins
+style: Medium up
+key: G
+form: ABC, 16 bars
+source: Colorado Cookbook, p. 174
+
+# section | bar | chord | scale
+# the solo changes; the head substitutes Ab7 for D7
+A | 1  | Am7
+A | 2  | D7
+A | 3  | GMaj7
+A | 5  | Am7
+A | 6  | D7
+A | 7  | GMaj7
+B | 9  | Dm7
+B | 10 | G7
+B | 11 | Cm7
+B | 12 | F7
+C | 13 | Am7
+C | 14 | D7
+C | 15 | GMaj7

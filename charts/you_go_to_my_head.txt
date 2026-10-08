@@ -1,0 +1,69 @@
+title: You Go to My Head
+subtitle: Ballad, Eb, 40 bars
+composer: J. Fred Coots
+style: Ballad
+key: Eb
+form: AABCD, 40 bars
+source: Colorado Cookbook, p. 275
+
+# section | bar | chord | scale
+A1 | 1  | EbMaj7
+A1 | 2  | Abm7
+A1 | 2  | Db7
+A1 | 3  | GbMaj7
+A1 | 4  | F7
+A1 | 4  | Bb7
+A1 | 5  | Ebm
+A1 | 6  | F7
+A1 | 6  | Bb7b9
+A1 | 7  | EbMaj7
+A1 | 8  | Fm7
+A1 | 8  | Bb7b9
+A2 | 9  | EbMaj7
+A2 | 10 | Abm7
+A2 | 10 | Db7
+A2 | 11 | GbMaj7
+A2 | 12 | F7
+A2 | 12 | Bb7
+A2 | 13 | Ebm
+A2 | 14 | F7
+A2 | 14 | Bb7b9
+A2 | 15 | EbMaj7
+A2 | 16 | Bbm7
+A2 | 16 | Eb7
+B  | 17 | AbMaj7
+B  | 18 | D7b9
+B  | 19 | EbMaj7
+B  | 19 | Fm7
+B  | 19 | Bb7
+B  | 20 | EbMaj7
+B  | 21 | Am7
+B  | 21 | D7b9
+B  | 22 | GMaj7
+B  | 22 | G#dim7
+B  | 23 | Am7
+B  | 23 | D7alt
+B  | 24 | Gm7
+B  | 24 | Gbm7
+B  | 24 | Fm7
+B  | 24 | Bb7
+C  | 25 | EbMaj7
+C  | 26 | Abm7
+C  | 26 | Db7
+C  | 27 | GbMaj7
+C  | 28 | F7
+C  | 28 | Bb7
+C  | 29 | Ebm
+C  | 30 | F7
+C  | 30 | Bb7
+C  | 31 | EbMaj7
+C  | 32 | Bbm7
+C  | 32 | Eb7b9
+D  | 33 | AbMaj7
+D  | 34 | Db7
+D  | 35 | EbMaj7
+D  | 36 | Cm7
+D  | 36 | Gbdim7
+D  | 37 | Fm7
+D  | 38 | Bb7b9
+D  | 39 | EbMaj7

@@ -1,0 +1,37 @@
+title: Bernie's Tune
+subtitle: Medium up, D minor, AABA
+composer: Bernie Miller
+style: Medium up
+key: Bb
+form: AABA
+source: Colorado Cookbook, p. 31
+
+# section | bar | chord | scale
+A1 | 1  | Dm
+A1 | 3  | Bb7
+A1 | 5  | Em7b5
+A1 | 6  | A7
+A1 | 7  | Dm
+A1 | 8  | Em7b5
+A1 | 8  | A7
+A2 | 9  | Dm
+A2 | 11 | Bb7
+A2 | 13 | Em7b5
+A2 | 14 | A7
+A2 | 15 | Dm
+B  | 17 | BbMaj7
+B  | 17 | G7
+B  | 18 | Cm7
+B  | 18 | F7
+B  | 19 | BbMaj7
+B  | 19 | G7
+B  | 20 | Cm7
+B  | 20 | F7
+B  | 21 | BbMaj7
+B  | 21 | G7
+B  | 22 | Cm7
+B  | 22 | F7
+B  | 23 | BbMaj7
+B  | 24 | Em7b5
+B  | 24 | A7
+@copy A2 A3 16

@@ -1,0 +1,46 @@
+title: Unit Seven
+subtitle: Swing and Latin, C, 44 bars (12 12 8 12)
+composer: Sam Jones
+style: Mixed
+key: C
+form: AABC, 44 bars
+source: Colorado Cookbook, p. 252
+
+# section | bar | chord | scale
+A1 | 1  | C7
+A1 | 5  | F7
+A1 | 7  | C7
+A1 | 8  | A7alt
+A1 | 9  | AbMaj7
+A1 | 10 | G7alt
+A1 | 11 | C7
+A1 | 11 | A7
+A1 | 12 | D7
+A1 | 12 | G7alt
+A2 | 13 | C7
+A2 | 17 | F7
+A2 | 19 | C7
+A2 | 20 | A7alt
+A2 | 21 | AbMaj7
+A2 | 22 | G7alt
+A2 | 23 | C7
+A2 | 24 | A7alt
+B  | 25 | Dm7
+B  | 26 | G7
+B  | 27 | Em7
+B  | 28 | A7alt
+B  | 29 | Dm7
+B  | 30 | G7
+B  | 31 | Em7
+B  | 31 | A7
+B  | 32 | Dm7
+B  | 32 | G7
+C  | 33 | C7
+C  | 37 | F7
+C  | 39 | C7
+C  | 40 | A7alt
+C  | 41 | AbMaj7
+C  | 42 | G7alt
+C  | 43 | C7
+C  | 43 | A7alt
+C  | 44 | D7

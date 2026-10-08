@@ -1,0 +1,35 @@
+title: Nearness
+subtitle: Bright swing, 32 bars (Bob Gillis)
+composer: Bob Gillis
+style: Medium up
+key: Bm
+form: AB, 32 bars
+source: Colorado Cookbook, p. 154
+
+# section | bar | chord | scale
+A | 1  | Bm7
+A | 5  | BbMaj7#11
+A | 6  | AbMaj7#11
+A | 7  | Gb7#11
+A | 9  | Bm7
+A | 11 | BbMaj7#11
+A | 13 | Am7
+A | 14 | BbMaj7#11
+A | 15 | Am7
+A | 16 | BbMaj7#11
+A | 16 | Am7
+B | 17 | Abm7
+B | 20 | Bbm7
+B | 20 | Bm7
+B | 21 | Bm7
+B | 22 | BbMaj7#11
+B | 22 | Dm7
+B | 23 | Eb7#11
+B | 24 | Eb7/Db
+B | 25 | FMaj7/C
+B | 26 | Gm7/C
+B | 27 | Am7/C
+B | 28 | BbMaj7#11/C
+B | 29 | Bm7b5
+B | 30 | Bbm7
+B | 31 | F7sus4

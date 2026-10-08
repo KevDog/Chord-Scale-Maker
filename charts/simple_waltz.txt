@@ -1,0 +1,18 @@
+title: Simple Waltz
+subtitle: Jazz waltz, F, 16 bars (Clark Terry)
+composer: Clark Terry
+style: Waltz
+key: F
+form: A, 16 bars
+source: Colorado Cookbook, p. 199
+
+# section | bar | chord | scale
+A | 1  | F7
+A | 5  | Bb7
+A | 7  | F7
+A | 11 | Gm7
+A | 12 | C7
+A | 13 | F
+A | 14 | Bb
+A | 15 | F
+A | 16 | C7

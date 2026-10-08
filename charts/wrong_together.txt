@@ -1,0 +1,43 @@
+title: Wrong Together
+subtitle: Walking ballad, F, 16 bars (Steve Swallow)
+composer: Steve Swallow
+style: Ballad
+key: F
+form: AB, 16 bars
+source: Colorado Cookbook, p. 272
+
+# section | bar | chord | scale
+# the coda is left out
+A | 1  | Em9
+A | 1  | A7#11
+A | 2  | Gm9
+A | 2  | C7#11
+A | 3  | FMaj7
+A | 3  | Bb7
+A | 4  | Am7
+A | 4  | D7
+A | 5  | Gm9
+A | 5  | C7#11
+A | 6  | Bbm9
+A | 6  | Eb7#11
+A | 7  | AbMaj7
+A | 7  | G7alt
+A | 8  | Cm9
+A | 8  | F7alt
+B | 9  | BbMaj7
+B | 9  | A7alt
+B | 10 | Dm9
+B | 10 | G7#11
+B | 11 | CMaj7
+B | 11 | F7#11
+B | 12 | Em9
+B | 12 | A7#11
+B | 13 | Gm9
+B | 13 | C7#11
+B | 14 | FMaj7
+B | 14 | Bb7#11
+B | 15 | A7b13
+B | 15 | D7b9
+B | 16 | Gm9
+B | 16 | C7sus4
+B | 16 | C7

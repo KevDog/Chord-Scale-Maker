@@ -1,0 +1,36 @@
+title: Got Eyes for You
+subtitle: Bossa nova, Eb, 32 bars
+composer: Bob Montgomery
+style: Latin
+key: Eb
+form: AABC, 32 bars
+source: Colorado Cookbook, p. 81
+
+# section | bar | chord | scale
+A1 | 1  | EbMaj7
+A1 | 3  | AbMaj7
+A1 | 5  | Gm7
+A1 | 6  | C7b9
+A1 | 7  | Fm7
+A1 | 8  | Bb7b9
+A2 | 9  | EbMaj7
+A2 | 11 | AbMaj7
+A2 | 13 | Gm7
+A2 | 14 | C7b9
+A2 | 15 | Fm7
+A2 | 16 | G7b9
+B  | 17 | CMaj7
+B  | 19 | FMaj7
+B  | 20 | Dm7
+B  | 20 | G9
+B  | 21 | Em7
+B  | 22 | Am7
+B  | 23 | FMaj7
+B  | 24 | Em7
+C  | 25 | EbMaj7
+C  | 26 | AbMaj7
+C  | 27 | Fm7
+C  | 28 | Bb7b9
+C  | 29 | EbMaj7
+C  | 31 | Fm7
+C  | 32 | Bb7b9

@@ -1,0 +1,19 @@
+title: Watermelon Man
+subtitle: Latin rock, F, 16 bars
+composer: Herbie Hancock
+style: Even 8ths
+key: F
+form: A, 16 bars
+source: Colorado Cookbook, p. 260
+
+# section | bar | chord | scale
+A | 1  | F7
+A | 5  | Bb7
+A | 7  | F7
+A | 9  | C7
+A | 10 | Bb7
+A | 11 | C7
+A | 12 | Bb7
+A | 13 | C7
+A | 14 | Bb7
+A | 15 | F7

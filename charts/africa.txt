@@ -1,0 +1,14 @@
+title: Africa
+subtitle: Afro-Latin, D minor, one chord
+composer: John Coltrane
+style: Even 8ths
+key: Dm
+form: AABC
+source: Colorado Cookbook, p. 13
+
+# section | bar | chord | scale
+# a vamp on one chord: the intro repeats on cue, then A (played twice), B and C
+A1 | 1  | Dm6/9/E
+@copy A1 A2 8
+B  | 17 | Dm6/9/E
+C  | 25 | Dm6/9/E

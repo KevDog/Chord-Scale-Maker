@@ -1,0 +1,51 @@
+title: Laura
+subtitle: Ballad, C, 32 bars
+composer: David Raksin
+style: Ballad
+key: C
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 122
+
+# section | bar | chord | scale
+# the lead sheet offers Bm7 E7 Am7 D7 over bar 4 and Am7 D7 Gm7 C7 over bar 8 as turnarounds;
+# the solo form (repeat to the top) is written, not the ending
+A | 1  | Am9
+A | 2  | D7b9
+A | 3  | GMaj7
+A | 3  | C7
+A | 4  | GMaj7
+A | 5  | Gm9
+A | 6  | C7b9
+A | 7  | FMaj7
+A | 7  | Bb7
+A | 8  | FMaj7
+B | 9  | Fm7
+B | 10 | Bb7b9
+B | 11 | EbMaj7
+B | 12 | Cm7
+B | 13 | Am7b5
+B | 14 | D7b9
+B | 15 | GMaj7
+B | 16 | Bm7
+B | 16 | E7b9
+C | 17 | Am9
+C | 18 | D7b9
+C | 19 | GMaj7
+C | 19 | C7
+C | 20 | GMaj7
+C | 21 | Gm9
+C | 22 | C7b9
+C | 23 | FMaj7
+C | 23 | Bb7
+C | 24 | FMaj7
+D | 25 | Fm7
+D | 26 | G7b9
+D | 27 | CMaj7
+D | 28 | D7
+D | 29 | Ebm7
+D | 29 | Ab7b9
+D | 30 | Dm7
+D | 30 | G9
+D | 31 | C6/9
+D | 32 | Bm7
+D | 32 | E7b9

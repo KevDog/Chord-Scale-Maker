@@ -1,0 +1,36 @@
+title: I'm an Old Cowhand
+subtitle: Medium, Eb, ABAB
+composer: Johnny Mercer
+style: Medium
+key: Eb
+form: ABAB
+source: Colorado Cookbook, p. 101
+
+# section | bar | chord | scale
+A1 | 1  | Fm7
+A1 | 2  | Bb7
+A1 | 3  | EbMaj7
+A1 | 3  | Ab7
+A1 | 4  | Gm7
+A1 | 4  | C7#9
+A1 | 5  | Fm7
+A1 | 6  | Bb7
+A1 | 7  | EbMaj7
+A1 | 8  | Dm7b5
+A1 | 8  | G7alt
+B1 | 9  | Cm7
+B1 | 10 | Gm7
+B1 | 11 | Cm7
+B1 | 12 | Gm7
+B1 | 13 | Cm7
+B1 | 14 | Gm7
+B1 | 14 | C7#9
+B1 | 15 | Fm7
+B1 | 15 | Bb7
+B1 | 16 | EbMaj7
+B1 | 16 | C7#9
+B1 | 17 | Fm7
+B1 | 17 | Bb7
+B1 | 18 | EbMaj7
+@copy A1 A2 18
+@copy B1 B2 18

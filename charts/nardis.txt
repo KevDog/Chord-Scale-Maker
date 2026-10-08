@@ -1,0 +1,27 @@
+title: Nardis
+subtitle: Medium, E minor, 32 bars
+composer: Bill Evans
+style: Medium
+key: Em
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 152
+
+# section | bar | chord | scale
+A1 | 1  | Em
+A1 | 2  | FMaj7
+A1 | 3  | B7
+A1 | 4  | CMaj7
+A1 | 5  | Am
+A1 | 6  | FMaj7
+A1 | 7  | EMaj7
+A1 | 8  | Em
+@copy A1 A2 8
+B  | 17 | Am
+B  | 18 | FMaj7#11
+B  | 19 | Am
+B  | 20 | FMaj7#11
+B  | 21 | Dm
+B  | 22 | G7
+B  | 23 | CMaj7
+B  | 24 | FMaj7#11
+@copy A1 A3 24

@@ -1,0 +1,44 @@
+title: Nica's Dream
+subtitle: Latin and swing, Bb minor, 64 bars (A A B B C)
+composer: Horace Silver
+style: Mixed
+key: Bbm
+form: AABBC, 64 bars
+source: Colorado Cookbook, p. 157
+
+# section | bar | chord | scale
+# the tag (intro, between solos, ending) is left out
+A1 | 1  | BbmMaj7
+A1 | 3  | AbmMaj7
+A1 | 5  | BbmMaj7
+A1 | 7  | Ebm7
+A1 | 8  | Ab7
+A1 | 9  | Abm7
+A1 | 10 | Db7
+A1 | 11 | GbMaj7
+A1 | 11 | Db9
+A1 | 12 | C7alt
+A1 | 13 | Cm7b5
+A1 | 14 | F7alt
+A1 | 15 | BbmMaj7
+@copy A1 A2 16
+B1 | 33 | Ebm7/Ab
+B1 | 34 | Ab7
+B1 | 35 | DbMaj7
+B1 | 36 | Bb7b9
+B1 | 37 | Eb7
+B1 | 38 | Ebm7
+B1 | 38 | Ab7
+B1 | 39 | DbMaj9
+B1 | 40 | Em7
+B1 | 40 | A7
+B2 | 41 | Ebm7/Ab
+B2 | 42 | Ab7
+B2 | 43 | DbMaj7
+B2 | 44 | Bb7b9
+B2 | 45 | Eb7
+B2 | 46 | Ebm7
+B2 | 46 | Ab7
+B2 | 47 | DbMaj9
+B2 | 48 | F7alt
+@copy A1 C 48

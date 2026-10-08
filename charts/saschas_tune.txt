@@ -1,0 +1,21 @@
+title: Sascha's Tune
+subtitle: Medium up bebop and Latin, F minor, 16 bars (Bob Montgomery)
+composer: Bob Montgomery
+style: Mixed
+key: Fm
+form: AB, 16 bars
+source: Colorado Cookbook, p. 189
+
+# section | bar | chord | scale
+A | 1  | FmMaj7
+A | 3  | C7b9
+A | 5  | FmMaj7
+A | 7  | F7b9
+B | 9  | Bbm7
+B | 10 | Eb7
+B | 11 | Abm7
+B | 12 | Db7
+B | 13 | Gbm7
+B | 14 | Cb7
+B | 15 | Gm7b5
+B | 16 | C7b9

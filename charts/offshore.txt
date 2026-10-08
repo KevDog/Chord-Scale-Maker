@@ -1,0 +1,48 @@
+title: Offshore
+subtitle: Medium, Ab, 32 bars (Booker Little)
+composer: Booker Little
+style: Medium
+key: Ab
+form: AABC, 32 bars
+source: Colorado Cookbook, p. 160
+
+# section | bar | chord | scale
+A1 | 1  | AbMaj7
+A1 | 2  | GbMaj7
+A1 | 3  | AbMaj7
+A1 | 4  | Db9#11
+A1 | 5  | GbMaj7
+A1 | 6  | E9#11
+A1 | 7  | Bbm7
+A1 | 8  | Eb7
+A2 | 9  | AbMaj7
+A2 | 10 | GbMaj7
+A2 | 11 | AbMaj7
+A2 | 12 | Db9#11
+A2 | 13 | GbMaj7
+A2 | 14 | E9#11
+A2 | 15 | Bbm7
+A2 | 15 | Eb7
+A2 | 16 | AbMaj7
+A2 | 16 | Ab7alt
+B  | 17 | Dbm
+B  | 18 | Ab7alt
+B  | 19 | Dbm7
+B  | 19 | Gb7
+B  | 20 | AbMaj7
+B  | 21 | Dbm7
+B  | 21 | Gb7
+B  | 22 | AbMaj7
+B  | 23 | Bm7
+B  | 23 | E7
+B  | 24 | Bbm7
+B  | 24 | Eb7
+C  | 25 | AbMaj7
+C  | 26 | GbMaj7
+C  | 27 | AbMaj7
+C  | 28 | Db9#11
+C  | 29 | GbMaj7
+C  | 30 | E9#11
+C  | 31 | Bbm7
+C  | 31 | Eb7
+C  | 32 | AbMaj7

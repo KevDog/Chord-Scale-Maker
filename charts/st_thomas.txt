@@ -1,0 +1,30 @@
+title: St. Thomas
+subtitle: Latin, C, 16 bars
+composer: Sonny Rollins
+style: Latin
+key: C
+form: AABC, 16 bars
+source: Colorado Cookbook, p. 65
+
+# section | bar | chord | scale
+A1 | 1  | C6/9
+A1 | 1  | F7
+A1 | 2  | Em7
+A1 | 2  | A7
+A1 | 3  | Dm7
+A1 | 3  | G7
+A1 | 4  | C6/9
+@copy A1 A2 4
+B  | 9  | Em7b5
+B  | 9  | Bb7#11
+B  | 10 | A7#9
+B  | 11 | Ab7#11
+B  | 11 | Dm7
+B  | 12 | G7
+C  | 13 | C6/9
+C  | 13 | C7/E
+C  | 14 | F
+C  | 14 | F#dim7
+C  | 15 | C/G
+C  | 15 | G7
+C  | 16 | C6/9

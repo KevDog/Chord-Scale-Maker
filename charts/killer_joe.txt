@@ -1,0 +1,27 @@
+title: Killer Joe
+subtitle: Medium, C, AABA
+composer: Benny Golson
+style: Medium
+key: C
+form: AABA
+source: Colorado Cookbook, p. 119
+
+# section | bar | chord | scale
+A1 | 1  | C7
+A1 | 2  | Bb7
+A1 | 3  | C7
+A1 | 4  | Bb7
+A1 | 5  | C7
+A1 | 6  | Bb7
+A1 | 7  | C7
+A1 | 8  | Bb7
+@copy A1 A2 8
+B  | 17 | Em7b5
+B  | 18 | A7b9
+B  | 19 | Ebm7
+B  | 20 | Ab7
+B  | 21 | A7
+B  | 22 | Ab7
+B  | 23 | Em7
+B  | 24 | A7
+@copy A1 A3 24

@@ -1,0 +1,22 @@
+title: What Is This Thing Called Love
+subtitle: Medium up, C, 32 bars
+composer: Cole Porter
+style: Medium up
+key: C
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 265
+
+# section | bar | chord | scale
+A1 | 1  | Gm7b5
+A1 | 2  | C7b9
+A1 | 3  | Fm
+A1 | 5  | Dm7b5
+A1 | 6  | G7alt
+A1 | 7  | CMaj7
+@copy A1 A2 8
+B  | 17 | Cm7
+B  | 18 | F7
+B  | 19 | BbMaj7
+B  | 21 | Ab7#11
+B  | 23 | G7alt
+@copy A1 A3 24

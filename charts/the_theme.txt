@@ -1,0 +1,36 @@
+title: The Theme
+subtitle: Medium up rhythm changes, Bb, 32 bars
+composer: Miles Davis
+style: Medium up
+key: Bb
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 240
+
+# section | bar | chord | scale
+A1 | 1  | Bb
+A1 | 2  | Cm7
+A1 | 2  | F7
+A1 | 3  | Bb
+A1 | 4  | Cm7
+A1 | 4  | F7
+A1 | 5  | Bb7
+A1 | 6  | Eb7
+A1 | 6  | Edim7
+A1 | 7  | Bb
+A1 | 8  | Cm7
+A1 | 8  | F7
+A2 | 9  | Bb
+A2 | 10 | Cm7
+A2 | 10 | F7
+A2 | 11 | Bb
+A2 | 12 | Cm7
+A2 | 12 | F7
+A2 | 13 | Bb7
+A2 | 14 | Eb7
+A2 | 14 | Edim7
+A2 | 15 | Bb
+B  | 17 | D7
+B  | 19 | G7
+B  | 21 | C7
+B  | 23 | F7
+@copy A2 A3 16

@@ -1,0 +1,44 @@
+title: Our Delight
+subtitle: Medium up, Ab, 32 bars
+composer: Tadd Dameron
+style: Medium
+key: Ab
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 171
+
+# section | bar | chord | scale
+A1 | 1  | Bb13
+A1 | 2  | Eb7alt
+A1 | 3  | AbMaj7
+A1 | 4  | F7
+A1 | 5  | Bb7
+A1 | 6  | Bbm7
+A1 | 6  | Bdim7
+A1 | 7  | Ab/C
+A1 | 7  | Bdim7
+A1 | 8  | Bbm7
+A1 | 8  | Eb13
+A1 | 8  | B7#11
+A2 | 9  | Bb13
+A2 | 10 | Eb7alt
+A2 | 11 | AbMaj7
+A2 | 12 | F7
+A2 | 13 | Bb7
+A2 | 14 | Bbm7
+A2 | 14 | Bdim7
+A2 | 15 | Ab/C
+A2 | 15 | Bdim7
+A2 | 16 | Eb7sus4
+A2 | 16 | AbMaj7
+B  | 17 | Ebm7
+B  | 18 | Ab7alt
+B  | 19 | DbMaj7
+B  | 21 | Dbm7
+B  | 21 | Gb7
+B  | 22 | Cm7
+B  | 22 | F7
+B  | 23 | Bm7
+B  | 23 | E7
+B  | 24 | Eb7
+B  | 24 | B7#11
+@copy A2 A3 16

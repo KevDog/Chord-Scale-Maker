@@ -1,0 +1,33 @@
+title: The Girl from Ipanema
+subtitle: Bossa nova, F, AABA
+composer: Antonio Carlos Jobim
+style: Latin
+key: F
+form: AABA
+source: Colorado Cookbook, p. 79
+
+# section | bar | chord | scale
+A1 | 1  | FMaj7
+A1 | 3  | G7
+A1 | 5  | Gm7
+A1 | 6  | Gb7
+A1 | 7  | FMaj7
+A1 | 8  | Gb7
+A2 | 9  | FMaj7
+A2 | 11 | G7
+A2 | 13 | Gm7
+A2 | 14 | Gb7
+A2 | 15 | FMaj7
+B  | 17 | GbMaj7
+B  | 19 | B7#11
+B  | 21 | F#m
+B  | 23 | Am7/D
+B  | 24 | D7
+B  | 25 | Gm
+B  | 27 | Bbm/Eb
+B  | 28 | Eb7
+B  | 29 | Am7
+B  | 30 | D7alt
+B  | 31 | Gm7
+B  | 32 | C7alt
+@copy A1 A3 24

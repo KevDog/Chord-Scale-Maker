@@ -1,0 +1,61 @@
+title: You'll Never Believe…
+subtitle: Medium up swing, Eb, 43 bars (Stefan Karlsson)
+composer: Stefan Karlsson
+style: Medium up
+key: Eb
+form: ABCD, 43 bars
+source: Colorado Cookbook, p. 276
+
+# section | bar | chord | scale
+A | 1  | EbMaj7
+A | 2  | A7#11
+A | 3  | AbMaj7
+A | 4  | Db7
+A | 5  | EbMaj7
+A | 6  | A7#11
+A | 7  | AbMaj7
+A | 8  | Dm7b5
+A | 8  | G7
+A | 9  | Cm7
+A | 10 | Cm7/Bb
+A | 11 | Am7
+A | 12 | Abm7
+A | 12 | Db7
+B | 13 | GbMaj7
+B | 14 | C7#11
+B | 15 | CbMaj7
+B | 16 | Fm7b5
+B | 16 | Bb7
+B | 17 | Ebm7
+B | 18 | Ebm7/Db
+B | 19 | Cm7
+B | 20 | F7
+C | 21 | BbMaj7
+C | 22 | G7
+C | 23 | Cm7
+C | 24 | Am7b5
+C | 24 | D7b9
+C | 25 | Gm7
+C | 26 | C7#11
+C | 27 | Fm7
+C | 28 | Bb7
+D | 29 | EbMaj7
+D | 30 | A7#11
+D | 31 | AbMaj7
+D | 32 | Db7
+D | 33 | EbMaj7
+D | 34 | A7#11
+D | 35 | AbMaj7
+D | 36 | Dm7b5
+D | 36 | G7
+D | 37 | Cm7
+D | 38 | Cm7/Bb
+D | 39 | Am7b5
+D | 39 | D7
+D | 40 | Abm7
+D | 40 | Db7
+D | 41 | G7
+D | 41 | C7
+D | 42 | Fm7
+D | 42 | Bb7
+D | 43 | EMaj7

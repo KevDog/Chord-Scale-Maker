@@ -1,0 +1,44 @@
+title: Softly, as in a Morning Sunrise
+subtitle: Medium, C minor, 32 bars
+composer: Sigmund Romberg
+style: Up
+key: Cm
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 206
+
+# section | bar | chord | scale
+# the horn intro is left out
+A1 | 1  | Cm
+A1 | 2  | Dm7b5
+A1 | 2  | G7b9
+A1 | 3  | Cm
+A1 | 4  | Dm7b5
+A1 | 4  | G7b9
+A1 | 5  | Cm
+A1 | 6  | Dm7b5
+A1 | 6  | G7b9
+A1 | 7  | Cm
+A1 | 8  | Dm7b5
+A1 | 8  | G7b9
+A2 | 9  | Cm
+A2 | 10 | Dm7b5
+A2 | 10 | G7b9
+A2 | 11 | Cm
+A2 | 12 | Dm7b5
+A2 | 12 | G7b9
+A2 | 13 | Cm
+A2 | 14 | Dm7b5
+A2 | 14 | G7b9
+A2 | 15 | Cm
+A2 | 16 | Fm7
+A2 | 16 | Bb7b9
+B  | 17 | EbMaj7
+B  | 18 | AbMaj7
+B  | 19 | Gm7
+B  | 20 | C7
+B  | 21 | Fm7
+B  | 22 | Am7b5
+B  | 22 | D7
+B  | 23 | Dm7b5
+B  | 24 | G7b9
+@copy A1 A3 24

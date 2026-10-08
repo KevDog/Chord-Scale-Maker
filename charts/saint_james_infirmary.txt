@@ -1,0 +1,26 @@
+title: Saint James Infirmary
+subtitle: Slow, D minor, 8 bars
+composer: Traditional
+style: Medium
+key: Dm
+form: A, 8 bars
+source: Colorado Cookbook, p. 199
+
+# section | bar | chord | scale
+A | 1 | Dm
+A | 1 | A7/E
+A | 2 | Dm/F
+A | 2 | A7/E
+A | 3 | Dm
+A | 3 | Em7b5
+A | 4 | A7
+A | 4 | Em7/B
+A | 4 | Em7b5/C
+A | 4 | A7/C#
+A | 5 | Dm
+A | 5 | A7/C#
+A | 6 | Dm/C
+A | 6 | G/B
+A | 7 | Bb7
+A | 7 | A7
+A | 8 | Dm

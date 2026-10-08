@@ -1,0 +1,18 @@
+title: Centerpiece
+subtitle: Blues, Bb, 12 bars (Keester Parade)
+composer: Harry "Sweets" Edison
+style: Blues
+key: Bb
+form: A, 12 bars
+source: Colorado Cookbook, p. 50
+
+# section | bar | chord | scale
+A | 1  | Bb7
+A | 2  | Eb7
+A | 3  | Bb7
+A | 5  | Eb7
+A | 7  | Bb7
+A | 9  | Cm7
+A | 10 | F7
+A | 11 | Bb7
+A | 12 | F7

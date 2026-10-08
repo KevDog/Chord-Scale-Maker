@@ -1,0 +1,58 @@
+title: Thinking of You
+subtitle: Medium, Eb, 32 bars
+composer: Harry Ruby
+style: Medium
+key: Eb
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 245
+
+# section | bar | chord | scale
+A1 | 1  | EbMaj7
+A1 | 2  | Am7b5
+A1 | 2  | D7b9
+A1 | 3  | Abm7
+A1 | 3  | Db7
+A1 | 4  | Gm7
+A1 | 4  | C7b9
+A1 | 5  | F#m7
+A1 | 5  | B7b9
+A1 | 6  | Fm7
+A1 | 6  | Bb7b9
+A1 | 7  | Gm7
+A1 | 7  | C7b9
+A1 | 8  | Fm7
+A1 | 8  | Bb7b9
+A2 | 9  | EbMaj7
+A2 | 10 | Am7b5
+A2 | 10 | D7b9
+A2 | 11 | Abm7
+A2 | 11 | Db7
+A2 | 12 | Gm7
+A2 | 12 | C7b9
+A2 | 13 | F#m7
+A2 | 13 | B7b9
+A2 | 14 | Fm7
+A2 | 14 | Bb7b9
+A2 | 15 | EbMaj7
+A2 | 16 | Dm7b5
+A2 | 16 | G7alt
+B  | 17 | Cm
+B  | 19 | Gm
+B  | 21 | Bbm7
+B  | 21 | Eb7
+B  | 22 | AbMaj7
+B  | 23 | Dm7b5
+B  | 23 | G7b9
+B  | 24 | Db7#11
+A3 | 25 | EbMaj7
+A3 | 26 | Am7b5
+A3 | 26 | D7b9
+A3 | 27 | Abm7
+A3 | 27 | Db7
+A3 | 28 | Gm7
+A3 | 28 | C7b9
+A3 | 29 | F#m7
+A3 | 29 | B7b9
+A3 | 30 | Fm7
+A3 | 30 | Bb7b9
+A3 | 31 | EbMaj7

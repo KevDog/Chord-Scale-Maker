@@ -1,0 +1,37 @@
+title: Baby Steps
+subtitle: Medium up, Eb, AAB
+composer: Jeff Jenkins
+style: Medium up
+key: Eb
+form: AAB
+source: Colorado Cookbook, p. 26
+
+# section | bar | chord | scale
+# the 16-bar intro (also the ending) is left out
+A1 | 1  | BMaj7
+A1 | 1  | D7
+A1 | 2  | GMaj7
+A1 | 2  | Bb7
+A1 | 3  | EbMaj7
+A1 | 4  | Am7
+A1 | 4  | D7
+A1 | 5  | GMaj7
+A1 | 5  | Bb7
+A1 | 6  | EbMaj7
+A1 | 6  | Gb7
+A1 | 7  | BMaj7
+A1 | 8  | Fm7
+A1 | 8  | Bb7
+@copy A1 A2 8
+B  | 17 | EbMaj7
+B  | 18 | Am7/D
+B  | 18 | D7
+B  | 19 | GMaj7/D
+B  | 20 | C#m7
+B  | 20 | F#7
+B  | 21 | BMaj7
+B  | 22 | Fm7
+B  | 22 | Bb7
+B  | 23 | EbMaj7
+B  | 24 | C#m7
+B  | 24 | F#7

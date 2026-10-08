@@ -36,9 +36,10 @@ describe('qualities', () => {
   })
 
   it('reads extended symbols as their base quality when the rest is only alterations', () => {
-    expect(['Maj7#11', '7sus4#9', 'Maj7#5', '-7', 'maj9', 'm7(b5)', '7(9)', 'Maj7(9)', 'm7(11)', 'm7#5#9x', '', 'x'].map(baseQuality)).toEqual([
+    expect(['Maj7#9', '7sus4#9', 'Maj7b5', '-7', 'maj9', 'm7(b5)', '7(9)', 'Maj7(9)', 'm7(11)', 'm7#5#9x', '', 'x'].map(baseQuality)).toEqual([
       'Maj7', '7sus4', 'Maj7', 'm7', 'Maj7', 'm7b5', '7', 'Maj7', 'm7', null, 'maj', null,
     ])
+    expect(['Maj7#11', 'Maj7#5', 'Δ+', 'Maj9#11'].map(baseQuality)).toEqual(['Maj7#11', 'Maj7#5', 'Maj7#5', 'Maj7#11']) // their own qualities
   })
 
   it('pairs Spanish Phrygian with dominant and sus chords, and reads sus b9 as its own chord', () => {

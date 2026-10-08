@@ -1,0 +1,49 @@
+title: On Green Dolphin Street
+subtitle: Latin / swing, C, 32 bars
+composer: Bronisław Kaper
+style: Mixed
+key: C
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 165
+
+# section | bar | chord | scale
+A | 1  | CMaj7
+A | 3  | EbMaj7
+A | 5  | DMaj7
+A | 6  | DbMaj7
+A | 7  | CMaj7
+A | 7  | F7
+A | 8  | Em7b5
+A | 8  | A7b9
+B | 9  | Dm7
+B | 10 | G7b9
+B | 11 | CMaj7
+B | 13 | Fm7
+B | 14 | Bb7b9
+B | 15 | EbMaj7
+B | 16 | Dm7
+B | 16 | G7
+C | 17 | CMaj7
+C | 19 | EbMaj7
+C | 21 | DMaj7
+C | 22 | DbMaj7
+C | 23 | CMaj7
+C | 23 | F7
+C | 24 | Em7b5
+C | 24 | A7b9
+D | 25 | Dm
+D | 25 | Dm/C
+D | 26 | Bm7b5
+D | 26 | E7b9
+D | 27 | Am
+D | 27 | Am/G
+D | 28 | F#m7b5
+D | 28 | B7
+D | 29 | Em7
+D | 29 | A7alt
+D | 30 | Dm7
+D | 30 | G7alt
+D | 31 | CMaj7
+D | 31 | A7
+D | 32 | Dm7
+D | 32 | G7

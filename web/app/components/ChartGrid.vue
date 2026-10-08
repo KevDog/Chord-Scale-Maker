@@ -60,7 +60,7 @@ import { type ChartDoc, type MetaKey, type RowField, chartMeta, insertRowAfter, 
 const props = defineProps<{ doc: ChartDoc }>()
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc] }>()
 
-const META_KEYS: readonly MetaKey[] = ['title', 'subtitle']
+const META_KEYS: readonly Extract<MetaKey, 'title' | 'subtitle'>[] = ['title', 'subtitle'] // the heading; the rest stays in the text
 const TEXT_FIELDS: readonly Exclude<RowField, 'scale'>[] = ['section', 'bar', 'chord']
 
 const meta = computed(() => chartMeta(props.doc))

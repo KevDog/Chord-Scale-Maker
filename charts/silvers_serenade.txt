@@ -1,0 +1,23 @@
+title: Silver's Serenade
+subtitle: Medium, E minor, 16 bars
+composer: Horace Silver
+style: Medium
+key: Em
+form: A, 16 bars
+source: Colorado Cookbook, p. 198
+
+# section | bar | chord | scale
+# the coda is left out
+A | 1  | Em
+A | 3  | Bbm
+A | 5  | Am
+A | 7  | Ebm
+A | 9  | Am
+A | 11 | Cm7
+A | 12 | F7
+A | 13 | BbMaj7
+A | 13 | Cm7
+A | 14 | Dm7
+A | 14 | EbMaj7
+A | 15 | Am7
+A | 16 | D7

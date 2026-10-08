@@ -1,0 +1,17 @@
+title: Bustin' Chops
+subtitle: Fast swing, G minor, the solo changes
+composer: Stefan Karlsson
+style: Up
+key: Gm
+form: A
+source: Colorado Cookbook, p. 43
+
+# section | bar | chord | scale
+# the head's pedal intro and horn line are left out; these are the solo changes
+A | 1  | Gm7
+A | 5  | Fm7
+A | 7  | Gm7
+A | 9  | Bbm9
+A | 10 | Dbm7
+A | 11 | Bb/Gb
+A | 12 | C/Db

@@ -1,0 +1,37 @@
+title: This I Dig of You
+subtitle: Medium up, Bb, 32 bars
+composer: Lee Morgan & Hank Mobley
+style: Medium up
+key: Ab
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 247
+
+# section | bar | chord | scale
+# the A sections sit over an F pedal
+A | 1  | BbMaj7
+A | 2  | Cm
+A | 3  | BbMaj7
+A | 4  | Cm
+A | 5  | BbMaj7
+A | 6  | Cm
+A | 7  | BbMaj7
+A | 8  | Fm7
+A | 8  | Bb7
+B | 9  | EbMaj7
+B | 10 | Em7b5
+B | 10 | A7alt
+B | 11 | Dm7
+B | 12 | G7
+B | 13 | Dbm7
+B | 14 | Gb7
+B | 15 | Cm7
+B | 16 | F7
+@copy A C 16
+D | 25 | EbMaj7
+D | 26 | Em7b5
+D | 26 | A7alt
+D | 27 | Dm7
+D | 28 | G7
+D | 29 | Cm7
+D | 30 | F7
+D | 31 | BbMaj7

@@ -1,0 +1,36 @@
+title: Speak No Evil
+subtitle: Medium, C minor, 50 bars (14 14 8 14)
+composer: Wayne Shorter
+style: Medium
+key: Cm
+form: AABC, 50 bars
+source: Colorado Cookbook, p. 217
+
+# section | bar | chord | scale
+A1 | 1  | Cm
+A1 | 2  | DbMaj7#11
+A1 | 3  | Cm
+A1 | 4  | DbMaj7#11
+A1 | 5  | Cm
+A1 | 6  | DbMaj7#11
+A1 | 7  | Cm
+A1 | 8  | DbMaj7#11
+A1 | 8  | Ebm
+A1 | 9  | Em
+A1 | 9  | Cm
+A1 | 10 | Dm
+A1 | 10 | Bbm
+A1 | 11 | A7#11
+A1 | 12 | Bbm
+A1 | 13 | A7#11
+A1 | 14 | Bbm
+@copy A1 A2 14
+B  | 29 | Am7b5
+B  | 30 | Ab7
+B  | 31 | Gm
+B  | 32 | Gb7
+B  | 33 | Fm
+B  | 34 | Bb7alt
+B  | 35 | D/Eb
+B  | 36 | DbMaj7#11
+@copy A1 C 36

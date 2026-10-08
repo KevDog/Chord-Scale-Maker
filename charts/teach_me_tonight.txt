@@ -1,0 +1,72 @@
+title: Teach Me Tonight
+subtitle: Slow swing, C, 33 bars (the second A has a 3-bar ending)
+composer: Gene de Paul
+style: Medium
+key: C
+form: AABA, 33 bars
+source: Colorado Cookbook, p. 233
+
+# section | bar | chord | scale
+A1 | 1  | CMaj7
+A1 | 1  | F9
+A1 | 2  | Em7
+A1 | 2  | A7
+A1 | 3  | Dm7
+A1 | 3  | G7
+A1 | 4  | Em7b5
+A1 | 4  | A7b9
+A1 | 5  | Dm7
+A1 | 6  | Dm7/G
+A1 | 6  | G7
+A1 | 7  | CMaj7
+A1 | 7  | A7
+A1 | 8  | Dm7
+A1 | 8  | G7
+A1 | 8  | G7#5
+A2 | 9  | CMaj7
+A2 | 9  | F9
+A2 | 10 | Em7
+A2 | 10 | A7
+A2 | 11 | Dm7
+A2 | 11 | G7
+A2 | 12 | Em7b5
+A2 | 12 | A7b9
+A2 | 13 | Dm7
+A2 | 14 | Dm7/G
+A2 | 14 | G7
+A2 | 15 | CMaj7
+A2 | 15 | F7
+A2 | 16 | C
+A2 | 16 | Em7
+A2 | 16 | Ebm7
+B  | 17 | Dm7
+B  | 17 | G7
+B  | 18 | CMaj7
+B  | 18 | A7b9
+B  | 19 | Dm7
+B  | 19 | G7
+B  | 20 | CMaj7
+B  | 21 | F#m7b5
+B  | 21 | B7b9
+B  | 22 | Em7
+B  | 22 | A7
+B  | 23 | Am7
+B  | 23 | D7
+B  | 24 | Dm7
+B  | 24 | G7
+B  | 24 | G7#5
+A3 | 25 | CMaj7
+A3 | 25 | F9
+A3 | 26 | Em7
+A3 | 26 | A7
+A3 | 27 | Dm7
+A3 | 27 | G7
+A3 | 28 | Em7b5
+A3 | 28 | A7b9
+A3 | 29 | Dm7
+A3 | 30 | Dm7/G
+A3 | 30 | G7
+A3 | 31 | CMaj7
+A3 | 31 | A7b9
+A3 | 32 | Dm7
+A3 | 32 | G7

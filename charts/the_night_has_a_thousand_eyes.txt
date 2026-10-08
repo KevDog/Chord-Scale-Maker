@@ -1,0 +1,49 @@
+title: The Night Has a Thousand Eyes
+subtitle: Latin and swing, G, 48 bars (A B A B C D)
+composer: Jerry Brainin
+style: Mixed
+key: G
+form: ABABCD, 48 bars
+source: Colorado Cookbook, p. 236
+
+# section | bar | chord | scale
+A1 | 1  | GMaj7/D
+A1 | 3  | D7sus4
+A1 | 5  | GMaj7/D
+A1 | 7  | D7sus4
+A1 | 8  | D7
+B1 | 9  | Dm7
+B1 | 10 | G7
+B1 | 11 | C#m7b5
+B1 | 12 | Cm6
+B1 | 13 | Bm7
+B1 | 13 | Bb7
+B1 | 14 | Am7
+B1 | 14 | D7
+B1 | 15 | GMaj7/D
+B1 | 16 | D7sus4
+@copy A1 A2 16
+B2 | 25 | Dm7
+B2 | 26 | G7
+B2 | 27 | C#m7b5
+B2 | 28 | Cm6
+B2 | 29 | Bm7
+B2 | 29 | Bb7
+B2 | 30 | Am7
+B2 | 30 | D7
+B2 | 31 | GMaj7/D
+B2 | 32 | GMaj7
+B2 | 32 | Db7
+C  | 33 | Cm7
+C  | 34 | F7
+C  | 35 | BbMaj7
+C  | 37 | Bbm7
+C  | 38 | Eb7
+C  | 39 | AbMaj7
+D  | 41 | Am7
+D  | 42 | D7sus4
+D  | 43 | GMaj7
+D  | 44 | Em7
+D  | 45 | Am7/D
+D  | 46 | D7sus4
+D  | 47 | GMaj7

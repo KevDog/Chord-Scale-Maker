@@ -1,0 +1,65 @@
+title: Whisper Not
+subtitle: Medium, C minor, 32 bars
+composer: Benny Golson
+style: Medium
+key: Cm
+form: AABC, 32 bars
+source: Colorado Cookbook, p. 269
+
+# section | bar | chord | scale
+A1 | 1  | Cm
+A1 | 1  | Cm/Bb
+A1 | 2  | Am7b5
+A1 | 2  | D7b9
+A1 | 3  | Gm
+A1 | 3  | Gm/F
+A1 | 4  | Em7b5
+A1 | 4  | A7b9
+A1 | 5  | Dm
+A1 | 5  | Bm7b5
+A1 | 6  | Em
+A1 | 6  | A7b9
+A1 | 7  | Dm
+A1 | 7  | Em
+A1 | 8  | Fm
+A1 | 8  | G7b9
+A2 | 9  | Cm
+A2 | 9  | Cm/Bb
+A2 | 10 | Am7b5
+A2 | 10 | D7b9
+A2 | 11 | Gm
+A2 | 11 | Gm/F
+A2 | 12 | Em7b5
+A2 | 12 | A7b9
+A2 | 13 | Dm
+A2 | 13 | Bm7b5
+A2 | 14 | Em
+A2 | 14 | A7b9
+A2 | 15 | Dm
+A2 | 15 | Em
+A2 | 16 | Fm
+A2 | 16 | Bb7
+B  | 17 | Am7b5
+B  | 18 | D7b9
+B  | 19 | Gm
+B  | 20 | Gm/F
+B  | 21 | Em7b5
+B  | 22 | A7b9
+B  | 23 | Dm7b5
+B  | 24 | G7b9
+C  | 25 | Cm
+C  | 25 | Cm/Bb
+C  | 26 | Am7b5
+C  | 26 | D7b9
+C  | 27 | Gm
+C  | 27 | Gm/F
+C  | 28 | Em7b5
+C  | 28 | A7b9
+C  | 29 | Dm
+C  | 29 | Bm7b5
+C  | 30 | Em
+C  | 30 | A7b9
+C  | 31 | Dm
+C  | 31 | Dm/C
+C  | 32 | Ab7
+C  | 32 | G7alt

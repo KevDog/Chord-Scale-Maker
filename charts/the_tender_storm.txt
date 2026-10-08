@@ -1,0 +1,30 @@
+title: The Tender Storm
+subtitle: Bebop, medium up, D, 20 bars
+composer: Eddie Harris
+style: Medium up
+key: D
+form: A, 20 bars
+source: Colorado Cookbook, p. 239
+
+# section | bar | chord | scale
+A | 1  | Em7
+A | 2  | Bbm7
+A | 2  | Eb7
+A | 3  | DMaj7
+A | 5  | Ebm7
+A | 5  | Ab7
+A | 6  | Dm7
+A | 7  | Abm7
+A | 7  | Db7
+A | 9  | CMaj7
+A | 11 | C#m7
+A | 11 | F#7
+A | 12 | Cm7
+A | 13 | F#m7
+A | 13 | B7
+A | 15 | BbMaj7
+A | 16 | EbMaj7
+A | 17 | Em11
+A | 18 | F9
+A | 19 | BbMaj7
+A | 20 | Eb9

@@ -1,0 +1,35 @@
+title: I Fall in Love Too Easily
+subtitle: Ballad, Eb, 16 bars
+composer: Jule Styne
+style: Ballad
+key: Eb
+form: AB, 16 bars
+source: Colorado Cookbook, p. 93
+
+# section | bar | chord | scale
+A | 1  | Fm7
+A | 1  | Bb7
+A | 2  | EbMaj7
+A | 3  | Dm7b5
+A | 3  | G7b9
+A | 4  | Cm7
+A | 5  | Dm7b5
+A | 5  | G7b9
+A | 6  | Cm7
+A | 7  | D7
+A | 8  | Ab7#11
+A | 8  | G7
+B | 9  | Am7b5
+B | 9  | D7b9
+B | 10 | G7
+B | 11 | Gm7
+B | 11 | C7
+B | 12 | Fm7
+B | 12 | C7
+B | 13 | Fm7
+B | 13 | Bb9
+B | 14 | Db7#11
+B | 14 | C7
+B | 15 | Fm7
+B | 15 | Bb13
+B | 16 | Eb6/9

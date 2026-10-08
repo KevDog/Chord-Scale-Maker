@@ -1,0 +1,46 @@
+title: Epistrophy
+subtitle: Medium, C, AABA
+composer: Thelonious Monk & Kenny Clarke
+style: Medium
+key: C
+form: ABCD
+source: Colorado Cookbook, p. 69
+
+# section | bar | chord | scale
+A | 1  | Db7
+A | 1  | D7
+A | 2  | Db7
+A | 2  | D7
+A | 3  | Db7
+A | 3  | D7
+A | 4  | Db7
+A | 4  | D7
+A | 5  | Eb7
+A | 5  | E7
+A | 6  | Eb7
+A | 6  | E7
+A | 7  | Eb7
+A | 7  | E7
+A | 8  | Eb7
+A | 8  | E7
+B | 9  | Eb7
+B | 9  | E7
+B | 10 | Eb7
+B | 10 | E7
+B | 11 | Eb7
+B | 11 | E7
+B | 12 | Eb7
+B | 12 | E7
+B | 13 | Db7
+B | 13 | D7
+B | 14 | Db7
+B | 14 | D7
+B | 15 | Db7
+B | 15 | D7
+B | 16 | Db7
+B | 16 | D7
+C | 17 | F#m6
+C | 21 | B7
+C | 23 | Db7
+C | 24 | D7
+@copy B D 16

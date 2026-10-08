@@ -1,0 +1,43 @@
+title: Somewhere Over the Rainbow
+subtitle: Ballad or samba, Eb, 32 bars
+composer: Harold Arlen
+style: Ballad
+key: Eb
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 209
+
+# section | bar | chord | scale
+A1 | 1  | Am7b5
+A1 | 1  | D7b9
+A1 | 2  | Gm7
+A1 | 2  | A7b5
+A1 | 3  | AbMaj7
+A1 | 3  | Am7b5
+A1 | 3  | D7b9
+A1 | 4  | Gm7
+A1 | 4  | C7b9
+A1 | 5  | Fm7
+A1 | 5  | Abm7
+A1 | 6  | Gm7
+A1 | 6  | C7b9
+A1 | 7  | Fm7
+A1 | 7  | Bb7b9
+A1 | 8  | EbMaj7
+A1 | 8  | Fm7
+A1 | 8  | Bb7b9
+@copy A1 A2 8
+B  | 17 | EbMaj7
+B  | 18 | Fm7
+B  | 18 | Bb7b9
+B  | 19 | Gm7
+B  | 19 | C7b9
+B  | 20 | Fm7
+B  | 20 | Bb7b9
+B  | 21 | EbMaj7
+B  | 22 | Am7b5
+B  | 22 | D7b9
+B  | 23 | Gm7
+B  | 23 | C9
+B  | 24 | Fm7
+B  | 24 | Bb7b9
+@copy A1 A3 24

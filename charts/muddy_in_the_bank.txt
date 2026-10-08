@@ -1,0 +1,50 @@
+title: Muddy in the Bank
+subtitle: Medium up, Ab, 26 bars (8 8 10)
+composer: Steve Swallow
+style: Medium up
+key: Ab
+form: ABC, 26 bars
+source: Colorado Cookbook, p. 143
+
+# section | bar | chord | scale
+A | 1  | AbMaj7
+A | 2  | Gm7b5
+A | 2  | C7alt
+A | 3  | Fm7
+A | 3  | Bb7
+A | 4  | EbMaj7
+A | 5  | Dm7b5
+A | 5  | G7alt
+A | 6  | Cm7
+A | 6  | Am7b5
+A | 7  | Ab7#11
+A | 8  | G7b9
+B | 9  | Cm
+B | 10 | Dm7b5
+B | 10 | G7alt
+B | 11 | AbMaj7#11
+B | 12 | Gm7b5
+B | 12 | C7alt
+B | 13 | Fm
+B | 13 | Fm/Eb
+B | 14 | Dm7b5
+B | 14 | G7alt
+B | 15 | Cm7
+B | 15 | Am7b5
+B | 16 | Ab7#11
+C | 17 | G7b13
+C | 18 | GbMaj7
+C | 19 | F7b13
+C | 20 | Bbm
+C | 20 | Bbm/Ab
+C | 21 | Gm7b5
+C | 21 | C7alt
+C | 22 | Fm7
+C | 22 | Bb7
+C | 23 | EbMaj7
+C | 24 | Dm7b5
+C | 24 | G7alt
+C | 25 | Cm7
+C | 25 | B7
+C | 26 | Bbm7
+C | 26 | Eb7

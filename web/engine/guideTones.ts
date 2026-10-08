@@ -18,6 +18,8 @@ const TONES: Readonly<Record<string, readonly [string, string]>> = {
   maj: ['3', '1'], // a triad has no 7th: its root resolves by step from a V7 (B -> C, F# -> G), its 5th would leap
   m: ['b3', '1'],
   Maj7: ['3', '7'],
+  'Maj7#11': ['3', '7'],
+  'Maj7#5': ['3', '7'],
   '6': ['3', '6'],
   m7: ['b3', 'b7'],
   m6: ['b3', '6'],

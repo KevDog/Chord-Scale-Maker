@@ -1,0 +1,45 @@
+title: Old Devil Moon
+subtitle: Medium, F, 32 bars
+composer: Burton Lane
+style: Medium
+key: F
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 162
+
+# section | bar | chord | scale
+# the Killer Joe style intro (F7 Eb7) is left out
+A | 1  | F7
+A | 2  | Eb7
+A | 3  | F7
+A | 4  | Eb7
+A | 5  | F7
+A | 6  | Eb7
+A | 7  | F7
+A | 8  | Cm7
+A | 8  | F7b9
+B | 9  | BbMaj7
+B | 11 | Bbm7
+B | 12 | Eb7
+B | 13 | Abm7
+B | 13 | Db7
+B | 14 | GbMaj7
+B | 14 | C7
+B | 15 | F7
+B | 16 | Eb7
+C | 17 | F7
+C | 18 | Eb7
+C | 19 | DMaj7
+C | 21 | Dm7
+C | 22 | G7
+C | 23 | Gm7
+C | 24 | C7
+D | 25 | F7
+D | 26 | Eb7
+D | 27 | F7
+D | 28 | Eb7
+D | 29 | Am7
+D | 29 | D7
+D | 30 | Gm7
+D | 30 | C7
+D | 31 | F7
+D | 32 | Eb7

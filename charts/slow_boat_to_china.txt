@@ -1,0 +1,39 @@
+title: Slow Boat to China
+subtitle: Medium, Bb, 32 bars (On a Slow Boat to China)
+composer: Frank Loesser
+style: Medium
+key: Bb
+form: ABAD, 32 bars
+source: Colorado Cookbook, p. 200
+
+# section | bar | chord | scale
+# bar 2 can also be Bdim7
+A1 | 1  | BbMaj7
+A1 | 2  | Dm7b5
+A1 | 2  | G7
+A1 | 3  | Cm7
+A1 | 4  | Dbdim7
+A1 | 5  | BbMaj7/D
+A1 | 6  | Am7b5
+A1 | 6  | D7b9
+A1 | 7  | EbMaj7
+A1 | 8  | Dm7b5
+A1 | 8  | G7
+B  | 9  | Cm7
+B  | 10 | Em7b5
+B  | 10 | A7b9
+B  | 11 | BbMaj7
+B  | 11 | Ab7#11
+B  | 12 | G7
+B  | 13 | C7
+B  | 15 | Cm7
+B  | 16 | F9
+@copy A1 A2 16
+D  | 25 | Cm7
+D  | 26 | Ab7#11
+D  | 27 | BbMaj7
+D  | 28 | Dm7b5
+D  | 28 | G7
+D  | 29 | C7
+D  | 30 | F7
+D  | 31 | BbMaj7

@@ -1,0 +1,34 @@
+title: I'll Remember April
+subtitle: Latin and swing, G, ABA, 48 bars
+composer: Gene de Paul, Patricia Johnston & Don Raye
+style: Mixed
+key: G
+form: ABA, 48 bars
+source: Colorado Cookbook, p. 100
+
+# section | bar | chord | scale
+# the standard 48-bar form; the lead sheet condenses the A sections
+A1 | 1  | GMaj7
+A1 | 5  | Gm
+A1 | 9  | Am7b5
+A1 | 10 | D7#9
+A1 | 11 | Bm7b5
+A1 | 12 | E7#9
+A1 | 13 | Am7
+A1 | 14 | D7
+A1 | 15 | GMaj7
+B  | 17 | Cm7
+B  | 18 | F7
+B  | 19 | BbMaj7
+B  | 21 | Cm7
+B  | 22 | F7
+B  | 23 | BbMaj7
+B  | 25 | Am7
+B  | 26 | D7#9
+B  | 27 | GMaj7
+B  | 29 | F#m7
+B  | 30 | B7
+B  | 31 | EMaj7
+B  | 32 | Am7
+B  | 32 | D7
+@copy A1 A2 32

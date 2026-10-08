@@ -1,0 +1,18 @@
+title: Caravan
+subtitle: Latin and swing, F minor, AABA
+composer: Juan Tizol
+style: Latin
+key: Fm
+form: AABA
+source: Colorado Cookbook, p. 48
+
+# section | bar | chord | scale
+A1 | 1  | C7b9
+A1 | 13 | Fm
+@copy A1 A2 16
+B  | 33 | F7
+B  | 37 | Bb7
+B  | 41 | Eb7
+B  | 45 | Ab7
+B  | 47 | G7#9
+@copy A1 A3 48

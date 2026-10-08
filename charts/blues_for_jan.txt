@@ -1,0 +1,17 @@
+title: Blues for Jan
+subtitle: Medium up blues, F, 12 bars
+composer: Bob Montgomery
+style: Blues
+key: F
+form: A, 12 bars
+source: Colorado Cookbook, p. 38
+
+# section | bar | chord | scale
+A | 1  | F7
+A | 2  | Bb7
+A | 3  | F7
+A | 5  | Bb7
+A | 7  | F7
+A | 9  | Gm7
+A | 10 | C7
+A | 11 | F7

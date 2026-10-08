@@ -1,0 +1,60 @@
+title: My Funny Valentine
+subtitle: Ballad, C minor, 36 bars
+composer: Richard Rodgers
+style: Ballad
+key: Cm
+form: ABCD, 36 bars
+source: Colorado Cookbook, p. 146
+
+# section | bar | chord | scale
+# the "standard" chords; the lead sheet also offers Fm F#m7 B7 Bbm7 Eb7 Dm7b5 G7b9 (bars 6–8)
+# and Am7b5 D7 Gm7 C7 F#m7 B7 (bars 14–16) as alternates
+A | 1  | Cm
+A | 2  | CmMaj7/B
+A | 3  | Cm7/Bb
+A | 4  | Am7b5
+A | 5  | AbMaj7#11
+A | 6  | Fm
+A | 7  | Dm7b5
+A | 8  | G7b9
+B | 9  | Cm
+B | 10 | CmMaj7/B
+B | 11 | Cm7/Bb
+B | 12 | Am7b5
+B | 13 | AbMaj7#11
+B | 14 | Fm
+B | 15 | Fm7b5
+B | 16 | Fm7
+B | 16 | Bb7b9
+C | 17 | EbMaj7
+C | 17 | Fm/Eb
+C | 18 | EbMaj7
+C | 18 | Fm/Eb
+C | 19 | EbMaj7
+C | 19 | Fm/Eb
+C | 20 | EbMaj7
+C | 20 | Fm/Eb
+C | 21 | EbMaj7
+C | 21 | G7alt
+C | 22 | Cm
+C | 22 | Bbm
+C | 23 | AbMaj7
+C | 24 | Dm7b5
+C | 24 | G7alt
+D | 25 | Cm
+D | 26 | CmMaj7/B
+D | 27 | Cm7/Bb
+D | 28 | Am7b5
+D | 29 | AbMaj7#11
+D | 30 | Dm7b5
+D | 30 | G7alt
+D | 31 | Cm7
+D | 31 | F7b9
+D | 32 | Bbm7
+D | 32 | Eb7b9
+D | 33 | AbMaj7
+D | 34 | Fm7
+D | 34 | Bb7
+D | 35 | EbMaj7
+D | 36 | Dm7b5
+D | 36 | G7

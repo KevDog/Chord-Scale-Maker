@@ -1,0 +1,32 @@
+title: Tee Pee Time
+subtitle: Medium, Bb, 44 bars (12 12 8 12)
+composer: Clark Terry
+style: Blues
+key: Bb
+form: AABC, 44 bars
+source: Colorado Cookbook, p. 234
+
+# section | bar | chord | scale
+A1 | 1  | Bb7
+A1 | 2  | Eb7
+A1 | 3  | Bb7
+A1 | 5  | Eb7
+A1 | 7  | Bb7
+A1 | 9  | Cm7
+A1 | 10 | F7
+A1 | 11 | Bb7
+A1 | 12 | Cm7
+A1 | 12 | F7
+A2 | 13 | Bb7
+A2 | 14 | Eb7
+A2 | 15 | Bb7
+A2 | 17 | Eb7
+A2 | 19 | Bb7
+A2 | 21 | Cm7
+A2 | 22 | F7
+A2 | 23 | Bb7
+B  | 25 | D7
+B  | 27 | G7
+B  | 29 | C7
+B  | 31 | F7
+@copy A1 C 32

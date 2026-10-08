@@ -1,0 +1,44 @@
+title: Don't Get Around Much Anymore
+subtitle: Medium, C, AABA
+composer: Duke Ellington
+style: Medium
+key: C
+form: AABA
+source: Colorado Cookbook, p. 64
+
+# section | bar | chord | scale
+# the standard changes; the sheet's alternate turnarounds are left out
+A1 | 1  | CMaj7
+A1 | 3  | CMaj7
+A1 | 3  | Bb7
+A1 | 4  | A7
+A1 | 5  | Dm7
+A1 | 6  | G7
+A1 | 7  | CMaj7
+A1 | 8  | G7
+A2 | 9  | CMaj7
+A2 | 11 | CMaj7
+A2 | 11 | Bb7
+A2 | 12 | A7
+A2 | 13 | Dm7
+A2 | 14 | G7
+A2 | 15 | CMaj7
+A2 | 16 | C7
+B  | 17 | FMaj7
+B  | 18 | Bb7
+B  | 19 | CMaj7
+B  | 20 | C7
+B  | 21 | FMaj7
+B  | 22 | F#m7b5
+B  | 22 | B7
+B  | 23 | Em7
+B  | 23 | Ebdim7
+B  | 24 | Dm7
+B  | 24 | G7
+A3 | 25 | CMaj7
+A3 | 27 | CMaj7
+A3 | 27 | Bb7
+A3 | 28 | A7
+A3 | 29 | Dm7
+A3 | 30 | G7
+A3 | 31 | CMaj7

@@ -1,0 +1,25 @@
+title: Dance of the Infidels
+subtitle: Fast, F, the 12-bar solo form
+composer: Bud Powell
+style: Medium up
+key: F
+form: A
+source: Colorado Cookbook, p. 58
+
+# section | bar | chord | scale
+# the intro, piano vamp and tag are left out; solos are on this 12-bar A section
+A | 1  | FMaj7
+A | 2  | Bbm7
+A | 2  | Eb7
+A | 3  | Am
+A | 3  | Gm
+A | 4  | F#m7
+A | 4  | B7
+A | 5  | Fm7
+A | 6  | Bb7
+A | 7  | Am
+A | 8  | Abm
+A | 9  | Gm
+A | 10 | Dbm7
+A | 10 | Gb7
+A | 11 | FMaj7

@@ -1,0 +1,29 @@
+title: Naima
+subtitle: Ballad, Ab, 20 bars
+composer: John Coltrane
+style: Ballad
+key: Ab
+form: AABC, 20 bars
+source: Colorado Cookbook, p. 151
+
+# section | bar | chord | scale
+# the A and C sections sit over an Eb bass pedal, the bridge over Bb; the coda is left out
+A1 | 1  | Bbm
+A1 | 2  | Ebm
+A1 | 3  | B7#11
+A1 | 3  | A7#11
+A1 | 4  | AbMaj7
+@copy A1 A2 4
+B  | 9  | BMaj7
+B  | 10 | Bb7alt
+B  | 11 | BMaj7
+B  | 12 | Bb7b9
+B  | 13 | E7#11
+B  | 14 | BMaj7
+B  | 15 | Fm
+B  | 16 | Gb7#11
+C  | 17 | Bbm
+C  | 18 | Ebm
+C  | 19 | B7#11
+C  | 19 | A7#11
+C  | 20 | AbMaj7

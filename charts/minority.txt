@@ -1,0 +1,25 @@
+title: Minority
+subtitle: Medium up, F minor, 16 bars
+composer: Gigi Gryce
+style: Medium up
+key: Fm
+form: A, 16 bars
+source: Colorado Cookbook, p. 134
+
+# section | bar | chord | scale
+A | 1  | Fm
+A | 2  | Dm7b5
+A | 3  | Gm7
+A | 4  | C7b9
+A | 5  | Fm
+A | 6  | Dm7b5
+A | 7  | Cm7
+A | 8  | F7
+A | 9  | Bbm7
+A | 10 | Eb7
+A | 11 | Abm7
+A | 12 | Db7
+A | 13 | Gbm7
+A | 14 | Cb7
+A | 15 | Gm7
+A | 16 | C7

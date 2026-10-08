@@ -1,0 +1,76 @@
+title: The Things We Did Last Summer
+subtitle: Medium, F, 32 bars
+composer: Jule Styne
+style: Ballad
+key: F
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 241
+
+# section | bar | chord | scale
+A1 | 1  | FMaj7
+A1 | 1  | D7
+A1 | 2  | Gm7
+A1 | 2  | C7
+A1 | 3  | Am7
+A1 | 3  | BbMaj7
+A1 | 4  | Am7b5
+A1 | 4  | D7
+A1 | 5  | Gm7
+A1 | 5  | Eb7#11
+A1 | 6  | Am
+A1 | 6  | Abm
+A1 | 7  | Gm7
+A1 | 7  | C7
+A1 | 8  | Am7
+A1 | 8  | D7
+A1 | 8  | Gm7
+A1 | 8  | C7
+A2 | 9  | FMaj7
+A2 | 9  | D7
+A2 | 10 | Gm7
+A2 | 10 | C7
+A2 | 11 | Am7
+A2 | 11 | BbMaj7
+A2 | 12 | Am7b5
+A2 | 12 | D7
+A2 | 13 | Gm7
+A2 | 13 | Eb7#11
+A2 | 14 | Am
+A2 | 14 | Abm
+A2 | 15 | Gm7
+A2 | 15 | C7
+A2 | 16 | FMaj7
+A2 | 16 | Dm7
+A2 | 16 | Dbm
+B  | 17 | Cm7
+B  | 17 | F7
+B  | 18 | Cm7
+B  | 18 | F7
+B  | 19 | BbMaj7
+B  | 19 | Eb7#11
+B  | 20 | BbMaj7
+B  | 20 | Em7b5
+B  | 20 | A7
+B  | 21 | Dm7
+B  | 21 | G7
+B  | 22 | Dm7
+B  | 22 | G7
+B  | 23 | Gm/C
+B  | 23 | Abm/Db
+B  | 24 | Gm7
+B  | 24 | C7
+A3 | 25 | FMaj7
+A3 | 25 | D7
+A3 | 26 | Gm7
+A3 | 26 | C7
+A3 | 27 | Am7
+A3 | 27 | BbMaj7
+A3 | 28 | Am7b5
+A3 | 28 | D7
+A3 | 29 | Gm7
+A3 | 29 | Eb7#11
+A3 | 30 | Am
+A3 | 30 | Abm
+A3 | 31 | Gm7
+A3 | 31 | C7
+A3 | 32 | FMaj7

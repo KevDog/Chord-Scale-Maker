@@ -1,0 +1,67 @@
+title: In a Sentimental Mood
+subtitle: Ballad, F, AABA
+composer: Duke Ellington
+style: Ballad
+key: F
+form: AABC
+source: Colorado Cookbook, p. 108
+
+# section | bar | chord | scale
+A1 | 1  | Dm
+A1 | 1  | DmMaj7
+A1 | 2  | Dm7
+A1 | 2  | G7
+A1 | 3  | Gm
+A1 | 3  | GmMaj7
+A1 | 4  | Gm7
+A1 | 4  | C7
+A1 | 5  | Dm7
+A1 | 6  | Am7
+A1 | 6  | D7
+A1 | 7  | Gm7
+A1 | 7  | C7
+A1 | 8  | FMaj9
+A2 | 9  | Dm
+A2 | 9  | DmMaj7
+A2 | 10 | Dm7
+A2 | 10 | G7
+A2 | 11 | Gm
+A2 | 11 | GmMaj7
+A2 | 12 | Gm7
+A2 | 12 | C7
+A2 | 13 | Dm7
+A2 | 14 | Am7
+A2 | 14 | D7
+A2 | 15 | Gm7
+A2 | 15 | C7
+A2 | 16 | FMaj7
+A2 | 16 | Ebm7
+A2 | 16 | Ab7
+B  | 17 | DbMaj7
+B  | 17 | Bbm7
+B  | 18 | Ebm7
+B  | 18 | Ab7
+B  | 19 | DbMaj7
+B  | 19 | Bb7
+B  | 20 | Eb7
+B  | 20 | Ab7
+B  | 21 | DbMaj7
+B  | 21 | Bbm7
+B  | 22 | Ebm7
+B  | 22 | Ab7
+B  | 23 | Gm7
+B  | 23 | C7
+C  | 25 | Bm7b5
+C  | 25 | Bb13
+C  | 26 | Am7
+C  | 26 | Abdim7
+C  | 27 | Gm
+C  | 27 | GmMaj7
+C  | 28 | Gm7
+C  | 28 | C7
+C  | 29 | Dm7
+C  | 30 | Am7
+C  | 30 | D7
+C  | 31 | Gm7
+C  | 31 | C7
+C  | 32 | F6/9

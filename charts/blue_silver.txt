@@ -1,0 +1,27 @@
+title: Blue Silver
+subtitle: Medium up, Bb, 20 bars
+composer: Blue Mitchell
+style: Medium up
+key: Bb
+form: A, 20 bars
+source: Colorado Cookbook, p. 37
+
+# section | bar | chord | scale
+A | 1  | Am7b5
+A | 2  | D7
+A | 3  | Gm7
+A | 4  | C7
+A | 5  | BMaj7
+A | 6  | Cm7b5
+A | 6  | F7
+A | 7  | BbMaj7
+A | 9  | Bm7
+A | 10 | E7
+A | 11 | AMaj7
+A | 12 | F#m7
+A | 13 | Ebm7b5
+A | 14 | Ab7b9
+A | 15 | DbMaj7
+A | 17 | Cm7b5
+A | 18 | F7alt
+A | 19 | BbMaj7

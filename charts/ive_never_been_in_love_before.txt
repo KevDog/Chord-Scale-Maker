@@ -1,0 +1,48 @@
+title: I've Never Been in Love Before
+subtitle: Medium, Bb, AABA
+composer: Frank Loesser
+style: Medium
+key: Bb
+form: AABA
+source: Colorado Cookbook, p. 105
+
+# section | bar | chord | scale
+A1 | 1  | BbMaj7
+A1 | 1  | Gm7
+A1 | 2  | Cm7
+A1 | 2  | F7
+A1 | 3  | BbMaj7
+A1 | 3  | Eb7
+A1 | 4  | Dm7
+A1 | 4  | G7b9
+A1 | 5  | Cm7
+A1 | 6  | F7
+A1 | 7  | BbMaj7
+A1 | 8  | Cm7
+A1 | 8  | F7
+A2 | 9  | BbMaj7
+A2 | 9  | Gm7
+A2 | 10 | Cm7
+A2 | 10 | F7
+A2 | 11 | BbMaj7
+A2 | 11 | Eb7
+A2 | 12 | Dm7
+A2 | 12 | G7b9
+A2 | 13 | Cm7
+A2 | 14 | F7
+A2 | 15 | BbMaj7
+A2 | 16 | Fm7
+A2 | 16 | Bb7b9
+B  | 17 | EbMaj7
+B  | 18 | Cm7
+B  | 18 | F7
+B  | 19 | BbMaj7
+B  | 20 | Am7
+B  | 20 | D7
+B  | 21 | Gm7
+B  | 22 | Em7b5
+B  | 22 | A7b9
+B  | 23 | DMaj7
+B  | 24 | Cm7
+B  | 24 | F7
+@copy A1 A3 24

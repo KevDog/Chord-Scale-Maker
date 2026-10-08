@@ -1,0 +1,12 @@
+title: Blues Minor
+subtitle: Modal minor blues, F minor, 12 bars
+composer: John Coltrane
+style: Medium up
+key: Fm
+form: A, 12 bars
+source: Colorado Cookbook, p. 278
+
+# section | bar | chord | scale
+A | 1 | Fm
+A | 5 | Bbm
+A | 9 | Fm

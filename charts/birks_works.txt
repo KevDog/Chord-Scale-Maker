@@ -1,0 +1,17 @@
+title: Birk's Works
+subtitle: Minor blues, F minor, 12 bars
+composer: Dizzy Gillespie
+style: Blues
+key: Fm
+form: A, 12 bars
+source: Colorado Cookbook, p. 35
+
+# section | bar | chord | scale
+A | 1  | Fm
+A | 6  | Db7
+A | 8  | Fm
+A | 9  | Abm7
+A | 9  | Db7
+A | 10 | Gm7
+A | 10 | C7
+A | 11 | Fm

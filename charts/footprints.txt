@@ -1,12 +1,16 @@
 title: Footprints
 subtitle: 12-Bar Minor Blues in 6/4, Real Book Turnaround
+composer: Wayne Shorter
+style: Blues
+key: Cm
+form: A
 
 # section | bar | chord   | scale
-A | 1  | Cm7      | C Dorian
-A | 5  | Fm7      | F Dorian
-A | 7  | Cm7      | C Dorian
-A | 9  | F#m7b5   | F# Locrian ♮2
-A | 9  | F13#11   | F Lydian Dominant
-A | 10 | E7alt    | E Altered
-A | 10 | A7alt    | A Altered
-A | 11 | Cm7      | C Dorian
+A | 1  | Cm7    | C Dorian
+A | 5  | Fm7    | F Dorian
+A | 7  | Cm7    | C Dorian
+A | 9  | F#m7b5 | F# Locrian ♮2
+A | 9  | F13#11 | F Lydian Dominant
+A | 10 | E7alt  | E Altered
+A | 10 | A7alt  | A Altered
+A | 11 | Cm7    | C Dorian

@@ -1,0 +1,40 @@
+title: Jive at Five
+subtitle: Medium, Eb, AABA
+composer: Harry "Sweets" Edison & Count Basie
+style: Medium
+key: Eb
+form: AABA
+source: Colorado Cookbook, p. 114
+
+# section | bar | chord | scale
+A1 | 1  | EbMaj7
+A1 | 1  | Cm7
+A1 | 2  | Fm7
+A1 | 2  | Bb7
+A1 | 3  | EbMaj7
+A1 | 3  | Cm7
+A1 | 4  | Fm7
+A1 | 4  | Bb7
+A1 | 5  | Eb7
+A1 | 5  | D7
+A1 | 6  | Db7
+A1 | 6  | C7
+A1 | 7  | B7
+A1 | 7  | Bb7
+A1 | 8  | EbMaj7
+@copy A1 A2 8
+B  | 17 | EbMaj7
+B  | 17 | Cdim7
+B  | 18 | Fm7
+B  | 18 | Eb6
+B  | 19 | EbMaj7
+B  | 19 | Cdim7
+B  | 20 | Fm7
+B  | 20 | Eb6
+B  | 21 | EbMaj7
+B  | 21 | Cdim7
+B  | 22 | Fm7
+B  | 22 | Eb6
+B  | 23 | F9
+B  | 24 | Bb7#5
+@copy A1 A3 24

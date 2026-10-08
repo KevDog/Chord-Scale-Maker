@@ -1,0 +1,60 @@
+title: Star Eyes
+subtitle: Latin, Eb, 36 bars
+composer: Gene de Paul
+style: Latin
+key: Eb
+form: AABC, 36 bars
+source: Colorado Cookbook, p. 220
+
+# section | bar | chord | scale
+# the vamp intro and coda are left out
+A1 | 1  | EbMaj7
+A1 | 2  | Fm7
+A1 | 2  | Bb7
+A1 | 3  | EbMaj7
+A1 | 4  | Ebm7
+A1 | 4  | Ab7
+A1 | 5  | DbMaj7
+A1 | 6  | Gm7b5
+A1 | 6  | C7alt
+A1 | 7  | FMaj7
+A1 | 8  | Fm7b5
+A1 | 8  | Bb7
+A2 | 9  | EbMaj7
+A2 | 10 | Fm7
+A2 | 10 | Bb7
+A2 | 11 | EbMaj7
+A2 | 12 | Ebm7
+A2 | 12 | Ab7
+A2 | 13 | DbMaj7
+A2 | 14 | Gm7b5
+A2 | 14 | C7alt
+A2 | 15 | FMaj7
+A2 | 16 | Fm7b5
+A2 | 16 | Bb7
+A2 | 16 | A7
+B  | 17 | AbMaj7
+B  | 19 | Abm7
+B  | 19 | Db7
+B  | 20 | GbMaj7
+B  | 22 | Fm7
+B  | 24 | Bb7
+C  | 25 | EbMaj7
+C  | 26 | Fm7
+C  | 26 | Bb7
+C  | 27 | EbMaj7
+C  | 28 | Ebm7
+C  | 28 | Ab7
+C  | 29 | DbMaj7
+C  | 30 | Gm7b5
+C  | 30 | C7alt
+C  | 31 | FMaj7
+C  | 32 | Fm7b5
+C  | 32 | Bb7
+C  | 33 | Eb7
+C  | 33 | D7
+C  | 34 | Db7
+C  | 34 | C7b9
+C  | 35 | Fm7
+C  | 35 | Fm7/Bb
+C  | 36 | EbMaj7

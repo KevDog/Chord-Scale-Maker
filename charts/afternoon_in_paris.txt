@@ -1,0 +1,42 @@
+title: Afternoon in Paris
+subtitle: Medium, C, 32 bars
+composer: John Lewis
+style: Medium
+key: C
+form: AABC, 32 bars
+source: Colorado Cookbook, p. 14
+
+# section | bar | chord | scale
+# the bridge's standard chords; the sheet's alternates (Fm7 Bb7, Em7 A7, Dbm7 Gb7) are left out
+A1 | 1  | CMaj7
+A1 | 2  | Cm7
+A1 | 2  | F7
+A1 | 3  | BbMaj7
+A1 | 4  | Bbm7
+A1 | 4  | Eb7
+A1 | 5  | AbMaj7
+A1 | 6  | Dm7b5
+A1 | 6  | G7b9
+A1 | 7  | CMaj7
+A1 | 7  | Am7
+A1 | 8  | Dm7
+A1 | 8  | G7
+A2 | 9  | CMaj7
+A2 | 10 | Cm7
+A2 | 10 | F7
+A2 | 11 | BbMaj7
+A2 | 12 | Bbm7
+A2 | 12 | Eb7
+A2 | 13 | AbMaj7
+A2 | 14 | Dm7b5
+A2 | 14 | G7b9
+A2 | 15 | CMaj7
+B  | 17 | Dm7
+B  | 18 | G7
+B  | 19 | CMaj7
+B  | 20 | Am7
+B  | 21 | Dm7
+B  | 22 | G7
+B  | 23 | Dm7
+B  | 24 | G7
+@copy A1 C 24

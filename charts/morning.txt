@@ -1,0 +1,65 @@
+title: Morning
+subtitle: Latin, A minor, 32 bars
+composer: Clare Fischer
+style: Latin
+key: Am
+form: AABC, 32 bars
+source: Colorado Cookbook, p. 140
+
+# section | bar | chord | scale
+A1 | 1  | Bm7
+A1 | 1  | E7
+A1 | 2  | Am7
+A1 | 2  | D7
+A1 | 3  | Bm7
+A1 | 3  | E7
+A1 | 4  | Am7
+A1 | 4  | D7
+A1 | 5  | Dm7
+A1 | 5  | G7
+A1 | 6  | Em7
+A1 | 6  | A7
+A1 | 7  | Bm7
+A1 | 7  | E7
+A1 | 8  | Am7
+A1 | 8  | D7
+A2 | 9  | Bm7
+A2 | 9  | E7
+A2 | 10 | Am7
+A2 | 10 | D7
+A2 | 11 | Bm7
+A2 | 11 | E7
+A2 | 12 | Am7
+A2 | 12 | D7
+A2 | 13 | Dm7
+A2 | 13 | G7
+A2 | 14 | Em7
+A2 | 14 | A7
+A2 | 15 | Bm7
+A2 | 15 | E7
+A2 | 16 | Am
+B  | 17 | Dm7
+B  | 18 | G7sus4
+B  | 19 | C6
+B  | 19 | F7
+B  | 20 | Em7
+B  | 20 | A7alt
+B  | 21 | Dm7
+B  | 22 | G7sus4
+B  | 23 | Bm7b5
+B  | 24 | E7
+C  | 25 | Bm7
+C  | 25 | E7
+C  | 26 | Am7
+C  | 26 | D7
+C  | 27 | Bm7
+C  | 27 | E7
+C  | 28 | Am7
+C  | 28 | D7
+C  | 29 | Dm7
+C  | 29 | G7
+C  | 30 | Em7
+C  | 30 | A7
+C  | 31 | Bm7
+C  | 31 | E7
+C  | 32 | Am

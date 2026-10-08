@@ -1,5 +1,9 @@
 title: Stella by Starlight
 subtitle: 32 Bars, Bb
+composer: Victor Young
+style: Medium up
+key: Bb
+form: ABCD
 
 # section | bar | chord | scale
 A | 1  | Em7b5  | E Locrian

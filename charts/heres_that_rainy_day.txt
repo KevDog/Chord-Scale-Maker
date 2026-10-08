@@ -1,0 +1,41 @@
+title: Here's That Rainy Day
+subtitle: Bossa nova, G, 32 bars
+composer: Jimmy Van Heusen
+style: Ballad
+key: G
+form: ABCD, 32 bars
+source: Colorado Cookbook, p. 86
+
+# section | bar | chord | scale
+A | 1  | GMaj7
+A | 1  | Gb7alt
+A | 2  | Fm7
+A | 2  | Bb7
+A | 3  | EbMaj7
+A | 4  | AbMaj7
+A | 5  | Am7
+A | 6  | D7
+A | 7  | GMaj7
+A | 8  | Dm7
+A | 8  | G7
+B | 9  | Cm7
+B | 10 | F7
+B | 11 | BbMaj7
+B | 12 | EbMaj7
+B | 13 | Am7
+B | 14 | D7
+B | 15 | GMaj7
+B | 16 | Am7
+B | 16 | D7
+@copy A C 16
+D | 25 | CMaj7
+D | 26 | Am7
+D | 26 | D7
+D | 27 | Bm7
+D | 27 | Em7
+D | 28 | A7#11
+D | 28 | Bbdim7
+D | 29 | Am7
+D | 30 | D7
+D | 31 | EbMaj7
+D | 32 | AbMaj7

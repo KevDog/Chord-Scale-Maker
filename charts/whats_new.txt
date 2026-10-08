@@ -1,0 +1,58 @@
+title: What's New
+subtitle: Ballad, C, 32 bars
+composer: Bob Haggart
+style: Ballad
+key: C
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 266
+
+# section | bar | chord | scale
+A1 | 1  | CMaj7
+A1 | 1  | F13
+A1 | 2  | Bbm9
+A1 | 2  | Eb7
+A1 | 3  | AbMaj7
+A1 | 3  | DbMaj7
+A1 | 4  | Dm7b5
+A1 | 4  | G7#11
+A1 | 5  | Cm
+A1 | 5  | Am7b5
+A1 | 6  | Dm7b5
+A1 | 6  | G7alt
+A1 | 7  | CMaj7
+A1 | 7  | Am7
+A1 | 8  | Dm7
+A1 | 8  | G7b9
+A2 | 9  | CMaj7
+A2 | 9  | F13
+A2 | 10 | Bbm9
+A2 | 10 | Eb7
+A2 | 11 | AbMaj7
+A2 | 11 | DbMaj7
+A2 | 12 | Dm7b5
+A2 | 12 | G7#11
+A2 | 13 | Cm
+A2 | 13 | Am7b5
+A2 | 14 | Dm7b5
+A2 | 14 | G7alt
+A2 | 15 | CMaj7
+A2 | 15 | Am7
+A2 | 16 | Gm7
+A2 | 16 | C7b9
+B  | 17 | FMaj7
+B  | 17 | Bb13
+B  | 18 | Ebm9
+B  | 18 | Ab7
+B  | 19 | DbMaj7
+B  | 19 | GbMaj7
+B  | 20 | Gm7b5
+B  | 20 | C7alt
+B  | 21 | Fm
+B  | 21 | Dm7b5
+B  | 22 | Gm7b5
+B  | 22 | C7alt
+B  | 23 | FMaj7
+B  | 23 | F6
+B  | 24 | Dm7b5
+B  | 24 | G7alt
+@copy A1 A3 24

@@ -1,0 +1,38 @@
+title: Voyage
+subtitle: Medium up, F minor, 32 bars
+composer: Kenny Barron
+style: Medium up
+key: Ab
+form: AABA, 32 bars
+source: Colorado Cookbook, p. 254
+
+# section | bar | chord | scale
+A1 | 1  | Fm6/9
+A1 | 3  | Gbm6/9
+A1 | 4  | F7b9
+A1 | 5  | Bbm7
+A1 | 6  | Gm7b5
+A1 | 6  | C7
+A1 | 7  | Fm6/9
+A1 | 8  | Gm7b5
+A1 | 8  | C7
+A2 | 9  | Fm6/9
+A2 | 11 | Gbm6/9
+A2 | 12 | F7b9
+A2 | 13 | Bbm7
+A2 | 14 | Gm7b5
+A2 | 14 | C7
+A2 | 15 | Fm6/9
+B  | 17 | DbMaj7
+B  | 18 | Em7
+B  | 18 | A7
+B  | 19 | DMaj7
+B  | 20 | Fm7
+B  | 20 | Bb7
+B  | 21 | EbMaj7
+B  | 22 | F#m7
+B  | 22 | B7
+B  | 23 | EMaj7
+B  | 24 | Gm7b5
+B  | 24 | C7
+@copy A1 A3 24

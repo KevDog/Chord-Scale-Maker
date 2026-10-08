@@ -1,0 +1,17 @@
+title: Work Song
+subtitle: Medium, F minor, 16 bars
+composer: Nat Adderley
+style: Medium
+key: Fm
+form: A, 16 bars
+source: Colorado Cookbook, p. 260
+
+# section | bar | chord | scale
+A | 1  | Fm
+A | 7  | C7
+A | 9  | Fm
+A | 13 | F7
+A | 14 | Bb7
+A | 15 | Db7
+A | 15 | C7
+A | 16 | Fm

@@ -1,0 +1,40 @@
+title: I'll Close My Eyes
+subtitle: Medium, F, 32 bars
+composer: Billy Reid
+style: Medium
+key: F
+form: AA, 32 bars
+source: Colorado Cookbook, p. 99
+
+# section | bar | chord | scale
+A1 | 1  | FMaj7
+A1 | 3  | Em7
+A1 | 4  | A7
+A1 | 5  | Dm7
+A1 | 6  | G7
+A1 | 7  | Cm7
+A1 | 8  | F7
+A1 | 9  | BbMaj7
+A1 | 10 | Eb7
+A1 | 11 | FMaj7
+A1 | 13 | Bm7b5
+A1 | 14 | E7b9
+A1 | 15 | Am7
+A1 | 15 | Abdim7
+A1 | 16 | Gm7
+A1 | 16 | Gb7/C
+A2 | 17 | FMaj7
+A2 | 19 | Em7
+A2 | 20 | A7
+A2 | 21 | Dm7
+A2 | 22 | G7
+A2 | 23 | Cm7
+A2 | 24 | F7
+A2 | 25 | BbMaj7
+A2 | 26 | Eb7
+A2 | 27 | Am7b5
+A2 | 28 | D7b9
+A2 | 29 | G7
+A2 | 30 | Gm7
+A2 | 30 | C7
+A2 | 31 | F6/9

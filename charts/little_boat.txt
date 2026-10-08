@@ -1,0 +1,22 @@
+title: Little Boat
+subtitle: Bossa nova, Bb, 16 bars (O Barquinho)
+composer: Roberto Menescal
+style: Latin
+key: Bb
+form: A, 16 bars
+source: Colorado Cookbook, p. 120
+
+# section | bar | chord | scale
+A | 1  | BbMaj7
+A | 3  | Em7
+A | 4  | A7
+A | 5  | AbMaj7
+A | 7  | Dm7
+A | 8  | G7
+A | 9  | GbMaj7
+A | 11 | Cm7
+A | 12 | F7
+A | 13 | Dm7
+A | 14 | G7b9
+A | 15 | Cm7
+A | 16 | F7b9
