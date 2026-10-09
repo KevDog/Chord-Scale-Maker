@@ -123,3 +123,34 @@ describe('chart', () => {
     expect(parseChart('time: 6/8\nA | 1 | C').diagnostics.map((d) => d.message)).toEqual(['time: 2/4, 3/4 or 4/4'])
   })
 })
+
+describe('navigation directives', () => {
+  const round = (text: string): string => serializeChart(parseChart(text).value)
+
+  it('parses @ending with an explicit and a defaulted last bar', () => {
+    const lines = parseChart('@ending 1 Intro 7 8\n@ending 2 Intro 9\n').value.lines
+    expect(lines[0]).toEqual({ kind: 'ending', n: 1, section: 'Intro', from: 7, to: 8 })
+    expect(lines[1]).toEqual({ kind: 'ending', n: 2, section: 'Intro', from: 9, to: 9 })
+  })
+
+  it('parses @segno, @coda and @nav', () => {
+    const lines = parseChart('@segno A 1\n@coda Coda 1\n@nav D 8 D.S. al Coda\n').value.lines
+    expect(lines[0]).toEqual({ kind: 'mark', mark: 'segno', section: 'A', bar: 1 })
+    expect(lines[1]).toEqual({ kind: 'mark', mark: 'coda', section: 'Coda', bar: 1 })
+    expect(lines[2]).toEqual({ kind: 'nav', section: 'D', bar: 8, text: 'D.S. al Coda' })
+  })
+
+  it('round-trips every directive (one-bar ending drops its LAST)', () => {
+    const text = '@ending 1 Intro 7 8\n@ending 2 Intro 9\n@segno A 1\n@coda Coda 1\n@nav D 8 D.S. al Coda\n'
+    expect(round(text)).toBe(text)
+  })
+
+  it('rejects malformed directives as invalid lines, kept verbatim', () => {
+    for (const bad of ['@ending 3 A 1 2', '@ending 1 A x', '@segno A', '@coda A 1 extra', '@nav A 8']) {
+      const { value, diagnostics } = parseChart(bad + '\n')
+      expect(value.lines[0]).toEqual({ kind: 'invalid', text: bad })
+      expect(diagnostics.length).toBe(1)
+      expect(serializeChart(value)).toBe(bad + '\n')
+    }
+  })
+})

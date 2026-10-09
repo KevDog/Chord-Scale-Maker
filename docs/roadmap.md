@@ -3,12 +3,13 @@
 Ideas agreed in principle but not scheduled, and work in progress. Each gets a plan or a PR of its own when it's
 picked up.
 
-## Next for the Changes sheet
-
-The sheet is live ([plan-changes.md](plan-changes.md)). Still to come: 1st and 2nd endings, D.C./segno navigation and
-coda symbols.
-
 ## Done
+
+### The Changes sheet
+
+Feature-complete ([plan-changes.md](plan-changes.md)). 1st/2nd endings, D.C./segno navigation and coda symbols are
+done via the `@ending`/`@segno`/`@coda`/`@nav` directives
+([spec](superpowers/specs/2026-10-09-changes-navigation-design.md)).
 
 ### The cookbook's intros and codas
 

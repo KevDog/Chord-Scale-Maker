@@ -13,7 +13,9 @@ chord takes its scale.
    each with its own toggle (both on); a key-area label wherever the key changes ("B♭ major"). The analysis's
    reasons stay in the chart text.
 3. **Repeats:** a `@copy` straight after its source section prints as repeat signs; a later one (A3 after a
-   bridge) is written out, labelled "A3 (= A1)". 1st and 2nd endings, and D.C./segno navigation, come later.
+   bridge) is written out, labelled "A3 (= A1)". 1st and 2nd endings, D.C./segno navigation and coda symbols are
+   now done via the `@ending`/`@segno`/`@coda`/`@nav` directives — see
+   docs/superpowers/specs/2026-10-09-changes-navigation-design.md.
 4. **Metre:** the chart's `time:` line (2/4, 3/4, 4/4) sets the slashes a bar.
 5. **Intros and codas:** an intro prints before the form; a coda, tag or ending after it. A coda or ending is
    headed "… (after the last chorus)"; a tag isn't, since a tag can be an interlude after the head (A Night in
