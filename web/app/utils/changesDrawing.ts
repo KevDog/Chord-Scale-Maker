@@ -8,7 +8,8 @@ import { fitSvg, headCentre, STAVE_Y, svgContext, type VexFlowModule } from './v
 
 const TIME_SPACE = 40 // the first line also holds the time signature
 const BAR_UNITS = 300 // drawing width per bar, as the guide tone sheet uses
-const BAND = { top: 74, bottom: 126 } // just the staff (lines at 80-120): slashes sit on the middle line
+const VOLTA_Y = 0 // shift for the 1st/2nd-ending bracket, above the staff (at getYForTopText)
+const BAND = { top: 44, bottom: 126 } // the volta bracket (~48) then the staff (lines at 80-120)
 
 /** per bar, each beat's slash centre as a fraction of the width */
 export type ChangesLayout = Readonly<{ xs: readonly (readonly number[])[] }>
@@ -33,6 +34,10 @@ export function drawChangesLine(
     if (bar.repeatEnd) stave.setEndBarType(vf.BarlineType.REPEAT_END)
     else if (bar.end === 'final') stave.setEndBarType(vf.BarlineType.END)
     else if (bar.end === 'double') stave.setEndBarType(vf.BarlineType.DOUBLE)
+    if (bar.volta) {
+      const t = bar.volta.start && bar.volta.end ? vf.Volta.type.BEGIN_END : bar.volta.start ? vf.Volta.type.BEGIN : bar.volta.end ? vf.Volta.type.END : vf.Volta.type.MID
+      stave.setVoltaType(t, bar.volta.start ? `${bar.volta.n}.` : '', VOLTA_Y)
+    }
     stave.setContext(ctx).draw()
     const notes = Array.from({ length: opts.beats }, () => {
       const note = new vf.StaveNote({ keys: ['b/4'], duration: 'q', type: 's', autoStem: false })
