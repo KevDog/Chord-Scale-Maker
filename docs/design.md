@@ -296,7 +296,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - **Chord symbols** sit over their beats and labels under the notes, both as HTML.
 - **Width:** 4 bars a system, or 2 on phones (`useMediaQuery`), drawn at the same size per bar.
 
-### Changes sheet ([plan-changes.md](plan-changes.md); the `changes` flag, off)
+### Changes sheet ([plan-changes.md](plan-changes.md); the `changes` flag, on)
 
 - A study lead sheet: `engine/changes.ts` `buildChanges(doc, part, barsPerLine)` lays the chart out in lines of four
   bars (two on phones), each section on a new line, one slash a beat in the chart's metre. Chords sit on their
@@ -468,7 +468,7 @@ library writes such a repeat out instead.
     overrides one for a build or `make dev`.
   - `npm run e2e` builds with every flag on.
   - `myCharts` (My charts, New chart, Download/Open, share links), `guideTones` (the Guide tones sheet), `changes`
-    (the Changes sheet, off),
+    (the Changes sheet),
     `practice` (the Practice panel) and `scaleLevels` (the Scale level control) are on, since sign-off.
 
 ## 9. Security

@@ -73,7 +73,7 @@ export default defineNuxtConfig({
         myCharts: true, // My charts: edits and new charts saved in this browser, files, share links (docs/plan-saving.md); on since sign-off
         guideTones: true, // the Guide tones sheet in the preview (docs/plan-guide-tones.md); on since sign-off
         practice: true, // highlight a chosen subset of each scale's notes (docs/plan-practice.md); on since sign-off
-        changes: false, // the Changes sheet: the chart as a study lead sheet, numerals and scales under the chords (docs/plan-changes.md)
+        changes: true, // the Changes sheet: the chart as a study lead sheet, numerals and scales under the chords (docs/plan-changes.md); on since sign-off
         scaleLevels: true, // the Level control: Basic / Standard / Advanced / Random scales per chart (engine/levels.ts); on since sign-off
       },
     },

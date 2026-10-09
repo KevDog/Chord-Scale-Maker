@@ -1,6 +1,6 @@
 # The Changes sheet
 
-Status: **built, behind the `changes` flag (off)** until it's signed off.
+Status: **done**; the `changes` flag is on since sign-off (2026-10-08).
 
 A third sheet beside Scales and Guide tones: the chart as a study lead sheet. No melody (we have none); the
 chords over slashes, with what the analysis knows written under them. It's a study sheet: it shows why each
