@@ -154,7 +154,7 @@ export function serializeChart(doc: ChartDoc): string {
  * they stand; the analysis and the guide tone timeline treat each as its own piece, around the repeating form.
  */
 const OUTSIDE = /^(intro|coda|tag|ending)(\s*\d+)?$/i
-export const isOutsideForm = (section: string): boolean => OUTSIDE.test(section.trim())
+const isOutsideForm = (section: string): boolean => OUTSIDE.test(section.trim())
 /** before the form (an intro), the form itself, or after it */
 export type FormPart = 'before' | 'form' | 'after'
 export const formPart = (section: string): FormPart => (!isOutsideForm(section) ? 'form' : /^intro/i.test(section.trim()) ? 'before' : 'after')

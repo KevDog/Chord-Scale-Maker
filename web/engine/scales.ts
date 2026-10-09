@@ -64,7 +64,7 @@ export const ALIASES: Readonly<Record<string, ScaleKey>> = {
 export type ScaleNote = Readonly<Spelled & { semis: number }>
 export type ParsedScale = Readonly<{ root: Spelled; key: ScaleKey }>
 
-export const norm = (s: string): string =>
+const norm = (s: string): string =>
   s
     .toLowerCase()
     .replaceAll('-', ' ')
