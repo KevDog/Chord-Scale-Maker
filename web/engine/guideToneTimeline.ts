@@ -6,7 +6,7 @@ import { formPart, type Row } from './chart'
  * a chord lasts until the next change, rows that share a bar split it, and the last row runs to the end of the form.
  */
 
-export const BEATS = 4 // 4/4, the default
+const BEATS = 4 // 4/4, the default
 /** how a bar is shared by 1 chord, 2, …, in beats, for each metre; a bar holds at most one chord a beat */
 const SPLITS: Readonly<Record<2 | 3 | 4, readonly (readonly number[])[]>> = {
   4: [[4], [2, 2], [2, 1, 1], [1, 1, 1, 1]],

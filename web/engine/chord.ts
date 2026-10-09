@@ -9,7 +9,7 @@ import { orNull } from './util'
  */
 
 /** root, quality (everything between root and /bass), optional bass */
-export const CHORD_RE = /^([A-G])([b#♭♯]?)(.*?)(?:\/([A-G])([b#♭♯]?))?$/
+const CHORD_RE = /^([A-G])([b#♭♯]?)(.*?)(?:\/([A-G])([b#♭♯]?))?$/
 
 export type ChordParts = Readonly<{ root: Spelled; quality: string; bass?: Spelled }>
 export type ChordToken = Readonly<{ kind: 'text'; text: string } | { kind: 'acc'; acc: 'b' | '#' }>
