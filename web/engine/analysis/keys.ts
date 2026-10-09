@@ -65,7 +65,7 @@ export function diatonic(e: Entry, key: Key): boolean {
 
 /** a dominant 7th or a resolving sus chord: what can make a cadence */
 export const isDominantLike = (e: Entry | undefined): boolean => e?.family === 'dominant' || e?.quality === '7sus4'
-const isTonicType = (e: Entry | undefined): boolean => e?.family === 'major' || e?.family === 'minor'
+export const isTonicType = (e: Entry | undefined): e is Entry => e?.family === 'major' || e?.family === 'minor'
 
 /** §5.1: a dominant resolving down a fifth (or, as a tritone cadence, a half step) to a major or minor chord */
 export type Cadence = Readonly<{

@@ -1,4 +1,4 @@
-import { hasRelatedII, isDominantLike, type Key } from './keys'
+import { hasRelatedII, isDominantLike, isTonicType, type Key } from './keys'
 import { type Context, type Decision, roman } from './rules'
 import { downFifth, downHalf, type Entry, interval, nextOf, prevOf } from './stream'
 
@@ -29,7 +29,6 @@ const degreeOf = (e: Pick<Entry, 'pc' | 'family'>, key: Key): string => glyph(ro
 const own = (e: Entry, key: Key): string => degreeOf(e, key) + (e.family === 'dominant' ? '7' : (SUFFIX[e.quality] ?? ''))
 /** "/ii", or nothing when the chord it leads to is the key's own tonic */
 const of = (target: Pick<Entry, 'pc' | 'family'>, key: Key): string => (target.pc === key.tonic ? '' : `/${degreeOf(target, key)}`)
-const isTonicType = (e: Entry | undefined): e is Entry => e?.family === 'major' || e?.family === 'minor'
 
 export function numeral(ctx: Context, i: number, decision: Decision): string {
   const e = ctx.stream[i]
