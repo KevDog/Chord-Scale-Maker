@@ -1,5 +1,22 @@
 import { describe, expect, it } from 'vitest'
-import { accFor, enharmonics, mod, parseRoot, pcOf, rootName } from '../pitch'
+import { accFor, enharmonics, glyphs, mod, parseRoot, pcOf, rootName } from '../pitch'
+
+describe('glyphs', () => {
+  it('turns accidentals into music glyphs', () => {
+    expect(glyphs('Eb')).toBe('E♭')
+    expect(glyphs('F#')).toBe('F♯')
+    expect(glyphs('Bb Mixolydian b6')).toBe('B♭ Mixolydian ♭6')
+    expect(glyphs('Lydian #5')).toBe('Lydian ♯5')
+    expect(glyphs('1 2 3 4 5 6 b7 7')).toBe('1 2 3 4 5 6 ♭7 7')
+    expect(glyphs('bb7')).toBe('♭♭7') // double flat degree
+    expect(glyphs('Cbb')).toBe('C♭♭') // double flat root
+  })
+
+  it('leaves the b inside a word alone (Bebop, not Be♭op)', () => {
+    expect(glyphs('G Bebop Dominant')).toBe('G Bebop Dominant')
+    expect(glyphs('Bb Bebop Dorian')).toBe('B♭ Bebop Dorian')
+  })
+})
 
 describe('pitch', () => {
   it('mod is always positive', () => {
