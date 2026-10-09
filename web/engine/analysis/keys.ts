@@ -217,9 +217,6 @@ export function impliedDiatonic(pc: number, minor: boolean, key: Key): boolean {
   return [0, minor ? 3 : 4, 7].every((s) => ref.has((pc + s) % 12))
 }
 
-/** the cadence an entry is the dominant of, if any */
-export const cadenceAt = (cadences: readonly Cadence[], i: number): Cadence | undefined => cadences.find((c) => c.dominant === i)
-
 /** the chord before e is its related ii: a minor or half-diminished chord a fifth above it */
 export const hasRelatedII = (stream: readonly Entry[], i: number): boolean => {
   const e = stream[i]
