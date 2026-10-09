@@ -238,7 +238,7 @@ test('the preview toolbar is one row on a desktop, in every sheet', async ({ pag
   const tops = () =>
     page.locator('#preview-heading').locator('xpath=following-sibling::*[1]').evaluate((el) => {
       const row = el.firstElementChild as HTMLElement
-      return new Set([...row.children].map((c) => Math.round(c.getBoundingClientRect().bottom))).size
+      return new Set(Array.from(row.children, (c) => Math.round(c.getBoundingClientRect().bottom))).size
     })
   for (const sheet of ['Scales', 'Guide tones', 'Changes']) {
     await page.getByRole('group', { name: 'Sheet' }).getByText(sheet, { exact: true }).click()
