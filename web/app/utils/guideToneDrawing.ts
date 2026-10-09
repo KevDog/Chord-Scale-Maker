@@ -1,5 +1,5 @@
 import { accText, type GuideSystem, toVexKey } from '~~/engine'
-import { cropBand, fitSvg, headCentre, STAVE_Y, svgContext, type VexFlowModule } from './vexflow'
+import { BAR_UNITS, cropBand, fitSvg, headCentre, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
 
 /**
  * Drawing guide tone systems (engine/guideTones.ts) with VexFlow: two staves a system, one per line, bars aligned
@@ -10,8 +10,6 @@ const DURATIONS = { 4: 'w', 3: 'hd', 2: 'h', 1: 'q' } as const // 3 beats: a dot
 const REST_KEY = { treble: 'b/4', bass: 'd/3' } as const
 const INK = { fillStyle: 'currentColor', strokeStyle: 'currentColor' } // follows light/dark mode, prints black
 const CLEF_SPACE = 70 // the first bar of a system also holds the clef
-const TIME_SPACE = 40 // and, on the first system, the time signature
-const BAR_UNITS = 300 // drawing width per bar, so 2-bar systems on phones draw as large as 4-bar ones elsewhere
 // guide tones sit near the middle of the staff, so their minimum band is just the clef: 8 systems fit a letter page
 export const GUIDE_MIN_TOP = 64
 export const GUIDE_MIN_BOTTOM = 134

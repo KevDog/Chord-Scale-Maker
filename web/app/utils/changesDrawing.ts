@@ -1,13 +1,11 @@
 import type { ChangesLine } from '~~/engine'
-import { fitSvg, headCentre, STAVE_Y, svgContext, type VexFlowModule } from './vexflow'
+import { BAR_UNITS, fitSvg, headCentre, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
 
 /**
  * Drawing a Changes line (engine/changes.ts) with VexFlow: one stave, one slash a beat, repeat and final barlines,
  * the time signature on the first line. Chords, numerals and scales are HTML placed over and under the slashes.
  */
 
-const TIME_SPACE = 40 // the first line also holds the time signature
-const BAR_UNITS = 300 // drawing width per bar, as the guide tone sheet uses
 const VOLTA_Y = 0 // shift for the 1st/2nd-ending bracket, above the staff (at getYForTopText)
 const BAND = { top: 74, bottom: 126 } // just the staff (lines at 80-120): slashes sit on the middle line
 const VOLTA_BAND = { top: 44, bottom: 126 } // a line with a 1st/2nd-ending bracket needs headroom above the staff
