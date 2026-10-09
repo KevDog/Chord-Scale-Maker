@@ -3,6 +3,21 @@
 Ideas agreed in principle but not scheduled, and work in progress. Each gets a plan or a PR of its own when it's
 picked up.
 
+## Next
+
+### Architecture-audit leftovers (2026-10-09)
+
+A multi-agent audit after the `v2-changes` tag found 13 items; the behavior-preserving refactors landed as PRs #69–78
+(DRY of `keyText`/`isTonicType`/`shiftBy`/`spellEqual`/`defaultScaleOrNull`, dead-code and API-narrowing, shared
+drawing constants and practice key, plus the `glyphs()` Bebop fix). Still open:
+
+- **Contact email validation** — share the server `EMAIL` rule with the client pre-check (PR #79, left for review:
+  it tightens user-facing validation).
+- **Date-formatter DRY** — `EditorView.vue` and `MyChartsList.vue` share a today-vs-date formatter; low value and
+  locale-string-sensitive, so deferred (not worth an unreviewed merge).
+- **Engine coverage** — `voiceLeading.ts` (Viterbi) and `stream.ts` have no direct unit tests; adding them is pure
+  upside but wants careful, fresh attention to avoid pinning current behavior as "correct".
+
 ## Done
 
 ### The Changes sheet
