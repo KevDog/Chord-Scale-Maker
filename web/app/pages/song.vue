@@ -19,6 +19,7 @@
       :save-target="source.target"
       :library-title="source.libraryTitle"
       :shared="source.shared"
+      :is-new="source.target?.kind === 'new'"
       @created="adopt"
       @reload="reload"
     />

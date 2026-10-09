@@ -1,38 +1,24 @@
-import { expect, staves, test } from './fixtures'
+import { expect, openEditor, staves, test } from './fixtures'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/song?new=1')
   await expect(staves(page)).toHaveCount(3) // starter chart: 3 rows, from the root
 })
 
-test('the Text pane is hidden until shown, remembered, and flags problems while hidden', async ({ page }) => {
-  const toggle = page.getByRole('button', { name: 'Show text' })
+test('the editor is hidden until opened, remembered, and flags problems while hidden', async ({ page }) => {
+  await page.goto('/song?chart=autumn_leaves') // song-first: editor hidden
+  const edit = page.getByRole('button', { name: 'Edit', exact: true })
   await expect(page.getByLabel('Chart text')).toBeHidden()
-  await expect(toggle).toHaveAttribute('aria-expanded', 'false')
-  await toggle.click()
+  await expect(edit).toHaveAttribute('aria-expanded', 'false')
+  await edit.click()
   await expect(page.getByLabel('Chart text')).toBeVisible()
-  await page.getByLabel('Chart text').fill('title: T\nA | 1 | Cm7 | C Dorian | extra\n')
   await page.reload()
-  await expect(page.getByLabel('Chart text')).toBeVisible() // remembered
-  await page.getByRole('button', { name: 'Hide text' }).click()
+  await expect(page.getByLabel('Chart text')).toBeVisible() // remembered (csm-editor)
+  // make a problem, then close the editor: it's flagged with an Edit prompt
+  await page.getByLabel('Chart text').fill('title: T\nA | 1 | Cm7 | C Dorian | extra\n')
+  await page.getByRole('button', { name: 'Done', exact: true }).click()
   await expect(page.getByLabel('Chart text')).toBeHidden()
-  await page.goto('/song?chart=autumn_leaves')
-  await expect(page.getByLabel('Chart text')).toBeHidden()
-  await page.goto('/song?new=1')
-  await page.getByRole('button', { name: 'Show text' }).click()
-  await page.getByLabel('Chart text').fill('title: T\nA | 1\n')
-  await page.getByRole('button', { name: 'Hide text' }).click()
   await expect(page.getByRole('status').filter({ hasText: 'text has a problem' })).toBeVisible()
-})
-
-test('scale menus show the formula where there is room: with the Text pane hidden, not beside it', async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 900 })
-  await page.goto('/song?chart=blue_bossa')
-  const dorian = page.getByText('1, 2, ♭3, 4, 5, 6, ♭7', { exact: true })
-  await expect(dorian.first()).toBeVisible()
-  await expect(page.getByText('1, ♭2, ♭3, 3, ♯4, ♭6, ♭7', { exact: true }).first()).toBeVisible() // G Altered
-  await page.getByRole('button', { name: 'Show text' }).click()
-  await expect(dorian).toHaveCount(0)
 })
 
 test('grid edits update the text at once', async ({ page }) => {
@@ -52,8 +38,7 @@ test('a value that would corrupt the text is rejected but stays visible', async 
 })
 
 test('text edits update the grid and preview; unknown chords prompt for a scale', async ({ page }) => {
-  await page.getByRole('button', { name: 'Show text' }).click()
-  const text = page.getByLabel('Chart text')
+  const text = page.getByLabel('Chart text') // ?new=1: the editor is already open
   await text.fill(`${await text.inputValue()}B | 9 | Cm7#5#9x\n`)
   await expect(staves(page)).toHaveCount(3) // the new row has no scale yet, so it isn't drawn
   await expect(page.getByText('Choose a scale', { exact: true })).toHaveCount(1)
@@ -85,6 +70,7 @@ test('transposing rewrites the chart in another key', async ({ page }) => {
   await page.getByLabel('To key').selectOption('Bb')
   await page.getByRole('button', { name: 'Transpose', exact: true }).click()
   await expect(page.getByRole('status').filter({ hasText: 'Transposed' })).toHaveText('Transposed from F to B♭.')
+  await openEditor(page)
   const text = page.getByLabel('Chart text')
   await expect(text).toHaveValue(/A \| 6 +\| Edim7 +\| E Whole-Half/)
   await expect(text).toHaveValue(/title: F Jazz Blues/) // titles stay as typed
@@ -116,8 +102,7 @@ test('guide tones draw both lines, four bars a system, without the scale control
 })
 
 test('the text editor explains itself on hover and on focus', async ({ page }) => {
-  await page.getByRole('button', { name: 'Show text' }).click()
-  const help = page.getByRole('button', { name: 'How the text editor works' })
+  const help = page.getByRole('button', { name: 'How the text editor works' }) // ?new=1: the editor is already open
   const tip = page.getByRole('tooltip')
   await expect(tip).toBeHidden()
   await help.hover()
@@ -186,7 +171,7 @@ test('focus mode shows only the sheet, leaves on Escape or its button, and still
 
 test('the scale level writes its scales into the chart, keeps your own picks, and goes back', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
-  await page.getByRole('button', { name: 'Show text' }).click()
+  await openEditor(page)
   const text = page.getByLabel('Chart text')
   const status = page.getByRole('status').filter({ hasText: /in this browser/ })
   await page.getByLabel('Scale for D7').first().selectOption('D Lydian Dominant') // a pick of your own
@@ -212,7 +197,7 @@ test('the scale level writes its scales into the chart, keeps your own picks, an
 
 test('levels take over a library chart’s own scale choices, and Standard brings them back', async ({ page }) => {
   await page.goto('/song?chart=f_bird_blues')
-  await page.getByRole('button', { name: 'Show text' }).click()
+  await openEditor(page)
   const text = page.getByLabel('Chart text')
   await expect(text).toHaveValue(/A7b9 +\| A Phrygian Dominant/)
   await page.getByText('Advanced', { exact: true }).click()

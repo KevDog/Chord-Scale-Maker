@@ -38,3 +38,16 @@ export async function chooseInstrument(page: import('@playwright/test').Page, na
   await page.getByRole('button', { name: 'Instrument' }).click()
   await page.getByRole('option', { name: new RegExp(`^${name}`) }).click()
 }
+
+/** reveal the editor (grid + text) if it isn't already shown — the page is song-first, editor hidden by default */
+export async function openEditor(page: import('@playwright/test').Page): Promise<void> {
+  const text = page.getByLabel('Chart text')
+  // retry the click: before hydration the Edit handler isn't attached yet, so a single click can be lost
+  await expect(async () => {
+    if (!(await text.isVisible())) {
+      const edit = page.getByRole('button', { name: 'Edit', exact: true })
+      if (await edit.count()) await edit.click({ timeout: 1000 })
+    }
+    await expect(text).toBeVisible({ timeout: 1000 })
+  }).toPass({ timeout: 10_000 })
+}

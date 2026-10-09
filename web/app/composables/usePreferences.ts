@@ -9,16 +9,16 @@ function storedRef<T>(key: string, parse: (raw: string) => T | undefined, fallba
   return value
 }
 
-/** the preview's instrument, start note and interval labels, and whether the editor shows its Text pane, remembered in this browser (client-only) */
+/** the preview's instrument, start note and interval labels, and whether the editor is shown, remembered in this browser (client-only) */
 export function usePreferences() {
   const instrument = storedRef<InstrumentName>('csm-instrument', (s) => (isInstrumentName(s) ? s : undefined), 'concert')
   const start = storedRef<string>('csm-start', (s) => ((PICKER_ROOTS as readonly string[]).includes(s) ? s : undefined), 'C')
   const intervals = storedRef<boolean>('csm-intervals', (s) => s === 'on', true, (v) => (v ? 'on' : 'off')) // on until turned off: they show each note's job over the chord
-  const showText = storedRef<boolean>('csm-show-text', (s) => s === 'on', false, (v) => (v ? 'on' : 'off')) // the editor's Text pane: hidden until shown
+  const showEditor = storedRef<boolean>('csm-editor', (s) => s === 'on', false, (v) => (v ? 'on' : 'off')) // the editor (grid + text): hidden until shown, song-first
   // the Changes sheet's study rows: each chord's numeral and its scale, both on until turned off
   const numerals = storedRef<boolean>('csm-numerals', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
   const scaleNames = storedRef<boolean>('csm-scale-names', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
-  return { instrument, start, intervals, showText, numerals, scaleNames }
+  return { instrument, start, intervals, showEditor, numerals, scaleNames }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
@@ -31,6 +31,6 @@ export function linkPreferences(view: ShareView) {
     intervals: ref<boolean>(view.intervals ?? own.intervals.value),
     numerals: ref<boolean>(view.numerals ?? own.numerals.value),
     scaleNames: ref<boolean>(view.scaleNames ?? own.scaleNames.value),
-    showText: own.showText, // how you like the editor laid out: yours, and remembered
+    showEditor: own.showEditor, // whether the editor is open: yours, and remembered
   }
 }

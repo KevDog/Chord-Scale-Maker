@@ -27,19 +27,15 @@
       </UiDialogActions>
     </UiDialog>
 
-    <div :class="['grid gap-8 print:hidden', textShown && 'lg:grid-cols-2']">
+    <UiText v-if="!editorShown && editor.diagnostics.value.length" role="status" class="text-amber-700! print:hidden dark:text-amber-400!">
+      The chart's text has {{ editor.diagnostics.value.length === 1 ? 'a problem' : `${editor.diagnostics.value.length} problems` }}.
+      <button type="button" class="font-semibold underline" @click="prefs.showEditor.value = true">Edit</button> to fix {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
+    </UiText>
+
+    <div v-if="editorShown" class="grid gap-8 print:hidden lg:grid-cols-2">
       <section aria-labelledby="grid-heading" class="min-w-0">
         <div class="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
           <UiSubheading id="grid-heading">Chart</UiSubheading>
-          <UiButton
-            plain
-            :aria-expanded="textShown"
-            aria-controls="text-pane"
-            :disabled="editor.fatal.value"
-            @click="prefs.showText.value = !prefs.showText.value"
-          >
-            <CodeBracketIcon data-slot="icon" />{{ textShown ? 'Hide text' : 'Show text' }}
-          </UiButton>
         </div>
         <!-- Level: how sophisticated each chord's scale is, written into the chart (engine/levels.ts) -->
         <div v-if="levelsOn && !editor.fatal.value" class="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -48,10 +44,6 @@
           <UiButton v-if="scaleLevel.level.value === 'random'" outline title="Deal a new random scale for each chord" @click="shuffle"><ArrowPathIcon data-slot="icon" />Shuffle</UiButton>
           <UiText v-if="levelNote" role="status" class="text-sm/6!">{{ levelNote }}</UiText>
         </div>
-        <UiText v-if="!textShown && editor.diagnostics.value.length" role="status" class="mb-3 text-amber-700! dark:text-amber-400!">
-          The chart's text has {{ editor.diagnostics.value.length === 1 ? 'a problem' : `${editor.diagnostics.value.length} problems` }}.
-          <button type="button" class="font-semibold underline" @click="prefs.showText.value = true">Show text</button> to see {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
-        </UiText>
         <div v-if="editor.fatal.value" class="rounded-lg bg-red-500/10 p-4 text-sm/6 text-red-700 dark:text-red-400">
           This chart is over a size limit. Shorten it in the text editor to edit it here.
         </div>
@@ -59,7 +51,7 @@
           <ChartGrid :doc="editor.doc.value" @update:doc="editor.setDoc" />
         </div>
       </section>
-      <section v-show="textShown" id="text-pane" aria-labelledby="text-heading" class="min-w-0">
+      <section id="text-pane" aria-labelledby="text-heading" class="min-w-0">
         <div class="mb-3 flex items-center gap-2">
           <UiSubheading id="text-heading">Text</UiSubheading>
           <HelpTip label="How the text editor works">
@@ -96,6 +88,7 @@
         >
           <!-- the chart's actions, after Intervals (none while the chart is over a size limit) -->
           <template v-if="!editor.fatal.value" #actions>
+            <UiButton outline :aria-expanded="editorShown" title="Show or hide the chart editor" @click="prefs.showEditor.value = !prefs.showEditor.value"><CodeBracketIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</UiButton>
             <ChartTranspose :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
             <UiButton outline title="Show only the sheet music (Esc to leave)" @click="enterFocus"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
             <UiButton color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
@@ -186,7 +179,7 @@ import type { SheetKind } from '~/utils/sheets'
  * saveTarget: where edits save (My charts); none when the feature is off. libraryTitle: the library chart's title.
  * shared: opened from a share link, with the view it carried (applied for this visit, not saved).
  */
-const props = defineProps<{ initialText: string; practiceKey?: string; saveTarget?: SaveTarget; libraryTitle?: string; shared?: ShareView }>()
+const props = defineProps<{ initialText: string; practiceKey?: string; saveTarget?: SaveTarget; libraryTitle?: string; shared?: ShareView; isNew?: boolean }>()
 const emit = defineEmits<{ created: [id: string]; reload: [] }>()
 
 const PER_PAGE = 12
@@ -196,8 +189,10 @@ const editor = useChartEditor(props.initialText)
 const byline = computed(() => [editor.heading.value.subtitle, editor.heading.value.composer].filter(Boolean).join(' — '))
 const prefs = props.shared ? linkPreferences(props.shared) : usePreferences()
 const part = computed(() => partFor(prefs.instrument.value))
-/** the Text pane: hidden by default, and always shown for a chart over a size limit (only the text can fix it) */
-const textShown = computed(() => prefs.showText.value || editor.fatal.value)
+/** the editor (grid + text): hidden by default (song-first), shown for a new chart or one over a size limit (only the text can fix it) */
+const bornNew = ref(false) // latches true for a new chart, so saving it (its URL becomes ?mine) doesn't hide the editor mid-edit
+watch(() => props.isNew, (v) => { if (v) bornNew.value = true }, { immediate: true })
+const editorShown = computed(() => prefs.showEditor.value || bornNew.value || editor.fatal.value)
 /** one spelling at a time: every scale from the Start on note, or each from its own root */
 const mode = ref<Mode>(props.shared?.mode ?? 'root')
 const sharedSheet = props.shared?.sheet
