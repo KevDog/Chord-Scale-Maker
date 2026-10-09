@@ -44,6 +44,8 @@ for (const [chart, pages] of [
   ['autumn_leaves', 1],
   ['satin_doll', 1],
   ['a_night_in_tunisia', 2],
+  ['stardust', 2],
+  ['its_you_or_no_one', 2],
 ] as const) {
   test(`prints the Changes eight lines a page (${chart})`, async ({ page }) => {
     await page.goto(`/editor?chart=${chart}`)
@@ -54,3 +56,15 @@ for (const [chart, pages] of [
     expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(pages)
   })
 }
+
+test('the Changes sheet shows 1st/2nd endings and a D.S. al Coda', async ({ page }) => {
+  await page.goto('/editor?chart=its_you_or_no_one')
+  await page.getByRole('group', { name: 'Sheet' }).getByText('Changes', { exact: true }).click()
+  await expect(page.locator('svg[aria-label^="Bars:"]').first()).toBeVisible()
+  await expect(page.getByText('D.S. al Coda')).toBeVisible()
+  await expect(page.getByLabel('Coda').first()).toBeVisible()
+  await page.goto('/editor?chart=stardust')
+  await page.getByRole('group', { name: 'Sheet' }).getByText('Changes', { exact: true }).click()
+  await expect(page.locator('svg[aria-label^="Bars:"]').first()).toBeVisible()
+  await expect(page.locator('svg[aria-label^="Bars:"] text', { hasText: '1.' }).first()).toBeVisible()
+})

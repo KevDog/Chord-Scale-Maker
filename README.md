@@ -33,6 +33,9 @@ A1 | 3 | E7    | E Mixolydian
 | `section \| bar \| chord \| scale` | One row per chord. Two chords in a bar are two rows with the same bar number. A chord lasts until the next bar number. |
 | `section \| bar \| chord` | Scale omitted: the chord quality's default from `chord_scales.json` (`Cm7` → `C Dorian`). |
 | `@copy SRC DST OFFSET` | Repeat section `SRC` as `DST`, adding `OFFSET` to each bar number. |
+| `@ending N SECTION FIRST [LAST]` | A 1st/2nd ending (volta) over `SECTION` bars `FIRST`..`LAST`; the section is played twice on the Changes sheet — repeat signs with the two endings bracketed. Write the two endings as sequential bars (e.g. 7–8 then 9–10). |
+| `@segno SECTION BAR` / `@coda SECTION BAR` | A segno (𝄋) or coda (⊕) glyph above that bar on the Changes sheet (the coda marks both the "to the coda" departure and the coda arrival). |
+| `@nav SECTION BAR TEXT` | A navigation instruction above that bar on the Changes sheet: `D.S. al Coda`, `D.C. al Fine`, `To Coda`, `Fine`. |
 | `time: 3/4` | The metre: `2/4`, `3/4` or `4/4` (the default). The guide tone sheet writes its rhythm in it (the waltzes in the library say `3/4`). |
 | `Intro`, `Coda`, `Tag`, `Ending` sections | Outside the form (`Tag 2` too): they print where they stand, but the form's turnaround goes back to its own bar 1, and each is analysed and timed on its own (its bars may be numbered from 1). `form:` counts only the form. |
 | `title:`, `subtitle:` | The heading on each page. |

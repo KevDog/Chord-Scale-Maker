@@ -154,6 +154,9 @@ type ChartLine =
   | { kind: 'meta'; key: MetaKey; value: string }  // title, subtitle (the heading); key, bars (analyser hints); composer, style, form, source
   | { kind: 'row'; section: string; bar: string; chord: string; scale: string; comment?: string }  // scale '' = default; comment: a trailing # …
   | { kind: 'copy'; src: string; dst: string; offset: number }
+  | { kind: 'ending'; n: number; section: string; from: number; to: number }  // a 1st/2nd ending (volta) on the Changes sheet
+  | { kind: 'mark'; mark: 'segno' | 'coda'; section: string; bar: number }     // a segno 𝄋 / coda ⊕ glyph
+  | { kind: 'nav'; section: string; bar: number; text: string }                // "D.S. al Coda", "To Coda", "Fine"
   | { kind: 'comment'; text: string }
   | { kind: 'blank' }
   | { kind: 'invalid'; text: string }     // bad line, kept verbatim so text round-trips
@@ -169,7 +172,13 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   must not render or write back such a chart. Non-fatal diagnostics are per-line errors shown inline.
 - **Serializing:** `serializeChart(doc) → text` gives the canonical, column-aligned form.
 - **Expanding:** `expandRows(doc) → Parsed<Row[]>` applies `@copy` in order, capped at 1,000 rows;
-  `expandRowLines` is the same with each row's source line (a repeat points at the row it copies).
+  `expandRowLines` is the same with each row's source line (a repeat points at the row it copies). `ending`, `mark`
+  and `nav` lines carry no rows, so expansion ignores them.
+- **Navigation directives** (`@ending`, `@segno`, `@coda`, `@nav`): read only by the Changes sheet
+  (`engine/changes.ts`), which maps them onto per-bar `volta`/`segno`/`coda`/`nav` fields. An `@ending` section is a
+  2× repeat with the two endings bracketed; `@segno`/`@coda` draw glyphs, `@nav` a printed instruction. Parsing is
+  syntactic only; a directive naming a section/bar the chart lacks simply renders nothing (like a `@copy` of an
+  unknown section). See docs/plan-changes.md.
 - **Outside the form** (`isOutsideForm`, `formPart`): sections named `Intro`, `Coda`, `Tag` or `Ending` (with an
   optional number). They print where they stand; the analysis links an intro into the form's first chord and a coda
   after its last (the form itself wraps to its own top), and the guide tone timeline times each on its own, so their

@@ -13,14 +13,20 @@ Intro | 3  | F7b9    | F Phrygian Dominant       # V7 of Bb7, on the way to Eb m
 Intro | 4  | Bb7     | Bb Phrygian Dominant      # V7 of Eb minor, the chain's last link: b9 and b13 are in the key
 Intro | 5  | Ebm7    | Eb Dorian                 # ii of Ab7: Dorian
 Intro | 5  | Ab7     | Ab Mixolydian             # V7/I in Db: natural tensions
-Intro | 6  | Fm7     | F Dorian                  # ii of the ii–V to Eb minor
-Intro | 6  | Bb7     | Bb Mixolydian b6          # V7/ii in Db: the b13 is in the key
-Intro | 7  | Ebm7    | Eb Dorian                 # ii of the ii–V to Db
-Intro | 7  | Ab7     | Ab Mixolydian             # V7 of Db: natural tensions
-Intro | 8  | DbMaj7  | Db Ionian                 # tonic: the 4th is in the key
-Intro | 8  | Db7     | Db Mixolydian             # V7/IV in Db: natural tensions
-# the chorus with its 8-bar verse intro added; the verse repeats with a 1st ending (Gm7 C7 | Ebm7 Ab7),
-# shown here is the 2nd ending into the chorus
+Intro | 6  | Fm7     | F Dorian                  # ii of Bb7: Dorian
+Intro | 6  | Bb7     | Bb Mixolydian b6          # keep: V7/ii in Db like the chorus's bar 6; the b13 Gb is in the key
+Intro | 7  | Gm7     | G Dorian                  # ii of C7: Dorian
+Intro | 7  | C7      | C Mixolydian              # passing ii–V: its own key
+Intro | 8  | Ebm7    | Eb Dorian                 # ii of Ab7: Dorian
+Intro | 8  | Ab7     | Ab Mixolydian             # V7/I in Db: natural tensions
+Intro | 9  | Ebm7    | Eb Dorian                 # ii of the ii–V to Db
+Intro | 9  | Ab7     | Ab Mixolydian             # V7 of Db: natural tensions
+Intro | 10 | DbMaj7  | Db Ionian                 # tonic: the 4th is in the key
+Intro | 10 | Db7     | Db Mixolydian             # V7/IV in Db: natural tensions
+@ending 1 Intro 7 8
+@ending 2 Intro 9 10
+# the chorus with its 8-bar verse intro added; the verse repeats, taking the 1st ending (bars 7-8) then the
+# 2nd ending (bars 9-10) into the chorus
 A1    | 1  | GbMaj7  | Gb Lydian                 # IV: the #4 is the key’s 7th
 A1    | 3  | GbmMaj7 | Gb Melodic Minor          # from the symbol: minor-major 7th
 A1    | 4  | Gbm7    | Gb Dorian                 # ii of Cb7b9: Dorian

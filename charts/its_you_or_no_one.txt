@@ -17,6 +17,11 @@ Coda  | 3  | Gm7    | G Dorian            # ii of the ii–V to F
 Coda  | 4  | C7     | C Mixolydian        # V7 of F: natural tensions
 Coda  | 5  | F      | F Ionian            # tonic: the 4th is in the key
 # the melody horn intro is left out; the played intro (Bbm7 Am7 D7) and the coda are added
+# the head is D.S. al Coda: a segno at A, the coda glyph at D 31 (to the coda) and at the coda itself
+@segno A 1
+@coda D 31
+@nav D 31 D.S. al Coda
+@coda Coda 1
 A     | 1  | Gm7    | G Dorian            # ii of the ii–V to F
 A     | 2  | C7     | C Mixolydian        # V7 of F: natural tensions
 A     | 3  | FMaj7  | F Ionian            # tonic: the 4th is in the key
