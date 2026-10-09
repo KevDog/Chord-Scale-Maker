@@ -1,6 +1,6 @@
 import { type ChartDoc, type ChartLine, expandRowLines } from '../chart'
 import { sameScale } from '../scales'
-import { bluesKey, findCadences, isModal, type Key, localKeys, parseKey, sameKey, scoreKey } from './keys'
+import { bluesKey, findCadences, isModal, type Key, keyText, localKeys, parseKey, sameKey, scoreKey } from './keys'
 import { type Context, decide, type Decision } from './rules'
 import { numeral } from './numerals'
 import { buildStream } from './stream'
@@ -90,7 +90,6 @@ export type Conflict = Readonly<{ line: number; bar: string; chord: string; sour
 
 const isAnalysisComment = (l: ChartLine): boolean => l.kind === 'comment' && /^#\s*(analysis|area):/.test(l.text)
 const isKept = (l: ChartLine): boolean => l.kind === 'row' && /^keep:/.test(l.comment ?? '')
-const keyText = (key: Key): string => (key.minor ? key.name : key.name.replace(/ major$/, ''))
 
 export function applyAnalysis(
   doc: ChartDoc,

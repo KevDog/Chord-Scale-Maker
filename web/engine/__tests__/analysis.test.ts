@@ -1,7 +1,17 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { analyse, applyAnalysis, parseKey, pins } from '../analysis'
+import { keyText, makeKey } from '../analysis/keys'
 import { formPart, parseChart, serializeChart } from '../chart'
+import { parseRoot } from '../pitch'
+
+describe('keyText', () => {
+  it('drops the " major" suffix but keeps " minor"', () => {
+    expect(keyText(makeKey(parseRoot('C'), false))).toBe('C')
+    expect(keyText(makeKey(parseRoot('A'), true))).toBe('A minor')
+    expect(keyText(makeKey(parseRoot('Bb'), false))).toBe('Bb')
+  })
+})
 
 /** a chart from `key` and `bar chord` pairs: "1 Dm7, 2 G7, 3 CMaj7" */
 const chart = (key: string, rows: string, extra = ''): string =>
