@@ -40,8 +40,10 @@ Four new directives, parsed like `@copy` (a leading `@word`, whitespace-split). 
   numbers within that section; `LAST` defaults to `FIRST` (a one-bar ending). `LAST >= FIRST`.
 - `BAR` is a bar number within `SECTION`.
 - `@nav`'s `TEXT…` is the rest of the line, kept verbatim (it may contain spaces and dots).
-- A directive that names a missing section, an out-of-range bar, or a malformed number is an `invalid` line,
-  reported like a bad `@copy` and kept verbatim so the text round-trips.
+- Validation at parse time is **syntactic only** (shape and number format), as for `@copy`: a malformed directive
+  is an `invalid` line, reported and kept verbatim so the text round-trips. A syntactically valid directive that
+  names a section or bar the chart doesn't contain simply renders nothing at build time — the same lenient
+  behaviour as a `@copy` of an unknown section (which copies no rows).
 
 **Endings** are written as two sequential runs of bars (they time and analyse as ordinary rows). The drawing
 places the 2nd ending after the 1st on the stave, with the repeat-end barline between them — which is exactly how
