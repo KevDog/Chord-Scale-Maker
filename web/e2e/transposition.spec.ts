@@ -13,6 +13,13 @@ test('writes the sheet for a transposing instrument and remembers it', async ({ 
   await expect(page.getByRole('button', { name: 'Instrument' })).toContainText('Tenor sax')
 })
 
+test('Transpose needs the chart key', async ({ page }) => {
+  await page.goto('/editor?chart=autumn_leaves') // has key: Gm
+  await expect(page.getByRole('button', { name: /Transpose/ }).first()).toBeEnabled()
+  await page.goto('/editor?new=1') // blank chart, no key yet
+  await expect(page.getByRole('button', { name: /Transpose/ }).first()).toBeDisabled()
+})
+
 test('bass clef instruments and the start note', async ({ page }) => {
   await page.goto('/editor?chart=autumn_leaves')
   await chooseInstrument(page, 'Trombone')

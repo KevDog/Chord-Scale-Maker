@@ -3,7 +3,14 @@
     <div class="grid gap-4 sm:grid-cols-2">
       <UiField v-for="key in META_KEYS" :key="key">
         <UiLabel class="capitalize">{{ key }}</UiLabel>
-        <GridCell meta :value="meta[key]" :max-length="LIMITS.maxMeta" @update="(v) => emitDoc(setMeta(doc, key, v))" />
+        <template v-if="key === 'key'">
+          <UiSelect :model-value="meta.key" :invalid="!isValidKey(meta.key)" aria-label="Key" @update:model-value="(v) => emitDoc(setMeta(doc, 'key', String(v)))">
+            <option value="" disabled>Pick a key</option>
+            <option v-for="k in KEY_OPTIONS" :key="k" :value="k">{{ keyLabel(k) }}</option>
+          </UiSelect>
+          <UiErrorMessage v-if="!isValidKey(meta.key)">Pick the chart's key</UiErrorMessage>
+        </template>
+        <GridCell v-else meta :value="meta[key]" :max-length="LIMITS.maxMeta" @update="(v) => emitDoc(setMeta(doc, key, v))" />
       </UiField>
     </div>
     <UiTable dense bleed class="[--gutter:--spacing(1)]">
@@ -55,12 +62,13 @@
 
 <script setup lang="ts">
 import { PlusIcon, TrashIcon } from '@heroicons/vue/16/solid'
-import { type ChartDoc, type MetaKey, type RowField, chartMeta, insertRowAfter, LIMITS, removeLine, setMeta, setRowChord, setRowField } from '~~/engine'
+import { type ChartDoc, chartMeta, insertRowAfter, isValidKey, keyLabel, LIMITS, type MetaKey, removeLine, type RowField, setMeta, setRowChord, setRowField } from '~~/engine'
 
 const props = defineProps<{ doc: ChartDoc }>()
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc] }>()
 
-const META_KEYS: readonly Extract<MetaKey, 'title' | 'subtitle'>[] = ['title', 'subtitle'] // the heading; the rest stays in the text
+const META_KEYS: readonly Extract<MetaKey, 'title' | 'subtitle' | 'key'>[] = ['title', 'subtitle', 'key'] // the heading; the rest stays in the text
+const KEY_OPTIONS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B', 'Cm', 'C#m', 'Dm', 'D#m', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'Bbm', 'Bm'] as const
 const TEXT_FIELDS: readonly Exclude<RowField, 'scale'>[] = ['section', 'bar', 'chord']
 
 const meta = computed(() => chartMeta(props.doc))

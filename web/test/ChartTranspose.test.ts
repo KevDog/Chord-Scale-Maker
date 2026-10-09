@@ -16,11 +16,11 @@ const button = (name: string) =>
 
 describe('ChartTranspose', () => {
   it("starts from the chart's key and emits the chart in the new key", async () => {
-    const doc = parseChart('title: F Blues\nA | 1 | F7\nA | 2 | Bb7 | Bb Mixolydian\nA | 3 | ???\n').value
+    const doc = parseChart('title: F Blues\nkey: F\nA | 1 | F7\nA | 2 | Bb7 | Bb Mixolydian\nA | 3 | ???\n').value
     const w = await mountSuspended(ChartTranspose, { props: { current: () => doc }, attachTo: document.body })
     await w.find('button').trigger('click')
     await settle()
-    expect(select('From key').value).toBe('F')
+    expect(document.querySelector('[role=dialog]')?.textContent).toContain('From key') // From is read-only, from the chart's key
     expect(button('Transpose')?.disabled).toBe(true) // same key
     const to = select('To key')
     to.value = 'Bb'
@@ -29,7 +29,7 @@ describe('ChartTranspose', () => {
     button('Transpose')?.click()
     await settle()
     const [[out]] = w.emitted('update:doc') as [[typeof doc]]
-    expect(serializeChart(out)).toBe(serializeChart(parseChart('title: F Blues\nA | 1 | Bb7\nA | 2 | Eb7 | Eb Mixolydian\nA | 3 | ???\n').value))
+    expect(serializeChart(out)).toBe(serializeChart(parseChart('title: F Blues\nkey: Bb\nA | 1 | Bb7\nA | 2 | Eb7 | Eb Mixolydian\nA | 3 | ???\n').value))
     expect(w.emitted('transposed')).toEqual([['Transposed from F to B♭; 1 row could not be read and stayed as typed.']])
     w.unmount()
   })

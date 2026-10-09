@@ -39,7 +39,7 @@ export type Golden = {
   scales: Record<string, Record<string, ScaleCase>>
   chords: { part: string; chord: string; scale: string | null; tokens: ChordToken[] | null }[]
   options: Record<string, { options: readonly ScaleOption[] | null; default: string | null }>
-  charts: Record<string, { text: string; title: string; subtitle: string; rows: (string | null)[][] }> // a null scale: unresolved
+  charts: Record<string, { text: string; title: string; subtitle: string; key: string; rows: (string | null)[][] }> // a null scale: unresolved
 }
 
 const PARTS: Record<string, Part> = Object.fromEntries(
@@ -141,7 +141,7 @@ export function buildGolden(): Golden {
       const doc = parseChart(text).value
       const meta = chartMeta(doc)
       const rows = expandRows(doc).value.map((r) => [r.section, r.bar, r.chord, resolveScale(r)])
-      return [name, { text, title: meta.title, subtitle: meta.subtitle, rows }]
+      return [name, { text, title: meta.title, subtitle: meta.subtitle, key: meta.key, rows }]
     }),
   )
   return {

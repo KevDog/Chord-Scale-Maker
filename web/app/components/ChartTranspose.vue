@@ -1,5 +1,5 @@
 <template>
-  <UiButton outline @click="openDialog"><ArrowsUpDownIcon data-slot="icon" />Transpose…</UiButton>
+  <UiButton outline :disabled="!keyValid" :title="keyValid ? undefined : `Set the chart's key first`" @click="openDialog"><ArrowsUpDownIcon data-slot="icon" />Transpose…</UiButton>
 
   <UiDialog :open="open" size="md" @close="open = false">
     <UiDialogTitle>Transpose chart</UiDialogTitle>
@@ -8,9 +8,7 @@
       <div class="grid grid-cols-2 gap-4">
         <UiField>
           <UiLabel>From key</UiLabel>
-          <UiSelect v-model="from">
-            <option v-for="k in fromKeys" :key="k" :value="k">{{ noteText(k) }}</option>
-          </UiSelect>
+          <UiText class="py-1.5 font-medium">{{ keyLabel(from) }}</UiText>
         </UiField>
         <UiField>
           <UiLabel>To key</UiLabel>
@@ -29,7 +27,7 @@
 
 <script setup lang="ts">
 import { ArrowsUpDownIcon } from '@heroicons/vue/16/solid'
-import { type ChartDoc, chartKey, noteText, TRANSPOSE_KEYS, transposeChart } from '~~/engine'
+import { type ChartDoc, chartMeta, isValidKey, keyLabel, noteText, setMeta, TRANSPOSE_KEYS, transposeChart } from '~~/engine'
 
 /**
  * "Transpose…": rewrites the chart in another concert key (engine/transpose.ts).
@@ -41,17 +39,19 @@ const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; 'transposed': [message
 const open = ref(false)
 const from = ref<string>('C')
 const to = ref<string>('C')
-/** the guessed key leads the list when it isn't one of the usual spellings (C#, G#…) */
-const fromKeys = computed(() => ((TRANSPOSE_KEYS as readonly string[]).includes(from.value) ? TRANSPOSE_KEYS : [from.value, ...TRANSPOSE_KEYS]))
+/** the chart's declared key is the source; Transpose is unavailable until it's a valid key */
+const keyValid = computed(() => isValidKey(chartMeta(props.current()).key))
 
 function openDialog(): void {
-  from.value = chartKey(props.current()) ?? 'C'
+  from.value = chartMeta(props.current()).key.trim()
   to.value = from.value
   open.value = true
 }
 
 function apply(): void {
-  const { doc, skipped } = transposeChart(props.current(), from.value, to.value)
+  const { doc: moved, skipped } = transposeChart(props.current(), from.value, to.value)
+  // the chart's declared key is authoritative, so follow it to the new key (keeping major/minor)
+  const doc = setMeta(moved, 'key', from.value.endsWith('m') ? `${to.value}m` : to.value)
   emit('update:doc', doc)
   const note = skipped ? `; ${skipped} ${skipped === 1 ? 'row' : 'rows'} could not be read and stayed as typed` : ''
   emit('transposed', `Transposed from ${noteText(from.value)} to ${noteText(to.value)}${note}.`)

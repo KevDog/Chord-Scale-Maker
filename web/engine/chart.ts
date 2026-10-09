@@ -166,10 +166,13 @@ const metaValue = (doc: ChartDoc, key: MetaKey, fallback = ''): string =>
 /** the chart's beats a bar, from its `time:` line (4 without one) */
 export const chartBeats = (doc: ChartDoc): 2 | 3 | 4 => beatsPerBar(metaValue(doc, 'time')) ?? 4
 
-/** the title and subtitle as written (what the editor's fields edit) */
-export function chartMeta(doc: ChartDoc): Readonly<{ title: string; subtitle: string }> {
-  return { title: metaValue(doc, 'title', 'Untitled'), subtitle: metaValue(doc, 'subtitle') }
+/** the title, subtitle and key as written (what the editor's fields edit) */
+export function chartMeta(doc: ChartDoc): Readonly<{ title: string; subtitle: string; key: string }> {
+  return { title: metaValue(doc, 'title', 'Untitled'), subtitle: metaValue(doc, 'subtitle'), key: metaValue(doc, 'key') }
 }
+
+/** a valid chart key: a note letter, optional accidental, optional minor "m" ("Eb", "F#m"); nothing else */
+export const isValidKey = (text: string): boolean => /^[A-G][b#]?m?$/.test(text.trim())
 
 /** "Eb" -> "E♭", "F#m" -> "F♯ minor"; anything else as written */
 export function keyLabel(key: string): string {
