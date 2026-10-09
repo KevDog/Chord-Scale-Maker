@@ -20,8 +20,12 @@ export function parseRoot(tok: string): Spelled {
   return { letter: 'CDEFGAB'.indexOf(letter.toUpperCase()) as Letter, acc }
 }
 
-/** "Eb" -> "E♭", "b9" -> "♭9": typed accidentals as music glyphs, for display */
-export const glyphs = (text: string): string => text.replaceAll('b', '♭').replaceAll('#', '♯')
+/**
+ * "Eb" -> "E♭", "b9" -> "♭9": typed accidentals as music glyphs, for display. A `b` flanked by lowercase letters is
+ * part of a word, not a flat (so "Bebop" stays "Bebop", not "Be♭op"); every `#` is a sharp.
+ */
+export const glyphs = (text: string): string =>
+  text.replaceAll('#', '♯').replace(/b/g, (_m, i: number) => (/[a-z]/.test(text[i - 1] ?? '') && /[a-z]/.test(text[i + 1] ?? '') ? 'b' : '♭'))
 
 export const accText = (acc: number): string => (acc > 0 ? '#'.repeat(acc) : 'b'.repeat(-acc))
 export const rootName = (n: Spelled): string => LETTERS[n.letter] + accText(n.acc)
