@@ -12,7 +12,7 @@ source: Colorado Cookbook, p. 252
 A1 | 1  | C7     | C Mixolydian         # extended dominant: V7 of F7
 A1 | 5  | F7     | F Lydian Dominant    # IV7 in C, not resolving: the #11 is in the key
 A1 | 7  | C7     | C Mixolydian         # I7 in C, not resolving: natural tensions
-# area: Ab major (bars 8–44)
+# area: Ab major (bars 8–24)
 A1 | 8  | A7alt  | A Altered            # from the symbol: altered
 A1 | 9  | AbMaj7 | Ab Ionian            # tonic: the 4th is in the key
 A1 | 10 | G7alt  | G Altered            # from the symbol: altered
@@ -28,19 +28,21 @@ A2 | 21 | AbMaj7 | Ab Ionian            # tonic: the 4th is in the key
 A2 | 22 | G7alt  | G Altered            # from the symbol: altered
 A2 | 23 | C7     | C Phrygian Dominant  # III7 in Ab, not resolving: b9 and b13 are in the key
 A2 | 24 | A7alt  | A Altered            # from the symbol: altered
+# area: C major (bars 25–39)
 B  | 25 | Dm7    | D Dorian             # ii of G7: Dorian
-B  | 26 | G7     | G Mixolydian         # passing ii–V: its own key
+B  | 26 | G7     | G Mixolydian         # V7/I in C: natural tensions
 B  | 27 | Em7    | E Dorian             # ii of the ii–V to D minor
 B  | 28 | A7alt  | A Altered            # from the symbol: altered
 B  | 29 | Dm7    | D Dorian             # ii of G7: Dorian
-B  | 30 | G7     | G Mixolydian         # passing ii–V: its own key
+B  | 30 | G7     | G Mixolydian         # V7/I in C: natural tensions
 B  | 31 | Em7    | E Dorian             # ii of the ii–V to D minor
-B  | 31 | A7     | A Altered            # V7/#iv in Ab: b9, #11 and b13 are in the key
+B  | 31 | A7     | A Mixolydian b6      # V7/ii in C: the b13 is in the key
 B  | 32 | Dm7    | D Dorian             # ii of G7: Dorian
 B  | 32 | G7     | G Mixolydian         # extended dominant: V7 of C7
 C  | 33 | C7     | C Mixolydian         # extended dominant: V7 of F7
-C  | 37 | F7     | F Mixolydian b6      # VI7 in Ab, not resolving: the b13 is in the key
-C  | 39 | C7     | C Phrygian Dominant  # III7 in Ab, not resolving: b9 and b13 are in the key
+C  | 37 | F7     | F Lydian Dominant    # IV7 in C, not resolving: the #11 is in the key
+C  | 39 | C7     | C Mixolydian         # I7 in C, not resolving: natural tensions
+# area: Ab major (bars 40–44)
 C  | 40 | A7alt  | A Altered            # from the symbol: altered
 C  | 41 | AbMaj7 | Ab Ionian            # tonic: the 4th is in the key
 C  | 42 | G7alt  | G Altered            # from the symbol: altered

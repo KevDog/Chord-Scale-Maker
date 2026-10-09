@@ -2,6 +2,7 @@ import { type ChartDoc, type ChartLine, expandRowLines } from '../chart'
 import { sameScale } from '../scales'
 import { bluesKey, findCadences, isModal, type Key, localKeys, parseKey, sameKey, scoreKey } from './keys'
 import { type Context, decide, type Decision } from './rules'
+import { numeral } from './numerals'
 import { buildStream } from './stream'
 
 /**
@@ -16,8 +17,11 @@ export { pins } from './rules'
 /** bumped when a rule changes what it gives; saved in each chart's `# analysis:` line */
 export const RULES_VERSION = 1
 
-/** held: a later row of a chord held over several (Gm | Gm), which shares the first row's reason */
-export type RowAnalysis = Readonly<Decision & { row: number; line: number; bar: string; chord: string; key: Key; held: boolean }>
+/**
+ * held: a later row of a chord held over several (Gm | Gm), which shares the first row's reason. numeral: the chord's
+ * Roman numeral in its key area (numerals.ts)
+ */
+export type RowAnalysis = Readonly<Decision & { row: number; line: number; bar: string; chord: string; key: Key; held: boolean; numeral: string }>
 export type Area = Readonly<{ key: Key; from: string; to: string; row: number }>
 export type Analysis = Readonly<{
   key: Key | null
@@ -55,6 +59,7 @@ export function analyse(doc: ChartDoc): Analysis {
   stream.forEach((e, i) => {
     const key = keys[i] ?? global
     const decision = decide(ctx, i)
+    const roman = numeral(ctx, i, decision)
     const prevKey = i > 0 ? keys[i - 1] : undefined
     const firstRow = rows[e.rows[0] ?? 0]
     if (firstRow && (!prevKey || !sameKey(prevKey, key))) areas.push({ key, from: firstRow.bar, to: firstRow.bar, row: e.rows[0] ?? 0 })
@@ -62,7 +67,7 @@ export function analyse(doc: ChartDoc): Analysis {
     for (const [j, r] of e.rows.entries()) {
       const row = rows[r]
       if (!row) continue
-      out.push({ ...decision, row: r, line: row.line, bar: row.bar, chord: row.chord, key, held: j > 0 })
+      out.push({ ...decision, row: r, line: row.line, bar: row.bar, chord: row.chord, key, held: j > 0, numeral: roman })
       if (area) areas[areas.length - 1] = { ...area, to: row.bar }
     }
   })

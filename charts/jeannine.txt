@@ -32,12 +32,13 @@ A2 | 31 | AbMaj7 | Ab Ionian             # tonic: the 4th is in the key
 A2 | 32 | Ebm7   | Eb Dorian             # ii of the ii–V to Db
 A2 | 32 | Ab7    | Ab Mixolydian         # V7/IV in Ab: natural tensions
 B  | 33 | DbMaj7 | Db Lydian             # IV: the #4 is the key’s 7th
-# area: F major (bars 35–38)
+# area: F major (bars 35–36)
 B  | 35 | Gm7    | G Dorian              # ii of the ii–V to F
 B  | 35 | C7     | C Mixolydian          # V7 of F: natural tensions
 B  | 36 | FMaj7  | F Ionian              # tonic: the 4th is in the key
+# area: Ab major (bar 38)
 B  | 38 | Fm7    | F Dorian              # ii of Bb7: Dorian
-B  | 38 | Bb7    | Bb Mixolydian         # passing ii–V: its own key
+B  | 38 | Bb7    | Bb Mixolydian         # V7/V in Ab: natural tensions
 # area: Ab minor (bars 39–41)
 B  | 39 | Bbm7   | Bb Dorian             # ii of the ii–V to Ab minor
 B  | 40 | Eb7    | Eb Phrygian Dominant  # V7 of Ab minor: b9 and b13 are in the key

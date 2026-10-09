@@ -16,15 +16,15 @@ A1 | 3  | Am     | A Dorian                 # ii: Dorian, the key’s own notes
 A1 | 4  | Cm7    | C Dorian                 # ii of F7b9: Dorian
 A1 | 4  | F7b9   | F Half-Whole Diminished  # back door bVII7 to GMaj7: the #11 is in the key, the b9 from the symbol
 A1 | 5  | GMaj7  | G Ionian                 # tonic: the 4th is in the key
-# area: Bb major (bars 5–7)
+# area: Bb major (bars 5–6)
 A1 | 5  | Cm7    | C Dorian                 # ii of the ii–V to Bb
 A1 | 5  | F7     | F Mixolydian             # V7 of Bb: natural tensions
 A1 | 6  | BbMaj7 | Bb Ionian                # tonic: the 4th is in the key
 A1 | 6  | Bbm7   | Bb Dorian                # ii of Eb7: Dorian
 A1 | 6  | Eb7    | Eb Mixolydian            # passing ii–V: its own key
+# area: G major (bars 7–13)
 A1 | 7  | Em11   | E Dorian                 # ii of A13: Dorian
-A1 | 7  | A13    | A Mixolydian             # passing ii–V: its own key
-# area: G major (bars 8–13)
+A1 | 7  | A13    | A Mixolydian             # V7/V in G: natural tensions
 A1 | 8  | Am7    | A Dorian                 # ii of the ii–V to G
 A1 | 8  | D7b9   | D Half-Whole Diminished  # V7 of G: the b9 from the symbol
 A2 | 9  | GMaj7  | G Ionian                 # tonic: the 4th is in the key
@@ -35,15 +35,17 @@ A2 | 11 | Am     | A Dorian                 # ii: Dorian, the key’s own notes
 A2 | 12 | Cm7    | C Dorian                 # ii of F7b9: Dorian
 A2 | 12 | F7b9   | F Half-Whole Diminished  # back door bVII7 to GMaj7: the #11 is in the key, the b9 from the symbol
 A2 | 13 | GMaj7  | G Ionian                 # tonic: the 4th is in the key
-# area: Bb major (bars 13–23)
+# area: Bb major (bars 13–14)
 A2 | 13 | Cm7    | C Dorian                 # ii of the ii–V to Bb
 A2 | 13 | F7     | F Mixolydian             # V7 of Bb: natural tensions
 A2 | 14 | BbMaj7 | Bb Ionian                # tonic: the 4th is in the key
 A2 | 14 | Bbm7   | Bb Dorian                # ii of Eb7: Dorian
 A2 | 14 | Eb7    | Eb Mixolydian            # passing ii–V: its own key
+# area: G major (bars 15–16)
 A2 | 15 | Am11   | A Dorian                 # ii of D9: Dorian
-A2 | 15 | D9     | D Mixolydian             # passing ii–V: its own key
+A2 | 15 | D9     | D Mixolydian             # V7/I in G: natural tensions
 A2 | 16 | Cm6    | C Dorian                 # a minor sixth chord: Dorian
+# area: Bb major (bars 16–22)
 A2 | 16 | B7     | B Lydian Dominant        # tritone substitute: resolves down a half step to BbMaj7
 B  | 17 | BbMaj7 | Bb Ionian                # tonic: the 4th is in the key
 B  | 17 | Gm7    | G Aeolian                # vi: the b13 is in the key
@@ -56,9 +58,9 @@ B  | 21 | Cm7    | C Dorian                 # ii of Cm7/F: Dorian
 B  | 21 | Cm7/F  | F Mixolydian             # static sus: Mixolydian
 B  | 22 | Am7b5  | A Locrian                # iiø7 of D7b9: the b9 is in the key
 B  | 22 | D7b9   | D Phrygian Dominant      # V7/vi in Bb: b9 and b13 are in the key
+# area: G major (bars 23–29)
 B  | 23 | Em11   | E Dorian                 # ii of A13: Dorian
-B  | 23 | A13    | A Mixolydian             # passing ii–V: its own key
-# area: G major (bars 24–29)
+B  | 23 | A13    | A Mixolydian             # V7/V in G: natural tensions
 B  | 24 | Am11   | A Dorian                 # ii of the ii–V to G
 B  | 24 | D7alt  | D Altered                # from the symbol: altered
 A3 | 25 | GMaj7  | G Ionian                 # tonic: the 4th is in the key

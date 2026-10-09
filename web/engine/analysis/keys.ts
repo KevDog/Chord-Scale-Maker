@@ -156,8 +156,27 @@ export function localKeys(stream: readonly Entry[], cadences: readonly Cadence[]
   const keys: Key[] = stream.map(() => global)
   let current = global
   const ordered = [...cadences].sort((a, b) => a.approach - b.approach)
+  // ii–Vs that don't land: in a major area, one implying a chord of the home key but not of the area brings the
+  // home key back
+  // (Lady Bird's Am7 D7 after the Ab section is the ii–V of G, in C)
+  const implied = stream.flatMap((e, i) => {
+    const p = stream[i - 1]
+    if (!isDominantLike(e) || cadences.some((c) => c.dominant === i) || !p || i === 0) return []
+    if (!((p.family === 'minor' || p.family === 'halfdim') && interval(e.pc, p.pc) === 7)) return []
+    return [{ at: i - 1, pc: (e.pc + 5) % 12, minor: p.family === 'halfdim' }]
+  })
   const changes: { at: number; key: Key }[] = []
-  for (const c of ordered) {
+  const events = [...ordered.map((c) => ({ at: c.approach, c })), ...implied.map((x) => ({ at: x.at, x }))].sort((a, b) => a.at - b.at)
+  for (const ev of events) {
+    if ('x' in ev) {
+      const { pc, minor } = ev.x
+      if (!current.minor && !impliedDiatonic(pc, minor, current) && impliedDiatonic(pc, minor, global) && !sameKey(current, global)) {
+        changes.push({ at: ev.at, key: global })
+        current = global
+      }
+      continue
+    }
+    const c = ev.c
     const target = stream[c.target]
     if (!target) continue
     // a minor chord that is itself the ii of the next ii–V passes through (Dm7 G7 | Cm7 F7 | Bb7): no area of its own

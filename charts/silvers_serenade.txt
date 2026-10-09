@@ -14,12 +14,13 @@ A | 3  | Bbm    | Bb Dorian     # a borrowed minor chord: Dorian, its own key
 A | 5  | Am     | A Dorian      # iv: Dorian, the key’s own notes
 A | 7  | Ebm    | Eb Dorian     # a borrowed minor chord: Dorian, its own key
 A | 9  | Am     | A Dorian      # iv: Dorian, the key’s own notes
-# area: Bb major (bars 11–16)
+# area: Bb major (bars 11–14)
 A | 11 | Cm7    | C Dorian      # ii of the ii–V to Bb
 A | 12 | F7     | F Mixolydian  # V7 of Bb: natural tensions
 A | 13 | BbMaj7 | Bb Ionian     # tonic: the 4th is in the key
 A | 13 | Cm7    | C Dorian      # ii: Dorian, the key’s own notes
 A | 14 | Dm7    | D Dorian      # iii: Dorian (its Phrygian would put a b9 over the root)
 A | 14 | EbMaj7 | Eb Lydian     # IV: the #4 is the key’s 7th
+# area: E minor (bars 15–16)
 A | 15 | Am7    | A Dorian      # ii of D7: Dorian
-A | 16 | D7     | D Mixolydian  # passing ii–V: its own key
+A | 16 | D7     | D Mixolydian  # V7/bIII in E minor: natural tensions

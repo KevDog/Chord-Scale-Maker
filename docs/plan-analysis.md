@@ -722,6 +722,7 @@ hand-scaled chart was read. Each refinement below has a test named for it (`web/
 | A cadence into the home tonic comes home | Long Ago and Far Away, `Gm7 C7 \| FMaj7` after a bridge in C | F Lydian (IV of C) | F Ionian |
 | In a minor key, a ii–V–I into a major chord tonicizes it | Bernie's Tune's bridge (B♭ in D minor) | `G7 → Cm7` as "V7/♭vii in D minor" | V7/ii in B♭, Mixolydian ♭6 |
 | Intros, codas, tags and endings sit outside the form | A Night in Tunisia's interlude, Moment's Notice's tag | the form's last chord resolved into the tag | the form wraps to its own top; each such section is analysed around it |
+| In a major area, a ii–V that doesn't land but implies a chord of the home key brings it back | Lady Bird's `Am7 D7` after the A♭ section | ii–V "of VII in A♭" | ii7/V V7/V in C (same scales); Old Devil Moon's and Unit Seven's last A sections home again |
 | A section that starts on the home tonic is home again | Nardis' last A, after a bridge in C, with no cadence back | C Ionian, A Aeolian (in C) | C Lydian, A Dorian (in E minor) |
 | A turnaround into the top carries its key into bar 1 | Giant Steps, `F♯7 \| BMaj7` | B Lydian | B Ionian |
 | An implied ii–V target counts when its triad is in the key | There Will Never Be Another You, `Cm7 F7♯11` | passing ii–V | V7/V in E♭ |

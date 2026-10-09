@@ -174,6 +174,12 @@ describe('analysis: keys (§5)', () => {
     expect(verdict(library('autumn_leaves'), '24 EbMaj7')).toBe('Eb Lydian (M4)') // a tritone cadence doesn't
   })
 
+  it('in a major area, a ii–V that doesn’t land but implies a chord of home brings home back (Lady Bird bars 11–12)', () => {
+    const rows = analyse(parseChart(library('lady_bird')).value).rows
+    expect(rows.filter((r) => r.bar === '11' || r.bar === '12').map((r) => `${r.numeral} ${r.key.name}`)).toEqual(['ii7/V C major', 'V7/V C major'])
+    expect(verdict(library('whisper_not'), '19 Gm')).toMatch(/^G Dorian/) // a minor area keeps its own reading, not v Phrygian
+  })
+
   it('finds modal tunes', () => {
     for (const name of ['so_what', 'maiden_voyage', 'footprints']) expect(analyse(parseChart(library(name)).value).context, name).toBe('modal')
     expect(analyse(parseChart(library('stella_by_starlight')).value).context).toBe('functional')
@@ -191,6 +197,21 @@ describe('analysis: intros and codas outside the form', () => {
 
   it('names them by section: Intro, Coda, Tag, Ending, with a number or not', () => {
     expect(['Intro', 'coda', 'Tag 2', 'Ending', 'A', 'Introduction', 'B2'].map(formPart)).toEqual(['before', 'after', 'after', 'after', 'form', 'form', 'form'])
+  })
+})
+
+describe('analysis: numerals', () => {
+  const numerals = (name: string, bars: readonly string[]) =>
+    analyse(parseChart(library(name)).value).rows.filter((r) => bars.includes(r.bar)).map((r) => `${r.chord} ${r.numeral}`)
+
+  it('name each chord’s degree and quality in its key area, and what a dominant or a ii leads to', () => {
+    expect(numerals('rhythm_changes', ['1', '2', '17', '19', '21', '23'])).toEqual(['Bb6 I6', 'G7b9 V7/ii', 'Cm7 ii7', 'F7 V7', 'D7 III7', 'G7 VI7', 'C7 II7', 'F7 V7'])
+    expect(numerals('stella_by_starlight', ['1', '2', '12', '13', '29', '30'])).toEqual([
+      'Em7b5 iiø7/iii', 'A7b9 V7/iii', 'Bbm7 iv7/V', 'Eb7 ♭VII7/V', 'FMaj7 Vmaj7', 'Cm7b5 iiø7', 'F7b9 V7',
+    ])
+    expect(numerals('autumn_leaves', ['1', '2', '5', '6', '7', '23', '24'])).toEqual([
+      'Cm7 ii7/♭III', 'F7 V7/♭III', 'Am7b5 iiø7', 'D7 V7', 'Gm i', 'Bm7 ii7/II', 'E7 subV7/♭VI', 'EbMaj7 ♭VImaj7',
+    ])
   })
 })
 

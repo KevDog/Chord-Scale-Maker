@@ -24,7 +24,7 @@ function build(): string {
         {
           key: `${a.key?.name ?? 'none'} (${a.keyFrom}, ${a.context})`,
           areas: a.areas.map((x) => `${x.key.name} ${x.from}–${x.to}`),
-          rows: a.rows.map((r) => `${r.bar} ${r.chord} → ${r.scale ?? '?'} (${r.rule}) ${r.reason.startsWith(r.fn) ? r.reason : `${r.fn} — ${r.reason}`}`),
+          rows: a.rows.map((r) => `${r.bar} ${r.chord} [${r.numeral}] → ${r.scale ?? '?'} (${r.rule}) ${r.reason.startsWith(r.fn) ? r.reason : `${r.fn} — ${r.reason}`}`),
         },
       ]
     }),

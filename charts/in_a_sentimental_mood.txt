@@ -36,7 +36,7 @@ A2 | 14 | D7     | D Mixolydian b6           # V7/ii in F: the b13 is in the key
 A2 | 15 | Gm7    | G Dorian                  # ii of the ii–V to F
 A2 | 15 | C7     | C Mixolydian              # V7 of F: natural tensions
 A2 | 16 | FMaj7  | F Ionian                  # tonic: the 4th is in the key
-# area: Db major (bars 16–25)
+# area: Db major (bars 16–22)
 A2 | 16 | Ebm7   | Eb Dorian                 # ii of the ii–V to Db
 A2 | 16 | Ab7    | Ab Mixolydian             # V7 of Db: natural tensions
 B  | 17 | DbMaj7 | Db Ionian                 # tonic: the 4th is in the key
@@ -51,10 +51,10 @@ B  | 21 | DbMaj7 | Db Ionian                 # tonic: the 4th is in the key
 B  | 21 | Bbm7   | Bb Aeolian                # vi: the b13 is in the key
 B  | 22 | Ebm7   | Eb Dorian                 # ii of Ab7: Dorian
 B  | 22 | Ab7    | Ab Lydian Dominant        # tritone substitute: resolves down a half step to Gm7
+# area: F major (bars 23–32)
 B  | 23 | Gm7    | G Dorian                  # ii of C7: Dorian
-B  | 23 | C7     | C Mixolydian              # passing ii–V: its own key
-C  | 25 | Bm7b5  | B Locrian                 # bviiø7 in Db: the b9 is in the key
-# area: F major (bars 25–32)
+B  | 23 | C7     | C Mixolydian              # V7/I in F: natural tensions
+C  | 25 | Bm7b5  | B Locrian                 # #ivø7 in F: the b9 is in the key
 C  | 25 | Bb13   | Bb Lydian Dominant        # tritone substitute: resolves down a half step to Am7
 C  | 26 | Am7    | A Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
 C  | 26 | Abdim7 | Ab Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord

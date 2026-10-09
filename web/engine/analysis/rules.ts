@@ -45,7 +45,7 @@ const NAME = {
 
 const DEGREES = ['I', 'bII', 'II', 'bIII', 'III', 'IV', '#IV', 'V', 'bVI', 'VI', 'bVII', 'VII']
 /** "ii", "bVII", "V": the entry's degree in the key, lower case for minor-type chords */
-function roman(e: Pick<Entry, 'pc' | 'family'>, key: Key): string {
+export function roman(e: Pick<Entry, 'pc' | 'family'>, key: Key): string {
   const d = DEGREES[interval(key.tonic, e.pc)] ?? '?'
   return e.family === 'minor' || e.family === 'halfdim' || e.family === 'dim' ? d.toLowerCase() : d
 }

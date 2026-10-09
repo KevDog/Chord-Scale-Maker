@@ -13,30 +13,32 @@ A1 | 3  | Bm7b5  | B Locrian                # iiø7 of the ii–V to A minor: th
 A1 | 4  | E7b9   | E Phrygian Dominant      # V7 of A minor: b9 and b13 are in the key
 A1 | 5  | Am7    | A Dorian                 # ii of the ii–V to G minor
 A1 | 5  | D7     | D Mixolydian             # V7/bvii in A minor: natural tensions
-# area: F major (bars 6–13)
+# area: F major (bars 6–7)
 A1 | 6  | Gm7    | G Dorian                 # ii of the ii–V to F
 A1 | 6  | C7b9   | C Half-Whole Diminished  # V7 of F: the b9 from the symbol
 A1 | 7  | F6     | F Ionian                 # tonic: the 4th is in the key
+# area: A minor (bars 9–21)
 B1 | 9  | F#m7b5 | F# Locrian               # iiø7 of B7b9: the b9 is in the key
-B1 | 10 | B7b9   | B Phrygian Dominant      # V7/vii in F: b9 and b13 are in the key
+B1 | 10 | B7b9   | B Phrygian Dominant      # V7/v in A minor: b9 and b13 are in the key
 B1 | 11 | Em7b5  | E Locrian                # iiø7 of A7b9: the b9 is in the key
-B1 | 12 | A7b9   | A Phrygian Dominant      # V7/vi in F: b9 and b13 are in the key
-B1 | 13 | Dm7b5  | D Locrian                # viø7 in F: the b9 is in the key
-# area: A minor (bars 14–21)
+B1 | 12 | A7b9   | A Phrygian Dominant      # V7/iv in A minor: the b13 is in the key, the b9 from the symbol
+B1 | 13 | Dm7b5  | D Locrian                # ivø7 in A minor: the b9 is in the key
 B1 | 14 | Bm7b5  | B Locrian                # iiø7 of the ii–V to A minor: the b9 is in the key
 B1 | 14 | E7b9   | E Phrygian Dominant      # V7 of A minor: b9 and b13 are in the key
 B1 | 15 | Am7    | A Dorian                 # tonic minor: Dorian by convention
 B1 | 16 | Bb7#11 | Bb Lydian Dominant       # tritone substitute: resolves down a half step to Am7
 @copy A1 A2 16
+# area: A minor (bars 25–31)
 B2 | 25 | F#m7b5 | F# Locrian               # iiø7 of B7b9: the b9 is in the key
-B2 | 26 | B7b9   | B Phrygian Dominant      # V7/vii in F: b9 and b13 are in the key
+B2 | 26 | B7b9   | B Phrygian Dominant      # V7/v in A minor: b9 and b13 are in the key
 B2 | 27 | Em7b5  | E Locrian                # iiø7 of A7b9: the b9 is in the key
-B2 | 28 | A7b9   | A Phrygian Dominant      # V7/vi in F: b9 and b13 are in the key
-B2 | 29 | Dm7b5  | D Locrian                # viø7 in F: the b9 is in the key
+B2 | 28 | A7b9   | A Phrygian Dominant      # V7/iv in A minor: the b13 is in the key, the b9 from the symbol
+B2 | 29 | Dm7b5  | D Locrian                # ivø7 in A minor: the b9 is in the key
 B2 | 30 | Bm7b5  | B Locrian                # iiø7 of the ii–V to A minor: the b9 is in the key
-B2 | 30 | E7b9   | E Phrygian Dominant      # V7/iii in F: b9 and b13 are in the key
+B2 | 30 | E7b9   | E Phrygian Dominant      # V7 of A minor: b9 and b13 are in the key
 B2 | 31 | Am7    | A Dorian                 # ii of the ii–V to G minor
-B2 | 31 | D7     | D Mixolydian b6          # V7/ii in F: the b13 is in the key
+B2 | 31 | D7     | D Mixolydian             # V7/bvii in A minor: natural tensions
+# area: F major (bars 32–37)
 B2 | 32 | Gm7    | G Dorian                 # ii of the ii–V to F
 B2 | 32 | C7b9   | C Half-Whole Diminished  # V7 of F: the b9 from the symbol
 C  | 33 | F6     | F Ionian                 # tonic: the 4th is in the key
