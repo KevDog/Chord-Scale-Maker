@@ -1,5 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { accFor, enharmonics, glyphs, mod, parseRoot, pcOf, rootName, shiftBy } from '../pitch'
+import { accFor, enharmonics, glyphs, mod, parseRoot, pcOf, rootName, shiftBy, spellEqual } from '../pitch'
+
+describe('spellEqual', () => {
+  it('compares a spelled note by letter and accidental', () => {
+    expect(spellEqual(parseRoot('Eb'), parseRoot('Eb'))).toBe(true)
+    expect(spellEqual(parseRoot('Eb'), parseRoot('D#'))).toBe(false) // same pitch, different spelling
+    expect(spellEqual(parseRoot('E'), parseRoot('F'))).toBe(false)
+  })
+})
 
 describe('shiftBy', () => {
   it('moves a note by letters and semitones, respelling the accidental', () => {

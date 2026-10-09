@@ -1,4 +1,4 @@
-import { type Spelled, accFor, enharmonics, mod, NAT_PC, parseRoot, pcOf, rootName, toLetter } from './pitch'
+import { type Spelled, accFor, enharmonics, mod, NAT_PC, parseRoot, pcOf, rootName, spellEqual, toLetter } from './pitch'
 
 /**
  * Scales from degree formulas (never hand-typed note lists), their names and aliases, and simplifyRoot: the
@@ -156,7 +156,7 @@ export function sameScale(a: string, b: string | null | undefined): boolean {
   if (a === b) return true
   try {
     const [x, y] = [parseScale(a), parseScale(b)]
-    return x.key === y.key && x.root.letter === y.root.letter && x.root.acc === y.root.acc
+    return x.key === y.key && spellEqual(x.root, y.root)
   } catch {
     return false
   }
