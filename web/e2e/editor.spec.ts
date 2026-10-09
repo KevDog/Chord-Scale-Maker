@@ -230,3 +230,19 @@ test('a waltz’s guide tones are in 3/4: dotted halves, three beats a bar', asy
   await expect(line1.locator('.vf-timesignature, g.vf-timesignature').first()).toBeAttached()
   await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
 })
+
+test('the preview toolbar is one row on a desktop, in every sheet', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto('/editor?chart=autumn_leaves')
+  await page.getByText('From C', { exact: true }).click() // Scales with its Start on menu: the most controls
+  const tops = () =>
+    page.locator('#preview-heading').locator('xpath=following-sibling::*[1]').evaluate((el) => {
+      const row = el.firstElementChild as HTMLElement
+      return new Set([...row.children].map((c) => Math.round(c.getBoundingClientRect().bottom))).size
+    })
+  for (const sheet of ['Scales', 'Guide tones', 'Changes']) {
+    await page.getByRole('group', { name: 'Sheet' }).getByText(sheet, { exact: true }).click()
+    expect(await tops(), sheet).toBe(1)
+  }
+})
+

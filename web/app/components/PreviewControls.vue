@@ -1,8 +1,9 @@
 <template>
   <div class="space-y-4">
-    <div class="flex flex-wrap items-end gap-4">
+    <!-- one row on a desktop in every sheet, Scales (the most controls, with From C) included -->
+    <div class="flex flex-wrap items-end gap-3">
       <SegmentedControl v-if="sheets.length > 1" v-model="sheet" legend="Sheet" name="sheet" :options="sheets" />
-      <UiField class="w-60">
+      <UiField class="w-44">
         <UiLabel>Instrument</UiLabel>
         <UiListbox v-model="instrument">
           <template #selected="{ value }"><UiListboxLabel>{{ instrumentOption(value) }}</UiListboxLabel></template>
@@ -15,7 +16,7 @@
         </UiListbox>
       </UiField>
       <SegmentedControl v-if="sheet === 'scales'" v-model="mode" legend="Where each scale starts" name="mode" :options="modes" />
-      <UiField v-if="sheet === 'scales' && mode === 'from'" class="w-28">
+      <UiField v-if="sheet === 'scales' && mode === 'from'" class="w-20">
         <UiLabel>Start on</UiLabel>
         <UiSelect v-model="start" aria-describedby="start-help">
           <option v-for="r in PICKER_ROOTS" :key="r" :value="r">{{ noteText(r) }}</option>
