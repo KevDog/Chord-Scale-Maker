@@ -23,7 +23,7 @@ describe('the Changes sheet', () => {
     const bar3 = bars('autumn_leaves')[2]
     expect(bar3?.chords.map((c) => [c.text, c.beat, c.numeral, c.scale])).toEqual([
       ['Bm7', 0, 'ii7/II', 'B Dorian'],
-      ['E7', 2, 'V7/II', 'E Mixolydian'],
+      ['E7', 2, 'V7/II', 'E Mixo'],
     ])
   })
 
@@ -47,6 +47,24 @@ describe('the Changes sheet', () => {
 
   it('counts a waltz in 3', () => {
     expect(buildChanges(library('someday_my_prince_will_come'), CONCERT).beats).toBe(3)
+  })
+})
+
+describe('scale labels', () => {
+  const chords = (text: string) =>
+    buildChanges(parseChart(text).value, CONCERT).lines.map((l) => l.bars.flatMap((b) => b.chords.map((c) => [c.text, c.scale])))
+
+  it('abbreviates scale names and blanks a scale that repeats the previous chord on the same line', () => {
+    const text = ['key: C', 'A | 1 | Dm7', 'A | 2 | Dm7', 'A | 3 | G7', 'A | 4 | G7'].join('\n') + '\n'
+    const line0 = chords(text)[0]!
+    expect(line0.map((c) => c[1])).toEqual(['D Dorian', null, 'G Mixo', null])
+  })
+
+  it('always shows the first chord of a line, even if it repeats the previous line', () => {
+    const text = ['key: C', 'A | 1 | Dm7', 'A | 2 | Dm7', 'A | 3 | Dm7', 'A | 4 | Dm7', 'A | 5 | Dm7'].join('\n') + '\n'
+    const lines = chords(text)
+    expect(lines[0]!.map((c) => c[1])).toEqual(['D Dorian', null, null, null])
+    expect(lines[1]![0]![1]).toBe('D Dorian')
   })
 })
 
