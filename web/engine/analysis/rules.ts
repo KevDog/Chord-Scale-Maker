@@ -1,5 +1,5 @@
 import { rootName } from '../pitch'
-import { degree, diatonic, hasRelatedII, impliedDiatonic, isDominantLike, type Key, makeKey, reference } from './keys'
+import { degree, diatonic, hasRelatedII, impliedDiatonic, isDominantLike, type Key, keyText, makeKey, reference } from './keys'
 import { downFifth, downHalf, type Entry, interval, nextOf, prevOf } from './stream'
 
 /**
@@ -49,8 +49,6 @@ export function roman(e: Pick<Entry, 'pc' | 'family'>, key: Key): string {
   const d = DEGREES[interval(key.tonic, e.pc)] ?? '?'
   return e.family === 'minor' || e.family === 'halfdim' || e.family === 'dim' ? d.toLowerCase() : d
 }
-/** "Bb" for a major key, "G minor" for a minor one */
-const keyText = (key: Key): string => (key.minor ? key.name : key.name.replace(/ major$/, ''))
 
 const named = (e: Entry, scale: string): string => `${e.root ? rootName(e.root) : '?'} ${scale}`
 

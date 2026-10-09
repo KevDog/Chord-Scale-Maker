@@ -8,6 +8,9 @@ import { downFifth, downHalf, type Entry, type Family, interval, nextOf, prevOf 
 export type Key = Readonly<{ tonic: number; minor: boolean; name: string }>
 
 export const makeKey = (root: Spelled, minor: boolean): Key => ({ tonic: pcOf(root), minor, name: `${rootName(root)} ${minor ? 'minor' : 'major'}` })
+
+/** a key as a label: "C major" -> "C", "A minor" -> "A minor" (the ambient major is unspoken) */
+export const keyText = (key: Key): string => (key.minor ? key.name : key.name.replace(/ major$/, ''))
 export const sameKey = (a: Key, b: Key): boolean => a.tonic === b.tonic && a.minor === b.minor
 
 /** a `key:` meta value: "Eb", "F#m", "Bb minor", "C-"; null if it isn't one */
