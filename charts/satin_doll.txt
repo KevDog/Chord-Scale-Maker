@@ -7,7 +7,7 @@ source: Colorado Cookbook, p. 191
 # analysis: 2026-10-08, rules v1; C
 
 # section | bar | chord | scale
-# the intro vamp is left out
+# the intro vamp is melody only (no chords) and is left out
 A1 | 1  | Dm7   | D Dorian            # ii of G7: Dorian
 A1 | 1  | G7    | G Mixolydian        # V7/I in C: natural tensions
 A1 | 2  | Dm7   | D Dorian            # ii of G7: Dorian

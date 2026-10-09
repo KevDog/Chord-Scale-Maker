@@ -4,42 +4,44 @@ style: Medium up
 key: Cm
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 248
-# analysis: 2026-10-08, rules v1; C minor
+# analysis: 2026-10-09, rules v1; C minor
 
 # section | bar | chord | scale
-# the 8-bar Abm tag after the head is left out
 # area: C minor (bars 1–2)
-A | 1  | Cm     | C Dorian              # tonic minor: Dorian by convention
-A | 2  | G7alt  | G Altered             # from the symbol: altered
+Tag | 1  | Abm    | Ab Dorian             # a borrowed minor chord: Dorian, its own key
+Tag | 5  | Abm    | Ab Dorian
+# the tag is an 8-bar Abm vamp after the head
+A   | 1  | Cm     | C Dorian              # tonic minor: Dorian by convention
+A   | 2  | G7alt  | G Altered             # from the symbol: altered
 # area: Bb minor (bars 3–8)
-A | 3  | Cm     | C Dorian              # ii of the ii–V to Bb minor
-A | 4  | F7     | F Phrygian Dominant   # V7 of Bb minor: b9 and b13 are in the key
-A | 5  | Bbm    | Bb Dorian             # tonic minor: Dorian by convention
-A | 6  | F7b9   | F Phrygian Dominant   # V7 of Bb minor: b9 and b13 are in the key
-A | 7  | Bbm    | Bb Dorian             # tonic minor: Dorian by convention
-A | 8  | Fm7b5  | F Locrian             # iiø7 of the ii–V to Eb minor: the b9 is in the key
-A | 8  | Bb7alt | Bb Altered            # from the symbol: altered
+A   | 3  | Cm     | C Dorian              # ii of the ii–V to Bb minor
+A   | 4  | F7     | F Phrygian Dominant   # V7 of Bb minor: b9 and b13 are in the key
+A   | 5  | Bbm    | Bb Dorian             # tonic minor: Dorian by convention
+A   | 6  | F7b9   | F Phrygian Dominant   # V7 of Bb minor: b9 and b13 are in the key
+A   | 7  | Bbm    | Bb Dorian             # tonic minor: Dorian by convention
+A   | 8  | Fm7b5  | F Locrian             # iiø7 of the ii–V to Eb minor: the b9 is in the key
+A   | 8  | Bb7alt | Bb Altered            # from the symbol: altered
 # area: C# minor (bars 9–13)
-B | 9  | Ebm    | Eb Dorian             # ii of the ii–V to C# minor
-B | 11 | Ab7    | Ab Phrygian Dominant  # V7 of C# minor: b9 and b13 are in the key
-B | 13 | C#m    | C# Dorian             # tonic minor: Dorian by convention
+B   | 9  | Ebm    | Eb Dorian             # ii of the ii–V to C# minor
+B   | 11 | Ab7    | Ab Phrygian Dominant  # V7 of C# minor: b9 and b13 are in the key
+B   | 13 | C#m    | C# Dorian             # tonic minor: Dorian by convention
 # area: C minor (bars 15–19)
-B | 15 | G7alt  | G Altered             # from the symbol: altered
-C | 17 | Cm     | C Dorian              # tonic minor: Dorian by convention
-C | 18 | G7alt  | G Altered             # from the symbol: altered
-C | 19 | Cm     | C Dorian              # tonic minor: Dorian by convention
+B   | 15 | G7alt  | G Altered             # from the symbol: altered
+C   | 17 | Cm     | C Dorian              # tonic minor: Dorian by convention
+C   | 18 | G7alt  | G Altered             # from the symbol: altered
+C   | 19 | Cm     | C Dorian              # tonic minor: Dorian by convention
 # area: Db major (bars 20–28)
-C | 20 | Ebm11  | Eb Dorian             # ii of the ii–V to Db
-C | 20 | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
-C | 21 | DbMaj7 | Db Ionian             # tonic: the 4th is in the key
-C | 22 | C7alt  | C Altered             # from the symbol: altered
-C | 23 | Fm     | F Dorian              # iii: Dorian (its Phrygian would put a b9 over the root)
-C | 24 | F7alt  | F Altered             # from the symbol: altered
-D | 25 | Bbm7   | Bb Dorian             # ii of Eb7alt: Dorian
-D | 26 | Eb7alt | Eb Altered            # from the symbol: altered
-D | 27 | Cm7    | C Dorian              # ii of the ii–V to Bb minor
-D | 28 | F7alt  | F Altered             # from the symbol: altered
+C   | 20 | Ebm11  | Eb Dorian             # ii of the ii–V to Db
+C   | 20 | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
+C   | 21 | DbMaj7 | Db Ionian             # tonic: the 4th is in the key
+C   | 22 | C7alt  | C Altered             # from the symbol: altered
+C   | 23 | Fm     | F Dorian              # iii: Dorian (its Phrygian would put a b9 over the root)
+C   | 24 | F7alt  | F Altered             # from the symbol: altered
+D   | 25 | Bbm7   | Bb Dorian             # ii of Eb7alt: Dorian
+D   | 26 | Eb7alt | Eb Altered            # from the symbol: altered
+D   | 27 | Cm7    | C Dorian              # ii of the ii–V to Bb minor
+D   | 28 | F7alt  | F Altered             # from the symbol: altered
 # area: Ab minor (bars 29–31)
-D | 29 | Bbm7   | Bb Dorian             # ii of the ii–V to Ab minor
-D | 30 | Eb7alt | Eb Altered            # from the symbol: altered
-D | 31 | Abm    | Ab Dorian             # tonic minor: Dorian by convention
+D   | 29 | Bbm7   | Bb Dorian             # ii of the ii–V to Ab minor
+D   | 30 | Eb7alt | Eb Altered            # from the symbol: altered
+D   | 31 | Abm    | Ab Dorian             # tonic minor: Dorian by convention

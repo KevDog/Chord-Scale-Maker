@@ -4,27 +4,28 @@ style: Latin
 key: Am
 form: AB, 16 bars
 source: Colorado Cookbook, p. 178
-# analysis: 2026-10-08, rules v1; A minor
+# analysis: 2026-10-09, rules v1; A minor
 
 # section | bar | chord | scale
-# the bass intro is left out
 # area: A minor (bars 1–5)
-A | 1  | Am     | A Dorian       # tonic minor: Dorian by convention
-A | 5  | Cm     | C Dorian       # a borrowed minor chord: Dorian, its own key
+Intro | 1  | Am     | A Dorian       # tonic minor: Dorian by convention
+# the intro is a 4-bar Am bass solo
+A     | 1  | Am     | A Dorian       # tonic minor: Dorian by convention
+A     | 5  | Cm     | C Dorian       # a borrowed minor chord: Dorian, its own key
 # area: Bb major (bars 8–9)
-A | 8  | Cm7    | C Dorian       # ii of the ii–V to Bb
-A | 8  | F7     | F Mixolydian   # V7 of Bb: natural tensions
-B | 9  | BbMaj7 | Bb Ionian      # tonic: the 4th is in the key
+A     | 8  | Cm7    | C Dorian       # ii of the ii–V to Bb
+A     | 8  | F7     | F Mixolydian   # V7 of Bb: natural tensions
+B     | 9  | BbMaj7 | Bb Ionian      # tonic: the 4th is in the key
 # area: Ab major (bars 10–11)
-B | 10 | Bbm7   | Bb Dorian      # ii of the ii–V to Ab
-B | 10 | Eb7    | Eb Mixolydian  # V7 of Ab: natural tensions
-B | 11 | AbMaj7 | Ab Ionian      # tonic: the 4th is in the key
+B     | 10 | Bbm7   | Bb Dorian      # ii of the ii–V to Ab
+B     | 10 | Eb7    | Eb Mixolydian  # V7 of Ab: natural tensions
+B     | 11 | AbMaj7 | Ab Ionian      # tonic: the 4th is in the key
 # area: Gb major (bars 12–13)
-B | 12 | Abm7   | Ab Dorian      # ii of the ii–V to Gb
-B | 12 | Db7    | Db Mixolydian  # V7 of Gb: natural tensions
-B | 13 | GbMaj7 | Gb Ionian      # tonic: the 4th is in the key
+B     | 12 | Abm7   | Ab Dorian      # ii of the ii–V to Gb
+B     | 12 | Db7    | Db Mixolydian  # V7 of Gb: natural tensions
+B     | 13 | GbMaj7 | Gb Ionian      # tonic: the 4th is in the key
 # area: A minor (bars 14–16)
-B | 14 | Gm7    | G Dorian       # ii of the ii–V to F
-B | 14 | C7     | C Mixolydian   # V7/bVI in A minor: natural tensions
-B | 15 | FMaj7  | F Lydian       # a non-tonic major chord: Lydian
-B | 16 | E7alt  | E Altered      # from the symbol: altered
+B     | 14 | Gm7    | G Dorian       # ii of the ii–V to F
+B     | 14 | C7     | C Mixolydian   # V7/bVI in A minor: natural tensions
+B     | 15 | FMaj7  | F Lydian       # a non-tonic major chord: Lydian
+B     | 16 | E7alt  | E Altered      # from the symbol: altered

@@ -8,10 +8,12 @@ picked up.
 The sheet is live ([plan-changes.md](plan-changes.md)). Still to come: 1st and 2nd endings, D.C./segno navigation and
 coda symbols.
 
-## Next
+## Done
 
 ### The cookbook's intros and codas
 
-Intros, codas, tags and endings now have a home (sections named `Intro`, `Coda`, `Tag`, `Ending`: outside the
-form). The 222 Colorado Cookbook charts left them out, and 43 say so in a comment (`# the intro vamp (Db7#9 C7#9)
-… is left out`); they can be transcribed from the lead sheets.
+Intros, codas, tags and endings have a home (sections named `Intro`, `Coda`, `Tag`, `Ending`: outside the form).
+The charts that noted a left-out intro, coda, tag or verse have had it transcribed from the lead sheets — played
+chord-stab intros, coda turnarounds, tags and the odd verse (Stardust). The ones whose "left out" note is a melody
+line with no chords (a horn intro) say so; a left-out *form* section or a sheet's *alternate* chords (Jingle Bells'
+head, Cherokee's reharmonisations) are out of scope — they're not intros or codas.

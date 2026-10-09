@@ -4,46 +4,50 @@ style: Medium
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 162
-# analysis: 2026-10-08, rules v1; F
+# analysis: 2026-10-09, rules v1; F
 
 # section | bar | chord | scale
-# the Killer Joe style intro (F7 Eb7) is left out
 # area: F major (bars 1–12)
-A | 1  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
-A | 2  | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-A | 3  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
-A | 4  | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-A | 5  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
-A | 6  | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-A | 7  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
-A | 8  | Cm7    | C Dorian                 # ii of the ii–V to Bb
-A | 8  | F7b9   | F Half-Whole Diminished  # V7/IV in F: the b9 from the symbol
-B | 9  | BbMaj7 | Bb Lydian                # IV: the #4 is the key’s 7th
-B | 11 | Bbm7   | Bb Dorian                # ii of the ii–V to Ab minor
-B | 12 | Eb7    | Eb Lydian Dominant       # V7/biii in F: the #11 is in the key
+Intro | 1  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
+Intro | 2  | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+Intro | 3  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
+Intro | 4  | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+# the Killer Joe style intro (F7 Eb7, slashes)
+A     | 1  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
+A     | 2  | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A     | 3  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
+A     | 4  | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A     | 5  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
+A     | 6  | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A     | 7  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
+A     | 8  | Cm7    | C Dorian                 # ii of the ii–V to Bb
+A     | 8  | F7b9   | F Half-Whole Diminished  # V7/IV in F: the b9 from the symbol
+B     | 9  | BbMaj7 | Bb Lydian                # IV: the #4 is the key’s 7th
+B     | 11 | Bbm7   | Bb Dorian                # ii of the ii–V to Ab minor
+B     | 12 | Eb7    | Eb Lydian Dominant       # V7/biii in F: the #11 is in the key
 # area: Gb major (bars 13–17)
-B | 13 | Abm7   | Ab Dorian                # ii of the ii–V to Gb
-B | 13 | Db7    | Db Mixolydian            # V7 of Gb: natural tensions
-B | 14 | GbMaj7 | Gb Ionian                # tonic: the 4th is in the key
-B | 14 | C7     | C Mixolydian             # extended dominant: V7 of F7
-B | 15 | F7     | F Phrygian Dominant      # VII7 in Gb, not resolving: b9 and b13 are in the key
-B | 16 | Eb7    | Eb Mixolydian b6         # VI7 in Gb, not resolving: the b13 is in the key
-C | 17 | F7     | F Phrygian Dominant      # VII7 in Gb, not resolving: b9 and b13 are in the key
+B     | 13 | Abm7   | Ab Dorian                # ii of the ii–V to Gb
+B     | 13 | Db7    | Db Mixolydian            # V7 of Gb: natural tensions
+B     | 14 | GbMaj7 | Gb Ionian                # tonic: the 4th is in the key
+B     | 14 | C7     | C Mixolydian             # extended dominant: V7 of F7
+B     | 15 | F7     | F Phrygian Dominant      # VII7 in Gb, not resolving: b9 and b13 are in the key
+B     | 16 | Eb7    | Eb Mixolydian b6         # VI7 in Gb, not resolving: the b13 is in the key
+C     | 17 | F7     | F Phrygian Dominant      # VII7 in Gb, not resolving: b9 and b13 are in the key
 # area: D major (bars 18–19)
-C | 18 | Eb7    | Eb Lydian Dominant       # tritone substitute: resolves down a half step to DMaj7
-C | 19 | DMaj7  | D Ionian                 # tonic: the 4th is in the key
+C     | 18 | Eb7    | Eb Lydian Dominant       # tritone substitute: resolves down a half step to DMaj7
+C     | 19 | DMaj7  | D Ionian                 # tonic: the 4th is in the key
 # area: F major (bars 21–32)
-C | 21 | Dm7    | D Dorian                 # ii of G7: Dorian
-C | 22 | G7     | G Mixolydian             # V7/V in F: natural tensions
-C | 23 | Gm7    | G Dorian                 # ii of C7: Dorian
-C | 24 | C7     | C Mixolydian             # extended dominant: V7 of F7
-D | 25 | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
-D | 26 | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-D | 27 | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
-D | 28 | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-D | 29 | Am7    | A Dorian                 # ii of the ii–V to G minor
-D | 29 | D7     | D Mixolydian b6          # V7/ii in F: the b13 is in the key
-D | 30 | Gm7    | G Dorian                 # ii of C7: Dorian
-D | 30 | C7     | C Mixolydian             # extended dominant: V7 of F7
-D | 31 | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
-D | 32 | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+C     | 21 | Dm7    | D Dorian                 # ii of G7: Dorian
+C     | 22 | G7     | G Mixolydian             # V7/V in F: natural tensions
+C     | 23 | Gm7    | G Dorian                 # ii of C7: Dorian
+C     | 24 | C7     | C Mixolydian             # extended dominant: V7 of F7
+D     | 25 | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
+D     | 26 | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+D     | 27 | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
+D     | 28 | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+D     | 29 | Am7    | A Dorian                 # ii of the ii–V to G minor
+D     | 29 | D7     | D Mixolydian b6          # V7/ii in F: the b13 is in the key
+D     | 30 | Gm7    | G Dorian                 # ii of C7: Dorian
+D     | 30 | C7     | C Mixolydian             # extended dominant: V7 of F7
+D     | 31 | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
+D     | 32 | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key

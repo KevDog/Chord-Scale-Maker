@@ -4,23 +4,25 @@ style: Medium
 key: Em
 form: A, 16 bars
 source: Colorado Cookbook, p. 198
-# analysis: 2026-10-08, rules v1; E minor
+# analysis: 2026-10-09, rules v1; E minor
 
 # section | bar | chord | scale
-# the coda is left out
 # area: E minor (bars 1–9)
-A | 1  | Em     | E Dorian      # tonic minor: Dorian by convention
-A | 3  | Bbm    | Bb Dorian     # a borrowed minor chord: Dorian, its own key
-A | 5  | Am     | A Dorian      # iv: Dorian, the key’s own notes
-A | 7  | Ebm    | Eb Dorian     # a borrowed minor chord: Dorian, its own key
-A | 9  | Am     | A Dorian      # iv: Dorian, the key’s own notes
+Coda | 1  | D7       | D Mixolydian  # V7/bIII in E minor: natural tensions
+Coda | 3  | GMaj7#11 | G Lydian      # from the symbol: #11
+# the coda is D7, a cadenza, then GMaj7#11
+A    | 1  | Em       | E Dorian      # tonic minor: Dorian by convention
+A    | 3  | Bbm      | Bb Dorian     # a borrowed minor chord: Dorian, its own key
+A    | 5  | Am       | A Dorian      # iv: Dorian, the key’s own notes
+A    | 7  | Ebm      | Eb Dorian     # a borrowed minor chord: Dorian, its own key
+A    | 9  | Am       | A Dorian      # iv: Dorian, the key’s own notes
 # area: Bb major (bars 11–14)
-A | 11 | Cm7    | C Dorian      # ii of the ii–V to Bb
-A | 12 | F7     | F Mixolydian  # V7 of Bb: natural tensions
-A | 13 | BbMaj7 | Bb Ionian     # tonic: the 4th is in the key
-A | 13 | Cm7    | C Dorian      # ii: Dorian, the key’s own notes
-A | 14 | Dm7    | D Dorian      # iii: Dorian (its Phrygian would put a b9 over the root)
-A | 14 | EbMaj7 | Eb Lydian     # IV: the #4 is the key’s 7th
+A    | 11 | Cm7      | C Dorian      # ii of the ii–V to Bb
+A    | 12 | F7       | F Mixolydian  # V7 of Bb: natural tensions
+A    | 13 | BbMaj7   | Bb Ionian     # tonic: the 4th is in the key
+A    | 13 | Cm7      | C Dorian      # ii: Dorian, the key’s own notes
+A    | 14 | Dm7      | D Dorian      # iii: Dorian (its Phrygian would put a b9 over the root)
+A    | 14 | EbMaj7   | Eb Lydian     # IV: the #4 is the key’s 7th
 # area: E minor (bars 15–16)
-A | 15 | Am7    | A Dorian      # ii of D7: Dorian
-A | 16 | D7     | D Mixolydian  # V7/bIII in E minor: natural tensions
+A    | 15 | Am7      | A Dorian      # ii of D7: Dorian
+A    | 16 | D7       | D Mixolydian  # V7/bIII in E minor: natural tensions
