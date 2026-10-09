@@ -38,6 +38,9 @@ export const shiftBy = (n: Spelled, steps: number, semis: number): Spelled => {
   return { letter, acc: accFor(mod(pcOf(n) + semis, 12), letter) }
 }
 
+/** two notes spelled the same (Eb and D# are not equal, though they sound alike) */
+export const spellEqual = (a: Spelled, b: Spelled): boolean => a.letter === b.letter && a.acc === b.acc
+
 /** all spellings of this pitch class with at most one accidental, in letter order */
 export function enharmonics(n: Spelled): Spelled[] {
   const pc = pcOf(n)

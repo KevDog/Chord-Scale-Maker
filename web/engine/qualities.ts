@@ -1,6 +1,6 @@
 import raw from '../../chord_scales.json'
 import { parseChord } from './chord'
-import { rootName, type Spelled } from './pitch'
+import { rootName, type Spelled, spellEqual } from './pitch'
 import { scaleKey, simplifyRoot, spellFrom } from './scales'
 
 /**
@@ -32,7 +32,7 @@ const LOOKUP: ReadonlyMap<string, string> = new Map([
 export type ScaleOption = Readonly<{ scale: string; note: string; default: boolean; outside: boolean; level?: 'basic' | 'advanced' }>
 export type QualityMatch = Readonly<{ quality: string; options: readonly ScaleOption[] }>
 
-const same = (a: Spelled | undefined, b: Spelled): boolean => a !== undefined && a.letter === b.letter && a.acc === b.acc
+const same = (a: Spelled | undefined, b: Spelled): boolean => a !== undefined && spellEqual(a, b)
 
 /** the chord its scales come from: a slash chord that is really another chord on its bass (DbMaj7/C -> C 7sus4b9) */
 function slashReading(quality: string, root: Spelled, bass: Spelled | undefined): Readonly<{ quality: string; root: Spelled }> {
