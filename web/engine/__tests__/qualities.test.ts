@@ -1,6 +1,14 @@
 import { describe, expect, it } from 'vitest'
-import { baseQuality, defaultScale, QUALITY_NAMES, resolveQuality } from '../qualities'
+import { baseQuality, defaultScale, defaultScaleOrNull, QUALITY_NAMES, resolveQuality } from '../qualities'
 import { parseScale } from '../scales'
+
+describe('defaultScaleOrNull', () => {
+  it('is defaultScale, but returns null instead of throwing on an unparseable chord', () => {
+    expect(defaultScaleOrNull('Cm7')).toBe(defaultScale('Cm7'))
+    expect(() => defaultScale('???')).toThrow()
+    expect(defaultScaleOrNull('???')).toBeNull()
+  })
+})
 
 describe('qualities', () => {
   it('picks the default scale for a chord quality', () => {
