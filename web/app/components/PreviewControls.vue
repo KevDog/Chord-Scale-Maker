@@ -1,8 +1,9 @@
 <template>
   <div id="preview-toolbar" class="space-y-4">
-    <!-- labelled groups, one row on a desktop: Sheet · Instrument · Work on · Show · Transposition · Display -->
-    <div class="flex flex-wrap items-end gap-x-4 gap-y-3">
-      <SegmentedControl v-if="sheets.length > 1" v-model="sheet" legend="Sheet" name="sheet" :options="sheets" />
+    <!-- labelled groups: the controls wrap on the left; Display stays pinned top-right (Sheet · Instrument · Work on · Show · Transposition | Display) -->
+    <div class="flex items-start justify-between gap-x-4 gap-y-3">
+      <div class="flex flex-wrap items-end gap-x-4 gap-y-3">
+        <SegmentedControl v-if="sheets.length > 1" v-model="sheet" legend="Sheet" name="sheet" :options="sheets" />
       <UiField class="w-40">
         <UiLabel>Instrument</UiLabel>
         <UiListbox v-model="instrument">
@@ -42,9 +43,10 @@
           <slot name="transpose" />
         </div>
       </UiField>
-      <UiField class="ml-auto">
+      </div>
+      <UiField class="shrink-0">
         <UiLabel>Display</UiLabel>
-        <div class="flex flex-wrap gap-2 *:whitespace-nowrap"><slot name="display" /></div>
+        <div class="flex flex-wrap justify-end gap-2 *:whitespace-nowrap"><slot name="display" /></div>
       </UiField>
     </div>
     <UiText id="start-help" class="sr-only">Written pitch the "from" part starts on</UiText>

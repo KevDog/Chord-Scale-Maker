@@ -230,7 +230,7 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
   // how many rows the toolbar's labelled groups fall on (the content is capped at 72rem, so six groups can take two)
   const layout = () =>
     page.locator('#preview-toolbar').evaluate((el) => {
-      const row = el.firstElementChild as HTMLElement
+      const row = el.firstElementChild?.firstElementChild as HTMLElement // the wrapping left groups (Display is pinned top-right beside them)
       const kids = Array.from(row.children, (c) => c.getBoundingClientRect())
       return { rows: new Set(kids.map((r) => Math.round(r.bottom))).size, widths: `${row.clientWidth}: ${kids.map((r) => Math.round(r.width)).join(' + ')}` }
     })
