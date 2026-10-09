@@ -107,6 +107,9 @@
           :lit="litNow"
           @update:selection="practice.setSelection(mode, $event)"
         />
+        <div class="pt-1">
+          <UiButton plain class="text-sm!" title="Something wrong with this chart? Send it over with the details" @click="reportError"><FlagIcon data-slot="icon" />Report a chart error</UiButton>
+        </div>
       </div>
 
       <div :class="focus.on.value && 'mx-auto max-w-6xl print:max-w-none'">
@@ -153,7 +156,8 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, BookmarkIcon, CodeBracketIcon, DocumentDuplicateIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
+import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, BookmarkIcon, CodeBracketIcon, DocumentDuplicateIcon, FlagIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
+import { CHART_REPORT_KEY, type ChartReport } from '~/utils/chartReport'
 import {
   buildSheet,
   type ChartDoc,
@@ -353,5 +357,22 @@ function enterFocus(): void {
 function print(): void {
   editor.flush() // include anything typed in the last moment
   nextTick(() => window.print())
+}
+
+/** send the chart and its context to the contact form (via sessionStorage), pre-filled for a bug report */
+function reportError(): void {
+  editor.flush()
+  const report: ChartReport = {
+    chart: editor.text.value,
+    slug: props.saveTarget && 'slug' in props.saveTarget ? props.saveTarget.slug : '',
+    title: editor.heading.value.title,
+    version: String(useRuntimeConfig().public.version ?? ''),
+    instrument: instrumentOption(prefs.instrument.value),
+    sheet: sheet.value,
+    level: levelsOn ? scaleLevel.level.value : '',
+    url: location.href,
+  }
+  sessionStorage.setItem(CHART_REPORT_KEY, JSON.stringify(report))
+  navigateTo('/contact')
 }
 </script>
