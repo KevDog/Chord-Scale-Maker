@@ -64,14 +64,14 @@ B  | 18 | F7     | F Mixolydian         # V7/v in Eb: natural tensions
 B  | 19 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
 B  | 19 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
 B  | 20 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
-# area: Gb major (bars 21–23)
+# area: Gb major (bars 21–22)
 B  | 21 | Abm7   | Ab Dorian            # ii of the ii–V to Gb
 B  | 21 | Db7    | Db Mixolydian        # V7 of Gb: natural tensions
 B  | 22 | GbMaj7 | Gb Ionian            # tonic: the 4th is in the key
 B  | 22 | B7     | B Lydian Dominant    # IV7 in Gb, not resolving: the #11 is in the key
+# area: Eb major (bars 23–32)
 B  | 23 | Cm7    | C Dorian             # ii of F7: Dorian
-B  | 23 | F7     | F Mixolydian         # passing ii–V: its own key
-# area: Eb major (bars 24–32)
+B  | 23 | F7     | F Mixolydian         # V7/V in Eb: natural tensions
 B  | 24 | Fm7    | F Dorian             # ii of the ii–V to Eb
 B  | 24 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
 A3 | 25 | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key

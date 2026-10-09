@@ -38,3 +38,19 @@ for (const [chart, instrument, pages] of [
     expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(pages)
   })
 }
+
+// eight lines a page: a 32-bar AABA written out (Satin Doll) on one; Tunisia's nine lines (with the tag) on two
+for (const [chart, pages] of [
+  ['autumn_leaves', 1],
+  ['satin_doll', 1],
+  ['a_night_in_tunisia', 2],
+] as const) {
+  test(`prints the Changes eight lines a page (${chart})`, async ({ page }) => {
+    await page.goto(`/editor?chart=${chart}`)
+    await page.getByRole('group', { name: 'Sheet' }).getByText('Changes', { exact: true }).click()
+    await expect(page.locator('svg[aria-label^="Bars:"]').first()).toBeVisible()
+    await page.emulateMedia({ media: 'print' })
+    await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+    expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(pages)
+  })
+}

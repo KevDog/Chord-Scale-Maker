@@ -91,6 +91,8 @@
           v-model:mode="mode"
           v-model:start="prefs.start.value"
           v-model:intervals="prefs.intervals.value"
+          v-model:numerals="prefs.numerals.value"
+          v-model:scale-names="prefs.scaleNames.value"
         >
           <!-- the chart's actions, after Intervals (none while the chart is over a size limit) -->
           <template v-if="!editor.fatal.value" #actions>
@@ -113,6 +115,17 @@
 
       <div :class="focus.on.value && 'mx-auto max-w-6xl print:max-w-none'">
         <UiText v-if="editor.fatal.value" class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
+        <ChangesSheet
+          v-else-if="sheet === 'changes'"
+          :doc="editor.doc.value"
+          :title="editor.meta.value.title"
+          :subtitle="editor.heading.value.subtitle"
+          :composer="editor.heading.value.composer"
+          :part="part"
+          :instrument-label="instrumentLabel(prefs.instrument.value)"
+          :numerals="prefs.numerals.value"
+          :scales="prefs.scaleNames.value"
+        />
         <GuideToneSheet
           v-else-if="sheet === 'guideTones'"
           :rows="editor.rows.value"
@@ -187,7 +200,10 @@ const part = computed(() => partFor(prefs.instrument.value))
 const textShown = computed(() => prefs.showText.value || editor.fatal.value)
 /** one spelling at a time: every scale from the Start on note, or each from its own root */
 const mode = ref<Mode>(props.shared?.mode ?? 'root')
-const sheet = ref<SheetKind>(props.shared?.sheet === 'guideTones' && useFeature('guideTones') ? 'guideTones' : 'scales')
+const sharedSheet = props.shared?.sheet
+const sheet = ref<SheetKind>(
+  sharedSheet === 'guideTones' && useFeature('guideTones') ? 'guideTones' : sharedSheet === 'changes' && useFeature('changes') ? 'changes' : 'scales',
+)
 const practiceOn = useFeature('practice')
 const practice = usePractice(props.practiceKey)
 const levelsOn = useFeature('scaleLevels')
@@ -284,6 +300,8 @@ async function openShare(): Promise<void> {
     mode: mode.value,
     start: prefs.start.value,
     intervals: prefs.intervals.value,
+    numerals: prefs.numerals.value,
+    scaleNames: prefs.scaleNames.value,
     sheet: sheet.value,
     ...(selection.value ? { practice: selection.value } : {}),
     ...(level.value !== 'standard' ? { level: level.value, seed: scaleLevel.seed.value } : {}),

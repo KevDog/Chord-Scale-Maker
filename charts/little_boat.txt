@@ -14,14 +14,14 @@ A | 1  | BbMaj7 | Bb Ionian                # tonic: the 4th is in the key
 A | 3  | Em7    | E Dorian                 # ii of A7: Dorian
 A | 4  | A7     | A Lydian Dominant        # tritone substitute: resolves down a half step to AbMaj7
 A | 5  | AbMaj7 | Ab Ionian                # tonic: the 4th is in the key
-# area: Gb major (bars 7–14)
+# area: Gb major (bars 7–9)
 A | 7  | Dm7    | D Dorian                 # ii of G7: Dorian
 A | 8  | G7     | G Lydian Dominant        # tritone substitute: resolves down a half step to GbMaj7
 A | 9  | GbMaj7 | Gb Ionian                # tonic: the 4th is in the key
+# area: Bb major (bars 11–16)
 A | 11 | Cm7    | C Dorian                 # ii of F7: Dorian
-A | 12 | F7     | F Mixolydian             # passing ii–V: its own key
+A | 12 | F7     | F Mixolydian             # V7/I in Bb: natural tensions
 A | 13 | Dm7    | D Dorian                 # ii of the ii–V to C minor
-A | 14 | G7b9   | G Altered                # V7/#iv in Gb: b9, #11 and b13 are in the key
-# area: Bb major (bars 15–16)
+A | 14 | G7b9   | G Phrygian Dominant      # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
 A | 15 | Cm7    | C Dorian                 # ii of the ii–V to Bb
 A | 16 | F7b9   | F Half-Whole Diminished  # V7 of Bb: the b9 from the symbol

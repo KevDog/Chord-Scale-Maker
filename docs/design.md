@@ -296,6 +296,20 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - **Chord symbols** sit over their beats and labels under the notes, both as HTML.
 - **Width:** 4 bars a system, or 2 on phones (`useMediaQuery`), drawn at the same size per bar.
 
+### Changes sheet ([plan-changes.md](plan-changes.md); the `changes` flag, off)
+
+- A study lead sheet: `engine/changes.ts` `buildChanges(doc, part, barsPerLine)` lays the chart out in lines of four
+  bars (two on phones), each section on a new line, one slash a beat in the chart's metre. Chords sit on their
+  beats (the guide tone timeline's timing), each with its Roman numeral (`analysis/numerals.ts`) and its scale, both
+  written for the part; key-area labels where the key changes; section markers; a `@copy` straight after its
+  source folded into repeat signs ("A1 · A2"), a later one written out ("A3 (= A1)"); a double barline at the end
+  of the form when a tag or coda follows (a coda or ending headed "after the last chorus"), a final one at the end.
+- `ChangesSheet.vue` / `ChangesSystem.vue` draw it with `utils/changesDrawing.ts` (slash noteheads without stems,
+  repeat and final barlines, the time signature on the first line); chords, numerals and scales are HTML placed at
+  the slashes, each wrapping within the room up to the next chord. Eight lines a printed page (a 32-bar AABA).
+- `Numerals` and `Scales` toggles replace Intervals on this sheet (`csm-numerals`, `csm-scale-names`, both on;
+  share links carry them and the sheet).
+
 ### Shared
 
 - **Loading VexFlow:** it loads client-only, by dynamic import of `vexflow/bravura` on the editor page only. It's
@@ -453,7 +467,8 @@ library writes such a repeat out instead.
   - New flags start off, and every flag is fixed at build time. `NUXT_PUBLIC_FEATURES_<NAME>=true|false`
     overrides one for a build or `make dev`.
   - `npm run e2e` builds with every flag on.
-  - `myCharts` (My charts, New chart, Download/Open, share links), `guideTones` (the Guide tones sheet),
+  - `myCharts` (My charts, New chart, Download/Open, share links), `guideTones` (the Guide tones sheet), `changes`
+    (the Changes sheet, off),
     `practice` (the Practice panel) and `scaleLevels` (the Scale level control) are on, since sign-off.
 
 ## 9. Security

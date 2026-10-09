@@ -49,20 +49,20 @@ A2 | 15 | Bb7   | Bb Lydian Dominant       # back door bVII7 to CMaj7: the #11 i
 A2 | 16 | CMaj7 | C Ionian                 # tonic: the 4th is in the key
 B  | 17 | Em7   | E Dorian                 # ii of A7: Dorian
 B  | 17 | A7    | A Mixolydian             # passing ii–V: its own key
-# area: D major (bars 18–23)
+# area: D major (bars 18–20)
 B  | 18 | Em7   | E Dorian                 # ii of the ii–V to D
 B  | 18 | A7    | A Mixolydian             # V7 of D: natural tensions
 B  | 19 | DMaj7 | D Ionian                 # tonic: the 4th is in the key
 B  | 19 | GMaj9 | G Lydian                 # IV: the #4 is the key’s 7th
 B  | 20 | DMaj7 | D Ionian                 # tonic: the 4th is in the key
 B  | 20 | GMaj9 | G Lydian                 # IV: the #4 is the key’s 7th
+# area: C major (bars 21–32)
 B  | 21 | Dm7   | D Dorian                 # ii of G7: Dorian
-B  | 21 | G7    | G Mixolydian             # passing ii–V: its own key
+B  | 21 | G7    | G Mixolydian             # V7/I in C: natural tensions
 B  | 22 | Dm7   | D Dorian                 # ii of G7: Dorian
-B  | 22 | G7    | G Mixolydian             # passing ii–V: its own key
+B  | 22 | G7    | G Mixolydian             # V7/I in C: natural tensions
 B  | 23 | Em7   | E Dorian                 # ii of the ii–V to D minor
-B  | 23 | A7    | A Mixolydian             # V7 of D: natural tensions
-# area: C major (bars 24–32)
+B  | 23 | A7    | A Mixolydian b6          # V7/ii in C: the b13 is in the key
 B  | 24 | Dm7   | D Dorian                 # ii of the ii–V to C
 B  | 24 | G7    | G Mixolydian             # V7 of C: natural tensions
 C  | 25 | CMaj7 | C Ionian                 # tonic: the 4th is in the key

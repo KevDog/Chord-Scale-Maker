@@ -27,10 +27,11 @@ B  | 18 | Db7      | Db Mixolydian         # V7/IV in Db: natural tensions
 B  | 19 | GbMaj7   | Gb Lydian             # IV: the #4 is the key’s 7th
 B  | 19 | Abm7     | Ab Dorian             # a borrowed minor chord: Dorian, its own key
 B  | 20 | Bbm7     | Bb Aeolian            # vi: the b13 is in the key
-# area: E major (bars 21–25)
+# area: E major (bars 21–23)
 B  | 21 | F#m7     | F# Dorian             # ii of the ii–V to E
 B  | 22 | B7       | B Mixolydian          # V7 of E: natural tensions
 B  | 23 | EMaj7    | E Ionian              # tonic: the 4th is in the key
+# area: Db major (bars 24–32)
 B  | 24 | Ebm7     | Eb Dorian             # ii of Ab7alt: Dorian
 B  | 24 | Ab7alt   | Ab Altered            # from the symbol: altered
 @copy A1 A3 24
