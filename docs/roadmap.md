@@ -7,12 +7,8 @@ picked up.
 
 ### The Changes sheet
 
-A third sheet beside Scales and Guide tones: the chart as a study lead sheet, chords over slashes (VexFlow), with
-the Roman numerals and scales from the analysis under each chord and key-area labels. Decisions taken: VexFlow
-slash staves; a study sheet (numerals and scales, each with its own toggle, both on); back-to-back `@copy` as
-repeat signs, later copies written out as "A3 (= A1)"; 1st/2nd endings later; a `time:` meta line (done: 2/4, 3/4,
-4/4; the eight waltzes say 3/4); intros before the form and codas after it under "Coda (after the last chorus)", no segno or
-coda symbols yet; four bars a line (two on phones), each section on a new line; behind a feature flag, off.
+Built behind the `changes` flag (off) for sign-off: [plan-changes.md](plan-changes.md). Still to come: 1st and 2nd
+endings, D.C./segno navigation and coda symbols.
 
 ## Next
 

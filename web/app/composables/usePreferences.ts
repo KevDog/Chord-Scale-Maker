@@ -15,7 +15,10 @@ export function usePreferences() {
   const start = storedRef<string>('csm-start', (s) => ((PICKER_ROOTS as readonly string[]).includes(s) ? s : undefined), 'C')
   const intervals = storedRef<boolean>('csm-intervals', (s) => s === 'on', true, (v) => (v ? 'on' : 'off')) // on until turned off: they show each note's job over the chord
   const showText = storedRef<boolean>('csm-show-text', (s) => s === 'on', false, (v) => (v ? 'on' : 'off')) // the editor's Text pane: hidden until shown
-  return { instrument, start, intervals, showText }
+  // the Changes sheet's study rows: each chord's numeral and its scale, both on until turned off
+  const numerals = storedRef<boolean>('csm-numerals', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
+  const scaleNames = storedRef<boolean>('csm-scale-names', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
+  return { instrument, start, intervals, showText, numerals, scaleNames }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
@@ -26,6 +29,8 @@ export function linkPreferences(view: ShareView) {
     instrument: ref<InstrumentName>(view.instrument ?? own.instrument.value),
     start: ref<string>(start),
     intervals: ref<boolean>(view.intervals ?? own.intervals.value),
+    numerals: ref<boolean>(view.numerals ?? own.numerals.value),
+    scaleNames: ref<boolean>(view.scaleNames ?? own.scaleNames.value),
     showText: own.showText, // how you like the editor laid out: yours, and remembered
   }
 }

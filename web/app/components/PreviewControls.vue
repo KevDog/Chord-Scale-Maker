@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-4">
     <div class="flex flex-wrap items-end gap-4">
-      <SegmentedControl v-if="guideTones" v-model="sheet" legend="Sheet" name="sheet" :options="SHEETS" />
+      <SegmentedControl v-if="sheets.length > 1" v-model="sheet" legend="Sheet" name="sheet" :options="sheets" />
       <UiField class="w-60">
         <UiLabel>Instrument</UiLabel>
         <UiListbox v-model="instrument">
@@ -23,9 +23,13 @@
       </UiField>
       <!-- Intervals and the chart's actions: one group, its own row below lg, two by two on a phone -->
       <div class="flex flex-wrap items-end gap-3 *:whitespace-nowrap max-lg:w-full max-sm:grid max-sm:grid-cols-2">
-        <UiButton v-bind="intervals ? { color: 'note' } : { outline: true }" :aria-pressed="intervals" title="Label each note against the chord root (on screen only)" @click="intervals = !intervals">
+        <UiButton v-if="sheet !== 'changes'" v-bind="intervals ? { color: 'note' } : { outline: true }" :aria-pressed="intervals" title="Label each note against the chord root (on screen only)" @click="intervals = !intervals">
           Intervals
         </UiButton>
+        <template v-else>
+          <UiButton v-bind="numerals ? { color: 'note' } : { outline: true }" :aria-pressed="numerals" title="Each chord's Roman numeral in its key" @click="numerals = !numerals">Numerals</UiButton>
+          <UiButton v-bind="scaleNames ? { color: 'note' } : { outline: true }" :aria-pressed="scaleNames" title="Each chord's scale, under its numeral" @click="scaleNames = !scaleNames">Scales</UiButton>
+        </template>
         <slot name="actions" />
       </div>
     </div>
@@ -47,8 +51,12 @@ const instrument = defineModel<InstrumentName>('instrument', { required: true })
 const mode = defineModel<Mode>('mode', { required: true })
 const start = defineModel<string>('start', { required: true })
 const intervals = defineModel<boolean>('intervals', { required: true })
+const numerals = defineModel<boolean>('numerals', { default: true })
+const scaleNames = defineModel<boolean>('scaleNames', { default: true })
 
 const guideTones = useFeature('guideTones')
+const changes = useFeature('changes')
+const sheets = computed(() => SHEETS.filter((s) => (s.value === 'guideTones' ? guideTones : s.value === 'changes' ? changes : true)))
 const modes = computed((): readonly { value: Mode; label: string }[] => [
   { value: 'from', label: `From ${noteText(start.value)}` },
   { value: 'root', label: 'From root' },

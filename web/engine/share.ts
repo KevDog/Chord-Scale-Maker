@@ -11,12 +11,15 @@ import { type PracticeSelection, practiceSelectionFrom } from './practice'
  * (including while inflating, so a tiny link can't expand into megabytes), validates every field, drops what it
  * doesn't know, and returns null instead of throwing.
  */
-export type ShareSheet = 'scales' | 'guideTones'
+export type ShareSheet = 'scales' | 'guideTones' | 'changes'
 export type ShareView = Readonly<{
   instrument?: InstrumentName
   mode?: Mode
   start?: string
   intervals?: boolean
+  /** the Changes sheet's numerals and scale rows */
+  numerals?: boolean
+  scaleNames?: boolean
   sheet?: ShareSheet
   practice?: PracticeSelection
   level?: ScaleLevel
@@ -88,7 +91,9 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(o.mode === 'root' || o.mode === 'from' ? { mode: o.mode } : {}),
     ...(typeof o.start === 'string' && START.test(o.start) ? { start: o.start } : {}),
     ...(typeof o.intervals === 'boolean' ? { intervals: o.intervals } : {}),
-    ...(o.sheet === 'scales' || o.sheet === 'guideTones' ? { sheet: o.sheet } : {}),
+    ...(typeof o.numerals === 'boolean' ? { numerals: o.numerals } : {}),
+    ...(typeof o.scaleNames === 'boolean' ? { scaleNames: o.scaleNames } : {}),
+    ...(o.sheet === 'scales' || o.sheet === 'guideTones' || o.sheet === 'changes' ? { sheet: o.sheet } : {}),
     ...(practice ? { practice } : {}),
     ...(isScaleLevel(o.level) ? { level: o.level } : {}),
     ...(Number.isInteger(o.seed) && (o.seed as number) >= 0 && (o.seed as number) < 2 ** 32 ? { seed: o.seed as number } : {}),
