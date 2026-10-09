@@ -9,7 +9,7 @@ bleed, require a chart key, and add a one-click chart-error report, from a round
 
 The `/editor` page grew control-by-control; UI testing surfaced bleed, crowding and a few missing affordances. This
 makes it a song-first page (`/song`) whose primary job is viewing/practising a chart, with editing revealed on
-demand, and tidies the toolbar into labelled groups. Eight changes, mostly independent; each ships as its own small
+demand, and tidies the toolbar into labelled groups. Nine changes, mostly independent; each ships as its own small
 PR where it can.
 
 Who it's for: the player practising from a chart, and the chart author. Success: the toolbar reads at a glance, the
@@ -116,6 +116,24 @@ guards that nothing is lost.
 Delete the on-screen "Page N" dashed separator (`SheetPages.vue:8-12`); keep the print page-break classes
 (`print:break-after-page`). Pages simply stack with their existing spacing on screen.
 
+## 7. Loading feedback (spinner)
+
+Re-renders have no busy feedback: the first sheet render lazy-loads the VexFlow chunk, and every sheet / instrument
+/ Work-on / transpose switch re-draws. Two CSP-safe layers (CSS `animate-spin`, no remote assets):
+
+- **Sheet (re)render spinner.** A new `app/composables/useRendering.ts` holds a shared counter; each sheet's
+  `draw()` (`ScaleStaff.vue`, `GuideToneSystem.vue`, `ChangesSystem.vue`) brackets itself: `const done =
+  rendering.begin()` at the top, `done()` in a `finally`. The preview sheet area shows one centered `UiSpinner`
+  overlay while `rendering.active > 0`, **debounced ~150 ms** so quick redraws don't flash. One spinner for the
+  whole sheet, not one per staff/system.
+- **Navigation bar.** Add `<NuxtLoadingIndicator>` to `app/app.vue` for click-navigations (opening a chart from the
+  library / My charts, the chart-error jump to `/contact`): Nuxt drives the thin top progress bar automatically.
+- **`UiSpinner`** is a small presentational component in `app/components/ui/` (an SVG circle with `animate-spin` and
+  `aria-label="Loading"`), matching the Catalyst style.
+
+Buttons that trigger a redraw (sheet, instrument, Work-on, Transpose-apply) are covered by the sheet spinner for
+free. Async actions with their own latency (share-link generation) keep their existing local busy state.
+
 ## Testing
 
 - **Engine (test-first):** `abbreviateScale` (each replacement, words left alone, roots/accidentals intact);
@@ -125,8 +143,10 @@ Delete the on-screen "Page N" dashed separator (`SheetPages.vue:8-12`); keep the
   Key picker writes `key:` via `setMeta`; the editor show/hide toggles the grid + text.
 - **e2e:** `/song?chart=…` loads and `/editor` is gone; the Edit toggle shows/hides the editor; Transpose is
   disabled without a key and uses the chart key as From; "Report a chart error" lands on `/contact` with the chart
-  text pre-filled; the page divider is absent on screen; print budgets still hold (extend `print.spec.ts`,
-  `editor.spec.ts`, `my-charts.spec.ts` as needed for the route rename).
+  text pre-filled; the page divider is absent on screen; the sheet spinner appears over a slow first render and the
+  loading bar on chart open; print budgets still hold (extend `print.spec.ts`, `editor.spec.ts`,
+  `my-charts.spec.ts` as needed for the route rename).
+- **`useRendering`** unit: `begin()`/`done()` move `active` and never go negative; concurrent draws aggregate.
 - **Golden:** `abbreviateScale`/de-dup are display-only (golden stores pre-glyph ASCII scale names) — `golden.json`
   is expected to stay unchanged; confirm it.
 
@@ -134,8 +154,8 @@ Delete the on-screen "Page N" dashed separator (`SheetPages.vue:8-12`); keep the
 
 Independent, shippable PRs (rough order): (a) remove divider; (b) scale-label abbreviate + de-dup; (c) `isValidKey`
 + Key field + Transpose-From; (d) `/song` route rename + link updates; (e) song-first show/hide editor; (f) toolbar
-restructure; (g) chart-error report. (e) and (f) touch the same components, so land (e) then (f); (c)'s Transpose
-change pairs with the Key field.
+restructure; (g) chart-error report; (h) loading spinner + nav bar. (e) and (f) touch the same components, so land
+(e) then (f); (c)'s Transpose change pairs with the Key field. (h) is independent and can land any time.
 
 ## Out of scope
 
