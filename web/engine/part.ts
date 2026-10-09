@@ -1,5 +1,5 @@
 import { type Clef, type InstrumentName, type Transposition, CLEF_ROOT_LOW, CLEF_START, INSTRUMENTS, TRANSPOSITIONS } from './instruments'
-import { type Spelled, accFor, LETTERS, mod, NAT_PC, parseRoot, pcOf, toLetter } from './pitch'
+import { type Spelled, LETTERS, mod, NAT_PC, parseRoot, pcOf, shiftBy } from './pitch'
 import { type ScaleKey, type ScaleNote, parseScale, SCALES, simplifyRoot, spellScale } from './scales'
 
 /**
@@ -25,8 +25,7 @@ export const partFor = (name: InstrumentName): Part => {
 /** move a spelled note up by the transposition interval */
 export function transposeRoot(n: Spelled, trans: Transposition): Spelled {
   const [steps, semis] = TRANSPOSITIONS[trans]
-  const letter = toLetter(n.letter + steps)
-  return { letter, acc: accFor(mod(pcOf(n) + semis, 12), letter) }
+  return shiftBy(n, steps, semis)
 }
 
 export const writtenRoot = (part: Part, n: Spelled, key?: ScaleKey): Spelled =>

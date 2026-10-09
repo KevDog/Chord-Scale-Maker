@@ -32,6 +32,12 @@ export const rootName = (n: Spelled): string => LETTERS[n.letter] + accText(n.ac
 export const pcOf = (n: Spelled): number => mod(NAT_PC[n.letter] + n.acc, 12)
 export const accFor = (pc: number, letter: Letter): number => mod(pc - NAT_PC[letter] + 6, 12) - 6
 
+/** move a spelled note up by `steps` letters and `semis` semitones, respelling the accidental for the new letter */
+export const shiftBy = (n: Spelled, steps: number, semis: number): Spelled => {
+  const letter = toLetter(n.letter + steps)
+  return { letter, acc: accFor(mod(pcOf(n) + semis, 12), letter) }
+}
+
 /** all spellings of this pitch class with at most one accidental, in letter order */
 export function enharmonics(n: Spelled): Spelled[] {
   const pc = pcOf(n)
