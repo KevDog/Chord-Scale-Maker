@@ -49,12 +49,14 @@ function openDialog(): void {
 }
 
 function apply(): void {
-  const { doc: moved, skipped } = transposeChart(props.current(), from.value, to.value)
-  // the chart's declared key is authoritative, so follow it to the new key (keeping major/minor)
-  const doc = setMeta(moved, 'key', from.value.endsWith('m') ? `${to.value}m` : to.value)
+  const minor = from.value.endsWith('m')
+  // transpose on the bare root ("Gm" -> move "G"); the chart's declared key follows, keeping major/minor
+  const { doc: moved, skipped } = transposeChart(props.current(), from.value.replace(/m$/, ''), to.value)
+  const newKey = minor ? `${to.value}m` : to.value
+  const doc = setMeta(moved, 'key', newKey)
   emit('update:doc', doc)
   const note = skipped ? `; ${skipped} ${skipped === 1 ? 'row' : 'rows'} could not be read and stayed as typed` : ''
-  emit('transposed', `Transposed from ${noteText(from.value)} to ${noteText(to.value)}${note}.`)
+  emit('transposed', `Transposed from ${keyLabel(from.value)} to ${keyLabel(newKey)}${note}.`)
   open.value = false
 }
 </script>
