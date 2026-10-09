@@ -66,4 +66,10 @@ describe('transpose', () => {
     expect(TRANSPOSE_KEYS).toContain('F#')
     expect(TRANSPOSE_KEYS).toHaveLength(13)
   })
+
+  it('keeps navigation directives verbatim when transposing', () => {
+    const text = 'key: C\nA | 1 | Dm7 | D Dorian\n@ending 1 A 1\n@segno A 1\n@coda A 1\n@nav A 1 D.S. al Coda\n'
+    const out = serializeChart(transposeChart(parseChart(text).value, 'C', 'Eb').doc)
+    for (const d of ['@ending 1 A 1', '@segno A 1', '@coda A 1', '@nav A 1 D.S. al Coda']) expect(out).toContain(d)
+  })
 })

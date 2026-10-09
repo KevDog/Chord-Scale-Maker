@@ -26,6 +26,9 @@ export type ChartLine =
   // scale '' = default; comment: a trailing "# …" (the analysis, docs/plan-analysis.md §12.1), kept verbatim
   | Readonly<{ kind: 'row'; section: string; bar: string; chord: string; scale: string; comment?: string }>
   | Readonly<{ kind: 'copy'; src: string; dst: string; offset: number }>
+  | Readonly<{ kind: 'ending'; n: number; section: string; from: number; to: number }>
+  | Readonly<{ kind: 'mark'; mark: 'segno' | 'coda'; section: string; bar: number }>
+  | Readonly<{ kind: 'nav'; section: string; bar: number; text: string }>
   | Readonly<{ kind: 'comment'; text: string }>
   | Readonly<{ kind: 'blank' }>
   | Readonly<{ kind: 'invalid'; text: string }> // kept verbatim so text round-trips
@@ -56,6 +59,27 @@ function parseLine(line: string): ChartLine | string {
     if (src.length > LIMITS.maxCell || dst.length > LIMITS.maxCell)
       return `section name longer than ${LIMITS.maxCell} characters`
     return { kind: 'copy', src, dst, offset: Number(offset) }
+  }
+  if (low.startsWith('@ending')) {
+    const [, n = '', section = '', from = '', to = from, ...extra] = line.split(/\s+/)
+    if (extra.length > 0 || (n !== '1' && n !== '2') || !INT_RE.test(from) || !INT_RE.test(to)) return 'use  @ending N SECTION FIRST [LAST]'
+    if (section.length > LIMITS.maxCell) return `section name longer than ${LIMITS.maxCell} characters`
+    if (Number(to) < Number(from)) return '@ending LAST must be at least FIRST'
+    return { kind: 'ending', n: Number(n), section, from: Number(from), to: Number(to) }
+  }
+  if (low.startsWith('@segno') || low.startsWith('@coda')) {
+    const [word = '', section = '', bar = '', ...extra] = line.split(/\s+/)
+    if (extra.length > 0 || !section || !INT_RE.test(bar)) return 'use  @segno SECTION BAR  or  @coda SECTION BAR'
+    if (section.length > LIMITS.maxCell) return `section name longer than ${LIMITS.maxCell} characters`
+    return { kind: 'mark', mark: word.toLowerCase() === '@coda' ? 'coda' : 'segno', section, bar: Number(bar) }
+  }
+  if (low.startsWith('@nav')) {
+    const m = /^@nav\s+(\S+)\s+(\S+)\s+(.+)$/.exec(line)
+    if (!m || !INT_RE.test(m[2] ?? '')) return 'use  @nav SECTION BAR TEXT'
+    const [, section = '', bar = '', text = ''] = m
+    if (section.length > LIMITS.maxCell) return `section name longer than ${LIMITS.maxCell} characters`
+    if (text.trim().length > LIMITS.maxMeta) return `nav text longer than ${LIMITS.maxMeta} characters`
+    return { kind: 'nav', section, bar: Number(bar), text: text.trim() }
   }
   // a trailing comment starts at a # with space on both sides (F#m7 and C# Lydian have none before theirs)
   const hash = /\s#(?=\s|$)/.exec(line)
@@ -109,6 +133,12 @@ export function serializeChart(doc: ChartDoc): string {
       }
       case 'copy':
         return `@copy ${l.src} ${l.dst} ${l.offset}`
+      case 'ending':
+        return `@ending ${l.n} ${l.section} ${l.from}${l.to !== l.from ? ` ${l.to}` : ''}`
+      case 'mark':
+        return `@${l.mark} ${l.section} ${l.bar}`
+      case 'nav':
+        return `@nav ${l.section} ${l.bar} ${l.text}`
       case 'comment':
       case 'invalid':
         return l.text
