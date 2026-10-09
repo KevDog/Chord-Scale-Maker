@@ -1,5 +1,6 @@
 title: Bb Bird Blues
 subtitle: Blues for Alice Changes
+key: Bb
 # analysis: 2026-10-08, rules v1; Bb
 
 # section | bar | chord | scale

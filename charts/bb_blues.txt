@@ -1,5 +1,6 @@
 title: Bb Blues
 subtitle: Basic 12-Bar Blues
+key: Bb
 # analysis: 2026-10-08, rules v1; Bb, blues
 
 # section | bar | chord | scale

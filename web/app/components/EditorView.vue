@@ -283,7 +283,7 @@ function saveCopy(): void {
   copyError.value = result.ok ? '' : "Couldn't save a copy: this browser's storage is full, or My charts is at its limit."
   if (!result.ok) return
   scaleLevel.carryTo(`mine:${id}`)
-  navigateTo({ path: '/editor', query: { mine: id } })
+  navigateTo({ path: '/song', query: { mine: id } })
 }
 
 const shareOpen = ref(false)
@@ -306,7 +306,7 @@ async function openShare(): Promise<void> {
     ...(selection.value ? { practice: selection.value } : {}),
     ...(level.value !== 'standard' ? { level: level.value, seed: scaleLevel.seed.value } : {}),
   }
-  shareLink.value = `${location.origin}/editor#s=${await encodeShare({ chart: editor.text.value, view })}`
+  shareLink.value = `${location.origin}/song#s=${await encodeShare({ chart: editor.text.value, view })}`
 }
 
 /** a shared chart, kept: into My charts with its practice picks, then opened at its own address */
@@ -319,7 +319,7 @@ function saveShared(): void {
   const kept = usePractice(`mine:${id}`)
   for (const m of ['root', 'from'] as const) kept.setSelection(m, practice.selection(m))
   scaleLevel.carryTo(`mine:${id}`)
-  navigateTo({ path: '/editor', query: { mine: id } })
+  navigateTo({ path: '/song', query: { mine: id } })
 }
 
 /** the chart as a .txt file, as it is now */

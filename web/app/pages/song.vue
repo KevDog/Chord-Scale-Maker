@@ -55,7 +55,7 @@ let adopted = ''
 const hash = import.meta.client ? (route.hash || (useNuxtApp().$arrivalHash as string | undefined) || location.hash) : ''
 const link = myCharts && hash.startsWith('#s=') ? await decodeShare(hash.slice(3)) : undefined
 
-// without My charts the editor only opens library charts; with it, a bare /editor has nothing to open
+// without My charts the editor only opens library charts; with it, a bare /song has nothing to open
 // (not on the prerender, which has no query)
 if (import.meta.client && !findChart(query('chart')) && (!myCharts || (!query('mine') && route.query.new === undefined && link === undefined)))
   await navigateTo('/', { replace: true })
@@ -96,7 +96,7 @@ watch(
 /** a new chart was saved: give it its address without restarting the editor */
 function adopt(id: string): void {
   adopted = id
-  router.replace({ path: '/editor', query: { mine: id } })
+  router.replace({ path: '/song', query: { mine: id } })
 }
 
 function reload(): void {

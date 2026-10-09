@@ -9,7 +9,7 @@ for (const [instrument, start] of [
   ['Trombone', 'B'],
 ] as const) {
   test(`prints 12 staves per letter page (${instrument}, from ${start ?? 'the root'})`, async ({ page }) => {
-    await page.goto('/editor?chart=autumn_leaves')
+    await page.goto('/song?chart=autumn_leaves')
     await chooseInstrument(page, instrument)
     if (start) {
       await page.getByText('From C', { exact: true }).click()
@@ -29,7 +29,7 @@ for (const [chart, instrument, pages] of [
   ['milestones', 'Concert', 2],
 ] as const) {
   test(`prints guide tones 8 systems per page (${chart}, ${instrument})`, async ({ page }) => {
-    await page.goto(`/editor?chart=${chart}`)
+    await page.goto(`/song?chart=${chart}`)
     await chooseInstrument(page, instrument)
     await page.getByRole('group', { name: 'Sheet' }).getByText('Guide tones', { exact: true }).click()
     await expect(page.locator('svg[aria-label^="Line 1:"]').first()).toBeVisible()
@@ -49,7 +49,7 @@ for (const [chart, pages] of [
   ['its_you_or_no_one', 2],
 ] as const) {
   test(`prints the Changes eight lines a page (${chart})`, async ({ page }) => {
-    await page.goto(`/editor?chart=${chart}`)
+    await page.goto(`/song?chart=${chart}`)
     await page.getByRole('group', { name: 'Sheet' }).getByText('Changes', { exact: true }).click()
     await expect(page.locator('svg[aria-label^="Bars:"]').first()).toBeVisible()
     await page.emulateMedia({ media: 'print' })
@@ -59,12 +59,12 @@ for (const [chart, pages] of [
 }
 
 test('the Changes sheet shows 1st/2nd endings and a D.S. al Coda', async ({ page }) => {
-  await page.goto('/editor?chart=its_you_or_no_one')
+  await page.goto('/song?chart=its_you_or_no_one')
   await page.getByRole('group', { name: 'Sheet' }).getByText('Changes', { exact: true }).click()
   await expect(page.locator('svg[aria-label^="Bars:"]').first()).toBeVisible()
   await expect(page.getByText('D.S. al Coda')).toBeVisible()
   await expect(page.getByLabel('Coda').first()).toBeVisible()
-  await page.goto('/editor?chart=stardust')
+  await page.goto('/song?chart=stardust')
   await page.getByRole('group', { name: 'Sheet' }).getByText('Changes', { exact: true }).click()
   await expect(page.locator('svg[aria-label^="Bars:"]').first()).toBeVisible()
   await expect(page.locator('svg[aria-label^="Bars:"] text', { hasText: '1.' }).first()).toBeVisible()

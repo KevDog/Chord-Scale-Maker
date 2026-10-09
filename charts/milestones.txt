@@ -1,5 +1,6 @@
 title: Milestones
 subtitle: AABBA, 40 Bars
+key: Gm
 # analysis: 2026-10-08, rules v1; G minor, modal
 
 # section | bar | chord | scale

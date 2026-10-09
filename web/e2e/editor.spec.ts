@@ -1,7 +1,7 @@
 import { expect, staves, test } from './fixtures'
 
 test.beforeEach(async ({ page }) => {
-  await page.goto('/editor?new=1')
+  await page.goto('/song?new=1')
   await expect(staves(page)).toHaveCount(3) // starter chart: 3 rows, from the root
 })
 
@@ -16,9 +16,9 @@ test('the Text pane is hidden until shown, remembered, and flags problems while 
   await expect(page.getByLabel('Chart text')).toBeVisible() // remembered
   await page.getByRole('button', { name: 'Hide text' }).click()
   await expect(page.getByLabel('Chart text')).toBeHidden()
-  await page.goto('/editor?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn_leaves')
   await expect(page.getByLabel('Chart text')).toBeHidden()
-  await page.goto('/editor?new=1')
+  await page.goto('/song?new=1')
   await page.getByRole('button', { name: 'Show text' }).click()
   await page.getByLabel('Chart text').fill('title: T\nA | 1\n')
   await page.getByRole('button', { name: 'Hide text' }).click()
@@ -27,7 +27,7 @@ test('the Text pane is hidden until shown, remembered, and flags problems while 
 
 test('scale menus show the formula where there is room: with the Text pane hidden, not beside it', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
-  await page.goto('/editor?chart=blue_bossa')
+  await page.goto('/song?chart=blue_bossa')
   const dorian = page.getByText('1, 2, ♭3, 4, 5, 6, ♭7', { exact: true })
   await expect(dorian.first()).toBeVisible()
   await expect(page.getByText('1, ♭2, ♭3, 3, ♯4, ♭6, ♭7', { exact: true }).first()).toBeVisible() // G Altered
@@ -79,9 +79,9 @@ test('the mode toggle shows one spelling at a time, and Start on only for From',
 })
 
 test('transposing rewrites the chart in another key', async ({ page }) => {
-  await page.goto('/editor?chart=f_jazz_blues')
+  await page.goto('/song?chart=f_jazz_blues')
   await page.getByRole('button', { name: 'Transpose…' }).click()
-  await expect(page.getByLabel('From key')).toHaveValue('F')
+  await expect(page.getByRole('dialog')).toContainText('From key') // From is the chart's key (read-only); the status below confirms it's F
   await page.getByLabel('To key').selectOption('Bb')
   await page.getByRole('button', { name: 'Transpose', exact: true }).click()
   await expect(page.getByRole('status').filter({ hasText: 'Transposed' })).toHaveText('Transposed from F to B♭.')
@@ -92,7 +92,7 @@ test('transposing rewrites the chart in another key', async ({ page }) => {
 })
 
 test('interval labels show on screen, against the chord root, on until turned off', async ({ page }) => {
-  await page.goto('/editor?chart=footprints')
+  await page.goto('/song?chart=footprints')
   const toggle = page.getByRole('button', { name: 'Intervals' })
   await expect(toggle).toHaveAttribute('aria-pressed', 'true') // on by default
   await expect(page.getByText('Intervals from the chord root:').first()).toBeAttached()
@@ -104,7 +104,7 @@ test('interval labels show on screen, against the chord root, on until turned of
 })
 
 test('guide tones draw both lines, four bars a system, without the scale controls', async ({ page }) => {
-  await page.goto('/editor?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn_leaves')
   await page.getByRole('group', { name: 'Sheet' }).getByText('Guide tones', { exact: true }).click()
   await expect(page.getByText('Full Form, Alternate Changes · G minor · AAB (Guide Tone Lines)')).toBeVisible()
   await expect(page.locator('svg[aria-label^="Line 1:"]')).toHaveCount(8) // 32 bars
@@ -132,7 +132,7 @@ test('the text editor explains itself on hover and on focus', async ({ page }) =
 })
 
 test('guide tone notation follows dark mode (no hard-coded black)', async ({ page }) => {
-  await page.goto('/editor?chart=f_jazz_blues')
+  await page.goto('/song?chart=f_jazz_blues')
   await page.getByRole('button', { name: /Switch to dark mode/ }).click()
   await page.getByRole('group', { name: 'Sheet' }).getByText('Guide tones', { exact: true }).click()
   await expect(page.locator('svg[aria-label^="Line 1:"]').first()).toBeVisible()
@@ -141,7 +141,7 @@ test('guide tone notation follows dark mode (no hard-coded black)', async ({ pag
 })
 
 test('practice highlights the chosen notes, remembers them per chart, and prints them', async ({ page }) => {
-  await page.goto('/editor?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn_leaves')
   const panel = page.locator('fieldset', { hasText: 'Practice' })
   await panel.getByRole('button', { name: 'Guide tones' }).click()
   await expect(page.locator('.vf-selected')).toHaveCount(78) // two per staff, 39 staves
@@ -161,7 +161,7 @@ test('practice highlights the chosen notes, remembers them per chart, and prints
 })
 
 test('focus mode shows only the sheet, leaves on Escape or its button, and still prints 4 pages', async ({ page }) => {
-  await page.goto('/editor?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn_leaves')
   const focus = page.getByRole('button', { name: 'Focus', exact: true })
   const dialog = page.getByRole('dialog', { name: 'Focus mode' })
   const exit = page.getByRole('button', { name: /Exit focus/ })
@@ -185,7 +185,7 @@ test('focus mode shows only the sheet, leaves on Escape or its button, and still
 })
 
 test('the scale level writes its scales into the chart, keeps your own picks, and goes back', async ({ page }) => {
-  await page.goto('/editor?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn_leaves')
   await page.getByRole('button', { name: 'Show text' }).click()
   const text = page.getByLabel('Chart text')
   const status = page.getByRole('status').filter({ hasText: /in this browser/ })
@@ -211,7 +211,7 @@ test('the scale level writes its scales into the chart, keeps your own picks, an
 })
 
 test('levels take over a library chart’s own scale choices, and Standard brings them back', async ({ page }) => {
-  await page.goto('/editor?chart=f_bird_blues')
+  await page.goto('/song?chart=f_bird_blues')
   await page.getByRole('button', { name: 'Show text' }).click()
   const text = page.getByLabel('Chart text')
   await expect(text).toHaveValue(/A7b9 +\| A Phrygian Dominant/)
@@ -223,7 +223,7 @@ test('levels take over a library chart’s own scale choices, and Standard bring
 })
 
 test('a waltz’s guide tones are in 3/4: dotted halves, three beats a bar', async ({ page }) => {
-  await page.goto('/editor?chart=someday_my_prince_will_come')
+  await page.goto('/song?chart=someday_my_prince_will_come')
   await page.getByRole('group', { name: 'Sheet' }).getByText('Guide tones', { exact: true }).click()
   const line1 = page.locator('svg[aria-label^="Line 1:"]').first()
   await expect(line1).toBeVisible()
@@ -233,7 +233,7 @@ test('a waltz’s guide tones are in 3/4: dotted halves, three beats a bar', asy
 
 test('the preview toolbar is one row on a desktop, in every sheet', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
-  await page.goto('/editor?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn_leaves')
   await page.getByText('From C', { exact: true }).click() // Scales with its Start on menu: the most controls
   // how many rows the toolbar's controls fall on, and (for a failure) the row's width and each control's
   const layout = () =>

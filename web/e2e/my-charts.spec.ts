@@ -3,10 +3,10 @@ import { chooseInstrument, expect, test } from './fixtures'
 const status = (page: import('@playwright/test').Page) => page.getByRole('status').filter({ hasText: /in this browser|Saving/ })
 
 test('a new chart saves itself, gets its own address, and is listed in My charts', async ({ page }) => {
-  await page.goto('/editor?new=1')
+  await page.goto('/song?new=1')
   await page.getByLabel('chord for row 1', { exact: true }).fill('F7')
   await expect(status(page)).toHaveText(/^Saved in this browser at/)
-  await expect(page).toHaveURL(/\/editor\?mine=[a-f0-9]{12}$/)
+  await expect(page).toHaveURL(/\/song\?mine=[a-f0-9]{12}$/)
   await expect(page.getByLabel('chord for row 1', { exact: true })).toBeFocused() // the editor didn't restart
   await page.reload()
   await expect(page.getByLabel('chord for row 1', { exact: true })).toHaveValue('F7')
@@ -16,7 +16,7 @@ test('a new chart saves itself, gets its own address, and is listed in My charts
 })
 
 test('edits to a library chart are kept as your version, until you revert', async ({ page }) => {
-  await page.goto('/editor?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn_leaves')
   await expect(status(page)).toHaveText('Edits are saved in this browser as your version.')
   await page.getByLabel('chord for row 1', { exact: true }).fill('Cm9')
   await expect(status(page)).toHaveText(/^Your edited version of Autumn Leaves, saved in this browser/)
@@ -34,9 +34,9 @@ test('edits to a library chart are kept as your version, until you revert', asyn
 })
 
 test('Save as a copy keeps a variation beside your version, and Delete removes one', async ({ page }) => {
-  await page.goto('/editor?chart=so_what')
+  await page.goto('/song?chart=so_what')
   await page.getByRole('button', { name: 'Save as a copy' }).click()
-  await expect(page).toHaveURL(/\/editor\?mine=/)
+  await expect(page).toHaveURL(/\/song\?mine=/)
   await expect(page.getByRole('heading', { name: 'So What (copy)', level: 1 })).toBeVisible()
   await page.goto('/')
   const mine = page.getByRole('region', { name: 'My charts' })
@@ -47,12 +47,12 @@ test('Save as a copy keeps a variation beside your version, and Delete removes o
 })
 
 test('a chart that isn’t saved here says so', async ({ page }) => {
-  await page.goto('/editor?mine=doesnotexist')
+  await page.goto('/song?mine=doesnotexist')
   await expect(page.getByRole('heading', { name: 'That chart isn’t here' })).toBeVisible()
 })
 
 test('Download saves the chart as text, scales included, and Open brings it back as a new chart', async ({ page }) => {
-  await page.goto('/editor?chart=blue_bossa')
+  await page.goto('/song?chart=blue_bossa')
   const downloading = page.waitForEvent('download')
   await page.getByRole('button', { name: 'Download' }).click()
   const file = await downloading
@@ -63,7 +63,7 @@ test('Download saves the chart as text, scales included, and Open brings it back
   const chooser = page.waitForEvent('filechooser')
   await page.getByRole('button', { name: 'Open chart…' }).click()
   await (await chooser).setFiles({ name: 'Blue Bossa.txt', mimeType: 'text/plain', buffer: Buffer.from(text.replace('title: Blue Bossa', 'title: Blue Bossa (mine)')) })
-  await expect(page).toHaveURL(/\/editor\?mine=/)
+  await expect(page).toHaveURL(/\/song\?mine=/)
   await expect(page.getByRole('heading', { name: 'Blue Bossa (mine)', level: 1 })).toBeVisible()
   await expect(page.getByLabel('Chart text')).toHaveValue(/G7#5#9 \| G Altered/) // the scale choices came with it
 })
@@ -85,14 +85,14 @@ test('a file dropped on the library opens, and a wrong one says why', async ({ p
 })
 
 test('a share link carries the chart and the view to a browser that has never seen it', async ({ page, browser }) => {
-  await page.goto('/editor?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn_leaves')
   await page.getByLabel('chord for row 1', { exact: true }).fill('Cm9')
   await chooseInstrument(page, 'Tenor')
   await page.getByText('From C', { exact: true }).click()
   await page.locator('fieldset', { hasText: 'Practice' }).getByRole('button', { name: 'All' }).click()
   await page.getByRole('button', { name: 'Share' }).click()
   const box = page.getByRole('dialog').getByLabel('Link')
-  await expect(box).toHaveValue(/\/editor#s=[A-Za-z0-9_-]+$/)
+  await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/)
   const link = await box.inputValue()
   expect(link.length).toBeLessThan(2_000)
 
@@ -110,8 +110,8 @@ test('a share link carries the chart and the view to a browser that has never se
   await visitor.goBack() // the shared chart again
   await expect(visitor.getByLabel('chord for row 1', { exact: true })).toHaveValue('Cm9')
   await visitor.getByRole('button', { name: 'Save to My charts' }).click()
-  await expect(visitor).toHaveURL(/\/editor\?mine=/)
-  await visitor.goto('/editor?chart=so_what')
+  await expect(visitor).toHaveURL(/\/song\?mine=/)
+  await visitor.goto('/song?chart=so_what')
   await expect(visitor.locator('section header p').first()).not.toContainText('Tenor') // the link didn't change their own settings
   await visitor.goto('/')
   await expect(visitor.getByRole('region', { name: 'My charts' }).getByRole('link', { name: 'Autumn Leaves' })).toBeVisible()
@@ -119,12 +119,12 @@ test('a share link carries the chart and the view to a browser that has never se
 })
 
 test('a damaged share link says so', async ({ page }) => {
-  await page.goto('/editor#s=not-a-real-chart')
+  await page.goto('/song#s=not-a-real-chart')
   await expect(page.getByRole('heading', { name: 'That link doesn’t open a chart' })).toBeVisible()
 })
 
 test('choosing a scale and then the usual one again writes the scale name, and leaves the library chart unedited', async ({ page }) => {
-  await page.goto('/editor?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn_leaves')
   const scale = page.getByLabel('Scale for Cm7').first()
   await scale.selectOption('C Aeolian')
   await expect(status(page)).toHaveText(/^Your edited version of Autumn Leaves/)

@@ -19,7 +19,7 @@ export function useOpenChart() {
         error.value = "Couldn't open it: this browser's storage is full, or My charts is at its limit."
         return
       }
-      await navigateTo({ path: '/editor', query: { mine: id } })
+      await navigateTo({ path: '/song', query: { mine: id } })
     } finally {
       busy.value = false
     }

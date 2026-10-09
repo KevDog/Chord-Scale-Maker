@@ -1,5 +1,6 @@
 title: Bb Jazz Blues
 subtitle: 12-Bar Blues with ii–V Turnarounds
+key: Bb
 # analysis: 2026-10-08, rules v1; Bb, blues
 
 # section | bar | chord | scale
