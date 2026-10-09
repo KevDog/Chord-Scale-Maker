@@ -9,7 +9,7 @@
 | [plan-ui-redesign.md](plan-ui-redesign.md) | Historical record of the Catalyst UI redesign. |
 | [plan-guide-tones.md](plan-guide-tones.md) | Guide tone lines: the decisions, algorithm and print layout (done). |
 | [plan-saving.md](plan-saving.md) | Saving charts without accounts: My charts in the browser, Download/Open, share links (done). |
-| [plan-changes.md](plan-changes.md) | The Changes sheet: a study lead sheet with numerals and scales under the chords (built, flag off). |
+| [plan-changes.md](plan-changes.md) | The Changes sheet: a study lead sheet with numerals and scales under the chords (done). |
 | [plan-analysis.md](plan-analysis.md) | Harmonic analysis for scale choice: the rule set, worked against the library, with its decisions and what building it changed (built). |
 
 The plan files describe the code as it was when each phase landed. Where they disagree with the code or with

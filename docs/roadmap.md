@@ -3,12 +3,10 @@
 Ideas agreed in principle but not scheduled, and work in progress. Each gets a plan or a PR of its own when it's
 picked up.
 
-## In progress
+## Next for the Changes sheet
 
-### The Changes sheet
-
-Built behind the `changes` flag (off) for sign-off: [plan-changes.md](plan-changes.md). Still to come: 1st and 2nd
-endings, D.C./segno navigation and coda symbols.
+The sheet is live ([plan-changes.md](plan-changes.md)). Still to come: 1st and 2nd endings, D.C./segno navigation and
+coda symbols.
 
 ## Next
 
