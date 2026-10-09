@@ -1,5 +1,14 @@
 import { describe, expect, it } from 'vitest'
-import { accFor, enharmonics, glyphs, mod, parseRoot, pcOf, rootName } from '../pitch'
+import { accFor, enharmonics, glyphs, mod, parseRoot, pcOf, rootName, shiftBy } from '../pitch'
+
+describe('shiftBy', () => {
+  it('moves a note by letters and semitones, respelling the accidental', () => {
+    expect(rootName(shiftBy(parseRoot('C'), 1, 2))).toBe('D') // up a major 2nd
+    expect(rootName(shiftBy(parseRoot('C'), 2, 3))).toBe('Eb') // up a minor 3rd
+    expect(rootName(shiftBy(parseRoot('F'), 4, 7))).toBe('C') // up a perfect 5th
+    expect(rootName(shiftBy(parseRoot('B'), 1, 1))).toBe('C') // B -> C (letter wraps)
+  })
+})
 
 describe('glyphs', () => {
   it('turns accidentals into music glyphs', () => {

@@ -2,7 +2,7 @@ import type { ChartDoc, ChartLine } from './chart'
 import { resolveScale } from './chart'
 import { parseChord } from './chord'
 import type { RowLine } from './edit'
-import { type Spelled, accFor, enharmonics, mod, parseRoot, pcOf, rootName, toLetter } from './pitch'
+import { type Spelled, accFor, enharmonics, mod, parseRoot, pcOf, rootName, shiftBy, toLetter } from './pitch'
 import { type ScaleKey, parseScale, SCALES, simplifyRoot, spellFrom } from './scales'
 
 /**
@@ -22,8 +22,7 @@ export const keyShift = (from: Spelled, to: Spelled): KeyShift => ({
 })
 
 export function shiftNote(n: Spelled, s: KeyShift): Spelled {
-  const letter = toLetter(n.letter + s.steps)
-  return { letter, acc: accFor(mod(pcOf(n) + s.semis, 12), letter) }
+  return shiftBy(n, s.steps, s.semis)
 }
 
 /** -1 for a flat key (F, Bb … Gb), 1 for a sharp key (G, D … F#), 0 for C */
