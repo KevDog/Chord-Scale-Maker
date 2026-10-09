@@ -1,4 +1,5 @@
 import { type Mode, type PracticeSelection, practiceSelectionFrom } from '~~/engine'
+import { practiceKey } from '~/utils/practiceKey'
 
 /** a stored selection, if it is one (anything else in storage is ignored) */
 function parse(raw: string | null): PracticeSelection | null {
@@ -15,15 +16,14 @@ function parse(raw: string | null): PracticeSelection | null {
  * this browser. Without a chart (a draft) it lasts for the visit.
  */
 export function usePractice(slug?: string) {
-  const key = (mode: Mode): string => `csm-practice:${slug}:${mode}`
-  const load = (mode: Mode): PracticeSelection | null => (slug ? parse(readStored(key(mode))) : null)
+  const load = (mode: Mode): PracticeSelection | null => (slug ? parse(readStored(practiceKey(slug, mode))) : null)
   const selections = reactive<Record<Mode, PracticeSelection | null>>({ root: load('root'), from: load('from') })
 
   function setSelection(mode: Mode, selection: PracticeSelection | null): void {
     selections[mode] = selection
     if (!slug) return
-    if (selection) writeStored(key(mode), JSON.stringify(selection))
-    else removeStored(key(mode))
+    if (selection) writeStored(practiceKey(slug, mode), JSON.stringify(selection))
+    else removeStored(practiceKey(slug, mode))
   }
 
   return { selection: (mode: Mode): PracticeSelection | null => selections[mode], setSelection }
