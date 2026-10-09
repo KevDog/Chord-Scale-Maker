@@ -1,4 +1,4 @@
-import { chooseInstrument, expect, staves, test } from './fixtures'
+import { chooseInstrument, expect, pickOption, staves, test } from './fixtures'
 
 const firstStaff = (page: import('@playwright/test').Page) => page.locator('.break-inside-avoid').first()
 
@@ -23,7 +23,7 @@ test('Transpose needs the chart key', async ({ page }) => {
 test('bass clef instruments and the start note', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
   await chooseInstrument(page, 'Trombone')
-  await page.getByText('From C', { exact: true }).click()
+  await pickOption(page, 'Where each scale starts', 'From C')
   await page.getByLabel('Start on').selectOption('B')
   await expect(page.getByText('From B', { exact: true })).toBeVisible()
   await expect(page.locator('section header p').first()).toHaveText('Full Form, Alternate Changes · G minor · AAB – Trombone (Spelled from B)')

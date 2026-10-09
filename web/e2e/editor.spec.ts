@@ -1,4 +1,4 @@
-import { expect, openEditor, staves, test } from './fixtures'
+import { expect, openEditor, pickOption, setScaleLevel, staves, test } from './fixtures'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/song?new=1')
@@ -51,15 +51,15 @@ test('text edits update the grid and preview; unknown chords prompt for a scale'
 })
 
 test('the mode toggle shows one spelling at a time, and Start on only for From', async ({ page }) => {
-  await expect(page.getByLabel('From root')).toBeChecked() // the default
+  const mode = page.getByRole('button', { name: 'Where each scale starts' })
+  await expect(mode).toContainText('From root') // the default
   await expect(page.getByLabel('Start on')).toHaveCount(0)
-  await expect(page.getByText('Both', { exact: true })).toHaveCount(0)
-  await page.getByText('From C', { exact: true }).click()
+  await pickOption(page, 'Where each scale starts', 'From C')
   await expect(staves(page)).toHaveCount(3)
   await expect(page.locator('section header p').first()).toHaveText('Spelled from C')
   await page.getByLabel('Start on').selectOption('Eb')
-  await expect(page.getByText('From E♭', { exact: true })).toBeVisible()
-  await page.getByText('From root', { exact: true }).click()
+  await expect(mode).toContainText('From E♭')
+  await pickOption(page, 'Where each scale starts', 'From root')
   await expect(page.locator('section header p').first()).toHaveText('Spelled from the Root')
 })
 
@@ -135,11 +135,11 @@ test('practice highlights the chosen notes, remembers them per chart, and prints
   await expect(page.locator('fieldset', { hasText: 'Practice' }).getByRole('button', { name: 'Guide tones' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.locator('.vf-selected')).toHaveCount(78)
   // From C keeps its own selection
-  await page.getByText('From C', { exact: true }).click()
+  await pickOption(page, 'Where each scale starts', 'From C')
   await expect(page.locator('.vf-selected')).toHaveCount(0)
   await page.locator('fieldset', { hasText: 'Practice' }).locator('label', { hasText: /^E♭$/ }).click()
   await expect(page.locator('.vf-selected').first()).toBeAttached()
-  await page.getByText('From root', { exact: true }).click()
+  await pickOption(page, 'Where each scale starts', 'From root')
   await page.emulateMedia({ media: 'print' })
   const pdf = await page.pdf({ format: 'Letter' })
   expect((pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length).toBe(4) // still 12 staves a page
@@ -175,21 +175,22 @@ test('the scale level writes its scales into the chart, keeps your own picks, an
   const text = page.getByLabel('Chart text')
   const status = page.getByRole('status').filter({ hasText: /in this browser/ })
   await page.getByLabel('Scale for D7').first().selectOption('D Lydian Dominant') // a pick of your own
-  await page.getByText('Basic', { exact: true }).click()
+  await setScaleLevel(page, 'Basic')
   await expect(text).toHaveValue(/Cm7 +\| C Minor Pentatonic/)
   await expect(text).toHaveValue(/D7 +\| D Lydian Dominant/) // yours: kept
   await expect(page.getByRole('status').filter({ hasText: /chords moved to basic scales/ })).toBeVisible()
   await expect(status).toHaveText(/^Your edited version of Autumn Leaves/)
   await page.reload()
-  await expect(page.getByLabel('Basic')).toBeChecked() // remembered with the chart
-  await page.getByText('Advanced', { exact: true }).click()
+  await openEditor(page)
+  await expect(page.getByRole('button', { name: 'Work on' })).toContainText('Basic') // remembered with the chart
+  await setScaleLevel(page, 'Advanced')
   await expect(text).toHaveValue(/Cm7 +\| C Bebop Dorian/)
-  await page.getByText('Random', { exact: true }).click()
+  await setScaleLevel(page, 'Random')
   const dealt = await text.inputValue()
   await page.getByRole('button', { name: 'Shuffle' }).click()
   await expect.poll(() => text.inputValue()).not.toEqual(dealt)
   await expect(text).toHaveValue(/D7 +\| D Lydian Dominant/)
-  await page.getByText('Standard', { exact: true }).click()
+  await setScaleLevel(page, 'Standard')
   await expect(text).toHaveValue(/Cm7 +\| C Dorian/)
   await page.getByLabel('Scale for D7').first().selectOption('D Phrygian Dominant') // back to the library's own
   await expect(status).toHaveText('Edits are saved in this browser as your version.') // the library version again
@@ -200,9 +201,9 @@ test('levels take over a library chart’s own scale choices, and Standard bring
   await openEditor(page)
   const text = page.getByLabel('Chart text')
   await expect(text).toHaveValue(/A7b9 +\| A Phrygian Dominant/)
-  await page.getByText('Advanced', { exact: true }).click()
+  await setScaleLevel(page, 'Advanced')
   await expect(text).toHaveValue(/A7b9 +\| A Spanish Phrygian/)
-  await page.getByText('Standard', { exact: true }).click()
+  await setScaleLevel(page, 'Standard')
   await expect(text).toHaveValue(/A7b9 +\| A Phrygian Dominant/) // the chart's choice, not Half-Whole
   await expect(page.getByRole('status').filter({ hasText: /in this browser/ })).toHaveText('Edits are saved in this browser as your version.')
 })
@@ -216,11 +217,17 @@ test('a waltz’s guide tones are in 3/4: dotted halves, three beats a bar', asy
   await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
 })
 
-test('the preview toolbar is one row on a desktop, in every sheet', async ({ page }) => {
-  await page.setViewportSize({ width: 1280, height: 900 })
+test('the toolbar groups the controls under labels, with the scale level as a dropdown', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
-  await page.getByText('From C', { exact: true }).click() // Scales with its Start on menu: the most controls
-  // how many rows the toolbar's controls fall on, and (for a failure) the row's width and each control's
+  for (const label of ['Instrument', 'Work on', 'Show', 'Transposition', 'Display']) await expect(page.getByText(label, { exact: true }).first()).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Work on' })).toBeVisible() // the scale level is a dropdown in the toolbar
+})
+
+test('the preview toolbar stays tidy (at most two rows), in every sheet', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/song?chart=autumn_leaves')
+  await pickOption(page, 'Where each scale starts', 'From C') // Scales with its Start on menu: the most controls
+  // how many rows the toolbar's labelled groups fall on (the content is capped at 72rem, so six groups can take two)
   const layout = () =>
     page.locator('#preview-heading').locator('xpath=following-sibling::*[1]').evaluate((el) => {
       const row = el.firstElementChild as HTMLElement
@@ -230,7 +237,7 @@ test('the preview toolbar is one row on a desktop, in every sheet', async ({ pag
   for (const sheet of ['Scales', 'Guide tones', 'Changes']) {
     await page.getByRole('group', { name: 'Sheet' }).getByText(sheet, { exact: true }).click()
     const { rows, widths } = await layout()
-    expect(rows, `${sheet} (${widths})`).toBe(1)
+    expect(rows, `${sheet} (${widths})`).toBeLessThanOrEqual(2)
   }
 })
 

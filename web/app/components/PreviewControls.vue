@@ -1,7 +1,7 @@
 <template>
   <div class="space-y-4">
-    <!-- one row on a desktop in every sheet, Scales (the most controls, with From C) included -->
-    <div class="flex flex-wrap items-end gap-3 lg:gap-2">
+    <!-- labelled groups, one row on a desktop: Sheet · Instrument · Work on · Show · Transposition · Display -->
+    <div class="flex flex-wrap items-end gap-x-4 gap-y-3">
       <SegmentedControl v-if="sheets.length > 1" v-model="sheet" legend="Sheet" name="sheet" :options="sheets" />
       <UiField class="w-40">
         <UiLabel>Instrument</UiLabel>
@@ -15,24 +15,37 @@
           </UiListboxGroup>
         </UiListbox>
       </UiField>
-      <SegmentedControl v-if="sheet === 'scales'" v-model="mode" legend="Where each scale starts" name="mode" :options="modes" />
-      <UiField v-if="sheet === 'scales' && mode === 'from'" class="w-[4.5rem]">
-        <UiLabel>Start on</UiLabel>
-        <UiSelect v-model="start" aria-describedby="start-help">
-          <option v-for="r in PICKER_ROOTS" :key="r" :value="r">{{ noteText(r) }}</option>
-        </UiSelect>
+      <UiField v-if="$slots.workon">
+        <UiLabel>Work on</UiLabel>
+        <div class="flex items-center gap-2"><slot name="workon" /></div>
       </UiField>
-      <!-- Intervals and the chart's actions: one group, its own row below lg, two by two on a phone -->
-      <div class="flex flex-wrap items-end gap-3 *:whitespace-nowrap max-lg:w-full max-sm:grid max-sm:grid-cols-2 lg:gap-2">
-        <UiButton v-if="sheet !== 'changes'" v-bind="intervals ? { color: 'note' } : { outline: true }" :aria-pressed="intervals" title="Label each note against the chord root (on screen only)" @click="intervals = !intervals">
-          Intervals
-        </UiButton>
-        <template v-else>
-          <UiButton v-bind="numerals ? { color: 'note' } : { outline: true }" :aria-pressed="numerals" title="Each chord's Roman numeral in its key" @click="numerals = !numerals">Numerals</UiButton>
-          <UiButton v-bind="scaleNames ? { color: 'note' } : { outline: true }" :aria-pressed="scaleNames" title="Each chord's scale, under its numeral" @click="scaleNames = !scaleNames">Scales</UiButton>
-        </template>
-        <slot name="actions" />
-      </div>
+      <UiField>
+        <UiLabel>Show</UiLabel>
+        <div class="flex flex-wrap gap-2 *:whitespace-nowrap">
+          <UiButton v-if="sheet !== 'changes'" v-bind="intervals ? { color: 'note' } : { outline: true }" :aria-pressed="intervals" title="Label each note against the chord root (on screen only)" @click="intervals = !intervals">Intervals</UiButton>
+          <template v-else>
+            <UiButton v-bind="numerals ? { color: 'note' } : { outline: true }" :aria-pressed="numerals" title="Each chord's Roman numeral in its key" @click="numerals = !numerals">Numerals</UiButton>
+            <UiButton v-bind="scaleNames ? { color: 'note' } : { outline: true }" :aria-pressed="scaleNames" title="Each chord's scale, under its numeral" @click="scaleNames = !scaleNames">Scales</UiButton>
+          </template>
+        </div>
+      </UiField>
+      <UiField>
+        <UiLabel>Transposition</UiLabel>
+        <div class="flex flex-wrap items-center gap-2">
+          <UiListbox v-if="sheet === 'scales'" v-model="mode" class="w-32" aria-label="Where each scale starts">
+            <template #selected="{ value }"><UiListboxLabel>{{ modeLabel(value) }}</UiListboxLabel></template>
+            <UiListboxOption v-for="m in modes" :key="m.value" :value="m.value"><UiListboxLabel>{{ m.label }}</UiListboxLabel></UiListboxOption>
+          </UiListbox>
+          <UiSelect v-if="sheet === 'scales' && mode === 'from'" v-model="start" class="w-[4.5rem]" aria-label="Start on" aria-describedby="start-help">
+            <option v-for="r in PICKER_ROOTS" :key="r" :value="r">{{ noteText(r) }}</option>
+          </UiSelect>
+          <slot name="transpose" />
+        </div>
+      </UiField>
+      <UiField class="ml-auto">
+        <UiLabel>Display</UiLabel>
+        <div class="flex flex-wrap gap-2 *:whitespace-nowrap"><slot name="display" /></div>
+      </UiField>
     </div>
     <UiText id="start-help" class="sr-only">Written pitch the "from" part starts on</UiText>
     <UiText aria-live="polite">
@@ -46,7 +59,7 @@
 import { INSTRUMENTS, type InstrumentName, type Mode, noteText, partFor } from '~~/engine'
 import type { SheetKind } from '~/utils/sheets'
 
-/** the preview toolbar: which sheet, the instrument, where scales start, interval labels, then the #actions slot */
+/** the preview toolbar, in labelled groups: Sheet, Instrument, #workon, Show, Transposition (+ #transpose), #display */
 const sheet = defineModel<SheetKind>('sheet', { required: true })
 const instrument = defineModel<InstrumentName>('instrument', { required: true })
 const mode = defineModel<Mode>('mode', { required: true })
@@ -62,5 +75,6 @@ const modes = computed((): readonly { value: Mode; label: string }[] => [
   { value: 'from', label: `From ${noteText(start.value)}` },
   { value: 'root', label: 'From root' },
 ])
+const modeLabel = (v: Mode): string => modes.value.find((m) => m.value === v)?.label ?? ''
 const part = computed(() => partFor(instrument.value))
 </script>

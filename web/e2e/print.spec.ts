@@ -1,4 +1,4 @@
-import { chooseInstrument, expect, staves, test } from './fixtures'
+import { chooseInstrument, expect, pickOption, staves, test } from './fixtures'
 
 const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length
 
@@ -12,7 +12,7 @@ for (const [instrument, start] of [
     await page.goto('/song?chart=autumn_leaves')
     await chooseInstrument(page, instrument)
     if (start) {
-      await page.getByText('From C', { exact: true }).click()
+      await pickOption(page, 'Where each scale starts', 'From C')
       await page.getByLabel('Start on').selectOption(start)
     }
     await expect(staves(page)).toHaveCount(39)

@@ -37,13 +37,6 @@
         <div class="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
           <UiSubheading id="grid-heading">Chart</UiSubheading>
         </div>
-        <!-- Level: how sophisticated each chord's scale is, written into the chart (engine/levels.ts) -->
-        <div v-if="levelsOn && !editor.fatal.value" class="mb-4 flex flex-wrap items-center gap-x-3 gap-y-2">
-          <span id="scale-level-label" class="text-sm/6 font-medium text-zinc-950 dark:text-white">Scale level</span>
-          <SegmentedControl :model-value="scaleLevel.level.value" legend="Scale level" name="scale-level" :options="LEVEL_OPTIONS" @update:model-value="setLevel" />
-          <UiButton v-if="scaleLevel.level.value === 'random'" outline title="Deal a new random scale for each chord" @click="shuffle"><ArrowPathIcon data-slot="icon" />Shuffle</UiButton>
-          <UiText v-if="levelNote" role="status" class="text-sm/6!">{{ levelNote }}</UiText>
-        </div>
         <div v-if="editor.fatal.value" class="rounded-lg bg-red-500/10 p-4 text-sm/6 text-red-700 dark:text-red-400">
           This chart is over a size limit. Shorten it in the text editor to edit it here.
         </div>
@@ -86,14 +79,24 @@
           v-model:numerals="prefs.numerals.value"
           v-model:scale-names="prefs.scaleNames.value"
         >
-          <!-- the chart's actions, after Intervals (none while the chart is over a size limit) -->
-          <template v-if="!editor.fatal.value" #actions>
-            <UiButton outline :aria-expanded="editorShown" title="Show or hide the chart editor" @click="prefs.showEditor.value = !prefs.showEditor.value"><CodeBracketIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</UiButton>
+          <!-- Work on: how sophisticated each chord's scale is (engine/levels.ts); a dropdown in the toolbar -->
+          <template v-if="levelsOn && !editor.fatal.value" #workon>
+            <UiListbox :model-value="scaleLevel.level.value" @update:model-value="(v) => v && setLevel(v)">
+              <template #selected="{ value }"><UiListboxLabel>{{ levelLabel(value) }}</UiListboxLabel></template>
+              <UiListboxOption v-for="o in LEVEL_OPTIONS" :key="o.value" :value="o.value"><UiListboxLabel>{{ o.label }}</UiListboxLabel></UiListboxOption>
+            </UiListbox>
+            <UiButton v-if="scaleLevel.level.value === 'random'" outline aria-label="Shuffle" title="Deal a new random scale for each chord" @click="shuffle"><ArrowPathIcon data-slot="icon" /></UiButton>
+          </template>
+          <template v-if="!editor.fatal.value" #transpose>
             <ChartTranspose :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
+          </template>
+          <template v-if="!editor.fatal.value" #display>
+            <UiButton outline :aria-expanded="editorShown" title="Show or hide the chart editor" @click="prefs.showEditor.value = !prefs.showEditor.value"><CodeBracketIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</UiButton>
             <UiButton outline title="Show only the sheet music (Esc to leave)" @click="enterFocus"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
             <UiButton color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
           </template>
         </PreviewControls>
+        <UiText v-if="levelNote" role="status" class="text-sm/6!">{{ levelNote }}</UiText>
         <UiText v-if="transposed" role="status">{{ transposed }}</UiText>
         <PracticePanel
           v-if="practiceOn && sheet === 'scales' && !editor.fatal.value"
@@ -204,6 +207,7 @@ const practice = usePractice(props.practiceKey)
 const levelsOn = useFeature('scaleLevels')
 const scaleLevel = useScaleLevel(props.practiceKey, props.shared)
 const LEVEL_OPTIONS = SCALE_LEVELS.map((value) => ({ value, label: LEVEL_LABELS[value] }))
+const levelLabel = (v: (typeof SCALE_LEVELS)[number]): string => LEVEL_LABELS[v]
 const level = computed(() => (levelsOn ? scaleLevel.level.value : 'standard'))
 const levelNote = ref('')
 

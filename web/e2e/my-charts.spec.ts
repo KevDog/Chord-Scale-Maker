@@ -1,4 +1,4 @@
-import { chooseInstrument, expect, openEditor, test } from './fixtures'
+import { chooseInstrument, expect, openEditor, pickOption, test } from './fixtures'
 
 const status = (page: import('@playwright/test').Page) => page.getByRole('status').filter({ hasText: /in this browser|Saving/ })
 
@@ -92,7 +92,7 @@ test('a share link carries the chart and the view to a browser that has never se
   await openEditor(page)
   await page.getByLabel('chord for row 1', { exact: true }).fill('Cm9')
   await chooseInstrument(page, 'Tenor')
-  await page.getByText('From C', { exact: true }).click()
+  await pickOption(page, 'Where each scale starts', 'From C')
   await page.locator('fieldset', { hasText: 'Practice' }).getByRole('button', { name: 'All' }).click()
   await page.getByRole('button', { name: 'Share' }).click()
   const box = page.getByRole('dialog').getByLabel('Link')

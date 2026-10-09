@@ -39,6 +39,17 @@ export async function chooseInstrument(page: import('@playwright/test').Page, na
   await page.getByRole('option', { name: new RegExp(`^${name}`) }).click()
 }
 
+/** open a listbox (by its current button name) and choose an option by exact label */
+export async function pickOption(page: import('@playwright/test').Page, button: string | RegExp, option: string | RegExp): Promise<void> {
+  await page.getByRole('button', { name: button }).click()
+  await page.getByRole('option', { name: option, exact: typeof option === 'string' }).click()
+}
+
+/** set the Work-on scale level from its toolbar dropdown */
+export async function setScaleLevel(page: import('@playwright/test').Page, label: string): Promise<void> {
+  await pickOption(page, 'Work on', label)
+}
+
 /** reveal the editor (grid + text) if it isn't already shown — the page is song-first, editor hidden by default */
 export async function openEditor(page: import('@playwright/test').Page): Promise<void> {
   const text = page.getByLabel('Chart text')
