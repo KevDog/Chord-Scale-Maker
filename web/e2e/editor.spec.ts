@@ -235,14 +235,17 @@ test('the preview toolbar is one row on a desktop, in every sheet', async ({ pag
   await page.setViewportSize({ width: 1280, height: 900 })
   await page.goto('/editor?chart=autumn_leaves')
   await page.getByText('From C', { exact: true }).click() // Scales with its Start on menu: the most controls
-  const tops = () =>
+  // how many rows the toolbar's controls fall on, and (for a failure) the row's width and each control's
+  const layout = () =>
     page.locator('#preview-heading').locator('xpath=following-sibling::*[1]').evaluate((el) => {
       const row = el.firstElementChild as HTMLElement
-      return new Set(Array.from(row.children, (c) => Math.round(c.getBoundingClientRect().bottom))).size
+      const kids = Array.from(row.children, (c) => c.getBoundingClientRect())
+      return { rows: new Set(kids.map((r) => Math.round(r.bottom))).size, widths: `${row.clientWidth}: ${kids.map((r) => Math.round(r.width)).join(' + ')}` }
     })
   for (const sheet of ['Scales', 'Guide tones', 'Changes']) {
     await page.getByRole('group', { name: 'Sheet' }).getByText(sheet, { exact: true }).click()
-    expect(await tops(), sheet).toBe(1)
+    const { rows, widths } = await layout()
+    expect(rows, `${sheet} (${widths})`).toBe(1)
   }
 })
 
