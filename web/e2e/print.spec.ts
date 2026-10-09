@@ -33,6 +33,7 @@ for (const [chart, instrument, pages] of [
     await chooseInstrument(page, instrument)
     await page.getByRole('group', { name: 'Sheet' }).getByText('Guide tones', { exact: true }).click()
     await expect(page.locator('svg[aria-label^="Line 1:"]').first()).toBeVisible()
+    await expect(page.getByRole('separator')).toHaveCount(0) // no on-screen page divider
     await page.emulateMedia({ media: 'print' })
     await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
     expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(pages)
