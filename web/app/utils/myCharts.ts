@@ -1,4 +1,5 @@
-import { chartMeta, LIMITS, parseChart } from '~~/engine'
+import { chartMeta, LIMITS, MODES, parseChart } from '~~/engine'
+import { practiceKey } from '~/utils/practiceKey'
 
 /**
  * My charts: charts saved in this browser's localStorage, with no account and nothing sent anywhere. An index of
@@ -82,7 +83,7 @@ export function saveChart(input: Readonly<{ id: string; text: string; kind: Save
 export function deleteChart(id: string): void {
   writeStored(INDEX, JSON.stringify(readIndex().filter((m) => m.id !== id)))
   removeStored(textKey(id))
-  for (const mode of ['root', 'from']) removeStored(`csm-practice:mine:${id}:${mode}`)
+  for (const mode of MODES) removeStored(practiceKey(`mine:${id}`, mode))
 }
 
 /** the old single draft (the hidden New chart's), moved into My charts once */

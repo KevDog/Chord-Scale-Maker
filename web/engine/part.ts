@@ -10,6 +10,8 @@ import { type ScaleKey, type ScaleNote, parseScale, SCALES, simplifyRoot, spellS
 /** an instrument "view" of the chart */
 export type Part = Readonly<{ clef: Clef; trans: Transposition }>
 export type Mode = 'from' | 'root'
+/** the practice modes, for iterating (From root picks intervals, From X picks pitches) */
+export const MODES: readonly Mode[] = ['root', 'from']
 export type Pitched = Readonly<Spelled & { midi: number }>
 type WrittenScale = Readonly<{ root: Spelled; key: ScaleKey; notes: readonly ScaleNote[] }>
 export type ScaleLabel = Readonly<{ root: Spelled; name: string }>
