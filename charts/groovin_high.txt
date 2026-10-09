@@ -7,7 +7,7 @@ source: Colorado Cookbook, p. 82
 # analysis: 2026-10-08, rules v1; Eb
 
 # section | bar | chord | scale
-# the horn intro is left out
+# the horn intro is a melody line (no chords), so it is left out
 A1 | 1  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 A1 | 3  | Am7    | A Dorian                  # ii of D7: Dorian
 A1 | 4  | D7     | D Mixolydian              # passing ii–V: its own key

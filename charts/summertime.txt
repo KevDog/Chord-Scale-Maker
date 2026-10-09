@@ -4,25 +4,29 @@ style: Medium
 key: Dm
 form: AB, 16 bars
 source: Colorado Cookbook, p. 228
-# analysis: 2026-10-08, rules v1; D minor
+# analysis: 2026-10-09, rules v1; D minor
 
 # section | bar | chord | scale
-# the horn intro and the Dm DmMaj7 Dm7 Dm6 vamp are left out; bar 4 can also be Gm7 C7, bar 5 FMaj7 BbMaj7
 # area: D minor (bars 1–9)
-A | 1  | Dm    | D Dorian             # tonic minor: Dorian by convention
-A | 5  | Gm    | G Dorian             # iv: Dorian, the key’s own notes
-A | 7  | Em7b5 | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
-A | 8  | A7    | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key
-B | 9  | Dm    | D Dorian             # tonic minor: Dorian by convention
+Intro | 1  | Dm     | D Dorian             # tonic minor: Dorian by convention
+Intro | 2  | DmMaj7 | D Melodic Minor      # from the symbol: minor-major 7th
+Intro | 3  | Dm7    | D Dorian             # tonic minor: Dorian by convention
+Intro | 4  | Dm6    | D Dorian             # a minor sixth chord: Dorian
+# the melody-only horn intro is left out; the Dm vamp (also the ending, to fade) is the intro here; bar 4 can also be Gm7 C7, bar 5 FMaj7 BbMaj7
+A     | 1  | Dm     | D Dorian             # tonic minor: Dorian by convention
+A     | 5  | Gm     | G Dorian             # iv: Dorian, the key’s own notes
+A     | 7  | Em7b5  | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
+A     | 8  | A7     | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key
+B     | 9  | Dm     | D Dorian             # tonic minor: Dorian by convention
 # area: F major (bars 11–12)
-B | 11 | Gm7   | G Dorian             # ii of the ii–V to F
-B | 11 | C7    | C Mixolydian         # V7 of F: natural tensions
-B | 12 | FMaj7 | F Ionian             # tonic: the 4th is in the key
-B | 12 | Bb7   | Bb Lydian Dominant   # IV7 in F, not resolving: the #11 is in the key
+B     | 11 | Gm7    | G Dorian             # ii of the ii–V to F
+B     | 11 | C7     | C Mixolydian         # V7 of F: natural tensions
+B     | 12 | FMaj7  | F Ionian             # tonic: the 4th is in the key
+B     | 12 | Bb7    | Bb Lydian Dominant   # IV7 in F, not resolving: the #11 is in the key
 # area: D minor (bars 13–16)
-B | 13 | Em7b5 | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
-B | 13 | A7    | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key
-B | 14 | Dm    | D Dorian             # tonic minor: Dorian by convention
-B | 15 | Em7b5 | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
-B | 15 | A7    | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key
-B | 16 | Dm    | D Dorian             # tonic minor: Dorian by convention
+B     | 13 | Em7b5  | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
+B     | 13 | A7     | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key
+B     | 14 | Dm     | D Dorian             # tonic minor: Dorian by convention
+B     | 15 | Em7b5  | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
+B     | 15 | A7     | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key
+B     | 16 | Dm     | D Dorian             # tonic minor: Dorian by convention

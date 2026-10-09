@@ -4,26 +4,38 @@ style: Ballad
 key: Ab
 form: AABC, 20 bars
 source: Colorado Cookbook, p. 151
-# analysis: 2026-10-08, rules v1; Ab
+# analysis: 2026-10-09, rules v1; Ab
 
 # section | bar | chord | scale
-# the A and C sections sit over an Eb bass pedal, the bridge over Bb; the coda is left out
-A1 | 1  | Bbm    | Bb Dorian                 # ii: Dorian, the key’s own notes
-A1 | 2  | Ebm    | Eb Dorian                 # a borrowed minor chord: Dorian, its own key
-A1 | 3  | B7#11  | B Lydian Dominant         # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-A1 | 3  | A7#11  | A Lydian Dominant         # tritone substitute: resolves down a half step to AbMaj7
-A1 | 4  | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key
+Coda | 1  | Bbm    | Bb Dorian                 # ii: Dorian, the key’s own notes
+Coda | 1  | A7#11  | A Lydian Dominant         # tritone substitute: resolves down a half step to AbMaj7
+Coda | 2  | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key
+Coda | 4  | B7#11  | B Lydian Dominant         # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+Coda | 4  | A7#11  | A Lydian Dominant         # tritone substitute: resolves down a half step to AbMaj7
+Coda | 5  | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key
+Coda | 5  | DbMaj7 | Db Lydian                 # IV: the #4 is the key’s 7th
+Coda | 6  | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key
+Coda | 6  | DbMaj7 | Db Lydian                 # IV: the #4 is the key’s 7th
+Coda | 7  | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key
+Coda | 7  | DbMaj7 | Db Lydian                 # IV: the #4 is the key’s 7th
+Coda | 8  | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key
+# the A and C sections sit over an Eb bass pedal, the bridge over Bb; the coda is a plagal AbMaj7 DbMaj7 vamp
+A1   | 1  | Bbm    | Bb Dorian                 # ii: Dorian, the key’s own notes
+A1   | 2  | Ebm    | Eb Dorian                 # a borrowed minor chord: Dorian, its own key
+A1   | 3  | B7#11  | B Lydian Dominant         # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A1   | 3  | A7#11  | A Lydian Dominant         # tritone substitute: resolves down a half step to AbMaj7
+A1   | 4  | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key
 @copy A1 A2 4
-B  | 9  | BMaj7  | B Lydian                  # a non-tonic major chord: Lydian
-B  | 10 | Bb7alt | Bb Altered                # from the symbol: altered
-B  | 11 | BMaj7  | B Lydian                  # a non-tonic major chord: Lydian
-B  | 12 | Bb7b9  | Bb Half-Whole Diminished  # II7 in Ab, not resolving: the b9 from the symbol
-B  | 13 | E7#11  | E Lydian Dominant         # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-B  | 14 | BMaj7  | B Lydian                  # a non-tonic major chord: Lydian
-B  | 15 | Fm     | F Aeolian                 # vi: the b13 is in the key
-B  | 16 | Gb7#11 | Gb Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-C  | 17 | Bbm    | Bb Dorian                 # ii: Dorian, the key’s own notes
-C  | 18 | Ebm    | Eb Dorian                 # a borrowed minor chord: Dorian, its own key
-C  | 19 | B7#11  | B Lydian Dominant         # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-C  | 19 | A7#11  | A Lydian Dominant         # tritone substitute: resolves down a half step to AbMaj7
-C  | 20 | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key
+B    | 9  | BMaj7  | B Lydian                  # a non-tonic major chord: Lydian
+B    | 10 | Bb7alt | Bb Altered                # from the symbol: altered
+B    | 11 | BMaj7  | B Lydian                  # a non-tonic major chord: Lydian
+B    | 12 | Bb7b9  | Bb Half-Whole Diminished  # II7 in Ab, not resolving: the b9 from the symbol
+B    | 13 | E7#11  | E Lydian Dominant         # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B    | 14 | BMaj7  | B Lydian                  # a non-tonic major chord: Lydian
+B    | 15 | Fm     | F Aeolian                 # vi: the b13 is in the key
+B    | 16 | Gb7#11 | Gb Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+C    | 17 | Bbm    | Bb Dorian                 # ii: Dorian, the key’s own notes
+C    | 18 | Ebm    | Eb Dorian                 # a borrowed minor chord: Dorian, its own key
+C    | 19 | B7#11  | B Lydian Dominant         # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+C    | 19 | A7#11  | A Lydian Dominant         # tritone substitute: resolves down a half step to AbMaj7
+C    | 20 | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key

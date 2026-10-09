@@ -27,11 +27,11 @@ describe('the Changes sheet', () => {
     ])
   })
 
-  it('writes a later copy out, marks key areas, and closes the form before a tag', () => {
+  it('prints an intro before the form, writes a later copy out, marks key areas, and closes both with a double bar before a tag', () => {
     const b = bars('a_night_in_tunisia')
-    expect(b.filter((x) => x.marker).map((x) => x.marker)).toEqual(['A1 · A2', 'B', 'A3 (= A1)', 'Tag'])
+    expect(b.filter((x) => x.marker).map((x) => x.marker)).toEqual(['Intro', 'A1 · A2', 'B', 'A3 (= A1)', 'Tag'])
     expect(b.filter((x) => x.keyArea).map((x) => x.keyArea)).toEqual(['D minor', 'F major', 'D minor'])
-    expect(b.map((x) => x.end).filter((e) => e !== 'none')).toEqual(['double', 'final'])
+    expect(b.map((x) => x.end).filter((e) => e !== 'none')).toEqual(['double', 'double', 'final'])
   })
 
   it('heads a coda "after the last chorus"', () => {

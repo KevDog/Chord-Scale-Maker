@@ -7,7 +7,7 @@ source: Colorado Cookbook, p. 206
 # analysis: 2026-10-08, rules v1; C minor
 
 # section | bar | chord | scale
-# the horn intro is left out
+# the horn intro is a melody line (no chords), so it is left out
 # area: C minor (bars 1–15)
 A1 | 1  | Cm     | C Dorian                  # tonic minor: Dorian by convention
 A1 | 2  | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key

@@ -7,7 +7,7 @@ source: Colorado Cookbook, p. 220
 # analysis: 2026-10-08, rules v1; Eb
 
 # section | bar | chord | scale
-# the vamp intro and coda are left out
+# the intro and coda vamps are melody only (no chords) and are left out
 # area: Eb major (bars 1–3)
 A1 | 1  | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
 A1 | 2  | Fm7    | F Dorian                 # ii of the ii–V to Eb

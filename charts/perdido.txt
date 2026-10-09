@@ -7,7 +7,7 @@ source: Colorado Cookbook, p. 175
 # analysis: 2026-10-08, rules v1; Bb
 
 # section | bar | chord | scale
-# the horn intro is left out
+# the horn intro is a melody line (no chords), so it is left out
 A1 | 1  | Cm7    | C Dorian            # ii of the ii–V to Bb
 A1 | 2  | F7     | F Mixolydian        # V7 of Bb: natural tensions
 A1 | 3  | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key

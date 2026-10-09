@@ -4,45 +4,64 @@ style: Medium up
 key: Eb
 form: AAB
 source: Colorado Cookbook, p. 26
-# analysis: 2026-10-08, rules v1; Eb
+# analysis: 2026-10-09, rules v1; Eb
 
 # section | bar | chord | scale
-# the 16-bar intro (also the ending) is left out
-# area: B major (bar 1)
-A1 | 1  | BMaj7   | B Ionian       # tonic: the 4th is in the key; the repeat at bar 9 would be B Lydian
+# area: B major (bars 1–9)
+Intro | 1  | EbMaj7  | Eb Lydian      # a non-tonic major chord: Lydian
+Intro | 2  | DMaj7   | D Lydian       # a non-tonic major chord: Lydian
+Intro | 3  | GMaj7   | G Lydian       # a non-tonic major chord: Lydian
+Intro | 4  | F#7     | F# Mixolydian  # V7 of B: natural tensions
+Intro | 5  | BMaj7   | B Ionian       # tonic: the 4th is in the key
+Intro | 6  | Ab/Bb   | Ab Lydian      # a non-tonic major chord: Lydian
+Intro | 7  | EbMaj7  | Eb Lydian      # a non-tonic major chord: Lydian
+Intro | 8  | Gb7     | Gb Mixolydian  # V7 of B: natural tensions
+Intro | 9  | BMaj7   | B Ionian       # tonic: the 4th is in the key
+# area: Eb major (bars 10–15)
+Intro | 10 | Bbsus4  | Bb Mixolydian  # V7sus4 of EbMaj7: natural tensions
+Intro | 11 | EbMaj7  | Eb Ionian      # tonic: the 4th is in the key
+Intro | 12 | DMaj7   | D Lydian       # a non-tonic major chord: Lydian
+Intro | 13 | GMaj7   | G Lydian       # a non-tonic major chord: Lydian
+Intro | 14 | Bb7     | Bb Mixolydian  # V7 of Eb: natural tensions
+Intro | 15 | EbMaj7  | Eb Ionian      # tonic: the 4th is in the key
+# area: B major (bars 16–1)
+Intro | 16 | C#m7    | C# Dorian      # ii of the ii–V to B
+Intro | 16 | F#7     | F# Mixolydian  # V7 of B: natural tensions
+# the 16-bar intro doubles as the ending
+A1    | 1  | BMaj7   | B Ionian       # tonic: the 4th is in the key; the repeat at bar 9 would be B Lydian
 # area: G major (bars 1–2)
-A1 | 1  | D7      | D Mixolydian   # V7 of G: natural tensions
-A1 | 2  | GMaj7   | G Ionian       # tonic: the 4th is in the key
+A1    | 1  | D7      | D Mixolydian   # V7 of G: natural tensions
+A1    | 2  | GMaj7   | G Ionian       # tonic: the 4th is in the key
 # area: Eb major (bars 2–3)
-A1 | 2  | Bb7     | Bb Mixolydian  # V7 of Eb: natural tensions
-A1 | 3  | EbMaj7  | Eb Ionian      # tonic: the 4th is in the key
+A1    | 2  | Bb7     | Bb Mixolydian  # V7 of Eb: natural tensions
+A1    | 3  | EbMaj7  | Eb Ionian      # tonic: the 4th is in the key
 # area: G major (bars 4–5)
-A1 | 4  | Am7     | A Dorian       # ii of the ii–V to G
-A1 | 4  | D7      | D Mixolydian   # V7 of G: natural tensions
-A1 | 5  | GMaj7   | G Ionian       # tonic: the 4th is in the key
+A1    | 4  | Am7     | A Dorian       # ii of the ii–V to G
+A1    | 4  | D7      | D Mixolydian   # V7 of G: natural tensions
+A1    | 5  | GMaj7   | G Ionian       # tonic: the 4th is in the key
 # area: Eb major (bars 5–6)
-A1 | 5  | Bb7     | Bb Mixolydian  # V7 of Eb: natural tensions
-A1 | 6  | EbMaj7  | Eb Ionian      # tonic: the 4th is in the key
+A1    | 5  | Bb7     | Bb Mixolydian  # V7 of Eb: natural tensions
+A1    | 6  | EbMaj7  | Eb Ionian      # tonic: the 4th is in the key
 # area: B major (bars 6–7)
-A1 | 6  | Gb7     | Gb Mixolydian  # V7 of B: natural tensions
-A1 | 7  | BMaj7   | B Ionian       # tonic: the 4th is in the key
+A1    | 6  | Gb7     | Gb Mixolydian  # V7 of B: natural tensions
+A1    | 7  | BMaj7   | B Ionian       # tonic: the 4th is in the key
 # area: Eb major (bars 8–9)
-A1 | 8  | Fm7     | F Dorian       # ii of Bb7: Dorian
-A1 | 8  | Bb7     | Bb Mixolydian  # V7/I in Eb: natural tensions
+A1    | 8  | Fm7     | F Dorian       # ii of Bb7: Dorian
+A1    | 8  | Bb7     | Bb Mixolydian  # V7/I in Eb: natural tensions
 @copy A1 A2 8
-B  | 17 | EbMaj7  | Eb Ionian      # tonic: the 4th is in the key
-B  | 18 | Am7/D   | D Mixolydian   # static sus: Mixolydian
+B     | 17 | EbMaj7  | Eb Ionian      # tonic: the 4th is in the key
+B     | 18 | Am7/D   | D Mixolydian   # static sus: Mixolydian
 # area: G major (bars 18–19)
-B  | 18 | D7      | D Mixolydian   # V7 of G: natural tensions
-B  | 19 | GMaj7/D | G Ionian       # tonic: the 4th is in the key
+B     | 18 | D7      | D Mixolydian   # V7 of G: natural tensions
+B     | 19 | GMaj7/D | G Ionian       # tonic: the 4th is in the key
 # area: B major (bars 20–21)
-B  | 20 | C#m7    | C# Dorian      # ii of the ii–V to B
-B  | 20 | F#7     | F# Mixolydian  # V7 of B: natural tensions
-B  | 21 | BMaj7   | B Ionian       # tonic: the 4th is in the key
+B     | 20 | C#m7    | C# Dorian      # ii of the ii–V to B
+B     | 20 | F#7     | F# Mixolydian  # V7 of B: natural tensions
+B     | 21 | BMaj7   | B Ionian       # tonic: the 4th is in the key
 # area: Eb major (bars 22–23)
-B  | 22 | Fm7     | F Dorian       # ii of the ii–V to Eb
-B  | 22 | Bb7     | Bb Mixolydian  # V7 of Eb: natural tensions
-B  | 23 | EbMaj7  | Eb Ionian      # tonic: the 4th is in the key
+B     | 22 | Fm7     | F Dorian       # ii of the ii–V to Eb
+B     | 22 | Bb7     | Bb Mixolydian  # V7 of Eb: natural tensions
+B     | 23 | EbMaj7  | Eb Ionian      # tonic: the 4th is in the key
 # area: B major (bar 24)
-B  | 24 | C#m7    | C# Dorian      # ii of the ii–V to B
-B  | 24 | F#7     | F# Mixolydian  # V7 of B: natural tensions
+B     | 24 | C#m7    | C# Dorian      # ii of the ii–V to B
+B     | 24 | F#7     | F# Mixolydian  # V7 of B: natural tensions

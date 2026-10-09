@@ -4,26 +4,27 @@ style: Latin
 key: C
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 231
-# analysis: 2026-10-08, rules v1; C
+# analysis: 2026-10-09, rules v1; C
 
 # section | bar | chord | scale
-# the D7alt intro is left out
-A1 | 1  | CMaj7 | C Ionian                 # tonic: the 4th is in the key
-A1 | 3  | D7alt | D Altered                # from the symbol: altered
-A1 | 5  | Dm7   | D Dorian                 # ii of the ii–V to C
-A1 | 6  | G7    | G Mixolydian             # V7 of C: natural tensions
-A1 | 7  | CMaj7 | C Ionian                 # tonic: the 4th is in the key
-A1 | 8  | Dm7   | D Dorian                 # ii of the ii–V to C
-A1 | 8  | G7    | G Mixolydian             # V7 of C: natural tensions
-A2 | 9  | CMaj7 | C Ionian                 # tonic: the 4th is in the key
-A2 | 11 | D7alt | D Altered                # from the symbol: altered
-A2 | 13 | Dm7   | D Dorian                 # ii of the ii–V to C
-A2 | 14 | G7    | G Mixolydian             # V7 of C: natural tensions
-A2 | 15 | CMaj7 | C Ionian                 # tonic: the 4th is in the key
-A2 | 16 | Gm7   | G Dorian                 # ii of the ii–V to F
-A2 | 16 | C7    | C Mixolydian             # V7/IV in C: natural tensions
-B  | 17 | FMaj7 | F Lydian                 # IV: the #4 is the key’s 7th
-B  | 21 | D7    | D Mixolydian             # II7 in C, not resolving: natural tensions
-B  | 23 | Dm7   | D Dorian                 # ii of the ii–V to C
-B  | 24 | G7b9  | G Half-Whole Diminished  # V7 of C: the b9 from the symbol
+Intro | 1  | D7alt | D Altered                # from the symbol: altered
+# the intro is 4 bars of D7alt
+A1    | 1  | CMaj7 | C Ionian                 # tonic: the 4th is in the key
+A1    | 3  | D7alt | D Altered                # from the symbol: altered
+A1    | 5  | Dm7   | D Dorian                 # ii of the ii–V to C
+A1    | 6  | G7    | G Mixolydian             # V7 of C: natural tensions
+A1    | 7  | CMaj7 | C Ionian                 # tonic: the 4th is in the key
+A1    | 8  | Dm7   | D Dorian                 # ii of the ii–V to C
+A1    | 8  | G7    | G Mixolydian             # V7 of C: natural tensions
+A2    | 9  | CMaj7 | C Ionian                 # tonic: the 4th is in the key
+A2    | 11 | D7alt | D Altered                # from the symbol: altered
+A2    | 13 | Dm7   | D Dorian                 # ii of the ii–V to C
+A2    | 14 | G7    | G Mixolydian             # V7 of C: natural tensions
+A2    | 15 | CMaj7 | C Ionian                 # tonic: the 4th is in the key
+A2    | 16 | Gm7   | G Dorian                 # ii of the ii–V to F
+A2    | 16 | C7    | C Mixolydian             # V7/IV in C: natural tensions
+B     | 17 | FMaj7 | F Lydian                 # IV: the #4 is the key’s 7th
+B     | 21 | D7    | D Mixolydian             # II7 in C, not resolving: natural tensions
+B     | 23 | Dm7   | D Dorian                 # ii of the ii–V to C
+B     | 24 | G7b9  | G Half-Whole Diminished  # V7 of C: the b9 from the symbol
 @copy A1 A3 24
