@@ -217,9 +217,9 @@
       <UiSubheading id="printing">Printing and Focus</UiSubheading>
       <ul class="list-disc space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
         <li>
-          <strong class="font-semibold text-zinc-950 dark:text-white">Print / Save PDF</strong> gives you clean letter
+          <strong class="font-semibold text-zinc-950 dark:text-white">Print</strong> gives you clean letter
           pages, black on white whatever mode you're in: twelve staves a page for scales, eight systems a page for guide
-          tones. The dashed lines on screen show where each page starts. To get a PDF, pick "Save as PDF" in your
+          tones, eight lines a page for the changes. The dashed lines on screen show where each page starts. To get a PDF, pick "Save as PDF" in your
           browser's print dialog.
         </li>
         <li>

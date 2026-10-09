@@ -1,8 +1,9 @@
 <template>
   <div class="space-y-4">
-    <div class="flex flex-wrap items-end gap-4">
+    <!-- one row on a desktop in every sheet, Scales (the most controls, with From C) included -->
+    <div class="flex flex-wrap items-end gap-3 lg:gap-2">
       <SegmentedControl v-if="sheets.length > 1" v-model="sheet" legend="Sheet" name="sheet" :options="sheets" />
-      <UiField class="w-60">
+      <UiField class="w-40">
         <UiLabel>Instrument</UiLabel>
         <UiListbox v-model="instrument">
           <template #selected="{ value }"><UiListboxLabel>{{ instrumentOption(value) }}</UiListboxLabel></template>
@@ -15,14 +16,14 @@
         </UiListbox>
       </UiField>
       <SegmentedControl v-if="sheet === 'scales'" v-model="mode" legend="Where each scale starts" name="mode" :options="modes" />
-      <UiField v-if="sheet === 'scales' && mode === 'from'" class="w-28">
+      <UiField v-if="sheet === 'scales' && mode === 'from'" class="w-[4.5rem]">
         <UiLabel>Start on</UiLabel>
         <UiSelect v-model="start" aria-describedby="start-help">
           <option v-for="r in PICKER_ROOTS" :key="r" :value="r">{{ noteText(r) }}</option>
         </UiSelect>
       </UiField>
       <!-- Intervals and the chart's actions: one group, its own row below lg, two by two on a phone -->
-      <div class="flex flex-wrap items-end gap-3 *:whitespace-nowrap max-lg:w-full max-sm:grid max-sm:grid-cols-2">
+      <div class="flex flex-wrap items-end gap-3 *:whitespace-nowrap max-lg:w-full max-sm:grid max-sm:grid-cols-2 lg:gap-2">
         <UiButton v-if="sheet !== 'changes'" v-bind="intervals ? { color: 'note' } : { outline: true }" :aria-pressed="intervals" title="Label each note against the chord root (on screen only)" @click="intervals = !intervals">
           Intervals
         </UiButton>
