@@ -4,6 +4,7 @@
     <div class="relative h-12 print:h-7">
       <template v-for="m in marks" :key="m.key">
         <div class="absolute bottom-0 whitespace-nowrap" :style="{ left: `${m.x * 100}%` }">
+          <ChangesMarks v-if="m.segno || m.coda || m.nav" :segno="m.segno" :coda="m.coda" :nav="m.nav" />
           <div v-if="m.marker || m.keyArea" class="flex items-baseline gap-2 text-[0.65rem] print:text-[0.55rem]/3">
             <span v-if="m.marker" class="rounded-sm border border-zinc-400 px-1 font-semibold text-zinc-700 dark:border-zinc-500 dark:text-zinc-300 print:border-neutral-600 print:text-black">{{ m.marker }}</span>
             <span v-if="m.keyArea" class="text-note-800 italic dark:text-note-300 print:text-neutral-700">{{ m.keyArea }}</span>
@@ -50,8 +51,8 @@ const drawError = ref<string | null>(null)
 const marks = computed(() => {
   const all = props.line.bars.flatMap((bar, b) => {
     const at = (beat: number): number => Math.max(0, (xs.value[b]?.[beat] ?? 0) - 0.012)
-    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, x: at(c.beat), tokens: c.tokens, text: c.text, numeral: c.numeral, scale: c.scale, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '' }))
-    if (!chords.length && (bar.marker || bar.keyArea)) return [{ key: `${b}-m`, x: at(0), tokens: null, text: '', numeral: '', scale: null, marker: bar.marker, keyArea: bar.keyArea }]
+    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, x: at(c.beat), tokens: c.tokens, text: c.text, numeral: c.numeral, scale: c.scale, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
+    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, x: at(0), tokens: null, text: '', numeral: '', scale: null, marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
     return chords
   })
   return all.map((m, i) => ({ ...m, room: Math.max(0.05, (all[i + 1]?.x ?? 1) - m.x) }))
