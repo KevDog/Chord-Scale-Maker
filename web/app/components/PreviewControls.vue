@@ -1,5 +1,5 @@
 <template>
-  <div class="space-y-4">
+  <div id="preview-toolbar" class="space-y-4">
     <!-- labelled groups, one row on a desktop: Sheet · Instrument · Work on · Show · Transposition · Display -->
     <div class="flex flex-wrap items-end gap-x-4 gap-y-3">
       <SegmentedControl v-if="sheets.length > 1" v-model="sheet" legend="Sheet" name="sheet" :options="sheets" />

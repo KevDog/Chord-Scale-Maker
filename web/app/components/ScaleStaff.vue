@@ -32,9 +32,11 @@ const props = defineProps<{ staff: StaffModel; clef: 'treble' | 'bass'; interval
 const el = useTemplateRef<HTMLDivElement>('el')
 const drawError = ref<string | null>(null)
 const xs = ref<number[]>([])
+const rendering = useRendering()
 
 async function draw(): Promise<void> {
   if (props.staff.error) return
+  const done = rendering.begin()
   try {
     const vf = await loadVexFlow()
     if (!el.value) return // still showing a previous draw error; keep it
@@ -42,6 +44,8 @@ async function draw(): Promise<void> {
     drawError.value = null
   } catch (e) {
     drawError.value = `Couldn't draw this staff (${e instanceof Error ? e.message : String(e)})`
+  } finally {
+    done()
   }
 }
 

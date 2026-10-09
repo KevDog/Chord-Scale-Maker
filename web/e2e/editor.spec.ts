@@ -229,7 +229,7 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
   await pickOption(page, 'Where each scale starts', 'From C') // Scales with its Start on menu: the most controls
   // how many rows the toolbar's labelled groups fall on (the content is capped at 72rem, so six groups can take two)
   const layout = () =>
-    page.locator('#preview-heading').locator('xpath=following-sibling::*[1]').evaluate((el) => {
+    page.locator('#preview-toolbar').evaluate((el) => {
       const row = el.firstElementChild as HTMLElement
       const kids = Array.from(row.children, (c) => c.getBoundingClientRect())
       return { rows: new Set(kids.map((r) => Math.round(r.bottom))).size, widths: `${row.clientWidth}: ${kids.map((r) => Math.round(r.width)).join(' + ')}` }
@@ -241,3 +241,17 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
   }
 })
 
+
+test('a spinner shows over the sheet while it renders', async ({ browser }) => {
+  const ctx = await browser.newContext() // fresh: VexFlow not cached yet
+  const page = await ctx.newPage()
+  await page.route(/\/_nuxt\/.*\.js$/, async (route) => {
+    await new Promise((r) => setTimeout(r, 400)) // slow every chunk, so the VexFlow load+draw exceeds the spinner's 150ms debounce
+    await route.continue()
+  })
+  await page.goto('/song?chart=autumn_leaves')
+  await expect(page.getByRole('status', { name: 'Loading' }).first()).toBeVisible()
+  await expect(staves(page)).toHaveCount(39) // drawn once VexFlow loads
+  await expect(page.getByRole('status', { name: 'Loading' })).toHaveCount(0) // spinner gone
+  await ctx.close()
+})

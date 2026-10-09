@@ -59,7 +59,7 @@
 
     <!-- focus mode: this section alone, over the whole page (and printed as usual) -->
     <section
-      v-bind="focus.on.value ? { role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Focus mode' } : { 'aria-labelledby': 'preview-heading' }"
+      v-bind="focus.on.value ? { role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Focus mode' } : { 'aria-label': 'Preview' }"
       :class="[
         'space-y-6',
         focus.on.value && 'fixed inset-0 z-50 overflow-y-auto bg-zinc-100 px-4 pb-8 dark:bg-zinc-900 print:static print:overflow-visible print:bg-white print:p-0',
@@ -69,7 +69,6 @@
         <UiButton outline @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-500 dark:text-zinc-400">Esc</kbd></UiButton>
       </div>
       <div v-show="!focus.on.value" class="space-y-4 print:hidden">
-        <UiSubheading id="preview-heading">Preview</UiSubheading>
         <PreviewControls
           v-model:sheet="sheet"
           v-model:instrument="prefs.instrument.value"
@@ -112,7 +111,8 @@
         </div>
       </div>
 
-      <div :class="focus.on.value && 'mx-auto max-w-6xl print:max-w-none'">
+      <div :class="['relative', focus.on.value && 'mx-auto max-w-6xl print:max-w-none']">
+        <div v-if="rendering.busy.value" role="status" aria-label="Loading" class="pointer-events-none absolute inset-0 z-10 flex items-start justify-center pt-10 print:hidden"><UiSpinner /></div>
         <UiText v-if="editor.fatal.value" class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
         <ChangesSheet
           v-else-if="sheet === 'changes'"
@@ -192,6 +192,7 @@ const emit = defineEmits<{ created: [id: string]; reload: [] }>()
 const PER_PAGE = 12
 
 const editor = useChartEditor(props.initialText)
+const rendering = useRendering()
 /** under the heading: "Ballad · E♭ · AABA, 32 bars — Johnny Green" */
 const byline = computed(() => [editor.heading.value.subtitle, editor.heading.value.composer].filter(Boolean).join(' — '))
 const prefs = props.shared ? linkPreferences(props.shared) : usePreferences()
