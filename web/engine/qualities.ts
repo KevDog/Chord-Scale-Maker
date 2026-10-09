@@ -98,5 +98,14 @@ export function defaultScale(chord: string): string | null {
   return (options.find((o) => o.default) ?? options[0])?.scale ?? null
 }
 
+/** defaultScale, but null instead of throwing on a chord that can't be parsed (e.g. mid-typing) */
+export const defaultScaleOrNull = (chord: string): string | null => {
+  try {
+    return defaultScale(chord)
+  } catch {
+    return null
+  }
+}
+
 /** canonical quality names, for validating chord_scales.json */
 export const QUALITY_NAMES: readonly string[] = Object.keys(DATA.qualities)

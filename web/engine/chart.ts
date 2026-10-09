@@ -1,5 +1,5 @@
 import { LIMITS } from './limits'
-import { defaultScale } from './qualities'
+import { defaultScaleOrNull } from './qualities'
 
 /**
  * The chart text format (docs/design.md §4): a tolerant parser to a ChartDoc that keeps every line, the canonical
@@ -232,10 +232,5 @@ export function expandRows(doc: ChartDoc): Parsed<readonly Row[]> {
 
 /** the row's scale, else the chord quality's default; null means "ask the user" */
 export function resolveScale(row: Row): string | null {
-  if (row.scale) return row.scale
-  try {
-    return defaultScale(row.chord)
-  } catch {
-    return null // unparseable chord
-  }
+  return row.scale ? row.scale : defaultScaleOrNull(row.chord)
 }

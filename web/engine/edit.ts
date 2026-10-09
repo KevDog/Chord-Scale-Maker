@@ -1,6 +1,6 @@
 import { type ChartDoc, type ChartLine, type MetaKey, parseChart, serializeChart } from './chart'
 import { LIMITS } from './limits'
-import { defaultScale } from './qualities'
+import { defaultScaleOrNull } from './qualities'
 import { rootName } from './pitch'
 import { parseScale, sameScale, SCALES } from './scales'
 
@@ -31,13 +31,6 @@ export function setRowField(doc: ChartDoc, i: number, field: RowField, value: st
   return { lines: replaceAt(doc.lines, i, { ...line, [field]: value }) }
 }
 
-const defaultOr = (chord: string): string | null => {
-  try {
-    return defaultScale(chord)
-  } catch {
-    return null // a chord that can't be parsed yet (mid-typing)
-  }
-}
 
 /**
  * set a row's chord; a scale that was the old chord's default follows to the new chord's default (Cm7 → F7 takes
@@ -46,8 +39,8 @@ const defaultOr = (chord: string): string | null => {
 export function setRowChord(doc: ChartDoc, i: number, chord: string): ChartDoc {
   const line = doc.lines[i]
   if (line?.kind !== 'row') return doc
-  const next = defaultOr(chord)
-  const follows = line.scale !== '' && next !== null && sameScale(line.scale, defaultOr(line.chord))
+  const next = defaultScaleOrNull(chord)
+  const follows = line.scale !== '' && next !== null && sameScale(line.scale, defaultScaleOrNull(line.chord))
   return { lines: replaceAt(doc.lines, i, { ...line, chord, scale: follows ? next : line.scale }) }
 }
 
@@ -63,7 +56,7 @@ function canonicalScale(text: string): string {
 
 /** each row's scale as it plays, in one written form: an empty cell becomes the chord's default */
 function withResolvedScales(doc: ChartDoc): ChartDoc {
-  return { lines: doc.lines.map((l) => (l.kind === 'row' ? { ...l, scale: canonicalScale(l.scale || (defaultOr(l.chord) ?? '')) } : l)) }
+  return { lines: doc.lines.map((l) => (l.kind === 'row' ? { ...l, scale: canonicalScale(l.scale || (defaultScaleOrNull(l.chord) ?? '')) } : l)) }
 }
 
 /** two chart texts that say the same thing: the same lines, ignoring spacing and whether a default scale is written */
