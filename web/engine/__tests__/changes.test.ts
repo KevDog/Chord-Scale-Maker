@@ -49,3 +49,30 @@ describe('the Changes sheet', () => {
     expect(buildChanges(library('someday_my_prince_will_come'), CONCERT).beats).toBe(3)
   })
 })
+
+describe('endings and navigation', () => {
+  const barsOf = (text: string) => buildChanges(parseChart(text).value, CONCERT).lines.flatMap((l) => l.bars)
+
+  it('makes a section with @ending a 2x repeat and brackets each ending', () => {
+    const text = ['key: C', 'A | 1 | Dm7', 'A | 2 | G7', 'A | 3 | CMaj7', 'A | 4 | Am7', '@ending 1 A 3 3', '@ending 2 A 4 4'].join('\n') + '\n'
+    const b = barsOf(text)
+    expect(b[0]?.repeatStart).toBe(true)
+    expect(b[2]?.repeatEnd).toBe(2)
+    expect(b[3]?.repeatEnd).toBe(0)
+    expect(b.map((x) => x.volta)).toEqual([null, null, { n: 1, start: true, end: true }, { n: 2, start: true, end: true }])
+  })
+
+  it('maps @segno, @coda and @nav onto their bars; two @nav join', () => {
+    const text = ['key: C', 'A | 1 | Dm7', 'A | 2 | G7', 'Coda | 1 | CMaj7', '@segno A 1', '@coda Coda 1', '@nav A 2 To Coda', '@nav A 2 D.S. al Coda'].join('\n') + '\n'
+    const b = barsOf(text)
+    expect(b[0]?.segno).toBe(true)
+    expect(b[1]?.nav).toBe('To Coda · D.S. al Coda')
+    expect(b.find((x) => x.marker.startsWith('Coda'))?.coda).toBe(true)
+  })
+
+  it('ignores a directive whose section or bar is absent, without throwing', () => {
+    const text = 'key: C\nA | 1 | Dm7\n@segno ZZ 9\n@nav A 99 x\n@ending 1 ZZ 1\n'
+    const b = barsOf(text)
+    expect(b.every((x) => !x.segno && x.nav === '' && x.volta === null)).toBe(true)
+  })
+})
