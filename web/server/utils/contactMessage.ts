@@ -34,7 +34,7 @@ export type ContactCheck =
   | Readonly<{ ok: false; spam: true }>
   | Readonly<{ ok: false; spam: false; errors: Readonly<Partial<Record<ContactField, string>>> }>
 
-const EMAIL = /^[^\s@<>()",;:]+@[^\s@<>()",;:]+\.[^\s@<>()",;:]{2,}$/
+export const EMAIL = /^[^\s@<>()",;:]+@[^\s@<>()",;:]+\.[^\s@<>()",;:]{2,}$/
 const text = (v: unknown): string => (typeof v === 'string' ? v.trim() : '')
 
 export function checkContact(body: unknown, now: number): ContactCheck {

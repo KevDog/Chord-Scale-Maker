@@ -50,7 +50,7 @@
 
 <script setup lang="ts">
 import type { ReadyAttachment } from '~/utils/attachment'
-import { CONTACT_LIMITS, type ContactField as Field } from '../../server/utils/contactMessage'
+import { CONTACT_LIMITS, type ContactField as Field, EMAIL } from '../../server/utils/contactMessage'
 
 /** the contact form: posts to /api/contact, which emails the message (server/api/contact.post.ts) */
 const blank = () => ({ name: '', email: '', message: '', website: '' })
@@ -76,7 +76,8 @@ onMounted(() => {
 function localErrors(): Partial<Record<Field, string>> {
   const e: Partial<Record<Field, string>> = {}
   if (!form.name.trim()) e.name = 'Please add your name.'
-  if (!/^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(form.email.trim())) e.email = 'Please add a valid email address.'
+  const email = form.email.trim()
+  if (!EMAIL.test(email) || email.length > CONTACT_LIMITS.email) e.email = 'Please add a valid email address.'
   if (!form.message.trim()) e.message = 'Please write a message.'
   return e
 }
