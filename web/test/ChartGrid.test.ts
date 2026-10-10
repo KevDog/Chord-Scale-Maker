@@ -58,7 +58,7 @@ describe('ChartGrid with functions', () => {
     localStorage.clear()
   })
   afterEach(() => {
-    useRuntimeConfig().public.features.functions = false
+    useRuntimeConfig().public.features.functions = true
   })
   const fdoc = parseChart('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\n@key A 9 D\n').value
 
@@ -101,6 +101,13 @@ describe('ChartGrid with functions', () => {
 })
 
 describe('ChartGrid without functions', () => {
+  beforeEach(() => {
+    useRuntimeConfig().public.features.functions = false
+  })
+  afterEach(() => {
+    useRuntimeConfig().public.features.functions = true
+  })
+
   it('has no Function column and no key-change buttons', async () => {
     const w = await mountSuspended(ChartGrid, { props: { doc } })
     expect(w.find('[aria-label="function for row 1"]').exists()).toBe(false)
