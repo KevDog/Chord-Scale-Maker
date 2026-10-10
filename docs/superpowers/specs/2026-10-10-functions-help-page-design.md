@@ -1,6 +1,7 @@
 # Functions and analysis rules: a help page
 
-Date: 2026-10-10. Status: approved (decisions below are the user's; the last three rows added the same day). Builds on
+Date: 2026-10-10. Status: approved (decisions below are the user's; the last five rows and the `D8` rename added the
+same day). Builds on
 [2026-10-09-chart-functions-design.md](2026-10-09-chart-functions-design.md) and docs/plan-analysis.md.
 
 ## Goal
@@ -27,9 +28,10 @@ prerender time; only prose is written by hand.
 | Source of truth | The engine, imported directly by the page's composable at prerender. No generated JSON to keep fresh, no golden-style test for the page: the engine's own tests cover the content. |
 | Reference key | A key picker (every major and minor key, default C major); the table is recomputed in the browser from the engine, since the engine ships to the browser already. Prerender C major. |
 | Table layout | §1.2 is split into four groups — diatonic, secondary, substitutes and borrowings, chromatic — with a sticky sub-navigation. |
-| The `m7'` id | Renumbered `m9` (iii in major: Dorian). `m8` stays as is. The golden fixture is regenerated. |
+| The primed ids | `m7'` is renumbered `m9` (iii in major: Dorian) and `D3'` is renumbered `D8` (an extended dominant into a minor key), so every id is a letter and a number. `m8` stays as is. The golden fixture is regenerated. |
 | Rule ids in the UI | Show the id after the reason in `ChangesNote` ("ii of the ii–V to C · rule m4"), and make it a link to the rule's row on `/functions`. Fallback decisions (`fallback: true`) say so: "rule m8, a guess — an `@key` or a function would settle it". |
 | Where a disagreement goes | Both (decided after the repo went public): "Copy for an issue" copies the text, then offers the contact form or a new GitHub issue pre-filled with it. Most users will have no GitHub account, so the contact form comes first. |
+| The reason note | It becomes a click-to-open panel (Headless UI `Popover`), no longer a hover tooltip: a tooltip can't hold the rule link or the copy button. Click or tap opens it; Escape or a click outside closes it. |
 | Editor | The function cell's hint and its error message link to `/functions#writing` ("How to write a function"). |
 | Help catch-up | "The preview controls" describes the Changes toolbar's Analysis and Guide Tones headings (from the guide tone lines work). |
 
@@ -53,7 +55,8 @@ Hand-written prose, kept short, with the grammar as the editor reads it (`FUNCTI
 - `sub` goes only on a dominant (`subV7`, `subV7/ii`).
 - After the slash, the chord the function leads to, as a degree of the key (`V7/ii`, `iiø7/vi`, `♯iv°7/V`).
 - Degrees count from the tonic as in a major key, in minor keys too: `♭III` in C minor is E♭.
-- The three error messages, verbatim, with what each means.
+- The four error messages (a key that won't read, a function that won't read, `sub` on a non-dominant, a major
+  quality on a lower-case numeral), produced by `parseFunction` itself on an example each, with what each means.
 - What a function does and does not change: it settles the numeral and the key the rules reason in; the chord
   symbol, labels and practice presets still read the chord as written; the rules still choose a dominant's
   tensions from the key (so a function is preferred over a `# keep:` scale, as CLAUDE.md says).
@@ -93,7 +96,7 @@ which is how a user will recognise their case:
 | 1 | The chord symbol alone | `D1` (pinned tensions, `alt`), `M1` (♯11), `M2` (♯5), `m1` (m(maj7)), `m2` (m6), `m3` (♭6), `s1` (sus ♭9) |
 | 2 | The chart's mode | `M5`, `m6`, `h1` (modal charts: Lydian, Dorian, Locrian ♮2) |
 | 3 | The chord's degree in its key | `M3` (tonic), `M4` (other major: Lydian), `m5` (tonic minor), `m7` (diatonic minor: ii Dorian, vi Aeolian, v Phrygian), `m9` (iii in major: Dorian), `D5` (blues and diatonic non-resolving: derive), `D7` (static) |
-| 4 | The chords around it | `D2` (subV7), `D3` (extended dominant), `D4` (resolving dominant: derive), `D6` (chromatic non-resolving), `m4` (related ii), `h2` (related iiø7), `d1` (vii°7, auxiliary), `s2` (resolving sus), `s3` (static sus) |
+| 4 | The chords around it | `D2` (subV7), `D3` (extended dominant), `D8` (extended dominant into a minor key), `D4` (resolving dominant: derive), `D6` (chromatic non-resolving), `m4` (related ii), `h2` (related iiø7), `d1` (vii°7, auxiliary), `s2` (resolving sus), `s3` (static sus) |
 | 5 | A guess (`fallback`) | `m8` (chromatic minor), `h2` without a related dominant, `d1` passing diminished |
 
 Within a family the engine tries its rules in id order (docs/plan-analysis.md §8); the page says so and shows that
@@ -120,10 +123,10 @@ only and the page says to paste the copied text.
   is in `RULES` and vice versa. This is the one new engine surface; the decisions themselves are unchanged.
 - Export `dominantScale` and the `Slots` type (already pure) for the slot table.
 - Export `SUFFIXES` grouped by family for the spellings table.
-- Rename rule `m7'` to `m9` in `rules.ts` and docs/plan-analysis.md §8; regenerate the golden fixture.
+- Rename rule `m7'` to `m9` and `D3'` to `D8` in `rules.ts` and docs/plan-analysis.md §8; regenerate the golden fixture.
 - A `functionsTable(key: Key)` in a new `engine/analysis/catalogue.ts`: the enumeration of §1.2, returning
   `{ fn, chord, scale, rule, reason, fallback }[]`, with a test that no row is `'?'` and that the C-major table has
-  the textbook rows (`V7` Mixolydian, `ii7` Dorian, `V7/ii` with ♭9 and ♭13, `subV7` Lydian Dominant, `♭VII7`
+  the textbook rows (`V7` Mixolydian, `ii7` Dorian, `V7/ii` Mixolydian ♭6 (the ♭13 is in the key), `subV7` Lydian Dominant, `♭VII7`
   Lydian Dominant, `viiø7` Locrian, `iiø7/vi` Locrian).
 
 ## 3. App
