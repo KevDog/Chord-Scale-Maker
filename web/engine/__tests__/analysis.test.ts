@@ -268,7 +268,7 @@ describe('stated functions and @key (docs/superpowers/specs/2026-10-09-chart-fun
     expect(rowOf(plain, '2 D7')?.fallback).toBe(true)
     const r = rowOf(plain.replace('A | 2 | D7', 'A | 2 | D7 | | V7/V'), '2 D7')
     expect([r?.scale, r?.rule, r?.numeral, r?.stated, r?.fallback]).toEqual(['D Mixolydian', 'D4', 'V7/V', true, undefined])
-    expect(r?.reason).toBe('V7/V in C: natural tensions (stated)')
+    expect(r?.reason).toBe('* V7/V in C: natural tensions')
   })
 
   it('a key prefix decides its row only, and opens no key area', () => {
@@ -353,6 +353,6 @@ describe('stated functions and @key (docs/superpowers/specs/2026-10-09-chart-fun
     const doc = parseChart(lines('C', ['A | 1 | CMaj7', 'A | 2 | D7 | D Lydian Dominant | V7/V', 'A | 3 | Dm7', 'A | 4 | G7'], '@key A 1 C\n')).value
     const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'force', save: true, date: '2026-10-10' }).doc)
     expect(out).toContain('@key A 1 C\n')
-    expect(out).toMatch(/A \| 2 \| D7\s+\| D Mixolydian\s+\| V7\/V\s+# V7\/V in C: natural tensions \(stated\)\n/)
+    expect(out).toMatch(/A \| 2 \| D7\s+\| D Mixolydian\s+\| V7\/V\s+# \* V7\/V in C: natural tensions\n/)
   })
 })

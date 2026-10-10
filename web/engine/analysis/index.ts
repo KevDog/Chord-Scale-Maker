@@ -167,7 +167,7 @@ export function analyse(doc: ChartDoc): Analysis {
     const key = p.areaKeys[i] ?? p.global
     const s = p.stated[i]
     const { fallback, ...ruled } = decide(ctx, i)
-    const decision: Decision = s ? { ...ruled, reason: `${ruled.reason} (stated)` } : fallback ? { ...ruled, fallback } : ruled
+    const decision: Decision = s ? { ...ruled, reason: `* ${ruled.reason}` } : fallback ? { ...ruled, fallback } : ruled
     const roman = s ? s.fn.text : numeral(ctx, i, decision)
     const prevKey = i > 0 ? p.areaKeys[i - 1] : undefined
     const firstRow = p.rows[e.rows[0] ?? 0]

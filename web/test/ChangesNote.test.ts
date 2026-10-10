@@ -4,12 +4,12 @@ import ChangesNote from '~/components/ChangesNote.vue'
 
 describe('ChangesNote', () => {
   it('is a button described by a tooltip with the reason and the key', async () => {
-    const w = await mountSuspended(ChangesNote, { props: { reason: 'V7/V in C: natural tensions (stated)', heardIn: 'C major', keyFrom: 'found' as const }, slots: { default: () => 'V7/V' } })
+    const w = await mountSuspended(ChangesNote, { props: { reason: '* V7/V in C: natural tensions', heardIn: 'C major', keyFrom: 'found' as const }, slots: { default: () => 'V7/V' } })
     const button = w.find('button')
     expect(button.text()).toBe('V7/V')
     const tip = w.find(`#${button.attributes('aria-describedby')}`)
     expect(tip.attributes('role')).toBe('tooltip')
-    expect(tip.text()).toContain('V7/V in C: natural tensions (stated)')
+    expect(tip.text()).toContain('* V7/V in C: natural tensions')
     expect(tip.findAll('span').at(-1)?.text()).toBe('in C major')
     expect(tip.text()).not.toContain('function stated in the chart')
     expect(tip.classes()).toContain('print:hidden')

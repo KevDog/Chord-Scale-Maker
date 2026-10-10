@@ -54,7 +54,7 @@ describe('the Changes sheet', () => {
     const chords = buildChanges(doc, CONCERT).lines.flatMap((l) => l.bars).flatMap((b) => b.chords)
     const bb7 = chords.find((c) => c.text === 'Bb7')
     expect([bb7?.numeral, bb7?.stated, bb7?.heardIn]).toEqual(['♭VI7', true, 'D major'])
-    expect(bb7?.reason).toMatch(/\(stated\)$/)
+    expect(bb7?.reason).toMatch(/^\* /)
     expect(chords.find((c) => c.text === 'G7')).toMatchObject({ stated: false, heardIn: 'C major', reason: 'V7 of C: natural tensions' })
   })
 

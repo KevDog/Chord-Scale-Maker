@@ -96,7 +96,7 @@ the same function, and a test checks that over every library chart.
 - **Contradictions:** the function doesn't fit the chord when its family disagrees with the chord's (`ii7` on
   `Bb7`), or when its degree's root isn't the chord's root in the row's key. The analyser reports it with the
   row and ignores the function for that row.
-- `Decision` gains `stated: boolean`, and its reason is marked, e.g. `V7/V in C: natural tensions (stated)`.
+- `Decision` gains `stated: boolean`, and its reason is starred, as the grid stars the author's choice, e.g. `* V7/V in C: natural tensions`.
 - `numeral()` returns the stated function in normalised form when a row has one.
 
 ### Writing back

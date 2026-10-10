@@ -54,7 +54,7 @@ test('a function from the dropdown: the Changes sheet shows it, its note opens f
   const sheet = sheetOf(page)
   const numeral = sheet.getByRole('button', { name: 'V7/V' })
   await numeral.focus()
-  await expect(page.getByRole('tooltip').filter({ hasText: 'V7/V in C: natural tensions (stated)' })).toBeVisible()
+  await expect(page.getByRole('tooltip').filter({ hasText: '* V7/V in C: natural tensions' })).toBeVisible()
   await expect(page.getByRole('tooltip').filter({ hasText: 'in C major' }).first()).toBeVisible()
   await page.keyboard.press('Escape')
   await expect(page.getByRole('tooltip').filter({ hasText: 'V7/V in C' })).toBeHidden()
