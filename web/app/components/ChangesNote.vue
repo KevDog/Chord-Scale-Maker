@@ -2,9 +2,11 @@
   <!-- a numeral or scale on the Changes sheet, with why the analysis chose it; hover, focus or tap shows it, Escape hides it -->
   <span class="group/note relative inline-block max-w-full" @keydown.escape="dismissed = true" @pointerleave="dismissed = false" @focusout="dismissed = false">
     <button
-type="button" :aria-describedby="id" 
+      type="button"
+      :aria-describedby="id"
       :class="wrap ? 'whitespace-normal' : 'truncate'"
-      class="block max-w-full rounded-sm text-left focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500">
+      class="block max-w-full rounded-sm text-left focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500"
+    >
       <slot />
     </button>
     <span
