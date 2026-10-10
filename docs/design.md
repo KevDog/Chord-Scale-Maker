@@ -152,7 +152,8 @@ The text format needs a document model that preserves comments and `@copy`.
 ```ts
 type ChartLine =
   | { kind: 'meta'; key: MetaKey; value: string }  // title, subtitle (the heading); key, bars (analyser hints); composer, style, form, source
-  | { kind: 'row'; section: string; bar: string; chord: string; scale: string; comment?: string }  // scale '' = default; comment: a trailing # …
+  | { kind: 'row'; section: string; bar: string; chord: string; scale: string; function?: string; comment?: string }  // scale '' = default; function: the optional fifth cell, a stated function ('V7/ii', 'D: V7/ii'); comment: a trailing # …
+  | { kind: 'key'; section: string; bar: number; key: string }  // @key B 17 D: bars from there in that key, until the next @key
   | { kind: 'copy'; src: string; dst: string; offset: number }
   | { kind: 'ending'; n: number; section: string; from: number; to: number }  // a 1st/2nd ending (volta) on the Changes sheet
   | { kind: 'mark'; mark: 'segno' | 'coda'; section: string; bar: number }     // a segno 𝄋 / coda ⊕ glyph
@@ -186,6 +187,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Metre:** a `time:` meta line, `2/4`, `3/4` or `4/4` (the default; anything else is a diagnostic). `chartBeats`
   gives the beats a bar; the guide tone timeline splits bars by it (3/4: one chord = 3 beats, two = 2 + 1) and the
   sheet draws its time signature and dotted halves. The scale sheet doesn't depend on it.
+- **Function cell and `@key`:** a row may carry a fifth cell, the function the author states (`V7/ii`, or
+  `D: V7/ii` for another key); empty means unstated. A `key` line pins the key area from its bar on. Both are
+  read by the analysis (§7a) and round-trip through the grid; a row with a function but no scale keeps its empty
+  scale cell (`A | 2 | D7 | | V7/V`).
 - **Trailing comments:** a row may end in `# …` (a `#` with space on both sides, so `F#m7` and `C# Lydian` are
   safe). It holds the analysis (§7a), is kept verbatim through every edit, and is column-aligned when serialized;
   the grid doesn't show it.
@@ -439,6 +444,14 @@ library writes such a repeat out instead.
 - **The library:** every chart but the two modes charts is analysed and saved (`--force --save`); Milestones'
   Aeolian bridge is a `# keep:` (the melody says so). After a rule change, `npm run analyse -- --all --force
   --save`, then `make golden`, and read both diffs.
+- **Stated functions:** a row's function cell is taken as given. Virtual targets: `V7/V` is read as a dominant
+  of the key's V even when no V follows. An `@key` line makes a span of key areas from its bar to the next
+  `@key`, overriding the detected ones. A key prefix (`D: V7/ii`) decides that one row only. A function that does
+  not fit the chord in its key, or an `@key` naming no key, is a problem (reported; the grid marks the cell
+  `aria-invalid`). Rules that could only guess carry a `fallback` flag, and `--ambiguous` lists those rows with
+  the functions each might have and the key areas an `@key` would pin. The analyser never writes a function or
+  an `@key`. `rowNotes` (`engine/notes.ts`) gives each row's reason and key; the grid's Notes column and the
+  Changes sheet's numeral/scale tooltips show it, behind the `functions` flag (off).
 - **Menus:** every scale the rules give a quality is among that quality's options in `chord_scales.json`
   (Phrygian Dominant and Mixolydian ♭6 on `7`, Phrygian on minor chords, Mixolydian ♭6 on `7sus4`), so a scale
   you change can be changed back from the menu.

@@ -30,8 +30,10 @@ A1 | 3 | E7    | E Mixolydian
 
 | Element | Meaning |
 | --- | --- |
-| `section \| bar \| chord \| scale` | One row per chord. Two chords in a bar are two rows with the same bar number. A chord lasts until the next bar number. |
+| `section \| bar \| chord \| scale \| function` | One row per chord. Two chords in a bar are two rows with the same bar number. A chord lasts until the next bar number. |
 | `section \| bar \| chord` | Scale omitted: the chord quality's default from `chord_scales.json` (`Cm7` → `C Dorian`). |
+| `… \| function` | Optional: what the chord does, as the Changes sheet writes it (`V7/ii`, `subV7`, `ii7/V`, `♭VII7`, `IVmaj7`), in the key area, or in another key before a colon (`D: V7/ii`). The analyser takes it as given when it picks the scale; it never writes one. |
+| `@key SECTION BAR KEY` | The key from that bar until the next `@key` (`@key B 17 D`), where the analyser's own key areas would be wrong. It never writes one. |
 | `@copy SRC DST OFFSET` | Repeat section `SRC` as `DST`, adding `OFFSET` to each bar number. |
 | `@ending N SECTION FIRST [LAST]` | A 1st/2nd ending (volta) over `SECTION` bars `FIRST`..`LAST`; the section is played twice on the Changes sheet — repeat signs with the two endings bracketed. Write the two endings as sequential bars (e.g. 7–8 then 9–10). |
 | `@segno SECTION BAR` / `@coda SECTION BAR` | A segno (𝄋) or coda (⊕) glyph above that bar on the Changes sheet (the coda marks both the "to the coda" departure and the coda arrival). |
@@ -61,7 +63,8 @@ cd web && npm run analyse -- ../charts/<tune>.txt --write --save
 ```
 
 `--write` fills blank scale cells only; `--force` rewrites every cell the rules reach except rows whose comment
-starts `# keep:`; `--save` writes the comments; `--all` runs over every chart. Without flags it only reports.
+starts `# keep:`; `--save` writes the comments; `--all` runs over every chart. Without flags it only reports. `--ambiguous` lists the chords the rules could
+only guess at, each with the functions it might have, and the key areas an `@key` would pin.
 
 ## Instruments
 
