@@ -1,4 +1,4 @@
-import { expect, openEditor, pickOption, setScaleLevel, staves, test } from './fixtures'
+import { chooseSheet, expect, openEditor, pickOption, setScaleLevel, staves, test } from './fixtures'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/song?new=1')
@@ -91,13 +91,13 @@ test('interval labels show on screen, against the chord root, on until turned of
 
 test('guide tones draw both lines, four bars a system, without the scale controls', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
-  await page.getByRole('group', { name: 'Sheet' }).getByText('Guide tones', { exact: true }).click()
+  await chooseSheet(page, 'Guide tones')
   await expect(page.getByText('Full Form, Alternate Changes · G minor · AAB (Guide Tone Lines)')).toBeVisible()
   await expect(page.locator('svg[aria-label^="Line 1:"]')).toHaveCount(8) // 32 bars
   await expect(page.locator('svg[aria-label^="Line 2:"]')).toHaveCount(8)
   await expect(page.getByLabel('Start on')).toHaveCount(0)
   await expect(page.getByText('From root', { exact: true })).toHaveCount(0)
-  await page.getByText('Scales', { exact: true }).click()
+  await chooseSheet(page, 'Scales')
   await expect(staves(page)).toHaveCount(39)
 })
 
@@ -119,7 +119,7 @@ test('the text editor explains itself on hover and on focus', async ({ page }) =
 test('guide tone notation follows dark mode (no hard-coded black)', async ({ page }) => {
   await page.goto('/song?chart=f_jazz_blues')
   await page.getByRole('button', { name: /Switch to dark mode/ }).click()
-  await page.getByRole('group', { name: 'Sheet' }).getByText('Guide tones', { exact: true }).click()
+  await chooseSheet(page, 'Guide tones')
   await expect(page.locator('svg[aria-label^="Line 1:"]').first()).toBeVisible()
   const black = page.locator('svg[aria-label^="Line"] [stroke="black"], svg[aria-label^="Line"] [fill="black"], svg[aria-label^="Line"] [stroke="#000000"], svg[aria-label^="Line"] [fill="#000000"]')
   await expect(black).toHaveCount(0)
@@ -154,7 +154,7 @@ test('focus mode shows only the sheet, leaves on Escape or its button, and still
   await expect(dialog).toBeVisible()
   await expect(dialog.locator('svg[aria-label]')).toHaveCount(39)
   await expect(exit).toBeFocused()
-  await expect(page.getByRole('group', { name: 'Sheet' })).toBeHidden()
+  await expect(page.getByRole('button', { name: 'Work on' })).toBeHidden()
   // the overlay covers the page: nothing behind it takes a click
   expect(await page.evaluate(() => document.elementFromPoint(20, 200)?.closest('[role=dialog]') != null)).toBe(true)
   await page.emulateMedia({ media: 'print' })
@@ -166,7 +166,7 @@ test('focus mode shows only the sheet, leaves on Escape or its button, and still
   await focus.click()
   await exit.click()
   await expect(dialog).toHaveCount(0)
-  await expect(page.getByRole('group', { name: 'Sheet' })).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Work on' })).toBeVisible()
 })
 
 test('the scale level writes its scales into the chart, keeps your own picks, and goes back', async ({ page }) => {
@@ -182,7 +182,7 @@ test('the scale level writes its scales into the chart, keeps your own picks, an
   await expect(status).toHaveText(/^Your edited version of Autumn Leaves/)
   await page.reload()
   await openEditor(page)
-  await expect(page.getByRole('button', { name: 'Work on' })).toContainText('Basic') // remembered with the chart
+  await expect(page.getByRole('button', { name: 'Level' })).toContainText('Basic') // remembered with the chart
   await setScaleLevel(page, 'Advanced')
   await expect(text).toHaveValue(/Cm7 +\| C Bebop Dorian/)
   await setScaleLevel(page, 'Random')
@@ -210,7 +210,7 @@ test('levels take over a library chart’s own scale choices, and Standard bring
 
 test('a waltz’s guide tones are in 3/4: dotted halves, three beats a bar', async ({ page }) => {
   await page.goto('/song?chart=someday_my_prince_will_come')
-  await page.getByRole('group', { name: 'Sheet' }).getByText('Guide tones', { exact: true }).click()
+  await chooseSheet(page, 'Guide tones')
   const line1 = page.locator('svg[aria-label^="Line 1:"]').first()
   await expect(line1).toBeVisible()
   await expect(line1.locator('.vf-timesignature, g.vf-timesignature').first()).toBeAttached()
@@ -219,8 +219,8 @@ test('a waltz’s guide tones are in 3/4: dotted halves, three beats a bar', asy
 
 test('the toolbar groups the controls under labels, with the scale level as a dropdown', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
-  for (const label of ['Instrument', 'Work on', 'Show', 'Transposition', 'Display']) await expect(page.getByText(label, { exact: true }).first()).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Work on' })).toBeVisible() // the scale level is a dropdown in the toolbar
+  for (const label of ['Work on', 'Instrument', 'Level', 'Show', 'Transposition', 'Display']) await expect(page.getByText(label, { exact: true }).first()).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Level' })).toBeVisible() // the scale level is a dropdown in the toolbar
 })
 
 test('the preview toolbar stays tidy (at most two rows), in every sheet', async ({ page }) => {
@@ -232,10 +232,11 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
     page.locator('#preview-toolbar').evaluate((el) => {
       const row = el.firstElementChild?.firstElementChild as HTMLElement // the wrapping left groups (Display is pinned top-right beside them)
       const kids = Array.from(row.children, (c) => c.getBoundingClientRect())
-      return { rows: new Set(kids.map((r) => Math.round(r.bottom))).size, widths: `${row.clientWidth}: ${kids.map((r) => Math.round(r.width)).join(' + ')}` }
+      // groups are top-aligned (items-start), so distinct tops = visual rows
+      return { rows: new Set(kids.map((r) => Math.round(r.top))).size, widths: `${row.clientWidth}: ${kids.map((r) => Math.round(r.width)).join(' + ')}` }
     })
   for (const sheet of ['Scales', 'Guide tones', 'Changes']) {
-    await page.getByRole('group', { name: 'Sheet' }).getByText(sheet, { exact: true }).click()
+    await chooseSheet(page, sheet)
     const { rows, widths } = await layout()
     expect(rows, `${sheet} (${widths})`).toBeLessThanOrEqual(2)
   }

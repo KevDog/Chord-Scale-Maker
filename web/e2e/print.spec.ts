@@ -1,4 +1,4 @@
-import { chooseInstrument, expect, pickOption, staves, test } from './fixtures'
+import { chooseInstrument, chooseSheet, expect, pickOption, staves, test } from './fixtures'
 
 const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length
 
@@ -31,7 +31,7 @@ for (const [chart, instrument, pages] of [
   test(`prints guide tones 8 systems per page (${chart}, ${instrument})`, async ({ page }) => {
     await page.goto(`/song?chart=${chart}`)
     await chooseInstrument(page, instrument)
-    await page.getByRole('group', { name: 'Sheet' }).getByText('Guide tones', { exact: true }).click()
+    await chooseSheet(page, 'Guide tones')
     await expect(page.locator('svg[aria-label^="Line 1:"]').first()).toBeVisible()
     await expect(page.getByRole('separator')).toHaveCount(0) // no on-screen page divider
     await page.emulateMedia({ media: 'print' })
@@ -50,7 +50,7 @@ for (const [chart, pages] of [
 ] as const) {
   test(`prints the Changes eight lines a page (${chart})`, async ({ page }) => {
     await page.goto(`/song?chart=${chart}`)
-    await page.getByRole('group', { name: 'Sheet' }).getByText('Changes', { exact: true }).click()
+    await chooseSheet(page, 'Changes')
     await expect(page.locator('svg[aria-label^="Bars:"]').first()).toBeVisible()
     await page.emulateMedia({ media: 'print' })
     await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
@@ -60,12 +60,12 @@ for (const [chart, pages] of [
 
 test('the Changes sheet shows 1st/2nd endings and a D.S. al Coda', async ({ page }) => {
   await page.goto('/song?chart=its_you_or_no_one')
-  await page.getByRole('group', { name: 'Sheet' }).getByText('Changes', { exact: true }).click()
+  await chooseSheet(page, 'Changes')
   await expect(page.locator('svg[aria-label^="Bars:"]').first()).toBeVisible()
   await expect(page.getByText('D.S. al Coda')).toBeVisible()
   await expect(page.getByLabel('Coda').first()).toBeVisible()
   await page.goto('/song?chart=stardust')
-  await page.getByRole('group', { name: 'Sheet' }).getByText('Changes', { exact: true }).click()
+  await chooseSheet(page, 'Changes')
   await expect(page.locator('svg[aria-label^="Bars:"]').first()).toBeVisible()
   await expect(page.locator('svg[aria-label^="Bars:"] text', { hasText: '1.' }).first()).toBeVisible()
 })

@@ -78,8 +78,8 @@
           v-model:numerals="prefs.numerals.value"
           v-model:scale-names="prefs.scaleNames.value"
         >
-          <!-- Work on: how sophisticated each chord's scale is (engine/levels.ts); a dropdown in the toolbar -->
-          <template v-if="levelsOn && !editor.fatal.value" #workon>
+          <!-- Level: how sophisticated each chord's scale is (engine/levels.ts); a dropdown in the toolbar -->
+          <template v-if="levelsOn && !editor.fatal.value" #level>
             <UiListbox :model-value="scaleLevel.level.value" @update:model-value="(v) => v && setLevel(v)">
               <template #selected="{ value }"><UiListboxLabel>{{ levelLabel(value) }}</UiListboxLabel></template>
               <UiListboxOption v-for="o in LEVEL_OPTIONS" :key="o.value" :value="o.value"><UiListboxLabel>{{ o.label }}</UiListboxLabel></UiListboxOption>

@@ -45,8 +45,13 @@ export async function pickOption(page: import('@playwright/test').Page, button: 
   await page.getByRole('option', { name: option, exact: typeof option === 'string' }).click()
 }
 
-/** set the Work-on scale level from its toolbar dropdown */
+/** set the scale level from its toolbar "Level" dropdown */
 export async function setScaleLevel(page: import('@playwright/test').Page, label: string): Promise<void> {
+  await pickOption(page, 'Level', label)
+}
+
+/** choose a sheet (Scales / Guide tones / Changes) from the toolbar's "Work on" dropdown */
+export async function chooseSheet(page: import('@playwright/test').Page, label: string): Promise<void> {
   await pickOption(page, 'Work on', label)
 }
 

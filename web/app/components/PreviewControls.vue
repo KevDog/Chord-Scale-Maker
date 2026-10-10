@@ -2,8 +2,14 @@
   <div id="preview-toolbar" class="space-y-4">
     <!-- labelled groups: the controls wrap on the left; Display stays pinned top-right (Sheet · Instrument · Work on · Show · Transposition | Display) -->
     <div class="flex items-start justify-between gap-x-4 gap-y-3">
-      <div class="flex flex-wrap items-end gap-x-4 gap-y-3">
-        <SegmentedControl v-if="sheets.length > 1" v-model="sheet" legend="Sheet" name="sheet" :options="sheets" />
+      <div class="flex flex-wrap items-start gap-x-4 gap-y-3">
+      <UiField v-if="sheets.length > 1" class="w-40">
+        <UiLabel>Work on</UiLabel>
+        <UiListbox v-model="sheet">
+          <template #selected="{ value }"><UiListboxLabel>{{ sheetLabel(value) }}</UiListboxLabel></template>
+          <UiListboxOption v-for="s in sheets" :key="s.value" :value="s.value"><UiListboxLabel>{{ s.label }}</UiListboxLabel></UiListboxOption>
+        </UiListbox>
+      </UiField>
       <UiField class="w-40">
         <UiLabel>Instrument</UiLabel>
         <UiListbox v-model="instrument">
@@ -16,9 +22,9 @@
           </UiListboxGroup>
         </UiListbox>
       </UiField>
-      <UiField v-if="$slots.workon">
-        <UiLabel>Work on</UiLabel>
-        <div class="flex items-center gap-2"><slot name="workon" /></div>
+      <UiField v-if="$slots.level">
+        <UiLabel>Level</UiLabel>
+        <div class="flex items-center gap-2"><slot name="level" /></div>
       </UiField>
       <UiField>
         <UiLabel>Show</UiLabel>
@@ -33,6 +39,7 @@
       <UiField>
         <UiLabel>Transposition</UiLabel>
         <div class="flex flex-wrap items-center gap-2">
+          <slot name="transpose" />
           <UiListbox v-if="sheet === 'scales'" v-model="mode" class="w-32" aria-label="Where each scale starts">
             <template #selected="{ value }"><UiListboxLabel>{{ modeLabel(value) }}</UiListboxLabel></template>
             <UiListboxOption v-for="m in modes" :key="m.value" :value="m.value"><UiListboxLabel>{{ m.label }}</UiListboxLabel></UiListboxOption>
@@ -40,7 +47,6 @@
           <UiSelect v-if="sheet === 'scales' && mode === 'from'" v-model="start" class="w-[4.5rem]" aria-label="Start on" aria-describedby="start-help">
             <option v-for="r in PICKER_ROOTS" :key="r" :value="r">{{ noteText(r) }}</option>
           </UiSelect>
-          <slot name="transpose" />
         </div>
       </UiField>
       </div>
@@ -61,7 +67,7 @@
 import { INSTRUMENTS, type InstrumentName, type Mode, noteText, partFor } from '~~/engine'
 import type { SheetKind } from '~/utils/sheets'
 
-/** the preview toolbar, in labelled groups: Sheet, Instrument, #workon, Show, Transposition (+ #transpose), #display */
+/** the preview toolbar, in labelled groups: Work on (sheet), Instrument, #level, Show, Transposition (+ #transpose), #display */
 const sheet = defineModel<SheetKind>('sheet', { required: true })
 const instrument = defineModel<InstrumentName>('instrument', { required: true })
 const mode = defineModel<Mode>('mode', { required: true })
@@ -78,5 +84,6 @@ const modes = computed((): readonly { value: Mode; label: string }[] => [
   { value: 'root', label: 'From root' },
 ])
 const modeLabel = (v: Mode): string => modes.value.find((m) => m.value === v)?.label ?? ''
+const sheetLabel = (v: SheetKind): string => sheets.value.find((s) => s.value === v)?.label ?? ''
 const part = computed(() => partFor(instrument.value))
 </script>

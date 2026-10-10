@@ -1,4 +1,4 @@
-import { chooseInstrument, expect, test } from './fixtures'
+import { chooseInstrument, chooseSheet, expect, test } from './fixtures'
 
 const lines = (page: import('@playwright/test').Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the chart grid above it (whose menus name the same scales) */
@@ -6,7 +6,7 @@ const sheetOf = (page: import('@playwright/test').Page) => lines(page).first().l
 
 test('the Changes sheet: slashes, chords, numerals and scales, a repeat, and toggles that stick', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
-  await page.getByRole('group', { name: 'Sheet' }).getByText('Changes', { exact: true }).click()
+  await chooseSheet(page, 'Changes')
   await expect(lines(page)).toHaveCount(6) // A1 · A2 played twice, then B: 24 bars, four a line
   const sheet = sheetOf(page)
   await expect(sheet.getByText('A1 · A2', { exact: true })).toBeVisible()
@@ -19,7 +19,7 @@ test('the Changes sheet: slashes, chords, numerals and scales, a repeat, and tog
   await page.getByRole('button', { name: 'Scales', exact: true }).click()
   await expect(sheet.getByText('D Phryg Dom')).toHaveCount(0)
   await page.reload()
-  await page.getByRole('group', { name: 'Sheet' }).getByText('Changes', { exact: true }).click()
+  await chooseSheet(page, 'Changes')
   await expect(page.getByRole('button', { name: 'Numerals' })).toHaveAttribute('aria-pressed', 'false') // remembered
   await chooseInstrument(page, 'Tenor')
   await expect(sheetOf(page).getByText('A minor', { exact: true })).toBeVisible() // the key area, written for the tenor
@@ -27,7 +27,7 @@ test('the Changes sheet: slashes, chords, numerals and scales, a repeat, and tog
 
 test('a later copy is written out, a tag follows a double barline, and a share link opens on the sheet', async ({ page, browser }) => {
   await page.goto('/song?chart=a_night_in_tunisia')
-  await page.getByRole('group', { name: 'Sheet' }).getByText('Changes', { exact: true }).click()
+  await chooseSheet(page, 'Changes')
   await expect(page.getByText('A3 (= A1)', { exact: true })).toBeVisible()
   await expect(page.getByText('Tag', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Share' }).click()
