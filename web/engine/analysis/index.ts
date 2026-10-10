@@ -14,7 +14,8 @@ import { fitError, functionCandidates, impliedTarget, parseFunction, type Stated
  */
 
 export { parseKey, type Key } from './keys'
-export { pins } from './rules'
+export { dominantScale, dominantScaleTable, pins, ruleParts, type RuleInfo, RULES, type Slots, TIERS } from './rules'
+export { FUNCTION_ERRORS, parseFunction, type Spelling, spellings, SUFFIXES } from './functions'
 export { ambiguities } from './ambiguity'
 
 /** bumped when a rule changes what it gives; saved in each chart's `# analysis:` line */
