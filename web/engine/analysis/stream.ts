@@ -31,6 +31,8 @@ const FAMILY: Readonly<Record<string, Family>> = {
   '7sus4': 'sus',
   '7sus4b9': 'sus',
 }
+/** a chord quality's family; null for one the analyser doesn't know */
+export const familyOf = (quality: string): Family | null => FAMILY[quality] ?? null
 
 export type Entry = Readonly<{
   /** the expanded rows this entry covers (identical consecutive rows are one entry) */
@@ -110,7 +112,7 @@ export function buildStream(rows: readonly LinedRow[], formBars?: number): Entry
       root: reading?.root ?? null,
       pc: reading ? pcOf(reading.root) : -1,
       quality: reading?.quality ?? '',
-      family: reading ? (FAMILY[reading.quality] ?? null) : null,
+      family: reading ? familyOf(reading.quality) : null,
       symbol: reading?.symbol ?? '',
       start: t.start,
       bars: t.bars,
