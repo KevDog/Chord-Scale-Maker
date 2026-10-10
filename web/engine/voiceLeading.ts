@@ -10,8 +10,8 @@ import { pcOf, type Spelled } from './pitch'
 export type GuideTone = Readonly<{ note: Spelled; label: string }>
 export type GuideTones = Readonly<{ third: GuideTone; seventh: GuideTone }>
 
-/** written ranges: anything inside [lo, hi]; [comfortLo, comfortHi] costs nothing */
-const RANGES: Readonly<Record<Clef, Readonly<{ lo: number; hi: number; comfortLo: number; comfortHi: number }>>> = {
+/** written ranges: anything inside [lo, hi]; [comfortLo, comfortHi] is comfortable (costs nothing to the pair search) */
+export const RANGES: Readonly<Record<Clef, Readonly<{ lo: number; hi: number; comfortLo: number; comfortHi: number }>>> = {
   treble: { lo: 60, hi: 81, comfortLo: 64, comfortHi: 74 }, // C4-A5, comfortable E4-D5
   bass: { lo: 40, hi: 60, comfortLo: 43, comfortHi: 55 }, // E2-C4, comfortable G2-G3
 }
