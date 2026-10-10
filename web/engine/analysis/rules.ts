@@ -16,8 +16,8 @@ export type Context = Readonly<{
   modal: boolean
 }>
 
-/** one chord's verdict: null scale when no rule reaches it */
-export type Decision = Readonly<{ scale: string | null; rule: string; fn: string; reason: string }>
+/** one chord's verdict: null scale when no rule reaches it; fallback: the rules could only guess (an author's function would settle it) */
+export type Decision = Readonly<{ scale: string | null; rule: string; fn: string; reason: string; fallback?: true }>
 
 // —— names ——
 
@@ -207,9 +207,9 @@ function dominant(ctx: Context, i: number): Decision {
   }
   if (reference(key).includes(e.pc) || reference(key, true).includes(e.pc)) {
     const fn = `${roman(e, key)}7 in ${keyText(key)}, not resolving`
-    return dominantDecision(e, 'D5', fn, derive(e, key), fn, true)
+    return { ...dominantDecision(e, 'D5', fn, derive(e, key), fn, true), fallback: true }
   }
-  return dominantDecision(e, 'D6', 'chromatic dominant', LYDIAN_DOMINANT, 'a chromatic dominant with nowhere to go: Lydian Dominant, its own key', false)
+  return { ...dominantDecision(e, 'D6', 'chromatic dominant', LYDIAN_DOMINANT, 'a chromatic dominant with nowhere to go: Lydian Dominant, its own key', false), fallback: true }
 }
 
 // —— the other families ——
@@ -252,7 +252,7 @@ function minor(ctx: Context, i: number): Decision {
     if (key.minor && d === 7) return { scale: named(e, NAME.phrygian), rule: 'm7', fn, reason: 'v of a minor key: the b9 is in the key' }
     return { scale: named(e, NAME.dorian), rule: 'm7', fn, reason: `${roman(e, key)}: Dorian, the key’s own notes` }
   }
-  return { scale: named(e, NAME.dorian), rule: 'm8', fn: `borrowed ${roman(e, key)} in ${keyText(key)}`, reason: 'a borrowed minor chord: Dorian, its own key' }
+  return { scale: named(e, NAME.dorian), rule: 'm8', fn: `borrowed ${roman(e, key)} in ${keyText(key)}`, reason: 'a borrowed minor chord: Dorian, its own key', fallback: true }
 }
 
 function halfDiminished(ctx: Context, i: number): Decision {
@@ -264,7 +264,7 @@ function halfDiminished(ctx: Context, i: number): Decision {
   const end = related ? nextOf(ctx.stream, ctx.stream[i]?.next) : undefined
   const to = related && end?.root && n && downFifth(n, end) && (end.family === 'minor' || end.family === 'major') ? keyText(makeKey(end.root, end.family === 'minor')) : null
   const fn = to ? `iiø7 of the ii–V to ${to}` : related ? `iiø7 of ${n?.chord}` : `${roman(e, key)}ø7 in ${keyText(key)}`
-  return { scale: named(e, NAME.locrian), rule: 'h2', fn, reason: `${fn}: the b9 is in the key` }
+  return { scale: named(e, NAME.locrian), rule: 'h2', fn, reason: `${fn}: the b9 is in the key`, ...(related ? {} : { fallback: true as const }) }
 }
 
 function diminished(ctx: Context, i: number): Decision {
@@ -277,7 +277,7 @@ function diminished(ctx: Context, i: number): Decision {
       : p && n && p.pc === n.pc && p.pc === e.pc
         ? 'auxiliary diminished'
         : 'passing diminished'
-  return { scale: named(e, NAME.wholeHalf), rule: 'd1', fn, reason: `${fn}: the rootless V7b9 of the next chord` }
+  return { scale: named(e, NAME.wholeHalf), rule: 'd1', fn, reason: `${fn}: the rootless V7b9 of the next chord`, ...(fn === 'passing diminished' ? { fallback: true as const } : {}) }
 }
 
 function sus(ctx: Context, i: number): Decision {

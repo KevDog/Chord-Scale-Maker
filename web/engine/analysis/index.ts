@@ -1,9 +1,11 @@
-import { type ChartDoc, type ChartLine, expandRowLines } from '../chart'
+import { type ChartDoc, type ChartLine, expandRowLines, type LinedRow } from '../chart'
+import { pcOf, rootName, shiftBy, type Spelled } from '../pitch'
 import { sameScale } from '../scales'
 import { bluesKey, findCadences, isModal, type Key, keyText, localKeys, parseKey, sameKey, scoreKey } from './keys'
 import { type Context, decide, type Decision } from './rules'
 import { numeral } from './numerals'
-import { buildStream } from './stream'
+import { buildStream, type Entry, type Family } from './stream'
+import { fitError, impliedTarget, parseFunction, type StatedFunction, tonicOf } from './functions'
 
 /**
  * Harmonic analysis for scale choice (docs/plan-analysis.md): a chart's chords to a scale per row, with the rule
@@ -21,14 +23,19 @@ export const RULES_VERSION = 1
  * held: a later row of a chord held over several (Gm | Gm), which shares the first row's reason. numeral: the chord's
  * Roman numeral in its key area (numerals.ts)
  */
-export type RowAnalysis = Readonly<Decision & { row: number; line: number; bar: string; chord: string; key: Key; held: boolean; numeral: string }>
-export type Area = Readonly<{ key: Key; from: string; to: string; row: number }>
+export type RowAnalysis = Readonly<
+  Decision & { row: number; line: number; bar: string; chord: string; key: Key; held: boolean; numeral: string; stated: boolean; statedKey?: Key }
+>
+export type Area = Readonly<{ key: Key; from: string; to: string; row: number; section: string; stated: boolean }>
+/** something in the chart the analysis couldn't use: a function that won't read or doesn't fit, an @key with no bar. line: the doc line */
+export type Problem = Readonly<{ line: number; message: string }>
 export type Analysis = Readonly<{
   key: Key | null
   keyFrom: 'key:' | 'blues' | 'scored' | 'none'
   context: 'functional' | 'modal' | 'blues'
   areas: readonly Area[]
   rows: readonly RowAnalysis[]
+  problems: readonly Problem[]
 }>
 
 const meta = (doc: ChartDoc, key: string): string => doc.lines.reduce((v, l) => (l.kind === 'meta' && l.key === key ? l.value : v), '')
@@ -37,6 +44,73 @@ const meta = (doc: ChartDoc, key: string): string => doc.lines.reduce((v, l) => 
 function formBars(doc: ChartDoc): number | undefined {
   const n = Number(meta(doc, 'bars')) || Number(/(\d+) bars/.exec(meta(doc, 'form'))?.[1])
   return Number.isFinite(n) && n > 0 ? n : undefined
+}
+
+type Stated = Readonly<{ fn: StatedFunction; key: Key }>
+const addProblem = (problems: Problem[], p: Problem): void => {
+  if (!problems.some((q) => q.line === p.line && q.message === p.message)) problems.push(p)
+}
+
+/** `@key` lines: each holds from its bar until the next; before the first, the areas as found */
+function statedAreas(doc: ChartDoc, rows: readonly LinedRow[], stream: readonly Entry[], found: readonly Key[], problems: Problem[]): { keys: Key[]; stated: boolean[] } {
+  const starts: { at: number; key: Key }[] = []
+  doc.lines.forEach((l, line) => {
+    if (l.kind !== 'key') return
+    const r = rows.findIndex((x) => x.section === l.section && x.bar === String(l.bar))
+    const at = stream.findIndex((e) => e.rows.includes(r))
+    const key = parseKey(l.key)
+    if (r < 0 || at < 0 || !key) return void addProblem(problems, { line, message: `@key ${l.section} ${l.bar}: no bar ${l.bar} in section ${l.section}` })
+    starts.push({ at, key })
+  })
+  starts.sort((a, b) => a.at - b.at)
+  const keys = [...found]
+  const stated = stream.map(() => false)
+  starts.forEach(({ at, key }, k) => {
+    for (let i = at; i < (starts[k + 1]?.at ?? stream.length); i++) {
+      keys[i] = key
+      stated[i] = true
+    }
+  })
+  return { keys, stated }
+}
+
+/** each entry's function, when it reads and fits its chord; otherwise a problem, and none */
+function statedFunctions(stream: readonly Entry[], rows: readonly LinedRow[], keys: readonly Key[], global: Key, problems: Problem[]): (Stated | undefined)[] {
+  return stream.map((e, i) => {
+    if (!e.function) return undefined
+    const line = rows[e.rows[0] ?? 0]?.line ?? 0
+    const fn = parseFunction(e.function)
+    if (typeof fn === 'string') return void addProblem(problems, { line, message: fn })
+    const key = fn.key ?? keys[i] ?? global
+    const misfit = fitError(fn, e, key)
+    if (misfit) return void addProblem(problems, { line, message: misfit })
+    return { fn, key }
+  })
+}
+
+/**
+ * the stream the rules read: a stated row's target as a chord after it (with its V7 between, for a ii), so each rule
+ * decides through its usual path. The extra entries follow the real ones and are never reported.
+ */
+function withTargets(stream: readonly Entry[], keys: readonly Key[], stated: readonly (Stated | undefined)[]): { stream: Entry[]; keys: Key[] } {
+  const out = [...stream]
+  const outKeys = [...keys]
+  stream.forEach((e, i) => {
+    const s = stated[i]
+    const t = s ? impliedTarget(s.fn, s.key) : null
+    if (!s || !t || e.family === 'major') return
+    const add = (root: Spelled, quality: string, family: Family, next: number | null): number => {
+      const chord = `${rootName(root)}${quality === 'maj' ? '' : quality}`
+      out.push({ ...e, rows: [], next, prev: i, chord, root, pc: pcOf(root), quality, family, symbol: '', start: e.start + e.bars, bars: 1, function: '' })
+      outKeys.push(s.key)
+      return out.length - 1
+    }
+    const root = shiftBy(tonicOf(s.key), t.steps, t.semis)
+    let next = add(root, t.minor ? 'm' : 'maj', t.minor ? 'minor' : 'major', null)
+    if (e.family === 'minor' || e.family === 'halfdim') next = add(shiftBy(root, 4, 7), '7', 'dominant', next)
+    out[i] = { ...e, next }
+  })
+  return { stream: out, keys: outKeys }
 }
 
 export function analyse(doc: ChartDoc): Analysis {
@@ -51,27 +125,38 @@ export function analyse(doc: ChartDoc): Analysis {
   const global = blues ?? stated ?? scoreKey(stream, cadences)
   const keyFrom = blues ? 'blues' : stated ? 'key:' : global ? 'scored' : 'none'
   const modal = !blues && isModal(stream, cadences)
-  if (!global) return { key: null, keyFrom, context: 'functional', areas: [], rows: [] }
-  const keys = modal || blues ? stream.map(() => global) : localKeys(stream, cadences, global)
-  const ctx: Context = { stream, keys, global, blues, modal }
+  if (!global) return { key: null, keyFrom, context: 'functional', areas: [], rows: [], problems: [] }
+  const found = modal || blues ? stream.map(() => global) : localKeys(stream, cadences, global)
+  const problems: Problem[] = []
+  const areaKeys = statedAreas(doc, rows, stream, found, problems)
+  const fns = statedFunctions(stream, rows, areaKeys.keys, global, problems)
+  const virtual = withTargets(
+    stream,
+    stream.map((_, i) => fns[i]?.key ?? areaKeys.keys[i] ?? global),
+    fns,
+  )
+  const ctx: Context = { stream: virtual.stream, keys: virtual.keys, global, blues, modal }
   const out: RowAnalysis[] = []
   const areas: Area[] = []
   stream.forEach((e, i) => {
-    const key = keys[i] ?? global
-    const decision = decide(ctx, i)
-    const roman = numeral(ctx, i, decision)
-    const prevKey = i > 0 ? keys[i - 1] : undefined
+    const key = areaKeys.keys[i] ?? global
+    const s = fns[i]
+    const { fallback, ...ruled } = decide(ctx, i)
+    const decision: Decision = s ? { ...ruled, reason: `${ruled.reason} (stated)` } : fallback ? { ...ruled, fallback } : ruled
+    const roman = s ? s.fn.text : numeral(ctx, i, decision)
+    const prevKey = i > 0 ? areaKeys.keys[i - 1] : undefined
     const firstRow = rows[e.rows[0] ?? 0]
-    if (firstRow && (!prevKey || !sameKey(prevKey, key))) areas.push({ key, from: firstRow.bar, to: firstRow.bar, row: e.rows[0] ?? 0 })
+    if (firstRow && (!prevKey || !sameKey(prevKey, key)))
+      areas.push({ key, from: firstRow.bar, to: firstRow.bar, row: e.rows[0] ?? 0, section: firstRow.section, stated: areaKeys.stated[i] ?? false })
     const area = areas.at(-1)
     for (const [j, r] of e.rows.entries()) {
       const row = rows[r]
       if (!row) continue
-      out.push({ ...decision, row: r, line: row.line, bar: row.bar, chord: row.chord, key, held: j > 0, numeral: roman })
+      out.push({ ...decision, row: r, line: row.line, bar: row.bar, chord: row.chord, key, held: j > 0, numeral: roman, stated: !!s, ...(s?.fn.key ? { statedKey: s.key } : {}) })
       if (area) areas[areas.length - 1] = { ...area, to: row.bar }
     }
   })
-  return { key: global, keyFrom, context: blues ? 'blues' : modal ? 'modal' : 'functional', areas, rows: out }
+  return { key: global, keyFrom, context: blues ? 'blues' : modal ? 'modal' : 'functional', areas, rows: out, problems }
 }
 
 // —— writing it back ——
