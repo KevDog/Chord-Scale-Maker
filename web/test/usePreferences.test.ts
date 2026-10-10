@@ -83,7 +83,7 @@ describe('linkPreferences', () => {
 
   it("takes a link's guide tones over your own, for this visit only", async () => {
     localStorage.setItem('csm-guide-7th', 'on')
-    const p = linked({ guideThird: true })
+    const p = linked({ fromThird: true })
     expect([p.fromThird.value, p.fromSeventh.value]).toEqual([true, true])
     p.fromThird.value = false
     await nextTick()

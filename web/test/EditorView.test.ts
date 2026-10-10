@@ -217,7 +217,7 @@ describe('EditorView guide tones', () => {
   })
 
   it("applies a share link's guides for the visit, and a share link carries them", async () => {
-    const w = await mount({ sheet: 'changes', guideSeventh: true })
+    const w = await mount({ sheet: 'changes', fromSeventh: true })
     expect(changesSheet(w).props('guides')).toEqual({ fromThird: false, fromSeventh: true })
     expect(localStorage.getItem('csm-guide-7th')).toBeNull()
     await buttonCalled(w, 'Share')?.trigger('click')
@@ -226,7 +226,7 @@ describe('EditorView guide tones', () => {
       if (typeof l !== 'string') throw new Error('no link yet')
       return l
     })
-    expect((await decodeShare(link.split('#s=')[1] ?? ''))?.view).toMatchObject({ sheet: 'changes', guideThird: false, guideSeventh: true })
+    expect((await decodeShare(link.split('#s=')[1] ?? ''))?.view).toMatchObject({ sheet: 'changes', fromThird: false, fromSeventh: true })
     w.unmount()
   })
 

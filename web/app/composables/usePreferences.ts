@@ -38,8 +38,8 @@ export function linkPreferences(view: ShareView) {
     intervals: ref<boolean>(view.intervals ?? own.intervals.value),
     numerals: ref<boolean>(view.numerals ?? own.numerals.value),
     scaleNames: ref<boolean>(view.scaleNames ?? own.scaleNames.value),
-    fromThird: ref<boolean>(view.guideThird ?? own.fromThird.value),
-    fromSeventh: ref<boolean>(view.guideSeventh ?? own.fromSeventh.value),
+    fromThird: ref<boolean>(view.fromThird ?? own.fromThird.value),
+    fromSeventh: ref<boolean>(view.fromSeventh ?? own.fromSeventh.value),
     showEditor: own.showEditor, // whether the editor is open: yours, and remembered
     textPane: own.textPane,
     notes: own.notes, // whether the grid's Notes column is shown: yours, and remembered
