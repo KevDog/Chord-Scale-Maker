@@ -38,7 +38,7 @@ async function chooseMode(w: Wrapper, label: string): Promise<void> {
 
 describe('EditorView help', () => {
   afterEach(() => {
-    useRuntimeConfig().public.features.functions = false
+    useRuntimeConfig().public.features.functions = true
     localStorage.clear()
   })
   it('mentions functions and @key only with the flag on', async () => {
@@ -73,6 +73,7 @@ describe('EditorView help', () => {
   })
 
   it('with functions off, keeps the side-by-side layout and no text toggle', async () => {
+    useRuntimeConfig().public.features.functions = false
     const w = await mount()
     await w.findAll('button').find((b) => b.text() === 'Edit')?.trigger('click')
     await nextTick()
