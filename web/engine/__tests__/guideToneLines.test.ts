@@ -59,7 +59,11 @@ describe('guide tone lines', () => {
     expect(linesOf(['F7', 'D7']).a).toEqual(['A4 (3)', 'F#4 (3)'])
   })
 
-  it('rule 4: candidates lie inside the written range: below E2, the bottom of the bass range, a line turns up to Eb3', () => {
+  it('rule 4: candidates lie inside the written range: at C4, the bottom of the treble range, B3 is out, so A turns up to F4', () => {
+    expect(linesOf(['C7', 'Ab', 'Db7'])).toEqual({ a: ['E4 (3)', 'C4 (3)', 'F4 (3)'], b: ['Bb4 (7)', 'Ab4 (1)', 'Cb5 (7)'] }) // no collision at Db7
+  })
+
+  it('rule 4 with 7.2: below E2, the bottom of the bass range, a line turns up to Eb3 (B would have leapt there; the lines trade)', () => {
     expect(linesOf(['Ab', 'G', 'Gb', 'F', 'E', 'Eb'], BASS)).toEqual({
       a: ['C3 (3)', 'B2 (3)', 'Bb2 (3)', 'A2 (3)', 'G#2 (3)', 'Eb3 (1)'],
       b: ['Ab2 (1)', 'G2 (1)', 'Gb2 (1)', 'F2 (1)', 'E2 (1)', 'G2 (3)'],
