@@ -4,9 +4,13 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import ChangesNote from '~/components/ChangesNote.vue'
 import { ISSUE_CONTEXT } from '~/utils/issueReport'
 
-const M4_PROPS = { reason: 'ii of the ii–V to C', heardIn: 'C major', keyFrom: 'found' as const, rule: 'm4', fallback: false, chord: 'Dm7', numeral: 'ii7', scale: 'D Dorian' }
-const base = { reason: 'r', heardIn: 'C major', keyFrom: 'found' as const, rule: 'm4', fallback: false, chord: 'Dm7', numeral: 'ii7', scale: 'D Dorian' }
-const mountNote = (props: Partial<typeof base> & { wrap?: boolean } = {}) => mountSuspended(ChangesNote, { props: { ...base, ...props }, slots: { default: () => 'x' }, attachTo: document.body, global: { provide: { [ISSUE_CONTEXT as symbol]: { title: () => 'T', shareUrl: async () => 'https://x/song#s=1' } } } })
+const M4_PROPS = { reason: 'ii of the ii–V to C', heardIn: 'C major', keyFrom: 'found' as const, rule: 'm4', fallback: false, chord: 'Dm7', concert: 'Dm7', numeral: 'ii7', scale: 'D Dorian' }
+const base = { reason: 'r', heardIn: 'C major', keyFrom: 'found' as const, rule: 'm4', fallback: false, chord: 'Dm7', concert: 'Dm7', numeral: 'ii7', scale: 'D Dorian' }
+const CONTEXT = { title: () => 'T', part: () => ({ name: 'Concert', transposes: false }), shareUrl: async () => 'https://x/song#s=1' }
+const mountNote = (props: Partial<typeof base> & { wrap?: boolean } = {}, context: Partial<typeof CONTEXT> = {}) =>
+  mountSuspended(ChangesNote, { props: { ...base, ...props }, slots: { default: () => 'x' }, attachTo: document.body, global: { provide: { [ISSUE_CONTEXT as symbol]: { ...CONTEXT, ...context } } } })
+/** a click as the browser gives it: synchronous, nothing awaited after it */
+const clickNow = (w: Awaited<ReturnType<typeof mountNote>>, selector: string): void => (w.find(selector).element as HTMLElement).click()
 
 describe('ChangesNote', () => {
   afterEach(() => vi.unstubAllGlobals())
@@ -73,6 +77,7 @@ describe('ChangesNote', () => {
     vi.stubGlobal('navigator', { clipboard: { writeText } })
     const w = await mountNote(M4_PROPS)
     await w.find('button').trigger('click')
+    await flushPromises()
     await w.find('button[data-copy]').trigger('click')
     await flushPromises()
     expect(writeText).toHaveBeenCalledWith(expect.stringContaining('Rule: m4 (ii of the ii–V to C)'))
@@ -86,6 +91,7 @@ describe('ChangesNote', () => {
     vi.stubGlobal('navigator', {})
     const w = await mountNote(M4_PROPS)
     await w.find('button').trigger('click')
+    await flushPromises()
     await w.find('button[data-copy]').trigger('click')
     await flushPromises()
     expect((w.find('textarea[readonly]').element as HTMLTextAreaElement).value).toContain('Rule: m4')
@@ -96,9 +102,91 @@ describe('ChangesNote', () => {
     vi.stubGlobal('navigator', { clipboard: { writeText: vi.fn().mockRejectedValue(new Error('denied')) } })
     const w = await mountNote(M4_PROPS)
     await w.find('button').trigger('click')
+    await flushPromises()
     await w.find('button[data-copy]').trigger('click')
     await flushPromises()
     expect(w.find('textarea[readonly]').exists()).toBe(true)
+    w.unmount()
+  })
+
+  it('on a transposing part, names the chord as drawn, and reports which lines are written for the part', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    vi.stubGlobal('navigator', { clipboard: { writeText } })
+    const props = { reason: 'V7 of C: natural tensions', heardIn: 'D major', rule: 'D4', chord: 'A7', concert: 'G7', numeral: 'V7', scale: 'A Mixolydian' }
+    const w = await mountNote(props, { part: () => ({ name: 'B♭ Trumpet', transposes: true }) })
+    await w.find('button').trigger('click')
+    expect(w.find('[role=dialog]').attributes('aria-label')).toBe('Why: A7')
+    await flushPromises()
+    clickNow(w, 'button[data-copy]')
+    const text = writeText.mock.calls[0]?.[0] as string
+    expect(text).toContain('Instrument: B♭ Trumpet\nChord: A7 (concert G7)\n')
+    expect(text).toContain('Key area (written for B♭ Trumpet): D major')
+    expect(text).toContain('Scale shown (written for B♭ Trumpet): A Mixolydian')
+    expect(text).toContain('Rule: D4 (V7 of C: natural tensions), in concert pitch')
+    w.unmount()
+  })
+
+  it('Copy writes to the clipboard within the click, the report made when the note opened', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    vi.stubGlobal('navigator', { clipboard: { writeText } })
+    const w = await mountNote(M4_PROPS)
+    await w.find('button').trigger('click')
+    await flushPromises()
+    expect(w.find('button[data-copy]').attributes('data-ready')).toBe('true')
+    clickNow(w, 'button[data-copy]')
+    expect(writeText).toHaveBeenCalledWith(expect.stringContaining('Link: https://x/song#s=1'))
+    await flushPromises()
+    expect(w.text()).toContain('Copied.')
+    w.unmount()
+  })
+
+  it('a click before the link is made shows the text to copy by hand, the link filled in when it comes', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    vi.stubGlobal('navigator', { clipboard: { writeText } })
+    let resolve = (_: string): void => {}
+    const w = await mountNote(M4_PROPS, { shareUrl: () => new Promise<string>((r) => (resolve = r)) })
+    await w.find('button').trigger('click')
+    expect(w.find('button[data-copy]').attributes('data-ready')).toBe('false')
+    clickNow(w, 'button[data-copy]')
+    await flushPromises()
+    expect(writeText).not.toHaveBeenCalled()
+    const box = () => (w.find('textarea[readonly]').element as HTMLTextAreaElement).value
+    expect(box()).toContain('Rule: m4')
+    resolve('https://x/song#s=2')
+    await flushPromises()
+    expect(box()).toContain('Link: https://x/song#s=2')
+    w.unmount()
+  })
+
+  it('a share link that fails leaves the text to copy by hand, saying why it has no link', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    vi.stubGlobal('navigator', { clipboard: { writeText } })
+    const w = await mountNote(M4_PROPS, { shareUrl: () => Promise.reject(new Error('no CompressionStream')) })
+    await w.find('button').trigger('click')
+    await flushPromises()
+    clickNow(w, 'button[data-copy]')
+    await flushPromises()
+    expect(writeText).not.toHaveBeenCalled()
+    const box = (w.find('textarea[readonly]').element as HTMLTextAreaElement).value
+    expect(box).toContain('Rule: m4')
+    expect(box).not.toContain('https://x/')
+    expect(box).toContain('Link: (this browser could not make one: paste the chart')
+    w.unmount()
+  })
+
+  it('opens fresh each time: no "Copied." from before', async () => {
+    vi.stubGlobal('navigator', { clipboard: { writeText: vi.fn().mockResolvedValue(undefined) } })
+    const w = await mountNote(M4_PROPS)
+    await w.find('button').trigger('click')
+    await flushPromises()
+    await w.find('button[data-copy]').trigger('click')
+    await flushPromises()
+    expect(w.text()).toContain('Copied.')
+    await w.find('button').trigger('click')
+    await w.find('button').trigger('click')
+    await flushPromises()
+    expect(w.find('[role=dialog]').exists()).toBe(true)
+    expect(w.text()).not.toContain('Copied.')
     w.unmount()
   })
 })

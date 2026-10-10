@@ -502,11 +502,17 @@ library writes such a repeat out instead.
   analyser never writes a function or an `@key`. `rowNotes` (`engine/notes.ts`) gives each row's reason and key;
   the grid's Notes column and the Changes sheet's numeral/scale notes show it, the note with where its key
   came from (a key the author set is starred), behind the `functions` flag (on).
-- **The reason note** (`ChangesNote.vue`): a click-to-open Headless UI popover (role dialog, "Why: <chord>"), not
+- **The reason note** (`ChangesNote.vue`): a click-to-open Headless UI popover (role dialog, "Why: <chord>", the chord as
+  drawn for the part: `ChangesChord.written`), not
   a hover tooltip; Escape or a click outside closes it, and a clamp keeps the panel 16px inside the viewport. It
   gives the reason and key, and the rule's id linked to `/functions#rule-<id>`. A `fallback` the author didn't state
   reads "a guess — an @key or a function would settle it". Copy for an issue (`utils/issueReport.ts`) puts the
-  chord, function, scale, rule, reason and key on the clipboard and navigates nowhere; it then offers both "Send it
+  chord, function, scale, rule, reason and key on the clipboard and navigates nowhere. On a transposing part it names
+  the instrument (`Instrument: B♭ Trumpet`), gives the chord as drawn with its concert symbol (`A7 (concert G7)`),
+  labels the key area and scale "written for" the part and the rule's reason "in concert pitch"; a concert-pitch part
+  gets none of that. The report and its share link are made as the note opens, so the click writes to the clipboard
+  at once (Safari allows it only within the click); clicked before the link is ready, or with no link to be had, it
+  shows the text to copy by hand. It then offers both "Send it
   with the contact form" (the text passed through sessionStorage `csm-issue-text`) first and "Open a GitHub issue"
   second (a link; the text goes in its URL up to 8000 characters, then the title only). `analyse()` keeps `fallback` on stated
   rows. Rule ids carry no primes (`m7'` became `m9`, `D3'` became `D8`).

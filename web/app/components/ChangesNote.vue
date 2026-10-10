@@ -20,8 +20,8 @@
         </template>
       </span>
       <span class="mt-1 block text-xs text-zinc-500 dark:text-zinc-400">{{ keyFrom === 'found' ? '' : '* ' }}in {{ heardIn }}</span>
-      <div v-if="context" class="mt-2 space-y-2 border-t border-zinc-950/5 pt-2 dark:border-white/5">
-        <UiButton plain data-copy class="text-sm!" @click="copy">Copy for an issue</UiButton>
+      <div v-if="context" class="mt-2 space-y-2 border-t border-zinc-950/5 pt-2 dark:border-white/5" @vue:mounted="prepare">
+        <UiButton plain data-copy :data-ready="ready" class="text-sm!" @click="copy">Copy for an issue</UiButton>
         <template v-if="state === 'copied' || state === 'manual'">
           <p v-if="state === 'copied'" class="text-xs text-zinc-500 dark:text-zinc-400" role="status">Copied.</p>
           <template v-else>
@@ -48,15 +48,18 @@ import { ISSUE_CONTEXT, ISSUE_TEXT_KEY, issueText, issueTitle, issueUrl } from '
 /**
  * why the analysis gave a chord its function and scale (engine/changes.ts reason, rule, heardIn, keyFrom), opened by a
  * click or tap; Escape or a click outside closes it. A key the author set, by an @key or the function's own key, is
- * starred, as in the grid's Function dropdown. The rule id links to its row on /functions.
+ * starred, as in the grid's Function dropdown. The rule id links to its row on /functions. chord is the symbol as
+ * drawn for the part (written), concert the chart's own.
  */
 const props = withDefaults(
-  defineProps<{ reason: string; heardIn: string; keyFrom: ChangesChord['keyFrom']; rule: string; fallback: boolean; chord: string; numeral: string; scale: string | null; wrap?: boolean }>(),
+  defineProps<{ reason: string; heardIn: string; keyFrom: ChangesChord['keyFrom']; rule: string; fallback: boolean; chord: string; concert: string; numeral: string; scale: string | null; wrap?: boolean }>(),
   { wrap: false },
 )
 const shift = ref(0)
-/** the panel opens at its numeral's left edge; moved so it stays on the screen, on a phone and near the sheet's right edge */
-/** on a click that opens the panel (keyboard activation clicks too): measure it, then move it */
+/**
+ * on a click that opens the panel (keyboard activation clicks too): measure it, then move it so it stays on the
+ * screen, on a phone and near the sheet's right edge (it opens at its numeral's left edge)
+ */
 async function place(e: MouseEvent): Promise<void> {
   const anchor = (e.currentTarget as HTMLElement | null)?.parentElement // read before the await: currentTarget is cleared after dispatch
   shift.value = 0
@@ -70,25 +73,54 @@ const context = inject(ISSUE_CONTEXT, null)
 const state = ref<'idle' | 'copied' | 'manual'>('idle')
 const text = ref('')
 const title = ref('')
+/** the report has its share link: Copy can write it within the click (Safari allows the clipboard only there) */
+const ready = ref(false)
 const github = computed(() => issueUrl(title.value, text.value))
+const NO_LINK = "(this browser could not make one: paste the chart's text here)"
+let opening = 0
 
-/** the report on the clipboard, or shown to copy by hand when the clipboard is missing or refuses */
-async function copy(): Promise<void> {
+/** on opening: a fresh report, its share link made now, so the Copy click has nothing to wait for */
+async function prepare(): Promise<void> {
   if (!context) return
-  const fields = { title: context.title(), chord: props.chord, numeral: props.numeral, heardIn: props.heardIn, scale: props.scale, rule: props.rule, reason: props.reason, link: await context.shareUrl() }
-  text.value = issueText(fields)
-  title.value = issueTitle(fields)
+  const n = ++opening
+  state.value = 'idle'
+  ready.value = false
+  const fields = { title: context.title(), part: context.part(), chord: props.chord, concert: props.concert, numeral: props.numeral, heardIn: props.heardIn, scale: props.scale, rule: props.rule, reason: props.reason }
+  title.value = issueTitle({ ...fields, link: '' })
+  text.value = issueText({ ...fields, link: '(being made…)' })
+  let link: string | null
   try {
-    if (!navigator.clipboard) throw new Error('no clipboard')
-    await navigator.clipboard.writeText(text.value)
-    state.value = 'copied'
+    link = await context.shareUrl()
+  } catch {
+    link = null
+  }
+  if (n !== opening) return
+  text.value = issueText({ ...fields, link: link ?? NO_LINK })
+  ready.value = link !== null
+}
+
+/** the report on the clipboard, written within the click; shown to copy by hand when it isn't ready or the clipboard refuses */
+function copy(): void {
+  if (!ready.value || !navigator.clipboard) {
+    state.value = 'manual'
+    return
+  }
+  try {
+    navigator.clipboard.writeText(text.value).then(
+      () => (state.value = 'copied'),
+      () => (state.value = 'manual'),
+    )
   } catch {
     state.value = 'manual'
   }
 }
 
 function toContact(): void {
-  sessionStorage.setItem(ISSUE_TEXT_KEY, text.value)
+  try {
+    sessionStorage.setItem(ISSUE_TEXT_KEY, text.value)
+  } catch {
+    // storage blocked: the form opens empty, and the text is still on the clipboard or in the box
+  }
   navigateTo('/contact')
 }
 </script>

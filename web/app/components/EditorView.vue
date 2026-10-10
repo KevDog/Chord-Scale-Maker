@@ -161,7 +161,7 @@
 
 <script setup lang="ts">
 import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, BookmarkIcon, CodeBracketIcon, DocumentDuplicateIcon, FlagIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
-import { ISSUE_CONTEXT } from '~/utils/issueReport'
+import { ISSUE_CONTEXT, issuePart } from '~/utils/issueReport'
 import { CHART_REPORT_KEY, type ChartReport, guidesText } from '~/utils/chartReport'
 import {
   buildSheet,
@@ -331,7 +331,7 @@ async function openShare(): Promise<void> {
   shareLink.value = await shareUrl()
 }
 
-provide(ISSUE_CONTEXT, { title: () => editor.heading.value.title, shareUrl })
+provide(ISSUE_CONTEXT, { title: () => editor.heading.value.title, part: () => issuePart(prefs.instrument.value), shareUrl })
 
 /** a shared chart, kept: into My charts with its practice picks, then opened at its own address */
 function saveShared(): void {

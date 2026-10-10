@@ -1,6 +1,6 @@
 import { readFileSync } from 'node:fs'
 import type { Page } from '@playwright/test'
-import { expect, test, writeChart } from './fixtures'
+import { chooseInstrument, expect, test, writeChart } from './fixtures'
 
 // the engine can't be imported here (its JSON import needs a bundler), so read the ids from the RULES table's source
 const RULE_IDS = Array.from(
@@ -65,7 +65,9 @@ test('Copy for an issue copies the report and offers the contact form and GitHub
   await saved(page)
   await page.getByRole('button', { name: 'ii7' }).first().click()
   const note = page.getByRole('dialog', { name: 'Why: Dm7' })
-  await note.getByRole('button', { name: 'Copy for an issue' }).click()
+  const copy = note.getByRole('button', { name: 'Copy for an issue' })
+  await expect(copy).toHaveAttribute('data-ready', 'true') // the share link is made as the note opens
+  await copy.click()
   await expect(note.getByRole('status')).toHaveText('Copied.')
   const copied = await page.evaluate(() => navigator.clipboard.readText())
   expect(copied).toContain('Chord: Dm7')
@@ -75,6 +77,23 @@ test('Copy for an issue copies the report and offers the contact form and GitHub
   await note.getByRole('button', { name: 'Send it with the contact form' }).click()
   await expect(page).toHaveURL(/\/contact$/)
   await expect(page.getByLabel('Message')).toHaveValue(/Rule: m4/)
+})
+
+test('on a transposing part the note names the chord as drawn, and the report says which lines are written', async ({ page, context }) => {
+  await context.grantPermissions(['clipboard-read', 'clipboard-write'])
+  await writeChart(page, CHART)
+  await saved(page)
+  await chooseInstrument(page, 'Trumpet')
+  await page.getByRole('button', { name: 'V7', exact: true }).first().click()
+  const note = page.getByRole('dialog', { name: 'Why: A7' })
+  const copy = note.getByRole('button', { name: 'Copy for an issue' })
+  await expect(copy).toHaveAttribute('data-ready', 'true')
+  await copy.click()
+  await expect(note.getByRole('status')).toHaveText('Copied.')
+  const copied = await page.evaluate(() => navigator.clipboard.readText())
+  expect(copied).toContain('Instrument: B♭ Trumpet\nChord: A7 (concert G7)\n')
+  expect(copied).toContain('Key area (written for B♭ Trumpet): D major')
+  expect(copied).toContain(', in concert pitch')
 })
 
 test('on a phone the note fits the screen, wherever its numeral sits on the line', async ({ page }) => {
