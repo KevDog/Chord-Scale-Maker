@@ -61,7 +61,7 @@
       </UiField>
       </div>
       <UiField class="shrink-0">
-        <UiLabel>Display</UiLabel>
+        <UiLabel class="block text-right">Display</UiLabel>
         <div class="flex flex-wrap justify-end gap-2 *:whitespace-nowrap"><slot name="display" /></div>
       </UiField>
     </div>
