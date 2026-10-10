@@ -30,7 +30,7 @@ test('each sheet draws the clef and key signature once, at its start, guide tone
   await expect(signatures(page.locator('body'))).toHaveCount(1)
 
   // with both guide tones on: still line 1 only
-  await showGuides(page, '3rd', '7th')
+  await showGuides(page, 'From 3rd', 'From 7th')
   await guidesDrawn(page)
   await expect(clefs(lines(page).first())).toHaveCount(1)
   await expect(signatures(lines(page).first())).toHaveCount(1)
@@ -59,7 +59,7 @@ test('no key: line, no signature, and the clef still once, guide tones too', asy
   await expect(clefs(staves(page).first())).toHaveCount(1)
   await expect(clefs(page.locator('body'))).toHaveCount(1)
   await chooseSheet(page, 'Changes')
-  await showGuides(page, '3rd', '7th')
+  await showGuides(page, 'From 3rd', 'From 7th')
   await expect(lines(page).first()).toHaveAttribute('aria-label', /^Bars: C7 \| F7.*; guide tones: /)
   await expect(signatures(page.locator('body'))).toHaveCount(0)
   await expect(clefs(lines(page).first())).toHaveCount(1) // a guide on: line 1 gets the clef, key or not
@@ -68,7 +68,7 @@ test('no key: line, no signature, and the clef still once, guide tones too', asy
 
 test('guide tones take their accidentals from the signature, and from C without a key:', async ({ page }) => {
   await writeChart(page, 'title: T\nkey: F\nA | 1 | Gm7\nA | 2 | C7\nA | 3 | FMaj7\n')
-  await showGuides(page, '3rd', '7th')
+  await showGuides(page, 'From 3rd', 'From 7th')
   await expect(lines(page).first()).toHaveAttribute('aria-label', /^Bars: Gm7 \| C7 \| FMaj7.*; guide tones: /)
   await expect(glyphs(signatures(lines(page).first()))).toHaveCount(1) // F: one flat
   expect(await noteAccidentals(page)).toEqual([]) // the B♭s of Gm7 and C7 are in the signature
@@ -85,7 +85,7 @@ test('an @key draws no second signature; the Changes sheet shows it as a key are
   await chooseSheet(page, 'Changes')
   await expect(lines(page).first()).toBeVisible()
   await expect(signatures(page.locator('body'))).toHaveCount(1)
-  await showGuides(page, '3rd', '7th')
+  await showGuides(page, 'From 3rd', 'From 7th')
   await expect(lines(page).first()).toHaveAttribute('aria-label', /; guide tones: /)
   await expect(signatures(page.locator('body'))).toHaveCount(1) // the key change goes by accidentals, never a new signature
   const sheet = lines(page).first().locator('xpath=ancestor::div[contains(@class,"rounded-xl")][1]')

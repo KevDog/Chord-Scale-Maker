@@ -76,7 +76,7 @@ export async function writeChart(page: Page, text: string): Promise<void> {
 }
 
 /** turn on the Changes sheet's guide tone toggles, each confirmed pressed (retried: a click before hydration is lost) */
-export async function showGuides(page: Page, ...names: readonly ('3rd' | '7th')[]): Promise<void> {
+export async function showGuides(page: Page, ...names: readonly ('From 3rd' | 'From 7th')[]): Promise<void> {
   for (const name of names) {
     const toggle = page.getByRole('button', { name, exact: true })
     await expect(async () => {

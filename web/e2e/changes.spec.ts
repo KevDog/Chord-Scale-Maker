@@ -4,7 +4,7 @@ import { chooseInstrument, chooseSheet, drawn, expect, GLYPH, guidesDrawn, openE
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the chart grid above it (whose menus name the same scales) */
 const sheetOf = (page: Page) => lines(page).first().locator('xpath=ancestor::div[contains(@class,"rounded-xl")][1]')
-const guide = (page: Page, name: '3rd' | '7th') => page.getByRole('button', { name, exact: true })
+const guide = (page: Page, name: 'From 3rd' | 'From 7th') => page.getByRole('button', { name, exact: true })
 /** a line's guide tone labels: the row between its staff and its numerals */
 const labelRow = (line: Locator) => line.locator('xpath=../following-sibling::div[1]')
 /** each chord's x on a line, as a fraction of its width (ChangesSystem sets a mark's left 0.012 before its beat) */
@@ -97,23 +97,23 @@ test('a chart opens on the Changes sheet, and Scales is the only other sheet', a
   await page.keyboard.press('Escape')
 })
 
-test('the 3rd and 7th put each chord’s guide tone in place of its slashes, labelled, and stay on', async ({ page }) => {
+test('From 3rd and From 7th put each chord’s guide tone in place of its slashes, labelled, and stay on', async ({ page }) => {
   await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 1 | G7sus4\nA | 2 | C6\nA | 2 | C\nA | 3 | Em7\nA | 3 | A7\nA | 4 | Dm7\nA | 4 | G7\n')
   const line = lines(page).first()
   await expect(line).toHaveAttribute('aria-label', /^Bars: Dm7 G7sus4 \| C6 C \| Em7 A7 \| Dm7 G7$/) // no guide tones yet
-  await expect(guide(page, '3rd')).toHaveAttribute('aria-pressed', 'false') // off until turned on
-  await expect(guide(page, '7th')).toHaveAttribute('aria-pressed', 'false')
+  await expect(guide(page, 'From 3rd')).toHaveAttribute('aria-pressed', 'false') // off until turned on
+  await expect(guide(page, 'From 7th')).toHaveAttribute('aria-pressed', 'false')
   await expect.poll(async () => (await drawn(line)).slashes).toBe(16) // four bars of slashes
-  await showGuides(page, '3rd')
+  await showGuides(page, 'From 3rd')
   await expect(line).toHaveAttribute('aria-label', /^Bars: Dm7 G7sus4 \| C6 C \| Em7 A7 \| Dm7 G7; guide tones: /)
   await expect.poll(async () => (await drawn(line)).heads.length).toBe(8) // a half note a chord
   expect((await drawn(line)).slashes).toBe(0)
-  await expect(labelRow(line)).toHaveText(/^\s*3\s*4\s*3\s*3\s*3\s*3\s*3\s*3\s*$/) // a sus chord's 4th
-  await guide(page, '3rd').click()
-  await showGuides(page, '7th')
-  await expect(guide(page, '3rd')).toHaveAttribute('aria-pressed', 'false')
-  await expect(labelRow(line)).toHaveText(/^\s*7\s*7\s*6\s*1\s*7\s*7\s*7\s*7\s*$/) // a 6 chord's 6th, a triad's root
-  await showGuides(page, '3rd')
+  await expect(labelRow(line)).toHaveText(/^\s*3\s*7\s*3\s*3\s*7\s*3\s*7\s*3\s*$/) // from the Dm7's 3rd: the nearest guide tone of G7sus4 is its 7th (the F, held)
+  await guide(page, 'From 3rd').click()
+  await showGuides(page, 'From 7th')
+  await expect(guide(page, 'From 3rd')).toHaveAttribute('aria-pressed', 'false')
+  await expect(labelRow(line)).toHaveText(/^\s*7\s*4\s*6\s*1\s*3\s*7\s*3\s*7\s*$/) // from the Dm7's 7th: a sus chord's 4th, a 6 chord's 6th, a triad's root
+  await showGuides(page, 'From 3rd')
   await expect.poll(async () => (await drawn(line)).heads.length).toBe(16)
   const both = await drawn(line)
   expect(both.stems.filter((s) => s.to < s.from)).toHaveLength(8) // the upper voice: stems up
@@ -121,15 +121,15 @@ test('the 3rd and 7th put each chord’s guide tone in place of its slashes, lab
   await expect(labelRow(line)).toHaveText(/^(\s*\d){16}\s*$/) // two labels a chord
   await expectChordsOnHeads(line)
   await page.reload()
-  await expect(guide(page, '3rd')).toHaveAttribute('aria-pressed', 'true') // remembered
-  await expect(guide(page, '7th')).toHaveAttribute('aria-pressed', 'true')
+  await expect(guide(page, 'From 3rd')).toHaveAttribute('aria-pressed', 'true') // remembered
+  await expect(guide(page, 'From 7th')).toHaveAttribute('aria-pressed', 'true')
   await expect(lines(page).first()).toHaveAttribute('aria-label', /; guide tones: /)
 })
 
 test('both guide tones: the ii–V–I’s labels swap, and each voice’s ties curve away from the other’s', async ({ page }) => {
   await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 3 | G7\nA | 5 | CMaj7\n')
   await expect(lines(page).first()).toHaveAttribute('aria-label', /^Bars: Dm7 \| – \| G7 \| –/)
-  await showGuides(page, '3rd', '7th')
+  await showGuides(page, 'From 3rd', 'From 7th')
   await guidesDrawn(page)
   const line = lines(page).first()
   await expect(line).toHaveAttribute('aria-label', /; guide tones: C5 7 \/ F4 3/) // Dm7: C over F
@@ -147,7 +147,7 @@ test('both guide tones: the ii–V–I’s labels swap, and each voice’s ties 
 
 test('a chord held over a line break: an open tie ends line 1, a half-tie starts line 2', async ({ page }) => {
   await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 3 | G7\nA | 6 | CMaj7\n') // G7: bars 3-5, across the break after bar 4
-  await showGuides(page, '3rd', '7th')
+  await showGuides(page, 'From 3rd', 'From 7th')
   await guidesDrawn(page)
   const [one, two] = await Promise.all([drawn(lines(page).nth(0)), drawn(lines(page).nth(1))])
   const lastHead = Math.max(...one.heads.map((h) => h.x))
@@ -158,7 +158,7 @@ test('a chord held over a line break: an open tie ends line 1, a half-tie starts
 
 test('guide tones are written for the part: a B♭ trumpet, and a bass clef within E2–C4', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
-  await showGuides(page, '3rd', '7th')
+  await showGuides(page, 'From 3rd', 'From 7th')
   await chooseInstrument(page, 'Trumpet')
   await expect(lines(page).first()).toHaveAttribute('aria-label', /; guide tones: (C\d 7 \/ F\d 3|F\d 3 \/ C\d 7)/) // concert C–7 is written D–7: 7th C, 3rd F
   await guidesDrawn(page)
@@ -174,7 +174,7 @@ test('guide tones are written for the part: a B♭ trumpet, and a bass clef with
 
 test('a waltz’s guide tones are in 3/4: a bar-long chord is a dotted half', async ({ page }) => {
   await page.goto('/song?chart=someday_my_prince_will_come')
-  await showGuides(page, '7th')
+  await showGuides(page, 'From 7th')
   const line = lines(page).first()
   await expect(line).toHaveAttribute('aria-label', /; guide tones: /)
   await expect(line.locator('.vf-timesignature').first()).toBeAttached()
@@ -187,7 +187,7 @@ test('a waltz’s guide tones are in 3/4: a bar-long chord is a dotted half', as
 test('guide tone notes follow dark mode (no hard-coded black)', async ({ page }) => {
   await page.goto('/song?chart=f_jazz_blues')
   await page.getByRole('button', { name: /Switch to dark mode/ }).click()
-  await showGuides(page, '3rd', '7th')
+  await showGuides(page, 'From 3rd', 'From 7th')
   await guidesDrawn(page)
   const black = page.locator(['stroke="black"', 'fill="black"', 'stroke="#000000"', 'fill="#000000"'].map((a) => `svg[aria-label^="Bars:"] [${a}]`).join(', '))
   await expect(black).toHaveCount(0)
@@ -200,7 +200,7 @@ for (const [width, bars] of [
   test(`four chords a bar, both guide tones, ${bars} bars a line: no notehead or accidental collides, and each chord sits on its note`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 })
     await writeChart(page, 'title: T\nkey: C\nA | 1 | Em7\nA | 1 | A7\nA | 1 | Dm7\nA | 1 | G7\nA | 2 | Ebm7\nA | 2 | Ab7\nA | 2 | Dbm7\nA | 2 | Gb7\nA | 3 | CMaj7\nA | 4 | C#m7b5\nA | 4 | F#7\n')
-    await showGuides(page, '3rd', '7th')
+    await showGuides(page, 'From 3rd', 'From 7th')
     const line = lines(page).first()
     await expect(line).toHaveAttribute('aria-label', /^Bars: Em7 A7 Dm7 G7 \| Ebm7 Ab7 Dbm7 Gb7.*; guide tones: /)
     const d = await drawn(line)
@@ -219,7 +219,7 @@ test('an unknown chord gets one rest for both voices, and a note above the sheet
   await expect(line).toHaveAttribute('aria-label', /^Bars: Dm7 \| Cm7#5#9x \| G7 \| CMaj7/)
   const note = page.getByRole('listitem').filter({ hasText: 'no guide tones for Cm7#5#9x (unknown chord quality)' })
   await expect(note).toHaveCount(0) // only with a guide on
-  await showGuides(page, '3rd', '7th')
+  await showGuides(page, 'From 3rd', 'From 7th')
   await expect(line).toHaveAttribute('aria-label', /; guide tones: /)
   const d = await drawn(line)
   expect(d.rests).toBe(1) // never two stacked
@@ -230,7 +230,7 @@ test('an unknown chord gets one rest for both voices, and a note above the sheet
 test('on a line with an ending, the bracket clears the guide tones’ stems (B♭ part, both on)', async ({ page }) => {
   await page.goto('/song?chart=stardust')
   await chooseInstrument(page, 'Trumpet')
-  await showGuides(page, '3rd', '7th')
+  await showGuides(page, 'From 3rd', 'From 7th')
   await guidesDrawn(page)
   let endings = 0
   for (const svg of await lines(page).all()) {

@@ -60,7 +60,7 @@ test('the Changes sheet shows 1st/2nd endings and a D.S. al Coda', async ({ page
 test('prints the Changes with both guide tones, a sheet page to a letter page, in the tallest case', async ({ page }) => {
   await page.goto('/song?chart=stardust')
   await chooseInstrument(page, 'Trombone')
-  await showGuides(page, '3rd', '7th')
+  await showGuides(page, 'From 3rd', 'From 7th')
   await expect(page.getByRole('button', { name: 'Numerals' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByRole('button', { name: 'Scales', exact: true })).toHaveAttribute('aria-pressed', 'true')
   await guidesDrawn(page)
