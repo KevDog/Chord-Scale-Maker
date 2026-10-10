@@ -36,8 +36,8 @@ come from the C4 floor that the instrument doesn't have.
 - **Tests:** the rule tests keep the clef ranges (they name pitches); new cases for a wider range (no floor turn at
   C4 on vibes) and a narrower one; the library test runs per instrument. The golden fixture doesn't cover guide
   tones, so no fixture change is expected.
-- **Open questions:** should the comfortable zone move with the instrument, or stay a register the exercise is sung
-  and played in? And does the Scales sheet's fixed written range (scales sit where they read best) stay separate?
+- **Decided (the user's):** the comfortable zone moves with the instrument (each instrument's range carries its own
+  `comfortLo`/`comfortHi`). The Scales sheet keeps its fixed written range.
 
 ## Done
 
