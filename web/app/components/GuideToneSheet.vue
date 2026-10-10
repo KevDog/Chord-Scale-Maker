@@ -16,6 +16,7 @@
             :bars-per-system="barsPerSystem"
             :beats="sheet.beats"
             :intervals="intervals"
+            :signatures="homeKey !== undefined"
           />
         </div>
       </template>
@@ -24,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { buildGuideTones, chunk, pageSubtitle, type Part, type Row } from '~~/engine'
+import { buildGuideTones, chunk, type Key, pageSubtitle, type Part, type Row } from '~~/engine'
 
 /** both guide tone lines for the chart, in systems of 4 bars (2 on phones) and pages of 8 systems */
 const props = defineProps<{
@@ -36,6 +37,7 @@ const props = defineProps<{
   instrumentLabel: string // '' for concert
   beats?: 2 | 3 | 4 // the chart's time signature, over 4
   intervals?: boolean
+  homeKey?: Key | null // the chart's key, for the key signature (null: no key: line); undefined: signatures off
 }>()
 
 const SYSTEMS_PER_PAGE = 8
@@ -44,7 +46,7 @@ const SYSTEMS_PER_PAGE = 8
 const wide = useMediaQuery('(min-width: 640px), print')
 const barsPerSystem = computed(() => (wide.value ? 4 : 2))
 
-const sheet = computed(() => buildGuideTones(props.rows, props.part, barsPerSystem.value, props.beats ?? 4))
+const sheet = computed(() => buildGuideTones(props.rows, props.part, barsPerSystem.value, props.beats ?? 4, props.homeKey))
 const subtitleText = computed(() => pageSubtitle(props.subtitle, props.instrumentLabel, 'Guide Tone Lines'))
 const pages = computed(() =>
   chunk(

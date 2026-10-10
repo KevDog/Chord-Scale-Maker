@@ -142,3 +142,33 @@ describe('EditorView', () => {
     expect(dialog().exists()).toBe(false)
   })
 })
+
+describe('EditorView key signatures', () => {
+  const KEYED = 'title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\n'
+  const mountWith = (shared?: { sheet: 'guideTones' | 'changes' }) =>
+    mountSuspended(EditorView, {
+      props: { initialText: KEYED, ...(shared ? { shared } : {}) },
+      global: { stubs: { ScaleSheet: true, GuideToneSheet: true, ChangesSheet: true } },
+    })
+  afterEach(() => {
+    useRuntimeConfig().public.features.keySignatures = true
+    localStorage.clear()
+  })
+
+  it("with the flag on, gives the scale and guide tone sheets the chart's key, and the Changes sheet signatures", async () => {
+    useRuntimeConfig().public.features.keySignatures = true
+    const scales = await mountWith()
+    expect(scales.findComponent({ name: 'ScaleSheet' }).props('homeKey')).toEqual(expect.objectContaining({ name: 'Bb major' }))
+    const guide = await mountWith({ sheet: 'guideTones' })
+    expect(guide.findComponent({ name: 'GuideToneSheet' }).props('homeKey')).toEqual(expect.objectContaining({ name: 'Bb major' }))
+    const changes = await mountWith({ sheet: 'changes' })
+    expect(changes.findComponent({ name: 'ChangesSheet' }).props('signatures')).toBe(true)
+  })
+
+  it('with the flag off, passes no key and no signatures', async () => {
+    useRuntimeConfig().public.features.keySignatures = false
+    expect((await mountWith()).findComponent({ name: 'ScaleSheet' }).props('homeKey')).toBeUndefined()
+    expect((await mountWith({ sheet: 'guideTones' })).findComponent({ name: 'GuideToneSheet' }).props('homeKey')).toBeUndefined()
+    expect((await mountWith({ sheet: 'changes' })).findComponent({ name: 'ChangesSheet' }).props('signatures')).toBe(false)
+  })
+})

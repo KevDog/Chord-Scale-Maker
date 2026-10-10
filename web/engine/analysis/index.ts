@@ -222,6 +222,9 @@ export function functionChoices(doc: ChartDoc): ReadonlyMap<number, readonly Fun
   return out
 }
 
+/** the chart's home key (its key: line) for the key signature; null without one. An @key never changes it */
+export const chartKeyOf = (doc: ChartDoc): Key | null => parseKey(meta(doc, 'key'))
+
 // —— writing it back ——
 
 export type ApplyOptions = Readonly<{

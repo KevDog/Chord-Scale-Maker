@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { parseChart, serializeChart } from '../chart'
-import { functionChoices, insertKeyChange, rowNotes } from '../notes'
+import { chartKeyOf, functionChoices, insertKeyChange, rowNotes } from '../notes'
 
 const notes = (text: string) => rowNotes(parseChart(text).value)
 const C_TUNE = 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\nA | 5 | Am7\nA | 6 | Dm7\nA | 7 | G7\nA | 8 | CMaj7\n'
@@ -75,5 +75,15 @@ describe('insertKeyChange', () => {
 
   it('adds only the one line in the last area', () => {
     expect(change(MOVES + C, 11)).toBe(tidy(MOVES + C.replace('C | 10', '@key C 10 C\nC | 10')))
+  })
+})
+
+describe('chartKeyOf', () => {
+  it("is the chart's key: line, whatever its @key areas", () => {
+    expect(chartKeyOf(parseChart('title: T\nkey: Eb\nA | 1 | EbMaj7\nB | 2 | DMaj7\n@key B 2 D\n').value)?.name).toBe('Eb major')
+    expect(chartKeyOf(parseChart('title: T\nkey: Gm\nA | 1 | Gm7\n').value)?.name).toBe('G minor')
+  })
+  it('is null without a key: line', () => {
+    expect(chartKeyOf(parseChart('title: T\nA | 1 | Cm7\n').value)).toBeNull()
   })
 })

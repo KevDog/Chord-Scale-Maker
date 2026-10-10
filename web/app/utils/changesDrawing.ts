@@ -1,14 +1,17 @@
 import type { ChangesLine } from '~~/engine'
-import { BAR_UNITS, fitSvg, headCentre, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
+import { BAR_UNITS, fitSvg, headCentre, signatureLead, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
 
 /**
  * Drawing a Changes line (engine/changes.ts) with VexFlow: one stave, one slash a beat, repeat and final barlines,
  * the time signature on the first line. Chords, numerals and scales are HTML placed over and under the slashes.
+ * With a clef (key signatures on): the first line (timeSignature) starts with the clef and the chart's key signature,
+ * the rest with neither; without, no clef, as before.
  */
 
 const VOLTA_Y = 0 // shift for the 1st/2nd-ending bracket, above the staff (at getYForTopText)
 const BAND = { top: 74, bottom: 126 } // just the staff (lines at 80-120): slashes sit on the middle line
 const VOLTA_BAND = { top: 44, bottom: 126 } // a line with a 1st/2nd-ending bracket needs headroom above the staff
+const CLEF_BAND = { top: 64, bottom: 134 } // a line with a clef (key signatures on): room for the clef above and below the staff
 
 /** per bar, each beat's slash centre as a fraction of the width */
 export type ChangesLayout = Readonly<{ xs: readonly (readonly number[])[] }>
@@ -17,9 +20,10 @@ export function drawChangesLine(
   vf: VexFlowModule,
   el: HTMLElement,
   line: ChangesLine,
-  opts: Readonly<{ timeSignature: boolean; beats: 2 | 3 | 4; barsPerLine: number }>,
+  opts: Readonly<{ timeSignature: boolean; beats: 2 | 3 | 4; barsPerLine: number; clef?: 'treble' | 'bass' }>,
 ): ChangesLayout {
-  const lead = opts.timeSignature ? TIME_SPACE : 0
+  const clef = opts.timeSignature ? opts.clef : undefined // with signatures, the clef and key signature start the first line only
+  const lead = (clef ? signatureLead(vf, clef, line.bars[0]?.keySig ?? null) : 0) + (opts.timeSignature ? TIME_SPACE : 0)
   const total = BAR_UNITS * opts.barsPerLine
   const barWidth = (total - 1 - lead) / opts.barsPerLine
   const ctx = svgContext(vf, el, total)
@@ -28,6 +32,8 @@ export function drawChangesLine(
   line.bars.forEach((bar, b) => {
     const width = b === 0 ? barWidth + lead : barWidth
     const stave = new vf.Stave(x, STAVE_Y, width)
+    if (b === 0 && clef) stave.addClef(clef)
+    if (b === 0 && clef && bar.keySig) stave.addKeySignature(bar.keySig)
     if (b === 0 && opts.timeSignature) stave.addTimeSignature(`${opts.beats}/4`)
     if (bar.repeatStart) stave.setBegBarType(vf.BarlineType.REPEAT_BEGIN)
     if (bar.repeatEnd) stave.setEndBarType(vf.BarlineType.REPEAT_END)
@@ -49,7 +55,8 @@ export function drawChangesLine(
     xs.push(notes.map((n) => headCentre(n, total)))
     x += width
   })
-  const band = line.bars.some((b) => b.volta) ? VOLTA_BAND : BAND
+  const plain = clef ? CLEF_BAND : BAND
+  const band = line.bars.some((b) => b.volta) ? { top: VOLTA_BAND.top, bottom: plain.bottom } : plain
   fitSvg(el, band, total, `Bars: ${line.bars.map((b) => b.chords.map((c) => c.text).join(' ') || '–').join(' | ')}`)
   return { xs }
 }

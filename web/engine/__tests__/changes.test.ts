@@ -108,4 +108,13 @@ describe('endings and navigation', () => {
     const b = barsOf(text)
     expect(b.every((x) => !x.segno && x.nav === '' && x.volta === null)).toBe(true)
   })
+
+  it("with signatures, gives every bar the chart's key; an @key shows only as its key-area label", () => {
+    const doc = parseChart('title: T\nkey: Eb\nA | 1 | EbMaj7\nB | 2 | DMaj7\n@key B 2 D\n').value
+    const bars = buildChanges(doc, TENOR, 4, true).lines.flatMap((l) => l.bars).filter((b) => b.chords.length)
+    expect(bars.map((b) => b.keySig)).toEqual(['F', 'F'])
+    expect(bars.map((b) => b.keyArea)).toEqual(['F major', 'E major'])
+    expect(buildChanges(doc, CONCERT).lines[0]?.bars[0]?.keySig).toBeNull()
+    expect(buildChanges(parseChart('title: T\nA | 1 | Cm7\n').value, CONCERT, 4, true).lines[0]?.bars[0]?.keySig).toBeNull()
+  })
 })

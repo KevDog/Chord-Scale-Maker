@@ -1,7 +1,8 @@
-import { analyse, parseKey } from './analysis'
+import { analyse, chartKeyOf, parseKey } from './analysis'
 import { type ChartDoc, type ChartLine, chartBeats, expandRowLines, formPart, type FormPart, type LinedRow, resolveScale } from './chart'
 import { type ChordToken, chordTokensOrNull } from './chord'
 import { guideToneTimeline } from './guideToneTimeline'
+import { keySignature } from './keySignature'
 import { type Part, scaleLabel, writtenRoot } from './part'
 import { glyphs, parseRoot, rootName } from './pitch'
 import { abbreviateScale } from './scales'
@@ -32,6 +33,8 @@ export type ChangesChord = Readonly<{
   keyFrom: 'found' | 'area' | 'function'
 }>
 export type ChangesBar = Readonly<{
+  /** the chart's key signature, written for the part; null when signatures are off or it has no key: */
+  keySig: string | null
   chords: readonly ChangesChord[]
   /** a section marker on its first bar: "A1", "A3 (= A1)", "Intro", "Coda (after the last chorus)" */
   marker: string
@@ -71,11 +74,12 @@ const writtenScale = (part: Part, scale: string | null): string | null => {
   return label ? glyphs(`${rootName(label.root)} ${abbreviateScale(label.name)}`) : scale
 }
 
-export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4): ChangesSheet {
+export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false): ChangesSheet {
   const rows = expandRowLines(doc).value
   const beats = chartBeats(doc)
   const { events, diagnostics } = guideToneTimeline(rows, beats)
   const analysis = analyse(doc)
+  const keySig = signatures ? keySignature(chartKeyOf(doc), part) : null
   const byRow = new Map(analysis.rows.map((r) => [r.row, r]))
   const index = new Map<LinedRow, number>(rows.map((r, i) => [r, i]))
   const eventAt = new Map(events.map((e) => [index.get(e.row as LinedRow) ?? -1, e]))
@@ -183,6 +187,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4): Change
       const last = j === block.to - block.from
       const hasEndings = sectionsWithEndings.has(block.section)
       return {
+        keySig,
         chords,
         marker: j === 0 ? block.marker : '',
         keyArea,

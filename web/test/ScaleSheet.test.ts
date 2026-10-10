@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import { CONCERT, type Row } from '~~/engine'
+import { chartKeyOf, CONCERT, parseChart, type Row } from '~~/engine'
 import ScaleSheet from '~/components/ScaleSheet.vue'
 
 const rows: Row[] = Array.from({ length: 13 }, (_, i) => ({ section: 'A', bar: String(i + 1), chord: 'Cm7', scale: '' }))
@@ -42,5 +42,14 @@ describe('ScaleSheet', () => {
     })
     expect(w.find('section p').text()).toBe('Trombone (Spelled from E♭)')
     expect(w.find('scale-staff-stub').attributes('clef')).toBe('bass')
+  })
+
+  it("gives each staff the chart's key signature when given its key, and none without", async () => {
+    const homeKey = chartKeyOf(parseChart('key: Bb\nA | 1 | Cm7\n').value)
+    const props = { rows: rows.slice(0, 1), title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', start: 'C', mode: 'root' as const, perPage: 12 }
+    const staffOf = async (extra: object) =>
+      (await mountSuspended(ScaleSheet, { props: { ...props, ...extra }, global: { stubs } })).findComponent({ name: 'ScaleStaff' }).props('staff')
+    expect(await staffOf({ homeKey })).toMatchObject({ keySig: 'Bb', showClefAndKey: true, accidentals: [null, null, null, null, null, null, null] }) // C dorian: Eb and Bb in the signature
+    expect(await staffOf({})).toMatchObject({ keySig: null, showClefAndKey: true, accidentals: [null, null, 'b', null, null, null, 'b'] })
   })
 })

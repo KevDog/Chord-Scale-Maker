@@ -2,6 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Row } from '../chart'
 import { CONCERT } from '../part'
 import { type ModeChoice, type StaffModel, buildSheet, noteText, pageSubtitle, toVexKey } from '../sheet'
+import { parseKey } from '../analysis/keys'
 
 const row = (chord: string, scale = '', bar = '1'): Row => ({ section: 'A', bar, chord, scale })
 
@@ -100,5 +101,39 @@ describe('sheet', () => {
     expect(s?.notes.map(toVexKey)).toEqual(['d/4', 'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5'])
     const [b] = buildSheet([row('Cm7')], { clef: 'bass', trans: 'C' }, 'from', 'C', 12)[0]?.pages.flat() ?? []
     expect(b?.notes.map(toVexKey)[0]).toBe('c/3') // bass clef starts an octave lower
+  })
+
+  it("with the chart's key, gives every staff its written signature and only the accidentals that leave it", () => {
+    const rows = [row('Dm7', 'D Dorian'), row('DMaj7', 'D Ionian', '2')] // the D major bar takes accidentals against Eb, as after an @key
+    const all = buildSheet(rows, CONCERT, 'root', 'C', 12, null, parseKey('Eb')).flatMap((p) => p.pages.flat())
+    expect(all.map((s) => s.keySig)).toEqual(['Eb', 'Eb'])
+    const spelled = (s: StaffModel | undefined) => s?.notes.map((n, i) => (s.accidentals[i] ?? '') + 'CDEFGAB'[n.letter])
+    expect(spelled(all[0])).toEqual(['D', 'nE', 'F', 'G', 'nA', 'nB', 'C'])
+    expect(spelled(all[1])).toEqual(['D', 'nE', '#F', 'G', 'nA', 'nB', '#C'])
+    const [plain] = buildSheet(rows, CONCERT, 'root', 'C', 12).flatMap((p) => p.pages.flat())
+    expect([plain?.keySig, plain?.accidentals.every((a) => a === null)]).toEqual([null, true])
+  })
+  it('with a null key (no key: line), keeps explicit accidentals as without a key', () => {
+    const rows = [row('C7', 'C Half-Whole')]
+    const [a] = buildSheet(rows, CONCERT, 'root', 'C', 12, null, null).flatMap((p) => p.pages.flat())
+    const [b] = buildSheet(rows, CONCERT, 'root', 'C', 12).flatMap((p) => p.pages.flat())
+    expect([a?.keySig, a?.accidentals]).toEqual([null, b?.accidentals])
+  })
+  it('writes the signature for a transposing part', () => {
+    const rows = [row('EbMaj7', 'Eb Ionian')]
+    const [staff] = buildSheet(rows, { clef: 'treble', trans: 'Bb' }, 'root', 'C', 12, null, parseKey('Eb')).flatMap((p) => p.pages.flat())
+    expect([staff?.keySig, staff?.accidentals.every((a) => a === null)]).toEqual(['F', true]) // F Ionian in F: no accidentals
+  })
+  it("with the chart's key, starts only each part's first staff with the clef and signature", () => {
+    const rows = [row('Cm7'), row('F7', '', '2'), row('BbMaj7', '', '3')]
+    const shown = (key?: ReturnType<typeof parseKey>) =>
+      buildSheet(rows, CONCERT, 'both', 'C', 2, null, key).map((p) => p.pages.flat().map((s) => s.showClefAndKey))
+    expect(shown(parseKey('Bb'))).toEqual([[true, false, false], [true, false, false]])
+    expect(shown(null)).toEqual([[true, false, false], [true, false, false]]) // no key: line: the clef once, no signature
+    expect(shown()).toEqual([[true, true, true], [true, true, true]]) // signatures off: a clef on every staff, as before
+  })
+  it('gives a staff a new id when its clef comes or goes', () => {
+    const ids = (key?: null) => buildSheet([row('Cm7'), row('F7', '', '2')], CONCERT, 'root', 'C', 12, null, key).flatMap((p) => p.pages.flat().map((s) => s.id))
+    expect(ids(null)[1]).not.toBe(ids()[1])
   })
 })

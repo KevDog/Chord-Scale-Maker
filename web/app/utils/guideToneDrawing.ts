@@ -1,5 +1,5 @@
-import { accText, type GuideSystem, toVexKey } from '~~/engine'
-import { BAR_UNITS, cropBand, fitSvg, headCentre, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
+import { accidentalsInBar, accText, type GuideNote, type GuideSystem, octaveOf, toVexKey } from '~~/engine'
+import { BAR_UNITS, CLEF_SPACE, cropBand, fitSvg, headCentre, signatureLead, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
 
 /**
  * Drawing guide tone systems (engine/guideTones.ts) with VexFlow: two staves a system, one per line, bars aligned
@@ -9,7 +9,6 @@ import { BAR_UNITS, cropBand, fitSvg, headCentre, STAVE_Y, svgContext, TIME_SPAC
 const DURATIONS = { 4: 'w', 3: 'hd', 2: 'h', 1: 'q' } as const // 3 beats: a dotted half
 const REST_KEY = { treble: 'b/4', bass: 'd/3' } as const
 const INK = { fillStyle: 'currentColor', strokeStyle: 'currentColor' } // follows light/dark mode, prints black
-const CLEF_SPACE = 70 // the first bar of a system also holds the clef
 // guide tones sit near the middle of the staff, so their minimum band is just the clef: 8 systems fit a letter page
 export const GUIDE_MIN_TOP = 64
 export const GUIDE_MIN_BOTTOM = 134
@@ -20,19 +19,51 @@ export type SystemLayout = Readonly<{
 }>
 
 /**
+ * each note's accidental in its bar (rests: null). With a key signature: the measure rule against it (accidentalsInBar).
+ * Without one (signatures off, or no key: line), the legacy rule, which is not the measure rule against C: every
+ * altered note shows its sharp or flat, even repeated in the bar, and a natural shows where an altered note came before
+ * on that letter and octave. A tied-in note writes nothing, but still counts as what came before.
+ */
+export function barAccidentals(notes: readonly GuideNote[], tiedIn: (i: number) => boolean, keySig: string | null): (string | null)[] {
+  const pitched = notes.flatMap((n, i) => (n.pitch ? [{ i, pitch: n.pitch }] : []))
+  const accs = keySig
+    ? accidentalsInBar(pitched.map(({ i, pitch }) => ({ letter: pitch.letter, acc: pitch.acc, octave: octaveOf(pitch), tiedIn: tiedIn(i) })), keySig)
+    : legacyAccidentals(pitched.map(({ i, pitch }) => ({ pitch, tiedIn: tiedIn(i) })))
+  const out: (string | null)[] = notes.map(() => null)
+  pitched.forEach(({ i }, k) => (out[i] = accs[k] ?? null))
+  return out
+}
+
+function legacyAccidentals(notes: readonly Readonly<{ pitch: NonNullable<GuideNote['pitch']>; tiedIn: boolean }>[]): (string | null)[] {
+  const before = new Map<string, number>() // the last accidental on each letter + octave in the bar
+  return notes.map(({ pitch, tiedIn }) => {
+    const place = `${pitch.letter}/${octaveOf(pitch)}`
+    const previous = before.get(place) ?? 0
+    before.set(place, pitch.acc)
+    if (tiedIn || (pitch.acc === 0 && previous === 0)) return null
+    return pitch.acc === 0 ? 'n' : accText(pitch.acc)
+  })
+}
+
+/**
  * draw one guide tone system: line 1 into els[0], line 2 into els[1], one staff each, bars aligned across both
  * (each bar's two voices are formatted together). Every system uses the same bar width, so a short last system
- * is left-aligned rather than stretched. Colors follow CSS `color`.
+ * is left-aligned rather than stretched. Colors follow CSS `color`. Without signatures every system starts with the
+ * clef; with them (signatures), only the first system (timeSignature) does, with the chart's key signature after it.
  */
 export function drawGuideToneSystem(
   vf: VexFlowModule,
   els: readonly [HTMLElement, HTMLElement],
   system: GuideSystem,
   clef: 'treble' | 'bass',
-  opts: Readonly<{ timeSignature: boolean; finalBar: boolean; barsPerSystem: number; beats?: 2 | 3 | 4 }>,
+  opts: Readonly<{ timeSignature: boolean; finalBar: boolean; barsPerSystem: number; beats?: 2 | 3 | 4; signatures?: boolean }>,
 ): SystemLayout {
   const beats = opts.beats ?? 4
-  const lead = CLEF_SPACE + (opts.timeSignature ? TIME_SPACE : 0)
+  // the clef starts every system without signatures; with them, only the first, followed by the key signature (measured)
+  const headed = !opts.signatures || opts.timeSignature
+  const keySig = opts.signatures && opts.timeSignature ? (system.bars[0]?.keySig ?? null) : null
+  const time = opts.timeSignature ? `${beats}/4` : undefined
+  const lead = !headed ? 0 : opts.signatures ? signatureLead(vf, clef, keySig, time) : CLEF_SPACE + (opts.timeSignature ? TIME_SPACE : 0)
   const total = BAR_UNITS * opts.barsPerSystem
   const barWidth = (total - 1 - lead) / opts.barsPerSystem
   const ctxs = els.map((el) => svgContext(vf, el, total))
@@ -46,7 +77,8 @@ export function drawGuideToneSystem(
     const isLast = b === system.bars.length - 1
     const staves = ([0, 1] as const).map((l) => {
       const stave = new vf.Stave(x, STAVE_Y, width)
-      if (b === 0) stave.addClef(clef)
+      if (b === 0 && headed) stave.addClef(clef)
+      if (b === 0 && keySig) stave.addKeySignature(keySig)
       if (b === 0 && opts.timeSignature) stave.addTimeSignature(`${beats}/4`)
       if (isLast && opts.finalBar) stave.setEndBarType(vf.BarlineType.END)
       const ctx = ctxs[l]
@@ -54,9 +86,9 @@ export function drawGuideToneSystem(
       return stave
     })
     const voices = ([0, 1] as const).map((l) => {
-      const shown = new Map<string, number>() // accidentals so far in this bar, by letter + octave
+      const tiedIn = (i: number): boolean => (i === 0 ? (ties[l]?.at(-1) ?? false) : (bar.lines[l][i - 1]?.tie ?? false))
+      const accs = barAccidentals(bar.lines[l], tiedIn, bar.keySig)
       const notes = bar.lines[l].map((n, i) => {
-        const tiedIn = i === 0 ? (ties[l]?.at(-1) ?? false) : (bar.lines[l][i - 1]?.tie ?? false)
         const dotted = (note: InstanceType<typeof vf.StaveNote>): InstanceType<typeof vf.StaveNote> => {
           if (n.beats === 3) vf.Dot.buildAndAttach([note], { all: true })
           return note
@@ -65,10 +97,8 @@ export function drawGuideToneSystem(
         const key = toVexKey(n.pitch)
         const note = dotted(new vf.StaveNote({ keys: [key], duration: DURATIONS[n.beats], clef }))
         note.setStemStyle(INK) // stems carry their own default (black), not the context's currentColor
-        const place = `${n.pitch.letter}/${key.split('/')[1]}`
-        const before = shown.get(place) ?? 0
-        if (!tiedIn && (n.pitch.acc !== 0 || before !== 0)) note.addModifier(new vf.Accidental(n.pitch.acc === 0 ? 'n' : accText(n.pitch.acc)), 0)
-        shown.set(place, n.pitch.acc)
+        const acc = accs[i]
+        if (acc) note.addModifier(new vf.Accidental(acc), 0)
         return note
       })
       allNotes[l]?.push(...notes)

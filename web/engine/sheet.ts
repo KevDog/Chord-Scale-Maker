@@ -4,6 +4,8 @@ import { type ChordToken, chordTokensOrNull, writtenChordRoot, writtenChordRootL
 import { intervalLabels } from './intervals'
 import { type PracticeSelection, practiceKeys, selectedNotes, startReference } from './practice'
 import { resolveQuality } from './qualities'
+import type { Key } from './analysis/keys'
+import { accidentalsInBar, keySignature, octaveOf } from './keySignature'
 import { chunk, orNull } from './util'
 import { type Mode, type Part, type Pitched, type ScaleLabel, resolveStart, scaleLabel, scaleNotes } from './part'
 import { accText, glyphs, LETTERS, mod, NAT_PC, parseRoot, rootName } from './pitch'
@@ -21,6 +23,9 @@ export type StaffModel = Readonly<{
   chord: readonly ChordToken[] | null // null: chord can't be read
   scale: ScaleLabel | null
   notes: readonly Pitched[]
+  keySig: string | null // VexFlow major spec for the staff's key signature; null: none drawn
+  showClefAndKey: boolean // draw the clef (and keySig) at its start: every staff without signatures, each part's first with them
+  accidentals: readonly (string | null)[] // per note: the accidental to draw ("#", "b", "n"…) or null
   intervals: readonly string[] | null // each note against the chord root (b9, #11…); null if the chord can't be read
   keys: readonly string[] | null // practice keys: each note's spelled interval from the mode's reference
   selected: readonly boolean[] | null // practice: which notes are picked; null when practice is off
@@ -81,13 +86,16 @@ function staff(
   last: boolean,
   startText: string,
   practice: PracticeSelection | null,
+  key: Key | null | undefined,
+  showClefAndKey: boolean,
 ): StaffModel {
   const scale = resolveScale(row)
   const startKey = 'midi' in start ? start.midi : start.error
-  const id = [index, row.section, row.bar, row.chord, row.scale, part.clef, part.trans, mode, startKey].join('|')
-  const base = { id, section: row.section, bar: row.bar, last }
+  const keySig = key === undefined ? null : keySignature(key, part)
+  const id = [index, row.section, row.bar, row.chord, row.scale, part.clef, part.trans, mode, startKey, keySig, showClefAndKey ? '' : 'bare'].join('|')
+  const base = { id, section: row.section, bar: row.bar, last, keySig, showClefAndKey }
   const chord = chordTokensOrNull(part, row.chord, scale)
-  const none = { notes: [], intervals: null, keys: null, selected: null }
+  const none = { notes: [], accidentals: [], intervals: null, keys: null, selected: null }
   if (scale === null) return { ...base, ...none, chord, scale: null, error: chord ? 'Choose a scale' : "Can't read this chord" }
   try {
     const label = scaleLabel(part, scale)
@@ -98,6 +106,7 @@ function staff(
       chord,
       scale: label,
       notes,
+      accidentals: keySig === null ? notes.map((n) => (n.acc ? accText(n.acc) : null)) : accidentalsInBar(notes.map((n) => ({ letter: n.letter, acc: n.acc, octave: octaveOf(n) })), keySig),
       intervals: intervalsOrNull(part, row.chord, scale, notes),
       ...practiceFor(row, part, mode, startText, scale, notes, practice),
       error: null,
@@ -126,7 +135,11 @@ export function pageSubtitle(subtitle: string, instrument: string, heading: stri
 }
 
 
-/** the printable sheet: one part per mode, each split into pages of perPage staves; never throws */
+/**
+ * the printable sheet: one part per mode, each split into pages of perPage staves; never throws.
+ * key: the chart's home key for the signature (null: no key: line, no signature); undefined: signatures off. With
+ * signatures, only each part's first staff starts with the clef and signature, and every staff's accidentals go against it.
+ */
 export function buildSheet(
   rows: readonly Row[],
   part: Part,
@@ -134,6 +147,7 @@ export function buildSheet(
   startText: string,
   perPage: number,
   practice: PracticeSelection | null = null,
+  key?: Key | null,
 ): SheetPart[] {
   return modesFor(choice).map((mode) => {
     const start = startFor(part, mode, startText)
@@ -141,7 +155,7 @@ export function buildSheet(
       mode,
       heading: mode === 'from' ? `Spelled from ${noteText(startText)}` : 'Spelled from the Root',
       pages: chunk(
-        rows.map((r, i) => staff(r, i, part, mode, start, i === rows.length - 1, startText, practice)),
+        rows.map((r, i) => staff(r, i, part, mode, start, i === rows.length - 1, startText, practice, key, key === undefined || i === 0)),
         perPage,
       ),
     }
