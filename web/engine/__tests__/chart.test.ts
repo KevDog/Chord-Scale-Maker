@@ -161,3 +161,48 @@ describe('navigation directives', () => {
     }
   })
 })
+
+describe('the function cell and @key lines', () => {
+  it('reads an optional fifth cell as the function, with or without a scale', () => {
+    const { value, diagnostics } = parseChart('A | 1 | F7 | F Mixolydian | V7/V\nA | 2 | Bb7 |  | D: V7/ii\nA | 3 | F7\nA | 4 | F7 | |\n')
+    expect(diagnostics).toEqual([])
+    expect(value.lines).toEqual([
+      { kind: 'row', section: 'A', bar: '1', chord: 'F7', scale: 'F Mixolydian', function: 'V7/V' },
+      { kind: 'row', section: 'A', bar: '2', chord: 'Bb7', scale: '', function: 'D: V7/ii' },
+      { kind: 'row', section: 'A', bar: '3', chord: 'F7', scale: '' },
+      { kind: 'row', section: 'A', bar: '4', chord: 'F7', scale: '' }, // an empty fifth cell is no function
+    ])
+  })
+
+  it('rejects a sixth cell', () => {
+    expect(parseChart('A | 1 | Cm7 | C Dorian | ii7 | extra\n').diagnostics[0]?.message).toBe('expected  section | bar | chord [| scale [| function]]')
+  })
+
+  it('writes functions back aligned, with comments after them', () => {
+    const text =
+      'A | 1 | F7     | F Mixolydian | V7/V  # x\n' +
+      `A | 2 | Bb7    | ${' '.repeat(12)} | V7    # y\n` +
+      'A | 3 | EbMaj7 | Eb Ionian\n'
+    expect(serializeChart(parseChart(text).value)).toBe(text)
+  })
+
+  it('reads @key SECTION BAR KEY and writes it back', () => {
+    const { value, diagnostics } = parseChart('@key B 17 D\n@key A3 25 Bb minor\n')
+    expect(diagnostics).toEqual([])
+    expect(value.lines).toEqual([
+      { kind: 'key', section: 'B', bar: 17, key: 'D' },
+      { kind: 'key', section: 'A3', bar: 25, key: 'Bb minor' },
+    ])
+    expect(serializeChart(value)).toBe('@key B 17 D\n@key A3 25 Bb minor\n')
+  })
+
+  it('rejects a malformed @key', () => {
+    for (const bad of ['@key B 17', '@key B x D', '@key B 17 H', '@key B 17 Dorian', '@key B 17 d'])
+      expect(parseChart(bad).diagnostics[0]?.message, bad).toBe('use  @key SECTION BAR KEY  (a key like Eb or Cm)')
+  })
+
+  it("copies a row's function to its @copy repeats", () => {
+    const rows = expandRowLines(parseChart('A | 1 | D7 |  | V7/V\n@copy A B 8\n').value).value
+    expect(rows.map((r) => `${r.section} ${r.bar} ${r.function}`)).toEqual(['A 1 V7/V', 'B 9 V7/V'])
+  })
+})

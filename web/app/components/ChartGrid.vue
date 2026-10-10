@@ -69,7 +69,7 @@ const emit = defineEmits<{ 'update:doc': [doc: ChartDoc] }>()
 
 const META_KEYS: readonly Extract<MetaKey, 'title' | 'subtitle' | 'key'>[] = ['title', 'subtitle', 'key'] // the heading; the rest stays in the text
 const KEY_OPTIONS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B', 'Cm', 'C#m', 'Dm', 'D#m', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'Bbm', 'Bm'] as const
-const TEXT_FIELDS: readonly Exclude<RowField, 'scale'>[] = ['section', 'bar', 'chord']
+const TEXT_FIELDS: readonly Exclude<RowField, 'scale' | 'function'>[] = ['section', 'bar', 'chord']
 
 const meta = computed(() => chartMeta(props.doc))
 /** line index -> 1-based number among chord rows, for labels */

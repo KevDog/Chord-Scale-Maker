@@ -1,3 +1,4 @@
+import { KEY_TEXT_RE } from '../chart'
 import { parseRoot, pcOf, rootName, type Spelled } from '../pitch'
 import { downFifth, downHalf, type Entry, type Family, interval, nextOf, prevOf } from './stream'
 
@@ -15,7 +16,7 @@ export const sameKey = (a: Key, b: Key): boolean => a.tonic === b.tonic && a.min
 
 /** a `key:` meta value: "Eb", "F#m", "Bb minor", "C-"; null if it isn't one */
 export function parseKey(text: string): Key | null {
-  const m = /^([A-G][b#]?)\s*(m|-|min|minor|major|maj)?$/i.exec(text.trim())
+  const m = KEY_TEXT_RE.exec(text.trim())
   if (!m || !/^[A-G]/.test(m[1] ?? '')) return null
   const suffix = (m[2] ?? '').toLowerCase()
   return makeKey(parseRoot(m[1] ?? 'C'), suffix === 'm' || suffix === '-' || suffix.startsWith('min'))

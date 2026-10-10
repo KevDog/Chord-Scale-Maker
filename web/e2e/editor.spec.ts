@@ -15,7 +15,7 @@ test('the editor is hidden until opened, remembered, and flags problems while hi
   await page.reload()
   await expect(page.getByLabel('Chart text')).toBeVisible() // remembered (csm-editor)
   // make a problem, then close the editor: it's flagged with an Edit prompt
-  await page.getByLabel('Chart text').fill('title: T\nA | 1 | Cm7 | C Dorian | extra\n')
+  await page.getByLabel('Chart text').fill('title: T\nA | 1 | Cm7 | C Dorian | ii7 | extra\n')
   await page.getByRole('button', { name: 'Done', exact: true }).click()
   await expect(page.getByLabel('Chart text')).toBeHidden()
   await expect(page.getByRole('status').filter({ hasText: 'text has a problem' })).toBeVisible()

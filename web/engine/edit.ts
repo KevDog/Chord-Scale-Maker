@@ -5,7 +5,7 @@ import { rootName } from './pitch'
 import { parseScale, sameScale, SCALES } from './scales'
 
 export type RowLine = Extract<ChartLine, { kind: 'row' }>
-export type RowField = 'section' | 'bar' | 'chord' | 'scale'
+export type RowField = 'section' | 'bar' | 'chord' | 'scale' | 'function'
 
 /**
  * why a grid cell value would not survive serialize -> parse as the same line, or null if fine
@@ -24,11 +24,28 @@ export function cellError(value: string, maxLength: number = LIMITS.maxCell, met
 
 const replaceAt = <T>(xs: readonly T[], i: number, x: T): T[] => [...xs.slice(0, i), x, ...xs.slice(i + 1)]
 
-/** set one field of the row at line index i (a no-op if that line is not a row) */
+/** set one field of the row at line index i (a no-op if that line is not a row); an empty function removes it */
 export function setRowField(doc: ChartDoc, i: number, field: RowField, value: string): ChartDoc {
   const line = doc.lines[i]
   if (line?.kind !== 'row') return doc
+  if (field === 'function' && !value) {
+    const { function: _, ...rest } = line
+    return { lines: replaceAt(doc.lines, i, rest) }
+  }
   return { lines: replaceAt(doc.lines, i, { ...line, [field]: value }) }
+}
+
+/** set an @key line's key (a no-op if line i isn't one) */
+export function setKeyLine(doc: ChartDoc, i: number, key: string): ChartDoc {
+  const line = doc.lines[i]
+  return line?.kind === 'key' ? { lines: replaceAt(doc.lines, i, { ...line, key }) } : doc
+}
+
+/** an @key line just above the row at line i, from its section and bar (a no-op for a non-row or a bar like "1a") */
+export function insertKeyBefore(doc: ChartDoc, i: number, key: string): ChartDoc {
+  const line = doc.lines[i]
+  if (line?.kind !== 'row' || !/^\d{1,6}$/.test(line.bar)) return doc
+  return { lines: [...doc.lines.slice(0, i), { kind: 'key', section: line.section, bar: Number(line.bar), key }, ...doc.lines.slice(i)] }
 }
 
 

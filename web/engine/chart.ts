@@ -23,22 +23,27 @@ export function beatsPerBar(time: string): 2 | 3 | 4 | null {
 }
 export type ChartLine =
   | Readonly<{ kind: 'meta'; key: MetaKey; value: string }>
-  // scale '' = default; comment: a trailing "# …" (the analysis, docs/plan-analysis.md §12.1), kept verbatim
-  | Readonly<{ kind: 'row'; section: string; bar: string; chord: string; scale: string; comment?: string }>
+  // scale '' = default; function: the author's harmonic function (V7/ii, D: V7/ii), absent when not written;
+  // comment: a trailing "# …" (the analysis, docs/plan-analysis.md §12.1), kept verbatim
+  | Readonly<{ kind: 'row'; section: string; bar: string; chord: string; scale: string; function?: string; comment?: string }>
   | Readonly<{ kind: 'copy'; src: string; dst: string; offset: number }>
   | Readonly<{ kind: 'ending'; n: number; section: string; from: number; to: number }>
   | Readonly<{ kind: 'mark'; mark: 'segno' | 'coda'; section: string; bar: number }>
   | Readonly<{ kind: 'nav'; section: string; bar: number; text: string }>
+  // the author's key area, from this bar until the next @key
+  | Readonly<{ kind: 'key'; section: string; bar: number; key: string }>
   | Readonly<{ kind: 'comment'; text: string }>
   | Readonly<{ kind: 'blank' }>
   | Readonly<{ kind: 'invalid'; text: string }> // kept verbatim so text round-trips
 export type ChartDoc = Readonly<{ lines: readonly ChartLine[] }>
 /** line is 1-based (0 = whole chart); fatal = over a hard input limit: don't render it or write it back */
 export type Diagnostic = Readonly<{ line: number; message: string; fatal?: true }>
-export type Row = Readonly<{ section: string; bar: string; chord: string; scale: string }>
+export type Row = Readonly<{ section: string; bar: string; chord: string; scale: string; function?: string }>
 export type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 const INT_RE = /^[+-]?\d{1,6}$/ // bar numbers; longer would lose precision as Number
+/** a key as `key:` and `@key` take it: "Eb", "F#m", "Bb minor", "C-" */
+export const KEY_TEXT_RE = /^([A-G][b#]?)\s*(m|-|min|minor|major|maj)?$/i
 const OFFSET_RE = /^[+-]?\d{1,4}$/ // bar offsets stay well inside safe integers
 
 function parseLine(line: string): ChartLine | string {
@@ -81,16 +86,25 @@ function parseLine(line: string): ChartLine | string {
     if (text.trim().length > LIMITS.maxMeta) return `nav text longer than ${LIMITS.maxMeta} characters`
     return { kind: 'nav', section, bar: Number(bar), text: text.trim() }
   }
+  if (low.startsWith('@key')) {
+    const m = /^@key\s+(\S+)\s+(\S+)\s+(.+)$/i.exec(line)
+    const k = (m?.[3] ?? '').trim()
+    // KEY_TEXT_RE is case-blind for its suffix (Bb Minor); the note letter must still be a capital
+    if (!m || !INT_RE.test(m[2] ?? '') || !KEY_TEXT_RE.test(k) || !/^[A-G]/.test(k)) return 'use  @key SECTION BAR KEY  (a key like Eb or Cm)'
+    const [, section = '', bar = ''] = m
+    if (section.length > LIMITS.maxCell) return `section name longer than ${LIMITS.maxCell} characters`
+    return { kind: 'key', section, bar: Number(bar), key: k }
+  }
   // a trailing comment starts at a # with space on both sides (F#m7 and C# Lydian have none before theirs)
   const hash = /\s#(?=\s|$)/.exec(line)
   const body = hash ? line.slice(0, hash.index) : line
   const comment = hash ? line.slice(hash.index + 2).trim() : undefined
   const cells = body.split('|').map((c) => c.trim())
-  if (cells.length !== 3 && cells.length !== 4) return 'expected  section | bar | chord [| scale]'
+  if (cells.length < 3 || cells.length > 5) return 'expected  section | bar | chord [| scale [| function]]'
   if (cells.some((c) => c.length > LIMITS.maxCell)) return `cell longer than ${LIMITS.maxCell} characters`
   if (comment !== undefined && comment.length > LIMITS.maxMeta) return `comment longer than ${LIMITS.maxMeta} characters`
-  const [section = '', bar = '', chord = '', scale = ''] = cells
-  return comment === undefined ? { kind: 'row', section, bar, chord, scale } : { kind: 'row', section, bar, chord, scale, comment }
+  const [section = '', bar = '', chord = '', scale = '', fn = ''] = cells
+  return { kind: 'row', section, bar, chord, scale, ...(fn ? { function: fn } : {}), ...(comment === undefined ? {} : { comment }) }
 }
 
 /** tolerant parse: bad lines become 'invalid' lines plus a diagnostic, never an exception */
@@ -118,16 +132,23 @@ export function serializeChart(doc: ChartDoc): string {
   const rows = doc.lines.filter((l) => l.kind === 'row')
   const width = (f: (r: (typeof rows)[number]) => string): number => Math.max(0, ...rows.map((r) => f(r).length))
   const [ws, wb, wc] = [width((r) => r.section), width((r) => r.bar), width((r) => r.chord)]
-  const wsc = Math.max(0, ...rows.filter((r) => r.comment !== undefined).map((r) => r.scale.length)) // comments line up
+  // scales line up where a comment or a function follows them; functions where a comment follows
+  const wsc = Math.max(0, ...rows.filter((r) => r.comment !== undefined || r.function !== undefined).map((r) => r.scale.length))
+  const wf = Math.max(0, ...rows.filter((r) => r.function !== undefined && r.comment !== undefined).map((r) => (r.function ?? '').length))
   const out = doc.lines.map((l): string => {
     switch (l.kind) {
       case 'meta':
         return `${l.key}: ${l.value}`
       case 'row': {
         const head = `${l.section.padEnd(ws)} | ${l.bar.padEnd(wb)} | `
+        const tail = l.comment !== undefined ? `  #${l.comment ? ` ${l.comment}` : ''}` : ''
+        if (l.function !== undefined) {
+          const fn = l.comment !== undefined ? l.function.padEnd(wf) : l.function
+          return `${head}${l.chord.padEnd(wc)} | ${l.scale.padEnd(wsc)} | ${fn}${tail}`
+        }
         if (l.comment !== undefined) {
           const cells = l.scale ? `${l.chord.padEnd(wc)} | ${l.scale.padEnd(wsc)}` : l.chord.padEnd(wc)
-          return `${head}${cells}  #${l.comment ? ` ${l.comment}` : ''}`
+          return `${head}${cells}${tail}`
         }
         return l.scale ? `${head}${l.chord.padEnd(wc)} | ${l.scale}` : `${head}${l.chord}`
       }
@@ -139,6 +160,8 @@ export function serializeChart(doc: ChartDoc): string {
         return `@${l.mark} ${l.section} ${l.bar}`
       case 'nav':
         return `@nav ${l.section} ${l.bar} ${l.text}`
+      case 'key':
+        return `@key ${l.section} ${l.bar} ${l.key}`
       case 'comment':
       case 'invalid':
         return l.text
@@ -209,7 +232,7 @@ export function expandRowLines(doc: ChartDoc): Parsed<readonly LinedRow[]> {
         diagnostics.push(tooMany(i + 1))
         break
       }
-      rows.push({ section: l.section, bar: l.bar, chord: l.chord, scale: l.scale, line: i })
+      rows.push({ section: l.section, bar: l.bar, chord: l.chord, scale: l.scale, ...(l.function ? { function: l.function } : {}), line: i })
     }
     if (l.kind !== 'copy') continue
     const src = rows.filter((r) => r.section === l.src)
