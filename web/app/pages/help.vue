@@ -8,7 +8,7 @@
         <UiTextLink href="/contact">tell me</UiTextLink> and I'll fix the page (or the app).
       </UiText>
       <div class="space-y-3 pt-2">
-        <h2 class="text-base/7 font-semibold text-zinc-950 sm:text-sm/6 dark:text-white">A disclaimer</h2>
+        <UiSubheading>A disclaimer</UiSubheading>
         <UiText>
           Here is the major disclaimer regarding this site: Music isn't math. I'm not a PhD in music theory, and my
           degree is in computer science. I've been writing software for about thirty years and playing vibraphone for
