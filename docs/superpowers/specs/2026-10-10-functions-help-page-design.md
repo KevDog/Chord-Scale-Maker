@@ -112,7 +112,8 @@ the reference scale of the key, how the symbol's pins override them (`D1+D4`), a
 
 A short checklist: the chart row (chord, function, key area), the scale shown, the rule id, the scale expected and
 why (a melody note, a recording, a book). A "Copy for an issue" button on the reason popover that puts exactly
-that on the clipboard, with the share link of the chart. Two destinations follow: the contact form (`/contact`,
+that on the clipboard, with the chord's bar and section, and the share link of the chart unless it is a library
+chart as published (named by its slug instead; decided after the first release of the page). Two destinations follow: the contact form (`/contact`,
 first, pre-filled as "Report a chart error" is), and a link that opens a new issue on the public GitHub repository
 with the title and the copied text as its body. A link is a navigation, not a resource the page loads, so the CSP
 is unchanged. If the body would make the URL too long for GitHub (a long share link), the link carries the title

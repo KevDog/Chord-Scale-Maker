@@ -80,6 +80,12 @@ describe('the Changes sheet', () => {
     expect(chords(CONCERT).map((c) => c.written)).toEqual(['Dm7', 'G7', 'CMaj7'])
   })
 
+  it('gives each chord the chart row it comes from: its section and bar', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nB | 9 | CMaj7\n').value
+    const chords = buildChanges(doc, CONCERT).lines.flatMap((l) => l.bars).flatMap((b) => b.chords)
+    expect(chords.map((c) => c.at)).toEqual([{ section: 'A', bar: '1' }, { section: 'A', bar: '2' }, { section: 'B', bar: '9' }])
+  })
+
   it('counts a waltz in 3', () => {
     expect(buildChanges(library('someday_my_prince_will_come'), CONCERT).beats).toBe(3)
   })

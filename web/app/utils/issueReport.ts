@@ -12,8 +12,11 @@ export const ISSUE_TEXT_KEY = 'csm-issue-text'
 /** the part the sheet is written for: its name with its key ("B♭ Trumpet"), and whether it reads other than concert pitch */
 export type IssuePart = Readonly<{ name: string; transposes: boolean }>
 
-/** what the note needs from the editor: the chart's title, the part, and a share link of the chart as it is now */
-export const ISSUE_CONTEXT: InjectionKey<Readonly<{ title: () => string; part: () => IssuePart; shareUrl: () => Promise<string> }>> = Symbol('issue context')
+/**
+ * what the note needs from the editor: the chart's title, the part, the library chart's slug when the chart is that
+ * chart as published (null otherwise), and a share link of the chart as it is now
+ */
+export const ISSUE_CONTEXT: InjectionKey<Readonly<{ title: () => string; part: () => IssuePart; library: () => string | null; shareUrl: () => Promise<string> }>> = Symbol('issue context')
 
 /** "trumpet" -> "B♭ Trumpet"; a concert-pitch part by its name alone ("Trombone") */
 export function issuePart(name: InstrumentName): IssuePart {
@@ -23,9 +26,24 @@ export function issuePart(name: InstrumentName): IssuePart {
 
 /**
  * chord, heardIn and scale as the sheet shows them for the part; concert, the chart's own symbol (the chord when
- * missing); reason and rule are the analysis's, in concert pitch
+ * missing); reason and rule are the analysis's, in concert pitch. at: the chart row (the same chord can be analysed
+ * differently in another bar). library: the slug of a library chart as published, which needs no link; link: the
+ * share link otherwise, null for none
  */
-export type IssueFields = Readonly<{ title: string; chord: string; concert?: string; part?: IssuePart; numeral: string; heardIn: string; scale: string | null; rule: string; reason: string; link: string }>
+export type IssueFields = Readonly<{
+  title: string
+  library?: string
+  at?: Readonly<{ section: string; bar: string }>
+  chord: string
+  concert?: string
+  part?: IssuePart
+  numeral: string
+  heardIn: string
+  scale: string | null
+  rule: string
+  reason: string
+  link: string | null
+}>
 
 /** the chart's own symbol: the chart, the function and the rule are all in concert pitch */
 export const issueTitle = (f: IssueFields): string => `${f.title}: ${f.concert ?? f.chord} (${f.numeral}), rule ${f.rule}`
@@ -36,15 +54,16 @@ export function issueText(f: IssueFields): string {
   const written = part ? ` (written for ${part})` : ''
   const concert = f.concert && f.concert !== f.chord ? ` (concert ${f.concert})` : ''
   return [
-    `Chart: ${f.title}`,
+    `Chart: ${f.title}${f.library ? ` (library chart ${f.library})` : ''}`,
     ...(part ? [`Instrument: ${part}`] : []),
+    ...(f.at ? [`Bar: ${f.at.bar} (section ${f.at.section})`] : []),
     `Chord: ${f.chord}${concert}`,
     `Function: ${f.numeral}`,
     `Key area${written}: ${f.heardIn}`,
     `Scale shown${written}: ${f.scale ?? '(none)'}`,
     `Rule: ${f.rule} (${f.reason})${part ? ', in concert pitch' : ''}`,
     'Expected: (the scale you expected, and why: a melody note, a recording, a book)',
-    `Link: ${f.link}`,
+    ...(f.link !== null ? [`Link: ${f.link}`] : []),
   ].join('\n')
 }
 

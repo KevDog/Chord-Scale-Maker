@@ -331,7 +331,12 @@ async function openShare(): Promise<void> {
   shareLink.value = await shareUrl()
 }
 
-provide(ISSUE_CONTEXT, { title: () => editor.heading.value.title, part: () => issuePart(prefs.instrument.value), shareUrl })
+/** the library chart's slug while the chart is that chart as published: a report names it by slug and bar, no share link */
+const publishedSlug = (): string | null => {
+  const t = props.saveTarget
+  return t?.kind === 'library' && editor.text.value === t.libraryText ? t.slug : null
+}
+provide(ISSUE_CONTEXT, { title: () => editor.heading.value.title, part: () => issuePart(prefs.instrument.value), library: publishedSlug, shareUrl })
 
 /** a shared chart, kept: into My charts with its practice picks, then opened at its own address */
 function saveShared(): void {

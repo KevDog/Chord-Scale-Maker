@@ -24,6 +24,8 @@ export type ChangesChord = Readonly<{
   text: string
   /** its symbol as drawn for the part, in the chart's notation ("A7" for a concert G7 on a B♭ part); text when it can't be read */
   written: string
+  /** the chart row it comes from: the same chord can be analysed differently in another bar */
+  at: Readonly<{ section: string; bar: string }>
   tokens: readonly ChordToken[] | null
   /** its Roman numeral in its key area (V7/ii); '' when the analysis doesn't reach it */
   numeral: string
@@ -222,6 +224,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             beat: (eventAt.get(i)?.start ?? bar * beats) - bar * beats,
             text: row.chord,
             written: writtenChordTextOrNull(part, row.chord, scale) ?? row.chord,
+            at: { section: row.section, bar: row.bar },
             tokens: chordTokensOrNull(part, row.chord, scale),
             numeral: a?.numeral && a.numeral !== '?' ? a.numeral : '',
             scale: writtenScale(part, scale),

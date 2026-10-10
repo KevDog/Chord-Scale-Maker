@@ -19,6 +19,16 @@ describe('issue report', () => {
     )
   })
 
+  it('names the bar the chord is in: the same chord can be analysed differently elsewhere in the chart', () => {
+    expect(issueText({ ...F, at: { section: 'A2', bar: '14' } }).split('\n').slice(0, 3)).toEqual(['Chart: Autumn Leaves', 'Bar: 14 (section A2)', 'Chord: Am7b5'])
+  })
+
+  it('a library chart as published is named by its slug and needs no share link', () => {
+    const text = issueText({ ...F, library: 'autumn_leaves', link: null })
+    expect(text.split('\n')[0]).toBe('Chart: Autumn Leaves (library chart autumn_leaves)')
+    expect(text).not.toContain('Link:')
+  })
+
   it('the title names the chart, the chord and the rule', () => {
     expect(issueTitle(F)).toBe('Autumn Leaves: Am7b5 (iiø7), rule h2')
   })
