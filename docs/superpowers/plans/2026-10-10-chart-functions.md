@@ -11,8 +11,10 @@ The analyser decides scales from those statements. Every chart shows live notes 
 - **`analysis/functions.ts`:** reads a function and checks it against its chord.
 - **Analyser:** turns a stated function into a *virtual target*: extra stream entries after the real ones, wired as
   the stated row's `next`. Every existing rule then decides through its usual path.
-- **Views:** live notes come from a pure engine helper (`notes.ts`) and new `buildChanges` fields. The app shows
-  them in the grid and on the Changes sheet, behind the `functions` flag.
+- **Views:** live notes and each row's function choices (Auto plus every function that fits, with the scale each
+  gives) come from pure engine helpers (`notes.ts`, `functionChoices`) and new `buildChanges` fields. The grid edits
+  functions with a dropdown and `@key` lines with a key select; the Changes sheet shows the notes. All of it is
+  behind the `functions` flag.
 
 **Tech Stack:** TypeScript (strict), Vitest (`--project engine` and the Nuxt project), Nuxt 4 / Vue 3, Tailwind,
 Catalyst UI ports in `web/app/components/ui/`, Playwright.
@@ -60,6 +62,12 @@ Found while planning. These are applied to the spec in Task 0.
 - **Key prefix:** a row's key prefix (`D:`) decides that row only and does not open a key area. `RowAnalysis` keeps
   the area's `key` and adds `statedKey`.
 - **Reason format:** a stated row's reason is the rule's reason plus ` (stated)`.
+- **Grid editing:** the grid edits a function with a dropdown, not free text. The dropdown holds Auto (the
+  analyser's reading) and every function that fits the chord in its key area, each with the scale it gives. A
+  key-prefixed function is written in the text editor; the dropdown keeps it as its current value.
+- **`@key` in the grid:** `@key` rows have a key select, and each chord row has a "Key change at row N" button that
+  inserts an `@key` above it. Moving an `@key` line stays in the text.
+- **Suggestions:** the ambiguity report's suggestions are the dropdown's list without the chord's own degree.
 
 ---
 
@@ -80,6 +88,11 @@ Found while planning. These are applied to the spec in Task 0.
   - **Key prefix:** in §2 "Key areas", add "A prefix doesn't open a key area: `RowAnalysis.key` stays the area,
     `statedKey` is the prefix."
   - **Reason:** in §2 "Rules", change the reason example to `V7/V in C: natural tensions (stated)`.
+  - **Grid:** in §3 "Editor grid", replace the Function column's free-text cell with "a dropdown: Auto (the
+    analyser's reading), then every function that fits the chord in its key area, each with the scale it gives; a
+    key-prefixed function from the text shows as its current value." Replace the `@key` bullet with "a key select
+    on each `@key` row, and a 'Key change at row N' button on each chord row." Drop "Editing `@key` lines in the
+    grid" from Out of scope.
 - [ ] **Step 2: Commit**
 
 ```bash
@@ -107,6 +120,8 @@ git commit -m "Spec: corrections found while planning chart functions"
   - `Row` gains `function?: string`, and `LinedRow` gets it through `expandRowLines`.
   - `export const KEY_TEXT_RE: RegExp` in `chart.ts`.
   - `RowField` gains `'function'`, and `setRowField(doc, i, 'function', '')` removes the field.
+  - `setKeyLine(doc: ChartDoc, i: number, key: string): ChartDoc` and
+    `insertKeyBefore(doc: ChartDoc, i: number, key: string): ChartDoc`, both in `edit.ts`.
 
 - [ ] **Step 1: Write the failing tests** (append to `web/engine/__tests__/chart.test.ts`; add `expandRowLines` to
   its import from `'../chart'` if it isn't there)
@@ -158,7 +173,8 @@ describe('the function cell and @key lines', () => {
 })
 ```
 
-Append to `web/engine/__tests__/edit.test.ts` (import `serializeChart` from `'../chart'` if it isn't imported):
+Append to `web/engine/__tests__/edit.test.ts` (import `serializeChart` from `'../chart'`, and `insertKeyBefore` and
+`setKeyLine` from `'../edit'`):
 
 ```ts
 describe('the function cell', () => {
@@ -173,6 +189,22 @@ describe('the function cell', () => {
   it('keeps the function when the scale is cleared', () => {
     const doc = parseChart('A | 1 | D7 | D Mixolydian | V7/V\n').value
     expect(serializeChart(setRowField(doc, 0, 'scale', ''))).toBe('A | 1 | D7 |  | V7/V\n')
+  })
+})
+
+describe('@key lines', () => {
+  it('starts a key change at a row, and changes its key', () => {
+    const doc = parseChart('A | 1 | Cm7\nB | 9 | DMaj7\n').value
+    const added = insertKeyBefore(doc, 1, 'D')
+    expect(serializeChart(added)).toBe('A | 1 | Cm7\n@key B 9 D\nB | 9 | DMaj7\n')
+    expect(serializeChart(setKeyLine(added, 1, 'Eb'))).toBe('A | 1 | Cm7\n@key B 9 Eb\nB | 9 | DMaj7\n')
+  })
+
+  it('leaves the doc alone for a line that is not a row, or a bar that is not a whole number', () => {
+    const doc = parseChart('# note\nA | 1a | Cm7\n').value
+    expect(insertKeyBefore(doc, 0, 'D')).toBe(doc)
+    expect(insertKeyBefore(doc, 1, 'D')).toBe(doc)
+    expect(setKeyLine(doc, 1, 'D')).toBe(doc)
   })
 })
 ```
@@ -306,6 +338,19 @@ export function setRowField(doc: ChartDoc, i: number, field: RowField, value: st
   }
   return { lines: replaceAt(doc.lines, i, { ...line, [field]: value }) }
 }
+
+/** set an @key line's key (a no-op if line i isn't one) */
+export function setKeyLine(doc: ChartDoc, i: number, key: string): ChartDoc {
+  const line = doc.lines[i]
+  return line?.kind === 'key' ? { lines: replaceAt(doc.lines, i, { ...line, key }) } : doc
+}
+
+/** an @key line just above the row at line i, from its section and bar (a no-op for a non-row or a bar like "1a") */
+export function insertKeyBefore(doc: ChartDoc, i: number, key: string): ChartDoc {
+  const line = doc.lines[i]
+  if (line?.kind !== 'row' || !/^\d{1,6}$/.test(line.bar)) return doc
+  return { lines: [...doc.lines.slice(0, i), { kind: 'key', section: line.section, bar: Number(line.bar), key }, ...doc.lines.slice(i)] }
+}
 ```
 
 In `web/e2e/editor.spec.ts:18`, make the broken line six cells:
@@ -335,24 +380,30 @@ git commit -m "Chart format: an optional function cell and @key lines"
 
 **Files:**
 - Create: `web/engine/analysis/functions.ts`
-- Modify: `web/engine/analysis/numerals.ts:24` (export `glyph`)
+- Modify: `web/engine/analysis/numerals.ts:24-28` (export `glyph`; `own` becomes the exported `ownNumeral`)
 - Modify: `web/engine/analysis/stream.ts:13-33` (export `familyOf`)
 - Test: `web/engine/__tests__/functions.test.ts`
 
 **Interfaces:**
-- Consumes: `parseKey`, `Key`, `keyText` from `./keys`; `roman` from `./rules`; `Family`
-  from `./stream`; `parseRoot`, `rootName`, `shiftBy`, `pcOf`, `mod`, `Spelled` from `../pitch`.
+- Consumes: `parseKey`, `sameKey`, `Key`, `keyText` from `./keys`; `roman` from `./rules`; `Family` and `Entry` from
+  `./stream`; `parseRoot`, `rootName`, `shiftBy`, `pcOf`, `mod`, `Spelled` from `../pitch`.
 - Produces:
-  - `type Degree = Readonly<{ steps: number; semis: number }>`
-  - `type Target = Degree & Readonly<{ minor: boolean }>`
-  - `type StatedFunction = Readonly<{ text: string; key: Key | null; sub: boolean; degree: Degree; family: Family; target: Target | null }>`
-  - `parseFunction(text: string): StatedFunction | string`, where a string is an error.
-  - `impliedTarget(f: StatedFunction, key: Key): Target | null`
-  - `tonicOf(key: Key): Spelled`
-  - `functionRoot(f: StatedFunction, key: Key): Spelled`
-  - `fitError(f: StatedFunction, chord: Readonly<{ chord: string; pc: number; family: Family | null }>, key: Key): string | null`
-  - `suggest(e: Readonly<{ pc: number; family: Family | null }>, key: Key): string[]`
-  - From `numerals.ts`: `export const glyph`. From `stream.ts`: `export const familyOf(quality: string): Family | null`.
+  - **Types:** `type Degree = Readonly<{ steps: number; semis: number }>`;
+    `type Target = Degree & Readonly<{ minor: boolean }>`;
+    `type StatedFunction = Readonly<{ text: string; key: Key | null; sub: boolean; degree: Degree; family: Family; target: Target | null }>`
+  - **Reading:** `parseFunction(text: string): StatedFunction | string`, where a string is an error;
+    `sameFunction(a: string, b: string): boolean`.
+  - **Targets and roots:** `impliedTarget(f: StatedFunction, key: Key): Target | null`; `tonicOf(key: Key): Spelled`;
+    `functionRoot(f: StatedFunction, key: Key): Spelled`.
+  - **Checking:**
+    `fitError(f: StatedFunction, chord: Readonly<{ chord: string; pc: number; family: Family | null }>, key: Key): string | null`
+  - **Offering:**
+    `functionCandidates(e: Readonly<{ pc: number; family: Family | null; quality: string }>, key: Key): string[]`.
+    These are the functions that fit the chord in its key area, in the order the grid's dropdown lists them, ending
+    with the chord's own degree.
+  - **Exports from neighbouring files:** `numerals.ts` exports `glyph` and
+    `ownNumeral(e: Pick<Entry, 'pc' | 'family' | 'quality'>, key: Key): string`; `stream.ts` exports
+    `familyOf(quality: string): Family | null`.
 
 - [ ] **Step 1: Write the failing tests** (`web/engine/__tests__/functions.test.ts`)
 
@@ -360,10 +411,12 @@ git commit -m "Chart format: an optional function cell and @key lines"
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { analyse } from '../analysis'
-import { fitError, functionRoot, impliedTarget, parseFunction, type StatedFunction, suggest } from '../analysis/functions'
+import { fitError, functionCandidates, functionRoot, impliedTarget, parseFunction, sameFunction, type StatedFunction } from '../analysis/functions'
 import { type Key, parseKey } from '../analysis/keys'
+import { familyOf } from '../analysis/stream'
 import { parseChart } from '../chart'
-import { rootName } from '../pitch'
+import { pcOf, rootName } from '../pitch'
+import { readChord } from '../qualities'
 import { isSyncCopy } from '../util'
 
 const fn = (text: string): StatedFunction => {
@@ -376,6 +429,11 @@ const key = (text: string): Key => {
   if (!k) throw new Error(text)
   return k
 }
+const LIBRARY = new URL('../../../charts/', import.meta.url)
+const libraryRows = () =>
+  readdirSync(LIBRARY)
+    .filter((x) => x.endsWith('.txt') && !isSyncCopy(x))
+    .flatMap((f) => analyse(parseChart(readFileSync(new URL(f, LIBRARY), 'utf8')).value).rows.map((r) => ({ f, r })))
 
 describe('parseFunction', () => {
   it("reads the Changes sheet's numerals and their ASCII spellings into one form", () => {
@@ -415,6 +473,13 @@ describe('parseFunction', () => {
     expect(parseFunction('ivmaj7')).toBe('ivmaj7: a major quality on a lower-case numeral')
     expect(parseFunction('H: V7')).toBe('"H" isn\'t a key (Eb, Cm)')
   })
+
+  it('knows two spellings of one function', () => {
+    expect(sameFunction('bVII7/III', '♭VII7/III')).toBe(true)
+    expect(sameFunction('D: V7/ii', 'D:V7/ii')).toBe(true)
+    expect(sameFunction('V7/ii', 'D: V7/ii')).toBe(false)
+    expect(sameFunction('X7', 'X7')).toBe(false) // not a function at all
+  })
 })
 
 describe('where a function puts its chord', () => {
@@ -447,28 +512,45 @@ describe('where a function puts its chord', () => {
   })
 })
 
-describe('suggest', () => {
-  it('offers the functions a chord the rules could only guess at might have', () => {
-    expect(suggest({ pc: 2, family: 'dominant' }, key('C'))).toEqual(['V7/V', 'V7/v', 'subV7/♭II'])
-    expect(suggest({ pc: 9, family: 'minor' }, key('C'))).toEqual(['ii7/V'])
-    expect(suggest({ pc: 11, family: 'dim' }, key('C'))).toEqual(['vii°7', 'vii°7/i'])
-    expect(suggest({ pc: 0, family: 'major' }, key('C'))).toEqual([])
+describe('functionCandidates', () => {
+  it("lists what a chord can do in its key, ending with its own degree", () => {
+    expect(functionCandidates({ pc: 2, family: 'dominant', quality: '7' }, key('C'))).toEqual(['V7/V', 'V7/v', 'subV7/♭II', 'subV7/♭ii', '♭VII7/III', 'II7'])
+    expect(functionCandidates({ pc: 7, family: 'dominant', quality: '7' }, key('C'))).toEqual(['V7', 'V7/i', 'subV7/♯IV', 'subV7/♯iv', '♭VII7/VI', 'V7'].filter((x, i, a) => a.indexOf(x) === i))
+    expect(functionCandidates({ pc: 9, family: 'minor', quality: 'm7' }, key('C'))).toEqual(['ii7/V', 'vi7'])
+    expect(functionCandidates({ pc: 11, family: 'dim', quality: 'dim7' }, key('C'))).toEqual(['vii°7', 'vii°7/i'])
+    expect(functionCandidates({ pc: 5, family: 'major', quality: 'Maj7' }, key('C'))).toEqual(['IVmaj7'])
+    expect(functionCandidates({ pc: -1, family: null, quality: '' }, key('C'))).toEqual([])
+  })
+
+  it('offers only functions that read and fit, for every chord in the library', () => {
+    for (const { f, r } of libraryRows()) {
+      const c = readChord(r.chord)
+      if (!c) continue
+      const chord = { chord: r.chord, pc: pcOf(c.root), family: familyOf(c.quality), quality: c.quality }
+      for (const text of functionCandidates(chord, r.key)) {
+        const parsed = parseFunction(text)
+        expect(typeof parsed === 'string' ? parsed : fitError(parsed, chord, r.key), `${f} bar ${r.bar} ${r.chord}: ${text}`).toBeNull()
+      }
+    }
   })
 })
 
 describe('the round trip with the Changes sheet', () => {
   it('reads back every numeral the analyser gives the library, in the same spelling', () => {
-    const dir = new URL('../../../charts/', import.meta.url)
-    for (const f of readdirSync(dir).filter((x) => x.endsWith('.txt') && !isSyncCopy(x))) {
-      for (const r of analyse(parseChart(readFileSync(new URL(f, dir), 'utf8')).value).rows) {
-        if (r.numeral === '?') continue
-        const back = parseFunction(r.numeral)
-        expect(typeof back === 'string' ? back : back.text, `${f} bar ${r.bar} ${r.chord}`).toBe(r.numeral)
-      }
+    for (const { f, r } of libraryRows()) {
+      if (r.numeral === '?') continue
+      const back = parseFunction(r.numeral)
+      expect(typeof back === 'string' ? back : back.text, `${f} bar ${r.bar} ${r.chord}`).toBe(r.numeral)
     }
   })
 })
 ```
+
+How the candidate lists in the test work out:
+- **G7 in C:** the second dominant list is G7 in C, where `V7/I` collapses to `V7`. The `filter` keeps the expected
+  list free of the duplicate that `functionCandidates` itself removes.
+- **`V7/i`:** the target is the tonic chord, but minor in a major key, so the slash part is kept.
+- **`♯IV`:** `roman()` spells pc 6 `#IV` (its `DEGREES` table), so the half-step-below target of G7 is `♯IV`.
 
 - [ ] **Step 2: Run them to see them fail**
 
@@ -477,10 +559,16 @@ Expected: FAIL: cannot resolve `../analysis/functions`.
 
 - [ ] **Step 3: Implement**
 
-In `web/engine/analysis/numerals.ts:24`, export the existing helper:
+In `web/engine/analysis/numerals.ts`, export `glyph` and turn `own` into `ownNumeral`. Use it at every place `own(`
+was called in the file: the modal return and the three `return own(e, key)` lines.
 
 ```ts
+/** "bVII" -> "♭VII" */
 export const glyph = (r: string): string => r.replace(/^b/, '♭').replace(/^#/, '♯')
+const degreeOf = (e: Pick<Entry, 'pc' | 'family'>, key: Key): string => glyph(roman(e, key))
+/** the chord's own degree and quality in the key: "II7", "vi7", "IVmaj7", "vii°7" */
+export const ownNumeral = (e: Pick<Entry, 'pc' | 'family' | 'quality'>, key: Key): string =>
+  degreeOf(e, key) + (e.family === 'dominant' ? '7' : (SUFFIX[e.quality] ?? ''))
 ```
 
 In `web/engine/analysis/stream.ts`, after the `FAMILY` table, add the export below and use it in `buildStream`
@@ -495,8 +583,8 @@ Create `web/engine/analysis/functions.ts`:
 
 ```ts
 import { mod, parseRoot, pcOf, rootName, shiftBy, type Spelled } from '../pitch'
-import { type Key, keyText, parseKey } from './keys'
-import { glyph } from './numerals'
+import { type Key, keyText, parseKey, sameKey } from './keys'
+import { glyph, ownNumeral } from './numerals'
 import { roman } from './rules'
 import type { Family } from './stream'
 
@@ -606,12 +694,15 @@ export function parseFunction(text: string): StatedFunction | string {
     target,
   }
 }
-```
 
-Note that `glyph` operates on the start of a string: `glyph('b')` gives `'♭'` and `glyph('')` gives `''`, which is
-all `parseFunction` needs.
+/** two texts that state the same function in the same key ("bVII7" and "♭VII7"); false if either won't read */
+export function sameFunction(a: string, b: string): boolean {
+  const x = parseFunction(a)
+  const y = parseFunction(b)
+  if (typeof x === 'string' || typeof y === 'string') return false
+  return x.text === y.text && (x.key === null ? y.key === null : y.key !== null && sameKey(x.key, y.key))
+}
 
-```ts
 const TONIC: Target = { steps: 0, semis: 0, minor: false }
 
 /** the chord a function leads to: its target, or the tonic for V7, subV7, ♭VII7, ii(ø)7 and vii°7; null for none */
@@ -650,40 +741,43 @@ export function fitError(f: StatedFunction, chord: Readonly<{ chord: string; pc:
   return pcOf(root) === chord.pc ? null : `${f.text} in ${keyText(key)} is on ${rootName(root)}, not ${chord.chord}`
 }
 
-/** functions an author might mean for a chord the rules could only guess at (the --ambiguous report) */
-export function suggest(e: Readonly<{ pc: number; family: Family | null }>, key: Key): string[] {
+/**
+ * the functions that fit a chord in its key, for the grid's dropdown and the --ambiguous report: where it could lead
+ * (a fifth down, a half step down as a tritone substitute, a step up by the back door; for a ii, the chord a step
+ * down), then its own degree
+ */
+export function functionCandidates(e: Readonly<{ pc: number; family: Family | null; quality: string }>, key: Key): string[] {
+  if (!e.family || e.pc < 0) return []
   const at = (base: string, pc: number, minor: boolean): string => {
     const to = mod(pc, 12)
     return to === key.tonic && minor === key.minor ? base : `${base}/${glyph(roman({ pc: to, family: minor ? 'minor' : 'major' }, key))}`
   }
-  switch (e.family) {
-    case 'dominant':
-      return [at('V7', e.pc + 5, false), at('V7', e.pc + 5, true), at('subV7', e.pc - 1, false)]
-    case 'minor':
-      return [at('ii7', e.pc - 2, false)]
-    case 'halfdim':
-      return [at('iiø7', e.pc - 2, true)]
-    case 'dim':
-      return [at('vii°7', e.pc + 1, false), at('vii°7', e.pc + 1, true)]
-    default:
-      return []
+  const leads: Readonly<Record<Family, readonly string[]>> = {
+    dominant: [at('V7', e.pc + 5, false), at('V7', e.pc + 5, true), at('subV7', e.pc - 1, false), at('subV7', e.pc - 1, true), at('♭VII7', e.pc + 2, false)],
+    sus: [at('V7sus', e.pc + 5, false), at('V7sus', e.pc + 5, true)],
+    minor: [at('ii7', e.pc - 2, false)],
+    halfdim: [at('iiø7', e.pc - 2, true)],
+    dim: [at('vii°7', e.pc + 1, false), at('vii°7', e.pc + 1, true)],
+    major: [],
   }
+  return [...new Set([...leads[e.family], ownNumeral({ pc: e.pc, family: e.family, quality: e.quality }, key)])]
 }
 ```
 
-The test's message `ii7 is a minor chord, G7 a dominant one` matches `${f.text} is a minor chord, G7 a dominant one`.
+`glyph` operates on the start of a string: `glyph('b')` gives `'♭'` and `glyph('')` gives `''`, which is all
+`parseFunction` needs.
 
 - [ ] **Step 4: Run the tests**
 
 Run: `npx vitest run --project engine engine/__tests__/functions.test.ts`
-Expected: PASS. If the round-trip test fails for a numeral, extend the grammar (`SUFFIXES`, `NUMERAL`) to read it.
-Don't weaken the test.
+Expected: PASS. If a round-trip numeral or a library candidate fails, extend the grammar (`SUFFIXES`, `NUMERAL`) or
+fix `functionCandidates`. Don't weaken the test.
 
 - [ ] **Step 5: Commit**
 
 ```bash
 git add web/engine/analysis/functions.ts web/engine/analysis/numerals.ts web/engine/analysis/stream.ts web/engine/__tests__/functions.test.ts
-git commit -m "Analysis: read an author's function and check it against its chord"
+git commit -m "Analysis: read an author's function, check it against its chord, and list the ones that fit"
 ```
 
 ---
@@ -1024,14 +1118,19 @@ git commit -m "Analysis: stated functions and @key areas decide the scale; probl
 
 **Files:**
 - Create: `web/engine/analysis/ambiguity.ts`
+- Modify: `web/engine/analysis/keys.ts` (`keyCode`)
 - Modify: `web/engine/analysis/index.ts` (re-export `ambiguities`)
 - Modify: `web/scripts/analyse.ts` (`--ambiguous`, problems in every report, usage text)
 - Test: `web/engine/__tests__/ambiguity.test.ts`
 
 **Interfaces:**
-- Consumes: `Analysis`, `RowAnalysis.fallback`, `stated`, `statedKey`, `Area.section`, `Area.stated`, `problems`
-  (Task 3); `suggest` (Task 2); `familyOf` (Task 2); `readChord` (`../qualities`).
-- Produces: `ambiguities(a: Analysis): string[]`.
+- Consumes:
+  - from Task 3: `Analysis`, `RowAnalysis.fallback`, `stated`, `statedKey`, `Area.section`, `Area.stated`, `problems`;
+  - from Task 2: `functionCandidates`, `ownNumeral`, `familyOf`;
+  - from `../qualities`: `readChord`.
+- Produces:
+  - `ambiguities(a: Analysis): string[]`
+  - `keyCode(k: Key): string`, a key as `key:` and `@key` write it ("D", "Bbm"). Task 6 uses it too.
 
 - [ ] **Step 1: Write the failing tests** (`web/engine/__tests__/ambiguity.test.ts`)
 
@@ -1039,15 +1138,20 @@ git commit -m "Analysis: stated functions and @key areas decide the scale; probl
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { ambiguities, analyse } from '../analysis'
+import { keyCode, parseKey } from '../analysis/keys'
 import { parseChart } from '../chart'
 
 const report = (text: string): string[] => ambiguities(analyse(parseChart(text).value))
 const C_TUNE = 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\nA | 5 | Am7\nA | 6 | Dm7\nA | 7 | G7\nA | 8 | CMaj7\n'
 
 describe('the ambiguity report', () => {
+  it('writes keys as key: and @key take them', () => {
+    expect(['D', 'Bb minor', 'F#m'].map((k) => keyCode(parseKey(k) ?? { tonic: 0, minor: false, name: '' }))).toEqual(['D', 'Bbm', 'F#m'])
+  })
+
   it('lists the rows the rules could only guess at, with functions to try', () => {
     expect(report(C_TUNE)).toEqual([
-      "bar 2 D7: II7 in C, not resolving: natural tensions; if it's V7/V or V7/v or subV7/♭II, write that in its function cell",
+      "bar 2 D7: II7 in C, not resolving: natural tensions; if it's V7/V, V7/v, subV7/♭II, subV7/♭ii or ♭VII7/III, choose that as its function",
     ])
   })
 
@@ -1070,46 +1174,57 @@ describe('the ambiguity report', () => {
 - [ ] **Step 2: Run them to see them fail**
 
 Run: `npx vitest run --project engine engine/__tests__/ambiguity.test.ts`
-Expected: FAIL: `ambiguities` is not exported.
+Expected: FAIL: `ambiguities` and `keyCode` are not exported.
 
 - [ ] **Step 3: Implement**
+
+In `web/engine/analysis/keys.ts`, after `keyText`:
+
+```ts
+/** a key as `key:` and `@key` write it: "D", "Bbm" */
+export const keyCode = (key: Key): string => `${key.name.split(' ')[0] ?? ''}${key.minor ? 'm' : ''}`
+```
 
 `web/engine/analysis/ambiguity.ts`:
 
 ```ts
 import { pcOf } from '../pitch'
 import { readChord } from '../qualities'
-import { suggest } from './functions'
+import { functionCandidates } from './functions'
 import type { Analysis } from './index'
-import { type Key, keyText, sameKey } from './keys'
+import { keyCode, keyText, sameKey } from './keys'
+import { ownNumeral } from './numerals'
 import { familyOf } from './stream'
 
 /**
  * The --ambiguous report (docs/superpowers/specs/2026-10-09-chart-functions-design.md §2): what an author could
- * settle with a function cell or an @key line, then the problems with the ones already written.
+ * settle with a function or an @key line, then the problems with the ones already written.
  */
-
-/** "D", "Bbm": a key as `key:` and `@key` write it */
-const keyLine = (k: Key): string => `${keyText(k).replace(/ minor$/, '')}${k.minor ? 'm' : ''}`
-
 export function ambiguities(a: Analysis): string[] {
   const out: string[] = []
   const home = a.key
-  if (a.keyFrom === 'scored' && home) out.push(`no key: line; the analysis guessed ${keyText(home)}: add  key: ${keyLine(home)}`)
+  if (a.keyFrom === 'scored' && home) out.push(`no key: line; the analysis guessed ${keyText(home)}: add  key: ${keyCode(home)}`)
   for (const x of a.areas)
-    if (home && !x.stated && !sameKey(x.key, home)) out.push(`key area ${keyText(x.key)}, bars ${x.from}–${x.to}, found by cadence: pin it with  @key ${x.section} ${x.from} ${keyLine(x.key)}`)
+    if (home && !x.stated && !sameKey(x.key, home)) out.push(`key area ${keyText(x.key)}, bars ${x.from}–${x.to}, found by cadence: pin it with  @key ${x.section} ${x.from} ${keyCode(x.key)}`)
   const seen = new Set<number>()
   for (const r of a.rows) {
     if (!r.fallback || r.stated || r.held || seen.has(r.line)) continue
     seen.add(r.line)
     const c = readChord(r.chord)
-    const ideas = c ? suggest({ pc: pcOf(c.root), family: familyOf(c.quality) }, r.statedKey ?? r.key) : []
-    out.push(`bar ${r.bar} ${r.chord}: ${r.reason}${ideas.length ? `; if it's ${ideas.join(' or ')}, write that in its function cell` : ''}`)
+    const key = r.statedKey ?? r.key
+    const chord = c ? { pc: pcOf(c.root), family: familyOf(c.quality), quality: c.quality } : null
+    const ideas = chord ? functionCandidates(chord, key).filter((t) => t !== ownNumeral(chord, key)) : []
+    const list = ideas.length < 2 ? (ideas[0] ?? '') : `${ideas.slice(0, -1).join(', ')} or ${ideas.at(-1)}`
+    out.push(`bar ${r.bar} ${r.chord}: ${r.reason}${list ? `; if it's ${list}, choose that as its function` : ''}`)
   }
   for (const p of a.problems) out.push(`line ${p.line + 1}: ${p.message}`)
   return out
 }
 ```
+
+`ownNumeral`'s `family` parameter is `Family`, but `familyOf` returns `Family | null`. `functionCandidates` returns
+`[]` for null, so guard the filter with `chord.family ? ownNumeral({ ...chord, family: chord.family }, key) : ''`
+if the typecheck asks for it.
 
 In `web/engine/analysis/index.ts`, next to the other re-exports:
 
@@ -1119,7 +1234,7 @@ export { ambiguities } from './ambiguity'
 
 In `web/scripts/analyse.ts`:
 - **Header comment:** add the line
-  `*   --ambiguous   list what a function cell or an @key could settle, and problems with the ones written`.
+  `*   --ambiguous   list what a function or an @key could settle, and problems with the ones written`.
 - **Usage string:** add `[--ambiguous]` to the usage line.
 - **Flag:** after `const quiet = flag('--quiet')`, add `const ambiguous = flag('--ambiguous')`.
 - **Loop:** right after `const lines = report(name, a)`, add
@@ -1145,14 +1260,14 @@ In `web/scripts/analyse.ts`:
 Run: `npx vitest run --project engine engine/__tests__/ambiguity.test.ts`
 Expected: PASS.
 Run: `npm run -s analyse -- --ambiguous ../charts/misty.txt`
-Expected: a `misty:` block that includes
-`bar 23 Bb7: V7 in Eb, not resolving: natural tensions; if it's …` and `bar 17 Bbm7: a borrowed minor chord: …`.
+Expected: a `misty:` block that includes `bar 23 Bb7: V7 in Eb, not resolving: natural tensions; if it's …` and
+`bar 17 Bbm7: a borrowed minor chord: …`.
 Run (repo root): `make test`. Expected: PASS.
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add web/engine/analysis/ambiguity.ts web/engine/analysis/index.ts web/scripts/analyse.ts web/engine/__tests__/ambiguity.test.ts
+git add web/engine/analysis/ambiguity.ts web/engine/analysis/keys.ts web/engine/analysis/index.ts web/scripts/analyse.ts web/engine/__tests__/ambiguity.test.ts
 git commit -m "Analyse CLI: --ambiguous lists what a function or @key could settle; problems in every report"
 ```
 
@@ -1240,22 +1355,34 @@ git commit -m "Transpose: move @key lines and a function's key"
 
 ---
 
-### Task 6: Live notes for views: `notes.ts` and the Changes sheet's data
+### Task 6: Live notes and function choices for views; the Changes sheet's data
 
 **Files:**
+- Modify: `web/engine/analysis/index.ts` (split `analyse()` into `prepare` and `contextFor`; add `functionChoices`)
 - Create: `web/engine/notes.ts`
 - Modify: `web/engine/index.ts` (export `./notes`)
 - Modify: `web/engine/changes.ts` (`ChangesChord` gains `reason`, `stated`, `heardIn`)
 - Test: `web/engine/__tests__/notes.test.ts`, `web/engine/__tests__/changes.test.ts`
 
 **Interfaces:**
-- Consumes: `analyse` and its `problems`, `stated`, `statedKey` (Task 3).
+- Consumes:
+  - from Task 3: `analyse` and its `problems`, `stated`, `statedKey`; the helpers `statedAreas`,
+    `statedFunctions`, `withTargets`; the `Stated` type;
+  - from Task 2: `functionCandidates`, `parseFunction`, `fitError`, `impliedTarget`, `tonicOf`;
+  - from Task 4: `keyCode`.
 - Produces:
-  - `type RowNote = Readonly<{ numeral: string; note: string; problem: string | null }>`
-  - `rowNotes(doc: ChartDoc): ReadonlyMap<number, RowNote>`, keyed by 0-based doc line. It also covers `@key`
-    lines that have a problem.
-  - `ChangesChord.reason: string`, `ChangesChord.stated: boolean`, and `ChangesChord.heardIn: string`, the key the
-    chord is heard in, written for the part ("B♭ major").
+  - **From `analysis/index.ts`:** `type FunctionChoice = Readonly<{ value: string; label: string; scale: string | null }>`
+    and `functionChoices(doc: ChartDoc): ReadonlyMap<number, readonly FunctionChoice[]>`.
+    - It is keyed by 0-based doc line. The first choice is always `{ value: '', label: 'Auto: <numeral>' }`.
+    - Each later choice is a fitting function: its label reads "V7/V (to G)", and its scale is what the rules give
+      when it's stated.
+  - **From `notes.ts`:** `type RowNote = Readonly<{ note: string; problem: string | null; key: string }>` and
+    `rowNotes(doc: ChartDoc): ReadonlyMap<number, RowNote>`.
+    - `key` is the row's key area as `keyCode` writes it ("D", "Bbm"), or `''`.
+    - The map also covers `@key` lines that have a problem.
+    - It re-exports `functionChoices` and `FunctionChoice` for the app.
+  - **`ChangesChord`:** gains `reason: string`, `stated: boolean`, and `heardIn: string`, the key written for the part
+    ("B♭ major").
 
 - [ ] **Step 1: Write the failing tests**
 
@@ -1264,13 +1391,14 @@ git commit -m "Transpose: move @key lines and a function's key"
 ```ts
 import { describe, expect, it } from 'vitest'
 import { parseChart } from '../chart'
-import { rowNotes } from '../notes'
+import { functionChoices, rowNotes } from '../notes'
 
 const notes = (text: string) => rowNotes(parseChart(text).value)
+const C_TUNE = 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\nA | 5 | Am7\nA | 6 | Dm7\nA | 7 | G7\nA | 8 | CMaj7\n'
 
 describe('rowNotes', () => {
-  it('gives each row its numeral and reason, keyed by doc line', () => {
-    expect(notes('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n').get(3)).toEqual({ numeral: 'V7', note: 'V7 of C: natural tensions', problem: null })
+  it('gives each row its reason and key area, keyed by doc line', () => {
+    expect(notes('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n').get(3)).toEqual({ note: 'V7 of C: natural tensions', problem: null, key: 'C' })
   })
 
   it("says when your scale isn't the analyser's", () => {
@@ -1282,7 +1410,27 @@ describe('rowNotes', () => {
   it("carries a row's function problem, and an @key's", () => {
     const n = notes('title: T\nkey: C\n@key Z 9 D\nA | 1 | Dm7\nA | 2 | G7 | | ii7\nA | 3 | CMaj7\n')
     expect(n.get(4)?.problem).toBe('ii7 is a minor chord, G7 a dominant one')
-    expect(n.get(2)).toEqual({ numeral: '', note: '', problem: '@key Z 9: no bar 9 in section Z' })
+    expect(n.get(2)).toEqual({ note: '', problem: '@key Z 9: no bar 9 in section Z', key: '' })
+  })
+})
+
+describe('functionChoices', () => {
+  it('offers Auto, then each function that fits, with the scale it would give', () => {
+    const d7 = functionChoices(parseChart(C_TUNE).value).get(3) ?? []
+    expect(d7[0]).toEqual({ value: '', label: 'Auto: II7', scale: 'D Mixolydian' })
+    expect(d7).toContainEqual({ value: 'V7/V', label: 'V7/V (to G)', scale: 'D Mixolydian' })
+    expect(d7).toContainEqual({ value: 'subV7/♭II', label: 'subV7/♭II (to Db)', scale: 'D Lydian Dominant' })
+    expect(d7.map((c) => c.value)).toEqual(['', 'V7/V', 'V7/v', 'subV7/♭II', 'subV7/♭ii', '♭VII7/III', 'II7'])
+  })
+
+  it("shows Auto as the analyser's own reading even when the row states a function", () => {
+    const stated = functionChoices(parseChart(C_TUNE.replace('A | 2 | D7', 'A | 2 | D7 | | subV7/♭II')).value).get(3) ?? []
+    expect(stated[0]).toEqual({ value: '', label: 'Auto: II7', scale: 'D Mixolydian' })
+  })
+
+  it('gives a held row the choices of the chord it holds', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | D7\nA | 2 | D7\nA | 3 | G7\nA | 4 | CMaj7\n').value
+    expect(functionChoices(doc).get(3)).toEqual(functionChoices(doc).get(2))
   })
 })
 ```
@@ -1301,28 +1449,156 @@ Append to `web/engine/__tests__/changes.test.ts`, inside `describe('the Changes 
 ```
 
 `♭VI7` in D is B♭ (D + 8 semitones, a sixth up as letters), so the function fits. It has no target, so the rules
-decide B♭7 in D through their usual path. The test checks only the fields this task adds.
+decide B♭7 in D through their usual path.
 
 - [ ] **Step 2: Run them to see them fail**
 
 Run: `npx vitest run --project engine engine/__tests__/notes.test.ts engine/__tests__/changes.test.ts`
-Expected: FAIL: no `../notes` module, and `stated` and `heardIn` are undefined.
+Expected: FAIL: there's no `../notes` module, and `stated` and `heardIn` are undefined.
 
-- [ ] **Step 3: Implement**
+- [ ] **Step 3a: Split `analyse()`** (`web/engine/analysis/index.ts`)
+
+The analysis and the choices read the same prepared chart, so compute it once in `prepare`. Above `analyse`:
+
+```ts
+type Prepared = Readonly<{
+  rows: readonly LinedRow[]
+  stream: readonly Entry[]
+  areaKeys: readonly Key[]
+  areaStated: readonly boolean[]
+  stated: readonly (Stated | undefined)[]
+  global: Key
+  blues: Key | null
+  modal: boolean
+  keyFrom: Analysis['keyFrom']
+  problems: readonly Problem[]
+}>
+
+/** everything the rules read before they decide: the stream, its key areas, the stated functions; global null without a key */
+function prepare(doc: ChartDoc): Prepared | Readonly<{ global: null; keyFrom: Analysis['keyFrom'] }> {
+  const rows = expandRowLines(doc).value
+  const bars = formBars(doc)
+  const stream = buildStream(rows, bars)
+  const cadences = findCadences(stream)
+  const form = stream.filter((e) => e.part === 'form')
+  const span = form.length ? Math.round((form.at(-1)?.start ?? 0) + (form.at(-1)?.bars ?? 0) - (form[0]?.start ?? 0)) : 0
+  const blues = bluesKey(form, bars ?? span)
+  const stated = parseKey(meta(doc, 'key'))
+  const global = blues ?? stated ?? scoreKey(stream, cadences)
+  const keyFrom = blues ? 'blues' : stated ? 'key:' : global ? 'scored' : 'none'
+  if (!global) return { global: null, keyFrom }
+  const modal = !blues && isModal(stream, cadences)
+  const found = modal || blues ? stream.map(() => global) : localKeys(stream, cadences, global)
+  const problems: Problem[] = []
+  const areas = statedAreas(doc, rows, stream, found, problems)
+  const fns = statedFunctions(stream, rows, areas.keys, global, problems)
+  return { rows, stream, areaKeys: areas.keys, areaStated: areas.stated, stated: fns, global, blues, modal, keyFrom, problems }
+}
+
+/** the rules' context under these statements: each stated row's target wired in after it */
+function contextFor(p: Prepared, stated: readonly (Stated | undefined)[]): Context {
+  const v = withTargets(p.stream, p.stream.map((_, i) => stated[i]?.key ?? p.areaKeys[i] ?? p.global), stated)
+  return { stream: v.stream, keys: v.keys, global: p.global, blues: p.blues, modal: p.modal }
+}
+```
+
+These lines are the start of `analyse()` as it stands, moved. Keep their order, and check them against the file.
+
+`analyse` becomes:
+
+```ts
+export function analyse(doc: ChartDoc): Analysis {
+  const p = prepare(doc)
+  if (p.global === null) return { key: null, keyFrom: p.keyFrom, context: 'functional', areas: [], rows: [], problems: [] }
+  const ctx = contextFor(p, p.stated)
+  const out: RowAnalysis[] = []
+  const areas: Area[] = []
+  p.stream.forEach((e, i) => {
+    const key = p.areaKeys[i] ?? p.global
+    const s = p.stated[i]
+    const { fallback, ...ruled } = decide(ctx, i)
+    const decision: Decision = s ? { ...ruled, reason: `${ruled.reason} (stated)` } : fallback ? { ...ruled, fallback } : ruled
+    const roman = s ? s.fn.text : numeral(ctx, i, decision)
+    const prevKey = i > 0 ? p.areaKeys[i - 1] : undefined
+    const firstRow = p.rows[e.rows[0] ?? 0]
+    if (firstRow && (!prevKey || !sameKey(prevKey, key)))
+      areas.push({ key, from: firstRow.bar, to: firstRow.bar, row: e.rows[0] ?? 0, section: firstRow.section, stated: p.areaStated[i] ?? false })
+    const area = areas.at(-1)
+    for (const [j, r] of e.rows.entries()) {
+      const row = p.rows[r]
+      if (!row) continue
+      out.push({ ...decision, row: r, line: row.line, bar: row.bar, chord: row.chord, key, held: j > 0, numeral: roman, stated: !!s, ...(s?.fn.key ? { statedKey: s.key } : {}) })
+      if (area) areas[areas.length - 1] = { ...area, to: row.bar }
+    }
+  })
+  return { key: p.global, keyFrom: p.keyFrom, context: p.blues ? 'blues' : p.modal ? 'modal' : 'functional', areas, rows: out, problems: p.problems }
+}
+```
+
+Run: `npx vitest run --project engine engine/__tests__/analysis.test.ts engine/__tests__/analysis.fixture.test.ts`
+Expected: PASS with no change. This step is a pure refactor.
+
+- [ ] **Step 3b: Add `functionChoices`** (`web/engine/analysis/index.ts`, after `analyse`)
+
+Add `functionCandidates` to the import from `./functions`.
+
+```ts
+/** one option of the grid's Function dropdown: value '' is Auto (the analyser's own reading) */
+export type FunctionChoice = Readonly<{ value: string; label: string; scale: string | null }>
+
+/**
+ * each row's Function options, keyed by doc line: Auto, then every function that fits the chord in its key area,
+ * each with the scale the rules give when it's stated (the other rows' statements stand)
+ */
+export function functionChoices(doc: ChartDoc): ReadonlyMap<number, readonly FunctionChoice[]> {
+  const out = new Map<number, readonly FunctionChoice[]>()
+  const p = prepare(doc)
+  if (p.global === null) return out
+  const verdict = (i: number, s: Stated | undefined): { scale: string | null; numeral: string } => {
+    const ctx = contextFor(p, p.stated.map((x, j) => (j === i ? s : x)))
+    const d = decide(ctx, i)
+    return { scale: d.scale, numeral: s ? s.fn.text : numeral(ctx, i, d) }
+  }
+  p.stream.forEach((e, i) => {
+    if (!e.family) return
+    const key = p.areaKeys[i] ?? p.global
+    const auto = verdict(i, undefined)
+    const choices: FunctionChoice[] = [{ value: '', label: auto.numeral === '?' ? 'Auto' : `Auto: ${auto.numeral}`, scale: auto.scale }]
+    for (const text of functionCandidates(e, key)) {
+      const fn = parseFunction(text)
+      if (typeof fn === 'string' || fitError(fn, e, key)) continue
+      const t = impliedTarget(fn, key)
+      const to = t ? ` (to ${rootName(shiftBy(tonicOf(key), t.steps, t.semis))}${t.minor ? 'm' : ''})` : ''
+      choices.push({ value: text, label: `${fn.text}${to}`, scale: verdict(i, { fn, key }).scale })
+    }
+    for (const r of e.rows) {
+      const line = p.rows[r]?.line
+      if (line !== undefined && !out.has(line)) out.set(line, choices)
+    }
+  })
+  return out
+}
+```
+
+- [ ] **Step 3c: `notes.ts` and the Changes data**
 
 `web/engine/notes.ts`:
 
 ```ts
-import { analyse } from './analysis'
+import { analyse, functionChoices, type FunctionChoice } from './analysis'
+import { keyCode } from './analysis/keys'
 import { type ChartDoc, resolveScale } from './chart'
 import { sameScale } from './scales'
 
+export { functionChoices, type FunctionChoice }
+
 /**
- * What the editor shows beside each row (docs/superpowers/specs/2026-10-09-chart-functions-design.md §3): the
- * analyser's numeral (the Function cell's placeholder), why it chose the scale it did, and any problem with the row's
- * function. Live, from analyse(), so every chart has notes, not only those the CLI saved. Keyed by doc line.
+ * What the editor shows beside each row (docs/superpowers/specs/2026-10-09-chart-functions-design.md §3): why the
+ * analyser chose the scale it did, any problem with the row's function, and the key area (where a key change from
+ * this row would start). Live, from analyse(), so every chart has notes, not only those the CLI saved. Keyed by doc
+ * line.
  */
-export type RowNote = Readonly<{ numeral: string; note: string; problem: string | null }>
+export type RowNote = Readonly<{ note: string; problem: string | null; key: string }>
 
 export function rowNotes(doc: ChartDoc): ReadonlyMap<number, RowNote> {
   const a = analyse(doc)
@@ -1334,12 +1610,12 @@ export function rowNotes(doc: ChartDoc): ReadonlyMap<number, RowNote> {
     const chosen = line?.kind === 'row' ? resolveScale(line) : null
     const differs = !!r.scale && !!chosen && !sameScale(chosen, r.scale)
     out.set(r.line, {
-      numeral: r.numeral === '?' ? '' : r.numeral,
       note: differs ? `analyser: ${r.scale} (${r.reason}); you chose ${chosen}` : r.reason,
       problem: problemAt(r.line),
+      key: keyCode(r.key),
     })
   }
-  for (const p of a.problems) if (!out.has(p.line)) out.set(p.line, { numeral: '', note: '', problem: p.message })
+  for (const p of a.problems) if (!out.has(p.line)) out.set(p.line, { note: '', problem: p.message, key: '' })
   return out
 }
 ```
@@ -1367,20 +1643,17 @@ In the chord `map` in `buildChanges`:
             heardIn: a ? keyName((a.statedKey ?? a.key).name, part) : '',
 ```
 
-`keyName` gives "D major" for concert, so the test's `heardIn: 'D major'` matches. If `keyName` writes glyphs
-("B♭ major"), that's its usual output.
-
 - [ ] **Step 4: Run the tests**
 
 Run: `npx vitest run --project engine engine/__tests__/notes.test.ts engine/__tests__/changes.test.ts`
 Expected: PASS.
-Run (repo root): `make test`. Expected: PASS (`golden.json` unchanged).
+Run (repo root): `make test`. Expected: PASS (`golden.json` and `analysis.json` unchanged).
 
 - [ ] **Step 5: Commit**
 
 ```bash
-git add web/engine/notes.ts web/engine/index.ts web/engine/changes.ts web/engine/__tests__/notes.test.ts web/engine/__tests__/changes.test.ts
-git commit -m "Engine: live row notes, and each Changes chord's reason and key"
+git add web/engine/analysis/index.ts web/engine/notes.ts web/engine/index.ts web/engine/changes.ts web/engine/__tests__/notes.test.ts web/engine/__tests__/changes.test.ts
+git commit -m "Engine: function choices with their scales, live row notes, each Changes chord's reason and key"
 ```
 
 ---
@@ -1464,25 +1737,80 @@ git commit -m "Feature flag: functions (off); remember the grid's notes toggle"
 
 ---
 
-### Task 8: The editor grid: the Function column, notes and `@key` rows
+### Task 8: The editor grid: a Function dropdown, notes, and `@key` rows with a key select
 
 **Files:**
-- Modify: `web/app/components/GridCell.vue` (`placeholder` and `problem` props)
+- Create: `web/app/components/FunctionCell.vue`
 - Modify: `web/app/components/ChartGrid.vue`
-- Test: `web/test/ChartGrid.test.ts`
+- Test: `web/test/FunctionCell.test.ts`, `web/test/ChartGrid.test.ts`
 
 **Interfaces:**
-- Consumes: `rowNotes` (Task 6), `setRowField(…, 'function', …)` (Task 1), `useFeature('functions')` and
-  `usePreferences().notes` (Task 7), `keyLabel` (`~~/engine`).
+- Consumes:
+  - from Task 6: `functionChoices`, `FunctionChoice`, `rowNotes`, `RowNote`;
+  - from Task 2: `sameFunction` (export it from `web/engine/notes.ts` next to `functionChoices`:
+    `export { sameFunction } from './analysis/functions'`);
+  - from Task 1: `setRowField(…, 'function', …)`, `setKeyLine`, `insertKeyBefore`;
+  - from Task 7: `useFeature('functions')`, `usePreferences().notes`;
+  - `keyLabel` from `~~/engine`.
 - Produces:
-  - **Function cell:** labelled `function for row N`; its placeholder is the analyser's numeral; it is marked invalid
-    with the problem in its `title`.
-  - **Notes toggle:** a button "Show notes" / "Hide notes" with `aria-pressed`.
-  - **Notes cell:** one per row, showing the note.
-  - **`@key` row:** reads "@key from SECTION BAR: KEY (edit in text)".
+  - `<FunctionCell :choices :value :problem :label @update>`, a native `UiSelect` like `ScaleCell`. Each option reads
+    "V7/V (to G) → D Mixolydian".
+    - **Auto:** the first option, `Auto: II7 → D Mixolydian`, which emits `''`.
+    - **Current value:** a value the list doesn't hold (a key-prefixed function typed in the text) shows as one more
+      option, selected. It is marked invalid with `problem` in its title.
+  - **Grid:** a "Show notes" / "Hide notes" toggle (`aria-pressed`) and a Notes cell per row.
+  - **`@key` rows:** each gets a key select, `aria-label="Key from SECTION BAR"`.
+  - **Chord rows:** each gets a "Key change at row N" button that inserts `@key SECTION BAR <the row's key area>`
+    above the row.
 
-- [ ] **Step 1: Write the failing tests** (append to `web/test/ChartGrid.test.ts`; flags come from runtime config,
-  so stub the flag as on for this block)
+- [ ] **Step 1: Write the failing tests**
+
+`web/test/FunctionCell.test.ts`:
+
+```ts
+import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { describe, expect, it } from 'vitest'
+import FunctionCell from '~/components/FunctionCell.vue'
+
+const CHOICES = [
+  { value: '', label: 'Auto: II7', scale: 'D Mixolydian' },
+  { value: 'V7/V', label: 'V7/V (to G)', scale: 'D Mixolydian' },
+  { value: 'subV7/♭II', label: 'subV7/♭II (to Db)', scale: 'D Lydian Dominant' },
+]
+const mount = (value: string, problem: string | null = null) => mountSuspended(FunctionCell, { props: { choices: CHOICES, value, problem, label: 'function for row 2' } })
+
+describe('FunctionCell', () => {
+  it('offers Auto and each function that fits, with the scale it gives', async () => {
+    const w = await mount('')
+    expect(w.findAll('option').map((o) => o.text())).toEqual(['Auto: II7 → D Mixolydian', 'V7/V (to G) → D Mixolydian', 'subV7/♭II (to Db) → D Lydian Dominant'])
+    expect((w.find('select').element as HTMLSelectElement).value).toBe('')
+  })
+
+  it('emits the chosen function, and Auto as empty', async () => {
+    const w = await mount('V7/V')
+    await w.find('select').setValue('subV7/♭II')
+    await w.find('select').setValue('')
+    expect(w.emitted('update')).toEqual([['subV7/♭II'], ['']])
+  })
+
+  it('shows a function written another way as the matching option', async () => {
+    const w = await mount('subV7/bII')
+    expect((w.find('select').element as HTMLSelectElement).value).toBe('subV7/♭II')
+    expect(w.findAll('option')).toHaveLength(3)
+  })
+
+  it('keeps a function the list does not hold, and marks a problem', async () => {
+    const w = await mount('Db: V7/ii', 'V7/ii in Db is on Bb, not D7')
+    const select = w.find('select')
+    expect((select.element as HTMLSelectElement).value).toBe('Db: V7/ii')
+    expect(w.findAll('option').at(-1)?.text()).toBe('Db: V7/ii')
+    expect(select.attributes('aria-invalid')).toBe('true')
+    expect(select.attributes('title')).toBe('V7/ii in Db is on Bb, not D7')
+  })
+})
+```
+
+Append to `web/test/ChartGrid.test.ts` (add `afterEach` and `beforeEach` to the vitest import):
 
 ```ts
 describe('ChartGrid with functions', () => {
@@ -1495,82 +1823,88 @@ describe('ChartGrid with functions', () => {
   })
   const fdoc = parseChart('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\n@key A 9 D\n').value
 
-  it("shows the analyser's numeral as the function's placeholder, and writes a function", async () => {
+  it("offers each row's functions and writes the one chosen", async () => {
     const w = await mountSuspended(ChartGrid, { props: { doc: fdoc } })
-    const cell = w.find('[aria-label="function for row 2"]')
-    expect(cell.attributes('placeholder')).toBe('II7')
-    await cell.setValue('V7/V')
+    const select = w.find('select[aria-label="function for row 2"]')
+    expect(select.find('option').text()).toBe('Auto: II7 → D Mixolydian')
+    await select.setValue('V7/V')
     expect(lastDoc(w)?.lines[3]).toMatchObject({ kind: 'row', chord: 'D7', function: 'V7/V' })
-  })
-
-  it("marks a function that doesn't fit its chord", async () => {
-    const doc = parseChart('title: T\nkey: C\nA | 1 | G7 | | ii7\n').value
-    const cell = (await mountSuspended(ChartGrid, { props: { doc } })).find('[aria-label="function for row 1"]')
-    expect(cell.attributes('aria-invalid')).toBe('true')
-    expect(cell.attributes('title')).toBe('ii7 is a minor chord, G7 a dominant one')
   })
 
   it('shows notes on demand', async () => {
     const w = await mountSuspended(ChartGrid, { props: { doc: fdoc } })
-    expect(w.text()).not.toContain('not resolving')
+    expect(w.text()).not.toContain('not resolving: natural tensions')
     await w.find('button[aria-pressed]').trigger('click')
     expect(w.text()).toContain('II7 in C, not resolving: natural tensions')
   })
 
-  it('shows an @key line, and its problem', async () => {
+  it('edits an @key line with a key select, and shows its problem', async () => {
     const w = await mountSuspended(ChartGrid, { props: { doc: fdoc } })
-    expect(w.text()).toContain('@keyfrom A 9: D')
     expect(w.text()).toContain('@key A 9: no bar 9 in section A')
+    await w.find('select[aria-label="Key from A 9"]').setValue('Eb')
+    expect(lastDoc(w)?.lines[6]).toEqual({ kind: 'key', section: 'A', bar: 9, key: 'Eb' })
+  })
+
+  it('starts a key change at a row, in that row’s key area', async () => {
+    const w = await mountSuspended(ChartGrid, { props: { doc: fdoc } })
+    await w.find('[aria-label="Key change at row 3"]').trigger('click')
+    expect(lastDoc(w)?.lines.slice(4, 6)).toEqual([
+      { kind: 'key', section: 'A', bar: 3, key: 'C' },
+      { kind: 'row', section: 'A', bar: '3', chord: 'Dm7', scale: '' },
+    ])
   })
 })
 
 describe('ChartGrid without functions', () => {
-  it('has no Function column', async () => {
+  it('has no Function column and no key-change buttons', async () => {
     const w = await mountSuspended(ChartGrid, { props: { doc } })
     expect(w.find('[aria-label="function for row 1"]').exists()).toBe(false)
+    expect(w.find('[aria-label="Key change at row 1"]').exists()).toBe(false)
   })
 })
 ```
 
-Add `afterEach` and `beforeEach` to the vitest import. The badge and the text run together in `w.text()`, hence
-`'@keyfrom A 9: D'`.
-
 - [ ] **Step 2: Run them to see them fail**
 
-Run: `npx vitest run test/ChartGrid.test.ts`
-Expected: FAIL: there's no function cell.
+Run: `npx vitest run test/FunctionCell.test.ts test/ChartGrid.test.ts`
+Expected: FAIL: there's no `FunctionCell` and no function select.
 
 - [ ] **Step 3: Implement**
 
-`web/app/components/GridCell.vue`: add the two props and use them.
+`web/app/components/FunctionCell.vue`:
 
 ```vue
 <template>
-  <UiInput
-    :model-value="error ? draft : value"
-    :invalid="!!error || !!problem"
+  <UiSelect
+    :model-value="selected"
     :aria-label="label"
-    :title="error ?? problem ?? undefined"
-    :placeholder="placeholder"
-    :class="dense && 'sm:py-1 sm:text-sm/5'"
-    @update:model-value="onInput"
-  />
+    :invalid="!!problem"
+    :title="problem ?? undefined"
+    class="sm:py-1 sm:text-sm/5"
+    @update:model-value="(v) => emit('update', String(v))"
+  >
+    <option v-for="c in choices" :key="c.value" :value="c.value">{{ c.label }}{{ c.scale ? ` → ${c.scale}` : '' }}</option>
+    <option v-if="!matching && value" :value="value">{{ value }}</option>
+  </UiSelect>
 </template>
-```
 
-```ts
+<script setup lang="ts">
+import { type FunctionChoice, sameFunction } from '~~/engine'
+
 /**
- * A grid text cell (Catalyst Input). Values that pass cellError are emitted; others stay visible in
- * the input, marked invalid with the reason in its tooltip, so the user can fix them (the doc keeps
- * the last good value). problem: a reason from outside (the analysis) to mark it invalid with.
+ * A row's function: Auto (the analyser's reading), or one of the functions that fit the chord in its key, each with
+ * the scale it gives (engine functionChoices). A function written in the text that isn't among them (another key's,
+ * "Db: V7/ii") stays, as one more option.
  */
-const props = withDefaults(
-  defineProps<{ value: string; label?: string; maxLength?: number; dense?: boolean; meta?: boolean; placeholder?: string; problem?: string | null }>(),
-  { label: undefined, maxLength: LIMITS.maxCell, placeholder: undefined, problem: null },
-)
+const props = defineProps<{ choices: readonly FunctionChoice[]; value: string; problem: string | null; label: string }>()
+const emit = defineEmits<{ update: [value: string] }>()
+
+const matching = computed(() => (props.value ? props.choices.find((c) => c.value && sameFunction(c.value, props.value)) : props.choices[0]))
+const selected = computed(() => matching.value?.value ?? props.value)
+</script>
 ```
 
-`web/app/components/ChartGrid.vue`:
+In `web/app/components/ChartGrid.vue`:
 - **Toggle:** above `<UiTable …>`, add
 
 ```vue
@@ -1582,24 +1916,29 @@ const props = withDefaults(
 - **Headers:** after `<UiTableHeader>Scale</UiTableHeader>`, add
 
 ```vue
-          <UiTableHeader v-if="functionsOn" class="w-36">Function</UiTableHeader>
+          <UiTableHeader v-if="functionsOn" class="w-56">Function</UiTableHeader>
           <UiTableHeader v-if="functionsOn && notes">Notes</UiTableHeader>
 ```
 
 - **Row cells:** after the `ScaleCell` cell, add
 
 ```vue
-            <UiTableCell v-if="functionsOn" class="px-1! py-1!">
-              <GridCell
-                dense
+            <UiTableCell v-if="functionsOn" class="min-w-48 px-1! py-1!">
+              <FunctionCell
+                :choices="choicesByLine.get(i) ?? []"
                 :value="line.function ?? ''"
-                :placeholder="notesByLine.get(i)?.numeral"
                 :problem="notesByLine.get(i)?.problem ?? null"
                 :label="`function for row ${rowNumber[i]}`"
                 @update="(v) => emitDoc(setRowField(doc, i, 'function', v))"
               />
             </UiTableCell>
             <UiTableCell v-if="functionsOn && notes" class="px-1! py-1! text-sm/5 whitespace-normal text-zinc-600 dark:text-zinc-400">{{ notesByLine.get(i)?.note }}</UiTableCell>
+```
+
+- **Row actions:** in the chord row's actions cell, before the plus button, add
+
+```vue
+              <UiButton v-if="functionsOn" plain :aria-label="`Key change at row ${rowNumber[i]}`" title="Start a key change here" @click="emitDoc(insertKeyBefore(doc, i, notesByLine.get(i)?.key || meta.key || 'C'))"><KeyIcon data-slot="icon" /></UiButton>
 ```
 
 - **Spans:** replace the `@copy` row's `colspan="4"` with `:colspan="columns - 1"`, and the invalid row's
@@ -1609,8 +1948,14 @@ const props = withDefaults(
 ```vue
           <UiTableRow v-else-if="line.kind === 'key'">
             <UiTableCell :colspan="columns - 1" class="text-zinc-500 dark:text-zinc-400">
-              <UiBadge color="sky" class="mr-2">@key</UiBadge>from <UiStrong>{{ line.section }} {{ line.bar }}</UiStrong>: {{ keyLabel(line.key) }}
-              <span class="ml-1">(edit in text)</span>
+              <div class="flex flex-wrap items-center gap-2">
+                <UiBadge color="sky">@key</UiBadge>
+                <span>from <UiStrong>{{ line.section }} {{ line.bar }}</UiStrong> in</span>
+                <UiSelect :model-value="line.key" :aria-label="`Key from ${line.section} ${line.bar}`" class="w-40 sm:py-1 sm:text-sm/5" @update:model-value="(v) => emitDoc(setKeyLine(doc, i, String(v)))">
+                  <option v-for="k in KEY_OPTIONS" :key="k" :value="k">{{ keyLabel(k) }}</option>
+                  <option v-if="!(KEY_OPTIONS as readonly string[]).includes(line.key)" :value="line.key">{{ line.key }}</option>
+                </UiSelect>
+              </div>
               <UiErrorMessage v-if="notesByLine.get(i)?.problem">{{ notesByLine.get(i)?.problem }}</UiErrorMessage>
             </UiTableCell>
             <UiTableCell class="px-1! py-1! text-right">
@@ -1619,22 +1964,25 @@ const props = withDefaults(
           </UiTableRow>
 ```
 
-- **Script:** add `rowNotes` and `type RowNote` to the `~~/engine` import, then
+- **Script:**
+  - Add `KeyIcon` to the `@heroicons/vue/16/solid` import.
+  - Add `functionChoices`, `type FunctionChoice`, `insertKeyBefore`, `rowNotes`, `type RowNote` and `setKeyLine` to
+    the `~~/engine` import.
+  - Then add
 
 ```ts
 const functionsOn = useFeature('functions')
 const { notes } = usePreferences()
-/** the live analysis beside each row: numeral, note, problem (engine/notes.ts) */
+/** the live analysis beside each row (engine/notes.ts): its note, its problem, its key area; and its function options */
 const notesByLine = computed<ReadonlyMap<number, RowNote>>(() => (functionsOn ? rowNotes(props.doc) : new Map()))
+const choicesByLine = computed<ReadonlyMap<number, readonly FunctionChoice[]>>(() => (functionsOn ? functionChoices(props.doc) : new Map()))
 /** section, bar, chord, scale, [function], [notes], actions */
 const columns = computed(() => 5 + (functionsOn ? 1 : 0) + (functionsOn && notes.value ? 1 : 0))
 ```
 
-The template's `:colspan="columns - 1"` reads the computed's value automatically.
-
 - [ ] **Step 4: Run the tests**
 
-Run: `npx vitest run test/ChartGrid.test.ts`
+Run: `npx vitest run test/FunctionCell.test.ts test/ChartGrid.test.ts`
 Expected: PASS. If mutating `useRuntimeConfig().public.features` doesn't reach `useFeature` in this test setup,
 mock it the way `features.test.ts` mocks Nuxt imports:
 
@@ -1648,8 +1996,8 @@ Run (repo root): `make test && make lint`. Expected: PASS.
 - [ ] **Step 5: Commit**
 
 ```bash
-git add web/app/components/GridCell.vue web/app/components/ChartGrid.vue web/test/ChartGrid.test.ts
-git commit -m "Editor grid: Function column with the analyser's numeral, notes on demand, @key rows"
+git add web/app/components/FunctionCell.vue web/app/components/ChartGrid.vue web/engine/notes.ts web/test/FunctionCell.test.ts web/test/ChartGrid.test.ts
+git commit -m "Editor grid: a Function dropdown of what fits, notes on demand, @key rows with a key select"
 ```
 
 ---
@@ -1779,15 +2127,15 @@ git commit -m "Changes sheet: each numeral and scale explains itself"
   import from `'./fixtures'`)
 
 ```ts
-test('a stated function: the grid takes it, the Changes sheet shows it, and its note opens from the keyboard', async ({ page }) => {
+test('a function from the dropdown: the Changes sheet shows it, its note opens from the keyboard, and keys change from the grid', async ({ page }) => {
   await page.goto('/song?new=1')
   await openEditor(page)
   await page.getByLabel('Chart text').fill('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\n')
   const fn = page.getByLabel('function for row 2')
-  await expect(fn).toHaveAttribute('placeholder', 'II7')
+  await expect(fn.locator('option').first()).toHaveText('Auto: II7 → D Mixolydian')
   await page.getByRole('button', { name: 'Show notes' }).click()
   await expect(page.getByText('II7 in C, not resolving: natural tensions')).toBeVisible()
-  await fn.fill('V7/V')
+  await fn.selectOption({ label: 'V7/V (to G) → D Mixolydian' })
   await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 2 \| D7\s+\|\s+\| V7\/V/)
   await chooseSheet(page, 'Changes')
   const sheet = sheetOf(page)
@@ -1796,8 +2144,10 @@ test('a stated function: the grid takes it, the Changes sheet shows it, and its 
   await expect(page.getByRole('tooltip').filter({ hasText: 'V7/V in C: natural tensions (stated)' })).toBeVisible()
   await page.keyboard.press('Escape')
   await expect(page.getByRole('tooltip').filter({ hasText: 'V7/V in C' })).toBeHidden()
-  await fn.fill('ii7')
-  await expect(fn).toHaveAttribute('aria-invalid', 'true')
+  await page.getByLabel('Chart text').fill('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7 | | Db: V7/ii\nA | 3 | Dm7\nA | 4 | G7\n')
+  await expect(fn).toHaveAttribute('aria-invalid', 'true') // V7/ii in Db is Bb7, not D7
+  await page.getByLabel('Key change at row 3').click()
+  await expect(page.getByLabel('Chart text')).toHaveValue(/@key A 3 C\nA \| 3 \| Dm7/)
 })
 ```
 
@@ -1813,7 +2163,7 @@ line, `pages.spec.ts` and `print.spec.ts`.
 `web/app/components/EditorView.vue:54`: the format line reads
 
 ```vue
-<span class="block">One line per chord: <code class="font-mono text-xs whitespace-nowrap">section | bar | chord | scale | function</code>, in concert pitch. Leave the scale out to use the chord's default; the function (<code class="font-mono text-xs">V7/ii</code>, <code class="font-mono text-xs">D: V7/ii</code>) is optional and tells the analysis what the chord does.</span>
+<span class="block">One line per chord: <code class="font-mono text-xs whitespace-nowrap">section | bar | chord | scale | function</code>, in concert pitch. Leave the scale out to use the chord's default; the function (<code class="font-mono text-xs">V7/ii</code>, or <code class="font-mono text-xs">D: V7/ii</code> in another key) is optional and tells the analysis what the chord does; the grid offers the ones that fit.</span>
 ```
 
 Line 55: after the `@copy A B 8` sentence, add ``, and <code class="font-mono text-xs">@key B 17 D</code> puts
