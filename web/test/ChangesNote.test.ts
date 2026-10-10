@@ -13,4 +13,13 @@ describe('ChangesNote', () => {
     expect(tip.text()).toContain('in C major · function stated in the chart')
     expect(tip.classes()).toContain('print:hidden')
   })
+
+  it('wraps instead of truncating when asked', async () => {
+    const props = { reason: 'r', heardIn: 'C major', stated: false }
+    const plain = await mountSuspended(ChangesNote, { props, slots: { default: () => 'x' } })
+    expect(plain.find('button').classes()).toContain('truncate')
+    const w = await mountSuspended(ChangesNote, { props: { ...props, wrap: true }, slots: { default: () => 'x' } })
+    expect(w.find('button').classes()).not.toContain('truncate')
+    expect(w.find('button').classes()).toContain('whitespace-normal')
+  })
 })

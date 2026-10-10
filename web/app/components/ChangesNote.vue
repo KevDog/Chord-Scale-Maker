@@ -1,7 +1,10 @@
 <template>
   <!-- a numeral or scale on the Changes sheet, with why the analysis chose it; hover, focus or tap shows it, Escape hides it -->
   <span class="group/note relative inline-block max-w-full" @keydown.escape="dismissed = true" @pointerleave="dismissed = false" @focusout="dismissed = false">
-    <button type="button" :aria-describedby="id" class="block max-w-full truncate rounded-sm text-left focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500">
+    <button
+type="button" :aria-describedby="id" 
+      :class="wrap ? 'whitespace-normal' : 'truncate'"
+      class="block max-w-full rounded-sm text-left focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500">
       <slot />
     </button>
     <span
@@ -20,7 +23,7 @@
 
 <script setup lang="ts">
 /** why the analysis gave a chord its function and scale (engine/changes.ts reason, heardIn, stated) */
-defineProps<{ reason: string; heardIn: string; stated: boolean }>()
+withDefaults(defineProps<{ reason: string; heardIn: string; stated: boolean; wrap?: boolean }>(), { wrap: false })
 const id = useId()
 const dismissed = ref(false)
 </script>

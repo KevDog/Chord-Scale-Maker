@@ -32,10 +32,10 @@
       <span
         v-for="m in marks"
         :key="`s${m.key}`"
-        :class="['absolute pr-1 text-[0.7rem]/3.5 text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700', !(notesOn && m.reason) && 'truncate']"
+        :class="['absolute pr-1 text-[0.7rem]/3.5 text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700']"
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
-        <ChangesNote v-if="notesOn && m.reason && m.scale" :reason="m.reason" :heard-in="m.heardIn" :stated="m.stated">{{ m.scale }}</ChangesNote>
+        <ChangesNote v-if="notesOn && m.reason && m.scale" :reason="m.reason" :heard-in="m.heardIn" :stated="m.stated" wrap>{{ m.scale }}</ChangesNote>
         <template v-else>{{ m.scale }}</template>
       </span>
     </div>
