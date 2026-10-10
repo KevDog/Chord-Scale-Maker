@@ -64,7 +64,7 @@ test('a later copy is written out, a tag follows a double barline, and a share l
   await other.close()
 })
 
-test('a function from the dropdown: the Changes sheet shows it, its note opens from the keyboard, and keys change from the grid', async ({ page }) => {
+test('a function from the dropdown: the Changes sheet shows it, its note opens on a click, and keys change from the grid', async ({ page }) => {
   await page.goto('/song?new=1')
   await openEditor(page)
   await page.getByLabel('Chart text').fill('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\n')
@@ -77,11 +77,13 @@ test('a function from the dropdown: the Changes sheet shows it, its note opens f
   await chooseSheet(page, 'Changes')
   const sheet = sheetOf(page)
   const numeral = sheet.getByRole('button', { name: 'V7/V' })
-  await numeral.focus()
-  await expect(page.getByRole('tooltip').filter({ hasText: '* V7/V in C: natural tensions' })).toBeVisible()
-  await expect(page.getByRole('tooltip').filter({ hasText: 'in C major' }).first()).toBeVisible()
+  await numeral.click()
+  const note = page.getByRole('dialog', { name: 'Why: D7' })
+  await expect(note).toContainText('* V7/V in C: natural tensions')
+  await expect(note).toContainText('in C major')
+  await expect(note.getByRole('link', { name: 'D4' })).toHaveAttribute('href', '/functions#rule-D4')
   await page.keyboard.press('Escape')
-  await expect(page.getByRole('tooltip').filter({ hasText: 'V7/V in C' })).toBeHidden()
+  await expect(note).toBeHidden()
   await page.getByLabel('Chart text').fill('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7 | | Db: V7/ii\nA | 3 | Dm7\nA | 4 | G7\n')
   await expect(fn).toHaveAttribute('aria-invalid', 'true') // V7/ii in Db is Bb7, not D7
   await page.getByLabel('Key change at row 3').click()

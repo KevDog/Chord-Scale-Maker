@@ -500,8 +500,37 @@ library writes such a repeat out instead.
   the functions each might have and the key areas an `@key` would pin, each with a second `@key` back to the next
   area (an `@key` holds until the next); the grid's key-change button (`insertKeyChange`) adds the same pair. The
   analyser never writes a function or an `@key`. `rowNotes` (`engine/notes.ts`) gives each row's reason and key;
-  the grid's Notes column and the Changes sheet's numeral/scale tooltips show it, the tooltip with where its key
+  the grid's Notes column and the Changes sheet's numeral/scale notes show it, the note with where its key
   came from (a key the author set is starred), behind the `functions` flag (on).
+- **The reason note** (`ChangesNote.vue`): a click-to-open Headless UI popover (role dialog, "Why: <chord>", the chord as
+  drawn for the part: `ChangesChord.written`), not
+  a hover tooltip; Escape or a click outside closes it, and a clamp keeps the panel 16px inside the viewport. It
+  gives the reason and key, and the rule's id linked to `/functions#rule-<id>`. A `fallback` the author didn't state
+  reads "a guess — an @key or a function would settle it". Copy for an issue (`utils/issueReport.ts`) puts the
+  chord, function, scale, rule, reason and key on the clipboard and navigates nowhere. On a transposing part it names
+  the instrument (`Instrument: B♭ Trumpet`), gives the chord as drawn with its concert symbol (`A7 (concert G7)`),
+  labels the key area and scale "written for" the part and the rule's reason "in concert pitch"; a concert-pitch part
+  gets none of that. The report and its share link are made as the note opens, so the click writes to the clipboard
+  at once (Safari allows it only within the click); clicked before the link is ready, or with no link to be had, it
+  shows the text to copy by hand. It then offers both "Send it
+  with the contact form" (the text passed through sessionStorage `csm-issue-text`) first and "Open a GitHub issue"
+  second (a link; the text goes in its URL up to 8000 characters, then the title only). `analyse()` keeps `fallback` on stated
+  rows. Rule ids carry no primes (`m7'` became `m9`, `D3'` became `D8`).
+- **The functions page** (`/functions`, `pages/functions.vue`; prerendered in C major): the reference for what
+  `analyse` does. Sections `#writing` (the function syntax, its errors taken from `FUNCTION_ERRORS` and
+  `parseFunction`, never paraphrased), `#table` (every function in `FUNCTION_GROUPS` (`group-diatonic`,
+  `group-secondary`, `group-substitutes`, `group-chromatic`) with the chord, scale, rule and reason the engine
+  gives), `#rules` (every rule in `RULES`, by `TIERS`, one row `rule-<id>` each; `ruleParts` and
+  `dominantScaleTable` in `analysis/rules.ts`) and `#report` (the Copy for an issue route). Nothing on it is
+  hand-typed: `functionsTable(key)` (`analysis/catalogue.ts`) runs one-row charts (`bars: 1`; `bars: 2` with a tonic row first for the chromatic diminished function) through
+  `analyse`, in the page's key (`FUNCTIONS_KEYS`, `utils/functionsKey.ts`: the Transpose majors, then the twelve minors
+  as their signatures spell them, C♯ and G♯ minor rather than D♭ and G♭ minor, whose tables need double flats; all
+  within the wider `CATALOGUE_KEYS` the engine tests sweep), at prerender and again
+  on a key change. The chosen key is kept in the URL as `?key=` in step with the router's history state, and
+  remembered as `csm-functions-key`. A sticky group nav follows the scroll (an IntersectionObserver). Rules that
+  only read the chord symbol are covered in tests by chord-symbol examples. Linked from the footer ("Functions"),
+  Help, the editor and the grid ("How to write a function"). Prose glyphs (♭ ♯) go through `proseGlyphs`
+  (`pitch.ts`).
 - **Menus:** every scale the rules give a quality is among that quality's options in `chord_scales.json`
   (Phrygian Dominant and Mixolydian ♭6 on `7`, Phrygian on minor chords, Mixolydian ♭6 on `7sus4`), so a scale
   you change can be changed back from the menu.

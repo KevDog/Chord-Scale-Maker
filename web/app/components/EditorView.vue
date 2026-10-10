@@ -161,6 +161,7 @@
 
 <script setup lang="ts">
 import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, BookmarkIcon, CodeBracketIcon, DocumentDuplicateIcon, FlagIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
+import { ISSUE_CONTEXT, issuePart } from '~/utils/issueReport'
 import { CHART_REPORT_KEY, type ChartReport, guidesText } from '~/utils/chartReport'
 import {
   buildSheet,
@@ -305,11 +306,9 @@ const shareOpen = ref(false)
 const shareLink = ref<string | null>(null)
 
 /** a link carrying the chart as it is now, and how it's being viewed */
-async function openShare(): Promise<void> {
+async function shareUrl(): Promise<string> {
   editor.flush()
   saved?.flush()
-  shareLink.value = null
-  shareOpen.value = true
   const view: ShareView = {
     instrument: prefs.instrument.value,
     mode: mode.value,
@@ -323,8 +322,16 @@ async function openShare(): Promise<void> {
     ...(selection.value ? { practice: selection.value } : {}),
     ...(level.value !== 'standard' ? { level: level.value, seed: scaleLevel.seed.value } : {}),
   }
-  shareLink.value = `${location.origin}/song#s=${await encodeShare({ chart: editor.text.value, view })}`
+  return `${location.origin}/song#s=${await encodeShare({ chart: editor.text.value, view })}`
 }
+
+async function openShare(): Promise<void> {
+  shareLink.value = null
+  shareOpen.value = true
+  shareLink.value = await shareUrl()
+}
+
+provide(ISSUE_CONTEXT, { title: () => editor.heading.value.title, part: () => issuePart(prefs.instrument.value), shareUrl })
 
 /** a shared chart, kept: into My charts with its practice picks, then opened at its own address */
 function saveShared(): void {

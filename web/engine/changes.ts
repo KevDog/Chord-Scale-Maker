@@ -1,6 +1,6 @@
 import { analyse, chartKeyOf, parseKey } from './analysis'
 import { type ChartDoc, type ChartLine, chartBeats, expandRowLines, formPart, type FormPart, type LinedRow, resolveScale } from './chart'
-import { type ChordToken, chordTokensOrNull } from './chord'
+import { type ChordToken, chordTokensOrNull, writtenChordTextOrNull } from './chord'
 import { guideToneTimeline } from './guideToneTimeline'
 import { type GuideInput, type GuideNote, type GuideShow, guidesOn, guideVoices, NO_GUIDES } from './guideTones'
 import { keySignature } from './keySignature'
@@ -20,7 +20,10 @@ import { chunk, orNull } from './util'
 export type ChangesChord = Readonly<{
   /** the beat it starts on, from 0 */
   beat: number
+  /** its symbol as the chart has it, in concert pitch */
   text: string
+  /** its symbol as drawn for the part, in the chart's notation ("A7" for a concert G7 on a B♭ part); text when it can't be read */
+  written: string
   tokens: readonly ChordToken[] | null
   /** its Roman numeral in its key area (V7/ii); '' when the analysis doesn't reach it */
   numeral: string
@@ -28,6 +31,10 @@ export type ChangesChord = Readonly<{
   scale: string | null
   /** why the analysis gave it its scale ('' when it doesn't reach it) */
   reason: string
+  /** the rule id behind its scale ("m4", "D1+D4"); '' when the analysis doesn't reach it */
+  rule: string
+  /** the rules could only guess its scale (an @key or a function would settle it); never so for a function the author wrote */
+  fallback: boolean
   /** its function was written in the chart, not found */
   stated: boolean
   /** the key it's heard in, written for the part ("B♭ major"); '' when the analysis doesn't reach it */
@@ -214,10 +221,13 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
           return {
             beat: (eventAt.get(i)?.start ?? bar * beats) - bar * beats,
             text: row.chord,
+            written: writtenChordTextOrNull(part, row.chord, scale) ?? row.chord,
             tokens: chordTokensOrNull(part, row.chord, scale),
             numeral: a?.numeral && a.numeral !== '?' ? a.numeral : '',
             scale: writtenScale(part, scale),
             reason: a?.reason ?? '',
+            rule: a?.rule && a.rule !== '?' ? a.rule : '',
+            fallback: !!a?.fallback && !a?.stated,
             stated: a?.stated ?? false,
             heardIn: a ? keyName((a.statedKey ?? a.key).name, part) : '',
             keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',

@@ -1,5 +1,5 @@
 import { type Part, writtenRoot } from './part'
-import { type Spelled, accFor, LETTERS, mod, parseRoot, pcOf, toLetter } from './pitch'
+import { type Spelled, accFor, LETTERS, mod, parseRoot, pcOf, rootName, toLetter } from './pitch'
 import { parseScale, simplifyRoot } from './scales'
 import { orNull } from './util'
 
@@ -71,21 +71,35 @@ export function writtenChordRoot(part: Part, chord: string, scaleText?: string):
  * they share a pitch; a slash bass keeps its interval from the root (D7/F# -> E7/G# on Bb).
  */
 export function chordTokens(part: Part, chord: string, scaleText?: string): ChordToken[] {
+  const { root, quality, bass } = writtenChord(part, chord, scaleText)
+  const tokens = [text(LETTERS[root.letter]), ...accTokens(root.acc), ...qualityTokens(quality)]
+  if (bass) tokens.push(text('/' + LETTERS[bass.letter]), ...accTokens(bass.acc))
+  return mergeText(tokens)
+}
+
+/** the chord written for the part: root and bass spelled as chordTokens draws them, the quality as the chart has it */
+function writtenChord(part: Part, chord: string, scaleText?: string): ChordParts {
   const c = parseChord(chord)
   const root = writtenChordRoot(part, chord, scaleText)
-  const tokens = [text(LETTERS[root.letter]), ...accTokens(root.acc), ...qualityTokens(c.quality)]
-  if (c.bass) {
-    const letter = toLetter(root.letter + (c.bass.letter - c.root.letter))
-    const acc = accFor(mod(pcOf(root) + (pcOf(c.bass) - pcOf(c.root)), 12), letter)
-    const bass = Math.abs(acc) > 1 ? simplifyRoot({ letter, acc }) : { letter, acc }
-    tokens.push(text('/' + LETTERS[bass.letter]), ...accTokens(bass.acc))
-  }
-  return mergeText(tokens)
+  if (!c.bass) return { root, quality: c.quality }
+  const letter = toLetter(root.letter + (c.bass.letter - c.root.letter))
+  const acc = accFor(mod(pcOf(root) + (pcOf(c.bass) - pcOf(c.root)), 12), letter)
+  return { root, quality: c.quality, bass: Math.abs(acc) > 1 ? simplifyRoot({ letter, acc }) : { letter, acc } }
+}
+
+/** the chord symbol written for the part, in the chart's notation (G7 -> "A7" on a B♭ part; D7/F# -> "E7/G#") */
+export function writtenChordText(part: Part, chord: string, scaleText?: string): string {
+  const { root, quality, bass } = writtenChord(part, chord, scaleText)
+  return `${rootName(root)}${quality}${bass ? `/${rootName(bass)}` : ''}`
 }
 
 /** chordTokens for display: a scale that can't be read is ignored; null only if the chord itself can't be read */
 export const chordTokensOrNull = (part: Part, chord: string, scaleText?: string | null): readonly ChordToken[] | null =>
   orNull(() => chordTokens(part, chord, scaleText ?? undefined)) ?? orNull(() => chordTokens(part, chord))
+
+/** writtenChordText, ignoring a scale that can't be read; null when the chord can't be read */
+export const writtenChordTextOrNull = (part: Part, chord: string, scaleText?: string | null): string | null =>
+  orNull(() => writtenChordText(part, chord, scaleText ?? undefined)) ?? orNull(() => writtenChordText(part, chord))
 
 /** writtenChordRoot, ignoring a scale that can't be read (throws only if the chord can't be read) */
 export const writtenChordRootLenient = (part: Part, chord: string, scaleText?: string | null): Spelled =>

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { accFor, enharmonics, glyphs, mod, parseRoot, pcOf, rootName, shiftBy, spellEqual } from '../pitch'
+import { accFor, enharmonics, glyphs, mod, parseRoot, pcOf, proseGlyphs, rootName, shiftBy, spellEqual } from '../pitch'
 
 describe('spellEqual', () => {
   it('compares a spelled note by letter and accidental', () => {
@@ -32,6 +32,19 @@ describe('glyphs', () => {
   it('leaves the b inside a word alone (Bebop, not Be♭op)', () => {
     expect(glyphs('G Bebop Dominant')).toBe('G Bebop Dominant')
     expect(glyphs('Bb Bebop Dorian')).toBe('B♭ Bebop Dorian')
+  })
+})
+
+describe('proseGlyphs', () => {
+  it('turns the accidentals in a sentence into glyphs', () => {
+    expect(proseGlyphs('V7/iii in C: b9 and b13 are in the key')).toBe('V7/iii in C: ♭9 and ♭13 are in the key')
+    expect(proseGlyphs('back door bVII7 to Eb: the #11 is in the key')).toBe('back door ♭VII7 to E♭: the ♯11 is in the key')
+    expect(proseGlyphs('resolves down a half step to Ebm; F# Locrian over F#m7b5')).toBe('resolves down a half step to E♭m; F♯ Locrian over F♯m7♭5')
+  })
+
+  it('leaves words that start with a b alone', () => {
+    expect(proseGlyphs('tonic minor: Dorian by convention, both ways, but back')).toBe('tonic minor: Dorian by convention, both ways, but back')
+    expect(proseGlyphs('An alt dominant is Altered; Absolutely')).toBe('An alt dominant is Altered; Absolutely')
   })
 })
 

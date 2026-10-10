@@ -36,7 +36,7 @@ const ROMAN: Readonly<Record<string, Degree>> = {
 }
 const NUMERAL = 'VII|VI|V|IV|III|II|I|vii|vi|v|iv|iii|ii|i'
 /** each quality spelling, and how the Changes sheet writes it */
-const SUFFIXES: Readonly<Record<string, string>> = {
+export const SUFFIXES: Readonly<Record<string, string>> = {
   '': '',
   maj7: 'maj7',
   Maj7: 'maj7',
@@ -87,18 +87,26 @@ function familyOf(suffix: string, upper: boolean): Family {
 
 const LOWER: ReadonlySet<Family> = new Set(['minor', 'halfdim', 'dim'])
 
+/** the messages parseFunction gives, so the reference page can show them verbatim */
+export const FUNCTION_ERRORS = {
+  notAKey: (keyPart: string): string => `"${keyPart}" isn't a key (Eb, Cm)`,
+  notAFunction: (body: string): string => `"${body}" isn't a function (V7/ii, subV7, ii7/V, ♭VII7, IVmaj7)`,
+  subNotDominant: (): string => 'sub only goes on a dominant (subV7)',
+  majorOnLowerCase: (body: string): string => `${body}: a major quality on a lower-case numeral`,
+} as const
+
 export function parseFunction(text: string): StatedFunction | string {
   const colon = text.indexOf(':')
   const keyPart = colon >= 0 ? text.slice(0, colon).trim() : ''
   const body = (colon >= 0 ? text.slice(colon + 1) : text).trim()
   const key = keyPart ? parseKey(keyPart) : null
-  if (keyPart && !key) return `"${keyPart}" isn't a key (Eb, Cm)`
+  if (keyPart && !key) return FUNCTION_ERRORS.notAKey(keyPart)
   const m = FUNCTION_RE.exec(ascii(body))
-  if (!m) return `"${body}" isn't a function (V7/ii, subV7, ii7/V, ♭VII7, IVmaj7)`
+  if (!m) return FUNCTION_ERRORS.notAFunction(body)
   const [, sub = '', acc = '', num = '', suffix = '', tacc = '', tnum = ''] = m
   const family = familyOf(suffix, isUpper(num))
-  if (sub && family !== 'dominant') return 'sub only goes on a dominant (subV7)'
-  if (!isUpper(num) && family === 'major') return `${body}: a major quality on a lower-case numeral`
+  if (sub && family !== 'dominant') return FUNCTION_ERRORS.subNotDominant()
+  if (!isUpper(num) && family === 'major') return FUNCTION_ERRORS.majorOnLowerCase(body)
   const cased = LOWER.has(family) ? num.toLowerCase() : num.toUpperCase()
   const target = tnum ? { ...degreeOf(tacc, tnum), minor: !isUpper(tnum) } : null
   return {
@@ -109,6 +117,25 @@ export function parseFunction(text: string): StatedFunction | string {
     family,
     target,
   }
+}
+
+/** one family's quality spellings, grouped by how the sheet writes them ("maj7" <- maj7, Maj7, M7, maj) */
+export type Spelling = Readonly<{ family: Family; written: string; spellings: readonly string[] }>
+
+/** every spelling the grammar accepts, on an upper- and a lower-case numeral, minus the one it rejects (a major quality on lower case) */
+export function spellings(): readonly Spelling[] {
+  const groups = new Map<string, { family: Family; written: string; spellings: string[] }>()
+  for (const [spelling, written] of Object.entries(SUFFIXES)) {
+    for (const upper of [true, false]) {
+      const family = familyOf(spelling, upper)
+      if (!upper && family === 'major') continue
+      const k = `${family}|${written}`
+      const g = groups.get(k) ?? { family, written, spellings: [] }
+      if (!g.spellings.includes(spelling)) g.spellings.push(spelling)
+      groups.set(k, g)
+    }
+  }
+  return [...groups.values()]
 }
 
 /** two texts that state the same function in the same key ("bVII7" and "♭VII7"); false if either won't read */

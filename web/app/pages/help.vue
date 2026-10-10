@@ -4,9 +4,30 @@
       <p class="mb-2 inline-block bg-note-100 px-2 py-0.5 font-display text-xs font-bold tracking-[0.2em] text-note-800 uppercase dark:bg-note-900 dark:text-note-200" aria-hidden="true">Help</p>
       <UiHeading>How it all works</UiHeading>
       <UiText>
-        Nothing here is complicated, but a few things are tucked away. Here's the tour. If something's still unclear,
+        Nothing here is complicated to use (I hope), but a few things are tucked away. Here's the tour. If something's still unclear,
         <UiTextLink href="/contact">tell me</UiTextLink> and I'll fix the page (or the app).
       </UiText>
+      <div class="space-y-3 pt-2">
+        <UiSubheading>A disclaimer</UiSubheading>
+        <UiText>
+          One critical thing to know about this site: music both is and isn't math. I'm not a PhD in music theory, and my
+          degree is in computer science. I've been writing software for about thirty years and playing vibraphone for
+          about ten. I know enough to make this work, but the logic behind the functional analysis was put together by
+          compiling many internet resources and boiling them down to a series of logical tests.
+        </UiText>
+        <UiText>
+          But jazz isn't made of logic, it's made of art. I'm not a good enough player to know if the analysis is right in all
+          cases, and I don't have the time to check every tune in the library. If you see something that looks wrong,
+          please <UiTextLink href="/contact">let me know</UiTextLink> and I'll fix it. There are also some clickable
+          links in various places that will show you the reasoning behind the analysis, and you can use those to check
+          the logic for yourself or to tell me what to fix.
+        </UiText>
+        <UiText>
+          As you probably suspect for a solo project this complex, I relied on AI to boil down the analysis logic into
+          a series of rules as well as the documentation. Claude Code kept me honest, provided planning and
+          specification help, and filled in gaps in my knowledge.
+        </UiText>
+      </div>
       <nav aria-label="On this page" class="pt-2">
         <ul class="flex flex-wrap gap-x-4 gap-y-1 text-sm/6">
           <li v-for="s in SECTIONS" :key="s.id"><UiTextLink :href="`#${s.id}`">{{ s.title }}</UiTextLink></li>
@@ -72,9 +93,18 @@
           </dd>
         </div>
         <div>
-          <dt class="font-semibold text-zinc-950 dark:text-white">Intervals</dt>
+          <dt class="font-semibold text-zinc-950 dark:text-white">Analysis and Guide Tones</dt>
           <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
-            Labels each note against the chord's root (1, 9, ♭3, 11 and so on). Handy while you're learning what each
+            On the Changes sheet, <strong class="font-semibold">Analysis</strong> holds <strong class="font-semibold">Numerals</strong>
+            and <strong class="font-semibold">Scales</strong>, which turn those rows on and off. <strong class="font-semibold">Guide Tones</strong>
+            holds <strong class="font-semibold">From 3rd</strong> and <strong class="font-semibold">From 7th</strong>, the guide tone
+            lines described above.
+          </dd>
+        </div>
+        <div>
+          <dt class="font-semibold text-zinc-950 dark:text-white">Show: Intervals</dt>
+          <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+            On the Scales sheet, <strong class="font-semibold">Show</strong> holds Intervals. It labels each note against the chord's root (1, 9, ♭3, 11 and so on). Handy while you're learning what each
             note does. It starts on; switch it off if you don't need it (that's remembered too). It's on screen only,
             so printed sheets stay clean.
           </dd>
@@ -128,6 +158,11 @@
         grid and the <strong class="font-semibold text-zinc-950 dark:text-white">Text</strong> box are two views of the
         same chart; edit either and the other (and the preview) keeps up. The Text box is tucked away until you press
         <strong class="font-semibold text-zinc-950 dark:text-white">Show text</strong>, and it stays out once you do.
+      </UiText>
+      <UiText>
+        A row's Function cell takes a Roman numeral such as <UiCode>V7/ii</UiCode> or <UiCode>subV7</UiCode>, which tells
+        the rules what the chord does. <UiTextLink href="/functions#writing">Functions and rules</UiTextLink> shows how to
+        write one and the scale each gives.
       </UiText>
 
       <UiSubheading :level="3" class="pt-2">The grid</UiSubheading>
@@ -245,6 +280,12 @@
           Missing a tune? <strong class="font-semibold text-zinc-950 dark:text-white">Request a chart</strong> in the
           library takes you to the <UiTextLink href="/contact">contact form</UiTextLink>. Tell me the tune, and if you
           can, attach a photo or PDF of the changes.
+        </li>
+        <li>
+          Wondering why a chord got its scale? Click its numeral or scale on the Changes sheet: the note says why and
+          names the rule, and <UiTextLink href="/functions#rules">Functions and rules</UiTextLink> lists them all. If
+          you'd choose differently, <strong class="font-semibold text-zinc-950 dark:text-white">Copy for an issue</strong>
+          in that note collects the details for the contact form.
         </li>
         <li>It works on a phone, but the staves are small. A tablet or a laptop is nicer.</li>
       </ul>

@@ -46,6 +46,22 @@ describe('the Changes sheet', () => {
     expect(b.map((x) => x.end).filter((e) => e !== 'none')).toEqual(['double', 'double', 'final'])
   })
 
+  it('each chord carries the rule behind its scale, and whether the rules only guessed', () => {
+    const rows = (text: string) => buildChanges(parseChart(text).value, CONCERT).lines.flatMap((l) => l.bars).flatMap((b) => b.chords)
+    const chords = rows('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\nA | 4 | Abm7\n')
+    expect(chords.map((c) => [c.text, c.rule, c.fallback])).toEqual([
+      ['Dm7', 'm4', false],
+      ['G7', 'D4', false],
+      ['CMaj7', 'M3', false],
+      ['Abm7', 'm8', true],
+    ])
+  })
+
+  it('a function the author wrote is never a guess on the sheet, though its rule is still named', () => {
+    const [a] = buildChanges(parseChart('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7 | | II7\nA | 3 | Dm7\nA | 4 | G7\n').value, CONCERT).lines.flatMap((l) => l.bars).flatMap((b) => b.chords).filter((c) => c.text === 'D7')
+    expect([a?.stated, a?.fallback, a?.rule !== '']).toEqual([true, false, true])
+  })
+
   it('heads a coda "after the last chorus"', () => {
     const doc = parseChart('key: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\nCoda | 1 | Db7\nCoda | 2 | CMaj7\n').value
     const markers = buildChanges(doc, CONCERT).lines.flatMap((l) => l.bars).filter((x) => x.marker).map((x) => x.marker)
@@ -55,6 +71,13 @@ describe('the Changes sheet', () => {
   it('writes chords, scales and key areas for a transposing instrument; numerals stay', () => {
     const [first] = bars('autumn_leaves', TENOR)
     expect([first?.keyArea, first?.chords[0]?.scale, first?.chords[0]?.numeral]).toEqual(['A minor', 'D Dorian', 'ii7/♭III'])
+  })
+
+  it('gives each chord its symbol as written for the part, beside the chart\'s concert symbol', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n').value
+    const chords = (part: Part) => buildChanges(doc, part).lines.flatMap((l) => l.bars).flatMap((b) => b.chords)
+    expect(chords(TENOR).map((c) => [c.text, c.written])).toEqual([['Dm7', 'Em7'], ['G7', 'A7'], ['CMaj7', 'DMaj7']])
+    expect(chords(CONCERT).map((c) => c.written)).toEqual(['Dm7', 'G7', 'CMaj7'])
   })
 
   it('counts a waltz in 3', () => {
