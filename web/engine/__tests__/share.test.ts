@@ -13,7 +13,7 @@ async function packed(value: unknown): Promise<string> {
 
 describe('share links', () => {
   it('round-trip a chart and its view, in URL-safe characters', async () => {
-    const view = { instrument: 'tenor-sax', mode: 'from', start: 'Eb', intervals: false, sheet: 'guideTones', practice: { keys: ['b3', '3'] } } as const
+    const view = { instrument: 'tenor-sax', mode: 'from', start: 'Eb', intervals: false, sheet: 'changes', practice: { keys: ['b3', '3'] } } as const
     const encoded = await encodeShare({ chart: CHART, view })
     expect(encoded).toMatch(/^[A-Za-z0-9_-]+$/)
     expect(await decodeShare(encoded)).toEqual({ chart: CHART, view })
@@ -47,6 +47,28 @@ describe('share links', () => {
       practice: { keys: ['b3'] },
     })
     expect(await decodeShare(await packed({ v: 1, chart: CHART, view: { mode: 'root', bogus: true } }))).toEqual({ chart: CHART, view: { mode: 'root' } })
+  })
+
+  it("carry the Changes sheet's guide tone lines, from the 3rd and from the 7th, booleans only", async () => {
+    const view = { sheet: 'changes', numerals: true, fromThird: true, fromSeventh: false } as const
+    expect(await decodeShare(await encodeShare({ chart: CHART, view }))).toEqual({ chart: CHART, view })
+    expect(shareViewFrom({ fromThird: 'on', fromSeventh: 1 })).toBeUndefined()
+    expect(shareViewFrom({ fromThird: false, fromSeventh: 'yes' })).toEqual({ fromThird: false })
+  })
+
+  it('read the older guideThird/guideSeventh toggles as the lines from the 3rd and the 7th', async () => {
+    expect(shareViewFrom({ guideThird: true, guideSeventh: false })).toEqual({ fromThird: true, fromSeventh: false })
+    expect(await decodeShare(await packed({ v: 1, chart: CHART, view: { sheet: 'changes', guideSeventh: true } }))).toEqual({
+      chart: CHART,
+      view: { sheet: 'changes', fromSeventh: true },
+    })
+    expect(shareViewFrom({ guideThird: 'on' })).toBeUndefined()
+    expect(shareViewFrom({ guideThird: true, fromThird: false })).toEqual({ fromThird: false }) // the new name wins
+  })
+
+  it('drop the retired Guide tones sheet from an old link, keeping the rest of its view', async () => {
+    expect(shareViewFrom({ sheet: 'guideTones', numerals: true })).toEqual({ numerals: true })
+    expect(await decodeShare(await packed({ v: 1, chart: CHART, view: { sheet: 'guideTones', mode: 'root' } }))).toEqual({ chart: CHART, view: { mode: 'root' } })
   })
 
   it('carry function cells and @key lines unchanged', async () => {

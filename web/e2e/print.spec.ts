@@ -1,4 +1,4 @@
-import { chooseInstrument, chooseSheet, expect, pickOption, staves, test } from './fixtures'
+import { chooseInstrument, chooseSheet, drawn, expect, guidesDrawn, pickOption, showGuides, staves, test } from './fixtures'
 
 const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length
 
@@ -10,6 +10,7 @@ for (const [instrument, start] of [
 ] as const) {
   test(`prints 12 staves per letter page (${instrument}, from ${start ?? 'the root'})`, async ({ page }) => {
     await page.goto('/song?chart=autumn_leaves')
+    await chooseSheet(page, 'Scales') // a chart opens on the Changes
     await chooseInstrument(page, instrument)
     if (start) {
       await pickOption(page, 'Where each scale starts', 'From C')
@@ -22,25 +23,7 @@ for (const [instrument, start] of [
   })
 }
 
-// 8 four-bar systems per letter page: a 32-bar tune on one page, Milestones (40 bars) on two
-for (const [chart, instrument, pages] of [
-  ['autumn_leaves', 'Concert', 1],
-  ['autumn_leaves', 'Trombone', 1],
-  ['milestones', 'Concert', 2],
-] as const) {
-  test(`prints guide tones 8 systems per page (${chart}, ${instrument})`, async ({ page }) => {
-    await page.goto(`/song?chart=${chart}`)
-    await chooseInstrument(page, instrument)
-    await chooseSheet(page, 'Guide Tones')
-    await expect(page.locator('svg[aria-label^="Line 1:"]').first()).toBeVisible()
-    await expect(page.getByRole('separator')).toHaveCount(0) // no on-screen page divider
-    await page.emulateMedia({ media: 'print' })
-    await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
-    expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(pages)
-  })
-}
-
-// eight lines a page: a 32-bar AABA written out (Satin Doll) on one; Tunisia's nine lines (with the tag) on two
+// eight lines a page with guide tones off: a 32-bar AABA written out (Satin Doll) on one; Tunisia's nine lines (with the tag) on two
 for (const [chart, pages] of [
   ['autumn_leaves', 1],
   ['satin_doll', 1],
@@ -68,4 +51,26 @@ test('the Changes sheet shows 1st/2nd endings and a D.S. al Coda', async ({ page
   await chooseSheet(page, 'Changes')
   await expect(page.locator('svg[aria-label^="Bars:"]').first()).toBeVisible()
   await expect(page.locator('svg[aria-label^="Bars:"] text', { hasText: '1.' }).first()).toBeVisible()
+})
+
+// the tallest Changes lines: both guide tones (two voices, stems both ways) with numerals and scales, a 1st/2nd ending
+// raised above the stems, and a bass part below the staff (no library chart reaches E2, the range's floor: Stardust's
+// trombone part goes to F♯2). Each sheet page holds changesLinesPerPage lines, so the PDF has as many pages as the
+// sheet: a page that overflowed would add one
+test('prints the Changes with both guide tones, a sheet page to a letter page, in the tallest case', async ({ page }) => {
+  await page.goto('/song?chart=stardust')
+  await chooseInstrument(page, 'Trombone')
+  await showGuides(page, 'From 3rd', 'From 7th')
+  await expect(page.getByRole('button', { name: 'Numerals' })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByRole('button', { name: 'Scales', exact: true })).toHaveAttribute('aria-pressed', 'true')
+  await guidesDrawn(page)
+  const svgs = page.locator('svg[aria-label^="Bars:"]')
+  const all = await Promise.all((await svgs.all()).map(drawn))
+  expect(all.filter((d) => d.voltaBottom !== null).length).toBeGreaterThan(0) // the verse's 1st and 2nd endings
+  expect(Math.max(...all.flatMap((d) => d.heads.map((h) => h.y)))).toBeGreaterThanOrEqual(120) // on or below the bass staff's bottom line (G2)
+  const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+  expect(sheetPages).toBeGreaterThanOrEqual(2) // at least one full page
+  await page.emulateMedia({ media: 'print' })
+  await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+  expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
 })

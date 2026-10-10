@@ -1,4 +1,4 @@
-import { chooseInstrument, expect, openEditor, pickOption, test } from './fixtures'
+import { chooseInstrument, chooseSheet, expect, openEditor, pickOption, test } from './fixtures'
 
 const status = (page: import('@playwright/test').Page) => page.getByRole('status').filter({ hasText: /in this browser|Saving/ })
 
@@ -89,6 +89,7 @@ test('a file dropped on the library opens, and a wrong one says why', async ({ p
 
 test('a share link carries the chart and the view to a browser that has never seen it', async ({ page, browser }) => {
   await page.goto('/song?chart=autumn_leaves')
+  await chooseSheet(page, 'Scales') // From C and the practice picks are the scale sheet's; the link carries the sheet
   await openEditor(page)
   await page.getByLabel('chord for row 1', { exact: true }).fill('Cm9')
   await chooseInstrument(page, 'Tenor')

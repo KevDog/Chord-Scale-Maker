@@ -2,9 +2,9 @@
 
 ## What this is
 Chord Scale Maker (www.chordscalemaker.com), a Nuxt web app in `web/` that turns a concert-pitch chord chart
-(`charts/*.txt`) into chord-scale practice sheets, one staff per chord, written for a jazz instrument, plus guide
-tone lines and practice highlighting. See README.md for the chart format. The original Python/LilyPond CLI was
-retired after the `v1-launch` tag.
+(`charts/*.txt`) into practice sheets written for a jazz instrument: the Changes (a study lead sheet, the default
+view, with optional guide tones on the staff) and the Scales (one staff per chord, with practice highlighting). See
+README.md for the chart format. The original Python/LilyPond CLI was retired after the `v1-launch` tag.
 
 ## Working here
 - `make setup` once, then `make test` after changes (typecheck + vitest); `make lint`; `make e2e` (Playwright);

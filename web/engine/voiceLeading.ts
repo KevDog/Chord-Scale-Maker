@@ -5,13 +5,14 @@ import { pcOf, type Spelled } from './pitch'
 /**
  * Voice leading for guide tone lines: given each chord's two guide tones, choose pitches for two complementary
  * lines (one on the 3rd, one on the 7th of every chord) with the least combined motion, inside the part's range.
+ * The Changes sheet draws the greedy lines of guideToneLines.ts instead; this global pair search stays as a check.
  */
 
 export type GuideTone = Readonly<{ note: Spelled; label: string }>
 export type GuideTones = Readonly<{ third: GuideTone; seventh: GuideTone }>
 
-/** written ranges: anything inside [lo, hi]; [comfortLo, comfortHi] costs nothing */
-const RANGES: Readonly<Record<Clef, Readonly<{ lo: number; hi: number; comfortLo: number; comfortHi: number }>>> = {
+/** written ranges: anything inside [lo, hi]; [comfortLo, comfortHi] is comfortable (costs nothing to the pair search) */
+export const RANGES: Readonly<Record<Clef, Readonly<{ lo: number; hi: number; comfortLo: number; comfortHi: number }>>> = {
   treble: { lo: 60, hi: 81, comfortLo: 64, comfortHi: 74 }, // C4-A5, comfortable E4-D5
   bass: { lo: 40, hi: 60, comfortLo: 43, comfortHi: 55 }, // E2-C4, comfortable G2-G3
 }

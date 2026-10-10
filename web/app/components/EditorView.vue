@@ -86,6 +86,8 @@
             v-model:intervals="prefs.intervals.value"
             v-model:numerals="prefs.numerals.value"
             v-model:scale-names="prefs.scaleNames.value"
+            v-model:from-third="prefs.fromThird.value"
+            v-model:from-seventh="prefs.fromSeventh.value"
           >
             <!-- Level: how sophisticated each chord's scale is (engine/levels.ts); a dropdown in the toolbar -->
             <template v-if="levelsOn && !editor.fatal.value" #level>
@@ -134,18 +136,7 @@
             :numerals="prefs.numerals.value"
             :scales="prefs.scaleNames.value"
             :signatures="signaturesOn"
-          />
-          <GuideToneSheet
-            v-else-if="sheet === 'guideTones'"
-            :rows="editor.rows.value"
-            :title="editor.meta.value.title"
-            :subtitle="editor.heading.value.subtitle"
-            :composer="editor.heading.value.composer"
-            :part="part"
-            :instrument-label="instrumentLabel(prefs.instrument.value)"
-            :beats="editor.beats.value"
-            :intervals="prefs.intervals.value"
-            :home-key="homeKey"
+            :guides="guides"
           />
           <ScaleSheet
             v-else
@@ -170,12 +161,13 @@
 
 <script setup lang="ts">
 import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, BookmarkIcon, CodeBracketIcon, DocumentDuplicateIcon, FlagIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
-import { CHART_REPORT_KEY, type ChartReport } from '~/utils/chartReport'
+import { CHART_REPORT_KEY, type ChartReport, guidesText } from '~/utils/chartReport'
 import {
   buildSheet,
   chartKeyOf,
   type ChartDoc,
   encodeShare,
+  type GuideShow,
   instrumentLabel,
   LEVEL_LABELS,
   parseChart,
@@ -193,7 +185,7 @@ import {
   type ShareView,
 } from '~~/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
-import type { SheetKind } from '~/utils/sheets'
+import { firstSheet, type SheetKind } from '~/utils/sheets'
 
 /**
  * practiceKey: what practice selections are remembered under (a library slug, or mine:<id>); none for the visit only.
@@ -211,6 +203,8 @@ const rendering = useRendering()
 const byline = computed(() => [editor.heading.value.subtitle, editor.heading.value.composer].filter(Boolean).join(' — '))
 const prefs = props.shared ? linkPreferences(props.shared) : usePreferences()
 const part = computed(() => partFor(prefs.instrument.value))
+/** the Changes sheet's guide tones: which of each chord's 3rd and 7th are drawn */
+const guides = computed((): GuideShow => ({ fromThird: prefs.fromThird.value, fromSeventh: prefs.fromSeventh.value }))
 /** the editor (grid + text): hidden by default (song-first), shown for a new chart or one over a size limit (only the text can fix it) */
 const bornNew = ref(false) // latches true for a new chart, so saving it (its URL becomes ?mine) doesn't hide the editor mid-edit
 watch(() => props.isNew, (v) => { if (v) bornNew.value = true }, { immediate: true })
@@ -219,10 +213,7 @@ const editorShown = computed(() => prefs.showEditor.value || bornNew.value || ed
 const textShown = computed(() => !functionsOn || prefs.textPane.value)
 /** one spelling at a time: every scale from the Start on note, or each from its own root */
 const mode = ref<Mode>(props.shared?.mode ?? 'root')
-const sharedSheet = props.shared?.sheet
-const sheet = ref<SheetKind>(
-  sharedSheet === 'guideTones' && useFeature('guideTones') ? 'guideTones' : sharedSheet === 'changes' && useFeature('changes') ? 'changes' : 'scales',
-)
+const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeature('changes') }))
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
 const signaturesOn = useFeature('keySignatures')
@@ -326,6 +317,8 @@ async function openShare(): Promise<void> {
     intervals: prefs.intervals.value,
     numerals: prefs.numerals.value,
     scaleNames: prefs.scaleNames.value,
+    fromThird: prefs.fromThird.value,
+    fromSeventh: prefs.fromSeventh.value,
     sheet: sheet.value,
     ...(selection.value ? { practice: selection.value } : {}),
     ...(level.value !== 'standard' ? { level: level.value, seed: scaleLevel.seed.value } : {}),
@@ -390,6 +383,7 @@ function reportError(): void {
     version: String(useRuntimeConfig().public.version ?? ''),
     instrument: instrumentOption(prefs.instrument.value),
     sheet: sheet.value,
+    guides: guidesText(guides.value),
     level: levelsOn ? scaleLevel.level.value : '',
     url: location.href,
   }

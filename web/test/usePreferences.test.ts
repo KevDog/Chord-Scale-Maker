@@ -1,10 +1,18 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { effectScope, nextTick } from 'vue'
-import { usePreferences } from '~/composables/usePreferences'
+import { linkPreferences, usePreferences } from '~/composables/usePreferences'
+import type { ShareView } from '~~/engine'
 
 function prefs() {
   const scope = effectScope()
   const p = scope.run(() => usePreferences())
+  if (!p) throw new Error('no preferences')
+  return p
+}
+
+function linked(view: ShareView) {
+  const scope = effectScope()
+  const p = scope.run(() => linkPreferences(view))
   if (!p) throw new Error('no preferences')
   return p
 }
@@ -39,6 +47,19 @@ describe('usePreferences', () => {
     expect(prefs().notes.value).toBe(true)
   })
 
+  it('keeps the guide tones off until turned on, and remembers each', async () => {
+    const p = prefs()
+    expect([p.fromThird.value, p.fromSeventh.value]).toEqual([false, false])
+    p.fromThird.value = true
+    await nextTick()
+    expect([localStorage.getItem('csm-guide-3rd'), localStorage.getItem('csm-guide-7th')]).toEqual(['on', null])
+    const again = prefs()
+    expect([again.fromThird.value, again.fromSeventh.value]).toEqual([true, false])
+    again.fromThird.value = false
+    await nextTick()
+    expect(localStorage.getItem('csm-guide-3rd')).toBe('off')
+  })
+
   it('remembers choices in this browser', async () => {
     const p = prefs()
     p.instrument.value = 'alto-sax'
@@ -51,7 +72,21 @@ describe('usePreferences', () => {
   it('ignores stored values it does not recognise', () => {
     localStorage.setItem('csm-instrument', 'kazoo')
     localStorage.setItem('csm-start', 'H')
+    localStorage.setItem('csm-guide-3rd', 'yes')
     const p = prefs()
-    expect([p.instrument.value, p.start.value]).toEqual(['concert', 'C'])
+    expect([p.instrument.value, p.start.value, p.fromThird.value]).toEqual(['concert', 'C', false])
+  })
+})
+
+describe('linkPreferences', () => {
+  afterEach(() => localStorage.clear())
+
+  it("takes a link's guide tones over your own, for this visit only", async () => {
+    localStorage.setItem('csm-guide-7th', 'on')
+    const p = linked({ fromThird: true })
+    expect([p.fromThird.value, p.fromSeventh.value]).toEqual([true, true])
+    p.fromThird.value = false
+    await nextTick()
+    expect(localStorage.getItem('csm-guide-3rd')).toBeNull()
   })
 })

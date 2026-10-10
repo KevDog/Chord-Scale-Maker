@@ -19,7 +19,7 @@ const watchRepoData = (): Plugin => ({
 // Fully static site (nuxt generate). Engine + rendering run in the browser; see docs/design.md.
 /** where the site lives: link previews need absolute image URLs (previews of preview deployments show production's) */
 const SITE_URL = 'https://www.chordscalemaker.com'
-const DESCRIPTION = 'Practice sheets for jazz improvisation: every chord’s scale, guide tone lines and practice picks, written for your instrument.'
+const DESCRIPTION = 'Practice sheets for jazz improvisation: every chord’s scale, the changes with their guide tones, and practice picks, written for your instrument.'
 
 export default defineNuxtConfig({
   // copies a sync tool (iCloud, Finder) makes beside changed files, "arrivalHash.client 2.ts": never load them as
@@ -71,7 +71,6 @@ export default defineNuxtConfig({
       // feature flags (useFeature): new ones start off; NUXT_PUBLIC_FEATURES_<NAME>=true|false overrides one
       features: {
         myCharts: true, // My charts: edits and new charts saved in this browser, files, share links (docs/plan-saving.md); on since sign-off
-        guideTones: true, // the Guide tones sheet in the preview (docs/plan-guide-tones.md); on since sign-off
         practice: true, // highlight a chosen subset of each scale's notes (docs/plan-practice.md); on since sign-off
         changes: true, // the Changes sheet: the chart as a study lead sheet, numerals and scales under the chords (docs/plan-changes.md); on since sign-off
         scaleLevels: true, // the Level control: Basic / Standard / Advanced / Random scales per chart (engine/levels.ts); on since sign-off

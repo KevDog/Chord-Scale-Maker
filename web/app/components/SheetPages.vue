@@ -25,7 +25,7 @@ const props = defineProps<{
   title: string
   composer?: string
   pages: readonly T[]
-  compact?: boolean // less space under the header in print (guide tones fit 8 systems a page)
+  compact?: boolean // less space under the header in print (the Changes fits its lines a page)
 }>()
 
 const headerOnScreen = (i: number): boolean => i === 0 || props.pages[i]?.subtitle !== props.pages[i - 1]?.subtitle

@@ -1,6 +1,6 @@
 <template>
   <div id="preview-toolbar" class="space-y-4">
-    <!-- labelled groups: the controls wrap on the left, Display pinned top-right (Work on · Instrument · Level · Show · Transposition · Spell Scale | Display); top-aligned so every label sits on one line -->
+    <!-- labelled groups: the controls wrap on the left, Display pinned top-right (Work on · Instrument · Level · Show (on the Changes: Analysis · Guide Tones) · Transposition · Spell Scale | Display); top-aligned so every label sits on one line -->
     <div class="flex items-start justify-between gap-x-4 gap-y-3">
       <div class="flex flex-wrap items-start gap-x-4 gap-y-3">
       <UiField v-if="sheets.length > 1" class="w-36">
@@ -31,16 +31,28 @@
         <UiLabel class="pl-3">Level</UiLabel>
         <div class="flex items-center gap-2"><slot name="level" /></div>
       </UiField>
-      <UiField>
+      <UiField v-if="sheet !== 'changes'">
         <UiLabel class="pl-3">Show</UiLabel>
         <div class="flex flex-wrap gap-2 *:whitespace-nowrap">
-          <UiButton v-if="sheet !== 'changes'" v-bind="intervals ? { color: 'note' } : { outline: true }" :class="intervals ? '' : OFF_FILL" :aria-pressed="intervals" title="Label each note against the chord root (on screen only)" @click="intervals = !intervals">Intervals</UiButton>
-          <template v-else>
-            <UiButton v-bind="numerals ? { color: 'note' } : { outline: true }" :class="numerals ? '' : OFF_FILL" :aria-pressed="numerals" title="Each chord's Roman numeral in its key" @click="numerals = !numerals">Numerals</UiButton>
-            <UiButton v-bind="scaleNames ? { color: 'note' } : { outline: true }" :class="scaleNames ? '' : OFF_FILL" :aria-pressed="scaleNames" title="Each chord's scale, under its numeral" @click="scaleNames = !scaleNames">Scales</UiButton>
-          </template>
+          <UiButton v-bind="intervals ? { color: 'note' } : { outline: true }" :class="intervals ? '' : OFF_FILL" :aria-pressed="intervals" title="Label each note against the chord root (on screen only)" @click="intervals = !intervals">Intervals</UiButton>
         </div>
       </UiField>
+      <template v-else>
+        <UiField>
+          <UiLabel class="pl-3">Analysis</UiLabel>
+          <div class="flex flex-wrap gap-2 *:whitespace-nowrap">
+            <UiButton v-bind="numerals ? { color: 'note' } : { outline: true }" :class="numerals ? '' : OFF_FILL" :aria-pressed="numerals" title="Each chord's Roman numeral in its key" @click="numerals = !numerals">Numerals</UiButton>
+            <UiButton v-bind="scaleNames ? { color: 'note' } : { outline: true }" :class="scaleNames ? '' : OFF_FILL" :aria-pressed="scaleNames" title="Each chord's scale, under its numeral" @click="scaleNames = !scaleNames">Scales</UiButton>
+          </div>
+        </UiField>
+        <UiField>
+          <UiLabel class="pl-3">Guide Tones</UiLabel>
+          <div class="flex flex-wrap gap-2 *:whitespace-nowrap">
+            <UiButton v-bind="fromThird ? { color: 'note' } : { outline: true }" :class="fromThird ? '' : OFF_FILL" :aria-pressed="fromThird" aria-description="Guide tones: a line from the first chord's 3rd" title="A line that starts on the first chord's 3rd and moves to the nearest guide tone of each chord; with From 7th on, both lines" @click="fromThird = !fromThird">From 3rd</UiButton>
+            <UiButton v-bind="fromSeventh ? { color: 'note' } : { outline: true }" :class="fromSeventh ? '' : OFF_FILL" :aria-pressed="fromSeventh" aria-description="Guide tones: a line from the first chord's 7th" title="A line that starts on the first chord's 7th and moves to the nearest guide tone of each chord; with From 3rd on, both lines" @click="fromSeventh = !fromSeventh">From 7th</UiButton>
+          </div>
+        </UiField>
+      </template>
       <UiField>
         <UiLabel class="pl-3">Transposition</UiLabel>
         <div class="flex flex-wrap items-center gap-2">
@@ -77,7 +89,7 @@
 import { INSTRUMENTS, type InstrumentName, type Mode, noteText, partFor } from '~~/engine'
 import type { SheetKind } from '~/utils/sheets'
 
-/** the preview toolbar, in labelled groups: Work on (sheet), Instrument, #level, Show, Transposition (+ #transpose), #display */
+/** the preview toolbar, in labelled groups: Work on (sheet), Instrument, #level, Show (on the Changes: Analysis, Guide Tones), Transposition (+ #transpose), #display */
 const sheet = defineModel<SheetKind>('sheet', { required: true })
 const instrument = defineModel<InstrumentName>('instrument', { required: true })
 const mode = defineModel<Mode>('mode', { required: true })
@@ -85,10 +97,11 @@ const start = defineModel<string>('start', { required: true })
 const intervals = defineModel<boolean>('intervals', { required: true })
 const numerals = defineModel<boolean>('numerals', { default: true })
 const scaleNames = defineModel<boolean>('scaleNames', { default: true })
+const fromThird = defineModel<boolean>('fromThird', { default: false })
+const fromSeventh = defineModel<boolean>('fromSeventh', { default: false })
 
-const guideTones = useFeature('guideTones')
 const changes = useFeature('changes')
-const sheets = computed(() => SHEETS.filter((s) => (s.value === 'guideTones' ? guideTones : s.value === 'changes' ? changes : true)))
+const sheets = computed(() => SHEETS.filter((s) => s.value !== 'changes' || changes))
 const modes = computed((): readonly { value: Mode; label: string }[] => [
   { value: 'from', label: `From ${noteText(start.value)}` },
   { value: 'root', label: 'From root' },

@@ -1,9 +1,10 @@
 # Chord Scale Maker
 
-Chord-scale practice sheets from a chord chart, at [chordscalemaker.com](https://www.chordscalemaker.com). Each
-chord in a chart gets one staff with the scale that goes with it, written for your instrument. Scales are computed
-from their degree formulas, so spellings are always correct. There's also a guide tone sheet (each chord's 3rd and
-7th, voice-led into two lines) and a practice mode that highlights a chosen set of notes.
+Chord-scale practice sheets from a chord chart, at [chordscalemaker.com](https://www.chordscalemaker.com). A chart
+opens on the Changes sheet, a study lead sheet with each chord's Roman numeral and scale under it; its From 3rd and
+From 7th toggles put guide tone lines on the staff: each starts on the first chord's 3rd or 7th and moves to the nearest guide tone of each chord. The Scales sheet gives each chord one staff with the
+scale that goes with it. Everything is written for your instrument, and scales are computed from their degree
+formulas, so spellings are always correct. A practice mode highlights a chosen set of notes.
 
 The web app lives in `web/` (Nuxt 4, Tailwind CSS, VexFlow). Pages are prerendered and served by Vercel; the only
 server code is the contact form.
@@ -38,7 +39,7 @@ A1 | 3 | E7    | E Mixolydian
 | `@ending N SECTION FIRST [LAST]` | A 1st/2nd ending (volta) over `SECTION` bars `FIRST`..`LAST`; the section is played twice on the Changes sheet — repeat signs with the two endings bracketed. Write the two endings as sequential bars (e.g. 7–8 then 9–10). |
 | `@segno SECTION BAR` / `@coda SECTION BAR` | A segno (𝄋) or coda (⊕) glyph above that bar on the Changes sheet (the coda marks both the "to the coda" departure and the coda arrival). |
 | `@nav SECTION BAR TEXT` | A navigation instruction above that bar on the Changes sheet: `D.S. al Coda`, `D.C. al Fine`, `To Coda`, `Fine`. |
-| `time: 3/4` | The metre: `2/4`, `3/4` or `4/4` (the default). The guide tone sheet writes its rhythm in it (the waltzes in the library say `3/4`). |
+| `time: 3/4` | The metre: `2/4`, `3/4` or `4/4` (the default). The Changes sheet writes its slashes and guide tones in it (the waltzes in the library say `3/4`). |
 | `Intro`, `Coda`, `Tag`, `Ending` sections | Outside the form (`Tag 2` too): they print where they stand, but the form's turnaround goes back to its own bar 1, and each is analysed and timed on its own (its bars may be numbered from 1). `form:` counts only the form. |
 | `title:`, `subtitle:` | The heading on each page. |
 | `composer:`, `style:`, `key:`, `form:`, `source:` | About the tune: who wrote it, the feel (`Ballad`, `Medium up`, `Latin`…), the key (`Eb`, `Fm`), the form (`AABA, 32 bars`) and where the chart came from. Kept with the chart, not shown; `key:` is the analyser's starting point. |

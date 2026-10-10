@@ -8,7 +8,7 @@ test('searches the library and opens a chart', async ({ page }) => {
   await page.getByPlaceholder('Search by title').fill('autumn')
   await page.getByRole('link', { name: /Autumn Leaves/ }).click()
   await expect(page).toHaveURL(/song\?chart=autumn_leaves/)
-  await expect(staves(page)).toHaveCount(39) // 39 rows, from the root
+  await expect(staves(page)).toHaveCount(6) // it opens on the Changes: 24 bars, four a line
 })
 
 test('finds a tune by its composer, and the sheet carries the composer and the tune line', async ({ page }) => {
