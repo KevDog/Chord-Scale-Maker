@@ -63,8 +63,9 @@ cd web && npm run analyse -- ../charts/<tune>.txt --write --save
 ```
 
 `--write` fills blank scale cells only; `--force` rewrites every cell the rules reach except rows whose comment
-starts `# keep:`; `--save` writes the comments; `--all` runs over every chart. Without flags it only reports. `--ambiguous` lists the chords the rules could
-only guess at, each with the functions it might have, and the key areas an `@key` would pin.
+starts `# keep:`; `--save` writes the comments; `--all` runs over every chart. Without flags it only reports.
+`--ambiguous` lists the chords the rules could only guess at, each with the functions it might have, and the key areas
+an `@key` would pin.
 
 ## Instruments
 

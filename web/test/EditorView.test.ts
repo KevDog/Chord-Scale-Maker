@@ -36,6 +36,28 @@ async function chooseMode(w: Wrapper, label: string): Promise<void> {
   await nextTick()
 }
 
+describe('EditorView help', () => {
+  afterEach(() => {
+    useRuntimeConfig().public.features.functions = false
+    localStorage.clear()
+  })
+  it('mentions functions and @key only with the flag on', async () => {
+    useRuntimeConfig().public.features.functions = true
+    const on = await mount()
+    await on.findAll('button').find((b) => b.text() === 'Edit')?.trigger('click')
+    await nextTick()
+    expect(on.html()).toContain('@key B 17 D')
+    on.unmount()
+    useRuntimeConfig().public.features.functions = false
+    const off = await mount()
+    await off.findAll('button').find((b) => b.text() === 'Edit')?.trigger('click')
+    await nextTick()
+    expect(off.html()).not.toMatch(/function|@key/)
+    expect(off.html()).toContain("Leave the scale out to use the chord's default.")
+    off.unmount()
+  })
+})
+
 describe('EditorView', () => {
   afterEach(() => localStorage.clear())
 

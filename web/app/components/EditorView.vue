@@ -51,8 +51,8 @@
           <div class="mb-3 flex items-center gap-2">
             <UiSubheading id="text-heading">Text</UiSubheading>
             <HelpTip label="How the text editor works">
-              <span class="block">One line per chord: <code class="font-mono text-xs whitespace-nowrap">section | bar | chord | scale | function</code>, in concert pitch. Leave the scale out to use the chord's default; the function (<code class="font-mono text-xs">V7/ii</code>, or <code class="font-mono text-xs">D: V7/ii</code> in another key) is optional and tells the analysis what the chord does; the grid offers the ones that fit.</span>
-              <span class="mt-2 block"><code class="font-mono text-xs">title:</code>, <code class="font-mono text-xs">subtitle:</code>, <code class="font-mono text-xs">composer:</code>, <code class="font-mono text-xs">key:</code> and <code class="font-mono text-xs">form:</code> set the heading, lines starting with <code class="font-mono text-xs">#</code> are comments, and <code class="font-mono text-xs">@copy A B 8</code> repeats section A as B, 8 bars later, and <code class="font-mono text-xs">@key B 17 D</code> puts bars from B 17 in D until the next @key.</span>
+              <span class="block">One line per chord: <code class="font-mono text-xs whitespace-nowrap">section | bar | chord | scale<template v-if="functionsOn"> | function</template></code>, in concert pitch. Leave the scale out to use the chord's default.<template v-if="functionsOn"> The function (<code class="font-mono text-xs">V7/ii</code>, or <code class="font-mono text-xs">D: V7/ii</code> in another key) is optional and tells the analysis what the chord does; the grid offers the ones that fit.</template></span>
+              <span class="mt-2 block"><code class="font-mono text-xs">title:</code>, <code class="font-mono text-xs">subtitle:</code>, <code class="font-mono text-xs">composer:</code>, <code class="font-mono text-xs">key:</code> and <code class="font-mono text-xs">form:</code> set the heading, lines starting with <code class="font-mono text-xs">#</code> are comments, and <code class="font-mono text-xs">@copy A B 8</code> repeats section A as B, 8 bars later<template v-if="functionsOn">, and <code class="font-mono text-xs">@key B 17 D</code> puts bars from B 17 in D until the next @key</template>.</span>
               <span class="mt-2 block">The text and the grid stay in sync: edit either one. Problems are listed under the text.</span>
             </HelpTip>
           </div>
@@ -212,6 +212,7 @@ const sheet = ref<SheetKind>(
   sharedSheet === 'guideTones' && useFeature('guideTones') ? 'guideTones' : sharedSheet === 'changes' && useFeature('changes') ? 'changes' : 'scales',
 )
 const practiceOn = useFeature('practice')
+const functionsOn = useFeature('functions')
 const practice = usePractice(props.practiceKey)
 const levelsOn = useFeature('scaleLevels')
 const scaleLevel = useScaleLevel(props.practiceKey, props.shared)
