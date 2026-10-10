@@ -1,5 +1,6 @@
 title: So What
 subtitle: AABA, 32 Bars
+key: Dm
 # analysis: 2026-10-08, rules v1; D minor, modal
 
 # section | bar | chord | scale

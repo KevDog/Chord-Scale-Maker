@@ -1,5 +1,6 @@
 title: Maiden Voyage
 subtitle: AABA, 32 Bars, Four Bars per Chord
+key: D
 # analysis: 2026-10-08, rules v1; Eb, modal
 
 # section | bar | chord  | scale

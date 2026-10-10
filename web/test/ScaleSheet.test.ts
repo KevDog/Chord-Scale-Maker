@@ -20,13 +20,8 @@ describe('ScaleSheet', () => {
       'S (Spelled from the Root)',
       'S (Spelled from the Root)',
     ])
-    // one continuous card on screen: a divider where each printed page starts, and the header only where the
-    // subtitle changes (every printed page still has its own, for print)
-    expect(w.findAll('[role=separator]').map((d) => d.attributes('aria-label'))).toEqual([
-      'Printed page 2 starts here',
-      'Printed page 3 starts here',
-      'Printed page 4 starts here',
-    ])
+    // one continuous card on screen; the header shows only where the subtitle changes (every printed page still has
+    // its own, for print)
     expect(pages.map((p) => p.find('header').classes().includes('hidden'))).toEqual([false, true, false, true])
     expect(pages.every((p) => p.classes().includes('print:break-after-page'))).toBe(true)
   })

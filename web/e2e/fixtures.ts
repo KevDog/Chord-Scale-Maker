@@ -38,3 +38,32 @@ export async function chooseInstrument(page: import('@playwright/test').Page, na
   await page.getByRole('button', { name: 'Instrument' }).click()
   await page.getByRole('option', { name: new RegExp(`^${name}`) }).click()
 }
+
+/** open a listbox (by its current button name) and choose an option by exact label */
+export async function pickOption(page: import('@playwright/test').Page, button: string | RegExp, option: string | RegExp): Promise<void> {
+  await page.getByRole('button', { name: button }).click()
+  await page.getByRole('option', { name: option, exact: typeof option === 'string' }).click()
+}
+
+/** set the scale level from its toolbar "Level" dropdown */
+export async function setScaleLevel(page: import('@playwright/test').Page, label: string): Promise<void> {
+  await pickOption(page, 'Level', label)
+}
+
+/** choose a sheet (Scales / Guide Tones / Changes) from the toolbar's "Work on" dropdown */
+export async function chooseSheet(page: import('@playwright/test').Page, label: string): Promise<void> {
+  await pickOption(page, 'Work on', label)
+}
+
+/** reveal the editor (grid + text) if it isn't already shown — the page is song-first, editor hidden by default */
+export async function openEditor(page: import('@playwright/test').Page): Promise<void> {
+  const text = page.getByLabel('Chart text')
+  // retry the click: before hydration the Edit handler isn't attached yet, so a single click can be lost
+  await expect(async () => {
+    if (!(await text.isVisible())) {
+      const edit = page.getByRole('button', { name: 'Edit', exact: true })
+      if (await edit.count()) await edit.click({ timeout: 1000 })
+    }
+    await expect(text).toBeVisible({ timeout: 1000 })
+  }).toPass({ timeout: 10_000 })
+}

@@ -18,7 +18,7 @@
       <UiSubheading id="quick">The short version</UiSubheading>
       <ol class="list-decimal space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
         <li>Pick a tune from the <UiTextLink href="/">library</UiTextLink>.</li>
-        <li>Choose your instrument under <strong class="font-semibold text-zinc-950 dark:text-white">Preview</strong>. The sheet is rewritten for it.</li>
+        <li>Choose your instrument from the <strong class="font-semibold text-zinc-950 dark:text-white">Instrument</strong> menu in the toolbar. The sheet is rewritten for it.</li>
         <li>Practise from the screen, hit <strong class="font-semibold text-zinc-950 dark:text-white">Focus</strong> to get rid of everything but the music, or print it.</li>
       </ol>
       <UiText>That's genuinely it. Everything below is for when you want more.</UiText>

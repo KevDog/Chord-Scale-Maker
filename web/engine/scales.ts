@@ -64,6 +64,29 @@ export const ALIASES: Readonly<Record<string, ScaleKey>> = {
 export type ScaleNote = Readonly<Spelled & { semis: number }>
 export type ParsedScale = Readonly<{ root: Spelled; key: ScaleKey }>
 
+const SCALE_ABBREV: Readonly<Record<string, string>> = {
+  Mixolydian: 'Mixo',
+  Pentatonic: 'Pent',
+  Dominant: 'Dom',
+  Diminished: 'Dim',
+  Lydian: 'Lyd',
+  Phrygian: 'Phryg',
+  Locrian: 'Locr',
+  Augmented: 'Aug',
+}
+
+/** shorten the long scale words for a tight display ("Lydian Dominant" -> "Lyd Dom"); roots and degrees untouched */
+export function abbreviateScale(name: string): string {
+  return name
+    .replace(/Harmonic Minor/g, 'Harm min')
+    .replace(/Melodic Minor/g, 'Mel min')
+    .replace(/Half-Whole/g, 'H/W')
+    .replace(/Whole-Half/g, 'W/H')
+    .split(' ')
+    .map((w) => SCALE_ABBREV[w] ?? w)
+    .join(' ')
+}
+
 const norm = (s: string): string =>
   s
     .toLowerCase()

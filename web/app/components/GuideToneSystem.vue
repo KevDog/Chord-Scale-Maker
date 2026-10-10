@@ -48,6 +48,7 @@ function setEl(l: 0 | 1, el: Element | ComponentPublicInstance | null): void {
 }
 const xs = ref<readonly (readonly (readonly number[])[])[]>([[], []])
 const drawError = ref<string | null>(null)
+const rendering = useRendering()
 
 const labelsFor = (l: 0 | 1): { x: number; label: string }[] =>
   props.system.bars.flatMap((bar, b) =>
@@ -73,6 +74,7 @@ const chordMarks = computed(() =>
 async function draw(): Promise<void> {
   const [a, b] = els
   if (!a || !b) return
+  const done = rendering.begin()
   try {
     const vf = await loadVexFlow()
     xs.value = drawGuideToneSystem(vf, [a, b], props.system, props.clef, {
@@ -84,6 +86,8 @@ async function draw(): Promise<void> {
     drawError.value = null
   } catch (e) {
     drawError.value = `Couldn't draw these bars (${e instanceof Error ? e.message : String(e)})`
+  } finally {
+    done()
   }
 }
 

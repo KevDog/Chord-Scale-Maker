@@ -7,9 +7,8 @@ test('searches the library and opens a chart', async ({ page }) => {
   await expect(page.getByText('No charts match')).toBeVisible()
   await page.getByPlaceholder('Search by title').fill('autumn')
   await page.getByRole('link', { name: /Autumn Leaves/ }).click()
-  await expect(page).toHaveURL(/editor\?chart=autumn_leaves/)
+  await expect(page).toHaveURL(/song\?chart=autumn_leaves/)
   await expect(staves(page)).toHaveCount(39) // 39 rows, from the root
-  await expect(page.getByRole('separator', { name: /Printed page \d starts here/ })).toHaveCount(3) // 4 printed pages
 })
 
 test('finds a tune by its composer, and the sheet carries the composer and the tune line', async ({ page }) => {
@@ -24,7 +23,7 @@ test('finds a tune by its composer, and the sheet carries the composer and the t
 })
 
 test('every page carries a hashed Content-Security-Policy', async ({ page }) => {
-  for (const path of ['/', '/editor', '/help', '/about', '/contact', '/privacy']) {
+  for (const path of ['/', '/song', '/help', '/about', '/contact', '/privacy']) {
     await page.goto(path)
     const csp = await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content')
     expect(csp).toMatch(/script-src 'self' 'sha256-[^']+' 'sha256-[^']+'/)
@@ -48,7 +47,7 @@ test('a quote in the header, kept while navigating', async ({ page }) => {
   await expect(quote.locator('figcaption')).toHaveText(/^— [^·]+$/) // the author only
   const text = await quote.textContent()
   await page.getByRole('link', { name: /Autumn Leaves/ }).click()
-  await expect(page).toHaveURL(/editor/)
+  await expect(page).toHaveURL(/song/)
   await expect(page.locator('nav figure')).toHaveText(text ?? '')
 })
 

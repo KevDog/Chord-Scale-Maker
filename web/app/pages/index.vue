@@ -11,7 +11,7 @@
         <UiButton outline href="/contact">Request a chart</UiButton>
         <template v-if="myCharts">
           <UiButton outline :disabled="opener.busy.value" title="Open a chart saved as a .txt file (or drop one on this page)" @click="fileInput?.click()"><FolderOpenIcon data-slot="icon" />Open chart…</UiButton>
-          <UiButton color="note" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
+          <UiButton color="note" href="/song?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
         </template>
       </div>
     </div>
@@ -39,7 +39,7 @@
       <UiTableBody>
         <UiTableRow v-for="chart in charts" :key="chart.slug">
           <UiTableCell class="font-medium">
-            <UiLink :href="`/editor?chart=${chart.slug}`" class="text-note-800 hover:underline dark:text-note-300">{{ chart.title }}</UiLink>
+            <UiLink :href="`/song?chart=${chart.slug}`" class="text-note-800 hover:underline dark:text-note-300">{{ chart.title }}</UiLink>
           </UiTableCell>
           <UiTableCell class="text-zinc-500 dark:text-zinc-400">{{ chart.composer }}</UiTableCell>
           <UiTableCell class="text-zinc-500 dark:text-zinc-400">{{ chart.subtitle }}</UiTableCell>
@@ -52,7 +52,7 @@
       <UiSubheading class="mt-2" :level="2">No charts match "{{ query }}"</UiSubheading>
       <UiText class="mt-1">Try another title or composer, or {{ myCharts ? 'start a new chart' : 'request one' }}.</UiText>
       <div v-if="myCharts" class="mt-6">
-        <UiButton v-if="myCharts" color="note" href="/editor?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
+        <UiButton v-if="myCharts" color="note" href="/song?new=1"><PlusIcon data-slot="icon" />New chart</UiButton>
       </div>
     </div>
   </div>

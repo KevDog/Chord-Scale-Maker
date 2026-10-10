@@ -3,6 +3,6 @@ export type SheetKind = 'scales' | 'guideTones' | 'changes'
 
 export const SHEETS: readonly { value: SheetKind; label: string }[] = [
   { value: 'scales', label: 'Scales' },
-  { value: 'guideTones', label: 'Guide tones' },
+  { value: 'guideTones', label: 'Guide Tones' },
   { value: 'changes', label: 'Changes' },
 ]

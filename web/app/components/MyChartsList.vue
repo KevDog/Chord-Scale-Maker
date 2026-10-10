@@ -66,7 +66,7 @@ onBeforeUnmount(() => window.removeEventListener('storage', onStorage))
 
 const shown = computed(() => charts.value.filter((c) => searchLibrary([{ slug: c.id, title: c.title, subtitle: '', composer: '', text: '' }], props.query).length))
 
-const openHref = (c: SavedMeta): string => (c.kind === 'edited' && c.basedOn ? `/editor?chart=${c.basedOn}` : `/editor?mine=${c.id}`)
+const openHref = (c: SavedMeta): string => (c.kind === 'edited' && c.basedOn ? `/song?chart=${c.basedOn}` : `/song?mine=${c.id}`)
 const kindLabel = (c: SavedMeta): string => (c.kind === 'edited' ? 'Edited' : c.kind === 'copy' ? 'Copy' : 'Mine')
 const changed = (at: number): string => {
   const d = new Date(at)

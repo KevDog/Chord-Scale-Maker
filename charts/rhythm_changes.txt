@@ -1,5 +1,6 @@
 title: Rhythm Changes
 subtitle: Bb, AABA, Standard Changes
+key: Bb
 # analysis: 2026-10-08, rules v1; Bb
 
 # section | bar | chord | scale

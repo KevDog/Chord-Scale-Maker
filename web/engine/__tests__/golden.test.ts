@@ -75,7 +75,7 @@ describe('golden fixture', () => {
       const rows = expandRows(doc)
       return [
         [`${name} diagnostics`, [], [...diagnostics, ...rows.diagnostics]] as const,
-        [`${name} meta`, { title: want.title, subtitle: want.subtitle }, chartMeta(doc)] as const,
+        [`${name} meta`, { title: want.title, subtitle: want.subtitle, key: want.key }, chartMeta(doc)] as const,
         [`${name} rows`, want.rows, rows.value.map((r) => [r.section, r.bar, r.chord, resolveScale(r)])] as const,
       ]
     })

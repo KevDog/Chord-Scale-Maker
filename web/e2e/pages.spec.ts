@@ -125,3 +125,14 @@ test('Help is in the navbar and footer, and its contents jump to each section', 
   await expect(footer.getByRole('link', { name: 'Support me on Ko-fi' })).toHaveAttribute('href', 'https://ko-fi.com/kcstevens90266')
   await expect(footer.getByRole('link', { name: 'Support me on Patreon' })).toHaveAttribute('href', 'https://www.patreon.com/kcstevens')
 })
+
+test('Report a chart error opens the contact form, pre-filled with the chart and details', async ({ page }) => {
+  await page.goto('/song?chart=autumn_leaves')
+  await page.getByRole('button', { name: 'Report a chart error' }).click()
+  await expect(page).toHaveURL(/\/contact/)
+  const message = page.getByRole('textbox', { name: 'Message' })
+  await expect(message).toHaveValue(/version:/)
+  await expect(message).toHaveValue(/Cm7/) // the chart text came along
+  await page.reload() // the report is used once, then cleared
+  await expect(page.getByRole('textbox', { name: 'Message' })).toHaveValue('')
+})

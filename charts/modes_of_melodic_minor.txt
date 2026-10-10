@@ -1,5 +1,6 @@
 title: Modes of Melodic Minor
 subtitle: C Melodic Minor from Each Degree
+key: Cm
 
 # section | bar | chord | scale
 # "bar" is the scale degree. "From C" shows all seven share one set of notes; "From root" shows each mode

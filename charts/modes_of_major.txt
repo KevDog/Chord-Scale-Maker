@@ -1,5 +1,6 @@
 title: Modes of the Major Scale
 subtitle: C Major from Each Degree
+key: C
 
 # section | bar | chord | scale
 # "bar" is the scale degree. "From C" shows all seven share one set of notes; "From root" shows each mode

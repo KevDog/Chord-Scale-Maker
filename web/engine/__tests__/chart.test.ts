@@ -1,6 +1,13 @@
 import { describe, expect, it } from 'vitest'
-import { beatsPerBar, chartBeats, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, keyLabel, parseChart, resolveScale, serializeChart } from '../chart'
+import { beatsPerBar, chartBeats, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, parseChart, resolveScale, serializeChart } from '../chart'
 import { LIMITS } from '../limits'
+
+describe('isValidKey', () => {
+  it('accepts a real major or minor key, rejects junk', () => {
+    for (const k of ['C', 'Eb', 'F#', 'Bb', 'Am', 'F#m', 'Dm']) expect(isValidKey(k)).toBe(true)
+    for (const k of ['', 'H', 'Cmaj', 'x', 'C7', '  ']) expect(isValidKey(k)).toBe(false)
+  })
+})
 
 const SAMPLE = `title: T
 subtitle: S
@@ -16,7 +23,7 @@ describe('chart', () => {
     const { value: doc, diagnostics } = parseChart(SAMPLE)
     expect(diagnostics).toEqual([])
     expect(doc.lines.map((l) => l.kind)).toEqual(['meta', 'meta', 'blank', 'comment', 'row', 'row', 'copy'])
-    expect(chartMeta(doc)).toEqual({ title: 'T', subtitle: 'S' })
+    expect(chartMeta(doc)).toEqual({ title: 'T', subtitle: 'S', key: '' })
     expect(doc.lines[5]).toEqual({ kind: 'row', section: 'A', bar: '2', chord: 'F7', scale: '' })
   })
 

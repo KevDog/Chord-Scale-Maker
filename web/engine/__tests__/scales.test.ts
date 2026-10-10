@@ -1,6 +1,21 @@
 import { describe, expect, it } from 'vitest'
 import { parseRoot, rootName } from '../pitch'
-import { parseScale, SCALES, scaleKey, simplifyRoot, spellFrom, spellScale } from '../scales'
+import { abbreviateScale, parseScale, SCALES, scaleKey, simplifyRoot, spellFrom, spellScale } from '../scales'
+
+describe('abbreviateScale', () => {
+  it('shortens long scale words, leaves roots/degrees/short names alone', () => {
+    expect(abbreviateScale('Mixolydian')).toBe('Mixo')
+    expect(abbreviateScale('Mixolydian b6')).toBe('Mixo b6')
+    expect(abbreviateScale('Lydian Dominant')).toBe('Lyd Dom')
+    expect(abbreviateScale('Major Pentatonic')).toBe('Major Pent')
+    expect(abbreviateScale('Harmonic Minor')).toBe('Harm min')
+    expect(abbreviateScale('Melodic Minor')).toBe('Mel min')
+    expect(abbreviateScale('Half-Whole Diminished')).toBe('H/W Dim')
+    expect(abbreviateScale('Bebop Dominant')).toBe('Bebop Dom')
+    expect(abbreviateScale('Dorian')).toBe('Dorian')
+    expect(abbreviateScale('Altered')).toBe('Altered')
+  })
+})
 
 const spelled = (text: string): string => {
   const { root, key } = parseScale(text)

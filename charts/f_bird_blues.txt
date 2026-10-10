@@ -1,5 +1,6 @@
 title: F Bird Blues
 subtitle: Blues for Alice Changes
+key: F
 # analysis: 2026-10-08, rules v1; F
 
 # section | bar | chord | scale

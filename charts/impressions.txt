@@ -1,5 +1,6 @@
 title: Impressions
 subtitle: AABA, 32 Bars (the So What Form)
+key: Dm
 # analysis: 2026-10-08, rules v1; D minor, modal
 
 # section | bar | chord | scale

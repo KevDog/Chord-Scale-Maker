@@ -736,7 +736,7 @@
   ]
  },
  "bb_bird_blues": {
-  "key": "Bb major (scored, functional)",
+  "key": "Bb major (key:, functional)",
   "areas": [
    "Bb major 1–12"
   ],
@@ -2255,7 +2255,7 @@
   ]
  },
  "f_bird_blues": {
-  "key": "F major (scored, functional)",
+  "key": "F major (key:, functional)",
   "areas": [
    "F major 1–12"
   ],
@@ -3429,7 +3429,7 @@
   ]
  },
  "impressions": {
-  "key": "D minor (scored, modal)",
+  "key": "D minor (key:, modal)",
   "areas": [
    "D minor 1–25"
   ],
@@ -4492,19 +4492,19 @@
   ]
  },
  "maiden_voyage": {
-  "key": "Eb major (scored, modal)",
+  "key": "D major (key:, modal)",
   "areas": [
-   "Eb major 1–29"
+   "D major 1–29"
   ],
   "rows": [
-   "1 Am7/D [VII7sus] → D Mixolydian (s3) static sus: Mixolydian",
-   "5 Cm7/F [II7sus] → F Mixolydian (s3) static sus: Mixolydian",
-   "9 Am7/D [VII7sus] → D Mixolydian (s3) static sus: Mixolydian",
-   "13 Cm7/F [II7sus] → F Mixolydian (s3) static sus: Mixolydian",
-   "17 Bbm7/Eb [I7sus] → Eb Mixolydian (s3) static sus: Mixolydian",
-   "21 C#m7 [♭vii7] → C# Dorian (m6) modal minor: Dorian",
-   "25 Am7/D [VII7sus] → D Mixolydian (s3) static sus: Mixolydian",
-   "29 Cm7/F [II7sus] → F Mixolydian (s3) static sus: Mixolydian"
+   "1 Am7/D [I7sus] → D Mixolydian (s3) static sus: Mixolydian",
+   "5 Cm7/F [♭III7sus] → F Mixolydian (s3) static sus: Mixolydian",
+   "9 Am7/D [I7sus] → D Mixolydian (s3) static sus: Mixolydian",
+   "13 Cm7/F [♭III7sus] → F Mixolydian (s3) static sus: Mixolydian",
+   "17 Bbm7/Eb [♭II7sus] → Eb Mixolydian (s3) static sus: Mixolydian",
+   "21 C#m7 [vii7] → C# Dorian (m6) modal minor: Dorian",
+   "25 Am7/D [I7sus] → D Mixolydian (s3) static sus: Mixolydian",
+   "29 Cm7/F [♭III7sus] → F Mixolydian (s3) static sus: Mixolydian"
   ]
  },
  "mean_to_me": {
@@ -4620,7 +4620,7 @@
   ]
  },
  "milestones": {
-  "key": "G minor (scored, modal)",
+  "key": "G minor (key:, modal)",
   "areas": [
    "G minor 1–33"
   ],
@@ -4710,7 +4710,7 @@
   ]
  },
  "modes_of_major": {
-  "key": "C major (scored, functional)",
+  "key": "C major (key:, functional)",
   "areas": [
    "C major 1–7"
   ],
@@ -4725,18 +4725,18 @@
   ]
  },
  "modes_of_melodic_minor": {
-  "key": "G minor (scored, functional)",
+  "key": "C minor (key:, functional)",
   "areas": [
-   "G minor 1–7"
+   "C minor 1–7"
   ],
   "rows": [
-   "1 CmMaj7 [iv(maj7)] → C Melodic Minor (m1) iv in G minor — from the symbol: minor-major 7th",
-   "2 D7sus4b9 [V7sus] → D Phrygian (s1) sus b9 — from the symbol: sus b9",
-   "3 EbMaj7#5 [♭VImaj7♯5] → Eb Lydian Augmented (M2) bVI in G minor — from the symbol: #5",
-   "4 F7#11 [♭VII7] → F Lydian Dominant (D1+D5) bVII7 in G minor, not resolving: the #11 from the symbol",
-   "5 G7b13 [I7] → G Mixolydian b6 (D5) I7 in G minor, not resolving: the b13 is in the key",
-   "6 Am7b5 [iiø7] → A Locrian (h2) iiø7 in G minor: the b9 is in the key",
-   "7 B7alt [III7] → B Altered (D1) altered dominant — from the symbol: altered"
+   "1 CmMaj7 [i(maj7)] → C Melodic Minor (m1) i in C minor — from the symbol: minor-major 7th",
+   "2 D7sus4b9 [II7sus] → D Phrygian (s1) sus b9 — from the symbol: sus b9",
+   "3 EbMaj7#5 [♭IIImaj7♯5] → Eb Lydian Augmented (M2) bIII in C minor — from the symbol: #5",
+   "4 F7#11 [IV7] → F Lydian Dominant (D1+D5) IV7 in C minor, not resolving: the #11 from the symbol",
+   "5 G7b13 [V7] → G Phrygian Dominant (D5) V7 in C minor, not resolving: b9 and b13 are in the key",
+   "6 Am7b5 [viø7] → A Locrian (h2) viø7 in C minor: the b9 is in the key",
+   "7 B7alt [VII7] → B Altered (D1) altered dominant — from the symbol: altered"
   ]
  },
  "moments_notice": {
@@ -6457,7 +6457,7 @@
   ]
  },
  "rhythm_changes": {
-  "key": "Bb major (scored, functional)",
+  "key": "Bb major (key:, functional)",
   "areas": [
    "Bb major 1–32"
   ],
@@ -7266,7 +7266,7 @@
   ]
  },
  "so_what": {
-  "key": "D minor (scored, modal)",
+  "key": "D minor (key:, modal)",
   "areas": [
    "D minor 1–25"
   ],

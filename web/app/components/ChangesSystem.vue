@@ -43,6 +43,7 @@ const props = defineProps<{
 const el = ref<HTMLElement | null>(null)
 const xs = ref<readonly (readonly number[])[]>([])
 const drawError = ref<string | null>(null)
+const rendering = useRendering()
 
 /**
  * each chord over the slash of its beat (markers and key areas ride on a bar's first chord, or its first beat), with
@@ -64,12 +65,15 @@ const repeats = computed(() =>
 
 async function draw(): Promise<void> {
   if (!el.value) return
+  const done = rendering.begin()
   try {
     const vf = await loadVexFlow()
     xs.value = drawChangesLine(vf, el.value, props.line, { timeSignature: props.first, beats: props.beats, barsPerLine: props.barsPerLine }).xs
     drawError.value = null
   } catch (e) {
     drawError.value = `Couldn't draw these bars (${e instanceof Error ? e.message : String(e)})`
+  } finally {
+    done()
   }
 }
 

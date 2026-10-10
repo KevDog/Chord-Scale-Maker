@@ -51,6 +51,7 @@
 <script setup lang="ts">
 import type { ReadyAttachment } from '~/utils/attachment'
 import { CONTACT_LIMITS, type ContactField as Field, EMAIL } from '../../server/utils/contactMessage'
+import { buildChartReport, CHART_REPORT_KEY } from '~/utils/chartReport'
 
 /** the contact form: posts to /api/contact, which emails the message (server/api/contact.post.ts) */
 const blank = () => ({ name: '', email: '', message: '', website: '' })
@@ -70,6 +71,16 @@ watch(attachment, () => {
 
 onMounted(() => {
   startedAt = Date.now()
+  // a chart-error report (from the editor) pre-fills the message, once, then is cleared
+  const raw = sessionStorage.getItem(CHART_REPORT_KEY)
+  if (raw) {
+    sessionStorage.removeItem(CHART_REPORT_KEY)
+    try {
+      form.message = buildChartReport(JSON.parse(raw))
+    } catch {
+      /* a malformed or oversized blob: leave the form blank */
+    }
+  }
 })
 
 /** the same rules the server applies, so most mistakes show without a round trip */

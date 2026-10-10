@@ -4,6 +4,7 @@ import { type ChordToken, chordTokensOrNull } from './chord'
 import { guideToneTimeline } from './guideToneTimeline'
 import { type Part, scaleLabel, writtenRoot } from './part'
 import { glyphs, parseRoot, rootName } from './pitch'
+import { abbreviateScale } from './scales'
 import { chunk, orNull } from './util'
 
 /**
@@ -59,7 +60,7 @@ function keyName(name: string, part: Part): string {
 const writtenScale = (part: Part, scale: string | null): string | null => {
   if (!scale) return null
   const label = orNull(() => scaleLabel(part, scale))
-  return label ? glyphs(`${rootName(label.root)} ${label.name}`) : scale
+  return label ? glyphs(`${rootName(label.root)} ${abbreviateScale(label.name)}`) : scale
 }
 
 export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4): ChangesSheet {
@@ -184,5 +185,19 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4): Change
     })
     return chunk(bars, barsPerLine).map((b) => ({ bars: b }))
   })
-  return { lines, beats, diagnostics }
+
+  // within each line, blank a chord's scale when it repeats the previous chord's (the first chord always shows its scale)
+  const deduped = lines.map((line): ChangesLine => {
+    let prev: string | null = null
+    const bars = line.bars.map((bar): ChangesBar => ({
+      ...bar,
+      chords: bar.chords.map((c): ChangesChord => {
+        if (c.scale && c.scale === prev) return { ...c, scale: null }
+        prev = c.scale
+        return c
+      }),
+    }))
+    return { bars }
+  })
+  return { lines: deduped, beats, diagnostics }
 }

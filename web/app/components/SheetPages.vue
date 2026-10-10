@@ -1,15 +1,9 @@
 <template>
-  <!-- on screen: one continuous card, with a dashed divider where each printed page starts;
-       in print: bare letter pages, each breaking after itself under its own header -->
+  <!-- on screen: one continuous card; in print: bare letter pages, each breaking after itself under its own header -->
   <div
     class="rounded-xl bg-white p-6 shadow-xs ring-1 ring-zinc-950/10 dark:bg-zinc-950 dark:ring-white/10 print:rounded-none print:bg-white print:p-0 print:shadow-none print:ring-0"
   >
     <section v-for="(page, i) in pages" :key="i" class="print:break-after-page print:last:break-after-auto">
-      <div v-if="i > 0" role="separator" :aria-label="`Printed page ${i + 1} starts here`" class="my-6 flex items-center gap-3 text-xs text-zinc-500 print:hidden dark:text-zinc-400">
-        <span class="flex-1 border-t border-dashed border-zinc-300 dark:border-zinc-700" />
-        <span aria-hidden="true">Page {{ i + 1 }}</span>
-        <span class="flex-1 border-t border-dashed border-zinc-300 dark:border-zinc-700" />
-      </div>
       <!-- every printed page repeats the header; on screen only where the subtitle changes (the first page) -->
       <header :class="['mb-4 text-center', compact && 'print:mb-1', !headerOnScreen(i) && 'hidden print:block']">
         <h2 class="font-display text-2xl/8 font-bold tracking-tight text-zinc-950 dark:text-white print:text-black">{{ title }}</h2>
