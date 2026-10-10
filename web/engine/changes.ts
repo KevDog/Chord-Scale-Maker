@@ -1,4 +1,4 @@
-import { analyse, parseKey, rowKeys } from './analysis'
+import { analyse, chartKeyOf, parseKey } from './analysis'
 import { type ChartDoc, type ChartLine, chartBeats, expandRowLines, formPart, type FormPart, type LinedRow, resolveScale } from './chart'
 import { type ChordToken, chordTokensOrNull } from './chord'
 import { guideToneTimeline } from './guideToneTimeline'
@@ -33,7 +33,7 @@ export type ChangesChord = Readonly<{
   keyFrom: 'found' | 'area' | 'function'
 }>
 export type ChangesBar = Readonly<{
-  /** the key signature in force, written for the part; null when signatures are off */
+  /** the chart's key signature, written for the part; null when signatures are off or it has no key: */
   keySig: string | null
   chords: readonly ChangesChord[]
   /** a section marker on its first bar: "A1", "A3 (= A1)", "Intro", "Coda (after the last chorus)" */
@@ -79,7 +79,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const beats = chartBeats(doc)
   const { events, diagnostics } = guideToneTimeline(rows, beats)
   const analysis = analyse(doc)
-  const keys = signatures ? rowKeys(doc) : null
+  const keySig = signatures ? keySignature(chartKeyOf(doc), part) : null
   const byRow = new Map(analysis.rows.map((r) => [r.row, r]))
   const index = new Map<LinedRow, number>(rows.map((r, i) => [r, i]))
   const eventAt = new Map(events.map((e) => [index.get(e.row as LinedRow) ?? -1, e]))
@@ -159,7 +159,6 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   }
 
   let lastKey = ''
-  let sigKey = keys?.[0] ?? null
   const lastForm = blocks.findLastIndex((b) => b.part === 'form')
   const lines = blocks.flatMap((block, k) => {
     const bars = Array.from({ length: Math.max(1, block.to - block.from + 1) }, (_, j): ChangesBar => {
@@ -185,12 +184,10 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
       const firstKey = block.rows.map((i) => byRow.get(i)).find((a) => a && barOf(a.row) === bar)?.key.name
       const keyArea = firstKey && firstKey !== lastKey ? keyName(firstKey, part) : ''
       for (const i of block.rows) if (barOf(i) === bar) lastKey = byRow.get(i)?.key.name ?? lastKey
-      const firstRow = block.rows.find((i) => barOf(i) === bar)
-      if (keys && firstRow !== undefined) sigKey = keys[firstRow] ?? sigKey
       const last = j === block.to - block.from
       const hasEndings = sectionsWithEndings.has(block.section)
       return {
-        keySig: keys ? keySignature(sigKey, part) : null,
+        keySig,
         chords,
         marker: j === 0 ? block.marker : '',
         keyArea,

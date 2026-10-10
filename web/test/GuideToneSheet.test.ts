@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import GuideToneSheet from '~/components/GuideToneSheet.vue'
-import { CONCERT, expandRows, parseChart, rowKeys } from '~~/engine'
+import { CONCERT, chartKeyOf, expandRows, parseChart } from '~~/engine'
 
 const rows = (text: string) => expandRows(parseChart(text).value).value
 const mount = (text: string) =>
@@ -22,12 +22,17 @@ describe('GuideToneSheet', () => {
     expect(w.find('ul').text()).toContain('no guide tones for Cm7#5#9x')
   })
 
-  it("carries the rows' keys to every bar it draws, and none without", async () => {
+  it("carries the chart's key to every bar it draws and turns signatures on, and neither without", async () => {
     const text = 'key: Eb\nA | 1 | Fm7\nA | 2 | Bb7\n'
     const props = { rows: rows(text), title: 'T', subtitle: 'S', part: CONCERT, instrumentLabel: '' }
-    const barsOf = async (extra: object) =>
-      ((await mountSuspended(GuideToneSheet, { props: { ...props, ...extra }, global: { stubs: { GuideToneSystem: true } } })).findComponent({ name: 'GuideToneSystem' }).props('system') as { bars: { keySig: string | null }[] }).bars
-    expect((await barsOf({ keys: rowKeys(parseChart(text).value) })).map((b) => b.keySig)).toEqual(['Eb', 'Eb'])
-    expect((await barsOf({})).every((b) => b.keySig === null)).toBe(true)
+    const systemOf = async (extra: object) =>
+      (await mountSuspended(GuideToneSheet, { props: { ...props, ...extra }, global: { stubs: { GuideToneSystem: true } } })).findComponent({ name: 'GuideToneSystem' })
+    const keyed = await systemOf({ homeKey: chartKeyOf(parseChart(text).value) })
+    expect((keyed.props('system') as { bars: { keySig: string | null }[] }).bars.map((b) => b.keySig)).toEqual(['Eb', 'Eb'])
+    expect(keyed.props('signatures')).toBe(true)
+    expect((await systemOf({ homeKey: null })).props('signatures')).toBe(true) // no key: line: the clef once, no signature
+    const plain = await systemOf({})
+    expect((plain.props('system') as { bars: { keySig: string | null }[] }).bars.every((b) => b.keySig === null)).toBe(true)
+    expect(plain.props('signatures')).toBe(false)
   })
 })

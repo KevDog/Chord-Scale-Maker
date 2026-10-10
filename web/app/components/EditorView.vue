@@ -145,7 +145,7 @@
             :instrument-label="instrumentLabel(prefs.instrument.value)"
             :beats="editor.beats.value"
             :intervals="prefs.intervals.value"
-            :keys="keys"
+            :home-key="homeKey"
           />
           <ScaleSheet
             v-else
@@ -160,7 +160,7 @@
             :per-page="PER_PAGE"
             :intervals="prefs.intervals.value"
             :practice="selection"
-            :keys="keys"
+            :home-key="homeKey"
           />
         </div>
       </section>
@@ -173,6 +173,7 @@ import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeft
 import { CHART_REPORT_KEY, type ChartReport } from '~/utils/chartReport'
 import {
   buildSheet,
+  chartKeyOf,
   type ChartDoc,
   encodeShare,
   instrumentLabel,
@@ -184,7 +185,6 @@ import {
   partFor,
   practiceBoxes,
   relevel,
-  rowKeys,
   SCALE_LEVELS,
   type LevelState,
   type ScaleLevel,
@@ -226,8 +226,8 @@ const sheet = ref<SheetKind>(
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
 const signaturesOn = useFeature('keySignatures')
-/** each row's key, for the sheets' key signatures (none when the flag is off: drawn as before) */
-const keys = computed(() => (signaturesOn ? rowKeys(editor.doc.value) : undefined))
+/** the chart's key, for the sheets' key signature, drawn once at the start (undefined when the flag is off: drawn as before) */
+const homeKey = computed(() => (signaturesOn ? chartKeyOf(editor.doc.value) : undefined))
 const practice = usePractice(props.practiceKey)
 const levelsOn = useFeature('scaleLevels')
 const scaleLevel = useScaleLevel(props.practiceKey, props.shared)

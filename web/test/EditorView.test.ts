@@ -155,19 +155,19 @@ describe('EditorView key signatures', () => {
     localStorage.clear()
   })
 
-  it('with the flag on, gives the scale and guide tone sheets each row\'s key, and the Changes sheet signatures', async () => {
+  it("with the flag on, gives the scale and guide tone sheets the chart's key, and the Changes sheet signatures", async () => {
     useRuntimeConfig().public.features.keySignatures = true
     const scales = await mountWith()
-    expect(scales.findComponent({ name: 'ScaleSheet' }).props('keys')).toEqual([expect.objectContaining({ name: 'Bb major' }), expect.objectContaining({ name: 'Bb major' })])
+    expect(scales.findComponent({ name: 'ScaleSheet' }).props('homeKey')).toEqual(expect.objectContaining({ name: 'Bb major' }))
     const guide = await mountWith({ sheet: 'guideTones' })
-    expect(guide.findComponent({ name: 'GuideToneSheet' }).props('keys')).toHaveLength(2)
+    expect(guide.findComponent({ name: 'GuideToneSheet' }).props('homeKey')).toEqual(expect.objectContaining({ name: 'Bb major' }))
     const changes = await mountWith({ sheet: 'changes' })
     expect(changes.findComponent({ name: 'ChangesSheet' }).props('signatures')).toBe(true)
   })
 
-  it('with the flag off, passes no keys and no signatures', async () => {
-    expect((await mountWith()).findComponent({ name: 'ScaleSheet' }).props('keys')).toBeUndefined()
-    expect((await mountWith({ sheet: 'guideTones' })).findComponent({ name: 'GuideToneSheet' }).props('keys')).toBeUndefined()
+  it('with the flag off, passes no key and no signatures', async () => {
+    expect((await mountWith()).findComponent({ name: 'ScaleSheet' }).props('homeKey')).toBeUndefined()
+    expect((await mountWith({ sheet: 'guideTones' })).findComponent({ name: 'GuideToneSheet' }).props('homeKey')).toBeUndefined()
     expect((await mountWith({ sheet: 'changes' })).findComponent({ name: 'ChangesSheet' }).props('signatures')).toBe(false)
   })
 })

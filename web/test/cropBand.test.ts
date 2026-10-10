@@ -25,8 +25,14 @@ describe('cropBand', () => {
 
 describe('barAccidentals', () => {
   const note = (letter: number, acc: number) => ({ beats: 1, tie: false, pitch: { letter: letter as 0, acc, midi: 60 + acc } }) as never
-  it('uses the legacy rule when the bar has no key signature (before the first @key)', () => {
+  it('uses the legacy rule when the bar has no key signature (no key: line)', () => {
     expect(barAccidentals([note(0, 0), note(0, 1), note(0, 0)], () => false, null)).toEqual([null, '#', 'n'])
+  })
+  it('without a signature, shows every altered note, even repeated in the bar', () => {
+    expect(barAccidentals([note(2, -1), note(2, -1)], () => false, null)).toEqual(['b', 'b'])
+  })
+  it('without a signature, writes nothing on a tied-in note, but a natural after it', () => {
+    expect(barAccidentals([note(2, -1), note(2, 0)], (i) => i === 0, null)).toEqual([null, 'n'])
   })
   it('measures against the signature when there is one', () => {
     expect(barAccidentals([note(3, 1), note(3, 0)], () => false, 'G')).toEqual([null, 'n'])

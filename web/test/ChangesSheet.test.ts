@@ -13,7 +13,7 @@ const systemOf = async (signatures: boolean) =>
   ).findComponent({ name: 'ChangesSystem' })
 
 describe('ChangesSheet', () => {
-  it("with signatures, gives each line its keys and the part's clef", async () => {
+  it("with signatures, gives the lines the chart's key and the part's clef (drawn on the first line only)", async () => {
     const line = await systemOf(true)
     expect(line.props('clef')).toBe('bass')
     expect(line.props('line').bars[0].keySig).toBe('Bb')

@@ -82,9 +82,10 @@ For transposing instruments the notes, chord symbols and scale names are all tra
 Bm7 becomes C♯m7 on a B♭ instrument, not D♭m7). Octave transpositions don't matter: every scale sits in a
 comfortable written range.
 
-Every sheet starts with a clef and the key signature as written for your instrument (a chart with no `key:` gets none;
-an `@key` draws a new one mid-line on the Changes and guide tone sheets). Accidentals the signature already supplies aren't repeated,
-and one that is cancelled within a bar shows a natural.
+Every sheet starts with a clef and the key signature as written for your instrument, once, at the start, as on a jazz
+lead sheet (a chart with no `key:` gets no signature). Key changes are written with accidentals only, and shown in the
+analysis: the Changes sheet labels each `@key` area. Accidentals the signature already supplies aren't repeated, and
+one that is cancelled within a bar shows a natural.
 
 ## Developing
 

@@ -337,11 +337,15 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   by font ascent, not ink.
   - A minimum band keeps ordinary staves aligned.
   - Guide tone staves use a tighter one, just the clef, because their notes stay near the middle of the staff.
-- **Clefs and key signatures (the `keySignatures` flag):** every staff draws its clef and the chart's key as written
-  for the instrument (`keySignature` in `engine/keySignature.ts`; a minor key by its relative major, none without a
-  `key:`). `buildSheet` takes each row's key from the analysis (or `@key`), so the Changes sheet draws a new signature
-  where it changes. Notes follow the measure rule (`accidentalsInBar`): an accidental shows only where it differs from
-  what is in force in the bar. On the Changes sheet, staves with a signature use a taller crop band (`CLEF_BAND`); guide tone sheets keep their own bands.
+- **Clefs and key signatures (the `keySignatures` flag):** the clef and the chart's key as written for the instrument
+  (`keySignature` in `engine/keySignature.ts`; a minor key by its relative major, none without a `key:`), once at the
+  start, as on a jazz lead sheet: the first staff of each scale sheet part (`StaffModel.showClefAndKey`), the first
+  guide tone system and the first Changes line; every other staff, system and line has neither. The key is the
+  chart's `key:` (`chartKeyOf`) throughout: key changes go by accidentals only, and show in the analysis (the
+  Changes sheet's key-area labels), never as a new signature. Notes follow the measure rule (`accidentalsInBar`): an
+  accidental shows only where it differs from what is in force in the bar; with no signature, guide tones keep the
+  legacy rule (`barAccidentals`). The first Changes line uses a taller crop band (`CLEF_BAND`); guide tone sheets keep
+  their own bands. With the flag off, every scale staff and guide tone system has its clef, as before.
 - **Shared helpers:** `svgContext`, `fitSvg` and `headCentre` in `utils/vexflow.ts`.
 - **Instrument choice:** 16 presets, grouped by what they read (C treble, B♭, E♭, F, bass clef). The
   choice sets the `Part` (clef + transposition) for the whole preview, so notes, chord symbols and scale names

@@ -204,14 +204,16 @@ describe('guide tone lines', () => {
     expect(buildGuideTones([row('1', 'Cm7#5#9x')], CONCERT).diagnostics).toEqual(['no guide tones for Cm7#5#9x (unknown chord quality)'])
   })
 
-  it('gives each bar the key in force, changing at the bar an @key starts', () => {
+  it("gives every bar the chart's key, written for the part", () => {
     const rows = [
       { section: 'A', bar: '1', chord: 'EbMaj7', scale: '' },
-      { section: 'B', bar: '2', chord: 'DMaj7', scale: '' },
+      { section: 'B', bar: '2', chord: 'DMaj7', scale: '' }, // an @key D here changes nothing on the staff
       { section: 'B', bar: '3', chord: 'Em7', scale: '' },
     ]
-    const sheet = buildGuideTones(rows, CONCERT, 4, 4, [parseKey('Eb'), parseKey('D'), parseKey('D')])
-    expect(sheet.systems.flatMap((s) => s.bars.filter((b) => b.chords.length).map((b) => b.keySig))).toEqual(['Eb', 'D', 'D'])
-    expect(buildGuideTones(rows, CONCERT).systems[0]?.bars[0]?.keySig).toBeNull()
+    const sigs = (key?: ReturnType<typeof parseKey>, part: Part = CONCERT) => new Set(buildGuideTones(rows, part, 2, 4, key).systems.flatMap((s) => s.bars.map((b) => b.keySig)))
+    expect(sigs(parseKey('Eb'))).toEqual(new Set(['Eb']))
+    expect(sigs(parseKey('Eb'), { clef: 'treble', trans: 'Bb' })).toEqual(new Set(['F']))
+    expect(sigs(null)).toEqual(new Set([null]))
+    expect(sigs()).toEqual(new Set([null]))
   })
 })

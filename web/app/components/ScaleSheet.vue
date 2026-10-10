@@ -23,12 +23,12 @@ const props = defineProps<{
   perPage: number
   intervals?: boolean // label notes against the chord root, on screen only
   practice?: PracticeSelection | null // highlight these notes, dim the rest
-  keys?: readonly (Key | null)[] // each row's key, for its key signature; none drawn without
+  homeKey?: Key | null // the chart's key, for the key signature (null: no key: line); undefined: signatures off
 }>()
 
 /** every printed page, in order, with its own heading */
 const pages = computed(() =>
-  buildSheet(props.rows, props.part, props.mode, props.start, props.perPage, props.practice ?? null, props.keys)
+  buildSheet(props.rows, props.part, props.mode, props.start, props.perPage, props.practice ?? null, props.homeKey)
     .flatMap((sheetPart) =>
       sheetPart.pages.map((staves) => ({
         mode: sheetPart.mode,

@@ -34,7 +34,6 @@ export const CLEF_SPACE = 70 // lead width for a clef (guide tone systems)
 export const BAR_UNITS = 300 // drawing width per bar (guide tone and Changes sheets share it, so phones' 2-bar systems draw as large as 4-bar ones)
 export const MIN_TOP = 55 // always show the clef and a ledger line's space above and below the staff
 export const MIN_BOTTOM = 140
-export const KEY_CHANGE_TOP = 56 // a mid-line key change: room above the staff for its naturals and sharps
 // room around a note head for its accidental: a flat rises about two spaces, a sharp hangs 1.5
 const ABOVE_HEAD = 24
 const BELOW_HEAD = 18
@@ -83,8 +82,8 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
   const ctx = svgContext(vf, el, STAFF_WIDTH)
 
   const stave = new vf.Stave(0, STAVE_Y, STAFF_WIDTH - 1)
-  stave.addClef(clef)
-  if (staff.keySig) stave.addKeySignature(staff.keySig)
+  if (staff.showClefAndKey) stave.addClef(clef) // with key signatures: each part's first staff only
+  if (staff.showClefAndKey && staff.keySig) stave.addKeySignature(staff.keySig)
   stave.setEndBarType(staff.last ? vf.BarlineType.END : vf.BarlineType.DOUBLE)
   stave.setContext(ctx).draw()
 
@@ -132,16 +131,4 @@ export function signatureLead(vf: VexFlowModule, clef: 'treble' | 'bass', keySig
     if (time) s.addTimeSignature(time)
   })
   return CLEF_SPACE + all - startWidth(vf, (s) => s.addClef(clef))
-}
-
-/** the width a mid-line key change takes (the new signature, after naturals cancelling the old one) */
-export const keyChangeWidth = (vf: VexFlowModule, keySig: string, previous: string | null): number =>
-  startWidth(vf, (s) => s.addKeySignature(keySig, previous ?? undefined))
-
-/** each bar's key change, from the bar before it in the same line: what to draw, and what it cancels; null for none */
-export function keyChanges(bars: readonly Readonly<{ keySig: string | null }>[]): (Readonly<{ keySig: string; previous: string | null }> | null)[] {
-  return bars.map((bar, b) => {
-    const previous = bars[b - 1]?.keySig ?? null
-    return b === 0 || bar.keySig === previous ? null : { keySig: bar.keySig ?? 'C', previous }
-  })
 }

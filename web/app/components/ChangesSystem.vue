@@ -55,7 +55,7 @@ const props = defineProps<{
   barsPerLine: number
   numerals: boolean
   scales: boolean
-  clef?: 'treble' | 'bass' // with key signatures: the clef and signature on the line
+  clef?: 'treble' | 'bass' // with key signatures: the part's clef, drawn with the signature on the first line only
 }>()
 
 const el = ref<HTMLElement | null>(null)

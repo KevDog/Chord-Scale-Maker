@@ -36,7 +36,7 @@ const props = defineProps<{
   instrumentLabel: string // '' for concert
   numerals: boolean
   scales: boolean
-  signatures?: boolean // the part's clef and key signatures on every line
+  signatures?: boolean // the part's clef and the chart's key signature, once, at the start of the first line
 }>()
 
 const LINES_PER_PAGE = 8 // a 32-bar AABA, one section a line pair, with its numerals and scales
