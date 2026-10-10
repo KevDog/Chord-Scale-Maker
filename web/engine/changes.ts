@@ -28,6 +28,10 @@ export type ChangesChord = Readonly<{
   scale: string | null
   /** why the analysis gave it its scale ('' when it doesn't reach it) */
   reason: string
+  /** the rule id behind its scale ("m4", "D1+D4"); '' when the analysis doesn't reach it */
+  rule: string
+  /** the rules could only guess its scale (an @key or a function would settle it); never so for a function the author wrote */
+  fallback: boolean
   /** its function was written in the chart, not found */
   stated: boolean
   /** the key it's heard in, written for the part ("B♭ major"); '' when the analysis doesn't reach it */
@@ -218,6 +222,8 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             numeral: a?.numeral && a.numeral !== '?' ? a.numeral : '',
             scale: writtenScale(part, scale),
             reason: a?.reason ?? '',
+            rule: a?.rule && a.rule !== '?' ? a.rule : '',
+            fallback: !!a?.fallback && !a?.stated,
             stated: a?.stated ?? false,
             heardIn: a ? keyName((a.statedKey ?? a.key).name, part) : '',
             keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',
