@@ -1,0 +1,244 @@
+file | title | key | style | form
+a_night_in_tunisia.txt | A Night in Tunisia | Dm | Latin | AABA, 32 bars
+a_song_for_nicholas.txt | A Song for Nicholas | C | Medium | AB, 16 bars
+a_weaver_of_dreams.txt | A Weaver of Dreams | C | Medium | AA, 32 bars
+africa.txt | Africa | Dm | Even 8ths | AABC
+afternoon_in_paris.txt | Afternoon in Paris | C | Medium | AABC, 32 bars
+all_blues.txt | All Blues | G | Blues | A, 12 bars
+all_the_things_you_are.txt | All the Things You Are | Ab | Medium up | AABC
+alone_together.txt | Alone Together | Dm | Medium | AABC, 44 bars
+along_came_betty.txt | Along Came Betty | Ab | Medium | ABCD
+anthropology.txt | Anthropology | Bb | Medium up | AABA
+antigua.txt | Antigua | F | Latin | AABC, 32 bars
+autumn_leaves.txt | Autumn Leaves | Gm | Medium | AAB
+avalon.txt | Avalon | F | Up | ABCD, 32 bars
+baby_steps.txt | Baby Steps | Eb | Medium up | AAB
+bags_groove.txt | Bags' Groove | F | Blues | A, 12 bars
+basin_street_blues.txt | Basin Street Blues | Bb | Medium | BC
+baubles_bangles_and_beads.txt | Baubles, Bangles and Beads | Ab | Waltz | ABCD, 36 bars
+bb_bird_blues.txt | Bb Bird Blues | Bb |  | 
+bb_blues.txt | Bb Blues | Bb |  | 
+bb_jazz_blues.txt | Bb Jazz Blues | Bb |  | 
+beatrice.txt | Beatrice | Fm | Medium | A, 16 bars
+below_zero.txt | Below Zero | Bb | Even 8ths | AABC
+bernies_tune.txt | Bernie's Tune | Dm | Medium up | AABA
+bessies_blues.txt | Bessie's Blues | Eb | Blues | A, 12 bars
+billies_bounce.txt | Billie's Bounce | F | Blues | A, 12 bars
+birks_works.txt | Birk's Works | Fm | Blues | A, 12 bars
+blue_bossa.txt | Blue Bossa | Cm | Latin | AB
+blue_monk.txt | Blue Monk | Bb | Blues | A, 12 bars
+blue_silver.txt | Blue Silver | Bb | Medium up | A, 20 bars
+blue_trane.txt | Blue Trane | Eb | Blues | A, 12 bars
+blues_for_jan.txt | Blues for Jan | F | Blues | A, 12 bars
+blues_for_lj.txt | Blues for LJ | Bb | Blues | A, 12 bars
+blues_for_willie.txt | Blues for Willie | Bb | Blues | A, 12 bars
+blues_in_a_closet.txt | Blues in a Closet | F | Blues | A, 12 bars
+blues_minor.txt | Blues Minor | Fm | Medium up | A, 12 bars
+blues_walk.txt | Blues Walk | Bb | Blues | A, 12 bars
+body_and_soul.txt | Body and Soul | Db | Ballad | AABC
+bolivia.txt | Bolivia | G | Mixed | AB, 24 bars
+bustin_chops.txt | Bustin' Chops | Gm | Up | A
+bye_bye_blackbird.txt | Bye Bye Blackbird | F | Medium | ABCD, 32 bars
+cantaloupe_island.txt | Cantaloupe Island | Fm | Even 8ths | A, 16 bars
+caravan.txt | Caravan | Fm | Latin | AABA
+centerpiece.txt | Centerpiece | Bb | Blues | A, 12 bars
+ceora.txt | Ceora | Ab | Latin | AB, 32 bars
+cherokee.txt | Cherokee | Bb | Up | AABA, 64 bars
+con_alma.txt | Con Alma | D | Mixed | AABA
+confirmation.txt | Confirmation | F | Medium | AABA
+coral.txt | Coral | Fm | Ballad | A, 12 bars
+corner_pocket.txt | Corner Pocket | Bb | Medium | AABA
+cote_d_azur.txt | Coté d'Azur | Bbm | Blues | A, 12 bars
+cottontail.txt | Cottontail | Bb | Medium up | AABA
+dance_of_the_infidels.txt | Dance of the Infidels | F | Medium up | A
+darn_that_dream.txt | Darn That Dream | G | Ballad | AABC
+days_of_wine_and_roses.txt | Days of Wine and Roses | F | Medium | AB, 32 bars
+dearly_beloved.txt | Dearly Beloved | C | Mixed | ABCD, 32 bars
+dont_get_around_much_anymore.txt | Don't Get Around Much Anymore | C | Medium | AABA
+dont_take_your_love_from_me.txt | Don't Take Your Love from Me | C | Medium | ABCD, 32 bars
+doxy.txt | Doxy | Bb | Medium | ABC, 16 bars
+edda.txt | Edda | G | Waltz | ABCD, 32 bars
+epistrophy.txt | Epistrophy | C | Medium | ABCD
+everything_i_love.txt | Everything I Love | Eb | Medium | ABCD, 32 bars
+f_bird_blues.txt | F Bird Blues | F |  | 
+f_blues.txt | F Blues | F |  | 
+f_jazz_blues.txt | F Jazz Blues | F |  | 
+fingers.txt | Fingers | Bb | Medium up | AABA
+flintstones.txt | Flintstones | Bb | Up | AABA
+flugelin_the_blues.txt | Flugelin' the Blues | Bb | Blues | A, 12 bars
+footprints.txt | Footprints | Cm | Blues | A
+four.txt | Four | Eb | Medium up | AA, 32 bars
+gentle_rain.txt | Gentle Rain | Am | Latin | ABABC, 38 bars
+georgia_on_my_mind.txt | Georgia on My Mind | F | Ballad | AABC
+giant_steps.txt | Giant Steps | Eb | Medium up | A, 16 bars
+got_eyes_for_you.txt | Got Eyes for You | Eb | Latin | AABC, 32 bars
+groovin_high.txt | Groovin' High | Eb | Medium up | AA, 32 bars
+have_you_met_miss_jones.txt | Have You Met Miss Jones | F | Medium up | AABC
+heres_that_rainy_day.txt | Here's That Rainy Day | G | Ballad | ABCD, 32 bars
+high_fly.txt | High Fly | Bb | Medium | AABC
+honeysuckle_rose.txt | Honeysuckle Rose | F | Medium | AABA
+i_cant_get_started.txt | I Can't Get Started | C | Ballad | AABC
+i_fall_in_love_too_easily.txt | I Fall in Love Too Easily | Eb | Ballad | AB, 16 bars
+i_love_you.txt | I Love You | F | Up | ABCD, 32 bars
+i_remember_you.txt | I Remember You | F | Medium | AABC, 36 bars
+ill_close_my_eyes.txt | I'll Close My Eyes | F | Medium | AA, 32 bars
+ill_remember_april.txt | I'll Remember April | G | Mixed | ABA, 48 bars
+im_an_old_cowhand.txt | I'm an Old Cowhand | Eb | Medium | ABAB
+im_old_fashioned.txt | I'm Old Fashioned | F | Medium | ABCD, 36 bars
+impressions.txt | Impressions | Dm |  | 
+in_a_sentimental_mood.txt | In a Sentimental Mood | F | Ballad | AABC
+in_and_out.txt | In and Out | F | Up | ABCD, 32 bars
+in_walked_bud.txt | In Walked Bud | Ab | Medium | AABA
+invitation.txt | Invitation | Ebm | Mixed | ABCDEF, 48 bars
+its_you_or_no_one.txt | It's You or No One | F | Up | ABCD, 32 bars
+ive_got_a_crush_on_you.txt | I've Got a Crush on You | Bb | Medium | AB, 18 bars
+ive_got_rhythm.txt | I've Got Rhythm | Bb | Up | AABA
+ive_never_been_in_love_before.txt | I've Never Been in Love Before | Bb | Medium | AABA
+jeannine.txt | Jeannine | Ab | Medium up | AABA, 56 bars
+jingle_bells.txt | Jingle Bells | F | Christmas | BBC, 24 bars
+jive_at_five.txt | Jive at Five | Eb | Medium | AABA
+joy_spring.txt | Joy Spring | F | Medium | ABCD, 32 bars
+just_around_the_corner.txt | Just Around the Corner | Bb | Up | A, 12 bars
+just_friends.txt | Just Friends | F | Up | AA, 32 bars
+killer_joe.txt | Killer Joe | C | Medium | AABA
+lady_bird.txt | Lady Bird | C | Medium up | A
+laura.txt | Laura | C | Ballad | ABCD, 32 bars
+limehouse_blues.txt | Limehouse Blues | Ab | Medium up | ABCD, 32 bars
+little_boat.txt | Little Boat | Bb | Latin | A, 16 bars
+little_sunflower.txt | Little Sunflower | Dm | Even 8ths | AABBA
+locomotion.txt | Locomotion | Bb | Blues | AABC, 44 bars
+long_ago_and_far_away.txt | Long Ago and Far Away | F | Medium | ABCD, 32 bars
+love_for_sale.txt | Love for Sale | Bbm | Mixed | AABC, 64 bars
+maiden_voyage.txt | Maiden Voyage | D |  | 
+mean_to_me.txt | Mean to Me | F | Medium | AABA, 32 bars
+meditation.txt | Meditation | C | Latin | ABCD, 40 bars
+milestones.txt | Milestones | Gm |  | 
+minority.txt | Minority | Fm | Medium up | A, 16 bars
+miss_premise.txt | Miss Premise | Eb | Waltz | AB, 32 bars
+misty 2.txt | Misty | Eb | Medium Ballad | AABA, 32 bars
+misty.txt | Misty | Eb | Medium Ballad | AABA, 32 bars
+modes_of_major.txt | Modes of the Major Scale | C |  | 
+modes_of_melodic_minor.txt | Modes of Melodic Minor | Cm |  | 
+moments_notice.txt | Moment's Notice | Eb | Medium up | AA, 30 bars
+mood_indigo.txt | Mood Indigo | Ab | Ballad | ABCD, 32 bars
+moonlight_in_vermont.txt | Moonlight in Vermont | Eb | Ballad | AABC, 26 bars
+morning.txt | Morning | Am | Latin | AABC, 32 bars
+mr_pc.txt | Mr. P.C. | Cm | Blues | A, 12 bars
+ms_p_and_p.txt | Ms. P & P | Gb | Medium | ABC, 24 bars
+muddy_in_the_bank.txt | Muddy in the Bank | Ab | Medium up | ABC, 26 bars
+mumbles.txt | Mumbles | Eb | Blues | A, 12 bars
+my_baby_just_cares_for_me.txt | My Baby Just Cares for Me | Eb | Medium | ABCD, 32 bars
+my_funny_valentine.txt | My Funny Valentine | Cm | Ballad | ABCD, 36 bars
+my_old_flame.txt | My Old Flame | G | Ballad | AABA, 32 bars
+my_romance.txt | My Romance | Bb | Medium | ABCD, 32 bars
+my_shining_hour.txt | My Shining Hour | Eb | Latin | AB, 32 bars
+naima.txt | Naima | Ab | Ballad | AABC, 20 bars
+nardis.txt | Nardis | Em | Medium | AABA, 32 bars
+nature_boy.txt | Nature Boy | Dm | Ballad | AA, 32 bars
+nearness.txt | Nearness | Bm | Medium up | AB, 32 bars
+nefertiti.txt | Nefertiti | C | Medium | A, 16 bars
+nicas_dream.txt | Nica's Dream | Bbm | Mixed | AABBC, 64 bars
+offshore.txt | Offshore | Ab | Medium | AABC, 32 bars
+oh_lady_be_good.txt | Oh, Lady Be Good | F | Medium up | AABA, 32 bars
+old_devil_moon.txt | Old Devil Moon | F | Medium | ABCD, 32 bars
+oleo.txt | Oleo | Bb | Medium up | AABA, 32 bars
+on_a_misty_night.txt | On a Misty Night | Eb | Medium | AABA, 32 bars
+on_green_dolphin_street.txt | On Green Dolphin Street | C | Mixed | ABCD, 32 bars
+on_the_trail.txt | On the Trail | F | Medium | AB, 16 bars
+once_i_loved.txt | Once I Loved | F | Latin | AAB, 44 bars
+one_foot_in_the_gutter.txt | One Foot in the Gutter | F | Medium | ABCD, 32 bars
+one_note_samba.txt | One Note Samba | Bb | Latin | ABC, 40 bars
+our_delight.txt | Our Delight | Ab | Medium | AABA, 32 bars
+ow.txt | Ow | Bb | Medium up | AABA, 32 bars
+peace.txt | Peace | Bb | Ballad | A, 10 bars
+pent_up_house.txt | Pent Up House | G | Medium up | ABC, 16 bars
+perdido.txt | Perdido | Bb | Up | AABA, 32 bars
+recorda_me.txt | Recorda-Me | Am | Latin | AB, 16 bars
+relaxin.txt | Relaxin' | Ab | Medium | AB, 32 bars
+rhythm_a_ning.txt | Rhythm-a-ning | Bb | Medium up | AABA, 32 bars
+rhythm_changes.txt | Rhythm Changes | Bb |  | 
+round_midnight.txt | 'Round Midnight | Ebm | Ballad | AABC, 32 bars
+saint_james_infirmary.txt | Saint James Infirmary | Dm | Medium | A, 8 bars
+samanthas_bossa.txt | Samantha's Bossa | Eb | Latin | AB, 16 bars
+sandu.txt | Sandu | Eb | Blues | A, 12 bars
+saschas_tune.txt | Sascha's Tune | Fm | Mixed | AB, 16 bars
+satellite.txt | Satellite | G | Medium up | ABCD, 32 bars
+satin_doll.txt | Satin Doll | C | Medium | AABA, 32 bars
+scrapple_from_the_apple.txt | Scrapple from the Apple | F | Medium | AABA, 32 bars
+secret_love.txt | Secret Love | Eb | Up | ABC, 32 bars
+seven_steps_to_heaven.txt | Seven Steps to Heaven | F | Up | ABC, 32 bars
+sheba.txt | Sheba | Bb | Ballad | AABC, 32 bars
+shifting_down.txt | Shifting Down | Bb | Blues | A, 12 bars
+silvers_serenade.txt | Silver's Serenade | Em | Medium | A, 16 bars
+simple_waltz.txt | Simple Waltz | F | Waltz | A, 16 bars
+slow_boat_to_china.txt | Slow Boat to China | Bb | Medium | ABAD, 32 bars
+smatter.txt | Smatter | Bbm | Medium | AB, 20 bars
+smile.txt | Smile | F | Latin | ABCD, 32 bars
+snapper.txt | Snapper | Fm | Medium up | AABC, 44 bars
+so_what.txt | So What | Dm |  | 
+social_call.txt | Social Call | Db | Medium | AABA, 32 bars
+softly_as_in_a_morning_sunrise.txt | Softly, as in a Morning Sunrise | Cm | Up | AABA, 32 bars
+solar.txt | Solar | Cm | Medium up | A, 12 bars
+some_other_blues.txt | Some Other Blues | F | Blues | A, 12 bars
+someday_my_prince_will_come.txt | Someday My Prince Will Come | F | Waltz | AA, 32 bars
+somewhere_over_the_rainbow.txt | Somewhere Over the Rainbow | Eb | Ballad | AABA, 32 bars
+song_for_my_father.txt | Song for My Father | Fm | Even 8ths | AAB, 24 bars
+sophisticated_lady.txt | Sophisticated Lady | Ab | Ballad | AABA, 32 bars
+spacemen.txt | Spacemen | Bb | Up | AABA, 32 bars
+speak_low.txt | Speak Low | F | Up | AABC, 56 bars
+speak_no_evil.txt | Speak No Evil | Cm | Medium | AABC, 50 bars
+squeeze_me.txt | Squeeze Me | F | Medium | AABA, 32 bars
+squirrel.txt | Squirrel | F | Blues | A, 12 bars
+st_thomas.txt | St. Thomas | C | Latin | AABC, 16 bars
+star_eyes.txt | Star Eyes | Eb | Latin | AABC, 36 bars
+stardust.txt | Stardust | Db | Ballad | AA, 32 bars
+stella_by_starlight.txt | Stella by Starlight | Bb | Medium up | ABCD
+stompin_at_the_savoy.txt | Stompin' at the Savoy | Db | Medium | AABA, 32 bars
+strollin.txt | Strollin' | Db | Medium | AB, 32 bars
+sugar.txt | Sugar | Cm | Medium | A, 16 bars
+summertime.txt | Summertime | Dm | Medium | AB, 16 bars
+sunny_side_of_the_street.txt | On the Sunny Side of the Street | C | Medium | AABA, 32 bars
+take_the_a_train.txt | Take the "A" Train | C | Latin | AABA, 32 bars
+tangerine.txt | Tangerine | F | Latin | ABCD, 32 bars
+teach_me_tonight.txt | Teach Me Tonight | C | Medium | AABA, 33 bars
+tee_pee_time.txt | Tee Pee Time | Bb | Blues | AABC, 44 bars
+tenor_madness.txt | Tenor Madness | Bb | Blues | A, 12 bars
+the_christmas_song.txt | The Christmas Song | Eb | Christmas | AABA, 32 bars
+the_girl_from_ipanema.txt | The Girl from Ipanema | F | Latin | AABA
+the_night_has_a_thousand_eyes.txt | The Night Has a Thousand Eyes | G | Mixed | ABABCD, 48 bars
+the_night_we_first_met.txt | The Night We First Met | Fm | Ballad | AABC, 33 bars
+the_tender_storm.txt | The Tender Storm | D | Medium up | A, 20 bars
+the_theme.txt | The Theme | Bb | Medium up | AABA, 32 bars
+the_things_we_did_last_summer.txt | The Things We Did Last Summer | F | Ballad | AABA, 32 bars
+there_is_no_greater_love.txt | There Is No Greater Love | Bb | Medium up | AABA, 32 bars
+there_will_never_be_another_you.txt | There Will Never Be Another You | Eb | Medium up | AB, 32 bars
+things_aint_what_they_used_to_be.txt | Things Ain't What They Used to Be | Db | Blues | A, 12 bars
+thinking_of_you.txt | Thinking of You | Eb | Medium | AABA, 32 bars
+thinking_out_loud.txt | Thinking Out Loud | Db | Latin | ABCD, 32 bars
+this_i_dig_of_you.txt | This I Dig of You | Bb | Medium up | ABCD, 32 bars
+this_is_new.txt | This Is New | Cm | Medium up | ABCD, 32 bars
+time_after_time.txt | Time After Time | C | Medium | ABCD, 32 bars
+triste.txt | Triste | Bb | Latin | ABCD, 32 bars
+tune_up.txt | Tune Up | D | Medium | A, 16 bars
+unit_seven.txt | Unit Seven | C | Mixed | AABC, 44 bars
+up_jumped_spring.txt | Up Jumped Spring | Bb | Waltz | AABC, 56 bars
+voyage.txt | Voyage | Fm | Medium up | AABA, 32 bars
+waltz_for_ellington.txt | Waltz for Ellington | Bb | Waltz | AB, 58 bars
+waltzing_matilda.txt | Waltzing Matilda | Eb | Latin | AABC, 32 bars
+watch_what_happens.txt | Watch What Happens | Eb | Latin | AABC, 36 bars
+watermelon_man.txt | Watermelon Man | F | Even 8ths | A, 16 bars
+wave.txt | Wave | D | Latin | AABC, 44 bars
+well_you_neednt.txt | Well You Needn't | F | Medium | AABA, 32 bars
+what_is_this_thing_called_love.txt | What Is This Thing Called Love | C | Medium up | AABA, 32 bars
+whats_new.txt | What's New | C | Ballad | AABA, 32 bars
+where_or_when.txt | Where or When | Eb | Medium | AABC, 40 bars
+whisper_not.txt | Whisper Not | Cm | Medium | AABC, 32 bars
+wish_for_now.txt | Wish for Now | Am | Latin | AB, 30 bars
+woodyn_you.txt | Woody'n You | Db | Medium up | AABA, 32 bars
+work_song.txt | Work Song | Fm | Medium | A, 16 bars
+wrong_together.txt | Wrong Together | F | Ballad | AB, 16 bars
+yardbird_suite.txt | Yardbird Suite | C | Medium | AABA, 32 bars
+you_and_i_and_george.txt | You and I and George | C | Ballad | AB, 18 bars
+you_go_to_my_head.txt | You Go to My Head | Eb | Ballad | AABCD, 40 bars
+youll_never_believe.txt | You'll Never Believe… | Eb | Medium up | ABCD, 43 bars
+yours_is_my_heart_alone.txt | Yours Is My Heart Alone | C | Medium | ABCD, 32 bars

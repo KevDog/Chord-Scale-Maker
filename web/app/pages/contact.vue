@@ -82,7 +82,7 @@ onMounted(() => {
       /* a malformed or oversized blob: leave the form blank */
     }
   }
-  // a scale disagreement (the Changes sheet's Copy for an issue) pre-fills the message, once, then is cleared
+  // a scale disagreement (the Changes sheet's Report issue) pre-fills the message, once, then is cleared
   const issue = sessionStorage.getItem(ISSUE_TEXT_KEY)
   if (issue && !form.message) {
     sessionStorage.removeItem(ISSUE_TEXT_KEY)

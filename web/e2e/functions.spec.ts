@@ -59,13 +59,13 @@ test('a rule link from the Changes sheet lands on its row', async ({ page }) => 
   await expect(page.locator('#rule-m4')).toBeInViewport()
 })
 
-test('Copy for an issue copies the report and offers the contact form and GitHub', async ({ page, context }) => {
+test('Report issue copies the report and offers the contact form and GitHub', async ({ page, context }) => {
   await context.grantPermissions(['clipboard-read', 'clipboard-write'])
   await writeChart(page, CHART)
   await saved(page)
   await page.getByRole('button', { name: 'ii7' }).first().click()
   const note = page.getByRole('dialog', { name: 'Why: Dm7' })
-  const copy = note.getByRole('button', { name: 'Copy for an issue' })
+  const copy = note.getByRole('button', { name: 'Report issue' })
   await expect(copy).toHaveAttribute('data-ready', 'true') // the share link is made as the note opens
   await copy.click()
   await expect(note.getByRole('status')).toHaveText('Copied.')
@@ -86,7 +86,7 @@ test('on a transposing part the note names the chord as drawn, and the report sa
   await chooseInstrument(page, 'Trumpet')
   await page.getByRole('button', { name: 'V7', exact: true }).first().click()
   const note = page.getByRole('dialog', { name: 'Why: A7' })
-  const copy = note.getByRole('button', { name: 'Copy for an issue' })
+  const copy = note.getByRole('button', { name: 'Report issue' })
   await expect(copy).toHaveAttribute('data-ready', 'true')
   await copy.click()
   await expect(note.getByRole('status')).toHaveText('Copied.')

@@ -506,7 +506,7 @@ library writes such a repeat out instead.
   drawn for the part: `ChangesChord.written`), not
   a hover tooltip; Escape or a click outside closes it, and a clamp keeps the panel 16px inside the viewport. It
   gives the reason and key, and the rule's id linked to `/functions#rule-<id>`. A `fallback` the author didn't state
-  reads "a guess — an @key or a function would settle it". Copy for an issue (`utils/issueReport.ts`) puts the
+  reads "a guess — an @key or a function would settle it". Report issue (`utils/issueReport.ts`) puts the
   chord, its bar and section (the same chord can be analysed differently in another bar), function, scale, rule,
   reason and key on the clipboard and navigates nowhere. A library chart as published is named by its slug and gets no
   share link; an edited, new or shared chart carries one. On a transposing part it names
@@ -523,7 +523,7 @@ library writes such a repeat out instead.
   `parseFunction`, never paraphrased), `#table` (every function in `FUNCTION_GROUPS` (`group-diatonic`,
   `group-secondary`, `group-substitutes`, `group-chromatic`) with the chord, scale, rule and reason the engine
   gives), `#rules` (every rule in `RULES`, by `TIERS`, one row `rule-<id>` each; `ruleParts` and
-  `dominantScaleTable` in `analysis/rules.ts`) and `#report` (the Copy for an issue route). Nothing on it is
+  `dominantScaleTable` in `analysis/rules.ts`) and `#report` (the Report issue route). Nothing on it is
   hand-typed: `functionsTable(key)` (`analysis/catalogue.ts`) runs one-row charts (`bars: 1`; `bars: 2` with a tonic row first for the chromatic diminished function) through
   `analyse`, in the page's key (`FUNCTIONS_KEYS`, `utils/functionsKey.ts`: the Transpose majors, then the twelve minors
   as their signatures spell them, C♯ and G♯ minor rather than D♭ and G♭ minor, whose tables need double flats; all

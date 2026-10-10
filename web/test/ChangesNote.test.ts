@@ -72,7 +72,7 @@ describe('ChangesNote', () => {
     w.unmount()
   })
 
-  it('Copy for an issue puts the report on the clipboard, then offers the contact form and GitHub', async () => {
+  it('Report issue puts the report on the clipboard, then offers the contact form and GitHub', async () => {
     const writeText = vi.fn().mockResolvedValue(undefined)
     vi.stubGlobal('navigator', { clipboard: { writeText } })
     const w = await mountNote(M4_PROPS)
