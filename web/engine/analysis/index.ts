@@ -15,6 +15,7 @@ import { fitError, impliedTarget, parseFunction, type StatedFunction, tonicOf } 
 
 export { parseKey, type Key } from './keys'
 export { pins } from './rules'
+export { ambiguities } from './ambiguity'
 
 /** bumped when a rule changes what it gives; saved in each chart's `# analysis:` line */
 export const RULES_VERSION = 1

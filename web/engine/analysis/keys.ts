@@ -12,6 +12,9 @@ export const makeKey = (root: Spelled, minor: boolean): Key => ({ tonic: pcOf(ro
 
 /** a key as a label: "C major" -> "C", "A minor" -> "A minor" (the ambient major is unspoken) */
 export const keyText = (key: Key): string => (key.minor ? key.name : key.name.replace(/ major$/, ''))
+
+/** a key as `key:` and `@key` write it: "D", "Bbm" */
+export const keyCode = (key: Key): string => `${key.name.split(' ')[0] ?? ''}${key.minor ? 'm' : ''}`
 export const sameKey = (a: Key, b: Key): boolean => a.tonic === b.tonic && a.minor === b.minor
 
 /** a `key:` meta value: "Eb", "F#m", "Bb minor", "C-"; null if it isn't one */
