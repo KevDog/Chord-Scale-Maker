@@ -1,11 +1,16 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it } from 'vitest'
+import { flushPromises } from '@vue/test-utils'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import ChangesNote from '~/components/ChangesNote.vue'
+import { ISSUE_CONTEXT } from '~/utils/issueReport'
 
+const M4_PROPS = { reason: 'ii of the ii–V to C', heardIn: 'C major', keyFrom: 'found' as const, rule: 'm4', fallback: false, chord: 'Dm7', numeral: 'ii7', scale: 'D Dorian' }
 const base = { reason: 'r', heardIn: 'C major', keyFrom: 'found' as const, rule: 'm4', fallback: false, chord: 'Dm7', numeral: 'ii7', scale: 'D Dorian' }
-const mountNote = (props: Partial<typeof base> & { wrap?: boolean } = {}) => mountSuspended(ChangesNote, { props: { ...base, ...props }, slots: { default: () => 'x' }, attachTo: document.body })
+const mountNote = (props: Partial<typeof base> & { wrap?: boolean } = {}) => mountSuspended(ChangesNote, { props: { ...base, ...props }, slots: { default: () => 'x' }, attachTo: document.body, global: { provide: { [ISSUE_CONTEXT as symbol]: { title: () => 'T', shareUrl: async () => 'https://x/song#s=1' } } } })
 
 describe('ChangesNote', () => {
+  afterEach(() => vi.unstubAllGlobals())
+
   it('opens on click and shows the reason, the key, and the rule as a link', async () => {
     const w = await mountNote({ reason: 'ii of the ii–V to C' })
     expect(w.find('[role=dialog]').exists()).toBe(false)
@@ -60,6 +65,40 @@ describe('ChangesNote', () => {
     const w = await mountNote({ wrap: true })
     expect(w.find('button').classes()).not.toContain('truncate')
     expect(w.find('button').classes()).toContain('whitespace-normal')
+    w.unmount()
+  })
+
+  it('Copy for an issue puts the report on the clipboard, then offers the contact form and GitHub', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    vi.stubGlobal('navigator', { clipboard: { writeText } })
+    const w = await mountNote(M4_PROPS)
+    await w.find('button').trigger('click')
+    await w.find('button[data-copy]').trigger('click')
+    await flushPromises()
+    expect(writeText).toHaveBeenCalledWith(expect.stringContaining('Rule: m4 (ii of the ii–V to C)'))
+    expect(w.text()).toContain('Copied.')
+    expect(w.find('a[href^="https://github.com/KevDog/Chord-Scale-Maker/issues/new?title="]').exists()).toBe(true)
+    expect(w.find('button[data-contact]').text()).toBe('Send it with the contact form')
+    w.unmount()
+  })
+
+  it('without a clipboard, shows the text to copy by hand', async () => {
+    vi.stubGlobal('navigator', {})
+    const w = await mountNote(M4_PROPS)
+    await w.find('button').trigger('click')
+    await w.find('button[data-copy]').trigger('click')
+    await flushPromises()
+    expect((w.find('textarea[readonly]').element as HTMLTextAreaElement).value).toContain('Rule: m4')
+    w.unmount()
+  })
+
+  it('a refused clipboard also shows the text', async () => {
+    vi.stubGlobal('navigator', { clipboard: { writeText: vi.fn().mockRejectedValue(new Error('denied')) } })
+    const w = await mountNote(M4_PROPS)
+    await w.find('button').trigger('click')
+    await w.find('button[data-copy]').trigger('click')
+    await flushPromises()
+    expect(w.find('textarea[readonly]').exists()).toBe(true)
     w.unmount()
   })
 })

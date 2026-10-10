@@ -18,6 +18,21 @@
         </template>
       </span>
       <span class="mt-1 block text-xs text-zinc-500 dark:text-zinc-400">{{ keyFrom === 'found' ? '' : '* ' }}in {{ heardIn }}</span>
+      <div v-if="context" class="mt-2 space-y-2 border-t border-zinc-950/5 pt-2 dark:border-white/5">
+        <UiButton plain data-copy class="text-sm!" @click="copy">Copy for an issue</UiButton>
+        <template v-if="state === 'copied' || state === 'manual'">
+          <p v-if="state === 'copied'" class="text-xs text-zinc-500 dark:text-zinc-400" role="status">Copied.</p>
+          <template v-else>
+            <p class="text-xs text-zinc-500 dark:text-zinc-400" role="status">Copy it from here:</p>
+            <textarea readonly rows="6" class="w-full rounded-md border border-zinc-950/10 bg-transparent p-2 font-mono text-xs dark:border-white/10" :value="text" @focus="($event.target as HTMLTextAreaElement).select()" />
+          </template>
+          <div class="flex flex-col items-start gap-1">
+            <UiButton plain data-contact class="text-sm!" @click="toContact">Send it with the contact form</UiButton>
+            <UiTextLink :href="github.url" external>Open a GitHub issue</UiTextLink>
+            <p v-if="!github.full" class="text-xs text-zinc-500 dark:text-zinc-400">The link is too long to carry the details: paste them into the issue.</p>
+          </div>
+        </template>
+      </div>
     </HPopoverPanel>
   </HPopover>
 </template>
@@ -25,6 +40,7 @@
 <script setup lang="ts">
 import { Popover as HPopover, PopoverButton as HPopoverButton, PopoverPanel as HPopoverPanel } from '@headlessui/vue'
 import { type ChangesChord, ruleParts } from '~~/engine'
+import { ISSUE_CONTEXT, ISSUE_TEXT_KEY, issueText, issueTitle, issueUrl } from '~/utils/issueReport'
 
 /**
  * why the analysis gave a chord its function and scale (engine/changes.ts reason, rule, heardIn, keyFrom), opened by a
@@ -36,4 +52,30 @@ const props = withDefaults(
   { wrap: false },
 )
 const parts = computed(() => ruleParts(props.rule))
+
+const context = inject(ISSUE_CONTEXT, null)
+const state = ref<'idle' | 'copied' | 'manual'>('idle')
+const text = ref('')
+const title = ref('')
+const github = computed(() => issueUrl(title.value, text.value))
+
+/** the report on the clipboard, or shown to copy by hand when the clipboard is missing or refuses */
+async function copy(): Promise<void> {
+  if (!context) return
+  const fields = { title: context.title(), chord: props.chord, numeral: props.numeral, heardIn: props.heardIn, scale: props.scale, rule: props.rule, reason: props.reason, link: await context.shareUrl() }
+  text.value = issueText(fields)
+  title.value = issueTitle(fields)
+  try {
+    if (!navigator.clipboard) throw new Error('no clipboard')
+    await navigator.clipboard.writeText(text.value)
+    state.value = 'copied'
+  } catch {
+    state.value = 'manual'
+  }
+}
+
+function toContact(): void {
+  sessionStorage.setItem(ISSUE_TEXT_KEY, text.value)
+  navigateTo('/contact')
+}
 </script>

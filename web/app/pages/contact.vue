@@ -50,6 +50,7 @@
 
 <script setup lang="ts">
 import type { ReadyAttachment } from '~/utils/attachment'
+import { ISSUE_TEXT_KEY } from '~/utils/issueReport'
 import { CONTACT_LIMITS, type ContactField as Field, EMAIL } from '../../server/utils/contactMessage'
 import { buildChartReport, CHART_REPORT_KEY } from '~/utils/chartReport'
 
@@ -80,6 +81,12 @@ onMounted(() => {
     } catch {
       /* a malformed or oversized blob: leave the form blank */
     }
+  }
+  // a scale disagreement (the Changes sheet's Copy for an issue) pre-fills the message, once, then is cleared
+  const issue = sessionStorage.getItem(ISSUE_TEXT_KEY)
+  if (issue && !form.message) {
+    sessionStorage.removeItem(ISSUE_TEXT_KEY)
+    form.message = issue.slice(0, CONTACT_LIMITS.message)
   }
 })
 
