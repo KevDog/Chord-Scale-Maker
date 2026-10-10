@@ -329,7 +329,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   lower. A start, or a restart after a rest, takes the octave nearest the line's last sounded note (the centre with
   none).
   - **Holds:** a chord whose 3rd and 7th are spelled as the previous chord's, in the same block, holds both lines:
-    the same pitch, tied, labelled again. A hold never crosses a block (section) boundary or the start of a 2nd
+    the same pitch, tied, labelled again. The same pitches in swapped roles (Dm7 → G7sus4) strike again. A hold never crosses a block (section) boundary or the start of a 2nd
     ending; there the chord strikes again, untied.
   - **Rests:** a chord with no guide tones rests in both lines and ends the run; the next chord restarts by rule 1.
   - **Collisions:** the lines are always complementary. If both pick the same tone, the smaller move keeps it (equal:

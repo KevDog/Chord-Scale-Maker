@@ -44,7 +44,9 @@ single-toggle line is the 3rd (or the 7th) of *every* chord, which cannot move b
    run: the line never re-strikes a tone an octave away on its own.
 
 5. **Holds.** A chord that repeats the previous chord's guide tones (the same chord again, or a change of extension
-   only — `C7` to `C7b9`) holds the note. A held note is tied across barlines and line ends, as today.
+   only — `C7` to `C7b9`) holds the note. The same two pitches in swapped roles (`Dm7` to `G7sus4`: F and C) are
+   struck again, not held: the new attack and label mark the change of role. A held note is tied across barlines and
+   line ends, as today.
 
 6. **Rests and unknown chords.** A chord with no guide tones rests in both lines and ends the run. After it, the lines
    restart by rule 1, in the octave nearest the last sounded note of each line (or the centre, if there is none).
