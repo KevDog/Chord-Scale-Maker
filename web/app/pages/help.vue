@@ -34,13 +34,15 @@
         and <strong class="font-semibold text-zinc-950 dark:text-white">Scales</strong> turn those rows on and off.
       </UiText>
       <UiText>
-        <strong class="font-semibold text-zinc-950 dark:text-white">3rd</strong> and
-        <strong class="font-semibold text-zinc-950 dark:text-white">7th</strong> put the guide tones on the Changes staff in
-        place of the slashes: each chord's 3rd (the 4th on a sus chord) and its 7th (the root on a triad, the 6th on a 6
-        chord), the notes that tell you which chord you're on. There's one note per chord, held for as long as the chord
-        lasts. With one on, it sits in the nearest octave; with both on, you get two voices on one staff that move by step,
-        the 3rd and 7th trading places as the harmony leans from one chord to the next. Try singing or playing one line all
-        the way through the tune; it's a great way to learn the changes.
+        <strong class="font-semibold text-zinc-950 dark:text-white">From 3rd</strong> and
+        <strong class="font-semibold text-zinc-950 dark:text-white">From 7th</strong> put guide tones on the Changes staff in
+        place of the slashes. A guide tone is a chord's 3rd (the 4th on a sus chord) or its 7th (the root on a triad, the 6th
+        on a 6 chord), the notes that tell you which chord you're on. Each toggle is one line: it starts on the first chord's
+        3rd or 7th, then moves to whichever guide tone of the next chord is nearest, usually by step, and holds when the
+        two chords share their guide tones. With both on you get both lines on one staff, always on different notes, and the
+        3rd and 7th trade places as the harmony leans from one chord to the next. A chord with no guide tones rests, and the
+        line starts again after it. Try singing or playing one line all the way through the tune; it's a great way to learn
+        the changes.
       </UiText>
       <UiText>
         <strong class="font-semibold text-zinc-950 dark:text-white">Scales</strong> is one staff per
@@ -160,7 +162,7 @@
         </li>
         <li>
           <UiCode>time: 3/4</UiCode> makes it a waltz (<UiCode>2/4</UiCode> and <UiCode>4/4</UiCode> work too; 4/4 is
-          what you get without it). With 3rd or 7th on, the Changes sheet writes its guide tones in it.
+          what you get without it). With a guide tone line on, the Changes sheet writes its guide tones in it.
         </li>
         <li><UiCode>title:</UiCode> and <UiCode>subtitle:</UiCode> set the heading. <UiCode>composer:</UiCode>, <UiCode>style:</UiCode>, <UiCode>key:</UiCode> and <UiCode>form:</UiCode> fill in the line under it (the subtitle, if there is one, takes the style's place), and lines starting with <UiCode>#</UiCode> are notes to yourself. A row can end in a note too, after a space and a <UiCode>#</UiCode>: the library's say why each scale was chosen.</li>
         <li>Anything I can't make sense of is listed under the text box, with the line number.</li>

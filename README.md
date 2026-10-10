@@ -1,8 +1,8 @@
 # Chord Scale Maker
 
 Chord-scale practice sheets from a chord chart, at [chordscalemaker.com](https://www.chordscalemaker.com). A chart
-opens on the Changes sheet, a study lead sheet with each chord's Roman numeral and scale under it; its 3rd and 7th
-toggles put each chord's guide tones on the staff, voice-led. The Scales sheet gives each chord one staff with the
+opens on the Changes sheet, a study lead sheet with each chord's Roman numeral and scale under it; its From 3rd and
+From 7th toggles put guide tone lines on the staff: each starts on the first chord's 3rd or 7th and moves to the nearest guide tone of each chord. The Scales sheet gives each chord one staff with the
 scale that goes with it. Everything is written for your instrument, and scales are computed from their degree
 formulas, so spellings are always correct. A practice mode highlights a chosen set of notes.
 

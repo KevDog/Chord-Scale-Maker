@@ -38,8 +38,8 @@
           <template v-else>
             <UiButton v-bind="numerals ? { color: 'note' } : { outline: true }" :class="numerals ? '' : OFF_FILL" :aria-pressed="numerals" title="Each chord's Roman numeral in its key" @click="numerals = !numerals">Numerals</UiButton>
             <UiButton v-bind="scaleNames ? { color: 'note' } : { outline: true }" :class="scaleNames ? '' : OFF_FILL" :aria-pressed="scaleNames" title="Each chord's scale, under its numeral" @click="scaleNames = !scaleNames">Scales</UiButton>
-            <UiButton v-bind="fromThird ? { color: 'note' } : { outline: true }" :class="fromThird ? '' : OFF_FILL" :aria-pressed="fromThird" aria-description="Guide tones: show each chord's third" title="Each chord's 3rd (4th on sus chords), in the nearest octave; with 7th on, two voices that move by step" @click="fromThird = !fromThird">3rd</UiButton>
-            <UiButton v-bind="fromSeventh ? { color: 'note' } : { outline: true }" :class="fromSeventh ? '' : OFF_FILL" :aria-pressed="fromSeventh" aria-description="Guide tones: show each chord's seventh" title="Each chord's 7th (root on triads, 6th on 6 chords), in the nearest octave; with 3rd on, two voices that move by step" @click="fromSeventh = !fromSeventh">7th</UiButton>
+            <UiButton v-bind="fromThird ? { color: 'note' } : { outline: true }" :class="fromThird ? '' : OFF_FILL" :aria-pressed="fromThird" aria-description="Guide tones: a line from the first chord's 3rd" title="A line that starts on the first chord's 3rd and moves to the nearest guide tone of each chord; with From 7th on, both lines" @click="fromThird = !fromThird">From 3rd</UiButton>
+            <UiButton v-bind="fromSeventh ? { color: 'note' } : { outline: true }" :class="fromSeventh ? '' : OFF_FILL" :aria-pressed="fromSeventh" aria-description="Guide tones: a line from the first chord's 7th" title="A line that starts on the first chord's 7th and moves to the nearest guide tone of each chord; with From 3rd on, both lines" @click="fromSeventh = !fromSeventh">From 7th</UiButton>
           </template>
         </div>
       </UiField>
