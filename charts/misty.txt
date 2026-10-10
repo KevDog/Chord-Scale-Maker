@@ -37,7 +37,7 @@ A2 | 15 | Eb6     | Eb Ionian                 # tonic: the 4th is in the key
 A2 | 15 | Bb9sus4 | Bb Mixolydian             # V7sus4 of Eb6: natural tensions
 A2 | 16 | Eb6     | Eb Ionian                 # tonic: the 4th is in the key
 
-B  | 17 | Bbm7    | Bb Dorian                 # a borrowed minor chord: Dorian, its own key
+B  | 17 | Bbm7    | Bb Dorian                | ii7/IV  # * ii of the ii–V to Ab
 B  | 17 | BbmMaj7 | Bb Melodic Minor          # from the symbol: minor-major 7th
 B  | 18 | Bbm7    | Bb Dorian                 # ii of the ii–V to Ab
 B  | 18 | Eb7b9   | Eb Half-Whole Diminished  # V7/IV in Eb: the b9 from the symbol
@@ -48,7 +48,7 @@ B  | 20 | Ab6     | Ab Lydian                 # IV: the #4 is the key’s 7th
 B  | 21 | Am11    | A Dorian                  # ii of D7: Dorian
 B  | 22 | D7      | D Mixolydian              # passing ii–V: its own key
 B  | 22 | F7      | F Mixolydian              # extended dominant: V7 of Bb7
-B  | 23 | Bb7     | Bb Mixolydian             # V7 in Eb, not resolving: natural tensions
+B  | 23 | Bb7     | Bb Mixolydian            | V7      # * V7 of Eb: natural tensions
 B  | 23 | Edim7   | E Whole-Half Diminished   # vii°7 of Fm7: the rootless V7b9 of the next chord
 B  | 24 | Fm7     | F Dorian                  # ii of the ii–V to Eb
 B  | 24 | Bb13    | Bb Mixolydian             # V7 of Eb: natural tensions
