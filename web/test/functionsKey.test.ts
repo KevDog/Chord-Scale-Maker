@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { FUNCTIONS_KEYS, functionsKeyFrom, functionsKeyLabel } from '~/utils/functionsKey'
+import { FUNCTIONS_KEYS, functionsKeyFrom, functionsKeyLabel, keyedLocation } from '~/utils/functionsKey'
 
 describe('the functions page key', () => {
   it('offers every Transpose key, major then minor', () => {
@@ -21,5 +21,20 @@ describe('the functions page key', () => {
   it('names each key with its mode', () => {
     expect(functionsKeyLabel('Eb')).toBe('E♭ major')
     expect(functionsKeyLabel('F#m')).toBe('F♯ minor')
+  })
+
+  it('puts the key in the address, and points the router’s history entry at it', () => {
+    const state = { back: '/', current: '/functions?key=Ebm#rule-m4', forward: null, position: 3 }
+    expect(keyedLocation('https://x.test/functions?key=Ebm#rule-m4', state, 'F')).toEqual({
+      url: 'https://x.test/functions?key=F#rule-m4',
+      state: { back: '/', current: '/functions?key=F#rule-m4', forward: null, position: 3 },
+    })
+  })
+  it('replaces a key that does not read, and keeps the rest of the query', () => {
+    expect(keyedLocation('https://x.test/functions?key=H&x=1', null, 'C')).toEqual({ url: 'https://x.test/functions?key=C&x=1', state: { current: '/functions?key=C&x=1' } })
+    expect(keyedLocation('https://x.test/functions?key=Eb&key=F', null, 'C')?.url).toBe('https://x.test/functions?key=C')
+  })
+  it('leaves an address that already has the key', () => {
+    expect(keyedLocation('https://x.test/functions?key=Eb', {}, 'Eb')).toBeNull()
   })
 })

@@ -220,7 +220,7 @@ import {
   spellings,
   TIERS,
 } from '~~/engine'
-import { FUNCTIONS_KEYS, functionsKeyFrom, functionsKeyLabel } from '~/utils/functionsKey'
+import { FUNCTIONS_KEYS, functionsKeyFrom, functionsKeyLabel, keyedLocation } from '~/utils/functionsKey'
 import { ISSUE_REPO } from '~/utils/issueReport'
 
 /**
@@ -267,13 +267,19 @@ const keyCode = ref(import.meta.client && !useNuxtApp().isHydrating ? functionsK
 const rows = computed(() => functionsTable(parseKey(keyCode.value) ?? parseKey('C')!))
 const groupRows = (g: FunctionGroup) => rows.value.filter((r) => r.group === g)
 
+/** the key in the link, so it can be shared (history directly: a router navigation would scroll back to the #anchor) */
+function syncUrl(k: string): void {
+  const next = keyedLocation(location.href, history.state, k)
+  if (next) history.replaceState(next.state, '', next.url)
+}
+/** a ?key= that isn't the key shown (one that doesn't read) is rewritten; no ?key= at all stays out of the link */
+const syncQuery = (): void => {
+  if (route.query.key !== undefined && route.query.key !== keyCode.value) syncUrl(keyCode.value)
+}
+
 watch(keyCode, (k) => {
   prefs.functionsKey.value = k
-  // in the link, so it can be shared; history directly, since a router navigation would scroll back to the #anchor
-  const url = new URL(location.href)
-  if (url.searchParams.get('key') === k) return
-  url.searchParams.set('key', k)
-  history.replaceState(history.state, '', url)
+  syncUrl(k)
 })
 
 // the link's ?key= reaches the route only after a prerendered page has hydrated (and changes on back and forward)
@@ -281,6 +287,7 @@ watch(
   () => route.query.key,
   (q) => {
     keyCode.value = functionsKeyFrom(q, keyCode.value)
+    syncQuery()
   },
 )
 
@@ -290,6 +297,11 @@ const groupNav = useTemplateRef<HTMLElement>('groupNav')
 let observer: IntersectionObserver | undefined
 onMounted(() => {
   keyCode.value = functionsKeyFrom(route.query.key, prefs.functionsKey.value)
+  syncQuery()
+  // a prerendered page's router puts the arrival address back once it has hydrated, over anything written before
+  onNuxtReady(() => {
+    if (route.query.key !== undefined || keyCode.value !== 'C') syncUrl(keyCode.value)
+  })
   const line = (groupNav.value?.offsetHeight ?? 40) + 48 // below the row (two lines on a phone), past where a #group link lands
   const update = () => {
     const passed = FUNCTION_GROUPS.filter((g) => (document.getElementById(`group-${g.id}`)?.getBoundingClientRect().top ?? Infinity) <= line)
