@@ -7,6 +7,27 @@
         Nothing here is complicated, but a few things are tucked away. Here's the tour. If something's still unclear,
         <UiTextLink href="/contact">tell me</UiTextLink> and I'll fix the page (or the app).
       </UiText>
+      <div class="space-y-3 pt-2">
+        <h2 class="text-base/7 font-semibold text-zinc-950 sm:text-sm/6 dark:text-white">A disclaimer</h2>
+        <UiText>
+          Here is the major disclaimer regarding this site: Music isn't math. I'm not a PhD in music theory, and my
+          degree is in computer science. I've been writing software for about thirty years and playing vibraphone for
+          about ten. I know enough to make this work, but the logic behind the functional analysis was put together by
+          compiling many internet resources and boiling them down to a series of logical tests.
+        </UiText>
+        <UiText>
+          But jazz isn't logic, it's an art. I'm not a good enough player to know if the analysis is right in all
+          cases, and I don't have the time to check every tune in the library. If you see something that looks wrong,
+          please <UiTextLink href="/contact">let me know</UiTextLink> and I'll fix it. There are also some clickable
+          links in various places that will show you the reasoning behind the analysis, and you can use those to check
+          the logic for yourself or to tell me what to fix.
+        </UiText>
+        <UiText>
+          As you probably suspect for a solo project this complex, I relied on AI to boil down the analysis logic into
+          a series of rules as well as the documentation. Claude Code kept me honest, provided planning and
+          specification help, and filled in gaps in my knowledge.
+        </UiText>
+      </div>
       <nav aria-label="On this page" class="pt-2">
         <ul class="flex flex-wrap gap-x-4 gap-y-1 text-sm/6">
           <li v-for="s in SECTIONS" :key="s.id"><UiTextLink :href="`#${s.id}`">{{ s.title }}</UiTextLink></li>
