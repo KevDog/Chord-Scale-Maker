@@ -1,14 +1,12 @@
 import { accidentalsInBar, accText, type GuideSystem, type LegacyGuideNote, octaveOf, toVexKey } from '~~/engine'
 import { BAR_UNITS, CLEF_SPACE, cropBand, fitSvg, headCentre, signatureLead, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
+import { DURATIONS, INK, REST_KEY } from './changesDrawing'
 
 /**
  * Drawing guide tone systems (engine/guideTones.ts) with VexFlow: two staves a system, one per line, bars aligned
  * across both. The scale-staff drawing and the shared SVG helpers live in vexflow.ts.
  */
 
-const DURATIONS = { 4: 'w', 3: 'hd', 2: 'h', 1: 'q' } as const // 3 beats: a dotted half
-const REST_KEY = { treble: 'b/4', bass: 'd/3' } as const
-const INK = { fillStyle: 'currentColor', strokeStyle: 'currentColor' } // follows light/dark mode, prints black
 // guide tones sit near the middle of the staff, so their minimum band is just the clef: 8 systems fit a letter page
 export const GUIDE_MIN_TOP = 64
 export const GUIDE_MIN_BOTTOM = 134
