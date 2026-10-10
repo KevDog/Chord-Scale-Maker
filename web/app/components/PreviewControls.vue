@@ -34,10 +34,10 @@
       <UiField>
         <UiLabel class="pl-3">Show</UiLabel>
         <div class="flex flex-wrap gap-2 *:whitespace-nowrap">
-          <UiButton v-if="sheet !== 'changes'" v-bind="intervals ? { color: 'note' } : { outline: true }" :aria-pressed="intervals" title="Label each note against the chord root (on screen only)" @click="intervals = !intervals">Intervals</UiButton>
+          <UiButton v-if="sheet !== 'changes'" v-bind="intervals ? { color: 'note' } : { outline: true }" :class="intervals ? '' : OFF_FILL" :aria-pressed="intervals" title="Label each note against the chord root (on screen only)" @click="intervals = !intervals">Intervals</UiButton>
           <template v-else>
-            <UiButton v-bind="numerals ? { color: 'note' } : { outline: true }" :aria-pressed="numerals" title="Each chord's Roman numeral in its key" @click="numerals = !numerals">Numerals</UiButton>
-            <UiButton v-bind="scaleNames ? { color: 'note' } : { outline: true }" :aria-pressed="scaleNames" title="Each chord's scale, under its numeral" @click="scaleNames = !scaleNames">Scales</UiButton>
+            <UiButton v-bind="numerals ? { color: 'note' } : { outline: true }" :class="numerals ? '' : OFF_FILL" :aria-pressed="numerals" title="Each chord's Roman numeral in its key" @click="numerals = !numerals">Numerals</UiButton>
+            <UiButton v-bind="scaleNames ? { color: 'note' } : { outline: true }" :class="scaleNames ? '' : OFF_FILL" :aria-pressed="scaleNames" title="Each chord's scale, under its numeral" @click="scaleNames = !scaleNames">Scales</UiButton>
           </template>
         </div>
       </UiField>
@@ -93,6 +93,8 @@ const modes = computed((): readonly { value: Mode; label: string }[] => [
   { value: 'from', label: `From ${noteText(start.value)}` },
   { value: 'root', label: 'From root' },
 ])
+// a solid white fill for the "off" toggles so they read on the tinted box (an outline button is transparent)
+const OFF_FILL = 'bg-white hover:bg-zinc-50 dark:bg-white/10 dark:hover:bg-white/15'
 const modeLabel = (v: Mode): string => modes.value.find((m) => m.value === v)?.label ?? ''
 const sheetLabel = (v: SheetKind): string => sheets.value.find((s) => s.value === v)?.label ?? ''
 const part = computed(() => partFor(instrument.value))

@@ -11,6 +11,7 @@
         v-for="p in PRESETS[mode]"
         :key="p"
         v-bind="activePreset === p ? { color: 'note' } : { outline: true }"
+        :class="activePreset === p ? '' : 'bg-white hover:bg-zinc-50 dark:bg-white/10 dark:hover:bg-white/15'"
         :aria-pressed="activePreset === p"
         @click="pickPreset(p)"
       >
