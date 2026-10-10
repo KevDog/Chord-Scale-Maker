@@ -17,8 +17,8 @@ chord_scales.json ──┼─> build (Vite raw import) ┤
 engine ──> fixtures/golden.json (frozen answers, `make golden`) ──> vitest golden test
 ```
 
-The preview has two sheets: **Changes** (the chart as a study lead sheet, the default view; its 3rd and 7th toggles
-put each chord's guide tones on the staff, voice-led) and **Scales** (one staff per chord). Both are written for the
+The preview has two sheets: **Changes** (the chart as a study lead sheet, the default view; its From 3rd and From 7th
+toggles put guide tone lines on the staff) and **Scales** (one staff per chord). Both are written for the
 chosen instrument.
 
 ## 2. Repository layout
@@ -43,8 +43,9 @@ web/                      # Nuxt app (Vercel root directory)
     transpose.ts          # move a whole chart to another key (editor "Transpose…")
     intervals.ts          # interval names against the chord root (b9, #11, …)
     guideTones.ts         # guide tones per chord, voiced for the Changes sheet (guideVoices)
+    guideToneLines.ts     #   the two greedy lines, from the 3rd and from the 7th (guideToneLines)
     guideToneTimeline.ts  #   when each chord starts and how long it lasts, in the chart's metre
-    voiceLeading.ts       #   the two complementary lines (Viterbi over pairs)
+    voiceLeading.ts       #   RANGES, and voiceLead (Viterbi over pairs), kept only to compare with the lines
     util.ts               # orNull, chunk
     limits.ts             # input caps
     index.ts
@@ -310,25 +311,40 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   repeat and final barlines, the time signature on the first line); chords, numerals and scales are HTML placed at
   the slashes, each wrapping within the room up to the next chord. Eight lines a printed page (a 32-bar AABA), fewer
   with guide tones on (§6a).
-- `Numerals`, `Scales`, `3rd` and `7th` toggles replace Intervals on this sheet (`csm-numerals`, `csm-scale-names`,
+- `Numerals`, `Scales`, `From 3rd` and `From 7th` toggles replace Intervals on this sheet (`csm-numerals`, `csm-scale-names`,
   both on; `csm-guide-3rd`, `csm-guide-7th`, both off; share links carry them and the sheet).
 
-### Guide tones on Changes ([spec](superpowers/specs/2026-10-10-guide-tones-on-changes-design.md))
+### Guide tones on Changes ([spec](superpowers/specs/2026-10-10-guide-tone-lines-design.md); first built as [guide tones on Changes](superpowers/specs/2026-10-10-guide-tones-on-changes-design.md))
 
-- **What shows:** with **3rd** or **7th** on, each chord's slashes give way to one note, held for the chord's length
-  and tied across barlines; a tie still open at a line's end continues as a half-tie on the next line. A chord with
-  no guide tones gets a rest and the diagnostic `no guide tones for X (…)`.
+- **What shows:** **From 3rd** and **From 7th** are two lines. Line A starts on the first chord's 3rd, line B on its
+  7th, and each moves to the nearest guide tone of every chord after it. One toggle shows that line alone, both show
+  both. Each chord's slashes give way to one note per line, held for the chord's length and tied across barlines; a tie
+  still open at a line's end continues as a half-tie on the next line.
 - **Which tones** come from the chord quality (`TONES` in `engine/guideTones.ts`): the 3rd (a sus chord's 4th) and
   the 7th (a triad's root, a 6 chord's 6th).
-- **Voicing:** one on: that degree alone, in the nearest octave (`voiceLeadOne`, the pair search over identical
-  pitches), so it leaps where the pair would step. Both on: `voiceLead`, a Viterbi search over pairs, keeps the two
-  voices complementary with the least combined motion inside the part's range (treble C4–A5, bass E2–C4); each pair
-  is sorted by pitch, upper voice first. Over the library about 89% of moves are a step or less, the voices never
-  cross, and they are never closer than a minor 3rd.
+- **The lines** (`engine/guideToneLines.ts`, `guideToneLines`) are greedy, one chord at a time, so a reader can apply
+  them by hand; the rules are numbered in the spec. The candidates are both guide tones at every octave inside the
+  part's written range (`RANGES`: treble C4–A5, bass E2–C4). A line takes the smaller move (a common tone before a
+  step before a leap); equal moves go to the pitch nearer the centre of the comfortable range (A4 treble), then the
+  lower. A start, or a restart after a rest, takes the octave nearest the line's last sounded note (the centre with
+  none).
+  - **Holds:** a chord whose 3rd and 7th are spelled as the previous chord's, in the same block, holds both lines:
+    the same pitch, tied, labelled again. A hold never crosses a block (section) boundary or the start of a 2nd
+    ending; there the chord strikes again, untied.
+  - **Rests:** a chord with no guide tones rests in both lines and ends the run; the next chord restarts by rule 1.
+  - **Collisions:** the lines are always complementary. If both pick the same tone, the smaller move keeps it (equal:
+    the line moving down, else A) and the other takes the remaining tone. Both lines are built whichever is shown, so
+    a lone line still gives way where they collide. They may cross; with both on the notes are sorted by pitch at each
+    chord, upper first.
+  - **Form:** repeats and endings are voiced in written order, a 2nd ending from the 1st ending's last chord; the
+    line neither loops nor looks ahead.
+- **Check:** `voiceLead` (the Viterbi pair search) is kept only as a comparison. `npm run guide-lines` measures the
+  library (common tones, steps, leaps, every move over a tritone); `npm run guide-lines -- --compare` sets the lines
+  against the pair search.
 - **Model:** `guideVoices` voices the drawn rows before `buildChanges` splits them into lines, so 2 or 4 bars a line
   give the same pitches and a folded copy is voiced once. `ChangesBar.voices` holds each bar's `[line]` or
-  `[upper, lower]` `GuideNote`s, and `ChangesChord.guide` each chord's labels, top to bottom. A 2nd ending is voiced
-  from the 1st ending's last chord, in written order. Accidentals follow the measure rule over both voices together
+  `[upper, lower]` `GuideNote`s, and `ChangesChord.guide` each chord's labels, top to bottom. `GuideShow` is
+  `{ fromThird, fromSeventh }`. Accidentals follow the measure rule over both voices together
   (`accidentalsInBar`), against the signature, or C without one.
 - **Labels:** the degree without its accidental (`guideLabel`: `b3` → `3`, `bb7` → `7`), in a row under the staff,
   stacked when both are on; they print. They swap between voices as the line moves (7 over 3, then 3 over 7, through
@@ -404,7 +420,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - `SheetPages`, which lays out both sheets' printed pages. On screen they form one continuous card, with a dashed
     "Page N" divider where each printed page starts and the header shown once. In print each page is a bare letter
     page with its own header.
-  - `PreviewControls`, the preview toolbar: Work on, Instrument, From root/From X, then Intervals (on the Changes: Numerals, Scales, 3rd and 7th) with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
+  - `PreviewControls`, the preview toolbar: Work on, Instrument, From root/From X, then Intervals (on the Changes: Numerals, Scales, From 3rd and From 7th) with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
 - **Dark mode** is a `.dark` class on `<html>`, toggled in the navbar.
   - The default is light, and the choice is saved per browser.
   - `public/theme-init.js` applies it before first paint. It's a file, not an inline script, so the CSP needs no
@@ -498,7 +514,7 @@ library writes such a repeat out instead.
   - `flush`: parse any pending typing now. It runs before printing and transposing.
   - Immutable updates only. The sheet (the Changes, the default, or Scales) and the mode are page state.
 - **`usePreferences()`:** the instrument, the start note, the Intervals toggle and the Changes sheet's toggles
-  (Numerals, Scales, and the guide tones' 3rd and 7th, off until turned on), each a `storedRef` saved per browser. A
+  (Numerals, Scales, and the guide tone lines From 3rd and From 7th, off until turned on; the stored keys keep their older names), each a `storedRef` saved per browser. A
   stored value that isn't a known instrument or picker root falls back to the default.
 - **Browser storage** goes through `utils/storage.ts` (`readStored`, `writeStored`). It's best-effort, because
   storage can be blocked or full. It holds the theme, the preferences, practice picks and My charts. Nothing is
@@ -630,11 +646,9 @@ Pages are static, and the only server code is the contact function, so the attac
   - quality resolution, interval roots, diagnostics and limits
   - transposition spelling
   - interval names
-  - guide tones: the timeline (form lengths, metres), `voiceLeadOne` (the smoothest single line, its role and
-    labels), the ii–V–I pair moving by step with its labels swapping, `guideVoices` (ties and `tiedIn`, dotted
+  - guide tones: the timeline (form lengths, metres), `guideToneLines` (one test a rule, named for its number, the spec's three worked examples, and the library: complementary at every chord, every pitch in range), `guideVoices` (ties and `tiedIn`, dotted
     halves, the measure rule over both voices, rests for unknown chords, an unreadable scale ignored, the bass range),
-    and library property tests with both on: at least 85% of moves are steps, the voices never cross, stay a minor
-    3rd apart and never share a label, and no tie reaches into another block
+    holds, and a library test that no tie reaches into another block
   - the Changes sheet with guide tones: off is today's sheet, a folded copy is voiced once, a 2nd ending follows the
     1st ending's last chord, 2 and 4 bars a line give the same pitches, and `changesLinesPerPage`
   - the analyser: one test per rule (`analysis.test.ts`, named for the rule, from a real tune), key finding,
@@ -659,7 +673,7 @@ Pages are static, and the only server code is the contact function, so the attac
     picker and drop), share links in a fresh browser context, damaged links
   - Transpose
   - interval labels
-  - guide tones on the Changes sheet: the 3rd and 7th toggles and their labels, two voices' stems and ties (and their
+  - guide tones on the Changes sheet: the From 3rd and From 7th toggles and their labels, two voices' stems and ties (and their
     half-ties over a line break), one rest for an unknown chord, accidentals against the signature, B♭ and bass-clef
     parts, a waltz, dark mode, endings above the stems, and no collisions in a 4-chord bar
   - transposing instruments and the bass clef, and that the choices persist
@@ -711,9 +725,11 @@ Pages are static, and the only server code is the contact function, so the attac
    plain `simplifyRoot`.
 6. **Mixolydian ♭6 is its own scale** (1 2 3 4 5 b6 b7). It used to be an alias of Phrygian Dominant, which has a
    b2 and no 2.
-7. **Guide tones** are two toggles on the Changes sheet (the separate sheet is gone), in the chart's metre. Triads
-   use 3 + root, because the root resolves by step from a V7 where the 5th would leap. With both on, the two voices
-   are voice-led together, so they move by step and never cross; one alone is voiced in the nearest octave.
+7. **Guide tones** are two lines on the Changes sheet (the separate sheet is gone), in the chart's metre, from the
+   3rd and from the 7th ([spec](superpowers/specs/2026-10-10-guide-tone-lines-design.md)). Triads use 3 + root,
+   because the root resolves by step from a V7 where the 5th would leap. The lines are greedy rules, not a global
+   search: each steps to the nearest guide tone, they stay complementary, and a repeated chord holds. The older
+   per-degree toggles and the Viterbi pair search (`voiceLead`, now only a comparison) are superseded.
 8. **One spelling at a time** in the preview (From X or From root).
 9. **Transpose, interval labels and guide tones** were built on the ported engine, so they inherit its spelling
    rules.

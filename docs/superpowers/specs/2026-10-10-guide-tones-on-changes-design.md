@@ -15,8 +15,8 @@ sheet is removed. The Changes sheet becomes the default view.
 | Question | Decision (the user's) |
 | --- | --- |
 | Display | Notes on the chord staff, in place of the beat slashes, timed to each chord. |
-| Toggles | Two: **3rd** and **7th**. The register is always voice-led. Both on: two voices on one staff (stems up/down) that move by step; one on: that degree only, correctly labelled. |
-| A lone line | Voiced on its own in the nearest octave (smoothest alone). A single line cannot move by step (ii–V–I 3rds go F→B→E); about 13% of its notes change octave when the other toggle is turned on. |
+| Toggles | Superseded by [2026-10-10-guide-tone-lines-design.md](2026-10-10-guide-tone-lines-design.md): the toggles are **From 3rd** and **From 7th**, each a line. Original: Two: **3rd** and **7th**. The register is always voice-led. Both on: two voices on one staff (stems up/down) that move by step; one on: that degree only, correctly labelled. |
+| A lone line | Superseded by the same spec (a lone line is now a greedy line, not the smoothest alone). Original: Voiced on its own in the nearest octave (smoothest alone). A single line cannot move by step (ii–V–I 3rds go F→B→E); about 13% of its notes change octave when the other toggle is turned on. |
 | Rhythm | One note per chord, held for the chord's length and tied across barlines and line ends. |
 | Labels | The real degree: `3`/`7`, `4` on a sus chord, `1` on a triad, `6` on a 6 chord; accidentals dropped (`b3`→`3`). They print. |
 | Clef and key signature | First line only, as for slashes; accidentals are against the signature on every line. |
