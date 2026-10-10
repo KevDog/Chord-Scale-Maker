@@ -100,7 +100,7 @@ My experiment ran exactly this wrapper, without the final `.map`.
   - Add `missing` to the diagnostics only when a guide is on.
 - `export function changesLinesPerPage(guides: GuideShow, rows: Readonly<{ numerals: boolean; scales: boolean }>): number`:
   - No guide: 8, whatever the rows (today's count).
-  - With numerals and scales: start at 7 for one guide and 6 for both.
+  - With numerals and scales: start at 7 for one guide and 6 for both. (Tuned: 6 and 5. The tallest pages, with an ending raised over two voices' stems, overflowed at 7 and 6.)
   - One more line when both rows are off.
   - Tune the numbers with `print.spec`.
 - Edit the comment at `changes.ts:14`.
@@ -126,11 +126,11 @@ My experiment ran exactly this wrapper, without the final `.map`.
   - A line starting with a `tiedIn` note gets a `firstNote: null` stub.
   - With two voices, call `tie.setDirection(-stemDir)` on every tie and half-tie. VexFlow puts direction +1 below the head, so this makes upper ties curve up and lower ties curve down. With one voice, keep VexFlow's default.
 - **Volta:**
-  - On a line with voices and a volta: `shift = min(0, minStemTipY − MARGIN − (getYForTopText(5) + 1.5·spacing))`.
+  - On a line with voices and a volta: `shift = min(0, minInkY − MARGIN − (getYForTopText(5) + 1.5·spacing))`, where `minInkY` is the highest stem tip or notehead minus `ACCIDENTAL_RISE` (`voltaShift`): whole notes have no stem, and a flat rises above its head.
   - Apply the same shift to every bar's `setVoltaType(…, VOLTA_Y + shift)`, so the bracket stays level across the line.
 - **Clef:** `opts.clef` stays one value. `ChangesSheet.vue:18` passes `part.clef` when `signatures || guide on`. The staff clef goes on line 1 only (`changesDrawing.ts:25`), and the key signature only when `bar.keySig` is set.
 - **Crop:**
-  - With voices: `cropBand([...headYs, ...stemTips], CLEF_BAND.top, CLEF_BAND.bottom)`. When the line has a volta, merge in `VOLTA_BAND.top + shift`.
+  - With voices: `cropBand([...headYs, ...stemTips], CLEF_BAND.top, CLEF_BAND.bottom)`. When the line has a volta, take in the bracket's measured top, `getYForTopText(numLines) + shift − VOLTA_PAD` (`voicedBand`); the fixed `VOLTA_BAND.top`, shifted, would clip it.
   - Slash lines keep `BAND`/`CLEF_BAND` exactly.
 - **Width and phones:** `lead`, `BAR_UNITS` and widths are unchanged. On phones, 2 bars a line only moves line breaks, giving more open ties at line ends.
 - **aria-label:** keep the `Bars: …` prefix (tests use it) and append `; guide tones: C5 7 / F4 3, B4 3 / F4 7 | …`.
@@ -144,7 +144,7 @@ My experiment ran exactly this wrapper, without the final `.map`.
 - **`usePreferences.ts`:** `guideThird` → `csm-guide-3rd` and `guideSeventh` → `csm-guide-7th`, stored as `'on'`/`'off'`, default **off**. Add both to `linkPreferences`.
 - **`engine/share.ts`:**
   - Add optional `guideThird` and `guideSeventh` booleans, validated at :93-95. `VERSION` stays 1.
-  - Remove `'guideTones'` from `ShareSheet` (:14) and the whitelist (:96). An old link falls back to Scales.
+  - Remove `'guideTones'` from `ShareSheet` (:14) and the whitelist (:96). An old link drops its `sheet` and opens the default view (Changes).
 - **`PreviewControls.vue`:**
   - `defineModel('guideThird', { default: false })` and `defineModel('guideSeventh', …)`.
   - Buttons **3rd** and **7th** after Scales (:40), using the existing toggle pattern with `aria-pressed`.

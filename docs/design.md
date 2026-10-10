@@ -17,8 +17,9 @@ chord_scales.json ──┼─> build (Vite raw import) ┤
 engine ──> fixtures/golden.json (frozen answers, `make golden`) ──> vitest golden test
 ```
 
-The preview has two sheets: **Scales** (one staff per chord) and **Guide tones** (each
-chord's 3rd and 7th, voice-led into two lines). Both are written for the chosen instrument.
+The preview has two sheets: **Changes** (the chart as a study lead sheet, the default view; its 3rd and 7th toggles
+put each chord's guide tones on the staff, voice-led) and **Scales** (one staff per chord). Both are written for the
+chosen instrument.
 
 ## 2. Repository layout
 
@@ -41,8 +42,8 @@ web/                      # Nuxt app (Vercel root directory)
     sheet.ts              # rows -> pages of StaffModel (labels, notes, intervals, errors), toVexKey
     transpose.ts          # move a whole chart to another key (editor "Transpose…")
     intervals.ts          # interval names against the chord root (b9, #11, …)
-    guideTones.ts         # guide tones per chord + the GuideToneSheet model
-    guideToneTimeline.ts  #   when each chord starts and how long it lasts (4/4)
+    guideTones.ts         # guide tones per chord, voiced for the Changes sheet (guideVoices)
+    guideToneTimeline.ts  #   when each chord starts and how long it lasts, in the chart's metre
     voiceLeading.ts       #   the two complementary lines (Viterbi over pairs)
     util.ts               # orNull, chunk
     limits.ts             # input caps
@@ -56,12 +57,12 @@ web/                      # Nuxt app (Vercel root directory)
     pages/ui.vue          # dev-only showcase of the Catalyst components (removed from production builds)
     components/           # AppShell, EditorView, ChartGrid, GridCell, ScaleCell, ChartText, ChartTranspose,
                           # PreviewControls, SegmentedControl, SheetPages, ScaleSheet, ScaleStaff,
-                          # GuideToneSheet, GuideToneSystem, ChordSymbol, NoteName
+                          # ChangesSheet, ChangesSystem, ChordSymbol, NoteName
     components/ui/        # Catalyst ported to Vue (<UiButton>, <UiListbox>, <UiDialog>, …)
     composables/          # useChartEditor (editor state), usePreferences, useTheme, useFeature, useMediaQuery,
                           # useFocusMode, useSavedChart (auto-save), useOpenChart
     utils/                # library (build-time charts), scaleChoices, instrumentChoices, sheets,
-                          # vexflow (loader, scale staves, shared SVG helpers), guideToneDrawing,
+                          # vexflow (loader, scale staves, shared SVG helpers), changesDrawing,
                           # storage (safe localStorage), myCharts (saved charts), chartFile (Download/Open),
                           # starterChart, catalyst/ (button and badge styles),
                           # field, table, interactive (Catalyst wiring)
@@ -186,7 +187,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   bars can be numbered from 1.
 - **Metre:** a `time:` meta line, `2/4`, `3/4` or `4/4` (the default; anything else is a diagnostic). `chartBeats`
   gives the beats a bar; the guide tone timeline splits bars by it (3/4: one chord = 3 beats, two = 2 + 1) and the
-  sheet draws its time signature and dotted halves. The scale sheet doesn't depend on it.
+  Changes sheet draws its time signature, its slashes and, with guide tones on, its dotted halves. The scale sheet
+  doesn't depend on it.
 - **Function cell and `@key`:** a row may carry a fifth cell, the function the author states (`V7/ii`, or
   `D: V7/ii` for another key); empty means unstated. A `key` line pins the key area from its bar on. Both are
   read by the analysis (§7a) and round-trip through the grid; a row with a function but no scale keeps its empty
@@ -290,39 +292,56 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   on screen, picked notes keep the staff's ink in light mode (as the clef) and take the accent in dark mode, while
   the rest are faint (35% opacity in dark mode). In print, picked notes are black and the rest light grey.
 
-### Guide tone sheet
-
-- **Model:** `engine/guideTones.ts` builds a `GuideToneSheet` (see [plan-guide-tones.md](plan-guide-tones.md)).
-  - **Guide tones** come from the chord quality (3rd and 7th; 6 chords 3 + 6; sus4 4 + b7; triads 3 + root).
-  - **Timeline** (`guideToneTimeline.ts`), in 4/4:
-    - Rows in the same bar split it.
-    - A chord lasts until the next change.
-    - The last row runs to the end of the form: as long as the section it repeats, rounded up to whole 4-bar
-      phrases.
-  - **Voice leading** (`voiceLeading.ts`) picks both lines together, a Viterbi search over pairs, so the lines
-    stay complementary (one on the 3rd, one on the 7th of every chord) with the least combined motion inside the
-    part's range. Line 1 starts on the 3rd.
-- **Drawing** (`utils/guideToneDrawing.ts`):
-  - **Systems** have two staves, one per line, with the two voices of each bar formatted together so the bars
-    line up.
-  - **Notation:** the first system gets the clef and 4/4. Held chords are tied across barlines, left open at
-    the end of a system. Accidentals follow bar rules.
-  - **Chord symbols** sit over their beats and labels under the notes, both as HTML.
-- **Width:** 4 bars a system, or 2 on phones (`useMediaQuery`), drawn at the same size per bar.
-
 ### Changes sheet ([plan-changes.md](plan-changes.md); the `changes` flag, on)
 
-- A study lead sheet: `engine/changes.ts` `buildChanges(doc, part, barsPerLine)` lays the chart out in lines of four
-  bars (two on phones), each section on a new line, one slash a beat in the chart's metre. Chords sit on their
-  beats (the guide tone timeline's timing), each with its Roman numeral (`analysis/numerals.ts`) and its scale, both
-  written for the part; key-area labels where the key changes; section markers; a `@copy` straight after its
-  source folded into repeat signs ("A1 · A2"), a later one written out ("A3 (= A1)"); a double barline at the end
-  of the form when a tag or coda follows (a coda or ending headed "after the last chorus"), a final one at the end.
+- **The default view:** a chart opens on the Changes; a share link may open it on Scales.
+- A study lead sheet: `engine/changes.ts` `buildChanges(doc, part, barsPerLine, signatures, guides)` lays the chart
+  out in lines of four bars (two on phones), each section on a new line, one slash a beat in the chart's metre.
+  Chords sit on their beats (the guide tone timeline's timing), each with its Roman numeral (`analysis/numerals.ts`)
+  and its scale, both written for the part; key-area labels where the key changes; section markers; a `@copy`
+  straight after its source folded into repeat signs ("A1 · A2"), a later one written out ("A3 (= A1)"); a double
+  barline at the end of the form when a tag or coda follows (a coda or ending headed "after the last chorus"), a
+  final one at the end.
+- **Timing** (`guideToneTimeline.ts`), in the chart's metre:
+  - Rows in the same bar split it.
+  - A chord lasts until the next change.
+  - The last row runs to the end of the form: as long as the section it repeats, rounded up to whole 4-bar phrases.
 - `ChangesSheet.vue` / `ChangesSystem.vue` draw it with `utils/changesDrawing.ts` (slash noteheads without stems,
   repeat and final barlines, the time signature on the first line); chords, numerals and scales are HTML placed at
-  the slashes, each wrapping within the room up to the next chord. Eight lines a printed page (a 32-bar AABA).
-- `Numerals` and `Scales` toggles replace Intervals on this sheet (`csm-numerals`, `csm-scale-names`, both on;
-  share links carry them and the sheet).
+  the slashes, each wrapping within the room up to the next chord. Eight lines a printed page (a 32-bar AABA), fewer
+  with guide tones on (§6a).
+- `Numerals`, `Scales`, `3rd` and `7th` toggles replace Intervals on this sheet (`csm-numerals`, `csm-scale-names`,
+  both on; `csm-guide-3rd`, `csm-guide-7th`, both off; share links carry them and the sheet).
+
+### Guide tones on Changes ([spec](superpowers/specs/2026-10-10-guide-tones-on-changes-design.md))
+
+- **What shows:** with **3rd** or **7th** on, each chord's slashes give way to one note, held for the chord's length
+  and tied across barlines; a tie still open at a line's end continues as a half-tie on the next line. A chord with
+  no guide tones gets a rest and the diagnostic `no guide tones for X (…)`.
+- **Which tones** come from the chord quality (`TONES` in `engine/guideTones.ts`): the 3rd (a sus chord's 4th) and
+  the 7th (a triad's root, a 6 chord's 6th).
+- **Voicing:** one on: that degree alone, in the nearest octave (`voiceLeadOne`, the pair search over identical
+  pitches), so it leaps where the pair would step. Both on: `voiceLead`, a Viterbi search over pairs, keeps the two
+  voices complementary with the least combined motion inside the part's range (treble C4–A5, bass E2–C4); each pair
+  is sorted by pitch, upper voice first. Over the library about 89% of moves are a step or less, the voices never
+  cross, and they are never closer than a minor 3rd.
+- **Model:** `guideVoices` voices the drawn rows before `buildChanges` splits them into lines, so 2 or 4 bars a line
+  give the same pitches and a folded copy is voiced once. `ChangesBar.voices` holds each bar's `[line]` or
+  `[upper, lower]` `GuideNote`s, and `ChangesChord.guide` each chord's labels, top to bottom. A 2nd ending is voiced
+  from the 1st ending's last chord, in written order. Accidentals follow the measure rule over both voices together
+  (`accidentalsInBar`), against the signature, or C without one.
+- **Labels:** the degree without its accidental (`guideLabel`: `b3` → `3`, `bb7` → `7`), in a row under the staff,
+  stacked when both are on; they print. They swap between voices as the line moves (7 over 3, then 3 over 7, through
+  a ii–V–I).
+- **Drawing** (`utils/changesDrawing.ts`; a line without voices draws its slashes as before):
+  - Two passes: every bar's notes are formatted first; then the stem tips are read, an ending's bracket is raised
+    above the highest (level across the line), and the staves and voices are drawn.
+  - One note a chord, a dotted half for 3 beats, with the model's accidentals. Two voices: stems up and down, the
+    upper voice's ties curving up and the lower's down; a rest goes in the upper voice with a `GhostNote` under it.
+  - A third voice of `GhostNote`s keeps a position for every beat (`xs`), so chords, numerals and scales still sit
+    over each chord's first note.
+  - Line 1 gets the part's clef whenever a guide is on; the key signature only with signatures on.
+  - The aria-label adds `; guide tones: C5 7 / F4 3, …` after `Bars: …`.
 
 ### Shared
 
@@ -331,21 +350,22 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - Its Bravura font is embedded as a `data:` URL, so the CSP needs `font-src 'self' data:`.
   - Drawing waits for `document.fonts.load`.
 - **Colour:** the SVG uses `currentColor`, so it follows light and dark mode and prints black.
-- **Drawing space:** a scale staff is drawn 1200 units wide; guide tones use 300 units a bar.
+- **Drawing space:** a scale staff is drawn 1200 units wide; the Changes sheet uses 300 units a bar.
 - **Cropping:** each SVG's viewBox is cropped to its notes' vertical range by `cropBand`. The range comes from
   VexFlow's note-head positions plus room for accidentals; SVG `getBBox` can't be used, because it measures glyphs
   by font ascent, not ink.
   - A minimum band keeps ordinary staves aligned.
-  - Guide tone staves use a tighter one, just the clef, because their notes stay near the middle of the staff.
+  - Changes lines of slashes keep fixed bands (`BAND`, `CLEF_BAND`, `VOLTA_BAND`); a line with guide tones crops to
+    its noteheads and stem tips, never inside `CLEF_BAND`, and takes in a raised ending bracket.
 - **Clefs and key signatures (the `keySignatures` flag, on):** the clef and the chart's key as written for the instrument
   (`keySignature` in `engine/keySignature.ts`; a minor key by its relative major, none without a `key:`), once at the
-  start, as on a jazz lead sheet: the first staff of each scale sheet part (`StaffModel.showClefAndKey`), the first
-  guide tone system and the first Changes line; every other staff, system and line has neither. The key is the
-  chart's `key:` (`chartKeyOf`) throughout: key changes go by accidentals only, and show in the analysis (the
-  Changes sheet's key-area labels), never as a new signature. Notes follow the measure rule (`accidentalsInBar`): an
-  accidental shows only where it differs from what is in force in the bar; with no signature, guide tones keep the
-  legacy rule (`barAccidentals`). The first Changes line uses a taller crop band (`CLEF_BAND`); guide tone sheets keep
-  their own bands. With the flag off, every scale staff and guide tone system has its clef, as before.
+  start, as on a jazz lead sheet: the first staff of each scale sheet part (`StaffModel.showClefAndKey`) and the
+  first Changes line; every other staff and line has neither. With a guide tone on, the first Changes line gets the
+  clef even with the flag off or without a `key:`. The key is the chart's `key:` (`chartKeyOf`) throughout: key
+  changes go by accidentals only, and show in the analysis (the Changes sheet's key-area labels), never as a new
+  signature. Notes follow the measure rule (`accidentalsInBar`): an accidental shows only where it differs from what
+  is in force in the bar (guide tones: both voices together, against C without a signature). The first Changes line
+  uses a taller crop band (`CLEF_BAND`). With the flag off, every scale staff has its clef, as before.
 - **Shared helpers:** `svgContext`, `fitSvg` and `headCentre` in `utils/vexflow.ts`.
 - **Instrument choice:** 16 presets, grouped by what they read (C treble, B♭, E♭, F, bass clef). The
   choice sets the `Part` (clef + transposition) for the whole preview, so notes, chord symbols and scale names
@@ -384,8 +404,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - `SheetPages`, which lays out both sheets' printed pages. On screen they form one continuous card, with a dashed
     "Page N" divider where each printed page starts and the header shown once. In print each page is a bare letter
     page with its own header.
-  - `SegmentedControl`, the joined toggles (Scales | Guide tones, From | From root).
-  - `PreviewControls`, the preview toolbar: Sheet, Instrument, From root/From X, then Intervals with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
+  - `SegmentedControl`, the joined toggles (From | From root).
+  - `PreviewControls`, the preview toolbar: Sheet, Instrument, From root/From X, then Intervals (on the Changes: Numerals, Scales, 3rd and 7th) with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
 - **Dark mode** is a `.dark` class on `<html>`, toggled in the navbar.
   - The default is light, and the choice is saved per browser.
   - `public/theme-init.js` applies it before first paint. It's a file, not an inline script, so the CSP needs no
@@ -401,10 +421,13 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   together as one card, with "Page N" dividers marking the breaks.
 - **Scale sheets:** 12 staves a page, with 8px between staves. A full page fills
   about 9.6in, even when every note has ledger lines (e.g. trombone from B). Autumn Leaves prints on 4 pages.
-- **Guide tones:** 8 four-bar systems a page, so a 32-bar tune prints on one page and Milestones on two.
-  - The chord row and spacing are shorter in print.
-  - Print always uses 4 bars a system.
-  - Systems never split across pages.
+- **Changes:** 8 four-bar lines a page with guide tones off, so a 32-bar AABA prints on one page.
+  - With guide tones on, `changesLinesPerPage` (`engine/changes.ts`) gives fewer: 6 for one guide and 5 for both
+    with numerals and scales, one more with both rows off. `print.spec.ts` prints the tallest case (both guides,
+    numerals, scales, an ending and a bass part) a sheet page to a letter page.
+  - The chord row and spacing are shorter in print; lines with a clef or guide tones close up (`print:space-y-0`).
+  - Print always uses 4 bars a line.
+  - Lines never split across pages.
 - **Saving a PDF:** users choose "Save as PDF" in the browser's print dialog. There is no server-side PDF.
 
 ## 7. Library
@@ -474,9 +497,10 @@ library writes such a repeat out instead.
   - `setText`: debounced re-parse.
   - `setDoc`: a grid edit, written back as canonical text.
   - `flush`: parse any pending typing now. It runs before printing and transposing.
-  - Immutable updates only. The sheet (scales or guide tones) and the mode are page state.
-- **`usePreferences()`:** the instrument, the start note and the Intervals toggle, each a `storedRef` saved per
-  browser. A stored value that isn't a known instrument or picker root falls back to the default.
+  - Immutable updates only. The sheet (the Changes, the default, or Scales) and the mode are page state.
+- **`usePreferences()`:** the instrument, the start note, the Intervals toggle and the Changes sheet's toggles
+  (Numerals, Scales, and the guide tones' 3rd and 7th, off until turned on), each a `storedRef` saved per browser. A
+  stored value that isn't a known instrument or picker root falls back to the default.
 - **Browser storage** goes through `utils/storage.ts` (`readStored`, `writeStored`). It's best-effort, because
   storage can be blocked or full. It holds the theme, the preferences, practice picks and My charts. Nothing is
   sent anywhere.
@@ -500,9 +524,9 @@ library writes such a repeat out instead.
   - New flags start off, and every flag is fixed at build time. `NUXT_PUBLIC_FEATURES_<NAME>=true|false`
     overrides one for a build or `make dev`.
   - `npm run e2e` builds with every flag on.
-  - `myCharts` (My charts, New chart, Download/Open, share links), `guideTones` (the Guide tones sheet), `changes`
-    (the Changes sheet),
-    `practice` (the Practice panel) and `scaleLevels` (the Scale level control) are on, since sign-off.
+  - `myCharts` (My charts, New chart, Download/Open, share links), `changes` (the Changes sheet),
+    `practice` (the Practice panel) and `scaleLevels` (the Scale level control) are on, since sign-off. Guide tones
+    on the Changes sheet have no flag: their toggles start off.
 
 ## 9. Security
 
@@ -607,8 +631,13 @@ Pages are static, and the only server code is the contact function, so the attac
   - quality resolution, interval roots, diagnostics and limits
   - transposition spelling
   - interval names
-  - guide tones: the textbook ii–V–I, form lengths, ties, transposition, and a check that no library chart's
-    lines leap more than a 5th (a 4th in the first charts)
+  - guide tones: the timeline (form lengths, metres), `voiceLeadOne` (the smoothest single line, its role and
+    labels), the ii–V–I pair moving by step with its labels swapping, `guideVoices` (ties and `tiedIn`, dotted
+    halves, the measure rule over both voices, rests for unknown chords, an unreadable scale ignored, the bass range),
+    and library property tests with both on: at least 85% of moves are steps, the voices never cross, stay a minor
+    3rd apart and never share a label, and no tie reaches into another block
+  - the Changes sheet with guide tones: off is today's sheet, a folded copy is voiced once, a 2nd ending follows the
+    1st ending's last chord, 2 and 4 bars a line give the same pitches, and `changesLinesPerPage`
   - the analyser: one test per rule (`analysis.test.ts`, named for the rule, from a real tune), key finding,
     key areas and contexts, and writing back (fill, force, keep, save, rerun, `@copy` conflicts)
 - **App tests (`web/test/`):** `@nuxt/test-utils` (Nuxt runtime, happy-dom) with Vue Test Utils. They cover:
@@ -617,7 +646,8 @@ Pages are static, and the only server code is the contact function, so the attac
   - scale choices, `ChartGrid` edits and validation, and the `ScaleCell` dropdown and dialog
   - `ChartTranspose`
   - the preview controls (`EditorView`)
-  - `ScaleSheet` pagination with `ScaleStaff` stubbed, and the guide tone sheet
+  - `ScaleSheet` pagination with `ScaleStaff` stubbed; `ChangesSheet` (the clef with a guide on, the print gap, lines
+    a page) and the `ChangesSystem` label row
   - feature flags, preferences, and the Catalyst components (`test/ui/`)
 
   VexFlow drawing needs a real browser, so the E2E tests cover it.
@@ -630,12 +660,14 @@ Pages are static, and the only server code is the contact function, so the attac
     picker and drop), share links in a fresh browser context, damaged links
   - Transpose
   - interval labels
-  - guide tones
+  - guide tones on the Changes sheet: the 3rd and 7th toggles and their labels, two voices' stems and ties (and their
+    half-ties over a line break), one rest for an unknown chord, accidentals against the signature, B♭ and bass-clef
+    parts, a waltz, dark mode, endings above the stems, and no collisions in a 4-chord bar
   - transposing instruments and the bass clef, and that the choices persist
   - dark mode
   - print:
     - scale sheets, 4 pages for Autumn Leaves, including the tallest staves
-    - guide tones, 1 page for Autumn Leaves (concert and trombone) and 2 for Milestones
+    - the Changes, 8 lines a page with guide tones off, and the tallest guide tone lines at `changesLinesPerPage`
   - the CSP meta on every page, and the not-found page
 
   Every test fails on a page error, a console error or a CSP violation. Run them with `make e2e`.
@@ -661,7 +693,8 @@ Pages are static, and the only server code is the contact function, so the attac
    - Dorian ♭2 and Mixolydian ♭6.
    - Inside and outside pentatonics, and interval labels.
    - Feature flags.
-   - Guide tone lines ([plan-guide-tones.md](plan-guide-tones.md)).
+   - Guide tone lines ([plan-guide-tones.md](plan-guide-tones.md)), later moved onto the Changes sheet
+     ([the spec](superpowers/specs/2026-10-10-guide-tones-on-changes-design.md)).
    - One spelling at a time on the scale sheet.
 
 ## 12. Decisions
@@ -674,13 +707,14 @@ Pages are static, and the only server code is the contact function, so the attac
 3. **Slash-bass parsing.** `CHORD_RE` takes the quality lazily and the bass only as `/` + a note letter at the
    end. So `C6/9` gives quality `6/9`, and `D7/F#` gives quality `7` with bass F#. The quality is then matched
    exactly against the aliases.
-4. **Staves per page.** 12 for scale sheets; 8 systems (32 bars) for guide tones.
+4. **Staves per page.** 12 for scale sheets; 8 lines for the Changes, fewer with guide tones on (`changesLinesPerPage`).
 5. **Transpose spells for the target key** (Dbm7 Gb7 in B♭, even with Cb/Fb in the scale). Instrument parts keep
    plain `simplifyRoot`.
 6. **Mixolydian ♭6 is its own scale** (1 2 3 4 5 b6 b7). It used to be an alias of Phrygian Dominant, which has a
    b2 and no 2.
-7. **Guide tones:** 4/4 only, for now. Triads use 3 + root, because the root resolves by step from a V7 where
-   the 5th would leap. The two lines are voice-led together, so they never collapse onto the same notes.
+7. **Guide tones** are two toggles on the Changes sheet (the separate sheet is gone), in the chart's metre. Triads
+   use 3 + root, because the root resolves by step from a V7 where the 5th would leap. With both on, the two voices
+   are voice-led together, so they move by step and never cross; one alone is voiced in the nearest octave.
 8. **One spelling at a time** in the preview (From X or From root).
 9. **Transpose, interval labels and guide tones** were built on the ported engine, so they inherit its spelling
    rules.
