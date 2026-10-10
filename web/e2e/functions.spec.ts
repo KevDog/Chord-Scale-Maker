@@ -77,17 +77,24 @@ test('Copy for an issue copies the report and offers the contact form and GitHub
   await expect(page.getByLabel('Message')).toHaveValue(/Rule: m4/)
 })
 
-// BUG (app, not the test): on a 390px phone the note is 358px wide but opens at x=65 (its left edge is 3rem left of the
-// numeral button, which is at x~113), so its right edge is at 423 and runs off the screen. Fix in ChangesNote.vue.
-test.fixme('on a phone the note fits the screen', async ({ page }) => {
+test('on a phone the note fits the screen, wherever its numeral sits on the line', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await writeChart(page, CHART)
   await saved(page)
-  await page.getByRole('button', { name: 'ii7' }).first().click()
-  const note = page.getByRole('dialog', { name: 'Why: Dm7' })
-  await expect(note).toBeVisible()
-  const box = await note.boundingBox()
-  expect(box && box.x >= 0 && box.x + box.width <= 390).toBe(true)
+  const numerals = page.getByRole('button', { name: /^(ii7|V7|Imaj7)$/ })
+  const count = await numerals.count()
+  expect(count).toBeGreaterThanOrEqual(3)
+  for (const i of [0, 1, count - 1]) {
+    await numerals.nth(i).click()
+    const note = page.getByRole('dialog', { name: /^Why: / })
+    await expect(note).toBeVisible()
+    await expect.poll(async () => {
+      const box = await note.boundingBox()
+      return box !== null && box.x >= 0 && box.x + box.width <= 390
+    }, `numeral ${i}`).toBe(true)
+    await page.keyboard.press('Escape')
+    await expect(note).toBeHidden()
+  }
 })
 
 test('on a phone the note is reachable by keyboard and closes on Escape and outside clicks', async ({ page }) => {

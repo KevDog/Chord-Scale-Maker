@@ -4,13 +4,15 @@
     <HPopoverButton
       :class="wrap ? 'whitespace-normal' : 'truncate'"
       class="block max-w-full rounded-sm text-left focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500"
+      @click="place"
     >
       <slot />
     </HPopoverButton>
     <HPopoverPanel
       role="dialog"
+      :style="{ left: `${shift}px` }"
       :aria-label="`Why: ${chord}`"
-      class="absolute top-full left-0 z-20 mt-2 w-72 rounded-lg max-sm:-left-12 max-sm:w-[calc(100vw-2rem)] bg-white p-3 text-left text-sm/6 font-normal text-zinc-700 shadow-lg ring-1 ring-zinc-950/10 dark:bg-zinc-800 dark:text-zinc-200 dark:ring-white/10 print:hidden"
+      class="absolute top-full left-0 z-20 mt-2 w-72 rounded-lg max-sm:w-[calc(100vw-2rem)] bg-white p-3 text-left text-sm/6 font-normal text-zinc-700 shadow-lg ring-1 ring-zinc-950/10 dark:bg-zinc-800 dark:text-zinc-200 dark:ring-white/10 print:hidden"
     >
       <span class="block">
         {{ reason }}<template v-if="rule">
@@ -40,6 +42,7 @@
 <script setup lang="ts">
 import { Popover as HPopover, PopoverButton as HPopoverButton, PopoverPanel as HPopoverPanel } from '@headlessui/vue'
 import { type ChangesChord, ruleParts } from '~~/engine'
+import { panelShift } from '~/utils/notePlacement'
 import { ISSUE_CONTEXT, ISSUE_TEXT_KEY, issueText, issueTitle, issueUrl } from '~/utils/issueReport'
 
 /**
@@ -51,6 +54,16 @@ const props = withDefaults(
   defineProps<{ reason: string; heardIn: string; keyFrom: ChangesChord['keyFrom']; rule: string; fallback: boolean; chord: string; numeral: string; scale: string | null; wrap?: boolean }>(),
   { wrap: false },
 )
+const shift = ref(0)
+/** the panel opens at its numeral's left edge; moved so it stays on the screen, on a phone and near the sheet's right edge */
+/** on a click that opens the panel (keyboard activation clicks too): measure it, then move it */
+async function place(e: MouseEvent): Promise<void> {
+  const anchor = (e.currentTarget as HTMLElement | null)?.parentElement // read before the await: currentTarget is cleared after dispatch
+  shift.value = 0
+  await new Promise((r) => requestAnimationFrame(r)) // the panel renders a tick or two after the click
+  const panel = anchor?.querySelector<HTMLElement>('[role=dialog]')
+  if (panel && anchor) shift.value = panelShift(anchor.getBoundingClientRect().left, panel.offsetWidth, document.documentElement.clientWidth)
+}
 const parts = computed(() => ruleParts(props.rule))
 
 const context = inject(ISSUE_CONTEXT, null)
