@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { type ChordToken, chordTokens, parseChord } from '../chord'
+import { type ChordToken, chordTokens, parseChord, writtenChordText } from '../chord'
 import { type Part, CONCERT } from '../part'
 
 const BB: Part = { clef: 'treble', trans: 'Bb' }
@@ -26,5 +26,14 @@ describe('chord', () => {
   it('transposes root and bass, following the scale spelling', () => {
     expect(show(chordTokens(BB, 'D7/F#', 'D Half-Whole'))).toBe('E7/G♯')
     expect(show(chordTokens(BB, 'Bm7', 'B Dorian'))).toBe('C♯–7')
+  })
+
+  it('writes the chord for a part in the chart\'s notation, spelled as its symbol is drawn', () => {
+    expect(writtenChordText(BB, 'G7')).toBe('A7')
+    expect(writtenChordText(BB, 'Ebmaj7')).toBe('Fmaj7')
+    expect(writtenChordText(BB, 'D7/F#', 'D Half-Whole')).toBe('E7/G#')
+    expect(writtenChordText(BB, 'Bm7', 'B Dorian')).toBe('C#m7')
+    expect(writtenChordText(CONCERT, 'Am7b5')).toBe('Am7b5')
+    expect(writtenChordText(CONCERT, 'C6/9/E')).toBe('C6/9/E')
   })
 })

@@ -73,6 +73,13 @@ describe('the Changes sheet', () => {
     expect([first?.keyArea, first?.chords[0]?.scale, first?.chords[0]?.numeral]).toEqual(['A minor', 'D Dorian', 'ii7/♭III'])
   })
 
+  it('gives each chord its symbol as written for the part, beside the chart\'s concert symbol', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n').value
+    const chords = (part: Part) => buildChanges(doc, part).lines.flatMap((l) => l.bars).flatMap((b) => b.chords)
+    expect(chords(TENOR).map((c) => [c.text, c.written])).toEqual([['Dm7', 'Em7'], ['G7', 'A7'], ['CMaj7', 'DMaj7']])
+    expect(chords(CONCERT).map((c) => c.written)).toEqual(['Dm7', 'G7', 'CMaj7'])
+  })
+
   it('counts a waltz in 3', () => {
     expect(buildChanges(library('someday_my_prince_will_come'), CONCERT).beats).toBe(3)
   })
