@@ -235,7 +235,7 @@ describe('EditorView guide tones', () => {
     await buttonCalled(w, 'From 7th')?.trigger('click')
     await nextTick()
     await buttonCalled(w, 'Report a chart error')?.trigger('click')
-    expect(JSON.parse(sessionStorage.getItem(CHART_REPORT_KEY) ?? '{}')).toMatchObject({ sheet: 'changes', guides: '7th' })
+    expect(JSON.parse(sessionStorage.getItem(CHART_REPORT_KEY) ?? '{}')).toMatchObject({ sheet: 'changes', guides: 'from 7th' })
     expect(navigate).toHaveBeenCalledWith('/contact')
     w.unmount()
   })

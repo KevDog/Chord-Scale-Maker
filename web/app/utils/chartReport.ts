@@ -4,8 +4,8 @@ export const CHART_REPORT_KEY = 'csm-chart-report'
 /** guides: the Changes sheet's guide tones shown, as guidesText gives them */
 export type ChartReport = Readonly<{ chart: string; slug: string; title: string; version: string; instrument: string; sheet: string; guides: string; level: string; url: string }>
 
-/** which guide tones are shown, for a report: '', '3rd', '7th' or '3rd,7th' */
-export const guidesText = (g: GuideShow): string => [g.fromThird && '3rd', g.fromSeventh && '7th'].filter(Boolean).join(',')
+/** which guide tone lines are shown, for a report: '', 'from 3rd', 'from 7th' or 'from 3rd,from 7th' */
+export const guidesText = (g: GuideShow): string => [g.fromThird && 'from 3rd', g.fromSeventh && 'from 7th'].filter(Boolean).join(',')
 
 /** the contact message a chart-error report pre-fills: a prompt for the reporter, a debug block, then the chart text */
 export function buildChartReport(r: ChartReport): string {

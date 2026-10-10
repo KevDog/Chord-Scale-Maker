@@ -14,7 +14,7 @@ describe('buildChartReport', () => {
   })
 
   it('says which guide tones were shown, after the sheet', () => {
-    expect(buildChartReport({ ...REPORT, sheet: 'changes', guides: '3rd,7th' })).toContain('sheet: changes\nguides: 3rd,7th\n')
+    expect(buildChartReport({ ...REPORT, sheet: 'changes', guides: 'from 3rd,from 7th' })).toContain('sheet: changes\nguides: from 3rd,from 7th\n')
     expect(buildChartReport(REPORT)).toMatch(/^guides: $/m)
   })
 })
@@ -22,8 +22,8 @@ describe('buildChartReport', () => {
 describe('guidesText', () => {
   it('names the guide tones shown', () => {
     expect(guidesText(NO_GUIDES)).toBe('')
-    expect(guidesText({ fromThird: true, fromSeventh: false })).toBe('3rd')
-    expect(guidesText({ fromThird: false, fromSeventh: true })).toBe('7th')
-    expect(guidesText({ fromThird: true, fromSeventh: true })).toBe('3rd,7th')
+    expect(guidesText({ fromThird: true, fromSeventh: false })).toBe('from 3rd')
+    expect(guidesText({ fromThird: false, fromSeventh: true })).toBe('from 7th')
+    expect(guidesText({ fromThird: true, fromSeventh: true })).toBe('from 3rd,from 7th')
   })
 })
