@@ -6,9 +6,9 @@ import { changesLinesPerPage, type ChartDoc, type GuideShow, NO_GUIDES, parseCha
 const doc = parseChart('title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\n').value
 // 64 bars: more lines than any page holds, at 2 or 4 bars a line
 const long = parseChart(`title: L\nkey: C\n${Array.from({ length: 64 }, (_, i) => `A | ${i + 1} | ${['Dm7', 'G7', 'CMaj7', 'A7'][i % 4]}`).join('\n')}\n`).value
-const THIRD: GuideShow = { third: true, seventh: false }
-const SEVENTH: GuideShow = { third: false, seventh: true }
-const BOTH: GuideShow = { third: true, seventh: true }
+const THIRD: GuideShow = { fromThird: true, fromSeventh: false }
+const SEVENTH: GuideShow = { fromThird: false, fromSeventh: true }
+const BOTH: GuideShow = { fromThird: true, fromSeventh: true }
 
 const mountSheet = (over: Readonly<{ doc?: ChartDoc; signatures?: boolean; guides?: GuideShow; numerals?: boolean; scales?: boolean }> = {}) =>
   mountSuspended(ChangesSheet, {

@@ -184,7 +184,7 @@ describe('EditorView guide tones', () => {
 
   it('starts with the 3rd and 7th off', async () => {
     const w = await mount()
-    expect(changesSheet(w).props('guides')).toEqual({ third: false, seventh: false })
+    expect(changesSheet(w).props('guides')).toEqual({ fromThird: false, fromSeventh: false })
     expect(buttonCalled(w, '3rd')?.attributes('aria-pressed')).toBe('false')
     expect(buttonCalled(w, '7th')?.attributes('aria-pressed')).toBe('false')
     expect(buttonCalled(w, '3rd')?.attributes('aria-description')).toBe("Guide tones: show each chord's third")
@@ -196,10 +196,10 @@ describe('EditorView guide tones', () => {
     const w = await mount()
     await buttonCalled(w, '3rd')?.trigger('click')
     await nextTick()
-    expect(changesSheet(w).props('guides')).toEqual({ third: true, seventh: false })
+    expect(changesSheet(w).props('guides')).toEqual({ fromThird: true, fromSeventh: false })
     await buttonCalled(w, '7th')?.trigger('click')
     await nextTick()
-    expect(changesSheet(w).props('guides')).toEqual({ third: true, seventh: true })
+    expect(changesSheet(w).props('guides')).toEqual({ fromThird: true, fromSeventh: true })
     expect(buttonCalled(w, '3rd')?.attributes('aria-pressed')).toBe('true')
     expect(buttonCalled(w, '7th')?.attributes('aria-pressed')).toBe('true')
     expect([localStorage.getItem('csm-guide-3rd'), localStorage.getItem('csm-guide-7th')]).toEqual(['on', 'on'])
@@ -218,7 +218,7 @@ describe('EditorView guide tones', () => {
 
   it("applies a share link's guides for the visit, and a share link carries them", async () => {
     const w = await mount({ sheet: 'changes', guideSeventh: true })
-    expect(changesSheet(w).props('guides')).toEqual({ third: false, seventh: true })
+    expect(changesSheet(w).props('guides')).toEqual({ fromThird: false, fromSeventh: true })
     expect(localStorage.getItem('csm-guide-7th')).toBeNull()
     await buttonCalled(w, 'Share')?.trigger('click')
     const link = await vi.waitFor(() => {

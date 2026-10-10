@@ -22,8 +22,8 @@ describe('buildChartReport', () => {
 describe('guidesText', () => {
   it('names the guide tones shown', () => {
     expect(guidesText(NO_GUIDES)).toBe('')
-    expect(guidesText({ third: true, seventh: false })).toBe('3rd')
-    expect(guidesText({ third: false, seventh: true })).toBe('7th')
-    expect(guidesText({ third: true, seventh: true })).toBe('3rd,7th')
+    expect(guidesText({ fromThird: true, fromSeventh: false })).toBe('3rd')
+    expect(guidesText({ fromThird: false, fromSeventh: true })).toBe('7th')
+    expect(guidesText({ fromThird: true, fromSeventh: true })).toBe('3rd,7th')
   })
 })

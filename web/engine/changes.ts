@@ -11,7 +11,8 @@ import { chunk, orNull } from './util'
 
 /**
  * The Changes sheet (docs/plan-changes.md): the chart as a study lead sheet. Bars of slashes in the chart's metre
- * (or, with a guide tone toggle on, each chord's 3rd and/or 7th as voice-led notes held for the chord's length),
+ * (or, with a guide tone toggle on, a guide tone line from the 3rd and/or one from the 7th, a note a chord held for
+ * the chord's length),
  * each chord on its beat with its Roman numeral and its scale, a key-area label where the key changes, section
  * markers, and repeat signs for a @copy straight after its source. No DOM, like sheet.ts and guideTones.ts.
  */
@@ -177,17 +178,24 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     blocks.push(run)
   }
 
-  // guide tones, voice-led over the rows as drawn (a folded repeat is drawn once, so it's voiced once), before the
-  // lines are cut, so the pitches don't depend on how many bars a line holds
-  const drawn = (): GuideInput[] =>
-    blocks
-      .flatMap((b) => b.rows)
-      .flatMap((i): GuideInput[] => {
+  // guide tones, as lines over the rows as drawn (a folded repeat is drawn once, so it's voiced once), before the
+  // lines are cut, so the pitches don't depend on how many bars a line holds. Each block, and each 2nd (or later)
+  // ending, is its own for holds: a tie never runs into a new section or from one ending into the next
+  const drawn = (): GuideInput[] => {
+    let block = -1
+    let lastKey = ''
+    return blocks.flatMap((b, k) =>
+      b.rows.flatMap((i): GuideInput[] => {
         const e = eventAt.get(i)
         if (!e) return []
+        const volta = voltaAt.get(Math.floor(e.start / beats))?.n ?? 0
+        const key = `${k}|${volta > 1 ? volta : 0}`
+        if (key !== lastKey) [block, lastKey] = [block + 1, key]
         const scale = resolveScale(e.row)
-        return [{ row: i, chord: e.chord, ...(scale ? { scale } : {}), start: e.start, beats: e.beats }]
-      })
+        return [{ row: i, chord: e.chord, ...(scale ? { scale } : {}), start: e.start, beats: e.beats, block }]
+      }),
+    )
+  }
   const guideLines = guidesOn(guides) ? guideVoices(drawn(), part, beats, keySig, guides) : null
 
   let lastKey = ''

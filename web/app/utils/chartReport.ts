@@ -5,7 +5,7 @@ export const CHART_REPORT_KEY = 'csm-chart-report'
 export type ChartReport = Readonly<{ chart: string; slug: string; title: string; version: string; instrument: string; sheet: string; guides: string; level: string; url: string }>
 
 /** which guide tones are shown, for a report: '', '3rd', '7th' or '3rd,7th' */
-export const guidesText = (g: GuideShow): string => [g.third && '3rd', g.seventh && '7th'].filter(Boolean).join(',')
+export const guidesText = (g: GuideShow): string => [g.fromThird && '3rd', g.fromSeventh && '7th'].filter(Boolean).join(',')
 
 /** the contact message a chart-error report pre-fills: a prompt for the reporter, a debug block, then the chart text */
 export function buildChartReport(r: ChartReport): string {

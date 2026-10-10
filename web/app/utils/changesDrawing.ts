@@ -77,7 +77,7 @@ export function guideAria(line: ChangesLine): string {
     const chords = bar.chords.map((c) =>
       bar.voices
         .map((notes, v) => {
-          const n = notes.find((x) => x.beat === c.beat && !x.tiedIn)
+          const n = notes.find((x) => x.beat === c.beat) // struck, or tied in where the chord holds the note before
           return `${n?.pitch ? pitchName(n.pitch) : 'rest'} ${c.guide[v] ?? ''}`.trim()
         })
         .join(' / '),

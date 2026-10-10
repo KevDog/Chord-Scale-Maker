@@ -49,13 +49,13 @@ describe('usePreferences', () => {
 
   it('keeps the guide tones off until turned on, and remembers each', async () => {
     const p = prefs()
-    expect([p.guideThird.value, p.guideSeventh.value]).toEqual([false, false])
-    p.guideThird.value = true
+    expect([p.fromThird.value, p.fromSeventh.value]).toEqual([false, false])
+    p.fromThird.value = true
     await nextTick()
     expect([localStorage.getItem('csm-guide-3rd'), localStorage.getItem('csm-guide-7th')]).toEqual(['on', null])
     const again = prefs()
-    expect([again.guideThird.value, again.guideSeventh.value]).toEqual([true, false])
-    again.guideThird.value = false
+    expect([again.fromThird.value, again.fromSeventh.value]).toEqual([true, false])
+    again.fromThird.value = false
     await nextTick()
     expect(localStorage.getItem('csm-guide-3rd')).toBe('off')
   })
@@ -74,7 +74,7 @@ describe('usePreferences', () => {
     localStorage.setItem('csm-start', 'H')
     localStorage.setItem('csm-guide-3rd', 'yes')
     const p = prefs()
-    expect([p.instrument.value, p.start.value, p.guideThird.value]).toEqual(['concert', 'C', false])
+    expect([p.instrument.value, p.start.value, p.fromThird.value]).toEqual(['concert', 'C', false])
   })
 })
 
@@ -84,8 +84,8 @@ describe('linkPreferences', () => {
   it("takes a link's guide tones over your own, for this visit only", async () => {
     localStorage.setItem('csm-guide-7th', 'on')
     const p = linked({ guideThird: true })
-    expect([p.guideThird.value, p.guideSeventh.value]).toEqual([true, true])
-    p.guideThird.value = false
+    expect([p.fromThird.value, p.fromSeventh.value]).toEqual([true, true])
+    p.fromThird.value = false
     await nextTick()
     expect(localStorage.getItem('csm-guide-3rd')).toBeNull()
   })

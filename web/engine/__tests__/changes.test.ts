@@ -16,9 +16,9 @@ vi.mock('../guideTones', async (importOriginal) => {
 const library = (name: string) => parseChart(readFileSync(`../charts/${name}.txt`, 'utf8')).value
 const TENOR: Part = { clef: 'treble', trans: 'Bb' }
 const bars = (name: string, part = CONCERT) => buildChanges(library(name), part).lines.flatMap((l) => l.bars)
-const THIRD: GuideShow = { third: true, seventh: false }
-const SEVENTH: GuideShow = { third: false, seventh: true }
-const BOTH: GuideShow = { third: true, seventh: true }
+const THIRD: GuideShow = { fromThird: true, fromSeventh: false }
+const SEVENTH: GuideShow = { fromThird: false, fromSeventh: true }
+const BOTH: GuideShow = { fromThird: true, fromSeventh: true }
 
 describe('the Changes sheet', () => {
   it('lays a chart out four bars a line, each section on a new line, a @copy straight after its source as a repeat', () => {
@@ -207,6 +207,13 @@ describe('guide tones on the Changes sheet', () => {
     ]) // A7's C#5 over G4, then Dm7's C5 over F4: a step in each voice
   })
 
+  it('holds a repeated chord with a tie inside a section, and strikes it again in the next section or ending', () => {
+    const tied = (text: string) => barsOf(text, THIRD).map((x) => x.voices[0]?.map((n) => `${n.tiedIn ? '^' : ''}${n.pitch?.midi}${n.tie ? '~' : ''}`).join(' '))
+    expect(tied('key: C\nA | 1 | C7\nA | 2 | C7b9\nB | 3 | C7\nB | 4 | Dm7\n')).toEqual(['64~', '^64', '64', '65'])
+    const endings = 'key: C\nA | 1 | Dm7\nA | 2 | C7\nA | 3 | C7\nA | 4 | C7\n@ending 1 A 3 3\n@ending 2 A 4 4\n'
+    expect(tied(endings)).toEqual(['65', '64~', '^64', '64']) // into the 1st ending tied; the 2nd ending struck again
+  })
+
   it('reads accidentals against the signature when it is drawn, and against C when it is not', () => {
     const text = 'key: F\nA | 1 | Gm7\nA | 2 | C7\nA | 3 | FMaj7\n'
     const struck = (signatures: boolean) =>
@@ -242,7 +249,7 @@ describe('guide tones over the library, both on', () => {
   const voicesOf = (s: ChangesSheet) => s.lines.flatMap((l) => l.bars.map((b) => b.voices))
   const plain = (s: ChangesSheet) => s.lines.map((l) => l.bars.map(({ voices: _v, ...b }) => ({ ...b, chords: b.chords.map(({ guide: _g, ...c }) => c) })))
 
-  it('strike one note a voice per chord, on its beat, and fill every bar', () => {
+  it('strike (or hold) one note a voice per chord, on its beat, and fill every bar', () => {
     expect(docs.length).toBeGreaterThan(200)
     for (const { f, doc } of docs) {
       const sheet = buildChanges(doc, CONCERT, 4, false, BOTH)
@@ -250,7 +257,9 @@ describe('guide tones over the library, both on', () => {
         expect(bar.voices.length, f).toBe(2)
         for (const voice of bar.voices) {
           expect(voice.reduce((s, n) => s + n.beats, 0), f).toBe(sheet.beats)
-          expect(voice.filter((n) => !n.tiedIn).map((n) => n.beat), f).toEqual(bar.chords.map((c) => c.beat))
+          const beats = bar.chords.map((c) => c.beat) // a held chord's note starts on its beat, tied in
+          expect(voice.filter((n) => !n.tiedIn || beats.includes(n.beat)).map((n) => n.beat), f).toEqual(beats)
+          expect(voice.filter((n) => !n.tiedIn).every((n) => beats.includes(n.beat)), f).toBe(true)
           expect(voice.every((n) => n.pitch !== null), f).toBe(true)
         }
         for (const c of bar.chords) expect(c.guide.length, `${f} ${c.text}`).toBe(2)

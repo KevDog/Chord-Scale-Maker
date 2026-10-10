@@ -86,8 +86,8 @@
             v-model:intervals="prefs.intervals.value"
             v-model:numerals="prefs.numerals.value"
             v-model:scale-names="prefs.scaleNames.value"
-            v-model:guide-third="prefs.guideThird.value"
-            v-model:guide-seventh="prefs.guideSeventh.value"
+            v-model:from-third="prefs.fromThird.value"
+            v-model:from-seventh="prefs.fromSeventh.value"
           >
             <!-- Level: how sophisticated each chord's scale is (engine/levels.ts); a dropdown in the toolbar -->
             <template v-if="levelsOn && !editor.fatal.value" #level>
@@ -204,7 +204,7 @@ const byline = computed(() => [editor.heading.value.subtitle, editor.heading.val
 const prefs = props.shared ? linkPreferences(props.shared) : usePreferences()
 const part = computed(() => partFor(prefs.instrument.value))
 /** the Changes sheet's guide tones: which of each chord's 3rd and 7th are drawn */
-const guides = computed((): GuideShow => ({ third: prefs.guideThird.value, seventh: prefs.guideSeventh.value }))
+const guides = computed((): GuideShow => ({ fromThird: prefs.fromThird.value, fromSeventh: prefs.fromSeventh.value }))
 /** the editor (grid + text): hidden by default (song-first), shown for a new chart or one over a size limit (only the text can fix it) */
 const bornNew = ref(false) // latches true for a new chart, so saving it (its URL becomes ?mine) doesn't hide the editor mid-edit
 watch(() => props.isNew, (v) => { if (v) bornNew.value = true }, { immediate: true })
@@ -317,8 +317,8 @@ async function openShare(): Promise<void> {
     intervals: prefs.intervals.value,
     numerals: prefs.numerals.value,
     scaleNames: prefs.scaleNames.value,
-    guideThird: prefs.guideThird.value,
-    guideSeventh: prefs.guideSeventh.value,
+    guideThird: prefs.fromThird.value,
+    guideSeventh: prefs.fromSeventh.value,
     sheet: sheet.value,
     ...(selection.value ? { practice: selection.value } : {}),
     ...(level.value !== 'standard' ? { level: level.value, seed: scaleLevel.seed.value } : {}),

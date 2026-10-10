@@ -5,6 +5,7 @@ import { pcOf, type Spelled } from './pitch'
 /**
  * Voice leading for guide tone lines: given each chord's two guide tones, choose pitches for two complementary
  * lines (one on the 3rd, one on the 7th of every chord) with the least combined motion, inside the part's range.
+ * The Changes sheet draws the greedy lines of guideToneLines.ts instead; this global pair search stays as a check.
  */
 
 export type GuideTone = Readonly<{ note: Spelled; label: string }>
@@ -108,14 +109,4 @@ export function voiceLead(tones: readonly (GuideTones | null)[], clef: Clef): re
   }
   flush()
   return [one, two]
-}
-
-/**
- * one line alone, on the 3rd (role 0) or the 7th (role 1) of every chord, or a rest: the smoothest such line in the
- * part's range. Both roles get the same pitch, so the pair search's line 1 is the smoothest single line.
- */
-export function voiceLeadOne(tones: readonly (GuideTones | null)[], role: 0 | 1, clef: Clef): (Candidate | null)[] {
-  const pick = (t: GuideTones): GuideTone => (role ? t.seventh : t.third)
-  return voiceLead(tones.map((t) => t && { third: pick(t), seventh: pick(t) }), clef)[0]
-    .map((c) => c && { ...c, role }) // the pair search alternates roles over identical pitches; report the one asked for
 }

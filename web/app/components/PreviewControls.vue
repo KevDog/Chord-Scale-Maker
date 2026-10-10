@@ -38,8 +38,8 @@
           <template v-else>
             <UiButton v-bind="numerals ? { color: 'note' } : { outline: true }" :class="numerals ? '' : OFF_FILL" :aria-pressed="numerals" title="Each chord's Roman numeral in its key" @click="numerals = !numerals">Numerals</UiButton>
             <UiButton v-bind="scaleNames ? { color: 'note' } : { outline: true }" :class="scaleNames ? '' : OFF_FILL" :aria-pressed="scaleNames" title="Each chord's scale, under its numeral" @click="scaleNames = !scaleNames">Scales</UiButton>
-            <UiButton v-bind="guideThird ? { color: 'note' } : { outline: true }" :class="guideThird ? '' : OFF_FILL" :aria-pressed="guideThird" aria-description="Guide tones: show each chord's third" title="Each chord's 3rd (4th on sus chords), in the nearest octave; with 7th on, two voices that move by step" @click="guideThird = !guideThird">3rd</UiButton>
-            <UiButton v-bind="guideSeventh ? { color: 'note' } : { outline: true }" :class="guideSeventh ? '' : OFF_FILL" :aria-pressed="guideSeventh" aria-description="Guide tones: show each chord's seventh" title="Each chord's 7th (root on triads, 6th on 6 chords), in the nearest octave; with 3rd on, two voices that move by step" @click="guideSeventh = !guideSeventh">7th</UiButton>
+            <UiButton v-bind="fromThird ? { color: 'note' } : { outline: true }" :class="fromThird ? '' : OFF_FILL" :aria-pressed="fromThird" aria-description="Guide tones: show each chord's third" title="Each chord's 3rd (4th on sus chords), in the nearest octave; with 7th on, two voices that move by step" @click="fromThird = !fromThird">3rd</UiButton>
+            <UiButton v-bind="fromSeventh ? { color: 'note' } : { outline: true }" :class="fromSeventh ? '' : OFF_FILL" :aria-pressed="fromSeventh" aria-description="Guide tones: show each chord's seventh" title="Each chord's 7th (root on triads, 6th on 6 chords), in the nearest octave; with 3rd on, two voices that move by step" @click="fromSeventh = !fromSeventh">7th</UiButton>
           </template>
         </div>
       </UiField>
@@ -87,8 +87,8 @@ const start = defineModel<string>('start', { required: true })
 const intervals = defineModel<boolean>('intervals', { required: true })
 const numerals = defineModel<boolean>('numerals', { default: true })
 const scaleNames = defineModel<boolean>('scaleNames', { default: true })
-const guideThird = defineModel<boolean>('guideThird', { default: false })
-const guideSeventh = defineModel<boolean>('guideSeventh', { default: false })
+const fromThird = defineModel<boolean>('fromThird', { default: false })
+const fromSeventh = defineModel<boolean>('fromSeventh', { default: false })
 
 const changes = useFeature('changes')
 const sheets = computed(() => SHEETS.filter((s) => s.value !== 'changes' || changes))

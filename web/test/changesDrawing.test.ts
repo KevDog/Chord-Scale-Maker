@@ -115,6 +115,11 @@ describe('guideAria', () => {
     expect(guideAria(line)).toBe('; guide tones: C5 7 / F4 3, B4 3 / F4 7 | B4 7 / E4 3 | –')
   })
 
+  it("names a held chord's note, tied in on its own beat, rather than a rest", () => {
+    const line: ChangesLine = { bars: [bar([chord(0, 'C7', ['3']), chord(2, 'C7b9', ['3'])], [[note(2, 0, 64, 0, 2, { tie: true }), note(2, 0, 64, 2, 2, { tiedIn: true })]])] }
+    expect(guideAria(line)).toBe('; guide tones: E4 3, E4 3')
+  })
+
   it('spells accidentals and names a rest', () => {
     const line: ChangesLine = { bars: [bar([chord(0, 'Gm7', ['3']), chord(2, 'Cm7#5#9x', [])], [[note(6, -1, 70, 0, 2), rest(2, 2)]])] }
     expect(guideAria(line)).toBe('; guide tones: B♭4 3, rest')
