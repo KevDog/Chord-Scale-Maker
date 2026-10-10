@@ -78,7 +78,8 @@ the same function, and a test checks that over every library chart.
 
 - `@key` spans replace `localKeys()`'s output for their bars. Cadences and scoring still run for the rest of
   the chart.
-- A row's key prefix replaces the key for that row only.
+- A row's key prefix replaces the key for that row only. A prefix doesn't open a key area: `RowAnalysis.key` stays
+  the area, `statedKey` is the prefix.
 - `Area` gains `stated: boolean`, so reports and the popover can say who decided it.
 
 ### Rules
@@ -88,14 +89,14 @@ the same function, and a test checks that over every library chart.
   reading goes behind one helper. When the row has a stated target, the helper returns that target, built as a
   virtual `Entry` with a `pc` and `family`. Otherwise it returns the neighbour as today. Each family rule then
   decides through its normal path. There is no second rule table.
-  Example: Misty bar 23 is `Bb7 | | V7/V` in Eb. The target is F major, so the V7 rule applies and gives natural
-  tensions and Bb Mixolydian, where today it gives "V7 in Eb, not resolving".
+  Example: `D7 | | V7/V` in C, where D7 goes on to Dm7. The target is G major, so the V7 rule (D4) applies with
+  natural tensions, where today the D7 is "II7 in C, not resolving" (D5).
 - A stated `sub` selects the tritone-substitute rule (D2). A stated `♭VII7` with a major target selects the
   back-door rule.
 - **Contradictions:** the function doesn't fit the chord when its family disagrees with the chord's (`ii7` on
   `Bb7`), or when its degree's root isn't the chord's root in the row's key. The analyser reports it with the
   row and ignores the function for that row.
-- `Decision` gains `stated: boolean`, and its reason is marked, e.g. `V7/V (stated): natural tensions`.
+- `Decision` gains `stated: boolean`, and its reason is marked, e.g. `V7/V in C: natural tensions (stated)`.
 - `numeral()` returns the stated function in normalised form when a row has one.
 
 ### Writing back
@@ -109,10 +110,9 @@ scale rewritten from the stated function. `# keep:` still pins a scale.
 
 - rows decided by fallback rules, such as "V7 … not resolving", "a chromatic dominant with nowhere to go", or
   any other fallback rule, each with a suggested function;
-- key areas found only by scoring, without a cadence to confirm them, each with a suggested `@key` line.
+- found key areas other than the home key, each with the `@key` line that would pin it; a missing `key:` line.
 
-The fallback rule ids are listed as a constant in `rules.ts` next to the rules, so adding a rule means deciding
-whether it is a fallback.
+Rules mark a guess with `fallback: true` on their `Decision`.
 
 ## 3. App (`functions` feature flag, off; on in e2e builds)
 
@@ -120,8 +120,8 @@ whether it is a fallback.
   wherever it's opened.
 - **Editor grid (`ChartGrid.vue`):**
   - A **Function** column after Scale.
-    - **Editing:** a `GridCell` edited through `setRowField(doc, i, 'function', v)` (`RowField` gains
-      `'function'`).
+    - **Editing:** a dropdown: Auto (the analyser's reading), then every function that fits the chord in its key
+      area, each with the scale it gives; a key-prefixed function from the text shows as its current value.
     - **Placeholder:** an empty cell shows the analyser's live numeral in grey.
     - **Errors:** a function that won't parse, or contradicts the chord, gets a red invalid state and an error
       message.
@@ -129,8 +129,8 @@ whether it is a fallback.
     shows a read-only **Notes** column computed live:
     - the reason;
     - when the row's scale differs from the analyser's, `analyser: <scale> (<reason>); you chose <scale>`.
-  - **`@key` rows:** a badge row like `@copy`, reading `@key from A2 16: D major (edit in text)`, with delete.
-- **Changes sheet (`ChangesSystem.vue`):** each numeral and scale is the trigger of a Headless UI `Popover`.
+  - **`@key` rows:** a key select on each `@key` row, and a 'Key change at row N' button on each chord row.
+- **Changes sheet (`ChangesSystem.vue`):** each numeral and scale is the trigger of a tooltip in `HelpTip.vue`'s pattern.
   - **Contents:** reason, key area (marked stated or found), and "stated" when the author wrote the function.
   - **Access:** opens on hover, tap or keyboard focus; `print:hidden`.
   - **Data:** comes from `buildChanges`, which gains `reason`, `stated` and `keyArea` per chord.
@@ -179,6 +179,5 @@ TDD for the engine (the `tdd-for-non-drawing` rule):
 
 ## Out of scope
 
-- Editing `@key` lines in the grid (text only).
 - Showing notes on the scale sheet or in print.
 - The analyser suggesting functions anywhere but the CLI report.
