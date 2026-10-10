@@ -1,26 +1,31 @@
 <template>
   <div id="preview-toolbar" class="space-y-4">
-    <!-- labelled groups: the controls wrap on the left; Display stays pinned top-right (Sheet · Instrument · Work on · Show · Transposition | Display) -->
+    <!-- labelled groups: the controls wrap on the left, Display pinned top-right (Work on · Instrument · Level · Show · Transposition · Spell Scale | Display); top-aligned so every label sits on one line -->
     <div class="flex items-start justify-between gap-x-4 gap-y-3">
       <div class="flex flex-wrap items-start gap-x-4 gap-y-3">
       <UiField v-if="sheets.length > 1" class="w-40">
         <UiLabel>Work on</UiLabel>
-        <UiListbox v-model="sheet">
-          <template #selected="{ value }"><UiListboxLabel>{{ sheetLabel(value) }}</UiListboxLabel></template>
-          <UiListboxOption v-for="s in sheets" :key="s.value" :value="s.value"><UiListboxLabel>{{ s.label }}</UiListboxLabel></UiListboxOption>
-        </UiListbox>
+        <!-- a plain wrapper (not data-slot=control) so the label gap matches the other groups -->
+        <div class="flex items-center gap-2">
+          <UiListbox v-model="sheet">
+            <template #selected="{ value }"><UiListboxLabel>{{ sheetLabel(value) }}</UiListboxLabel></template>
+            <UiListboxOption v-for="s in sheets" :key="s.value" :value="s.value"><UiListboxLabel>{{ s.label }}</UiListboxLabel></UiListboxOption>
+          </UiListbox>
+        </div>
       </UiField>
       <UiField class="w-40">
         <UiLabel>Instrument</UiLabel>
-        <UiListbox v-model="instrument">
-          <template #selected="{ value }"><UiListboxLabel>{{ instrumentOption(value) }}</UiListboxLabel></template>
-          <UiListboxGroup v-for="g in INSTRUMENT_GROUPS" :key="g.label" :label="g.label">
-            <UiListboxOption v-for="name in g.instruments" :key="name" :value="name">
-              <UiListboxLabel>{{ instrumentOption(name) }}</UiListboxLabel>
-              <UiListboxDescription>{{ INSTRUMENTS[name].description }}</UiListboxDescription>
-            </UiListboxOption>
-          </UiListboxGroup>
-        </UiListbox>
+        <div class="flex items-center gap-2">
+          <UiListbox v-model="instrument">
+            <template #selected="{ value }"><UiListboxLabel>{{ instrumentOption(value) }}</UiListboxLabel></template>
+            <UiListboxGroup v-for="g in INSTRUMENT_GROUPS" :key="g.label" :label="g.label">
+              <UiListboxOption v-for="name in g.instruments" :key="name" :value="name">
+                <UiListboxLabel>{{ instrumentOption(name) }}</UiListboxLabel>
+                <UiListboxDescription>{{ INSTRUMENTS[name].description }}</UiListboxDescription>
+              </UiListboxOption>
+            </UiListboxGroup>
+          </UiListbox>
+        </div>
       </UiField>
       <UiField v-if="$slots.level">
         <UiLabel>Level</UiLabel>
@@ -40,11 +45,16 @@
         <UiLabel>Transposition</UiLabel>
         <div class="flex flex-wrap items-center gap-2">
           <slot name="transpose" />
-          <UiListbox v-if="sheet === 'scales'" v-model="mode" class="w-32" aria-label="Where each scale starts">
+        </div>
+      </UiField>
+      <UiField v-if="sheet === 'scales'">
+        <UiLabel>Spell Scale</UiLabel>
+        <div class="flex flex-wrap items-center gap-2">
+          <UiListbox v-model="mode" class="w-32" aria-label="Where each scale starts">
             <template #selected="{ value }"><UiListboxLabel>{{ modeLabel(value) }}</UiListboxLabel></template>
             <UiListboxOption v-for="m in modes" :key="m.value" :value="m.value"><UiListboxLabel>{{ m.label }}</UiListboxLabel></UiListboxOption>
           </UiListbox>
-          <UiSelect v-if="sheet === 'scales' && mode === 'from'" v-model="start" class="w-[4.5rem]" aria-label="Start on" aria-describedby="start-help">
+          <UiSelect v-if="mode === 'from'" v-model="start" class="w-[4.5rem]" aria-label="Start on" aria-describedby="start-help">
             <option v-for="r in PICKER_ROOTS" :key="r" :value="r">{{ noteText(r) }}</option>
           </UiSelect>
         </div>
