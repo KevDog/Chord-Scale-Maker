@@ -23,6 +23,14 @@ describe('usePreferences', () => {
     expect(prefs().intervals.value).toBe(false)
   })
 
+  it('keeps the grid notes hidden until shown, and remembers', async () => {
+    const p = prefs()
+    expect(p.notes.value).toBe(false)
+    p.notes.value = true
+    await nextTick()
+    expect(prefs().notes.value).toBe(true)
+  })
+
   it('remembers choices in this browser', async () => {
     const p = prefs()
     p.instrument.value = 'alto-sax'
