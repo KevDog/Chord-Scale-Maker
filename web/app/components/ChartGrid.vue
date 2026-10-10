@@ -23,7 +23,7 @@
           <UiTableHeader class="w-16">Bar</UiTableHeader>
           <UiTableHeader class="w-32">Chord</UiTableHeader>
           <UiTableHeader>Scale</UiTableHeader>
-          <UiTableHeader v-if="functionsOn" class="w-56">Function</UiTableHeader>
+          <UiTableHeader v-if="functionsOn" class="w-56">Function<NuxtLink to="/functions#writing" aria-label="How to write a function" title="How to write a function" class="ml-1 inline-flex align-middle text-zinc-500 hover:text-zinc-700 dark:text-zinc-400 dark:hover:text-zinc-200"><QuestionMarkCircleIcon class="size-4" aria-hidden="true" /></NuxtLink></UiTableHeader>
           <UiTableHeader v-if="functionsOn && notes">Notes</UiTableHeader>
           <UiTableHeader class="w-20"><span class="sr-only">Row actions</span></UiTableHeader>
         </UiTableRow>
@@ -45,6 +45,7 @@
                 :label="`function for row ${rowNumber[i]}`"
                 @update="(v) => emitDoc(setRowField(doc, i, 'function', v))"
               />
+              <UiErrorMessage v-if="notesByLine.get(i)?.problem">{{ notesByLine.get(i)?.problem }} <NuxtLink to="/functions#writing" class="underline">How to write a function</NuxtLink></UiErrorMessage>
             </UiTableCell>
             <UiTableCell v-if="functionsOn && notes" class="px-1! py-1! text-sm/5 whitespace-normal text-zinc-600 dark:text-zinc-400">{{ notesByLine.get(i)?.note }}</UiTableCell>
             <UiTableCell class="px-1! py-1! text-right">
@@ -73,7 +74,7 @@
                   <option v-if="!(KEY_OPTIONS as readonly string[]).includes(line.key)" :value="line.key">{{ line.key }}</option>
                 </UiSelect>
               </div>
-              <UiErrorMessage v-if="notesByLine.get(i)?.problem">{{ notesByLine.get(i)?.problem }}</UiErrorMessage>
+              <UiErrorMessage v-if="notesByLine.get(i)?.problem">{{ notesByLine.get(i)?.problem }} <NuxtLink to="/functions#writing" class="underline">How to write a function</NuxtLink></UiErrorMessage>
             </UiTableCell>
             <UiTableCell class="px-1! py-1! text-right">
               <UiButton plain :aria-label="`Delete line ${i + 1}`" @click="emitDoc(removeLine(doc, i))"><TrashIcon data-slot="icon" /></UiButton>
@@ -94,7 +95,7 @@
 </template>
 
 <script setup lang="ts">
-import { KeyIcon, PlusIcon, TrashIcon } from '@heroicons/vue/16/solid'
+import { KeyIcon, PlusIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/vue/16/solid'
 import { type ChartDoc, chartMeta, type FunctionChoice, functionChoices, insertKeyChange, insertRowAfter, isValidKey, keyLabel, LIMITS, type MetaKey, removeLine, type RowField, type RowNote, rowNotes, setKeyLine, setMeta, setRowChord, setRowField } from '~~/engine'
 
 const props = defineProps<{ doc: ChartDoc }>()

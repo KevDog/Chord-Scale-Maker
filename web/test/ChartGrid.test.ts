@@ -70,6 +70,12 @@ describe('ChartGrid with functions', () => {
     expect(lastDoc(w)?.lines[3]).toMatchObject({ kind: 'row', chord: 'D7', function: 'V7/V' })
   })
 
+  it('links the Function column to how to write a function, and a function that will not read to the same place', async () => {
+    const w = await mountSuspended(ChartGrid, { props: { doc: parseChart('title: T\nkey: C\nA | 1 | D7 | | X7\n').value } })
+    expect(w.find('thead a[href="/functions#writing"]').attributes('aria-label')).toBe('How to write a function')
+    expect(w.find('tbody a[href="/functions#writing"]').text()).toBe('How to write a function')
+  })
+
   it('shows notes on demand', async () => {
     const w = await mountSuspended(ChartGrid, { props: { doc: fdoc } })
     expect(w.text()).not.toContain('not resolving: natural tensions')
