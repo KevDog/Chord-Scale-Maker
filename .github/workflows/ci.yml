@@ -1,7 +1,16 @@
 name: ci
-on: [push, pull_request]
+# pull requests only (checks run locally first; the merge needs no second run), and not for docs-only changes
+on:
+  pull_request:
+    paths-ignore:
+      - 'docs/**'
+      - '**/*.md'
 permissions:
   contents: read
+# a newer push to the same PR cancels the run it supersedes
+concurrency:
+  group: ci-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
 # actions are pinned to commit SHAs (tags can move); Dependabot proposes updates
 jobs:
   engine:
