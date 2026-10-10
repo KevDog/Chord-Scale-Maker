@@ -138,18 +138,6 @@
             :signatures="signaturesOn"
             :guides="guides"
           />
-          <GuideToneSheet
-            v-else-if="sheet === 'guideTones'"
-            :rows="editor.rows.value"
-            :title="editor.meta.value.title"
-            :subtitle="editor.heading.value.subtitle"
-            :composer="editor.heading.value.composer"
-            :part="part"
-            :instrument-label="instrumentLabel(prefs.instrument.value)"
-            :beats="editor.beats.value"
-            :intervals="prefs.intervals.value"
-            :home-key="homeKey"
-          />
           <ScaleSheet
             v-else
             :rows="editor.rows.value"
@@ -225,7 +213,7 @@ const editorShown = computed(() => prefs.showEditor.value || bornNew.value || ed
 const textShown = computed(() => !functionsOn || prefs.textPane.value)
 /** one spelling at a time: every scale from the Start on note, or each from its own root */
 const mode = ref<Mode>(props.shared?.mode ?? 'root')
-const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { guideTones: useFeature('guideTones'), changes: useFeature('changes') }))
+const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeature('changes') }))
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
 const signaturesOn = useFeature('keySignatures')

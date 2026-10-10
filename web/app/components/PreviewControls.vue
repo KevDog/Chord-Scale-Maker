@@ -90,9 +90,8 @@ const scaleNames = defineModel<boolean>('scaleNames', { default: true })
 const guideThird = defineModel<boolean>('guideThird', { default: false })
 const guideSeventh = defineModel<boolean>('guideSeventh', { default: false })
 
-const guideTones = useFeature('guideTones')
 const changes = useFeature('changes')
-const sheets = computed(() => SHEETS.filter((s) => (s.value === 'guideTones' ? guideTones : s.value === 'changes' ? changes : true)))
+const sheets = computed(() => SHEETS.filter((s) => s.value !== 'changes' || changes))
 const modes = computed((): readonly { value: Mode; label: string }[] => [
   { value: 'from', label: `From ${noteText(start.value)}` },
   { value: 'root', label: 'From root' },

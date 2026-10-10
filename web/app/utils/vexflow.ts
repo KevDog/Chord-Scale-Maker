@@ -30,8 +30,8 @@ const STAFF_WIDTH = 1200
 const STAFF_HEIGHT = 200
 export const STAVE_Y = 40 // staff lines at y 80-120, with room for ledger lines on both sides
 export const TIME_SPACE = 40 // extra lead width on the first system, for the time signature
-export const CLEF_SPACE = 70 // lead width for a clef (guide tone systems)
-export const BAR_UNITS = 300 // drawing width per bar (guide tone and Changes sheets share it, so phones' 2-bar systems draw as large as 4-bar ones)
+export const CLEF_SPACE = 70 // lead width for a clef alone (signatureLead builds on it)
+export const BAR_UNITS = 300 // drawing width per bar on the Changes sheet, so phones' 2-bar lines draw as large as 4-bar ones
 export const MIN_TOP = 55 // always show the clef and a ledger line's space above and below the staff
 export const MIN_BOTTOM = 140
 // room around a note head for its accidental: a flat rises about two spaces, a sharp hangs 1.5

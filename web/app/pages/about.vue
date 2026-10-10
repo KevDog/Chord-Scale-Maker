@@ -14,7 +14,7 @@
       </UiText>
       <UiText>
         It's built for practising improvisation. Spell every scale from the same note to see exactly where the
-        harmony moves. Follow the guide tones, the 3rds and 7ths, through a tune. Or pick a few notes from each scale
+        harmony moves. Put the guide tones, the 3rds and 7ths, over the changes and follow them through a tune. Or pick a few notes from each scale
         and improvise with just those.
       </UiText>
     </section>

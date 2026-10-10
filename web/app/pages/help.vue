@@ -25,19 +25,11 @@
     </section>
 
     <section class="scroll-mt-6 space-y-4" aria-labelledby="sheets">
-      <UiSubheading id="sheets">The three sheets</UiSubheading>
+      <UiSubheading id="sheets">The two sheets</UiSubheading>
       <UiText>
         <strong class="font-semibold text-zinc-950 dark:text-white">Scales</strong> is the main event: one staff per
         chord, with the scale that goes with it, in the order the tune runs. Each staff is labelled with where it is in
         the form, the chord and the scale.
-      </UiText>
-      <UiText>
-        <strong class="font-semibold text-zinc-950 dark:text-white">Guide tones</strong> boils the tune down to the
-        3rds and 7ths, the notes that tell you which chord you're on. It writes two lines on two staves, four bars to a
-        system, and each line moves to the closest note it can, so you can hear how the harmony leans from one chord to
-        the next. It's in 4/4 unless the chart says otherwise (<UiCode>time: 3/4</UiCode> for a waltz), and a chord lasts
-        until the next bar number. Try singing or playing one line all the way through the tune; it's a great way to
-        learn the changes.
       </UiText>
       <UiText>
         <strong class="font-semibold text-zinc-950 dark:text-white">Changes</strong> is the tune as a lead sheet without
@@ -45,6 +37,15 @@
         in wherever it moves. It's the why behind the Scales sheet: <em>ii7 V7 Imaj7</em> in one key, then a
         <em>V7/ii</em> borrowing from the next. <strong class="font-semibold text-zinc-950 dark:text-white">Numerals</strong>
         and <strong class="font-semibold text-zinc-950 dark:text-white">Scales</strong> turn those rows on and off.
+      </UiText>
+      <UiText>
+        <strong class="font-semibold text-zinc-950 dark:text-white">3rd</strong> and
+        <strong class="font-semibold text-zinc-950 dark:text-white">7th</strong> put the guide tones on the Changes staff in
+        place of the slashes: each chord's 3rd (the 4th on a sus chord) and its 7th (the root on a triad, the 6th on a 6
+        chord), the notes that tell you which chord you're on. There's one note per chord, held for as long as the chord
+        lasts. With one on, it sits in the nearest octave; with both on, you get two voices on one staff that move by step,
+        the 3rd and 7th trading places as the harmony leans from one chord to the next. Try singing or playing one line all
+        the way through the tune; it's a great way to learn the changes.
       </UiText>
     </section>
 
@@ -159,7 +160,7 @@
         </li>
         <li>
           <UiCode>time: 3/4</UiCode> makes it a waltz (<UiCode>2/4</UiCode> and <UiCode>4/4</UiCode> work too; 4/4 is
-          what you get without it). The guide tone sheet writes its rhythm in it.
+          what you get without it). With 3rd or 7th on, the Changes sheet writes its guide tones in it.
         </li>
         <li><UiCode>title:</UiCode> and <UiCode>subtitle:</UiCode> set the heading. <UiCode>composer:</UiCode>, <UiCode>style:</UiCode>, <UiCode>key:</UiCode> and <UiCode>form:</UiCode> fill in the line under it (the subtitle, if there is one, takes the style's place), and lines starting with <UiCode>#</UiCode> are notes to yourself. A row can end in a note too, after a space and a <UiCode>#</UiCode>: the library's say why each scale was chosen.</li>
         <li>Anything I can't make sense of is listed under the text box, with the line number.</li>
@@ -218,8 +219,8 @@
       <ul class="list-disc space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
         <li>
           <strong class="font-semibold text-zinc-950 dark:text-white">Print</strong> gives you clean letter
-          pages, black on white whatever mode you're in: twelve staves a page for scales, eight systems a page for guide
-          tones, eight lines a page for the changes. The dashed lines on screen show where each page starts. To get a PDF, pick "Save as PDF" in your
+          pages, black on white whatever mode you're in: twelve staves a page for scales, eight lines a page for the
+          changes (fewer with guide tones on). The dashed lines on screen show where each page starts. To get a PDF, pick "Save as PDF" in your
           browser's print dialog.
         </li>
         <li>
@@ -254,7 +255,7 @@ const myCharts = useFeature('myCharts')
 const levelsOn = useFeature('scaleLevels')
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },
-  { id: 'sheets', title: 'The three sheets' },
+  { id: 'sheets', title: 'The two sheets' },
   { id: 'controls', title: 'Preview controls' },
   { id: 'practice', title: 'Practice' },
   { id: 'editing', title: 'Editing a chart' },

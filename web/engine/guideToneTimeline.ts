@@ -1,8 +1,8 @@
 import { formPart, type Row } from './chart'
 
 /**
- * When each chord of a guide tone sheet starts and how long it lasts, in beats (4/4 unless the chart says 3/4 or 2/4;
- * docs/plan-guide-tones.md):
+ * When each chord of the Changes sheet starts and how long it lasts, in beats (4/4 unless the chart says 3/4 or 2/4;
+ * docs/plan-guide-tones.md), for its bars and its guide tones:
  * a chord lasts until the next change, rows that share a bar split it, and the last row runs to the end of the form.
  */
 

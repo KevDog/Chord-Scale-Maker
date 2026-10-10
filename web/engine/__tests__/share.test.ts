@@ -13,7 +13,7 @@ async function packed(value: unknown): Promise<string> {
 
 describe('share links', () => {
   it('round-trip a chart and its view, in URL-safe characters', async () => {
-    const view = { instrument: 'tenor-sax', mode: 'from', start: 'Eb', intervals: false, sheet: 'guideTones', practice: { keys: ['b3', '3'] } } as const
+    const view = { instrument: 'tenor-sax', mode: 'from', start: 'Eb', intervals: false, sheet: 'changes', practice: { keys: ['b3', '3'] } } as const
     const encoded = await encodeShare({ chart: CHART, view })
     expect(encoded).toMatch(/^[A-Za-z0-9_-]+$/)
     expect(await decodeShare(encoded)).toEqual({ chart: CHART, view })
@@ -54,6 +54,11 @@ describe('share links', () => {
     expect(await decodeShare(await encodeShare({ chart: CHART, view }))).toEqual({ chart: CHART, view })
     expect(shareViewFrom({ guideThird: 'on', guideSeventh: 1 })).toBeUndefined()
     expect(shareViewFrom({ guideThird: false, guideSeventh: 'yes' })).toEqual({ guideThird: false })
+  })
+
+  it('drop the retired Guide tones sheet from an old link, keeping the rest of its view', async () => {
+    expect(shareViewFrom({ sheet: 'guideTones', numerals: true })).toEqual({ numerals: true })
+    expect(await decodeShare(await packed({ v: 1, chart: CHART, view: { sheet: 'guideTones', mode: 'root' } }))).toEqual({ chart: CHART, view: { mode: 'root' } })
   })
 
   it('carry function cells and @key lines unchanged', async () => {

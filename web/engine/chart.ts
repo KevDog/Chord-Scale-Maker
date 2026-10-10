@@ -14,7 +14,7 @@ import { defaultScaleOrNull } from './qualities'
 export type MetaKey = 'title' | 'subtitle' | 'key' | 'bars' | 'time' | 'composer' | 'style' | 'form' | 'source'
 export const META_KEYS: readonly MetaKey[] = ['title', 'subtitle', 'key', 'bars', 'time', 'composer', 'style', 'form', 'source']
 
-/** `time:` 2/4, 3/4 or 4/4 (the default): beats a bar for the guide tone and Changes sheets; null if it's another */
+/** `time:` 2/4, 3/4 or 4/4 (the default): beats a bar for the Changes sheet and its guide tones; null if it's another */
 export function beatsPerBar(time: string): 2 | 3 | 4 | null {
   const t = time.trim()
   if (!t) return 4
@@ -178,7 +178,7 @@ export function serializeChart(doc: ChartDoc): string {
 
 /**
  * sections outside the form: an Intro before it, a Coda, Tag or Ending after it ("Tag 2" too). They print where
- * they stand; the analysis and the guide tone timeline treat each as its own piece, around the repeating form.
+ * they stand; the analysis and the Changes timeline (guideToneTimeline.ts) treat each as its own piece, around the repeating form.
  */
 const OUTSIDE = /^(intro|coda|tag|ending)(\s*\d+)?$/i
 const isOutsideForm = (section: string): boolean => OUTSIDE.test(section.trim())

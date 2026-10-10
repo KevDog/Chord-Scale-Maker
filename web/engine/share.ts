@@ -11,7 +11,7 @@ import { type PracticeSelection, practiceSelectionFrom } from './practice'
  * (including while inflating, so a tiny link can't expand into megabytes), validates every field, drops what it
  * doesn't know, and returns null instead of throwing.
  */
-export type ShareSheet = 'scales' | 'guideTones' | 'changes'
+export type ShareSheet = 'scales' | 'changes' // a link from the retired Guide tones sheet drops its sheet and opens the default
 export type ShareView = Readonly<{
   instrument?: InstrumentName
   mode?: Mode
@@ -98,7 +98,7 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(typeof o.scaleNames === 'boolean' ? { scaleNames: o.scaleNames } : {}),
     ...(typeof o.guideThird === 'boolean' ? { guideThird: o.guideThird } : {}),
     ...(typeof o.guideSeventh === 'boolean' ? { guideSeventh: o.guideSeventh } : {}),
-    ...(o.sheet === 'scales' || o.sheet === 'guideTones' || o.sheet === 'changes' ? { sheet: o.sheet } : {}),
+    ...(o.sheet === 'scales' || o.sheet === 'changes' ? { sheet: o.sheet } : {}),
     ...(practice ? { practice } : {}),
     ...(isScaleLevel(o.level) ? { level: o.level } : {}),
     ...(Number.isInteger(o.seed) && (o.seed as number) >= 0 && (o.seed as number) < 2 ** 32 ? { seed: o.seed as number } : {}),

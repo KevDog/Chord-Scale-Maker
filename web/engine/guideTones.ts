@@ -1,20 +1,17 @@
-import { type Row, resolveScale } from './chart'
-import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRootLenient } from './chord'
-import type { Key } from './analysis/keys'
-import { guideToneTimeline } from './guideToneTimeline'
+import { parseChord, writtenChordRootLenient } from './chord'
 import type { Part, Pitched } from './part'
-import { accidentalsInBar, keySignature, octaveOf } from './keySignature'
+import { accidentalsInBar, octaveOf } from './keySignature'
 import { baseQuality } from './qualities'
 import { spellFrom } from './scales'
-import { chunk, orNull } from './util'
+import { orNull } from './util'
 import { type Candidate, type GuideTones, voiceLead, voiceLeadOne } from './voiceLeading'
 
 /**
  * Guide tones (docs/superpowers/specs/2026-10-10-guide-tones-on-changes-design.md): each chord's 3rd and 7th as
  * voices for the Changes sheet, one note a chord, voice-led (both on: two voices that move by step; one on: that
  * degree alone, in the nearest octave), split at barlines, with accidentals by the measure rule across both voices.
- * The old Guide tones sheet (buildGuideTones) stays until the Changes sheet replaces it. No DOM, like sheet.ts. The
- * timeline (guideToneTimeline.ts) and the voice leading (voiceLeading.ts) live in their own modules.
+ * No DOM, like sheet.ts. The timeline (guideToneTimeline.ts) and the voice leading (voiceLeading.ts) live in their
+ * own modules.
  */
 
 /** canonical quality -> the degrees that stand for its "3rd" and "7th" */
@@ -85,19 +82,6 @@ export const guideLabel = (degree: string): string => degree.replace(/^[b#]+/, '
 
 /** a chord to voice: row is the caller's index for its labels; start and beats are in beats from 0 */
 export type GuideInput = Readonly<{ row: number; chord: string; scale?: string; start: number; beats: number }>
-
-/** the Guide tones sheet's note; removed with that sheet */
-export type LegacyGuideNote = Readonly<{ pitch: Pitched | null; beats: 1 | 2 | 3 | 4; tie: boolean; label: string }> // tie: into the next note
-export type GuideChord = Readonly<{ beat: number; text: string; tokens: readonly ChordToken[] | null }>
-export type GuideBar = Readonly<{
-  keySig: string | null // the chart's key, written for the part; null: none drawn
-  label: string // "A · Bar 9" where a chord starts, else ''
-  chords: readonly GuideChord[]
-  lines: readonly [readonly LegacyGuideNote[], readonly LegacyGuideNote[]]
-}>
-export type GuideSystem = Readonly<{ bars: readonly GuideBar[] }>
-/** beats: a bar's beats (its time signature over 4) */
-export type GuideToneSheet = Readonly<{ systems: readonly GuideSystem[]; diagnostics: readonly string[]; beats: 2 | 3 | 4 }>
 
 /**
  * split [start, start + length) at barlines into notes, tying a held pitch across them (a rest is split untied);
@@ -195,47 +179,4 @@ export function guideVoices(
   })
   for (const [bar, voices] of bars) bars.set(bar, voiceAccidentals(voices, keySig))
   return { bars, labels, missing }
-}
-
-/** both guide tone lines for a chart, in systems of barsPerSystem bars; key: the chart's key for every bar's signature */
-export function buildGuideTones(rows: readonly Row[], part: Part, barsPerSystem = 4, beats: 2 | 3 | 4 = 4, key?: Key | null): GuideToneSheet {
-  const { events, diagnostics } = guideToneTimeline(rows, beats)
-  const missing: string[] = []
-  const tones = events.map((e) => {
-    const t = guideTonesFor(part, e.chord, resolveScale(e.row) ?? undefined)
-    if (!t) {
-      const why = `no guide tones for ${e.chord || 'an empty chord'} (${readable(e.chord) ? 'unknown chord quality' : "can't read the chord"})`
-      if (!missing.includes(why)) missing.push(why)
-    }
-    return t
-  })
-  const voiced = voiceLead(tones, part.clef)
-  const end = events.reduce((m, e) => Math.max(m, e.start + e.beats), 0)
-  const barCount = Math.ceil(end / beats)
-  // each line's notes, split at barlines once, then grouped by bar
-  const byBar = ([0, 1] as const).map((l) => {
-    const out: LegacyGuideNote[][] = Array.from({ length: barCount }, () => [])
-    events.forEach((e, j) => {
-      const c = voiced[l][j] ?? null
-      notesFor(c, e.start, e.beats, beats).forEach(({ bar, note }) =>
-        out[bar]?.push({ pitch: note.pitch, beats: note.beats, tie: note.tie, label: c?.label ?? '' }),
-      )
-    })
-    return out
-  })
-  const keySig = key === undefined ? null : keySignature(key, part)
-  const bars = Array.from({ length: barCount }, (_, i): GuideBar => {
-    const starting = events.filter((e) => Math.floor(e.start / beats) === i)
-    const firstRow = starting[0]?.row
-    const chords = starting.map(
-      (e): GuideChord => ({ beat: e.start - i * beats, text: e.chord, tokens: chordTokensOrNull(part, e.chord, resolveScale(e.row)) }),
-    )
-    return {
-      keySig,
-      label: firstRow ? `${firstRow.section} · Bar ${firstRow.bar}` : '',
-      chords,
-      lines: [byBar[0]?.[i] ?? [], byBar[1]?.[i] ?? []],
-    }
-  })
-  return { systems: chunk(bars, barsPerSystem).map((b) => ({ bars: b })), diagnostics: [...diagnostics, ...missing], beats }
 }
