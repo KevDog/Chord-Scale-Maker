@@ -1,5 +1,5 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { type ChartDoc, parseChart } from '~~/engine'
 import ChartGrid from '~/components/ChartGrid.vue'
 
@@ -49,5 +49,55 @@ describe('ChartGrid', () => {
     expect(lastDoc(w)?.lines[0]).toEqual({ kind: 'meta', key: 'title', value: 'New title' })
     await w.find('[aria-label="Add row after row 1"]').trigger('click')
     expect(lastDoc(w)?.lines[2]).toEqual({ kind: 'row', section: 'A', bar: '1', chord: '', scale: '' })
+  })
+})
+
+describe('ChartGrid with functions', () => {
+  beforeEach(() => {
+    useRuntimeConfig().public.features.functions = true
+    localStorage.clear()
+  })
+  afterEach(() => {
+    useRuntimeConfig().public.features.functions = false
+  })
+  const fdoc = parseChart('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\n@key A 9 D\n').value
+
+  it("offers each row's functions and writes the one chosen", async () => {
+    const w = await mountSuspended(ChartGrid, { props: { doc: fdoc } })
+    const select = w.find('select[aria-label="function for row 2"]')
+    expect(select.find('option').text()).toBe('Auto: II7 → D Mixolydian')
+    await select.setValue('V7/V')
+    expect(lastDoc(w)?.lines[3]).toMatchObject({ kind: 'row', chord: 'D7', function: 'V7/V' })
+  })
+
+  it('shows notes on demand', async () => {
+    const w = await mountSuspended(ChartGrid, { props: { doc: fdoc } })
+    expect(w.text()).not.toContain('not resolving: natural tensions')
+    await w.find('button[aria-pressed]').trigger('click')
+    expect(w.text()).toContain('II7 in C, not resolving: natural tensions')
+  })
+
+  it('edits an @key line with a key select, and shows its problem', async () => {
+    const w = await mountSuspended(ChartGrid, { props: { doc: fdoc } })
+    expect(w.text()).toContain('@key A 9: no bar 9 in section A')
+    await w.find('select[aria-label="Key from A 9"]').setValue('Eb')
+    expect(lastDoc(w)?.lines[6]).toEqual({ kind: 'key', section: 'A', bar: 9, key: 'Eb' })
+  })
+
+  it('starts a key change at a row, in that row’s key area', async () => {
+    const w = await mountSuspended(ChartGrid, { props: { doc: fdoc } })
+    await w.find('[aria-label="Key change at row 3"]').trigger('click')
+    expect(lastDoc(w)?.lines.slice(4, 6)).toEqual([
+      { kind: 'key', section: 'A', bar: 3, key: 'C' },
+      { kind: 'row', section: 'A', bar: '3', chord: 'Dm7', scale: '' },
+    ])
+  })
+})
+
+describe('ChartGrid without functions', () => {
+  it('has no Function column and no key-change buttons', async () => {
+    const w = await mountSuspended(ChartGrid, { props: { doc } })
+    expect(w.find('[aria-label="function for row 1"]').exists()).toBe(false)
+    expect(w.find('[aria-label="Key change at row 1"]').exists()).toBe(false)
   })
 })

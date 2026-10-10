@@ -4,6 +4,7 @@ import { type ChartDoc, resolveScale } from './chart'
 import { sameScale } from './scales'
 
 export { functionChoices, type FunctionChoice }
+export { sameFunction } from './analysis/functions'
 
 /**
  * What the editor shows beside each row (docs/superpowers/specs/2026-10-09-chart-functions-design.md §3): why the
