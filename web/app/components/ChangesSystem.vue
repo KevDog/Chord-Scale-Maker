@@ -17,10 +17,27 @@
     <div ref="el" class="text-zinc-900 dark:text-zinc-100 print:text-black" />
     <!-- the analysis under each chord: its numeral, then its scale -->
     <div v-if="numerals" class="relative h-5 print:h-3.5">
-      <span v-for="m in marks" :key="`n${m.key}`" class="absolute truncate text-sm font-medium text-zinc-800 dark:text-zinc-200 print:text-xs/3.5 print:text-black" :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }" :title="m.numeral">{{ m.numeral }}</span>
+      <span
+        v-for="m in marks"
+        :key="`n${m.key}`"
+        :class="['absolute text-sm font-medium text-zinc-800 dark:text-zinc-200 print:text-xs/3.5 print:text-black', !(notesOn && m.reason) && 'truncate']"
+        :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
+        :title="notesOn && m.reason ? undefined : m.numeral"
+      >
+        <ChangesNote v-if="notesOn && m.reason && m.numeral" :reason="m.reason" :heard-in="m.heardIn" :stated="m.stated">{{ m.numeral }}</ChangesNote>
+        <template v-else>{{ m.numeral }}</template>
+      </span>
     </div>
     <div v-if="scales" class="relative h-8 print:h-6">
-      <span v-for="m in marks" :key="`s${m.key}`" class="absolute pr-1 text-[0.7rem]/3.5 text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700" :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }">{{ m.scale }}</span>
+      <span
+        v-for="m in marks"
+        :key="`s${m.key}`"
+        :class="['absolute pr-1 text-[0.7rem]/3.5 text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700', !(notesOn && m.reason) && 'truncate']"
+        :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
+      >
+        <ChangesNote v-if="notesOn && m.reason && m.scale" :reason="m.reason" :heard-in="m.heardIn" :stated="m.stated">{{ m.scale }}</ChangesNote>
+        <template v-else>{{ m.scale }}</template>
+      </span>
     </div>
     <p v-if="drawError" class="rounded border border-dashed border-amber-500 px-3 py-2 text-sm text-amber-700 dark:text-amber-400">{{ drawError }}</p>
   </div>
@@ -44,6 +61,7 @@ const el = ref<HTMLElement | null>(null)
 const xs = ref<readonly (readonly number[])[]>([])
 const drawError = ref<string | null>(null)
 const rendering = useRendering()
+const notesOn = useFeature('functions')
 
 /**
  * each chord over the slash of its beat (markers and key areas ride on a bar's first chord, or its first beat), with
@@ -52,8 +70,8 @@ const rendering = useRendering()
 const marks = computed(() => {
   const all = props.line.bars.flatMap((bar, b) => {
     const at = (beat: number): number => Math.max(0, (xs.value[b]?.[beat] ?? 0) - 0.012)
-    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, x: at(c.beat), tokens: c.tokens, text: c.text, numeral: c.numeral, scale: c.scale, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
-    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, x: at(0), tokens: null, text: '', numeral: '', scale: null, marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
+    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, x: at(c.beat), tokens: c.tokens, text: c.text, numeral: c.numeral, scale: c.scale, reason: c.reason, stated: c.stated, heardIn: c.heardIn, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
+    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, x: at(0), tokens: null, text: '', numeral: '', scale: null, reason: '', stated: false, heardIn: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
     return chords
   })
   return all.map((m, i) => ({ ...m, room: Math.max(0.05, (all[i + 1]?.x ?? 1) - m.x) }))
