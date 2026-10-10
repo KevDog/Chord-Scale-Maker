@@ -40,17 +40,24 @@ function nearest(cands: readonly Candidate[], to: number, centre: number): Candi
   return cands.reduce<Candidate | null>((best, c) => (!best || before(c, best) ? c : best), null)
 }
 
+const TRITONE = 6
+
 /**
  * rule 7.2: when both lines choose the same tone, the smaller move keeps it; with equal moves, the line moving down
  * (otherwise A, which can't arise: lines on different pitch classes can only meet with equal moves from opposite
- * sides). The other line takes the remaining tone in the octave nearest its own note.
+ * sides). The other line takes the remaining tone in the octave nearest its own note, unless that leaps more than a
+ * tritone and trading makes the larger of the two moves smaller: then the lines trade.
  */
 function together(from: Pair, [a, b]: Pair, t: GuideTones, clef: Clef, centre: number): Pair {
   if (a.role !== b.role) return [a, b]
-  const [ma, mb] = [a.pitch.midi - from[0].pitch.midi, b.pitch.midi - from[1].pitch.midi]
-  const aKeeps = Math.abs(ma) !== Math.abs(mb) ? Math.abs(ma) < Math.abs(mb) : !(mb < 0 && ma >= 0)
-  const remaining = (line: Candidate): Candidate => nearest(octaves(t, a.role ? 0 : 1, clef), line.pitch.midi, centre) ?? line
-  return aKeeps ? [a, remaining(from[1])] : [remaining(from[0]), b]
+  const move = (i: 0 | 1, c: Candidate): number => Math.abs(c.pitch.midi - from[i].pitch.midi)
+  const aKeeps = move(0, a) !== move(1, b) ? move(0, a) < move(1, b) : !(b.pitch.midi < from[1].pitch.midi && a.pitch.midi >= from[0].pitch.midi)
+  const remaining = (i: 0 | 1): Candidate => nearest(octaves(t, a.role ? 0 : 1, clef), from[i].pitch.midi, centre) ?? from[i]
+  const keep: Pair = aKeeps ? [a, remaining(1)] : [remaining(0), b]
+  const trade: Pair = aKeeps ? [remaining(0), b] : [a, remaining(1)]
+  const larger = (p: Pair): number => Math.max(move(0, p[0]), move(1, p[1]))
+  const leap = aKeeps ? move(1, keep[1]) : move(0, keep[0])
+  return leap > TRITONE && larger(trade) < larger(keep) ? trade : keep
 }
 
 /**

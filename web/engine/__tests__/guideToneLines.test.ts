@@ -59,10 +59,10 @@ describe('guide tone lines', () => {
     expect(linesOf(['F7', 'D7']).a).toEqual(['A4 (3)', 'F#4 (3)'])
   })
 
-  it('rule 4: candidates lie inside the written range: at E2, the bottom of the bass range, the line turns up to Eb3', () => {
+  it('rule 4: candidates lie inside the written range: below E2, the bottom of the bass range, a line turns up to Eb3', () => {
     expect(linesOf(['Ab', 'G', 'Gb', 'F', 'E', 'Eb'], BASS)).toEqual({
-      a: ['C3 (3)', 'B2 (3)', 'Bb2 (3)', 'A2 (3)', 'G#2 (3)', 'G2 (3)'],
-      b: ['Ab2 (1)', 'G2 (1)', 'Gb2 (1)', 'F2 (1)', 'E2 (1)', 'Eb3 (1)'],
+      a: ['C3 (3)', 'B2 (3)', 'Bb2 (3)', 'A2 (3)', 'G#2 (3)', 'Eb3 (1)'],
+      b: ['Ab2 (1)', 'G2 (1)', 'Gb2 (1)', 'F2 (1)', 'E2 (1)', 'G2 (3)'],
     })
   })
   it('rule 7.1: each line chooses for itself, and the two choices stand when they differ', () => {
@@ -78,8 +78,18 @@ describe('guide tone lines', () => {
     expect(linesOf(['Cm6', 'D7'])).toEqual({ a: ['Eb4 (3)', 'C4 (7)'], b: ['A4 (6)', 'F#4 (3)'] }) // B falls to F#4
   })
 
+  it('rule 7.2: the lines trade when the line giving up the tone would leap more than a tritone and trading makes the larger move smaller', () => {
+    // both choose F#4: A keeps it (a step) and B leaps Eb4 to B4 (8); traded, each moves a minor 3rd
+    expect(linesOf(['Fm7', 'GMaj7'])).toEqual({ a: ['Ab4 (3)', 'B4 (3)'], b: ['Eb4 (7)', 'F#4 (7)'] })
+  })
+
+  it('rule 7.2: no trade when trading would not make the larger move smaller', () => {
+    // both choose Db: A keeps Db4 (a half step) and B leaps F5 to Bb4 (7); traded, A would leap D4 to Bb4 (8)
+    expect(linesOf(['Cm', 'Dm', 'Bbm'])).toEqual({ a: ['Eb4 (3)', 'D4 (1)', 'Db4 (3)'], b: ['C5 (1)', 'F5 (3)', 'Bb4 (1)'] })
+  })
+
   it('rule 7.3: the lines may cross (A from above B to below it)', () => {
-    expect(linesOf(['Fm7', 'GMaj7'])).toEqual({ a: ['Ab4 (3)', 'F#4 (7)'], b: ['Eb4 (7)', 'B4 (3)'] })
+    expect(linesOf(['F', 'G'])).toEqual({ a: ['A4 (3)', 'G4 (1)'], b: ['F4 (1)', 'B4 (3)'] })
   })
 
   it('rule 7: the lines are complementary: different tones at every chord, even where both would choose the same', () => {
