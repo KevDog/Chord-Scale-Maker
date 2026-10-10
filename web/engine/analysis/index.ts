@@ -5,7 +5,7 @@ import { bluesKey, findCadences, isModal, type Key, keyText, localKeys, parseKey
 import { type Context, decide, type Decision } from './rules'
 import { numeral } from './numerals'
 import { buildStream, type Entry, type Family } from './stream'
-import { fitError, impliedTarget, parseFunction, type StatedFunction, tonicOf } from './functions'
+import { fitError, functionCandidates, impliedTarget, parseFunction, type StatedFunction, tonicOf } from './functions'
 
 /**
  * Harmonic analysis for scale choice (docs/plan-analysis.md): a chart's chords to a scale per row, with the rule
@@ -114,7 +114,21 @@ function withTargets(stream: readonly Entry[], keys: readonly Key[], stated: rea
   return { stream: out, keys: outKeys }
 }
 
-export function analyse(doc: ChartDoc): Analysis {
+type Prepared = Readonly<{
+  rows: readonly LinedRow[]
+  stream: readonly Entry[]
+  areaKeys: readonly Key[]
+  areaStated: readonly boolean[]
+  stated: readonly (Stated | undefined)[]
+  global: Key
+  blues: Key | null
+  modal: boolean
+  keyFrom: Analysis['keyFrom']
+  problems: readonly Problem[]
+}>
+
+/** everything the rules read before they decide: the stream, its key areas, the stated functions; global null without a key */
+function prepare(doc: ChartDoc): Prepared | Readonly<{ global: null; keyFrom: Analysis['keyFrom'] }> {
   const rows = expandRowLines(doc).value
   const bars = formBars(doc)
   const stream = buildStream(rows, bars)
@@ -125,39 +139,82 @@ export function analyse(doc: ChartDoc): Analysis {
   const stated = parseKey(meta(doc, 'key'))
   const global = blues ?? stated ?? scoreKey(stream, cadences)
   const keyFrom = blues ? 'blues' : stated ? 'key:' : global ? 'scored' : 'none'
+  if (!global) return { global: null, keyFrom }
   const modal = !blues && isModal(stream, cadences)
-  if (!global) return { key: null, keyFrom, context: 'functional', areas: [], rows: [], problems: [] }
   const found = modal || blues ? stream.map(() => global) : localKeys(stream, cadences, global)
   const problems: Problem[] = []
-  const areaKeys = statedAreas(doc, rows, stream, found, problems)
-  const fns = statedFunctions(stream, rows, areaKeys.keys, global, problems)
-  const virtual = withTargets(
-    stream,
-    stream.map((_, i) => fns[i]?.key ?? areaKeys.keys[i] ?? global),
-    fns,
-  )
-  const ctx: Context = { stream: virtual.stream, keys: virtual.keys, global, blues, modal }
+  const areas = statedAreas(doc, rows, stream, found, problems)
+  const fns = statedFunctions(stream, rows, areas.keys, global, problems)
+  return { rows, stream, areaKeys: areas.keys, areaStated: areas.stated, stated: fns, global, blues, modal, keyFrom, problems }
+}
+
+/** the rules' context under these statements: each stated row's target wired in after it */
+function contextFor(p: Prepared, stated: readonly (Stated | undefined)[]): Context {
+  const v = withTargets(p.stream, p.stream.map((_, i) => stated[i]?.key ?? p.areaKeys[i] ?? p.global), stated)
+  return { stream: v.stream, keys: v.keys, global: p.global, blues: p.blues, modal: p.modal }
+}
+
+export function analyse(doc: ChartDoc): Analysis {
+  const p = prepare(doc)
+  if (p.global === null) return { key: null, keyFrom: p.keyFrom, context: 'functional', areas: [], rows: [], problems: [] }
+  const ctx = contextFor(p, p.stated)
   const out: RowAnalysis[] = []
   const areas: Area[] = []
-  stream.forEach((e, i) => {
-    const key = areaKeys.keys[i] ?? global
-    const s = fns[i]
+  p.stream.forEach((e, i) => {
+    const key = p.areaKeys[i] ?? p.global
+    const s = p.stated[i]
     const { fallback, ...ruled } = decide(ctx, i)
     const decision: Decision = s ? { ...ruled, reason: `${ruled.reason} (stated)` } : fallback ? { ...ruled, fallback } : ruled
     const roman = s ? s.fn.text : numeral(ctx, i, decision)
-    const prevKey = i > 0 ? areaKeys.keys[i - 1] : undefined
-    const firstRow = rows[e.rows[0] ?? 0]
+    const prevKey = i > 0 ? p.areaKeys[i - 1] : undefined
+    const firstRow = p.rows[e.rows[0] ?? 0]
     if (firstRow && (!prevKey || !sameKey(prevKey, key)))
-      areas.push({ key, from: firstRow.bar, to: firstRow.bar, row: e.rows[0] ?? 0, section: firstRow.section, stated: areaKeys.stated[i] ?? false })
+      areas.push({ key, from: firstRow.bar, to: firstRow.bar, row: e.rows[0] ?? 0, section: firstRow.section, stated: p.areaStated[i] ?? false })
     const area = areas.at(-1)
     for (const [j, r] of e.rows.entries()) {
-      const row = rows[r]
+      const row = p.rows[r]
       if (!row) continue
       out.push({ ...decision, row: r, line: row.line, bar: row.bar, chord: row.chord, key, held: j > 0, numeral: roman, stated: !!s, ...(s?.fn.key ? { statedKey: s.key } : {}) })
       if (area) areas[areas.length - 1] = { ...area, to: row.bar }
     }
   })
-  return { key: global, keyFrom, context: blues ? 'blues' : modal ? 'modal' : 'functional', areas, rows: out, problems }
+  return { key: p.global, keyFrom: p.keyFrom, context: p.blues ? 'blues' : p.modal ? 'modal' : 'functional', areas, rows: out, problems: p.problems }
+}
+
+/** one option of the grid's Function dropdown: value '' is Auto (the analyser's own reading) */
+export type FunctionChoice = Readonly<{ value: string; label: string; scale: string | null }>
+
+/**
+ * each row's Function options, keyed by doc line: Auto, then every function that fits the chord in its key area,
+ * each with the scale the rules give when it's stated (the other rows' statements stand)
+ */
+export function functionChoices(doc: ChartDoc): ReadonlyMap<number, readonly FunctionChoice[]> {
+  const out = new Map<number, readonly FunctionChoice[]>()
+  const p = prepare(doc)
+  if (p.global === null) return out
+  const verdict = (i: number, s: Stated | undefined): { scale: string | null; numeral: string } => {
+    const ctx = contextFor(p, p.stated.map((x, j) => (j === i ? s : x)))
+    const d = decide(ctx, i)
+    return { scale: d.scale, numeral: s ? s.fn.text : numeral(ctx, i, d) }
+  }
+  p.stream.forEach((e, i) => {
+    if (!e.family) return
+    const key = p.areaKeys[i] ?? p.global
+    const auto = verdict(i, undefined)
+    const choices: FunctionChoice[] = [{ value: '', label: auto.numeral === '?' ? 'Auto' : `Auto: ${auto.numeral}`, scale: auto.scale }]
+    for (const text of functionCandidates(e, key)) {
+      const fn = parseFunction(text)
+      if (typeof fn === 'string' || fitError(fn, e, key)) continue
+      const t = impliedTarget(fn, key)
+      const to = t ? ` (to ${rootName(shiftBy(tonicOf(key), t.steps, t.semis))}${t.minor ? 'm' : ''})` : ''
+      choices.push({ value: text, label: `${fn.text}${to}`, scale: verdict(i, { fn, key }).scale })
+    }
+    for (const r of e.rows) {
+      const line = p.rows[r]?.line
+      if (line !== undefined && !out.has(line)) out.set(line, choices)
+    }
+  })
+  return out
 }
 
 // —— writing it back ——
