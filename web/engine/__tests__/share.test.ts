@@ -48,4 +48,9 @@ describe('share links', () => {
     })
     expect(await decodeShare(await packed({ v: 1, chart: CHART, view: { mode: 'root', bogus: true } }))).toEqual({ chart: CHART, view: { mode: 'root' } })
   })
+
+  it('carry function cells and @key lines unchanged', async () => {
+    const chart = 'title: T\nA | 1 | D7 |  | V7/V\n@key A 1 D\n'
+    expect((await decodeShare(await encodeShare({ chart })))?.chart).toBe(chart)
+  })
 })

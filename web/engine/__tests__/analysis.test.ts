@@ -256,3 +256,103 @@ describe('analysis: writing it back (§12.1)', () => {
     expect(serializeChart(run(t, 'fill', true).doc)).toContain('the repeat at bar 4 would be G Phrygian Dominant')
   })
 })
+
+describe('stated functions and @key (docs/superpowers/specs/2026-10-09-chart-functions-design.md)', () => {
+  const lines = (key: string, rows: readonly string[], extra = ''): string => `title: T\nkey: ${key}\n${extra}${rows.join('\n')}\n`
+  const rowOf = (text: string, barChord: string) => analyse(parseChart(text).value).rows.find((r) => `${r.bar} ${r.chord}` === barChord)
+  const C_TUNE = ['A | 1 | CMaj7', 'A | 2 | D7', 'A | 3 | Dm7', 'A | 4 | G7', 'A | 5 | Am7', 'A | 6 | Dm7', 'A | 7 | G7', 'A | 8 | CMaj7']
+
+  it('a stated target overrides the neighbour: D7 going nowhere, stated V7/V', () => {
+    const plain = lines('C', C_TUNE)
+    expect(verdict(plain, '2 D7')).toBe('D Mixolydian (D5)')
+    expect(rowOf(plain, '2 D7')?.fallback).toBe(true)
+    const r = rowOf(plain.replace('A | 2 | D7', 'A | 2 | D7 | | V7/V'), '2 D7')
+    expect([r?.scale, r?.rule, r?.numeral, r?.stated, r?.fallback]).toEqual(['D Mixolydian', 'D4', 'V7/V', true, undefined])
+    expect(r?.reason).toBe('* V7/V in C: natural tensions')
+  })
+
+  it('a key prefix decides its row only, and opens no key area', () => {
+    const plain = lines('D', ['A | 1 | DMaj7', 'A | 2 | Em7', 'A | 3 | Bb7', 'A | 4 | DMaj7'])
+    expect(verdict(plain, '3 Bb7')).toBe('Bb Lydian Dominant (D6)')
+    const a = analyse(parseChart(plain.replace('A | 3 | Bb7', 'A | 3 | Bb7 | | Db: V7/ii')).value)
+    const r = a.rows.find((x) => x.chord === 'Bb7')
+    expect([r?.scale, r?.rule, r?.statedKey?.name, r?.key.name]).toEqual(['Bb Mixolydian b6', 'D4', 'Db major', 'D major'])
+    expect(a.areas.map((x) => x.key.name)).toEqual(['D major'])
+  })
+
+  it('subV7 and ♭VII7 reach their own rules', () => {
+    const sub = lines('C', ['A | 1 | CMaj7', 'A | 2 | Db7 | | subV7', 'A | 3 | Am7', 'A | 4 | Dm7', 'A | 5 | G7', 'A | 6 | CMaj7'])
+    expect(verdict(sub, '2 Db7')).toBe('Db Lydian Dominant (D2)')
+    const back = lines('C', ['A | 1 | CMaj7', 'A | 2 | Bb7 | | ♭VII7', 'A | 3 | Am7', 'A | 4 | Dm7', 'A | 5 | G7', 'A | 6 | CMaj7'])
+    expect(verdict(back, '2 Bb7')).toBe('Bb Lydian Dominant (D5)')
+    expect(rowOf(back, '2 Bb7')?.fn).toBe('back door bVII7 to C')
+  })
+
+  it('the ii of a stated ii–V is named for its target', () => {
+    const text = lines('C', ['A | 1 | CMaj7', 'A | 2 | Am7 | | ii7/V', 'A | 3 | FMaj7', 'A | 4 | G7'])
+    const r = rowOf(text, '2 Am7')
+    expect([r?.scale, r?.rule, r?.fn]).toEqual(['A Dorian', 'm4', 'ii of the ii–V to G'])
+  })
+
+  it('@key holds from its bar until the next', () => {
+    const rows = ['A | 1 | EbMaj7', 'A | 2 | Cm7', 'B | 3 | DMaj7', 'B | 4 | Em7', 'B | 5 | DMaj7', 'C | 6 | EbMaj7', 'C | 7 | Fm7', 'C | 8 | Bb7']
+    const text = lines('Eb', rows, '@key B 3 D\n@key C 6 Eb\n')
+    const a = analyse(parseChart(text).value)
+    expect(a.areas.map((x) => `${x.key.name} ${x.section} ${x.from}–${x.to} ${x.stated ? 'stated' : 'found'}`)).toEqual([
+      'Eb major A 1–2 found',
+      'D major B 3–5 stated',
+      'Eb major C 6–8 stated',
+    ])
+    expect(verdict(text, '3 DMaj7')).toBe('D Ionian (M3)')
+    expect(a.problems).toEqual([])
+  })
+
+  it('an @key on a bar a chord is held through starts at that chord, and bars compare as numbers', () => {
+    const rows = ['A | 1 | EbMaj7', 'A | 2 | Cm7', 'B | 3 | DMaj7', 'B | 5 | Em7', 'B | 6 | A7', 'B | 7 | DMaj7', 'C | 08 | EbMaj7', 'C | 9 | Fm7', 'C | 10 | Bb7']
+    const a = analyse(parseChart(lines('Eb', rows, '@key B 4 D\n@key C 8 Eb\n')).value)
+    expect(a.problems).toEqual([])
+    expect(a.areas.map((x) => `${x.key.name} ${x.section} ${x.from}–${x.to} ${x.stated ? 'stated' : 'found'}`)).toEqual([
+      'Eb major A 1–2 found',
+      'D major B 3–7 stated',
+      'Eb major C 08–10 stated',
+    ])
+  })
+
+  it("reports a function that won't read, doesn't fit, or sits on a chord it can't read, and ignores it", () => {
+    const text = lines('C', ['A | 1 | CMaj7', 'A | 2 | D7 | | X7', 'A | 3 | Bb7 | | V7/V', 'A | 4 | Hm7 | | ii7'])
+    const a = analyse(parseChart(text).value)
+    expect(a.problems.map((p) => `${p.line} ${p.message}`)).toEqual([
+      '3 "X7" isn\'t a function (V7/ii, subV7, ii7/V, ♭VII7, IVmaj7)',
+      '4 V7/V in C is on D, not Bb7',
+      "5 Hm7 can't be read, so its function can't be checked",
+    ])
+    expect(a.rows.filter((r) => r.stated)).toEqual([])
+  })
+
+  it('an @key on a bar that is not there is a problem; the areas stay as found', () => {
+    const text = lines('C', C_TUNE, '@key B 99 D\n')
+    const a = analyse(parseChart(text).value)
+    expect(a.problems).toEqual([{ line: 2, message: '@key B 99: no bar 99 in section B' }])
+    expect(a.areas.map((x) => x.key.name)).toEqual(analyse(parseChart(lines('C', C_TUNE)).value).areas.map((x) => x.key.name))
+  })
+
+  it('a function on a @copy source states its repeats too, and a bad one is reported once', () => {
+    const good = analyse(parseChart(lines('C', ['A | 1 | CMaj7', 'A | 2 | D7 | | V7/V', 'A | 3 | Dm7', 'A | 4 | G7', '@copy A B 4'])).value)
+    expect(good.rows.filter((r) => r.chord === 'D7').map((r) => `${r.bar} ${r.stated}`)).toEqual(['2 true', '6 true'])
+    const bad = analyse(parseChart(lines('C', ['A | 1 | CMaj7', 'A | 2 | D7 | | X7', 'A | 3 | Dm7', 'A | 4 | G7', '@copy A B 4'])).value)
+    expect(bad.problems).toHaveLength(1)
+  })
+
+  it('held chords merge unless the later one states a different function', () => {
+    const held = (second: string) => analyse(parseChart(lines('C', ['A | 1 | CMaj7', 'A | 2 | D7 | | V7/V', second, 'A | 4 | G7'])).value).rows.filter((r) => r.chord === 'D7').map((r) => r.held)
+    expect(held('A | 3 | D7')).toEqual([false, true])
+    expect(held('A | 3 | D7 | | II7')).toEqual([false, false])
+  })
+
+  it('applyAnalysis never writes a function or an @key, and --force rewrites a stated row from its function', () => {
+    const doc = parseChart(lines('C', ['A | 1 | CMaj7', 'A | 2 | D7 | D Lydian Dominant | V7/V', 'A | 3 | Dm7', 'A | 4 | G7'], '@key A 1 C\n')).value
+    const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'force', save: true, date: '2026-10-10' }).doc)
+    expect(out).toContain('@key A 1 C\n')
+    expect(out).toMatch(/A \| 2 \| D7\s+\| D Mixolydian\s+\| V7\/V\s+# \* V7\/V in C: natural tensions\n/)
+  })
+})

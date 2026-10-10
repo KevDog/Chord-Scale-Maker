@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { type ChartDoc, chartMeta, parseChart, serializeChart } from '../chart'
-import { cellError, insertRowAfter, removeLine, sameChart, setMeta, setRowChord, setRowField } from '../edit'
+import { cellError, insertKeyBefore, insertRowAfter, removeLine, sameChart, setKeyLine, setMeta, setRowChord, setRowField } from '../edit'
 
 const doc = parseChart('title: T\nA | 1 | Cm7\n# note\nA | 2 | F7 | F Mixolydian\n').value
 
@@ -59,5 +59,36 @@ describe('chord changes and comparing charts', () => {
     expect(sameChart('A | 6 | D7 | D Half-Whole\n', 'A | 6 | D7 | D Half-Whole Diminished\n')).toBe(true)
     expect(sameChart('A | 1 | Cm7 | C Dorian\n', 'A | 1 | Cm7 | C Aeolian\n')).toBe(false)
     expect(sameChart('# note\nA | 1 | Cm7\n', 'A | 1 | Cm7\n')).toBe(false) // comments count
+  })
+})
+
+describe('the function cell', () => {
+  it('sets a function, and clearing it drops the fifth cell', () => {
+    const set = setRowField(parseChart('A | 1 | D7\n').value, 0, 'function', 'V7/V')
+    expect(serializeChart(set)).toBe('A | 1 | D7 |  | V7/V\n')
+    const cleared = setRowField(set, 0, 'function', '')
+    expect(cleared.lines[0]).not.toHaveProperty('function')
+    expect(serializeChart(cleared)).toBe('A | 1 | D7\n')
+  })
+
+  it('keeps the function when the scale is cleared', () => {
+    const doc = parseChart('A | 1 | D7 | D Mixolydian | V7/V\n').value
+    expect(serializeChart(setRowField(doc, 0, 'scale', ''))).toBe('A | 1 | D7 |  | V7/V\n')
+  })
+})
+
+describe('@key lines', () => {
+  it('starts a key change at a row, and changes its key', () => {
+    const doc = parseChart('A | 1 | Cm7\nB | 9 | DMaj7\n').value
+    const added = insertKeyBefore(doc, 1, 'D')
+    expect(serializeChart(added)).toBe('A | 1 | Cm7\n@key B 9 D\nB | 9 | DMaj7\n')
+    expect(serializeChart(setKeyLine(added, 1, 'Eb'))).toBe('A | 1 | Cm7\n@key B 9 Eb\nB | 9 | DMaj7\n')
+  })
+
+  it('leaves the doc alone for a line that is not a row, or a bar that is not a whole number', () => {
+    const doc = parseChart('# note\nA | 1a | Cm7\n').value
+    expect(insertKeyBefore(doc, 0, 'D')).toBe(doc)
+    expect(insertKeyBefore(doc, 1, 'D')).toBe(doc)
+    expect(setKeyLine(doc, 1, 'D')).toBe(doc)
   })
 })

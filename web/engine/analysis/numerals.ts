@@ -24,9 +24,10 @@ const SUFFIX: Readonly<Record<string, string>> = {
   '7sus4b9': '7sus',
 }
 /** "bVII" -> "♭VII" */
-const glyph = (r: string): string => r.replace(/^b/, '♭').replace(/^#/, '♯')
+export const glyph = (r: string): string => r.replace(/^b/, '♭').replace(/^#/, '♯')
 const degreeOf = (e: Pick<Entry, 'pc' | 'family'>, key: Key): string => glyph(roman(e, key))
-const own = (e: Entry, key: Key): string => degreeOf(e, key) + (e.family === 'dominant' ? '7' : (SUFFIX[e.quality] ?? ''))
+/** the chord's own degree and quality in the key: "II7", "vi7", "IVmaj7", "vii°7" */
+export const ownNumeral = (e: Pick<Entry, 'pc' | 'family' | 'quality'>, key: Key): string => degreeOf(e, key) + (e.family === 'dominant' ? '7' : (SUFFIX[e.quality] ?? ''))
 /** "/ii", or nothing when the chord it leads to is the key's own tonic */
 const of = (target: Pick<Entry, 'pc' | 'family'>, key: Key): string => (target.pc === key.tonic ? '' : `/${degreeOf(target, key)}`)
 
@@ -34,18 +35,18 @@ export function numeral(ctx: Context, i: number, decision: Decision): string {
   const e = ctx.stream[i]
   if (!e?.family) return '?'
   const key = ctx.keys[i] ?? ctx.global
-  if (ctx.modal) return own(e, key)
+  if (ctx.modal) return ownNumeral(e, key)
   const n = nextOf(ctx.stream, i)
   const p = prevOf(ctx.stream, i)
   if (e.family === 'dominant' || e.quality === '7sus4') {
     const seven = e.family === 'dominant' ? '7' : '7sus'
     if (n && downHalf(e, n) && decision.rule.includes('D2')) return `subV${seven}${of(n, key)}`
     if (n && downFifth(e, n) && !isDominantLike(n)) return `V${seven}${of(n, key)}`
-    if (n && downFifth(e, n)) return own(e, key) // an extended dominant: its own degree (the Rhythm bridge's III7 VI7 II7)
+    if (n && downFifth(e, n)) return ownNumeral(e, key) // an extended dominant: its own degree (the Rhythm bridge's III7 VI7 II7)
     if (n && interval(e.pc, n.pc) === 2 && n.family === 'major') return `♭VII${seven}${of(n, key)}` // the back door
     if (p && interval(e.pc, p.pc) === 5 && isTonicType(p)) return `V${seven}${of(p, key)}` // V7 of the chord before
     if (hasRelatedII(ctx.stream, i) && p) return `V${seven}${of({ pc: (e.pc + 5) % 12, family: p.family === 'halfdim' ? 'minor' : 'major' }, key)}`
-    return own(e, key)
+    return ownNumeral(e, key)
   }
   if ((e.family === 'minor' || e.family === 'halfdim') && n && isDominantLike(n) && interval(e.pc, n.pc) === 5) {
     // the ii of a ii–V: named for the chord the V goes to
@@ -56,5 +57,5 @@ export function numeral(ctx: Context, i: number, decision: Decision): string {
     // a ii–V that doesn't land: named for the chord it implies (a major one, or minor after a ø7)
     return `ii${suffix}${of({ pc: (n.pc + 5) % 12, family: e.family === 'halfdim' ? 'minor' : 'major' }, key)}`
   }
-  return own(e, key)
+  return ownNumeral(e, key)
 }

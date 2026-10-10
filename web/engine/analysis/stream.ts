@@ -31,6 +31,8 @@ const FAMILY: Readonly<Record<string, Family>> = {
   '7sus4': 'sus',
   '7sus4b9': 'sus',
 }
+/** a chord quality's family; null for one the analyser doesn't know */
+export const familyOf = (quality: string): Family | null => FAMILY[quality] ?? null
 
 export type Entry = Readonly<{
   /** the expanded rows this entry covers (identical consecutive rows are one entry) */
@@ -51,6 +53,8 @@ export type Entry = Readonly<{
   family: Family | null
   /** the quality text whose tensions the symbol pins */
   symbol: string
+  /** the author's function on its first row (the chart's fifth cell); '' = none */
+  function: string
   /** the bar it starts in (fractional when it shares a bar) and how many bars it lasts */
   start: number
   bars: number
@@ -95,7 +99,7 @@ export function buildStream(rows: readonly LinedRow[], formBars?: number): Entry
     const t = times[i] ?? { start: 1, bars: 1 }
     const part = parts[i] ?? 'form'
     const prev = out[out.length - 1]
-    if (prev && prev.chord === row.chord && prev.part === part) {
+    if (prev && prev.chord === row.chord && prev.part === part && (!row.function || row.function === prev.function)) {
       out[out.length - 1] = { ...prev, rows: [...prev.rows, i], bars: prev.bars + t.bars }
       return
     }
@@ -110,8 +114,9 @@ export function buildStream(rows: readonly LinedRow[], formBars?: number): Entry
       root: reading?.root ?? null,
       pc: reading ? pcOf(reading.root) : -1,
       quality: reading?.quality ?? '',
-      family: reading ? (FAMILY[reading.quality] ?? null) : null,
+      family: reading ? familyOf(reading.quality) : null,
       symbol: reading?.symbol ?? '',
+      function: row.function ?? '',
       start: t.start,
       bars: t.bars,
     })

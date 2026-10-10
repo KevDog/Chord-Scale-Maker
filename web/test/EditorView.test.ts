@@ -36,6 +36,52 @@ async function chooseMode(w: Wrapper, label: string): Promise<void> {
   await nextTick()
 }
 
+describe('EditorView help', () => {
+  afterEach(() => {
+    useRuntimeConfig().public.features.functions = false
+    localStorage.clear()
+  })
+  it('mentions functions and @key only with the flag on', async () => {
+    useRuntimeConfig().public.features.functions = true
+    const on = await mount()
+    await on.findAll('button').find((b) => b.text() === 'Edit')?.trigger('click')
+    await nextTick()
+    expect(on.html()).toContain('@key B 17 D')
+    on.unmount()
+    useRuntimeConfig().public.features.functions = false
+    const off = await mount()
+    await off.findAll('button').find((b) => b.text() === 'Edit')?.trigger('click')
+    await nextTick()
+    expect(off.html()).not.toMatch(/function|@key/)
+    expect(off.html()).toContain("Leave the scale out to use the chord's default.")
+    off.unmount()
+  })
+
+  it('with functions on, gives the grid the full width and lets the text editor collapse', async () => {
+    useRuntimeConfig().public.features.functions = true
+    const w = await mount()
+    await w.findAll('button').find((b) => b.text() === 'Edit')?.trigger('click')
+    await nextTick()
+    expect(w.find('section[aria-labelledby="grid-heading"]').element.parentElement?.className).not.toContain('lg:grid-cols-2')
+    const toggle = w.find('button[aria-controls="chart-text-body"]')
+    expect([toggle.text(), toggle.attributes('aria-expanded')]).toEqual(['Hide text', 'true'])
+    await toggle.trigger('click')
+    await nextTick()
+    expect(w.find('#chart-text-body').exists()).toBe(false)
+    expect([toggle.text(), toggle.attributes('aria-expanded')]).toEqual(['Show text', 'false'])
+    w.unmount()
+  })
+
+  it('with functions off, keeps the side-by-side layout and no text toggle', async () => {
+    const w = await mount()
+    await w.findAll('button').find((b) => b.text() === 'Edit')?.trigger('click')
+    await nextTick()
+    expect(w.find('section[aria-labelledby="grid-heading"]').element.parentElement?.className).toContain('lg:grid-cols-2')
+    expect(w.find('button[aria-controls="chart-text-body"]').exists()).toBe(false)
+    w.unmount()
+  })
+})
+
 describe('EditorView', () => {
   afterEach(() => localStorage.clear())
 

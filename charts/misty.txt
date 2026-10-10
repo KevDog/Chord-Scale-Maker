@@ -1,0 +1,68 @@
+title: Misty
+composer: Erroll Garner
+style: Medium Ballad
+key: Eb
+form: AABA, 32 bars
+source: The New Real Book, Vol. 1, p. 434
+# analysis: 2026-10-10, rules v1; Eb
+# Bars 17, 19 and 32: the book's parenthesised chords are kept. Bars 5, 13 and 29: EbMaj7 may be played as Gm7.
+
+# section | bar | chord | scale
+A1 | 1  | EbMaj7  | Eb Ionian                 # tonic: the 4th is in the key
+A1 | 2  | Bbm9    | Bb Dorian                 # ii of the ii–V to Ab
+A1 | 2  | Eb13b9  | Eb Half-Whole Diminished  # V7/IV in Eb: the b9 from the symbol
+A1 | 3  | AbMaj7  | Ab Lydian                 # IV: the #4 is the key’s 7th
+A1 | 4  | Abm9    | Ab Dorian                 # ii of Db13: Dorian
+A1 | 4  | Db13    | Db Lydian Dominant        # back door bVII7 to EbMaj7: the #11 is in the key
+A1 | 5  | EbMaj7  | Eb Ionian                 # tonic: the 4th is in the key
+A1 | 5  | Cm7     | C Aeolian                 # vi: the b13 is in the key
+A1 | 6  | Fm7     | F Dorian                  # ii of Bb7: Dorian
+A1 | 6  | Bb7     | Bb Mixolydian             # V7/I in Eb: natural tensions
+A1 | 7  | G7      | G Mixolydian              # extended dominant: V7 of C7
+A1 | 7  | C7      | C Mixolydian              # extended dominant: V7 of F9
+A1 | 8  | F9      | F Mixolydian              # extended dominant: V7 of Bb13
+A1 | 8  | Bb13    | Bb Mixolydian             # V7 of Eb: natural tensions
+
+A2 | 9  | EbMaj7  | Eb Ionian                 # tonic: the 4th is in the key
+A2 | 10 | Bbm9    | Bb Dorian                 # ii of the ii–V to Ab
+A2 | 10 | Eb13b9  | Eb Half-Whole Diminished  # V7/IV in Eb: the b9 from the symbol
+A2 | 11 | AbMaj7  | Ab Lydian                 # IV: the #4 is the key’s 7th
+A2 | 12 | Abm9    | Ab Dorian                 # ii of Db13: Dorian
+A2 | 12 | Db13    | Db Lydian Dominant        # back door bVII7 to EbMaj7: the #11 is in the key
+A2 | 13 | EbMaj7  | Eb Ionian                 # tonic: the 4th is in the key
+A2 | 13 | Cm7     | C Aeolian                 # vi: the b13 is in the key
+A2 | 14 | Fm7     | F Dorian                  # ii of the ii–V to Eb
+A2 | 14 | Bb7     | Bb Mixolydian             # V7 of Eb: natural tensions
+A2 | 15 | Eb6     | Eb Ionian                 # tonic: the 4th is in the key
+A2 | 15 | Bb9sus4 | Bb Mixolydian             # V7sus4 of Eb6: natural tensions
+A2 | 16 | Eb6     | Eb Ionian                 # tonic: the 4th is in the key
+
+B  | 17 | Bbm7    | Bb Dorian                 # a borrowed minor chord: Dorian, its own key
+B  | 17 | BbmMaj7 | Bb Melodic Minor          # from the symbol: minor-major 7th
+B  | 18 | Bbm7    | Bb Dorian                 # ii of the ii–V to Ab
+B  | 18 | Eb7b9   | Eb Half-Whole Diminished  # V7/IV in Eb: the b9 from the symbol
+B  | 19 | AbMaj7  | Ab Lydian                 # IV: the #4 is the key’s 7th
+B  | 19 | Bbm7    | Bb Dorian                 # ii of the ii–V to Ab
+B  | 19 | Eb7     | Eb Mixolydian             # V7/IV in Eb: natural tensions
+B  | 20 | Ab6     | Ab Lydian                 # IV: the #4 is the key’s 7th
+B  | 21 | Am11    | A Dorian                  # ii of D7: Dorian
+B  | 22 | D7      | D Mixolydian              # passing ii–V: its own key
+B  | 22 | F7      | F Mixolydian              # extended dominant: V7 of Bb7
+B  | 23 | Bb7     | Bb Mixolydian             # V7 in Eb, not resolving: natural tensions
+B  | 23 | Edim7   | E Whole-Half Diminished   # vii°7 of Fm7: the rootless V7b9 of the next chord
+B  | 24 | Fm7     | F Dorian                  # ii of the ii–V to Eb
+B  | 24 | Bb13    | Bb Mixolydian             # V7 of Eb: natural tensions
+
+A3 | 25 | EbMaj7  | Eb Ionian                 # tonic: the 4th is in the key
+A3 | 26 | Bbm9    | Bb Dorian                 # ii of the ii–V to Ab
+A3 | 26 | Eb13b9  | Eb Half-Whole Diminished  # V7/IV in Eb: the b9 from the symbol
+A3 | 27 | AbMaj7  | Ab Lydian                 # IV: the #4 is the key’s 7th
+A3 | 28 | Abm9    | Ab Dorian                 # ii of Db13: Dorian
+A3 | 28 | Db13    | Db Lydian Dominant        # back door bVII7 to EbMaj7: the #11 is in the key
+A3 | 29 | EbMaj7  | Eb Ionian                 # tonic: the 4th is in the key
+A3 | 29 | Cm7     | C Aeolian                 # vi: the b13 is in the key
+A3 | 30 | Fm7     | F Dorian                  # ii of the ii–V to Eb
+A3 | 30 | Bb7     | Bb Mixolydian             # V7 of Eb: natural tensions
+A3 | 31 | Eb6     | Eb Ionian                 # tonic: the 4th is in the key
+A3 | 32 | Fm7     | F Dorian                  # ii of the ii–V to Eb
+A3 | 32 | Bb13    | Bb Mixolydian             # V7 of Eb: natural tensions

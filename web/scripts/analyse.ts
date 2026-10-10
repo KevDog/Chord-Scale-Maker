@@ -7,10 +7,11 @@
  *   --write    fill blank scale cells          --force   rewrite every cell the rules reach (not `# keep:` rows)
  *   --save     write the analysis into the chart as comments (a reason per row, `# area:` lines, a header)
  *   --quiet    only the summary
+ *   --ambiguous   list what a function or an @key could settle, and problems with the ones written
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
-import { analyse, applyAnalysis, type Analysis } from '../engine/analysis'
+import { ambiguities, analyse, applyAnalysis, type Analysis } from '../engine/analysis'
 import { isSyncCopy, parseChart, sameScale, serializeChart } from '../engine'
 
 const args = process.argv.slice(2)
@@ -23,12 +24,13 @@ const files = flag('--all')
       .map((f) => join(REPO, 'charts', f))
   : args.filter((a) => !a.startsWith('--')).map((a) => resolve(process.cwd(), a))
 if (!files.length) {
-  console.error('usage: npm run analyse -- [--all | charts/x.txt …] [--write | --force] [--save] [--quiet]')
+  console.error('usage: npm run analyse -- [--all | charts/x.txt …] [--write | --force] [--save] [--quiet] [--ambiguous]')
   process.exit(2)
 }
 const scales = flag('--force') ? 'force' : flag('--write') ? 'fill' : 'none'
 const save = flag('--save')
 const quiet = flag('--quiet')
+const ambiguous = flag('--ambiguous')
 const date = new Date().toISOString().slice(0, 10)
 
 function report(name: string, a: Analysis): string[] {
@@ -49,6 +51,11 @@ for (const file of files) {
   const a = analyse(doc)
   const name = basename(file, '.txt')
   const lines = report(name, a)
+  if (ambiguous) {
+    const found = ambiguities(a)
+    if (found.length) console.log([`${name}:`, ...found.map((l) => `  ${l}`)].join('\n') + '\n')
+    continue
+  }
   for (const r of a.rows) {
     const line = doc.lines[r.line]
     const current = line?.kind === 'row' ? line.scale : ''
@@ -62,6 +69,7 @@ for (const file of files) {
     }
     lines.push(`  ${mark} ${r.bar.padStart(3)} ${r.chord.padEnd(10)} ${(r.scale ?? '—').padEnd(26)} ${r.rule.padEnd(7)} ${r.reason}${mark === '≠' ? `   [chart: ${current}]` : ''}`)
   }
+  for (const p of a.problems) lines.push(`  ! line ${p.line + 1}: ${p.message}`)
   if (scales !== 'none' || save) {
     const { doc: next, changes, conflicts } = applyAnalysis(doc, a, { scales, save, date })
     const out = serializeChart(next)
@@ -75,7 +83,9 @@ for (const file of files) {
   if (!quiet) console.log(lines.join('\n') + '\n')
 }
 const filled = agree + differ
-console.log(
-  `${files.length} chart(s): ${agree} rows agree, ${differ} differ${filled ? ` (${Math.round((100 * agree) / filled)}% of written scales)` : ''}, ${blank} blank, ${unreached} unreached${written ? `; ${written} file(s) written` : ''}`,
-)
+// --ambiguous reads no scales, so it has no summary
+if (!ambiguous)
+  console.log(
+    `${files.length} chart(s): ${agree} rows agree, ${differ} differ${filled ? ` (${Math.round((100 * agree) / filled)}% of written scales)` : ''}, ${blank} blank, ${unreached} unreached${written ? `; ${written} file(s) written` : ''}`,
+  )
 if (quiet && disagreements.length) console.log(disagreements.join('\n'))

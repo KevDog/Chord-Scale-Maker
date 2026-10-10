@@ -1,5 +1,5 @@
 import type { ChartDoc, ChartLine } from './chart'
-import { resolveScale } from './chart'
+import { matchKeyText, resolveScale } from './chart'
 import { parseChord } from './chord'
 import type { RowLine } from './edit'
 import { type Spelled, accFor, enharmonics, mod, parseRoot, pcOf, rootName, shiftBy, toLetter } from './pitch'
@@ -52,6 +52,22 @@ function rootScaleKey(row: RowLine, root: Spelled): ScaleKey {
   return pcOf(s.root) === pcOf(root) ? s.key : 'ionian'
 }
 
+/** a key moved by the shift, spelled on the target key's side, its suffix as written ("Am" -> "Cm" up a minor 3rd) */
+function transposeKeyText(text: string, s: KeyShift, side: KeySide): string {
+  const t = text.trim()
+  const m = matchKeyText(t)
+  if (!m) return text
+  const minor = /^(m|-|min|minor)$/i.test(m[2] ?? '')
+  const root = spellInKey(shiftNote(parseRoot(m[1] ?? 'C'), s), minor ? 'aeolian' : 'ionian', side)
+  return rootName(root) + t.slice((m[1] ?? '').length)
+}
+
+/** a function is relative to its key, so only the key before its colon moves ("Db: V7/ii") */
+function transposeFunction(fn: string, s: KeyShift, side: KeySide): string {
+  const colon = fn.indexOf(':')
+  return colon < 0 ? fn : transposeKeyText(fn.slice(0, colon), s, side) + fn.slice(colon)
+}
+
 /**
  * one row moved by the shift (throws if its chord or scale can't be read). Roots are spelled for the
  * target key (spellInKey); the chord follows its scale's root when they share a pitch, and a slash
@@ -74,7 +90,7 @@ function transposeRow(row: RowLine, s: KeyShift, side: KeySide): RowLine {
     const acc = accFor(mod(pcOf(root) + pcOf(c.bass) - pcOf(c.root), 12), letter)
     chord += '/' + rootName(Math.abs(acc) > 1 ? simplifyRoot({ letter, acc }) : { letter, acc })
   }
-  return { ...row, chord, scale }
+  return { ...row, chord, scale, ...(row.function ? { function: transposeFunction(row.function, s, side) } : {}) }
 }
 
 /** move every row from one key to another; lines that aren't rows, and rows it can't read, stay as they are */
@@ -83,6 +99,7 @@ export function transposeChart(doc: ChartDoc, from: string, to: string): Readonl
   const side = keySide(to)
   let skipped = 0
   const lines = doc.lines.map((l): ChartLine => {
+    if (l.kind === 'key') return { ...l, key: transposeKeyText(l.key, s, side) }
     if (l.kind !== 'row') return l
     try {
       return transposeRow(l, s, side)

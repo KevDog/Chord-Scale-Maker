@@ -35,7 +35,7 @@
         <button type="button" class="font-semibold underline" @click="prefs.showEditor.value = true">Edit</button> to fix {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
       </UiText>
   
-      <div v-if="editorShown" class="grid gap-8 print:hidden lg:grid-cols-2">
+      <div v-if="editorShown" :class="['grid gap-8 print:hidden', !functionsOn && 'lg:grid-cols-2']">
         <section aria-labelledby="grid-heading" class="min-w-0">
           <div class="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
             <UiSubheading id="grid-heading">Chart</UiSubheading>
@@ -51,12 +51,18 @@
           <div class="mb-3 flex items-center gap-2">
             <UiSubheading id="text-heading">Text</UiSubheading>
             <HelpTip label="How the text editor works">
-              <span class="block">One line per chord: <code class="font-mono text-xs whitespace-nowrap">section | bar | chord | scale</code>, in concert pitch. Leave the scale out to use the chord's default.</span>
-              <span class="mt-2 block"><code class="font-mono text-xs">title:</code>, <code class="font-mono text-xs">subtitle:</code>, <code class="font-mono text-xs">composer:</code>, <code class="font-mono text-xs">key:</code> and <code class="font-mono text-xs">form:</code> set the heading, lines starting with <code class="font-mono text-xs">#</code> are comments, and <code class="font-mono text-xs">@copy A B 8</code> repeats section A as B, 8 bars later.</span>
+              <span class="block">One line per chord: <code class="font-mono text-xs whitespace-nowrap">section | bar | chord | scale<template v-if="functionsOn"> | function</template></code>, in concert pitch. Leave the scale out to use the chord's default.<template v-if="functionsOn"> The function (<code class="font-mono text-xs">V7/ii</code>, or <code class="font-mono text-xs">D: V7/ii</code> in another key) is optional and tells the analysis what the chord does; the grid offers the ones that fit.</template></span>
+              <span class="mt-2 block"><code class="font-mono text-xs">title:</code>, <code class="font-mono text-xs">subtitle:</code>, <code class="font-mono text-xs">composer:</code>, <code class="font-mono text-xs">key:</code> and <code class="font-mono text-xs">form:</code> set the heading, lines starting with <code class="font-mono text-xs">#</code> are comments, and <code class="font-mono text-xs">@copy A B 8</code> repeats section A as B, 8 bars later<template v-if="functionsOn">, and <code class="font-mono text-xs">@key B 17 D</code> puts bars from B 17 in D until the next @key</template>.</span>
               <span class="mt-2 block">The text and the grid stay in sync: edit either one. Problems are listed under the text.</span>
             </HelpTip>
+            <UiButton v-if="functionsOn" plain class="ml-auto" aria-controls="chart-text-body" :aria-expanded="textShown" @click="prefs.textPane.value = !prefs.textPane.value">{{ textShown ? 'Hide text' : 'Show text' }}</UiButton>
           </div>
-          <ChartText :text="editor.text.value" :diagnostics="editor.diagnostics.value" @update:text="editor.setText" />
+          <div v-if="textShown" id="chart-text-body">
+            <ChartText :text="editor.text.value" :diagnostics="editor.diagnostics.value" @update:text="editor.setText" />
+          </div>
+          <UiText v-else-if="editor.diagnostics.value.length" role="status" class="text-amber-800! dark:text-amber-400!">
+            The text has {{ editor.diagnostics.value.length === 1 ? 'a problem' : `${editor.diagnostics.value.length} problems` }}: show it to fix {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
+          </UiText>
         </section>
       </div>
   
@@ -205,6 +211,8 @@ const part = computed(() => partFor(prefs.instrument.value))
 const bornNew = ref(false) // latches true for a new chart, so saving it (its URL becomes ?mine) doesn't hide the editor mid-edit
 watch(() => props.isNew, (v) => { if (v) bornNew.value = true }, { immediate: true })
 const editorShown = computed(() => prefs.showEditor.value || bornNew.value || editor.fatal.value)
+/** the text editor: beside the grid; with the functions flag the grid needs the full width, so the text goes under it and folds away */
+const textShown = computed(() => !functionsOn || prefs.textPane.value)
 /** one spelling at a time: every scale from the Start on note, or each from its own root */
 const mode = ref<Mode>(props.shared?.mode ?? 'root')
 const sharedSheet = props.shared?.sheet
@@ -212,6 +220,7 @@ const sheet = ref<SheetKind>(
   sharedSheet === 'guideTones' && useFeature('guideTones') ? 'guideTones' : sharedSheet === 'changes' && useFeature('changes') ? 'changes' : 'scales',
 )
 const practiceOn = useFeature('practice')
+const functionsOn = useFeature('functions')
 const practice = usePractice(props.practiceKey)
 const levelsOn = useFeature('scaleLevels')
 const scaleLevel = useScaleLevel(props.practiceKey, props.shared)

@@ -18,7 +18,11 @@ export function usePreferences() {
   // the Changes sheet's study rows: each chord's numeral and its scale, both on until turned off
   const numerals = storedRef<boolean>('csm-numerals', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
   const scaleNames = storedRef<boolean>('csm-scale-names', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
-  return { instrument, start, intervals, showEditor, numerals, scaleNames }
+  // the editor grid's Notes column: why each scale was chosen; hidden until shown
+  const notes = storedRef<boolean>('csm-grid-notes', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
+  // the text editor under the full-width grid (with the functions flag): shown until hidden
+  const textPane = storedRef<boolean>('csm-text-pane', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
+  return { instrument, start, intervals, showEditor, numerals, scaleNames, notes, textPane }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
@@ -32,5 +36,7 @@ export function linkPreferences(view: ShareView) {
     numerals: ref<boolean>(view.numerals ?? own.numerals.value),
     scaleNames: ref<boolean>(view.scaleNames ?? own.scaleNames.value),
     showEditor: own.showEditor, // whether the editor is open: yours, and remembered
+    textPane: own.textPane,
+    notes: own.notes, // whether the grid's Notes column is shown: yours, and remembered
   }
 }

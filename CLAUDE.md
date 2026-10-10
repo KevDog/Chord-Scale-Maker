@@ -44,6 +44,8 @@ retired after the `v1-launch` tag.
   `key:` (and `composer:`, `style:`, `form:`, `source:` when known); then `cd web && npm run analyse --
   ../charts/<tune>.txt --write --save` to fill the scales and their reasons, read the report, and `make golden`
   (the fixtures cover every library chart). A scale the melody demands over the rules: write it, with `# keep: …`.
+  Where the analyser can only guess (`npm run analyse -- ../charts/<tune>.txt --ambiguous`), write the function
+  (`| V7/ii`) or an `@key` rather than a `# keep:` scale: a function lets the rules still choose the tensions.
 - Changing an analysis rule (`web/engine/analysis/`, docs/plan-analysis.md): a test first, then
   `npm run analyse -- --all --force --save`, `make golden`, and read both diffs.
 - "Add scale X": add a formula to `SCALES` in `web/engine/scales.ts` (and an alias if common), pair it with chord

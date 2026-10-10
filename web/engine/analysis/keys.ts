@@ -1,3 +1,4 @@
+import { matchKeyText } from '../chart'
 import { parseRoot, pcOf, rootName, type Spelled } from '../pitch'
 import { downFifth, downHalf, type Entry, type Family, interval, nextOf, prevOf } from './stream'
 
@@ -11,12 +12,15 @@ export const makeKey = (root: Spelled, minor: boolean): Key => ({ tonic: pcOf(ro
 
 /** a key as a label: "C major" -> "C", "A minor" -> "A minor" (the ambient major is unspoken) */
 export const keyText = (key: Key): string => (key.minor ? key.name : key.name.replace(/ major$/, ''))
+
+/** a key as `key:` and `@key` write it: "D", "Bbm" */
+export const keyCode = (key: Key): string => `${key.name.split(' ')[0] ?? ''}${key.minor ? 'm' : ''}`
 export const sameKey = (a: Key, b: Key): boolean => a.tonic === b.tonic && a.minor === b.minor
 
 /** a `key:` meta value: "Eb", "F#m", "Bb minor", "C-"; null if it isn't one */
 export function parseKey(text: string): Key | null {
-  const m = /^([A-G][b#]?)\s*(m|-|min|minor|major|maj)?$/i.exec(text.trim())
-  if (!m || !/^[A-G]/.test(m[1] ?? '')) return null
+  const m = matchKeyText(text.trim())
+  if (!m) return null
   const suffix = (m[2] ?? '').toLowerCase()
   return makeKey(parseRoot(m[1] ?? 'C'), suffix === 'm' || suffix === '-' || suffix.startsWith('min'))
 }
