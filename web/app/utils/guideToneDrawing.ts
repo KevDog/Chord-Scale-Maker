@@ -18,8 +18,12 @@ export type SystemLayout = Readonly<{
   xs: readonly (readonly (readonly number[])[])[]
 }>
 
-/** each note's accidental against the key signature and what came before it in the bar (rests: null) */
-function barAccidentals(notes: readonly GuideNote[], tiedIn: (i: number) => boolean, keySig: string | null): (string | null)[] {
+/**
+ * each note's accidental against the key signature and what came before it in the bar (rests: null). With no signature
+ * (a bar before the first @key of a chart with no key:) the measure rule reduces to the legacy one: a sharp or flat,
+ * and a natural only where an accidental came before on that line and octave.
+ */
+export function barAccidentals(notes: readonly GuideNote[], tiedIn: (i: number) => boolean, keySig: string | null): (string | null)[] {
   const pitched = notes.flatMap((n, i) => (n.pitch ? [{ i, pitch: n.pitch }] : []))
   const accs = accidentalsInBar(pitched.map(({ i, pitch }) => ({ letter: pitch.letter, acc: pitch.acc, octave: octaveOf(pitch), tiedIn: tiedIn(i) })), keySig)
   const out: (string | null)[] = notes.map(() => null)

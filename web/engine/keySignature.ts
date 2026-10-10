@@ -31,9 +31,10 @@ export function accidentalsInBar(notes: readonly BarNote[], spec: string | null)
   const inForce = new Map<string, number>()
   return notes.map((n) => {
     const place = `${n.letter}/${n.octave}`
+    if (n.tiedIn) return null // carried over the barline: nothing is written here, so nothing is in force from it
     const current = inForce.get(place) ?? sig.get(n.letter) ?? 0
     inForce.set(place, n.acc)
-    if (n.tiedIn || n.acc === current) return null
+    if (n.acc === current) return null
     return n.acc === 0 ? 'n' : accText(n.acc)
   })
 }

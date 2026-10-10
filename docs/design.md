@@ -341,7 +341,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   for the instrument (`keySignature` in `engine/keySignature.ts`; a minor key by its relative major, none without a
   `key:`). `buildSheet` takes each row's key from the analysis (or `@key`), so the Changes sheet draws a new signature
   where it changes. Notes follow the measure rule (`accidentalsInBar`): an accidental shows only where it differs from
-  what is in force in the bar. Staves with a signature use a taller crop band (`CLEF_BAND`).
+  what is in force in the bar. On the Changes sheet, staves with a signature use a taller crop band (`CLEF_BAND`); guide tone sheets keep their own bands.
 - **Shared helpers:** `svgContext`, `fitSvg` and `headCentre` in `utils/vexflow.ts`.
 - **Instrument choice:** 16 presets, grouped by what they read (C treble, B♭, E♭, F, bass clef). The
   choice sets the `Part` (clef + transposition) for the whole preview, so notes, chord symbols and scale names

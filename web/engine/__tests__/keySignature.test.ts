@@ -51,6 +51,10 @@ describe('accidentalsInBar', () => {
     expect(accidentalsInBar([{ letter: 6, acc: 0, octave: 4, tiedIn: true }], 'F')).toEqual([null])
   })
 
+  it('does not count a tied-in note as an accidental written in this bar', () => {
+    expect(accidentalsInBar([{ letter: 3, acc: 1, octave: 4, tiedIn: true }, { letter: 3, acc: 1, octave: 4 }], 'C')).toEqual([null, '#'])
+  })
+
   it('reads a pitched note the way VexFlow places it', () => {
     expect(octaveOf({ letter: 0, acc: 0, midi: 60 })).toBe(4)
     expect(octaveOf({ letter: 6, acc: 1, midi: 72 })).toBe(4) // B#4 sounds as C5

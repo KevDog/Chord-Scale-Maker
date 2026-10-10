@@ -86,6 +86,11 @@ describe('rowKeys', () => {
       'Eb major', 'D major', 'D major', 'Eb major',
     ])
   })
+  it('lets an @key hold through an @copy until the next @key', () => {
+    const chart = 'title: T\nkey: Eb\nA1 | 1 | EbMaj7\nA1 | 2 | Cm7\n@key A1 2 C\n@copy A1 A2 2\n'
+    expect(names(chart)).toEqual(['Eb major', 'C major', 'C major', 'C major'])
+    expect(names(chart.replace('@copy', '@key A2 3 Eb\n@copy'))).toEqual(['Eb major', 'C major', 'Eb major', 'Eb major'])
+  })
   it('ignores key areas the analyser only found', () => {
     const body = readFileSync('../charts/body_and_soul.txt', 'utf8')
     expect(new Set(names(body))).toEqual(new Set(['Db major']))

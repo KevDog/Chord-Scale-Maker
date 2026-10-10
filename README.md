@@ -33,7 +33,7 @@ A1 | 3 | E7    | E Mixolydian
 | `section \| bar \| chord \| scale \| function` | One row per chord. Two chords in a bar are two rows with the same bar number. A chord lasts until the next bar number. |
 | `section \| bar \| chord` | Scale omitted: the chord quality's default from `chord_scales.json` (`Cm7` → `C Dorian`). |
 | `… \| function` | Optional: what the chord does, as the Changes sheet writes it (`V7/ii`, `subV7`, `ii7/V`, `♭VII7`, `IVmaj7`), in the key area, or in another key before a colon (`D: V7/ii`). The analyser takes it as given when it picks the scale; it never writes one. |
-| `@key SECTION BAR KEY` | The key from that bar until the next `@key` (`@key B 17 D`), where the analyser's own key areas would be wrong. It never writes one. |
+| `@key SECTION BAR KEY` | The key from that bar until the next `@key` (`@key B 17 D`), where the analyser's own key areas would be wrong. It never writes one. It holds through an `@copy`: after `@key A1 5 C` and `@copy A1 A2 8`, all of A2 is in C, so write an `@key` at the copy's first bar to return. |
 | `@copy SRC DST OFFSET` | Repeat section `SRC` as `DST`, adding `OFFSET` to each bar number. |
 | `@ending N SECTION FIRST [LAST]` | A 1st/2nd ending (volta) over `SECTION` bars `FIRST`..`LAST`; the section is played twice on the Changes sheet — repeat signs with the two endings bracketed. Write the two endings as sequential bars (e.g. 7–8 then 9–10). |
 | `@segno SECTION BAR` / `@coda SECTION BAR` | A segno (𝄋) or coda (⊕) glyph above that bar on the Changes sheet (the coda marks both the "to the coda" departure and the coda arrival). |
@@ -83,7 +83,7 @@ Bm7 becomes C♯m7 on a B♭ instrument, not D♭m7). Octave transpositions don'
 comfortable written range.
 
 Every sheet starts with a clef and the key signature as written for your instrument (a chart with no `key:` gets none;
-an `@key` draws a new one mid-line on the Changes sheet). Accidentals the signature already supplies aren't repeated,
+an `@key` draws a new one mid-line on the Changes and guide tone sheets). Accidentals the signature already supplies aren't repeated,
 and one that is cancelled within a bar shows a natural.
 
 ## Developing
