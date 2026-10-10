@@ -111,6 +111,12 @@ describe('sheet', () => {
     const [plain] = buildSheet(rows, CONCERT, 'root', 'C', 12).flatMap((p) => p.pages.flat())
     expect([plain?.keySig, plain?.accidentals.every((a) => a === null)]).toEqual([null, true])
   })
+  it('with a null key (no key: line), keeps explicit accidentals as without keys', () => {
+    const rows = [{ section: 'A', bar: '1', chord: 'C7', scale: 'C Half-Whole' }]
+    const [a] = buildSheet(rows, CONCERT, 'root', 'C', 12, null, [null]).flatMap((p) => p.pages.flat())
+    const [b] = buildSheet(rows, CONCERT, 'root', 'C', 12).flatMap((p) => p.pages.flat())
+    expect([a?.keySig, a?.accidentals]).toEqual([null, b?.accidentals])
+  })
   it('writes the signature for a transposing part', () => {
     const rows = [{ section: 'A', bar: '1', chord: 'EbMaj7', scale: 'Eb Ionian' }]
     const [staff] = buildSheet(rows, { clef: 'treble', trans: 'Bb' }, 'root', 'C', 12, null, [parseKey('Eb')]).flatMap((p) => p.pages.flat())

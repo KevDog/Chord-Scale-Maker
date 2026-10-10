@@ -104,7 +104,7 @@ function staff(
       chord,
       scale: label,
       notes,
-      accidentals: key === undefined ? notes.map((n) => (n.acc ? accText(n.acc) : null)) : accidentalsInBar(notes.map((n) => ({ letter: n.letter, acc: n.acc, octave: octaveOf(n) })), keySig),
+      accidentals: keySig === null ? notes.map((n) => (n.acc ? accText(n.acc) : null)) : accidentalsInBar(notes.map((n) => ({ letter: n.letter, acc: n.acc, octave: octaveOf(n) })), keySig),
       intervals: intervalsOrNull(part, row.chord, scale, notes),
       ...practiceFor(row, part, mode, startText, scale, notes, practice),
       error: null,

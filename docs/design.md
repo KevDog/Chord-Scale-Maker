@@ -337,6 +337,11 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   by font ascent, not ink.
   - A minimum band keeps ordinary staves aligned.
   - Guide tone staves use a tighter one, just the clef, because their notes stay near the middle of the staff.
+- **Clefs and key signatures (the `keySignatures` flag):** every staff draws its clef and the chart's key as written
+  for the instrument (`keySignature` in `engine/keySignature.ts`; a minor key by its relative major, none without a
+  `key:`). `buildSheet` takes each row's key from the analysis (or `@key`), so the Changes sheet draws a new signature
+  where it changes. Notes follow the measure rule (`accidentalsInBar`): an accidental shows only where it differs from
+  what is in force in the bar. Staves with a signature use a taller crop band (`CLEF_BAND`).
 - **Shared helpers:** `svgContext`, `fitSvg` and `headCentre` in `utils/vexflow.ts`.
 - **Instrument choice:** 16 presets, grouped by what they read (C treble, B♭, E♭, F, bass clef). The
   choice sets the `Part` (clef + transposition) for the whole preview, so notes, chord symbols and scale names

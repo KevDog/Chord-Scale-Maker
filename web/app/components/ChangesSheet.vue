@@ -5,7 +5,7 @@
     </ul>
     <SheetPages :title="title" :composer="composer" :pages="pages" compact>
       <template #default="{ page }">
-        <div class="space-y-4 print:space-y-1">
+        <div class="space-y-4 print:space-y-0">
           <ChangesSystem
             v-for="l in page.lines"
             :key="l.index"
