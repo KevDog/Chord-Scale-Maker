@@ -45,7 +45,7 @@ web/                      # Nuxt app (Vercel root directory)
     guideTones.ts         # guide tones per chord, voiced for the Changes sheet (guideVoices)
     guideToneLines.ts     #   the two greedy lines, from the 3rd and from the 7th (guideToneLines)
     guideToneTimeline.ts  #   when each chord starts and how long it lasts, in the chart's metre
-    voiceLeading.ts       #   RANGES, and voiceLead (Viterbi over pairs), kept only to compare with the lines
+    voiceLeading.ts       #   RANGES (the clefs' default ranges), and voiceLead (Viterbi over pairs), kept only to compare
     util.ts               # orNull, chunk
     limits.ts             # input caps
     index.ts
@@ -324,10 +324,13 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   the 7th (a triad's root, a 6 chord's 6th).
 - **The lines** (`engine/guideToneLines.ts`, `guideToneLines`) are greedy, one chord at a time, so a reader can apply
   them by hand; the rules are numbered in the spec. The candidates are both guide tones at every octave inside the
-  part's written range (`RANGES`: treble C4–A5, bass E2–C4). A line takes the smaller move (a common tone before a
-  step before a leap); equal moves go to the pitch nearer the centre of the comfortable range (A4 treble), then the
-  lower. A start, or a restart after a rest, takes the octave nearest the line's last sounded note (the centre with
-  none).
+  part's written range, `rangeOf(part)`: its instrument's range from `INSTRUMENTS` (`{ lo, hi, centre }`, inside a
+  two-ledger-line cap, `CAPS`: treble G3–D6, bass B1–F4; vibes G3–D6 around B♭4, trumpet C4–G5, tuba C2–B♭3…), or,
+  for a part without one (`CONCERT`), its clef's default (`RANGES`: treble C4–A5 around A4, bass E2–C4 around C♯3).
+  A line takes the smaller move (a common tone before a step before a leap); equal moves go to the pitch nearer the
+  centre, then the lower. A start, or a restart after a rest, takes the octave nearest the line's last sounded note (the
+  centre with none). The centre does nothing else: within its range a line moves freely
+  ([spec](superpowers/specs/2026-10-10-guide-tone-ranges-design.md)).
   - **Holds:** a chord whose 3rd and 7th are spelled as the previous chord's, in the same block, holds both lines:
     the same pitch, tied, labelled again. The same pitches in swapped roles (Dm7 → G7sus4) strike again. A hold never crosses a block (section) boundary or the start of a 2nd
     ending; there the chord strikes again, untied.

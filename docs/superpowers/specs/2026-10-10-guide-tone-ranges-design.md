@@ -1,6 +1,8 @@
 # Guide tone ranges per instrument: design
 
-Date: 2026-10-10. Status: approved in conversation (approach A, the cap, the range table, a centre note in place of
+Status: implemented (branch guide-tone-ranges).
+
+Date: 2026-10-10. Approved in conversation (approach A, the cap, the range table, a centre note in place of
 the comfortable zone, vibes G3–D6 centre B♭4); written spec awaiting review. Builds on
 [2026-10-10-guide-tone-lines-design.md](2026-10-10-guide-tone-lines-design.md) and the roadmap entry "Guide tone
 ranges per instrument".

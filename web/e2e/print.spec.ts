@@ -54,12 +54,12 @@ test('the Changes sheet shows 1st/2nd endings and a D.S. al Coda', async ({ page
 })
 
 // the tallest Changes lines: both guide tones (two voices, stems both ways) with numerals and scales, a 1st/2nd ending
-// raised above the stems, and a bass part below the staff (no library chart reaches E2, the range's floor: Stardust's
-// trombone part goes to F♯2). Each sheet page holds changesLinesPerPage lines, so the PDF has as many pages as the
-// sheet: a page that overflowed would add one
+// raised above the stems, and a bass part below the staff (the tuba's, the lowest guide tone range: C2–B♭3, down to two
+// ledger lines below). Each sheet page holds changesLinesPerPage lines, so the PDF has as many pages as the sheet: a page
+// that overflowed would add one
 test('prints the Changes with both guide tones, a sheet page to a letter page, in the tallest case', async ({ page }) => {
   await page.goto('/song?chart=stardust')
-  await chooseInstrument(page, 'Trombone')
+  await chooseInstrument(page, 'Tuba')
   await showGuides(page, 'From 3rd', 'From 7th')
   await expect(page.getByRole('button', { name: 'Numerals' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByRole('button', { name: 'Scales', exact: true })).toHaveAttribute('aria-pressed', 'true')
