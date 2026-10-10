@@ -26,7 +26,9 @@ async function expectChordsOnHeads(line: Locator): Promise<void> {
 
 type Box = Readonly<{ left: number; right: number; top: number; bottom: number }>
 const box = (g: Readonly<{ x: number; y: number; w: number }>, half: number): Box => ({ left: g.x, right: g.x + g.w, top: g.y - half, bottom: g.y + half })
-const overlaps = (a: Box, b: Box): boolean => a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5
+// a 1px tolerance: an accidental sits flush against its own notehead, and its glyph box differs by a fraction of a
+// pixel between platforms' fonts (0.51px on CI's Linux)
+const overlaps = (a: Box, b: Box): boolean => a.left < b.right - 1 && b.left < a.right - 1 && a.top < b.bottom - 1 && b.top < a.bottom - 1
 
 test('the Changes sheet: slashes, chords, numerals and scales, a repeat, and toggles that stick', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
