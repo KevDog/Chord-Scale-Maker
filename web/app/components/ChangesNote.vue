@@ -52,7 +52,7 @@ import { ISSUE_CONTEXT, ISSUE_TEXT_KEY, issueText, issueTitle, issueUrl } from '
  * drawn for the part (written), concert the chart's own.
  */
 const props = withDefaults(
-  defineProps<{ reason: string; heardIn: string; keyFrom: ChangesChord['keyFrom']; rule: string; fallback: boolean; chord: string; concert: string; numeral: string; scale: string | null; wrap?: boolean }>(),
+  defineProps<{ reason: string; heardIn: string; keyFrom: ChangesChord['keyFrom']; rule: string; fallback: boolean; chord: string; concert: string; numeral: string; scale: string | null; at: Readonly<{ section: string; bar: string }>; wrap?: boolean }>(),
   { wrap: false },
 )
 const shift = ref(0)
@@ -85,8 +85,15 @@ async function prepare(): Promise<void> {
   const n = ++opening
   state.value = 'idle'
   ready.value = false
-  const fields = { title: context.title(), part: context.part(), chord: props.chord, concert: props.concert, numeral: props.numeral, heardIn: props.heardIn, scale: props.scale, rule: props.rule, reason: props.reason }
-  title.value = issueTitle({ ...fields, link: '' })
+  const library = context.library()
+  const fields = { title: context.title(), ...(library ? { library } : {}), at: props.at, part: context.part(), chord: props.chord, concert: props.concert, numeral: props.numeral, heardIn: props.heardIn, scale: props.scale, rule: props.rule, reason: props.reason }
+  title.value = issueTitle({ ...fields, link: null })
+  if (library) {
+    // a library chart as published: its slug and bar find it, no share link to wait for
+    text.value = issueText({ ...fields, link: null })
+    ready.value = true
+    return
+  }
   text.value = issueText({ ...fields, link: '(being made…)' })
   let link: string | null
   try {

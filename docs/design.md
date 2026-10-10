@@ -507,10 +507,12 @@ library writes such a repeat out instead.
   a hover tooltip; Escape or a click outside closes it, and a clamp keeps the panel 16px inside the viewport. It
   gives the reason and key, and the rule's id linked to `/functions#rule-<id>`. A `fallback` the author didn't state
   reads "a guess — an @key or a function would settle it". Copy for an issue (`utils/issueReport.ts`) puts the
-  chord, function, scale, rule, reason and key on the clipboard and navigates nowhere. On a transposing part it names
+  chord, its bar and section (the same chord can be analysed differently in another bar), function, scale, rule,
+  reason and key on the clipboard and navigates nowhere. A library chart as published is named by its slug and gets no
+  share link; an edited, new or shared chart carries one. On a transposing part it names
   the instrument (`Instrument: B♭ Trumpet`), gives the chord as drawn with its concert symbol (`A7 (concert G7)`),
   labels the key area and scale "written for" the part and the rule's reason "in concert pitch"; a concert-pitch part
-  gets none of that. The report and its share link are made as the note opens, so the click writes to the clipboard
+  gets none of that. The report and any share link are made as the note opens, so the click writes to the clipboard
   at once (Safari allows it only within the click); clicked before the link is ready, or with no link to be had, it
   shows the text to copy by hand. It then offers both "Send it
   with the contact form" (the text passed through sessionStorage `csm-issue-text`) first and "Open a GitHub issue"

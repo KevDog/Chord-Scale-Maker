@@ -5,8 +5,8 @@ import ChangesNote from '~/components/ChangesNote.vue'
 import { ISSUE_CONTEXT } from '~/utils/issueReport'
 
 const M4_PROPS = { reason: 'ii of the ii–V to C', heardIn: 'C major', keyFrom: 'found' as const, rule: 'm4', fallback: false, chord: 'Dm7', concert: 'Dm7', numeral: 'ii7', scale: 'D Dorian' }
-const base = { reason: 'r', heardIn: 'C major', keyFrom: 'found' as const, rule: 'm4', fallback: false, chord: 'Dm7', concert: 'Dm7', numeral: 'ii7', scale: 'D Dorian' }
-const CONTEXT = { title: () => 'T', part: () => ({ name: 'Concert', transposes: false }), shareUrl: async () => 'https://x/song#s=1' }
+const base = { reason: 'r', heardIn: 'C major', keyFrom: 'found' as const, rule: 'm4', fallback: false, chord: 'Dm7', concert: 'Dm7', numeral: 'ii7', scale: 'D Dorian', at: { section: 'A', bar: '1' } }
+const CONTEXT = { title: () => 'T', part: () => ({ name: 'Concert', transposes: false }), library: (): string | null => null, shareUrl: async () => 'https://x/song#s=1' }
 const mountNote = (props: Partial<typeof base> & { wrap?: boolean } = {}, context: Partial<typeof CONTEXT> = {}) =>
   mountSuspended(ChangesNote, { props: { ...base, ...props }, slots: { default: () => 'x' }, attachTo: document.body, global: { provide: { [ISSUE_CONTEXT as symbol]: { ...CONTEXT, ...context } } } })
 /** a click as the browser gives it: synchronous, nothing awaited after it */
@@ -119,7 +119,7 @@ describe('ChangesNote', () => {
     await flushPromises()
     clickNow(w, 'button[data-copy]')
     const text = writeText.mock.calls[0]?.[0] as string
-    expect(text).toContain('Instrument: B♭ Trumpet\nChord: A7 (concert G7)\n')
+    expect(text).toContain('Instrument: B♭ Trumpet\nBar: 1 (section A)\nChord: A7 (concert G7)\n')
     expect(text).toContain('Key area (written for B♭ Trumpet): D major')
     expect(text).toContain('Scale shown (written for B♭ Trumpet): A Mixolydian')
     expect(text).toContain('Rule: D4 (V7 of C: natural tensions), in concert pitch')
@@ -171,6 +171,34 @@ describe('ChangesNote', () => {
     expect(box).toContain('Rule: m4')
     expect(box).not.toContain('https://x/')
     expect(box).toContain('Link: (this browser could not make one: paste the chart')
+    w.unmount()
+  })
+
+  it('a library chart as published: the report names its bar and slug, no share link, ready at once', async () => {
+    const shareUrl = vi.fn(async () => 'https://x/song#s=1')
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    vi.stubGlobal('navigator', { clipboard: { writeText } })
+    const w = await mountNote({ at: { section: 'A', bar: '3' } }, { library: () => 'autumn_leaves', shareUrl })
+    await w.find('button').trigger('click')
+    clickNow(w, 'button[data-copy]')
+    await flushPromises()
+    const text = writeText.mock.calls[0]?.[0] as string
+    expect(text).toContain('Chart: T (library chart autumn_leaves)')
+    expect(text).toContain('Bar: 3 (section A)')
+    expect(text).not.toContain('Link:')
+    expect(shareUrl).not.toHaveBeenCalled()
+    w.unmount()
+  })
+
+  it('an edited or new chart keeps its share link', async () => {
+    const writeText = vi.fn().mockResolvedValue(undefined)
+    vi.stubGlobal('navigator', { clipboard: { writeText } })
+    const w = await mountNote({ at: { section: 'A', bar: '3' } }, { library: () => null })
+    await w.find('button').trigger('click')
+    await flushPromises()
+    clickNow(w, 'button[data-copy]')
+    await flushPromises()
+    expect(writeText.mock.calls[0]?.[0]).toContain('Link: https://x/song#s=1')
     w.unmount()
   })
 

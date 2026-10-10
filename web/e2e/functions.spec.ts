@@ -91,7 +91,7 @@ test('on a transposing part the note names the chord as drawn, and the report sa
   await copy.click()
   await expect(note.getByRole('status')).toHaveText('Copied.')
   const copied = await page.evaluate(() => navigator.clipboard.readText())
-  expect(copied).toContain('Instrument: B♭ Trumpet\nChord: A7 (concert G7)\n')
+  expect(copied).toContain('Instrument: B♭ Trumpet\nBar: 2 (section A)\nChord: A7 (concert G7)\n')
   expect(copied).toContain('Key area (written for B♭ Trumpet): D major')
   expect(copied).toContain(', in concert pitch')
 })
