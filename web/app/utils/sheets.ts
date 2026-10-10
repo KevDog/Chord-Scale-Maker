@@ -6,3 +6,10 @@ export const SHEETS: readonly { value: SheetKind; label: string }[] = [
   { value: 'guideTones', label: 'Guide Tones' },
   { value: 'changes', label: 'Changes' },
 ]
+
+/** the sheet a chart opens on: a share link's own sheet if it's on, else the Changes (Scales when that sheet is off) */
+export function firstSheet(shared: SheetKind | undefined, on: Readonly<{ guideTones: boolean; changes: boolean }>): SheetKind {
+  if (shared === 'guideTones' && on.guideTones) return 'guideTones'
+  if (shared === 'scales' || !on.changes) return 'scales'
+  return 'changes'
+}

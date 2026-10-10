@@ -1,13 +1,25 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { afterEach, describe, expect, it } from 'vitest'
+import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 import EditorView from '~/components/EditorView.vue'
+import { CHART_REPORT_KEY } from '~/utils/chartReport'
+import { decodeShare, type ShareView } from '~~/engine'
+
+const { navigate } = vi.hoisted(() => ({ navigate: vi.fn() }))
+mockNuxtImport('navigateTo', () => navigate)
 
 const TEXT = 'title: T\nA | 1 | Cm7\n'
-const mount = () =>
-  mountSuspended(EditorView, { props: { initialText: TEXT }, global: { stubs: { ScaleSheet: true } }, attachTo: document.body })
+const mount = (shared?: ShareView) =>
+  mountSuspended(EditorView, {
+    props: { initialText: TEXT, ...(shared ? { shared } : {}) },
+    global: { stubs: { ScaleSheet: true, ChangesSheet: true } },
+    attachTo: document.body,
+  })
 type Wrapper = Awaited<ReturnType<typeof mount>>
 const sheet = (w: Wrapper) => w.findComponent({ name: 'ScaleSheet' })
+const changesSheet = (w: Wrapper) => w.findComponent({ name: 'ChangesSheet' })
+/** a button by its exact visible text */
+const buttonCalled = (w: Wrapper, name: string) => w.findAll('button').find((b) => b.text() === name)
 /** the control a toolbar label (Catalyst Field) points at */
 const control = (w: Wrapper, label: string) => {
   const id = w.findAll('label').find((l) => l.text() === label)?.attributes('for')
@@ -32,6 +44,15 @@ async function chooseMode(w: Wrapper, label: string): Promise<void> {
   await nextTick()
   const option = w.findAll('[role=option]').find((o) => o.text() === label)
   if (!option) throw new Error(`no mode option ${label}`)
+  await option.trigger('click')
+  await nextTick()
+}
+/** open the Work on listbox and pick a sheet by its visible label */
+async function chooseSheet(w: Wrapper, label: string): Promise<void> {
+  await control(w, 'Work on').trigger('click')
+  await nextTick()
+  const option = w.findAll('[role=option]').find((o) => o.text() === label)
+  if (!option) throw new Error(`no sheet ${label}`)
   await option.trigger('click')
   await nextTick()
 }
@@ -86,14 +107,23 @@ describe('EditorView help', () => {
 describe('EditorView', () => {
   afterEach(() => localStorage.clear())
 
+  it('opens on the Changes sheet', async () => {
+    const w = await mount()
+    expect(changesSheet(w).exists()).toBe(true)
+    expect(sheet(w).exists()).toBe(false)
+    w.unmount()
+  })
+
   it('previews in concert pitch by default', async () => {
     const w = await mount()
+    await chooseSheet(w, 'Scales')
     expect(sheet(w).props()).toMatchObject({ part: { clef: 'treble', trans: 'C' }, instrumentLabel: '', start: 'C', mode: 'root' })
     expect(w.text()).not.toContain('the preview is')
   })
 
   it('offers one spelling at a time, with Start on only for From', async () => {
     const w = await mount()
+    await chooseSheet(w, 'Scales')
     expect(w.find('[aria-label="Start on"]').exists()).toBe(false)
     await chooseMode(w, 'From C')
     expect(sheet(w).props('mode')).toBe('from')
@@ -102,6 +132,7 @@ describe('EditorView', () => {
 
   it('transposes the preview for the chosen instrument and start note', async () => {
     const w = await mount()
+    await chooseSheet(w, 'Scales')
     await chooseInstrument(w, 'Tenor Sax')
     await chooseMode(w, 'From C')
     await w.find('[aria-label="Start on"]').setValue('Eb')
@@ -112,6 +143,7 @@ describe('EditorView', () => {
 
   it('uses the bass clef for trombone', async () => {
     const w = await mount()
+    await chooseSheet(w, 'Scales')
     await chooseInstrument(w, 'Trombone')
     expect(sheet(w).props('part')).toEqual({ clef: 'bass', trans: 'C' })
     expect(w.text()).toContain('The preview is in bass clef, concert pitch, for trombone')
@@ -125,8 +157,8 @@ describe('EditorView', () => {
     await button('Focus')?.trigger('click')
     await nextTick()
     expect(dialog().attributes('aria-label')).toBe('Focus mode')
-    expect(dialog().find('fieldset').isVisible()).toBe(false) // the preview controls are hidden
-    expect(dialog().findComponent({ name: 'ScaleSheet' }).exists()).toBe(true)
+    expect(dialog().find('#preview-toolbar').isVisible()).toBe(false) // the preview controls are hidden
+    expect(dialog().findComponent({ name: 'ChangesSheet' }).exists()).toBe(true)
     expect(document.activeElement?.textContent).toContain('Exit focus')
     expect(document.documentElement.classList.contains('overflow-hidden')).toBe(true)
 
@@ -143,11 +175,75 @@ describe('EditorView', () => {
   })
 })
 
+describe('EditorView guide tones', () => {
+  afterEach(() => {
+    localStorage.clear()
+    sessionStorage.clear()
+    navigate.mockClear()
+  })
+
+  it('starts with the 3rd and 7th off', async () => {
+    const w = await mount()
+    expect(changesSheet(w).props('guides')).toEqual({ third: false, seventh: false })
+    expect(buttonCalled(w, '3rd')?.attributes('aria-pressed')).toBe('false')
+    expect(buttonCalled(w, '7th')?.attributes('aria-pressed')).toBe('false')
+    w.unmount()
+  })
+
+  it('turns each on, passes both to the Changes sheet, and remembers them', async () => {
+    const w = await mount()
+    await buttonCalled(w, '3rd')?.trigger('click')
+    await nextTick()
+    expect(changesSheet(w).props('guides')).toEqual({ third: true, seventh: false })
+    await buttonCalled(w, '7th')?.trigger('click')
+    await nextTick()
+    expect(changesSheet(w).props('guides')).toEqual({ third: true, seventh: true })
+    expect(buttonCalled(w, '3rd')?.attributes('aria-pressed')).toBe('true')
+    expect(buttonCalled(w, '7th')?.attributes('aria-pressed')).toBe('true')
+    expect([localStorage.getItem('csm-guide-3rd'), localStorage.getItem('csm-guide-7th')]).toEqual(['on', 'on'])
+    w.unmount()
+  })
+
+  it('offers the 3rd and 7th on the Changes sheet only', async () => {
+    const w = await mount()
+    expect(buttonCalled(w, '3rd')).toBeDefined()
+    await chooseSheet(w, 'Scales')
+    expect(buttonCalled(w, '3rd')).toBeUndefined()
+    expect(buttonCalled(w, '7th')).toBeUndefined()
+    expect(buttonCalled(w, 'Intervals')).toBeDefined()
+    w.unmount()
+  })
+
+  it("applies a share link's guides for the visit, and a share link carries them", async () => {
+    const w = await mount({ sheet: 'changes', guideSeventh: true })
+    expect(changesSheet(w).props('guides')).toEqual({ third: false, seventh: true })
+    expect(localStorage.getItem('csm-guide-7th')).toBeNull()
+    await buttonCalled(w, 'Share')?.trigger('click')
+    const link = await vi.waitFor(() => {
+      const l = w.findComponent({ name: 'ShareDialog' }).props('link')
+      if (typeof l !== 'string') throw new Error('no link yet')
+      return l
+    })
+    expect((await decodeShare(link.split('#s=')[1] ?? ''))?.view).toMatchObject({ sheet: 'changes', guideThird: false, guideSeventh: true })
+    w.unmount()
+  })
+
+  it('reports the sheet and the guides with a chart error', async () => {
+    const w = await mount()
+    await buttonCalled(w, '7th')?.trigger('click')
+    await nextTick()
+    await buttonCalled(w, 'Report a chart error')?.trigger('click')
+    expect(JSON.parse(sessionStorage.getItem(CHART_REPORT_KEY) ?? '{}')).toMatchObject({ sheet: 'changes', guides: '7th' })
+    expect(navigate).toHaveBeenCalledWith('/contact')
+    w.unmount()
+  })
+})
+
 describe('EditorView key signatures', () => {
   const KEYED = 'title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\n'
-  const mountWith = (shared?: { sheet: 'guideTones' | 'changes' }) =>
+  const mountWith = (shared: { sheet: 'scales' | 'guideTones' | 'changes' }) =>
     mountSuspended(EditorView, {
-      props: { initialText: KEYED, ...(shared ? { shared } : {}) },
+      props: { initialText: KEYED, shared },
       global: { stubs: { ScaleSheet: true, GuideToneSheet: true, ChangesSheet: true } },
     })
   afterEach(() => {
@@ -157,7 +253,7 @@ describe('EditorView key signatures', () => {
 
   it("with the flag on, gives the scale and guide tone sheets the chart's key, and the Changes sheet signatures", async () => {
     useRuntimeConfig().public.features.keySignatures = true
-    const scales = await mountWith()
+    const scales = await mountWith({ sheet: 'scales' })
     expect(scales.findComponent({ name: 'ScaleSheet' }).props('homeKey')).toEqual(expect.objectContaining({ name: 'Bb major' }))
     const guide = await mountWith({ sheet: 'guideTones' })
     expect(guide.findComponent({ name: 'GuideToneSheet' }).props('homeKey')).toEqual(expect.objectContaining({ name: 'Bb major' }))
@@ -167,7 +263,7 @@ describe('EditorView key signatures', () => {
 
   it('with the flag off, passes no key and no signatures', async () => {
     useRuntimeConfig().public.features.keySignatures = false
-    expect((await mountWith()).findComponent({ name: 'ScaleSheet' }).props('homeKey')).toBeUndefined()
+    expect((await mountWith({ sheet: 'scales' })).findComponent({ name: 'ScaleSheet' }).props('homeKey')).toBeUndefined()
     expect((await mountWith({ sheet: 'guideTones' })).findComponent({ name: 'GuideToneSheet' }).props('homeKey')).toBeUndefined()
     expect((await mountWith({ sheet: 'changes' })).findComponent({ name: 'ChangesSheet' }).props('signatures')).toBe(false)
   })
