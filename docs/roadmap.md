@@ -54,3 +54,4 @@ The charts that noted a left-out intro, coda, tag or verse have had it transcrib
 chord-stab intros, coda turnarounds, tags and the odd verse (Stardust). The ones whose "left out" note is a melody
 line with no chords (a horn intro) say so; a left-out *form* section or a sheet's *alternate* chords (Jingle Bells'
 head, Cherokee's reharmonisations) are out of scope — they're not intros or codas.
+
