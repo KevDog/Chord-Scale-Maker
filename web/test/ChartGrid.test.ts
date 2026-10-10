@@ -65,7 +65,7 @@ describe('ChartGrid with functions', () => {
   it("offers each row's functions and writes the one chosen", async () => {
     const w = await mountSuspended(ChartGrid, { props: { doc: fdoc } })
     const select = w.find('select[aria-label="function for row 2"]')
-    expect(select.find('option').text()).toBe('Auto: II7 → D Mixolydian')
+    expect(select.find('option').text()).toBe('II7 → D Mixolydian')
     await select.setValue('V7/V')
     expect(lastDoc(w)?.lines[3]).toMatchObject({ kind: 'row', chord: 'D7', function: 'V7/V' })
   })

@@ -184,12 +184,13 @@ export function analyse(doc: ChartDoc): Analysis {
   return { key: p.global, keyFrom: p.keyFrom, context: p.blues ? 'blues' : p.modal ? 'modal' : 'functional', areas, rows: out, problems: p.problems }
 }
 
-/** one option of the grid's Function dropdown: value '' is Auto (the analyser's own reading) */
+/** one option of the grid's Function dropdown: value '' is Auto (the analyser's own reading, labelled with its numeral) */
 export type FunctionChoice = Readonly<{ value: string; label: string; scale: string | null }>
 
 /**
  * each row's Function options, keyed by doc line: Auto, then every function that fits the chord in its key area,
- * each with the scale the rules give when it's stated (the other rows' statements stand)
+ * each with the scale the rules give when it's stated (the other rows' statements stand); one that would read and
+ * sound just like Auto is left out
  */
 export function functionChoices(doc: ChartDoc): ReadonlyMap<number, readonly FunctionChoice[]> {
   const out = new Map<number, readonly FunctionChoice[]>()
@@ -204,13 +205,14 @@ export function functionChoices(doc: ChartDoc): ReadonlyMap<number, readonly Fun
     if (!e.family) return
     const key = p.areaKeys[i] ?? p.global
     const auto = verdict(i, undefined)
-    const choices: FunctionChoice[] = [{ value: '', label: auto.numeral === '?' ? 'Auto' : `Auto: ${auto.numeral}`, scale: auto.scale }]
+    const choices: FunctionChoice[] = [{ value: '', label: auto.numeral === '?' ? 'Auto' : auto.numeral, scale: auto.scale }]
     for (const text of functionCandidates(e, key)) {
       const fn = parseFunction(text)
       if (typeof fn === 'string' || fitError(fn, e, key)) continue
       const t = impliedTarget(fn, key)
       const to = t ? ` (to ${rootName(shiftBy(tonicOf(key), t.steps, t.semis))}${t.minor ? 'm' : ''})` : ''
-      choices.push({ value: text, label: `${fn.text}${to}`, scale: verdict(i, { fn, key }).scale })
+      const choice = { value: text, label: `${fn.text}${to}`, scale: verdict(i, { fn, key }).scale }
+      if (choice.label !== choices[0]?.label || choice.scale !== choices[0]?.scale) choices.push(choice)
     }
     for (const r of e.rows) {
       const line = p.rows[r]?.line

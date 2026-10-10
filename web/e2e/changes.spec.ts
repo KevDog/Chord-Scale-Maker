@@ -45,7 +45,7 @@ test('a function from the dropdown: the Changes sheet shows it, its note opens f
   await openEditor(page)
   await page.getByLabel('Chart text').fill('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\n')
   const fn = page.getByLabel('function for row 2')
-  await expect(fn.locator('option').first()).toHaveText('Auto: II7 → D Mixolydian')
+  await expect(fn.locator('option').first()).toHaveText('II7 → D Mixolydian')
   await page.getByRole('button', { name: 'Show notes' }).click()
   await expect(page.getByText('II7 in C, not resolving: natural tensions')).toBeVisible()
   await fn.selectOption({ label: 'V7/V (to G) → D Mixolydian' })

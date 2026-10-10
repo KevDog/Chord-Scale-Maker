@@ -24,22 +24,27 @@ describe('rowNotes', () => {
 })
 
 describe('functionChoices', () => {
-  it('offers Auto, then each function that fits, with the scale it would give', () => {
+  it("offers the analyser's reading, then each function that fits, with the scale it would give", () => {
     const d7 = functionChoices(parseChart(C_TUNE).value).get(3) ?? []
-    expect(d7[0]).toEqual({ value: '', label: 'Auto: II7', scale: 'D Mixolydian' })
+    expect(d7[0]).toEqual({ value: '', label: 'II7', scale: 'D Mixolydian' })
     expect(d7).toContainEqual({ value: 'V7/V', label: 'V7/V (to G)', scale: 'D Mixolydian' })
     expect(d7).toContainEqual({ value: 'subV7/♭II', label: 'subV7/♭II (to Db)', scale: 'D Lydian Dominant' })
-    expect(d7.map((c) => c.value)).toEqual(['', 'V7/V', 'V7/v', 'subV7/♭II', 'subV7/♭ii', '♭VII7/III', 'II7'])
+    expect(d7.map((c) => c.value)).toEqual(['', 'V7/V', 'V7/v', 'subV7/♭II', 'subV7/♭ii', '♭VII7/III'])
+  })
+
+  it("leaves out a function that would read and sound the same as the analyser's", () => {
+    const d7 = functionChoices(parseChart(C_TUNE).value).get(3) ?? []
+    expect(d7.filter((c) => c.label === 'II7' && c.scale === 'D Mixolydian')).toHaveLength(1)
   })
 
   it("shows Auto as the analyser's own reading even when the row states a function", () => {
     const stated = functionChoices(parseChart(C_TUNE.replace('A | 2 | D7', 'A | 2 | D7 | | subV7/♭II')).value).get(3) ?? []
-    expect(stated[0]).toEqual({ value: '', label: 'Auto: II7', scale: 'D Mixolydian' })
+    expect(stated[0]).toEqual({ value: '', label: 'II7', scale: 'D Mixolydian' })
   })
 
   it("keeps the other rows' statements while it works out one row's choices", () => {
     const doc = parseChart('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | Em7\nA | 3 | A7 | | V7/II\nA | 4 | Dm7\nA | 5 | G7\nA | 6 | CMaj7\n').value
-    expect(functionChoices(doc).get(3)?.[0]?.label).toBe('Auto: ii7/II')
+    expect(functionChoices(doc).get(3)?.[0]?.label).toBe('ii7/II')
   })
 
   it('gives a held row the choices of the chord it holds', () => {
