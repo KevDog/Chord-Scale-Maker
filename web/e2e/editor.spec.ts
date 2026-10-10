@@ -195,7 +195,10 @@ test('levels take over a library chart’s own scale choices, and Standard bring
 
 test('the toolbar groups the controls under labels, with the scale level as a dropdown', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
-  for (const label of ['Work on', 'Instrument', 'Level', 'Show', 'Transposition', 'Display']) await expect(page.getByText(label, { exact: true }).first()).toBeVisible()
+  for (const label of ['Work on', 'Instrument', 'Level', 'Analysis', 'Guide Tones', 'Transposition', 'Display']) await expect(page.getByText(label, { exact: true }).first()).toBeVisible()
+  await chooseSheet(page, 'Scales')
+  await expect(page.getByText('Show', { exact: true }).first()).toBeVisible() // Intervals, in place of Analysis and Guide Tones
+  await expect(page.getByText('Guide Tones', { exact: true })).toHaveCount(0)
   await expect(page.getByRole('button', { name: 'Level' })).toBeVisible() // the scale level is a dropdown in the toolbar
 })
 
