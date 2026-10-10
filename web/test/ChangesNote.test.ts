@@ -10,16 +10,17 @@ describe('ChangesNote', () => {
     const tip = w.find(`#${button.attributes('aria-describedby')}`)
     expect(tip.attributes('role')).toBe('tooltip')
     expect(tip.text()).toContain('V7/V in C: natural tensions (stated)')
-    expect(tip.text()).toContain('in C major (found)')
+    expect(tip.findAll('span').at(-1)?.text()).toBe('in C major')
     expect(tip.text()).not.toContain('function stated in the chart')
     expect(tip.classes()).toContain('print:hidden')
   })
 
-  it('says whether its key was found, set by an @key, or named by the function', async () => {
-    const tip = async (keyFrom: 'found' | 'area' | 'function'): Promise<string> =>
-      (await mountSuspended(ChangesNote, { props: { reason: 'r', heardIn: 'D major', keyFrom }, slots: { default: () => 'x' } })).find('[role="tooltip"]').text()
-    expect(await tip('area')).toContain('in D major (@key)')
-    expect(await tip('function')).toContain("in D major (the function's key)")
+  it("stars a key the author set, by an @key or the function's key", async () => {
+    const keyLine = async (keyFrom: 'found' | 'area' | 'function'): Promise<string> =>
+      (await mountSuspended(ChangesNote, { props: { reason: 'r', heardIn: 'D major', keyFrom }, slots: { default: () => 'x' } })).findAll('[role="tooltip"] > span').at(-1)?.text() ?? ''
+    expect(await keyLine('found')).toBe('in D major')
+    expect(await keyLine('area')).toBe('* in D major')
+    expect(await keyLine('function')).toBe('* in D major')
   })
 
   it('wraps instead of truncating when asked', async () => {

@@ -18,7 +18,7 @@
       ]"
     >
       <span class="block">{{ reason }}</span>
-      <span class="mt-1 block text-xs text-zinc-500 dark:text-zinc-400">in {{ heardIn }} ({{ FROM[keyFrom] }})</span>
+      <span class="mt-1 block text-xs text-zinc-500 dark:text-zinc-400">{{ keyFrom === 'found' ? '' : '* ' }}in {{ heardIn }}</span>
     </span>
   </span>
 </template>
@@ -26,9 +26,11 @@
 <script setup lang="ts">
 import type { ChangesChord } from '~~/engine'
 
-/** why the analysis gave a chord its function and scale (engine/changes.ts reason, heardIn, keyFrom) */
+/**
+ * why the analysis gave a chord its function and scale (engine/changes.ts reason, heardIn, keyFrom); a key the author
+ * set, by an @key or the function's own key, is starred, as in the grid's Function dropdown
+ */
 withDefaults(defineProps<{ reason: string; heardIn: string; keyFrom: ChangesChord['keyFrom']; wrap?: boolean }>(), { wrap: false })
-const FROM: Readonly<Record<ChangesChord['keyFrom'], string>> = { found: 'found', area: '@key', function: "the function's key" }
 const id = useId()
 const dismissed = ref(false)
 </script>
