@@ -333,7 +333,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     ending; there the chord strikes again, untied.
   - **Rests:** a chord with no guide tones rests in both lines and ends the run; the next chord restarts by rule 1.
   - **Collisions:** the lines are always complementary. If both pick the same tone, the smaller move keeps it (equal:
-    the line moving down, else A) and the other takes the remaining tone. Both lines are built whichever is shown, so
+    the line moving down, else A) and the other takes the remaining tone, unless that leaps more than a tritone and
+    trading makes the larger move smaller: then the lines trade. Both lines are built whichever is shown, so
     a lone line still gives way where they collide. They may cross; with both on the notes are sorted by pitch at each
     chord, upper first.
   - **Form:** repeats and endings are voiced in written order, a 2nd ending from the 1st ending's last chord; the

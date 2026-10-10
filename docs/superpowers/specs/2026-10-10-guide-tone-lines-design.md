@@ -1,6 +1,7 @@
 # Guide tone lines from the 3rd or the 7th: design
 
-Date: 2026-10-10. Status: approved (toggle semantics decided by the user; see "What changes in the product"). Builds on
+Date: 2026-10-10. Status: approved (toggle semantics decided by the user; see "What changes in the product"; open
+questions decided by the user, and the trade in rule 7.2 added, the same day). Builds on
 [2026-10-10-guide-tones-on-changes-design.md](2026-10-10-guide-tones-on-changes-design.md).
 
 ## Goal
@@ -52,7 +53,10 @@ single-toggle line is the 3rd (or the 7th) of *every* chord, which cannot move b
    1. Each line first chooses by rules 2–4 independently.
    2. If both choose the same tone, the line with the smaller move keeps it and the other takes the remaining tone in
       its nearest octave. If the moves are equal, the line moving down keeps it; if neither or both move down, line A
-      keeps it.
+      keeps it. If the line that gives up the shared tone would then leap more than a tritone, and trading makes the
+      larger of the two moves smaller, the lines trade: it keeps the shared tone and the other line takes the
+      remaining tone. (Without this, chains of dominants pull both lines down to the floor of the range, where the
+      loser of a collision jumps nearly an octave.)
    3. The lines may cross; on the staff the voices are sorted by pitch at each chord, as today.
 
 8. **Labels.** Each note is labelled with the real degree, accidental dropped, as today (`3`, `7`, `4`, `6`, `1`).
@@ -102,13 +106,14 @@ From E4 (line A) the nearer tone of Ebmaj7 is D4 (its 7th, a whole step down); f
 - `voiceLeadOne` is replaced by the rules above; `voiceLead` (the Viterbi pair search) can be replaced by the same
   rules or kept as a check against them. The golden fixture will change for every chart.
 
-## Open questions
+## Open questions (decided)
 
-1. **Looping the form.** Rule 9 leaves the join from the last chord back to the first unvoiced. A lookahead could
+1. **Looping the form.** *Decided: no lookahead; the player can manage the join.* Rule 9 leaves the join from the last chord back to the first unvoiced. A lookahead could
    choose the starting octave so that the line also steps into its own repeat; worth measuring over the library.
-2. **Greedy against global.** These rules are greedy, one chord at a time, so that a reader can apply them by hand.
+2. **Greedy against global.** *Decided: greedy, with the trade in rule 7.2. Measured over the library (treble):
+   moves over a tritone fall from 394 to 18 (the pair search: 3), the largest from 11 to 9 semitones.* These rules are greedy, one chord at a time, so that a reader can apply them by hand.
    The pair search finds the globally smoothest lines. Measuring how often they differ over the 8,300 library chords
    would show whether the greedy lines ever paint themselves into a corner (a leap that a different earlier choice
    would have avoided).
-3. **Tie-break order.** Rule 3 prefers the centre of the range before the falling resolution. The reverse is
+3. **Tie-break order.** *Decided: centre first, for now.* Rule 3 prefers the centre of the range before the falling resolution. The reverse is
    defensible; the two disagree only when the lower candidate is the one further from the centre.
