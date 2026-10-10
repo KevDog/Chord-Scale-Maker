@@ -1,7 +1,12 @@
 import { keyLabel, TRANSPOSE_KEYS } from '~~/engine'
 
-/** the /functions page's key picker: every Transpose key, major then minor (docs/superpowers/specs/2026-10-10-functions-help-page-design.md §3) */
-export const FUNCTIONS_KEYS: readonly string[] = [...TRANSPOSE_KEYS, ...TRANSPOSE_KEYS.map((k) => `${k}m`)]
+/**
+ * the /functions page's key picker (docs/superpowers/specs/2026-10-10-functions-help-page-design.md §3): every
+ * Transpose major, then the twelve minors as their key signatures spell them (C♯ and G♯ minor, not D♭ and G♭ minor,
+ * whose tables would need double flats); all of them in CATALOGUE_KEYS, the keys the engine's tests sweep
+ */
+const MINORS = ['Cm', 'C#m', 'Dm', 'Ebm', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'Bbm', 'Bm'] as const
+export const FUNCTIONS_KEYS: readonly string[] = [...TRANSPOSE_KEYS, ...MINORS]
 
 const offered = (v: unknown): v is string => typeof v === 'string' && FUNCTIONS_KEYS.includes(v)
 

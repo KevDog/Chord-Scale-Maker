@@ -517,8 +517,9 @@ library writes such a repeat out instead.
   gives), `#rules` (every rule in `RULES`, by `TIERS`, one row `rule-<id>` each; `ruleParts` and
   `dominantScaleTable` in `analysis/rules.ts`) and `#report` (the Copy for an issue route). Nothing on it is
   hand-typed: `functionsTable(key)` (`analysis/catalogue.ts`) runs one-row charts (`bars: 1`; `bars: 2` with a tonic row first for the chromatic diminished function) through
-  `analyse`, in the page's key (a Transpose key, major or minor: `FUNCTIONS_KEYS`, `utils/functionsKey.ts`; the engine tests sweep the wider
-  `CATALOGUE_KEYS`), at prerender and again
+  `analyse`, in the page's key (`FUNCTIONS_KEYS`, `utils/functionsKey.ts`: the Transpose majors, then the twelve minors
+  as their signatures spell them, C♯ and G♯ minor rather than D♭ and G♭ minor, whose tables need double flats; all
+  within the wider `CATALOGUE_KEYS` the engine tests sweep), at prerender and again
   on a key change. The chosen key is kept in the URL as `?key=` in step with the router's history state, and
   remembered as `csm-functions-key`. A sticky group nav follows the scroll (an IntersectionObserver). Rules that
   only read the chord symbol are covered in tests by chord-symbol examples. Linked from the footer ("Functions"),
