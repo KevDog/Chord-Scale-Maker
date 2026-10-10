@@ -26,9 +26,7 @@ async function expectChordsOnHeads(line: Locator): Promise<void> {
 
 type Box = Readonly<{ left: number; right: number; top: number; bottom: number }>
 const box = (g: Readonly<{ x: number; y: number; w: number }>, half: number): Box => ({ left: g.x, right: g.x + g.w, top: g.y - half, bottom: g.y + half })
-// a 1px tolerance: an accidental sits flush against its own notehead, and its glyph box differs by a fraction of a
-// pixel between platforms' fonts (0.51px on CI's Linux)
-const overlaps = (a: Box, b: Box): boolean => a.left < b.right - 1 && b.left < a.right - 1 && a.top < b.bottom - 1 && b.top < a.bottom - 1
+const overlaps = (a: Box, b: Box): boolean => a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5
 
 test('the Changes sheet: slashes, chords, numerals and scales, a repeat, and toggles that stick', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
@@ -216,8 +214,18 @@ for (const [width, bars] of [
     expect(d.width).toBe(300 * bars)
     expect(d.heads.length).toBeGreaterThanOrEqual(16)
     expect(d.accidentals.length).toBeGreaterThan(0)
-    const boxes = [...d.heads.map((h) => box(h, 4.5)), ...d.accidentals.map((a) => box(a, 10))]
-    boxes.forEach((a, i) => boxes.slice(i + 1).forEach((b) => expect(overlaps(a, b), `${JSON.stringify(a)} and ${JSON.stringify(b)}`).toBe(false)))
+    const heads = d.heads.map((h) => box(h, 4.5))
+    const accidentals = d.accidentals.map((a) => box(a, 10))
+    // an accidental sits flush against its own notehead (same height, just to its right), and its glyph box differs
+    // by platform (it reaches 1.5px into the head on CI's Linux): that pair is not a collision
+    const own = (a: Box, h: Box): boolean => Math.abs((a.top + a.bottom) / 2 - (h.top + h.bottom) / 2) < 0.5 && h.left > a.left && h.left < a.right + 1
+    const boxes = [...heads, ...accidentals]
+    boxes.forEach((a, i) =>
+      boxes.slice(i + 1).forEach((b) => {
+        if (accidentals.includes(b) && heads.includes(a) && own(b, a)) return
+        expect(overlaps(a, b), `${JSON.stringify(a)} and ${JSON.stringify(b)}`).toBe(false)
+      }),
+    )
     await expectChordsOnHeads(line)
   })
 }
