@@ -8,6 +8,7 @@ import { CONCERT, type Part } from '../part'
 import { rootName } from '../pitch'
 import { toVexKey } from '../sheet'
 import { isSyncCopy } from '../util'
+import { parseKey } from '../analysis/keys'
 
 const row = (bar: string, chord: string, scale = ''): Row => ({ section: 'A', bar, chord, scale })
 const rowsOf = (text: string): readonly Row[] => expandRows(parseChart(text).value).value
@@ -201,5 +202,16 @@ describe('guide tone lines', () => {
     expect(one).toEqual(['f/4', 'rest', 'e/4'])
     expect(two[1]).toBe('rest')
     expect(buildGuideTones([row('1', 'Cm7#5#9x')], CONCERT).diagnostics).toEqual(['no guide tones for Cm7#5#9x (unknown chord quality)'])
+  })
+
+  it('gives each bar the key in force, changing at the bar an @key starts', () => {
+    const rows = [
+      { section: 'A', bar: '1', chord: 'EbMaj7', scale: '' },
+      { section: 'B', bar: '2', chord: 'DMaj7', scale: '' },
+      { section: 'B', bar: '3', chord: 'Em7', scale: '' },
+    ]
+    const sheet = buildGuideTones(rows, CONCERT, 4, 4, [parseKey('Eb'), parseKey('D'), parseKey('D')])
+    expect(sheet.systems.flatMap((s) => s.bars.filter((b) => b.chords.length).map((b) => b.keySig))).toEqual(['Eb', 'D', 'D'])
+    expect(buildGuideTones(rows, CONCERT).systems[0]?.bars[0]?.keySig).toBeNull()
   })
 })

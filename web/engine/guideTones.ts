@@ -1,7 +1,9 @@
 import { type Row, resolveScale } from './chart'
 import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRootLenient } from './chord'
+import type { Key } from './analysis/keys'
 import { guideToneTimeline } from './guideToneTimeline'
 import type { Part, Pitched } from './part'
+import { keySignature } from './keySignature'
 import { baseQuality } from './qualities'
 import { spellFrom } from './scales'
 import { chunk, orNull } from './util'
@@ -58,6 +60,7 @@ export function guideTonesFor(part: Part, chord: string, scale?: string): GuideT
 export type GuideNote = Readonly<{ pitch: Pitched | null; beats: 1 | 2 | 3 | 4; tie: boolean; label: string }> // tie: into the next note
 export type GuideChord = Readonly<{ beat: number; text: string; tokens: readonly ChordToken[] | null }>
 export type GuideBar = Readonly<{
+  keySig: string | null // the key in force, written for the part; null: none drawn
   label: string // "A · Bar 9" where a chord starts, else ''
   chords: readonly GuideChord[]
   lines: readonly [readonly GuideNote[], readonly GuideNote[]]
@@ -87,7 +90,7 @@ function notesFor(c: Candidate | null, start: number, length: number, beats: num
 const readable = (chord: string): boolean => orNull(() => parseChord(chord)) !== null
 
 /** both guide tone lines for a chart, in systems of barsPerSystem bars */
-export function buildGuideTones(rows: readonly Row[], part: Part, barsPerSystem = 4, beats: 2 | 3 | 4 = 4): GuideToneSheet {
+export function buildGuideTones(rows: readonly Row[], part: Part, barsPerSystem = 4, beats: 2 | 3 | 4 = 4, keys?: readonly (Key | null)[]): GuideToneSheet {
   const { events, diagnostics } = guideToneTimeline(rows, beats)
   const missing: string[] = []
   const tones = events.map((e) => {
@@ -107,13 +110,16 @@ export function buildGuideTones(rows: readonly Row[], part: Part, barsPerSystem 
     events.forEach((e, j) => notesFor(voiced[l][j] ?? null, e.start, e.beats, beats).forEach((n) => out[n.bar]?.push(n.note)))
     return out
   })
+  let key: Key | null = keys?.[0] ?? null
   const bars = Array.from({ length: barCount }, (_, i): GuideBar => {
     const starting = events.filter((e) => Math.floor(e.start / beats) === i)
     const firstRow = starting[0]?.row
     const chords = starting.map(
       (e): GuideChord => ({ beat: e.start - i * beats, text: e.chord, tokens: chordTokensOrNull(part, e.chord, resolveScale(e.row)) }),
     )
+    if (keys && starting[0]) key = keys[rows.indexOf(starting[0].row)] ?? key
     return {
+      keySig: keys ? keySignature(key, part) : null,
       label: firstRow ? `${firstRow.section} · Bar ${firstRow.bar}` : '',
       chords,
       lines: [byBar[0]?.[i] ?? [], byBar[1]?.[i] ?? []],

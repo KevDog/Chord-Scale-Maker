@@ -108,4 +108,11 @@ describe('endings and navigation', () => {
     const b = barsOf(text)
     expect(b.every((x) => !x.segno && x.nav === '' && x.volta === null)).toBe(true)
   })
+
+  it('with signatures, gives each bar its written key, changing at an @key', () => {
+    const doc = parseChart('title: T\nkey: Eb\nA | 1 | EbMaj7\nB | 2 | DMaj7\n@key B 2 D\n').value
+    const bars = buildChanges(doc, TENOR, 4, true).lines.flatMap((l) => l.bars).filter((b) => b.chords.length)
+    expect(bars.map((b) => b.keySig)).toEqual(['F', 'E'])
+    expect(buildChanges(doc, CONCERT).lines[0]?.bars[0]?.keySig).toBeNull()
+  })
 })
