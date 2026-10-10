@@ -55,6 +55,7 @@ const props = defineProps<{
   barsPerLine: number
   numerals: boolean
   scales: boolean
+  clef?: 'treble' | 'bass' // with key signatures: the clef and signature on the line
 }>()
 
 const el = ref<HTMLElement | null>(null)
@@ -86,7 +87,7 @@ async function draw(): Promise<void> {
   const done = rendering.begin()
   try {
     const vf = await loadVexFlow()
-    xs.value = drawChangesLine(vf, el.value, props.line, { timeSignature: props.first, beats: props.beats, barsPerLine: props.barsPerLine }).xs
+    xs.value = drawChangesLine(vf, el.value, props.line, { timeSignature: props.first, beats: props.beats, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}) }).xs
     drawError.value = null
   } catch (e) {
     drawError.value = `Couldn't draw these bars (${e instanceof Error ? e.message : String(e)})`
@@ -96,5 +97,5 @@ async function draw(): Promise<void> {
 }
 
 onMounted(draw)
-watch(() => [props.line, props.first, props.beats, props.barsPerLine], () => nextTick(draw))
+watch(() => [props.line, props.first, props.beats, props.barsPerLine, props.clef], () => nextTick(draw))
 </script>

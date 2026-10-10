@@ -1,4 +1,4 @@
-import { accText, type StaffModel, toVexKey } from '~~/engine'
+import { type StaffModel, toVexKey } from '~~/engine'
 
 export type VexFlowModule = typeof import('vexflow/bravura')
 type Context = ReturnType<InstanceType<VexFlowModule['Renderer']>['getContext']>
@@ -30,9 +30,11 @@ const STAFF_WIDTH = 1200
 const STAFF_HEIGHT = 200
 export const STAVE_Y = 40 // staff lines at y 80-120, with room for ledger lines on both sides
 export const TIME_SPACE = 40 // extra lead width on the first system, for the time signature
+export const CLEF_SPACE = 70 // lead width for a clef (guide tone systems)
 export const BAR_UNITS = 300 // drawing width per bar (guide tone and Changes sheets share it, so phones' 2-bar systems draw as large as 4-bar ones)
 export const MIN_TOP = 55 // always show the clef and a ledger line's space above and below the staff
 export const MIN_BOTTOM = 140
+export const KEY_CHANGE_TOP = 56 // a mid-line key change: room above the staff for its naturals and sharps
 // room around a note head for its accidental: a flat rises about two spaces, a sharp hangs 1.5
 const ABOVE_HEAD = 24
 const BELOW_HEAD = 18
@@ -81,12 +83,15 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
   const ctx = svgContext(vf, el, STAFF_WIDTH)
 
   const stave = new vf.Stave(0, STAVE_Y, STAFF_WIDTH - 1)
-  stave.addClef(clef).setEndBarType(staff.last ? vf.BarlineType.END : vf.BarlineType.DOUBLE)
+  stave.addClef(clef)
+  if (staff.keySig) stave.addKeySignature(staff.keySig)
+  stave.setEndBarType(staff.last ? vf.BarlineType.END : vf.BarlineType.DOUBLE)
   stave.setContext(ctx).draw()
 
-  const notes = staff.notes.map((n) => {
+  const notes = staff.notes.map((n, i) => {
     const note = new vf.StaveNote({ keys: [toVexKey(n)], duration: 'w', clef })
-    if (n.acc) note.addModifier(new vf.Accidental(accText(n.acc)), 0) // explicit on every altered note
+    const acc = staff.accidentals[i] // without a key signature: explicit on every altered note
+    if (acc) note.addModifier(new vf.Accidental(acc), 0)
     return note
   })
   if (notes.length > 0) {
@@ -105,4 +110,38 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
   const label = names.join(' ') + (picked ? `; practice: ${picked.length ? picked.join(' ') : 'none'}` : '')
   fitSvg(el, cropBand(notes.flatMap((n) => n.getYs())), STAFF_WIDTH, label)
   return notes.map((n) => headCentre(n, STAFF_WIDTH))
+}
+
+type Stave = InstanceType<VexFlowModule['Stave']>
+
+/** how much later notes start on a stave with these modifiers than on a bare one (drawing units), from a probe stave */
+function startWidth(vf: VexFlowModule, add: (stave: Stave) => void): number {
+  const probe = new vf.Stave(0, 0, 400)
+  add(probe)
+  return probe.getNoteStartX() - new vf.Stave(0, 0, 400).getNoteStartX()
+}
+
+/**
+ * the lead width of a system's first bar with its clef, key signature and (if given) time signature: what they measure,
+ * plus the padding CLEF_SPACE gives a clef alone, so bars line up as they do without signatures
+ */
+export function signatureLead(vf: VexFlowModule, clef: 'treble' | 'bass', keySig: string | null, time?: string): number {
+  const all = startWidth(vf, (s) => {
+    s.addClef(clef)
+    if (keySig) s.addKeySignature(keySig)
+    if (time) s.addTimeSignature(time)
+  })
+  return CLEF_SPACE + all - startWidth(vf, (s) => s.addClef(clef))
+}
+
+/** the width a mid-line key change takes (the new signature, after naturals cancelling the old one) */
+export const keyChangeWidth = (vf: VexFlowModule, keySig: string, previous: string | null): number =>
+  startWidth(vf, (s) => s.addKeySignature(keySig, previous ?? undefined))
+
+/** each bar's key change, from the bar before it in the same line: what to draw, and what it cancels; null for none */
+export function keyChanges(bars: readonly Readonly<{ keySig: string | null }>[]): (Readonly<{ keySig: string; previous: string | null }> | null)[] {
+  return bars.map((bar, b) => {
+    const previous = bars[b - 1]?.keySig ?? null
+    return b === 0 || bar.keySig === previous ? null : { keySig: bar.keySig ?? 'C', previous }
+  })
 }

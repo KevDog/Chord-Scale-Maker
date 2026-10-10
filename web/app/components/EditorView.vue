@@ -133,6 +133,7 @@
             :instrument-label="instrumentLabel(prefs.instrument.value)"
             :numerals="prefs.numerals.value"
             :scales="prefs.scaleNames.value"
+            :signatures="signaturesOn"
           />
           <GuideToneSheet
             v-else-if="sheet === 'guideTones'"
@@ -144,6 +145,7 @@
             :instrument-label="instrumentLabel(prefs.instrument.value)"
             :beats="editor.beats.value"
             :intervals="prefs.intervals.value"
+            :keys="keys"
           />
           <ScaleSheet
             v-else
@@ -158,6 +160,7 @@
             :per-page="PER_PAGE"
             :intervals="prefs.intervals.value"
             :practice="selection"
+            :keys="keys"
           />
         </div>
       </section>
@@ -181,6 +184,7 @@ import {
   partFor,
   practiceBoxes,
   relevel,
+  rowKeys,
   SCALE_LEVELS,
   type LevelState,
   type ScaleLevel,
@@ -221,6 +225,9 @@ const sheet = ref<SheetKind>(
 )
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
+const signaturesOn = useFeature('keySignatures')
+/** each row's key, for the sheets' key signatures (none when the flag is off: drawn as before) */
+const keys = computed(() => (signaturesOn ? rowKeys(editor.doc.value) : undefined))
 const practice = usePractice(props.practiceKey)
 const levelsOn = useFeature('scaleLevels')
 const scaleLevel = useScaleLevel(props.practiceKey, props.shared)

@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { buildSheet, type ModeChoice, type Part, pageSubtitle, type PracticeSelection, type Row } from '~~/engine'
+import { buildSheet, type Key, type ModeChoice, type Part, pageSubtitle, type PracticeSelection, type Row } from '~~/engine'
 
 const props = defineProps<{
   rows: readonly Row[]
@@ -23,11 +23,12 @@ const props = defineProps<{
   perPage: number
   intervals?: boolean // label notes against the chord root, on screen only
   practice?: PracticeSelection | null // highlight these notes, dim the rest
+  keys?: readonly (Key | null)[] // each row's key, for its key signature; none drawn without
 }>()
 
 /** every printed page, in order, with its own heading */
 const pages = computed(() =>
-  buildSheet(props.rows, props.part, props.mode, props.start, props.perPage, props.practice ?? null)
+  buildSheet(props.rows, props.part, props.mode, props.start, props.perPage, props.practice ?? null, props.keys)
     .flatMap((sheetPart) =>
       sheetPart.pages.map((staves) => ({
         mode: sheetPart.mode,

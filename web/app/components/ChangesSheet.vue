@@ -15,6 +15,7 @@
             :bars-per-line="barsPerLine"
             :numerals="numerals"
             :scales="scales"
+            :clef="signatures ? part.clef : undefined"
           />
         </div>
       </template>
@@ -35,6 +36,7 @@ const props = defineProps<{
   instrumentLabel: string // '' for concert
   numerals: boolean
   scales: boolean
+  signatures?: boolean // the part's clef and key signatures on every line
 }>()
 
 const LINES_PER_PAGE = 8 // a 32-bar AABA, one section a line pair, with its numerals and scales
@@ -42,7 +44,7 @@ const LINES_PER_PAGE = 8 // a 32-bar AABA, one section a line pair, with its num
 const wide = useMediaQuery('(min-width: 640px), print')
 const barsPerLine = computed(() => (wide.value ? 4 : 2))
 
-const sheet = computed(() => buildChanges(props.doc, props.part, barsPerLine.value))
+const sheet = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, props.signatures))
 const subtitleText = computed(() => pageSubtitle(props.subtitle, props.instrumentLabel, 'Changes'))
 const pages = computed(() =>
   chunk(
