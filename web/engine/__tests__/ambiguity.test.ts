@@ -28,6 +28,11 @@ describe('the ambiguity report', () => {
     expect(report(C_TUNE.replace('key: C\n', ''))[0]).toBe('no key: line; the analysis guessed C: add  key: C')
   })
 
+  it("keeps the chord's own numeral when stating it would name a target", () => {
+    const misty = report(readFileSync('../charts/misty.txt', 'utf8'))
+    expect(misty.find((l) => l.startsWith('bar 23 Bb7:'))).toContain("if it's V7, ")
+  })
+
   it('ends with the problems, by line number', () => {
     expect(report(C_TUNE.replace('A | 2 | D7', 'A | 2 | D7 | | X7')).at(-1)).toBe('line 4: "X7" isn\'t a function (V7/ii, subV7, ii7/V, ♭VII7, IVmaj7)')
   })

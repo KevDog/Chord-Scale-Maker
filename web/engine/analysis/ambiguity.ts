@@ -1,6 +1,6 @@
 import { pcOf } from '../pitch'
 import { readChord } from '../qualities'
-import { functionCandidates } from './functions'
+import { functionCandidates, impliedTarget, parseFunction } from './functions'
 import type { Analysis } from './index'
 import { keyCode, keyText, sameKey } from './keys'
 import { ownNumeral } from './numerals'
@@ -24,7 +24,13 @@ export function ambiguities(a: Analysis): string[] {
     const key = r.statedKey ?? r.key
     const chord = c ? { pc: pcOf(c.root), family: familyOf(c.quality), quality: c.quality } : null
     const own = chord?.family ? ownNumeral({ ...chord, family: chord.family }, key) : ''
-    const ideas = chord ? functionCandidates(chord, key).filter((t) => t !== own) : []
+    // the chord's own numeral is no idea when stating it would change nothing (it names no target)
+    const idle = (t: string): boolean => {
+      if (t !== own) return false
+      const f = parseFunction(t)
+      return typeof f === 'string' || impliedTarget(f, key) === null
+    }
+    const ideas = chord ? functionCandidates(chord, key).filter((t) => !idle(t)) : []
     const list = ideas.length < 2 ? (ideas[0] ?? '') : `${ideas.slice(0, -1).join(', ')} or ${ideas.at(-1)}`
     out.push(`bar ${r.bar} ${r.chord}: ${r.reason}${list ? `; if it's ${list}, choose that as its function` : ''}`)
   }
