@@ -2,6 +2,7 @@ import { chooseSheet, expect, openEditor, pickOption, setScaleLevel, staves, tes
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/song?new=1')
+  await chooseSheet(page, 'Scales') // a chart opens on the Changes; these tests are about the scale sheet
   await expect(staves(page)).toHaveCount(3) // starter chart: 3 rows, from the root
 })
 
@@ -79,6 +80,7 @@ test('transposing rewrites the chart in another key', async ({ page }) => {
 
 test('interval labels show on screen, against the chord root, on until turned off', async ({ page }) => {
   await page.goto('/song?chart=footprints')
+  await chooseSheet(page, 'Scales') // the Changes has no Intervals toggle
   const toggle = page.getByRole('button', { name: 'Intervals' })
   await expect(toggle).toHaveAttribute('aria-pressed', 'true') // on by default
   await expect(page.getByText('Intervals from the chord root:').first()).toBeAttached()
@@ -86,19 +88,8 @@ test('interval labels show on screen, against the chord root, on until turned of
   await expect(toggle).toHaveAttribute('aria-pressed', 'false')
   await expect(page.getByText('Intervals from the chord root:')).toHaveCount(0)
   await page.reload()
-  await expect(page.getByRole('button', { name: 'Intervals' })).toHaveAttribute('aria-pressed', 'false') // remembered
-})
-
-test('guide tones draw both lines, four bars a system, without the scale controls', async ({ page }) => {
-  await page.goto('/song?chart=autumn_leaves')
-  await chooseSheet(page, 'Guide Tones')
-  await expect(page.getByText('Full Form, Alternate Changes · G minor · AAB (Guide Tone Lines)')).toBeVisible()
-  await expect(page.locator('svg[aria-label^="Line 1:"]')).toHaveCount(8) // 32 bars
-  await expect(page.locator('svg[aria-label^="Line 2:"]')).toHaveCount(8)
-  await expect(page.getByLabel('Start on')).toHaveCount(0)
-  await expect(page.getByText('From root', { exact: true })).toHaveCount(0)
   await chooseSheet(page, 'Scales')
-  await expect(staves(page)).toHaveCount(39)
+  await expect(page.getByRole('button', { name: 'Intervals' })).toHaveAttribute('aria-pressed', 'false') // remembered
 })
 
 test('the text editor explains itself on hover and on focus', async ({ page }) => {
@@ -116,22 +107,15 @@ test('the text editor explains itself on hover and on focus', async ({ page }) =
   await expect(tip).toBeHidden()
 })
 
-test('guide tone notation follows dark mode (no hard-coded black)', async ({ page }) => {
-  await page.goto('/song?chart=f_jazz_blues')
-  await page.getByRole('button', { name: /Switch to dark mode/ }).click()
-  await chooseSheet(page, 'Guide Tones')
-  await expect(page.locator('svg[aria-label^="Line 1:"]').first()).toBeVisible()
-  const black = page.locator('svg[aria-label^="Line"] [stroke="black"], svg[aria-label^="Line"] [fill="black"], svg[aria-label^="Line"] [stroke="#000000"], svg[aria-label^="Line"] [fill="#000000"]')
-  await expect(black).toHaveCount(0)
-})
-
 test('practice highlights the chosen notes, remembers them per chart, and prints them', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
+  await chooseSheet(page, 'Scales') // practice is on the scale sheet
   const panel = page.locator('fieldset', { hasText: 'Practice' })
   await panel.getByRole('button', { name: 'Guide tones' }).click()
   await expect(page.locator('.vf-selected')).toHaveCount(78) // two per staff, 39 staves
   await expect(page.locator('svg[aria-label*="; practice:"]').first()).toBeAttached()
   await page.reload()
+  await chooseSheet(page, 'Scales')
   await expect(page.locator('fieldset', { hasText: 'Practice' }).getByRole('button', { name: 'Guide tones' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.locator('.vf-selected')).toHaveCount(78)
   // From C keeps its own selection
@@ -147,6 +131,7 @@ test('practice highlights the chosen notes, remembers them per chart, and prints
 
 test('focus mode shows only the sheet, leaves on Escape or its button, and still prints 4 pages', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
+  await chooseSheet(page, 'Scales') // 39 staves, 4 printed pages
   const focus = page.getByRole('button', { name: 'Focus', exact: true })
   const dialog = page.getByRole('dialog', { name: 'Focus mode' })
   const exit = page.getByRole('button', { name: /Exit focus/ })
@@ -208,15 +193,6 @@ test('levels take over a library chart’s own scale choices, and Standard bring
   await expect(page.getByRole('status').filter({ hasText: /in this browser/ })).toHaveText('Edits are saved in this browser as your version.')
 })
 
-test('a waltz’s guide tones are in 3/4: dotted halves, three beats a bar', async ({ page }) => {
-  await page.goto('/song?chart=someday_my_prince_will_come')
-  await chooseSheet(page, 'Guide Tones')
-  const line1 = page.locator('svg[aria-label^="Line 1:"]').first()
-  await expect(line1).toBeVisible()
-  await expect(line1.locator('.vf-timesignature, g.vf-timesignature').first()).toBeAttached()
-  await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
-})
-
 test('the toolbar groups the controls under labels, with the scale level as a dropdown', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
   for (const label of ['Work on', 'Instrument', 'Level', 'Show', 'Transposition', 'Display']) await expect(page.getByText(label, { exact: true }).first()).toBeVisible()
@@ -226,6 +202,7 @@ test('the toolbar groups the controls under labels, with the scale level as a dr
 test('the preview toolbar stays tidy (at most two rows), in every sheet', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/song?chart=autumn_leaves')
+  await chooseSheet(page, 'Scales')
   await pickOption(page, 'Where each scale starts', 'From C') // Scales with its Start on menu: the most controls
   // how many rows the toolbar's labelled groups fall on (the content is capped at 72rem, so six groups can take two)
   const layout = () =>
@@ -235,7 +212,7 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
       // groups are top-aligned (items-start), so distinct tops = visual rows
       return { rows: new Set(kids.map((r) => Math.round(r.top))).size, widths: `${row.clientWidth}: ${kids.map((r) => Math.round(r.width)).join(' + ')}` }
     })
-  for (const sheet of ['Scales', 'Guide Tones', 'Changes']) {
+  for (const sheet of ['Scales', 'Changes']) {
     await chooseSheet(page, sheet)
     const { rows, widths } = await layout()
     expect(rows, `${sheet} (${widths})`).toBeLessThanOrEqual(2)
@@ -252,7 +229,7 @@ test('a spinner shows over the sheet while it renders', async ({ browser }) => {
   })
   await page.goto('/song?chart=autumn_leaves')
   await expect(page.getByRole('status', { name: 'Loading' }).first()).toBeVisible()
-  await expect(staves(page)).toHaveCount(39) // drawn once VexFlow loads
+  await expect(staves(page)).toHaveCount(6) // drawn once VexFlow loads: Autumn Leaves opens on the Changes, six lines
   await expect(page.getByRole('status', { name: 'Loading' })).toHaveCount(0) // spinner gone
   await ctx.close()
 })

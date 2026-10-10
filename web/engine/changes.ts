@@ -83,12 +83,14 @@ const writtenScale = (part: Part, scale: string | null): string | null => {
 /**
  * Changes lines on a printed page: 8 with no guide tones (a 32-bar AABA, one section a line pair, with its numerals
  * and scales), whatever rows are shown. Notes, stems and the label row take more height, so with numerals or scales
- * shown it's 7 for one guide and 6 for both, and one more with both rows off. print.spec checks the worst case.
+ * shown it's 6 for one guide and 5 for both, and one more with both rows off: measured over the library in every
+ * transposition at letter width, with a page's tallest lines (an ending raised over two voices' stems). print.spec
+ * checks the worst case.
  */
 export function changesLinesPerPage(guides: GuideShow, rows: Readonly<{ numerals: boolean; scales: boolean }>): number {
   const on = guidesOn(guides)
   if (!on) return 8
-  return (on === 1 ? 7 : 6) + (!rows.numerals && !rows.scales ? 1 : 0)
+  return (on === 1 ? 6 : 5) + (!rows.numerals && !rows.scales ? 1 : 0)
 }
 
 export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, guides: GuideShow = NO_GUIDES): ChangesSheet {

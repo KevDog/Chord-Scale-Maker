@@ -228,9 +228,9 @@ describe('guide tones on the Changes sheet', () => {
       { numerals: false, scales: false },
     ]
     expect(rows.map((r) => changesLinesPerPage(NO_GUIDES, r))).toEqual([8, 8, 8, 8])
-    expect(rows.map((r) => changesLinesPerPage(THIRD, r))).toEqual([7, 7, 7, 8])
-    expect(rows.map((r) => changesLinesPerPage(SEVENTH, r))).toEqual([7, 7, 7, 8])
-    expect(rows.map((r) => changesLinesPerPage(BOTH, r))).toEqual([6, 6, 6, 7])
+    expect(rows.map((r) => changesLinesPerPage(THIRD, r))).toEqual([6, 6, 6, 7])
+    expect(rows.map((r) => changesLinesPerPage(SEVENTH, r))).toEqual([6, 6, 6, 7])
+    expect(rows.map((r) => changesLinesPerPage(BOTH, r))).toEqual([5, 5, 5, 6])
   })
 })
 

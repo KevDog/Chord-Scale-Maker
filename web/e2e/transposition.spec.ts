@@ -1,9 +1,10 @@
-import { chooseInstrument, expect, pickOption, staves, test } from './fixtures'
+import { chooseInstrument, chooseSheet, expect, pickOption, staves, test } from './fixtures'
 
 const firstStaff = (page: import('@playwright/test').Page) => page.locator('.break-inside-avoid').first()
 
 test('writes the sheet for a transposing instrument and remembers it', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
+  await chooseSheet(page, 'Scales')
   await expect(firstStaff(page)).toContainText('C–7')
   await chooseInstrument(page, 'Tenor Sax')
   await expect(firstStaff(page)).toContainText('D–7')
@@ -22,6 +23,7 @@ test('Transpose needs the chart key', async ({ page }) => {
 
 test('bass clef instruments and the start note', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
+  await chooseSheet(page, 'Scales') // the start note is the scale sheet's
   await chooseInstrument(page, 'Trombone')
   await pickOption(page, 'Where each scale starts', 'From C')
   await page.getByLabel('Start on').selectOption('B')
