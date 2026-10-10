@@ -27,6 +27,16 @@ export function parseRoot(tok: string): Spelled {
 export const glyphs = (text: string): string =>
   text.replaceAll('#', '♯').replace(/b/g, (_m, i: number) => (/[a-z]/.test(text[i - 1] ?? '') && /[a-z]/.test(text[i + 1] ?? '') ? 'b' : '♭'))
 
+/**
+ * glyphs for the engine's sentences (a rule's reason, its summary): "the b9", "Eb", "bVII7", "#11", "m7b5", but a word
+ * that starts with a b ("by", "back") stays a word
+ */
+export const proseGlyphs = (text: string): string =>
+  text
+    .replaceAll('#', '♯')
+    .replace(/\b([A-G])b(?![a-ln-z])/g, '$1♭')
+    .replace(/(?<![A-Za-z])b(?=\d|[IV])/g, '♭')
+
 export const accText = (acc: number): string => (acc > 0 ? '#'.repeat(acc) : 'b'.repeat(-acc))
 export const rootName = (n: Spelled): string => LETTERS[n.letter] + accText(n.acc)
 export const pcOf = (n: Spelled): number => mod(NAT_PC[n.letter] + n.acc, 12)

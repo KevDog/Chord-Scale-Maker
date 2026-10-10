@@ -76,6 +76,15 @@ describe('usePreferences', () => {
     const p = prefs()
     expect([p.instrument.value, p.start.value, p.fromThird.value]).toEqual(['concert', 'C', false])
   })
+
+  it("remembers the functions page's key, C major until chosen", async () => {
+    localStorage.setItem('csm-functions-key', 'H')
+    const p = prefs()
+    expect(p.functionsKey.value).toBe('C')
+    p.functionsKey.value = 'Ebm'
+    await nextTick()
+    expect(prefs().functionsKey.value).toBe('Ebm')
+  })
 })
 
 describe('linkPreferences', () => {
