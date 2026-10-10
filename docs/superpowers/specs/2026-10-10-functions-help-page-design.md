@@ -1,6 +1,8 @@
 # Functions and analysis rules: a help page
 
-Date: 2026-10-10. Status: approved (decisions below are the user's; the last five rows and the `D8` rename added the
+Status: implemented (branch functions-page).
+
+Date: 2026-10-10. Approved (decisions below are the user's; the last five rows and the `D8` rename added the
 same day). Builds on
 [2026-10-09-chart-functions-design.md](2026-10-09-chart-functions-design.md) and docs/plan-analysis.md.
 
