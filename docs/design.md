@@ -56,7 +56,7 @@ web/                      # Nuxt app (Vercel root directory)
     pages/about.vue, contact.vue, privacy.vue  # About (Jazz Lab thanks, the video, credits), the form, privacy
     pages/ui.vue          # dev-only showcase of the Catalyst components (removed from production builds)
     components/           # AppShell, EditorView, ChartGrid, GridCell, ScaleCell, ChartText, ChartTranspose,
-                          # PreviewControls, SegmentedControl, SheetPages, ScaleSheet, ScaleStaff,
+                          # PreviewControls, SheetPages, ScaleSheet, ScaleStaff,
                           # ChangesSheet, ChangesSystem, ChordSymbol, NoteName
     components/ui/        # Catalyst ported to Vue (<UiButton>, <UiListbox>, <UiDialog>, …)
     composables/          # useChartEditor (editor state), usePreferences, useTheme, useFeature, useMediaQuery,
@@ -404,8 +404,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - `SheetPages`, which lays out both sheets' printed pages. On screen they form one continuous card, with a dashed
     "Page N" divider where each printed page starts and the header shown once. In print each page is a bare letter
     page with its own header.
-  - `SegmentedControl`, the joined toggles (From | From root).
-  - `PreviewControls`, the preview toolbar: Sheet, Instrument, From root/From X, then Intervals (on the Changes: Numerals, Scales, 3rd and 7th) with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
+  - `PreviewControls`, the preview toolbar: Work on, Instrument, From root/From X, then Intervals (on the Changes: Numerals, Scales, 3rd and 7th) with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
 - **Dark mode** is a `.dark` class on `<html>`, toggled in the navbar.
   - The default is light, and the choice is saved per browser.
   - `public/theme-init.js` applies it before first paint. It's a file, not an inline script, so the CSP needs no

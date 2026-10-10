@@ -27,14 +27,9 @@
     <section class="scroll-mt-6 space-y-4" aria-labelledby="sheets">
       <UiSubheading id="sheets">The two sheets</UiSubheading>
       <UiText>
-        <strong class="font-semibold text-zinc-950 dark:text-white">Scales</strong> is the main event: one staff per
-        chord, with the scale that goes with it, in the order the tune runs. Each staff is labelled with where it is in
-        the form, the chord and the scale.
-      </UiText>
-      <UiText>
-        <strong class="font-semibold text-zinc-950 dark:text-white">Changes</strong> is the tune as a lead sheet without
-        the melody: slashes, four bars a line, with each chord's Roman numeral and scale under it, and the key written
-        in wherever it moves. It's the why behind the Scales sheet: <em>ii7 V7 Imaj7</em> in one key, then a
+        <strong class="font-semibold text-zinc-950 dark:text-white">Changes</strong> is the default view, where a chart opens: the tune as a lead sheet without
+        the melody, in slashes, four bars a line, with each chord's Roman numeral and scale under it, and the key written
+        in wherever it moves. It's the why behind the scales: <em>ii7 V7 Imaj7</em> in one key, then a
         <em>V7/ii</em> borrowing from the next. <strong class="font-semibold text-zinc-950 dark:text-white">Numerals</strong>
         and <strong class="font-semibold text-zinc-950 dark:text-white">Scales</strong> turn those rows on and off.
       </UiText>
@@ -46,6 +41,11 @@
         lasts. With one on, it sits in the nearest octave; with both on, you get two voices on one staff that move by step,
         the 3rd and 7th trading places as the harmony leans from one chord to the next. Try singing or playing one line all
         the way through the tune; it's a great way to learn the changes.
+      </UiText>
+      <UiText>
+        <strong class="font-semibold text-zinc-950 dark:text-white">Scales</strong> is one staff per
+        chord, with the scale that goes with it, in the order the tune runs. Each staff is labelled with where it is in
+        the form, the chord and the scale. Practice works on this sheet.
       </UiText>
     </section>
 

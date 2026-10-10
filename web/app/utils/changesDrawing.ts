@@ -1,4 +1,4 @@
-import { type ChangesBar, type ChangesLine, type GuideNote, type Pitched, toVexKey } from '~~/engine'
+import { accText, type ChangesBar, type ChangesLine, type GuideNote, type Pitched, signatureAccidentals, toVexKey } from '~~/engine'
 import { BAR_UNITS, cropBand, fitSvg, headCentre, signatureLead, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
 
 /**
@@ -54,10 +54,20 @@ export function beatXs(heads: ReadonlyMap<number, number>, ghostXs: readonly num
 /** two voices' ties curve apart (VexFlow: -1 above the heads, +1 below); null with one voice: VexFlow's own */
 export const tieDirection = (voices: number, v: number): number | null => (voices < 2 ? null : v === 0 ? -1 : 1)
 
-/** "C5", "Bb4": a pitch as a screen reader reads it */
+/** "C5", "B♭4": a pitch as a screen reader reads it */
 function pitchName(p: Pitched): string {
   const [key = '', octave = ''] = toVexKey(p).split('/')
-  return `${key.charAt(0).toUpperCase()}${key.slice(1)}${octave}`
+  return `${key.charAt(0).toUpperCase()}${key.slice(1).replaceAll('#', '♯').replaceAll('b', '♭')}${octave}`
+}
+
+/**
+ * a note that continues the previous line starts a new system with no accidental of its own; restate it (in
+ * parentheses) when its pitch differs from what the key signature gives that letter: '#', 'b', 'n', else null
+ */
+export function restatedAccidental(n: GuideNote, keySig: string | null): string | null {
+  if (!n.tiedIn || !n.pitch) return null
+  if (n.pitch.acc === (signatureAccidentals(keySig).get(n.pitch.letter) ?? 0)) return null
+  return n.pitch.acc === 0 ? 'n' : accText(n.pitch.acc)
 }
 
 /** the aria-label's guide tones: each chord's notes top to bottom with their labels, "–" for a held bar; '' when off */
@@ -125,7 +135,7 @@ const room = (stave: Stave, x: number, width: number): number => width - (stave.
  * a guide tone (or rest) for voice v of count: stems up then down with two voices, VexFlow's choice with one.
  * With two, a rest is written once, in the upper voice; the lower holds a ghost of the same length.
  */
-function tickFor(vf: VexFlowModule, n: GuideNote, v: number, count: number, clef: Clef): Tick {
+function tickFor(vf: VexFlowModule, n: GuideNote, v: number, count: number, clef: Clef, restate: string | null): Tick {
   const duration = DURATIONS[n.beats]
   const dotted = (note: StaveNote): StaveNote => {
     if (n.beats === 3) vf.Dot.buildAndAttach([note], { all: true })
@@ -136,6 +146,7 @@ function tickFor(vf: VexFlowModule, n: GuideNote, v: number, count: number, clef
   const note = dotted(new vf.StaveNote({ keys: [toVexKey(n.pitch)], duration, clef, ...stem }))
   note.setStemStyle(INK) // stems carry their own default (black), not the context's currentColor
   if (n.accidental) note.addModifier(new vf.Accidental(n.accidental), 0)
+  else if (restate) note.addModifier(new vf.Accidental(restate).setAsCautionary(), 0)
   return note
 }
 
@@ -185,7 +196,7 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   const laid = line.bars.map((bar, b): Laid => {
     const width = b === 0 ? barWidth + lead : barWidth
     const stave = staveFor(vf, bar, b === 0, x, width, clef, opts)
-    const voices = bar.voices.map((model, v) => ({ model, ticks: model.map((n) => tickFor(vf, n, v, count, noteClef)) }))
+    const voices = bar.voices.map((model, v) => ({ model, ticks: model.map((n, i) => tickFor(vf, n, v, count, noteClef, b === 0 && i === 0 ? restatedAccidental(n, bar.keySig) : null)) }))
     const grid = voices.length ? Array.from({ length: opts.beats }, () => new vf.GhostNote('q')) : []
     const plain = voices.length ? [] : slashes(vf, opts.beats)
     const lists: readonly (readonly Tick[])[] = voices.length ? [...voices.map((v) => v.ticks), grid] : [plain]

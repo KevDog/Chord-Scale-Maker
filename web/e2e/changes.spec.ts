@@ -93,7 +93,7 @@ test('a chart opens on the Changes sheet, and Scales is the only other sheet', a
   await expect(page.getByRole('button', { name: 'Work on' })).toContainText('Changes')
   await expect(lines(page)).toHaveCount(6)
   await page.getByRole('button', { name: 'Work on' }).click()
-  await expect(page.getByRole('option')).toHaveText(['Scales', 'Changes'])
+  await expect(page.getByRole('option')).toHaveText(['Changes', 'Scales'])
   await page.keyboard.press('Escape')
 })
 

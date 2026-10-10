@@ -2,8 +2,8 @@
 export type SheetKind = 'scales' | 'changes'
 
 export const SHEETS: readonly { value: SheetKind; label: string }[] = [
-  { value: 'scales', label: 'Scales' },
   { value: 'changes', label: 'Changes' },
+  { value: 'scales', label: 'Scales' },
 ]
 
 /** the sheet a chart opens on: a share link's own sheet, else the Changes (Scales when that sheet is off) */

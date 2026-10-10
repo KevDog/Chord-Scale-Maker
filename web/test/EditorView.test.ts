@@ -187,6 +187,8 @@ describe('EditorView guide tones', () => {
     expect(changesSheet(w).props('guides')).toEqual({ third: false, seventh: false })
     expect(buttonCalled(w, '3rd')?.attributes('aria-pressed')).toBe('false')
     expect(buttonCalled(w, '7th')?.attributes('aria-pressed')).toBe('false')
+    expect(buttonCalled(w, '3rd')?.attributes('aria-description')).toBe("Guide tones: show each chord's third")
+    expect(buttonCalled(w, '7th')?.attributes('aria-description')).toBe("Guide tones: show each chord's seventh")
     w.unmount()
   })
 

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter } from '~~/engine'
-import { beatXs, guideAria, tieDirection, voicedBand, voltaShift } from '~/utils/changesDrawing'
+import { beatXs, guideAria, restatedAccidental, tieDirection, voicedBand, voltaShift } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: readonly string[]): ChangesChord => ({
   beat,
@@ -77,6 +77,22 @@ describe('tieDirection', () => {
   })
 })
 
+describe('restatedAccidental', () => {
+  const tied = (letter: Letter, acc: number): GuideNote => note(letter, acc, 60, 0, 4, { tiedIn: true })
+  it('is null for a note that does not continue the last line', () => {
+    expect(restatedAccidental(note(6, -1, 70, 0, 4), null)).toBeNull()
+  })
+  it('restates a tied note the key does not imply: flat, sharp, natural', () => {
+    expect(restatedAccidental(tied(6, -1), 'C')).toBe('b')
+    expect(restatedAccidental(tied(3, 1), null)).toBe('#')
+    expect(restatedAccidental(tied(6, 0), 'F')).toBe('n') // F major has Bb
+  })
+  it('leaves a tied note the signature already gives, and plain naturals without one', () => {
+    expect(restatedAccidental(tied(6, -1), 'F')).toBeNull()
+    expect(restatedAccidental(tied(0, 0), null)).toBeNull()
+  })
+})
+
 describe('guideAria', () => {
   it('is empty with no guide tone on', () => {
     expect(guideAria({ bars: [bar([chord(0, 'C7', [])], [])] })).toBe('')
@@ -101,6 +117,6 @@ describe('guideAria', () => {
 
   it('spells accidentals and names a rest', () => {
     const line: ChangesLine = { bars: [bar([chord(0, 'Gm7', ['3']), chord(2, 'Cm7#5#9x', [])], [[note(6, -1, 70, 0, 2), rest(2, 2)]])] }
-    expect(guideAria(line)).toBe('; guide tones: Bb4 3, rest')
+    expect(guideAria(line)).toBe('; guide tones: B♭4 3, rest')
   })
 })

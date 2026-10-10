@@ -3,8 +3,8 @@ import { firstSheet, SHEETS } from '~/utils/sheets'
 
 describe('SHEETS', () => {
   it('offers Scales and Changes only: guide tones are on the Changes sheet', () => {
-    expect(SHEETS.map((s) => s.value)).toEqual(['scales', 'changes'])
-    expect(SHEETS.map((s) => s.label)).toEqual(['Scales', 'Changes'])
+    expect(SHEETS.map((s) => s.value)).toEqual(['changes', 'scales'])
+    expect(SHEETS.map((s) => s.label)).toEqual(['Changes', 'Scales'])
   })
 })
 
