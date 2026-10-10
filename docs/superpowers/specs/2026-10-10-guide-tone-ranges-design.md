@@ -17,7 +17,7 @@ tritone left in treble) go away where the instrument reaches lower.
 | --- | --- |
 | Comfortable zone | Moves with the instrument (the user's). |
 | Scales sheet | Keeps its fixed written range; unchanged (the user's). |
-| Where the ranges come from | Proposed from standard practical ranges and reviewed by the user (the user's choice); vibes edited by the user to G3–D6. |
+| Where the ranges come from | Proposed from standard practical ranges and reviewed by the user (the user's choice); vibes edited by the user: range G3–D6, comfortable zone a fifth either side of C4–C5, clamped to the range (G3–G5). |
 | Approach | A range on `Part` (the user's): `partFor(instrument)` carries it; the lines read `part.range`. |
 | Readability cap | A line never needs more than two ledger lines: treble G3–D6, bass B1–F4 (written). Every instrument's range lies inside its clef's cap. |
 | Fallback | A part without a range (`CONCERT`, a part built by hand) uses today's clef range (`RANGES`). |
@@ -32,7 +32,7 @@ comfortable zone. MIDI numbers in brackets (C4 = 60).
 | --- | --- | --- | --- | --- |
 | concert | treble | C4–A5 (60–81) | E4–D5 (64–74) | A4 (today's) |
 | piano | treble | C4–C6 (60–84) | E4–E5 (64–76) | B♭4 |
-| vibes | treble | G3–D6 (55–86) | C4–C5 (60–72) | F♯4 |
+| vibes | treble | G3–D6 (55–86) | G3–G5 (55–79) | G4 |
 | flute | treble | C4–C6 (60–84) | G4–G5 (67–79) | C♯5 |
 | guitar | treble | A3–A5 (57–81) | A3–A4 (57–69) | D♯4 |
 | trumpet, flugelhorn | treble | C4–G5 (60–79) | E4–E5 (64–76) | B♭4 |
