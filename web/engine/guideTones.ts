@@ -1,5 +1,5 @@
 import { parseChord, writtenChordRootLenient } from './chord'
-import type { Part, Pitched } from './part'
+import { type Part, type Pitched, rangeOf } from './part'
 import { accidentalsInBar, octaveOf } from './keySignature'
 import { baseQuality } from './qualities'
 import { spellFrom } from './scales'
@@ -157,7 +157,7 @@ export function guideVoices(
     }
     return t
   })
-  const [a, b] = guideToneLines(tones, part.clef, chords.map((c) => c.block ?? 0))
+  const [a, b] = guideToneLines(tones, rangeOf(part), chords.map((c) => c.block ?? 0))
   const at = (j: number): (LineNote | null)[] => {
     const [x = null, y = null] = [a[j], b[j]]
     if (count === 1) return [show.fromThird ? x : y]
