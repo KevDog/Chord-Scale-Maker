@@ -109,6 +109,10 @@ describe('guide tone lines', () => {
     expect(linesOf(['Dm7', 'G7']).a).toEqual(['F4 (3)', 'F4 (7)'])
   })
 
+  it('rule 5: the same two pitches in swapped roles are struck again, not held (F and C: Dm7 3 7, G7sus4 7 4)', () => {
+    expect(linesOf(['Dm7', 'G7sus4'])).toEqual({ a: ['F4 (3)', 'F4 (7)'], b: ['C5 (7)', 'C5 (4)'] })
+  })
+
   it('rule 5: no hold across a block boundary: the same pitches, struck again', () => {
     expect(linesOf(['C7', 'C7b9', 'C7'], CONCERT, [0, 0, 1])).toEqual({ a: ['E4 (3)', 'E4 (3)~', 'E4 (3)'], b: ['Bb4 (7)', 'Bb4 (7)~', 'Bb4 (7)'] })
   })
