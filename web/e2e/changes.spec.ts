@@ -149,11 +149,18 @@ test('a chord held over a line break: an open tie ends line 1, a half-tie starts
   await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 3 | G7\nA | 6 | CMaj7\n') // G7: bars 3-5, across the break after bar 4
   await showGuides(page, 'From 3rd', 'From 7th')
   await guidesDrawn(page)
-  const [one, two] = await Promise.all([drawn(lines(page).nth(0)), drawn(lines(page).nth(1))])
-  const lastHead = Math.max(...one.heads.map((h) => h.x))
-  expect(one.ties.filter((t) => t.x >= lastHead - 3)).toHaveLength(2) // one open tie per voice, from bar 4's notes
-  const firstHead = Math.min(...two.heads.map((h) => h.x))
-  expect(two.ties.filter((t) => t.x < firstHead)).toHaveLength(2) // one half-tie in per voice, before bar 5's notes
+  const openTies = async () => {
+    const one = await drawn(lines(page).nth(0))
+    const lastHead = Math.max(...one.heads.map((h) => h.x))
+    return one.ties.filter((t) => t.x >= lastHead - 3).length
+  }
+  const halfTies = async () => {
+    const two = await drawn(lines(page).nth(1))
+    const firstHead = Math.min(...two.heads.map((h) => h.x))
+    return two.ties.filter((t) => t.x < firstHead).length
+  }
+  await expect.poll(openTies).toBe(2) // one open tie per voice, from bar 4's notes
+  await expect.poll(halfTies).toBe(2) // one half-tie in per voice, before bar 5's notes (polled: line 2 may draw after line 1)
 })
 
 test('guide tones are written for the part: a B♭ trumpet, and a bass clef within E2–C4', async ({ page }) => {
