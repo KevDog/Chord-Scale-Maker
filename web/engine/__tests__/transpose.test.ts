@@ -67,6 +67,12 @@ describe('transpose', () => {
     expect(TRANSPOSE_KEYS).toHaveLength(13)
   })
 
+  it("moves @key lines and a function's key, on the target key's side; the function itself is relative and stays", () => {
+    const doc = parseChart('A | 1 | D7 |  | V7/V\nA | 2 | Bb7 |  | Db: V7/ii\n@key A 2 Am\n').value
+    const out = serializeChart(transposeChart(doc, 'C', 'Eb').doc)
+    expect(out).toBe('A | 1 | F7  |  | V7/V\nA | 2 | Db7 |  | E: V7/ii\n@key A 2 Cm\n')
+  })
+
   it('keeps navigation directives verbatim when transposing', () => {
     const text = 'key: C\nA | 1 | Dm7 | D Dorian\n@ending 1 A 1\n@segno A 1\n@coda A 1\n@nav A 1 D.S. al Coda\n'
     const out = serializeChart(transposeChart(parseChart(text).value, 'C', 'Eb').doc)
