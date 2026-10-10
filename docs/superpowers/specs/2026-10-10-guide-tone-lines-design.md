@@ -104,7 +104,8 @@ From E4 (line A) the nearer tone of Ebmaj7 is D4 (its 7th, a whole step down); f
   today's voice-led pair, since that pair is also complementary and nearly always stepwise.
 - With one on, the single line steps or holds nearly everywhere, and its label row alternates `3` and `7`.
 - `voiceLeadOne` is replaced by the rules above; `voiceLead` (the Viterbi pair search) can be replaced by the same
-  rules or kept as a check against them. The golden fixture will change for every chart.
+  rules or kept as a check against them. The golden fixture does not cover guide tones and is
+  unchanged; the library test and `npm run guide-lines` cover the lines.
 
 ## Open questions (decided)
 
@@ -112,7 +113,7 @@ From E4 (line A) the nearer tone of Ebmaj7 is D4 (its 7th, a whole step down); f
    choose the starting octave so that the line also steps into its own repeat; worth measuring over the library.
 2. **Greedy against global.** *Decided: greedy, with the trade in rule 7.2. Measured over the library (treble):
    moves over a tritone fall from 394 to 18 (the pair search: 3), the largest from 11 to 9 semitones.* These rules are greedy, one chord at a time, so that a reader can apply them by hand.
-   The pair search finds the globally smoothest lines. Measuring how often they differ over the 8,300 library chords
+   The pair search finds the globally smoothest lines. Measuring how often they differ over the 8,000 library chords
    would show whether the greedy lines ever paint themselves into a corner (a leap that a different earlier choice
    would have avoided).
 3. **Tie-break order.** *Decided: centre first, for now.* Rule 3 prefers the centre of the range before the falling resolution. The reverse is

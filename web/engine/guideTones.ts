@@ -8,10 +8,9 @@ import { guideToneLines, type LineNote } from './guideToneLines'
 import type { Candidate, GuideTones } from './voiceLeading'
 
 /**
- * Guide tones (docs/superpowers/specs/2026-10-10-guide-tones-on-changes-design.md): each chord's 3rd and 7th as
- * voices for the Changes sheet, one note a chord, as guide tone lines (guideToneLines.ts, the spec of
- * 2026-10-10-guide-tone-lines-design.md: line A from the 3rd, line B from the 7th, each moving to the nearer guide
- * tone), split at barlines, with accidentals by the measure rule across both voices. No DOM, like sheet.ts. The
+ * Guide tones on the Changes sheet: guide tone lines (docs/superpowers/specs/2026-10-10-guide-tone-lines-design.md:
+ * line A from the first chord's 3rd, line B from its 7th, each moving to the nearer guide tone of the next chord) as
+ * voices, one note a chord (docs/superpowers/specs/2026-10-10-guide-tones-on-changes-design.md), split at barlines, with accidentals by the measure rule across both voices. No DOM, like sheet.ts. The
  * timeline (guideToneTimeline.ts) and the lines (guideToneLines.ts) live in their own modules.
  */
 

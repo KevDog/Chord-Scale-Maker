@@ -182,7 +182,7 @@ describe('EditorView guide tones', () => {
     navigate.mockClear()
   })
 
-  it('starts with the 3rd and 7th off', async () => {
+  it('starts with From 3rd and From 7th off', async () => {
     const w = await mount()
     expect(changesSheet(w).props('guides')).toEqual({ fromThird: false, fromSeventh: false })
     expect(buttonCalled(w, 'From 3rd')?.attributes('aria-pressed')).toBe('false')
