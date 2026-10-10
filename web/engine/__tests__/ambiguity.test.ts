@@ -47,8 +47,9 @@ describe('the ambiguity report', () => {
   })
 
   it("keeps the chord's own numeral when stating it would name a target", () => {
-    const misty = report(readFileSync('../charts/misty.txt', 'utf8'))
-    expect(misty.find((l) => l.startsWith('bar 23 Bb7:'))).toContain("if it's V7, ")
+    // the end of Misty's bridge, before its bar 23 stated V7: Bb7 goes on through Edim7, so the rules can only guess
+    const bridge = 'title: T\nkey: Eb\nA | 1 | Am7\nA | 2 | D7\nA | 2 | F7\nA | 3 | Bb7\nA | 3 | Edim7\nA | 4 | Fm7\nA | 4 | Bb7\nA | 5 | EbMaj7\n'
+    expect(report(bridge).find((l) => l.startsWith('bar 3 Bb7:'))).toContain("if it's V7, ")
   })
 
   it('ends with the problems, by line number', () => {
