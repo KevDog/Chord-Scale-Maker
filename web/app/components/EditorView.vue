@@ -9,9 +9,9 @@
         <UiText v-else role="status" class="text-sm/6!">A shared chart. It isn’t saved in this browser until you save it.</UiText>
         <UiButton v-if="shared" color="note" :disabled="editor.fatal.value" @click="saveShared"><BookmarkIcon data-slot="icon" />Save to My charts</UiButton>
         <UiButton v-if="saved?.edited.value" plain @click="revertOpen = true"><ArrowUturnLeftIcon data-slot="icon" />Revert to library version</UiButton>
-        <UiButton v-if="saved" outline :disabled="editor.fatal.value" @click="saveCopy"><DocumentDuplicateIcon data-slot="icon" />Save as a copy</UiButton>
-        <UiButton outline @click="download"><ArrowDownTrayIcon data-slot="icon" />Download</UiButton>
-        <UiButton outline :disabled="editor.fatal.value" @click="openShare"><LinkIcon data-slot="icon" />Share</UiButton>
+        <UiButton v-if="saved" color="note" :disabled="editor.fatal.value" @click="saveCopy"><DocumentDuplicateIcon data-slot="icon" />Save as a copy</UiButton>
+        <UiButton color="note" @click="download"><ArrowDownTrayIcon data-slot="icon" />Download</UiButton>
+        <UiButton color="note" :disabled="editor.fatal.value" @click="openShare"><LinkIcon data-slot="icon" />Share</UiButton>
       </div>
       <UiText v-if="copyError" role="alert" class="mt-2 text-sm/6! text-red-700! dark:text-red-400!">{{ copyError }}</UiText>
     </div>
@@ -27,131 +27,135 @@
       </UiDialogActions>
     </UiDialog>
 
-    <UiText v-if="!editorShown && editor.diagnostics.value.length" role="status" class="text-amber-700! print:hidden dark:text-amber-400!">
-      The chart's text has {{ editor.diagnostics.value.length === 1 ? 'a problem' : `${editor.diagnostics.value.length} problems` }}.
-      <button type="button" class="font-semibold underline" @click="prefs.showEditor.value = true">Edit</button> to fix {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
-    </UiText>
-
-    <div v-if="editorShown" class="grid gap-8 print:hidden lg:grid-cols-2">
-      <section aria-labelledby="grid-heading" class="min-w-0">
-        <div class="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-          <UiSubheading id="grid-heading">Chart</UiSubheading>
+    <!-- the working area, set off from the header in a tinted box (Blue Note palette); muted text darkens to
+         zinc-600 on the tint so it keeps AA contrast (zinc-500 would drop below 4.5:1 on any non-white background) -->
+    <div class="space-y-8 rounded-2xl bg-note-100 p-5 ring-1 ring-note-200 sm:p-6 [&_[data-slot=text]]:text-zinc-600 dark:bg-white/5 dark:ring-white/10 dark:[&_[data-slot=text]]:text-zinc-400 print:rounded-none print:bg-transparent print:p-0 print:ring-0">
+      <UiText v-if="!editorShown && editor.diagnostics.value.length" role="status" class="text-amber-800! print:hidden dark:text-amber-400!">
+        The chart's text has {{ editor.diagnostics.value.length === 1 ? 'a problem' : `${editor.diagnostics.value.length} problems` }}.
+        <button type="button" class="font-semibold underline" @click="prefs.showEditor.value = true">Edit</button> to fix {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
+      </UiText>
+  
+      <div v-if="editorShown" class="grid gap-8 print:hidden lg:grid-cols-2">
+        <section aria-labelledby="grid-heading" class="min-w-0">
+          <div class="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
+            <UiSubheading id="grid-heading">Chart</UiSubheading>
+          </div>
+          <div v-if="editor.fatal.value" class="rounded-lg bg-red-500/10 p-4 text-sm/6 text-red-700 dark:text-red-400">
+            This chart is over a size limit. Shorten it in the text editor to edit it here.
+          </div>
+          <div v-else class="max-h-[60vh] overflow-auto pr-1">
+            <ChartGrid :doc="editor.doc.value" @update:doc="editor.setDoc" />
+          </div>
+        </section>
+        <section id="text-pane" aria-labelledby="text-heading" class="min-w-0">
+          <div class="mb-3 flex items-center gap-2">
+            <UiSubheading id="text-heading">Text</UiSubheading>
+            <HelpTip label="How the text editor works">
+              <span class="block">One line per chord: <code class="font-mono text-xs whitespace-nowrap">section | bar | chord | scale</code>, in concert pitch. Leave the scale out to use the chord's default.</span>
+              <span class="mt-2 block"><code class="font-mono text-xs">title:</code>, <code class="font-mono text-xs">subtitle:</code>, <code class="font-mono text-xs">composer:</code>, <code class="font-mono text-xs">key:</code> and <code class="font-mono text-xs">form:</code> set the heading, lines starting with <code class="font-mono text-xs">#</code> are comments, and <code class="font-mono text-xs">@copy A B 8</code> repeats section A as B, 8 bars later.</span>
+              <span class="mt-2 block">The text and the grid stay in sync: edit either one. Problems are listed under the text.</span>
+            </HelpTip>
+          </div>
+          <ChartText :text="editor.text.value" :diagnostics="editor.diagnostics.value" @update:text="editor.setText" />
+        </section>
+      </div>
+  
+      <!-- focus mode: this section alone, over the whole page (and printed as usual) -->
+      <section
+        v-bind="focus.on.value ? { role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Focus mode' } : { 'aria-label': 'Preview' }"
+        :class="[
+          'space-y-6',
+          focus.on.value && 'fixed inset-0 z-50 overflow-y-auto bg-zinc-100 px-4 pb-8 dark:bg-zinc-900 print:static print:overflow-visible print:bg-white print:p-0',
+        ]"
+      >
+        <div v-if="focus.on.value" ref="focusBar" class="sticky top-0 z-10 -mx-4 flex justify-end bg-zinc-100/90 px-4 py-3 backdrop-blur-sm dark:bg-zinc-900/90 print:hidden">
+          <UiButton outline @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-500 dark:text-zinc-400">Esc</kbd></UiButton>
         </div>
-        <div v-if="editor.fatal.value" class="rounded-lg bg-red-500/10 p-4 text-sm/6 text-red-700 dark:text-red-400">
-          This chart is over a size limit. Shorten it in the text editor to edit it here.
+        <div v-show="!focus.on.value" class="space-y-4 print:hidden">
+          <PreviewControls
+            v-model:sheet="sheet"
+            v-model:instrument="prefs.instrument.value"
+            v-model:mode="mode"
+            v-model:start="prefs.start.value"
+            v-model:intervals="prefs.intervals.value"
+            v-model:numerals="prefs.numerals.value"
+            v-model:scale-names="prefs.scaleNames.value"
+          >
+            <!-- Level: how sophisticated each chord's scale is (engine/levels.ts); a dropdown in the toolbar -->
+            <template v-if="levelsOn && !editor.fatal.value" #level>
+              <UiListbox :model-value="scaleLevel.level.value" @update:model-value="(v) => v && setLevel(v)">
+                <template #selected="{ value }"><UiListboxLabel>{{ levelLabel(value) }}</UiListboxLabel></template>
+                <UiListboxOption v-for="o in LEVEL_OPTIONS" :key="o.value" :value="o.value"><UiListboxLabel>{{ o.label }}</UiListboxLabel></UiListboxOption>
+              </UiListbox>
+              <UiButton v-if="scaleLevel.level.value === 'random'" color="note" aria-label="Shuffle" title="Deal a new random scale for each chord" @click="shuffle"><ArrowPathIcon data-slot="icon" /></UiButton>
+            </template>
+            <template v-if="!editor.fatal.value" #transpose>
+              <ChartTranspose :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
+            </template>
+            <template v-if="!editor.fatal.value" #display>
+              <UiButton color="note" :aria-expanded="editorShown" title="Show or hide the chart editor" @click="prefs.showEditor.value = !prefs.showEditor.value"><CodeBracketIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</UiButton>
+              <UiButton color="note" title="Show only the sheet music (Esc to leave)" @click="enterFocus"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
+              <UiButton color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
+            </template>
+          </PreviewControls>
+          <UiText v-if="levelNote" role="status" class="text-sm/6!">{{ levelNote }}</UiText>
+          <UiText v-if="transposed" role="status">{{ transposed }}</UiText>
+          <PracticePanel
+            v-if="practiceOn && sheet === 'scales' && !editor.fatal.value"
+            :mode="mode"
+            :start-text="prefs.start.value"
+            :boxes="practiceBoxesNow"
+            :selection="selection"
+            :lit="litNow"
+            @update:selection="practice.setSelection(mode, $event)"
+          />
+          <div class="pt-1">
+            <UiButton plain class="text-sm!" title="Something wrong with this chart? Send it over with the details" @click="reportError"><FlagIcon data-slot="icon" />Report a chart error</UiButton>
+          </div>
         </div>
-        <div v-else class="max-h-[60vh] overflow-auto pr-1">
-          <ChartGrid :doc="editor.doc.value" @update:doc="editor.setDoc" />
+  
+        <div :class="['relative rounded-xl bg-white p-4 ring-1 ring-note-200 dark:bg-zinc-900 dark:ring-white/10 print:rounded-none print:bg-transparent print:p-0 print:ring-0', focus.on.value && 'mx-auto max-w-6xl print:max-w-none']">
+          <div v-if="rendering.busy.value" role="status" aria-label="Loading" class="pointer-events-none absolute inset-0 z-10 flex items-start justify-center pt-10 print:hidden"><UiSpinner /></div>
+          <UiText v-if="editor.fatal.value" class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
+          <ChangesSheet
+            v-else-if="sheet === 'changes'"
+            :doc="editor.doc.value"
+            :title="editor.meta.value.title"
+            :subtitle="editor.heading.value.subtitle"
+            :composer="editor.heading.value.composer"
+            :part="part"
+            :instrument-label="instrumentLabel(prefs.instrument.value)"
+            :numerals="prefs.numerals.value"
+            :scales="prefs.scaleNames.value"
+          />
+          <GuideToneSheet
+            v-else-if="sheet === 'guideTones'"
+            :rows="editor.rows.value"
+            :title="editor.meta.value.title"
+            :subtitle="editor.heading.value.subtitle"
+            :composer="editor.heading.value.composer"
+            :part="part"
+            :instrument-label="instrumentLabel(prefs.instrument.value)"
+            :beats="editor.beats.value"
+            :intervals="prefs.intervals.value"
+          />
+          <ScaleSheet
+            v-else
+            :rows="editor.rows.value"
+            :title="editor.meta.value.title"
+            :subtitle="editor.heading.value.subtitle"
+            :composer="editor.heading.value.composer"
+            :part="part"
+            :instrument-label="instrumentLabel(prefs.instrument.value)"
+            :start="prefs.start.value"
+            :mode="mode"
+            :per-page="PER_PAGE"
+            :intervals="prefs.intervals.value"
+            :practice="selection"
+          />
         </div>
-      </section>
-      <section id="text-pane" aria-labelledby="text-heading" class="min-w-0">
-        <div class="mb-3 flex items-center gap-2">
-          <UiSubheading id="text-heading">Text</UiSubheading>
-          <HelpTip label="How the text editor works">
-            <span class="block">One line per chord: <code class="font-mono text-xs whitespace-nowrap">section | bar | chord | scale</code>, in concert pitch. Leave the scale out to use the chord's default.</span>
-            <span class="mt-2 block"><code class="font-mono text-xs">title:</code>, <code class="font-mono text-xs">subtitle:</code>, <code class="font-mono text-xs">composer:</code>, <code class="font-mono text-xs">key:</code> and <code class="font-mono text-xs">form:</code> set the heading, lines starting with <code class="font-mono text-xs">#</code> are comments, and <code class="font-mono text-xs">@copy A B 8</code> repeats section A as B, 8 bars later.</span>
-            <span class="mt-2 block">The text and the grid stay in sync: edit either one. Problems are listed under the text.</span>
-          </HelpTip>
-        </div>
-        <ChartText :text="editor.text.value" :diagnostics="editor.diagnostics.value" @update:text="editor.setText" />
       </section>
     </div>
-
-    <!-- focus mode: this section alone, over the whole page (and printed as usual) -->
-    <section
-      v-bind="focus.on.value ? { role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Focus mode' } : { 'aria-label': 'Preview' }"
-      :class="[
-        'space-y-6',
-        focus.on.value && 'fixed inset-0 z-50 overflow-y-auto bg-zinc-100 px-4 pb-8 dark:bg-zinc-900 print:static print:overflow-visible print:bg-white print:p-0',
-      ]"
-    >
-      <div v-if="focus.on.value" ref="focusBar" class="sticky top-0 z-10 -mx-4 flex justify-end bg-zinc-100/90 px-4 py-3 backdrop-blur-sm dark:bg-zinc-900/90 print:hidden">
-        <UiButton outline @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-500 dark:text-zinc-400">Esc</kbd></UiButton>
-      </div>
-      <div v-show="!focus.on.value" class="space-y-4 print:hidden">
-        <PreviewControls
-          v-model:sheet="sheet"
-          v-model:instrument="prefs.instrument.value"
-          v-model:mode="mode"
-          v-model:start="prefs.start.value"
-          v-model:intervals="prefs.intervals.value"
-          v-model:numerals="prefs.numerals.value"
-          v-model:scale-names="prefs.scaleNames.value"
-        >
-          <!-- Level: how sophisticated each chord's scale is (engine/levels.ts); a dropdown in the toolbar -->
-          <template v-if="levelsOn && !editor.fatal.value" #level>
-            <UiListbox :model-value="scaleLevel.level.value" @update:model-value="(v) => v && setLevel(v)">
-              <template #selected="{ value }"><UiListboxLabel>{{ levelLabel(value) }}</UiListboxLabel></template>
-              <UiListboxOption v-for="o in LEVEL_OPTIONS" :key="o.value" :value="o.value"><UiListboxLabel>{{ o.label }}</UiListboxLabel></UiListboxOption>
-            </UiListbox>
-            <UiButton v-if="scaleLevel.level.value === 'random'" outline aria-label="Shuffle" title="Deal a new random scale for each chord" @click="shuffle"><ArrowPathIcon data-slot="icon" /></UiButton>
-          </template>
-          <template v-if="!editor.fatal.value" #transpose>
-            <ChartTranspose :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
-          </template>
-          <template v-if="!editor.fatal.value" #display>
-            <UiButton outline :aria-expanded="editorShown" title="Show or hide the chart editor" @click="prefs.showEditor.value = !prefs.showEditor.value"><CodeBracketIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</UiButton>
-            <UiButton outline title="Show only the sheet music (Esc to leave)" @click="enterFocus"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
-            <UiButton color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
-          </template>
-        </PreviewControls>
-        <UiText v-if="levelNote" role="status" class="text-sm/6!">{{ levelNote }}</UiText>
-        <UiText v-if="transposed" role="status">{{ transposed }}</UiText>
-        <PracticePanel
-          v-if="practiceOn && sheet === 'scales' && !editor.fatal.value"
-          :mode="mode"
-          :start-text="prefs.start.value"
-          :boxes="practiceBoxesNow"
-          :selection="selection"
-          :lit="litNow"
-          @update:selection="practice.setSelection(mode, $event)"
-        />
-        <div class="pt-1">
-          <UiButton plain class="text-sm!" title="Something wrong with this chart? Send it over with the details" @click="reportError"><FlagIcon data-slot="icon" />Report a chart error</UiButton>
-        </div>
-      </div>
-
-      <div :class="['relative', focus.on.value && 'mx-auto max-w-6xl print:max-w-none']">
-        <div v-if="rendering.busy.value" role="status" aria-label="Loading" class="pointer-events-none absolute inset-0 z-10 flex items-start justify-center pt-10 print:hidden"><UiSpinner /></div>
-        <UiText v-if="editor.fatal.value" class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
-        <ChangesSheet
-          v-else-if="sheet === 'changes'"
-          :doc="editor.doc.value"
-          :title="editor.meta.value.title"
-          :subtitle="editor.heading.value.subtitle"
-          :composer="editor.heading.value.composer"
-          :part="part"
-          :instrument-label="instrumentLabel(prefs.instrument.value)"
-          :numerals="prefs.numerals.value"
-          :scales="prefs.scaleNames.value"
-        />
-        <GuideToneSheet
-          v-else-if="sheet === 'guideTones'"
-          :rows="editor.rows.value"
-          :title="editor.meta.value.title"
-          :subtitle="editor.heading.value.subtitle"
-          :composer="editor.heading.value.composer"
-          :part="part"
-          :instrument-label="instrumentLabel(prefs.instrument.value)"
-          :beats="editor.beats.value"
-          :intervals="prefs.intervals.value"
-        />
-        <ScaleSheet
-          v-else
-          :rows="editor.rows.value"
-          :title="editor.meta.value.title"
-          :subtitle="editor.heading.value.subtitle"
-          :composer="editor.heading.value.composer"
-          :part="part"
-          :instrument-label="instrumentLabel(prefs.instrument.value)"
-          :start="prefs.start.value"
-          :mode="mode"
-          :per-page="PER_PAGE"
-          :intervals="prefs.intervals.value"
-          :practice="selection"
-        />
-      </div>
-    </section>
   </div>
 </template>
 

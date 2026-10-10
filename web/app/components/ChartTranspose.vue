@@ -1,5 +1,5 @@
 <template>
-  <UiButton outline :disabled="!keyValid" :title="keyValid ? undefined : `Set the chart's key first`" @click="openDialog"><ArrowsUpDownIcon data-slot="icon" />Transpose…</UiButton>
+  <UiButton color="note" :disabled="!keyValid" :title="keyValid ? undefined : `Set the chart's key first`" @click="openDialog"><ArrowsUpDownIcon data-slot="icon" />Transpose…</UiButton>
 
   <UiDialog :open="open" size="md" @close="open = false">
     <UiDialogTitle>Transpose chart</UiDialogTitle>
