@@ -51,6 +51,10 @@ describe('guide tone lines', () => {
     expect(linesOf(['Bb6', 'G7']).a).toEqual(['D5 (3)', 'B4 (3)'])
   })
 
+  it('rule 3.1: two tones equally near, the lower further from the centre: the upper (F#4 rather than D4 from E4)', () => {
+    expect(linesOf(['CMaj7', 'D'])).toEqual({ a: ['E4 (3)', 'F#4 (3)'], b: ['B4 (7)', 'D5 (1)'] })
+  })
+
   it('rule 3.2: equally near and equally central: the lower (F#4 rather than C5 from A4)', () => {
     expect(linesOf(['F7', 'D7']).a).toEqual(['A4 (3)', 'F#4 (3)'])
   })

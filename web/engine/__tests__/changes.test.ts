@@ -212,6 +212,20 @@ describe('guide tones on the Changes sheet', () => {
     expect(tied('key: C\nA | 1 | C7\nA | 2 | C7b9\nB | 3 | C7\nB | 4 | Dm7\n')).toEqual(['64~', '^64', '64', '65'])
     const endings = 'key: C\nA | 1 | Dm7\nA | 2 | C7\nA | 3 | C7\nA | 4 | C7\n@ending 1 A 3 3\n@ending 2 A 4 4\n'
     expect(tied(endings)).toEqual(['65', '64~', '^64', '64']) // into the 1st ending tied; the 2nd ending struck again
+    const after = 'key: C\nA | 1 | Dm7\nA | 2 | C7\nA | 3 | C7\nA | 4 | C7\nA | 5 | C7\n@ending 1 A 3 3\n@ending 2 A 4 4\n'
+    expect(tied(after)).toEqual(['65', '64~', '^64', '64~', '^64~', '^64~', '^64~', '^64']) // from the 2nd ending on, holds tie again (the last C7 fills its phrase)
+  })
+
+  it('continues the lines into a 2nd ending from the 1st ending, rather than starting them again (rule 9)', () => {
+    const text = 'key: C\nA | 1 | CMaj7\nA | 2 | A7\nA | 3 | Dm7\nA | 4 | G7\n@ending 1 A 3 3\n@ending 2 A 4 4\n'
+    const b = barsOf(text, BOTH)
+    expect(b.map((x) => x.voices.map((v) => v[0]?.pitch?.midi))).toEqual([
+      [71, 64],
+      [73, 67],
+      [72, 65],
+      [71, 65], // G7: B4 over F4, from C5 over F4; a fresh start would give F5 over B4
+    ])
+    expect(b[3]?.chords[0]?.guide).toEqual(['3', '7'])
   })
 
   it('reads accidentals against the signature when it is drawn, and against C when it is not', () => {
