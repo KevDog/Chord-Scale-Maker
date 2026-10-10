@@ -13,6 +13,7 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
 import { buildChanges, chartBeats, CONCERT, expandRowLines, guideTonesFor, guideToneLines, guideToneTimeline, isSyncCopy, parseChart, resolveScale, rootName, voiceLead } from '../engine'
 import type { ChartLine, GuideInput, LinedRow, Part, Pitched } from '../engine'
+import { octaveOf } from '../engine/keySignature'
 
 const args = process.argv.slice(2)
 const flag = (f: string): boolean => args.includes(f)
@@ -79,14 +80,16 @@ function drawnChords(text: string): Chord[] {
     blocks.push(run)
   }
   let block = -1
-  let lastKey = ''
+  let from = -1 // as buildChanges: a new block at each sheet block and at each 2nd (or later) ending
+  let ending = 0
   return blocks.flatMap((b, k) =>
     b.rows.flatMap((i): Chord[] => {
       const e = eventAt.get(i)
       if (!e) return []
       const volta = voltaAt.get(Math.floor(e.start / beats)) ?? 0
-      const key = `${k}|${volta > 1 ? volta : 0}`
-      if (key !== lastKey) [block, lastKey] = [block + 1, key]
+      if (k !== from || (volta > 1 && volta !== ending)) block++
+      from = k
+      ending = volta
       const scale = resolveScale(e.row)
       return [{ row: i, chord: e.chord, ...(scale ? { scale } : {}), start: e.start, beats: e.beats, block, at: `${e.row.section} ${e.row.bar}`, bar: Math.floor(e.start / beats) + 1 }]
     }),
@@ -94,7 +97,7 @@ function drawnChords(text: string): Chord[] {
 }
 
 type Note = { midi: number; name: string; label: string } | null
-const name = (p: Pitched): string => `${rootName(p)}${Math.floor(p.midi / 12) - 1}`
+const name = (p: Pitched): string => `${rootName(p)}${octaveOf(p)}`
 const noteOf = (c: { pitch: Pitched; label: string } | null): Note => (c ? { midi: c.pitch.midi, name: name(c.pitch), label: c.label.replace(/^[b#]+/, '') } : null)
 
 type Seq = Readonly<{ chart: string; chords: readonly Chord[]; lines: readonly (readonly Note[])[] }> // lines: one note a chord, per line
