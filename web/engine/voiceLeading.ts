@@ -109,3 +109,13 @@ export function voiceLead(tones: readonly (GuideTones | null)[], clef: Clef): re
   flush()
   return [one, two]
 }
+
+/**
+ * one line alone, on the 3rd (role 0) or the 7th (role 1) of every chord, or a rest: the smoothest such line in the
+ * part's range. Both roles get the same pitch, so the pair search's line 1 is the smoothest single line.
+ */
+export function voiceLeadOne(tones: readonly (GuideTones | null)[], role: 0 | 1, clef: Clef): (Candidate | null)[] {
+  const pick = (t: GuideTones): GuideTone => (role ? t.seventh : t.third)
+  return voiceLead(tones.map((t) => t && { third: pick(t), seventh: pick(t) }), clef)[0]
+    .map((c) => c && { ...c, role }) // the pair search alternates roles over identical pitches; report the one asked for
+}

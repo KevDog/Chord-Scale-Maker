@@ -1,4 +1,4 @@
-import { accidentalsInBar, accText, type GuideNote, type GuideSystem, octaveOf, toVexKey } from '~~/engine'
+import { accidentalsInBar, accText, type GuideSystem, type LegacyGuideNote, octaveOf, toVexKey } from '~~/engine'
 import { BAR_UNITS, CLEF_SPACE, cropBand, fitSvg, headCentre, signatureLead, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
 
 /**
@@ -24,7 +24,7 @@ export type SystemLayout = Readonly<{
  * altered note shows its sharp or flat, even repeated in the bar, and a natural shows where an altered note came before
  * on that letter and octave. A tied-in note writes nothing, but still counts as what came before.
  */
-export function barAccidentals(notes: readonly GuideNote[], tiedIn: (i: number) => boolean, keySig: string | null): (string | null)[] {
+export function barAccidentals(notes: readonly LegacyGuideNote[], tiedIn: (i: number) => boolean, keySig: string | null): (string | null)[] {
   const pitched = notes.flatMap((n, i) => (n.pitch ? [{ i, pitch: n.pitch }] : []))
   const accs = keySig
     ? accidentalsInBar(pitched.map(({ i, pitch }) => ({ letter: pitch.letter, acc: pitch.acc, octave: octaveOf(pitch), tiedIn: tiedIn(i) })), keySig)
@@ -34,7 +34,7 @@ export function barAccidentals(notes: readonly GuideNote[], tiedIn: (i: number) 
   return out
 }
 
-function legacyAccidentals(notes: readonly Readonly<{ pitch: NonNullable<GuideNote['pitch']>; tiedIn: boolean }>[]): (string | null)[] {
+function legacyAccidentals(notes: readonly Readonly<{ pitch: NonNullable<LegacyGuideNote['pitch']>; tiedIn: boolean }>[]): (string | null)[] {
   const before = new Map<string, number>() // the last accidental on each letter + octave in the bar
   return notes.map(({ pitch, tiedIn }) => {
     const place = `${pitch.letter}/${octaveOf(pitch)}`
