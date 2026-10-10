@@ -4,19 +4,19 @@
       <p class="mb-2 inline-block bg-note-100 px-2 py-0.5 font-display text-xs font-bold tracking-[0.2em] text-note-800 uppercase dark:bg-note-900 dark:text-note-200" aria-hidden="true">Help</p>
       <UiHeading>How it all works</UiHeading>
       <UiText>
-        Nothing here is complicated, but a few things are tucked away. Here's the tour. If something's still unclear,
+        Nothing here is complicated to use (I hope), but a few things are tucked away. Here's the tour. If something's still unclear,
         <UiTextLink href="/contact">tell me</UiTextLink> and I'll fix the page (or the app).
       </UiText>
       <div class="space-y-3 pt-2">
         <UiSubheading>A disclaimer</UiSubheading>
         <UiText>
-          Here is the major disclaimer regarding this site: Music isn't math. I'm not a PhD in music theory, and my
+          One critical thing to know about this site: music both is and isn't math. I'm not a PhD in music theory, and my
           degree is in computer science. I've been writing software for about thirty years and playing vibraphone for
           about ten. I know enough to make this work, but the logic behind the functional analysis was put together by
           compiling many internet resources and boiling them down to a series of logical tests.
         </UiText>
         <UiText>
-          But jazz isn't logic, it's an art. I'm not a good enough player to know if the analysis is right in all
+          But jazz isn't made of logic, it's made of art. I'm not a good enough player to know if the analysis is right in all
           cases, and I don't have the time to check every tune in the library. If you see something that looks wrong,
           please <UiTextLink href="/contact">let me know</UiTextLink> and I'll fix it. There are also some clickable
           links in various places that will show you the reasoning behind the analysis, and you can use those to check
