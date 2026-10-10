@@ -3,8 +3,8 @@
     <!-- labelled groups: the controls wrap on the left, Display pinned top-right (Work on · Instrument · Level · Show · Transposition · Spell Scale | Display); top-aligned so every label sits on one line -->
     <div class="flex items-start justify-between gap-x-4 gap-y-3">
       <div class="flex flex-wrap items-start gap-x-4 gap-y-3">
-      <UiField v-if="sheets.length > 1" class="w-40">
-        <UiLabel>Work on</UiLabel>
+      <UiField v-if="sheets.length > 1" class="w-36">
+        <UiLabel class="pl-3">Work on</UiLabel>
         <!-- a plain wrapper (not data-slot=control) so the label gap matches the other groups -->
         <div class="flex items-center gap-2">
           <UiListbox v-model="sheet">
@@ -13,14 +13,14 @@
           </UiListbox>
         </div>
       </UiField>
-      <UiField class="w-40">
-        <UiLabel>Instrument</UiLabel>
+      <UiField class="w-36">
+        <UiLabel class="pl-3">Instrument</UiLabel>
         <div class="flex items-center gap-2">
           <UiListbox v-model="instrument">
             <template #selected="{ value }"><UiListboxLabel>{{ instrumentOption(value) }}</UiListboxLabel></template>
             <UiListboxGroup v-for="g in INSTRUMENT_GROUPS" :key="g.label" :label="g.label">
               <UiListboxOption v-for="name in g.instruments" :key="name" :value="name">
-                <UiListboxLabel>{{ instrumentOption(name) }}</UiListboxLabel>
+                <UiListboxLabel>{{ instrumentOption(name) }}:</UiListboxLabel>
                 <UiListboxDescription>{{ INSTRUMENTS[name].description }}</UiListboxDescription>
               </UiListboxOption>
             </UiListboxGroup>
@@ -28,11 +28,11 @@
         </div>
       </UiField>
       <UiField v-if="$slots.level">
-        <UiLabel>Level</UiLabel>
+        <UiLabel class="pl-3">Level</UiLabel>
         <div class="flex items-center gap-2"><slot name="level" /></div>
       </UiField>
       <UiField>
-        <UiLabel>Show</UiLabel>
+        <UiLabel class="pl-3">Show</UiLabel>
         <div class="flex flex-wrap gap-2 *:whitespace-nowrap">
           <UiButton v-if="sheet !== 'changes'" v-bind="intervals ? { color: 'note' } : { outline: true }" :aria-pressed="intervals" title="Label each note against the chord root (on screen only)" @click="intervals = !intervals">Intervals</UiButton>
           <template v-else>
@@ -42,13 +42,13 @@
         </div>
       </UiField>
       <UiField>
-        <UiLabel>Transposition</UiLabel>
+        <UiLabel class="pl-3">Transposition</UiLabel>
         <div class="flex flex-wrap items-center gap-2">
           <slot name="transpose" />
         </div>
       </UiField>
       <UiField v-if="sheet === 'scales'">
-        <UiLabel>Spell Scale</UiLabel>
+        <UiLabel class="pl-3">Spell Scale</UiLabel>
         <div class="flex flex-wrap items-center gap-2">
           <UiListbox v-model="mode" class="w-32" aria-label="Where each scale starts">
             <template #selected="{ value }"><UiListboxLabel>{{ modeLabel(value) }}</UiListboxLabel></template>
@@ -61,7 +61,7 @@
       </UiField>
       </div>
       <UiField class="shrink-0">
-        <UiLabel class="block text-right">Display</UiLabel>
+        <UiLabel class="block pr-3 text-right">Display</UiLabel>
         <div class="flex flex-wrap justify-end gap-2 *:whitespace-nowrap"><slot name="display" /></div>
       </UiField>
     </div>

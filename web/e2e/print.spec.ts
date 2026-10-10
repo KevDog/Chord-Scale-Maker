@@ -31,7 +31,7 @@ for (const [chart, instrument, pages] of [
   test(`prints guide tones 8 systems per page (${chart}, ${instrument})`, async ({ page }) => {
     await page.goto(`/song?chart=${chart}`)
     await chooseInstrument(page, instrument)
-    await chooseSheet(page, 'Guide tones')
+    await chooseSheet(page, 'Guide Tones')
     await expect(page.locator('svg[aria-label^="Line 1:"]').first()).toBeVisible()
     await expect(page.getByRole('separator')).toHaveCount(0) // no on-screen page divider
     await page.emulateMedia({ media: 'print' })

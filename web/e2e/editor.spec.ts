@@ -91,7 +91,7 @@ test('interval labels show on screen, against the chord root, on until turned of
 
 test('guide tones draw both lines, four bars a system, without the scale controls', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
-  await chooseSheet(page, 'Guide tones')
+  await chooseSheet(page, 'Guide Tones')
   await expect(page.getByText('Full Form, Alternate Changes · G minor · AAB (Guide Tone Lines)')).toBeVisible()
   await expect(page.locator('svg[aria-label^="Line 1:"]')).toHaveCount(8) // 32 bars
   await expect(page.locator('svg[aria-label^="Line 2:"]')).toHaveCount(8)
@@ -119,7 +119,7 @@ test('the text editor explains itself on hover and on focus', async ({ page }) =
 test('guide tone notation follows dark mode (no hard-coded black)', async ({ page }) => {
   await page.goto('/song?chart=f_jazz_blues')
   await page.getByRole('button', { name: /Switch to dark mode/ }).click()
-  await chooseSheet(page, 'Guide tones')
+  await chooseSheet(page, 'Guide Tones')
   await expect(page.locator('svg[aria-label^="Line 1:"]').first()).toBeVisible()
   const black = page.locator('svg[aria-label^="Line"] [stroke="black"], svg[aria-label^="Line"] [fill="black"], svg[aria-label^="Line"] [stroke="#000000"], svg[aria-label^="Line"] [fill="#000000"]')
   await expect(black).toHaveCount(0)
@@ -210,7 +210,7 @@ test('levels take over a library chart’s own scale choices, and Standard bring
 
 test('a waltz’s guide tones are in 3/4: dotted halves, three beats a bar', async ({ page }) => {
   await page.goto('/song?chart=someday_my_prince_will_come')
-  await chooseSheet(page, 'Guide tones')
+  await chooseSheet(page, 'Guide Tones')
   const line1 = page.locator('svg[aria-label^="Line 1:"]').first()
   await expect(line1).toBeVisible()
   await expect(line1.locator('.vf-timesignature, g.vf-timesignature').first()).toBeAttached()
@@ -235,7 +235,7 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
       // groups are top-aligned (items-start), so distinct tops = visual rows
       return { rows: new Set(kids.map((r) => Math.round(r.top))).size, widths: `${row.clientWidth}: ${kids.map((r) => Math.round(r.width)).join(' + ')}` }
     })
-  for (const sheet of ['Scales', 'Guide tones', 'Changes']) {
+  for (const sheet of ['Scales', 'Guide Tones', 'Changes']) {
     await chooseSheet(page, sheet)
     const { rows, widths } = await layout()
     expect(rows, `${sheet} (${widths})`).toBeLessThanOrEqual(2)

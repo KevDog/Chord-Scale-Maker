@@ -55,7 +55,7 @@ describe('EditorView', () => {
 
   it('transposes the preview for the chosen instrument and start note', async () => {
     const w = await mount()
-    await chooseInstrument(w, 'Tenor sax')
+    await chooseInstrument(w, 'Tenor Sax')
     await chooseMode(w, 'From C')
     await w.find('[aria-label="Start on"]').setValue('Eb')
     expect(sheet(w).props()).toMatchObject({ part: { clef: 'treble', trans: 'Bb' }, instrumentLabel: 'Tenor Sax (Bb)', start: 'Eb' })

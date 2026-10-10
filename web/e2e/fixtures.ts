@@ -50,7 +50,7 @@ export async function setScaleLevel(page: import('@playwright/test').Page, label
   await pickOption(page, 'Level', label)
 }
 
-/** choose a sheet (Scales / Guide tones / Changes) from the toolbar's "Work on" dropdown */
+/** choose a sheet (Scales / Guide Tones / Changes) from the toolbar's "Work on" dropdown */
 export async function chooseSheet(page: import('@playwright/test').Page, label: string): Promise<void> {
   await pickOption(page, 'Work on', label)
 }
