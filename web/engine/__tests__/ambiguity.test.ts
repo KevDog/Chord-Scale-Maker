@@ -24,8 +24,26 @@ describe('the ambiguity report', () => {
 
   it('offers an @key for each found key area away from home, and a key: line when there is none', () => {
     const body = report(readFileSync('../charts/body_and_soul.txt', 'utf8'))
-    expect(body).toContain('key area D, bars 16–24, found by cadence: pin it with  @key A2 16 D')
+    expect(body).toContain('key area D, bars 16–24, found by cadence: pin it with  @key A2 16 D  and  @key B 24 Db')
     expect(report(C_TUNE.replace('key: C\n', ''))[0]).toBe('no key: line; the analysis guessed C: add  key: C')
+  })
+
+  it('returns to the next area after a pinned one, so the pin holds only its own bars', () => {
+    const text = readFileSync('../charts/a_night_in_tunisia.txt', 'utf8')
+    const line = report(text).find((l) => l.startsWith('key area F'))
+    expect(line).toBe('key area F, bars 21–24, found by cadence: pin it with  @key B 21 F  and  @key A3 25 Dm')
+    const keyAt = (t: string, bar: string): string | undefined => analyse(parseChart(t).value).rows.find((r) => r.bar === bar)?.key.name
+    const pinned = `${text}${(line?.match(/@key \S+ \S+ \S+/g) ?? []).join('\n')}\n`
+    expect(['21', '25', '44'].map((b) => keyAt(pinned, b))).toEqual(['F major', 'D minor', 'D minor'])
+    expect(['25', '44'].map((b) => keyAt(pinned, b))).toEqual(['25', '44'].map((b) => keyAt(text, b)))
+  })
+
+  it('pins the last area with one line', () => {
+    expect(report(readFileSync('../charts/beatrice.txt', 'utf8'))).toContain('key area D minor, bars 11–16, found by cadence: pin it with  @key A 11 Dm')
+  })
+
+  it("asks for a key: line when the analysis can't guess one", () => {
+    expect(report('title: T\nA | 1 | Hm7\n')).toEqual(["no key: line, and the analysis couldn't guess one: add  key: …"])
   })
 
   it("keeps the chord's own numeral when stating it would name a target", () => {

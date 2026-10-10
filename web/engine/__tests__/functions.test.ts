@@ -62,6 +62,7 @@ describe('parseFunction', () => {
     expect(parseFunction('subii7')).toBe('sub only goes on a dominant (subV7)')
     expect(parseFunction('ivmaj7')).toBe('ivmaj7: a major quality on a lower-case numeral')
     expect(parseFunction('H: V7')).toBe('"H" isn\'t a key (Eb, Cm)')
+    expect(parseFunction('bb: V7')).toBe('"bb" isn\'t a key (Eb, Cm)') // the note letter is a capital, as in key: and @key
   })
 
   it('knows two spellings of one function', () => {

@@ -43,7 +43,12 @@ export type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] 
 
 const INT_RE = /^[+-]?\d{1,6}$/ // bar numbers; longer would lose precision as Number
 /** a key as `key:` and `@key` take it: "Eb", "F#m", "Bb minor", "C-" */
-export const KEY_TEXT_RE = /^([A-G][b#]?)\s*(m|-|min|minor|major|maj)?$/i
+const KEY_TEXT_RE = /^([A-G][b#]?)\s*(m|-|min|minor|major|maj)?$/i
+/** KEY_TEXT_RE, case-blind for its suffix (Bb Minor), with the note letter a capital ("bb" is no key); null if no key */
+export function matchKeyText(text: string): RegExpExecArray | null {
+  const m = KEY_TEXT_RE.exec(text)
+  return m && /^[A-G]/.test(m[1] ?? '') ? m : null
+}
 const OFFSET_RE = /^[+-]?\d{1,4}$/ // bar offsets stay well inside safe integers
 
 function parseLine(line: string): ChartLine | string {
@@ -89,8 +94,7 @@ function parseLine(line: string): ChartLine | string {
   if (low.startsWith('@key')) {
     const m = /^@key\s+(\S+)\s+(\S+)\s+(.+)$/i.exec(line)
     const k = (m?.[3] ?? '').trim()
-    // KEY_TEXT_RE is case-blind for its suffix (Bb Minor); the note letter must still be a capital
-    if (!m || !INT_RE.test(m[2] ?? '') || !KEY_TEXT_RE.test(k) || !/^[A-G]/.test(k)) return 'use  @key SECTION BAR KEY  (a key like Eb or Cm)'
+    if (!m || !INT_RE.test(m[2] ?? '') || !matchKeyText(k)) return 'use  @key SECTION BAR KEY  (a key like Eb or Cm)'
     const [, section = '', bar = ''] = m
     if (section.length > LIMITS.maxCell) return `section name longer than ${LIMITS.maxCell} characters`
     return { kind: 'key', section, bar: Number(bar), key: k }

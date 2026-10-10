@@ -1,5 +1,5 @@
 import type { ChartDoc, ChartLine } from './chart'
-import { KEY_TEXT_RE, resolveScale } from './chart'
+import { matchKeyText, resolveScale } from './chart'
 import { parseChord } from './chord'
 import type { RowLine } from './edit'
 import { type Spelled, accFor, enharmonics, mod, parseRoot, pcOf, rootName, shiftBy, toLetter } from './pitch'
@@ -55,7 +55,7 @@ function rootScaleKey(row: RowLine, root: Spelled): ScaleKey {
 /** a key moved by the shift, spelled on the target key's side, its suffix as written ("Am" -> "Cm" up a minor 3rd) */
 function transposeKeyText(text: string, s: KeyShift, side: KeySide): string {
   const t = text.trim()
-  const m = KEY_TEXT_RE.exec(t)
+  const m = matchKeyText(t)
   if (!m) return text
   const minor = /^(m|-|min|minor)$/i.test(m[2] ?? '')
   const root = spellInKey(shiftNote(parseRoot(m[1] ?? 'C'), s), minor ? 'aeolian' : 'ionian', side)

@@ -83,7 +83,9 @@ for (const file of files) {
   if (!quiet) console.log(lines.join('\n') + '\n')
 }
 const filled = agree + differ
-console.log(
-  `${files.length} chart(s): ${agree} rows agree, ${differ} differ${filled ? ` (${Math.round((100 * agree) / filled)}% of written scales)` : ''}, ${blank} blank, ${unreached} unreached${written ? `; ${written} file(s) written` : ''}`,
-)
+// --ambiguous reads no scales, so it has no summary
+if (!ambiguous)
+  console.log(
+    `${files.length} chart(s): ${agree} rows agree, ${differ} differ${filled ? ` (${Math.round((100 * agree) / filled)}% of written scales)` : ''}, ${blank} blank, ${unreached} unreached${written ? `; ${written} file(s) written` : ''}`,
+  )
 if (quiet && disagreements.length) console.log(disagreements.join('\n'))

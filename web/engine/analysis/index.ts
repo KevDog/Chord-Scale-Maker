@@ -52,15 +52,18 @@ const addProblem = (problems: Problem[], p: Problem): void => {
   if (!problems.some((q) => q.line === p.line && q.message === p.message)) problems.push(p)
 }
 
-/** `@key` lines: each holds from its bar until the next; before the first, the areas as found */
+/**
+ * `@key` lines: each holds from its bar until the next; before the first, the areas as found. Its bar may be one a
+ * chord is held through (no row of its own): the key starts with the entry that covers it, played in its section.
+ */
 function statedAreas(doc: ChartDoc, rows: readonly LinedRow[], stream: readonly Entry[], found: readonly Key[], problems: Problem[]): { keys: Key[]; stated: boolean[] } {
   const starts: { at: number; key: Key }[] = []
   doc.lines.forEach((l, line) => {
     if (l.kind !== 'key') return
-    const r = rows.findIndex((x) => x.section === l.section && x.bar === String(l.bar))
-    const at = stream.findIndex((e) => e.rows.includes(r))
+    const covers = (e: Entry): boolean => e.start <= l.bar && l.bar < e.start + e.bars && rows[e.rows.findLast((r) => Number(rows[r]?.bar) <= l.bar) ?? -1]?.section === l.section
+    const at = stream.findIndex(covers)
     const key = parseKey(l.key)
-    if (r < 0 || at < 0 || !key) return void addProblem(problems, { line, message: `@key ${l.section} ${l.bar}: no bar ${l.bar} in section ${l.section}` })
+    if (at < 0 || !key) return void addProblem(problems, { line, message: `@key ${l.section} ${l.bar}: no bar ${l.bar} in section ${l.section}` })
     starts.push({ at, key })
   })
   starts.sort((a, b) => a.at - b.at)

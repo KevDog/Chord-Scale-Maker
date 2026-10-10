@@ -1,7 +1,7 @@
 import { pcOf } from '../pitch'
 import { readChord } from '../qualities'
 import { functionCandidates, impliedTarget, parseFunction } from './functions'
-import type { Analysis } from './index'
+import type { Analysis, Area } from './index'
 import { keyCode, keyText, sameKey } from './keys'
 import { ownNumeral } from './numerals'
 import { familyOf } from './stream'
@@ -14,8 +14,14 @@ export function ambiguities(a: Analysis): string[] {
   const out: string[] = []
   const home = a.key
   if (a.keyFrom === 'scored' && home) out.push(`no key: line; the analysis guessed ${keyText(home)}: add  key: ${keyCode(home)}`)
-  for (const x of a.areas)
-    if (home && !x.stated && !sameKey(x.key, home)) out.push(`key area ${keyText(x.key)}, bars ${x.from}–${x.to}, found by cadence: pin it with  @key ${x.section} ${x.from} ${keyCode(x.key)}`)
+  if (a.keyFrom === 'none') out.push("no key: line, and the analysis couldn't guess one: add  key: …")
+  // an @key holds until the next, so a pin also returns to the area after it (unless an @key already starts that one)
+  const pin = (x: Area): string => `@key ${x.section} ${x.from} ${keyCode(x.key)}`
+  a.areas.forEach((x, k) => {
+    if (!home || x.stated || sameKey(x.key, home)) return
+    const next = a.areas[k + 1]
+    out.push(`key area ${keyText(x.key)}, bars ${x.from}–${x.to}, found by cadence: pin it with  ${pin(x)}${next && !next.stated ? `  and  ${pin(next)}` : ''}`)
+  })
   const seen = new Set<number>()
   for (const r of a.rows) {
     if (!r.fallback || r.stated || r.held || seen.has(r.line)) continue

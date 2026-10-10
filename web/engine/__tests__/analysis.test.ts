@@ -307,6 +307,17 @@ describe('stated functions and @key (docs/superpowers/specs/2026-10-09-chart-fun
     expect(a.problems).toEqual([])
   })
 
+  it('an @key on a bar a chord is held through starts at that chord, and bars compare as numbers', () => {
+    const rows = ['A | 1 | EbMaj7', 'A | 2 | Cm7', 'B | 3 | DMaj7', 'B | 5 | Em7', 'B | 6 | A7', 'B | 7 | DMaj7', 'C | 08 | EbMaj7', 'C | 9 | Fm7', 'C | 10 | Bb7']
+    const a = analyse(parseChart(lines('Eb', rows, '@key B 4 D\n@key C 8 Eb\n')).value)
+    expect(a.problems).toEqual([])
+    expect(a.areas.map((x) => `${x.key.name} ${x.section} ${x.from}–${x.to} ${x.stated ? 'stated' : 'found'}`)).toEqual([
+      'Eb major A 1–2 found',
+      'D major B 3–7 stated',
+      'Eb major C 08–10 stated',
+    ])
+  })
+
   it("reports a function that won't read, doesn't fit, or sits on a chord it can't read, and ignores it", () => {
     const text = lines('C', ['A | 1 | CMaj7', 'A | 2 | D7 | | X7', 'A | 3 | Bb7 | | V7/V', 'A | 4 | Hm7 | | ii7'])
     const a = analyse(parseChart(text).value)
