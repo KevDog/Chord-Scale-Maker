@@ -18,14 +18,17 @@
       ]"
     >
       <span class="block">{{ reason }}</span>
-      <span class="mt-1 block text-xs text-zinc-500 dark:text-zinc-400">in {{ heardIn }}{{ stated ? ' · function stated in the chart' : '' }}</span>
+      <span class="mt-1 block text-xs text-zinc-500 dark:text-zinc-400">in {{ heardIn }} ({{ FROM[keyFrom] }})</span>
     </span>
   </span>
 </template>
 
 <script setup lang="ts">
-/** why the analysis gave a chord its function and scale (engine/changes.ts reason, heardIn, stated) */
-withDefaults(defineProps<{ reason: string; heardIn: string; stated: boolean; wrap?: boolean }>(), { wrap: false })
+import type { ChangesChord } from '~~/engine'
+
+/** why the analysis gave a chord its function and scale (engine/changes.ts reason, heardIn, keyFrom) */
+withDefaults(defineProps<{ reason: string; heardIn: string; keyFrom: ChangesChord['keyFrom']; wrap?: boolean }>(), { wrap: false })
+const FROM: Readonly<Record<ChangesChord['keyFrom'], string>> = { found: 'found', area: '@key', function: "the function's key" }
 const id = useId()
 const dismissed = ref(false)
 </script>

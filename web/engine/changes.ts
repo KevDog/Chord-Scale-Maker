@@ -28,6 +28,8 @@ export type ChangesChord = Readonly<{
   stated: boolean
   /** the key it's heard in, written for the part ("B♭ major"); '' when the analysis doesn't reach it */
   heardIn: string
+  /** where that key came from: the key before its function's colon, an @key over its area, or the analysis */
+  keyFrom: 'found' | 'area' | 'function'
 }>
 export type ChangesBar = Readonly<{
   chords: readonly ChangesChord[]
@@ -172,6 +174,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4): Change
             reason: a?.reason ?? '',
             stated: a?.stated ?? false,
             heardIn: a ? keyName((a.statedKey ?? a.key).name, part) : '',
+            keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',
           }
         })
       const firstKey = block.rows.map((i) => byRow.get(i)).find((a) => a && barOf(a.row) === bar)?.key.name

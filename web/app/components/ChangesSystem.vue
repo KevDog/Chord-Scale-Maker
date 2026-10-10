@@ -24,7 +24,7 @@
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
         :title="notesOn && m.reason ? undefined : m.numeral"
       >
-        <ChangesNote v-if="notesOn && m.reason && m.numeral" :reason="m.reason" :heard-in="m.heardIn" :stated="m.stated">{{ m.numeral }}</ChangesNote>
+        <ChangesNote v-if="notesOn && m.reason && m.numeral" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom">{{ m.numeral }}</ChangesNote>
         <template v-else>{{ m.numeral }}</template>
       </span>
     </div>
@@ -35,7 +35,7 @@
         class="absolute pr-1 text-[0.7rem]/3.5 text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700"
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
-        <ChangesNote v-if="notesOn && m.reason && m.scale" :reason="m.reason" :heard-in="m.heardIn" :stated="m.stated" wrap>{{ m.scale }}</ChangesNote>
+        <ChangesNote v-if="notesOn && m.reason && m.scale" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" wrap>{{ m.scale }}</ChangesNote>
         <template v-else>{{ m.scale }}</template>
       </span>
     </div>
@@ -70,8 +70,8 @@ const notesOn = useFeature('functions')
 const marks = computed(() => {
   const all = props.line.bars.flatMap((bar, b) => {
     const at = (beat: number): number => Math.max(0, (xs.value[b]?.[beat] ?? 0) - 0.012)
-    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, x: at(c.beat), tokens: c.tokens, text: c.text, numeral: c.numeral, scale: c.scale, reason: c.reason, stated: c.stated, heardIn: c.heardIn, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
-    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, x: at(0), tokens: null, text: '', numeral: '', scale: null, reason: '', stated: false, heardIn: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
+    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, x: at(c.beat), tokens: c.tokens, text: c.text, numeral: c.numeral, scale: c.scale, reason: c.reason, heardIn: c.heardIn, keyFrom: c.keyFrom, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
+    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, x: at(0), tokens: null, text: '', numeral: '', scale: null, reason: '', heardIn: '', keyFrom: 'found' as const, marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
     return chords
   })
   return all.map((m, i) => ({ ...m, room: Math.max(0.05, (all[i + 1]?.x ?? 1) - m.x) }))

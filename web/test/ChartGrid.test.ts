@@ -84,12 +84,18 @@ describe('ChartGrid with functions', () => {
     expect(lastDoc(w)?.lines[6]).toEqual({ kind: 'key', section: 'A', bar: 9, key: 'Eb' })
   })
 
-  it('starts a key change at a row, in that row’s key area', async () => {
-    const w = await mountSuspended(ChartGrid, { props: { doc: fdoc } })
-    await w.find('[aria-label="Key change at row 3"]').trigger('click')
-    expect(lastDoc(w)?.lines.slice(4, 6)).toEqual([
-      { kind: 'key', section: 'A', bar: 3, key: 'C' },
-      { kind: 'row', section: 'A', bar: '3', chord: 'Dm7', scale: '' },
+  it('starts a key change at a row, in that row’s key area, and returns to the next area', async () => {
+    const moves = parseChart('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | CMaj7\nB | 5 | Am7\nB | 6 | D7\nB | 7 | GMaj7\nB | 8 | GMaj7\nC | 9 | Dm7\nC | 10 | G7\n').value
+    const w = await mountSuspended(ChartGrid, { props: { doc: moves } })
+    await w.find('[aria-label="Key change at row 6"]').trigger('click')
+    const lines = lastDoc(w)?.lines ?? []
+    expect(lines.slice(7, 9)).toEqual([
+      { kind: 'key', section: 'B', bar: 6, key: 'G' },
+      { kind: 'row', section: 'B', bar: '6', chord: 'D7', scale: '' },
+    ])
+    expect(lines.slice(11, 13)).toEqual([
+      { kind: 'key', section: 'C', bar: 9, key: 'C' },
+      { kind: 'row', section: 'C', bar: '9', chord: 'Dm7', scale: '' },
     ])
   })
 })
@@ -99,5 +105,14 @@ describe('ChartGrid without functions', () => {
     const w = await mountSuspended(ChartGrid, { props: { doc } })
     expect(w.find('[aria-label="function for row 1"]').exists()).toBe(false)
     expect(w.find('[aria-label="Key change at row 1"]').exists()).toBe(false)
+  })
+
+  it('shows an @key line read-only, like a @copy, with a delete button', async () => {
+    const w = await mountSuspended(ChartGrid, { props: { doc: parseChart('title: T\nkey: C\nA | 1 | Cm7\n@key A 1 Eb\n').value } })
+    expect(w.find('select[aria-label="Key from A 1"]').exists()).toBe(false)
+    expect(w.text()).toContain('@key')
+    expect(w.text()).toMatch(/from A 1 in\s*E♭\s*\(edit in text\)/)
+    await w.find('[aria-label="Delete line 4"]').trigger('click')
+    expect(lastDoc(w)?.lines).toHaveLength(3)
   })
 })

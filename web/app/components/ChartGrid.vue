@@ -48,7 +48,7 @@
             </UiTableCell>
             <UiTableCell v-if="functionsOn && notes" class="px-1! py-1! text-sm/5 whitespace-normal text-zinc-600 dark:text-zinc-400">{{ notesByLine.get(i)?.note }}</UiTableCell>
             <UiTableCell class="px-1! py-1! text-right">
-              <UiButton v-if="functionsOn" plain :aria-label="`Key change at row ${rowNumber[i]}`" title="Start a key change here" @click="emitDoc(insertKeyBefore(doc, i, notesByLine.get(i)?.key || meta.key || 'C'))"><KeyIcon data-slot="icon" /></UiButton>
+              <UiButton v-if="functionsOn" plain :aria-label="`Key change at row ${rowNumber[i]}`" title="Start a key change here" @click="emitDoc(insertKeyChange(doc, i))"><KeyIcon data-slot="icon" /></UiButton>
               <UiButton plain :aria-label="`Add row after row ${rowNumber[i]}`" @click="emitDoc(insertRowAfter(doc, i))"><PlusIcon data-slot="icon" /></UiButton>
               <UiButton plain :aria-label="`Delete row ${rowNumber[i]}`" @click="emitDoc(removeLine(doc, i))"><TrashIcon data-slot="icon" /></UiButton>
             </UiTableCell>
@@ -67,7 +67,8 @@
               <div class="flex flex-wrap items-center gap-2">
                 <UiBadge color="sky">@key</UiBadge>
                 <span>from <UiStrong>{{ line.section }} {{ line.bar }}</UiStrong> in</span>
-                <UiSelect :model-value="line.key" :aria-label="`Key from ${line.section} ${line.bar}`" class="w-40 sm:py-1 sm:text-sm/5" @update:model-value="(v) => emitDoc(setKeyLine(doc, i, String(v)))">
+                <template v-if="!functionsOn"><UiStrong>{{ keyLabel(line.key) }}</UiStrong><span>(edit in text)</span></template>
+                <UiSelect v-else :model-value="line.key" :aria-label="`Key from ${line.section} ${line.bar}`" class="w-40 sm:py-1 sm:text-sm/5" @update:model-value="(v) => emitDoc(setKeyLine(doc, i, String(v)))">
                   <option v-for="k in KEY_OPTIONS" :key="k" :value="k">{{ keyLabel(k) }}</option>
                   <option v-if="!(KEY_OPTIONS as readonly string[]).includes(line.key)" :value="line.key">{{ line.key }}</option>
                 </UiSelect>
@@ -94,7 +95,7 @@
 
 <script setup lang="ts">
 import { KeyIcon, PlusIcon, TrashIcon } from '@heroicons/vue/16/solid'
-import { type ChartDoc, chartMeta, type FunctionChoice, functionChoices, insertKeyBefore, insertRowAfter, isValidKey, keyLabel, LIMITS, type MetaKey, removeLine, type RowField, type RowNote, rowNotes, setKeyLine, setMeta, setRowChord, setRowField } from '~~/engine'
+import { type ChartDoc, chartMeta, type FunctionChoice, functionChoices, insertKeyChange, insertRowAfter, isValidKey, keyLabel, LIMITS, type MetaKey, removeLine, type RowField, type RowNote, rowNotes, setKeyLine, setMeta, setRowChord, setRowField } from '~~/engine'
 
 const props = defineProps<{ doc: ChartDoc }>()
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc] }>()

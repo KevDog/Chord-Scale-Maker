@@ -449,9 +449,11 @@ library writes such a repeat out instead.
   `@key`, overriding the detected ones. A key prefix (`D: V7/ii`) decides that one row only. A function that does
   not fit the chord in its key, or an `@key` naming no key, is a problem (reported; the grid marks the cell
   `aria-invalid`). Rules that could only guess carry a `fallback` flag, and `--ambiguous` lists those rows with
-  the functions each might have and the key areas an `@key` would pin. The analyser never writes a function or
-  an `@key`. `rowNotes` (`engine/notes.ts`) gives each row's reason and key; the grid's Notes column and the
-  Changes sheet's numeral/scale tooltips show it, behind the `functions` flag (off).
+  the functions each might have and the key areas an `@key` would pin, each with a second `@key` back to the next
+  area (an `@key` holds until the next); the grid's key-change button (`insertKeyChange`) adds the same pair. The
+  analyser never writes a function or an `@key`. `rowNotes` (`engine/notes.ts`) gives each row's reason and key;
+  the grid's Notes column and the Changes sheet's numeral/scale tooltips show it, the tooltip with where its key
+  came from (found, an `@key`, or the function's key), behind the `functions` flag (off).
 - **Menus:** every scale the rules give a quality is among that quality's options in `chord_scales.json`
   (Phrygian Dominant and Mixolydian ♭6 on `7`, Phrygian on minor chords, Mixolydian ♭6 on `7sus4`), so a scale
   you change can be changed back from the menu.
