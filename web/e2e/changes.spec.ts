@@ -108,11 +108,11 @@ test('From 3rd and From 7th put each chord’s guide tone in place of its slashe
   await expect(line).toHaveAttribute('aria-label', /^Bars: Dm7 G7sus4 \| C6 C \| Em7 A7 \| Dm7 G7; guide tones: /)
   await expect.poll(async () => (await drawn(line)).heads.length).toBe(8) // a half note a chord
   expect((await drawn(line)).slashes).toBe(0)
-  await expect(labelRow(line)).toHaveText(/^\s*3\s*7\s*3\s*3\s*7\s*3\s*7\s*3\s*$/) // from the Dm7's 3rd: the nearest guide tone of G7sus4 is its 7th (the F, held)
+  await expect(labelRow(line)).toHaveText(/^\s*3\s*7\s*3\s*3\s*7\s*3\s*7\s*7\s*$/) // from the Dm7's 3rd: the nearest guide tone of G7sus4 is its 7th (the F, held); at the last G7 the lines trade rather than leap C4 to B4
   await guide(page, 'From 3rd').click()
   await showGuides(page, 'From 7th')
   await expect(guide(page, 'From 3rd')).toHaveAttribute('aria-pressed', 'false')
-  await expect(labelRow(line)).toHaveText(/^\s*7\s*4\s*6\s*1\s*3\s*7\s*3\s*7\s*$/) // from the Dm7's 7th: a sus chord's 4th, a 6 chord's 6th, a triad's root
+  await expect(labelRow(line)).toHaveText(/^\s*7\s*4\s*6\s*1\s*3\s*7\s*3\s*3\s*$/) // from the Dm7's 7th: a sus chord's 4th, a 6 chord's 6th, a triad's root
   await showGuides(page, 'From 3rd')
   await expect.poll(async () => (await drawn(line)).heads.length).toBe(16)
   const both = await drawn(line)
