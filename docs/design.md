@@ -337,7 +337,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   by font ascent, not ink.
   - A minimum band keeps ordinary staves aligned.
   - Guide tone staves use a tighter one, just the clef, because their notes stay near the middle of the staff.
-- **Clefs and key signatures (the `keySignatures` flag):** the clef and the chart's key as written for the instrument
+- **Clefs and key signatures (the `keySignatures` flag, on):** the clef and the chart's key as written for the instrument
   (`keySignature` in `engine/keySignature.ts`; a minor key by its relative major, none without a `key:`), once at the
   start, as on a jazz lead sheet: the first staff of each scale sheet part (`StaffModel.showClefAndKey`), the first
   guide tone system and the first Changes line; every other staff, system and line has neither. The key is the

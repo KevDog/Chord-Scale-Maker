@@ -151,7 +151,7 @@ describe('EditorView key signatures', () => {
       global: { stubs: { ScaleSheet: true, GuideToneSheet: true, ChangesSheet: true } },
     })
   afterEach(() => {
-    useRuntimeConfig().public.features.keySignatures = false
+    useRuntimeConfig().public.features.keySignatures = true
     localStorage.clear()
   })
 
@@ -166,6 +166,7 @@ describe('EditorView key signatures', () => {
   })
 
   it('with the flag off, passes no key and no signatures', async () => {
+    useRuntimeConfig().public.features.keySignatures = false
     expect((await mountWith()).findComponent({ name: 'ScaleSheet' }).props('homeKey')).toBeUndefined()
     expect((await mountWith({ sheet: 'guideTones' })).findComponent({ name: 'GuideToneSheet' }).props('homeKey')).toBeUndefined()
     expect((await mountWith({ sheet: 'changes' })).findComponent({ name: 'ChangesSheet' }).props('signatures')).toBe(false)
