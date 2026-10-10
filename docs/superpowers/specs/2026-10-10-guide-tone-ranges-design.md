@@ -1,62 +1,72 @@
 # Guide tone ranges per instrument: design
 
-Date: 2026-10-10. Status: approved in conversation (approach A, the cap, and the range table, with the user's vibes
-edits); written spec awaiting review. Builds on
+Date: 2026-10-10. Status: approved in conversation (approach A, the cap, the range table, a centre note in place of
+the comfortable zone, vibes G3–D6 centre B♭4); written spec awaiting review. Builds on
 [2026-10-10-guide-tone-lines-design.md](2026-10-10-guide-tone-lines-design.md) and the roadmap entry "Guide tone
 ranges per instrument".
 
 ## Goal
 
-The guide tone lines take their written range and comfortable zone from the instrument, not the clef alone, so each
+The guide tone lines take their written range and their centre from the instrument, not the clef alone, so each
 instrument's lines sit where it plays them, and the leaps forced by the treble C4 floor (most of the 18 moves over a
 tritone left in treble) go away where the instrument reaches lower.
+
+## How the two values are used
+
+- **Line range** (`lo`–`hi`): the only limit on pitch. A guide tone is a candidate only in octaves inside it (rule 4);
+  at its edges a line turns. Within it the line moves freely, always to the nearer tone.
+- **Centre** (one note): where a line starts (rule 1, and rule 6's restart with nothing sounded before) and which of two
+  equally near candidates wins (rule 3). Nothing else: it doesn't pull a line back.
+
+The earlier "comfortable zone" is replaced by its centre: the lines only ever used the zone's midpoint.
 
 ## Decisions
 
 | Question | Decision |
 | --- | --- |
-| Comfortable zone | Moves with the instrument (the user's). |
+| Centre, not a zone | The user's: one centre note per instrument; a player's visual marker (vibes: the middle B♭, B♭4). |
 | Scales sheet | Keeps its fixed written range; unchanged (the user's). |
-| Where the ranges come from | Proposed from standard practical ranges and reviewed by the user (the user's choice); vibes edited by the user: range G3–D6, comfortable zone a fifth either side of C4–C5, clamped to the range (G3–G5). |
+| Where the ranges come from | Proposed from standard practical ranges and reviewed by the user (the user's choice); vibes set by the user: G3–D6, centre B♭4. |
 | Approach | A range on `Part` (the user's): `partFor(instrument)` carries it; the lines read `part.range`. |
 | Readability cap | A line never needs more than two ledger lines: treble G3–D6, bass B1–F4 (written). Every instrument's range lies inside its clef's cap. |
-| Fallback | A part without a range (`CONCERT`, a part built by hand) uses today's clef range (`RANGES`). |
-| The rules | Unchanged: rule 1's start octave and rule 3's tie-break use the centre of the comfortable zone, rule 4 the range. |
+| Fallback | A part without a range (`CONCERT`, a part built by hand) uses today's clef range and centre (treble C4–A5, A4; bass E2–C4, C♯3). |
+| The rules | Unchanged. |
 
 ## The ranges (written pitch)
 
-"Line range" is the practical range for a guide tone line, inside the cap; the centre is the middle of the
-comfortable zone. MIDI numbers in brackets (C4 = 60).
+MIDI numbers in brackets (C4 = 60). The other instruments' centres are the midpoints of the zones proposed earlier;
+the user may move any of them to a better marker, as for vibes.
 
-| Instrument | Clef | Line range | Comfortable | Centre |
-| --- | --- | --- | --- | --- |
-| concert | treble | C4–A5 (60–81) | E4–D5 (64–74) | A4 (today's) |
-| piano | treble | C4–C6 (60–84) | E4–E5 (64–76) | B♭4 |
-| vibes | treble | G3–D6 (55–86) | G3–G5 (55–79) | G4 |
-| flute | treble | C4–C6 (60–84) | G4–G5 (67–79) | C♯5 |
-| guitar | treble | A3–A5 (57–81) | A3–A4 (57–69) | D♯4 |
-| trumpet, flugelhorn | treble | C4–G5 (60–79) | E4–E5 (64–76) | B♭4 |
-| clarinet | treble | A3–C6 (57–84) | C4–C5 (60–72) | F♯4 |
-| soprano, alto, tenor, bari sax | treble | B♭3–C6 (58–84) | D4–D5 (62–74) | A♭4 |
-| horn | treble | C4–G5 (60–79) | E4–E5 (64–76) | B♭4 |
-| trombone | bass | B♭2–E4 (46–64) | D3–D4 (50–62) | A♭3 |
-| tuba | bass | C2–B♭3 (36–58) | F2–F3 (41–53) | B2 |
-| bass | bass | E2–C4 (40–60) | G2–G3 (43–55) | C♯3 (today's) |
+| Instrument | Clef | Line range | Centre |
+| --- | --- | --- | --- |
+| concert | treble | C4–A5 (60–81) | A4 (69, today's) |
+| piano | treble | C4–C6 (60–84) | B♭4 (70) |
+| vibes | treble | G3–D6 (55–86) | B♭4 (70) |
+| flute | treble | C4–C6 (60–84) | C♯5 (73) |
+| guitar | treble | A3–A5 (57–81) | D♯4 (63) |
+| trumpet, flugelhorn | treble | C4–G5 (60–79) | B♭4 (70) |
+| clarinet | treble | A3–C6 (57–84) | F♯4 (66) |
+| soprano, alto, tenor, bari sax | treble | B♭3–C6 (58–84) | A♭4 (68) |
+| horn | treble | C4–G5 (60–79) | B♭4 (70) |
+| trombone | bass | B♭2–E4 (46–64) | A♭3 (56) |
+| tuba | bass | C2–B♭3 (36–58) | B2 (47) |
+| bass | bass | E2–C4 (40–60) | C♯3 (49, today's) |
 
 Guitar and bass are written an octave above where they sound, and so are tenor and bari sax beyond their key
 transposition; the table is the written staff, which is what the lines are drawn on.
 
 ## 1. Engine
 
-- `engine/instruments.ts`: `Range = Readonly<{ lo: number; hi: number; comfortLo: number; comfortHi: number }>` (MIDI,
-  written); each `INSTRUMENTS` entry gains `range: Range` from the table. `CAPS: Record<Clef, { lo, hi }>` = treble
-  55–86, bass 35–65.
+- `engine/instruments.ts`: `Range = Readonly<{ lo: number; hi: number; centre: number }>` (MIDI, written); each
+  `INSTRUMENTS` entry gains `range: Range` from the table. `CAPS: Record<Clef, { lo, hi }>` = treble 55–86, bass
+  35–65.
 - `engine/part.ts`: `Part` gains `range?: Range`; `partFor(name)` returns `{ clef, trans, range }`. `rangeOf(part)`:
-  `part.range ?? RANGES[part.clef]`. `CONCERT` is unchanged (no range: today's clef range).
-- `engine/guideToneLines.ts`: `guideToneLines(tones, range, blocks)` takes a `Range` instead of a `Clef` (octaves,
-  centre, every use of `RANGES[clef]`); `guideVoices` and `buildChanges` pass `rangeOf(part)`.
-- `engine/voiceLeading.ts`: `RANGES` keeps the clef defaults; `voiceLead` (used only by the comparison script) takes a
-  `Range` too, so the comparison is like for like.
+  `part.range` or the clef default (`RANGES[clef]` as `{ lo, hi, centre }`). `CONCERT` is unchanged.
+- `engine/guideToneLines.ts`: `guideToneLines(tones, range, blocks)` takes a `Range` instead of a `Clef` (octaves and
+  centre); `guideVoices` and `buildChanges` pass `rangeOf(part)`.
+- `engine/voiceLeading.ts`: `RANGES` becomes the clef defaults `{ lo, hi, centre }`. `voiceLead` (the comparison
+  script's pair search) takes a `Range`; its comfort cost uses a band of the centre ± 5 semitones (today's treble band
+  exactly; bass one semitone narrower each side), so the comparison stays like for like.
 - `scripts/guideLines.ts`: `--instrument <name>` measures with `partFor(name)` (`--part bass` stays: concert bass
   clef).
 
@@ -68,7 +78,7 @@ crops to what is drawn.
 
 ## 3. Testing
 
-- Unit (TDD): every instrument's range lies inside its clef's cap and its comfortable zone inside its range;
+- Unit (TDD): every instrument's range lies inside its clef's cap and its centre inside its range;
   `partFor` carries the range; `rangeOf` falls back for `CONCERT`; `guideToneLines` with a vibes range goes below C4
   where the treble range turned up (e.g. the rule 4 floor case: C7 Ab Db7 — line A at C4 now steps down, not up);
   the existing rule tests keep `CONCERT`/bass and their pitches.
