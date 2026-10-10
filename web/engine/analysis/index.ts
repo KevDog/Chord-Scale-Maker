@@ -19,6 +19,7 @@ export { FUNCTION_ERRORS, parseFunction, type Spelling, spellings, SUFFIXES } fr
 export { ambiguities } from './ambiguity'
 
 /** bumped when a rule changes what it gives; saved in each chart's `# analysis:` line */
+export { CATALOGUE_KEYS, FUNCTION_GROUPS, type FunctionGroup, type FunctionRow, functionsTable } from './catalogue'
 export const RULES_VERSION = 1
 
 /**
@@ -168,7 +169,7 @@ export function analyse(doc: ChartDoc): Analysis {
     const key = p.areaKeys[i] ?? p.global
     const s = p.stated[i]
     const { fallback, ...ruled } = decide(ctx, i)
-    const decision: Decision = s ? { ...ruled, reason: `* ${ruled.reason}` } : fallback ? { ...ruled, fallback } : ruled
+    const decision: Decision = s ? { ...ruled, reason: `* ${ruled.reason}`, ...(fallback ? { fallback } : {}) } : fallback ? { ...ruled, fallback } : ruled
     const roman = s ? s.fn.text : numeral(ctx, i, decision)
     const prevKey = i > 0 ? p.areaKeys[i - 1] : undefined
     const firstRow = p.rows[e.rows[0] ?? 0]
