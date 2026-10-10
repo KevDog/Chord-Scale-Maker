@@ -284,7 +284,7 @@
         <li>
           Wondering why a chord got its scale? Click its numeral or scale on the Changes sheet: the note says why and
           names the rule, and <UiTextLink href="/functions#rules">Functions and rules</UiTextLink> lists them all. If
-          you'd choose differently, <strong class="font-semibold text-zinc-950 dark:text-white">Copy for an issue</strong>
+          you'd choose differently, <strong class="font-semibold text-zinc-950 dark:text-white">Report issue</strong>
           in that note collects the details for the contact form.
         </li>
         <li>It works on a phone, but the staves are small. A tablet or a laptop is nicer.</li>

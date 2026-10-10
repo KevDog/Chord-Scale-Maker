@@ -2,7 +2,7 @@ import type { InjectionKey } from 'vue'
 import { glyphs, type InstrumentName, INSTRUMENTS } from '~~/engine'
 import { instrumentOption } from '~/utils/instrumentChoices'
 
-/** "Copy for an issue" on the Changes sheet's reason note (docs/superpowers/specs/2026-10-10-functions-help-page-design.md §1.4) */
+/** "Report issue" on the Changes sheet's reason note (docs/superpowers/specs/2026-10-10-functions-help-page-design.md §1.4) */
 
 export const ISSUE_REPO = 'https://github.com/KevDog/Chord-Scale-Maker'
 /** a URL GitHub's new-issue page reliably accepts */

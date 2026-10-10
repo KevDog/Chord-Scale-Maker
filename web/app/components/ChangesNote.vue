@@ -21,7 +21,7 @@
       </span>
       <span class="mt-1 block text-xs text-zinc-500 dark:text-zinc-400">{{ keyFrom === 'found' ? '' : '* ' }}in {{ heardIn }}</span>
       <div v-if="context" class="mt-2 space-y-2 border-t border-zinc-950/5 pt-2 dark:border-white/5" @vue:mounted="prepare">
-        <UiButton plain data-copy :data-ready="ready" class="text-sm!" @click="copy">Copy for an issue</UiButton>
+        <UiButton plain data-copy :data-ready="ready" class="text-sm!" @click="copy">Report issue</UiButton>
         <template v-if="state === 'copied' || state === 'manual'">
           <p v-if="state === 'copied'" class="text-xs text-zinc-500 dark:text-zinc-400" role="status">Copied.</p>
           <template v-else>

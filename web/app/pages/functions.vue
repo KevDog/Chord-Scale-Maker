@@ -195,8 +195,9 @@
         <li>the scale you expected, and why: a melody note, a recording, a book.</li>
       </ul>
       <UiText>
-        On the Changes sheet, click a chord's numeral or scale to see why it was chosen; <strong class="font-semibold text-zinc-950 dark:text-white">Copy for an issue</strong>
-        in that note copies exactly this, with a link to the chart. Paste it into the
+        On the Changes sheet, click a chord's numeral or scale to see why it was chosen; <strong class="font-semibold text-zinc-950 dark:text-white">Report issue</strong>
+        in that note copies exactly this: the chord's bar, and a link to the chart unless it's a library chart you haven't
+        edited. Paste it into the
         <UiTextLink href="/contact">contact form</UiTextLink> or a
         <UiTextLink :href="`${ISSUE_REPO}/issues/new`" external>new GitHub issue</UiTextLink>, and fill in what you expected.
       </UiText>
