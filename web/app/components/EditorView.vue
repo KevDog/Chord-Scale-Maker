@@ -29,7 +29,7 @@
 
     <!-- the working area, set off from the header in a tinted box (Blue Note palette); muted text darkens to
          zinc-600 on the tint so it keeps AA contrast (zinc-500 would drop below 4.5:1 on any non-white background) -->
-    <div class="space-y-8 rounded-2xl bg-note-100 p-5 ring-1 ring-note-200 sm:p-6 [&_[data-slot=text]]:text-zinc-600 dark:bg-white/5 dark:ring-white/10 dark:[&_[data-slot=text]]:text-zinc-400 print:rounded-none print:bg-transparent print:p-0 print:ring-0">
+    <div class="space-y-8 rounded-2xl bg-note-100 p-5 ring-1 ring-note-200 sm:p-6 [&_[data-slot=text]]:text-zinc-600 [&_th]:text-zinc-600 dark:bg-white/5 dark:ring-white/10 dark:[&_[data-slot=text]]:text-zinc-400 dark:[&_th]:text-zinc-400 print:rounded-none print:bg-transparent print:p-0 print:ring-0">
       <UiText v-if="!editorShown && editor.diagnostics.value.length" role="status" class="text-amber-800! print:hidden dark:text-amber-400!">
         The chart's text has {{ editor.diagnostics.value.length === 1 ? 'a problem' : `${editor.diagnostics.value.length} problems` }}.
         <button type="button" class="font-semibold underline" @click="prefs.showEditor.value = true">Edit</button> to fix {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
@@ -83,7 +83,7 @@
           >
             <!-- Level: how sophisticated each chord's scale is (engine/levels.ts); a dropdown in the toolbar -->
             <template v-if="levelsOn && !editor.fatal.value" #level>
-              <UiListbox :model-value="scaleLevel.level.value" @update:model-value="(v) => v && setLevel(v)">
+              <UiListbox :model-value="scaleLevel.level.value" class="w-32" @update:model-value="(v) => v && setLevel(v)">
                 <template #selected="{ value }"><UiListboxLabel>{{ levelLabel(value) }}</UiListboxLabel></template>
                 <UiListboxOption v-for="o in LEVEL_OPTIONS" :key="o.value" :value="o.value"><UiListboxLabel>{{ o.label }}</UiListboxLabel></UiListboxOption>
               </UiListbox>

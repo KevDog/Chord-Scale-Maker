@@ -7,7 +7,7 @@
         <UiLabel class="pl-3">Work on</UiLabel>
         <!-- a plain wrapper (not data-slot=control) so the label gap matches the other groups -->
         <div class="flex items-center gap-2">
-          <UiListbox v-model="sheet">
+          <UiListbox v-model="sheet" class="w-full">
             <template #selected="{ value }"><UiListboxLabel>{{ sheetLabel(value) }}</UiListboxLabel></template>
             <UiListboxOption v-for="s in sheets" :key="s.value" :value="s.value"><UiListboxLabel>{{ s.label }}</UiListboxLabel></UiListboxOption>
           </UiListbox>
@@ -16,7 +16,7 @@
       <UiField class="w-36">
         <UiLabel class="pl-3">Instrument</UiLabel>
         <div class="flex items-center gap-2">
-          <UiListbox v-model="instrument">
+          <UiListbox v-model="instrument" class="w-full">
             <template #selected="{ value }"><UiListboxLabel>{{ instrumentOption(value) }}</UiListboxLabel></template>
             <UiListboxGroup v-for="g in INSTRUMENT_GROUPS" :key="g.label" :label="g.label">
               <UiListboxOption v-for="name in g.instruments" :key="name" :value="name">

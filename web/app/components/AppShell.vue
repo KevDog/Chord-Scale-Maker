@@ -31,7 +31,7 @@
     </template>
     <slot />
     <template #footer>
-      <footer class="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 pt-4 pb-6 text-sm text-zinc-500 print:hidden lg:px-12 dark:text-zinc-400">
+      <footer class="mx-auto flex w-full max-w-6xl flex-wrap items-center justify-between gap-x-6 gap-y-2 px-6 pt-4 pb-6 text-sm text-zinc-600 print:hidden lg:px-12 dark:text-zinc-400">
         <p>
           © {{ year }} Kevin Stevens. Provided as is, for practice and education.
           <span class="ml-1 text-xs whitespace-nowrap tabular-nums" :title="`Version ${version}: the date and commit this site was built from`">{{ version }}</span>
