@@ -49,6 +49,13 @@ describe('share links', () => {
     expect(await decodeShare(await packed({ v: 1, chart: CHART, view: { mode: 'root', bogus: true } }))).toEqual({ chart: CHART, view: { mode: 'root' } })
   })
 
+  it("carry the Changes sheet's guide tone toggles, booleans only", async () => {
+    const view = { sheet: 'changes', numerals: true, guideThird: true, guideSeventh: false } as const
+    expect(await decodeShare(await encodeShare({ chart: CHART, view }))).toEqual({ chart: CHART, view })
+    expect(shareViewFrom({ guideThird: 'on', guideSeventh: 1 })).toBeUndefined()
+    expect(shareViewFrom({ guideThird: false, guideSeventh: 'yes' })).toEqual({ guideThird: false })
+  })
+
   it('carry function cells and @key lines unchanged', async () => {
     const chart = 'title: T\nA | 1 | D7 |  | V7/V\n@key A 1 D\n'
     expect((await decodeShare(await encodeShare({ chart })))?.chart).toBe(chart)

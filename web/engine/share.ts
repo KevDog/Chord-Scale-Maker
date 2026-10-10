@@ -20,6 +20,9 @@ export type ShareView = Readonly<{
   /** the Changes sheet's numerals and scale rows */
   numerals?: boolean
   scaleNames?: boolean
+  /** the Changes sheet's guide tones: each chord's 3rd, its 7th, or both as two voices */
+  guideThird?: boolean
+  guideSeventh?: boolean
   sheet?: ShareSheet
   practice?: PracticeSelection
   level?: ScaleLevel
@@ -93,6 +96,8 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(typeof o.intervals === 'boolean' ? { intervals: o.intervals } : {}),
     ...(typeof o.numerals === 'boolean' ? { numerals: o.numerals } : {}),
     ...(typeof o.scaleNames === 'boolean' ? { scaleNames: o.scaleNames } : {}),
+    ...(typeof o.guideThird === 'boolean' ? { guideThird: o.guideThird } : {}),
+    ...(typeof o.guideSeventh === 'boolean' ? { guideSeventh: o.guideSeventh } : {}),
     ...(o.sheet === 'scales' || o.sheet === 'guideTones' || o.sheet === 'changes' ? { sheet: o.sheet } : {}),
     ...(practice ? { practice } : {}),
     ...(isScaleLevel(o.level) ? { level: o.level } : {}),
