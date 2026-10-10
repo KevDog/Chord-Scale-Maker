@@ -1,4 +1,4 @@
-import type { Clef } from './instruments'
+import type { Clef, Range } from './instruments'
 import type { Pitched } from './part'
 import { pcOf, type Spelled } from './pitch'
 
@@ -11,12 +11,13 @@ import { pcOf, type Spelled } from './pitch'
 export type GuideTone = Readonly<{ note: Spelled; label: string }>
 export type GuideTones = Readonly<{ third: GuideTone; seventh: GuideTone }>
 
-/** written ranges: anything inside [lo, hi]; [comfortLo, comfortHi] is comfortable (costs nothing to the pair search) */
-export const RANGES: Readonly<Record<Clef, Readonly<{ lo: number; hi: number; comfortLo: number; comfortHi: number }>>> = {
-  treble: { lo: 60, hi: 81, comfortLo: 64, comfortHi: 74 }, // C4-A5, comfortable E4-D5
-  bass: { lo: 40, hi: 60, comfortLo: 43, comfortHi: 55 }, // E2-C4, comfortable G2-G3
+/** each clef's default guide tone range (written): a part without its own (CONCERT) uses it — treble C4–A5 around A4, bass E2–C4 around C♯3 */
+export const RANGES: Readonly<Record<Clef, Range>> = {
+  treble: { lo: 60, hi: 81, centre: 69 },
+  bass: { lo: 40, hi: 60, centre: 49 },
 }
-const OUTSIDE_COST = 3 // per semitone outside the comfortable range
+const OUTSIDE_COST = 3 // per semitone outside the comfortable band (the centre ± COMFORT)
+const COMFORT = 5
 const LEAP_COST = 2 // per semitone beyond a whole step
 const WIDE_LEAP_COST = 0.1 // and a little more the wider it is: two 4ths over an octave and a step (strollin: F- Bb-)
 const CENTRE_COST = 0.01 // ties: nearer the middle of the range
@@ -36,7 +37,7 @@ function candidates(tones: GuideTones, clef: Clef): Candidate[] {
 }
 
 function placeCost(midi: number, clef: Clef): number {
-  const { comfortLo, comfortHi } = RANGES[clef]
+  const [comfortLo, comfortHi] = [RANGES[clef].centre - COMFORT, RANGES[clef].centre + COMFORT]
   const outside = Math.max(0, comfortLo - midi, midi - comfortHi)
   return OUTSIDE_COST * outside + CENTRE_COST * Math.abs(midi - (comfortLo + comfortHi) / 2)
 }

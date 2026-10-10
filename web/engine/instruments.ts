@@ -4,7 +4,15 @@
 
 export type Transposition = 'C' | 'Bb' | 'Eb' | 'F'
 export type Clef = 'treble' | 'bass'
-export type Instrument = Readonly<{ clef: Clef; trans: Transposition; description: string }>
+/** a guide tone line's written range (MIDI, C4 = 60): candidates lie in [lo, hi]; centre places a start and breaks ties */
+export type Range = Readonly<{ lo: number; hi: number; centre: number }>
+export type Instrument = Readonly<{ clef: Clef; trans: Transposition; description: string; range: Range }>
+
+/** the most a guide tone line may need on the staff: two ledger lines either side (treble G3–D6, bass B1–F4) */
+export const CAPS: Readonly<Record<Clef, Readonly<{ lo: number; hi: number }>>> = {
+  treble: { lo: 55, hi: 86 },
+  bass: { lo: 35, hi: 65 },
+}
 
 /** written = concert + interval: [letter steps, semitones] up from concert */
 export const TRANSPOSITIONS: Readonly<Record<Transposition, readonly [number, number]>> = {
@@ -16,22 +24,22 @@ export const TRANSPOSITIONS: Readonly<Record<Transposition, readonly [number, nu
 
 /** octave transpositions (guitar, bass, tenor, bari) don't matter: scales sit in a fixed written range */
 export const INSTRUMENTS = {
-  concert: { clef: 'treble', trans: 'C', description: 'any C instrument, treble clef (piano RH, vibes, flute, violin)' },
-  piano: { clef: 'treble', trans: 'C', description: 'same as concert' },
-  vibes: { clef: 'treble', trans: 'C', description: 'same as concert' },
-  flute: { clef: 'treble', trans: 'C', description: 'same as concert' },
-  guitar: { clef: 'treble', trans: 'C', description: 'same as concert' },
-  trumpet: { clef: 'treble', trans: 'Bb', description: 'Bb, written a major 2nd up' },
-  flugelhorn: { clef: 'treble', trans: 'Bb', description: 'same as trumpet' },
-  clarinet: { clef: 'treble', trans: 'Bb', description: 'same as trumpet' },
-  'soprano-sax': { clef: 'treble', trans: 'Bb', description: 'same as trumpet' },
-  'tenor-sax': { clef: 'treble', trans: 'Bb', description: 'same key as trumpet (sounds an octave lower)' },
-  'alto-sax': { clef: 'treble', trans: 'Eb', description: 'Eb, written a major 6th up' },
-  'bari-sax': { clef: 'treble', trans: 'Eb', description: 'same key as alto (sounds an octave lower)' },
-  horn: { clef: 'treble', trans: 'F', description: 'French horn in F, written a perfect 5th up' },
-  trombone: { clef: 'bass', trans: 'C', description: 'bass clef, concert pitch' },
-  tuba: { clef: 'bass', trans: 'C', description: 'bass clef, concert pitch' },
-  bass: { clef: 'bass', trans: 'C', description: 'bass clef, concert pitch' },
+  concert: { clef: 'treble', trans: 'C', description: 'any C instrument, treble clef (piano RH, vibes, flute, violin)', range: { lo: 60, hi: 81, centre: 69 } }, // C4–A5, centre A4
+  piano: { clef: 'treble', trans: 'C', description: 'same as concert', range: { lo: 60, hi: 84, centre: 70 } }, // C4–C6, centre B♭4
+  vibes: { clef: 'treble', trans: 'C', description: 'same as concert', range: { lo: 55, hi: 86, centre: 70 } }, // G3–D6, centre the middle B♭ (B♭4)
+  flute: { clef: 'treble', trans: 'C', description: 'same as concert', range: { lo: 60, hi: 84, centre: 73 } }, // C4–C6, centre C♯5
+  guitar: { clef: 'treble', trans: 'C', description: 'same as concert', range: { lo: 57, hi: 81, centre: 63 } }, // A3–A5 written, centre D♯4
+  trumpet: { clef: 'treble', trans: 'Bb', description: 'Bb, written a major 2nd up', range: { lo: 60, hi: 79, centre: 70 } }, // C4–G5 written, centre B♭4
+  flugelhorn: { clef: 'treble', trans: 'Bb', description: 'same as trumpet', range: { lo: 60, hi: 79, centre: 70 } }, // C4–G5 written, centre B♭4
+  clarinet: { clef: 'treble', trans: 'Bb', description: 'same as trumpet', range: { lo: 57, hi: 84, centre: 66 } }, // A3–C6 written, centre F♯4
+  'soprano-sax': { clef: 'treble', trans: 'Bb', description: 'same as trumpet', range: { lo: 58, hi: 84, centre: 68 } }, // B♭3–C6 written, centre A♭4
+  'tenor-sax': { clef: 'treble', trans: 'Bb', description: 'same key as trumpet (sounds an octave lower)', range: { lo: 58, hi: 84, centre: 68 } }, // B♭3–C6 written, centre A♭4
+  'alto-sax': { clef: 'treble', trans: 'Eb', description: 'Eb, written a major 6th up', range: { lo: 58, hi: 84, centre: 68 } }, // B♭3–C6 written, centre A♭4
+  'bari-sax': { clef: 'treble', trans: 'Eb', description: 'same key as alto (sounds an octave lower)', range: { lo: 58, hi: 84, centre: 68 } }, // B♭3–C6 written, centre A♭4
+  horn: { clef: 'treble', trans: 'F', description: 'French horn in F, written a perfect 5th up', range: { lo: 60, hi: 79, centre: 70 } }, // C4–G5 written, centre B♭4
+  trombone: { clef: 'bass', trans: 'C', description: 'bass clef, concert pitch', range: { lo: 46, hi: 64, centre: 56 } }, // B♭2–E4, centre A♭3
+  tuba: { clef: 'bass', trans: 'C', description: 'bass clef, concert pitch', range: { lo: 36, hi: 58, centre: 47 } }, // C2–B♭3, centre B2
+  bass: { clef: 'bass', trans: 'C', description: 'bass clef, concert pitch', range: { lo: 40, hi: 60, centre: 49 } }, // E2–C4 written, centre C♯3
 } as const satisfies Record<string, Instrument>
 
 export type InstrumentName = keyof typeof INSTRUMENTS

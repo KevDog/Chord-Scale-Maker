@@ -66,7 +66,7 @@ function together(from: Pair, [a, b]: Pair, t: GuideTones, clef: Clef, centre: n
  * repeats the previous chord's guide tones, by spelling, in the same block holds both lines (rule 5).
  */
 export function guideToneLines(tones: readonly (GuideTones | null)[], clef: Clef, blocks: readonly number[] = []): readonly [(LineNote | null)[], (LineNote | null)[]] {
-  const centre = (RANGES[clef].comfortLo + RANGES[clef].comfortHi) / 2
+  const centre = RANGES[clef].centre
   const lines: [(LineNote | null)[], (LineNote | null)[]] = [[], []]
   let last: readonly [number, number] = [centre, centre] // each line's last sounded note: a run starts nearest it (rules 1, 6)
   let prev: Readonly<{ tones: GuideTones; notes: Pair; block: number | undefined }> | null = null

@@ -1,6 +1,7 @@
-import { type Clef, type InstrumentName, type Transposition, CLEF_ROOT_LOW, CLEF_START, INSTRUMENTS, TRANSPOSITIONS } from './instruments'
+import { type Clef, type InstrumentName, type Range, type Transposition, CLEF_ROOT_LOW, CLEF_START, INSTRUMENTS, TRANSPOSITIONS } from './instruments'
 import { type Spelled, LETTERS, mod, NAT_PC, parseRoot, pcOf, shiftBy } from './pitch'
 import { type ScaleKey, type ScaleNote, parseScale, SCALES, simplifyRoot, spellScale } from './scales'
+import { RANGES } from './voiceLeading'
 
 /**
  * A Part (clef + transposition) is how the sheet is written for one instrument: written roots and scales, scale
@@ -8,7 +9,8 @@ import { type ScaleKey, type ScaleNote, parseScale, SCALES, simplifyRoot, spellS
  */
 
 /** an instrument "view" of the chart */
-export type Part = Readonly<{ clef: Clef; trans: Transposition }>
+/** range: the guide tone lines' written range (its instrument's); none: the clef's default (rangeOf) */
+export type Part = Readonly<{ clef: Clef; trans: Transposition; range?: Range }>
 export type Mode = 'from' | 'root'
 /** the practice modes, for iterating (From root picks intervals, From X picks pitches) */
 export const MODES: readonly Mode[] = ['root', 'from']
@@ -20,9 +22,12 @@ export const CONCERT: Part = { clef: 'treble', trans: 'C' }
 
 /** the clef and transposition an instrument reads in */
 export const partFor = (name: InstrumentName): Part => {
-  const { clef, trans } = INSTRUMENTS[name]
-  return { clef, trans }
+  const { clef, trans, range } = INSTRUMENTS[name]
+  return { clef, trans, range }
 }
+
+/** a part's guide tone range: its instrument's, or its clef's default */
+export const rangeOf = (part: Part): Range => part.range ?? RANGES[part.clef]
 
 /** move a spelled note up by the transposition interval */
 function transposeRoot(n: Spelled, trans: Transposition): Spelled {

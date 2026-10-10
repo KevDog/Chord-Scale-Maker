@@ -145,7 +145,7 @@ describe('EditorView', () => {
     const w = await mount()
     await chooseSheet(w, 'Scales')
     await chooseInstrument(w, 'Trombone')
-    expect(sheet(w).props('part')).toEqual({ clef: 'bass', trans: 'C' })
+    expect(sheet(w).props('part')).toEqual({ clef: 'bass', trans: 'C', range: { lo: 46, hi: 64, centre: 56 } })
     expect(w.text()).toContain('The preview is in bass clef, concert pitch, for trombone')
   })
 
