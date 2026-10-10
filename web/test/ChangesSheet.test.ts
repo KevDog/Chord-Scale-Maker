@@ -24,4 +24,11 @@ describe('ChangesSheet', () => {
     expect(line.props('clef')).toBeUndefined()
     expect(line.props('line').bars[0].keySig).toBeNull()
   })
+
+  it('keeps the print gap between lines unless signatures are on', async () => {
+    const gap = async (signatures: boolean) => (await systemOf(signatures)).element.parentElement?.className
+    expect(await gap(false)).toContain('print:space-y-1')
+    expect(await gap(true)).toContain('print:space-y-0')
+    expect(await gap(true)).not.toContain('print:space-y-1')
+  })
 })
