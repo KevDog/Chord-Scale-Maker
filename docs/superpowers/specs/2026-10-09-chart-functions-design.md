@@ -80,7 +80,7 @@ the same function, and a test checks that over every library chart.
   the chart.
 - A row's key prefix replaces the key for that row only. A prefix doesn't open a key area: `RowAnalysis.key` stays
   the area, `statedKey` is the prefix.
-- `Area` gains `stated: boolean`, so reports and the popover can say who decided it.
+- `Area` gains `stated: boolean`, so reports and the tooltip can say who decided it.
 
 ### Rules
 
@@ -122,9 +122,9 @@ Rules mark a guess with `fallback: true` on their `Decision`.
   - A **Function** column after Scale.
     - **Editing:** a dropdown: Auto (the analyser's reading), then every function that fits the chord in its key
       area, each with the scale it gives; a key-prefixed function from the text shows as its current value.
-    - **Placeholder:** an empty cell shows the analyser's live numeral in grey.
-    - **Errors:** a function that won't parse, or contradicts the chord, gets a red invalid state and an error
-      message.
+    - **Auto:** the first option, showing the analyser's numeral and scale.
+    - **Invalid values:** a key-prefixed or non-fitting function typed in the text shows as the current value,
+      marked invalid, with the problem as its title.
   - A **Show notes** toggle above the table, off by default and remembered per viewer in `localStorage`. It
     shows a read-only **Notes** column computed live:
     - the reason;
@@ -152,7 +152,7 @@ TDD for the engine (the `tdd-for-non-drawing` rule):
 2. **`functions.ts`:** the grammar in glyph and ASCII spellings; errors; `numeral` ↔ `parseFunction` round trip
    over the library.
 3. **Analyser:**
-   - a stated target overrides the neighbour (Misty bar 23);
+   - a stated target overrides the neighbour (`D7 | | V7/V` in C: D5 becomes D4);
    - `sub` and `♭VII7` route to their rules;
    - `@key` spans replace found areas;
    - a prefix affects only its row;
@@ -162,8 +162,8 @@ TDD for the engine (the `tdd-for-non-drawing` rule):
 4. **Ambiguity report:** its fallback rows and scored-only areas, with suggestions.
 5. **Transposing:** `@key` and prefixes move; function text doesn't.
 6. **App unit tests (`web/test/`):** the Function cell's validation and placeholder, the Notes toggle and its
-   "you chose" text, and the popover's content.
-7. **Playwright (`web/e2e/`):** editing a function updates the Changes sheet's numeral and scale; the popover
+   "you chose" text, and the tooltip's content.
+7. **Playwright (`web/e2e/`):** editing a function updates the Changes sheet's numeral and scale; the tooltip
    opens by keyboard; axe still reports 0 violations; the page still runs under the hashed CSP.
 8. **Golden:** existing charts' answers must not change. The analysis fixture gains `stated` fields, and the
    diff is reviewed.
