@@ -1,6 +1,7 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { parseChart, serializeChart } from '../chart'
-import { functionChoices, insertKeyChange, rowNotes } from '../notes'
+import { functionChoices, insertKeyChange, rowKeys, rowNotes } from '../notes'
 
 const notes = (text: string) => rowNotes(parseChart(text).value)
 const C_TUNE = 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\nA | 5 | Am7\nA | 6 | Dm7\nA | 7 | G7\nA | 8 | CMaj7\n'
@@ -75,5 +76,21 @@ describe('insertKeyChange', () => {
 
   it('adds only the one line in the last area', () => {
     expect(change(MOVES + C, 11)).toBe(tidy(MOVES + C.replace('C | 10', '@key C 10 C\nC | 10')))
+  })
+})
+
+describe('rowKeys', () => {
+  const names = (text: string) => rowKeys(parseChart(text).value).map((k) => k?.name ?? null)
+  it("gives every row the chart's key, an @key's from its bar until the next", () => {
+    expect(names('title: T\nkey: Eb\nA | 1 | EbMaj7\nB | 2 | DMaj7\nB | 3 | Em7\nC | 4 | EbMaj7\n@key B 2 D\n@key C 4 Eb\n')).toEqual([
+      'Eb major', 'D major', 'D major', 'Eb major',
+    ])
+  })
+  it('ignores key areas the analyser only found', () => {
+    const body = readFileSync('../charts/body_and_soul.txt', 'utf8')
+    expect(new Set(names(body))).toEqual(new Set(['Db major']))
+  })
+  it('is null without a key: line', () => {
+    expect(names('title: T\nA | 1 | Cm7\n')).toEqual([null])
   })
 })

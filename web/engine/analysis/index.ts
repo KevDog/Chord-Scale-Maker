@@ -222,6 +222,18 @@ export function functionChoices(doc: ChartDoc): ReadonlyMap<number, readonly Fun
   return out
 }
 
+/** each expanded row's key for its key signature: the @key in force there, else the chart's key:, else null */
+export function rowKeys(doc: ChartDoc): readonly (Key | null)[] {
+  const home = parseKey(meta(doc, 'key'))
+  const out: (Key | null)[] = expandRowLines(doc).value.map(() => home)
+  const p = prepare(doc)
+  if (p.global === null) return out
+  p.stream.forEach((e, i) => {
+    if (p.areaStated[i]) for (const r of e.rows) out[r] = p.areaKeys[i] ?? home
+  })
+  return out
+}
+
 // —— writing it back ——
 
 export type ApplyOptions = Readonly<{

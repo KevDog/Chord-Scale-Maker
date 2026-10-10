@@ -1,10 +1,11 @@
-import { analyse, type Area, functionChoices, type FunctionChoice } from './analysis'
+import { analyse, type Area, functionChoices, rowKeys, type FunctionChoice } from './analysis'
 import { keyCode } from './analysis/keys'
 import { type ChartDoc, type ChartLine, resolveScale } from './chart'
 import { insertKeyBefore } from './edit'
 import { sameScale } from './scales'
 
-export { functionChoices, type FunctionChoice }
+export { functionChoices, type FunctionChoice, rowKeys }
+export type { Key } from './analysis/keys'
 export { sameFunction } from './analysis/functions'
 
 /**
