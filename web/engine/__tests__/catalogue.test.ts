@@ -51,6 +51,9 @@ describe('functionsTable', () => {
   })
 })
 
+// tier-1 symbol rules need a chord symbol, not a function: one-row charts for the ids nothing else reaches
+const SYMBOL_EXAMPLES: readonly Readonly<{ chord: string; rule: string }>[] = [{ chord: 'Am7b13', rule: 'm3' }]
+
 describe('RULES against what the engine produces', () => {
   it('every rule in RULES is reached by the library or by the catalogue in some key', () => {
     const seen = new Set<string>()
@@ -58,6 +61,11 @@ describe('RULES against what the engine produces', () => {
     for (const f of readdirSync(LIBRARY).filter((f) => f.endsWith('.txt') && !isSyncCopy(f)))
       for (const r of analyse(parseChart(readFileSync(new URL(f, LIBRARY), 'utf8')).value).rows) ruleParts(r.rule).forEach((id) => seen.add(id))
     for (const k of CATALOGUE_KEYS) for (const r of table(k)) ruleParts(r.rule).forEach((id) => seen.add(id))
+    for (const { chord, rule } of SYMBOL_EXAMPLES) {
+      const got = analyse(parseChart(`key: A\nbars: 1\nA | 1 | ${chord} | |\n`).value).rows[0]?.rule ?? '?'
+      expect(ruleParts(got)).toContain(rule)
+      ruleParts(got).forEach((id) => seen.add(id))
+    }
     expect(RULES.map((r) => r.id).filter((id) => !seen.has(id))).toEqual([])
   })
 })
