@@ -5,7 +5,7 @@ Date: 2026-10-09. Status: approved in brainstorming; implementation plan to foll
 ## Goal
 
 Let a chart's author settle the harmonic function the analyser should use when it chooses a scale, where the
-rules can't tell (a dominant that doesn't resolve, a chromatic chord, a key area found only by scoring), and let
+rules can't tell (a dominant that doesn't resolve, a chromatic chord, a key area away from the home key), and let
 anyone viewing a chart see why each scale was chosen.
 
 ## Decisions
@@ -27,9 +27,9 @@ anyone viewing a chart see why each scale was chosen.
 
 ```
 section | bar | chord | scale | function   # comment
-B  | 23 | Bb7 | Bb Mixolydian | V7/V
-B  | 23 | Bb7 |               | V7/V       ← default/analysed scale, stated function
-B  | 19 | B7  |               | D: V7/ii   ← this row only, in D major
+A  | 2  | D7  | D Mixolydian | V7/V
+A  | 2  | D7  |              | V7/V       ← default/analysed scale, stated function (C major)
+A  | 3  | Bb7 |              | Db: V7/ii  ← this row only, in Db major
 ```
 
 - `RowLine` gains `function?: string`. A row with no function serialises exactly as today: the cell and its
@@ -76,7 +76,7 @@ the same function, and a test checks that over every library chart.
 
 ### Key areas
 
-- `@key` spans replace `localKeys()`'s output for their bars. Cadences and scoring still run for the rest of
+- `@key` spans replace `localKeys()`'s output for their bars. Cadence detection still runs for the rest of
   the chart.
 - A row's key prefix replaces the key for that row only. A prefix doesn't open a key area: `RowAnalysis.key` stays
   the area, `statedKey` is the prefix.
@@ -123,8 +123,9 @@ Rules mark a guess with `fallback: true` on their `Decision`.
     - **Editing:** a dropdown: Auto (the analyser's reading), then every function that fits the chord in its key
       area, each with the scale it gives; a key-prefixed function from the text shows as its current value.
     - **Auto:** the first option, showing the analyser's numeral and scale.
-    - **Invalid values:** a key-prefixed or non-fitting function typed in the text shows as the current value,
-      marked invalid, with the problem as its title.
+    - **Invalid values:** a function typed in the text that won't parse or doesn't fit its chord shows as the
+      current value, marked invalid, with the problem as its title. A valid key-prefixed function simply shows as
+      the current value.
   - A **Show notes** toggle above the table, off by default and remembered per viewer in `localStorage`. It
     shows a read-only **Notes** column computed live:
     - the reason;
@@ -159,9 +160,10 @@ TDD for the engine (the `tdd-for-non-drawing` rule):
    - contradictions are reported and ignored;
    - `applyAnalysis` never writes a function or `@key`;
    - `--force` respects stated rows.
-4. **Ambiguity report:** its fallback rows and scored-only areas, with suggestions.
+4. **Ambiguity report:** its fallback rows and found key areas away from the home key (each with the `@key` that would pin it), a missing
+   `key:` line, with suggestions.
 5. **Transposing:** `@key` and prefixes move; function text doesn't.
-6. **App unit tests (`web/test/`):** the Function cell's validation and placeholder, the Notes toggle and its
+6. **App unit tests (`web/test/`):** the Function dropdown's options (Auto first, each fitting function with its scale) and invalid marking, the Notes toggle and its
    "you chose" text, and the tooltip's content.
 7. **Playwright (`web/e2e/`):** editing a function updates the Changes sheet's numeral and scale; the tooltip
    opens by keyboard; axe still reports 0 violations; the page still runs under the hashed CSP.
