@@ -218,7 +218,7 @@ The rules, in priority order. The first that applies decides.
 | D1 | The symbol pins enough tensions to leave one scale (`7alt`, `7♯5`, `7♯11`, `7sus4♭9`…); a ♯11 written alone pins the natural 9 and 13 with it | per the table above | "from the symbol" |
 | D2 | **subV7:** resolves down a half step, to anything but a ø7 or °7 (`Fm7 B♭7 \| Aø7` is the ii–V of E♭) | Lydian Dominant | "tritone substitute of … (resolves down a half step)" |
 | D3 | **extended:** resolves down a fifth to another dominant, in a chain that ends on a **major** tonic | Mixolydian | "extended dominant: V7 of the next dominant" |
-| D3′ | **extended**, in a chain that ends on a **minor** tonic (`D7♭9 G7♯5 → Cm7` in Stella), the last link included | derive each link from that minor key (harmonic minor for the last) | "V7 of the V7 of C minor: ♭9 and ♭13 are in the key" |
+| D8 | **extended**, in a chain that ends on a **minor** tonic (`D7♭9 G7♯5 → Cm7` in Stella), the last link included | derive each link from that minor key (harmonic minor for the last) | "V7 of the V7 of C minor: ♭9 and ♭13 are in the key" |
 | D4 | **V7, V7/x, V7 of the chord before, cadence to a new key:** resolves down a fifth to a non-dominant chord | derive from the reference | "V7 of G minor: ♭9 and ♭13 are in the key" / "V7/ii in C: the 9 is in the key, the 13 isn't" |
 | D5 | The **back door** (♭VII7 up a whole step to a major chord), **I7 / IV7 in a blues**, or a **non-resolving** dominant whose root is diatonic (deceptive V7) | derive from the local key | "IV7 in a blues: the ♯11 is the key's major 7th" / "back door ♭VII7 to …" |
 | D6 | **Non-resolving with a chromatic root** (♭VI7 that doesn't resolve, ♭II7 sitting) | Lydian Dominant | "a chromatic dominant with nowhere to go: Lydian Dominant, its own key" |
@@ -274,10 +274,10 @@ different chord).
 | m5 | **Tonic minor** (i of a minor area) | Dorian | "tonic minor: Dorian by convention (Aeolian at Basic? see §11)" |
 | m6 | Modal tune | Dorian | "modal minor: Dorian" |
 | m7 | Diatonic, by derivation from the local key: ii → Dorian; vi → Aeolian (the ♭13 is in the key); iv of minor → Dorian; v of minor → Phrygian | as derived | "vi: the ♭13 is in the key" |
-| m7′ | **iii** | Dorian | "iii: its diatonic scale (Phrygian) puts a ♭9 a half step over the root; Dorian is what gets played" |
+| m9 | **iii** | Dorian | "iii: its diatonic scale (Phrygian) puts a ♭9 a half step over the root; Dorian is what gets played" |
 | m8 | Borrowed or chromatic (iv7 in major, ♭vi7…) | Dorian | "a borrowed minor chord: Dorian, its own key" |
 
-m4 outranks m7 on purpose: `Am7 D7 G7` in C makes Am7 a ii, so Dorian, not Aeolian. m5 and m7′ are conventions,
+m4 outranks m7 on purpose: `Am7 D7 G7` in C makes Am7 a ii, so Dorian, not Aeolian. m5 and m9 are conventions,
 not derivations: natural minor would say Aeolian for the tonic, and the key says Phrygian for iii. Both match
 what players do and what the library has (Stella's Dm7, All the Things' Cm7, each reached as a tonic of the
 moment); Aeolian and Phrygian are one click away in the menu.
@@ -426,11 +426,11 @@ example of what the analyser can't know (§13).
 | 8 | A♭7 | ♭VII7, the back door to B♭Maj7 | D5 | A♭ Lydian Dominant | ✓ |
 | 9 | B♭Maj7 | I | M3 | B♭ Ionian | ✓ |
 | 10 | Eø7 A7♭9 | ii–V of iii, landing this time | h2, D1+D4 | E Locrian, A Phrygian Dominant | ✓ ✓ |
-| 11 | Dm7 | iii, reached by its own ii–V | m7′ | D Dorian | ✓ (Phrygian before the m7′ refinement) |
+| 11 | Dm7 | iii, reached by its own ii–V | m9 | D Dorian | ✓ (Phrygian before the m9 refinement) |
 | 12 | B♭m7 E♭7 | iv7 ♭VII7: the back door to FMaj7 | m4, D5 | B♭ Dorian, E♭ Lydian Dominant | ✓ ✓ |
 | 13 | FMaj7 | V as a major 7th: chromatic, reached by the back door | M4 | F Lydian | ✓, decision 10 |
 | 14 | Eø7 A7♭9 | ii–V of iii, not landing | h2, D1+D4 | E Locrian, A Phrygian Dominant | ✓ ✓ |
-| 15–16 | Aø7 D7♭9 | related iiø7; extended dominant in a chain ending on Cm7 | h2, D3′ | A Locrian, D Phrygian Dominant | ✓ ✓ (Half-Whole before D3′) |
+| 15–16 | Aø7 D7♭9 | related iiø7; extended dominant in a chain ending on Cm7 | h2, D8 | A Locrian, D Phrygian Dominant | ✓ ✓ (Half-Whole before D8) |
 | 17–18 | G7♯5 | V7 of the C minor area; ♯5 pinned, ♭9 in the key | D1+D4 | G Altered | ✓ (my hand said Whole Tone; the rule won) |
 | 19–20 | Cm7 | tonic of the C minor area (ii of B♭, tonicized) | m5 | C Dorian | ✓ |
 | 21–22 | A♭7♯11 | ♭VII7 back door, ♯11 pinned | D1 | A♭ Lydian Dominant | ✓ |
@@ -447,7 +447,7 @@ example of what the analyser can't know (§13).
 | 2–4 | B♭m7 E♭7 A♭Maj7 | ii–V–I | m4, D4, M3 | B♭ Dorian, E♭ Mixolydian, A♭ Ionian | ✓ |
 | 5 | D♭Maj7 | IV | M4 | D♭ Lydian | ✓ |
 | 6–8 | Dm7 G7 CMaj7 | ii–V opening a C major area; its tonic | m4, D4, M3 | D Dorian, G Mixolydian, C Ionian | ✓ |
-| 9 | Cm7 | iii of A♭, on the root of the tonic just left | m7′ | C Dorian | ✓ (Phrygian before m7′) |
+| 9 | Cm7 | iii of A♭, on the root of the tonic just left | m9 | C Dorian | ✓ (Phrygian before m9) |
 | 10–12 | Fm7 B♭7 E♭Maj7 | ii–V opening an E♭ area (E♭Maj7 isn't diatonic to A♭); its tonic | m4, D4, M3 | F Dorian, B♭ Mixolydian, E♭ Ionian | ✓ |
 | 13 | A♭Maj7 | IV of the E♭ area | M4 | A♭ Lydian | ✓ |
 | 14–16 | Aø7 D7 GMaj7 | iiø7–V opening a G area; its tonic | h2, D4, M3 | A Locrian, D Mixolydian, G Ionian | ✓ |
@@ -457,7 +457,7 @@ example of what the analyser can't know (§13).
 | 25 | Fm7 | vi again, not the tonic of an F minor area (§5.3) | m7 | F Aeolian | ✓ (Dorian before the §5.3 refinement) |
 | 26–29 | as bars 2–5 | | | | ✓ |
 | 30 | G♭13 | ♭VII7, non-resolving, 13 pinned | D5 | G♭ Lydian Dominant | ✓ |
-| 31 | Cm7 | iii, passing down to B°7 and B♭m7 | m7′ | C Dorian | ✓ (Phrygian before m7′) |
+| 31 | Cm7 | iii, passing down to B°7 and B♭m7 | m9 | C Dorian | ✓ (Phrygian before m9) |
 | 32 | B°7 | passing diminished | d1 | B Whole-Half | ✓ |
 | 33–35 | B♭m7 E♭7 A♭6 | ii–V–I | m4, D4, M3 | B♭ Dorian, E♭ Mixolydian, A♭ Ionian | ✓ |
 | 36 | Gø7 C7 | secondary ii–V to vi, into the top of the form | h2, D4 | G Locrian, C Phrygian Dominant | ✓ ✓ |
@@ -482,11 +482,11 @@ They were chosen to hit rules the first fourteen charts never reached, and they 
    Things opened an F minor area, making bar 25's Fm7 a tonic (Dorian) while bar 1's identical Fm7 was vi
    (Aeolian). A cadence into a chord diatonic to the global key now returns there. No earlier chart changes:
    Autumn Leaves' B♭Maj7 is ♭III of G minor, and reads the same either way.
-2. **D3′, dominant chains into a minor tonic.** Stella's `Aø7 D7♭9 | G7♯5 | Cm7` made D7♭9 Half-Whole under D3
+2. **D8, dominant chains into a minor tonic.** Stella's `Aø7 D7♭9 | G7♯5 | Cm7` made D7♭9 Half-Whole under D3
    (natural tensions for an extended dominant), a bright sound in the darkest bar of the tune. A chain that ends
    on a minor tonic now derives each link from that key: Phrygian Dominant. The Rhythm Changes bridge, which ends
    on B♭ major, is unchanged.
-3. **m7′, iii → Dorian.** Three iii chords (Stella's Dm7, All the Things' Cm7 twice) and I'd have played Dorian on
+3. **m9, iii → Dorian.** Three iii chords (Stella's Dm7, All the Things' Cm7 twice) and I'd have played Dorian on
    every one. The diatonic scale, Phrygian, has its one distinctive note a half step above the root. Decision 8 is
    withdrawn: iii is Dorian, and Phrygian stays in the menu and in the modes chart, where it belongs.
 4. **The rule beat my hand once.** I wrote Whole Tone for Stella's G+ out of habit; the derivation says Altered (the
@@ -716,7 +716,7 @@ hand-scaled chart was read. Each refinement below has a test named for it (`web/
 | A tritone substitute doesn't fire into a ø7 or °7 | Autumn Leaves, `Fm7 B♭7 \| Aø7` | B♭ Lydian Dominant | B♭ Mixolydian (V7/♭VI, as §9 has it) |
 | The back door is its own case (D5) | Stella, `B♭m7 E♭7 \| FMaj7`; Lady Bird | E♭ Mixolydian (read as a passing ii–V) | E♭ Lydian Dominant |
 | A tension takes its natural form when the key holds both | Stella's A♭7 → B♭Maj7: A and B♭ are both in B♭ | A♭ Half-Whole | A♭ Lydian Dominant |
-| D3′ includes the chain's last link | Stella, `G7♯5 → Cm7` | G Whole Tone (V7/ii in B♭) | G Altered (§9's verdict) |
+| D8 includes the chain's last link | Stella, `G7♯5 → Cm7` | G Whole Tone (V7/ii in B♭) | G Altered (§9's verdict) |
 | A ♯11 written alone pins the natural 9 and 13 | `D7♯11` resolving to a minor chord | Altered | Lydian Dominant |
 | A minor ii of the next ii–V opens no area | Bird Blues, `Dm7 G7 \| Cm7 F7 \| B♭7` | G Phrygian Dominant (V7 of C minor) | G Mixolydian (V7/V, as §9 has it) |
 | A cadence into the home tonic comes home | Long Ago and Far Away, `Gm7 C7 \| FMaj7` after a bridge in C | F Lydian (IV of C) | F Ionian |

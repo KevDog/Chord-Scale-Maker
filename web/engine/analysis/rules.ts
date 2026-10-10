@@ -167,14 +167,14 @@ function dominant(ctx: Context, i: number): Decision {
     const end = chainEnd(ctx, i)
     if (end?.root && end.family === 'minor') {
       const minor = makeKey(end.root, true)
-      return dominantDecision(e, "D3'", `extended dominant into ${keyText(minor)}`, derive(e, minor), `V7 of ${n.chord}, on the way to ${keyText(minor)}`, true)
+      return dominantDecision(e, 'D8', `extended dominant into ${keyText(minor)}`, derive(e, minor), `V7 of ${n.chord}, on the way to ${keyText(minor)}`, true)
     }
     return dominantDecision(e, 'D3', `extended dominant (V7 of ${n.chord})`, NATURAL, `extended dominant: V7 of ${n.chord}`, false)
   }
   if (n?.root && downFifth(e, n) && n.family === 'minor' && p && isDominantLike(p) && downFifth(p, e)) {
     // the last link of a chain of dominants into a minor chord: that minor key, as for the links before it
     const minor = makeKey(n.root, true)
-    return dominantDecision(e, "D3'", `V7 of ${keyText(minor)}, at the end of a chain of dominants`, derive(e, minor, true), `V7 of ${keyText(minor)}, the chain's last link`, true)
+    return dominantDecision(e, 'D8', `V7 of ${keyText(minor)}, at the end of a chain of dominants`, derive(e, minor, true), `V7 of ${keyText(minor)}, the chain's last link`, true)
   }
   if (n && downFifth(e, n)) {
     const tonic = n.pc === key.tonic
@@ -248,7 +248,7 @@ function minor(ctx: Context, i: number): Decision {
   if (key.minor && d === 0) return { scale: named(e, NAME.dorian), rule: 'm5', fn, reason: 'tonic minor: Dorian by convention' }
   if (diatonic(e, key)) {
     if (!key.minor && d === 9) return { scale: named(e, NAME.aeolian), rule: 'm7', fn, reason: 'vi: the b13 is in the key' }
-    if (!key.minor && d === 4) return { scale: named(e, NAME.dorian), rule: "m7'", fn, reason: 'iii: Dorian (its Phrygian would put a b9 over the root)' }
+    if (!key.minor && d === 4) return { scale: named(e, NAME.dorian), rule: 'm9', fn, reason: 'iii: Dorian (its Phrygian would put a b9 over the root)' }
     if (key.minor && d === 7) return { scale: named(e, NAME.phrygian), rule: 'm7', fn, reason: 'v of a minor key: the b9 is in the key' }
     return { scale: named(e, NAME.dorian), rule: 'm7', fn, reason: `${roman(e, key)}: Dorian, the key’s own notes` }
   }

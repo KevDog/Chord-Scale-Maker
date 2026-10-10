@@ -50,9 +50,9 @@ describe('analysis: dominants (§7.1)', () => {
     expect([v['1 D7'], v['3 G7'], v['5 C7'], v['7 F7']]).toEqual(['D Mixolydian (D3)', 'G Mixolydian (D3)', 'C Mixolydian (D3)', 'F Mixolydian (D4)'])
   })
 
-  it("D3' a chain into a minor chord takes that key, last link included (Stella)", () => {
+  it('D8 a chain into a minor chord takes that key, last link included (Stella)', () => {
     const v = verdicts(chart('Bb', '1 Am7b5, 2 D7b9, 3 G7#5, 5 Cm7, 7 F7, 8 BbMaj7'))
-    expect([v['2 D7b9'], v['3 G7#5']]).toEqual(["D Phrygian Dominant (D3')", "G Altered (D1+D3')"])
+    expect([v['2 D7b9'], v['3 G7#5']]).toEqual(['D Phrygian Dominant (D8)', 'G Altered (D1+D8)'])
   })
 
   it('D4 V7 of a minor key is Phrygian Dominant (decision 1)', () => {
@@ -126,7 +126,7 @@ describe('analysis: the other families (§7.2–7.6)', () => {
     expect([v['2 Am7'], v['3 Dm7'], v['5 Em7'], v['6 Fm6'], v['7 CmMaj7']]).toEqual([
       'A Aeolian (m7)', // vi: the b13 is in the key
       'D Dorian (m4)', // related ii
-      "E Dorian (m7')", // iii
+      'E Dorian (m9)', // iii
       'F Dorian (m2)',
       'C Melodic Minor (m1)',
     ])
