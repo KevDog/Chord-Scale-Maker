@@ -506,9 +506,9 @@ library writes such a repeat out instead.
   a hover tooltip; Escape or a click outside closes it, and a clamp keeps the panel 16px inside the viewport. It
   gives the reason and key, and the rule's id linked to `/functions#rule-<id>`. A `fallback` the author didn't state
   reads "a guess — an @key or a function would settle it". Copy for an issue (`utils/issueReport.ts`) puts the
-  chord, function, scale, rule, reason and key on the clipboard and opens the contact form pre-filled (through
-  sessionStorage `csm-issue-text`), or, where the form isn't available, a GitHub issue link (a navigation; the
-  text goes in the URL, only the title once it passes 8000 characters). `analyse()` keeps `fallback` on stated
+  chord, function, scale, rule, reason and key on the clipboard and navigates nowhere; it then offers both "Send it
+  with the contact form" (the text passed through sessionStorage `csm-issue-text`) first and "Open a GitHub issue"
+  second (a link; the text goes in its URL up to 8000 characters, then the title only). `analyse()` keeps `fallback` on stated
   rows. Rule ids carry no primes (`m7'` became `m9`, `D3'` became `D8`).
 - **The functions page** (`/functions`, `pages/functions.vue`; prerendered in C major): the reference for what
   `analyse` does. Sections `#writing` (the function syntax, its errors taken from `FUNCTION_ERRORS` and
@@ -516,8 +516,9 @@ library writes such a repeat out instead.
   `group-secondary`, `group-substitutes`, `group-chromatic`) with the chord, scale, rule and reason the engine
   gives), `#rules` (every rule in `RULES`, by `TIERS`, one row `rule-<id>` each; `ruleParts` and
   `dominantScaleTable` in `analysis/rules.ts`) and `#report` (the Copy for an issue route). Nothing on it is
-  hand-typed: `functionsTable(key)` (`analysis/catalogue.ts`) runs one-row charts with a `bars: 1` header through
-  `analyse`, in the page's key (a Transpose key, major or minor, from `CATALOGUE_KEYS`), at prerender and again
+  hand-typed: `functionsTable(key)` (`analysis/catalogue.ts`) runs one-row charts (`bars: 1`; `bars: 2` with a tonic row first for the chromatic diminished function) through
+  `analyse`, in the page's key (a Transpose key, major or minor: `FUNCTIONS_KEYS`, `utils/functionsKey.ts`; the engine tests sweep the wider
+  `CATALOGUE_KEYS`), at prerender and again
   on a key change. The chosen key is kept in the URL as `?key=` in step with the router's history state, and
   remembered as `csm-functions-key`. A sticky group nav follows the scroll (an IntersectionObserver). Rules that
   only read the chord symbol are covered in tests by chord-symbol examples. Linked from the footer ("Functions"),
