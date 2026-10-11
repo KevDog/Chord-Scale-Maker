@@ -1,0 +1,158 @@
+# Function labels and the function grammar: design
+
+Date: 2026-10-10. Status: approved (decisions below are the user's). Source: the research in
+[docs/research/2026-10-jazz-theory-vs-engine.md](../../research/2026-10-jazz-theory-vs-engine.md) §3.4 and §5 P3/P9,
+with the detail in its appendix [C-functions.md](../../research/2026-10-jazz-theory-vs-engine/C-functions.md).
+
+**This PR lands before the functions help page** ([2026-10-10-functions-help-page-design.md](2026-10-10-functions-help-page-design.md)):
+that page generates its tables from `numerals.ts`, `SUFFIXES` and `parseFunction`, and would otherwise publish the
+labels this spec corrects. The functions-page branch rebases onto this one.
+
+## Goal
+
+The Changes sheet's numerals and the report's function names follow the Berklee vocabulary everywhere except in
+four places, each a label the sources would call wrong. Fix those, and make the fifth cell accept the spellings a
+Berklee-trained author types. No scale changes anywhere in this spec: every test below asserts the scale is
+unchanged.
+
+## Decisions
+
+| Question | Decision |
+| --- | --- |
+| Numeral case | Keep the lower-case convention (`ii7`, `V7/ii`, `viiø7`): Terefenko, "Jazz Transformations of the ii7–V7–I Progression", *Current Research in Jazz* 1 (2009). The sheet's printed text does not change except where this spec says. |
+| Grammar | Lenient on input, canonical on output. Every spelling in §2 reads to the same canonical text the sheet prints today. |
+| Upper-case slash target | Takes its quality from the key (`V7/II` in C is A7 → Dm7, as Berklee writes it). A lower-case target keeps forcing minor. |
+| Deceptive resolution | `(V7/II)` parses, sets a `deceptive` flag, changes no scale; the sheet prints the parentheses. |
+| Half-diminished glyph | `ø7` stays (understood by everyone; the Berklee texts themselves call it "not preferred" but universal). |
+
+## 1. Label changes (`numerals.ts`, the `fn` and `reason` strings in `rules.ts`, `RULES`)
+
+Each item: the change, the test, the sources (book pages; the PDFs are in `design/sources/`, offsets N&G book =
+PDF + 1, M&H book = PDF − 12, Levine book = PDF − 16).
+
+### L1. A dominant into the key's own V7 is `V7/V`; chain links print an arrow
+
+- Today `D7 G7 | Cmaj7` in C prints `II7` for the D7 (`numeral()` prints an extended dominant's own degree), and
+  the Rhythm bridge `D7 G7 C7 F7` in B♭ prints `III7 VI7 II7 V7`. `II7` is N&G p. 127's label for a *non-dominant*
+  II7; every source labels D7 → G7 as V7/V.
+- Change: the link that resolves into the local key's V7 prints `V7/V` (fn "V7 of V7: the dominant of the
+  dominant"); earlier links of a chain of three or more print `→` and keep fn "extended dominant: each one falls a
+  fifth into the next". A chain of two (`D7 G7 | C`) is not "extended" in the report; it is V7/V → V7. Rule ids D3/D8
+  and their scales are unchanged; update their `RULES` summaries.
+- Tests: `key: C`, `Cmaj7 | D7 | G7 | Cmaj7` → D7 prints `V7/V`, scale D Mixolydian, rule D3. `key: Bb`,
+  `Bbmaj7 | D7 | G7 | C7 | F7 | Bbmaj7` → `→ → V7/V V7`, all Mixolydian. Into minor: `A7 | D7 | G7 | Cm7`, `key: Cm` →
+  `→ V7/V V7`, D8 scales unchanged.
+- Sources: N&G pp. 51–55 ("to call each a V7/V would be inaccurate"; the arrow), p. 127; M&H pp. 49–50; Chediak
+  vol. 1 pp. 107, 109.
+
+### L2. A diatonic chord acting as a related ii prints its degree
+
+- Today `Em7 | A7 | Dm7` in C prints Em7 as `ii7/ii`, `Am7 | D7 | G7` prints `ii7/V`, `Bm7♭5 | E7 | Am7` prints
+  `iiø7/vi`: the diatonic identity (iii7, vi7, viiø7) never reaches the sheet. Berklee prints the degree and a
+  bracket ("dual function").
+- Change: when the minor or ø chord before a dominant a fourth above is diatonic to the local key, the numeral is
+  its degree (`iii7`, `vi7`, `viiø7`); the report fn keeps "ii of the ii–V to D minor" and adds "also iii of C". A
+  non-diatonic related ii (`Gm7 | C7 | Fmaj7` in C) still prints `ii7/IV`. Scales (m4 Dorian, h2 Locrian) unchanged.
+- Tests: `key: C`: `Cmaj7 | Em7 | A7 | Dm7 | G7 | Cmaj7` → Em7 `iii7`, E Dorian (m4) today — see the rules spec,
+  which changes this chord's scale to Phrygian; this spec's test pins the label only. `Bm7b5 | E7 | Am7` → `viiø7`,
+  B Locrian. `Gm7 | C7 | Fmaj7` → `ii7/IV`.
+- Sources: M&H pp. 52–53; N&G pp. 46–47, 67; Chediak vol. 1 p. 102.
+
+### L3. Auxiliary diminished: defined by the next chord
+
+- Today "auxiliary" requires the same root before *and* after (`C C°7 C`); `Dm7 G7 | C°7 | C6` and `C | G°7 | G7`
+  print "passing diminished" with the guess flag.
+- Change: a °7 whose next chord is on its own root is auxiliary, whatever precedes it. Reason: "auxiliary
+  diminished: it decorates the chord and returns to it". No guess flag. Scale unchanged (d1; the rules spec changes d1
+  separately).
+- Tests: `key: C`, `Dm7 | G7 | Cdim7 | C6` → "auxiliary diminished"; `Cmaj7 | Gdim7 | G7` → auxiliary.
+- Sources: M&H p. 159 (figs. 7.30, 7.32); Chediak vol. 1 p. 103; N&G p. 111.
+
+### L4. Diminished numerals by direction
+
+- Today `roman()` has one flat-side table, so an ascending C♯°7 (to Dm7) prints `♭ii°7` and G♯°7 (to Am7) prints
+  `♭vi°7`, colliding with the descending ♭III°7/♭VI°7. Berklee spells ascending chords sharp, descending flat;
+  the accidental carries the direction.
+- Change: a `vii°7 of X` (ascending) prints sharp-side (`♯i°7`, `♯ii°7`, `♯iv°7`, `♯v°7`); descending and auxiliary
+  print flat-side as today (`♭iii°7`, `♭vi°7`, `i°7`). The function grammar already accepts `♯I°7`.
+- Tests: `key: C`, `Cmaj7 | C#dim7 | Dm7` → `♯i°7`; `Em7 | Ebdim7 | Dm7` → `♭iii°7`; `Cmaj7 | Cdim7 | Cmaj7` → `i°7`.
+- Sources: M&H pp. 148–152; N&G pp. 110, 113.
+
+### L5. A sus before its own dominant is a suspension, not "static"
+
+- Today `Dm7 | G7sus4 | G7 | C` labels the sus "static sus" (s3).
+- Change: a `7sus4` followed by the dominant on the same root gets fn "V7sus4 before the V7: a subdominant
+  suspension", reason "V7sus4 before the V7: Mixolydian, the 4th is a chord tone here". Rule id stays s3 (update its
+  `RULES` summary); scale Mixolydian unchanged. "Static sus" remains for a sus with no same-root dominant after it.
+- Test: `key: C`, `Cmaj7 | Dm7 | G7sus4 | G7 | Cmaj7` → the fn above, G Mixolydian, s3.
+- Sources: M&H p. 6 (fig. 1.8); N&G p. 38; Levine p. 45.
+
+### L6. Borrowed chords are named as borrowed, not "chromatic"
+
+- Today a non-resolving ♭VII7, ♭VI7 or ♭III7 in a major key gets fn "chromatic dominant" with the guess flag
+  (D6), and a borrowed major 7th (♭VImaj7, ♭IImaj7, ♭IIImaj7, ♭VIImaj7 in major, M4) is "a non-tonic major chord".
+  Both are the textbook modal-interchange chords; Berklee names them by their source.
+- Change: D6 for ♭VII7/♭VI7/♭III7 in a major key: fn "♭VII7, borrowed from the parallel minor (subdominant
+  minor)", reason "♭VII7 from the parallel minor: Lydian Dominant, it returns to I"; no guess flag. M4 for the four
+  borrowed major 7ths in a major key: fn "♭VImaj7, borrowed (modal interchange)", reason "♭VImaj7, borrowed from
+  C minor: Lydian (its ♯11 is in the key)". h2 for iiø7 in a major key: fn "iiø7, borrowed". "Chromatic dominant"
+  (with the guess flag) remains for a dominant on any other non-diatonic root. Scales unchanged.
+- Tests: `key: C`, `Cmaj7 | Bb7 | Fmaj7` → Bb7 fn as above, B♭ Lydian Dominant, no guess; `Cmaj7 | Ab7 | Cmaj7` →
+  ♭VI7 likewise; `Cmaj7 | Abmaj7 | G7` → Abmaj7 fn "borrowed (modal interchange)", A♭ Lydian; `Cmaj7 | E7 | Fmaj7`
+  (E7 on a diatonic root, not resolving) → unchanged.
+- Sources: M&H pp. 123, 130, 236–238; N&G pp. 74–75, 80, 82, 123; Chediak vol. 1 pp. 97, 112–113.
+
+### L7. Print `V7sus4`
+
+- `SUFFIXES['7sus4']` and `numerals.ts` write `7sus`. Print `V7sus4` (M&H pp. 6–7; N&G `V7(sus4)`); keep accepting
+  `7sus` and `sus`. Test: `G7sus4 | Cmaj7`, `key: C` → `V7sus4`; `parseFunction('V7sus')` reads `V7sus4`.
+
+### L8. "Passing ii–V" → "extended ii–V" in the report
+
+- Chediak's term (vol. 1 p. 107; N&G p. 68 "related II-7 of a sequential dominant"). Fn "extended ii–V: a
+  side-step, its own notes". Numerals and scales unchanged. Test: Gm `Bm7 | E7 | Bbm7 | Eb7 | Am7b5 | D7 | Gm7` → fn
+  changes only.
+
+## 2. Grammar changes (`functions.ts`), all additive
+
+Every row: input → canonical text (what the sheet prints and what the file keeps when normalised). Add a test per
+row to `functions.test.ts` and keep the round-trip test (every numeral the analyser gives the library reads back to
+itself).
+
+| Input accepted | Reads as | Source of the spelling |
+| --- | --- | --- |
+| `II-7`, `II–7` (hyphen or en dash), `I-6`, `VI-7` | `ii7`, `i6`, `vi7` | N&G, M&H, Levine |
+| `I-(maj7)`, `I-Maj7` | `i(maj7)` | N&G p. 23 |
+| `VII-7(♭5)`, `VII-7b5`, `♯IV-7(♭5)`, `VIIm7(b5)`, `VIIØ7` | `viiø7`, `♯ivø7` | N&G p. 23; M&H p. viii; Chediak |
+| `V7(sus4)`, `Vsus4` | `V7sus4` | N&G p. 23 |
+| `SubV7/II`, `subV/II`, `SubV/III` (with or without the 7, any case of "sub") | `subV7/ii`, `subV7/iii` | M&H pp. 70–71; Chediak |
+| `I∆7` with U+2206 (what Option-J types on a Mac), as well as Δ U+0394 | `Imaj7` | Levine's glyph |
+| `B♭: V7/ii` (glyph flat in the key prefix) | `B♭: V7/ii` | M&H p. 41 |
+| `(V7/II)`, `(III7)` | `(V7/ii)`, `(III7)` with `deceptive: true` | N&G pp. 52–55; M&H p. 48; Chediak vol. 1 pp. 105, 114 |
+
+Semantics:
+
+- **G6, upper-case target.** `V7/II` in C → target Dm7 (`target.minor === true`); `V7/V` → G major; `V7/VI` → Am7.
+  The quality comes from the key's diatonic chord on that degree (major key: ii, iii, vi minor; vii ø); in a minor
+  key from `DIATONIC_MINOR`. `V7/ii` (lower case) keeps forcing minor; `V7/♭III` keeps major. `functionCandidates`
+  keeps offering both readings where they differ.
+- **G7, deceptive.** `StatedFunction` gains `deceptive: boolean`. `impliedTarget` and the scale derivation ignore
+  it (the dominant's scale is still that of its expected target: N&G p. 45 "altered notes should not be changed to
+  unaltered"); `fitError` does not demand the resolution; the sheet prints the parentheses.
+- `chord_scales.json` aliases gain U+2206 wherever U+0394 is listed.
+
+## 3. Order of work
+
+1. Tests first, label by label, with the stream harness pattern from `functions.test.ts`; each asserts the numeral,
+   the fn, and that the scale and rule id are unchanged.
+2. `numerals.ts` and the fn/reason strings; update `RULES` summaries for D3, D8, s3, D6, M4, h2.
+3. Grammar: `parseFunction`, `SUFFIXES`, `ascii()`, `fitError`, `functionCandidates`; the round-trip test.
+4. `npm run analyse -- --all --force --save` and `make golden`; the only diffs are numerals, fn and reason text —
+   assert in the PR that no scale changed (a script that diffs the fixture on `scale` only).
+5. Docs: `docs/design.md` (numerals, the function grammar); the chart-functions spec's grammar section gains the
+   new spellings; the functions-page spec's §1.1 table is generated, so nothing to edit there.
+
+## 4. Out of scope
+
+The scale changes the same research proposes (IV after its V7, blues IV7, °7, iii7): the rules spec. Context and
+detection: the context spec. Upper-case numerals on the sheet: declined.
