@@ -70,7 +70,9 @@ test('a later copy is written out, a tag follows a double barline, and a share l
   await expect(page.getByText('A3 (= A1)', { exact: true })).toBeVisible()
   await expect(page.getByText('Tag', { exact: true })).toBeVisible()
   await page.getByRole('button', { name: 'Share' }).click()
-  const link = await page.getByRole('dialog').getByLabel('Link').inputValue()
+  const box = page.getByRole('dialog').getByLabel('Link')
+  await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/) // made, not "Making the link…"
+  const link = await box.inputValue()
   const other = await browser.newContext()
   const visitor = await other.newPage()
   await visitor.goto(link)
@@ -115,6 +117,23 @@ test('a function from the inspector: the Changes sheet shows it, its note opens 
   await barCell(page, 'A', 3).click()
   await page.getByRole('button', { name: 'Key change here' }).click()
   await expect(page.getByLabel('Chart text')).toHaveValue(/@key A 3 C\nA \| 3 \| Dm7/)
+})
+
+test('a function picked in the inspector changes the scale the Changes sheet plays on a blank cell (proposedScales)', async ({ page }) => {
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\nA | 5 | CMaj7\n')
+  const sheet = sheetOf(page)
+  await expect(sheet).toContainText('D Mixo') // the sheet's short names
+  await barCell(page, 'A', 2).click() // D7
+  await expect(page.getByRole('heading', { level: 3 }).filter({ hasText: /^(Function|Scale|Why)$/ })).toHaveText(['Function', 'Scale', 'Why'])
+  const scales = page.getByRole('radiogroup', { name: 'Scale' }).getByRole('radio')
+  await expect(scales.first()).toContainText('D Mixolydian')
+  await expect(scales.first()).toBeChecked()
+  await page.getByRole('radiogroup', { name: 'Function' }).getByRole('radio').filter({ hasText: '→ D Lydian Dominant' }).first().click()
+  await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 2 \| D7\s+\|\s+\| \S/) // the function written, the scale cell left blank
+  await expect(sheet).toContainText('D Lyd Dom')
+  await expect(scales.first()).toContainText('D Lydian Dominant') // the analysed option follows the function
+  await expect(scales.first()).toBeChecked()
+  await expect(page.getByRole('button', { name: 'Unpin' })).toHaveCount(0)
 })
 
 test('a chart opens on the Changes sheet, and Scales is the only other sheet', async ({ page }) => {
@@ -174,7 +193,9 @@ test('the guide tone choice survives a reload and rides a share link', async ({ 
   await expect(guide(page, 'From 7th')).toBeChecked()
   await expect(labelRow(lines(page).first())).toHaveText(/^\s*7\s*3\s*7\s*$/)
   await page.getByRole('button', { name: 'Share' }).click()
-  const link = await page.getByRole('dialog').getByLabel('Link').inputValue()
+  const box = page.getByRole('dialog').getByLabel('Link')
+  await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/) // made, not "Making the link…"
+  const link = await box.inputValue()
   const other = await browser.newContext() // fresh storage: its own preference is Off
   const visitor = await other.newPage()
   await visitor.goto(link)

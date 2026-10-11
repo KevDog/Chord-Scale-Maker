@@ -25,7 +25,7 @@ export type Resolved = Readonly<{
 export type ScaleView = Readonly<{ level: ScaleLevel; seed: number; proposed: boolean }>
 
 /** an analysed scale at a level: Standard as analysed; a tonic minor (rule m5) Aeolian at Basic; else its ladder or a Random pick */
-function atLevel(view: ScaleView, chord: string, scale: string, rule: string, line: number): string {
+export function atLevel(view: ScaleView, chord: string, scale: string, rule: string, line: number): string {
   if (view.level === 'standard') return scale
   const root = readChord(chord)?.root
   if (view.level === 'basic' && rule === 'm5' && root) return `${rootName(root)} Aeolian`

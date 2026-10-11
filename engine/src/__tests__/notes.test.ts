@@ -9,7 +9,13 @@ const C_TUNE = 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 
 
 describe('rowNotes', () => {
   it('gives each row its reason and key area, keyed by doc line', () => {
-    expect(notes('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n').get(3)).toEqual({ note: 'V7 of C: natural tensions', problem: null, key: 'C', numeral: 'V7', scale: 'G Mixolydian', source: 'default' })
+    expect(notes('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n').get(3)).toEqual({ note: 'V7 of C: natural tensions', problem: null, key: 'C', numeral: 'V7', scale: 'G Mixolydian', source: 'default', analysed: 'G Mixolydian', rule: 'D4' })
+  })
+
+  it("gives the analyser's scale and rule beside yours, at the sheet's level: what blanking the cell would play", () => {
+    expect(notes('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7 | G Altered\nA | 3 | CMaj7\n').get(3)).toMatchObject({ scale: 'G Altered', analysed: 'G Mixolydian', rule: 'D4' })
+    const minor = 'title: T\nkey: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm7 | G Dorian\n'
+    expect(notes(minor, { ...ON, level: 'basic' }).get(4)).toMatchObject({ scale: 'G Dorian', source: 'written', analysed: 'G Aeolian' })
   })
 
   it('gives the scale played: yours over the analyser’s; and the function you stated as the numeral', () => {
@@ -38,7 +44,7 @@ describe('rowNotes', () => {
   it("carries a row's function problem, and an @key's", () => {
     const n = notes('title: T\nkey: C\n@key Z 9 D\nA | 1 | Dm7\nA | 2 | G7 | | ii7\nA | 3 | CMaj7\n')
     expect(n.get(4)?.problem).toBe('ii7 is a minor chord, G7 a dominant one')
-    expect(n.get(2)).toEqual({ note: '', problem: '@key Z 9: no bar 9 in section Z', key: '', numeral: '', scale: '', source: 'default' })
+    expect(n.get(2)).toEqual({ note: '', problem: '@key Z 9: no bar 9 in section Z', key: '', numeral: '', scale: '', source: 'default', analysed: '', rule: '' })
   })
 })
 
