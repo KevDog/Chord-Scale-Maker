@@ -138,9 +138,10 @@ describe('analysis: the other families (§7.2–7.6)', () => {
     expect(verdict(chart('Gm', '1 Gm, 2 Dm7, 3 Gm'), '2 Dm7')).toBe('D Phrygian (m7)') // v of a minor key
   })
 
-  it('h1 h2 half-diminished: Locrian, Locrian natural 2 when modal (Footprints)', () => {
+  it('h2 half-diminished: Locrian, in a modal chart too (Footprints; h1 is gone, R6)', () => {
     expect(verdict(chart('Gm', '1 Am7b5, 2 D7, 3 Gm'), '1 Am7b5')).toBe('A Locrian (h2)')
-    expect(verdict(library('footprints'), '9 F#m7b5')).toBe('F# Locrian natural 2 (h1)')
+    expect(analyse(parseChart(library('footprints')).value).context).toBe('modal')
+    expect(verdict(library('footprints'), '9 F#m7b5')).toBe('F# Locrian (h2)')
   })
 
   it('d1 diminished: Whole-Half', () => {

@@ -36,6 +36,11 @@ describe('RULES', () => {
     expect(ruleParts('m4')).toEqual(['m4'])
   })
 
+  it('has no h1: a ø7 in a modal chart goes through h2 (R6)', () => {
+    expect(RULES.map((r) => r.id)).not.toContain('h1')
+    expect(RULES.filter((r) => r.family === 'halfdim').map((r) => r.id)).toEqual(['h2'])
+  })
+
   it('has no primed ids', () => {
     expect(RULES.map((r) => r.id).filter((id) => id.includes("'"))).toEqual([])
   })

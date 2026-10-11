@@ -40,7 +40,6 @@ const NAME = {
   phrygian: 'Phrygian',
   melodicMinor: 'Melodic Minor',
   locrian: 'Locrian',
-  locrianN2: 'Locrian natural 2',
   wholeHalf: 'Whole-Half Diminished',
 } as const
 
@@ -322,7 +321,6 @@ function minor(ctx: Context, i: number): Decision {
 function halfDiminished(ctx: Context, i: number): Decision {
   const e = ctx.stream[i] as Entry
   const key = ctx.keys[i] ?? ctx.global
-  if (ctx.modal) return { scale: named(e, NAME.locrianN2), rule: 'h1', fn: 'modal half-diminished', reason: 'modal: the melodic-minor colour, with a 9 to lean on' }
   const n = nextOf(ctx.stream, i)
   const related = n && isDominantLike(n) && interval(e.pc, n.pc) === 5
   const end = related ? nextOf(ctx.stream, ctx.stream[i]?.next) : undefined
@@ -452,8 +450,7 @@ export const RULES: readonly RuleInfo[] = [
   { id: 'm9', family: 'minor', tier: 3, scale: 'Phrygian', looksAt: 'its degree: iii in a major key, also as the ii of the next dominant', summary: 'iii in a major key is Phrygian, the key’s own notes (the ♭2 is a passing note); Dorian at Advanced.' },
   { id: 'm7', family: 'minor', tier: 3, scale: 'Dorian, Aeolian or Phrygian', looksAt: 'its degree: another diatonic minor chord', summary: 'A diatonic minor chord takes the key’s own notes: vi of a major key Aeolian, v of a minor key Phrygian, any other Dorian.' },
   { id: 'm8', family: 'minor', tier: 5, scale: 'Dorian', looksAt: 'a minor chord the key does not hold', summary: 'A borrowed or chromatic minor chord is Dorian, its own key.', guess: 'always' },
-  { id: 'h1', family: 'halfdim', tier: 2, scale: 'Locrian natural 2', looksAt: 'a modal chart', summary: 'A half-diminished chord in a modal chart is Locrian ♮2.' },
-  { id: 'h2', family: 'halfdim', tier: 4, scale: 'Locrian', looksAt: 'the next chord, a dominant a fourth up', summary: 'A half-diminished chord is Locrian; with a dominant after it, it is the iiø7 of that minor ii–V; without one, iiø7 in a major key is borrowed from the parallel minor.', guess: 'no related dominant follows (but iiø7 in a major key)' },
+  { id: 'h2', family: 'halfdim', tier: 4, scale: 'Locrian', looksAt: 'the next chord, a dominant a fourth up', summary: 'A half-diminished chord is Locrian (Locrian ♮2 at Advanced), in a modal chart too; with a dominant after it, it is the iiø7 of that minor ii–V; without one, iiø7 in a major key is borrowed from the parallel minor.', guess: 'no related dominant follows (but iiø7 in a major key)' },
   { id: 'd1', family: 'dim', tier: 4, scale: 'Whole-Half Diminished', looksAt: 'the next chord', summary: 'A diminished seventh chord (a vii°7 leading up a half step, an auxiliary that returns to a chord on its own root, or a passing one) is Whole-Half Diminished.', guess: 'a passing diminished chord' },
   { id: 's1', family: 'sus', tier: 1, scale: 'Phrygian', looksAt: 'a b9 in the symbol', summary: 'A sus b9 is Phrygian.' },
   { id: 's2', family: 'sus', tier: 4, scale: 'Mixolydian or Mixolydian b6', looksAt: 'the next chord, a fifth down (in a chart that is not modal, held under four bars)', summary: 'A resolving sus takes its 13 from the key: Mixolydian, or Mixolydian b6 when the key holds the b13.' },
