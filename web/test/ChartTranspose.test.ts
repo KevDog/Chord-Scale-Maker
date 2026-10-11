@@ -34,13 +34,16 @@ describe('ChartTranspose', () => {
     w.unmount()
   })
 
-  it('transposes a minor-key chart without choking on the "m" suffix', async () => {
+  it('offers a minor-key chart the minor keys, starting at its own, and keeps it minor', async () => {
     const doc = parseChart('title: Minor\nkey: Gm\nA | 1 | Gm7 | G Dorian\nA | 2 | D7\n').value
     const w = await mountSuspended(ChartTranspose, { props: { current: () => doc }, attachTo: document.body })
     await w.find('button').trigger('click')
     await settle()
     const to = select('To key')
-    to.value = 'Bb'
+    expect([...to.options].map((o) => o.text).slice(0, 3)).toEqual(['C minor', 'C♯ minor', 'D minor'])
+    expect(to.selectedOptions[0]?.text).toBe('G minor')
+    expect(button('Transpose')?.disabled).toBe(true) // same key
+    to.value = 'Bbm'
     to.dispatchEvent(new Event('change'))
     await settle()
     button('Transpose')?.click()

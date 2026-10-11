@@ -15,6 +15,24 @@ export type KeyShift = Readonly<{ steps: number; semis: number }>
 
 /** keys offered for transposing a chart; F# and Gb both, since the spelling matters */
 export const TRANSPOSE_KEYS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'] as const
+/** the twelve minors as their key signatures spell them (C♯ and G♯ minor, not D♭ and G♭ minor: double flats) */
+export const TRANSPOSE_MINOR_KEYS = ['Cm', 'C#m', 'Dm', 'Ebm', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'Bbm', 'Bm'] as const
+
+/** "Ebm" -> its root and whether it's minor; a bare root is major */
+function readKey(key: string): Readonly<{ root: Spelled; minor: boolean }> {
+  const m = matchKeyText(key.trim())
+  return m ? { root: parseRoot(m[1] ?? ''), minor: /^(m|-|min|minor)$/i.test(m[2] ?? '') } : { root: parseRoot(key), minor: false }
+}
+
+/** the keys a chart in `key` can move to: a transposition keeps the mode */
+export const transposeKeys = (key: string): readonly string[] => (readKey(key).minor ? TRANSPOSE_MINOR_KEYS : TRANSPOSE_KEYS)
+
+/** the offered key (transposeKeys) for `key`: itself, or its enharmonic twin (D♯ minor -> E♭ minor, C♯ -> D♭) */
+export function offeredKey(key: string): string {
+  const pc = pcOf(readKey(key).root)
+  const keys = transposeKeys(key)
+  return keys.find((k) => k.trim() === key.trim()) ?? keys.find((k) => pcOf(readKey(k).root) === pc) ?? key
+}
 
 export const keyShift = (from: Spelled, to: Spelled): KeyShift => ({
   steps: mod(to.letter - from.letter, 7),
@@ -25,10 +43,11 @@ export function shiftNote(n: Spelled, s: KeyShift): Spelled {
   return shiftBy(n, s.steps, s.semis)
 }
 
-/** -1 for a flat key (F, Bb … Gb), 1 for a sharp key (G, D … F#), 0 for C */
+/** -1 for a flat key (F, Bb … Gb; Dm, Cm), 1 for a sharp key (G, D … F#; Em), 0 for C and A minor */
 export type KeySide = -1 | 0 | 1
 export function keySide(key: string): KeySide {
-  const acc = spellFrom(parseRoot(key), SCALES.ionian[0]).reduce((sum, n) => sum + n.acc, 0)
+  const { root, minor } = readKey(key)
+  const acc = spellFrom(root, SCALES[minor ? 'aeolian' : 'ionian'][0]).reduce((sum, n) => sum + n.acc, 0)
   return acc < 0 ? -1 : acc > 0 ? 1 : 0
 }
 
@@ -99,9 +118,12 @@ function transposeRow(row: RowLine, s: KeyShift, side: KeySide): RowLine {
   return { ...row, chord, scale, ...(row.function ? { function: transposeFunction(row.function, s, side) } : {}) }
 }
 
-/** move every row from one key to another; lines that aren't rows, and rows it can't read, stay as they are */
+/**
+ * move every row from one key to another (`F`, `Ebm`; a minor key spells on its own signature's side); lines that
+ * aren't rows, and rows it can't read, stay as they are
+ */
 export function transposeChart(doc: ChartDoc, from: string, to: string): Readonly<{ doc: ChartDoc; skipped: number }> {
-  const s = keyShift(parseRoot(from), parseRoot(to))
+  const s = keyShift(readKey(from).root, readKey(to).root)
   const side = keySide(to)
   let skipped = 0
   const lines = doc.lines.map((l): ChartLine => {

@@ -13,7 +13,7 @@
         <UiField>
           <UiLabel>To key</UiLabel>
           <UiSelect v-model="to">
-            <option v-for="k in TRANSPOSE_KEYS" :key="k" :value="k">{{ noteText(k) }}</option>
+            <option v-for="k in keys" :key="k" :value="k">{{ keyLabel(k) }}</option>
           </UiSelect>
         </UiField>
       </div>
@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { ArrowsUpDownIcon } from '@heroicons/vue/16/solid'
-import { type ChartDoc, chartMeta, isValidKey, keyLabel, noteText, setMeta, TRANSPOSE_KEYS, transposeChart } from '@chord-scale-maker/engine'
+import { type ChartDoc, chartMeta, isValidKey, keyLabel, offeredKey, setMeta, transposeChart, transposeKeys } from '@chord-scale-maker/engine'
 
 /**
  * "Transpose…": rewrites the chart in another concert key (engine/src/transpose.ts).
@@ -39,20 +39,20 @@ const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; 'transposed': [message
 const open = ref(false)
 const from = ref<string>('C')
 const to = ref<string>('C')
+/** a transposition keeps the mode: a minor chart moves among the minor keys */
+const keys = computed(() => transposeKeys(from.value))
 /** the chart's declared key is the source; Transpose is unavailable until it's a valid key */
 const keyValid = computed(() => isValidKey(chartMeta(props.current()).key))
 
 function openDialog(): void {
   from.value = chartMeta(props.current()).key.trim()
-  to.value = from.value
+  to.value = offeredKey(from.value)
   open.value = true
 }
 
 function apply(): void {
-  const minor = from.value.endsWith('m')
-  // transpose on the bare root ("Gm" -> move "G"); the chart's declared key follows, keeping major/minor
-  const { doc: moved, skipped } = transposeChart(props.current(), from.value.replace(/m$/, ''), to.value)
-  const newKey = minor ? `${to.value}m` : to.value
+  const { doc: moved, skipped } = transposeChart(props.current(), from.value, to.value)
+  const newKey = to.value
   const doc = setMeta(moved, 'key', newKey)
   emit('update:doc', doc)
   const note = skipped ? `; ${skipped} ${skipped === 1 ? 'row' : 'rows'} could not be read and stayed as typed` : ''
