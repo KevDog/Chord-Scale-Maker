@@ -25,7 +25,7 @@ chosen instrument.
 
 ```text
 package.json              # npm workspaces (engine, web), overrides; package-lock.json beside it
-engine/                   # @chord-scale-maker/engine (specs/2026-10-11-engine-ui-split-design.md)
+engine/                   # @chord-scale-maker/engine (superpowers/specs/2026-10-11-engine-ui-split-design.md)
   chord_scales.json       # qualities, aliases, default/alternate scales, slash readings
   charts/*.txt            # chart library (concert pitch)
   fixtures/               # golden.json, analysis.json: the engine's frozen answers (`make golden`)
@@ -736,7 +736,7 @@ Pages are static, and the only server code is the contact function, so the attac
   - the parsed rows of each chart in `engine/charts/`, and two inline charts for parser edge cases
 
   `engine/fixtures/analysis.json` is the analyser's report over every library chart, one row per line (key, areas, and
-  each row's scale, rule, function and reason); `make golden` rewrites both fixtures. `npm run fixture-scales [--
+  each row's scale, rule, function and reason); `make golden` rewrites both fixtures. `npm run fixture-scales -w engine [--
   <ref>]` (`engine/scripts/fixtureScales.ts`) compares only their scales with a ref's (default `main`) and exits 1 on any
   difference: the check for a change meant to move text but no scale.
 

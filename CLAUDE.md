@@ -19,11 +19,11 @@ README.md for the chart format. The original Python/LilyPond CLI was retired aft
 - App code is in `web/app/`, its unit tests in `web/test/`, browser tests in `web/e2e/`. Pages must run under the
   hashed CSP (`web/build/csp.ts`): no inline `<script>` of our own, no `eval`, no third-party origins (one
   exception: the About video's frame from `youtube-nocookie.com`). Pages are prerendered; the only server code is
-  `web/server/` (the contact form). Keep `engine/` free of Vue/DOM imports (its lint rule enforces it); put view logic that can be pure in
+  `web/server/` (the contact form). Keep `engine/` free of Vue/DOM imports (its lint rule bars Vue, VexFlow and app imports; its tsconfig has no DOM); put view logic that can be pure in
   the engine (`sheet.ts`, `edit.ts`).
 - Runtime `dependencies` are only what ships to browsers (`vue`, `vexflow`, `@headlessui/vue`, `@heroicons/vue`,
   `@fontsource-variable/jost`, and the workspace's own `@chord-scale-maker/engine`, which has no dependencies);
-  CI gates on `npm audit --omit=dev`. The lockfile and `overrides` are in the root `package.json`.
+  CI gates on `npm audit --omit=dev`. `overrides` are in the root `package.json`; the lockfile is the root `package-lock.json`.
 - Feature flags: `runtimeConfig.public.features` + `useFeature()`; new flags start off; e2e builds with all on.
 - Versions are the commit's date and hash (`web/build/version.ts`); no number to bump.
   Milestones are annotated tags (`v1-launch`).
