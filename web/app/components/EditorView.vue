@@ -1,8 +1,12 @@
 <template>
   <div class="space-y-10">
     <div class="min-w-0 print:hidden">
-      <UiHeading>{{ editor.meta.value.title || 'Untitled' }}</UiHeading>
+      <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
+        <UiHeading>{{ editor.meta.value.title || 'Untitled' }}</UiHeading>
+        <UiButton v-if="!editor.fatal.value" color="note" :aria-expanded="editorShown" title="Show or hide the chart editor" @click="toggleEditor"><PencilSquareIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</UiButton>
+      </div>
       <UiText v-if="byline" class="mt-1">{{ byline }}</UiText>
+      <UiText v-if="sheetEditing" class="mt-1 md:hidden">Full editing works on a larger screen. Tap a chord on the sheet to change it.</UiText>
       <!-- My charts: where this chart is saved, and what you can do with it -->
       <div v-if="saved || shared" class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
         <UiText v-if="saved" role="status" :class="['text-sm/6!', saved.status.value.state === 'failed' && 'text-red-700! dark:text-red-400!']">{{ saveText }}</UiText>
@@ -17,6 +21,8 @@
     </div>
 
     <ShareDialog :open="shareOpen" :link="shareLink" @close="shareOpen = false" />
+    <SheetChordEditor :doc="editor.doc.value" :target="sheetChord" @update:doc="editor.setDoc" @said="said = $event" @close="sheetChord = null" />
+    <p class="sr-only" aria-live="polite">{{ said }}</p>
 
     <UiDialog :open="revertOpen" size="md" @close="revertOpen = false">
       <UiDialogTitle>Revert to the library version?</UiDialogTitle>
@@ -32,11 +38,11 @@
     <div class="space-y-8 rounded-2xl bg-note-100 p-5 ring-1 ring-note-200 sm:p-6 [&_[data-slot=text]]:text-zinc-600 [&_th]:text-zinc-600 dark:bg-white/5 dark:ring-white/10 dark:[&_[data-slot=text]]:text-zinc-400 dark:[&_th]:text-zinc-400 print:rounded-none print:bg-transparent print:p-0 print:ring-0">
       <UiText v-if="!editorShown && editor.diagnostics.value.length" role="status" class="text-amber-800! print:hidden dark:text-amber-400!">
         The chart's text has {{ editor.diagnostics.value.length === 1 ? 'a problem' : `${editor.diagnostics.value.length} problems` }}.
-        <button type="button" class="font-semibold underline" @click="prefs.showEditor.value = true">Edit</button> to fix {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
+        <button type="button" class="font-semibold underline" @click="toggleEditor">Edit</button> to fix {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
       </UiText>
   
-      <!-- the bar editor (barEditor flag): the chart as bars with an inspector, its text under ⋯ as the Source -->
-      <div v-if="editorShown && barEditorOn" class="space-y-8 print:hidden" @keydown="chartHistory.onKeydown">
+      <!-- the bar editor: the chart as bars with an inspector, its text under ⋯ as the Source -->
+      <div v-if="editorShown" class="space-y-8 print:hidden" @keydown="chartHistory.onKeydown">
         <section aria-labelledby="grid-heading" class="min-w-0 space-y-5">
           <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
             <UiSubheading id="grid-heading">Chart</UiSubheading>
@@ -56,8 +62,11 @@
             This chart is over a size limit. Shorten it in the Source to edit it here.
           </div>
           <template v-else>
-            <ChartHeadingFields details :doc="editor.doc.value" @update:doc="editor.setDoc" />
-            <BarEditor :doc="editor.doc.value" @update:doc="editor.setDoc" @source="prefs.source.value = true" />
+            <ChartHeadingFields :doc="editor.doc.value" @update:doc="editor.setDoc" />
+            <!-- below md, light edits only: chords are changed on the Changes sheet -->
+            <div class="max-md:hidden">
+              <BarEditor ref="barEditor" :doc="editor.doc.value" @update:doc="editor.setDoc" @source="prefs.source.value = true" @selected="selectedLine = $event" />
+            </div>
           </template>
         </section>
         <section v-if="sourceShown" id="text-pane" aria-labelledby="text-heading" class="min-w-0">
@@ -78,38 +87,6 @@
         </UiText>
       </div>
 
-      <div v-else-if="editorShown" :class="['grid gap-8 print:hidden', !functionsOn && 'lg:grid-cols-2']" @keydown="chartHistory.onKeydown">
-        <section aria-labelledby="grid-heading" class="min-w-0">
-          <div class="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
-            <UiSubheading id="grid-heading">Chart</UiSubheading>
-          </div>
-          <div v-if="editor.fatal.value" class="rounded-lg bg-red-500/10 p-4 text-sm/6 text-red-700 dark:text-red-400">
-            This chart is over a size limit. Shorten it in the text editor to edit it here.
-          </div>
-          <!-- its own scroll box from sm up; below, only sideways, so the page is the one vertical scroller -->
-          <div v-else class="overflow-x-auto pr-1 sm:max-h-[60vh] sm:overflow-auto">
-            <ChartGrid :doc="editor.doc.value" @update:doc="editor.setDoc" />
-          </div>
-        </section>
-        <section id="text-pane" aria-labelledby="text-heading" class="min-w-0">
-          <div class="relative mb-3 flex items-center gap-2">
-            <UiSubheading id="text-heading">Text</UiSubheading>
-            <HelpTip label="How the text editor works">
-              <span class="block">One line per chord: <code class="font-mono text-xs whitespace-nowrap">section | bar | chord | scale<template v-if="functionsOn"> | function</template></code>, in concert pitch. Leave the scale out to use the chord's default.<template v-if="functionsOn"> The function (<code class="font-mono text-xs">V7/ii</code>, or <code class="font-mono text-xs">D: V7/ii</code> in another key) is optional and tells the analysis what the chord does; the grid offers the ones that fit.</template></span>
-              <span class="mt-2 block"><code class="font-mono text-xs">title:</code>, <code class="font-mono text-xs">subtitle:</code>, <code class="font-mono text-xs">composer:</code>, <code class="font-mono text-xs">key:</code> and <code class="font-mono text-xs">form:</code> set the heading, lines starting with <code class="font-mono text-xs">#</code> are comments, and <code class="font-mono text-xs">@copy A B 8</code> repeats section A as B, 8 bars later<template v-if="functionsOn">, and <code class="font-mono text-xs">@key B 17 D</code> puts bars from B 17 in D until the next @key</template>.</span>
-              <span class="mt-2 block">The text and the grid stay in sync: edit either one. Problems are listed under the text.</span>
-            </HelpTip>
-            <UiButton v-if="functionsOn" plain class="ml-auto" aria-controls="chart-text-body" :aria-expanded="textShown" @click="prefs.textPane.value = !prefs.textPane.value">{{ textShown ? 'Hide text' : 'Show text' }}</UiButton>
-          </div>
-          <div v-if="textShown" id="chart-text-body">
-            <ChartText :text="editor.text.value" :diagnostics="editor.diagnostics.value" @update:text="editor.setText" />
-          </div>
-          <UiText v-else-if="editor.diagnostics.value.length" role="status" class="text-amber-800! dark:text-amber-400!">
-            The text has {{ editor.diagnostics.value.length === 1 ? 'a problem' : `${editor.diagnostics.value.length} problems` }}: show it to fix {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
-          </UiText>
-        </section>
-      </div>
-  
       <!-- focus mode: this section alone, over the whole page (and printed as usual) -->
       <section
         v-bind="focus.on.value ? { role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Focus mode' } : { 'aria-label': 'Preview' }"
@@ -144,7 +121,6 @@
               <ChartTranspose :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
             </template>
             <template v-if="!editor.fatal.value" #display>
-              <UiButton color="note" :aria-expanded="editorShown" title="Show or hide the chart editor" @click="prefs.showEditor.value = !prefs.showEditor.value"><CodeBracketIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</UiButton>
               <UiButton color="note" title="Show only the sheet music (Esc to leave)" @click="enterFocus"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
               <UiButton color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
             </template>
@@ -180,6 +156,9 @@
             :scales="prefs.scaleNames.value"
             :signatures="signaturesOn"
             :guide-line="prefs.guideLine.value"
+            :editable="sheetEditing && !focus.on.value"
+            :selected-line="selectedLine"
+            @edit="editSheetChord"
           />
           <ScaleSheet
             v-else
@@ -203,7 +182,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, BookmarkIcon, CodeBracketIcon, DocumentDuplicateIcon, EllipsisHorizontalIcon, FlagIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
+import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, BookmarkIcon, CodeBracketIcon, DocumentDuplicateIcon, EllipsisHorizontalIcon, FlagIcon, LinkIcon, PencilSquareIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import { ISSUE_CONTEXT, issuePart } from '~/utils/issueReport'
 import { CHART_REPORT_KEY, type ChartReport, guidesText } from '~/utils/chartReport'
 import {
@@ -228,6 +207,7 @@ import {
   type ShareView,
 } from '@chord-scale-maker/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
+import type { SheetChordEdit } from '~/utils/sheetChordEdit'
 import { firstSheet, type SheetKind } from '~/utils/sheets'
 
 /**
@@ -247,19 +227,33 @@ const rendering = useRendering()
 const byline = computed(() => [editor.heading.value.subtitle, editor.heading.value.composer].filter(Boolean).join(' — '))
 const prefs = props.shared ? linkPreferences(props.shared) : usePreferences()
 const part = computed(() => partFor(prefs.instrument.value))
-/** the editor (grid + text): hidden by default (song-first), shown for a new chart or one over a size limit (only the text can fix it) */
+/** the editor: hidden by default (song-first), shown for a new chart or one over a size limit (only the text can fix it) */
 const bornNew = ref(false) // latches true for a new chart, so saving it (its URL becomes ?mine) doesn't hide the editor mid-edit
 watch(() => props.isNew, (v) => { if (v) bornNew.value = true }, { immediate: true })
 const editorShown = computed(() => prefs.showEditor.value || bornNew.value || editor.fatal.value)
-/** the text editor: beside the grid; with the functions flag the grid needs the full width, so the text goes under it and folds away */
-const textShown = computed(() => !functionsOn || prefs.textPane.value)
+/** Edit and Done; Done closes a new chart's editor too */
+function toggleEditor(): void {
+  prefs.showEditor.value = !editorShown.value
+  bornNew.value = false
+}
 /** one spelling at a time: every scale from the Start on note, or each from its own root */
 const mode = ref<Mode>(props.shared?.mode ?? 'root')
 const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeature('changes') }))
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
 const signaturesOn = useFeature('keySignatures')
-const barEditorOn = useFeature('barEditor')
+/** chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor) */
+const sheetEditing = computed(() => editorShown.value && !editor.fatal.value)
+const sheetChord = ref<SheetChordEdit | null>(null)
+const selectedLine = ref<number | null>(null)
+const said = ref('')
+const barEditor = ref<{ selectLine: (line: number) => void } | null>(null)
+/** a chord tapped on the sheet: edit it, and select it in the bar grid */
+function editSheetChord(chord: SheetChordEdit): void {
+  editor.flush()
+  sheetChord.value = chord
+  barEditor.value?.selectLine(chord.line)
+}
 /** the bar editor's Source: under ⋯, remembered; always shown for a chart over a size limit (only the text can fix it) */
 const sourceShown = computed(() => prefs.source.value || editor.fatal.value)
 /** the chart's key, for the sheets' key signature, drawn once at the start (undefined when the flag is off: drawn as before) */

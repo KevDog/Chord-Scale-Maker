@@ -61,3 +61,22 @@ describe('ChangesSystem guide tone labels', () => {
     expect(labelsOf(w.find('[data-slot="guides"]').element)).toEqual(['3', ''])
   })
 })
+
+describe('ChangesSystem chords while editing', () => {
+  const at = (c: ChangesChord, section: string, barNo: string, line: number, written = c.text): ChangesChord => ({ ...c, at: { section, bar: barNo }, line, written })
+  const line: ChangesLine = { bars: [bar([at(chord(0, 'Dm7', ''), 'A', '3', 4), at(chord(2, 'G7', ''), 'A', '3', 5, 'A7')], [])] }
+
+  it('draws plain chords when not editable', async () => {
+    const w = await mount(line)
+    expect(w.findAll('button')).toHaveLength(0)
+  })
+
+  it('makes each chord a button named for its place, asking to edit its chart line', async () => {
+    const w = await mountSuspended(ChangesSystem, { props: { line, first: true, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, editable: true, selectedLine: 5 } })
+    const buttons = w.findAll('button')
+    expect(buttons.map((b) => b.attributes('aria-label'))).toEqual(['Edit Dm7, A bar 3', 'Edit A7 (concert G7), A bar 3'])
+    expect(buttons[1]?.classes()).toContain('ring-2') // selected in the bar editor
+    await buttons[0]?.trigger('click')
+    expect(w.emitted('edit')?.[0]?.[0]).toMatchObject({ line: 4, section: 'A', bar: '3' })
+  })
+})

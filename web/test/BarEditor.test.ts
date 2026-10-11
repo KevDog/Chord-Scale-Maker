@@ -130,6 +130,16 @@ describe('BarEditor', () => {
     expect(grid()).toContain('D Dorian')
     w.unmount()
   })
+
+  it('selects a chord by its chart line (tapped on the Changes sheet), and says which line is selected', async () => {
+    const { w, cell } = await mount()
+    expect(w.emitted('selected')?.at(-1)).toEqual([2]) // Dm7, the first chord
+    ;(w.vm as unknown as { selectLine: (line: number) => void }).selectLine(5)
+    await nextTick()
+    expect(cell(/^A, bar 3: CMaj7, A7/)?.attributes('aria-selected')).toBe('true')
+    expect(w.emitted('selected')?.at(-1)).toEqual([5])
+    w.unmount()
+  })
 })
 
 describe('BarEditor structure', () => {

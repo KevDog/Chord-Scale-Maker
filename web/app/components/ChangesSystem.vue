@@ -9,7 +9,19 @@
             <span v-if="m.marker" class="rounded-sm border border-zinc-400 px-1 font-semibold text-zinc-700 dark:border-zinc-500 dark:text-zinc-300 print:border-neutral-600 print:text-black">{{ m.marker }}</span>
             <span v-if="m.keyArea" class="text-note-800 italic dark:text-note-300 print:text-neutral-700">{{ m.keyArea }}</span>
           </div>
-          <div class="text-base font-semibold print:text-sm/4"><ChordSymbol v-if="m.tokens" :tokens="m.tokens" /><span v-else>{{ m.text }}</span></div>
+          <div class="text-base font-semibold print:text-sm/4">
+            <!-- the chord as a button while editing: it opens the chord editor (EditorView) -->
+            <button
+              v-if="editable && m.line >= 0"
+              type="button"
+              :aria-label="editLabel(m)"
+              :class="['relative -mx-1 cursor-pointer rounded px-1 hover:bg-note-100 focus-visible:outline-2 focus-visible:outline-blue-500 dark:hover:bg-white/10', m.line === selectedLine && 'ring-2 ring-note-600 max-md:ring-0 dark:ring-note-400']"
+              @click="emit('edit', { line: m.line, section: m.row.section, bar: m.row.bar, anchor: ($event.currentTarget as HTMLElement).getBoundingClientRect() })"
+            >
+              <UiTouchTarget><ChordSymbol v-if="m.tokens" :tokens="m.tokens" /><span v-else>{{ m.text }}</span></UiTouchTarget>
+            </button>
+            <template v-else><ChordSymbol v-if="m.tokens" :tokens="m.tokens" /><span v-else>{{ m.text }}</span></template>
+          </div>
         </div>
       </template>
       <span v-for="r in repeats" :key="`r${r.key}`" class="absolute bottom-0 -translate-x-full text-xs font-semibold text-zinc-600 dark:text-zinc-400 print:text-black" :style="{ left: `${r.x * 100}%` }">×{{ r.times }}</span>
@@ -55,6 +67,7 @@
 <script setup lang="ts">
 import type { ChangesLine } from '@chord-scale-maker/engine'
 import { drawChangesLine } from '~/utils/changesDrawing'
+import type { SheetChordEdit } from '~/utils/sheetChordEdit'
 
 /** one line of the Changes sheet: slashes (or guide tones), the chords over them, guide tone labels and the analysis under them */
 const props = defineProps<{
@@ -65,7 +78,10 @@ const props = defineProps<{
   numerals: boolean
   scales: boolean
   clef?: 'treble' | 'bass' // with key signatures or a guide tone on: the part's clef, drawn (with any signature) on the first line only
+  editable?: boolean // each chord a button that asks to edit it
+  selectedLine?: number | null // the chart line of the chord selected in the bar editor, outlined
 }>()
+const emit = defineEmits<{ edit: [chord: SheetChordEdit] }>()
 
 const el = ref<HTMLElement | null>(null)
 const xs = ref<readonly (readonly number[])[]>([])
@@ -80,12 +96,15 @@ const notesOn = useFeature('functions')
 const marks = computed(() => {
   const all = props.line.bars.flatMap((bar, b) => {
     const at = (beat: number): number => Math.max(0, (xs.value[b]?.[beat] ?? 0) - 0.012)
-    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, x: at(c.beat), tokens: c.tokens, text: c.text, written: c.written, row: c.at, numeral: c.numeral, scale: c.scale, reason: c.reason, rule: c.rule, fallback: c.fallback, heardIn: c.heardIn, keyFrom: c.keyFrom, guide: c.guide, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
-    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, x: at(0), tokens: null, text: '', written: '', row: { section: '', bar: '' }, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
+    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, line: c.line, x: at(c.beat), tokens: c.tokens, text: c.text, written: c.written, row: c.at, numeral: c.numeral, scale: c.scale, reason: c.reason, rule: c.rule, fallback: c.fallback, heardIn: c.heardIn, keyFrom: c.keyFrom, guide: c.guide, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
+    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, line: -1, x: at(0), tokens: null, text: '', written: '', row: { section: '', bar: '' }, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
     return chords
   })
   return all.map((m, i) => ({ ...m, room: Math.max(0.05, (all[i + 1]?.x ?? 1) - m.x) }))
 })
+/** "Edit Dm7, A bar 3"; a transposed part's chord says its concert pitch too, as the editor shows it */
+const editLabel = (m: { written: string; text: string; row: { section: string; bar: string } }): string =>
+  `Edit ${m.written}${m.written === m.text ? '' : ` (concert ${m.text})`}, ${m.row.section} bar ${m.row.bar}`
 /** "×3" over a repeat that plays more than twice */
 const repeats = computed(() =>
   props.line.bars.flatMap((bar, b) => (bar.repeatEnd > 2 ? [{ key: b, x: Math.min(1, (xs.value[b]?.at(-1) ?? 1) + 0.03), times: bar.repeatEnd }] : [])),

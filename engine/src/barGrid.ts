@@ -67,6 +67,16 @@ export function placePos(view: BarView, pos: GridPos): GridPos | null {
   return at(s.name, bar, Math.min(pos.chord, lastChord(bar)))
 }
 
+/** where the chord written on line `line` of the chart is on the grid; null for a line that isn't one there */
+export function posOfLine(view: BarView, line: number): GridPos | null {
+  for (const s of view.sections.filter((x) => !x.copy))
+    for (const b of s.bars) {
+      const k = b.chords.findIndex((c) => c.line === line)
+      if (k >= 0) return at(s.name, b, k)
+    }
+  return null
+}
+
 /** the chords that play in a bar: its own, or the one held into it */
 export function soundingChords(view: BarView, section: string, bar: number): string[] {
   const bars = view.sections.find((s) => s.name === section)?.bars ?? []

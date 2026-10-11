@@ -16,6 +16,9 @@
             :numerals="numerals"
             :scales="scales"
             :clef="signatures || guideOn ? part.clef : undefined"
+            :editable="editable"
+            :selected-line="selectedLine"
+            @edit="emit('edit', $event)"
           />
         </div>
       </template>
@@ -24,6 +27,7 @@
 </template>
 
 <script setup lang="ts">
+import type { SheetChordEdit } from '~/utils/sheetChordEdit'
 import { buildChanges, changesLinesPerPage, type ChartDoc, chunk, type GuideLine, pageSubtitle, type Part } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones) */
@@ -38,7 +42,10 @@ const props = defineProps<{
   scales: boolean
   signatures?: boolean // the part's clef and the chart's key signature, once, at the start of the first line
   guideLine?: GuideLine // a guide tone line, from the 3rd or the 7th, as notes in place of the slashes (the clef then always starts line 1)
+  editable?: boolean // tap a chord to edit it
+  selectedLine?: number | null // the chart line of the chord selected in the bar editor
 }>()
+const emit = defineEmits<{ edit: [chord: SheetChordEdit] }>()
 
 const wide = useMediaQuery('(min-width: 640px), print')
 const barsPerLine = computed(() => (wide.value ? 4 : 2))

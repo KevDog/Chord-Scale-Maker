@@ -1,6 +1,6 @@
 import { type ChartDoc, type ChartLine, expandRowLines, formPart, type FormPart, type MetaKey, parseChart, serializeChart } from './chart'
 import { type BarSection, type BarView, barView, type ChartBar } from './bars'
-import { soundingChords } from './barGrid'
+import { chordsAfterTyping, posOfLine, soundingChords } from './barGrid'
 import { LIMITS } from './limits'
 import { defaultScaleOrNull } from './qualities'
 import { rootName } from './pitch'
@@ -254,6 +254,16 @@ export function setBarChords(doc: ChartDoc, section: string, bar: number, chords
   }
   const removed = new Set(old.slice(chords.length))
   return { lines: next.lines.flatMap((l, i) => (removed.has(i) ? [] : i === old.at(-1) ? [l, ...extra] : [l])) }
+}
+
+/**
+ * the chord written on line i, replaced by `text` (Changes sheet editing): as typing it into the grid there, so
+ * blank takes it out (not a section's first chord) and % is the bar before; the same doc when the chart can't take it
+ */
+export function setLineChord(doc: ChartDoc, i: number, text: string): ChartDoc {
+  const view = barView(doc)
+  const pos = posOfLine(view, i)
+  return pos ? setBarChords(doc, pos.section, pos.bar, chordsAfterTyping(view, pos, text, false)) : doc
 }
 
 /**

@@ -365,3 +365,17 @@ describe('guide tone lines over the library', () => {
     })
   }
 })
+
+describe('a drawn chord’s line', () => {
+  it('is the line of the chart it was written on; a repeat’s chords point at the rows they repeat', () => {
+    const doc = parseChart(['title: T', 'A | 1 | Cm7', 'A | 2 | F7', 'B | 3 | Bbmaj7', '@copy A C 4'].join('\n')).value
+    const chords = buildChanges(doc, CONCERT).lines.flatMap((l) => l.bars).flatMap((b) => b.chords)
+    expect(chords.map((c) => [c.text, c.at.section, c.line])).toEqual([
+      ['Cm7', 'A', 1],
+      ['F7', 'A', 2],
+      ['Bbmaj7', 'B', 3],
+      ['Cm7', 'C', 1],
+      ['F7', 'C', 2],
+    ])
+  })
+})
