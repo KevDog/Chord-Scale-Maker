@@ -36,7 +36,8 @@ A1 | 3 | E7    | E Mixolydian
 | Element | Meaning |
 | --- | --- |
 | `section \| bar \| chord \| scale \| function` | One row per chord. Two chords in a bar are two rows with the same bar number. A chord lasts until the next bar number. |
-| `section \| bar \| chord` | Scale omitted: the chord quality's default from `chord_scales.json` (`Cm7` → `C Dorian`). |
+| `section \| bar \| chord` | Scale omitted: the analyser's choice, at the sheet's level: the stated function's scale if the row has one, else the rules'. Where the analysis doesn't reach the chord, the quality's default from `chord_scales.json` (`Cm7` → `C Dorian`). |
+| `… \| scale` | The scale as written, at every level: a pin, the player's choice over the analyser's. Say why with a `# keep: …` comment. |
 | `… \| function` | Optional: what the chord does, as the Changes sheet writes it (`V7/ii`, `subV7`, `ii7/V`, `♭VII7`, `IVmaj7`), in the key area, or in another key before a colon (`D: V7/ii`). The analyser takes it as given when it picks the scale; it never writes one. |
 | `@key SECTION BAR KEY` | The key from that bar until the next `@key` (`@key B 17 D`), where the analyser's own key areas would be wrong. It never writes one. It holds through an `@copy`: after `@key A1 5 C` and `@copy A1 A2 8`, all of A2 is in C, so write an `@key` at the copy's first bar to return. |
 | `context: modal` | How the analyser reads the chart: `functional` (cadences and key areas, the usual), `modal` (each chord its own mode, no key areas) or `blues` (the I7 and IV7 of a blues by their degree, no key areas; the I is `key:`, else bar 1). Without it the analyser decides by detection, and says which in its report; write it where the detection is wrong or borderline (`npm run analyse -- … --ambiguous` names those). `minor:` is reserved: accepted and ignored. |
@@ -59,20 +60,22 @@ Scales are written `<root> <name>`, such as `Bb Dorian`, `D Half-Whole` or `G Al
 **outside** options (tension to resolve) marked. A slash chord can take its scales from another chord on its
 bass: `DbMaj7/C` is a sus♭9 chord on C, so it defaults to `C Phrygian` (`slash_chords` in `chord_scales.json`).
 
-## Filling in the scales
+## Choosing the scales
 
-The library's scales come from a harmonic analysis of each chart (the rules are in
-[docs/plan-analysis.md](docs/plan-analysis.md)): each chord's function in its key decides its scale, and the
-reason is saved as the row's comment. To fill in a new chart written with chords only:
+A blank scale cell plays a harmonic analysis of the chart (the rules are in
+[docs/plan-analysis.md](docs/plan-analysis.md)): each chord's function in its key decides its scale, at the level
+the sheet is set to (Basic, Standard, Advanced, Random). The level is the player's, not the chart's: it is never
+written into the rows. So a chart is written with chords only, plus a function (`| | V7/ii`) or an `@key` where the
+analyser would guess, and a scale only where the tune demands one over the rules. The analyser explains itself:
 
 ```sh
-cd engine && npm run analyse -- charts/<tune>.txt --write --save
+cd engine && npm run analyse -- charts/<tune>.txt --save
 ```
 
-`--write` fills blank scale cells only; `--force` rewrites every cell the rules reach except rows whose comment
-starts `# keep:`; `--save` writes the comments; `--all` runs over every chart. Without flags it only reports.
-`--ambiguous` lists the chords the rules could only guess at, each with the functions it might have, and the key areas
-an `@key` would pin.
+Without flags it only reports. `--save` writes the reasons into the chart as comments; `--all` runs over every
+chart. `--ambiguous` lists the chords the rules could only guess at, each with the functions it might have, and the
+key areas an `@key` would pin. `--strip` blanks every written scale the rules already give (never a `# keep:` row)
+and lists the rest.
 
 ## Instruments
 

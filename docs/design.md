@@ -258,14 +258,16 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     note "Full editing works on a larger screen" sits under the title, and chords are changed on the sheet. The
     heading fields, Undo, the Source under ⋯ and Transpose stay. The library hides New chart there.
 - **Scale level** (the `scaleLevels` flag, on; `engine/src/levels.ts`): Basic / Standard / Advanced / Random, in the
-  preview's toolbar. Choosing one writes the scales into the chart (`relevel`), so they save, print and share with it.
+  preview's toolbar. The level is a **view preference**, like the instrument: it is never written into the rows, so
+  changing it is no edit (no undo step, the chart stays clean). The sheets play every blank scale cell at it
+  (`resolveScales`, §7a); a written scale is a pin and plays as written at every level.
   - Options in `chord_scales.json` carry `level: basic|advanced`; Standard is the default, and a quality without a
     tag keeps it. Random picks among the inside options, from a seed (Shuffle deals a new one).
-  - The level **owns** the rows that played their default when the chart left Standard (`line:chord` keys), and
-    moves only those, while they still play the old level's scale. So a hand-picked scale stays, even one that is
-    also a level's choice (B♭ Lydian on a Maj7), and Standard puts the owned rows back.
-  - A library chart's own choices (the Bird Blues' A7♭9 on Phrygian Dominant) are its Standard: levels take them
-    over too, and Standard brings them back (`baseline`: the library chart, for itself and for copies of it).
+  - The `proposedScales` flag (on) made it so. With the flag off, the old path remains until the flag goes: the
+    level wrote its scales into the chart (`relevel`), and had to remember which rows it **owned** (`LevelState.owned`)
+    and a library chart's own choices (`baseline`) to tell its scales from the user's. All three are retired with the
+    flag. A saved chart with owned rows is migrated once as it opens (`unlevel`, in `EditorView`): each owned cell
+    still holding the level's scale is blanked, so it follows the level; then `owned` is dropped.
   - **Ladders** (`ladders` in `chord_scales.json`, plan-analysis.md §11): a row whose Standard is not its
     quality's default climbs that scale's ladder instead of the quality's tags, so the analysis's choice keeps its
     colour: D7 on Phrygian Dominant (V7 of G minor) goes to G Minor Pentatonic at Basic and Altered at
@@ -274,10 +276,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     one chord quality: `m` and `m7` on Phrygian (iii, or v of a minor key) are Dorian at Advanced, not Dorian ♭2;
     `m6` on Melodic Minor stays there. The Level control's Random pool leaves out options marked `functional: true`
     (the °7 scales that fit one function only).
-  - A tonic minor chord (the analysis's rule m5; `relevel` runs `analyse` on the chart) is Aeolian at Basic.
-  - `useScaleLevel` remembers the level, seed and owned rows per chart in this browser (Save as a copy and Save to
-    My charts carry them; Revert resets them). Share links carry the level and seed; without the owned rows, a
-    recipient's next change matches rows by scale.
+  - A tonic minor chord (the analysis's rule m5) is Aeolian at Basic.
+  - `useScaleLevel` remembers the level and seed per chart in this browser (Save as a copy and Save to My charts
+    carry them; Revert resets them). Share links carry the level and seed, as a view preference for the recipient.
 - **Slash readings** (`slash_chords` in `chord_scales.json`): a chord whose bass makes it another
   chord takes that chord's options on the bass. DbMaj7/C is a sus♭9 on C: C Phrygian (default), C Spanish
   Phrygian, C Dorian ♭2. Only the options change; the symbol, interval labels and practice presets read DbMaj7.
@@ -507,8 +508,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - Autumn Leaves, Blue Bossa, Stella by Starlight, All the Things You Are, Lady Bird.
   - F and B♭ blues, jazz blues and Bird blues.
   - 222 tunes transcribed (chords only; `composer:`, `style:`, `key:`, `form:`, `source:` from its index) from the
-    Colorado Cookbook, a lead-sheet collection kept out of the repo in `design/leadsheets/`. Their scales are the
-    qualities' defaults until the analyser (plan-analysis.md) writes them.
+    Colorado Cookbook, a lead-sheet collection kept out of the repo in `design/leadsheets/`. Their scale cells are
+    blank: they play the analysis (§7a).
   - Rhythm changes.
   - Modal tunes: So What, Impressions, Milestones, Maiden Voyage, Footprints.
   - Modes of the major scale and of melodic minor.
@@ -519,26 +520,30 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 ## 7a. Harmonic analysis
 
 The rule set in [plan-analysis.md](plan-analysis.md), built as `engine/src/analysis/` (pure TypeScript) and the
-script `engine/scripts/analyse.ts`. The site doesn't run it: it fills in the charts' scales, and their comments say
-why.
+script `engine/scripts/analyse.ts`. The site runs it on every revision of the chart: a blank scale cell plays its
+choice (`resolveScales`, below), and the Changes sheet's numerals and notes read it. The script reports, and saves
+its reasons into a chart as comments.
 
 - **Passes:** `stream.ts` (chords as heard, slash readings applied, with durations; the form wraps), `keys.ts`
   (cadences, the global key from `key:` or by score, key areas, the modal and blues contexts), `rules.ts` (each
   chord's function in its local key and its scale, by family, with the rule's id and a reason). Dominants derive
   their tensions from the key's reference scale under the symbol's pins; the other families read the scale off the
   function.
-- **`analyse(doc)`** reports; **`applyAnalysis(doc, analysis, options)`** fills blank scale cells (`fill`), or
-  rewrites every cell but `# keep:` rows (`force`), and with `save` writes the reason as each row's trailing
-  comment, `# area:` lines where the key area changes, and an `# analysis: <date>, rules v<N>; <key>` header (kept
-  as it was when nothing else changed, so a rerun is a no-op). A `@copy` repeat whose verdict differs from its
-  source row is reported and noted in the source row's comment; only the source line can be written, so the
-library writes such a repeat out instead.
+- **`analyse(doc)`** reports; **`applyAnalysis(doc, analysis, { scales: 'strip' | 'none', save, date })`** returns
+  `{ doc, changes, conflicts, overrides }`. `strip` blanks a written scale the rules reproduce at Standard, only when
+  every occurrence of the line (`@copy` repeats too) has that scale, and never a `# keep:` row; every other written
+  scale that differs lands in `overrides`. `save` writes the reason as each row's trailing comment, `# area:` lines
+  where the key area changes, and an `# analysis: <date>, rules v<N>; <key>` header (kept as it was when nothing
+  else changed, so a rerun is a no-op). There is no fill: a blank cell already plays the analysis.
 - **The CLI** (in `engine/`): `npm run analyse -- charts/<tune>.txt` (or `--all`) prints a report per row: ✓ agrees with the
-  chart, ≠ differs, blank, ? unreached. `--write`, `--force`, `--save` as above; `--quiet` gives the summary and
-  the disagreements only.
-- **The library:** every chart but the two modes charts is analysed and saved (`--force --save`); Milestones'
-  Aeolian bridge is a `# keep:` (the melody says so). After a rule change, `npm run analyse -- --all --force
-  --save`, then `make golden`, and read both diffs.
+  chart, ≠ differs, blank, ? unreached. `--strip` and `--save` as above (`--strip` prints the overrides under "left
+  as written, without # keep:"); `--quiet` gives the summary and the disagreements only; `--ambiguous` below.
+- **The library:** chords, functions, `@key`s and the true overrides; the scales the rules give were stripped
+  (`--all --strip --save`). Each written scale left is a `# keep:` with its reason: Milestones' Aeolian bridge (the
+  melody says so), Stardust's intro B♭7 (V7/ii in D♭ like the chorus), three rows of the melodic-minor modes chart,
+  the Coltrane-cycle tonic B Ionian in Baby Steps. The golden fixture (`playedRows`: `resolveScales` at Standard)
+  keeps the per-row record, so after a rule change `make golden` and its diff is the review; the library follows
+  the rules by itself.
 - **Stated functions:** a row's function cell is taken as given. Virtual targets: `V7/V` is read as a dominant
   of the key's V even when no V follows. An `@key` line makes a span of key areas from its bar to the next
   `@key`, overriding the detected ones. A key prefix (`D: V7/ii`) decides that one row only. A function that does
@@ -553,14 +558,14 @@ library writes such a repeat out instead.
   the inspector's Why and the Changes sheet's numeral/scale notes show it, the note with where its key
   came from (a key the author set is starred), behind the `functions` flag (on).
 - **The scale played** (`engine/src/resolve.ts`, [proposed scales spec](superpowers/specs/2026-10-11-proposed-scales-design.md)
-  §2; the `proposedScales` flag, off): `resolveScales(doc, view, analysis?)` gives each expanded row (keyed by its
+  §2; the `proposedScales` flag, on): `resolveScales(doc, view, analysis?)` gives each expanded row (keyed by its
   index in `expandRowLines`, so a `@copy` repeat resolves on its own row) a `Resolved` scale and its `source`:
   `written` (the cell, at every level) > `function` (a stated function's scale) > `rules` > `default` (the quality's,
   where the analysis doesn't reach the row); null for a chord that can't be read. An analysed scale is moved to the
   view's level as the Level control moves one (`scaleAtLevel` on it, Aeolian for a tonic minor at Basic, Random by
-  `line:chord`). `view.proposed` false (the flag off) skips the analysis: a blank cell plays the quality's default
-  at every level, as before. `buildSheet` takes the map, `buildChanges` and `rowNotes` the view (sharing their one
-  `analyse`); the guide tones read the cell or the quality's default, untouched. `qualityScale(row)` (once
+  `line:chord`). The level is the view's, never the chart's. `view.proposed` false (the flag off) skips the
+  analysis: a blank cell plays the quality's default at every level, as before; that path goes with the flag.
+  `buildSheet` takes the map, `buildChanges` and `rowNotes` the view (sharing their one `analyse`); the guide tones read the cell or the quality's default, untouched. `qualityScale(row)` (once
   `resolveScale`) is the one-row lookup for places with no document.
 - **Numerals** (`analysis/numerals.ts`; the degree itself in `analysis/degrees.ts`, shared with the rules and the
   grammar): lower case for the minor family (`ii7`, `V7/ii`, `viiø7`), as Terefenko writes them. A dominant into the
@@ -683,7 +688,7 @@ library writes such a repeat out instead.
     `practice` (the Practice panel) and `scaleLevels` (the Scale level control) are on, since sign-off. Guide tones
     on the Changes sheet have no flag: their toggles start off. The bar editor shipped behind `barEditor`; at its
     sign-off the old row grid went, and the flag with it. `proposedScales` (a blank scale cell plays the analysis,
-    §7a) is off while it's built in stages.
+    §7a) is on since the library strip, whose blank cells need it; it and `scaleLevels` go after sign-off.
 
 ## 9. Security
 
@@ -859,8 +864,8 @@ Pages are static, and the only server code is the contact function, so the attac
 ## 12. Decisions
 
 1. **Optional scale column.** Rows may omit the scale (3 cells, or an empty 4th cell). The scale
-   then comes from the quality's default in `chord_scales.json`. The editor prompts when it can't resolve a
-   quality.
+   then comes from the analysis at the sheet's level (§7a), or the quality's default in `chord_scales.json` where
+   the analysis doesn't reach. A written scale is a pin. The editor prompts when it can't resolve a quality.
 2. **Triads.** `chord_scales.json` has `maj` (`""`, `M`, `ma`, `major` → Ionian) and `m` (`-`, `mi`, `min` →
    Dorian).
 3. **Slash-bass parsing.** `CHORD_RE` takes the quality lazily and the bass only as `/` + a note letter at the
