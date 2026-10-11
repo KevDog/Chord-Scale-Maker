@@ -16,6 +16,7 @@ web/playwright-report/
 # Tailwind Plus kits (commercial licence): reference only, never committed
 design/tailwind-plus/
 .DS_Store
+.vscode/
 
 # duplicates a sync tool (iCloud, Finder) makes beside a changed file: "favicon 2.svg"
 * [0-9].*
