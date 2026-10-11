@@ -15,16 +15,14 @@
       <span v-for="r in repeats" :key="`r${r.key}`" class="absolute bottom-0 -translate-x-full text-xs font-semibold text-zinc-600 dark:text-zinc-400 print:text-black" :style="{ left: `${r.x * 100}%` }">×{{ r.times }}</span>
     </div>
     <div ref="el" class="text-zinc-900 dark:text-zinc-100 print:text-black" />
-    <!-- with guide tones on: each chord's labels (3, 7; 4 on a sus chord, 1 on a triad, 6 on a 6 chord), top to bottom like its notes -->
-    <div v-if="guides" data-slot="guides" aria-hidden="true" :class="['relative', guides > 1 ? 'h-7 print:h-5' : 'h-4 print:h-3']">
+    <!-- with a guide tone line on: each chord's label (3, 7; 4 on a sus chord, 1 on a triad, 6 on a 6 chord) -->
+    <div v-if="hasGuideLine" data-slot="guides" aria-hidden="true" class="relative h-4 print:h-3">
       <span
         v-for="m in marks"
         :key="`g${m.key}`"
-        class="absolute flex flex-col text-xs/3.5 font-medium text-zinc-600 tabular-nums dark:text-zinc-400 print:text-[0.6rem]/2.5 print:text-black"
+        class="absolute text-xs/3.5 font-medium text-zinc-600 tabular-nums dark:text-zinc-400 print:text-[0.6rem]/2.5 print:text-black"
         :style="{ left: `${m.x * 100}%` }"
-      >
-        <span v-for="(g, i) in m.guide" :key="i">{{ g }}</span>
-      </span>
+      >{{ m.guide }}</span>
     </div>
     <!-- the analysis under each chord: its numeral, then its scale -->
     <div v-if="numerals" class="relative h-5 print:h-3.5">
@@ -83,7 +81,7 @@ const marks = computed(() => {
   const all = props.line.bars.flatMap((bar, b) => {
     const at = (beat: number): number => Math.max(0, (xs.value[b]?.[beat] ?? 0) - 0.012)
     const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, x: at(c.beat), tokens: c.tokens, text: c.text, written: c.written, row: c.at, numeral: c.numeral, scale: c.scale, reason: c.reason, rule: c.rule, fallback: c.fallback, heardIn: c.heardIn, keyFrom: c.keyFrom, guide: c.guide, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
-    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, x: at(0), tokens: null, text: '', written: '', row: { section: '', bar: '' }, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: [] as readonly string[], marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
+    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, x: at(0), tokens: null, text: '', written: '', row: { section: '', bar: '' }, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
     return chords
   })
   return all.map((m, i) => ({ ...m, room: Math.max(0.05, (all[i + 1]?.x ?? 1) - m.x) }))
@@ -92,8 +90,8 @@ const marks = computed(() => {
 const repeats = computed(() =>
   props.line.bars.flatMap((bar, b) => (bar.repeatEnd > 2 ? [{ key: b, x: Math.min(1, (xs.value[b]?.at(-1) ?? 1) + 0.03), times: bar.repeatEnd }] : [])),
 )
-/** how many guide tone voices the line draws (0: none on, slashes), for its label row's height */
-const guides = computed(() => Math.max(0, ...props.line.bars.map((b) => b.voices.length)))
+/** whether the line draws a guide tone line (else slashes), and so its label row */
+const hasGuideLine = computed(() => props.line.bars.some((b) => b.voice.length > 0))
 
 async function draw(): Promise<void> {
   if (!el.value) return

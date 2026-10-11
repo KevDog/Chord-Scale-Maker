@@ -6,8 +6,8 @@ import { BAR_UNITS, cropBand, fitSvg, headCentre, signatureLead, STAVE_Y, svgCon
  * the time signature on the first line. Chords, numerals and scales are HTML placed over and under the slashes.
  * With a clef (key signatures or a guide tone on): the first line (timeSignature) starts with the clef, and with the
  * chart's key signature when a bar carries one; the rest with neither; without, no clef, as before.
- * With guide tones on (bar.voices), each chord's 3rd and/or 7th replace the slashes: one voice, or two with stems up
- * and down, each note held for its chord and tied across barlines and line ends. Drawn in two passes, so a 1st/2nd-
+ * With a guide tone line on (bar.voice), each chord's guide tone replaces the slashes: one voice, stems by VexFlow's
+ * usual rule, each note held for its chord and tied across barlines and line ends. Drawn in two passes, so a 1st/2nd-
  * ending bracket can be raised over the highest stem tip before anything is drawn.
  */
 
@@ -51,9 +51,6 @@ export function beatXs(heads: ReadonlyMap<number, number>, ghostXs: readonly num
   return ghostXs.map((g, beat) => heads.get(beat) ?? (g + HALF_HEAD) / width)
 }
 
-/** two voices' ties curve apart (VexFlow: -1 above the heads, +1 below); null with one voice: VexFlow's own */
-export const tieDirection = (voices: number, v: number): number | null => (voices < 2 ? null : v === 0 ? -1 : 1)
-
 /** "C5", "B♭4": a pitch as a screen reader reads it */
 function pitchName(p: Pitched): string {
   const [key = '', octave = ''] = toVexKey(p).split('/')
@@ -70,18 +67,14 @@ export function restatedAccidental(n: GuideNote, keySig: string | null): string 
   return n.pitch.acc === 0 ? 'n' : accText(n.pitch.acc)
 }
 
-/** the aria-label's guide tones: each chord's notes top to bottom with their labels, "–" for a held bar; '' when off */
+/** the aria-label's guide tones: each chord's note with its label, "–" for a held bar; '' when off */
 export function guideAria(line: ChangesLine): string {
-  if (!line.bars.some((b) => b.voices.length)) return ''
+  if (!line.bars.some((b) => b.voice.length)) return ''
   const bars = line.bars.map((bar) => {
-    const chords = bar.chords.map((c) =>
-      bar.voices
-        .map((notes, v) => {
-          const n = notes.find((x) => x.beat === c.beat) // struck, or tied in where the chord holds the note before
-          return `${n?.pitch ? pitchName(n.pitch) : 'rest'} ${c.guide[v] ?? ''}`.trim()
-        })
-        .join(' / '),
-    )
+    const chords = bar.chords.map((c) => {
+      const n = bar.voice.find((x) => x.beat === c.beat) // struck, or tied in where the chord holds the note before
+      return `${n?.pitch ? pitchName(n.pitch) : 'rest'} ${c.guide}`.trim()
+    })
     return chords.join(', ') || '–'
   })
   return `; guide tones: ${bars.join(' | ')}`
@@ -131,19 +124,15 @@ const voiceOf = (vf: VexFlowModule, beats: number, ticks: readonly Tick[]): Voic
 /** room for the notes after the stave's modifiers */
 const room = (stave: Stave, x: number, width: number): number => width - (stave.getNoteStartX() - x) - 20
 
-/**
- * a guide tone (or rest) for voice v of count: stems up then down with two voices, VexFlow's choice with one.
- * With two, a rest is written once, in the upper voice; the lower holds a ghost of the same length.
- */
-function tickFor(vf: VexFlowModule, n: GuideNote, v: number, count: number, clef: Clef, restate: string | null): Tick {
+/** a guide tone (or rest), its stem by VexFlow's usual rule (up below the middle line, down above) */
+function tickFor(vf: VexFlowModule, n: GuideNote, clef: Clef, restate: string | null): StaveNote {
   const duration = DURATIONS[n.beats]
   const dotted = (note: StaveNote): StaveNote => {
     if (n.beats === 3) vf.Dot.buildAndAttach([note], { all: true })
     return note
   }
-  if (!n.pitch) return v > 0 ? new vf.GhostNote(duration) : dotted(new vf.StaveNote({ keys: [REST_KEY[clef]], duration: `${duration}r`, clef }))
-  const stem = count > 1 ? { stemDirection: v === 0 ? 1 : -1 } : { autoStem: true }
-  const note = dotted(new vf.StaveNote({ keys: [toVexKey(n.pitch)], duration, clef, ...stem }))
+  if (!n.pitch) return dotted(new vf.StaveNote({ keys: [REST_KEY[clef]], duration: `${duration}r`, clef }))
+  const note = dotted(new vf.StaveNote({ keys: [toVexKey(n.pitch)], duration, clef, autoStem: true }))
   note.setStemStyle(INK) // stems carry their own default (black), not the context's currentColor
   if (n.accidental) note.addModifier(new vf.Accidental(n.accidental), 0)
   else if (restate) note.addModifier(new vf.Accidental(restate).setAsCautionary(), 0)
@@ -151,7 +140,7 @@ function tickFor(vf: VexFlowModule, n: GuideNote, v: number, count: number, clef
 }
 
 export function drawChangesLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, opts: Opts): ChangesLayout {
-  if (line.bars.some((b) => b.voices.length)) return drawGuideLine(vf, el, line, opts)
+  if (line.bars.some((b) => b.voice.length)) return drawGuideLine(vf, el, line, opts)
   const { clef, lead, total, barWidth } = geometry(vf, line, opts)
   const ctx = svgContext(vf, el, total)
   const xs: number[][] = []
@@ -177,8 +166,9 @@ export function drawChangesLine(vf: VexFlowModule, el: HTMLElement, line: Change
 type Laid = Readonly<{
   bar: ChangesBar
   stave: Stave
-  /** per voice, top first: the model's notes and their tickables */
-  voices: readonly Readonly<{ model: readonly GuideNote[]; ticks: readonly Tick[] }>[]
+  /** the guide tone voice's notes and their tickables; [] for a bar without guide tones */
+  model: readonly GuideNote[]
+  ticks: readonly StaveNote[]
   grid: readonly GhostNote[] // a ghost a beat, formatted with the notes: where each beat falls
   plain: readonly StaveNote[] // slashes, for a bar without guide tones
   all: readonly Voice[]
@@ -188,7 +178,6 @@ type Laid = Readonly<{
 function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, opts: Opts): ChangesLayout {
   const { clef, lead, total, barWidth } = geometry(vf, line, opts)
   const noteClef: Clef = opts.clef ?? 'treble'
-  const count = Math.max(0, ...line.bars.map((b) => b.voices.length))
   const ctx = svgContext(vf, el, total)
 
   // pass 1: every bar's stave and notes, formatted (not drawn), so the stem tips are known
@@ -196,21 +185,22 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   const laid = line.bars.map((bar, b): Laid => {
     const width = b === 0 ? barWidth + lead : barWidth
     const stave = staveFor(vf, bar, b === 0, x, width, clef, opts)
-    const voices = bar.voices.map((model, v) => ({ model, ticks: model.map((n, i) => tickFor(vf, n, v, count, noteClef, b === 0 && i === 0 ? restatedAccidental(n, bar.keySig) : null)) }))
-    const grid = voices.length ? Array.from({ length: opts.beats }, () => new vf.GhostNote('q')) : []
-    const plain = voices.length ? [] : slashes(vf, opts.beats)
-    const lists: readonly (readonly Tick[])[] = voices.length ? [...voices.map((v) => v.ticks), grid] : [plain]
+    const model = bar.voice
+    const ticks = model.map((n, i) => tickFor(vf, n, noteClef, b === 0 && i === 0 ? restatedAccidental(n, bar.keySig) : null))
+    const grid = ticks.length ? Array.from({ length: opts.beats }, () => new vf.GhostNote('q')) : []
+    const plain = ticks.length ? [] : slashes(vf, opts.beats)
+    const lists: readonly (readonly Tick[])[] = ticks.length ? [ticks, grid] : [plain]
     const all = lists.map((ticks) => {
       ticks.forEach((t) => t.setStave(stave))
       return voiceOf(vf, opts.beats, ticks)
     })
     new vf.Formatter().joinVoices(all).format(all, room(stave, x, width))
     x += width
-    return { bar, stave, voices, grid, plain, all }
+    return { bar, stave, model, ticks, grid, plain, all }
   })
 
   // pass 2: raise the brackets over the highest stem tip or accidental, level across the line; draw staves, then notes
-  const pitched = laid.flatMap((l) => l.voices.flatMap((v) => v.ticks)).filter((t): t is StaveNote => t instanceof vf.StaveNote && !t.isRest())
+  const pitched = laid.flatMap((l) => l.ticks).filter((t) => !t.isRest())
   const heads = pitched.flatMap((n) => n.getYs())
   const tips = pitched.filter((n) => n.hasStem()).map((n) => n.getStemExtents().topY)
   const first = laid[0]?.stave
@@ -222,32 +212,23 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
   })
   laid.forEach((l) => l.all.forEach((v) => v.draw(ctx, l.stave)))
 
-  // ties, one chain a voice across the line: open at its end, and a half-tie in where the line starts tied
-  for (let v = 0; v < count; v++) {
-    const chain = laid.flatMap((l) => {
-      const voice = l.voices[v]
-      return voice ? voice.model.map((m, i) => ({ m, t: voice.ticks[i] ?? null })) : []
-    })
-    const direction = tieDirection(count, v)
-    const tie = (firstNote: Tick | null, lastNote: Tick | null): void => {
-      const t = new vf.StaveTie({ firstNote, lastNote, firstIndexes: [0], lastIndexes: [0] })
-      if (direction !== null) t.setDirection(direction)
-      t.setContext(ctx).draw()
-    }
-    chain.forEach(({ m, t }, i) => {
-      if (!m.pitch || !t) return
-      if (i === 0 && m.tiedIn) tie(null, t)
-      if (m.tie) tie(t, chain[i + 1]?.t ?? null)
-    })
+  // ties, one chain across the line: open at its end, and a half-tie in where the line starts tied
+  const chain = laid.flatMap((l) => l.model.map((m, i) => ({ m, t: l.ticks[i] ?? null })))
+  const tie = (firstNote: StaveNote | null, lastNote: StaveNote | null): void => {
+    new vf.StaveTie({ firstNote, lastNote, firstIndexes: [0], lastIndexes: [0] }).setContext(ctx).draw()
   }
+  chain.forEach(({ m, t }, i) => {
+    if (!m.pitch || !t) return
+    if (i === 0 && m.tiedIn) tie(null, t)
+    if (m.tie) tie(t, chain[i + 1]?.t ?? null)
+  })
 
   const xs = laid.map((l) => {
-    const top = l.voices[0]
-    if (!top) return l.plain.map((n) => headCentre(n, total))
+    if (!l.ticks.length) return l.plain.map((n) => headCentre(n, total))
     const starts = new Map<number, number>()
-    top.model.forEach((m, i) => {
-      const t = top.ticks[i]
-      if (t instanceof vf.StaveNote) starts.set(m.beat, headCentre(t, total))
+    l.model.forEach((m, i) => {
+      const t = l.ticks[i]
+      if (t) starts.set(m.beat, headCentre(t, total))
     })
     return beatXs(starts, l.grid.map((g) => g.getAbsoluteX()), total)
   })

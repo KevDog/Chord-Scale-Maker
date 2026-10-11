@@ -1,8 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter } from '~~/engine'
-import { beatXs, guideAria, restatedAccidental, tieDirection, voicedBand, voltaShift } from '~/utils/changesDrawing'
+import { beatXs, guideAria, restatedAccidental, voicedBand, voltaShift } from '~/utils/changesDrawing'
 
-const chord = (beat: number, text: string, guide: readonly string[]): ChangesChord => ({
+const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   beat,
   text,
   tokens: null,
@@ -14,7 +14,7 @@ const chord = (beat: number, text: string, guide: readonly string[]): ChangesCho
   keyFrom: 'found',
   guide,
 })
-const bar = (chords: readonly ChangesChord[], voices: readonly (readonly GuideNote[])[]): ChangesBar => ({
+const bar = (chords: readonly ChangesChord[], voice: readonly GuideNote[]): ChangesBar => ({
   keySig: null,
   chords,
   marker: '',
@@ -26,7 +26,7 @@ const bar = (chords: readonly ChangesChord[], voices: readonly (readonly GuideNo
   segno: false,
   coda: false,
   nav: '',
-  voices,
+  voice,
 })
 const note = (letter: Letter, acc: number, midi: number, beat: number, beats: 1 | 2 | 3 | 4, more: Partial<GuideNote> = {}): GuideNote => ({
   pitch: { letter, acc, midi },
@@ -69,14 +69,6 @@ describe('beatXs', () => {
   })
 })
 
-describe('tieDirection', () => {
-  it("curves two voices' ties apart, the upper above and the lower below; one voice keeps VexFlow's", () => {
-    expect(tieDirection(2, 0)).toBe(-1)
-    expect(tieDirection(2, 1)).toBe(1)
-    expect(tieDirection(1, 0)).toBeNull()
-  })
-})
-
 describe('restatedAccidental', () => {
   const tied = (letter: Letter, acc: number): GuideNote => note(letter, acc, 60, 0, 4, { tiedIn: true })
   it('is null for a note that does not continue the last line', () => {
@@ -94,34 +86,28 @@ describe('restatedAccidental', () => {
 })
 
 describe('guideAria', () => {
-  it('is empty with no guide tone on', () => {
-    expect(guideAria({ bars: [bar([chord(0, 'C7', [])], [])] })).toBe('')
+  it('is empty with the line off', () => {
+    expect(guideAria({ bars: [bar([chord(0, 'C7', '')], [])] })).toBe('')
   })
 
-  it("names each chord's notes top to bottom with their labels, and a held bar as a dash", () => {
+  it("names each chord's note with its label, and a held bar as a dash", () => {
     const line: ChangesLine = {
       bars: [
-        bar(
-          [chord(0, 'Dm7', ['7', '3']), chord(2, 'G7', ['3', '7'])],
-          [
-            [note(0, 0, 72, 0, 2), note(6, 0, 71, 2, 2)],
-            [note(3, 0, 65, 0, 2), note(3, 0, 65, 2, 2)],
-          ],
-        ),
-        bar([chord(0, 'CMaj7', ['7', '3'])], [[note(6, 0, 71, 0, 4, { tie: true })], [note(2, 0, 64, 0, 4, { tie: true })]]),
-        bar([], [[note(6, 0, 71, 0, 4, { tiedIn: true })], [note(2, 0, 64, 0, 4, { tiedIn: true })]]),
+        bar([chord(0, 'Dm7', '7'), chord(2, 'G7', '3')], [note(0, 0, 72, 0, 2), note(6, 0, 71, 2, 2)]),
+        bar([chord(0, 'CMaj7', '7')], [note(6, 0, 71, 0, 4, { tie: true })]),
+        bar([], [note(6, 0, 71, 0, 4, { tiedIn: true })]),
       ],
     }
-    expect(guideAria(line)).toBe('; guide tones: C5 7 / F4 3, B4 3 / F4 7 | B4 7 / E4 3 | –')
+    expect(guideAria(line)).toBe('; guide tones: C5 7, B4 3 | B4 7 | –')
   })
 
   it("names a held chord's note, tied in on its own beat, rather than a rest", () => {
-    const line: ChangesLine = { bars: [bar([chord(0, 'C7', ['3']), chord(2, 'C7b9', ['3'])], [[note(2, 0, 64, 0, 2, { tie: true }), note(2, 0, 64, 2, 2, { tiedIn: true })]])] }
+    const line: ChangesLine = { bars: [bar([chord(0, 'C7', '3'), chord(2, 'C7b9', '3')], [note(2, 0, 64, 0, 2, { tie: true }), note(2, 0, 64, 2, 2, { tiedIn: true })])] }
     expect(guideAria(line)).toBe('; guide tones: E4 3, E4 3')
   })
 
   it('spells accidentals and names a rest', () => {
-    const line: ChangesLine = { bars: [bar([chord(0, 'Gm7', ['3']), chord(2, 'Cm7#5#9x', [])], [[note(6, -1, 70, 0, 2), rest(2, 2)]])] }
+    const line: ChangesLine = { bars: [bar([chord(0, 'Gm7', '3'), chord(2, 'Cm7#5#9x', '')], [note(6, -1, 70, 0, 2), rest(2, 2)])] }
     expect(guideAria(line)).toBe('; guide tones: B♭4 3, rest')
   })
 })

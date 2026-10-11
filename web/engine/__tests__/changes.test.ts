@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it, vi } from 'vitest'
 import { buildChanges, type ChangesSheet, changesLinesPerPage } from '../changes'
 import { parseChart } from '../chart'
-import { type GuideNote, type GuideShow, guideVoices, NO_GUIDES } from '../guideTones'
+import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
 import { CONCERT, type Part } from '../part'
 import { rootName } from '../pitch'
 import { isSyncCopy } from '../util'
@@ -16,9 +16,6 @@ vi.mock('../guideTones', async (importOriginal) => {
 const library = (name: string) => parseChart(readFileSync(`../charts/${name}.txt`, 'utf8')).value
 const TENOR: Part = { clef: 'treble', trans: 'Bb' }
 const bars = (name: string, part = CONCERT) => buildChanges(library(name), part).lines.flatMap((l) => l.bars)
-const THIRD: GuideShow = { fromThird: true, fromSeventh: false }
-const SEVENTH: GuideShow = { fromThird: false, fromSeventh: true }
-const BOTH: GuideShow = { fromThird: true, fromSeventh: true }
 
 describe('the Changes sheet', () => {
   it('lays a chart out four bars a line, each section on a new line, a @copy straight after its source as a repeat', () => {
@@ -161,45 +158,54 @@ describe('endings and navigation', () => {
 })
 
 describe('guide tones on the Changes sheet', () => {
-  const sheetOf = (text: string, guides: GuideShow, barsPerLine = 4, signatures = false) =>
-    buildChanges(parseChart(text).value, CONCERT, barsPerLine, signatures, guides)
-  const barsOf = (text: string, guides: GuideShow) => sheetOf(text, guides).lines.flatMap((l) => l.bars)
+  const sheetOf = (text: string, line: GuideLine, barsPerLine = 4, signatures = false) =>
+    buildChanges(parseChart(text).value, CONCERT, barsPerLine, signatures, line)
+  const barsOf = (text: string, line: GuideLine, barsPerLine = 4) => sheetOf(text, line, barsPerLine).lines.flatMap((l) => l.bars)
   const labels = (s: ChangesSheet) => s.lines.flatMap((l) => l.bars).flatMap((b) => b.chords.map((c) => c.guide))
   const SIXES = 'key: C\nA | 1 | C6\nA | 2 | C7sus4\nA | 3 | C\nA | 4 | Cm7\n'
+  /** each bar's voice: struck MIDI numbers, ^ tied in, ~ tied on */
+  const tied = (b: readonly { voice: readonly GuideNote[] }[]) => b.map((x) => x.voice.map((n) => `${n.tiedIn ? '^' : ''}${n.pitch?.midi ?? 'rest'}${n.tie ? '~' : ''}`).join(' '))
 
-  it('leaves the sheet as it was with both off: no voices, no labels, and no voice leading run', () => {
+  it("leaves the sheet as it was with the line 'off': no voice, no labels, and no voice leading run", () => {
     vi.mocked(guideVoices).mockClear()
     const doc = library('autumn_leaves')
-    const sheet = buildChanges(doc, CONCERT, 4, false, NO_GUIDES)
+    const sheet = buildChanges(doc, CONCERT, 4, false, 'off')
     expect(sheet).toEqual(buildChanges(doc, CONCERT))
     const b = sheet.lines.flatMap((l) => l.bars)
-    expect(b.every((x) => x.voices.length === 0 && x.chords.every((c) => c.guide.length === 0))).toBe(true)
+    expect(b.every((x) => x.voice.length === 0 && x.chords.every((c) => c.guide === ''))).toBe(true)
     expect(guideVoices).not.toHaveBeenCalled()
   })
 
-  it('labels each chord with its real degree, flats and sharps dropped', () => {
-    expect(labels(sheetOf(SIXES, THIRD))).toEqual([['3'], ['4'], ['3'], ['3']])
-    expect(labels(sheetOf(SIXES, SEVENTH))).toEqual([['6'], ['7'], ['1'], ['7']])
-    expect(labels(sheetOf(SIXES, BOTH)).map((l) => [...l].sort())).toEqual([['3', '6'], ['4', '7'], ['1', '3'], ['3', '7']])
+  it('labels each chord with its real degree, flats and sharps dropped, one label a chord', () => {
+    expect(labels(sheetOf(SIXES, 'third'))).toEqual(['3', '4', '3', '3'])
+    expect(labels(sheetOf(SIXES, 'seventh'))).toEqual(['6', '7', '1', '7'])
   })
 
   it('strikes one note a chord, held for its length and tied across the barline', () => {
-    const b = barsOf('key: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n', THIRD) // CMaj7 runs to the end of the 4-bar phrase
-    expect(b.map((x) => x.voices.length)).toEqual([1, 1, 1, 1])
-    expect(b.map((x) => x.voices[0]?.map((n) => [n.beat, n.beats, n.tie, n.tiedIn]))).toEqual([
+    const b = barsOf('key: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n', 'third') // CMaj7 runs to the end of the 4-bar phrase
+    expect(b.map((x) => x.voice.map((n) => [n.beat, n.beats, n.tie, n.tiedIn]))).toEqual([
       [[0, 4, false, false]],
       [[0, 4, false, false]],
       [[0, 4, true, false]],
       [[0, 4, false, true]],
     ])
-    expect(b[3]?.voices[0]?.[0]?.pitch).toEqual(b[2]?.voices[0]?.[0]?.pitch)
-    expect(b[3]?.voices[0]?.[0]?.accidental).toBeNull()
+    expect(b[3]?.voice[0]?.pitch).toEqual(b[2]?.voice[0]?.pitch)
+    expect(b[3]?.voice[0]?.accidental).toBeNull()
   })
 
-  it('rests where a chord has no guide tones, and says so only when a guide is on', () => {
+  it('ties a held chord across a line break, the next line starting tied in', () => {
+    const text = 'key: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | C7\nA | 4 | CMaj7\nA | 6 | Dm7\n' // CMaj7 holds bars 4-5
+    const sheet = sheetOf(text, 'third')
+    const [first, second] = sheet.lines
+    expect([first?.bars.length, tied(first?.bars ?? []).at(-1), tied(second?.bars ?? [])[0]]).toEqual([4, '64~', '^64'])
+    expect(tied(barsOf(text, 'third', 2))).toEqual(tied(barsOf(text, 'third', 4)))
+  })
+
+  it('rests where a chord has no guide tones, and says so only when a line is on', () => {
     const text = 'key: C\nA | 1 | Dm7\nA | 2 | Cm7#5#9x\nA | 3 | CMaj7\n'
-    const on = sheetOf(text, BOTH)
-    expect(on.lines[0]?.bars[1]?.voices.map((v) => v.map((n) => n.pitch))).toEqual([[null], [null]])
+    const on = sheetOf(text, 'seventh')
+    expect(on.lines[0]?.bars[1]?.voice.map((n) => n.pitch)).toEqual([null])
+    expect(on.lines[0]?.bars[1]?.chords[0]?.guide).toBe('')
     expect(on.diagnostics.filter((d) => d.startsWith('no guide tones for Cm7#5#9x'))).toHaveLength(1)
     expect(buildChanges(parseChart(text).value, CONCERT).diagnostics.some((d) => d.startsWith('no guide tones'))).toBe(false)
   })
@@ -207,10 +213,10 @@ describe('guide tones on the Changes sheet', () => {
   it('voices a folded repeat once: only the rows drawn, in written order', () => {
     const text = ['key: C', 'A1 | 1 | Dm7', 'A1 | 2 | G7', 'A1 | 3 | CMaj7', 'A1 | 4 | A7', '@copy A1 A2 4', 'B | 9 | Fm7', 'B | 10 | Bb7', 'B | 11 | EbMaj7', 'B | 12 | Ab7'].join('\n') + '\n'
     vi.mocked(guideVoices).mockClear()
-    const sheet = sheetOf(text, BOTH)
+    const sheet = sheetOf(text, 'third')
     expect(sheet.lines.map((l) => l.bars[0]?.marker)).toEqual(['A1 · A2', 'B'])
     expect(guideVoices).toHaveBeenCalledTimes(1)
-    const [inputs, , beats, keySig, show] = vi.mocked(guideVoices).mock.calls[0]!
+    const [inputs, , beats, keySig, line] = vi.mocked(guideVoices).mock.calls[0]!
     expect(inputs.map((c) => [c.row, c.chord, c.start, c.beats])).toEqual([
       [0, 'Dm7', 0, 4],
       [1, 'G7', 4, 4],
@@ -221,48 +227,39 @@ describe('guide tones on the Changes sheet', () => {
       [10, 'EbMaj7', 40, 4],
       [11, 'Ab7', 44, 4],
     ])
-    expect([beats, keySig, show]).toEqual([4, null, BOTH])
-    expect(sheet.lines.flatMap((l) => l.bars).every((b) => b.voices.length === 2)).toBe(true)
+    expect([beats, keySig, line]).toEqual([4, null, 'third'])
+    expect(sheet.lines.flatMap((l) => l.bars).every((b) => b.voice.length > 0)).toBe(true)
   })
 
   it("voices a 2nd ending from the 1st ending's last chord, in written order", () => {
     const text = 'key: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | Em7\nA | 4 | A7\nA | 5 | Dm7\nA | 6 | G7\nA | 7 | CMaj7\n@ending 1 A 3 4\n@ending 2 A 5 6\n'
-    const b = barsOf(text, BOTH)
+    const b = barsOf(text, 'third')
     expect(b.map((x) => x.volta?.n ?? 0)).toEqual([0, 0, 1, 1, 2, 2, 0, 0])
-    const struck = (i: number) => b[i]?.voices.map((v) => v[0]?.pitch?.midi)
-    expect([struck(3), struck(4)]).toEqual([
-      [73, 67],
-      [72, 65],
-    ]) // A7's C#5 over G4, then Dm7's C5 over F4: a step in each voice
+    const struck = (i: number) => b[i]?.voice[0]?.pitch?.midi
+    expect([struck(3), struck(4)]).toEqual([67, 65]) // A7's G4, then Dm7's F4: a step
   })
 
   it('holds a repeated chord with a tie inside a section, and strikes it again in the next section or ending', () => {
-    const tied = (text: string) => barsOf(text, THIRD).map((x) => x.voices[0]?.map((n) => `${n.tiedIn ? '^' : ''}${n.pitch?.midi}${n.tie ? '~' : ''}`).join(' '))
-    expect(tied('key: C\nA | 1 | C7\nA | 2 | C7b9\nB | 3 | C7\nB | 4 | Dm7\n')).toEqual(['64~', '^64', '64', '65'])
+    expect(tied(barsOf('key: C\nA | 1 | C7\nA | 2 | C7b9\nB | 3 | C7\nB | 4 | Dm7\n', 'third'))).toEqual(['64~', '^64', '64', '65'])
     const endings = 'key: C\nA | 1 | Dm7\nA | 2 | C7\nA | 3 | C7\nA | 4 | C7\n@ending 1 A 3 3\n@ending 2 A 4 4\n'
-    expect(tied(endings)).toEqual(['65', '64~', '^64', '64']) // into the 1st ending tied; the 2nd ending struck again
+    expect(tied(barsOf(endings, 'third'))).toEqual(['65', '64~', '^64', '64']) // into the 1st ending tied; the 2nd ending struck again
     const after = 'key: C\nA | 1 | Dm7\nA | 2 | C7\nA | 3 | C7\nA | 4 | C7\nA | 5 | C7\n@ending 1 A 3 3\n@ending 2 A 4 4\n'
-    expect(tied(after)).toEqual(['65', '64~', '^64', '64~', '^64~', '^64~', '^64~', '^64']) // from the 2nd ending on, holds tie again (the last C7 fills its phrase)
+    expect(tied(barsOf(after, 'third'))).toEqual(['65', '64~', '^64', '64~', '^64~', '^64~', '^64~', '^64']) // from the 2nd ending on, holds tie again (the last C7 fills its phrase)
   })
 
-  it('continues the lines into a 2nd ending from the 1st ending, rather than starting them again (rule 9)', () => {
+  it('continues the line into a 2nd ending from the 1st ending, rather than starting it again (rule 9)', () => {
     const text = 'key: C\nA | 1 | CMaj7\nA | 2 | A7\nA | 3 | Dm7\nA | 4 | G7\n@ending 1 A 3 3\n@ending 2 A 4 4\n'
-    const b = barsOf(text, BOTH)
-    expect(b.map((x) => x.voices.map((v) => v[0]?.pitch?.midi))).toEqual([
-      [71, 64],
-      [73, 67],
-      [72, 65],
-      [71, 65], // G7: B4 over F4, from C5 over F4; a fresh start would give F5 over B4
-    ])
-    expect(b[3]?.chords[0]?.guide).toEqual(['3', '7'])
+    const b = barsOf(text, 'seventh')
+    expect(b.map((x) => x.voice[0]?.pitch?.midi)).toEqual([71, 73, 72, 71]) // G7: B4 from C5; a fresh start would give F5
+    expect(b[3]?.chords[0]?.guide).toBe('3')
   })
 
   it('reads accidentals against the signature when it is drawn, and against C when it is not', () => {
     const text = 'key: F\nA | 1 | Gm7\nA | 2 | C7\nA | 3 | FMaj7\n'
     const struck = (signatures: boolean) =>
-      sheetOf(text, BOTH, 4, signatures)
+      sheetOf(text, 'third', 4, signatures)
         .lines.flatMap((l) => l.bars)
-        .flatMap((b) => b.voices.flat())
+        .flatMap((b) => b.voice)
         .filter((n): n is GuideNote & { pitch: NonNullable<GuideNote['pitch']> } => !n.tiedIn && n.pitch !== null)
         .map((n) => [rootName(n.pitch), n.accidental] as const)
     expect(struck(false).filter(([name]) => name === 'Bb')).toHaveLength(2) // Gm7's 3rd, C7's 7th
@@ -270,58 +267,55 @@ describe('guide tones on the Changes sheet', () => {
     expect(struck(true).every(([, acc]) => acc === null)).toBe(true)
   })
 
-  it('fits 8 lines a page with no guide, whatever the rows; fewer with guides; one more when both rows are off', () => {
+  it('fits 8 lines a page with no line, whatever the rows; 6 with a line; one more when both rows are off', () => {
     const rows = [
       { numerals: true, scales: true },
       { numerals: true, scales: false },
       { numerals: false, scales: true },
       { numerals: false, scales: false },
     ]
-    expect(rows.map((r) => changesLinesPerPage(NO_GUIDES, r))).toEqual([8, 8, 8, 8])
-    expect(rows.map((r) => changesLinesPerPage(THIRD, r))).toEqual([6, 6, 6, 7])
-    expect(rows.map((r) => changesLinesPerPage(SEVENTH, r))).toEqual([6, 6, 6, 7])
-    expect(rows.map((r) => changesLinesPerPage(BOTH, r))).toEqual([5, 5, 5, 6])
+    expect(rows.map((r) => changesLinesPerPage('off', r))).toEqual([8, 8, 8, 8])
+    expect(rows.map((r) => changesLinesPerPage('third', r))).toEqual([6, 6, 6, 7])
+    expect(rows.map((r) => changesLinesPerPage('seventh', r))).toEqual([6, 6, 6, 7])
   })
 })
 
-describe('guide tones over the library, both on', () => {
+describe('guide tone lines over the library', () => {
   const LIBRARY = new URL('../../../charts/', import.meta.url)
   const docs = readdirSync(LIBRARY)
     .filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
     .map((f) => ({ f, doc: parseChart(readFileSync(new URL(f, LIBRARY), 'utf8')).value }))
-  const voicesOf = (s: ChangesSheet) => s.lines.flatMap((l) => l.bars.map((b) => b.voices))
-  const plain = (s: ChangesSheet) => s.lines.map((l) => l.bars.map(({ voices: _v, ...b }) => ({ ...b, chords: b.chords.map(({ guide: _g, ...c }) => c) })))
+  const voiceOf = (s: ChangesSheet) => s.lines.flatMap((l) => l.bars.map((b) => b.voice))
+  const plain = (s: ChangesSheet) => s.lines.map((l) => l.bars.map(({ voice: _v, ...b }) => ({ ...b, chords: b.chords.map(({ guide: _g, ...c }) => c) })))
 
-  it('strike (or hold) one note a voice per chord, on its beat, and fill every bar', () => {
-    expect(docs.length).toBeGreaterThan(200)
-    for (const { f, doc } of docs) {
-      const sheet = buildChanges(doc, CONCERT, 4, false, BOTH)
-      for (const bar of sheet.lines.flatMap((l) => l.bars)) {
-        expect(bar.voices.length, f).toBe(2)
-        for (const voice of bar.voices) {
+  for (const line of ['third', 'seventh'] as const) {
+    it(`from the ${line}: strike (or hold) one note per chord, on its beat, and fill every bar`, () => {
+      expect(docs.length).toBeGreaterThan(200)
+      for (const { f, doc } of docs) {
+        const sheet = buildChanges(doc, CONCERT, 4, false, line)
+        for (const bar of sheet.lines.flatMap((l) => l.bars)) {
+          const voice = bar.voice
           expect(voice.reduce((s, n) => s + n.beats, 0), f).toBe(sheet.beats)
           const beats = bar.chords.map((c) => c.beat) // a held chord's note starts on its beat, tied in
           expect(voice.filter((n) => !n.tiedIn || beats.includes(n.beat)).map((n) => n.beat), f).toEqual(beats)
           expect(voice.filter((n) => !n.tiedIn).every((n) => beats.includes(n.beat)), f).toBe(true)
           expect(voice.every((n) => n.pitch !== null), f).toBe(true)
+          for (const c of bar.chords) expect(c.guide, `${f} ${c.text}`).not.toBe('')
         }
-        for (const c of bar.chords) expect(c.guide.length, `${f} ${c.text}`).toBe(2)
+        expect(sheet.diagnostics.filter((d) => d.startsWith('no guide tones')), f).toEqual([])
       }
-      expect(sheet.diagnostics.filter((d) => d.startsWith('no guide tones')), f).toEqual([])
-    }
-  })
+    })
 
-  it('tie only inside a block: a tie lands on a tiedIn piece of the same pitch, and a block starts fresh', () => {
-    for (const { f, doc } of docs) {
-      const all = buildChanges(doc, CONCERT, 4, false, BOTH).lines.flatMap((l) => l.bars)
-      for (const v of [0, 1]) {
+    it(`from the ${line}: tie only inside a block, across line breaks too: a tie lands on a tiedIn piece of the same pitch, and a block starts fresh`, () => {
+      for (const { f, doc } of docs) {
+        const all = buildChanges(doc, CONCERT, 4, false, line).lines.flatMap((l) => l.bars)
         let prev: GuideNote | undefined
         for (const bar of all) {
           if (bar.marker) {
             expect(prev?.tie ?? false, `${f} ${bar.marker}`).toBe(false)
             prev = undefined
           }
-          for (const n of bar.voices[v] ?? []) {
+          for (const n of bar.voice) {
             expect(n.tiedIn, f).toBe(prev?.tie ?? false)
             if (n.tiedIn) expect(n.pitch?.midi, f).toBe(prev?.pitch?.midi)
             prev = n
@@ -329,17 +323,17 @@ describe('guide tones over the library, both on', () => {
         }
         expect(prev?.tie ?? false, f).toBe(false)
       }
-    }
-  })
+    })
 
-  it('voice the same at 2 or 4 bars a line, and change nothing but voices, labels and diagnostics', () => {
-    for (const { f, doc } of docs) {
-      const on4 = buildChanges(doc, CONCERT, 4, false, BOTH)
-      const on2 = buildChanges(doc, CONCERT, 2, false, BOTH)
-      const off = buildChanges(doc, CONCERT)
-      expect(voicesOf(on2), f).toEqual(voicesOf(on4))
-      expect(plain(on4), f).toEqual(plain(off))
-      expect(on4.diagnostics, f).toEqual(off.diagnostics)
-    }
-  })
+    it(`from the ${line}: voice the same at 2 or 4 bars a line, and change nothing but the voice, labels and diagnostics`, () => {
+      for (const { f, doc } of docs) {
+        const on4 = buildChanges(doc, CONCERT, 4, false, line)
+        const on2 = buildChanges(doc, CONCERT, 2, false, line)
+        const off = buildChanges(doc, CONCERT)
+        expect(voiceOf(on2), f).toEqual(voiceOf(on4))
+        expect(plain(on4), f).toEqual(plain(off))
+        expect(on4.diagnostics, f).toEqual(off.diagnostics)
+      }
+    })
+  }
 })

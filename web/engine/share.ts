@@ -1,3 +1,4 @@
+import type { GuideLine } from './guideTones'
 import { type InstrumentName, isInstrumentName } from './instruments'
 import { isScaleLevel, type ScaleLevel } from './levels'
 import { LIMITS } from './limits'
@@ -20,9 +21,8 @@ export type ShareView = Readonly<{
   /** the Changes sheet's numerals and scale rows */
   numerals?: boolean
   scaleNames?: boolean
-  /** the Changes sheet's guide tone lines: from the 3rd (A), from the 7th (B), or both as two voices */
-  fromThird?: boolean
-  fromSeventh?: boolean
+  /** the Changes sheet's guide tone line: from the 3rd (A) or from the 7th (B); absent: off */
+  guideLine?: GuideLine
   sheet?: ShareSheet
   practice?: PracticeSelection
   level?: ScaleLevel
@@ -84,8 +84,6 @@ async function inflate(bytes: Uint8Array<ArrayBuffer>, max: number): Promise<Uin
   return out
 }
 
-const flag = <K extends string>(key: K, v: unknown): { [k in K]?: boolean } => (typeof v === 'boolean' ? ({ [key]: v } as { [k in K]: boolean }) : {})
-
 /** the view's known, valid fields only */
 export function shareViewFrom(v: unknown): ShareView | undefined {
   if (!v || typeof v !== 'object') return undefined
@@ -98,8 +96,7 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(typeof o.intervals === 'boolean' ? { intervals: o.intervals } : {}),
     ...(typeof o.numerals === 'boolean' ? { numerals: o.numerals } : {}),
     ...(typeof o.scaleNames === 'boolean' ? { scaleNames: o.scaleNames } : {}),
-    ...flag('fromThird', o.fromThird ?? o.guideThird), // guideThird, guideSeventh: the toggles' names in older links
-    ...flag('fromSeventh', o.fromSeventh ?? o.guideSeventh),
+    ...(o.guideLine === 'third' || o.guideLine === 'seventh' ? { guideLine: o.guideLine } : {}), // anything else: off
     ...(o.sheet === 'scales' || o.sheet === 'changes' ? { sheet: o.sheet } : {}),
     ...(practice ? { practice } : {}),
     ...(isScaleLevel(o.level) ? { level: o.level } : {}),

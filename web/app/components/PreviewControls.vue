@@ -47,10 +47,7 @@
         </UiField>
         <UiField>
           <UiLabel class="pl-3">Guide Tones</UiLabel>
-          <div class="flex flex-wrap gap-2 *:whitespace-nowrap">
-            <UiButton v-bind="fromThird ? { color: 'note' } : { outline: true }" :class="fromThird ? '' : OFF_FILL" :aria-pressed="fromThird" aria-description="Guide tones: a line from the first chord's 3rd" title="A line that starts on the first chord's 3rd and moves to the nearest guide tone of each chord; with From 7th on, both lines" @click="fromThird = !fromThird">From 3rd</UiButton>
-            <UiButton v-bind="fromSeventh ? { color: 'note' } : { outline: true }" :class="fromSeventh ? '' : OFF_FILL" :aria-pressed="fromSeventh" aria-description="Guide tones: a line from the first chord's 7th" title="A line that starts on the first chord's 7th and moves to the nearest guide tone of each chord; with From 3rd on, both lines" @click="fromSeventh = !fromSeventh">From 7th</UiButton>
-          </div>
+          <SegmentedControl v-model="guideLine" legend="Guide tones" name="guide-line" :options="GUIDE_LINES" />
         </UiField>
       </template>
       <UiField>
@@ -86,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { INSTRUMENTS, type InstrumentName, type Mode, noteText, partFor } from '~~/engine'
+import { type GuideLine, INSTRUMENTS, type InstrumentName, type Mode, noteText, partFor } from '~~/engine'
 import type { SheetKind } from '~/utils/sheets'
 
 /** the preview toolbar, in labelled groups: Work on (sheet), Instrument, #level, Show (on the Changes: Analysis, Guide Tones), Transposition (+ #transpose), #display */
@@ -97,8 +94,7 @@ const start = defineModel<string>('start', { required: true })
 const intervals = defineModel<boolean>('intervals', { required: true })
 const numerals = defineModel<boolean>('numerals', { default: true })
 const scaleNames = defineModel<boolean>('scaleNames', { default: true })
-const fromThird = defineModel<boolean>('fromThird', { default: false })
-const fromSeventh = defineModel<boolean>('fromSeventh', { default: false })
+const guideLine = defineModel<GuideLine>('guideLine', { default: 'off' })
 
 const changes = useFeature('changes')
 const sheets = computed(() => SHEETS.filter((s) => s.value !== 'changes' || changes))
@@ -108,6 +104,12 @@ const modes = computed((): readonly { value: Mode; label: string }[] => [
 ])
 // a solid white fill for the "off" toggles so they read on the tinted box (an outline button is transparent)
 const OFF_FILL = 'bg-white hover:bg-zinc-50 dark:bg-white/10 dark:hover:bg-white/15'
+// the Changes sheet's guide tone line: at most one at a time
+const GUIDE_LINES = [
+  { value: 'off', label: 'Off', title: 'No guide tones: slashes' },
+  { value: 'third', label: 'From 3rd', title: "A line that starts on the first chord's 3rd and moves to the nearest guide tone of each chord" },
+  { value: 'seventh', label: 'From 7th', title: "A line that starts on the first chord's 7th and moves to the nearest guide tone of each chord" },
+] as const
 const modeLabel = (v: Mode): string => modes.value.find((m) => m.value === v)?.label ?? ''
 const sheetLabel = (v: SheetKind): string => sheets.value.find((s) => s.value === v)?.label ?? ''
 const part = computed(() => partFor(instrument.value))

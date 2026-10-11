@@ -47,17 +47,31 @@ describe('usePreferences', () => {
     expect(prefs().notes.value).toBe(true)
   })
 
-  it('keeps the guide tones off until turned on, and remembers each', async () => {
+  it('keeps the guide tone line off until chosen, and remembers it', async () => {
     const p = prefs()
-    expect([p.fromThird.value, p.fromSeventh.value]).toEqual([false, false])
-    p.fromThird.value = true
+    expect(p.guideLine.value).toBe('off')
+    p.guideLine.value = 'third'
     await nextTick()
-    expect([localStorage.getItem('csm-guide-3rd'), localStorage.getItem('csm-guide-7th')]).toEqual(['on', null])
+    expect(localStorage.getItem('csm-guide-line')).toBe('third')
     const again = prefs()
-    expect([again.fromThird.value, again.fromSeventh.value]).toEqual([true, false])
-    again.fromThird.value = false
+    expect(again.guideLine.value).toBe('third')
+    again.guideLine.value = 'seventh'
     await nextTick()
-    expect(localStorage.getItem('csm-guide-3rd')).toBe('off')
+    expect(localStorage.getItem('csm-guide-line')).toBe('seventh')
+    again.guideLine.value = 'off'
+    await nextTick()
+    expect(localStorage.getItem('csm-guide-line')).toBe('off')
+    expect(Object.keys(p)).not.toContain('fromThird')
+  })
+
+  it('falls back to off on a stored guide line it does not know, and ignores the old keys', () => {
+    for (const junk of ['both', 'on', 'Third', '']) {
+      localStorage.setItem('csm-guide-line', junk)
+      expect(prefs().guideLine.value).toBe('off')
+    }
+    localStorage.removeItem('csm-guide-line')
+    localStorage.setItem('csm-guide-3rd', 'on')
+    expect(prefs().guideLine.value).toBe('off')
   })
 
   it('remembers choices in this browser', async () => {
@@ -72,9 +86,8 @@ describe('usePreferences', () => {
   it('ignores stored values it does not recognise', () => {
     localStorage.setItem('csm-instrument', 'kazoo')
     localStorage.setItem('csm-start', 'H')
-    localStorage.setItem('csm-guide-3rd', 'yes')
     const p = prefs()
-    expect([p.instrument.value, p.start.value, p.fromThird.value]).toEqual(['concert', 'C', false])
+    expect([p.instrument.value, p.start.value]).toEqual(['concert', 'C'])
   })
 
   it("remembers the functions page's key, C major until chosen", async () => {
@@ -90,12 +103,17 @@ describe('usePreferences', () => {
 describe('linkPreferences', () => {
   afterEach(() => localStorage.clear())
 
-  it("takes a link's guide tones over your own, for this visit only", async () => {
-    localStorage.setItem('csm-guide-7th', 'on')
-    const p = linked({ fromThird: true })
-    expect([p.fromThird.value, p.fromSeventh.value]).toEqual([true, true])
-    p.fromThird.value = false
+  it("takes a link's guide tone line over your own, for this visit only", async () => {
+    localStorage.setItem('csm-guide-line', 'seventh')
+    const p = linked({ guideLine: 'third' })
+    expect(p.guideLine.value).toBe('third')
+    p.guideLine.value = 'off'
     await nextTick()
-    expect(localStorage.getItem('csm-guide-3rd')).toBeNull()
+    expect(localStorage.getItem('csm-guide-line')).toBe('seventh')
+  })
+
+  it('opens a link without a guide line with the line off, whatever your own', () => {
+    localStorage.setItem('csm-guide-line', 'seventh')
+    expect(linked({ sheet: 'changes' }).guideLine.value).toBe('off')
   })
 })

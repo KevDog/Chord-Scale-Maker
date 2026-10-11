@@ -1,6 +1,6 @@
 # Guide tone lines from the 3rd or the 7th: design
 
-Date: 2026-10-10. Status: approved (toggle semantics decided by the user; see "What changes in the product"; open
+Date: 2026-10-10. Status: approved; rule 7 and the "both on" display superseded by [the independent-lines spec](2026-10-10-independent-guide-tone-lines-design.md), and rules 1, 6 and 9 amended by [the diverge note](2026-10-11-guide-lines-diverge-note.md) (placing a run; lines that meet go apart) (toggle semantics decided by the user; see "What changes in the product"; open
 questions decided by the user, and the trade in rule 7.2 added, the same day). Builds on
 [2026-10-10-guide-tones-on-changes-design.md](2026-10-10-guide-tones-on-changes-design.md).
 
@@ -22,12 +22,11 @@ single-toggle line is the 3rd (or the 7th) of *every* chord, which cannot move b
   0 is a *common tone*; 1 or 2 is a *step*; anything more is a *leap*.
 - **Comfortable range** and **centre.** The comfortable sub-range of the clef (treble E4–D5, bass G2–G3) and its
   midpoint.
-- **Line A** starts on the 3rd; **line B** starts on the 7th. Both are always constructed together (rule 7), whichever
-  the reader has chosen to see.
+- **Line A** starts on the 3rd; **line B** starts on the 7th. *(Superseded: each is built alone.)*
 
 ## Rules
 
-1. **Start.** Line A begins on the "3rd" of the first voiced chord, line B on its "7th", each in the octave nearest
+1. **Start.** *(Amended by [the diverge note](2026-10-11-guide-lines-diverge-note.md), rule P: the start octave is the one whose run, up to the next rest, averages nearest the centre.)* Line A begins on the "3rd" of the first voiced chord, line B on its "7th", each in the octave nearest
    the centre of the comfortable range. Candidates outside the written range are never used (rule 4).
 
 2. **Next note.** At each following chord, the line moves to whichever of that chord's two guide tones is the
@@ -48,10 +47,10 @@ single-toggle line is the 3rd (or the 7th) of *every* chord, which cannot move b
    struck again, not held: the new attack and label mark the change of role. A held note is tied across barlines and
    line ends, as today.
 
-6. **Rests and unknown chords.** A chord with no guide tones rests in both lines and ends the run. After it, the lines
+6. **Rests and unknown chords.** *(Superseded where it says "both lines": one line is built at a time; see the independent-lines spec. The restart "in the octave nearest the last sounded note" is superseded by [the diverge note](2026-10-11-guide-lines-diverge-note.md), rule P: a restart is placed like a start.)* A chord with no guide tones rests in both lines and ends the run. After it, the lines
    restart by rule 1, in the octave nearest the last sounded note of each line (or the centre, if there is none).
 
-7. **The two lines together.** The lines are complementary: at every chord they take different guide tones.
+7. **The two lines together.** *Superseded by [the independent-lines spec](2026-10-10-independent-guide-tone-lines-design.md): removed; each line is built alone.* The lines are complementary: at every chord they take different guide tones.
    1. Each line first chooses by rules 2–4 independently.
    2. If both choose the same tone, the line with the smaller move keeps it and the other takes the remaining tone in
       its nearest octave. If the moves are equal, the line moving down keeps it; if neither or both move down, line A
@@ -64,11 +63,11 @@ single-toggle line is the 3rd (or the 7th) of *every* chord, which cannot move b
 8. **Labels.** Each note is labelled with the real degree, accidental dropped, as today (`3`, `7`, `4`, `6`, `1`).
    Because the role changes along the line, the labels under one line read, for a ii–V–I, `3 7 3` or `7 3 7`.
 
-9. **Form.** Repeats and endings are voiced in written order; the second ending continues from the last chord of the
+9. **Form.** *(Amended by [the diverge note](2026-10-11-guide-lines-diverge-note.md): a run's start octave looks ahead as far as the next rest; nothing past a rest changes a line.)* Repeats and endings are voiced in written order; the second ending continues from the last chord of the
    first. The line does not loop: the last chord is not voiced with regard to the first.
 
 10. **Spelling.** A guide tone keeps the spelling given by its chord (`guideTonesFor`), whatever octave rule 2 chose;
-    accidentals follow the measure rule across both voices, as today.
+    accidentals follow the measure rule across both voices, as today. *(Superseded: one voice; see the independent-lines spec.)*
 
 ## Worked examples (treble, concert)
 
@@ -93,7 +92,7 @@ Two rules show here. At `Bb6 → G7` line A has a tie (B4 and F5 are both 3 semi
 the centre. At `F7 → Dm7` nothing is within a step of A4 (F4 is 4 below, C5 is 3 above), so the line leaps to C5, the
 smaller move. Line B steps or holds throughout.
 
-**A collision** — `Cmaj7 | Ebmaj7`
+**A collision** — `Cmaj7 | Ebmaj7` *(Superseded: rule 7 is gone, so there is no collision; each line takes its own nearest tone. See the independent-lines spec.)*
 
 From E4 (line A) the nearer tone of Ebmaj7 is D4 (its 7th, a whole step down); from B4 (line B) it is also D (a minor
 3rd up). Rule 7.2: line A's move is smaller, so A takes D4 and B takes G4, the 3rd, a major 3rd down.
@@ -102,7 +101,7 @@ From E4 (line A) the nearer tone of Ebmaj7 is D4 (its 7th, a whole step down); f
 
 - **Decision (the user's):** the toggles become **From 3rd** and **From 7th**: a line that starts there, rather than
   that degree on every chord. There is no toggle for "both degrees"; two lines on the staff means both start points.
-  With both on, the display is unchanged in kind (two voices on one staff, sorted by pitch) and will be close to
+  *(Superseded: the sheet shows one line at a time, chosen Off / From 3rd / From 7th.)* With both on, the display was unchanged in kind (two voices on one staff, sorted by pitch) and will be close to
   today's voice-led pair, since that pair is also complementary and nearly always stepwise.
 - With one on, the single line steps or holds nearly everywhere, and its label row alternates `3` and `7`.
 - `voiceLeadOne` is replaced by the rules above; `voiceLead` (the Viterbi pair search) can be replaced by the same
@@ -111,9 +110,9 @@ From E4 (line A) the nearer tone of Ebmaj7 is D4 (its 7th, a whole step down); f
 
 ## Open questions (decided)
 
-1. **Looping the form.** *Decided: no lookahead; the player can manage the join.* Rule 9 leaves the join from the last chord back to the first unvoiced. A lookahead could
+1. **Looping the form.** *Decided: no lookahead; the player can manage the join. (Amended by [the diverge note](2026-10-11-guide-lines-diverge-note.md): no loop still, but a run's start octave now looks ahead to the next rest.)* Rule 9 leaves the join from the last chord back to the first unvoiced. A lookahead could
    choose the starting octave so that the line also steps into its own repeat; worth measuring over the library.
-2. **Greedy against global.** *Decided: greedy, with the trade in rule 7.2. Measured over the library (treble):
+2. **Greedy against global.** *(The trade in rule 7.2 is superseded by the independent-lines spec.)* *Decided: greedy, with the trade in rule 7.2. Measured over the library (treble):
    moves over a tritone fall from 394 to 18 (the pair search: 3), the largest from 11 to 9 semitones.* These rules are greedy, one chord at a time, so that a reader can apply them by hand.
    The pair search finds the globally smoothest lines. Measuring how often they differ over the 8,000 library chords
    would show whether the greedy lines ever paint themselves into a corner (a leap that a different earlier choice

@@ -2,7 +2,7 @@ import { analyse, chartKeyOf, parseKey } from './analysis'
 import { type ChartDoc, type ChartLine, chartBeats, expandRowLines, formPart, type FormPart, type LinedRow, resolveScale } from './chart'
 import { type ChordToken, chordTokensOrNull, writtenChordTextOrNull } from './chord'
 import { guideToneTimeline } from './guideToneTimeline'
-import { type GuideInput, type GuideNote, type GuideShow, guidesOn, guideVoices, NO_GUIDES } from './guideTones'
+import { type GuideInput, type GuideLine, type GuideNote, guideVoices } from './guideTones'
 import { keySignature } from './keySignature'
 import { type Part, scaleLabel, writtenRoot } from './part'
 import { glyphs, parseRoot, rootName } from './pitch'
@@ -11,8 +11,8 @@ import { chunk, orNull } from './util'
 
 /**
  * The Changes sheet (docs/plan-changes.md): the chart as a study lead sheet. Bars of slashes in the chart's metre
- * (or, with a guide tone toggle on, a guide tone line from the 3rd and/or one from the 7th, a note a chord held for
- * the chord's length),
+ * (or, with a guide tone line on, the line from the 3rd or the one from the 7th, a note a chord held for the chord's
+ * length),
  * each chord on its beat with its Roman numeral and its scale, a key-area label where the key changes, section
  * markers, and repeat signs for a @copy straight after its source. No DOM, like sheet.ts and guideTones.ts.
  */
@@ -43,15 +43,15 @@ export type ChangesChord = Readonly<{
   heardIn: string
   /** where that key came from: the key before its function's colon, an @key over its area, or the analysis */
   keyFrom: 'found' | 'area' | 'function'
-  /** its guide tones' labels, top to bottom ("7", "3"; "4" on a sus chord); [] with no guide on or none found */
-  guide: readonly string[]
+  /** its guide tone's label ("3", "7"; "4" on a sus chord); '' with the line off or none found */
+  guide: string
 }>
 export type ChangesBar = Readonly<{
   /** the chart's key signature, written for the part; null when signatures are off or it has no key: */
   keySig: string | null
   chords: readonly ChangesChord[]
-  /** guide tones written in place of the slashes: [] with no guide on, [line] for one, [upper, lower] for both */
-  voices: readonly (readonly GuideNote[])[]
+  /** the guide tone line's notes in place of the slashes; [] with the line off */
+  voice: readonly GuideNote[]
   /** a section marker on its first bar: "A1", "A3 (= A1)", "Intro", "Coda (after the last chorus)" */
   marker: string
   /** the key, written for the part, where a key area starts: "B♭ major" */
@@ -92,18 +92,17 @@ const writtenScale = (part: Part, scale: string | null): string | null => {
 
 /**
  * Changes lines on a printed page: 8 with no guide tones (a 32-bar AABA, one section a line pair, with its numerals
- * and scales), whatever rows are shown. Notes, stems and the label row take more height, so with numerals or scales
- * shown it's 6 for one guide and 5 for both, and one more with both rows off: measured over the library in every
- * transposition at letter width, with a page's tallest lines (an ending raised over two voices' stems). print.spec
- * checks the worst case.
+ * and scales), whatever rows are shown. Notes, stems and the label row take more height, so with a guide tone line
+ * and numerals or scales shown it's 6, and one more with both rows off: measured over the library in every
+ * transposition at letter width, with a page's tallest lines (an ending raised over the stems). print.spec checks the
+ * worst case.
  */
-export function changesLinesPerPage(guides: GuideShow, rows: Readonly<{ numerals: boolean; scales: boolean }>): number {
-  const on = guidesOn(guides)
-  if (!on) return 8
-  return (on === 1 ? 6 : 5) + (!rows.numerals && !rows.scales ? 1 : 0)
+export function changesLinesPerPage(line: GuideLine, rows: Readonly<{ numerals: boolean; scales: boolean }>): number {
+  if (line === 'off') return 8
+  return 6 + (!rows.numerals && !rows.scales ? 1 : 0)
 }
 
-export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, guides: GuideShow = NO_GUIDES): ChangesSheet {
+export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: GuideLine = 'off'): ChangesSheet {
   const rows = expandRowLines(doc).value
   const beats = chartBeats(doc)
   const { events, diagnostics } = guideToneTimeline(rows, beats)
@@ -187,7 +186,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     blocks.push(run)
   }
 
-  // guide tones, as lines over the rows as drawn (a folded repeat is drawn once, so it's voiced once), before the
+  // guide tones, as a line over the rows as drawn (a folded repeat is drawn once, so it's voiced once), before the
   // lines are cut, so the pitches don't depend on how many bars a line holds. Holds start afresh at each block and
   // at each 2nd (or later) ending, so a tie never runs into a new section or from one ending into the next
   const drawn = (): GuideInput[] => {
@@ -207,7 +206,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
       }),
     )
   }
-  const guideLines = guidesOn(guides) ? guideVoices(drawn(), part, beats, keySig, guides) : null
+  const guideLine = line === 'off' ? null : guideVoices(drawn(), part, beats, keySig, line)
 
   let lastKey = ''
   const lastForm = blocks.findLastIndex((b) => b.part === 'form')
@@ -234,7 +233,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             stated: a?.stated ?? false,
             heardIn: a ? keyName((a.statedKey ?? a.key).name, part) : '',
             keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',
-            guide: guideLines?.labels.get(i) ?? [],
+            guide: guideLine?.labels.get(i) ?? '',
           }
         })
       const firstKey = block.rows.map((i) => byRow.get(i)).find((a) => a && barOf(a.row) === bar)?.key.name
@@ -245,7 +244,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
       return {
         keySig,
         chords,
-        voices: guideLines?.bars.get(bar) ?? [],
+        voice: guideLine?.bars.get(bar) ?? [],
         marker: j === 0 ? block.marker : '',
         keyArea,
         repeatStart: hasEndings ? j === 0 : j === 0 && block.times > 1,
@@ -273,5 +272,5 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     }))
     return { bars }
   })
-  return { lines: deduped, beats, diagnostics: guideLines ? [...diagnostics, ...guideLines.missing] : diagnostics }
+  return { lines: deduped, beats, diagnostics: guideLine ? [...diagnostics, ...guideLine.missing] : diagnostics }
 }
