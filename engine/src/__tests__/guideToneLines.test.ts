@@ -146,69 +146,114 @@ describe('each line built on its own', () => {
   })
 
   it('a line takes the nearer octave of a tone the other line also takes (B: D5, not F5)', () => {
-    expect(lineOf(['Cm', 'Dm', 'Bbm'], CONCERT, 'third')).toEqual(['Eb5 (3)', 'D5 (1)', 'Bb4 (1)']) // met on D5: up, but nothing of Bbm above D5 in range (D2)
+    expect(lineOf(['Cm', 'Dm', 'Bbm'], CONCERT, 'third')).toEqual(['Eb5 (3)', 'D5 (1)', 'Db5 (3)']) // met on D5: up, but nothing of Bbm above D5 in range, so as alone (G2)
     expect(lineOf(['Cm', 'Dm', 'Bbm'], CONCERT, 'seventh')).toEqual(['C5 (1)', 'D5 (1)', 'Db5 (3)']) // was F5, Bb4
   })
 })
 
 /**
- * lines that meet go apart (docs/superpowers/specs/2026-10-11-guide-lines-diverge-note.md): the lines are built
- * together again, but only so that, after landing on one pitch, they leave it in opposite directions at the next chord
+ * lines that meet go apart, gently (docs/superpowers/specs/2026-10-11-guide-lines-diverge-note.md, G1–G3): the lines
+ * are built together again, but only so that, after landing on one pitch, they part at the next new chord: one keeps
+ * the pitch if the chord has it (G1), or they leave it in opposite directions (G2), never by more than a tritone
+ * because of each other (G3)
  */
-describe('lines that meet go apart (one up, one down)', () => {
+describe('lines that meet go apart, gently (G1–G3)', () => {
   const both = (chords: readonly string[], blocks?: readonly number[], part: Part = CONCERT): readonly [(string | null)[], (string | null)[]] => [lineOf(chords, part, 'third', blocks), lineOf(chords, part, 'seventh', blocks)]
+  const am = guideTonesFor(CONCERT, 'Am')
+  if (!am) throw new Error('Am has guide tones')
+  const unison = { third: am.third, seventh: { ...am.third, label: '7' } } // a chord whose two guide tones are C and C
 
-  it('D1: Cm7 D7 meet on C5; at G7 the line that was above (A, from Eb5) goes up to F5, the other (B, from Bb4) down to B4', () => {
+  it('G1: Cm7 D7 meet on C5, a guide tone of Dm7: B (below before they met) keeps it, A (above) goes up to F5', () => {
+    expect(both(['Cm7', 'D7', 'Dm7'])).toEqual([
+      ['Eb5 (3)', 'C5 (7)', 'F5 (3)'],
+      ['Bb4 (7)', 'C5 (7)', 'C5 (7)'], // strict: down to F4
+    ])
+  })
+
+  it('G1: the mover may go up a tritone (D7 again in a new block: A C5 to F#5), while B keeps C5, struck again', () => {
+    expect(both(['Cm7', 'D7', 'D7'], [0, 0, 1])).toEqual([
+      ['Eb5 (3)', 'C5 (7)', 'F#5 (3)'],
+      ['Bb4 (7)', 'C5 (7)', 'C5 (7)'], // strict: F#4, a tritone down too
+    ])
+  })
+
+  it('G1, the tritone cap: met on F4, a guide tone of Dm7, where C5 is 7 above, so the mover takes C4, 5 below, crossing the keeper', () => {
+    expect(both(['B7', 'Dm', 'F', 'Dm7'])).toEqual([
+      ['D#4 (3)', 'D4 (1)', 'F4 (1)', 'F4 (3)'],
+      ['A4 (7)', 'F4 (3)', 'F4 (1)', 'C4 (7)'], // strict: C5
+    ])
+  })
+
+  it('G1: together since a restart, line A (from the 3rd) keeps the shared pitch', () => {
+    const range = { lo: 48, hi: 84, centre: 66 }
+    const line = (from: From): (number | undefined)[] => guideToneLine([unison, guideTonesFor(CONCERT, 'Dm7')], range, from).map((n) => n?.pitch.midi)
+    expect(line('third')).toEqual([72, 72])
+    expect(line('seventh')).toEqual([72, 77]) // F5, the up line's side
+  })
+
+  it('G2: Cm7 D7 meet on C5, not a guide tone of G7: A (above before) goes up to F5, B down to B4', () => {
     expect(both(['Cm7', 'D7', 'G7'])).toEqual([
       ['Eb5 (3)', 'C5 (7)', 'F5 (7)'],
       ['Bb4 (7)', 'C5 (7)', 'B4 (3)'], // each alone: both B4
     ])
   })
 
-  it('D1: C7 A7 meet on G4 with B above before; at Dm7 B goes up to C5 and A down to F4', () => {
+  it('G2: C7 A7 meet on G4 with B above before; at Dm7 B goes up to C5 and A down to F4', () => {
     expect(both(['C7', 'A7', 'Dm7'])).toEqual([
       ['E4 (3)', 'G4 (7)', 'F4 (3)'],
       ['Bb4 (7)', 'G4 (7)', 'C5 (7)'],
     ])
   })
 
-  it('D1: together since a restart (a chord whose two guide tones share a pitch), the line from the 7th goes up', () => {
-    const am = guideTonesFor(CONCERT, 'Am')
-    if (!am) throw new Error('Am has guide tones')
-    const unison = { third: am.third, seventh: { ...am.third, label: '7' } } // C and C
+  it('G2: together since a restart, the line from the 7th goes up', () => {
     const [a, b] = (['third', 'seventh'] as const).map((from) => guideToneLine([unison, guideTonesFor(CONCERT, 'G7')], rangeOf(CONCERT), from).map(text))
     expect(a).toEqual(['C5 (3)', 'B4 (3)'])
     expect(b).toEqual(['C5 (7)', 'F5 (7)'])
   })
 
-  it('D2, the floor: met on F4 with nothing of Db7 below it in range (C4 up), the down line takes the nearest above that is not the up line’s', () => {
+  it('G2, the tritone cap: at G, nothing above C5 within a tritone (G5 is 7 above), so A moves as alone, to B4, with B; at F they part', () => {
+    expect(both(['Cm7', 'D7', 'G', 'F'])).toEqual([
+      ['Eb5 (3)', 'C5 (7)', 'B4 (3)', 'F5 (1)'], // strict: G5 at the G
+      ['Bb4 (7)', 'C5 (7)', 'B4 (3)', 'A4 (3)'],
+    ])
+  })
+
+  it('G1 at the floor: met on F4, a guide tone of Db7: A (below before) keeps it, B goes up to Cb5', () => {
     expect(both(['B7', 'Dm', 'F', 'Db7'])).toEqual([
-      ['D#4 (3)', 'D4 (1)', 'F4 (1)', 'F5 (3)'], // down, but nothing below: F5, the nearest above other than Cb5
-      ['A4 (7)', 'F4 (3)', 'F4 (1)', 'Cb5 (7)'], // was above (A4 over D4): up
+      ['D#4 (3)', 'D4 (1)', 'F4 (1)', 'F4 (3)'], // strict: F5, an octave
+      ['A4 (7)', 'F4 (3)', 'F4 (1)', 'Cb5 (7)'],
     ])
   })
 
-  it('D2, the ceiling: met on Eb5 with nothing of Cm7 above it in range (to A5), the up line takes the nearest below that is not the down line’s', () => {
+  it('G1 at the ceiling: met on Eb5 with no Bb above it in range (to A5), the mover takes Bb4, 5 below, and B keeps Eb5', () => {
     expect(both(['Bb', 'Bb7', 'B', 'Ebm', 'Cm7'])).toEqual([
-      ['D5 (3)', 'D5 (3)', 'D#5 (3)', 'Eb5 (1)', 'Eb4 (3)'], // was above: up, but nothing above: Eb4, the nearest below other than Bb4
-      ['Bb4 (1)', 'Ab4 (7)', 'B4 (1)', 'Eb5 (1)', 'Bb4 (7)'],
+      ['D5 (3)', 'D5 (3)', 'D#5 (3)', 'Eb5 (1)', 'Bb4 (7)'], // strict: Eb4, an octave
+      ['Bb4 (1)', 'Ab4 (7)', 'B4 (1)', 'Eb5 (1)', 'Eb5 (3)'],
     ])
   })
 
-  it('D2: with no other candidate at all, they coincide again, and go apart (or try to) at the next chord', () => {
-    const am = guideTonesFor(CONCERT, 'Am')
-    if (!am) throw new Error('Am has guide tones')
-    const unison = { third: am.third, seventh: { ...am.third, label: '7' } } // C only: C4 and C5 in C4–C5
+  it('G2 at the ceiling: met on D5 with nothing of Bbm above it in range, A moves as alone, to Db5, with B', () => {
+    expect(both(['Cm', 'Dm', 'Bbm'])).toEqual([
+      ['Eb5 (3)', 'D5 (1)', 'Db5 (3)'], // strict: Bb4
+      ['C5 (1)', 'D5 (1)', 'Db5 (3)'],
+    ])
+  })
+
+  it('G3: with no octave of the other guide tone within a tritone in range (C4–C5: F4 is 7 below C5), the mover stays with the keeper', () => {
+    const range = { lo: 60, hi: 72, centre: 66 }
+    const line = (from: From): (number | undefined)[] => guideToneLine([unison, guideTonesFor(CONCERT, 'Dm7')], range, from).map((n) => n?.pitch.midi)
+    expect(line('third')).toEqual([72, 72])
+    expect(line('seventh')).toEqual([72, 72]) // strict: F4
+  })
+
+  it('G3: a unison chord again and again in C4–C5: the only other octave is an octave away, so the lines stay together', () => {
     const range = { lo: 60, hi: 72, centre: 66 }
     const line = (from: From): (number | undefined)[] => guideToneLine([unison, unison, unison], range, from, [0, 1, 2]).map((n) => n?.pitch.midi)
-    expect(line('third')).toEqual([72, 60, 72]) // placed: C4 and C5 as far from the centre, so the higher
-    expect(line('seventh')).toEqual([72, 60, 72])
+    expect(line('third')).toEqual([72, 72, 72]) // placed: C4 and C5 as far from the centre, so the higher
+    expect(line('seventh')).toEqual([72, 72, 72]) // strict: 60, 72
   })
 
-  it('D2: with no candidate at all in range (a toy range C4–D4, no B or F), the lines rest there, as a single line does, rather than fail', () => {
-    const am = guideTonesFor(CONCERT, 'Am')
-    if (!am) throw new Error('Am has guide tones')
-    const unison = { third: am.third, seventh: { ...am.third, label: '7' } } // C and C: both lines on C4
+  it('with no candidate at all in range (a toy range C4–D4, no B or F), the lines rest there, as a single line does, rather than fail', () => {
     const range = { lo: 60, hi: 62, centre: 61 }
     for (const from of ['third', 'seventh'] as const)
       expect(guideToneLine([unison, guideTonesFor(CONCERT, 'G7')], range, from).map((n) => n?.pitch.midi ?? null)).toEqual([60, null])
@@ -221,21 +266,25 @@ describe('lines that meet go apart (one up, one down)', () => {
     ])
   })
 
-  it('D3: a held chord holds both lines on the shared pitch; they go apart at the first new chord', () => {
+  it('D3, holds: a held chord holds both lines on the shared pitch; at the first new chord B keeps it, struck again (G1)', () => {
+    expect(both(['Cm7', 'D7', 'D7', 'Dm7'])).toEqual([
+      ['Eb5 (3)', 'C5 (7)', 'C5 (7)~', 'F5 (3)'],
+      ['Bb4 (7)', 'C5 (7)', 'C5 (7)~', 'C5 (7)'],
+    ])
+  })
+
+  it('D3, holds: a held chord holds both lines; they part at the first new chord (G2)', () => {
     expect(both(['Cm7', 'D7', 'D7', 'G7'])).toEqual([
       ['Eb5 (3)', 'C5 (7)', 'C5 (7)~', 'F5 (7)'],
       ['Bb4 (7)', 'C5 (7)', 'C5 (7)~', 'B4 (3)'],
     ])
   })
 
-  it('D3: the same chord across a block boundary is a new chord: the lines go apart there (a tritone each, C5 to F#5 and F#4)', () => {
-    expect(both(['Cm7', 'D7', 'D7'], [0, 0, 1])).toEqual([
-      ['Eb5 (3)', 'C5 (7)', 'F#5 (3)'],
-      ['Bb4 (7)', 'C5 (7)', 'F#4 (3)'],
+  it('D3, rests: a rest ends the run, and the next chord restarts each line by rule 6, not by G1 or G2', () => {
+    expect(both(['Cm7', 'D7', '???', 'Dm7'])).toEqual([
+      ['Eb5 (3)', 'C5 (7)', null, 'F4 (3)'], // G1 would send A to F5
+      ['Bb4 (7)', 'C5 (7)', null, 'C5 (7)'],
     ])
-  })
-
-  it('D3: a rest ends the run, and the next chord restarts each line by rule 6, not by going apart', () => {
     expect(both(['Cm7', 'D7', '???', 'G7'])).toEqual([
       ['Eb5 (3)', 'C5 (7)', null, 'B4 (3)'],
       ['Bb4 (7)', 'C5 (7)', null, 'F4 (7)'],
@@ -375,28 +424,40 @@ describe('guide tone lines over the library', () => {
     }
 
   for (const [name, part] of PARTS)
-    it(`${name}: lines that share a pitch differ at the next new chord, the one going up above it or the one going down below`, () => {
+    it(`${name}: lines that share a pitch part gently at the next new chord: one keeps a common tone, neither leaps past a tritone because of the other`, () => {
       const faults: string[] = []
       let met = 0
+      const { lo, hi } = rangeOf(part)
+      const inRange = (pcs: readonly number[]): number[] => {
+        const out: number[] = []
+        for (let m = lo; m <= hi; m++) if (pcs.includes(m % 12)) out.push(m)
+        return out
+      }
       for (const { f, doc } of charts) {
         const { events } = guideToneTimeline(expandRows(doc).value, chartBeats(doc))
         const tones = events.map((e) => guideTonesFor(part, e.chord, resolveScale(e.row) ?? undefined))
         const [a, b] = (['third', 'seventh'] as const).map((from) => guideToneLine(tones, rangeOf(part), from))
         tones.forEach((_, j) => {
-          const [x, y, nx, ny] = [a?.[j], b?.[j], a?.[j + 1], b?.[j + 1]]
-          if (!x || !y || !nx || !ny || nx.held || x.pitch.midi !== y.pitch.midi) return
+          const [x, y, nx, ny, t] = [a?.[j], b?.[j], a?.[j + 1], b?.[j + 1], tones[j + 1]]
+          if (!x || !y || !nx || !ny || !t || nx.held || x.pitch.midi !== y.pitch.midi) return
           met++
           const p = x.pitch.midi
-          if (nx.pitch.midi === ny.pitch.midi) faults.push(`${f} chord ${j + 1} (${events[j + 1]?.chord}): still together on ${rootName(nx.pitch)}${octaveOf(nx.pitch)}`)
-          else if ((nx.pitch.midi - p) * (ny.pitch.midi - p) > 0) {
-            // both on one side: only when the other side has no guide tone in range (D2)
-            const t = tones[j + 1]
-            const { lo, hi } = rangeOf(part)
-            const pcs = t ? [pcOf(t.third.note), pcOf(t.seventh.note)] : []
-            const side = nx.pitch.midi > p ? -1 : 1
-            let room = false
-            for (let m = p + side; m >= lo && m <= hi; m += side) if (pcs.includes(m % 12)) room = true
-            if (room) faults.push(`${f} chord ${j + 1} (${events[j + 1]?.chord}): both moved the same way from ${p}`)
+          const at = `${f} chord ${j + 1} (${events[j + 1]?.chord}) from ${p}`
+          const [n, m] = [nx.pitch.midi, ny.pitch.midi]
+          const [p3, p7] = [pcOf(t.third.note), pcOf(t.seventh.note)]
+          if (p % 12 === p3 || p % 12 === p7) {
+            // G1: one keeps p; the other goes to the other guide tone within a tritone, or stays (G3)
+            if (n !== p && m !== p) return void faults.push(`${at}: neither kept the common tone`)
+            const mover = n === p ? m : n
+            const others = inRange([p % 12 === p3 ? p7 : p3]).filter((c) => c !== p && Math.abs(c - p) <= 6)
+            if (mover === p ? others.length > 0 : Math.abs(mover - p) > 6) faults.push(`${at}: the mover went to ${mover}`)
+          } else {
+            // G2: each within a tritone on its side, or as alone (rules 2–4); together again only if one had no room
+            const cands = inRange([p3, p7])
+            const alone = Math.min(...cands.map((c) => Math.abs(c - p)))
+            for (const q of [n, m]) if (Math.abs(q - p) > Math.max(6, alone)) faults.push(`${at}: a line moved to ${q}`)
+            const room = (side: number): boolean => cands.some((c) => (c - p) * side > 0 && Math.abs(c - p) <= 6)
+            if (n === m && room(1) && room(-1)) faults.push(`${at}: still together on ${n}`)
           }
         })
       }

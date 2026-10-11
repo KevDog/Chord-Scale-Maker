@@ -95,10 +95,12 @@
         </li>
         <li>
           <strong class="font-semibold text-zinc-950 dark:text-white">When the two lines meet.</strong> You see one line at
-          a time, but the other is worked out alongside it. If both land on the same note, they split at the next chord:
-          the one that was higher goes up to the nearest guide tone above, the other down to the nearest below (with no
-          room on its side, a line takes the next nearest note on the other). So From 3rd and From 7th may touch for a
-          chord, but they don't stay together.
+          a time, but the other is worked out alongside it. If both land on the same note, they part at the next new chord.
+          If that chord has the note too, the line that was lower keeps it and the other moves to the chord's other guide
+          tone, upward if that's no more than a tritone away. Otherwise the one that was higher goes up to the nearest
+          guide tone above and the other down to the nearest below. Neither leaps more than a tritone just to get away:
+          a line with nothing that close on its side moves as it would on its own, so now and then the two stay together
+          for another chord. So From 3rd and From 7th may touch, but they rarely stay together.
         </li>
         <li>
           <strong class="font-semibold text-zinc-950 dark:text-white">Rests, repeats and spelling.</strong> A chord with no

@@ -134,7 +134,7 @@ test('From 3rd or From 7th puts each chord’s guide tone in place of its slashe
   await expect(line).toHaveAttribute('aria-label', /^Bars: Dm7 G7sus4 \| C6 C \| Em7 A7 \| Dm7 G7; guide tones: /)
   await expect.poll(async () => (await drawn(line)).heads.length).toBe(8) // a half note a chord
   expect((await drawn(line)).slashes).toBe(0)
-  await expect(labelRow(line)).toHaveText(/^\s*3\s*7\s*3\s*3\s*7\s*7\s*3\s*7\s*$/) // from the Dm7's 3rd (F5, the run placed nearest the centre): F5 F5 E5 E5 D5 G5 F5 F5. G7sus4's nearest guide tone is its 7th (the F, a common tone); the lines meet on D5 at Em7, and A, above before, goes up to G5 at A7 (D1; alone it would take C#5); at the last G7, F5 again
+  await expect(labelRow(line)).toHaveText(/^\s*3\s*7\s*3\s*3\s*7\s*7\s*3\s*7\s*$/) // from the Dm7's 3rd (F5, the run placed nearest the centre): F5 F5 E5 E5 D5 G5 F5 F5. G7sus4's nearest guide tone is its 7th (the F, a common tone); the lines meet on D5 at Em7, and A, above before, goes up to G5 at A7 (G2: D is not a guide tone of A7; alone it would take C#5); at the last G7, F5 again
   await showGuides(page, 'From 7th')
   await expect(guide(page, 'From 3rd')).not.toBeChecked()
   await expect(labelRow(line)).toHaveText(/^\s*7\s*4\s*6\s*1\s*7\s*3\s*7\s*3\s*$/) // from the Dm7's 7th: a sus chord's 4th, a 6 chord's 6th, a triad's root
@@ -291,7 +291,7 @@ for (const [width, bars] of [
 ] as const) {
   test(`vibes, ${bars} bars a line: a line down to G3 draws two ledger lines below the staff, and nothing collides`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 })
-    await writeChart(page, 'title: T\nkey: C\nA | 1 | Bm\nA | 2 | E\nA | 3 | DMaj7\nA | 4 | Gm\nA | 5 | Cm7\nA | 6 | Bb7\nA | 7 | Am7\nA | 8 | G7\n') // from the 3rd: D4 E4 F#4 Bb3 … G3 at the Am7
+    await writeChart(page, 'title: T\nkey: C\nA | 1 | Abm7\nA | 2 | D7\nA | 3 | Ebm7\nA | 4 | Gbm7\nA | 5 | Abm7\nA | 6 | BbMaj7\nA | 7 | Eb7\nA | 8 | Bm7\n') // from the 3rd: Cb4 C4 Db4 Fb4 Cb4 A3 G3 (at the Eb7) A3
     await chooseInstrument(page, 'Vibes')
     await showGuides(page, 'From 3rd')
     await guidesDrawn(page)

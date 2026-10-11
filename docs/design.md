@@ -340,7 +340,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   the 7th (a triad's root, a 6 chord's 6th).
 - **The lines** (`engine/src/guideToneLines.ts`; `guideToneLine` returns one of the pair) move one chord at a time; only a
   run's starting octave looks ahead, as far as the next rest. The rules are numbered in the spec (rule 7, the lines
-  taking different tones, is gone; D1–D3 and P are the diverge note's). The candidates are both guide tones at every octave inside the
+  taking different tones, is gone; G1–G3, D3 and P are the diverge note's). The candidates are both guide tones at every octave inside the
   part's written range, `rangeOf(part)`: its instrument's range from `INSTRUMENTS` (`{ lo, hi, centre }`, inside a
   two-ledger-line cap, `CAPS`: treble G3–D6, bass B1–F4; vibes G3–D6 around B♭4, trumpet G3–G5, tuba C2–B♭3…), or,
   for a part without one (`CONCERT`), its clef's default (`RANGES`: treble C4–A5 around A4, bass E2–C4 around C♯3).
@@ -349,11 +349,14 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - **Placing a run (P):** a start, or a restart after a rest, tries each octave of the line's degree in range: the
     run is built from it, alone, up to the next rest, and the octave whose run averages nearest the centre is kept (a
     tie, compared exactly: the higher). So a line doesn't start at the centre and sink to the floor.
-  - **Meeting (D1–D3):** when the two lines land on one pitch, at the next new chord the line that was above before
-    they met takes the nearest guide tone strictly above it, the other the nearest strictly below (together since a
-    restart: line B goes up). With nothing in range on its side, a line takes the nearest on the other side that isn't
-    its partner's (with none, they coincide again). Apart, each moves on its own; a held chord holds both, and the
-    same chord in a new block counts as new.
+  - **Meeting (G1–G3, D3), the gentle diverge:** when the two lines land on one pitch, they part at the next new
+    chord, and neither moves more than a tritone (6 semitones) because of the other. If the pitch is a guide tone of
+    that chord (G1), the line that was below before they met keeps it (struck again) and the other goes to the chord's
+    other guide tone: its nearest octave above if within a tritone, else its nearest either way if within a tritone,
+    else (G3) it stays with the keeper. If not (G2), the line that was above takes the nearest guide tone strictly
+    above, the other the nearest strictly below, each only within a tritone; a line with none moves as it would alone,
+    and the lines may coincide again. Together since a restart, line A counts as the one below. Apart, each moves on
+    its own; a held chord holds both, and the same chord in a new block counts as new.
   - **Holds:** a chord whose 3rd and 7th are spelled as the previous chord's, in the same block, holds the line:
     the same pitch, tied, labelled again. The same pitches in swapped roles (Dm7 → G7sus4) strike again. A hold never crosses a block (section) boundary or the start of a 2nd
     ending; there the chord strikes again, untied.
@@ -361,7 +364,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - **Form:** repeats and endings are voiced in written order, a 2nd ending from the 1st ending's last chord; the
     line doesn't loop, and nothing past a rest changes it.
 - **Check:** `voiceLead` (the Viterbi pair search) is kept only as a comparison. `npm run guide-lines` measures the
-  library (common tones, steps, leaps, where the lines share a pitch, each line's height, every move over a tritone) for each line; `npm run guide-lines -- --compare`
+  library (common tones, steps, leaps, where the lines share a pitch, how they part after meeting, each line's height, every move over a tritone) for each line; `npm run guide-lines -- --compare`
   sets each line against the pair search; `-- --check` confirms the library's labels.
 - **Model:** `guideVoices` voices the drawn rows before `buildChanges` splits them into lines, so 2 or 4 bars a line
   give the same pitches and a folded copy is voiced once. `ChangesBar.voice` holds each bar's one voice of
@@ -833,8 +836,11 @@ Pages are static, and the only server code is the contact function, so the attac
    [the diverge note](superpowers/specs/2026-10-11-guide-lines-diverge-note.md)). Triads use 3 + root,
    because the root resolves by step from a V7 where the 5th would leap. The lines are local rules, not a global
    search: each steps to the nearest guide tone and a repeated chord holds; a run's starting octave is placed so the
-   run averages nearest the centre, and lines that meet go apart, one up and one down (the user chose lower
-   coincidence over fewer leaps). The older
+   run averages nearest the centre, and lines that meet part gently: one keeps the shared note if the next chord has
+   it, or they go one up and one down, neither more than a tritone because of the other (strict diverge, always one
+   up and one down, had the fewest meetings but far more leaps over a tritone than the independent lines of #102:
+   about 6× on concert treble, 4–8× across the parts measured; gentle keeps meetings near strict's and cuts those
+   leaps below #102's on five of six parts, trombone the exception). The older
    per-degree toggles and the Viterbi pair search (`voiceLead`, now only a comparison) are superseded.
 8. **One spelling at a time** in the preview (From X or From root).
 9. **Transpose, interval labels and guide tones** were built on the ported engine, so they inherit its spelling
