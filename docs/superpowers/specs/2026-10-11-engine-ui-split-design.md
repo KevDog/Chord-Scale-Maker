@@ -79,7 +79,7 @@ Everything below was read from the code at `0814306` (main).
     "the engine can't be imported here (its JSON import needs a bundler)".
 - **Engine tests read repo data** by two kinds of path: `new URL('../../../charts/', import.meta.url)` and
   cwd-relative `readFileSync('../charts/…')` (the cwd is `web/`). With the two JSON imports in `qualities.ts` and
-  `levels.ts`, that is 33 lines in 19 files, listed in the plan's Task 3.
+  `levels.ts`, that is 33 lines in 19 files, fixed in the plan's Task 3.
 
 ### E2. The engine's public API, as the app uses it
 
@@ -500,9 +500,10 @@ ruleset; split the docs.
 - `git diff --stat -M main` shows `fixtures/golden.json` and `fixtures/analysis.json` as 100% renames.
 - `npm test -w engine`, `npm run typecheck -w engine` and `npm run lint -w engine` pass from `engine/` with no Nuxt
   involvement (`grep -r nuxt engine/src engine/scripts` finds nothing).
-- No file in `web/` imports the engine except as `@chord-scale-maker/engine`; `grep -rn "\.\./engine\|~~/engine" web`
+- No file in `web/` imports the engine except as `@chord-scale-maker/engine`; `grep -rnE "~~/engine|from '(\.\./)+engine" web/app web/test web/e2e`
   finds nothing.
-- `make test`, `make lint`, `make e2e` pass; the test counts match the baseline (one more for the API snapshot).
+- `make test`, `make lint`, `make e2e` pass; the test counts match the baseline plus two (the library
+  test and the API snapshot).
 - `npm run fixture-scales -w engine -- main` prints "no scale changed".
 - `npm run check:headers -w web` passes; `npm audit --omit=dev --audit-level=high` passes at the root.
 - CI's `engine` and `e2e` pass on the PR, and the Vercel preview serves the library (242 charts), the editor and the
@@ -519,7 +520,7 @@ ruleset; split the docs.
 | Dev tool versions drift between the two manifests (D13). | Dependabot's grouped minor/patch PR updates both manifests; a version mismatch shows as a second copy in `npm ls`. |
 | `fixture-scales` compares the wrong paths across the move. | The fallback path above; the plan runs it against main before merge. |
 | The engine's own ESLint config differs from `withNuxt` and reports new findings. | Run it in Task 3; fix findings in the engine or add the rule's off-switch with a comment, never weaken the shared rules for the app. |
-| Hidden cwd assumptions in engine tests (`readFileSync('../charts/…')`). | The plan lists all 33 path lines; the tests fail loudly if one is missed. |
+| Hidden cwd assumptions in engine tests (`readFileSync('../charts/…')`). | The plan rewrites all 33 path lines and greps for leftovers; the tests fail loudly if one is missed. |
 
 ## Out of scope
 
