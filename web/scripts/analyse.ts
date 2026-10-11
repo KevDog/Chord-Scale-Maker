@@ -7,11 +7,11 @@
  *   --write    fill blank scale cells          --force   rewrite every cell the rules reach (not `# keep:` rows)
  *   --save     write the analysis into the chart as comments (a reason per row, `# area:` lines, a header)
  *   --quiet    only the summary
- *   --ambiguous   list what a function or an @key could settle, and problems with the ones written
+ *   --ambiguous   list what a function, an @key or a context: could settle, and problems with the ones written
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
-import { ambiguities, analyse, applyAnalysis, type Analysis } from '../engine/analysis'
+import { ambiguities, analyse, applyAnalysis, type Analysis, contextLine } from '../engine/analysis'
 import { isSyncCopy, parseChart, sameScale, serializeChart } from '../engine'
 
 const args = process.argv.slice(2)
@@ -34,9 +34,9 @@ const ambiguous = flag('--ambiguous')
 const date = new Date().toISOString().slice(0, 10)
 
 function report(name: string, a: Analysis): string[] {
-  const head = `${name}: ${a.key?.name ?? 'no key'} (${a.keyFrom}${a.context === 'functional' ? '' : `, ${a.context}`})`
+  const head = `${name}: ${a.key?.name ?? 'no key'} (${a.keyFrom})`
   const areas = a.areas.length > 1 ? [`  areas: ${a.areas.map((x) => `${x.key.name} ${x.from}–${x.to}`).join(' · ')}`] : []
-  return [head, ...areas]
+  return [head, `  ${contextLine(a)}`, ...areas]
 }
 
 let agree = 0

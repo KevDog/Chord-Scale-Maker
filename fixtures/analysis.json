@@ -191,7 +191,7 @@
   ]
  },
  "all_blues": {
-  "key": "G major (blues, blues)",
+  "key": "G major (key:, blues)",
   "areas": [
    "G major 1–11"
   ],
@@ -635,7 +635,7 @@
   ]
  },
  "bags_groove": {
-  "key": "F major (blues, blues)",
+  "key": "F major (key:, blues)",
   "areas": [
    "F major 1–12"
   ],
@@ -764,7 +764,7 @@
   ]
  },
  "bb_blues": {
-  "key": "Bb major (blues, blues)",
+  "key": "Bb major (key:, blues)",
   "areas": [
    "Bb major 1–12"
   ],
@@ -784,7 +784,7 @@
   ]
  },
  "bb_jazz_blues": {
-  "key": "Bb major (blues, blues)",
+  "key": "Bb major (key:, blues)",
   "areas": [
    "Bb major 1–12"
   ],
@@ -937,7 +937,7 @@
   ]
  },
  "bessies_blues": {
-  "key": "Eb major (blues, blues)",
+  "key": "Eb major (key:, blues)",
   "areas": [
    "Eb major 1–12"
   ],
@@ -954,7 +954,7 @@
   ]
  },
  "billies_bounce": {
-  "key": "F major (blues, blues)",
+  "key": "F major (key:, blues)",
   "areas": [
    "F major 1–12"
   ],
@@ -1011,7 +1011,7 @@
   ]
  },
  "blue_monk": {
-  "key": "Bb major (blues, blues)",
+  "key": "Bb major (key:, blues)",
   "areas": [
    "Bb major 1–12"
   ],
@@ -1059,7 +1059,7 @@
   ]
  },
  "blue_trane": {
-  "key": "Eb major (blues, blues)",
+  "key": "Eb major (key:, blues)",
   "areas": [
    "Eb major 1–11"
   ],
@@ -1072,7 +1072,7 @@
   ]
  },
  "blues_for_jan": {
-  "key": "F major (blues, blues)",
+  "key": "F major (key:, blues)",
   "areas": [
    "F major 1–11"
   ],
@@ -1088,7 +1088,7 @@
   ]
  },
  "blues_for_lj": {
-  "key": "Bb major (blues, blues)",
+  "key": "Bb major (key:, blues)",
   "areas": [
    "Bb major 1–12"
   ],
@@ -1108,7 +1108,7 @@
   ]
  },
  "blues_for_willie": {
-  "key": "Bb major (blues, blues)",
+  "key": "Bb major (key:, blues)",
   "areas": [
    "Bb major 1–12"
   ],
@@ -1127,7 +1127,7 @@
   ]
  },
  "blues_in_a_closet": {
-  "key": "F major (blues, blues)",
+  "key": "F major (key:, blues)",
   "areas": [
    "F major 1–12"
   ],
@@ -1155,7 +1155,7 @@
   ]
  },
  "blues_walk": {
-  "key": "Bb major (blues, blues)",
+  "key": "Bb major (key:, blues)",
   "areas": [
    "Bb major 1–11"
   ],
@@ -1377,7 +1377,7 @@
   ]
  },
  "centerpiece": {
-  "key": "Bb major (blues, blues)",
+  "key": "Bb major (key:, blues)",
   "areas": [
    "Bb major 1–12"
   ],
@@ -2283,7 +2283,7 @@
   ]
  },
  "f_blues": {
-  "key": "F major (blues, blues)",
+  "key": "F major (key:, blues)",
   "areas": [
    "F major 1–12"
   ],
@@ -2303,7 +2303,7 @@
   ]
  },
  "f_jazz_blues": {
-  "key": "F major (blues, blues)",
+  "key": "F major (key:, blues)",
   "areas": [
    "F major 1–12"
   ],
@@ -2415,7 +2415,7 @@
   ]
  },
  "flugelin_the_blues": {
-  "key": "Bb major (blues, blues)",
+  "key": "Bb major (key:, blues)",
   "areas": [
    "Bb major 1–12"
   ],
@@ -4077,7 +4077,7 @@
   ]
  },
  "just_around_the_corner": {
-  "key": "Bb major (blues, blues)",
+  "key": "Bb major (key:, blues)",
   "areas": [
    "Bb major 1–12"
   ],
@@ -4326,35 +4326,35 @@
   ]
  },
  "locomotion": {
-  "key": "Bb major (key:, modal)",
+  "key": "Bb major (key:, blues)",
   "areas": [
    "Bb major 1–43"
   ],
   "rows": [
-   "1 Bb7 [I7] → Bb Mixolydian (D7) modal dominant — modal: its own mode",
-   "5 Eb7 [IV7] → Eb Mixolydian (D7) modal dominant — modal: its own mode",
-   "7 Bb7 [I7] → Bb Mixolydian (D7) modal dominant — modal: its own mode",
-   "9 Cm7 [ii7] → C Dorian (m6) modal minor: Dorian",
-   "10 F7 [V7] → F Mixolydian (D7) modal dominant — modal: its own mode",
-   "11 Bb7 [I7] → Bb Mixolydian (D7) modal dominant — modal: its own mode",
-   "12 Cm7 [ii7] → C Dorian (m6) modal minor: Dorian",
-   "12 F7 [V7] → F Mixolydian (D7) modal dominant — modal: its own mode",
-   "13 Bb7 [I7] → Bb Mixolydian (D7) modal dominant — modal: its own mode",
-   "17 Eb7 [IV7] → Eb Mixolydian (D7) modal dominant — modal: its own mode",
-   "19 Bb7 [I7] → Bb Mixolydian (D7) modal dominant — modal: its own mode",
-   "21 Cm7 [ii7] → C Dorian (m6) modal minor: Dorian",
-   "22 F7 [V7] → F Mixolydian (D7) modal dominant — modal: its own mode",
-   "23 Bb7 [I7] → Bb Mixolydian (D7) modal dominant — modal: its own mode",
-   "25 Ab7 [♭VII7] → Ab Mixolydian (D7) modal dominant — modal: its own mode",
-   "27 G7 [VI7] → G Mixolydian (D7) modal dominant — modal: its own mode",
-   "29 Gb7 [♭VI7] → Gb Mixolydian (D7) modal dominant — modal: its own mode",
-   "31 F7 [V7] → F Mixolydian (D7) modal dominant — modal: its own mode",
-   "33 Bb7 [I7] → Bb Mixolydian (D7) modal dominant — modal: its own mode",
-   "37 Eb7 [IV7] → Eb Mixolydian (D7) modal dominant — modal: its own mode",
-   "39 Bb7 [I7] → Bb Mixolydian (D7) modal dominant — modal: its own mode",
-   "41 Cm7 [ii7] → C Dorian (m6) modal minor: Dorian",
-   "42 F7 [V7] → F Mixolydian (D7) modal dominant — modal: its own mode",
-   "43 Bb7 [I7] → Bb Mixolydian (D7) modal dominant — modal: its own mode"
+   "1 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "5 Eb7 [IV7] → Eb Mixolydian (D5) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "7 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "9 Cm7 [ii7] → C Dorian (m4) ii of F7: Dorian",
+   "10 F7 [V7] → F Mixolydian (D3) extended dominant (V7 of Bb7) — extended dominant: V7 of Bb7",
+   "11 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "12 Cm7 [ii7] → C Dorian (m4) ii of F7: Dorian",
+   "12 F7 [V7] → F Mixolydian (D3) extended dominant (V7 of Bb7) — extended dominant: V7 of Bb7",
+   "13 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "17 Eb7 [IV7] → Eb Mixolydian (D5) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "19 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "21 Cm7 [ii7] → C Dorian (m4) ii of F7: Dorian",
+   "22 F7 [V7] → F Mixolydian (D3) extended dominant (V7 of Bb7) — extended dominant: V7 of Bb7",
+   "23 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "25 Ab7 [subV7/VI] → Ab Lydian Dominant (D2) subV7 of G7 — tritone substitute: resolves down a half step to G7",
+   "27 G7 [subV7/♭VI] → G Lydian Dominant (D2) subV7 of Gb7 — tritone substitute: resolves down a half step to Gb7",
+   "29 Gb7 [subV7/V] → Gb Lydian Dominant (D2) subV7 of F7 — tritone substitute: resolves down a half step to F7",
+   "31 F7 [V7] → F Mixolydian (D3) extended dominant (V7 of Bb7) — extended dominant: V7 of Bb7",
+   "33 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "37 Eb7 [IV7] → Eb Mixolydian (D5) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "39 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "41 Cm7 [ii7] → C Dorian (m4) ii of F7: Dorian",
+   "42 F7 [V7] → F Mixolydian (D3) extended dominant (V7 of Bb7) — extended dominant: V7 of Bb7",
+   "43 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions"
   ]
  },
  "long_ago_and_far_away": {
@@ -5147,7 +5147,7 @@
   ]
  },
  "mumbles": {
-  "key": "Eb major (blues, blues)",
+  "key": "Eb major (key:, blues)",
   "areas": [
    "Eb major 1–11"
   ],
@@ -6760,7 +6760,7 @@
   ]
  },
  "sandu": {
-  "key": "Eb major (blues, blues)",
+  "key": "Eb major (key:, blues)",
   "areas": [
    "Eb major 1–12"
   ],
@@ -7137,7 +7137,7 @@
   ]
  },
  "shifting_down": {
-  "key": "Bb major (blues, blues)",
+  "key": "Bb major (key:, blues)",
   "areas": [
    "Bb major 1–11"
   ],
@@ -7476,7 +7476,7 @@
   ]
  },
  "some_other_blues": {
-  "key": "F major (blues, blues)",
+  "key": "F major (key:, blues)",
   "areas": [
    "F major 1–12"
   ],
@@ -7949,7 +7949,7 @@
   ]
  },
  "squirrel": {
-  "key": "F major (blues, blues)",
+  "key": "F major (key:, blues)",
   "areas": [
    "F major 1–11"
   ],
@@ -8561,47 +8561,47 @@
   ]
  },
  "tee_pee_time": {
-  "key": "Bb major (key:, functional)",
+  "key": "Bb major (key:, blues)",
   "areas": [
    "Bb major 1–44"
   ],
   "rows": [
-   "1 Bb7 [I7] → Bb Mixolydian (D3) extended dominant (V7 of Eb7) — extended dominant: V7 of Eb7",
-   "2 Eb7 [IV7] → Eb Lydian Dominant (D5) IV7 in Bb, not resolving: the #11 is in the key",
-   "3 Bb7 [I7] → Bb Mixolydian (D3) extended dominant (V7 of Eb7) — extended dominant: V7 of Eb7",
-   "5 Eb7 [IV7] → Eb Lydian Dominant (D5) IV7 in Bb, not resolving: the #11 is in the key",
-   "7 Bb7 [I7] → Bb Mixolydian (D5) I7 in Bb, not resolving: natural tensions",
+   "1 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "2 Eb7 [IV7] → Eb Mixolydian (D5) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "3 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "5 Eb7 [IV7] → Eb Mixolydian (D5) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "7 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
    "9 Cm7 [ii7] → C Dorian (m4) ii of F7: Dorian",
    "10 F7 [V7] → F Mixolydian (D3) extended dominant (V7 of Bb7) — extended dominant: V7 of Bb7",
-   "11 Bb7 [I7] → Bb Mixolydian (D5) I7 in Bb, not resolving: natural tensions",
+   "11 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
    "12 Cm7 [ii7] → C Dorian (m4) ii of F7: Dorian",
    "12 F7 [V7] → F Mixolydian (D3) extended dominant (V7 of Bb7) — extended dominant: V7 of Bb7",
-   "13 Bb7 [I7] → Bb Mixolydian (D3) extended dominant (V7 of Eb7) — extended dominant: V7 of Eb7",
-   "14 Eb7 [IV7] → Eb Lydian Dominant (D5) IV7 in Bb, not resolving: the #11 is in the key",
-   "15 Bb7 [I7] → Bb Mixolydian (D3) extended dominant (V7 of Eb7) — extended dominant: V7 of Eb7",
-   "17 Eb7 [IV7] → Eb Lydian Dominant (D5) IV7 in Bb, not resolving: the #11 is in the key",
-   "19 Bb7 [I7] → Bb Mixolydian (D5) I7 in Bb, not resolving: natural tensions",
+   "13 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "14 Eb7 [IV7] → Eb Mixolydian (D5) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "15 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "17 Eb7 [IV7] → Eb Mixolydian (D5) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "19 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
    "21 Cm7 [ii7] → C Dorian (m4) ii of F7: Dorian",
    "22 F7 [V7] → F Mixolydian (D3) extended dominant (V7 of Bb7) — extended dominant: V7 of Bb7",
-   "23 Bb7 [I7] → Bb Mixolydian (D5) I7 in Bb, not resolving: natural tensions",
+   "23 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
    "25 D7 [→] → D Mixolydian (D3) extended dominant: each one falls a fifth into the next: natural tensions",
    "27 G7 [→] → G Mixolydian (D3) extended dominant: each one falls a fifth into the next: natural tensions",
    "29 C7 [V7/V] → C Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
    "31 F7 [V7] → F Mixolydian (D3) extended dominant (V7 of Bb7) — extended dominant: V7 of Bb7",
-   "33 Bb7 [I7] → Bb Mixolydian (D3) extended dominant (V7 of Eb7) — extended dominant: V7 of Eb7",
-   "34 Eb7 [IV7] → Eb Lydian Dominant (D5) IV7 in Bb, not resolving: the #11 is in the key",
-   "35 Bb7 [I7] → Bb Mixolydian (D3) extended dominant (V7 of Eb7) — extended dominant: V7 of Eb7",
-   "37 Eb7 [IV7] → Eb Lydian Dominant (D5) IV7 in Bb, not resolving: the #11 is in the key",
-   "39 Bb7 [I7] → Bb Mixolydian (D5) I7 in Bb, not resolving: natural tensions",
+   "33 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "34 Eb7 [IV7] → Eb Mixolydian (D5) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "35 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "37 Eb7 [IV7] → Eb Mixolydian (D5) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "39 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
    "41 Cm7 [ii7] → C Dorian (m4) ii of F7: Dorian",
    "42 F7 [V7] → F Mixolydian (D3) extended dominant (V7 of Bb7) — extended dominant: V7 of Bb7",
-   "43 Bb7 [I7] → Bb Mixolydian (D5) I7 in Bb, not resolving: natural tensions",
+   "43 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
    "44 Cm7 [ii7] → C Dorian (m4) ii of F7: Dorian",
    "44 F7 [V7] → F Mixolydian (D3) extended dominant (V7 of Bb7) — extended dominant: V7 of Bb7"
   ]
  },
  "tenor_madness": {
-  "key": "Bb major (blues, blues)",
+  "key": "Bb major (key:, blues)",
   "areas": [
    "Bb major 1–12"
   ],
@@ -9099,7 +9099,7 @@
   ]
  },
  "things_aint_what_they_used_to_be": {
-  "key": "Db major (blues, blues)",
+  "key": "Db major (key:, blues)",
   "areas": [
    "Db major 1–12"
   ],
@@ -9441,32 +9441,29 @@
   ]
  },
  "unit_seven": {
-  "key": "C major (key:, functional)",
+  "key": "C major (key:, blues)",
   "areas": [
-   "C major 1–7",
-   "Ab major 8–24",
-   "C major 25–39",
-   "Ab major 40–44"
+   "C major 1–44"
   ],
   "rows": [
-   "1 C7 [I7] → C Mixolydian (D3) extended dominant (V7 of F7) — extended dominant: V7 of F7",
-   "5 F7 [IV7] → F Lydian Dominant (D5) IV7 in C, not resolving: the #11 is in the key",
-   "7 C7 [I7] → C Mixolydian (D5) I7 in C, not resolving: natural tensions",
-   "8 A7alt [♭II7] → A Altered (D1) altered dominant — from the symbol: altered",
-   "9 AbMaj7 [Imaj7] → Ab Ionian (M3) I in Ab — tonic: the 4th is in the key",
-   "10 G7alt [VII7] → G Altered (D1) altered dominant — from the symbol: altered",
-   "11 C7 [III7] → C Phrygian Dominant (D5) III7 in Ab, not resolving: b9 and b13 are in the key",
-   "11 A7 [♭II7] → A Mixolydian (D3) extended dominant (V7 of D7) — extended dominant: V7 of D7",
-   "12 D7 [♯IV7] → D Mixolydian (D3) extended dominant (V7 of G7alt) — extended dominant: V7 of G7alt",
-   "12 G7alt [VII7] → G Altered (D1) altered dominant — from the symbol: altered",
-   "13 C7 [III7] → C Mixolydian (D3) extended dominant (V7 of F7) — extended dominant: V7 of F7",
-   "17 F7 [VI7] → F Mixolydian b6 (D5) VI7 in Ab, not resolving: the b13 is in the key",
-   "19 C7 [III7] → C Phrygian Dominant (D5) III7 in Ab, not resolving: b9 and b13 are in the key",
-   "20 A7alt [♭II7] → A Altered (D1) altered dominant — from the symbol: altered",
-   "21 AbMaj7 [Imaj7] → Ab Ionian (M3) I in Ab — tonic: the 4th is in the key",
-   "22 G7alt [VII7] → G Altered (D1) altered dominant — from the symbol: altered",
-   "23 C7 [III7] → C Phrygian Dominant (D5) III7 in Ab, not resolving: b9 and b13 are in the key",
-   "24 A7alt [V7/♯iv] → A Altered (D1) altered dominant — from the symbol: altered",
+   "1 C7 [I7] → C Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "5 F7 [IV7] → F Mixolydian (D5) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "7 C7 [I7] → C Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "8 A7alt [VI7] → A Altered (D1) altered dominant — from the symbol: altered",
+   "9 AbMaj7 [♭VImaj7] → Ab Lydian (M4) ♭VImaj7, borrowed (modal interchange) — ♭VImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)",
+   "10 G7alt [V7] → G Altered (D1) altered dominant — from the symbol: altered",
+   "11 C7 [I7] → C Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "11 A7 [→] → A Mixolydian (D3) extended dominant: each one falls a fifth into the next: natural tensions",
+   "12 D7 [V7/V] → D Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "12 G7alt [V7] → G Altered (D1) altered dominant — from the symbol: altered",
+   "13 C7 [I7] → C Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "17 F7 [IV7] → F Mixolydian (D5) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "19 C7 [I7] → C Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "20 A7alt [VI7] → A Altered (D1) altered dominant — from the symbol: altered",
+   "21 AbMaj7 [♭VImaj7] → Ab Lydian (M4) ♭VImaj7, borrowed (modal interchange) — ♭VImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)",
+   "22 G7alt [V7] → G Altered (D1) altered dominant — from the symbol: altered",
+   "23 C7 [I7] → C Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "24 A7alt [V7/ii] → A Altered (D1) altered dominant — from the symbol: altered",
    "25 Dm7 [ii7] → D Dorian (m4) ii of G7: Dorian",
    "26 G7 [V7] → G Mixolydian (D4) V7/I in C (the I never arrives) — V7/I in C: natural tensions",
    "27 Em7 [iii7] → E Phrygian (m9) ii of the ii–V to D minor; also iii of C — iii: Phrygian, the key's own notes (the ♭2 is a passing note)",
@@ -9477,15 +9474,15 @@
    "31 A7 [V7/ii] → A Mixolydian b6 (D4) V7/ii in C: the b13 is in the key",
    "32 Dm7 [ii7] → D Dorian (m4) ii of G7: Dorian",
    "32 G7 [V7] → G Mixolydian (D3) extended dominant (V7 of C7) — extended dominant: V7 of C7",
-   "33 C7 [I7] → C Mixolydian (D3) extended dominant (V7 of F7) — extended dominant: V7 of F7",
-   "37 F7 [IV7] → F Lydian Dominant (D5) IV7 in C, not resolving: the #11 is in the key",
-   "39 C7 [I7] → C Mixolydian (D5) I7 in C, not resolving: natural tensions",
-   "40 A7alt [♭II7] → A Altered (D1) altered dominant — from the symbol: altered",
-   "41 AbMaj7 [Imaj7] → Ab Ionian (M3) I in Ab — tonic: the 4th is in the key",
-   "42 G7alt [VII7] → G Altered (D1) altered dominant — from the symbol: altered",
-   "43 C7 [III7] → C Phrygian Dominant (D5) III7 in Ab, not resolving: b9 and b13 are in the key",
-   "43 A7alt [♭II7] → A Altered (D1) altered dominant — from the symbol: altered",
-   "44 D7 [♯IV7] → D Lydian Dominant (D6) chromatic dominant — a chromatic dominant with nowhere to go: Lydian Dominant, its own key"
+   "33 C7 [I7] → C Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "37 F7 [IV7] → F Mixolydian (D5) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "39 C7 [I7] → C Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "40 A7alt [VI7] → A Altered (D1) altered dominant — from the symbol: altered",
+   "41 AbMaj7 [♭VImaj7] → Ab Lydian (M4) ♭VImaj7, borrowed (modal interchange) — ♭VImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)",
+   "42 G7alt [V7] → G Altered (D1) altered dominant — from the symbol: altered",
+   "43 C7 [I7] → C Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "43 A7alt [VI7] → A Altered (D1) altered dominant — from the symbol: altered",
+   "44 D7 [II7] → D Mixolydian (D5) II7 in C, not resolving: natural tensions"
   ]
  },
  "up_jumped_spring": {

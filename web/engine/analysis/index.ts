@@ -1,8 +1,8 @@
-import { type ChartDoc, type ChartLine, expandRowLines, type LinedRow } from '../chart'
+import { type ChartContext, type ChartDoc, type ChartLine, expandRowLines, formPart, type LinedRow, parseContext } from '../chart'
 import { LIMITS } from '../limits'
 import { pcOf, rootName, shiftBy, type Spelled } from '../pitch'
 import { sameScale } from '../scales'
-import { bluesKey, findCadences, isModal, type Key, keyText, localKeys, parseKey, sameKey, scoreKey } from './keys'
+import { bluesKey, type Detection, detectContext, findCadences, type Key, keyText, localKeys, makeKey, parseKey, sameKey, scoreKey } from './keys'
 import { type Context, decide, type Decision } from './rules'
 import { numeral } from './numerals'
 import { buildStream, type Entry, type Family } from './stream'
@@ -17,7 +17,8 @@ import { fitError, functionCandidates, impliedTarget, parseFunction, type Stated
 export { parseKey, type Key } from './keys'
 export { dominantScale, dominantScaleTable, pins, ruleParts, type RuleInfo, RULES, type Slots, TIERS } from './rules'
 export { FUNCTION_ERRORS, parseFunction, type Spelling, spellings, SUFFIXES } from './functions'
-export { ambiguities } from './ambiguity'
+export { ambiguities, contextLine } from './ambiguity'
+export type { Detection } from './keys'
 
 /** bumped when a rule changes what it gives; saved in each chart's `# analysis:` line */
 export { CATALOGUE_KEYS, FUNCTION_GROUPS, type FunctionGroup, type FunctionRow, functionsTable } from './catalogue'
@@ -36,7 +37,10 @@ export type Problem = Readonly<{ line: number; message: string }>
 export type Analysis = Readonly<{
   key: Key | null
   keyFrom: 'key:' | 'blues' | 'scored' | 'none'
-  context: 'functional' | 'modal' | 'blues'
+  context: ChartContext
+  /** the chart's context: line, or the detection (§5.4); detection: what it read, whichever decided */
+  contextSource: 'stated' | 'detected'
+  detection: Detection
   areas: readonly Area[]
   rows: readonly RowAnalysis[]
   problems: readonly Problem[]
@@ -132,28 +136,68 @@ type Prepared = Readonly<{
   blues: Key | null
   modal: boolean
   keyFrom: Analysis['keyFrom']
+  context: ChartContext
+  contextSource: Analysis['contextSource']
+  detection: Detection
   problems: readonly Problem[]
 }>
+type Unkeyed = Readonly<{ global: null; keyFrom: Analysis['keyFrom']; context: ChartContext; contextSource: Analysis['contextSource']; detection: Detection; problems: readonly Problem[] }>
 
-/** everything the rules read before they decide: the stream, its key areas, the stated functions; global null without a key */
-function prepare(doc: ChartDoc): Prepared | Readonly<{ global: null; keyFrom: Analysis['keyFrom'] }> {
+/** the lengths in bars of the form's sections, in order (a section is a run of rows with one label) */
+function sectionLengths(rows: readonly LinedRow[], formBars: number): number[] {
+  const form = rows.filter((r) => formPart(r.section) === 'form' && /^\d+$/.test(r.bar))
+  const starts = form.flatMap((r, i) => (i === 0 || form[i - 1]?.section !== r.section ? [Number(r.bar)] : []))
+  const end = (starts[0] ?? 0) + formBars
+  return starts.map((b, i) => (starts[i + 1] ?? end) - b)
+}
+
+/**
+ * the header lines the analysis reads beside key: (docs/superpowers/specs/2026-10-10-chart-context-design.md §1): the
+ * stated context, if it is one; problems for one that isn't, for minor: (reserved) and for @context (not yet built)
+ */
+function statedContext(doc: ChartDoc, problems: Problem[]): ChartContext | null {
+  let context: ChartContext | null = null
+  doc.lines.forEach((l, line) => {
+    if (l.kind === 'meta' && l.key === 'context') {
+      context = parseContext(l.value)
+      if (!context) addProblem(problems, { line, message: `context: ${l.value} is not functional, modal or blues: the context is detected` })
+    }
+    if (l.kind === 'meta' && l.key === 'minor') addProblem(problems, { line, message: 'minor: is reserved, and ignored' })
+    if (l.kind === 'context') addProblem(problems, { line, message: `@context ${l.section} ${l.bar} ${l.context}: not yet supported: using the chart's context` })
+  })
+  return context
+}
+
+/**
+ * everything the rules read before they decide: the context, the stream, its key areas, the stated functions; global
+ * null without a key. A stated context beats the detection, and a stated key the blues key (§5.4, principle 1).
+ */
+function prepare(doc: ChartDoc): Prepared | Unkeyed {
+  const problems: Problem[] = []
   const rows = expandRowLines(doc).value
   const bars = formBars(doc)
   const stream = buildStream(rows, bars)
   const cadences = findCadences(stream)
   const form = stream.filter((e) => e.part === 'form')
   const span = form.length ? Math.round((form.at(-1)?.start ?? 0) + (form.at(-1)?.bars ?? 0) - (form[0]?.start ?? 0)) : 0
-  const blues = bluesKey(form, bars ?? span)
+  const sections = sectionLengths(rows, bars ?? span)
+  const detection = detectContext(stream, cadences, form, bars ?? span, sections)
+  const statedCtx = statedContext(doc, problems)
+  const context = statedCtx ?? detection.context
+  const contextSource = statedCtx ? 'stated' : 'detected'
   const stated = parseKey(meta(doc, 'key'))
-  const global = blues ?? stated ?? scoreKey(stream, cadences)
-  const keyFrom = blues ? 'blues' : stated ? 'key:' : global ? 'scored' : 'none'
-  if (!global) return { global: null, keyFrom }
-  const modal = !blues && isModal(stream, cadences)
+  // a blues' I: key:, else the detected blues key, else (a stated blues the detection missed) the root in bar 1
+  const bar1 = form.find((e) => e.root)
+  const bluesI = context !== 'blues' ? null : (bluesKey(form, bars ?? span, sections) ?? (bar1?.root ? makeKey(bar1.root, bar1.family === 'minor') : null))
+  const global = stated ?? bluesI ?? scoreKey(stream, cadences)
+  const keyFrom = stated ? 'key:' : bluesI ? 'blues' : global ? 'scored' : 'none'
+  if (!global) return { global: null, keyFrom, context, contextSource, detection, problems }
+  const blues = context === 'blues' ? global : null
+  const modal = context === 'modal'
   const found = modal || blues ? stream.map(() => global) : localKeys(stream, cadences, global)
-  const problems: Problem[] = []
   const areas = statedAreas(doc, rows, stream, found, problems)
   const fns = statedFunctions(stream, rows, areas.keys, global, problems)
-  return { rows, stream, areaKeys: areas.keys, areaStated: areas.stated, stated: fns, global, blues, modal, keyFrom, problems }
+  return { rows, stream, areaKeys: areas.keys, areaStated: areas.stated, stated: fns, global, blues, modal, keyFrom, context, contextSource, detection, problems }
 }
 
 /** the rules' context under these statements: each stated row's target wired in after it */
@@ -164,7 +208,7 @@ function contextFor(p: Prepared, stated: readonly (Stated | undefined)[]): Conte
 
 export function analyse(doc: ChartDoc): Analysis {
   const p = prepare(doc)
-  if (p.global === null) return { key: null, keyFrom: p.keyFrom, context: 'functional', areas: [], rows: [], problems: [] }
+  if (p.global === null) return { key: null, keyFrom: p.keyFrom, context: p.context, contextSource: p.contextSource, detection: p.detection, areas: [], rows: [], problems: p.problems }
   const ctx = contextFor(p, p.stated)
   const out: RowAnalysis[] = []
   const areas: Area[] = []
@@ -186,7 +230,7 @@ export function analyse(doc: ChartDoc): Analysis {
       if (area) areas[areas.length - 1] = { ...area, to: row.bar }
     }
   })
-  return { key: p.global, keyFrom: p.keyFrom, context: p.blues ? 'blues' : p.modal ? 'modal' : 'functional', areas, rows: out, problems: p.problems }
+  return { key: p.global, keyFrom: p.keyFrom, context: p.context, contextSource: p.contextSource, detection: p.detection, areas, rows: out, problems: p.problems }
 }
 
 /** one option of the grid's Function dropdown: value '' is Auto (the analyser's own reading, labelled with
