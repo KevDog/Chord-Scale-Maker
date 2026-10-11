@@ -16,7 +16,7 @@
     </div>
     <div ref="el" class="text-zinc-900 dark:text-zinc-100 print:text-black" />
     <!-- with a guide tone line on: each chord's label (3, 7; 4 on a sus chord, 1 on a triad, 6 on a 6 chord) -->
-    <div v-if="guides" data-slot="guides" aria-hidden="true" class="relative h-4 print:h-3">
+    <div v-if="hasGuideLine" data-slot="guides" aria-hidden="true" class="relative h-4 print:h-3">
       <span
         v-for="m in marks"
         :key="`g${m.key}`"
@@ -91,7 +91,7 @@ const repeats = computed(() =>
   props.line.bars.flatMap((bar, b) => (bar.repeatEnd > 2 ? [{ key: b, x: Math.min(1, (xs.value[b]?.at(-1) ?? 1) + 0.03), times: bar.repeatEnd }] : [])),
 )
 /** whether the line draws a guide tone line (else slashes), and so its label row */
-const guides = computed(() => props.line.bars.some((b) => b.voice.length > 0))
+const hasGuideLine = computed(() => props.line.bars.some((b) => b.voice.length > 0))
 
 async function draw(): Promise<void> {
   if (!el.value) return

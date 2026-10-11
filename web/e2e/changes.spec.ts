@@ -151,10 +151,17 @@ test('choosing Off, From 3rd, From 7th and Off again redraws the line each time'
   await expect(line).not.toHaveAttribute('aria-label', /guide tones/)
   await showGuides(page, 'From 3rd')
   await expect(labelRow(line)).toHaveText(/^\s*3\s*7\s*3\s*$/)
+  await expect.poll(async () => (await drawn(line)).heads.length).toBeGreaterThan(0)
+  const third = { aria: await line.getAttribute('aria-label'), ys: (await drawn(line)).heads.map((h) => h.y) }
   await showGuides(page, 'From 7th')
   await expect(labelRow(line)).toHaveText(/^\s*7\s*3\s*7\s*$/) // another line, not the same one relabelled
+  await expect(line).not.toHaveAttribute('aria-label', third.aria ?? '') // the staff is redrawn: other notes
+  await expect.poll(async () => (await drawn(line)).heads.map((h) => h.y)).not.toEqual(third.ys)
+  expect((await drawn(line)).heads.length).toBeGreaterThan(0)
   await showGuides(page, 'Off')
   await expect(line).not.toHaveAttribute('aria-label', /guide tones/)
+  await expect.poll(async () => (await drawn(line)).heads.length).toBe(0) // no notes
+  await expect(page.locator('[data-slot="guides"]')).toHaveCount(0) // and no label row
   await expect.poll(async () => (await drawn(line)).slashes).toBe(16) // the slashes are back
 })
 
@@ -172,6 +179,20 @@ test('the guide tone choice survives a reload and rides a share link', async ({ 
   await expect(guide(visitor, 'From 7th')).toBeChecked()
   await expect(labelRow(lines(visitor).first())).toHaveText(/^\s*7\s*3\s*7\s*$/)
   await other.close()
+})
+
+test('one voice’s stems: up below the middle line, down above it', async ({ page }) => {
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 1 | G7\nA | 2 | CMaj7\nA | 2 | A7\nA | 3 | Dm7\nA | 3 | G7\nA | 4 | CMaj7\nA | 4 | Am7\n') // two chords a bar: half notes, which have stems
+  const stems: { from: number; to: number }[] = []
+  for (const choice of ['From 3rd', 'From 7th'] as const) { // the 3rd line sits low (F4, E4), the 7th line high (C5, B4)
+    await showGuides(page, choice)
+    await guidesDrawn(page)
+    await expect.poll(async () => (await drawn(lines(page).first())).stems.length).toBeGreaterThan(0)
+    stems.push(...(await drawn(lines(page).first())).stems)
+  }
+  const clear = stems.filter((st) => Math.abs(st.from - 100) > 3) // the middle line is y 100
+  expect(clear.some((st) => st.from > 100) && clear.some((st) => st.from < 100)).toBe(true) // notes on both sides
+  for (const st of clear) expect(st.from > 100 ? st.to < st.from : st.to > st.from, `stem from ${st.from} to ${st.to}`).toBe(true)
 })
 
 test('a guide tone line: the ii–V–I’s labels alternate, and each held chord ties', async ({ page }) => {

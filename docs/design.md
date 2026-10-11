@@ -365,7 +365,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - A second voice of `GhostNote`s keeps a position for every beat (`xs`), so chords, numerals and scales still sit
     over each chord's first note.
   - Line 1 gets the part's clef whenever a line is on; the key signature only with signatures on.
-  - The aria-label adds `; guide tones: C5 7 / F4 3, …` after `Bars: …`.
+  - The aria-label adds `; guide tones: F4 3, F4 7, …` after `Bars: …`.
 
 ### Shared
 
@@ -428,7 +428,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - `SheetPages`, which lays out both sheets' printed pages. On screen they form one continuous card, with a dashed
     "Page N" divider where each printed page starts and the header shown once. In print each page is a bare letter
     page with its own header.
-  - `PreviewControls`, the preview toolbar: Work on, Instrument, From root/From X, then Show: Intervals (on the Changes, Analysis: Numerals and Scales, and Guide Tones: From 3rd and From 7th) with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
+  - `PreviewControls`, the preview toolbar: Work on, Instrument, From root/From X, then Show: Intervals (on the Changes, Analysis: Numerals and Scales, and Guide Tones: Off · From 3rd · From 7th) with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
 - **Dark mode** is a `.dark` class on `<html>`, toggled in the navbar.
   - The default is light, and the choice is saved per browser.
   - `public/theme-init.js` applies it before first paint. It's a file, not an inline script, so the CSP needs no

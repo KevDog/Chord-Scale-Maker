@@ -57,10 +57,11 @@ test('the Changes sheet shows 1st/2nd endings and a D.S. al Coda', async ({ page
 // raised above the stems, and a bass part below the staff (the tuba's, the lowest guide tone range: C2–B♭3, down to two
 // ledger lines below). Each sheet page holds changesLinesPerPage lines, so the PDF has as many pages as the sheet: a page
 // that overflowed would add one
-test('prints the Changes with a guide tone line, a sheet page to a letter page, in the tallest case', async ({ page }) => {
+for (const line of ['From 3rd', 'From 7th'] as const) {
+test(`prints the Changes with a guide tone line (${line}), a sheet page to a letter page, in the tallest case`, async ({ page }) => {
   await page.goto('/song?chart=stardust')
   await chooseInstrument(page, 'Tuba')
-  await showGuides(page, 'From 3rd')
+  await showGuides(page, line)
   await expect(page.getByRole('button', { name: 'Numerals' })).toHaveAttribute('aria-pressed', 'true')
   await expect(page.getByRole('button', { name: 'Scales', exact: true })).toHaveAttribute('aria-pressed', 'true')
   await guidesDrawn(page)
@@ -74,3 +75,4 @@ test('prints the Changes with a guide tone line, a sheet page to a letter page, 
   await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
 })
+}

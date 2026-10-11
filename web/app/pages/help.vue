@@ -58,9 +58,8 @@
         <strong class="font-semibold text-zinc-950 dark:text-white">From 3rd</strong> and
         <strong class="font-semibold text-zinc-950 dark:text-white">From 7th</strong> put guide tones on the Changes staff in
         place of the slashes. A guide tone is a chord's 3rd (the 4th on a sus chord) or its 7th (the root on a triad, the 6th
-        on a 6 chord), the notes that tell you which chord you're on. Each choice is one line, and one shows at a time (Off, From 3rd or From 7th): it starts on the first chord's
-        3rd or 7th, then moves to whichever guide tone of the next chord is nearest, usually by step, and holds when the
-        two chords share their guide tones. The 3rd and 7th trade places as the harmony leans from one chord to the next. A chord with no guide tones rests, and the
+        on a 6 chord), the notes that tell you which chord you're on. Only one line shows at a time. From 3rd starts on the first chord's 3rd and From 7th on its 7th; either way the line then moves to whichever guide tone of the next chord is nearest, usually by step, and holds when the
+        two chords share their guide tones. A chord with no guide tones rests, and the
         line starts again after it. Try singing or playing one line all the way through the tune; it's a great way to learn
         the changes.
       </UiText>
