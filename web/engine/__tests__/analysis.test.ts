@@ -1,4 +1,4 @@
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { analyse, applyAnalysis, parseKey, pins } from '../analysis'
 import { keyText, makeKey } from '../analysis/keys'
@@ -6,7 +6,8 @@ import { hiddenDominant, passingReason } from '../analysis/rules'
 import { familyOf } from '../analysis/stream'
 import { formPart, parseChart, serializeChart } from '../chart'
 import { parseRoot, pcOf } from '../pitch'
-import { readChord } from '../qualities'
+import { readChord, resolveQuality } from '../qualities'
+import { isSyncCopy } from '../util'
 
 describe('keyText', () => {
   it('drops the " major" suffix but keeps " minor"', () => {
@@ -92,9 +93,9 @@ describe('analysis: dominants (§7.1)', () => {
     expect(verdict(chart('C', '1 CMaj7, 3 Fm7, 4 Bb7, 5 CMaj7, 7 Dm7, 8 G7'), '4 Bb7')).toBe('Bb Lydian Dominant (D5)')
   })
 
-  it('D5 IV7 of a blues is Lydian Dominant, I7 Mixolydian (decision 4)', () => {
+  it('D5 IV7 of a blues is Mixolydian, I7 Mixolydian, both D5 (R2)', () => {
     const v = verdicts(library('f_blues').replace(/ \| [A-G][b#]? [A-Za-z ]+$/gm, ''))
-    expect([v['1 F7'], v['2 Bb7']]).toEqual(['F Mixolydian (D3)', 'Bb Lydian Dominant (D5)'])
+    expect([v['1 F7'], v['2 Bb7']]).toEqual(['F Mixolydian (D5)', 'Bb Mixolydian (D5)'])
     expect(analyse(parseChart(library('f_blues')).value).context).toBe('blues')
   })
 
@@ -260,6 +261,36 @@ describe('R1: a IV reached by its own dominant is Ionian (docs/superpowers/specs
     const doc = parseChart(text).value
     const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'force', save: false, date: '2026-10-10' }).doc)
     expect(out).toContain('Eb Lydian  # keep: the melody')
+  })
+})
+
+describe('R2: the blues I7 and IV7 by D5 before D3 (docs/superpowers/specs/2026-10-10-analysis-rules-from-sources-design.md)', () => {
+  const reasoned = (text: string, barChord: string): string | undefined => {
+    const r = analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === barChord)
+    return r && `${r.scale} (${r.rule}): ${r.reason}`
+  }
+  const fJazzBlues = library('f_jazz_blues')
+
+  it('I7 of the blues is D5, not an extended dominant (F Jazz Blues bar 1)', () => {
+    expect(reasoned(fJazzBlues, '1 F7')).toBe('F Mixolydian (D5): I7 of the blues: a tonic with dominant colour, natural tensions')
+  })
+
+  it('IV7 of the blues is Mixolydian, D5 (F Jazz Blues bar 5)', () => {
+    expect(reasoned(fJazzBlues, '5 Bb7')).toBe('Bb Mixolydian (D5): IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)')
+  })
+
+  it('no I7 row of any library blues is reasoned by D3', () => {
+    const files = readdirSync('../charts').filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
+    const blues = files.map((f) => [f, analyse(parseChart(readFileSync(`../charts/${f}`, 'utf8')).value)] as const).filter(([, a]) => a.context === 'blues')
+    expect(blues.map(([f]) => f)).toContain('f_jazz_blues.txt')
+    const d3 = blues.flatMap(([f, a]) =>
+      a.rows.filter((r) => { const c = readChord(r.chord); return c && c.quality === '7' && a.key && pcOf(c.root) === a.key.tonic && r.rule.includes('D3') }).map((r) => `${f} ${r.bar} ${r.chord}`),
+    )
+    expect(d3).toEqual([])
+  })
+
+  it('the 7 menu still lists Lydian Dominant', () => {
+    expect(resolveQuality('C7')?.options.map((o) => o.scale)).toContain('C Lydian Dominant')
   })
 })
 

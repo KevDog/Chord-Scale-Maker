@@ -125,12 +125,12 @@ const changedBy = (base: Slots, pinned: Pins): string[] => SLOTS.flatMap((slot) 
  * where each came from; one that sets them (subV7: Lydian Dominant) says which the symbol changed. D1+ marks a scale
  * the symbol moved.
  */
-function dominantDecision(e: Entry, rule: string, fn: string, base: Slots, why: string, derived: boolean): Decision {
+function dominantDecision(e: Entry, rule: string, fn: string, base: Slots, why: string, derived: boolean, sep = ': '): Decision {
   const p = pins(e.symbol)
   const slots: Slots = { ...base, ...p }
   const moved = dominantScale(slots) !== dominantScale(base)
   const symbolNotes = changedBy(base, p)
-  const reason = derived ? `${why}: ${tensionReason(base, p)}` : moved && symbolNotes.length ? `${why}; ${list(symbolNotes)} from the symbol` : why
+  const reason = derived ? `${why}${sep}${tensionReason(base, p)}` : moved && symbolNotes.length ? `${why}; ${list(symbolNotes)} from the symbol` : why
   return { scale: named(e, dominantScale(slots)), rule: moved ? `D1+${rule}` : rule, fn, reason }
 }
 
@@ -178,6 +178,10 @@ function dominant(ctx: Context, i: number): Decision {
   const pin = pins(e.symbol)
   if (pin.all) return { scale: named(e, NAME.altered), rule: 'D1', fn: 'altered dominant', reason: 'from the symbol: altered' }
   if (ctx.modal) return dominantDecision(e, 'D7', 'modal dominant', NATURAL, 'modal: its own mode', false)
+  // R2: the blues I7 and IV7 are decided by their degree before the chords around them (M&H p. 137: "I7 should not be
+  // confused with V7/IV"); IV7 is Mixolydian, though the key holds its #11 (principle 4 yields, N&G p. 105)
+  if (ctx.blues && e.pc === ctx.blues.tonic) return dominantDecision(e, 'D5', 'I7 of the blues', derive(e, ctx.blues), 'I7 of the blues: a tonic with dominant colour', true, ', ')
+  if (ctx.blues && interval(ctx.blues.tonic, e.pc) === 5) return dominantDecision(e, 'D5', 'IV7 of the blues', NATURAL, 'IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)', false)
   // a tritone substitute lands on a chord of its own; into a ø7 or °7 it is the V of what follows (Fm7 Bb7 | Aø7)
   if (n && downHalf(e, n) && n.family !== 'halfdim' && n.family !== 'dim') return dominantDecision(e, 'D2', `subV7 of ${n.chord}`, LYDIAN_DOMINANT, `tritone substitute: resolves down a half step to ${n.chord}`, false)
   if (n && downFifth(e, n) && isDominantLike(n)) {
@@ -222,10 +226,6 @@ function dominant(ctx: Context, i: number): Decision {
     return dominantDecision(e, 'D4', `V7/${roman(implied, key)} in ${keyText(key)} (the ${roman(implied, key)} never arrives)`, derive(e, key), `V7/${roman(implied, key)} in ${keyText(key)}`, true)
   }
   if (e.bars >= 4) return dominantDecision(e, 'D7', 'static dominant', NATURAL, 'static dominant: its own mode', false)
-  if (ctx.blues && (e.pc === ctx.blues.tonic || interval(ctx.blues.tonic, e.pc) === 5)) {
-    const fn = e.pc === ctx.blues.tonic ? 'I7 of the blues' : 'IV7 of the blues'
-    return dominantDecision(e, 'D5', fn, derive(e, ctx.blues), fn, true)
-  }
   if (reference(key).includes(e.pc) || reference(key, true).includes(e.pc)) {
     const fn = `${roman(e, key)}7 in ${keyText(key)}, not resolving`
     return { ...dominantDecision(e, 'D5', fn, derive(e, key), fn, true), fallback: true }
@@ -415,9 +415,9 @@ export const RULES: readonly RuleInfo[] = [
   { id: 'D7', family: 'dominant', tier: 3, scale: 'Mixolydian', looksAt: 'a modal chart, or a dominant that resolves nowhere and is held four bars or more', summary: 'A static or modal dominant is its own mode: Mixolydian.' },
   { id: 'D2', family: 'dominant', tier: 4, scale: 'Lydian Dominant', looksAt: 'the next chord, a half step down (not a ø7 or °7)', summary: 'A tritone substitute resolves down a half step: Lydian Dominant.' },
   { id: 'D8', family: 'dominant', tier: 4, scale: 'derived from the minor key', looksAt: 'a chain of dominants that ends on a minor chord, or its last link', summary: 'An extended dominant on its way into a minor key, or the last link of the chain, takes its tensions from that key. A link into the key’s own V7 is V7/V, the links before it arrows.' },
-  { id: 'D3', family: 'dominant', tier: 4, scale: 'Mixolydian', looksAt: 'the next chord, another dominant a fifth down', summary: 'An extended dominant (V7 of another V7) keeps natural tensions: Mixolydian. A link into the key’s own V7 is V7/V (the dominant of the dominant), the links before it arrows; a chain that never reaches the key’s V7 keeps each chord’s own degree.' },
+  { id: 'D3', family: 'dominant', tier: 4, scale: 'Mixolydian', looksAt: 'the next chord, another dominant a fifth down', summary: 'An extended dominant (V7 of another V7) keeps natural tensions: Mixolydian (a blues I7 before its IV7 is not one: D5). A link into the key’s own V7 is V7/V (the dominant of the dominant), the links before it arrows; a chain that never reaches the key’s V7 keeps each chord’s own degree.' },
   { id: 'D4', family: 'dominant', tier: 4, scale: 'derived from the key', looksAt: 'the chord it resolves to, a fifth down; the major or minor chord before it that it is the V of; or the ii before it', summary: 'A resolving dominant takes each tension (9, 11, 13) in the form the key holds.' },
-  { id: 'D5', family: 'dominant', tier: 3, scale: 'derived from the key', looksAt: 'its degree: the back door, the blues, or a diatonic dominant', summary: 'A dominant a whole step below a major chord (the back door, ♭VII7), a blues I7 or IV7, or a diatonic dominant that does not resolve takes its tensions from the key.', guess: 'a diatonic dominant that does not resolve' },
+  { id: 'D5', family: 'dominant', tier: 3, scale: 'derived from the key (Mixolydian for a blues IV7)', looksAt: 'its degree: the blues I7 or IV7 (before the chords around it), the back door, or a diatonic dominant', summary: 'A blues I7 (a tonic with dominant colour) takes its tensions from the key and a blues IV7 is Mixolydian, whatever follows them; a dominant a whole step below a major chord (the back door, ♭VII7), or a diatonic dominant that does not resolve, takes its tensions from the key.', guess: 'a diatonic dominant that does not resolve' },
   { id: 'D6', family: 'dominant', tier: 4, scale: 'Lydian Dominant', looksAt: 'a non-diatonic dominant with nowhere to go', summary: 'A non-diatonic dominant that does not resolve is Lydian Dominant: in a major key, ♭VII7, ♭VI7 or ♭III7 borrowed from the parallel minor; any other, a chromatic dominant in its own key.', guess: 'a chromatic dominant (not ♭VII7, ♭VI7 or ♭III7 in a major key)' },
   { id: 'M1', family: 'major', tier: 1, scale: 'Lydian', looksAt: 'a #11 in the symbol', summary: 'A maj7#11 is Lydian.' },
   { id: 'M2', family: 'major', tier: 1, scale: 'Lydian Augmented', looksAt: 'a #5 in the symbol', summary: 'A maj7#5 is Lydian Augmented.' },
