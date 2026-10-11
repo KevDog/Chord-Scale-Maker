@@ -1,7 +1,7 @@
 # Editor UX: three alternatives, one recommended
 
-**Status:** proposal for review, 2026-10-11. Nothing is built: this folder holds the findings, three static mockups and
-screenshots. The app is unchanged.
+**Status:** **B approved, 2026-10-11** (decisions in §6). Nothing is built yet: this folder holds the findings, three
+static mockups and screenshots. The app is unchanged.
 
 **In short:** today's editor is a table of chord *rows*, and every row has a section name and a bar number typed by
 hand. That one choice causes most of the pain: you can't see the form, inserting or deleting a bar means renumbering
@@ -217,7 +217,10 @@ line, headed by its name chip and key area.
   - the bar's actions, labelled: insert, delete, key change, endings, segno/coda/D.S., new section.
 - **Errors.** A chord the app can't read gets an amber underline in its cell, and the inspector explains it and
   suggests a fix.
-- **Text** stays as a *Source* tab: same text, same sync, for power users and for anything the grid doesn't model.
+- **Text** stays as *Source*, under the ⋯ menu (decided): same text, same sync, for power users and for anything
+  the grid doesn't model.
+- **Concert pitch** (decided): the grid always shows and takes the chart's own concert pitch, labelled as such.
+- **Numerals and scales** under each cell sit behind a toggle (decided), so the grid reads as plain chords by default.
 - **The sheet below** outlines the selected bar, and tapping a chord on the sheet selects it in the grid. That brings
   A's best idea in at low cost.
 
@@ -239,7 +242,7 @@ line, headed by its name chip and key area.
   Dominant").
 - Bottom sheets are modal dialogs with their focus trapped. Every action is in a menu as well as a gesture
   (long-press has a button equivalent).
-- The Source tab remains a plain textarea.
+- Source (under ⋯) remains a plain textarea.
 - The mockup's keyboard legend is part of the UI: the shortcuts are shown, not hidden.
 
 **Reuses** `barView` and the bar operations above, plus `scaleChoices`, `functionChoices`, `rowNotes`,
@@ -342,7 +345,8 @@ builds, as every flag is.
    - the bar grid replaces the row table when the flag is on;
    - selection, typing, Space and Tab, arrows, undo;
    - an inspector with Scale, Function and Why;
-   - the text becomes the Source tab, built on the existing `ChartText`;
+   - the text moves under ⋯ as Source, built on the existing `ChartText`;
+   - a toggle for the numerals and scales in the grid;
    - port the editor e2e tests (e2e runs with flags on).
 3. **Stage 2, structure:** + Bar, + Section, the bar menu (insert, delete, key change, endings, segno/coda/nav),
    Repeat a section, Write out a copy, Paste bars, and time and details in the header strip.
@@ -359,12 +363,14 @@ Each stage is its own PR, with unit tests alongside the engine work and e2e for 
 
 ## 6. Questions for you
 
-1. **Concert pitch while editing?** The grid could show the chords in your instrument's key and convert on entry.
-   The mockups keep the grid in concert pitch, the chart's own pitch, and label it.
-2. **Numerals and scales in the grid:** always shown (as mocked), or a toggle? They're the analysis' live reading,
+All answered (2026-10-11): **B approved.**
+
+1. ~~**Concert pitch while editing?**~~ Decided: concert pitch, the chart's own pitch, labelled. No conversion on
+   entry.
+2. ~~**Numerals and scales in the grid:**~~ Decided: behind a toggle. They're the analysis' live reading,
    and useful while choosing.
 3. ~~**Chord keyboard on phones**~~: decided, no. Phones get light edits with the system keyboard (stage 3).
-4. Should **Source** stay visible to everyone, or move under ⋯ once the grid covers endings and marks?
+4. ~~Should **Source** stay visible to everyone, or move under ⋯?~~ Decided: under ⋯.
 
 ---
 
