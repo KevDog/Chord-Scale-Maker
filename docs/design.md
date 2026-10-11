@@ -325,7 +325,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **The lines** (`engine/guideToneLines.ts`, `guideToneLines`) are greedy, one chord at a time, so a reader can apply
   them by hand; the rules are numbered in the spec. The candidates are both guide tones at every octave inside the
   part's written range, `rangeOf(part)`: its instrument's range from `INSTRUMENTS` (`{ lo, hi, centre }`, inside a
-  two-ledger-line cap, `CAPS`: treble G3–D6, bass B1–F4; vibes G3–D6 around B♭4, trumpet C4–G5, tuba C2–B♭3…), or,
+  two-ledger-line cap, `CAPS`: treble G3–D6, bass B1–F4; vibes G3–D6 around B♭4, trumpet G3–G5, tuba C2–B♭3…), or,
   for a part without one (`CONCERT`), its clef's default (`RANGES`: treble C4–A5 around A4, bass E2–C4 around C♯3).
   A line takes the smaller move (a common tone before a step before a leap); equal moves go to the pitch nearer the
   centre, then the lower. A start, or a restart after a rest, takes the octave nearest the line's last sounded note (the

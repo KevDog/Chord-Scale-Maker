@@ -171,10 +171,10 @@ describe('guide tone lines in an instrument’s range', () => {
     expect(linesOf(['Ebm7'], VIBES).a).toEqual(['Gb4 (3)']) // Gb4 (66) and Gb5 (78): 4 and 8 from B♭4
   })
 
-  it('a trumpet’s lines stay within C4–G5 written', () => {
+  it('a trumpet’s lines stay within G3–G5 written', () => {
     const trumpet = partFor('trumpet')
     const [a, b] = guideToneLines(['Dm7', 'G7', 'CMaj7', 'A7', 'Dm7', 'G7', 'Em7', 'A7'].map((c) => guideTonesFor(trumpet, c)), rangeOf(trumpet))
-    for (const n of [...a, ...b]) expect(n && n.pitch.midi >= 60 && n.pitch.midi <= 79).toBe(true)
+    for (const n of [...a, ...b]) expect(n && n.pitch.midi >= 55 && n.pitch.midi <= 79).toBe(true)
   })
 })
 

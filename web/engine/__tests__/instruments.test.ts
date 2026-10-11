@@ -17,7 +17,7 @@ describe('instruments', () => {
   })
 
   it('maps instruments to the part they read, with their guide tone range', () => {
-    expect(partFor('trumpet')).toEqual({ clef: 'treble', trans: 'Bb', range: { lo: 60, hi: 79, centre: 70 } })
+    expect(partFor('trumpet')).toEqual({ clef: 'treble', trans: 'Bb', range: { lo: 55, hi: 79, centre: 70 } })
     expect(partFor('bari-sax')).toEqual({ clef: 'treble', trans: 'Eb', range: { lo: 58, hi: 84, centre: 68 } })
     expect(partFor('tuba')).toEqual({ clef: 'bass', trans: 'C', range: { lo: 36, hi: 58, centre: 47 } })
   })
@@ -26,9 +26,9 @@ describe('instruments', () => {
     const ranges = Object.fromEntries(Object.entries(INSTRUMENTS).map(([name, i]) => [name, [i.range.lo, i.range.hi, i.range.centre]]))
     expect(ranges).toEqual({
       concert: [60, 81, 69], piano: [60, 84, 70], vibes: [55, 86, 70], flute: [60, 84, 73], guitar: [57, 81, 63],
-      trumpet: [60, 79, 70], flugelhorn: [60, 79, 70], clarinet: [57, 84, 66],
+      trumpet: [55, 79, 70], flugelhorn: [55, 79, 70], clarinet: [57, 84, 66],
       'soprano-sax': [58, 84, 68], 'alto-sax': [58, 84, 68], 'tenor-sax': [58, 84, 68], 'bari-sax': [58, 84, 68],
-      horn: [60, 79, 70], trombone: [46, 64, 56], tuba: [36, 58, 47], bass: [40, 60, 49],
+      horn: [60, 79, 70], trombone: [40, 64, 56], tuba: [36, 58, 47], bass: [40, 60, 49],
     })
   })
 

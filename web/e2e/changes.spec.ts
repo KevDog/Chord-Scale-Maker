@@ -180,7 +180,7 @@ test('a chord held over a line break: an open tie ends line 1, a half-tie starts
   await expect.poll(halfTies).toBe(2) // one half-tie in per voice, before bar 5's notes (polled: line 2 may draw after line 1)
 })
 
-test('guide tones are written for the part, in its range: a B♭ trumpet within C4–G5, a trombone in bass clef within B♭2–E4', async ({ page }) => {
+test('guide tones are written for the part, in its range: a B♭ trumpet within G3–G5, a trombone in bass clef within E2–E4', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
   await showGuides(page, 'From 3rd', 'From 7th')
   await chooseInstrument(page, 'Trumpet')
@@ -189,7 +189,7 @@ test('guide tones are written for the part, in its range: a B♭ trumpet within 
   const heads = async () => (await Promise.all((await lines(page).all()).map(drawn))).flatMap((d) => d.heads.map((h) => h.y))
   const written = await heads()
   expect(Math.min(...written)).toBeGreaterThanOrEqual(75) // G5, a space above the treble staff (lines at 80–120, 5 a step)
-  expect(Math.max(...written)).toBeLessThanOrEqual(130) // C4, a ledger line below it
+  expect(Math.max(...written)).toBeLessThanOrEqual(145) // G3, two ledger lines below it
   const trumpet = await lines(page).evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')))
   await chooseInstrument(page, 'Trombone')
   await expect.poll(() => lines(page).evaluateAll((els, before) => els.every((e, i) => e.getAttribute('aria-label') !== before[i]), trumpet)).toBe(true)
@@ -197,7 +197,7 @@ test('guide tones are written for the part, in its range: a B♭ trumpet within 
   await expect(page.locator('.vf-clef')).toHaveCount(1)
   const ys = await heads()
   expect(Math.min(...ys)).toBeGreaterThanOrEqual(60) // E4, two steps above the bass staff's ledger C4
-  expect(Math.max(...ys)).toBeLessThanOrEqual(110) // B♭2, the bass staff's second space
+  expect(Math.max(...ys)).toBeLessThanOrEqual(130) // E2, a ledger line below the bass staff
 })
 
 test('a waltz’s guide tones are in 3/4: a bar-long chord is a dotted half', async ({ page }) => {
