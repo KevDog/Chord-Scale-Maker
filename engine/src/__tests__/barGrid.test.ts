@@ -1,7 +1,7 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { barView } from '../bars'
-import { chordsAfterTyping, firstPos, gridLines, moveInGrid, placePos, soundingChords } from '../barGrid'
+import { chordsAfterTyping, firstPos, gridLines, moveInGrid, placePos, posOfLine, soundingChords } from '../barGrid'
 import { type ChartDoc, parseChart } from '../chart'
 
 const chart = (name: string): ChartDoc => parseChart(readFileSync(`charts/${name}.txt`, 'utf8')).value
@@ -96,5 +96,19 @@ describe('chordsAfterTyping', () => {
     expect(chordsAfterTyping(view, pos('A', 5), '%', false)).toEqual(['Eb7']) // the bar before is held
     expect(chordsAfterTyping(view, pos('A', 4), '%', false)).toEqual(['Bbmaj7', 'Eb7'])
     expect(chordsAfterTyping(view, pos('A', 1), '%', false)).toEqual([]) // nothing before
+  })
+})
+
+describe('posOfLine', () => {
+  it('finds the chord written on a line of the chart, on the grid', () => {
+    expect(posOfLine(view, 1)).toEqual(pos('A', 1, 0))
+    expect(posOfLine(view, 4)).toEqual(pos('A', 3, 1))
+    expect(posOfLine(view, 8)).toEqual(pos('C', 17, 0))
+  })
+
+  it('is null for a line that isn’t a chord on the grid', () => {
+    expect(posOfLine(view, 0)).toBeNull() // the title
+    expect(posOfLine(view, 7)).toBeNull() // the @copy
+    expect(posOfLine(view, 99)).toBeNull()
   })
 })

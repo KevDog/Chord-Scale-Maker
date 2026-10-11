@@ -26,6 +26,8 @@ export type ChangesChord = Readonly<{
   written: string
   /** the chart row it comes from: the same chord can be analysed differently in another bar */
   at: Readonly<{ section: string; bar: string }>
+  /** the index in doc.lines it was written on, to edit it by; a repeat's chord points at the row it repeats */
+  line: number
   tokens: readonly ChordToken[] | null
   /** its Roman numeral in its key area (V7/ii); '' when the analysis doesn't reach it */
   numeral: string
@@ -224,6 +226,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             text: row.chord,
             written: writtenChordTextOrNull(part, row.chord, scale) ?? row.chord,
             at: { section: row.section, bar: row.bar },
+            line: row.line,
             tokens: chordTokensOrNull(part, row.chord, scale),
             numeral: a?.numeral && a.numeral !== '?' ? a.numeral : '',
             scale: writtenScale(part, scale),

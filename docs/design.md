@@ -255,7 +255,19 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   rows). Endings, marks and jumps show under a bar's chords and in its label. Every refused change leaves the same
   doc and says why, in the grid or the dialog. The heading fields are `ChartHeadingFields`, with the time and,
   under Details, the composer, style and form (`chartDetails`); the text is the Source, under the ⋯ menu
-  (remembered, `csm-source`). Concert pitch always.
+  (remembered, `csm-source`). Concert pitch always. The inspector's Scale, Function and Why are `ChordChoices`,
+  shared with the sheet's chord editor.
+  - **Tap to edit:** while the bar editor is shown, each chord on the Changes sheet is a button ("Edit Dm7, A bar
+    3"; a transposed part's adds "(concert C7)"). It opens `SheetChordEditor`, a Headless UI dialog: from `md` up a
+    popover by the chord (`popoverPlace`: under it, or above it near the window's foot), below `md` a bottom sheet. It
+    holds the chord in concert pitch (`setLineChord`: as typing it into the grid there, so blank takes it out and `%`
+    is the bar before; refused with why) and its `ChordChoices`. Each drawn chord carries its chart `line`
+    (`ChangesChord.line`); a repeat's points at the row it repeats, and the editor says a change there changes the
+    section it repeats. The tap also selects the chord in the grid (`posOfLine`), and the chord selected in the grid
+    is outlined on the sheet.
+  - **Phones (below `md`): light edits only.** The grid, its structure actions and the inspector are hidden; the
+    note "Full editing works on a larger screen" sits under the title, and chords are changed on the sheet. The
+    heading fields, Undo, the Source under ⋯ and Transpose stay. The library hides New chart there.
 - **Scale level** (the `scaleLevels` flag, on; `engine/src/levels.ts`): Basic / Standard / Advanced / Random, above the
   chart grid. Choosing one writes the scales into the chart (`relevel`), so they save, print and share with it.
   - Options in `chord_scales.json` carry `level: basic|advanced`; Standard is the default, and a quality without a
@@ -346,7 +358,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - The last row runs to the end of the form: as long as the section it repeats, rounded up to whole 4-bar phrases.
 - `ChangesSheet.vue` / `ChangesSystem.vue` draw it with `utils/changesDrawing.ts` (slash noteheads without stems,
   repeat and final barlines, the time signature on the first line); chords, numerals and scales are HTML placed at
-  the slashes, each wrapping within the room up to the next chord. Eight lines a printed page (a 32-bar AABA), fewer
+  the slashes, each wrapping within the room up to the next chord (a button while the bar editor is shown: tap to
+  edit, §4). Eight lines a printed page (a 32-bar AABA), fewer
   with a guide tone line on (§6a).
 - `Numerals` and `Scales` toggles and a **Guide Tones** segmented control (Off · From 3rd · From 7th) replace Intervals on
   this sheet (`csm-numerals`, `csm-scale-names`, both on; `csm-guide-line`, `off | third | seventh`, off; share links carry
