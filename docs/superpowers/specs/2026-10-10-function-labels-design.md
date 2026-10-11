@@ -21,8 +21,8 @@ unchanged.
 | --- | --- |
 | Numeral case | Keep the lower-case convention (`ii7`, `V7/ii`, `viiø7`): Terefenko, "Jazz Transformations of the ii7–V7–I Progression", *Current Research in Jazz* 1 (2009). The sheet's printed text does not change except where this spec says. |
 | Grammar | Lenient on input, canonical on output. Every spelling in §2 reads to the same canonical text the sheet prints today. |
-| Upper-case slash target | Takes its quality from the key (`V7/II` in C is A7 → Dm7, as Berklee writes it). A lower-case target keeps forcing minor. |
-| Deceptive resolution | `(V7/II)` parses, sets a `deceptive` flag, changes no scale; the sheet prints the parentheses. |
+| Upper-case slash target | Deferred (see the decisions below): upper case keeps meaning major, the sheet's convention; a lower-case target is minor. Taking the quality from the key (`V7/II` in C as A7 → Dm7, as Berklee writes it) was proposed and not adopted. |
+| Deceptive resolution | `(V7/II)` parses, sets a `deceptive` flag, changes no scale; the sheet prints the parentheses (and the target keeps its case). |
 | Half-diminished glyph | `ø7` stays (understood by everyone; the Berklee texts themselves call it "not preferred" but universal). |
 
 ## 1. Label changes (`numerals.ts`, the `fn` and `reason` strings in `rules.ts`, `RULES`)
@@ -149,17 +149,17 @@ itself).
 | `I-(maj7)`, `I-Maj7` | `i(maj7)` | N&G p. 23 |
 | `VII-7(♭5)`, `VII-7b5`, `♯IV-7(♭5)`, `VIIm7(b5)`, `VIIØ7` | `viiø7`, `♯ivø7` | N&G p. 23; M&H p. viii; Chediak |
 | `V7(sus4)`, `Vsus4` | `V7sus4` | N&G p. 23 |
-| `SubV7/II`, `subV/II`, `SubV/III` (with or without the 7, any case of "sub") | `subV7/ii`, `subV7/iii` | M&H pp. 70–71; Chediak |
+| `SubV7/II`, `subV/II`, `SubV/III` (with or without the 7, any case of "sub") | `subV7/II`, `subV7/III` (the target keeps its case: G6 deferred) | M&H pp. 70–71; Chediak |
 | `I∆7` with U+2206 (what Option-J types on a Mac), as well as Δ U+0394 | `Imaj7` | Levine's glyph |
 | `B♭: V7/ii` (glyph flat in the key prefix) | `B♭: V7/ii` | M&H p. 41 |
-| `(V7/II)`, `(III7)` | `(V7/ii)`, `(III7)` with `deceptive: true` | N&G pp. 52–55; M&H p. 48; Chediak vol. 1 pp. 105, 114 |
+| `(V7/II)`, `(III7)` | `(V7/II)`, `(III7)` with `deceptive: true` | N&G pp. 52–55; M&H p. 48; Chediak vol. 1 pp. 105, 114 |
 
 Semantics:
 
-- **G6, upper-case target.** `V7/II` in C → target Dm7 (`target.minor === true`); `V7/V` → G major; `V7/VI` → Am7.
-  The quality comes from the key's diatonic chord on that degree (major key: ii, iii, vi minor; vii ø); in a minor
-  key from `DIATONIC_MINOR`. `V7/ii` (lower case) keeps forcing minor; `V7/♭III` keeps major. `functionCandidates`
-  keeps offering both readings where they differ.
+- **G6, upper-case target: deferred by the user.** Proposed: `V7/II` in C → target Dm7, the quality from the key's
+  diatonic chord on that degree. Not adopted: it would read the sheet's own upper-case targets (A7 → D major prints
+  `V7/II`, 185 library rows) as minor. Upper case keeps meaning major, lower case minor (`V7/II` → D major, `V7/ii` →
+  Dm); `functionCandidates` keeps offering both readings where they differ.
 - **G7, deceptive.** `StatedFunction` gains `deceptive: boolean`. `impliedTarget` and the scale derivation ignore
   it (the dominant's scale is still that of its expected target: N&G p. 45 "altered notes should not be changed to
   unaltered"); `fitError` does not demand the resolution; the sheet prints the parentheses.

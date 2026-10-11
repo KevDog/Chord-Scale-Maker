@@ -48,6 +48,15 @@ describe('functionChoices', () => {
     expect(functionChoices(parseChart(text.replace(' | | V7/III', '')).value).get(3)?.[0]?.label).toBe('ii7/iii') // unstated
   })
 
+  it('labels Auto "Auto (extended dominant)" on a chain link the sheet marks with an arrow (ruling R7)', () => {
+    const bridge = functionChoices(parseChart('title: T\nkey: Bb\nA | 1 | BbMaj7\nA | 2 | D7\nA | 3 | G7\nA | 4 | C7\nA | 5 | F7\nA | 6 | BbMaj7\n').value)
+    expect([3, 4, 5].map((line) => bridge.get(line)?.[0])).toEqual([
+      { value: '', label: 'Auto (extended dominant)', scale: 'D Mixolydian' },
+      { value: '', label: 'Auto (extended dominant)', scale: 'G Mixolydian' },
+      { value: '', label: 'V7/V', scale: 'C Mixolydian' },
+    ])
+  })
+
   it('gives a held row the choices of the chord it holds', () => {
     const doc = parseChart('title: T\nkey: C\nA | 1 | D7\nA | 2 | D7\nA | 3 | G7\nA | 4 | CMaj7\n').value
     expect(functionChoices(doc).get(3)).toEqual(functionChoices(doc).get(2))

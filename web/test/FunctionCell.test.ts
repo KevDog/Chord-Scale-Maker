@@ -16,6 +16,11 @@ describe('FunctionCell', () => {
     expect((w.find('select').element as HTMLSelectElement).value).toBe('')
   })
 
+  it('shows the label it is given for Auto, as on a chain link (Auto (extended dominant))', async () => {
+    const w = await mountSuspended(FunctionCell, { props: { choices: [{ value: '', label: 'Auto (extended dominant)', scale: 'D Mixolydian' }, ...CHOICES.slice(1)], value: '', problem: null, label: 'function for row 2' } })
+    expect(w.findAll('option').map((o) => o.text())[0]).toBe('Auto (extended dominant) → D Mixolydian')
+  })
+
   it('emits the chosen function, and Auto as empty', async () => {
     const w = await mount('V7/V')
     await w.find('select').setValue('subV7/♭II')

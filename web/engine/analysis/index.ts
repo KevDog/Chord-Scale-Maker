@@ -186,7 +186,9 @@ export function analyse(doc: ChartDoc): Analysis {
   return { key: p.global, keyFrom: p.keyFrom, context: p.blues ? 'blues' : p.modal ? 'modal' : 'functional', areas, rows: out, problems: p.problems }
 }
 
-/** one option of the grid's Function dropdown: value '' is Auto (the analyser's own reading, labelled with its numeral) */
+/** one option of the grid's Function dropdown: value '' is Auto (the analyser's own reading, labelled with
+ * its numeral; "Auto" when it has none, "Auto (extended dominant)" for a chain link the sheet marks →)
+ */
 export type FunctionChoice = Readonly<{ value: string; label: string; scale: string | null }>
 
 /**
@@ -207,7 +209,7 @@ export function functionChoices(doc: ChartDoc): ReadonlyMap<number, readonly Fun
     if (!e.family) return
     const key = p.areaKeys[i] ?? p.global
     const auto = verdict(i, undefined)
-    const choices: FunctionChoice[] = [{ value: '', label: auto.numeral === '?' ? 'Auto' : auto.numeral, scale: auto.scale }]
+    const choices: FunctionChoice[] = [{ value: '', label: auto.numeral === '?' ? 'Auto' : auto.numeral === '→' ? 'Auto (extended dominant)' : auto.numeral, scale: auto.scale }]
     for (const text of functionCandidates(e, key)) {
       const fn = parseFunction(text)
       if (typeof fn === 'string' || fitError(fn, e, key)) continue
