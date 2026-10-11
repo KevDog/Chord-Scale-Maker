@@ -1,4 +1,4 @@
-import raw from '../../chord_scales.json'
+import raw from '../chord_scales.json'
 import { parseChord } from './chord'
 import { rootName, type Spelled, spellEqual } from './pitch'
 import { cleanLettering, scaleKey, simplifyRoot, spellFrom } from './scales'

@@ -122,8 +122,8 @@ describe('the °7 menu’s diatonic diminished options (R17)', () => {
 
   it('hold every library °7’s analysed diatonic diminished scale, so none shows as a custom entry', () => {
     const missing: string[] = []
-    for (const f of readdirSync('../charts').filter((x) => x.endsWith('.txt') && !isSyncCopy(x))) {
-      for (const r of analyse(parseChart(readFileSync(`../charts/${f}`, 'utf8')).value).rows) {
+    for (const f of readdirSync('charts').filter((x) => x.endsWith('.txt') && !isSyncCopy(x))) {
+      for (const r of analyse(parseChart(readFileSync(`charts/${f}`, 'utf8')).value).rows) {
         if (!r.scale?.includes('Diatonic Diminished')) continue
         if (!(resolveQuality(r.chord)?.options ?? []).some((o) => sameScale(o.scale, r.scale))) missing.push(`${f} ${r.bar} ${r.chord}: ${r.scale}`)
       }

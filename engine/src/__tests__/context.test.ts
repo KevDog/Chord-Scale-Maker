@@ -8,7 +8,7 @@ import { parseChart } from '../chart'
  * the detection's fixes, and the report line.
  */
 
-const library = (name: string): string => readFileSync(`../charts/${name}.txt`, 'utf8')
+const library = (name: string): string => readFileSync(`charts/${name}.txt`, 'utf8')
 /** a library chart as if it had no context: line */
 const undeclared = (name: string): string => library(name).replace(/^context:.*\n/m, '')
 const read = (text: string): Analysis => analyse(parseChart(text).value)

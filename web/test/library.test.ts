@@ -1,3 +1,5 @@
+import { readdirSync } from 'node:fs'
+import { isSyncCopy } from '@chord-scale-maker/engine'
 import { describe, expect, it } from 'vitest'
 import { findChart, LIBRARY, searchLibrary, toLibrary } from '~/utils/library'
 
@@ -27,5 +29,12 @@ describe('library', () => {
     expect(LIBRARY.map((c) => c.slug)).toContain('autumn_leaves')
     expect(findChart('autumn_leaves')?.title).toBe('Autumn Leaves')
     expect(findChart('nope')).toBeUndefined()
+  })
+
+  it('includes every chart in the engine package, and nothing else', () => {
+    // cwd-relative (the cwd is web/): import.meta.url isn't a file: URL in the nuxt environment
+    const files = readdirSync('../engine/charts').filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
+    expect(files.length).toBeGreaterThan(200)
+    expect(LIBRARY.map((c) => `${c.slug}.txt`).sort()).toEqual([...files].sort())
   })
 })

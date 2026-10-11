@@ -17,6 +17,6 @@ export function chunk<T>(xs: readonly T[], n: number): T[][] {
 
 /**
  * a copy a sync tool (iCloud, Finder) makes beside a changed file: "giant_steps 2.txt". Git ignores them
- * (.gitignore), so does Nuxt (nuxt.config.ts); the chart library and its tests skip them too
+ * (.gitignore), and so does the app's build config; the chart library and its tests skip them too
  */
 export const isSyncCopy = (path: string): boolean => / \d+\.[^./]+$/.test(path)

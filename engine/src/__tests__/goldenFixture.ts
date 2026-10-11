@@ -5,7 +5,7 @@
  *   npm run golden    (rewrites the file; review the diff)
  */
 import { readdirSync, readFileSync } from 'node:fs'
-import raw from '../../../chord_scales.json'
+import raw from '../../chord_scales.json'
 import {
   ALIASES,
   type ChordToken,
@@ -113,7 +113,7 @@ export function scaleCase(part: Part, text: string, fromStarts: readonly string[
   }
 }
 
-const repo = (path: string): URL => new URL(`../../../${path}`, import.meta.url)
+const repo = (path: string): URL => new URL(`../../${path}`, import.meta.url)
 export const GOLDEN_FILE = repo('fixtures/golden.json')
 
 function libraryCharts(): Record<string, string> {

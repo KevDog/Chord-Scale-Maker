@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
-import raw from '../../../chord_scales.json'
+import raw from '../../chord_scales.json'
 import { expandRows, parseChart, resolveScale } from '../chart'
 import { analyse } from '../analysis'
 import { ladderScale, type LevelState, relevel, scaleAtLevel, seededUnit } from '../levels'
@@ -37,7 +37,7 @@ describe('scale levels', () => {
   it('keep a Q5 Whole-Half Standard whose root the analysis respelled at Basic and Advanced (Gbdim7: F# Whole-Half)', () => {
     const at = (level: 'basic' | 'advanced') => scaleAtLevel('Gbdim7', level, 0, '', 'F# Whole-Half Diminished')
     expect([at('basic'), at('advanced')]).toEqual(['F# Whole-Half Diminished', 'F# Whole-Half Diminished'])
-    const tat = parseChart(readFileSync('../charts/time_after_time.txt', 'utf8')).value
+    const tat = parseChart(readFileSync('charts/time_after_time.txt', 'utf8')).value
     for (const bar of [26, 28]) {
       const r = analyse(tat).rows.find((x) => `${x.bar} ${x.chord}` === `${bar} Gbdim7`)
       expect(r?.scale, `bar ${bar}`).toBe('F# Whole-Half Diminished')

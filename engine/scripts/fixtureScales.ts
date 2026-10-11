@@ -12,7 +12,7 @@ import { execFileSync } from 'node:child_process'
 import { readFileSync } from 'node:fs'
 import { join, resolve } from 'node:path'
 
-const REPO = resolve(import.meta.dirname, '../..')
+const REPO = resolve(import.meta.dirname, '..')
 const ref = process.argv.slice(2).find((a) => !a.startsWith('--')) ?? 'main'
 
 type Json = null | boolean | number | string | readonly Json[] | { readonly [k: string]: Json }
@@ -20,7 +20,18 @@ type Obj = { readonly [k: string]: Json }
 /** where a scale is, and the scale ('' when there is none) */
 type Scales = ReadonlyMap<string, string>
 
-const atRef = (file: string): Json => JSON.parse(execFileSync('git', ['show', `${ref}:${file}`], { cwd: REPO, encoding: 'utf8', maxBuffer: 1 << 28 })) as Json
+const show = (path: string): string =>
+  execFileSync('git', ['show', `${ref}:${path}`], { cwd: REPO, encoding: 'utf8', maxBuffer: 1 << 28, stdio: ['ignore', 'pipe', 'ignore'] })
+/** the file at the ref: in engine/ since the engine became its own package, at the repo root before (`./` and `../` are relative to the cwd, engine/) */
+const atRef = (file: string): Json => {
+  let text: string
+  try {
+    text = show(`./${file}`)
+  } catch {
+    text = show(`../${file}`)
+  }
+  return JSON.parse(text) as Json
+}
 const atTree = (file: string): Json => JSON.parse(readFileSync(join(REPO, file), 'utf8')) as Json
 
 const obj = (x: Json | undefined): Obj => (x !== null && typeof x === 'object' && !Array.isArray(x) ? (x as Obj) : {})

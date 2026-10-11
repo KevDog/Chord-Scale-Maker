@@ -9,11 +9,7 @@
     "postinstall": "nuxt prepare",
     "test": "vitest run",
     "test:watch": "vitest",
-    "golden": "UPDATE_GOLDEN=1 vitest run --project engine engine/__tests__/golden.test.ts engine/__tests__/analysis.fixture.test.ts",
-    "analyse": "vite-node scripts/analyse.ts --",
-    "guide-lines": "vite-node scripts/guideLines.ts --",
-    "fixture-scales": "vite-node scripts/fixtureScales.ts --",
-    "typecheck": "nuxt typecheck && tsc -p tsconfig.engine.json && tsc -p tsconfig.e2e.json",
+    "typecheck": "nuxt typecheck && tsc -p tsconfig.build.json && tsc -p tsconfig.e2e.json",
     "lint": "eslint .",
     "e2e": "NUXT_PUBLIC_FEATURES_MY_CHARTS=true NUXT_PUBLIC_FEATURES_PRACTICE=true NUXT_PUBLIC_FEATURES_SCALE_LEVELS=true NUXT_PUBLIC_FEATURES_CHANGES=true NUXT_PUBLIC_FEATURES_FUNCTIONS=true NUXT_PUBLIC_FEATURES_KEY_SIGNATURES=true nuxt build && playwright test",
     "icons": "node scripts/icons.mjs",
@@ -35,6 +31,7 @@
     "vue-tsc": "3.3.12"
   },
   "dependencies": {
+    "@chord-scale-maker/engine": "*",
     "@fontsource-variable/jost": "5.3.0",
     "@headlessui/vue": "1.7.23",
     "@heroicons/vue": "2.2.0",

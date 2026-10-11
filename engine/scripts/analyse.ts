@@ -11,12 +11,12 @@
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
-import { ambiguities, analyse, applyAnalysis, type Analysis, contextLine } from '../engine/analysis'
-import { isSyncCopy, parseChart, sameScale, serializeChart } from '../engine'
+import { ambiguities, analyse, applyAnalysis, type Analysis, contextLine } from '../src/analysis'
+import { isSyncCopy, parseChart, sameScale, serializeChart } from '../src'
 
 const args = process.argv.slice(2)
 const flag = (f: string): boolean => args.includes(f)
-const REPO = resolve(import.meta.dirname, '../..')
+const REPO = resolve(import.meta.dirname, '..')
 const files = flag('--all')
   ? readdirSync(join(REPO, 'charts'))
       .filter((f) => f.endsWith('.txt') && !isSyncCopy(f))

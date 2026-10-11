@@ -178,9 +178,9 @@ describe('voiceAccidentals', () => {
 })
 
 describe('guide tone lines over the library', () => {
-  const charts = readdirSync('../charts')
+  const charts = readdirSync('charts')
     .filter((name) => !isSyncCopy(name))
-    .map((name) => ({ name, doc: parseChart(readFileSync(`../charts/${name}`, 'utf8')).value }))
+    .map((name) => ({ name, doc: parseChart(readFileSync(`charts/${name}`, 'utf8')).value }))
   const inputs = (doc: ChartDoc): GuideInput[] => {
     const { events } = guideToneTimeline(expandRows(doc).value, chartBeats(doc))
     return events.map((e, i) => ({ row: i, chord: e.chord, scale: resolveScale(e.row) ?? undefined, start: e.start, beats: e.beats }))

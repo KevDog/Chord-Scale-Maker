@@ -2,15 +2,15 @@
 setup:
 	npm ci
 test:
-	cd web && npm run typecheck && npm test
+	npm run typecheck && npm test
 lint:
-	cd web && npm run lint
+	npm run lint
 # browser tests against the production build (installs Chromium for Playwright on first run)
 e2e:
 	cd web && npx playwright install chromium && npm run e2e
-# rewrite fixtures/golden.json from the engine after an intended change; review its diff
+# rewrite engine/fixtures/golden.json and analysis.json from the engine after an intended change; review their diffs
 golden:
-	cd web && npm run golden
+	npm run golden -w engine
 # web app: live-reloading dev server at http://localhost:3000
 dev:
 	cd web && npm run dev

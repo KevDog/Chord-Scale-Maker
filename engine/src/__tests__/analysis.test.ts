@@ -42,7 +42,7 @@ function verdicts(text: string): Record<string, string> {
   return out
 }
 const verdict = (text: string, barChord: string): string | undefined => verdicts(text)[barChord]
-const library = (name: string): string => readFileSync(`../charts/${name}.txt`, 'utf8')
+const library = (name: string): string => readFileSync(`charts/${name}.txt`, 'utf8')
 
 describe('analysis: dominants (§7.1)', () => {
   it('D1 the symbol pins it: 7alt is Altered anywhere', () => {
@@ -299,7 +299,7 @@ describe('reasons from the sources (docs/superpowers/specs/2026-10-10-analysis-r
   })
 
   it('chord_scales.json: Aeolian on a minor chord is for vi, or a written ♭6 (iv is Dorian)', () => {
-    const json = JSON.parse(readFileSync('../chord_scales.json', 'utf8')) as { qualities: Record<string, { scale: string; note?: string }[]> }
+    const json = JSON.parse(readFileSync('chord_scales.json', 'utf8')) as { qualities: Record<string, { scale: string; note?: string }[]> }
     for (const q of ['m', 'm7']) expect(json.qualities[q]?.find((o) => o.scale === 'Aeolian')?.note).toBe('when the chord is vi, or the symbol has a ♭6')
   })
 })
@@ -390,8 +390,8 @@ describe('R2: the blues I7 and IV7 by D5 before D3 (docs/superpowers/specs/2026-
   })
 
   it('no I7 row of any library blues is reasoned by D3', () => {
-    const files = readdirSync('../charts').filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
-    const blues = files.map((f) => [f, analyse(parseChart(readFileSync(`../charts/${f}`, 'utf8')).value)] as const).filter(([, a]) => a.context === 'blues')
+    const files = readdirSync('charts').filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
+    const blues = files.map((f) => [f, analyse(parseChart(readFileSync(`charts/${f}`, 'utf8')).value)] as const).filter(([, a]) => a.context === 'blues')
     expect(blues.map(([f]) => f)).toContain('f_jazz_blues.txt')
     const d3 = blues.flatMap(([f, a]) =>
       a.rows.filter((r) => { const c = readChord(r.chord); return c && c.quality === '7' && a.key && pcOf(c.root) === a.key.tonic && r.rule.includes('D3') }).map((r) => `${f} ${r.bar} ${r.chord}`),
@@ -444,7 +444,7 @@ describe('R4: iii7 is Phrygian, m9 (docs/superpowers/specs/2026-10-10-analysis-r
   })
 
   it('chord_scales.json: Phrygian on a minor chord is for iii, or v of a minor key', () => {
-    const json = JSON.parse(readFileSync('../chord_scales.json', 'utf8')) as { qualities: Record<string, { scale: string; note?: string }[]> }
+    const json = JSON.parse(readFileSync('chord_scales.json', 'utf8')) as { qualities: Record<string, { scale: string; note?: string }[]> }
     for (const q of ['m', 'm7']) expect(json.qualities[q]?.find((o) => o.scale === 'Phrygian')?.note).toBe('iii, or v of a minor key')
   })
 

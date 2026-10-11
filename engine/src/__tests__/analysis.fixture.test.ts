@@ -9,8 +9,8 @@ import { analyse } from '../analysis'
 import { parseChart } from '../chart'
 import { isSyncCopy } from '../util'
 
-const FILE = new URL('../../../fixtures/analysis.json', import.meta.url)
-const CHARTS = new URL('../../../charts/', import.meta.url)
+const FILE = new URL('../../fixtures/analysis.json', import.meta.url)
+const CHARTS = new URL('../../charts/', import.meta.url)
 
 function build(): string {
   const charts = readdirSync(CHARTS)

@@ -1,6 +1,6 @@
 {
   // Playwright tests and config; code in page.addInitScript runs in the browser, hence DOM types
-  "extends": "./tsconfig.engine.json",
+  "extends": "./tsconfig.build.json",
   "compilerOptions": { "lib": ["ES2023", "DOM"] },
   "include": ["e2e/**/*.ts", "playwright.config.ts"]
 }

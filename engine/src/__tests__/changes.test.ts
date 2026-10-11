@@ -13,7 +13,7 @@ vi.mock('../guideTones', async (importOriginal) => {
   return { ...actual, guideVoices: vi.fn(actual.guideVoices) }
 })
 
-const library = (name: string) => parseChart(readFileSync(`../charts/${name}.txt`, 'utf8')).value
+const library = (name: string) => parseChart(readFileSync(`charts/${name}.txt`, 'utf8')).value
 const TENOR: Part = { clef: 'treble', trans: 'Bb' }
 const bars = (name: string, part = CONCERT) => buildChanges(library(name), part).lines.flatMap((l) => l.bars)
 
@@ -281,7 +281,7 @@ describe('guide tones on the Changes sheet', () => {
 })
 
 describe('guide tone lines over the library', () => {
-  const LIBRARY = new URL('../../../charts/', import.meta.url)
+  const LIBRARY = new URL('../../charts/', import.meta.url)
   const docs = readdirSync(LIBRARY)
     .filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
     .map((f) => ({ f, doc: parseChart(readFileSync(new URL(f, LIBRARY), 'utf8')).value }))

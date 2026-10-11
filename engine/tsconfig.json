@@ -1,6 +1,6 @@
 {
-  // The engine and its tests, outside Nuxt (the app's tsconfigs come from .nuxt/ via tsconfig.json).
-  // Same strictness as Nuxt's generated config, plus Node types for the tests.
+  // The engine, its tests and its tools: pure TypeScript, no DOM (lib ES2023), Node types for the tests and tools.
+  // Same strictness as Nuxt's generated config, which also checks this code through the app's imports.
   "compilerOptions": {
     "target": "ES2023",
     "lib": ["ES2023"],
@@ -15,8 +15,7 @@
     "verbatimModuleSyntax": true,
     "skipLibCheck": true,
     "noEmit": true,
-    "allowImportingTsExtensions": true, // build/check-headers.ts runs directly under node
     "types": ["node"]
   },
-  "include": ["engine/**/*.ts", "build/**/*.ts"]
+  "include": ["src/**/*.ts", "scripts/**/*.ts"]
 }

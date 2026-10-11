@@ -98,10 +98,10 @@ describe('transpose', () => {
   it('transposes no library diatonic diminished row into an unclean lettering where a clean one exists, in any key', () => {
     const ugly = (n: { letter: number; acc: number }) => Math.abs(n.acc) > 1 || (n.acc === 1 && (n.letter === 2 || n.letter === 6)) || (n.acc === -1 && (n.letter === 0 || n.letter === 3))
     const clean = (root: Spelled, key: ScaleKey) => !spellFrom(root, SCALES[key][0]).some(ugly)
-    const files = readdirSync('../charts').filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
+    const files = readdirSync('charts').filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
     const bad: string[] = []
     for (const f of files) {
-      const text = readFileSync(`../charts/${f}`, 'utf8')
+      const text = readFileSync(`charts/${f}`, 'utf8')
       if (!/Diatonic Diminished/.test(text)) continue
       const from = /^key:\s*([A-G][b#]?)/m.exec(text)?.[1]
       if (!from) continue

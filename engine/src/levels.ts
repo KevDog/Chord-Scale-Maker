@@ -1,4 +1,4 @@
-import raw from '../../chord_scales.json'
+import raw from '../chord_scales.json'
 import { analyse } from './analysis'
 import type { ChartDoc } from './chart'
 import { rootName } from './pitch'

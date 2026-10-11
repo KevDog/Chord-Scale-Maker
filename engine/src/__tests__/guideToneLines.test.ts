@@ -276,7 +276,7 @@ describe('placing a run nearest the centre', () => {
 
   it('a tie between two placements is exact, not decided by rounding the averages (guitar doxy and clarinet misty, from the 7th)', () => {
     const first = (chart: string, instrument: InstrumentName): number | undefined => {
-      const doc = parseChart(readFileSync(new URL(`../../../charts/${chart}.txt`, import.meta.url), 'utf8')).value
+      const doc = parseChart(readFileSync(new URL(`../../charts/${chart}.txt`, import.meta.url), 'utf8')).value
       const { events } = guideToneTimeline(expandRows(doc).value, chartBeats(doc))
       const part = partFor(instrument)
       return guideToneLine(events.map((e) => guideTonesFor(part, e.chord, resolveScale(e.row) ?? undefined)), rangeOf(part), 'seventh').find((n) => n)?.pitch.midi
@@ -336,7 +336,7 @@ describe('a guide tone line in an instrument’s range', () => {
 })
 
 describe('guide tone lines over the library', () => {
-  const LIBRARY = new URL('../../../charts/', import.meta.url)
+  const LIBRARY = new URL('../../charts/', import.meta.url)
   const charts = readdirSync(LIBRARY)
     .filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
     .map((f) => ({ f, doc: parseChart(readFileSync(new URL(f, LIBRARY), 'utf8')).value }))

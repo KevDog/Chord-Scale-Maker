@@ -15,13 +15,13 @@
  */
 import { readdirSync, readFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
-import { buildChanges, chartBeats, CONCERT, expandRowLines, guideTonesFor, guideToneLine, guideToneTimeline, INSTRUMENTS, isInstrumentName, isSyncCopy, parseChart, partFor, rangeOf, resolveScale, rootName, voiceLead } from '../engine'
-import type { ChartLine, GuideInput, LinedRow, Part, Pitched } from '../engine'
-import { octaveOf } from '../engine/keySignature'
+import { buildChanges, chartBeats, CONCERT, expandRowLines, guideTonesFor, guideToneLine, guideToneTimeline, INSTRUMENTS, isInstrumentName, isSyncCopy, parseChart, partFor, rangeOf, resolveScale, rootName, voiceLead } from '../src'
+import type { ChartLine, GuideInput, LinedRow, Part, Pitched } from '../src'
+import { octaveOf } from '../src/keySignature'
 
 const args = process.argv.slice(2)
 const flag = (f: string): boolean => args.includes(f)
-const REPO = resolve(import.meta.dirname, '../..')
+const REPO = resolve(import.meta.dirname, '..')
 const instrument = flag('--instrument') ? args[args.indexOf('--instrument') + 1] : undefined
 if (instrument !== undefined && !isInstrumentName(instrument)) throw new Error(`--instrument: no instrument "${instrument}" (${Object.keys(INSTRUMENTS).join(', ')})`)
 const part: Part = instrument ? partFor(instrument) : args[args.indexOf('--part') + 1] === 'bass' && flag('--part') ? { ...CONCERT, clef: 'bass' } : CONCERT

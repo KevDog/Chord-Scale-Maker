@@ -21,7 +21,7 @@ const key = (text: string): Key => {
   if (!k) throw new Error(text)
   return k
 }
-const LIBRARY = new URL('../../../charts/', import.meta.url)
+const LIBRARY = new URL('../../charts/', import.meta.url)
 const libraryRows = () =>
   readdirSync(LIBRARY)
     .filter((x) => x.endsWith('.txt') && !isSyncCopy(x))

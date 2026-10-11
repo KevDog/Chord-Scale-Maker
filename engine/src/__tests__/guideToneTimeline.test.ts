@@ -77,8 +77,8 @@ describe('timeline', () => {
 
 describe('the library', () => {
   it('times every chart in its own metre without a problem, and every chord has guide tones', () => {
-    for (const f of readdirSync('../charts').filter((name) => !isSyncCopy(name))) {
-      const doc = parseChart(readFileSync(`../charts/${f}`, 'utf8')).value
+    for (const f of readdirSync('charts').filter((name) => !isSyncCopy(name))) {
+      const doc = parseChart(readFileSync(`charts/${f}`, 'utf8')).value
       const { events, diagnostics } = guideToneTimeline(expandRows(doc).value, chartBeats(doc))
       expect(diagnostics, f).toEqual([])
       expect(events.filter((e) => !guideTonesFor(CONCERT, e.chord, resolveScale(e.row) ?? undefined)).map((e) => e.chord), f).toEqual([])

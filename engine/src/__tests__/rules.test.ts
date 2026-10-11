@@ -6,7 +6,7 @@ import { dominantScaleTable, ruleParts, RULES, TIERS } from '../analysis/rules'
 import { parseChart } from '../chart'
 import { isSyncCopy } from '../util'
 
-const LIBRARY = new URL('../../../charts/', import.meta.url)
+const LIBRARY = new URL('../../charts/', import.meta.url)
 const libraryRuleIds = (): Set<string> => {
   const ids = new Set<string>()
   for (const f of readdirSync(LIBRARY).filter((f) => f.endsWith('.txt') && !isSyncCopy(f))) {

@@ -1,0 +1,34 @@
+{
+  "name": "@chord-scale-maker/engine",
+  "version": "0.0.0",
+  "private": true,
+  "description": "The Chord Scale Maker engine: chart parsing, harmonic analysis, scales, spelling, guide tones, sheet models",
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    ".": "./src/index.ts",
+    "./charts/*": "./charts/*",
+    "./package.json": "./package.json"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint .",
+    "golden": "UPDATE_GOLDEN=1 vitest run src/__tests__/golden.test.ts src/__tests__/analysis.fixture.test.ts",
+    "analyse": "vite-node scripts/analyse.ts --",
+    "guide-lines": "vite-node scripts/guideLines.ts --",
+    "fixture-scales": "vite-node scripts/fixtureScales.ts --"
+  },
+  "devDependencies": {
+    "@nuxt/eslint-config": "1.17.0",
+    "@types/node": "26.6.4",
+    "eslint": "10.12.0",
+    "typescript": "5.9.3",
+    "vite-node": "6.0.0",
+    "vitest": "5.0.3"
+  },
+  "engines": {
+    "node": "24.x"
+  }
+}
