@@ -245,8 +245,17 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   edit leaves the same doc, and the grid says why). An unknown chord gets an amber underline. Numerals and scales
   under the chords sit behind a toggle (off). The inspector (`BarInspector`) has the chord's scales as a radio list
   (the usual one, inside, outside, any scale by search: `searchScales`), its function with the scale each gives,
-  the analysis' Why, and Key change here. The heading fields are `ChartHeadingFields`; the text is the Source, under
-  the ⋯ menu (remembered, `csm-source`). Concert pitch always.
+  the analysis' Why, and the bar's actions: a held bar before or after (`insertHeldBar`, which writes the sounding
+  chord at a part's end, where a held bar wouldn't count), Delete bar, 1st / 2nd ending (`toggleEnding`: on, grown
+  onto the bar next to it, or off), Segno and Coda (`setMark`), a jump (`setNav`), New section here (`splitSection`)
+  and Key change here. Under the grid: + Bar (after the selected section's last, before a part's rounding-out bars),
+  + Section (`addSection`), Repeat a section (`repeatSection`) and Paste bars (`parseBarLine`, inserted by
+  `insertBars` only without diagnostics, before or after the selected bar); their fields are in `BarDialog`. A
+  section's chip renames it (`renameSection`); a repeat's line has Write out (`writeOutCopy`: the `@copy` becomes
+  rows). Endings, marks and jumps show under a bar's chords and in its label. Every refused change leaves the same
+  doc and says why, in the grid or the dialog. The heading fields are `ChartHeadingFields`, with the time and,
+  under Details, the composer, style and form (`chartDetails`); the text is the Source, under the ⋯ menu
+  (remembered, `csm-source`). Concert pitch always.
 - **Scale level** (the `scaleLevels` flag, on; `engine/src/levels.ts`): Basic / Standard / Advanced / Random, above the
   chart grid. Choosing one writes the scales into the chart (`relevel`), so they save, print and share with it.
   - Options in `chord_scales.json` carry `level: basic|advanced`; Standard is the default, and a quality without a

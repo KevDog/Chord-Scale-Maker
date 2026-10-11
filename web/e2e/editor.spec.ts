@@ -45,6 +45,82 @@ test('entering a tune is type, Space, type, Tab', async ({ page }) => {
   await expect(barCell(page, 'A', 3)).toBeFocused()
 })
 
+/** the chart text without its column padding */
+const plain = async (text: import('@playwright/test').Locator): Promise<string> => (await text.inputValue()).replace(/[ \t]*\|[ \t]*/g, ' | ')
+
+test('structure: paste bars, add and repeat a section, write the repeat out, and rename a section', async ({ page }) => {
+  const text = page.getByLabel('Chart text')
+  await text.fill('title: T\nkey: C\nA | 1 | C\nA | 2 | F\n')
+  await expect(barCell(page, 'A', 2)).toHaveAccessibleName('A, bar 2: F')
+  await barCell(page, 'A', 2).click()
+  await page.getByRole('button', { name: 'Paste bars…' }).click()
+  const dialog = page.getByRole('dialog')
+  await dialog.getByLabel('Bars').fill('| Dm7 | G7 |')
+  await dialog.getByRole('button', { name: 'Insert after bar 2' }).click()
+  await expect(dialog).toBeHidden()
+  await expect.poll(() => plain(text)).toMatch(/A \| 3 \| Dm7\s*\nA \| 4 \| G7/)
+  await expect(barCell(page, 'A', 3)).toBeFocused()
+
+  await page.getByRole('button', { name: 'Add section…' }).click()
+  await dialog.getByLabel('Section name').fill('B')
+  await dialog.getByLabel('First chords').fill('Em7 A7')
+  await dialog.getByRole('button', { name: 'Add section' }).click()
+  await expect.poll(() => plain(text)).toMatch(/B \| 5 \| Em7\s*\nB \| 5 \| A7/)
+
+  await page.getByRole('button', { name: 'Repeat a section…' }).click()
+  await dialog.getByLabel('Section to repeat').selectOption('A')
+  await dialog.getByLabel('Name of the repeat').fill('A2')
+  await dialog.getByRole('button', { name: 'Repeat', exact: true }).click()
+  await expect.poll(() => plain(text)).toMatch(/@copy A A2 8/)
+  await expect(page.getByText('repeats A · bars 9–12')).toBeVisible()
+  await page.getByRole('button', { name: 'Write out A2' }).click()
+  await expect.poll(() => plain(text)).toMatch(/A2 \| 9 \| C\s*\nA2 \| 10 \| F/)
+  await expect(barCell(page, 'A2', 9)).toBeVisible()
+
+  await page.getByRole('button', { name: 'Rename section B' }).click()
+  await dialog.getByLabel('Section name').fill('Bridge')
+  await dialog.getByRole('button', { name: 'Rename' }).click()
+  await expect.poll(() => plain(text)).toMatch(/Bridge \| 5 \| Em7/)
+})
+
+test('bar actions: a bar in and out, an ending, a segno, a jump and a new section', async ({ page }) => {
+  const text = page.getByLabel('Chart text')
+  await text.fill('title: T\nkey: C\nA | 1 | C\nA | 2 | F\nA | 3 | G7\nA | 4 | C\n')
+  await expect(barCell(page, 'A', 4)).toHaveAccessibleName('A, bar 4: C')
+  await barCell(page, 'A', 2).click()
+  const inspector = page.getByRole('complementary')
+  await inspector.getByRole('button', { name: 'Bar after' }).click()
+  await expect.poll(() => plain(text)).toMatch(/A \| 2 \| F\s*\nA \| 4 \| G7/)
+  await expect(barCell(page, 'A', 3)).toHaveAccessibleName('A, bar 3: held')
+  await inspector.getByRole('button', { name: 'Delete bar' }).click()
+  await expect.poll(() => plain(text)).toMatch(/A \| 3 \| G7/)
+
+  await barCell(page, 'A', 4).click()
+  await inspector.getByRole('button', { name: '2nd ending' }).click()
+  await inspector.getByRole('button', { name: 'Coda' }).click()
+  await inspector.getByLabel('Jump at the end of the bar').selectOption('D.C. al Fine')
+  await expect.poll(() => plain(text)).toMatch(/@ending 2 A 4/)
+  await expect.poll(() => plain(text)).toMatch(/@coda A 4/)
+  await expect.poll(() => plain(text)).toMatch(/@nav A 4 D\.C\. al Fine/)
+  await expect(barCell(page, 'A', 4)).toHaveAccessibleName('A, bar 4: C; 2nd ending; Coda; D.C. al Fine')
+
+  await barCell(page, 'A', 3).click()
+  await inspector.getByRole('button', { name: 'New section here…' }).click()
+  await page.getByRole('dialog').getByLabel('Section name').fill('B')
+  await page.getByRole('dialog').getByRole('button', { name: 'Start section' }).click()
+  await expect.poll(() => plain(text)).toMatch(/B \| 3 \| G7\s*\nB \| 4 \| C/)
+  await expect.poll(() => plain(text)).toMatch(/@ending 2 B 4/)
+})
+
+test('the header sets the time and, under Details, the composer', async ({ page }) => {
+  const text = page.getByLabel('Chart text')
+  await page.getByLabel('Time', { exact: true }).selectOption('3/4')
+  await expect(text).toHaveValue(/^time: 3\/4$/m)
+  await page.getByRole('button', { name: 'Details', exact: true }).click()
+  await page.getByLabel('Composer').fill('Kosma')
+  await expect(text).toHaveValue(/^composer: Kosma$/m)
+})
+
 test('a new chart starts in C, the key of its chords', async ({ page }) => {
   await expect(page.getByLabel('Chart text')).toHaveValue(/^key: C$/m)
 })

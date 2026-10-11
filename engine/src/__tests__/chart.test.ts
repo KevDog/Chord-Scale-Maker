@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { beatsPerBar, chartBeats, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, parseChart, parseContext, resolveScale, serializeChart } from '../chart'
+import { beatsPerBar, chartBeats, chartDetails, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, parseChart, parseContext, resolveScale, serializeChart } from '../chart'
 import { LIMITS } from '../limits'
 
 describe('isValidKey', () => {
@@ -25,6 +25,11 @@ describe('chart', () => {
     expect(doc.lines.map((l) => l.kind)).toEqual(['meta', 'meta', 'blank', 'comment', 'row', 'row', 'copy'])
     expect(chartMeta(doc)).toEqual({ title: 'T', subtitle: 'S', key: '' })
     expect(doc.lines[5]).toEqual({ kind: 'row', section: 'A', bar: '2', chord: 'F7', scale: '' })
+  })
+
+  it('reads the details the editor shows under the heading, as written', () => {
+    expect(chartDetails(parseChart('time: 3/4\ncomposer: X\nstyle: Waltz\nform: AABA\ncomposer: Y').value)).toEqual({ time: '3/4', composer: 'Y', style: 'Waltz', form: 'AABA' })
+    expect(chartDetails(parseChart('A | 1 | C').value)).toEqual({ time: '', composer: '', style: '', form: '' })
   })
 
   it('defaults the title', () => {

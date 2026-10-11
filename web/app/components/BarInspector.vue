@@ -54,25 +54,54 @@
         <UiText class="text-sm/6!">{{ note.note }}</UiText>
       </section>
 
-      <section v-if="functionsOn" aria-label="Bar actions" class="flex flex-wrap gap-2 border-t border-zinc-950/5 pt-4 dark:border-white/5">
-        <UiButton outline @click="emit('update:doc', insertKeyChange(doc, chord.line))"><KeyIcon data-slot="icon" />Key change here</UiButton>
-      </section>
     </template>
+
+    <section aria-labelledby="bar-heading" class="space-y-3 border-t border-zinc-950/5 pt-4 dark:border-white/5">
+      <UiSubheading id="bar-heading" :level="3">Bar {{ bar }}</UiSubheading>
+      <UiText v-if="cell.kind === 'implied'" class="text-sm/6!">This bar rounds the part out to a whole phrase. Type a chord here to make it the chart’s own.</UiText>
+      <template v-else>
+        <div class="flex flex-wrap gap-2">
+          <UiButton outline @click="change(insertHeldBar(doc, section, bar), `Bar ${bar} added`, 'A section can’t start with a held bar.')"><PlusIcon data-slot="icon" />Bar before</UiButton>
+          <UiButton outline @click="change(insertHeldBar(doc, section, bar + 1), `Bar ${bar + 1} added`, 'No bar can go there.', bar + 1)"><PlusIcon data-slot="icon" />Bar after</UiButton>
+          <UiButton outline @click="change(deleteBar(doc, section, bar), `Bar ${bar} deleted`, 'A section can’t start with a held bar: give the next bar a chord first.')"><TrashIcon data-slot="icon" />Delete bar</UiButton>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <UiButton v-for="n in ENDINGS" :key="n" :outline="ending !== n" :color="ending === n ? 'note' : undefined" :aria-pressed="ending === n" @click="change(toggleEnding(doc, section, n, bar), `${n === 1 ? '1st' : '2nd'} ending ${ending === n ? 'off' : 'on'}`, 'An ending can’t go over the other one.')">
+            {{ n === 1 ? '1st' : '2nd' }} ending
+          </UiButton>
+          <UiButton v-for="m in MARKS" :key="m" :outline="!hasMark(m)" :color="hasMark(m) ? 'note' : undefined" :aria-pressed="hasMark(m)" @click="change(setMark(doc, section, bar, m, !hasMark(m)), `${MARK_LABELS[m]} ${hasMark(m) ? 'off' : 'on'}`, '')">
+            {{ MARK_LABELS[m] }}
+          </UiButton>
+        </div>
+        <UiField>
+          <UiLabel>Jump at the end of the bar</UiLabel>
+          <UiSelect :model-value="navText" @update:model-value="(v) => change(setNav(doc, section, bar, String(v)), String(v) || 'No jump', '')">
+            <option value="">None</option>
+            <option v-for="t in navOptions" :key="t" :value="t">{{ t }}</option>
+          </UiSelect>
+        </UiField>
+        <div class="flex flex-wrap gap-2">
+          <UiButton outline @click="emit('split')">New section here…</UiButton>
+          <UiButton v-if="functionsOn && chord" outline @click="emit('update:doc', insertKeyChange(doc, chord.line))"><KeyIcon data-slot="icon" />Key change here</UiButton>
+        </div>
+      </template>
+    </section>
   </aside>
 </template>
 
 <script setup lang="ts">
-import { KeyIcon } from '@heroicons/vue/16/solid'
-import { type BarChord, type ChartDoc, functionChoices, insertKeyChange, parseChord, rootName, type RowLine, type RowNote, rowNotes, sameFunction, samePitchScale, setRowField } from '@chord-scale-maker/engine'
+import { KeyIcon, PlusIcon, TrashIcon } from '@heroicons/vue/16/solid'
+import { type BarChord, type ChartBar, type ChartDoc, deleteBar, functionChoices, insertHeldBar, insertKeyChange, parseChord, rootName, type RowLine, type RowNote, rowNotes, sameFunction, samePitchScale, setMark, setNav, setRowField, toggleEnding } from '@chord-scale-maker/engine'
 import ScaleOptionLabel from './ScaleOptionLabel.vue'
 
 /**
  * The bar editor's inspector (docs/superpowers/proposals/editor-ux/README.md §3 B): the selected chord's scale (the
  * usual one, the alternates inside and outside, any scale by search), its function with the scale each gives, and
- * why the analysis chose what it did.
+ * why the analysis chose what it did; then the bar's own actions: bars in and out, endings, marks, a jump and a new
+ * section. A change the chart can't take is refused with why.
  */
-const props = defineProps<{ doc: ChartDoc; section: string; bar: number; index: number; chord: BarChord | null; count: number }>()
-const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; said: [text: string] }>()
+const props = defineProps<{ doc: ChartDoc; section: string; bar: number; index: number; chord: BarChord | null; count: number; cell: ChartBar }>()
+const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; said: [text: string]; refused: [text: string]; select: [bar: number]; split: [] }>()
 
 const functionsOn = useFeature('functions')
 const ORDINALS = ['1st', '2nd', '3rd', '4th']
@@ -111,6 +140,23 @@ const rootText = computed((): string => {
 const query = ref('')
 watch(() => props.chord?.line, () => (query.value = ''))
 const found = computed(() => searchScales(query.value, rootText.value))
+
+const ENDINGS = [1, 2] as const
+const MARKS = ['segno', 'coda'] as const
+const MARK_LABELS = { segno: 'Segno', coda: 'Coda' } as const
+const NAVS = ['D.S. al Coda', 'D.S. al Fine', 'D.C. al Coda', 'D.C. al Fine', 'To Coda', 'Fine']
+const ending = computed(() => props.cell.ending?.n ?? null)
+const hasMark = (m: 'segno' | 'coda'): boolean => props.cell.marks.some((x) => x.mark === m)
+const navText = computed(() => props.cell.nav[0]?.text ?? '')
+const navOptions = computed(() => (navText.value && !NAVS.includes(navText.value) ? [...NAVS, navText.value] : NAVS))
+
+/** a bar action's new doc: the same doc means the chart can't take it, and why is said */
+function change(next: ChartDoc, said: string, refused: string, select?: number): void {
+  if (next === props.doc) return emit('refused', refused || 'The chart can’t take that here.')
+  emit('update:doc', next)
+  emit('said', `${props.section}: ${said}`)
+  if (select !== undefined) emit('select', select)
+}
 
 function setScale(scale: string): void {
   const line = props.chord?.line

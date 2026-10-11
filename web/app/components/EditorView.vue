@@ -56,7 +56,7 @@
             This chart is over a size limit. Shorten it in the Source to edit it here.
           </div>
           <template v-else>
-            <ChartHeadingFields :doc="editor.doc.value" @update:doc="editor.setDoc" />
+            <ChartHeadingFields details :doc="editor.doc.value" @update:doc="editor.setDoc" />
             <BarEditor :doc="editor.doc.value" @update:doc="editor.setDoc" @source="prefs.source.value = true" />
           </template>
         </section>
