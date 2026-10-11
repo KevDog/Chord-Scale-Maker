@@ -1,7 +1,8 @@
 title: F Bird Blues
 subtitle: Blues for Alice Changes
 key: F
-# analysis: 2026-10-11, rules v1; F
+context: blues
+# analysis: 2026-10-11, rules v1; F, blues
 
 # section | bar | chord | scale
 A | 1  | FMaj7 | F Ionian             # tonic: the 4th is in the key
@@ -10,8 +11,8 @@ A | 2  | A7b9  | A Phrygian Dominant  # V7/vi in F: b9 and b13 are in the key
 A | 3  | Dm7   | D Dorian             # ii of the ii–V to C minor
 A | 3  | G7    | G Mixolydian         # V7/v in F: natural tensions
 A | 4  | Cm7   | C Dorian             # ii of F7: Dorian
-A | 4  | F7    | F Mixolydian         # extended dominant: V7 of Bb7
-A | 5  | Bb7   | Bb Lydian Dominant   # IV7 in F, not resolving: the #11 is in the key
+A | 4  | F7    | F Mixolydian         # I7 of the blues: a tonic with dominant colour, natural tensions
+A | 5  | Bb7   | Bb Mixolydian        # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
 A | 6  | Bbm7  | Bb Dorian            # ii of Eb7: Dorian
 A | 6  | Eb7   | Eb Mixolydian        # extended ii–V: a side-step, its own key
 A | 7  | Am7   | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)

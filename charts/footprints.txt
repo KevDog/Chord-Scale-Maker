@@ -3,6 +3,7 @@ subtitle: 12-Bar Minor Blues in 6/4, Real Book Turnaround
 composer: Wayne Shorter
 style: Blues
 key: Cm
+context: modal
 form: A
 # analysis: 2026-10-11, rules v1; C minor, modal
 

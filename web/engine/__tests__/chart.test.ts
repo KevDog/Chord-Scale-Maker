@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { beatsPerBar, chartBeats, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, parseChart, resolveScale, serializeChart } from '../chart'
+import { beatsPerBar, chartBeats, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, parseChart, parseContext, resolveScale, serializeChart } from '../chart'
 import { LIMITS } from '../limits'
 
 describe('isValidKey', () => {
@@ -204,5 +204,64 @@ describe('the function cell and @key lines', () => {
   it("copies a row's function to its @copy repeats", () => {
     const rows = expandRowLines(parseChart('A | 1 | D7 |  | V7/V\n@copy A B 8\n').value).value
     expect(rows.map((r) => `${r.section} ${r.bar} ${r.function}`)).toEqual(['A 1 V7/V', 'B 9 V7/V'])
+  })
+})
+
+describe('context: and @context (docs/superpowers/specs/2026-10-10-chart-context-design.md §1)', () => {
+  it('reads context: and writes it back', () => {
+    for (const v of ['functional', 'modal', 'blues']) {
+      const text = `title: T\ncontext: ${v}\n`
+      const { value, diagnostics } = parseChart(text)
+      expect(diagnostics).toEqual([])
+      expect(value.lines[1]).toEqual({ kind: 'meta', key: 'context', value: v })
+      expect(serializeChart(value)).toBe(text)
+    }
+  })
+
+  it('a context: that is none of the three is a header error, the line kept as written (like a bad key:)', () => {
+    const { value, diagnostics } = parseChart('title: T\ncontext: bossa\n')
+    expect(diagnostics).toEqual([{ line: 2, message: 'context: functional, modal or blues' }])
+    expect(value.lines[1]).toEqual({ kind: 'meta', key: 'context', value: 'bossa' })
+    expect(serializeChart(value)).toBe('title: T\ncontext: bossa\n')
+  })
+
+  it('reads a context: with a trailing comment (the spec example), keeping the line as written', () => {
+    const text = 'context: modal          # the whole tune\n'
+    const { value, diagnostics } = parseChart(text)
+    expect(diagnostics).toEqual([])
+    expect(value.lines[0]).toEqual({ kind: 'meta', key: 'context', value: 'modal          # the whole tune' })
+    expect(parseContext('modal          # the whole tune')).toBe('modal')
+    expect(serializeChart(value)).toBe(text)
+  })
+
+  it('an empty context: is absent, like an empty key:: no diagnostic', () => {
+    expect(parseChart('title: T\ncontext:\n').diagnostics).toEqual([])
+    expect(parseChart('title: T\ncontext:   \n').diagnostics).toEqual([])
+  })
+
+  it('rejects an @context whose section name is over the limit', () => {
+    expect(parseChart(`@context ${'S'.repeat(LIMITS.maxCell + 1)} 1 modal`).diagnostics[0]?.message).toBe(`section name longer than ${LIMITS.maxCell} characters`)
+  })
+
+  it('accepts minor: (reserved) and keeps it', () => {
+    const { value, diagnostics } = parseChart('minor: dorian\n')
+    expect(diagnostics).toEqual([])
+    expect(value.lines[0]).toEqual({ kind: 'meta', key: 'minor', value: 'dorian' })
+    expect(serializeChart(value)).toBe('minor: dorian\n')
+  })
+
+  it('reads @context SECTION BAR VALUE and writes it back', () => {
+    const { value, diagnostics } = parseChart('@context A 1 modal\n@context B 17 Blues\n')
+    expect(diagnostics).toEqual([])
+    expect(value.lines).toEqual([
+      { kind: 'context', section: 'A', bar: 1, context: 'modal' },
+      { kind: 'context', section: 'B', bar: 17, context: 'blues' },
+    ])
+    expect(serializeChart(value)).toBe('@context A 1 modal\n@context B 17 blues\n')
+  })
+
+  it('rejects a malformed @context', () => {
+    for (const bad of ['@context A 1', '@context A x modal', '@context A 1 bossa', '@context A 1 modal extra'])
+      expect(parseChart(bad).diagnostics[0]?.message, bad).toBe('use  @context SECTION BAR CONTEXT  (functional, modal or blues)')
   })
 })

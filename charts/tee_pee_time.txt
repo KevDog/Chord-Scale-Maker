@@ -3,31 +3,32 @@ subtitle: Blues (12 12 8 12)
 composer: Clark Terry
 style: Blues
 key: Bb
+context: blues
 form: AABC, 44 bars
 source: Colorado Cookbook, p. 234
-# analysis: 2026-10-11, rules v1; Bb
+# analysis: 2026-10-11, rules v1; Bb, blues
 
 # section | bar | chord | scale
-A1 | 1  | Bb7 | Bb Mixolydian       # extended dominant: V7 of Eb7
-A1 | 2  | Eb7 | Eb Lydian Dominant  # IV7 in Bb, not resolving: the #11 is in the key
-A1 | 3  | Bb7 | Bb Mixolydian       # extended dominant: V7 of Eb7
-A1 | 5  | Eb7 | Eb Lydian Dominant  # IV7 in Bb, not resolving: the #11 is in the key
-A1 | 7  | Bb7 | Bb Mixolydian       # I7 in Bb, not resolving: natural tensions
-A1 | 9  | Cm7 | C Dorian            # ii of F7: Dorian
-A1 | 10 | F7  | F Mixolydian        # extended dominant: V7 of Bb7
-A1 | 11 | Bb7 | Bb Mixolydian       # I7 in Bb, not resolving: natural tensions
-A1 | 12 | Cm7 | C Dorian            # ii of F7: Dorian
-A1 | 12 | F7  | F Mixolydian        # extended dominant: V7 of Bb7
-A2 | 13 | Bb7 | Bb Mixolydian       # extended dominant: V7 of Eb7
-A2 | 14 | Eb7 | Eb Lydian Dominant  # IV7 in Bb, not resolving: the #11 is in the key
-A2 | 15 | Bb7 | Bb Mixolydian       # extended dominant: V7 of Eb7
-A2 | 17 | Eb7 | Eb Lydian Dominant  # IV7 in Bb, not resolving: the #11 is in the key
-A2 | 19 | Bb7 | Bb Mixolydian       # I7 in Bb, not resolving: natural tensions
-A2 | 21 | Cm7 | C Dorian            # ii of F7: Dorian
-A2 | 22 | F7  | F Mixolydian        # extended dominant: V7 of Bb7
-A2 | 23 | Bb7 | Bb Mixolydian       # I7 in Bb, not resolving: natural tensions
-B  | 25 | D7  | D Mixolydian        # extended dominant: each one falls a fifth into the next: natural tensions
-B  | 27 | G7  | G Mixolydian        # extended dominant: each one falls a fifth into the next: natural tensions
-B  | 29 | C7  | C Mixolydian        # V7 of V7: the dominant of the dominant: natural tensions
-B  | 31 | F7  | F Mixolydian        # extended dominant: V7 of Bb7
+A1 | 1  | Bb7 | Bb Mixolydian  # I7 of the blues: a tonic with dominant colour, natural tensions
+A1 | 2  | Eb7 | Eb Mixolydian  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A1 | 3  | Bb7 | Bb Mixolydian  # I7 of the blues: a tonic with dominant colour, natural tensions
+A1 | 5  | Eb7 | Eb Mixolydian  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A1 | 7  | Bb7 | Bb Mixolydian  # I7 of the blues: a tonic with dominant colour, natural tensions
+A1 | 9  | Cm7 | C Dorian       # ii of F7: Dorian
+A1 | 10 | F7  | F Mixolydian   # extended dominant: V7 of Bb7
+A1 | 11 | Bb7 | Bb Mixolydian  # I7 of the blues: a tonic with dominant colour, natural tensions
+A1 | 12 | Cm7 | C Dorian       # ii of F7: Dorian
+A1 | 12 | F7  | F Mixolydian   # extended dominant: V7 of Bb7
+A2 | 13 | Bb7 | Bb Mixolydian  # I7 of the blues: a tonic with dominant colour, natural tensions
+A2 | 14 | Eb7 | Eb Mixolydian  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A2 | 15 | Bb7 | Bb Mixolydian  # I7 of the blues: a tonic with dominant colour, natural tensions
+A2 | 17 | Eb7 | Eb Mixolydian  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A2 | 19 | Bb7 | Bb Mixolydian  # I7 of the blues: a tonic with dominant colour, natural tensions
+A2 | 21 | Cm7 | C Dorian       # ii of F7: Dorian
+A2 | 22 | F7  | F Mixolydian   # extended dominant: V7 of Bb7
+A2 | 23 | Bb7 | Bb Mixolydian  # I7 of the blues: a tonic with dominant colour, natural tensions
+B  | 25 | D7  | D Mixolydian   # extended dominant: each one falls a fifth into the next: natural tensions
+B  | 27 | G7  | G Mixolydian   # extended dominant: each one falls a fifth into the next: natural tensions
+B  | 29 | C7  | C Mixolydian   # V7 of V7: the dominant of the dominant: natural tensions
+B  | 31 | F7  | F Mixolydian   # extended dominant: V7 of Bb7
 @copy A1 C 32

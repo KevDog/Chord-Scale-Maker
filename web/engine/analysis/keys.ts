@@ -1,4 +1,4 @@
-import { matchKeyText } from '../chart'
+import { type ChartContext, matchKeyText } from '../chart'
 import { parseRoot, pcOf, rootName, type Spelled } from '../pitch'
 import { downFifth, downHalf, type Entry, type Family, interval, nextOf, prevOf } from './stream'
 
@@ -110,29 +110,78 @@ export function findCadences(stream: readonly Entry[]): Cadence[] {
   return out
 }
 
-/** §5.4: a 12-bar (or 24-bar) form with a dominant 7th on its root in bar 1 and on the 4th above it in bar 5 */
-export function bluesKey(stream: readonly Entry[], formBars: number): Key | null {
-  if (formBars % 12 !== 0 || formBars > 24 || !stream.length) return null
+/**
+ * §5.4: a dominant 7th on its root in bar 1 and on the 4th above it in bar 5, in a 12-bar (or 24-bar) form, or in
+ * the first section of a form of 12-bar sections, or of a 12-12-8-12 one (AABC, 44 bars; Levine p. 226).
+ * sections: the form's section lengths in bars, in order
+ */
+export function bluesKey(stream: readonly Entry[], formBars: number, sections: readonly number[] = []): Key | null {
+  return bluesTest(stream, formBars, sections)?.key ?? null
+}
+
+/** which test found the blues: the whole form, or its first 12-bar section */
+export type BluesBy = 'form' | 'section'
+
+function bluesTest(stream: readonly Entry[], formBars: number, sections: readonly number[]): { key: Key; by: BluesBy } | null {
+  const byForm = formBars % 12 === 0 && formBars <= 24
+  const twelves = sections.length > 1 && sections.every((n) => n === 12)
+  const by: BluesBy | null = byForm ? 'form' : twelves || sections.join('-') === '12-12-8-12' ? 'section' : null
+  if (!by || !stream.length) return null
   const first = stream[0]
   const startBar = first?.start ?? 1
   const at = (bar: number): Entry | undefined => stream.find((e) => e.start <= bar && bar < e.start + e.bars)
   const five = at(startBar + 4)
   if (first?.family !== 'dominant' || five?.family !== 'dominant' || !first.root) return null
-  return interval(first.pc, five.pc) === 5 ? makeKey(first.root, false) : null
+  return interval(first.pc, five.pc) === 5 ? { key: makeKey(first.root, false), by } : null
 }
 
-/** §5.4: few chords take part in cadences, and chords last two bars or more */
-export function isModal(stream: readonly Entry[], cadences: readonly Cadence[]): boolean {
-  if (!stream.length) return false
+/**
+ * §5.4: what the detection read, for the report: the chords (stream entries) and how many take part in cadences,
+ * the median chord's length in bars, the dominant 7ths and whether they share one root, the blues test that passed
+ */
+export type Detection = Readonly<{
+  context: ChartContext
+  chords: number
+  inCadence: number
+  medianBars: number
+  dominants: number
+  oneRoot: boolean
+  blues: BluesBy | null
+  /** the chords' lengths, shortest first (what the median is read from) */
+  lengths: readonly number[]
+}>
+
+/**
+ * §5.4: the context by detection. Blues by its form; else modal when few chords take part in cadences (under a
+ * third) and chords last two bars or more (the median), unless more than half the chords are dominant 7ths on more
+ * than one root (modal music is poor in dominants: M&H p. 187; one root is a Mixolydian tonic, M&H p. 190). The
+ * cuts are unsourced numbers; the report shows them.
+ */
+export function detectContext(stream: readonly Entry[], cadences: readonly Cadence[], form: readonly Entry[], formBars: number, sections: readonly number[]): Detection {
   const inCadence = new Set<number>()
   for (const c of cadences) {
     for (let i = c.approach; i <= c.dominant; i++) inCadence.add(i)
     inCadence.add(c.target)
   }
-  const bars = stream.map((e) => e.bars).sort((a, b) => a - b)
-  const median = bars[Math.floor(bars.length / 2)] ?? 0
-  return inCadence.size < stream.length / 3 && median >= 2
+  const lengths = stream.map((e) => e.bars).sort((a, b) => a - b)
+  const dominants = stream.filter((e) => e.family === 'dominant')
+  const counts = {
+    chords: stream.length,
+    inCadence: inCadence.size,
+    medianBars: lengths[Math.floor(lengths.length / 2)] ?? 0,
+    dominants: dominants.length,
+    oneRoot: dominants.length > 0 && dominants.every((e) => e.pc === dominants[0]?.pc),
+    lengths,
+  }
+  const blues = bluesTest(form, formBars, sections)?.by ?? null
+  const context: ChartContext = blues ? 'blues' : stream.length && modalTests(counts).every(Boolean) ? 'modal' : 'functional'
+  return { context, ...counts, blues }
 }
+
+type Counts = Pick<Detection, 'chords' | 'inCadence' | 'medianBars' | 'dominants' | 'oneRoot'>
+
+/** the three modal tests: few chords in cadences, long chords, and not mostly dominants on several roots */
+export const modalTests = (d: Counts): readonly [boolean, boolean, boolean] => [d.inCadence < d.chords / 3, d.medianBars >= 2, !(d.dominants > d.chords / 2 && !d.oneRoot)]
 
 /** §5.2: score the 24 keys when the chart doesn't say */
 export function scoreKey(stream: readonly Entry[], cadences: readonly Cadence[]): Key | null {
