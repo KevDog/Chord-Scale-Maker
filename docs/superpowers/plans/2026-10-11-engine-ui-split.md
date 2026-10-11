@@ -3,8 +3,8 @@
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or
 > superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-> **Status: waiting on the user.** D1 is decided (2026-10-11): **two packages, one repo; Part A is the work.** The
-> other decisions are **Assumed (confirm)**; don't start until the user has answered the spec's remaining "Open
+> **Status: waiting on the user.** D1, D2 and D3 are decided (2026-10-11): **two packages, one repo; Part A is the work;
+> the engine owns `charts/`; `engine/` at the root, `web/` unchanged.** The other decisions are **Assumed (confirm)**; don't start until the user has answered the spec's remaining "Open
 > questions". A step tagged **[Dn]** depends on assumed decision Dn; if the user decides otherwise, change that step
 > before running it. **Part B** runs only when a Phase 2 trigger appears: an API experience, or others using the engine
 > for their own work.

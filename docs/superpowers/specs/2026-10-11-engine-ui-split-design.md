@@ -16,10 +16,10 @@ assumed answer.
 2. ~~**What is the split for?**~~ **Decided (user, 2026-10-11):** a clear boundary now; two repos later if we want to
    offer an API experience or let others use the engine for their own work. Those are the Phase 2 triggers. → **D1**,
    **D9**
-3. **Who owns `charts/`?** Assumed: the engine package. The analyser writes the charts, and the golden and analysis
+3. ~~**Who owns `charts/`?**~~ **Decided (user, 2026-10-11): the engine package.** The analyser writes the charts, and the golden and analysis
    fixtures and 15 engine test files read them. The site only displays them. Cost: once there are two repos, a new
    chart reaches the site only with an engine release. → **D2**
-4. **Layout.** Assumed: a new top-level `engine/` package; `web/` stays where it is, so Vercel's root directory
+4. ~~**Layout.**~~ **Decided (user, 2026-10-11):** a new top-level `engine/` package; `web/` stays where it is, so Vercel's root directory
    doesn't change. → **D3**
 5. **CI check names.** Assumed: keep the jobs `engine` and `e2e`, so the `protect main` ruleset needs no edit; the
    `engine` job now runs both packages' lint, typecheck and tests. → **D6**
@@ -222,8 +222,8 @@ C comes later.
 | # | Question | Decision | Status | Alternatives | Why |
 | --- | --- | --- | --- | --- | --- |
 | D1 | Repo shape | One repo, two npm workspace packages (B). Separate repos (C) only when a Phase 2 trigger appears: an API experience, or others using the engine for their own work. | **Decided (user, 2026-10-11)** | A: lint rules only. C: two repos now. | E4: 44% of code PRs span both; one author; no second consumer. B gives the boundary at no cost to the PR flow and prepares C. |
-| D2 | Owner of `charts/` | The engine package (`engine/charts/`). The app reads them through the package. | **Assumed (confirm)** | The app (`web/charts/`), with the engine's tests reading across. A third package, `library`. | The analyser writes them; the fixtures and 15 engine test files read them; "make a chart" is all engine commands. The app only displays them. A third package adds a manifest for no gain. |
-| D3 | Layout | `engine/` at the root, holding `src/` (today's `web/engine/`), `scripts/`, `charts/`, `fixtures/`, `chord_scales.json`. `web/` stays. | **Assumed (confirm)** | `packages/engine` + `apps/web`: conventional, but moves Vercel's root directory and every app path. | Smallest diff. Vercel's root directory stays `web`. |
+| D2 | Owner of `charts/` | The engine package (`engine/charts/`). The app reads them through the package. | **Decided (user, 2026-10-11)** | The app (`web/charts/`), with the engine's tests reading across. A third package, `library`. | The analyser writes them; the fixtures and 15 engine test files read them; "make a chart" is all engine commands. The app only displays them. A third package adds a manifest for no gain. |
+| D3 | Layout | `engine/` at the root, holding `src/` (today's `web/engine/`), `scripts/`, `charts/`, `fixtures/`, `chord_scales.json`. `web/` stays. | **Decided (user, 2026-10-11)** | `packages/engine` + `apps/web`: conventional, but moves Vercel's root directory and every app path. | Smallest diff. Vercel's root directory stays `web`. |
 | D4 | Workspace tool | npm workspaces. | **Assumed (confirm)** | pnpm or Yarn workspaces; Turborepo on top. | The project uses npm; two packages need no task runner; Vercel and Dependabot support npm workspaces. |
 | D5 | What the engine package ships | TypeScript source: `exports` points at `src/index.ts`; no build step. | **Assumed (confirm)** | Build a `dist/` now (as Phase 2 needs). | Vite (Nuxt, Vitest, vite-node) compiles linked workspace sources already; a build step is only needed for publishing. YAGNI. |
 | D6 | CI job names | Keep `engine` and `e2e`. `engine` runs lint, typecheck and test for both packages, then the app's build, header check and audit. | **Assumed (confirm)** | Separate `engine` and `web` jobs, adding `web` to the ruleset (a settings change the user makes). | The ruleset needs no edit; the name `engine` is already a misnomer for a job that builds the app, so nothing new is lost. |
