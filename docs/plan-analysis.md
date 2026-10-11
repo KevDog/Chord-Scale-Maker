@@ -136,14 +136,39 @@ which is why relative-key ambiguity rarely matters. The library chart does not m
 
 ### 5.4 Modal and blues contexts
 
-Two whole-tune contexts change the rules:
+Two whole-tune contexts change the rules. A chart may state its context in its header, `context: functional |
+modal | blues`, as it states a key (principle 1); a written context always wins, and without one it is detected
+(`prepare()` in `index.ts`: context `stated ?? detected`; docs/superpowers/specs/2026-10-10-chart-context-design.md).
 
-- **Modal:** fewer than a third of the chords take part in cadences, and the median chord lasts two bars or
-  more. So What, Maiden Voyage, Milestones, Impressions and Footprints qualify. In a modal tune the functional
-  rules are off: each chord is its own mode (§7.6).
-- **Blues:** the form is 12 bars (or a multiple), with a dominant 7th on one root in bar 1 and the dominant a
-  fourth above it in bar 5. The key is the bar-1 root, major. The tonic and subdominant are dominant 7ths by
-  nature, not by function (§7.1, rule D7).
+| Context | Rules | Key areas |
+| --- | --- | --- |
+| `functional` | cadences, functions, areas (the default) | on |
+| `modal` | each chord its own mode: M5, m6, D7, s3 | off |
+| `blues` | the I7 and IV7 by their degree (R2: D5 before D3; IV7 Mixolydian) | off |
+
+- **Blues (detected):** a dominant 7th on one root in bar 1 and the dominant a fourth above it in bar 5, in a
+  12-bar (or 24-bar) form, or in the first section of a form of 12-bar sections or of a 12-12-8-12 one (`AABC, 44
+  bars`; Levine p. 226: Locomotion, Tee Pee Time, Unit Seven). The tests stay dominant-on-bar-1 and -bar-5, not
+  "tonic and subdominant of any quality": Solar's key areas depend on its being read as functional, and a chart
+  that is a blues by another shape (the Bird blues, a minor blues, Watermelon Man's 16 bars) says `context: blues`.
+  The key: `key:` beats the blues key (`stated ?? blues ?? scored`); with no `key:` it is the bar-1 root, major,
+  or, for a stated blues the detection missed, the bar-1 chord's root and mode. The tonic and subdominant are
+  dominant 7ths by nature, not by function (§7.1, R2). A minor blues is `context: blues` with the minor-key rules
+  inside: it changes the label and the key source, not the scales (Levine p. 225; M&H pp. 143–144).
+- **Modal (detected):** fewer than a third of the chords take part in cadences, and the median chord lasts two bars
+  or more, unless more than half the chords are dominant 7ths on more than one root (modal music is poor in
+  dominants, M&H p. 187, N&G p. 153; an all-dominant tune has no cadences by §5.1's definition, and read modal
+  until this guard; one root is a Mixolydian tonic, M&H p. 190, so a `G7` vamp stays modal). So What, Maiden
+  Voyage, Milestones and Impressions qualify; Footprints sits exactly on the median and says `context: modal`. In
+  a modal tune the functional rules are off: each chord is its own mode (§7.6).
+- **The thresholds** (a third of the chords in cadences; a median of two bars; half the chords dominant) are
+  unsourced numbers. The report shows them: `context: modal (detected: 0 of 8 chords in cadences, median chord 2
+  bars)`, or `context: modal (stated)`; `--ambiguous` names a detection within one chord of one of them
+  ("context: modal by the median exactly (2 bars); consider  context: modal").
+- **Not built:** `minor: dorian | aeolian` is reserved (accepted and reported as ignored); `@context SECTION BAR
+  VALUE` is parsed like `@key` (from its bar until the next; inside a `modal` span the span's first chord is its
+  tonic, inside a `blues` span its bar 1 is the I), and reported as "not yet supported: using the chart's context"
+  until a chart needs it. A bad `context:` value is a header diagnostic; the analysis detects and reports it.
 
 ### 5.5 Diatonic chords
 
@@ -459,8 +484,8 @@ Twenty-two of twenty-nine rows agree; the seven that don't are three decisions (
 | 1 | FMaj7 | I | M3 | F Ionian | ✓ |
 | 2 | Eø7 A7♭9 | related iiø7, V7/vi; ♭9 and ♭13 in F | h2, D4 | E Locrian, A Phrygian Dominant | ✓ ✓ |
 | 3 | Dm7 G7 | related ii, V7/V (→ Cm7, the next ii) | m4, D4 | D Dorian, G Mixolydian | ✓ ✓ |
-| 4 | Cm7 F7 | related ii, extended (→ B♭7) | m4, D3 | C Dorian, F Mixolydian | ✓ ✓ |
-| 5 | B♭7 | IV7 in F, not resolving (not a blues: R2 doesn't reach it) | D5 (the ♯11 is in the key) | B♭ Lydian Dominant | ✓ |
+| 4 | Cm7 F7 | related ii, I7 of the blues (R2, not an extended dominant) | m4, D5 | C Dorian, F Mixolydian | ✓ ✓ |
+| 5 | B♭7 | IV7 of the blues (`context: blues`) | D5 (R2) | B♭ Mixolydian | ✓ |
 | 6 | B♭m7 E♭7 | related ii; an extended ii–V, a side-step in its own key | m4, D4 | B♭ Dorian, E♭ Mixolydian | ✓ ✓ |
 | 7 | Am7 D7 | iii; an extended ii–V, a side-step | m9, D4 | A Phrygian, D Mixolydian | ✓ ✓ |
 | 8 | A♭m7 D♭7 | related ii; an extended ii–V, a side-step | m4, D4 | A♭ Dorian, D♭ Mixolydian | ✓ ✓ |
@@ -469,10 +494,11 @@ Twenty-two of twenty-nine rows agree; the seven that don't are three decisions (
 | 12 | Gm7 C7 | ii–V → I | m4, D4 | G Dorian, C Mixolydian | ✓ ✓ |
 
 The first chart gave A7♭9 and D7♭9, the same function, different scales; the analyser gives both Phrygian
-Dominant, and so does the chart now. Bar 5 stays B♭ Lydian Dominant: the chart opens on FMaj7, so the analyser
-doesn't read it as a blues, and R2's Mixolydian for the blues IV7 (§10, decision 4) doesn't reach it; it is a IV7 in
-F that doesn't resolve (D5), its ♯11 in the key. With R5 the V7 → minor rows (A7♭9 → Dm7, D7♭9 → Gm7) climb to
-Altered at Advanced.
+Dominant, and so does the chart now. The chart opens on FMaj7, so the detection doesn't read it as a blues; it says
+`context: blues` (§5.4), and bar 5's B♭7 is the blues IV7, Mixolydian by R2 (§10, decision 4), where as a IV7 in F
+that doesn't resolve it was Lydian Dominant. Nothing else moves: its ii–Vs are side-steps and secondary dominants
+read pair by pair, not key areas, so turning the areas off costs no scale. With R5 the V7 → minor rows
+(A7♭9 → Dm7, D7♭9 → Gm7) climb to Altered at Advanced.
 
 ### Rhythm Changes (B♭ major)
 
@@ -501,7 +527,8 @@ minor), Dø7 Locrian (h2), G7♯5♯9 Altered (D1), Cm(Maj7) Melodic Minor (m1),
 
 ### Footprints (C minor, modal)
 
-Four of eight chords are the tonic for four bars; no cadence. Modal. Cm7 → Dorian (m6), Fm7 → Dorian, F♯ø7 →
+No cadence (0 of 8 chords), and the median chord exactly two bars: modal by the detection, on its threshold, so
+the chart says `context: modal` (§5.4). Cm7 → Dorian (m6), Fm7 → Dorian, F♯ø7 →
 Locrian (h2; h1 dropped, so the chart's ♮2 is a `# keep:` if wanted), F13♯11 → Lydian Dominant (D1), E7alt and A7alt
 → Altered (D1).
 
@@ -630,8 +657,8 @@ the places a future rule change is most likely to revisit.
    first answer was Lydian Dominant, the ♯11 (E over B♭7 in F) being the key's major 7th. The sources write the
    blues IV7 as Mixolydian (N&G p. 105; M&H pp. 93, 125), which is what most people play, so principle 4 yields
    for the blues subdominant, exactly the exception this entry foresaw; the I7 is decided by D5 before D3 (M&H
-   p. 137). Lydian Dominant stays in the `7` menu, and the back-door ♭VII7, Rhythm Changes' IV7 and the Bird Blues'
-   bar 5 B♭7 (neither chart is read as a blues) stay Lydian Dominant.
+   p. 137). Lydian Dominant stays in the `7` menu, and the back-door ♭VII7 and Rhythm Changes' IV7 (not a blues) stay
+   Lydian Dominant; the Bird Blues' bar 5 B♭7 is Mixolydian once the chart says `context: blues` (§5.4).
 5. **The Bird Blues chain (bars 6–8): analyse each pair, or treat the chain as passing ii–Vs (all Mixolydian)?**
    *Analyse each.* E♭7 is a back door, D7 is V7/ii, D♭7 is a tritone sub, and each has a reason. The counter-case:
    at bebop tempo nobody hears the difference, and the current chart's uniform Mixolydian reads cleaner on the
@@ -746,9 +773,11 @@ A script, not a page: `npm run analyse -- charts/<tune>.txt`. The site is untouc
   line above (the analyser leaves the next row alone).
 - `--all`: runs the report over every chart in `charts/`, for the regression check in §13.
 - **Hints in the chart:** an optional `key: Gm` meta line fixes the global key when the scoring would get it wrong
-  (a tune that ends away from home); `bars: 32` fixes the form length when the last chord's duration matters.
-  Both are meta lines; the parser needs to accept them (today only `title:` and `subtitle:` are meta), and the
-  site ignores them.
+  (a tune that ends away from home); `bars: 32` fixes the form length when the last chord's duration matters;
+  `context: modal` (`functional`, `modal`, `blues`) fixes the context when the detection would get it wrong (§5.4),
+  and `@context SECTION BAR VALUE`, parsed but not yet used, will fix it for a span. All are meta lines or
+  directives the site ignores. The report's second line says which context decided: `context: blues (stated)` or
+  `context: functional (detected: 9 of 12 chords in cadences, median chord 1 bar)`.
 
 ### 12.1 Saving the analysis in the chart
 
@@ -776,8 +805,9 @@ A1 | 7 | Gm     | G Dorian             # tonic minor: Dorian by convention
 - A **trailing comment** on a row (`# …` after the scale) holds that row's function and reason. The parser treats
   everything from `#` as a comment today, so this needs one small change: a row may end in a comment, which the
   text ⇄ grid sync keeps verbatim. The grid doesn't show it.
-- **Area lines** (`# area: …`) and the **header line** (`# analysis: date, rules version`) are ordinary comment
-  lines. The header lets `--all` report which charts were analysed under older rules.
+- **Area lines** (`# area: …`) and the **header line** (`# analysis: date, rules version; key, context`) are
+  ordinary comment lines. The analyser writes scales and comments only: never a `key:`, a `context:`, a function or
+  an `@key`; those are the author's (`context:` and `@context` sit in the header and among the rows, §5.4). The header lets `--all` report which charts were analysed under older rules.
 - **Editing by hand:** change the scale, and the comment, in any text editor. On its next run the analyser
   compares its answer with the row and, where they differ, reports both; `--write` never touches a filled cell.
   To make a hand choice permanent and silence the report, write `# keep: …` as the reason; to make it a rule,

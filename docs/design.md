@@ -153,9 +153,10 @@ The text format needs a document model that preserves comments and `@copy`.
 
 ```ts
 type ChartLine =
-  | { kind: 'meta'; key: MetaKey; value: string }  // title, subtitle (the heading); key, bars (analyser hints); composer, style, form, source
+  | { kind: 'meta'; key: MetaKey; value: string }  // title, subtitle (the heading); key, bars, context (analyser hints); minor (reserved); time; composer, style, form, source
   | { kind: 'row'; section: string; bar: string; chord: string; scale: string; function?: string; comment?: string }  // scale '' = default; function: the optional fifth cell, a stated function ('V7/ii', 'D: V7/ii'); comment: a trailing # …
   | { kind: 'key'; section: string; bar: number; key: string }  // @key B 17 D: bars from there in that key, until the next @key
+  | { kind: 'context'; section: string; bar: number; context: ChartContext }  // @context B 17 modal: parsed, not yet analysed
   | { kind: 'copy'; src: string; dst: string; offset: number }
   | { kind: 'ending'; n: number; section: string; from: number; to: number }  // a 1st/2nd ending (volta) on the Changes sheet
   | { kind: 'mark'; mark: 'segno' | 'coda'; section: string; bar: number }     // a segno 𝄋 / coda ⊕ glyph
@@ -194,6 +195,11 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   `D: V7/ii` for another key); empty means unstated. A `key` line pins the key area from its bar on. Both are
   read by the analysis (§7a) and round-trip through the grid; a row with a function but no scale keeps its empty
   scale cell (`A | 2 | D7 | | V7/V`).
+- **`context:` and `@context`:** `context: functional | modal | blues` states how the analysis reads the chart
+  (§7a; docs/plan-analysis.md §5.4); absent, it is detected. A value that is none of the three keeps its line (like a
+  bad `key:`) and is a diagnostic; the analysis then detects, and reports the bad line. `minor:` is reserved
+  (accepted, kept, reported as ignored). `@context SECTION BAR CONTEXT` is parsed, validated and serialised like
+  `@key`; the analysis reports it as not yet supported and keeps the chart's context. The site shows neither.
 - **Trailing comments:** a row may end in `# …` (a `#` with space on both sides, so `F#m7` and `C# Lydian` are
   safe). It holds the analysis (§7a), is kept verbatim through every edit, and is column-aligned when serialized;
   the grid doesn't show it.
@@ -505,7 +511,9 @@ library writes such a repeat out instead.
   `aria-invalid`). Rules that could only guess carry a `fallback` flag, and `--ambiguous` lists those rows with
   the functions each might have and the key areas an `@key` would pin, each with a second `@key` back to the next
   area (an `@key` holds until the next); the grid's key-change button (`insertKeyChange`) adds the same pair. The
-  analyser never writes a function or an `@key`. `rowNotes` (`engine/notes.ts`) gives each row's reason and key;
+  analyser never writes a function, an `@key` or a `context:`. The report's second line says which context
+  decided and why (`context: modal (stated)`, `context: modal (detected: 0 of 8 chords in cadences, median chord 2
+  bars)`); `--ambiguous` also names a detection within one chord of a threshold. `rowNotes` (`engine/notes.ts`) gives each row's reason and key;
   the grid's Notes column and the Changes sheet's numeral/scale notes show it, the note with where its key
   came from (a key the author set is starred), behind the `functions` flag (on).
 - **Numerals** (`analysis/numerals.ts`; the degree itself in `analysis/degrees.ts`, shared with the rules and the
