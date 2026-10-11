@@ -22,7 +22,7 @@ B1 | 9  | F#m7b5 | F# Locrian               # iiø7 of B7b9: Locrian, the key's 
 B1 | 10 | B7b9   | B Phrygian Dominant      # V7/v in A minor: b9 and b13 are in the key
 B1 | 11 | Em7b5  | E Locrian                # iiø7 of A7b9: Locrian, the key's own notes (its ♭2 is a passing note)
 B1 | 12 | A7b9   | A Phrygian Dominant      # V7/iv in A minor: the b13 is in the key, the b9 from the symbol
-B1 | 13 | Dm7b5  | D Locrian                # ivø7 in A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B1 | 13 | Dm7b5  | D Locrian                # ivø7 in A minor: Locrian, its own mode (the chord is outside the key)
 B1 | 14 | Bm7b5  | B Locrian                # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B1 | 14 | E7b9   | E Phrygian Dominant      # V7 of A minor: b9 and b13 are in the key
 B1 | 15 | Am7    | A Dorian                 # tonic minor: Dorian by convention
@@ -33,7 +33,7 @@ B2 | 25 | F#m7b5 | F# Locrian               # iiø7 of B7b9: Locrian, the key's 
 B2 | 26 | B7b9   | B Phrygian Dominant      # V7/v in A minor: b9 and b13 are in the key
 B2 | 27 | Em7b5  | E Locrian                # iiø7 of A7b9: Locrian, the key's own notes (its ♭2 is a passing note)
 B2 | 28 | A7b9   | A Phrygian Dominant      # V7/iv in A minor: the b13 is in the key, the b9 from the symbol
-B2 | 29 | Dm7b5  | D Locrian                # ivø7 in A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B2 | 29 | Dm7b5  | D Locrian                # ivø7 in A minor: Locrian, its own mode (the chord is outside the key)
 B2 | 30 | Bm7b5  | B Locrian                # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B2 | 30 | E7b9   | E Phrygian Dominant      # V7 of A minor: b9 and b13 are in the key
 B2 | 31 | Am7    | A Dorian                 # ii of the ii–V to G minor

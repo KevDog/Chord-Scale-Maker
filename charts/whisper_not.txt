@@ -18,7 +18,7 @@ A1 | 3  | Gm/F  | G Phrygian           # v of a minor key: Phrygian, the key's o
 A1 | 4  | Em7b5 | E Locrian            # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A1 | 4  | A7b9  | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key
 A1 | 5  | Dm    | D Dorian             # tonic minor: Dorian by convention
-A1 | 5  | Bm7b5 | B Locrian            # viø7 in D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+A1 | 5  | Bm7b5 | B Locrian            # viø7 in D minor: Locrian, its own mode (the chord is outside the key)
 A1 | 6  | Em    | E Dorian             # ii of the ii–V to D minor
 A1 | 6  | A7b9  | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key
 A1 | 7  | Dm    | D Dorian             # tonic minor: Dorian by convention
@@ -36,7 +36,7 @@ A2 | 11 | Gm/F  | G Phrygian           # v of a minor key: Phrygian, the key's o
 A2 | 12 | Em7b5 | E Locrian            # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A2 | 12 | A7b9  | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key
 A2 | 13 | Dm    | D Dorian             # tonic minor: Dorian by convention
-A2 | 13 | Bm7b5 | B Locrian            # viø7 in D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+A2 | 13 | Bm7b5 | B Locrian            # viø7 in D minor: Locrian, its own mode (the chord is outside the key)
 A2 | 14 | Em    | E Dorian             # ii of the ii–V to D minor
 A2 | 14 | A7b9  | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key
 A2 | 15 | Dm    | D Dorian             # tonic minor: Dorian by convention
@@ -62,7 +62,7 @@ C  | 27 | Gm/F  | G Phrygian           # v of a minor key: Phrygian, the key's o
 C  | 28 | Em7b5 | E Locrian            # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 C  | 28 | A7b9  | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key
 C  | 29 | Dm    | D Dorian             # tonic minor: Dorian by convention
-C  | 29 | Bm7b5 | B Locrian            # viø7 in D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+C  | 29 | Bm7b5 | B Locrian            # viø7 in D minor: Locrian, its own mode (the chord is outside the key)
 C  | 30 | Em    | E Dorian             # ii of the ii–V to D minor
 C  | 30 | A7b9  | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key
 C  | 31 | Dm    | D Dorian             # tonic minor: Dorian by convention

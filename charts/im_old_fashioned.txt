@@ -46,7 +46,7 @@ C | 21 | Bm7    | B Dorian                 # ii: Dorian, the key’s own notes
 C | 22 | C#m7   | C# Phrygian              # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C | 22 | DMaj7  | D Lydian                 # IV: the #4 is the key’s 7th
 C | 23 | E7     | E Mixolydian             # V7 in A, not resolving: natural tensions
-C | 23 | F#m7b5 | F# Locrian               # viø7 in A: Locrian, the key's own notes (its ♭2 is a passing note)
+C | 23 | F#m7b5 | F# Locrian               # viø7 in A: Locrian, its own mode (the chord is outside the key)
 # area: F major (bars 24–36)
 C | 24 | Gm7    | G Dorian                 # ii of the ii–V to F
 C | 24 | C7b9   | C Half-Whole Diminished  # V7 of F: the b9 from the symbol
@@ -64,7 +64,7 @@ D | 30 | BbMaj7 | Bb Ionian                # the F7 before it makes Bb the key o
 D | 30 | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
 D | 31 | Am7    | A Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 D | 31 | Dm7    | D Aeolian                # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-D | 32 | Bm7b5  | B Locrian                # #ivø7 in F: Locrian, the key's own notes (its ♭2 is a passing note)
+D | 32 | Bm7b5  | B Locrian                # #ivø7 in F: Locrian, its own mode (the chord is outside the key)
 D | 32 | Bbm6   | Bb Dorian                # a minor sixth chord: Dorian
 D | 33 | Am7    | A Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 D | 33 | Ab7    | Ab Lydian Dominant       # tritone substitute: resolves down a half step to Gm7

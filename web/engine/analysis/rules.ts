@@ -1,5 +1,5 @@
 import { proseGlyphs, rootName, shiftBy } from '../pitch'
-import { degree, diatonic, hasRelatedII, impliedDiatonic, isDominantLike, type Key, keyText, makeKey, reference } from './keys'
+import { degree, diatonic, hasRelatedII, impliedDiatonic, isDominantLike, type Key, keyText, makeKey, reference, tonicName } from './keys'
 import { ownNumeral, roman } from './degrees'
 import { downFifth, downHalf, type Entry, type Family, interval, nextOf, prevOf } from './stream'
 
@@ -258,8 +258,7 @@ function major(ctx: Context, i: number): Decision {
   if (key.minor && d === 3) return { scale: named(e, NAME.ionian), rule: 'M3', fn, reason: `bIII of ${keyText(key)}: the relative major itself` }
   if (key.minor && d === 10) {
     // R6: ♭VII of a minor key, its Ionian the notes of the tonic's Dorian (N&G pp. 85, 88, 91)
-    const tonic = key.name.split(' ')[0] ?? ''
-    return { scale: named(e, NAME.ionian), rule: 'M3', fn, reason: proseGlyphs(`bVII of ${keyText(key)}: ${e.root ? rootName(e.root) : '?'} major, the notes of ${tonic} Dorian`) }
+    return { scale: named(e, NAME.ionian), rule: 'M3', fn, reason: proseGlyphs(`bVII of ${keyText(key)}: ${e.root ? rootName(e.root) : '?'} major, the notes of ${tonicName(key)} Dorian`) }
   }
   if (!key.minor && d === 7 && e.quality === 'maj') return { scale: named(e, NAME.mixolydian), rule: 'M3', fn, reason: 'V without its 7th: Mixolydian, the key’s own notes' }
   const p = prevOf(ctx.stream, i)
@@ -327,6 +326,7 @@ function halfDiminished(ctx: Context, i: number): Decision {
   const to = related && end?.root && n && downFifth(n, end) && (end.family === 'minor' || end.family === 'major') ? keyText(makeKey(end.root, end.family === 'minor')) : null
   if (!related && !key.minor && degree(e, key) === 2) return { scale: named(e, NAME.locrian), rule: 'h2', fn: 'iiø7, borrowed', reason: `iiø7, borrowed from ${keyText(key)} minor: Locrian` }
   const fn = to ? `iiø7 of the ii–V to ${to}` : related ? `iiø7 of ${n?.chord}` : `${roman(e, key)}ø7 in ${keyText(key)}`
+  if (!related && !diatonic(e, key)) return { scale: named(e, NAME.locrian), rule: 'h2', fn, reason: `${fn}: Locrian, its own mode (the chord is outside the key)`, fallback: true }
   const why = `${to ? `iiø7 of ${to}` : fn}: Locrian, the key's own notes (its ♭2 is a passing note)`
   return { scale: named(e, NAME.locrian), rule: 'h2', fn: related ? `${fn}${alsoDegree(e, key)}` : fn, reason: why, ...(related ? {} : { fallback: true as const }) }
 }

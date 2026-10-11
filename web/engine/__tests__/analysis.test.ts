@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { analyse, applyAnalysis, parseKey, pins } from '../analysis'
-import { keyText, makeKey } from '../analysis/keys'
+import { keyText, makeKey, tonicName } from '../analysis/keys'
 import { hiddenDominant, passingReason } from '../analysis/rules'
 import { familyOf } from '../analysis/stream'
 import { formPart, parseChart, serializeChart } from '../chart'
@@ -14,6 +14,11 @@ describe('keyText', () => {
     expect(keyText(makeKey(parseRoot('C'), false))).toBe('C')
     expect(keyText(makeKey(parseRoot('A'), true))).toBe('A minor')
     expect(keyText(makeKey(parseRoot('Bb'), false))).toBe('Bb')
+  })
+
+  it('tonicName: the tonic as written', () => {
+    expect(tonicName(makeKey(parseRoot('Bb'), true))).toBe('Bb')
+    expect(tonicName(makeKey(parseRoot('F#'), false))).toBe('F#')
   })
 })
 
@@ -351,6 +356,13 @@ describe('R6: the small bundle (docs/superpowers/specs/2026-10-10-analysis-rules
 
   it('m2 a tonic minor sixth chord in a modal chart stays Dorian (§5.4: no functional rules there; Africa)', () => {
     expect(reasoned(library('africa'), '1 Dm6/9/E')).toBe('D Dorian (m2): a minor sixth chord: Dorian')
+  })
+
+  it('h2 a ø7 that is neither related nor diatonic is its own mode, not the key\'s notes (Footprints)', () => {
+    const fp = analyse(parseChart(library('footprints')).value).rows.find((x) => `${x.bar} ${x.chord}` === '9 F#m7b5')
+    expect([fp?.scale, fp?.rule, fp?.reason, fp?.fallback]).toEqual(['F# Locrian', 'h2', '#ivø7 in C minor: Locrian, its own mode (the chord is outside the key)', true])
+    expect(reasoned(chart('C', '1 CMaj7, 2 F#m7b5, 3 FMaj7'), '2 F#m7b5')).toBe('F# Locrian (h2): #ivø7 in C: Locrian, its own mode (the chord is outside the key)')
+    expect(reasoned(chart('C', '1 CMaj7, 2 Bm7b5, 3 CMaj7'), '2 Bm7b5')).toBe("B Locrian (h2): viiø7 in C: Locrian, the key's own notes (its ♭2 is a passing note)")
   })
 
   it('M3 ♭VII of a minor key is Ionian, the notes of the tonic’s Dorian; ♭VI stays Lydian (M4)', () => {

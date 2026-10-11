@@ -11,7 +11,7 @@ source: Colorado Cookbook, p. 270
 # area: A minor (bars 1–11)
 A | 1  | Dm7       | D Dorian                  # iv: Dorian, the key’s own notes
 A | 2  | E7        | E Phrygian Dominant       # V7 in A minor, not resolving: b9 and b13 are in the key
-A | 3  | F#m7b5    | F# Locrian                # viø7 in A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+A | 3  | F#m7b5    | F# Locrian                # viø7 in A minor: Locrian, its own mode (the chord is outside the key)
 A | 4  | Fm11      | F Dorian                  # a borrowed minor chord: Dorian, its own key
 A | 5  | Em7       | E Phrygian                # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
 A | 5  | Dm9       | D Dorian                  # iv: Dorian, the key’s own notes

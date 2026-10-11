@@ -53,7 +53,7 @@ C  | 25 | Bb7    | Bb Lydian Dominant   # tritone substitute: resolves down a ha
 C  | 26 | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C  | 26 | D7b9   | D Phrygian Dominant  # V7/ii in F: the b13 is in the key, the b9 from the symbol
 C  | 27 | Gm7    | G Dorian             # ii: Dorian, the key’s own notes
-C  | 28 | Bm7b5  | B Locrian            # #ivø7 in F: Locrian, the key's own notes (its ♭2 is a passing note)
+C  | 28 | Bm7b5  | B Locrian            # #ivø7 in F: Locrian, its own mode (the chord is outside the key)
 C  | 28 | Bb7    | Bb Lydian Dominant   # tritone substitute: resolves down a half step to Am7
 C  | 29 | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C  | 29 | D7     | D Mixolydian b6      # V7/ii in F: the b13 is in the key

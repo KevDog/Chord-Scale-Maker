@@ -24,7 +24,7 @@ B | 15 | Bm7      | B Phrygian                # iii: Phrygian, the key's own not
 B | 16 | CMaj7#11 | C Lydian                  # from the symbol: #11
 B | 17 | Bm7      | B Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 18 | Bm7/A    | B Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B | 19 | Abm7b5   | Ab Locrian                # biiø7 in G: Locrian, the key's own notes (its ♭2 is a passing note)
+B | 19 | Abm7b5   | Ab Locrian                # biiø7 in G: Locrian, its own mode (the chord is outside the key)
 # area: F major (bars 20–24)
 B | 20 | Gm7      | G Dorian                  # ii of the ii–V to F
 B | 20 | C7       | C Mixolydian              # V7 of F: natural tensions

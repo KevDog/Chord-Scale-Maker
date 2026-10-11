@@ -15,7 +15,7 @@ A1 | 3  | Dm7    | D Dorian                  # ii of the ii–V to C
 A1 | 3  | G7     | G Mixolydian              # V7 of C: natural tensions
 A1 | 4  | C6/9   | C Ionian                  # tonic: the 4th is in the key
 @copy A1 A2 4
-B  | 9  | Em7b5  | E Locrian                 # iiiø7 in C: Locrian, the key's own notes (its ♭2 is a passing note)
+B  | 9  | Em7b5  | E Locrian                 # iiiø7 in C: Locrian, its own mode (the chord is outside the key)
 B  | 9  | Bb7#11 | Bb Lydian Dominant        # tritone substitute: resolves down a half step to A7#9
 B  | 10 | A7#9   | A Half-Whole Diminished   # tritone substitute: resolves down a half step to Ab7#11; b9 and #9 from the symbol
 B  | 11 | Ab7#11 | Ab Lydian Dominant        # ♭VI7 from the parallel minor: Lydian Dominant

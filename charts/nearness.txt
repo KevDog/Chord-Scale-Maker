@@ -31,6 +31,6 @@ B | 25 | FMaj7/C     | F Lydian            # a non-tonic major chord: Lydian
 B | 26 | Gm7/C       | C Mixolydian        # static sus: Mixolydian
 B | 27 | Am7/C       | A Dorian            # a borrowed minor chord: Dorian, its own key
 B | 28 | BbMaj7#11/C | Bb Lydian           # from the symbol: #11
-B | 29 | Bm7b5       | B Locrian           # iø7 in B minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B | 29 | Bm7b5       | B Locrian           # iø7 in B minor: Locrian, its own mode (the chord is outside the key)
 B | 30 | Bbm7        | Bb Dorian           # a borrowed minor chord: Dorian, its own key
 B | 31 | F7sus4      | F Mixolydian        # static sus: Mixolydian

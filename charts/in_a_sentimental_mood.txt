@@ -54,7 +54,7 @@ B  | 22 | Ab7    | Ab Lydian Dominant        # tritone substitute: resolves down
 # area: F major (bars 23–32)
 B  | 23 | Gm7    | G Dorian                  # ii of C7: Dorian
 B  | 23 | C7     | C Mixolydian              # V7/I in F: natural tensions
-C  | 25 | Bm7b5  | B Locrian                 # #ivø7 in F: Locrian, the key's own notes (its ♭2 is a passing note)
+C  | 25 | Bm7b5  | B Locrian                 # #ivø7 in F: Locrian, its own mode (the chord is outside the key)
 C  | 25 | Bb13   | Bb Lydian Dominant        # tritone substitute: resolves down a half step to Am7
 C  | 26 | Am7    | A Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C  | 26 | Abdim7 | Ab Whole-Half Diminished  # passing diminished: a rootless dominant ♭9

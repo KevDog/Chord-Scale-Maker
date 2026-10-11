@@ -53,7 +53,7 @@ B | 38 | Eb7    | Eb Mixolydian       # V7 of Ab: natural tensions
 B | 39 | AbMaj7 | Ab Ionian           # tonic: the 4th is in the key
 B | 40 | Fm7    | F Aeolian           # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 B | 40 | Fm7/Eb | F Aeolian           # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B | 41 | Dm7b5  | D Locrian           # #ivø7 in Ab: Locrian, the key's own notes (its ♭2 is a passing note)
+B | 41 | Dm7b5  | D Locrian           # #ivø7 in Ab: Locrian, its own mode (the chord is outside the key)
 B | 42 | Dbm7   | Db Dorian           # ii of Gb7#11: Dorian
 B | 42 | Gb7#11 | Gb Lydian Dominant  # extended ii–V: a side-step, its own key; #11 from the symbol
 B | 43 | Cm7    | C Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)

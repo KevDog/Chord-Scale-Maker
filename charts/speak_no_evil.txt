@@ -26,7 +26,7 @@ A1 | 12 | Bbm       | Bb Dorian           # a borrowed minor chord: Dorian, its 
 A1 | 13 | A7#11     | A Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
 A1 | 14 | Bbm       | Bb Dorian           # a borrowed minor chord: Dorian, its own key
 @copy A1 A2 14
-B  | 29 | Am7b5     | A Locrian           # viø7 in C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B  | 29 | Am7b5     | A Locrian           # viø7 in C minor: Locrian, its own mode (the chord is outside the key)
 B  | 30 | Ab7       | Ab Lydian Dominant  # tritone substitute: resolves down a half step to Gm
 B  | 31 | Gm        | G Phrygian          # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
 B  | 32 | Gb7       | Gb Lydian Dominant  # tritone substitute: resolves down a half step to Fm

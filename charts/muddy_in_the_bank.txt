@@ -19,7 +19,7 @@ A | 4  | EbMaj7    | Eb Ionian            # tonic: the 4th is in the key
 A | 5  | Dm7b5     | D Locrian            # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 5  | G7alt     | G Altered            # from the symbol: altered
 A | 6  | Cm7       | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A | 6  | Am7b5     | A Locrian            # #ivø7 in Eb: Locrian, the key's own notes (its ♭2 is a passing note)
+A | 6  | Am7b5     | A Locrian            # #ivø7 in Eb: Locrian, its own mode (the chord is outside the key)
 A | 7  | Ab7#11    | Ab Lydian Dominant   # tritone substitute: resolves down a half step to G7b9
 A | 8  | G7b9      | G Phrygian Dominant  # V7/vi in Eb: b9 and b13 are in the key
 B | 9  | Cm        | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
@@ -33,7 +33,7 @@ B | 13 | Fm/Eb     | F Dorian             # ii: Dorian, the key’s own notes
 B | 14 | Dm7b5     | D Locrian            # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 14 | G7alt     | G Altered            # from the symbol: altered
 B | 15 | Cm7       | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B | 15 | Am7b5     | A Locrian            # #ivø7 in Eb: Locrian, the key's own notes (its ♭2 is a passing note)
+B | 15 | Am7b5     | A Locrian            # #ivø7 in Eb: Locrian, its own mode (the chord is outside the key)
 B | 16 | Ab7#11    | Ab Lydian Dominant   # tritone substitute: resolves down a half step to G7b13
 # area: Gb major (bars 17–21)
 C | 17 | G7b13     | G Whole Tone         # tritone substitute: resolves down a half step to GbMaj7; b13 from the symbol

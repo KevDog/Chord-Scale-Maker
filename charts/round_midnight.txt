@@ -25,7 +25,7 @@ Intro | 4  | Bb7b9    | Bb Phrygian Dominant      # V7 of Eb minor: b9 and b13 a
 A1    | 1  | Ebm      | Eb Dorian                 # tonic minor: Dorian by convention
 A1    | 1  | Ebm/D    | Eb Dorian                 # tonic minor: Dorian by convention
 A1    | 1  | Ebm/Db   | Eb Dorian                 # tonic minor: Dorian by convention
-A1    | 2  | Cm7b5    | C Locrian                 # viø7 in Eb minor: Locrian, the key's own notes (its ♭2 is a passing note)
+A1    | 2  | Cm7b5    | C Locrian                 # viø7 in Eb minor: Locrian, its own mode (the chord is outside the key)
 A1    | 2  | Abm7     | Ab Dorian                 # ii of Db7: Dorian
 A1    | 2  | Db7      | Db Mixolydian             # V7/bIII in Eb minor: natural tensions
 A1    | 3  | Cm7b5    | C Locrian                 # iiø7 of F7: Locrian, the key's own notes (its ♭2 is a passing note)
@@ -47,7 +47,7 @@ A1    | 8  | Bb7#11   | Bb Lydian Dominant        # V7 of Eb minor, the chain's 
 A2    | 9  | Ebm      | Eb Dorian                 # tonic minor: Dorian by convention
 A2    | 9  | Ebm/D    | Eb Dorian                 # tonic minor: Dorian by convention
 A2    | 9  | Ebm/Db   | Eb Dorian                 # tonic minor: Dorian by convention
-A2    | 10 | Cm7b5    | C Locrian                 # viø7 in Eb minor: Locrian, the key's own notes (its ♭2 is a passing note)
+A2    | 10 | Cm7b5    | C Locrian                 # viø7 in Eb minor: Locrian, its own mode (the chord is outside the key)
 A2    | 10 | Abm7     | Ab Dorian                 # ii of Db7: Dorian
 A2    | 10 | Db7      | Db Mixolydian             # V7/bIII in Eb minor: natural tensions
 A2    | 11 | Cm7b5    | C Locrian                 # iiø7 of F7: Locrian, the key's own notes (its ♭2 is a passing note)
@@ -90,7 +90,7 @@ B     | 24 | Bb7b9    | Bb Phrygian Dominant      # V7 of Eb minor: b9 and b13 a
 C     | 25 | Ebm      | Eb Dorian                 # tonic minor: Dorian by convention
 C     | 25 | Ebm/D    | Eb Dorian                 # tonic minor: Dorian by convention
 C     | 25 | Ebm/Db   | Eb Dorian                 # tonic minor: Dorian by convention
-C     | 26 | Cm7b5    | C Locrian                 # viø7 in Eb minor: Locrian, the key's own notes (its ♭2 is a passing note)
+C     | 26 | Cm7b5    | C Locrian                 # viø7 in Eb minor: Locrian, its own mode (the chord is outside the key)
 C     | 26 | Abm7     | Ab Dorian                 # ii of Db7: Dorian
 C     | 26 | Db7      | Db Mixolydian             # V7/bIII in Eb minor: natural tensions
 C     | 27 | Cm7b5    | C Locrian                 # iiø7 of F7: Locrian, the key's own notes (its ♭2 is a passing note)

@@ -10,7 +10,7 @@ source: Colorado Cookbook, p. 268
 # section | bar | chord | scale
 A1 | 1  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 A1 | 1  | Cm7    | C Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A1 | 2  | Am7b5  | A Locrian                 # #ivø7 in Eb: Locrian, the key's own notes (its ♭2 is a passing note)
+A1 | 2  | Am7b5  | A Locrian                 # #ivø7 in Eb: Locrian, its own mode (the chord is outside the key)
 A1 | 2  | Ab7    | Ab Lydian Dominant        # tritone substitute: resolves down a half step to Gm7
 A1 | 3  | Gm7    | G Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A1 | 3  | Fm7    | F Dorian                  # ii: Dorian, the key’s own notes
@@ -25,7 +25,7 @@ A1 | 10 | Fm7    | F Dorian                  # ii of the ii–V to Eb
 A1 | 10 | Bb7    | Bb Mixolydian             # V7 of Eb: natural tensions
 A2 | 11 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 A2 | 11 | Cm7    | C Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A2 | 12 | Am7b5  | A Locrian                 # #ivø7 in Eb: Locrian, the key's own notes (its ♭2 is a passing note)
+A2 | 12 | Am7b5  | A Locrian                 # #ivø7 in Eb: Locrian, its own mode (the chord is outside the key)
 A2 | 12 | Ab7    | Ab Lydian Dominant        # tritone substitute: resolves down a half step to Gm7
 A2 | 13 | Gm7    | G Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A2 | 13 | Fm7    | F Dorian                  # ii: Dorian, the key’s own notes
@@ -49,7 +49,7 @@ B  | 28 | Fm7    | F Dorian                  # ii of the ii–V to Eb
 B  | 28 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
 C  | 29 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 C  | 29 | Cm7    | C Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-C  | 30 | Am7b5  | A Locrian                 # #ivø7 in Eb: Locrian, the key's own notes (its ♭2 is a passing note)
+C  | 30 | Am7b5  | A Locrian                 # #ivø7 in Eb: Locrian, its own mode (the chord is outside the key)
 C  | 30 | Ab7    | Ab Lydian Dominant        # tritone substitute: resolves down a half step to Gm7
 C  | 31 | Gm7    | G Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C  | 32 | Bbm9   | Bb Dorian                 # ii of the ii–V to Ab

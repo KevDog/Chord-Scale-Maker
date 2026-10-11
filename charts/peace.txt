@@ -24,7 +24,7 @@ A | 5  | Bm7    | B Dorian                 # ii of the ii–V to A
 A | 5  | E9     | E Mixolydian             # V7 of A: natural tensions
 A | 6  | AMaj7  | A Ionian                 # tonic: the 4th is in the key
 A | 6  | F#m7   | F# Aeolian               # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A | 7  | Ebm7b5 | Eb Locrian               # #ivø7 in A: Locrian, the key's own notes (its ♭2 is a passing note)
+A | 7  | Ebm7b5 | Eb Locrian               # #ivø7 in A: Locrian, its own mode (the chord is outside the key)
 # area: Db major (bars 7–9)
 A | 7  | D7alt  | D Altered                # from the symbol: altered
 A | 8  | DbMaj7 | Db Ionian                # tonic: the 4th is in the key

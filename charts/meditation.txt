@@ -23,7 +23,7 @@ A | 13 | Em7    | E Phrygian                # iii: Phrygian, the key's own notes
 A | 14 | A7#5   | A Whole Tone              # V7/ii in C: the b13 is in the key, the #11 from the symbol
 A | 15 | Dm7    | D Dorian                  # ii of G7#5: Dorian
 A | 16 | G7#5   | G Whole Tone              # V7/I in C: #11 and b13 from the symbol
-B | 17 | F#m7b5 | F# Locrian                # #ivø7 in C: Locrian, the key's own notes (its ♭2 is a passing note)
+B | 17 | F#m7b5 | F# Locrian                # #ivø7 in C: Locrian, its own mode (the chord is outside the key)
 B | 19 | Fm7    | F Dorian                  # ii of Bb7: Dorian
 B | 20 | Bb7    | Bb Mixolydian             # extended ii–V: a side-step, its own key
 B | 21 | Em7    | E Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)

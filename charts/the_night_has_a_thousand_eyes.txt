@@ -16,7 +16,7 @@ A1 | 7  | D7sus4  | D Mixolydian        # V7sus4 before its dominant: Mixolydian
 A1 | 8  | D7      | D Mixolydian        # V7 in G, not resolving: natural tensions
 B1 | 9  | Dm7     | D Dorian            # ii of G7: Dorian
 B1 | 10 | G7      | G Mixolydian        # V7/IV in G: natural tensions
-B1 | 11 | C#m7b5  | C# Locrian          # #ivø7 in G: Locrian, the key's own notes (its ♭2 is a passing note)
+B1 | 11 | C#m7b5  | C# Locrian          # #ivø7 in G: Locrian, its own mode (the chord is outside the key)
 B1 | 12 | Cm6     | C Dorian            # a minor sixth chord: Dorian
 B1 | 13 | Bm7     | B Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B1 | 13 | Bb7     | Bb Lydian Dominant  # tritone substitute: resolves down a half step to Am7
@@ -27,7 +27,7 @@ B1 | 16 | D7sus4  | D Mixolydian        # V7sus4 resolving down a fifth: Mixolyd
 @copy A1 A2 16
 B2 | 25 | Dm7     | D Dorian            # ii of G7: Dorian
 B2 | 26 | G7      | G Mixolydian        # V7/IV in G: natural tensions
-B2 | 27 | C#m7b5  | C# Locrian          # #ivø7 in G: Locrian, the key's own notes (its ♭2 is a passing note)
+B2 | 27 | C#m7b5  | C# Locrian          # #ivø7 in G: Locrian, its own mode (the chord is outside the key)
 B2 | 28 | Cm6     | C Dorian            # a minor sixth chord: Dorian
 B2 | 29 | Bm7     | B Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B2 | 29 | Bb7     | Bb Lydian Dominant  # tritone substitute: resolves down a half step to Am7

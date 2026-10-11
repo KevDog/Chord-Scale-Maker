@@ -27,7 +27,7 @@ C | 17 | EbMaj7   | Eb Ionian                 # tonic: the 4th is in the key
 C | 18 | Ab7#11   | Ab Lydian Dominant        # IV7 in Eb, not resolving: the #11 is in the key
 C | 19 | EbMaj7   | Eb Ionian                 # tonic: the 4th is in the key
 C | 20 | Ab7#11   | Ab Lydian Dominant        # IV7 in Eb, not resolving: the #11 is in the key
-C | 21 | Gm7b5    | G Locrian                 # iiiø7 in Eb: Locrian, the key's own notes (its ♭2 is a passing note)
+C | 21 | Gm7b5    | G Locrian                 # iiiø7 in Eb: Locrian, its own mode (the chord is outside the key)
 C | 22 | Gbdim7   | Gb Whole-Half Diminished  # passing diminished: a rootless dominant ♭9
 C | 23 | Fm       | F Dorian                  # ii: Dorian, the key’s own notes
 D | 25 | AbMaj7   | Ab Lydian                 # IV: the #4 is the key’s 7th

@@ -59,7 +59,7 @@ B  | 33 | CMaj7  | C Ionian                 # tonic: the 4th is in the key
 B  | 34 | Cm7    | C Dorian                 # ii of the ii–V to Bb
 B  | 34 | F7     | F Mixolydian             # V7/IV in F: natural tensions
 B  | 35 | BbMaj7 | Bb Ionian                # the F7 before it makes Bb the key of the moment: the 4th is in the key
-B  | 37 | Bm7b5  | B Locrian                # #ivø7 in F: Locrian, the key's own notes (its ♭2 is a passing note)
+B  | 37 | Bm7b5  | B Locrian                # #ivø7 in F: Locrian, its own mode (the chord is outside the key)
 B  | 38 | Bbm6/9 | Bb Dorian                # a minor sixth chord: Dorian
 B  | 39 | Am7    | A Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B  | 40 | Ab7#11 | Ab Lydian Dominant       # tritone substitute: resolves down a half step to G7
