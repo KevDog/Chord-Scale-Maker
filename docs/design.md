@@ -277,7 +277,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     (the °7 scales that fit one function only).
   - A tonic minor chord (the analysis's rule m5) is Aeolian at Basic.
   - `useScaleLevel` remembers the level and seed per chart in this browser (Save as a copy and Save to My charts
-    carry them; Revert resets them). Share links carry the level and seed, as a view preference for the recipient.
+    carry them; Revert keeps them). Share links carry the level and seed, as a view preference for the recipient.
 - **Slash readings** (`slash_chords` in `chord_scales.json`): a chord whose bass makes it another
   chord takes that chord's options on the bass. DbMaj7/C is a sus♭9 on C: C Phrygian (default), C Spanish
   Phrygian, C Dorian ♭2. Only the options change; the symbol, interval labels and practice presets read DbMaj7.

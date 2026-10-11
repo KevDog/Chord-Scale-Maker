@@ -414,7 +414,6 @@ function revert(): void {
   const id = saved?.id()
   if (id) deleteChart(id)
   saved?.forget()
-  scaleLevel.reset() // the library's scales are at Standard
   emit('reload')
 }
 
