@@ -18,11 +18,8 @@ export type Resolved = Readonly<{
   reason?: string
 }>
 
-/**
- * the level is the player's, like the instrument: a view preference, never chart text. proposed: the
- * proposedScales flag; off, a blank cell plays the quality's default at every level, as before.
- */
-export type ScaleView = Readonly<{ level: ScaleLevel; seed: number; proposed: boolean }>
+/** the level is the player's, like the instrument: a view preference, never chart text */
+export type ScaleView = Readonly<{ level: ScaleLevel; seed: number }>
 
 /** an analysed scale at a level: Standard as analysed; a tonic minor (rule m5) Aeolian at Basic; else its ladder or a Random pick */
 export function atLevel(view: ScaleView, chord: string, scale: string, rule: string, line: number): string {
@@ -41,7 +38,7 @@ export function resolveScales(doc: ChartDoc, view: ScaleView, analysis: Analysis
   const out = new Map<number, Resolved>()
   expandRowLines(doc).value.forEach((row, i) => {
     if (row.scale) return void out.set(i, { scale: row.scale, source: 'written' })
-    const r = view.proposed ? byRow.get(i) : undefined
+    const r = byRow.get(i)
     if (r?.scale) return void out.set(i, { scale: atLevel(view, row.chord, r.scale, r.rule, row.line), source: r.stated ? 'function' : 'rules', rule: r.rule, reason: r.reason })
     out.set(i, { scale: qualityScale(row), source: 'default' })
   })

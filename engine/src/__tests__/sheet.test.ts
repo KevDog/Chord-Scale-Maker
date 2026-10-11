@@ -142,8 +142,8 @@ describe('sheet', () => {
 
   describe('reading resolveScales', () => {
     const doc = parseChart('title: T\nkey: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm7 | G Dorian\n').value
-    const played = (level: ScaleLevel, proposed = true): (string | null)[] =>
-      (buildSheet(expandRows(doc).value, CONCERT, 'root', 'C', 12, null, undefined, resolveScales(doc, { level, seed: 0, proposed }))[0]?.pages.flat() ?? []).map((s) =>
+    const played = (level: ScaleLevel): (string | null)[] =>
+      (buildSheet(expandRows(doc).value, CONCERT, 'root', 'C', 12, null, undefined, resolveScales(doc, { level, seed: 0 }))[0]?.pages.flat() ?? []).map((s) =>
         s.scale ? `${rootName(s.scale.root)} ${s.scale.name}` : null,
       )
 
@@ -157,16 +157,14 @@ describe('sheet', () => {
     })
 
     it('gives a staff a new id when the scale it plays changes', () => {
-      const ids = (level: ScaleLevel) => buildSheet(expandRows(doc).value, CONCERT, 'root', 'C', 12, null, undefined, resolveScales(doc, { level, seed: 0, proposed: true }))[0]?.pages.flat().map((s) => s.id) ?? []
+      const ids = (level: ScaleLevel) => buildSheet(expandRows(doc).value, CONCERT, 'root', 'C', 12, null, undefined, resolveScales(doc, { level, seed: 0 }))[0]?.pages.flat().map((s) => s.id) ?? []
       const [std, basic] = [ids('standard'), ids('basic')]
       expect(std[1]).not.toBe(basic[1])
       expect(std[2]).toBe(basic[2]) // written: the same at every level
     })
 
-    it('plays as before with the flag off, or with nothing resolved', () => {
-      const before = (staves(expandRows(doc).value) ?? []).map((s) => s.scale && `${rootName(s.scale.root)} ${s.scale.name}`)
-      expect(before).toEqual(['A Locrian', 'D Mixolydian', 'G Dorian'])
-      expect(played('basic', false)).toEqual(before)
+    it('plays each row’s own scale or its quality’s default with nothing resolved', () => {
+      expect((staves(expandRows(doc).value) ?? []).map((s) => s.scale && `${rootName(s.scale.root)} ${s.scale.name}`)).toEqual(['A Locrian', 'D Mixolydian', 'G Dorian'])
     })
   })
 })

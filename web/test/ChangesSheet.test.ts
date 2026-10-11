@@ -16,14 +16,13 @@ const systemOf = async (signatures: boolean, guideLine?: GuideLine) =>
   (await mountSheet({ signatures, ...(guideLine ? { guideLine } : {}) })).findComponent({ name: 'ChangesSystem' })
 
 describe('ChangesSheet', () => {
-  it('plays a blank cell at the level it is given (proposedScales), the quality’s default without one', async () => {
+  it('plays a blank cell at the level it is given, Standard without one', async () => {
     const scaleAt = async (view?: ScaleView) =>
       (await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: true, ...(view ? { view } : {}) }, global: { stubs: { ChangesSystem: true } } }))
         .findComponent({ name: 'ChangesSystem' })
         .props('line').bars[0].chords[0].scale
     expect(await scaleAt()).toBe('C Dorian')
-    expect(await scaleAt({ level: 'basic', seed: 0, proposed: true })).toMatch(/^C Min.*Pent/)
-    expect(await scaleAt({ level: 'basic', seed: 0, proposed: false })).toBe('C Dorian') // flag off: as before
+    expect(await scaleAt({ level: 'basic', seed: 0 })).toMatch(/^C Min.*Pent/)
   })
 
   it("with signatures, gives the lines the chart's key and the part's clef (drawn on the first line only)", async () => {

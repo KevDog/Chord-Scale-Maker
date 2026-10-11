@@ -119,7 +119,7 @@ test('a function from the inspector: the Changes sheet shows it, its note opens 
   await expect(page.getByLabel('Chart text')).toHaveValue(/@key A 3 C\nA \| 3 \| Dm7/)
 })
 
-test('a function picked in the inspector changes the scale the Changes sheet plays on a blank cell (proposedScales)', async ({ page }) => {
+test('a function picked in the inspector changes the scale the Changes sheet plays on a blank cell', async ({ page }) => {
   await writeChart(page, 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\nA | 5 | CMaj7\n')
   const sheet = sheetOf(page)
   await expect(sheet).toContainText('D Mixo') // the sheet's short names

@@ -4,8 +4,7 @@ import { parseChart, qualityScale } from '../chart'
 import type { ScaleLevel } from '../levels'
 import { type Resolved, resolveScales, type ScaleView } from '../resolve'
 
-const on = (level: ScaleLevel = 'standard', seed = 0): ScaleView => ({ level, seed, proposed: true })
-const OFF: ScaleView = { level: 'standard', seed: 0, proposed: false }
+const on = (level: ScaleLevel = 'standard', seed = 0): ScaleView => ({ level, seed })
 const resolve = (text: string, view = on()): readonly Resolved[] => [...resolveScales(parseChart(text).value, view).values()]
 const scales = (text: string, view = on()): readonly (string | null)[] => resolve(text, view).map((r) => r.scale)
 
@@ -54,6 +53,7 @@ describe('resolveScales', () => {
     // Basic: the quality's tag on its default (Locrian), the analysed scale's ladder (V7 of a minor key: its pentatonic), Aeolian on a tonic minor (m5)
     expect(scales(G_MINOR, on('basic'))).toEqual(['F Major Pentatonic', 'G Minor Pentatonic', 'G Dorian', 'G Aeolian'])
     expect(scales(G_MINOR, on('advanced'))[2]).toBe('G Dorian')
+    expect(scales(G_MINOR, on('advanced'))[3]).not.toBe('G Aeolian') // Aeolian on a tonic minor: Basic only
     expect(resolve(G_MINOR, on('basic')).map((r) => r.source)).toEqual(['rules', 'rules', 'written', 'rules'])
   })
 
@@ -62,6 +62,8 @@ describe('resolveScales', () => {
     for (const seed of [1, 2, 3]) expect(scales(tune, on('random', seed))).toEqual(scales(tune, on('random', seed)))
     expect(new Set([1, 2, 3, 4, 5].map((seed) => scales(tune, on('random', seed)).join())).size).toBeGreaterThan(1)
     expect(scales(tune, on('random', 4))[7]).toBe('C Ionian')
+    const copied = scales('title: T\nkey: C\nA | 1 | Dm7\n@copy A B 8\n', on('random', 7))
+    expect(copied[1]).toBe(copied[0]) // a @copy repeat deals as its source row
   })
 
   it('resolves a @copy repeat on its own row', () => {
@@ -73,18 +75,6 @@ describe('resolveScales', () => {
   it('resolves a modal chart’s chords to their modes by the rules', () => {
     const rows = resolve('title: T\ncontext: modal\nA | 1 | Dm7\nA | 2 | Dm7\nA | 3 | Ebm7\nA | 4 | Ebm7\n')
     expect(rows).toEqual(Array.from({ length: 4 }, (_, i) => expect.objectContaining({ scale: i < 2 ? 'D Dorian' : 'Eb Dorian', source: 'rules', rule: 'm6' })))
-  })
-
-  it('with the proposedScales flag off, plays the cell or the quality’s default at every level, as before', () => {
-    const doc = parseChart(C_TUNE).value
-    for (const level of ['standard', 'basic', 'random'] as const)
-      expect([...resolveScales(doc, { ...OFF, level }).values()]).toEqual([
-        { scale: 'C Lydian', source: 'written' },
-        { scale: 'D Mixolydian', source: 'default' },
-        { scale: 'D Dorian', source: 'default' },
-        { scale: 'G Mixolydian', source: 'default' },
-        { scale: 'C Ionian', source: 'default' },
-      ])
   })
 })
 

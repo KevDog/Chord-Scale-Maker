@@ -1,10 +1,9 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import raw from '../../chord_scales.json'
-import { expandRows, parseChart, qualityScale } from '../chart'
+import { expandRows, parseChart } from '../chart'
 import { analyse } from '../analysis'
-import { ladderScale, type LevelState, relevel, SCALE_LEVELS, scaleAtLevel, seededUnit, unlevel } from '../levels'
-import { resolveScales } from '../resolve'
+import { ladderScale, type LevelState, scaleAtLevel, seededUnit, unlevel } from '../levels'
 import { resolveQuality } from '../qualities'
 import { samePitchScale, scaleKey } from '../scales'
 
@@ -56,49 +55,13 @@ describe('scale levels', () => {
     expect(resolveQuality('Cm7')?.options.find((o) => o.level === 'basic')?.scale).toBe('C Minor Pentatonic')
   })
 
-  const at = (level: LevelState['level'], seed = 0): LevelState => ({ level, seed })
-  const scales = (doc: ReturnType<typeof parseChart>['value']) => expandRows(doc).value.map(qualityScale) // a blank cell plays the default
-
-  it('own a default written on an enharmonic root like the default itself, and keep its spelling (R18)', () => {
-    const respelled = parseChart('A | 1 | Gbdim7 | F# Whole-Half Diminished\n').value
-    const plain = parseChart('A | 1 | Gbdim7 | Gb Whole-Half Diminished\n').value
-    const adv = relevel(respelled, at('standard'), at('advanced'))
-    expect([adv.owned, adv.changed, scales(adv.doc)]).toEqual([['0:Gbdim7'], 0, ['F# Whole-Half Diminished']])
+  it('keep a Standard written on an enharmonic root, and deal it like the default itself (R18)', () => {
+    expect(scaleAtLevel('Gbdim7', 'advanced', 0, '0:Gbdim7', 'F# Whole-Half Diminished')).toBe('F# Whole-Half Diminished')
     for (const seed of [1, 2, 3, 4, 5, 6]) {
-      const r = scales(relevel(respelled, at('standard'), at('random', seed)).doc)[0] ?? ''
-      const p = scales(relevel(plain, at('standard'), at('random', seed)).doc)[0] ?? ''
+      const r = scaleAtLevel('Gbdim7', 'random', seed, '0:Gbdim7', 'F# Whole-Half Diminished') ?? ''
+      const p = scaleAtLevel('Gbdim7', 'random', seed, '0:Gbdim7', 'Gb Whole-Half Diminished') ?? ''
       expect(samePitchScale(r, p), `seed ${seed}: ${r} / ${p}`).toBe(true)
     }
-  })
-
-  it('write the level into the chart, moving only rows that play the old level’s scale', () => {
-    const doc = parseChart('A | 1 | Cm7\nA | 2 | F7 | F Mixolydian\nA | 3 | Bbmaj7 | Bb Bebop Major\n').value
-    const basic = relevel(doc, at('standard'), at('basic'))
-    expect(scales(basic.doc)).toEqual(['C Minor Pentatonic', 'F Major Pentatonic', 'Bb Bebop Major']) // chosen: stays
-    expect(basic.changed).toBe(2)
-    const advanced = relevel(basic.doc, at('basic'), at('advanced'))
-    expect(scales(advanced.doc)).toEqual(['C Bebop Dorian', 'F Bebop Dominant', 'Bb Bebop Major'])
-    const back = relevel(advanced.doc, at('advanced'), at('standard'))
-    expect(scales(back.doc)).toEqual(['C Dorian', 'F Mixolydian', 'Bb Bebop Major'])
-  })
-
-  it('own only the rows that played their default, so a chosen scale that is also a level’s choice stays', () => {
-    const doc = parseChart('A | 1 | Cm7\nA | 2 | Bbmaj7 | Bb Lydian\n').value // Lydian: chosen, and Maj7's Advanced
-    const advanced = relevel(doc, at('standard'), at('advanced'))
-    expect(advanced.owned).toEqual(['0:Cm7'])
-    const random = relevel(advanced.doc, { ...at('advanced'), owned: advanced.owned }, at('random', 3))
-    const back = relevel(random.doc, { ...at('random', 3), owned: random.owned }, at('standard'))
-    expect(scales(back.doc)).toEqual(['C Dorian', 'Bb Lydian'])
-    expect(back.owned).toEqual([])
-  })
-
-  it('take over a library chart’s own choices, and bring them back at Standard', () => {
-    const library = parseChart('A | 1 | A7b9 | A Phrygian Dominant\nA | 2 | Dm7\n').value // the Bird Blues' V7♭9 → ii
-    const advanced = relevel(library, at('standard'), at('advanced'), library)
-    expect(scales(advanced.doc)).toEqual(['A Altered', 'D Bebop Dorian'])
-    const back = relevel(advanced.doc, { ...at('advanced'), owned: advanced.owned }, at('standard'), library)
-    expect(scales(back.doc)).toEqual(['A Phrygian Dominant', 'D Dorian']) // the chart's choice, not Half-Whole
-    expect(scales(relevel(library, at('standard'), at('advanced')).doc)[0]).toBe('A Phrygian Dominant') // without it: a chosen scale, kept
   })
 
   it('climb the Standard scale’s ladder when the chart’s Standard isn’t the quality’s (§11)', () => {
@@ -112,10 +75,6 @@ describe('scale levels', () => {
     ])
     expect(scaleAtLevel('D7', 'basic', 0, '', 'D Phrygian Dominant')).toBe('G Minor Pentatonic')
     expect(scaleAtLevel('D7', 'basic', 0, '', 'D Mixolydian')).toBe('D Major Pentatonic') // the quality's own default: its tags
-    // Autumn Leaves as the analysis wrote it: V7 of G minor, and V7/iv
-    const library = parseChart('A | 6 | D7 | D Phrygian Dominant\nA | 32 | G7 | G Mixolydian b6\nA | 33 | Cm7 | C Dorian\n').value
-    expect(scales(relevel(library, at('standard'), at('basic'), library).doc)).toEqual(['G Minor Pentatonic', 'C Minor Pentatonic', 'C Minor Pentatonic'])
-    expect(scales(relevel(library, at('standard'), at('advanced'), library).doc)).toEqual(['D Altered', 'G Altered', 'C Bebop Dorian'])
   })
 
   it('a V7 of a minor chord on Phrygian Dominant is Altered at Advanced; the 7 menu keeps Spanish Phrygian (R5)', () => {
@@ -146,15 +105,6 @@ describe('scale levels', () => {
     expect(ladderScale('E Phrygian', 'advanced', '7sus4b9')).toBe('E Dorian b2')
   })
 
-  it('make a tonic minor chord Aeolian at Basic (decision 7), and bring it back', () => {
-    const doc = parseChart('key: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm\nA | 4 | Gm\nA | 5 | Cm7\nA | 6 | F7\n').value
-    const basic = relevel(doc, at('standard'), at('basic'))
-    expect(scales(basic.doc)).toEqual(['F Major Pentatonic', 'D Major Pentatonic', 'G Aeolian', 'G Aeolian', 'C Minor Pentatonic', 'F Major Pentatonic'])
-    const back = relevel(basic.doc, { ...at('basic'), owned: basic.owned }, at('standard'))
-    expect(scales(back.doc)).toEqual(['A Locrian', 'D Mixolydian', 'G Dorian', 'G Dorian', 'C Dorian', 'F Mixolydian'])
-    expect(scales(relevel(doc, at('standard'), at('advanced')).doc)[2]).toBe('G Bebop Dorian') // Basic only
-  })
-
   it('ladders name real scales, and every rung root is an interval', () => {
     for (const [name, rungs] of Object.entries(raw.ladders)) {
       expect(() => scaleKey(name), name).not.toThrow()
@@ -162,74 +112,49 @@ describe('scale levels', () => {
     }
   })
 
-  it('leave a scale you changed by hand alone on the next move', () => {
-    const basic = relevel(parseChart('A | 1 | Cm7\nA | 2 | F7\n').value, at('standard'), at('basic')).doc
-    const lines = basic.lines.map((l, i) => (l.kind === 'row' && i === 0 ? { ...l, scale: 'C Aeolian' } : l))
-    expect(scales(relevel({ lines }, at('basic'), at('advanced')).doc)).toEqual(['C Aeolian', 'F Bebop Dominant'])
-  })
-
-  it('change nothing at the same level, and keep @copy repeats on their source row', () => {
-    const doc = parseChart('A | 1 | Cm7\n@copy A B 8\n').value
-    expect(relevel(doc, at('standard'), at('standard'))).toMatchObject({ doc, changed: 0, owned: [] })
-    const random = scales(relevel(doc, at('standard'), at('random', 7)).doc)
-    expect(random[0]).toBe(random[1])
-  })
-
   it('pick at random repeatably, only among inside options, and redeal on a new seed', () => {
-    const doc = parseChart(Array.from({ length: 24 }, (_, i) => `A | ${i + 1} | Dm7`).join('\n')).value
-    const dealt = (seed: number) => scales(relevel(doc, at('standard'), at('random', seed)).doc)
-    expect(dealt(42)).toEqual(dealt(42))
-    expect(dealt(42)).not.toEqual(dealt(43))
+    const dealt = (chord: string, seed: number) => Array.from({ length: 24 }, (_, i) => scaleAtLevel(chord, 'random', seed, `${i}:${chord}`))
+    expect(dealt('Dm7', 42)).toEqual(dealt('Dm7', 42))
+    expect(dealt('Dm7', 42)).not.toEqual(dealt('Dm7', 43))
     const inside = (resolveQuality('Dm7')?.options ?? []).filter((o) => !o.outside).map((o) => o.scale)
-    for (const s of [...dealt(1), ...dealt(2)]) expect(inside).toContain(s)
-    expect(new Set(dealt(1)).size).toBeGreaterThan(2)
-    const shuffled = relevel(relevel(doc, at('standard'), at('random', 1)).doc, at('random', 1), at('random', 2)).doc
-    expect(scales(shuffled)).toEqual(dealt(2)) // Shuffle: every random pick moves to the new deal
+    for (const s of [...dealt('Dm7', 1), ...dealt('Dm7', 2)]) expect(inside).toContain(s)
+    expect(new Set(dealt('Dm7', 1)).size).toBeGreaterThan(2)
     for (const k of ['a', 'b', 'c']) expect(seededUnit(9, k)).toBeGreaterThanOrEqual(0)
     // a function's own diatonic diminished scale is never dealt at random (R10)
-    const dims = parseChart(Array.from({ length: 24 }, (_, i) => `A | ${i + 1} | Cdim7`).join('\n')).value
-    for (const seed of [1, 2, 3]) for (const s of scales(relevel(dims, at('standard'), at('random', seed)).doc)) expect(s).not.toMatch(/Diatonic Diminished/)
+    for (const seed of [1, 2, 3]) for (const s of dealt('Cdim7', seed)) expect(s).not.toMatch(/Diatonic Diminished/)
   })
 })
 
-describe('the level on the resolver (proposedScales on)', () => {
-  const at = (level: LevelState['level'], seed = 0): LevelState => ({ level, seed })
+describe('unlevel, the migration of a chart a level once wrote into', () => {
   const cells = (doc: ReturnType<typeof parseChart>['value']) => expandRows(doc).value.map((r) => r.scale)
   const parsed = (text: string) => parseChart(text).value
+  const at = (level: LevelState['level'], seed = 0, owned?: readonly string[]): LevelState => ({ level, seed, ...(owned ? { owned } : {}) })
 
-  it('plays at every level what relevel wrote into the analysed chart, without writing a cell', () => {
-    const doc = parsed('key: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm\nA | 4 | Cm7\nA | 5 | F7\nA | 6 | BbMaj7\nA | 7 | Dm7\n')
-    const a = analyse(doc)
-    const analysed = { lines: doc.lines.map((l, i) => { const s = a.rows.find((r) => r.line === i)?.scale; return l.kind === 'row' && s ? { ...l, scale: s } : l }) } // the old library's way: the analysis written in
-    for (const level of SCALE_LEVELS) {
-      const written = relevel(analysed, at('standard'), at(level, 5), analysed).doc
-      const played = [...resolveScales(doc, { level, seed: 5, proposed: true }).values()].map((r) => r.scale)
-      expect(played, level).toEqual(cells(written))
-    }
-    expect(cells(doc).every((s) => s === '')).toBe(true)
-  })
-
-  it('migration: blanks the owned rows that still play the stored level’s scale, and only those', () => {
-    const doc = parsed('A | 1 | Cm7\nA | 2 | F7\nA | 3 | Bbmaj7 | Bb Lydian\n') // Lydian: chosen
-    const basic = relevel(doc, at('standard'), at('basic'))
-    const lines = basic.doc.lines.map((l, i) => (l.kind === 'row' && i === 1 ? { ...l, scale: 'F Lydian Dominant' } : l)) // since changed by hand
-    const out = unlevel({ lines }, { ...at('basic'), owned: basic.owned })
+  it('blanks the owned rows that still play the stored level’s scale, and only those', () => {
+    // Basic wrote Cm7 and F7; F7 was changed by hand since; Bb Lydian is a pick of your own
+    const doc = parsed('A | 1 | Cm7 | C Minor Pentatonic\nA | 2 | F7 | F Lydian Dominant\nA | 3 | Bbmaj7 | Bb Lydian\n')
+    const out = unlevel(doc, at('basic', 0, ['0:Cm7', '1:F7']))
     expect(cells(out.doc)).toEqual(['', 'F Lydian Dominant', 'Bb Lydian'])
     expect(out.blanked).toBe(1)
   })
 
-  it('migration: blanks a library chart’s own choice moved by a level, and a Random deal, by its seed', () => {
+  it('blanks a library chart’s own choice moved by a level, and a Random deal, by its seed', () => {
     const library = parsed('A | 1 | A7b9 | A Phrygian Dominant\nA | 2 | Dm7\n')
-    const advanced = relevel(library, at('standard'), at('advanced'), library)
-    expect(cells(unlevel(advanced.doc, { ...at('advanced'), owned: advanced.owned }, library).doc)).toEqual(['', ''])
-    const random = relevel(library, at('standard'), at('random', 9), library)
-    expect(cells(unlevel(random.doc, { ...at('random', 8), owned: random.owned }, library).doc)).not.toEqual(['', '']) // another deal: not the level's
-    expect(cells(unlevel(random.doc, { ...at('random', 9), owned: random.owned }, library).doc)).toEqual(['', ''])
+    const owned = ['0:A7b9', '1:Dm7']
+    expect(cells(unlevel(parsed('A | 1 | A7b9 | A Altered\nA | 2 | Dm7 | D Bebop Dorian\n'), at('advanced', 0, owned), library).doc)).toEqual(['', ''])
+    const random = parsed('A | 1 | A7b9 | A Spanish Phrygian\nA | 2 | Dm7 | D Dorian\n') // Random, seed 9
+    expect(cells(unlevel(random, at('random', 8, owned), library).doc)).not.toEqual(['', '']) // another deal: not the level's
+    expect(cells(unlevel(random, at('random', 9, owned), library).doc)).toEqual(['', ''])
   })
 
-  it('migration: changes nothing without owned rows', () => {
+  it('blanks a tonic minor chord Basic made Aeolian', () => {
+    const doc = parsed('key: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm | G Aeolian\n')
+    expect(cells(unlevel(doc, at('basic', 0, ['3:Gm'])).doc)).toEqual(['', '', ''])
+  })
+
+  it('changes nothing without owned rows', () => {
     const doc = parsed('A | 1 | Cm7 | C Minor Pentatonic\n')
     expect(unlevel(doc, at('basic'))).toEqual({ doc, blanked: 0 })
-    expect(unlevel(doc, { ...at('basic'), owned: [] }).doc).toBe(doc)
+    expect(unlevel(doc, at('basic', 0, [])).doc).toBe(doc)
   })
 })

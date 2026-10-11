@@ -181,7 +181,7 @@
             so printed sheets stay clean.
           </dd>
         </div>
-        <div v-if="levelsOn">
+        <div>
           <dt class="font-semibold text-zinc-950 dark:text-white">Scale level</dt>
           <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
             How fancy the scales get, per chart. <strong class="font-semibold">Basic</strong> leans on pentatonics
@@ -370,7 +370,6 @@
 import { guideRanges } from '~/utils/instrumentChoices'
 
 const myCharts = useFeature('myCharts')
-const levelsOn = useFeature('scaleLevels')
 const GUIDE_RANGES = guideRanges()
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },

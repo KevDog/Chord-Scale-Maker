@@ -101,7 +101,7 @@ export function attempt<T>(f: () => T): T | null {
 
 /** each expanded row and the scale it plays at Standard: the written scale, else the analysis's, else the quality's default */
 export function playedRows(doc: ChartDoc): (string | null)[][] {
-  const played = resolveScales(doc, { level: 'standard', seed: 0, proposed: true })
+  const played = resolveScales(doc, { level: 'standard', seed: 0 })
   return expandRows(doc).value.map((r, i) => [r.section, r.bar, r.chord, played.get(i)?.scale ?? null])
 }
 

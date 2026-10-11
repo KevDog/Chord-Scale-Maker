@@ -85,7 +85,7 @@ export function useSavedChart(text: Readonly<Ref<string>>, target: SaveTarget, c
     edited: readonly(edited),
     /** save now (before Save as a copy, Download, Share) */
     flush: save,
-    /** save now though nothing was typed: the chart was changed on opening (the proposedScales migration) */
+    /** save now though nothing was typed: the chart was changed on opening (the Scale level migration) */
     saveNow(): void {
       dirty = true
       save()
