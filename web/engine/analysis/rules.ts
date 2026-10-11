@@ -1,6 +1,6 @@
 import { rootName } from '../pitch'
 import { degree, diatonic, hasRelatedII, impliedDiatonic, isDominantLike, type Key, keyText, makeKey, reference } from './keys'
-import { ownNumeral } from './numerals'
+import { ownNumeral, roman } from './degrees'
 import { downFifth, downHalf, type Entry, type Family, interval, nextOf, prevOf } from './stream'
 
 /**
@@ -43,13 +43,6 @@ const NAME = {
   locrianN2: 'Locrian natural 2',
   wholeHalf: 'Whole-Half Diminished',
 } as const
-
-const DEGREES = ['I', 'bII', 'II', 'bIII', 'III', 'IV', '#IV', 'V', 'bVI', 'VI', 'bVII', 'VII']
-/** "ii", "bVII", "V": the entry's degree in the key, lower case for minor-type chords */
-export function roman(e: Pick<Entry, 'pc' | 'family'>, key: Key): string {
-  const d = DEGREES[interval(key.tonic, e.pc)] ?? '?'
-  return e.family === 'minor' || e.family === 'halfdim' || e.family === 'dim' ? d.toLowerCase() : d
-}
 
 const named = (e: Entry, scale: string): string => `${e.root ? rootName(e.root) : '?'} ${scale}`
 

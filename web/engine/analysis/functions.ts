@@ -1,7 +1,6 @@
 import { mod, parseRoot, pcOf, rootName, shiftBy, type Spelled } from '../pitch'
 import { type Key, keyText, parseKey, sameKey } from './keys'
-import { glyph, ownNumeral } from './numerals'
-import { roman } from './rules'
+import { glyph, ownNumeral, roman } from './degrees'
 import type { Family } from './stream'
 
 /**

@@ -1,5 +1,6 @@
 import { diatonic, hasRelatedII, isDominantLike, isTonicType, type Key } from './keys'
-import { type Context, type Decision, roman, towardV7 } from './rules'
+import { degreeOf, ownNumeral, SUFFIX } from './degrees'
+import { type Context, type Decision, towardV7 } from './rules'
 import { downFifth, downHalf, type Entry, interval, nextOf, prevOf } from './stream'
 
 /**
@@ -8,26 +9,6 @@ import { downFifth, downHalf, type Entry, interval, nextOf, prevOf } from './str
  * ii7/V). Relative to the key, so the same for every instrument.
  */
 
-const SUFFIX: Readonly<Record<string, string>> = {
-  maj: '',
-  Maj7: 'maj7',
-  'Maj7#11': 'maj7',
-  'Maj7#5': 'maj7♯5',
-  '6': '6',
-  m: '',
-  m7: '7',
-  m6: '6',
-  mMaj7: '(maj7)',
-  m7b5: 'ø7',
-  dim7: '°7',
-  '7sus4': '7sus4',
-  '7sus4b9': '7sus4',
-}
-/** "bVII" -> "♭VII" */
-export const glyph = (r: string): string => r.replace(/^b/, '♭').replace(/^#/, '♯')
-const degreeOf = (e: Pick<Entry, 'pc' | 'family'>, key: Key): string => glyph(roman(e, key))
-/** the chord's own degree and quality in the key: "II7", "vi7", "IVmaj7", "vii°7" */
-export const ownNumeral = (e: Pick<Entry, 'pc' | 'family' | 'quality'>, key: Key): string => degreeOf(e, key) + (e.family === 'dominant' ? '7' : (SUFFIX[e.quality] ?? ''))
 /** "/ii", or nothing when the chord it leads to is the key's own tonic */
 const of = (target: Pick<Entry, 'pc' | 'family'>, key: Key): string => (target.pc === key.tonic ? '' : `/${degreeOf(target, key)}`)
 /** the chromatic degrees spelled sharp, for a °7 that leads up a half step (the accidental carries the direction) */
