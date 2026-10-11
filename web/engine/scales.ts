@@ -34,6 +34,18 @@ export const SCALES = {
   'bebop dominant': ['1 2 3 4 5 6 b7 7', 'Bebop Dominant'],
   'bebop major': ['1 2 3 4 5 b6 6 7', 'Bebop Major'],
   'bebop dorian': ['1 2 b3 3 4 5 6 b7', 'Bebop Dorian'],
+  // R3b, a functional °7's key-derived scale (M&H pp. 152–161): the ascending vii°7 of X is X's V7(♭9 ♯9 ♭13) from
+  // the °7's root; ♯IV°7 to I/5 is the ♯II°7's; the passing ♭III°7 and ♭VI°7 and the auxiliary I°7 and V°7 are their
+  // chord tones plus the key's notes
+  'diatonic diminished': ['1 b2 b3 b4 b5 b6 bb7 b8', 'Diatonic Dim.'],
+  'diatonic diminished biii': ['1 #1 b3 3 #4 #5 6 7', 'Diatonic Dim. (♭III°7)'], // fig. 7.22
+  'diatonic diminished biii optional': ['1 2 b3 3 #4 #5 6 7', 'Diatonic Dim. (♭III°7 optional)'], // fig. 7.23, the 9 (common with the ii it falls to)
+  'diatonic diminished bvi': ['1 #1 #2 3 #4 #5 6 7', 'Diatonic Dim. (♭VI°7)'], // fig. 7.27
+  'diatonic diminished i': ['1 2 b3 3 b5 5 6 7', 'Diatonic Dim. (I°7)'], // fig. 7.31, first
+  'diatonic diminished i optional': ['1 2 b3 4 b5 5 6 7', 'Diatonic Dim. (I°7 optional)'], // fig. 7.31, second, the 11 in place of the 3
+  'diatonic diminished v': ['1 2 b3 4 b5 5 6 b7', 'Diatonic Dim. (V°7)'], // fig. 7.34
+  'diatonic diminished #iv': ['1 b2 b3 4 b5 b6 bb7 b7', 'Diatonic Dim. (♯IV°7)'], // fig. 7.13, ♯IV°7 to I/5: the ♯II°7's notes
+  'diatonic diminished #iv optional': ['1 b2 b3 4 b5 b6 bb7 b8', 'Diatonic Dim. (♯IV°7 optional)'], // fig. 7.14, with the major 7th (printed F♮ over F♯)
 } as const satisfies Record<string, readonly [string, string]>
 
 export type ScaleKey = keyof typeof SCALES
@@ -59,6 +71,7 @@ export const ALIASES: Readonly<Record<string, ScaleKey>> = {
   'phrygian natural 6': 'dorian b2',
   'aeolian dominant': 'mixolydian b6',
   bebop: 'bebop dominant',
+  'leading tone diminished': 'diatonic diminished',
 }
 
 export type ScaleNote = Readonly<Spelled & { semis: number }>
@@ -95,6 +108,8 @@ const norm = (s: string): string =>
     .replaceAll('♭', 'b')
     .replaceAll('♯', '#')
     .replaceAll('.', '')
+    .replace(/[()]|°7?/g, '') // a label's function: "Diatonic Dim. (♭VI°7)"
+    .replace(/\bdim\b/g, 'diminished')
     .replace(/\s+/g, ' ')
     .trim()
 
@@ -111,7 +126,8 @@ export function spellFrom(root: Spelled, formula: string): ScaleNote[] {
       if (!m) throw new Error(`bad scale degree: ${JSON.stringify(tok)}`)
       const [, accs = '', degree = ''] = m
       const idx = toLetter(Number(degree) - 1) // degree's offset in letters, wrapping (a true modulo)
-      const semis = NAT_PC[idx] + count(accs, '#') - count(accs, 'b')
+      const octaves = Math.max(0, Math.floor((Number(degree) - 1) / 7)) // an 8th is an octave above the root
+      const semis = NAT_PC[idx] + 12 * octaves + count(accs, '#') - count(accs, 'b')
       const letter = toLetter(root.letter + idx)
       return { letter, acc: accFor(mod(rootPc + semis, 12), letter), semis }
     })
@@ -155,6 +171,34 @@ export function simplifyRoot(n: Spelled, key: ScaleKey = 'ionian'): Spelled {
   return minBy(enharmonics(n), cost)
 }
 
+/** the scale spells cleanly on this root: no double accidental, no B♯ E♯ C♭ F♭ */
+export const spellsCleanly = (root: Spelled, key: ScaleKey): boolean => !spellFrom(root, SCALES[key][0]).some(isUgly)
+
+/** two formulas with the same notes, lettered differently (♭III°7's and the ascending diatonic diminished) */
+export function samePitches(a: ScaleKey, b: ScaleKey): boolean {
+  const pcs = (k: ScaleKey): string => [...new Set(spellFrom({ letter: 0, acc: 0 }, SCALES[k][0]).map((n) => mod(n.semis, 12)))].sort((x, y) => x - y).join()
+  return pcs(a) === pcs(b)
+}
+
+/** the ascending diatonic diminished, the lettering ♭III°7's and ♭VI°7's notes fall back to, and its written name */
+const ASCENDING_DIM: ScaleKey = 'diatonic diminished'
+const ASCENDING_DIM_NAME = 'Diatonic Diminished'
+
+/**
+ * R9: a scale on this pitch, on the root the project rule spells best (simplifyRoot: E♭ ascending is D♯ Diatonic
+ * Diminished); where no root spells the formula cleanly, the ascending diatonic diminished's lettering of the same
+ * notes when it spells them cleanly, as M&H print ♭III°7 as ♯II°7 (fig. 7.22: B°7 in A♭ is B C D E♭ F G A♭ B♭, not
+ * C♭ C E𝄫 E♭ …). `name`: the written name of that re-lettered scale, when it is one.
+ */
+export function cleanLettering(root: Spelled, key: ScaleKey): Readonly<{ root: Spelled; key: ScaleKey; name?: string }> {
+  const r = simplifyRoot(root, key)
+  if (!spellsCleanly(r, key) && key !== ASCENDING_DIM && samePitches(key, ASCENDING_DIM)) {
+    const alt = simplifyRoot(root, ASCENDING_DIM)
+    if (spellsCleanly(alt, ASCENDING_DIM)) return { root: alt, key: ASCENDING_DIM, name: ASCENDING_DIM_NAME }
+  }
+  return { root: r, key }
+}
+
 const isScaleKey = (k: string): k is ScaleKey => Object.hasOwn(SCALES, k)
 
 /** scale name ("Half-Whole Dim.", "hw", "Locrian ♮2") -> SCALES key */
@@ -180,6 +224,21 @@ export function sameScale(a: string, b: string | null | undefined): boolean {
   try {
     const [x, y] = [parseScale(a), parseScale(b)]
     return x.key === y.key && spellEqual(x.root, y.root)
+  } catch {
+    return false
+  }
+}
+
+/**
+ * R18: the same menu entry, its root compared by pitch ("F# Whole-Half" on G♭°7 is the menu's "Gb Whole-Half"); for a
+ * written scale matched against a chord's options, never to respell one. False if either can't be read (unless equal).
+ */
+export function samePitchScale(a: string, b: string | null | undefined): boolean {
+  if (!b) return false
+  if (a === b) return true
+  try {
+    const [x, y] = [parseScale(a), parseScale(b)]
+    return x.key === y.key && pcOf(x.root) === pcOf(y.root)
   } catch {
     return false
   }

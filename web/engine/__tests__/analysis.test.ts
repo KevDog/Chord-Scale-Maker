@@ -1,15 +1,27 @@
-import { readFileSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { analyse, applyAnalysis, parseKey, pins } from '../analysis'
-import { keyText, makeKey } from '../analysis/keys'
+import { keyText, makeKey, tonicName } from '../analysis/keys'
+import { hiddenDominant, passingReason } from '../analysis/rules'
+import { familyOf } from '../analysis/stream'
+import { chordTokens } from '../chord'
 import { formPart, parseChart, serializeChart } from '../chart'
-import { parseRoot } from '../pitch'
+import { scaleAtLevel } from '../levels'
+import { CONCERT, writtenScale } from '../part'
+import { parseRoot, pcOf } from '../pitch'
+import { readChord, resolveQuality } from '../qualities'
+import { isSyncCopy } from '../util'
 
 describe('keyText', () => {
   it('drops the " major" suffix but keeps " minor"', () => {
     expect(keyText(makeKey(parseRoot('C'), false))).toBe('C')
     expect(keyText(makeKey(parseRoot('A'), true))).toBe('A minor')
     expect(keyText(makeKey(parseRoot('Bb'), false))).toBe('Bb')
+  })
+
+  it('tonicName: the tonic as written', () => {
+    expect(tonicName(makeKey(parseRoot('Bb'), true))).toBe('Bb')
+    expect(tonicName(makeKey(parseRoot('F#'), false))).toBe('F#')
   })
 })
 
@@ -89,9 +101,9 @@ describe('analysis: dominants (§7.1)', () => {
     expect(verdict(chart('C', '1 CMaj7, 3 Fm7, 4 Bb7, 5 CMaj7, 7 Dm7, 8 G7'), '4 Bb7')).toBe('Bb Lydian Dominant (D5)')
   })
 
-  it('D5 IV7 of a blues is Lydian Dominant, I7 Mixolydian (decision 4)', () => {
+  it('D5 IV7 of a blues is Mixolydian, I7 Mixolydian, both D5 (R2)', () => {
     const v = verdicts(library('f_blues').replace(/ \| [A-G][b#]? [A-Za-z ]+$/gm, ''))
-    expect([v['1 F7'], v['2 Bb7']]).toEqual(['F Mixolydian (D3)', 'Bb Lydian Dominant (D5)'])
+    expect([v['1 F7'], v['2 Bb7']]).toEqual(['F Mixolydian (D5)', 'Bb Mixolydian (D5)'])
     expect(analyse(parseChart(library('f_blues')).value).context).toBe('blues')
   })
 
@@ -126,7 +138,7 @@ describe('analysis: the other families (§7.2–7.6)', () => {
     expect([v['2 Am7'], v['3 Dm7'], v['5 Em7'], v['6 Fm6'], v['7 CmMaj7']]).toEqual([
       'A Aeolian (m7)', // vi: the b13 is in the key
       'D Dorian (m4)', // related ii
-      'E Dorian (m9)', // iii
+      'E Phrygian (m9)', // iii (R4)
       'F Dorian (m2)',
       'C Melodic Minor (m1)',
     ])
@@ -134,19 +146,361 @@ describe('analysis: the other families (§7.2–7.6)', () => {
     expect(verdict(chart('Gm', '1 Gm, 2 Dm7, 3 Gm'), '2 Dm7')).toBe('D Phrygian (m7)') // v of a minor key
   })
 
-  it('h1 h2 half-diminished: Locrian, Locrian natural 2 when modal (Footprints)', () => {
+  it('h2 half-diminished: Locrian, in a modal chart too (Footprints; h1 is gone, R6)', () => {
     expect(verdict(chart('Gm', '1 Am7b5, 2 D7, 3 Gm'), '1 Am7b5')).toBe('A Locrian (h2)')
-    expect(verdict(library('footprints'), '9 F#m7b5')).toBe('F# Locrian natural 2 (h1)')
+    expect(analyse(parseChart(library('footprints')).value).context).toBe('modal')
+    expect(verdict(library('footprints'), '9 F#m7b5')).toBe('F# Locrian (h2)')
   })
 
-  it('d1 diminished: Whole-Half', () => {
-    expect(verdict(chart('Bb', '1 BbMaj7, 2 Bdim7, 3 Cm7, 4 F7'), '2 Bdim7')).toBe('B Whole-Half Diminished (d1)')
+  it('d1 diminished: a vii°7 is Diatonic Diminished (R3b)', () => {
+    expect(verdict(chart('Bb', '1 BbMaj7, 2 Bdim7, 3 Cm7, 4 F7'), '2 Bdim7')).toBe('B Diatonic Diminished (d1)')
   })
 
   it('s1–s3 sus chords', () => {
     expect(verdict(chart('C', '1 DbMaj7/C, 3 CMaj7'), '1 DbMaj7/C')).toBe('C Phrygian (s1)')
     expect(verdict(chart('C', '1 Dm7, 2 G7sus4, 3 CMaj7'), '2 G7sus4')).toBe('G Mixolydian (s2)')
     expect(verdict(chart('', '1 D7sus4, 5 F7sus4, 9 D7sus4, 13 F7sus4'), '1 D7sus4')).toBe('D Mixolydian (s3)')
+  })
+})
+
+describe('reasons from the sources (docs/superpowers/specs/2026-10-10-analysis-rules-from-sources-design.md R3a, R6)', () => {
+  /** "A Aeolian (m7): vi: …" for the chord asked for */
+  const reasoned = (text: string, barChord: string): string | undefined => {
+    const r = analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === barChord)
+    return r && `${r.scale} (${r.rule}): ${r.reason}`
+  }
+
+  it('d1 a vii°7 names the dominant it hides', () => {
+    expect(reasoned(chart('C', '1 CMaj7, 2 C#dim7, 3 Dm7, 4 G7'), '2 C#dim7')).toBe('C# Diatonic Diminished (d1): vii°7 of Dm7: A7♭9 without its root')
+  })
+
+  it('d1 a passing °7 names the dominant it hides, past a related ii (Wave)', () => {
+    expect(reasoned(chart('D', '1 DMaj7, 2 Bbdim7, 3 Am7, 3 D7'), '2 Bbdim7')).toBe("Bb Diatonic Diminished bVI (d1): passing diminished: A7♭9 without its A, the D7's dominant (Am7 its ii)")
+  })
+
+  it('d1 a passing °7 whose hidden dominant is the next chord’s V', () => {
+    expect(reasoned(chart('C', '1 CMaj7, 2 Edim7, 3 Dm7, 4 G7'), '2 Edim7')).toBe("E Whole-Half Diminished (d1): passing diminished: A7♭9 without its A, the Dm7's dominant; not functioning diatonically: the symmetric scale")
+  })
+
+  it('d1 an auxiliary °7 decorates the chord', () => {
+    expect(reasoned(chart('C', '1 C7, 2 Cdim7, 3 C6'), '2 Cdim7')).toBe('C Diatonic Diminished I (d1): auxiliary diminished: it decorates the chord and returns to it')
+  })
+
+  it('d1 a passing °7 that hides no dominant of what follows', () => {
+    expect(reasoned(chart('C', '1 CMaj7, 2 F#dim7, 3 FMaj7'), '2 F#dim7')).toBe('F# Whole-Half Diminished (d1): passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale')
+  })
+
+  it('d1 R3b: the diatonic diminished scale by function, M&H figs. 7.22–7.34', () => {
+    const scale = (key: string, rows: string, barChord: string) => verdict(chart(key, rows), barChord)
+    expect(scale('C', '1 CMaj7, 2 C#dim7, 3 Dm7', '2 C#dim7')).toBe('C# Diatonic Diminished (d1)') // ascending
+    expect(scale('Cm', '1 Cm, 2 Bdim7, 3 Cm', '2 Bdim7')).toBe('B Diatonic Diminished (d1)') // ascending, in a minor key too
+    expect(scale('C', '1 Em7, 2 Ebdim7, 3 Dm7', '2 Ebdim7')).toBe('Eb Diatonic Diminished bIII (d1)') // passing on ♭3 (Q1a)
+    expect(scale('D', '1 DMaj7, 2 Bbdim7, 3 Am7, 3 D7', '2 Bbdim7')).toBe('Bb Diatonic Diminished bVI (d1)') // passing on ♭6
+    expect(scale('C', '1 Dm7, 2 G7, 3 Cdim7, 4 C6', '3 Cdim7')).toBe('C Diatonic Diminished I (d1)') // auxiliary on 1 (Q2a)
+    expect(scale('C', '1 CMaj7, 2 Gdim7, 3 G7', '2 Gdim7')).toBe('G Diatonic Diminished V (d1)') // auxiliary on 5
+  })
+
+  it('d1 R3b: ♯IV°7 to the tonic, over its 5th or not, takes fig. 7.13’s scale', () => {
+    expect(reasoned(chart('C', '1 FMaj7, 2 F#dim7, 3 C/G, 4 G7'), '2 F#dim7')).toBe("F# Diatonic Diminished #IV (d1): ♯IV°7 to I over its 5th: B7♭9 without its root, the ♯II°7's notes")
+    expect(reasoned(chart('Bb', '1 Bb7, 2 Eb7, 2 Edim7, 3 Bb7, 4 G7'), '2 Edim7')).toBe("E Diatonic Diminished #IV (d1): ♯IV°7 to I: A7♭9 without its root, the ♯II°7's notes") // blues bar 6, fig. 7.15
+  })
+
+  it('d1 R3b: a °7 a half step below the next chord’s bass ascends to it (♯II°7 to I/3, fig. 7.9)', () => {
+    expect(reasoned(chart('Ab', '1 Bbm7, 2 Bdim7, 3 Ab/C, 4 Bbm7'), '2 Bdim7')).toBe('B Diatonic Diminished (d1): vii°7 to Ab/C, up to its bass: G7♭9 without its root')
+    expect(verdict(chart('Bb', '1 Cm7, 2 Dbdim7, 3 Bb/D, 4 Cm7'), '2 Dbdim7')).toBe('C# Diatonic Diminished (d1)')
+  })
+
+  it('d1 R16: a °7 a half step below the next chord’s root ascends to it, whatever its bass', () => {
+    expect(reasoned(chart('C', '1 CMaj7, 2 C#dim7, 3 Dm7/A, 4 G7'), '2 C#dim7')).toBe('C# Diatonic Diminished (d1): vii°7 of Dm7/A: A7♭9 without its root')
+    expect(reasoned(chart('C', '1 Dm7, 2 Bdim7, 3 C/G, 4 G7'), '2 Bdim7')).toBe('B Diatonic Diminished (d1): vii°7 of C/G: G7♭9 without its root') // vii°7 to I6/4
+  })
+
+  it('d1 R16: the bass reading still holds, and ♯IV°7 to I is tested first', () => {
+    expect(reasoned(chart('C', '1 Em7, 2 D#dim7, 3 C/E, 4 FMaj7'), '2 D#dim7')).toBe('D# Diatonic Diminished (d1): vii°7 to C/E, up to its bass: B7♭9 without its root') // ♯II°7 to I/3 (Q6)
+    expect(verdict(chart('C', '1 FMaj7, 2 F#dim7, 3 C/G, 4 G7'), '2 F#dim7')).toBe('F# Diatonic Diminished #IV (d1)') // fig. 7.13, not vii°7 of G
+    expect(reasoned(chart('Cm', '1 Fm7, 2 F#dim7, 3 Cm/G, 4 G7'), '2 F#dim7')).toBe('F# Diatonic Diminished (d1): vii°7 to Cm/G, up to its bass: D7♭9 without its root') // in a minor key, no ♯IV°7 figure
+  })
+
+  it('d1 R7: a Q5 comment past the chart-comment limit drops the "(X its ii)" aside, and any comment is cut to fit', () => {
+    const text = chart('Bb', '1 Bb7, 2 Eb7, 2 Edim7, 3 Cm7, 3 F7, 4 Bb6')
+    const saved = (t: string, scales: 'fill' | 'force') => {
+      const doc = parseChart(t).value
+      return parseChart(serializeChart(applyAnalysis(doc, analyse(doc), { scales, save: true, date: '2026-10-10' }).doc))
+    }
+    const bare = saved(text, 'force')
+    expect(bare.diagnostics).toEqual([])
+    expect(bare.value.lines.find((l) => l.kind === 'row' && l.chord === 'Edim7')).toMatchObject({ comment: "passing diminished: C7♭9 without its C, the F7's dominant; not functioning diatonically: the symmetric scale" })
+    // a written scale the rules disagree with wraps the reason ("≠ rules: …"): still within the limit
+    const differs = saved(text.replace('A | 2 | Edim7', 'A | 2 | Edim7 | E Diatonic Diminished #IV'), 'fill')
+    expect(differs.diagnostics).toEqual([])
+    const comment = differs.value.lines.find((l) => l.kind === 'row' && l.chord === 'Edim7')
+    expect(comment).toMatchObject({ scale: 'E Diatonic Diminished #IV', comment: expect.stringMatching(/^≠ rules: E Whole-Half Diminished \(passing diminished: .*…\)$/) })
+    for (const name of ['body_and_soul', 'rhythm_changes']) expect(parseChart(library(name)).diagnostics, name).toEqual([])
+    expect(verdict(library('body_and_soul'), '22 Ebdim7')).toBe('Eb Whole-Half Diminished (d1)')
+    expect(verdict(library('rhythm_changes'), '14 Edim7')).toBe('E Whole-Half Diminished (d1)')
+  })
+
+  it('d1 R9: a °7’s scale root is spelled by the project rule, on the concert sheet too (no double accidental, no B♯ E♯ C♭ F♭)', () => {
+    const ugly = (n: { letter: number; acc: number }) => Math.abs(n.acc) > 1 || (n.acc === 1 && (n.letter === 2 || n.letter === 6)) || (n.acc === -1 && (n.letter === 0 || n.letter === 3))
+    const cases: [string, string, string][] = [
+      ['below_zero', '26 Ebdim7', 'D# Diatonic Diminished'],
+      ['meditation', '6 Ebdim7', 'D# Diatonic Diminished'],
+      ['meditation', '30 Ebdim7', 'D# Diatonic Diminished'],
+      ['slow_boat_to_china', '4 Dbdim7', 'C# Diatonic Diminished'],
+      ['slow_boat_to_china', '20 Dbdim7', 'C# Diatonic Diminished'],
+      ['all_the_things_you_are', '32 Bdim7', 'B Diatonic Diminished'], // ♭III°7 lettered as ♯II°7 (fig. 7.22's pitches)
+      ['baubles_bangles_and_beads', '4 Bdim7', 'B Diatonic Diminished'],
+      ['our_delight', '7 Bdim7', 'B Diatonic Diminished'],
+      ['our_delight', '15 Bdim7', 'B Diatonic Diminished'],
+      ['our_delight', '31 Bdim7', 'B Diatonic Diminished'],
+      ['body_and_soul', '4 Edim7', 'E Diatonic Diminished'],
+      ['body_and_soul', '12 Edim7', 'E Diatonic Diminished'],
+      ['body_and_soul', '28 Edim7', 'E Diatonic Diminished'],
+    ]
+    for (const [name, barChord, want] of cases) {
+      const scale = verdict(library(name), barChord)?.replace(/ \(d1\)$/, '') ?? ''
+      expect(scale, `${name} ${barChord}`).toBe(want)
+      expect(writtenScale(CONCERT, scale).notes.filter(ugly), `${name} ${barChord}`).toEqual([])
+    }
+    // the chord symbol follows its scale's spelling where they share a root (CLAUDE.md)
+    expect(chordTokens(CONCERT, 'Ebdim7', 'D# Diatonic Diminished')).toEqual([{ kind: 'text', text: 'D' }, { kind: 'acc', acc: '#' }, { kind: 'text', text: 'dim7' }])
+    // a C♭ root never reaches a scale it can't spell
+    expect(verdict(chart('C', '1 CMaj7, 2 Cbdim7, 3 Cm7'), '2 Cbdim7')).toBe('B Diatonic Diminished (d1)')
+  })
+
+  it('d1 R3b: a °7 the figures don’t cover is not functioning diatonically: Whole-Half (Q5)', () => {
+    const q5 = (key: string, rows: string, barChord: string) => reasoned(chart(key, rows), barChord)
+    expect(q5('C', '1 FMaj7, 2 Fdim7, 3 FMaj7', '2 Fdim7')).toBe('F Whole-Half Diminished (d1): auxiliary diminished: it decorates the chord and returns to it; not functioning diatonically: the symmetric scale') // auxiliary on 4
+    expect(q5('Cm', '1 Cm7, 2 Cdim7, 3 Cm7', '2 Cdim7')).toBe('C Whole-Half Diminished (d1): auxiliary diminished: it decorates the chord and returns to it; not functioning diatonically: the symmetric scale') // in a minor key
+    expect(q5('Cm', '1 Fm7, 2 Ebdim7, 3 Dm7b5, 4 G7', '2 Ebdim7')).toMatch(/^Eb Whole-Half Diminished \(d1\): passing diminished: .*; not functioning diatonically: the symmetric scale$/) // passing in a minor key
+  })
+
+  it('d1 R3b: Wave bar 2 is the ♭VI°7 scale at Standard, Whole-Half at Advanced', () => {
+    expect(verdict(library('wave'), '2 Bbdim7')).toBe('Bb Diatonic Diminished bVI (d1)')
+    expect(scaleAtLevel('Bbdim7', 'advanced', 0, '', 'Bb Diatonic Diminished bVI')).toBe('Bb Whole-Half Diminished')
+  })
+
+  it('m7 vi and v of a minor key: the avoid note is a passing note, not "in the key"', () => {
+    expect(reasoned(chart('C', '1 CMaj7, 2 Am7, 3 FMaj7'), '2 Am7')).toBe("A Aeolian (m7): vi: Aeolian, the key's own notes (the ♭6 is a passing note)")
+    expect(reasoned(chart('Gm', '1 Gm, 2 Dm7, 3 Gm'), '2 Dm7')).toBe("D Phrygian (m7): v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)")
+  })
+
+  it('h2 the iiø7 of a minor ii–V: its ♭2 is a passing note', () => {
+    expect(reasoned(chart('Gm', '1 Am7b5, 2 D7, 3 Gm7'), '1 Am7b5')).toBe("A Locrian (h2): iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)")
+  })
+
+  it('m5 prints no note to the plan', () => {
+    expect(reasoned(chart('Gm', '1 Am7b5, 2 D7, 3 Gm'), '3 Gm')).toBe('G Dorian (m5): tonic minor: Dorian by convention')
+  })
+
+  it('s2 a resolving sus: the 4th is a chord tone; the derived ♭6 stays', () => {
+    expect(reasoned(chart('C', '1 Dm7, 2 G7sus4, 3 CMaj7'), '2 G7sus4')).toBe('G Mixolydian (s2): V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here')
+    expect(reasoned(chart('Cm', '1 Dm7b5, 2 G7sus4, 3 Cm7'), '2 G7sus4')).toMatch(/^G Mixolydian b6 \(s2\): /)
+  })
+
+  it('chord_scales.json: Aeolian on a minor chord is for vi, or a written ♭6 (iv is Dorian)', () => {
+    const json = JSON.parse(readFileSync('../chord_scales.json', 'utf8')) as { qualities: Record<string, { scale: string; note?: string }[]> }
+    for (const q of ['m', 'm7']) expect(json.qualities[q]?.find((o) => o.scale === 'Aeolian')?.note).toBe('when the chord is vi, or the symbol has a ♭6')
+  })
+})
+
+describe('hiddenDominant (R3a): the V7♭9 a °7 is, without its root', () => {
+  const at = (chord: string) => {
+    const r = readChord(chord)
+    if (!r) throw new Error(chord)
+    return { chord, root: r.root, pc: pcOf(r.root), family: familyOf(r.quality), quality: r.quality }
+  }
+
+  it('Wave: Bb°7 → Am7 D7 hides A7♭9, the D7’s dominant, not E7♭9', () => {
+    expect(hiddenDominant(at('Bbdim7').pc, at('Am7'), at('D7'))).toEqual({ root: 'A', target: 'D7', ii: 'Am7' })
+  })
+
+  it('C#°7 → Dm7 hides A7♭9', () => {
+    expect(hiddenDominant(at('C#dim7').pc, at('Dm7'), at('G7'))).toEqual({ root: 'A', target: 'Dm7' })
+  })
+
+  it('spells the dominant a fifth above its target', () => {
+    expect(hiddenDominant(at('Ddim7').pc, at('Ebm7'), at('Ab7'))).toEqual({ root: 'Bb', target: 'Ebm7' })
+  })
+
+  it('no match: null, and the fallback reason', () => {
+    expect(hiddenDominant(at('F#dim7').pc, at('FMaj7'), at('Dm7'))).toBeNull()
+    expect(hiddenDominant(at('F#dim7').pc, undefined, undefined)).toBeNull()
+    expect(passingReason(null)).toBe('passing diminished: a rootless dominant ♭9')
+    expect(passingReason({ root: 'A', target: 'D7', ii: 'Am7' })).toBe("passing diminished: A7♭9 without its A, the D7's dominant (Am7 its ii)")
+  })
+})
+
+describe('R1: a IV reached by its own dominant is Ionian (docs/superpowers/specs/2026-10-10-analysis-rules-from-sources-design.md)', () => {
+  const reasoned = (text: string, barChord: string): string | undefined => {
+    const r = analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === barChord)
+    return r && `${r.scale} (${r.rule}): ${r.reason}`
+  }
+
+  it('V7/IV → IV: Ionian, M3 (Stella bars 5–7)', () => {
+    expect(reasoned(library('stella_by_starlight'), '7 EbMaj7')).toBe('Eb Ionian (M3): the Bb7 before it makes Eb the key of the moment: the 4th is in the key')
+    expect(reasoned(chart('Bb', '5 Fm7, 6 Bb7, 7 EbMaj7, 8 Ab7, 9 BbMaj7'), '7 EbMaj7')).toBe('Eb Ionian (M3): the Bb7 before it makes Eb the key of the moment: the 4th is in the key')
+  })
+
+  it('V7/IV → IV: Ionian (Moment’s Notice bars 10–11 and 26–27)', () => {
+    expect([verdict(library('moments_notice'), '11 AbMaj7'), verdict(library('moments_notice'), '27 AbMaj7')]).toEqual(['Ab Ionian (M3)', 'Ab Ionian (M3)'])
+  })
+
+  it('subV7/IV → IV: Ionian (E7 is a half step above Eb)', () => {
+    expect(reasoned(chart('Bb', '1 BbMaj7, 2 E7, 3 EbMaj7, 4 F7, 5 BbMaj7'), '3 EbMaj7')).toBe('Eb Ionian (M3): the E7 before it makes Eb the key of the moment: the 4th is in the key')
+  })
+
+  it('a IV not so prepared stays Lydian (All the Things bar 5: DbMaj7 after AbMaj7)', () => {
+    expect(verdict(library('all_the_things_you_are'), '5 DbMaj7')).toBe('Db Lydian (M4)')
+    expect(verdict(chart('C', '1 CMaj7, 2 FMaj7, 3 Dm7, 4 G7, 5 CMaj7'), '2 FMaj7')).toBe('F Lydian (M4)')
+  })
+
+  it('a # keep: Eb Lydian row stays Lydian', () => {
+    const text = 'title: T\nkey: Bb\n\nA | 1 | Fm7\nA | 2 | Bb7\nA | 3 | EbMaj7 | Eb Lydian  # keep: the melody\nA | 4 | BbMaj7\n'
+    const doc = parseChart(text).value
+    const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'force', save: false, date: '2026-10-10' }).doc)
+    expect(out).toContain('Eb Lydian  # keep: the melody')
+  })
+})
+
+describe('R2: the blues I7 and IV7 by D5 before D3 (docs/superpowers/specs/2026-10-10-analysis-rules-from-sources-design.md)', () => {
+  const reasoned = (text: string, barChord: string): string | undefined => {
+    const r = analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === barChord)
+    return r && `${r.scale} (${r.rule}): ${r.reason}`
+  }
+  const fJazzBlues = library('f_jazz_blues')
+
+  it('I7 of the blues is D5, not an extended dominant (F Jazz Blues bar 1)', () => {
+    expect(reasoned(fJazzBlues, '1 F7')).toBe('F Mixolydian (D5): I7 of the blues: a tonic with dominant colour, natural tensions')
+  })
+
+  it('IV7 of the blues is Mixolydian, D5 (F Jazz Blues bar 5)', () => {
+    expect(reasoned(fJazzBlues, '5 Bb7')).toBe('Bb Mixolydian (D5): IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)')
+  })
+
+  it('a IV7 whose symbol moves it off Mixolydian drops the Mixolydian clause (Ab7#11 in an Eb blues)', () => {
+    const text = chart('', '1 Eb7, 5 Ab7#11, 7 Eb7, 9 Bb7, 10 Ab7, 11 Eb7, 12 Bb7')
+    expect(analyse(parseChart(text).value).context).toBe('blues')
+    expect(reasoned(text, '5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D5): IV7 of the blues: a subdominant with dominant colour; #11 from the symbol')
+    expect(reasoned(library('blue_trane'), '5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D5): IV7 of the blues: a subdominant with dominant colour; #11 from the symbol')
+  })
+
+  it('an I7 whose symbol moves it names the symbol’s notes, not natural tensions (Eb7#9)', () => {
+    expect(reasoned(library('blue_trane'), '1 Eb7#9')).toBe('Eb Half-Whole Diminished (D1+D5): I7 of the blues: a tonic with dominant colour, b9, #9 and #11 from the symbol')
+  })
+
+  it('no I7 row of any library blues is reasoned by D3', () => {
+    const files = readdirSync('../charts').filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
+    const blues = files.map((f) => [f, analyse(parseChart(readFileSync(`../charts/${f}`, 'utf8')).value)] as const).filter(([, a]) => a.context === 'blues')
+    expect(blues.map(([f]) => f)).toContain('f_jazz_blues.txt')
+    const d3 = blues.flatMap(([f, a]) =>
+      a.rows.filter((r) => { const c = readChord(r.chord); return c && c.quality === '7' && a.key && pcOf(c.root) === a.key.tonic && r.rule.includes('D3') }).map((r) => `${f} ${r.bar} ${r.chord}`),
+    )
+    expect(d3).toEqual([])
+  })
+
+  it('a stated function wins over R2: V7/IV on the blues I7 of bar 4 (principle 1)', () => {
+    const text = fJazzBlues.replace(/^(A \| 4 +\| F7 +\| F Mixolydian) +#.*$/m, '$1 | V7/IV')
+    expect(parseChart(text).diagnostics).toEqual([])
+    const r = analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === '4 F7')
+    expect([r?.scale, r?.rule, r?.fn, r?.numeral, r?.stated]).toEqual(['F Mixolydian', 'D4', 'V7/IV in F', 'V7/IV', true])
+    expect(r?.reason).toMatch(/^\* V7\/IV in F: /)
+    expect(verdict(text, '1 F7')).toBe('F Mixolydian (D5)') // the unstated I7s keep R2
+  })
+
+  it('a stated function that names no target leaves R2 its degree: a stated I7 is still the blues I7', () => {
+    const text = fJazzBlues.replace(/^(A \| 1 +\| F7 +\| F Mixolydian) +#.*$/m, '$1 | I7')
+    expect(parseChart(text).diagnostics).toEqual([])
+    const r = analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === '1 F7')
+    expect([r?.scale, r?.rule, r?.fn, r?.stated]).toEqual(['F Mixolydian', 'D5', 'I7 of the blues', true])
+  })
+
+  it('a # keep: Bb Lydian Dominant on the blues IV7 stays', () => {
+    const text = fJazzBlues.replace(/^(A \| 5 +\| Bb7 +\| )Bb Mixolydian +#.*$/m, '$1Bb Lydian Dominant  # keep: the melody')
+    const doc = parseChart(text).value
+    const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'force', save: false, date: '2026-10-10' }).doc)
+    expect(out).toMatch(/^A \| 5 +\| Bb7 +\| Bb Lydian Dominant +# keep: the melody$/m)
+  })
+
+  it('the 7 menu still lists Lydian Dominant', () => {
+    expect(resolveQuality('C7')?.options.map((o) => o.scale)).toContain('C Lydian Dominant')
+  })
+})
+
+describe('R4: iii7 is Phrygian, m9 (docs/superpowers/specs/2026-10-10-analysis-rules-from-sources-design.md)', () => {
+  const row = (text: string, barChord: string) => analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === barChord)
+  const reasoned = (text: string, barChord: string): string | undefined => {
+    const r = row(text, barChord)
+    return r && `${r.scale} (${r.rule}): ${r.reason}`
+  }
+
+  it('iii7 of a major key: Phrygian, the key\'s own notes', () => {
+    expect(reasoned(chart('C', '1 Cmaj7, 2 Em7, 3 Am7, 4 Dm7, 5 G7'), '2 Em7')).toBe("E Phrygian (m9): iii: Phrygian, the key's own notes (the ♭2 is a passing note)")
+  })
+
+  it('iii7 as the related ii of the next dominant keeps Phrygian (m4 does not override a diatonic iii)', () => {
+    const r = row(chart('C', '1 Cmaj7, 2 Em7, 3 A7, 4 Dm7'), '2 Em7')
+    expect([r?.scale, r?.rule, r?.numeral]).toEqual(['E Phrygian', 'm9', 'iii7'])
+  })
+
+  it('chord_scales.json: Phrygian on a minor chord is for iii, or v of a minor key', () => {
+    const json = JSON.parse(readFileSync('../chord_scales.json', 'utf8')) as { qualities: Record<string, { scale: string; note?: string }[]> }
+    for (const q of ['m', 'm7']) expect(json.qualities[q]?.find((o) => o.scale === 'Phrygian')?.note).toBe('iii, or v of a minor key')
+  })
+
+  it('a # keep: E Dorian on iii7 stays', () => {
+    const text = 'title: T\nkey: C\n\nA | 1 | CMaj7\nA | 2 | Em7 | E Dorian  # keep: the melody\nA | 3 | Am7\nA | 4 | Dm7\nA | 5 | G7\n'
+    const doc = parseChart(text).value
+    const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'force', save: false, date: '2026-10-10' }).doc)
+    expect(out).toContain('E Dorian  # keep: the melody')
+  })
+
+  it('a ii of a ii–V stays Dorian (m4)', () => {
+    expect(verdict(chart('C', '1 Cmaj7, 2 Dm7, 3 G7, 4 Cmaj7'), '2 Dm7')).toBe('D Dorian (m4)')
+  })
+})
+
+describe('R6: the small bundle (docs/superpowers/specs/2026-10-10-analysis-rules-from-sources-design.md)', () => {
+  const reasoned = (text: string, barChord: string): string | undefined => {
+    const r = analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === barChord)
+    return r && `${r.scale} (${r.rule}): ${r.reason}`
+  }
+
+  it('m2 a tonic minor sixth chord is Melodic Minor (A Night in Tunisia)', () => {
+    expect(reasoned(library('a_night_in_tunisia'), '2 Dm6/9')).toBe('D Melodic Minor (m2): tonic minor sixth chord: melodic minor, the raised 7th is a tension')
+    expect(reasoned(chart('Dm', '1 Eb7, 2 Dm6/9'), '2 Dm6/9')).toBe('D Melodic Minor (m2): tonic minor sixth chord: melodic minor, the raised 7th is a tension')
+  })
+
+  it('a # keep: D Dorian on a tonic m6 stays', () => {
+    const text = 'title: T\nkey: Dm\n\nA | 1 | Eb7\nA | 2 | Dm6 | D Dorian  # keep: the melody\n'
+    const doc = parseChart(text).value
+    const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'force', save: false, date: '2026-10-10' }).doc)
+    expect(verdict(text, '2 Dm6')).toBe('D Melodic Minor (m2)')
+    expect(out).toContain('D Dorian  # keep: the melody')
+  })
+
+  it('m2 any other minor sixth chord is Dorian (Wave: iv6 in D)', () => {
+    const wave = library('wave').replace(/^(A1 \| 6 +\| )Gm7 .*$/m, '$1Gm6')
+    expect(reasoned(wave, '6 Gm6')).toBe('G Dorian (m2): a minor sixth chord: Dorian')
+    expect(reasoned(chart('C', '1 CMaj7, 2 Fm6, 3 CMaj7'), '2 Fm6')).toBe('F Dorian (m2): a minor sixth chord: Dorian')
+  })
+
+  it('m2 a tonic minor sixth chord in a modal chart stays Dorian (§5.4: no functional rules there; Africa)', () => {
+    expect(reasoned(library('africa'), '1 Dm6/9/E')).toBe('D Dorian (m2): a minor sixth chord: Dorian')
+  })
+
+  it('h2 a ø7 that is neither related nor diatonic is its own mode, not the key\'s notes (Footprints)', () => {
+    const fp = analyse(parseChart(library('footprints')).value).rows.find((x) => `${x.bar} ${x.chord}` === '9 F#m7b5')
+    expect([fp?.scale, fp?.rule, fp?.reason, fp?.fallback]).toEqual(['F# Locrian', 'h2', '#ivø7 in C minor: Locrian, its own mode (the chord is outside the key)', true])
+    expect(reasoned(chart('C', '1 CMaj7, 2 F#m7b5, 3 FMaj7'), '2 F#m7b5')).toBe('F# Locrian (h2): #ivø7 in C: Locrian, its own mode (the chord is outside the key)')
+    expect(reasoned(chart('C', '1 CMaj7, 2 Bm7b5, 3 CMaj7'), '2 Bm7b5')).toBe("B Locrian (h2): viiø7 in C: Locrian, the key's own notes (its ♭2 is a passing note)")
+  })
+
+  it('M3 ♭VII of a minor key is Ionian, the notes of the tonic’s Dorian; ♭VI stays Lydian (M4)', () => {
+    const text = chart('Cm', '1 Cm7, 2 BbMaj7, 3 AbMaj7')
+    expect(reasoned(text, '2 BbMaj7')).toBe('Bb Ionian (M3): ♭VII of C minor: B♭ major, the notes of C Dorian')
+    expect(verdict(text, '3 AbMaj7')).toBe('Ab Lydian (M4)')
+    expect(reasoned(chart('Fm', '1 Fm7, 2 EbMaj7, 3 DbMaj7'), '2 EbMaj7')).toBe('Eb Ionian (M3): ♭VII of F minor: E♭ major, the notes of F Dorian')
   })
 })
 

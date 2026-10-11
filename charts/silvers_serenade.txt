@@ -4,7 +4,7 @@ style: Medium
 key: Em
 form: A, 16 bars
 source: Colorado Cookbook, p. 198
-# analysis: 2026-10-09, rules v1; E minor
+# analysis: 2026-10-11, rules v1; E minor
 
 # section | bar | chord | scale
 # area: E minor (bars 1–9)
@@ -21,7 +21,7 @@ A    | 11 | Cm7      | C Dorian      # ii of the ii–V to Bb
 A    | 12 | F7       | F Mixolydian  # V7 of Bb: natural tensions
 A    | 13 | BbMaj7   | Bb Ionian     # tonic: the 4th is in the key
 A    | 13 | Cm7      | C Dorian      # ii: Dorian, the key’s own notes
-A    | 14 | Dm7      | D Dorian      # iii: Dorian (its Phrygian would put a b9 over the root)
+A    | 14 | Dm7      | D Phrygian    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A    | 14 | EbMaj7   | Eb Lydian     # IV: the #4 is the key’s 7th
 # area: E minor (bars 15–16)
 A    | 15 | Am7      | A Dorian      # ii of D7: Dorian

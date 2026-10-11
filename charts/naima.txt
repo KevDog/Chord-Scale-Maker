@@ -32,7 +32,7 @@ B    | 11 | BMaj7  | B Lydian                  # ♭IIImaj7, borrowed from Ab mi
 B    | 12 | Bb7b9  | Bb Half-Whole Diminished  # II7 in Ab, not resolving: the b9 from the symbol
 B    | 13 | E7#11  | E Lydian Dominant         # ♭VI7 from the parallel minor: Lydian Dominant
 B    | 14 | BMaj7  | B Lydian                  # ♭IIImaj7, borrowed from Ab minor: Lydian (its ♯11 is in the key)
-B    | 15 | Fm     | F Aeolian                 # vi: the b13 is in the key
+B    | 15 | Fm     | F Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 B    | 16 | Gb7#11 | Gb Lydian Dominant        # ♭VII7 from the parallel minor: Lydian Dominant
 C    | 17 | Bbm    | Bb Dorian                 # ii: Dorian, the key’s own notes
 C    | 18 | Ebm    | Eb Dorian                 # a borrowed minor chord: Dorian, its own key

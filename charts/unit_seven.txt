@@ -5,7 +5,7 @@ style: Mixed
 key: C
 form: AABC, 44 bars
 source: Colorado Cookbook, p. 252
-# analysis: 2026-10-08, rules v1; C
+# analysis: 2026-10-11, rules v1; C
 
 # section | bar | chord | scale
 # area: C major (bars 1–7)
@@ -31,11 +31,11 @@ A2 | 24 | A7alt  | A Altered            # from the symbol: altered
 # area: C major (bars 25–39)
 B  | 25 | Dm7    | D Dorian             # ii of G7: Dorian
 B  | 26 | G7     | G Mixolydian         # V7/I in C: natural tensions
-B  | 27 | Em7    | E Dorian             # ii of the ii–V to D minor
+B  | 27 | Em7    | E Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B  | 28 | A7alt  | A Altered            # from the symbol: altered
 B  | 29 | Dm7    | D Dorian             # ii of G7: Dorian
 B  | 30 | G7     | G Mixolydian         # V7/I in C: natural tensions
-B  | 31 | Em7    | E Dorian             # ii of the ii–V to D minor
+B  | 31 | Em7    | E Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B  | 31 | A7     | A Mixolydian b6      # V7/ii in C: the b13 is in the key
 B  | 32 | Dm7    | D Dorian             # ii of G7: Dorian
 B  | 32 | G7     | G Mixolydian         # extended dominant: V7 of C7

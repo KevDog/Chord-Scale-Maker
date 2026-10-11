@@ -4,7 +4,7 @@ style: Medium
 key: Dm
 form: A, 8 bars
 source: Colorado Cookbook, p. 199
-# analysis: 2026-10-08, rules v1; D minor
+# analysis: 2026-10-11, rules v1; D minor
 
 # section | bar | chord | scale
 A | 1 | Dm      | D Dorian             # tonic minor: Dorian by convention
@@ -12,10 +12,10 @@ A | 1 | A7/E    | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the ke
 A | 2 | Dm/F    | D Dorian             # tonic minor: Dorian by convention
 A | 2 | A7/E    | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key
 A | 3 | Dm      | D Dorian             # tonic minor: Dorian by convention
-A | 3 | Em7b5   | E Locrian            # iiø7 of A7: the b9 is in the key
+A | 3 | Em7b5   | E Locrian            # iiø7 of A7: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 4 | A7      | A Phrygian Dominant  # V7/i in D minor: b9 and b13 are in the key
 A | 4 | Em7/B   | E Dorian             # a borrowed minor chord: Dorian, its own key
-A | 4 | Em7b5/C | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
+A | 4 | Em7b5/C | E Locrian            # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 4 | A7/C#   | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key
 A | 5 | Dm      | D Dorian             # tonic minor: Dorian by convention
 A | 5 | A7/C#   | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key

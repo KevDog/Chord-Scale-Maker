@@ -5,7 +5,7 @@ key: Bb
 
 # section | bar | chord | scale
 A | 1  | BbMaj7 | Bb Ionian            # tonic: the 4th is in the key
-A | 2  | Am7b5  | A Locrian            # iiø7 of the ii–V to G minor: the b9 is in the key
+A | 2  | Am7b5  | A Locrian            # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 2  | D7b9   | D Phrygian Dominant  # V7/vi in Bb: b9 and b13 are in the key
 A | 3  | Gm7    | G Dorian             # ii of the ii–V to F minor
 A | 3  | C7     | C Mixolydian         # V7/v in Bb: natural tensions
@@ -14,7 +14,7 @@ A | 4  | Bb7    | Bb Mixolydian        # extended dominant: V7 of Eb7
 A | 5  | Eb7    | Eb Lydian Dominant   # IV7 in Bb, not resolving: the #11 is in the key
 A | 6  | Ebm7   | Eb Dorian            # ii of Ab7: Dorian
 A | 6  | Ab7    | Ab Mixolydian        # extended ii–V: a side-step, its own key
-A | 7  | Dm7    | D Dorian             # ii of G7: Dorian
+A | 7  | Dm7    | D Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A | 7  | G7     | G Mixolydian         # extended ii–V: a side-step, its own key
 A | 8  | Dbm7   | Db Dorian            # ii of Gb7: Dorian
 A | 8  | Gb7    | Gb Mixolydian        # extended ii–V: a side-step, its own key

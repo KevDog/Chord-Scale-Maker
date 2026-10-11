@@ -8,34 +8,34 @@ source: Colorado Cookbook, p. 150
 # analysis: 2026-10-11, rules v1; Eb
 
 # section | bar | chord | scale
-A | 1  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
-A | 2  | Cm7    | C Aeolian                 # vi: the b13 is in the key
-A | 3  | Fm7    | F Dorian                  # ii of the ii–V to Eb
-A | 4  | Bb7    | Bb Mixolydian             # V7 of Eb: natural tensions
-A | 5  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
-A | 7  | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
-A | 8  | G7alt  | G Altered                 # from the symbol: altered
-A | 9  | Cm     | C Aeolian                 # vi: the b13 is in the key
-A | 10 | Am7b5  | A Locrian                 # #ivø7 in Eb: the b9 is in the key
-A | 11 | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
-A | 12 | G7alt  | G Altered                 # from the symbol: altered
-A | 13 | Cm7    | C Dorian                  # ii of F7: Dorian
-A | 14 | F7     | F Mixolydian              # extended dominant: V7 of Fm7/Bb
-A | 15 | Fm7/Bb | Bb Mixolydian             # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-A | 16 | Bb7    | Bb Mixolydian             # V7 in Eb, not resolving: natural tensions
-B | 17 | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
-B | 18 | Eb7    | Eb Mixolydian             # V7/IV in Eb: natural tensions
-B | 19 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
-B | 21 | Abm7   | Ab Dorian                 # ii of Db7: Dorian
-B | 22 | Db7    | Db Lydian Dominant        # back door bVII7 to Eb/G: the #11 is in the key
-B | 23 | Eb/G   | Eb Ionian                 # tonic: the 4th is in the key
-B | 23 | Gbdim7 | Gb Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
-B | 24 | Fm7    | F Dorian                  # ii of the ii–V to Eb
-B | 24 | Bb7    | Bb Mixolydian             # V7 of Eb: natural tensions
-B | 25 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
-B | 26 | Ab7    | Ab Lydian Dominant        # IV7 in Eb, not resolving: the #11 is in the key
-B | 27 | Gm7b5  | G Locrian                 # iiø7 of the ii–V to F minor: the b9 is in the key
-B | 28 | C7alt  | C Altered                 # from the symbol: altered
-B | 29 | Fm7    | F Dorian                  # ii of the ii–V to Eb
-B | 30 | Bb7    | Bb Mixolydian             # V7 of Eb: natural tensions
-B | 31 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
+A | 1  | EbMaj7 | Eb Ionian               # tonic: the 4th is in the key
+A | 2  | Cm7    | C Aeolian               # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+A | 3  | Fm7    | F Dorian                # ii of the ii–V to Eb
+A | 4  | Bb7    | Bb Mixolydian           # V7 of Eb: natural tensions
+A | 5  | EbMaj7 | Eb Ionian               # tonic: the 4th is in the key
+A | 7  | Dm7b5  | D Locrian               # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+A | 8  | G7alt  | G Altered               # from the symbol: altered
+A | 9  | Cm     | C Aeolian               # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+A | 10 | Am7b5  | A Locrian               # #ivø7 in Eb: Locrian, its own mode (the chord is outside the key)
+A | 11 | Dm7b5  | D Locrian               # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+A | 12 | G7alt  | G Altered               # from the symbol: altered
+A | 13 | Cm7    | C Dorian                # ii of F7: Dorian
+A | 14 | F7     | F Mixolydian            # extended dominant: V7 of Fm7/Bb
+A | 15 | Fm7/Bb | Bb Mixolydian           # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+A | 16 | Bb7    | Bb Mixolydian           # V7 in Eb, not resolving: natural tensions
+B | 17 | Bbm7   | Bb Dorian               # ii of the ii–V to Ab
+B | 18 | Eb7    | Eb Mixolydian           # V7/IV in Eb: natural tensions
+B | 19 | AbMaj7 | Ab Ionian               # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
+B | 21 | Abm7   | Ab Dorian               # ii of Db7: Dorian
+B | 22 | Db7    | Db Lydian Dominant      # back door bVII7 to Eb/G: the #11 is in the key
+B | 23 | Eb/G   | Eb Ionian               # tonic: the 4th is in the key
+B | 23 | Gbdim7 | F# Diatonic Diminished  # passing diminished: F7♭9 without its F, the Bb7's dominant (Fm7 its ii)
+B | 24 | Fm7    | F Dorian                # ii of the ii–V to Eb
+B | 24 | Bb7    | Bb Mixolydian           # V7 of Eb: natural tensions
+B | 25 | EbMaj7 | Eb Ionian               # tonic: the 4th is in the key
+B | 26 | Ab7    | Ab Lydian Dominant      # IV7 in Eb, not resolving: the #11 is in the key
+B | 27 | Gm7b5  | G Locrian               # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B | 28 | C7alt  | C Altered               # from the symbol: altered
+B | 29 | Fm7    | F Dorian                # ii of the ii–V to Eb
+B | 30 | Bb7    | Bb Mixolydian           # V7 of Eb: natural tensions
+B | 31 | EbMaj7 | Eb Ionian               # tonic: the 4th is in the key

@@ -7,7 +7,7 @@ source: Colorado Cookbook, p. 109
 # analysis: 2026-10-11, rules v1; Ab
 
 # section | bar | chord | scale
-A1 | 1  | Fm     | F Aeolian           # vi: the b13 is in the key
+A1 | 1  | Fm     | F Aeolian           # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A1 | 2  | FmMaj7 | F Melodic Minor     # from the symbol: minor-major 7th
 A1 | 3  | Fm7    | F Dorian            # ii of Bb7: Dorian
 A1 | 4  | Bb7    | Bb Mixolydian       # V7 of V7: the dominant of the dominant: natural tensions
@@ -18,7 +18,7 @@ A1 | 6  | Eb7#11 | Eb Lydian Dominant  # V7 of Ab: the #11 from the symbol
 A1 | 7  | Ab6    | Ab Ionian           # tonic: the 4th is in the key
 A1 | 8  | Ab6    | Ab Ionian
 A1 | 8  | C7#9   | C Altered           # V7/vi in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
-A2 | 9  | Fm     | F Aeolian           # vi: the b13 is in the key
+A2 | 9  | Fm     | F Aeolian           # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A2 | 10 | FmMaj7 | F Melodic Minor     # from the symbol: minor-major 7th
 A2 | 11 | Fm7    | F Dorian            # ii of Bb7: Dorian
 A2 | 12 | Bb7    | Bb Mixolydian       # V7 of V7: the dominant of the dominant: natural tensions
@@ -27,8 +27,8 @@ A2 | 13 | Ab6    | Ab Ionian           # tonic: the 4th is in the key
 A2 | 14 | Bb7    | Bb Mixolydian       # V7 of V7: the dominant of the dominant: natural tensions
 A2 | 14 | Eb7#11 | Eb Lydian Dominant  # V7 of Ab: the #11 from the symbol
 A2 | 15 | Ab6    | Ab Ionian           # tonic: the 4th is in the key
-B  | 17 | Fm     | F Aeolian           # vi: the b13 is in the key
+B  | 17 | Fm     | F Aeolian           # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 B  | 19 | Db7    | Db Lydian Dominant  # IV7 in Ab, not resolving: the #11 is in the key
-B  | 21 | Fm     | F Aeolian           # vi: the b13 is in the key
+B  | 21 | Fm     | F Aeolian           # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 B  | 23 | Db7    | Db Lydian Dominant  # IV7 in Ab, not resolving: the #11 is in the key
 @copy A2 A3 16

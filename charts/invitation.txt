@@ -29,7 +29,7 @@ D | 26 | D7      | D Mixolydian              # extended ii–V: a side-step, its
 # area: G major (bars 26–32)
 D | 26 | D7#9    | D Half-Whole Diminished   # V7 of G: b9, #9 and #11 from the symbol
 D | 27 | GMaj7   | G Ionian                  # tonic: the 4th is in the key
-D | 29 | Em7b5   | E Locrian                 # iiø7 of A7alt: the b9 is in the key
+D | 29 | Em7b5   | E Locrian                 # iiø7 of A7alt: Locrian, the key's own notes (its ♭2 is a passing note)
 D | 30 | A7alt   | A Altered                 # from the symbol: altered
 D | 31 | D7#9    | D Altered                 # V7 of G7#9, on the way to C minor: the b13 is in the key, b9, #9 and #11 from the symbol
 D | 32 | G7#9    | G Altered                 # V7 of C minor, the chain's last link: the b13 is in the key, b9, #9 and #11 from the symbol

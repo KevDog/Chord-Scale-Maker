@@ -1,4 +1,5 @@
 import { type ChartDoc, type ChartLine, expandRowLines, type LinedRow } from '../chart'
+import { LIMITS } from '../limits'
 import { pcOf, rootName, shiftBy, type Spelled } from '../pitch'
 import { sameScale } from '../scales'
 import { bluesKey, findCadences, isModal, type Key, keyText, localKeys, parseKey, sameKey, scoreKey } from './keys'
@@ -98,9 +99,10 @@ function statedFunctions(stream: readonly Entry[], rows: readonly LinedRow[], ke
  * the stream the rules read: a stated row's target as a chord after it (with its V7 between, for a ii), so each rule
  * decides through its usual path. The extra entries follow the real ones and are never reported.
  */
-function withTargets(stream: readonly Entry[], keys: readonly Key[], stated: readonly (Stated | undefined)[]): { stream: Entry[]; keys: Key[] } {
+function withTargets(stream: readonly Entry[], keys: readonly Key[], stated: readonly (Stated | undefined)[]): { stream: Entry[]; keys: Key[]; added: boolean[] } {
   const out = [...stream]
   const outKeys = [...keys]
+  const added = stream.map(() => false) // the entries a target was wired in after
   stream.forEach((e, i) => {
     const s = stated[i]
     const t = s ? impliedTarget(s.fn, s.key) : null
@@ -115,8 +117,9 @@ function withTargets(stream: readonly Entry[], keys: readonly Key[], stated: rea
     let next = add(root, t.minor ? 'm' : 'maj', t.minor ? 'minor' : 'major', null)
     if (e.family === 'minor' || e.family === 'halfdim') next = add(shiftBy(root, 4, 7), '7', 'dominant', next)
     out[i] = { ...e, next }
+    added[i] = true
   })
-  return { stream: out, keys: outKeys }
+  return { stream: out, keys: outKeys, added }
 }
 
 type Prepared = Readonly<{
@@ -156,7 +159,7 @@ function prepare(doc: ChartDoc): Prepared | Readonly<{ global: null; keyFrom: An
 /** the rules' context under these statements: each stated row's target wired in after it */
 function contextFor(p: Prepared, stated: readonly (Stated | undefined)[]): Context {
   const v = withTargets(p.stream, p.stream.map((_, i) => stated[i]?.key ?? p.areaKeys[i] ?? p.global), stated)
-  return { stream: v.stream, keys: v.keys, global: p.global, blues: p.blues, modal: p.modal }
+  return { stream: v.stream, keys: v.keys, global: p.global, blues: p.blues, modal: p.modal, statedTarget: v.stream.map((_, i) => !!v.added[i]) }
 }
 
 export function analyse(doc: ChartDoc): Analysis {
@@ -284,8 +287,11 @@ export function applyAnalysis(
       if (!isKept(l)) {
         const differs = r.scale && row.scale && !sameScale(row.scale, r.scale)
         const repeat = conflicts.find((c) => c.line === i)
-        const base = differs ? `≠ rules: ${r.scale} (${r.reason})` : r.held ? undefined : r.reason
-        const reason = repeat ? `${base ?? r.reason}; the repeat at bar ${repeat.bar} would be ${repeat.copy}` : base
+        const compose = (why: string): string | undefined => {
+          const base = differs ? `≠ rules: ${r.scale} (${why})` : r.held ? undefined : why
+          return repeat ? `${base ?? why}; the repeat at bar ${repeat.bar} would be ${repeat.copy}` : base
+        }
+        const reason = fitComment(compose, r.short ? [r.reason, r.short] : [r.reason])
         const { comment: _, ...bare } = row
         row = reason === undefined ? bare : { ...bare, comment: reason }
       }
@@ -301,6 +307,24 @@ export function applyAnalysis(
     out.splice(at, 0, { kind: 'comment', text: unchanged && old?.kind === 'comment' ? old.text : header })
   }
   return { doc: { lines: out }, changes, conflicts }
+}
+
+/**
+ * R7: the first reason whose comment fits the chart's limit (LIMITS.maxMeta); else the last, cut short with "…" so
+ * the comment still fits (a chart with a longer comment doesn't parse)
+ */
+function fitComment(compose: (why: string) => string | undefined, reasons: readonly string[]): string | undefined {
+  for (const why of reasons) {
+    const c = compose(why)
+    if (c === undefined || c.length <= LIMITS.maxMeta) return c
+  }
+  const last = reasons[reasons.length - 1] ?? ''
+  for (let n = last.length - 1; n > 0; n--) {
+    const c = compose(`${last.slice(0, n).trimEnd()}…`)
+    if (c === undefined || c.length <= LIMITS.maxMeta) return c
+  }
+  const c = compose('…')
+  return c === undefined || c.length <= LIMITS.maxMeta ? c : `${c.slice(0, LIMITS.maxMeta - 1)}…`
 }
 
 const withoutHeader = (lines: readonly ChartLine[]): ChartLine[] => lines.filter((l) => !(l.kind === 'comment' && /^#\s*analysis:/.test(l.text)))

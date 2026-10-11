@@ -15,7 +15,7 @@ A | 5  | DMaj7  | D Lydian                  # a non-tonic major chord: Lydian
 A | 6  | DbMaj7 | Db Lydian                 # ♭IImaj7, borrowed from C Phrygian: Lydian (its ♯11 is in the key)
 A | 7  | CMaj7  | C Ionian                  # tonic: the 4th is in the key
 A | 7  | F7     | F Lydian Dominant         # IV7 in C, not resolving: the #11 is in the key
-A | 8  | Em7b5  | E Locrian                 # iiø7 of the ii–V to D minor: the b9 is in the key
+A | 8  | Em7b5  | E Locrian                 # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 8  | A7b9   | A Phrygian Dominant       # V7/ii in C: the b13 is in the key, the b9 from the symbol
 B | 9  | Dm7    | D Dorian                  # ii of the ii–V to C
 B | 10 | G7b9   | G Half-Whole Diminished   # V7 of C: the b9 from the symbol
@@ -33,17 +33,17 @@ C | 21 | DMaj7  | D Lydian                  # a non-tonic major chord: Lydian
 C | 22 | DbMaj7 | Db Lydian                 # ♭IImaj7, borrowed from C Phrygian: Lydian (its ♯11 is in the key)
 C | 23 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
 C | 23 | F7     | F Lydian Dominant         # IV7 in C, not resolving: the #11 is in the key
-C | 24 | Em7b5  | E Locrian                 # iiø7 of the ii–V to D minor: the b9 is in the key
+C | 24 | Em7b5  | E Locrian                 # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 C | 24 | A7b9   | A Phrygian Dominant       # V7/ii in C: the b13 is in the key, the b9 from the symbol
 D | 25 | Dm     | D Dorian                  # ii: Dorian, the key’s own notes
 D | 25 | Dm/C   | D Dorian                  # ii: Dorian, the key’s own notes
-D | 26 | Bm7b5  | B Locrian                 # iiø7 of the ii–V to A minor: the b9 is in the key
+D | 26 | Bm7b5  | B Locrian                 # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
 D | 26 | E7b9   | E Phrygian Dominant       # V7/vi in C: b9 and b13 are in the key
-D | 27 | Am     | A Aeolian                 # vi: the b13 is in the key
-D | 27 | Am/G   | A Aeolian                 # vi: the b13 is in the key
-D | 28 | F#m7b5 | F# Locrian                # iiø7 of the ii–V to E minor: the b9 is in the key
+D | 27 | Am     | A Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+D | 27 | Am/G   | A Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+D | 28 | F#m7b5 | F# Locrian                # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
 D | 28 | B7     | B Phrygian Dominant       # V7/iii in C: b9 and b13 are in the key
-D | 29 | Em7    | E Dorian                  # ii of the ii–V to D minor
+D | 29 | Em7    | E Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 D | 29 | A7alt  | A Altered                 # from the symbol: altered
 D | 30 | Dm7    | D Dorian                  # ii of the ii–V to C
 D | 30 | G7alt  | G Altered                 # from the symbol: altered

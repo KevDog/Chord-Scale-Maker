@@ -2,7 +2,7 @@ import { parseChord } from './chord'
 import { guideToneDegrees } from './guideTones'
 import { spelledInterval } from './intervals'
 import type { Mode } from './part'
-import { glyphs, parseRoot, rootName, type Spelled } from './pitch'
+import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled } from './pitch'
 import { baseQuality } from './qualities'
 import { spellFrom } from './scales'
 import { orNull } from './util'
@@ -68,8 +68,12 @@ const CHORD_TONES: Readonly<Record<string, readonly string[]>> = {
 /** the start text's note ("Eb", "F#3" -> F#), or null if it isn't one */
 export const startReference = (startText: string): Spelled | null => orNull(() => parseRoot(startText.trim().replace(/\d+$/, '')))
 
-/** each note's key against the reference */
-export const practiceKeys = (reference: Spelled, notes: readonly Spelled[]): string[] => notes.map((n) => spelledInterval(reference, n))
+/** a dim7's chord tones and major 7th by semitone, whatever the scale's letters (♭VI°7 spells its ♭3 C♯ over B♭) */
+const DIM7_KEYS: Readonly<Record<number, string>> = { 0: '1', 3: 'b3', 6: 'b5', 9: 'bb7', 11: '7' }
+
+/** each note's key against the reference; `quality`: the chord's, when the reference is its root (From root) */
+export const practiceKeys = (reference: Spelled, notes: readonly Spelled[], quality?: string | null): string[] =>
+  notes.map((n) => (quality === 'dim7' ? DIM7_KEYS[mod(pcOf(n) - pcOf(reference), 12)] : undefined) ?? spelledInterval(reference, n))
 
 const rawQuality = (chord: string): string | null => orNull(() => parseChord(chord).quality)
 

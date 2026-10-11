@@ -12,7 +12,7 @@ source: Colorado Cookbook, p. 157
 Intro | 1  | BbmMaj7 | Bb Melodic Minor          # from the symbol: minor-major 7th
 Intro | 2  | AbmMaj7 | Ab Melodic Minor          # from the symbol: minor-major 7th
 Intro | 3  | GbMaj7  | Gb Lydian                 # a non-tonic major chord: Lydian
-Intro | 4  | Cm7b5   | C Locrian                 # iiø7 of the ii–V to Bb minor: the b9 is in the key
+Intro | 4  | Cm7b5   | C Locrian                 # iiø7 of Bb minor: Locrian, the key's own notes (its ♭2 is a passing note)
 Intro | 5  | F7alt   | F Altered                 # from the symbol: altered
 Intro | 7  | Bbm     | Bb Dorian                 # tonic minor: Dorian by convention
 # the tag (BbmMaj7 … F7alt back to Bbm) is the intro, played between solos and for the ending too
@@ -28,7 +28,7 @@ A1    | 11 | GbMaj7  | Gb Ionian                 # tonic: the 4th is in the key
 A1    | 11 | Db9     | Db Lydian Dominant        # tritone substitute: resolves down a half step to C7alt
 A1    | 12 | C7alt   | C Altered                 # from the symbol: altered
 # area: Bb minor (bars 13–24)
-A1    | 13 | Cm7b5   | C Locrian                 # iiø7 of the ii–V to Bb minor: the b9 is in the key
+A1    | 13 | Cm7b5   | C Locrian                 # iiø7 of Bb minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A1    | 14 | F7alt   | F Altered                 # from the symbol: altered
 A1    | 15 | BbmMaj7 | Bb Melodic Minor          # from the symbol: minor-major 7th
 @copy A1 A2 16

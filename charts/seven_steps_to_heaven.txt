@@ -17,13 +17,13 @@ Coda  | 2  | E7b9   | E Phrygian Dominant  # VII7 in F, not resolving: b9 and b1
 Coda  | 3  | F6     | F Ionian             # tonic: the 4th is in the key
 # the solo changes; the intro is the F13 Eb13 vamp, the coda the Eb6/9 E7b9 F6 vamp (to fade)
 A     | 1  | FMaj7  | F Ionian             # tonic: the 4th is in the key
-A     | 2  | Em7b5  | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
+A     | 2  | Em7b5  | E Locrian            # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A     | 2  | A7alt  | A Altered            # from the symbol: altered
 A     | 3  | Dm7    | D Dorian             # ii of G7: Dorian
 A     | 4  | G7     | G Mixolydian         # V7/V in F: natural tensions
 A     | 5  | Gm7    | G Dorian             # ii of C7: Dorian
 A     | 6  | C7     | C Mixolydian         # V7/I in F: natural tensions
-A     | 7  | Am7    | A Dorian             # ii of the ii–V to G minor
+A     | 7  | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A     | 7  | D7     | D Mixolydian b6      # V7/ii in F: the b13 is in the key
 A     | 8  | Gm7    | G Dorian             # ii of C7: Dorian
 A     | 8  | C7     | C Mixolydian         # V7/I in F: natural tensions
@@ -44,7 +44,7 @@ B     | 15 | GbMaj7 | Gb Ionian            # tonic: the 4th is in the key
 B     | 16 | Gm7    | G Dorian             # ii of the ii–V to F
 B     | 16 | C7     | C Mixolydian         # V7 of F: natural tensions
 C     | 17 | FMaj7  | F Ionian             # tonic: the 4th is in the key
-C     | 18 | Em7b5  | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
+C     | 18 | Em7b5  | E Locrian            # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 C     | 18 | A7alt  | A Altered            # from the symbol: altered
 C     | 19 | Dm7    | D Dorian             # ii of G7: Dorian
 C     | 20 | G7     | G Mixolydian         # V7/V in F: natural tensions

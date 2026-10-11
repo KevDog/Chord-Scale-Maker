@@ -13,7 +13,7 @@ describe('ScaleCell', () => {
     const w = await mount('Cm7')
     const labels = w.findAll('option').map((o) => o.text())
     expect(labels[0]).toBe('C Dorian') // the usual choice comes first, unlabelled
-    expect(labels).toContain('C Aeolian (when the chord is vi or iv)')
+    expect(labels).toContain('C Aeolian (when the chord is vi, or the symbol has a ♭6)')
     expect(labels.at(-1)).toBe('Other…')
   })
 
@@ -36,6 +36,20 @@ describe('ScaleCell', () => {
   it('shows a scale typed in the text even if it is not an option', async () => {
     const w = await mount('Cm7', 'C Bebop Dominant')
     expect((w.find('select').element as HTMLSelectElement).value).toBe('C Bebop Dominant')
+  })
+
+  it('shows a scale written on an enharmonic root as the menu entry it is (R18): F# Whole-Half on Gbdim7 is the default', async () => {
+    const w = await mount('Gbdim7', 'F# Whole-Half Diminished')
+    expect((w.find('select').element as HTMLSelectElement).value).toBe('')
+    expect(w.findAll('option').map((o) => o.attributes('value'))).not.toContain('F# Whole-Half Diminished')
+    const alt = await mount('Ebdim7', 'Eb Diatonic Diminished') // the menu letters it D♯ (R17)
+    expect((alt.find('select').element as HTMLSelectElement).value).toBe('D# Diatonic Diminished')
+    expect(alt.findAll('option').map((o) => o.attributes('value'))).not.toContain('Eb Diatonic Diminished')
+  })
+
+  it('still shows a scale on another root as custom', async () => {
+    const w = await mount('Gbdim7', 'G Whole-Half Diminished')
+    expect((w.find('select').element as HTMLSelectElement).value).toBe('G Whole-Half Diminished')
   })
 
   it('prompts for unknown chords and picks any scale in a dialog', async () => {

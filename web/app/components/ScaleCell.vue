@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { enharmonics, glyphs, noteText, parseChord, parseScale, rootName, sameScale, SCALES } from '~~/engine'
+import { enharmonics, glyphs, noteText, parseChord, parseScale, rootName, samePitchScale, SCALES } from '~~/engine'
 
 /** a row's scale: the chord's default, its alternates, or "Other…" (any scale, in a dialog) */
 const props = defineProps<{ chord: string; scale: string }>()
@@ -56,9 +56,12 @@ const emit = defineEmits<{ update: [scale: string] }>()
 const choices = computed(() => scaleChoices(props.chord))
 const inside = computed(() => choices.value.alternates.filter((o) => !o.outside))
 const outside = computed(() => choices.value.alternates.filter((o) => o.outside))
-/** a scale typed in the text that equals the default shows as the default, and one equal to an alternate as it */
-const isDefault = computed(() => props.scale !== '' && sameScale(props.scale, choices.value.defaultScale))
-const matching = computed(() => choices.value.alternates.find((o) => sameScale(props.scale, o.scale)))
+/**
+ * a scale typed in the text that equals the default shows as the default, and one equal to an alternate as it; the
+ * root by pitch (R18: F# Whole-Half on G♭°7 is the default), the text itself unchanged
+ */
+const isDefault = computed(() => props.scale !== '' && samePitchScale(props.scale, choices.value.defaultScale))
+const matching = computed(() => choices.value.alternates.find((o) => samePitchScale(props.scale, o.scale)))
 const custom = computed(() => props.scale !== '' && !isDefault.value && !matching.value)
 const selectValue = computed(() => (props.scale === '' || isDefault.value ? '' : (matching.value?.scale ?? props.scale)))
 const needsScale = computed(() => props.scale === '' && !choices.value.defaultScale)

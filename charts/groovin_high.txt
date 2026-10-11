@@ -12,12 +12,12 @@ A1 | 1  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 A1 | 3  | Am7    | A Dorian                  # ii of D7: Dorian
 A1 | 4  | D7     | D Mixolydian              # extended ii–V: a side-step, its own key
 A1 | 5  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
-A1 | 7  | Gm7    | G Dorian                  # ii of C7: Dorian
+A1 | 7  | Gm7    | G Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A1 | 8  | C7     | C Mixolydian              # extended dominant: V7 of F7
 A1 | 9  | F7     | F Mixolydian              # II7 in Eb, not resolving: natural tensions
 A1 | 11 | Fm7    | F Dorian                  # ii of Bb7: Dorian
 A1 | 12 | Bb7    | Bb Mixolydian             # V7/I in Eb: natural tensions
-A1 | 13 | Gm7    | G Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+A1 | 13 | Gm7    | G Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A1 | 14 | F#m7   | F# Dorian                 # a borrowed minor chord: Dorian, its own key
 A1 | 14 | Fm7    | F Dorian                  # ii of the ii–V to Eb
 A1 | 15 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
@@ -25,7 +25,7 @@ A2 | 17 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 A2 | 19 | Am7    | A Dorian                  # ii of D7: Dorian
 A2 | 20 | D7     | D Mixolydian              # extended ii–V: a side-step, its own key
 A2 | 21 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
-A2 | 23 | Gm7    | G Dorian                  # ii of C7: Dorian
+A2 | 23 | Gm7    | G Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A2 | 24 | C7     | C Mixolydian              # extended dominant: V7 of F7
 A2 | 25 | F7     | F Mixolydian              # II7 in Eb, not resolving: natural tensions
 A2 | 27 | Fm7    | F Dorian                  # ii of Bb7: Dorian

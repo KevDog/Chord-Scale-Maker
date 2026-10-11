@@ -1,14 +1,14 @@
 import raw from '../../chord_scales.json'
 import { parseChord } from './chord'
 import { rootName, type Spelled, spellEqual } from './pitch'
-import { scaleKey, simplifyRoot, spellFrom } from './scales'
+import { cleanLettering, scaleKey, simplifyRoot, spellFrom } from './scales'
 
 /**
  * Chord qualities from chord_scales.json: aliases, default and alternate scales per
  * quality, and baseQuality for extended symbols.
  */
 
-type RawOption = Readonly<{ root: string; scale: string; default?: boolean; note?: string; outside?: boolean; level?: string }>
+type RawOption = Readonly<{ root: string; scale: string; default?: boolean; note?: string; outside?: boolean; level?: string; functional?: boolean }>
 /** a chord of `quality` whose bass is the interval `bass` above its root takes `as`'s options on the bass */
 type SlashRule = Readonly<{ quality: string; bass: string; as: string; note?: string }>
 type QualityData = Readonly<{
@@ -28,8 +28,9 @@ const LOOKUP: ReadonlyMap<string, string> = new Map([
 /**
  * outside: a deliberate outside sound (tension to resolve), listed apart from the inside options.
  * level: the quality's Basic or Advanced choice for the Level control (engine/levels.ts), if it is one.
+ * functional: fits one function only (a °7's diatonic diminished scales): in the menu, never dealt at random.
  */
-export type ScaleOption = Readonly<{ scale: string; note: string; default: boolean; outside: boolean; level?: 'basic' | 'advanced' }>
+export type ScaleOption = Readonly<{ scale: string; note: string; default: boolean; outside: boolean; level?: 'basic' | 'advanced'; functional?: true }>
 export type QualityMatch = Readonly<{ quality: string; options: readonly ScaleOption[] }>
 
 const same = (a: Spelled | undefined, b: Spelled): boolean => a !== undefined && spellEqual(a, b)
@@ -53,12 +54,15 @@ export function resolveQuality(chord: string): QualityMatch | null {
     const key = scaleKey(opt.scale)
     const [r] = spellFrom(reading.root, opt.root)
     if (!r) throw new Error(`bad interval ${JSON.stringify(opt.root)} in chord_scales.json`)
-    const root = opt.root === '1' ? r : simplifyRoot(r, key) // interval-derived: friendliest spelling
+    // a functional °7 scale is lettered as the analysis letters it (R9, R17); others keep the chord's root
+    const spelled = opt.functional ? cleanLettering(r, key) : { root: opt.root === '1' ? r : simplifyRoot(r, key) } // interval-derived: friendliest spelling
     const tag = opt.level
     const level: { level?: 'basic' | 'advanced' } = tag === 'basic' || tag === 'advanced' ? { level: tag } : {}
-    return { scale: `${rootName(root)} ${opt.scale}`, note: opt.note ?? '', default: opt.default ?? false, outside: opt.outside ?? false, ...level }
+    const name = ('name' in spelled ? spelled.name : undefined) ?? opt.scale
+    return { scale: `${rootName(spelled.root)} ${name}`, note: opt.note ?? '', default: opt.default ?? false, outside: opt.outside ?? false, ...level, ...(opt.functional ? { functional: true as const } : {}) }
   })
-  return { quality, options }
+  // a ♭III°7 or ♭VI°7 re-lettered as the ascending formula is that option already: listed once
+  return { quality, options: options.filter((o, i) => options.findIndex((x) => x.scale === o.scale) === i) }
 }
 
 /**

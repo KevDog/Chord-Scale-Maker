@@ -4,7 +4,7 @@ style: Medium
 key: C
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 14
-# analysis: 2026-10-08, rules v1; C
+# analysis: 2026-10-11, rules v1; C
 
 # section | bar | chord | scale
 # the bridge's standard chords; the sheet's alternates (Fm7 Bb7, Em7 A7, Dbm7 Gb7) are left out
@@ -19,10 +19,10 @@ A1 | 4  | Bbm7   | Bb Dorian                # ii of the ii–V to Ab
 A1 | 4  | Eb7    | Eb Mixolydian            # V7 of Ab: natural tensions
 A1 | 5  | AbMaj7 | Ab Ionian                # tonic: the 4th is in the key
 # area: C major (bars 6–9)
-A1 | 6  | Dm7b5  | D Locrian                # iiø7 of the ii–V to C: the b9 is in the key
+A1 | 6  | Dm7b5  | D Locrian                # iiø7 of C: Locrian, the key's own notes (its ♭2 is a passing note)
 A1 | 6  | G7b9   | G Half-Whole Diminished  # V7 of C: the b9 from the symbol
 A1 | 7  | CMaj7  | C Ionian                 # tonic: the 4th is in the key
-A1 | 7  | Am7    | A Aeolian                # vi: the b13 is in the key
+A1 | 7  | Am7    | A Aeolian                # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A1 | 8  | Dm7    | D Dorian                 # ii of the ii–V to C
 A1 | 8  | G7     | G Mixolydian             # V7 of C: natural tensions
 A2 | 9  | CMaj7  | C Ionian                 # tonic: the 4th is in the key
@@ -35,13 +35,13 @@ A2 | 12 | Bbm7   | Bb Dorian                # ii of the ii–V to Ab
 A2 | 12 | Eb7    | Eb Mixolydian            # V7 of Ab: natural tensions
 A2 | 13 | AbMaj7 | Ab Ionian                # tonic: the 4th is in the key
 # area: C major (bars 14–25)
-A2 | 14 | Dm7b5  | D Locrian                # iiø7 of the ii–V to C: the b9 is in the key
+A2 | 14 | Dm7b5  | D Locrian                # iiø7 of C: Locrian, the key's own notes (its ♭2 is a passing note)
 A2 | 14 | G7b9   | G Half-Whole Diminished  # V7 of C: the b9 from the symbol
 A2 | 15 | CMaj7  | C Ionian                 # tonic: the 4th is in the key
 B  | 17 | Dm7    | D Dorian                 # ii of the ii–V to C
 B  | 18 | G7     | G Mixolydian             # V7 of C: natural tensions
 B  | 19 | CMaj7  | C Ionian                 # tonic: the 4th is in the key
-B  | 20 | Am7    | A Aeolian                # vi: the b13 is in the key
+B  | 20 | Am7    | A Aeolian                # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 B  | 21 | Dm7    | D Dorian                 # ii of G7: Dorian
 B  | 22 | G7     | G Mixolydian             # V7/I in C: natural tensions
 B  | 23 | Dm7    | D Dorian                 # ii of the ii–V to C

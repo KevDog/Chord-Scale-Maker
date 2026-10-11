@@ -12,13 +12,13 @@ A1 | 1  | C6/9   | C Ionian             # tonic: the 4th is in the key
 A1 | 2  | Bm7    | B Dorian             # ii of E7: Dorian
 A1 | 2  | E7     | E Mixolydian         # extended ii–V: a side-step, its own key
 A1 | 3  | FMaj7  | F Lydian             # IV: the #4 is the key’s 7th
-A1 | 4  | Bm7b5  | B Locrian            # iiø7 of the ii–V to A minor: the b9 is in the key
+A1 | 4  | Bm7b5  | B Locrian            # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A1 | 4  | E7     | E Phrygian Dominant  # V7/vi in C: b9 and b13 are in the key
 A1 | 5  | Am7    | A Dorian             # ii of D7: Dorian
 A1 | 6  | D7     | D Mixolydian         # V7/V in C: natural tensions
 A1 | 7  | Dm7    | D Dorian             # ii of G7: Dorian
 A1 | 7  | G7     | G Mixolydian         # V7/I in C: natural tensions
-A1 | 8  | Em7    | E Dorian             # ii of the ii–V to D minor
+A1 | 8  | Em7    | E Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A1 | 8  | A7     | A Mixolydian b6      # V7/ii in C: the b13 is in the key
 A1 | 8  | Dm7    | D Dorian             # ii of the ii–V to C
 A1 | 8  | G7     | G Mixolydian         # V7 of C: natural tensions
@@ -26,7 +26,7 @@ A2 | 9  | C6/9   | C Ionian             # tonic: the 4th is in the key
 A2 | 10 | Bm7    | B Dorian             # ii of E7: Dorian
 A2 | 10 | E7     | E Mixolydian         # extended ii–V: a side-step, its own key
 A2 | 11 | FMaj7  | F Lydian             # IV: the #4 is the key’s 7th
-A2 | 12 | Bm7b5  | B Locrian            # iiø7 of the ii–V to A minor: the b9 is in the key
+A2 | 12 | Bm7b5  | B Locrian            # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A2 | 12 | E7     | E Phrygian Dominant  # V7/vi in C: b9 and b13 are in the key
 A2 | 13 | Am7    | A Dorian             # ii of D7: Dorian
 A2 | 14 | D7     | D Mixolydian         # V7/V in C: natural tensions
@@ -35,9 +35,9 @@ A2 | 15 | G7     | G Mixolydian         # V7 of C: natural tensions
 A2 | 16 | C6/9   | C Ionian             # tonic: the 4th is in the key
 B  | 17 | Gm7    | G Dorian             # ii of the ii–V to F
 B  | 18 | C7     | C Mixolydian         # V7/IV in C: natural tensions
-B  | 19 | FMaj7  | F Lydian             # IV: the #4 is the key’s 7th
+B  | 19 | FMaj7  | F Ionian             # the C7 before it makes F the key of the moment: the 4th is in the key
 B  | 19 | C7     | C Mixolydian         # V7/IV in C: natural tensions
-B  | 20 | F6/9   | F Lydian             # IV: the #4 is the key’s 7th
+B  | 20 | F6/9   | F Ionian             # the C7 before it makes F the key of the moment: the 4th is in the key
 B  | 20 | E7/C   | E Phrygian Dominant  # III7 in C, not resolving: b9 and b13 are in the key
 B  | 20 | E7/B   | E Lydian Dominant    # tritone substitute: resolves down a half step to Eb7/Bb
 B  | 20 | Eb7/Bb | Eb Lydian Dominant   # ♭III7 from the parallel minor: Lydian Dominant

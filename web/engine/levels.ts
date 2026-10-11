@@ -2,13 +2,13 @@ import raw from '../../chord_scales.json'
 import { analyse } from './analysis'
 import type { ChartDoc } from './chart'
 import { rootName } from './pitch'
-import { readChord, resolveQuality, type ScaleOption } from './qualities'
-import { parseScale, sameScale, scaleKey, simplifyRoot, spellFrom } from './scales'
+import { type QualityMatch, readChord, resolveQuality, type ScaleOption } from './qualities'
+import { parseScale, samePitchScale, scaleKey, simplifyRoot, spellFrom } from './scales'
 
 /**
  * The Level control: how sophisticated each chord's scale is, written into the chart. Standard is the quality's
  * default (chord_scales.json); Basic and Advanced are the options tagged `level`, falling back to the default where a
- * quality has none; Random picks among the quality's inside options, repeatably from a seed. A row whose Standard is
+ * quality has none; Random picks among the quality's inside options (not one that fits a single function), repeatably from a seed. A row whose Standard is
  * not its quality's default (the analysis chose it: D7 → D Phrygian Dominant) climbs that scale's ladder instead
  * (chord_scales.json `ladders`, docs/plan-analysis.md §11), so Basic over a V7 of a minor chord is the minor key's
  * pentatonic, not the major one. A tonic minor chord (the analysis's rule m5) is Aeolian at Basic, the natural
@@ -21,13 +21,14 @@ export const LEVEL_LABELS: Readonly<Record<ScaleLevel, string>> = { basic: 'Basi
 
 export const isScaleLevel = (v: unknown): v is ScaleLevel => typeof v === 'string' && (SCALE_LEVELS as readonly string[]).includes(v)
 
-const optionsFor = (chord: string): readonly ScaleOption[] => {
+const qualityOf = (chord: string): QualityMatch | null => {
   try {
-    return resolveQuality(chord)?.options ?? []
+    return resolveQuality(chord)
   } catch {
-    return [] // a chord that can't be parsed: nothing to choose from
+    return null // a chord that can't be parsed: nothing to choose from
   }
 }
+const optionsFor = (chord: string): readonly ScaleOption[] => qualityOf(chord)?.options ?? []
 
 /** a number in [0, 1) from a seed and a key, the same every time (FNV-1a, then a mulberry32 step) */
 export function seededUnit(seed: number, key: string): number {
@@ -42,12 +43,19 @@ export function seededUnit(seed: number, key: string): number {
 type Rung = readonly [string, string] // interval above the Standard root, scale name
 const LADDERS: Readonly<Record<string, Readonly<{ basic?: Rung; advanced?: Rung }>>> = raw.ladders as never
 const LADDER_BY_KEY = new Map(Object.entries(LADDERS).map(([name, rungs]) => [scaleKey(name), rungs]))
+/** per-quality overrides of a ladder (chord_scales.json `quality_ladders`): a minor chord on Phrygian is Dorian at Advanced */
+const QUALITY_LADDERS: Readonly<Record<string, Readonly<Record<string, Readonly<{ basic?: Rung; advanced?: Rung }>>>>> =
+  raw.quality_ladders as never
 
-/** Basic or Advanced on a Standard scale's ladder; the Standard itself where the ladder has no rung; null if unreadable */
-export function ladderScale(standard: string, level: 'basic' | 'advanced'): string | null {
+/**
+ * Basic or Advanced on a Standard scale's ladder, the chord quality's own override first (`quality`: m7, 7sus4b9);
+ * the Standard itself where the ladder has no rung; null if unreadable
+ */
+export function ladderScale(standard: string, level: 'basic' | 'advanced', quality?: string): string | null {
   try {
     const s = parseScale(standard)
-    const rung = LADDER_BY_KEY.get(s.key)?.[level]
+    const override = quality ? Object.entries(QUALITY_LADDERS[quality] ?? {}).find(([name]) => scaleKey(name) === s.key)?.[1]?.[level] : undefined
+    const rung = override ?? LADDER_BY_KEY.get(s.key)?.[level]
     if (!rung) return standard
     const [interval, name] = rung
     const [r] = spellFrom(s.root, interval)
@@ -64,16 +72,19 @@ export function ladderScale(standard: string, level: 'basic' | 'advanced'): stri
  * then gives Basic and Advanced.
  */
 export function scaleAtLevel(chord: string, level: ScaleLevel, seed = 0, key = '', standard?: string): string | null {
-  const options = optionsFor(chord)
+  const match = qualityOf(chord)
+  const options = match?.options ?? []
   const def = options.find((o) => o.default) ?? options[0]
   if (!def) return null
   if (level === 'standard') return standard || def.scale
-  if ((level === 'basic' || level === 'advanced') && standard && !sameScale(standard, def.scale)) return ladderScale(standard, level) ?? def.scale
+  // a Standard the analysis only respelled (Gbdim7: F# Whole-Half, R9) is still the default, and keeps its spelling
+  if ((level === 'basic' || level === 'advanced') && standard && !samePitchScale(standard, def.scale)) return ladderScale(standard, level, match?.quality) ?? def.scale
   if (level === 'random') {
-    const pool = options.filter((o) => !o.outside)
+    const pool = options.filter((o) => !o.outside && !o.functional)
     return pool[Math.floor(seededUnit(seed, key) * pool.length)]?.scale ?? def.scale
   }
-  return options.find((o) => o.level === level)?.scale ?? def.scale
+  const pick = options.find((o) => o.level === level)?.scale ?? def.scale
+  return standard && samePitchScale(pick, standard) ? standard : pick
 }
 
 /**
@@ -118,7 +129,7 @@ export function relevel(
         : scaleAtLevel(chord, state.level, state.seed, rowKey(i, chord), standard(i, chord))
   const owns = (i: number, chord: string, scale: string): boolean => {
     const mine = from.level === 'standard' || !from.owned || from.owned.includes(rowKey(i, chord)) // no record (an old share link): any match counts
-    return mine && (scale === '' || sameScale(scale, at(from, i, chord)))
+    return mine && (scale === '' || samePitchScale(scale, at(from, i, chord))) // by pitch (R18)
   }
   let changed = 0
   const owned: string[] = []
@@ -126,7 +137,7 @@ export function relevel(
     if (l.kind !== 'row' || !owns(i, l.chord, l.scale)) return l
     if (to.level !== 'standard') owned.push(rowKey(i, l.chord))
     const next = at(to, i, l.chord)
-    if (!next || sameScale(next, l.scale || defaultOf(l.chord))) return l
+    if (!next || samePitchScale(next, l.scale || defaultOf(l.chord))) return l // the same scale keeps its spelling
     changed++
     return { ...l, scale: next }
   })

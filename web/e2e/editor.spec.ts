@@ -73,7 +73,7 @@ test('transposing rewrites the chart in another key', async ({ page }) => {
   await expect(page.getByRole('status').filter({ hasText: 'Transposed' })).toHaveText('Transposed from F to B♭.')
   await openEditor(page)
   const text = page.getByLabel('Chart text')
-  await expect(text).toHaveValue(/A \| 6 +\| Edim7 +\| E Whole-Half/)
+  await expect(text).toHaveValue(/A \| 6 +\| Edim7 +\| E Diatonic Diminished #IV/)
   await expect(text).toHaveValue(/title: F Jazz Blues/) // titles stay as typed
   await expect(page.getByLabel('chord for row 1', { exact: true })).toHaveValue('Bb7')
 })
@@ -187,7 +187,7 @@ test('levels take over a library chart’s own scale choices, and Standard bring
   const text = page.getByLabel('Chart text')
   await expect(text).toHaveValue(/A7b9 +\| A Phrygian Dominant/)
   await setScaleLevel(page, 'Advanced')
-  await expect(text).toHaveValue(/A7b9 +\| A Spanish Phrygian/)
+  await expect(text).toHaveValue(/A7b9 +\| A Altered/)
   await setScaleLevel(page, 'Standard')
   await expect(text).toHaveValue(/A7b9 +\| A Phrygian Dominant/) // the chart's choice, not Half-Whole
   await expect(page.getByRole('status').filter({ hasText: /in this browser/ })).toHaveText('Edits are saved in this browser as your version.')

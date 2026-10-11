@@ -4,7 +4,7 @@ style: Medium up
 key: Cm
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 248
-# analysis: 2026-10-09, rules v1; C minor
+# analysis: 2026-10-11, rules v1; C minor
 
 # section | bar | chord | scale
 # area: C minor (bars 1–2)
@@ -19,7 +19,7 @@ A   | 4  | F7     | F Phrygian Dominant   # V7 of Bb minor: b9 and b13 are in th
 A   | 5  | Bbm    | Bb Dorian             # tonic minor: Dorian by convention
 A   | 6  | F7b9   | F Phrygian Dominant   # V7 of Bb minor: b9 and b13 are in the key
 A   | 7  | Bbm    | Bb Dorian             # tonic minor: Dorian by convention
-A   | 8  | Fm7b5  | F Locrian             # iiø7 of the ii–V to Eb minor: the b9 is in the key
+A   | 8  | Fm7b5  | F Locrian             # iiø7 of Eb minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A   | 8  | Bb7alt | Bb Altered            # from the symbol: altered
 # area: C# minor (bars 9–13)
 B   | 9  | Ebm    | Eb Dorian             # ii of the ii–V to C# minor
@@ -35,7 +35,7 @@ C   | 20 | Ebm11  | Eb Dorian             # ii of the ii–V to Db
 C   | 20 | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
 C   | 21 | DbMaj7 | Db Ionian             # tonic: the 4th is in the key
 C   | 22 | C7alt  | C Altered             # from the symbol: altered
-C   | 23 | Fm     | F Dorian              # iii: Dorian (its Phrygian would put a b9 over the root)
+C   | 23 | Fm     | F Phrygian            # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C   | 24 | F7alt  | F Altered             # from the symbol: altered
 D   | 25 | Bbm7   | Bb Dorian             # ii of Eb7alt: Dorian
 D   | 26 | Eb7alt | Eb Altered            # from the symbol: altered

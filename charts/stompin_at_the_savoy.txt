@@ -12,7 +12,7 @@ A1 | 2  | DbMaj7 | Db Ionian
 A1 | 2  | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
 A1 | 3  | DbMaj7 | Db Ionian             # tonic: the 4th is in the key
 A1 | 3  | Gb7    | Gb Lydian Dominant    # tritone substitute: resolves down a half step to Fm7
-A1 | 4  | Fm7    | F Dorian              # ii of the ii–V to Eb minor
+A1 | 4  | Fm7    | F Phrygian            # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A1 | 4  | Bb7b9  | Bb Phrygian Dominant  # V7/ii in Db: the b13 is in the key, the b9 from the symbol
 A1 | 5  | Ebm7   | Eb Dorian             # ii of the ii–V to Db
 A1 | 6  | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
@@ -25,7 +25,7 @@ A2 | 10 | DbMaj7 | Db Ionian
 A2 | 10 | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
 A2 | 11 | DbMaj7 | Db Ionian             # tonic: the 4th is in the key
 A2 | 11 | Gb7    | Gb Lydian Dominant    # tritone substitute: resolves down a half step to Fm7
-A2 | 12 | Fm7    | F Dorian              # ii of the ii–V to Eb minor
+A2 | 12 | Fm7    | F Phrygian            # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A2 | 12 | Bb7b9  | Bb Phrygian Dominant  # V7/ii in Db: the b13 is in the key, the b9 from the symbol
 A2 | 13 | Ebm7   | Eb Dorian             # ii of the ii–V to Db
 A2 | 14 | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
@@ -50,7 +50,7 @@ A3 | 26 | DbMaj7 | Db Ionian
 A3 | 26 | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
 A3 | 27 | DbMaj7 | Db Ionian             # tonic: the 4th is in the key
 A3 | 27 | Gb7    | Gb Lydian Dominant    # tritone substitute: resolves down a half step to Fm7
-A3 | 28 | Fm7    | F Dorian              # ii of the ii–V to Eb minor
+A3 | 28 | Fm7    | F Phrygian            # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A3 | 28 | Bb7    | Bb Mixolydian b6      # V7/ii in Db: the b13 is in the key
 A3 | 29 | Ebm7   | Eb Dorian             # ii of the ii–V to Db
 A3 | 30 | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions

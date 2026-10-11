@@ -18,19 +18,19 @@ A | 4  | GMaj7  | G Ionian                  # tonic: the 4th is in the key
 # area: C major (bars 5–8)
 A | 5  | Gm9    | G Dorian                  # ii of the ii–V to F
 A | 6  | C7b9   | C Half-Whole Diminished   # V7/IV in C: the b9 from the symbol
-A | 7  | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
+A | 7  | FMaj7  | F Ionian                  # the C7b9 before it makes F the key of the moment: the 4th is in the key
 A | 7  | Bb7    | Bb Lydian Dominant        # ♭VII7 from the parallel minor: Lydian Dominant
 A | 8  | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
 # area: Eb major (bars 9–12)
 B | 9  | Fm7    | F Dorian                  # ii of the ii–V to Eb
 B | 10 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
 B | 11 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
-B | 12 | Cm7    | C Aeolian                 # vi: the b13 is in the key
+B | 12 | Cm7    | C Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 # area: G major (bars 13–20)
-B | 13 | Am7b5  | A Locrian                 # iiø7 of the ii–V to G: the b9 is in the key
+B | 13 | Am7b5  | A Locrian                 # iiø7 of G: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 14 | D7b9   | D Half-Whole Diminished   # V7 of G: the b9 from the symbol
 B | 15 | GMaj7  | G Ionian                  # tonic: the 4th is in the key
-B | 16 | Bm7    | B Dorian                  # ii of the ii–V to A minor
+B | 16 | Bm7    | B Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 16 | E7b9   | E Phrygian Dominant       # V7/ii in G: the b13 is in the key, the b9 from the symbol
 C | 17 | Am9    | A Dorian                  # ii of the ii–V to G
 C | 18 | D7b9   | D Half-Whole Diminished   # V7 of G: the b9 from the symbol
@@ -40,7 +40,7 @@ C | 20 | GMaj7  | G Ionian                  # tonic: the 4th is in the key
 # area: C major (bars 21–32)
 C | 21 | Gm9    | G Dorian                  # ii of the ii–V to F
 C | 22 | C7b9   | C Half-Whole Diminished   # V7/IV in C: the b9 from the symbol
-C | 23 | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
+C | 23 | FMaj7  | F Ionian                  # the C7b9 before it makes F the key of the moment: the 4th is in the key
 C | 23 | Bb7    | Bb Lydian Dominant        # ♭VII7 from the parallel minor: Lydian Dominant
 C | 24 | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
 D | 25 | Fm7    | F Dorian                  # a borrowed minor chord: Dorian, its own key

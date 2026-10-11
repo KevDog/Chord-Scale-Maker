@@ -4,18 +4,18 @@ style: Medium
 key: Db
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 204
-# analysis: 2026-10-08, rules v1; Db
+# analysis: 2026-10-11, rules v1; Db
 
 # section | bar | chord | scale
 # the head ends with two extra bars (Ebm7 Ab7 | Db) and a drum tag; the solo form is written
 # area: Db major (bars 1–20)
-A1 | 1  | Fm7b5    | F Locrian             # iiø7 of the ii–V to Eb minor: the b9 is in the key
+A1 | 1  | Fm7b5    | F Locrian             # iiø7 of Eb minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A1 | 1  | Bb7b9    | Bb Phrygian Dominant  # V7/ii in Db: the b13 is in the key, the b9 from the symbol
 A1 | 2  | Ebm7     | Eb Dorian             # ii of the ii–V to Db
 A1 | 3  | Ebm7     | Eb Dorian
 A1 | 3  | Ab7b9b13 | Ab Phrygian Dominant  # V7 of Db: b9 and b13 from the symbol
 A1 | 4  | DbMaj7   | Db Ionian             # tonic: the 4th is in the key
-A1 | 5  | Fm7      | F Dorian              # iii: Dorian (its Phrygian would put a b9 over the root)
+A1 | 5  | Fm7      | F Phrygian            # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A1 | 5  | Em7      | E Dorian              # a borrowed minor chord: Dorian, its own key
 A1 | 6  | Ebm7     | Eb Dorian             # ii: Dorian, the key’s own notes
 A1 | 7  | Eb7      | Eb Lydian Dominant    # tritone substitute: resolves down a half step to D7
@@ -24,9 +24,9 @@ A1 | 8  | DbMaj7   | Db Ionian             # tonic: the 4th is in the key
 @copy A1 A2 8
 B  | 17 | Abm7     | Ab Dorian             # ii of the ii–V to Gb
 B  | 18 | Db7      | Db Mixolydian         # V7/IV in Db: natural tensions
-B  | 19 | GbMaj7   | Gb Lydian             # IV: the #4 is the key’s 7th
+B  | 19 | GbMaj7   | Gb Ionian             # the Db7 before it makes Gb the key of the moment: the 4th is in the key
 B  | 19 | Abm7     | Ab Dorian             # a borrowed minor chord: Dorian, its own key
-B  | 20 | Bbm7     | Bb Aeolian            # vi: the b13 is in the key
+B  | 20 | Bbm7     | Bb Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 # area: E major (bars 21–23)
 B  | 21 | F#m7     | F# Dorian             # ii of the ii–V to E
 B  | 22 | B7       | B Mixolydian          # V7 of E: natural tensions

@@ -104,10 +104,10 @@ describe('L2 a diatonic chord acting as a related ii prints its degree (major ke
   it('iii7 before V7/ii', () => {
     expect(label(row('C', 'Cmaj7 | Em7 | A7 | Dm7 | G7 | Cmaj7', 'Em7'))).toEqual({
       numeral: 'iii7',
-      scale: 'E Dorian',
-      rule: 'm4',
+      scale: 'E Phrygian', // R4: the iii keeps its own scale as a related ii
+      rule: 'm9',
       fn: 'ii of the ii–V to D minor; also iii of C',
-      reason: 'ii of the ii–V to D minor',
+      reason: "iii: Phrygian, the key's own notes (the ♭2 is a passing note)",
       fallback: undefined,
     })
   })
@@ -118,7 +118,7 @@ describe('L2 a diatonic chord acting as a related ii prints its degree (major ke
       scale: 'B Locrian',
       rule: 'h2',
       fn: 'iiø7 of the ii–V to A minor; also viiø7 of C',
-      reason: 'iiø7 of the ii–V to A minor: the b9 is in the key',
+      reason: "iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)",
       fallback: undefined,
     })
   })
@@ -250,15 +250,15 @@ describe('L3 auxiliary diminished: defined by the next chord', () => {
   const AUX = { fn: 'auxiliary diminished', reason: 'auxiliary diminished: it decorates the chord and returns to it', fallback: undefined }
 
   it('a °7 resolving to the chord on its own root after a ii–V is auxiliary, not a passing guess', () => {
-    expect(label(row('C', 'Dm7 | G7 | Cdim7 | C6', 'Cdim7'))).toEqual({ numeral: 'i°7', scale: 'C Whole-Half Diminished', rule: 'd1', ...AUX })
+    expect(label(row('C', 'Dm7 | G7 | Cdim7 | C6', 'Cdim7'))).toEqual({ numeral: 'i°7', scale: 'C Diatonic Diminished I', rule: 'd1', ...AUX })
   })
 
   it('a °7 resolving to the dominant on its own root is auxiliary', () => {
-    expect(label(row('C', 'Cmaj7 | Gdim7 | G7', 'Gdim7'))).toEqual({ numeral: 'v°7', scale: 'G Whole-Half Diminished', rule: 'd1', ...AUX })
+    expect(label(row('C', 'Cmaj7 | Gdim7 | G7', 'Gdim7'))).toEqual({ numeral: 'v°7', scale: 'G Diatonic Diminished V', rule: 'd1', ...AUX })
   })
 
   it('between two chords on its own root, as before', () => {
-    expect(label(row('C', 'Cmaj7 | Cdim7 | Cmaj7', 'Cdim7'))).toEqual({ numeral: 'i°7', scale: 'C Whole-Half Diminished', rule: 'd1', ...AUX })
+    expect(label(row('C', 'Cmaj7 | Cdim7 | Cmaj7', 'Cdim7'))).toEqual({ numeral: 'i°7', scale: 'C Diatonic Diminished I', rule: 'd1', ...AUX })
   })
 })
 
@@ -266,24 +266,35 @@ describe('L4 diminished numerals by direction', () => {
   it('an ascending vii°7 of X prints sharp-side', () => {
     expect(label(row('C', 'Cmaj7 | C#dim7 | Dm7', 'C#dim7'))).toEqual({
       numeral: '♯i°7',
-      scale: 'C# Whole-Half Diminished',
+      scale: 'C# Diatonic Diminished',
       rule: 'd1',
       fn: 'vii°7 of Dm7',
-      reason: 'vii°7 of Dm7: the rootless V7b9 of the next chord',
+      reason: 'vii°7 of Dm7: A7♭9 without its root',
       fallback: undefined,
     })
     expect(['Dm7 | D#dim7 | Em7', 'Fmaj7 | F#dim7 | G', 'G7 | G#dim7 | Am7'].map((c) => {
       const r = rows('C', c)[1]
       return `${r?.numeral} ${r?.scale} ${r?.rule}`
-    })).toEqual(['♯ii°7 D# Whole-Half Diminished d1', '♯iv°7 F# Whole-Half Diminished d1', '♯v°7 G# Whole-Half Diminished d1'])
+    })).toEqual(['♯ii°7 D# Diatonic Diminished d1', '♯iv°7 F# Diatonic Diminished d1', '♯v°7 G# Diatonic Diminished d1'])
+  })
+
+  it('a °7 ascending to the next chord’s bass prints sharp-side, like its scale (♯II°7 to I/3)', () => {
+    expect(label(row('Ab', 'Bbm7 | Bdim7 | Ab/C', 'Bdim7'))).toMatchObject({ numeral: '♯ii°7', scale: 'B Diatonic Diminished', rule: 'd1' })
+    expect(label(row('Bb', 'Cm7 | Dbdim7 | Bb/D', 'Dbdim7'))).toMatchObject({ numeral: '♯ii°7', scale: 'C# Diatonic Diminished', rule: 'd1' })
+  })
+
+  it('a °7 a half step below the next chord’s root prints as ascending over an inverted chord too (R16)', () => {
+    expect(label(row('C', 'Cmaj7 | C#dim7 | Dm7/A | G7', 'C#dim7'))).toMatchObject({ numeral: '♯i°7', scale: 'C# Diatonic Diminished', fn: 'vii°7 of Dm7/A' })
+    expect(label(row('C', 'Dm7 | Bdim7 | C/G | G7', 'Bdim7'))).toMatchObject({ numeral: 'vii°7', scale: 'B Diatonic Diminished', fn: 'vii°7 of C/G' })
+    expect(label(row('C', 'Fmaj7 | F#dim7 | C/G | G7', 'F#dim7'))).toMatchObject({ numeral: '♯iv°7', scale: 'F# Diatonic Diminished #IV' })
   })
 
   it('a descending one prints flat-side, as before', () => {
-    expect(label(row('C', 'Em7 | Ebdim7 | Dm7', 'Ebdim7'))).toMatchObject({ numeral: '♭iii°7', scale: 'Eb Whole-Half Diminished', rule: 'd1' })
+    expect(label(row('C', 'Em7 | Ebdim7 | Dm7', 'Ebdim7'))).toMatchObject({ numeral: '♭iii°7', scale: 'Eb Diatonic Diminished bIII', rule: 'd1' })
   })
 
   it('an auxiliary one prints its own degree', () => {
-    expect(label(row('C', 'Cmaj7 | Cdim7 | Cmaj7', 'Cdim7'))).toMatchObject({ numeral: 'i°7', scale: 'C Whole-Half Diminished', rule: 'd1' })
+    expect(label(row('C', 'Cmaj7 | Cdim7 | Cmaj7', 'Cdim7'))).toMatchObject({ numeral: 'i°7', scale: 'C Diatonic Diminished I', rule: 'd1' })
   })
 })
 

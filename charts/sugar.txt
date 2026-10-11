@@ -5,17 +5,17 @@ style: Medium
 key: Cm
 form: A, 16 bars
 source: Colorado Cookbook, p. 227
-# analysis: 2026-10-08, rules v1; C minor
+# analysis: 2026-10-11, rules v1; C minor
 
 # section | bar | chord | scale
 A | 1  | Cm     | C Dorian            # tonic minor: Dorian by convention
-A | 2  | Dm7b5  | D Locrian           # iiø7 of the ii–V to C minor: the b9 is in the key
+A | 2  | Dm7b5  | D Locrian           # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 2  | G7alt  | G Altered           # from the symbol: altered
 A | 3  | Cm     | C Dorian            # tonic minor: Dorian by convention
-A | 4  | Dm7b5  | D Locrian           # iiø7 of the ii–V to C minor: the b9 is in the key
+A | 4  | Dm7b5  | D Locrian           # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 4  | G7alt  | G Altered           # from the symbol: altered
 A | 5  | Cm     | C Dorian            # tonic minor: Dorian by convention
-A | 7  | Dm7b5  | D Locrian           # iiø7 of the ii–V to C minor: the b9 is in the key
+A | 7  | Dm7b5  | D Locrian           # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 8  | G7alt  | G Altered           # from the symbol: altered
 A | 9  | Cm     | C Dorian            # tonic minor: Dorian by convention
 A | 10 | Gb7    | Gb Lydian Dominant  # tritone substitute: resolves down a half step to Fm7

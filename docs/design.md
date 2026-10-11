@@ -233,9 +233,12 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     over too, and Standard brings them back (`baseline`: the library chart, for itself and for copies of it).
   - **Ladders** (`ladders` in `chord_scales.json`, plan-analysis.md §11): a row whose Standard is not its
     quality's default climbs that scale's ladder instead of the quality's tags, so the analysis's choice keeps its
-    colour: D7 on Phrygian Dominant (V7 of G minor) goes to G Minor Pentatonic at Basic and Spanish Phrygian at
-    Advanced, not to D Major Pentatonic and Bebop Dominant. A ladder without a rung keeps the Standard
-    (`ladderScale`).
+    colour: D7 on Phrygian Dominant (V7 of G minor) goes to G Minor Pentatonic at Basic and Altered at
+    Advanced (Spanish Phrygian stays in the menu: a rung holds one scale), not to D Major Pentatonic and Bebop
+    Dominant. A ladder without a rung keeps the Standard (`ladderScale`). `quality_ladders` overrides a ladder for
+    one chord quality: `m` and `m7` on Phrygian (iii, or v of a minor key) are Dorian at Advanced, not Dorian ♭2;
+    `m6` on Melodic Minor stays there. The Level control's Random pool leaves out options marked `functional: true`
+    (the °7 scales that fit one function only).
   - A tonic minor chord (the analysis's rule m5; `relevel` runs `analyse` on the chart) is Aeolian at Basic.
   - `useScaleLevel` remembers the level, seed and owned rows per chart in this browser (Save as a copy and Save to
     My charts carry them; Revert resets them). Share links carry the level and seed; without the owned rows, a
@@ -553,9 +556,39 @@ library writes such a repeat out instead.
   only read the chord symbol are covered in tests by chord-symbol examples. Linked from the footer ("Functions"),
   Help, the editor and the grid ("How to write a function"). Prose glyphs (♭ ♯) go through `proseGlyphs`
   (`pitch.ts`).
+- **The rules on one page** (the second pass, "analysis rules from sources", checked against Nettles and Graf,
+  Mulholland and Hojnacki, Levine and Chediak; [spec](superpowers/specs/2026-10-10-analysis-rules-from-sources-design.md),
+  decisions in plan-analysis.md §10, 11–17):
+  - **Dominant:** a blues I7 (derived) and IV7 (Mixolydian) are decided by their degree, D5 before D3; a V7 into a
+    minor chord is Phrygian Dominant, Altered at Advanced.
+  - **Major:** a IV reached by its own dominant (V7/IV, or subV7/IV) is Ionian, otherwise Lydian; ♭VII of a minor key
+    is Ionian. The rule reads the previous chord and wraps the form, so a bar-1 IV is prepared by the last chord.
+  - **Minor:** iii7 is Phrygian (also as a related ii), Dorian at Advanced; the tonic m6 of a minor key is Melodic
+    Minor, any other m6 Dorian. A ø7 is Locrian, in a modal chart too (h1 is gone); ♮2 is its Advanced rung.
+  - **Reasons:** they say "the key's own notes" and name the passing note rather than call an avoid note "in the
+    key". A chart comment is at most 120 characters (`LIMITS.maxMeta`): `fitComment` drops a reason's "(X its ii)"
+    aside, then cuts with "…".
+  - **The °7 scale family** (`SCALES`, `web/engine/scales.ts`; the figures are M&H pp. 152–161): `Diatonic Diminished`
+    (ascending: the V7♭9♯9♭13 of the chord it leads to, from the °7's root; alias `leading tone diminished`), and the
+    function variants `… #IV` (♯IV°7 → I), `… bIII`, `… bVI`, `… I`, `… V`, with `optional` forms for ♯IV, ♭III and I
+    (in the menu only). A °7 a half step below the next chord's **root or bass** ascends to it (R16; ♯IV°7 → I is
+    tested first). At Standard a °7 takes its function's scale; any other °7 keeps Whole-Half, with the reason "not
+    functioning diatonically: the symmetric scale"; Whole-Half is the Basic and Advanced rung and Harmonic Minor a
+    half step up stays in the menu. `dim7`'s quality default stays Whole-Half, and the Level control compares it by
+    pitch, so a Whole-Half the analysis respelled (F♯ on G♭°7) is still the default. ♭III°7 follows M&H (fig. 7.22)
+    where N&G p. 116 reaches it by enharmonic equivalence with ♯II°7; where no root spells a function's scale without
+    double accidentals or B♯/E♯/C♭/F♭, the equivalent figure's lettering is used. The scale root is spelled per scale
+    by `simplifyRoot`. One helper, `cleanLettering` (`scales.ts`), makes that choice for the analyser, for a
+    transposed chart and for the `dim7` menu's diatonic diminished options. A few rows keep a single C♭ or F♭ for want
+    of a clean root. A dim7's interval labels and practice presets are by semitone, not by degree.
+  - **Libraries:** Wave follows the *Songbook Tom Jobim* in full; The Girl from Ipanema's bars 7–8 and bridge do;
+    Solar opens on CmMaj7.
 - **Menus:** every scale the rules give a quality is among that quality's options in `chord_scales.json`
-  (Phrygian Dominant and Mixolydian ♭6 on `7`, Phrygian on minor chords, Mixolydian ♭6 on `7sus4`), so a scale
-  you change can be changed back from the menu.
+  (Phrygian Dominant and Mixolydian ♭6 on `7`, Phrygian on minor chords, Mixolydian ♭6 on `7sus4`, the diatonic
+  diminished family on `dim7`, lettered as the analysis letters them), so a scale you change can be changed back
+  from the menu. A written scale is matched with the menu's entries by pitch (`samePitchScale`, R18): the same scale
+  on an enharmonically equal root is that entry, so F♯ Whole-Half on G♭°7 selects the default, and its spelling is
+  never changed by the match (the scale cell, a chord change's default following, and the Level control).
 
 ## 8. State
 

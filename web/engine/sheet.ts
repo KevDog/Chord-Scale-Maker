@@ -73,7 +73,7 @@ function practiceFor(
   practice: PracticeSelection | null,
 ): Pick<StaffModel, 'keys' | 'selected'> {
   const reference = mode === 'from' ? startReference(startText) : orNull(() => writtenChordRootLenient(part, row.chord, scale))
-  const keys = reference ? practiceKeys(reference, notes) : null
+  const keys = reference ? practiceKeys(reference, notes, mode === 'root' ? (resolveQuality(row.chord)?.quality ?? null) : null) : null
   return { keys, selected: practice && keys ? selectedNotes(practice, row.chord, keys) : null }
 }
 

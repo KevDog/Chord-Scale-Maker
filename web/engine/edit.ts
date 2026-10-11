@@ -2,7 +2,7 @@ import { type ChartDoc, type ChartLine, type MetaKey, parseChart, serializeChart
 import { LIMITS } from './limits'
 import { defaultScaleOrNull } from './qualities'
 import { rootName } from './pitch'
-import { parseScale, sameScale, SCALES } from './scales'
+import { parseScale, samePitchScale, SCALES } from './scales'
 
 export type RowLine = Extract<ChartLine, { kind: 'row' }>
 export type RowField = 'section' | 'bar' | 'chord' | 'scale' | 'function'
@@ -57,7 +57,7 @@ export function setRowChord(doc: ChartDoc, i: number, chord: string): ChartDoc {
   const line = doc.lines[i]
   if (line?.kind !== 'row') return doc
   const next = defaultScaleOrNull(chord)
-  const follows = line.scale !== '' && next !== null && sameScale(line.scale, defaultScaleOrNull(line.chord))
+  const follows = line.scale !== '' && next !== null && samePitchScale(line.scale, defaultScaleOrNull(line.chord)) // by pitch (R18)
   return { lines: replaceAt(doc.lines, i, { ...line, chord, scale: follows ? next : line.scale }) }
 }
 

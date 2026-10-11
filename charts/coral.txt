@@ -11,16 +11,16 @@ A | 1  | Cm7       | C Dorian                 # ii of F7: Dorian
 A | 1  | F7        | F Mixolydian             # extended ii–V: a side-step, its own key
 A | 2  | D/Bb      | D Lydian                 # ♭III, borrowed from Cb minor: Lydian (its ♯11 is in the key)
 A | 3  | BbMaj9    | Bb Lydian                # a non-tonic major chord: Lydian
-A | 4  | Am7b5     | A Locrian                # iiø7 of the ii–V to G minor: the b9 is in the key
+A | 4  | Am7b5     | A Locrian                # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 4  | D7b9      | D Half-Whole Diminished  # V7/bvi in Cb: the #11 is in the key, the b9 from the symbol
 A | 5  | Gm7       | G Dorian                 # ii of C7: Dorian
 A | 5  | C7        | C Lydian Dominant        # tritone substitute: resolves down a half step to CbMaj7
 A | 6  | CbMaj7    | Cb Ionian                # tonic: the 4th is in the key
 A | 7  | GbMaj7/Bb | Gb Lydian                # a non-tonic major chord: Lydian
-A | 8  | Abm7      | Ab Aeolian               # vi: the b13 is in the key
+A | 8  | Abm7      | Ab Aeolian               # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A | 8  | CbMaj7/Gb | Cb Ionian                # tonic: the 4th is in the key
 A | 9  | GbMaj7#11 | Gb Lydian                # from the symbol: #11
 A | 10 | Gbsus     | Gb Mixolydian            # static sus: Mixolydian
 A | 11 | Fm11      | F Dorian                 # a borrowed minor chord: Dorian, its own key
-A | 12 | Dm7b5     | D Locrian                # iiø7 of the ii–V to C minor: the b9 is in the key
+A | 12 | Dm7b5     | D Locrian                # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 12 | G7b9      | G Half-Whole Diminished  # V7/bii in Cb: b9 and #11 are in the key
