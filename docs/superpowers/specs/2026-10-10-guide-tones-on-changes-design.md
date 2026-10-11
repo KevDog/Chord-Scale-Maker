@@ -34,6 +34,7 @@ sheet is removed. The Changes sheet becomes the default view.
 - With notes, numerals and scales all on, 8 lines no longer fit a printed page; lines per page drop to 6–7.
 
 ## 1. What the reader sees
+
 - **Both toggles off:** today's sheet (`voices: []`, `guide: []`, slashes).
 - **3rd on:** the slashes give way to one note per chord, held for the chord's length and tied across barlines.
   - A tie still open at a line's end continues as a half-tie into the next line.
@@ -49,7 +50,9 @@ sheet is removed. The Changes sheet becomes the default view.
 - **Unknown chord:** a single rest, plus the diagnostic `no guide tones for X (…)`.
 
 ## 2. Engine
+
 **`engine/guideTones.ts`** (slimmed):
+
 ```ts
 export type GuideShow = Readonly<{ third: boolean; seventh: boolean }>
 export const NO_GUIDES: GuideShow = { third: false, seventh: false }
@@ -70,6 +73,7 @@ export function guideVoices(chords: readonly GuideInput[], part: Part, beats: 2|
   missing: readonly string[]
 }
 ```
+
 - **Keep** `TONES`, `guideToneDegrees` (Practice), `guideTonesFor`, `readable` and `notesFor`. Export `notesFor` and have it set `tiedIn`.
 - **Delete** `GuideChord`, `GuideBar`, `GuideSystem`, `GuideToneSheet`, `buildGuideTones` and the old `GuideNote`.
 - **`guideVoices` steps:**
@@ -81,6 +85,7 @@ export function guideVoices(chords: readonly GuideInput[], part: Part, beats: 2|
   6. A null tone gives a rest in every shown voice and adds to `missing`.
 
 **`engine/voiceLeading.ts`:** unchanged, plus one wrapper with no new search code:
+
 ```ts
 /** one role alone: give both roles the same pitch, so the pair search's line 1 is the smoothest single line */
 export function voiceLeadOne(tones: readonly (GuideTones | null)[], role: 0 | 1, clef: Clef): (Candidate | null)[] {
@@ -89,9 +94,11 @@ export function voiceLeadOne(tones: readonly (GuideTones | null)[], role: 0 | 1,
     .map((c) => c && { ...c, role }) // the pair search alternates roles over identical pitches; report the one asked for
 }
 ```
+
 My experiment ran exactly this wrapper, without the final `.map`.
 
 **`engine/changes.ts`:**
+
 - `ChangesBar.voices: readonly (readonly GuideNote[])[]` and `ChangesChord.guide: readonly string[]`.
 - `buildChanges(doc, part, barsPerLine = 4, signatures = false, guides = NO_GUIDES)`:
   - After the blocks are built (:159), take the drawn rows: `blocks.flatMap(b => b.rows).filter(i => eventAt.has(i))`. A folded copy is absent, so what is drawn is what was voice-led.
@@ -106,6 +113,7 @@ My experiment ran exactly this wrapper, without the final `.map`.
 - Edit the comment at `changes.ts:14`.
 
 ## 3. Drawing (`app/utils/changesDrawing.ts`)
+
 - **Slash path:** when `!bar.voices.length`, today's code at :47-55 runs untouched.
 - **Two passes for lines with voices:**
   1. Build every bar's stave and notes, `setStave`, and format.
@@ -141,6 +149,7 @@ My experiment ran exactly this wrapper, without the final `.map`.
   - It redraws because `line` changes.
 
 ## 4. App
+
 - **`usePreferences.ts`:** `guideThird` → `csm-guide-3rd` and `guideSeventh` → `csm-guide-7th`, stored as `'on'`/`'off'`, default **off**. Add both to `linkPreferences`.
 - **`engine/share.ts`:**
   - Add optional `guideThird` and `guideSeventh` booleans, validated at :93-95. `VERSION` stays 1.
@@ -166,6 +175,7 @@ My experiment ran exactly this wrapper, without the final `.map`.
 - **Flag: none.** Delete `guideTones`. The toggles default off, so the sheet looks the same until someone opts in.
 
 ## 5. Removal
+
 - **Engine:**
   - Delete the sheet parts of `guideTones.ts` (above).
   - `index.ts:13,15` stay, since both modules survive.
@@ -204,6 +214,7 @@ My experiment ran exactly this wrapper, without the final `.map`.
 - **Untouched:** Practice's "Guide tones" preset (`practice.ts:81`) and `guideToneDegrees`. `golden.json` doesn't cover guide tones or Changes, so no `make golden`.
 
 ## 6. Testing and rollout
+
 - **Engine (TDD first):**
   - `voiceLeadOne` gives the smoothest single line. Every result's `role` is the one requested, and labels come from `pick(t).label`: `bb7`→`7` on dim7, `1` on a triad.
   - Both on: the ii–V–I pair moves by step, and its labels swap 7/3 → 3/7 → 7/3.

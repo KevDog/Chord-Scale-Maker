@@ -37,10 +37,12 @@ Inputs the spec implies but which no "happy-path" task centres on — each gets 
 ### Task 1: Parse and serialize the four directives (`chart.ts`)
 
 **Files:**
+
 - Modify: `web/engine/chart.ts` (the `ChartLine` union ~24-31; `parseLine` ~41-70; `serializeChart` switch ~98-118)
 - Test: `web/engine/__tests__/chart.test.ts`, `web/engine/__tests__/transpose.test.ts`
 
 **Interfaces:**
+
 - Produces, on `ChartLine`:
   - `{ kind: 'ending'; n: number; section: string; from: number; to: number }`
   - `{ kind: 'mark'; mark: 'segno' | 'coda'; section: string; bar: number }`
@@ -177,10 +179,12 @@ git commit -m "Changes: parse @ending/@segno/@coda/@nav directives"
 ### Task 2: Map directives onto `ChangesBar` (`changes.ts`)
 
 **Files:**
+
 - Modify: `web/engine/changes.ts` (the `ChangesBar` type ~25-36; `buildChanges` ~57-136)
 - Test: `web/engine/__tests__/changes.test.ts`
 
 **Interfaces:**
+
 - Consumes: `ChartLine` kinds `'ending'`/`'mark'`/`'nav'` from Task 1; existing `buildChanges(doc, part, barsPerLine)`, `expandRowLines`, `barOf`, `Run`, `ChangesBar`.
 - Produces, on `ChangesBar` (added fields, existing ones unchanged):
   - `volta: { n: number; start: boolean; end: boolean } | null`
@@ -339,10 +343,12 @@ git commit -m "Changes: volta/segno/coda/nav fields from directives"
 ### Task 3: Draw volta brackets (`changesDrawing.ts`)
 
 **Files:**
+
 - Modify: `web/app/utils/changesDrawing.ts` (the per-bar stave loop ~28-47; the `BAND` constant ~11)
 - Test: verified via Task 5's e2e (drawing has no unit test here; this task's gate is typecheck + a manual dev check)
 
 **Interfaces:**
+
 - Consumes: `ChangesLine`/`ChangesBar.volta` from Task 2; `VexFlowModule = typeof import('vexflow/bravura')` (`web/app/utils/vexflow.ts`), which exposes `vf.Stave`, `vf.BarlineType`, `vf.Volta`.
 - Produces: no new exported symbols; `drawChangesLine` now also draws voltas.
 
@@ -399,11 +405,13 @@ git commit -m "Changes: draw 1st/2nd-ending volta brackets"
 ### Task 4: Segno/coda glyphs and nav text in the overlay (`ChangesSystem.vue`)
 
 **Files:**
+
 - Modify: `web/app/components/ChangesSystem.vue` (the top overlay `<div class="relative h-12 …">` ~4-15; the `marks` computed ~50-58)
 - Create: `web/app/components/ChangesMarks.vue` (a tiny presentational component holding the inline-SVG segno/coda glyphs and nav label)
 - Test: verified via Task 5's e2e; this task's gate is typecheck + lint + dev check
 
 **Interfaces:**
+
 - Consumes: `ChangesBar.segno`/`coda`/`nav` from Task 2; the existing `marks`/`xs` layout in `ChangesSystem.vue`.
 - Produces: `ChangesMarks.vue` taking props `{ segno: boolean; coda: boolean; nav: string }`.
 
@@ -474,6 +482,7 @@ git commit -m "Changes: segno/coda glyphs and nav text in the overlay"
 ### Task 5: Convert Stardust and It's You or No One; e2e, golden, docs
 
 **Files:**
+
 - Modify: `charts/stardust.txt` (add `@ending` to the intro already present)
 - Modify: `charts/its_you_or_no_one.txt` (add `@segno`/`@coda`/`@nav`)
 - Modify: `web/e2e/print.spec.ts` (the "Changes eight lines a page" loop ~43-56)
@@ -481,6 +490,7 @@ git commit -m "Changes: segno/coda glyphs and nav text in the overlay"
 - Regenerate: `fixtures/golden.json`, `fixtures/analysis.json`
 
 **Interfaces:**
+
 - Consumes: directives (Task 1), engine fields (Task 2), drawing (Tasks 3-4).
 - Produces: two converted library charts; a new e2e case that gates the volta/segno/coda/nav render and the print budget.
 
@@ -523,6 +533,7 @@ bad=[(k,[r for r in old.get(k,{}).get('rows',[]) if r not in new[k]['rows']]) fo
 print('removed/changed rows:', bad or 'NONE')
 PY
 ```
+
 Expected: `NONE` (directives are not rows; only the chart `text` field changes).
 
 - [ ] **Step 4: Write the failing e2e for endings + a coda jump**
