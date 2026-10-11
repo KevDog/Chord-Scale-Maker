@@ -4,7 +4,7 @@ style: Medium
 key: Eb
 form: AABA
 source: Colorado Cookbook, p. 114
-# analysis: 2026-10-08, rules v1; Eb
+# analysis: 2026-10-11, rules v1; Eb
 
 # section | bar | chord | scale
 A1 | 1  | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
@@ -35,6 +35,6 @@ B  | 21 | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
 B  | 21 | Cdim7  | C Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
 B  | 22 | Fm7    | F Dorian                 # ii: Dorian, the key’s own notes
 B  | 22 | Eb6    | Eb Ionian                # tonic: the 4th is in the key
-B  | 23 | F9     | F Mixolydian             # extended dominant: V7 of Bb7#5
+B  | 23 | F9     | F Mixolydian             # V7 of V7: the dominant of the dominant: natural tensions
 B  | 24 | Bb7#5  | Bb Whole Tone            # V7 of Eb: #11 and b13 from the symbol
 @copy A1 A3 24

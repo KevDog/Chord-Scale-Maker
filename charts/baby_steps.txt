@@ -4,13 +4,13 @@ style: Medium up
 key: Eb
 form: AAB
 source: Colorado Cookbook, p. 26
-# analysis: 2026-10-09, rules v1; Eb
+# analysis: 2026-10-11, rules v1; Eb
 
 # section | bar | chord | scale
 # area: B major (bars 1–9)
 Intro | 1  | EbMaj7  | Eb Lydian      # a non-tonic major chord: Lydian
-Intro | 2  | DMaj7   | D Lydian       # a non-tonic major chord: Lydian
-Intro | 3  | GMaj7   | G Lydian       # a non-tonic major chord: Lydian
+Intro | 2  | DMaj7   | D Lydian       # ♭IIImaj7, borrowed from B minor: Lydian (its ♯11 is in the key)
+Intro | 3  | GMaj7   | G Lydian       # ♭VImaj7, borrowed from B minor: Lydian (its ♯11 is in the key)
 Intro | 4  | F#7     | F# Mixolydian  # V7 of B: natural tensions
 Intro | 5  | BMaj7   | B Ionian       # tonic: the 4th is in the key
 Intro | 6  | Ab/Bb   | Ab Lydian      # a non-tonic major chord: Lydian
@@ -50,7 +50,7 @@ A1    | 8  | Fm7     | F Dorian       # ii of Bb7: Dorian
 A1    | 8  | Bb7     | Bb Mixolydian  # V7/I in Eb: natural tensions
 @copy A1 A2 8
 B     | 17 | EbMaj7  | Eb Ionian      # tonic: the 4th is in the key
-B     | 18 | Am7/D   | D Mixolydian   # static sus: Mixolydian
+B     | 18 | Am7/D   | D Mixolydian   # VII7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 # area: G major (bars 18–19)
 B     | 18 | D7      | D Mixolydian   # V7 of G: natural tensions
 B     | 19 | GMaj7/D | G Ionian       # tonic: the 4th is in the key

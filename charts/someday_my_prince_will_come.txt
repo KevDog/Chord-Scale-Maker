@@ -6,7 +6,7 @@ key: F
 time: 3/4
 form: AA, 32 bars
 source: Colorado Cookbook, p. 211
-# analysis: 2026-10-08, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 A1 | 1  | FMaj7  | F Ionian                  # tonic: the 4th is in the key
@@ -15,7 +15,7 @@ A1 | 3  | BbMaj7 | Bb Lydian                 # IV: the #4 is the key’s 7th
 A1 | 4  | D7alt  | D Altered                 # from the symbol: altered
 A1 | 5  | Gm7    | G Dorian                  # ii: Dorian, the key’s own notes
 A1 | 6  | D7alt  | D Altered                 # from the symbol: altered
-A1 | 7  | G9     | G Mixolydian              # extended dominant: V7 of C7
+A1 | 7  | G9     | G Mixolydian              # V7 of V7: the dominant of the dominant: natural tensions
 A1 | 8  | C7     | C Mixolydian              # V7 in F, not resolving: natural tensions
 A1 | 9  | Am7    | A Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
 A1 | 10 | Abdim7 | Ab Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
@@ -31,13 +31,13 @@ A2 | 19 | BbMaj7 | Bb Lydian                 # IV: the #4 is the key’s 7th
 A2 | 20 | D7alt  | D Altered                 # from the symbol: altered
 A2 | 21 | Gm7    | G Dorian                  # ii: Dorian, the key’s own notes
 A2 | 22 | D7alt  | D Altered                 # from the symbol: altered
-A2 | 23 | G9     | G Mixolydian              # extended dominant: V7 of C7
+A2 | 23 | G9     | G Mixolydian              # V7 of V7: the dominant of the dominant: natural tensions
 A2 | 24 | C7     | C Mixolydian              # V7 in F, not resolving: natural tensions
 A2 | 25 | Cm7    | C Dorian                  # ii of the ii–V to Bb
 A2 | 26 | F9     | F Mixolydian              # V7/IV in F: natural tensions
 A2 | 27 | BbMaj7 | Bb Lydian                 # IV: the #4 is the key’s 7th
 A2 | 28 | Bdim7  | B Whole-Half Diminished   # passing diminished: the rootless V7b9 of the next chord
 A2 | 29 | F6/C   | F Ionian                  # tonic: the 4th is in the key
-A2 | 30 | Gm7/C  | C Mixolydian              # static sus: Mixolydian
+A2 | 30 | Gm7/C  | C Mixolydian              # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 A2 | 30 | C7     | C Mixolydian              # V7 of F: natural tensions
 A2 | 31 | F6/9   | F Ionian                  # tonic: the 4th is in the key

@@ -5,7 +5,7 @@ style: Medium
 key: Eb
 form: AABC, 40 bars
 source: Colorado Cookbook, p. 268
-# analysis: 2026-10-08, rules v1; Eb
+# analysis: 2026-10-11, rules v1; Eb
 
 # section | bar | chord | scale
 A1 | 1  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
@@ -18,7 +18,7 @@ A1 | 4  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 A1 | 4  | Eb7    | Eb Mixolydian             # V7/IV in Eb: natural tensions
 A1 | 5  | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
 A1 | 8  | Abm7   | Ab Dorian                 # ii of Db7: Dorian
-A1 | 8  | Db7    | Db Mixolydian             # passing ii–V: its own key
+A1 | 8  | Db7    | Db Mixolydian             # extended ii–V: a side-step, its own key
 A1 | 9  | Gm7    | G Dorian                  # ii of the ii–V to F minor
 A1 | 9  | C7     | C Mixolydian b6           # V7/ii in Eb: the b13 is in the key
 A1 | 10 | Fm7    | F Dorian                  # ii of the ii–V to Eb

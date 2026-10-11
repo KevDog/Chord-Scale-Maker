@@ -5,12 +5,12 @@ style: Medium
 key: C
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 229
-# analysis: 2026-10-08, rules v1; C
+# analysis: 2026-10-11, rules v1; C
 
 # section | bar | chord | scale
 A1 | 1  | C6/9   | C Ionian             # tonic: the 4th is in the key
 A1 | 2  | Bm7    | B Dorian             # ii of E7: Dorian
-A1 | 2  | E7     | E Mixolydian         # passing ii–V: its own key
+A1 | 2  | E7     | E Mixolydian         # extended ii–V: a side-step, its own key
 A1 | 3  | FMaj7  | F Lydian             # IV: the #4 is the key’s 7th
 A1 | 4  | Bm7b5  | B Locrian            # iiø7 of the ii–V to A minor: the b9 is in the key
 A1 | 4  | E7     | E Phrygian Dominant  # V7/vi in C: b9 and b13 are in the key
@@ -24,7 +24,7 @@ A1 | 8  | Dm7    | D Dorian             # ii of the ii–V to C
 A1 | 8  | G7     | G Mixolydian         # V7 of C: natural tensions
 A2 | 9  | C6/9   | C Ionian             # tonic: the 4th is in the key
 A2 | 10 | Bm7    | B Dorian             # ii of E7: Dorian
-A2 | 10 | E7     | E Mixolydian         # passing ii–V: its own key
+A2 | 10 | E7     | E Mixolydian         # extended ii–V: a side-step, its own key
 A2 | 11 | FMaj7  | F Lydian             # IV: the #4 is the key’s 7th
 A2 | 12 | Bm7b5  | B Locrian            # iiø7 of the ii–V to A minor: the b9 is in the key
 A2 | 12 | E7     | E Phrygian Dominant  # V7/vi in C: b9 and b13 are in the key
@@ -40,10 +40,10 @@ B  | 19 | C7     | C Mixolydian         # V7/IV in C: natural tensions
 B  | 20 | F6/9   | F Lydian             # IV: the #4 is the key’s 7th
 B  | 20 | E7/C   | E Phrygian Dominant  # III7 in C, not resolving: b9 and b13 are in the key
 B  | 20 | E7/B   | E Lydian Dominant    # tritone substitute: resolves down a half step to Eb7/Bb
-B  | 20 | Eb7/Bb | Eb Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 20 | Eb7/Bb | Eb Lydian Dominant   # ♭III7 from the parallel minor: Lydian Dominant
 B  | 21 | Am7    | A Dorian             # ii of D7: Dorian
 B  | 22 | D7     | D Mixolydian         # V7/V in C: natural tensions
 B  | 23 | Dm7    | D Dorian             # ii of G7sus4: Dorian
-B  | 24 | G7sus4 | G Mixolydian         # static sus: Mixolydian
+B  | 24 | G7sus4 | G Mixolydian         # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 B  | 24 | G7     | G Mixolydian         # V7 of C: natural tensions
 @copy A2 A3 16

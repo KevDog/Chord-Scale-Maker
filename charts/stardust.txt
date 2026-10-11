@@ -4,7 +4,7 @@ style: Ballad
 key: Db
 form: AA, 32 bars
 source: Colorado Cookbook, p. 219
-# analysis: 2026-10-09, rules v1; Db
+# analysis: 2026-10-11, rules v1; Db
 
 # section | bar | chord | scale
 Intro | 1  | DbMaj7  | Db Ionian                 # tonic: the 4th is in the key
@@ -16,7 +16,7 @@ Intro | 5  | Ab7     | Ab Mixolydian             # V7/I in Db: natural tensions
 Intro | 6  | Fm7     | F Dorian                  # ii of Bb7: Dorian
 Intro | 6  | Bb7     | Bb Mixolydian b6          # keep: V7/ii in Db like the chorus's bar 6; the b13 Gb is in the key
 Intro | 7  | Gm7     | G Dorian                  # ii of C7: Dorian
-Intro | 7  | C7      | C Mixolydian              # passing ii–V: its own key
+Intro | 7  | C7      | C Mixolydian              # extended ii–V: a side-step, its own key
 Intro | 8  | Ebm7    | Eb Dorian                 # ii of Ab7: Dorian
 Intro | 8  | Ab7     | Ab Mixolydian             # V7/I in Db: natural tensions
 Intro | 9  | Ebm7    | Eb Dorian                 # ii of the ii–V to Db
@@ -47,7 +47,7 @@ A1    | 12 | Fm7     | F Dorian                  # iii: Dorian (its Phrygian wou
 A1    | 12 | Bbm7    | Bb Dorian                 # ii of Eb9: Dorian
 A1    | 13 | Eb9     | Eb Mixolydian             # V7/V in Db: natural tensions
 A1    | 14 | Bbm7    | Bb Dorian                 # ii of Eb7: Dorian
-A1    | 14 | Eb7     | Eb Mixolydian             # extended dominant: V7 of Ab7
+A1    | 14 | Eb7     | Eb Mixolydian             # V7 of V7: the dominant of the dominant: natural tensions
 A1    | 15 | Ab7     | Ab Mixolydian             # V7 in Db, not resolving: natural tensions
 A1    | 15 | Ebm7    | Eb Dorian                 # ii of Ab7: Dorian
 A1    | 16 | Ab7     | Ab Mixolydian             # V7/I in Db: natural tensions

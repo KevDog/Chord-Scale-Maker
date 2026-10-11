@@ -5,7 +5,7 @@ style: Mixed
 key: G
 form: ABA, 48 bars
 source: Colorado Cookbook, p. 100
-# analysis: 2026-10-08, rules v1; G
+# analysis: 2026-10-11, rules v1; G
 
 # section | bar | chord | scale
 # the standard 48-bar form; the lead sheet condenses the A sections
@@ -13,7 +13,7 @@ source: Colorado Cookbook, p. 100
 A1 | 1  | GMaj7  | G Ionian                 # tonic: the 4th is in the key
 A1 | 5  | Gm     | G Dorian                 # a borrowed minor chord: Dorian, its own key
 A1 | 9  | Am7b5  | A Locrian                # iiø7 of D7#9: the b9 is in the key
-A1 | 10 | D7#9   | D Altered                # passing ii–V: its own key: the b13 is in the key, b9, #9 and #11 from the symbol
+A1 | 10 | D7#9   | D Altered                # extended ii–V: a side-step, its own key: the b13 is in the key, b9, #9 and #11 from the symbol
 A1 | 11 | Bm7b5  | B Locrian                # iiø7 of the ii–V to A minor: the b9 is in the key
 A1 | 12 | E7#9   | E Altered                # V7/ii in G: the b13 is in the key, b9, #9 and #11 from the symbol
 A1 | 13 | Am7    | A Dorian                 # ii of the ii–V to G

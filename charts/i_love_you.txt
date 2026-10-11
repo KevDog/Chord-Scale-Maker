@@ -4,7 +4,7 @@ style: Up
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 94
-# analysis: 2026-10-08, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 # area: F major (bars 1–11)
@@ -42,7 +42,7 @@ C | 22 | D7#9   | D Altered                # V7/ii in F: the b13 is in the key, 
 C | 23 | Gm7    | G Dorian                 # ii of C7b9: Dorian
 C | 24 | C7b9   | C Half-Whole Diminished  # V7/I in F: the b9 from the symbol
 D | 25 | Gm7b5  | G Locrian                # iiø7 of C7b9: the b9 is in the key
-D | 26 | C7b9   | C Phrygian Dominant      # passing ii–V: its own key: b9 and b13 are in the key
+D | 26 | C7b9   | C Phrygian Dominant      # extended ii–V: a side-step, its own key: b9 and b13 are in the key
 D | 27 | Am7b5  | A Locrian                # iiø7 of D7#9: the b9 is in the key
 D | 28 | D7#9   | D Half-Whole Diminished  # extended dominant: V7 of G7; b9, #9 and #11 from the symbol
 D | 29 | G7     | G Mixolydian             # II7 in F, not resolving: natural tensions

@@ -5,7 +5,7 @@ style: Mixed
 key: Bbm
 form: AABBC, 64 bars
 source: Colorado Cookbook, p. 157
-# analysis: 2026-10-09, rules v1; Bb minor
+# analysis: 2026-10-11, rules v1; Bb minor
 
 # section | bar | chord | scale
 # area: Bb minor (bars 1–8)
@@ -32,7 +32,7 @@ A1    | 13 | Cm7b5   | C Locrian                 # iiø7 of the ii–V to Bb min
 A1    | 14 | F7alt   | F Altered                 # from the symbol: altered
 A1    | 15 | BbmMaj7 | Bb Melodic Minor          # from the symbol: minor-major 7th
 @copy A1 A2 16
-B1    | 33 | Ebm7/Ab | Ab Mixolydian             # static sus: Mixolydian
+B1    | 33 | Ebm7/Ab | Ab Mixolydian             # ♭VII7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 B1    | 34 | Ab7     | Ab Mixolydian             # V7/bIII in Bb minor: natural tensions
 B1    | 35 | DbMaj7  | Db Ionian                 # bIII of Bb minor: the relative major itself
 B1    | 36 | Bb7b9   | Bb Half-Whole Diminished  # extended dominant: V7 of Eb7; b9 from the symbol
@@ -43,7 +43,7 @@ B1    | 38 | Ab7     | Ab Mixolydian             # V7 of Db: natural tensions
 B1    | 39 | DbMaj9  | Db Ionian                 # tonic: the 4th is in the key
 B1    | 40 | Em7     | E Dorian                  # ii of A7: Dorian
 B1    | 40 | A7      | A Lydian Dominant         # tritone substitute: resolves down a half step to Ebm7/Ab
-B2    | 41 | Ebm7/Ab | Ab Mixolydian             # static sus: Mixolydian
+B2    | 41 | Ebm7/Ab | Ab Mixolydian             # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 B2    | 42 | Ab7     | Ab Mixolydian             # V7 of Db: natural tensions
 B2    | 43 | DbMaj7  | Db Ionian                 # tonic: the 4th is in the key
 B2    | 44 | Bb7b9   | Bb Half-Whole Diminished  # extended dominant: V7 of Eb7; b9 from the symbol

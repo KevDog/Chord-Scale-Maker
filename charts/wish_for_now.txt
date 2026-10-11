@@ -5,7 +5,7 @@ style: Latin
 key: Am
 form: AB, 30 bars
 source: Colorado Cookbook, p. 270
-# analysis: 2026-10-08, rules v1; A minor
+# analysis: 2026-10-11, rules v1; A minor
 
 # section | bar | chord | scale
 # area: A minor (bars 1–11)
@@ -32,7 +32,7 @@ B | 17 | F#m7      | F# Dorian                 # tonic minor: Dorian by conventi
 B | 17 | F#m7/E    | F# Dorian                 # ii of B13b9/D#: Dorian
 B | 18 | B13b9/D#  | B Half-Whole Diminished   # V7/bVII in F# minor: the b9 from the symbol
 B | 19 | Dm11      | D Dorian                  # ii of G7b9: Dorian
-B | 20 | G7b9      | G Half-Whole Diminished   # passing ii–V: its own key; b9 from the symbol
+B | 20 | G7b9      | G Half-Whole Diminished   # extended ii–V: a side-step, its own key; b9 from the symbol
 B | 21 | AbMaj7#11 | Ab Lydian                 # from the symbol: #11
 B | 22 | Bb7sus4   | Bb Mixolydian             # static sus: Mixolydian
 B | 23 | CMaj7     | C Lydian                  # a non-tonic major chord: Lydian

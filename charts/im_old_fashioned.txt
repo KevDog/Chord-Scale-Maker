@@ -4,7 +4,7 @@ style: Medium
 key: F
 form: ABCD, 36 bars
 source: Colorado Cookbook, p. 102
-# analysis: 2026-10-08, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 # the lead sheet writes the A sections in half time (four chords a bar); this counts two chords a bar
@@ -61,7 +61,7 @@ D | 28 | C7     | C Mixolydian             # V7/I in F: natural tensions
 D | 29 | Cm7    | C Dorian                 # ii of the ii–V to Bb
 D | 29 | F7     | F Mixolydian             # V7/IV in F: natural tensions
 D | 30 | BbMaj7 | Bb Lydian                # IV: the #4 is the key’s 7th
-D | 30 | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+D | 30 | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
 D | 31 | Am7    | A Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
 D | 31 | Dm7    | D Aeolian                # vi: the b13 is in the key
 D | 32 | Bm7b5  | B Locrian                # #ivø7 in F: the b9 is in the key

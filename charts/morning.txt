@@ -4,7 +4,7 @@ style: Latin
 key: Am
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 140
-# analysis: 2026-10-08, rules v1; A minor
+# analysis: 2026-10-11, rules v1; A minor
 
 # section | bar | chord | scale
 # area: A minor (bars 1–16)
@@ -19,7 +19,7 @@ A1 | 4  | D7     | D Mixolydian         # V7/bVII in A minor: natural tensions
 A1 | 5  | Dm7    | D Dorian             # ii of G7: Dorian
 A1 | 5  | G7     | G Mixolydian         # V7/bIII in A minor: natural tensions
 A1 | 6  | Em7    | E Dorian             # ii of A7: Dorian
-A1 | 6  | A7     | A Mixolydian         # passing ii–V: its own key
+A1 | 6  | A7     | A Mixolydian         # extended ii–V: a side-step, its own key
 A1 | 7  | Bm7    | B Dorian             # ii of the ii–V to A minor
 A1 | 7  | E7     | E Phrygian Dominant  # V7 of A minor: b9 and b13 are in the key
 A1 | 8  | Am7    | A Dorian             # ii of D7: Dorian
@@ -35,7 +35,7 @@ A2 | 12 | D7     | D Mixolydian         # V7/bVII in A minor: natural tensions
 A2 | 13 | Dm7    | D Dorian             # ii of G7: Dorian
 A2 | 13 | G7     | G Mixolydian         # V7/bIII in A minor: natural tensions
 A2 | 14 | Em7    | E Dorian             # ii of A7: Dorian
-A2 | 14 | A7     | A Mixolydian         # passing ii–V: its own key
+A2 | 14 | A7     | A Mixolydian         # extended ii–V: a side-step, its own key
 A2 | 15 | Bm7    | B Dorian             # ii of the ii–V to A minor
 A2 | 15 | E7     | E Phrygian Dominant  # V7 of A minor: b9 and b13 are in the key
 A2 | 16 | Am     | A Dorian             # tonic minor: Dorian by convention
@@ -61,7 +61,7 @@ C  | 28 | D7     | D Mixolydian         # V7/V in C: natural tensions
 C  | 29 | Dm7    | D Dorian             # ii of G7: Dorian
 C  | 29 | G7     | G Mixolydian         # V7/I in C: natural tensions
 C  | 30 | Em7    | E Dorian             # ii of A7: Dorian
-C  | 30 | A7     | A Mixolydian         # passing ii–V: its own key
+C  | 30 | A7     | A Mixolydian         # extended ii–V: a side-step, its own key
 # area: A minor (bars 31–32)
 C  | 31 | Bm7    | B Dorian             # ii of the ii–V to A minor
 C  | 31 | E7     | E Phrygian Dominant  # V7 of A minor: b9 and b13 are in the key

@@ -5,13 +5,13 @@ style: Mixed
 key: G
 form: AB, 24 bars
 source: Colorado Cookbook, p. 42
-# analysis: 2026-10-08, rules v1; G
+# analysis: 2026-10-11, rules v1; G
 
 # section | bar | chord | scale
 # area: G major (bars 1–9)
 A | 1  | G7       | G Mixolydian              # static dominant: its own mode
 A | 8  | G7b9     | G Half-Whole Diminished   # I7 in G, not resolving: the b9 from the symbol
-B | 9  | EbMaj7   | Eb Lydian                 # a non-tonic major chord: Lydian
+B | 9  | EbMaj7   | Eb Lydian                 # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
 # area: D major (bars 10–11)
 B | 10 | Em7      | E Dorian                  # ii of the ii–V to D
 B | 10 | A7       | A Mixolydian              # V7 of D: natural tensions

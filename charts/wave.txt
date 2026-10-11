@@ -5,7 +5,7 @@ style: Latin
 key: D
 form: AABC, 44 bars
 source: Colorado Cookbook, p. 261
-# analysis: 2026-10-08, rules v1; D
+# analysis: 2026-10-11, rules v1; D
 
 # section | bar | chord | scale
 # area: D major (bars 1–24)
@@ -22,9 +22,9 @@ A1 | 9  | E7     | E Mixolydian              # V7/V in D: natural tensions
 A1 | 10 | Bb7    | Bb Lydian Dominant        # tritone substitute: resolves down a half step to A7alt
 A1 | 10 | A7alt  | A Altered                 # from the symbol: altered
 A1 | 11 | Dm7    | D Dorian                  # ii of G7: Dorian
-A1 | 11 | G7     | G Mixolydian              # passing ii–V: its own key
+A1 | 11 | G7     | G Mixolydian              # extended ii–V: a side-step, its own key
 A1 | 12 | Dm7    | D Dorian                  # ii of G7: Dorian
-A1 | 12 | G7     | G Mixolydian              # passing ii–V: its own key
+A1 | 12 | G7     | G Mixolydian              # extended ii–V: a side-step, its own key
 @copy A1 A2 12
 # area: F major (bars 25–27)
 B  | 25 | Gm7    | G Dorian                  # ii of the ii–V to F

@@ -4,7 +4,7 @@ style: Medium
 key: Cm
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 269
-# analysis: 2026-10-08, rules v1; C minor
+# analysis: 2026-10-11, rules v1; C minor
 
 # section | bar | chord | scale
 # area: C minor (bars 1–3)
@@ -42,7 +42,7 @@ A2 | 14 | A7b9  | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the ke
 A2 | 15 | Dm    | D Dorian             # tonic minor: Dorian by convention
 A2 | 15 | Em    | E Dorian             # a borrowed minor chord: Dorian, its own key
 A2 | 16 | Fm    | F Dorian             # ii of Bb7: Dorian
-A2 | 16 | Bb7   | Bb Mixolydian        # passing ii–V: its own key
+A2 | 16 | Bb7   | Bb Mixolydian        # extended ii–V: a side-step, its own key
 B  | 17 | Am7b5 | A Locrian            # iiø7 of the ii–V to G minor: the b9 is in the key
 B  | 18 | D7b9  | D Phrygian Dominant  # V7/iv in D minor: the b13 is in the key, the b9 from the symbol
 B  | 19 | Gm    | G Dorian             # iv: Dorian, the key’s own notes

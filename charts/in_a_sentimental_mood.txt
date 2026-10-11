@@ -4,7 +4,7 @@ style: Ballad
 key: F
 form: AABC
 source: Colorado Cookbook, p. 108
-# analysis: 2026-10-08, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 # area: F major (bars 1–16)
@@ -44,8 +44,8 @@ B  | 17 | Bbm7   | Bb Aeolian                # vi: the b13 is in the key
 B  | 18 | Ebm7   | Eb Dorian                 # ii of the ii–V to Db
 B  | 18 | Ab7    | Ab Mixolydian             # V7 of Db: natural tensions
 B  | 19 | DbMaj7 | Db Ionian                 # tonic: the 4th is in the key
-B  | 19 | Bb7    | Bb Mixolydian             # extended dominant: V7 of Eb7
-B  | 20 | Eb7    | Eb Mixolydian             # extended dominant: V7 of Ab7
+B  | 19 | Bb7    | Bb Mixolydian             # extended dominant: each one falls a fifth into the next: natural tensions
+B  | 20 | Eb7    | Eb Mixolydian             # V7 of V7: the dominant of the dominant: natural tensions
 B  | 20 | Ab7    | Ab Mixolydian             # V7 of Db: natural tensions
 B  | 21 | DbMaj7 | Db Ionian                 # tonic: the 4th is in the key
 B  | 21 | Bbm7   | Bb Aeolian                # vi: the b13 is in the key

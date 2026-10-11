@@ -4,7 +4,7 @@ style: Ballad
 key: G
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 147
-# analysis: 2026-10-08, rules v1; G
+# analysis: 2026-10-11, rules v1; G
 
 # section | bar | chord | scale
 # area: G major (bars 1–5)
@@ -21,7 +21,7 @@ A1 | 5  | Cm7    | C Dorian                 # ii of the ii–V to Bb
 A1 | 5  | F7     | F Mixolydian             # V7 of Bb: natural tensions
 A1 | 6  | BbMaj7 | Bb Ionian                # tonic: the 4th is in the key
 A1 | 6  | Bbm7   | Bb Dorian                # ii of Eb7: Dorian
-A1 | 6  | Eb7    | Eb Mixolydian            # passing ii–V: its own key
+A1 | 6  | Eb7    | Eb Mixolydian            # extended ii–V: a side-step, its own key
 # area: G major (bars 7–13)
 A1 | 7  | Em11   | E Dorian                 # ii of A13: Dorian
 A1 | 7  | A13    | A Mixolydian             # V7/V in G: natural tensions
@@ -40,7 +40,7 @@ A2 | 13 | Cm7    | C Dorian                 # ii of the ii–V to Bb
 A2 | 13 | F7     | F Mixolydian             # V7 of Bb: natural tensions
 A2 | 14 | BbMaj7 | Bb Ionian                # tonic: the 4th is in the key
 A2 | 14 | Bbm7   | Bb Dorian                # ii of Eb7: Dorian
-A2 | 14 | Eb7    | Eb Mixolydian            # passing ii–V: its own key
+A2 | 14 | Eb7    | Eb Mixolydian            # extended ii–V: a side-step, its own key
 # area: G major (bars 15–16)
 A2 | 15 | Am11   | A Dorian                 # ii of D9: Dorian
 A2 | 15 | D9     | D Mixolydian             # V7/I in G: natural tensions
@@ -69,16 +69,16 @@ A3 | 26 | Bm7b5  | B Locrian                # iiø7 of the ii–V to A minor: th
 A3 | 26 | E7b9   | E Phrygian Dominant      # V7/ii in G: the b13 is in the key, the b9 from the symbol
 A3 | 27 | Am     | A Dorian                 # ii: Dorian, the key’s own notes
 A3 | 28 | Cm7    | C Dorian                 # ii of F7: Dorian
-A3 | 28 | F7     | F Mixolydian             # passing ii–V: its own key
+A3 | 28 | F7     | F Mixolydian             # extended ii–V: a side-step, its own key
 A3 | 28 | Am7b5  | A Locrian                # iiø7 of the ii–V to G: the b9 is in the key
 A3 | 28 | D7b9   | D Half-Whole Diminished  # V7 of G: the b9 from the symbol
 A3 | 29 | GMaj7  | G Ionian                 # tonic: the 4th is in the key
 # area: Bb major (bars 29–30)
-A3 | 29 | C7     | C Mixolydian             # extended dominant: V7 of F7
+A3 | 29 | C7     | C Mixolydian             # V7 of V7: the dominant of the dominant: natural tensions
 A3 | 29 | F7     | F Mixolydian             # V7 of Bb: natural tensions
 A3 | 30 | BbMaj7 | Bb Ionian                # tonic: the 4th is in the key
 A3 | 30 | Bbm7   | Bb Dorian                # ii of Eb7: Dorian
-A3 | 30 | Eb7    | Eb Mixolydian            # passing ii–V: its own key
+A3 | 30 | Eb7    | Eb Mixolydian            # extended ii–V: a side-step, its own key
 # area: G major (bars 31–32)
 A3 | 31 | Am11   | A Dorian                 # ii of the ii–V to G
 A3 | 31 | D7alt  | D Altered                # from the symbol: altered

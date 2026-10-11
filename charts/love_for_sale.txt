@@ -5,7 +5,7 @@ style: Mixed
 key: Bbm
 form: AABC, 64 bars
 source: Colorado Cookbook, p. 129
-# analysis: 2026-10-08, rules v1; Bb minor
+# analysis: 2026-10-11, rules v1; Bb minor
 
 # section | bar | chord | scale
 # the lead sheet offers Eb7 for EbMaj7 and Bb7 for Bbm in the A sections; the Maj7 / minor reading is written
@@ -54,7 +54,7 @@ B  | 43 | Ebm    | Eb Dorian                 # ii: Dorian, the key’s own notes
 B  | 45 | Gm7b5  | G Locrian                 # iiø7 of C7b9: the b9 is in the key
 B  | 46 | C7b9   | C Phrygian Dominant       # V7/iii in Db: b9 and b13 are in the key
 B  | 47 | F#m7   | F# Dorian                 # ii of B7: Dorian
-B  | 47 | B7     | B Mixolydian              # passing ii–V: its own key
+B  | 47 | B7     | B Mixolydian              # extended ii–V: a side-step, its own key
 # area: Eb major (bars 48–55)
 B  | 48 | Fm7b5  | F Locrian                 # iiø7 of the ii–V to Eb: the b9 is in the key
 B  | 48 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol

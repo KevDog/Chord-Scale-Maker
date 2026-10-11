@@ -4,7 +4,7 @@ style: Medium
 key: Bb
 form: AB, 18 bars
 source: Colorado Cookbook, p. 103
-# analysis: 2026-10-08, rules v1; Bb
+# analysis: 2026-10-11, rules v1; Bb
 
 # section | bar | chord | scale
 A | 1  | Dm7    | D Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
@@ -30,12 +30,12 @@ B | 11 | Dm7    | D Dorian                  # iii: Dorian (its Phrygian would pu
 B | 11 | Dbdim7 | Db Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
 B | 12 | Cm7    | C Dorian                  # ii: Dorian, the key’s own notes
 B | 12 | Ebm7   | Eb Dorian                 # ii of Ab7: Dorian
-B | 12 | Ab7    | Ab Mixolydian             # passing ii–V: its own key
+B | 12 | Ab7    | Ab Mixolydian             # extended ii–V: a side-step, its own key
 B | 13 | Dm7    | D Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
 B | 13 | Gm7    | G Dorian                  # ii of C7: Dorian
 B | 14 | C7     | C Mixolydian              # V7/V in Bb: natural tensions
 B | 15 | Bb/F   | Bb Ionian                 # tonic: the 4th is in the key
 B | 15 | Gm7    | G Dorian                  # ii of C7: Dorian
-B | 16 | C7     | C Mixolydian              # extended dominant: V7 of F7
+B | 16 | C7     | C Mixolydian              # V7 of V7: the dominant of the dominant: natural tensions
 B | 16 | F7     | F Mixolydian              # V7 of Bb: natural tensions
 B | 17 | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key

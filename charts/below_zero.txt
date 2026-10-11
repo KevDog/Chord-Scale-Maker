@@ -5,7 +5,7 @@ style: Even 8ths
 key: Bb
 form: AABC
 source: Colorado Cookbook, p. 30
-# analysis: 2026-10-08, rules v1; Bb
+# analysis: 2026-10-11, rules v1; Bb
 
 # section | bar | chord | scale
 # area: Bb major (bars 1–16)
@@ -35,16 +35,16 @@ A2 | 19 | A7       | A Mixolydian              # V7 of D: natural tensions
 A2 | 20 | DMaj7#5  | D Lydian Augmented        # from the symbol: #5
 A2 | 20 | Ab7#11   | Ab Lydian Dominant        # tritone substitute: resolves down a half step to GMaj7
 B  | 21 | GMaj7    | G Lydian                  # IV: the #4 is the key’s 7th
-B  | 22 | C7#11    | C Lydian Dominant         # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 22 | C7#11    | C Lydian Dominant         # ♭VII7 from the parallel minor: Lydian Dominant
 B  | 23 | Bbm7     | Bb Dorian                 # ii of Eb7b9: Dorian
-B  | 24 | Eb7b9    | Eb Half-Whole Diminished  # passing ii–V: its own key; b9 from the symbol
+B  | 24 | Eb7b9    | Eb Half-Whole Diminished  # extended ii–V: a side-step, its own key; b9 from the symbol
 B  | 25 | Am7      | A Dorian                  # ii of D7: Dorian
 B  | 26 | D7       | D Mixolydian              # V7/IV in D: natural tensions
 B  | 26 | Ebdim7   | Eb Whole-Half Diminished  # vii°7 of Em11: the rootless V7b9 of the next chord
 B  | 27 | Em11     | E Dorian                  # ii: Dorian, the key’s own notes
 B  | 27 | Dm11     | D Dorian                  # a borrowed minor chord: Dorian, its own key
 B  | 28 | Dbm7     | Db Dorian                 # ii of Gb7: Dorian
-B  | 28 | Gb7      | Gb Mixolydian             # passing ii–V: its own key
+B  | 28 | Gb7      | Gb Mixolydian             # extended ii–V: a side-step, its own key
 # area: Bb major (bars 28–34)
 B  | 28 | Cm7      | C Dorian                  # ii of the ii–V to Bb
 B  | 28 | F7       | F Mixolydian              # V7 of Bb: natural tensions

@@ -6,7 +6,7 @@ key: Bb
 time: 3/4
 form: AABC, 56 bars
 source: Colorado Cookbook, p. 253
-# analysis: 2026-10-08, rules v1; Bb
+# analysis: 2026-10-11, rules v1; Bb
 
 # section | bar | chord | scale
 # area: Bb major (bars 1–32)
@@ -70,6 +70,6 @@ C  | 51 | Dm7    | D Dorian                  # iii: Dorian (its Phrygian would p
 C  | 52 | Ebm7   | Eb Dorian                 # a borrowed minor chord: Dorian, its own key
 C  | 53 | Cm7    | C Dorian                  # ii of F7: Dorian
 C  | 54 | F7     | F Mixolydian              # V7/I in Bb: natural tensions
-C  | 55 | BMaj7  | B Lydian                  # a non-tonic major chord: Lydian
+C  | 55 | BMaj7  | B Lydian                  # ♭IImaj7, borrowed from Bb Phrygian: Lydian (its ♯11 is in the key)
 C  | 56 | BMaj7  | B Lydian
 C  | 56 | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key

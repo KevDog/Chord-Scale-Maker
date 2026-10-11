@@ -4,7 +4,7 @@ style: Medium up
 key: Fm
 form: A, 16 bars
 source: Colorado Cookbook, p. 134
-# analysis: 2026-10-08, rules v1; F minor
+# analysis: 2026-10-11, rules v1; F minor
 
 # section | bar | chord | scale
 A | 1  | Fm    | F Dorian             # tonic minor: Dorian by convention
@@ -20,6 +20,6 @@ A | 10 | Eb7   | Eb Mixolydian        # V7/biii in F minor: natural tensions
 A | 11 | Abm7  | Ab Dorian            # ii of the ii–V to Gb minor
 A | 12 | Db7   | Db Lydian Dominant   # V7/bii in F minor: the #11 is in the key
 A | 13 | Gbm7  | Gb Dorian            # ii of Cb7: Dorian
-A | 14 | Cb7   | Cb Mixolydian        # passing ii–V: its own key
+A | 14 | Cb7   | Cb Mixolydian        # extended ii–V: a side-step, its own key
 A | 15 | Gm7   | G Dorian             # ii of the ii–V to F minor
 A | 16 | C7    | C Phrygian Dominant  # V7 of F minor: b9 and b13 are in the key
