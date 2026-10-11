@@ -1,3 +1,5 @@
+import { createRequire } from 'node:module'
+import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import type { Plugin } from 'vite'
@@ -7,12 +9,15 @@ import { quotesPlugin } from './build/quotes'
 import { SECURITY_HEADERS } from './build/headers'
 import { buildVersion } from './build/version'
 
-/** dev: charts/ and chord_scales.json sit outside Vite's root, so it doesn't watch them by itself (quotes.json is
- *  watched by its own plugin) */
+/** the engine package's folder (engine/ in the workspace): its charts/ is the library */
+const ENGINE_DIR = dirname(createRequire(import.meta.url).resolve('@chord-scale-maker/engine/package.json'))
+
+/** dev: the engine's charts/ and chord_scales.json sit outside Vite's root, so it doesn't watch them by itself
+ *  (quotes.json is watched by its own plugin) */
 const watchRepoData = (): Plugin => ({
   name: 'watch-repo-data',
   configureServer(server) {
-    server.watcher.add([fileURLToPath(new URL('../charts', import.meta.url)), fileURLToPath(new URL('../chord_scales.json', import.meta.url))])
+    server.watcher.add([join(ENGINE_DIR, 'charts'), join(ENGINE_DIR, 'chord_scales.json')])
   },
 })
 
@@ -29,6 +34,10 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: ['@nuxt/eslint'],
   css: ['~/assets/css/main.css'],
+  // the library's charts, from the engine package (app/utils/library.ts)
+  alias: { '#charts': join(ENGINE_DIR, 'charts') },
+  // the engine is TypeScript source in a workspace package: compile it into the server bundle too (prerendering)
+  build: { transpile: ['@chord-scale-maker/engine'] },
   app: {
     head: {
       htmlAttrs: { lang: 'en' },
@@ -73,7 +82,7 @@ export default defineNuxtConfig({
         myCharts: true, // My charts: edits and new charts saved in this browser, files, share links (docs/plan-saving.md); on since sign-off
         practice: true, // highlight a chosen subset of each scale's notes (docs/plan-practice.md); on since sign-off
         changes: true, // the Changes sheet: the chart as a study lead sheet, numerals and scales under the chords (docs/plan-changes.md); on since sign-off
-        scaleLevels: true, // the Level control: Basic / Standard / Advanced / Random scales per chart (engine/levels.ts); on since sign-off
+        scaleLevels: true, // the Level control: Basic / Standard / Advanced / Random scales per chart (engine/src/levels.ts); on since sign-off
         keySignatures: true, // the clef and key signature once, at the start of each sheet (docs/superpowers/specs/2026-10-10-key-signatures-design.md); on since sign-off
         functions: true, // author functions, @key areas and live analysis notes (docs/superpowers/specs/2026-10-09-chart-functions-design.md); on since sign-off
       },
@@ -99,7 +108,7 @@ export default defineNuxtConfig({
   },
   vite: {
     plugins: [tailwindcss(), watchRepoData(), quotesPlugin(fileURLToPath(new URL('../data/quotes.json', import.meta.url)))],
-    // the engine imports ../chord_scales.json, the library reads ../charts, the navbar quotes ../data
+    // the engine package (engine/, beside web/: its source, chord_scales.json, charts) and the navbar quotes (../data)
     server: { fs: { allow: ['..'] } },
   },
 })

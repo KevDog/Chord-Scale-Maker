@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { decodeShare, type ShareView } from '~~/engine'
+import { decodeShare, type ShareView } from '@chord-scale-maker/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 
 /**
@@ -36,7 +36,7 @@ import type { SaveTarget } from '~/composables/useSavedChart'
  * - ?chart=<slug>: a library chart, or your edited version of it (My charts)
  * - ?mine=<id>: one of your saved charts
  * - ?new=1: a blank chart, saved on its first edit (the address then becomes ?mine=<id>)
- * - #s=<payload>: a share link (engine/share.ts): the chart and its view, not saved until you save it
+ * - #s=<payload>: a share link (engine/src/share.ts): the chart and its view, not saved until you save it
  * Without the myCharts feature only library charts open, and nothing is saved.
  */
 type Source =

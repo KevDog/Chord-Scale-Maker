@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import { sameChart } from '~~/engine'
+import { sameChart } from '@chord-scale-maker/engine'
 import type { SavedKind } from '~/utils/myCharts'
 
 /**

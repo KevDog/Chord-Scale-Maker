@@ -1,6 +1,6 @@
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { effectScope } from 'vue'
-import { setRowField } from '~~/engine'
+import { setRowField } from '@chord-scale-maker/engine'
 import { TEXT_DEBOUNCE_MS, useChartEditor } from '~/composables/useChartEditor'
 
 const TEXT = 'title: T\nA | 1 | Cm7\n@copy A B 8\n'

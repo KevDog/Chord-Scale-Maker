@@ -47,7 +47,7 @@
 </template>
 
 <script setup lang="ts">
-import { enharmonics, glyphs, noteText, parseChord, parseScale, rootName, samePitchScale, SCALES } from '~~/engine'
+import { enharmonics, glyphs, noteText, parseChord, parseScale, rootName, samePitchScale, SCALES } from '@chord-scale-maker/engine'
 
 /** a row's scale: the chord's default, its alternates, or "Other…" (any scale, in a dialog) */
 const props = defineProps<{ chord: string; scale: string }>()

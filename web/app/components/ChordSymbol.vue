@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ChordToken } from '~~/engine'
+import type { ChordToken } from '@chord-scale-maker/engine'
 
 defineProps<{ tokens: readonly ChordToken[] }>()
 </script>

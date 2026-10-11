@@ -1,10 +1,14 @@
 import { readFileSync } from 'node:fs'
+import { createRequire } from 'node:module'
+import { pathToFileURL } from 'node:url'
 import type { Page } from '@playwright/test'
 import { chooseInstrument, expect, test, writeChart } from './fixtures'
 
-// the engine can't be imported here (its JSON import needs a bundler), so read the ids from the RULES table's source
+// the engine can't be imported here (its JSON import needs a bundler), so read the ids from the RULES table's source,
+// found through the package (engine/ in the workspace)
+const ENGINE = pathToFileURL(createRequire(import.meta.url).resolve('@chord-scale-maker/engine/package.json'))
 const RULE_IDS = Array.from(
-  (readFileSync(new URL('../engine/analysis/rules.ts', import.meta.url), 'utf8').split('export const RULES')[1] ?? '').matchAll(/^\s*\{ id: '([^']+)'/gm),
+  (readFileSync(new URL('src/analysis/rules.ts', ENGINE), 'utf8').split('export const RULES')[1] ?? '').matchAll(/^\s*\{ id: '([^']+)'/gm),
   (m) => m[1] as string,
 )
 

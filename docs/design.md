@@ -7,14 +7,14 @@ records of how each phase was built (see [README.md](README.md)).
 
 A Nuxt 4 site, styled with Tailwind CSS and built with `nuxt build`, on Vercel (`web/vercel.json`). Every page is
 prerendered and served as a static file; the scale engine, chart parser and renderer all run in the browser. The chart
-library is built into the site at build time from `charts/*.txt`. The only server code is one function,
+library is built into the site at build time from `engine/charts/*.txt` (the engine package). The only server code is one function,
 `/api/contact` (the contact form). Unknown URLs are also rendered there, as the 404 page. There is no database.
 
 ```text
-charts/*.txt ───────┐                          ┌─> Library page (title and composer search)
-chord_scales.json ──┼─> build (Vite raw import) ┤
-                    │                          └─> Editor: text ⇄ grid ─> engine ─> VexFlow preview ─> browser print
-engine ──> fixtures/golden.json (frozen answers, `make golden`) ──> vitest golden test
+engine/charts/*.txt ─────┐                          ┌─> Library page (title and composer search)
+engine/chord_scales.json ┼─> build (Vite raw import) ┤
+                         │                          └─> Editor: text ⇄ grid ─> engine ─> VexFlow preview ─> browser print
+engine ──> engine/fixtures/golden.json (frozen answers, `make golden`) ──> vitest golden test
 ```
 
 The preview has two sheets: **Changes** (the chart as a study lead sheet, the default view; its From 3rd and From 7th
@@ -24,13 +24,14 @@ chosen instrument.
 ## 2. Repository layout
 
 ```text
-chord_scales.json         # qualities, aliases, default/alternate scales, slash readings
-data/quotes.json          # quotes for the navbar (web only)
-charts/*.txt              # chart library (concert pitch)
-fixtures/golden.json      # the engine's frozen answers (web/engine/__tests__/goldenFixture.ts, `make golden`)
-docs/                     # this file, requirements, phase plans (docs/README.md)
-web/                      # Nuxt app (Vercel root directory)
-  engine/                 # pure TS, no Vue/DOM imports
+package.json              # npm workspaces (engine, web), overrides; package-lock.json beside it
+engine/                   # @chord-scale-maker/engine (superpowers/specs/2026-10-11-engine-ui-split-design.md)
+  chord_scales.json       # qualities, aliases, default/alternate scales, slash readings
+  charts/*.txt            # chart library (concert pitch)
+  fixtures/               # golden.json, analysis.json: the engine's frozen answers (`make golden`)
+  scripts/                # analyse.ts, fixtureScales.ts, guideLines.ts (npm run analyse | fixture-scales | guide-lines)
+  package.json, tsconfig.json, vitest.config.ts, eslint.config.mjs (the boundary rule)
+  src/                    # pure TS, no Vue/DOM imports; index.ts is the public API
     pitch.ts              # letters, pitch classes, accFor, enharmonics, glyphs (b -> ♭)
     scales.ts             # SCALES, ALIASES, spellFrom, simplifyRoot, spellScale, parseScale
     instruments.ts        # TRANSPOSITIONS, INSTRUMENTS, clef ranges
@@ -49,7 +50,10 @@ web/                      # Nuxt app (Vercel root directory)
     util.ts               # orNull, chunk
     limits.ts             # input caps
     index.ts
-    __tests__/            # vitest, incl. the golden fixture
+    __tests__/            # vitest, incl. the golden fixture and the export snapshot
+data/quotes.json          # quotes for the navbar (web only)
+docs/                     # this file, requirements, phase plans (docs/README.md)
+web/                      # Nuxt app (Vercel root directory); imports @chord-scale-maker/engine
   app/
     pages/index.vue       # library + title/composer search
     pages/editor.vue      # ?chart=<slug>; with myCharts also ?mine=<id>, ?new=1 and share links (#s=…)
@@ -79,13 +83,14 @@ web/                      # Nuxt app (Vercel root directory)
   public/og-image.png     # the 1200×630 link preview (Open Graph tags in nuxt.config.ts), drawn by the same script
   test/                   # app tests (@nuxt/test-utils, happy-dom)
   e2e/                    # Playwright tests against the production build
-  nuxt.config.ts, vitest.config.ts (engine + app projects), playwright.config.ts, eslint.config.mjs,
-  tsconfig.json (Nuxt's generated configs), tsconfig.engine.json, tsconfig.e2e.json
+  nuxt.config.ts, vitest.config.ts (node + app projects), playwright.config.ts, eslint.config.mjs,
+  tsconfig.json (Nuxt's generated configs), tsconfig.build.json, tsconfig.e2e.json
 ```
 
-Vercel builds from `web/` with
-"include files outside root directory" enabled so `charts/` and `chord_scales.json` are importable. In
-`make dev`, a small Vite plugin watches those two as well, since they sit outside Vite's root.
+Vercel builds from `web/` with "include files outside root directory" enabled, so the engine package (`engine/`)
+and `data/` are in the build; it installs from the workspace root (the root `package-lock.json`). The library comes
+from the engine package through the `#charts` alias (`nuxt.config.ts`), and `make dev` watches the engine's charts
+and `chord_scales.json`, since they sit outside Vite's root.
 
 ## 3. Engine
 
@@ -179,7 +184,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   `expandRowLines` is the same with each row's source line (a repeat points at the row it copies). `ending`, `mark`
   and `nav` lines carry no rows, so expansion ignores them.
 - **Navigation directives** (`@ending`, `@segno`, `@coda`, `@nav`): read only by the Changes sheet
-  (`engine/changes.ts`), which maps them onto per-bar `volta`/`segno`/`coda`/`nav` fields. An `@ending` section is a
+  (`engine/src/changes.ts`), which maps them onto per-bar `volta`/`segno`/`coda`/`nav` fields. An `@ending` section is a
   2× repeat with the two endings bracketed; `@segno`/`@coda` draw glyphs, `@nav` a printed instruction. Parsing is
   syntactic only; a directive naming a section/bar the chart lacks simply renders nothing (like a `@copy` of an
   unknown section). See docs/plan-changes.md.
@@ -228,7 +233,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     closes.
 
   An unknown quality gives an amber border and "Choose a scale…", with "Other…" still available.
-- **Scale level** (the `scaleLevels` flag, on; `engine/levels.ts`): Basic / Standard / Advanced / Random, above the
+- **Scale level** (the `scaleLevels` flag, on; `engine/src/levels.ts`): Basic / Standard / Advanced / Random, above the
   chart grid. Choosing one writes the scales into the chart (`relevel`), so they save, print and share with it.
   - Options in `chord_scales.json` carry `level: basic|advanced`; Standard is the default, and a quality without a
     tag keeps it. Random picks among the inside options, from a seed (Shuffle deals a new one).
@@ -252,7 +257,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Slash readings** (`slash_chords` in `chord_scales.json`): a chord whose bass makes it another
   chord takes that chord's options on the bass. DbMaj7/C is a sus♭9 on C: C Phrygian (default), C Spanish
   Phrygian, C Dorian ♭2. Only the options change; the symbol, interval labels and practice presets read DbMaj7.
-- **Transpose…** (`ChartTranspose`, `engine/transpose.ts`) rewrites the whole chart in another concert key.
+- **Transpose…** (`ChartTranspose`, `engine/src/transpose.ts`) rewrites the whole chart in another concert key.
   - Every row moves by the key interval in letters and semitones.
   - **Spelling:** roots are spelled on the target key's side by `spellInKey`, so a Bb chart reads Dbm7 Gb7, and
     a natural beats an accidental (B, not Cb). `simplifyRoot` decides in C, or when that side would put double
@@ -279,10 +284,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   default is From root, and the Start on select only appears for From. The engine still supports `both`.
 - **Subtitles** (`pageSubtitle`): "Subtitle – Tenor Sax (Bb) (Spelled from C)".
 - **Interval labels:** the Intervals toggle, on by default and saved per browser, labels every note against the chord's written
-  root (`engine/intervals.ts`). Labels read b9, #9, #11 and b13, a minor 3rd reads #9 on chords with a major
+  root (`engine/src/intervals.ts`). Labels read b9, #9, #11 and b13, a minor 3rd reads #9 on chords with a major
   3rd, sus chords get a 4, and sixth chords a 6. They are HTML placed under the note heads, on screen only, so
   the print layout doesn't change.
-- **View model:** `engine/sheet.ts` builds the `StaffModel` (labels, notes, intervals, or an error such as
+- **View model:** `engine/src/sheet.ts` builds the `StaffModel` (labels, notes, intervals, or an error such as
   "Choose a scale"), and components only draw it. The live preview re-renders only staves that changed: each
   staff's `id` combines its position, its row content, the part and the mode.
 
@@ -290,7 +295,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 - **What it does:** a subset of each scale's notes to improvise with. The chosen notes are highlighted on the
   Scales sheet and the rest dimmed, on screen and in print.
-- **The engine** (`engine/practice.ts`) gives every staff's notes a key, a spelled interval:
+- **The engine** (`engine/src/practice.ts`) gives every staff's notes a key, a spelled interval:
   - **From root:** from each chord's written root, so ♭3 and 3, and ♯4 and ♭5, are separate keys.
   - **From X:** from the start note, so "♭3" is E♭ from C.
 
@@ -305,7 +310,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 ### Changes sheet ([plan-changes.md](plan-changes.md); the `changes` flag, on)
 
 - **The default view:** a chart opens on the Changes; a share link may open it on Scales.
-- A study lead sheet: `engine/changes.ts` `buildChanges(doc, part, barsPerLine, signatures, guides)` lays the chart
+- A study lead sheet: `engine/src/changes.ts` `buildChanges(doc, part, barsPerLine, signatures, guides)` lays the chart
   out in lines of four bars (two on phones), each section on a new line, one slash a beat in the chart's metre.
   Chords sit on their beats (the guide tone timeline's timing), each with its Roman numeral (`analysis/numerals.ts`)
   and its scale, both written for the part; key-area labels where the key changes; section markers; a `@copy`
@@ -331,9 +336,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   give way to one note, held for the chord's length and tied across barlines; a tie still open at a line's end
   continues as a half-tie on the next line. Both lines are always built, together, so the notes don't depend on which
   is shown; each moves on its own except where they meet (below), and they may cross or briefly share a tone.
-- **Which tones** come from the chord quality (`TONES` in `engine/guideTones.ts`): the 3rd (a sus chord's 4th) and
+- **Which tones** come from the chord quality (`TONES` in `engine/src/guideTones.ts`): the 3rd (a sus chord's 4th) and
   the 7th (a triad's root, a 6 chord's 6th).
-- **The lines** (`engine/guideToneLines.ts`; `guideToneLine` returns one of the pair) move one chord at a time; only a
+- **The lines** (`engine/src/guideToneLines.ts`; `guideToneLine` returns one of the pair) move one chord at a time; only a
   run's starting octave looks ahead, as far as the next rest. The rules are numbered in the spec (rule 7, the lines
   taking different tones, is gone; D1–D3 and P are the diverge note's). The candidates are both guide tones at every octave inside the
   part's written range, `rangeOf(part)`: its instrument's range from `INSTRUMENTS` (`{ lo, hi, centre }`, inside a
@@ -388,7 +393,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - Changes lines of slashes keep fixed bands (`BAND`, `CLEF_BAND`, `VOLTA_BAND`); a line with guide tones crops to
     its noteheads and stem tips, never inside `CLEF_BAND`, and takes in a raised ending bracket.
 - **Clefs and key signatures (the `keySignatures` flag, on):** the clef and the chart's key as written for the instrument
-  (`keySignature` in `engine/keySignature.ts`; a minor key by its relative major, none without a `key:`), once at the
+  (`keySignature` in `engine/src/keySignature.ts`; a minor key by its relative major, none without a `key:`), once at the
   start, as on a jazz lead sheet: the first staff of each scale sheet part (`StaffModel.showClefAndKey`) and the
   first Changes line; every other staff and line has neither. With a guide tone on, the first Changes line gets the
   clef even with the flag off or without a `key:`. The key is the chart's `key:` (`chartKeyOf`) throughout: key
@@ -451,7 +456,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Scale sheets:** 12 staves a page, with 8px between staves. A full page fills
   about 9.6in, even when every note has ledger lines (e.g. trombone from B). Autumn Leaves prints on 4 pages.
 - **Changes:** 8 four-bar lines a page with guide tones off, so a 32-bar AABA prints on one page.
-  - With guide tones on, `changesLinesPerPage` (`engine/changes.ts`) gives fewer: 6 with a line on and
+  - With guide tones on, `changesLinesPerPage` (`engine/src/changes.ts`) gives fewer: 6 with a line on and
     numerals and scales, one more with both rows off. `print.spec.ts` prints the tallest case (one line,
     numerals, scales, an ending and a bass part) a sheet page to a letter page.
   - The chord row and spacing are shorter in print; lines with a clef or guide tones close up (`print:space-y-0`).
@@ -461,11 +466,12 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 ## 7. Library
 
-- **Loading:** `import.meta.glob('../../../charts/*.txt', { query: '?raw', eager: true })` in
+- **Loading:** `import.meta.glob('#charts/*.txt', { query: '?raw', eager: true })` (`#charts` is the engine package's
+  `charts/`) in
   `app/utils/library.ts` gives `{ slug, title, subtitle, composer, text }[]` at build time, skipping sync-tool
   copies (`giant_steps 2.txt`, `isSyncCopy`). The same parser runs, and a test fails the build if any library
   chart has errors. Search matches the title or the composer.
-- **Heading:** `chartHeading` (engine/chart.ts) gives what the library, the editor and every sheet show: the title,
+- **Heading:** `chartHeading` (engine/src/chart.ts) gives what the library, the editor and every sheet show: the title,
   a line built from the subtitle (or, without one, `style:`), `key:` (`E♭ minor`) and `form:`, and the composer
   (right-aligned under the heading on a sheet's first page, as on a lead sheet). `chartMeta` stays the title and
   subtitle as written, which the chart grid edits.
@@ -484,8 +490,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 ## 7a. Harmonic analysis
 
-The rule set in [plan-analysis.md](plan-analysis.md), built as `web/engine/analysis/` (pure TypeScript) and the
-script `web/scripts/analyse.ts`. The site doesn't run it: it fills in the charts' scales, and their comments say
+The rule set in [plan-analysis.md](plan-analysis.md), built as `engine/src/analysis/` (pure TypeScript) and the
+script `engine/scripts/analyse.ts`. The site doesn't run it: it fills in the charts' scales, and their comments say
 why.
 
 - **Passes:** `stream.ts` (chords as heard, slash readings applied, with durations; the form wraps), `keys.ts`
@@ -499,7 +505,7 @@ why.
   as it was when nothing else changed, so a rerun is a no-op). A `@copy` repeat whose verdict differs from its
   source row is reported and noted in the source row's comment; only the source line can be written, so the
 library writes such a repeat out instead.
-- **The CLI:** `npm run analyse -- charts/<tune>.txt` (or `--all`) prints a report per row: ✓ agrees with the
+- **The CLI** (in `engine/`): `npm run analyse -- charts/<tune>.txt` (or `--all`) prints a report per row: ✓ agrees with the
   chart, ≠ differs, blank, ? unreached. `--write`, `--force`, `--save` as above; `--quiet` gives the summary and
   the disagreements only.
 - **The library:** every chart but the two modes charts is analysed and saved (`--force --save`); Milestones'
@@ -514,7 +520,7 @@ library writes such a repeat out instead.
   area (an `@key` holds until the next); the grid's key-change button (`insertKeyChange`) adds the same pair. The
   analyser never writes a function, an `@key` or a `context:`. The report's second line says which context
   decided and why (`context: modal (stated)`, `context: modal (detected: 0 of 8 chords in cadences, median chord 2
-  bars)`); `--ambiguous` also names a detection within one chord of a threshold. `rowNotes` (`engine/notes.ts`) gives each row's reason and key;
+  bars)`); `--ambiguous` also names a detection within one chord of a threshold. `rowNotes` (`engine/src/notes.ts`) gives each row's reason and key;
   the grid's Notes column and the Changes sheet's numeral/scale notes show it, the note with where its key
   came from (a key the author set is starred), behind the `functions` flag (on).
 - **Numerals** (`analysis/numerals.ts`; the degree itself in `analysis/degrees.ts`, shared with the rules and the
@@ -577,7 +583,7 @@ library writes such a repeat out instead.
   - **Reasons:** they say "the key's own notes" and name the passing note rather than call an avoid note "in the
     key". A chart comment is at most 120 characters (`LIMITS.maxMeta`): `fitComment` drops a reason's "(X its ii)"
     aside, then cuts with "…".
-  - **The °7 scale family** (`SCALES`, `web/engine/scales.ts`; the figures are M&H pp. 152–161): `Diatonic Diminished`
+  - **The °7 scale family** (`SCALES`, `engine/src/scales.ts`; the figures are M&H pp. 152–161): `Diatonic Diminished`
     (ascending: the V7♭9♯9♭13 of the chord it leads to, from the °7's root; alias `leading tone diminished`), and the
     function variants `… #IV` (♯IV°7 → I), `… bIII`, `… bVI`, `… I`, `… V`, with `optional` forms for ♯IV, ♭III and I
     (in the menu only). A °7 a half step below the next chord's **root or bass** ascends to it (R16; ♯IV°7 → I is
@@ -622,7 +628,7 @@ library writes such a repeat out instead.
     default scale is written out). A new chart's first save moves the address to
     `?mine=<id>` without restarting the editor.
   - Download writes the text as a Blob; Open (`readChartFile`) takes a `.txt` up to the size limit.
-  - Share links (`engine/share.ts`): `{ v: 1, chart, view }` as deflate-raw JSON in base64url after `#s=`. The view
+  - Share links (`engine/src/share.ts`): `{ v: 1, chart, view }` as deflate-raw JSON in base64url after `#s=`. The view
     applies for that visit only (`linkPreferences`), and nothing is saved until **Save to My charts**. The router
     rewrites the address without its `#` while a prerendered page hydrates, so `plugins/arrivalHash.client.ts`
     keeps the original.
@@ -721,22 +727,22 @@ Pages are static, and the only server code is the contact function, so the attac
 
 ## 10. Testing
 
-- **Golden fixture:** `fixtures/golden.json` freezes the engine's answers. `web/engine/__tests__/goldenFixture.ts`
+- **Golden fixture:** `engine/fixtures/golden.json` freezes the engine's answers. `engine/src/__tests__/goldenFixture.ts`
   builds it from:
   - every scale × 21 roots (7 letters × ♭/♮/♯) × 5 parts (treble in C, B♭, E♭ and F, plus bass clef in C) → written root, notes, label, or error
   - `scale_notes` for both modes, both clefs, and several start notes
   - chord-symbol tokens for a chord corpus, including slash chords
   - scale options (with `note`, `default`, `outside`) and defaults for a chord corpus
-  - the parsed rows of each chart in `charts/`, and two inline charts for parser edge cases
+  - the parsed rows of each chart in `engine/charts/`, and two inline charts for parser edge cases
 
-  `fixtures/analysis.json` is the analyser's report over every library chart, one row per line (key, areas, and
-  each row's scale, rule, function and reason); `make golden` rewrites both fixtures. `npm run fixture-scales [--
-  <ref>]` (`web/scripts/fixtureScales.ts`) compares only their scales with a ref's (default `main`) and exits 1 on any
+  `engine/fixtures/analysis.json` is the analyser's report over every library chart, one row per line (key, areas, and
+  each row's scale, rule, function and reason); `make golden` rewrites both fixtures. `npm run fixture-scales -w engine [--
+  <ref>]` (`engine/scripts/fixtureScales.ts`) compares only their scales with a ref's (default `main`) and exits 1 on any
   difference: the check for a change meant to move text but no scale.
 
   The golden test compares each section with readable mismatches, then checks that the file is exactly what the
   engine writes now (so a new chart or scale can't go uncovered). After an intended change to the engine,
-  `chord_scales.json` or `charts/`: `make golden`, then review the diff. The file was first written by the Python
+  `chord_scales.json` or `engine/charts/`: `make golden`, then review the diff. The file was first written by the Python
   CLI's exporter; the TS engine reproduced it byte for byte when the CLI was retired.
 - **Engine unit tests (vitest),** written test-first alongside each module. They cover what fixtures can't:
   - quality resolution, interval roots, diagnostics and limits
@@ -781,8 +787,8 @@ Pages are static, and the only server code is the contact function, so the attac
 
   Every test fails on a page error, a console error or a CSP violation. Run them with `make e2e`.
 - **CI (GitHub Actions):**
-  - The jobs: lint, typecheck (`nuxt typecheck` plus the engine and e2e tsconfigs),
-    vitest, `nuxt build`, the header check, `npm audit --omit=dev` (gating), and an e2e job.
+  - The jobs: lint, typecheck (the engine's `tsc`, `nuxt typecheck`, the build and e2e tsconfigs) and vitest for
+    both packages, then `nuxt build`, the header check, `npm audit --omit=dev` (gating), and an e2e job.
   - The Playwright report is uploaded when the e2e job fails.
   - A full `npm audit` is reported but doesn't block, because build-tooling advisories don't ship.
   - Vercel's Git integration builds a preview deploy per PR.
@@ -840,3 +846,8 @@ Pages are static, and the only server code is the contact function, so the attac
 11. **The Python CLI is retired** (after the `v1-launch` tag). Its one unique strength was LilyPond's engraving;
     the browser's Save as PDF covers printing, and keeping two engines in step doubled every change. The golden
     fixture it wrote is kept, now regenerated by the TS engine. Revisit if LilyPond can run on Vercel.
+12. **Two packages, one repo.** The engine is the workspace package `@chord-scale-maker/engine` (`engine/`), with its
+    data and tools; the app depends on it by name, through its `exports` map. A separate engine repo waits for a
+    reason to exist: a second consumer, outside work on the analysis, or a release cadence of its own
+    ([spec](superpowers/specs/2026-10-11-engine-ui-split-design.md), Phase 2). Until then a change that spans both
+    is one PR, and the commit is still the release (decision 10).

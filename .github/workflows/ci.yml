@@ -1,6 +1,7 @@
 name: ci
-# pull requests only (checks run locally first; the merge needs no second run). engine and e2e are required checks on
-# main, so the workflow always runs: a docs-only change skips them by condition, which reports success
+# pull requests only (checks run locally first; the merge needs no second run). engine (both packages' lint, typecheck
+# and tests, then the site's build, headers and audit) and e2e are required checks on main, so the workflow always
+# runs: a docs-only change skips them by condition, which reports success
 on:
   pull_request:
 permissions:
@@ -39,17 +40,24 @@ jobs:
         with:
           node-version: '24'
           cache: npm
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: package-lock.json
       - run: npm ci
+        working-directory: .
+      # both packages: the engine (engine/) and the app (web/)
       - run: npm run lint
+        working-directory: .
       - run: npm run typecheck
+        working-directory: .
       - run: npm test
+        working-directory: .
       - run: npm run build
       # what Vercel will serve: headers on pages and assets, CSP meta on every page
       - run: npm run check:headers
-      # gate on what ships to browsers (vue, vexflow); build tooling advisories are reported, not blocking
+      # gate on what ships to browsers (vue, vexflow, the engine); build tooling advisories are reported, not blocking
       - run: npm audit --omit=dev --audit-level=high
+        working-directory: .
       - run: npm audit --audit-level=high || true
+        working-directory: .
   e2e:
     needs: changes
     if: needs.changes.outputs.code == 'true'
@@ -63,8 +71,9 @@ jobs:
         with:
           node-version: '24'
           cache: npm
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: package-lock.json
       - run: npm ci
+        working-directory: .
       - run: npx playwright install --with-deps chromium
       - run: npm run e2e
       - if: failure()

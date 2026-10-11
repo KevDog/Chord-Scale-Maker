@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, beforeEach, describe, expect, it } from 'vitest'
-import { type ChartDoc, parseChart } from '~~/engine'
+import { type ChartDoc, parseChart } from '@chord-scale-maker/engine'
 import ChartGrid from '~/components/ChartGrid.vue'
 
 const doc = parseChart('title: T\nA | 1 | Cm7\n@copy A B 8\nbad line\n').value

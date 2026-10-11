@@ -1,0 +1,145 @@
+import raw from '../chord_scales.json'
+import { analyse } from './analysis'
+import type { ChartDoc } from './chart'
+import { rootName } from './pitch'
+import { type QualityMatch, readChord, resolveQuality, type ScaleOption } from './qualities'
+import { parseScale, samePitchScale, scaleKey, simplifyRoot, spellFrom } from './scales'
+
+/**
+ * The Level control: how sophisticated each chord's scale is, written into the chart. Standard is the quality's
+ * default (chord_scales.json); Basic and Advanced are the options tagged `level`, falling back to the default where a
+ * quality has none; Random picks among the quality's inside options (not one that fits a single function), repeatably from a seed. A row whose Standard is
+ * not its quality's default (the analysis chose it: D7 → D Phrygian Dominant) climbs that scale's ladder instead
+ * (chord_scales.json `ladders`, docs/plan-analysis.md §11), so Basic over a V7 of a minor chord is the minor key's
+ * pentatonic, not the major one. A tonic minor chord (the analysis's rule m5) is Aeolian at Basic, the natural
+ * minor beginners learn first (decision 7). Changing level moves only the rows that play the old level's scale
+ * (relevel), so a scale you chose yourself stays.
+ */
+export type ScaleLevel = 'basic' | 'standard' | 'advanced' | 'random'
+export const SCALE_LEVELS: readonly ScaleLevel[] = ['basic', 'standard', 'advanced', 'random']
+export const LEVEL_LABELS: Readonly<Record<ScaleLevel, string>> = { basic: 'Basic', standard: 'Standard', advanced: 'Advanced', random: 'Random' }
+
+export const isScaleLevel = (v: unknown): v is ScaleLevel => typeof v === 'string' && (SCALE_LEVELS as readonly string[]).includes(v)
+
+const qualityOf = (chord: string): QualityMatch | null => {
+  try {
+    return resolveQuality(chord)
+  } catch {
+    return null // a chord that can't be parsed: nothing to choose from
+  }
+}
+const optionsFor = (chord: string): readonly ScaleOption[] => qualityOf(chord)?.options ?? []
+
+/** a number in [0, 1) from a seed and a key, the same every time (FNV-1a, then a mulberry32 step) */
+export function seededUnit(seed: number, key: string): number {
+  let h = 2166136261 ^ seed
+  for (let i = 0; i < key.length; i++) h = Math.imul(h ^ key.charCodeAt(i), 16777619)
+  let t = (h + 0x6d2b79f5) >>> 0
+  t = Math.imul(t ^ (t >>> 15), t | 1)
+  t ^= t + Math.imul(t ^ (t >>> 7), t | 61)
+  return ((t ^ (t >>> 14)) >>> 0) / 4294967296
+}
+
+type Rung = readonly [string, string] // interval above the Standard root, scale name
+const LADDERS: Readonly<Record<string, Readonly<{ basic?: Rung; advanced?: Rung }>>> = raw.ladders as never
+const LADDER_BY_KEY = new Map(Object.entries(LADDERS).map(([name, rungs]) => [scaleKey(name), rungs]))
+/** per-quality overrides of a ladder (chord_scales.json `quality_ladders`): a minor chord on Phrygian is Dorian at Advanced */
+const QUALITY_LADDERS: Readonly<Record<string, Readonly<Record<string, Readonly<{ basic?: Rung; advanced?: Rung }>>>>> =
+  raw.quality_ladders as never
+
+/**
+ * Basic or Advanced on a Standard scale's ladder, the chord quality's own override first (`quality`: m7, 7sus4b9);
+ * the Standard itself where the ladder has no rung; null if unreadable
+ */
+export function ladderScale(standard: string, level: 'basic' | 'advanced', quality?: string): string | null {
+  try {
+    const s = parseScale(standard)
+    const override = quality ? Object.entries(QUALITY_LADDERS[quality] ?? {}).find(([name]) => scaleKey(name) === s.key)?.[1]?.[level] : undefined
+    const rung = override ?? LADDER_BY_KEY.get(s.key)?.[level]
+    if (!rung) return standard
+    const [interval, name] = rung
+    const [r] = spellFrom(s.root, interval)
+    if (!r) return standard
+    return `${rootName(interval === '1' ? r : simplifyRoot(r, scaleKey(name)))} ${name}`
+  } catch {
+    return null
+  }
+}
+
+/**
+ * the chord's scale at a level, or null if the chord has no options; `key` makes a Random pick repeatable.
+ * `standard`: the row's Standard when it isn't the quality's default (a library chart's own choice), whose ladder
+ * then gives Basic and Advanced.
+ */
+export function scaleAtLevel(chord: string, level: ScaleLevel, seed = 0, key = '', standard?: string): string | null {
+  const match = qualityOf(chord)
+  const options = match?.options ?? []
+  const def = options.find((o) => o.default) ?? options[0]
+  if (!def) return null
+  if (level === 'standard') return standard || def.scale
+  // a Standard the analysis only respelled (Gbdim7: F# Whole-Half, R9) is still the default, and keeps its spelling
+  if ((level === 'basic' || level === 'advanced') && standard && !samePitchScale(standard, def.scale)) return ladderScale(standard, level, match?.quality) ?? def.scale
+  if (level === 'random') {
+    const pool = options.filter((o) => !o.outside && !o.functional)
+    return pool[Math.floor(seededUnit(seed, key) * pool.length)]?.scale ?? def.scale
+  }
+  const pick = options.find((o) => o.level === level)?.scale ?? def.scale
+  return standard && samePitchScale(pick, standard) ? standard : pick
+}
+
+/**
+ * where a chart's scales stand: the level, its Random seed, and the rows the level owns (`line:chord` keys). A row
+ * is owned when the chart leaves Standard and the row plays its default; a hand edit takes it back.
+ */
+export type LevelState = Readonly<{ level: ScaleLevel; seed: number; owned?: readonly string[] }>
+
+const defaultOf = (chord: string): string => optionsFor(chord).find((o) => o.default)?.scale ?? ''
+const rowKey = (i: number, chord: string): string => `${i}:${chord}`
+
+/**
+ * move a chart from one level to another, writing the scales into its rows. Only rows the level owns move, and only
+ * while they still play the old level's scale; a scale you chose yourself stays, even one that happens to be a
+ * level's choice (B♭ Lydian on a Maj7). `baseline` is the library chart this one came from: its own scale choices
+ * (A7♭9 on Phrygian Dominant in the Bird Blues) are the chart's Standard, so levels take them over too and Standard
+ * brings them back. @copy repeats follow their source rows. Returns the chart, how many rows changed, and the rows
+ * the level owns now (none back at Standard).
+ */
+export function relevel(
+  doc: ChartDoc,
+  from: LevelState,
+  to: LevelState,
+  baseline?: ChartDoc,
+): Readonly<{ doc: ChartDoc; changed: number; owned: readonly string[] }> {
+  /** the row's Standard: the library's own choice for this line, else the chord's default */
+  const standard = (i: number, chord: string): string => {
+    const b = baseline?.lines[i]
+    return b?.kind === 'row' && b.chord === chord && b.scale ? b.scale : defaultOf(chord)
+  }
+  // the rows that are a tonic minor chord, from the analysis (it reads the chords, so it's the same at every level)
+  const tonicMinor = new Set(analyse(doc).rows.filter((r) => r.rule === 'm5').map((r) => r.line))
+  const aeolian = (chord: string): string | null => {
+    const r = readChord(chord)
+    return r ? `${rootName(r.root)} Aeolian` : null
+  }
+  const at = (state: LevelState, i: number, chord: string): string | null =>
+    state.level === 'standard'
+      ? standard(i, chord) || null
+      : state.level === 'basic' && tonicMinor.has(i)
+        ? aeolian(chord)
+        : scaleAtLevel(chord, state.level, state.seed, rowKey(i, chord), standard(i, chord))
+  const owns = (i: number, chord: string, scale: string): boolean => {
+    const mine = from.level === 'standard' || !from.owned || from.owned.includes(rowKey(i, chord)) // no record (an old share link): any match counts
+    return mine && (scale === '' || samePitchScale(scale, at(from, i, chord))) // by pitch (R18)
+  }
+  let changed = 0
+  const owned: string[] = []
+  const lines = doc.lines.map((l, i) => {
+    if (l.kind !== 'row' || !owns(i, l.chord, l.scale)) return l
+    if (to.level !== 'standard') owned.push(rowKey(i, l.chord))
+    const next = at(to, i, l.chord)
+    if (!next || samePitchScale(next, l.scale || defaultOf(l.chord))) return l // the same scale keeps its spelling
+    changed++
+    return { ...l, scale: next }
+  })
+  return { doc: changed ? { lines } : doc, changed, owned }
+}

@@ -1,0 +1,201 @@
+{
+  "$schema_note": "Chord-scale options keyed by chord quality. Each option's root is an interval above the chord root ('1' = same root). Scale names match SCALES in engine/src/scales.ts. The first option with default=true is used when a chart row omits the scale. outside=true marks a deliberate outside sound (tension to resolve); the editor lists those separately. level=basic|advanced marks a quality's simpler or richer choice for the Level control (the default is Standard; a quality without one keeps its default). functional=true marks a scale that fits one function only (a °7's diatonic diminished scales): offered in the menu, never dealt by the Random level. slash_chords: a chord of `quality` whose bass is the interval `bass` above its root takes its scale options from quality `as` on the bass note (the chord symbol itself is unchanged). ladders: when a row's Standard scale is not its quality's default (the analysis chose it: D7 → D Phrygian Dominant), the Level control takes Basic and Advanced from the Standard scale's ladder instead of the quality's level tags; each rung is [interval above the Standard root, scale], and a missing rung keeps the Standard scale (docs/plan-analysis.md §11). quality_ladders: per-quality overrides of a ladder (m and m7 on Phrygian: Dorian at Advanced, where sus ♭9 keeps Dorian ♭2; a tonic m6 on Melodic Minor stays there at Advanced, as Harmonic Minor's ♭6 would clash with its 6th).",
+  "quality_aliases": {
+    "maj": ["", "M", "ma", "major"],
+    "m": ["-", "mi", "min"],
+    "Maj7": ["ma7", "MA7", "M7", "maj7", "Δ7", "∆7", "Δ", "∆", "maj9", "Maj9"],
+    "Maj7#11": ["maj7#11", "M7#11", "Δ#11", "∆#11", "Maj7+11", "maj7+11", "Maj7(#11)", "Maj9#11"],
+    "Maj7#5": ["maj7#5", "M7#5", "Δ#5", "∆#5", "Maj7+5", "maj7+5", "Maj7+", "Δ+5", "∆+5", "Δ+", "∆+", "+Maj7"],
+    "6": ["maj6", "Maj6", "6/9", "69"],
+    "m7": ["-7", "mi7", "min7", "m9", "-9", "mi9", "m11", "-11"],
+    "m6": ["-6", "mi6", "min6", "m6/9"],
+    "mMaj7": ["-Maj7", "mM7", "-Δ7", "-∆7", "miMa7", "minMaj7"],
+    "7": ["9", "13", "7(13)", "9(13)"],
+    "7sus4": ["sus", "sus4", "7sus", "9sus4", "9sus", "11"],
+    "7sus4b9": ["7susb9", "susb9", "sus4b9", "7sus4(b9)", "7sus(b9)", "sus(b9)", "9sus4b9", "phryg"],
+    "7b9": ["7(b9)", "13b9"],
+    "7b9b13": ["7(b9,b13)", "7b13b9", "7(b13,b9)"],
+    "7b13": ["7(b13)", "9b13", "9(b13)"],
+    "7#11": ["7(#11)", "9#11", "7b5", "7(b5)", "13#11"],
+    "7alt": ["alt", "7#9", "7(#9)", "7#5", "7(#5)", "7+", "+7", "7#9b13", "7#5#9", "7b9#9", "7(#9,b13)"],
+    "m7b5": ["-7b5", "m7(b5)", "-7(b5)", "ø7", "ø", "mi7b5", "min7b5", "half-dim"],
+    "dim7": ["°7", "o7", "°", "o", "dim"]
+  },
+  "qualities": {
+    "maj": [
+      { "root": "1",  "scale": "Ionian",            "default": true },
+      { "root": "1",  "scale": "Lydian", "level": "advanced" },
+      { "root": "1",  "scale": "Major Pentatonic", "level": "basic" }
+    ],
+    "m": [
+      { "root": "1",  "scale": "Dorian",            "default": true },
+      { "root": "1",  "scale": "Aeolian",           "note": "when the chord is vi, or the symbol has a ♭6" },
+      { "root": "1",  "scale": "Phrygian",          "note": "iii, or v of a minor key" },
+      { "root": "1",  "scale": "Dorian b2",         "note": "Phrygian with a natural 6" },
+      { "root": "1",  "scale": "Minor Pentatonic", "level": "basic" },
+      { "root": "1",  "scale": "Melodic Minor" },
+      { "root": "1",  "scale": "Bebop Dorian", "level": "advanced" }
+    ],
+    "Maj7": [
+      { "root": "1",  "scale": "Ionian",            "default": true },
+      { "root": "1",  "scale": "Lydian", "level": "advanced" },
+      { "root": "1",  "scale": "Major Pentatonic", "level": "basic" },
+      { "root": "5",  "scale": "Major Pentatonic",  "note": "no 4th; 7 and 9 emphasised" },
+      { "root": "6",  "scale": "Minor Pentatonic" },
+      { "root": "1",  "scale": "Bebop Major" },
+      { "root": "1",  "scale": "Lydian Augmented",  "note": "for Maj7#5" }
+    ],
+    "Maj7#11": [
+      { "root": "1",  "scale": "Lydian",            "default": true },
+      { "root": "1",  "scale": "Lydian Augmented",  "level": "advanced" }
+    ],
+    "Maj7#5": [
+      { "root": "1",  "scale": "Lydian Augmented",  "default": true },
+      { "root": "1",  "scale": "Lydian" }
+    ],
+    "6": [
+      { "root": "1",  "scale": "Ionian",            "default": true },
+      { "root": "1",  "scale": "Lydian", "level": "advanced" },
+      { "root": "1",  "scale": "Major Pentatonic", "level": "basic" },
+      { "root": "1",  "scale": "Bebop Major" }
+    ],
+    "m7": [
+      { "root": "1",  "scale": "Dorian",            "default": true },
+      { "root": "1",  "scale": "Aeolian",           "note": "when the chord is vi, or the symbol has a ♭6" },
+      { "root": "1",  "scale": "Phrygian",          "note": "iii, or v of a minor key" },
+      { "root": "1",  "scale": "Dorian b2",         "note": "Phrygian with a natural 6" },
+      { "root": "1",  "scale": "Minor Pentatonic", "level": "basic" },
+      { "root": "1",  "scale": "Blues" },
+      { "root": "b3", "scale": "Major Pentatonic" },
+      { "root": "1",  "scale": "Bebop Dorian", "level": "advanced" },
+      { "root": "2",  "scale": "Minor Pentatonic",  "note": "9, 11 and 13 colour" },
+      { "root": "5",  "scale": "Minor Pentatonic",  "note": "no 3rd: 9 and 11" },
+      { "root": "b2", "scale": "Minor Pentatonic",  "note": "side-slip a half step up", "outside": true },
+      { "root": "b5", "scale": "Minor Pentatonic",  "note": "a tritone away: most tension", "outside": true }
+    ],
+    "m6": [
+      { "root": "1",  "scale": "Dorian",            "default": true },
+      { "root": "1",  "scale": "Melodic Minor", "level": "advanced" },
+      { "root": "1",  "scale": "Minor Pentatonic", "level": "basic" }
+    ],
+    "mMaj7": [
+      { "root": "1",  "scale": "Melodic Minor",     "default": true },
+      { "root": "1",  "scale": "Harmonic Minor", "level": "advanced" }
+    ],
+    "7": [
+      { "root": "1",  "scale": "Mixolydian",        "default": true },
+      { "root": "1",  "scale": "Bebop Dominant", "level": "advanced" },
+      { "root": "1",  "scale": "Lydian Dominant" },
+      { "root": "1",  "scale": "Phrygian Dominant", "note": "V7 of a minor chord" },
+      { "root": "1",  "scale": "Mixolydian b6",     "note": "V7/ii or V7/iv" },
+      { "root": "1",  "scale": "Half-Whole Diminished" },
+      { "root": "1",  "scale": "Altered",           "note": "resolving dominants" },
+      { "root": "1",  "scale": "Blues" },
+      { "root": "1",  "scale": "Major Pentatonic", "level": "basic" },
+      { "root": "5",  "scale": "Minor Pentatonic",  "note": "9 and 13 colour" },
+      { "root": "4",  "scale": "Minor Pentatonic",  "note": "the minor key's, over a V7 of a minor chord" },
+      { "root": "1",  "scale": "Whole Tone",        "note": "for 7#5" },
+      { "root": "1",  "scale": "Spanish Phrygian",  "note": "V7 of a minor chord: b9 #9 and b13 around the 3rd" },
+      { "root": "b5", "scale": "Major Pentatonic",  "note": "tritone sub: b9 #9 #11 b13", "outside": true }
+    ],
+    "7sus4": [
+      { "root": "1",  "scale": "Mixolydian",        "default": true },
+      { "root": "1",  "scale": "Mixolydian b6",     "note": "resolving to a minor chord" },
+      { "root": "b7", "scale": "Major Pentatonic", "level": "basic" },
+      { "root": "1",  "scale": "Dorian",            "note": "sus with a minor colour", "level": "advanced" },
+      { "root": "5",  "scale": "Minor Pentatonic" },
+      { "root": "1",  "scale": "Spanish Phrygian",  "note": "a Phrygian sus: b9 over the 4th" }
+    ],
+    "7sus4b9": [
+      { "root": "1",  "scale": "Phrygian",          "default": true },
+      { "root": "1",  "scale": "Spanish Phrygian",  "note": "adds the major 3rd, as a passing note" },
+      { "root": "1",  "scale": "Dorian b2",         "note": "mode 2 of melodic minor: natural 13", "level": "advanced" }
+    ],
+    "7b9": [
+      { "root": "1",  "scale": "Half-Whole Diminished", "default": true },
+      { "root": "1",  "scale": "Phrygian Dominant", "note": "V7 to minor, b9 b13", "level": "basic" },
+      { "root": "1",  "scale": "Spanish Phrygian",  "note": "Phrygian Dominant with the #9 too", "level": "advanced" },
+      { "root": "1",  "scale": "Altered" }
+    ],
+    "7b9b13": [
+      { "root": "1",  "scale": "Phrygian Dominant", "default": true, "note": "V7 to minor" },
+      { "root": "1",  "scale": "Spanish Phrygian",  "note": "with the #9 too", "level": "advanced" },
+      { "root": "1",  "scale": "Altered" }
+    ],
+    "7b13": [
+      { "root": "1",  "scale": "Mixolydian b6",     "default": true },
+      { "root": "1",  "scale": "Phrygian Dominant", "note": "with a b9 too" },
+      { "root": "1",  "scale": "Whole Tone",        "note": "b13 as #5" },
+      { "root": "1",  "scale": "Altered",           "level": "advanced" }
+    ],
+    "7#11": [
+      { "root": "1",  "scale": "Lydian Dominant",   "default": true },
+      { "root": "1",  "scale": "Whole Tone", "level": "basic" },
+      { "root": "1",  "scale": "Half-Whole Diminished", "level": "advanced" },
+      { "root": "5",  "scale": "Melodic Minor",     "note": "same notes as Lydian Dominant" }
+    ],
+    "7alt": [
+      { "root": "1",  "scale": "Altered",           "default": true },
+      { "root": "b2", "scale": "Melodic Minor",     "note": "same notes as Altered" },
+      { "root": "1",  "scale": "Half-Whole Diminished", "note": "b9 #9 #11, natural 13", "level": "advanced" },
+      { "root": "1",  "scale": "Whole Tone",        "note": "#5 without b9" },
+      { "root": "1",  "scale": "Phrygian Dominant" },
+      { "root": "b5", "scale": "Major Pentatonic",  "note": "all altered tensions: b9 #9 #11 b13", "level": "basic" }
+    ],
+    "m7b5": [
+      { "root": "1",  "scale": "Locrian",           "default": true },
+      { "root": "1",  "scale": "Locrian natural 2", "level": "advanced" },
+      { "root": "b3", "scale": "Melodic Minor",     "note": "same notes as Locrian natural 2" },
+      { "root": "b6", "scale": "Major Pentatonic", "level": "basic" }
+    ],
+    "dim7": [
+      { "root": "1",  "scale": "Whole-Half Diminished", "default": true },
+      { "root": "1",  "scale": "Diatonic Diminished",   "note": "an ascending vii°7: the V7♭9♯9♭13 of the chord it leads to", "functional": true },
+      { "root": "1",  "scale": "Diatonic Diminished bIII", "note": "a passing ♭III°7: its chord tones plus the key's notes", "functional": true },
+      { "root": "1",  "scale": "Diatonic Diminished bIII optional", "note": "♭III°7 with the 9, common with the ii it falls to", "functional": true },
+      { "root": "1",  "scale": "Diatonic Diminished bVI", "note": "a passing ♭VI°7: its chord tones plus the key's notes", "functional": true },
+      { "root": "1",  "scale": "Diatonic Diminished I", "note": "an auxiliary I°7: its chord tones plus the key's notes", "functional": true },
+      { "root": "1",  "scale": "Diatonic Diminished I optional", "note": "I°7 with the 11 in place of the 3", "functional": true },
+      { "root": "1",  "scale": "Diatonic Diminished V", "note": "an auxiliary V°7: its chord tones plus the key's notes", "functional": true },
+      { "root": "1",  "scale": "Diatonic Diminished #IV", "note": "♯IV°7 to I over its 5th: the ♯II°7's notes", "functional": true },
+      { "root": "1",  "scale": "Diatonic Diminished #IV optional", "note": "♯IV°7 with the major 7th (a blues)", "functional": true },
+      { "root": "b2", "scale": "Harmonic Minor",    "note": "dim7 as vii of the minor key a half step up" }
+    ]
+  },
+  "ladders": {
+    "Ionian":                { "basic": ["1", "Major Pentatonic"],  "advanced": ["1", "Lydian"] },
+    "Lydian":                { "basic": ["1", "Major Pentatonic"] },
+    "Mixolydian":            { "basic": ["1", "Major Pentatonic"],  "advanced": ["1", "Bebop Dominant"] },
+    "Lydian Dominant":       { "basic": ["1", "Major Pentatonic"] },
+    "Mixolydian b6":         { "basic": ["4", "Minor Pentatonic"],  "advanced": ["1", "Altered"] },
+    "Phrygian Dominant":     { "basic": ["4", "Minor Pentatonic"],  "advanced": ["1", "Altered"] },
+    "Half-Whole Diminished": { "basic": ["1", "Major Pentatonic"],  "advanced": ["1", "Altered"] },
+    "Altered":               { "basic": ["b5", "Major Pentatonic"], "advanced": ["1", "Half-Whole Diminished"] },
+    "Whole Tone":            { "advanced": ["1", "Altered"] },
+    "Dorian":                { "basic": ["1", "Minor Pentatonic"],  "advanced": ["1", "Bebop Dorian"] },
+    "Aeolian":               { "basic": ["1", "Minor Pentatonic"] },
+    "Phrygian":              { "basic": ["1", "Minor Pentatonic"],  "advanced": ["1", "Dorian b2"] },
+    "Melodic Minor":         { "basic": ["1", "Minor Pentatonic"],  "advanced": ["1", "Harmonic Minor"] },
+    "Locrian":               { "basic": ["b6", "Major Pentatonic"], "advanced": ["1", "Locrian natural 2"] },
+    "Locrian natural 2":     { "basic": ["b6", "Major Pentatonic"] },
+    "Whole-Half Diminished": { "advanced": ["b2", "Harmonic Minor"] },
+    "Diatonic Diminished": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] },
+    "Diatonic Diminished bIII": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] },
+    "Diatonic Diminished bIII optional": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] },
+    "Diatonic Diminished bVI": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] },
+    "Diatonic Diminished I": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] },
+    "Diatonic Diminished I optional": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] },
+    "Diatonic Diminished V": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] },
+    "Diatonic Diminished #IV": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] },
+    "Diatonic Diminished #IV optional": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] }
+  },
+  "quality_ladders": {
+    "m": { "Phrygian": { "advanced": ["1", "Dorian"] } },
+    "m7": { "Phrygian": { "advanced": ["1", "Dorian"] } },
+    "m6": { "Melodic Minor": { "advanced": ["1", "Melodic Minor"] } }
+  },
+  "slash_chords": [
+    { "quality": "Maj7", "bass": "7", "as": "7sus4b9", "note": "a major 7th chord over the note a half step below (DbMaj7/C) is a sus b9 chord on the bass" },
+    { "quality": "m7", "bass": "4", "as": "7sus4", "note": "a minor 7th chord over the note a 4th above its root (Am7/D) is a 9sus4 chord on the bass" }
+  ]
+}

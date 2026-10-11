@@ -53,7 +53,7 @@
 </template>
 
 <script setup lang="ts">
-import type { ChangesLine } from '~~/engine'
+import type { ChangesLine } from '@chord-scale-maker/engine'
 import { drawChangesLine } from '~/utils/changesDrawing'
 
 /** one line of the Changes sheet: slashes (or guide tones), the chords over them, guide tone labels and the analysis under them */

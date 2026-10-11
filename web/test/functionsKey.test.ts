@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { FUNCTIONS_KEYS, functionsKeyFrom, functionsKeyLabel, keyedLocation } from '~/utils/functionsKey'
-import { CATALOGUE_KEYS, functionsTable, parseKey } from '~~/engine'
+import { CATALOGUE_KEYS, functionsTable, parseKey } from '@chord-scale-maker/engine'
 
 describe('the functions page key', () => {
   it('offers every Transpose major, then the minors as their key signatures spell them', () => {

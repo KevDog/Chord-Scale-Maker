@@ -1,10 +1,10 @@
-import { chartHeading, isSyncCopy, parseChart } from '~~/engine'
+import { chartHeading, isSyncCopy, parseChart } from '@chord-scale-maker/engine'
 
 /** subtitle: the heading line (subtitle or style, key, form), as on the sheet */
 export type LibraryChart = Readonly<{ slug: string; title: string; subtitle: string; composer: string; text: string }>
 
-/** build-time: every chart in the repo's charts/ folder, as raw text */
-const files = import.meta.glob<string>('../../../charts/*.txt', { query: '?raw', import: 'default', eager: true })
+/** build-time: every chart in the engine package's charts/ folder (the #charts alias, nuxt.config.ts), as raw text */
+const files = import.meta.glob<string>('#charts/*.txt', { query: '?raw', import: 'default', eager: true })
 
 export function toLibrary(entries: Readonly<Record<string, string>>): LibraryChart[] {
   return Object.entries(entries)

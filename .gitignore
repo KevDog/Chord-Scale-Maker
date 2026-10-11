@@ -4,7 +4,7 @@ output/
 .venv/
 __pycache__/
 .claude/settings.local.json
-web/node_modules/
+node_modules/
 web/.nuxt/
 web/.output/
 web/.data/

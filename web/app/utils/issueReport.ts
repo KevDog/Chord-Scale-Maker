@@ -1,5 +1,5 @@
 import type { InjectionKey } from 'vue'
-import { glyphs, type InstrumentName, INSTRUMENTS } from '~~/engine'
+import { glyphs, type InstrumentName, INSTRUMENTS } from '@chord-scale-maker/engine'
 import { instrumentOption } from '~/utils/instrumentChoices'
 
 /** "Report issue" on the Changes sheet's reason note (docs/superpowers/specs/2026-10-10-functions-help-page-design.md §1.4) */

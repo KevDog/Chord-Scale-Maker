@@ -1,4 +1,4 @@
-import { LIMITS } from '~~/engine'
+import { LIMITS } from '@chord-scale-maker/engine'
 
 /**
  * Charts as files: Download saves the chart text as a .txt (a Blob with an object URL, so no CSP change), and Open

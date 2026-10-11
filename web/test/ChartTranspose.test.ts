@@ -2,7 +2,7 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import { nextTick } from 'vue'
 import ChartTranspose from '~/components/ChartTranspose.vue'
-import { parseChart, serializeChart } from '~~/engine'
+import { parseChart, serializeChart } from '@chord-scale-maker/engine'
 
 const settle = async () => {
   for (let i = 0; i < 3; i++) await nextTick()

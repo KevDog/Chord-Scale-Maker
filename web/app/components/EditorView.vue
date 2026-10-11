@@ -88,7 +88,7 @@
             v-model:scale-names="prefs.scaleNames.value"
             v-model:guide-line="prefs.guideLine.value"
           >
-            <!-- Level: how sophisticated each chord's scale is (engine/levels.ts); a dropdown in the toolbar -->
+            <!-- Level: how sophisticated each chord's scale is (engine/src/levels.ts); a dropdown in the toolbar -->
             <template v-if="levelsOn && !editor.fatal.value" #level>
               <UiListbox :model-value="scaleLevel.level.value" class="w-32" @update:model-value="(v) => v && setLevel(v)">
                 <template #selected="{ value }"><UiListboxLabel>{{ levelLabel(value) }}</UiListboxLabel></template>
@@ -182,7 +182,7 @@ import {
   serializeChart,
   setMeta,
   type ShareView,
-} from '~~/engine'
+} from '@chord-scale-maker/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 import { firstSheet, type SheetKind } from '~/utils/sheets'
 

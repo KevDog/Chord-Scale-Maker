@@ -5,6 +5,12 @@ picked up.
 
 ## Next
 
+### A separate engine repo (conditional)
+
+The engine is its own workspace package. Moving it to its own repo, published to npm, waits for a trigger: something
+other than this site needs it, people want to work on the analysis without the app, or its releases should follow
+their own cadence ([spec](superpowers/specs/2026-10-11-engine-ui-split-design.md), Phase 2; plan Part B).
+
 ### Architecture-audit leftovers (2026-10-09)
 
 A multi-agent audit after the `v2-changes` tag found 13 items; the behavior-preserving refactors landed as PRs #69–78

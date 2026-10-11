@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from 'vitest'
 import { effectScope, nextTick } from 'vue'
 import { linkPreferences, usePreferences } from '~/composables/usePreferences'
-import type { ShareView } from '~~/engine'
+import type { ShareView } from '@chord-scale-maker/engine'
 
 function prefs() {
   const scope = effectScope()

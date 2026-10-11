@@ -17,7 +17,7 @@
 </template>
 
 <script setup lang="ts">
-import type { Diagnostic } from '~~/engine'
+import type { Diagnostic } from '@chord-scale-maker/engine'
 
 defineProps<{ text: string; diagnostics: readonly Diagnostic[] }>()
 const emit = defineEmits<{ 'update:text': [text: string] }>()

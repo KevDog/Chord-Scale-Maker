@@ -1,4 +1,4 @@
-import { chartMeta, LIMITS, MODES, parseChart } from '~~/engine'
+import { chartMeta, LIMITS, MODES, parseChart } from '@chord-scale-maker/engine'
 import { practiceKey } from '~/utils/practiceKey'
 
 /**

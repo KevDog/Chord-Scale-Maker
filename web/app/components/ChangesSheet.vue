@@ -24,7 +24,7 @@
 </template>
 
 <script setup lang="ts">
-import { buildChanges, changesLinesPerPage, type ChartDoc, chunk, type GuideLine, pageSubtitle, type Part } from '~~/engine'
+import { buildChanges, changesLinesPerPage, type ChartDoc, chunk, type GuideLine, pageSubtitle, type Part } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones) */
 const props = defineProps<{

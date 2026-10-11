@@ -42,12 +42,12 @@
 
 <script setup lang="ts">
 import { Popover as HPopover, PopoverButton as HPopoverButton, PopoverPanel as HPopoverPanel } from '@headlessui/vue'
-import { type ChangesChord, ruleParts } from '~~/engine'
+import { type ChangesChord, ruleParts } from '@chord-scale-maker/engine'
 import { panelShift } from '~/utils/notePlacement'
 import { ISSUE_CONTEXT, ISSUE_TEXT_KEY, issueText, issueTitle, issueUrl } from '~/utils/issueReport'
 
 /**
- * why the analysis gave a chord its function and scale (engine/changes.ts reason, rule, heardIn, keyFrom), opened by a
+ * why the analysis gave a chord its function and scale (engine/src/changes.ts reason, rule, heardIn, keyFrom), opened by a
  * click or tap; Escape or a click outside closes it. A key the author set, by an @key or the function's own key, is
  * starred, as in the grid's Function dropdown. The rule id links to its row on /functions. chord is the symbol as
  * drawn for the part (written), concert the chart's own.

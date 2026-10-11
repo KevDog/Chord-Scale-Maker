@@ -9,12 +9,16 @@ formulas, so spellings are always correct. A practice mode highlights a chosen s
 The web app lives in `web/` (Nuxt 4, Tailwind CSS, VexFlow). Pages are prerendered and served by Vercel; the only
 server code is the contact form.
 
+The engine — chart parsing, harmonic analysis, scales and spelling, guide tones, the sheet models — is its own
+package, `@chord-scale-maker/engine` in `engine/`, with the chart library, `chord_scales.json`, its fixtures and the
+analyser. It is pure TypeScript with no dependencies; the app imports it by name.
+
 > The original Python CLI, `jazz_scales.py`, which typeset the sheets with LilyPond, was retired after
 > `v1-launch`. `git checkout v1-launch` brings it back.
 
 ## Charts
 
-Charts live in `charts/`, one plain-text file each, always in **concert pitch**. Every file there appears in the
+Charts live in `engine/charts/`, one plain-text file each, always in **concert pitch**. Every file there appears in the
 library on the next build (or at once in `make dev`).
 
 ```
@@ -51,7 +55,7 @@ Chord symbols: `Cm7`, `C-7`, `Cmi7`, `Bbm7`, `Am7b5`, `D7#5`, `G7#9b13`, `EbMaj7
 `D7/F#`, `Cm6/Eb`. Minor chords are shown with an en dash (`C–7`).
 
 Scales are written `<root> <name>`, such as `Bb Dorian`, `D Half-Whole` or `G Altered`: 26 scales plus aliases, in
-`web/engine/scales.ts`. Each chord quality's default and alternate scales are in `chord_scales.json`, with
+`engine/src/scales.ts`. Each chord quality's default and alternate scales are in `chord_scales.json`, with
 **outside** options (tension to resolve) marked. A slash chord can take its scales from another chord on its
 bass: `DbMaj7/C` is a sus♭9 chord on C, so it defaults to `C Phrygian` (`slash_chords` in `chord_scales.json`).
 
@@ -62,7 +66,7 @@ The library's scales come from a harmonic analysis of each chart (the rules are 
 reason is saved as the row's comment. To fill in a new chart written with chords only:
 
 ```sh
-cd web && npm run analyse -- ../charts/<tune>.txt --write --save
+cd engine && npm run analyse -- charts/<tune>.txt --write --save
 ```
 
 `--write` fills blank scale cells only; `--force` rewrites every cell the rules reach except rows whose comment
@@ -93,22 +97,22 @@ one that is cancelled within a bar shows a natural.
 ## Developing
 
 ```bash
-make setup     # once: npm ci in web/
+make setup     # once: npm ci at the root (installs both packages: engine/ and web/)
 make dev       # live-reloading dev server at http://localhost:3000
 make preview   # build the production site and serve it locally
-make test      # typecheck and unit tests (vitest)
+make test      # typecheck and unit tests (vitest), both packages
 make lint
 make e2e       # browser tests (Playwright, Chromium) against the production build
-make golden    # rewrite fixtures/golden.json after an intended engine change
+make golden    # rewrite engine/fixtures/golden.json after an intended engine change
 ```
 
-- **Add a scale:** a degree formula in `SCALES` in `web/engine/scales.ts` (`'lydian dominant': ['1 2 3 #4 5 6 b7',
+- **Add a scale:** a degree formula in `SCALES` in `engine/src/scales.ts` (`'lydian dominant': ['1 2 3 #4 5 6 b7',
   'Lydian Dominant']`), pair it with chord qualities in `chord_scales.json`, add tests, then `make golden` and
   review the fixture's diff.
-- **Add an instrument:** `INSTRUMENTS` in `web/engine/instruments.ts`.
-- **Add a chart:** a `.txt` file in `charts/`, then `make golden` (the fixture covers every library chart).
+- **Add an instrument:** `INSTRUMENTS` in `engine/src/instruments.ts`.
+- **Add a chart:** a `.txt` file in `engine/charts/`, then `make golden` (the fixture covers every library chart).
 
-`fixtures/golden.json` freezes the engine's answers over a wide set of scales, chords, start notes and charts. It
+`engine/fixtures/golden.json` freezes the engine's answers over a wide set of scales, chords, start notes and charts. It
 began as the Python engine's answers, and the TypeScript engine reproduces them exactly; any change in behaviour
 now shows up as a diff to review.
 

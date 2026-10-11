@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { cellError, LIMITS } from '~~/engine'
+import { cellError, LIMITS } from '@chord-scale-maker/engine'
 
 /**
  * A grid text cell (Catalyst Input). Values that pass cellError are emitted; others stay visible in

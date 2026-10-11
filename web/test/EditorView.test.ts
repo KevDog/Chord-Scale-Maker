@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 import EditorView from '~/components/EditorView.vue'
 import { CHART_REPORT_KEY } from '~/utils/chartReport'
-import { decodeShare, type ShareView } from '~~/engine'
+import { decodeShare, type ShareView } from '@chord-scale-maker/engine'
 
 const { navigate } = vi.hoisted(() => ({ navigate: vi.fn() }))
 mockNuxtImport('navigateTo', () => navigate)

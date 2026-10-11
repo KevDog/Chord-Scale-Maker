@@ -1,0 +1,22 @@
+{
+  // The build helpers and their tests (build/), outside Nuxt (the app's tsconfigs come from .nuxt/ via tsconfig.json).
+  // Same strictness as Nuxt's generated config, plus Node types for the tests.
+  "compilerOptions": {
+    "target": "ES2023",
+    "lib": ["ES2023"],
+    "module": "ESNext",
+    "moduleResolution": "Bundler",
+    "strict": true,
+    "noUncheckedIndexedAccess": true,
+    "noImplicitOverride": true,
+    "noFallthroughCasesInSwitch": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "verbatimModuleSyntax": true,
+    "skipLibCheck": true,
+    "noEmit": true,
+    "allowImportingTsExtensions": true, // build/check-headers.ts runs directly under node
+    "types": ["node"]
+  },
+  "include": ["build/**/*.ts"]
+}

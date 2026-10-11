@@ -1,4 +1,4 @@
-import { resolveQuality, SCALES, type ScaleOption } from '~~/engine'
+import { resolveQuality, SCALES, type ScaleOption } from '@chord-scale-maker/engine'
 
 /** roots offered by the scale picker, in chromatic order */
 export const PICKER_ROOTS = ['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'A', 'A#', 'Bb', 'B'] as const

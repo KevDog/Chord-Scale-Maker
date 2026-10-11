@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import { chartKeyOf, CONCERT, parseChart, type Row } from '~~/engine'
+import { chartKeyOf, CONCERT, parseChart, type Row } from '@chord-scale-maker/engine'
 import ScaleSheet from '~/components/ScaleSheet.vue'
 
 const rows: Row[] = Array.from({ length: 13 }, (_, i) => ({ section: 'A', bar: String(i + 1), chord: 'Cm7', scale: '' }))

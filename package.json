@@ -1,0 +1,16 @@
+{
+  "name": "chord-scale-maker",
+  "private": true,
+  "workspaces": ["engine", "web"],
+  "scripts": {
+    "test": "npm test --workspaces",
+    "typecheck": "npm run typecheck --workspaces",
+    "lint": "npm run lint --workspaces"
+  },
+  "engines": {
+    "node": "24.x"
+  },
+  "overrides": {
+    "simple-git": "^4.0.2"
+  }
+}

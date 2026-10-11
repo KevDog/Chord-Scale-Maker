@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import ChangesSheet from '~/components/ChangesSheet.vue'
-import { changesLinesPerPage, type ChartDoc, type GuideLine, parseChart } from '~~/engine'
+import { changesLinesPerPage, type ChartDoc, type GuideLine, parseChart } from '@chord-scale-maker/engine'
 
 const doc = parseChart('title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\n').value
 // 64 bars: more lines than any page holds, at 2 or 4 bars a line

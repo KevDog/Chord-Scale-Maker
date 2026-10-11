@@ -225,7 +225,7 @@ import {
   RULES,
   spellings,
   TIERS,
-} from '~~/engine'
+} from '@chord-scale-maker/engine'
 import { FUNCTIONS_KEYS, functionsKeyFrom, functionsKeyLabel, keyedLocation } from '~/utils/functionsKey'
 import { ISSUE_REPO } from '~/utils/issueReport'
 

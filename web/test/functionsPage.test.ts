@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import Functions from '~/pages/functions.vue'
-import { FUNCTION_ERRORS, functionsTable, parseKey, proseGlyphs, RULES } from '~~/engine'
+import { FUNCTION_ERRORS, functionsTable, parseKey, proseGlyphs, RULES } from '@chord-scale-maker/engine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 
 describe('the functions page', () => {

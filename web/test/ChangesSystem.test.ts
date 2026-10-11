@@ -1,7 +1,7 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
 import ChangesSystem from '~/components/ChangesSystem.vue'
-import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter } from '~~/engine'
+import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter } from '@chord-scale-maker/engine'
 
 vi.mock('~/utils/changesDrawing', async (importOriginal) => ({
   ...(await importOriginal<typeof import('~/utils/changesDrawing')>()),

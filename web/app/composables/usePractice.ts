@@ -1,4 +1,4 @@
-import { type Mode, type PracticeSelection, practiceSelectionFrom } from '~~/engine'
+import { type Mode, type PracticeSelection, practiceSelectionFrom } from '@chord-scale-maker/engine'
 import { practiceKey } from '~/utils/practiceKey'
 
 /** a stored selection, if it is one (anything else in storage is ignored) */

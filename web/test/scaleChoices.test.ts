@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { parseScale } from '~~/engine'
+import { parseScale } from '@chord-scale-maker/engine'
 import { PICKER_SCALES, scaleChoices } from '~/utils/scaleChoices'
 
 describe('scaleChoices', () => {
