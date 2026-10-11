@@ -47,9 +47,10 @@
           <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
             <UiSubheading id="grid-heading">Chart</UiSubheading>
             <UiBadge color="zinc" title="The chart is written and edited in concert pitch, whatever the instrument">Concert pitch</UiBadge>
-            <div class="ml-auto flex items-center gap-1">
+            <div class="ml-auto flex flex-wrap items-center justify-end gap-1">
               <UiButton plain :disabled="!chartHistory.canUndo.value" title="Undo (⌘Z)" @click="chartHistory.undo"><ArrowUturnLeftIcon data-slot="icon" />Undo</UiButton>
               <UiButton plain :disabled="!chartHistory.canRedo.value" title="Redo (⇧⌘Z)" @click="chartHistory.redo"><ArrowUturnRightIcon data-slot="icon" />Redo</UiButton>
+              <UiButton v-if="saved || shared" plain :disabled="!unsaved" title="Save in this browser now (edits also save a moment after you stop)" @click="saveNow"><BookmarkIcon data-slot="icon" />Save</UiButton>
               <UiDropdown>
                 <UiDropdownButton plain aria-label="More editing options"><EllipsisHorizontalIcon data-slot="icon" /></UiDropdownButton>
                 <UiDropdownMenu anchor="end">
@@ -355,6 +356,16 @@ const saveText = computed((): string => {
     return props.libraryTitle ? `Your edited version of ${props.libraryTitle}, saved in this browser ${timeText(s.at)}.` : `Saved in this browser ${timeText(s.at)}.`
   return props.saveTarget?.kind === 'library' ? 'Edits are saved in this browser as your version.' : 'Saved in this browser once you start editing.'
 })
+
+/** edits not saved yet: the autosave is waiting, or failed and will try again; a shared chart is never saved */
+const unsaved = computed(() => !editor.fatal.value && (props.shared ? true : ['pending', 'failed'].includes(saved?.status.value.state ?? '')))
+
+/** the Save beside Undo: the autosave's wait skipped; a shared chart kept in My charts */
+function saveNow(): void {
+  if (props.shared) return saveShared()
+  editor.flush()
+  saved?.flush()
+}
 
 /** a copy of the chart as it is now, opened in its place */
 function saveCopy(): void {

@@ -33,6 +33,13 @@ describe('SheetChordEditor', () => {
     localStorage.clear()
   })
 
+  it('keeps the scale and the function open, with nothing to fold', async () => {
+    await mount(target(3))
+    await settle()
+    expect(document.querySelector('[role=dialog] [aria-expanded]')).toBeNull()
+    expect(document.querySelector('[role=dialog] [role=radiogroup][aria-label="Scale"]')).not.toBeNull()
+  })
+
   it('is closed with no chord', async () => {
     await mount(null)
     expect(dialog()).toBeNull()

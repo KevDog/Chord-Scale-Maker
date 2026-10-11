@@ -424,3 +424,57 @@ describe('EditorView scale level', () => {
     expect(localStorage.getItem('csm-level:mine:abc123abc123')).toBe(STORED)
   })
 })
+
+describe('EditorView Save', () => {
+  afterEach(() => {
+    localStorage.clear()
+    navigate.mockClear()
+  })
+  const ID = 'abc123abc123'
+  const mountMine = () => {
+    saveChart({ id: ID, text: TEXT, kind: 'new' })
+    return mountSuspended(EditorView, {
+      props: { initialText: TEXT, practiceKey: `mine:${ID}`, saveTarget: { kind: 'mine', id: ID } },
+      global: { stubs: { ScaleSheet: true, ChangesSheet: true } },
+      attachTo: document.body,
+    })
+  }
+  const saveButton = (w: Wrapper) => buttonCalled(w, 'Save')
+
+  it('saves an edit at once from beside Undo, and rests while nothing is unsaved', async () => {
+    const w = await mountMine()
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await nextTick()
+    expect(saveButton(w)?.attributes('disabled')).toBeDefined()
+    await w.find('[role=gridcell]').trigger('keydown', { key: 'D' })
+    await nextTick()
+    const input = w.find('input[aria-label=Chord]')
+    await input.setValue('Dm7')
+    await input.trigger('keydown', { key: 'Enter' })
+    await nextTick()
+    expect(loadChart(ID)?.text).not.toContain('Dm7') // the autosave waits for a pause
+    expect(saveButton(w)?.attributes('disabled')).toBeUndefined()
+    await saveButton(w)?.trigger('click')
+    await nextTick()
+    expect(loadChart(ID)?.text).toContain('Dm7')
+    expect(saveButton(w)?.attributes('disabled')).toBeDefined()
+    w.unmount()
+  })
+
+  it('keeps a shared chart in My charts', async () => {
+    const w = await mount({ sheet: 'changes' })
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await nextTick()
+    await saveButton(w)?.trigger('click')
+    expect(navigate).toHaveBeenCalledWith({ path: '/song', query: { mine: expect.any(String) } })
+    w.unmount()
+  })
+
+  it('is not offered where nothing saves', async () => {
+    const w = await mount()
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await nextTick()
+    expect(saveButton(w)).toBeUndefined()
+    w.unmount()
+  })
+})
