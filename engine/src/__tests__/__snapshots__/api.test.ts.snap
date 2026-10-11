@@ -34,6 +34,7 @@ exports[`exports the same names 1`] = `
   "accFor",
   "accText",
   "accidentalsInBar",
+  "barView",
   "baseQuality",
   "beatsPerBar",
   "buildChanges",
