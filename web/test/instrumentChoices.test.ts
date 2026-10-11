@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { INSTRUMENTS } from '~~/engine'
+import { INSTRUMENTS } from '@chord-scale-maker/engine'
 import { guideRanges, INSTRUMENT_GROUPS, instrumentOption } from '~/utils/instrumentChoices'
 
 describe('instrumentChoices', () => {

@@ -1,4 +1,4 @@
-import { type StaffModel, toVexKey } from '~~/engine'
+import { type StaffModel, toVexKey } from '@chord-scale-maker/engine'
 
 export type VexFlowModule = typeof import('vexflow/bravura')
 type Context = ReturnType<InstanceType<VexFlowModule['Renderer']>['getContext']>

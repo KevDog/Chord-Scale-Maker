@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter } from '~~/engine'
+import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter } from '@chord-scale-maker/engine'
 import { beatXs, guideAria, restatedAccidental, voicedBand, voltaShift } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: string): ChangesChord => ({

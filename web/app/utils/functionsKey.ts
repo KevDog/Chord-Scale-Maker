@@ -1,4 +1,4 @@
-import { keyLabel, TRANSPOSE_KEYS } from '~~/engine'
+import { keyLabel, TRANSPOSE_KEYS } from '@chord-scale-maker/engine'
 
 /**
  * the /functions page's key picker (docs/superpowers/specs/2026-10-10-functions-help-page-design.md §3): every

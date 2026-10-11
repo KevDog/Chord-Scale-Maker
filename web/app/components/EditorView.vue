@@ -182,7 +182,7 @@ import {
   serializeChart,
   setMeta,
   type ShareView,
-} from '~~/engine'
+} from '@chord-scale-maker/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 import { firstSheet, type SheetKind } from '~/utils/sheets'
 

@@ -42,7 +42,7 @@
 
 <script setup lang="ts">
 import { Popover as HPopover, PopoverButton as HPopoverButton, PopoverPanel as HPopoverPanel } from '@headlessui/vue'
-import { type ChangesChord, ruleParts } from '~~/engine'
+import { type ChangesChord, ruleParts } from '@chord-scale-maker/engine'
 import { panelShift } from '~/utils/notePlacement'
 import { ISSUE_CONTEXT, ISSUE_TEXT_KEY, issueText, issueTitle, issueUrl } from '~/utils/issueReport'
 

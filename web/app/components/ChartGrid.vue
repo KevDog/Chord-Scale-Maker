@@ -96,7 +96,7 @@
 
 <script setup lang="ts">
 import { KeyIcon, PlusIcon, QuestionMarkCircleIcon, TrashIcon } from '@heroicons/vue/16/solid'
-import { type ChartDoc, chartMeta, type FunctionChoice, functionChoices, insertKeyChange, insertRowAfter, isValidKey, keyLabel, LIMITS, type MetaKey, removeLine, type RowField, type RowNote, rowNotes, setKeyLine, setMeta, setRowChord, setRowField } from '~~/engine'
+import { type ChartDoc, chartMeta, type FunctionChoice, functionChoices, insertKeyChange, insertRowAfter, isValidKey, keyLabel, LIMITS, type MetaKey, removeLine, type RowField, type RowNote, rowNotes, setKeyLine, setMeta, setRowChord, setRowField } from '@chord-scale-maker/engine'
 
 const props = defineProps<{ doc: ChartDoc }>()
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc] }>()

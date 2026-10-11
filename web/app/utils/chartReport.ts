@@ -1,4 +1,4 @@
-import type { GuideLine } from '~~/engine'
+import type { GuideLine } from '@chord-scale-maker/engine'
 
 export const CHART_REPORT_KEY = 'csm-chart-report'
 /** guides: the Changes sheet's guide tone line, as guidesText gives it */

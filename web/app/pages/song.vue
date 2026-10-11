@@ -28,7 +28,7 @@
 </template>
 
 <script setup lang="ts">
-import { decodeShare, type ShareView } from '~~/engine'
+import { decodeShare, type ShareView } from '@chord-scale-maker/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 
 /**

@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { ArrowsUpDownIcon } from '@heroicons/vue/16/solid'
-import { type ChartDoc, chartMeta, isValidKey, keyLabel, noteText, setMeta, TRANSPOSE_KEYS, transposeChart } from '~~/engine'
+import { type ChartDoc, chartMeta, isValidKey, keyLabel, noteText, setMeta, TRANSPOSE_KEYS, transposeChart } from '@chord-scale-maker/engine'
 
 /**
  * "Transpose…": rewrites the chart in another concert key (engine/transpose.ts).

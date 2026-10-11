@@ -29,6 +29,8 @@ export default defineNuxtConfig({
   devtools: { enabled: false },
   modules: ['@nuxt/eslint'],
   css: ['~/assets/css/main.css'],
+  // temporary (engine/UI split, Task 2): the engine's package name, until the engine moves to its own package
+  alias: { '@chord-scale-maker/engine': fileURLToPath(new URL('./engine', import.meta.url)) },
   app: {
     head: {
       htmlAttrs: { lang: 'en' },

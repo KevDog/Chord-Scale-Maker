@@ -1,4 +1,4 @@
-import { type InstrumentName, INSTRUMENTS } from '~~/engine'
+import { type InstrumentName, INSTRUMENTS } from '@chord-scale-maker/engine'
 
 export type InstrumentGroup = Readonly<{ label: string; instruments: readonly InstrumentName[] }>
 

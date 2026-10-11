@@ -33,7 +33,7 @@
 </template>
 
 <script setup lang="ts">
-import { compareKeys, type Mode, noteText, type PracticeBox, type PracticeSelection, type Preset, PRESET_LABELS, PRESETS } from '~~/engine'
+import { compareKeys, type Mode, noteText, type PracticeBox, type PracticeSelection, type Preset, PRESET_LABELS, PRESETS } from '@chord-scale-maker/engine'
 
 /**
  * the practice controls: per-chord presets (From root) or All (From X), a box per spelled interval or pitch in the

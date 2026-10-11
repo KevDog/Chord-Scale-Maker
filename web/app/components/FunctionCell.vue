@@ -13,7 +13,7 @@
 </template>
 
 <script setup lang="ts">
-import { type FunctionChoice, sameFunction } from '~~/engine'
+import { type FunctionChoice, sameFunction } from '@chord-scale-maker/engine'
 
 /**
  * A row's function: Auto (the analyser's reading, shown as its numeral), or one of the functions that fit the chord in

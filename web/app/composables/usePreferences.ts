@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import { type GuideLine, type InstrumentName, isInstrumentName, type ShareView } from '~~/engine'
+import { type GuideLine, type InstrumentName, isInstrumentName, type ShareView } from '@chord-scale-maker/engine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 
 /** a ref kept in this browser's storage; a stored value that doesn't parse falls back */

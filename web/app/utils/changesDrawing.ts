@@ -1,4 +1,4 @@
-import { accText, type ChangesBar, type ChangesLine, type GuideNote, type Pitched, signatureAccidentals, toVexKey } from '~~/engine'
+import { accText, type ChangesBar, type ChangesLine, type GuideNote, type Pitched, signatureAccidentals, toVexKey } from '@chord-scale-maker/engine'
 import { BAR_UNITS, cropBand, fitSvg, headCentre, signatureLead, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
 
 /**

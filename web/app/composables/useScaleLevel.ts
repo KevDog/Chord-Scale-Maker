@@ -1,4 +1,4 @@
-import { isScaleLevel, type ScaleLevel } from '~~/engine'
+import { isScaleLevel, type ScaleLevel } from '@chord-scale-maker/engine'
 
 const newSeed = (): number => crypto.getRandomValues(new Uint32Array(1))[0] ?? 1
 

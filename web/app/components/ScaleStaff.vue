@@ -25,7 +25,7 @@
 </template>
 
 <script setup lang="ts">
-import { glyphs, type StaffModel } from '~~/engine'
+import { glyphs, type StaffModel } from '@chord-scale-maker/engine'
 
 /** intervals: label each note against the chord root (b9, #11…) */
 const props = defineProps<{ staff: StaffModel; clef: 'treble' | 'bass'; intervals?: boolean }>()

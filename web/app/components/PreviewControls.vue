@@ -83,7 +83,7 @@
 </template>
 
 <script setup lang="ts">
-import { type GuideLine, INSTRUMENTS, type InstrumentName, type Mode, noteText, partFor } from '~~/engine'
+import { type GuideLine, INSTRUMENTS, type InstrumentName, type Mode, noteText, partFor } from '@chord-scale-maker/engine'
 import type { SheetKind } from '~/utils/sheets'
 
 /** the preview toolbar, in labelled groups: Work on (sheet), Instrument, #level, Show (on the Changes: Analysis, Guide Tones), Transposition (+ #transpose), #display */

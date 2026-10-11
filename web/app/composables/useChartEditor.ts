@@ -8,7 +8,7 @@ import {
   isFatal,
   parseChart,
   serializeChart,
-} from '~~/engine'
+} from '@chord-scale-maker/engine'
 
 export const TEXT_DEBOUNCE_MS = 150
 

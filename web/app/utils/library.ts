@@ -1,4 +1,4 @@
-import { chartHeading, isSyncCopy, parseChart } from '~~/engine'
+import { chartHeading, isSyncCopy, parseChart } from '@chord-scale-maker/engine'
 
 /** subtitle: the heading line (subtitle or style, key, form), as on the sheet */
 export type LibraryChart = Readonly<{ slug: string; title: string; subtitle: string; composer: string; text: string }>

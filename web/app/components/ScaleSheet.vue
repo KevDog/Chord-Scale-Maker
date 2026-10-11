@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { buildSheet, type Key, type ModeChoice, type Part, pageSubtitle, type PracticeSelection, type Row } from '~~/engine'
+import { buildSheet, type Key, type ModeChoice, type Part, pageSubtitle, type PracticeSelection, type Row } from '@chord-scale-maker/engine'
 
 const props = defineProps<{
   rows: readonly Row[]

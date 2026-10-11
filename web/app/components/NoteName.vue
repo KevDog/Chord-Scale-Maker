@@ -3,7 +3,7 @@
 </template>
 
 <script setup lang="ts">
-import { LETTERS, type Spelled } from '~~/engine'
+import { LETTERS, type Spelled } from '@chord-scale-maker/engine'
 
 const props = defineProps<{ note: Spelled }>()
 const accidental = computed(() => (props.note.acc > 0 ? '♯' : '♭').repeat(Math.abs(props.note.acc)))
