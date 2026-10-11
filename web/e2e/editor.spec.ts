@@ -30,6 +30,30 @@ test('grid edits update the text at once', async ({ page }) => {
   await expect(scale.locator('option', { hasText: 'B Major Pentatonic' })).toHaveCount(1)
 })
 
+test('a new chart starts in C, the key of its chords', async ({ page }) => {
+  await expect(page.getByLabel('Chart text')).toHaveValue(/^key: C$/m)
+})
+
+test('⌘Z undoes an edit and ⇧⌘Z redoes it, wherever it was made', async ({ page }) => {
+  const text = page.getByLabel('Chart text')
+  await page.getByRole('button', { name: 'Delete row 1' }).click() // a button: the browser's own undo can't bring it back
+  await expect(text).not.toHaveValue(/Dm7/)
+  await page.getByLabel('chord for row 1').press('ControlOrMeta+z')
+  await expect(text).toHaveValue(/A \| 1 \| Dm7/)
+  await expect(page.getByLabel('chord for row 1')).toHaveValue('Dm7')
+  await text.press('ControlOrMeta+Shift+z')
+  await expect(text).not.toHaveValue(/Dm7/)
+  await expect(page.getByLabel('chord for row 1')).toHaveValue('G7')
+})
+
+test('on a phone the page never scrolls sideways', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  const width = () => page.evaluate(() => document.documentElement.scrollWidth)
+  await expect.poll(width).toBeLessThanOrEqual(390) // the Scales sheet, editor open
+  await chooseSheet(page, 'Changes') // more controls in the toolbar
+  await expect.poll(width).toBeLessThanOrEqual(390)
+})
+
 test('a value that would corrupt the text is rejected but stays visible', async ({ page }) => {
   const cell = page.getByLabel('chord for row 1')
   await cell.fill('C|7')
@@ -57,11 +81,11 @@ test('the mode toggle shows one spelling at a time, and Start on only for From',
   await expect(page.getByLabel('Start on')).toHaveCount(0)
   await pickOption(page, 'Where each scale starts', 'From C')
   await expect(staves(page)).toHaveCount(3)
-  await expect(page.locator('section header p').first()).toHaveText('Spelled from C')
+  await expect(page.locator('section header p').first()).toHaveText('C (Spelled from C)')
   await page.getByLabel('Start on').selectOption('Eb')
   await expect(mode).toContainText('From E♭')
   await pickOption(page, 'Where each scale starts', 'From root')
-  await expect(page.locator('section header p').first()).toHaveText('Spelled from the Root')
+  await expect(page.locator('section header p').first()).toHaveText('C (Spelled from the Root)')
 })
 
 test('transposing rewrites the chart in another key', async ({ page }) => {

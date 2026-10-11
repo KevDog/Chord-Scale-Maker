@@ -17,7 +17,8 @@ test('writes the sheet for a transposing instrument and remembers it', async ({ 
 test('Transpose needs the chart key', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves') // has key: Gm
   await expect(page.getByRole('button', { name: /Transpose/ }).first()).toBeEnabled()
-  await page.goto('/song?new=1') // blank chart, no key yet
+  await page.goto('/song?new=1')
+  await page.getByLabel('Chart text').fill('title: T\nA | 1 | Dm7\n') // no key
   await expect(page.getByRole('button', { name: /Transpose/ }).first()).toBeDisabled()
 })
 

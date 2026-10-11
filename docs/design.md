@@ -64,7 +64,7 @@ web/                      # Nuxt app (Vercel root directory); imports @chord-sca
                           # PreviewControls, SheetPages, ScaleSheet, ScaleStaff,
                           # ChangesSheet, ChangesSystem, ChordSymbol, NoteName
     components/ui/        # Catalyst ported to Vue (<UiButton>, <UiListbox>, <UiDialog>, …)
-    composables/          # useChartEditor (editor state), usePreferences, useTheme, useFeature, useMediaQuery,
+    composables/          # useChartEditor (editor state), useChartHistory (undo), usePreferences, useTheme, useFeature, useMediaQuery,
                           # useFocusMode, useSavedChart (auto-save), useOpenChart
     utils/                # library (build-time charts), scaleChoices, instrumentChoices, sheets,
                           # vexflow (loader, scale staves, shared SVG helpers), changesDrawing,
@@ -213,6 +213,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     the canonical form applies only after a grid edit.
   - Grid edits make a new doc (an immutable update), which is serialized back into the text.
   - The text always wins. A grid edit made from a doc older than the typed text is dropped.
+  - **Undo:** ⌘Z and ⇧⌘Z (Ctrl off a Mac) in the grid or the text step through the text's history (`useChartHistory`
+    over the engine's pure `history.ts`). A state is recorded each time the doc changes: a grid edit or a
+    transposition at once, typing after the parse pause, so a burst of keystrokes is one step. It keeps 100 steps.
 - **The grid** shows each `ChartLine` as a row:
   - Data rows are editable cells.
   - `@copy` is a compact directive row, and invalid lines show their error.
@@ -263,7 +266,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     a natural beats an accidental (B, not Cb). `simplifyRoot` decides in C, or when that side would put double
     accidentals in the scale.
   - A chord follows its scale's root, and a slash bass keeps its interval.
-  - Titles stay as typed. To undo, transpose back.
+  - Titles stay as typed. ⌘Z in the editor undoes it.
 - **Focus** (`useFocusMode`) shows the current sheet alone, over the whole page, with its practice highlighting.
   - A dialog (`aria-modal`) holding the preview section itself, so the sheet isn't drawn twice; the toolbar and
     practice panel are hidden, and the page behind doesn't scroll.
@@ -615,6 +618,7 @@ library writes such a repeat out instead.
   - `setText`: debounced re-parse.
   - `setDoc`: a grid edit, written back as canonical text.
   - `flush`: parse any pending typing now. It runs before printing and transposing.
+- **`useChartHistory(editor)`:** undo and redo over the editor's text (§4), with `onKeydown` for ⌘Z and ⇧⌘Z.
   - Immutable updates only. The sheet (the Changes, the default, or Scales) and the mode are page state.
 - **`usePreferences()`:** the instrument, the start note, the Intervals toggle and the Changes sheet's toggles
   (Numerals, Scales, and the guide tone line, Off · From 3rd · From 7th, off until chosen, as `csm-guide-line`), each a `storedRef` saved per browser. A
@@ -759,7 +763,7 @@ Pages are static, and the only server code is the contact function, so the attac
   - the analyser: one test per rule (`analysis.test.ts`, named for the rule, from a real tune), key finding,
     key areas and contexts, and writing back (fill, force, keep, save, rerun, `@copy` conflicts)
 - **App tests (`web/test/`):** `@nuxt/test-utils` (Nuxt runtime, happy-dom) with Vue Test Utils. They cover:
-  - `useChartEditor` sync and debounce
+  - `useChartEditor` sync and debounce, and `useChartHistory` undo
   - library build and search
   - scale choices, `ChartGrid` edits and validation, and the `ScaleCell` dropdown and dialog
   - `ChartTranspose`

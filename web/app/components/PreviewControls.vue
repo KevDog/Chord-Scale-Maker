@@ -1,8 +1,8 @@
 <template>
   <div id="preview-toolbar" class="space-y-4">
-    <!-- labelled groups: the controls wrap on the left, Display pinned top-right (Work on · Instrument · Level · Show (on the Changes: Analysis · Guide Tones) · Transposition · Spell Scale | Display); top-aligned so every label sits on one line -->
-    <div class="flex items-start justify-between gap-x-4 gap-y-3">
-      <div class="flex flex-wrap items-start gap-x-4 gap-y-3">
+    <!-- labelled groups: the controls wrap on the left, Display pinned top-right (on its own line, still right, once the row is too narrow) (Work on · Instrument · Level · Show (on the Changes: Analysis · Guide Tones) · Transposition · Spell Scale | Display); top-aligned so every label sits on one line -->
+    <div class="flex flex-wrap items-start justify-between gap-x-4 gap-y-3">
+      <div class="flex min-w-0 grow basis-80 flex-wrap items-start gap-x-4 gap-y-3">
       <UiField v-if="sheets.length > 1" class="w-36">
         <UiLabel class="pl-3">Work on</UiLabel>
         <!-- a plain wrapper (not data-slot=control) so the label gap matches the other groups -->
@@ -69,7 +69,7 @@
         </div>
       </UiField>
       </div>
-      <UiField class="shrink-0">
+      <UiField class="ml-auto shrink-0">
         <UiLabel class="block pr-3 text-right">Display</UiLabel>
         <div class="flex flex-wrap justify-end gap-2 *:whitespace-nowrap"><slot name="display" /></div>
       </UiField>

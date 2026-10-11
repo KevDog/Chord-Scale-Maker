@@ -1,6 +1,7 @@
 /** what New chart starts from */
 export const STARTER_CHART = `title: Untitled
 subtitle:
+key: C
 
 # section | bar | chord | scale (optional)
 A | 1 | Dm7
