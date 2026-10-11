@@ -3,11 +3,10 @@
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:subagent-driven-development (recommended) or
 > superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
-> **Status: waiting on the user.** D1, D2 and D3 are decided (2026-10-11): **two packages, one repo; Part A is the work;
-> the engine owns `charts/`; `engine/` at the root, `web/` unchanged.** The other decisions are **Assumed (confirm)**; don't start until the user has answered the spec's remaining "Open
-> questions". A step tagged **[Dn]** depends on assumed decision Dn; if the user decides otherwise, change that step
-> before running it. **Part B** runs only when a Phase 2 trigger appears: an API experience, or others using the engine
-> for their own work.
+> **Status: ready.** Every decision in the spec was confirmed by the user on 2026-10-11 (D1: two packages, one
+> repo; D2: the engine owns `charts/`; D3: `engine/` at the root, `web/` unchanged; D4–D13 as proposed). **Part A**
+> is the work. **Part B** runs only when a Phase 2 trigger appears: an API experience, or others using the engine for
+> their own work. The **[Dn]** tags show which decision each step rests on.
 
 **Goal:** make the analysis engine its own npm workspace package, `@chord-scale-maker/engine` in `engine/`, owning its
 code, data and tools, with the Nuxt app in `web/` depending on it by name. No behaviour, URL, security or deploy

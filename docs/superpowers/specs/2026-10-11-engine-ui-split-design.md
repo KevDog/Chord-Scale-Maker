@@ -1,7 +1,7 @@
 # Splitting the engine and the UI: design
 
 Date: 2026-10-11. Status: **draft for review**. Written overnight without the user, so every decision is marked
-**Assumed (confirm)** until the user confirms it. Plan: [2026-10-11-engine-ui-split.md](../plans/2026-10-11-engine-ui-split.md).
+**Assumed (confirm)** until the user confirms it. All decisions confirmed by the user on 2026-10-11. Plan: [2026-10-11-engine-ui-split.md](../plans/2026-10-11-engine-ui-split.md).
 
 The request, in the user's words: "Separating the project into two repos/projects, one for the analysis engine and
 one for the UI. You can plan and spec this one."
@@ -21,18 +21,18 @@ assumed answer.
    chart reaches the site only with an engine release. → **D2**
 4. ~~**Layout.**~~ **Decided (user, 2026-10-11):** a new top-level `engine/` package; `web/` stays where it is, so Vercel's root directory
    doesn't change. → **D3**
-5. **CI check names.** Assumed: keep the jobs `engine` and `e2e`, so the `protect main` ruleset needs no edit; the
+5. ~~**CI check names.**~~ **Decided (user, 2026-10-11):** keep the jobs `engine` and `e2e`, so the `protect main` ruleset needs no edit; the
    `engine` job now runs both packages' lint, typecheck and tests. → **D6**
-6. **Package name.** Assumed: `@chord-scale-maker/engine`, private, version `0.0.0`. Publishing it later needs the
+6. ~~**Package name.**~~ **Decided (user, 2026-10-11):** `@chord-scale-maker/engine`, private, version `0.0.0`. Publishing it later needs the
    npm scope `chord-scale-maker` (a free npm organisation). → **D7**
-7. **Public API.** Assumed: keep `index.ts` exporting everything it does today, and add a snapshot test of the
+7. ~~**Public API.**~~ **Decided (user, 2026-10-11):** keep `index.ts` exporting everything it does today, and add a snapshot test of the
    exported names so any change to the surface shows up in review. → **D8**
-8. **How a separate engine would be published (Phase 2 only).** Assumed: the public npm registry, with trusted
+8. ~~**How a separate engine would be published (Phase 2 only).**~~ **Decided (user, 2026-10-11):** the public npm registry, with trusted
    publishing from GitHub Actions and SemVer from `0.1.0`. → **D9**
-9. **Which repo keeps the history, issues and Vercel link (Phase 2 only).** Assumed: the current repo becomes the
+9. ~~**Which repo keeps the history, issues and Vercel link (Phase 2 only).**~~ **Decided (user, 2026-10-11):** the current repo becomes the
    app repo; the engine repo is a new repo cut with `git filter-repo`. The public repo's history is never
    rewritten. → **D10**
-10. **Dev tools per package.** Assumed: each package declares its own dev tools (TypeScript, Vitest, ESLint) at the
+10. ~~**Dev tools per package.**~~ **Decided (user, 2026-10-11):** each package declares its own dev tools (TypeScript, Vitest, ESLint) at the
     same exact versions, so the engine can leave without changes. → **D13**
 
 ## Summary
@@ -224,16 +224,16 @@ C comes later.
 | D1 | Repo shape | One repo, two npm workspace packages (B). Separate repos (C) only when a Phase 2 trigger appears: an API experience, or others using the engine for their own work. | **Decided (user, 2026-10-11)** | A: lint rules only. C: two repos now. | E4: 44% of code PRs span both; one author; no second consumer. B gives the boundary at no cost to the PR flow and prepares C. |
 | D2 | Owner of `charts/` | The engine package (`engine/charts/`). The app reads them through the package. | **Decided (user, 2026-10-11)** | The app (`web/charts/`), with the engine's tests reading across. A third package, `library`. | The analyser writes them; the fixtures and 15 engine test files read them; "make a chart" is all engine commands. The app only displays them. A third package adds a manifest for no gain. |
 | D3 | Layout | `engine/` at the root, holding `src/` (today's `web/engine/`), `scripts/`, `charts/`, `fixtures/`, `chord_scales.json`. `web/` stays. | **Decided (user, 2026-10-11)** | `packages/engine` + `apps/web`: conventional, but moves Vercel's root directory and every app path. | Smallest diff. Vercel's root directory stays `web`. |
-| D4 | Workspace tool | npm workspaces. | **Assumed (confirm)** | pnpm or Yarn workspaces; Turborepo on top. | The project uses npm; two packages need no task runner; Vercel and Dependabot support npm workspaces. |
-| D5 | What the engine package ships | TypeScript source: `exports` points at `src/index.ts`; no build step. | **Assumed (confirm)** | Build a `dist/` now (as Phase 2 needs). | Vite (Nuxt, Vitest, vite-node) compiles linked workspace sources already; a build step is only needed for publishing. YAGNI. |
-| D6 | CI job names | Keep `engine` and `e2e`. `engine` runs lint, typecheck and test for both packages, then the app's build, header check and audit. | **Assumed (confirm)** | Separate `engine` and `web` jobs, adding `web` to the ruleset (a settings change the user makes). | The ruleset needs no edit; the name `engine` is already a misnomer for a job that builds the app, so nothing new is lost. |
-| D7 | Package name | `@chord-scale-maker/engine`, `private: true`, version `0.0.0`. The app's package keeps its name (`jazz-scales-web`). | **Assumed (confirm)** | `@kevdog/…` (the scope GitHub Packages would require); unscoped `chord-scale-engine`. | Reads as what it is; private now, so the scope costs nothing until Phase 2. Renaming later touches 48 import lines. |
-| D8 | Public API | Keep `index.ts` as it is (no narrowing). Add a snapshot test of the index's runtime export names. | **Assumed (confirm)** | Narrow the index to the 107 names the app uses (E2) now. | No behaviour change in a restructuring PR; the snapshot makes any later change to the surface visible in review, which Phase 2's SemVer needs. Narrowing is a separate, later decision. |
-| D9 | Phase 2 delivery | Public npm, trusted publishing from GitHub Actions, SemVer from `0.1.0`, built with Vite library mode + `tsc` declarations. | **Assumed (confirm)** | Git dependency on tags; GitHub Packages (rejected: token for every install). | Normal installs, `npm audit` and Dependabot coverage; no long-lived token. |
-| D10 | Phase 2 repos | The current repo becomes the app repo and keeps its history, issues, PRs, ruleset and Vercel link. A new engine repo is cut from a fresh clone with `git filter-repo`, keeping the pre-move paths. The public repo's history is never rewritten. | **Assumed (confirm)** | `git subtree split --prefix=engine` (loses all history before the move); making the current repo the engine repo (moves the Vercel link and issues). | filter-repo keeps the engine's whole history, including the Python CLI's; the site keeps everything it is attached to. |
-| D11 | Docs | Stay at the root in Phase 1; `design.md` updated in place. Split only in Phase 2. | **Assumed (confirm)** | Move engine docs into `engine/docs/` now. | Docs PRs skip CI by the `docs/**` rule; moving them now churns links for no gain. |
-| D12 | `data/quotes.json` | Stays where it is, owned by the app. | **Assumed (confirm)** | Move into `web/`. | Not engine data; in Phase 2 the app keeps the current repo, so it never moves. |
-| D13 | Dev tools | Each package declares its own dev tools at the same exact versions (`typescript`, `vitest`, `@types/node`, `eslint`); the engine adds `vite-node` 6.0.0 and `@nuxt/eslint-config` 1.17.0. npm hoists one copy. | **Assumed (confirm)** | Shared tools in the root `devDependencies`. | The engine's manifest stays complete, so it can leave the repo unchanged. Drift risk: see [Risks](#risks). |
+| D4 | Workspace tool | npm workspaces. | **Decided (user, 2026-10-11)** | pnpm or Yarn workspaces; Turborepo on top. | The project uses npm; two packages need no task runner; Vercel and Dependabot support npm workspaces. |
+| D5 | What the engine package ships | TypeScript source: `exports` points at `src/index.ts`; no build step. | **Decided (user, 2026-10-11)** | Build a `dist/` now (as Phase 2 needs). | Vite (Nuxt, Vitest, vite-node) compiles linked workspace sources already; a build step is only needed for publishing. YAGNI. |
+| D6 | CI job names | Keep `engine` and `e2e`. `engine` runs lint, typecheck and test for both packages, then the app's build, header check and audit. | **Decided (user, 2026-10-11)** | Separate `engine` and `web` jobs, adding `web` to the ruleset (a settings change the user makes). | The ruleset needs no edit; the name `engine` is already a misnomer for a job that builds the app, so nothing new is lost. |
+| D7 | Package name | `@chord-scale-maker/engine`, `private: true`, version `0.0.0`. The app's package keeps its name (`jazz-scales-web`). | **Decided (user, 2026-10-11)** | `@kevdog/…` (the scope GitHub Packages would require); unscoped `chord-scale-engine`. | Reads as what it is; private now, so the scope costs nothing until Phase 2. Renaming later touches 48 import lines. |
+| D8 | Public API | Keep `index.ts` as it is (no narrowing). Add a snapshot test of the index's runtime export names. | **Decided (user, 2026-10-11)** | Narrow the index to the 107 names the app uses (E2) now. | No behaviour change in a restructuring PR; the snapshot makes any later change to the surface visible in review, which Phase 2's SemVer needs. Narrowing is a separate, later decision. |
+| D9 | Phase 2 delivery | Public npm, trusted publishing from GitHub Actions, SemVer from `0.1.0`, built with Vite library mode + `tsc` declarations. | **Decided (user, 2026-10-11)** | Git dependency on tags; GitHub Packages (rejected: token for every install). | Normal installs, `npm audit` and Dependabot coverage; no long-lived token. |
+| D10 | Phase 2 repos | The current repo becomes the app repo and keeps its history, issues, PRs, ruleset and Vercel link. A new engine repo is cut from a fresh clone with `git filter-repo`, keeping the pre-move paths. The public repo's history is never rewritten. | **Decided (user, 2026-10-11)** | `git subtree split --prefix=engine` (loses all history before the move); making the current repo the engine repo (moves the Vercel link and issues). | filter-repo keeps the engine's whole history, including the Python CLI's; the site keeps everything it is attached to. |
+| D11 | Docs | Stay at the root in Phase 1; `design.md` updated in place. Split only in Phase 2. | **Decided (user, 2026-10-11)** | Move engine docs into `engine/docs/` now. | Docs PRs skip CI by the `docs/**` rule; moving them now churns links for no gain. |
+| D12 | `data/quotes.json` | Stays where it is, owned by the app. | **Decided (user, 2026-10-11)** | Move into `web/`. | Not engine data; in Phase 2 the app keeps the current repo, so it never moves. |
+| D13 | Dev tools | Each package declares its own dev tools at the same exact versions (`typescript`, `vitest`, `@types/node`, `eslint`); the engine adds `vite-node` 6.0.0 and `@nuxt/eslint-config` 1.17.0. npm hoists one copy. | **Decided (user, 2026-10-11)** | Shared tools in the root `devDependencies`. | The engine's manifest stays complete, so it can leave the repo unchanged. Drift risk: see [Risks](#risks). |
 | D14 | Root commands | The Makefile stays the interface: `make test` and `make lint` cover both packages; `make golden` runs in the engine. | Follows from D1 | — | CLAUDE.md and the habits around it keep working. |
 
 ## Architecture (Phase 1)
