@@ -1,0 +1,344 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Mockup B: bar grid editor</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@400;500;600;700&display=swap" rel="stylesheet">
+<script src="https://cdn.tailwindcss.com/3.4.16"></script>
+<script>
+tailwind.config = { theme: { extend: {
+  fontFamily: { sans: ['Jost', 'ui-sans-serif', 'system-ui'] },
+  colors: {
+    zinc: { 50:'#f3f6fb',100:'#e6ecf5',200:'#d3ddec',300:'#b3c1d6',400:'#8395b1',500:'#5e6f8d',600:'#4a5a75',700:'#34445e',800:'#1f3150',900:'#0f1c30',950:'#08111f' },
+    note: { 50:'#eef3fc',100:'#dce6f8',200:'#bcd0f4',300:'#8fb4f8',400:'#6393ec',500:'#2f6fe0',600:'#2659c2',700:'#1d4aa3',800:'#123e85',900:'#0e2f66' },
+  } } } }
+</script>
+<style>
+  .bar { position: relative; border-left: 2px solid #34445e; padding: 6px 8px 4px; min-height: 64px; }
+  .bar:last-child { border-right: 2px solid #34445e; }
+  .chords { display: flex; gap: 10px; align-items: baseline; }
+  .ch { font-weight: 600; font-size: 17px; color: #08111f; border-radius: 4px; padding: 0 2px; }
+  .an { display: flex; gap: 10px; margin-top: 2px; }
+  .an > span { font-size: 10.5px; line-height: 13px; color: #4a5a75; }
+  .an b { display: block; font-weight: 500; color: #1f3150; font-size: 11.5px; }
+  .guess { text-decoration: underline dotted #d97706; text-underline-offset: 2px; }
+  .co { position: absolute; z-index: 30; width: 22px; height: 22px; border-radius: 999px; background: #e11d48; color: white; font: 700 12px/22px Jost, sans-serif; text-align: center; box-shadow: 0 0 0 2px white; }
+  kbd { font: 500 11px/1 ui-monospace, monospace; border: 1px solid #b3c1d6; border-bottom-width: 2px; border-radius: 4px; padding: 2px 5px; background: white; color: #1f3150; }
+  .key { background: white; border-radius: 6px; box-shadow: 0 1px 0 #8395b1; font-weight: 600; font-size: 15px; height: 40px; display: flex; align-items: center; justify-content: center; color: #08111f; }
+  .key.q { font-size: 13px; }
+  .key.act { background: #123e85; color: white; box-shadow: 0 1px 0 #0e2f66; font-size: 12px; }
+  .pbar { position: relative; border-left: 1.5px solid #34445e; padding: 4px 4px 3px; min-height: 46px; }
+  .pbar:last-child { border-right: 1.5px solid #34445e; }
+  .pch { font-weight: 600; font-size: 14px; color: #08111f; line-height: 18px; }
+  .pan { font-size: 9px; line-height: 11px; color: #4a5a75; }
+</style>
+</head>
+<body class="bg-zinc-100 font-sans text-zinc-950 antialiased">
+<div class="mx-auto max-w-[1720px] px-6 py-8">
+  <header class="mb-6">
+    <p class="text-sm font-semibold uppercase tracking-wide text-note-700">Chord Scale Maker · editor proposal · mockup B (recommended)</p>
+    <h1 class="mt-1 text-3xl font-bold">Bar grid editor: bars as cells, with an inspector</h1>
+    <p class="mt-2 max-w-4xl text-zinc-700">The chart is edited as bars, the way a player reads it: four bars a line, each section on its own line, the
+      way iReal Pro and the Changes sheet both show it. You type chords straight into bars; the bar numbers, the sections and the
+      directives are worked out for you. The selected chord's scale and function sit in an inspector beside the grid on desktop,
+      and in a bottom sheet on phones. The text stays, as a <em>Source</em> tab. Static mockup: Catalyst look, the site's palette; the numbered dots are notes.</p>
+  </header>
+
+  <!-- ======================= DESKTOP ======================= -->
+  <h2 class="mb-3 text-lg font-semibold text-zinc-800">Desktop (1280 px): Edit open on Autumn Leaves, the E7 in bar 23 selected</h2>
+  <div class="flex flex-wrap items-start gap-8">
+  <div class="relative w-[1280px] shrink-0 rounded-2xl bg-white p-8 shadow-sm ring-1 ring-zinc-950/5">
+    <!-- page heading -->
+    <div class="flex items-start justify-between">
+      <div>
+        <h3 class="text-2xl font-semibold">Autumn Leaves</h3>
+        <p class="mt-1 text-sm text-zinc-500">Full Form, Alternate Changes · G minor · AAB — Joseph Kosma</p>
+      </div>
+      <div class="flex items-center gap-2 text-sm">
+        <span class="mr-2 text-zinc-500">Saved in this browser at 1:21 AM</span>
+        <button class="rounded-lg px-2.5 py-1.5 font-semibold text-zinc-700 hover:bg-zinc-100" title="Undo (⌘Z)">↶ Undo</button>
+        <button class="rounded-lg px-2.5 py-1.5 font-semibold text-zinc-400" title="Redo (⇧⌘Z)">↷ Redo</button>
+        <button class="rounded-lg bg-note-800 px-3.5 py-1.5 font-semibold text-white">Done</button>
+      </div>
+    </div>
+
+    <div class="mt-6 rounded-2xl bg-note-100 p-6 ring-1 ring-note-200">
+      <!-- tabs + details strip -->
+      <div class="flex flex-wrap items-end justify-between gap-4">
+        <div class="inline-flex rounded-lg bg-white p-0.5 text-sm font-semibold ring-1 ring-zinc-950/10">
+          <span class="rounded-md bg-note-800 px-3 py-1 text-white">Chart</span>
+          <span class="px-3 py-1 text-zinc-700">Source</span>
+        </div>
+        <div class="flex flex-wrap items-end gap-3 text-sm">
+          <label class="block"><span class="mb-1 block font-medium text-zinc-700">Title</span><span class="block w-56 rounded-lg bg-white px-3 py-1.5 ring-1 ring-zinc-950/10">Autumn Leaves</span></label>
+          <label class="block"><span class="mb-1 block font-medium text-zinc-700">Key</span><span class="flex w-32 justify-between rounded-lg bg-white px-3 py-1.5 ring-1 ring-zinc-950/10">G minor <span class="text-zinc-400">⌄</span></span></label>
+          <label class="block"><span class="mb-1 block font-medium text-zinc-700">Time</span><span class="inline-flex rounded-lg bg-white p-0.5 ring-1 ring-zinc-950/10"><span class="px-2 py-1 text-zinc-500">2/4</span><span class="px-2 py-1 text-zinc-500">3/4</span><span class="rounded-md bg-note-500 px-2 py-1 font-semibold text-white">4/4</span></span></label>
+          <button class="rounded-lg px-2.5 py-1.5 font-semibold text-zinc-700 hover:bg-white/60">Details ▾</button>
+          <button class="rounded-lg bg-white px-2.5 py-1.5 font-semibold text-zinc-700 ring-1 ring-zinc-950/10">⇅ Transpose…</button>
+        </div>
+      </div>
+
+      <div class="mt-5 flex gap-6">
+        <!-- the grid -->
+        <div class="relative min-w-0 flex-1" role="grid" aria-label="Chart, 3 sections, 32 bars">
+          <!-- A1 -->
+          <div class="mb-1 flex items-baseline gap-3">
+            <span class="rounded border border-zinc-500 bg-white px-1.5 text-xs font-semibold text-zinc-700">A1</span>
+            <span class="text-xs italic text-note-800">G minor</span>
+            <span class="text-xs text-zinc-500">bars 1–8</span>
+          </div>
+          <div class="grid grid-cols-4 rounded-md bg-white ring-1 ring-zinc-950/5">
+            <div class="bar"><div class="chords"><span class="ch">C–7</span></div><div class="an"><span><b>ii7/♭III</b>C Dorian</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">F7</span></div><div class="an"><span><b>V7/♭III</b>F Mixo</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">B–7</span><span class="ch">E7</span></div><div class="an"><span><b>ii7/II</b>B Dorian</span><span><b>V7/II</b>E Mixo</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">B♭–7</span><span class="ch">E♭7</span></div><div class="an"><span><b>ii7/♭II</b>B♭ Dorian</span><span><b>V7/♭II</b>E♭ Mixo</span></div></div>
+          </div>
+          <div class="mt-1 grid grid-cols-4 rounded-md bg-white ring-1 ring-zinc-950/5">
+            <div class="bar"><div class="chords"><span class="ch">A–7(♭5)</span></div><div class="an"><span><b>iiø7</b>A Locr</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">D7</span></div><div class="an"><span><b>V7</b>D Phryg Dom</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">G–</span></div><div class="an"><span><b>i</b>G Dorian</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">G–</span></div><div class="an"><span><b>i</b></span></div></div>
+          </div>
+          <!-- A2 copy -->
+          <div class="mt-4 flex items-center gap-3 rounded-md border border-dashed border-note-400 bg-white/60 px-3 py-2 text-sm">
+            <span class="rounded border border-zinc-500 bg-white px-1.5 text-xs font-semibold text-zinc-700">A2</span>
+            <span class="text-zinc-700">repeats <b>A1</b> · bars 9–16</span>
+            <span class="ml-auto flex gap-2">
+              <button class="rounded-md px-2 py-0.5 font-semibold text-note-800 hover:bg-note-50">Show bars</button>
+              <button class="rounded-md px-2 py-0.5 font-semibold text-note-800 hover:bg-note-50">Write out (to change it)</button>
+            </span>
+          </div>
+          <!-- B -->
+          <div class="mt-4 mb-1 flex items-baseline gap-3">
+            <span class="rounded border border-zinc-500 bg-white px-1.5 text-xs font-semibold text-zinc-700">B</span>
+            <span class="text-xs text-zinc-500">bars 17–32</span>
+          </div>
+          <div class="grid grid-cols-4 rounded-md bg-white ring-1 ring-zinc-950/5">
+            <div class="bar"><div class="chords"><span class="ch">A–7(♭5)</span></div><div class="an"><span><b>iiø7</b>A Locr</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">D7</span></div><div class="an"><span><b>V7</b>D Phryg Dom</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">G–</span></div><div class="an"><span><b>i</b>G Dorian</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">G–</span></div><div class="an"><span><b>i</b></span></div></div>
+          </div>
+          <div class="mt-1 grid grid-cols-4 rounded-md bg-white ring-1 ring-zinc-950/5">
+            <div class="bar"><div class="chords"><span class="ch">C–7</span></div><div class="an"><span><b>ii7/♭III</b>C Dorian</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">F7</span></div><div class="an"><span><b>V7/♭III</b>F Mixo</span></div></div>
+            <div class="bar bg-note-50 outline outline-2 outline-note-500 -outline-offset-2"><div class="chords"><span class="ch">B–7</span><span class="ch bg-note-500 text-white">E7</span></div><div class="an"><span><b>ii7/II</b>B Dorian</span><span><b>subV7</b>E Lyd Dom</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">E♭Maj7</span></div><div class="an"><span><b>♭VImaj7</b>E♭ Lyd</span></div></div>
+          </div>
+          <div class="mt-1 grid grid-cols-4 rounded-md bg-white ring-1 ring-zinc-950/5">
+            <div class="bar"><div class="chords"><span class="ch">A–7(♭5)</span></div><div class="an"><span><b>iiø7</b>A Locr</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">D7</span></div><div class="an"><span><b>V7</b>D Phryg Dom</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">G–</span><span class="ch">D7/F♯</span></div><div class="an"><span><b>i</b>G Dorian</span><span><b>V7</b>D Phryg Dom</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">F–7</span><span class="ch">B♭7</span></div><div class="an"><span><b>ii7/♭VI</b>F Dorian</span><span><b>V7/♭VI</b>B♭ Mixo</span></div></div>
+          </div>
+          <div class="mt-1 grid grid-cols-4 rounded-md bg-white ring-1 ring-zinc-950/5">
+            <div class="bar"><div class="chords"><span class="ch">A–7(♭5)</span></div><div class="an"><span><b>iiø7</b>A Locr</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">D7</span></div><div class="an"><span><b>V7</b>D Phryg Dom</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">G–</span></div><div class="an"><span><b>i</b>G Dorian</span></div></div>
+            <div class="bar"><div class="chords"><span class="ch">G7</span></div><div class="an"><span class="guess"><b>V7/iv</b>G Mixo ♭6</span></div></div>
+          </div>
+          <div class="mt-2 flex gap-2 text-sm">
+            <button class="rounded-lg border border-dashed border-zinc-400 px-3 py-1.5 font-semibold text-zinc-600">+ Bar</button>
+            <button class="rounded-lg border border-dashed border-zinc-400 px-3 py-1.5 font-semibold text-zinc-600">+ Section</button>
+            <button class="rounded-lg border border-dashed border-zinc-400 px-3 py-1.5 font-semibold text-zinc-600">Repeat a section…</button>
+            <button class="rounded-lg border border-dashed border-zinc-400 px-3 py-1.5 font-semibold text-zinc-600">Paste bars…</button>
+          </div>
+          <!-- keyboard legend -->
+          <div class="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg bg-white/70 px-3 py-2 text-xs text-zinc-600">
+            <span><kbd>type</kbd> replaces the chord</span>
+            <span><kbd>Space</kbd> next chord in the bar</span>
+            <span><kbd>Tab</kbd> / <kbd>→</kbd> next bar</span>
+            <span><kbd>↑</kbd><kbd>↓</kbd> line above / below</span>
+            <span><kbd>Enter</kbd> edit · confirm</span>
+            <span><kbd>⌫</kbd> clear</span>
+            <span><kbd>%</kbd> same as the bar before</span>
+            <span><kbd>⌘↵</kbd> insert a bar</span>
+            <span><kbd>S</kbd> scale · <kbd>F</kbd> function</span>
+            <span><kbd>⌘Z</kbd> undo</span>
+          </div>
+          <span class="co" style="left:-28px; top:2px">1</span>
+          <span class="co" style="left:-28px; top:62px">2</span>
+          <span class="co" style="left:-28px; top:168px">3</span>
+          <span class="co" style="left:610px; top:330px">4</span>
+          <span class="co" style="left:-28px; top:540px">5</span>
+          <span class="co" style="left:-28px; top:592px">6</span>
+        </div>
+
+        <!-- inspector -->
+        <aside class="relative w-80 shrink-0 space-y-5 rounded-xl bg-white p-4 text-sm ring-1 ring-zinc-950/10" aria-label="Selected chord">
+          <span class="co" style="left:-12px; top:-10px">7</span>
+          <div>
+            <p class="text-xs font-medium text-zinc-500">B · bar 23 · 2nd chord · beats 3–4</p>
+            <div class="mt-1 flex items-center gap-2">
+              <span class="flex-1 rounded-lg px-3 py-1.5 text-lg font-semibold ring-2 ring-note-500">E7</span>
+            </div>
+          </div>
+          <div>
+            <p class="mb-1.5 font-semibold text-zinc-800">Scale</p>
+            <ul class="space-y-0.5" role="radiogroup" aria-label="Scale for E7">
+              <li class="flex items-center gap-2 rounded-md px-2 py-1"><span class="size-3.5 rounded-full ring-1 ring-zinc-400"></span>E Mixolydian <span class="ml-auto rounded bg-zinc-100 px-1.5 text-[11px] text-zinc-600">default</span></li>
+              <li class="flex items-center gap-2 rounded-md bg-note-50 px-2 py-1 ring-1 ring-note-200"><span class="size-3.5 rounded-full bg-note-500 ring-4 ring-inset ring-white outline outline-1 outline-note-500"></span><span><b>E Lydian Dominant</b><span class="block text-[11px] text-zinc-500">1 2 3 ♯4 5 6 ♭7 · the analysis' pick</span></span></li>
+              <li class="flex items-center gap-2 rounded-md px-2 py-1"><span class="size-3.5 rounded-full ring-1 ring-zinc-400"></span>E Bebop Dominant</li>
+              <li class="flex items-center gap-2 rounded-md px-2 py-1"><span class="size-3.5 rounded-full ring-1 ring-zinc-400"></span>E Major Pentatonic</li>
+              <li class="pt-1.5 text-[11px] font-semibold uppercase tracking-wide text-zinc-500">Outside · tension to resolve</li>
+              <li class="flex items-center gap-2 rounded-md px-2 py-1"><span class="size-3.5 rounded-full ring-1 ring-zinc-400"></span>E Altered</li>
+              <li class="flex items-center gap-2 rounded-md px-2 py-1"><span class="size-3.5 rounded-full ring-1 ring-zinc-400"></span>E Half-Whole Diminished</li>
+            </ul>
+            <div class="mt-2 flex items-center gap-2 rounded-lg px-2.5 py-1.5 text-zinc-500 ring-1 ring-zinc-950/10">⌕ <span>Any scale: type “E ph…”</span></div>
+          </div>
+          <div>
+            <p class="mb-1.5 font-semibold text-zinc-800">Function <span class="font-normal text-zinc-500">· what E7 does here</span></p>
+            <ul class="space-y-0.5">
+              <li class="flex items-center gap-2 rounded-md bg-note-50 px-2 py-1 ring-1 ring-note-200"><span class="size-3.5 rounded-full bg-note-500 ring-4 ring-inset ring-white outline outline-1 outline-note-500"></span>Auto: <b>subV7</b> <span class="ml-auto text-zinc-500">→ Lyd Dom</span></li>
+              <li class="flex items-center gap-2 rounded-md px-2 py-1"><span class="size-3.5 rounded-full ring-1 ring-zinc-400"></span>V7/ii <span class="ml-auto text-zinc-500">→ Phryg Dom</span></li>
+              <li class="flex items-center gap-2 rounded-md px-2 py-1"><span class="size-3.5 rounded-full ring-1 ring-zinc-400"></span>V7/II <span class="ml-auto text-zinc-500">→ Mixo</span></li>
+            </ul>
+            <p class="mt-2 rounded-md bg-zinc-50 px-2.5 py-2 text-xs/5 text-zinc-600">Why: a tritone substitute, resolving down a half step to E♭Maj7 · rule <a class="underline">D7</a></p>
+          </div>
+          <div class="border-t border-zinc-950/5 pt-3">
+            <p class="mb-1.5 font-semibold text-zinc-800">Bar 23</p>
+            <div class="flex flex-wrap gap-1.5 text-xs font-semibold">
+              <button class="rounded-md bg-zinc-100 px-2 py-1">+ Bar before</button>
+              <button class="rounded-md bg-zinc-100 px-2 py-1">+ Bar after</button>
+              <button class="rounded-md bg-zinc-100 px-2 py-1">Delete bar</button>
+              <button class="rounded-md bg-zinc-100 px-2 py-1">Key change here</button>
+              <button class="rounded-md bg-zinc-100 px-2 py-1">1st / 2nd ending…</button>
+              <button class="rounded-md bg-zinc-100 px-2 py-1">Segno · Coda · D.S.…</button>
+              <button class="rounded-md bg-zinc-100 px-2 py-1">New section here</button>
+            </div>
+          </div>
+        </aside>
+      </div>
+    </div>
+    <p class="mt-4 text-sm text-zinc-500">Below this box: the toolbar and the live Changes sheet, as today. The selected bar is outlined on the sheet too, and tapping a chord on the sheet selects it here.</p>
+  </div>
+
+  <!-- desktop notes -->
+  <ol class="w-[340px] list-none space-y-3 text-sm text-zinc-700">
+    <li><span class="co !static mr-1 inline-block">1</span> <b>Sections are lines.</b> A section's name and key area head its bars; rename it once (click the chip) instead of in every row. No bar numbers are typed anywhere: they're counted.</li>
+    <li><span class="co !static mr-1 inline-block">2</span> <b>Four bars a line</b>, as on the Changes sheet, so the form reads at a glance; 32 bars fit in one screen with no inner scroll box.</li>
+    <li><span class="co !static mr-1 inline-block">3</span> <b>@copy is a real thing on the grid</b>: “A2 repeats A1”, with Show bars and Write out. Today the grid says “(edit in text)”.</li>
+    <li><span class="co !static mr-1 inline-block">4</span> <b>Selection.</b> One bar outlined, one chord filled. Typing replaces it; Space adds a second chord to the bar (two chords split it 2 + 2, as the chart already means); Tab goes on. Entering a tune is: type, Tab, type, Tab.</li>
+    <li><span class="co !static mr-1 inline-block">5</span> <b>Structure buttons</b> under the grid: add a bar or section, repeat a section (writes <code>@copy</code>), paste a line like <code>| Cm7 | F7 | Bm7 E7 |</code> from iReal, a forum or another chart.</li>
+    <li><span class="co !static mr-1 inline-block">6</span> <b>The keys are shown</b>, not hidden: the whole editor works without a mouse, in grid order (arrows inside the grid, one Tab stop in and out, not eight a row).</li>
+    <li><span class="co !static mr-1 inline-block">7</span> <b>Inspector</b> for the selected chord. Scale as a list you can read (default, inside, outside, any scale by search: no modal with two selects); function with the scale each gives; the analysis' reason; and the bar's actions, labelled, where today there's a key icon. Engine calls already exist: <code>scaleChoices</code>, <code>functionChoices</code>, <code>rowNotes</code>, <code>insertKeyChange</code>.</li>
+    <li class="rounded-lg bg-white p-3 ring-1 ring-zinc-950/5"><b>Errors:</b> a chord the app can't read gets an amber underline and the inspector says so (“Not a chord I know: Cm7#5#9x. Pick a scale for it, or check the spelling: Cm7#5#9?”) right where you typed, not in a list under the text pane.</li>
+  </ol>
+  </div>
+
+  <!-- ======================= PHONE ======================= -->
+  <h2 class="mt-12 mb-3 text-lg font-semibold text-zinc-800">Phone (390 px): the same grid, a chord keyboard, and bottom sheets</h2>
+  <div class="flex flex-wrap items-start gap-10">
+
+    <!-- P1: typing -->
+    <figure>
+    <div class="relative h-[844px] w-[390px] overflow-hidden rounded-[2.5rem] bg-zinc-50 shadow-xl ring-8 ring-zinc-900">
+      <div class="flex items-center justify-between border-b border-zinc-200 bg-white px-4 pt-10 pb-2">
+        <button class="text-sm font-semibold text-note-800">Done</button>
+        <div class="text-center"><p class="text-sm font-semibold">Autumn Leaves</p><p class="text-[11px] text-zinc-500">G minor · 4/4</p></div>
+        <div class="flex gap-3 text-base text-zinc-600"><span>↶</span><span>⋯</span></div>
+      </div>
+      <div class="flex gap-1 bg-white px-4 pb-2 text-xs font-semibold">
+        <span class="rounded-md bg-note-800 px-2.5 py-1 text-white">Chart</span><span class="px-2.5 py-1 text-zinc-600">Sheet</span><span class="px-2.5 py-1 text-zinc-600">Source</span>
+      </div>
+      <div class="space-y-1 px-4 pt-3">
+        <div class="flex items-baseline gap-2"><span class="rounded border border-zinc-500 bg-white px-1 text-[11px] font-semibold">A1</span><span class="text-[11px] italic text-note-800">G minor</span></div>
+        <div class="grid grid-cols-4 rounded bg-white"><div class="pbar"><p class="pch">C–7</p><p class="pan">ii7/♭III</p></div><div class="pbar"><p class="pch">F7</p><p class="pan">V7/♭III</p></div><div class="pbar"><p class="pch">B–7</p><p class="pch">E7</p></div><div class="pbar"><p class="pch">B♭–7</p><p class="pch">E♭7</p></div></div>
+        <div class="grid grid-cols-4 rounded bg-white"><div class="pbar"><p class="pch">A–7(♭5)</p><p class="pan">iiø7</p></div><div class="pbar"><p class="pch">D7</p><p class="pan">V7</p></div><div class="pbar"><p class="pch">G–</p><p class="pan">i</p></div><div class="pbar"><p class="pch">G–</p><p class="pan">i</p></div></div>
+        <div class="rounded border border-dashed border-note-400 bg-white/60 px-2 py-1.5 text-xs"><b>A2</b> repeats A1 · bars 9–16</div>
+        <div class="flex items-baseline gap-2 pt-1"><span class="rounded border border-zinc-500 bg-white px-1 text-[11px] font-semibold">B</span></div>
+        <div class="grid grid-cols-4 rounded bg-white"><div class="pbar"><p class="pch">A–7(♭5)</p><p class="pan">iiø7</p></div><div class="pbar"><p class="pch">D7</p><p class="pan">V7</p></div><div class="pbar"><p class="pch">G–</p><p class="pan">i</p></div><div class="pbar"><p class="pch">G–</p><p class="pan">i</p></div></div>
+        <div class="grid grid-cols-4 rounded bg-white"><div class="pbar bg-note-50 outline outline-2 -outline-offset-2 outline-note-500"><p class="pch"><span class="rounded bg-note-500 px-0.5 text-white">C–7</span><span class="ml-px inline-block h-4 w-px animate-pulse bg-note-800 align-middle"></span></p><p class="pan">ii7/♭III</p></div><div class="pbar"><p class="pch">F7</p><p class="pan">V7/♭III</p></div><div class="pbar"><p class="pch">B–7</p><p class="pch">E7</p></div><div class="pbar"><p class="pch">E♭Maj7</p><p class="pan">♭VImaj7</p></div></div>
+        <div class="grid grid-cols-4 rounded bg-white opacity-60"><div class="pbar"><p class="pch">A–7(♭5)</p></div><div class="pbar"><p class="pch">D7</p></div><div class="pbar"><p class="pch">G–</p><p class="pch">D7/F♯</p></div><div class="pbar"><p class="pch">F–7</p><p class="pch">B♭7</p></div></div>
+      </div>
+      <!-- selection strip + chord keyboard -->
+      <div class="absolute inset-x-0 bottom-0 bg-zinc-200 px-1.5 pt-2 pb-6">
+        <div class="mb-2 flex items-center justify-between px-1.5 text-xs">
+          <span class="font-medium text-zinc-700">B · bar 21 · <b class="text-zinc-950">C–7</b> → C Dorian</span>
+          <span class="rounded bg-white px-1.5 py-0.5 font-semibold text-zinc-600">abc</span>
+        </div>
+        <div class="grid grid-cols-7 gap-1.5">
+          <span class="key">C</span><span class="key">D</span><span class="key">E</span><span class="key">F</span><span class="key">G</span><span class="key">A</span><span class="key">B</span>
+          <span class="key">♭</span><span class="key">♯</span><span class="key q">–7</span><span class="key q">7</span><span class="key q">Maj7</span><span class="key q">/</span><span class="key">⌫</span>
+          <span class="key q">–7♭5</span><span class="key q">°7</span><span class="key q">6</span><span class="key q">sus</span><span class="key q">alt</span><span class="key q">9</span><span class="key q">more</span>
+        </div>
+        <div class="mt-1.5 grid grid-cols-5 gap-1.5">
+          <span class="key act">‹ Bar</span><span class="key act">Scale</span><span class="key act">Function</span><span class="key act">Bar ⋯</span><span class="key act">Bar ›</span>
+        </div>
+      </div>
+      <span class="co" style="left:10px; top:118px">1</span>
+      <span class="co" style="left:120px; top:470px">2</span>
+      <span class="co" style="left:356px; top:532px">3</span>
+    </div>
+    <figcaption class="mt-3 w-[390px] text-sm text-zinc-700"><span class="co !static mr-1 inline-block">1</span> Edit is a full-screen mode with its own top bar: Done, Undo, ⋯ (details, transpose, share). Chart / Sheet / Source tabs replace scrolling between a grid, a text pane and a preview 1,500 px apart. <span class="co !static mx-1 inline-block">2</span> Four bars fit in 358 px (86 px a bar): no sideways scrolling, no scroll box inside the page. <span class="co !static mx-1 inline-block">3</span> A chord keyboard instead of the phone's: roots, accidentals and qualities one tap each (iOS needs three taps for a <code>|</code> and fights capitals); “abc” brings back the system keyboard. Its bottom row moves between bars and opens the sheets.</figcaption>
+    </figure>
+
+    <!-- P2: scale bottom sheet -->
+    <figure>
+    <div class="relative h-[844px] w-[390px] overflow-hidden rounded-[2.5rem] bg-zinc-50 shadow-xl ring-8 ring-zinc-900">
+      <div class="flex items-center justify-between border-b border-zinc-200 bg-white px-4 pt-10 pb-2 opacity-40">
+        <button class="text-sm font-semibold text-note-800">Done</button><p class="text-sm font-semibold">Autumn Leaves</p><span>⋯</span>
+      </div>
+      <div class="space-y-1 px-4 pt-3 opacity-40">
+        <div class="grid grid-cols-4 rounded bg-white"><div class="pbar"><p class="pch">C–7</p></div><div class="pbar"><p class="pch">F7</p></div><div class="pbar"><p class="pch">B–7</p><p class="pch">E7</p></div><div class="pbar"><p class="pch">E♭Maj7</p></div></div>
+      </div>
+      <div class="absolute inset-0 bg-zinc-950/25"></div>
+      <div class="absolute inset-x-0 bottom-0 rounded-t-2xl bg-white px-4 pt-2 pb-8 shadow-2xl" role="dialog" aria-label="Scale for E7">
+        <div class="mx-auto mb-3 h-1 w-10 rounded-full bg-zinc-300"></div>
+        <div class="flex items-baseline justify-between"><p class="text-base font-semibold">E7 · bar 23</p><span class="text-xs text-zinc-500">B section</span></div>
+        <div class="mt-3 inline-flex rounded-lg bg-zinc-100 p-0.5 text-sm font-semibold"><span class="rounded-md bg-white px-3 py-1 shadow-sm">Scale</span><span class="px-3 py-1 text-zinc-600">Function</span><span class="px-3 py-1 text-zinc-600">Why</span></div>
+        <ul class="mt-3 divide-y divide-zinc-100 text-[15px]">
+          <li class="flex items-center gap-3 py-2.5"><span class="size-4 rounded-full ring-1 ring-zinc-400"></span>E Mixolydian<span class="ml-auto rounded bg-zinc-100 px-1.5 text-xs text-zinc-600">default</span></li>
+          <li class="flex items-center gap-3 py-2.5"><span class="size-4 rounded-full bg-note-500 ring-4 ring-inset ring-white outline outline-1 outline-note-500"></span><span><b>E Lydian Dominant</b><span class="block text-xs text-zinc-500">1 2 3 ♯4 5 6 ♭7 · the analysis' pick</span></span></li>
+          <li class="flex items-center gap-3 py-2.5"><span class="size-4 rounded-full ring-1 ring-zinc-400"></span>E Bebop Dominant</li>
+          <li class="flex items-center gap-3 py-2.5"><span class="size-4 rounded-full ring-1 ring-zinc-400"></span>E Major Pentatonic</li>
+          <li class="pt-3 pb-1 text-xs font-semibold uppercase tracking-wide text-zinc-500">Outside · tension to resolve</li>
+          <li class="flex items-center gap-3 py-2.5"><span class="size-4 rounded-full ring-1 ring-zinc-400"></span>E Altered</li>
+          <li class="flex items-center gap-3 py-2.5"><span class="size-4 rounded-full ring-1 ring-zinc-400"></span>E Half-Whole Diminished</li>
+        </ul>
+        <div class="mt-2 flex items-center gap-2 rounded-lg px-3 py-2.5 text-zinc-500 ring-1 ring-zinc-950/10">⌕ Any scale…</div>
+      </div>
+      <span class="co" style="left:340px; top:440px">4</span>
+    </div>
+    <figcaption class="mt-3 w-[390px] text-sm text-zinc-700"><span class="co !static mr-1 inline-block">4</span> The inspector as a bottom sheet (Headless UI <code>Dialog</code>, focus trapped, swipe or Esc to close): Scale, Function, Why. Rows are 44 px tap targets with the formula shown, where today's native select truncates “D Phrygian D…” and hides the formula on narrow cells.</figcaption>
+    </figure>
+
+    <!-- P3: bar menu -->
+    <figure>
+    <div class="relative h-[844px] w-[390px] overflow-hidden rounded-[2.5rem] bg-zinc-50 shadow-xl ring-8 ring-zinc-900">
+      <div class="flex items-center justify-between border-b border-zinc-200 bg-white px-4 pt-10 pb-2 opacity-40">
+        <button class="text-sm font-semibold text-note-800">Done</button><p class="text-sm font-semibold">Blue Bossa</p><span>⋯</span>
+      </div>
+      <div class="space-y-1 px-4 pt-3">
+        <div class="flex items-baseline gap-2"><span class="rounded border border-zinc-500 bg-white px-1 text-[11px] font-semibold">A</span></div>
+        <div class="grid grid-cols-4 rounded bg-white"><div class="pbar"><p class="pch">C–7</p></div><div class="pbar"><p class="pch">%</p></div><div class="pbar"><p class="pch">F–7</p></div><div class="pbar"><p class="pch">%</p></div></div>
+        <div class="grid grid-cols-4 rounded bg-white"><div class="pbar"><p class="pch">D–7♭5</p></div><div class="pbar"><p class="pch">G7</p></div><div class="pbar"><p class="pch">C–7</p></div><div class="pbar"><p class="pch">%</p></div></div>
+        <div class="flex items-baseline gap-2 pt-1"><span class="rounded border border-zinc-500 bg-white px-1 text-[11px] font-semibold">B</span><span class="text-[11px] italic text-note-800">D♭ major</span></div>
+        <div class="grid grid-cols-4 rounded bg-white"><div class="pbar"><p class="pch">E♭–7</p></div><div class="pbar"><p class="pch">A♭7</p></div><div class="pbar"><p class="pch">D♭Maj7</p></div><div class="pbar"><p class="pch">%</p></div></div>
+        <div class="grid grid-cols-4 rounded bg-white"><div class="pbar"><p class="pch">D–7♭5</p></div><div class="pbar"><p class="pch">G7</p></div><div class="pbar"><p class="pch">C–7</p></div><div class="pbar outline outline-2 -outline-offset-2 outline-note-500 bg-note-50"><p class="pch">D–7♭5</p><p class="pch">G7</p></div></div>
+        <div class="grid grid-cols-4"><div class="pbar flex items-center justify-center rounded border border-dashed border-zinc-400 !border-l-zinc-400 text-xs font-semibold text-zinc-500">+ bar</div></div>
+      </div>
+      <div class="absolute inset-0 top-[360px] bg-zinc-950/25"></div>
+      <div class="absolute inset-x-0 bottom-0 rounded-t-2xl bg-white px-4 pt-2 pb-8 shadow-2xl" role="dialog" aria-label="Bar 16">
+        <div class="mx-auto mb-3 h-1 w-10 rounded-full bg-zinc-300"></div>
+        <p class="text-base font-semibold">Bar 16 <span class="font-normal text-zinc-500">· B section, last bar</span></p>
+        <ul class="mt-2 divide-y divide-zinc-100 text-[15px]">
+          <li class="flex justify-between py-3">Insert a bar before<span class="text-zinc-400">›</span></li>
+          <li class="flex justify-between py-3">Insert a bar after<span class="text-zinc-400">›</span></li>
+          <li class="flex justify-between py-3">Delete this bar <span class="text-xs text-zinc-500">later bars renumber</span></li>
+          <li class="flex justify-between py-3">Key change from here<span class="text-zinc-400">›</span></li>
+          <li class="flex justify-between py-3">Start a new section here<span class="text-zinc-400">›</span></li>
+          <li class="flex justify-between py-3">1st / 2nd ending…<span class="text-zinc-400">›</span></li>
+          <li class="flex justify-between py-3">Segno · Coda · D.S. · Fine…<span class="text-zinc-400">›</span></li>
+        </ul>
+      </div>
+      <span class="co" style="left:340px; top:510px">5</span>
+    </div>
+    <figcaption class="mt-3 w-[390px] text-sm text-zinc-700"><span class="co !static mr-1 inline-block">5</span> Long-press a bar (or “Bar ⋯” on the keyboard, or the context-menu key on desktop) for its actions. Each one is a pure engine edit that renumbers the later bars and moves every <code>@key</code>, <code>@ending</code>, <code>@segno</code>/<code>@coda</code>/<code>@nav</code> and <code>@copy</code> offset that points past it: today that's dozens of hand edits, in rows and in text.</figcaption>
+    </figure>
+  </div>
+</div>
+</body>
+</html>
