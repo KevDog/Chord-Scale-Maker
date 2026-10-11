@@ -291,7 +291,7 @@ for (const [width, bars] of [
 ] as const) {
   test(`vibes, ${bars} bars a line: a line down to G3 draws two ledger lines below the staff, and nothing collides`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 })
-    await writeChart(page, 'title: T\nkey: C\nA | 1 | Bm\nA | 2 | E\nA | 3 | DMaj7\nA | 4 | Gm\nA | 5 | Cm7\nA | 6 | Bb7\nA | 7 | Am7\nA | 8 | G7\n') // from the 3rd: D4 E4 F#4 Bb3 … G3 at the Am7
+    await writeChart(page, 'title: T\nkey: C\nA | 1 | Abm7\nA | 2 | D7\nA | 3 | Ebm7\nA | 4 | Gbm7\nA | 5 | Abm7\nA | 6 | BbMaj7\nA | 7 | Eb7\nA | 8 | Bm7\n') // from the 3rd: Cb4 C4 Db4 Fb4 Cb4 A3 G3 (at the Eb7) A3
     await chooseInstrument(page, 'Vibes')
     await showGuides(page, 'From 3rd')
     await guidesDrawn(page)

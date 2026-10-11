@@ -8,7 +8,7 @@ import type { Candidate, GuideTone, GuideTones } from './voiceLeading'
  * nearer, so that it steps or holds almost everywhere. One chord at a time, except that a run's starting octave looks
  * ahead to the next rest (P). Rule 7, the lines taking different tones, is removed
  * (docs/superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md); instead both lines are built together so
- * that lines that meet go apart (D1–D3, docs/superpowers/specs/2026-10-11-guide-lines-diverge-note.md). Rule numbers
+ * that lines that meet part gently (G1–G3 and D3, docs/superpowers/specs/2026-10-11-guide-lines-diverge-note.md). Rule numbers
  * below are the specs'. Pure; no DOM.
  */
 
@@ -42,23 +42,33 @@ function nearest(cands: readonly Candidate[], to: number, centre: number): Candi
 
 type Pair = readonly [Candidate, Candidate] // line A, line B
 
+/** a move of at most a tritone (6 semitones) is one a line may make because of the other line (G1–G3) */
+const TRITONE = 6
+const within = (c: Candidate | null, at: number): Candidate | null => (c && Math.abs(c.pitch.midi - at) <= TRITONE ? c : null)
+
 /**
- * D1, D2 (docs/superpowers/specs/2026-10-11-guide-lines-diverge-note.md): the lines left a shared pitch `at`; `up` is
- * the line that goes up (the other goes down). Each takes its nearest candidate strictly on its side; with none there,
- * the nearest strictly on the other side that is not its partner's; with none of those either, its partner's. No
- * candidate at all (only in a range narrower than an octave): null, a rest, as elsewhere.
+ * G1–G3 (docs/superpowers/specs/2026-10-11-guide-lines-diverge-note.md, "Next: gentle variant"): the lines left a
+ * shared pitch `at`; `up` is the line that was above before they met (the other was below). G1: if `at` is a guide tone
+ * of this chord, the line below keeps it and the other goes to the chord's other guide tone: its nearest octave above
+ * `at` if within a tritone, else its nearest either way if within a tritone, else (G3) it stays with the keeper. G2:
+ * otherwise the line above takes its nearest candidate strictly above `at`, the other strictly below, each only within
+ * a tritone; a line with none moves as it would alone (rules 2–4), and the lines may coincide again. No candidate at
+ * all (only in a range narrower than an octave): null, a rest, as elsewhere.
  */
-function apart(all: readonly Candidate[], at: number, up: 0 | 1, centre: number): Pair | null {
-  const above = all.filter((c) => c.pitch.midi > at)
-  const below = all.filter((c) => c.pitch.midi < at)
-  const own = (i: 0 | 1): readonly Candidate[] => (i === up ? above : below)
-  const other = (i: 0 | 1): readonly Candidate[] => (i === up ? below : above)
-  const first: 0 | 1 = own(up).length ? up : up ? 0 : 1 // a line with room on its side chooses first
-  const second: 0 | 1 = first ? 0 : 1
-  const x = nearest(own(first), at, centre) ?? nearest(other(first), at, centre)
-  if (!x) return null
-  const y = nearest(own(second), at, centre) ?? nearest(other(second).filter((c) => c.pitch.midi !== x.pitch.midi), at, centre) ?? x
-  return first === 0 ? [x, y] : [y, x]
+function meet(t: GuideTones, range: Range, at: number, up: 0 | 1): Pair | null {
+  const centre = range.centre
+  const all = both(t, range)
+  const keep = all.find((c) => c.pitch.midi === at)
+  const order = (upper: Candidate, lower: Candidate): Pair => (up ? [lower, upper] : [upper, lower])
+  if (keep) {
+    const other = octaves(t, keep.role ? 0 : 1, range).filter((c) => c.pitch.midi !== at)
+    const moved = within(nearest(other.filter((c) => c.pitch.midi > at), at, centre), at) ?? within(nearest(other, at, centre), at) ?? keep
+    return order(moved, keep)
+  }
+  const alone = nearest(all, at, centre)
+  const upper = within(nearest(all.filter((c) => c.pitch.midi > at), at, centre), at) ?? alone
+  const lower = within(nearest(all.filter((c) => c.pitch.midi < at), at, centre), at) ?? alone
+  return upper && lower ? order(upper, lower) : null
 }
 
 type Prev = Readonly<{ tones: GuideTones; block: number | undefined }>
@@ -98,8 +108,9 @@ function place(tones: readonly (GuideTones | null)[], range: Range, blocks: read
 /**
  * lines A and B, one note per chord in written order (rule 9), or null (a rest in both) for a chord without guide
  * tones, which ends the run (rule 6). Each line's run is placed nearest the centre (place) and moves by rules 2–6 on
- * its own, except that lines on one pitch leave it in opposite directions at the next new chord (D1–D3): the line that
- * was above before they met goes up (together since a restart: line B). blocks: as guideToneLine.
+ * its own, except that lines on one pitch part gently at the next new chord (G1–G3, D3): the line that was below before
+ * they met keeps the pitch if the chord has it, or else goes down while the other goes up, never more than a tritone
+ * because of each other (together since a restart: line A was below). blocks: as guideToneLine.
  */
 function guideToneLines(tones: readonly (GuideTones | null)[], range: Range, blocks: readonly number[]): (readonly [LineNote, LineNote] | null)[] {
   const centre = range.centre
@@ -113,10 +124,10 @@ function guideToneLines(tones: readonly (GuideTones | null)[], range: Range, blo
       const keep = (c: Candidate): Candidate => ({ ...c, label: tone(t, c.role).label })
       notes = [keep(prev.notes[0]), keep(prev.notes[1])]
     } else if (t && prev) {
-      const all = both(t, range)
       const [a, b] = prev.notes
-      if (a.pitch.midi === b.pitch.midi) notes = apart(all, a.pitch.midi, up, centre) // D1, D2
+      if (a.pitch.midi === b.pitch.midi) notes = meet(t, range, a.pitch.midi, up) // G1–G3
       else {
+        const all = both(t, range)
         const [x, y] = [nearest(all, a.pitch.midi, centre), nearest(all, b.pitch.midi, centre)] // rules 2–4 (D3)
         if (x && y) notes = [x, y]
       }
@@ -134,7 +145,7 @@ function guideToneLines(tones: readonly (GuideTones | null)[], range: Range, blo
 /**
  * one line, A (from: 'third') or B ('seventh'), one note per chord in written order (rule 9), or null (a rest) for a
  * chord without guide tones, which ends the run (rule 6). Both lines are built together, but only so that lines on one
- * pitch can go apart (guideToneLines); otherwise each moves on its own (rule 7 stays removed,
+ * pitch can part (guideToneLines); otherwise each moves on its own (rule 7 stays removed,
  * docs/superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md). blocks: each chord's block on the sheet
  * (none given: all one); a chord that repeats the previous chord's guide tones, by spelling, in the same block holds
  * the note (rule 5).
