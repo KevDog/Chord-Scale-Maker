@@ -11,13 +11,11 @@ one for the UI. You can plan and spec this one."
 Most consequential first. Each links to its row in [Decisions](#decisions); the spec and the plan follow the
 assumed answer.
 
-1. **Two packages in this repo now, or two GitHub repos now?** Assumed: one repo with two npm workspace packages
-   (`engine/` and `web/`), with a separate engine repo later, when a trigger in [Phase 2](#phase-2-two-repos-conditional)
-   appears. The evidence (44% of recent code PRs change both sides; a one-week-old, single-author project) argues
-   against separate repos today. → **D1**
-2. **What is the split for?** Assumed: a hard boundary and two projects that can each be read, tested and reasoned
-   about alone, with no second consumer of the engine yet. If there is a consumer in view (a CLI, an API, another
-   site, outside contributors to the analysis), Phase 2 moves earlier. → **D1**, **D9**
+1. ~~**Two packages in this repo now, or two GitHub repos now?**~~ **Decided (user, 2026-10-11): two packages for
+   now.** → **D1**
+2. ~~**What is the split for?**~~ **Decided (user, 2026-10-11):** a clear boundary now; two repos later if we want to
+   offer an API experience or let others use the engine for their own work. Those are the Phase 2 triggers. → **D1**,
+   **D9**
 3. **Who owns `charts/`?** Assumed: the engine package. The analyser writes the charts, and the golden and analysis
    fixtures and 15 engine test files read them. The site only displays them. Cost: once there are two repos, a new
    chart reaches the site only with an engine release. → **D2**
@@ -223,7 +221,7 @@ C comes later.
 
 | # | Question | Decision | Status | Alternatives | Why |
 | --- | --- | --- | --- | --- | --- |
-| D1 | Repo shape | One repo, two npm workspace packages (B). Separate repos (C) only when a Phase 2 trigger appears. | **Assumed (confirm)** | A: lint rules only. C: two repos now. | E4: 44% of code PRs span both; one author; no second consumer. B gives the boundary at no cost to the PR flow and prepares C. |
+| D1 | Repo shape | One repo, two npm workspace packages (B). Separate repos (C) only when a Phase 2 trigger appears: an API experience, or others using the engine for their own work. | **Decided (user, 2026-10-11)** | A: lint rules only. C: two repos now. | E4: 44% of code PRs span both; one author; no second consumer. B gives the boundary at no cost to the PR flow and prepares C. |
 | D2 | Owner of `charts/` | The engine package (`engine/charts/`). The app reads them through the package. | **Assumed (confirm)** | The app (`web/charts/`), with the engine's tests reading across. A third package, `library`. | The analyser writes them; the fixtures and 15 engine test files read them; "make a chart" is all engine commands. The app only displays them. A third package adds a manifest for no gain. |
 | D3 | Layout | `engine/` at the root, holding `src/` (today's `web/engine/`), `scripts/`, `charts/`, `fixtures/`, `chord_scales.json`. `web/` stays. | **Assumed (confirm)** | `packages/engine` + `apps/web`: conventional, but moves Vercel's root directory and every app path. | Smallest diff. Vercel's root directory stays `web`. |
 | D4 | Workspace tool | npm workspaces. | **Assumed (confirm)** | pnpm or Yarn workspaces; Turborepo on top. | The project uses npm; two packages need no task runner; Vercel and Dependabot support npm workspaces. |
@@ -482,7 +480,8 @@ The plan has the exact files and commands; in outline, each step a commit that l
 
 ## Phase 2: two repos (conditional)
 
-Not scheduled. Start it when one of these is true:
+Not scheduled. The user's triggers (2026-10-11): **an API experience**, or **letting others use the engine for their
+own work**. Either one starts Phase 2. Related signs that point the same way:
 
 - something other than this site needs the engine (a CLI, an API, another app, a notebook);
 - people want to work on the analysis without the app (outside contributors, a different review cadence);
