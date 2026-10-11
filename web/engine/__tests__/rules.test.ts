@@ -58,11 +58,11 @@ describe('function spellings and errors', () => {
     const find = (family: string, written: string) => spellings().find((s) => s.family === family && s.written === written)?.spellings
     expect(find('major', 'maj7')).toEqual(['maj7', 'Maj7', 'M7', 'maj'])
     expect(find('dominant', '7')).toEqual(['7'])
-    expect(find('minor', '7')).toEqual(['7', 'm7'])
-    expect(find('minor', '(maj7)')).toEqual(['(maj7)', 'mMaj7'])
-    expect(find('halfdim', 'ø7')).toEqual(['ø7', 'ø', 'm7b5'])
+    expect(find('minor', '7')).toEqual(['7', 'm7', '-7'])
+    expect(find('minor', '(maj7)')).toEqual(['(maj7)', 'mMaj7', '-(maj7)', '-Maj7'])
+    expect(find('halfdim', 'ø7')).toEqual(['ø7', 'ø', 'm7b5', 'm7(b5)', '-7b5', '-7(b5)'])
     expect(find('dim', '°7')).toEqual(['o7', 'o', 'dim7'])
-    expect(find('sus', '7sus4')).toEqual(['7sus4', '7sus', 'sus'])
+    expect(find('sus', '7sus4')).toEqual(['7sus4', '7(sus4)', '7sus', 'sus4', 'sus'])
     expect(spellings().some((s) => s.family === 'major' && s.spellings.includes('m'))).toBe(false)
   })
 
