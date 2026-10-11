@@ -28,7 +28,7 @@ export const INSTRUMENTS = {
   piano: { clef: 'treble', trans: 'C', description: 'same as concert', range: { lo: 60, hi: 84, centre: 70 } }, // C4–C6, centre B♭4
   vibes: { clef: 'treble', trans: 'C', description: 'same as concert', range: { lo: 55, hi: 86, centre: 70 } }, // G3–D6, centre the middle B♭ (B♭4)
   flute: { clef: 'treble', trans: 'C', description: 'same as concert', range: { lo: 60, hi: 84, centre: 73 } }, // C4–C6, centre C♯5
-  guitar: { clef: 'treble', trans: 'C', description: 'same as concert', range: { lo: 57, hi: 81, centre: 63 } }, // A3–A5 written, centre D♯4
+  guitar: { clef: 'treble', trans: 'C', description: 'same as concert', range: { lo: 57, hi: 81, centre: 66 } }, // A3–A5 written, centre F♯4
   trumpet: { clef: 'treble', trans: 'Bb', description: 'Bb, written a major 2nd up', range: { lo: 55, hi: 79, centre: 70 } }, // G3–G5 written, centre B♭4
   flugelhorn: { clef: 'treble', trans: 'Bb', description: 'same as trumpet', range: { lo: 55, hi: 79, centre: 70 } }, // G3–G5 written, centre B♭4
   clarinet: { clef: 'treble', trans: 'Bb', description: 'same as trumpet', range: { lo: 57, hi: 84, centre: 66 } }, // A3–C6 written, centre F♯4
@@ -36,7 +36,7 @@ export const INSTRUMENTS = {
   'tenor-sax': { clef: 'treble', trans: 'Bb', description: 'same key as trumpet (sounds an octave lower)', range: { lo: 58, hi: 84, centre: 68 } }, // B♭3–C6 written, centre A♭4
   'alto-sax': { clef: 'treble', trans: 'Eb', description: 'Eb, written a major 6th up', range: { lo: 58, hi: 84, centre: 68 } }, // B♭3–C6 written, centre A♭4
   'bari-sax': { clef: 'treble', trans: 'Eb', description: 'same key as alto (sounds an octave lower)', range: { lo: 58, hi: 84, centre: 68 } }, // B♭3–C6 written, centre A♭4
-  horn: { clef: 'treble', trans: 'F', description: 'French horn in F, written a perfect 5th up', range: { lo: 60, hi: 79, centre: 70 } }, // C4–G5 written, centre B♭4
+  horn: { clef: 'treble', trans: 'F', description: 'French horn in F, written a perfect 5th up', range: { lo: 55, hi: 79, centre: 70 } }, // G3–G5 written, centre B♭4
   trombone: { clef: 'bass', trans: 'C', description: 'bass clef, concert pitch', range: { lo: 40, hi: 64, centre: 56 } }, // E2–E4, centre A♭3
   tuba: { clef: 'bass', trans: 'C', description: 'bass clef, concert pitch', range: { lo: 36, hi: 58, centre: 47 } }, // C2–B♭3, centre B2
   bass: { clef: 'bass', trans: 'C', description: 'bass clef, concert pitch', range: { lo: 40, hi: 60, centre: 49 } }, // E2–C4 written, centre C♯3
