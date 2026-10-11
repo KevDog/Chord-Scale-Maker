@@ -9,8 +9,9 @@ import type { Candidate, GuideTones } from './voiceLeading'
 
 /**
  * Guide tones on the Changes sheet: one guide tone line (docs/superpowers/specs/2026-10-10-guide-tone-lines-design.md,
- * as amended by 2026-10-10-independent-guide-tone-lines-design.md: line A from the first chord's 3rd or line B from its
- * 7th, each built on its own, moving to the nearer guide tone of the next chord) as one voice, a note a chord
+ * as amended by 2026-10-10-independent-guide-tone-lines-design.md and 2026-10-11-guide-lines-diverge-note.md: line A
+ * from the first chord's 3rd or line B from its 7th, moving to the nearer guide tone of the next chord, the two going
+ * apart where they meet) as one voice, a note a chord
  * (docs/superpowers/specs/2026-10-10-guide-tones-on-changes-design.md), split at barlines, with accidentals by the
  * measure rule. No DOM, like sheet.ts. The timeline (guideToneTimeline.ts) and the lines (guideToneLines.ts) live in
  * their own modules.
@@ -125,7 +126,7 @@ const readable = (chord: string): boolean => orNull(() => parseChord(chord)) !==
 /**
  * the guide tone line's voice for chords in time order: by timeline bar (Math.floor(start / beats)), the bar's
  * notes; by row, the chord's label (no entry for a rest); and a diagnostic for each chord without guide tones. The
- * line is built on its own (guideToneLine). A chord that repeats the guide tones in the same block is tied from the
+ * line is one of the pair guideToneLine builds together (so they can go apart where they meet). A chord that repeats the guide tones in the same block is tied from the
  * one before; a chord without guide tones rests. keySig: the signature in force on every line (null: C). Nothing
  * when the line is 'off'.
  */

@@ -43,7 +43,7 @@ web/                      # Nuxt app (Vercel root directory)
     transpose.ts          # move a whole chart to another key (editor "Transpose…")
     intervals.ts          # interval names against the chord root (b9, #11, …)
     guideTones.ts         # guide tones per chord, voiced for the Changes sheet (guideVoices)
-    guideToneLines.ts     #   the two greedy lines, from the 3rd and from the 7th (guideToneLines)
+    guideToneLines.ts     #   the two lines, from the 3rd and from the 7th, built together (guideToneLine)
     guideToneTimeline.ts  #   when each chord starts and how long it lasts, in the chart's metre
     voiceLeading.ts       #   RANGES (the clefs' default ranges), and voiceLead (Viterbi over pairs), kept only to compare
     util.ts               # orNull, chunk
@@ -324,33 +324,39 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   this sheet (`csm-numerals`, `csm-scale-names`, both on; `csm-guide-line`, `off | third | seventh`, off; share links carry
   them and the sheet, the line as `guideLine`, absent meaning off).
 
-### Guide tones on Changes ([spec](superpowers/specs/2026-10-10-guide-tone-lines-design.md); first built as [guide tones on Changes](superpowers/specs/2026-10-10-guide-tones-on-changes-design.md))
+### Guide tones on Changes ([spec](superpowers/specs/2026-10-10-guide-tone-lines-design.md), amended by [independent lines](superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md) and [the diverge note](superpowers/specs/2026-10-11-guide-lines-diverge-note.md); first built as [guide tones on Changes](superpowers/specs/2026-10-10-guide-tones-on-changes-design.md))
 
 - **What shows:** at most one line, chosen **Off**, **From 3rd** or **From 7th**. Line A starts on the first chord's
   3rd, line B on its 7th, and the line moves to the nearest guide tone of every chord after it. Each chord's slashes
   give way to one note, held for the chord's length and tied across barlines; a tie still open at a line's end
-  continues as a half-tie on the next line. The two lines are independent
-  ([spec](superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md)): each is built alone, so the notes
-  don't depend on which is shown and the lines may share a tone or cross.
+  continues as a half-tie on the next line. Both lines are always built, together, so the notes don't depend on which
+  is shown; each moves on its own except where they meet (below), and they may cross or briefly share a tone.
 - **Which tones** come from the chord quality (`TONES` in `engine/guideTones.ts`): the 3rd (a sus chord's 4th) and
   the 7th (a triad's root, a 6 chord's 6th).
-- **The line** (`engine/guideToneLines.ts`, `guideToneLine`) is greedy, one chord at a time, so a reader can apply
-  it by hand; the rules are numbered in the spec (rule 7, the lines taking different tones, is gone). The candidates are both guide tones at every octave inside the
+- **The lines** (`engine/guideToneLines.ts`; `guideToneLine` returns one of the pair) move one chord at a time; only a
+  run's starting octave looks ahead, as far as the next rest. The rules are numbered in the spec (rule 7, the lines
+  taking different tones, is gone; D1–D3 and P are the diverge note's). The candidates are both guide tones at every octave inside the
   part's written range, `rangeOf(part)`: its instrument's range from `INSTRUMENTS` (`{ lo, hi, centre }`, inside a
   two-ledger-line cap, `CAPS`: treble G3–D6, bass B1–F4; vibes G3–D6 around B♭4, trumpet G3–G5, tuba C2–B♭3…), or,
   for a part without one (`CONCERT`), its clef's default (`RANGES`: treble C4–A5 around A4, bass E2–C4 around C♯3).
   A line takes the smaller move (a common tone before a step before a leap); equal moves go to the pitch nearer the
-  centre, then the lower. A start, or a restart after a rest, takes the octave nearest the line's last sounded note (the
-  centre with none). The centre does nothing else: within its range a line moves freely
-  ([spec](superpowers/specs/2026-10-10-guide-tone-ranges-design.md)).
+  centre, then the lower ([ranges](superpowers/specs/2026-10-10-guide-tone-ranges-design.md)).
+  - **Placing a run (P):** a start, or a restart after a rest, tries each octave of the line's degree in range: the
+    run is built from it, alone, up to the next rest, and the octave whose run averages nearest the centre is kept (a
+    tie, compared exactly: the higher). So a line doesn't start at the centre and sink to the floor.
+  - **Meeting (D1–D3):** when the two lines land on one pitch, at the next new chord the line that was above before
+    they met takes the nearest guide tone strictly above it, the other the nearest strictly below (together since a
+    restart: line B goes up). With nothing in range on its side, a line takes the nearest on the other side that isn't
+    its partner's (with none, they coincide again). Apart, each moves on its own; a held chord holds both, and the
+    same chord in a new block counts as new.
   - **Holds:** a chord whose 3rd and 7th are spelled as the previous chord's, in the same block, holds the line:
     the same pitch, tied, labelled again. The same pitches in swapped roles (Dm7 → G7sus4) strike again. A hold never crosses a block (section) boundary or the start of a 2nd
     ending; there the chord strikes again, untied.
   - **Rests:** a chord with no guide tones rests and ends the run; the next chord restarts by rule 1.
   - **Form:** repeats and endings are voiced in written order, a 2nd ending from the 1st ending's last chord; the
-    line neither loops nor looks ahead.
+    line doesn't loop, and nothing past a rest changes it.
 - **Check:** `voiceLead` (the Viterbi pair search) is kept only as a comparison. `npm run guide-lines` measures the
-  library (common tones, steps, leaps, every move over a tritone) for each line alone; `npm run guide-lines -- --compare`
+  library (common tones, steps, leaps, where the lines share a pitch, each line's height, every move over a tritone) for each line; `npm run guide-lines -- --compare`
   sets each line against the pair search; `-- --check` confirms the library's labels.
 - **Model:** `guideVoices` voices the drawn rows before `buildChanges` splits them into lines, so 2 or 4 bars a line
   give the same pitches and a folded copy is voiced once. `ChangesBar.voice` holds each bar's one voice of
@@ -817,9 +823,12 @@ Pages are static, and the only server code is the contact function, so the attac
    b2 and no 2.
 7. **Guide tones** are one line at a time on the Changes sheet (the separate sheet is gone), in the chart's metre, from the
    3rd or from the 7th ([spec](superpowers/specs/2026-10-10-guide-tone-lines-design.md), made independent by
-   [this one](superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md)). Triads use 3 + root,
-   because the root resolves by step from a V7 where the 5th would leap. The lines are greedy rules, not a global
-   search: each steps to the nearest guide tone, is built alone, and a repeated chord holds. The older
+   [this one](superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md), then amended by
+   [the diverge note](superpowers/specs/2026-10-11-guide-lines-diverge-note.md)). Triads use 3 + root,
+   because the root resolves by step from a V7 where the 5th would leap. The lines are local rules, not a global
+   search: each steps to the nearest guide tone and a repeated chord holds; a run's starting octave is placed so the
+   run averages nearest the centre, and lines that meet go apart, one up and one down (the user chose lower
+   coincidence over fewer leaps). The older
    per-degree toggles and the Viterbi pair search (`voiceLead`, now only a comparison) are superseded.
 8. **One spelling at a time** in the preview (From X or From root).
 9. **Transpose, interval labels and guide tones** were built on the ported engine, so they inherit its spelling

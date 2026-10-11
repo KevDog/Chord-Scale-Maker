@@ -72,9 +72,9 @@
       <ul class="list-disc space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
         <li>
           <strong class="font-semibold text-zinc-950 dark:text-white">The guide tones.</strong> Each chord's 3rd and 7th.
-          Where a chord has no 7th or no 3rd, something else stands in: a 6 chord uses its 6th, a sus chord its 4th, a
-          plain triad its root, and a diminished 7th its double-flat 7th. The label under the note is that degree without
-          its flat or sharp: 3, 7, 6, 4 or 1.
+          Where a chord has no 7th or no 3rd, something else stands in: a 6 chord uses its 6th, a sus chord its 4th, and a
+          plain triad its root. (A diminished 7th's 7th is its double-flat 7th.) The label under the note is that degree
+          without its flat or sharp: 3, 7, 6, 4 or 1.
         </li>
         <li>
           <strong class="font-semibold text-zinc-950 dark:text-white">The start.</strong> From 3rd begins on the first
@@ -91,19 +91,18 @@
         <li>
           <strong class="font-semibold text-zinc-950 dark:text-white">The range.</strong> The line only uses notes your
           instrument can comfortably play, so at the floor or the ceiling it turns back toward the middle. Written ranges:
-          concert C4–A5; piano and flute C4–C6; vibes G3–D6; guitar A3–A5; trumpet, flugelhorn and horn G3–G5; clarinet
-          A3–C6; saxophones B♭3–C6; trombone E2–E4; bass E2–C4; tuba C2–B♭3.
+          {{ GUIDE_RANGES }}.
         </li>
         <li>
           <strong class="font-semibold text-zinc-950 dark:text-white">When the two lines meet.</strong> You see one line at
           a time, but the other is worked out alongside it. If both land on the same note, they split at the next chord:
           the one that was higher goes up to the nearest guide tone above, the other down to the nearest below (with no
-          room on its side, a line takes the next nearest note on the other). So From 3rd and From 7th stay two different
-          lines.
+          room on its side, a line takes the next nearest note on the other). So From 3rd and From 7th may touch for a
+          chord, but they don't stay together.
         </li>
         <li>
           <strong class="font-semibold text-zinc-950 dark:text-white">Rests, repeats and spelling.</strong> A chord with no
-          guide tones (one I can't read) gets a rest, and the line starts again after it, placed the same way as at the
+          guide tones (one I can't read, or a chord quality I don't know) gets a rest, and the line starts again after it, placed the same way as at the
           start. Repeats and endings are played in the order they're written: a second ending carries on from the chord
           before it, and the last bar doesn't lead back to the top. Each note keeps its chord's spelling: the 7th of G♭7 is
           F♭, not E.
@@ -365,8 +364,11 @@
 </template>
 
 <script setup lang="ts">
+import { guideRanges } from '~/utils/instrumentChoices'
+
 const myCharts = useFeature('myCharts')
 const levelsOn = useFeature('scaleLevels')
+const GUIDE_RANGES = guideRanges()
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },
   { id: 'sheets', title: 'The two sheets' },

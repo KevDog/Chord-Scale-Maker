@@ -25,3 +25,20 @@ export const instrumentOption = (name: InstrumentName): string =>
     .split('-')
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ')
+
+const NOTE = ['C', 'C♯', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'A♭', 'A', 'B♭', 'B'] as const
+/** 58 -> "B♭3" (middle C = C4) */
+const noteName = (midi: number): string => `${NOTE[midi % 12]}${Math.floor(midi / 12) - 1}`
+/** ["a", "b", "c"] -> "a, b and c" */
+const listed = (xs: readonly string[]): string => (xs.length < 2 ? (xs[0] ?? '') : `${xs.slice(0, -1).join(', ')} and ${xs.at(-1)}`)
+
+/** each written guide tone range in INSTRUMENTS, instruments sharing one range together: "concert C4–A5; piano and flute C4–C6; …" */
+export function guideRanges(): string {
+  const groups = new Map<string, string[]>()
+  for (const n of Object.keys(INSTRUMENTS) as InstrumentName[]) {
+    const { lo, hi } = INSTRUMENTS[n].range
+    const key = `${noteName(lo)}–${noteName(hi)}`
+    groups.set(key, [...(groups.get(key) ?? []), n.replace(/-/g, ' ')])
+  }
+  return [...groups].map(([range, names]) => `${listed(names)} ${range}`).join('; ')
+}

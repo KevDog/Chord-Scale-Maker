@@ -5,9 +5,11 @@ import type { Candidate, GuideTone, GuideTones } from './voiceLeading'
 /**
  * Guide tone lines (docs/superpowers/specs/2026-10-10-guide-tone-lines-design.md): a single voice over a chart, line A
  * from the first chord's "3rd" or line B from its "7th", moving to whichever of the next chord's two guide tones is
- * nearer, so that it steps or holds almost everywhere. Greedy, one chord at a time, so that a reader could apply the
- * rules by hand; each line is built on its own (docs/superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md
- * removed rule 7, the lines taking different tones). Rule numbers below are the spec's. Pure; no DOM.
+ * nearer, so that it steps or holds almost everywhere. One chord at a time, except that a run's starting octave looks
+ * ahead to the next rest (P). Rule 7, the lines taking different tones, is removed
+ * (docs/superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md); instead both lines are built together so
+ * that lines that meet go apart (D1–D3, docs/superpowers/specs/2026-10-11-guide-lines-diverge-note.md). Rule numbers
+ * below are the specs'. Pure; no DOM.
  */
 
 /** a line's note at one chord (role 0: the chord's "3rd", 1: its "7th"); held: it repeats the chord before (rule 5) */
@@ -43,9 +45,10 @@ type Pair = readonly [Candidate, Candidate] // line A, line B
 /**
  * D1, D2 (docs/superpowers/specs/2026-10-11-guide-lines-diverge-note.md): the lines left a shared pitch `at`; `up` is
  * the line that goes up (the other goes down). Each takes its nearest candidate strictly on its side; with none there,
- * the nearest strictly on the other side that is not its partner's; with none of those either, its partner's.
+ * the nearest strictly on the other side that is not its partner's; with none of those either, its partner's. No
+ * candidate at all (only in a range narrower than an octave): null, a rest, as elsewhere.
  */
-function apart(all: readonly Candidate[], at: number, up: 0 | 1, centre: number): Pair {
+function apart(all: readonly Candidate[], at: number, up: 0 | 1, centre: number): Pair | null {
   const above = all.filter((c) => c.pitch.midi > at)
   const below = all.filter((c) => c.pitch.midi < at)
   const own = (i: 0 | 1): readonly Candidate[] => (i === up ? above : below)
@@ -53,7 +56,7 @@ function apart(all: readonly Candidate[], at: number, up: 0 | 1, centre: number)
   const first: 0 | 1 = own(up).length ? up : up ? 0 : 1 // a line with room on its side chooses first
   const second: 0 | 1 = first ? 0 : 1
   const x = nearest(own(first), at, centre) ?? nearest(other(first), at, centre)
-  if (!x) throw new Error('a guide tone has an octave on one side of any pitch in range')
+  if (!x) return null
   const y = nearest(own(second), at, centre) ?? nearest(other(second).filter((c) => c.pitch.midi !== x.pitch.midi), at, centre) ?? x
   return first === 0 ? [x, y] : [y, x]
 }
@@ -83,9 +86,10 @@ function soloRun(tones: readonly (GuideTones | null)[], range: Range, blocks: re
  * degree's octaves in range, the one whose run alone, up to the next rest, averages nearest the centre; a tie, the higher
  */
 function place(tones: readonly (GuideTones | null)[], range: Range, blocks: readonly number[], j: number, t: GuideTones, role: 0 | 1): Candidate | null {
+  // every octave's run reaches the same rest, so comparing |sum - centre × length| compares the averages, exactly
   const off = (c: Candidate): number => {
     const run = soloRun(tones, range, blocks, j, c)
-    return Math.abs(run.reduce((x, y) => x + y, 0) / run.length - range.centre)
+    return Math.abs(run.reduce((x, y) => x + y, 0) - range.centre * run.length)
   }
   const scored = octaves(t, role, range).map((c) => ({ c, d: off(c) }))
   return scored.reduce<{ c: Candidate; d: number } | null>((best, x) => (!best || x.d < best.d || (x.d === best.d && x.c.pitch.midi > best.c.pitch.midi) ? x : best), null)?.c ?? null

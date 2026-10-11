@@ -1,6 +1,6 @@
 # Guide tone lines from the 3rd or the 7th: design
 
-Date: 2026-10-10. Status: approved; rule 7 and the "both on" display superseded by [the independent-lines spec](2026-10-10-independent-guide-tone-lines-design.md) (toggle semantics decided by the user; see "What changes in the product"; open
+Date: 2026-10-10. Status: approved; rule 7 and the "both on" display superseded by [the independent-lines spec](2026-10-10-independent-guide-tone-lines-design.md), and rules 1, 6 and 9 amended by [the diverge note](2026-10-11-guide-lines-diverge-note.md) (placing a run; lines that meet go apart) (toggle semantics decided by the user; see "What changes in the product"; open
 questions decided by the user, and the trade in rule 7.2 added, the same day). Builds on
 [2026-10-10-guide-tones-on-changes-design.md](2026-10-10-guide-tones-on-changes-design.md).
 
@@ -26,7 +26,7 @@ single-toggle line is the 3rd (or the 7th) of *every* chord, which cannot move b
 
 ## Rules
 
-1. **Start.** Line A begins on the "3rd" of the first voiced chord, line B on its "7th", each in the octave nearest
+1. **Start.** *(Amended by [the diverge note](2026-10-11-guide-lines-diverge-note.md), rule P: the start octave is the one whose run, up to the next rest, averages nearest the centre.)* Line A begins on the "3rd" of the first voiced chord, line B on its "7th", each in the octave nearest
    the centre of the comfortable range. Candidates outside the written range are never used (rule 4).
 
 2. **Next note.** At each following chord, the line moves to whichever of that chord's two guide tones is the
@@ -47,7 +47,7 @@ single-toggle line is the 3rd (or the 7th) of *every* chord, which cannot move b
    struck again, not held: the new attack and label mark the change of role. A held note is tied across barlines and
    line ends, as today.
 
-6. **Rests and unknown chords.** *(Superseded where it says "both lines": one line is built at a time; see the independent-lines spec.)* A chord with no guide tones rests in both lines and ends the run. After it, the lines
+6. **Rests and unknown chords.** *(Superseded where it says "both lines": one line is built at a time; see the independent-lines spec. The restart "in the octave nearest the last sounded note" is superseded by [the diverge note](2026-10-11-guide-lines-diverge-note.md), rule P: a restart is placed like a start.)* A chord with no guide tones rests in both lines and ends the run. After it, the lines
    restart by rule 1, in the octave nearest the last sounded note of each line (or the centre, if there is none).
 
 7. **The two lines together.** *Superseded by [the independent-lines spec](2026-10-10-independent-guide-tone-lines-design.md): removed; each line is built alone.* The lines are complementary: at every chord they take different guide tones.
@@ -63,7 +63,7 @@ single-toggle line is the 3rd (or the 7th) of *every* chord, which cannot move b
 8. **Labels.** Each note is labelled with the real degree, accidental dropped, as today (`3`, `7`, `4`, `6`, `1`).
    Because the role changes along the line, the labels under one line read, for a ii–V–I, `3 7 3` or `7 3 7`.
 
-9. **Form.** Repeats and endings are voiced in written order; the second ending continues from the last chord of the
+9. **Form.** *(Amended by [the diverge note](2026-10-11-guide-lines-diverge-note.md): a run's start octave looks ahead as far as the next rest; nothing past a rest changes a line.)* Repeats and endings are voiced in written order; the second ending continues from the last chord of the
    first. The line does not loop: the last chord is not voiced with regard to the first.
 
 10. **Spelling.** A guide tone keeps the spelling given by its chord (`guideTonesFor`), whatever octave rule 2 chose;
@@ -110,7 +110,7 @@ From E4 (line A) the nearer tone of Ebmaj7 is D4 (its 7th, a whole step down); f
 
 ## Open questions (decided)
 
-1. **Looping the form.** *Decided: no lookahead; the player can manage the join.* Rule 9 leaves the join from the last chord back to the first unvoiced. A lookahead could
+1. **Looping the form.** *Decided: no lookahead; the player can manage the join. (Amended by [the diverge note](2026-10-11-guide-lines-diverge-note.md): no loop still, but a run's start octave now looks ahead to the next rest.)* Rule 9 leaves the join from the last chord back to the first unvoiced. A lookahead could
    choose the starting octave so that the line also steps into its own repeat; worth measuring over the library.
 2. **Greedy against global.** *(The trade in rule 7.2 is superseded by the independent-lines spec.)* *Decided: greedy, with the trade in rule 7.2. Measured over the library (treble):
    moves over a tritone fall from 394 to 18 (the pair search: 3), the largest from 11 to 9 semitones.* These rules are greedy, one chord at a time, so that a reader can apply them by hand.

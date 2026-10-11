@@ -54,9 +54,9 @@ test('the Changes sheet shows 1st/2nd endings and a D.S. al Coda', async ({ page
 })
 
 // the tallest Changes lines: one guide tone line with numerals and scales, a 1st/2nd ending
-// raised above the stems, and a bass part below the staff (the tuba's, the lowest guide tone range: C2–B♭3, down to two
-// ledger lines below). Each sheet page holds changesLinesPerPage lines, so the PDF has as many pages as the sheet: a page
-// that overflowed would add one
+// raised above the stems, and a bass part in the lowest guide tone range (the tuba's, C2–B♭3). On Stardust From 7th
+// reaches F♯2, below the staff; From 3rd, placed nearer the centre, bottoms out at C3, inside it. Each sheet page
+// holds changesLinesPerPage lines, so the PDF has as many pages as the sheet: a page that overflowed would add one
 for (const line of ['From 3rd', 'From 7th'] as const) {
 test(`prints the Changes with a guide tone line (${line}), a sheet page to a letter page, in the tallest case`, async ({ page }) => {
   await page.goto('/song?chart=stardust')
@@ -68,7 +68,7 @@ test(`prints the Changes with a guide tone line (${line}), a sheet page to a let
   const svgs = page.locator('svg[aria-label^="Bars:"]')
   const all = await Promise.all((await svgs.all()).map(drawn))
   expect(all.filter((d) => d.voltaBottom !== null).length).toBeGreaterThan(0) // the verse's 1st and 2nd endings
-  expect(Math.max(...all.flatMap((d) => d.heads.map((h) => h.y)))).toBeGreaterThanOrEqual(line === 'From 7th' ? 120 : 105) // From 7th: on or below the bass staff's bottom line (G2); From 3rd, placed nearer the centre, down to C3
+  expect(Math.max(...all.flatMap((d) => d.heads.map((h) => h.y)))).toBeGreaterThanOrEqual(line === 'From 7th' ? 120 : 105) // From 7th: on or below the bass staff's bottom line (G2, F♯2 here); From 3rd: down to C3
   const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
   expect(sheetPages).toBeGreaterThanOrEqual(2) // at least one full page
   await page.emulateMedia({ media: 'print' })

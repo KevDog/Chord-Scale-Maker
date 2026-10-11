@@ -1,7 +1,7 @@
 # Guide tone lines that meet go apart: note
 
-Date: 2026-10-11. Status: built on branch `guide-lines-diverge` (from `independent-guide-lines`, PR #102) for the
-user to compare; not merged. Amends [the independent-lines spec](2026-10-10-independent-guide-tone-lines-design.md),
+Date: 2026-10-11. Status: shipped (the user's choice, G8), on branch `guide-lines-diverge` (from
+`independent-guide-lines`, PR #102), although strict diverge fails the significance test below. Amends [the independent-lines spec](2026-10-10-independent-guide-tone-lines-design.md),
 which keeps rules 1–6 and 8–10 of [the guide tone lines spec](2026-10-10-guide-tone-lines-design.md) and drops rule 7.
 
 ## Why
@@ -18,11 +18,11 @@ on its own.
 
 | | Ruling | Status |
 | --- | --- | --- |
-| D1 | When the lines share a pitch at a chord, at the next new chord the line that was above before they met moves to the nearest in-range guide tone strictly above that pitch, the other to the nearest strictly below. Together since a restart (only possible if a chord's two guide tones share a pitch, so never with real symbols): line B (From 7th) goes up. | assumed (confirm) |
-| D2 | With no in-range candidate on its side, a line takes its nearest candidate on the other side that is not its partner's (the partner on its own side chooses first). If none exists, they coincide again, and D1 applies at the next chord. | assumed (confirm) |
-| D3 | Once apart, each line moves by rules 2–6 independently until they meet again. A held chord (rule 5) holds both lines on the shared pitch; they go apart at the first new chord. The same chord across a block boundary is a new chord, so they go apart there. Rests and restarts are as before (a rest ends the run; the restart is rule 1/6 for each line). | assumed (confirm) |
-| P | **Placing a run.** At a line's start or restart (rule 1, and the rule 6 restart), instead of the chosen degree in the octave nearest the centre (rule 1) or nearest the last sounded note (rule 6): build the line's run alone (rules 2–5, no meetings) from each of the degree's octaves in range, up to the next rest, and keep the octave whose run's average pitch is nearest the centre; on a tie, the higher. Rules 2–6 are otherwise unchanged. Each line's run is placed, then D1–D3 apply as they meet. The placement looks ahead as far as the next rest, so rule 9's "no look-ahead" now means no loop and nothing past a rest. | approved by the user, 2026-10-11 |
-| D4 | The public API stays `guideToneLine(tones, range, from, blocks?)`, returning one line (both are built internally). Nothing above the engine changed; no e2e or app expectation moved. | assumed (confirm) |
+| D1 | When the lines share a pitch at a chord, at the next new chord the line that was above before they met moves to the nearest in-range guide tone strictly above that pitch, the other to the nearest strictly below. Together since a restart (only possible if a chord's two guide tones share a pitch, so never with real symbols): line B (From 7th) goes up. | accepted by the user (shipped, G8) |
+| D2 | With no in-range candidate on its side, a line takes its nearest candidate on the other side that is not its partner's (the partner on its own side chooses first). If none exists, they coincide again, and D1 applies at the next chord. | accepted by the user (shipped, G8) |
+| D3 | Once apart, each line moves by rules 2–6 independently until they meet again. A held chord (rule 5) holds both lines on the shared pitch; they go apart at the first new chord. The same chord across a block boundary is a new chord, so they go apart there. Rests and restarts are as before (a rest ends the run; the restart is rule 1/6 for each line). | accepted by the user (shipped, G8) |
+| P | **Placing a run.** At a line's start or restart (rule 1, and the rule 6 restart), instead of the chosen degree in the octave nearest the centre (rule 1) or nearest the last sounded note (rule 6): build the line's run alone (rules 2–5, no meetings) from each of the degree's octaves in range, up to the next rest, and keep the octave whose run's average pitch is nearest the centre; on a tie, the higher (compared exactly: the runs reach the same rest, so |sum − centre × length| orders them without rounding). Rules 2–6 are otherwise unchanged. Each line's run is placed, then D1–D3 apply as they meet. The placement looks ahead as far as the next rest, so rule 9's "no look-ahead" now means no loop and nothing past a rest. | approved by the user, 2026-10-11 |
+| D4 | The public API stays `guideToneLine(tones, range, from, blocks?)`, returning one line (both are built internally). The diverge commit (f558165) changed nothing above the engine and moved no e2e or app expectation; the placement commit later moved three e2e expectations, and the help page gained a section (both listed below). | accepted by the user (shipped, G8) |
 
 Tests: `web/engine/__tests__/guideToneLines.test.ts`, "lines that meet go apart" (D1 both directions, the restart
 case, the floor and ceiling of D2, D2's "coincide again", D3 apart / held / block boundary / rest) and, over the
@@ -30,15 +30,17 @@ library for every part, "lines that share a pitch differ at the next new chord" 
 other has no guide tone in range). The diverge commit moved no existing expected row.
 
 Placement (P) has its own tests ("placing a run nearest the centre": A Song for Nicholas on vibes, line A from E5; a
-placed run stays in range; a restart after a rest reads as the run alone; a tie takes the higher) and moved these rows,
+run is weighed as it really goes, turned at the floor; a restart after a rest reads as the run alone; a tie takes the
+higher, exactly, as on guitar doxy and clarinet misty from the 7th) and moved these rows,
 all because a start or restart is now placed: rule 1's tie (Cm7 Eb4 → Eb5; bass Eb7 G2 → G3, the higher); rule 3.1 on
 line B (F7 D7 now Eb5 → C5 rather than F#5); rule 4's floor examples (treble and vibes now G7 F7 Eb7 Db7 B7 A7 G7,
 line A at C#4 turning up to F4, or down to B3 on vibes; bass now C7 Em7 Dbm7 Cm, line B Fb2 → C3); rule 6 (the restart
 is placed, not nearest the last note: Dm7 ??? G7 ??? A7 line B F4, G4, was F5, G5); rule 9 (rewritten: what follows a
 rest leaves a line alone); "each line on its own" (Cmaj7 Ebmaj7 line A E5 D5; F7 D7 and Cm6 D7 no longer meet, so
 dropped from the meeting test; Cm Dm Bbm line A Eb5 D5 Bb4); D1–D3 rebased on Cm7 D7 and C7 A7 (F7 D7 no longer
-meet); D2's toy case starts on C5. guideTones.test.ts: guideVoices' "on its own" example is now Fm7 GMaj7. e2e (the
-expectations only, and two fixtures that no longer reached their notes): the From 3rd label row (3 7 3 3 7 7 3 7);
+meet); D2's toy case starts on C5. D2 also gained a toy case with no candidate at all in range: both lines rest there,
+as a single line does, rather than fail. guideTones.test.ts: guideVoices' "on its own" example is now Fm7 GMaj7. e2e (the
+expectations, and one fixture that no longer reached its note): the From 3rd label row (3 7 3 3 7 7 3 7);
 the vibes ledger-line chart (now Bm E DMaj7 Gm Cm7 Bb7 Am7 G7, down to G3 at the Am7); the tuba print case accepts
 C3 as the From 3rd line's lowest note (From 7th still reaches G2).
 
@@ -213,13 +215,18 @@ an octave.
 ## Next: gentle variant, after the split
 
 To try after the repo split, replacing D1 and D2 (D3, D4 and P unchanged), measured against #102 and strict
-diverge+placement, with Wilcoxon on gentle against strict for coincidence and moves over a tritone:
+diverge+placement, with Wilcoxon on gentle against strict for coincidence and moves over a tritone. "At most a
+tritone" means a move of 6 semitones or fewer; every candidate is inside the part's range (rule 4).
 
-- **G1.** When the lines share a pitch at chord i, look at the next new chord. If the shared pitch is one of its guide
-  tones, one line keeps it (holds or ties): the line that was below before they met, or From 3rd if they've been
-  together since a restart. The other line moves to that chord's other guide tone, at the nearest octave, in its own
-  direction (up if it was above) when that is within a tritone, else the nearest octave either way.
-- **G2.** If the shared pitch is not a guide tone of the next chord, each line takes its nearest candidate in its own
-  direction (strictly up / strictly down), as in D1. But a line never moves more than a tritone to avoid its partner:
-  if its directional candidate is further, it takes its nearest candidate and the lines may coincide again.
-- **G3.** At the range edge, prefer holding or coinciding to an octave leap.
+- **G1, a shared common tone.** When the lines share a pitch p at chord i and p is a guide tone of the next new
+  chord, the keeper keeps p (struck again, or tied if the chord holds): the line that was below before they met, or
+  line A (From 3rd) if they've been together since a restart. The mover goes to the chord's other guide tone: its
+  nearest in-range octave in the mover's direction (up if it was above) if that is at most a tritone from p;
+  otherwise its nearest in-range octave either way, if that is at most a tritone from p; otherwise G3.
+- **G2, no common tone.** When p is not a guide tone of the next new chord, the line that was above takes its nearest
+  in-range candidate strictly above p, the other its nearest strictly below, each only if that is at most a tritone
+  from p. A line with no such candidate (none in range on its side, or the nearest more than a tritone away) takes
+  its nearest candidate either way by rules 2–4, and the lines may coincide again.
+- **G3, the range edge.** No line moves more than a tritone because of the other: where G1's mover has no octave of
+  the other guide tone within a tritone of p, it stays on p with the keeper (they coincide, and G1 or G2 applies at
+  the next new chord); where G2 sends a line to rules 2–4, it moves no further than it would alone.

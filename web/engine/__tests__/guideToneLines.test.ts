@@ -205,6 +205,15 @@ describe('lines that meet go apart (one up, one down)', () => {
     expect(line('seventh')).toEqual([72, 60, 72])
   })
 
+  it('D2: with no candidate at all in range (a toy range C4–D4, no B or F), the lines rest there, as a single line does, rather than fail', () => {
+    const am = guideTonesFor(CONCERT, 'Am')
+    if (!am) throw new Error('Am has guide tones')
+    const unison = { third: am.third, seventh: { ...am.third, label: '7' } } // C and C: both lines on C4
+    const range = { lo: 60, hi: 62, centre: 61 }
+    for (const from of ['third', 'seventh'] as const)
+      expect(guideToneLine([unison, guideTonesFor(CONCERT, 'G7')], range, from).map((n) => n?.pitch.midi ?? null)).toEqual([60, null])
+  })
+
   it('D3: once apart, each line moves by rules 2–6 on its own (CMaj7: A steps F5 to E5, B holds B4 as a common tone)', () => {
     expect(both(['Cm7', 'D7', 'G7', 'CMaj7'])).toEqual([
       ['Eb5 (3)', 'C5 (7)', 'F5 (7)', 'E5 (3)'],
@@ -250,13 +259,11 @@ describe('placing a run nearest the centre', () => {
     expect(pitches(lineOf(NICHOLAS, VIBES, 'seventh'))).toEqual(['B4', 'D5', 'C5', 'C5', 'B4', 'D5', 'C5', 'C5', 'B4', 'Bb4', 'B4', 'C5'])
   })
 
-  it('a placed run never leaves the range, even where the higher start’s run climbs to the ceiling (a toy range C4–C5)', () => {
-    const range = { lo: 60, hi: 72, centre: 66 }
-    const rising = ['C7', 'Db7', 'D7', 'Eb7', 'E7', 'F7', 'F#7', 'G7']
-    for (const from of ['third', 'seventh'] as const) {
-      const line = guideToneLine(rising.map((c) => guideTonesFor(CONCERT, c)), range, from)
-      for (const n of line) expect(n && n.pitch.midi >= range.lo && n.pitch.midi <= range.hi).toBe(true)
-    }
+  it('placement weighs each run as it really goes, turned at the floor (G7 Gb7 F7 E7 Eb7 D7, toy ranges around E4)', () => {
+    const chain = ['G7', 'Gb7', 'F7', 'E7', 'Eb7', 'D7'].map((c) => guideTonesFor(CONCERT, c))
+    const from = (lo: number): number[] => guideToneLine(chain, { lo, hi: 84, centre: 64 }, 'third').map((n) => n?.pitch.midi ?? 0)
+    expect(from(54)).toEqual([71, 70, 69, 68, 67, 66]) // the run from B3 sinks to F#3 (average 56.5): B4's (68.5) is nearer
+    expect(from(58)).toEqual([59, 58, 63, 62, 61, 60]) // floor B♭3: the run from B3 turns up to E♭4 (average 60.5) and wins
   })
 
   it('a restart after a rest is placed the same way: the run after the rest reads as it would alone', () => {
@@ -265,6 +272,17 @@ describe('placing a run nearest the centre', () => {
       expect(lineOf(['Dm7', 'Dm7', '???', ...run], CONCERT, from).slice(3)).toEqual(lineOf(run, CONCERT, from))
       expect(lineOf(['F#7', 'B7', '???', ...run], CONCERT, from).slice(3)).toEqual(lineOf(run, CONCERT, from))
     }
+  })
+
+  it('a tie between two placements is exact, not decided by rounding the averages (guitar doxy and clarinet misty, from the 7th)', () => {
+    const first = (chart: string, instrument: InstrumentName): number | undefined => {
+      const doc = parseChart(readFileSync(new URL(`../../../charts/${chart}.txt`, import.meta.url), 'utf8')).value
+      const { events } = guideToneTimeline(expandRows(doc).value, chartBeats(doc))
+      const part = partFor(instrument)
+      return guideToneLine(events.map((e) => guideTonesFor(part, e.chord, resolveScale(e.row) ?? undefined)), rangeOf(part), 'seventh').find((n) => n)?.pitch.midi
+    }
+    expect(first('doxy', 'guitar')).toBe(80) // A♭5: its run averages exactly as far above F♯4 as A♭4's below
+    expect(first('misty', 'clarinet')).toBe(76)
   })
 
   it('a tie between two placements takes the higher (Cm7 alone: Eb4 and Eb5 are as far from A4)', () => {

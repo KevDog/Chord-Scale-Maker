@@ -1,12 +1,12 @@
 # Independent guide tone lines, one at a time: design
 
-Date: 2026-10-10. Status: implemented. Supersedes rule 7 and the
+Date: 2026-10-10. Status: implemented; amended by [the diverge note](2026-10-11-guide-lines-diverge-note.md) (both lines are built together again so that lines that meet go apart, D1–D3, and a run's start octave is placed nearest the centre, P). Supersedes rule 7 and the
 "both on" display of [2026-10-10-guide-tone-lines-design.md](2026-10-10-guide-tone-lines-design.md); keeps the ranges
 of [2026-10-10-guide-tone-ranges-design.md](2026-10-10-guide-tone-ranges-design.md).
 
 ## Goal
 
-Each guide tone line is built on its own, as a player builds it by hand: start on the first chord's 3rd (or 7th) and
+Each guide tone line is built on its own *(amended: except where the two lines meet; see the diverge note)*, as a player builds it by hand: start on the first chord's 3rd (or 7th) and
 move to the nearer guide tone of each chord that follows. The two lines no longer contend for a note, and the Changes
 sheet shows one line at a time.
 
