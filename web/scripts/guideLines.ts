@@ -1,9 +1,11 @@
 /**
  * Measures the guide tone lines (docs/superpowers/specs/2026-10-10-guide-tone-lines-design.md) over every chart in
  * charts/, voiced exactly as the Changes sheet voices them (written order, folded repeats drawn once, blocks for holds).
- * Each line, A (from the 3rd) and B (from the 7th), is built on its own (guideToneLine; no rule 7).
+ * Each line, A (from the 3rd) and B (from the 7th), is built by guideToneLine: on its own (no rule 7), except that lines
+ * that meet go apart at the next new chord (docs/superpowers/specs/2026-10-11-guide-lines-diverge-note.md).
  *
- *   npm run guide-lines                      common tone / step / leap shares per line, and every move > a tritone
+ *   npm run guide-lines                      common tone / step / leap shares per line, where the two lines share a pitch,
+ *                                            the largest move, each line's height, and every move > a tritone
  *   npm run guide-lines -- --compare         each line alone, with the older global pair search (voiceLead) for reference
  *   --part bass                              a concert bass-clef part instead of the default concert treble
  *   --instrument vibes                       an instrument's part, in its own guide tone range
@@ -167,12 +169,39 @@ function check(seqs: readonly Seq[]): void {
   })
 }
 
+/** where the lines share a pitch, the largest move, and how high each line sits: the mean of its chart means */
+function together(seqs: readonly Seq[], moves: readonly Move[]): void {
+  let [voiced, same, half] = [0, 0, 0]
+  for (const s of seqs) {
+    const [a = [], b = []] = s.lines
+    const both = a.flatMap((x, j) => (x && b[j] ? [x.midi === b[j]?.midi] : []))
+    voiced += both.length
+    same += both.filter(Boolean).length
+    if (both.length && both.filter(Boolean).length / both.length > 0.5) half++
+  }
+  const top = moves.reduce<Move | undefined>((b, x) => (!b || x.size > b.size ? x : b), undefined)
+  const centre = rangeOf(part).centre
+  const height = LINES.map((l, line) => {
+    const means = seqs.flatMap((s) => {
+      const ms = (s.lines[line] ?? []).flatMap((n) => (n ? [n.midi] : []))
+      return ms.length ? [ms.reduce((x, y) => x + y, 0) / ms.length] : []
+    })
+    return { line: l, 'mean of chart means': (means.reduce((x, y) => x + y, 0) / means.length).toFixed(1), centre, 'charts > a M3 below centre': means.filter((m) => m < centre - 4).length }
+  })
+  console.log(`\n### The two lines together\n`)
+  console.log(`chords where both lines share a pitch: ${same} of ${voiced} (${pct(same, voiced)}); charts with the lines identical at more than half their chords: ${half} of ${seqs.length}`)
+  if (top) console.log(`largest move: ${top.size} semitones (${leapRow(top).slice(0, 5).join(', ')})`)
+  console.log('\n### Each line\'s height')
+  console.table(height)
+}
+
 function defaultRun(): void {
   const seqs = sequences('alone')
   const moves = movesOf(seqs)
   console.log(`## Guide tone lines over ${seqs.length} charts, ${seqs.reduce((n, s) => n + s.chords.length, 0)} chords, ${partName}\n`)
   console.log('### Moves by line')
   console.table(shares(moves))
+  together(seqs, moves)
   const big = moves.filter((m) => m.size > 6)
   console.log(`\n### Moves larger than a tritone (> 6 semitones): ${big.length}\n`)
   if (big.length) console.log(mdTable(['chart', 'section bar', 'line', 'chord -> chord', 'pitch', 'semitones'], big.map(leapRow)))
