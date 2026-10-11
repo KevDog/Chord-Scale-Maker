@@ -1,7 +1,7 @@
 # Lead-sheet editor: edit chords where they print
 
-Date: 2026-10-11. Status: **proposed** (every decision below is the author's recommendation; the user reviews them
-together). Builds on the editor UX proposal ([mockup A](../proposals/editor-ux/mockup-a-lead-sheet.html),
+Date: 2026-10-11. Status: **accepted** (D1–D12 reviewed and accepted by the user, 2026-10-11). Plan:
+[2026-10-11-lead-sheet-editor.md](../plans/2026-10-11-lead-sheet-editor.md). Builds on the editor UX proposal ([mockup A](../proposals/editor-ux/mockup-a-lead-sheet.html),
 [README §3 A](../proposals/editor-ux/README.md)), the bar editor that shipped from it (proposal B, stages 1–3), and the
 proposed-scales spec (2026-10-11): the function decides, the scale cell overrides.
 
@@ -194,12 +194,14 @@ Below `md`, nothing in §1 applies (D8). The flag changes nothing there.
 /** chord symbols that complete `text`: the typed text first, then the root with each matching quality; at most `limit` */
 export function chordCompletions(text: string, limit = 6): readonly string[]
 
-/** how the chart would read `text` on `line`: its numeral and scale at the view's level; nulls where it doesn't reach */
-export function chordPreview(doc: ChartDoc, line: number, text: string, view?: ScaleView): Readonly<{ numeral: string | null; scale: string | null; readable: boolean }>
+/** how the chart would read a bar once its chords are `chords`: the numeral and scale of the one at `index`, at the view's level */
+export function chordPreview(doc: ChartDoc, section: string, bar: number, chords: readonly string[], index: number, view?: ScaleView): Readonly<{ numeral: string | null; scale: string | null; readable: boolean }>
 ```
 
-- `chordPreview` is `setLineChord` then `rowNotes(next, view).get(line)`; `readable` is `readChord(text) !== null`.
-  When `setLineChord` refuses (same doc back), the preview is the row as it is, `readable` from the text.
+- `chordPreview` is `setBarChords` then `rowNotes(next, view)` on the bar's `index`-th row; `readable` is
+  `readChord(chord) !== null`. A preview is of a bar's chords (not a line) so the new chord slot after Space previews
+  the same way as a chord that exists (plan, Task 1). When `setBarChords` refuses (same doc back), the preview is the
+  row as it is, with `readable: false`.
 - Both pure; no Vue, no DOM; tests in `engine/src/__tests__/completions.test.ts`. The API snapshot gains the two names.
 
 ## 3. Site
@@ -231,7 +233,6 @@ export function chordPreview(doc: ChartDoc, line: number, text: string, view?: S
   toolbar inserts and deletes a bar and the bar numbers follow; the ghost bar adds one; the title is edited in place;
   a B♭ instrument shows concert pitch with the banner while editing and the part after Done; print preview hides every
   mark (`page.emulateMedia({ media: 'print' })`); at 390 px nothing of this appears and the bottom sheet still works.
-- Axe runs over the editing sheet in e2e, as the other screens have it.
 
 ## 5. Rollout
 
