@@ -151,8 +151,9 @@ modal | blues`, as it states a key (principle 1); a written context always wins,
   bars`; Levine p. 226: Locomotion, Tee Pee Time, Unit Seven). The tests stay dominant-on-bar-1 and -bar-5, not
   "tonic and subdominant of any quality": Solar's key areas depend on its being read as functional, and a chart
   that is a blues by another shape (the Bird blues, a minor blues, Watermelon Man's 16 bars) says `context: blues`.
-  The key: `key:` beats the blues key (`stated ?? blues ?? scored`); with no `key:` it is the bar-1 root, major,
-  or, for a stated blues the detection missed, the bar-1 chord's root and mode. The tonic and subdominant are
+  The key: `key:` beats the blues key (`stated ?? blues ?? scored`); with no `key:` a blues form's key is its
+  bar-1 root, major, whatever the context (a 12-bar B♭ blues stated `functional` is still in B♭, its blues rules
+  off), and for a stated blues the detection missed, the bar-1 chord's root and mode. The tonic and subdominant are
   dominant 7ths by nature, not by function (§7.1, R2). A minor blues is `context: blues` with the minor-key rules
   inside: it changes the label and the key source, not the scales (Levine p. 225; M&H pp. 143–144).
 - **Modal (detected):** fewer than a third of the chords take part in cadences, and the median chord lasts two bars
@@ -163,8 +164,10 @@ modal | blues`, as it states a key (principle 1); a written context always wins,
   a modal tune the functional rules are off: each chord is its own mode (§7.6).
 - **The thresholds** (a third of the chords in cadences; a median of two bars; half the chords dominant) are
   unsourced numbers. The report shows them: `context: modal (detected: 0 of 8 chords in cadences, median chord 2
-  bars)`, or `context: modal (stated)`; `--ambiguous` names a detection within one chord of one of them
-  ("context: modal by the median exactly (2 bars); consider  context: modal").
+  bars)`, or `context: modal (stated)`, with ", but N of M dominant 7ths" when the guard alone kept a chart from
+  modal; `--ambiguous` names a detection within one chord of one of them ("context: modal by the median exactly (2
+  bars); consider  context: modal"). A chart with no chord in a cadence is not near the cadence cut: a cadence takes
+  two chords. A trailing `# …` on the `context:` line is a comment; an empty `context:` is absent.
 - **Not built:** `minor: dorian | aeolian` is reserved (accepted and reported as ignored); `@context SECTION BAR
   VALUE` is parsed like `@key` (from its bar until the next; inside a `modal` span the span's first chord is its
   tonic, inside a `blues` span its bar 1 is the I), and reported as "not yet supported: using the chart's context"

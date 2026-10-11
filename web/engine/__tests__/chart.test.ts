@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { beatsPerBar, chartBeats, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, parseChart, resolveScale, serializeChart } from '../chart'
+import { beatsPerBar, chartBeats, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, parseChart, parseContext, resolveScale, serializeChart } from '../chart'
 import { LIMITS } from '../limits'
 
 describe('isValidKey', () => {
@@ -223,6 +223,24 @@ describe('context: and @context (docs/superpowers/specs/2026-10-10-chart-context
     expect(diagnostics).toEqual([{ line: 2, message: 'context: functional, modal or blues' }])
     expect(value.lines[1]).toEqual({ kind: 'meta', key: 'context', value: 'bossa' })
     expect(serializeChart(value)).toBe('title: T\ncontext: bossa\n')
+  })
+
+  it('reads a context: with a trailing comment (the spec example), keeping the line as written', () => {
+    const text = 'context: modal          # the whole tune\n'
+    const { value, diagnostics } = parseChart(text)
+    expect(diagnostics).toEqual([])
+    expect(value.lines[0]).toEqual({ kind: 'meta', key: 'context', value: 'modal          # the whole tune' })
+    expect(parseContext('modal          # the whole tune')).toBe('modal')
+    expect(serializeChart(value)).toBe(text)
+  })
+
+  it('an empty context: is absent, like an empty key:: no diagnostic', () => {
+    expect(parseChart('title: T\ncontext:\n').diagnostics).toEqual([])
+    expect(parseChart('title: T\ncontext:   \n').diagnostics).toEqual([])
+  })
+
+  it('rejects an @context whose section name is over the limit', () => {
+    expect(parseChart(`@context ${'S'.repeat(LIMITS.maxCell + 1)} 1 modal`).diagnostics[0]?.message).toBe(`section name longer than ${LIMITS.maxCell} characters`)
   })
 
   it('accepts minor: (reserved) and keeps it', () => {

@@ -55,7 +55,9 @@ export function contextLine(a: Analysis): string {
   if (a.contextSource === 'stated') return `context: ${a.context} (stated)`
   const d = a.detection
   if (d.blues) return `context: blues (detected: ${d.blues === 'form' ? 'a 12-bar blues' : 'a blues in the first 12-bar section'}, I7 in bar 1 and IV7 in bar 5)`
-  const guard = !modalTests(d)[2]
+  // the dominants are named only when they alone kept the chart from modal
+  const [few, long, poor] = modalTests(d)
+  const guard = few && long && !poor
   return `context: ${a.context} (detected: ${d.inCadence} of ${d.chords} chords in cadences, median chord ${bars(d.medianBars)}${guard ? `, but ${d.dominants} of ${d.chords} dominant 7ths` : ''})`
 }
 
@@ -68,10 +70,11 @@ function nearThreshold(d: Detection): string[] {
   const tests = modalTests(d)
   const context = tests.every(Boolean) ? 'modal' : 'functional'
   const mid = Math.floor(d.lengths.length / 2)
-  // a cadence takes two chords, and a second root a second dominant: a one-chord chart is near neither cut
+  // a cadence takes two chords, so from none no single chord adds one; and a second root takes a second dominant,
+  // so a one-chord chart is near neither cut
   const several = d.chords >= 2
   const near = [
-    tests[0] ? several && d.inCadence + 1 >= d.chords / 3 : d.inCadence - 1 < d.chords / 3,
+    tests[0] ? d.inCadence > 0 && d.inCadence + 1 >= d.chords / 3 : d.inCadence - 1 < d.chords / 3,
     tests[1] ? (d.lengths[mid - 1] ?? 2) < 2 : (d.lengths[mid + 1] ?? 0) >= 2,
     tests[2] ? several && d.dominants >= 1 && d.dominants + 1 > d.chords / 2 : d.dominants - 1 <= d.chords / 2,
   ]

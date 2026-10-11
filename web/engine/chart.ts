@@ -16,9 +16,9 @@ export const META_KEYS: readonly MetaKey[] = ['title', 'subtitle', 'key', 'bars'
 
 /** how the analyser reads a chart (docs/plan-analysis.md §5.4): its rule families and whether key areas are found */
 export type ChartContext = 'functional' | 'modal' | 'blues'
-/** a `context:` or `@context` value, case-blind ("Modal"); null if it is none of the three */
+/** a `context:` or `@context` value, case-blind ("Modal"), a trailing " # …" dropped; null if it is none of the three */
 export function parseContext(text: string): ChartContext | null {
-  const t = text.trim().toLowerCase()
+  const t = text.replace(/\s#(\s.*)?$/, '').trim().toLowerCase()
   return t === 'functional' || t === 'modal' || t === 'blues' ? t : null
 }
 
@@ -137,8 +137,9 @@ export function parseChart(text: string): Parsed<ChartDoc> {
   const lines = text.split(/\r?\n/).map((raw, i): ChartLine => {
     const t = raw.trim()
     const parsed = parseLine(t)
-    // a context: that is none of the three is kept, like a bad key:, and reported; the analyser detects instead
-    if (typeof parsed !== 'string' && parsed.kind === 'meta' && parsed.key === 'context' && !parseContext(parsed.value))
+    // a context: that is none of the three is kept, like a bad key:, and reported; the analyser detects instead (an
+    // empty one is absent, like an empty key:)
+    if (typeof parsed !== 'string' && parsed.kind === 'meta' && parsed.key === 'context' && parsed.value && !parseContext(parsed.value))
       diagnostics.push({ line: i + 1, message: 'context: functional, modal or blues' })
     if (typeof parsed !== 'string') return parsed
     diagnostics.push({ line: i + 1, message: parsed })

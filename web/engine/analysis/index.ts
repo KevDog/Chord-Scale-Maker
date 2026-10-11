@@ -160,7 +160,7 @@ function statedContext(doc: ChartDoc, problems: Problem[]): ChartContext | null 
   doc.lines.forEach((l, line) => {
     if (l.kind === 'meta' && l.key === 'context') {
       context = parseContext(l.value)
-      if (!context) addProblem(problems, { line, message: `context: ${l.value} is not functional, modal or blues: the context is detected` })
+      if (!context && l.value) addProblem(problems, { line, message: `context: ${l.value} is not functional, modal or blues: the context is detected` })
     }
     if (l.kind === 'meta' && l.key === 'minor') addProblem(problems, { line, message: 'minor: is reserved, and ignored' })
     if (l.kind === 'context') addProblem(problems, { line, message: `@context ${l.section} ${l.bar} ${l.context}: not yet supported: using the chart's context` })
@@ -186,9 +186,11 @@ function prepare(doc: ChartDoc): Prepared | Unkeyed {
   const context = statedCtx ?? detection.context
   const contextSource = statedCtx ? 'stated' : 'detected'
   const stated = parseKey(meta(doc, 'key'))
-  // a blues' I: key:, else the detected blues key, else (a stated blues the detection missed) the root in bar 1
+  // the key: key:, else the detected blues key (whatever the context), else for a stated blues the detection missed
+  // the root in bar 1, else the score
   const bar1 = form.find((e) => e.root)
-  const bluesI = context !== 'blues' ? null : (bluesKey(form, bars ?? span, sections) ?? (bar1?.root ? makeKey(bar1.root, bar1.family === 'minor') : null))
+  const missed = context === 'blues' && bar1?.root ? makeKey(bar1.root, bar1.family === 'minor') : null
+  const bluesI = bluesKey(form, bars ?? span, sections) ?? missed
   const global = stated ?? bluesI ?? scoreKey(stream, cadences)
   const keyFrom = stated ? 'key:' : bluesI ? 'blues' : global ? 'scored' : 'none'
   if (!global) return { global: null, keyFrom, context, contextSource, detection, problems }

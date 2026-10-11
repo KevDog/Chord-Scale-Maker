@@ -67,6 +67,16 @@ describe('a stated context (§2)', () => {
   })
 })
 
+describe('the blues key without key: (§2: stated ?? blues ?? scored)', () => {
+  it('is used whatever the context: a 12-bar Bb blues stated functional or modal is in Bb', () => {
+    for (const c of ['functional', 'modal']) {
+      const a = read(chart('', BLUES_ROWS, `form: A, 12 bars\ncontext: ${c}\n`))
+      expect([a.context, a.key?.name, a.keyFrom], c).toEqual([c, 'Bb major', 'blues'])
+      expect(a.rows.some((r) => r.reason.startsWith('I7 of the blues')), c).toBe(false) // the blues rules are off
+    }
+  })
+})
+
 describe('a stated key beats the blues key (§2)', () => {
   it('a 12-bar Bb7 … Eb7 chart with key: Eb reports E♭', () => {
     const a = read(chart('Eb', BLUES_ROWS, 'form: A, 12 bars\n'))
@@ -84,6 +94,16 @@ describe('what the analysis could not use (§1)', () => {
     const a = read('title: T\nkey: Dm\ncontext: bossa\nA | 1 | Dm7\nA | 9 | EbMaj7\n')
     expect(a.contextSource).toBe('detected')
     expect(a.problems).toEqual([{ line: 2, message: 'context: bossa is not functional, modal or blues: the context is detected' }])
+  })
+
+  it('a context: with a trailing comment is stated', () => {
+    const a = read('title: T\nkey: C\ncontext: modal          # the whole tune\nA | 1 | Dm7\nA | 3 | G7\nA | 5 | CMaj7\n')
+    expect([a.context, a.contextSource, a.problems]).toEqual(['modal', 'stated', []])
+  })
+
+  it('an empty context: is absent: detected, no problem', () => {
+    const a = read('title: T\nkey: Dm\ncontext:\nA | 1 | Dm7\nA | 9 | EbMaj7\n')
+    expect([a.contextSource, a.problems]).toEqual(['detected', []])
   })
 
   it('minor: is reserved, and ignored', () => {
@@ -150,6 +170,8 @@ describe('the report line (§1, §4)', () => {
       'context: functional (detected: 0 of 8 chords in cadences, median chord 2 bars, but 8 of 8 dominant 7ths)',
     )
     expect(contextLine(read(chart('', BLUES_ROWS, 'form: A, 12 bars\n')))).toBe('context: blues (detected: a 12-bar blues, I7 in bar 1 and IV7 in bar 5)')
+    // the dominants are named only when they are what kept the chart from modal
+    expect(contextLine(read(chart('C', '1 A7, 2 D7, 3 G7, 4 CMaj7')))).toBe('context: functional (detected: 4 of 4 chords in cadences, median chord 1 bar)')
     expect(contextLine(read(undeclared('locomotion')))).toBe('context: blues (detected: a blues in the first 12-bar section, I7 in bar 1 and IV7 in bar 5)')
   })
 })
@@ -169,6 +191,25 @@ describe('--ambiguous: a detection within one chord of a threshold (§4)', () =>
     const text = chart('C', '1 EbMaj7, 3 Dm7, 4 G7, 5 CMaj7, 7 AbMaj7, 9 DbMaj7, 11 Em7, 13 Fm7, 15 BbMaj7', 'form: A, 16 bars\n')
     expect(read(text).detection).toMatchObject({ chords: 9, inCadence: 3 })
     expect(ambiguities(read(text))).toContain('context: functional by one chord: 3 of 9 chords in cadences (under a third is modal); consider  context: functional')
+  })
+
+  it('no cadence share flips by one chord from none: a cadence takes two (So What, Impressions, Milestones)', () => {
+    for (const name of ['so_what', 'impressions', 'milestones']) expect(ambiguities(read(undeclared(name))).filter((l) => l.startsWith('context:')), name).toEqual([])
+  })
+
+  it('names the median when one chord would lift it to two bars', () => {
+    const text = chart('C', '1 CMaj7, 2 DbMaj7, 3 EbMaj7, 4 Em7, 6 FMaj7', 'form: A, 8 bars\n')
+    expect(read(text).detection).toMatchObject({ inCadence: 0, medianBars: 1, lengths: [1, 1, 1, 2, 3] })
+    expect(ambiguities(read(text))).toContain('context: functional by one chord: the median chord 1 bar (2 bars or more is modal); consider  context: functional')
+  })
+
+  it('names the dominants when one fewer would let the chart read modal', () => {
+    const text = chart('', '1 Ab7, 3 G7, 5 Gb7, 7 F7, 9 E7, 11 BbMaj7, 13 DbMaj7, 15 Am7, 17 EbMaj7', 'form: A, 18 bars\n')
+    expect(read(text).detection).toMatchObject({ chords: 9, inCadence: 0, medianBars: 2, dominants: 5, oneRoot: false })
+    expect(ambiguities(read(text)).filter((l) => l.startsWith('context:'))).toEqual([
+      'context: functional by one chord: 5 of 9 chords dominant 7ths (over half, on more than one root, is not modal); consider  context: functional',
+    ])
+    expect(contextLine(read(text))).toBe('context: functional (detected: 0 of 9 chords in cadences, median chord 2 bars, but 5 of 9 dominant 7ths)')
   })
 
   it('a detection far from every threshold says nothing', () => {
