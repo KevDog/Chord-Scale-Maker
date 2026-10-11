@@ -53,4 +53,22 @@ describe('ChartTranspose', () => {
     expect(w.emitted('transposed')).toEqual([['Transposed from G minor to B♭ minor.']])
     w.unmount()
   })
+
+  it('rewrites a saved analysis for the new key', async () => {
+    const doc = parseChart('title: T\nkey: Eb\n# analysis: 2026-01-02, rules v1; Eb\nA | 1 | Fm7  # ii of Bb7\nA | 2 | Bb7\nA | 3 | EbMaj7\n').value
+    const w = await mountSuspended(ChartTranspose, { props: { current: () => doc }, attachTo: document.body })
+    await w.find('button').trigger('click')
+    await settle()
+    const to = select('To key')
+    to.value = 'C'
+    to.dispatchEvent(new Event('change'))
+    await settle()
+    button('Transpose')?.click()
+    await settle()
+    const [[out]] = w.emitted('update:doc') as [[typeof doc]]
+    const text = serializeChart(out)
+    expect(text).toContain('# analysis: 2026-01-02, rules v1; C\nA | 1 | Dm7    # ii of the ii–V to C\n')
+    expect(text).not.toMatch(/Eb|Bb7/)
+    w.unmount()
+  })
 })

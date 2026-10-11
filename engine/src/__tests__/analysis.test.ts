@@ -1,15 +1,17 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { analyse, applyAnalysis, parseKey, pins } from '../analysis'
+import { analyse, applyAnalysis, parseKey, pins, refreshAnalysis } from '../analysis'
 import { keyText, makeKey, tonicName } from '../analysis/keys'
 import { hiddenDominant, passingReason } from '../analysis/rules'
 import { familyOf } from '../analysis/stream'
 import { chordTokens } from '../chord'
-import { formPart, parseChart, serializeChart } from '../chart'
+import { type ChartDoc, formPart, parseChart, serializeChart } from '../chart'
+import { setMeta } from '../edit'
 import { scaleAtLevel } from '../levels'
 import { CONCERT, writtenScale } from '../part'
 import { parseRoot, pcOf } from '../pitch'
 import { readChord, resolveQuality } from '../qualities'
+import { transposeChart } from '../transpose'
 import { isSyncCopy } from '../util'
 
 describe('analyse', () => {
@@ -737,5 +739,34 @@ describe('stated functions and @key (docs/superpowers/specs/2026-10-09-chart-fun
     expect(out).toContain('@key A 1 C\n')
     expect(out).toMatch(/A \| 2 \| D7\s+\| D Lydian Dominant\s+\| V7\/V\s+# ≠ rules: D Mixolydian/)
     expect(overrides.map((o) => `${o.chord}: ${o.scale} / ${o.rules}`)).toEqual(['D7: D Lydian Dominant / D Mixolydian'])
+  })
+})
+
+describe('refreshAnalysis', () => {
+  const comments = (doc: ChartDoc): string[] =>
+    doc.lines.flatMap((l) => (l.kind === 'comment' ? [l.text] : l.kind === 'row' && l.comment ? [l.comment] : []))
+  const moved = (text: string, from: string, to: string): ChartDoc => setMeta(transposeChart(parseChart(text).value, from, to).doc, 'key', to)
+
+  it('rewrites a transposed chart’s analysis for its new key, keeping the header’s date', () => {
+    const doc = refreshAnalysis(moved(library('round_midnight'), 'Ebm', 'Cm'))
+    const text = comments(doc)
+    expect(text).toContain('# analysis: 2026-10-11, rules v1; C minor')
+    expect(text).toContain('# area: C minor (bars 1–3)')
+    expect(text).toContain('# area: C major (bars 3–4)')
+    expect(text).toContain('# area: Eb major (bars 5–6)') // was Gb major
+    expect(doc.lines.find((l) => l.kind === 'row' && l.chord === 'F7b9')).toMatchObject({ comment: expect.stringMatching(/^IV7 in C minor/) })
+    expect(text.filter((t) => /\b(Gb|Ab minor)\b/.test(t))).toEqual([])
+    expect(serializeChart(doc)).toBe(serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'none', save: true, date: '2026-10-11' }).doc))
+  })
+
+  it('leaves a chart without an analysis header as it is: its comments are the user’s', () => {
+    const doc = moved('key: Eb\nA | 1 | Fm7  # my own note on Eb\nA | 2 | Bb7\n', 'Eb', 'C')
+    expect(refreshAnalysis(doc)).toBe(doc)
+  })
+
+  it('keeps a # keep: row’s comment as written', () => {
+    const text = 'key: Eb\n# analysis: 2026-01-02, rules v1; Eb\nA | 1 | Fm7 | F Phrygian  # keep: the melody’s Gb in Eb\nA | 2 | Bb7\nA | 3 | EbMaj7\n'
+    const row = refreshAnalysis(moved(text, 'Eb', 'C')).lines.find((l) => l.kind === 'row' && l.chord === 'Dm7')
+    expect(row).toMatchObject({ scale: 'D Phrygian', comment: 'keep: the melody’s Gb in Eb' })
   })
 })
