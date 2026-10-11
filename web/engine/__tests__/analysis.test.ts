@@ -4,8 +4,10 @@ import { analyse, applyAnalysis, parseKey, pins } from '../analysis'
 import { keyText, makeKey, tonicName } from '../analysis/keys'
 import { hiddenDominant, passingReason } from '../analysis/rules'
 import { familyOf } from '../analysis/stream'
+import { chordTokens } from '../chord'
 import { formPart, parseChart, serializeChart } from '../chart'
 import { scaleAtLevel } from '../levels'
+import { CONCERT, writtenScale } from '../part'
 import { parseRoot, pcOf } from '../pitch'
 import { readChord, resolveQuality } from '../qualities'
 import { isSyncCopy } from '../util'
@@ -205,15 +207,54 @@ describe('reasons from the sources (docs/superpowers/specs/2026-10-10-analysis-r
 
   it('d1 R3b: a °7 a half step below the next chord’s bass ascends to it (♯II°7 to I/3, fig. 7.9)', () => {
     expect(reasoned(chart('Ab', '1 Bbm7, 2 Bdim7, 3 Ab/C, 4 Bbm7'), '2 Bdim7')).toBe('B Diatonic Diminished (d1): vii°7 to Ab/C, up to its bass: G7♭9 without its root')
-    expect(verdict(chart('Bb', '1 Cm7, 2 Dbdim7, 3 Bb/D, 4 Cm7'), '2 Dbdim7')).toBe('Db Diatonic Diminished (d1)')
+    expect(verdict(chart('Bb', '1 Cm7, 2 Dbdim7, 3 Bb/D, 4 Cm7'), '2 Dbdim7')).toBe('C# Diatonic Diminished (d1)')
   })
 
-  it('d1 R7: a Q5 reason past the chart-comment limit drops the "(X its ii)" aside', () => {
-    const r = reasoned(chart('Bb', '1 Bb7, 2 Eb7, 2 Edim7, 3 Cm7, 3 F7, 4 Bb6'), '2 Edim7')
-    expect(r).toBe("E Whole-Half Diminished (d1): passing diminished: C7♭9 without its C, the F7's dominant; not functioning diatonically: the symmetric scale")
+  it('d1 R7: a Q5 comment past the chart-comment limit drops the "(X its ii)" aside, and any comment is cut to fit', () => {
+    const text = chart('Bb', '1 Bb7, 2 Eb7, 2 Edim7, 3 Cm7, 3 F7, 4 Bb6')
+    const saved = (t: string, scales: 'fill' | 'force') => {
+      const doc = parseChart(t).value
+      return parseChart(serializeChart(applyAnalysis(doc, analyse(doc), { scales, save: true, date: '2026-10-10' }).doc))
+    }
+    const bare = saved(text, 'force')
+    expect(bare.diagnostics).toEqual([])
+    expect(bare.value.lines.find((l) => l.kind === 'row' && l.chord === 'Edim7')).toMatchObject({ comment: "passing diminished: C7♭9 without its C, the F7's dominant; not functioning diatonically: the symmetric scale" })
+    // a written scale the rules disagree with wraps the reason ("≠ rules: …"): still within the limit
+    const differs = saved(text.replace('A | 2 | Edim7', 'A | 2 | Edim7 | E Diatonic Diminished #IV'), 'fill')
+    expect(differs.diagnostics).toEqual([])
+    const comment = differs.value.lines.find((l) => l.kind === 'row' && l.chord === 'Edim7')
+    expect(comment).toMatchObject({ scale: 'E Diatonic Diminished #IV', comment: expect.stringMatching(/^≠ rules: E Whole-Half Diminished \(passing diminished: .*…\)$/) })
     for (const name of ['body_and_soul', 'rhythm_changes']) expect(parseChart(library(name)).diagnostics, name).toEqual([])
     expect(verdict(library('body_and_soul'), '22 Ebdim7')).toBe('Eb Whole-Half Diminished (d1)')
     expect(verdict(library('rhythm_changes'), '14 Edim7')).toBe('E Whole-Half Diminished (d1)')
+  })
+
+  it('d1 R9: a °7’s scale root is spelled by the project rule, on the concert sheet too (no double accidental, no B♯ E♯ C♭ F♭)', () => {
+    const ugly = (n: { letter: number; acc: number }) => Math.abs(n.acc) > 1 || (n.acc === 1 && (n.letter === 2 || n.letter === 6)) || (n.acc === -1 && (n.letter === 0 || n.letter === 3))
+    const cases: [string, string, string][] = [
+      ['below_zero', '26 Ebdim7', 'D# Diatonic Diminished'],
+      ['meditation', '6 Ebdim7', 'D# Diatonic Diminished'],
+      ['meditation', '30 Ebdim7', 'D# Diatonic Diminished'],
+      ['slow_boat_to_china', '4 Dbdim7', 'C# Diatonic Diminished'],
+      ['slow_boat_to_china', '20 Dbdim7', 'C# Diatonic Diminished'],
+      ['all_the_things_you_are', '32 Bdim7', 'B Diatonic Diminished'], // ♭III°7 lettered as ♯II°7 (fig. 7.22's pitches)
+      ['baubles_bangles_and_beads', '4 Bdim7', 'B Diatonic Diminished'],
+      ['our_delight', '7 Bdim7', 'B Diatonic Diminished'],
+      ['our_delight', '15 Bdim7', 'B Diatonic Diminished'],
+      ['our_delight', '31 Bdim7', 'B Diatonic Diminished'],
+      ['body_and_soul', '4 Edim7', 'E Diatonic Diminished'],
+      ['body_and_soul', '12 Edim7', 'E Diatonic Diminished'],
+      ['body_and_soul', '28 Edim7', 'E Diatonic Diminished'],
+    ]
+    for (const [name, barChord, want] of cases) {
+      const scale = verdict(library(name), barChord)?.replace(/ \(d1\)$/, '') ?? ''
+      expect(scale, `${name} ${barChord}`).toBe(want)
+      expect(writtenScale(CONCERT, scale).notes.filter(ugly), `${name} ${barChord}`).toEqual([])
+    }
+    // the chord symbol follows its scale's spelling where they share a root (CLAUDE.md)
+    expect(chordTokens(CONCERT, 'Ebdim7', 'D# Diatonic Diminished')).toEqual([{ kind: 'text', text: 'D' }, { kind: 'acc', acc: '#' }, { kind: 'text', text: 'dim7' }])
+    // a C♭ root never reaches a scale it can't spell
+    expect(verdict(chart('C', '1 CMaj7, 2 Cbdim7, 3 Cm7'), '2 Cbdim7')).toBe('B Diatonic Diminished (d1)')
   })
 
   it('d1 R3b: a °7 the figures don’t cover is not functioning diatonically: Whole-Half (Q5)', () => {

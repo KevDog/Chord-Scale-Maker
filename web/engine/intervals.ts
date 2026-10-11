@@ -28,8 +28,13 @@ const SUS = new Set(['7sus4', '7sus4b9'])
  * quality is the canonical chord quality (resolveQuality), or null if unknown: on chords with a
  * major 3rd a minor 3rd is #9; sus chords have a 4, not an 11; sixth chords a 6, not a 13.
  */
+/** a dim7's notes by semitone, whatever the scale's letters (♭VI°7 spells its ♭3 C♯ over B♭): M&H's labels */
+const DIM7 = ['1', 'b9', '9', 'b3', '3', '11', 'b5', '5', 'b13', 'bb7', 'b7', '7'] as const
+
 export function intervalLabel(root: Spelled, note: Spelled, quality: string | null): string {
+  if (quality === 'dim7') return DIM7[mod(pcOf(note) - pcOf(root), 12)] ?? '?'
   const { steps, acc } = interval(root, note)
+  if (steps === 0 && acc === -1) return '7' // a ♭8 (C over C♯) is the major 7th
   if (steps === 2 && acc === -1 && quality !== null && MAJOR_THIRD.has(quality)) return '#9'
   if (steps === 3 && acc === 0 && quality !== null && SUS.has(quality)) return '4'
   if (steps === 5 && acc === 0 && quality !== null && SIXTH.has(quality)) return '6'

@@ -8,7 +8,7 @@ import { parseScale, sameScale, scaleKey, simplifyRoot, spellFrom } from './scal
 /**
  * The Level control: how sophisticated each chord's scale is, written into the chart. Standard is the quality's
  * default (chord_scales.json); Basic and Advanced are the options tagged `level`, falling back to the default where a
- * quality has none; Random picks among the quality's inside options, repeatably from a seed. A row whose Standard is
+ * quality has none; Random picks among the quality's inside options (not one that fits a single function), repeatably from a seed. A row whose Standard is
  * not its quality's default (the analysis chose it: D7 → D Phrygian Dominant) climbs that scale's ladder instead
  * (chord_scales.json `ladders`, docs/plan-analysis.md §11), so Basic over a V7 of a minor chord is the minor key's
  * pentatonic, not the major one. A tonic minor chord (the analysis's rule m5) is Aeolian at Basic, the natural
@@ -79,7 +79,7 @@ export function scaleAtLevel(chord: string, level: ScaleLevel, seed = 0, key = '
   if (level === 'standard') return standard || def.scale
   if ((level === 'basic' || level === 'advanced') && standard && !sameScale(standard, def.scale)) return ladderScale(standard, level, match?.quality) ?? def.scale
   if (level === 'random') {
-    const pool = options.filter((o) => !o.outside)
+    const pool = options.filter((o) => !o.outside && !o.functional)
     return pool[Math.floor(seededUnit(seed, key) * pool.length)]?.scale ?? def.scale
   }
   return options.find((o) => o.level === level)?.scale ?? def.scale

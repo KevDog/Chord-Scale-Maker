@@ -41,6 +41,17 @@ describe('practice keys', () => {
   })
 })
 
+describe('practice on a diminished seventh chord (R3b)', () => {
+  it('keys its chord tones by semitone, so the presets light 1 ♭3 ♭5 °7 whatever the scale’s letters', () => {
+    const [wave] = staves([row('Bbdim7', 'Bb Diatonic Diminished bVI')], 'root', { preset: 'chordTones' })
+    expect(wave?.keys).toEqual(['1', '#1', 'b3', '3', 'b5', '#5', 'bb7', '7'])
+    expect(picked(wave ? [wave] : [])).toEqual([['Bb', 'C#', 'E', 'G']])
+    const [tensions] = staves([row('Bbdim7', 'Bb Diatonic Diminished bVI')], 'root', { preset: 'tensions' })
+    expect(picked(tensions ? [tensions] : [])).toEqual([['B', 'D', 'F#', 'A']])
+    expect(staves([row('C#dim7', 'C# Diatonic Diminished')], 'root')[0]?.keys).toEqual(['1', 'b2', 'b3', 'b4', 'b5', 'b6', 'bb7', '7'])
+  })
+})
+
 describe('practice selection', () => {
   it('is off unless asked for', () => {
     expect(staves([row('Dm7')], 'root')[0]?.selected).toBeNull()

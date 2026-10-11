@@ -148,5 +148,8 @@ describe('scale levels', () => {
     const shuffled = relevel(relevel(doc, at('standard'), at('random', 1)).doc, at('random', 1), at('random', 2)).doc
     expect(scales(shuffled)).toEqual(dealt(2)) // Shuffle: every random pick moves to the new deal
     for (const k of ['a', 'b', 'c']) expect(seededUnit(9, k)).toBeGreaterThanOrEqual(0)
+    // a function's own diatonic diminished scale is never dealt at random (R10)
+    const dims = parseChart(Array.from({ length: 24 }, (_, i) => `A | ${i + 1} | Cdim7`).join('\n')).value
+    for (const seed of [1, 2, 3]) for (const s of scales(relevel(dims, at('standard'), at('random', seed)).doc)) expect(s).not.toMatch(/Diatonic Diminished/)
   })
 })

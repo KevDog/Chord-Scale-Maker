@@ -1,5 +1,5 @@
-import { LIMITS } from '../limits'
 import { proseGlyphs, rootName, shiftBy } from '../pitch'
+import { samePitches, scaleKey, simplifyRoot, spellsCleanly } from '../scales'
 import { degree, diatonic, hasRelatedII, impliedDiatonic, isDominantLike, type Key, keyText, makeKey, reference, tonicName } from './keys'
 import { ownNumeral, roman } from './degrees'
 import { bassOf, bassPc, downFifth, downHalf, type Entry, type Family, interval, nextOf, prevOf } from './stream'
@@ -18,8 +18,11 @@ export type Context = Readonly<{
   modal: boolean
 }>
 
-/** one chord's verdict: null scale when no rule reaches it; fallback: the rules could only guess (an author's function would settle it) */
-export type Decision = Readonly<{ scale: string | null; rule: string; fn: string; reason: string; fallback?: true }>
+/**
+ * one chord's verdict: null scale when no rule reaches it; fallback: the rules could only guess (an author's function
+ * would settle it); short: the reason without an aside, for a chart comment that would pass the limit (R7)
+ */
+export type Decision = Readonly<{ scale: string | null; rule: string; fn: string; reason: string; fallback?: true; short?: string }>
 
 // —— names ——
 
@@ -356,6 +359,23 @@ export function hiddenDominant(dim: number, next: Neighbour | undefined, after: 
 export const passingReason = (h: Hidden | null): string =>
   h ? `passing diminished: ${h.root}7♭9 without its ${h.root}, the ${h.target}'s dominant${h.ii ? ` (${h.ii} its ii)` : ''}` : 'passing diminished: a rootless dominant ♭9'
 
+/**
+ * R9: a °7's scale on the root the project rule spells best (simplifyRoot: E♭°7 ascending is D♯ Diatonic Diminished);
+ * where no root spells the function's formula cleanly, the ascending formula's lettering of the same notes, as M&H
+ * print ♭III°7 as ♯II°7 (fig. 7.22: B°7 in A♭ is B C D E♭ F G A♭ B♭, not C♭ C E𝄫 E♭ …)
+ */
+function dimScale(e: Entry, name: string): string {
+  if (!e.root) return named(e, name)
+  const key = scaleKey(name)
+  const root = simplifyRoot(e.root, key)
+  const ascending = scaleKey(NAME.diatonicDim)
+  if (!spellsCleanly(root, key) && key !== ascending && samePitches(key, ascending)) {
+    const alt = simplifyRoot(e.root, ascending)
+    if (spellsCleanly(alt, ascending)) return `${rootName(alt)} ${NAME.diatonicDim}`
+  }
+  return `${rootName(root)} ${name}`
+}
+
 /** Q5: a °7 M&H's figures don't cover keeps the symmetric scale (N&G p. 114) */
 const SYMMETRIC = '; not functioning diatonically: the symmetric scale'
 
@@ -374,18 +394,17 @@ function diminished(ctx: Context, i: number): Decision {
   const n = nextOf(ctx.stream, i)
   const d = interval(key.tonic, e.pc)
   /** the figure's scale on this degree of a major key, or Whole-Half with Q5's reason */
-  const byDegree = (figures: Readonly<Record<number, string>>, reason: string, short = reason): Pick<Decision, 'scale' | 'reason'> => {
+  const byDegree = (figures: Readonly<Record<number, string>>, reason: string, short?: string): Pick<Decision, 'scale' | 'reason' | 'short'> => {
     const variant = key.minor ? undefined : figures[d]
-    if (variant) return { scale: named(e, `${NAME.diatonicDim} ${variant}`), reason }
-    // R7: past the chart-comment limit, the shorter reason
-    return { scale: named(e, NAME.wholeHalf), reason: `${reason}${SYMMETRIC}`.length > LIMITS.maxMeta ? `${short}${SYMMETRIC}` : `${reason}${SYMMETRIC}` }
+    if (variant) return { scale: dimScale(e, `${NAME.diatonicDim} ${variant}`), reason }
+    return { scale: dimScale(e, NAME.wholeHalf), reason: `${reason}${SYMMETRIC}`, ...(short ? { short: `${short}${SYMMETRIC}` } : {}) }
   }
   // auxiliary: the next chord is on its own root, whatever came before (C7 | C°7 | C6, G°7 | G7)
   if (n && n.pc === e.pc) return { ...byDegree({ 0: 'I', 7: 'V' }, 'auxiliary diminished: it decorates the chord and returns to it'), rule: 'd1', fn: 'auxiliary diminished' }
   if (!key.minor && d === 6 && e.root && n && n.pc === key.tonic && (n.family === 'major' || n.family === 'dominant')) {
     // ♯IV°7 to I (I/5 above all): an inversion of ♯II°7, the V7/iii's 3rd, 5th, 7th and ♭9
     const fn = `♯IV°7 to I${interval(n.pc, bassPc(n)) === 7 ? ' over its 5th' : ''}`
-    return { scale: named(e, `${NAME.diatonicDim} #IV`), rule: 'd1', fn, reason: `${fn}: ${rootName(shiftBy(e.root, 3, 5))}7♭9 without its root, the ♯II°7's notes` }
+    return { scale: dimScale(e, `${NAME.diatonicDim} #IV`), rule: 'd1', fn, reason: `${fn}: ${rootName(shiftBy(e.root, 3, 5))}7♭9 without its root, the ♯II°7's notes` }
   }
   const hidden = hiddenDominant(e.pc, n, nextOf(ctx.stream, ctx.stream[i]?.next))
   if (ascends(e, n)) {
@@ -393,13 +412,14 @@ function diminished(ctx: Context, i: number): Decision {
     const bass = bassOf(n)
     if (bassPc(n) !== n.pc && bass) {
       const fn = `vii°7 to ${n.chord}, up to its bass`
-      return { scale: named(e, NAME.diatonicDim), rule: 'd1', fn, reason: `${fn}: ${rootName(shiftBy(bass, 4, 7))}7♭9 without its root` }
+      return { scale: dimScale(e, NAME.diatonicDim), rule: 'd1', fn, reason: `${fn}: ${rootName(shiftBy(bass, 4, 7))}7♭9 without its root` }
     }
     const fn = `vii°7 of ${n.chord}`
-    return { scale: named(e, NAME.diatonicDim), rule: 'd1', fn, reason: `${fn}: ${hidden?.root ?? 'its V'}7♭9 without its root` }
+    return { scale: dimScale(e, NAME.diatonicDim), rule: 'd1', fn, reason: `${fn}: ${hidden?.root ?? 'its V'}7♭9 without its root` }
   }
-  const reason = passingReason(hidden)
-  return { ...byDegree({ 3: 'bIII', 8: 'bVI' }, reason, hidden ? passingReason({ root: hidden.root, target: hidden.target }) : reason), rule: 'd1', fn: 'passing diminished', fallback: true }
+  // R7: the "(X its ii)" aside is what a chart comment drops first
+  const short = hidden?.ii ? passingReason({ root: hidden.root, target: hidden.target }) : undefined
+  return { ...byDegree({ 3: 'bIII', 8: 'bVI' }, passingReason(hidden), short), rule: 'd1', fn: 'passing diminished', fallback: true }
 }
 
 function sus(ctx: Context, i: number): Decision {

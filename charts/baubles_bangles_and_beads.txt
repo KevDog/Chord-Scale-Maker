@@ -15,7 +15,7 @@ A | 2  | Eb9    | Eb Mixolydian                # V7 of Ab: natural tensions
 A | 3  | AbMaj7 | Ab Ionian                    # tonic: the 4th is in the key
 A | 4  | Fm7    | F Aeolian                    # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A | 4  | Cm7    | C Phrygian                   # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 4  | Bdim7  | B Diatonic Diminished bIII   # passing diminished: Bb7♭9 without its Bb, the Eb9's dominant (Bbm7 its ii)
+A | 4  | Bdim7  | B Diatonic Diminished        # passing diminished: Bb7♭9 without its Bb, the Eb9's dominant (Bbm7 its ii)
 A | 5  | Bbm7   | Bb Dorian                    # ii of the ii–V to Ab
 A | 6  | Eb9    | Eb Mixolydian                # V7 of Ab: natural tensions
 A | 7  | AbMaj7 | Ab Ionian                    # tonic: the 4th is in the key

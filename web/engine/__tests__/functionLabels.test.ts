@@ -280,7 +280,7 @@ describe('L4 diminished numerals by direction', () => {
 
   it('a °7 ascending to the next chord’s bass prints sharp-side, like its scale (♯II°7 to I/3)', () => {
     expect(label(row('Ab', 'Bbm7 | Bdim7 | Ab/C', 'Bdim7'))).toMatchObject({ numeral: '♯ii°7', scale: 'B Diatonic Diminished', rule: 'd1' })
-    expect(label(row('Bb', 'Cm7 | Dbdim7 | Bb/D', 'Dbdim7'))).toMatchObject({ numeral: '♯ii°7', scale: 'Db Diatonic Diminished', rule: 'd1' })
+    expect(label(row('Bb', 'Cm7 | Dbdim7 | Bb/D', 'Dbdim7'))).toMatchObject({ numeral: '♯ii°7', scale: 'C# Diatonic Diminished', rule: 'd1' })
   })
 
   it('a descending one prints flat-side, as before', () => {

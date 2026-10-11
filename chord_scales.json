@@ -1,5 +1,5 @@
 {
-  "$schema_note": "Chord-scale options keyed by chord quality. Each option's root is an interval above the chord root ('1' = same root). Scale names match SCALES in web/engine/scales.ts. The first option with default=true is used when a chart row omits the scale. outside=true marks a deliberate outside sound (tension to resolve); the editor lists those separately. level=basic|advanced marks a quality's simpler or richer choice for the Level control (the default is Standard; a quality without one keeps its default). slash_chords: a chord of `quality` whose bass is the interval `bass` above its root takes its scale options from quality `as` on the bass note (the chord symbol itself is unchanged). ladders: when a row's Standard scale is not its quality's default (the analysis chose it: D7 → D Phrygian Dominant), the Level control takes Basic and Advanced from the Standard scale's ladder instead of the quality's level tags; each rung is [interval above the Standard root, scale], and a missing rung keeps the Standard scale (docs/plan-analysis.md §11). quality_ladders: per-quality overrides of a ladder (m and m7 on Phrygian: Dorian at Advanced, where sus ♭9 keeps Dorian ♭2; a tonic m6 on Melodic Minor stays there at Advanced, as Harmonic Minor's ♭6 would clash with its 6th).",
+  "$schema_note": "Chord-scale options keyed by chord quality. Each option's root is an interval above the chord root ('1' = same root). Scale names match SCALES in web/engine/scales.ts. The first option with default=true is used when a chart row omits the scale. outside=true marks a deliberate outside sound (tension to resolve); the editor lists those separately. level=basic|advanced marks a quality's simpler or richer choice for the Level control (the default is Standard; a quality without one keeps its default). functional=true marks a scale that fits one function only (a °7's diatonic diminished scales): offered in the menu, never dealt by the Random level. slash_chords: a chord of `quality` whose bass is the interval `bass` above its root takes its scale options from quality `as` on the bass note (the chord symbol itself is unchanged). ladders: when a row's Standard scale is not its quality's default (the analysis chose it: D7 → D Phrygian Dominant), the Level control takes Basic and Advanced from the Standard scale's ladder instead of the quality's level tags; each rung is [interval above the Standard root, scale], and a missing rung keeps the Standard scale (docs/plan-analysis.md §11). quality_ladders: per-quality overrides of a ladder (m and m7 on Phrygian: Dorian at Advanced, where sus ♭9 keeps Dorian ♭2; a tonic m6 on Melodic Minor stays there at Advanced, as Harmonic Minor's ♭6 would clash with its 6th).",
   "quality_aliases": {
     "maj": ["", "M", "ma", "major"],
     "m": ["-", "mi", "min"],
@@ -150,15 +150,15 @@
     ],
     "dim7": [
       { "root": "1",  "scale": "Whole-Half Diminished", "default": true },
-      { "root": "1",  "scale": "Diatonic Diminished",   "note": "an ascending vii°7: the V7♭9♯9♭13 of the chord it leads to" },
-      { "root": "1",  "scale": "Diatonic Diminished bIII", "note": "a passing ♭III°7: its chord tones plus the key's notes" },
-      { "root": "1",  "scale": "Diatonic Diminished bIII optional", "note": "♭III°7 with the 9, common with the ii it falls to" },
-      { "root": "1",  "scale": "Diatonic Diminished bVI", "note": "a passing ♭VI°7: its chord tones plus the key's notes" },
-      { "root": "1",  "scale": "Diatonic Diminished I", "note": "an auxiliary I°7: its chord tones plus the key's notes" },
-      { "root": "1",  "scale": "Diatonic Diminished I optional", "note": "I°7 with the 11 in place of the 3" },
-      { "root": "1",  "scale": "Diatonic Diminished V", "note": "an auxiliary V°7: its chord tones plus the key's notes" },
-      { "root": "1",  "scale": "Diatonic Diminished #IV", "note": "♯IV°7 to I over its 5th: the ♯II°7's notes" },
-      { "root": "1",  "scale": "Diatonic Diminished #IV optional", "note": "♯IV°7 with the major 7th (a blues)" },
+      { "root": "1",  "scale": "Diatonic Diminished",   "note": "an ascending vii°7: the V7♭9♯9♭13 of the chord it leads to", "functional": true },
+      { "root": "1",  "scale": "Diatonic Diminished bIII", "note": "a passing ♭III°7: its chord tones plus the key's notes", "functional": true },
+      { "root": "1",  "scale": "Diatonic Diminished bIII optional", "note": "♭III°7 with the 9, common with the ii it falls to", "functional": true },
+      { "root": "1",  "scale": "Diatonic Diminished bVI", "note": "a passing ♭VI°7: its chord tones plus the key's notes", "functional": true },
+      { "root": "1",  "scale": "Diatonic Diminished I", "note": "an auxiliary I°7: its chord tones plus the key's notes", "functional": true },
+      { "root": "1",  "scale": "Diatonic Diminished I optional", "note": "I°7 with the 11 in place of the 3", "functional": true },
+      { "root": "1",  "scale": "Diatonic Diminished V", "note": "an auxiliary V°7: its chord tones plus the key's notes", "functional": true },
+      { "root": "1",  "scale": "Diatonic Diminished #IV", "note": "♯IV°7 to I over its 5th: the ♯II°7's notes", "functional": true },
+      { "root": "1",  "scale": "Diatonic Diminished #IV optional", "note": "♯IV°7 with the major 7th (a blues)", "functional": true },
       { "root": "b2", "scale": "Harmonic Minor",    "note": "dim7 as vii of the minor key a half step up" }
     ]
   },

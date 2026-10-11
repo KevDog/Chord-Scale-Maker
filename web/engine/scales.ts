@@ -171,6 +171,15 @@ export function simplifyRoot(n: Spelled, key: ScaleKey = 'ionian'): Spelled {
   return minBy(enharmonics(n), cost)
 }
 
+/** the scale spells cleanly on this root: no double accidental, no B♯ E♯ C♭ F♭ */
+export const spellsCleanly = (root: Spelled, key: ScaleKey): boolean => !spellFrom(root, SCALES[key][0]).some(isUgly)
+
+/** two formulas with the same notes, lettered differently (♭III°7's and the ascending diatonic diminished) */
+export function samePitches(a: ScaleKey, b: ScaleKey): boolean {
+  const pcs = (k: ScaleKey): string => [...new Set(spellFrom({ letter: 0, acc: 0 }, SCALES[k][0]).map((n) => mod(n.semis, 12)))].sort((x, y) => x - y).join()
+  return pcs(a) === pcs(b)
+}
+
 const isScaleKey = (k: string): k is ScaleKey => Object.hasOwn(SCALES, k)
 
 /** scale name ("Half-Whole Dim.", "hw", "Locrian ♮2") -> SCALES key */

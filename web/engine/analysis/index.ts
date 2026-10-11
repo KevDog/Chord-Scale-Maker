@@ -1,4 +1,5 @@
 import { type ChartDoc, type ChartLine, expandRowLines, type LinedRow } from '../chart'
+import { LIMITS } from '../limits'
 import { pcOf, rootName, shiftBy, type Spelled } from '../pitch'
 import { sameScale } from '../scales'
 import { bluesKey, findCadences, isModal, type Key, keyText, localKeys, parseKey, sameKey, scoreKey } from './keys'
@@ -284,8 +285,11 @@ export function applyAnalysis(
       if (!isKept(l)) {
         const differs = r.scale && row.scale && !sameScale(row.scale, r.scale)
         const repeat = conflicts.find((c) => c.line === i)
-        const base = differs ? `≠ rules: ${r.scale} (${r.reason})` : r.held ? undefined : r.reason
-        const reason = repeat ? `${base ?? r.reason}; the repeat at bar ${repeat.bar} would be ${repeat.copy}` : base
+        const compose = (why: string): string | undefined => {
+          const base = differs ? `≠ rules: ${r.scale} (${why})` : r.held ? undefined : why
+          return repeat ? `${base ?? why}; the repeat at bar ${repeat.bar} would be ${repeat.copy}` : base
+        }
+        const reason = fitComment(compose, r.short ? [r.reason, r.short] : [r.reason])
         const { comment: _, ...bare } = row
         row = reason === undefined ? bare : { ...bare, comment: reason }
       }
@@ -301,6 +305,24 @@ export function applyAnalysis(
     out.splice(at, 0, { kind: 'comment', text: unchanged && old?.kind === 'comment' ? old.text : header })
   }
   return { doc: { lines: out }, changes, conflicts }
+}
+
+/**
+ * R7: the first reason whose comment fits the chart's limit (LIMITS.maxMeta); else the last, cut short with "…" so
+ * the comment still fits (a chart with a longer comment doesn't parse)
+ */
+function fitComment(compose: (why: string) => string | undefined, reasons: readonly string[]): string | undefined {
+  for (const why of reasons) {
+    const c = compose(why)
+    if (c === undefined || c.length <= LIMITS.maxMeta) return c
+  }
+  const last = reasons[reasons.length - 1] ?? ''
+  for (let n = last.length - 1; n > 0; n--) {
+    const c = compose(`${last.slice(0, n).trimEnd()}…`)
+    if (c === undefined || c.length <= LIMITS.maxMeta) return c
+  }
+  const c = compose('…')
+  return c === undefined || c.length <= LIMITS.maxMeta ? c : `${c.slice(0, LIMITS.maxMeta - 1)}…`
 }
 
 const withoutHeader = (lines: readonly ChartLine[]): ChartLine[] => lines.filter((l) => !(l.kind === 'comment' && /^#\s*analysis:/.test(l.text)))

@@ -26,4 +26,11 @@ describe('interval labels', () => {
     expect(intervalLabel(parseRoot('C'), parseRoot('Bbb'), 'dim7')).toBe('bb7')
     expect(intervalLabel(parseRoot('C'), parseRoot('G#'), '7alt')).toBe('#5')
   })
+
+  it('names a dim7’s notes by semitone whatever the scale’s letters, as M&H label them (R3b)', () => {
+    expect(labels('Bb', 'Bb B C# D E F# G A', 'dim7')).toEqual(['1', 'b9', 'b3', '3', 'b5', 'b13', 'bb7', '7']) // Wave's ♭VI°7 (fig. 7.27)
+    expect(labels('C#', 'C# D E F G A Bb C', 'dim7')).toEqual(['1', 'b9', 'b3', '3', 'b5', 'b13', 'bb7', '7']) // ascending: its top note is T7
+    expect(labels('C', 'C D Eb F Gb G A B', 'dim7')).toEqual(['1', '9', 'b3', '11', 'b5', '5', 'bb7', '7']) // I°7, optional (fig. 7.31)
+    expect(intervalLabel(parseRoot('C#'), parseRoot('C'), 'm7')).toBe('7') // a ♭8 is a 7 on any chord
+  })
 })
