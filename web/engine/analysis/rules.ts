@@ -149,7 +149,8 @@ function chainEnd(ctx: Context, i: number): Entry | undefined {
 
 /**
  * a dominant link on its way into the key's own V7 (a dominant on degree V of its local key): 'link' when the next
- * chord is that V7 (V7/V), 'arrow' when a later link of its chain is (→); null for a chain that never reaches it
+ * chord is that V7 (V7/V), 'arrow' when a later link of its chain is (→); null for a chain that never reaches it, or
+ * one a sus breaks (A7 D7sus4 G7)
  */
 export function towardV7(ctx: Context, i: number): 'link' | 'arrow' | null {
   const e = ctx.stream[i]
@@ -159,8 +160,8 @@ export function towardV7(ctx: Context, i: number): 'link' | 'arrow' | null {
   let j: number | null = i
   for (let step = 0; step < ctx.stream.length && j !== null; step++) {
     const n = nextOf(ctx.stream, j)
-    if (!n || !downFifth(here, n) || !isDominantLike(n)) return null
-    if (n.family === 'dominant' && interval(key.tonic, n.pc) === 7) return step === 0 ? 'link' : 'arrow'
+    if (!n || !downFifth(here, n) || n.family !== 'dominant') return null // a sus breaks the chain: no arrow before it
+    if (interval(key.tonic, n.pc) === 7) return step === 0 ? 'link' : 'arrow'
     here = n
     j = ctx.stream[j]?.next ?? null
   }
@@ -332,7 +333,7 @@ function sus(ctx: Context, i: number): Decision {
       reason: b13 ? `V7sus4 of ${n.chord}: the b13 is in the key` : `V7sus4 of ${n.chord}: natural tensions`,
     }
   }
-  if (n && n.pc === e.pc && n.family === 'dominant') {
+  if (!ctx.modal && n && n.pc === e.pc && n.family === 'dominant') {
     const own = ownNumeral(e, key)
     return { scale: named(e, NAME.mixolydian), rule: 's3', fn: `${own} before its dominant: a subdominant suspension`, reason: `${own} before its dominant: Mixolydian, the 4th is a chord tone here` }
   }
@@ -403,7 +404,7 @@ export const RULES: readonly RuleInfo[] = [
   { id: 'd1', family: 'dim', tier: 4, scale: 'Whole-Half Diminished', looksAt: 'the next chord', summary: 'A diminished seventh chord (a vii°7 leading up a half step, an auxiliary that returns to a chord on its own root, or a passing one) is Whole-Half Diminished.', guess: 'a passing diminished chord' },
   { id: 's1', family: 'sus', tier: 1, scale: 'Phrygian', looksAt: 'a b9 in the symbol', summary: 'A sus b9 is Phrygian.' },
   { id: 's2', family: 'sus', tier: 4, scale: 'Mixolydian or Mixolydian b6', looksAt: 'the next chord, a fifth down (in a chart that is not modal, held under four bars)', summary: 'A resolving sus takes its 13 from the key: Mixolydian, or Mixolydian b6 when the key holds the b13.' },
-  { id: 's3', family: 'sus', tier: 4, scale: 'Mixolydian', looksAt: 'no resolution: a modal chart, a sus held four bars or more, or none that falls a fifth; or the dominant on its own root next', summary: 'A static sus is Mixolydian; so is a sus before its dominant on the same root, a subdominant suspension (its 4th a chord tone).' },
+  { id: 's3', family: 'sus', tier: 4, scale: 'Mixolydian', looksAt: 'no resolution: a modal chart, a sus held four bars or more, or none that falls a fifth; or, outside a modal chart, the dominant on its own root next', summary: 'A static sus is Mixolydian; so is a sus before its dominant on the same root, a subdominant suspension (its 4th a chord tone).' },
 ]
 
 /** the rules a verdict's id names: "D1+D4" -> D1, D4 */

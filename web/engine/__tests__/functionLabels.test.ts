@@ -65,7 +65,7 @@ describe('L1 a dominant into the key’s own V7 is V7/V; chain links print an ar
       fn: 'V7 of V7: the dominant of the dominant, on the way to C minor',
       reason: 'V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key',
     })
-    expect(label(row('Cm', chords, 'G7'))).toMatchObject({ fn: 'V7 of C minor, at the end of a chain of dominants', reason: 'V7 of C minor, the chain’s last link: b9 and b13 are in the key'.replace('’', "'") })
+    expect(label(row('Cm', chords, 'G7'))).toMatchObject({ fn: 'V7 of C minor, at the end of a chain of dominants', reason: "V7 of C minor, the chain's last link: b9 and b13 are in the key" })
   })
 
   it('a chain of two not into the key’s V7 is unchanged', () => {
@@ -84,6 +84,19 @@ describe('L1 a dominant into the key’s own V7 is V7/V; chain links print an ar
     const chords = 'Bbmaj7 | F7 | Bb7 | Eb7 | Ab7 | Bbmaj7'
     expect(sheet('Bb', chords, ['F7', 'Bb7', 'Eb7', 'Ab7'])).toEqual(['V7 F Mixolydian D3', 'I7 Bb Mixolydian D3', 'IV7 Eb Mixolydian D3', '♭VII7 Ab Lydian Dominant D5'])
     expect(label(row('Bb', chords, 'Bb7'))).toMatchObject({ fn: 'extended dominant (V7 of Eb7)', reason: 'extended dominant: V7 of Eb7' })
+  })
+  it('a sus breaks the chain: no arrow before it, and it is never the V7/V link (ruling R5)', () => {
+    const chords = 'A7 | D7sus4 | G7 | C'
+    expect(label(row('C', chords, 'A7'))).toEqual({
+      numeral: 'VI7',
+      scale: 'A Mixolydian',
+      rule: 'D3',
+      fn: 'extended dominant (V7 of D7sus4)',
+      reason: 'extended dominant: V7 of D7sus4',
+      fallback: undefined,
+    })
+    expect(sheet('C', chords, ['D7sus4', 'G7'])).toEqual(['II7sus4 D Mixolydian s2', 'V7 G Mixolydian D4'])
+    expect(sheet('C', 'D7 | G7sus4 | G7 | C', ['D7', 'G7sus4', 'G7'])).toEqual(['II7 D Mixolydian D3', 'V7sus4 G Mixolydian s3', 'V7 G Mixolydian D4'])
   })
 })
 
@@ -295,6 +308,12 @@ describe('L5 a sus before its own dominant is a suspension', () => {
 
   it('a sus with no same-root dominant after it stays static', () => {
     expect(label(row('C', 'Cmaj7 | G7sus4 | Fmaj7', 'G7sus4'))).toMatchObject({ scale: 'G Mixolydian', rule: 's3', fn: 'static sus', reason: 'static sus: Mixolydian' })
+  })
+  it('in a modal chart a sus before its own-root dominant stays static', () => {
+    const text = 'title: T\nkey: D\nbars: 16\nA | 1 | Dm7\nA | 5 | G7sus4\nA | 7 | G7\nA | 9 | Ebmaj7\nA | 13 | Dm7\n'
+    const a = analyse(parseChart(text).value)
+    expect(a.context).toBe('modal')
+    expect(label(a.rows.find((r) => r.chord === 'G7sus4') as RowAnalysis)).toMatchObject({ scale: 'G Mixolydian', rule: 's3', fn: 'static sus', reason: 'static sus: Mixolydian' })
   })
 })
 
