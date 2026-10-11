@@ -35,7 +35,7 @@
         <button type="button" class="font-semibold underline" @click="prefs.showEditor.value = true">Edit</button> to fix {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
       </UiText>
   
-      <div v-if="editorShown" :class="['grid gap-8 print:hidden', !functionsOn && 'lg:grid-cols-2']">
+      <div v-if="editorShown" :class="['grid gap-8 print:hidden', !functionsOn && 'lg:grid-cols-2']" @keydown="chartHistory.onKeydown">
         <section aria-labelledby="grid-heading" class="min-w-0">
           <div class="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
             <UiSubheading id="grid-heading">Chart</UiSubheading>
@@ -43,12 +43,13 @@
           <div v-if="editor.fatal.value" class="rounded-lg bg-red-500/10 p-4 text-sm/6 text-red-700 dark:text-red-400">
             This chart is over a size limit. Shorten it in the text editor to edit it here.
           </div>
-          <div v-else class="max-h-[60vh] overflow-auto pr-1">
+          <!-- its own scroll box from sm up; below, only sideways, so the page is the one vertical scroller -->
+          <div v-else class="overflow-x-auto pr-1 sm:max-h-[60vh] sm:overflow-auto">
             <ChartGrid :doc="editor.doc.value" @update:doc="editor.setDoc" />
           </div>
         </section>
         <section id="text-pane" aria-labelledby="text-heading" class="min-w-0">
-          <div class="mb-3 flex items-center gap-2">
+          <div class="relative mb-3 flex items-center gap-2">
             <UiSubheading id="text-heading">Text</UiSubheading>
             <HelpTip label="How the text editor works">
               <span class="block">One line per chord: <code class="font-mono text-xs whitespace-nowrap">section | bar | chord | scale<template v-if="functionsOn"> | function</template></code>, in concert pitch. Leave the scale out to use the chord's default.<template v-if="functionsOn"> The function (<code class="font-mono text-xs">V7/ii</code>, or <code class="font-mono text-xs">D: V7/ii</code> in another key) is optional and tells the analysis what the chord does; the grid offers the ones that fit.</template></span>
@@ -197,6 +198,7 @@ const emit = defineEmits<{ created: [id: string]; reload: [] }>()
 const PER_PAGE = 12
 
 const editor = useChartEditor(props.initialText)
+const chartHistory = useChartHistory(editor)
 const rendering = useRendering()
 /** under the heading: "Ballad · E♭ · AABA, 32 bars — Johnny Green" */
 const byline = computed(() => [editor.heading.value.subtitle, editor.heading.value.composer].filter(Boolean).join(' — '))
