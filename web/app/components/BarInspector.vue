@@ -9,7 +9,7 @@
       </p>
     </div>
 
-    <ChordChoices v-if="chord" :doc="doc" :line="chord.line" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)" />
+    <ChordChoices v-if="chord" collapsible :doc="doc" :line="chord.line" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)" />
 
     <section aria-labelledby="bar-heading" class="space-y-3 border-t border-zinc-950/5 pt-4 dark:border-white/5">
       <UiSubheading id="bar-heading" :level="3">Bar {{ bar }}</UiSubheading>

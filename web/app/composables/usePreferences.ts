@@ -25,9 +25,12 @@ export function usePreferences() {
   const notes = storedRef<boolean>('csm-grid-notes', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the bar editor's Source (the chart's text), under its ⋯ menu: hidden until shown
   const source = storedRef<boolean>('csm-source', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
+  // the bar editor's inspector: its Scale and Function, each open until folded away
+  const inspectorScale = storedRef<boolean>('csm-inspector-scale', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
+  const inspectorFunction = storedRef<boolean>('csm-inspector-function', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
   // the /functions page's key: C major until another is picked
   const functionsKey = storedRef<string>('csm-functions-key', (s) => (FUNCTIONS_KEYS.includes(s) ? s : undefined), 'C')
-  return { instrument, start, intervals, showEditor, numerals, scaleNames, guideLine, notes, source, functionsKey }
+  return { instrument, start, intervals, showEditor, numerals, scaleNames, guideLine, notes, source, inspectorScale, inspectorFunction, functionsKey }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */

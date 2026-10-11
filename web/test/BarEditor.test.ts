@@ -258,6 +258,7 @@ describe('BarInspector', () => {
   const d7 = parseChart('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\nB | 5 | C\n').value
   const cellOf = (d: ChartDoc, bar: number) => barView(d).sections.flatMap((s) => s.bars).find((b) => b.bar === bar)!
   const props = { doc: d7, section: 'A', bar: 2, index: 0, chord: { chord: 'D7', beat: 0, line: 3 }, count: 1, cell: cellOf(d7, 2) }
+  afterEach(() => localStorage.clear()) // the inspector's folds are remembered
 
   it('adds and deletes bars, and says why the chart can’t take one', async () => {
     const w = await mountSuspended(BarInspector, { props })
@@ -306,6 +307,26 @@ describe('BarInspector', () => {
     expect(w.text()).toContain('II7 in C, not resolving: natural tensions')
     await w.findAll('button').find((b) => b.text() === 'Key change here')?.trigger('click')
     expect(serializeChart(lastDoc(w) as ChartDoc)).toMatch(/@key A 2 C/)
+  })
+
+  it('folds the scale (with its why) and the function away, each showing its choice, and remembers', async () => {
+    const w = await mountSuspended(BarInspector, { props })
+    const group = (name: string) => w.findAll('[role=radiogroup]').find((g) => g.attributes('aria-label') === name)
+    for (const name of ['Scale', 'Function']) expect(button(w, name)?.attributes('aria-expanded')).toBe('true')
+    expect(w.text()).toContain('not resolving: natural tensions')
+    await button(w, 'Scale')?.trigger('click')
+    expect(w.text()).not.toContain('not resolving: natural tensions')
+    await button(w, 'Function')?.trigger('click')
+    expect(group('Scale')).toBeUndefined()
+    expect(group('Function')).toBeUndefined()
+    expect(w.find('input[aria-label="Any scale"]').exists()).toBe(false)
+    expect(button(w, 'Scale')?.attributes('aria-expanded')).toBe('false')
+    expect(w.text()).toContain('D Mixolydian')
+    expect(w.text()).toContain('Auto: II7')
+    const again = await mountSuspended(BarInspector, { props })
+    expect(button(again, 'Scale')?.attributes('aria-expanded')).toBe('false')
+    await button(again, 'Scale')?.trigger('click')
+    expect(again.findAll('[role=radiogroup]').some((g) => g.attributes('aria-label') === 'Scale')).toBe(true)
   })
 
   const headings = (w: { findAll: (s: string) => { text: () => string }[] }) => w.findAll('h3').map((h) => h.text()).filter((t) => ['Function', 'Scale', 'Why'].includes(t))
