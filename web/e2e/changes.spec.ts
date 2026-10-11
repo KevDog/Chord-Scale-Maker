@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseInstrument, chooseSheet, type Drawn, drawn, expect, GLYPH, guidesDrawn, openEditor, showGuides, test, writeChart } from './fixtures'
+import { barCell, chooseInstrument, chooseSheet, type Drawn, drawn, expect, GLYPH, guidesDrawn, openEditor, showGuides, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the chart grid above it (whose menus name the same scales) */
@@ -89,15 +89,15 @@ test('a numeral or scale with a note looks clickable on screen (dotted underline
   await expect(numeral).toHaveCSS('text-decoration-line', 'none')
 })
 
-test('a function from the dropdown: the Changes sheet shows it, its note opens on a click, and keys change from the grid', async ({ page }) => {
+test('a function from the inspector: the Changes sheet shows it, its note opens on a click, and keys change from the grid', async ({ page }) => {
   await page.goto('/song?new=1')
   await openEditor(page)
   await page.getByLabel('Chart text').fill('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\n')
-  const fn = page.getByLabel('function for row 2')
-  await expect(fn.locator('option').first()).toHaveText('II7 → D Mixolydian')
-  await page.getByRole('button', { name: 'Show notes' }).click()
-  await expect(page.getByRole('cell', { name: 'II7 in C, not resolving: natural tensions', exact: true })).toBeVisible() // the grid's note (the default Changes sheet's tooltips say it too)
-  await fn.selectOption({ label: 'V7/V (to G) → D Mixolydian' })
+  await barCell(page, 'A', 2).click() // D7
+  const fns = page.getByRole('radiogroup', { name: 'Function' })
+  await expect(fns.getByRole('radio').first()).toHaveAccessibleName(/^Auto: II7\s*→ D Mixolydian$/)
+  await expect(page.getByText('II7 in C, not resolving: natural tensions', { exact: true })).toBeVisible() // the inspector's Why (the default Changes sheet's tooltips say it too)
+  await fns.getByRole('radio', { name: /^V7\/V \(to G\)\s*→ D Mixolydian$/ }).click()
   await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 2 \| D7\s+\|\s+\| V7\/V/)
   await chooseSheet(page, 'Changes')
   const sheet = sheetOf(page)
@@ -110,8 +110,10 @@ test('a function from the dropdown: the Changes sheet shows it, its note opens o
   await page.keyboard.press('Escape')
   await expect(note).toBeHidden()
   await page.getByLabel('Chart text').fill('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7 | | Db: V7/ii\nA | 3 | Dm7\nA | 4 | G7\n')
-  await expect(fn).toHaveAttribute('aria-invalid', 'true') // V7/ii in Db is Bb7, not D7
-  await page.getByLabel('Key change at row 3').click()
+  await barCell(page, 'A', 2).click()
+  await expect(page.getByText('V7/ii in Db is on Bb, not D7', { exact: true })).toBeVisible() // the inspector says what's wrong with the function
+  await barCell(page, 'A', 3).click()
+  await page.getByRole('button', { name: 'Key change here' }).click()
   await expect(page.getByLabel('Chart text')).toHaveValue(/@key A 3 C\nA \| 3 \| Dm7/)
 })
 

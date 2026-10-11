@@ -35,7 +35,50 @@
         <button type="button" class="font-semibold underline" @click="prefs.showEditor.value = true">Edit</button> to fix {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
       </UiText>
   
-      <div v-if="editorShown" :class="['grid gap-8 print:hidden', !functionsOn && 'lg:grid-cols-2']" @keydown="chartHistory.onKeydown">
+      <!-- the bar editor (barEditor flag): the chart as bars with an inspector, its text under ⋯ as the Source -->
+      <div v-if="editorShown && barEditorOn" class="space-y-8 print:hidden" @keydown="chartHistory.onKeydown">
+        <section aria-labelledby="grid-heading" class="min-w-0 space-y-5">
+          <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
+            <UiSubheading id="grid-heading">Chart</UiSubheading>
+            <UiBadge color="zinc" title="The chart is written and edited in concert pitch, whatever the instrument">Concert pitch</UiBadge>
+            <div class="ml-auto flex items-center gap-1">
+              <UiButton plain :disabled="!chartHistory.canUndo.value" title="Undo (⌘Z)" @click="chartHistory.undo"><ArrowUturnLeftIcon data-slot="icon" />Undo</UiButton>
+              <UiButton plain :disabled="!chartHistory.canRedo.value" title="Redo (⇧⌘Z)" @click="chartHistory.redo"><ArrowUturnRightIcon data-slot="icon" />Redo</UiButton>
+              <UiDropdown>
+                <UiDropdownButton plain aria-label="More editing options"><EllipsisHorizontalIcon data-slot="icon" /></UiDropdownButton>
+                <UiDropdownMenu anchor="end">
+                  <UiDropdownItem @click="prefs.source.value = !sourceShown"><CodeBracketIcon data-slot="icon" />{{ sourceShown ? 'Hide source' : 'Show source' }}</UiDropdownItem>
+                </UiDropdownMenu>
+              </UiDropdown>
+            </div>
+          </div>
+          <div v-if="editor.fatal.value" class="rounded-lg bg-red-500/10 p-4 text-sm/6 text-red-700 dark:text-red-400">
+            This chart is over a size limit. Shorten it in the Source to edit it here.
+          </div>
+          <template v-else>
+            <ChartHeadingFields :doc="editor.doc.value" @update:doc="editor.setDoc" />
+            <BarEditor :doc="editor.doc.value" @update:doc="editor.setDoc" @source="prefs.source.value = true" />
+          </template>
+        </section>
+        <section v-if="sourceShown" id="text-pane" aria-labelledby="text-heading" class="min-w-0">
+          <div class="relative mb-3 flex items-center gap-2">
+            <UiSubheading id="text-heading">Source</UiSubheading>
+            <HelpTip label="How the text editor works">
+              <span class="block">One line per chord: <code class="font-mono text-xs whitespace-nowrap">section | bar | chord | scale<template v-if="functionsOn"> | function</template></code>, in concert pitch. Leave the scale out to use the chord's default.</span>
+              <span class="mt-2 block"><code class="font-mono text-xs">title:</code>, <code class="font-mono text-xs">subtitle:</code>, <code class="font-mono text-xs">composer:</code>, <code class="font-mono text-xs">key:</code> and <code class="font-mono text-xs">form:</code> set the heading, lines starting with <code class="font-mono text-xs">#</code> are comments, and <code class="font-mono text-xs">@copy A B 8</code> repeats section A as B, 8 bars later<template v-if="functionsOn">, and <code class="font-mono text-xs">@key B 17 D</code> puts bars from B 17 in D until the next @key</template>.</span>
+              <span class="mt-2 block">The Source and the bars stay in sync: edit either one. Problems are listed under the text.</span>
+            </HelpTip>
+            <UiButton v-if="!editor.fatal.value" plain class="ml-auto" @click="prefs.source.value = false">Hide source</UiButton>
+          </div>
+          <ChartText :text="editor.text.value" :diagnostics="editor.diagnostics.value" @update:text="editor.setText" />
+        </section>
+        <UiText v-else-if="editor.diagnostics.value.length" role="status" class="text-amber-800! dark:text-amber-400!">
+          The chart's text has {{ editor.diagnostics.value.length === 1 ? 'a problem' : `${editor.diagnostics.value.length} problems` }}.
+          <button type="button" class="font-semibold underline" @click="prefs.source.value = true">Show the source</button> to fix {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
+        </UiText>
+      </div>
+
+      <div v-else-if="editorShown" :class="['grid gap-8 print:hidden', !functionsOn && 'lg:grid-cols-2']" @keydown="chartHistory.onKeydown">
         <section aria-labelledby="grid-heading" class="min-w-0">
           <div class="mb-3 flex flex-wrap items-center justify-between gap-x-4 gap-y-2">
             <UiSubheading id="grid-heading">Chart</UiSubheading>
@@ -160,7 +203,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, BookmarkIcon, CodeBracketIcon, DocumentDuplicateIcon, FlagIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
+import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, BookmarkIcon, CodeBracketIcon, DocumentDuplicateIcon, EllipsisHorizontalIcon, FlagIcon, LinkIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import { ISSUE_CONTEXT, issuePart } from '~/utils/issueReport'
 import { CHART_REPORT_KEY, type ChartReport, guidesText } from '~/utils/chartReport'
 import {
@@ -216,6 +259,9 @@ const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeatu
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
 const signaturesOn = useFeature('keySignatures')
+const barEditorOn = useFeature('barEditor')
+/** the bar editor's Source: under ⋯, remembered; always shown for a chart over a size limit (only the text can fix it) */
+const sourceShown = computed(() => prefs.source.value || editor.fatal.value)
 /** the chart's key, for the sheets' key signature, drawn once at the start (undefined when the flag is off: drawn as before) */
 const homeKey = computed(() => (signaturesOn ? chartKeyOf(editor.doc.value) : undefined))
 const practice = usePractice(props.practiceKey)

@@ -25,9 +25,11 @@ export function usePreferences() {
   const notes = storedRef<boolean>('csm-grid-notes', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the text editor under the full-width grid (with the functions flag): shown until hidden
   const textPane = storedRef<boolean>('csm-text-pane', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
+  // the bar editor's Source (the chart's text), under its ⋯ menu: hidden until shown
+  const source = storedRef<boolean>('csm-source', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the /functions page's key: C major until another is picked
   const functionsKey = storedRef<string>('csm-functions-key', (s) => (FUNCTIONS_KEYS.includes(s) ? s : undefined), 'C')
-  return { instrument, start, intervals, showEditor, numerals, scaleNames, guideLine, notes, textPane, functionsKey }
+  return { instrument, start, intervals, showEditor, numerals, scaleNames, guideLine, notes, textPane, source, functionsKey }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
@@ -43,6 +45,7 @@ export function linkPreferences(view: ShareView) {
     guideLine: ref<GuideLine>(view.guideLine ?? 'off'), // a link without one shows no line
     showEditor: own.showEditor, // whether the editor is open: yours, and remembered
     textPane: own.textPane,
+    source: own.source,
     notes: own.notes, // whether the grid's Notes column is shown: yours, and remembered
   }
 }

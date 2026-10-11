@@ -1,4 +1,4 @@
-import { resolveQuality, SCALES, type ScaleOption } from '@chord-scale-maker/engine'
+import { glyphs, parseScale, resolveQuality, SCALES, type ScaleOption } from '@chord-scale-maker/engine'
 
 /** roots offered by the scale picker, in chromatic order */
 export const PICKER_ROOTS = ['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'A', 'A#', 'Bb', 'B'] as const
@@ -22,4 +22,33 @@ export function scaleChoices(chord: string): ScaleChoices {
   }
   const def = options.find((o) => o.default) ?? options[0] ?? null // same fallback as engine defaultScale
   return { known: options.length > 0, defaultScale: def?.scale ?? null, alternates: options.filter((o) => o !== def) }
+}
+
+/** a scale's degrees, "1 2 ♭3 4 5 6 ♭7"; null if it can't be read */
+export function scaleFormula(scale: string): string | null {
+  try {
+    return glyphs(SCALES[parseScale(scale).key][0])
+  } catch {
+    return null
+  }
+}
+
+const NOTE = /^[a-g](#|b)?$/i
+const SEARCH_LIMIT = 8
+
+/**
+ * any scale, from what's typed: "E ph" is E Phrygian and E Phrygian Dominant; with no root typed, the chord's.
+ * Each word typed starts a word of the name. At most eight.
+ */
+export function searchScales(query: string, root: string): string[] {
+  const words = query.trim().split(/\s+/).filter(Boolean)
+  if (!words.length) return []
+  const [first = ''] = words
+  const typedRoot = NOTE.test(first) ? first.charAt(0).toUpperCase() + first.slice(1).toLowerCase() : null
+  const wanted = (typedRoot ? words.slice(1) : words).map((w) => w.toLowerCase())
+  const named = PICKER_SCALES.filter((name) => {
+    const parts = name.toLowerCase().split(/[\s-]+/)
+    return wanted.every((w) => parts.some((p) => p.startsWith(w)))
+  })
+  return named.slice(0, SEARCH_LIMIT).map((name) => `${typedRoot ?? root} ${name}`)
 }
