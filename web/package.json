@@ -43,8 +43,5 @@
   },
   "engines": {
     "node": "24.x"
-  },
-  "overrides": {
-    "simple-git": "^4.0.2"
   }
 }

@@ -1,6 +1,6 @@
 .PHONY: setup test lint e2e golden dev preview clean
 setup:
-	cd web && npm ci
+	npm ci
 test:
 	cd web && npm run typecheck && npm test
 lint:

@@ -62,7 +62,7 @@ try {
 
 /** the wordmark with the mark on navy, the mark's blue corner echoed in a corner and faint note heads climbing behind */
 async function banner(out, l) {
-  const font = new URL('../node_modules/@fontsource-variable/jost/files/jost-latin-wght-normal.woff2', import.meta.url).href
+  const font = import.meta.resolve('@fontsource-variable/jost/files/jost-latin-wght-normal.woff2')
   const mark = new URL('../public/favicon.svg', import.meta.url).href
   const [x0, y0, dx, dy, rx] = l.heads
   const heads = [0, 1, 2, 3, 4, 5, 6]

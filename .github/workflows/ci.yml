@@ -39,8 +39,9 @@ jobs:
         with:
           node-version: '24'
           cache: npm
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: package-lock.json
       - run: npm ci
+        working-directory: .
       - run: npm run lint
       - run: npm run typecheck
       - run: npm test
@@ -63,8 +64,9 @@ jobs:
         with:
           node-version: '24'
           cache: npm
-          cache-dependency-path: web/package-lock.json
+          cache-dependency-path: package-lock.json
       - run: npm ci
+        working-directory: .
       - run: npx playwright install --with-deps chromium
       - run: npm run e2e
       - if: failure()
