@@ -75,7 +75,7 @@
                     >
                       <span class="block truncate text-base/6 font-semibold sm:text-sm/6">{{ c.chord }}</span>
                       <span v-if="notes && functionsOn" :class="['block truncate text-[0.7rem]/4', isSelected(s.name, b.bar, k) ? 'text-white/90' : 'text-zinc-600 dark:text-zinc-400']">
-                        {{ c.numeral || ' ' }}<br>{{ c.scale || ' ' }}
+                        {{ c.numeral || ' ' }}<br><span :class="c.proposed && (isSelected(s.name, b.bar, k) ? 'text-white/60' : 'text-zinc-400 dark:text-zinc-500')" :aria-description="c.proposed ? 'proposed' : undefined">{{ c.scale || ' ' }}</span>
                       </span>
                     </button>
                   </template>
@@ -187,6 +187,7 @@ const props = defineProps<{ doc: ChartDoc }>()
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; source: []; selected: [line: number | null] }>()
 
 const functionsOn = useFeature('functions')
+const proposedOn = useFeature('proposedScales') // a blank cell's scale is the analysis's, shown greyed until pinned
 const { notes } = usePreferences() // the numerals and scales under each chord: off until shown
 
 const KEYS: readonly (readonly [string, string])[] = [
@@ -249,16 +250,16 @@ function toggleCopy(name: string): void {
 }
 
 /** a chord as the cell shows it: the draft in its place while it's being typed */
-type ShownChord = Readonly<{ chord: string; known: boolean; numeral: string; scale: string; editing: boolean }>
+type ShownChord = Readonly<{ chord: string; known: boolean; numeral: string; scale: string; proposed: boolean; editing: boolean }>
 function shownChords(section: string, b: ChartBar): ShownChord[] {
   const shown = b.chords.map((c): ShownChord => {
     const n = noteByLine.value.get(c.line)
-    return { chord: c.chord, known: scaleChoices(c.chord).known, numeral: n?.numeral ?? '', scale: n?.scale ?? '', editing: false }
+    return { chord: c.chord, known: scaleChoices(c.chord).known, numeral: n?.numeral ?? '', scale: n?.scale ?? '', proposed: proposedOn && !!n?.scale && n.source !== 'written', editing: false }
   })
   const e = editing.value
   if (!e || !isSelectedBar(section, b.bar)) return shown
   const k = pos.value?.chord ?? 0
-  const draftChord: ShownChord = { chord: draft.value, known: true, numeral: '', scale: '', editing: true }
+  const draftChord: ShownChord = { chord: draft.value, known: true, numeral: '', scale: '', proposed: false, editing: true }
   return e.insert ? [...shown.slice(0, k), draftChord, ...shown.slice(k)] : [...shown.slice(0, k), draftChord, ...shown.slice(k + 1)]
 }
 const editingHere = (section: string, bar: number): boolean => !!editing.value && isSelectedBar(section, bar)

@@ -129,13 +129,14 @@ test('a damaged share link says so', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'That link doesn’t open a chart' })).toBeVisible()
 })
 
-test('choosing a scale and then the usual one again writes the scale name, and leaves the library chart unedited', async ({ page }) => {
+test('choosing a scale and then the library’s again by name writes the name, and leaves the library chart unedited', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
   await openEditor(page)
   await barCell(page, 'A1', 1).click() // Cm7
   await page.getByRole('radio', { name: /^C Aeolian/ }).click()
   await expect(status(page)).toHaveText(/^Your edited version of Autumn Leaves/)
-  await page.getByRole('radio', { name: /^C Dorian 1/ }).click() // the usual one
+  await page.getByRole('searchbox', { name: 'Any scale' }).fill('C dor') // the analysed option would blank the cell, and the library still has its scales written
+  await page.getByRole('list', { name: 'Scales found' }).getByRole('button', { name: /^C Dorian \d/ }).click()
   await expect(page.getByLabel('Chart text')).toHaveValue(/A1 \| 1 +\| Cm7 +\| C Dorian/) // the name, not an empty cell
   await expect(status(page)).toHaveText('Edits are saved in this browser as your version.') // back to the library version
   await expect(page.getByRole('button', { name: 'Revert to library version' })).toHaveCount(0)

@@ -24,8 +24,8 @@ test('tapping a chord on the Changes sheet edits it in a popover, and selects it
   await input.fill('Db7')
   await input.press('Enter')
   await expect.poll(() => plain(page)).toMatch(/A \| 2 \| Db7/)
-  await editor.getByRole('radiogroup', { name: 'Scale' }).getByRole('radio', { name: /Db Lydian Dominant/ }).click()
-  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| Db7 \| Db Lydian Dominant/)
+  await editor.getByRole('radiogroup', { name: 'Scale' }).getByRole('radio', { name: /^Db Mixolydian 1/ }).click() // not the analysed Db Lydian Dominant: this one pins
+  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| Db7 \| Db Mixolydian/)
   await editor.getByRole('button', { name: 'Done' }).click()
   await expect(editor).toBeHidden()
   await expect(page.getByRole('button', { name: 'Edit Db7, A bar 2' })).toBeVisible()

@@ -2,7 +2,7 @@ import { analyse, type Area, chartKeyOf, functionChoices, type FunctionChoice } 
 import { keyCode } from './analysis/keys'
 import type { ChartDoc, ChartLine } from './chart'
 import { insertKeyBefore } from './edit'
-import { type Resolved, resolveScales, type ScaleView } from './resolve'
+import { atLevel, type Resolved, resolveScales, type ScaleView } from './resolve'
 import { sameScale } from './scales'
 
 export { chartKeyOf, functionChoices, type FunctionChoice }
@@ -25,6 +25,9 @@ export type RowNote = Readonly<{
   scale: string
   /** where that scale comes from; "you chose" is said only of a written one */
   source: Resolved['source']
+  /** the analysis's scale at the sheet's level, and its rule: what the row plays once its cell is blank; '' when the analysis doesn't reach it */
+  analysed: string
+  rule: string
 }>
 
 const STANDARD: ScaleView = { level: 'standard', seed: 0, proposed: false }
@@ -45,9 +48,11 @@ export function rowNotes(doc: ChartDoc, view: ScaleView = STANDARD): ReadonlyMap
       numeral: r.numeral === '?' ? '' : r.numeral,
       scale: played.scale ?? r.scale ?? '',
       source: played.source,
+      analysed: r.scale ? atLevel(view, r.chord, r.scale, r.rule, r.line) : '',
+      rule: r.scale ? r.rule : '',
     })
   }
-  for (const p of a.problems) if (!out.has(p.line)) out.set(p.line, { note: '', problem: p.message, key: '', numeral: '', scale: '', source: 'default' })
+  for (const p of a.problems) if (!out.has(p.line)) out.set(p.line, { note: '', problem: p.message, key: '', numeral: '', scale: '', source: 'default', analysed: '', rule: '' })
   return out
 }
 
