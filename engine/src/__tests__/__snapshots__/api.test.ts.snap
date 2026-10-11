@@ -134,6 +134,7 @@ exports[`exports the same names 1`] = `
   "readChord",
   "recordHistory",
   "redoHistory",
+  "refreshAnalysis",
   "removeLine",
   "renameSection",
   "repeatSection",

@@ -291,6 +291,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     Gb7, not F#7). `simplifyRoot` decides in C and A minor, or when that side would put double accidentals in the
     scale.
   - A chord follows its scale's root, and a slash bass keeps its interval.
+  - **A saved analysis follows:** a chart with an `# analysis:` header has its analysis re-run in the new key and
+    written back (`refreshAnalysis`): the header, `# area:` lines and row reasons name the new key, and the header
+    keeps its date. `# keep:` comments stay as written. A chart without the header keeps its comments: they are the
+    user's own.
   - Titles stay as typed. ⌘Z in the editor undoes it.
 - **Focus** (`useFocusMode`) shows the current sheet alone, over the whole page, with its practice highlighting.
   - A dialog (`aria-modal`) holding the preview section itself, so the sheet isn't drawn twice; the toolbar and

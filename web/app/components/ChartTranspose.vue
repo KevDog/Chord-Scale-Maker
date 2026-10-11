@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import { ArrowsUpDownIcon } from '@heroicons/vue/16/solid'
-import { type ChartDoc, chartMeta, isValidKey, keyLabel, offeredKey, setMeta, transposeChart, transposeKeys } from '@chord-scale-maker/engine'
+import { type ChartDoc, chartMeta, isValidKey, keyLabel, offeredKey, refreshAnalysis, setMeta, transposeChart, transposeKeys } from '@chord-scale-maker/engine'
 
 /**
  * "Transpose…": rewrites the chart in another concert key (engine/src/transpose.ts).
@@ -53,7 +53,8 @@ function openDialog(): void {
 function apply(): void {
   const { doc: moved, skipped } = transposeChart(props.current(), from.value, to.value)
   const newKey = to.value
-  const doc = setMeta(moved, 'key', newKey)
+  // the analysis reads the key, so it's set first; a saved analysis then names the new key
+  const doc = refreshAnalysis(setMeta(moved, 'key', newKey))
   emit('update:doc', doc)
   const note = skipped ? `; ${skipped} ${skipped === 1 ? 'row' : 'rows'} could not be read and stayed as typed` : ''
   emit('transposed', `Transposed from ${keyLabel(from.value)} to ${keyLabel(newKey)}${note}.`)

@@ -374,6 +374,18 @@ export function applyAnalysis(
 }
 
 /**
+ * a chart's saved analysis rewritten for the chart as it now stands (after Transpose…, its key and reasons name the
+ * new key), keeping the header's date: the rules didn't change. A chart without an `# analysis:` header comes back
+ * as it is, since its row comments are the user's own.
+ */
+export function refreshAnalysis(doc: ChartDoc): ChartDoc {
+  const header = doc.lines.find((l) => l.kind === 'comment' && /^#\s*analysis:/.test(l.text))
+  if (header?.kind !== 'comment') return doc
+  const date = /analysis:\s*([^,]*),/.exec(header.text)?.[1]?.trim() ?? ''
+  return applyAnalysis(doc, analyse(doc), { scales: 'none', save: true, date }).doc
+}
+
+/**
  * R7: the first reason whose comment fits the chart's limit (LIMITS.maxMeta); else the last, cut short with "…" so
  * the comment still fits (a chart with a longer comment doesn't parse)
  */
