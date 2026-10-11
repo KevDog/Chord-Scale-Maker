@@ -407,6 +407,25 @@ describe('EditorView scale level', () => {
     expect(w.findComponent({ name: 'PreviewControls' }).text()).toContain('Basic')
   })
 
+  it('keeps the level when your version is reverted to the library’s', async () => {
+    saveChart({ id: 'eeeeee1', text: TEXT, kind: 'edited', basedOn: 'autumn_leaves' })
+    localStorage.setItem('csm-level:autumn_leaves', JSON.stringify({ level: 'basic', seed: 7 }))
+    const w = await mountSuspended(EditorView, {
+      props: { initialText: TEXT, practiceKey: 'autumn_leaves', saveTarget: { kind: 'library', slug: 'autumn_leaves', libraryText: TEXT, id: 'eeeeee1' } },
+      global: { stubs: { ScaleSheet: true, ChangesSheet: true } },
+      attachTo: document.body,
+    })
+    await buttonCalled(w, 'Revert to library version')?.trigger('click')
+    await nextTick()
+    const confirm = [...document.querySelectorAll('[role=dialog] button')].find((b) => b.textContent?.trim() === 'Revert')
+    if (!(confirm instanceof HTMLElement)) throw new Error('no Revert in the dialog')
+    confirm.click()
+    await nextTick()
+    expect(w.emitted('reload')).toHaveLength(1)
+    expect(loadChart('eeeeee1')).toBeNull()
+    expect(JSON.parse(localStorage.getItem('csm-level:autumn_leaves') ?? '{}')).toEqual({ level: 'basic', seed: 7 })
+    expect(changesSheet(w).props('view')).toEqual({ level: 'basic', seed: 7 })
+  })
 })
 
 describe('EditorView Save', () => {

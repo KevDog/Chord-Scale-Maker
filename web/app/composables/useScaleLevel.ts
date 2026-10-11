@@ -48,11 +48,5 @@ export function useScaleLevel(key?: string, initial?: Readonly<{ level?: ScaleLe
     carryTo(otherKey: string): void {
       if (level.value !== 'standard') writeStored(`csm-level:${otherKey}`, state())
     },
-    /** back to Standard (the chart was reverted to the library's) */
-    reset(): void {
-      level.value = 'standard'
-      owned.value = undefined
-      if (storeKey) removeStored(storeKey)
-    },
   }
 }
