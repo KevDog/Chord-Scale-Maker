@@ -68,7 +68,7 @@ test(`prints the Changes with a guide tone line (${line}), a sheet page to a let
   const svgs = page.locator('svg[aria-label^="Bars:"]')
   const all = await Promise.all((await svgs.all()).map(drawn))
   expect(all.filter((d) => d.voltaBottom !== null).length).toBeGreaterThan(0) // the verse's 1st and 2nd endings
-  expect(Math.max(...all.flatMap((d) => d.heads.map((h) => h.y)))).toBeGreaterThanOrEqual(120) // on or below the bass staff's bottom line (G2)
+  expect(Math.max(...all.flatMap((d) => d.heads.map((h) => h.y)))).toBeGreaterThanOrEqual(line === 'From 7th' ? 120 : 105) // From 7th: on or below the bass staff's bottom line (G2); From 3rd, placed nearer the centre, down to C3
   const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
   expect(sheetPages).toBeGreaterThanOrEqual(2) // at least one full page
   await page.emulateMedia({ media: 'print' })

@@ -39,9 +39,9 @@ describe('a guide tone line', () => {
     expect(lineOf(['Bb6'], CONCERT, 'seventh')).toEqual(['G4 (6)'])
   })
 
-  it('rule 1: an octave as far above the centre as below takes the lower (Eb4/Eb5 around A4; G2/G3 around C#3)', () => {
-    expect(lineOf(['Cm7'], CONCERT, 'third')).toEqual(['Eb4 (3)'])
-    expect(lineOf(['Eb7'], BASS, 'third')).toEqual(['G2 (3)'])
+  it('rule 1, placed: a single chord, an octave as far above the centre as below takes the higher (Eb4/Eb5 around A4; G2/G3 around C#3)', () => {
+    expect(lineOf(['Cm7'], CONCERT, 'third')).toEqual(['Eb5 (3)'])
+    expect(lineOf(['Eb7'], BASS, 'third')).toEqual(['G3 (3)'])
   })
 
   it('rule 2: a common tone before any move (line A: F4 holds as the b7 of G7)', () => {
@@ -70,21 +70,21 @@ describe('a guide tone line', () => {
     expect(lineOf(['CMaj7', 'D'], CONCERT, 'third')).toEqual(['E4 (3)', 'F#4 (3)'])
   })
 
-  it('rule 3.1 on line B: F#4 rather than C4 from Eb4, both a minor 3rd away', () => {
-    expect(lineOf(['F7', 'D7'], CONCERT, 'seventh')).toEqual(['Eb4 (7)', 'F#4 (3)'])
+  it('rule 3.1 on line B: C5 rather than F#5 from Eb5, both a minor 3rd away', () => {
+    expect(lineOf(['F7', 'D7'], CONCERT, 'seventh')).toEqual(['Eb5 (7)', 'C5 (7)']) // placed: Eb5's run averages as near A4 as Eb4's, so the higher
   })
 
   it('rule 3.2: equally near and equally central: the lower (line A: F#4 rather than C5 from A4)', () => {
     expect(lineOf(['F7', 'D7'], CONCERT, 'third')).toEqual(['A4 (3)', 'F#4 (3)'])
   })
 
-  it('rule 4: candidates lie inside the written range: at C4, the bottom of the treble range, B3 is out, so line A turns up to F4', () => {
-    expect(lineOf(['C7', 'Am', 'Db7'], CONCERT, 'third')).toEqual(['E4 (3)', 'C4 (3)', 'F4 (3)'])
+  const DOWN_WHOLE_STEPS = ['G7', 'F7', 'Eb7', 'Db7', 'B7', 'A7', 'G7']
+  it('rule 4: candidates lie inside the written range: at C#4, near the bottom of the treble range (C4), B3 is out, so line A turns up to F4', () => {
+    expect(lineOf(DOWN_WHOLE_STEPS, CONCERT, 'third')).toEqual(['B4 (3)', 'A4 (3)', 'G4 (3)', 'F4 (3)', 'D#4 (3)', 'C#4 (3)', 'F4 (7)']) // B4: the only B in range
   })
 
-  it('rule 4: at E2, the bottom of the bass range, Eb2 is out, so line B turns up to G2', () => {
-    expect(lineOf(['Ab', 'G', 'Gb', 'F', 'E', 'Eb'], BASS, 'seventh')).toEqual(['Ab2 (1)', 'G2 (1)', 'Gb2 (1)', 'F2 (1)', 'E2 (1)', 'G2 (3)'])
-    expect(lineOf(['Ab', 'G', 'Gb', 'F', 'E', 'Eb'], BASS, 'third')).toEqual(['C3 (3)', 'B2 (3)', 'Bb2 (3)', 'A2 (3)', 'G#2 (3)', 'G2 (3)'])
+  it('rule 4: at Fb2 (E2), the bottom of the bass range, Eb2 is out, so line B turns up to C3', () => {
+    expect(lineOf(['C7', 'Em7', 'Dbm7', 'Cm'], BASS, 'seventh')).toEqual(['Bb2 (7)', 'G2 (3)', 'Fb2 (3)', 'C3 (1)'])
   })
 
   it('rule 5: a chord repeating the guide tones holds the line (the same chord again, or a change of extension)', () => {
@@ -108,20 +108,20 @@ describe('a guide tone line', () => {
 
   it('rule 6: a chord without guide tones rests and the next restarts the line on its own degree (A: the 3rd, B: the 7th)', () => {
     expect(lineOf(['Dm7', 'Cm7#5#9x', 'G7'], CONCERT, 'third')).toEqual(['F4 (3)', null, 'B4 (3)']) // not F4
-    expect(lineOf(['Dm7', 'Cm7#5#9x', 'G7'], CONCERT, 'seventh')).toEqual(['C5 (7)', null, 'F5 (7)']) // not B4
+    expect(lineOf(['Dm7', 'Cm7#5#9x', 'G7'], CONCERT, 'seventh')).toEqual(['C5 (7)', null, 'F4 (7)']) // not B4
   })
 
-  it("rule 6: the restart takes the octave nearest the line's last sounded note, or the centre if there is none", () => {
-    expect(lineOf(['Dm7', '???', 'G7', '???', 'A7'], CONCERT, 'seventh')).toEqual(['C5 (7)', null, 'F5 (7)', null, 'G5 (7)']) // G5 from F5, not G4
+  it('rule 6, placed: the restart is placed like a start, whatever the line sounded before the rest', () => {
+    expect(lineOf(['Dm7', '???', 'G7', '???', 'A7'], CONCERT, 'seventh')).toEqual(['C5 (7)', null, 'F4 (7)', null, 'G4 (7)']) // was F5, G5: nearest the last note
     expect(lineOf(['???', 'A7'], CONCERT, 'seventh')).toEqual([null, 'G4 (7)'])
     expect(lineOf(['C7', '???', 'C7'], CONCERT, 'third')).toEqual(['E4 (3)', null, 'E4 (3)']) // not held over the rest
   })
 
-  it('rule 9: a line does not loop or look ahead: a longer chart only extends it', () => {
+  it('rule 9: a line does not loop, and its placement looks no further than the next rest: what follows a rest leaves it alone', () => {
     const tune = ['Dm7', 'G7', 'CMaj7', 'A7', 'Dm7', 'G7', 'Em7', 'A7']
     for (const from of ['third', 'seventh'] as const) {
       const whole = lineOf(tune, CONCERT, from)
-      for (let n = 1; n < tune.length; n++) expect(lineOf(tune.slice(0, n), CONCERT, from)).toEqual(whole.slice(0, n))
+      expect(lineOf([...tune, '???', 'F#7', 'B7', 'E7'], CONCERT, from).slice(0, tune.length)).toEqual(whole)
     }
   })
 
@@ -133,16 +133,12 @@ describe('a guide tone line', () => {
 
 /** rule 7 is gone (docs/superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md): no collision rule, no trade */
 describe('each line built on its own', () => {
-  it('Cmaj7 | Ebmaj7: both lines take D (A falls E4 to D4; B rises B4 to D5, the nearer D)', () => {
-    expect(lineOf(['CMaj7', 'EbMaj7'], CONCERT, 'third')).toEqual(['E4 (3)', 'D4 (7)'])
+  it('Cmaj7 | Ebmaj7: both lines take D5 (A falls E5 to D5; B rises B4 to D5, the nearer D)', () => {
+    expect(lineOf(['CMaj7', 'EbMaj7'], CONCERT, 'third')).toEqual(['E5 (3)', 'D5 (7)'])
     expect(lineOf(['CMaj7', 'EbMaj7'], CONCERT, 'seventh')).toEqual(['B4 (7)', 'D5 (7)'])
   })
 
   it('both lines may land on the same pitch, where the collision rule once moved one of them', () => {
-    expect(lineOf(['F7', 'D7'], CONCERT, 'third')).toEqual(['A4 (3)', 'F#4 (3)'])
-    expect(lineOf(['F7', 'D7'], CONCERT, 'seventh')).toEqual(['Eb4 (7)', 'F#4 (3)']) // was C4
-    expect(lineOf(['Cm6', 'D7'], CONCERT, 'third')).toEqual(['Eb4 (3)', 'F#4 (3)']) // was C4
-    expect(lineOf(['Cm6', 'D7'], CONCERT, 'seventh')).toEqual(['A4 (6)', 'F#4 (3)'])
     expect(lineOf(['Fm7', 'GMaj7'], CONCERT, 'third')).toEqual(['Ab4 (3)', 'F#4 (7)']) // was B4 (the trade)
     expect(lineOf(['Fm7', 'GMaj7'], CONCERT, 'seventh')).toEqual(['Eb4 (7)', 'F#4 (7)'])
     expect(lineOf(['F', 'G'], CONCERT, 'third')).toEqual(['A4 (3)', 'G4 (1)'])
@@ -150,7 +146,7 @@ describe('each line built on its own', () => {
   })
 
   it('a line takes the nearer octave of a tone the other line also takes (B: D5, not F5)', () => {
-    expect(lineOf(['Cm', 'Dm', 'Bbm'], CONCERT, 'third')).toEqual(['Eb4 (3)', 'D4 (1)', 'Db4 (3)'])
+    expect(lineOf(['Cm', 'Dm', 'Bbm'], CONCERT, 'third')).toEqual(['Eb5 (3)', 'D5 (1)', 'Bb4 (1)']) // met on D5: up, but nothing of Bbm above D5 in range (D2)
     expect(lineOf(['Cm', 'Dm', 'Bbm'], CONCERT, 'seventh')).toEqual(['C5 (1)', 'D5 (1)', 'Db5 (3)']) // was F5, Bb4
   })
 })
@@ -162,17 +158,17 @@ describe('each line built on its own', () => {
 describe('lines that meet go apart (one up, one down)', () => {
   const both = (chords: readonly string[], blocks?: readonly number[], part: Part = CONCERT): readonly [(string | null)[], (string | null)[]] => [lineOf(chords, part, 'third', blocks), lineOf(chords, part, 'seventh', blocks)]
 
-  it('D1: F7 D7 meet on F#4; at G7 the line that was above (A, from A4) goes up to B4, the other (B, from Eb4) down to F4', () => {
-    expect(both(['F7', 'D7', 'G7'])).toEqual([
-      ['A4 (3)', 'F#4 (3)', 'B4 (3)'],
-      ['Eb4 (7)', 'F#4 (3)', 'F4 (7)'], // each alone: both F4
+  it('D1: Cm7 D7 meet on C5; at G7 the line that was above (A, from Eb5) goes up to F5, the other (B, from Bb4) down to B4', () => {
+    expect(both(['Cm7', 'D7', 'G7'])).toEqual([
+      ['Eb5 (3)', 'C5 (7)', 'F5 (7)'],
+      ['Bb4 (7)', 'C5 (7)', 'B4 (3)'], // each alone: both B4
     ])
   })
 
-  it('D1: Cm6 D7 meet on F#4 with B above before; at G7 B goes up to B4 and A down to F4', () => {
-    expect(both(['Cm6', 'D7', 'G7'])).toEqual([
-      ['Eb4 (3)', 'F#4 (3)', 'F4 (7)'],
-      ['A4 (6)', 'F#4 (3)', 'B4 (3)'],
+  it('D1: C7 A7 meet on G4 with B above before; at Dm7 B goes up to C5 and A down to F4', () => {
+    expect(both(['C7', 'A7', 'Dm7'])).toEqual([
+      ['E4 (3)', 'G4 (7)', 'F4 (3)'],
+      ['Bb4 (7)', 'G4 (7)', 'C5 (7)'],
     ])
   })
 
@@ -205,36 +201,74 @@ describe('lines that meet go apart (one up, one down)', () => {
     const unison = { third: am.third, seventh: { ...am.third, label: '7' } } // C only: C4 and C5 in C4–C5
     const range = { lo: 60, hi: 72, centre: 66 }
     const line = (from: From): (number | undefined)[] => guideToneLine([unison, unison, unison], range, from, [0, 1, 2]).map((n) => n?.pitch.midi)
-    expect(line('third')).toEqual([60, 72, 60])
-    expect(line('seventh')).toEqual([60, 72, 60])
+    expect(line('third')).toEqual([72, 60, 72]) // placed: C4 and C5 as far from the centre, so the higher
+    expect(line('seventh')).toEqual([72, 60, 72])
   })
 
-  it('D3: once apart, each line moves by rules 2–6 on its own (CMaj7: A holds B4 as a common tone, B steps F4 to E4)', () => {
-    expect(both(['F7', 'D7', 'G7', 'CMaj7'])).toEqual([
-      ['A4 (3)', 'F#4 (3)', 'B4 (3)', 'B4 (7)'],
-      ['Eb4 (7)', 'F#4 (3)', 'F4 (7)', 'E4 (3)'],
+  it('D3: once apart, each line moves by rules 2–6 on its own (CMaj7: A steps F5 to E5, B holds B4 as a common tone)', () => {
+    expect(both(['Cm7', 'D7', 'G7', 'CMaj7'])).toEqual([
+      ['Eb5 (3)', 'C5 (7)', 'F5 (7)', 'E5 (3)'],
+      ['Bb4 (7)', 'C5 (7)', 'B4 (3)', 'B4 (7)'],
     ])
   })
 
   it('D3: a held chord holds both lines on the shared pitch; they go apart at the first new chord', () => {
-    expect(both(['F7', 'D7', 'D7', 'G7'])).toEqual([
-      ['A4 (3)', 'F#4 (3)', 'F#4 (3)~', 'B4 (3)'],
-      ['Eb4 (7)', 'F#4 (3)', 'F#4 (3)~', 'F4 (7)'],
+    expect(both(['Cm7', 'D7', 'D7', 'G7'])).toEqual([
+      ['Eb5 (3)', 'C5 (7)', 'C5 (7)~', 'F5 (7)'],
+      ['Bb4 (7)', 'C5 (7)', 'C5 (7)~', 'B4 (3)'],
     ])
   })
 
-  it('D3: the same chord across a block boundary is a new chord: the lines go apart there (a tritone each, F#4 to C5 and C4)', () => {
-    expect(both(['F7', 'D7', 'D7'], [0, 0, 1])).toEqual([
-      ['A4 (3)', 'F#4 (3)', 'C5 (7)'],
-      ['Eb4 (7)', 'F#4 (3)', 'C4 (7)'],
+  it('D3: the same chord across a block boundary is a new chord: the lines go apart there (a tritone each, C5 to F#5 and F#4)', () => {
+    expect(both(['Cm7', 'D7', 'D7'], [0, 0, 1])).toEqual([
+      ['Eb5 (3)', 'C5 (7)', 'F#5 (3)'],
+      ['Bb4 (7)', 'C5 (7)', 'F#4 (3)'],
     ])
   })
 
   it('D3: a rest ends the run, and the next chord restarts each line by rule 6, not by going apart', () => {
-    expect(both(['F7', 'D7', '???', 'G7'])).toEqual([
-      ['A4 (3)', 'F#4 (3)', null, 'B4 (3)'],
-      ['Eb4 (7)', 'F#4 (3)', null, 'F4 (7)'],
+    expect(both(['Cm7', 'D7', '???', 'G7'])).toEqual([
+      ['Eb5 (3)', 'C5 (7)', null, 'B4 (3)'],
+      ['Bb4 (7)', 'C5 (7)', null, 'F4 (7)'],
     ])
+  })
+})
+
+/**
+ * placing a run (docs/superpowers/specs/2026-10-11-guide-lines-diverge-note.md, approved by the user 2026-10-11): at a
+ * start or restart, the octave whose run, up to the next rest, averages nearest the centre (a tie: the higher)
+ */
+describe('placing a run nearest the centre', () => {
+  const VIBES = partFor('vibes')
+  const pitches = (line: readonly (string | null)[]): (string | null)[] => line.map((n) => n && n.replace(/ .*/, ''))
+  const NICHOLAS = ['CMaj7', 'EbMaj7', 'AbMaj7', 'DbMaj7', 'CMaj7', 'EbMaj7', 'AbMaj7', 'DbMaj7', 'CMaj7', 'GbMaj7', 'CMaj7', 'DbMaj7']
+
+  it('A Song for Nicholas on vibes, from the 3rd: line A starts on E5, not E4, whose run sinks to B♭3', () => {
+    // alone, the run from E5 reads E5 D5 C5 C5 B4 D5 C5 C5 B4 Bb4 B4 C5; here line B (B4 D5 …) meets it on D5, and
+    // A, above before they met, goes up at AbMaj7 (D1)
+    expect(pitches(lineOf(NICHOLAS, VIBES, 'third'))).toEqual(['E5', 'D5', 'G5', 'F5', 'E5', 'D5', 'G5', 'F5', 'E5', 'F5', 'E5', 'F5'])
+    expect(pitches(lineOf(NICHOLAS, VIBES, 'seventh'))).toEqual(['B4', 'D5', 'C5', 'C5', 'B4', 'D5', 'C5', 'C5', 'B4', 'Bb4', 'B4', 'C5'])
+  })
+
+  it('a placed run never leaves the range, even where the higher start’s run climbs to the ceiling (a toy range C4–C5)', () => {
+    const range = { lo: 60, hi: 72, centre: 66 }
+    const rising = ['C7', 'Db7', 'D7', 'Eb7', 'E7', 'F7', 'F#7', 'G7']
+    for (const from of ['third', 'seventh'] as const) {
+      const line = guideToneLine(rising.map((c) => guideTonesFor(CONCERT, c)), range, from)
+      for (const n of line) expect(n && n.pitch.midi >= range.lo && n.pitch.midi <= range.hi).toBe(true)
+    }
+  })
+
+  it('a restart after a rest is placed the same way: the run after the rest reads as it would alone', () => {
+    const run = ['G7', 'CMaj7', 'Fm7', 'Bb7']
+    for (const from of ['third', 'seventh'] as const) {
+      expect(lineOf(['Dm7', 'Dm7', '???', ...run], CONCERT, from).slice(3)).toEqual(lineOf(run, CONCERT, from))
+      expect(lineOf(['F#7', 'B7', '???', ...run], CONCERT, from).slice(3)).toEqual(lineOf(run, CONCERT, from))
+    }
+  })
+
+  it('a tie between two placements takes the higher (Cm7 alone: Eb4 and Eb5 are as far from A4)', () => {
+    expect(lineOf(['Cm7'], CONCERT, 'third')).toEqual(['Eb5 (3)'])
   })
 })
 
@@ -261,9 +295,10 @@ describe('the worked examples', () => {
 describe('a guide tone line in an instrument’s range', () => {
   const VIBES = partFor('vibes')
 
-  it('rule 4 on vibes: at C4 line A steps down to Cb4 (written below C4), where the treble default turned up to F4', () => {
-    expect(lineOf(['C7', 'Am', 'Db7'], CONCERT, 'third')).toEqual(['E4 (3)', 'C4 (3)', 'F4 (3)']) // the default range: C4 is the floor
-    expect(lineOf(['C7', 'Am', 'Db7'], VIBES, 'third')).toEqual(['E4 (3)', 'C4 (3)', 'Cb4 (7)'])
+  it('rule 4 on vibes: at C#4 line A steps down to B3 (written below C4), where the treble default turned up to F4', () => {
+    const chords = ['G7', 'F7', 'Eb7', 'Db7', 'B7', 'A7', 'G7']
+    expect(lineOf(chords, CONCERT, 'third').at(-1)).toEqual('F4 (7)') // the default range: C4 is the floor
+    expect(lineOf(chords, VIBES, 'third')).toEqual(['B4 (3)', 'A4 (3)', 'G4 (3)', 'F4 (3)', 'D#4 (3)', 'C#4 (3)', 'B3 (3)'])
   })
 
   it('rule 1 on vibes: a line starts in the octave nearest B♭4', () => {

@@ -75,9 +75,9 @@ describe('guideVoices', () => {
   })
 
   it('builds the line on its own: from the 3rd it takes F#4, the tone the line from the 7th takes too', () => {
-    const third = guideVoices(inTurn(['Cm6', 'D7']), CONCERT, 4, null, 'third')
-    expect(barsText(third)).toEqual(['0:eb/4/4b', '0:f#/4/4#'])
-    expect([...third.labels]).toEqual([[0, '3'], [1, '3']])
+    const third = guideVoices(inTurn(['Fm7', 'GMaj7']), CONCERT, 4, null, 'third')
+    expect(barsText(third)).toEqual(['0:ab/4/4b', '0:f#/4/4#'])
+    expect([...third.labels]).toEqual([[0, '3'], [1, '7']])
   })
 
   it('holds a chord that repeats the guide tones: tied from the chord before, its label printed again (rule 5)', () => {

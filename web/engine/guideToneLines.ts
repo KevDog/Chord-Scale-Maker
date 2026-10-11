@@ -58,27 +58,58 @@ function apart(all: readonly Candidate[], at: number, up: 0 | 1, centre: number)
   return first === 0 ? [x, y] : [y, x]
 }
 
+type Prev = Readonly<{ tones: GuideTones; block: number | undefined }>
+/** a chord that repeats the previous chord's guide tones, by spelling, in the same block (rule 5) */
+const holds = (prev: Prev | null, t: GuideTones, block: number | undefined): boolean =>
+  !!prev && prev.block === block && spelledAlike(prev.tones.third, t.third) && spelledAlike(prev.tones.seventh, t.seventh)
+const both = (t: GuideTones, range: Range): Candidate[] => [...octaves(t, 0, range), ...octaves(t, 1, range)]
+
+/** one line alone from chord j, starting on `start`, up to the next rest (rules 2–5, no meetings): its pitches */
+function soloRun(tones: readonly (GuideTones | null)[], range: Range, blocks: readonly number[], j: number, start: Candidate): number[] {
+  const out = [start.pitch.midi]
+  let at = start.pitch.midi
+  for (let k = j + 1; k < tones.length; k++) {
+    const t = tones[k]
+    if (!t) break
+    const prev = tones[k - 1]
+    if (!prev || !holds({ tones: prev, block: blocks[k - 1] }, t, blocks[k])) at = nearest(both(t, range), at, range.centre)?.pitch.midi ?? at
+    out.push(at)
+  }
+  return out
+}
+
+/**
+ * placing a run (rules 1 and 6, as amended by the diverge note, approved by the user 2026-10-11): of the chosen
+ * degree's octaves in range, the one whose run alone, up to the next rest, averages nearest the centre; a tie, the higher
+ */
+function place(tones: readonly (GuideTones | null)[], range: Range, blocks: readonly number[], j: number, t: GuideTones, role: 0 | 1): Candidate | null {
+  const off = (c: Candidate): number => {
+    const run = soloRun(tones, range, blocks, j, c)
+    return Math.abs(run.reduce((x, y) => x + y, 0) / run.length - range.centre)
+  }
+  const scored = octaves(t, role, range).map((c) => ({ c, d: off(c) }))
+  return scored.reduce<{ c: Candidate; d: number } | null>((best, x) => (!best || x.d < best.d || (x.d === best.d && x.c.pitch.midi > best.c.pitch.midi) ? x : best), null)?.c ?? null
+}
+
 /**
  * lines A and B, one note per chord in written order (rule 9), or null (a rest in both) for a chord without guide
- * tones, which ends the run (rule 6). Each line moves by rules 1–6 on its own, except that lines on one pitch leave it
- * in opposite directions at the next new chord (D1–D3): the line that was above before they met goes up (together
- * since a restart: line B). blocks: as guideToneLine.
+ * tones, which ends the run (rule 6). Each line's run is placed nearest the centre (place) and moves by rules 2–6 on
+ * its own, except that lines on one pitch leave it in opposite directions at the next new chord (D1–D3): the line that
+ * was above before they met goes up (together since a restart: line B). blocks: as guideToneLine.
  */
 function guideToneLines(tones: readonly (GuideTones | null)[], range: Range, blocks: readonly number[]): (readonly [LineNote, LineNote] | null)[] {
   const centre = range.centre
-  let last: readonly [number, number] = [centre, centre] // each line's last sounded note: a run starts nearest it (rules 1, 6)
   let up: 0 | 1 = 1 // the line above when they were last apart in this run (none yet: B)
-  let prev: Readonly<{ tones: GuideTones; notes: Pair; block: number | undefined }> | null = null
+  let prev: (Prev & Readonly<{ notes: Pair }>) | null = null
   return tones.map((t, j) => {
     const block = blocks[j]
-    const held = !!t && !!prev && prev.block === block && spelledAlike(prev.tones.third, t.third) && spelledAlike(prev.tones.seventh, t.seventh)
+    const held = !!t && holds(prev, t, block)
     let notes: Pair | null = null
     if (t && prev && held) {
       const keep = (c: Candidate): Candidate => ({ ...c, label: tone(t, c.role).label })
       notes = [keep(prev.notes[0]), keep(prev.notes[1])]
-    }
-    else if (t && prev) {
-      const all = [...octaves(t, 0, range), ...octaves(t, 1, range)]
+    } else if (t && prev) {
+      const all = both(t, range)
       const [a, b] = prev.notes
       if (a.pitch.midi === b.pitch.midi) notes = apart(all, a.pitch.midi, up, centre) // D1, D2
       else {
@@ -87,11 +118,10 @@ function guideToneLines(tones: readonly (GuideTones | null)[], range: Range, blo
       }
     } else if (t) {
       up = 1
-      const [x, y] = [nearest(octaves(t, 0, range), last[0], centre), nearest(octaves(t, 1, range), last[1], centre)] // rule 1
+      const [x, y] = [place(tones, range, blocks, j, t, 0), place(tones, range, blocks, j, t, 1)] // rules 1, 6
       if (x && y) notes = [x, y]
     }
     if (notes && notes[0].pitch.midi !== notes[1].pitch.midi) up = notes[0].pitch.midi > notes[1].pitch.midi ? 0 : 1
-    if (notes) last = [notes[0].pitch.midi, notes[1].pitch.midi]
     prev = t && notes ? { tones: t, notes, block } : null
     return notes && [{ ...notes[0], held }, { ...notes[1], held }]
   })
