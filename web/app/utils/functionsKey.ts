@@ -1,12 +1,11 @@
-import { keyLabel, TRANSPOSE_KEYS } from '@chord-scale-maker/engine'
+import { keyLabel, TRANSPOSE_KEYS, TRANSPOSE_MINOR_KEYS } from '@chord-scale-maker/engine'
 
 /**
  * the /functions page's key picker (docs/superpowers/specs/2026-10-10-functions-help-page-design.md §3): every
  * Transpose major, then the twelve minors as their key signatures spell them (C♯ and G♯ minor, not D♭ and G♭ minor,
  * whose tables would need double flats); all of them in CATALOGUE_KEYS, the keys the engine's tests sweep
  */
-const MINORS = ['Cm', 'C#m', 'Dm', 'Ebm', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'Bbm', 'Bm'] as const
-export const FUNCTIONS_KEYS: readonly string[] = [...TRANSPOSE_KEYS, ...MINORS]
+export const FUNCTIONS_KEYS: readonly string[] = [...TRANSPOSE_KEYS, ...TRANSPOSE_MINOR_KEYS]
 
 const offered = (v: unknown): v is string => typeof v === 'string' && FUNCTIONS_KEYS.includes(v)
 

@@ -4,7 +4,7 @@ import { parseChart, serializeChart } from '../chart'
 import { enharmonics, parseRoot, type Spelled } from '../pitch'
 import { parseScale, samePitches, type ScaleKey, spellFrom, SCALES } from '../scales'
 import { isSyncCopy } from '../util'
-import { chartKey, keySide, shiftNote, keyShift, spellInKey, TRANSPOSE_KEYS, transposeChart } from '../transpose'
+import { chartKey, keySide, shiftNote, keyShift, spellInKey, TRANSPOSE_KEYS, TRANSPOSE_MINOR_KEYS, offeredKey, transposeChart, transposeKeys } from '../transpose'
 
 const rowsOf = (text: string, from: string, to: string): string[] =>
   transposeChart(parseChart(text).value, from, to)
@@ -42,6 +42,23 @@ describe('transpose', () => {
     expect(spellInKey(parseRoot('Cb'), 'ionian', -1)).toEqual(parseRoot('B')) // a natural beats a flat
     expect(spellInKey(parseRoot('A#'), 'mixolydian', 1)).toEqual(parseRoot('Bb')) // A# Mixolydian needs C## and F##
     expect(spellInKey(parseRoot('Gb'), 'mixolydian', 0)).toEqual(parseRoot('F#')) // C: simplifyRoot decides
+  })
+
+  it('reads a minor key by its own signature: C minor is a flat key, E minor a sharp one, A minor neither', () => {
+    expect(['Cm', 'Dm', 'Gm', 'Fm', 'Bbm', 'Ebm', 'Am', 'Em', 'Bm', 'F#m', 'C#m', 'G#m'].map(keySide)).toEqual([-1, -1, -1, -1, -1, -1, 0, 1, 1, 1, 1, 1])
+  })
+
+  it('moves a minor-key chart to a minor key, spelling on that key’s side, not its major namesake’s', () => {
+    expect(rowsOf('A | 1 | Ebm7\nA | 2 | A7', 'Ebm', 'Cm')).toEqual(['Cm7', 'Gb7']) // C minor is a flat key: not F♯7
+    expect(rowsOf('A | 1 | Ebm7\nA | 2 | E7', 'Ebm', 'Gm')).toEqual(['Gm7', 'Ab7']) // nor G♯7 in G minor
+  })
+
+  it('offers the keys of the chart’s own mode: every major for a major chart, the twelve minors as their signatures spell them for a minor one', () => {
+    expect(transposeKeys('F')).toEqual(TRANSPOSE_KEYS)
+    expect(transposeKeys('Ebm')).toEqual(TRANSPOSE_MINOR_KEYS)
+    expect(TRANSPOSE_MINOR_KEYS).toEqual(['Cm', 'C#m', 'Dm', 'Ebm', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'Bbm', 'Bm'])
+     // a key the list spells otherwise starts at its offered twin
+    expect(['F', 'Gb', 'Ebm', 'D#m', 'A#m', 'Dbm', 'C#', 'Cb'].map(offeredKey)).toEqual(['F', 'Gb', 'Ebm', 'Ebm', 'Bbm', 'C#m', 'Db', 'B'])
   })
 
   it('keeps a slash bass at its interval from the root', () => {

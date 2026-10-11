@@ -284,9 +284,13 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   Phrygian, C Dorian ♭2. Only the options change; the symbol, interval labels and practice presets read DbMaj7.
 - **Transpose…** (`ChartTranspose`, `engine/src/transpose.ts`) rewrites the whole chart in another concert key.
   - Every row moves by the key interval in letters and semitones.
+  - **The mode stays:** the To list (`transposeKeys`) is every major for a major chart, and for a minor one the
+    twelve minors as their signatures spell them (`TRANSPOSE_MINOR_KEYS`: C♯ and G♯ minor, E♭ and B♭ minor). It
+    starts at the chart's key, or its enharmonic twin there (`offeredKey`: D♯ minor → E♭ minor).
   - **Spelling:** roots are spelled on the target key's side by `spellInKey`, so a Bb chart reads Dbm7 Gb7, and
-    a natural beats an accidental (B, not Cb). `simplifyRoot` decides in C, or when that side would put double
-    accidentals in the scale.
+    a natural beats an accidental (B, not Cb). A minor key's side is its own signature's (C minor is a flat key:
+    Gb7, not F#7). `simplifyRoot` decides in C and A minor, or when that side would put double accidentals in the
+    scale.
   - A chord follows its scale's root, and a slash bass keeps its interval.
   - Titles stay as typed. ⌘Z in the editor undoes it.
 - **Focus** (`useFocusMode`) shows the current sheet alone, over the whole page, with its practice highlighting.
