@@ -85,6 +85,7 @@ describe('scale levels', () => {
     expect(scaleAtLevel('Dm7', 'advanced', 0, '', 'D Phrygian')).toBe('D Dorian') // v of a minor key too (Q4)
     expect(scaleAtLevel('G7sus4b9', 'advanced', 0, '', 'G Phrygian')).toBe('G Dorian b2')
     expect(ladderScale('E Phrygian', 'advanced')).toBe('E Dorian b2') // no quality: the ladder as it is
+    expect(scaleAtLevel('Em', 'advanced', 0, '', 'E Phrygian')).toBe('E Dorian') // a iii triad climbs like iii7
     expect(ladderScale('E Phrygian', 'advanced', 'm7')).toBe('E Dorian')
     expect(ladderScale('E Phrygian', 'advanced', '7sus4b9')).toBe('E Dorian b2')
   })

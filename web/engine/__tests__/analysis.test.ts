@@ -321,6 +321,11 @@ describe('R4: iii7 is Phrygian, m9 (docs/superpowers/specs/2026-10-10-analysis-r
     expect([r?.scale, r?.rule, r?.numeral]).toEqual(['E Phrygian', 'm9', 'iii7'])
   })
 
+  it('chord_scales.json: Phrygian on a minor chord is for iii, or v of a minor key', () => {
+    const json = JSON.parse(readFileSync('../chord_scales.json', 'utf8')) as { qualities: Record<string, { scale: string; note?: string }[]> }
+    for (const q of ['m', 'm7']) expect(json.qualities[q]?.find((o) => o.scale === 'Phrygian')?.note).toBe('iii, or v of a minor key')
+  })
+
   it('a ii of a ii–V stays Dorian (m4)', () => {
     expect(verdict(chart('C', '1 Cmaj7, 2 Dm7, 3 G7, 4 Cmaj7'), '2 Dm7')).toBe('D Dorian (m4)')
   })

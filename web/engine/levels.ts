@@ -43,7 +43,7 @@ export function seededUnit(seed: number, key: string): number {
 type Rung = readonly [string, string] // interval above the Standard root, scale name
 const LADDERS: Readonly<Record<string, Readonly<{ basic?: Rung; advanced?: Rung }>>> = raw.ladders as never
 const LADDER_BY_KEY = new Map(Object.entries(LADDERS).map(([name, rungs]) => [scaleKey(name), rungs]))
-/** per-quality overrides of a ladder (chord_scales.json `quality_ladders`): an m7 on Phrygian is Dorian at Advanced */
+/** per-quality overrides of a ladder (chord_scales.json `quality_ladders`): a minor chord on Phrygian is Dorian at Advanced */
 const QUALITY_LADDERS: Readonly<Record<string, Readonly<Record<string, Readonly<{ basic?: Rung; advanced?: Rung }>>>>> =
   raw.quality_ladders as never
 
