@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { analyse, type RowAnalysis } from '../analysis'
 import { parseFunction } from '../analysis/functions'
+import { readFileSync } from 'node:fs'
 import { parseChart } from '../chart'
 
 /**
@@ -23,6 +24,214 @@ function row(key: string, chords: string, chord: string): RowAnalysis {
 }
 
 const label = (r: RowAnalysis) => ({ numeral: r.numeral, scale: r.scale, rule: r.rule, fn: r.fn, reason: r.reason, fallback: r.fallback })
+
+/** the rows of `chords`, as "numeral scale rule" */
+const sheet = (key: string, chords: string, pick: readonly string[]) =>
+  pick.map((c) => {
+    const r = row(key, chords, c)
+    return `${r.numeral} ${r.scale} ${r.rule}`
+  })
+
+describe('L1 a dominant into the key’s own V7 is V7/V; chain links print an arrow', () => {
+  it('D7 G7 | C: the D7 is V7/V, not an extended dominant', () => {
+    expect(label(row('C', 'Cmaj7 | D7 | G7 | Cmaj7', 'D7'))).toEqual({
+      numeral: 'V7/V',
+      scale: 'D Mixolydian',
+      rule: 'D3',
+      fn: 'V7 of V7: the dominant of the dominant',
+      reason: 'V7 of V7: the dominant of the dominant: natural tensions',
+      fallback: undefined,
+    })
+  })
+
+  it('the Rhythm bridge: → → V7/V V7, all Mixolydian', () => {
+    const chords = 'Bbmaj7 | D7 | G7 | C7 | F7 | Bbmaj7'
+    expect(sheet('Bb', chords, ['D7', 'G7', 'C7', 'F7'])).toEqual(['→ D Mixolydian D3', '→ G Mixolydian D3', 'V7/V C Mixolydian D3', 'V7 F Mixolydian D4'])
+    expect(label(row('Bb', chords, 'D7'))).toMatchObject({
+      fn: 'extended dominant: each one falls a fifth into the next',
+      reason: 'extended dominant: each one falls a fifth into the next: natural tensions',
+    })
+    expect(label(row('Bb', chords, 'C7'))).toMatchObject({ fn: 'V7 of V7: the dominant of the dominant', reason: 'V7 of V7: the dominant of the dominant: natural tensions' })
+  })
+
+  it('into a minor tonic (D8): the same labels, on the way to the minor key', () => {
+    const chords = 'A7 | D7 | G7 | Cm7'
+    expect(sheet('Cm', chords, ['A7', 'D7', 'G7'])).toEqual(['→ A Phrygian Dominant D8', 'V7/V D Phrygian Dominant D8', 'V7 G Phrygian Dominant D8'])
+    expect(label(row('Cm', chords, 'A7'))).toMatchObject({
+      fn: 'extended dominant: each one falls a fifth into the next, on the way to C minor',
+      reason: 'extended dominant: each one falls a fifth into the next, on the way to C minor: b9 and b13 are in the key',
+    })
+    expect(label(row('Cm', chords, 'D7'))).toMatchObject({
+      fn: 'V7 of V7: the dominant of the dominant, on the way to C minor',
+      reason: 'V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key',
+    })
+    expect(label(row('Cm', chords, 'G7'))).toMatchObject({ fn: 'V7 of C minor, at the end of a chain of dominants', reason: 'V7 of C minor, the chain’s last link: b9 and b13 are in the key'.replace('’', "'") })
+  })
+
+  it('a chain of two not into the key’s V7 is unchanged', () => {
+    expect(label(row('C', 'Cmaj7 | E7 | A7 | Dm7', 'E7'))).toEqual({
+      numeral: 'III7',
+      scale: 'E Phrygian Dominant',
+      rule: 'D8',
+      fn: 'extended dominant into D minor',
+      reason: 'V7 of A7, on the way to D minor: b9 and b13 are in the key',
+      fallback: undefined,
+    })
+    expect(label(row('F', 'F7 | Bb7 | F7 | C7', 'F7'))).toMatchObject({ numeral: 'I7', scale: 'F Mixolydian', rule: 'D3', fn: 'extended dominant (V7 of Bb7)', reason: 'extended dominant: V7 of Bb7' })
+  })
+
+  it('a chain of three or more that never reaches the key’s V7 is unchanged (Anthropology)', () => {
+    const chords = 'Bbmaj7 | F7 | Bb7 | Eb7 | Ab7 | Bbmaj7'
+    expect(sheet('Bb', chords, ['F7', 'Bb7', 'Eb7', 'Ab7'])).toEqual(['V7 F Mixolydian D3', 'I7 Bb Mixolydian D3', 'IV7 Eb Mixolydian D3', '♭VII7 Ab Lydian Dominant D5'])
+    expect(label(row('Bb', chords, 'Bb7'))).toMatchObject({ fn: 'extended dominant (V7 of Eb7)', reason: 'extended dominant: V7 of Eb7' })
+  })
+})
+
+describe('L2 a diatonic chord acting as a related ii prints its degree (major key areas)', () => {
+  it('iii7 before V7/ii', () => {
+    expect(label(row('C', 'Cmaj7 | Em7 | A7 | Dm7 | G7 | Cmaj7', 'Em7'))).toEqual({
+      numeral: 'iii7',
+      scale: 'E Dorian',
+      rule: 'm4',
+      fn: 'ii of the ii–V to D minor; also iii of C',
+      reason: 'ii of the ii–V to D minor',
+      fallback: undefined,
+    })
+  })
+
+  it('viiø7 before V7/vi: the "also" in the fn only', () => {
+    expect(label(row('C', 'Bm7b5 | E7 | Am7', 'Bm7b5'))).toEqual({
+      numeral: 'viiø7',
+      scale: 'B Locrian',
+      rule: 'h2',
+      fn: 'iiø7 of the ii–V to A minor; also viiø7 of C',
+      reason: 'iiø7 of the ii–V to A minor: the b9 is in the key',
+      fallback: undefined,
+    })
+  })
+
+  it('whether or not its ii–V lands', () => {
+    expect(label(row('C', 'Cmaj7 | Am7 | D7 | Cmaj7', 'Am7'))).toEqual({
+      numeral: 'vi7',
+      scale: 'A Dorian',
+      rule: 'm4',
+      fn: 'ii of D7; also vi of C',
+      reason: 'ii of D7: Dorian',
+      fallback: undefined,
+    })
+  })
+
+  it('a non-diatonic related ii keeps its slash', () => {
+    expect(label(row('C', 'Gm7 | C7 | Fmaj7', 'Gm7'))).toMatchObject({ numeral: 'ii7/IV', scale: 'G Dorian', rule: 'm4', fn: 'ii of the ii–V to F', reason: 'ii of the ii–V to F' })
+  })
+
+  it('the ii of the tonic is not "also" anything', () => {
+    expect(label(row('C', 'Cmaj7 | Dm7 | G7 | Cmaj7', 'Dm7'))).toMatchObject({ numeral: 'ii7', rule: 'm4', fn: 'ii of the ii–V to C' })
+  })
+
+  it('a minor key area is unchanged (Autumn Leaves)', () => {
+    const r = analyse(parseChart(readFileSync(new URL('../../../charts/autumn_leaves.txt', import.meta.url), 'utf8')).value).rows.find((x) => x.bar === '1')
+    expect([r?.chord, r?.numeral, r?.key.name, r?.scale, r?.rule, r?.fn]).toEqual(['Cm7', 'ii7/♭III', 'G minor', 'C Dorian', 'm4', 'ii of F7'])
+  })
+})
+
+describe('L6 borrowed chords are named as borrowed', () => {
+  it('♭VII7 not into I: subdominant minor, no guess', () => {
+    expect(label(row('C', 'Cmaj7 | Bb7 | Fmaj7', 'Bb7'))).toEqual({
+      numeral: '♭VII7',
+      scale: 'Bb Lydian Dominant',
+      rule: 'D6',
+      fn: '♭VII7, borrowed from the parallel minor (subdominant minor)',
+      reason: '♭VII7 from the parallel minor: Lydian Dominant',
+      fallback: undefined,
+    })
+  })
+
+  it('♭VI7 returning to I', () => {
+    expect(label(row('C', 'Cmaj7 | Ab7 | Cmaj7', 'Ab7'))).toEqual({
+      numeral: '♭VI7',
+      scale: 'Ab Lydian Dominant',
+      rule: 'D6',
+      fn: '♭VI7, borrowed from the parallel minor (subdominant minor)',
+      reason: '♭VI7 from the parallel minor: Lydian Dominant, it returns to I',
+      fallback: undefined,
+    })
+  })
+
+  it('♭III7 is borrowed but not subdominant minor', () => {
+    expect(label(row('C', 'Cmaj7 | Eb7 | Cmaj7', 'Eb7'))).toMatchObject({
+      scale: 'Eb Lydian Dominant',
+      rule: 'D6',
+      fn: '♭III7, borrowed from the parallel minor',
+      reason: '♭III7 from the parallel minor: Lydian Dominant, it returns to I',
+      fallback: undefined,
+    })
+  })
+
+  it('a dominant on any other non-diatonic root is still a chromatic guess', () => {
+    expect(label(row('C', 'Cmaj7 | Gb7 | Cmaj7', 'Gb7'))).toMatchObject({ scale: 'Gb Lydian Dominant', rule: 'D6', fn: 'chromatic dominant', fallback: true })
+  })
+
+  it('a diatonic-root dominant that does not resolve is unchanged', () => {
+    expect(label(row('C', 'Cmaj7 | E7 | Fmaj7', 'E7'))).toMatchObject({ numeral: 'III7', scale: 'E Phrygian Dominant', rule: 'D5', fn: 'III7 in C, not resolving', fallback: true })
+  })
+
+  it('borrowed major chords: modal interchange, from C minor or C Phrygian', () => {
+    expect(label(row('C', 'Cmaj7 | Abmaj7 | G7', 'Abmaj7'))).toEqual({
+      numeral: '♭VImaj7',
+      scale: 'Ab Lydian',
+      rule: 'M4',
+      fn: '♭VImaj7, borrowed (modal interchange)',
+      reason: '♭VImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)',
+      fallback: undefined,
+    })
+    expect(label(row('C', 'Cmaj7 | Dbmaj7 | Cmaj7', 'Dbmaj7'))).toMatchObject({
+      scale: 'Db Lydian',
+      rule: 'M4',
+      fn: '♭IImaj7, borrowed (modal interchange)',
+      reason: '♭IImaj7, borrowed from C Phrygian: Lydian (its ♯11 is in the key)',
+    })
+  })
+
+  it('borrowed triads and sixth chords take their own numeral', () => {
+    expect(label(row('C', 'Cmaj7 | Ab6 | G7', 'Ab6'))).toMatchObject({ scale: 'Ab Lydian', rule: 'M4', fn: '♭VI6, borrowed (modal interchange)', reason: '♭VI6, borrowed from C minor: Lydian (its ♯11 is in the key)' })
+    expect(label(row('C', 'Cmaj7 | Eb | Dm7', 'Eb'))).toMatchObject({ scale: 'Eb Lydian', rule: 'M4', fn: '♭III, borrowed (modal interchange)', reason: '♭III, borrowed from C minor: Lydian (its ♯11 is in the key)' })
+  })
+
+  it('iiø7 with no dominant after it is borrowed, no guess', () => {
+    expect(label(row('C', 'Cmaj7 | Dm7b5 | Cmaj7', 'Dm7b5'))).toEqual({
+      numeral: 'iiø7',
+      scale: 'D Locrian',
+      rule: 'h2',
+      fn: 'iiø7, borrowed',
+      reason: 'iiø7, borrowed from C minor: Locrian',
+      fallback: undefined,
+    })
+  })
+
+  it('iiø7 before its dominant, and other unattached ø7s, are unchanged', () => {
+    expect(label(row('C', 'Dm7b5 | G7 | Cmaj7', 'Dm7b5'))).toMatchObject({ scale: 'D Locrian', rule: 'h2', fn: 'iiø7 of the ii–V to C', fallback: undefined })
+    expect(label(row('C', 'Cmaj7 | F#m7b5 | Fmaj7', 'F#m7b5'))).toMatchObject({ scale: 'F# Locrian', rule: 'h2', fn: '#ivø7 in C', fallback: true })
+  })
+})
+
+describe('L8 extended ii–V', () => {
+  it('a side-step ii–V: fn and reason, numerals and scales unchanged', () => {
+    const chords = 'Bm7 | E7 | Bbm7 | Eb7 | Am7b5 | D7 | Gm7'
+    expect(sheet('Gm', chords, ['E7', 'Eb7'])).toEqual(['V7/II E Mixolydian D4', 'V7/♭II Eb Mixolydian D4'])
+    for (const c of ['E7', 'Eb7']) expect(label(row('Gm', chords, c))).toMatchObject({ fn: 'extended ii–V: a side-step, its own notes', reason: 'extended ii–V: a side-step, its own key' })
+  })
+
+  it('with the tensions when its target is minor', () => {
+    expect(label(row('C', 'Cmaj7 | C#m7b5 | F#7 | Cmaj7', 'F#7'))).toMatchObject({
+      numeral: 'V7/vii',
+      scale: 'F# Phrygian Dominant',
+      rule: 'D4',
+      fn: 'extended ii–V: a side-step, its own notes',
+      reason: 'extended ii–V: a side-step, its own key: b9 and b13 are in the key',
+    })
+  })
+})
 
 describe('L3 auxiliary diminished: defined by the next chord', () => {
   const AUX = { fn: 'auxiliary diminished', reason: 'auxiliary diminished: it decorates the chord and returns to it', fallback: undefined }
@@ -70,8 +279,17 @@ describe('L5 a sus before its own dominant is a suspension', () => {
     expect(label(row('C', 'Cmaj7 | Dm7 | G7sus4 | G7 | Cmaj7', 'G7sus4'))).toMatchObject({
       scale: 'G Mixolydian',
       rule: 's3',
-      fn: 'V7sus4 before the V7: a subdominant suspension',
-      reason: 'V7sus4 before the V7: Mixolydian, the 4th is a chord tone here',
+      fn: 'V7sus4 before its dominant: a subdominant suspension',
+      reason: 'V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here',
+    })
+  })
+
+  it('named by its own degree on another root', () => {
+    expect(label(row('C', 'Cmaj7 | D7sus4 | D7 | G7 | Cmaj7', 'D7sus4'))).toMatchObject({
+      scale: 'D Mixolydian',
+      rule: 's3',
+      fn: 'II7sus4 before its dominant: a subdominant suspension',
+      reason: 'II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here',
     })
   })
 

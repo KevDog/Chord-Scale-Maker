@@ -1,5 +1,5 @@
-import { hasRelatedII, isDominantLike, isTonicType, type Key } from './keys'
-import { type Context, type Decision, roman } from './rules'
+import { diatonic, hasRelatedII, isDominantLike, isTonicType, type Key } from './keys'
+import { type Context, type Decision, roman, towardV7 } from './rules'
 import { downFifth, downHalf, type Entry, interval, nextOf, prevOf } from './stream'
 
 /**
@@ -45,14 +45,17 @@ export function numeral(ctx: Context, i: number, decision: Decision): string {
     const seven = e.family === 'dominant' ? '7' : '7sus4'
     if (n && downHalf(e, n) && decision.rule.includes('D2')) return `subV${seven}${of(n, key)}`
     if (n && downFifth(e, n) && !isDominantLike(n)) return `V${seven}${of(n, key)}`
-    if (n && downFifth(e, n)) return ownNumeral(e, key) // an extended dominant: its own degree (the Rhythm bridge's III7 VI7 II7)
+    const toward = towardV7(ctx, i)
+    if (toward) return toward === 'link' ? 'V7/V' : '→' // into the key's V7: the Rhythm bridge's → → V7/V
+    if (n && downFifth(e, n)) return ownNumeral(e, key) // any other extended dominant: its own degree (a blues I7 → IV7)
     if (n && interval(e.pc, n.pc) === 2 && n.family === 'major') return `♭VII${seven}${of(n, key)}` // the back door
     if (p && interval(e.pc, p.pc) === 5 && isTonicType(p)) return `V${seven}${of(p, key)}` // V7 of the chord before
     if (hasRelatedII(ctx.stream, i) && p) return `V${seven}${of({ pc: (e.pc + 5) % 12, family: p.family === 'halfdim' ? 'minor' : 'major' }, key)}`
     return ownNumeral(e, key)
   }
   if ((e.family === 'minor' || e.family === 'halfdim') && n && isDominantLike(n) && interval(e.pc, n.pc) === 5) {
-    // the ii of a ii–V: named for the chord the V goes to
+    // the ii of a ii–V: a diatonic chord of a major key prints its degree (iii7, vi7, viiø7); else named for the chord the V goes to
+    if (!key.minor && diatonic(e, key)) return ownNumeral(e, key)
     const t = nextOf(ctx.stream, e.next)
     const suffix = e.family === 'halfdim' ? 'ø7' : (SUFFIX[e.quality] ?? '')
     if (t && downFifth(n, t) && isTonicType(t)) return `ii${suffix}${of(t, key)}`

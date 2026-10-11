@@ -43,8 +43,9 @@ describe('functionChoices', () => {
   })
 
   it("keeps the other rows' statements while it works out one row's choices", () => {
-    const doc = parseChart('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | Em7\nA | 3 | A7 | | V7/II\nA | 4 | Dm7\nA | 5 | G7\nA | 6 | CMaj7\n').value
-    expect(functionChoices(doc).get(3)?.[0]?.label).toBe('ii7/II')
+    const text = 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | F#m7\nA | 3 | B7 | | V7/III\nA | 4 | Em7\nA | 5 | G7\nA | 6 | CMaj7\n'
+    expect(functionChoices(parseChart(text).value).get(3)?.[0]?.label).toBe('ii7/III')
+    expect(functionChoices(parseChart(text.replace(' | | V7/III', '')).value).get(3)?.[0]?.label).toBe('ii7/iii') // unstated
   })
 
   it('gives a held row the choices of the chord it holds', () => {
