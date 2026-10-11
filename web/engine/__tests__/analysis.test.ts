@@ -279,6 +279,17 @@ describe('R2: the blues I7 and IV7 by D5 before D3 (docs/superpowers/specs/2026-
     expect(reasoned(fJazzBlues, '5 Bb7')).toBe('Bb Mixolydian (D5): IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)')
   })
 
+  it('a IV7 whose symbol moves it off Mixolydian drops the Mixolydian clause (Ab7#11 in an Eb blues)', () => {
+    const text = chart('', '1 Eb7, 5 Ab7#11, 7 Eb7, 9 Bb7, 10 Ab7, 11 Eb7, 12 Bb7')
+    expect(analyse(parseChart(text).value).context).toBe('blues')
+    expect(reasoned(text, '5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D5): IV7 of the blues: a subdominant with dominant colour; #11 from the symbol')
+    expect(reasoned(library('blue_trane'), '5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D5): IV7 of the blues: a subdominant with dominant colour; #11 from the symbol')
+  })
+
+  it('an I7 whose symbol moves it names the symbol’s notes, not natural tensions (Eb7#9)', () => {
+    expect(reasoned(library('blue_trane'), '1 Eb7#9')).toBe('Eb Half-Whole Diminished (D1+D5): I7 of the blues: a tonic with dominant colour, b9, #9 and #11 from the symbol')
+  })
+
   it('no I7 row of any library blues is reasoned by D3', () => {
     const files = readdirSync('../charts').filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
     const blues = files.map((f) => [f, analyse(parseChart(readFileSync(`../charts/${f}`, 'utf8')).value)] as const).filter(([, a]) => a.context === 'blues')

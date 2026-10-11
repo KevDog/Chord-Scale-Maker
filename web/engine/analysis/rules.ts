@@ -181,7 +181,11 @@ function dominant(ctx: Context, i: number): Decision {
   // R2: the blues I7 and IV7 are decided by their degree before the chords around them (M&H p. 137: "I7 should not be
   // confused with V7/IV"); IV7 is Mixolydian, though the key holds its #11 (principle 4 yields, N&G p. 105)
   if (ctx.blues && e.pc === ctx.blues.tonic) return dominantDecision(e, 'D5', 'I7 of the blues', derive(e, ctx.blues), 'I7 of the blues: a tonic with dominant colour', true, ', ')
-  if (ctx.blues && interval(ctx.blues.tonic, e.pc) === 5) return dominantDecision(e, 'D5', 'IV7 of the blues', NATURAL, 'IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)', false)
+  if (ctx.blues && interval(ctx.blues.tonic, e.pc) === 5) {
+    const why = 'IV7 of the blues: a subdominant with dominant colour'
+    const moved = dominantScale({ ...NATURAL, ...pin }) !== NAME.mixolydian // the symbol's notes then name the scale
+    return dominantDecision(e, 'D5', 'IV7 of the blues', NATURAL, moved ? why : `${why}, Mixolydian (the #11 is an extra colour)`, false)
+  }
   // a tritone substitute lands on a chord of its own; into a ø7 or °7 it is the V of what follows (Fm7 Bb7 | Aø7)
   if (n && downHalf(e, n) && n.family !== 'halfdim' && n.family !== 'dim') return dominantDecision(e, 'D2', `subV7 of ${n.chord}`, LYDIAN_DOMINANT, `tritone substitute: resolves down a half step to ${n.chord}`, false)
   if (n && downFifth(e, n) && isDominantLike(n)) {
