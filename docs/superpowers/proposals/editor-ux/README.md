@@ -11,6 +11,13 @@ plain HTML on the existing engine, so it needs no new dependency, and it can shi
 flag. A (edit on the Changes sheet) is the most striking option but the riskiest. C (smart text) is the cheapest
 but keeps the row format's problems.
 
+**Decided with the user (2026-10-11): full editing is for larger screens.** Phones (below `md`, 768 px) get the
+sheet plus light edits: tap a chord on the Changes sheet to change it, pick its scale or function from a bottom
+sheet, and transpose. No structure editing and no new chart; a quiet note says "Full editing works on a larger
+screen". Tablets and desktops get the full bar grid. Reason: at 390 px a bar is ≈86 px, so two chords are cramped and
+a long slash chord doesn't fit. Chord entry needs a custom keyboard and is still slower than a laptop, and structure
+work stacks bottom sheets on a grid. Phone use is reading at the instrument, transposing and fixing a wrong chord.
+
 | | Mockup | Screenshot |
 | --- | --- | --- |
 | A. Lead-sheet-first | [mockup-a-lead-sheet.html](mockup-a-lead-sheet.html) | [img/mockup-a-lead-sheet.png](img/mockup-a-lead-sheet.png) |
@@ -214,14 +221,15 @@ line, headed by its name chip and key area.
 - **The sheet below** outlines the selected bar, and tapping a chord on the sheet selects it in the grid. That brings
   A's best idea in at low cost.
 
-**Phone.**
-- Edit becomes a full-screen mode: a top bar with Done, Undo and ⋯ (details, transpose, share), and
-  **Chart / Sheet / Source** tabs. No 1,500 px scroll between editor and result.
-- Four bars fit in 358 px (86 px a bar), with no sideways scroll and no scroll box inside the page.
-- **A chord keyboard** replaces the system one: roots, ♭ ♯, qualities and `/`, one tap each. Its bottom row has
-  ‹ Bar, Scale, Function, Bar ⋯, Bar ›. "abc" brings back the system keyboard. No autocorrect, no capitals fight, no
-  three-tap pipe.
-- The inspector and the bar menu are bottom sheets (Headless UI `Dialog`), with 44 px rows.
+**Phone (decided: light edits only, below `md`).**
+- The bar grid is not shown on phones. Edit there means **tap a chord on the Changes sheet**: a bottom sheet
+  (Headless UI `Dialog`, 44 px rows) opens with the chord in a text field (system keyboard), and the scale and function
+  lists from the inspector. Transpose stays in ⋯.
+- No structure actions (bars, sections, repeats, endings, marks) and no new chart on phones. A one-line note under the
+  title: "Full editing works on a larger screen."
+- Considered and set aside: the full-screen Chart / Sheet / Source mode with a custom chord keyboard. At 86 px a bar
+  it works for one chord a bar but not for two or for long slash chords, and it is the largest single piece of the
+  phone work for a task people do at a desk.
 
 **Accessibility.**
 - The WAI-ARIA **grid** pattern: one Tab stop into the grid, arrows inside it, roving `tabindex`, and
@@ -302,7 +310,7 @@ Actions and syntax keystrokes per task (counting rules in §2). "≈" means roun
 | State a function | 3 + scroll; phone: 2.5 screens sideways | **2** | **2** | ≈4 |
 | Key change from a bar | 3 + Edit + scroll | 4 | 4 | 4 |
 | Undo | none | ⌘Z | ⌘Z | ⌘Z |
-| **Phone** | page 110 px too wide, 3 nested scrollers, 2 rows visible | cramped: 2 bars a line, ~40 px targets, little room with the keyboard up | **designed for it**: 4 bars a line, chord keyboard, bottom sheets, tabs | fine for fixes, slow to enter |
+| **Phone** | page 110 px too wide, 3 nested scrollers, 2 rows visible | cramped: 2 bars a line, ~40 px targets, little room with the keyboard up | **light edits by design**: tap a chord on the sheet, bottom sheet for chord/scale/function; full grid from `md` up | fine for fixes, slow to enter |
 | **Sees the form while editing** | no | yes (the real sheet) | **yes** (bars, 4 a line) | beside it, not in it |
 | **Accessibility** | labelled inputs, 8 Tab stops a row | weakest (a drawing) | strong if the grid pattern is done well | strongest baseline |
 | **Effort** | | L | L (in M stages) | M |
@@ -338,9 +346,11 @@ builds, as every flag is.
    - port the editor e2e tests (e2e runs with flags on).
 3. **Stage 2, structure:** + Bar, + Section, the bar menu (insert, delete, key change, endings, segno/coda/nav),
    Repeat a section, Write out a copy, Paste bars, and time and details in the header strip.
-4. **Stage 3, phone:** full-screen Edit with Chart / Sheet / Source tabs, the chord keyboard, and bottom sheets.
+4. **Stage 3, tap to edit (all screens; the phone's whole editor):** tap a chord on the Changes sheet to change it,
+   in a popover on desktop and a bottom sheet on phones, with the chord, scale and function. Below `md`, the bar grid
+   and the structure actions are hidden, and the note "Full editing works on a larger screen" shows. Effort S (was
+   an L phone stage with a chord keyboard).
 5. **Stage 4:**
-   - tap a chord on the Changes sheet to edit it there;
    - move Edit next to the title;
    - sign off, turn the flag on in `nuxt.config.ts`, then remove `ChartGrid`, `GridCell`, `ScaleCell`'s select and
      `FunctionCell`.
@@ -353,8 +363,7 @@ Each stage is its own PR, with unit tests alongside the engine work and e2e for 
    The mockups keep the grid in concert pitch, the chart's own pitch, and label it.
 2. **Numerals and scales in the grid:** always shown (as mocked), or a toggle? They're the analysis' live reading,
    and useful while choosing.
-3. **Chord keyboard on phones:** worth building in stage 3, or start with the system keyboard plus a quality-chip
-   strip?
+3. ~~**Chord keyboard on phones**~~: decided, no. Phones get light edits with the system keyboard (stage 3).
 4. Should **Source** stay visible to everyone, or move under ⋯ once the grid covers endings and marks?
 
 ---
