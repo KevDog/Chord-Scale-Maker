@@ -1,11 +1,12 @@
 import { analyse, chartKeyOf, parseKey } from './analysis'
-import { type ChartDoc, type ChartLine, chartBeats, expandRowLines, formPart, type FormPart, type LinedRow, resolveScale } from './chart'
+import { type ChartDoc, type ChartLine, chartBeats, expandRowLines, formPart, type FormPart, type LinedRow, qualityScale } from './chart'
 import { type ChordToken, chordTokensOrNull, writtenChordTextOrNull } from './chord'
 import { guideToneTimeline } from './guideToneTimeline'
 import { type GuideInput, type GuideLine, type GuideNote, guideVoices } from './guideTones'
 import { keySignature } from './keySignature'
 import { type Part, scaleLabel, writtenRoot } from './part'
 import { glyphs, parseRoot, rootName } from './pitch'
+import { resolveScales, type ScaleView } from './resolve'
 import { abbreviateScale } from './scales'
 import { chunk, orNull } from './util'
 
@@ -104,11 +105,15 @@ export function changesLinesPerPage(line: GuideLine, rows: Readonly<{ numerals: 
   return 6 + (!rows.numerals && !rows.scales ? 1 : 0)
 }
 
-export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: GuideLine = 'off'): ChangesSheet {
+const STANDARD: ScaleView = { level: 'standard', seed: 0, proposed: false }
+
+/** view: the sheet's level, and whether blank cells follow the analysis (resolve.ts); the guide tones read the chords only */
+export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: GuideLine = 'off', view: ScaleView = STANDARD): ChangesSheet {
   const rows = expandRowLines(doc).value
   const beats = chartBeats(doc)
   const { events, diagnostics } = guideToneTimeline(rows, beats)
   const analysis = analyse(doc)
+  const resolved = resolveScales(doc, view, analysis)
   const keySig = signatures ? keySignature(chartKeyOf(doc), part) : null
   const byRow = new Map(analysis.rows.map((r) => [r.row, r]))
   const index = new Map<LinedRow, number>(rows.map((r, i) => [r, i]))
@@ -203,7 +208,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         if (k !== from || (volta > 1 && volta !== ending)) block++
         from = k
         ending = volta
-        const scale = resolveScale(e.row)
+        const scale = qualityScale(e.row)
         return [{ row: i, chord: e.chord, ...(scale ? { scale } : {}), start: e.start, beats: e.beats, block }]
       }),
     )
@@ -220,7 +225,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         .map((i): ChangesChord => {
           const row = rows[i] as LinedRow
           const a = byRow.get(i)
-          const scale = resolveScale(row)
+          const scale = resolved.get(i)?.scale ?? null
           return {
             beat: (eventAt.get(i)?.start ?? bar * beats) - bar * beats,
             text: row.chord,

@@ -1,7 +1,8 @@
 import { analyse, type Area, chartKeyOf, functionChoices, type FunctionChoice } from './analysis'
 import { keyCode } from './analysis/keys'
-import { type ChartDoc, type ChartLine, resolveScale } from './chart'
+import type { ChartDoc, ChartLine } from './chart'
 import { insertKeyBefore } from './edit'
+import { type Resolved, resolveScales, type ScaleView } from './resolve'
 import { sameScale } from './scales'
 
 export { chartKeyOf, functionChoices, type FunctionChoice }
@@ -20,28 +21,33 @@ export type RowNote = Readonly<{
   key: string
   /** the chord's Roman numeral in its key area, or the function stated; '' when the analysis doesn't reach it */
   numeral: string
-  /** the scale played: the row's own, else the analyser's; '' for none */
+  /** the scale played (resolve.ts): the row's own, else the analysis's at the sheet's level; '' for none */
   scale: string
+  /** where that scale comes from; "you chose" is said only of a written one */
+  source: Resolved['source']
 }>
 
-export function rowNotes(doc: ChartDoc): ReadonlyMap<number, RowNote> {
+const STANDARD: ScaleView = { level: 'standard', seed: 0, proposed: false }
+
+export function rowNotes(doc: ChartDoc, view: ScaleView = STANDARD): ReadonlyMap<number, RowNote> {
   const a = analyse(doc)
+  const resolved = resolveScales(doc, view, a)
   const problemAt = (line: number): string | null => a.problems.find((p) => p.line === line)?.message ?? null
   const out = new Map<number, RowNote>()
   for (const r of a.rows) {
     if (out.has(r.line)) continue // a @copy repeat: its source row speaks for it
-    const line = doc.lines[r.line]
-    const chosen = line?.kind === 'row' ? resolveScale(line) : null
-    const differs = !!r.scale && !!chosen && !sameScale(chosen, r.scale)
+    const played = resolved.get(r.row) ?? { scale: null, source: 'default' }
+    const differs = played.source === 'written' && !!r.scale && !!played.scale && !sameScale(played.scale, r.scale)
     out.set(r.line, {
-      note: differs ? `analyser: ${r.scale} (${r.reason}); you chose ${chosen}` : r.reason,
+      note: differs ? `analyser: ${r.scale} (${r.reason}); you chose ${played.scale}` : r.reason,
       problem: problemAt(r.line),
       key: keyCode(r.key),
       numeral: r.numeral === '?' ? '' : r.numeral,
-      scale: chosen ?? r.scale ?? '',
+      scale: played.scale ?? r.scale ?? '',
+      source: played.source,
     })
   }
-  for (const p of a.problems) if (!out.has(p.line)) out.set(p.line, { note: '', problem: p.message, key: '', numeral: '', scale: '' })
+  for (const p of a.problems) if (!out.has(p.line)) out.set(p.line, { note: '', problem: p.message, key: '', numeral: '', scale: '', source: 'default' })
   return out
 }
 

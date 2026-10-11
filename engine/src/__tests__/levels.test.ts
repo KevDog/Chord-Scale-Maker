@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import raw from '../../chord_scales.json'
-import { expandRows, parseChart, resolveScale } from '../chart'
+import { expandRows, parseChart, qualityScale } from '../chart'
 import { analyse } from '../analysis'
 import { ladderScale, type LevelState, relevel, scaleAtLevel, seededUnit } from '../levels'
 import { resolveQuality } from '../qualities'
@@ -56,7 +56,7 @@ describe('scale levels', () => {
   })
 
   const at = (level: LevelState['level'], seed = 0): LevelState => ({ level, seed })
-  const scales = (doc: ReturnType<typeof parseChart>['value']) => expandRows(doc).value.map(resolveScale) // a blank cell plays the default
+  const scales = (doc: ReturnType<typeof parseChart>['value']) => expandRows(doc).value.map(qualityScale) // a blank cell plays the default
 
   it('own a default written on an enharmonic root like the default itself, and keep its spelling (R18)', () => {
     const respelled = parseChart('A | 1 | Gbdim7 | F# Whole-Half Diminished\n').value

@@ -147,7 +147,8 @@ type ChordToken =
     Interval-derived roots are respelled by `simplifyRoot` for their scale: `b2` over Bb → B, not Cb.
   - `baseQuality(text)` reads an extended symbol as the known quality it starts with, when the rest is only
     alterations (`Maj7#11` → `Maj7`, `7(9)` → `7`). Guide tones use it.
-- `chart.ts` `resolveScale(row)`: the explicit scale cell, else the default, else `null` (the UI prompts).
+- `chart.ts` `qualityScale(row)`: the explicit scale cell, else the default, else `null` (the UI prompts); the
+  sheets read `resolveScales` (§7a).
 - `chord.ts`:
   - `chordTokens` and `writtenChordRoot` throw on a scale they can't read.
   - `chordTokensOrNull` and `writtenChordRootLenient` are the display variants. They ignore an unreadable
@@ -547,9 +548,20 @@ library writes such a repeat out instead.
   area (an `@key` holds until the next); the bar editor's Key change here (`insertKeyChange`) adds the same pair. The
   analyser never writes a function, an `@key` or a `context:`. The report's second line says which context
   decided and why (`context: modal (stated)`, `context: modal (detected: 0 of 8 chords in cadences, median chord 2
-  bars)`); `--ambiguous` also names a detection within one chord of a threshold. `rowNotes` (`engine/src/notes.ts`) gives each row's reason and key;
+  bars)`); `--ambiguous` also names a detection within one chord of a threshold. `rowNotes` (`engine/src/notes.ts`) gives each row's reason, key,
+  the scale played and its `source`; it says "analyser: X (reason); you chose Y" only of a written scale that differs;
   the inspector's Why and the Changes sheet's numeral/scale notes show it, the note with where its key
   came from (a key the author set is starred), behind the `functions` flag (on).
+- **The scale played** (`engine/src/resolve.ts`, [proposed scales spec](superpowers/specs/2026-10-11-proposed-scales-design.md)
+  §2; the `proposedScales` flag, off): `resolveScales(doc, view, analysis?)` gives each expanded row (keyed by its
+  index in `expandRowLines`, so a `@copy` repeat resolves on its own row) a `Resolved` scale and its `source`:
+  `written` (the cell, at every level) > `function` (a stated function's scale) > `rules` > `default` (the quality's,
+  where the analysis doesn't reach the row); null for a chord that can't be read. An analysed scale is moved to the
+  view's level as the Level control moves one (`scaleAtLevel` on it, Aeolian for a tonic minor at Basic, Random by
+  `line:chord`). `view.proposed` false (the flag off) skips the analysis: a blank cell plays the quality's default
+  at every level, as before. `buildSheet` takes the map, `buildChanges` and `rowNotes` the view (sharing their one
+  `analyse`); the guide tones read the cell or the quality's default, untouched. `qualityScale(row)` (once
+  `resolveScale`) is the one-row lookup for places with no document.
 - **Numerals** (`analysis/numerals.ts`; the degree itself in `analysis/degrees.ts`, shared with the rules and the
   grammar): lower case for the minor family (`ii7`, `V7/ii`, `viiø7`), as Terefenko writes them. A dominant into the
   local key's own V7 prints `V7/V`, and the links before it in a chain of three or more print `→` (a display mark, not
@@ -670,7 +682,8 @@ library writes such a repeat out instead.
   - `myCharts` (My charts, New chart, Download/Open, share links), `changes` (the Changes sheet),
     `practice` (the Practice panel) and `scaleLevels` (the Scale level control) are on, since sign-off. Guide tones
     on the Changes sheet have no flag: their toggles start off. The bar editor shipped behind `barEditor`; at its
-    sign-off the old row grid went, and the flag with it.
+    sign-off the old row grid went, and the flag with it. `proposedScales` (a blank scale cell plays the analysis,
+    §7a) is off while it's built in stages.
 
 ## 9. Security
 

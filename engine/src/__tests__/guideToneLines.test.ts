@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { chartBeats, expandRows, parseChart, resolveScale } from '../chart'
+import { chartBeats, expandRows, parseChart, qualityScale } from '../chart'
 import { guideToneLine, type LineNote } from '../guideToneLines'
 import { guideToneTimeline } from '../guideToneTimeline'
 import { guideLabel, guideTonesFor } from '../guideTones'
@@ -328,7 +328,7 @@ describe('placing a run nearest the centre', () => {
       const doc = parseChart(readFileSync(new URL(`../../charts/${chart}.txt`, import.meta.url), 'utf8')).value
       const { events } = guideToneTimeline(expandRows(doc).value, chartBeats(doc))
       const part = partFor(instrument)
-      return guideToneLine(events.map((e) => guideTonesFor(part, e.chord, resolveScale(e.row) ?? undefined)), rangeOf(part), 'seventh').find((n) => n)?.pitch.midi
+      return guideToneLine(events.map((e) => guideTonesFor(part, e.chord, qualityScale(e.row) ?? undefined)), rangeOf(part), 'seventh').find((n) => n)?.pitch.midi
     }
     expect(first('doxy', 'guitar')).toBe(80) // A♭5: its run averages exactly as far above F♯4 as A♭4's below
     expect(first('misty', 'clarinet')).toBe(76)
@@ -405,7 +405,7 @@ describe('guide tone lines over the library', () => {
         let voiced = 0
         for (const { f, doc } of charts) {
           const { events } = guideToneTimeline(expandRows(doc).value, chartBeats(doc))
-          const tones = events.map((e) => guideTonesFor(part, e.chord, resolveScale(e.row) ?? undefined))
+          const tones = events.map((e) => guideTonesFor(part, e.chord, qualityScale(e.row) ?? undefined))
           const line = guideToneLine(tones, rangeOf(part), from)
           if (line.length !== tones.length) faults.push(`${f}: ${line.length} notes for ${tones.length} chords`)
           tones.forEach((t, i) => {
@@ -435,7 +435,7 @@ describe('guide tone lines over the library', () => {
       }
       for (const { f, doc } of charts) {
         const { events } = guideToneTimeline(expandRows(doc).value, chartBeats(doc))
-        const tones = events.map((e) => guideTonesFor(part, e.chord, resolveScale(e.row) ?? undefined))
+        const tones = events.map((e) => guideTonesFor(part, e.chord, qualityScale(e.row) ?? undefined))
         const [a, b] = (['third', 'seventh'] as const).map((from) => guideToneLine(tones, rangeOf(part), from))
         tones.forEach((_, j) => {
           const [x, y, nx, ny, t] = [a?.[j], b?.[j], a?.[j + 1], b?.[j + 1], tones[j + 1]]

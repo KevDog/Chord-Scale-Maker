@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { type ChartDoc, chartBeats, expandRows, parseChart, resolveScale } from '../chart'
+import { type ChartDoc, chartBeats, expandRows, parseChart, qualityScale } from '../chart'
 import {
   type GuideInput,
   guideLabel,
@@ -183,7 +183,7 @@ describe('guide tone lines over the library', () => {
     .map((name) => ({ name, doc: parseChart(readFileSync(`charts/${name}`, 'utf8')).value }))
   const inputs = (doc: ChartDoc): GuideInput[] => {
     const { events } = guideToneTimeline(expandRows(doc).value, chartBeats(doc))
-    return events.map((e, i) => ({ row: i, chord: e.chord, scale: resolveScale(e.row) ?? undefined, start: e.start, beats: e.beats }))
+    return events.map((e, i) => ({ row: i, chord: e.chord, scale: qualityScale(e.row) ?? undefined, start: e.start, beats: e.beats }))
   }
   const RANGE = { treble: [60, 81], bass: [40, 60] } as const
 

@@ -1,6 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import type { Row } from '../chart'
+import { expandRows, parseChart, type Row } from '../chart'
+import type { ScaleLevel } from '../levels'
 import { CONCERT } from '../part'
+import { rootName } from '../pitch'
+import { resolveScales } from '../resolve'
 import { type ModeChoice, type StaffModel, buildSheet, noteText, pageSubtitle, toVexKey } from '../sheet'
 import { parseKey } from '../analysis/keys'
 
@@ -135,5 +138,35 @@ describe('sheet', () => {
   it('gives a staff a new id when its clef comes or goes', () => {
     const ids = (key?: null) => buildSheet([row('Cm7'), row('F7', '', '2')], CONCERT, 'root', 'C', 12, null, key).flatMap((p) => p.pages.flat().map((s) => s.id))
     expect(ids(null)[1]).not.toBe(ids()[1])
+  })
+
+  describe('reading resolveScales', () => {
+    const doc = parseChart('title: T\nkey: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm7 | G Dorian\n').value
+    const played = (level: ScaleLevel, proposed = true): (string | null)[] =>
+      (buildSheet(expandRows(doc).value, CONCERT, 'root', 'C', 12, null, undefined, resolveScales(doc, { level, seed: 0, proposed }))[0]?.pages.flat() ?? []).map((s) =>
+        s.scale ? `${rootName(s.scale.root)} ${s.scale.name}` : null,
+      )
+
+    it('plays the analysed scale in a blank cell', () => {
+      expect(played('standard')).toEqual(['A Locrian', 'D Phrygian Dominant', 'G Dorian'])
+    })
+
+    it('plays a written cell as written at every level', () => {
+      expect(played('basic')).toEqual(['F Major Pentatonic', 'G Minor Pentatonic', 'G Dorian'])
+      expect(played('advanced')[2]).toBe('G Dorian')
+    })
+
+    it('gives a staff a new id when the scale it plays changes', () => {
+      const ids = (level: ScaleLevel) => buildSheet(expandRows(doc).value, CONCERT, 'root', 'C', 12, null, undefined, resolveScales(doc, { level, seed: 0, proposed: true }))[0]?.pages.flat().map((s) => s.id) ?? []
+      const [std, basic] = [ids('standard'), ids('basic')]
+      expect(std[1]).not.toBe(basic[1])
+      expect(std[2]).toBe(basic[2]) // written: the same at every level
+    })
+
+    it('plays as before with the flag off, or with nothing resolved', () => {
+      const before = (staves(expandRows(doc).value) ?? []).map((s) => s.scale && `${rootName(s.scale.root)} ${s.scale.name}`)
+      expect(before).toEqual(['A Locrian', 'D Mixolydian', 'G Dorian'])
+      expect(played('basic', false)).toEqual(before)
+    })
   })
 })

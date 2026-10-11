@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { chartBeats, expandRows, parseChart, resolveScale, type Row } from '../chart'
+import { chartBeats, expandRows, parseChart, qualityScale, type Row } from '../chart'
 import { guideTonesFor } from '../guideTones'
 import { guideToneTimeline } from '../guideToneTimeline'
 import { CONCERT } from '../part'
@@ -81,7 +81,7 @@ describe('the library', () => {
       const doc = parseChart(readFileSync(`charts/${f}`, 'utf8')).value
       const { events, diagnostics } = guideToneTimeline(expandRows(doc).value, chartBeats(doc))
       expect(diagnostics, f).toEqual([])
-      expect(events.filter((e) => !guideTonesFor(CONCERT, e.chord, resolveScale(e.row) ?? undefined)).map((e) => e.chord), f).toEqual([])
+      expect(events.filter((e) => !guideTonesFor(CONCERT, e.chord, qualityScale(e.row) ?? undefined)).map((e) => e.chord), f).toEqual([])
     }
   })
 })

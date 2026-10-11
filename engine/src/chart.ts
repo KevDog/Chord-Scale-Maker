@@ -289,7 +289,10 @@ export function expandRows(doc: ChartDoc): Parsed<readonly Row[]> {
   return { value: value.map(({ section, bar, chord, scale }) => ({ section, bar, chord, scale })), diagnostics }
 }
 
-/** the row's scale, else the chord quality's default; null means "ask the user" */
-export function resolveScale(row: Row): string | null {
+/**
+ * one row on its own: its scale, else the chord quality's default; null means "ask the user". The sheets read
+ * resolveScales (resolve.ts), which also hears the analysis; this is for places with no document (a quality's usual).
+ */
+export function qualityScale(row: Row): string | null {
   return row.scale ? row.scale : defaultScaleOrNull(row.chord)
 }

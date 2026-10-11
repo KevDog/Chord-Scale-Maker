@@ -5,6 +5,8 @@ import { parseChart } from '../chart'
 import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
 import { CONCERT, type Part } from '../part'
 import { rootName } from '../pitch'
+import type { ScaleView } from '../resolve'
+import { abbreviateScale } from '../scales'
 import { isSyncCopy } from '../util'
 
 // a transparent wrapper, so a test can see what buildChanges hands the voice leading
@@ -118,6 +120,32 @@ describe('scale labels', () => {
     const lines = chords(text)
     expect(lines[0]!.map((c) => c[1])).toEqual(['D Dorian', null, null, null])
     expect(lines[1]![0]![1]).toBe('D Dorian')
+  })
+})
+
+describe('scales from the resolver', () => {
+  const G_MINOR = 'title: T\nkey: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm7 | G Dorian\nA | 4 | Cm7\n'
+  const on = (level: ScaleView['level']): ScaleView => ({ level, seed: 0, proposed: true })
+  const sheet = (view?: ScaleView, line: GuideLine = 'off') => buildChanges(parseChart(G_MINOR).value, CONCERT, 4, false, line, view)
+  const labels = (view?: ScaleView) => sheet(view).lines.flatMap((l) => l.bars.flatMap((b) => b.chords.map((c) => c.scale)))
+  const short = (scale: string) => abbreviateScale(scale)
+
+  it('plays the analysed scale in a blank cell', () => {
+    expect(labels(on('standard'))).toEqual([short('A Locrian'), short('D Phrygian Dominant'), 'G Dorian', short('C Dorian')])
+  })
+
+  it('plays a written cell as written at every level', () => {
+    expect(labels(on('basic'))).toEqual([short('F Major Pentatonic'), short('G Minor Pentatonic'), 'G Dorian', short('C Minor Pentatonic')])
+    expect(labels(on('advanced'))[2]).toBe('G Dorian')
+  })
+
+  it('plays the cell or the quality’s default with the flag off, as before', () => {
+    expect(labels({ ...on('basic'), proposed: false })).toEqual(labels())
+    expect(labels()[1]).toBe(short('D Mixolydian'))
+  })
+
+  it('leaves the guide tones alone', () => {
+    expect(sheet(on('basic'), 'third').lines.map((l) => l.bars.map((b) => b.voice))).toEqual(sheet(undefined, 'third').lines.map((l) => l.bars.map((b) => b.voice)))
   })
 })
 

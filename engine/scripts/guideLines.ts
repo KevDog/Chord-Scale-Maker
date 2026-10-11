@@ -16,7 +16,7 @@
  */
 import { readdirSync, readFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
-import { buildChanges, chartBeats, CONCERT, expandRowLines, guideTonesFor, guideToneLine, guideToneTimeline, INSTRUMENTS, isInstrumentName, isSyncCopy, parseChart, partFor, rangeOf, resolveScale, rootName, voiceLead } from '../src'
+import { buildChanges, chartBeats, CONCERT, expandRowLines, guideTonesFor, guideToneLine, guideToneTimeline, INSTRUMENTS, isInstrumentName, isSyncCopy, parseChart, partFor, rangeOf, qualityScale, rootName, voiceLead } from '../src'
 import type { ChartLine, GuideInput, LinedRow, Part, Pitched } from '../src'
 import { octaveOf } from '../src/keySignature'
 
@@ -99,7 +99,7 @@ function drawnChords(text: string): Chord[] {
       if (k !== from || (volta > 1 && volta !== ending)) block++
       from = k
       ending = volta
-      const scale = resolveScale(e.row)
+      const scale = qualityScale(e.row)
       return [{ row: i, chord: e.chord, ...(scale ? { scale } : {}), start: e.start, beats: e.beats, block, at: `${e.row.section} ${e.row.bar}`, bar: Math.floor(e.start / beats) + 1 }]
     }),
   )
