@@ -7,12 +7,20 @@ import { defaultScaleOrNull } from './qualities'
  */
 
 /**
- * title: and subtitle: are the heading. key: and bars: are hints for the analyser (docs/plan-analysis.md §12);
- * composer:, style:, form: and source: describe the tune (where the chart came from). The site keeps the rest and
- * shows only the heading.
+ * title: and subtitle: are the heading. key:, bars: and context: are hints for the analyser (docs/plan-analysis.md
+ * §12; context: functional, modal or blues, §5.4); minor: is reserved (accepted, ignored); composer:, style:, form:
+ * and source: describe the tune (where the chart came from). The site keeps the rest and shows only the heading.
  */
-export type MetaKey = 'title' | 'subtitle' | 'key' | 'bars' | 'time' | 'composer' | 'style' | 'form' | 'source'
-export const META_KEYS: readonly MetaKey[] = ['title', 'subtitle', 'key', 'bars', 'time', 'composer', 'style', 'form', 'source']
+export type MetaKey = 'title' | 'subtitle' | 'key' | 'bars' | 'time' | 'context' | 'minor' | 'composer' | 'style' | 'form' | 'source'
+export const META_KEYS: readonly MetaKey[] = ['title', 'subtitle', 'key', 'bars', 'time', 'context', 'minor', 'composer', 'style', 'form', 'source']
+
+/** how the analyser reads a chart (docs/plan-analysis.md §5.4): its rule families and whether key areas are found */
+export type ChartContext = 'functional' | 'modal' | 'blues'
+/** a `context:` or `@context` value, case-blind ("Modal"); null if it is none of the three */
+export function parseContext(text: string): ChartContext | null {
+  const t = text.trim().toLowerCase()
+  return t === 'functional' || t === 'modal' || t === 'blues' ? t : null
+}
 
 /** `time:` 2/4, 3/4 or 4/4 (the default): beats a bar for the Changes sheet and its guide tones; null if it's another */
 export function beatsPerBar(time: string): 2 | 3 | 4 | null {
@@ -32,6 +40,8 @@ export type ChartLine =
   | Readonly<{ kind: 'nav'; section: string; bar: number; text: string }>
   // the author's key area, from this bar until the next @key
   | Readonly<{ kind: 'key'; section: string; bar: number; key: string }>
+  // the author's context, from this bar until the next @context (parsed; the analyser doesn't use it yet)
+  | Readonly<{ kind: 'context'; section: string; bar: number; context: ChartContext }>
   | Readonly<{ kind: 'comment'; text: string }>
   | Readonly<{ kind: 'blank' }>
   | Readonly<{ kind: 'invalid'; text: string }> // kept verbatim so text round-trips
@@ -99,6 +109,14 @@ function parseLine(line: string): ChartLine | string {
     if (section.length > LIMITS.maxCell) return `section name longer than ${LIMITS.maxCell} characters`
     return { kind: 'key', section, bar: Number(bar), key: k }
   }
+  if (low.startsWith('@context')) {
+    const m = /^@context\s+(\S+)\s+(\S+)\s+(\S+)$/i.exec(line)
+    const context = parseContext(m?.[3] ?? '')
+    if (!m || !INT_RE.test(m[2] ?? '') || !context) return 'use  @context SECTION BAR CONTEXT  (functional, modal or blues)'
+    const [, section = '', bar = ''] = m
+    if (section.length > LIMITS.maxCell) return `section name longer than ${LIMITS.maxCell} characters`
+    return { kind: 'context', section, bar: Number(bar), context }
+  }
   // a trailing comment starts at a # with space on both sides (F#m7 and C# Lydian have none before theirs)
   const hash = /\s#(?=\s|$)/.exec(line)
   const body = hash ? line.slice(0, hash.index) : line
@@ -119,6 +137,9 @@ export function parseChart(text: string): Parsed<ChartDoc> {
   const lines = text.split(/\r?\n/).map((raw, i): ChartLine => {
     const t = raw.trim()
     const parsed = parseLine(t)
+    // a context: that is none of the three is kept, like a bad key:, and reported; the analyser detects instead
+    if (typeof parsed !== 'string' && parsed.kind === 'meta' && parsed.key === 'context' && !parseContext(parsed.value))
+      diagnostics.push({ line: i + 1, message: 'context: functional, modal or blues' })
     if (typeof parsed !== 'string') return parsed
     diagnostics.push({ line: i + 1, message: parsed })
     return { kind: 'invalid', text: t }
@@ -166,6 +187,8 @@ export function serializeChart(doc: ChartDoc): string {
         return `@nav ${l.section} ${l.bar} ${l.text}`
       case 'key':
         return `@key ${l.section} ${l.bar} ${l.key}`
+      case 'context':
+        return `@context ${l.section} ${l.bar} ${l.context}`
       case 'comment':
       case 'invalid':
         return l.text
