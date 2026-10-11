@@ -1,5 +1,5 @@
 import { proseGlyphs, rootName, shiftBy } from '../pitch'
-import { samePitches, scaleKey, simplifyRoot, spellsCleanly } from '../scales'
+import { cleanLettering, scaleKey } from '../scales'
 import { degree, diatonic, hasRelatedII, impliedDiatonic, isDominantLike, type Key, keyText, makeKey, reference, tonicName } from './keys'
 import { ownNumeral, roman } from './degrees'
 import { bassOf, bassPc, downFifth, downHalf, type Entry, type Family, interval, nextOf, prevOf } from './stream'
@@ -16,6 +16,8 @@ export type Context = Readonly<{
   global: Key
   blues: Key | null
   modal: boolean
+  /** the entries whose stated function names a target (V7/IV): the rules read that target, before R2's degree (principle 1) */
+  statedTarget: readonly boolean[]
 }>
 
 /**
@@ -183,9 +185,11 @@ function dominant(ctx: Context, i: number): Decision {
   if (pin.all) return { scale: named(e, NAME.altered), rule: 'D1', fn: 'altered dominant', reason: 'from the symbol: altered' }
   if (ctx.modal) return dominantDecision(e, 'D7', 'modal dominant', NATURAL, 'modal: its own mode', false)
   // R2: the blues I7 and IV7 are decided by their degree before the chords around them (M&H p. 137: "I7 should not be
-  // confused with V7/IV"); IV7 is Mixolydian, though the key holds its #11 (principle 4 yields, N&G p. 105)
-  if (ctx.blues && e.pc === ctx.blues.tonic) return dominantDecision(e, 'D5', 'I7 of the blues', derive(e, ctx.blues), 'I7 of the blues: a tonic with dominant colour', true, ', ')
-  if (ctx.blues && interval(ctx.blues.tonic, e.pc) === 5) {
+  // confused with V7/IV"); IV7 is Mixolydian, though the key holds its #11 (principle 4 yields, N&G p. 105). A stated
+  // function that names a target wins (principle 1): a stated V7/IV goes the usual way, to its target
+  const blues = ctx.statedTarget[i] ? null : ctx.blues
+  if (blues && e.pc === blues.tonic) return dominantDecision(e, 'D5', 'I7 of the blues', derive(e, blues), 'I7 of the blues: a tonic with dominant colour', true, ', ')
+  if (blues && interval(blues.tonic, e.pc) === 5) {
     const why = 'IV7 of the blues: a subdominant with dominant colour'
     const moved = dominantScale({ ...NATURAL, ...pin }) !== NAME.mixolydian // the symbol's notes then name the scale
     return dominantDecision(e, 'D5', 'IV7 of the blues', NATURAL, moved ? why : `${why}, Mixolydian (the #11 is an extra colour)`, false)
@@ -359,32 +363,26 @@ export function hiddenDominant(dim: number, next: Neighbour | undefined, after: 
 export const passingReason = (h: Hidden | null): string =>
   h ? `passing diminished: ${h.root}7♭9 without its ${h.root}, the ${h.target}'s dominant${h.ii ? ` (${h.ii} its ii)` : ''}` : 'passing diminished: a rootless dominant ♭9'
 
-/**
- * R9: a °7's scale on the root the project rule spells best (simplifyRoot: E♭°7 ascending is D♯ Diatonic Diminished);
- * where no root spells the function's formula cleanly, the ascending formula's lettering of the same notes, as M&H
- * print ♭III°7 as ♯II°7 (fig. 7.22: B°7 in A♭ is B C D E♭ F G A♭ B♭, not C♭ C E𝄫 E♭ …)
- */
+/** R9: a °7's scale on the root the project rule spells best, or the ascending formula's lettering (cleanLettering) */
 function dimScale(e: Entry, name: string): string {
   if (!e.root) return named(e, name)
-  const key = scaleKey(name)
-  const root = simplifyRoot(e.root, key)
-  const ascending = scaleKey(NAME.diatonicDim)
-  if (!spellsCleanly(root, key) && key !== ascending && samePitches(key, ascending)) {
-    const alt = simplifyRoot(e.root, ascending)
-    if (spellsCleanly(alt, ascending)) return `${rootName(alt)} ${NAME.diatonicDim}`
-  }
-  return `${rootName(root)} ${name}`
+  const spelled = cleanLettering(e.root, scaleKey(name))
+  return `${rootName(spelled.root)} ${spelled.name ?? name}`
 }
 
 /** Q5: a °7 M&H's figures don't cover keeps the symmetric scale (N&G p. 114) */
 const SYMMETRIC = '; not functioning diatonically: the symmetric scale'
 
-/** a °7 a half step below the next chord's bass, a major or minor chord: ascending to it (D♯°7 → C/E, fig. 7.9) */
-export const ascends = (e: Pick<Entry, 'pc'>, n: Entry | undefined): n is Entry => !!n && (n.family === 'major' || n.family === 'minor') && interval(e.pc, bassPc(n)) === 1
+/**
+ * R16: a °7 a half step below the next chord's root (C♯°7 → Dm7/A, B°7 → C/G) or its bass (D♯°7 → C/E, fig. 7.9), a
+ * major or minor chord: ascending to it
+ */
+export const ascends = (e: Pick<Entry, 'pc'>, n: Entry | undefined): n is Entry =>
+  !!n && (n.family === 'major' || n.family === 'minor') && (interval(e.pc, n.pc) === 1 || interval(e.pc, bassPc(n)) === 1)
 
 /**
  * R3b: a °7's scale by its function in the local key (M&H pp. 152–161): in a major key ♯IV°7 to the tonic (over its
- * 5th or not, fig. 7.12–7.15) takes the ♯II°7's notes; the ascending vii°7 of X (by X's bass) takes X's V7(♭9 ♯9 ♭13)
+ * 5th or not, fig. 7.12–7.15) takes the ♯II°7's notes; the ascending vii°7 of X (by X's root or bass) takes X's V7(♭9 ♯9 ♭13)
  * from its root, in any key; in a major key the passing ♭III°7 and ♭VI°7 and the auxiliary I°7 and V°7 take their
  * figure's scale (the chord tones plus the key's notes); any other is Whole-Half (Q5)
  */
@@ -408,9 +406,9 @@ function diminished(ctx: Context, i: number): Decision {
   }
   const hidden = hiddenDominant(e.pc, n, nextOf(ctx.stream, ctx.stream[i]?.next))
   if (ascends(e, n)) {
-    // a vii°7 always hides its target's V: the °7's root is that V's 3rd (by the bass: D♯°7 → C/E hides B7)
+    // a vii°7 always hides its target's V: the °7's root is that V's 3rd (by the bass when not by the root: D♯°7 → C/E hides B7)
     const bass = bassOf(n)
-    if (bassPc(n) !== n.pc && bass) {
+    if (interval(e.pc, n.pc) !== 1 && bass) {
       const fn = `vii°7 to ${n.chord}, up to its bass`
       return { scale: dimScale(e, NAME.diatonicDim), rule: 'd1', fn, reason: `${fn}: ${rootName(shiftBy(bass, 4, 7))}7♭9 without its root` }
     }

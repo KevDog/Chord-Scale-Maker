@@ -283,6 +283,12 @@ describe('L4 diminished numerals by direction', () => {
     expect(label(row('Bb', 'Cm7 | Dbdim7 | Bb/D', 'Dbdim7'))).toMatchObject({ numeral: '♯ii°7', scale: 'C# Diatonic Diminished', rule: 'd1' })
   })
 
+  it('a °7 a half step below the next chord’s root prints as ascending over an inverted chord too (R16)', () => {
+    expect(label(row('C', 'Cmaj7 | C#dim7 | Dm7/A | G7', 'C#dim7'))).toMatchObject({ numeral: '♯i°7', scale: 'C# Diatonic Diminished', fn: 'vii°7 of Dm7/A' })
+    expect(label(row('C', 'Dm7 | Bdim7 | C/G | G7', 'Bdim7'))).toMatchObject({ numeral: 'vii°7', scale: 'B Diatonic Diminished', fn: 'vii°7 of C/G' })
+    expect(label(row('C', 'Fmaj7 | F#dim7 | C/G | G7', 'F#dim7'))).toMatchObject({ numeral: '♯iv°7', scale: 'F# Diatonic Diminished #IV' })
+  })
+
   it('a descending one prints flat-side, as before', () => {
     expect(label(row('C', 'Em7 | Ebdim7 | Dm7', 'Ebdim7'))).toMatchObject({ numeral: '♭iii°7', scale: 'Eb Diatonic Diminished bIII', rule: 'd1' })
   })

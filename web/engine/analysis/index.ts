@@ -99,9 +99,10 @@ function statedFunctions(stream: readonly Entry[], rows: readonly LinedRow[], ke
  * the stream the rules read: a stated row's target as a chord after it (with its V7 between, for a ii), so each rule
  * decides through its usual path. The extra entries follow the real ones and are never reported.
  */
-function withTargets(stream: readonly Entry[], keys: readonly Key[], stated: readonly (Stated | undefined)[]): { stream: Entry[]; keys: Key[] } {
+function withTargets(stream: readonly Entry[], keys: readonly Key[], stated: readonly (Stated | undefined)[]): { stream: Entry[]; keys: Key[]; added: boolean[] } {
   const out = [...stream]
   const outKeys = [...keys]
+  const added = stream.map(() => false) // the entries a target was wired in after
   stream.forEach((e, i) => {
     const s = stated[i]
     const t = s ? impliedTarget(s.fn, s.key) : null
@@ -116,8 +117,9 @@ function withTargets(stream: readonly Entry[], keys: readonly Key[], stated: rea
     let next = add(root, t.minor ? 'm' : 'maj', t.minor ? 'minor' : 'major', null)
     if (e.family === 'minor' || e.family === 'halfdim') next = add(shiftBy(root, 4, 7), '7', 'dominant', next)
     out[i] = { ...e, next }
+    added[i] = true
   })
-  return { stream: out, keys: outKeys }
+  return { stream: out, keys: outKeys, added }
 }
 
 type Prepared = Readonly<{
@@ -157,7 +159,7 @@ function prepare(doc: ChartDoc): Prepared | Readonly<{ global: null; keyFrom: An
 /** the rules' context under these statements: each stated row's target wired in after it */
 function contextFor(p: Prepared, stated: readonly (Stated | undefined)[]): Context {
   const v = withTargets(p.stream, p.stream.map((_, i) => stated[i]?.key ?? p.areaKeys[i] ?? p.global), stated)
-  return { stream: v.stream, keys: v.keys, global: p.global, blues: p.blues, modal: p.modal }
+  return { stream: v.stream, keys: v.keys, global: p.global, blues: p.blues, modal: p.modal, statedTarget: v.stream.map((_, i) => !!v.added[i]) }
 }
 
 export function analyse(doc: ChartDoc): Analysis {

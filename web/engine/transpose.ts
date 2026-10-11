@@ -3,7 +3,7 @@ import { matchKeyText, resolveScale } from './chart'
 import { parseChord } from './chord'
 import type { RowLine } from './edit'
 import { type Spelled, accFor, enharmonics, mod, parseRoot, pcOf, rootName, shiftBy, toLetter } from './pitch'
-import { type ScaleKey, parseScale, SCALES, simplifyRoot, spellFrom } from './scales'
+import { cleanLettering, type ScaleKey, parseScale, SCALES, simplifyRoot, spellFrom, spellsCleanly } from './scales'
 
 /**
  * Transposing a whole chart to another concert key (the editor's Transpose…). Web-only: roots are spelled on the
@@ -79,8 +79,14 @@ function transposeRow(row: RowLine, s: KeyShift, side: KeySide): RowLine {
   let root = spellInKey(shiftNote(c.root, s), rootScaleKey(row, c.root), side)
   if (row.scale) {
     const parsed = parseScale(row.scale)
-    const scaleRoot = spellInKey(shiftNote(parsed.root, s), parsed.key, side)
-    const name = row.scale.trim().slice(row.scale.trim().search(/\s/))
+    const shifted = shiftNote(parsed.root, s)
+    let scaleRoot = spellInKey(shifted, parsed.key, side)
+    let name = row.scale.trim().slice(row.scale.trim().search(/\s/))
+    if (parsed.key.startsWith('diatonic diminished') && !spellsCleanly(scaleRoot, parsed.key)) {
+      // a °7's diatonic diminished scale is lettered as the analysis letters it (R9), where that spells cleanly
+      const clean = cleanLettering(shifted, parsed.key)
+      if (spellsCleanly(clean.root, clean.key)) [scaleRoot, name] = [clean.root, clean.name ? ` ${clean.name}` : name]
+    }
     scale = rootName(scaleRoot) + name
     if (pcOf(parsed.root) === pcOf(c.root)) root = scaleRoot
   }

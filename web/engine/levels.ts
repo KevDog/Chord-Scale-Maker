@@ -1,7 +1,7 @@
 import raw from '../../chord_scales.json'
 import { analyse } from './analysis'
 import type { ChartDoc } from './chart'
-import { rootName } from './pitch'
+import { pcOf, rootName } from './pitch'
 import { type QualityMatch, readChord, resolveQuality, type ScaleOption } from './qualities'
 import { parseScale, sameScale, scaleKey, simplifyRoot, spellFrom } from './scales'
 
@@ -66,6 +66,16 @@ export function ladderScale(standard: string, level: 'basic' | 'advanced', quali
   }
 }
 
+/** the same scale on the same pitch, however its root is spelled (F# and Gb Whole-Half); false if either can't be read */
+function samePitch(a: string, b: string): boolean {
+  try {
+    const [x, y] = [parseScale(a), parseScale(b)]
+    return x.key === y.key && pcOf(x.root) === pcOf(y.root)
+  } catch {
+    return false
+  }
+}
+
 /**
  * the chord's scale at a level, or null if the chord has no options; `key` makes a Random pick repeatable.
  * `standard`: the row's Standard when it isn't the quality's default (a library chart's own choice), whose ladder
@@ -77,12 +87,14 @@ export function scaleAtLevel(chord: string, level: ScaleLevel, seed = 0, key = '
   const def = options.find((o) => o.default) ?? options[0]
   if (!def) return null
   if (level === 'standard') return standard || def.scale
-  if ((level === 'basic' || level === 'advanced') && standard && !sameScale(standard, def.scale)) return ladderScale(standard, level, match?.quality) ?? def.scale
+  // a Standard the analysis only respelled (Gbdim7: F# Whole-Half, R9) is still the default, and keeps its spelling
+  if ((level === 'basic' || level === 'advanced') && standard && !samePitch(standard, def.scale)) return ladderScale(standard, level, match?.quality) ?? def.scale
   if (level === 'random') {
     const pool = options.filter((o) => !o.outside && !o.functional)
     return pool[Math.floor(seededUnit(seed, key) * pool.length)]?.scale ?? def.scale
   }
-  return options.find((o) => o.level === level)?.scale ?? def.scale
+  const pick = options.find((o) => o.level === level)?.scale ?? def.scale
+  return standard && samePitch(pick, standard) ? standard : pick
 }
 
 /**

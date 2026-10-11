@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import { readFileSync } from 'node:fs'
 import raw from '../../../chord_scales.json'
 import { expandRows, parseChart, resolveScale } from '../chart'
 import { analyse } from '../analysis'
@@ -29,7 +30,19 @@ describe('scale levels', () => {
     const dim7 = resolveQuality('Cdim7')?.options ?? []
     expect(dim7.find((o) => o.default)?.scale).toBe('C Whole-Half Diminished')
     expect(dim7.find((o) => o.scale === 'C# Harmonic Minor')?.level).toBeUndefined()
-    expect(dim7.map((o) => o.scale)).toEqual(expect.arrayContaining(['C Diatonic Diminished', 'C Diatonic Diminished bIII', 'C Diatonic Diminished bIII optional', 'C Diatonic Diminished bVI', 'C Diatonic Diminished I', 'C Diatonic Diminished I optional', 'C Diatonic Diminished V', 'C Diatonic Diminished #IV', 'C Diatonic Diminished #IV optional']))
+    // R17: spelled as the analysis spells them (C ascending needs F♭ B𝄫 C♭: B♯ is the cleaner root)
+    expect(dim7.map((o) => o.scale)).toEqual(expect.arrayContaining(['B# Diatonic Diminished', 'C Diatonic Diminished bIII', 'C Diatonic Diminished bIII optional', 'C Diatonic Diminished bVI', 'C Diatonic Diminished I', 'C Diatonic Diminished I optional', 'C Diatonic Diminished V', 'C Diatonic Diminished #IV', 'B# Diatonic Diminished #IV optional']))
+  })
+
+  it('keep a Q5 Whole-Half Standard whose root the analysis respelled at Basic and Advanced (Gbdim7: F# Whole-Half)', () => {
+    const at = (level: 'basic' | 'advanced') => scaleAtLevel('Gbdim7', level, 0, '', 'F# Whole-Half Diminished')
+    expect([at('basic'), at('advanced')]).toEqual(['F# Whole-Half Diminished', 'F# Whole-Half Diminished'])
+    const tat = parseChart(readFileSync('../charts/time_after_time.txt', 'utf8')).value
+    for (const bar of [26, 28]) {
+      const r = analyse(tat).rows.find((x) => `${x.bar} ${x.chord}` === `${bar} Gbdim7`)
+      expect(r?.scale, `bar ${bar}`).toBe('F# Whole-Half Diminished')
+      expect(scaleAtLevel('Gbdim7', 'advanced', 0, '', r?.scale ?? undefined), `bar ${bar}`).toBe('F# Whole-Half Diminished')
+    }
   })
 
   it('tag at most one Basic and one Advanced option per quality', () => {

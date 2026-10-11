@@ -1,6 +1,9 @@
+import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { parseChart, serializeChart } from '../chart'
-import { parseRoot } from '../pitch'
+import { enharmonics, parseRoot, type Spelled } from '../pitch'
+import { parseScale, samePitches, type ScaleKey, spellFrom, SCALES } from '../scales'
+import { isSyncCopy } from '../util'
 import { chartKey, keySide, shiftNote, keyShift, spellInKey, TRANSPOSE_KEYS, transposeChart } from '../transpose'
 
 const rowsOf = (text: string, from: string, to: string): string[] =>
@@ -82,5 +85,35 @@ describe('transpose', () => {
     const text = 'key: C\nA | 1 | Dm7 | D Dorian\n@ending 1 A 1\n@segno A 1\n@coda A 1\n@nav A 1 D.S. al Coda\n'
     const out = serializeChart(transposeChart(parseChart(text).value, 'C', 'Eb').doc)
     for (const d of ['@ending 1 A 1', '@segno A 1', '@coda A 1', '@nav A 1 D.S. al Coda']) expect(out).toContain(d)
+  })
+
+  it('letters a diatonic diminished scale as the analysis does (R9): no B♯ E♯ C♭ F♭ or double accidental where a clean lettering exists', () => {
+    expect(rowsOf('A1 | 2 | Bbdim7 | Bb Diatonic Diminished bVI', 'D', 'Db')).toEqual(['Adim7 | A Diatonic Diminished']) // Wave, not A A♯ B♯ …
+    expect(rowsOf('D | 28 | Ebdim7 | Eb Diatonic Diminished bIII', 'C', 'Ab')).toEqual(['Bdim7 | B Diatonic Diminished']) // Dearly Beloved, not C♭ C E𝄫 …
+    expect(rowsOf('D | 28 | Bbdim7 | Bb Diatonic Diminished bIII', 'G', 'Eb')).toEqual(['F#dim7 | F# Diatonic Diminished']) // Here's That Rainy Day
+    expect(rowsOf('B | 24 | Abdim7 | Ab Diatonic Diminished bVI', 'C', 'Db')).toEqual(['Adim7 | A Diatonic Diminished']) // The Night We First Met
+    expect(rowsOf('A | 1 | Bbdim7 | Bb Diatonic Diminished bVI', 'D', 'C')).toEqual(['Abdim7 | Ab Diatonic Diminished bVI']) // a clean root of its own stays
+  })
+
+  it('transposes no library diatonic diminished row into an unclean lettering where a clean one exists, in any key', () => {
+    const ugly = (n: { letter: number; acc: number }) => Math.abs(n.acc) > 1 || (n.acc === 1 && (n.letter === 2 || n.letter === 6)) || (n.acc === -1 && (n.letter === 0 || n.letter === 3))
+    const clean = (root: Spelled, key: ScaleKey) => !spellFrom(root, SCALES[key][0]).some(ugly)
+    const files = readdirSync('../charts').filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
+    const bad: string[] = []
+    for (const f of files) {
+      const text = readFileSync(`../charts/${f}`, 'utf8')
+      if (!/Diatonic Diminished/.test(text)) continue
+      const from = /^key:\s*([A-G][b#]?)/m.exec(text)?.[1]
+      if (!from) continue
+      for (const to of TRANSPOSE_KEYS) {
+        for (const l of transposeChart(parseChart(text).value, from, to).doc.lines) {
+          if (l.kind !== 'row' || !l.scale || !/Diatonic Diminished/.test(l.scale)) continue
+          const s = parseScale(l.scale)
+          const anyClean = enharmonics(s.root).some((r) => clean(r, s.key) || (samePitches(s.key, 'diatonic diminished') && clean(r, 'diatonic diminished')))
+          if (!clean(s.root, s.key) && anyClean) bad.push(`${f} → ${to}: ${l.chord} | ${l.scale}`)
+        }
+      }
+    }
+    expect(bad).toEqual([])
   })
 })

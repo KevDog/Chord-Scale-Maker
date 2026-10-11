@@ -180,6 +180,25 @@ export function samePitches(a: ScaleKey, b: ScaleKey): boolean {
   return pcs(a) === pcs(b)
 }
 
+/** the ascending diatonic diminished, the lettering ♭III°7's and ♭VI°7's notes fall back to, and its written name */
+const ASCENDING_DIM: ScaleKey = 'diatonic diminished'
+const ASCENDING_DIM_NAME = 'Diatonic Diminished'
+
+/**
+ * R9: a scale on this pitch, on the root the project rule spells best (simplifyRoot: E♭ ascending is D♯ Diatonic
+ * Diminished); where no root spells the formula cleanly, the ascending diatonic diminished's lettering of the same
+ * notes when it spells them cleanly, as M&H print ♭III°7 as ♯II°7 (fig. 7.22: B°7 in A♭ is B C D E♭ F G A♭ B♭, not
+ * C♭ C E𝄫 E♭ …). `name`: the written name of that re-lettered scale, when it is one.
+ */
+export function cleanLettering(root: Spelled, key: ScaleKey): Readonly<{ root: Spelled; key: ScaleKey; name?: string }> {
+  const r = simplifyRoot(root, key)
+  if (!spellsCleanly(r, key) && key !== ASCENDING_DIM && samePitches(key, ASCENDING_DIM)) {
+    const alt = simplifyRoot(root, ASCENDING_DIM)
+    if (spellsCleanly(alt, ASCENDING_DIM)) return { root: alt, key: ASCENDING_DIM, name: ASCENDING_DIM_NAME }
+  }
+  return { root: r, key }
+}
+
 const isScaleKey = (k: string): k is ScaleKey => Object.hasOwn(SCALES, k)
 
 /** scale name ("Half-Whole Dim.", "hw", "Locrian ♮2") -> SCALES key */

@@ -21,7 +21,7 @@ export function numeral(ctx: Context, i: number, decision: Decision): string {
   if (ctx.modal) return ownNumeral(e, key)
   const n = nextOf(ctx.stream, i)
   const p = prevOf(ctx.stream, i)
-  if (e.family === 'dim' && ascends(e, n)) return `${SHARP[interval(key.tonic, e.pc)] ?? degreeOf(e, key)}°7` // vii°7 of the next chord (by its bass: ♯ii°7 → I/3): ♯i°7
+  if (e.family === 'dim' && ascends(e, n)) return `${SHARP[interval(key.tonic, e.pc)] ?? degreeOf(e, key)}°7` // vii°7 of the next chord (by its root or bass, R16: ♯ii°7 → I/3): ♯i°7
   if (e.family === 'dominant' || e.quality === '7sus4') {
     const seven = e.family === 'dominant' ? '7' : '7sus4'
     if (n && downHalf(e, n) && decision.rule.includes('D2')) return `subV${seven}${of(n, key)}`

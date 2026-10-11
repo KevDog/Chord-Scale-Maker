@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { parseRoot, rootName } from '../pitch'
-import { abbreviateScale, parseScale, SCALES, scaleKey, simplifyRoot, spellFrom, spellScale } from '../scales'
+import { abbreviateScale, cleanLettering, parseScale, SCALES, scaleKey, simplifyRoot, spellFrom, spellScale } from '../scales'
 
 describe('abbreviateScale', () => {
   it('shortens long scale words, leaves roots/degrees/short names alone', () => {
@@ -68,5 +68,28 @@ describe('scales', () => {
     expect(rootName(simplifyRoot(parseRoot('D#'), 'dorian'))).toBe('Eb')
     expect(rootName(simplifyRoot(parseRoot('Gb')))).toBe('Gb') // tie keeps flat direction
     expect(rootName(simplifyRoot(parseRoot('E'), 'ionian'))).toBe('E')
+  })
+})
+
+describe('cleanLettering (R9): a scale on a pitch, on the root the project rule spells best', () => {
+  const at = (root: string, key: Parameters<typeof cleanLettering>[1]) => {
+    const r = cleanLettering(parseRoot(root), key)
+    return `${rootName(r.root)} ${r.name ?? r.key}`
+  }
+
+  it('takes simplifyRoot’s root where it spells the formula cleanly', () => {
+    expect(at('Eb', 'diatonic diminished')).toBe('D# diatonic diminished') // E♭ ascending needs F♭ and double flats
+    expect(at('Bb', 'diatonic diminished bvi')).toBe('Bb diatonic diminished bvi')
+    expect(at('Eb', 'diatonic diminished biii')).toBe('Eb diatonic diminished biii')
+    expect(at('Gb', 'dorian')).toBe('F# dorian')
+  })
+
+  it('letters ♭III°7’s and ♭VI°7’s notes as the ascending formula where no root of theirs spells cleanly (fig. 7.22)', () => {
+    expect(at('Cb', 'diatonic diminished biii')).toBe('B Diatonic Diminished') // not C♭ C E𝄫 E♭ …
+    expect(at('A', 'diatonic diminished bvi')).toBe('A Diatonic Diminished') // not A A♯ B♯ C♯ D♯ E♯ …
+  })
+
+  it('keeps a formula with no same-pitch lettering as simplifyRoot gives it', () => {
+    expect(at('D', 'diatonic diminished #iv')).toBe('D diatonic diminished #iv')
   })
 })

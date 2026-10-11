@@ -1,6 +1,11 @@
+import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
+import { analyse } from '../analysis'
+import { parseChart } from '../chart'
+import { enharmonics, type Spelled } from '../pitch'
 import { baseQuality, defaultScale, defaultScaleOrNull, QUALITY_NAMES, resolveQuality } from '../qualities'
-import { parseScale } from '../scales'
+import { parseScale, sameScale, samePitches, type ScaleKey, SCALES, spellFrom } from '../scales'
+import { isSyncCopy } from '../util'
 
 describe('defaultScaleOrNull', () => {
   it('is defaultScale, but returns null instead of throwing on an unparseable chord', () => {
@@ -81,5 +86,48 @@ describe('qualities', () => {
       expect(options.filter((o) => o.default), q).toHaveLength(1)
       for (const o of options) expect(() => parseScale(o.scale)).not.toThrow()
     }
+  })
+})
+
+describe('the °7 menu’s diatonic diminished options (R17)', () => {
+  const ugly = (n: { letter: number; acc: number }) => Math.abs(n.acc) > 1 || (n.acc === 1 && (n.letter === 2 || n.letter === 6)) || (n.acc === -1 && (n.letter === 0 || n.letter === 3))
+  const functional = (chord: string) => (resolveQuality(chord)?.options ?? []).filter((o) => o.functional).map((o) => o.scale)
+
+  it('spell their root as the analysis does: D# Diatonic Diminished on Ebdim7', () => {
+    expect(functional('Ebdim7')).toContain('D# Diatonic Diminished')
+    expect(functional('Ebdim7')).not.toContain('Eb Diatonic Diminished')
+    expect(functional('Ebdim7')).toContain('Eb Diatonic Diminished bIII') // E♭ spells ♭III°7 cleanly
+    expect(functional('Gdim7')).toContain('G Diatonic Diminished')
+  })
+
+  it('offer a ♭III°7 or ♭VI°7 with no clean root once, as the ascending lettering of its notes (fig. 7.22)', () => {
+    const b = functional('Bdim7')
+    expect(b).not.toContain('B Diatonic Diminished bIII') // B B♯ D D♯ E♯ …
+    expect(b.filter((s) => s === 'B Diatonic Diminished')).toHaveLength(1)
+    expect(new Set(b).size).toBe(b.length)
+  })
+
+  it('offer no double accidental or B♯ E♯ C♭ F♭ where a clean lettering exists', () => {
+    const bad: string[] = []
+    for (const root of ['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'A', 'A#', 'Bb', 'B', 'Cb']) {
+      for (const scale of functional(`${root}dim7`)) {
+        const s = parseScale(scale)
+        const clean = (r: Spelled, k: ScaleKey) => !spellFrom(r, SCALES[k][0]).some(ugly)
+        const anyClean = enharmonics(s.root).some((r) => clean(r, s.key) || (samePitches(s.key, 'diatonic diminished') && clean(r, 'diatonic diminished')))
+        if (!clean(s.root, s.key) && anyClean) bad.push(`${root}dim7: ${scale}`)
+      }
+    }
+    expect(bad).toEqual([])
+  })
+
+  it('hold every library °7’s analysed diatonic diminished scale, so none shows as a custom entry', () => {
+    const missing: string[] = []
+    for (const f of readdirSync('../charts').filter((x) => x.endsWith('.txt') && !isSyncCopy(x))) {
+      for (const r of analyse(parseChart(readFileSync(`../charts/${f}`, 'utf8')).value).rows) {
+        if (!r.scale?.includes('Diatonic Diminished')) continue
+        if (!(resolveQuality(r.chord)?.options ?? []).some((o) => sameScale(o.scale, r.scale))) missing.push(`${f} ${r.bar} ${r.chord}: ${r.scale}`)
+      }
+    }
+    expect(missing).toEqual([])
   })
 })
