@@ -113,6 +113,28 @@ PDF + 1, M&H book = PDF − 12, Levine book = PDF − 16).
   side-step, its own notes". Numerals and scales unchanged. Test: Gm `Bm7 | E7 | Bbm7 | Eb7 | Am7b5 | D7 | Gm7` → fn
   changes only.
 
+### Decisions on the cases above the spec left open (the user's, 2026-10-10)
+
+- **Reasons.** Users see the reason (report, chart comments, the functions page); fn is internal. Where this spec
+  gives only an fn, the reason carries the same words followed by today's tension tail (e.g. "…: natural tensions").
+- **L1.** The link into the key's V7 prints `V7/V`, reason "V7 of V7: the dominant of the dominant: <tensions>";
+  earlier links print `→`, reason "extended dominant: each one falls a fifth into the next: <tensions>". Into a minor
+  tonic (D8) the same labels, the reason keeping D8's "on the way to C minor". A chain of two that does not go into
+  the key's V7 (every blues I7 → IV7; `E7 | A7 | Dm7`) is unchanged: its own degree and today's text. A chain of three
+  or more that never reaches the key's V7 (Anthropology `F7 Bb7 Eb7 | Ab7`) is unchanged: arrows appear only on chains
+  that lead into the key's V7. "The key's V7" is a dominant on degree V of the local key.
+- **L2.** fn "ii of the ii–V to D minor; also iii of C" (ø7: "…; also viiø7 of C"). m4's reason unchanged; for h2 the
+  "also …" goes in the fn only, not the reason. Major key areas only: in a minor area Autumn Leaves' `Cm7 F7 | Bb`
+  keeps `ii7/♭III`. Applies to any diatonic related ii whether or not its ii–V lands.
+- **L6.** `iiø7, borrowed` only when no dominant follows (today's guess case); the guess flag clears; reason
+  "iiø7, borrowed from C minor: Locrian". ♭VII7/♭VI7/♭III7 print their own numeral in the text; "it returns to I"
+  only when the next chord is I; "(subdominant minor)" for ♭VII7 and ♭VI7, not ♭III7. ♭IImaj7 is "borrowed from C
+  Phrygian"; ♭III/♭VI/♭VIImaj7 "borrowed from C minor"; all "(its ♯11 is in the key)". Borrowed triads and sixth
+  chords on those degrees get the same text with their own numeral.
+- **L8.** The reason changes too: "extended ii–V: a side-step, its own key" (+ tensions when the target is minor).
+- **L5.** The text uses the chord's own numeral and "its dominant" ("VI7sus4 before its dominant: a subdominant
+  suspension"), so a sus on another degree reads correctly.
+
 ## 2. Grammar changes (`functions.ts`), all additive
 
 Every row: input → canonical text (what the sheet prints and what the file keeps when normalised). Add a test per
