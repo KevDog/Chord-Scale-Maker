@@ -586,8 +586,9 @@ library writes such a repeat out instead.
 - **Menus:** every scale the rules give a quality is among that quality's options in `chord_scales.json`
   (Phrygian Dominant and Mixolydian ♭6 on `7`, Phrygian on minor chords, Mixolydian ♭6 on `7sus4`, the diatonic
   diminished family on `dim7`, lettered as the analysis letters them), so a scale you change can be changed back
-  from the menu. One exception: a Whole-Half the analysis respelled (F♯ Whole-Half on G♭°7) is offered on the
-  chord's root (G♭), the same notes spelled the other way.
+  from the menu. A written scale is matched with the menu's entries by pitch (`samePitchScale`, R18): the same scale
+  on an enharmonically equal root is that entry, so F♯ Whole-Half on G♭°7 selects the default, and its spelling is
+  never changed by the match (the scale cell, a chord change's default following, and the Level control).
 
 ## 8. State
 

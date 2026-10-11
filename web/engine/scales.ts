@@ -229,6 +229,21 @@ export function sameScale(a: string, b: string | null | undefined): boolean {
   }
 }
 
+/**
+ * R18: the same menu entry, its root compared by pitch ("F# Whole-Half" on G♭°7 is the menu's "Gb Whole-Half"); for a
+ * written scale matched against a chord's options, never to respell one. False if either can't be read (unless equal).
+ */
+export function samePitchScale(a: string, b: string | null | undefined): boolean {
+  if (!b) return false
+  if (a === b) return true
+  try {
+    const [x, y] = [parseScale(a), parseScale(b)]
+    return x.key === y.key && pcOf(x.root) === pcOf(y.root)
+  } catch {
+    return false
+  }
+}
+
 export function spellScale(root: Spelled, key: ScaleKey): ScaleNote[] {
   const notes = spellFrom(root, SCALES[key][0])
   if (notes.some((n) => Math.abs(n.acc) > 2))

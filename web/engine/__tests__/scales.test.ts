@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { parseRoot, rootName } from '../pitch'
-import { abbreviateScale, cleanLettering, parseScale, SCALES, scaleKey, simplifyRoot, spellFrom, spellScale } from '../scales'
+import { abbreviateScale, cleanLettering, parseScale, samePitchScale, SCALES, scaleKey, simplifyRoot, spellFrom, spellScale } from '../scales'
 
 describe('abbreviateScale', () => {
   it('shortens long scale words, leaves roots/degrees/short names alone', () => {
@@ -91,5 +91,21 @@ describe('cleanLettering (R9): a scale on a pitch, on the root the project rule 
 
   it('keeps a formula with no same-pitch lettering as simplifyRoot gives it', () => {
     expect(at('D', 'diatonic diminished #iv')).toBe('D diatonic diminished #iv')
+  })
+})
+
+describe('samePitchScale (R18): the same menu entry, however its root is spelled', () => {
+  it('matches the same scale on an enharmonically equal root, however the name is written', () => {
+    expect(samePitchScale('F# Whole-Half Diminished', 'Gb Whole-Half Diminished')).toBe(true) // time_after_time's G♭°7
+    expect(samePitchScale('D# Diatonic Diminished', 'Eb Diatonic Diminished')).toBe(true)
+    expect(samePitchScale('D Half-Whole', 'D Half-Whole Diminished')).toBe(true)
+  })
+
+  it('does not match another root, another scale, or text it cannot read', () => {
+    expect(samePitchScale('G Whole-Half Diminished', 'Gb Whole-Half Diminished')).toBe(false)
+    expect(samePitchScale('F# Half-Whole Diminished', 'Gb Whole-Half Diminished')).toBe(false)
+    expect(samePitchScale('F# Whole-Half Diminished', null)).toBe(false)
+    expect(samePitchScale('F# Nonsense', 'F# Nonsense')).toBe(true) // the same text is the same entry
+    expect(samePitchScale('F# Nonsense', 'Gb Nonsense')).toBe(false)
   })
 })

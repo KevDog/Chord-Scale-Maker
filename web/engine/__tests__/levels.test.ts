@@ -5,7 +5,7 @@ import { expandRows, parseChart, resolveScale } from '../chart'
 import { analyse } from '../analysis'
 import { ladderScale, type LevelState, relevel, scaleAtLevel, seededUnit } from '../levels'
 import { resolveQuality } from '../qualities'
-import { scaleKey } from '../scales'
+import { samePitchScale, scaleKey } from '../scales'
 
 
 describe('scale levels', () => {
@@ -57,6 +57,18 @@ describe('scale levels', () => {
 
   const at = (level: LevelState['level'], seed = 0): LevelState => ({ level, seed })
   const scales = (doc: ReturnType<typeof parseChart>['value']) => expandRows(doc).value.map(resolveScale) // a blank cell plays the default
+
+  it('own a default written on an enharmonic root like the default itself, and keep its spelling (R18)', () => {
+    const respelled = parseChart('A | 1 | Gbdim7 | F# Whole-Half Diminished\n').value
+    const plain = parseChart('A | 1 | Gbdim7 | Gb Whole-Half Diminished\n').value
+    const adv = relevel(respelled, at('standard'), at('advanced'))
+    expect([adv.owned, adv.changed, scales(adv.doc)]).toEqual([['0:Gbdim7'], 0, ['F# Whole-Half Diminished']])
+    for (const seed of [1, 2, 3, 4, 5, 6]) {
+      const r = scales(relevel(respelled, at('standard'), at('random', seed)).doc)[0] ?? ''
+      const p = scales(relevel(plain, at('standard'), at('random', seed)).doc)[0] ?? ''
+      expect(samePitchScale(r, p), `seed ${seed}: ${r} / ${p}`).toBe(true)
+    }
+  })
 
   it('write the level into the chart, moving only rows that play the old level’s scale', () => {
     const doc = parseChart('A | 1 | Cm7\nA | 2 | F7 | F Mixolydian\nA | 3 | Bbmaj7 | Bb Bebop Major\n').value

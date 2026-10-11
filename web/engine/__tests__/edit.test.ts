@@ -54,6 +54,11 @@ describe('chord changes and comparing charts', () => {
     expect(rowOf(setRowChord(doc('A | 1 | Cm7 | C Dorian\n'), 0, 'Cm7#5#9x'))).toMatchObject({ scale: 'C Dorian' }) // unknown: kept
   })
 
+  it('follows a default written on an enharmonic root to the new chord (R18: F# Whole-Half on Gbdim7)', () => {
+    expect(rowOf(setRowChord(doc('A | 1 | Gbdim7 | F# Whole-Half Diminished\n'), 0, 'Cm7'))).toMatchObject({ chord: 'Cm7', scale: 'C Dorian' })
+    expect(rowOf(setRowChord(doc('A | 1 | Gbdim7 | G Whole-Half Diminished\n'), 0, 'Cm7'))).toMatchObject({ scale: 'G Whole-Half Diminished' })
+  })
+
   it('treats charts as the same when only spacing or a written-out default differs', () => {
     expect(sameChart('A | 1 | Cm7 | C Dorian\n', 'A | 1  |  Cm7\n')).toBe(true)
     expect(sameChart('A | 6 | D7 | D Half-Whole\n', 'A | 6 | D7 | D Half-Whole Diminished\n')).toBe(true)
