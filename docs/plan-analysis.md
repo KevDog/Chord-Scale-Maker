@@ -768,6 +768,10 @@ A script, not a page: `npm run analyse -- charts/<tune>.txt`. The site is untouc
 - **Report** (default): the key and key areas found, then one line per row: bar, chord, function, the scale the
   rules give, the reason, and the chart's current scale where it differs (`≠ D Half-Whole`). Rows the rules
   couldn't reach are marked `?`.
+> Since the [proposed scales spec](superpowers/specs/2026-10-11-proposed-scales-design.md), a blank scale cell plays
+> the analysis, so `--write` and `--force` are gone; `--strip` blanks the written scales the rules reproduce
+> (never a `# keep:` row). See docs/design.md §7a.
+
 - `--save`: writes the analysis into the chart as comments (§12.1), alongside `--write` or on its own.
 - `--write`: fills **blank** scale cells only, leaving every written scale as it is. The usual way to add a chart:
   write the chords, run `--write`, read the report, fix the chart or the rules.

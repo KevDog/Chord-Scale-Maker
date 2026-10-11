@@ -41,17 +41,21 @@ README.md for the chart format. The original Python/LilyPond CLI was retired aft
 - Transposing a chart to another key (`engine/src/transpose.ts`) spells roots on the target key's side (Dbm7 Gb7
   in Bb, even with Cb/Fb in the scale); `simplifyRoot` decides in C, or if that side needs double accidentals.
   Instrument parts still use `simplifyRoot` alone.
-- Chart rows may omit the scale; the quality's default from `chord_scales.json` is used.
+- Chart rows may omit the scale; the analysis is used (the stated function's scale, else the rules', at the sheet's
+  level), and the quality's default from `chord_scales.json` only where the analysis doesn't reach. A written scale
+  is a pin and plays at every level. The level is a view preference, never written into rows.
 
 ## Typical requests
 - "Make a chart for <tune>": create `engine/charts/<tune>.txt` in concert pitch, one row per chord change, chords only, with
   `key:` (and `composer:`, `style:`, `form:`, `source:` when known); then `cd engine && npm run analyse --
-  charts/<tune>.txt --write --save` to fill the scales and their reasons, read the report, and `make golden`
-  (the fixtures cover every library chart). A scale the melody demands over the rules: write it, with `# keep: …`.
-  Where the analyser can only guess (`cd engine && npm run analyse -- charts/<tune>.txt --ambiguous`), write the function
-  (`| V7/ii`) or an `@key` rather than a `# keep:` scale: a function lets the rules still choose the tensions.
-- Changing an analysis rule (`engine/src/analysis/`, docs/plan-analysis.md): a test first, then
-  `cd engine && npm run analyse -- --all --force --save`, `make golden`, and read both diffs.
+  charts/<tune>.txt --save` to save the reasons, read the report, then `--ambiguous`, and `make golden` (the
+  fixtures cover every library chart). Leave the scale cells blank: they play the analysis. A scale the melody
+  demands over the rules: write it, with `# keep: …`. Otherwise, where the analyser can only guess, write the
+  function (`| | V7/ii`) or an `@key` rather than a scale: a function lets the rules still choose the tensions.
+- Changing an analysis rule (`engine/src/analysis/`, docs/plan-analysis.md): a test first, then `make golden`, and
+  read the fixture's diff (it is the review: the library's blank cells follow the rules by themselves).
+  `cd engine && npm run analyse -- --all --strip --save` re-saves the reasons and blanks any written scale the new
+  rule now gives.
 - "Add scale X": add a formula to `SCALES` in `engine/src/scales.ts` (and an alias if common), pair it with chord
   qualities in `chord_scales.json`, add tests, then `make golden`.
 - "Add instrument X": add to `INSTRUMENTS` in `engine/src/instruments.ts` with clef and key.

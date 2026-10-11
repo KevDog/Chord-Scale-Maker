@@ -17,8 +17,9 @@
     <section class="scroll-mt-6 space-y-4" aria-labelledby="writing">
       <UiSubheading id="writing">Writing a function</UiSubheading>
       <UiText>
-        A chart row may end with the chord's function, after the scale: <UiCode>A | 5 | A7 | | V7/ii</UiCode>. The
-        function is read as:
+        A chart row may end with the chord's function, after the scale: <UiCode>A | 5 | A7 | | V7/ii</UiCode>. Leave
+        the scale cell blank and the scale follows the function, at the level the sheet is set to; a scale written in
+        the cell is played as written instead. The function is read as:
       </UiText>
       <pre class="overflow-x-auto rounded-lg bg-zinc-950/2.5 p-4 font-mono text-sm/6 text-zinc-950 ring-1 ring-zinc-950/10 dark:bg-white/5 dark:text-white dark:ring-white/10"><code>{{ GRAMMAR }}</code></pre>
       <ul class="list-disc space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
@@ -74,9 +75,9 @@
 
       <UiText>
         A function settles the numeral and the key the rules reason in. It doesn't change the chord: the chord symbol,
-        its labels and the practice presets still read the chord as written. On a dominant the rules still choose the
-        tensions from the key, so a function is usually better than picking the scale yourself: transpose the chart
-        and the scale still fits.
+        its labels and the practice presets still read the chord as written. With the scale cell blank, the function
+        decides the scale; on a dominant the rules still choose the tensions from the key, so a function is usually
+        better than picking the scale yourself: transpose the chart, or change the level, and the scale still fits.
       </UiText>
     </section>
 
