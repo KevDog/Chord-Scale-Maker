@@ -1,7 +1,8 @@
 # Guide tone lines that meet go apart: note
 
 Date: 2026-10-11. Status: shipped (the user's choice, G8), on branch `guide-lines-diverge` (from
-`independent-guide-lines`, PR #102), although strict diverge fails the significance test below. Amends [the independent-lines spec](2026-10-10-independent-guide-tone-lines-design.md),
+`independent-guide-lines`, PR #102), although strict diverge fails the significance test below. The gentle variant (G1–G3) is built and measured on
+`guide-lines-gentle`: see "Gentle variant: measured" at the end. Amends [the independent-lines spec](2026-10-10-independent-guide-tone-lines-design.md),
 which keeps rules 1–6 and 8–10 of [the guide tone lines spec](2026-10-10-guide-tone-lines-design.md) and drops rule 7.
 
 ## Why
@@ -230,3 +231,171 @@ tritone" means a move of 6 semitones or fewer; every candidate is inside the par
 - **G3, the range edge.** No line moves more than a tritone because of the other: where G1's mover has no octave of
   the other guide tone within a tritone of p, it stays on p with the keeper (they coincide, and G1 or G2 applies at
   the next new chord); where G2 sends a line to rules 2–4, it moves no further than it would alone.
+
+## Gentle variant: measured
+
+Built on branch `guide-lines-gentle` (from main a0f869d, after the repo split): G1–G3 in place of D1/D2, with P, D3
+and D4 unchanged (`engine/src/guideToneLines.ts`). Interpretations made in building it: G1's mover is always the line
+that was above, so "its direction" is up; a held chord after a meeting holds both lines (D3), so G1's keeper is struck
+again at the first new chord, never tied; for G1 on a chord whose two guide tones share a pitch (only in toy cases), the
+mover's candidates exclude the shared pitch itself, so it stays (G3) unless another octave is within a tritone.
+
+Tests (`engine/src/__tests__/guideToneLines.test.ts`, "lines that meet go apart, gently (G1–G3)"): the common tone
+kept by the line below (Cm7 D7 Dm7; D7 again in a new block, the mover a tritone up), the tritone cap on G1 (B7 Dm F
+Dm7: C5 is 7 above F4, so C4) and on G2 (Cm7 D7 G: G5 is 7 above C5, so A moves as alone, to B4, with B), no common
+tone (Cm7 D7 G7; C7 A7 Dm7), the range edge (G1 at the floor and ceiling; G2 at the ceiling, Cm Dm Bbm; G3 in a toy
+C4–C5 range), together since a restart (A keeps; B goes up in G2), holds and rests. The library check now asserts,
+for every part, that after a meeting one line keeps a common tone, the mover stays within a tritone (or stays, G3), no
+line moves further than a tritone or than it would alone, and the lines are together again only when one had no room.
+Moved expectations: Cm Dm Bbm line A (Bb4 → Db5, G2 at the ceiling); the D2 toy cases (now together, G3); e2e, the
+vibes ledger-line chart, which no longer reached G3 (strict's F#4 → Bb3 leap at the Gm is gone; now Abm7 D7 Ebm7 Gbm7
+Abm7 BbMaj7 Eb7 Bm7, G3 at the Eb7), and one comment (the From 3rd label row's meeting is now G2; the row is
+unchanged). No golden change.
+
+Columns: **#102** (894f679, each line alone, no diverge or placement, its `guideToneLines.ts` taken from git
+history), **strict** (a0f869d: D1–D4 and P, as shipped), **gentle** (this branch). Same library and sequence as above
+(242 charts, 8008 chords, the sheet's order, folds and blocks), with the current engine's guide tones for all three.
+The last row: meetings followed by a new chord (not held), of them the lines together again, one line kept the shared
+pitch (G1), and either line moving more than a tritone from it. Scratch scripts: `scratchpad/gentle/` (measure.ts,
+sig.ts, common.ts); `npm run guide-lines -w engine` now also prints the distinct count and the meeting row.
+
+#### treble (concert) (range 60-81, centre 69)
+
+| measure | #102 (894f679) | strict (a0f869d) | gentle |
+| --- | --- | --- | --- |
+| chords where both lines share a pitch | 63.1% (5051/8008) | 5.4% (433/8008) | 6.2% (500/8008) |
+| charts more than half identical | 140/242 | 0/242 | 0/242 |
+| line A: common / step / leap | 28.4% / 62.1% / 9.5% | 27.6% / 61.4% / 11.0% | 28.0% / 61.2% / 10.8% |
+| line B: common / step / leap | 27.7% / 62.2% / 10.1% | 27.5% / 61.7% / 10.8% | 27.7% / 62.2% / 10.1% |
+| moves > tritone: A / B / distinct chords | 13 / 11 / 14 | 37 / 49 / 85 | 4 / 5 / 9 |
+| largest move (semitones) | 7 (autumn_leaves A1 7, A C4->G4) | 12 (baby_steps B 24, B E4->E5) | 7 (jeannine A3 41, B Db4->Ab4) |
+| line A: mean of chart means (centre 69) | 66.5 | 69.5 | 69.6 |
+| line B: mean of chart means (centre 69) | 66.3 | 68.2 | 68.4 |
+| line A: charts averaging > M3 below centre | 101/242 | 36/242 | 37/242 |
+| line B: charts averaging > M3 below centre | 108/242 | 54/242 | 51/242 |
+| meetings followed by a new chord / together again / one kept the pitch / a move > tritone | 4736 / 4736 / 0 / 10 | 416 / 0 / 0 / 71 | 479 / 33 / 110 / 0 |
+
+#### bass (concert) (range 40-60, centre 49)
+
+| measure | #102 (894f679) | strict (a0f869d) | gentle |
+| --- | --- | --- | --- |
+| chords where both lines share a pitch | 63.0% (5049/8008) | 5.3% (423/8008) | 6.0% (480/8008) |
+| charts more than half identical | 138/242 | 0/242 | 0/242 |
+| line A: common / step / leap | 28.3% / 62.9% / 8.8% | 26.6% / 62.6% / 10.9% | 27.1% / 62.4% / 10.5% |
+| line B: common / step / leap | 28.0% / 62.5% / 9.5% | 27.5% / 61.6% / 10.9% | 28.0% / 61.7% / 10.2% |
+| moves > tritone: A / B / distinct chords | 18 / 15 / 20 | 43 / 59 / 102 | 7 / 9 / 16 |
+| largest move (semitones) | 8 (the_things_we_did_last_summer A2 16, B C4->Fb3) | 12 (along_came_betty C 21, A G2->G3) | 8 (the_things_we_did_last_summer A2 16, A C4->Fb3) |
+| line A: mean of chart means (centre 49) | 46.1 | 49.0 | 48.9 |
+| line B: mean of chart means (centre 49) | 46.2 | 48.2 | 48.1 |
+| line A: charts averaging > M3 below centre | 108/242 | 39/242 | 41/242 |
+| line B: charts averaging > M3 below centre | 110/242 | 47/242 | 58/242 |
+| meetings followed by a new chord / together again / one kept the pitch / a move > tritone | 4724 / 4724 / 0 / 13 | 404 / 0 / 0 / 85 | 454 / 25 / 111 / 0 |
+
+#### vibes (range 55-86, centre 70)
+
+| measure | #102 (894f679) | strict (a0f869d) | gentle |
+| --- | --- | --- | --- |
+| chords where both lines share a pitch | 51.1% (4096/8008) | 3.3% (266/8008) | 4.1% (327/8008) |
+| charts more than half identical | 109/242 | 0/242 | 0/242 |
+| line A: common / step / leap | 29.3% / 63.0% / 7.7% | 28.1% / 63.4% / 8.5% | 28.5% / 63.3% / 8.2% |
+| line B: common / step / leap | 28.9% / 63.1% / 8.1% | 27.9% / 63.1% / 9.0% | 28.2% / 63.1% / 8.7% |
+| moves > tritone: A / B / distinct chords | 14 / 13 / 14 | 30 / 27 / 56 | 6 / 6 / 12 |
+| largest move (semitones) | 8 (body_and_soul A2 13, A G3->Eb4) | 12 (everything_i_love D 28, B Cb4->Cb5) | 8 (body_and_soul A2 13, B G3->Eb4) |
+| line A: mean of chart means (centre 70) | 65.8 | 70.2 | 70.5 |
+| line B: mean of chart means (centre 70) | 65.7 | 69.3 | 69.6 |
+| line A: charts averaging > M3 below centre | 129/242 | 45/242 | 38/242 |
+| line B: charts averaging > M3 below centre | 132/242 | 64/242 | 59/242 |
+| meetings followed by a new chord / together again / one kept the pitch / a move > tritone | 3825 / 3825 / 0 / 13 | 258 / 0 / 0 / 45 | 314 / 28 / 81 / 0 |
+
+#### trumpet (range 55-79, centre 70)
+
+| measure | #102 (894f679) | strict (a0f869d) | gentle |
+| --- | --- | --- | --- |
+| chords where both lines share a pitch | 46.5% (3724/8008) | 4.3% (347/8008) | 5.7% (457/8008) |
+| charts more than half identical | 101/242 | 0/242 | 0/242 |
+| line A: common / step / leap | 29.0% / 63.2% / 7.9% | 28.0% / 62.3% / 9.7% | 28.7% / 61.9% / 9.4% |
+| line B: common / step / leap | 28.6% / 62.8% / 8.6% | 27.9% / 62.1% / 10.1% | 27.8% / 62.6% / 9.5% |
+| moves > tritone: A / B / distinct chords | 10 / 8 / 11 | 32 / 47 / 78 | 5 / 5 / 10 |
+| largest move (semitones) | 7 (everything_i_love B 9, B G3->D4) | 12 (all_the_things_you_are C 31, B C4->C5) | 7 (in_a_sentimental_mood A1 3, A G5->C5) |
+| line A: mean of chart means (centre 70) | 64.9 | 67.8 | 68.5 |
+| line B: mean of chart means (centre 70) | 65.2 | 67.5 | 68.0 |
+| line A: charts averaging > M3 below centre | 145/242 | 88/242 | 71/242 |
+| line B: charts averaging > M3 below centre | 137/242 | 96/242 | 81/242 |
+| meetings followed by a new chord / together again / one kept the pitch / a move > tritone | 3469 / 3469 / 0 / 7 | 331 / 0 / 0 / 65 | 434 / 62 / 103 / 0 |
+
+#### tenor sax (range 58-84, centre 68)
+
+| measure | #102 (894f679) | strict (a0f869d) | gentle |
+| --- | --- | --- | --- |
+| chords where both lines share a pitch | 56.9% (4557/8008) | 4.6% (371/8008) | 5.2% (414/8008) |
+| charts more than half identical | 122/242 | 0/242 | 0/242 |
+| line A: common / step / leap | 29.0% / 62.3% / 8.6% | 28.0% / 62.2% / 9.8% | 28.2% / 62.5% / 9.4% |
+| line B: common / step / leap | 28.9% / 61.8% / 9.3% | 27.6% / 62.2% / 10.2% | 28.2% / 62.3% / 9.5% |
+| moves > tritone: A / B / distinct chords | 8 / 10 / 10 | 28 / 34 / 62 | 4 / 5 / 9 |
+| largest move (semitones) | 8 (nardis A1 8, B Bb3->F#4) | 12 (a_weaver_of_dreams A2 22, B D4->D5) | 8 (nardis A3 32, A Bb3->F#4) |
+| line A: mean of chart means (centre 68) | 64.9 | 68.6 | 68.8 |
+| line B: mean of chart means (centre 68) | 64.9 | 67.7 | 67.7 |
+| line A: charts averaging > M3 below centre | 119/242 | 32/242 | 29/242 |
+| line B: charts averaging > M3 below centre | 127/242 | 44/242 | 46/242 |
+| meetings followed by a new chord / together again / one kept the pitch / a move > tritone | 4270 / 4270 / 0 / 8 | 345 / 0 / 0 / 54 | 382 / 17 / 92 / 0 |
+
+#### trombone (range 40-64, centre 56)
+
+| measure | #102 (894f679) | strict (a0f869d) | gentle |
+| --- | --- | --- | --- |
+| chords where both lines share a pitch | 44.5% (3563/8008) | 4.4% (350/8008) | 6.5% (521/8008) |
+| charts more than half identical | 93/242 | 0/242 | 2/242 |
+| line A: common / step / leap | 29.2% / 63.3% / 7.5% | 28.1% / 61.6% / 10.3% | 28.8% / 61.4% / 9.8% |
+| line B: common / step / leap | 28.8% / 63.1% / 8.2% | 27.4% / 62.6% / 10.0% | 27.5% / 62.6% / 9.9% |
+| moves > tritone: A / B / distinct chords | 11 / 8 / 12 | 49 / 53 / 100 | 7 / 9 / 16 |
+| largest move (semitones) | 7 (everything_i_love B 9, B F2->C3) | 12 (antigua C 32, A G2->G3) | 8 (caravan A1 13, A E4->Ab3) |
+| line A: mean of chart means (centre 56) | 50.8 | 53.1 | 53.8 |
+| line B: mean of chart means (centre 56) | 51.0 | 53.4 | 53.7 |
+| line A: charts averaging > M3 below centre | 145/242 | 104/242 | 82/242 |
+| line B: charts averaging > M3 below centre | 137/242 | 98/242 | 86/242 |
+| meetings followed by a new chord / together again / one kept the pitch / a move > tritone | 3320 / 3320 / 0 / 7 | 335 / 0 / 0 / 84 | 498 / 97 / 147 / 0 |
+
+### Significance: gentle against strict
+
+Per chart, paired, strict (a0f869d) against gentle, Wilcoxon signed-rank, two-sided, alpha = 0.05, the method above
+(normal approximation, zeros dropped, tie-corrected variance, continuity correction 0.5). W+ is the rank sum where
+gentle is higher.
+
+| part | measure | N charts | n (non-zero) | W+ | W- | z | p | direction (gentle vs strict) | mean per-chart diff | significant |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| treble (concert) | coincidence share | 242 | 43 | 908 | 38 | 5.25 | 1.5e-7 | rises | 0.70 pts | yes |
+| treble (concert) | line A moves > tritone | 242 | 30 | 0 | 465 | -5.25 | 1.5e-7 | falls | -0.136 | yes |
+| treble (concert) | line B moves > tritone | 242 | 36 | 0 | 666 | -5.68 | 1.4e-8 | falls | -0.182 | yes |
+| treble (concert) | chords with a move > tritone (distinct) | 242 | 59 | 0 | 1770 | -7.10 | 1.2e-12 | falls | -0.314 | yes |
+| bass (concert) | coincidence share | 242 | 45 | 919 | 116 | 4.53 | 6.0e-6 | rises | 0.64 pts | yes |
+| bass (concert) | line A moves > tritone | 242 | 31 | 0 | 496 | -5.28 | 1.3e-7 | falls | -0.149 | yes |
+| bass (concert) | line B moves > tritone | 242 | 48 | 22.5 | 1153.5 | -6.43 | 1.3e-10 | falls | -0.207 | yes |
+| bass (concert) | chords with a move > tritone (distinct) | 242 | 63 | 0 | 2016 | -7.22 | 5.2e-13 | falls | -0.355 | yes |
+| vibes | coincidence share | 242 | 31 | 483 | 13 | 4.60 | 4.3e-6 | rises | 0.68 pts | yes |
+| vibes | line A moves > tritone | 242 | 21 | 0 | 231 | -4.39 | 1.1e-5 | falls | -0.099 | yes |
+| vibes | line B moves > tritone | 242 | 20 | 0 | 210 | -4.36 | 1.3e-5 | falls | -0.087 | yes |
+| vibes | chords with a move > tritone (distinct) | 242 | 39 | 0 | 780 | -5.98 | 2.2e-9 | falls | -0.182 | yes |
+| trumpet | coincidence share | 242 | 44 | 966 | 24 | 5.49 | 4.0e-8 | rises | 1.28 pts | yes |
+| trumpet | line A moves > tritone | 242 | 24 | 0 | 300 | -4.65 | 3.3e-6 | falls | -0.112 | yes |
+| trumpet | line B moves > tritone | 242 | 38 | 0 | 741 | -5.90 | 3.7e-9 | falls | -0.174 | yes |
+| trumpet | chords with a move > tritone (distinct) | 242 | 57 | 0 | 1653 | -7.07 | 1.6e-12 | falls | -0.281 | yes |
+
+### Reading it
+
+**Leaps: gone.** Moves over a tritone fall on every part and line, significantly (p from 1.3e-5 to 5e-13): concert
+treble from 85 distinct chords (strict) to 9, below #102's 14; the largest move is 7 or 8 semitones again on every part
+(strict: 12), and no move after a meeting exceeds a tritone (strict: 45–85 per part). Leap shares fall slightly, toward
+#102's; step and common-tone shares barely move.
+
+**Coincidence: slightly up, still low.** The share of chords with both lines on one pitch rises significantly but by
+little: treble 5.4% → 6.2%, bass 5.3% → 6.0%, vibes 3.3% → 4.1%, trumpet 4.3% → 5.7% (mean per-chart rise 0.6–1.3
+points; #102 was 44–63%). Two things add to it: the lines meet a little more often (treble 479 meetings against 416),
+and G2's fallback, or G3, leaves them together again at some (treble 33 of 479; trombone, in its narrow range, 97 of
+498, with 2 of 242 charts more than half identical: a_song_for_nicholas 7/12, sugar 9/16). Tenor sax and trombone, outside the test, follow the same pattern.
+
+**Height:** unchanged or a little better than strict (trumpet's low charts 88 / 96 → 71 / 81; trombone 104 / 98 → 82 /
+86; bass line B 47 → 58 is the one step back).
+
+**Verdict.** Gentle keeps coincidence near strict's (within about a point, a tenth of #102's) while cutting the leaps
+over a tritone by 79–89% (distinct chords, the six parts), to fewer than #102 had. The coincidence rise is statistically significant but small; the
+leap fall is large.
