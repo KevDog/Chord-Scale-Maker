@@ -1,12 +1,21 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import { chartKeyOf, CONCERT, parseChart, type Row } from '@chord-scale-maker/engine'
+import { chartKeyOf, CONCERT, parseChart, type Resolved, type Row } from '@chord-scale-maker/engine'
 import ScaleSheet from '~/components/ScaleSheet.vue'
 
 const rows: Row[] = Array.from({ length: 13 }, (_, i) => ({ section: 'A', bar: String(i + 1), chord: 'Cm7', scale: '' }))
 const stubs = { ScaleStaff: true } // VexFlow needs a real browser
 
 describe('ScaleSheet', () => {
+  it('plays the resolved scales it is given (proposedScales), else each row’s own or its quality’s default', async () => {
+    const scaleOf = async (resolved?: Map<number, Resolved>) =>
+      (await mountSuspended(ScaleSheet, { props: { rows: rows.slice(0, 1), title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', start: 'C', mode: 'root', perPage: 12, ...(resolved ? { resolved } : {}) }, global: { stubs } }))
+        .findComponent({ name: 'ScaleStaff' })
+        .props('staff').scale?.name
+    expect(await scaleOf()).toBe('Dorian')
+    expect(await scaleOf(new Map([[0, { scale: 'C Minor Pentatonic', source: 'rules' }]]))).toBe('Minor Pentatonic')
+  })
+
   it('lays out pages of perPage staves for each mode, each with a heading', async () => {
     const w = await mountSuspended(ScaleSheet, {
       props: { rows, title: 'T', subtitle: 'S', part: CONCERT, instrumentLabel: '', start: 'C', mode: 'both', perPage: 12 },

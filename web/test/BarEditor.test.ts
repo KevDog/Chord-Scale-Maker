@@ -1,6 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it } from 'vitest'
-import { nextTick } from 'vue'
+import { nextTick, ref } from 'vue'
+import { SCALE_VIEW } from '~/utils/scaleView'
 import { barView, type ChartDoc, parseChart, serializeChart } from '@chord-scale-maker/engine'
 import BarEditor from '~/components/BarEditor.vue'
 import BarInspector from '~/components/BarInspector.vue'
@@ -128,6 +129,14 @@ describe('BarEditor', () => {
     await w.findAll('button').find((b) => b.text() === 'Numerals & scales')?.trigger('click')
     expect(grid()).toContain('ii7')
     expect(grid()).toContain('D Dorian')
+    w.unmount()
+  })
+
+  it('shows each chord’s scale at the sheets’ level (proposedScales)', async () => {
+    const w = await mountSuspended(BarEditor, { props: { doc }, attachTo: document.body, global: { provide: { [SCALE_VIEW as symbol]: ref({ level: 'basic', seed: 0, proposed: true }) } } })
+    await w.findAll('button').find((b) => b.text() === 'Numerals & scales')?.trigger('click')
+    expect(w.find('[role=grid]').text()).toContain('D Minor Pentatonic')
+    expect(w.find('[role=grid]').text()).not.toContain('D Dorian')
     w.unmount()
   })
 

@@ -18,16 +18,18 @@ function parse(raw: string | null): { level: ScaleLevel; seed: number; owned?: s
 }
 
 /**
- * the level the chart's scales were written at (engine/src/levels.ts) and its Random seed, remembered per chart in this
- * browser under `key` (a library slug or mine:<id>), so the next change knows which rows to move; without a key, or
- * from a share link's `initial`, it lasts for the visit
+ * the chart's scale level and its Random seed, remembered per chart in this browser under `key` (a library slug or
+ * mine:<id>); without a key, or from a share link's `initial`, it lasts for the visit. With proposedScales on, the
+ * level is a view preference the sheets play blank cells at; `owned` is read once, by the migration in EditorView,
+ * then dropped. Off, the level is written into the chart (relevel, engine/src/levels.ts) and `owned` tells the next
+ * change which rows to move.
  */
 export function useScaleLevel(key?: string, initial?: Readonly<{ level?: ScaleLevel; seed?: number }>) {
   const storeKey = key ? `csm-level:${key}` : null
   const saved = storeKey && !initial ? parse(readStored(storeKey)) : null
   const level = ref<ScaleLevel>(initial?.level ?? saved?.level ?? 'standard')
   const seed = ref<number>(initial?.seed ?? saved?.seed ?? newSeed())
-  /** the rows the level owns (engine/src/levels.ts); unknown for a share link, which then matches by scale */
+  /** the rows the level owns (relevel, proposedScales off); unknown for a share link, which then matches by scale */
   const owned = ref<readonly string[] | undefined>(saved?.owned)
   const state = (): string => JSON.stringify({ level: level.value, seed: seed.value, ...(owned.value ? { owned: owned.value } : {}) })
   watch([level, seed, owned], () => {

@@ -3,6 +3,7 @@ import { afterEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 import EditorView from '~/components/EditorView.vue'
 import { CHART_REPORT_KEY } from '~/utils/chartReport'
+import { loadChart, saveChart } from '~/utils/myCharts'
 import { decodeShare, type ShareView } from '@chord-scale-maker/engine'
 
 const { navigate } = vi.hoisted(() => ({ navigate: vi.fn() }))
@@ -350,5 +351,76 @@ describe('EditorView editing', () => {
     await nextTick()
     expect(w.find('[role=gridcell]').attributes('aria-label')).toBe('A, bar 1: Cm7')
     w.unmount()
+  })
+})
+
+describe('EditorView scale level', () => {
+  afterEach(() => {
+    useRuntimeConfig().public.features.proposedScales = false
+    localStorage.clear()
+    vi.restoreAllMocks()
+  })
+  /** open the Level listbox and pick a level by its visible label */
+  async function chooseLevel(w: Wrapper, label: string): Promise<void> {
+    await control(w, 'Level').trigger('click')
+    await nextTick()
+    const option = w.findAll('[role=option]').find((o) => o.text() === label)
+    if (!option) throw new Error(`no level ${label}`)
+    await option.trigger('click')
+    await nextTick()
+  }
+  const undoable = (w: Wrapper) => buttonCalled(w, 'Undo')?.attributes('disabled') === undefined
+  const cells = (doc: unknown) => (doc as { lines: { kind: string; scale?: string }[] }).lines.filter((l) => l.kind === 'row').map((l) => l.scale)
+
+  it('with proposedScales on, a level change plays on the sheets and leaves the chart alone', async () => {
+    useRuntimeConfig().public.features.proposedScales = true
+    const w = await mount()
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    const before = changesSheet(w).props('doc')
+    await chooseLevel(w, 'Basic')
+    expect(changesSheet(w).props('doc')).toBe(before) // no edit
+    expect(changesSheet(w).props('view')).toMatchObject({ level: 'basic', proposed: true })
+    expect(undoable(w)).toBe(false) // not an undoable edit
+    expect(w.text()).not.toMatch(/moved to basic scales/)
+    await chooseSheet(w, 'Scales')
+    expect(sheet(w).props('resolved').get(0)).toMatchObject({ scale: 'C Minor Pentatonic' })
+  })
+
+  it('with it off, a level change writes the scales into the chart, as before', async () => {
+    const w = await mount()
+    await chooseLevel(w, 'Basic')
+    expect(cells(changesSheet(w).props('doc'))).toEqual(['C Minor Pentatonic'])
+    expect(w.text()).toMatch(/1 chord moved to basic scales/)
+  })
+
+  const LEVELLED = 'title: T\nA | 1 | Cm7 | C Minor Pentatonic\nA | 2 | F7 | F Lydian Dominant\nA | 3 | Bbmaj7 | Bb Major Pentatonic\n'
+  const STORED = JSON.stringify({ level: 'basic', seed: 1, owned: ['1:Cm7', '2:F7'] }) // relevel wrote Cm7 and F7; F7 was changed by hand since; Bbmaj7 is a pick of your own
+  const mountMine = () => {
+    saveChart({ id: 'abc123abc123', text: LEVELLED, kind: 'new' })
+    localStorage.setItem('csm-level:mine:abc123abc123', STORED)
+    return mountSuspended(EditorView, {
+      props: { initialText: LEVELLED, practiceKey: 'mine:abc123abc123', saveTarget: { kind: 'mine', id: 'abc123abc123' } },
+      global: { stubs: { ScaleSheet: true, ChangesSheet: true } },
+      attachTo: document.body,
+    })
+  }
+
+  it('with it on, blanks the cells a level wrote into a saved chart, once, and forgets which rows it owned', async () => {
+    useRuntimeConfig().public.features.proposedScales = true
+    const log = vi.spyOn(console, 'info').mockImplementation(() => {})
+    const w = await mountMine()
+    expect(cells(changesSheet(w).props('doc'))).toEqual(['', 'F Lydian Dominant', 'Bb Major Pentatonic'])
+    expect(loadChart('abc123abc123')?.text).not.toContain('C Minor Pentatonic') // saved
+    expect(JSON.parse(localStorage.getItem('csm-level:mine:abc123abc123') ?? '{}')).toEqual({ level: 'basic', seed: 1 })
+    expect(log).toHaveBeenCalledWith(expect.stringMatching(/1 scale/))
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    expect(undoable(w)).toBe(false)
+    expect(w.findComponent({ name: 'PreviewControls' }).text()).toContain('Basic')
+  })
+
+  it('with it off, leaves a saved chart and its level state as they are', async () => {
+    const w = await mountMine()
+    expect(cells(changesSheet(w).props('doc'))).toEqual(['C Minor Pentatonic', 'F Lydian Dominant', 'Bb Major Pentatonic'])
+    expect(localStorage.getItem('csm-level:mine:abc123abc123')).toBe(STORED)
   })
 })

@@ -175,6 +175,7 @@ import {
 import { ClipboardDocumentIcon, PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import BarDialog, { type BarDialogKind, type BarDialogSubmit } from './BarDialog.vue'
 import BarInspector from './BarInspector.vue'
+import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 
 /**
  * The bar editor (docs/superpowers/proposals/editor-ux/README.md §3 B): the chart as bars, four to a line, each
@@ -202,7 +203,8 @@ const KEYS: readonly (readonly [string, string])[] = [
 const view = computed(() => barView(props.doc))
 const lines = computed(() => gridLines(view.value))
 const linesOf = (section: string) => lines.value.filter((l) => l.section === section)
-const noteByLine = computed((): ReadonlyMap<number, RowNote> => (functionsOn ? rowNotes(props.doc) : new Map()))
+const scaleView = inject(SCALE_VIEW, shallowRef(DEFAULT_VIEW))
+const noteByLine = computed((): ReadonlyMap<number, RowNote> => (functionsOn ? rowNotes(props.doc, scaleView.value) : new Map()))
 const span = (bars: readonly ChartBar[]): string => `${bars[0]?.bar ?? ''}–${bars.at(-1)?.bar ?? ''}`
 const headingId = (section: string): string => `bars-${section.replace(/[^\w-]/g, '_')}`
 /** the key the section starts in, from the analysis */

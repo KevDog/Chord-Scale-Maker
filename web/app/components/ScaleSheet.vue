@@ -9,7 +9,7 @@
 </template>
 
 <script setup lang="ts">
-import { buildSheet, type Key, type ModeChoice, type Part, pageSubtitle, type PracticeSelection, type Row } from '@chord-scale-maker/engine'
+import { buildSheet, type Key, type ModeChoice, type Part, pageSubtitle, type PracticeSelection, type Resolved, type Row } from '@chord-scale-maker/engine'
 
 const props = defineProps<{
   rows: readonly Row[]
@@ -24,11 +24,12 @@ const props = defineProps<{
   intervals?: boolean // label notes against the chord root, on screen only
   practice?: PracticeSelection | null // highlight these notes, dim the rest
   homeKey?: Key | null // the chart's key, for the key signature (null: no key: line); undefined: signatures off
+  resolved?: ReadonlyMap<number, Resolved> // what each row plays (resolveScales); undefined: its own scale or its quality's default
 }>()
 
 /** every printed page, in order, with its own heading */
 const pages = computed(() =>
-  buildSheet(props.rows, props.part, props.mode, props.start, props.perPage, props.practice ?? null, props.homeKey)
+  buildSheet(props.rows, props.part, props.mode, props.start, props.perPage, props.practice ?? null, props.homeKey, props.resolved)
     .flatMap((sheetPart) =>
       sheetPart.pages.map((staves) => ({
         mode: sheetPart.mode,

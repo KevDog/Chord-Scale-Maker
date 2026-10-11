@@ -96,6 +96,25 @@ export type LevelState = Readonly<{ level: ScaleLevel; seed: number; owned?: rea
 const defaultOf = (chord: string): string => optionsFor(chord).find((o) => o.default)?.scale ?? ''
 const rowKey = (i: number, chord: string): string => `${i}:${chord}`
 
+/** a row's scale at a level as relevel writes it: `standard` is the row's Standard, `tonicMinor` the rows on rule m5 */
+function scaleAt(state: LevelState, i: number, chord: string, standard: string, tonicMinor: ReadonlySet<number>): string | null {
+  if (state.level === 'standard') return standard || null
+  if (state.level === 'basic' && tonicMinor.has(i)) {
+    const r = readChord(chord)
+    return r ? `${rootName(r.root)} Aeolian` : null
+  }
+  return scaleAtLevel(chord, state.level, state.seed, rowKey(i, chord), standard)
+}
+
+/** the row's Standard: the library's own choice for this line, else the chord's default */
+const standardOf = (baseline: ChartDoc | undefined, i: number, chord: string): string => {
+  const b = baseline?.lines[i]
+  return b?.kind === 'row' && b.chord === chord && b.scale ? b.scale : defaultOf(chord)
+}
+
+// the rows that are a tonic minor chord, from the analysis (it reads the chords, so it's the same at every level)
+const tonicMinorOf = (doc: ChartDoc): ReadonlySet<number> => new Set(analyse(doc).rows.filter((r) => r.rule === 'm5').map((r) => r.line))
+
 /**
  * move a chart from one level to another, writing the scales into its rows. Only rows the level owns move, and only
  * while they still play the old level's scale; a scale you chose yourself stays, even one that happens to be a
@@ -110,23 +129,8 @@ export function relevel(
   to: LevelState,
   baseline?: ChartDoc,
 ): Readonly<{ doc: ChartDoc; changed: number; owned: readonly string[] }> {
-  /** the row's Standard: the library's own choice for this line, else the chord's default */
-  const standard = (i: number, chord: string): string => {
-    const b = baseline?.lines[i]
-    return b?.kind === 'row' && b.chord === chord && b.scale ? b.scale : defaultOf(chord)
-  }
-  // the rows that are a tonic minor chord, from the analysis (it reads the chords, so it's the same at every level)
-  const tonicMinor = new Set(analyse(doc).rows.filter((r) => r.rule === 'm5').map((r) => r.line))
-  const aeolian = (chord: string): string | null => {
-    const r = readChord(chord)
-    return r ? `${rootName(r.root)} Aeolian` : null
-  }
-  const at = (state: LevelState, i: number, chord: string): string | null =>
-    state.level === 'standard'
-      ? standard(i, chord) || null
-      : state.level === 'basic' && tonicMinor.has(i)
-        ? aeolian(chord)
-        : scaleAtLevel(chord, state.level, state.seed, rowKey(i, chord), standard(i, chord))
+  const tonicMinor = tonicMinorOf(doc)
+  const at = (state: LevelState, i: number, chord: string): string | null => scaleAt(state, i, chord, standardOf(baseline, i, chord), tonicMinor)
   const owns = (i: number, chord: string, scale: string): boolean => {
     const mine = from.level === 'standard' || !from.owned || from.owned.includes(rowKey(i, chord)) // no record (an old share link): any match counts
     return mine && (scale === '' || samePitchScale(scale, at(from, i, chord))) // by pitch (R18)
@@ -142,4 +146,23 @@ export function relevel(
     return { ...l, scale: next }
   })
   return { doc: changed ? { lines } : doc, changed, owned }
+}
+
+/**
+ * the proposedScales migration (docs/superpowers/specs/2026-10-11-proposed-scales-design.md §3): a chart relevel
+ * wrote, with its cells blank again where they still hold the level's scale, so the resolver plays the level there.
+ * Only the rows `state.owned` lists; a row changed by hand since, or never owned, keeps its scale.
+ */
+export function unlevel(doc: ChartDoc, state: LevelState, baseline?: ChartDoc): Readonly<{ doc: ChartDoc; blanked: number }> {
+  if (!state.owned?.length) return { doc, blanked: 0 }
+  const owned = new Set(state.owned)
+  const tonicMinor = tonicMinorOf(doc)
+  let blanked = 0
+  const lines = doc.lines.map((l, i) => {
+    if (l.kind !== 'row' || !l.scale || !owned.has(rowKey(i, l.chord))) return l
+    if (!samePitchScale(l.scale, scaleAt(state, i, l.chord, standardOf(baseline, i, l.chord), tonicMinor))) return l
+    blanked++
+    return { ...l, scale: '' }
+  })
+  return { doc: blanked ? { lines } : doc, blanked }
 }

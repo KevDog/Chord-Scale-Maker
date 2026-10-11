@@ -85,6 +85,11 @@ export function useSavedChart(text: Readonly<Ref<string>>, target: SaveTarget, c
     edited: readonly(edited),
     /** save now (before Save as a copy, Download, Share) */
     flush: save,
+    /** save now though nothing was typed: the chart was changed on opening (the proposedScales migration) */
+    saveNow(): void {
+      dirty = true
+      save()
+    },
     /** the saved chart's id, once there is one */
     id: (): string | undefined => id,
     /** your version of a library chart is gone: forget it without saving again */
