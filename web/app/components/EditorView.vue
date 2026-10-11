@@ -47,7 +47,7 @@
           <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
             <UiSubheading id="grid-heading">Chart</UiSubheading>
             <UiBadge color="zinc" title="The chart is written and edited in concert pitch, whatever the instrument">Concert pitch</UiBadge>
-            <div class="ml-auto flex items-center gap-1">
+            <div class="ml-auto flex flex-wrap items-center justify-end gap-1">
               <UiButton plain :disabled="!chartHistory.canUndo.value" title="Undo (⌘Z)" @click="chartHistory.undo"><ArrowUturnLeftIcon data-slot="icon" />Undo</UiButton>
               <UiButton plain :disabled="!chartHistory.canRedo.value" title="Redo (⇧⌘Z)" @click="chartHistory.redo"><ArrowUturnRightIcon data-slot="icon" />Redo</UiButton>
               <UiButton v-if="saved || shared" plain :disabled="!unsaved" title="Save in this browser now (edits also save a moment after you stop)" @click="saveNow"><BookmarkIcon data-slot="icon" />Save</UiButton>
