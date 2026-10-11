@@ -16,30 +16,12 @@ drawing constants and practice key, plus the `glyphs()` Bebop fix), and the cont
 - **Engine coverage** — `voiceLeading.ts` (Viterbi) and `stream.ts` have no direct unit tests; adding them is pure
   upside but wants careful, fresh attention to avoid pinning current behavior as "correct".
 
+## Done
+
 ### Guide tone ranges per instrument
 
-Today the guide tone lines (`engine/guideToneLines.ts`) take their range from the clef alone (`RANGES` in
-`engine/voiceLeading.ts`, written pitch): treble C4–A5 with a comfortable E4–D5 (centre about A4), bass E2–C4 with
-G2–G3. Every treble instrument shares one range, so on vibes (F3–F6) the lines never leave the middle of the
-instrument, and the leaps over a tritone that remain (18 in treble over the library, e.g. D7 → Gm, C4 → G4) all
-come from the C4 floor that the instrument doesn't have.
-
-- **Engine:** an optional written range per instrument in `INSTRUMENTS` (`lo`, `hi`, `comfortLo`, `comfortHi`),
-  falling back to the clef's `RANGES` entry; `guideToneLines` and `guideVoices` take the part's range instead of its
-  clef. The rules don't change: rule 1's start octave and rule 3's tie-break use the centre, rule 4 the range.
-- **Ranges to settle** (written pitch, the instrument's practical range for a line, not its extremes): vibes,
-  piano, guitar, flute, trumpet/flugelhorn, clarinet, the saxophones, horn, trombone, tuba, bass. A source per
-  instrument; where unsure, keep the clef's range.
-- **Measure first:** `npm run guide-lines` per part (`--part`), before and after: common tone, step and leap shares,
-  moves over a tritone, and the comparison with the pair search. A wider range should remove the floor leaps; check
-  it doesn't let the lines drift to an uncomfortable register (the centre still anchors starts and ties).
-- **Tests:** the rule tests keep the clef ranges (they name pitches); new cases for a wider range (no floor turn at
-  C4 on vibes) and a narrower one; the library test runs per instrument. The golden fixture doesn't cover guide
-  tones, so no fixture change is expected.
-- **Decided (the user's):** the comfortable zone moves with the instrument (each instrument's range carries its own
-  `comfortLo`/`comfortHi`). The Scales sheet keeps its fixed written range.
-
-## Done
+Each instrument's guide tone lines use its own written range and centre, inside a two-ledger-line cap
+([spec](superpowers/specs/2026-10-10-guide-tone-ranges-design.md)).
 
 ### The Changes sheet
 

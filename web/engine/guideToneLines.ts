@@ -1,6 +1,6 @@
-import type { Clef } from './instruments'
+import type { Range } from './instruments'
 import { pcOf } from './pitch'
-import { type Candidate, type GuideTone, type GuideTones, RANGES } from './voiceLeading'
+import type { Candidate, GuideTone, GuideTones } from './voiceLeading'
 
 /**
  * Guide tone lines (docs/superpowers/specs/2026-10-10-guide-tone-lines-design.md): two single voices over a chart,
@@ -19,8 +19,8 @@ const tone = (t: GuideTones, role: 0 | 1): GuideTone => (role ? t.seventh : t.th
 const spelledAlike = (x: GuideTone, y: GuideTone): boolean => x.note.letter === y.note.letter && x.note.acc === y.note.acc
 
 /** a guide tone at every octave inside the written range: no other pitch is a candidate (rule 4) */
-function octaves(t: GuideTones, role: 0 | 1, clef: Clef): Candidate[] {
-  const { lo, hi } = RANGES[clef]
+function octaves(t: GuideTones, role: 0 | 1, range: Range): Candidate[] {
+  const { lo, hi } = range
   const { note, label } = tone(t, role)
   const out: Candidate[] = []
   for (let midi = lo; midi <= hi; midi++) if (midi % 12 === pcOf(note)) out.push({ pitch: { letter: note.letter, acc: note.acc, midi }, label, role })
@@ -48,11 +48,11 @@ const TRITONE = 6
  * sides). The other line takes the remaining tone in the octave nearest its own note, unless that leaps more than a
  * tritone and trading makes the larger of the two moves smaller: then the lines trade.
  */
-function together(from: Pair, [a, b]: Pair, t: GuideTones, clef: Clef, centre: number): Pair {
+function together(from: Pair, [a, b]: Pair, t: GuideTones, range: Range, centre: number): Pair {
   if (a.role !== b.role) return [a, b]
   const move = (i: 0 | 1, c: Candidate): number => Math.abs(c.pitch.midi - from[i].pitch.midi)
   const aKeeps = move(0, a) !== move(1, b) ? move(0, a) < move(1, b) : !(b.pitch.midi < from[1].pitch.midi && a.pitch.midi >= from[0].pitch.midi)
-  const remaining = (i: 0 | 1): Candidate => nearest(octaves(t, a.role ? 0 : 1, clef), from[i].pitch.midi, centre) ?? from[i]
+  const remaining = (i: 0 | 1): Candidate => nearest(octaves(t, a.role ? 0 : 1, range), from[i].pitch.midi, centre) ?? from[i]
   const keep: Pair = aKeeps ? [a, remaining(1)] : [remaining(0), b]
   const trade: Pair = aKeeps ? [remaining(0), b] : [a, remaining(1)]
   const larger = (p: Pair): number => Math.max(move(0, p[0]), move(1, p[1]))
@@ -65,8 +65,8 @@ function together(from: Pair, [a, b]: Pair, t: GuideTones, clef: Clef, centre: n
  * tones, which ends the run (rule 6). blocks: each chord's block on the sheet (none given: all one); a chord that
  * repeats the previous chord's guide tones, by spelling, in the same block holds both lines (rule 5).
  */
-export function guideToneLines(tones: readonly (GuideTones | null)[], clef: Clef, blocks: readonly number[] = []): readonly [(LineNote | null)[], (LineNote | null)[]] {
-  const centre = (RANGES[clef].comfortLo + RANGES[clef].comfortHi) / 2
+export function guideToneLines(tones: readonly (GuideTones | null)[], range: Range, blocks: readonly number[] = []): readonly [(LineNote | null)[], (LineNote | null)[]] {
+  const centre = range.centre
   const lines: [(LineNote | null)[], (LineNote | null)[]] = [[], []]
   let last: readonly [number, number] = [centre, centre] // each line's last sounded note: a run starts nearest it (rules 1, 6)
   let prev: Readonly<{ tones: GuideTones; notes: Pair; block: number | undefined }> | null = null
@@ -76,11 +76,11 @@ export function guideToneLines(tones: readonly (GuideTones | null)[], clef: Clef
     let notes: Pair | null = null
     if (t && prev && held) notes = [{ ...prev.notes[0], label: tone(t, prev.notes[0].role).label }, { ...prev.notes[1], label: tone(t, prev.notes[1].role).label }]
     else if (t && prev) {
-      const all = [...octaves(t, 0, clef), ...octaves(t, 1, clef)]
+      const all = [...octaves(t, 0, range), ...octaves(t, 1, range)]
       const [a, b] = [nearest(all, prev.notes[0].pitch.midi, centre), nearest(all, prev.notes[1].pitch.midi, centre)] // rule 7.1
-      if (a && b) notes = together(prev.notes, [a, b], t, clef, centre)
+      if (a && b) notes = together(prev.notes, [a, b], t, range, centre)
     } else if (t) {
-      const [a, b] = [nearest(octaves(t, 0, clef), last[0], centre), nearest(octaves(t, 1, clef), last[1], centre)] // rule 1
+      const [a, b] = [nearest(octaves(t, 0, range), last[0], centre), nearest(octaves(t, 1, range), last[1], centre)] // rule 1
       if (a && b) notes = [a, b]
     }
     lines[0].push(notes && { ...notes[0], held })

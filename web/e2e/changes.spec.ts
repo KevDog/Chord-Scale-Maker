@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseInstrument, chooseSheet, drawn, expect, GLYPH, guidesDrawn, openEditor, showGuides, test, writeChart } from './fixtures'
+import { chooseInstrument, chooseSheet, type Drawn, drawn, expect, GLYPH, guidesDrawn, openEditor, showGuides, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the chart grid above it (whose menus name the same scales) */
@@ -28,6 +28,21 @@ type Box = Readonly<{ left: number; right: number; top: number; bottom: number }
 const box = (g: Readonly<{ x: number; y: number; w: number }>, half: number): Box => ({ left: g.x, right: g.x + g.w, top: g.y - half, bottom: g.y + half })
 const overlaps = (a: Box, b: Box): boolean => a.left < b.right - 0.5 && b.left < a.right - 0.5 && a.top < b.bottom - 0.5 && b.top < a.bottom - 0.5
 
+/** no two noteheads or accidentals overlap; an accidental sits flush against its own notehead (same height, just to
+ * its right), and its glyph box differs by platform (it reaches 1.5px into the head on CI's Linux): that pair is not a
+ * collision */
+function expectNoCollisions(d: Drawn): void {
+  const heads = d.heads.map((h) => box(h, 4.5))
+  const accidentals = d.accidentals.map((a) => box(a, 10))
+  const own = (a: Box, h: Box): boolean => Math.abs((a.top + a.bottom) / 2 - (h.top + h.bottom) / 2) < 0.5 && h.left > a.left && h.left < a.right + 1
+  const boxes = [...heads, ...accidentals]
+  boxes.forEach((a, i) =>
+    boxes.slice(i + 1).forEach((b) => {
+      if (accidentals.includes(b) && heads.includes(a) && own(b, a)) return
+      expect(overlaps(a, b), `${JSON.stringify(a)} and ${JSON.stringify(b)}`).toBe(false)
+    }),
+  )
+}
 test('the Changes sheet: slashes, chords, numerals and scales, a repeat, and toggles that stick', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
   await chooseSheet(page, 'Changes')
@@ -165,20 +180,24 @@ test('a chord held over a line break: an open tie ends line 1, a half-tie starts
   await expect.poll(halfTies).toBe(2) // one half-tie in per voice, before bar 5's notes (polled: line 2 may draw after line 1)
 })
 
-test('guide tones are written for the part: a B♭ trumpet, and a bass clef within E2–C4', async ({ page }) => {
+test('guide tones are written for the part, in its range: a B♭ trumpet within G3–G5, a trombone in bass clef within E2–E4', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
   await showGuides(page, 'From 3rd', 'From 7th')
   await chooseInstrument(page, 'Trumpet')
   await expect(lines(page).first()).toHaveAttribute('aria-label', /; guide tones: (C\d 7 \/ F\d 3|F\d 3 \/ C\d 7)/) // concert C–7 is written D–7: 7th C, 3rd F
   await guidesDrawn(page)
+  const heads = async () => (await Promise.all((await lines(page).all()).map(drawn))).flatMap((d) => d.heads.map((h) => h.y))
+  const written = await heads()
+  expect(Math.min(...written)).toBeGreaterThanOrEqual(75) // G5, a space above the treble staff (lines at 80–120, 5 a step)
+  expect(Math.max(...written)).toBeLessThanOrEqual(145) // G3, two ledger lines below it
   const trumpet = await lines(page).evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')))
   await chooseInstrument(page, 'Trombone')
   await expect.poll(() => lines(page).evaluateAll((els, before) => els.every((e, i) => e.getAttribute('aria-label') !== before[i]), trumpet)).toBe(true)
   await expect.poll(async () => (await drawn(lines(page).first())).clefs).toEqual([GLYPH.fClef]) // line 1's clef
   await expect(page.locator('.vf-clef')).toHaveCount(1)
-  const ys = (await Promise.all((await lines(page).all()).map(drawn))).flatMap((d) => d.heads.map((h) => h.y))
-  expect(Math.min(...ys)).toBeGreaterThanOrEqual(70) // C4, a ledger line above the bass staff
-  expect(Math.max(...ys)).toBeLessThanOrEqual(130) // E2, a ledger line below it
+  const ys = await heads()
+  expect(Math.min(...ys)).toBeGreaterThanOrEqual(60) // E4, two steps above the bass staff's ledger C4
+  expect(Math.max(...ys)).toBeLessThanOrEqual(130) // E2, a ledger line below the bass staff
 })
 
 test('a waltz’s guide tones are in 3/4: a bar-long chord is a dotted half', async ({ page }) => {
@@ -216,19 +235,25 @@ for (const [width, bars] of [
     expect(d.width).toBe(300 * bars)
     expect(d.heads.length).toBeGreaterThanOrEqual(16)
     expect(d.accidentals.length).toBeGreaterThan(0)
-    const heads = d.heads.map((h) => box(h, 4.5))
-    const accidentals = d.accidentals.map((a) => box(a, 10))
-    // an accidental sits flush against its own notehead (same height, just to its right), and its glyph box differs
-    // by platform (it reaches 1.5px into the head on CI's Linux): that pair is not a collision
-    const own = (a: Box, h: Box): boolean => Math.abs((a.top + a.bottom) / 2 - (h.top + h.bottom) / 2) < 0.5 && h.left > a.left && h.left < a.right + 1
-    const boxes = [...heads, ...accidentals]
-    boxes.forEach((a, i) =>
-      boxes.slice(i + 1).forEach((b) => {
-        if (accidentals.includes(b) && heads.includes(a) && own(b, a)) return
-        expect(overlaps(a, b), `${JSON.stringify(a)} and ${JSON.stringify(b)}`).toBe(false)
-      }),
-    )
+    expectNoCollisions(d)
     await expectChordsOnHeads(line)
+  })
+}
+
+for (const [width, bars] of [
+  [1400, 4],
+  [390, 2],
+] as const) {
+  test(`vibes, ${bars} bars a line: a line down to G3 draws two ledger lines below the staff, and nothing collides`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 })
+    await writeChart(page, 'title: T\nkey: C\nA | 1 | C7\nA | 2 | Ab\nA | 3 | Db7\nA | 4 | Gb\nA | 5 | B7\nA | 6 | E7\nA | 7 | A7\nA | 8 | D7\n')
+    await chooseInstrument(page, 'Vibes')
+    await showGuides(page, 'From 3rd', 'From 7th')
+    await guidesDrawn(page)
+    const all = await Promise.all((await lines(page).all()).map(drawn))
+    expect(Math.max(...all.flatMap((d) => d.heads.map((h) => h.y)))).toBeGreaterThanOrEqual(145) // G3: two ledger lines below the staff (80–120, 5 a step)
+    for (const d of all) expectNoCollisions(d)
+    for (const line of await lines(page).all()) await expectChordsOnHeads(line)
   })
 }
 

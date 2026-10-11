@@ -5,20 +5,25 @@
  *   npm run guide-lines                      common tone / step / leap shares per line, and every move > a tritone
  *   npm run guide-lines -- --compare         the greedy lines against the older global pair search (voiceLead)
  *   --part bass                              a concert bass-clef part instead of the default concert treble
+ *   --instrument vibes                       an instrument's part, in its own guide tone range
  *   --check                                  verify the script's chord sequence against buildChanges' labels
  *
  * Moves are between consecutive voiced chords within a run (a rest ends it); a held note is a common tone.
  */
 import { readdirSync, readFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
-import { buildChanges, chartBeats, CONCERT, expandRowLines, guideTonesFor, guideToneLines, guideToneTimeline, isSyncCopy, parseChart, resolveScale, rootName, voiceLead } from '../engine'
+import { buildChanges, chartBeats, CONCERT, expandRowLines, guideTonesFor, guideToneLines, guideToneTimeline, INSTRUMENTS, isInstrumentName, isSyncCopy, parseChart, partFor, rangeOf, resolveScale, rootName, voiceLead } from '../engine'
 import type { ChartLine, GuideInput, LinedRow, Part, Pitched } from '../engine'
 import { octaveOf } from '../engine/keySignature'
 
 const args = process.argv.slice(2)
 const flag = (f: string): boolean => args.includes(f)
 const REPO = resolve(import.meta.dirname, '../..')
-const part: Part = args[args.indexOf('--part') + 1] === 'bass' && flag('--part') ? { ...CONCERT, clef: 'bass' } : CONCERT
+const instrument = flag('--instrument') ? args[args.indexOf('--instrument') + 1] : undefined
+if (instrument !== undefined && !isInstrumentName(instrument)) throw new Error(`--instrument: no instrument "${instrument}" (${Object.keys(INSTRUMENTS).join(', ')})`)
+const part: Part = instrument ? partFor(instrument) : args[args.indexOf('--part') + 1] === 'bass' && flag('--part') ? { ...CONCERT, clef: 'bass' } : CONCERT
+/** the part as the report names it: "vibes", or the clef for a concert part */
+const partName = instrument ?? `${part.clef} (concert)`
 const files = readdirSync(join(REPO, 'charts'))
   .filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
   .sort()
@@ -107,7 +112,7 @@ function sequences(method: Method): Seq[] {
   return files.map((file) => {
     const chords = drawnChords(readFileSync(file, 'utf8'))
     const tones = chords.map((c) => guideTonesFor(part, c.chord, c.scale))
-    const [a, b] = method === 'greedy' ? guideToneLines(tones, part.clef, chords.map((c) => c.block ?? 0)) : voiceLead(tones, part.clef)
+    const [a, b] = method === 'greedy' ? guideToneLines(tones, rangeOf(part), chords.map((c) => c.block ?? 0)) : voiceLead(tones, rangeOf(part))
     return { chart: basename(file, '.txt'), chords, lines: [a.map(noteOf), b.map(noteOf)] }
   })
 }
@@ -163,7 +168,7 @@ function check(seqs: readonly Seq[]): void {
 function defaultRun(): void {
   const seqs = sequences('greedy')
   const moves = movesOf(seqs)
-  console.log(`## Guide tone lines over ${seqs.length} charts, ${seqs.reduce((n, s) => n + s.chords.length, 0)} chords, ${part.clef} (concert)\n`)
+  console.log(`## Guide tone lines over ${seqs.length} charts, ${seqs.reduce((n, s) => n + s.chords.length, 0)} chords, ${partName}\n`)
   console.log('### Moves by line')
   console.table(shares(moves))
   const big = moves.filter((m) => m.size > 6)
@@ -193,7 +198,7 @@ function compareRun(): void {
       }
     })
   })
-  console.log(`## Greedy lines against the pair search (voiceLead), ${part.clef} (concert)\n`)
+  console.log(`## Greedy lines against the pair search (voiceLead), ${partName}\n`)
   console.log(`voiced chords where the two-voice sets differ: ${differ} of ${total} (${pct(differ, total)}); charts with any difference: ${charts.size} of ${g.length}\n`)
   const [gs, ps] = [shares(gm), shares(pm)]
   console.log('### Step and leap shares, side by side (line = the method\'s own line 1 / line 2)')

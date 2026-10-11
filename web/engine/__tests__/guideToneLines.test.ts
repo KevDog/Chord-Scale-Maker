@@ -4,12 +4,11 @@ import { chartBeats, expandRows, parseChart, resolveScale } from '../chart'
 import { guideToneLines, type LineNote } from '../guideToneLines'
 import { guideToneTimeline } from '../guideToneTimeline'
 import { guideLabel, guideTonesFor } from '../guideTones'
-import type { Clef } from '../instruments'
+import { INSTRUMENTS, type InstrumentName } from '../instruments'
 import { octaveOf } from '../keySignature'
-import { CONCERT, type Part } from '../part'
+import { CONCERT, type Part, partFor, rangeOf } from '../part'
 import { pcOf, rootName } from '../pitch'
 import { isSyncCopy } from '../util'
-import { RANGES } from '../voiceLeading'
 
 const BASS: Part = { clef: 'bass', trans: 'C' }
 const TENOR: Part = { clef: 'treble', trans: 'Bb' }
@@ -20,7 +19,7 @@ const same = (n: LineNote, t: { note: { letter: number; acc: number }; label: st
   n.pitch.letter === t.note.letter && n.pitch.acc === t.note.acc && n.label === t.label
 /** lines A and B over chords in concert pitch (or for a part), as text */
 const linesOf = (chords: readonly string[], part: Part = CONCERT, blocks?: readonly number[]) => {
-  const [a, b] = guideToneLines(chords.map((c) => guideTonesFor(part, c)), part.clef as Clef, blocks)
+  const [a, b] = guideToneLines(chords.map((c) => guideTonesFor(part, c)), rangeOf(part), blocks)
   return { a: a.map(text), b: b.map(text) }
 }
 
@@ -97,7 +96,7 @@ describe('guide tone lines', () => {
   })
 
   it('rule 7: the lines are complementary: different tones at every chord, even where both would choose the same', () => {
-    const [a, b] = guideToneLines(['CMaj7', 'EbMaj7', 'F7', 'D7', 'Cm6', 'D7', 'Fm7', 'GMaj7'].map((c) => guideTonesFor(CONCERT, c)), 'treble')
+    const [a, b] = guideToneLines(['CMaj7', 'EbMaj7', 'F7', 'D7', 'Cm6', 'D7', 'Fm7', 'GMaj7'].map((c) => guideTonesFor(CONCERT, c)), rangeOf(CONCERT))
     a.forEach((n, i) => expect(n?.role, `chord ${i}`).not.toBe(b[i]?.role))
   })
   it('rule 5: a chord repeating the guide tones holds both lines (the same chord again, or a change of extension)', () => {
@@ -159,22 +158,48 @@ describe('the worked examples', () => {
   })
 })
 
+describe('guide tone lines in an instrument’s range', () => {
+  const VIBES = partFor('vibes')
+
+  it('rule 4 on vibes: at C4 the line steps down to Cb4 (written below C4), where the treble default turned up to F4', () => {
+    expect(linesOf(['C7', 'Ab', 'Db7']).a).toEqual(['E4 (3)', 'C4 (3)', 'F4 (3)']) // the default range: C4 is the floor
+    expect(linesOf(['C7', 'Ab', 'Db7'], VIBES).a).toEqual(['E4 (3)', 'C4 (3)', 'Cb4 (7)'])
+  })
+
+  it('rule 1 on vibes: a line starts in the octave nearest B♭4', () => {
+    expect(linesOf(['Dm7'], VIBES)).toEqual({ a: ['F4 (3)'], b: ['C5 (7)'] })
+    expect(linesOf(['Ebm7'], VIBES).a).toEqual(['Gb4 (3)']) // Gb4 (66) and Gb5 (78): 4 and 8 from B♭4
+  })
+
+  it('a trumpet’s lines stay within G3–G5 written', () => {
+    const trumpet = partFor('trumpet')
+    const [a, b] = guideToneLines(['Dm7', 'G7', 'CMaj7', 'A7', 'Dm7', 'G7', 'Em7', 'A7'].map((c) => guideTonesFor(trumpet, c)), rangeOf(trumpet))
+    for (const n of [...a, ...b]) expect(n && n.pitch.midi >= 55 && n.pitch.midi <= 79).toBe(true)
+  })
+})
+
 describe('guide tone lines over the library', () => {
   const LIBRARY = new URL('../../../charts/', import.meta.url)
   const charts = readdirSync(LIBRARY)
     .filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
     .map((f) => ({ f, doc: parseChart(readFileSync(new URL(f, LIBRARY), 'utf8')).value }))
 
-  for (const [name, part] of [['treble (concert)', CONCERT], ['bass', BASS], ['Bb tenor', TENOR]] as const) {
+  const PARTS: readonly (readonly [string, Part])[] = [
+    ['treble (concert)', CONCERT],
+    ['bass', BASS],
+    ['Bb tenor', TENOR],
+    ...(Object.keys(INSTRUMENTS) as InstrumentName[]).map((n) => [n, partFor(n)] as const),
+  ]
+  for (const [name, part] of PARTS) {
     it(`${name}: both lines sound at every voiced chord, on different guide tones, inside the written range`, () => {
       expect(charts.length).toBeGreaterThan(200)
-      const { lo, hi } = RANGES[part.clef]
+      const { lo, hi } = rangeOf(part)
       const faults: string[] = []
       let voiced = 0
       for (const { f, doc } of charts) {
         const { events } = guideToneTimeline(expandRows(doc).value, chartBeats(doc))
         const tones = events.map((e) => guideTonesFor(part, e.chord, resolveScale(e.row) ?? undefined))
-        const [a, b] = guideToneLines(tones, part.clef)
+        const [a, b] = guideToneLines(tones, rangeOf(part))
         tones.forEach((t, i) => {
           const [x, y] = [a[i], b[i]]
           const at = `${f} chord ${i} (${events[i]?.chord})`

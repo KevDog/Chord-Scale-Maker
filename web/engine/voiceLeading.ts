@@ -1,4 +1,4 @@
-import type { Clef } from './instruments'
+import type { Clef, Range } from './instruments'
 import type { Pitched } from './part'
 import { pcOf, type Spelled } from './pitch'
 
@@ -11,12 +11,13 @@ import { pcOf, type Spelled } from './pitch'
 export type GuideTone = Readonly<{ note: Spelled; label: string }>
 export type GuideTones = Readonly<{ third: GuideTone; seventh: GuideTone }>
 
-/** written ranges: anything inside [lo, hi]; [comfortLo, comfortHi] is comfortable (costs nothing to the pair search) */
-export const RANGES: Readonly<Record<Clef, Readonly<{ lo: number; hi: number; comfortLo: number; comfortHi: number }>>> = {
-  treble: { lo: 60, hi: 81, comfortLo: 64, comfortHi: 74 }, // C4-A5, comfortable E4-D5
-  bass: { lo: 40, hi: 60, comfortLo: 43, comfortHi: 55 }, // E2-C4, comfortable G2-G3
+/** each clef's default guide tone range (written): a part without its own (CONCERT) uses it — treble C4–A5 around A4, bass E2–C4 around C♯3 */
+export const RANGES: Readonly<Record<Clef, Range>> = {
+  treble: { lo: 60, hi: 81, centre: 69 },
+  bass: { lo: 40, hi: 60, centre: 49 },
 }
-const OUTSIDE_COST = 3 // per semitone outside the comfortable range
+const OUTSIDE_COST = 3 // per semitone outside the comfortable band (the centre ± COMFORT)
+const COMFORT = 5
 const LEAP_COST = 2 // per semitone beyond a whole step
 const WIDE_LEAP_COST = 0.1 // and a little more the wider it is: two 4ths over an octave and a step (strollin: F- Bb-)
 const CENTRE_COST = 0.01 // ties: nearer the middle of the range
@@ -24,8 +25,8 @@ const CENTRE_COST = 0.01 // ties: nearer the middle of the range
 /** a guide tone at one octave; role 0 = the chord's "3rd", 1 = its "7th" */
 export type Candidate = Readonly<{ pitch: Pitched; label: string; role: 0 | 1 }>
 
-function candidates(tones: GuideTones, clef: Clef): Candidate[] {
-  const { lo, hi } = RANGES[clef]
+function candidates(tones: GuideTones, range: Range): Candidate[] {
+  const { lo, hi } = range
   return ([tones.third, tones.seventh] as const).flatMap((t, role) => {
     const pc = pcOf(t.note)
     const out: Candidate[] = []
@@ -35,8 +36,8 @@ function candidates(tones: GuideTones, clef: Clef): Candidate[] {
   })
 }
 
-function placeCost(midi: number, clef: Clef): number {
-  const { comfortLo, comfortHi } = RANGES[clef]
+function placeCost(midi: number, range: Range): number {
+  const [comfortLo, comfortHi] = [range.centre - COMFORT, range.centre + COMFORT]
   const outside = Math.max(0, comfortLo - midi, midi - comfortHi)
   return OUTSIDE_COST * outside + CENTRE_COST * Math.abs(midi - (comfortLo + comfortHi) / 2)
 }
@@ -54,10 +55,10 @@ type Pair = readonly [Candidate, Candidate] // line 1, line 2: always one 3rd an
  * (one on the 3rd, one on the 7th), line 1 starts on the 3rd, and their combined motion is as small as possible,
  * so neither line pays for the other's smoothness
  */
-function smoothestPairs(steps: readonly Candidate[][], clef: Clef): Pair[] {
+function smoothestPairs(steps: readonly Candidate[][], range: Range): Pair[] {
   const pairsOf = (cands: readonly Candidate[], first: boolean): Pair[] =>
     cands.flatMap((a) => (first && a.role !== 0 ? [] : cands.filter((b) => b.role !== a.role).map((b): Pair => [a, b])))
-  const place = (p: Pair): number => placeCost(p[0].pitch.midi, clef) + placeCost(p[1].pitch.midi, clef)
+  const place = (p: Pair): number => placeCost(p[0].pitch.midi, range) + placeCost(p[1].pitch.midi, range)
   const move = (from: Pair, to: Pair): number => moveCost(from[0].pitch.midi, to[0].pitch.midi) + moveCost(from[1].pitch.midi, to[1].pitch.midi)
 
   const states = steps.map((c, s) => pairsOf(c, s === 0))
@@ -88,19 +89,19 @@ function smoothestPairs(steps: readonly Candidate[][], clef: Clef): Pair[] {
 }
 
 /** both lines, one guide tone (or a rest) per chord; runs between rests are voice-led separately */
-export function voiceLead(tones: readonly (GuideTones | null)[], clef: Clef): readonly [(Candidate | null)[], (Candidate | null)[]] {
+export function voiceLead(tones: readonly (GuideTones | null)[], range: Range): readonly [(Candidate | null)[], (Candidate | null)[]] {
   const one: (Candidate | null)[] = []
   const two: (Candidate | null)[] = []
   let run: Candidate[][] = []
   const flush = (): void => {
-    for (const [a, b] of smoothestPairs(run, clef)) {
+    for (const [a, b] of smoothestPairs(run, range)) {
       one.push(a)
       two.push(b)
     }
     run = []
   }
   for (const t of tones) {
-    if (t) run.push(candidates(t, clef))
+    if (t) run.push(candidates(t, range))
     else {
       flush()
       one.push(null) // a rest; both lines start again after it
