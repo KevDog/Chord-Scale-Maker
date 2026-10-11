@@ -3,9 +3,10 @@ subtitle: Minor blues
 composer: Dizzy Gillespie
 style: Blues
 key: Fm
+context: blues
 form: A, 12 bars
 source: Colorado Cookbook, p. 35
-# analysis: 2026-10-11, rules v1; F minor
+# analysis: 2026-10-11, rules v1; F minor, blues
 
 # section | bar | chord | scale
 A | 1  | Fm   | F Dorian             # tonic minor: Dorian by convention
