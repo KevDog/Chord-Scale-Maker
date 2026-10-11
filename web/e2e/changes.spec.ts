@@ -79,6 +79,16 @@ test('a later copy is written out, a tag follows a double barline, and a share l
   await other.close()
 })
 
+test('a numeral or scale with a note looks clickable on screen (dotted underline, pointer), and prints plain', async ({ page }) => {
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n')
+  const numeral = page.getByRole('button', { name: 'ii7', exact: true }).first()
+  await expect(numeral).toHaveCSS('text-decoration-style', 'dotted')
+  await expect(numeral).toHaveCSS('text-decoration-line', 'underline')
+  await expect(numeral).toHaveCSS('cursor', 'pointer')
+  await page.emulateMedia({ media: 'print' })
+  await expect(numeral).toHaveCSS('text-decoration-line', 'none')
+})
+
 test('a function from the dropdown: the Changes sheet shows it, its note opens on a click, and keys change from the grid', async ({ page }) => {
   await page.goto('/song?new=1')
   await openEditor(page)
