@@ -16,7 +16,7 @@ A1 | 5  | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
 A1 | 5  | Gm7    | G Aeolian           # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A1 | 6  | Cm7    | C Dorian            # ii of F7: Dorian
 A1 | 6  | F7     | F Mixolydian        # V7/I in Bb: natural tensions
-A1 | 7  | Dm7    | D Dorian            # ii of the ii–V to C minor
+A1 | 7  | Dm7    | D Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A1 | 7  | G7     | G Mixolydian b6     # V7/ii in Bb: the b13 is in the key
 A1 | 8  | Cm7    | C Dorian            # ii of the ii–V to Bb
 A1 | 8  | F7     | F Mixolydian        # V7 of Bb: natural tensions
@@ -25,10 +25,10 @@ A2 | 10 | Fm7    | F Dorian            # ii of the ii–V to Eb
 A2 | 10 | Bb7    | Bb Mixolydian       # V7/IV in Bb: natural tensions
 A2 | 11 | EbMaj7 | Eb Ionian           # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
 A2 | 12 | Ab7    | Ab Lydian Dominant  # ♭VII7 from the parallel minor: Lydian Dominant
-A2 | 13 | Dm7    | D Dorian            # ii of the ii–V to C minor
+A2 | 13 | Dm7    | D Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A2 | 13 | G7     | G Mixolydian b6     # V7/ii in Bb: the b13 is in the key
 A2 | 14 | Cm7    | C Dorian            # ii: Dorian, the key’s own notes
-A2 | 14 | Dm7    | D Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)
+A2 | 14 | Dm7    | D Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A2 | 14 | EbMaj7 | Eb Lydian           # IV: the #4 is the key’s 7th
 A2 | 14 | F7     | F Mixolydian        # V7 of Bb: natural tensions
 A2 | 15 | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
@@ -48,10 +48,10 @@ C  | 26 | Bb7    | Bb Mixolydian       # V7/IV in Bb: natural tensions
 C  | 27 | EbMaj7 | Eb Ionian           # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
 C  | 28 | Ebm7   | Eb Dorian           # ii of Ab7: Dorian
 C  | 28 | Ab7    | Ab Mixolydian       # extended ii–V: a side-step, its own key
-C  | 29 | Dm7    | D Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)
+C  | 29 | Dm7    | D Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C  | 29 | Gm7    | G Aeolian           # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 C  | 30 | Cm7    | C Dorian            # ii: Dorian, the key’s own notes
-C  | 30 | Dm7    | D Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)
+C  | 30 | Dm7    | D Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C  | 30 | EbMaj7 | Eb Lydian           # IV: the #4 is the key’s 7th
 C  | 30 | F7     | F Mixolydian        # V7 of Bb: natural tensions
 C  | 31 | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key

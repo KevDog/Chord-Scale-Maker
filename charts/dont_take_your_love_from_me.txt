@@ -9,7 +9,7 @@ source: Colorado Cookbook, p. 63
 # section | bar | chord | scale
 A | 1  | CMaj7   | C Ionian                  # tonic: the 4th is in the key
 A | 1  | Dm7     | D Dorian                  # ii: Dorian, the key’s own notes
-A | 2  | Em7     | E Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+A | 2  | Em7     | E Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A | 2  | Ebdim7  | Eb Whole-Half Diminished  # passing diminished: D7♭9 without its D, the G7's dominant (Dm7 its ii)
 A | 3  | Dm7     | D Dorian                  # ii of G7: Dorian
 A | 3  | G7      | G Mixolydian              # V7/I in C: natural tensions
@@ -32,7 +32,7 @@ B | 15 | Ab7     | Ab Lydian Dominant        # tritone substitute: resolves down
 B | 16 | G7      | G Mixolydian              # V7 of C: natural tensions
 C | 17 | CMaj7   | C Ionian                  # tonic: the 4th is in the key
 C | 17 | Dm7     | D Dorian                  # ii: Dorian, the key’s own notes
-C | 18 | Em7     | E Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+C | 18 | Em7     | E Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C | 18 | Ebdim7  | Eb Whole-Half Diminished  # passing diminished: D7♭9 without its D, the G7's dominant (Dm7 its ii)
 C | 19 | Dm7     | D Dorian                  # ii of G7: Dorian
 C | 19 | G7      | G Mixolydian              # V7/I in C: natural tensions

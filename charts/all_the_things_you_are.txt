@@ -45,7 +45,7 @@ C     | 27 | Eb7    | Eb Mixolydian             # V7 of Ab: natural tensions
 C     | 28 | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key
 C     | 29 | DbMaj7 | Db Lydian                 # IV: the #4 is the key’s 7th
 C     | 30 | Gb13   | Gb Lydian Dominant        # ♭VII7 from the parallel minor: Lydian Dominant
-C     | 31 | Cm7    | C Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+C     | 31 | Cm7    | C Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C     | 32 | Bdim7  | B Whole-Half              # passing diminished: Bb7♭9 without its Bb, the Eb7's dominant (Bbm7 its ii)
 C     | 33 | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
 C     | 34 | Eb7    | Eb Mixolydian             # V7 of Ab: natural tensions

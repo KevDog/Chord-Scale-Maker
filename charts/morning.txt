@@ -44,7 +44,7 @@ B  | 17 | Dm7    | D Dorian             # ii of the ii–V to C
 B  | 18 | G7sus4 | G Mixolydian         # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 B  | 19 | C6     | C Ionian             # tonic: the 4th is in the key
 B  | 19 | F7     | F Lydian Dominant    # tritone substitute: resolves down a half step to Em7
-B  | 20 | Em7    | E Dorian             # ii of the ii–V to D minor
+B  | 20 | Em7    | E Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B  | 20 | A7alt  | A Altered            # from the symbol: altered
 B  | 21 | Dm7    | D Dorian             # ii of G7sus4: Dorian
 B  | 22 | G7sus4 | G Mixolydian         # static sus: Mixolydian
@@ -60,7 +60,7 @@ C  | 28 | Am7    | A Dorian             # ii of D7: Dorian
 C  | 28 | D7     | D Mixolydian         # V7/V in C: natural tensions
 C  | 29 | Dm7    | D Dorian             # ii of G7: Dorian
 C  | 29 | G7     | G Mixolydian         # V7/I in C: natural tensions
-C  | 30 | Em7    | E Dorian             # ii of A7: Dorian
+C  | 30 | Em7    | E Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C  | 30 | A7     | A Mixolydian         # extended ii–V: a side-step, its own key
 # area: A minor (bars 31–32)
 C  | 31 | Bm7    | B Dorian             # ii of the ii–V to A minor

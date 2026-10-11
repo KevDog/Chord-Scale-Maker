@@ -15,7 +15,7 @@ A1 | 2  | Ebm7     | Eb Dorian             # ii of the ii–V to Db
 A1 | 3  | Ebm7     | Eb Dorian
 A1 | 3  | Ab7b9b13 | Ab Phrygian Dominant  # V7 of Db: b9 and b13 from the symbol
 A1 | 4  | DbMaj7   | Db Ionian             # tonic: the 4th is in the key
-A1 | 5  | Fm7      | F Dorian              # iii: Dorian (its Phrygian would put a b9 over the root)
+A1 | 5  | Fm7      | F Phrygian            # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A1 | 5  | Em7      | E Dorian              # a borrowed minor chord: Dorian, its own key
 A1 | 6  | Ebm7     | Eb Dorian             # ii: Dorian, the key’s own notes
 A1 | 7  | Eb7      | Eb Lydian Dominant    # tritone substitute: resolves down a half step to D7

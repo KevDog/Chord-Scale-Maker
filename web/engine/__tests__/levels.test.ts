@@ -79,6 +79,16 @@ describe('scale levels', () => {
     expect(scales(relevel(library, at('standard'), at('advanced'), library).doc)).toEqual(['D Spanish Phrygian', 'G Altered', 'C Bebop Dorian'])
   })
 
+  it('an m7 on Phrygian (iii7, R4) is Dorian at Advanced; a sus b9 keeps Dorian b2 (quality_ladders)', () => {
+    expect(scaleAtLevel('Em7', 'advanced', 0, '', 'E Phrygian')).toBe('E Dorian')
+    expect(scaleAtLevel('Em7', 'basic', 0, '', 'E Phrygian')).toBe('E Minor Pentatonic') // the Phrygian ladder's own Basic
+    expect(scaleAtLevel('Dm7', 'advanced', 0, '', 'D Phrygian')).toBe('D Dorian') // v of a minor key too (Q4)
+    expect(scaleAtLevel('G7sus4b9', 'advanced', 0, '', 'G Phrygian')).toBe('G Dorian b2')
+    expect(ladderScale('E Phrygian', 'advanced')).toBe('E Dorian b2') // no quality: the ladder as it is
+    expect(ladderScale('E Phrygian', 'advanced', 'm7')).toBe('E Dorian')
+    expect(ladderScale('E Phrygian', 'advanced', '7sus4b9')).toBe('E Dorian b2')
+  })
+
   it('make a tonic minor chord Aeolian at Basic (decision 7), and bring it back', () => {
     const doc = parseChart('key: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm\nA | 4 | Gm\nA | 5 | Cm7\nA | 6 | F7\n').value
     const basic = relevel(doc, at('standard'), at('basic'))

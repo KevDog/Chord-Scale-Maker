@@ -9,7 +9,7 @@ source: Colorado Cookbook, p. 65
 # section | bar | chord | scale
 A1 | 1  | C6/9   | C Ionian                  # tonic: the 4th is in the key
 A1 | 1  | F7     | F Lydian Dominant         # tritone substitute: resolves down a half step to Em7
-A1 | 2  | Em7    | E Dorian                  # ii of the ii–V to D minor
+A1 | 2  | Em7    | E Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A1 | 2  | A7     | A Mixolydian b6           # V7/ii in C: the b13 is in the key
 A1 | 3  | Dm7    | D Dorian                  # ii of the ii–V to C
 A1 | 3  | G7     | G Mixolydian              # V7 of C: natural tensions

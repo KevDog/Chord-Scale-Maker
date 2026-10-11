@@ -5,7 +5,7 @@ style: Latin
 key: Bb
 form: A, 16 bars
 source: Colorado Cookbook, p. 120
-# analysis: 2026-10-08, rules v1; Bb
+# analysis: 2026-10-11, rules v1; Bb
 
 # section | bar | chord | scale
 # area: Bb major (bar 1)
@@ -21,7 +21,7 @@ A | 9  | GbMaj7 | Gb Ionian                # tonic: the 4th is in the key
 # area: Bb major (bars 11–16)
 A | 11 | Cm7    | C Dorian                 # ii of F7: Dorian
 A | 12 | F7     | F Mixolydian             # V7/I in Bb: natural tensions
-A | 13 | Dm7    | D Dorian                 # ii of the ii–V to C minor
+A | 13 | Dm7    | D Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A | 14 | G7b9   | G Phrygian Dominant      # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
 A | 15 | Cm7    | C Dorian                 # ii of the ii–V to Bb
 A | 16 | F7b9   | F Half-Whole Diminished  # V7 of Bb: the b9 from the symbol

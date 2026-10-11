@@ -31,7 +31,7 @@ B  | 20 | C7     | C Mixolydian              # V7/IV in C: natural tensions
 B  | 21 | FMaj7  | F Ionian                  # the C7 before it makes F the key of the moment: the 4th is in the key
 B  | 22 | F#m7b5 | F# Locrian                # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B  | 22 | B7     | B Phrygian Dominant       # V7/iii in C: b9 and b13 are in the key
-B  | 23 | Em7    | E Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+B  | 23 | Em7    | E Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B  | 23 | Ebdim7 | Eb Whole-Half Diminished  # passing diminished: D7♭9 without its D, the G7's dominant (Dm7 its ii)
 B  | 24 | Dm7    | D Dorian                  # ii of the ii–V to C
 B  | 24 | G7     | G Mixolydian              # V7 of C: natural tensions

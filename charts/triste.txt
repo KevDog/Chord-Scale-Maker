@@ -14,7 +14,7 @@ A | 1  | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
 A | 3  | GbMaj7 | Gb Lydian                 # ♭VImaj7, borrowed from Bb minor: Lydian (its ♯11 is in the key)
 A | 4  | B7#11  | B Lydian Dominant         # tritone substitute: resolves down a half step to BbMaj7
 A | 5  | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
-A | 7  | Dm7    | D Dorian                  # ii of the ii–V to C minor
+A | 7  | Dm7    | D Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A | 8  | G7b9   | G Phrygian Dominant       # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
 B | 9  | Cm     | C Dorian                  # ii: Dorian, the key’s own notes
 B | 9  | Cm/Bb  | C Dorian                  # ii: Dorian, the key’s own notes

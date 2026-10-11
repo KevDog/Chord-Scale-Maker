@@ -8,12 +8,12 @@ source: Colorado Cookbook, p. 256
 # analysis: 2026-10-11, rules v1; Eb
 
 # section | bar | chord | scale
-Coda | 1  | Gm7    | G Dorian             # ii of the ii–V to F minor
+Coda | 1  | Gm7    | G Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 Coda | 2  | C7     | C Mixolydian b6      # V7/ii in Eb: the b13 is in the key
 Coda | 3  | Fm7    | F Dorian             # ii of the ii–V to Eb
 Coda | 3  | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
 Coda | 4  | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
-Coda | 5  | Gm7    | G Dorian             # ii of the ii–V to F minor
+Coda | 5  | Gm7    | G Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 Coda | 6  | C7     | C Mixolydian b6      # V7/ii in Eb: the b13 is in the key
 Coda | 7  | Fm7    | F Dorian             # ii of the ii–V to Eb
 Coda | 7  | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
@@ -26,7 +26,7 @@ A1   | 3  | Cm7    | C Aeolian            # vi: Aeolian, the key's own notes (th
 A1   | 3  | Cm7/Bb | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A1   | 4  | Am7b5  | A Locrian            # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A1   | 4  | D7b9   | D Phrygian Dominant  # V7/iii in Eb: b9 and b13 are in the key
-A1   | 5  | Gm7    | G Dorian             # ii of the ii–V to F minor
+A1   | 5  | Gm7    | G Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A1   | 6  | C7     | C Mixolydian b6      # V7/ii in Eb: the b13 is in the key
 A1   | 7  | Fm7    | F Dorian             # ii of the ii–V to Eb
 A1   | 8  | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
@@ -37,7 +37,7 @@ A2   | 11 | Cm7    | C Aeolian            # vi: Aeolian, the key's own notes (th
 A2   | 11 | Cm7/Bb | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A2   | 12 | Am7b5  | A Locrian            # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A2   | 12 | D7b9   | D Phrygian Dominant  # V7/iii in Eb: b9 and b13 are in the key
-A2   | 13 | Gm7    | G Dorian             # ii of the ii–V to F minor
+A2   | 13 | Gm7    | G Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A2   | 14 | C7     | C Mixolydian b6      # V7/ii in Eb: the b13 is in the key
 A2   | 15 | Fm7    | F Dorian             # ii of the ii–V to Eb
 A2   | 15 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
@@ -48,7 +48,7 @@ B    | 18 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
 B    | 19 | AbMaj7 | Ab Ionian            # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
 B    | 20 | Am7b5  | A Locrian            # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B    | 20 | D7     | D Phrygian Dominant  # V7/iii in Eb: b9 and b13 are in the key
-B    | 21 | Gm7    | G Dorian             # ii of the ii–V to F minor
+B    | 21 | Gm7    | G Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B    | 22 | C7     | C Mixolydian b6      # V7/ii in Eb: the b13 is in the key
 B    | 23 | Fm7    | F Dorian             # ii of the ii–V to Eb
 B    | 24 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
@@ -59,7 +59,7 @@ C    | 27 | Cm7    | C Aeolian            # vi: Aeolian, the key's own notes (th
 C    | 27 | Cm7/Bb | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 C    | 28 | Am7b5  | A Locrian            # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 C    | 28 | D7     | D Phrygian Dominant  # V7/iii in Eb: b9 and b13 are in the key
-C    | 29 | Gm7    | G Dorian             # ii of the ii–V to F minor
+C    | 29 | Gm7    | G Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C    | 30 | C7     | C Mixolydian b6      # V7/ii in Eb: the b13 is in the key
 C    | 31 | Fm7    | F Dorian             # ii of the ii–V to Eb
 C    | 31 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions

@@ -17,7 +17,7 @@ A1 | 3  | AbMaj7 | Ab Ionian                # tonic: the 4th is in the key
 A1 | 3  | DbMaj7 | Db Lydian                # IV: the #4 is the key’s 7th
 A1 | 4  | Dm7b5  | D Locrian                # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A1 | 4  | G7#11  | G Lydian Dominant        # V7/iii in Ab: 9, #11 and 13 from the symbol
-A1 | 5  | Cm     | C Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
+A1 | 5  | Cm     | C Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A1 | 5  | Am7b5  | A Locrian                # biiø7 in Ab: Locrian, the key's own notes (its ♭2 is a passing note)
 # area: C major (bars 6–9)
 A1 | 6  | Dm7b5  | D Locrian                # iiø7 of C: Locrian, the key's own notes (its ♭2 is a passing note)
@@ -35,7 +35,7 @@ A2 | 11 | AbMaj7 | Ab Ionian                # tonic: the 4th is in the key
 A2 | 11 | DbMaj7 | Db Lydian                # IV: the #4 is the key’s 7th
 A2 | 12 | Dm7b5  | D Locrian                # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A2 | 12 | G7#11  | G Lydian Dominant        # V7/iii in Ab: 9, #11 and 13 from the symbol
-A2 | 13 | Cm     | C Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
+A2 | 13 | Cm     | C Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A2 | 13 | Am7b5  | A Locrian                # biiø7 in Ab: Locrian, the key's own notes (its ♭2 is a passing note)
 # area: C major (bars 14–17)
 A2 | 14 | Dm7b5  | D Locrian                # iiø7 of C: Locrian, the key's own notes (its ♭2 is a passing note)
@@ -53,7 +53,7 @@ B  | 19 | DbMaj7 | Db Ionian                # tonic: the 4th is in the key
 B  | 19 | GbMaj7 | Gb Lydian                # IV: the #4 is the key’s 7th
 B  | 20 | Gm7b5  | G Locrian                # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B  | 20 | C7alt  | C Altered                # from the symbol: altered
-B  | 21 | Fm     | F Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
+B  | 21 | Fm     | F Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B  | 21 | Dm7b5  | D Locrian                # biiø7 in Db: Locrian, the key's own notes (its ♭2 is a passing note)
 # area: C major (bars 22–25)
 B  | 22 | Gm7b5  | G Locrian                # iiø7 of F: Locrian, the key's own notes (its ♭2 is a passing note)

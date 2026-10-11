@@ -19,7 +19,7 @@ A    | 4  | Gm7      | G Dorian         # ii of the ii–V to F
 A    | 4  | C7       | C Mixolydian     # V7 of F: natural tensions
 A    | 5  | FMaj7    | F Ionian         # tonic: the 4th is in the key
 A    | 5  | BbMaj7   | Bb Lydian        # IV: the #4 is the key’s 7th
-A    | 6  | Am7      | A Dorian         # ii of the ii–V to G minor
+A    | 6  | Am7      | A Phrygian       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A    | 6  | D7       | D Mixolydian b6  # V7/ii in F: the b13 is in the key
 A    | 7  | Gm       | G Dorian         # ii: Dorian, the key’s own notes
 A    | 7  | GmMaj7   | G Melodic Minor  # from the symbol: minor-major 7th

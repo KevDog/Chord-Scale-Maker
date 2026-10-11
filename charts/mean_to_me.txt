@@ -15,7 +15,7 @@ A1 | 3  | FMaj7  | F Ionian                 # tonic: the 4th is in the key
 A1 | 3  | B7#11  | B Lydian Dominant        # tritone substitute: resolves down a half step to BbMaj7
 A1 | 4  | BbMaj7 | Bb Ionian                # the B7#11 before it makes Bb the key of the moment: the 4th is in the key
 A1 | 4  | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
-A1 | 5  | Am7    | A Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
+A1 | 5  | Am7    | A Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A1 | 5  | Ab7    | Ab Lydian Dominant       # tritone substitute: resolves down a half step to Gm7
 A1 | 6  | Gm7    | G Dorian                 # ii: Dorian, the key’s own notes
 A1 | 6  | Gb7alt | Gb Altered               # from the symbol: altered
@@ -31,7 +31,7 @@ A2 | 11 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
 A2 | 11 | B7#11  | B Lydian Dominant        # tritone substitute: resolves down a half step to BbMaj7
 A2 | 12 | BbMaj7 | Bb Ionian                # the B7#11 before it makes Bb the key of the moment: the 4th is in the key
 A2 | 12 | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
-A2 | 13 | Am7    | A Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
+A2 | 13 | Am7    | A Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A2 | 13 | Ab7    | Ab Lydian Dominant       # tritone substitute: resolves down a half step to Gm7
 A2 | 14 | Gm7    | G Dorian                 # ii: Dorian, the key’s own notes
 A2 | 14 | Gb7alt | Gb Altered               # from the symbol: altered
@@ -58,7 +58,7 @@ A3 | 27 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
 A3 | 27 | B7#11  | B Lydian Dominant        # tritone substitute: resolves down a half step to BbMaj7
 A3 | 28 | BbMaj7 | Bb Ionian                # the B7#11 before it makes Bb the key of the moment: the 4th is in the key
 A3 | 28 | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
-A3 | 29 | Am7    | A Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
+A3 | 29 | Am7    | A Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A3 | 29 | Ab7    | Ab Lydian Dominant       # tritone substitute: resolves down a half step to Gm7
 A3 | 30 | Gm7    | G Dorian                 # ii: Dorian, the key’s own notes
 A3 | 30 | Gb7alt | Gb Altered               # from the symbol: altered

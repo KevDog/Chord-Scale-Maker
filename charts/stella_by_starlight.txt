@@ -18,7 +18,7 @@ A | 8  | Ab7    | Ab Lydian Dominant   # back door bVII7 to BbMaj7: the #11 is i
 B | 9  | BbMaj7 | Bb Ionian            # tonic: the 4th is in the key
 B | 10 | Em7b5  | E Locrian            # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 10 | A7b9   | A Phrygian Dominant  # V7/iii in Bb: b9 and b13 are in the key
-B | 11 | Dm7    | D Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
+B | 11 | Dm7    | D Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 12 | Bbm7   | Bb Dorian            # ii of Eb7: Dorian
 B | 12 | Eb7    | Eb Lydian Dominant   # back door bVII7 to FMaj7: the #11 is in the key
 B | 13 | FMaj7  | F Lydian             # a non-tonic major chord: Lydian

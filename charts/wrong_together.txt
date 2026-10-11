@@ -22,7 +22,7 @@ A    | 2  | Gm9    | G Dorian             # ii of the ii–V to F
 A    | 2  | C7#11  | C Lydian Dominant    # V7 of F: the #11 from the symbol
 A    | 3  | FMaj7  | F Ionian             # tonic: the 4th is in the key
 A    | 3  | Bb7    | Bb Lydian Dominant   # tritone substitute: resolves down a half step to Am7
-A    | 4  | Am7    | A Dorian             # ii of the ii–V to G minor
+A    | 4  | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A    | 4  | D7     | D Mixolydian b6      # V7/ii in F: the b13 is in the key
 A    | 5  | Gm9    | G Dorian             # ii of C7#11: Dorian
 A    | 5  | C7#11  | C Lydian Dominant    # V7/I in F: the #11 from the symbol
@@ -41,7 +41,7 @@ B    | 10 | Dm9    | D Dorian             # ii of the ii–V to C
 B    | 10 | G7#11  | G Lydian Dominant    # V7 of C: the #11 from the symbol
 B    | 11 | CMaj7  | C Ionian             # tonic: the 4th is in the key
 B    | 11 | F7#11  | F Lydian Dominant    # tritone substitute: resolves down a half step to Em9
-B    | 12 | Em9    | E Dorian             # ii of A7#11: Dorian
+B    | 12 | Em9    | E Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B    | 12 | A7#11  | A Lydian Dominant    # extended ii–V: a side-step, its own key; #11 from the symbol
 # area: F major (bars 13–16)
 B    | 13 | Gm9    | G Dorian             # ii of the ii–V to F

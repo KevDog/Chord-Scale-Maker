@@ -104,10 +104,10 @@ describe('L2 a diatonic chord acting as a related ii prints its degree (major ke
   it('iii7 before V7/ii', () => {
     expect(label(row('C', 'Cmaj7 | Em7 | A7 | Dm7 | G7 | Cmaj7', 'Em7'))).toEqual({
       numeral: 'iii7',
-      scale: 'E Dorian',
-      rule: 'm4',
+      scale: 'E Phrygian', // R4: the iii keeps its own scale as a related ii
+      rule: 'm9',
       fn: 'ii of the ii–V to D minor; also iii of C',
-      reason: 'ii of the ii–V to D minor',
+      reason: "iii: Phrygian, the key's own notes (the ♭2 is a passing note)",
       fallback: undefined,
     })
   })

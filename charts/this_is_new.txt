@@ -35,7 +35,7 @@ C   | 20 | Ebm11  | Eb Dorian             # ii of the ii–V to Db
 C   | 20 | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
 C   | 21 | DbMaj7 | Db Ionian             # tonic: the 4th is in the key
 C   | 22 | C7alt  | C Altered             # from the symbol: altered
-C   | 23 | Fm     | F Dorian              # iii: Dorian (its Phrygian would put a b9 over the root)
+C   | 23 | Fm     | F Phrygian            # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C   | 24 | F7alt  | F Altered             # from the symbol: altered
 D   | 25 | Bbm7   | Bb Dorian             # ii of Eb7alt: Dorian
 D   | 26 | Eb7alt | Eb Altered            # from the symbol: altered

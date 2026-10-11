@@ -9,11 +9,11 @@ source: Colorado Cookbook, p. 59
 # section | bar | chord | scale
 A | 1  | FMaj7  | F Ionian                 # tonic: the 4th is in the key
 A | 2  | Eb7#11 | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
-A | 3  | Am7    | A Dorian                 # ii of the ii–V to G minor
+A | 3  | Am7    | A Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A | 4  | D7#9   | D Altered                # V7/ii in F: the b13 is in the key, b9, #9 and #11 from the symbol
 A | 5  | Gm     | G Dorian                 # ii: Dorian, the key’s own notes
 A | 7  | Eb7#11 | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
-A | 9  | Am7    | A Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
+A | 9  | Am7    | A Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A | 10 | Dm     | D Aeolian                # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A | 11 | Gm     | G Dorian                 # ii: Dorian, the key’s own notes
 A | 12 | Gm     | G Dorian
@@ -26,16 +26,16 @@ A | 15 | Gm7/C  | C Mixolydian             # V7sus4 before its dominant: Mixolyd
 A | 16 | C7b9   | C Half-Whole Diminished  # V7 of F: the b9 from the symbol
 B | 17 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
 B | 18 | Eb7#11 | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
-B | 19 | Am7    | A Dorian                 # ii of the ii–V to G minor
+B | 19 | Am7    | A Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 20 | D7#9   | D Altered                # V7/ii in F: the b13 is in the key, b9, #9 and #11 from the symbol
 B | 21 | Gm     | G Dorian                 # ii: Dorian, the key’s own notes
 B | 23 | Eb7#11 | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
-B | 25 | Am7    | A Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
+B | 25 | Am7    | A Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 26 | Dm     | D Aeolian                # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 B | 26 | Dm/C   | D Aeolian                # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 B | 27 | Bm7b5  | B Locrian                # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 28 | E7#9   | E Altered                # V7/iii in F: the b13 is in the key, b9, #9 and #11 from the symbol
-B | 29 | Am     | A Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
+B | 29 | Am     | A Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 29 | Dm     | D Aeolian                # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 B | 30 | Gm7    | G Dorian                 # ii of the ii–V to F
 B | 30 | C7     | C Mixolydian             # V7 of F: natural tensions

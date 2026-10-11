@@ -130,7 +130,7 @@ describe('analysis: the other families (§7.2–7.6)', () => {
     expect([v['2 Am7'], v['3 Dm7'], v['5 Em7'], v['6 Fm6'], v['7 CmMaj7']]).toEqual([
       'A Aeolian (m7)', // vi: the b13 is in the key
       'D Dorian (m4)', // related ii
-      'E Dorian (m9)', // iii
+      'E Phrygian (m9)', // iii (R4)
       'F Dorian (m2)',
       'C Melodic Minor (m1)',
     ])
@@ -302,6 +302,27 @@ describe('R2: the blues I7 and IV7 by D5 before D3 (docs/superpowers/specs/2026-
 
   it('the 7 menu still lists Lydian Dominant', () => {
     expect(resolveQuality('C7')?.options.map((o) => o.scale)).toContain('C Lydian Dominant')
+  })
+})
+
+describe('R4: iii7 is Phrygian, m9 (docs/superpowers/specs/2026-10-10-analysis-rules-from-sources-design.md)', () => {
+  const row = (text: string, barChord: string) => analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === barChord)
+  const reasoned = (text: string, barChord: string): string | undefined => {
+    const r = row(text, barChord)
+    return r && `${r.scale} (${r.rule}): ${r.reason}`
+  }
+
+  it('iii7 of a major key: Phrygian, the key\'s own notes', () => {
+    expect(reasoned(chart('C', '1 Cmaj7, 2 Em7, 3 Am7, 4 Dm7, 5 G7'), '2 Em7')).toBe("E Phrygian (m9): iii: Phrygian, the key's own notes (the ♭2 is a passing note)")
+  })
+
+  it('iii7 as the related ii of the next dominant keeps Phrygian (m4 does not override a diatonic iii)', () => {
+    const r = row(chart('C', '1 Cmaj7, 2 Em7, 3 A7, 4 Dm7'), '2 Em7')
+    expect([r?.scale, r?.rule, r?.numeral]).toEqual(['E Phrygian', 'm9', 'iii7'])
+  })
+
+  it('a ii of a ii–V stays Dorian (m4)', () => {
+    expect(verdict(chart('C', '1 Cmaj7, 2 Dm7, 3 G7, 4 Cmaj7'), '2 Dm7')).toBe('D Dorian (m4)')
   })
 })
 

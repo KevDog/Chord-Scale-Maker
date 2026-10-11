@@ -17,7 +17,7 @@ B | 4  | Ab7    | Ab Lydian Dominant        # tritone substitute: resolves down 
 B | 4  | G7     | G Mixolydian              # extended dominant: each one falls a fifth into the next: natural tensions
 B | 5  | C7     | C Mixolydian              # V7 of V7: the dominant of the dominant: natural tensions
 B | 6  | F7     | F Mixolydian              # V7 in Bb, not resolving: natural tensions
-B | 7  | Dm7    | D Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+B | 7  | Dm7    | D Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 7  | Dbdim7 | Db Whole-Half Diminished  # passing diminished: C7♭9 without its C, the F7's dominant (Cm7 its ii)
 B | 8  | Cm7    | C Dorian                  # ii of the ii–V to Bb
 B | 8  | F7     | F Mixolydian              # V7 of Bb: natural tensions

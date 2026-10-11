@@ -21,7 +21,7 @@ A | 8  | Bb7    | Bb Mixolydian    # V7/IV in Bb: natural tensions
 B | 9  | EbMaj7 | Eb Ionian        # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
 B | 10 | Em7b5  | E Locrian        # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 10 | A7alt  | A Altered        # from the symbol: altered
-B | 11 | Dm7    | D Dorian         # ii of G7: Dorian
+B | 11 | Dm7    | D Phrygian       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 12 | G7     | G Mixolydian     # extended ii–V: a side-step, its own key
 B | 13 | Dbm7   | Db Dorian        # ii of Gb7: Dorian
 B | 14 | Gb7    | Gb Mixolydian    # extended ii–V: a side-step, its own key
@@ -31,7 +31,7 @@ B | 16 | F7     | F Mixolydian     # V7 of Bb: natural tensions
 D | 25 | EbMaj7 | Eb Ionian        # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
 D | 26 | Em7b5  | E Locrian        # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 D | 26 | A7alt  | A Altered        # from the symbol: altered
-D | 27 | Dm7    | D Dorian         # ii of the ii–V to C minor
+D | 27 | Dm7    | D Phrygian       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 D | 28 | G7     | G Mixolydian b6  # V7/ii in Bb: the b13 is in the key
 D | 29 | Cm7    | C Dorian         # ii of the ii–V to Bb
 D | 30 | F7     | F Mixolydian     # V7 of Bb: natural tensions

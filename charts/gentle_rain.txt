@@ -45,4 +45,4 @@ C  | 33 | F6     | F Ionian                 # tonic: the 4th is in the key
 C  | 34 | C9     | C Mixolydian             # V7 of F: natural tensions
 C  | 35 | F6     | F Ionian                 # tonic: the 4th is in the key
 C  | 36 | Em7    | E Dorian                 # a borrowed minor chord: Dorian, its own key
-C  | 37 | Am     | A Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
+C  | 37 | Am     | A Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)

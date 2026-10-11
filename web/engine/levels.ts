@@ -2,7 +2,7 @@ import raw from '../../chord_scales.json'
 import { analyse } from './analysis'
 import type { ChartDoc } from './chart'
 import { rootName } from './pitch'
-import { readChord, resolveQuality, type ScaleOption } from './qualities'
+import { type QualityMatch, readChord, resolveQuality, type ScaleOption } from './qualities'
 import { parseScale, sameScale, scaleKey, simplifyRoot, spellFrom } from './scales'
 
 /**
@@ -21,13 +21,14 @@ export const LEVEL_LABELS: Readonly<Record<ScaleLevel, string>> = { basic: 'Basi
 
 export const isScaleLevel = (v: unknown): v is ScaleLevel => typeof v === 'string' && (SCALE_LEVELS as readonly string[]).includes(v)
 
-const optionsFor = (chord: string): readonly ScaleOption[] => {
+const qualityOf = (chord: string): QualityMatch | null => {
   try {
-    return resolveQuality(chord)?.options ?? []
+    return resolveQuality(chord)
   } catch {
-    return [] // a chord that can't be parsed: nothing to choose from
+    return null // a chord that can't be parsed: nothing to choose from
   }
 }
+const optionsFor = (chord: string): readonly ScaleOption[] => qualityOf(chord)?.options ?? []
 
 /** a number in [0, 1) from a seed and a key, the same every time (FNV-1a, then a mulberry32 step) */
 export function seededUnit(seed: number, key: string): number {
@@ -42,12 +43,19 @@ export function seededUnit(seed: number, key: string): number {
 type Rung = readonly [string, string] // interval above the Standard root, scale name
 const LADDERS: Readonly<Record<string, Readonly<{ basic?: Rung; advanced?: Rung }>>> = raw.ladders as never
 const LADDER_BY_KEY = new Map(Object.entries(LADDERS).map(([name, rungs]) => [scaleKey(name), rungs]))
+/** per-quality overrides of a ladder (chord_scales.json `quality_ladders`): an m7 on Phrygian is Dorian at Advanced */
+const QUALITY_LADDERS: Readonly<Record<string, Readonly<Record<string, Readonly<{ basic?: Rung; advanced?: Rung }>>>>> =
+  raw.quality_ladders as never
 
-/** Basic or Advanced on a Standard scale's ladder; the Standard itself where the ladder has no rung; null if unreadable */
-export function ladderScale(standard: string, level: 'basic' | 'advanced'): string | null {
+/**
+ * Basic or Advanced on a Standard scale's ladder, the chord quality's own override first (`quality`: m7, 7sus4b9);
+ * the Standard itself where the ladder has no rung; null if unreadable
+ */
+export function ladderScale(standard: string, level: 'basic' | 'advanced', quality?: string): string | null {
   try {
     const s = parseScale(standard)
-    const rung = LADDER_BY_KEY.get(s.key)?.[level]
+    const override = quality ? Object.entries(QUALITY_LADDERS[quality] ?? {}).find(([name]) => scaleKey(name) === s.key)?.[1]?.[level] : undefined
+    const rung = override ?? LADDER_BY_KEY.get(s.key)?.[level]
     if (!rung) return standard
     const [interval, name] = rung
     const [r] = spellFrom(s.root, interval)
@@ -64,11 +72,12 @@ export function ladderScale(standard: string, level: 'basic' | 'advanced'): stri
  * then gives Basic and Advanced.
  */
 export function scaleAtLevel(chord: string, level: ScaleLevel, seed = 0, key = '', standard?: string): string | null {
-  const options = optionsFor(chord)
+  const match = qualityOf(chord)
+  const options = match?.options ?? []
   const def = options.find((o) => o.default) ?? options[0]
   if (!def) return null
   if (level === 'standard') return standard || def.scale
-  if ((level === 'basic' || level === 'advanced') && standard && !sameScale(standard, def.scale)) return ladderScale(standard, level) ?? def.scale
+  if ((level === 'basic' || level === 'advanced') && standard && !sameScale(standard, def.scale)) return ladderScale(standard, level, match?.quality) ?? def.scale
   if (level === 'random') {
     const pool = options.filter((o) => !o.outside)
     return pool[Math.floor(seededUnit(seed, key) * pool.length)]?.scale ?? def.scale

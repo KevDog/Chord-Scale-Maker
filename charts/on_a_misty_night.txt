@@ -14,7 +14,7 @@ A1 | 2  | Cm7    | C Aeolian                 # vi: Aeolian, the key's own notes 
 A1 | 3  | Fm9    | F Dorian                  # ii: Dorian, the key’s own notes
 A1 | 5  | Abm9   | Ab Dorian                 # ii of Db7#11: Dorian
 A1 | 6  | Db7#11 | Db Lydian Dominant        # extended ii–V: a side-step, its own key; #11 from the symbol
-A1 | 7  | Gm7    | G Dorian                  # ii of the ii–V to F minor
+A1 | 7  | Gm7    | G Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A1 | 7  | C7alt  | C Altered                 # from the symbol: altered
 A1 | 8  | Fm9    | F Dorian                  # ii of the ii–V to Eb
 A1 | 8  | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol

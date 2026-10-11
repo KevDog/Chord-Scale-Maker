@@ -47,7 +47,7 @@ A2 | 14 | G7b9  | G Half-Whole Diminished  # V7 of C: the b9 from the symbol
 A2 | 15 | CMaj7 | C Ionian                 # tonic: the 4th is in the key
 A2 | 15 | Bb7   | Bb Lydian Dominant       # back door bVII7 to CMaj7: the #11 is in the key
 A2 | 16 | CMaj7 | C Ionian                 # tonic: the 4th is in the key
-B  | 17 | Em7   | E Dorian                 # ii of A7: Dorian
+B  | 17 | Em7   | E Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B  | 17 | A7    | A Mixolydian             # extended ii–V: a side-step, its own key
 # area: D major (bars 18–20)
 B  | 18 | Em7   | E Dorian                 # ii of the ii–V to D
@@ -61,7 +61,7 @@ B  | 21 | Dm7   | D Dorian                 # ii of G7: Dorian
 B  | 21 | G7    | G Mixolydian             # V7/I in C: natural tensions
 B  | 22 | Dm7   | D Dorian                 # ii of G7: Dorian
 B  | 22 | G7    | G Mixolydian             # V7/I in C: natural tensions
-B  | 23 | Em7   | E Dorian                 # ii of the ii–V to D minor
+B  | 23 | Em7   | E Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B  | 23 | A7    | A Mixolydian b6          # V7/ii in C: the b13 is in the key
 B  | 24 | Dm7   | D Dorian                 # ii of the ii–V to C
 B  | 24 | G7    | G Mixolydian             # V7 of C: natural tensions

@@ -39,8 +39,8 @@ B | 16 | Ab7#11    | Ab Lydian Dominant   # tritone substitute: resolves down a 
 C | 17 | G7b13     | G Whole Tone         # tritone substitute: resolves down a half step to GbMaj7; b13 from the symbol
 C | 18 | GbMaj7    | Gb Ionian            # tonic: the 4th is in the key
 C | 19 | F7b13     | F Phrygian Dominant  # V7/iii in Gb: b9 and b13 are in the key
-C | 20 | Bbm       | Bb Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)
-C | 20 | Bbm/Ab    | Bb Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)
+C | 20 | Bbm       | Bb Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+C | 20 | Bbm/Ab    | Bb Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C | 21 | Gm7b5     | G Locrian            # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
 C | 21 | C7alt     | C Altered            # from the symbol: altered
 # area: Eb major (bars 22–25)

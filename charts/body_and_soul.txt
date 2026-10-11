@@ -14,7 +14,7 @@ A1 | 2  | Ebm7     | Eb Dorian                 # ii of the ii–V to Db
 A1 | 2  | Ab7      | Ab Mixolydian             # V7 of Db: natural tensions
 A1 | 3  | DbMaj7   | Db Ionian                 # tonic: the 4th is in the key
 A1 | 3  | Gb7      | Gb Lydian Dominant        # tritone substitute: resolves down a half step to Fm
-A1 | 4  | Fm       | F Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+A1 | 4  | Fm       | F Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A1 | 4  | Edim7    | E Whole-Half Diminished   # passing diminished: a rootless dominant ♭9
 A1 | 5  | Ebm      | Eb Dorian                 # ii: Dorian, the key’s own notes
 A1 | 5  | Ebm/Db   | Eb Dorian                 # ii: Dorian, the key’s own notes
@@ -31,7 +31,7 @@ A2 | 10 | Ebm7     | Eb Dorian                 # ii of the ii–V to Db
 A2 | 10 | Ab7      | Ab Mixolydian             # V7 of Db: natural tensions
 A2 | 11 | DbMaj7   | Db Ionian                 # tonic: the 4th is in the key
 A2 | 11 | Gb7      | Gb Lydian Dominant        # tritone substitute: resolves down a half step to Fm
-A2 | 12 | Fm       | F Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+A2 | 12 | Fm       | F Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A2 | 12 | Edim7    | E Whole-Half Diminished   # passing diminished: a rootless dominant ♭9
 A2 | 13 | Ebm      | Eb Dorian                 # ii: Dorian, the key’s own notes
 A2 | 13 | Ebm/Db   | Eb Dorian                 # ii: Dorian, the key’s own notes
@@ -49,7 +49,7 @@ B  | 17 | Em7      | E Dorian                  # ii: Dorian, the key’s own not
 B  | 18 | DMaj7/F# | D Ionian                  # tonic: the 4th is in the key
 B  | 18 | Gm7      | G Dorian                  # ii of C7: Dorian
 B  | 18 | C7       | C Mixolydian              # extended ii–V: a side-step, its own key
-B  | 19 | F#m7     | F# Dorian                 # ii of the ii–V to E minor
+B  | 19 | F#m7     | F# Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B  | 19 | B7       | B Mixolydian b6           # V7/ii in D: the b13 is in the key
 B  | 19 | Em7      | E Dorian                  # ii of the ii–V to D
 B  | 19 | A7       | A Mixolydian              # V7 of D: natural tensions

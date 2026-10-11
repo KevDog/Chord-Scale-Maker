@@ -48,7 +48,7 @@ B  | 36 | Bb7    | Bb Mixolydian b6          # V7/iv in Bb minor: the b13 is in 
 B  | 37 | Ebm7   | Eb Dorian                 # ii of the ii–V to Db
 B  | 38 | Ab7    | Ab Mixolydian             # V7 of Db: natural tensions
 B  | 39 | DbMaj7 | Db Ionian                 # tonic: the 4th is in the key
-B  | 41 | Fm7    | F Dorian                  # ii of the ii–V to Eb minor
+B  | 41 | Fm7    | F Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B  | 42 | Bb7b9  | Bb Phrygian Dominant      # V7/ii in Db: the b13 is in the key, the b9 from the symbol
 B  | 43 | Ebm    | Eb Dorian                 # ii: Dorian, the key’s own notes
 B  | 45 | Gm7b5  | G Locrian                 # iiø7 of C7b9: Locrian, the key's own notes (its ♭2 is a passing note)

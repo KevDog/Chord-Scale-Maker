@@ -58,7 +58,7 @@ B  | 22 | D7       | D Mixolydian             # V7 of G: natural tensions
 B  | 23 | GMaj7    | G Ionian                 # tonic: the 4th is in the key
 B  | 23 | G7alt/Db | G Altered                # from the symbol: altered
 # area: Ab major (bars 24–32)
-B  | 24 | Cm7      | C Dorian                 # ii of the ii–V to Bb minor
+B  | 24 | Cm7      | C Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B  | 24 | F7b9     | F Phrygian Dominant      # V7/ii in Ab: the b13 is in the key, the b9 from the symbol
 A3 | 25 | Bbm      | Bb Dorian                # ii: Dorian, the key’s own notes
 A3 | 26 | Gb7      | Gb Lydian Dominant       # tritone substitute: resolves down a half step to F7
@@ -75,5 +75,5 @@ A3 | 30 | Bbm7     | Bb Dorian                # ii of the ii–V to Ab
 A3 | 30 | Eb7      | Eb Mixolydian            # V7 of Ab: natural tensions
 A3 | 31 | AbMaj9   | Ab Ionian                # tonic: the 4th is in the key
 A3 | 31 | Db7      | Db Lydian Dominant       # tritone substitute: resolves down a half step to Cm7
-A3 | 32 | Cm7      | C Dorian                 # ii of the ii–V to Bb minor
+A3 | 32 | Cm7      | C Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A3 | 32 | F7b9     | F Phrygian Dominant      # V7/ii in Ab: the b13 is in the key, the b9 from the symbol

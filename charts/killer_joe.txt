@@ -22,6 +22,6 @@ B  | 19 | Ebm7  | Eb Dorian            # ii of Ab7: Dorian
 B  | 20 | Ab7   | Ab Mixolydian        # extended ii–V: a side-step, its own key
 B  | 21 | A7    | A Lydian Dominant    # tritone substitute: resolves down a half step to Ab7
 B  | 22 | Ab7   | Ab Lydian Dominant   # ♭VI7 from the parallel minor: Lydian Dominant
-B  | 23 | Em7   | E Dorian             # ii of A7: Dorian
+B  | 23 | Em7   | E Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B  | 24 | A7    | A Mixolydian         # extended ii–V: a side-step, its own key
 @copy A1 A3 24

@@ -277,6 +277,11 @@ function major(ctx: Context, i: number): Decision {
 const alsoDegree = (e: Entry, key: Key): string =>
   !key.minor && diatonic(e, key) && degree(e, key) !== 2 ? `; also ${roman(e, key)}${e.family === 'halfdim' ? 'ø7' : ''} of ${keyText(key)}` : ''
 
+/** iii of a major key, diatonic (R4) */
+const iii = (e: Entry, key: Key): boolean => !key.minor && diatonic(e, key) && degree(e, key) === 4
+/** m9: iii7 is Phrygian, its only available tension the 11 (N&G p. 33; M&H pp. 23, 57); Dorian is its Advanced rung */
+const iiiPhrygian = (e: Entry): Omit<Decision, 'fn'> => ({ scale: named(e, NAME.phrygian), rule: 'm9', reason: "iii: Phrygian, the key's own notes (the ♭2 is a passing note)" })
+
 function minor(ctx: Context, i: number): Decision {
   const e = ctx.stream[i] as Entry
   const key = ctx.keys[i] ?? ctx.global
@@ -292,12 +297,13 @@ function minor(ctx: Context, i: number): Decision {
     const lands = end && downFifth(n, end) && (end.family === 'major' || end.family === 'minor')
     const to = lands && end?.root ? keyText(makeKey(end.root, end.family === 'minor')) : null
     const fn = to ? `ii of the ii–V to ${to}` : `ii of ${n.chord}`
+    if (iii(e, key)) return { ...iiiPhrygian(e), fn: `${fn}${alsoDegree(e, key)}` } // a diatonic iii keeps its own scale as a related ii (M&H p. 57)
     return { scale: named(e, NAME.dorian), rule: 'm4', fn: `${fn}${alsoDegree(e, key)}`, reason: to ? fn : `${fn}: Dorian` }
   }
   if (key.minor && d === 0) return { scale: named(e, NAME.dorian), rule: 'm5', fn, reason: 'tonic minor: Dorian by convention' }
   if (diatonic(e, key)) {
     if (!key.minor && d === 9) return { scale: named(e, NAME.aeolian), rule: 'm7', fn, reason: "vi: Aeolian, the key's own notes (the ♭6 is a passing note)" }
-    if (!key.minor && d === 4) return { scale: named(e, NAME.dorian), rule: 'm9', fn, reason: 'iii: Dorian (its Phrygian would put a b9 over the root)' }
+    if (iii(e, key)) return { ...iiiPhrygian(e), fn }
     if (key.minor && d === 7) return { scale: named(e, NAME.phrygian), rule: 'm7', fn, reason: "v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)" }
     return { scale: named(e, NAME.dorian), rule: 'm7', fn, reason: `${roman(e, key)}: Dorian, the key’s own notes` }
   }
@@ -432,9 +438,9 @@ export const RULES: readonly RuleInfo[] = [
   { id: 'm2', family: 'minor', tier: 1, scale: 'Dorian', looksAt: 'a 6 in the symbol', summary: 'A minor sixth chord is Dorian.' },
   { id: 'm3', family: 'minor', tier: 1, scale: 'Aeolian', looksAt: 'a b6 or b13 in the symbol', summary: 'A minor chord with a written b6 or b13 is Aeolian.' },
   { id: 'm6', family: 'minor', tier: 2, scale: 'Dorian', looksAt: 'a modal chart', summary: 'A minor chord in a modal chart is Dorian.' },
-  { id: 'm4', family: 'minor', tier: 4, scale: 'Dorian', looksAt: 'the next chord, a dominant a fourth up', summary: 'The ii of a ii–V is Dorian.' },
+  { id: 'm4', family: 'minor', tier: 4, scale: 'Dorian', looksAt: 'the next chord, a dominant a fourth up', summary: 'The ii of a ii–V is Dorian (a diatonic iii keeps its Phrygian, m9).' },
   { id: 'm5', family: 'minor', tier: 3, scale: 'Dorian', looksAt: 'its degree: the tonic of a minor key', summary: 'The tonic minor chord of a minor key is Dorian, by convention.' },
-  { id: 'm9', family: 'minor', tier: 3, scale: 'Dorian', looksAt: 'its degree: iii in a major key', summary: 'iii in a major key is Dorian (its Phrygian would put a b9 over the root).' },
+  { id: 'm9', family: 'minor', tier: 3, scale: 'Phrygian', looksAt: 'its degree: iii in a major key, also as the ii of the next dominant', summary: 'iii in a major key is Phrygian, the key’s own notes (the ♭2 is a passing note); Dorian at Advanced.' },
   { id: 'm7', family: 'minor', tier: 3, scale: 'Dorian, Aeolian or Phrygian', looksAt: 'its degree: another diatonic minor chord', summary: 'A diatonic minor chord takes the key’s own notes: vi of a major key Aeolian, v of a minor key Phrygian, any other Dorian.' },
   { id: 'm8', family: 'minor', tier: 5, scale: 'Dorian', looksAt: 'a minor chord the key does not hold', summary: 'A borrowed or chromatic minor chord is Dorian, its own key.', guess: 'always' },
   { id: 'h1', family: 'halfdim', tier: 2, scale: 'Locrian natural 2', looksAt: 'a modal chart', summary: 'A half-diminished chord in a modal chart is Locrian ♮2.' },

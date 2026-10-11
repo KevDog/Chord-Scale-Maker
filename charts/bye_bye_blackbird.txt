@@ -10,7 +10,7 @@ source: Colorado Cookbook, p. 46
 # section | bar | chord | scale
 A | 1  | FMaj7  | F Ionian                  # tonic: the 4th is in the key
 A | 2  | BbMaj7 | Bb Lydian                 # IV: the #4 is the key’s 7th
-A | 2  | Am7    | A Dorian                  # ii of the ii–V to G minor
+A | 2  | Am7    | A Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A | 2  | D7     | D Mixolydian b6           # V7/ii in F: the b13 is in the key
 A | 3  | Gm7    | G Dorian                  # ii of the ii–V to F
 A | 3  | C7     | C Mixolydian              # V7 of F: natural tensions
@@ -21,7 +21,7 @@ A | 7  | Gm7    | G Dorian                  # ii of C7: Dorian
 A | 8  | C7     | C Mixolydian              # V7/I in F: natural tensions
 B | 9  | Gm     | G Dorian                  # ii: Dorian, the key’s own notes
 B | 10 | Abm    | Ab Dorian                 # a borrowed minor chord: Dorian, its own key
-B | 11 | Am     | A Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+B | 11 | Am     | A Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 12 | Abm    | Ab Dorian                 # a borrowed minor chord: Dorian, its own key
 B | 13 | Gm7    | G Dorian                  # ii of the ii–V to F
 B | 14 | C7     | C Mixolydian              # V7 of F: natural tensions
@@ -32,7 +32,7 @@ C | 18 | Bm7    | B Dorian                  # ii of E7: Dorian
 C | 18 | E7     | E Mixolydian              # extended ii–V: a side-step, its own key
 C | 19 | Bbm7   | Bb Dorian                 # ii of Eb7: Dorian
 C | 19 | Eb7    | Eb Mixolydian             # extended ii–V: a side-step, its own key
-C | 20 | Am7    | A Dorian                  # ii of the ii–V to G minor
+C | 20 | Am7    | A Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C | 20 | D7     | D Mixolydian b6           # V7/ii in F: the b13 is in the key
 C | 21 | Gm     | G Dorian                  # ii: Dorian, the key’s own notes
 C | 23 | Abm7   | Ab Dorian                 # ii of Db7: Dorian

@@ -22,7 +22,7 @@ A | 8  | G7     | G Phrygian Dominant      # III7 in Eb, not resolving: b9 and b
 B | 9  | Am7b5  | A Locrian                # iiø7 of D7b9: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 9  | D7b9   | D Half-Whole Diminished  # extended dominant: V7 of G7; b9 from the symbol
 B | 10 | G7     | G Phrygian Dominant      # III7 in Eb, not resolving: b9 and b13 are in the key
-B | 11 | Gm7    | G Dorian                 # ii of the ii–V to F minor
+B | 11 | Gm7    | G Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 11 | C7     | C Mixolydian b6          # V7/ii in Eb: the b13 is in the key
 B | 12 | Fm7    | F Dorian                 # ii: Dorian, the key’s own notes
 B | 12 | C7     | C Mixolydian b6          # V7/ii in Eb: the b13 is in the key

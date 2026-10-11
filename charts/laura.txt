@@ -30,7 +30,7 @@ B | 12 | Cm7    | C Aeolian                 # vi: Aeolian, the key's own notes (
 B | 13 | Am7b5  | A Locrian                 # iiø7 of G: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 14 | D7b9   | D Half-Whole Diminished   # V7 of G: the b9 from the symbol
 B | 15 | GMaj7  | G Ionian                  # tonic: the 4th is in the key
-B | 16 | Bm7    | B Dorian                  # ii of the ii–V to A minor
+B | 16 | Bm7    | B Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 16 | E7b9   | E Phrygian Dominant       # V7/ii in G: the b13 is in the key, the b9 from the symbol
 C | 17 | Am9    | A Dorian                  # ii of the ii–V to G
 C | 18 | D7b9   | D Half-Whole Diminished   # V7 of G: the b9 from the symbol

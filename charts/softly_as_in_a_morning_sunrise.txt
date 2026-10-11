@@ -36,7 +36,7 @@ A2 | 16 | Fm7    | F Dorian                  # ii of the ii–V to Eb
 A2 | 16 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
 B  | 17 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 B  | 18 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
-B  | 19 | Gm7    | G Dorian                  # ii of the ii–V to F minor
+B  | 19 | Gm7    | G Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B  | 20 | C7     | C Mixolydian b6           # V7/ii in Eb: the b13 is in the key
 B  | 21 | Fm7    | F Dorian                  # ii: Dorian, the key’s own notes
 B  | 22 | Am7b5  | A Locrian                 # iiø7 of D7: Locrian, the key's own notes (its ♭2 is a passing note)

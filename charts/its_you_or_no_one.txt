@@ -9,7 +9,7 @@ source: Colorado Cookbook, p. 111
 # section | bar | chord | scale
 # area: F major (bars 1–7)
 Intro | 1  | Bbm7   | Bb Dorian           # a borrowed minor chord: Dorian, its own key
-Intro | 2  | Am7    | A Dorian            # ii of the ii–V to G minor
+Intro | 2  | Am7    | A Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 Intro | 2  | D7     | D Mixolydian b6     # V7/ii in F: the b13 is in the key
 Coda  | 1  | Abm7   | Ab Dorian           # ii of Db7: Dorian
 Coda  | 2  | Db7    | Db Mixolydian       # extended ii–V: a side-step, its own key
@@ -26,7 +26,7 @@ A     | 1  | Gm7    | G Dorian            # ii of the ii–V to F
 A     | 2  | C7     | C Mixolydian        # V7 of F: natural tensions
 A     | 3  | FMaj7  | F Ionian            # tonic: the 4th is in the key
 A     | 3  | Bb7    | Bb Lydian Dominant  # tritone substitute: resolves down a half step to Am7
-A     | 4  | Am7    | A Dorian            # ii of the ii–V to G minor
+A     | 4  | Am7    | A Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A     | 4  | D7     | D Mixolydian b6     # V7/ii in F: the b13 is in the key
 A     | 5  | Gm7    | G Dorian            # ii of the ii–V to F
 A     | 6  | C7     | C Mixolydian        # V7 of F: natural tensions
@@ -56,7 +56,7 @@ D     | 25 | Bm7b5  | B Locrian           # iiø7 of E7alt: Locrian, the key's o
 D     | 25 | E7alt  | E Altered           # from the symbol: altered
 D     | 26 | Bbm7   | Bb Dorian           # ii of Eb7: Dorian
 D     | 26 | Eb7    | Eb Mixolydian       # extended ii–V: a side-step, its own key
-D     | 27 | Am7    | A Dorian            # ii of D7: Dorian
+D     | 27 | Am7    | A Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 D     | 27 | D7     | D Mixolydian        # extended ii–V: a side-step, its own key
 D     | 28 | Abm7   | Ab Dorian           # ii of Db7: Dorian
 D     | 28 | Db7    | Db Mixolydian       # extended ii–V: a side-step, its own key

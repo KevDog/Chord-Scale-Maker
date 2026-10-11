@@ -9,14 +9,14 @@ source: Colorado Cookbook, p. 232
 
 # section | bar | chord | scale
 # area: F major (bars 1–11)
-Intro | 1  | Am7    | A Dorian             # ii of the ii–V to G minor
+Intro | 1  | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 Intro | 1  | D7b9   | D Phrygian Dominant  # V7/ii in F: the b13 is in the key, the b9 from the symbol
 # the melody horn intro is left out; the played intro (Am7 D7b9) is added
 A     | 1  | Gm9    | G Dorian             # ii of the ii–V to F
 A     | 2  | C7     | C Mixolydian         # V7 of F: natural tensions
 A     | 3  | FMaj7  | F Ionian             # tonic: the 4th is in the key
 A     | 3  | BbMaj7 | Bb Lydian            # IV: the #4 is the key’s 7th
-A     | 4  | Am7    | A Dorian             # ii of the ii–V to G minor
+A     | 4  | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A     | 4  | D7b9   | D Phrygian Dominant  # V7/ii in F: the b13 is in the key, the b9 from the symbol
 A     | 5  | Gm7    | G Dorian             # ii of C7: Dorian
 A     | 5  | C7     | C Mixolydian         # V7/I in F: natural tensions
@@ -41,7 +41,7 @@ C     | 17 | Gm9    | G Dorian             # ii of the ii–V to F
 C     | 18 | C7     | C Mixolydian         # V7 of F: natural tensions
 C     | 19 | FMaj7  | F Ionian             # tonic: the 4th is in the key
 C     | 19 | BbMaj7 | Bb Lydian            # IV: the #4 is the key’s 7th
-C     | 20 | Am7    | A Dorian             # ii of the ii–V to G minor
+C     | 20 | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C     | 20 | D7b9   | D Phrygian Dominant  # V7/ii in F: the b13 is in the key, the b9 from the symbol
 C     | 21 | Gm7    | G Dorian             # ii of C7: Dorian
 C     | 21 | C7     | C Mixolydian         # V7/I in F: natural tensions

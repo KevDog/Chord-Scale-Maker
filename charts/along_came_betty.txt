@@ -31,7 +31,7 @@ B | 14 | A7#9   | A Altered                 # V7/vi in F: the b13 is in the key,
 # area: Ab major (bars 15–17)
 B | 15 | Dm7    | D Dorian                  # ii of the ii–V to C minor
 B | 16 | G9     | G Mixolydian b6           # V7/iii in Ab: the b13 is in the key, the 9 from the symbol
-C | 17 | Cm7    | C Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+C | 17 | Cm7    | C Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 # area: G minor (bars 19–29)
 C | 19 | Am7b5  | A Locrian                 # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 C | 19 | D7#9   | D Altered                 # V7 of G minor: the b13 is in the key, b9, #9 and #11 from the symbol

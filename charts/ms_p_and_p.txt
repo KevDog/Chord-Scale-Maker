@@ -19,7 +19,7 @@ C | 19 | Am7     | A Dorian       # a borrowed minor chord: Dorian, its own key
 C | 20 | Cm7     | C Dorian       # ii of F7: Dorian
 C | 20 | F7      | F Mixolydian   # extended ii–V: a side-step, its own key
 C | 21 | Gm7     | G Dorian       # a borrowed minor chord: Dorian, its own key
-C | 22 | Bbm7    | Bb Dorian      # ii of Eb7: Dorian
+C | 22 | Bbm7    | Bb Phrygian    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C | 22 | Eb7     | Eb Mixolydian  # extended ii–V: a side-step, its own key
 C | 23 | Fm7     | F Dorian       # a borrowed minor chord: Dorian, its own key
 C | 24 | Abm7    | Ab Dorian      # ii of Db7: Dorian

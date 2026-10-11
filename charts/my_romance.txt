@@ -11,7 +11,7 @@ source: Colorado Cookbook, p. 149
 # the solo changes in bars 13–14 (the head has Dm7 Db7 | Csus4 C7)
 A | 1  | BbMaj7   | Bb Ionian                 # tonic: the 4th is in the key
 A | 1  | Cm7      | C Dorian                  # ii: Dorian, the key’s own notes
-A | 2  | Dm7      | D Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+A | 2  | Dm7      | D Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A | 2  | Dbdim7   | Db Whole-Half Diminished  # passing diminished: C7♭9 without its C, the F7's dominant (Cm7 its ii)
 A | 3  | Cm7      | C Dorian                  # ii of the ii–V to Bb
 A | 3  | F7       | F Mixolydian              # V7 of Bb: natural tensions
@@ -35,7 +35,7 @@ B | 11 | Ab7      | Ab Lydian Dominant        # back door bVII7 to BbMaj7: the #
 B | 12 | BbMaj7   | Bb Ionian                 # tonic: the 4th is in the key
 B | 13 | Em7b5    | E Locrian                 # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 13 | A7b9     | A Phrygian Dominant       # V7/iii in Bb: b9 and b13 are in the key
-B | 14 | Dm7      | D Dorian                  # ii of G7: Dorian
+B | 14 | Dm7      | D Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 14 | G7       | G Mixolydian              # extended ii–V: a side-step, its own key
 B | 15 | Dbm7     | Db Dorian                 # ii of Gb7: Dorian
 B | 15 | Gb7      | Gb Mixolydian             # extended ii–V: a side-step, its own key
@@ -43,7 +43,7 @@ B | 16 | Cm7      | C Dorian                  # ii of the ii–V to Bb
 B | 16 | F7       | F Mixolydian              # V7 of Bb: natural tensions
 C | 17 | BbMaj7   | Bb Ionian                 # tonic: the 4th is in the key
 C | 17 | Cm7      | C Dorian                  # ii: Dorian, the key’s own notes
-C | 18 | Dm7      | D Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+C | 18 | Dm7      | D Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 C | 18 | Dbdim7   | Db Whole-Half Diminished  # passing diminished: C7♭9 without its C, the F7's dominant (Cm7 its ii)
 C | 19 | Cm7      | C Dorian                  # ii of the ii–V to Bb
 C | 19 | F7       | F Mixolydian              # V7 of Bb: natural tensions

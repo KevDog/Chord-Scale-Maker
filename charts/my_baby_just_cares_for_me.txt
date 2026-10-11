@@ -35,7 +35,7 @@ D | 26 | Am7b5    | A Locrian                 # iiø7 of D7: Locrian, the key's 
 D | 26 | D7       | D Phrygian Dominant       # V7/iii in Eb: b9 and b13 are in the key
 D | 27 | Abm7     | Ab Dorian                 # ii of Db7: Dorian
 D | 27 | Db7      | Db Mixolydian             # extended ii–V: a side-step, its own key
-D | 28 | Gm7      | G Dorian                  # ii of the ii–V to F minor
+D | 28 | Gm7      | G Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 D | 28 | C7       | C Mixolydian b6           # V7/ii in Eb: the b13 is in the key
 D | 29 | Fm7      | F Dorian                  # ii of Bb7: Dorian
 D | 30 | Bb7      | Bb Mixolydian             # V7/I in Eb: natural tensions

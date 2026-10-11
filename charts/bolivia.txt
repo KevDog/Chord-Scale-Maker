@@ -20,10 +20,10 @@ B | 11 | DMaj7    | D Ionian                  # tonic: the 4th is in the key
 B | 12 | Ab7b9    | Ab Half-Whole Diminished  # tritone substitute: resolves down a half step to GMaj7; b9 from the symbol
 B | 13 | GMaj7    | G Ionian                  # tonic: the 4th is in the key
 B | 14 | F#7alt   | F# Altered                # from the symbol: altered
-B | 15 | Bm7      | B Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+B | 15 | Bm7      | B Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 16 | CMaj7#11 | C Lydian                  # from the symbol: #11
-B | 17 | Bm7      | B Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
-B | 18 | Bm7/A    | B Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
+B | 17 | Bm7      | B Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B | 18 | Bm7/A    | B Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 19 | Abm7b5   | Ab Locrian                # biiø7 in G: Locrian, the key's own notes (its ♭2 is a passing note)
 # area: F major (bars 20–24)
 B | 20 | Gm7      | G Dorian                  # ii of the ii–V to F

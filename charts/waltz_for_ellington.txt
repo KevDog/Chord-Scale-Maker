@@ -20,8 +20,8 @@ A | 7  | EbMaj7 | Eb Lydian           # a non-tonic major chord: Lydian
 A | 8  | AbMaj7 | Ab Ionian           # tonic: the 4th is in the key
 A | 9  | Dm7b5  | D Locrian           # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 10 | G7alt  | G Altered           # from the symbol: altered
-A | 11 | Cm7    | C Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)
-A | 12 | Cm7/Bb | C Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)
+A | 11 | Cm7    | C Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A | 12 | Cm7/Bb | C Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A | 13 | E/A    | E Lydian            # ♭VI, borrowed from Ab minor: Lydian (its ♯11 is in the key)
 # area: G major (bars 14–20)
 A | 14 | D7alt  | D Altered           # from the symbol: altered
@@ -56,15 +56,15 @@ B | 40 | Fm7/Eb | F Aeolian           # vi: Aeolian, the key's own notes (the �
 B | 41 | Dm7b5  | D Locrian           # #ivø7 in Ab: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 42 | Dbm7   | Db Dorian           # ii of Gb7#11: Dorian
 B | 42 | Gb7#11 | Gb Lydian Dominant  # extended ii–V: a side-step, its own key; #11 from the symbol
-B | 43 | Cm7    | C Dorian            # ii of the ii–V to Bb minor
+B | 43 | Cm7    | C Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 44 | F7alt  | F Altered           # from the symbol: altered
 B | 45 | Bbm7   | Bb Dorian           # ii of Eb7: Dorian
 B | 46 | Eb7    | Eb Mixolydian       # V7/I in Ab: natural tensions
-B | 47 | Cm7    | C Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)
+B | 47 | Cm7    | C Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 48 | Fm7    | F Aeolian           # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 B | 49 | Dbm7   | Db Dorian           # ii of Gb7#11: Dorian
 B | 50 | Gb7#11 | Gb Lydian Dominant  # extended ii–V: a side-step, its own key; #11 from the symbol
-B | 51 | Cm7    | C Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)
+B | 51 | Cm7    | C Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B | 52 | BMaj7  | B Lydian            # ♭IIImaj7, borrowed from Ab minor: Lydian (its ♯11 is in the key)
 B | 53 | EMaj7  | E Lydian            # ♭VImaj7, borrowed from Ab minor: Lydian (its ♯11 is in the key)
 B | 54 | AMaj7  | A Lydian            # ♭IImaj7, borrowed from Ab Phrygian: Lydian (its ♯11 is in the key)

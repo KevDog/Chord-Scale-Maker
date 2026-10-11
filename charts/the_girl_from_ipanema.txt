@@ -27,7 +27,7 @@ B  | 24 | D7     | D Mixolydian b6     # V7/ii in F: the b13 is in the key
 B  | 25 | Gm     | G Dorian            # ii: Dorian, the key’s own notes
 B  | 27 | Bbm/Eb | Bb Dorian           # ii of Eb7: Dorian
 B  | 28 | Eb7    | Eb Mixolydian       # extended ii–V: a side-step, its own key
-B  | 29 | Am7    | A Dorian            # ii of the ii–V to G minor
+B  | 29 | Am7    | A Phrygian          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 B  | 30 | D7alt  | D Altered           # from the symbol: altered
 B  | 31 | Gm7    | G Dorian            # ii of the ii–V to F
 B  | 32 | C7alt  | C Altered           # from the symbol: altered

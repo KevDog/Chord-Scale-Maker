@@ -23,7 +23,7 @@ A     | 3  | Dm7    | D Dorian             # ii of G7: Dorian
 A     | 4  | G7     | G Mixolydian         # V7/V in F: natural tensions
 A     | 5  | Gm7    | G Dorian             # ii of C7: Dorian
 A     | 6  | C7     | C Mixolydian         # V7/I in F: natural tensions
-A     | 7  | Am7    | A Dorian             # ii of the ii–V to G minor
+A     | 7  | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 A     | 7  | D7     | D Mixolydian b6      # V7/ii in F: the b13 is in the key
 A     | 8  | Gm7    | G Dorian             # ii of C7: Dorian
 A     | 8  | C7     | C Mixolydian         # V7/I in F: natural tensions
