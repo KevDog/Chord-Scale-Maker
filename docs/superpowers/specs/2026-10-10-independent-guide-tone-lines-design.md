@@ -1,6 +1,6 @@
 # Independent guide tone lines, one at a time: design
 
-Date: 2026-10-10. Status: approved in conversation; written spec awaiting review. Supersedes rule 7 and the
+Date: 2026-10-10. Status: implemented. Supersedes rule 7 and the
 "both on" display of [2026-10-10-guide-tone-lines-design.md](2026-10-10-guide-tone-lines-design.md); keeps the ranges
 of [2026-10-10-guide-tone-ranges-design.md](2026-10-10-guide-tone-ranges-design.md).
 

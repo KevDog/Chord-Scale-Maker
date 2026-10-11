@@ -58,10 +58,9 @@
         <strong class="font-semibold text-zinc-950 dark:text-white">From 3rd</strong> and
         <strong class="font-semibold text-zinc-950 dark:text-white">From 7th</strong> put guide tones on the Changes staff in
         place of the slashes. A guide tone is a chord's 3rd (the 4th on a sus chord) or its 7th (the root on a triad, the 6th
-        on a 6 chord), the notes that tell you which chord you're on. Each toggle is one line: it starts on the first chord's
+        on a 6 chord), the notes that tell you which chord you're on. Each choice is one line, and one shows at a time (Off, From 3rd or From 7th): it starts on the first chord's
         3rd or 7th, then moves to whichever guide tone of the next chord is nearest, usually by step, and holds when the
-        two chords share their guide tones. With both on you get both lines on one staff, always on different notes, and the
-        3rd and 7th trade places as the harmony leans from one chord to the next. A chord with no guide tones rests, and the
+        two chords share their guide tones. The 3rd and 7th trade places as the harmony leans from one chord to the next. A chord with no guide tones rests, and the
         line starts again after it. Try singing or playing one line all the way through the tune; it's a great way to learn
         the changes.
       </UiText>
@@ -97,8 +96,8 @@
           <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
             On the Changes sheet, <strong class="font-semibold">Analysis</strong> holds <strong class="font-semibold">Numerals</strong>
             and <strong class="font-semibold">Scales</strong>, which turn those rows on and off. <strong class="font-semibold">Guide Tones</strong>
-            holds <strong class="font-semibold">From 3rd</strong> and <strong class="font-semibold">From 7th</strong>, the guide tone
-            lines described above.
+            chooses <strong class="font-semibold">Off</strong>, <strong class="font-semibold">From 3rd</strong> or <strong class="font-semibold">From 7th</strong>, the guide tone
+            line described above.
           </dd>
         </div>
         <div>

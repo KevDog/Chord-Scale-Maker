@@ -1,6 +1,6 @@
 # Guide tone lines from the 3rd or the 7th: design
 
-Date: 2026-10-10. Status: approved (toggle semantics decided by the user; see "What changes in the product"; open
+Date: 2026-10-10. Status: approved; rule 7 and the "both on" display superseded by [the independent-lines spec](2026-10-10-independent-guide-tone-lines-design.md) (toggle semantics decided by the user; see "What changes in the product"; open
 questions decided by the user, and the trade in rule 7.2 added, the same day). Builds on
 [2026-10-10-guide-tones-on-changes-design.md](2026-10-10-guide-tones-on-changes-design.md).
 
@@ -22,8 +22,7 @@ single-toggle line is the 3rd (or the 7th) of *every* chord, which cannot move b
   0 is a *common tone*; 1 or 2 is a *step*; anything more is a *leap*.
 - **Comfortable range** and **centre.** The comfortable sub-range of the clef (treble E4–D5, bass G2–G3) and its
   midpoint.
-- **Line A** starts on the 3rd; **line B** starts on the 7th. Both are always constructed together (rule 7), whichever
-  the reader has chosen to see.
+- **Line A** starts on the 3rd; **line B** starts on the 7th. *(Superseded: each is built alone.)*
 
 ## Rules
 
@@ -51,7 +50,7 @@ single-toggle line is the 3rd (or the 7th) of *every* chord, which cannot move b
 6. **Rests and unknown chords.** A chord with no guide tones rests in both lines and ends the run. After it, the lines
    restart by rule 1, in the octave nearest the last sounded note of each line (or the centre, if there is none).
 
-7. **The two lines together.** The lines are complementary: at every chord they take different guide tones.
+7. **The two lines together.** *Superseded by [the independent-lines spec](2026-10-10-independent-guide-tone-lines-design.md): removed; each line is built alone.* The lines are complementary: at every chord they take different guide tones.
    1. Each line first chooses by rules 2–4 independently.
    2. If both choose the same tone, the line with the smaller move keeps it and the other takes the remaining tone in
       its nearest octave. If the moves are equal, the line moving down keeps it; if neither or both move down, line A
@@ -102,7 +101,7 @@ From E4 (line A) the nearer tone of Ebmaj7 is D4 (its 7th, a whole step down); f
 
 - **Decision (the user's):** the toggles become **From 3rd** and **From 7th**: a line that starts there, rather than
   that degree on every chord. There is no toggle for "both degrees"; two lines on the staff means both start points.
-  With both on, the display is unchanged in kind (two voices on one staff, sorted by pitch) and will be close to
+  *(Superseded: the sheet shows one line at a time, chosen Off / From 3rd / From 7th.)* With both on, the display was unchanged in kind (two voices on one staff, sorted by pitch) and will be close to
   today's voice-led pair, since that pair is also complementary and nearly always stepwise.
 - With one on, the single line steps or holds nearly everywhere, and its label row alternates `3` and `7`.
 - `voiceLeadOne` is replaced by the rules above; `voiceLead` (the Viterbi pair search) can be replaced by the same

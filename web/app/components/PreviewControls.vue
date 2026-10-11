@@ -47,9 +47,7 @@
         </UiField>
         <UiField>
           <UiLabel class="pl-3">Guide Tones</UiLabel>
-          <div class="flex flex-wrap gap-2 *:whitespace-nowrap">
-            <SegmentedControl v-model="guideLine" legend="Guide tones" name="guide-line" :options="GUIDE_LINES" />
-          </div>
+          <SegmentedControl v-model="guideLine" legend="Guide tones" name="guide-line" :options="GUIDE_LINES" />
         </UiField>
       </template>
       <UiField>

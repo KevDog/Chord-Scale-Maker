@@ -145,6 +145,35 @@ test('From 3rd or From 7th puts each chord’s guide tone in place of its slashe
   await expect(lines(page).first()).toHaveAttribute('aria-label', /; guide tones: /)
 })
 
+test('choosing Off, From 3rd, From 7th and Off again redraws the line each time', async ({ page }) => {
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n')
+  const line = lines(page).first()
+  await expect(line).not.toHaveAttribute('aria-label', /guide tones/)
+  await showGuides(page, 'From 3rd')
+  await expect(labelRow(line)).toHaveText(/^\s*3\s*7\s*3\s*$/)
+  await showGuides(page, 'From 7th')
+  await expect(labelRow(line)).toHaveText(/^\s*7\s*3\s*7\s*$/) // another line, not the same one relabelled
+  await showGuides(page, 'Off')
+  await expect(line).not.toHaveAttribute('aria-label', /guide tones/)
+  await expect.poll(async () => (await drawn(line)).slashes).toBe(16) // the slashes are back
+})
+
+test('the guide tone choice survives a reload and rides a share link', async ({ page, browser }) => {
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n')
+  await showGuides(page, 'From 7th')
+  await page.reload()
+  await expect(guide(page, 'From 7th')).toBeChecked()
+  await expect(labelRow(lines(page).first())).toHaveText(/^\s*7\s*3\s*7\s*$/)
+  await page.getByRole('button', { name: 'Share' }).click()
+  const link = await page.getByRole('dialog').getByLabel('Link').inputValue()
+  const other = await browser.newContext() // fresh storage: its own preference is Off
+  const visitor = await other.newPage()
+  await visitor.goto(link)
+  await expect(guide(visitor, 'From 7th')).toBeChecked()
+  await expect(labelRow(lines(visitor).first())).toHaveText(/^\s*7\s*3\s*7\s*$/)
+  await other.close()
+})
+
 test('a guide tone line: the ii–V–I’s labels alternate, and each held chord ties', async ({ page }) => {
   await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 3 | G7\nA | 5 | CMaj7\n')
   await expect(lines(page).first()).toHaveAttribute('aria-label', /^Bars: Dm7 \| – \| G7 \| –/)

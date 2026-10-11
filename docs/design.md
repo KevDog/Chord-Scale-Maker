@@ -18,7 +18,7 @@ engine ──> fixtures/golden.json (frozen answers, `make golden`) ──> vite
 ```
 
 The preview has two sheets: **Changes** (the chart as a study lead sheet, the default view; its From 3rd and From 7th
-toggles put guide tone lines on the staff) and **Scales** (one staff per chord). Both are written for the
+control puts a guide tone line on the staff) and **Scales** (one staff per chord). Both are written for the
 chosen instrument.
 
 ## 2. Repository layout
@@ -319,20 +319,23 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - `ChangesSheet.vue` / `ChangesSystem.vue` draw it with `utils/changesDrawing.ts` (slash noteheads without stems,
   repeat and final barlines, the time signature on the first line); chords, numerals and scales are HTML placed at
   the slashes, each wrapping within the room up to the next chord. Eight lines a printed page (a 32-bar AABA), fewer
-  with guide tones on (§6a).
-- `Numerals`, `Scales`, `From 3rd` and `From 7th` toggles replace Intervals on this sheet (`csm-numerals`, `csm-scale-names`,
-  both on; `csm-guide-3rd`, `csm-guide-7th`, both off; share links carry them and the sheet).
+  with a guide tone line on (§6a).
+- `Numerals` and `Scales` toggles and a **Guide Tones** segmented control (Off · From 3rd · From 7th) replace Intervals on
+  this sheet (`csm-numerals`, `csm-scale-names`, both on; `csm-guide-line`, `off | third | seventh`, off; share links carry
+  them and the sheet, the line as `guideLine`, absent meaning off).
 
 ### Guide tones on Changes ([spec](superpowers/specs/2026-10-10-guide-tone-lines-design.md); first built as [guide tones on Changes](superpowers/specs/2026-10-10-guide-tones-on-changes-design.md))
 
-- **What shows:** **From 3rd** and **From 7th** are two lines. Line A starts on the first chord's 3rd, line B on its
-  7th, and each moves to the nearest guide tone of every chord after it. One toggle shows that line alone, both show
-  both. Each chord's slashes give way to one note per line, held for the chord's length and tied across barlines; a tie
-  still open at a line's end continues as a half-tie on the next line.
+- **What shows:** at most one line, chosen **Off**, **From 3rd** or **From 7th**. Line A starts on the first chord's
+  3rd, line B on its 7th, and the line moves to the nearest guide tone of every chord after it. Each chord's slashes
+  give way to one note, held for the chord's length and tied across barlines; a tie still open at a line's end
+  continues as a half-tie on the next line. The two lines are independent
+  ([spec](superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md)): each is built alone, so the notes
+  don't depend on which is shown and the lines may share a tone or cross.
 - **Which tones** come from the chord quality (`TONES` in `engine/guideTones.ts`): the 3rd (a sus chord's 4th) and
   the 7th (a triad's root, a 6 chord's 6th).
-- **The lines** (`engine/guideToneLines.ts`, `guideToneLines`) are greedy, one chord at a time, so a reader can apply
-  them by hand; the rules are numbered in the spec. The candidates are both guide tones at every octave inside the
+- **The line** (`engine/guideToneLines.ts`, `guideToneLine`) is greedy, one chord at a time, so a reader can apply
+  it by hand; the rules are numbered in the spec (rule 7, the lines taking different tones, is gone). The candidates are both guide tones at every octave inside the
   part's written range, `rangeOf(part)`: its instrument's range from `INSTRUMENTS` (`{ lo, hi, centre }`, inside a
   two-ledger-line cap, `CAPS`: treble G3–D6, bass B1–F4; vibes G3–D6 around B♭4, trumpet G3–G5, tuba C2–B♭3…), or,
   for a part without one (`CONCERT`), its clef's default (`RANGES`: treble C4–A5 around A4, bass E2–C4 around C♯3).
@@ -340,36 +343,28 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   centre, then the lower. A start, or a restart after a rest, takes the octave nearest the line's last sounded note (the
   centre with none). The centre does nothing else: within its range a line moves freely
   ([spec](superpowers/specs/2026-10-10-guide-tone-ranges-design.md)).
-  - **Holds:** a chord whose 3rd and 7th are spelled as the previous chord's, in the same block, holds both lines:
+  - **Holds:** a chord whose 3rd and 7th are spelled as the previous chord's, in the same block, holds the line:
     the same pitch, tied, labelled again. The same pitches in swapped roles (Dm7 → G7sus4) strike again. A hold never crosses a block (section) boundary or the start of a 2nd
     ending; there the chord strikes again, untied.
-  - **Rests:** a chord with no guide tones rests in both lines and ends the run; the next chord restarts by rule 1.
-  - **Collisions:** the lines are always complementary. If both pick the same tone, the smaller move keeps it (equal:
-    the line moving down, else A) and the other takes the remaining tone, unless that leaps more than a tritone and
-    trading makes the larger move smaller: then the lines trade. Both lines are built whichever is shown, so
-    a lone line still gives way where they collide. They may cross; with both on the notes are sorted by pitch at each
-    chord, upper first.
+  - **Rests:** a chord with no guide tones rests and ends the run; the next chord restarts by rule 1.
   - **Form:** repeats and endings are voiced in written order, a 2nd ending from the 1st ending's last chord; the
     line neither loops nor looks ahead.
 - **Check:** `voiceLead` (the Viterbi pair search) is kept only as a comparison. `npm run guide-lines` measures the
-  library (common tones, steps, leaps, every move over a tritone); `npm run guide-lines -- --compare` sets the lines
-  against the pair search.
+  library (common tones, steps, leaps, every move over a tritone) for each line alone; `npm run guide-lines -- --compare`
+  sets each line against the pair search; `-- --check` confirms the library's labels.
 - **Model:** `guideVoices` voices the drawn rows before `buildChanges` splits them into lines, so 2 or 4 bars a line
-  give the same pitches and a folded copy is voiced once. `ChangesBar.voices` holds each bar's `[line]` or
-  `[upper, lower]` `GuideNote`s, and `ChangesChord.guide` each chord's labels, top to bottom. `GuideShow` is
-  `{ fromThird, fromSeventh }`. Accidentals follow the measure rule over both voices together
-  (`accidentalsInBar`), against the signature, or C without one.
-- **Labels:** the degree without its accidental (`guideLabel`: `b3` → `3`, `bb7` → `7`), in a row under the staff,
-  stacked when both are on; they print. They swap between voices as the line moves (7 over 3, then 3 over 7, through
-  a ii–V–I).
-- **Drawing** (`utils/changesDrawing.ts`; a line without voices draws its slashes as before):
+  give the same pitches and a folded copy is voiced once. `ChangesBar.voice` holds each bar's one voice of
+  `GuideNote`s, and `ChangesChord.guide` the chord's label (empty for none). `GuideLine` is `'off' | 'third' | 'seventh'`.
+  Accidentals follow the measure rule over the voice (`accidentalsInBar`), against the signature, or C without one.
+- **Labels:** the degree without its accidental (`guideLabel`: `b3` → `3`, `bb7` → `7`), in one row under the staff; they print. They alternate as
+  the line moves (3, then 7, through a ii–V–I).
+- **Drawing** (`utils/changesDrawing.ts`; a line without a voice draws its slashes as before):
   - Two passes: every bar's notes are formatted first; then the stem tips are read, an ending's bracket is raised
     above the highest (level across the line), and the staves and voices are drawn.
-  - One note a chord, a dotted half for 3 beats, with the model's accidentals. Two voices: stems up and down, the
-    upper voice's ties curving up and the lower's down; a rest goes in the upper voice with a `GhostNote` under it.
-  - A third voice of `GhostNote`s keeps a position for every beat (`xs`), so chords, numerals and scales still sit
+  - One note a chord, a dotted half for 3 beats, with the model's accidentals, stems set automatically, one tie chain.
+  - A second voice of `GhostNote`s keeps a position for every beat (`xs`), so chords, numerals and scales still sit
     over each chord's first note.
-  - Line 1 gets the part's clef whenever a guide is on; the key signature only with signatures on.
+  - Line 1 gets the part's clef whenever a line is on; the key signature only with signatures on.
   - The aria-label adds `; guide tones: C5 7 / F4 3, …` after `Bars: …`.
 
 ### Shared
@@ -393,7 +388,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   clef even with the flag off or without a `key:`. The key is the chart's `key:` (`chartKeyOf`) throughout: key
   changes go by accidentals only, and show in the analysis (the Changes sheet's key-area labels), never as a new
   signature. Notes follow the measure rule (`accidentalsInBar`): an accidental shows only where it differs from what
-  is in force in the bar (guide tones: both voices together, against C without a signature). The first Changes line
+  is in force in the bar (guide tones: the voice, against C without a signature). The first Changes line
   uses a taller crop band (`CLEF_BAND`). With the flag off, every scale staff has its clef, as before.
 - **Shared helpers:** `svgContext`, `fitSvg` and `headCentre` in `utils/vexflow.ts`.
 - **Instrument choice:** 16 presets, grouped by what they read (C treble, B♭, E♭, F, bass clef). The
@@ -450,8 +445,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Scale sheets:** 12 staves a page, with 8px between staves. A full page fills
   about 9.6in, even when every note has ledger lines (e.g. trombone from B). Autumn Leaves prints on 4 pages.
 - **Changes:** 8 four-bar lines a page with guide tones off, so a 32-bar AABA prints on one page.
-  - With guide tones on, `changesLinesPerPage` (`engine/changes.ts`) gives fewer: 6 for one guide and 5 for both
-    with numerals and scales, one more with both rows off. `print.spec.ts` prints the tallest case (both guides,
+  - With guide tones on, `changesLinesPerPage` (`engine/changes.ts`) gives fewer: 6 with a line on and
+    numerals and scales, one more with both rows off. `print.spec.ts` prints the tallest case (one line,
     numerals, scales, an ending and a bass part) a sheet page to a letter page.
   - The chord row and spacing are shorter in print; lines with a clef or guide tones close up (`print:space-y-0`).
   - Print always uses 4 bars a line.
@@ -607,7 +602,7 @@ library writes such a repeat out instead.
   - `flush`: parse any pending typing now. It runs before printing and transposing.
   - Immutable updates only. The sheet (the Changes, the default, or Scales) and the mode are page state.
 - **`usePreferences()`:** the instrument, the start note, the Intervals toggle and the Changes sheet's toggles
-  (Numerals, Scales, and the guide tone lines From 3rd and From 7th, off until turned on; the stored keys keep their older names), each a `storedRef` saved per browser. A
+  (Numerals, Scales, and the guide tone line, Off · From 3rd · From 7th, off until chosen, as `csm-guide-line`), each a `storedRef` saved per browser. A
   stored value that isn't a known instrument or picker root falls back to the default.
 - **Browser storage** goes through `utils/storage.ts` (`readStored`, `writeStored`). It's best-effort, because
   storage can be blocked or full. It holds the theme, the preferences, practice picks and My charts. Nothing is
@@ -741,8 +736,8 @@ Pages are static, and the only server code is the contact function, so the attac
   - quality resolution, interval roots, diagnostics and limits
   - transposition spelling
   - interval names
-  - guide tones: the timeline (form lengths, metres), `guideToneLines` (one test a rule, named for its number, the spec's three worked examples, and the library: complementary at every chord, every pitch in range), `guideVoices` (ties and `tiedIn`, dotted
-    halves, the measure rule over both voices, rests for unknown chords, an unreadable scale ignored, the bass range),
+  - guide tones: the timeline (form lengths, metres), `guideToneLine` (one test a rule, named for its number, the spec's worked examples, and the library: every pitch in range, each line alone), `guideVoices` (ties and `tiedIn`, dotted
+    halves, the measure rule over the voice, rests for unknown chords, an unreadable scale ignored, the bass range),
     holds, and a library test that no tie reaches into another block
   - the Changes sheet with guide tones: off is today's sheet, a folded copy is voiced once, a 2nd ending follows the
     1st ending's last chord, 2 and 4 bars a line give the same pitches, and `changesLinesPerPage`
@@ -768,7 +763,7 @@ Pages are static, and the only server code is the contact function, so the attac
     picker and drop), share links in a fresh browser context, damaged links
   - Transpose
   - interval labels
-  - guide tones on the Changes sheet: the From 3rd and From 7th toggles and their labels, two voices' stems and ties (and their
+  - guide tones on the Changes sheet: the Off · From 3rd · From 7th control and its labels, redrawing on each choice, one voice's stems and ties (and their
     half-ties over a line break), one rest for an unknown chord, accidentals against the signature, B♭ and bass-clef
     parts, a waltz, dark mode, endings above the stems, and no collisions in a 4-chord bar
   - transposing instruments and the bass clef, and that the choices persist
@@ -820,10 +815,11 @@ Pages are static, and the only server code is the contact function, so the attac
    plain `simplifyRoot`.
 6. **Mixolydian ♭6 is its own scale** (1 2 3 4 5 b6 b7). It used to be an alias of Phrygian Dominant, which has a
    b2 and no 2.
-7. **Guide tones** are two lines on the Changes sheet (the separate sheet is gone), in the chart's metre, from the
-   3rd and from the 7th ([spec](superpowers/specs/2026-10-10-guide-tone-lines-design.md)). Triads use 3 + root,
+7. **Guide tones** are one line at a time on the Changes sheet (the separate sheet is gone), in the chart's metre, from the
+   3rd or from the 7th ([spec](superpowers/specs/2026-10-10-guide-tone-lines-design.md), made independent by
+   [this one](superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md)). Triads use 3 + root,
    because the root resolves by step from a V7 where the 5th would leap. The lines are greedy rules, not a global
-   search: each steps to the nearest guide tone, they stay complementary, and a repeated chord holds. The older
+   search: each steps to the nearest guide tone, is built alone, and a repeated chord holds. The older
    per-degree toggles and the Viterbi pair search (`voiceLead`, now only a comparison) are superseded.
 8. **One spelling at a time** in the preview (From X or From root).
 9. **Transpose, interval labels and guide tones** were built on the ported engine, so they inherit its spelling
