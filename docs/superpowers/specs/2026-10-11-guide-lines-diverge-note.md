@@ -1,8 +1,9 @@
 # Guide tone lines that meet go apart: note
 
-Date: 2026-10-11. Status: shipped (the user's choice, G8), on branch `guide-lines-diverge` (from
-`independent-guide-lines`, PR #102), although strict diverge fails the significance test below. The gentle variant (G1–G3) is built and measured on
-`guide-lines-gentle`: see "Gentle variant: measured" at the end. Amends [the independent-lines spec](2026-10-10-independent-guide-tone-lines-design.md),
+Date: 2026-10-11. Status: strict diverge (D1–D4, P) shipped (the user's choice, G8), on branch `guide-lines-diverge`
+(from `independent-guide-lines`, PR #102), although it fails the significance test below. D1 and D2 are replaced by
+the gentle variant, G1–G3, in PR #108 (branch `guide-lines-gentle`); D3, D4 and P stay. See "Gentle variant:
+measured" at the end. Amends [the independent-lines spec](2026-10-10-independent-guide-tone-lines-design.md),
 which keeps rules 1–6 and 8–10 of [the guide tone lines spec](2026-10-10-guide-tone-lines-design.md) and drops rule 7.
 
 ## Why
@@ -12,15 +13,16 @@ until the next rest. On PR #102, concert treble, 63% of voiced chords have both 
 charts are identical at more than half their chords. The user's idea: when they come together, send one up and one
 down on the next note.
 
-## The rules as built (`web/engine/guideToneLines.ts`)
+## The rules as built (`engine/src/guideToneLines.ts`)
 
 Both lines are built together again, but only so they can go apart after meeting; otherwise each moves by rules 1–6
-on its own.
+on its own. D1 and D2 below are the strict rules as first shipped; PR #108 replaces them with G1–G3 (see "Next:
+gentle variant").
 
 | | Ruling | Status |
 | --- | --- | --- |
-| D1 | When the lines share a pitch at a chord, at the next new chord the line that was above before they met moves to the nearest in-range guide tone strictly above that pitch, the other to the nearest strictly below. Together since a restart (only possible if a chord's two guide tones share a pitch, so never with real symbols): line B (From 7th) goes up. | accepted by the user (shipped, G8) |
-| D2 | With no in-range candidate on its side, a line takes its nearest candidate on the other side that is not its partner's (the partner on its own side chooses first). If none exists, they coincide again, and D1 applies at the next chord. | accepted by the user (shipped, G8) |
+| D1 | When the lines share a pitch at a chord, at the next new chord the line that was above before they met moves to the nearest in-range guide tone strictly above that pitch, the other to the nearest strictly below. Together since a restart (only possible if a chord's two guide tones share a pitch, so never with real symbols): line B (From 7th) goes up. | accepted by the user (shipped, G8); replaced by G1–G3 in PR #108 |
+| D2 | With no in-range candidate on its side, a line takes its nearest candidate on the other side that is not its partner's (the partner on its own side chooses first). If none exists, they coincide again, and D1 applies at the next chord. | accepted by the user (shipped, G8); replaced by G1–G3 in PR #108 |
 | D3 | Once apart, each line moves by rules 2–6 independently until they meet again. A held chord (rule 5) holds both lines on the shared pitch; they go apart at the first new chord. The same chord across a block boundary is a new chord, so they go apart there. Rests and restarts are as before (a rest ends the run; the restart is rule 1/6 for each line). | accepted by the user (shipped, G8) |
 | P | **Placing a run.** At a line's start or restart (rule 1, and the rule 6 restart), instead of the chosen degree in the octave nearest the centre (rule 1) or nearest the last sounded note (rule 6): build the line's run alone (rules 2–5, no meetings) from each of the degree's octaves in range, up to the next rest, and keep the octave whose run's average pitch is nearest the centre; on a tie, the higher (compared exactly: the runs reach the same rest, so |sum − centre × length| orders them without rounding). Rules 2–6 are otherwise unchanged. Each line's run is placed, then D1–D3 apply as they meet. The placement looks ahead as far as the next rest, so rule 9's "no look-ahead" now means no loop and nothing past a rest. | approved by the user, 2026-10-11 |
 | D4 | The public API stays `guideToneLine(tones, range, from, blocks?)`, returning one line (both are built internally). The diverge commit (f558165) changed nothing above the engine and moved no e2e or app expectation; the placement commit later moved three e2e expectations, and the help page gained a section (both listed below). | accepted by the user (shipped, G8) |
@@ -220,7 +222,7 @@ diverge+placement, with Wilcoxon on gentle against strict for coincidence and mo
 tritone" means a move of 6 semitones or fewer; every candidate is inside the part's range (rule 4).
 
 - **G1, a shared common tone.** When the lines share a pitch p at chord i and p is a guide tone of the next new
-  chord, the keeper keeps p (struck again, or tied if the chord holds): the line that was below before they met, or
+  chord, the keeper keeps p (struck again): the line that was below before they met, or
   line A (From 3rd) if they've been together since a restart. The mover goes to the chord's other guide tone: its
   nearest in-range octave in the mover's direction (up if it was above) if that is at most a tritone from p;
   otherwise its nearest in-range octave either way, if that is at most a tritone from p; otherwise G3.
@@ -238,7 +240,7 @@ Built on branch `guide-lines-gentle` (from main a0f869d, after the repo split): 
 and D4 unchanged (`engine/src/guideToneLines.ts`). Interpretations made in building it: G1's mover is always the line
 that was above, so "its direction" is up; a held chord after a meeting holds both lines (D3), so G1's keeper is struck
 again at the first new chord, never tied; for G1 on a chord whose two guide tones share a pitch (only in toy cases), the
-mover's candidates exclude the shared pitch itself, so it stays (G3) unless another octave is within a tritone.
+mover's candidates exclude the shared pitch itself, so it stays (G3): its other octaves are 12 away.
 
 Tests (`engine/src/__tests__/guideToneLines.test.ts`, "lines that meet go apart, gently (G1–G3)"): the common tone
 kept by the line below (Cm7 D7 Dm7; D7 again in a new block, the mover a tritone up), the tritone cap on G1 (B7 Dm F
@@ -248,8 +250,8 @@ C4–C5 range), together since a restart (A keeps; B goes up in G2), holds and r
 for every part, that after a meeting one line keeps a common tone, the mover stays within a tritone (or stays, G3), no
 line moves further than a tritone or than it would alone, and the lines are together again only when one had no room.
 Moved expectations: Cm Dm Bbm line A (Bb4 → Db5, G2 at the ceiling); the D2 toy cases (now together, G3); e2e, the
-vibes ledger-line chart, which no longer reached G3 (strict's F#4 → Bb3 leap at the Gm is gone; now Abm7 D7 Ebm7 Gbm7
-Abm7 BbMaj7 Eb7 Bm7, G3 at the Eb7), and one comment (the From 3rd label row's meeting is now G2; the row is
+vibes ledger-line chart, which no longer reached the pitch G3 (strict's F#4 → Bb3 leap at the Gm is gone; now Abm7 D7
+Ebm7 Gbm7 Abm7 BbMaj7 Eb7 Bm7, the pitch G3 at the Eb7), and one comment (the From 3rd label row's meeting is now G2; the row is
 unchanged). No golden change.
 
 Columns: **#102** (894f679, each line alone, no diverge or placement, its `guideToneLines.ts` taken from git
@@ -394,8 +396,9 @@ and G2's fallback, or G3, leaves them together again at some (treble 33 of 479; 
 498, with 2 of 242 charts more than half identical: a_song_for_nicholas 7/12, sugar 9/16). Tenor sax and trombone, outside the test, follow the same pattern.
 
 **Height:** unchanged or a little better than strict (trumpet's low charts 88 / 96 → 71 / 81; trombone 104 / 98 → 82 /
-86; bass line B 47 → 58 is the one step back).
+86; bass line B 47 → 58 is the main step back).
 
 **Verdict.** Gentle keeps coincidence near strict's (within about a point, a tenth of #102's) while cutting the leaps
-over a tritone by 79–89% (distinct chords, the six parts), to fewer than #102 had. The coincidence rise is statistically significant but small; the
+over a tritone by 79–89% (distinct chords, the six parts), to fewer than #102 had on five of the six (trombone: 16
+against #102's 12). The coincidence rise is statistically significant but small; the
 leap fall is large.

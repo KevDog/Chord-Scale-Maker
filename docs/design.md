@@ -838,8 +838,9 @@ Pages are static, and the only server code is the contact function, so the attac
    search: each steps to the nearest guide tone and a repeated chord holds; a run's starting octave is placed so the
    run averages nearest the centre, and lines that meet part gently: one keeps the shared note if the next chord has
    it, or they go one up and one down, neither more than a tritone because of the other (strict diverge, always one
-   up and one down, had the fewest meetings but six times the leaps over a tritone; gentle keeps meetings near it and
-   cuts those leaps below the independent lines'). The older
+   up and one down, had the fewest meetings but far more leaps over a tritone than the independent lines of #102:
+   about 6× on concert treble, 4–8× across the parts measured; gentle keeps meetings near strict's and cuts those
+   leaps below #102's on five of six parts, trombone the exception). The older
    per-degree toggles and the Viterbi pair search (`voiceLead`, now only a comparison) are superseded.
 8. **One spelling at a time** in the preview (From X or From root).
 9. **Transpose, interval labels and guide tones** were built on the ported engine, so they inherit its spelling

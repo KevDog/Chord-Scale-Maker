@@ -95,7 +95,7 @@
         </li>
         <li>
           <strong class="font-semibold text-zinc-950 dark:text-white">When the two lines meet.</strong> You see one line at
-          a time, but the other is worked out alongside it. If both land on the same note, they part at the next chord.
+          a time, but the other is worked out alongside it. If both land on the same note, they part at the next new chord.
           If that chord has the note too, the line that was lower keeps it and the other moves to the chord's other guide
           tone, upward if that's no more than a tritone away. Otherwise the one that was higher goes up to the nearest
           guide tone above and the other down to the nearest below. Neither leaps more than a tritone just to get away:
