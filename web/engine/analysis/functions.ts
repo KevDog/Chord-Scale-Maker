@@ -56,9 +56,9 @@ export const SUFFIXES: Readonly<Record<string, string>> = {
   o7: '°7',
   o: '°7',
   dim7: '°7',
-  '7sus4': '7sus',
-  '7sus': '7sus',
-  sus: '7sus',
+  '7sus4': '7sus4',
+  '7sus': '7sus4',
+  sus: '7sus4',
 }
 const SUFFIX = Object.keys(SUFFIXES)
   .filter(Boolean)
@@ -197,7 +197,7 @@ export function functionCandidates(e: Readonly<{ pc: number; family: Family | nu
   }
   const leads: Readonly<Record<Family, readonly string[]>> = {
     dominant: [at('V7', e.pc + 5, false), at('V7', e.pc + 5, true), at('subV7', e.pc - 1, false), at('subV7', e.pc - 1, true), at('♭VII7', e.pc + 2, false)],
-    sus: [at('V7sus', e.pc + 5, false), at('V7sus', e.pc + 5, true)],
+    sus: [at('V7sus4', e.pc + 5, false), at('V7sus4', e.pc + 5, true)],
     minor: [at('ii7', e.pc - 2, false)],
     halfdim: [at('iiø7', e.pc - 2, true)],
     dim: [at('vii°7', e.pc + 1, false), at('vii°7', e.pc + 1, true)],

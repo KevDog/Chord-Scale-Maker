@@ -37,7 +37,7 @@ describe('parseFunction', () => {
       ['IVMaj7', 'IVmaj7'],
       ['IΔ7', 'Imaj7'],
       ['I6', 'I6'],
-      ['V7sus4', 'V7sus'],
+      ['V7sus4', 'V7sus4'],
       ['#ivø', '♯ivø7'],
       ['i(maj7)', 'i(maj7)'],
       ['♭VI7', '♭VI7'],

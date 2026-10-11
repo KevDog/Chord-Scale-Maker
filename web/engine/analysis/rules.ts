@@ -269,15 +269,12 @@ function halfDiminished(ctx: Context, i: number): Decision {
 
 function diminished(ctx: Context, i: number): Decision {
   const e = ctx.stream[i] as Entry
-  const p = prevOf(ctx.stream, i)
   const n = nextOf(ctx.stream, i)
-  const fn =
-    n && interval(e.pc, n.pc) === 1 && (n.family === 'major' || n.family === 'minor')
-      ? `vii°7 of ${n.chord}`
-      : p && n && p.pc === n.pc && p.pc === e.pc
-        ? 'auxiliary diminished'
-        : 'passing diminished'
-  return { scale: named(e, NAME.wholeHalf), rule: 'd1', fn, reason: `${fn}: the rootless V7b9 of the next chord`, ...(fn === 'passing diminished' ? { fallback: true as const } : {}) }
+  const scale = named(e, NAME.wholeHalf)
+  // auxiliary: the next chord is on its own root, whatever came before (C7 | C°7 | C6, G°7 | G7)
+  if (n && n.pc === e.pc) return { scale, rule: 'd1', fn: 'auxiliary diminished', reason: 'auxiliary diminished: it decorates the chord and returns to it' }
+  const fn = n && interval(e.pc, n.pc) === 1 && (n.family === 'major' || n.family === 'minor') ? `vii°7 of ${n.chord}` : 'passing diminished'
+  return { scale, rule: 'd1', fn, reason: `${fn}: the rootless V7b9 of the next chord`, ...(fn === 'passing diminished' ? { fallback: true as const } : {}) }
 }
 
 function sus(ctx: Context, i: number): Decision {
@@ -295,6 +292,8 @@ function sus(ctx: Context, i: number): Decision {
       reason: b13 ? `V7sus4 of ${n.chord}: the b13 is in the key` : `V7sus4 of ${n.chord}: natural tensions`,
     }
   }
+  if (n && n.pc === e.pc && n.family === 'dominant')
+    return { scale: named(e, NAME.mixolydian), rule: 's3', fn: 'V7sus4 before the V7: a subdominant suspension', reason: 'V7sus4 before the V7: Mixolydian, the 4th is a chord tone here' }
   return { scale: named(e, NAME.mixolydian), rule: 's3', fn: 'static sus', reason: 'static sus: Mixolydian' }
 }
 
@@ -359,10 +358,10 @@ export const RULES: readonly RuleInfo[] = [
   { id: 'm8', family: 'minor', tier: 5, scale: 'Dorian', looksAt: 'a minor chord the key does not hold', summary: 'A borrowed or chromatic minor chord is Dorian, its own key.', guess: 'always' },
   { id: 'h1', family: 'halfdim', tier: 2, scale: 'Locrian natural 2', looksAt: 'a modal chart', summary: 'A half-diminished chord in a modal chart is Locrian ♮2.' },
   { id: 'h2', family: 'halfdim', tier: 4, scale: 'Locrian', looksAt: 'the next chord, a dominant a fourth up', summary: 'A half-diminished chord is Locrian; with a dominant after it, it is the iiø7 of that minor ii–V.', guess: 'no related dominant follows' },
-  { id: 'd1', family: 'dim', tier: 4, scale: 'Whole-Half Diminished', looksAt: 'the chords on either side', summary: 'A diminished seventh chord (a vii°7 leading up a half step, an auxiliary between two chords on its own root, or a passing one) is Whole-Half Diminished.', guess: 'a passing diminished chord' },
+  { id: 'd1', family: 'dim', tier: 4, scale: 'Whole-Half Diminished', looksAt: 'the next chord', summary: 'A diminished seventh chord (a vii°7 leading up a half step, an auxiliary that returns to a chord on its own root, or a passing one) is Whole-Half Diminished.', guess: 'a passing diminished chord' },
   { id: 's1', family: 'sus', tier: 1, scale: 'Phrygian', looksAt: 'a b9 in the symbol', summary: 'A sus b9 is Phrygian.' },
   { id: 's2', family: 'sus', tier: 4, scale: 'Mixolydian or Mixolydian b6', looksAt: 'the next chord, a fifth down (in a chart that is not modal, held under four bars)', summary: 'A resolving sus takes its 13 from the key: Mixolydian, or Mixolydian b6 when the key holds the b13.' },
-  { id: 's3', family: 'sus', tier: 4, scale: 'Mixolydian', looksAt: 'no resolution: a modal chart, a sus held four bars or more, or none that falls a fifth', summary: 'A static sus is Mixolydian.' },
+  { id: 's3', family: 'sus', tier: 4, scale: 'Mixolydian', looksAt: 'no resolution: a modal chart, a sus held four bars or more, or none that falls a fifth; or the dominant on its own root next', summary: 'A static sus is Mixolydian; so is a V7sus4 before the V7 on its own root, a subdominant suspension (its 4th a chord tone).' },
 ]
 
 /** the rules a verdict's id names: "D1+D4" -> D1, D4 */

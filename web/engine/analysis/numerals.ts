@@ -20,8 +20,8 @@ const SUFFIX: Readonly<Record<string, string>> = {
   mMaj7: '(maj7)',
   m7b5: 'ø7',
   dim7: '°7',
-  '7sus4': '7sus',
-  '7sus4b9': '7sus',
+  '7sus4': '7sus4',
+  '7sus4b9': '7sus4',
 }
 /** "bVII" -> "♭VII" */
 export const glyph = (r: string): string => r.replace(/^b/, '♭').replace(/^#/, '♯')
@@ -30,6 +30,8 @@ const degreeOf = (e: Pick<Entry, 'pc' | 'family'>, key: Key): string => glyph(ro
 export const ownNumeral = (e: Pick<Entry, 'pc' | 'family' | 'quality'>, key: Key): string => degreeOf(e, key) + (e.family === 'dominant' ? '7' : (SUFFIX[e.quality] ?? ''))
 /** "/ii", or nothing when the chord it leads to is the key's own tonic */
 const of = (target: Pick<Entry, 'pc' | 'family'>, key: Key): string => (target.pc === key.tonic ? '' : `/${degreeOf(target, key)}`)
+/** the chromatic degrees spelled sharp, for a °7 that leads up a half step (the accidental carries the direction) */
+const SHARP: Readonly<Record<number, string>> = { 1: '♯i', 3: '♯ii', 6: '♯iv', 8: '♯v', 10: '♯vi' }
 
 export function numeral(ctx: Context, i: number, decision: Decision): string {
   const e = ctx.stream[i]
@@ -38,8 +40,9 @@ export function numeral(ctx: Context, i: number, decision: Decision): string {
   if (ctx.modal) return ownNumeral(e, key)
   const n = nextOf(ctx.stream, i)
   const p = prevOf(ctx.stream, i)
+  if (e.family === 'dim' && n && interval(e.pc, n.pc) === 1 && isTonicType(n)) return `${SHARP[interval(key.tonic, e.pc)] ?? degreeOf(e, key)}°7` // vii°7 of the next chord: ♯i°7
   if (e.family === 'dominant' || e.quality === '7sus4') {
-    const seven = e.family === 'dominant' ? '7' : '7sus'
+    const seven = e.family === 'dominant' ? '7' : '7sus4'
     if (n && downHalf(e, n) && decision.rule.includes('D2')) return `subV${seven}${of(n, key)}`
     if (n && downFifth(e, n) && !isDominantLike(n)) return `V${seven}${of(n, key)}`
     if (n && downFifth(e, n)) return ownNumeral(e, key) // an extended dominant: its own degree (the Rhythm bridge's III7 VI7 II7)

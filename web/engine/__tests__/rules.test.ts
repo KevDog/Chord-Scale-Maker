@@ -62,7 +62,7 @@ describe('function spellings and errors', () => {
     expect(find('minor', '(maj7)')).toEqual(['(maj7)', 'mMaj7'])
     expect(find('halfdim', 'ø7')).toEqual(['ø7', 'ø', 'm7b5'])
     expect(find('dim', '°7')).toEqual(['o7', 'o', 'dim7'])
-    expect(find('sus', '7sus')).toEqual(['7sus4', '7sus', 'sus'])
+    expect(find('sus', '7sus4')).toEqual(['7sus4', '7sus', 'sus'])
     expect(spellings().some((s) => s.family === 'major' && s.spellings.includes('m'))).toBe(false)
   })
 
