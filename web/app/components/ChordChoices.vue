@@ -49,6 +49,7 @@
 <script setup lang="ts">
 import { type ChartDoc, functionChoices, parseChord, rootName, type RowLine, type RowNote, rowNotes, sameFunction, samePitchScale, setRowField } from '@chord-scale-maker/engine'
 import ScaleOptionLabel from './ScaleOptionLabel.vue'
+import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 
 /**
  * A chord's scale (the usual one, the alternates inside and outside, any scale by search), its function with the
@@ -78,7 +79,8 @@ const selectedScale = computed((): string => {
 })
 const custom = computed(() => !!row.value?.scale && selectedScale.value === row.value.scale && !samePitchScale(row.value.scale, choices.value.defaultScale) && !choices.value.alternates.some((o) => o.scale === row.value?.scale))
 
-const note = computed((): RowNote | undefined => (row.value && functionsOn ? rowNotes(props.doc).get(props.line) : undefined))
+const scaleView = inject(SCALE_VIEW, shallowRef(DEFAULT_VIEW))
+const note = computed((): RowNote | undefined => (row.value && functionsOn ? rowNotes(props.doc, scaleView.value).get(props.line) : undefined))
 const fnChoices = computed(() => (row.value && functionsOn ? (functionChoices(props.doc).get(props.line) ?? []) : []))
 const matchingFunction = computed(() => {
   const fn = row.value?.function ?? ''

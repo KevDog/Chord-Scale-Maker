@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import ChangesSheet from '~/components/ChangesSheet.vue'
-import { changesLinesPerPage, type ChartDoc, type GuideLine, parseChart } from '@chord-scale-maker/engine'
+import { changesLinesPerPage, type ChartDoc, type GuideLine, parseChart, type ScaleView } from '@chord-scale-maker/engine'
 
 const doc = parseChart('title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\n').value
 // 64 bars: more lines than any page holds, at 2 or 4 bars a line
@@ -16,6 +16,16 @@ const systemOf = async (signatures: boolean, guideLine?: GuideLine) =>
   (await mountSheet({ signatures, ...(guideLine ? { guideLine } : {}) })).findComponent({ name: 'ChangesSystem' })
 
 describe('ChangesSheet', () => {
+  it('plays a blank cell at the level it is given (proposedScales), the quality’s default without one', async () => {
+    const scaleAt = async (view?: ScaleView) =>
+      (await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: true, ...(view ? { view } : {}) }, global: { stubs: { ChangesSystem: true } } }))
+        .findComponent({ name: 'ChangesSystem' })
+        .props('line').bars[0].chords[0].scale
+    expect(await scaleAt()).toBe('C Dorian')
+    expect(await scaleAt({ level: 'basic', seed: 0, proposed: true })).toMatch(/^C Min.*Pent/)
+    expect(await scaleAt({ level: 'basic', seed: 0, proposed: false })).toBe('C Dorian') // flag off: as before
+  })
+
   it("with signatures, gives the lines the chart's key and the part's clef (drawn on the first line only)", async () => {
     const line = await systemOf(true)
     expect(line.props('clef')).toBe('bass')

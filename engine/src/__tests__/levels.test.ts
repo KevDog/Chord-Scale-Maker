@@ -2,8 +2,9 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import raw from '../../chord_scales.json'
 import { expandRows, parseChart, qualityScale } from '../chart'
-import { analyse } from '../analysis'
-import { ladderScale, type LevelState, relevel, scaleAtLevel, seededUnit } from '../levels'
+import { analyse, applyAnalysis } from '../analysis'
+import { ladderScale, type LevelState, relevel, SCALE_LEVELS, scaleAtLevel, seededUnit, unlevel } from '../levels'
+import { resolveScales } from '../resolve'
 import { resolveQuality } from '../qualities'
 import { samePitchScale, scaleKey } from '../scales'
 
@@ -188,5 +189,46 @@ describe('scale levels', () => {
     // a function's own diatonic diminished scale is never dealt at random (R10)
     const dims = parseChart(Array.from({ length: 24 }, (_, i) => `A | ${i + 1} | Cdim7`).join('\n')).value
     for (const seed of [1, 2, 3]) for (const s of scales(relevel(dims, at('standard'), at('random', seed)).doc)) expect(s).not.toMatch(/Diatonic Diminished/)
+  })
+})
+
+describe('the level on the resolver (proposedScales on)', () => {
+  const at = (level: LevelState['level'], seed = 0): LevelState => ({ level, seed })
+  const cells = (doc: ReturnType<typeof parseChart>['value']) => expandRows(doc).value.map((r) => r.scale)
+  const parsed = (text: string) => parseChart(text).value
+
+  it('plays at every level what relevel wrote into the analysed chart, without writing a cell', () => {
+    const doc = parsed('key: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm\nA | 4 | Cm7\nA | 5 | F7\nA | 6 | BbMaj7\nA | 7 | Dm7\n')
+    const analysed = applyAnalysis(doc, analyse(doc), { scales: 'fill', save: false, date: '' }).doc // the library's way: the analysis written in
+    for (const level of SCALE_LEVELS) {
+      const written = relevel(analysed, at('standard'), at(level, 5), analysed).doc
+      const played = [...resolveScales(doc, { level, seed: 5, proposed: true }).values()].map((r) => r.scale)
+      expect(played, level).toEqual(cells(written))
+    }
+    expect(cells(doc).every((s) => s === '')).toBe(true)
+  })
+
+  it('migration: blanks the owned rows that still play the stored level’s scale, and only those', () => {
+    const doc = parsed('A | 1 | Cm7\nA | 2 | F7\nA | 3 | Bbmaj7 | Bb Lydian\n') // Lydian: chosen
+    const basic = relevel(doc, at('standard'), at('basic'))
+    const lines = basic.doc.lines.map((l, i) => (l.kind === 'row' && i === 1 ? { ...l, scale: 'F Lydian Dominant' } : l)) // since changed by hand
+    const out = unlevel({ lines }, { ...at('basic'), owned: basic.owned })
+    expect(cells(out.doc)).toEqual(['', 'F Lydian Dominant', 'Bb Lydian'])
+    expect(out.blanked).toBe(1)
+  })
+
+  it('migration: blanks a library chart’s own choice moved by a level, and a Random deal, by its seed', () => {
+    const library = parsed('A | 1 | A7b9 | A Phrygian Dominant\nA | 2 | Dm7\n')
+    const advanced = relevel(library, at('standard'), at('advanced'), library)
+    expect(cells(unlevel(advanced.doc, { ...at('advanced'), owned: advanced.owned }, library).doc)).toEqual(['', ''])
+    const random = relevel(library, at('standard'), at('random', 9), library)
+    expect(cells(unlevel(random.doc, { ...at('random', 8), owned: random.owned }, library).doc)).not.toEqual(['', '']) // another deal: not the level's
+    expect(cells(unlevel(random.doc, { ...at('random', 9), owned: random.owned }, library).doc)).toEqual(['', ''])
+  })
+
+  it('migration: changes nothing without owned rows', () => {
+    const doc = parsed('A | 1 | Cm7 | C Minor Pentatonic\n')
+    expect(unlevel(doc, at('basic'))).toEqual({ doc, blanked: 0 })
+    expect(unlevel(doc, { ...at('basic'), owned: [] }).doc).toBe(doc)
   })
 })

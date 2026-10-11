@@ -1,4 +1,4 @@
-import { barCell, chooseSheet, expect, openEditor, pickOption, setScaleLevel, staves, test, typeChord } from './fixtures'
+import { barCell, chooseSheet, expect, openEditor, pickOption, setScaleLevel, staves, test, typeChord, writeChart } from './fixtures'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/song?new=1')
@@ -272,45 +272,49 @@ test('focus mode shows only the sheet, leaves on Escape or its button, and still
   await expect(page.getByRole('button', { name: 'Work on' })).toBeVisible()
 })
 
-test('the scale level writes its scales into the chart, keeps your own picks, and goes back', async ({ page }) => {
-  await page.goto('/song?chart=autumn_leaves')
-  await openEditor(page)
+/** the Scales sheet's staves, with their headings (chord and scale) */
+const scaleStaves = (page: import('@playwright/test').Page) => page.locator('.break-inside-avoid')
+
+test('the scale level plays on the sheets without editing the chart, and a scale you pinned stays', async ({ page }) => {
+  await writeChart(page, 'title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\nA | 3 | BbMaj7\n')
   const text = page.getByLabel('Chart text')
-  const status = page.getByRole('status').filter({ hasText: /in this browser/ })
-  await barCell(page, 'A1', 6).click() // D7
-  await page.getByRole('radio', { name: /^D Lydian Dominant/ }).click() // a pick of your own
+  await barCell(page, 'A', 2).click() // F7
+  await page.getByRole('radio', { name: /^F Lydian Dominant/ }).click() // a pick of your own
+  await expect(text).toHaveValue(/F7 +\| F Lydian Dominant/)
+  const written = await text.inputValue()
+  await chooseSheet(page, 'Scales')
   await setScaleLevel(page, 'Basic')
-  await expect(text).toHaveValue(/Cm7 +\| C Minor Pentatonic/)
-  await expect(text).toHaveValue(/D7 +\| D Lydian Dominant/) // yours: kept
-  await expect(page.getByRole('status').filter({ hasText: /chords moved to basic scales/ })).toBeVisible()
-  await expect(status).toHaveText(/^Your edited version of Autumn Leaves/)
+  await expect(scaleStaves(page).nth(0)).toContainText('C Minor Pentatonic')
+  await expect(scaleStaves(page).nth(1)).toContainText('F Lydian Dominant') // yours: kept
+  await expect(text).toHaveValue(written) // the level is a view, not an edit
+  await expect(page).toHaveURL(/mine=/) // saved, at its own address
   await page.reload()
   await openEditor(page)
   await expect(page.getByRole('button', { name: 'Level' })).toContainText('Basic') // remembered with the chart
+  await chooseSheet(page, 'Scales')
   await setScaleLevel(page, 'Advanced')
-  await expect(text).toHaveValue(/Cm7 +\| C Bebop Dorian/)
+  await expect(scaleStaves(page).nth(0)).toContainText('C Bebop Dorian')
   await setScaleLevel(page, 'Random')
-  const dealt = await text.inputValue()
-  await page.getByRole('button', { name: 'Shuffle' }).click()
-  await expect.poll(() => text.inputValue()).not.toEqual(dealt)
-  await expect(text).toHaveValue(/D7 +\| D Lydian Dominant/)
+  const dealt = await scaleStaves(page).allInnerTexts()
+  await expect(async () => {
+    await page.getByRole('button', { name: 'Shuffle' }).click({ timeout: 1000 })
+    expect(await scaleStaves(page).allInnerTexts()).not.toEqual(dealt)
+  }).toPass({ timeout: 10_000 })
+  await expect(scaleStaves(page).nth(1)).toContainText('F Lydian Dominant')
   await setScaleLevel(page, 'Standard')
-  await expect(text).toHaveValue(/Cm7 +\| C Dorian/)
-  await barCell(page, 'A1', 6).click()
-  await page.getByRole('radio', { name: /^D Phrygian Dominant/ }).click() // back to the library's own
-  await expect(status).toHaveText('Edits are saved in this browser as your version.') // the library version again
+  await expect(scaleStaves(page).nth(0)).toContainText('C Dorian')
+  await expect(text).toHaveValue(written)
 })
 
-test('levels take over a library chart’s own scale choices, and Standard brings them back', async ({ page }) => {
-  await page.goto('/song?chart=f_bird_blues')
+test('a level leaves a library chart as published', async ({ page }) => {
+  await page.goto('/song?chart=autumn_leaves')
   await openEditor(page)
   const text = page.getByLabel('Chart text')
-  await expect(text).toHaveValue(/A7b9 +\| A Phrygian Dominant/)
+  const published = await text.inputValue()
   await setScaleLevel(page, 'Advanced')
-  await expect(text).toHaveValue(/A7b9 +\| A Altered/)
-  await setScaleLevel(page, 'Standard')
-  await expect(text).toHaveValue(/A7b9 +\| A Phrygian Dominant/) // the chart's choice, not Half-Whole
-  await expect(page.getByRole('status').filter({ hasText: /in this browser/ })).toHaveText('Edits are saved in this browser as your version.')
+  await expect(page.getByRole('button', { name: 'Level' })).toContainText('Advanced')
+  await expect(text).toHaveValue(published)
+  await expect(page.getByRole('status').filter({ hasText: /in this browser/ })).toHaveText('Edits are saved in this browser as your version.') // not edited
 })
 
 test('the toolbar groups the controls under labels, with the scale level as a dropdown', async ({ page }) => {

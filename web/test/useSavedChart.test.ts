@@ -2,7 +2,7 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { defineComponent, h, nextTick, ref } from 'vue'
 import { SAVE_DEBOUNCE_MS, type SaveTarget, useSavedChart } from '~/composables/useSavedChart'
-import { listCharts, loadChart, versionOf } from '~/utils/myCharts'
+import { listCharts, loadChart, saveChart, versionOf } from '~/utils/myCharts'
 
 const LIB = 'title: Autumn Leaves\nA1 | 1 | Cm7\n'
 const text = ref('')
@@ -31,6 +31,14 @@ describe('useSavedChart', () => {
   afterEach(() => {
     vi.useRealTimers()
     localStorage.clear()
+  })
+
+  it('saves a text that differs from the stored chart without an edit (a migration on open) when told', async () => {
+    saveChart({ id: 'abc123abc123', text: LIB, kind: 'new' })
+    text.value = `${LIB}A1 | 2 | F7\n` // opened changed: no edit to watch
+    const { api } = await harness({ kind: 'mine', id: 'abc123abc123' })
+    api.saveNow()
+    expect(loadChart('abc123abc123')?.text).toBe(`${LIB}A1 | 2 | F7\n`)
   })
 
   it('keeps edits to a library chart as your version, and drops it when edited back', async () => {

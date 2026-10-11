@@ -158,6 +158,7 @@
             :guide-line="prefs.guideLine.value"
             :editable="sheetEditing && !focus.on.value"
             :selected-line="selectedLine"
+            :view="scaleView"
             @edit="editSheetChord"
           />
           <ScaleSheet
@@ -174,6 +175,7 @@
             :intervals="prefs.intervals.value"
             :practice="selection"
             :home-key="homeKey"
+            :resolved="resolved"
           />
         </div>
       </section>
@@ -199,15 +201,19 @@ import {
   partFor,
   practiceBoxes,
   relevel,
+  resolveScales,
   SCALE_LEVELS,
   type LevelState,
   type ScaleLevel,
+  type ScaleView,
   serializeChart,
   setMeta,
   type ShareView,
+  unlevel,
 } from '@chord-scale-maker/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 import type { SheetChordEdit } from '~/utils/sheetChordEdit'
+import { SCALE_VIEW } from '~/utils/scaleView'
 import { firstSheet, type SheetKind } from '~/utils/sheets'
 
 /**
@@ -220,7 +226,33 @@ const emit = defineEmits<{ created: [id: string]; reload: [] }>()
 
 const PER_PAGE = 12
 
-const editor = useChartEditor(props.initialText)
+const levelsOn = useFeature('scaleLevels')
+const scaleLevel = useScaleLevel(props.practiceKey, props.shared)
+/** proposedScales: the level is a view preference; a blank cell plays the analysis at it, and nothing is written */
+const proposedOn = useFeature('proposedScales')
+/** the library chart this one came from (itself, or the source of a copy): its own scale choices are its Standard */
+const baseline = ((): ChartDoc | undefined => {
+  const t = props.saveTarget
+  const slug = t?.kind === 'library' ? t.slug : t?.kind === 'mine' ? loadChart(t.id)?.meta.basedOn : t?.kind === 'new' ? t.basedOn : undefined
+  const text = slug ? findChart(slug)?.text : undefined
+  return text === undefined ? undefined : parseChart(text).value
+})()
+const levelState = (): LevelState => ({ level: scaleLevel.level.value, seed: scaleLevel.seed.value, ...(scaleLevel.owned.value ? { owned: scaleLevel.owned.value } : {}) })
+/**
+ * proposedScales (docs/superpowers/specs/2026-10-11-proposed-scales-design.md §3): a saved chart a level once wrote
+ * its scales into has those cells blank again, so they follow the level; once, as it opens, then the rows it owned
+ * are forgotten. A scale you chose stays.
+ */
+const openingText = ((): string => {
+  if (!proposedOn || !scaleLevel.owned.value) return props.initialText
+  const { doc, blanked } = unlevel(parseChart(props.initialText).value, levelState(), baseline)
+  scaleLevel.owned.value = undefined
+  if (!blanked) return props.initialText
+  console.info(`proposedScales: ${blanked === 1 ? '1 scale' : `${blanked} scales`} a level wrote into this chart now follow the level`)
+  return serializeChart(doc)
+})()
+
+const editor = useChartEditor(openingText)
 const chartHistory = useChartHistory(editor)
 const rendering = useRendering()
 /** under the heading: "Ballad · E♭ · AABA, 32 bars — Johnny Green" */
@@ -259,22 +291,16 @@ const sourceShown = computed(() => prefs.source.value || editor.fatal.value)
 /** the chart's key, for the sheets' key signature, drawn once at the start (undefined when the flag is off: drawn as before) */
 const homeKey = computed(() => (signaturesOn ? chartKeyOf(editor.doc.value) : undefined))
 const practice = usePractice(props.practiceKey)
-const levelsOn = useFeature('scaleLevels')
-const scaleLevel = useScaleLevel(props.practiceKey, props.shared)
 const LEVEL_OPTIONS = SCALE_LEVELS.map((value) => ({ value, label: LEVEL_LABELS[value] }))
 const levelLabel = (v: (typeof SCALE_LEVELS)[number]): string => LEVEL_LABELS[v]
 const level = computed(() => (levelsOn ? scaleLevel.level.value : 'standard'))
+/** what the sheets and the grid play a blank cell at; one resolution per revision, shared by the Scales sheet and practice */
+const scaleView = computed((): ScaleView => ({ level: level.value, seed: scaleLevel.seed.value, proposed: proposedOn }))
+provide(SCALE_VIEW, scaleView)
+const resolved = computed(() => (proposedOn ? resolveScales(editor.doc.value, scaleView.value) : undefined))
 const levelNote = ref('')
 
-/** move the chart's scales to another level: rows playing the old level's scale take the new one's */
-/** the library chart this one came from (itself, or the source of a copy): its own scale choices are its Standard */
-const baseline = ((): ChartDoc | undefined => {
-  const t = props.saveTarget
-  const slug = t?.kind === 'library' ? t.slug : t?.kind === 'mine' ? loadChart(t.id)?.meta.basedOn : t?.kind === 'new' ? t.basedOn : undefined
-  const text = slug ? findChart(slug)?.text : undefined
-  return text === undefined ? undefined : parseChart(text).value
-})()
-const levelState = (): LevelState => ({ level: scaleLevel.level.value, seed: scaleLevel.seed.value, ...(scaleLevel.owned.value ? { owned: scaleLevel.owned.value } : {}) })
+/** move the chart's scales to another level: rows playing the old level's scale take the new one's (proposedScales off) */
 function moveLevel(to: ScaleLevel, seed: number, from: LevelState = levelState()): void {
   editor.flush()
   const result = relevel(editor.doc.value, from, { level: to, seed }, baseline)
@@ -285,8 +311,12 @@ function moveLevel(to: ScaleLevel, seed: number, from: LevelState = levelState()
     ? `${result.changed === 1 ? '1 chord' : `${result.changed} chords`} moved to ${LEVEL_LABELS[to].toLowerCase()} scales; any you chose yourself stay.`
     : 'No scales to change: they’re all your own choices, or already at this level.'
 }
-const setLevel = (to: ScaleLevel): void => moveLevel(to, scaleLevel.seed.value)
+const setLevel = (to: ScaleLevel): void => {
+  if (proposedOn) scaleLevel.level.value = to
+  else moveLevel(to, scaleLevel.seed.value)
+}
 function shuffle(): void {
+  if (proposedOn) return scaleLevel.shuffle()
   const from = levelState()
   scaleLevel.shuffle()
   moveLevel('random', scaleLevel.seed.value, from)
@@ -295,7 +325,7 @@ if (props.shared?.practice) practice.setSelection(mode.value, props.shared.pract
 const selection = computed(() => (practiceOn ? practice.selection(mode.value) : null))
 // every staff with its practice keys, for the panel's boxes and what the selection lights
 const practiceStaves = computed(() =>
-  practiceOn ? buildSheet(editor.rows.value, part.value, mode.value, prefs.start.value, LIMITS.maxExpandedRows, selection.value).flatMap((p) => p.pages.flat()) : [],
+  practiceOn ? buildSheet(editor.rows.value, part.value, mode.value, prefs.start.value, LIMITS.maxExpandedRows, selection.value, undefined, resolved.value).flatMap((p) => p.pages.flat()) : [],
 )
 const practiceBoxesNow = computed(() => practiceBoxes(practiceStaves.value, mode.value, prefs.start.value))
 const litNow = computed(() => litKeys(practiceStaves.value))
@@ -304,6 +334,7 @@ const focus = useFocusMode()
 const focusBar = ref<HTMLElement | null>(null)
 
 const saved = props.saveTarget ? useSavedChart(editor.text, props.saveTarget, (id) => emit('created', id)) : null
+if (openingText !== props.initialText) saved?.saveNow()
 const revertOpen = ref(false)
 const copyError = ref('')
 

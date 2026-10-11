@@ -12,6 +12,14 @@ import { parseRoot, pcOf } from '../pitch'
 import { readChord, resolveQuality } from '../qualities'
 import { isSyncCopy } from '../util'
 
+describe('analyse', () => {
+  it('analyses a document once: the sheets, the notes and the grid share the result', () => {
+    const doc = parseChart('key: C\nA | 1 | Dm7\nA | 2 | G7\n').value
+    expect(analyse(doc)).toBe(analyse(doc))
+    expect(analyse(parseChart('key: C\nA | 1 | Dm7\nA | 2 | G7\n').value)).not.toBe(analyse(doc)) // by revision, not by text
+  })
+})
+
 describe('keyText', () => {
   it('drops the " major" suffix but keeps " minor"', () => {
     expect(keyText(makeKey(parseRoot('C'), false))).toBe('C')

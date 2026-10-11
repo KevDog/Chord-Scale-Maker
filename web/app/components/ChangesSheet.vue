@@ -28,7 +28,7 @@
 
 <script setup lang="ts">
 import type { SheetChordEdit } from '~/utils/sheetChordEdit'
-import { buildChanges, changesLinesPerPage, type ChartDoc, chunk, type GuideLine, pageSubtitle, type Part } from '@chord-scale-maker/engine'
+import { buildChanges, changesLinesPerPage, type ChartDoc, chunk, type GuideLine, pageSubtitle, type Part, type ScaleView } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones) */
 const props = defineProps<{
@@ -44,6 +44,7 @@ const props = defineProps<{
   guideLine?: GuideLine // a guide tone line, from the 3rd or the 7th, as notes in place of the slashes (the clef then always starts line 1)
   editable?: boolean // tap a chord to edit it
   selectedLine?: number | null // the chart line of the chord selected in the bar editor
+  view?: ScaleView // the level blank cells play at (proposedScales); undefined: the quality's default
 }>()
 const emit = defineEmits<{ edit: [chord: SheetChordEdit] }>()
 
@@ -52,7 +53,7 @@ const barsPerLine = computed(() => (wide.value ? 4 : 2))
 
 const line = computed((): GuideLine => props.guideLine ?? 'off')
 const guideOn = computed(() => line.value !== 'off')
-const sheet = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, props.signatures, line.value))
+const sheet = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, props.signatures, line.value, props.view))
 // 8 lines with slashes (a 32-bar AABA, one section a line pair); fewer with a guide tone line, whose notes and labels are taller
 const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: props.numerals, scales: props.scales }))
 const subtitleText = computed(() => pageSubtitle(props.subtitle, props.instrumentLabel, 'Changes'))

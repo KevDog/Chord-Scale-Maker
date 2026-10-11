@@ -208,7 +208,18 @@ function contextFor(p: Prepared, stated: readonly (Stated | undefined)[]): Conte
   return { stream: v.stream, keys: v.keys, global: p.global, blues: p.blues, modal: p.modal, statedTarget: v.stream.map((_, i) => !!v.added[i]) }
 }
 
+const analysed = new WeakMap<ChartDoc, Analysis>()
+
+/** the chart's analysis, made once per document (a doc is never changed in place): the sheets, notes and grid share it */
 export function analyse(doc: ChartDoc): Analysis {
+  const known = analysed.get(doc)
+  if (known) return known
+  const a = analyseNow(doc)
+  analysed.set(doc, a)
+  return a
+}
+
+function analyseNow(doc: ChartDoc): Analysis {
   const p = prepare(doc)
   if (p.global === null) return { key: null, keyFrom: p.keyFrom, context: p.context, contextSource: p.contextSource, detection: p.detection, areas: [], rows: [], problems: p.problems }
   const ctx = contextFor(p, p.stated)
