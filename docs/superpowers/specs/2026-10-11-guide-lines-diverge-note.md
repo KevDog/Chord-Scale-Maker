@@ -150,6 +150,44 @@ the chart's rows without folds or blocks; the sheet's sequence gives 63.1% / 140
 | line B: charts averaging > M3 below centre | 145/242 | 137/242 | 137/242 | 98/242 |
 | meetings followed by a new chord / of them, not apart (#102) or on one side (D2) / a move > tritone | 0 / 0 / 0 | 3320 / 3320 / 7 | 312 / 47 / 70 | 335 / 63 / 84 |
 
+## Significance (ruling G7)
+
+Per chart over the 242 library charts, paired, #102 (894f679) against diverge+placement (adc4057), Wilcoxon
+signed-rank, two-sided, alpha = 0.05. Normal approximation: zero differences dropped (Wilcoxon's method), average ranks
+for ties with the tie-corrected variance, continuity correction 0.5; N is the charts with the measure defined (a chart
+with no moves has no leap share), n the non-zero differences, W+ the rank sum where the variant is higher. The
+smallest n (24, vibes and trumpet over-tritone counts) is near the limit where the normal approximation is usually
+trusted. Scratch script: `scratchpad/diverge/sig.ts` (not in the repo).
+
+| part | measure | N charts | n (non-zero) | W+ | W- | z | p | direction (variant vs #102) | mean per-chart diff | significant |
+| --- | --- | --- | --- | --- | --- | --- | --- | --- | --- | --- |
+| treble (concert) | (a) coincidence share | 242 | 190 | 126.5 | 18018.5 | -11.79 | 4.6e-32 | falls | -46.83 pts | yes |
+| treble (concert) | (b) line A leap share (>2) | 242 | 125 | 5980.5 | 1894.5 | 5.03 | 4.8e-7 | rises | 1.70 pts | yes |
+| treble (concert) | (b) line B leap share (>2) | 242 | 115 | 4299.5 | 2370.5 | 2.69 | 0.0071 | rises | 1.02 pts | yes |
+| treble (concert) | (c) line A moves > tritone | 242 | 35 | 515 | 115 | 3.58 | 0.0003 | rises | 0.099 | yes |
+| treble (concert) | (c) line B moves > tritone | 242 | 41 | 751.5 | 109.5 | 4.50 | 6.6e-6 | rises | 0.157 | yes |
+| bass (concert) | (a) coincidence share | 242 | 196 | 144 | 19162 | -11.96 | 5.9e-33 | falls | -47.30 pts | yes |
+| bass (concert) | (b) line A leap share (>2) | 242 | 117 | 5340 | 1563 | 5.14 | 2.8e-7 | rises | 1.87 pts | yes |
+| bass (concert) | (b) line B leap share (>2) | 242 | 117 | 4569.5 | 2333.5 | 3.04 | 0.0024 | rises | 1.58 pts | yes |
+| bass (concert) | (c) line A moves > tritone | 242 | 34 | 488 | 107 | 3.52 | 0.0004 | rises | 0.103 | yes |
+| bass (concert) | (c) line B moves > tritone | 242 | 52 | 1208.5 | 169.5 | 5.18 | 2.2e-7 | rises | 0.182 | yes |
+| vibes | (a) coincidence share | 242 | 179 | 370.5 | 15739.5 | -11.07 | 1.8e-28 | falls | -37.82 pts | yes |
+| vibes | (b) line A leap share (>2) | 242 | 119 | 4883 | 2257 | 3.48 | 0.0005 | rises | 1.01 pts | yes |
+| vibes | (b) line B leap share (>2) | 242 | 103 | 3736.5 | 1619.5 | 3.48 | 0.0005 | rises | 1.21 pts | yes |
+| vibes | (c) line A moves > tritone | 242 | 26 | 267.5 | 83.5 | 2.51 | 0.0121 | rises | 0.066 | yes |
+| vibes | (c) line B moves > tritone | 242 | 24 | 230.5 | 69.5 | 2.53 | 0.0116 | rises | 0.058 | yes |
+| trumpet | (a) coincidence share | 242 | 182 | 707 | 15946 | -10.71 | 9.6e-27 | falls | -34.00 pts | yes |
+| trumpet | (b) line A leap share (>2) | 242 | 103 | 4370 | 986 | 5.57 | 2.6e-8 | rises | 1.85 pts | yes |
+| trumpet | (b) line B leap share (>2) | 242 | 113 | 4763.5 | 1677.5 | 4.42 | 9.9e-6 | rises | 1.88 pts | yes |
+| trumpet | (c) line A moves > tritone | 242 | 24 | 267 | 33 | 3.58 | 0.0003 | rises | 0.091 | yes |
+| trumpet | (c) line B moves > tritone | 242 | 40 | 766 | 54 | 5.22 | 1.8e-7 | rises | 0.161 | yes |
+
+By the ruling, diverge passes only if (a) falls significantly on all four parts and neither (b) nor (c) rises
+significantly on any. (a) falls on all four (p < 1e-26), but (b) and (c) rise significantly on every part and line
+(p from 2.6e-8 to 0.012). **Strict diverge fails the test.** The user ships it anyway (strict diverge + placement + the help
+section, this branch): lower coincidence matters more to them than fewer leaps. A gentler rule is to be tried after the
+repo split; see "Next".
+
 ## Reading it
 
 **Coincidence: fixed.** On every part the share of chords with both lines on one pitch falls from 44–63% (#102) to
@@ -171,3 +209,17 @@ low), their centres sitting high in narrow ranges. Placement also trims diverge'
 A softer D1 to consider: let one line keep the shared pitch when it is a common tone (the one whose strict move would
 be larger) and send only the other away; and at the range's edge (D2), let the line with no room hold rather than leap
 an octave.
+
+## Next: gentle variant, after the split
+
+To try after the repo split, replacing D1 and D2 (D3, D4 and P unchanged), measured against #102 and strict
+diverge+placement, with Wilcoxon on gentle against strict for coincidence and moves over a tritone:
+
+- **G1.** When the lines share a pitch at chord i, look at the next new chord. If the shared pitch is one of its guide
+  tones, one line keeps it (holds or ties): the line that was below before they met, or From 3rd if they've been
+  together since a restart. The other line moves to that chord's other guide tone, at the nearest octave, in its own
+  direction (up if it was above) when that is within a tritone, else the nearest octave either way.
+- **G2.** If the shared pitch is not a guide tone of the next chord, each line takes its nearest candidate in its own
+  direction (strictly up / strictly down), as in D1. But a line never moves more than a tritone to avoid its partner:
+  if its directional candidate is further, it takes its nearest candidate and the lines may coincide again.
+- **G3.** At the range edge, prefer holding or coinciding to an octave leap.
