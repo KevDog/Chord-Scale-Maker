@@ -289,7 +289,11 @@ function minor(ctx: Context, i: number): Decision {
   const d = degree(e, key)
   const fn = `${roman(e, key)} in ${keyText(key)}`
   if (e.quality === 'mMaj7') return { scale: named(e, NAME.melodicMinor), rule: 'm1', fn, reason: 'from the symbol: minor-major 7th' }
-  if (e.quality === 'm6') return { scale: named(e, NAME.dorian), rule: 'm2', fn, reason: 'a minor sixth chord: Dorian' }
+  if (e.quality === 'm6') {
+    // R6: the tonic m6 of a minor key takes melodic minor (M&H pp. 85–86; Chediak vol. 1 p. 341); a modal chart has no tonic function (§5.4)
+    if (!ctx.modal && key.minor && d === 0) return { scale: named(e, NAME.melodicMinor), rule: 'm2', fn, reason: 'tonic minor sixth chord: melodic minor, the raised 7th is a tension' }
+    return { scale: named(e, NAME.dorian), rule: 'm2', fn, reason: 'a minor sixth chord: Dorian' }
+  }
   if (/b6|b13/.test(e.symbol)) return { scale: named(e, NAME.aeolian), rule: 'm3', fn, reason: 'from the symbol: b6' }
   if (ctx.modal) return { scale: named(e, NAME.dorian), rule: 'm6', fn: 'modal minor', reason: 'modal minor: Dorian' }
   if (n && isDominantLike(n) && interval(e.pc, n.pc) === 5) {
@@ -435,7 +439,7 @@ export const RULES: readonly RuleInfo[] = [
   { id: 'M3', family: 'major', tier: 3, scale: 'Ionian (Mixolydian for a V triad)', looksAt: 'its degree: the tonic, ♭III in a minor key, a V triad, or IV after its own dominant', summary: 'The tonic major chord (or ♭III, the relative major, in a minor key) is Ionian; so is a IV reached by its own dominant (V7/IV, or subV7/IV a half step above), the key of the moment; a V triad without its 7th is Mixolydian.' },
   { id: 'M4', family: 'major', tier: 3, scale: 'Lydian', looksAt: 'its degree: any other major chord', summary: 'Any other major chord is Lydian (on a IV not reached by its own dominant, the #4 is the key’s 7th; on ♭II, ♭III, ♭VI or ♭VII of a major key, borrowed by modal interchange, its ♯11 is in the key).' },
   { id: 'm1', family: 'minor', tier: 1, scale: 'Melodic Minor', looksAt: 'a major 7th in the symbol', summary: 'A minor-major 7th is Melodic Minor.' },
-  { id: 'm2', family: 'minor', tier: 1, scale: 'Dorian', looksAt: 'a 6 in the symbol', summary: 'A minor sixth chord is Dorian.' },
+  { id: 'm2', family: 'minor', tier: 3, scale: 'Melodic Minor or Dorian', looksAt: 'a 6 in the symbol, and its degree: the tonic of a minor key', summary: 'A minor sixth chord on the tonic of a minor key is Melodic Minor, the raised 7th a tension; any other (iv6, ii6, or any in a modal chart) is Dorian.' },
   { id: 'm3', family: 'minor', tier: 1, scale: 'Aeolian', looksAt: 'a b6 or b13 in the symbol', summary: 'A minor chord with a written b6 or b13 is Aeolian.' },
   { id: 'm6', family: 'minor', tier: 2, scale: 'Dorian', looksAt: 'a modal chart', summary: 'A minor chord in a modal chart is Dorian.' },
   { id: 'm4', family: 'minor', tier: 4, scale: 'Dorian', looksAt: 'the next chord, a dominant a fourth up', summary: 'The ii of a ii–V is Dorian (a diatonic iii keeps its Phrygian, m9).' },

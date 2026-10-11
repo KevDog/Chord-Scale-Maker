@@ -15,7 +15,7 @@ A1 | 3  | Dm     | D Dorian             # tonic minor: Dorian by convention
 A1 | 4  | Gm     | G Dorian             # iv: Dorian, the key’s own notes
 A1 | 5  | DmMaj7 | D Melodic Minor      # from the symbol: minor-major 7th
 A1 | 6  | Dm7    | D Dorian             # tonic minor: Dorian by convention
-A1 | 7  | Dm6    | D Dorian             # a minor sixth chord: Dorian
+A1 | 7  | Dm6    | D Melodic Minor      # tonic minor sixth chord: melodic minor, the raised 7th is a tension
 A1 | 8  | Gm     | G Dorian             # iv: Dorian, the key’s own notes
 A1 | 11 | Dm     | D Dorian             # tonic minor: Dorian by convention
 A1 | 13 | E7b9   | E Phrygian Dominant  # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key
@@ -26,7 +26,7 @@ A2 | 19 | Dm     | D Dorian             # tonic minor: Dorian by convention
 A2 | 20 | Gm     | G Dorian             # iv: Dorian, the key’s own notes
 A2 | 21 | DmMaj7 | D Melodic Minor      # from the symbol: minor-major 7th
 A2 | 22 | Dm7    | D Dorian             # tonic minor: Dorian by convention
-A2 | 23 | Dm6    | D Dorian             # a minor sixth chord: Dorian
+A2 | 23 | Dm6    | D Melodic Minor      # tonic minor sixth chord: melodic minor, the raised 7th is a tension
 A2 | 24 | Gm     | G Dorian             # iv: Dorian, the key’s own notes
 A2 | 27 | Dm     | D Dorian             # tonic minor: Dorian by convention
 A2 | 29 | E7b9   | E Phrygian Dominant  # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key

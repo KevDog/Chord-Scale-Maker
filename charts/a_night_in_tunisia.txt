@@ -10,16 +10,16 @@ source: Colorado Cookbook, p. 9
 # section | bar | chord | scale
 # area: D minor (bars 1–19)
 Intro | 1  | Eb7    | Eb Lydian Dominant        # tritone substitute: resolves down a half step to Dm6/9
-Intro | 2  | Dm6/9  | D Dorian                  # a minor sixth chord: Dorian
+Intro | 2  | Dm6/9  | D Melodic Minor           # tonic minor sixth chord: melodic minor, the raised 7th is a tension
 Intro | 3  | Eb7    | Eb Lydian Dominant        # tritone substitute: resolves down a half step to Dm6/9
-Intro | 4  | Dm6/9  | D Dorian                  # a minor sixth chord: Dorian
+Intro | 4  | Dm6/9  | D Melodic Minor           # tonic minor sixth chord: melodic minor, the raised 7th is a tension
 # the bass intro (Eb7 Dm6/9, played twice) and the tag (interlude after the head); the 4-bar solo break is left out
 A1    | 1  | Eb7    | Eb Lydian Dominant        # tritone substitute: resolves down a half step to Dm6/9
-A1    | 2  | Dm6/9  | D Dorian                  # a minor sixth chord: Dorian
+A1    | 2  | Dm6/9  | D Melodic Minor           # tonic minor sixth chord: melodic minor, the raised 7th is a tension
 A1    | 3  | Eb7    | Eb Lydian Dominant        # tritone substitute: resolves down a half step to Dm6/9
-A1    | 4  | Dm6/9  | D Dorian                  # a minor sixth chord: Dorian
+A1    | 4  | Dm6/9  | D Melodic Minor           # tonic minor sixth chord: melodic minor, the raised 7th is a tension
 A1    | 5  | Eb7    | Eb Lydian Dominant        # tritone substitute: resolves down a half step to Dm6/9
-A1    | 6  | Dm6/9  | D Dorian                  # a minor sixth chord: Dorian
+A1    | 6  | Dm6/9  | D Melodic Minor           # tonic minor sixth chord: melodic minor, the raised 7th is a tension
 A1    | 7  | Em7b5  | E Locrian                 # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A1    | 7  | A7#9   | A Altered                 # V7 of D minor: the b13 is in the key, b9, #9 and #11 from the symbol
 A1    | 8  | Dm     | D Dorian                  # tonic minor: Dorian by convention

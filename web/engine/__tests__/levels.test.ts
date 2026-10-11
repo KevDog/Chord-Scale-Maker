@@ -79,6 +79,12 @@ describe('scale levels', () => {
     expect(scales(relevel(library, at('standard'), at('advanced'), library).doc)).toEqual(['D Spanish Phrygian', 'G Altered', 'C Bebop Dorian'])
   })
 
+  it('a tonic m6 on Melodic Minor (R6) is Minor Pentatonic at Basic and stays Melodic Minor at Advanced (no ♭6 against its 6th)', () => {
+    expect(scaleAtLevel('Dm6/9', 'basic', 0, '', 'D Melodic Minor')).toBe('D Minor Pentatonic')
+    expect(scaleAtLevel('Dm6/9', 'advanced', 0, '', 'D Melodic Minor')).toBe('D Melodic Minor')
+    expect(scaleAtLevel('CmMaj7', 'advanced', 0, '', 'C Melodic Minor')).toBe('C Harmonic Minor') // m1 keeps its ladder
+  })
+
   it('an m7 on Phrygian (iii7, R4) is Dorian at Advanced; a sus b9 keeps Dorian b2 (quality_ladders)', () => {
     expect(scaleAtLevel('Em7', 'advanced', 0, '', 'E Phrygian')).toBe('E Dorian')
     expect(scaleAtLevel('Em7', 'basic', 0, '', 'E Phrygian')).toBe('E Minor Pentatonic') // the Phrygian ladder's own Basic

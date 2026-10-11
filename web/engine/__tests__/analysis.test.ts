@@ -331,6 +331,28 @@ describe('R4: iii7 is Phrygian, m9 (docs/superpowers/specs/2026-10-10-analysis-r
   })
 })
 
+describe('R6: the small bundle (docs/superpowers/specs/2026-10-10-analysis-rules-from-sources-design.md)', () => {
+  const reasoned = (text: string, barChord: string): string | undefined => {
+    const r = analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === barChord)
+    return r && `${r.scale} (${r.rule}): ${r.reason}`
+  }
+
+  it('m2 a tonic minor sixth chord is Melodic Minor (A Night in Tunisia)', () => {
+    expect(reasoned(library('a_night_in_tunisia'), '2 Dm6/9')).toBe('D Melodic Minor (m2): tonic minor sixth chord: melodic minor, the raised 7th is a tension')
+    expect(reasoned(chart('Dm', '1 Eb7, 2 Dm6/9'), '2 Dm6/9')).toBe('D Melodic Minor (m2): tonic minor sixth chord: melodic minor, the raised 7th is a tension')
+  })
+
+  it('m2 any other minor sixth chord is Dorian (Wave: iv6 in D)', () => {
+    const wave = library('wave').replace(/^(A1 \| 6 +\| )Gm7 .*$/m, '$1Gm6')
+    expect(reasoned(wave, '6 Gm6')).toBe('G Dorian (m2): a minor sixth chord: Dorian')
+    expect(reasoned(chart('C', '1 CMaj7, 2 Fm6, 3 CMaj7'), '2 Fm6')).toBe('F Dorian (m2): a minor sixth chord: Dorian')
+  })
+
+  it('m2 a tonic minor sixth chord in a modal chart stays Dorian (§5.4: no functional rules there; Africa)', () => {
+    expect(reasoned(library('africa'), '1 Dm6/9/E')).toBe('D Dorian (m2): a minor sixth chord: Dorian')
+  })
+})
+
 describe('analysis: keys (§5)', () => {
   it('reads key: lines', () => {
     expect(['Eb', 'F#m', 'Bb minor', 'C-', 'NC'].map((k) => parseKey(k)?.name ?? null)).toEqual(['Eb major', 'F# minor', 'Bb minor', 'C minor', null])
