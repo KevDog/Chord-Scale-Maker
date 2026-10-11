@@ -1,4 +1,4 @@
-import { chooseInstrument, chooseSheet, expect, pickOption, staves, test } from './fixtures'
+import { chooseInstrument, chooseSheet, expect, openEditor, pickOption, staves, test } from './fixtures'
 
 const firstStaff = (page: import('@playwright/test').Page) => page.locator('.break-inside-avoid').first()
 
@@ -18,6 +18,7 @@ test('Transpose needs the chart key', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves') // has key: Gm
   await expect(page.getByRole('button', { name: /Transpose/ }).first()).toBeEnabled()
   await page.goto('/song?new=1')
+  await openEditor(page)
   await page.getByLabel('Chart text').fill('title: T\nA | 1 | Dm7\n') // no key
   await expect(page.getByRole('button', { name: /Transpose/ }).first()).toBeDisabled()
 })

@@ -301,3 +301,50 @@ describe('EditorView key signatures', () => {
     expect((await mountWith({ sheet: 'changes' })).findComponent({ name: 'ChangesSheet' }).props('signatures')).toBe(false)
   })
 })
+
+describe('EditorView with the bar editor', () => {
+  afterEach(() => {
+    useRuntimeConfig().public.features.barEditor = false
+    localStorage.clear()
+  })
+
+  it('shows the bars in place of the rows, in concert pitch, with the Source under ⋯', async () => {
+    useRuntimeConfig().public.features.barEditor = true
+    const w = await mount()
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await nextTick()
+    expect(w.find('[role=gridcell][aria-label="A, bar 1: Cm7"]').exists()).toBe(true)
+    expect(w.find('[aria-label="chord for row 1"]').exists()).toBe(false)
+    expect(w.text()).toContain('Concert pitch')
+    expect(w.find('textarea[aria-label="Chart text"]').exists()).toBe(false)
+    await w.find('button[aria-label="More editing options"]').trigger('click')
+    await nextTick()
+    await buttonCalled(w, 'Show source')?.trigger('click')
+    await nextTick()
+    expect(w.find('textarea[aria-label="Chart text"]').exists()).toBe(true)
+    await buttonCalled(w, 'Hide source')?.trigger('click')
+    await nextTick()
+    expect(w.find('textarea[aria-label="Chart text"]').exists()).toBe(false)
+    w.unmount()
+  })
+
+  it('a grid edit can be undone from the header', async () => {
+    useRuntimeConfig().public.features.barEditor = true
+    const w = await mount()
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await nextTick()
+    const undo = buttonCalled(w, 'Undo')
+    expect(undo?.attributes('disabled')).toBeDefined()
+    await w.find('[role=gridcell]').trigger('keydown', { key: 'D' })
+    await nextTick()
+    const input = w.find('input[aria-label=Chord]')
+    await input.setValue('Dm7')
+    await input.trigger('keydown', { key: 'Enter' })
+    await nextTick()
+    expect(w.find('[role=gridcell]').attributes('aria-label')).toBe('A, bar 1: Dm7')
+    await buttonCalled(w, 'Undo')?.trigger('click')
+    await nextTick()
+    expect(w.find('[role=gridcell]').attributes('aria-label')).toBe('A, bar 1: Cm7')
+    w.unmount()
+  })
+})

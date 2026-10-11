@@ -14,7 +14,15 @@ export { sameFunction } from './analysis/functions'
  * this row would start). Live, from analyse(), so every chart has notes, not only those the CLI saved. Keyed by doc
  * line.
  */
-export type RowNote = Readonly<{ note: string; problem: string | null; key: string }>
+export type RowNote = Readonly<{
+  note: string
+  problem: string | null
+  key: string
+  /** the chord's Roman numeral in its key area, or the function stated; '' when the analysis doesn't reach it */
+  numeral: string
+  /** the scale played: the row's own, else the analyser's; '' for none */
+  scale: string
+}>
 
 export function rowNotes(doc: ChartDoc): ReadonlyMap<number, RowNote> {
   const a = analyse(doc)
@@ -29,9 +37,11 @@ export function rowNotes(doc: ChartDoc): ReadonlyMap<number, RowNote> {
       note: differs ? `analyser: ${r.scale} (${r.reason}); you chose ${chosen}` : r.reason,
       problem: problemAt(r.line),
       key: keyCode(r.key),
+      numeral: r.numeral === '?' ? '' : r.numeral,
+      scale: chosen ?? r.scale ?? '',
     })
   }
-  for (const p of a.problems) if (!out.has(p.line)) out.set(p.line, { note: '', problem: p.message, key: '' })
+  for (const p of a.problems) if (!out.has(p.line)) out.set(p.line, { note: '', problem: p.message, key: '', numeral: '', scale: '' })
   return out
 }
 

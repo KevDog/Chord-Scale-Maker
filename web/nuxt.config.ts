@@ -85,6 +85,7 @@ export default defineNuxtConfig({
         scaleLevels: true, // the Level control: Basic / Standard / Advanced / Random scales per chart (engine/src/levels.ts); on since sign-off
         keySignatures: true, // the clef and key signature once, at the start of each sheet (docs/superpowers/specs/2026-10-10-key-signatures-design.md); on since sign-off
         functions: true, // author functions, @key areas and live analysis notes (docs/superpowers/specs/2026-10-09-chart-functions-design.md); on since sign-off
+        barEditor: false, // the bar grid editor with an inspector, Source under ⋯ (docs/superpowers/proposals/editor-ux/README.md §3 B)
       },
     },
   },

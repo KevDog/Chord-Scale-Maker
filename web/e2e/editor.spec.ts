@@ -1,20 +1,22 @@
-import { chooseSheet, expect, openEditor, pickOption, setScaleLevel, staves, test } from './fixtures'
+import { barCell, chooseSheet, expect, openEditor, pickOption, setScaleLevel, staves, test, typeChord } from './fixtures'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/song?new=1')
   await chooseSheet(page, 'Scales') // a chart opens on the Changes; these tests are about the scale sheet
   await expect(staves(page)).toHaveCount(3) // starter chart: 3 rows, from the root
+  await openEditor(page) // ?new=1 opens the editor; the Source is under ⋯
 })
 
 test('the editor is hidden until opened, remembered, and flags problems while hidden', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves') // song-first: editor hidden
   const edit = page.getByRole('button', { name: 'Edit', exact: true })
-  await expect(page.getByLabel('Chart text')).toBeHidden()
+  await expect(barCell(page, 'A1', 1)).toBeHidden()
   await expect(edit).toHaveAttribute('aria-expanded', 'false')
   await edit.click()
-  await expect(page.getByLabel('Chart text')).toBeVisible()
+  await expect(barCell(page, 'A1', 1)).toBeVisible()
   await page.reload()
-  await expect(page.getByLabel('Chart text')).toBeVisible() // remembered (csm-editor)
+  await expect(barCell(page, 'A1', 1)).toBeVisible() // remembered (csm-editor)
+  await expect(page.getByLabel('Chart text')).toBeVisible() // and the Source, opened in beforeEach (csm-source)
   // make a problem, then close the editor: it's flagged with an Edit prompt
   await page.getByLabel('Chart text').fill('title: T\nA | 1 | Cm7 | C Dorian | ii7 | extra\n')
   await page.getByRole('button', { name: 'Done', exact: true }).click()
@@ -22,12 +24,25 @@ test('the editor is hidden until opened, remembered, and flags problems while hi
   await expect(page.getByRole('status').filter({ hasText: 'text has a problem' })).toBeVisible()
 })
 
-test('grid edits update the text at once', async ({ page }) => {
-  await page.getByLabel('chord for row 1').fill('Ebm7b5')
+test('grid edits update the text at once, and the inspector offers the chord’s scales', async ({ page }) => {
+  await typeChord(page, 'A', 1, 'Ebm7b5')
   await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 1 \| Ebm7b5/)
-  const scale = page.getByLabel('Scale for Ebm7b5')
-  await expect(scale.locator('option').first()).toHaveText('Eb Locrian') // the usual choice, first
-  await expect(scale.locator('option', { hasText: 'B Major Pentatonic' })).toHaveCount(1)
+  await expect(barCell(page, 'A', 1)).toBeFocused() // back on the bar, ready for the next key
+  const scales = page.getByRole('radiogroup', { name: 'Scale' }).getByRole('radio')
+  await expect(scales.first()).toContainText('Eb Locrian') // the usual choice, first
+  await expect(scales.filter({ hasText: 'B Major Pentatonic' })).toHaveCount(1)
+})
+
+test('entering a tune is type, Space, type, Tab', async ({ page }) => {
+  await barCell(page, 'A', 1).click()
+  await page.keyboard.type('Em7 A7')
+  await page.keyboard.press('Tab')
+  await page.keyboard.type('%')
+  await page.keyboard.press('Tab')
+  await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 1 \| Em7\s*\nA \| 1 \| A7\s*\nA \| 2 \| Em7\s*\nA \| 2 \| A7\s*\n/)
+  await expect(barCell(page, 'A', 3)).toBeFocused()
+  await page.keyboard.press('ArrowUp') // the top line: stays
+  await expect(barCell(page, 'A', 3)).toBeFocused()
 })
 
 test('a new chart starts in C, the key of its chords', async ({ page }) => {
@@ -36,14 +51,17 @@ test('a new chart starts in C, the key of its chords', async ({ page }) => {
 
 test('⌘Z undoes an edit and ⇧⌘Z redoes it, wherever it was made', async ({ page }) => {
   const text = page.getByLabel('Chart text')
-  await page.getByRole('button', { name: 'Delete row 1' }).click() // a button: the browser's own undo can't bring it back
-  await expect(text).not.toHaveValue(/Dm7/)
-  await page.getByLabel('chord for row 1').press('ControlOrMeta+z')
-  await expect(text).toHaveValue(/A \| 1 \| Dm7/)
-  await expect(page.getByLabel('chord for row 1')).toHaveValue('Dm7')
+  await barCell(page, 'A', 2).click()
+  await page.keyboard.press('Delete') // G7 out: bar 2 holds Dm7
+  await expect(text).not.toHaveValue(/G7/)
+  await expect(barCell(page, 'A', 2)).toHaveAccessibleName('A, bar 2: held')
+  await page.keyboard.press('ControlOrMeta+z')
+  await expect(text).toHaveValue(/A \| 2 \| G7/)
+  await expect(barCell(page, 'A', 2)).toHaveAccessibleName('A, bar 2: G7')
   await text.press('ControlOrMeta+Shift+z')
-  await expect(text).not.toHaveValue(/Dm7/)
-  await expect(page.getByLabel('chord for row 1')).toHaveValue('G7')
+  await expect(text).not.toHaveValue(/G7/)
+  await page.getByRole('button', { name: 'Undo', exact: true }).click()
+  await expect(text).toHaveValue(/A \| 2 \| G7/)
 })
 
 test('on a phone the page never scrolls sideways', async ({ page }) => {
@@ -55,23 +73,23 @@ test('on a phone the page never scrolls sideways', async ({ page }) => {
 })
 
 test('a value that would corrupt the text is rejected but stays visible', async ({ page }) => {
-  const cell = page.getByLabel('chord for row 1')
-  await cell.fill('C|7')
-  await expect(cell).toHaveValue('C|7')
-  await expect(cell).toHaveAttribute('aria-invalid', 'true')
+  await typeChord(page, 'A', 1, 'C|7')
+  const input = page.getByRole('textbox', { name: 'Chord' })
+  await expect(input).toHaveValue('C|7')
+  await expect(input).toHaveAttribute('aria-invalid', 'true')
+  await expect(page.getByRole('alert')).toContainText('may not contain |')
   await expect(page.getByLabel('Chart text')).not.toHaveValue(/C\|7/)
 })
 
-test('text edits update the grid and preview; unknown chords prompt for a scale', async ({ page }) => {
-  const text = page.getByLabel('Chart text') // ?new=1: the editor is already open
+test('text edits update the grid and preview; an unknown chord is flagged and takes any scale', async ({ page }) => {
+  const text = page.getByLabel('Chart text')
   await text.fill(`${await text.inputValue()}B | 9 | Cm7#5#9x\n`)
   await expect(staves(page)).toHaveCount(3) // the new row has no scale yet, so it isn't drawn
-  await expect(page.getByText('Choose a scale', { exact: true })).toHaveCount(1)
-  await page.getByLabel('Scale for Cm7#5#9x').selectOption('__other')
-  await page.getByLabel('Scale name').selectOption('Altered')
-  await page.getByRole('button', { name: 'Set scale' }).click()
+  await barCell(page, 'B', 9).getByTitle('Not a chord the app knows').click()
+  await expect(page.getByRole('note').filter({ hasText: 'isn’t a chord I know' })).toBeVisible()
+  await page.getByRole('searchbox', { name: 'Any scale' }).fill('alt')
+  await page.getByRole('list', { name: 'Scales found' }).getByRole('button', { name: /^C Altered/ }).click()
   await expect(text).toHaveValue(/Cm7#5#9x \| C Altered/)
-  await expect(page.getByLabel('Scale for Cm7#5#9x')).toBeFocused() // focus returns to the row
   await expect(staves(page)).toHaveCount(4)
 })
 
@@ -99,7 +117,7 @@ test('transposing rewrites the chart in another key', async ({ page }) => {
   const text = page.getByLabel('Chart text')
   await expect(text).toHaveValue(/A \| 6 +\| Edim7 +\| E Diatonic Diminished #IV/)
   await expect(text).toHaveValue(/title: F Jazz Blues/) // titles stay as typed
-  await expect(page.getByLabel('chord for row 1', { exact: true })).toHaveValue('Bb7')
+  await expect(barCell(page, 'A', 1)).toHaveAccessibleName('A, bar 1: Bb7')
 })
 
 test('interval labels show on screen, against the chord root, on until turned off', async ({ page }) => {
@@ -183,7 +201,8 @@ test('the scale level writes its scales into the chart, keeps your own picks, an
   await openEditor(page)
   const text = page.getByLabel('Chart text')
   const status = page.getByRole('status').filter({ hasText: /in this browser/ })
-  await page.getByLabel('Scale for D7').first().selectOption('D Lydian Dominant') // a pick of your own
+  await barCell(page, 'A1', 6).click() // D7
+  await page.getByRole('radio', { name: /^D Lydian Dominant/ }).click() // a pick of your own
   await setScaleLevel(page, 'Basic')
   await expect(text).toHaveValue(/Cm7 +\| C Minor Pentatonic/)
   await expect(text).toHaveValue(/D7 +\| D Lydian Dominant/) // yours: kept
@@ -201,7 +220,8 @@ test('the scale level writes its scales into the chart, keeps your own picks, an
   await expect(text).toHaveValue(/D7 +\| D Lydian Dominant/)
   await setScaleLevel(page, 'Standard')
   await expect(text).toHaveValue(/Cm7 +\| C Dorian/)
-  await page.getByLabel('Scale for D7').first().selectOption('D Phrygian Dominant') // back to the library's own
+  await barCell(page, 'A1', 6).click()
+  await page.getByRole('radio', { name: /^D Phrygian Dominant/ }).click() // back to the library's own
   await expect(status).toHaveText('Edits are saved in this browser as your version.') // the library version again
 })
 

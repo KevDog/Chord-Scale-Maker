@@ -236,6 +236,17 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     closes.
 
   An unknown quality gives an amber border and "Choose a scale…", with "Other…" still available.
+- **Bar editor** (the `barEditor` flag, off; [proposal §3 B](superpowers/proposals/editor-ux/README.md)): in place of
+  the row grid, `BarEditor` shows the chart as bars, four to a line, each written section its own ARIA grid
+  headed by its name, key area and bars (`barView` and `gridLines`); a `@copy` section is one line ("A2 repeats A1 ·
+  bars 9–16") whose bars show on request. One chord is selected (`GridPos`), the grid's one Tab stop. Typing replaces
+  it, Space adds a chord to the bar, Tab or the arrows move (`moveInGrid`: chord by chord, then bar by bar; ↑ ↓ keep
+  the column), `%` is the bar before as it plays, ⌫ clears it (`chordsAfterTyping`, then `setBarChords`; a refused
+  edit leaves the same doc, and the grid says why). An unknown chord gets an amber underline. Numerals and scales
+  under the chords sit behind a toggle (off). The inspector (`BarInspector`) has the chord's scales as a radio list
+  (the usual one, inside, outside, any scale by search: `searchScales`), its function with the scale each gives,
+  the analysis' Why, and Key change here. The heading fields are `ChartHeadingFields`; the text is the Source, under
+  the ⋯ menu (remembered, `csm-source`). Concert pitch always.
 - **Scale level** (the `scaleLevels` flag, on; `engine/src/levels.ts`): Basic / Standard / Advanced / Random, above the
   chart grid. Choosing one writes the scales into the chart (`relevel`), so they save, print and share with it.
   - Options in `chord_scales.json` carry `level: basic|advanced`; Standard is the default, and a quality without a
@@ -648,7 +659,8 @@ library writes such a repeat out instead.
   - `npm run e2e` builds with every flag on.
   - `myCharts` (My charts, New chart, Download/Open, share links), `changes` (the Changes sheet),
     `practice` (the Practice panel) and `scaleLevels` (the Scale level control) are on, since sign-off. Guide tones
-    on the Changes sheet have no flag: their toggles start off.
+    on the Changes sheet have no flag: their toggles start off. `barEditor` (the bar grid editor) is off while it's
+    built in stages.
 
 ## 9. Security
 

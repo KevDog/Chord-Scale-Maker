@@ -55,17 +55,33 @@ export async function chooseSheet(page: import('@playwright/test').Page, label: 
   await pickOption(page, 'Work on', label)
 }
 
-/** reveal the editor (grid + text) if it isn't already shown — the page is song-first, editor hidden by default */
+/** reveal the editor and its text (the bar editor's Source, under ⋯) if they aren't already shown — the page is song-first, editor hidden by default */
 export async function openEditor(page: import('@playwright/test').Page): Promise<void> {
   const text = page.getByLabel('Chart text')
-  // retry the click: before hydration the Edit handler isn't attached yet, so a single click can be lost
+  const more = page.getByRole('button', { name: 'More editing options' })
+  // retry the clicks: before hydration the handlers aren't attached yet, so a single click can be lost
   await expect(async () => {
     if (!(await text.isVisible())) {
-      const edit = page.getByRole('button', { name: 'Edit', exact: true })
-      if (await edit.count()) await edit.click({ timeout: 1000 })
+      if (await more.isVisible()) {
+        await more.click({ timeout: 1000 })
+        await page.getByRole('menuitem', { name: 'Show source' }).click({ timeout: 1000 })
+      } else {
+        const edit = page.getByRole('button', { name: 'Edit', exact: true })
+        if (await edit.count()) await edit.click({ timeout: 1000 })
+      }
     }
     await expect(text).toBeVisible({ timeout: 1000 })
   }).toPass({ timeout: 10_000 })
+}
+
+/** a bar of the bar editor's grid, by its section and number */
+export const barCell = (page: Page, section: string, bar: number) => page.getByRole('gridcell', { name: new RegExp(`^${section}, bar ${bar}:`) })
+
+/** type a chord over the selected chord of a bar, and confirm it */
+export async function typeChord(page: Page, section: string, bar: number, chord: string): Promise<void> {
+  await barCell(page, section, bar).click()
+  await page.keyboard.type(chord)
+  await page.keyboard.press('Enter')
 }
 
 /** a new chart with this text, the editor open (it opens on the Changes sheet) */
