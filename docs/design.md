@@ -60,7 +60,8 @@ web/                      # Nuxt app (Vercel root directory); imports @chord-sca
     pages/help.vue        # how it all works, in the owner's voice: sheets, controls, practice, editing, printing
     pages/about.vue, contact.vue, privacy.vue  # About (Jazz Lab thanks, the video, credits), the form, privacy
     pages/ui.vue          # dev-only showcase of the Catalyst components (removed from production builds)
-    components/           # AppShell, EditorView, ChartGrid, GridCell, ScaleCell, ChartText, ChartTranspose,
+    components/           # AppShell, EditorView, BarEditor, BarInspector, ChordChoices, SheetChordEditor,
+                          # ChartHeadingFields, MetaInput, ChartText, ChartTranspose,
                           # PreviewControls, SheetPages, ScaleSheet, ScaleStaff,
                           # ChangesSheet, ChangesSystem, ChordSymbol, NoteName
     components/ui/        # Catalyst ported to Vue (<UiButton>, <UiListbox>, <UiDialog>, …)
@@ -216,28 +217,15 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - **Undo:** ⌘Z and ⇧⌘Z (Ctrl off a Mac) in the grid or the text step through the text's history (`useChartHistory`
     over the engine's pure `history.ts`). A state is recorded each time the doc changes: a grid edit or a
     transposition at once, typing after the parse pause, so a burst of keystrokes is one step. It keeps 100 steps.
-- **The grid** shows each `ChartLine` as a row:
-  - Data rows are editable cells.
-  - `@copy` is a compact directive row, and invalid lines show their error.
-  - Expanded copies appear in the preview, not the grid.
 - **Cell validation** (`cellError`): a value may not contain `|` or line breaks, start or end with spaces, or
   start with `#`, `@`, `title:` or `subtitle:`; a row cell may not contain a `#` after a space (it would start a
-  trailing comment). Otherwise the serialized text would re-parse as a different line.
-  A rejected value stays visible and flagged in its cell (`GridCell`), and the doc keeps the last good value.
-- **Chord cell:** free text, validated as above.
-- **Scale cell** (`ScaleCell`): a dropdown with these entries.
-  - The quality's default first, unlabelled (with levels, "Default" read as a level). Choosing it writes its name into the text (`C Dorian`), and a default scale follows
-    when the chord changes (`setRowChord`: Cm7 → F7 takes C Dorian to F Mixolydian); a scale you chose stays.
-  - The scale's formula (1, 2, ♭3, …) shows inside the select where the cell is wide enough for the whole label and
-    the formula (measured with `utils/textWidth.ts`), typically with the Text pane hidden.
-  - The quality's inside alternates, with their notes.
-  - An "Outside (tension to resolve)" group, for options marked `outside`.
-  - "Other…", which opens a dialog with a root and any of the 26 scales. Focus returns to the cell after it
-    closes.
-
-  An unknown quality gives an amber border and "Choose a scale…", with "Other…" still available.
-- **Bar editor** (the `barEditor` flag, off; [proposal §3 B](superpowers/proposals/editor-ux/README.md)): in place of
-  the row grid, `BarEditor` shows the chart as bars, four to a line, each written section its own ARIA grid
+  trailing comment). Otherwise the serialized text would re-parse as a different line. The bar editor and the
+  sheet's chord editor refuse such a chord and say why; a rejected heading value stays visible and flagged in its
+  field (`MetaInput`), and the doc keeps the last good value.
+- **Scales follow the chord:** a default scale is written into the text by name (`C Dorian`), and follows when the
+  chord changes (`setRowChord`, `setBarChords`: Cm7 → F7 takes C Dorian to F Mixolydian); a scale you chose stays.
+- **Bar editor** ([proposal §3 B](superpowers/proposals/editor-ux/README.md); Edit, next to the title, opens it, and
+  Done closes it): `BarEditor` shows the chart as bars, four to a line, each written section its own ARIA grid
   headed by its name, key area and bars (`barView` and `gridLines`); a `@copy` section is one line ("A2 repeats A1 ·
   bars 9–16") whose bars show on request. One chord is selected (`GridPos`), the grid's one Tab stop. Typing replaces
   it, Space adds a chord to the bar, Tab or the arrows move (`moveInGrid`: chord by chord, then bar by bar; ↑ ↓ keep
@@ -257,7 +245,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   under Details, the composer, style and form (`chartDetails`); the text is the Source, under the ⋯ menu
   (remembered, `csm-source`). Concert pitch always. The inspector's Scale, Function and Why are `ChordChoices`,
   shared with the sheet's chord editor.
-  - **Tap to edit:** while the bar editor is shown, each chord on the Changes sheet is a button ("Edit Dm7, A bar
+  - **Tap to edit:** while the editor is shown, each chord on the Changes sheet is a button ("Edit Dm7, A bar
     3"; a transposed part's adds "(concert C7)"). It opens `SheetChordEditor`, a Headless UI dialog: from `md` up a
     popover by the chord (`popoverPlace`: under it, or above it near the window's foot), below `md` a bottom sheet. It
     holds the chord in concert pitch (`setLineChord`: as typing it into the grid there, so blank takes it out and `%`
@@ -268,8 +256,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - **Phones (below `md`): light edits only.** The grid, its structure actions and the inspector are hidden; the
     note "Full editing works on a larger screen" sits under the title, and chords are changed on the sheet. The
     heading fields, Undo, the Source under ⋯ and Transpose stay. The library hides New chart there.
-- **Scale level** (the `scaleLevels` flag, on; `engine/src/levels.ts`): Basic / Standard / Advanced / Random, above the
-  chart grid. Choosing one writes the scales into the chart (`relevel`), so they save, print and share with it.
+- **Scale level** (the `scaleLevels` flag, on; `engine/src/levels.ts`): Basic / Standard / Advanced / Random, in the
+  preview's toolbar. Choosing one writes the scales into the chart (`relevel`), so they save, print and share with it.
   - Options in `chord_scales.json` carry `level: basic|advanced`; Standard is the default, and a quality without a
     tag keeps it. Random picks among the inside options, from a seed (Shuffle deals a new one).
   - The level **owns** the rows that played their default when the chart left Standard (`line:chord` keys), and
@@ -513,7 +501,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Heading:** `chartHeading` (engine/src/chart.ts) gives what the library, the editor and every sheet show: the title,
   a line built from the subtitle (or, without one, `style:`), `key:` (`E♭ minor`) and `form:`, and the composer
   (right-aligned under the heading on a sheet's first page, as on a lead sheet). `chartMeta` stays the title and
-  subtitle as written, which the chart grid edits.
+  subtitle as written, which the heading fields edit.
 - **Contents:** 241 charts.
   - Autumn Leaves, Blue Bossa, Stella by Starlight, All the Things You Are, Lady Bird.
   - F and B♭ blues, jazz blues and Bird blues.
@@ -553,14 +541,14 @@ library writes such a repeat out instead.
 - **Stated functions:** a row's function cell is taken as given. Virtual targets: `V7/V` is read as a dominant
   of the key's V even when no V follows. An `@key` line makes a span of key areas from its bar to the next
   `@key`, overriding the detected ones. A key prefix (`D: V7/ii`) decides that one row only. A function that does
-  not fit the chord in its key, or an `@key` naming no key, is a problem (reported; the grid marks the cell
-  `aria-invalid`). Rules that could only guess carry a `fallback` flag, and `--ambiguous` lists those rows with
+  not fit the chord in its key, or an `@key` naming no key, is a problem (reported; the inspector shows it
+  under the function). Rules that could only guess carry a `fallback` flag, and `--ambiguous` lists those rows with
   the functions each might have and the key areas an `@key` would pin, each with a second `@key` back to the next
-  area (an `@key` holds until the next); the grid's key-change button (`insertKeyChange`) adds the same pair. The
+  area (an `@key` holds until the next); the bar editor's Key change here (`insertKeyChange`) adds the same pair. The
   analyser never writes a function, an `@key` or a `context:`. The report's second line says which context
   decided and why (`context: modal (stated)`, `context: modal (detected: 0 of 8 chords in cadences, median chord 2
   bars)`); `--ambiguous` also names a detection within one chord of a threshold. `rowNotes` (`engine/src/notes.ts`) gives each row's reason and key;
-  the grid's Notes column and the Changes sheet's numeral/scale notes show it, the note with where its key
+  the inspector's Why and the Changes sheet's numeral/scale notes show it, the note with where its key
   came from (a key the author set is starred), behind the `functions` flag (on).
 - **Numerals** (`analysis/numerals.ts`; the degree itself in `analysis/degrees.ts`, shared with the rules and the
   grammar): lower case for the minor family (`ii7`, `V7/ii`, `viiø7`), as Terefenko writes them. A dominant into the
@@ -681,8 +669,8 @@ library writes such a repeat out instead.
   - `npm run e2e` builds with every flag on.
   - `myCharts` (My charts, New chart, Download/Open, share links), `changes` (the Changes sheet),
     `practice` (the Practice panel) and `scaleLevels` (the Scale level control) are on, since sign-off. Guide tones
-    on the Changes sheet have no flag: their toggles start off. `barEditor` (the bar grid editor) is off while it's
-    built in stages.
+    on the Changes sheet have no flag: their toggles start off. The bar editor shipped behind `barEditor`; at its
+    sign-off the old row grid went, and the flag with it.
 
 ## 9. Security
 
@@ -799,7 +787,8 @@ Pages are static, and the only server code is the contact function, so the attac
 - **App tests (`web/test/`):** `@nuxt/test-utils` (Nuxt runtime, happy-dom) with Vue Test Utils. They cover:
   - `useChartEditor` sync and debounce, and `useChartHistory` undo
   - library build and search
-  - scale choices, `ChartGrid` edits and validation, and the `ScaleCell` dropdown and dialog
+  - scale choices, the bar editor (`BarEditor`, `BarInspector`, `ChordChoices`, `SheetChordEditor`) and the heading
+    fields' validation
   - `ChartTranspose`
   - the preview controls (`EditorView`)
   - `ScaleSheet` pagination with `ScaleStaff` stubbed; `ChangesSheet` (the clef with a guide on, the print gap, lines
@@ -810,7 +799,8 @@ Pages are static, and the only server code is the contact function, so the attac
 - **Local preview:** `make dev` (live reload) and `make preview` (the production static build, served locally).
 - **E2E (`web/e2e/`, Playwright with Chromium, against the production static build, all flags on):**
   - library search and open, and the staff count
-  - grid ⇄ text sync, rejected cells, and the scale prompt and dialog (with focus return)
+  - the bar editor: Edit and Done, bars ⇄ Source sync, typing and moving, the inspector, structure, undo; tap to
+    edit on the Changes sheet, and the phone's light edits
   - the mode toggle
   - My charts: auto-save and reload, your version and Revert, Save as a copy, Delete, Download and Open (file
     picker and drop), share links in a fresh browser context, damaged links

@@ -57,6 +57,16 @@ async function chooseSheet(w: Wrapper, label: string): Promise<void> {
   await nextTick()
 }
 
+/** open the editor, then its Source under ⋯ */
+async function showSource(w: Wrapper): Promise<void> {
+  await buttonCalled(w, 'Edit')?.trigger('click')
+  await nextTick()
+  await w.find('button[aria-label="More editing options"]').trigger('click')
+  await nextTick()
+  await buttonCalled(w, 'Show source')?.trigger('click')
+  await nextTick()
+}
+
 describe('EditorView help', () => {
   afterEach(() => {
     useRuntimeConfig().public.features.functions = true
@@ -65,42 +75,16 @@ describe('EditorView help', () => {
   it('mentions functions and @key only with the flag on', async () => {
     useRuntimeConfig().public.features.functions = true
     const on = await mount()
-    await on.findAll('button').find((b) => b.text() === 'Edit')?.trigger('click')
-    await nextTick()
+    await showSource(on)
     expect(on.html()).toContain('@key B 17 D')
     on.unmount()
+    localStorage.clear()
     useRuntimeConfig().public.features.functions = false
     const off = await mount()
-    await off.findAll('button').find((b) => b.text() === 'Edit')?.trigger('click')
-    await nextTick()
+    await showSource(off)
     expect(off.html()).not.toMatch(/function|@key/)
     expect(off.html()).toContain("Leave the scale out to use the chord's default.")
     off.unmount()
-  })
-
-  it('with functions on, gives the grid the full width and lets the text editor collapse', async () => {
-    useRuntimeConfig().public.features.functions = true
-    const w = await mount()
-    await w.findAll('button').find((b) => b.text() === 'Edit')?.trigger('click')
-    await nextTick()
-    expect(w.find('section[aria-labelledby="grid-heading"]').element.parentElement?.className).not.toContain('lg:grid-cols-2')
-    const toggle = w.find('button[aria-controls="chart-text-body"]')
-    expect([toggle.text(), toggle.attributes('aria-expanded')]).toEqual(['Hide text', 'true'])
-    await toggle.trigger('click')
-    await nextTick()
-    expect(w.find('#chart-text-body').exists()).toBe(false)
-    expect([toggle.text(), toggle.attributes('aria-expanded')]).toEqual(['Show text', 'false'])
-    w.unmount()
-  })
-
-  it('with functions off, keeps the side-by-side layout and no text toggle', async () => {
-    useRuntimeConfig().public.features.functions = false
-    const w = await mount()
-    await w.findAll('button').find((b) => b.text() === 'Edit')?.trigger('click')
-    await nextTick()
-    expect(w.find('section[aria-labelledby="grid-heading"]').element.parentElement?.className).toContain('lg:grid-cols-2')
-    expect(w.find('button[aria-controls="chart-text-body"]').exists()).toBe(false)
-    w.unmount()
   })
 })
 
@@ -302,19 +286,40 @@ describe('EditorView key signatures', () => {
   })
 })
 
-describe('EditorView with the bar editor', () => {
-  afterEach(() => {
-    useRuntimeConfig().public.features.barEditor = false
-    localStorage.clear()
+describe('EditorView editing', () => {
+  afterEach(() => localStorage.clear())
+
+  it('puts Edit next to the title, and Done closes the editor', async () => {
+    const w = await mount()
+    const edit = buttonCalled(w, 'Edit')
+    expect(edit?.element.parentElement?.querySelector('h1')?.textContent).toBe('T')
+    expect(edit?.attributes('aria-expanded')).toBe('false')
+    await edit?.trigger('click')
+    await nextTick()
+    expect(w.find('[role=gridcell]').exists()).toBe(true)
+    const done = buttonCalled(w, 'Done')
+    expect(done?.attributes('aria-expanded')).toBe('true')
+    await done?.trigger('click')
+    await nextTick()
+    expect(w.find('[role=gridcell]').exists()).toBe(false)
+    w.unmount()
   })
 
-  it('shows the bars in place of the rows, in concert pitch, with the Source under ⋯', async () => {
-    useRuntimeConfig().public.features.barEditor = true
+  it('opens a new chart in the editor, and Done still closes it', async () => {
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT, isNew: true }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    expect(w.find('[role=gridcell]').exists()).toBe(true)
+    await buttonCalled(w, 'Done')?.trigger('click')
+    await nextTick()
+    expect(w.find('[role=gridcell]').exists()).toBe(false)
+    expect(buttonCalled(w, 'Edit')?.attributes('aria-expanded')).toBe('false')
+    w.unmount()
+  })
+
+  it('shows the bars, in concert pitch, with the Source under ⋯', async () => {
     const w = await mount()
     await buttonCalled(w, 'Edit')?.trigger('click')
     await nextTick()
     expect(w.find('[role=gridcell][aria-label="A, bar 1: Cm7"]').exists()).toBe(true)
-    expect(w.find('[aria-label="chord for row 1"]').exists()).toBe(false)
     expect(w.text()).toContain('Concert pitch')
     expect(w.find('textarea[aria-label="Chart text"]').exists()).toBe(false)
     await w.find('button[aria-label="More editing options"]').trigger('click')
@@ -329,7 +334,6 @@ describe('EditorView with the bar editor', () => {
   })
 
   it('a grid edit can be undone from the header', async () => {
-    useRuntimeConfig().public.features.barEditor = true
     const w = await mount()
     await buttonCalled(w, 'Edit')?.trigger('click')
     await nextTick()
