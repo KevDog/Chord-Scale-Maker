@@ -11,9 +11,9 @@ source: Colorado Cookbook, p. 270
 # area: A minor (bars 1–11)
 A | 1  | Dm7       | D Dorian                  # iv: Dorian, the key’s own notes
 A | 2  | E7        | E Phrygian Dominant       # V7 in A minor, not resolving: b9 and b13 are in the key
-A | 3  | F#m7b5    | F# Locrian                # viø7 in A minor: the b9 is in the key
+A | 3  | F#m7b5    | F# Locrian                # viø7 in A minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 4  | Fm11      | F Dorian                  # a borrowed minor chord: Dorian, its own key
-A | 5  | Em7       | E Phrygian                # v of a minor key: the b9 is in the key
+A | 5  | Em7       | E Phrygian                # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
 A | 5  | Dm9       | D Dorian                  # iv: Dorian, the key’s own notes
 A | 6  | Bb7#11    | Bb Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
 A | 7  | Bm7       | B Dorian                  # a borrowed minor chord: Dorian, its own key
@@ -39,7 +39,7 @@ B | 23 | CMaj7     | C Lydian                  # a non-tonic major chord: Lydian
 B | 24 | FMaj7#11  | F Lydian                  # from the symbol: #11
 B | 25 | F#m11     | F# Dorian                 # tonic minor: Dorian by convention
 B | 25 | F#m11/E   | F# Dorian                 # tonic minor: Dorian by convention
-B | 26 | Ebdim7    | Eb Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+B | 26 | Ebdim7    | Eb Whole-Half Diminished  # passing diminished: a rootless dominant ♭9
 B | 27 | Dm7       | D Dorian                  # a borrowed minor chord: Dorian, its own key
 B | 28 | Dm11      | D Dorian                  # a borrowed minor chord: Dorian, its own key
 B | 29 | Am9       | A Dorian                  # a borrowed minor chord: Dorian, its own key

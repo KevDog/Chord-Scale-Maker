@@ -13,9 +13,9 @@ A1 | 3  | AbMaj7  | Ab Ionian                # tonic: the 4th is in the key
 A1 | 4  | F7      | F Mixolydian             # extended dominant: V7 of Bb7
 A1 | 5  | Bb7     | Bb Mixolydian            # II7 in Ab, not resolving: natural tensions
 A1 | 6  | Bbm7    | Bb Dorian                # ii: Dorian, the key’s own notes
-A1 | 6  | Bdim7   | B Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+A1 | 6  | Bdim7   | B Whole-Half Diminished  # passing diminished: a rootless dominant ♭9
 A1 | 7  | Ab/C    | Ab Ionian                # tonic: the 4th is in the key
-A1 | 7  | Bdim7   | B Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+A1 | 7  | Bdim7   | B Whole-Half Diminished  # passing diminished: Bb7♭9 without its Bb, the Eb13's dominant (Bbm7 its ii)
 A1 | 8  | Bbm7    | Bb Dorian                # ii of Eb13: Dorian
 A1 | 8  | Eb13    | Eb Mixolydian            # V7/I in Ab: natural tensions
 A1 | 8  | B7#11   | B Lydian Dominant        # tritone substitute: resolves down a half step to Bb13
@@ -25,10 +25,10 @@ A2 | 11 | AbMaj7  | Ab Ionian                # tonic: the 4th is in the key
 A2 | 12 | F7      | F Mixolydian             # extended dominant: V7 of Bb7
 A2 | 13 | Bb7     | Bb Mixolydian            # II7 in Ab, not resolving: natural tensions
 A2 | 14 | Bbm7    | Bb Dorian                # ii: Dorian, the key’s own notes
-A2 | 14 | Bdim7   | B Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+A2 | 14 | Bdim7   | B Whole-Half Diminished  # passing diminished: a rootless dominant ♭9
 A2 | 15 | Ab/C    | Ab Ionian                # tonic: the 4th is in the key
-A2 | 15 | Bdim7   | B Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
-A2 | 16 | Eb7sus4 | Eb Mixolydian            # V7sus4 of AbMaj7: natural tensions
+A2 | 15 | Bdim7   | B Whole-Half Diminished  # passing diminished: Bb7♭9 without its Bb, the Eb7sus4's dominant
+A2 | 16 | Eb7sus4 | Eb Mixolydian            # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 A2 | 16 | AbMaj7  | Ab Ionian                # tonic: the 4th is in the key
 B  | 17 | Ebm7    | Eb Dorian                # ii of the ii–V to Db
 B  | 18 | Ab7alt  | Ab Altered               # from the symbol: altered

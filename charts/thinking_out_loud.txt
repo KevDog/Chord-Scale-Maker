@@ -15,7 +15,7 @@ Coda | 3  | DbMaj7 | Db Ionian            # tonic: the 4th is in the key
 A    | 1  | Ebm7   | Eb Dorian            # ii: Dorian, the key’s own notes
 A    | 2  | Abm7   | Ab Dorian            # a borrowed minor chord: Dorian, its own key
 A    | 2  | F7alt  | F Altered            # from the symbol: altered
-A    | 3  | Bbm7   | Bb Aeolian           # vi: the b13 is in the key
+A    | 3  | Bbm7   | Bb Aeolian           # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A    | 4  | GbMaj7 | Gb Lydian            # IV: the #4 is the key’s 7th
 # area: Ab minor (bars 4–5)
 A    | 4  | Eb7alt | Eb Altered           # from the symbol: altered
@@ -38,9 +38,9 @@ B    | 14 | F7alt  | F Altered            # from the symbol: altered
 B    | 15 | BbMaj7 | Bb Ionian            # tonic: the 4th is in the key
 B    | 16 | E7alt  | E Altered            # from the symbol: altered
 C    | 17 | EbMaj7 | Eb Lydian            # IV: the #4 is the key’s 7th
-C    | 18 | Am7b5  | A Locrian            # iiø7 of the ii–V to G minor: the b9 is in the key
+C    | 18 | Am7b5  | A Locrian            # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 C    | 18 | D7alt  | D Altered            # from the symbol: altered
-C    | 19 | Gm11   | G Aeolian            # vi: the b13 is in the key
+C    | 19 | Gm11   | G Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 C    | 20 | Cm7    | C Dorian             # ii: Dorian, the key’s own notes
 C    | 20 | A7alt  | A Altered            # from the symbol: altered
 C    | 21 | Dm11   | D Dorian             # ii of G7: Dorian
@@ -49,7 +49,7 @@ C    | 22 | G7     | G Mixolydian         # extended ii–V: a side-step, its ow
 C    | 22 | G7alt  | G Altered            # from the symbol: altered
 C    | 23 | GbMaj7 | Gb Lydian            # IV: the #4 is the key’s 7th
 C    | 23 | CbMaj7 | Cb Lydian            # ♭VIImaj7, borrowed from Db minor: Lydian (its ♯11 is in the key)
-C    | 24 | Bbm7   | Bb Aeolian           # vi: the b13 is in the key
+C    | 24 | Bbm7   | Bb Aeolian           # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 # area: C minor (bars 24–25)
 C    | 24 | G7alt  | G Altered            # from the symbol: altered
 D    | 25 | Cm7    | C Dorian             # tonic minor: Dorian by convention

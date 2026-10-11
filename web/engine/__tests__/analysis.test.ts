@@ -2,8 +2,11 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { analyse, applyAnalysis, parseKey, pins } from '../analysis'
 import { keyText, makeKey } from '../analysis/keys'
+import { hiddenDominant, passingReason } from '../analysis/rules'
+import { familyOf } from '../analysis/stream'
 import { formPart, parseChart, serializeChart } from '../chart'
-import { parseRoot } from '../pitch'
+import { parseRoot, pcOf } from '../pitch'
+import { readChord } from '../qualities'
 
 describe('keyText', () => {
   it('drops the " major" suffix but keeps " minor"', () => {
@@ -147,6 +150,84 @@ describe('analysis: the other families (§7.2–7.6)', () => {
     expect(verdict(chart('C', '1 DbMaj7/C, 3 CMaj7'), '1 DbMaj7/C')).toBe('C Phrygian (s1)')
     expect(verdict(chart('C', '1 Dm7, 2 G7sus4, 3 CMaj7'), '2 G7sus4')).toBe('G Mixolydian (s2)')
     expect(verdict(chart('', '1 D7sus4, 5 F7sus4, 9 D7sus4, 13 F7sus4'), '1 D7sus4')).toBe('D Mixolydian (s3)')
+  })
+})
+
+describe('reasons from the sources (docs/superpowers/specs/2026-10-10-analysis-rules-from-sources-design.md R3a, R6)', () => {
+  /** "A Aeolian (m7): vi: …" for the chord asked for */
+  const reasoned = (text: string, barChord: string): string | undefined => {
+    const r = analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === barChord)
+    return r && `${r.scale} (${r.rule}): ${r.reason}`
+  }
+
+  it('d1 a vii°7 names the dominant it hides', () => {
+    expect(reasoned(chart('C', '1 CMaj7, 2 C#dim7, 3 Dm7, 4 G7'), '2 C#dim7')).toBe('C# Whole-Half Diminished (d1): vii°7 of Dm7: A7♭9 without its root')
+  })
+
+  it('d1 a passing °7 names the dominant it hides, past a related ii (Wave)', () => {
+    expect(reasoned(chart('D', '1 DMaj7, 2 Bbdim7, 3 Am7, 3 D7'), '2 Bbdim7')).toBe("Bb Whole-Half Diminished (d1): passing diminished: A7♭9 without its A, the D7's dominant (Am7 its ii)")
+  })
+
+  it('d1 a passing °7 whose hidden dominant is the next chord’s V', () => {
+    expect(reasoned(chart('C', '1 CMaj7, 2 Edim7, 3 Dm7, 4 G7'), '2 Edim7')).toBe("E Whole-Half Diminished (d1): passing diminished: A7♭9 without its A, the Dm7's dominant")
+  })
+
+  it('d1 an auxiliary °7 decorates the chord', () => {
+    expect(reasoned(chart('C', '1 C7, 2 Cdim7, 3 C6'), '2 Cdim7')).toBe('C Whole-Half Diminished (d1): auxiliary diminished: it decorates the chord and returns to it')
+  })
+
+  it('d1 a passing °7 that hides no dominant of what follows', () => {
+    expect(reasoned(chart('C', '1 CMaj7, 2 F#dim7, 3 FMaj7'), '2 F#dim7')).toBe('F# Whole-Half Diminished (d1): passing diminished: a rootless dominant ♭9')
+  })
+
+  it('m7 vi and v of a minor key: the avoid note is a passing note, not "in the key"', () => {
+    expect(reasoned(chart('C', '1 CMaj7, 2 Am7, 3 FMaj7'), '2 Am7')).toBe("A Aeolian (m7): vi: Aeolian, the key's own notes (the ♭6 is a passing note)")
+    expect(reasoned(chart('Gm', '1 Gm, 2 Dm7, 3 Gm'), '2 Dm7')).toBe("D Phrygian (m7): v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)")
+  })
+
+  it('h2 the iiø7 of a minor ii–V: its ♭2 is a passing note', () => {
+    expect(reasoned(chart('Gm', '1 Am7b5, 2 D7, 3 Gm7'), '1 Am7b5')).toBe("A Locrian (h2): iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)")
+  })
+
+  it('m5 prints no note to the plan', () => {
+    expect(reasoned(chart('Gm', '1 Am7b5, 2 D7, 3 Gm'), '3 Gm')).toBe('G Dorian (m5): tonic minor: Dorian by convention')
+  })
+
+  it('s2 a resolving sus: the 4th is a chord tone; the derived ♭6 stays', () => {
+    expect(reasoned(chart('C', '1 Dm7, 2 G7sus4, 3 CMaj7'), '2 G7sus4')).toBe('G Mixolydian (s2): V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here')
+    expect(reasoned(chart('Cm', '1 Dm7b5, 2 G7sus4, 3 Cm7'), '2 G7sus4')).toMatch(/^G Mixolydian b6 \(s2\): /)
+  })
+
+  it('chord_scales.json: Aeolian on a minor chord is for vi, or a written ♭6 (iv is Dorian)', () => {
+    const json = JSON.parse(readFileSync('../chord_scales.json', 'utf8')) as { qualities: Record<string, { scale: string; note?: string }[]> }
+    for (const q of ['m', 'm7']) expect(json.qualities[q]?.find((o) => o.scale === 'Aeolian')?.note).toBe('when the chord is vi, or the symbol has a ♭6')
+  })
+})
+
+describe('hiddenDominant (R3a): the V7♭9 a °7 is, without its root', () => {
+  const at = (chord: string) => {
+    const r = readChord(chord)
+    if (!r) throw new Error(chord)
+    return { chord, root: r.root, pc: pcOf(r.root), family: familyOf(r.quality), quality: r.quality }
+  }
+
+  it('Wave: Bb°7 → Am7 D7 hides A7♭9, the D7’s dominant, not E7♭9', () => {
+    expect(hiddenDominant(at('Bbdim7').pc, at('Am7'), at('D7'))).toEqual({ root: 'A', target: 'D7', ii: 'Am7' })
+  })
+
+  it('C#°7 → Dm7 hides A7♭9', () => {
+    expect(hiddenDominant(at('C#dim7').pc, at('Dm7'), at('G7'))).toEqual({ root: 'A', target: 'Dm7' })
+  })
+
+  it('spells the dominant a fifth above its target', () => {
+    expect(hiddenDominant(at('Ddim7').pc, at('Ebm7'), at('Ab7'))).toEqual({ root: 'Bb', target: 'Ebm7' })
+  })
+
+  it('no match: null, and the fallback reason', () => {
+    expect(hiddenDominant(at('F#dim7').pc, at('FMaj7'), at('Dm7'))).toBeNull()
+    expect(hiddenDominant(at('F#dim7').pc, undefined, undefined)).toBeNull()
+    expect(passingReason(null)).toBe('passing diminished: a rootless dominant ♭9')
+    expect(passingReason({ root: 'A', target: 'D7', ii: 'Am7' })).toBe("passing diminished: A7♭9 without its A, the D7's dominant (Am7 its ii)")
   })
 })
 

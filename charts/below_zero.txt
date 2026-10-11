@@ -15,7 +15,7 @@ A1 | 3  | BbMaj7#5 | Bb Lydian Augmented       # from the symbol: #5
 A1 | 4  | Ebm7/Bb  | Eb Dorian                 # a borrowed minor chord: Dorian, its own key
 A1 | 5  | E7#11    | E Lydian Dominant         # tritone substitute: resolves down a half step to EbMaj7#5
 A1 | 6  | EbMaj7#5 | Eb Lydian Augmented       # from the symbol: #5
-A1 | 8  | Em7b5    | E Locrian                 # iiø7 of the ii–V to D minor: the b9 is in the key
+A1 | 8  | Em7b5    | E Locrian                 # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A1 | 8  | A7       | A Phrygian Dominant       # V7/iii in Bb: b9 and b13 are in the key
 A1 | 9  | Dm7      | D Dorian                  # ii of the ii–V to C minor
 A1 | 9  | G7       | G Mixolydian b6           # V7/ii in Bb: the b13 is in the key
@@ -28,7 +28,7 @@ A2 | 14 | Ebm7/Bb  | Eb Dorian                 # a borrowed minor chord: Dorian,
 A2 | 15 | E7#11    | E Lydian Dominant         # tritone substitute: resolves down a half step to EbMaj7#5
 A2 | 16 | EbMaj7#5 | Eb Lydian Augmented       # from the symbol: #5
 # area: D major (bars 18–28)
-A2 | 18 | Em7b5    | E Locrian                 # iiø7 of the ii–V to D: the b9 is in the key
+A2 | 18 | Em7b5    | E Locrian                 # iiø7 of D: Locrian, the key's own notes (its ♭2 is a passing note)
 A2 | 18 | A7       | A Mixolydian              # V7 of D: natural tensions
 A2 | 19 | DMaj7#5  | D Lydian Augmented        # from the symbol: #5
 A2 | 19 | A7       | A Mixolydian              # V7 of D: natural tensions
@@ -40,7 +40,7 @@ B  | 23 | Bbm7     | Bb Dorian                 # ii of Eb7b9: Dorian
 B  | 24 | Eb7b9    | Eb Half-Whole Diminished  # extended ii–V: a side-step, its own key; b9 from the symbol
 B  | 25 | Am7      | A Dorian                  # ii of D7: Dorian
 B  | 26 | D7       | D Mixolydian              # V7/IV in D: natural tensions
-B  | 26 | Ebdim7   | Eb Whole-Half Diminished  # vii°7 of Em11: the rootless V7b9 of the next chord
+B  | 26 | Ebdim7   | Eb Whole-Half Diminished  # vii°7 of Em11: B7♭9 without its root
 B  | 27 | Em11     | E Dorian                  # ii: Dorian, the key’s own notes
 B  | 27 | Dm11     | D Dorian                  # a borrowed minor chord: Dorian, its own key
 B  | 28 | Dbm7     | Db Dorian                 # ii of Gb7: Dorian
@@ -55,9 +55,9 @@ C  | 32 | Ebm7/Bb  | Eb Dorian                 # a borrowed minor chord: Dorian,
 C  | 33 | E7#11    | E Lydian Dominant         # tritone substitute: resolves down a half step to EbMaj7
 C  | 34 | EbMaj7   | Eb Lydian                 # IV: the #4 is the key’s 7th
 # area: Ab minor (bars 35–36)
-C  | 35 | Em7b5    | E Locrian                 # iiø7 of A7: the b9 is in the key
+C  | 35 | Em7b5    | E Locrian                 # iiø7 of A7: Locrian, the key's own notes (its ♭2 is a passing note)
 C  | 35 | A7       | A Lydian Dominant         # tritone substitute: resolves down a half step to Abm11
 C  | 36 | Abm11    | Ab Dorian                 # tonic minor: Dorian by convention
 # area: Bb major (bar 38)
-C  | 38 | Cm7b5    | C Locrian                 # iiø7 of the ii–V to Bb: the b9 is in the key
+C  | 38 | Cm7b5    | C Locrian                 # iiø7 of Bb: Locrian, the key's own notes (its ♭2 is a passing note)
 C  | 38 | F7       | F Mixolydian              # V7 of Bb: natural tensions

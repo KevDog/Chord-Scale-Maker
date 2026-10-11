@@ -10,24 +10,24 @@ source: Colorado Cookbook, p. 236
 # section | bar | chord | scale
 # area: G major (bars 1–32)
 A1 | 1  | GMaj7/D | G Ionian            # tonic: the 4th is in the key
-A1 | 3  | D7sus4  | D Mixolydian        # V7sus4 of GMaj7/D: natural tensions
+A1 | 3  | D7sus4  | D Mixolydian        # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 A1 | 5  | GMaj7/D | G Ionian            # tonic: the 4th is in the key
 A1 | 7  | D7sus4  | D Mixolydian        # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 A1 | 8  | D7      | D Mixolydian        # V7 in G, not resolving: natural tensions
 B1 | 9  | Dm7     | D Dorian            # ii of G7: Dorian
 B1 | 10 | G7      | G Mixolydian        # V7/IV in G: natural tensions
-B1 | 11 | C#m7b5  | C# Locrian          # #ivø7 in G: the b9 is in the key
+B1 | 11 | C#m7b5  | C# Locrian          # #ivø7 in G: Locrian, the key's own notes (its ♭2 is a passing note)
 B1 | 12 | Cm6     | C Dorian            # a minor sixth chord: Dorian
 B1 | 13 | Bm7     | B Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)
 B1 | 13 | Bb7     | Bb Lydian Dominant  # tritone substitute: resolves down a half step to Am7
 B1 | 14 | Am7     | A Dorian            # ii of the ii–V to G
 B1 | 14 | D7      | D Mixolydian        # V7 of G: natural tensions
 B1 | 15 | GMaj7/D | G Ionian            # tonic: the 4th is in the key
-B1 | 16 | D7sus4  | D Mixolydian        # V7sus4 of GMaj7/D: natural tensions
+B1 | 16 | D7sus4  | D Mixolydian        # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 @copy A1 A2 16
 B2 | 25 | Dm7     | D Dorian            # ii of G7: Dorian
 B2 | 26 | G7      | G Mixolydian        # V7/IV in G: natural tensions
-B2 | 27 | C#m7b5  | C# Locrian          # #ivø7 in G: the b9 is in the key
+B2 | 27 | C#m7b5  | C# Locrian          # #ivø7 in G: Locrian, the key's own notes (its ♭2 is a passing note)
 B2 | 28 | Cm6     | C Dorian            # a minor sixth chord: Dorian
 B2 | 29 | Bm7     | B Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)
 B2 | 29 | Bb7     | Bb Lydian Dominant  # tritone substitute: resolves down a half step to Am7
@@ -46,9 +46,9 @@ C  | 38 | Eb7     | Eb Mixolydian       # V7 of Ab: natural tensions
 C  | 39 | AbMaj7  | Ab Ionian           # tonic: the 4th is in the key
 # area: G major (bars 41–47)
 D  | 41 | Am7     | A Dorian            # ii of the ii–V to G
-D  | 42 | D7sus4  | D Mixolydian        # V7sus4 of GMaj7: natural tensions
+D  | 42 | D7sus4  | D Mixolydian        # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 D  | 43 | GMaj7   | G Ionian            # tonic: the 4th is in the key
-D  | 44 | Em7     | E Aeolian           # vi: the b13 is in the key
+D  | 44 | Em7     | E Aeolian           # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 D  | 45 | Am7/D   | D Mixolydian        # static sus: Mixolydian
-D  | 46 | D7sus4  | D Mixolydian        # V7sus4 of GMaj7: natural tensions
+D  | 46 | D7sus4  | D Mixolydian        # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 D  | 47 | GMaj7   | G Ionian            # tonic: the 4th is in the key

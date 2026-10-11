@@ -34,13 +34,13 @@ A2 | 13 | Dbm7  | Db Dorian                # ii of Gb7: Dorian
 A2 | 13 | Gb7   | Gb Mixolydian            # extended ii–V: a side-step, its own key
 A2 | 14 | Cm7   | C Dorian                 # ii of F7: Dorian
 A2 | 14 | F7    | F Mixolydian             # V7/I in Bb: natural tensions
-A2 | 15 | Dm7b5 | D Locrian                # iiø7 of G7#9: the b9 is in the key
+A2 | 15 | Dm7b5 | D Locrian                # iiø7 of G7#9: Locrian, the key's own notes (its ♭2 is a passing note)
 A2 | 16 | G7#9  | G Altered                # V7/ii in Bb: the b13 is in the key, b9, #9 and #11 from the symbol
-B  | 17 | Cm7b5 | C Locrian                # iiø7 of F7b9: the b9 is in the key
+B  | 17 | Cm7b5 | C Locrian                # iiø7 of F7b9: Locrian, the key's own notes (its ♭2 is a passing note)
 B  | 18 | F7b9  | F Phrygian Dominant      # extended ii–V: a side-step, its own key: b9 and b13 are in the key
 B  | 19 | Dm    | D Dorian                 # ii of G7b9: Dorian
 B  | 20 | G7b9  | G Phrygian Dominant      # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
-B  | 21 | Cm7b5 | C Locrian                # iiø7 of F7b9: the b9 is in the key
+B  | 21 | Cm7b5 | C Locrian                # iiø7 of F7b9: Locrian, the key's own notes (its ♭2 is a passing note)
 B  | 22 | F7b9  | F Half-Whole Diminished  # tritone substitute: resolves down a half step to Em; b9 from the symbol
 B  | 23 | Em    | E Dorian                 # ii of A7: Dorian
 B  | 23 | A7    | A Mixolydian             # extended ii–V: a side-step, its own key

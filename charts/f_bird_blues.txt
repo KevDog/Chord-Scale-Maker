@@ -5,7 +5,7 @@ key: F
 
 # section | bar | chord | scale
 A | 1  | FMaj7 | F Ionian             # tonic: the 4th is in the key
-A | 2  | Em7b5 | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
+A | 2  | Em7b5 | E Locrian            # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 2  | A7b9  | A Phrygian Dominant  # V7/vi in F: b9 and b13 are in the key
 A | 3  | Dm7   | D Dorian             # ii of the ii–V to C minor
 A | 3  | G7    | G Mixolydian         # V7/v in F: natural tensions

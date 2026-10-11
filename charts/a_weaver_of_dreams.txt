@@ -9,7 +9,7 @@ source: Colorado Cookbook, p. 262
 # section | bar | chord | scale
 # the "standard" chords; the lead sheet offers Bbm7 Eb7 | Am7 D7 | Abm7 Db7 | Gm7 C7 for bars 5–8
 A1 | 1  | CMaj7  | C Ionian             # tonic: the 4th is in the key
-A1 | 3  | Bm7b5  | B Locrian            # iiø7 of the ii–V to A minor: the b9 is in the key
+A1 | 3  | Bm7b5  | B Locrian            # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A1 | 4  | E7b9   | E Phrygian Dominant  # V7/vi in C: b9 and b13 are in the key
 A1 | 5  | Am7    | A Dorian             # ii of the ii–V to G minor
 A1 | 6  | D7     | D Mixolydian         # V7/v in C: natural tensions
@@ -24,7 +24,7 @@ A1 | 14 | D7     | D Mixolydian         # V7/V in C: natural tensions
 A1 | 15 | Dm7    | D Dorian             # ii of the ii–V to C
 A1 | 16 | G7     | G Mixolydian         # V7 of C: natural tensions
 A2 | 17 | CMaj7  | C Ionian             # tonic: the 4th is in the key
-A2 | 19 | Bm7b5  | B Locrian            # iiø7 of the ii–V to A minor: the b9 is in the key
+A2 | 19 | Bm7b5  | B Locrian            # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A2 | 20 | E7b9   | E Phrygian Dominant  # V7/vi in C: b9 and b13 are in the key
 A2 | 21 | Am7    | A Dorian             # ii of the ii–V to G minor
 A2 | 22 | D7     | D Mixolydian         # V7/v in C: natural tensions

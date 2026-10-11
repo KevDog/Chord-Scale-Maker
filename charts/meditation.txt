@@ -13,7 +13,7 @@ A | 3  | F#m7/B | B Mixolydian              # VII7sus4 before its dominant: Mixo
 A | 4  | B7b9   | B Phrygian Dominant       # VII7 in C, not resolving: b9 and b13 are in the key
 A | 5  | CMaj7  | C Ionian                  # tonic: the 4th is in the key
 A | 6  | Dm7    | D Dorian                  # ii: Dorian, the key’s own notes
-A | 6  | Ebdim7 | Eb Whole-Half Diminished  # vii°7 of Em7: the rootless V7b9 of the next chord
+A | 6  | Ebdim7 | Eb Whole-Half Diminished  # vii°7 of Em7: B7♭9 without its root
 A | 7  | Em7    | E Dorian                  # ii of the ii–V to D minor
 A | 8  | A7#5   | A Whole Tone              # V7/ii in C: the b13 is in the key, the #11 from the symbol
 A | 9  | Dm     | D Dorian                  # ii: Dorian, the key’s own notes
@@ -23,11 +23,11 @@ A | 13 | Em7    | E Dorian                  # ii of the ii–V to D minor
 A | 14 | A7#5   | A Whole Tone              # V7/ii in C: the b13 is in the key, the #11 from the symbol
 A | 15 | Dm7    | D Dorian                  # ii of G7#5: Dorian
 A | 16 | G7#5   | G Whole Tone              # V7/I in C: #11 and b13 from the symbol
-B | 17 | F#m7b5 | F# Locrian                # #ivø7 in C: the b9 is in the key
+B | 17 | F#m7b5 | F# Locrian                # #ivø7 in C: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 19 | Fm7    | F Dorian                  # ii of Bb7: Dorian
 B | 20 | Bb7    | Bb Mixolydian             # extended ii–V: a side-step, its own key
 B | 21 | Em7    | E Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
-B | 22 | Ebdim7 | Eb Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+B | 22 | Ebdim7 | Eb Whole-Half Diminished  # passing diminished: D7♭9 without its D, the G7#5's dominant (Dm7 its ii)
 B | 23 | Dm7    | D Dorian                  # ii of the ii–V to C
 B | 24 | G7#5   | G Whole Tone              # V7 of C: #11 and b13 from the symbol
 C | 25 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
@@ -35,7 +35,7 @@ C | 27 | F#m7/B | B Mixolydian              # VII7sus4 before its dominant: Mixo
 C | 28 | B7b9   | B Phrygian Dominant       # VII7 in C, not resolving: b9 and b13 are in the key
 C | 29 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
 C | 30 | Dm7    | D Dorian                  # ii: Dorian, the key’s own notes
-C | 30 | Ebdim7 | Eb Whole-Half Diminished  # vii°7 of Em7: the rootless V7b9 of the next chord
+C | 30 | Ebdim7 | Eb Whole-Half Diminished  # vii°7 of Em7: B7♭9 without its root
 C | 31 | Em7    | E Dorian                  # ii of the ii–V to D minor
 C | 32 | A7#5   | A Whole Tone              # V7/ii in C: the b13 is in the key, the #11 from the symbol
 D | 33 | Dm     | D Dorian                  # ii: Dorian, the key’s own notes

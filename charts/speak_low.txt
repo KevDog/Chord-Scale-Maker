@@ -47,7 +47,7 @@ A2 | 31 | FMaj7  | F Ionian             # tonic: the 4th is in the key
 B  | 33 | AbMaj7 | Ab Lydian            # ♭IIImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
 B  | 35 | Db7#11 | Db Lydian Dominant   # back door bVII7 to EbMaj7: the #11 is in the key, the 9 from the symbol
 B  | 37 | EbMaj7 | Eb Lydian            # ♭VIImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
-B  | 39 | Bm7b5  | B Locrian            # iiø7 of the ii–V to A minor: the b9 is in the key
+B  | 39 | Bm7b5  | B Locrian            # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B  | 39 | E7alt  | E Altered            # from the symbol: altered
 B  | 40 | Am7    | A Dorian             # ii of the ii–V to G minor
 B  | 40 | D7     | D Mixolydian b6      # V7/ii in F: the b13 is in the key

@@ -29,7 +29,7 @@
     ],
     "m": [
       { "root": "1",  "scale": "Dorian",            "default": true },
-      { "root": "1",  "scale": "Aeolian",           "note": "when the chord is vi or iv" },
+      { "root": "1",  "scale": "Aeolian",           "note": "when the chord is vi, or the symbol has a ♭6" },
       { "root": "1",  "scale": "Phrygian",          "note": "v of a minor key" },
       { "root": "1",  "scale": "Dorian b2",         "note": "Phrygian with a natural 6" },
       { "root": "1",  "scale": "Minor Pentatonic", "level": "basic" },
@@ -61,7 +61,7 @@
     ],
     "m7": [
       { "root": "1",  "scale": "Dorian",            "default": true },
-      { "root": "1",  "scale": "Aeolian",           "note": "when the chord is vi or iv" },
+      { "root": "1",  "scale": "Aeolian",           "note": "when the chord is vi, or the symbol has a ♭6" },
       { "root": "1",  "scale": "Phrygian",          "note": "v of a minor key" },
       { "root": "1",  "scale": "Dorian b2",         "note": "Phrygian with a natural 6" },
       { "root": "1",  "scale": "Minor Pentatonic", "level": "basic" },

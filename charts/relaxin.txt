@@ -25,7 +25,7 @@ B | 19 | AbMaj7 | Ab Ionian                # tonic: the 4th is in the key
 B | 21 | Ebm7   | Eb Dorian                # ii of the ii–V to Db
 B | 22 | Ab7    | Ab Mixolydian            # V7/IV in Ab: natural tensions
 B | 23 | DbMaj7 | Db Lydian                # IV: the #4 is the key’s 7th
-B | 26 | Ddim7  | D Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+B | 26 | Ddim7  | D Whole-Half Diminished  # passing diminished: a rootless dominant ♭9
 B | 27 | AbMaj7 | Ab Ionian                # tonic: the 4th is in the key
 B | 28 | F7     | F Mixolydian             # extended dominant: V7 of Bb7
 B | 29 | Bb7    | Bb Mixolydian            # II7 in Ab, not resolving: natural tensions

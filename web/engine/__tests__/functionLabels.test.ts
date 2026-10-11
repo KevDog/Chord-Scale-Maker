@@ -118,7 +118,7 @@ describe('L2 a diatonic chord acting as a related ii prints its degree (major ke
       scale: 'B Locrian',
       rule: 'h2',
       fn: 'iiø7 of the ii–V to A minor; also viiø7 of C',
-      reason: 'iiø7 of the ii–V to A minor: the b9 is in the key',
+      reason: "iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)",
       fallback: undefined,
     })
   })
@@ -269,7 +269,7 @@ describe('L4 diminished numerals by direction', () => {
       scale: 'C# Whole-Half Diminished',
       rule: 'd1',
       fn: 'vii°7 of Dm7',
-      reason: 'vii°7 of Dm7: the rootless V7b9 of the next chord',
+      reason: 'vii°7 of Dm7: A7♭9 without its root',
       fallback: undefined,
     })
     expect(['Dm7 | D#dim7 | Em7', 'Fmaj7 | F#dim7 | G', 'G7 | G#dim7 | Am7'].map((c) => {

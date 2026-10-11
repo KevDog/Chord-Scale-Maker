@@ -18,12 +18,12 @@ A | 7  | Dm7    | D Dorian                  # ii of the ii–V to C minor
 A | 8  | G7b9   | G Phrygian Dominant       # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
 B | 9  | Cm     | C Dorian                  # ii: Dorian, the key’s own notes
 B | 9  | Cm/Bb  | C Dorian                  # ii: Dorian, the key’s own notes
-B | 10 | Am7b5  | A Locrian                 # iiø7 of the ii–V to G minor: the b9 is in the key
+B | 10 | Am7b5  | A Locrian                 # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 10 | D7alt  | D Altered                 # from the symbol: altered
-B | 11 | Gm     | G Aeolian                 # vi: the b13 is in the key
-B | 11 | Gm/F   | G Aeolian                 # vi: the b13 is in the key
+B | 11 | Gm     | G Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+B | 11 | Gm/F   | G Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 # area: D major (bars 12–15)
-B | 12 | Em7b5  | E Locrian                 # iiø7 of the ii–V to D: the b9 is in the key
+B | 12 | Em7b5  | E Locrian                 # iiø7 of D: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 12 | A7alt  | A Altered                 # from the symbol: altered
 B | 13 | DMaj7  | D Ionian                  # tonic: the 4th is in the key
 B | 14 | Em7    | E Dorian                  # ii of the ii–V to D minor

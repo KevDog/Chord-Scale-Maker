@@ -10,7 +10,7 @@ source: Colorado Cookbook, p. 261
 # section | bar | chord | scale
 # area: D major (bars 1–24)
 A1 | 1  | DMaj7  | D Ionian                  # tonic: the 4th is in the key
-A1 | 2  | Bbdim7 | Bb Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+A1 | 2  | Bbdim7 | Bb Whole-Half Diminished  # passing diminished: A7♭9 without its A, the D7's dominant (Am7 its ii)
 A1 | 3  | Am7    | A Dorian                  # ii of the ii–V to G
 A1 | 4  | D7     | D Mixolydian              # V7/IV in D: natural tensions
 A1 | 5  | GMaj7  | G Lydian                  # IV: the #4 is the key’s 7th
@@ -35,6 +35,6 @@ B  | 29 | Fm7    | F Dorian                  # ii of the ii–V to Eb
 B  | 30 | Bb7    | Bb Mixolydian             # V7 of Eb: natural tensions
 B  | 31 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 # area: D major (bars 32–44)
-B  | 32 | Em7b5  | E Locrian                 # iiø7 of the ii–V to D: the b9 is in the key
+B  | 32 | Em7b5  | E Locrian                 # iiø7 of D: Locrian, the key's own notes (its ♭2 is a passing note)
 B  | 32 | A7b9   | A Half-Whole Diminished   # V7 of D: the b9 from the symbol
 @copy A1 C 32

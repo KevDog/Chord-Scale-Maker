@@ -15,7 +15,7 @@ A1 | 2  | D7b9   | D Phrygian Dominant  # V7/ii in F: the b13 is in the key, the
 A1 | 3  | Gm7    | G Dorian             # ii of C7: Dorian
 A1 | 4  | C7     | C Mixolydian         # V7/I in F: natural tensions
 A1 | 5  | Am     | A Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
-A1 | 6  | Dm     | D Aeolian            # vi: the b13 is in the key
+A1 | 6  | Dm     | D Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A1 | 7  | Abm7   | Ab Dorian            # ii of Db7: Dorian
 A1 | 7  | Db7    | Db Mixolydian        # extended ii–V: a side-step, its own key
 A1 | 8  | Gm7    | G Dorian             # ii of the ii–V to F
@@ -27,7 +27,7 @@ A2 | 10 | D7b9   | D Phrygian Dominant  # V7/ii in F: the b13 is in the key, the
 A2 | 11 | Gm7    | G Dorian             # ii of C7: Dorian
 A2 | 12 | C7     | C Mixolydian         # V7/I in F: natural tensions
 A2 | 13 | Am     | A Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
-A2 | 14 | Dm     | D Aeolian            # vi: the b13 is in the key
+A2 | 14 | Dm     | D Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A2 | 15 | Cm7    | C Dorian             # ii of the ii–V to Bb
 A2 | 16 | F7     | F Mixolydian         # V7/IV in F: natural tensions
 B  | 17 | BbMaj7 | Bb Lydian            # IV: the #4 is the key’s 7th
@@ -53,7 +53,7 @@ C  | 25 | Bb7    | Bb Lydian Dominant   # tritone substitute: resolves down a ha
 C  | 26 | Am7    | A Dorian             # ii of the ii–V to G minor
 C  | 26 | D7b9   | D Phrygian Dominant  # V7/ii in F: the b13 is in the key, the b9 from the symbol
 C  | 27 | Gm7    | G Dorian             # ii: Dorian, the key’s own notes
-C  | 28 | Bm7b5  | B Locrian            # #ivø7 in F: the b9 is in the key
+C  | 28 | Bm7b5  | B Locrian            # #ivø7 in F: Locrian, the key's own notes (its ♭2 is a passing note)
 C  | 28 | Bb7    | Bb Lydian Dominant   # tritone substitute: resolves down a half step to Am7
 C  | 29 | Am7    | A Dorian             # ii of the ii–V to G minor
 C  | 29 | D7     | D Mixolydian b6      # V7/ii in F: the b13 is in the key

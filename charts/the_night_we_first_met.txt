@@ -4,7 +4,7 @@ style: Ballad
 key: Fm
 form: AABC, 33 bars
 source: Colorado Cookbook, p. 237
-# analysis: 2026-10-08, rules v1; F minor
+# analysis: 2026-10-11, rules v1; F minor
 
 # section | bar | chord | scale
 # area: F minor (bars 1–16)
@@ -18,7 +18,7 @@ A1 | 5  | Fm7     | F Dorian                  # tonic minor: Dorian by conventio
 A1 | 5  | Fm7/Eb  | F Dorian                  # tonic minor: Dorian by convention
 A1 | 6  | DbMaj7  | Db Lydian                 # a non-tonic major chord: Lydian
 A1 | 7  | Db7     | Db Lydian Dominant        # bVI7 in F minor, not resolving: the #11 is in the key
-A1 | 8  | Gm7b5   | G Locrian                 # iiø7 of the ii–V to F minor: the b9 is in the key
+A1 | 8  | Gm7b5   | G Locrian                 # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A1 | 8  | C7alt   | C Altered                 # from the symbol: altered
 A2 | 9  | Fm7     | F Dorian                  # tonic minor: Dorian by convention
 A2 | 10 | Bbm7    | Bb Dorian                 # iv: Dorian, the key’s own notes
@@ -36,7 +36,7 @@ A2 | 16 | Fm      | F Dorian                  # tonic minor: Dorian by conventio
 B  | 17 | Dm7     | D Dorian                  # ii of the ii–V to C
 B  | 17 | G7      | G Mixolydian              # V7 of C: natural tensions
 B  | 18 | CMaj7   | C Ionian                  # tonic: the 4th is in the key
-B  | 18 | Am7     | A Aeolian                 # vi: the b13 is in the key
+B  | 18 | Am7     | A Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 B  | 19 | Dm7     | D Dorian                  # ii of the ii–V to C
 B  | 19 | G7      | G Mixolydian              # V7 of C: natural tensions
 B  | 20 | CMaj7   | C Ionian                  # tonic: the 4th is in the key
@@ -45,10 +45,10 @@ B  | 21 | FMaj7   | F Lydian                  # IV: the #4 is the key’s 7th
 B  | 21 | FMaj7/E | E Phrygian                # from the symbol: sus b9
 B  | 22 | FMaj7/D | F Lydian                  # IV: the #4 is the key’s 7th
 B  | 22 | FMaj7/C | F Lydian                  # IV: the #4 is the key’s 7th
-B  | 23 | Bm7b5   | B Locrian                 # iiø7 of the ii–V to A minor: the b9 is in the key
+B  | 23 | Bm7b5   | B Locrian                 # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B  | 23 | E7b13   | E Phrygian Dominant       # V7/vi in C: b9 and b13 are in the key
-B  | 24 | Am7     | A Aeolian                 # vi: the b13 is in the key
-B  | 24 | Abdim7  | Ab Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+B  | 24 | Am7     | A Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+B  | 24 | Abdim7  | Ab Whole-Half Diminished  # passing diminished: G7♭9 without its G, the C7#11's dominant (Gm7 its ii)
 # area: F minor (bars 25–33)
 B  | 25 | Gm7     | G Dorian                  # ii of the ii–V to F minor
 B  | 25 | C7#11   | C Lydian Dominant         # V7 of F minor: 9, #11 and 13 from the symbol

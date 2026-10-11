@@ -18,5 +18,5 @@ B | 11 | Abm7   | Ab Dorian            # ii of the ii–V to Gb minor
 B | 12 | Db7    | Db Lydian Dominant   # V7/bii in F minor: the #11 is in the key
 B | 13 | Gbm7   | Gb Dorian            # ii of Cb7: Dorian
 B | 14 | Cb7    | Cb Mixolydian        # extended ii–V: a side-step, its own key
-B | 15 | Gm7b5  | G Locrian            # iiø7 of the ii–V to F minor: the b9 is in the key
+B | 15 | Gm7b5  | G Locrian            # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 16 | C7b9   | C Phrygian Dominant  # V7 of F minor: b9 and b13 are in the key

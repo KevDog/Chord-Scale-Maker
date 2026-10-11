@@ -41,14 +41,14 @@ A2 | 15 | E7     | E Phrygian Dominant  # V7 of A minor: b9 and b13 are in the k
 A2 | 16 | Am     | A Dorian             # tonic minor: Dorian by convention
 # area: C major (bars 17–30)
 B  | 17 | Dm7    | D Dorian             # ii of the ii–V to C
-B  | 18 | G7sus4 | G Mixolydian         # V7sus4 of C6: natural tensions
+B  | 18 | G7sus4 | G Mixolydian         # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 B  | 19 | C6     | C Ionian             # tonic: the 4th is in the key
 B  | 19 | F7     | F Lydian Dominant    # tritone substitute: resolves down a half step to Em7
 B  | 20 | Em7    | E Dorian             # ii of the ii–V to D minor
 B  | 20 | A7alt  | A Altered            # from the symbol: altered
 B  | 21 | Dm7    | D Dorian             # ii of G7sus4: Dorian
 B  | 22 | G7sus4 | G Mixolydian         # static sus: Mixolydian
-B  | 23 | Bm7b5  | B Locrian            # iiø7 of E7: the b9 is in the key
+B  | 23 | Bm7b5  | B Locrian            # iiø7 of E7: Locrian, the key's own notes (its ♭2 is a passing note)
 B  | 24 | E7     | E Phrygian Dominant  # V7/vi in C: b9 and b13 are in the key
 C  | 25 | Bm7    | B Dorian             # ii of the ii–V to A minor
 C  | 25 | E7     | E Phrygian Dominant  # V7/vi in C: b9 and b13 are in the key

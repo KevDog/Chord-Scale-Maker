@@ -35,12 +35,12 @@ A2    | 15 | CMaj7  | C Ionian                 # tonic: the 4th is in the key
 A2    | 16 | CMaj7  | C Ionian
 A2    | 16 | B7     | B Phrygian Dominant      # V7/iii in C: b9 and b13 are in the key
 B     | 17 | Em     | E Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
-B     | 18 | F#m7b5 | F# Locrian               # iiø7 of the ii–V to E minor: the b9 is in the key
+B     | 18 | F#m7b5 | F# Locrian               # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B     | 18 | B7alt  | B Altered                # from the symbol: altered
 B     | 19 | Em7    | E Dorian                 # ii of the ii–V to D minor
 B     | 20 | A7     | A Mixolydian b6          # V7/ii in C: the b13 is in the key
 B     | 21 | Dm7    | D Dorian                 # ii: Dorian, the key’s own notes
-B     | 22 | Em7b5  | E Locrian                # iiø7 of A7alt: the b9 is in the key
+B     | 22 | Em7b5  | E Locrian                # iiø7 of A7alt: Locrian, the key's own notes (its ♭2 is a passing note)
 B     | 22 | A7alt  | A Altered                # from the symbol: altered
 B     | 23 | D7     | D Mixolydian             # II7 in C, not resolving: natural tensions
 B     | 24 | Dm7    | D Dorian                 # ii of the ii–V to C

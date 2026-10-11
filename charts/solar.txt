@@ -5,7 +5,7 @@ style: Medium up
 key: Cm
 form: A, 12 bars
 source: Colorado Cookbook, p. 207
-# analysis: 2026-10-08, rules v1; C minor
+# analysis: 2026-10-11, rules v1; C minor
 
 # section | bar | chord | scale
 # area: C minor (bar 1)
@@ -23,5 +23,5 @@ A | 10 | Ebm7   | Eb Dorian   # ii of the ii–V to Db
 A | 10 | Ab7alt | Ab Altered  # from the symbol: altered
 A | 11 | DbMaj7 | Db Ionian   # tonic: the 4th is in the key
 # area: C minor (bar 12)
-A | 12 | Dm7b5  | D Locrian   # iiø7 of the ii–V to C minor: the b9 is in the key
+A | 12 | Dm7b5  | D Locrian   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 12 | G7alt  | G Altered   # from the symbol: altered

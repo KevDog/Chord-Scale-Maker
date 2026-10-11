@@ -5,7 +5,7 @@ key: Bb
 
 # section | bar | chord | scale
 A | 1  | BbMaj7 | Bb Ionian            # tonic: the 4th is in the key
-A | 2  | Am7b5  | A Locrian            # iiø7 of the ii–V to G minor: the b9 is in the key
+A | 2  | Am7b5  | A Locrian            # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 2  | D7b9   | D Phrygian Dominant  # V7/vi in Bb: b9 and b13 are in the key
 A | 3  | Gm7    | G Dorian             # ii of the ii–V to F minor
 A | 3  | C7     | C Mixolydian         # V7/v in Bb: natural tensions

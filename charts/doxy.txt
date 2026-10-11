@@ -23,7 +23,7 @@ A | 7  | C7    | C Mixolydian             # V7 of V7: the dominant of the domina
 A | 8  | F7    | F Mixolydian             # extended dominant: V7 of Bb7
 B | 9  | Bb7   | Bb Mixolydian            # extended dominant: V7 of Eb7
 B | 11 | Eb7   | Eb Lydian Dominant       # IV7 in Bb, not resolving: the #11 is in the key
-B | 12 | Edim7 | E Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+B | 12 | Edim7 | E Whole-Half Diminished  # passing diminished: a rootless dominant ♭9
 C | 13 | Bb7   | Bb Mixolydian            # extended dominant: V7 of Eb7
 C | 13 | Eb7   | Eb Lydian Dominant       # tritone substitute: resolves down a half step to D7
 C | 14 | D7    | D Mixolydian             # extended dominant: each one falls a fifth into the next: natural tensions

@@ -1,4 +1,4 @@
-import { rootName } from '../pitch'
+import { rootName, shiftBy } from '../pitch'
 import { degree, diatonic, hasRelatedII, impliedDiatonic, isDominantLike, type Key, keyText, makeKey, reference } from './keys'
 import { ownNumeral, roman } from './degrees'
 import { downFifth, downHalf, type Entry, type Family, interval, nextOf, prevOf } from './stream'
@@ -287,9 +287,9 @@ function minor(ctx: Context, i: number): Decision {
   }
   if (key.minor && d === 0) return { scale: named(e, NAME.dorian), rule: 'm5', fn, reason: 'tonic minor: Dorian by convention' }
   if (diatonic(e, key)) {
-    if (!key.minor && d === 9) return { scale: named(e, NAME.aeolian), rule: 'm7', fn, reason: 'vi: the b13 is in the key' }
+    if (!key.minor && d === 9) return { scale: named(e, NAME.aeolian), rule: 'm7', fn, reason: "vi: Aeolian, the key's own notes (the ♭6 is a passing note)" }
     if (!key.minor && d === 4) return { scale: named(e, NAME.dorian), rule: 'm9', fn, reason: 'iii: Dorian (its Phrygian would put a b9 over the root)' }
-    if (key.minor && d === 7) return { scale: named(e, NAME.phrygian), rule: 'm7', fn, reason: 'v of a minor key: the b9 is in the key' }
+    if (key.minor && d === 7) return { scale: named(e, NAME.phrygian), rule: 'm7', fn, reason: "v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)" }
     return { scale: named(e, NAME.dorian), rule: 'm7', fn, reason: `${roman(e, key)}: Dorian, the key’s own notes` }
   }
   return { scale: named(e, NAME.dorian), rule: 'm8', fn: `borrowed ${roman(e, key)} in ${keyText(key)}`, reason: 'a borrowed minor chord: Dorian, its own key', fallback: true }
@@ -305,8 +305,32 @@ function halfDiminished(ctx: Context, i: number): Decision {
   const to = related && end?.root && n && downFifth(n, end) && (end.family === 'minor' || end.family === 'major') ? keyText(makeKey(end.root, end.family === 'minor')) : null
   if (!related && !key.minor && degree(e, key) === 2) return { scale: named(e, NAME.locrian), rule: 'h2', fn: 'iiø7, borrowed', reason: `iiø7, borrowed from ${keyText(key)} minor: Locrian` }
   const fn = to ? `iiø7 of the ii–V to ${to}` : related ? `iiø7 of ${n?.chord}` : `${roman(e, key)}ø7 in ${keyText(key)}`
-  return { scale: named(e, NAME.locrian), rule: 'h2', fn: related ? `${fn}${alsoDegree(e, key)}` : fn, reason: `${fn}: the b9 is in the key`, ...(related ? {} : { fallback: true as const }) }
+  const why = `${to ? `iiø7 of ${to}` : fn}: Locrian, the key's own notes (its ♭2 is a passing note)`
+  return { scale: named(e, NAME.locrian), rule: 'h2', fn: related ? `${fn}${alsoDegree(e, key)}` : fn, reason: why, ...(related ? {} : { fallback: true as const }) }
 }
+
+type Neighbour = Pick<Entry, 'chord' | 'root' | 'pc' | 'family' | 'quality'>
+/** the dominant a °7 hides, without its root: its root, the chord it is the V of, and the ii that stands between */
+export type Hidden = Readonly<{ root: string; target: string; ii?: string }>
+
+/**
+ * R3a: of the four dominants a half step below the °7's notes, the one that is the V of the next chord, or of the
+ * chord after it when the next is that chord's related ii (Wave: B♭°7 → Am7 D7 hides A7♭9, not E7♭9); spelled a
+ * fifth above its target. null when none is.
+ */
+export function hiddenDominant(dim: number, next: Neighbour | undefined, after: Neighbour | undefined): Hidden | null {
+  const hides = (t: Neighbour | undefined): t is Neighbour & { root: NonNullable<Entry['root']> } =>
+    !!t?.root && t.pc >= 0 && [0, 3, 6, 9].some((k) => interval(dim + k - 1, t.pc) === 5)
+  const fifthAbove = (t: Neighbour & { root: NonNullable<Entry['root']> }): string => rootName(shiftBy(t.root, 4, 7))
+  if (hides(next)) return { root: fifthAbove(next), target: next.chord }
+  const ii = !!next && (next.family === 'minor' || next.family === 'halfdim') && isDominantLike(after as Entry) && !!after && interval(next.pc, after.pc) === 5
+  if (ii && hides(after)) return { root: fifthAbove(after), target: after.chord, ii: next.chord }
+  return null
+}
+
+/** a passing °7's reason: the dominant it hides, or (none) a rootless dominant ♭9 */
+export const passingReason = (h: Hidden | null): string =>
+  h ? `passing diminished: ${h.root}7♭9 without its ${h.root}, the ${h.target}'s dominant${h.ii ? ` (${h.ii} its ii)` : ''}` : 'passing diminished: a rootless dominant ♭9'
 
 function diminished(ctx: Context, i: number): Decision {
   const e = ctx.stream[i] as Entry
@@ -314,8 +338,13 @@ function diminished(ctx: Context, i: number): Decision {
   const scale = named(e, NAME.wholeHalf)
   // auxiliary: the next chord is on its own root, whatever came before (C7 | C°7 | C6, G°7 | G7)
   if (n && n.pc === e.pc) return { scale, rule: 'd1', fn: 'auxiliary diminished', reason: 'auxiliary diminished: it decorates the chord and returns to it' }
-  const fn = n && interval(e.pc, n.pc) === 1 && (n.family === 'major' || n.family === 'minor') ? `vii°7 of ${n.chord}` : 'passing diminished'
-  return { scale, rule: 'd1', fn, reason: `${fn}: the rootless V7b9 of the next chord`, ...(fn === 'passing diminished' ? { fallback: true as const } : {}) }
+  const hidden = hiddenDominant(e.pc, n, nextOf(ctx.stream, ctx.stream[i]?.next))
+  if (n && interval(e.pc, n.pc) === 1 && (n.family === 'major' || n.family === 'minor')) {
+    // a vii°7 always hides its target's V: the °7's root is that V's 3rd
+    const fn = `vii°7 of ${n.chord}`
+    return { scale, rule: 'd1', fn, reason: `${fn}: ${hidden?.root ?? 'its V'}7♭9 without its root` }
+  }
+  return { scale, rule: 'd1', fn: 'passing diminished', reason: passingReason(hidden), fallback: true }
 }
 
 function sus(ctx: Context, i: number): Decision {
@@ -330,7 +359,7 @@ function sus(ctx: Context, i: number): Decision {
       scale: named(e, b13 ? NAME.mixolydianB6 : NAME.mixolydian),
       rule: 's2',
       fn: `V7sus4 of ${n.chord}`,
-      reason: b13 ? `V7sus4 of ${n.chord}: the b13 is in the key` : `V7sus4 of ${n.chord}: natural tensions`,
+      reason: b13 ? `V7sus4 of ${n.chord}: the b13 is in the key` : 'V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here',
     }
   }
   if (!ctx.modal && n && n.pc === e.pc && n.family === 'dominant') {

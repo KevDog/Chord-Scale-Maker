@@ -4,31 +4,31 @@ style: Up
 key: Cm
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 206
-# analysis: 2026-10-08, rules v1; C minor
+# analysis: 2026-10-11, rules v1; C minor
 
 # section | bar | chord | scale
 # the horn intro is a melody line (no chords), so it is left out
 # area: C minor (bars 1–15)
 A1 | 1  | Cm     | C Dorian                  # tonic minor: Dorian by convention
-A1 | 2  | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+A1 | 2  | Dm7b5  | D Locrian                 # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A1 | 2  | G7b9   | G Phrygian Dominant       # V7 of C minor: b9 and b13 are in the key
 A1 | 3  | Cm     | C Dorian                  # tonic minor: Dorian by convention
-A1 | 4  | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+A1 | 4  | Dm7b5  | D Locrian                 # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A1 | 4  | G7b9   | G Phrygian Dominant       # V7 of C minor: b9 and b13 are in the key
 A1 | 5  | Cm     | C Dorian                  # tonic minor: Dorian by convention
-A1 | 6  | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+A1 | 6  | Dm7b5  | D Locrian                 # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A1 | 6  | G7b9   | G Phrygian Dominant       # V7 of C minor: b9 and b13 are in the key
 A1 | 7  | Cm     | C Dorian                  # tonic minor: Dorian by convention
-A1 | 8  | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+A1 | 8  | Dm7b5  | D Locrian                 # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A1 | 8  | G7b9   | G Phrygian Dominant       # V7 of C minor: b9 and b13 are in the key
 A2 | 9  | Cm     | C Dorian                  # tonic minor: Dorian by convention
-A2 | 10 | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+A2 | 10 | Dm7b5  | D Locrian                 # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A2 | 10 | G7b9   | G Phrygian Dominant       # V7 of C minor: b9 and b13 are in the key
 A2 | 11 | Cm     | C Dorian                  # tonic minor: Dorian by convention
-A2 | 12 | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+A2 | 12 | Dm7b5  | D Locrian                 # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A2 | 12 | G7b9   | G Phrygian Dominant       # V7 of C minor: b9 and b13 are in the key
 A2 | 13 | Cm     | C Dorian                  # tonic minor: Dorian by convention
-A2 | 14 | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+A2 | 14 | Dm7b5  | D Locrian                 # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A2 | 14 | G7b9   | G Phrygian Dominant       # V7 of C minor: b9 and b13 are in the key
 A2 | 15 | Cm     | C Dorian                  # tonic minor: Dorian by convention
 # area: Eb major (bars 16–22)
@@ -39,9 +39,9 @@ B  | 18 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
 B  | 19 | Gm7    | G Dorian                  # ii of the ii–V to F minor
 B  | 20 | C7     | C Mixolydian b6           # V7/ii in Eb: the b13 is in the key
 B  | 21 | Fm7    | F Dorian                  # ii: Dorian, the key’s own notes
-B  | 22 | Am7b5  | A Locrian                 # iiø7 of D7: the b9 is in the key
+B  | 22 | Am7b5  | A Locrian                 # iiø7 of D7: Locrian, the key's own notes (its ♭2 is a passing note)
 B  | 22 | D7     | D Phrygian Dominant       # V7/iii in Eb: b9 and b13 are in the key
 # area: C minor (bars 23–32)
-B  | 23 | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+B  | 23 | Dm7b5  | D Locrian                 # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B  | 24 | G7b9   | G Phrygian Dominant       # V7 of C minor: b9 and b13 are in the key
 @copy A1 A3 24

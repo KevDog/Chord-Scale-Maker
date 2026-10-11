@@ -26,7 +26,7 @@ A    | 7  | Db7       | Db Mixolydian             # V7/IV in Db: natural tension
 A    | 8  | Gm7       | G Dorian                  # ii of the ii–V to F minor
 A    | 8  | C7        | C Phrygian Dominant       # V7/iii in Db: b9 and b13 are in the key
 A    | 9  | Fm        | F Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
-A    | 10 | Bbm       | Bb Aeolian                # vi: the b13 is in the key
+A    | 10 | Bbm       | Bb Aeolian                # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A    | 11 | Ebm7      | Eb Dorian                 # ii of the ii–V to Db
 A    | 12 | Ab7       | Ab Mixolydian             # V7 of Db: natural tensions
 A    | 13 | DbMaj7    | Db Ionian                 # tonic: the 4th is in the key

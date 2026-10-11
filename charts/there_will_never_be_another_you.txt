@@ -4,14 +4,14 @@ style: Medium up
 key: Eb
 form: AB, 32 bars
 source: Colorado Cookbook, p. 242
-# analysis: 2026-10-08, rules v1; Eb
+# analysis: 2026-10-11, rules v1; Eb
 
 # section | bar | chord | scale
 # the "standard" chords; the lead sheet offers Ebm7 Ab7 Dm7 G7 (bars 3–4), Db7#11 (14) and F#m7 B7 Fm7 Bb7 (15–16)
 A | 1  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
-A | 3  | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+A | 3  | Dm7b5  | D Locrian                 # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 4  | G7b9   | G Phrygian Dominant       # V7/vi in Eb: b9 and b13 are in the key
-A | 5  | Cm     | C Aeolian                 # vi: the b13 is in the key
+A | 5  | Cm     | C Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A | 7  | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
 A | 8  | Eb7    | Eb Mixolydian             # V7/IV in Eb: natural tensions
 A | 9  | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
@@ -22,9 +22,9 @@ A | 13 | F7#11  | F Lydian Dominant         # V7/V in Eb: the #11 from the symbo
 A | 15 | Fm7    | F Dorian                  # ii of the ii–V to Eb
 A | 16 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
 B | 17 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
-B | 19 | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: the b9 is in the key
+B | 19 | Dm7b5  | D Locrian                 # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 20 | G7b9   | G Phrygian Dominant       # V7/vi in Eb: b9 and b13 are in the key
-B | 21 | Cm     | C Aeolian                 # vi: the b13 is in the key
+B | 21 | Cm     | C Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 B | 23 | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
 B | 24 | Eb7    | Eb Mixolydian             # V7/IV in Eb: natural tensions
 B | 25 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th

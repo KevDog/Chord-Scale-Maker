@@ -5,7 +5,7 @@ style: Christmas
 key: F
 form: BBC, 24 bars
 source: Colorado Cookbook, p. 280
-# analysis: 2026-10-08, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 # the 16-bar verse (F | Bb | C7 | F …) is left out
@@ -34,11 +34,11 @@ B2 | 14 | G7      | G Mixolydian              # II7 in F, not resolving: natural
 B2 | 15 | Gm7     | G Dorian                  # ii of the ii–V to F
 B2 | 15 | C7      | C Mixolydian              # V7 of F: natural tensions
 B2 | 16 | FMaj7   | F Ionian                  # tonic: the 4th is in the key
-C  | 17 | Gm7/C   | C Mixolydian              # V7sus4 of FMaj7/C: natural tensions
+C  | 17 | Gm7/C   | C Mixolydian              # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 C  | 18 | FMaj7/C | F Ionian                  # tonic: the 4th is in the key
-C  | 19 | Gm7/C   | C Mixolydian              # V7sus4 of FMaj7/C: natural tensions
+C  | 19 | Gm7/C   | C Mixolydian              # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 C  | 20 | FMaj7/C | F Ionian                  # tonic: the 4th is in the key
-C  | 21 | Gm7/C   | C Mixolydian              # V7sus4 of FMaj7/C: natural tensions
+C  | 21 | Gm7/C   | C Mixolydian              # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 C  | 22 | FMaj7/C | F Ionian                  # tonic: the 4th is in the key
 C  | 23 | Gm7/C   | C Mixolydian              # static sus: Mixolydian
 C  | 24 | Gb7/C   | Gb Lydian Dominant        # tritone substitute: resolves down a half step to FMaj7

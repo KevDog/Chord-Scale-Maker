@@ -5,7 +5,7 @@ style: Medium
 key: Cm
 form: AABC, 50 bars
 source: Colorado Cookbook, p. 217
-# analysis: 2026-10-08, rules v1; C minor
+# analysis: 2026-10-11, rules v1; C minor
 
 # section | bar | chord | scale
 A1 | 1  | Cm        | C Dorian            # tonic minor: Dorian by convention
@@ -26,9 +26,9 @@ A1 | 12 | Bbm       | Bb Dorian           # a borrowed minor chord: Dorian, its 
 A1 | 13 | A7#11     | A Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
 A1 | 14 | Bbm       | Bb Dorian           # a borrowed minor chord: Dorian, its own key
 @copy A1 A2 14
-B  | 29 | Am7b5     | A Locrian           # viø7 in C minor: the b9 is in the key
+B  | 29 | Am7b5     | A Locrian           # viø7 in C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B  | 30 | Ab7       | Ab Lydian Dominant  # tritone substitute: resolves down a half step to Gm
-B  | 31 | Gm        | G Phrygian          # v of a minor key: the b9 is in the key
+B  | 31 | Gm        | G Phrygian          # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
 B  | 32 | Gb7       | Gb Lydian Dominant  # tritone substitute: resolves down a half step to Fm
 B  | 33 | Fm        | F Dorian            # ii of Bb7alt: Dorian
 B  | 34 | Bb7alt    | Bb Altered          # from the symbol: altered

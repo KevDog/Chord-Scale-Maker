@@ -4,7 +4,7 @@ style: Christmas
 key: Eb
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 279
-# analysis: 2026-10-08, rules v1; Eb
+# analysis: 2026-10-11, rules v1; Eb
 
 # section | bar | chord | scale
 # area: Eb major (bars 1–6)
@@ -19,10 +19,10 @@ A1 | 3  | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
 A1 | 3  | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
 A1 | 4  | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
 A1 | 4  | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
-A1 | 5  | Cm7    | C Aeolian            # vi: the b13 is in the key
+A1 | 5  | Cm7    | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A1 | 5  | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
-A1 | 6  | Cm7    | C Aeolian            # vi: the b13 is in the key
-A1 | 6  | Cm7/Bb | C Aeolian            # vi: the b13 is in the key
+A1 | 6  | Cm7    | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+A1 | 6  | Cm7/Bb | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 # area: G major (bars 6–7)
 A1 | 6  | Am7    | A Dorian             # ii of the ii–V to G
 A1 | 6  | D7     | D Mixolydian         # V7 of G: natural tensions
@@ -45,10 +45,10 @@ A2 | 11 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
 A2 | 11 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
 A2 | 12 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
 A2 | 12 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
-A2 | 13 | Cm7    | C Aeolian            # vi: the b13 is in the key
+A2 | 13 | Cm7    | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A2 | 13 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
-A2 | 14 | Cm7    | C Aeolian            # vi: the b13 is in the key
-A2 | 14 | Cm7/Bb | C Aeolian            # vi: the b13 is in the key
+A2 | 14 | Cm7    | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+A2 | 14 | Cm7/Bb | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A2 | 14 | Am7    | A Dorian             # ii of the ii–V to G minor
 A2 | 14 | D7     | D Phrygian Dominant  # V7/iii in Eb: b9 and b13 are in the key
 A2 | 15 | Gm7    | G Dorian             # ii of the ii–V to F minor
@@ -85,10 +85,10 @@ A3 | 27 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
 A3 | 27 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
 A3 | 28 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
 A3 | 28 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
-A3 | 29 | Cm7    | C Aeolian            # vi: the b13 is in the key
+A3 | 29 | Cm7    | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A3 | 29 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
-A3 | 30 | Cm7    | C Aeolian            # vi: the b13 is in the key
-A3 | 30 | Cm7/Bb | C Aeolian            # vi: the b13 is in the key
+A3 | 30 | Cm7    | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+A3 | 30 | Cm7/Bb | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A3 | 30 | Am7    | A Dorian             # ii of the ii–V to G minor
 A3 | 30 | D7     | D Phrygian Dominant  # V7/iii in Eb: b9 and b13 are in the key
 A3 | 31 | Gm7    | G Dorian             # ii of the ii–V to F minor

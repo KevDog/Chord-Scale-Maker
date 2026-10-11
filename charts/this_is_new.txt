@@ -4,7 +4,7 @@ style: Medium up
 key: Cm
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 248
-# analysis: 2026-10-09, rules v1; C minor
+# analysis: 2026-10-11, rules v1; C minor
 
 # section | bar | chord | scale
 # area: C minor (bars 1–2)
@@ -19,7 +19,7 @@ A   | 4  | F7     | F Phrygian Dominant   # V7 of Bb minor: b9 and b13 are in th
 A   | 5  | Bbm    | Bb Dorian             # tonic minor: Dorian by convention
 A   | 6  | F7b9   | F Phrygian Dominant   # V7 of Bb minor: b9 and b13 are in the key
 A   | 7  | Bbm    | Bb Dorian             # tonic minor: Dorian by convention
-A   | 8  | Fm7b5  | F Locrian             # iiø7 of the ii–V to Eb minor: the b9 is in the key
+A   | 8  | Fm7b5  | F Locrian             # iiø7 of Eb minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A   | 8  | Bb7alt | Bb Altered            # from the symbol: altered
 # area: C# minor (bars 9–13)
 B   | 9  | Ebm    | Eb Dorian             # ii of the ii–V to C# minor

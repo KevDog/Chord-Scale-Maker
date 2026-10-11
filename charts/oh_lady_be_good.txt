@@ -4,7 +4,7 @@ style: Medium up
 key: F
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 161
-# analysis: 2026-10-08, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 A1 | 1  | FMaj7  | F Ionian                 # tonic: the 4th is in the key
@@ -31,11 +31,11 @@ A2 | 15 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
 A2 | 16 | Cm7    | C Dorian                 # ii of the ii–V to Bb
 A2 | 16 | F7     | F Mixolydian             # V7/IV in F: natural tensions
 B  | 17 | BbMaj7 | Bb Lydian                # IV: the #4 is the key’s 7th
-B  | 18 | Bdim7  | B Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+B  | 18 | Bdim7  | B Whole-Half Diminished  # passing diminished: a rootless dominant ♭9
 B  | 19 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
-B  | 20 | Em7b5  | E Locrian                # iiø7 of the ii–V to D minor: the b9 is in the key
+B  | 20 | Em7b5  | E Locrian                # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B  | 20 | A7alt  | A Altered                # from the symbol: altered
-B  | 21 | Dm     | D Aeolian                # vi: the b13 is in the key
+B  | 21 | Dm     | D Aeolian                # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 B  | 21 | DmMaj7 | D Melodic Minor          # from the symbol: minor-major 7th
 B  | 22 | Dm7    | D Dorian                 # ii of G7: Dorian
 B  | 22 | G7     | G Mixolydian             # V7/V in F: natural tensions

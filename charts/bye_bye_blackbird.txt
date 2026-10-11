@@ -15,8 +15,8 @@ A | 2  | D7     | D Mixolydian b6           # V7/ii in F: the b13 is in the key
 A | 3  | Gm7    | G Dorian                  # ii of the ii–V to F
 A | 3  | C7     | C Mixolydian              # V7 of F: natural tensions
 A | 4  | FMaj7  | F Ionian                  # tonic: the 4th is in the key
-A | 5  | Dm7/A  | D Aeolian                 # vi: the b13 is in the key
-A | 6  | Abdim7 | Ab Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
+A | 5  | Dm7/A  | D Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+A | 6  | Abdim7 | Ab Whole-Half Diminished  # passing diminished: G7♭9 without its G, the C7's dominant (Gm7 its ii)
 A | 7  | Gm7    | G Dorian                  # ii of C7: Dorian
 A | 8  | C7     | C Mixolydian              # V7/I in F: natural tensions
 B | 9  | Gm     | G Dorian                  # ii: Dorian, the key’s own notes
@@ -41,7 +41,7 @@ C | 24 | Gm7    | G Dorian                  # ii of the ii–V to F
 C | 24 | C7b9   | C Half-Whole Diminished   # V7 of F: the b9 from the symbol
 D | 25 | FMaj7  | F Ionian                  # tonic: the 4th is in the key
 D | 26 | BbMaj7 | Bb Lydian                 # IV: the #4 is the key’s 7th
-D | 27 | Am7b5  | A Locrian                 # iiø7 of the ii–V to G minor: the b9 is in the key
+D | 27 | Am7b5  | A Locrian                 # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 D | 28 | D7b9   | D Phrygian Dominant       # V7/ii in F: the b13 is in the key, the b9 from the symbol
 D | 29 | Gm7    | G Dorian                  # ii of the ii–V to F
 D | 30 | C7     | C Mixolydian              # V7 of F: natural tensions

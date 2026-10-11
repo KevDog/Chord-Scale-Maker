@@ -25,9 +25,9 @@ A | 8  | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
 B | 9  | Fm7    | F Dorian                  # ii of the ii–V to Eb
 B | 10 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
 B | 11 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
-B | 12 | Cm7    | C Aeolian                 # vi: the b13 is in the key
+B | 12 | Cm7    | C Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 # area: G major (bars 13–20)
-B | 13 | Am7b5  | A Locrian                 # iiø7 of the ii–V to G: the b9 is in the key
+B | 13 | Am7b5  | A Locrian                 # iiø7 of G: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 14 | D7b9   | D Half-Whole Diminished   # V7 of G: the b9 from the symbol
 B | 15 | GMaj7  | G Ionian                  # tonic: the 4th is in the key
 B | 16 | Bm7    | B Dorian                  # ii of the ii–V to A minor

@@ -13,7 +13,7 @@ describe('ScaleCell', () => {
     const w = await mount('Cm7')
     const labels = w.findAll('option').map((o) => o.text())
     expect(labels[0]).toBe('C Dorian') // the usual choice comes first, unlabelled
-    expect(labels).toContain('C Aeolian (when the chord is vi or iv)')
+    expect(labels).toContain('C Aeolian (when the chord is vi, or the symbol has a ♭6)')
     expect(labels.at(-1)).toBe('Other…')
   })
 

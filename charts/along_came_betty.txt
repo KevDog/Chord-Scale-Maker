@@ -33,10 +33,10 @@ B | 15 | Dm7    | D Dorian                  # ii of the ii–V to C minor
 B | 16 | G9     | G Mixolydian b6           # V7/iii in Ab: the b13 is in the key, the 9 from the symbol
 C | 17 | Cm7    | C Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
 # area: G minor (bars 19–29)
-C | 19 | Am7b5  | A Locrian                 # iiø7 of the ii–V to G minor: the b9 is in the key
+C | 19 | Am7b5  | A Locrian                 # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 C | 19 | D7#9   | D Altered                 # V7 of G minor: the b13 is in the key, b9, #9 and #11 from the symbol
 C | 20 | Gm7    | G Dorian                  # tonic minor: Dorian by convention
-C | 21 | Em7b5  | E Locrian                 # iiø7 of A7: the b9 is in the key
+C | 21 | Em7b5  | E Locrian                 # iiø7 of A7: Locrian, the key's own notes (its ♭2 is a passing note)
 C | 21 | A7     | A Phrygian Dominant       # V7/v in G minor: b9 and b13 are in the key
 C | 22 | Fm7    | F Dorian                  # ii of Bb7: Dorian
 C | 23 | Bb7    | Bb Mixolydian             # V7/bVI in G minor: natural tensions
@@ -45,10 +45,10 @@ D | 25 | Bm7    | B Dorian                  # a borrowed minor chord: Dorian, it
 D | 26 | Bbm7   | Bb Dorian                 # a borrowed minor chord: Dorian, its own key
 D | 27 | Bm7    | B Dorian                  # ii of E7: Dorian
 D | 27 | E7     | E Mixolydian              # extended ii–V: a side-step, its own key
-D | 28 | Cm7b5  | C Locrian                 # iiø7 of F7#9: the b9 is in the key
+D | 28 | Cm7b5  | C Locrian                 # iiø7 of F7#9: Locrian, the key's own notes (its ♭2 is a passing note)
 D | 29 | F7#9   | F Half-Whole Diminished   # V7/biii in G minor: b9, #9 and #11 from the symbol
 # area: Ab major (bars 30–33)
-D | 30 | Bbm7b5 | Bb Locrian                # iiø7 of the ii–V to Ab: the b9 is in the key
+D | 30 | Bbm7b5 | Bb Locrian                # iiø7 of Ab: Locrian, the key's own notes (its ♭2 is a passing note)
 D | 31 | Eb7#9  | Eb Half-Whole Diminished  # V7 of Ab: b9, #9 and #11 from the symbol
 D | 32 | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key
 D | 33 | Bm7    | B Dorian                  # ii of E7: Dorian

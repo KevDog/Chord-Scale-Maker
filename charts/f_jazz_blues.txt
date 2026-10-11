@@ -1,7 +1,7 @@
 title: F Jazz Blues
 subtitle: 12-Bar Blues with ii–V Turnarounds
 key: F
-# analysis: 2026-10-08, rules v1; F, blues
+# analysis: 2026-10-11, rules v1; F, blues
 
 # section | bar | chord | scale
 A | 1  | F7    | F Mixolydian         # extended dominant: V7 of Bb7
@@ -10,7 +10,7 @@ A | 3  | F7    | F Mixolydian         # I7 of the blues: natural tensions
 A | 4  | Cm7   | C Dorian             # ii of F7: Dorian
 A | 4  | F7    | F Mixolydian         # extended dominant: V7 of Bb7
 A | 5  | Bb7   | Bb Lydian Dominant   # IV7 of the blues: the #11 is in the key
-A | 6  | Bdim7 | B Whole-Half         # passing diminished: the rootless V7b9 of the next chord
+A | 6  | Bdim7 | B Whole-Half         # passing diminished: a rootless dominant ♭9
 A | 7  | F7    | F Mixolydian         # I7 of the blues: natural tensions
 A | 8  | Am7   | A Dorian             # ii of the ii–V to G minor
 A | 8  | D7b9  | D Phrygian Dominant  # V7/ii in F: the b13 is in the key, the b9 from the symbol

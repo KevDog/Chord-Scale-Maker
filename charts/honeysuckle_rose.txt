@@ -37,7 +37,7 @@ A2 | 14 | C7    | C Mixolydian             # V7 of F: natural tensions
 A2 | 15 | F6    | F Ionian                 # tonic: the 4th is in the key
 A2 | 15 | Gm7b5 | G Locrian                # iiø7, borrowed from F minor: Locrian
 A2 | 15 | F6    | F Ionian                 # tonic: the 4th is in the key
-A2 | 16 | Gm7b5 | G Locrian                # iiø7 of C7b9: the b9 is in the key
+A2 | 16 | Gm7b5 | G Locrian                # iiø7 of C7b9: Locrian, the key's own notes (its ♭2 is a passing note)
 A2 | 16 | C7b9  | C Half-Whole Diminished  # extended dominant: V7 of F7; b9 from the symbol
 B  | 17 | F7    | F Mixolydian             # extended dominant: V7 of Bb7
 B  | 19 | Bb7   | Bb Lydian Dominant       # IV7 in F, not resolving: the #11 is in the key

@@ -18,7 +18,7 @@ Intro | 7  | EbMaj7  | Eb Lydian      # a non-tonic major chord: Lydian
 Intro | 8  | Gb7     | Gb Mixolydian  # V7 of B: natural tensions
 Intro | 9  | BMaj7   | B Ionian       # tonic: the 4th is in the key
 # area: Eb major (bars 10–15)
-Intro | 10 | Bbsus4  | Bb Mixolydian  # V7sus4 of EbMaj7: natural tensions
+Intro | 10 | Bbsus4  | Bb Mixolydian  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 Intro | 11 | EbMaj7  | Eb Ionian      # tonic: the 4th is in the key
 Intro | 12 | DMaj7   | D Lydian       # a non-tonic major chord: Lydian
 Intro | 13 | GMaj7   | G Lydian       # a non-tonic major chord: Lydian

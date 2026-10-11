@@ -34,7 +34,7 @@ B | 19 | DbMaj7 | Db Ionian            # tonic: the 4th is in the key
 B | 21 | Dbm7   | Db Dorian            # ii of the ii–V to Cb
 B | 22 | Gb7    | Gb Mixolydian        # V7 of Cb: natural tensions
 B | 23 | CbMaj7 | Cb Ionian            # tonic: the 4th is in the key
-B | 24 | Cm7b5  | C Locrian            # iiø7 of F7: the b9 is in the key
+B | 24 | Cm7b5  | C Locrian            # iiø7 of F7: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 24 | F7     | F Phrygian Dominant  # extended ii–V: a side-step, its own key: b9 and b13 are in the key
 C | 25 | Dm7    | D Dorian             # a borrowed minor chord: Dorian, its own key
 # area: Bb major (bars 26–35)

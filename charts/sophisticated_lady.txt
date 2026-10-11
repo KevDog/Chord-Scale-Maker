@@ -4,7 +4,7 @@ style: Ballad
 key: Ab
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 213
-# analysis: 2026-10-08, rules v1; Ab
+# analysis: 2026-10-11, rules v1; Ab
 
 # section | bar | chord | scale
 # bar 24 on the lead sheet passes through Cm7 Eb7 Db7 Cm7b5 F7b9
@@ -24,7 +24,7 @@ A1 | 6  | Bbm7     | Bb Dorian                # ii of the ii–V to Ab
 A1 | 6  | Eb7      | Eb Mixolydian            # V7 of Ab: natural tensions
 A1 | 7  | AbMaj7   | Ab Ionian                # tonic: the 4th is in the key
 A1 | 7  | Db7      | Db Lydian Dominant       # IV7 in Ab, not resolving: the #11 is in the key
-A1 | 8  | Cm7b5    | C Locrian                # iiø7 of the ii–V to Bb minor: the b9 is in the key
+A1 | 8  | Cm7b5    | C Locrian                # iiø7 of Bb minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A1 | 8  | F7b9     | F Phrygian Dominant      # V7/ii in Ab: the b13 is in the key, the b9 from the symbol
 A2 | 9  | Bbm      | Bb Dorian                # ii: Dorian, the key’s own notes
 A2 | 10 | Gb7      | Gb Lydian Dominant       # tritone substitute: resolves down a half step to F7
@@ -44,15 +44,15 @@ A2 | 15 | AbMaj7   | Ab Ionian                # tonic: the 4th is in the key
 A2 | 16 | Am7      | A Dorian                 # ii of the ii–V to G
 A2 | 16 | D7       | D Mixolydian             # V7 of G: natural tensions
 B  | 17 | GMaj7    | G Ionian                 # tonic: the 4th is in the key
-B  | 17 | Em7      | E Aeolian                # vi: the b13 is in the key
+B  | 17 | Em7      | E Aeolian                # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 B  | 18 | Am7      | A Dorian                 # ii of D7: Dorian
 B  | 18 | D7       | D Mixolydian             # V7/I in G: natural tensions
-B  | 19 | Bm7b5    | B Locrian                # iiø7 of the ii–V to A minor: the b9 is in the key
+B  | 19 | Bm7b5    | B Locrian                # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B  | 19 | E7b9     | E Phrygian Dominant      # V7/ii in G: the b13 is in the key, the b9 from the symbol
 B  | 20 | Am7      | A Dorian                 # ii of the ii–V to G
 B  | 20 | D7b9     | D Half-Whole Diminished  # V7 of G: the b9 from the symbol
 B  | 21 | GMaj7    | G Ionian                 # tonic: the 4th is in the key
-B  | 21 | Em7      | E Aeolian                # vi: the b13 is in the key
+B  | 21 | Em7      | E Aeolian                # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 B  | 22 | Am7      | A Dorian                 # ii of the ii–V to G
 B  | 22 | D7       | D Mixolydian             # V7 of G: natural tensions
 B  | 23 | GMaj7    | G Ionian                 # tonic: the 4th is in the key

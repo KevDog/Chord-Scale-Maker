@@ -5,7 +5,7 @@ style: Latin
 key: Eb
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 81
-# analysis: 2026-10-08, rules v1; Eb
+# analysis: 2026-10-11, rules v1; Eb
 
 # section | bar | chord | scale
 # area: Eb major (bars 1–15)
@@ -27,7 +27,7 @@ B  | 19 | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
 B  | 20 | Dm7    | D Dorian                  # ii of G9: Dorian
 B  | 20 | G9     | G Mixolydian              # V7/I in C: natural tensions
 B  | 21 | Em7    | E Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
-B  | 22 | Am7    | A Aeolian                 # vi: the b13 is in the key
+B  | 22 | Am7    | A Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 B  | 23 | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
 B  | 24 | Em7    | E Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
 # area: Eb major (bars 25–32)

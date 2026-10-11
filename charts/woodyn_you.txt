@@ -9,11 +9,11 @@ source: Colorado Cookbook, p. 271
 
 # section | bar | chord | scale
 # the bridge can also start Am7 D7 | Bm7 E7 over its first and fifth bars
-A1 | 1  | Gm7b5  | G Locrian      # iiø7 of C7alt: the b9 is in the key
+A1 | 1  | Gm7b5  | G Locrian      # iiø7 of C7alt: Locrian, the key's own notes (its ♭2 is a passing note)
 A1 | 2  | C7alt  | C Altered      # from the symbol: altered
-A1 | 3  | Fm7b5  | F Locrian      # iiø7 of Bb7alt: the b9 is in the key
+A1 | 3  | Fm7b5  | F Locrian      # iiø7 of Bb7alt: Locrian, the key's own notes (its ♭2 is a passing note)
 A1 | 4  | Bb7alt | Bb Altered     # from the symbol: altered
-A1 | 5  | Ebm7b5 | Eb Locrian     # iiø7 of the ii–V to Db: the b9 is in the key
+A1 | 5  | Ebm7b5 | Eb Locrian     # iiø7 of Db: Locrian, the key's own notes (its ♭2 is a passing note)
 A1 | 6  | Ab7alt | Ab Altered     # from the symbol: altered
 A1 | 7  | DbMaj7 | Db Ionian      # tonic: the 4th is in the key
 @copy A1 A2 8
