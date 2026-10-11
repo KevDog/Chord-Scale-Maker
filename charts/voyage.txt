@@ -33,7 +33,7 @@ B  | 19 | DMaj7  | D Ionian             # tonic: the 4th is in the key
 # area: F minor (bars 20–21)
 B  | 20 | Fm7    | F Dorian             # ii of the ii–V to Eb
 B  | 20 | Bb7    | Bb Mixolydian        # V7/bVII in F minor: natural tensions
-B  | 21 | EbMaj7 | Eb Lydian            # a non-tonic major chord: Lydian
+B  | 21 | EbMaj7 | Eb Ionian            # ♭VII of F minor: E♭ major, the notes of F Dorian
 # area: E major (bars 22–23)
 B  | 22 | F#m7   | F# Dorian            # ii of the ii–V to E
 B  | 22 | B7     | B Mixolydian         # V7 of E: natural tensions

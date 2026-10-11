@@ -351,6 +351,13 @@ describe('R6: the small bundle (docs/superpowers/specs/2026-10-10-analysis-rules
   it('m2 a tonic minor sixth chord in a modal chart stays Dorian (§5.4: no functional rules there; Africa)', () => {
     expect(reasoned(library('africa'), '1 Dm6/9/E')).toBe('D Dorian (m2): a minor sixth chord: Dorian')
   })
+
+  it('M3 ♭VII of a minor key is Ionian, the notes of the tonic’s Dorian; ♭VI stays Lydian (M4)', () => {
+    const text = chart('Cm', '1 Cm7, 2 BbMaj7, 3 AbMaj7')
+    expect(reasoned(text, '2 BbMaj7')).toBe('Bb Ionian (M3): ♭VII of C minor: B♭ major, the notes of C Dorian')
+    expect(verdict(text, '3 AbMaj7')).toBe('Ab Lydian (M4)')
+    expect(reasoned(chart('Fm', '1 Fm7, 2 EbMaj7, 3 DbMaj7'), '2 EbMaj7')).toBe('Eb Ionian (M3): ♭VII of F minor: E♭ major, the notes of F Dorian')
+  })
 })
 
 describe('analysis: keys (§5)', () => {

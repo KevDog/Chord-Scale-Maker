@@ -11,9 +11,9 @@ source: Colorado Cookbook, p. 29
 A | 1  | FMaj7  | F Lydian             # a non-tonic major chord: Lydian
 A | 2  | GbMaj7 | Gb Lydian            # a non-tonic major chord: Lydian
 A | 3  | FMaj7  | F Lydian             # a non-tonic major chord: Lydian
-A | 4  | EbMaj7 | Eb Lydian            # a non-tonic major chord: Lydian
+A | 4  | EbMaj7 | Eb Ionian            # ♭VII of F minor: E♭ major, the notes of F Dorian
 A | 5  | Dm     | D Dorian             # a borrowed minor chord: Dorian, its own key
-A | 6  | EbMaj7 | Eb Lydian            # a non-tonic major chord: Lydian
+A | 6  | EbMaj7 | Eb Ionian            # ♭VII of F minor: E♭ major, the notes of F Dorian
 A | 7  | Dm     | D Dorian             # a borrowed minor chord: Dorian, its own key
 A | 7  | Cm     | C Phrygian           # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
 A | 8  | Bbm    | Bb Dorian            # iv: Dorian, the key’s own notes
