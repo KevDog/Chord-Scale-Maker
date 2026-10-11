@@ -19,17 +19,16 @@ function parse(raw: string | null): { level: ScaleLevel; seed: number; owned?: s
 
 /**
  * the chart's scale level and its Random seed, remembered per chart in this browser under `key` (a library slug or
- * mine:<id>); without a key, or from a share link's `initial`, it lasts for the visit. With proposedScales on, the
- * level is a view preference the sheets play blank cells at; `owned` is read once, by the migration in EditorView,
- * then dropped. Off, the level is written into the chart (relevel, engine/src/levels.ts) and `owned` tells the next
- * change which rows to move.
+ * mine:<id>); without a key, or from a share link's `initial`, it lasts for the visit. The level is a view preference
+ * the sheets play blank cells at. `owned` is from when a level was written into the chart: read once, by the
+ * migration in EditorView, then dropped.
  */
 export function useScaleLevel(key?: string, initial?: Readonly<{ level?: ScaleLevel; seed?: number }>) {
   const storeKey = key ? `csm-level:${key}` : null
   const saved = storeKey && !initial ? parse(readStored(storeKey)) : null
   const level = ref<ScaleLevel>(initial?.level ?? saved?.level ?? 'standard')
   const seed = ref<number>(initial?.seed ?? saved?.seed ?? newSeed())
-  /** the rows the level owns (relevel, proposedScales off); unknown for a share link, which then matches by scale */
+  /** the rows a level once wrote its scales into, until the migration reads them (engine/src/levels.ts unlevel) */
   const owned = ref<readonly string[] | undefined>(saved?.owned)
   const state = (): string => JSON.stringify({ level: level.value, seed: seed.value, ...(owned.value ? { owned: owned.value } : {}) })
   watch([level, seed, owned], () => {
@@ -45,11 +44,11 @@ export function useScaleLevel(key?: string, initial?: Readonly<{ level?: ScaleLe
     shuffle(): void {
       seed.value = newSeed()
     },
-    /** the same level for another chart (a copy, or a shared chart once saved): its scales were written at it */
+    /** the same level for another chart (a copy, or a shared chart once saved) */
     carryTo(otherKey: string): void {
       if (level.value !== 'standard') writeStored(`csm-level:${otherKey}`, state())
     },
-    /** back to Standard without moving any scales (the chart was reverted to the library's) */
+    /** back to Standard (the chart was reverted to the library's) */
     reset(): void {
       level.value = 'standard'
       owned.value = undefined

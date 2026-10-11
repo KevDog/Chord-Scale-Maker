@@ -257,17 +257,16 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - **Phones (below `md`): light edits only.** The grid, its structure actions and the inspector are hidden; the
     note "Full editing works on a larger screen" sits under the title, and chords are changed on the sheet. The
     heading fields, Undo, the Source under ⋯ and Transpose stay. The library hides New chart there.
-- **Scale level** (the `scaleLevels` flag, on; `engine/src/levels.ts`): Basic / Standard / Advanced / Random, in the
+- **Scale level** (`engine/src/levels.ts`): Basic / Standard / Advanced / Random, in the
   preview's toolbar. The level is a **view preference**, like the instrument: it is never written into the rows, so
   changing it is no edit (no undo step, the chart stays clean). The sheets play every blank scale cell at it
   (`resolveScales`, §7a); a written scale is a pin and plays as written at every level.
   - Options in `chord_scales.json` carry `level: basic|advanced`; Standard is the default, and a quality without a
     tag keeps it. Random picks among the inside options, from a seed (Shuffle deals a new one).
-  - The `proposedScales` flag (on) made it so. With the flag off, the old path remains until the flag goes: the
-    level wrote its scales into the chart (`relevel`), and had to remember which rows it **owned** (`LevelState.owned`)
-    and a library chart's own choices (`baseline`) to tell its scales from the user's. All three are retired with the
-    flag. A saved chart with owned rows is migrated once as it opens (`unlevel`, in `EditorView`): each owned cell
-    still holding the level's scale is blanked, so it follows the level; then `owned` is dropped.
+  - The level once wrote its scales into the chart, and a browser kept which rows it **owned** (`LevelState.owned`).
+    A saved chart with owned rows is migrated once as it opens (`unlevel`, in `EditorView`, with the library chart it
+    came from as `baseline`, whose own choices were its Standard): each owned cell still holding the level's scale is
+    blanked, so it follows the level; then `owned` is dropped.
   - **Ladders** (`ladders` in `chord_scales.json`, plan-analysis.md §11): a row whose Standard is not its
     quality's default climbs that scale's ladder instead of the quality's tags, so the analysis's choice keeps its
     colour: D7 on Phrygian Dominant (V7 of G minor) goes to G Minor Pentatonic at Basic and Altered at
@@ -562,14 +561,15 @@ its reasons into a chart as comments.
   the inspector's Why and the Changes sheet's numeral/scale notes show it, the note with where its key
   came from (a key the author set is starred), behind the `functions` flag (on).
 - **The scale played** (`engine/src/resolve.ts`, [proposed scales spec](superpowers/specs/2026-10-11-proposed-scales-design.md)
-  §2; the `proposedScales` flag, on): `resolveScales(doc, view, analysis?)` gives each expanded row (keyed by its
+  §2): `resolveScales(doc, view, analysis?)` gives each expanded row (keyed by its
   index in `expandRowLines`, so a `@copy` repeat resolves on its own row) a `Resolved` scale and its `source`:
   `written` (the cell, at every level) > `function` (a stated function's scale) > `rules` > `default` (the quality's,
   where the analysis doesn't reach the row); null for a chord that can't be read. An analysed scale is moved to the
   view's level as the Level control moves one (`scaleAtLevel` on it, Aeolian for a tonic minor at Basic, Random by
-  `line:chord`). The level is the view's, never the chart's. `view.proposed` false (the flag off) skips the
-  analysis: a blank cell plays the quality's default at every level, as before; that path goes with the flag.
-  `buildSheet` takes the map, `buildChanges` and `rowNotes` the view (sharing their one `analyse`); the guide tones read the cell or the quality's default, untouched. `qualityScale(row)` (once
+  `line:chord`). The level is the view's, never the chart's.
+  `buildSheet` takes the map (without it, each row's own scale or its quality's default), `buildChanges` and
+  `rowNotes` the view (Standard by default; sharing their one `analyse`); the guide tones read the cell or the
+  quality's default, untouched. `qualityScale(row)` (once
   `resolveScale`) is the one-row lookup for places with no document.
 - **Numerals** (`analysis/numerals.ts`; the degree itself in `analysis/degrees.ts`, shared with the rules and the
   grammar): lower case for the minor family (`ii7`, `V7/ii`, `viiø7`), as Terefenko writes them. A dominant into the
@@ -689,10 +689,10 @@ its reasons into a chart as comments.
     overrides one for a build or `make dev`.
   - `npm run e2e` builds with every flag on.
   - `myCharts` (My charts, New chart, Download/Open, share links), `changes` (the Changes sheet),
-    `practice` (the Practice panel) and `scaleLevels` (the Scale level control) are on, since sign-off. Guide tones
-    on the Changes sheet have no flag: their toggles start off. The bar editor shipped behind `barEditor`; at its
-    sign-off the old row grid went, and the flag with it. `proposedScales` (a blank scale cell plays the analysis,
-    §7a) is on since the library strip, whose blank cells need it; it and `scaleLevels` go after sign-off.
+    and `practice` (the Practice panel) are on, since sign-off. Guide tones on the Changes sheet have no flag: their
+    toggles start off. The bar editor shipped behind `barEditor`; at its sign-off the old row grid went, and the flag
+    with it. `scaleLevels` (the Scale level control) and `proposedScales` (a blank scale cell plays the analysis,
+    §7a) went the same way at theirs.
 
 ## 9. Security
 

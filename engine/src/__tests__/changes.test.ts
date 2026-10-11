@@ -125,7 +125,7 @@ describe('scale labels', () => {
 
 describe('scales from the resolver', () => {
   const G_MINOR = 'title: T\nkey: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm7 | G Dorian\nA | 4 | Cm7\n'
-  const on = (level: ScaleView['level']): ScaleView => ({ level, seed: 0, proposed: true })
+  const on = (level: ScaleView['level']): ScaleView => ({ level, seed: 0 })
   const sheet = (view?: ScaleView, line: GuideLine = 'off') => buildChanges(parseChart(G_MINOR).value, CONCERT, 4, false, line, view)
   const labels = (view?: ScaleView) => sheet(view).lines.flatMap((l) => l.bars.flatMap((b) => b.chords.map((c) => c.scale)))
   const short = (scale: string) => abbreviateScale(scale)
@@ -139,9 +139,8 @@ describe('scales from the resolver', () => {
     expect(labels(on('advanced'))[2]).toBe('G Dorian')
   })
 
-  it('plays the cell or the quality’s default with the flag off, as before', () => {
-    expect(labels({ ...on('basic'), proposed: false })).toEqual(labels())
-    expect(labels()[1]).toBe(short('D Mixolydian'))
+  it('plays at Standard without a view', () => {
+    expect(labels()).toEqual(labels(on('standard')))
   })
 
   it('leaves the guide tones alone', () => {

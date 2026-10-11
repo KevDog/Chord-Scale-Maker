@@ -44,7 +44,7 @@ const props = defineProps<{
   guideLine?: GuideLine // a guide tone line, from the 3rd or the 7th, as notes in place of the slashes (the clef then always starts line 1)
   editable?: boolean // tap a chord to edit it
   selectedLine?: number | null // the chart line of the chord selected in the bar editor
-  view?: ScaleView // the level blank cells play at (proposedScales); undefined: the quality's default
+  view?: ScaleView // the level blank cells play at; undefined: Standard
 }>()
 const emit = defineEmits<{ edit: [chord: SheetChordEdit] }>()
 

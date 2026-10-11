@@ -111,12 +111,12 @@
             v-model:guide-line="prefs.guideLine.value"
           >
             <!-- Level: how sophisticated each chord's scale is (engine/src/levels.ts); a dropdown in the toolbar -->
-            <template v-if="levelsOn && !editor.fatal.value" #level>
-              <UiListbox :model-value="scaleLevel.level.value" class="w-32" @update:model-value="(v) => v && setLevel(v)">
+            <template v-if="!editor.fatal.value" #level>
+              <UiListbox :model-value="scaleLevel.level.value" class="w-32" @update:model-value="(v) => v && (scaleLevel.level.value = v)">
                 <template #selected="{ value }"><UiListboxLabel>{{ levelLabel(value) }}</UiListboxLabel></template>
                 <UiListboxOption v-for="o in LEVEL_OPTIONS" :key="o.value" :value="o.value"><UiListboxLabel>{{ o.label }}</UiListboxLabel></UiListboxOption>
               </UiListbox>
-              <UiButton v-if="scaleLevel.level.value === 'random'" color="note" aria-label="Shuffle" title="Deal a new random scale for each chord" @click="shuffle"><ArrowPathIcon data-slot="icon" /></UiButton>
+              <UiButton v-if="scaleLevel.level.value === 'random'" color="note" aria-label="Shuffle" title="Deal a new random scale for each chord" @click="scaleLevel.shuffle"><ArrowPathIcon data-slot="icon" /></UiButton>
             </template>
             <template v-if="!editor.fatal.value" #transpose>
               <ChartTranspose :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
@@ -126,7 +126,6 @@
               <UiButton color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
             </template>
           </PreviewControls>
-          <UiText v-if="levelNote" role="status" class="text-sm/6!">{{ levelNote }}</UiText>
           <UiText v-if="transposed" role="status">{{ transposed }}</UiText>
           <PracticePanel
             v-if="practiceOn && sheet === 'scales' && !editor.fatal.value"
@@ -201,11 +200,9 @@ import {
   type Mode,
   partFor,
   practiceBoxes,
-  relevel,
   resolveScales,
   SCALE_LEVELS,
   type LevelState,
-  type ScaleLevel,
   type ScaleView,
   serializeChart,
   setMeta,
@@ -227,10 +224,8 @@ const emit = defineEmits<{ created: [id: string]; reload: [] }>()
 
 const PER_PAGE = 12
 
-const levelsOn = useFeature('scaleLevels')
+/** the level is a view preference: a blank cell plays the analysis at it, and nothing is written */
 const scaleLevel = useScaleLevel(props.practiceKey, props.shared)
-/** proposedScales: the level is a view preference; a blank cell plays the analysis at it, and nothing is written */
-const proposedOn = useFeature('proposedScales')
 /** the library chart this one came from (itself, or the source of a copy): its own scale choices are its Standard */
 const baseline = ((): ChartDoc | undefined => {
   const t = props.saveTarget
@@ -240,16 +235,16 @@ const baseline = ((): ChartDoc | undefined => {
 })()
 const levelState = (): LevelState => ({ level: scaleLevel.level.value, seed: scaleLevel.seed.value, ...(scaleLevel.owned.value ? { owned: scaleLevel.owned.value } : {}) })
 /**
- * proposedScales (docs/superpowers/specs/2026-10-11-proposed-scales-design.md §3): a saved chart a level once wrote
+ * the migration (docs/superpowers/specs/2026-10-11-proposed-scales-design.md §3): a saved chart a level once wrote
  * its scales into has those cells blank again, so they follow the level; once, as it opens, then the rows it owned
  * are forgotten. A scale you chose stays.
  */
 const openingText = ((): string => {
-  if (!proposedOn || !scaleLevel.owned.value) return props.initialText
+  if (!scaleLevel.owned.value) return props.initialText
   const { doc, blanked } = unlevel(parseChart(props.initialText).value, levelState(), baseline)
   scaleLevel.owned.value = undefined
   if (!blanked) return props.initialText
-  console.info(`proposedScales: ${blanked === 1 ? '1 scale' : `${blanked} scales`} a level wrote into this chart now follow the level`)
+  console.info(`Scale level: ${blanked === 1 ? '1 scale' : `${blanked} scales`} a level wrote into this chart now follow the level`)
   return serializeChart(doc)
 })()
 
@@ -294,34 +289,11 @@ const homeKey = computed(() => (signaturesOn ? chartKeyOf(editor.doc.value) : un
 const practice = usePractice(props.practiceKey)
 const LEVEL_OPTIONS = SCALE_LEVELS.map((value) => ({ value, label: LEVEL_LABELS[value] }))
 const levelLabel = (v: (typeof SCALE_LEVELS)[number]): string => LEVEL_LABELS[v]
-const level = computed(() => (levelsOn ? scaleLevel.level.value : 'standard'))
 /** what the sheets and the grid play a blank cell at; one resolution per revision, shared by the Scales sheet and practice */
-const scaleView = computed((): ScaleView => ({ level: level.value, seed: scaleLevel.seed.value, proposed: proposedOn }))
+const scaleView = computed((): ScaleView => ({ level: scaleLevel.level.value, seed: scaleLevel.seed.value }))
 provide(SCALE_VIEW, scaleView)
-const resolved = computed(() => (proposedOn ? resolveScales(editor.doc.value, scaleView.value) : undefined))
-const levelNote = ref('')
+const resolved = computed(() => resolveScales(editor.doc.value, scaleView.value))
 
-/** move the chart's scales to another level: rows playing the old level's scale take the new one's (proposedScales off) */
-function moveLevel(to: ScaleLevel, seed: number, from: LevelState = levelState()): void {
-  editor.flush()
-  const result = relevel(editor.doc.value, from, { level: to, seed }, baseline)
-  if (result.changed) editor.setDoc(result.doc)
-  scaleLevel.owned.value = to === 'standard' ? undefined : result.owned
-  scaleLevel.level.value = to
-  levelNote.value = result.changed
-    ? `${result.changed === 1 ? '1 chord' : `${result.changed} chords`} moved to ${LEVEL_LABELS[to].toLowerCase()} scales; any you chose yourself stay.`
-    : 'No scales to change: they’re all your own choices, or already at this level.'
-}
-const setLevel = (to: ScaleLevel): void => {
-  if (proposedOn) scaleLevel.level.value = to
-  else moveLevel(to, scaleLevel.seed.value)
-}
-function shuffle(): void {
-  if (proposedOn) return scaleLevel.shuffle()
-  const from = levelState()
-  scaleLevel.shuffle()
-  moveLevel('random', scaleLevel.seed.value, from)
-}
 if (props.shared?.practice) practice.setSelection(mode.value, props.shared.practice)
 const selection = computed(() => (practiceOn ? practice.selection(mode.value) : null))
 // every staff with its practice keys, for the panel's boxes and what the selection lights
@@ -399,7 +371,7 @@ async function shareUrl(): Promise<string> {
     ...(prefs.guideLine.value !== 'off' ? { guideLine: prefs.guideLine.value } : {}), // absent: off
     sheet: sheet.value,
     ...(selection.value ? { practice: selection.value } : {}),
-    ...(level.value !== 'standard' ? { level: level.value, seed: scaleLevel.seed.value } : {}),
+    ...(scaleLevel.level.value !== 'standard' ? { level: scaleLevel.level.value, seed: scaleLevel.seed.value } : {}),
   }
   return `${location.origin}/song#s=${await encodeShare({ chart: editor.text.value, view })}`
 }
@@ -475,7 +447,7 @@ function reportError(): void {
     instrument: instrumentOption(prefs.instrument.value),
     sheet: sheet.value,
     guides: guidesText(prefs.guideLine.value),
-    level: levelsOn ? scaleLevel.level.value : '',
+    level: scaleLevel.level.value,
     url: location.href,
   }
   sessionStorage.setItem(CHART_REPORT_KEY, JSON.stringify(report))

@@ -6,14 +6,14 @@ import { type QualityMatch, readChord, resolveQuality, type ScaleOption } from '
 import { parseScale, samePitchScale, scaleKey, simplifyRoot, spellFrom } from './scales'
 
 /**
- * The Level control: how sophisticated each chord's scale is, written into the chart. Standard is the quality's
+ * The Level control: how sophisticated each chord's scale is, a view preference the sheets play blank cells at
+ * (resolve.ts), never chart text. Standard is the quality's
  * default (chord_scales.json); Basic and Advanced are the options tagged `level`, falling back to the default where a
  * quality has none; Random picks among the quality's inside options (not one that fits a single function), repeatably from a seed. A row whose Standard is
  * not its quality's default (the analysis chose it: D7 → D Phrygian Dominant) climbs that scale's ladder instead
  * (chord_scales.json `ladders`, docs/plan-analysis.md §11), so Basic over a V7 of a minor chord is the minor key's
  * pentatonic, not the major one. A tonic minor chord (the analysis's rule m5) is Aeolian at Basic, the natural
- * minor beginners learn first (decision 7). Changing level moves only the rows that play the old level's scale
- * (relevel), so a scale you chose yourself stays.
+ * minor beginners learn first (decision 7).
  */
 export type ScaleLevel = 'basic' | 'standard' | 'advanced' | 'random'
 export const SCALE_LEVELS: readonly ScaleLevel[] = ['basic', 'standard', 'advanced', 'random']
@@ -88,15 +88,15 @@ export function scaleAtLevel(chord: string, level: ScaleLevel, seed = 0, key = '
 }
 
 /**
- * where a chart's scales stand: the level, its Random seed, and the rows the level owns (`line:chord` keys). A row
- * is owned when the chart leaves Standard and the row plays its default; a hand edit takes it back.
+ * a level as a browser once stored it: the level, its Random seed, and the rows it wrote its scales into (`line:chord`
+ * keys), back when a level was written into the chart. Only the migration (unlevel) reads `owned`.
  */
 export type LevelState = Readonly<{ level: ScaleLevel; seed: number; owned?: readonly string[] }>
 
 const defaultOf = (chord: string): string => optionsFor(chord).find((o) => o.default)?.scale ?? ''
 const rowKey = (i: number, chord: string): string => `${i}:${chord}`
 
-/** a row's scale at a level as relevel writes it: `standard` is the row's Standard, `tonicMinor` the rows on rule m5 */
+/** a row's scale at a level as a level once wrote it: `standard` is the row's Standard, `tonicMinor` the rows on rule m5 */
 function scaleAt(state: LevelState, i: number, chord: string, standard: string, tonicMinor: ReadonlySet<number>): string | null {
   if (state.level === 'standard') return standard || null
   if (state.level === 'basic' && tonicMinor.has(i)) {
@@ -116,42 +116,10 @@ const standardOf = (baseline: ChartDoc | undefined, i: number, chord: string): s
 const tonicMinorOf = (doc: ChartDoc): ReadonlySet<number> => new Set(analyse(doc).rows.filter((r) => r.rule === 'm5').map((r) => r.line))
 
 /**
- * move a chart from one level to another, writing the scales into its rows. Only rows the level owns move, and only
- * while they still play the old level's scale; a scale you chose yourself stays, even one that happens to be a
- * level's choice (B♭ Lydian on a Maj7). `baseline` is the library chart this one came from: its own scale choices
- * (A7♭9 on Phrygian Dominant in the Bird Blues) are the chart's Standard, so levels take them over too and Standard
- * brings them back. @copy repeats follow their source rows. Returns the chart, how many rows changed, and the rows
- * the level owns now (none back at Standard).
- */
-export function relevel(
-  doc: ChartDoc,
-  from: LevelState,
-  to: LevelState,
-  baseline?: ChartDoc,
-): Readonly<{ doc: ChartDoc; changed: number; owned: readonly string[] }> {
-  const tonicMinor = tonicMinorOf(doc)
-  const at = (state: LevelState, i: number, chord: string): string | null => scaleAt(state, i, chord, standardOf(baseline, i, chord), tonicMinor)
-  const owns = (i: number, chord: string, scale: string): boolean => {
-    const mine = from.level === 'standard' || !from.owned || from.owned.includes(rowKey(i, chord)) // no record (an old share link): any match counts
-    return mine && (scale === '' || samePitchScale(scale, at(from, i, chord))) // by pitch (R18)
-  }
-  let changed = 0
-  const owned: string[] = []
-  const lines = doc.lines.map((l, i) => {
-    if (l.kind !== 'row' || !owns(i, l.chord, l.scale)) return l
-    if (to.level !== 'standard') owned.push(rowKey(i, l.chord))
-    const next = at(to, i, l.chord)
-    if (!next || samePitchScale(next, l.scale || defaultOf(l.chord))) return l // the same scale keeps its spelling
-    changed++
-    return { ...l, scale: next }
-  })
-  return { doc: changed ? { lines } : doc, changed, owned }
-}
-
-/**
- * the proposedScales migration (docs/superpowers/specs/2026-10-11-proposed-scales-design.md §3): a chart relevel
- * wrote, with its cells blank again where they still hold the level's scale, so the resolver plays the level there.
- * Only the rows `state.owned` lists; a row changed by hand since, or never owned, keeps its scale.
+ * the migration (docs/superpowers/specs/2026-10-11-proposed-scales-design.md §3): a chart a level once wrote its
+ * scales into, with its cells blank again where they still hold the level's scale, so the resolver plays the level there.
+ * Only the rows `state.owned` lists; a row changed by hand since, or never owned, keeps its scale. `baseline`: the
+ * library chart it came from, whose own scale choices were its Standard.
  */
 export function unlevel(doc: ChartDoc, state: LevelState, baseline?: ChartDoc): Readonly<{ doc: ChartDoc; blanked: number }> {
   if (!state.owned?.length) return { doc, blanked: 0 }

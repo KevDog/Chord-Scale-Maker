@@ -20,7 +20,7 @@
               <ScaleOptionLabel :scale="analysed" :note="analysedNote" />
             </UiRadio>
             <UiRadio v-if="usual" :value="usual">
-              <ScaleOptionLabel :scale="usual" :note="proposedOn ? 'the quality’s usual' : 'the usual choice'" />
+              <ScaleOptionLabel :scale="usual" :note="'the quality’s usual'" />
             </UiRadio>
             <UiRadio v-for="o in inside" :key="o.scale" :value="o.scale"><ScaleOptionLabel :scale="o.scale" :note="o.note" /></UiRadio>
             <p v-if="outside.length" class="px-2 pt-2 text-xs/5 font-medium tracking-wide text-zinc-600 uppercase dark:text-zinc-400">Outside · tension to resolve</p>
@@ -79,8 +79,8 @@ import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 /**
  * A chord's scale (the usual one, the alternates inside and outside, any scale by search), its function with the
  * scale each gives, and why the analysis chose what it did: the chord written on `line` of the chart. Shared by the
- * bar editor's inspector and the Changes sheet's chord editor. With proposedScales on, the function comes first, and
- * the first scale is the analysed one: choosing it, or Unpin, blanks the cell; any other scale pins it.
+ * bar editor's inspector and the Changes sheet's chord editor. The function comes first, and the first scale is the
+ * analysed one: choosing it, or Unpin, blanks the cell; any other scale pins it.
  * `collapsible` (the inspector's): the scale (with its why) and the function each fold away to their choice, remembered.
  */
 const props = defineProps<{ doc: ChartDoc; line: number; collapsible?: boolean }>()
@@ -96,17 +96,16 @@ const prefs = props.collapsible ? usePreferences() : null
 const scaleOpen = computed({ get: () => prefs?.inspectorScale.value ?? true, set: (v) => prefs && (prefs.inspectorScale.value = v) })
 const functionOpen = computed({ get: () => prefs?.inspectorFunction.value ?? true, set: (v) => prefs && (prefs.inspectorFunction.value = v) })
 const functionsOn = useFeature('functions')
-const proposedOn = useFeature('proposedScales')
-const parts = proposedOn ? (['function', 'scale', 'why'] as const) : (['scale', 'function', 'why'] as const)
+const parts = ['function', 'scale', 'why'] as const
 const row = computed((): RowLine | null => {
   const l = props.doc.lines[props.line]
   return l?.kind === 'row' ? l : null
 })
 const choices = computed(() => scaleChoices(row.value?.chord ?? ''))
 const scaleView = inject(SCALE_VIEW, shallowRef(DEFAULT_VIEW))
-const note = computed((): RowNote | undefined => (row.value && (functionsOn || proposedOn) ? rowNotes(props.doc, scaleView.value).get(props.line) : undefined))
-/** proposedScales: the analysis's scale at the view's level, the option that blanks the cell; '' where the analysis doesn't reach */
-const analysed = computed(() => (proposedOn ? (note.value?.analysed ?? '') : ''))
+const note = computed((): RowNote | undefined => (row.value ? rowNotes(props.doc, scaleView.value).get(props.line) : undefined))
+/** the analysis's scale at the view's level, the option that blanks the cell; '' where the analysis doesn't reach */
+const analysed = computed(() => note.value?.analysed ?? '')
 const analysedNote = computed(() => [note.value?.numeral, note.value?.rule && `rule ${note.value.rule}`].filter(Boolean).join(', '))
 const pinned = computed(() => !!analysed.value && note.value?.source === 'written')
 const pinnedText = computed(() => (samePitchScale(row.value?.scale ?? '', analysed.value) ? 'your choice; the analyser’s too' : `your choice; the analyser says ${analysed.value}`))

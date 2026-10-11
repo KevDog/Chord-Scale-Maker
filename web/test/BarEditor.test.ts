@@ -132,24 +132,22 @@ describe('BarEditor', () => {
     w.unmount()
   })
 
-  it('shows each chord’s scale at the sheets’ level (proposedScales)', async () => {
-    const w = await mountSuspended(BarEditor, { props: { doc }, attachTo: document.body, global: { provide: { [SCALE_VIEW as symbol]: ref({ level: 'basic', seed: 0, proposed: true }) } } })
+  it('shows each chord’s scale at the sheets’ level', async () => {
+    const w = await mountSuspended(BarEditor, { props: { doc }, attachTo: document.body, global: { provide: { [SCALE_VIEW as symbol]: ref({ level: 'basic', seed: 0 }) } } })
     await w.findAll('button').find((b) => b.text() === 'Numerals & scales')?.trigger('click')
     expect(w.find('[role=grid]').text()).toContain('D Minor Pentatonic')
     expect(w.find('[role=grid]').text()).not.toContain('D Dorian')
     w.unmount()
   })
 
-  it('greys a proposed scale under its chord, and shows a pinned one as written (proposedScales)', async () => {
-    useRuntimeConfig().public.features.proposedScales = true
+  it('greys a proposed scale under its chord, and shows a pinned one as written', async () => {
     const pinned = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7 | G Altered\nA | 3 | CMaj7\n').value
-    const w = await mountSuspended(BarEditor, { props: { doc: pinned }, attachTo: document.body, global: { provide: { [SCALE_VIEW as symbol]: ref({ level: 'standard', seed: 0, proposed: true }) } } })
+    const w = await mountSuspended(BarEditor, { props: { doc: pinned }, attachTo: document.body, global: { provide: { [SCALE_VIEW as symbol]: ref({ level: 'standard', seed: 0 }) } } })
     await w.findAll('button').find((b) => b.text() === 'Numerals & scales')?.trigger('click')
     const proposed = w.findAll('[role=grid] [aria-description=proposed]').map((e) => e.text())
     expect(proposed).toEqual(['D Dorian', 'C Ionian'])
     expect(w.find('[role=grid]').text()).toContain('G Altered')
     w.unmount()
-    useRuntimeConfig().public.features.proposedScales = false
   })
 
   it('selects a chord by its chart line (tapped on the Changes sheet), and says which line is selected', async () => {
@@ -288,7 +286,7 @@ describe('BarInspector', () => {
 
   it('picks a scale from the list, or any scale by search', async () => {
     const w = await mountSuspended(BarInspector, { props })
-    const options = w.findAll('[role=radiogroup]')[0]?.findAll('[role=radio]') ?? []
+    const options = w.findAll('[role=radiogroup]').find((g) => g.attributes('aria-label') === 'Scale')?.findAll('[role=radio]') ?? []
     expect(options[0]?.text()).toContain('D Mixolydian')
     expect(options[0]?.attributes('aria-checked')).toBe('true')
     await options.find((o) => o.text().includes('D Lydian Dominant'))?.trigger('click')
@@ -300,7 +298,7 @@ describe('BarInspector', () => {
 
   it('states a function, with the scale each gives, and says why', async () => {
     const w = await mountSuspended(BarInspector, { props })
-    const fns = w.findAll('[role=radiogroup]')[1]?.findAll('[role=radio]') ?? []
+    const fns = w.findAll('[role=radiogroup]').find((g) => g.attributes('aria-label') === 'Function')?.findAll('[role=radio]') ?? []
     expect(fns[0]?.text()).toMatch(/^Auto: II7→ D Mixolydian$/)
     await fns.find((o) => o.text().startsWith('V7/V'))?.trigger('click')
     expect(rows(lastDoc(w))[1]).toMatch(/^A \| 2 \| D7 \| \| V7\/V$/)
@@ -328,22 +326,14 @@ describe('BarInspector', () => {
     await button(again, 'Scale')?.trigger('click')
     expect(again.findAll('[role=radiogroup]').some((g) => g.attributes('aria-label') === 'Scale')).toBe(true)
   })
-
-  const headings = (w: { findAll: (s: string) => { text: () => string }[] }) => w.findAll('h3').map((h) => h.text()).filter((t) => ['Function', 'Scale', 'Why'].includes(t))
-  it('keeps Scale, then Function, then Why with proposedScales off', async () => {
-    const w = await mountSuspended(BarInspector, { props })
-    expect(headings(w)).toEqual(['Scale', 'Function', 'Why'])
-  })
 })
 
-describe('BarInspector, proposedScales', () => {
-  const ON = { global: { provide: { [SCALE_VIEW as symbol]: ref({ level: 'standard', seed: 0, proposed: true }) } } }
+describe('BarInspector, proposed scales', () => {
+  const ON = { global: { provide: { [SCALE_VIEW as symbol]: ref({ level: 'standard', seed: 0 }) } } }
   const chart = (a7: string) => parseChart(`title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | A7${a7}\nA | 3 | Dm7\nA | 4 | G7\nB | 5 | C\n`).value
   const at = (d: ChartDoc) => ({ doc: d, section: 'A', bar: 2, index: 0, chord: { chord: 'A7', beat: 0, line: 3 }, count: 1, cell: barView(d).sections[0]!.bars[1]! })
   const scaleOptions = (w: { findAll: (s: string) => { attributes: (a: string) => string | undefined; findAll: (s: string) => unknown[] }[] }) =>
     (w.findAll('[role=radiogroup]').find((g) => g.attributes('aria-label') === 'Scale')?.findAll('[role=radio]') ?? []) as { text: () => string; attributes: (a: string) => string | undefined; trigger: (e: string) => Promise<void> }[]
-  beforeEach(() => (useRuntimeConfig().public.features.proposedScales = true))
-  afterEach(() => (useRuntimeConfig().public.features.proposedScales = false))
 
   it('puts Function first, then Scale, then Why', async () => {
     const w = await mountSuspended(BarInspector, { props: at(chart('')), ...ON })

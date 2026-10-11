@@ -7,7 +7,7 @@ const rows: Row[] = Array.from({ length: 13 }, (_, i) => ({ section: 'A', bar: S
 const stubs = { ScaleStaff: true } // VexFlow needs a real browser
 
 describe('ScaleSheet', () => {
-  it('plays the resolved scales it is given (proposedScales), else each row’s own or its quality’s default', async () => {
+  it('plays the resolved scales it is given, else each row’s own or its quality’s default', async () => {
     const scaleOf = async (resolved?: Map<number, Resolved>) =>
       (await mountSuspended(ScaleSheet, { props: { rows: rows.slice(0, 1), title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', start: 'C', mode: 'root', perPage: 12, ...(resolved ? { resolved } : {}) }, global: { stubs } }))
         .findComponent({ name: 'ScaleStaff' })

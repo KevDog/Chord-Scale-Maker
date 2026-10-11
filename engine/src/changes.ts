@@ -105,9 +105,9 @@ export function changesLinesPerPage(line: GuideLine, rows: Readonly<{ numerals: 
   return 6 + (!rows.numerals && !rows.scales ? 1 : 0)
 }
 
-const STANDARD: ScaleView = { level: 'standard', seed: 0, proposed: false }
+const STANDARD: ScaleView = { level: 'standard', seed: 0 }
 
-/** view: the sheet's level, and whether blank cells follow the analysis (resolve.ts); the guide tones read the chords only */
+/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only */
 export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: GuideLine = 'off', view: ScaleView = STANDARD): ChangesSheet {
   const rows = expandRowLines(doc).value
   const beats = chartBeats(doc)

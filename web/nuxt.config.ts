@@ -82,10 +82,8 @@ export default defineNuxtConfig({
         myCharts: true, // My charts: edits and new charts saved in this browser, files, share links (docs/plan-saving.md); on since sign-off
         practice: true, // highlight a chosen subset of each scale's notes (docs/plan-practice.md); on since sign-off
         changes: true, // the Changes sheet: the chart as a study lead sheet, numerals and scales under the chords (docs/plan-changes.md); on since sign-off
-        scaleLevels: true, // the Level control: Basic / Standard / Advanced / Random scales per chart (engine/src/levels.ts); on since sign-off
         keySignatures: true, // the clef and key signature once, at the start of each sheet (docs/superpowers/specs/2026-10-10-key-signatures-design.md); on since sign-off
         functions: true, // author functions, @key areas and live analysis notes (docs/superpowers/specs/2026-10-09-chart-functions-design.md); on since sign-off
-        proposedScales: true, // a blank scale cell plays the analysed scale at the sheet's level (docs/superpowers/specs/2026-10-11-proposed-scales-design.md); on with the library strip, whose blank cells need it
       },
     },
   },

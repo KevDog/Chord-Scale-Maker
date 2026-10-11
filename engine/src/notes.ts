@@ -30,7 +30,7 @@ export type RowNote = Readonly<{
   rule: string
 }>
 
-const STANDARD: ScaleView = { level: 'standard', seed: 0, proposed: false }
+const STANDARD: ScaleView = { level: 'standard', seed: 0 }
 
 export function rowNotes(doc: ChartDoc, view: ScaleView = STANDARD): ReadonlyMap<number, RowNote> {
   const a = analyse(doc)

@@ -356,7 +356,6 @@ describe('EditorView editing', () => {
 
 describe('EditorView scale level', () => {
   afterEach(() => {
-    useRuntimeConfig().public.features.proposedScales = false
     localStorage.clear()
     vi.restoreAllMocks()
   })
@@ -372,29 +371,20 @@ describe('EditorView scale level', () => {
   const undoable = (w: Wrapper) => buttonCalled(w, 'Undo')?.attributes('disabled') === undefined
   const cells = (doc: unknown) => (doc as { lines: { kind: string; scale?: string }[] }).lines.filter((l) => l.kind === 'row').map((l) => l.scale)
 
-  it('with proposedScales on, a level change plays on the sheets and leaves the chart alone', async () => {
-    useRuntimeConfig().public.features.proposedScales = true
+  it('a level change plays on the sheets and leaves the chart alone', async () => {
     const w = await mount()
     await buttonCalled(w, 'Edit')?.trigger('click')
     const before = changesSheet(w).props('doc')
     await chooseLevel(w, 'Basic')
     expect(changesSheet(w).props('doc')).toBe(before) // no edit
-    expect(changesSheet(w).props('view')).toMatchObject({ level: 'basic', proposed: true })
+    expect(changesSheet(w).props('view')).toEqual({ level: 'basic', seed: expect.any(Number) })
     expect(undoable(w)).toBe(false) // not an undoable edit
-    expect(w.text()).not.toMatch(/moved to basic scales/)
     await chooseSheet(w, 'Scales')
     expect(sheet(w).props('resolved').get(0)).toMatchObject({ scale: 'C Minor Pentatonic' })
   })
 
-  it('with it off, a level change writes the scales into the chart, as before', async () => {
-    const w = await mount()
-    await chooseLevel(w, 'Basic')
-    expect(cells(changesSheet(w).props('doc'))).toEqual(['C Minor Pentatonic'])
-    expect(w.text()).toMatch(/1 chord moved to basic scales/)
-  })
-
   const LEVELLED = 'title: T\nA | 1 | Cm7 | C Minor Pentatonic\nA | 2 | F7 | F Lydian Dominant\nA | 3 | Bbmaj7 | Bb Major Pentatonic\n'
-  const STORED = JSON.stringify({ level: 'basic', seed: 1, owned: ['1:Cm7', '2:F7'] }) // relevel wrote Cm7 and F7; F7 was changed by hand since; Bbmaj7 is a pick of your own
+  const STORED = JSON.stringify({ level: 'basic', seed: 1, owned: ['1:Cm7', '2:F7'] }) // a level once wrote Cm7 and F7; F7 was changed by hand since; Bbmaj7 is a pick of your own
   const mountMine = () => {
     saveChart({ id: 'abc123abc123', text: LEVELLED, kind: 'new' })
     localStorage.setItem('csm-level:mine:abc123abc123', STORED)
@@ -405,8 +395,7 @@ describe('EditorView scale level', () => {
     })
   }
 
-  it('with it on, blanks the cells a level wrote into a saved chart, once, and forgets which rows it owned', async () => {
-    useRuntimeConfig().public.features.proposedScales = true
+  it('blanks the cells a level wrote into a saved chart, once, and forgets which rows it owned', async () => {
     const log = vi.spyOn(console, 'info').mockImplementation(() => {})
     const w = await mountMine()
     expect(cells(changesSheet(w).props('doc'))).toEqual(['', 'F Lydian Dominant', 'Bb Major Pentatonic'])
@@ -418,11 +407,6 @@ describe('EditorView scale level', () => {
     expect(w.findComponent({ name: 'PreviewControls' }).text()).toContain('Basic')
   })
 
-  it('with it off, leaves a saved chart and its level state as they are', async () => {
-    const w = await mountMine()
-    expect(cells(changesSheet(w).props('doc'))).toEqual(['C Minor Pentatonic', 'F Lydian Dominant', 'Bb Major Pentatonic'])
-    expect(localStorage.getItem('csm-level:mine:abc123abc123')).toBe(STORED)
-  })
 })
 
 describe('EditorView Save', () => {

@@ -187,7 +187,6 @@ const props = defineProps<{ doc: ChartDoc }>()
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; source: []; selected: [line: number | null] }>()
 
 const functionsOn = useFeature('functions')
-const proposedOn = useFeature('proposedScales') // a blank cell's scale is the analysis's, shown greyed until pinned
 const { notes } = usePreferences() // the numerals and scales under each chord: off until shown
 
 const KEYS: readonly (readonly [string, string])[] = [
@@ -254,7 +253,7 @@ type ShownChord = Readonly<{ chord: string; known: boolean; numeral: string; sca
 function shownChords(section: string, b: ChartBar): ShownChord[] {
   const shown = b.chords.map((c): ShownChord => {
     const n = noteByLine.value.get(c.line)
-    return { chord: c.chord, known: scaleChoices(c.chord).known, numeral: n?.numeral ?? '', scale: n?.scale ?? '', proposed: proposedOn && !!n?.scale && n.source !== 'written', editing: false }
+    return { chord: c.chord, known: scaleChoices(c.chord).known, numeral: n?.numeral ?? '', scale: n?.scale ?? '', proposed: !!n?.scale && n.source !== 'written' /* the analysis's, greyed until pinned */, editing: false }
   })
   const e = editing.value
   if (!e || !isSelectedBar(section, b.bar)) return shown
