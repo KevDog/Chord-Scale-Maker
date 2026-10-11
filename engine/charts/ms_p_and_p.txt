@@ -8,19 +8,19 @@ source: Colorado Cookbook, p. 142
 # analysis: 2026-10-11, rules v1; Gb
 
 # section | bar | chord | scale
-A | 1  | Eb7sus4 | Eb Mixolydian  # static sus: Mixolydian
-A | 5  | Db7sus4 | Db Mixolydian  # static sus: Mixolydian
-B | 9  | Eb7sus4 | Eb Mixolydian  # static sus: Mixolydian
-B | 13 | Db7sus4 | Db Mixolydian  # static sus: Mixolydian
-C | 17 | Bm7     | B Dorian       # a borrowed minor chord: Dorian, its own key
-C | 18 | Dm7     | D Dorian       # ii of G7: Dorian
-C | 18 | G7      | G Mixolydian   # extended ii–V: a side-step, its own key
-C | 19 | Am7     | A Dorian       # a borrowed minor chord: Dorian, its own key
-C | 20 | Cm7     | C Dorian       # ii of F7: Dorian
-C | 20 | F7      | F Mixolydian   # extended ii–V: a side-step, its own key
-C | 21 | Gm7     | G Dorian       # a borrowed minor chord: Dorian, its own key
-C | 22 | Bbm7    | Bb Phrygian    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-C | 22 | Eb7     | Eb Mixolydian  # extended ii–V: a side-step, its own key
-C | 23 | Fm7     | F Dorian       # a borrowed minor chord: Dorian, its own key
-C | 24 | Abm7    | Ab Dorian      # ii of Db7: Dorian
-C | 24 | Db7     | Db Mixolydian  # V7/I in Gb: natural tensions
+A | 1  | Eb7sus4  # static sus: Mixolydian
+A | 5  | Db7sus4  # static sus: Mixolydian
+B | 9  | Eb7sus4  # static sus: Mixolydian
+B | 13 | Db7sus4  # static sus: Mixolydian
+C | 17 | Bm7      # a borrowed minor chord: Dorian, its own key
+C | 18 | Dm7      # ii of G7: Dorian
+C | 18 | G7       # extended ii–V: a side-step, its own key
+C | 19 | Am7      # a borrowed minor chord: Dorian, its own key
+C | 20 | Cm7      # ii of F7: Dorian
+C | 20 | F7       # extended ii–V: a side-step, its own key
+C | 21 | Gm7      # a borrowed minor chord: Dorian, its own key
+C | 22 | Bbm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+C | 22 | Eb7      # extended ii–V: a side-step, its own key
+C | 23 | Fm7      # a borrowed minor chord: Dorian, its own key
+C | 24 | Abm7     # ii of Db7: Dorian
+C | 24 | Db7      # V7/I in Gb: natural tensions

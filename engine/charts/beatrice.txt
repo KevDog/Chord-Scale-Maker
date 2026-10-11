@@ -8,22 +8,22 @@ source: Colorado Cookbook, p. 29
 
 # section | bar | chord | scale
 # area: F minor (bars 1–10)
-A | 1  | FMaj7  | F Lydian             # a non-tonic major chord: Lydian
-A | 2  | GbMaj7 | Gb Lydian            # a non-tonic major chord: Lydian
-A | 3  | FMaj7  | F Lydian             # a non-tonic major chord: Lydian
-A | 4  | EbMaj7 | Eb Ionian            # ♭VII of F minor: E♭ major, the notes of F Dorian
-A | 5  | Dm     | D Dorian             # a borrowed minor chord: Dorian, its own key
-A | 6  | EbMaj7 | Eb Ionian            # ♭VII of F minor: E♭ major, the notes of F Dorian
-A | 7  | Dm     | D Dorian             # a borrowed minor chord: Dorian, its own key
-A | 7  | Cm     | C Phrygian           # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
-A | 8  | Bbm    | Bb Dorian            # iv: Dorian, the key’s own notes
-A | 9  | Am     | A Dorian             # a borrowed minor chord: Dorian, its own key
-A | 10 | BbMaj7 | Bb Lydian            # a non-tonic major chord: Lydian
+A | 1  | FMaj7   # a non-tonic major chord: Lydian
+A | 2  | GbMaj7  # a non-tonic major chord: Lydian
+A | 3  | FMaj7   # a non-tonic major chord: Lydian
+A | 4  | EbMaj7  # ♭VII of F minor: E♭ major, the notes of F Dorian
+A | 5  | Dm      # a borrowed minor chord: Dorian, its own key
+A | 6  | EbMaj7  # ♭VII of F minor: E♭ major, the notes of F Dorian
+A | 7  | Dm      # a borrowed minor chord: Dorian, its own key
+A | 7  | Cm      # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+A | 8  | Bbm     # iv: Dorian, the key’s own notes
+A | 9  | Am      # a borrowed minor chord: Dorian, its own key
+A | 10 | BbMaj7  # a non-tonic major chord: Lydian
 # area: D minor (bars 11–16)
-A | 11 | Em7b5  | E Locrian            # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 11 | A7     | A Phrygian Dominant  # V7 of D minor: b9 and b13 are in the key
-A | 12 | Dm     | D Dorian             # tonic minor: Dorian by convention
-A | 13 | Gm     | G Dorian             # iv: Dorian, the key’s own notes
-A | 14 | GbMaj7 | Gb Lydian            # a non-tonic major chord: Lydian
-A | 15 | Fm     | F Dorian             # a borrowed minor chord: Dorian, its own key
-A | 16 | GbMaj7 | Gb Lydian            # a non-tonic major chord: Lydian
+A | 11 | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+A | 11 | A7      # V7 of D minor: b9 and b13 are in the key
+A | 12 | Dm      # tonic minor: Dorian by convention
+A | 13 | Gm      # iv: Dorian, the key’s own notes
+A | 14 | GbMaj7  # a non-tonic major chord: Lydian
+A | 15 | Fm      # a borrowed minor chord: Dorian, its own key
+A | 16 | GbMaj7  # a non-tonic major chord: Lydian

@@ -8,14 +8,14 @@ source: Colorado Cookbook, p. 38
 # analysis: 2026-10-11, rules v1; Bb, blues
 
 # section | bar | chord | scale
-A | 1  | Bb7   | Bb Mixolydian      # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 2  | Eb7   | Eb Mixolydian      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A | 3  | Bb7   | Bb Mixolydian      # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 5  | Eb7   | Eb Mixolydian      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A | 7  | Bb7   | Bb Mixolydian      # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 9  | Dbm7  | Db Dorian          # ii of Gb7: Dorian
-A | 9  | Gb7   | Gb Mixolydian      # extended ii–V: a side-step, its own key
-A | 10 | Cm7   | C Dorian           # ii of F7: Dorian
-A | 10 | F7    | F Mixolydian       # V7/I in Bb: natural tensions
-A | 11 | B7#11 | B Lydian Dominant  # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-A | 12 | F13   | F Mixolydian       # extended dominant: V7 of Bb7
+A | 1  | Bb7    # I7 of the blues: a tonic with dominant colour, natural tensions
+A | 2  | Eb7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A | 3  | Bb7    # I7 of the blues: a tonic with dominant colour, natural tensions
+A | 5  | Eb7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A | 7  | Bb7    # I7 of the blues: a tonic with dominant colour, natural tensions
+A | 9  | Dbm7   # ii of Gb7: Dorian
+A | 9  | Gb7    # extended ii–V: a side-step, its own key
+A | 10 | Cm7    # ii of F7: Dorian
+A | 10 | F7     # V7/I in Bb: natural tensions
+A | 11 | B7#11  # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A | 12 | F13    # extended dominant: V7 of Bb7

@@ -9,28 +9,28 @@ source: Colorado Cookbook, p. 67
 # analysis: 2026-10-11, rules v1; G
 
 # section | bar | chord | scale
-A | 1  | G6/9   | G Ionian             # tonic: the 4th is in the key
-A | 2  | F6/9   | F Lydian             # ♭VII6, borrowed from G minor: Lydian (its ♯11 is in the key)
-A | 3  | G6/9   | G Ionian             # tonic: the 4th is in the key
-A | 4  | F6/9   | F Lydian             # ♭VII6, borrowed from G minor: Lydian (its ♯11 is in the key)
-A | 5  | G6/9   | G Ionian             # tonic: the 4th is in the key
-A | 6  | F6/9   | F Lydian             # ♭VII6, borrowed from G minor: Lydian (its ♯11 is in the key)
-A | 7  | G6/9   | G Ionian             # tonic: the 4th is in the key
-A | 8  | F6/9   | F Lydian             # ♭VII6, borrowed from G minor: Lydian (its ♯11 is in the key)
-B | 9  | FMaj7  | F Lydian             # ♭VIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
-B | 10 | Em     | E Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B | 11 | FMaj7  | F Lydian             # ♭VIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
-B | 12 | Em     | E Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B | 13 | FMaj7  | F Lydian             # ♭VIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
-B | 14 | Em     | E Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B | 15 | FMaj7  | F Lydian             # ♭VIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
-B | 16 | Em     | E Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-C | 17 | EbMaj7 | Eb Lydian            # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
-D | 25 | Em7b5  | E Locrian            # iiø7 of A7b9: Locrian, the key's own notes (its ♭2 is a passing note)
-D | 26 | A7b9   | A Phrygian Dominant  # extended ii–V: a side-step, its own key: b9 and b13 are in the key
-D | 27 | Em7b5  | E Locrian            # iiø7 of A7b9: Locrian, the key's own notes (its ♭2 is a passing note)
-D | 28 | A7b9   | A Phrygian Dominant  # extended ii–V: a side-step, its own key: b9 and b13 are in the key
-D | 29 | Em7b5  | E Locrian            # iiø7 of A7b9: Locrian, the key's own notes (its ♭2 is a passing note)
-D | 30 | A7b9   | A Phrygian Dominant  # extended ii–V: a side-step, its own key: b9 and b13 are in the key
-D | 31 | Ebm7   | Eb Dorian            # ii of Ab7: Dorian
-D | 32 | Ab7    | Ab Lydian Dominant   # tritone substitute: resolves down a half step to G6/9
+A | 1  | G6/9    # tonic: the 4th is in the key
+A | 2  | F6/9    # ♭VII6, borrowed from G minor: Lydian (its ♯11 is in the key)
+A | 3  | G6/9    # tonic: the 4th is in the key
+A | 4  | F6/9    # ♭VII6, borrowed from G minor: Lydian (its ♯11 is in the key)
+A | 5  | G6/9    # tonic: the 4th is in the key
+A | 6  | F6/9    # ♭VII6, borrowed from G minor: Lydian (its ♯11 is in the key)
+A | 7  | G6/9    # tonic: the 4th is in the key
+A | 8  | F6/9    # ♭VII6, borrowed from G minor: Lydian (its ♯11 is in the key)
+B | 9  | FMaj7   # ♭VIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+B | 10 | Em      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+B | 11 | FMaj7   # ♭VIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+B | 12 | Em      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+B | 13 | FMaj7   # ♭VIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+B | 14 | Em      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+B | 15 | FMaj7   # ♭VIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+B | 16 | Em      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+C | 17 | EbMaj7  # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+D | 25 | Em7b5   # iiø7 of A7b9: Locrian, the key's own notes (its ♭2 is a passing note)
+D | 26 | A7b9    # extended ii–V: a side-step, its own key: b9 and b13 are in the key
+D | 27 | Em7b5   # iiø7 of A7b9: Locrian, the key's own notes (its ♭2 is a passing note)
+D | 28 | A7b9    # extended ii–V: a side-step, its own key: b9 and b13 are in the key
+D | 29 | Em7b5   # iiø7 of A7b9: Locrian, the key's own notes (its ♭2 is a passing note)
+D | 30 | A7b9    # extended ii–V: a side-step, its own key: b9 and b13 are in the key
+D | 31 | Ebm7    # ii of Ab7: Dorian
+D | 32 | Ab7     # tritone substitute: resolves down a half step to G6/9

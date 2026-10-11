@@ -7,34 +7,34 @@ source: Colorado Cookbook, p. 114
 # analysis: 2026-10-11, rules v1; Eb
 
 # section | bar | chord | scale
-A1 | 1  | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
-A1 | 1  | Cm7    | C Aeolian                # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A1 | 2  | Fm7    | F Dorian                 # ii of the ii–V to Eb
-A1 | 2  | Bb7    | Bb Mixolydian            # V7 of Eb: natural tensions
-A1 | 3  | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
-A1 | 3  | Cm7    | C Aeolian                # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A1 | 4  | Fm7    | F Dorian                 # ii of Bb7: Dorian
-A1 | 4  | Bb7    | Bb Mixolydian            # extended dominant: V7 of Eb7
-A1 | 5  | Eb7    | Eb Lydian Dominant       # tritone substitute: resolves down a half step to D7
-A1 | 5  | D7     | D Lydian Dominant        # tritone substitute: resolves down a half step to Db7
-A1 | 6  | Db7    | Db Lydian Dominant       # tritone substitute: resolves down a half step to C7
-A1 | 6  | C7     | C Lydian Dominant        # tritone substitute: resolves down a half step to B7
-A1 | 7  | B7     | B Lydian Dominant        # tritone substitute: resolves down a half step to Bb7
-A1 | 7  | Bb7    | Bb Mixolydian            # V7 of Eb: natural tensions
-A1 | 8  | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
+A1 | 1  | EbMaj7  # tonic: the 4th is in the key
+A1 | 1  | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+A1 | 2  | Fm7     # ii of the ii–V to Eb
+A1 | 2  | Bb7     # V7 of Eb: natural tensions
+A1 | 3  | EbMaj7  # tonic: the 4th is in the key
+A1 | 3  | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+A1 | 4  | Fm7     # ii of Bb7: Dorian
+A1 | 4  | Bb7     # extended dominant: V7 of Eb7
+A1 | 5  | Eb7     # tritone substitute: resolves down a half step to D7
+A1 | 5  | D7      # tritone substitute: resolves down a half step to Db7
+A1 | 6  | Db7     # tritone substitute: resolves down a half step to C7
+A1 | 6  | C7      # tritone substitute: resolves down a half step to B7
+A1 | 7  | B7      # tritone substitute: resolves down a half step to Bb7
+A1 | 7  | Bb7     # V7 of Eb: natural tensions
+A1 | 8  | EbMaj7  # tonic: the 4th is in the key
 @copy A1 A2 8
-B  | 17 | EbMaj7 | Eb Ionian
-B  | 17 | Cdim7  | C Whole-Half Diminished  # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
-B  | 18 | Fm7    | F Dorian                 # ii: Dorian, the key’s own notes
-B  | 18 | Eb6    | Eb Ionian                # tonic: the 4th is in the key
-B  | 19 | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
-B  | 19 | Cdim7  | C Whole-Half Diminished  # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
-B  | 20 | Fm7    | F Dorian                 # ii: Dorian, the key’s own notes
-B  | 20 | Eb6    | Eb Ionian                # tonic: the 4th is in the key
-B  | 21 | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
-B  | 21 | Cdim7  | C Whole-Half Diminished  # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
-B  | 22 | Fm7    | F Dorian                 # ii: Dorian, the key’s own notes
-B  | 22 | Eb6    | Eb Ionian                # tonic: the 4th is in the key
-B  | 23 | F9     | F Mixolydian             # V7 of V7: the dominant of the dominant: natural tensions
-B  | 24 | Bb7#5  | Bb Whole Tone            # V7 of Eb: #11 and b13 from the symbol
+B  | 17 | EbMaj7
+B  | 17 | Cdim7   # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
+B  | 18 | Fm7     # ii: Dorian, the key’s own notes
+B  | 18 | Eb6     # tonic: the 4th is in the key
+B  | 19 | EbMaj7  # tonic: the 4th is in the key
+B  | 19 | Cdim7   # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
+B  | 20 | Fm7     # ii: Dorian, the key’s own notes
+B  | 20 | Eb6     # tonic: the 4th is in the key
+B  | 21 | EbMaj7  # tonic: the 4th is in the key
+B  | 21 | Cdim7   # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
+B  | 22 | Fm7     # ii: Dorian, the key’s own notes
+B  | 22 | Eb6     # tonic: the 4th is in the key
+B  | 23 | F9      # V7 of V7: the dominant of the dominant: natural tensions
+B  | 24 | Bb7#5   # V7 of Eb: #11 and b13 from the symbol
 @copy A1 A3 24

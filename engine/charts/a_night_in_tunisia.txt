@@ -9,36 +9,36 @@ source: Colorado Cookbook, p. 9
 
 # section | bar | chord | scale
 # area: D minor (bars 1–19)
-Intro | 1  | Eb7    | Eb Lydian Dominant        # tritone substitute: resolves down a half step to Dm6/9
-Intro | 2  | Dm6/9  | D Melodic Minor           # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-Intro | 3  | Eb7    | Eb Lydian Dominant        # tritone substitute: resolves down a half step to Dm6/9
-Intro | 4  | Dm6/9  | D Melodic Minor           # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+Intro | 1  | Eb7     # tritone substitute: resolves down a half step to Dm6/9
+Intro | 2  | Dm6/9   # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+Intro | 3  | Eb7     # tritone substitute: resolves down a half step to Dm6/9
+Intro | 4  | Dm6/9   # tonic minor sixth chord: melodic minor, the raised 7th is a tension
 # the bass intro (Eb7 Dm6/9, played twice) and the tag (interlude after the head); the 4-bar solo break is left out
-A1    | 1  | Eb7    | Eb Lydian Dominant        # tritone substitute: resolves down a half step to Dm6/9
-A1    | 2  | Dm6/9  | D Melodic Minor           # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-A1    | 3  | Eb7    | Eb Lydian Dominant        # tritone substitute: resolves down a half step to Dm6/9
-A1    | 4  | Dm6/9  | D Melodic Minor           # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-A1    | 5  | Eb7    | Eb Lydian Dominant        # tritone substitute: resolves down a half step to Dm6/9
-A1    | 6  | Dm6/9  | D Melodic Minor           # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-A1    | 7  | Em7b5  | E Locrian                 # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A1    | 7  | A7#9   | A Altered                 # V7 of D minor: the b13 is in the key, b9, #9 and #11 from the symbol
-A1    | 8  | Dm     | D Dorian                  # tonic minor: Dorian by convention
+A1    | 1  | Eb7     # tritone substitute: resolves down a half step to Dm6/9
+A1    | 2  | Dm6/9   # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+A1    | 3  | Eb7     # tritone substitute: resolves down a half step to Dm6/9
+A1    | 4  | Dm6/9   # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+A1    | 5  | Eb7     # tritone substitute: resolves down a half step to Dm6/9
+A1    | 6  | Dm6/9   # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+A1    | 7  | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+A1    | 7  | A7#9    # V7 of D minor: the b13 is in the key, b9, #9 and #11 from the symbol
+A1    | 8  | Dm      # tonic minor: Dorian by convention
 @copy A1 A2 8
-B     | 17 | Am7b5  | A Locrian                 # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B     | 18 | D7#9   | D Altered                 # V7/iv in D minor: the b13 is in the key, b9, #9 and #11 from the symbol
-B     | 19 | Gm     | G Dorian                  # iv: Dorian, the key’s own notes
+B     | 17 | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B     | 18 | D7#9    # V7/iv in D minor: the b13 is in the key, b9, #9 and #11 from the symbol
+B     | 19 | Gm      # iv: Dorian, the key’s own notes
 # area: F major (bars 21–24)
-B     | 21 | Gm7b5  | G Locrian                 # iiø7 of F: Locrian, the key's own notes (its ♭2 is a passing note)
-B     | 22 | C7#9   | C Half-Whole Diminished   # V7 of F: b9, #9 and #11 from the symbol
-B     | 23 | FMaj7  | F Ionian                  # tonic: the 4th is in the key
-B     | 24 | Em7b5  | E Locrian                 # iiø7 of A7#9: Locrian, the key's own notes (its ♭2 is a passing note)
-B     | 24 | A7#9   | A Altered                 # V7/vi in F: the b13 is in the key, b9, #9 and #11 from the symbol
+B     | 21 | Gm7b5   # iiø7 of F: Locrian, the key's own notes (its ♭2 is a passing note)
+B     | 22 | C7#9    # V7 of F: b9, #9 and #11 from the symbol
+B     | 23 | FMaj7   # tonic: the 4th is in the key
+B     | 24 | Em7b5   # iiø7 of A7#9: Locrian, the key's own notes (its ♭2 is a passing note)
+B     | 24 | A7#9    # V7/vi in F: the b13 is in the key, b9, #9 and #11 from the symbol
 @copy A1 A3 24
-Tag   | 33 | Em7    | E Dorian                  # a borrowed minor chord: Dorian, its own key
-Tag   | 35 | Eb7#11 | Eb Lydian Dominant        # tritone substitute: resolves down a half step to Dm7
-Tag   | 37 | Dm7    | D Dorian                  # ii of G7#11: Dorian
-Tag   | 39 | G7#11  | G Lydian Dominant         # extended dominant: V7 of C7#11; #11 from the symbol
-Tag   | 41 | C7#11  | C Lydian Dominant         # bVII7 in D minor, not resolving: the #11 from the symbol
-Tag   | 42 | Gm/C   | G Dorian                  # iv: Dorian, the key’s own notes
-Tag   | 43 | F#7#9  | F# Half-Whole Diminished  # tritone substitute: resolves down a half step to F; b9 and #9 from the symbol
-Tag   | 44 | F      | F Ionian                  # bIII of D minor: the relative major itself
+Tag   | 33 | Em7     # a borrowed minor chord: Dorian, its own key
+Tag   | 35 | Eb7#11  # tritone substitute: resolves down a half step to Dm7
+Tag   | 37 | Dm7     # ii of G7#11: Dorian
+Tag   | 39 | G7#11   # extended dominant: V7 of C7#11; #11 from the symbol
+Tag   | 41 | C7#11   # bVII7 in D minor, not resolving: the #11 from the symbol
+Tag   | 42 | Gm/C    # iv: Dorian, the key’s own notes
+Tag   | 43 | F#7#9   # tritone substitute: resolves down a half step to F; b9 and #9 from the symbol
+Tag   | 44 | F       # bIII of D minor: the relative major itself

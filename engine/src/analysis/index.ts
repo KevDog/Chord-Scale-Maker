@@ -292,14 +292,16 @@ export const chartKeyOf = (doc: ChartDoc): Key | null => parseKey(meta(doc, 'key
 // —— writing it back ——
 
 export type ApplyOptions = Readonly<{
-  /** fill: blank scale cells only; force: every row the rules reach, except `# keep:` rows; none: scales untouched */
-  scales: 'fill' | 'force' | 'none'
+  /** strip: blank every written scale the rules reproduce at each of the line's occurrences, except `# keep:` rows; none: scales untouched */
+  scales: 'strip' | 'none'
   /** write the analysis as comments: a reason on each row, `# area:` lines, an `# analysis:` header */
   save: boolean
   /** for the header, "2026-10-08" */
   date: string
 }>
 export type Change = Readonly<{ line: number; bar: string; chord: string; from: string; to: string }>
+/** a written scale, without `# keep:`, that the rules don't reproduce at one of its occurrences (strip leaves it) */
+export type Override = Readonly<{ line: number; bar: string; chord: string; scale: string; rules: string }>
 /** a @copy repeat whose analysis differs from its source row's (only the source line can be written) */
 export type Conflict = Readonly<{ line: number; bar: string; chord: string; source: string; copy: string }>
 
@@ -310,7 +312,7 @@ export function applyAnalysis(
   doc: ChartDoc,
   analysis: Analysis,
   options: ApplyOptions,
-): Readonly<{ doc: ChartDoc; changes: readonly Change[]; conflicts: readonly Conflict[] }> {
+): Readonly<{ doc: ChartDoc; changes: readonly Change[]; conflicts: readonly Conflict[]; overrides: readonly Override[] }> {
   // each written line takes its first occurrence's verdict; a repeat that disagrees is reported
   const byLine = new Map<number, RowAnalysis>()
   const conflicts: Conflict[] = []
@@ -321,6 +323,7 @@ export function applyAnalysis(
       conflicts.push({ line: r.line, bar: r.bar, chord: r.chord, source: first.scale ?? '?', copy: r.scale ?? '?' })
   }
   const changes: Change[] = []
+  const overrides: Override[] = []
   const areaAt = new Map<number, string>()
   for (const a of analysis.areas) {
     const line = analysis.rows.find((r) => r.row === a.row)?.line
@@ -335,9 +338,13 @@ export function applyAnalysis(
     const r = byLine.get(i)
     if (!r) return void out.push(l)
     let row = l
-    if (r.scale && !isKept(l) && ((options.scales === 'fill' && !l.scale) || (options.scales === 'force' && !sameScale(l.scale, r.scale)))) {
-      if (!sameScale(l.scale, r.scale)) changes.push({ line: i, bar: r.bar, chord: r.chord, from: l.scale, to: r.scale })
-      row = { ...row, scale: r.scale }
+    if (l.scale && !isKept(l)) {
+      const differs = analysis.rows.find((x) => x.line === i && !sameScale(l.scale, x.scale))
+      if (differs) overrides.push({ line: i, bar: differs.bar, chord: differs.chord, scale: l.scale, rules: differs.scale ?? '?' })
+      else if (options.scales === 'strip') {
+        changes.push({ line: i, bar: r.bar, chord: r.chord, from: l.scale, to: '' })
+        row = { ...row, scale: '' }
+      }
     }
     if (options.save) {
       if (areaAt.has(i) && analysis.areas.length > 1) out.push({ kind: 'comment', text: areaAt.get(i) ?? '' })
@@ -363,7 +370,7 @@ export function applyAnalysis(
     const unchanged = old?.kind === 'comment' && old.text.replace(/analysis: [^,]*,/, '') === header.replace(/analysis: [^,]*,/, '') && sameLines(withoutHeader(doc.lines), withoutHeader(out))
     out.splice(at, 0, { kind: 'comment', text: unchanged && old?.kind === 'comment' ? old.text : header })
   }
-  return { doc: { lines: out }, changes, conflicts }
+  return { doc: { lines: out }, changes, conflicts, overrides }
 }
 
 /**

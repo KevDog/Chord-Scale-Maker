@@ -1,10 +1,10 @@
 title: Impressions
 subtitle: AABA, 32 Bars (the So What Form)
 key: Dm
-# analysis: 2026-10-08, rules v1; D minor, modal
+# analysis: 2026-10-11, rules v1; D minor, modal
 
 # section | bar | chord | scale
-A1 | 1  | Dm7  | D Dorian   # modal minor: Dorian
+A1 | 1  | Dm7   # modal minor: Dorian
 @copy A1 A2 8
-B  | 17 | Ebm7 | Eb Dorian  # modal minor: Dorian
+B  | 17 | Ebm7  # modal minor: Dorian
 @copy A1 A3 24

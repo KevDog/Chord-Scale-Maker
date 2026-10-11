@@ -8,37 +8,37 @@ source: Colorado Cookbook, p. 64
 
 # section | bar | chord | scale
 # the standard changes; the sheet's alternate turnarounds are left out
-A1 | 1  | CMaj7  | C Ionian                     # tonic: the 4th is in the key
-A1 | 3  | CMaj7  | C Ionian
-A1 | 3  | Bb7    | Bb Lydian Dominant           # tritone substitute: resolves down a half step to A7
-A1 | 4  | A7     | A Mixolydian b6              # V7/ii in C: the b13 is in the key
-A1 | 5  | Dm7    | D Dorian                     # ii of the ii–V to C
-A1 | 6  | G7     | G Mixolydian                 # V7 of C: natural tensions
-A1 | 7  | CMaj7  | C Ionian                     # tonic: the 4th is in the key
-A1 | 8  | G7     | G Mixolydian                 # V7 of C: natural tensions
-A2 | 9  | CMaj7  | C Ionian                     # tonic: the 4th is in the key
-A2 | 11 | CMaj7  | C Ionian
-A2 | 11 | Bb7    | Bb Lydian Dominant           # tritone substitute: resolves down a half step to A7
-A2 | 12 | A7     | A Mixolydian b6              # V7/ii in C: the b13 is in the key
-A2 | 13 | Dm7    | D Dorian                     # ii of the ii–V to C
-A2 | 14 | G7     | G Mixolydian                 # V7 of C: natural tensions
-A2 | 15 | CMaj7  | C Ionian                     # tonic: the 4th is in the key
-A2 | 16 | C7     | C Mixolydian                 # V7/IV in C: natural tensions
-B  | 17 | FMaj7  | F Ionian                     # the C7 before it makes F the key of the moment: the 4th is in the key
-B  | 18 | Bb7    | Bb Lydian Dominant           # back door bVII7 to CMaj7: the #11 is in the key
-B  | 19 | CMaj7  | C Ionian                     # tonic: the 4th is in the key
-B  | 20 | C7     | C Mixolydian                 # V7/IV in C: natural tensions
-B  | 21 | FMaj7  | F Ionian                     # the C7 before it makes F the key of the moment: the 4th is in the key
-B  | 22 | F#m7b5 | F# Locrian                   # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B  | 22 | B7     | B Phrygian Dominant          # V7/iii in C: b9 and b13 are in the key
-B  | 23 | Em7    | E Phrygian                   # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B  | 23 | Ebdim7 | Eb Diatonic Diminished bIII  # passing diminished: D7♭9 without its D, the G7's dominant (Dm7 its ii)
-B  | 24 | Dm7    | D Dorian                     # ii of the ii–V to C
-B  | 24 | G7     | G Mixolydian                 # V7 of C: natural tensions
-A3 | 25 | CMaj7  | C Ionian                     # tonic: the 4th is in the key
-A3 | 27 | CMaj7  | C Ionian
-A3 | 27 | Bb7    | Bb Lydian Dominant           # tritone substitute: resolves down a half step to A7
-A3 | 28 | A7     | A Mixolydian b6              # V7/ii in C: the b13 is in the key
-A3 | 29 | Dm7    | D Dorian                     # ii of the ii–V to C
-A3 | 30 | G7     | G Mixolydian                 # V7 of C: natural tensions
-A3 | 31 | CMaj7  | C Ionian                     # tonic: the 4th is in the key
+A1 | 1  | CMaj7   # tonic: the 4th is in the key
+A1 | 3  | CMaj7
+A1 | 3  | Bb7     # tritone substitute: resolves down a half step to A7
+A1 | 4  | A7      # V7/ii in C: the b13 is in the key
+A1 | 5  | Dm7     # ii of the ii–V to C
+A1 | 6  | G7      # V7 of C: natural tensions
+A1 | 7  | CMaj7   # tonic: the 4th is in the key
+A1 | 8  | G7      # V7 of C: natural tensions
+A2 | 9  | CMaj7   # tonic: the 4th is in the key
+A2 | 11 | CMaj7
+A2 | 11 | Bb7     # tritone substitute: resolves down a half step to A7
+A2 | 12 | A7      # V7/ii in C: the b13 is in the key
+A2 | 13 | Dm7     # ii of the ii–V to C
+A2 | 14 | G7      # V7 of C: natural tensions
+A2 | 15 | CMaj7   # tonic: the 4th is in the key
+A2 | 16 | C7      # V7/IV in C: natural tensions
+B  | 17 | FMaj7   # the C7 before it makes F the key of the moment: the 4th is in the key
+B  | 18 | Bb7     # back door bVII7 to CMaj7: the #11 is in the key
+B  | 19 | CMaj7   # tonic: the 4th is in the key
+B  | 20 | C7      # V7/IV in C: natural tensions
+B  | 21 | FMaj7   # the C7 before it makes F the key of the moment: the 4th is in the key
+B  | 22 | F#m7b5  # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B  | 22 | B7      # V7/iii in C: b9 and b13 are in the key
+B  | 23 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B  | 23 | Ebdim7  # passing diminished: D7♭9 without its D, the G7's dominant (Dm7 its ii)
+B  | 24 | Dm7     # ii of the ii–V to C
+B  | 24 | G7      # V7 of C: natural tensions
+A3 | 25 | CMaj7   # tonic: the 4th is in the key
+A3 | 27 | CMaj7
+A3 | 27 | Bb7     # tritone substitute: resolves down a half step to A7
+A3 | 28 | A7      # V7/ii in C: the b13 is in the key
+A3 | 29 | Dm7     # ii of the ii–V to C
+A3 | 30 | G7      # V7 of C: natural tensions
+A3 | 31 | CMaj7   # tonic: the 4th is in the key

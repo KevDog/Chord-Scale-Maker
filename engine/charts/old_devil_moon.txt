@@ -8,46 +8,46 @@ source: Colorado Cookbook, p. 162
 
 # section | bar | chord | scale
 # area: F major (bars 1–12)
-Intro | 1  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
-Intro | 2  | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
-Intro | 3  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
-Intro | 4  | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
+Intro | 1  | F7      # I7 in F, not resolving: natural tensions
+Intro | 2  | Eb7     # ♭VII7 from the parallel minor: Lydian Dominant
+Intro | 3  | F7      # I7 in F, not resolving: natural tensions
+Intro | 4  | Eb7     # ♭VII7 from the parallel minor: Lydian Dominant
 # the Killer Joe style intro (F7 Eb7, slashes)
-A     | 1  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
-A     | 2  | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
-A     | 3  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
-A     | 4  | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
-A     | 5  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
-A     | 6  | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
-A     | 7  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
-A     | 8  | Cm7    | C Dorian                 # ii of the ii–V to Bb
-A     | 8  | F7b9   | F Half-Whole Diminished  # V7/IV in F: the b9 from the symbol
-B     | 9  | BbMaj7 | Bb Ionian                # the F7b9 before it makes Bb the key of the moment: the 4th is in the key
-B     | 11 | Bbm7   | Bb Dorian                # ii of the ii–V to Ab minor
-B     | 12 | Eb7    | Eb Lydian Dominant       # V7/biii in F: the #11 is in the key
+A     | 1  | F7      # I7 in F, not resolving: natural tensions
+A     | 2  | Eb7     # ♭VII7 from the parallel minor: Lydian Dominant
+A     | 3  | F7      # I7 in F, not resolving: natural tensions
+A     | 4  | Eb7     # ♭VII7 from the parallel minor: Lydian Dominant
+A     | 5  | F7      # I7 in F, not resolving: natural tensions
+A     | 6  | Eb7     # ♭VII7 from the parallel minor: Lydian Dominant
+A     | 7  | F7      # I7 in F, not resolving: natural tensions
+A     | 8  | Cm7     # ii of the ii–V to Bb
+A     | 8  | F7b9    # V7/IV in F: the b9 from the symbol
+B     | 9  | BbMaj7  # the F7b9 before it makes Bb the key of the moment: the 4th is in the key
+B     | 11 | Bbm7    # ii of the ii–V to Ab minor
+B     | 12 | Eb7     # V7/biii in F: the #11 is in the key
 # area: Gb major (bars 13–17)
-B     | 13 | Abm7   | Ab Dorian                # ii of the ii–V to Gb
-B     | 13 | Db7    | Db Mixolydian            # V7 of Gb: natural tensions
-B     | 14 | GbMaj7 | Gb Ionian                # tonic: the 4th is in the key
-B     | 14 | C7     | C Mixolydian             # extended dominant: V7 of F7
-B     | 15 | F7     | F Phrygian Dominant      # VII7 in Gb, not resolving: b9 and b13 are in the key
-B     | 16 | Eb7    | Eb Mixolydian b6         # VI7 in Gb, not resolving: the b13 is in the key
-C     | 17 | F7     | F Phrygian Dominant      # VII7 in Gb, not resolving: b9 and b13 are in the key
+B     | 13 | Abm7    # ii of the ii–V to Gb
+B     | 13 | Db7     # V7 of Gb: natural tensions
+B     | 14 | GbMaj7  # tonic: the 4th is in the key
+B     | 14 | C7      # extended dominant: V7 of F7
+B     | 15 | F7      # VII7 in Gb, not resolving: b9 and b13 are in the key
+B     | 16 | Eb7     # VI7 in Gb, not resolving: the b13 is in the key
+C     | 17 | F7      # VII7 in Gb, not resolving: b9 and b13 are in the key
 # area: D major (bars 18–19)
-C     | 18 | Eb7    | Eb Lydian Dominant       # tritone substitute: resolves down a half step to DMaj7
-C     | 19 | DMaj7  | D Ionian                 # tonic: the 4th is in the key
+C     | 18 | Eb7     # tritone substitute: resolves down a half step to DMaj7
+C     | 19 | DMaj7   # tonic: the 4th is in the key
 # area: F major (bars 21–32)
-C     | 21 | Dm7    | D Dorian                 # ii of G7: Dorian
-C     | 22 | G7     | G Mixolydian             # V7/V in F: natural tensions
-C     | 23 | Gm7    | G Dorian                 # ii of C7: Dorian
-C     | 24 | C7     | C Mixolydian             # extended dominant: V7 of F7
-D     | 25 | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
-D     | 26 | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
-D     | 27 | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
-D     | 28 | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
-D     | 29 | Am7    | A Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-D     | 29 | D7     | D Mixolydian b6          # V7/ii in F: the b13 is in the key
-D     | 30 | Gm7    | G Dorian                 # ii of C7: Dorian
-D     | 30 | C7     | C Mixolydian             # extended dominant: V7 of F7
-D     | 31 | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
-D     | 32 | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
+C     | 21 | Dm7     # ii of G7: Dorian
+C     | 22 | G7      # V7/V in F: natural tensions
+C     | 23 | Gm7     # ii of C7: Dorian
+C     | 24 | C7      # extended dominant: V7 of F7
+D     | 25 | F7      # I7 in F, not resolving: natural tensions
+D     | 26 | Eb7     # ♭VII7 from the parallel minor: Lydian Dominant
+D     | 27 | F7      # I7 in F, not resolving: natural tensions
+D     | 28 | Eb7     # ♭VII7 from the parallel minor: Lydian Dominant
+D     | 29 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+D     | 29 | D7      # V7/ii in F: the b13 is in the key
+D     | 30 | Gm7     # ii of C7: Dorian
+D     | 30 | C7      # extended dominant: V7 of F7
+D     | 31 | F7      # I7 in F, not resolving: natural tensions
+D     | 32 | Eb7     # ♭VII7 from the parallel minor: Lydian Dominant

@@ -7,34 +7,34 @@ form: AAB
 # analysis: 2026-10-11, rules v1; G minor
 
 # section | bar | chord | scale
-A1 | 1  | Cm7    | C Dorian             # ii of F7: Dorian
-A1 | 2  | F7     | F Mixolydian         # V7/bIII in G minor: natural tensions
-A1 | 3  | Bm7    | B Dorian             # ii of E7: Dorian
-A1 | 3  | E7     | E Mixolydian         # extended ii–V: a side-step, its own key
-A1 | 4  | Bbm7   | Bb Dorian            # ii of Eb7: Dorian
-A1 | 4  | Eb7    | Eb Mixolydian        # extended ii–V: a side-step, its own key
-A1 | 5  | Am7b5  | A Locrian            # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A1 | 6  | D7     | D Phrygian Dominant  # V7 of G minor: b9 and b13 are in the key
-A1 | 7  | Gm     | G Dorian             # tonic minor: Dorian by convention
-A1 | 8  | Gm     | G Dorian
+A1 | 1  | Cm7     # ii of F7: Dorian
+A1 | 2  | F7      # V7/bIII in G minor: natural tensions
+A1 | 3  | Bm7     # ii of E7: Dorian
+A1 | 3  | E7      # extended ii–V: a side-step, its own key
+A1 | 4  | Bbm7    # ii of Eb7: Dorian
+A1 | 4  | Eb7     # extended ii–V: a side-step, its own key
+A1 | 5  | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+A1 | 6  | D7      # V7 of G minor: b9 and b13 are in the key
+A1 | 7  | Gm      # tonic minor: Dorian by convention
+A1 | 8  | Gm
 @copy A1 A2 8
 
-B  | 17 | Am7b5  | A Locrian            # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B  | 18 | D7     | D Phrygian Dominant  # V7 of G minor: b9 and b13 are in the key
-B  | 19 | Gm     | G Dorian             # tonic minor: Dorian by convention
-B  | 20 | Gm     | G Dorian
-B  | 21 | Cm7    | C Dorian             # ii of F7: Dorian
-B  | 22 | F7     | F Mixolydian         # V7/bIII in G minor: natural tensions
-B  | 23 | Bm7    | B Dorian             # ii of E7: Dorian
-B  | 23 | E7     | E Lydian Dominant    # tritone substitute: resolves down a half step to EbMaj7
-B  | 24 | EbMaj7 | Eb Lydian            # a non-tonic major chord: Lydian
-B  | 25 | Am7b5  | A Locrian            # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B  | 26 | D7     | D Phrygian Dominant  # V7 of G minor: b9 and b13 are in the key
-B  | 27 | Gm     | G Dorian             # tonic minor: Dorian by convention
-B  | 27 | D7/F#  | D Phrygian Dominant  # V7 of the Gm before it: b9 and b13 are in the key
-B  | 28 | Fm7    | F Dorian             # ii of Bb7: Dorian
-B  | 28 | Bb7    | Bb Mixolydian        # V7/bVI in G minor: natural tensions
-B  | 29 | Am7b5  | A Locrian            # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B  | 30 | D7     | D Phrygian Dominant  # V7 of G minor: b9 and b13 are in the key
-B  | 31 | Gm     | G Dorian             # tonic minor: Dorian by convention
-B  | 32 | G7     | G Mixolydian b6      # V7/iv in G minor: the b13 is in the key
+B  | 17 | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B  | 18 | D7      # V7 of G minor: b9 and b13 are in the key
+B  | 19 | Gm      # tonic minor: Dorian by convention
+B  | 20 | Gm
+B  | 21 | Cm7     # ii of F7: Dorian
+B  | 22 | F7      # V7/bIII in G minor: natural tensions
+B  | 23 | Bm7     # ii of E7: Dorian
+B  | 23 | E7      # tritone substitute: resolves down a half step to EbMaj7
+B  | 24 | EbMaj7  # a non-tonic major chord: Lydian
+B  | 25 | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B  | 26 | D7      # V7 of G minor: b9 and b13 are in the key
+B  | 27 | Gm      # tonic minor: Dorian by convention
+B  | 27 | D7/F#   # V7 of the Gm before it: b9 and b13 are in the key
+B  | 28 | Fm7     # ii of Bb7: Dorian
+B  | 28 | Bb7     # V7/bVI in G minor: natural tensions
+B  | 29 | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B  | 30 | D7      # V7 of G minor: b9 and b13 are in the key
+B  | 31 | Gm      # tonic minor: Dorian by convention
+B  | 32 | G7      # V7/iv in G minor: the b13 is in the key

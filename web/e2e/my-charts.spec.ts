@@ -53,14 +53,14 @@ test('a chart that isn’t saved here says so', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'That chart isn’t here' })).toBeVisible()
 })
 
-test('Download saves the chart as text, scales included, and Open brings it back as a new chart', async ({ page }) => {
+test('Download saves the chart as text, and Open brings it back as a new chart', async ({ page }) => {
   await page.goto('/song?chart=blue_bossa')
   const downloading = page.waitForEvent('download')
   await page.getByRole('button', { name: 'Download' }).click()
   const file = await downloading
   expect(file.suggestedFilename()).toBe('Blue Bossa.txt')
   const text = await (await file.createReadStream()).toArray().then((chunks) => Buffer.concat(chunks).toString('utf8'))
-  expect(text).toContain('A | 6  | G7#5#9 | G Altered')
+  expect(text).toMatch(/^A \| 6 +\| G7#5#9 +# /m) // as the library has it: the analysis chooses the scale
   await page.goto('/')
   const chooser = page.waitForEvent('filechooser')
   await page.getByRole('button', { name: 'Open chart…' }).click()
@@ -68,7 +68,7 @@ test('Download saves the chart as text, scales included, and Open brings it back
   await expect(page).toHaveURL(/\/song\?mine=/)
   await expect(page.getByRole('heading', { name: 'Blue Bossa (mine)', level: 1 })).toBeVisible()
   await openEditor(page)
-  await expect(page.getByLabel('Chart text')).toHaveValue(/G7#5#9 \| G Altered/) // the scale choices came with it
+  await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 6 +\| G7#5#9 +# /)
 })
 
 test('a file dropped on the library opens, and a wrong one says why', async ({ page }) => {
@@ -129,17 +129,23 @@ test('a damaged share link says so', async ({ page }) => {
   await expect(page.getByRole('heading', { name: 'That link doesn’t open a chart' })).toBeVisible()
 })
 
-test('choosing a scale and then the library’s again by name writes the name, and leaves the library chart unedited', async ({ page }) => {
+test('choosing a scale and then the analysed one again leaves the library chart unedited; choosing it by name pins it', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
   await openEditor(page)
   await barCell(page, 'A1', 1).click() // Cm7
   await page.getByRole('radio', { name: /^C Aeolian/ }).click()
   await expect(status(page)).toHaveText(/^Your edited version of Autumn Leaves/)
-  await page.getByRole('searchbox', { name: 'Any scale' }).fill('C dor') // the analysed option would blank the cell, and the library still has its scales written
-  await page.getByRole('list', { name: 'Scales found' }).getByRole('button', { name: /^C Dorian \d/ }).click()
-  await expect(page.getByLabel('Chart text')).toHaveValue(/A1 \| 1 +\| Cm7 +\| C Dorian/) // the name, not an empty cell
+  await page.getByRole('radio', { name: /^C Dorian 1/ }).click() // the analysed option: blanks the cell, as the library has it
+  await expect(page.getByLabel('Chart text')).toHaveValue(/A1 \| 1 +\| Cm7 +#/)
   await expect(status(page)).toHaveText('Edits are saved in this browser as your version.') // back to the library version
   await expect(page.getByRole('button', { name: 'Revert to library version' })).toHaveCount(0)
   await page.goto('/')
   await expect(page.getByRole('region', { name: 'My charts' })).toHaveCount(0)
+  await page.goto('/song?chart=autumn_leaves')
+  await openEditor(page)
+  await barCell(page, 'A1', 1).click()
+  await page.getByRole('searchbox', { name: 'Any scale' }).fill('C dor')
+  await page.getByRole('list', { name: 'Scales found' }).getByRole('button', { name: /^C Dorian \d/ }).click()
+  await expect(page.getByLabel('Chart text')).toHaveValue(/A1 \| 1 +\| Cm7 +\| C Dorian/) // the name pins it, though the analyser agrees
+  await expect(status(page)).toHaveText(/^Your edited version of Autumn Leaves/)
 })

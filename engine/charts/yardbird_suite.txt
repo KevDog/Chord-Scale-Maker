@@ -7,54 +7,54 @@ source: Colorado Cookbook, p. 273
 # analysis: 2026-10-11, rules v1; C
 
 # section | bar | chord | scale
-Intro | 1  | A7#9   | A Altered                # V7/ii in C: the b13 is in the key, b9, #9 and #11 from the symbol
-Intro | 2  | Dm7    | D Dorian                 # ii of the ii–V to C
-Intro | 2  | G7#9   | G Half-Whole Diminished  # V7 of C: b9, #9 and #11 from the symbol
+Intro | 1  | A7#9    # V7/ii in C: the b13 is in the key, b9, #9 and #11 from the symbol
+Intro | 2  | Dm7     # ii of the ii–V to C
+Intro | 2  | G7#9    # V7 of C: b9, #9 and #11 from the symbol
 # the melody horn intro is left out; the played intro (A7#9 Dm7 G7#9) is added
-A1    | 1  | CMaj7  | C Ionian                 # tonic: the 4th is in the key
-A1    | 2  | Fm7    | F Dorian                 # ii of Bb7: Dorian
-A1    | 2  | Bb7    | Bb Mixolydian            # extended ii–V: a side-step, its own key
-A1    | 3  | C7     | C Mixolydian             # I7 in C, not resolving: natural tensions
-A1    | 3  | Bb7    | Bb Lydian Dominant       # tritone substitute: resolves down a half step to A7
-A1    | 4  | A7     | A Mixolydian             # extended dominant: each one falls a fifth into the next: natural tensions
-A1    | 5  | D7     | D Mixolydian             # V7 of V7: the dominant of the dominant: natural tensions
-A1    | 6  | G7     | G Mixolydian             # V7 in C, not resolving: natural tensions
-A1    | 7  | Em7    | E Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1    | 7  | A7     | A Mixolydian b6          # V7/ii in C: the b13 is in the key
-A1    | 8  | Dm7    | D Dorian                 # ii of the ii–V to C
-A1    | 8  | G7     | G Mixolydian             # V7 of C: natural tensions
-A2    | 9  | CMaj7  | C Ionian                 # tonic: the 4th is in the key
-A2    | 10 | Fm7    | F Dorian                 # ii of Bb7: Dorian
-A2    | 10 | Bb7    | Bb Mixolydian            # extended ii–V: a side-step, its own key
-A2    | 11 | C7     | C Mixolydian             # I7 in C, not resolving: natural tensions
-A2    | 11 | Bb7    | Bb Lydian Dominant       # tritone substitute: resolves down a half step to A7
-A2    | 12 | A7     | A Mixolydian             # extended dominant: each one falls a fifth into the next: natural tensions
-A2    | 13 | D7     | D Mixolydian             # V7 of V7: the dominant of the dominant: natural tensions
-A2    | 14 | G7     | G Mixolydian             # V7 of C: natural tensions
-A2    | 15 | CMaj7  | C Ionian                 # tonic: the 4th is in the key
-A2    | 16 | CMaj7  | C Ionian
-A2    | 16 | B7     | B Phrygian Dominant      # V7/iii in C: b9 and b13 are in the key
-B     | 17 | Em     | E Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B     | 18 | F#m7b5 | F# Locrian               # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B     | 18 | B7alt  | B Altered                # from the symbol: altered
-B     | 19 | Em7    | E Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B     | 20 | A7     | A Mixolydian b6          # V7/ii in C: the b13 is in the key
-B     | 21 | Dm7    | D Dorian                 # ii: Dorian, the key’s own notes
-B     | 22 | Em7b5  | E Locrian                # iiø7 of A7alt: Locrian, the key's own notes (its ♭2 is a passing note)
-B     | 22 | A7alt  | A Altered                # from the symbol: altered
-B     | 23 | D7     | D Mixolydian             # II7 in C, not resolving: natural tensions
-B     | 24 | Dm7    | D Dorian                 # ii of the ii–V to C
-B     | 24 | G7     | G Mixolydian             # V7 of C: natural tensions
-A3    | 25 | CMaj7  | C Ionian                 # tonic: the 4th is in the key
-A3    | 26 | Fm7    | F Dorian                 # ii of Bb7: Dorian
-A3    | 26 | Bb7    | Bb Mixolydian            # extended ii–V: a side-step, its own key
-A3    | 27 | C7     | C Mixolydian             # I7 in C, not resolving: natural tensions
-A3    | 27 | Bb7    | Bb Lydian Dominant       # tritone substitute: resolves down a half step to A7
-A3    | 28 | A7     | A Mixolydian             # extended dominant: V7 of D7
-A3    | 29 | D7     | D Mixolydian             # II7 in C, not resolving: natural tensions
-A3    | 30 | Dm7    | D Dorian                 # ii of the ii–V to C
-A3    | 30 | G7     | G Mixolydian             # V7 of C: natural tensions
-A3    | 31 | CMaj7  | C Ionian                 # tonic: the 4th is in the key
-A3    | 31 | A7alt  | A Altered                # from the symbol: altered
-A3    | 32 | Dm7    | D Dorian                 # ii of the ii–V to C
-A3    | 32 | G7alt  | G Altered                # from the symbol: altered
+A1    | 1  | CMaj7   # tonic: the 4th is in the key
+A1    | 2  | Fm7     # ii of Bb7: Dorian
+A1    | 2  | Bb7     # extended ii–V: a side-step, its own key
+A1    | 3  | C7      # I7 in C, not resolving: natural tensions
+A1    | 3  | Bb7     # tritone substitute: resolves down a half step to A7
+A1    | 4  | A7      # extended dominant: each one falls a fifth into the next: natural tensions
+A1    | 5  | D7      # V7 of V7: the dominant of the dominant: natural tensions
+A1    | 6  | G7      # V7 in C, not resolving: natural tensions
+A1    | 7  | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A1    | 7  | A7      # V7/ii in C: the b13 is in the key
+A1    | 8  | Dm7     # ii of the ii–V to C
+A1    | 8  | G7      # V7 of C: natural tensions
+A2    | 9  | CMaj7   # tonic: the 4th is in the key
+A2    | 10 | Fm7     # ii of Bb7: Dorian
+A2    | 10 | Bb7     # extended ii–V: a side-step, its own key
+A2    | 11 | C7      # I7 in C, not resolving: natural tensions
+A2    | 11 | Bb7     # tritone substitute: resolves down a half step to A7
+A2    | 12 | A7      # extended dominant: each one falls a fifth into the next: natural tensions
+A2    | 13 | D7      # V7 of V7: the dominant of the dominant: natural tensions
+A2    | 14 | G7      # V7 of C: natural tensions
+A2    | 15 | CMaj7   # tonic: the 4th is in the key
+A2    | 16 | CMaj7
+A2    | 16 | B7      # V7/iii in C: b9 and b13 are in the key
+B     | 17 | Em      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B     | 18 | F#m7b5  # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B     | 18 | B7alt   # from the symbol: altered
+B     | 19 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B     | 20 | A7      # V7/ii in C: the b13 is in the key
+B     | 21 | Dm7     # ii: Dorian, the key’s own notes
+B     | 22 | Em7b5   # iiø7 of A7alt: Locrian, the key's own notes (its ♭2 is a passing note)
+B     | 22 | A7alt   # from the symbol: altered
+B     | 23 | D7      # II7 in C, not resolving: natural tensions
+B     | 24 | Dm7     # ii of the ii–V to C
+B     | 24 | G7      # V7 of C: natural tensions
+A3    | 25 | CMaj7   # tonic: the 4th is in the key
+A3    | 26 | Fm7     # ii of Bb7: Dorian
+A3    | 26 | Bb7     # extended ii–V: a side-step, its own key
+A3    | 27 | C7      # I7 in C, not resolving: natural tensions
+A3    | 27 | Bb7     # tritone substitute: resolves down a half step to A7
+A3    | 28 | A7      # extended dominant: V7 of D7
+A3    | 29 | D7      # II7 in C, not resolving: natural tensions
+A3    | 30 | Dm7     # ii of the ii–V to C
+A3    | 30 | G7      # V7 of C: natural tensions
+A3    | 31 | CMaj7   # tonic: the 4th is in the key
+A3    | 31 | A7alt   # from the symbol: altered
+A3    | 32 | Dm7     # ii of the ii–V to C
+A3    | 32 | G7alt   # from the symbol: altered

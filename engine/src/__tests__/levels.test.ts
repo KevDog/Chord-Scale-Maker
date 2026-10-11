@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { readFileSync } from 'node:fs'
 import raw from '../../chord_scales.json'
 import { expandRows, parseChart, qualityScale } from '../chart'
-import { analyse, applyAnalysis } from '../analysis'
+import { analyse } from '../analysis'
 import { ladderScale, type LevelState, relevel, SCALE_LEVELS, scaleAtLevel, seededUnit, unlevel } from '../levels'
 import { resolveScales } from '../resolve'
 import { resolveQuality } from '../qualities'
@@ -199,7 +199,8 @@ describe('the level on the resolver (proposedScales on)', () => {
 
   it('plays at every level what relevel wrote into the analysed chart, without writing a cell', () => {
     const doc = parsed('key: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm\nA | 4 | Cm7\nA | 5 | F7\nA | 6 | BbMaj7\nA | 7 | Dm7\n')
-    const analysed = applyAnalysis(doc, analyse(doc), { scales: 'fill', save: false, date: '' }).doc // the library's way: the analysis written in
+    const a = analyse(doc)
+    const analysed = { lines: doc.lines.map((l, i) => { const s = a.rows.find((r) => r.line === i)?.scale; return l.kind === 'row' && s ? { ...l, scale: s } : l }) } // the old library's way: the analysis written in
     for (const level of SCALE_LEVELS) {
       const written = relevel(analysed, at('standard'), at(level, 5), analysed).doc
       const played = [...resolveScales(doc, { level, seed: 5, proposed: true }).values()].map((r) => r.scale)

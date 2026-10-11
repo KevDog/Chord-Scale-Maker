@@ -8,26 +8,26 @@ source: Colorado Cookbook, p. 65
 # analysis: 2026-10-11, rules v1; Bb
 
 # section | bar | chord | scale
-A | 1  | Bb7   | Bb Mixolydian              # extended dominant: V7 of Eb7
-A | 1  | Eb7   | Eb Lydian Dominant         # tritone substitute: resolves down a half step to D7
-A | 2  | D7    | D Mixolydian               # extended dominant: each one falls a fifth into the next: natural tensions
-A | 2  | G7    | G Mixolydian               # extended dominant: each one falls a fifth into the next: natural tensions
-A | 3  | C7    | C Mixolydian               # V7 of V7: the dominant of the dominant: natural tensions
-A | 3  | F7    | F Mixolydian               # extended dominant: V7 of Bb7
-A | 4  | Bb7   | Bb Mixolydian              # extended dominant: V7 of Eb7
-A | 5  | Bb7   | Bb Mixolydian
-A | 5  | Eb7   | Eb Lydian Dominant         # tritone substitute: resolves down a half step to D7
-A | 6  | D7    | D Mixolydian               # extended dominant: each one falls a fifth into the next: natural tensions
-A | 6  | G7    | G Mixolydian               # extended dominant: each one falls a fifth into the next: natural tensions
-A | 7  | C7    | C Mixolydian               # V7 of V7: the dominant of the dominant: natural tensions
-A | 8  | F7    | F Mixolydian               # extended dominant: V7 of Bb7
-B | 9  | Bb7   | Bb Mixolydian              # extended dominant: V7 of Eb7
-B | 11 | Eb7   | Eb Lydian Dominant         # IV7 in Bb, not resolving: the #11 is in the key
-B | 12 | Edim7 | E Diatonic Diminished #IV  # ♯IV°7 to I: A7♭9 without its root, the ♯II°7's notes
-C | 13 | Bb7   | Bb Mixolydian              # extended dominant: V7 of Eb7
-C | 13 | Eb7   | Eb Lydian Dominant         # tritone substitute: resolves down a half step to D7
-C | 14 | D7    | D Mixolydian               # extended dominant: each one falls a fifth into the next: natural tensions
-C | 14 | G7    | G Mixolydian               # extended dominant: each one falls a fifth into the next: natural tensions
-C | 15 | C7    | C Mixolydian               # V7 of V7: the dominant of the dominant: natural tensions
-C | 15 | F7    | F Mixolydian               # V7 of Bb: natural tensions
-C | 16 | Bb    | Bb Ionian                  # tonic: the 4th is in the key
+A | 1  | Bb7    # extended dominant: V7 of Eb7
+A | 1  | Eb7    # tritone substitute: resolves down a half step to D7
+A | 2  | D7     # extended dominant: each one falls a fifth into the next: natural tensions
+A | 2  | G7     # extended dominant: each one falls a fifth into the next: natural tensions
+A | 3  | C7     # V7 of V7: the dominant of the dominant: natural tensions
+A | 3  | F7     # extended dominant: V7 of Bb7
+A | 4  | Bb7    # extended dominant: V7 of Eb7
+A | 5  | Bb7
+A | 5  | Eb7    # tritone substitute: resolves down a half step to D7
+A | 6  | D7     # extended dominant: each one falls a fifth into the next: natural tensions
+A | 6  | G7     # extended dominant: each one falls a fifth into the next: natural tensions
+A | 7  | C7     # V7 of V7: the dominant of the dominant: natural tensions
+A | 8  | F7     # extended dominant: V7 of Bb7
+B | 9  | Bb7    # extended dominant: V7 of Eb7
+B | 11 | Eb7    # IV7 in Bb, not resolving: the #11 is in the key
+B | 12 | Edim7  # ♯IV°7 to I: A7♭9 without its root, the ♯II°7's notes
+C | 13 | Bb7    # extended dominant: V7 of Eb7
+C | 13 | Eb7    # tritone substitute: resolves down a half step to D7
+C | 14 | D7     # extended dominant: each one falls a fifth into the next: natural tensions
+C | 14 | G7     # extended dominant: each one falls a fifth into the next: natural tensions
+C | 15 | C7     # V7 of V7: the dominant of the dominant: natural tensions
+C | 15 | F7     # V7 of Bb: natural tensions
+C | 16 | Bb     # tonic: the 4th is in the key

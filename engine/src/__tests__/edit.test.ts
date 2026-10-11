@@ -59,8 +59,9 @@ describe('chord changes and comparing charts', () => {
     expect(rowOf(setRowChord(doc('A | 1 | Gbdim7 | G Whole-Half Diminished\n'), 0, 'Cm7'))).toMatchObject({ scale: 'G Whole-Half Diminished' })
   })
 
-  it('treats charts as the same when only spacing or a written-out default differs', () => {
-    expect(sameChart('A | 1 | Cm7 | C Dorian\n', 'A | 1  |  Cm7\n')).toBe(true)
+  it('treats charts as the same when only spacing or how a scale is named differs', () => {
+    expect(sameChart('A | 1 | Cm7 | C Dorian\n', 'A | 1  |  Cm7  | C Dorian\n')).toBe(true)
+    expect(sameChart('A | 1 | Cm7 | C Dorian\n', 'A | 1 | Cm7\n')).toBe(false) // a written scale pins it; a blank plays the analysis
     expect(sameChart('A | 6 | D7 | D Half-Whole\n', 'A | 6 | D7 | D Half-Whole Diminished\n')).toBe(true)
     expect(sameChart('A | 1 | Cm7 | C Dorian\n', 'A | 1 | Cm7 | C Aeolian\n')).toBe(false)
     expect(sameChart('# note\nA | 1 | Cm7\n', 'A | 1 | Cm7\n')).toBe(false) // comments count

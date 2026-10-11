@@ -8,40 +8,40 @@ source: Colorado Cookbook, p. 252
 # analysis: 2026-10-11, rules v1; C, blues
 
 # section | bar | chord | scale
-A1 | 1  | C7     | C Mixolydian     # I7 of the blues: a tonic with dominant colour, natural tensions
-A1 | 5  | F7     | F Mixolydian     # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A1 | 7  | C7     | C Mixolydian     # I7 of the blues: a tonic with dominant colour, natural tensions
-A1 | 8  | A7alt  | A Altered        # from the symbol: altered
-A1 | 9  | AbMaj7 | Ab Lydian        # ♭VImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
-A1 | 10 | G7alt  | G Altered        # from the symbol: altered
-A1 | 11 | C7     | C Mixolydian     # I7 of the blues: a tonic with dominant colour, natural tensions
-A1 | 11 | A7     | A Mixolydian     # extended dominant: each one falls a fifth into the next: natural tensions
-A1 | 12 | D7     | D Mixolydian     # V7 of V7: the dominant of the dominant: natural tensions
-A1 | 12 | G7alt  | G Altered        # from the symbol: altered
-A2 | 13 | C7     | C Mixolydian     # I7 of the blues: a tonic with dominant colour, natural tensions
-A2 | 17 | F7     | F Mixolydian     # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A2 | 19 | C7     | C Mixolydian     # I7 of the blues: a tonic with dominant colour, natural tensions
-A2 | 20 | A7alt  | A Altered        # from the symbol: altered
-A2 | 21 | AbMaj7 | Ab Lydian        # ♭VImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
-A2 | 22 | G7alt  | G Altered        # from the symbol: altered
-A2 | 23 | C7     | C Mixolydian     # I7 of the blues: a tonic with dominant colour, natural tensions
-A2 | 24 | A7alt  | A Altered        # from the symbol: altered
-B  | 25 | Dm7    | D Dorian         # ii of G7: Dorian
-B  | 26 | G7     | G Mixolydian     # V7/I in C: natural tensions
-B  | 27 | Em7    | E Phrygian       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B  | 28 | A7alt  | A Altered        # from the symbol: altered
-B  | 29 | Dm7    | D Dorian         # ii of G7: Dorian
-B  | 30 | G7     | G Mixolydian     # V7/I in C: natural tensions
-B  | 31 | Em7    | E Phrygian       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B  | 31 | A7     | A Mixolydian b6  # V7/ii in C: the b13 is in the key
-B  | 32 | Dm7    | D Dorian         # ii of G7: Dorian
-B  | 32 | G7     | G Mixolydian     # extended dominant: V7 of C7
-C  | 33 | C7     | C Mixolydian     # I7 of the blues: a tonic with dominant colour, natural tensions
-C  | 37 | F7     | F Mixolydian     # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-C  | 39 | C7     | C Mixolydian     # I7 of the blues: a tonic with dominant colour, natural tensions
-C  | 40 | A7alt  | A Altered        # from the symbol: altered
-C  | 41 | AbMaj7 | Ab Lydian        # ♭VImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
-C  | 42 | G7alt  | G Altered        # from the symbol: altered
-C  | 43 | C7     | C Mixolydian     # I7 of the blues: a tonic with dominant colour, natural tensions
-C  | 43 | A7alt  | A Altered        # from the symbol: altered
-C  | 44 | D7     | D Mixolydian     # II7 in C, not resolving: natural tensions
+A1 | 1  | C7      # I7 of the blues: a tonic with dominant colour, natural tensions
+A1 | 5  | F7      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A1 | 7  | C7      # I7 of the blues: a tonic with dominant colour, natural tensions
+A1 | 8  | A7alt   # from the symbol: altered
+A1 | 9  | AbMaj7  # ♭VImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
+A1 | 10 | G7alt   # from the symbol: altered
+A1 | 11 | C7      # I7 of the blues: a tonic with dominant colour, natural tensions
+A1 | 11 | A7      # extended dominant: each one falls a fifth into the next: natural tensions
+A1 | 12 | D7      # V7 of V7: the dominant of the dominant: natural tensions
+A1 | 12 | G7alt   # from the symbol: altered
+A2 | 13 | C7      # I7 of the blues: a tonic with dominant colour, natural tensions
+A2 | 17 | F7      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A2 | 19 | C7      # I7 of the blues: a tonic with dominant colour, natural tensions
+A2 | 20 | A7alt   # from the symbol: altered
+A2 | 21 | AbMaj7  # ♭VImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
+A2 | 22 | G7alt   # from the symbol: altered
+A2 | 23 | C7      # I7 of the blues: a tonic with dominant colour, natural tensions
+A2 | 24 | A7alt   # from the symbol: altered
+B  | 25 | Dm7     # ii of G7: Dorian
+B  | 26 | G7      # V7/I in C: natural tensions
+B  | 27 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B  | 28 | A7alt   # from the symbol: altered
+B  | 29 | Dm7     # ii of G7: Dorian
+B  | 30 | G7      # V7/I in C: natural tensions
+B  | 31 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B  | 31 | A7      # V7/ii in C: the b13 is in the key
+B  | 32 | Dm7     # ii of G7: Dorian
+B  | 32 | G7      # extended dominant: V7 of C7
+C  | 33 | C7      # I7 of the blues: a tonic with dominant colour, natural tensions
+C  | 37 | F7      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+C  | 39 | C7      # I7 of the blues: a tonic with dominant colour, natural tensions
+C  | 40 | A7alt   # from the symbol: altered
+C  | 41 | AbMaj7  # ♭VImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
+C  | 42 | G7alt   # from the symbol: altered
+C  | 43 | C7      # I7 of the blues: a tonic with dominant colour, natural tensions
+C  | 43 | A7alt   # from the symbol: altered
+C  | 44 | D7      # II7 in C, not resolving: natural tensions

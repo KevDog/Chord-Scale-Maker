@@ -9,32 +9,32 @@ source: Colorado Cookbook, p. 81
 
 # section | bar | chord | scale
 # area: Eb major (bars 1–15)
-A1 | 1  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
-A1 | 3  | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
-A1 | 5  | Gm7    | G Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1 | 6  | C7b9   | C Phrygian Dominant       # V7/ii in Eb: the b13 is in the key, the b9 from the symbol
-A1 | 7  | Fm7    | F Dorian                  # ii of the ii–V to Eb
-A1 | 8  | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
-A2 | 9  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
-A2 | 11 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
-A2 | 13 | Gm7    | G Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A2 | 14 | C7b9   | C Phrygian Dominant       # V7/ii in Eb: the b13 is in the key, the b9 from the symbol
-A2 | 15 | Fm7    | F Dorian                  # ii: Dorian, the key’s own notes
+A1 | 1  | EbMaj7  # tonic: the 4th is in the key
+A1 | 3  | AbMaj7  # IV: the #4 is the key’s 7th
+A1 | 5  | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A1 | 6  | C7b9    # V7/ii in Eb: the b13 is in the key, the b9 from the symbol
+A1 | 7  | Fm7     # ii of the ii–V to Eb
+A1 | 8  | Bb7b9   # V7 of Eb: the b9 from the symbol
+A2 | 9  | EbMaj7  # tonic: the 4th is in the key
+A2 | 11 | AbMaj7  # IV: the #4 is the key’s 7th
+A2 | 13 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A2 | 14 | C7b9    # V7/ii in Eb: the b13 is in the key, the b9 from the symbol
+A2 | 15 | Fm7     # ii: Dorian, the key’s own notes
 # area: C major (bars 16–24)
-A2 | 16 | G7b9   | G Half-Whole Diminished   # V7 of C: the b9 from the symbol
-B  | 17 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
-B  | 19 | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
-B  | 20 | Dm7    | D Dorian                  # ii of G9: Dorian
-B  | 20 | G9     | G Mixolydian              # V7/I in C: natural tensions
-B  | 21 | Em7    | E Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B  | 22 | Am7    | A Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B  | 23 | FMaj7  | F Lydian                  # IV: the #4 is the key’s 7th
-B  | 24 | Em7    | E Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A2 | 16 | G7b9    # V7 of C: the b9 from the symbol
+B  | 17 | CMaj7   # tonic: the 4th is in the key
+B  | 19 | FMaj7   # IV: the #4 is the key’s 7th
+B  | 20 | Dm7     # ii of G9: Dorian
+B  | 20 | G9      # V7/I in C: natural tensions
+B  | 21 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B  | 22 | Am7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+B  | 23 | FMaj7   # IV: the #4 is the key’s 7th
+B  | 24 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 # area: Eb major (bars 25–32)
-C  | 25 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
-C  | 26 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
-C  | 27 | Fm7    | F Dorian                  # ii of the ii–V to Eb
-C  | 28 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
-C  | 29 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
-C  | 31 | Fm7    | F Dorian                  # ii of the ii–V to Eb
-C  | 32 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
+C  | 25 | EbMaj7  # tonic: the 4th is in the key
+C  | 26 | AbMaj7  # IV: the #4 is the key’s 7th
+C  | 27 | Fm7     # ii of the ii–V to Eb
+C  | 28 | Bb7b9   # V7 of Eb: the b9 from the symbol
+C  | 29 | EbMaj7  # tonic: the 4th is in the key
+C  | 31 | Fm7     # ii of the ii–V to Eb
+C  | 32 | Bb7b9   # V7 of Eb: the b9 from the symbol

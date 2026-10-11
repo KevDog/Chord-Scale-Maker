@@ -8,63 +8,63 @@ source: Colorado Cookbook, p. 215
 
 # section | bar | chord | scale
 # the solo changes; the bridge's last two bars can also be Db7 | C7
-A1 | 1  | Gm7    | G Dorian             # ii of C7: Dorian
-A1 | 2  | C7     | C Mixolydian         # V7/I in F: natural tensions
-A1 | 3  | Gm7    | G Dorian             # ii of C7: Dorian
-A1 | 4  | C7     | C Mixolydian         # V7/I in F: natural tensions
-A1 | 5  | Gm7    | G Dorian             # ii of C7: Dorian
-A1 | 6  | C7     | C Mixolydian         # V7/I in F: natural tensions
-A1 | 7  | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1 | 8  | D7     | D Mixolydian         # extended ii–V: a side-step, its own key
-A1 | 9  | Bbm7   | Bb Dorian            # ii of Eb7: Dorian
-A1 | 10 | Eb7    | Eb Mixolydian        # extended ii–V: a side-step, its own key
-A1 | 11 | Bbm7   | Bb Dorian            # ii of Eb7: Dorian
-A1 | 12 | Eb7    | Eb Mixolydian        # extended ii–V: a side-step, its own key
-A1 | 13 | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1 | 13 | D7     | D Mixolydian b6      # V7/ii in F: the b13 is in the key
-A1 | 14 | Gm7    | G Dorian             # ii of the ii–V to F
-A1 | 14 | C7     | C Mixolydian         # V7 of F: natural tensions
-A1 | 15 | FMaj7  | F Ionian             # tonic: the 4th is in the key
-A1 | 16 | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1 | 16 | D7     | D Mixolydian b6      # V7/ii in F: the b13 is in the key
-A2 | 17 | Gm7    | G Dorian             # ii of C7: Dorian
-A2 | 18 | C7     | C Mixolydian         # V7/I in F: natural tensions
-A2 | 19 | Gm7    | G Dorian             # ii of C7: Dorian
-A2 | 20 | C7     | C Mixolydian         # V7/I in F: natural tensions
-A2 | 21 | Gm7    | G Dorian             # ii of C7: Dorian
-A2 | 22 | C7     | C Mixolydian         # V7/I in F: natural tensions
-A2 | 23 | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A2 | 24 | D7     | D Mixolydian         # extended ii–V: a side-step, its own key
-A2 | 25 | Bbm7   | Bb Dorian            # ii of Eb7: Dorian
-A2 | 26 | Eb7    | Eb Mixolydian        # extended ii–V: a side-step, its own key
-A2 | 27 | Bbm7   | Bb Dorian            # ii of Eb7: Dorian
-A2 | 28 | Eb7    | Eb Mixolydian        # extended ii–V: a side-step, its own key
-A2 | 29 | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A2 | 29 | D7     | D Mixolydian b6      # V7/ii in F: the b13 is in the key
-A2 | 30 | Gm7    | G Dorian             # ii of the ii–V to F
-A2 | 30 | C7     | C Mixolydian         # V7 of F: natural tensions
-A2 | 31 | FMaj7  | F Ionian             # tonic: the 4th is in the key
-B  | 33 | AbMaj7 | Ab Lydian            # ♭IIImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
-B  | 35 | Db7#11 | Db Lydian Dominant   # back door bVII7 to EbMaj7: the #11 is in the key, the 9 from the symbol
-B  | 37 | EbMaj7 | Eb Lydian            # ♭VIImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
-B  | 39 | Bm7b5  | B Locrian            # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B  | 39 | E7alt  | E Altered            # from the symbol: altered
-B  | 40 | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B  | 40 | D7     | D Mixolydian b6      # V7/ii in F: the b13 is in the key
-C  | 41 | Gm7    | G Dorian             # ii of C7: Dorian
-C  | 42 | C7     | C Mixolydian         # V7/I in F: natural tensions
-C  | 43 | Gm7    | G Dorian             # ii of C7: Dorian
-C  | 44 | C7     | C Mixolydian         # V7/I in F: natural tensions
-C  | 45 | Gm7    | G Dorian             # ii of C7: Dorian
-C  | 46 | C7     | C Mixolydian         # V7/I in F: natural tensions
-C  | 47 | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-C  | 48 | D7     | D Mixolydian         # extended ii–V: a side-step, its own key
-C  | 49 | Bbm7   | Bb Dorian            # ii of Eb7: Dorian
-C  | 50 | Eb7    | Eb Mixolydian        # extended ii–V: a side-step, its own key
-C  | 51 | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-C  | 52 | D7b9   | D Phrygian Dominant  # V7/ii in F: the b13 is in the key, the b9 from the symbol
-C  | 53 | Gm7    | G Dorian             # ii of the ii–V to F
-C  | 54 | C7     | C Mixolydian         # V7 of F: natural tensions
-C  | 55 | FMaj7  | F Ionian             # tonic: the 4th is in the key
-C  | 56 | Am7    | A Phrygian           # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-C  | 56 | D7     | D Mixolydian b6      # V7/ii in F: the b13 is in the key
+A1 | 1  | Gm7     # ii of C7: Dorian
+A1 | 2  | C7      # V7/I in F: natural tensions
+A1 | 3  | Gm7     # ii of C7: Dorian
+A1 | 4  | C7      # V7/I in F: natural tensions
+A1 | 5  | Gm7     # ii of C7: Dorian
+A1 | 6  | C7      # V7/I in F: natural tensions
+A1 | 7  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A1 | 8  | D7      # extended ii–V: a side-step, its own key
+A1 | 9  | Bbm7    # ii of Eb7: Dorian
+A1 | 10 | Eb7     # extended ii–V: a side-step, its own key
+A1 | 11 | Bbm7    # ii of Eb7: Dorian
+A1 | 12 | Eb7     # extended ii–V: a side-step, its own key
+A1 | 13 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A1 | 13 | D7      # V7/ii in F: the b13 is in the key
+A1 | 14 | Gm7     # ii of the ii–V to F
+A1 | 14 | C7      # V7 of F: natural tensions
+A1 | 15 | FMaj7   # tonic: the 4th is in the key
+A1 | 16 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A1 | 16 | D7      # V7/ii in F: the b13 is in the key
+A2 | 17 | Gm7     # ii of C7: Dorian
+A2 | 18 | C7      # V7/I in F: natural tensions
+A2 | 19 | Gm7     # ii of C7: Dorian
+A2 | 20 | C7      # V7/I in F: natural tensions
+A2 | 21 | Gm7     # ii of C7: Dorian
+A2 | 22 | C7      # V7/I in F: natural tensions
+A2 | 23 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A2 | 24 | D7      # extended ii–V: a side-step, its own key
+A2 | 25 | Bbm7    # ii of Eb7: Dorian
+A2 | 26 | Eb7     # extended ii–V: a side-step, its own key
+A2 | 27 | Bbm7    # ii of Eb7: Dorian
+A2 | 28 | Eb7     # extended ii–V: a side-step, its own key
+A2 | 29 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A2 | 29 | D7      # V7/ii in F: the b13 is in the key
+A2 | 30 | Gm7     # ii of the ii–V to F
+A2 | 30 | C7      # V7 of F: natural tensions
+A2 | 31 | FMaj7   # tonic: the 4th is in the key
+B  | 33 | AbMaj7  # ♭IIImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
+B  | 35 | Db7#11  # back door bVII7 to EbMaj7: the #11 is in the key, the 9 from the symbol
+B  | 37 | EbMaj7  # ♭VIImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
+B  | 39 | Bm7b5   # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B  | 39 | E7alt   # from the symbol: altered
+B  | 40 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B  | 40 | D7      # V7/ii in F: the b13 is in the key
+C  | 41 | Gm7     # ii of C7: Dorian
+C  | 42 | C7      # V7/I in F: natural tensions
+C  | 43 | Gm7     # ii of C7: Dorian
+C  | 44 | C7      # V7/I in F: natural tensions
+C  | 45 | Gm7     # ii of C7: Dorian
+C  | 46 | C7      # V7/I in F: natural tensions
+C  | 47 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+C  | 48 | D7      # extended ii–V: a side-step, its own key
+C  | 49 | Bbm7    # ii of Eb7: Dorian
+C  | 50 | Eb7     # extended ii–V: a side-step, its own key
+C  | 51 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+C  | 52 | D7b9    # V7/ii in F: the b13 is in the key, the b9 from the symbol
+C  | 53 | Gm7     # ii of the ii–V to F
+C  | 54 | C7      # V7 of F: natural tensions
+C  | 55 | FMaj7   # tonic: the 4th is in the key
+C  | 56 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+C  | 56 | D7      # V7/ii in F: the b13 is in the key

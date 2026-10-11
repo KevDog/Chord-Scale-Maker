@@ -1,13 +1,14 @@
 title: Modes of the Major Scale
 subtitle: C Major from Each Degree
 key: C
+# analysis: 2026-10-11, rules v1; C
 
 # section | bar | chord | scale
 # "bar" is the scale degree. "From C" shows all seven share one set of notes; "From root" shows each mode
-C | 1 | CMaj7    | C Ionian
-C | 2 | Dm7      | D Dorian
-C | 3 | Em7      | E Phrygian
-C | 4 | FMaj7#11 | F Lydian
-C | 5 | G7       | G Mixolydian
-C | 6 | Am7      | A Aeolian
-C | 7 | Bm7b5    | B Locrian
+C | 1 | CMaj7     # tonic: the 4th is in the key
+C | 2 | Dm7       # ii: Dorian, the key’s own notes
+C | 3 | Em7       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+C | 4 | FMaj7#11  # from the symbol: #11
+C | 5 | G7        # V7 in C, not resolving: natural tensions
+C | 6 | Am7       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+C | 7 | Bm7b5     # viiø7 in C: Locrian, the key's own notes (its ♭2 is a passing note)
