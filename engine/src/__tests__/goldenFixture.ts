@@ -20,7 +20,7 @@ import {
   type Part,
   parseChart,
   resolveQuality,
-  resolveScale,
+  qualityScale,
   resolveStart,
   rootName,
   SCALES,
@@ -140,7 +140,7 @@ export function buildGolden(): Golden {
     Object.entries({ ...libraryCharts(), ...CHART_TEXTS }).map(([name, text]) => {
       const doc = parseChart(text).value
       const meta = chartMeta(doc)
-      const rows = expandRows(doc).value.map((r) => [r.section, r.bar, r.chord, resolveScale(r)])
+      const rows = expandRows(doc).value.map((r) => [r.section, r.bar, r.chord, qualityScale(r)])
       return [name, { text, title: meta.title, subtitle: meta.subtitle, key: meta.key, rows }]
     }),
   )

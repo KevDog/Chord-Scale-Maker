@@ -1,0 +1,49 @@
+import { type Analysis, analyse } from './analysis'
+import { type ChartDoc, expandRowLines, qualityScale } from './chart'
+import { type ScaleLevel, scaleAtLevel } from './levels'
+import { rootName } from './pitch'
+import { readChord } from './qualities'
+
+/**
+ * What each chord plays (docs/superpowers/specs/2026-10-11-proposed-scales-design.md §2): a written scale is the
+ * user's, at every level; a blank cell plays the analysis, the stated function's scale first, then the rules', at the
+ * sheet's level; the quality's default only where the analysis doesn't reach the row. One resolver for every sheet.
+ */
+export type Resolved = Readonly<{
+  /** null: the chord can't be read yet ("ask the user") */
+  scale: string | null
+  source: 'written' | 'function' | 'rules' | 'default'
+  /** the rule id, when the analysis chose the scale */
+  rule?: string
+  reason?: string
+}>
+
+/**
+ * the level is the player's, like the instrument: a view preference, never chart text. proposed: the
+ * proposedScales flag; off, a blank cell plays the quality's default at every level, as before.
+ */
+export type ScaleView = Readonly<{ level: ScaleLevel; seed: number; proposed: boolean }>
+
+/** an analysed scale at a level: Standard as analysed; a tonic minor (rule m5) Aeolian at Basic; else its ladder or a Random pick */
+function atLevel(view: ScaleView, chord: string, scale: string, rule: string, line: number): string {
+  if (view.level === 'standard') return scale
+  const root = readChord(chord)?.root
+  if (view.level === 'basic' && rule === 'm5' && root) return `${rootName(root)} Aeolian`
+  return scaleAtLevel(chord, view.level, view.seed, `${line}:${chord}`, scale) ?? scale
+}
+
+/**
+ * each expanded row's scale (in expandRowLines order, @copy repeats on their own rows), from one analysis: pass the
+ * one the caller has already made to share it
+ */
+export function resolveScales(doc: ChartDoc, view: ScaleView, analysis: Analysis = analyse(doc)): ReadonlyMap<number, Resolved> {
+  const byRow = new Map(analysis.rows.map((r) => [r.row, r]))
+  const out = new Map<number, Resolved>()
+  expandRowLines(doc).value.forEach((row, i) => {
+    if (row.scale) return void out.set(i, { scale: row.scale, source: 'written' })
+    const r = view.proposed ? byRow.get(i) : undefined
+    if (r?.scale) return void out.set(i, { scale: atLevel(view, row.chord, r.scale, r.rule, row.line), source: r.stated ? 'function' : 'rules', rule: r.rule, reason: r.reason })
+    out.set(i, { scale: qualityScale(row), source: 'default' })
+  })
+  return out
+}

@@ -1,5 +1,5 @@
 import type { ChartDoc, ChartLine } from './chart'
-import { matchKeyText, resolveScale } from './chart'
+import { matchKeyText, qualityScale } from './chart'
 import { parseChord } from './chord'
 import type { RowLine } from './edit'
 import { type Spelled, accFor, enharmonics, mod, parseRoot, pcOf, rootName, shiftBy, toLetter } from './pitch'
@@ -46,7 +46,7 @@ export function spellInKey(n: Spelled, scale: ScaleKey, side: KeySide): Spelled 
 
 /** the row's scale key when that scale is built on the chord root, else Ionian */
 function rootScaleKey(row: RowLine, root: Spelled): ScaleKey {
-  const text = resolveScale(row)
+  const text = qualityScale(row)
   if (!text) return 'ionian'
   const s = parseScale(text)
   return pcOf(s.root) === pcOf(root) ? s.key : 'ionian'

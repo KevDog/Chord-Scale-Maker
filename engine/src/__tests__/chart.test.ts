@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { beatsPerBar, chartBeats, chartDetails, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, parseChart, parseContext, resolveScale, serializeChart } from '../chart'
+import { beatsPerBar, chartBeats, chartDetails, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, parseChart, parseContext, qualityScale, serializeChart } from '../chart'
 import { LIMITS } from '../limits'
 
 describe('isValidKey', () => {
@@ -53,9 +53,9 @@ describe('chart', () => {
 
   it('resolves missing scales from the chord quality', () => {
     const rows = expandRows(parseChart(SAMPLE).value).value
-    expect(rows.map(resolveScale)).toEqual(['C Dorian', 'F Mixolydian', 'C Dorian', 'F Mixolydian'])
-    expect(resolveScale({ section: 'A', bar: '1', chord: 'Cm7#5#9x', scale: '' })).toBeNull()
-    expect(resolveScale({ section: 'A', bar: '1', chord: 'X', scale: '' })).toBeNull()
+    expect(rows.map(qualityScale)).toEqual(['C Dorian', 'F Mixolydian', 'C Dorian', 'F Mixolydian'])
+    expect(qualityScale({ section: 'A', bar: '1', chord: 'Cm7#5#9x', scale: '' })).toBeNull()
+    expect(qualityScale({ section: 'A', bar: '1', chord: 'X', scale: '' })).toBeNull()
   })
 
   it('reports bad lines without throwing and keeps them verbatim', () => {
