@@ -134,6 +134,8 @@ PDF + 1, M&H book = PDF − 12, Levine book = PDF − 16).
 - **L8.** The reason changes too: "extended ii–V: a side-step, its own key" (+ tensions when the target is minor).
 - **L5.** The text uses the chord's own numeral and "its dominant" ("VI7sus4 before its dominant: a subdominant
   suspension"), so a sus on another degree reads correctly.
+- **G6** (upper-case target from the key) deferred by the user: upper case keeps meaning major, the sheet's
+  convention; `(V7/II)` and `SubV/III` keep their case.
 
 ## 2. Grammar changes (`functions.ts`), all additive
 

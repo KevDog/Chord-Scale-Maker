@@ -106,6 +106,7 @@ describe('the spellings a Berklee-trained author types (function labels spec §2
   it('Sub or sub in any case, with or without the 7', () => {
     expect(texts(['SubV7/ii', 'subV/ii', 'SubV/iii', 'SUBV7', 'subV'])).toEqual(['subV7/ii', 'subV7/ii', 'subV7/iii', 'subV7', 'subV7'])
     expect(fn('subV/ii')).toMatchObject({ sub: true, family: 'dominant' })
+    expect(texts(['SubV7/II', 'subV/II', 'SubV/III'])).toEqual(['subV7/II', 'subV7/II', 'subV7/III']) // the target keeps its case (G6 deferred)
   })
 
   it('∆ (U+2206, what Option-J types on a Mac) as well as Δ (U+0394)', () => {
@@ -122,11 +123,21 @@ describe('the spellings a Berklee-trained author types (function labels spec §2
     expect(texts(['(V7/ii)', '(III7)', 'D: (V7/ii)'])).toEqual(['(V7/ii)', '(III7)', '(V7/ii)'])
     expect([fn('(V7/ii)').deceptive, fn('(III7)').deceptive, fn('V7/ii').deceptive]).toEqual([true, true, false])
     expect(fn('D: (V7/ii)').key?.name).toBe('D major')
+    expect([fn('(V7/II)').text, fn('(V7/II)').deceptive]).toEqual(['(V7/II)', true]) // the target keeps its case (G6 deferred)
     expect(sameFunction('(V7/ii)', 'V7/ii')).toBe(false) // a different statement: the resolution doesn't happen
   })
 
   it('an arrow is a display mark, not a function (ruling R4)', () => {
     expect(parseFunction('→')).toBe(FUNCTION_ERRORS.notAFunction('→'))
+  })
+})
+
+describe('an upper-case target names a major chord (G6 deferred: the sheet\'s convention)', () => {
+  it('upper case is major, lower case minor, whatever the key holds on that degree', () => {
+    expect(impliedTarget(fn('V7/II'), key('C'))).toEqual({ steps: 1, semis: 2, minor: false })
+    expect(impliedTarget(fn('V7/ii'), key('C'))).toEqual({ steps: 1, semis: 2, minor: true })
+    expect(impliedTarget(fn('(V7/II)'), key('C'))).toEqual({ steps: 1, semis: 2, minor: false })
+    expect(impliedTarget(fn('subV7/III'), key('C'))).toEqual({ steps: 2, semis: 4, minor: false })
   })
 })
 

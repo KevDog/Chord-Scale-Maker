@@ -514,11 +514,13 @@ library writes such a repeat out instead.
   flat-side. A sus prints `V7sus4`. The labels and their sources: [function labels spec](superpowers/specs/2026-10-10-function-labels-design.md).
 - **The function grammar** (`analysis/functions.ts`, `parseFunction`): the sheet's numerals read back, lenient on
   input and canonical on output: glyph or ASCII accidentals; `-`/`–` for minor (`II-7`, `I-(maj7)`);
-  `-7(♭5)`, `m7(b5)`, `Ø7` for ø7; `7(sus4)`, `sus4`; `Sub`/`sub` with or without the 7 (`SubV/ii` reads
-  `subV7/ii`); `Δ` or `∆` (U+0394, U+2206) for maj7; a glyph flat in the key prefix (`B♭: V7/ii`). A function in
+  `-7(♭5)`, `m7(b5)`, `Ø7` for ø7; `7(sus4)`, `sus4`; `Sub`/`sub` with or without the 7 (`SubV/III` reads
+  `subV7/III`); `Δ` or `∆` (U+0394, U+2206) for maj7; a glyph flat in the key prefix (`B♭: V7/ii`). A function in
   parentheses, `(V7/ii)`, is deceptive (`StatedFunction.deceptive`): its resolution doesn't come, its scale is still
   the expected target's (the target and the scale ignore the flag, and the fit doesn't ask for the resolution), and
-  the sheet prints the parentheses. Every numeral the analyser gives the library reads back to itself, and in
+  the sheet prints the parentheses. A target keeps the case written: upper case is a major chord, lower case a
+  minor one, as the sheet prints them (`(V7/II)` stays `(V7/II)`; reading an upper-case target's quality from the key,
+  G6 in the function labels spec, is deferred). Every numeral the analyser gives the library reads back to itself, and in
   parentheses to itself in parentheses (`functions.test.ts`). `chord_scales.json` lists `∆` wherever it lists `Δ`.
 - **The reason note** (`ChangesNote.vue`): a click-to-open Headless UI popover (role dialog, "Why: <chord>", the chord as
   drawn for the part: `ChangesChord.written`), not
