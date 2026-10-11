@@ -571,18 +571,23 @@ library writes such a repeat out instead.
   - **The °7 scale family** (`SCALES`, `web/engine/scales.ts`; the figures are M&H pp. 152–161): `Diatonic Diminished`
     (ascending: the V7♭9♯9♭13 of the chord it leads to, from the °7's root; alias `leading tone diminished`), and the
     function variants `… #IV` (♯IV°7 → I), `… bIII`, `… bVI`, `… I`, `… V`, with `optional` forms for ♯IV, ♭III and I
-    (in the menu only). The next chord's **bass** classifies an ascending °7. At Standard a °7 takes its function's
-    scale; any other °7 keeps Whole-Half, with the reason "not functioning diatonically: the symmetric scale"; Whole-Half
-    is the Advanced rung and Harmonic Minor a half step up stays in the menu. `dim7`'s quality default stays
-    Whole-Half. ♭III°7 follows M&H (fig. 7.22) where N&G p. 116 reaches it by enharmonic equivalence with ♯II°7;
-    where no root spells a function's scale without double accidentals or B♯/E♯/C♭/F♭, the equivalent figure's
-    lettering is used. The scale root is spelled per scale by `simplifyRoot`. A few rows keep a single C♭ or F♭ for want
+    (in the menu only). A °7 a half step below the next chord's **root or bass** ascends to it (R16; ♯IV°7 → I is
+    tested first). At Standard a °7 takes its function's scale; any other °7 keeps Whole-Half, with the reason "not
+    functioning diatonically: the symmetric scale"; Whole-Half is the Basic and Advanced rung and Harmonic Minor a
+    half step up stays in the menu. `dim7`'s quality default stays Whole-Half, and the Level control compares it by
+    pitch, so a Whole-Half the analysis respelled (F♯ on G♭°7) is still the default. ♭III°7 follows M&H (fig. 7.22)
+    where N&G p. 116 reaches it by enharmonic equivalence with ♯II°7; where no root spells a function's scale without
+    double accidentals or B♯/E♯/C♭/F♭, the equivalent figure's lettering is used. The scale root is spelled per scale
+    by `simplifyRoot`. One helper, `cleanLettering` (`scales.ts`), makes that choice for the analyser, for a
+    transposed chart and for the `dim7` menu's diatonic diminished options. A few rows keep a single C♭ or F♭ for want
     of a clean root. A dim7's interval labels and practice presets are by semitone, not by degree.
   - **Libraries:** Wave follows the *Songbook Tom Jobim* in full; The Girl from Ipanema's bars 7–8 and bridge do;
     Solar opens on CmMaj7.
 - **Menus:** every scale the rules give a quality is among that quality's options in `chord_scales.json`
   (Phrygian Dominant and Mixolydian ♭6 on `7`, Phrygian on minor chords, Mixolydian ♭6 on `7sus4`, the diatonic
-  diminished family on `dim7`), so a scale you change can be changed back from the menu.
+  diminished family on `dim7`, lettered as the analysis letters them), so a scale you change can be changed back
+  from the menu. One exception: a Whole-Half the analysis respelled (F♯ Whole-Half on G♭°7) is offered on the
+  chord's root (G♭), the same notes spelled the other way.
 
 ## 8. State
 

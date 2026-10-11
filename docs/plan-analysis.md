@@ -339,12 +339,12 @@ the one it actually hides: for a `vii°7 of X`, X's V7♭9; for a passing or aux
 one of its four notes that is the dominant of the next chord, or of the chord after a related ii (Wave: B♭°7 →
 Am7 D7 hides A7♭9, not E7♭9); with none, "a rootless dominant ♭9" (Levine p. 87; N&G p. 114). The scale then
 follows the function, from Mulholland and Hojnacki pp. 149–162 (Berklee's "diatonic diminished"), and the symmetric
-Whole-Half is the Advanced rung (N&G p. 114: it is "appropriate when the diminished 7th chord is not functioning
-diatonically"; Levine p. 84 and Chediak vol. 1 p. 91 give Whole-Half):
+Whole-Half is the Basic and Advanced rung (N&G p. 114: it is "appropriate when the diminished 7th chord is not
+functioning diatonically"; Levine p. 84 and Chediak vol. 1 p. 91 give Whole-Half):
 
 | Function | Scale (`SCALES` key), degrees from the °7 root | Source |
 |---|---|---|
-| ascending `vii°7` of X (a half step below the next chord's **bass**, a major or minor chord: C♯°7 → Dm7; ♯II°7 → I/3) | `diatonic diminished` (alias `leading tone diminished`), `1 ♭2 ♭3 ♭4 ♭5 ♭6 ♭♭7 ♭8`: X's V7(♭9 ♯9 ♭13) from the °7's root | M&H p. 152; N&G p. 115 |
+| ascending `vii°7` of X (a half step below the next chord's **root or bass**, a major or minor chord: C♯°7 → Dm7; ♯II°7 → I/3) | `diatonic diminished` (alias `leading tone diminished`), `1 ♭2 ♭3 ♭4 ♭5 ♭6 ♭♭7 ♭8`: X's V7(♭9 ♯9 ♭13) from the °7's root | M&H p. 152; N&G p. 115 |
 | ♯IV°7 to I, over its 5th or not (an inversion of ♯II°7); the blues I7 too | `diatonic diminished #iv`, `1 ♭2 ♭3 4 ♭5 ♭6 ♭♭7 ♭7` (menu: `#iv optional`, with the major 7th) | M&H figs. 7.13, 7.14, 7.15 |
 | passing ♭III°7 (falling to ii) | `diatonic diminished biii`, `1 ♯1 ♭3 3 ♯4 ♯5 6 7` (menu: `biii optional`, the 9 in place of the ♯1) | M&H figs. 7.22, 7.23, 7.24 |
 | passing ♭VI°7 | `diatonic diminished bvi`, `1 ♯1 ♯2 3 ♯4 ♯5 6 7` | M&H figs. 7.26, 7.27 |
@@ -352,12 +352,16 @@ diatonically"; Levine p. 84 and Chediak vol. 1 p. 91 give Whole-Half):
 | auxiliary V°7 | `diatonic diminished v`, `1 2 ♭3 4 ♭5 5 6 ♭7` | M&H figs. 7.32, 7.34 |
 | any other °7 (other roots, a minor key's passing or auxiliary °7) | `Whole-Half Diminished`, reason "…; not functioning diatonically: the symmetric scale" | N&G p. 114 |
 
-The function is classified by the **next chord's bass**, so `C♯°7 → Dm7/A` and `♯II°7 → I/3` (Our Delight, Slow
-Boat to China) are ascending. The figures give the formulas; none is a hand-typed note list. The decisions the
-figures left open were the user's: the ♭III°7 takes fig. 7.22 and the auxiliary I°7 the first of fig. 7.31 at
-Standard, their optional forms in the menu; ♯IV°7 → I takes fig. 7.13 with fig. 7.14 in the menu. Where N&G
-p. 116 reaches ♭III°7 by its enharmonic equivalence with ♯II°7 (the ascending pattern from the sharp root), the
-engine follows M&H's fig. 7.22 and prints the ♭III°7's own figure (`Diatonic Dim. (♭III°7)`).
+A °7 is ascending when its root is a half step below the next chord's **root or its bass** (R16): `C♯°7 → Dm7/A`
+and `B°7 → C/G` (vii°7 to I6/4) by the root, `♯II°7 → I/3` (Our Delight, Slow Boat to China) by the bass. ♯IV°7 → I
+is tested first, in any inversion, so `F♯°7 → C/G` takes fig. 7.13. The figures give the formulas; none is a
+hand-typed note list. The decisions the figures left open were the user's: the ♭III°7 takes fig. 7.22 and the
+auxiliary I°7 the first of fig. 7.31 at Standard, their optional forms in the menu; ♯IV°7 → I takes fig. 7.13 with
+fig. 7.14 in the menu. Where N&G p. 116 reaches ♭III°7 by its enharmonic equivalence with ♯II°7 (the ascending
+pattern from the sharp root), the engine follows M&H's fig. 7.22 and prints the ♭III°7's own figure
+(`Diatonic Dim. (♭III°7)`) where its root spells cleanly. That is the minority: 26 of the library's 34 ♭III°7 rows
+have no clean root for fig. 7.22 and print the ascending lettering of the same notes (`B Diatonic Diminished`, R9),
+so their sheet label reads "Diatonic Dim.", while the reason still says "passing diminished".
 
 **Spelling.** The scale's root is spelled by `simplifyRoot` per scale (R9), so an E♭°7 ascending is D♯ Diatonic
 Diminished and the sheet has no double accidentals or B♯/E♯/C♭/F♭. Where no spelling of the function's formula is
@@ -365,11 +369,14 @@ clean, the enharmonically equivalent figure's lettering is used (fig. 7.22 print
 the ascending pattern from the sharp root). A few rows keep a single C♭ or F♭ because no clean root exists
 (Miss Premise 6/22, Relaxin' 26), and the earlier Whole-Half rows on E♭, F♯ and C♯ keep theirs (R11). The notes of
 a °7 scale are labelled and practised **by semitone** from the root, not by formula degree (the formulas' ♯1 or ♭♭7
-would misname them): `intervals.ts` and `practice.ts` read the dim7 scales that way.
+would misname them): `intervals.ts` and `practice.ts` read the dim7 scales that way. The choice is one pure helper,
+`cleanLettering` (`scales.ts`), which the analyser, a transposed chart (`transposeRow`, where the key's side would
+put back a B♯ or a double flat) and the `dim7` menu's diatonic diminished options all use, so the written scale is
+always one of the menu's entries (R17).
 
-The ladder: Standard the function's scale, Advanced Whole-Half, Harmonic Minor (a half step up) kept in the menu
-(§11). Because a °7's Standard differs from the `dim7` quality default (still Whole-Half: no quality default can
-hold a scale that depends on function and key), the Level control climbs the new scales' ladders.
+The ladder: Standard the function's scale, Basic and Advanced Whole-Half, Harmonic Minor (a half step up) kept in
+the menu (§11). Because a °7's Standard differs from the `dim7` quality default (still Whole-Half: no quality default
+can hold a scale that depends on function and key), the Level control climbs the new scales' ladders.
 Function-specific scales carry `functional: true` in `chord_scales.json`: they are offered in the menu and never
 dealt by the Random level (R10).
 
@@ -450,26 +457,30 @@ Twenty-two of twenty-nine rows agree; the seven that don't are three decisions (
 | Bar | Chord | Function | Rule | Analyser | Chart |
 |---|---|---|---|---|---|
 | 1 | FMaj7 | I | M3 | F Ionian | ✓ |
-| 2 | Eø7 A7♭9 | related iiø7, V7/vi; ♭9 pinned, ♭13 in F | h2, D1+D4 | E Locrian, A Phrygian Dominant | ✓ ✓ |
+| 2 | Eø7 A7♭9 | related iiø7, V7/vi; ♭9 and ♭13 in F | h2, D4 | E Locrian, A Phrygian Dominant | ✓ ✓ |
 | 3 | Dm7 G7 | related ii, V7/V (→ Cm7, the next ii) | m4, D4 | D Dorian, G Mixolydian | ✓ ✓ |
 | 4 | Cm7 F7 | related ii, extended (→ B♭7) | m4, D3 | C Dorian, F Mixolydian | ✓ ✓ |
-| 5 | B♭7 | IV7 of the blues | D5 (R2: Mixolydian, the ♯11 an extra colour) | B♭ Mixolydian | ✓ (Lydian Dominant before R2) |
-| 6 | B♭m7 E♭7 | iv7, ♭VII7 (back door, doesn't resolve) | m4, D5 | B♭ Dorian, **E♭ Lydian Dominant** | ✓ ✗ E♭ Mixolydian |
-| 7 | Am7 D7 | related ii, V7/ii (Gm7 implied) | m4, D4 | A Dorian, **D Mixolydian ♭6** | ✓ ✗ D Mixolydian |
-| 8 | A♭m7 D♭7 | passing ii, subV7 → Gm7 | m4, D2 | A♭ Dorian, **D♭ Lydian Dominant** | ✓ ✗ D♭ Mixolydian |
+| 5 | B♭7 | IV7 in F, not resolving (not a blues: R2 doesn't reach it) | D5 (the ♯11 is in the key) | B♭ Lydian Dominant | ✓ |
+| 6 | B♭m7 E♭7 | related ii; an extended ii–V, a side-step in its own key | m4, D4 | B♭ Dorian, E♭ Mixolydian | ✓ ✓ |
+| 7 | Am7 D7 | iii; an extended ii–V, a side-step | m9, D4 | A Phrygian, D Mixolydian | ✓ ✓ |
+| 8 | A♭m7 D♭7 | related ii; an extended ii–V, a side-step | m4, D4 | A♭ Dorian, D♭ Mixolydian | ✓ ✓ |
 | 9–10 | Gm7 C7 | ii–V → I | m4, D4 | G Dorian, C Mixolydian | ✓ ✓ |
-| 11 | FMaj7 D7♭9 | I; V7/ii, ♭9 pinned | M3, D1+D4 | F Ionian, **D Phrygian Dominant** | ✓ ✗ D Half-Whole |
+| 11 | FMaj7 D7♭9 | I; V7/ii, ♭9 pinned | M3, D1+D4 | F Ionian, D Phrygian Dominant | ✓ ✓ (Half-Whole in the first chart) |
 | 12 | Gm7 C7 | ii–V → I | m4, D4 | G Dorian, C Mixolydian | ✓ ✓ |
 
-The chart's A7♭9 and D7♭9 are the same function and currently get different scales; the analyser gives both
-Phrygian Dominant. Bar 5 was the one real argument (§10, decision 4), now settled for Mixolydian by the sources.
-With R5 the V7 → minor rows (Bird Blues' A7♭9 → Gm7 included) climb to Altered at Advanced.
+The first chart gave A7♭9 and D7♭9, the same function, different scales; the analyser gives both Phrygian
+Dominant, and so does the chart now. Bar 5 stays B♭ Lydian Dominant: the chart opens on FMaj7, so the analyser
+doesn't read it as a blues, and R2's Mixolydian for the blues IV7 (§10, decision 4) doesn't reach it; it is a IV7 in
+F that doesn't resolve (D5), its ♯11 in the key. With R5 the V7 → minor rows (A7♭9 → Dm7, D7♭9 → Gm7) climb to
+Altered at Advanced.
 
 ### Rhythm Changes (B♭ major)
 
 Every row agrees: G7♭9 → Phrygian Dominant (V7/ii with ♭9 pinned), Cm7 F7 → Dorian, Mixolydian, B♭7 → Mixolydian
 (extended, into E♭7), E♭7 → Lydian Dominant (IV7 of a non-blues, D5), E°7 → ♯IV°7 to I, E Diatonic Dim. (♯IV°7) in
-bar 6 (d1; it was Whole-Half), the bridge → Mixolydian throughout (D3). The chart was written to these rules before they were written down, which is a good sign for both.
+bar 6 (d1; it was Whole-Half), while bars 14 and 30's E°7, falling to Cm7 F7, stay Whole-Half (passing diminished,
+Q5: "not functioning diatonically"), the bridge → Mixolydian throughout (D3). The chart was written to these rules
+before they were written down, which is a good sign for both.
 
 ### Blue Bossa (C minor, with a D♭ major area)
 
@@ -511,17 +522,17 @@ example of what the analyser can't know (§13).
 | 7 | E♭Maj7 | IV reached by its own dominant (B♭7) | M3 (R1) | E♭ Ionian | ✓ (Lydian before R1) |
 | 8 | A♭7 | ♭VII7, the back door to B♭Maj7 | D5 | A♭ Lydian Dominant | ✓ |
 | 9 | B♭Maj7 | I | M3 | B♭ Ionian | ✓ |
-| 10 | Eø7 A7♭9 | ii–V of iii, landing this time | h2, D1+D4 | E Locrian, A Phrygian Dominant | ✓ ✓ |
+| 10 | Eø7 A7♭9 | ii–V of iii, landing this time | h2, D4 | E Locrian, A Phrygian Dominant | ✓ ✓ |
 | 11 | Dm7 | iii, reached by its own ii–V | m9 | D Phrygian | ✓ (R4; Dorian before it) |
 | 12 | B♭m7 E♭7 | iv7 ♭VII7: the back door to FMaj7 | m4, D5 | B♭ Dorian, E♭ Lydian Dominant | ✓ ✓ |
 | 13 | FMaj7 | V as a major 7th: chromatic, reached by the back door | M4 | F Lydian | ✓, decision 10 |
-| 14 | Eø7 A7♭9 | ii–V of iii, not landing | h2, D1+D4 | E Locrian, A Phrygian Dominant | ✓ ✓ |
+| 14 | Eø7 A7♭9 | ii–V of iii, not landing | h2, D4 | E Locrian, A Phrygian Dominant | ✓ ✓ |
 | 15–16 | Aø7 D7♭9 | related iiø7; extended dominant in a chain ending on Cm7 | h2, D8 | A Locrian, D Phrygian Dominant | ✓ ✓ (Half-Whole before D8) |
-| 17–18 | G7♯5 | V7 of the C minor area; ♯5 pinned, ♭9 in the key | D1+D4 | G Altered | ✓ (my hand said Whole Tone; the rule won) |
-| 19–20 | Cm7 | tonic of the C minor area (ii of B♭, tonicized) | m5 | C Dorian | ✓ |
-| 21–22 | A♭7♯11 | ♭VII7 back door, ♯11 pinned | D1 | A♭ Lydian Dominant | ✓ |
+| 17–18 | G7♯5 | V7 of C minor, the chain's last link; ♯5 pinned, ♭9 and ♭13 in the key | D1+D8 | G Altered | ✓ (my hand said Whole Tone; the rule won) |
+| 19–20 | Cm7 | ii of B♭, where the chain lands | m7 | C Dorian | ✓ |
+| 21–22 | A♭7♯11 | ♭VII7 back door; the ♯11 is in the key | D5 | A♭ Lydian Dominant | ✓ |
 | 23–24 | B♭Maj7 | I | M3 | B♭ Ionian | ✓ |
-| 25–28 | Eø7 A7♭9, Dø7 G7♭9 | minor ii–Vs of iii and of ii, each landing on the next ii | h2, D1+D4 | E, D Locrian; A, G Phrygian Dominant | ✓ |
+| 25–28 | Eø7 A7♭9, Dø7 G7♭9 | minor ii–Vs of iii and of ii, each landing on the next ii | h2, D4 (A7♭9), D1+D4 (G7♭9) | E, D Locrian; A, G Phrygian Dominant | ✓ |
 | 29–30 | Cø7 F7♭9 | iiø7 (borrowed) and V7 → I; ♭9 pinned, the 13 is in B♭ | h2, D1+D4 | C Locrian, **F Half-Whole** (the table's rare ♭9 11 13 row, with a real chord) | ✓ ✓ |
 | 31–32 | B♭Maj7 | I | M3 | B♭ Ionian | ✓ |
 
@@ -619,8 +630,8 @@ the places a future rule change is most likely to revisit.
    first answer was Lydian Dominant, the ♯11 (E over B♭7 in F) being the key's major 7th. The sources write the
    blues IV7 as Mixolydian (N&G p. 105; M&H pp. 93, 125), which is what most people play, so principle 4 yields
    for the blues subdominant, exactly the exception this entry foresaw; the I7 is decided by D5 before D3 (M&H
-   p. 137). Lydian Dominant stays in the `7` menu, and the back-door ♭VII7 and Rhythm Changes' IV7 (not a blues)
-   stay Lydian Dominant.
+   p. 137). Lydian Dominant stays in the `7` menu, and the back-door ♭VII7, Rhythm Changes' IV7 and the Bird Blues'
+   bar 5 B♭7 (neither chart is read as a blues) stay Lydian Dominant.
 5. **The Bird Blues chain (bars 6–8): analyse each pair, or treat the chain as passing ii–Vs (all Mixolydian)?**
    *Analyse each.* E♭7 is a back door, D7 is V7/ii, D♭7 is a tritone sub, and each has a reason. The counter-case:
    at bebop tempo nobody hears the difference, and the current chart's uniform Mixolydian reads cleaner on the
@@ -652,12 +663,12 @@ the user decided Q1–Q6 on 2026-10-10):
 
 11. **IV after its own dominant → Ionian** (R1; §7.2). N&G p. 47, Levine p. 120. Lydian is the Advanced rung.
 12. **The °7 takes its function's diatonic diminished scale** (R3; §7.4). Berklee's key-derived scales at Standard,
-    Whole-Half at Advanced, Harmonic Minor a further option. Q1: ♭III°7 takes M&H fig. 7.22 (fig. 7.23 optional);
-    Q2: I°7 the first of fig. 7.31 (the second optional); Q5: °7s the figures do not cover keep Whole-Half, reason
-    "not functioning diatonically: the symmetric scale" (N&G p. 114); Q6: ♯IV°7 → I takes fig. 7.13 (fig. 7.14
-    optional), and a °7 is classified by the next chord's bass (♯II°7 → I/3 is ascending, fig. 7.9). The sources
-    split on ♭III°7 (N&G p. 116 by enharmonic equivalence with ♯II°7; M&H fig. 7.22): M&H, with the equivalent
-    lettering where no clean spelling exists (R9).
+    Whole-Half at Basic and Advanced, Harmonic Minor a further option. Q1: ♭III°7 takes M&H fig. 7.22 (fig. 7.23
+    optional); Q2: I°7 the first of fig. 7.31 (the second optional); Q5: °7s the figures do not cover keep
+    Whole-Half, reason "not functioning diatonically: the symmetric scale" (N&G p. 114); Q6: ♯IV°7 → I takes
+    fig. 7.13 (fig. 7.14 optional); a °7 is ascending a half step below the next chord's root or its bass (R16; by
+    the bass, ♯II°7 → I/3, fig. 7.9). The sources split on ♭III°7 (N&G p. 116 by enharmonic equivalence with ♯II°7;
+    M&H fig. 7.22): M&H, with the equivalent lettering where no clean spelling exists (R9).
 13. **A rung holds one scale** (Q3, R5). Altered is the Advanced rung of Phrygian Dominant, so Spanish Phrygian
     stays in the menu only.
 14. **A per-quality rung overrides the ladder** (Q4, R4): an `m7` or `m` on Phrygian is Dorian at Advanced, not
@@ -713,10 +724,12 @@ replacing them: a row whose Standard is its quality's default keeps the tags (so
 and `7sus4`'s Mixolydian keeps its own rungs), and a row whose Standard the analysis chose climbs that scale's
 ladder (`engine/levels.ts`, `ladderScale`), after the chord quality's own override in `quality_ladders` (`m` and
 `m7` on Phrygian: Dorian at Advanced; `m6` on Melodic Minor: Melodic Minor); the override is keyed by the chord's own
-quality, not by a slash reading. Scales that fit one function only (the diatonic diminished family) carry
-`functional: true` and are never dealt by Random, which picks among the quality's other inside options. A tonic minor chord (rule m5) is Aeolian at Basic (decision 7): the
-level control runs the analysis on the chart to find those rows. Lydian's and
-Lydian Dominant's Advanced rungs are blank, as in the table.
+quality, not by a slash reading. The default is compared by pitch: a Standard the analysis only respelled (G♭°7's
+F♯ Whole-Half, R9) is still the default, and keeps its spelling at Basic and Advanced. Scales that fit one function
+only (the diatonic diminished family) carry `functional: true` and are never dealt by Random, which picks among the
+quality's other inside options. A tonic minor chord (rule m5) is Aeolian at Basic (decision 7): the level control
+runs the analysis on the chart to find those rows. Lydian's and Lydian Dominant's Advanced rungs are blank, as in
+the table.
 
 ## 12. The tool
 
