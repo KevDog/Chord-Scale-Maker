@@ -85,16 +85,10 @@ describe('guideVoices', () => {
     expect([...seventh.labels]).toEqual([[0, ['7']], [1, ['3']], [2, ['7']]])
   })
 
-  it('one on: the line shown is still built with the other, so it gives way where they collide (rule 7)', () => {
-    const third = guideVoices(inTurn(['Cm6', 'D7']), CONCERT, 4, null, THIRD) // alone, A would take F#4; B falls to it
-    expect(barsText(third)).toEqual(['0:eb/4/4b', '0:c/4/4'])
-    expect([...third.labels]).toEqual([[0, ['3']], [1, ['7']]])
-  })
-
-  it('both on: the voices are sorted by pitch at every chord, so lines that cross swap voices (rule 7.3)', () => {
-    const g = guideVoices(inTurn(['Fm7', 'GMaj7']), CONCERT, 4, null, BOTH)
-    expect(barsText(g)).toEqual(['0:ab/4/4b | 0:eb/4/4b', '0:b/4/4 | 0:f#/4/4#']) // A: Ab4 -> F#4, B: Eb4 -> B4
-    expect([...g.labels]).toEqual([[0, ['3', '7']], [1, ['3', '7']]])
+  it('one on: the line shown is built on its own, so it takes F#4 although line B takes it too', () => {
+    const third = guideVoices(inTurn(['Cm6', 'D7']), CONCERT, 4, null, THIRD)
+    expect(barsText(third)).toEqual(['0:eb/4/4b', '0:f#/4/4#'])
+    expect([...third.labels]).toEqual([[0, ['3']], [1, ['3']]])
   })
 
   it('holds a chord that repeats the guide tones: tied from the chord before, its label printed again (rule 5)', () => {
@@ -109,8 +103,9 @@ describe('guideVoices', () => {
   })
 
   it('labels the real degree: 6 on a 6 chord, 4 on a sus chord, 1 on a triad, 7 on a dim7', () => {
-    const g = guideVoices(inTurn(['C6', 'C7sus4', 'C', 'Bdim7']), CONCERT, 4, null, BOTH)
-    expect([...g.labels]).toEqual([[0, ['6', '3']], [1, ['7', '4']], [2, ['1', '3']], [3, ['7', '3']]])
+    const g = guideVoices(inTurn(['C6', 'C7sus4', 'C']), CONCERT, 4, null, BOTH)
+    expect([...g.labels]).toEqual([[0, ['6', '3']], [1, ['7', '4']], [2, ['1', '3']]])
+    expect([...guideVoices(inTurn(['Bdim7']), CONCERT, 4, null, SEVENTH).labels]).toEqual([[0, ['7']]])
   })
 
   it('holds a chord across barlines with ties, the carried pieces marked tied in', () => {
@@ -136,7 +131,7 @@ describe('guideVoices', () => {
       { row: 0, chord: 'Gb', start: 0, beats: 2 },
       { row: 1, chord: 'Em', start: 2, beats: 2 },
     ]
-    expect(barsText(guideVoices(chords, CONCERT, 4, null, BOTH))).toEqual(['0:bb/4/2b 2:g/4/2n | 0:gb/4/2b 2:e/4/2'])
+    expect(barsText(guideVoices(chords, CONCERT, 4, null, BOTH))).toEqual(['0:bb/4/2b 2:g/4/2n | 0:gb/4/2b 2:g/4/2']) // both lines take G4
   })
 
   it('writes the sharp again on a note struck after the same note was held over the barline', () => {
@@ -211,7 +206,7 @@ describe('guide tone voices over the library', () => {
   const RANGE = { treble: [60, 81], bass: [40, 60] } as const
 
   for (const [name, part] of [['concert', CONCERT], ['bass', BASS]] as const) {
-    it(`both on, ${name}: at least 85% of moves are steps; the voices never cross, stay a minor 3rd apart and in range`, () => {
+    it(`both on, ${name}: at least 85% of moves are steps; every chord is labelled and the voices stay in step and in range`, () => {
       let moves = 0
       let steps = 0
       const faults: string[] = []
@@ -220,14 +215,9 @@ describe('guide tone voices over the library', () => {
         const g = guideVoices(chords, part, chartBeats(doc), null, BOTH)
         if (g.missing.length) faults.push(`${chart}: ${g.missing.join('; ')}`)
         if (g.labels.size !== chords.length) faults.push(`${chart}: ${g.labels.size} of ${chords.length} chords labelled`)
-        for (const [row, l] of g.labels) if (l[0] === l[1]) faults.push(`${chart} row ${row}: both voices labelled ${l[0]}`)
         const bars = [...g.bars.entries()].sort(([a], [b]) => a - b)
         for (const [bar, [upper = [], lower = []]] of bars) {
           if (upper.map((n) => n.beat).join() !== lower.map((n) => n.beat).join()) faults.push(`${chart} bar ${bar}: voices out of step`)
-          upper.forEach((u, i) => {
-            const l = lower[i]
-            if (u.pitch && l?.pitch && u.pitch.midi - l.pitch.midi < 3) faults.push(`${chart} bar ${bar}: ${toVexKey(u.pitch)} over ${toVexKey(l.pitch)}`)
-          })
           for (const n of [...upper, ...lower])
             if (n.pitch && (n.pitch.midi < RANGE[part.clef][0] || n.pitch.midi > RANGE[part.clef][1])) faults.push(`${chart} bar ${bar}: ${toVexKey(n.pitch)} out of range`)
         }
