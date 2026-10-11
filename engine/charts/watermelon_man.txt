@@ -9,13 +9,13 @@ source: Colorado Cookbook, p. 260
 # analysis: 2026-10-11, rules v1; F, blues
 
 # section | bar | chord | scale
-A | 1  | F7  | F Mixolydian   # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 5  | Bb7 | Bb Mixolydian  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A | 7  | F7  | F Mixolydian   # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 9  | C7  | C Mixolydian   # V7 in F, not resolving: natural tensions
-A | 10 | Bb7 | Bb Mixolydian  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A | 11 | C7  | C Mixolydian   # V7 in F, not resolving: natural tensions
-A | 12 | Bb7 | Bb Mixolydian  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A | 13 | C7  | C Mixolydian   # V7 in F, not resolving: natural tensions
-A | 14 | Bb7 | Bb Mixolydian  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A | 15 | F7  | F Mixolydian   # I7 of the blues: a tonic with dominant colour, natural tensions
+A | 1  | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
+A | 5  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A | 7  | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
+A | 9  | C7   # V7 in F, not resolving: natural tensions
+A | 10 | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A | 11 | C7   # V7 in F, not resolving: natural tensions
+A | 12 | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A | 13 | C7   # V7 in F, not resolving: natural tensions
+A | 14 | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A | 15 | F7   # I7 of the blues: a tonic with dominant colour, natural tensions

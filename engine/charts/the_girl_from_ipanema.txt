@@ -5,34 +5,34 @@ style: Latin
 key: F
 form: AABA
 source: Colorado Cookbook, p. 79
-# source: bars 7–8 and the bridge follow Songbook Tom Jobim vol. 3 (Chediak), pp. 61–62
 # analysis: 2026-10-11, rules v1; F
+# source: bars 7–8 and the bridge follow Songbook Tom Jobim vol. 3 (Chediak), pp. 61–62
 
 # section | bar | chord | scale
 # area: F major (bars 1–7)
-A1 | 1  | FMaj7  | F Ionian                 # tonic: the 4th is in the key
-A1 | 3  | G7     | G Mixolydian             # II7 in F, not resolving: natural tensions
-A1 | 5  | Gm7    | G Dorian                 # ii: Dorian, the key’s own notes
-A1 | 6  | Gb7    | Gb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-A1 | 7  | Am7    | A Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A1 | 1  | FMaj7   # tonic: the 4th is in the key
+A1 | 3  | G7      # II7 in F, not resolving: natural tensions
+A1 | 5  | Gm7     # ii: Dorian, the key’s own notes
+A1 | 6  | Gb7     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A1 | 7  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 # area: Db major (bars 7–8)
-A1 | 7  | Ab7    | Ab Mixolydian            # V7 of Db: natural tensions
-A1 | 8  | DbMaj9 | Db Ionian                # tonic: the 4th is in the key
+A1 | 7  | Ab7     # V7 of Db: natural tensions
+A1 | 8  | DbMaj9  # tonic: the 4th is in the key
 # area: F major (bars 8–39)
-A1 | 8  | Gb7#11 | Gb Lydian Dominant       # tritone substitute: resolves down a half step to FMaj7
-A2 | 9  | FMaj7  | F Ionian                 # tonic: the 4th is in the key
-A2 | 11 | G7     | G Mixolydian             # II7 in F, not resolving: natural tensions
-A2 | 13 | Gm7    | G Dorian                 # ii: Dorian, the key’s own notes
-A2 | 14 | Gb7    | Gb Lydian Dominant       # tritone substitute: resolves down a half step to FMaj7
-A2 | 15 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
-B  | 17 | F#Maj7 | F# Lydian                # ♭IImaj7, borrowed from F Phrygian: Lydian (its ♯11 is in the key)
-B  | 19 | B9     | B Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-B  | 21 | F#m7   | F# Dorian                # a borrowed minor chord: Dorian, its own key
-B  | 23 | D9     | D Mixolydian b6          # V7/ii in F: the b13 is in the key
-B  | 25 | Gm7    | G Dorian                 # ii: Dorian, the key’s own notes
-B  | 27 | Eb9    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
-B  | 29 | Am7    | A Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B  | 30 | D7b9   | D Phrygian Dominant      # V7/ii in F: the b13 is in the key, the b9 from the symbol
-B  | 31 | Gm7    | G Dorian                 # ii of the ii–V to F
-B  | 32 | C7b9   | C Half-Whole Diminished  # V7 of F: the b9 from the symbol
+A1 | 8  | Gb7#11  # tritone substitute: resolves down a half step to FMaj7
+A2 | 9  | FMaj7   # tonic: the 4th is in the key
+A2 | 11 | G7      # II7 in F, not resolving: natural tensions
+A2 | 13 | Gm7     # ii: Dorian, the key’s own notes
+A2 | 14 | Gb7     # tritone substitute: resolves down a half step to FMaj7
+A2 | 15 | FMaj7   # tonic: the 4th is in the key
+B  | 17 | F#Maj7  # ♭IImaj7, borrowed from F Phrygian: Lydian (its ♯11 is in the key)
+B  | 19 | B9      # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 21 | F#m7    # a borrowed minor chord: Dorian, its own key
+B  | 23 | D9      # V7/ii in F: the b13 is in the key
+B  | 25 | Gm7     # ii: Dorian, the key’s own notes
+B  | 27 | Eb9     # ♭VII7 from the parallel minor: Lydian Dominant
+B  | 29 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B  | 30 | D7b9    # V7/ii in F: the b13 is in the key, the b9 from the symbol
+B  | 31 | Gm7     # ii of the ii–V to F
+B  | 32 | C7b9    # V7 of F: the b9 from the symbol
 @copy A2 A3 24

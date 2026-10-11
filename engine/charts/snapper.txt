@@ -9,15 +9,15 @@ source: Colorado Cookbook, p. 203
 # analysis: 2026-10-11, rules v1; F minor
 
 # section | bar | chord | scale
-A1 | 1  | Fm    | F Dorian             # tonic minor: Dorian by convention
-A1 | 5  | Bbm   | Bb Dorian            # iv: Dorian, the key’s own notes
-A1 | 7  | Fm    | F Dorian             # tonic minor: Dorian by convention
-A1 | 9  | Gm7b5 | G Locrian            # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A1 | 10 | C7    | C Phrygian Dominant  # V7 of F minor: b9 and b13 are in the key
-A1 | 11 | Fm    | F Dorian             # tonic minor: Dorian by convention
+A1 | 1  | Fm     # tonic minor: Dorian by convention
+A1 | 5  | Bbm    # iv: Dorian, the key’s own notes
+A1 | 7  | Fm     # tonic minor: Dorian by convention
+A1 | 9  | Gm7b5  # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
+A1 | 10 | C7     # V7 of F minor: b9 and b13 are in the key
+A1 | 11 | Fm     # tonic minor: Dorian by convention
 @copy A1 A2 12
-B  | 25 | Bbm   | Bb Dorian            # iv: Dorian, the key’s own notes
-B  | 27 | Fm    | F Dorian             # tonic minor: Dorian by convention
-B  | 29 | Gm7b5 | G Locrian            # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B  | 31 | C7    | C Phrygian Dominant  # V7 of F minor: b9 and b13 are in the key
+B  | 25 | Bbm    # iv: Dorian, the key’s own notes
+B  | 27 | Fm     # tonic minor: Dorian by convention
+B  | 29 | Gm7b5  # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B  | 31 | C7     # V7 of F minor: b9 and b13 are in the key
 @copy A1 C 32

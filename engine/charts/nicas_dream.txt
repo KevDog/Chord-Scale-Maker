@@ -9,48 +9,48 @@ source: Colorado Cookbook, p. 157
 
 # section | bar | chord | scale
 # area: Bb minor (bars 1–8)
-Intro | 1  | BbmMaj7 | Bb Melodic Minor          # from the symbol: minor-major 7th
-Intro | 2  | AbmMaj7 | Ab Melodic Minor          # from the symbol: minor-major 7th
-Intro | 3  | GbMaj7  | Gb Lydian                 # a non-tonic major chord: Lydian
-Intro | 4  | Cm7b5   | C Locrian                 # iiø7 of Bb minor: Locrian, the key's own notes (its ♭2 is a passing note)
-Intro | 5  | F7alt   | F Altered                 # from the symbol: altered
-Intro | 7  | Bbm     | Bb Dorian                 # tonic minor: Dorian by convention
+Intro | 1  | BbmMaj7  # from the symbol: minor-major 7th
+Intro | 2  | AbmMaj7  # from the symbol: minor-major 7th
+Intro | 3  | GbMaj7   # a non-tonic major chord: Lydian
+Intro | 4  | Cm7b5    # iiø7 of Bb minor: Locrian, the key's own notes (its ♭2 is a passing note)
+Intro | 5  | F7alt    # from the symbol: altered
+Intro | 7  | Bbm      # tonic minor: Dorian by convention
 # the tag (BbmMaj7 … F7alt back to Bbm) is the intro, played between solos and for the ending too
-A1    | 1  | BbmMaj7 | Bb Melodic Minor          # from the symbol: minor-major 7th
-A1    | 3  | AbmMaj7 | Ab Melodic Minor          # from the symbol: minor-major 7th
-A1    | 5  | BbmMaj7 | Bb Melodic Minor          # from the symbol: minor-major 7th
-A1    | 7  | Ebm7    | Eb Dorian                 # ii of Ab7: Dorian
-A1    | 8  | Ab7     | Ab Mixolydian             # V7/bIII in Bb minor: natural tensions
+A1    | 1  | BbmMaj7  # from the symbol: minor-major 7th
+A1    | 3  | AbmMaj7  # from the symbol: minor-major 7th
+A1    | 5  | BbmMaj7  # from the symbol: minor-major 7th
+A1    | 7  | Ebm7     # ii of Ab7: Dorian
+A1    | 8  | Ab7      # V7/bIII in Bb minor: natural tensions
 # area: Gb major (bars 9–12)
-A1    | 9  | Abm7    | Ab Dorian                 # ii of the ii–V to Gb
-A1    | 10 | Db7     | Db Mixolydian             # V7 of Gb: natural tensions
-A1    | 11 | GbMaj7  | Gb Ionian                 # tonic: the 4th is in the key
-A1    | 11 | Db9     | Db Lydian Dominant        # tritone substitute: resolves down a half step to C7alt
-A1    | 12 | C7alt   | C Altered                 # from the symbol: altered
+A1    | 9  | Abm7     # ii of the ii–V to Gb
+A1    | 10 | Db7      # V7 of Gb: natural tensions
+A1    | 11 | GbMaj7   # tonic: the 4th is in the key
+A1    | 11 | Db9      # tritone substitute: resolves down a half step to C7alt
+A1    | 12 | C7alt    # from the symbol: altered
 # area: Bb minor (bars 13–24)
-A1    | 13 | Cm7b5   | C Locrian                 # iiø7 of Bb minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A1    | 14 | F7alt   | F Altered                 # from the symbol: altered
-A1    | 15 | BbmMaj7 | Bb Melodic Minor          # from the symbol: minor-major 7th
+A1    | 13 | Cm7b5    # iiø7 of Bb minor: Locrian, the key's own notes (its ♭2 is a passing note)
+A1    | 14 | F7alt    # from the symbol: altered
+A1    | 15 | BbmMaj7  # from the symbol: minor-major 7th
 @copy A1 A2 16
-B1    | 33 | Ebm7/Ab | Ab Mixolydian             # ♭VII7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-B1    | 34 | Ab7     | Ab Mixolydian             # V7/bIII in Bb minor: natural tensions
-B1    | 35 | DbMaj7  | Db Ionian                 # bIII of Bb minor: the relative major itself
-B1    | 36 | Bb7b9   | Bb Half-Whole Diminished  # extended dominant: V7 of Eb7; b9 from the symbol
-B1    | 37 | Eb7     | Eb Mixolydian             # IV7 in Bb minor, not resolving: natural tensions
+B1    | 33 | Ebm7/Ab  # ♭VII7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+B1    | 34 | Ab7      # V7/bIII in Bb minor: natural tensions
+B1    | 35 | DbMaj7   # bIII of Bb minor: the relative major itself
+B1    | 36 | Bb7b9    # extended dominant: V7 of Eb7; b9 from the symbol
+B1    | 37 | Eb7      # IV7 in Bb minor, not resolving: natural tensions
 # area: Db major (bars 38–47)
-B1    | 38 | Ebm7    | Eb Dorian                 # ii of the ii–V to Db
-B1    | 38 | Ab7     | Ab Mixolydian             # V7 of Db: natural tensions
-B1    | 39 | DbMaj9  | Db Ionian                 # tonic: the 4th is in the key
-B1    | 40 | Em7     | E Dorian                  # ii of A7: Dorian
-B1    | 40 | A7      | A Lydian Dominant         # tritone substitute: resolves down a half step to Ebm7/Ab
-B2    | 41 | Ebm7/Ab | Ab Mixolydian             # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-B2    | 42 | Ab7     | Ab Mixolydian             # V7 of Db: natural tensions
-B2    | 43 | DbMaj7  | Db Ionian                 # tonic: the 4th is in the key
-B2    | 44 | Bb7b9   | Bb Half-Whole Diminished  # extended dominant: V7 of Eb7; b9 from the symbol
-B2    | 45 | Eb7     | Eb Mixolydian             # II7 in Db, not resolving: natural tensions
-B2    | 46 | Ebm7    | Eb Dorian                 # ii of the ii–V to Db
-B2    | 46 | Ab7     | Ab Mixolydian             # V7 of Db: natural tensions
-B2    | 47 | DbMaj9  | Db Ionian                 # tonic: the 4th is in the key
+B1    | 38 | Ebm7     # ii of the ii–V to Db
+B1    | 38 | Ab7      # V7 of Db: natural tensions
+B1    | 39 | DbMaj9   # tonic: the 4th is in the key
+B1    | 40 | Em7      # ii of A7: Dorian
+B1    | 40 | A7       # tritone substitute: resolves down a half step to Ebm7/Ab
+B2    | 41 | Ebm7/Ab  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+B2    | 42 | Ab7      # V7 of Db: natural tensions
+B2    | 43 | DbMaj7   # tonic: the 4th is in the key
+B2    | 44 | Bb7b9    # extended dominant: V7 of Eb7; b9 from the symbol
+B2    | 45 | Eb7      # II7 in Db, not resolving: natural tensions
+B2    | 46 | Ebm7     # ii of the ii–V to Db
+B2    | 46 | Ab7      # V7 of Db: natural tensions
+B2    | 47 | DbMaj9   # tonic: the 4th is in the key
 # area: Bb minor (bars 48–56)
-B2    | 48 | F7alt   | F Altered                 # from the symbol: altered
+B2    | 48 | F7alt    # from the symbol: altered
 @copy A1 C 48

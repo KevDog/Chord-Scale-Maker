@@ -85,7 +85,7 @@ export default defineNuxtConfig({
         scaleLevels: true, // the Level control: Basic / Standard / Advanced / Random scales per chart (engine/src/levels.ts); on since sign-off
         keySignatures: true, // the clef and key signature once, at the start of each sheet (docs/superpowers/specs/2026-10-10-key-signatures-design.md); on since sign-off
         functions: true, // author functions, @key areas and live analysis notes (docs/superpowers/specs/2026-10-09-chart-functions-design.md); on since sign-off
-        proposedScales: false, // a blank scale cell plays the analysed scale at the sheet's level (docs/superpowers/specs/2026-10-11-proposed-scales-design.md)
+        proposedScales: true, // a blank scale cell plays the analysed scale at the sheet's level (docs/superpowers/specs/2026-10-11-proposed-scales-design.md); on with the library strip, whose blank cells need it
       },
     },
   },

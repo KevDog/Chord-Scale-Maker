@@ -4,7 +4,7 @@
  *
  *   npm run analyse -- charts/autumn_leaves.txt      report one chart
  *   npm run analyse -- --all                          report every chart, then a summary
- *   --write    fill blank scale cells          --force   rewrite every cell the rules reach (not `# keep:` rows)
+ *   --strip    blank every written scale the rules reproduce (not `# keep:` rows); list the ones they don't
  *   --save     write the analysis into the chart as comments (a reason per row, `# area:` lines, a header)
  *   --quiet    only the summary
  *   --ambiguous   list what a function, an @key or a context: could settle, and problems with the ones written
@@ -24,10 +24,10 @@ const files = flag('--all')
       .map((f) => join(REPO, 'charts', f))
   : args.filter((a) => !a.startsWith('--')).map((a) => resolve(process.cwd(), a))
 if (!files.length) {
-  console.error('usage: npm run analyse -- [--all | charts/x.txt …] [--write | --force] [--save] [--quiet] [--ambiguous]')
+  console.error('usage: npm run analyse -- [--all | charts/x.txt …] [--strip] [--save] [--quiet] [--ambiguous]')
   process.exit(2)
 }
-const scales = flag('--force') ? 'force' : flag('--write') ? 'fill' : 'none'
+const scales = flag('--strip') ? 'strip' : 'none'
 const save = flag('--save')
 const quiet = flag('--quiet')
 const ambiguous = flag('--ambiguous')
@@ -45,6 +45,7 @@ let blank = 0
 let unreached = 0
 let written = 0
 const disagreements: string[] = []
+const toReview: string[] = []
 for (const file of files) {
   const text = readFileSync(file, 'utf8')
   const doc = parseChart(text).value
@@ -71,13 +72,14 @@ for (const file of files) {
   }
   for (const p of a.problems) lines.push(`  ! line ${p.line + 1}: ${p.message}`)
   if (scales !== 'none' || save) {
-    const { doc: next, changes, conflicts } = applyAnalysis(doc, a, { scales, save, date })
+    const { doc: next, changes, conflicts, overrides } = applyAnalysis(doc, a, { scales, save, date })
     const out = serializeChart(next)
     if (out !== text) {
       writeFileSync(file, out)
       written++
     }
-    for (const c of changes) lines.push(`  wrote line ${c.line + 1}: ${c.chord} ${c.from || '(default)'} -> ${c.to}`)
+    if (changes.length) lines.push(`  stripped ${changes.length} scale(s) the rules reproduce`)
+    if (scales === 'strip') toReview.push(...overrides.map((o) => `${name} line ${o.line + 1}: bar ${o.bar} ${o.chord} ${o.scale}, rules ${o.rules}`))
     for (const c of conflicts) lines.push(`  @copy: bar ${c.bar} ${c.chord} would be ${c.copy} in the repeat; the source row has ${c.source}`)
   }
   if (!quiet) console.log(lines.join('\n') + '\n')
@@ -89,3 +91,4 @@ if (!ambiguous)
     `${files.length} chart(s): ${agree} rows agree, ${differ} differ${filled ? ` (${Math.round((100 * agree) / filled)}% of written scales)` : ''}, ${blank} blank, ${unreached} unreached${written ? `; ${written} file(s) written` : ''}`,
   )
 if (quiet && disagreements.length) console.log(disagreements.join('\n'))
+if (toReview.length) console.log(['left as written, without # keep: (add one with its reason, or blank the cell):', ...toReview.map((l) => `  ${l}`)].join('\n'))

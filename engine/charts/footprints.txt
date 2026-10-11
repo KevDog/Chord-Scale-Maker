@@ -8,11 +8,11 @@ form: A
 # analysis: 2026-10-11, rules v1; C minor, modal
 
 # section | bar | chord   | scale
-A | 1  | Cm7    | C Dorian           # modal minor: Dorian
-A | 5  | Fm7    | F Dorian           # modal minor: Dorian
-A | 7  | Cm7    | C Dorian           # modal minor: Dorian
-A | 9  | F#m7b5 | F# Locrian         # #ivø7 in C minor: Locrian, its own mode (the chord is outside the key)
-A | 9  | F13#11 | F Lydian Dominant  # modal: its own mode; #11 from the symbol
-A | 10 | E7alt  | E Altered          # from the symbol: altered
-A | 10 | A7alt  | A Altered          # from the symbol: altered
-A | 11 | Cm7    | C Dorian           # modal minor: Dorian
+A | 1  | Cm7     # modal minor: Dorian
+A | 5  | Fm7     # modal minor: Dorian
+A | 7  | Cm7     # modal minor: Dorian
+A | 9  | F#m7b5  # #ivø7 in C minor: Locrian, its own mode (the chord is outside the key)
+A | 9  | F13#11  # modal: its own mode; #11 from the symbol
+A | 10 | E7alt   # from the symbol: altered
+A | 10 | A7alt   # from the symbol: altered
+A | 11 | Cm7     # modal minor: Dorian

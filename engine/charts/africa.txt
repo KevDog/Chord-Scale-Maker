@@ -5,11 +5,11 @@ style: Even 8ths
 key: Dm
 form: AABC
 source: Colorado Cookbook, p. 13
-# analysis: 2026-10-08, rules v1; D minor, modal
+# analysis: 2026-10-11, rules v1; D minor, modal
 
 # section | bar | chord | scale
 # the intro is the same one-chord vamp as section A (Dm6/9 over E); it repeats on cue, then A (twice), B, C
-A1 | 1  | Dm6/9/E | D Dorian  # a minor sixth chord: Dorian
+A1 | 1  | Dm6/9/E  # a minor sixth chord: Dorian
 @copy A1 A2 8
-B  | 17 | Dm6/9/E | D Dorian
-C  | 25 | Dm6/9/E | D Dorian
+B  | 17 | Dm6/9/E
+C  | 25 | Dm6/9/E

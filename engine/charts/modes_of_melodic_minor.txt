@@ -1,13 +1,14 @@
 title: Modes of Melodic Minor
 subtitle: C Melodic Minor from Each Degree
 key: Cm
+# analysis: 2026-10-11, rules v1; C minor
 
 # section | bar | chord | scale
 # "bar" is the scale degree. "From C" shows all seven share one set of notes; "From root" shows each mode
-C | 1 | CmMaj7   | C Melodic Minor
-C | 2 | D7sus4b9 | D Dorian ♭2
-C | 3 | EbMaj7#5 | Eb Lydian Augmented
-C | 4 | F7#11    | F Lydian Dominant
-C | 5 | G7b13    | G Mixolydian ♭6
-C | 6 | Am7b5    | A Locrian ♮2
-C | 7 | B7alt    | B Altered
+C | 1 | CmMaj7    # from the symbol: minor-major 7th
+C | 2 | D7sus4b9 | D Dorian ♭2      # keep: the 2nd mode of C melodic minor
+C | 3 | EbMaj7#5  # from the symbol: #5
+C | 4 | F7#11     # IV7 in C minor, not resolving: the #11 from the symbol
+C | 5 | G7b13    | G Mixolydian ♭6  # keep: the 5th mode of C melodic minor
+C | 6 | Am7b5    | A Locrian ♮2     # keep: the 6th mode of C melodic minor
+C | 7 | B7alt     # from the symbol: altered

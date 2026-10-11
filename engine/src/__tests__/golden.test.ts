@@ -6,8 +6,8 @@
 import { readFileSync, writeFileSync } from 'node:fs'
 import { isDeepStrictEqual } from 'node:util'
 import { describe, expect, it } from 'vitest'
-import { type Clef, type Part, chartMeta, chordTokens, defaultScale, expandRows, parseChart, resolveQuality, qualityScale, resolveStart } from '..'
-import { attempt, buildGolden, GOLDEN_FILE, type Golden, renderGolden, scaleCase } from './goldenFixture'
+import { type Clef, type Part, chartMeta, chordTokens, defaultScale, expandRows, parseChart, resolveQuality, resolveStart } from '..'
+import { attempt, buildGolden, GOLDEN_FILE, type Golden, playedRows, renderGolden, scaleCase } from './goldenFixture'
 
 if (process.env.UPDATE_GOLDEN === '1') writeFileSync(GOLDEN_FILE, renderGolden(buildGolden()))
 const TEXT = readFileSync(GOLDEN_FILE, 'utf8')
@@ -76,7 +76,7 @@ describe('golden fixture', () => {
       return [
         [`${name} diagnostics`, [], [...diagnostics, ...rows.diagnostics]] as const,
         [`${name} meta`, { title: want.title, subtitle: want.subtitle, key: want.key }, chartMeta(doc)] as const,
-        [`${name} rows`, want.rows, rows.value.map((r) => [r.section, r.bar, r.chord, qualityScale(r)])] as const,
+        [`${name} rows`, want.rows, playedRows(doc)] as const,
       ]
     })
     expect(mismatches(cases)).toEqual([])

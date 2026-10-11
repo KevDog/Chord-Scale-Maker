@@ -73,14 +73,14 @@ function canonicalScale(text: string): string {
   }
 }
 
-/** each row's scale as it plays, in one written form: an empty cell becomes the chord's default */
-function withResolvedScales(doc: ChartDoc): ChartDoc {
-  return { lines: doc.lines.map((l) => (l.kind === 'row' ? { ...l, scale: canonicalScale(l.scale || (defaultScaleOrNull(l.chord) ?? '')) } : l)) }
+/** each written scale in one written form; an empty cell stays empty (it plays the analysis, a written one pins) */
+function withCanonicalScales(doc: ChartDoc): ChartDoc {
+  return { lines: doc.lines.map((l) => (l.kind === 'row' && l.scale ? { ...l, scale: canonicalScale(l.scale) } : l)) }
 }
 
-/** two chart texts that say the same thing: the same lines, ignoring spacing and whether a default scale is written */
+/** two chart texts that say the same thing: the same lines, ignoring spacing and how a written scale is named */
 export const sameChart = (a: string, b: string): boolean =>
-  a === b || serializeChart(withResolvedScales(parseChart(a).value)) === serializeChart(withResolvedScales(parseChart(b).value))
+  a === b || serializeChart(withCanonicalScales(parseChart(a).value)) === serializeChart(withCanonicalScales(parseChart(b).value))
 
 /** insert a row after line index i (-1 = at the top), copying section and bar from the row above */
 export function insertRowAfter(doc: ChartDoc, i: number): ChartDoc {

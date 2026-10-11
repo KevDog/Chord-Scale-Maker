@@ -8,6 +8,7 @@ import { readdirSync, readFileSync } from 'node:fs'
 import raw from '../../chord_scales.json'
 import {
   ALIASES,
+  type ChartDoc,
   type ChordToken,
   type Clef,
   CLEF_START,
@@ -20,7 +21,7 @@ import {
   type Part,
   parseChart,
   resolveQuality,
-  qualityScale,
+  resolveScales,
   resolveStart,
   rootName,
   SCALES,
@@ -98,6 +99,12 @@ export function attempt<T>(f: () => T): T | null {
   }
 }
 
+/** each expanded row and the scale it plays at Standard: the written scale, else the analysis's, else the quality's default */
+export function playedRows(doc: ChartDoc): (string | null)[][] {
+  const played = resolveScales(doc, { level: 'standard', seed: 0, proposed: true })
+  return expandRows(doc).value.map((r, i) => [r.section, r.bar, r.chord, played.get(i)?.scale ?? null])
+}
+
 export function scaleCase(part: Part, text: string, fromStarts: readonly string[]): ScaleCase {
   try {
     const label = scaleLabel(part, text)
@@ -140,8 +147,7 @@ export function buildGolden(): Golden {
     Object.entries({ ...libraryCharts(), ...CHART_TEXTS }).map(([name, text]) => {
       const doc = parseChart(text).value
       const meta = chartMeta(doc)
-      const rows = expandRows(doc).value.map((r) => [r.section, r.bar, r.chord, qualityScale(r)])
-      return [name, { text, title: meta.title, subtitle: meta.subtitle, key: meta.key, rows }]
+      return [name, { text, title: meta.title, subtitle: meta.subtitle, key: meta.key, rows: playedRows(doc) }]
     }),
   )
   return {

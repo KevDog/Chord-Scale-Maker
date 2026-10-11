@@ -8,41 +8,41 @@ source: Colorado Cookbook, p. 133
 # analysis: 2026-10-11, rules v1; C
 
 # section | bar | chord | scale
-A | 1  | CMaj7  | C Ionian                     # tonic: the 4th is in the key
-A | 3  | F#m7/B | B Mixolydian                 # VII7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-A | 4  | B7b9   | B Phrygian Dominant          # VII7 in C, not resolving: b9 and b13 are in the key
-A | 5  | CMaj7  | C Ionian                     # tonic: the 4th is in the key
-A | 6  | Dm7    | D Dorian                     # ii: Dorian, the key’s own notes
-A | 6  | Ebdim7 | D# Diatonic Diminished       # vii°7 of Em7: B7♭9 without its root
-A | 7  | Em7    | E Phrygian                   # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 8  | A7#5   | A Whole Tone                 # V7/ii in C: the b13 is in the key, the #11 from the symbol
-A | 9  | Dm     | D Dorian                     # ii: Dorian, the key’s own notes
-A | 11 | Fm7    | F Dorian                     # ii of Bb7: Dorian
-A | 12 | Bb7    | Bb Mixolydian                # extended ii–V: a side-step, its own key
-A | 13 | Em7    | E Phrygian                   # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 14 | A7#5   | A Whole Tone                 # V7/ii in C: the b13 is in the key, the #11 from the symbol
-A | 15 | Dm7    | D Dorian                     # ii of G7#5: Dorian
-A | 16 | G7#5   | G Whole Tone                 # V7/I in C: #11 and b13 from the symbol
-B | 17 | F#m7b5 | F# Locrian                   # #ivø7 in C: Locrian, its own mode (the chord is outside the key)
-B | 19 | Fm7    | F Dorian                     # ii of Bb7: Dorian
-B | 20 | Bb7    | Bb Mixolydian                # extended ii–V: a side-step, its own key
-B | 21 | Em7    | E Phrygian                   # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B | 22 | Ebdim7 | Eb Diatonic Diminished bIII  # passing diminished: D7♭9 without its D, the G7#5's dominant (Dm7 its ii)
-B | 23 | Dm7    | D Dorian                     # ii of the ii–V to C
-B | 24 | G7#5   | G Whole Tone                 # V7 of C: #11 and b13 from the symbol
-C | 25 | CMaj7  | C Ionian                     # tonic: the 4th is in the key
-C | 27 | F#m7/B | B Mixolydian                 # VII7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-C | 28 | B7b9   | B Phrygian Dominant          # VII7 in C, not resolving: b9 and b13 are in the key
-C | 29 | CMaj7  | C Ionian                     # tonic: the 4th is in the key
-C | 30 | Dm7    | D Dorian                     # ii: Dorian, the key’s own notes
-C | 30 | Ebdim7 | D# Diatonic Diminished       # vii°7 of Em7: B7♭9 without its root
-C | 31 | Em7    | E Phrygian                   # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-C | 32 | A7#5   | A Whole Tone                 # V7/ii in C: the b13 is in the key, the #11 from the symbol
-D | 33 | Dm     | D Dorian                     # ii: Dorian, the key’s own notes
-D | 35 | Fm7    | F Dorian                     # ii of Bb7: Dorian
-D | 36 | Bb7    | Bb Mixolydian                # extended ii–V: a side-step, its own key
-D | 37 | Em7    | E Phrygian                   # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-D | 37 | A7#5   | A Whole Tone                 # V7/ii in C: the b13 is in the key, the #11 from the symbol
-D | 38 | Dm7    | D Dorian                     # ii of the ii–V to C
-D | 38 | G7b9   | G Half-Whole Diminished      # V7 of C: the b9 from the symbol
-D | 39 | CMaj7  | C Ionian                     # tonic: the 4th is in the key
+A | 1  | CMaj7   # tonic: the 4th is in the key
+A | 3  | F#m7/B  # VII7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+A | 4  | B7b9    # VII7 in C, not resolving: b9 and b13 are in the key
+A | 5  | CMaj7   # tonic: the 4th is in the key
+A | 6  | Dm7     # ii: Dorian, the key’s own notes
+A | 6  | Ebdim7  # vii°7 of Em7: B7♭9 without its root
+A | 7  | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A | 8  | A7#5    # V7/ii in C: the b13 is in the key, the #11 from the symbol
+A | 9  | Dm      # ii: Dorian, the key’s own notes
+A | 11 | Fm7     # ii of Bb7: Dorian
+A | 12 | Bb7     # extended ii–V: a side-step, its own key
+A | 13 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A | 14 | A7#5    # V7/ii in C: the b13 is in the key, the #11 from the symbol
+A | 15 | Dm7     # ii of G7#5: Dorian
+A | 16 | G7#5    # V7/I in C: #11 and b13 from the symbol
+B | 17 | F#m7b5  # #ivø7 in C: Locrian, its own mode (the chord is outside the key)
+B | 19 | Fm7     # ii of Bb7: Dorian
+B | 20 | Bb7     # extended ii–V: a side-step, its own key
+B | 21 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B | 22 | Ebdim7  # passing diminished: D7♭9 without its D, the G7#5's dominant (Dm7 its ii)
+B | 23 | Dm7     # ii of the ii–V to C
+B | 24 | G7#5    # V7 of C: #11 and b13 from the symbol
+C | 25 | CMaj7   # tonic: the 4th is in the key
+C | 27 | F#m7/B  # VII7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+C | 28 | B7b9    # VII7 in C, not resolving: b9 and b13 are in the key
+C | 29 | CMaj7   # tonic: the 4th is in the key
+C | 30 | Dm7     # ii: Dorian, the key’s own notes
+C | 30 | Ebdim7  # vii°7 of Em7: B7♭9 without its root
+C | 31 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+C | 32 | A7#5    # V7/ii in C: the b13 is in the key, the #11 from the symbol
+D | 33 | Dm      # ii: Dorian, the key’s own notes
+D | 35 | Fm7     # ii of Bb7: Dorian
+D | 36 | Bb7     # extended ii–V: a side-step, its own key
+D | 37 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+D | 37 | A7#5    # V7/ii in C: the b13 is in the key, the #11 from the symbol
+D | 38 | Dm7     # ii of the ii–V to C
+D | 38 | G7b9    # V7 of C: the b9 from the symbol
+D | 39 | CMaj7   # tonic: the 4th is in the key

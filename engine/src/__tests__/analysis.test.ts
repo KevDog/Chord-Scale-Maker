@@ -110,7 +110,7 @@ describe('analysis: dominants (§7.1)', () => {
   })
 
   it('D5 IV7 of a blues is Mixolydian, I7 Mixolydian, both D5 (R2)', () => {
-    const v = verdicts(library('f_blues').replace(/ \| [A-G][b#]? [A-Za-z ]+$/gm, ''))
+    const v = verdicts(library('f_blues'))
     expect([v['1 F7'], v['2 Bb7']]).toEqual(['F Mixolydian (D5)', 'Bb Mixolydian (D5)'])
     expect(analyse(parseChart(library('f_blues')).value).context).toBe('blues')
   })
@@ -231,15 +231,15 @@ describe('reasons from the sources (docs/superpowers/specs/2026-10-10-analysis-r
 
   it('d1 R7: a Q5 comment past the chart-comment limit drops the "(X its ii)" aside, and any comment is cut to fit', () => {
     const text = chart('Bb', '1 Bb7, 2 Eb7, 2 Edim7, 3 Cm7, 3 F7, 4 Bb6')
-    const saved = (t: string, scales: 'fill' | 'force') => {
+    const saved = (t: string) => {
       const doc = parseChart(t).value
-      return parseChart(serializeChart(applyAnalysis(doc, analyse(doc), { scales, save: true, date: '2026-10-10' }).doc))
+      return parseChart(serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'none', save: true, date: '2026-10-10' }).doc))
     }
-    const bare = saved(text, 'force')
+    const bare = saved(text)
     expect(bare.diagnostics).toEqual([])
     expect(bare.value.lines.find((l) => l.kind === 'row' && l.chord === 'Edim7')).toMatchObject({ comment: "passing diminished: C7♭9 without its C, the F7's dominant; not functioning diatonically: the symmetric scale" })
     // a written scale the rules disagree with wraps the reason ("≠ rules: …"): still within the limit
-    const differs = saved(text.replace('A | 2 | Edim7', 'A | 2 | Edim7 | E Diatonic Diminished #IV'), 'fill')
+    const differs = saved(text.replace('A | 2 | Edim7', 'A | 2 | Edim7 | E Diatonic Diminished #IV'))
     expect(differs.diagnostics).toEqual([])
     const comment = differs.value.lines.find((l) => l.kind === 'row' && l.chord === 'Edim7')
     expect(comment).toMatchObject({ scale: 'E Diatonic Diminished #IV', comment: expect.stringMatching(/^≠ rules: E Whole-Half Diminished \(passing diminished: .*…\)$/) })
@@ -366,7 +366,7 @@ describe('R1: a IV reached by its own dominant is Ionian (docs/superpowers/specs
   it('a # keep: Eb Lydian row stays Lydian', () => {
     const text = 'title: T\nkey: Bb\n\nA | 1 | Fm7\nA | 2 | Bb7\nA | 3 | EbMaj7 | Eb Lydian  # keep: the melody\nA | 4 | BbMaj7\n'
     const doc = parseChart(text).value
-    const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'force', save: false, date: '2026-10-10' }).doc)
+    const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'strip', save: false, date: '2026-10-10' }).doc)
     expect(out).toContain('Eb Lydian  # keep: the melody')
   })
 })
@@ -408,7 +408,7 @@ describe('R2: the blues I7 and IV7 by D5 before D3 (docs/superpowers/specs/2026-
   })
 
   it('a stated function wins over R2: V7/IV on the blues I7 of bar 4 (principle 1)', () => {
-    const text = fJazzBlues.replace(/^(A \| 4 +\| F7 +\| F Mixolydian) +#.*$/m, '$1 | V7/IV')
+    const text = fJazzBlues.replace(/^(A \| 4 +\| F7) +#.*$/m, '$1 | | V7/IV')
     expect(parseChart(text).diagnostics).toEqual([])
     const r = analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === '4 F7')
     expect([r?.scale, r?.rule, r?.fn, r?.numeral, r?.stated]).toEqual(['F Mixolydian', 'D4', 'V7/IV in F', 'V7/IV', true])
@@ -417,16 +417,16 @@ describe('R2: the blues I7 and IV7 by D5 before D3 (docs/superpowers/specs/2026-
   })
 
   it('a stated function that names no target leaves R2 its degree: a stated I7 is still the blues I7', () => {
-    const text = fJazzBlues.replace(/^(A \| 1 +\| F7 +\| F Mixolydian) +#.*$/m, '$1 | I7')
+    const text = fJazzBlues.replace(/^(A \| 1 +\| F7) +#.*$/m, '$1 | | I7')
     expect(parseChart(text).diagnostics).toEqual([])
     const r = analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === '1 F7')
     expect([r?.scale, r?.rule, r?.fn, r?.stated]).toEqual(['F Mixolydian', 'D5', 'I7 of the blues', true])
   })
 
   it('a # keep: Bb Lydian Dominant on the blues IV7 stays', () => {
-    const text = fJazzBlues.replace(/^(A \| 5 +\| Bb7 +\| )Bb Mixolydian +#.*$/m, '$1Bb Lydian Dominant  # keep: the melody')
+    const text = fJazzBlues.replace(/^(A \| 5 +\| Bb7) +#.*$/m, '$1 | Bb Lydian Dominant  # keep: the melody')
     const doc = parseChart(text).value
-    const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'force', save: false, date: '2026-10-10' }).doc)
+    const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'strip', save: false, date: '2026-10-10' }).doc)
     expect(out).toMatch(/^A \| 5 +\| Bb7 +\| Bb Lydian Dominant +# keep: the melody$/m)
   })
 
@@ -459,7 +459,7 @@ describe('R4: iii7 is Phrygian, m9 (docs/superpowers/specs/2026-10-10-analysis-r
   it('a # keep: E Dorian on iii7 stays', () => {
     const text = 'title: T\nkey: C\n\nA | 1 | CMaj7\nA | 2 | Em7 | E Dorian  # keep: the melody\nA | 3 | Am7\nA | 4 | Dm7\nA | 5 | G7\n'
     const doc = parseChart(text).value
-    const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'force', save: false, date: '2026-10-10' }).doc)
+    const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'strip', save: false, date: '2026-10-10' }).doc)
     expect(out).toContain('E Dorian  # keep: the melody')
   })
 
@@ -482,7 +482,7 @@ describe('R6: the small bundle (docs/superpowers/specs/2026-10-10-analysis-rules
   it('a # keep: D Dorian on a tonic m6 stays', () => {
     const text = 'title: T\nkey: Dm\n\nA | 1 | Eb7\nA | 2 | Dm6 | D Dorian  # keep: the melody\n'
     const doc = parseChart(text).value
-    const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'force', save: false, date: '2026-10-10' }).doc)
+    const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'strip', save: false, date: '2026-10-10' }).doc)
     expect(verdict(text, '2 Dm6')).toBe('D Melodic Minor (m2)')
     expect(out).toContain('D Dorian  # keep: the melody')
   })
@@ -589,33 +589,52 @@ describe('analysis: numerals', () => {
 
 describe('analysis: writing it back (§12.1)', () => {
   const text = 'title: T\nkey: C\n\nA | 1 | Dm7\nA | 2 | G7 | G Bebop Dominant\nA | 3 | CMaj7\nA | 4 | Am7 | A Dorian  # keep: the melody\n'
-  const run = (t: string, scales: 'fill' | 'force' | 'none', save: boolean, date = '2026-10-08') => {
+  const run = (t: string, scales: 'strip' | 'none', save: boolean, date = '2026-10-08') => {
     const doc = parseChart(t).value
     return applyAnalysis(doc, analyse(doc), { scales, save, date })
   }
+  const written = 'title: T\nkey: C\n\nA | 1 | Dm7 | D Dorian\nA | 2 | G7 | G Bebop Dominant\nA | 3 | CMaj7 | C Ionian\nA | 4 | Am7 | A Dorian  # keep: the melody\n'
 
-  it('fills blank cells only, or forces all but # keep rows', () => {
-    const fill = serializeChart(run(text, 'fill', false).doc)
-    expect(fill).toContain('A | 1 | Dm7   | D Dorian\n')
-    expect(fill).toContain('G Bebop Dominant')
-    const force = run(text, 'force', false)
-    expect(force.changes.map((c) => `${c.chord} ${c.from || '-'} -> ${c.to}`)).toEqual(['Dm7 - -> D Dorian', 'G7 G Bebop Dominant -> G Mixolydian', 'CMaj7 - -> C Ionian'])
-    expect(serializeChart(force.doc)).toContain('A Dorian  # keep: the melody')
+  it('strips the written scales the rules reproduce, and lists the ones they do not', () => {
+    const strip = run(written, 'strip', false)
+    expect(strip.changes.map((c) => `${c.chord} ${c.from} -> ${c.to || '-'}`)).toEqual(['Dm7 D Dorian -> -', 'CMaj7 C Ionian -> -'])
+    expect(strip.overrides.map((o) => `${o.bar} ${o.chord}: ${o.scale} / ${o.rules}`)).toEqual(['2 G7: G Bebop Dominant / G Mixolydian'])
+    const out = serializeChart(strip.doc)
+    expect(out).toContain('A | 1 | Dm7\n')
+    expect(out).toContain('G Bebop Dominant')
+    expect(out).toContain('A Dorian  # keep: the melody')
+  })
+
+  it('strip keeps a spelling the rules write differently', () => {
+    const strip = run('title: T\nkey: Db\nA | 1 | Ebm7 | D# Dorian\nA | 2 | Ab7\nA | 3 | DbMaj7\n', 'strip', false)
+    expect(strip.changes).toEqual([])
+    expect(strip.overrides.map((o) => `${o.scale} / ${o.rules}`)).toEqual(['D# Dorian / Eb Dorian'])
+  })
+
+  it('strip keeps a @copy source whose repeat the rules read otherwise, and lists the repeat', () => {
+    const t = 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7 | G Mixolydian\n@copy A B 2\nC | 5 | Cm7\nC | 7 | Ab7\n'
+    const strip = run(t, 'strip', false)
+    expect(strip.changes).toEqual([])
+    expect(strip.overrides.map((o) => `${o.bar} ${o.chord}: ${o.scale} / ${o.rules}`)).toEqual(['4 G7: G Mixolydian / G Phrygian Dominant'])
+  })
+
+  it('strip leaves a chart of blank cells as it is', () => {
+    expect(serializeChart(run(text, 'strip', false).doc)).toBe(serializeChart(parseChart(text).value))
   })
 
   it('saves reasons, marks where a written scale differs, and reruns as a no-op', () => {
-    const saved = serializeChart(run(text, 'fill', true).doc)
+    const saved = serializeChart(run(written, 'none', true).doc)
     expect(saved).toContain('# analysis: 2026-10-08, rules v1; C')
     expect(saved).toMatch(/Dm7\s+\| D Dorian\s+# ii of the ii–V to C\n/)
     expect(saved).toMatch(/G Bebop Dominant\s+# ≠ rules: G Mixolydian \(V7 of C: natural tensions\)/)
-    expect(serializeChart(run(saved, 'fill', true, '2027-01-01').doc)).toBe(saved) // same analysis: the old date stays
+    expect(serializeChart(run(saved, 'none', true, '2027-01-01').doc)).toBe(saved) // same analysis: the old date stays
   })
 
   it('reports a @copy repeat whose analysis differs from its source row', () => {
     // the first G7 goes to the repeat's Dm7 (V7 in C, implied); the repeat's resolves to Cm7 (V7 of C minor)
     const t = 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\n@copy A B 2\nC | 5 | Cm7\nC | 7 | Ab7\n'
-    expect(run(t, 'fill', false).conflicts.map((c) => `${c.chord}: ${c.source} / ${c.copy}`)).toEqual(['G7: G Mixolydian / G Phrygian Dominant'])
-    expect(serializeChart(run(t, 'fill', true).doc)).toContain('the repeat at bar 4 would be G Phrygian Dominant')
+    expect(run(t, 'none', false).conflicts.map((c) => `${c.chord}: ${c.source} / ${c.copy}`)).toEqual(['G7: G Mixolydian / G Phrygian Dominant'])
+    expect(serializeChart(run(t, 'none', true).doc)).toContain('the repeat at bar 4 would be G Phrygian Dominant')
   })
 })
 
@@ -711,10 +730,12 @@ describe('stated functions and @key (docs/superpowers/specs/2026-10-09-chart-fun
     expect(held('A | 3 | D7 | | II7')).toEqual([false, false])
   })
 
-  it('applyAnalysis never writes a function or an @key, and --force rewrites a stated row from its function', () => {
+  it('applyAnalysis never writes a function or an @key, and strip lists a stated row its function disagrees with', () => {
     const doc = parseChart(lines('C', ['A | 1 | CMaj7', 'A | 2 | D7 | D Lydian Dominant | V7/V', 'A | 3 | Dm7', 'A | 4 | G7'], '@key A 1 C\n')).value
-    const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'force', save: true, date: '2026-10-10' }).doc)
+    const { doc: next, overrides } = applyAnalysis(doc, analyse(doc), { scales: 'strip', save: true, date: '2026-10-10' })
+    const out = serializeChart(next)
     expect(out).toContain('@key A 1 C\n')
-    expect(out).toMatch(/A \| 2 \| D7\s+\| D Mixolydian\s+\| V7\/V\s+# \* V7\/V in C: natural tensions\n/)
+    expect(out).toMatch(/A \| 2 \| D7\s+\| D Lydian Dominant\s+\| V7\/V\s+# ≠ rules: D Mixolydian/)
+    expect(overrides.map((o) => `${o.chord}: ${o.scale} / ${o.rules}`)).toEqual(['D7: D Lydian Dominant / D Mixolydian'])
   })
 })

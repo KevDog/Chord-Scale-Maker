@@ -8,35 +8,35 @@ source: Colorado Cookbook, p. 75
 # analysis: 2026-10-11, rules v1; Eb
 
 # section | bar | chord | scale
-Intro | 1  | Fm9    | F Dorian                 # ii: Dorian, the key’s own notes
-Intro | 1  | E7#9   | E Half-Whole Diminished  # tritone substitute: resolves down a half step to EbMaj7; b9 and #9 from the symbol
+Intro | 1  | Fm9     # ii: Dorian, the key’s own notes
+Intro | 1  | E7#9    # tritone substitute: resolves down a half step to EbMaj7; b9 and #9 from the symbol
 # the melody horn intro is left out; the played intro stabs (Fm9 E7#9) are added
-A1    | 1  | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
-A1    | 3  | Ebm7   | Eb Dorian                # ii of Ab7: Dorian
-A1    | 4  | Ab7    | Ab Mixolydian            # extended ii–V: a side-step, its own key
-A1    | 5  | Fm     | F Dorian                 # ii: Dorian, the key’s own notes
-A1    | 7  | Abm7   | Ab Dorian                # ii of Db7: Dorian
-A1    | 8  | Db7    | Db Mixolydian            # extended ii–V: a side-step, its own key
-A1    | 9  | Gm7    | G Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1    | 10 | Gbm7   | Gb Dorian                # a borrowed minor chord: Dorian, its own key
-A1    | 11 | Fm7    | F Dorian                 # ii of Bb7: Dorian
-A1    | 12 | Bb7    | Bb Mixolydian            # V7/I in Eb: natural tensions
-A1    | 13 | Gm7    | G Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1    | 14 | Gbm7   | Gb Dorian                # a borrowed minor chord: Dorian, its own key
-A1    | 15 | Fm7    | F Dorian                 # ii of the ii–V to Eb
-A1    | 16 | Bb7    | Bb Mixolydian            # V7 of Eb: natural tensions
-A2    | 17 | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
-A2    | 19 | Ebm7   | Eb Dorian                # ii of Ab7: Dorian
-A2    | 20 | Ab7    | Ab Mixolydian            # extended ii–V: a side-step, its own key
-A2    | 21 | Fm     | F Dorian                 # ii: Dorian, the key’s own notes
-A2    | 23 | Abm7   | Ab Dorian                # ii of Db7: Dorian
-A2    | 24 | Db7    | Db Mixolydian            # extended ii–V: a side-step, its own key
-A2    | 25 | Gm7    | G Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A2    | 26 | Gbm7   | Gb Dorian                # a borrowed minor chord: Dorian, its own key
-A2    | 27 | Fm7    | F Dorian                 # ii of Bb7: Dorian
-A2    | 28 | Bb7    | Bb Mixolydian            # V7/I in Eb: natural tensions
-A2    | 29 | Gm7    | G Phrygian               # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A2    | 30 | Gbm7   | Gb Dorian                # a borrowed minor chord: Dorian, its own key
-A2    | 31 | Fm7    | F Dorian                 # ii of the ii–V to Eb
-A2    | 31 | Bb7    | Bb Mixolydian            # V7 of Eb: natural tensions
-A2    | 32 | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
+A1    | 1  | EbMaj7  # tonic: the 4th is in the key
+A1    | 3  | Ebm7    # ii of Ab7: Dorian
+A1    | 4  | Ab7     # extended ii–V: a side-step, its own key
+A1    | 5  | Fm      # ii: Dorian, the key’s own notes
+A1    | 7  | Abm7    # ii of Db7: Dorian
+A1    | 8  | Db7     # extended ii–V: a side-step, its own key
+A1    | 9  | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A1    | 10 | Gbm7    # a borrowed minor chord: Dorian, its own key
+A1    | 11 | Fm7     # ii of Bb7: Dorian
+A1    | 12 | Bb7     # V7/I in Eb: natural tensions
+A1    | 13 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A1    | 14 | Gbm7    # a borrowed minor chord: Dorian, its own key
+A1    | 15 | Fm7     # ii of the ii–V to Eb
+A1    | 16 | Bb7     # V7 of Eb: natural tensions
+A2    | 17 | EbMaj7  # tonic: the 4th is in the key
+A2    | 19 | Ebm7    # ii of Ab7: Dorian
+A2    | 20 | Ab7     # extended ii–V: a side-step, its own key
+A2    | 21 | Fm      # ii: Dorian, the key’s own notes
+A2    | 23 | Abm7    # ii of Db7: Dorian
+A2    | 24 | Db7     # extended ii–V: a side-step, its own key
+A2    | 25 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A2    | 26 | Gbm7    # a borrowed minor chord: Dorian, its own key
+A2    | 27 | Fm7     # ii of Bb7: Dorian
+A2    | 28 | Bb7     # V7/I in Eb: natural tensions
+A2    | 29 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A2    | 30 | Gbm7    # a borrowed minor chord: Dorian, its own key
+A2    | 31 | Fm7     # ii of the ii–V to Eb
+A2    | 31 | Bb7     # V7 of Eb: natural tensions
+A2    | 32 | EbMaj7  # tonic: the 4th is in the key

@@ -9,27 +9,27 @@ source: Colorado Cookbook, p. 127
 # analysis: 2026-10-11, rules v1; Bb, blues
 
 # section | bar | chord | scale
-A1 | 1  | Bb7 | Bb Mixolydian       # I7 of the blues: a tonic with dominant colour, natural tensions
-A1 | 5  | Eb7 | Eb Mixolydian       # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A1 | 7  | Bb7 | Bb Mixolydian       # I7 of the blues: a tonic with dominant colour, natural tensions
-A1 | 9  | Cm7 | C Dorian            # ii of F7: Dorian
-A1 | 10 | F7  | F Mixolydian        # extended dominant: V7 of Bb7
-A1 | 11 | Bb7 | Bb Mixolydian       # I7 of the blues: a tonic with dominant colour, natural tensions
-A1 | 12 | Cm7 | C Dorian            # ii of F7: Dorian
-A1 | 12 | F7  | F Mixolydian        # extended dominant: V7 of Bb7
-A2 | 13 | Bb7 | Bb Mixolydian       # I7 of the blues: a tonic with dominant colour, natural tensions
-A2 | 17 | Eb7 | Eb Mixolydian       # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A2 | 19 | Bb7 | Bb Mixolydian       # I7 of the blues: a tonic with dominant colour, natural tensions
-A2 | 21 | Cm7 | C Dorian            # ii of F7: Dorian
-A2 | 22 | F7  | F Mixolydian        # extended dominant: V7 of Bb7
-A2 | 23 | Bb7 | Bb Mixolydian       # I7 of the blues: a tonic with dominant colour, natural tensions
-B  | 25 | Ab7 | Ab Lydian Dominant  # tritone substitute: resolves down a half step to G7
-B  | 27 | G7  | G Lydian Dominant   # tritone substitute: resolves down a half step to Gb7
-B  | 29 | Gb7 | Gb Lydian Dominant  # tritone substitute: resolves down a half step to F7
-B  | 31 | F7  | F Mixolydian        # extended dominant: V7 of Bb7
-C  | 33 | Bb7 | Bb Mixolydian       # I7 of the blues: a tonic with dominant colour, natural tensions
-C  | 37 | Eb7 | Eb Mixolydian       # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-C  | 39 | Bb7 | Bb Mixolydian       # I7 of the blues: a tonic with dominant colour, natural tensions
-C  | 41 | Cm7 | C Dorian            # ii of F7: Dorian
-C  | 42 | F7  | F Mixolydian        # extended dominant: V7 of Bb7
-C  | 43 | Bb7 | Bb Mixolydian       # I7 of the blues: a tonic with dominant colour, natural tensions
+A1 | 1  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+A1 | 5  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A1 | 7  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+A1 | 9  | Cm7  # ii of F7: Dorian
+A1 | 10 | F7   # extended dominant: V7 of Bb7
+A1 | 11 | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+A1 | 12 | Cm7  # ii of F7: Dorian
+A1 | 12 | F7   # extended dominant: V7 of Bb7
+A2 | 13 | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+A2 | 17 | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A2 | 19 | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+A2 | 21 | Cm7  # ii of F7: Dorian
+A2 | 22 | F7   # extended dominant: V7 of Bb7
+A2 | 23 | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+B  | 25 | Ab7  # tritone substitute: resolves down a half step to G7
+B  | 27 | G7   # tritone substitute: resolves down a half step to Gb7
+B  | 29 | Gb7  # tritone substitute: resolves down a half step to F7
+B  | 31 | F7   # extended dominant: V7 of Bb7
+C  | 33 | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+C  | 37 | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+C  | 39 | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+C  | 41 | Cm7  # ii of F7: Dorian
+C  | 42 | F7   # extended dominant: V7 of Bb7
+C  | 43 | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions

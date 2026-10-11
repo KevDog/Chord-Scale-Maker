@@ -9,6 +9,6 @@ source: Colorado Cookbook, p. 278
 # analysis: 2026-10-11, rules v1; F minor, blues
 
 # section | bar | chord | scale
-A | 1 | Fm  | F Dorian   # tonic minor: Dorian by convention
-A | 5 | Bbm | Bb Dorian  # iv: Dorian, the key’s own notes
-A | 9 | Fm  | F Dorian   # tonic minor: Dorian by convention
+A | 1 | Fm   # tonic minor: Dorian by convention
+A | 5 | Bbm  # iv: Dorian, the key’s own notes
+A | 9 | Fm   # tonic minor: Dorian by convention
