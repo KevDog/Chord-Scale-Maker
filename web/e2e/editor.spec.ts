@@ -187,7 +187,7 @@ test('levels take over a library chart’s own scale choices, and Standard bring
   const text = page.getByLabel('Chart text')
   await expect(text).toHaveValue(/A7b9 +\| A Phrygian Dominant/)
   await setScaleLevel(page, 'Advanced')
-  await expect(text).toHaveValue(/A7b9 +\| A Spanish Phrygian/)
+  await expect(text).toHaveValue(/A7b9 +\| A Altered/)
   await setScaleLevel(page, 'Standard')
   await expect(text).toHaveValue(/A7b9 +\| A Phrygian Dominant/) // the chart's choice, not Half-Whole
   await expect(page.getByRole('status').filter({ hasText: /in this browser/ })).toHaveText('Edits are saved in this browser as your version.')

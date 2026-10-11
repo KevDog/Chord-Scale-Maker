@@ -95,7 +95,7 @@
       { "root": "5",  "scale": "Minor Pentatonic",  "note": "9 and 13 colour" },
       { "root": "4",  "scale": "Minor Pentatonic",  "note": "the minor key's, over a V7 of a minor chord" },
       { "root": "1",  "scale": "Whole Tone",        "note": "for 7#5" },
-      { "root": "1",  "scale": "Spanish Phrygian",  "note": "b9 #9 and b13 around the 3rd" },
+      { "root": "1",  "scale": "Spanish Phrygian",  "note": "V7 of a minor chord: b9 #9 and b13 around the 3rd" },
       { "root": "b5", "scale": "Major Pentatonic",  "note": "tritone sub: b9 #9 #11 b13", "outside": true }
     ],
     "7sus4": [
@@ -168,7 +168,7 @@
     "Mixolydian":            { "basic": ["1", "Major Pentatonic"],  "advanced": ["1", "Bebop Dominant"] },
     "Lydian Dominant":       { "basic": ["1", "Major Pentatonic"] },
     "Mixolydian b6":         { "basic": ["4", "Minor Pentatonic"],  "advanced": ["1", "Altered"] },
-    "Phrygian Dominant":     { "basic": ["4", "Minor Pentatonic"],  "advanced": ["1", "Spanish Phrygian"] },
+    "Phrygian Dominant":     { "basic": ["4", "Minor Pentatonic"],  "advanced": ["1", "Altered"] },
     "Half-Whole Diminished": { "basic": ["1", "Major Pentatonic"],  "advanced": ["1", "Altered"] },
     "Altered":               { "basic": ["b5", "Major Pentatonic"], "advanced": ["1", "Half-Whole Diminished"] },
     "Whole Tone":            { "advanced": ["1", "Altered"] },

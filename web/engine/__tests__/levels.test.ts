@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import raw from '../../../chord_scales.json'
 import { expandRows, parseChart, resolveScale } from '../chart'
+import { analyse } from '../analysis'
 import { ladderScale, type LevelState, relevel, scaleAtLevel, seededUnit } from '../levels'
 import { resolveQuality } from '../qualities'
 import { scaleKey } from '../scales'
@@ -68,7 +69,7 @@ describe('scale levels', () => {
   it('take over a library chart’s own choices, and bring them back at Standard', () => {
     const library = parseChart('A | 1 | A7b9 | A Phrygian Dominant\nA | 2 | Dm7\n').value // the Bird Blues' V7♭9 → ii
     const advanced = relevel(library, at('standard'), at('advanced'), library)
-    expect(scales(advanced.doc)).toEqual(['A Spanish Phrygian', 'D Bebop Dorian'])
+    expect(scales(advanced.doc)).toEqual(['A Altered', 'D Bebop Dorian'])
     const back = relevel(advanced.doc, { ...at('advanced'), owned: advanced.owned }, at('standard'), library)
     expect(scales(back.doc)).toEqual(['A Phrygian Dominant', 'D Dorian']) // the chart's choice, not Half-Whole
     expect(scales(relevel(library, at('standard'), at('advanced')).doc)[0]).toBe('A Phrygian Dominant') // without it: a chosen scale, kept
@@ -76,7 +77,7 @@ describe('scale levels', () => {
 
   it('climb the Standard scale’s ladder when the chart’s Standard isn’t the quality’s (§11)', () => {
     expect(['D Phrygian Dominant', 'G Mixolydian b6', 'A Altered', 'C Whole Tone', 'Eb Lydian', 'F# Locrian natural 2'].map((s) => [ladderScale(s, 'basic'), ladderScale(s, 'advanced')])).toEqual([
-      ['G Minor Pentatonic', 'D Spanish Phrygian'], // the minor key's pentatonic over its V7
+      ['G Minor Pentatonic', 'D Altered'], // the minor key's pentatonic over its V7; Altered at Advanced (R5)
       ['C Minor Pentatonic', 'G Altered'],
       ['Eb Major Pentatonic', 'A Half-Whole Diminished'],
       ['C Whole Tone', 'C Altered'], // no simpler rung: the Standard stays
@@ -88,7 +89,18 @@ describe('scale levels', () => {
     // Autumn Leaves as the analysis wrote it: V7 of G minor, and V7/iv
     const library = parseChart('A | 6 | D7 | D Phrygian Dominant\nA | 32 | G7 | G Mixolydian b6\nA | 33 | Cm7 | C Dorian\n').value
     expect(scales(relevel(library, at('standard'), at('basic'), library).doc)).toEqual(['G Minor Pentatonic', 'C Minor Pentatonic', 'C Minor Pentatonic'])
-    expect(scales(relevel(library, at('standard'), at('advanced'), library).doc)).toEqual(['D Spanish Phrygian', 'G Altered', 'C Bebop Dorian'])
+    expect(scales(relevel(library, at('standard'), at('advanced'), library).doc)).toEqual(['D Altered', 'G Altered', 'C Bebop Dorian'])
+  })
+
+  it('a V7 of a minor chord on Phrygian Dominant is Altered at Advanced; the 7 menu keeps Spanish Phrygian (R5)', () => {
+    const doc = parseChart('key: Cm\nA | 1 | Dm7b5\nA | 2 | G7\nA | 3 | Cm7\n').value
+    const standard = analyse(doc).rows.find((r) => r.chord === 'G7')?.scale ?? undefined
+    expect(standard).toBe('G Phrygian Dominant')
+    expect(scaleAtLevel('G7', 'advanced', 0, '', standard)).toBe('G Altered')
+    expect(scaleAtLevel('G7', 'basic', 0, '', standard)).toBe('C Minor Pentatonic') // Basic unchanged
+    const menu = resolveQuality('G7')?.options ?? []
+    expect(menu.map((o) => o.scale)).toEqual(expect.arrayContaining(['G Altered', 'G Spanish Phrygian']))
+    expect(menu.find((o) => o.scale === 'G Spanish Phrygian')?.note).toMatch(/V7 of a minor chord/)
   })
 
   it('a tonic m6 on Melodic Minor (R6) is Minor Pentatonic at Basic and stays Melodic Minor at Advanced (no ♭6 against its 6th)', () => {
