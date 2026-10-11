@@ -5,7 +5,7 @@ style: Latin
 key: Eb
 form: AB, 32 bars
 source: Colorado Cookbook, p. 150
-# analysis: 2026-10-08, rules v1; Eb
+# analysis: 2026-10-11, rules v1; Eb
 
 # section | bar | chord | scale
 A | 1  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
@@ -21,7 +21,7 @@ A | 11 | Dm7b5  | D Locrian                 # iiø7 of the ii–V to C minor: th
 A | 12 | G7alt  | G Altered                 # from the symbol: altered
 A | 13 | Cm7    | C Dorian                  # ii of F7: Dorian
 A | 14 | F7     | F Mixolydian              # extended dominant: V7 of Fm7/Bb
-A | 15 | Fm7/Bb | Bb Mixolydian             # static sus: Mixolydian
+A | 15 | Fm7/Bb | Bb Mixolydian             # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 A | 16 | Bb7    | Bb Mixolydian             # V7 in Eb, not resolving: natural tensions
 B | 17 | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
 B | 18 | Eb7    | Eb Mixolydian             # V7/IV in Eb: natural tensions

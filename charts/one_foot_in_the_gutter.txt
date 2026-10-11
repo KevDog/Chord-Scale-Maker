@@ -5,15 +5,15 @@ style: Medium
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 169
-# analysis: 2026-10-08, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 A | 1  | F7    | F Mixolydian             # extended dominant: V7 of Bb7
 A | 3  | Bb7   | Bb Lydian Dominant       # IV7 in F, not resolving: the #11 is in the key
 A | 4  | Bdim7 | B Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
 A | 5  | F7    | F Mixolydian             # I7 in F, not resolving: natural tensions
-A | 6  | D7    | D Mixolydian             # extended dominant: V7 of G7
-A | 7  | G7    | G Mixolydian             # extended dominant: V7 of C7
+A | 6  | D7    | D Mixolydian             # extended dominant: each one falls a fifth into the next: natural tensions
+A | 7  | G7    | G Mixolydian             # V7 of V7: the dominant of the dominant: natural tensions
 A | 8  | C7    | C Mixolydian             # extended dominant: V7 of F7
 B | 9  | F7    | F Mixolydian             # extended dominant: V7 of Bb7
 B | 11 | Bb7   | Bb Lydian Dominant       # IV7 in F, not resolving: the #11 is in the key

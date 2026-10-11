@@ -15,6 +15,14 @@ describe('the functions page', () => {
     ])
   })
 
+  it('writes the whole pattern: parentheses for a deceptive resolution, and the Berklee spellings', async () => {
+    const w = await mountSuspended(Functions)
+    const writing = w.find('section[aria-labelledby="writing"]')
+    expect(writing.find('pre').text()).toBe('[Key:] [(] [sub] [♭|♯] NUMERAL [quality] [/ [♭|♯] NUMERAL] [)]')
+    expect(writing.text()).toContain('(V7/ii): a dominant that doesn’t resolve as expected; the scale is the same')
+    for (const s of ['II-7', 'VII-7(♭5)', 'V7(sus4)', 'SubV7/ii', 'I∆7', 'B♭: V7/ii']) expect(writing.text(), s).toContain(s)
+  })
+
   it('has one anchor per rule, and one per section and group', async () => {
     const w = await mountSuspended(Functions)
     for (const r of RULES) expect(w.findAll(`[id="rule-${r.id}"]`), r.id).toHaveLength(1)

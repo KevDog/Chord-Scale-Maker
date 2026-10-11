@@ -5,7 +5,7 @@ style: Mixed
 key: D
 form: AABA
 source: Colorado Cookbook, p. 53
-# analysis: 2026-10-08, rules v1; D
+# analysis: 2026-10-11, rules v1; D
 
 # section | bar | chord | scale
 # the bridge is in 4/4 on the sheet; the chart counts its bars as written
@@ -53,13 +53,13 @@ A2 | 15 | G7     | G Lydian Dominant     # a chromatic dominant with nowhere to 
 A2 | 15 | Db7    | Db Lydian Dominant    # tritone substitute: resolves down a half step to CMaj7
 A2 | 16 | CMaj7  | C Ionian              # tonic: the 4th is in the key
 B  | 17 | Cm7b5  | C Locrian             # iiø7 of F7b9: the b9 is in the key
-B  | 18 | F7b9   | F Phrygian Dominant   # passing ii–V: its own key: b9 and b13 are in the key
+B  | 18 | F7b9   | F Phrygian Dominant   # extended ii–V: a side-step, its own key: b9 and b13 are in the key
 # area: E major (bars 19–27)
 B  | 19 | F#m7   | F# Dorian             # ii of the ii–V to E
 B  | 20 | B7     | B Mixolydian          # V7 of E: natural tensions
 B  | 21 | EMaj7  | E Ionian              # tonic: the 4th is in the key
 B  | 23 | Fm7    | F Dorian              # ii of Bb7: Dorian
-B  | 24 | Bb7    | Bb Mixolydian         # passing ii–V: its own key
+B  | 24 | Bb7    | Bb Mixolydian         # extended ii–V: a side-step, its own key
 B  | 24 | F#m7   | F# Dorian             # ii of the ii–V to E
 B  | 24 | B7     | B Mixolydian          # V7 of E: natural tensions
 @copy A2 A3 16

@@ -4,7 +4,7 @@ style: Medium
 key: C
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 277
-# analysis: 2026-10-08, rules v1; C
+# analysis: 2026-10-11, rules v1; C
 
 # section | bar | chord | scale
 A | 1  | F#m7b5 | F# Locrian           # iiø7 of the ii–V to E minor: the b9 is in the key
@@ -20,7 +20,7 @@ A | 8  | G7     | G Mixolydian         # V7/I in C: natural tensions
 B | 9  | F#m7b5 | F# Locrian           # iiø7 of the ii–V to E minor: the b9 is in the key
 B | 10 | B7b9   | B Phrygian Dominant  # V7/iii in C: b9 and b13 are in the key
 B | 11 | Em7    | E Dorian             # ii of A7: Dorian
-B | 12 | A7     | A Mixolydian         # passing ii–V: its own key
+B | 12 | A7     | A Mixolydian         # extended ii–V: a side-step, its own key
 B | 13 | Am7    | A Dorian             # ii of D7: Dorian
 B | 14 | D7     | D Mixolydian         # V7/V in C: natural tensions
 B | 15 | Dm7    | D Dorian             # ii of G7: Dorian

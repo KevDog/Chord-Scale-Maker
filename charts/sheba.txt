@@ -4,7 +4,7 @@ style: Ballad
 key: Bb
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 196
-# analysis: 2026-10-08, rules v1; Bb
+# analysis: 2026-10-11, rules v1; Bb
 
 # section | bar | chord | scale
 A1 | 1  | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
@@ -24,7 +24,7 @@ A2 | 9  | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
 A2 | 10 | Fm7    | F Dorian            # ii of the ii–V to Eb
 A2 | 10 | Bb7    | Bb Mixolydian       # V7/IV in Bb: natural tensions
 A2 | 11 | EbMaj7 | Eb Lydian           # IV: the #4 is the key’s 7th
-A2 | 12 | Ab7    | Ab Lydian Dominant  # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A2 | 12 | Ab7    | Ab Lydian Dominant  # ♭VII7 from the parallel minor: Lydian Dominant
 A2 | 13 | Dm7    | D Dorian            # ii of the ii–V to C minor
 A2 | 13 | G7     | G Mixolydian b6     # V7/ii in Bb: the b13 is in the key
 A2 | 14 | Cm7    | C Dorian            # ii: Dorian, the key’s own notes
@@ -38,7 +38,7 @@ B  | 17 | Fm7    | F Dorian            # ii of the ii–V to Eb
 B  | 18 | Bb7    | Bb Mixolydian       # V7/IV in Bb: natural tensions
 B  | 19 | EbMaj7 | Eb Lydian           # IV: the #4 is the key’s 7th
 B  | 21 | Gm7    | G Dorian            # ii of C7: Dorian
-B  | 22 | C7     | C Mixolydian        # extended dominant: V7 of F7
+B  | 22 | C7     | C Mixolydian        # V7 of V7: the dominant of the dominant: natural tensions
 B  | 23 | F7     | F Mixolydian        # V7 in Bb, not resolving: natural tensions
 B  | 23 | Gb7    | Gb Lydian Dominant  # tritone substitute: resolves down a half step to F7
 B  | 24 | F7     | F Mixolydian        # V7 of Bb: natural tensions
@@ -47,7 +47,7 @@ C  | 26 | Fm7    | F Dorian            # ii of the ii–V to Eb
 C  | 26 | Bb7    | Bb Mixolydian       # V7/IV in Bb: natural tensions
 C  | 27 | EbMaj7 | Eb Lydian           # IV: the #4 is the key’s 7th
 C  | 28 | Ebm7   | Eb Dorian           # ii of Ab7: Dorian
-C  | 28 | Ab7    | Ab Mixolydian       # passing ii–V: its own key
+C  | 28 | Ab7    | Ab Mixolydian       # extended ii–V: a side-step, its own key
 C  | 29 | Dm7    | D Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)
 C  | 29 | Gm7    | G Aeolian           # vi: the b13 is in the key
 C  | 30 | Cm7    | C Dorian            # ii: Dorian, the key’s own notes

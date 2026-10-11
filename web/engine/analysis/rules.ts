@@ -1,5 +1,6 @@
 import { rootName } from '../pitch'
 import { degree, diatonic, hasRelatedII, impliedDiatonic, isDominantLike, type Key, keyText, makeKey, reference } from './keys'
+import { ownNumeral, roman } from './degrees'
 import { downFifth, downHalf, type Entry, type Family, interval, nextOf, prevOf } from './stream'
 
 /**
@@ -42,13 +43,6 @@ const NAME = {
   locrianN2: 'Locrian natural 2',
   wholeHalf: 'Whole-Half Diminished',
 } as const
-
-const DEGREES = ['I', 'bII', 'II', 'bIII', 'III', 'IV', '#IV', 'V', 'bVI', 'VI', 'bVII', 'VII']
-/** "ii", "bVII", "V": the entry's degree in the key, lower case for minor-type chords */
-export function roman(e: Pick<Entry, 'pc' | 'family'>, key: Key): string {
-  const d = DEGREES[interval(key.tonic, e.pc)] ?? '?'
-  return e.family === 'minor' || e.family === 'halfdim' || e.family === 'dim' ? d.toLowerCase() : d
-}
 
 const named = (e: Entry, scale: string): string => `${e.root ? rootName(e.root) : '?'} ${scale}`
 
@@ -153,6 +147,29 @@ function chainEnd(ctx: Context, i: number): Entry | undefined {
   return undefined
 }
 
+/**
+ * a dominant link on its way into the key's own V7 (a dominant on degree V of its local key): 'link' when the next
+ * chord is that V7 (V7/V), 'arrow' when a later link of its chain is (→); null for a chain that never reaches it, or
+ * one a sus breaks (A7 D7sus4 G7)
+ */
+export function towardV7(ctx: Context, i: number): 'link' | 'arrow' | null {
+  const e = ctx.stream[i]
+  const key = ctx.keys[i] ?? ctx.global
+  if (e?.family !== 'dominant') return null
+  let here: Entry = e
+  let j: number | null = i
+  for (let step = 0; step < ctx.stream.length && j !== null; step++) {
+    const n = nextOf(ctx.stream, j)
+    if (!n || !downFifth(here, n) || n.family !== 'dominant') return null // a sus breaks the chain: no arrow before it
+    if (interval(key.tonic, n.pc) === 7) return step === 0 ? 'link' : 'arrow'
+    here = n
+    j = ctx.stream[j]?.next ?? null
+  }
+  return null
+}
+
+const TOWARD_V7 = { link: 'V7 of V7: the dominant of the dominant', arrow: 'extended dominant: each one falls a fifth into the next' } as const
+
 function dominant(ctx: Context, i: number): Decision {
   const e = ctx.stream[i] as Entry
   const key = ctx.keys[i] ?? ctx.global
@@ -165,10 +182,14 @@ function dominant(ctx: Context, i: number): Decision {
   if (n && downHalf(e, n) && n.family !== 'halfdim' && n.family !== 'dim') return dominantDecision(e, 'D2', `subV7 of ${n.chord}`, LYDIAN_DOMINANT, `tritone substitute: resolves down a half step to ${n.chord}`, false)
   if (n && downFifth(e, n) && isDominantLike(n)) {
     const end = chainEnd(ctx, i)
+    const toward = towardV7(ctx, i)
+    const words = toward ? TOWARD_V7[toward] : null
     if (end?.root && end.family === 'minor') {
       const minor = makeKey(end.root, true)
+      if (words) return dominantDecision(e, 'D8', `${words}, on the way to ${keyText(minor)}`, derive(e, minor), `${words}, on the way to ${keyText(minor)}`, true)
       return dominantDecision(e, 'D8', `extended dominant into ${keyText(minor)}`, derive(e, minor), `V7 of ${n.chord}, on the way to ${keyText(minor)}`, true)
     }
+    if (words) return dominantDecision(e, 'D3', words, NATURAL, words, true)
     return dominantDecision(e, 'D3', `extended dominant (V7 of ${n.chord})`, NATURAL, `extended dominant: V7 of ${n.chord}`, false)
   }
   if (n?.root && downFifth(e, n) && n.family === 'minor' && p && isDominantLike(p) && downFifth(p, e)) {
@@ -196,7 +217,7 @@ function dominant(ctx: Context, i: number): Decision {
     const implied = { pc: (e.pc + 5) % 12, family: ii.family === 'halfdim' ? ('minor' as const) : ('major' as const) }
     if (!impliedDiatonic(implied.pc, implied.family === 'minor', key)) {
       const target: Key = { tonic: implied.pc, minor: implied.family === 'minor', name: '' } // the pair's own key
-      return dominantDecision(e, 'D4', 'passing ii–V', derive(e, target, target.minor), 'passing ii–V: its own key', implied.family === 'minor')
+      return dominantDecision(e, 'D4', 'extended ii–V: a side-step, its own notes', derive(e, target, target.minor), 'extended ii–V: a side-step, its own key', implied.family === 'minor')
     }
     return dominantDecision(e, 'D4', `V7/${roman(implied, key)} in ${keyText(key)} (the ${roman(implied, key)} never arrives)`, derive(e, key), `V7/${roman(implied, key)} in ${keyText(key)}`, true)
   }
@@ -208,6 +229,14 @@ function dominant(ctx: Context, i: number): Decision {
   if (reference(key).includes(e.pc) || reference(key, true).includes(e.pc)) {
     const fn = `${roman(e, key)}7 in ${keyText(key)}, not resolving`
     return { ...dominantDecision(e, 'D5', fn, derive(e, key), fn, true), fallback: true }
+  }
+  const d = degree(e, key)
+  if (!key.minor && (d === 10 || d === 8 || d === 3)) {
+    // ♭VII7, ♭VI7, ♭III7: borrowed from the parallel minor
+    const own = ownNumeral(e, key)
+    const home = n?.pc === key.tonic && n.family === 'major'
+    const fn = `${own}, borrowed from the parallel minor${d === 3 ? '' : ' (subdominant minor)'}`
+    return dominantDecision(e, 'D6', fn, LYDIAN_DOMINANT, `${own} from the parallel minor: Lydian Dominant${home ? ', it returns to I' : ''}`, false)
   }
   return { ...dominantDecision(e, 'D6', 'chromatic dominant', LYDIAN_DOMINANT, 'a chromatic dominant with nowhere to go: Lydian Dominant, its own key', false), fallback: true }
 }
@@ -225,9 +254,19 @@ function major(ctx: Context, i: number): Decision {
   if (!key.minor && d === 0) return { scale: named(e, NAME.ionian), rule: 'M3', fn, reason: 'tonic: the 4th is in the key' }
   if (key.minor && d === 3) return { scale: named(e, NAME.ionian), rule: 'M3', fn, reason: `bIII of ${keyText(key)}: the relative major itself` }
   if (!key.minor && d === 7 && e.quality === 'maj') return { scale: named(e, NAME.mixolydian), rule: 'M3', fn, reason: 'V without its 7th: Mixolydian, the key’s own notes' }
+  if (!key.minor && (d === 1 || d === 3 || d === 8 || d === 10)) {
+    // ♭II, ♭III, ♭VI, ♭VII: modal interchange, from the parallel minor (♭II from Phrygian)
+    const own = ownNumeral(e, key)
+    const from = `${keyText(key)} ${d === 1 ? 'Phrygian' : 'minor'}`
+    return { scale: named(e, NAME.lydian), rule: 'M4', fn: `${own}, borrowed (modal interchange)`, reason: `${own}, borrowed from ${from}: Lydian (its ♯11 is in the key)` }
+  }
   const why = !key.minor && d === 5 ? 'IV: the #4 is the key’s 7th' : 'a non-tonic major chord: Lydian'
   return { scale: named(e, NAME.lydian), rule: 'M4', fn, reason: why }
 }
+
+/** a related ii that is also a diatonic chord of a major key other than its ii: "; also iii of C" (dual function) */
+const alsoDegree = (e: Entry, key: Key): string =>
+  !key.minor && diatonic(e, key) && degree(e, key) !== 2 ? `; also ${roman(e, key)}${e.family === 'halfdim' ? 'ø7' : ''} of ${keyText(key)}` : ''
 
 function minor(ctx: Context, i: number): Decision {
   const e = ctx.stream[i] as Entry
@@ -243,7 +282,8 @@ function minor(ctx: Context, i: number): Decision {
     const end = n.root ? nextOf(ctx.stream, ctx.stream[i]?.next) : undefined
     const lands = end && downFifth(n, end) && (end.family === 'major' || end.family === 'minor')
     const to = lands && end?.root ? keyText(makeKey(end.root, end.family === 'minor')) : null
-    return { scale: named(e, NAME.dorian), rule: 'm4', fn: to ? `ii of the ii–V to ${to}` : `ii of ${n.chord}`, reason: to ? `ii of the ii–V to ${to}` : `ii of ${n.chord}: Dorian` }
+    const fn = to ? `ii of the ii–V to ${to}` : `ii of ${n.chord}`
+    return { scale: named(e, NAME.dorian), rule: 'm4', fn: `${fn}${alsoDegree(e, key)}`, reason: to ? fn : `${fn}: Dorian` }
   }
   if (key.minor && d === 0) return { scale: named(e, NAME.dorian), rule: 'm5', fn, reason: 'tonic minor: Dorian by convention' }
   if (diatonic(e, key)) {
@@ -263,21 +303,19 @@ function halfDiminished(ctx: Context, i: number): Decision {
   const related = n && isDominantLike(n) && interval(e.pc, n.pc) === 5
   const end = related ? nextOf(ctx.stream, ctx.stream[i]?.next) : undefined
   const to = related && end?.root && n && downFifth(n, end) && (end.family === 'minor' || end.family === 'major') ? keyText(makeKey(end.root, end.family === 'minor')) : null
+  if (!related && !key.minor && degree(e, key) === 2) return { scale: named(e, NAME.locrian), rule: 'h2', fn: 'iiø7, borrowed', reason: `iiø7, borrowed from ${keyText(key)} minor: Locrian` }
   const fn = to ? `iiø7 of the ii–V to ${to}` : related ? `iiø7 of ${n?.chord}` : `${roman(e, key)}ø7 in ${keyText(key)}`
-  return { scale: named(e, NAME.locrian), rule: 'h2', fn, reason: `${fn}: the b9 is in the key`, ...(related ? {} : { fallback: true as const }) }
+  return { scale: named(e, NAME.locrian), rule: 'h2', fn: related ? `${fn}${alsoDegree(e, key)}` : fn, reason: `${fn}: the b9 is in the key`, ...(related ? {} : { fallback: true as const }) }
 }
 
 function diminished(ctx: Context, i: number): Decision {
   const e = ctx.stream[i] as Entry
-  const p = prevOf(ctx.stream, i)
   const n = nextOf(ctx.stream, i)
-  const fn =
-    n && interval(e.pc, n.pc) === 1 && (n.family === 'major' || n.family === 'minor')
-      ? `vii°7 of ${n.chord}`
-      : p && n && p.pc === n.pc && p.pc === e.pc
-        ? 'auxiliary diminished'
-        : 'passing diminished'
-  return { scale: named(e, NAME.wholeHalf), rule: 'd1', fn, reason: `${fn}: the rootless V7b9 of the next chord`, ...(fn === 'passing diminished' ? { fallback: true as const } : {}) }
+  const scale = named(e, NAME.wholeHalf)
+  // auxiliary: the next chord is on its own root, whatever came before (C7 | C°7 | C6, G°7 | G7)
+  if (n && n.pc === e.pc) return { scale, rule: 'd1', fn: 'auxiliary diminished', reason: 'auxiliary diminished: it decorates the chord and returns to it' }
+  const fn = n && interval(e.pc, n.pc) === 1 && (n.family === 'major' || n.family === 'minor') ? `vii°7 of ${n.chord}` : 'passing diminished'
+  return { scale, rule: 'd1', fn, reason: `${fn}: the rootless V7b9 of the next chord`, ...(fn === 'passing diminished' ? { fallback: true as const } : {}) }
 }
 
 function sus(ctx: Context, i: number): Decision {
@@ -294,6 +332,10 @@ function sus(ctx: Context, i: number): Decision {
       fn: `V7sus4 of ${n.chord}`,
       reason: b13 ? `V7sus4 of ${n.chord}: the b13 is in the key` : `V7sus4 of ${n.chord}: natural tensions`,
     }
+  }
+  if (!ctx.modal && n && n.pc === e.pc && n.family === 'dominant') {
+    const own = ownNumeral(e, key)
+    return { scale: named(e, NAME.mixolydian), rule: 's3', fn: `${own} before its dominant: a subdominant suspension`, reason: `${own} before its dominant: Mixolydian, the 4th is a chord tone here` }
   }
   return { scale: named(e, NAME.mixolydian), rule: 's3', fn: 'static sus', reason: 'static sus: Mixolydian' }
 }
@@ -338,16 +380,16 @@ export const RULES: readonly RuleInfo[] = [
   { id: 'D1', family: 'dominant', tier: 1, scale: 'from the symbol (Altered for alt)', looksAt: 'the tensions written in the symbol', summary: 'An alt dominant is Altered; written tensions (b9, #9, #11, b13) override any other rule’s, shown as D1+ before that rule when they change its scale.' },
   { id: 'D7', family: 'dominant', tier: 3, scale: 'Mixolydian', looksAt: 'a modal chart, or a dominant that resolves nowhere and is held four bars or more', summary: 'A static or modal dominant is its own mode: Mixolydian.' },
   { id: 'D2', family: 'dominant', tier: 4, scale: 'Lydian Dominant', looksAt: 'the next chord, a half step down (not a ø7 or °7)', summary: 'A tritone substitute resolves down a half step: Lydian Dominant.' },
-  { id: 'D8', family: 'dominant', tier: 4, scale: 'derived from the minor key', looksAt: 'a chain of dominants that ends on a minor chord, or its last link', summary: 'An extended dominant on its way into a minor key, or the last link of the chain, takes its tensions from that key.' },
-  { id: 'D3', family: 'dominant', tier: 4, scale: 'Mixolydian', looksAt: 'the next chord, another dominant a fifth down', summary: 'An extended dominant (V7 of another V7) keeps natural tensions: Mixolydian.' },
+  { id: 'D8', family: 'dominant', tier: 4, scale: 'derived from the minor key', looksAt: 'a chain of dominants that ends on a minor chord, or its last link', summary: 'An extended dominant on its way into a minor key, or the last link of the chain, takes its tensions from that key. A link into the key’s own V7 is V7/V, the links before it arrows.' },
+  { id: 'D3', family: 'dominant', tier: 4, scale: 'Mixolydian', looksAt: 'the next chord, another dominant a fifth down', summary: 'An extended dominant (V7 of another V7) keeps natural tensions: Mixolydian. A link into the key’s own V7 is V7/V (the dominant of the dominant), the links before it arrows; a chain that never reaches the key’s V7 keeps each chord’s own degree.' },
   { id: 'D4', family: 'dominant', tier: 4, scale: 'derived from the key', looksAt: 'the chord it resolves to, a fifth down; the major or minor chord before it that it is the V of; or the ii before it', summary: 'A resolving dominant takes each tension (9, 11, 13) in the form the key holds.' },
   { id: 'D5', family: 'dominant', tier: 3, scale: 'derived from the key', looksAt: 'its degree: the back door, the blues, or a diatonic dominant', summary: 'A dominant a whole step below a major chord (the back door, ♭VII7), a blues I7 or IV7, or a diatonic dominant that does not resolve takes its tensions from the key.', guess: 'a diatonic dominant that does not resolve' },
-  { id: 'D6', family: 'dominant', tier: 4, scale: 'Lydian Dominant', looksAt: 'a chromatic dominant with nowhere to go', summary: 'A chromatic dominant that does not resolve is its own key: Lydian Dominant.', guess: 'always' },
+  { id: 'D6', family: 'dominant', tier: 4, scale: 'Lydian Dominant', looksAt: 'a non-diatonic dominant with nowhere to go', summary: 'A non-diatonic dominant that does not resolve is Lydian Dominant: in a major key, ♭VII7, ♭VI7 or ♭III7 borrowed from the parallel minor; any other, a chromatic dominant in its own key.', guess: 'a chromatic dominant (not ♭VII7, ♭VI7 or ♭III7 in a major key)' },
   { id: 'M1', family: 'major', tier: 1, scale: 'Lydian', looksAt: 'a #11 in the symbol', summary: 'A maj7#11 is Lydian.' },
   { id: 'M2', family: 'major', tier: 1, scale: 'Lydian Augmented', looksAt: 'a #5 in the symbol', summary: 'A maj7#5 is Lydian Augmented.' },
   { id: 'M5', family: 'major', tier: 2, scale: 'Lydian', looksAt: 'a modal chart', summary: 'A major chord in a modal chart is Lydian.' },
   { id: 'M3', family: 'major', tier: 3, scale: 'Ionian (Mixolydian for a V triad)', looksAt: 'its degree: the tonic, ♭III in a minor key, or a V triad', summary: 'The tonic major chord (or ♭III, the relative major, in a minor key) is Ionian; a V triad without its 7th is Mixolydian.' },
-  { id: 'M4', family: 'major', tier: 3, scale: 'Lydian', looksAt: 'its degree: any other major chord', summary: 'Any other major chord is Lydian (on IV, the #4 is the key’s 7th).' },
+  { id: 'M4', family: 'major', tier: 3, scale: 'Lydian', looksAt: 'its degree: any other major chord', summary: 'Any other major chord is Lydian (on IV, the #4 is the key’s 7th; on ♭II, ♭III, ♭VI or ♭VII of a major key, borrowed by modal interchange, its ♯11 is in the key).' },
   { id: 'm1', family: 'minor', tier: 1, scale: 'Melodic Minor', looksAt: 'a major 7th in the symbol', summary: 'A minor-major 7th is Melodic Minor.' },
   { id: 'm2', family: 'minor', tier: 1, scale: 'Dorian', looksAt: 'a 6 in the symbol', summary: 'A minor sixth chord is Dorian.' },
   { id: 'm3', family: 'minor', tier: 1, scale: 'Aeolian', looksAt: 'a b6 or b13 in the symbol', summary: 'A minor chord with a written b6 or b13 is Aeolian.' },
@@ -358,11 +400,11 @@ export const RULES: readonly RuleInfo[] = [
   { id: 'm7', family: 'minor', tier: 3, scale: 'Dorian, Aeolian or Phrygian', looksAt: 'its degree: another diatonic minor chord', summary: 'A diatonic minor chord takes the key’s own notes: vi of a major key Aeolian, v of a minor key Phrygian, any other Dorian.' },
   { id: 'm8', family: 'minor', tier: 5, scale: 'Dorian', looksAt: 'a minor chord the key does not hold', summary: 'A borrowed or chromatic minor chord is Dorian, its own key.', guess: 'always' },
   { id: 'h1', family: 'halfdim', tier: 2, scale: 'Locrian natural 2', looksAt: 'a modal chart', summary: 'A half-diminished chord in a modal chart is Locrian ♮2.' },
-  { id: 'h2', family: 'halfdim', tier: 4, scale: 'Locrian', looksAt: 'the next chord, a dominant a fourth up', summary: 'A half-diminished chord is Locrian; with a dominant after it, it is the iiø7 of that minor ii–V.', guess: 'no related dominant follows' },
-  { id: 'd1', family: 'dim', tier: 4, scale: 'Whole-Half Diminished', looksAt: 'the chords on either side', summary: 'A diminished seventh chord (a vii°7 leading up a half step, an auxiliary between two chords on its own root, or a passing one) is Whole-Half Diminished.', guess: 'a passing diminished chord' },
+  { id: 'h2', family: 'halfdim', tier: 4, scale: 'Locrian', looksAt: 'the next chord, a dominant a fourth up', summary: 'A half-diminished chord is Locrian; with a dominant after it, it is the iiø7 of that minor ii–V; without one, iiø7 in a major key is borrowed from the parallel minor.', guess: 'no related dominant follows (but iiø7 in a major key)' },
+  { id: 'd1', family: 'dim', tier: 4, scale: 'Whole-Half Diminished', looksAt: 'the next chord', summary: 'A diminished seventh chord (a vii°7 leading up a half step, an auxiliary that returns to a chord on its own root, or a passing one) is Whole-Half Diminished.', guess: 'a passing diminished chord' },
   { id: 's1', family: 'sus', tier: 1, scale: 'Phrygian', looksAt: 'a b9 in the symbol', summary: 'A sus b9 is Phrygian.' },
   { id: 's2', family: 'sus', tier: 4, scale: 'Mixolydian or Mixolydian b6', looksAt: 'the next chord, a fifth down (in a chart that is not modal, held under four bars)', summary: 'A resolving sus takes its 13 from the key: Mixolydian, or Mixolydian b6 when the key holds the b13.' },
-  { id: 's3', family: 'sus', tier: 4, scale: 'Mixolydian', looksAt: 'no resolution: a modal chart, a sus held four bars or more, or none that falls a fifth', summary: 'A static sus is Mixolydian.' },
+  { id: 's3', family: 'sus', tier: 4, scale: 'Mixolydian', looksAt: 'no resolution: a modal chart, a sus held four bars or more, or none that falls a fifth; or, outside a modal chart, the dominant on its own root next', summary: 'A static sus is Mixolydian; so is a sus before its dominant on the same root, a subdominant suspension (its 4th a chord tone).' },
 ]
 
 /** the rules a verdict's id names: "D1+D4" -> D1, D4 */

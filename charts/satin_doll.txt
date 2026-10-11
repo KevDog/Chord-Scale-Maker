@@ -4,7 +4,7 @@ style: Medium
 key: C
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 191
-# analysis: 2026-10-08, rules v1; C
+# analysis: 2026-10-11, rules v1; C
 
 # section | bar | chord | scale
 # the intro vamp is melody only (no chords) and is left out
@@ -13,9 +13,9 @@ A1 | 1  | G7    | G Mixolydian        # V7/I in C: natural tensions
 A1 | 2  | Dm7   | D Dorian            # ii of G7: Dorian
 A1 | 2  | G7    | G Mixolydian        # V7/I in C: natural tensions
 A1 | 3  | Em7   | E Dorian            # ii of A7: Dorian
-A1 | 3  | A7    | A Mixolydian        # passing ii–V: its own key
+A1 | 3  | A7    | A Mixolydian        # extended ii–V: a side-step, its own key
 A1 | 4  | Em7   | E Dorian            # ii of A7: Dorian
-A1 | 4  | A7    | A Mixolydian        # passing ii–V: its own key
+A1 | 4  | A7    | A Mixolydian        # extended ii–V: a side-step, its own key
 A1 | 5  | Am7   | A Dorian            # ii of D7: Dorian
 A1 | 5  | D7    | D Mixolydian        # V7/V in C: natural tensions
 A1 | 6  | Abm7  | Ab Dorian           # ii of Db7: Dorian
@@ -29,9 +29,9 @@ A2 | 9  | G7    | G Mixolydian        # V7/I in C: natural tensions
 A2 | 10 | Dm7   | D Dorian            # ii of G7: Dorian
 A2 | 10 | G7    | G Mixolydian        # V7/I in C: natural tensions
 A2 | 11 | Em7   | E Dorian            # ii of A7: Dorian
-A2 | 11 | A7    | A Mixolydian        # passing ii–V: its own key
+A2 | 11 | A7    | A Mixolydian        # extended ii–V: a side-step, its own key
 A2 | 12 | Em7   | E Dorian            # ii of A7: Dorian
-A2 | 12 | A7    | A Mixolydian        # passing ii–V: its own key
+A2 | 12 | A7    | A Mixolydian        # extended ii–V: a side-step, its own key
 A2 | 13 | Am7   | A Dorian            # ii of D7: Dorian
 A2 | 13 | D7    | D Mixolydian        # V7/V in C: natural tensions
 A2 | 14 | Abm7  | Ab Dorian           # ii of Db7: Dorian
@@ -49,9 +49,9 @@ A3 | 25 | G7    | G Mixolydian        # V7/I in C: natural tensions
 A3 | 26 | Dm7   | D Dorian            # ii of G7: Dorian
 A3 | 26 | G7    | G Mixolydian        # V7/I in C: natural tensions
 A3 | 27 | Em7   | E Dorian            # ii of A7: Dorian
-A3 | 27 | A7    | A Mixolydian        # passing ii–V: its own key
+A3 | 27 | A7    | A Mixolydian        # extended ii–V: a side-step, its own key
 A3 | 28 | Em7   | E Dorian            # ii of A7: Dorian
-A3 | 28 | A7    | A Mixolydian        # passing ii–V: its own key
+A3 | 28 | A7    | A Mixolydian        # extended ii–V: a side-step, its own key
 A3 | 29 | Am7   | A Dorian            # ii of D7: Dorian
 A3 | 29 | D7    | D Mixolydian        # V7/V in C: natural tensions
 A3 | 30 | Abm7  | Ab Dorian           # ii of Db7: Dorian

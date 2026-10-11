@@ -4,7 +4,7 @@ composer: Jerome Kern
 style: Medium up
 key: Ab
 form: AABC
-# analysis: 2026-10-09, rules v1; Ab
+# analysis: 2026-10-11, rules v1; Ab
 
 # section | bar | chord | scale
 # area: Ab major (bars 1–5)
@@ -44,7 +44,7 @@ C     | 26 | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
 C     | 27 | Eb7    | Eb Mixolydian             # V7 of Ab: natural tensions
 C     | 28 | AbMaj7 | Ab Ionian                 # tonic: the 4th is in the key
 C     | 29 | DbMaj7 | Db Lydian                 # IV: the #4 is the key’s 7th
-C     | 30 | Gb13   | Gb Lydian Dominant        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+C     | 30 | Gb13   | Gb Lydian Dominant        # ♭VII7 from the parallel minor: Lydian Dominant
 C     | 31 | Cm7    | C Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
 C     | 32 | Bdim7  | B Whole-Half              # passing diminished: the rootless V7b9 of the next chord
 C     | 33 | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab

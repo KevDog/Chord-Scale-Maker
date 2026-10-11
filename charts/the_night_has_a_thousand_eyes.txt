@@ -5,14 +5,14 @@ style: Mixed
 key: G
 form: ABABCD, 48 bars
 source: Colorado Cookbook, p. 236
-# analysis: 2026-10-08, rules v1; G
+# analysis: 2026-10-11, rules v1; G
 
 # section | bar | chord | scale
 # area: G major (bars 1–32)
 A1 | 1  | GMaj7/D | G Ionian            # tonic: the 4th is in the key
 A1 | 3  | D7sus4  | D Mixolydian        # V7sus4 of GMaj7/D: natural tensions
 A1 | 5  | GMaj7/D | G Ionian            # tonic: the 4th is in the key
-A1 | 7  | D7sus4  | D Mixolydian        # static sus: Mixolydian
+A1 | 7  | D7sus4  | D Mixolydian        # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 A1 | 8  | D7      | D Mixolydian        # V7 in G, not resolving: natural tensions
 B1 | 9  | Dm7     | D Dorian            # ii of G7: Dorian
 B1 | 10 | G7      | G Mixolydian        # V7/IV in G: natural tensions

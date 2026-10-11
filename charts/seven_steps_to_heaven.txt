@@ -4,15 +4,15 @@ style: Up
 key: F
 form: ABC, 32 bars
 source: Colorado Cookbook, p. 193
-# analysis: 2026-10-09, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 # area: F major (bars 1–9)
 Intro | 1  | F13    | F Mixolydian         # I7 in F, not resolving: natural tensions
-Intro | 2  | Eb13   | Eb Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+Intro | 2  | Eb13   | Eb Lydian Dominant   # ♭VII7 from the parallel minor: Lydian Dominant
 Intro | 3  | F13    | F Mixolydian         # I7 in F, not resolving: natural tensions
 Intro | 4  | Eb13   | Eb Lydian Dominant   # back door bVII7 to FMaj7: the #11 is in the key
-Coda  | 1  | Eb6/9  | Eb Lydian            # a non-tonic major chord: Lydian
+Coda  | 1  | Eb6/9  | Eb Lydian            # ♭VII6, borrowed from F minor: Lydian (its ♯11 is in the key)
 Coda  | 2  | E7b9   | E Phrygian Dominant  # VII7 in F, not resolving: b9 and b13 are in the key
 Coda  | 3  | F6     | F Ionian             # tonic: the 4th is in the key
 # the solo changes; the intro is the F13 Eb13 vamp, the coda the Eb6/9 E7b9 F6 vamp (to fade)
@@ -50,7 +50,7 @@ C     | 19 | Dm7    | D Dorian             # ii of G7: Dorian
 C     | 20 | G7     | G Mixolydian         # V7/V in F: natural tensions
 C     | 21 | Gm7    | G Dorian             # ii of C7: Dorian
 C     | 22 | C7     | C Mixolydian         # V7/I in F: natural tensions
-C     | 23 | Eb6/9  | Eb Lydian            # a non-tonic major chord: Lydian
+C     | 23 | Eb6/9  | Eb Lydian            # ♭VII6, borrowed from F minor: Lydian (its ♯11 is in the key)
 C     | 23 | E7b9   | E Phrygian Dominant  # VII7 in F, not resolving: b9 and b13 are in the key
 C     | 23 | F6     | F Ionian             # tonic: the 4th is in the key
 C     | 24 | F6     | F Ionian

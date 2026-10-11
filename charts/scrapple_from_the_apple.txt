@@ -4,7 +4,7 @@ style: Medium
 key: F
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 192
-# analysis: 2026-10-08, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 A1 | 1  | Gm7    | G Dorian                 # ii of C7: Dorian
@@ -29,9 +29,9 @@ A2 | 15 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
 A2 | 15 | C7     | C Mixolydian             # V7 of F: natural tensions
 A2 | 16 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
 B  | 17 | Em7    | E Dorian                 # ii of A7: Dorian
-B  | 18 | A7     | A Mixolydian             # passing ii–V: its own key
+B  | 18 | A7     | A Mixolydian             # extended ii–V: a side-step, its own key
 B  | 19 | Am7    | A Dorian                 # ii of D7: Dorian
-B  | 20 | D7     | D Mixolydian             # passing ii–V: its own key
+B  | 20 | D7     | D Mixolydian             # extended ii–V: a side-step, its own key
 B  | 21 | Dm7    | D Dorian                 # ii of G7: Dorian
 B  | 22 | G7     | G Mixolydian             # V7/V in F: natural tensions
 B  | 23 | Gm7    | G Dorian                 # ii of C7: Dorian

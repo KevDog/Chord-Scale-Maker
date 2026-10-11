@@ -4,7 +4,7 @@ style: Ballad
 key: F
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 241
-# analysis: 2026-10-08, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 A1 | 1  | FMaj7  | F Ionian             # tonic: the 4th is in the key
@@ -16,7 +16,7 @@ A1 | 3  | BbMaj7 | Bb Lydian            # IV: the #4 is the key’s 7th
 A1 | 4  | Am7b5  | A Locrian            # iiø7 of the ii–V to G minor: the b9 is in the key
 A1 | 4  | D7     | D Mixolydian b6      # V7/ii in F: the b13 is in the key
 A1 | 5  | Gm7    | G Dorian             # ii: Dorian, the key’s own notes
-A1 | 5  | Eb7#11 | Eb Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A1 | 5  | Eb7#11 | Eb Lydian Dominant   # ♭VII7 from the parallel minor: Lydian Dominant
 A1 | 6  | Am     | A Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
 A1 | 6  | Abm    | Ab Dorian            # a borrowed minor chord: Dorian, its own key
 A1 | 7  | Gm7    | G Dorian             # ii of C7: Dorian
@@ -34,7 +34,7 @@ A2 | 11 | BbMaj7 | Bb Lydian            # IV: the #4 is the key’s 7th
 A2 | 12 | Am7b5  | A Locrian            # iiø7 of the ii–V to G minor: the b9 is in the key
 A2 | 12 | D7     | D Mixolydian b6      # V7/ii in F: the b13 is in the key
 A2 | 13 | Gm7    | G Dorian             # ii: Dorian, the key’s own notes
-A2 | 13 | Eb7#11 | Eb Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A2 | 13 | Eb7#11 | Eb Lydian Dominant   # ♭VII7 from the parallel minor: Lydian Dominant
 A2 | 14 | Am     | A Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
 A2 | 14 | Abm    | Ab Dorian            # a borrowed minor chord: Dorian, its own key
 A2 | 15 | Gm7    | G Dorian             # ii of the ii–V to F
@@ -47,7 +47,7 @@ B  | 17 | F7     | F Mixolydian         # V7/IV in F: natural tensions
 B  | 18 | Cm7    | C Dorian             # ii of the ii–V to Bb
 B  | 18 | F7     | F Mixolydian         # V7/IV in F: natural tensions
 B  | 19 | BbMaj7 | Bb Lydian            # IV: the #4 is the key’s 7th
-B  | 19 | Eb7#11 | Eb Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 19 | Eb7#11 | Eb Lydian Dominant   # ♭VII7 from the parallel minor: Lydian Dominant
 B  | 20 | BbMaj7 | Bb Lydian            # IV: the #4 is the key’s 7th
 B  | 20 | Em7b5  | E Locrian            # iiø7 of the ii–V to D minor: the b9 is in the key
 B  | 20 | A7     | A Phrygian Dominant  # V7/vi in F: b9 and b13 are in the key
@@ -68,7 +68,7 @@ A3 | 27 | BbMaj7 | Bb Lydian            # IV: the #4 is the key’s 7th
 A3 | 28 | Am7b5  | A Locrian            # iiø7 of the ii–V to G minor: the b9 is in the key
 A3 | 28 | D7     | D Mixolydian b6      # V7/ii in F: the b13 is in the key
 A3 | 29 | Gm7    | G Dorian             # ii: Dorian, the key’s own notes
-A3 | 29 | Eb7#11 | Eb Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A3 | 29 | Eb7#11 | Eb Lydian Dominant   # ♭VII7 from the parallel minor: Lydian Dominant
 A3 | 30 | Am     | A Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
 A3 | 30 | Abm    | Ab Dorian            # a borrowed minor chord: Dorian, its own key
 A3 | 31 | Gm7    | G Dorian             # ii of the ii–V to F

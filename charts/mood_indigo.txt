@@ -4,7 +4,7 @@ style: Ballad
 key: Ab
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 137
-# analysis: 2026-10-08, rules v1; Ab
+# analysis: 2026-10-11, rules v1; Ab
 
 # section | bar | chord | scale
 A | 1  | Ab     | Ab Ionian           # tonic: the 4th is in the key
@@ -20,7 +20,7 @@ B | 9  | Ab7    | Ab Mixolydian       # I7 in Ab, not resolving: natural tension
 B | 10 | Ebm7   | Eb Dorian           # ii of the ii–V to Db
 B | 10 | Ab7    | Ab Mixolydian       # V7/IV in Ab: natural tensions
 B | 11 | Db     | Db Lydian           # IV: the #4 is the key’s 7th
-B | 12 | Gb7    | Gb Lydian Dominant  # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B | 12 | Gb7    | Gb Lydian Dominant  # ♭VII7 from the parallel minor: Lydian Dominant
 B | 12 | Eb7    | Eb Mixolydian       # V7 of Ab: natural tensions
 B | 13 | Ab     | Ab Ionian           # tonic: the 4th is in the key
 B | 14 | Bb7    | Bb Mixolydian       # II7 in Ab, not resolving: natural tensions
@@ -36,7 +36,7 @@ C | 20 | F7     | F Mixolydian b6     # V7/ii in Ab: the b13 is in the key
 C | 20 | Bbm7   | Bb Dorian           # ii of the ii–V to Ab
 C | 20 | Eb7    | Eb Mixolydian       # V7 of Ab: natural tensions
 C | 21 | Ab     | Ab Ionian           # tonic: the 4th is in the key
-C | 22 | Bb7    | Bb Mixolydian       # extended dominant: V7 of Eb7
+C | 22 | Bb7    | Bb Mixolydian       # V7 of V7: the dominant of the dominant: natural tensions
 C | 23 | Bb7    | Bb Mixolydian
 C | 24 | Eb7    | Eb Mixolydian       # extended dominant: V7 of Ab7
 D | 25 | Ab7    | Ab Mixolydian       # I7 in Ab, not resolving: natural tensions

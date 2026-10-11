@@ -4,7 +4,7 @@ style: Medium
 key: F
 form: AB, 16 bars
 source: Colorado Cookbook, p. 167
-# analysis: 2026-10-09, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 Coda | 1  | FMaj7#11 | F Lydian         # from the symbol: #11
@@ -26,9 +26,9 @@ A    | 7  | GmMaj7   | G Melodic Minor  # from the symbol: minor-major 7th
 A    | 8  | Gm7      | G Dorian         # ii of C7: Dorian
 A    | 8  | C7       | C Mixolydian     # V7/I in F: natural tensions
 B    | 9  | Abm7     | Ab Dorian        # ii of Db7: Dorian
-B    | 10 | Db7      | Db Mixolydian    # passing ii–V: its own key
+B    | 10 | Db7      | Db Mixolydian    # extended ii–V: a side-step, its own key
 B    | 11 | Abm7     | Ab Dorian        # ii of Db7: Dorian
-B    | 12 | Db7      | Db Mixolydian    # passing ii–V: its own key
+B    | 12 | Db7      | Db Mixolydian    # extended ii–V: a side-step, its own key
 B    | 13 | Gm7      | G Dorian         # ii of the ii–V to F
 B    | 14 | C7       | C Mixolydian     # V7 of F: natural tensions
 B    | 15 | FMaj7    | F Ionian         # tonic: the 4th is in the key

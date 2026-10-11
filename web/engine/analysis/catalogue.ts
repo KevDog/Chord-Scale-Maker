@@ -34,7 +34,7 @@ const QUALITY: Readonly<Record<Family, Readonly<Record<string, string>>>> = {
   minor: { '': 'm', '7': 'm7', '6': 'm6', '(maj7)': 'mMaj7' },
   halfdim: { ø7: 'm7b5' },
   dim: { '°7': 'dim7' },
-  sus: { '7sus': '7sus4' },
+  sus: { '7sus4': '7sus4' },
 }
 
 const MAJOR_DIATONIC = ['Imaj7', 'ii7', 'iii7', 'IVmaj7', 'V7', 'vi7', 'viiø7']
@@ -59,7 +59,7 @@ function rowsFor(key: Key): readonly (readonly [FunctionGroup, string])[] {
       'I7',
       '♯iv°7',
       ...targets.map((t) => `vii°7/${t}`),
-      'V7sus',
+      'V7sus4',
     ].map((fn) => ['substitutes', fn] as const),
     ...['♭vi7', '♯ivø7', '♭iii°7', 'II7', '♯IV7'].map((fn) => ['chromatic', fn] as const),
   ]

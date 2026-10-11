@@ -6,31 +6,31 @@ key: G
 time: 3/4
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 67
-# analysis: 2026-10-08, rules v1; G
+# analysis: 2026-10-11, rules v1; G
 
 # section | bar | chord | scale
 A | 1  | G6/9   | G Ionian             # tonic: the 4th is in the key
-A | 2  | F6/9   | F Lydian             # a non-tonic major chord: Lydian
+A | 2  | F6/9   | F Lydian             # ♭VII6, borrowed from G minor: Lydian (its ♯11 is in the key)
 A | 3  | G6/9   | G Ionian             # tonic: the 4th is in the key
-A | 4  | F6/9   | F Lydian             # a non-tonic major chord: Lydian
+A | 4  | F6/9   | F Lydian             # ♭VII6, borrowed from G minor: Lydian (its ♯11 is in the key)
 A | 5  | G6/9   | G Ionian             # tonic: the 4th is in the key
-A | 6  | F6/9   | F Lydian             # a non-tonic major chord: Lydian
+A | 6  | F6/9   | F Lydian             # ♭VII6, borrowed from G minor: Lydian (its ♯11 is in the key)
 A | 7  | G6/9   | G Ionian             # tonic: the 4th is in the key
-A | 8  | F6/9   | F Lydian             # a non-tonic major chord: Lydian
-B | 9  | FMaj7  | F Lydian             # a non-tonic major chord: Lydian
+A | 8  | F6/9   | F Lydian             # ♭VII6, borrowed from G minor: Lydian (its ♯11 is in the key)
+B | 9  | FMaj7  | F Lydian             # ♭VIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
 B | 10 | Em     | E Aeolian            # vi: the b13 is in the key
-B | 11 | FMaj7  | F Lydian             # a non-tonic major chord: Lydian
+B | 11 | FMaj7  | F Lydian             # ♭VIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
 B | 12 | Em     | E Aeolian            # vi: the b13 is in the key
-B | 13 | FMaj7  | F Lydian             # a non-tonic major chord: Lydian
+B | 13 | FMaj7  | F Lydian             # ♭VIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
 B | 14 | Em     | E Aeolian            # vi: the b13 is in the key
-B | 15 | FMaj7  | F Lydian             # a non-tonic major chord: Lydian
+B | 15 | FMaj7  | F Lydian             # ♭VIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
 B | 16 | Em     | E Aeolian            # vi: the b13 is in the key
-C | 17 | EbMaj7 | Eb Lydian            # a non-tonic major chord: Lydian
+C | 17 | EbMaj7 | Eb Lydian            # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
 D | 25 | Em7b5  | E Locrian            # iiø7 of A7b9: the b9 is in the key
-D | 26 | A7b9   | A Phrygian Dominant  # passing ii–V: its own key: b9 and b13 are in the key
+D | 26 | A7b9   | A Phrygian Dominant  # extended ii–V: a side-step, its own key: b9 and b13 are in the key
 D | 27 | Em7b5  | E Locrian            # iiø7 of A7b9: the b9 is in the key
-D | 28 | A7b9   | A Phrygian Dominant  # passing ii–V: its own key: b9 and b13 are in the key
+D | 28 | A7b9   | A Phrygian Dominant  # extended ii–V: a side-step, its own key: b9 and b13 are in the key
 D | 29 | Em7b5  | E Locrian            # iiø7 of A7b9: the b9 is in the key
-D | 30 | A7b9   | A Phrygian Dominant  # passing ii–V: its own key: b9 and b13 are in the key
+D | 30 | A7b9   | A Phrygian Dominant  # extended ii–V: a side-step, its own key: b9 and b13 are in the key
 D | 31 | Ebm7   | Eb Dorian            # ii of Ab7: Dorian
 D | 32 | Ab7    | Ab Lydian Dominant   # tritone substitute: resolves down a half step to G6/9

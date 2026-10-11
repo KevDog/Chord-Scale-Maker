@@ -31,6 +31,11 @@ describe('qualities', () => {
     ])
   })
 
+  it('reads ∆ (U+2206, what Option-J types on a Mac) wherever it reads Δ (U+0394)', () => {
+    for (const q of ['Δ7', 'Δ', 'Δ#11', 'Δ#5', 'Δ+5', 'Δ+', '-Δ7']) expect(baseQuality(q.replace('Δ', '\u2206')), q).toBe(baseQuality(q))
+    expect(defaultScale('C\u22067')).toBe('C Ionian')
+  })
+
   it('returns null for unknown qualities so the UI can prompt', () => {
     expect(resolveQuality('Cm7#5#9x')).toBeNull()
     expect(defaultScale('Cm7#5#9x')).toBeNull()

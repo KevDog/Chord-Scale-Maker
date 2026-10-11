@@ -4,7 +4,7 @@ style: Medium
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 115
-# analysis: 2026-10-09, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 # area: F major (bars 1–7)
@@ -25,7 +25,7 @@ A     | 2  | Gm7    | G Dorian            # ii of the ii–V to F
 A     | 2  | C7     | C Mixolydian        # V7 of F: natural tensions
 A     | 3  | FMaj7  | F Ionian            # tonic: the 4th is in the key
 A     | 4  | Bbm7   | Bb Dorian           # ii of Eb7: Dorian
-A     | 4  | Eb7    | Eb Mixolydian       # passing ii–V: its own key
+A     | 4  | Eb7    | Eb Mixolydian       # extended ii–V: a side-step, its own key
 A     | 5  | Am7    | A Dorian            # ii of the ii–V to G minor
 A     | 5  | D7#9   | D Altered           # V7/ii in F: the b13 is in the key, b9, #9 and #11 from the symbol
 A     | 6  | Gm7    | G Dorian            # ii of the ii–V to F
@@ -39,7 +39,7 @@ B     | 10 | Abm7   | Ab Dorian           # ii of the ii–V to Gb
 B     | 10 | Db7    | Db Mixolydian       # V7 of Gb: natural tensions
 B     | 11 | GbMaj7 | Gb Ionian           # tonic: the 4th is in the key
 B     | 12 | Bm7    | B Dorian            # ii of E7: Dorian
-B     | 12 | E7     | E Mixolydian        # passing ii–V: its own key
+B     | 12 | E7     | E Mixolydian        # extended ii–V: a side-step, its own key
 B     | 13 | Bbm7   | Bb Dorian           # ii of the ii–V to Ab minor
 B     | 13 | Eb7#9  | Eb Altered          # V7/ii in Gb: the b13 is in the key, b9, #9 and #11 from the symbol
 B     | 14 | Abm7   | Ab Dorian           # ii of the ii–V to Gb
@@ -69,7 +69,7 @@ D     | 26 | Gm7    | G Dorian            # ii of the ii–V to F
 D     | 26 | C7     | C Mixolydian        # V7 of F: natural tensions
 D     | 27 | FMaj7  | F Ionian            # tonic: the 4th is in the key
 D     | 28 | Bbm7   | Bb Dorian           # ii of Eb7: Dorian
-D     | 28 | Eb7    | Eb Mixolydian       # passing ii–V: its own key
+D     | 28 | Eb7    | Eb Mixolydian       # extended ii–V: a side-step, its own key
 D     | 29 | Am7    | A Dorian            # ii of the ii–V to G minor
 D     | 29 | D7#9   | D Altered           # V7/ii in F: the b13 is in the key, b9, #9 and #11 from the symbol
 D     | 30 | Gm7    | G Dorian            # ii of the ii–V to F

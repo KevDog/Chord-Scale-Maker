@@ -41,17 +41,30 @@ A  | 3  | Bb7 |              | Db: V7/ii  ← this row only, in Db major
 ### Function grammar
 
 The numerals the Changes sheet already prints (`numerals.ts`), read back in. Both glyph and ASCII spellings are
-accepted:
+accepted, and the spellings a Berklee-trained author types (function labels spec,
+[2026-10-10-function-labels-design.md](2026-10-10-function-labels-design.md) §2): lenient on input, canonical on
+output.
 
 - **Accidentals:** `♭`/`b` and `♯`/`#`.
-- **Qualities:** `°7`/`o7`, `ø7`/`m7b5`, `maj7`/`Maj7`/`Δ7`.
+- **Qualities:** `°7`/`o7`, `ø7`/`Ø7`/`m7b5`/`m7(b5)`/`-7b5`/`-7(♭5)`, `maj7`/`Maj7`/`Δ7`/`∆7` (U+0394 or U+2206,
+  what Option-J types on a Mac), `7sus4`/`7(sus4)`/`7sus`/`sus4`/`sus`; minor with `m` or a hyphen or en dash
+  (`II-7`, `II–7`, `I-6`, `I-(maj7)`, `I-Maj7`).
 - **Degree:** Roman numeral, with case giving the quality where it matters: `I`…`VII`, `ii`, `iii`, `vi`….
-- **Suffix:** `maj7`, `7`, `6`, `ø7`, `°7`, `7sus`, `(maj7)`, `maj7♯5`, or nothing.
+- **Suffix:** `maj7`, `7`, `6`, `ø7`, `°7`, `7sus4`, `(maj7)`, `maj7♯5`, or nothing.
 - **Target:** `/X`, where X is a degree (`V7/ii`, `ii7/V`, `iiø7/vi`, `vii°7/ii`).
-- **Prefix:** `subV7` (tritone substitute), `subV7/IV`.
-- **Key prefix:** `KEY: ` with a key as `key:` takes it (`D`, `Bbm`, `C#m`).
+- **Prefix:** `subV7` (tritone substitute), `subV7/IV`; `Sub` or `sub` in any case, with or without the 7 (`SubV/ii`
+  reads `subV7/ii`).
+- **Key prefix:** `KEY: ` with a key as `key:` takes it (`D`, `Bbm`, `C#m`), the flat or sharp as a glyph too
+  (`B♭: V7/ii`).
+- **Deceptive:** a function in parentheses, `(V7/ii)`, `(III7)`: the chord's expected resolution doesn't come. It
+  keeps that resolution's scale (the target is read as without the parentheses), fits its chord the same way, and
+  prints with its parentheses.
 
-Examples: `V7/V`, `subV7/IV`, `ii7/V`, `iiø7/vi`, `♭VII7`, `vii°7/ii`, `IVmaj7`, `I6`, `D: Imaj7`.
+Examples: `V7/V`, `subV7/IV`, `ii7/V`, `iiø7/vi`, `♭VII7`, `vii°7/ii`, `IVmaj7`, `I6`, `D: Imaj7`, `II-7`,
+`VII-7(♭5)`, `V7(sus4)`, `SubV/ii`, `(V7/ii)`.
+
+The sheet's `→` (a link of a chain of dominants into the key's V7) is a display mark, not a function: it doesn't
+read.
 
 The function's spelling is normalised to glyphs for display. The file keeps whatever the author wrote.
 

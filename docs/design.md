@@ -505,6 +505,23 @@ library writes such a repeat out instead.
   analyser never writes a function or an `@key`. `rowNotes` (`engine/notes.ts`) gives each row's reason and key;
   the grid's Notes column and the Changes sheet's numeral/scale notes show it, the note with where its key
   came from (a key the author set is starred), behind the `functions` flag (on).
+- **Numerals** (`analysis/numerals.ts`; the degree itself in `analysis/degrees.ts`, shared with the rules and the
+  grammar): lower case for the minor family (`ii7`, `V7/ii`, `viiø7`), as Terefenko writes them. A dominant into the
+  local key's own V7 prints `V7/V`, and the links before it in a chain of three or more print `→` (a display mark, not
+  a function); a chain that never reaches the key's V7, or one a sus breaks (`A7 D7sus4 G7`), keeps each chord's own
+  degree. A related ii that is diatonic to a major key area prints its degree (`iii7`, `vi7`, `viiø7`; the report
+  adds "also iii of C"). An ascending `vii°7 of X` prints sharp-side (`♯i°7`), a descending or auxiliary one
+  flat-side. A sus prints `V7sus4`. The labels and their sources: [function labels spec](superpowers/specs/2026-10-10-function-labels-design.md).
+- **The function grammar** (`analysis/functions.ts`, `parseFunction`): the sheet's numerals read back, lenient on
+  input and canonical on output: glyph or ASCII accidentals; `-`/`–` for minor (`II-7`, `I-(maj7)`);
+  `-7(♭5)`, `m7(b5)`, `Ø7` for ø7; `7(sus4)`, `sus4`; `Sub`/`sub` with or without the 7 (`SubV/III` reads
+  `subV7/III`); `Δ` or `∆` (U+0394, U+2206) for maj7; a glyph flat in the key prefix (`B♭: V7/ii`). A function in
+  parentheses, `(V7/ii)`, is deceptive (`StatedFunction.deceptive`): its resolution doesn't come, its scale is still
+  the expected target's (the target and the scale ignore the flag, and the fit doesn't ask for the resolution), and
+  the sheet prints the parentheses. A target keeps the case written: upper case is a major chord, lower case a
+  minor one, as the sheet prints them (`(V7/II)` stays `(V7/II)`; reading an upper-case target's quality from the key,
+  G6 in the function labels spec, is deferred). Every numeral the analyser gives the library reads back to itself, and in
+  parentheses to itself in parentheses (`functions.test.ts`). `chord_scales.json` lists `∆` wherever it lists `Δ`.
 - **The reason note** (`ChangesNote.vue`): a click-to-open Headless UI popover (role dialog, "Why: <chord>", the chord as
   drawn for the part: `ChangesChord.written`), not
   a hover tooltip; Escape or a click outside closes it, and a clamp keeps the panel 16px inside the viewport. It
@@ -671,7 +688,9 @@ Pages are static, and the only server code is the contact function, so the attac
   - the parsed rows of each chart in `charts/`, and two inline charts for parser edge cases
 
   `fixtures/analysis.json` is the analyser's report over every library chart, one row per line (key, areas, and
-  each row's scale, rule, function and reason); `make golden` rewrites both fixtures.
+  each row's scale, rule, function and reason); `make golden` rewrites both fixtures. `npm run fixture-scales [--
+  <ref>]` (`web/scripts/fixtureScales.ts`) compares only their scales with a ref's (default `main`) and exits 1 on any
+  difference: the check for a change meant to move text but no scale.
 
   The golden test compares each section with readable mismatches, then checks that the file is exactly what the
   engine writes now (so a new chart or scale can't go uncovered). After an intended change to the engine,

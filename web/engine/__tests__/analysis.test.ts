@@ -186,7 +186,7 @@ describe('analysis: keys (§5)', () => {
 
   it('in a major area, a ii–V that doesn’t land but implies a chord of home brings home back (Lady Bird bars 11–12)', () => {
     const rows = analyse(parseChart(library('lady_bird')).value).rows
-    expect(rows.filter((r) => r.bar === '11' || r.bar === '12').map((r) => `${r.numeral} ${r.key.name}`)).toEqual(['ii7/V C major', 'V7/V C major'])
+    expect(rows.filter((r) => r.bar === '11' || r.bar === '12').map((r) => `${r.numeral} ${r.key.name}`)).toEqual(['vi7 C major', 'V7/V C major'])
     expect(verdict(library('whisper_not'), '19 Gm')).toMatch(/^G Dorian/) // a minor area keeps its own reading, not v Phrygian
   })
 
@@ -215,7 +215,7 @@ describe('analysis: numerals', () => {
     analyse(parseChart(library(name)).value).rows.filter((r) => bars.includes(r.bar)).map((r) => `${r.chord} ${r.numeral}`)
 
   it('name each chord’s degree and quality in its key area, and what a dominant or a ii leads to', () => {
-    expect(numerals('rhythm_changes', ['1', '2', '17', '19', '21', '23'])).toEqual(['Bb6 I6', 'G7b9 V7/ii', 'Cm7 ii7', 'F7 V7', 'D7 III7', 'G7 VI7', 'C7 II7', 'F7 V7'])
+    expect(numerals('rhythm_changes', ['1', '2', '17', '19', '21', '23'])).toEqual(['Bb6 I6', 'G7b9 V7/ii', 'Cm7 ii7', 'F7 V7', 'D7 →', 'G7 →', 'C7 V7/V', 'F7 V7'])
     expect(numerals('stella_by_starlight', ['1', '2', '12', '13', '29', '30'])).toEqual([
       'Em7b5 iiø7/iii', 'A7b9 V7/iii', 'Bbm7 iv7/V', 'Eb7 ♭VII7/V', 'FMaj7 Vmaj7', 'Cm7b5 iiø7', 'F7b9 V7',
     ])
@@ -291,7 +291,7 @@ describe('stated functions and @key (docs/superpowers/specs/2026-10-09-chart-fun
   it('the ii of a stated ii–V is named for its target', () => {
     const text = lines('C', ['A | 1 | CMaj7', 'A | 2 | Am7 | | ii7/V', 'A | 3 | FMaj7', 'A | 4 | G7'])
     const r = rowOf(text, '2 Am7')
-    expect([r?.scale, r?.rule, r?.fn]).toEqual(['A Dorian', 'm4', 'ii of the ii–V to G'])
+    expect([r?.scale, r?.rule, r?.fn]).toEqual(['A Dorian', 'm4', 'ii of the ii–V to G; also vi of C'])
   })
 
   it('@key holds from its bar until the next', () => {

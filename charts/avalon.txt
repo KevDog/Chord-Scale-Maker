@@ -4,7 +4,7 @@ style: Up
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 25
-# analysis: 2026-10-08, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 A | 1  | Gm7   | G Dorian            # ii of the ii–V to F
@@ -12,7 +12,7 @@ A | 3  | C7    | C Mixolydian        # V7 of F: natural tensions
 A | 5  | FMaj7 | F Ionian            # tonic: the 4th is in the key
 A | 6  | Bb7   | Bb Lydian Dominant  # tritone substitute: resolves down a half step to Am7
 A | 7  | Am7   | A Dorian            # ii of D7: Dorian
-A | 8  | D7    | D Mixolydian        # passing ii–V: its own key
+A | 8  | D7    | D Mixolydian        # extended ii–V: a side-step, its own key
 B | 9  | C7    | C Mixolydian        # V7 in F, not resolving: natural tensions
 B | 11 | Gm7   | G Dorian            # ii of the ii–V to F
 B | 12 | C7    | C Mixolydian        # V7 of F: natural tensions

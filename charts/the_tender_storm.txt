@@ -5,7 +5,7 @@ style: Medium up
 key: D
 form: A, 20 bars
 source: Colorado Cookbook, p. 239
-# analysis: 2026-10-08, rules v1; D
+# analysis: 2026-10-11, rules v1; D
 
 # section | bar | chord | scale
 # area: D major (bars 1–6)
@@ -14,14 +14,14 @@ A | 2  | Bbm7   | Bb Dorian           # ii of Eb7: Dorian
 A | 2  | Eb7    | Eb Lydian Dominant  # tritone substitute: resolves down a half step to DMaj7
 A | 3  | DMaj7  | D Ionian            # tonic: the 4th is in the key
 A | 5  | Ebm7   | Eb Dorian           # ii of Ab7: Dorian
-A | 5  | Ab7    | Ab Mixolydian       # passing ii–V: its own key
+A | 5  | Ab7    | Ab Mixolydian       # extended ii–V: a side-step, its own key
 A | 6  | Dm7    | D Dorian            # a borrowed minor chord: Dorian, its own key
 # area: C major (bars 7–12)
 A | 7  | Abm7   | Ab Dorian           # ii of Db7: Dorian
 A | 7  | Db7    | Db Lydian Dominant  # tritone substitute: resolves down a half step to CMaj7
 A | 9  | CMaj7  | C Ionian            # tonic: the 4th is in the key
 A | 11 | C#m7   | C# Dorian           # ii of F#7: Dorian
-A | 11 | F#7    | F# Mixolydian       # passing ii–V: its own key
+A | 11 | F#7    | F# Mixolydian       # extended ii–V: a side-step, its own key
 A | 12 | Cm7    | C Dorian            # a borrowed minor chord: Dorian, its own key
 # area: Bb major (bars 13–20)
 A | 13 | F#m7   | F# Dorian           # ii of B7: Dorian

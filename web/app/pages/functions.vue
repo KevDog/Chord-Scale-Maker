@@ -33,6 +33,11 @@
           <UiCode>iiø7/vi</UiCode>, <UiCode>♯iv°7/V</UiCode>.
         </li>
         <li>Degrees count from the tonic as in a major key, in minor keys too: <UiCode>♭III</UiCode> in C minor is E♭.</li>
+        <li><UiCode>(V7/ii)</UiCode>: a dominant that doesn’t resolve as expected; the scale is the same. The sheet prints the parentheses.</li>
+        <li>
+          Berklee spellings read too: <UiCode>II-7</UiCode>, <UiCode>VII-7(♭5)</UiCode>, <UiCode>V7(sus4)</UiCode>,
+          <UiCode>SubV7/ii</UiCode>, <UiCode>I∆7</UiCode> (Δ or ∆), <UiCode>B♭: V7/ii</UiCode>.
+        </li>
       </ul>
 
       <UiSubheading :level="3" class="pt-2">Qualities</UiSubheading>
@@ -237,7 +242,7 @@ const SECTIONS = [
 const LINK = 'text-zinc-950 underline decoration-zinc-950/50 hover:decoration-zinc-950 dark:text-white dark:decoration-white/50 dark:hover:decoration-white'
 // printed, the tables keep their borders and wrap to the page instead of scrolling
 const PRINT_TABLE = 'print:[&_td]:border print:[&_td]:border-zinc-400 print:[&_th]:border print:[&_th]:border-zinc-400 print:[&_td]:min-w-0 print:[&_td]:whitespace-normal'
-const GRAMMAR = '[Key:] [sub] [♭|♯] NUMERAL [quality] [/ [♭|♯] NUMERAL]'
+const GRAMMAR = '[Key:] [(] [sub] [♭|♯] NUMERAL [quality] [/ [♭|♯] NUMERAL] [)]'
 const FALLBACK = 'a guess — an @key or a function would settle it'
 
 type Family = RuleInfo['family']

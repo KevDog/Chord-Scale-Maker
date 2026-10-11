@@ -4,13 +4,13 @@ style: Medium up
 key: Eb
 form: AA, 32 bars
 source: Colorado Cookbook, p. 82
-# analysis: 2026-10-08, rules v1; Eb
+# analysis: 2026-10-11, rules v1; Eb
 
 # section | bar | chord | scale
 # the horn intro is a melody line (no chords), so it is left out
 A1 | 1  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 A1 | 3  | Am7    | A Dorian                  # ii of D7: Dorian
-A1 | 4  | D7     | D Mixolydian              # passing ii–V: its own key
+A1 | 4  | D7     | D Mixolydian              # extended ii–V: a side-step, its own key
 A1 | 5  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 A1 | 7  | Gm7    | G Dorian                  # ii of C7: Dorian
 A1 | 8  | C7     | C Mixolydian              # extended dominant: V7 of F7
@@ -23,7 +23,7 @@ A1 | 14 | Fm7    | F Dorian                  # ii of the ii–V to Eb
 A1 | 15 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
 A2 | 17 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 A2 | 19 | Am7    | A Dorian                  # ii of D7: Dorian
-A2 | 20 | D7     | D Mixolydian              # passing ii–V: its own key
+A2 | 20 | D7     | D Mixolydian              # extended ii–V: a side-step, its own key
 A2 | 21 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 A2 | 23 | Gm7    | G Dorian                  # ii of C7: Dorian
 A2 | 24 | C7     | C Mixolydian              # extended dominant: V7 of F7

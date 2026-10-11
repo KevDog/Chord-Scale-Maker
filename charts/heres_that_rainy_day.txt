@@ -5,7 +5,7 @@ style: Ballad
 key: G
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 86
-# analysis: 2026-10-08, rules v1; G
+# analysis: 2026-10-11, rules v1; G
 
 # section | bar | chord | scale
 # area: G major (bar 1)
@@ -43,5 +43,5 @@ D | 28 | A7#11  | A Lydian Dominant         # V7/V in G: the #11 from the symbol
 D | 28 | Bbdim7 | Bb Whole-Half Diminished  # passing diminished: the rootless V7b9 of the next chord
 D | 29 | Am7    | A Dorian                  # ii of D7: Dorian
 D | 30 | D7     | D Mixolydian              # V7/I in G: natural tensions
-D | 31 | EbMaj7 | Eb Lydian                 # a non-tonic major chord: Lydian
-D | 32 | AbMaj7 | Ab Lydian                 # a non-tonic major chord: Lydian
+D | 31 | EbMaj7 | Eb Lydian                 # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+D | 32 | AbMaj7 | Ab Lydian                 # ♭IImaj7, borrowed from G Phrygian: Lydian (its ♯11 is in the key)

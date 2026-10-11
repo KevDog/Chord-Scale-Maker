@@ -4,7 +4,7 @@ style: Up
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 106
-# analysis: 2026-10-08, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 # area: F major (bars 1–7)
@@ -41,7 +41,7 @@ D | 26 | Bbm7   | Bb Dorian                # ii of Eb7: Dorian
 D | 26 | Eb7    | Eb Lydian Dominant       # back door bVII7 to FMaj7: the #11 is in the key
 D | 27 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
 D | 28 | Abm7   | Ab Dorian                # ii of Db7: Dorian
-D | 28 | Db7    | Db Mixolydian            # passing ii–V: its own key
+D | 28 | Db7    | Db Mixolydian            # extended ii–V: a side-step, its own key
 D | 29 | Gm7    | G Dorian                 # ii of the ii–V to F
 D | 30 | C7     | C Mixolydian             # V7 of F: natural tensions
 D | 31 | F      | F Ionian                 # tonic: the 4th is in the key

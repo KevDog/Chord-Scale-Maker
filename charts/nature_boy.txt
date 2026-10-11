@@ -6,7 +6,7 @@ key: Dm
 time: 3/4
 form: AA, 32 bars
 source: Colorado Cookbook, p. 153
-# analysis: 2026-10-08, rules v1; D minor
+# analysis: 2026-10-11, rules v1; D minor
 
 # section | bar | chord | scale
 A1 | 1  | Dm     | D Dorian             # tonic minor: Dorian by convention
@@ -18,7 +18,7 @@ A1 | 6  | Dm7    | D Dorian             # tonic minor: Dorian by convention
 A1 | 7  | Dm6    | D Dorian             # a minor sixth chord: Dorian
 A1 | 8  | Gm     | G Dorian             # iv: Dorian, the key’s own notes
 A1 | 11 | Dm     | D Dorian             # tonic minor: Dorian by convention
-A1 | 13 | E7b9   | E Phrygian Dominant  # V7 of A7b9, on the way to D minor: b9 and b13 are in the key
+A1 | 13 | E7b9   | E Phrygian Dominant  # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key
 A1 | 15 | A7b9   | A Phrygian Dominant  # V7 of D minor, the chain's last link: b9 and b13 are in the key
 A2 | 17 | Dm     | D Dorian             # tonic minor: Dorian by convention
 A2 | 18 | Gm     | G Dorian             # iv: Dorian, the key’s own notes
@@ -29,6 +29,6 @@ A2 | 22 | Dm7    | D Dorian             # tonic minor: Dorian by convention
 A2 | 23 | Dm6    | D Dorian             # a minor sixth chord: Dorian
 A2 | 24 | Gm     | G Dorian             # iv: Dorian, the key’s own notes
 A2 | 27 | Dm     | D Dorian             # tonic minor: Dorian by convention
-A2 | 29 | E7b9   | E Phrygian Dominant  # V7 of A7alt, on the way to D minor: b9 and b13 are in the key
+A2 | 29 | E7b9   | E Phrygian Dominant  # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key
 A2 | 30 | A7alt  | A Altered            # from the symbol: altered
 A2 | 31 | Dm     | D Dorian             # tonic minor: Dorian by convention

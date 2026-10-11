@@ -5,7 +5,7 @@ style: Medium
 key: Bb
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 149
-# analysis: 2026-10-08, rules v1; Bb
+# analysis: 2026-10-11, rules v1; Bb
 
 # section | bar | chord | scale
 # the solo changes in bars 13–14 (the head has Dm7 Db7 | Csus4 C7)
@@ -36,9 +36,9 @@ B | 12 | BbMaj7   | Bb Ionian                 # tonic: the 4th is in the key
 B | 13 | Em7b5    | E Locrian                 # iiø7 of the ii–V to D minor: the b9 is in the key
 B | 13 | A7b9     | A Phrygian Dominant       # V7/iii in Bb: b9 and b13 are in the key
 B | 14 | Dm7      | D Dorian                  # ii of G7: Dorian
-B | 14 | G7       | G Mixolydian              # passing ii–V: its own key
+B | 14 | G7       | G Mixolydian              # extended ii–V: a side-step, its own key
 B | 15 | Dbm7     | Db Dorian                 # ii of Gb7: Dorian
-B | 15 | Gb7      | Gb Mixolydian             # passing ii–V: its own key
+B | 15 | Gb7      | Gb Mixolydian             # extended ii–V: a side-step, its own key
 B | 16 | Cm7      | C Dorian                  # ii of the ii–V to Bb
 B | 16 | F7       | F Mixolydian              # V7 of Bb: natural tensions
 C | 17 | BbMaj7   | Bb Ionian                 # tonic: the 4th is in the key
@@ -68,7 +68,7 @@ D | 28 | Gm       | G Aeolian                 # vi: the b13 is in the key
 D | 28 | Ebm7     | Eb Dorian                 # ii of Ab7: Dorian
 D | 28 | Ab7      | Ab Lydian Dominant        # back door bVII7 to BbMaj7/F: the #11 is in the key
 D | 29 | BbMaj7/F | Bb Ionian                 # tonic: the 4th is in the key
-D | 30 | Cm7/F    | F Mixolydian              # static sus: Mixolydian
+D | 30 | Cm7/F    | F Mixolydian              # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 D | 30 | F7       | F Mixolydian              # V7 of Bb: natural tensions
 D | 31 | BbMaj7   | Bb Ionian                 # tonic: the 4th is in the key
 D | 32 | Cm7      | C Dorian                  # ii of the ii–V to Bb

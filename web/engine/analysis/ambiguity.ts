@@ -3,7 +3,7 @@ import { readChord } from '../qualities'
 import { functionCandidates, impliedTarget, parseFunction } from './functions'
 import type { Analysis, Area } from './index'
 import { keyCode, keyText, sameKey } from './keys'
-import { ownNumeral } from './numerals'
+import { ownNumeral } from './degrees'
 import { familyOf } from './stream'
 
 /**

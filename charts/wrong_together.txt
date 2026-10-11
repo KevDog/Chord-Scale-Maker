@@ -5,7 +5,7 @@ style: Ballad
 key: F
 form: AB, 16 bars
 source: Colorado Cookbook, p. 272
-# analysis: 2026-10-09, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 # area: Db major (bars 1–3)
@@ -17,7 +17,7 @@ Coda | 3  | C7alt  | C Altered            # from the symbol: altered
 Coda | 4  | FMaj7  | F Ionian             # tonic: the 4th is in the key
 # the coda is Am7 D7 DbMaj7 C7alt to FMaj7
 A    | 1  | Em9    | E Dorian             # ii of A7#11: Dorian
-A    | 1  | A7#11  | A Lydian Dominant    # passing ii–V: its own key; #11 from the symbol
+A    | 1  | A7#11  | A Lydian Dominant    # extended ii–V: a side-step, its own key; #11 from the symbol
 A    | 2  | Gm9    | G Dorian             # ii of the ii–V to F
 A    | 2  | C7#11  | C Lydian Dominant    # V7 of F: the #11 from the symbol
 A    | 3  | FMaj7  | F Ionian             # tonic: the 4th is in the key
@@ -42,7 +42,7 @@ B    | 10 | G7#11  | G Lydian Dominant    # V7 of C: the #11 from the symbol
 B    | 11 | CMaj7  | C Ionian             # tonic: the 4th is in the key
 B    | 11 | F7#11  | F Lydian Dominant    # tritone substitute: resolves down a half step to Em9
 B    | 12 | Em9    | E Dorian             # ii of A7#11: Dorian
-B    | 12 | A7#11  | A Lydian Dominant    # passing ii–V: its own key; #11 from the symbol
+B    | 12 | A7#11  | A Lydian Dominant    # extended ii–V: a side-step, its own key; #11 from the symbol
 # area: F major (bars 13–16)
 B    | 13 | Gm9    | G Dorian             # ii of the ii–V to F
 B    | 13 | C7#11  | C Lydian Dominant    # V7 of F: the #11 from the symbol
@@ -51,5 +51,5 @@ B    | 14 | Bb7#11 | Bb Lydian Dominant   # tritone substitute: resolves down a 
 B    | 15 | A7b13  | A Phrygian Dominant  # V7 of D7b9, on the way to G minor: b9 and b13 are in the key
 B    | 15 | D7b9   | D Phrygian Dominant  # V7 of G minor, the chain's last link: b9 and b13 are in the key
 B    | 16 | Gm9    | G Dorian             # ii of C7sus4: Dorian
-B    | 16 | C7sus4 | C Mixolydian         # static sus: Mixolydian
+B    | 16 | C7sus4 | C Mixolydian         # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 B    | 16 | C7     | C Mixolydian         # V7 in F, not resolving: natural tensions

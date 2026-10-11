@@ -4,7 +4,7 @@ style: Medium up
 key: F
 form: AABC
 source: Colorado Cookbook, p. 85
-# analysis: 2026-10-08, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 # area: F major (bars 1–17)
@@ -17,7 +17,7 @@ A1 | 4  | C7     | C Mixolydian         # V7/I in F: natural tensions
 A1 | 5  | Am     | A Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
 A1 | 6  | Dm     | D Aeolian            # vi: the b13 is in the key
 A1 | 7  | Abm7   | Ab Dorian            # ii of Db7: Dorian
-A1 | 7  | Db7    | Db Mixolydian        # passing ii–V: its own key
+A1 | 7  | Db7    | Db Mixolydian        # extended ii–V: a side-step, its own key
 A1 | 8  | Gm7    | G Dorian             # ii of the ii–V to F
 A1 | 8  | C7     | C Mixolydian         # V7 of F: natural tensions
 A2 | 9  | FMaj7  | F Ionian             # tonic: the 4th is in the key

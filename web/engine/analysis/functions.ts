@@ -1,7 +1,6 @@
 import { mod, parseRoot, pcOf, rootName, shiftBy, type Spelled } from '../pitch'
 import { type Key, keyText, parseKey, sameKey } from './keys'
-import { glyph, ownNumeral } from './numerals'
-import { roman } from './rules'
+import { glyph, ownNumeral, roman } from './degrees'
 import type { Family } from './stream'
 
 /**
@@ -23,6 +22,8 @@ export type StatedFunction = Readonly<{
   family: Family
   /** the chord it leads to, as a degree of the key; null when it names none */
   target: Target | null
+  /** written in parentheses, (V7/ii): the expected resolution doesn't come; the chord keeps that resolution's scale */
+  deceptive: boolean
 }>
 
 const ROMAN: Readonly<Record<string, Degree>> = {
@@ -35,7 +36,7 @@ const ROMAN: Readonly<Record<string, Degree>> = {
   VII: { steps: 6, semis: 11 },
 }
 const NUMERAL = 'VII|VI|V|IV|III|II|I|vii|vi|v|iv|iii|ii|i'
-/** each quality spelling, and how the Changes sheet writes it */
+/** each quality spelling, and how the Changes sheet writes it; a hyphen (or en dash) is minor, as Berklee writes it */
 export const SUFFIXES: Readonly<Record<string, string>> = {
   '': '',
   maj7: 'maj7',
@@ -45,20 +46,30 @@ export const SUFFIXES: Readonly<Record<string, string>> = {
   'maj7#5': 'maj7♯5',
   '6': '6',
   m: '',
+  '-': '',
   m7: '7',
+  '-7': '7',
   m6: '6',
+  '-6': '6',
   '(maj7)': '(maj7)',
   mMaj7: '(maj7)',
+  '-(maj7)': '(maj7)',
+  '-Maj7': '(maj7)',
   '7': '7',
   ø7: 'ø7',
   ø: 'ø7',
   m7b5: 'ø7',
+  'm7(b5)': 'ø7',
+  '-7b5': 'ø7',
+  '-7(b5)': 'ø7',
   o7: '°7',
   o: '°7',
   dim7: '°7',
-  '7sus4': '7sus',
-  '7sus': '7sus',
-  sus: '7sus',
+  '7sus4': '7sus4',
+  '7(sus4)': '7sus4',
+  '7sus': '7sus4',
+  sus4: '7sus4',
+  sus: '7sus4',
 }
 const SUFFIX = Object.keys(SUFFIXES)
   .filter(Boolean)
@@ -67,20 +78,33 @@ const SUFFIX = Object.keys(SUFFIXES)
   .join('|')
 const FUNCTION_RE = new RegExp(`^(sub)?([b#]?)(${NUMERAL})(${SUFFIX})?(?:/([b#]?)(${NUMERAL}))?$`)
 
-/** glyphs to the ASCII the pattern reads: ♭ ♯ ° Δ */
-const ascii = (s: string): string => s.replace(/♭/g, 'b').replace(/♯/g, '#').replace(/°/g, 'o').replace(/Δ7?/g, 'maj7')
+/** glyphs to the ASCII the pattern reads: ♭ ♯ ° Δ ∆ (U+0394, U+2206) Ø, the en dash as a hyphen, and Sub in any case */
+const ascii = (s: string): string =>
+  s
+    .replace(/♭/g, 'b')
+    .replace(/♯/g, '#')
+    .replace(/°/g, 'o')
+    .replace(/[\u0394\u2206]7?/g, 'maj7')
+    .replace(/Ø/g, 'ø')
+    .replace(/–/g, '-')
+    .replace(/^sub/i, 'sub')
 const isUpper = (numeral: string): boolean => numeral === numeral.toUpperCase()
 const degreeOf = (acc: string, numeral: string): Degree => {
   const d = ROMAN[numeral.toUpperCase()] ?? { steps: 0, semis: 0 }
   return { steps: d.steps, semis: d.semis + (acc === 'b' ? -1 : acc === '#' ? 1 : 0) }
 }
 
+const HALFDIM: ReadonlySet<string> = new Set(['ø7', 'ø', 'm7b5', 'm7(b5)', '-7b5', '-7(b5)'])
+const DIM: ReadonlySet<string> = new Set(['o7', 'o', 'dim7'])
+const MINOR: ReadonlySet<string> = new Set(['(maj7)', 'mMaj7', 'm', 'm7', 'm6', '-', '-7', '-6', '-(maj7)', '-Maj7'])
+const MAJOR: ReadonlySet<string> = new Set(['maj7', 'Maj7', 'M7', 'maj', 'maj7#5'])
+
 function familyOf(suffix: string, upper: boolean): Family {
-  if (/^(ø7?|m7b5)$/.test(suffix)) return 'halfdim'
-  if (/^(o7?|dim7)$/.test(suffix)) return 'dim'
+  if (HALFDIM.has(suffix)) return 'halfdim'
+  if (DIM.has(suffix)) return 'dim'
   if (/sus/.test(suffix)) return 'sus'
-  if (/^(\(maj7\)|mMaj7|m|m7|m6)$/.test(suffix)) return 'minor'
-  if (/^(maj7|Maj7|M7|maj|maj7#5)$/.test(suffix)) return 'major'
+  if (MINOR.has(suffix)) return 'minor'
+  if (MAJOR.has(suffix)) return 'major'
   if (suffix === '7') return upper ? 'dominant' : 'minor'
   return upper ? 'major' : 'minor' // a triad, or a sixth chord
 }
@@ -95,24 +119,33 @@ export const FUNCTION_ERRORS = {
   majorOnLowerCase: (body: string): string => `${body}: a major quality on a lower-case numeral`,
 } as const
 
+/**
+ * an author's function, read leniently (Berklee's II-7, VII-7(♭5), SubV/II, I∆7 as well as the sheet's own ii7,
+ * viiø7, subV7/ii, Imaj7) into the text the sheet prints. In parentheses, (V7/ii), it is deceptive: the chord's
+ * expected resolution doesn't come, and it still takes that resolution's scale.
+ */
 export function parseFunction(text: string): StatedFunction | string {
   const colon = text.indexOf(':')
   const keyPart = colon >= 0 ? text.slice(0, colon).trim() : ''
   const body = (colon >= 0 ? text.slice(colon + 1) : text).trim()
-  const key = keyPart ? parseKey(keyPart) : null
+  const key = keyPart ? parseKey(keyPart.replace(/♭/g, 'b').replace(/♯/g, '#')) : null
   if (keyPart && !key) return FUNCTION_ERRORS.notAKey(keyPart)
-  const m = FUNCTION_RE.exec(ascii(body))
+  const inner = /^\((.+)\)$/.exec(body)?.[1]?.trim()
+  const m = FUNCTION_RE.exec(ascii(inner ?? body))
   if (!m) return FUNCTION_ERRORS.notAFunction(body)
-  const [, sub = '', acc = '', num = '', suffix = '', tacc = '', tnum = ''] = m
+  const [, sub = '', acc = '', num = '', written = '', tacc = '', tnum = ''] = m
+  const suffix = sub && !written ? '7' : written // subV is subV7
   const family = familyOf(suffix, isUpper(num))
   if (sub && family !== 'dominant') return FUNCTION_ERRORS.subNotDominant()
   if (!isUpper(num) && family === 'major') return FUNCTION_ERRORS.majorOnLowerCase(body)
   const cased = LOWER.has(family) ? num.toLowerCase() : num.toUpperCase()
   const target = tnum ? { ...degreeOf(tacc, tnum), minor: !isUpper(tnum) } : null
+  const fnText = `${sub ? 'sub' : ''}${glyph(acc)}${cased}${SUFFIXES[suffix] ?? ''}${tnum ? `/${glyph(tacc)}${tnum}` : ''}`
   return {
-    text: `${sub ? 'sub' : ''}${glyph(acc)}${cased}${SUFFIXES[suffix] ?? ''}${tnum ? `/${glyph(tacc)}${tnum}` : ''}`,
+    text: inner === undefined ? fnText : `(${fnText})`,
     key,
     sub: !!sub,
+    deceptive: inner !== undefined,
     degree: degreeOf(acc, num),
     family,
     target,
@@ -197,7 +230,7 @@ export function functionCandidates(e: Readonly<{ pc: number; family: Family | nu
   }
   const leads: Readonly<Record<Family, readonly string[]>> = {
     dominant: [at('V7', e.pc + 5, false), at('V7', e.pc + 5, true), at('subV7', e.pc - 1, false), at('subV7', e.pc - 1, true), at('♭VII7', e.pc + 2, false)],
-    sus: [at('V7sus', e.pc + 5, false), at('V7sus', e.pc + 5, true)],
+    sus: [at('V7sus4', e.pc + 5, false), at('V7sus4', e.pc + 5, true)],
     minor: [at('ii7', e.pc - 2, false)],
     halfdim: [at('iiø7', e.pc - 2, true)],
     dim: [at('vii°7', e.pc + 1, false), at('vii°7', e.pc + 1, true)],

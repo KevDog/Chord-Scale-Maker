@@ -4,7 +4,7 @@ style: Medium
 key: Eb
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 70
-# analysis: 2026-10-08, rules v1; Eb
+# analysis: 2026-10-11, rules v1; Eb
 
 # section | bar | chord | scale
 # area: Eb major (bars 1–12)
@@ -23,7 +23,7 @@ B | 10 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
 B | 10 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
 B | 11 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
 B | 12 | Gm7    | G Dorian             # ii of C7: Dorian
-B | 12 | C7     | C Mixolydian         # passing ii–V: its own key
+B | 12 | C7     | C Mixolydian         # extended ii–V: a side-step, its own key
 # area: Gb major (bars 13–16)
 B | 13 | Abm7   | Ab Dorian            # ii of the ii–V to Gb
 B | 14 | Db7    | Db Mixolydian        # V7 of Gb: natural tensions
@@ -47,7 +47,7 @@ D | 26 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
 D | 26 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
 D | 27 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
 D | 28 | Abm7   | Ab Dorian            # ii of Db7: Dorian
-D | 28 | Db7    | Db Mixolydian        # passing ii–V: its own key
+D | 28 | Db7    | Db Mixolydian        # extended ii–V: a side-step, its own key
 D | 29 | Gm7    | G Dorian             # ii of the ii–V to F minor
 D | 29 | C7     | C Mixolydian b6      # V7/ii in Eb: the b13 is in the key
 D | 30 | Fm7    | F Dorian             # ii of the ii–V to Eb

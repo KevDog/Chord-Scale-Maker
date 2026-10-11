@@ -1,10 +1,12 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { analyse } from '../analysis'
-import { fitError, functionCandidates, functionRoot, impliedTarget, parseFunction, sameFunction, type StatedFunction } from '../analysis/functions'
+import { buildChanges } from '../changes'
+import { FUNCTION_ERRORS, fitError, functionCandidates, functionRoot, impliedTarget, parseFunction, sameFunction, type StatedFunction } from '../analysis/functions'
 import { type Key, parseKey } from '../analysis/keys'
 import { familyOf } from '../analysis/stream'
 import { parseChart } from '../chart'
+import { CONCERT } from '../part'
 import { pcOf, rootName } from '../pitch'
 import { readChord } from '../qualities'
 import { isSyncCopy } from '../util'
@@ -37,7 +39,7 @@ describe('parseFunction', () => {
       ['IVMaj7', 'IVmaj7'],
       ['IΔ7', 'Imaj7'],
       ['I6', 'I6'],
-      ['V7sus4', 'V7sus'],
+      ['V7sus4', 'V7sus4'],
       ['#ivø', '♯ivø7'],
       ['i(maj7)', 'i(maj7)'],
       ['♭VI7', '♭VI7'],
@@ -70,6 +72,97 @@ describe('parseFunction', () => {
     expect(sameFunction('D: V7/ii', 'D:V7/ii')).toBe(true)
     expect(sameFunction('V7/ii', 'D: V7/ii')).toBe(false)
     expect(sameFunction('X7', 'X7')).toBe(false) // not a function at all
+  })
+})
+
+/** each input's text, or the parser's message */
+const texts = (inputs: readonly string[]): string[] =>
+  inputs.map((t) => {
+    const f = parseFunction(t)
+    return typeof f === 'string' ? f : f.text
+  })
+
+describe('the spellings a Berklee-trained author types (function labels spec §2)', () => {
+  it('a hyphen or an en dash for minor', () => {
+    expect(texts(['II-7', 'II–7', 'I-6', 'VI-7', 'I-'])).toEqual(['ii7', 'ii7', 'i6', 'vi7', 'i'])
+    expect(['II-7', 'II–7', 'I-6'].map((t) => fn(t).family)).toEqual(['minor', 'minor', 'minor'])
+  })
+
+  it('a minor-major 7th with a hyphen', () => {
+    expect(texts(['I-(maj7)', 'I-Maj7'])).toEqual(['i(maj7)', 'i(maj7)'])
+    expect(fn('I-(maj7)').family).toBe('minor')
+  })
+
+  it('a half-diminished chord as -7(♭5), -7b5, m7(b5) or Ø7', () => {
+    expect(texts(['VII-7(♭5)', 'VII-7b5', '♯IV-7(♭5)', 'VIIm7(b5)', 'VIIØ7'])).toEqual(['viiø7', 'viiø7', '♯ivø7', 'viiø7', 'viiø7'])
+    expect(['VII-7(♭5)', 'VIIm7(b5)', 'VIIØ7'].map((t) => fn(t).family)).toEqual(['halfdim', 'halfdim', 'halfdim'])
+  })
+
+  it('a sus as 7(sus4) or sus4', () => {
+    expect(texts(['V7(sus4)', 'Vsus4'])).toEqual(['V7sus4', 'V7sus4'])
+    expect(fn('V7(sus4)').family).toBe('sus')
+  })
+
+  it('Sub or sub in any case, with or without the 7', () => {
+    expect(texts(['SubV7/ii', 'subV/ii', 'SubV/iii', 'SUBV7', 'subV'])).toEqual(['subV7/ii', 'subV7/ii', 'subV7/iii', 'subV7', 'subV7'])
+    expect(fn('subV/ii')).toMatchObject({ sub: true, family: 'dominant' })
+    expect(texts(['SubV7/II', 'subV/II', 'SubV/III'])).toEqual(['subV7/II', 'subV7/II', 'subV7/III']) // the target keeps its case (G6 deferred)
+  })
+
+  it('∆ (U+2206, what Option-J types on a Mac) as well as Δ (U+0394)', () => {
+    expect(texts(['I\u22067', 'I\u03947', 'IV\u2206'])).toEqual(['Imaj7', 'Imaj7', 'IVmaj7'])
+  })
+
+  it('a glyph flat or sharp in the key prefix', () => {
+    expect([fn('B♭: V7/ii').key?.name, fn('B♭: V7/ii').text]).toEqual(['Bb major', 'V7/ii'])
+    expect(fn('F♯m: iiø7').key?.name).toBe('F# minor')
+    expect(sameFunction('B♭: V7/ii', 'Bb: V7/ii')).toBe(true)
+  })
+
+  it('parentheses: a deceptive resolution, printed with its parentheses', () => {
+    expect(texts(['(V7/ii)', '(III7)', 'D: (V7/ii)'])).toEqual(['(V7/ii)', '(III7)', '(V7/ii)'])
+    expect([fn('(V7/ii)').deceptive, fn('(III7)').deceptive, fn('V7/ii').deceptive]).toEqual([true, true, false])
+    expect(fn('D: (V7/ii)').key?.name).toBe('D major')
+    expect([fn('(V7/II)').text, fn('(V7/II)').deceptive]).toEqual(['(V7/II)', true]) // the target keeps its case (G6 deferred)
+    expect(sameFunction('(V7/ii)', 'V7/ii')).toBe(false) // a different statement: the resolution doesn't happen
+  })
+
+  it('an arrow is a display mark, not a function (ruling R4)', () => {
+    expect(parseFunction('→')).toBe(FUNCTION_ERRORS.notAFunction('→'))
+  })
+})
+
+describe('an upper-case target names a major chord (G6 deferred: the sheet\'s convention)', () => {
+  it('upper case is major, lower case minor, whatever the key holds on that degree', () => {
+    expect(impliedTarget(fn('V7/II'), key('C'))).toEqual({ steps: 1, semis: 2, minor: false })
+    expect(impliedTarget(fn('V7/ii'), key('C'))).toEqual({ steps: 1, semis: 2, minor: true })
+    expect(impliedTarget(fn('(V7/II)'), key('C'))).toEqual({ steps: 1, semis: 2, minor: false })
+    expect(impliedTarget(fn('subV7/III'), key('C'))).toEqual({ steps: 2, semis: 4, minor: false })
+  })
+})
+
+describe('a deceptive function changes no scale', () => {
+  it('leads where the plain function leads, and puts its chord on the same root', () => {
+    expect(impliedTarget(fn('(V7/ii)'), key('C'))).toEqual(impliedTarget(fn('V7/ii'), key('C')))
+    expect(impliedTarget(fn('(III7)'), key('C'))).toBeNull()
+    expect(rootName(functionRoot(fn('(V7/ii)'), key('C')))).toBe('A')
+  })
+
+  it("fits its chord without the resolution, and is checked on the chord as the plain one is", () => {
+    expect(fitError(fn('(V7/ii)'), { chord: 'A7', pc: 9, family: 'dominant' }, key('C'))).toBeNull()
+    expect(fitError(fn('(V7/ii)'), { chord: 'Bb7', pc: 10, family: 'dominant' }, key('C'))).toBe('(V7/ii) in C is on A, not Bb7')
+  })
+
+  it("keeps the expected target's scale where the resolution doesn't come; the sheet prints the parentheses", () => {
+    // D7 to E♭: the deceptive cadence of G minor (V to ♭VI)
+    const chart = (f: string) => `title: T\nkey: C\nbars: 4\nA | 1 | Cmaj7\nA | 2 | D7 | | ${f}\nA | 3 | Ebmaj7\nA | 4 | G7\n`
+    const d7 = (f: string) => analyse(parseChart(chart(f)).value).rows.find((r) => r.chord === 'D7')
+    expect(d7('')).toMatchObject({ numeral: 'II7', scale: 'D Mixolydian' })
+    expect(d7('Gm: V7')).toMatchObject({ numeral: 'V7', scale: 'D Phrygian Dominant', rule: 'D4' })
+    expect(d7('Gm: (V7)')).toMatchObject({ numeral: '(V7)', scale: 'D Phrygian Dominant', rule: 'D4', fn: d7('Gm: V7')?.fn, reason: d7('Gm: V7')?.reason, stated: true })
+    expect(d7('(V7/v)')).toMatchObject({ numeral: '(V7/v)', scale: d7('V7/v')?.scale, rule: d7('V7/v')?.rule })
+    const sheet = buildChanges(parseChart(chart('Gm: (V7)')).value, CONCERT)
+    expect(sheet.lines.flatMap((l) => l.bars).flatMap((b) => b.chords).find((c) => c.text.startsWith('D'))?.numeral).toBe('(V7)')
   })
 })
 
@@ -129,9 +222,11 @@ describe('functionCandidates', () => {
 describe('the round trip with the Changes sheet', () => {
   it('reads back every numeral the analyser gives the library, in the same spelling', () => {
     for (const { f, r } of libraryRows()) {
-      if (r.numeral === '?') continue
+      if (r.numeral === '?' || r.numeral === '→') continue // no function: an unread chord, a link of a chain of dominants
       const back = parseFunction(r.numeral)
       expect(typeof back === 'string' ? back : back.text, `${f} bar ${r.bar} ${r.chord}`).toBe(r.numeral)
+      const deceptive = parseFunction(`(${r.numeral})`) // the same numeral, its resolution not coming
+      expect(typeof deceptive === 'string' ? deceptive : [deceptive.text, deceptive.deceptive], `${f} bar ${r.bar} ${r.chord}`).toEqual([`(${r.numeral})`, true])
     }
   })
 })

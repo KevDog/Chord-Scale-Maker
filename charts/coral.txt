@@ -4,12 +4,12 @@ style: Ballad
 key: Fm
 form: A, 12 bars
 source: Colorado Cookbook, p. 74
-# analysis: 2026-10-08, rules v1; F minor
+# analysis: 2026-10-11, rules v1; F minor
 
 # section | bar | chord | scale
 A | 1  | Cm7       | C Dorian                 # ii of F7: Dorian
-A | 1  | F7        | F Mixolydian             # passing ii–V: its own key
-A | 2  | D/Bb      | D Lydian                 # a non-tonic major chord: Lydian
+A | 1  | F7        | F Mixolydian             # extended ii–V: a side-step, its own key
+A | 2  | D/Bb      | D Lydian                 # ♭III, borrowed from Cb minor: Lydian (its ♯11 is in the key)
 A | 3  | BbMaj9    | Bb Lydian                # a non-tonic major chord: Lydian
 A | 4  | Am7b5     | A Locrian                # iiø7 of the ii–V to G minor: the b9 is in the key
 A | 4  | D7b9      | D Half-Whole Diminished  # V7/bvi in Cb: the #11 is in the key, the b9 from the symbol

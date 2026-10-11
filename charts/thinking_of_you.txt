@@ -4,18 +4,18 @@ style: Medium
 key: Eb
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 245
-# analysis: 2026-10-08, rules v1; Eb
+# analysis: 2026-10-11, rules v1; Eb
 
 # section | bar | chord | scale
 A1 | 1  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 A1 | 2  | Am7b5  | A Locrian                 # iiø7 of D7b9: the b9 is in the key
 A1 | 2  | D7b9   | D Phrygian Dominant       # V7/iii in Eb: b9 and b13 are in the key
 A1 | 3  | Abm7   | Ab Dorian                 # ii of Db7: Dorian
-A1 | 3  | Db7    | Db Mixolydian             # passing ii–V: its own key
+A1 | 3  | Db7    | Db Mixolydian             # extended ii–V: a side-step, its own key
 A1 | 4  | Gm7    | G Dorian                  # ii of C7b9: Dorian
-A1 | 4  | C7b9   | C Half-Whole Diminished   # passing ii–V: its own key; b9 from the symbol
+A1 | 4  | C7b9   | C Half-Whole Diminished   # extended ii–V: a side-step, its own key; b9 from the symbol
 A1 | 5  | F#m7   | F# Dorian                 # ii of B7b9: Dorian
-A1 | 5  | B7b9   | B Half-Whole Diminished   # passing ii–V: its own key; b9 from the symbol
+A1 | 5  | B7b9   | B Half-Whole Diminished   # extended ii–V: a side-step, its own key; b9 from the symbol
 A1 | 6  | Fm7    | F Dorian                  # ii of Bb7b9: Dorian
 A1 | 6  | Bb7b9  | Bb Half-Whole Diminished  # V7/I in Eb: the b9 from the symbol
 A1 | 7  | Gm7    | G Dorian                  # ii of the ii–V to F minor
@@ -26,11 +26,11 @@ A2 | 9  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 A2 | 10 | Am7b5  | A Locrian                 # iiø7 of D7b9: the b9 is in the key
 A2 | 10 | D7b9   | D Phrygian Dominant       # V7/iii in Eb: b9 and b13 are in the key
 A2 | 11 | Abm7   | Ab Dorian                 # ii of Db7: Dorian
-A2 | 11 | Db7    | Db Mixolydian             # passing ii–V: its own key
+A2 | 11 | Db7    | Db Mixolydian             # extended ii–V: a side-step, its own key
 A2 | 12 | Gm7    | G Dorian                  # ii of C7b9: Dorian
-A2 | 12 | C7b9   | C Half-Whole Diminished   # passing ii–V: its own key; b9 from the symbol
+A2 | 12 | C7b9   | C Half-Whole Diminished   # extended ii–V: a side-step, its own key; b9 from the symbol
 A2 | 13 | F#m7   | F# Dorian                 # ii of B7b9: Dorian
-A2 | 13 | B7b9   | B Half-Whole Diminished   # passing ii–V: its own key; b9 from the symbol
+A2 | 13 | B7b9   | B Half-Whole Diminished   # extended ii–V: a side-step, its own key; b9 from the symbol
 A2 | 14 | Fm7    | F Dorian                  # ii of the ii–V to Eb
 A2 | 14 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
 A2 | 15 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
@@ -48,11 +48,11 @@ A3 | 25 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 A3 | 26 | Am7b5  | A Locrian                 # iiø7 of D7b9: the b9 is in the key
 A3 | 26 | D7b9   | D Phrygian Dominant       # V7/iii in Eb: b9 and b13 are in the key
 A3 | 27 | Abm7   | Ab Dorian                 # ii of Db7: Dorian
-A3 | 27 | Db7    | Db Mixolydian             # passing ii–V: its own key
+A3 | 27 | Db7    | Db Mixolydian             # extended ii–V: a side-step, its own key
 A3 | 28 | Gm7    | G Dorian                  # ii of C7b9: Dorian
-A3 | 28 | C7b9   | C Half-Whole Diminished   # passing ii–V: its own key; b9 from the symbol
+A3 | 28 | C7b9   | C Half-Whole Diminished   # extended ii–V: a side-step, its own key; b9 from the symbol
 A3 | 29 | F#m7   | F# Dorian                 # ii of B7b9: Dorian
-A3 | 29 | B7b9   | B Half-Whole Diminished   # passing ii–V: its own key; b9 from the symbol
+A3 | 29 | B7b9   | B Half-Whole Diminished   # extended ii–V: a side-step, its own key; b9 from the symbol
 A3 | 30 | Fm7    | F Dorian                  # ii of the ii–V to Eb
 A3 | 30 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
 A3 | 31 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key

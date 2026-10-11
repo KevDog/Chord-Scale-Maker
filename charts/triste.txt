@@ -5,13 +5,13 @@ style: Latin
 key: Bb
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 251
-# analysis: 2026-10-08, rules v1; Bb
+# analysis: 2026-10-11, rules v1; Bb
 
 # section | bar | chord | scale
 # the lead sheet repeats Bbm7 Eb7 for two more bars before going back to the top
 # area: Bb major (bars 1–11)
 A | 1  | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
-A | 3  | GbMaj7 | Gb Lydian                 # a non-tonic major chord: Lydian
+A | 3  | GbMaj7 | Gb Lydian                 # ♭VImaj7, borrowed from Bb minor: Lydian (its ♯11 is in the key)
 A | 4  | B7#11  | B Lydian Dominant         # tritone substitute: resolves down a half step to BbMaj7
 A | 5  | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
 A | 7  | Dm7    | D Dorian                  # ii of the ii–V to C minor
@@ -34,7 +34,7 @@ B | 15 | G7     | G Lydian Dominant         # V7/bvii in D: the #11 is in the ke
 B | 16 | Cm7    | C Dorian                  # ii of the ii–V to Bb
 B | 16 | F7     | F Mixolydian              # V7 of Bb: natural tensions
 C | 17 | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
-C | 19 | GbMaj7 | Gb Lydian                 # a non-tonic major chord: Lydian
+C | 19 | GbMaj7 | Gb Lydian                 # ♭VImaj7, borrowed from Bb minor: Lydian (its ♯11 is in the key)
 C | 20 | B7#11  | B Lydian Dominant         # tritone substitute: resolves down a half step to BbMaj7
 C | 21 | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
 C | 23 | Fm7    | F Dorian                  # ii of the ii–V to Eb
@@ -46,4 +46,4 @@ D | 28 | C7#11  | C Lydian Dominant         # V7/V in Bb: the #11 from the symbo
 D | 29 | Cm7    | C Dorian                  # ii of the ii–V to Bb minor
 D | 30 | F7     | F Mixolydian              # V7 of Bb: natural tensions
 D | 31 | Bbm7   | Bb Dorian                 # ii of Eb7: Dorian
-D | 32 | Eb7    | Eb Mixolydian             # passing ii–V: its own key
+D | 32 | Eb7    | Eb Mixolydian             # extended ii–V: a side-step, its own key

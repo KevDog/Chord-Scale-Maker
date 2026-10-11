@@ -4,19 +4,19 @@ style: Medium up
 key: Eb
 form: AA, 30 bars
 source: Colorado Cookbook, p. 136
-# analysis: 2026-10-08, rules v1; Eb
+# analysis: 2026-10-11, rules v1; Eb
 
 # section | bar | chord | scale
 # area: Eb major (bars 1–5)
 A1  | 1  | Em7    | E Dorian             # ii of A7: Dorian
-A1  | 1  | A7     | A Mixolydian         # passing ii–V: its own key
+A1  | 1  | A7     | A Mixolydian         # extended ii–V: a side-step, its own key
 A1  | 2  | Fm7    | F Dorian             # ii of the ii–V to Eb
 A1  | 2  | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
 A1  | 3  | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
 A1  | 4  | Abm7   | Ab Dorian            # ii of Db7: Dorian
-A1  | 4  | Db7    | Db Mixolydian        # passing ii–V: its own key
+A1  | 4  | Db7    | Db Mixolydian        # extended ii–V: a side-step, its own key
 A1  | 5  | Dm7    | D Dorian             # ii of G7: Dorian
-A1  | 5  | G7     | G Mixolydian         # passing ii–V: its own key
+A1  | 5  | G7     | G Mixolydian         # extended ii–V: a side-step, its own key
 # area: Db major (bars 6–7)
 A1  | 6  | Ebm7   | Eb Dorian            # ii of the ii–V to Db
 A1  | 6  | Ab7    | Ab Mixolydian        # V7 of Db: natural tensions
@@ -29,7 +29,7 @@ A1  | 10 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
 A1  | 10 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
 A1  | 11 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
 A1  | 12 | Abm7   | Ab Dorian            # ii of Db7: Dorian
-A1  | 12 | Db7    | Db Mixolydian        # passing ii–V: its own key
+A1  | 12 | Db7    | Db Mixolydian        # extended ii–V: a side-step, its own key
 A1  | 13 | Gm     | G Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
 # area: Gb major (bars 14–15)
 A1  | 14 | Abm7   | Ab Dorian            # ii of the ii–V to Gb
@@ -39,14 +39,14 @@ A1  | 15 | GbMaj7 | Gb Ionian            # tonic: the 4th is in the key
 A1  | 16 | Fm7    | F Dorian             # ii of Bb7: Dorian
 A1  | 16 | Bb7    | Bb Mixolydian        # V7/I in Eb: natural tensions
 A2  | 17 | Em7    | E Dorian             # ii of A7: Dorian
-A2  | 17 | A7     | A Mixolydian         # passing ii–V: its own key
+A2  | 17 | A7     | A Mixolydian         # extended ii–V: a side-step, its own key
 A2  | 18 | Fm7    | F Dorian             # ii of the ii–V to Eb
 A2  | 18 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
 A2  | 19 | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
 A2  | 20 | Abm7   | Ab Dorian            # ii of Db7: Dorian
-A2  | 20 | Db7    | Db Mixolydian        # passing ii–V: its own key
+A2  | 20 | Db7    | Db Mixolydian        # extended ii–V: a side-step, its own key
 A2  | 21 | Dm7    | D Dorian             # ii of G7: Dorian
-A2  | 21 | G7     | G Mixolydian         # passing ii–V: its own key
+A2  | 21 | G7     | G Mixolydian         # extended ii–V: a side-step, its own key
 # area: Db major (bars 22–23)
 A2  | 22 | Ebm7   | Eb Dorian            # ii of the ii–V to Db
 A2  | 22 | Ab7    | Ab Mixolydian        # V7 of Db: natural tensions
@@ -59,7 +59,7 @@ A2  | 26 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
 A2  | 26 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
 A2  | 27 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
 A2  | 28 | Abm7   | Ab Dorian            # ii of Db7: Dorian
-A2  | 28 | Db7    | Db Mixolydian        # passing ii–V: its own key
+A2  | 28 | Db7    | Db Mixolydian        # extended ii–V: a side-step, its own key
 A2  | 29 | Gm7    | G Dorian             # ii of the ii–V to F minor
 A2  | 29 | C7     | C Mixolydian b6      # V7/ii in Eb: the b13 is in the key
 A2  | 30 | Fm7    | F Dorian             # ii of Bb7: Dorian

@@ -4,7 +4,7 @@ style: Latin
 key: Db
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 246
-# analysis: 2026-10-09, rules v1; Db
+# analysis: 2026-10-11, rules v1; Db
 
 # section | bar | chord | scale
 # area: Db major (bars 1–4)
@@ -25,7 +25,7 @@ A    | 6  | F7alt  | F Altered            # from the symbol: altered
 A    | 7  | BbMaj7 | Bb Ionian            # tonic: the 4th is in the key
 A    | 8  | G7b9   | G Phrygian Dominant  # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
 B    | 9  | Cm7    | C Dorian             # ii: Dorian, the key’s own notes
-B    | 10 | AbMaj7 | Ab Lydian            # a non-tonic major chord: Lydian
+B    | 10 | AbMaj7 | Ab Lydian            # ♭VIImaj7, borrowed from Bb minor: Lydian (its ♯11 is in the key)
 # area: Db major (bars 10–11)
 B    | 10 | G7alt  | G Altered            # from the symbol: altered
 B    | 11 | GbMaj7 | Gb Lydian            # IV: the #4 is the key’s 7th
@@ -44,11 +44,11 @@ C    | 19 | Gm11   | G Aeolian            # vi: the b13 is in the key
 C    | 20 | Cm7    | C Dorian             # ii: Dorian, the key’s own notes
 C    | 20 | A7alt  | A Altered            # from the symbol: altered
 C    | 21 | Dm11   | D Dorian             # ii of G7: Dorian
-C    | 22 | G7     | G Mixolydian         # passing ii–V: its own key
+C    | 22 | G7     | G Mixolydian         # extended ii–V: a side-step, its own key
 # area: Db major (bars 22–24)
 C    | 22 | G7alt  | G Altered            # from the symbol: altered
 C    | 23 | GbMaj7 | Gb Lydian            # IV: the #4 is the key’s 7th
-C    | 23 | CbMaj7 | Cb Lydian            # a non-tonic major chord: Lydian
+C    | 23 | CbMaj7 | Cb Lydian            # ♭VIImaj7, borrowed from Db minor: Lydian (its ♯11 is in the key)
 C    | 24 | Bbm7   | Bb Aeolian           # vi: the b13 is in the key
 # area: C minor (bars 24–25)
 C    | 24 | G7alt  | G Altered            # from the symbol: altered

@@ -4,7 +4,7 @@ style: Medium
 key: Db
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 225
-# analysis: 2026-10-08, rules v1; Db
+# analysis: 2026-10-11, rules v1; Db
 
 # section | bar | chord | scale
 A1 | 1  | DbMaj7 | Db Ionian             # tonic: the 4th is in the key
@@ -35,14 +35,14 @@ A2 | 16 | Db7    | Db Mixolydian         # extended dominant: V7 of Gb7
 B  | 17 | Gb7    | Gb Lydian Dominant    # IV7 in Db, not resolving: the #11 is in the key
 B  | 18 | G7     | G Lydian Dominant     # tritone substitute: resolves down a half step to Gb7
 B  | 18 | Gb7    | Gb Mixolydian         # extended dominant: V7 of B7
-B  | 19 | B7     | B Lydian Dominant     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 19 | B7     | B Lydian Dominant     # ♭VII7 from the parallel minor: Lydian Dominant
 B  | 20 | D7     | D Lydian Dominant     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
 B  | 20 | B7     | B Mixolydian          # extended dominant: V7 of E7
-B  | 21 | E7     | E Lydian Dominant     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 21 | E7     | E Lydian Dominant     # ♭III7 from the parallel minor: Lydian Dominant
 B  | 22 | F7     | F Lydian Dominant     # tritone substitute: resolves down a half step to E7
-B  | 22 | E7     | E Lydian Dominant     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+B  | 22 | E7     | E Lydian Dominant     # ♭III7 from the parallel minor: Lydian Dominant
 B  | 23 | Em7    | E Dorian              # ii of A7: Dorian
-B  | 23 | A7     | A Mixolydian          # passing ii–V: its own key
+B  | 23 | A7     | A Mixolydian          # extended ii–V: a side-step, its own key
 B  | 24 | Ebm7   | Eb Dorian             # ii of the ii–V to Db
 B  | 24 | Ab7    | Ab Mixolydian         # V7 of Db: natural tensions
 A3 | 25 | DbMaj7 | Db Ionian             # tonic: the 4th is in the key

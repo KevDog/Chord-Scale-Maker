@@ -4,7 +4,7 @@ style: Medium
 key: F
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 132
-# analysis: 2026-10-08, rules v1; F
+# analysis: 2026-10-11, rules v1; F
 
 # section | bar | chord | scale
 A1 | 1  | FMaj7  | F Ionian                 # tonic: the 4th is in the key
@@ -14,7 +14,7 @@ A1 | 2  | C7     | C Mixolydian             # V7 of F: natural tensions
 A1 | 3  | FMaj7  | F Ionian                 # tonic: the 4th is in the key
 A1 | 3  | B7#11  | B Lydian Dominant        # tritone substitute: resolves down a half step to BbMaj7
 A1 | 4  | BbMaj7 | Bb Lydian                # IV: the #4 is the key’s 7th
-A1 | 4  | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A1 | 4  | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
 A1 | 5  | Am7    | A Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
 A1 | 5  | Ab7    | Ab Lydian Dominant       # tritone substitute: resolves down a half step to Gm7
 A1 | 6  | Gm7    | G Dorian                 # ii: Dorian, the key’s own notes
@@ -30,7 +30,7 @@ A2 | 10 | C7     | C Mixolydian             # V7 of F: natural tensions
 A2 | 11 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
 A2 | 11 | B7#11  | B Lydian Dominant        # tritone substitute: resolves down a half step to BbMaj7
 A2 | 12 | BbMaj7 | Bb Lydian                # IV: the #4 is the key’s 7th
-A2 | 12 | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A2 | 12 | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
 A2 | 13 | Am7    | A Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
 A2 | 13 | Ab7    | Ab Lydian Dominant       # tritone substitute: resolves down a half step to Gm7
 A2 | 14 | Gm7    | G Dorian                 # ii: Dorian, the key’s own notes
@@ -57,7 +57,7 @@ A3 | 26 | C7     | C Mixolydian             # V7 of F: natural tensions
 A3 | 27 | FMaj7  | F Ionian                 # tonic: the 4th is in the key
 A3 | 27 | B7#11  | B Lydian Dominant        # tritone substitute: resolves down a half step to BbMaj7
 A3 | 28 | BbMaj7 | Bb Lydian                # IV: the #4 is the key’s 7th
-A3 | 28 | Eb7    | Eb Lydian Dominant       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A3 | 28 | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
 A3 | 29 | Am7    | A Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
 A3 | 29 | Ab7    | Ab Lydian Dominant       # tritone substitute: resolves down a half step to Gm7
 A3 | 30 | Gm7    | G Dorian                 # ii: Dorian, the key’s own notes

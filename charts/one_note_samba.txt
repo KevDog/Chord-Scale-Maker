@@ -5,7 +5,7 @@ style: Latin
 key: Bb
 form: ABC, 40 bars
 source: Colorado Cookbook, p. 170
-# analysis: 2026-10-08, rules v1; Bb
+# analysis: 2026-10-11, rules v1; Bb
 
 # section | bar | chord | scale
 # area: Bb major (bars 1–16)
@@ -20,7 +20,7 @@ A | 8  | B7#11  | B Lydian Dominant    # a chromatic dominant with nowhere to go
 A | 9  | Fm7    | F Dorian             # ii of the ii–V to Eb
 A | 10 | Bb7    | Bb Mixolydian        # V7/IV in Bb: natural tensions
 A | 11 | EbMaj7 | Eb Lydian            # IV: the #4 is the key’s 7th
-A | 12 | Ab7    | Ab Lydian Dominant   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A | 12 | Ab7    | Ab Lydian Dominant   # ♭VII7 from the parallel minor: Lydian Dominant
 A | 13 | Dm7    | D Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
 A | 14 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
 A | 15 | Cm7    | C Dorian             # ii: Dorian, the key’s own notes
@@ -35,7 +35,7 @@ B | 21 | Dbm7   | Db Dorian            # ii of the ii–V to Cb
 B | 22 | Gb7    | Gb Mixolydian        # V7 of Cb: natural tensions
 B | 23 | CbMaj7 | Cb Ionian            # tonic: the 4th is in the key
 B | 24 | Cm7b5  | C Locrian            # iiø7 of F7: the b9 is in the key
-B | 24 | F7     | F Phrygian Dominant  # passing ii–V: its own key: b9 and b13 are in the key
+B | 24 | F7     | F Phrygian Dominant  # extended ii–V: a side-step, its own key: b9 and b13 are in the key
 C | 25 | Dm7    | D Dorian             # a borrowed minor chord: Dorian, its own key
 # area: Bb major (bars 26–35)
 C | 26 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7

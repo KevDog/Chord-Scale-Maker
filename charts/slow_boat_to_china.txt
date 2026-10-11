@@ -5,7 +5,7 @@ style: Medium
 key: Bb
 form: ABAD, 32 bars
 source: Colorado Cookbook, p. 200
-# analysis: 2026-10-08, rules v1; Bb
+# analysis: 2026-10-11, rules v1; Bb
 
 # section | bar | chord | scale
 # bar 2 can also be Bdim7
@@ -34,7 +34,7 @@ D  | 25 | Cm7      | C Dorian                  # ii: Dorian, the key’s own not
 D  | 26 | Ab7#11   | Ab Lydian Dominant        # back door bVII7 to BbMaj7: the #11 is in the key
 D  | 27 | BbMaj7   | Bb Ionian                 # tonic: the 4th is in the key
 D  | 28 | Dm7b5    | D Locrian                 # iiø7 of G7: the b9 is in the key
-D  | 28 | G7       | G Mixolydian              # extended dominant: V7 of C7
-D  | 29 | C7       | C Mixolydian              # extended dominant: V7 of F7
+D  | 28 | G7       | G Mixolydian              # extended dominant: each one falls a fifth into the next: natural tensions
+D  | 29 | C7       | C Mixolydian              # V7 of V7: the dominant of the dominant: natural tensions
 D  | 30 | F7       | F Mixolydian              # V7 of Bb: natural tensions
 D  | 31 | BbMaj7   | Bb Ionian                 # tonic: the 4th is in the key
