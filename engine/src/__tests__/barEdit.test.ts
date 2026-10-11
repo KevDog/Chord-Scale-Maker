@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { barView } from '../bars'
 import { type ChartDoc, parseChart, serializeChart } from '../chart'
 import { parseBarLine } from '../barLine'
-import { addSection, deleteBar, insertBar, insertBars, renameSection, repeatSection, setBarChords, setEnding, setMark, setNav } from '../edit'
+import { addSection, deleteBar, insertBar, insertBars, insertHeldBar, renameSection, repeatSection, setBarChords, setEnding, setMark, setNav, splitSection, toggleEnding, writeOutCopy } from '../edit'
 
 const chart = (name: string): ChartDoc => parseChart(readFileSync(`charts/${name}.txt`, 'utf8')).value
 const text = (lines: readonly string[]): ChartDoc => parseChart(lines.join('\n')).value
@@ -247,6 +247,17 @@ describe('insertBar and deleteBar over the library', () => {
       }
     }
   })
+
+  it('write out every repeat to the same bars and chords', () => {
+    const played = (d: ChartDoc) => barView(d).sections.map((s) => [s.name, s.bars.map((b) => [b.bar, b.kind, b.chords.map((c) => c.chord)])])
+    for (const file of files) {
+      const doc = chart(file.replace(/\.txt$/, ''))
+      for (const section of barView(doc).sections.filter((s) => s.copy)) {
+        const written = writeOutCopy(doc, section.name)
+        expect([file, section.name, played(written), barView(written).unplaced]).toEqual([file, section.name, played(doc), barView(doc).unplaced])
+      }
+    }
+  })
 })
 
 describe('setBarChords', () => {
@@ -353,5 +364,88 @@ describe('endings, marks and nav', () => {
     expect(barView(setNav(on, 'A', 4, 'Fine')).sections[0]?.bars[3]?.nav).toMatchObject([{ text: 'Fine' }])
     expect(out(setNav(on, 'A', 4, ''))).toEqual(out(doc))
     expect(setNav(doc, 'A', 4, 'a|b')).toBe(doc)
+  })
+})
+
+describe('insertHeldBar', () => {
+  it('puts in a held bar, moving the later bars along', () => {
+    expect(out(insertHeldBar(small, 'A', 3))).toEqual(['A | 1 | C', 'A | 2 | F', 'A | 4 | G', 'A | 5 | C', 'B | 6 | Dm7', 'B | 8 | G7'])
+    expect(spans(insertHeldBar(small, 'A', 5))).toEqual([
+      ['A', 1, 5],
+      ['B', 6, 8],
+    ])
+  })
+
+  it("writes the chord that sounds there at a part's end, where a held bar wouldn't count", () => {
+    const doc = text(['A | 1 | C', 'A | 2 | F', 'A | 3 | G', 'A | 4 | C7'])
+    expect(out(insertHeldBar(doc, 'A', 5)).at(-1)).toBe('A | 5 | C7')
+    expect(spans(insertHeldBar(doc, 'A', 5))).toEqual([['A', 1, 8]])
+  })
+
+  it("won't go before a section's first bar or past its end", () => {
+    expect(insertHeldBar(small, 'B', 5)).toBe(small)
+    expect(insertHeldBar(small, 'A', 9)).toBe(small)
+  })
+})
+
+describe('writeOutCopy', () => {
+  it('turns a repeat into written rows of its own, in its place', () => {
+    const doc = text(['A | 1 | C | C Ionian', 'A | 2 | G7 | | V7', '@copy A A2 2', 'B | 5 | F'])
+    expect(out(writeOutCopy(doc, 'A2'))).toEqual(['A | 1 | C | C Ionian', 'A | 2 | G7 |  | V7', 'A2 | 3 | C | C Ionian', 'A2 | 4 | G7 |  | V7', 'B | 5 | F'])
+    expect(barView(writeOutCopy(doc, 'A2')).sections[1]?.copy).toBeNull()
+  })
+
+  it('keeps a later repeat of the repeat playing the same bars', () => {
+    const doc = text(['A | 1 | C', 'A | 2 | G7', '@copy A A2 2', '@copy A2 A3 2'])
+    expect(barView(writeOutCopy(doc, 'A2')).sections.flatMap((s) => s.bars.map((b) => b.chords.map((c) => c.chord).join()))).toEqual(
+      barView(doc).sections.flatMap((s) => s.bars.map((b) => b.chords.map((c) => c.chord).join())),
+    )
+  })
+
+  it('refuses a section that is not a repeat', () => {
+    expect(writeOutCopy(small, 'A')).toBe(small)
+    expect(writeOutCopy(small, 'Z')).toBe(small)
+  })
+})
+
+describe('splitSection', () => {
+  const doc = text(['A | 1 | C', 'A | 2 | F', 'A | 3 | G7', 'A | 4 | C', '@key A 3 G', '@segno A 4', '@ending 1 A 1 2', 'B | 5 | F'])
+
+  it('starts a new section at a bar: that bar and the rest of the section, with their marks', () => {
+    expect(out(splitSection(doc, 'A', 3, 'A2'))).toEqual(['A | 1 | C', 'A | 2 | F', 'A2 | 3 | G7', 'A2 | 4 | C', '@key A2 3 G', '@segno A2 4', '@ending 1 A 1 2', 'B | 5 | F'])
+    expect(spans(splitSection(doc, 'A', 3, 'A2'))).toEqual([
+      ['A', 1, 2],
+      ['A2', 3, 4],
+      ['B', 5, 8],
+    ])
+  })
+
+  it("refuses the section's first bar, a held bar, a name in use or of another part, an ending across the split, or a section another repeats", () => {
+    const held = text(['A | 1 | C', 'A | 3 | G7', 'B | 5 | F'])
+    expect(splitSection(doc, 'A', 1, 'A2')).toBe(doc)
+    expect(splitSection(held, 'A', 2, 'A2')).toBe(held)
+    expect(splitSection(doc, 'A', 3, 'B')).toBe(doc)
+    expect(splitSection(doc, 'A', 3, 'Coda')).toBe(doc)
+    expect(splitSection(doc, 'A', 2, 'A2')).toBe(doc)
+    const repeated = text(['A | 1 | C', 'A | 2 | F', '@copy A A2 2'])
+    expect(splitSection(repeated, 'A', 2, 'X')).toBe(repeated)
+  })
+})
+
+describe('toggleEnding', () => {
+  const doc = text(['A | 1 | C', 'A | 2 | F', 'A | 3 | G7', 'A | 4 | C', 'B | 5 | F'])
+
+  it('puts an ending on a bar, grows it onto the bar next to it, and takes it off a bar inside it', () => {
+    const one = toggleEnding(doc, 'A', 1, 2)
+    expect(out(one)[4]).toBe('@ending 1 A 2')
+    expect(out(toggleEnding(one, 'A', 1, 3))[4]).toBe('@ending 1 A 2 3')
+    expect(out(toggleEnding(one, 'A', 1, 1))[4]).toBe('@ending 1 A 1 2')
+    expect(out(toggleEnding(one, 'A', 1, 2))).toEqual(out(doc))
+    expect(out(toggleEnding(one, 'A', 1, 4))[4]).toBe('@ending 1 A 4')
+  })
+
+  it('refuses an ending over the other one', () => {
+    const one = toggleEnding(doc, 'A', 1, 2)
+    expect(toggleEnding(one, 'A', 2, 2)).toBe(one)
   })
 })

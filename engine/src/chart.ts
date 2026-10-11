@@ -222,6 +222,11 @@ export function chartMeta(doc: ChartDoc): Readonly<{ title: string; subtitle: st
   return { title: metaValue(doc, 'title', 'Untitled'), subtitle: metaValue(doc, 'subtitle'), key: metaValue(doc, 'key') }
 }
 
+/** the time and the tune's details as written (what the editor's Details fields edit) */
+export function chartDetails(doc: ChartDoc): Readonly<{ time: string; composer: string; style: string; form: string }> {
+  return { time: metaValue(doc, 'time'), composer: metaValue(doc, 'composer'), style: metaValue(doc, 'style'), form: metaValue(doc, 'form') }
+}
+
 /** a valid chart key: a note letter, optional accidental, optional minor "m" ("Eb", "F#m"); nothing else */
 export const isValidKey = (text: string): boolean => /^[A-G][b#]?m?$/.test(text.trim())
 

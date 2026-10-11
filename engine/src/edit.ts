@@ -1,5 +1,6 @@
-import { type ChartDoc, type ChartLine, formPart, type FormPart, type MetaKey, parseChart, serializeChart } from './chart'
+import { type ChartDoc, type ChartLine, expandRowLines, formPart, type FormPart, type MetaKey, parseChart, serializeChart } from './chart'
 import { type BarSection, type BarView, barView, type ChartBar } from './bars'
+import { soundingChords } from './barGrid'
 import { LIMITS } from './limits'
 import { defaultScaleOrNull } from './qualities'
 import { rootName } from './pitch'
@@ -256,6 +257,18 @@ export function setBarChords(doc: ChartDoc, section: string, bar: number, chords
 }
 
 /**
+ * a held bar at `bar` (see insertBar); at the end of a part, where a held bar wouldn't count, it holds the chord that
+ * sounds there, written out
+ */
+export function insertHeldBar(doc: ChartDoc, section: string, bar: number): ChartDoc {
+  const view = barView(doc)
+  const next = insertBar(doc, section, bar)
+  if (next === doc) return doc
+  const placed = barView(next).sections.find((s) => s.name === section)?.bars.find((b) => b.bar === bar)
+  return placed?.kind === 'held' ? next : insertBar(doc, section, bar, soundingChords(view, section, bar - 1))
+}
+
+/**
  * new bars in a section from `bar` on, in order (as parseBarLine reads them; an empty bar is held), moving every later
  * bar along as insertBar does. All or nothing: the same doc if any bar would be refused.
  */
@@ -334,6 +347,34 @@ export function repeatSection(doc: ChartDoc, src: string, dst: string): ChartDoc
   return { lines: [...doc.lines.slice(0, line), copy, ...doc.lines.slice(line)] }
 }
 
+/** a repeat written out: its @copy becomes rows of its own, in its place, as they play */
+export function writeOutCopy(doc: ChartDoc, section: string): ChartDoc {
+  const i = doc.lines.findIndex((l) => l.kind === 'copy' && l.dst === section)
+  const rows = expandRowLines(doc).value.filter((r) => r.section === section)
+  if (i < 0 || !rows.length) return doc
+  const written = rows.map(({ line: _, ...r }): RowLine => ({ kind: 'row', ...r }))
+  return { lines: [...doc.lines.slice(0, i), ...written, ...doc.lines.slice(i + 1)] }
+}
+
+/**
+ * a new section, `name`, from a bar to the end of its section, with the marks on those bars. Not at the section's
+ * first bar or on a held one, across an ending, into another part, or in a section a @copy repeats.
+ */
+export function splitSection(doc: ChartDoc, section: string, bar: number, name: string): ChartDoc {
+  const view = barView(doc)
+  const found = writtenBar(view, section, bar)
+  if (!found || found.bar.kind !== 'chords' || found.section.bars[0]?.bar === bar) return doc
+  if (view.sections.some((s) => s.name === name) || sectionError(name) || formPart(name) !== found.section.part) return doc
+  const across = (l: ChartLine): boolean => l.kind === 'ending' && l.section === section && l.from < bar && l.to >= bar
+  if (doc.lines.some((l) => across(l) || (l.kind === 'copy' && l.src === section))) return doc
+  const moves = (l: ChartLine): boolean => {
+    if (l.kind === 'row') return l.section === section && WHOLE.test(l.bar) && Number(l.bar) >= bar
+    if (l.kind === 'ending') return l.section === section && l.from >= bar
+    return (l.kind === 'key' || l.kind === 'context' || l.kind === 'mark' || l.kind === 'nav') && l.section === section && l.bar >= bar
+  }
+  return { lines: doc.lines.map((l): ChartLine => (moves(l) && 'section' in l ? { ...l, section: name } : l)) }
+}
+
 /** a directive for a section goes after the last line that names it (its rows, its @copy, its other directives) */
 function addDirective(doc: ChartDoc, section: string, line: ChartLine): ChartDoc {
   const own = doc.lines.findLastIndex((l) => ('section' in l && l.section === section) || (l.kind === 'copy' && l.dst === section))
@@ -371,4 +412,13 @@ export function setNav(doc: ChartDoc, section: string, bar: number, text: string
   const nav: ChartLine = { kind: 'nav', section, bar, text }
   const lines = doc.lines.flatMap((l, i): ChartLine[] => (!isNav(l) ? [l] : i === first && text ? [nav] : []))
   return first >= 0 || !text ? { lines } : addDirective(doc, section, nav)
+}
+
+/** ending n on a bar: off when the bar is in it, else grown onto the bar next to it, else just that bar */
+export function toggleEnding(doc: ChartDoc, section: string, n: 1 | 2, bar: number): ChartDoc {
+  const e = doc.lines.find((l) => l.kind === 'ending' && l.section === section && l.n === n)
+  if (e?.kind !== 'ending') return setEnding(doc, section, n, { from: bar, to: bar })
+  if (e.from <= bar && bar <= e.to) return setEnding(doc, section, n, null)
+  if (bar === e.to + 1 || bar === e.from - 1) return setEnding(doc, section, n, { from: Math.min(e.from, bar), to: Math.max(e.to, bar) })
+  return setEnding(doc, section, n, { from: bar, to: bar })
 }

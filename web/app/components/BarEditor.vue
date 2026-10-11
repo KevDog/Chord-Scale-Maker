@@ -10,9 +10,12 @@
         <!-- a repeat: one line, its bars shown on request; it changes through the section it repeats -->
         <div v-if="s.copy" class="rounded-lg border border-dashed border-note-300 px-3 py-2 dark:border-white/15">
           <div class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm/6 text-zinc-700 dark:text-zinc-300">
-            <UiBadge color="zinc">{{ s.name }}</UiBadge>
+            <button type="button" :aria-label="`Rename section ${s.name}`" title="Rename" @click="openDialog('rename', s.name)"><UiBadge color="zinc">{{ s.name }}</UiBadge></button>
             <span>repeats <UiStrong>{{ s.copy.of }}</UiStrong> · bars {{ span(s.bars) }}</span>
-            <UiButton plain class="ml-auto" :aria-expanded="openCopies.has(s.name)" @click="toggleCopy(s.name)">{{ openCopies.has(s.name) ? 'Hide bars' : 'Show bars' }}</UiButton>
+            <span class="ml-auto flex gap-1">
+              <UiButton plain :aria-expanded="openCopies.has(s.name)" @click="toggleCopy(s.name)">{{ openCopies.has(s.name) ? 'Hide bars' : 'Show bars' }}</UiButton>
+              <UiButton plain :aria-label="`Write out ${s.name}`" title="Write the repeat’s bars into the chart, to change them" @click="writeOut(s.name)">Write out</UiButton>
+            </span>
           </div>
           <div v-if="openCopies.has(s.name)" class="mt-2 grid grid-cols-4 gap-px text-sm/6 text-zinc-600 dark:text-zinc-400">
             <span v-for="b in s.bars" :key="b.bar" class="truncate px-2 py-1">{{ b.chords.map((c) => c.chord).join(' ') || '%' }}</span>
@@ -21,7 +24,7 @@
 
         <div v-else>
           <div :id="headingId(s.name)" class="mb-1 flex items-baseline gap-2 text-xs/5 text-zinc-600 dark:text-zinc-400">
-            <UiBadge color="zinc">{{ s.name }}</UiBadge>
+            <button type="button" :aria-label="`Rename section ${s.name}`" title="Rename" @click="openDialog('rename', s.name)"><UiBadge color="zinc">{{ s.name }}</UiBadge></button>
             <span v-if="sectionKey(s)" class="italic">{{ sectionKey(s) }}</span>
             <span>bars {{ span(s.bars) }}</span>
           </div>
@@ -78,13 +81,23 @@
                   </template>
                   <span v-if="b.kind === 'held' && !editingHere(s.name, b.bar)" class="px-1 text-zinc-500 dark:text-zinc-400" aria-hidden="true">%</span>
                 </div>
+                <span v-if="b.ending" :class="['absolute inset-x-0 top-0 border-t-2 border-zinc-500 dark:border-zinc-400', b.ending.first && 'left-1 border-l-2']" aria-hidden="true" />
+                <div v-if="marksOf(b).length" class="flex flex-wrap gap-x-1.5 px-1 text-[0.65rem]/4 text-zinc-600 italic dark:text-zinc-400" aria-hidden="true">
+                  <span v-for="m in marksOf(b)" :key="m">{{ m }}</span>
+                </div>
               </div>
             </div>
           </div>
         </div>
       </template>
 
-      <UiText v-if="!view.sections.length">No bars yet. Write the chart’s first chords in the Source.</UiText>
+      <UiText v-if="!view.sections.length">No bars yet. Add a section, or write the chart’s first chords in the Source.</UiText>
+      <div role="group" aria-label="Structure" class="flex flex-wrap gap-2">
+        <UiButton outline :disabled="!pos" aria-label="Add bar" @click="addBar"><PlusIcon data-slot="icon" />Bar</UiButton>
+        <UiButton outline aria-label="Add section…" @click="openDialog('section')"><PlusIcon data-slot="icon" />Section…</UiButton>
+        <UiButton outline :disabled="!view.sections.length" @click="openDialog('repeat')"><Square2StackIcon data-slot="icon" />Repeat a section…</UiButton>
+        <UiButton outline :disabled="!pos" @click="openDialog('paste')"><ClipboardDocumentIcon data-slot="icon" />Paste bars…</UiButton>
+      </div>
       <div v-if="view.unplaced.length" role="note" class="rounded-lg bg-amber-500/10 p-3 text-sm/6 text-amber-800 dark:text-amber-400">
         <p>{{ view.unplaced.length === 1 ? 'A line of the chart isn’t' : `${view.unplaced.length} lines of the chart aren’t` }} on the grid. Edit {{ view.unplaced.length === 1 ? 'it' : 'them' }} in the Source.</p>
         <ul class="mt-1 list-disc pl-5">
@@ -110,8 +123,23 @@
       :index="selected.pos.chord"
       :chord="selected.chord"
       :count="selected.count"
+      :cell="selected.cell"
       @update:doc="emitDoc"
       @said="said = $event"
+      @refused="refused = $event"
+      @select="(bar) => selected && select({ section: selected.pos.section, bar, chord: 0 })"
+      @split="openDialog('split')"
+    />
+
+    <BarDialog
+      :kind="dialog?.kind ?? null"
+      :sections="view.sections.filter((x) => !x.copy).map((x) => x.name)"
+      :section="dialog?.section ?? ''"
+      :bar="pos?.bar ?? 0"
+      :beats="view.beats"
+      :error="dialogError"
+      @close="closeDialog"
+      @submit="applyDialog"
     />
   </div>
 </template>
@@ -132,10 +160,19 @@ import {
   keyLabel,
   moveInGrid,
   placePos,
+  addSection,
+  insertBars,
+  insertHeldBar,
+  renameSection,
+  repeatSection,
   type RowNote,
   rowNotes,
   setBarChords,
+  splitSection,
+  writeOutCopy,
 } from '@chord-scale-maker/engine'
+import { ClipboardDocumentIcon, PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
+import BarDialog, { type BarDialogKind, type BarDialogSubmit } from './BarDialog.vue'
 import BarInspector from './BarInspector.vue'
 
 /**
@@ -185,7 +222,7 @@ const selected = computed(() => {
   const p = pos.value
   const b = p ? barAt(p.section, p.bar) : undefined
   if (!p || !b) return null
-  return { pos: p, chord: b.chords[p.chord] ?? null, count: b.chords.length }
+  return { pos: p, chord: b.chords[p.chord] ?? null, count: b.chords.length, cell: b }
 })
 const isSelectedBar = (section: string, bar: number): boolean => pos.value?.section === section && pos.value.bar === bar
 const isSelected = (section: string, bar: number, k: number): boolean => isSelectedBar(section, bar) && pos.value?.chord === k && !editing.value
@@ -213,11 +250,17 @@ function shownChords(section: string, b: ChartBar): ShownChord[] {
 const editingHere = (section: string, bar: number): boolean => !!editing.value && isSelectedBar(section, bar)
 
 const ORDINAL = ['1st', '2nd', '3rd', '4th']
+/** what's written on a bar besides its chords: its ending, segno or coda, and jump */
+function marksOf(b: ChartBar): string[] {
+  const ending = b.ending ? [`${ORDINAL[b.ending.n - 1] ?? b.ending.n} ending`] : []
+  return [...ending, ...b.marks.map((m) => (m.mark === 'segno' ? 'Segno' : 'Coda')), ...b.nav.map((n) => n.text)]
+}
 function cellLabel(section: string, b: ChartBar): string {
   const chords = b.chords.map((c) => c.chord).join(', ')
   const what = chords || (b.kind === 'held' ? 'held' : 'empty')
   const sel = isSelectedBar(section, b.bar) && b.chords.length > 1 ? ` (${ORDINAL[pos.value?.chord ?? 0] ?? ''} chord selected)` : ''
-  return `${section}, bar ${b.bar}: ${what}${sel}`
+  const marks = marksOf(b).map((m) => `; ${m}`).join('')
+  return `${section}, bar ${b.bar}: ${what}${marks}${sel}`
 }
 
 // the cells by section and bar, to move focus with the selection
@@ -377,4 +420,81 @@ function onDraftBlur(e: FocusEvent): void {
 }
 
 const emitDoc = (doc: ChartDoc): void => emit('update:doc', doc)
+
+/** a bar after the selected section's last (before a part's rounding-out bars) */
+function addBar(): void {
+  const p = pos.value
+  const s = view.value.sections.find((x) => x.name === p?.section)
+  const last = s?.bars.findLast((b) => b.kind !== 'implied')?.bar
+  if (!p || last === undefined) return
+  const next = insertHeldBar(props.doc, p.section, last + 1)
+  if (next === props.doc) return void (refused.value = 'No bar can go there.')
+  emitDoc(next)
+  said.value = `${p.section}: bar ${last + 1} added`
+  select({ section: p.section, bar: last + 1, chord: 0 })
+}
+
+function writeOut(section: string): void {
+  const next = writeOutCopy(props.doc, section)
+  if (next === props.doc) return void (refused.value = `${section} can’t be written out.`)
+  emitDoc(next)
+  said.value = `${section} written out`
+}
+
+const dialog = ref<{ kind: BarDialogKind; section: string } | null>(null)
+const dialogError = ref('')
+function openDialog(kind: BarDialogKind, section = pos.value?.section ?? ''): void {
+  dialog.value = { kind, section }
+  dialogError.value = ''
+}
+function closeDialog(): void {
+  dialog.value = null
+  focusCell()
+}
+
+const NAME_RULE = 'a name without spaces that no other section has'
+/** the dialog's change, and the selection after it; or why the chart can't take it */
+function dialogChange(v: BarDialogSubmit, d: ChartDoc, p: GridPos | null, section: string) {
+  switch (v.kind) {
+    case 'section': {
+      const next = addSection(d, v.name, v.chords)
+      const bar = barView(next).sections.find((x) => x.name === v.name)?.bars[0]?.bar ?? 0
+      return { next, at: { section: v.name, bar, chord: 0 }, said: `${v.name} added`, why: `A new section needs ${NAME_RULE}, and a chord or more.` }
+    }
+    case 'repeat':
+      return { next: repeatSection(d, v.src, v.name), at: p, said: `${v.name} repeats ${v.src}`, why: `A repeat needs ${NAME_RULE}, in the same part as ${v.src}.` }
+    case 'rename':
+      return {
+        next: renameSection(d, section, v.name),
+        at: p?.section === section ? { ...p, section: v.name } : p,
+        said: `${section} is now ${v.name}`,
+        why: `A section needs ${NAME_RULE}, and stays in or out of the form.`,
+      }
+    case 'split':
+      return {
+        next: p ? splitSection(d, p.section, p.bar, v.name) : d,
+        at: p ? { section: v.name, bar: p.bar, chord: 0 } : p,
+        said: `${v.name} starts at bar ${p?.bar}`,
+        why: `A new section needs ${NAME_RULE}, and starts on a bar with a chord, after the first, not inside an ending, and not in a section that’s repeated.`,
+      }
+    case 'paste': {
+      const bar = (p?.bar ?? 0) + (v.before ? 0 : 1)
+      return {
+        next: p ? insertBars(d, p.section, bar, v.bars) : d,
+        at: p ? { section: p.section, bar, chord: 0 } : p,
+        said: `${v.bars.length} bars added`,
+        why: v.before ? 'Those bars can’t go there: a section can’t start with a held bar.' : 'Those bars can’t go there.',
+      }
+    }
+  }
+}
+function applyDialog(v: BarDialogSubmit): void {
+  const { next, at, said: text, why } = dialogChange(v, props.doc, pos.value, dialog.value?.section ?? '')
+  if (next === props.doc) return void (dialogError.value = why)
+  editing.value = null
+  emitDoc(next)
+  said.value = text
+  dialog.value = null
+  if (at) select(at)
+}
 </script>
