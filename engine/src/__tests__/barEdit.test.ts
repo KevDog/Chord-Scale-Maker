@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { barView } from '../bars'
 import { type ChartDoc, parseChart, serializeChart } from '../chart'
 import { parseBarLine } from '../barLine'
-import { addSection, deleteBar, insertBar, insertBars, insertHeldBar, renameSection, repeatSection, setBarChords, setEnding, setMark, setNav, splitSection, toggleEnding, writeOutCopy } from '../edit'
+import { addSection, deleteBar, insertBar, insertBars, insertHeldBar, renameSection, repeatSection, setBarChords, setEnding, setLineChord, setMark, setNav, splitSection, toggleEnding, writeOutCopy } from '../edit'
 
 const chart = (name: string): ChartDoc => parseChart(readFileSync(`charts/${name}.txt`, 'utf8')).value
 const text = (lines: readonly string[]): ChartDoc => parseChart(lines.join('\n')).value
@@ -447,5 +447,25 @@ describe('toggleEnding', () => {
   it('refuses an ending over the other one', () => {
     const one = toggleEnding(doc, 'A', 1, 2)
     expect(toggleEnding(one, 'A', 2, 2)).toBe(one)
+  })
+})
+
+describe('setLineChord', () => {
+  const doc = text(['A | 1 | Cm7 | C Dorian', 'A | 2 | F7', 'A | 2 | Bb7', 'A | 3 | Ebmaj7', '@copy A B 4'])
+
+  it('replaces the chord written on a line, its scale following as setRowChord’s does', () => {
+    expect(out(setLineChord(doc, 0, 'Dm7'))[0]).toBe('A | 1 | Dm7 | D Dorian')
+    expect(out(setLineChord(doc, 2, 'E7')).slice(1, 3)).toEqual(['A | 2 | F7', 'A | 2 | E7'])
+  })
+
+  it('takes the chord out when cleared, but not a section’s first', () => {
+    expect(out(setLineChord(doc, 2, ' ')).slice(1, 3)).toEqual(['A | 2 | F7', 'A | 3 | Ebmaj7'])
+    expect(setLineChord(doc, 0, '')).toBe(doc)
+  })
+
+  it('gives back the same doc for a chord the chart can’t take, or a line that isn’t a chord', () => {
+    expect(setLineChord(doc, 1, 'F7 | x')).toBe(doc)
+    expect(setLineChord(doc, 4, 'C7')).toBe(doc) // the @copy
+    expect(setLineChord(doc, 1, 'F7')).toBe(doc) // unchanged
   })
 })

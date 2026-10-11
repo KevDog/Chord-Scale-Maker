@@ -3,6 +3,7 @@
     <div class="min-w-0 print:hidden">
       <UiHeading>{{ editor.meta.value.title || 'Untitled' }}</UiHeading>
       <UiText v-if="byline" class="mt-1">{{ byline }}</UiText>
+      <UiText v-if="sheetEditing" class="mt-1 md:hidden">Full editing works on a larger screen. Tap a chord on the sheet to change it.</UiText>
       <!-- My charts: where this chart is saved, and what you can do with it -->
       <div v-if="saved || shared" class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
         <UiText v-if="saved" role="status" :class="['text-sm/6!', saved.status.value.state === 'failed' && 'text-red-700! dark:text-red-400!']">{{ saveText }}</UiText>
@@ -17,6 +18,8 @@
     </div>
 
     <ShareDialog :open="shareOpen" :link="shareLink" @close="shareOpen = false" />
+    <SheetChordEditor :doc="editor.doc.value" :target="sheetChord" @update:doc="editor.setDoc" @said="said = $event" @close="sheetChord = null" />
+    <p class="sr-only" aria-live="polite">{{ said }}</p>
 
     <UiDialog :open="revertOpen" size="md" @close="revertOpen = false">
       <UiDialogTitle>Revert to the library version?</UiDialogTitle>
@@ -57,7 +60,10 @@
           </div>
           <template v-else>
             <ChartHeadingFields details :doc="editor.doc.value" @update:doc="editor.setDoc" />
-            <BarEditor :doc="editor.doc.value" @update:doc="editor.setDoc" @source="prefs.source.value = true" />
+            <!-- below md, light edits only: chords are changed on the Changes sheet -->
+            <div class="max-md:hidden">
+              <BarEditor ref="barEditor" :doc="editor.doc.value" @update:doc="editor.setDoc" @source="prefs.source.value = true" @selected="selectedLine = $event" />
+            </div>
           </template>
         </section>
         <section v-if="sourceShown" id="text-pane" aria-labelledby="text-heading" class="min-w-0">
@@ -180,6 +186,9 @@
             :scales="prefs.scaleNames.value"
             :signatures="signaturesOn"
             :guide-line="prefs.guideLine.value"
+            :editable="sheetEditing && !focus.on.value"
+            :selected-line="selectedLine"
+            @edit="editSheetChord"
           />
           <ScaleSheet
             v-else
@@ -228,6 +237,7 @@ import {
   type ShareView,
 } from '@chord-scale-maker/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
+import type { SheetChordEdit } from '~/utils/sheetChordEdit'
 import { firstSheet, type SheetKind } from '~/utils/sheets'
 
 /**
@@ -260,6 +270,18 @@ const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
 const signaturesOn = useFeature('keySignatures')
 const barEditorOn = useFeature('barEditor')
+/** chords on the Changes sheet open the chord editor while the bar editor is shown (on a phone, the whole editor) */
+const sheetEditing = computed(() => barEditorOn && editorShown.value && !editor.fatal.value)
+const sheetChord = ref<SheetChordEdit | null>(null)
+const selectedLine = ref<number | null>(null)
+const said = ref('')
+const barEditor = ref<{ selectLine: (line: number) => void } | null>(null)
+/** a chord tapped on the sheet: edit it, and select it in the bar grid */
+function editSheetChord(chord: SheetChordEdit): void {
+  editor.flush()
+  sheetChord.value = chord
+  barEditor.value?.selectLine(chord.line)
+}
 /** the bar editor's Source: under ⋯, remembered; always shown for a chart over a size limit (only the text can fix it) */
 const sourceShown = computed(() => prefs.source.value || editor.fatal.value)
 /** the chart's key, for the sheets' key signature, drawn once at the start (undefined when the flag is off: drawn as before) */

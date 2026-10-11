@@ -160,6 +160,7 @@ import {
   keyLabel,
   moveInGrid,
   placePos,
+  posOfLine,
   addSection,
   insertBars,
   insertHeldBar,
@@ -182,7 +183,7 @@ import BarInspector from './BarInspector.vue'
  * so undo and the text follow.
  */
 const props = defineProps<{ doc: ChartDoc }>()
-const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; source: [] }>()
+const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; source: []; selected: [line: number | null] }>()
 
 const functionsOn = useFeature('functions')
 const { notes } = usePreferences() // the numerals and scales under each chord: off until shown
@@ -224,6 +225,17 @@ const selected = computed(() => {
   if (!p || !b) return null
   return { pos: p, chord: b.chords[p.chord] ?? null, count: b.chords.length, cell: b }
 })
+// the selected chord's chart line, for the Changes sheet to outline
+watch(() => selected.value?.chord?.line ?? null, (line) => emit('selected', line), { immediate: true })
+/** select the chord written on a chart line (tapped on the Changes sheet), leaving focus where it is */
+function selectLine(line: number): void {
+  const p = posOfLine(view.value, line)
+  if (!p) return
+  editing.value = null
+  pos.value = p
+  refused.value = ''
+}
+defineExpose({ selectLine })
 const isSelectedBar = (section: string, bar: number): boolean => pos.value?.section === section && pos.value.bar === bar
 const isSelected = (section: string, bar: number, k: number): boolean => isSelectedBar(section, bar) && pos.value?.chord === k && !editing.value
 
