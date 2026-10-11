@@ -2,10 +2,11 @@
  * Measures the guide tone lines (docs/superpowers/specs/2026-10-10-guide-tone-lines-design.md) over every chart in
  * charts/, voiced exactly as the Changes sheet voices them (written order, folded repeats drawn once, blocks for holds).
  * Each line, A (from the 3rd) and B (from the 7th), is built by guideToneLine: on its own (no rule 7), except that lines
- * that meet go apart at the next new chord (docs/superpowers/specs/2026-10-11-guide-lines-diverge-note.md).
+ * that meet part gently at the next new chord (G1–G3, docs/superpowers/specs/2026-10-11-guide-lines-diverge-note.md).
  *
  *   npm run guide-lines                      common tone / step / leap shares per line, where the two lines share a pitch,
- *                                            the largest move, each line's height, and every move > a tritone
+ *                                            how the lines part after meeting, the largest move, each line's height, and
+ *                                            every move > a tritone
  *   npm run guide-lines -- --compare         each line alone, with the older global pair search (voiceLead) for reference
  *   --part bass                              a concert bass-clef part instead of the default concert treble
  *   --instrument vibes                       an instrument's part, in its own guide tone range
@@ -104,9 +105,9 @@ function drawnChords(text: string): Chord[] {
   )
 }
 
-type Note = { midi: number; name: string; label: string } | null
+type Note = { midi: number; name: string; label: string; held: boolean } | null
 const name = (p: Pitched): string => `${rootName(p)}${octaveOf(p)}`
-const noteOf = (c: { pitch: Pitched; label: string } | null): Note => (c ? { midi: c.pitch.midi, name: name(c.pitch), label: c.label.replace(/^[b#]+/, '') } : null)
+const noteOf = (c: { pitch: Pitched; label: string; held?: boolean } | null): Note => (c ? { midi: c.pitch.midi, name: name(c.pitch), label: c.label.replace(/^[b#]+/, ''), held: !!c.held } : null)
 
 type Seq = Readonly<{ chart: string; chords: readonly Chord[]; lines: readonly (readonly Note[])[] }> // lines: one note a chord, per line
 type Method = 'alone' | 'pair' // alone: each line built on its own; pair: voiceLead, for reference
@@ -180,6 +181,20 @@ function together(seqs: readonly Seq[], moves: readonly Move[]): void {
     if (both.length && both.filter(Boolean).length / both.length > 0.5) half++
   }
   const top = moves.reduce<Move | undefined>((b, x) => (!b || x.size > b.size ? x : b), undefined)
+  const distinct = new Set(moves.filter((m) => m.size > 6).map((m) => `${m.chart}|${m.j}`)).size
+  // meetings (G1–G3): the lines on one pitch, then a new chord (not held)
+  let [meets, again, kept, far] = [0, 0, 0, 0]
+  for (const s of seqs) {
+    const [a = [], b = []] = s.lines
+    a.forEach((x, j) => {
+      const [y, nx, ny] = [b[j], a[j + 1], b[j + 1]]
+      if (!x || !y || !nx || !ny || nx.held || x.midi !== y.midi) return
+      meets++
+      if (nx.midi === ny.midi) again++
+      else if (nx.midi === x.midi || ny.midi === x.midi) kept++
+      if (Math.abs(nx.midi - x.midi) > 6 || Math.abs(ny.midi - x.midi) > 6) far++
+    })
+  }
   const centre = rangeOf(part).centre
   const height = LINES.map((l, line) => {
     const means = seqs.flatMap((s) => {
@@ -190,6 +205,8 @@ function together(seqs: readonly Seq[], moves: readonly Move[]): void {
   })
   console.log(`\n### The two lines together\n`)
   console.log(`chords where both lines share a pitch: ${same} of ${voiced} (${pct(same, voiced)}); charts with the lines identical at more than half their chords: ${half} of ${seqs.length}`)
+  console.log(`chords where either line moves more than a tritone: ${distinct}`)
+  console.log(`meetings followed by a new chord: ${meets}; of them, together again: ${again}, one kept the shared pitch: ${kept}, a move > a tritone: ${far}`)
   if (top) console.log(`largest move: ${top.size} semitones (${leapRow(top).slice(0, 5).join(', ')})`)
   console.log('\n### Each line\'s height')
   console.table(height)
