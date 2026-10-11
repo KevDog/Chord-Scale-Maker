@@ -154,8 +154,8 @@ function check(seqs: readonly Seq[]): void {
     let bad = 0
     files.forEach((file, k) => {
       const text = readFileSync(file, 'utf8')
-      const sheet = buildChanges(parseChart(text).value, part, 4, false, { fromThird: line === 0, fromSeventh: line === 1 })
-      const theirs = sheet.lines.flatMap((l) => l.bars.flatMap((b) => b.chords.map((c) => c.guide.join(''))))
+      const sheet = buildChanges(parseChart(text).value, part, 4, false, line === 0 ? 'third' : 'seventh')
+      const theirs = sheet.lines.flatMap((l) => l.bars.flatMap((b) => b.chords.map((c) => c.guide)))
       const s = seqs[k]
       const mine = (s?.chords ?? []).map((_, j) => s?.lines[line]?.[j]?.label ?? '')
       if (theirs.length !== mine.length || theirs.some((t, j) => t !== mine[j])) {

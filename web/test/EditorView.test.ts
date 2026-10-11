@@ -182,58 +182,92 @@ describe('EditorView guide tones', () => {
     navigate.mockClear()
   })
 
-  it('starts with From 3rd and From 7th off', async () => {
+  /** the Guide Tones control's radios, by visible label */
+  const guideOptions = (w: Wrapper) =>
+    w.findAll('label').filter((l) => l.find('input[type="radio"][name="guide-line"]').exists())
+  const checkedGuide = (w: Wrapper) => guideOptions(w).filter((l) => (l.find('input').element as HTMLInputElement).checked).map((l) => l.text())
+  async function chooseGuide(w: Wrapper, label: string): Promise<void> {
+    const option = guideOptions(w).find((l) => l.text() === label)
+    if (!option) throw new Error(`no guide option ${label}`)
+    await option.find('input').setValue(true)
+    await nextTick()
+  }
+
+  it('shows Off, From 3rd and From 7th as one choice under Guide Tones, Off chosen', async () => {
     const w = await mount()
-    expect(changesSheet(w).props('guides')).toEqual({ fromThird: false, fromSeventh: false })
-    expect(buttonCalled(w, 'From 3rd')?.attributes('aria-pressed')).toBe('false')
-    expect(buttonCalled(w, 'From 7th')?.attributes('aria-pressed')).toBe('false')
-    expect(buttonCalled(w, 'From 3rd')?.attributes('aria-description')).toBe("Guide tones: a line from the first chord's 3rd")
-    expect(buttonCalled(w, 'From 7th')?.attributes('aria-description')).toBe("Guide tones: a line from the first chord's 7th")
+    expect(w.findAll('label').some((l) => l.text() === 'Guide Tones')).toBe(true)
+    expect(w.findAll('fieldset').find((f) => f.find('legend').text() === 'Guide tones')?.exists()).toBe(true)
+    expect(guideOptions(w).map((l) => l.text())).toEqual(['Off', 'From 3rd', 'From 7th'])
+    expect(checkedGuide(w)).toEqual(['Off'])
+    expect(changesSheet(w).props('guideLine')).toBe('off')
+    expect(guideOptions(w)[1]?.attributes('title')).toBe("A line that starts on the first chord's 3rd and moves to the nearest guide tone of each chord")
+    expect(guideOptions(w)[2]?.attributes('title')).toBe("A line that starts on the first chord's 7th and moves to the nearest guide tone of each chord")
+    expect(buttonCalled(w, 'From 3rd')).toBeUndefined() // no toggle buttons
     w.unmount()
   })
 
-  it('turns each on, passes both to the Changes sheet, and remembers them', async () => {
+  it('passes the line chosen to the Changes sheet, one at a time, and remembers it', async () => {
     const w = await mount()
-    await buttonCalled(w, 'From 3rd')?.trigger('click')
-    await nextTick()
-    expect(changesSheet(w).props('guides')).toEqual({ fromThird: true, fromSeventh: false })
-    await buttonCalled(w, 'From 7th')?.trigger('click')
-    await nextTick()
-    expect(changesSheet(w).props('guides')).toEqual({ fromThird: true, fromSeventh: true })
-    expect(buttonCalled(w, 'From 3rd')?.attributes('aria-pressed')).toBe('true')
-    expect(buttonCalled(w, 'From 7th')?.attributes('aria-pressed')).toBe('true')
-    expect([localStorage.getItem('csm-guide-3rd'), localStorage.getItem('csm-guide-7th')]).toEqual(['on', 'on'])
+    await chooseGuide(w, 'From 3rd')
+    expect(changesSheet(w).props('guideLine')).toBe('third')
+    expect(checkedGuide(w)).toEqual(['From 3rd'])
+    await chooseGuide(w, 'From 7th')
+    expect(changesSheet(w).props('guideLine')).toBe('seventh')
+    expect(checkedGuide(w)).toEqual(['From 7th'])
+    expect(localStorage.getItem('csm-guide-line')).toBe('seventh')
+    await chooseGuide(w, 'Off')
+    expect(changesSheet(w).props('guideLine')).toBe('off')
+    expect(localStorage.getItem('csm-guide-line')).toBe('off')
     w.unmount()
   })
 
-  it('offers From 3rd and From 7th on the Changes sheet only', async () => {
+  it('starts on the line remembered', async () => {
+    localStorage.setItem('csm-guide-line', 'third')
     const w = await mount()
-    expect(buttonCalled(w, 'From 3rd')).toBeDefined()
+    expect(checkedGuide(w)).toEqual(['From 3rd'])
+    expect(changesSheet(w).props('guideLine')).toBe('third')
+    w.unmount()
+  })
+
+  it('offers the guide tone line on the Changes sheet only', async () => {
+    const w = await mount()
+    expect(guideOptions(w)).toHaveLength(3)
     await chooseSheet(w, 'Scales')
-    expect(buttonCalled(w, 'From 3rd')).toBeUndefined()
-    expect(buttonCalled(w, 'From 7th')).toBeUndefined()
+    expect(guideOptions(w)).toHaveLength(0)
     expect(buttonCalled(w, 'Intervals')).toBeDefined()
     w.unmount()
   })
 
-  it("applies a share link's guides for the visit, and a share link carries them", async () => {
-    const w = await mount({ sheet: 'changes', fromSeventh: true })
-    expect(changesSheet(w).props('guides')).toEqual({ fromThird: false, fromSeventh: true })
-    expect(localStorage.getItem('csm-guide-7th')).toBeNull()
+  const linkOf = async (w: Wrapper) => {
     await buttonCalled(w, 'Share')?.trigger('click')
     const link = await vi.waitFor(() => {
       const l = w.findComponent({ name: 'ShareDialog' }).props('link')
       if (typeof l !== 'string') throw new Error('no link yet')
       return l
     })
-    expect((await decodeShare(link.split('#s=')[1] ?? ''))?.view).toMatchObject({ sheet: 'changes', fromThird: false, fromSeventh: true })
+    return (await decodeShare(link.split('#s=')[1] ?? ''))?.view
+  }
+
+  it("applies a share link's line for the visit, and a share link carries it", async () => {
+    const w = await mount({ sheet: 'changes', guideLine: 'seventh' })
+    expect(changesSheet(w).props('guideLine')).toBe('seventh')
+    expect(checkedGuide(w)).toEqual(['From 7th'])
+    expect(localStorage.getItem('csm-guide-line')).toBeNull()
+    expect(await linkOf(w)).toMatchObject({ sheet: 'changes', guideLine: 'seventh' })
+    w.unmount()
+  })
+
+  it('opens a link without a line with the line off, whatever your own, and shares no line with it off', async () => {
+    localStorage.setItem('csm-guide-line', 'third')
+    const w = await mount({ sheet: 'changes' })
+    expect(changesSheet(w).props('guideLine')).toBe('off')
+    expect(await linkOf(w)).not.toHaveProperty('guideLine')
     w.unmount()
   })
 
   it('reports the sheet and the guides with a chart error', async () => {
     const w = await mount()
-    await buttonCalled(w, 'From 7th')?.trigger('click')
-    await nextTick()
+    await chooseGuide(w, 'From 7th')
     await buttonCalled(w, 'Report a chart error')?.trigger('click')
     expect(JSON.parse(sessionStorage.getItem(CHART_REPORT_KEY) ?? '{}')).toMatchObject({ sheet: 'changes', guides: 'from 7th' })
     expect(navigate).toHaveBeenCalledWith('/contact')

@@ -75,15 +75,13 @@ export async function writeChart(page: Page, text: string): Promise<void> {
   await page.getByLabel('Chart text').fill(text)
 }
 
-/** turn on the Changes sheet's guide tone toggles, each confirmed pressed (retried: a click before hydration is lost) */
-export async function showGuides(page: Page, ...names: readonly ('From 3rd' | 'From 7th')[]): Promise<void> {
-  for (const name of names) {
-    const toggle = page.getByRole('button', { name, exact: true })
-    await expect(async () => {
-      if ((await toggle.getAttribute('aria-pressed')) !== 'true') await toggle.click({ timeout: 1000 })
-      await expect(toggle).toHaveAttribute('aria-pressed', 'true', { timeout: 1000 })
-    }).toPass({ timeout: 10_000 })
-  }
+/** choose the Changes sheet's guide tone line, confirmed checked (retried: a click before hydration is lost) */
+export async function showGuides(page: Page, name: 'Off' | 'From 3rd' | 'From 7th'): Promise<void> {
+  const radio = page.getByRole('radio', { name, exact: true })
+  await expect(async () => {
+    if (!(await radio.isChecked())) await page.locator('label').filter({ has: radio }).click({ timeout: 1000 })
+    await expect(radio).toBeChecked({ timeout: 1000 })
+  }).toPass({ timeout: 10_000 })
 }
 
 /** wait until every Changes line has been drawn with its guide tones (each line draws on its own) */

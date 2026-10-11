@@ -62,11 +62,3 @@ export function guideToneLine(tones: readonly (GuideTones | null)[], range: Rang
     return note && { ...note, held }
   })
 }
-
-/**
- * lines A and B, each built on its own by guideToneLine. A thin adapter for guideVoices until Task 2 of the
- * independent-lines plan voices one line and deletes it.
- */
-export function guideToneLines(tones: readonly (GuideTones | null)[], range: Range, blocks: readonly number[] = []): readonly [(LineNote | null)[], (LineNote | null)[]] {
-  return [guideToneLine(tones, range, 'third', blocks), guideToneLine(tones, range, 'seventh', blocks)]
-}

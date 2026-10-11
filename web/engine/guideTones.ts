@@ -4,14 +4,16 @@ import { accidentalsInBar, octaveOf } from './keySignature'
 import { baseQuality } from './qualities'
 import { spellFrom } from './scales'
 import { orNull } from './util'
-import { guideToneLines, type LineNote } from './guideToneLines'
+import { guideToneLine } from './guideToneLines'
 import type { Candidate, GuideTones } from './voiceLeading'
 
 /**
- * Guide tones on the Changes sheet: guide tone lines (docs/superpowers/specs/2026-10-10-guide-tone-lines-design.md:
- * line A from the first chord's 3rd, line B from its 7th, each moving to the nearer guide tone of the next chord) as
- * voices, one note a chord (docs/superpowers/specs/2026-10-10-guide-tones-on-changes-design.md), split at barlines, with accidentals by the measure rule across both voices. No DOM, like sheet.ts. The
- * timeline (guideToneTimeline.ts) and the lines (guideToneLines.ts) live in their own modules.
+ * Guide tones on the Changes sheet: one guide tone line (docs/superpowers/specs/2026-10-10-guide-tone-lines-design.md,
+ * as amended by 2026-10-10-independent-guide-tone-lines-design.md: line A from the first chord's 3rd or line B from its
+ * 7th, each built on its own, moving to the nearer guide tone of the next chord) as one voice, a note a chord
+ * (docs/superpowers/specs/2026-10-10-guide-tones-on-changes-design.md), split at barlines, with accidentals by the
+ * measure rule. No DOM, like sheet.ts. The timeline (guideToneTimeline.ts) and the lines (guideToneLines.ts) live in
+ * their own modules.
  */
 
 /** canonical quality -> the degrees that stand for its "3rd" and "7th" */
@@ -56,11 +58,8 @@ export function guideTonesFor(part: Part, chord: string, scale?: string): GuideT
   }
 }
 
-/** which guide tone lines the Changes sheet shows: line A, from the 3rd, and line B, from the 7th */
-export type GuideShow = Readonly<{ fromThird: boolean; fromSeventh: boolean }>
-export const NO_GUIDES: GuideShow = { fromThird: false, fromSeventh: false }
-/** how many guide tone voices are shown: 0, 1 or 2 */
-export const guidesOn = (s: GuideShow): number => +s.fromThird + +s.fromSeventh
+/** the guide tone line the Changes sheet shows, at most one: none, line A (from the 3rd) or line B (from the 7th) */
+export type GuideLine = 'off' | 'third' | 'seventh'
 
 /** one note (or rest) of a guide tone voice, within a bar */
 export type GuideNote = Readonly<{
@@ -73,7 +72,7 @@ export type GuideNote = Readonly<{
   tie: boolean
   /** continues the previous note: no accidental, no label */
   tiedIn: boolean
-  /** '#', 'b', 'n', '##', 'bb' or null: the measure rule across both voices, against the key signature (none: C) */
+  /** '#', 'b', 'n', '##', 'bb' or null: the measure rule, against the key signature (none: C) */
   accidental: string | null
 }>
 
@@ -107,22 +106,16 @@ export function notesFor(c: Candidate | null, start: number, length: number, bea
   return out
 }
 
-/**
- * one bar's voices (upper first) with their accidentals: the measure rule (accidentalsInBar) over both voices
- * merged, by beat and the upper note first, so an accidental in one voice is in force for the other
- */
-export function voiceAccidentals(voices: readonly (readonly GuideNote[])[], keySig: string | null): GuideNote[][] {
-  const merged = voices
-    .flatMap((notes, v) => notes.flatMap((n, i) => (n.pitch ? [{ v, i, n, pitch: n.pitch }] : [])))
-    .sort((a, b) => a.n.beat - b.n.beat || a.v - b.v)
+/** one bar's voice with its accidentals: the measure rule (accidentalsInBar) over its notes, rests left as they are */
+export function voiceAccidentals(voice: readonly GuideNote[], keySig: string | null): GuideNote[] {
+  const pitched = voice.flatMap((n, i) => (n.pitch ? [{ i, n, pitch: n.pitch }] : []))
   const accs = accidentalsInBar(
-    merged.map(({ n, pitch }) => ({ letter: pitch.letter, acc: pitch.acc, octave: octaveOf(pitch), tiedIn: n.tiedIn })),
+    pitched.map(({ n, pitch }) => ({ letter: pitch.letter, acc: pitch.acc, octave: octaveOf(pitch), tiedIn: n.tiedIn })),
     keySig,
   )
-  const out = voices.map((notes) => [...notes])
-  merged.forEach(({ v, i, n }, k) => {
-    const voice = out[v]
-    if (voice) voice[i] = { ...n, accidental: accs[k] ?? null }
+  const out = [...voice]
+  pitched.forEach(({ i, n }, k) => {
+    out[i] = { ...n, accidental: accs[k] ?? null }
   })
   return out
 }
@@ -130,25 +123,23 @@ export function voiceAccidentals(voices: readonly (readonly GuideNote[])[], keyS
 const readable = (chord: string): boolean => orNull(() => parseChord(chord)) !== null
 
 /**
- * the guide tone voices for chords in time order: by timeline bar (Math.floor(start / beats)), each bar's voices
- * ([line] with one toggle on, [upper, lower] with both); by row, the labels top to bottom (no entry for a rest);
- * and a diagnostic for each chord without guide tones. Lines A and B are always built together (they differ at
- * every chord); one on: that line alone; both on: the two sorted by pitch at every chord. A chord that repeats the
- * guide tones in the same block is tied from the one before. A chord without guide tones rests in every voice.
- * keySig: the signature in force on every line (null: C). Nothing when both are off.
+ * the guide tone line's voice for chords in time order: by timeline bar (Math.floor(start / beats)), the bar's
+ * notes; by row, the chord's label (no entry for a rest); and a diagnostic for each chord without guide tones. The
+ * line is built on its own (guideToneLine). A chord that repeats the guide tones in the same block is tied from the
+ * one before; a chord without guide tones rests. keySig: the signature in force on every line (null: C). Nothing
+ * when the line is 'off'.
  */
 export function guideVoices(
   chords: readonly GuideInput[],
   part: Part,
   beats: 2 | 3 | 4,
   keySig: string | null,
-  show: GuideShow,
-): { bars: ReadonlyMap<number, readonly (readonly GuideNote[])[]>; labels: ReadonlyMap<number, readonly string[]>; missing: readonly string[] } {
-  const bars = new Map<number, GuideNote[][]>()
-  const labels = new Map<number, readonly string[]>()
+  line: GuideLine,
+): { bars: ReadonlyMap<number, readonly GuideNote[]>; labels: ReadonlyMap<number, string>; missing: readonly string[] } {
+  const bars = new Map<number, GuideNote[]>()
+  const labels = new Map<number, string>()
   const missing: string[] = []
-  const count = guidesOn(show)
-  if (!count) return { bars, labels, missing }
+  if (line === 'off') return { bars, labels, missing }
   const tones = chords.map((c) => {
     const t = guideTonesFor(part, c.chord, c.scale)
     if (!t) {
@@ -157,37 +148,21 @@ export function guideVoices(
     }
     return t
   })
-  const [a, b] = guideToneLines(tones, rangeOf(part), chords.map((c) => c.block ?? 0))
-  const at = (j: number): (LineNote | null)[] => {
-    const [x = null, y = null] = [a[j], b[j]]
-    if (count === 1) return [show.fromThird ? x : y]
-    return x && y && y.pitch.midi > x.pitch.midi ? [y, x] : [x, y]
-  }
-  const voices: { bar: number; note: GuideNote }[][] = Array.from({ length: count }, () => [])
+  const notes = guideToneLine(tones, rangeOf(part), line, chords.map((c) => c.block ?? 0))
+  const voice: { bar: number; note: GuideNote }[] = []
   chords.forEach((c, j) => {
-    const here = at(j)
-    const labelled = here.flatMap((h) => (h ? [guideLabel(h.label)] : []))
-    if (labelled.length === here.length) labels.set(c.row, labelled)
-    here.forEach((h, v) => {
-      const voice = voices[v]
-      if (!voice) return
-      const notes = notesFor(h, c.start, c.beats, beats)
-      const before = voice.at(-1)
-      const first = notes[0]
-      if (h?.held && before && first) {
-        voice[voice.length - 1] = { ...before, note: { ...before.note, tie: true } }
-        notes[0] = { ...first, note: { ...first.note, tiedIn: true } }
-      }
-      voice.push(...notes)
-    })
+    const h = notes[j] ?? null
+    if (h) labels.set(c.row, guideLabel(h.label))
+    const here = notesFor(h, c.start, c.beats, beats)
+    const before = voice.at(-1)
+    const first = here[0]
+    if (h?.held && before && first) {
+      voice[voice.length - 1] = { ...before, note: { ...before.note, tie: true } }
+      here[0] = { ...first, note: { ...first.note, tiedIn: true } }
+    }
+    voice.push(...here)
   })
-  voices.forEach((voice, v) =>
-    voice.forEach(({ bar, note }) => {
-      const here = bars.get(bar) ?? voices.map((): GuideNote[] => [])
-      here[v]?.push(note)
-      bars.set(bar, here)
-    }),
-  )
-  for (const [bar, vs] of bars) bars.set(bar, voiceAccidentals(vs, keySig))
+  for (const { bar, note } of voice) bars.set(bar, [...(bars.get(bar) ?? []), note])
+  for (const [bar, v] of bars) bars.set(bar, voiceAccidentals(v, keySig))
   return { bars, labels, missing }
 }

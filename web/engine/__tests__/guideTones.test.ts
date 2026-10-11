@@ -5,10 +5,8 @@ import {
   type GuideInput,
   guideLabel,
   type GuideNote,
-  type GuideShow,
   guideTonesFor,
   guideVoices,
-  NO_GUIDES,
   voiceAccidentals,
 } from '../guideTones'
 import { guideToneTimeline } from '../guideToneTimeline'
@@ -46,17 +44,14 @@ describe('guide tones per chord', () => {
   })
 })
 
-const BOTH: GuideShow = { fromThird: true, fromSeventh: true }
-const THIRD: GuideShow = { fromThird: true, fromSeventh: false }
-const SEVENTH: GuideShow = { fromThird: false, fromSeventh: true }
 /** chord i on row i, one after another, len beats each */
 const inTurn = (chords: readonly string[], len = 4): GuideInput[] => chords.map((chord, i) => ({ row: i, chord, start: i * len, beats: len }))
 /** a note as "beat:key/beats", then ~ (tie), ^ (tied in) and its accidental */
 const noteText = (n: GuideNote): string =>
   `${n.beat}:${n.pitch ? toVexKey(n.pitch) : 'rest'}/${n.beats}${n.tie ? '~' : ''}${n.tiedIn ? '^' : ''}${n.accidental ?? ''}`
-/** each bar in order, its voices top to bottom joined by " | " */
+/** each bar's one voice in order */
 const barsText = (g: ReturnType<typeof guideVoices>): string[] =>
-  [...g.bars.entries()].sort(([a], [b]) => a - b).map(([, voices]) => voices.map((v) => v.map(noteText).join(' ')).join(' | '))
+  [...g.bars.entries()].sort(([a], [b]) => a - b).map(([, voice]) => voice.map(noteText).join(' '))
 
 describe('guideLabel', () => {
   it('drops the flat or sharp from the degree', () => {
@@ -65,73 +60,68 @@ describe('guideLabel', () => {
 })
 
 describe('guideVoices', () => {
-  it('gives nothing, not even a diagnostic, with both toggles off', () => {
-    const g = guideVoices(inTurn(['Dm7', 'Cm7#5#9x']), CONCERT, 4, null, NO_GUIDES)
+  it("gives nothing, not even a diagnostic, with the line 'off'", () => {
+    const g = guideVoices(inTurn(['Dm7', 'Cm7#5#9x']), CONCERT, 4, null, 'off')
     expect([g.bars.size, g.labels.size, g.missing]).toEqual([0, 0, []])
   })
 
-  it('both on: lines A and B as two voices, upper first, that move by step, their labels swapping 7/3 -> 3/7 -> 7/3', () => {
-    const g = guideVoices(inTurn(['Dm7', 'G7', 'CMaj7']), CONCERT, 4, null, BOTH)
-    expect(barsText(g)).toEqual(['0:c/5/4 | 0:f/4/4', '0:b/4/4 | 0:f/4/4', '0:b/4/4 | 0:e/4/4'])
-    expect([...g.labels]).toEqual([[0, ['7', '3']], [1, ['3', '7']], [2, ['7', '3']]])
-  })
-
-  it('one on: that line alone, from the 3rd (A) or the 7th (B), its labels alternating 3 and 7', () => {
-    const third = guideVoices(inTurn(['Dm7', 'G7', 'CMaj7']), CONCERT, 4, null, THIRD)
+  it('voices one line, from the 3rd or the 7th: one voice a bar and one label a chord, alternating 3 and 7', () => {
+    const third = guideVoices(inTurn(['Dm7', 'G7', 'CMaj7']), CONCERT, 4, null, 'third')
     expect(barsText(third)).toEqual(['0:f/4/4', '0:f/4/4', '0:e/4/4'])
-    expect([...third.labels]).toEqual([[0, ['3']], [1, ['7']], [2, ['3']]])
-    const seventh = guideVoices(inTurn(['Dm7', 'G7', 'CMaj7']), CONCERT, 4, null, SEVENTH)
+    expect([...third.labels]).toEqual([[0, '3'], [1, '7'], [2, '3']])
+    const seventh = guideVoices(inTurn(['Dm7', 'G7', 'CMaj7']), CONCERT, 4, null, 'seventh')
     expect(barsText(seventh)).toEqual(['0:c/5/4', '0:b/4/4', '0:b/4/4'])
-    expect([...seventh.labels]).toEqual([[0, ['7']], [1, ['3']], [2, ['7']]])
+    expect([...seventh.labels]).toEqual([[0, '7'], [1, '3'], [2, '7']])
   })
 
-  it('one on: the line shown is built on its own, so it takes F#4 although line B takes it too', () => {
-    const third = guideVoices(inTurn(['Cm6', 'D7']), CONCERT, 4, null, THIRD)
+  it('builds the line on its own: from the 3rd it takes F#4, the tone the line from the 7th takes too', () => {
+    const third = guideVoices(inTurn(['Cm6', 'D7']), CONCERT, 4, null, 'third')
     expect(barsText(third)).toEqual(['0:eb/4/4b', '0:f#/4/4#'])
-    expect([...third.labels]).toEqual([[0, ['3']], [1, ['3']]])
+    expect([...third.labels]).toEqual([[0, '3'], [1, '3']])
   })
 
   it('holds a chord that repeats the guide tones: tied from the chord before, its label printed again (rule 5)', () => {
-    const g = guideVoices(inTurn(['C7', 'C7b9'], 2), CONCERT, 4, null, BOTH)
-    expect(barsText(g)).toEqual(['0:bb/4/2~b 2:bb/4/2^ | 0:e/4/2~ 2:e/4/2^'])
-    expect([...g.labels]).toEqual([[0, ['7', '3']], [1, ['7', '3']]])
+    const third = guideVoices(inTurn(['C7', 'C7b9'], 2), CONCERT, 4, null, 'third')
+    expect(barsText(third)).toEqual(['0:e/4/2~ 2:e/4/2^'])
+    expect([...third.labels]).toEqual([[0, '3'], [1, '3']])
+    expect(barsText(guideVoices(inTurn(['C7', 'C7b9'], 2), CONCERT, 4, null, 'seventh'))).toEqual(['0:bb/4/2~b 2:bb/4/2^'])
   })
 
   it('strikes a repeated chord again in a new block, untied (rule 5)', () => {
     const chords = inTurn(['C7', 'C7b9']).map((c, i) => ({ ...c, block: i }))
-    expect(barsText(guideVoices(chords, CONCERT, 4, null, THIRD))).toEqual(['0:e/4/4', '0:e/4/4'])
+    expect(barsText(guideVoices(chords, CONCERT, 4, null, 'third'))).toEqual(['0:e/4/4', '0:e/4/4'])
   })
 
   it('labels the real degree: 6 on a 6 chord, 4 on a sus chord, 1 on a triad, 7 on a dim7', () => {
-    const g = guideVoices(inTurn(['C6', 'C7sus4', 'C']), CONCERT, 4, null, BOTH)
-    expect([...g.labels]).toEqual([[0, ['6', '3']], [1, ['7', '4']], [2, ['1', '3']]])
-    expect([...guideVoices(inTurn(['Bdim7']), CONCERT, 4, null, SEVENTH).labels]).toEqual([[0, ['7']]])
+    expect([...guideVoices(inTurn(['C6', 'C7sus4', 'C']), CONCERT, 4, null, 'third').labels.values()]).toEqual(['3', '4', '3'])
+    expect([...guideVoices(inTurn(['C6', 'C7sus4', 'C']), CONCERT, 4, null, 'seventh').labels.values()]).toEqual(['6', '7', '1'])
+    expect([...guideVoices(inTurn(['Bdim7']), CONCERT, 4, null, 'seventh').labels]).toEqual([[0, '7']])
   })
 
   it('holds a chord across barlines with ties, the carried pieces marked tied in', () => {
-    expect(barsText(guideVoices(inTurn(['Dm7'], 8), CONCERT, 4, null, THIRD))).toEqual(['0:f/4/4~', '0:f/4/4^'])
+    expect(barsText(guideVoices(inTurn(['Dm7'], 8), CONCERT, 4, null, 'third'))).toEqual(['0:f/4/4~', '0:f/4/4^'])
   })
 
-  it('writes a whole bar of 3/4 as a dotted half, tied over the barline in both voices', () => {
+  it('writes a whole bar of 3/4 as a dotted half, tied over the barline', () => {
     const chords: GuideInput[] = [
       { row: 0, chord: 'Dm7', start: 0, beats: 3 },
       { row: 1, chord: 'G7', start: 3, beats: 6 },
     ]
-    expect(barsText(guideVoices(chords, CONCERT, 3, null, BOTH))).toEqual(['0:c/5/3 | 0:f/4/3', '0:b/4/3~ | 0:f/4/3~', '0:b/4/3^ | 0:f/4/3^'])
+    expect(barsText(guideVoices(chords, CONCERT, 3, null, 'seventh'))).toEqual(['0:c/5/3', '0:b/4/3~', '0:b/4/3^'])
   })
 
   it('writes accidentals against the key signature, and against C without one', () => {
     const chords = inTurn(['Gm7', 'C7', 'FMaj7'])
-    expect(barsText(guideVoices(chords, CONCERT, 4, 'F', BOTH))).toEqual(['0:bb/4/4 | 0:f/4/4', '0:bb/4/4 | 0:e/4/4', '0:a/4/4 | 0:e/4/4'])
-    expect(barsText(guideVoices(chords, CONCERT, 4, null, BOTH))).toEqual(['0:bb/4/4b | 0:f/4/4', '0:bb/4/4b | 0:e/4/4', '0:a/4/4 | 0:e/4/4'])
+    expect(barsText(guideVoices(chords, CONCERT, 4, 'F', 'third'))).toEqual(['0:bb/4/4', '0:bb/4/4', '0:a/4/4'])
+    expect(barsText(guideVoices(chords, CONCERT, 4, null, 'third'))).toEqual(['0:bb/4/4b', '0:bb/4/4b', '0:a/4/4'])
   })
 
-  it("applies the measure rule across both voices: the upper G4 cancels the lower voice's Gb4 earlier in the bar", () => {
+  it('applies the measure rule within the bar: G4 after Gb4 takes a natural', () => {
     const chords: GuideInput[] = [
       { row: 0, chord: 'Gb', start: 0, beats: 2 },
       { row: 1, chord: 'Em', start: 2, beats: 2 },
     ]
-    expect(barsText(guideVoices(chords, CONCERT, 4, null, BOTH))).toEqual(['0:bb/4/2b 2:g/4/2n | 0:gb/4/2b 2:g/4/2']) // both lines take G4
+    expect(barsText(guideVoices(chords, CONCERT, 4, null, 'seventh'))).toEqual(['0:gb/4/2b 2:g/4/2n'])
   })
 
   it('writes the sharp again on a note struck after the same note was held over the barline', () => {
@@ -139,32 +129,26 @@ describe('guideVoices', () => {
       { row: 0, chord: 'D7', start: 0, beats: 6 },
       { row: 1, chord: 'D', start: 6, beats: 2 },
     ]
-    expect(barsText(guideVoices(chords, CONCERT, 4, null, THIRD))).toEqual(['0:f#/4/4~#', '0:f#/4/2^ 2:f#/4/2#'])
+    expect(barsText(guideVoices(chords, CONCERT, 4, null, 'third'))).toEqual(['0:f#/4/4~#', '0:f#/4/2^ 2:f#/4/2#'])
   })
 
-  it('rests in every voice on a chord without guide tones, reports it once, and labels nothing there', () => {
-    const g = guideVoices(inTurn(['Dm7', 'Cm7#5#9x', 'CMaj7', 'Cm7#5#9x', '???']), CONCERT, 4, null, BOTH)
-    expect(barsText(g)).toEqual(['0:c/5/4 | 0:f/4/4', '0:rest/4 | 0:rest/4', '0:b/4/4 | 0:e/4/4', '0:rest/4 | 0:rest/4', '0:rest/4 | 0:rest/4'])
+  it('rests on a chord without guide tones, reports it once, and labels nothing there', () => {
+    const g = guideVoices(inTurn(['Dm7', 'Cm7#5#9x', 'CMaj7', 'Cm7#5#9x', '???']), CONCERT, 4, null, 'third')
+    expect(barsText(g)).toEqual(['0:f/4/4', '0:rest/4', '0:e/4/4', '0:rest/4', '0:rest/4'])
     expect([...g.labels.keys()]).toEqual([0, 2])
     expect(g.missing).toEqual(['no guide tones for Cm7#5#9x (unknown chord quality)', "no guide tones for ??? (can't read the chord)"])
   })
 
   it('ignores a scale it cannot read rather than the chord', () => {
-    const g = guideVoices([{ row: 0, chord: 'Dm7', scale: 'D Dorain', start: 0, beats: 4 }], CONCERT, 4, null, THIRD)
-    expect([[...g.labels], g.missing]).toEqual([[[0, ['3']]], []])
+    const g = guideVoices([{ row: 0, chord: 'Dm7', scale: 'D Dorain', start: 0, beats: 4 }], CONCERT, 4, null, 'third')
+    expect([[...g.labels], g.missing]).toEqual([[[0, '3']], []])
   })
 
   it('writes for the part: a Bb part a step up, a bass part inside E2-C4', () => {
-    expect(barsText(guideVoices(inTurn(['Cm7', 'F7', 'BbMaj7']), TENOR, 4, null, BOTH))).toEqual(['0:c/5/4 | 0:f/4/4', '0:b/4/4 | 0:f/4/4', '0:b/4/4 | 0:e/4/4'])
-    const bass = guideVoices(inTurn(['Dm7', 'G7', 'CMaj7', 'C6', 'C7sus4', 'C']), BASS, 4, null, BOTH)
-    expect(barsText(bass)).toEqual([
-      '0:f/3/4 | 0:c/3/4',
-      '0:f/3/4 | 0:b/2/4',
-      '0:e/3/4 | 0:b/2/4',
-      '0:e/3/4 | 0:a/2/4',
-      '0:f/3/4 | 0:bb/2/4b',
-      '0:e/3/4 | 0:c/3/4',
-    ])
+    expect(barsText(guideVoices(inTurn(['Cm7', 'F7', 'BbMaj7']), TENOR, 4, null, 'third'))).toEqual(['0:f/4/4', '0:f/4/4', '0:e/4/4'])
+    const bass = inTurn(['Dm7', 'G7', 'CMaj7', 'C6', 'C7sus4', 'C'])
+    expect(barsText(guideVoices(bass, BASS, 4, null, 'third'))).toEqual(['0:f/3/4', '0:f/3/4', '0:e/3/4', '0:e/3/4', '0:f/3/4', '0:e/3/4'])
+    expect(barsText(guideVoices(bass, BASS, 4, null, 'seventh'))).toEqual(['0:c/3/4', '0:b/2/4', '0:b/2/4', '0:a/2/4', '0:bb/2/4b', '0:c/3/4'])
   })
 })
 
@@ -172,30 +156,28 @@ describe('voiceAccidentals', () => {
   const at = (beat: number, letter: 0 | 1 | 3, acc: number, midi: number, tiedIn = false): GuideNote => ({
     pitch: { letter, acc, midi },
     beat,
-    beats: 2,
+    beats: 1,
     tie: false,
     tiedIn,
     accidental: null,
   })
-  const C5 = (beat: number) => at(beat, 0, 0, 72)
-  const D4 = (beat: number) => at(beat, 1, 0, 62)
-  const accs = (voices: readonly (readonly GuideNote[])[]) => voiceAccidentals(voices, null).map((v) => v.map((n) => n.accidental))
+  const accs = (voice: readonly GuideNote[]) => voiceAccidentals(voice, null).map((n) => n.accidental)
 
-  it('F#4 in the lower voice, then F4 in the upper: a natural', () => {
-    expect(accs([[C5(0), at(2, 3, 0, 65)], [at(0, 3, 1, 66), D4(2)]])).toEqual([[null, 'n'], ['#', null]])
+  it('F#4, then F4: a natural', () => {
+    expect(accs([at(0, 3, 1, 66), at(1, 3, 0, 65)])).toEqual(['#', 'n'])
   })
 
-  it('a lower note tied in puts nothing in force: the upper voice on its letter and octave writes its sharp', () => {
-    expect(accs([[C5(0), at(2, 3, 1, 66)], [at(0, 3, 1, 66, true), D4(2)]])).toEqual([[null, '#'], [null, null]])
+  it('a note tied in puts nothing in force: the next F#4 struck writes its sharp', () => {
+    expect(accs([at(0, 3, 1, 66, true), at(1, 1, 0, 62), at(2, 3, 1, 66)])).toEqual([null, null, '#'])
   })
 
   it('leaves rests without an accidental', () => {
     const rest: GuideNote = { pitch: null, beat: 0, beats: 4, tie: false, tiedIn: false, accidental: null }
-    expect(accs([[rest], [rest]])).toEqual([[null], [null]])
+    expect(accs([rest])).toEqual([null])
   })
 })
 
-describe('guide tone voices over the library', () => {
+describe('guide tone lines over the library', () => {
   const charts = readdirSync('../charts')
     .filter((name) => !isSyncCopy(name))
     .map((name) => ({ name, doc: parseChart(readFileSync(`../charts/${name}`, 'utf8')).value }))
@@ -205,24 +187,22 @@ describe('guide tone voices over the library', () => {
   }
   const RANGE = { treble: [60, 81], bass: [40, 60] } as const
 
-  for (const [name, part] of [['concert', CONCERT], ['bass', BASS]] as const) {
-    it(`both on, ${name}: at least 85% of moves are steps; every chord is labelled and the voices stay in step and in range`, () => {
-      let moves = 0
-      let steps = 0
-      const faults: string[] = []
-      for (const { name: chart, doc } of charts) {
-        const chords = inputs(doc)
-        const g = guideVoices(chords, part, chartBeats(doc), null, BOTH)
-        if (g.missing.length) faults.push(`${chart}: ${g.missing.join('; ')}`)
-        if (g.labels.size !== chords.length) faults.push(`${chart}: ${g.labels.size} of ${chords.length} chords labelled`)
-        const bars = [...g.bars.entries()].sort(([a], [b]) => a - b)
-        for (const [bar, [upper = [], lower = []]] of bars) {
-          if (upper.map((n) => n.beat).join() !== lower.map((n) => n.beat).join()) faults.push(`${chart} bar ${bar}: voices out of step`)
-          for (const n of [...upper, ...lower])
-            if (n.pitch && (n.pitch.midi < RANGE[part.clef][0] || n.pitch.midi > RANGE[part.clef][1])) faults.push(`${chart} bar ${bar}: ${toVexKey(n.pitch)} out of range`)
-        }
-        for (const v of [0, 1]) {
-          const struck = bars.flatMap(([, voices]) => voices[v] ?? []).filter((n) => !n.tiedIn)
+  for (const [name, part] of [['concert', CONCERT], ['bass', BASS]] as const)
+    for (const line of ['third', 'seventh'] as const)
+      it(`from the ${line === 'third' ? '3rd' : '7th'}, ${name}: at least 85% of moves are steps; every chord is labelled and the line stays in range`, () => {
+        let moves = 0
+        let steps = 0
+        const faults: string[] = []
+        for (const { name: chart, doc } of charts) {
+          const chords = inputs(doc)
+          const g = guideVoices(chords, part, chartBeats(doc), null, line)
+          if (g.missing.length) faults.push(`${chart}: ${g.missing.join('; ')}`)
+          if (g.labels.size !== chords.length) faults.push(`${chart}: ${g.labels.size} of ${chords.length} chords labelled`)
+          const bars = [...g.bars.entries()].sort(([a], [b]) => a - b)
+          for (const [bar, voice] of bars)
+            for (const n of voice)
+              if (n.pitch && (n.pitch.midi < RANGE[part.clef][0] || n.pitch.midi > RANGE[part.clef][1])) faults.push(`${chart} bar ${bar}: ${toVexKey(n.pitch)} out of range`)
+          const struck = bars.flatMap(([, voice]) => voice).filter((n) => !n.tiedIn)
           struck.slice(1).forEach((n, j) => {
             const before = struck[j]?.pitch
             if (!n.pitch || !before) return
@@ -230,11 +210,9 @@ describe('guide tone voices over the library', () => {
             if (Math.abs(n.pitch.midi - before.midi) <= 2) steps++
           })
         }
-      }
-      expect(faults).toEqual([])
-      expect(steps / moves).toBeGreaterThanOrEqual(0.85)
-    })
-  }
+        expect(faults).toEqual([])
+        expect(steps / moves).toBeGreaterThanOrEqual(0.85)
+      })
 })
 
 describe('the engine', () => {
