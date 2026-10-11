@@ -17,7 +17,7 @@ A1 | 2  | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
 A1 | 3  | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
 A1 | 3  | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
 A1 | 3  | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
-A1 | 4  | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
+A1 | 4  | AbMaj7 | Ab Ionian            # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
 A1 | 4  | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
 A1 | 5  | Cm7    | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A1 | 5  | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
@@ -43,7 +43,7 @@ A2 | 10 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
 A2 | 11 | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
 A2 | 11 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
 A2 | 11 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
-A2 | 12 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
+A2 | 12 | AbMaj7 | Ab Ionian            # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
 A2 | 12 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
 A2 | 13 | Cm7    | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A2 | 13 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
@@ -58,12 +58,12 @@ A2 | 15 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
 A2 | 16 | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
 B  | 17 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
 B  | 17 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
-B  | 18 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
+B  | 18 | AbMaj7 | Ab Ionian            # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
 B  | 18 | Cm7    | C Dorian             # ii of the ii–V to Bb minor
 B  | 18 | F7     | F Mixolydian         # V7/v in Eb: natural tensions
 B  | 19 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
 B  | 19 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
-B  | 20 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
+B  | 20 | AbMaj7 | Ab Ionian            # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
 # area: Gb major (bars 21–22)
 B  | 21 | Abm7   | Ab Dorian            # ii of the ii–V to Gb
 B  | 21 | Db7    | Db Mixolydian        # V7 of Gb: natural tensions
@@ -83,7 +83,7 @@ A3 | 26 | Bb7    | Bb Mixolydian        # V7 of Eb: natural tensions
 A3 | 27 | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
 A3 | 27 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
 A3 | 27 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
-A3 | 28 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
+A3 | 28 | AbMaj7 | Ab Ionian            # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
 A3 | 28 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
 A3 | 29 | Cm7    | C Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A3 | 29 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7

@@ -28,7 +28,7 @@ B    | 9  | Cm7    | C Dorian             # ii: Dorian, the key’s own notes
 B    | 10 | AbMaj7 | Ab Lydian            # ♭VIImaj7, borrowed from Bb minor: Lydian (its ♯11 is in the key)
 # area: Db major (bars 10–11)
 B    | 10 | G7alt  | G Altered            # from the symbol: altered
-B    | 11 | GbMaj7 | Gb Lydian            # IV: the #4 is the key’s 7th
+B    | 11 | GbMaj7 | Gb Ionian            # the G7alt before it makes Gb the key of the moment: the 4th is in the key
 # area: Ab minor (bars 12–13)
 B    | 12 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab minor
 B    | 12 | Eb7alt | Eb Altered           # from the symbol: altered
@@ -37,7 +37,7 @@ B    | 13 | Abm7   | Ab Dorian            # tonic minor: Dorian by convention
 B    | 14 | F7alt  | F Altered            # from the symbol: altered
 B    | 15 | BbMaj7 | Bb Ionian            # tonic: the 4th is in the key
 B    | 16 | E7alt  | E Altered            # from the symbol: altered
-C    | 17 | EbMaj7 | Eb Lydian            # IV: the #4 is the key’s 7th
+C    | 17 | EbMaj7 | Eb Ionian            # the E7alt before it makes Eb the key of the moment: the 4th is in the key
 C    | 18 | Am7b5  | A Locrian            # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 C    | 18 | D7alt  | D Altered            # from the symbol: altered
 C    | 19 | Gm11   | G Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
@@ -47,7 +47,7 @@ C    | 21 | Dm11   | D Dorian             # ii of G7: Dorian
 C    | 22 | G7     | G Mixolydian         # extended ii–V: a side-step, its own key
 # area: Db major (bars 22–24)
 C    | 22 | G7alt  | G Altered            # from the symbol: altered
-C    | 23 | GbMaj7 | Gb Lydian            # IV: the #4 is the key’s 7th
+C    | 23 | GbMaj7 | Gb Ionian            # the G7alt before it makes Gb the key of the moment: the 4th is in the key
 C    | 23 | CbMaj7 | Cb Lydian            # ♭VIImaj7, borrowed from Db minor: Lydian (its ♯11 is in the key)
 C    | 24 | Bbm7   | Bb Aeolian           # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 # area: C minor (bars 24–25)

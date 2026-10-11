@@ -34,7 +34,7 @@ B | 15 | GMaj7  | G Ionian                  # tonic: the 4th is in the key
 B | 16 | Am7    | A Dorian                  # ii of the ii–V to G
 B | 16 | D7     | D Mixolydian              # V7 of G: natural tensions
 @copy A C 16
-D | 25 | CMaj7  | C Lydian                  # IV: the #4 is the key’s 7th
+D | 25 | CMaj7  | C Ionian                  # the G7 before it makes C the key of the moment: the 4th is in the key
 D | 26 | Am7    | A Dorian                  # ii of D7: Dorian
 D | 26 | D7     | D Mixolydian              # V7/I in G: natural tensions
 D | 27 | Bm7    | B Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)

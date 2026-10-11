@@ -44,7 +44,7 @@ A2 | 15 | CMaj7  | C Ionian                 # tonic: the 4th is in the key
 A2 | 15 | Am7    | A Aeolian                # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A2 | 16 | Gm7    | G Dorian                 # ii of the ii–V to F
 A2 | 16 | C7b9   | C Half-Whole Diminished  # V7/IV in C: the b9 from the symbol
-B  | 17 | FMaj7  | F Lydian                 # IV: the #4 is the key’s 7th
+B  | 17 | FMaj7  | F Ionian                 # the C7b9 before it makes F the key of the moment: the 4th is in the key
 B  | 17 | Bb13   | Bb Lydian Dominant       # V7/biii in C: the #11 is in the key
 # area: Db major (bars 18–21)
 B  | 18 | Ebm9   | Eb Dorian                # ii of the ii–V to Db
@@ -58,7 +58,7 @@ B  | 21 | Dm7b5  | D Locrian                # biiø7 in Db: Locrian, the key's o
 # area: C major (bars 22–25)
 B  | 22 | Gm7b5  | G Locrian                # iiø7 of F: Locrian, the key's own notes (its ♭2 is a passing note)
 B  | 22 | C7alt  | C Altered                # from the symbol: altered
-B  | 23 | FMaj7  | F Lydian                 # IV: the #4 is the key’s 7th
+B  | 23 | FMaj7  | F Ionian                 # the C7alt before it makes F the key of the moment: the 4th is in the key
 B  | 23 | F6     | F Lydian                 # IV: the #4 is the key’s 7th
 B  | 24 | Dm7b5  | D Locrian                # iiø7 of C: Locrian, the key's own notes (its ♭2 is a passing note)
 B  | 24 | G7alt  | G Altered                # from the symbol: altered

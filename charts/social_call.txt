@@ -24,7 +24,7 @@ A1 | 8  | DbMaj7   | Db Ionian             # tonic: the 4th is in the key
 @copy A1 A2 8
 B  | 17 | Abm7     | Ab Dorian             # ii of the ii–V to Gb
 B  | 18 | Db7      | Db Mixolydian         # V7/IV in Db: natural tensions
-B  | 19 | GbMaj7   | Gb Lydian             # IV: the #4 is the key’s 7th
+B  | 19 | GbMaj7   | Gb Ionian             # the Db7 before it makes Gb the key of the moment: the 4th is in the key
 B  | 19 | Abm7     | Ab Dorian             # a borrowed minor chord: Dorian, its own key
 B  | 20 | Bbm7     | Bb Aeolian            # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 # area: E major (bars 21–23)

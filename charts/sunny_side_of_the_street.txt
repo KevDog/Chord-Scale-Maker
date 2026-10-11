@@ -35,9 +35,9 @@ A2 | 15 | G7     | G Mixolydian         # V7 of C: natural tensions
 A2 | 16 | C6/9   | C Ionian             # tonic: the 4th is in the key
 B  | 17 | Gm7    | G Dorian             # ii of the ii–V to F
 B  | 18 | C7     | C Mixolydian         # V7/IV in C: natural tensions
-B  | 19 | FMaj7  | F Lydian             # IV: the #4 is the key’s 7th
+B  | 19 | FMaj7  | F Ionian             # the C7 before it makes F the key of the moment: the 4th is in the key
 B  | 19 | C7     | C Mixolydian         # V7/IV in C: natural tensions
-B  | 20 | F6/9   | F Lydian             # IV: the #4 is the key’s 7th
+B  | 20 | F6/9   | F Ionian             # the C7 before it makes F the key of the moment: the 4th is in the key
 B  | 20 | E7/C   | E Phrygian Dominant  # III7 in C, not resolving: b9 and b13 are in the key
 B  | 20 | E7/B   | E Lydian Dominant    # tritone substitute: resolves down a half step to Eb7/Bb
 B  | 20 | Eb7/Bb | Eb Lydian Dominant   # ♭III7 from the parallel minor: Lydian Dominant

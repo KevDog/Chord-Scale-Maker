@@ -13,7 +13,7 @@ A1 | 1  | DMaj7  | D Ionian                  # tonic: the 4th is in the key
 A1 | 2  | Bbdim7 | Bb Whole-Half Diminished  # passing diminished: A7♭9 without its A, the D7's dominant (Am7 its ii)
 A1 | 3  | Am7    | A Dorian                  # ii of the ii–V to G
 A1 | 4  | D7     | D Mixolydian              # V7/IV in D: natural tensions
-A1 | 5  | GMaj7  | G Lydian                  # IV: the #4 is the key’s 7th
+A1 | 5  | GMaj7  | G Ionian                  # the D7 before it makes G the key of the moment: the 4th is in the key
 A1 | 6  | Gm7    | G Dorian                  # a borrowed minor chord: Dorian, its own key
 A1 | 7  | F#7    | F# Mixolydian             # extended dominant: V7 of B7
 A1 | 8  | B7     | B Mixolydian b6           # VI7 in D, not resolving: the b13 is in the key

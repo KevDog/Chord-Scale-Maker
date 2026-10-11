@@ -15,7 +15,7 @@ A1 | 5  | Am7    | A Dorian             # ii of the ii–V to G minor
 A1 | 6  | D7     | D Mixolydian         # V7/v in C: natural tensions
 A1 | 7  | Gm7    | G Dorian             # ii of the ii–V to F
 A1 | 8  | C7     | C Mixolydian         # V7/IV in C: natural tensions
-A1 | 9  | FMaj7  | F Lydian             # IV: the #4 is the key’s 7th
+A1 | 9  | FMaj7  | F Ionian             # the C7 before it makes F the key of the moment: the 4th is in the key
 A1 | 10 | Bb7#11 | Bb Lydian Dominant   # ♭VII7 from the parallel minor: Lydian Dominant
 A1 | 11 | Em7    | E Dorian             # ii of A7: Dorian
 A1 | 12 | A7     | A Mixolydian         # extended ii–V: a side-step, its own key
@@ -30,7 +30,7 @@ A2 | 21 | Am7    | A Dorian             # ii of the ii–V to G minor
 A2 | 22 | D7     | D Mixolydian         # V7/v in C: natural tensions
 A2 | 23 | Gm7    | G Dorian             # ii of the ii–V to F
 A2 | 24 | C7     | C Mixolydian         # V7/IV in C: natural tensions
-A2 | 25 | FMaj7  | F Lydian             # IV: the #4 is the key’s 7th
+A2 | 25 | FMaj7  | F Ionian             # the C7 before it makes F the key of the moment: the 4th is in the key
 A2 | 26 | Bb7#11 | Bb Lydian Dominant   # ♭VII7 from the parallel minor: Lydian Dominant
 A2 | 27 | Em7    | E Dorian             # ii of A7: Dorian
 A2 | 27 | A7     | A Mixolydian         # extended ii–V: a side-step, its own key

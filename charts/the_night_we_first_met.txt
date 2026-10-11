@@ -41,7 +41,7 @@ B  | 19 | Dm7     | D Dorian                  # ii of the ii–V to C
 B  | 19 | G7      | G Mixolydian              # V7 of C: natural tensions
 B  | 20 | CMaj7   | C Ionian                  # tonic: the 4th is in the key
 B  | 20 | Gb7b9   | Gb Half-Whole Diminished  # tritone substitute: resolves down a half step to FMaj7; b9 from the symbol
-B  | 21 | FMaj7   | F Lydian                  # IV: the #4 is the key’s 7th
+B  | 21 | FMaj7   | F Ionian                  # the Gb7b9 before it makes F the key of the moment: the 4th is in the key
 B  | 21 | FMaj7/E | E Phrygian                # from the symbol: sus b9
 B  | 22 | FMaj7/D | F Lydian                  # IV: the #4 is the key’s 7th
 B  | 22 | FMaj7/C | F Lydian                  # IV: the #4 is the key’s 7th

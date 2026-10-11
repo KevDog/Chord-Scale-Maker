@@ -39,7 +39,7 @@ A2 | 14 | Db7   | Db Lydian Dominant  # tritone substitute: resolves down a half
 A2 | 15 | CMaj7 | C Ionian            # tonic: the 4th is in the key
 B  | 17 | Gm7   | G Dorian            # ii of the ii–V to F
 B  | 18 | C7    | C Mixolydian        # V7/IV in C: natural tensions
-B  | 19 | FMaj7 | F Lydian            # IV: the #4 is the key’s 7th
+B  | 19 | FMaj7 | F Ionian            # the C7 before it makes F the key of the moment: the 4th is in the key
 B  | 21 | Am7   | A Dorian            # ii of D7: Dorian
 B  | 22 | D7    | D Mixolydian        # V7/V in C: natural tensions
 B  | 23 | Dm7   | D Dorian            # ii of G7: Dorian

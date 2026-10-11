@@ -40,7 +40,7 @@ B  | 17 | Fm7    | F Dorian         # ii of Bb7: Dorian
 B  | 17 | Bb7    | Bb Mixolydian    # V7/IV in Bb: natural tensions
 B  | 18 | Fm7    | F Dorian         # ii of the ii–V to Eb
 B  | 18 | Bb7    | Bb Mixolydian    # V7/IV in Bb: natural tensions
-B  | 19 | EbMaj7 | Eb Lydian        # IV: the #4 is the key’s 7th
+B  | 19 | EbMaj7 | Eb Ionian        # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
 B  | 21 | Gm7    | G Dorian         # ii of C7: Dorian
 B  | 21 | C7     | C Mixolydian     # V7/V in Bb: natural tensions
 B  | 22 | Gm7    | G Dorian         # ii of C7: Dorian

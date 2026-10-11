@@ -19,7 +19,7 @@ A | 7  | Cm7    | C Dorian             # ii: Dorian, the key’s own notes
 A | 8  | B7#11  | B Lydian Dominant    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
 A | 9  | Fm7    | F Dorian             # ii of the ii–V to Eb
 A | 10 | Bb7    | Bb Mixolydian        # V7/IV in Bb: natural tensions
-A | 11 | EbMaj7 | Eb Lydian            # IV: the #4 is the key’s 7th
+A | 11 | EbMaj7 | Eb Ionian            # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
 A | 12 | Ab7    | Ab Lydian Dominant   # ♭VII7 from the parallel minor: Lydian Dominant
 A | 13 | Dm7    | D Dorian             # iii: Dorian (its Phrygian would put a b9 over the root)
 A | 14 | Db7    | Db Lydian Dominant   # tritone substitute: resolves down a half step to Cm7
@@ -47,7 +47,7 @@ C | 31 | Cm7    | C Dorian             # ii: Dorian, the key’s own notes
 C | 32 | B7#11  | B Lydian Dominant    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
 C | 33 | Fm7    | F Dorian             # ii of the ii–V to Eb
 C | 34 | Bb7    | Bb Mixolydian        # V7/IV in Bb: natural tensions
-C | 35 | EbMaj7 | Eb Lydian            # IV: the #4 is the key’s 7th
+C | 35 | EbMaj7 | Eb Ionian            # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
 # area: Db major (bars 36–37)
 C | 36 | Ab7    | Ab Mixolydian        # V7 of Db: natural tensions
 C | 37 | DbMaj7 | Db Ionian            # tonic: the 4th is in the key

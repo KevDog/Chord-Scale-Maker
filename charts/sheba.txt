@@ -10,7 +10,7 @@ source: Colorado Cookbook, p. 196
 A1 | 1  | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
 A1 | 2  | Fm7    | F Dorian            # ii of the ii–V to Eb
 A1 | 2  | Bb7    | Bb Mixolydian       # V7/IV in Bb: natural tensions
-A1 | 3  | EbMaj7 | Eb Lydian           # IV: the #4 is the key’s 7th
+A1 | 3  | EbMaj7 | Eb Ionian           # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
 A1 | 4  | Ab7    | Ab Lydian Dominant  # back door bVII7 to BbMaj7: the #11 is in the key
 A1 | 5  | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
 A1 | 5  | Gm7    | G Aeolian           # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
@@ -23,7 +23,7 @@ A1 | 8  | F7     | F Mixolydian        # V7 of Bb: natural tensions
 A2 | 9  | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
 A2 | 10 | Fm7    | F Dorian            # ii of the ii–V to Eb
 A2 | 10 | Bb7    | Bb Mixolydian       # V7/IV in Bb: natural tensions
-A2 | 11 | EbMaj7 | Eb Lydian           # IV: the #4 is the key’s 7th
+A2 | 11 | EbMaj7 | Eb Ionian           # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
 A2 | 12 | Ab7    | Ab Lydian Dominant  # ♭VII7 from the parallel minor: Lydian Dominant
 A2 | 13 | Dm7    | D Dorian            # ii of the ii–V to C minor
 A2 | 13 | G7     | G Mixolydian b6     # V7/ii in Bb: the b13 is in the key
@@ -36,7 +36,7 @@ A2 | 15 | Ab7    | Ab Lydian Dominant  # back door bVII7 to BbMaj7: the #11 is i
 A2 | 16 | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
 B  | 17 | Fm7    | F Dorian            # ii of the ii–V to Eb
 B  | 18 | Bb7    | Bb Mixolydian       # V7/IV in Bb: natural tensions
-B  | 19 | EbMaj7 | Eb Lydian           # IV: the #4 is the key’s 7th
+B  | 19 | EbMaj7 | Eb Ionian           # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
 B  | 21 | Gm7    | G Dorian            # ii of C7: Dorian
 B  | 22 | C7     | C Mixolydian        # V7 of V7: the dominant of the dominant: natural tensions
 B  | 23 | F7     | F Mixolydian        # V7 in Bb, not resolving: natural tensions
@@ -45,7 +45,7 @@ B  | 24 | F7     | F Mixolydian        # V7 of Bb: natural tensions
 C  | 25 | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
 C  | 26 | Fm7    | F Dorian            # ii of the ii–V to Eb
 C  | 26 | Bb7    | Bb Mixolydian       # V7/IV in Bb: natural tensions
-C  | 27 | EbMaj7 | Eb Lydian           # IV: the #4 is the key’s 7th
+C  | 27 | EbMaj7 | Eb Ionian           # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
 C  | 28 | Ebm7   | Eb Dorian           # ii of Ab7: Dorian
 C  | 28 | Ab7    | Ab Mixolydian       # extended ii–V: a side-step, its own key
 C  | 29 | Dm7    | D Dorian            # iii: Dorian (its Phrygian would put a b9 over the root)

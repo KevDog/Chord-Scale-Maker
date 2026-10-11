@@ -11,7 +11,7 @@ source: Colorado Cookbook, p. 211
 # section | bar | chord | scale
 A1 | 1  | FMaj7  | F Ionian                  # tonic: the 4th is in the key
 A1 | 2  | B7#11  | B Lydian Dominant         # tritone substitute: resolves down a half step to BbMaj7
-A1 | 3  | BbMaj7 | Bb Lydian                 # IV: the #4 is the key’s 7th
+A1 | 3  | BbMaj7 | Bb Ionian                 # the B7#11 before it makes Bb the key of the moment: the 4th is in the key
 A1 | 4  | D7alt  | D Altered                 # from the symbol: altered
 A1 | 5  | Gm7    | G Dorian                  # ii: Dorian, the key’s own notes
 A1 | 6  | D7alt  | D Altered                 # from the symbol: altered
@@ -27,7 +27,7 @@ A1 | 15 | Gm7    | G Dorian                  # ii of the ii–V to F
 A1 | 16 | C7b9   | C Half-Whole Diminished   # V7 of F: the b9 from the symbol
 A2 | 17 | FMaj7  | F Ionian                  # tonic: the 4th is in the key
 A2 | 18 | B7#11  | B Lydian Dominant         # tritone substitute: resolves down a half step to BbMaj7
-A2 | 19 | BbMaj7 | Bb Lydian                 # IV: the #4 is the key’s 7th
+A2 | 19 | BbMaj7 | Bb Ionian                 # the B7#11 before it makes Bb the key of the moment: the 4th is in the key
 A2 | 20 | D7alt  | D Altered                 # from the symbol: altered
 A2 | 21 | Gm7    | G Dorian                  # ii: Dorian, the key’s own notes
 A2 | 22 | D7alt  | D Altered                 # from the symbol: altered
@@ -35,7 +35,7 @@ A2 | 23 | G9     | G Mixolydian              # V7 of V7: the dominant of the dom
 A2 | 24 | C7     | C Mixolydian              # V7 in F, not resolving: natural tensions
 A2 | 25 | Cm7    | C Dorian                  # ii of the ii–V to Bb
 A2 | 26 | F9     | F Mixolydian              # V7/IV in F: natural tensions
-A2 | 27 | BbMaj7 | Bb Lydian                 # IV: the #4 is the key’s 7th
+A2 | 27 | BbMaj7 | Bb Ionian                 # the F9 before it makes Bb the key of the moment: the 4th is in the key
 A2 | 28 | Bdim7  | B Whole-Half Diminished   # passing diminished: a rootless dominant ♭9
 A2 | 29 | F6/C   | F Ionian                  # tonic: the 4th is in the key
 A2 | 30 | Gm7/C  | C Mixolydian              # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here

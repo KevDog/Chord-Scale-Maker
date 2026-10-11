@@ -60,7 +60,7 @@ D | 28 | Gm7    | G Dorian                 # ii of C7: Dorian
 D | 28 | C7     | C Mixolydian             # V7/I in F: natural tensions
 D | 29 | Cm7    | C Dorian                 # ii of the ii–V to Bb
 D | 29 | F7     | F Mixolydian             # V7/IV in F: natural tensions
-D | 30 | BbMaj7 | Bb Lydian                # IV: the #4 is the key’s 7th
+D | 30 | BbMaj7 | Bb Ionian                # the F7 before it makes Bb the key of the moment: the 4th is in the key
 D | 30 | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor: Lydian Dominant
 D | 31 | Am7    | A Dorian                 # iii: Dorian (its Phrygian would put a b9 over the root)
 D | 31 | Dm7    | D Aeolian                # vi: Aeolian, the key's own notes (the ♭6 is a passing note)

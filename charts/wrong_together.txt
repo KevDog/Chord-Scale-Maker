@@ -34,7 +34,7 @@ A    | 7  | G7alt  | G Altered            # from the symbol: altered
 # area: F major (bars 8–9)
 A    | 8  | Cm9    | C Dorian             # ii of the ii–V to Bb
 A    | 8  | F7alt  | F Altered            # from the symbol: altered
-B    | 9  | BbMaj7 | Bb Lydian            # IV: the #4 is the key’s 7th
+B    | 9  | BbMaj7 | Bb Ionian            # the F7alt before it makes Bb the key of the moment: the 4th is in the key
 B    | 9  | A7alt  | A Altered            # from the symbol: altered
 # area: C major (bars 10–12)
 B    | 10 | Dm9    | D Dorian             # ii of the ii–V to C

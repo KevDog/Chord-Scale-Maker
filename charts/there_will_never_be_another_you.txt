@@ -14,7 +14,7 @@ A | 4  | G7b9   | G Phrygian Dominant       # V7/vi in Eb: b9 and b13 are in the
 A | 5  | Cm     | C Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 A | 7  | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
 A | 8  | Eb7    | Eb Mixolydian             # V7/IV in Eb: natural tensions
-A | 9  | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+A | 9  | AbMaj7 | Ab Ionian                 # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
 A | 10 | Db7#11 | Db Lydian Dominant        # back door bVII7 to EbMaj7: the #11 is in the key
 A | 11 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 A | 12 | Cm7    | C Dorian                  # ii of F7#11: Dorian
@@ -27,7 +27,7 @@ B | 20 | G7b9   | G Phrygian Dominant       # V7/vi in Eb: b9 and b13 are in the
 B | 21 | Cm     | C Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 B | 23 | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
 B | 24 | Eb7    | Eb Mixolydian             # V7/IV in Eb: natural tensions
-B | 25 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+B | 25 | AbMaj7 | Ab Ionian                 # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
 B | 26 | Db7#11 | Db Lydian Dominant        # back door bVII7 to EbMaj7: the #11 is in the key
 B | 27 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 B | 28 | Am7    | A Dorian                  # ii of the ii–V to G minor

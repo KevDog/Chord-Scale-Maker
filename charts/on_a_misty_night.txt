@@ -29,7 +29,7 @@ B  | 17 | Bm9    | B Dorian                  # ii of E9: Dorian
 B  | 17 | E9     | E Mixolydian              # extended ii–V: a side-step, its own key
 B  | 18 | Bbm9   | Bb Dorian                 # ii of the ii–V to Ab
 B  | 18 | Eb9    | Eb Mixolydian             # V7/IV in Eb: natural tensions
-B  | 19 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+B  | 19 | AbMaj7 | Ab Ionian                 # the Eb9 before it makes Ab the key of the moment: the 4th is in the key
 B  | 21 | Dbm9   | Db Dorian                 # ii of Gb9: Dorian
 B  | 21 | Gb9    | Gb Mixolydian             # extended ii–V: a side-step, its own key
 B  | 22 | Cm9    | C Dorian                  # ii of F9: Dorian

@@ -4,7 +4,7 @@ style: Up
 key: Bb
 form: AABA, 64 bars
 source: Colorado Cookbook, p. 52
-# analysis: 2026-10-08, rules v1; Bb
+# analysis: 2026-10-11, rules v1; Bb
 
 # section | bar | chord | scale
 # the standard changes; the lead sheet's alternates (Eb7, Dm7 G7b9, Db7, Gb7#11, F7alt) are left out
@@ -12,7 +12,7 @@ source: Colorado Cookbook, p. 52
 A1 | 1  | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
 A1 | 3  | Fm7    | F Dorian            # ii of the ii–V to Eb
 A1 | 3  | Bb7    | Bb Mixolydian       # V7/IV in Bb: natural tensions
-A1 | 4  | EbMaj7 | Eb Lydian           # IV: the #4 is the key’s 7th
+A1 | 4  | EbMaj7 | Eb Ionian           # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
 A1 | 6  | Ab7#11 | Ab Lydian Dominant  # back door bVII7 to BbMaj7: the #11 is in the key
 A1 | 7  | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
 A1 | 9  | C7     | C Mixolydian        # II7 in Bb, not resolving: natural tensions
@@ -24,7 +24,7 @@ A1 | 16 | F7     | F Mixolydian        # V7 of Bb: natural tensions
 A2 | 17 | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
 A2 | 19 | Fm7    | F Dorian            # ii of the ii–V to Eb
 A2 | 19 | Bb7    | Bb Mixolydian       # V7/IV in Bb: natural tensions
-A2 | 20 | EbMaj7 | Eb Lydian           # IV: the #4 is the key’s 7th
+A2 | 20 | EbMaj7 | Eb Ionian           # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
 A2 | 22 | Ab7#11 | Ab Lydian Dominant  # back door bVII7 to BbMaj7: the #11 is in the key
 A2 | 23 | BbMaj7 | Bb Ionian           # tonic: the 4th is in the key
 A2 | 25 | C7     | C Mixolydian        # II7 in Bb, not resolving: natural tensions

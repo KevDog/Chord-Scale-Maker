@@ -25,7 +25,7 @@ A | 15 | Fm7/Bb | Bb Mixolydian             # V7sus4 before its dominant: Mixoly
 A | 16 | Bb7    | Bb Mixolydian             # V7 in Eb, not resolving: natural tensions
 B | 17 | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
 B | 18 | Eb7    | Eb Mixolydian             # V7/IV in Eb: natural tensions
-B | 19 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+B | 19 | AbMaj7 | Ab Ionian                 # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
 B | 21 | Abm7   | Ab Dorian                 # ii of Db7: Dorian
 B | 22 | Db7    | Db Lydian Dominant        # back door bVII7 to Eb/G: the #11 is in the key
 B | 23 | Eb/G   | Eb Ionian                 # tonic: the 4th is in the key

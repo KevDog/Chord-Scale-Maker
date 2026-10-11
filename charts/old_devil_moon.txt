@@ -22,7 +22,7 @@ A     | 6  | Eb7    | Eb Lydian Dominant       # ♭VII7 from the parallel minor
 A     | 7  | F7     | F Mixolydian             # I7 in F, not resolving: natural tensions
 A     | 8  | Cm7    | C Dorian                 # ii of the ii–V to Bb
 A     | 8  | F7b9   | F Half-Whole Diminished  # V7/IV in F: the b9 from the symbol
-B     | 9  | BbMaj7 | Bb Lydian                # IV: the #4 is the key’s 7th
+B     | 9  | BbMaj7 | Bb Ionian                # the F7b9 before it makes Bb the key of the moment: the 4th is in the key
 B     | 11 | Bbm7   | Bb Dorian                # ii of the ii–V to Ab minor
 B     | 12 | Eb7    | Eb Lydian Dominant       # V7/biii in F: the #11 is in the key
 # area: Gb major (bars 13–17)

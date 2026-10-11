@@ -31,5 +31,5 @@ B | 20 | C7       | C Mixolydian              # V7 of F: natural tensions
 B | 21 | FMaj7    | F Ionian                  # tonic: the 4th is in the key
 B | 22 | Bb7b9    | Bb Half-Whole Diminished  # IV7 in F, not resolving: the #11 is in the key, the b9 from the symbol
 B | 22 | B7b9     | B Half-Whole Diminished   # tritone substitute: resolves down a half step to BbMaj7; b9 from the symbol
-B | 23 | BbMaj7   | Bb Lydian                 # IV: the #4 is the key’s 7th
+B | 23 | BbMaj7   | Bb Ionian                 # the B7b9 before it makes Bb the key of the moment: the 4th is in the key
 B | 24 | A7#9     | A Altered                 # III7 in F, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol

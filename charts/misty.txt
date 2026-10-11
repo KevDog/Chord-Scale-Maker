@@ -11,7 +11,7 @@ source: The New Real Book, Vol. 1, p. 434
 A1 | 1  | EbMaj7  | Eb Ionian                 # tonic: the 4th is in the key
 A1 | 2  | Bbm9    | Bb Dorian                 # ii of the ii–V to Ab
 A1 | 2  | Eb13b9  | Eb Half-Whole Diminished  # V7/IV in Eb: the b9 from the symbol
-A1 | 3  | AbMaj7  | Ab Lydian                 # IV: the #4 is the key’s 7th
+A1 | 3  | AbMaj7  | Ab Ionian                 # the Eb13b9 before it makes Ab the key of the moment: the 4th is in the key
 A1 | 4  | Abm9    | Ab Dorian                 # ii of Db13: Dorian
 A1 | 4  | Db13    | Db Lydian Dominant        # back door bVII7 to EbMaj7: the #11 is in the key
 A1 | 5  | EbMaj7  | Eb Ionian                 # tonic: the 4th is in the key
@@ -26,7 +26,7 @@ A1 | 8  | Bb13    | Bb Mixolydian             # V7 of Eb: natural tensions
 A2 | 9  | EbMaj7  | Eb Ionian                 # tonic: the 4th is in the key
 A2 | 10 | Bbm9    | Bb Dorian                 # ii of the ii–V to Ab
 A2 | 10 | Eb13b9  | Eb Half-Whole Diminished  # V7/IV in Eb: the b9 from the symbol
-A2 | 11 | AbMaj7  | Ab Lydian                 # IV: the #4 is the key’s 7th
+A2 | 11 | AbMaj7  | Ab Ionian                 # the Eb13b9 before it makes Ab the key of the moment: the 4th is in the key
 A2 | 12 | Abm9    | Ab Dorian                 # ii of Db13: Dorian
 A2 | 12 | Db13    | Db Lydian Dominant        # back door bVII7 to EbMaj7: the #11 is in the key
 A2 | 13 | EbMaj7  | Eb Ionian                 # tonic: the 4th is in the key
@@ -41,10 +41,10 @@ B  | 17 | Bbm7    | Bb Dorian                | ii7/IV  # * ii of the ii–V to A
 B  | 17 | BbmMaj7 | Bb Melodic Minor          # from the symbol: minor-major 7th
 B  | 18 | Bbm7    | Bb Dorian                 # ii of the ii–V to Ab
 B  | 18 | Eb7b9   | Eb Half-Whole Diminished  # V7/IV in Eb: the b9 from the symbol
-B  | 19 | AbMaj7  | Ab Lydian                 # IV: the #4 is the key’s 7th
+B  | 19 | AbMaj7  | Ab Ionian                 # the Eb7b9 before it makes Ab the key of the moment: the 4th is in the key
 B  | 19 | Bbm7    | Bb Dorian                 # ii of the ii–V to Ab
 B  | 19 | Eb7     | Eb Mixolydian             # V7/IV in Eb: natural tensions
-B  | 20 | Ab6     | Ab Lydian                 # IV: the #4 is the key’s 7th
+B  | 20 | Ab6     | Ab Ionian                 # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
 B  | 21 | Am11    | A Dorian                  # ii of D7: Dorian
 B  | 22 | D7      | D Mixolydian              # extended ii–V: a side-step, its own key
 B  | 22 | F7      | F Mixolydian              # V7 of V7: the dominant of the dominant: natural tensions
@@ -56,7 +56,7 @@ B  | 24 | Bb13    | Bb Mixolydian             # V7 of Eb: natural tensions
 A3 | 25 | EbMaj7  | Eb Ionian                 # tonic: the 4th is in the key
 A3 | 26 | Bbm9    | Bb Dorian                 # ii of the ii–V to Ab
 A3 | 26 | Eb13b9  | Eb Half-Whole Diminished  # V7/IV in Eb: the b9 from the symbol
-A3 | 27 | AbMaj7  | Ab Lydian                 # IV: the #4 is the key’s 7th
+A3 | 27 | AbMaj7  | Ab Ionian                 # the Eb13b9 before it makes Ab the key of the moment: the 4th is in the key
 A3 | 28 | Abm9    | Ab Dorian                 # ii of Db13: Dorian
 A3 | 28 | Db13    | Db Lydian Dominant        # back door bVII7 to EbMaj7: the #11 is in the key
 A3 | 29 | EbMaj7  | Eb Ionian                 # tonic: the 4th is in the key

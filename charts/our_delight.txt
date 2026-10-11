@@ -32,7 +32,7 @@ A2 | 16 | Eb7sus4 | Eb Mixolydian            # V7sus4 resolving down a fifth: Mi
 A2 | 16 | AbMaj7  | Ab Ionian                # tonic: the 4th is in the key
 B  | 17 | Ebm7    | Eb Dorian                # ii of the ii–V to Db
 B  | 18 | Ab7alt  | Ab Altered               # from the symbol: altered
-B  | 19 | DbMaj7  | Db Lydian                # IV: the #4 is the key’s 7th
+B  | 19 | DbMaj7  | Db Ionian                # the Ab7alt before it makes Db the key of the moment: the 4th is in the key
 B  | 21 | Dbm7    | Db Dorian                # ii of Gb7: Dorian
 B  | 21 | Gb7     | Gb Mixolydian            # extended ii–V: a side-step, its own key
 B  | 22 | Cm7     | C Dorian                 # ii of F7: Dorian

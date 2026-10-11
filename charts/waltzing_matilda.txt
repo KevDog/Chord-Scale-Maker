@@ -45,7 +45,7 @@ A2   | 16 | EbMaj7 | Eb Ionian            # tonic: the 4th is in the key
 B    | 17 | EbMaj7 | Eb Ionian
 B    | 18 | Bbm7   | Bb Dorian            # ii of the ii–V to Ab
 B    | 18 | Eb7    | Eb Mixolydian        # V7/IV in Eb: natural tensions
-B    | 19 | AbMaj7 | Ab Lydian            # IV: the #4 is the key’s 7th
+B    | 19 | AbMaj7 | Ab Ionian            # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
 B    | 20 | Am7b5  | A Locrian            # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B    | 20 | D7     | D Phrygian Dominant  # V7/iii in Eb: b9 and b13 are in the key
 B    | 21 | Gm7    | G Dorian             # ii of the ii–V to F minor

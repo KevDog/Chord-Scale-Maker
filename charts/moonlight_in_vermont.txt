@@ -37,11 +37,11 @@ B   | 16 | GMaj7  | G Ionian                  # tonic: the 4th is in the key
 # area: Eb major (bars 17–26)
 B   | 17 | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
 B   | 17 | Eb7    | Eb Mixolydian             # V7/IV in Eb: natural tensions
-B   | 18 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+B   | 18 | AbMaj7 | Ab Ionian                 # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
 B   | 18 | Fm7    | F Dorian                  # ii: Dorian, the key’s own notes
 B   | 19 | Bbm7   | Bb Dorian                 # ii of the ii–V to Ab
 B   | 19 | Eb7    | Eb Mixolydian             # V7/IV in Eb: natural tensions
-B   | 20 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+B   | 20 | AbMaj7 | Ab Ionian                 # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
 B   | 20 | Bb7b9  | Bb Half-Whole Diminished  # V7 of Eb: the b9 from the symbol
 C   | 21 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 C   | 21 | Cm7    | C Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)

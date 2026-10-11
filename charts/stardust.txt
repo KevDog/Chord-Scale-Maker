@@ -27,7 +27,7 @@ Intro | 10 | Db7     | Db Mixolydian             # V7/IV in Db: natural tensions
 @ending 2 Intro 9 10
 # the chorus with its 8-bar verse intro added; the verse repeats, taking the 1st ending (bars 7-8) then the
 # 2nd ending (bars 9-10) into the chorus
-A1    | 1  | GbMaj7  | Gb Lydian                 # IV: the #4 is the key’s 7th
+A1    | 1  | GbMaj7  | Gb Ionian                 # the Db7b9 before it makes Gb the key of the moment: the 4th is in the key
 A1    | 3  | GbmMaj7 | Gb Melodic Minor          # from the symbol: minor-major 7th
 A1    | 4  | Gbm7    | Gb Dorian                 # ii of Cb7b9: Dorian
 A1    | 4  | Cb7b9   | Cb Half-Whole Diminished  # back door bVII7 to DbMaj7: the #11 is in the key, the b9 from the symbol
@@ -53,7 +53,7 @@ A1    | 15 | Ebm7    | Eb Dorian                 # ii of Ab7: Dorian
 A1    | 16 | Ab7     | Ab Mixolydian             # V7/I in Db: natural tensions
 A1    | 16 | Dm7b5   | D Locrian                 # iiø7 of G7: Locrian, the key's own notes (its ♭2 is a passing note)
 A1    | 16 | G7      | G Lydian Dominant         # tritone substitute: resolves down a half step to GbMaj7
-A2    | 17 | GbMaj7  | Gb Lydian                 # IV: the #4 is the key’s 7th
+A2    | 17 | GbMaj7  | Gb Ionian                 # the G7 before it makes Gb the key of the moment: the 4th is in the key
 A2    | 19 | GbmMaj7 | Gb Melodic Minor          # from the symbol: minor-major 7th
 A2    | 20 | Gbm7    | Gb Dorian                 # ii of Cb7b9: Dorian
 A2    | 20 | Cb7b9   | Cb Half-Whole Diminished  # back door bVII7 to DbMaj7: the #11 is in the key, the b9 from the symbol

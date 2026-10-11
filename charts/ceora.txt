@@ -14,7 +14,7 @@ A | 2  | Eb7    | Eb Mixolydian        # V7 of Ab: natural tensions
 A | 3  | AbMaj7 | Ab Ionian            # tonic: the 4th is in the key
 A | 4  | Ebm7   | Eb Dorian            # ii of the ii–V to Db
 A | 4  | Ab7    | Ab Mixolydian        # V7/IV in Ab: natural tensions
-A | 5  | DbMaj7 | Db Lydian            # IV: the #4 is the key’s 7th
+A | 5  | DbMaj7 | Db Ionian            # the Ab7 before it makes Db the key of the moment: the 4th is in the key
 A | 6  | Dm7b5  | D Locrian            # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 A | 6  | G7#9   | G Altered            # V7/iii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
 A | 7  | Cm7    | C Dorian             # ii of the ii–V to Bb minor
@@ -35,7 +35,7 @@ B | 18 | Eb7    | Eb Mixolydian        # V7 of Ab: natural tensions
 B | 19 | AbMaj7 | Ab Ionian            # tonic: the 4th is in the key
 B | 20 | Ebm7   | Eb Dorian            # ii of the ii–V to Db
 B | 20 | Ab7    | Ab Mixolydian        # V7/IV in Ab: natural tensions
-B | 21 | DbMaj7 | Db Lydian            # IV: the #4 is the key’s 7th
+B | 21 | DbMaj7 | Db Ionian            # the Ab7 before it makes Db the key of the moment: the 4th is in the key
 B | 22 | Dm7b5  | D Locrian            # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 B | 22 | G7#9   | G Altered            # V7/iii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
 B | 23 | Cm7    | C Dorian             # ii of the ii–V to Bb minor

@@ -46,7 +46,7 @@ B  | 17 | Cm7    | C Dorian             # ii of F7: Dorian
 B  | 17 | F7     | F Mixolydian         # V7/IV in F: natural tensions
 B  | 18 | Cm7    | C Dorian             # ii of the ii–V to Bb
 B  | 18 | F7     | F Mixolydian         # V7/IV in F: natural tensions
-B  | 19 | BbMaj7 | Bb Lydian            # IV: the #4 is the key’s 7th
+B  | 19 | BbMaj7 | Bb Ionian            # the F7 before it makes Bb the key of the moment: the 4th is in the key
 B  | 19 | Eb7#11 | Eb Lydian Dominant   # ♭VII7 from the parallel minor: Lydian Dominant
 B  | 20 | BbMaj7 | Bb Lydian            # IV: the #4 is the key’s 7th
 B  | 20 | Em7b5  | E Locrian            # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)

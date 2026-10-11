@@ -39,7 +39,7 @@ C | 20 | B7#11  | B Lydian Dominant         # tritone substitute: resolves down 
 C | 21 | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
 C | 23 | Fm7    | F Dorian                  # ii of the ii–V to Eb
 C | 24 | Bb7b9  | Bb Half-Whole Diminished  # V7/IV in Bb: the b9 from the symbol
-D | 25 | EbMaj7 | Eb Lydian                 # IV: the #4 is the key’s 7th
+D | 25 | EbMaj7 | Eb Ionian                 # the Bb7b9 before it makes Eb the key of the moment: the 4th is in the key
 D | 26 | Ab7#11 | Ab Lydian Dominant        # tritone substitute: resolves down a half step to Gm7
 D | 27 | Gm7    | G Dorian                  # ii of C7#11: Dorian
 D | 28 | C7#11  | C Lydian Dominant         # V7/V in Bb: the #11 from the symbol

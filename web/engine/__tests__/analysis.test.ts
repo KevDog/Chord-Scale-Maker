@@ -231,6 +231,38 @@ describe('hiddenDominant (R3a): the V7♭9 a °7 is, without its root', () => {
   })
 })
 
+describe('R1: a IV reached by its own dominant is Ionian (docs/superpowers/specs/2026-10-10-analysis-rules-from-sources-design.md)', () => {
+  const reasoned = (text: string, barChord: string): string | undefined => {
+    const r = analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === barChord)
+    return r && `${r.scale} (${r.rule}): ${r.reason}`
+  }
+
+  it('V7/IV → IV: Ionian, M3 (Stella bars 5–7)', () => {
+    expect(reasoned(library('stella_by_starlight'), '7 EbMaj7')).toBe('Eb Ionian (M3): the Bb7 before it makes Eb the key of the moment: the 4th is in the key')
+    expect(reasoned(chart('Bb', '5 Fm7, 6 Bb7, 7 EbMaj7, 8 Ab7, 9 BbMaj7'), '7 EbMaj7')).toBe('Eb Ionian (M3): the Bb7 before it makes Eb the key of the moment: the 4th is in the key')
+  })
+
+  it('V7/IV → IV: Ionian (Moment’s Notice bars 10–11 and 26–27)', () => {
+    expect([verdict(library('moments_notice'), '11 AbMaj7'), verdict(library('moments_notice'), '27 AbMaj7')]).toEqual(['Ab Ionian (M3)', 'Ab Ionian (M3)'])
+  })
+
+  it('subV7/IV → IV: Ionian (E7 is a half step above Eb)', () => {
+    expect(reasoned(chart('Bb', '1 BbMaj7, 2 E7, 3 EbMaj7, 4 F7, 5 BbMaj7'), '3 EbMaj7')).toBe('Eb Ionian (M3): the E7 before it makes Eb the key of the moment: the 4th is in the key')
+  })
+
+  it('a IV not so prepared stays Lydian (All the Things bar 5: DbMaj7 after AbMaj7)', () => {
+    expect(verdict(library('all_the_things_you_are'), '5 DbMaj7')).toBe('Db Lydian (M4)')
+    expect(verdict(chart('C', '1 CMaj7, 2 FMaj7, 3 Dm7, 4 G7, 5 CMaj7'), '2 FMaj7')).toBe('F Lydian (M4)')
+  })
+
+  it('a # keep: Eb Lydian row stays Lydian', () => {
+    const text = 'title: T\nkey: Bb\n\nA | 1 | Fm7\nA | 2 | Bb7\nA | 3 | EbMaj7 | Eb Lydian  # keep: the melody\nA | 4 | BbMaj7\n'
+    const doc = parseChart(text).value
+    const out = serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'force', save: false, date: '2026-10-10' }).doc)
+    expect(out).toContain('Eb Lydian  # keep: the melody')
+  })
+})
+
 describe('analysis: keys (§5)', () => {
   it('reads key: lines', () => {
     expect(['Eb', 'F#m', 'Bb minor', 'C-', 'NC'].map((k) => parseKey(k)?.name ?? null)).toEqual(['Eb major', 'F# minor', 'Bb minor', 'C minor', null])

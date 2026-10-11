@@ -34,7 +34,7 @@ A2 | 14 | F7     | F Mixolydian              # V7 of Bb: natural tensions
 A2 | 15 | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key
 A2 | 16 | Fm7    | F Dorian                  # ii of the ii–V to Eb
 A2 | 16 | Bb7b9  | Bb Half-Whole Diminished  # V7/IV in Bb: the b9 from the symbol
-B  | 17 | EbMaj7 | Eb Lydian                 # IV: the #4 is the key’s 7th
+B  | 17 | EbMaj7 | Eb Ionian                 # the Bb7b9 before it makes Eb the key of the moment: the 4th is in the key
 B  | 18 | Cm7    | C Dorian                  # ii of the ii–V to Bb
 B  | 18 | F7     | F Mixolydian              # V7 of Bb: natural tensions
 B  | 19 | BbMaj7 | Bb Ionian                 # tonic: the 4th is in the key

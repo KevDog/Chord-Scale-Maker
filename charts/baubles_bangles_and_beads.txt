@@ -36,7 +36,7 @@ C | 17 | F#m7   | F# Dorian                 # ii of the ii–V to E
 C | 18 | B9     | B Mixolydian              # V7 of E: natural tensions
 C | 19 | EMaj7  | E Ionian                  # tonic: the 4th is in the key
 C | 20 | Bb9#11 | Bb Lydian Dominant        # tritone substitute: resolves down a half step to AMaj7
-C | 21 | AMaj7  | A Lydian                  # IV: the #4 is the key’s 7th
+C | 21 | AMaj7  | A Ionian                  # the Bb9#11 before it makes A the key of the moment: the 4th is in the key
 # area: Ab major (bars 22–35)
 C | 22 | Bbm11  | Bb Dorian                 # ii of the ii–V to Ab
 C | 22 | Eb7    | Eb Mixolydian             # V7 of Ab: natural tensions

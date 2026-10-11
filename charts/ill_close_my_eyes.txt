@@ -14,7 +14,7 @@ A1 | 5  | Dm7    | D Dorian                  # ii of the ii–V to C minor
 A1 | 6  | G7     | G Mixolydian              # V7/v in F: natural tensions
 A1 | 7  | Cm7    | C Dorian                  # ii of the ii–V to Bb
 A1 | 8  | F7     | F Mixolydian              # V7/IV in F: natural tensions
-A1 | 9  | BbMaj7 | Bb Lydian                 # IV: the #4 is the key’s 7th
+A1 | 9  | BbMaj7 | Bb Ionian                 # the F7 before it makes Bb the key of the moment: the 4th is in the key
 A1 | 10 | Eb7    | Eb Lydian Dominant        # back door bVII7 to FMaj7: the #11 is in the key
 A1 | 11 | FMaj7  | F Ionian                  # tonic: the 4th is in the key
 A1 | 13 | Bm7b5  | B Locrian                 # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
@@ -30,7 +30,7 @@ A2 | 21 | Dm7    | D Dorian                  # ii of the ii–V to C minor
 A2 | 22 | G7     | G Mixolydian              # V7/v in F: natural tensions
 A2 | 23 | Cm7    | C Dorian                  # ii of the ii–V to Bb
 A2 | 24 | F7     | F Mixolydian              # V7/IV in F: natural tensions
-A2 | 25 | BbMaj7 | Bb Lydian                 # IV: the #4 is the key’s 7th
+A2 | 25 | BbMaj7 | Bb Ionian                 # the F7 before it makes Bb the key of the moment: the 4th is in the key
 A2 | 26 | Eb7    | Eb Lydian Dominant        # ♭VII7 from the parallel minor: Lydian Dominant
 A2 | 27 | Am7b5  | A Locrian                 # iiø7 of D7b9: Locrian, the key's own notes (its ♭2 is a passing note)
 A2 | 28 | D7b9   | D Half-Whole Diminished   # extended dominant: V7 of G7; b9 from the symbol

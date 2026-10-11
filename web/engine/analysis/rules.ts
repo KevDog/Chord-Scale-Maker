@@ -254,6 +254,11 @@ function major(ctx: Context, i: number): Decision {
   if (!key.minor && d === 0) return { scale: named(e, NAME.ionian), rule: 'M3', fn, reason: 'tonic: the 4th is in the key' }
   if (key.minor && d === 3) return { scale: named(e, NAME.ionian), rule: 'M3', fn, reason: `bIII of ${keyText(key)}: the relative major itself` }
   if (!key.minor && d === 7 && e.quality === 'maj') return { scale: named(e, NAME.mixolydian), rule: 'M3', fn, reason: 'V without its 7th: Mixolydian, the key’s own notes' }
+  const p = prevOf(ctx.stream, i)
+  if (!key.minor && d === 5 && p?.family === 'dominant' && (downFifth(p, e) || downHalf(p, e))) {
+    // R1: IV reached by its own dominant (V7/IV, or subV7/IV a half step above) is the key of the moment
+    return { scale: named(e, NAME.ionian), rule: 'M3', fn, reason: `the ${p.chord} before it makes ${e.root ? rootName(e.root) : '?'} the key of the moment: the 4th is in the key` }
+  }
   if (!key.minor && (d === 1 || d === 3 || d === 8 || d === 10)) {
     // ♭II, ♭III, ♭VI, ♭VII: modal interchange, from the parallel minor (♭II from Phrygian)
     const own = ownNumeral(e, key)
@@ -417,8 +422,8 @@ export const RULES: readonly RuleInfo[] = [
   { id: 'M1', family: 'major', tier: 1, scale: 'Lydian', looksAt: 'a #11 in the symbol', summary: 'A maj7#11 is Lydian.' },
   { id: 'M2', family: 'major', tier: 1, scale: 'Lydian Augmented', looksAt: 'a #5 in the symbol', summary: 'A maj7#5 is Lydian Augmented.' },
   { id: 'M5', family: 'major', tier: 2, scale: 'Lydian', looksAt: 'a modal chart', summary: 'A major chord in a modal chart is Lydian.' },
-  { id: 'M3', family: 'major', tier: 3, scale: 'Ionian (Mixolydian for a V triad)', looksAt: 'its degree: the tonic, ♭III in a minor key, or a V triad', summary: 'The tonic major chord (or ♭III, the relative major, in a minor key) is Ionian; a V triad without its 7th is Mixolydian.' },
-  { id: 'M4', family: 'major', tier: 3, scale: 'Lydian', looksAt: 'its degree: any other major chord', summary: 'Any other major chord is Lydian (on IV, the #4 is the key’s 7th; on ♭II, ♭III, ♭VI or ♭VII of a major key, borrowed by modal interchange, its ♯11 is in the key).' },
+  { id: 'M3', family: 'major', tier: 3, scale: 'Ionian (Mixolydian for a V triad)', looksAt: 'its degree: the tonic, ♭III in a minor key, a V triad, or IV after its own dominant', summary: 'The tonic major chord (or ♭III, the relative major, in a minor key) is Ionian; so is a IV reached by its own dominant (V7/IV, or subV7/IV a half step above), the key of the moment; a V triad without its 7th is Mixolydian.' },
+  { id: 'M4', family: 'major', tier: 3, scale: 'Lydian', looksAt: 'its degree: any other major chord', summary: 'Any other major chord is Lydian (on a IV not reached by its own dominant, the #4 is the key’s 7th; on ♭II, ♭III, ♭VI or ♭VII of a major key, borrowed by modal interchange, its ♯11 is in the key).' },
   { id: 'm1', family: 'minor', tier: 1, scale: 'Melodic Minor', looksAt: 'a major 7th in the symbol', summary: 'A minor-major 7th is Melodic Minor.' },
   { id: 'm2', family: 'minor', tier: 1, scale: 'Dorian', looksAt: 'a 6 in the symbol', summary: 'A minor sixth chord is Dorian.' },
   { id: 'm3', family: 'minor', tier: 1, scale: 'Aeolian', looksAt: 'a b6 or b13 in the symbol', summary: 'A minor chord with a written b6 or b13 is Aeolian.' },

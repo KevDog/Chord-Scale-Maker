@@ -16,7 +16,7 @@ A1 | 3  | Gm7    | G Dorian                  # iii: Dorian (its Phrygian would p
 A1 | 3  | Fm7    | F Dorian                  # ii: Dorian, the key’s own notes
 A1 | 4  | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 A1 | 4  | Eb7    | Eb Mixolydian             # V7/IV in Eb: natural tensions
-A1 | 5  | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+A1 | 5  | AbMaj7 | Ab Ionian                 # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
 A1 | 8  | Abm7   | Ab Dorian                 # ii of Db7: Dorian
 A1 | 8  | Db7    | Db Mixolydian             # extended ii–V: a side-step, its own key
 A1 | 9  | Gm7    | G Dorian                  # ii of the ii–V to F minor
@@ -31,7 +31,7 @@ A2 | 13 | Gm7    | G Dorian                  # iii: Dorian (its Phrygian would p
 A2 | 13 | Fm7    | F Dorian                  # ii: Dorian, the key’s own notes
 A2 | 14 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
 A2 | 14 | Eb7    | Eb Mixolydian             # V7/IV in Eb: natural tensions
-A2 | 15 | AbMaj7 | Ab Lydian                 # IV: the #4 is the key’s 7th
+A2 | 15 | AbMaj7 | Ab Ionian                 # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
 A2 | 18 | Abm7   | Ab Dorian                 # ii of Db7: Dorian
 A2 | 18 | Db7    | Db Lydian Dominant        # back door bVII7 to EbMaj7: the #11 is in the key
 A2 | 19 | EbMaj7 | Eb Ionian                 # tonic: the 4th is in the key
@@ -54,7 +54,7 @@ C  | 30 | Ab7    | Ab Lydian Dominant        # tritone substitute: resolves down
 C  | 31 | Gm7    | G Dorian                  # iii: Dorian (its Phrygian would put a b9 over the root)
 C  | 32 | Bbm9   | Bb Dorian                 # ii of the ii–V to Ab
 C  | 32 | Eb7#5  | Eb Whole Tone             # V7/IV in Eb: #11 and b13 from the symbol
-C  | 33 | AbMaj9 | Ab Lydian                 # IV: the #4 is the key’s 7th
+C  | 33 | AbMaj9 | Ab Ionian                 # the Eb7#5 before it makes Ab the key of the moment: the 4th is in the key
 C  | 34 | Gm7b5  | G Locrian                 # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
 C  | 34 | C7b9   | C Phrygian Dominant       # V7/ii in Eb: the b13 is in the key, the b9 from the symbol
 C  | 35 | Fm7    | F Dorian                  # ii: Dorian, the key’s own notes
