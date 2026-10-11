@@ -32,6 +32,20 @@ describe('scales', () => {
     expect(spelled('E Spanish Phrygian')).toBe('E F G G# A B C D') // Phrygian with the major 3rd too
   })
 
+  it('spells the diatonic diminished scales as M&H’s figures (R3b)', () => {
+    expect(spelled('C# Diatonic Diminished')).toBe('C# D E F G A Bb C') // ascending vii°7 of Dm7: A7♭9♯9♭13 from the C♯
+    expect(spelled('C# Leading-Tone Diminished')).toBe('C# D E F G A Bb C')
+    expect(spelled('Eb Diatonic Diminished bIII')).toBe('Eb E Gb G A B C D') // fig. 7.22 (Q1a)
+    expect(spelled('Eb Diatonic Diminished bIII optional')).toBe('Eb F Gb G A B C D') // fig. 7.23, the menu's option
+    expect(spelled('Bb Diatonic Diminished bVI')).toBe('Bb B C# D E F# G A') // fig. 7.27, Wave in D
+    expect(spelled('C Diatonic Diminished I')).toBe('C D Eb E Gb G A B') // fig. 7.31, first (Q2a)
+    expect(spelled('C Diatonic Diminished I optional')).toBe('C D Eb F Gb G A B') // fig. 7.31, second
+    expect(spelled('G Diatonic Diminished V')).toBe('G A Bb C Db D E F') // fig. 7.34
+    expect(spelled('F# Diatonic Diminished #IV')).toBe('F# G A B C D Eb E') // fig. 7.13, ♯IV°7 to I/5
+    expect(spelled('F# Diatonic Diminished #IV optional')).toBe('F# G A B C D Eb F') // fig. 7.14, with the major 7th
+    expect(spellFrom(parseRoot('C#'), 'b8').map((n) => n.semis)).toEqual([11]) // an 8th is an octave above the root
+  })
+
   it('normalises names and resolves aliases', () => {
     expect(scaleKey('Half Whole Dim')).toBe('half whole diminished')
     expect(scaleKey('major')).toBe('ionian')

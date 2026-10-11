@@ -1,4 +1,5 @@
 import { type FormPart, formPart, type LinedRow } from '../chart'
+import { parseChord } from '../chord'
 import { pcOf, type Spelled } from '../pitch'
 import { readChord } from '../qualities'
 
@@ -143,6 +144,20 @@ export const nextOf = (stream: readonly Entry[], i: number | null | undefined): 
 export const prevOf = (stream: readonly Entry[], i: number | null | undefined): Entry | undefined => {
   const p = i === null || i === undefined ? null : stream[i]?.prev
   return p === null || p === undefined ? undefined : stream[p]
+}
+
+/** the note in the bass: a slash chord's written bass (Ab/C → C), else its root (a slash reading's too); null if unreadable */
+export function bassOf(e: Pick<Entry, 'chord' | 'root'>): Spelled | null {
+  try {
+    return parseChord(e.chord).bass ?? e.root
+  } catch {
+    return e.root
+  }
+}
+/** the bass's pitch class, or the entry's own (-1 when unreadable) */
+export const bassPc = (e: Pick<Entry, 'chord' | 'root' | 'pc'>): number => {
+  const b = bassOf(e)
+  return b ? pcOf(b) : e.pc
 }
 
 /** b - a in semitones, 0..11 */

@@ -7,15 +7,15 @@ source: Colorado Cookbook, p. 39
 # analysis: 2026-10-11, rules v1; Bb, blues
 
 # section | bar | chord | scale
-A | 1  | Bb7   | Bb Mixolydian            # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 2  | Eb7   | Eb Mixolydian            # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A | 3  | Bb7   | Bb Mixolydian            # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 5  | Eb7   | Eb Mixolydian            # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A | 6  | Edim7 | E Whole-Half Diminished  # passing diminished: a rootless dominant ♭9
-A | 7  | Bb7   | Bb Mixolydian            # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 8  | G7    | G Mixolydian b6          # V7/ii in Bb: the b13 is in the key
-A | 9  | Cm7   | C Dorian                 # ii of F7: Dorian
-A | 10 | F7    | F Mixolydian             # extended dominant: V7 of Bb7
-A | 11 | Bb7   | Bb Mixolydian            # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 12 | Cm7   | C Dorian                 # ii of F7: Dorian
-A | 12 | F7    | F Mixolydian             # extended dominant: V7 of Bb7
+A | 1  | Bb7   | Bb Mixolydian              # I7 of the blues: a tonic with dominant colour, natural tensions
+A | 2  | Eb7   | Eb Mixolydian              # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A | 3  | Bb7   | Bb Mixolydian              # I7 of the blues: a tonic with dominant colour, natural tensions
+A | 5  | Eb7   | Eb Mixolydian              # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A | 6  | Edim7 | E Diatonic Diminished #IV  # ♯IV°7 to I: A7♭9 without its root, the ♯II°7's notes
+A | 7  | Bb7   | Bb Mixolydian              # I7 of the blues: a tonic with dominant colour, natural tensions
+A | 8  | G7    | G Mixolydian b6            # V7/ii in Bb: the b13 is in the key
+A | 9  | Cm7   | C Dorian                   # ii of F7: Dorian
+A | 10 | F7    | F Mixolydian               # extended dominant: V7 of Bb7
+A | 11 | Bb7   | Bb Mixolydian              # I7 of the blues: a tonic with dominant colour, natural tensions
+A | 12 | Cm7   | C Dorian                   # ii of F7: Dorian
+A | 12 | F7    | F Mixolydian               # extended dominant: V7 of Bb7

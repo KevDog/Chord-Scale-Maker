@@ -5,6 +5,7 @@ import { keyText, makeKey, tonicName } from '../analysis/keys'
 import { hiddenDominant, passingReason } from '../analysis/rules'
 import { familyOf } from '../analysis/stream'
 import { formPart, parseChart, serializeChart } from '../chart'
+import { scaleAtLevel } from '../levels'
 import { parseRoot, pcOf } from '../pitch'
 import { readChord, resolveQuality } from '../qualities'
 import { isSyncCopy } from '../util'
@@ -149,8 +150,8 @@ describe('analysis: the other families (§7.2–7.6)', () => {
     expect(verdict(library('footprints'), '9 F#m7b5')).toBe('F# Locrian (h2)')
   })
 
-  it('d1 diminished: Whole-Half', () => {
-    expect(verdict(chart('Bb', '1 BbMaj7, 2 Bdim7, 3 Cm7, 4 F7'), '2 Bdim7')).toBe('B Whole-Half Diminished (d1)')
+  it('d1 diminished: a vii°7 is Diatonic Diminished (R3b)', () => {
+    expect(verdict(chart('Bb', '1 BbMaj7, 2 Bdim7, 3 Cm7, 4 F7'), '2 Bdim7')).toBe('B Diatonic Diminished (d1)')
   })
 
   it('s1–s3 sus chords', () => {
@@ -168,23 +169,63 @@ describe('reasons from the sources (docs/superpowers/specs/2026-10-10-analysis-r
   }
 
   it('d1 a vii°7 names the dominant it hides', () => {
-    expect(reasoned(chart('C', '1 CMaj7, 2 C#dim7, 3 Dm7, 4 G7'), '2 C#dim7')).toBe('C# Whole-Half Diminished (d1): vii°7 of Dm7: A7♭9 without its root')
+    expect(reasoned(chart('C', '1 CMaj7, 2 C#dim7, 3 Dm7, 4 G7'), '2 C#dim7')).toBe('C# Diatonic Diminished (d1): vii°7 of Dm7: A7♭9 without its root')
   })
 
   it('d1 a passing °7 names the dominant it hides, past a related ii (Wave)', () => {
-    expect(reasoned(chart('D', '1 DMaj7, 2 Bbdim7, 3 Am7, 3 D7'), '2 Bbdim7')).toBe("Bb Whole-Half Diminished (d1): passing diminished: A7♭9 without its A, the D7's dominant (Am7 its ii)")
+    expect(reasoned(chart('D', '1 DMaj7, 2 Bbdim7, 3 Am7, 3 D7'), '2 Bbdim7')).toBe("Bb Diatonic Diminished bVI (d1): passing diminished: A7♭9 without its A, the D7's dominant (Am7 its ii)")
   })
 
   it('d1 a passing °7 whose hidden dominant is the next chord’s V', () => {
-    expect(reasoned(chart('C', '1 CMaj7, 2 Edim7, 3 Dm7, 4 G7'), '2 Edim7')).toBe("E Whole-Half Diminished (d1): passing diminished: A7♭9 without its A, the Dm7's dominant")
+    expect(reasoned(chart('C', '1 CMaj7, 2 Edim7, 3 Dm7, 4 G7'), '2 Edim7')).toBe("E Whole-Half Diminished (d1): passing diminished: A7♭9 without its A, the Dm7's dominant; not functioning diatonically: the symmetric scale")
   })
 
   it('d1 an auxiliary °7 decorates the chord', () => {
-    expect(reasoned(chart('C', '1 C7, 2 Cdim7, 3 C6'), '2 Cdim7')).toBe('C Whole-Half Diminished (d1): auxiliary diminished: it decorates the chord and returns to it')
+    expect(reasoned(chart('C', '1 C7, 2 Cdim7, 3 C6'), '2 Cdim7')).toBe('C Diatonic Diminished I (d1): auxiliary diminished: it decorates the chord and returns to it')
   })
 
   it('d1 a passing °7 that hides no dominant of what follows', () => {
-    expect(reasoned(chart('C', '1 CMaj7, 2 F#dim7, 3 FMaj7'), '2 F#dim7')).toBe('F# Whole-Half Diminished (d1): passing diminished: a rootless dominant ♭9')
+    expect(reasoned(chart('C', '1 CMaj7, 2 F#dim7, 3 FMaj7'), '2 F#dim7')).toBe('F# Whole-Half Diminished (d1): passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale')
+  })
+
+  it('d1 R3b: the diatonic diminished scale by function, M&H figs. 7.22–7.34', () => {
+    const scale = (key: string, rows: string, barChord: string) => verdict(chart(key, rows), barChord)
+    expect(scale('C', '1 CMaj7, 2 C#dim7, 3 Dm7', '2 C#dim7')).toBe('C# Diatonic Diminished (d1)') // ascending
+    expect(scale('Cm', '1 Cm, 2 Bdim7, 3 Cm', '2 Bdim7')).toBe('B Diatonic Diminished (d1)') // ascending, in a minor key too
+    expect(scale('C', '1 Em7, 2 Ebdim7, 3 Dm7', '2 Ebdim7')).toBe('Eb Diatonic Diminished bIII (d1)') // passing on ♭3 (Q1a)
+    expect(scale('D', '1 DMaj7, 2 Bbdim7, 3 Am7, 3 D7', '2 Bbdim7')).toBe('Bb Diatonic Diminished bVI (d1)') // passing on ♭6
+    expect(scale('C', '1 Dm7, 2 G7, 3 Cdim7, 4 C6', '3 Cdim7')).toBe('C Diatonic Diminished I (d1)') // auxiliary on 1 (Q2a)
+    expect(scale('C', '1 CMaj7, 2 Gdim7, 3 G7', '2 Gdim7')).toBe('G Diatonic Diminished V (d1)') // auxiliary on 5
+  })
+
+  it('d1 R3b: ♯IV°7 to the tonic, over its 5th or not, takes fig. 7.13’s scale', () => {
+    expect(reasoned(chart('C', '1 FMaj7, 2 F#dim7, 3 C/G, 4 G7'), '2 F#dim7')).toBe("F# Diatonic Diminished #IV (d1): ♯IV°7 to I over its 5th: B7♭9 without its root, the ♯II°7's notes")
+    expect(reasoned(chart('Bb', '1 Bb7, 2 Eb7, 2 Edim7, 3 Bb7, 4 G7'), '2 Edim7')).toBe("E Diatonic Diminished #IV (d1): ♯IV°7 to I: A7♭9 without its root, the ♯II°7's notes") // blues bar 6, fig. 7.15
+  })
+
+  it('d1 R3b: a °7 a half step below the next chord’s bass ascends to it (♯II°7 to I/3, fig. 7.9)', () => {
+    expect(reasoned(chart('Ab', '1 Bbm7, 2 Bdim7, 3 Ab/C, 4 Bbm7'), '2 Bdim7')).toBe('B Diatonic Diminished (d1): vii°7 to Ab/C, up to its bass: G7♭9 without its root')
+    expect(verdict(chart('Bb', '1 Cm7, 2 Dbdim7, 3 Bb/D, 4 Cm7'), '2 Dbdim7')).toBe('Db Diatonic Diminished (d1)')
+  })
+
+  it('d1 R7: a Q5 reason past the chart-comment limit drops the "(X its ii)" aside', () => {
+    const r = reasoned(chart('Bb', '1 Bb7, 2 Eb7, 2 Edim7, 3 Cm7, 3 F7, 4 Bb6'), '2 Edim7')
+    expect(r).toBe("E Whole-Half Diminished (d1): passing diminished: C7♭9 without its C, the F7's dominant; not functioning diatonically: the symmetric scale")
+    for (const name of ['body_and_soul', 'rhythm_changes']) expect(parseChart(library(name)).diagnostics, name).toEqual([])
+    expect(verdict(library('body_and_soul'), '22 Ebdim7')).toBe('Eb Whole-Half Diminished (d1)')
+    expect(verdict(library('rhythm_changes'), '14 Edim7')).toBe('E Whole-Half Diminished (d1)')
+  })
+
+  it('d1 R3b: a °7 the figures don’t cover is not functioning diatonically: Whole-Half (Q5)', () => {
+    const q5 = (key: string, rows: string, barChord: string) => reasoned(chart(key, rows), barChord)
+    expect(q5('C', '1 FMaj7, 2 Fdim7, 3 FMaj7', '2 Fdim7')).toBe('F Whole-Half Diminished (d1): auxiliary diminished: it decorates the chord and returns to it; not functioning diatonically: the symmetric scale') // auxiliary on 4
+    expect(q5('Cm', '1 Cm7, 2 Cdim7, 3 Cm7', '2 Cdim7')).toBe('C Whole-Half Diminished (d1): auxiliary diminished: it decorates the chord and returns to it; not functioning diatonically: the symmetric scale') // in a minor key
+    expect(q5('Cm', '1 Fm7, 2 Ebdim7, 3 Dm7b5, 4 G7', '2 Ebdim7')).toMatch(/^Eb Whole-Half Diminished \(d1\): passing diminished: .*; not functioning diatonically: the symmetric scale$/) // passing in a minor key
+  })
+
+  it('d1 R3b: Wave bar 2 is the ♭VI°7 scale at Standard, Whole-Half at Advanced', () => {
+    expect(verdict(library('wave'), '2 Bbdim7')).toBe('Bb Diatonic Diminished bVI (d1)')
+    expect(scaleAtLevel('Bbdim7', 'advanced', 0, '', 'Bb Diatonic Diminished bVI')).toBe('Bb Whole-Half Diminished')
   })
 
   it('m7 vi and v of a minor key: the avoid note is a passing note, not "in the key"', () => {

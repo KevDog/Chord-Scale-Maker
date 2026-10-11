@@ -49,7 +49,7 @@ B  | 21 | Am11    | A Dorian                  # ii of D7: Dorian
 B  | 22 | D7      | D Mixolydian              # extended ii–V: a side-step, its own key
 B  | 22 | F7      | F Mixolydian              # V7 of V7: the dominant of the dominant: natural tensions
 B  | 23 | Bb7     | Bb Mixolydian            | V7      # * V7 of Eb: natural tensions
-B  | 23 | Edim7   | E Whole-Half Diminished   # vii°7 of Fm7: C7♭9 without its root
+B  | 23 | Edim7   | E Diatonic Diminished     # vii°7 of Fm7: C7♭9 without its root
 B  | 24 | Fm7     | F Dorian                  # ii of the ii–V to Eb
 B  | 24 | Bb13    | Bb Mixolydian             # V7 of Eb: natural tensions
 

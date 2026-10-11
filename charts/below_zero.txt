@@ -40,7 +40,7 @@ B  | 23 | Bbm7     | Bb Dorian                 # ii of Eb7b9: Dorian
 B  | 24 | Eb7b9    | Eb Half-Whole Diminished  # extended ii–V: a side-step, its own key; b9 from the symbol
 B  | 25 | Am7      | A Dorian                  # ii of D7: Dorian
 B  | 26 | D7       | D Mixolydian              # V7/IV in D: natural tensions
-B  | 26 | Ebdim7   | Eb Whole-Half Diminished  # vii°7 of Em11: B7♭9 without its root
+B  | 26 | Ebdim7   | Eb Diatonic Diminished    # vii°7 of Em11: B7♭9 without its root
 B  | 27 | Em11     | E Dorian                  # ii: Dorian, the key’s own notes
 B  | 27 | Dm11     | D Dorian                  # a borrowed minor chord: Dorian, its own key
 B  | 28 | Dbm7     | Db Dorian                 # ii of Gb7: Dorian

@@ -150,7 +150,16 @@
     ],
     "dim7": [
       { "root": "1",  "scale": "Whole-Half Diminished", "default": true },
-      { "root": "b2", "scale": "Harmonic Minor",    "note": "dim7 as vii of the minor key a half step up", "level": "advanced" }
+      { "root": "1",  "scale": "Diatonic Diminished",   "note": "an ascending vii°7: the V7♭9♯9♭13 of the chord it leads to" },
+      { "root": "1",  "scale": "Diatonic Diminished bIII", "note": "a passing ♭III°7: its chord tones plus the key's notes" },
+      { "root": "1",  "scale": "Diatonic Diminished bIII optional", "note": "♭III°7 with the 9, common with the ii it falls to" },
+      { "root": "1",  "scale": "Diatonic Diminished bVI", "note": "a passing ♭VI°7: its chord tones plus the key's notes" },
+      { "root": "1",  "scale": "Diatonic Diminished I", "note": "an auxiliary I°7: its chord tones plus the key's notes" },
+      { "root": "1",  "scale": "Diatonic Diminished I optional", "note": "I°7 with the 11 in place of the 3" },
+      { "root": "1",  "scale": "Diatonic Diminished V", "note": "an auxiliary V°7: its chord tones plus the key's notes" },
+      { "root": "1",  "scale": "Diatonic Diminished #IV", "note": "♯IV°7 to I over its 5th: the ♯II°7's notes" },
+      { "root": "1",  "scale": "Diatonic Diminished #IV optional", "note": "♯IV°7 with the major 7th (a blues)" },
+      { "root": "b2", "scale": "Harmonic Minor",    "note": "dim7 as vii of the minor key a half step up" }
     ]
   },
   "ladders": {
@@ -169,7 +178,16 @@
     "Melodic Minor":         { "basic": ["1", "Minor Pentatonic"],  "advanced": ["1", "Harmonic Minor"] },
     "Locrian":               { "basic": ["b6", "Major Pentatonic"], "advanced": ["1", "Locrian natural 2"] },
     "Locrian natural 2":     { "basic": ["b6", "Major Pentatonic"] },
-    "Whole-Half Diminished": { "advanced": ["b2", "Harmonic Minor"] }
+    "Whole-Half Diminished": { "advanced": ["b2", "Harmonic Minor"] },
+    "Diatonic Diminished": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] },
+    "Diatonic Diminished bIII": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] },
+    "Diatonic Diminished bIII optional": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] },
+    "Diatonic Diminished bVI": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] },
+    "Diatonic Diminished I": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] },
+    "Diatonic Diminished I optional": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] },
+    "Diatonic Diminished V": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] },
+    "Diatonic Diminished #IV": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] },
+    "Diatonic Diminished #IV optional": { "basic": ["1", "Whole-Half Diminished"], "advanced": ["1", "Whole-Half Diminished"] }
   },
   "quality_ladders": {
     "m": { "Phrygian": { "advanced": ["1", "Dorian"] } },

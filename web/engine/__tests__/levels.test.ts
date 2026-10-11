@@ -15,8 +15,20 @@ describe('scale levels', () => {
     expect(at('Bm7b5')).toEqual(['G Major Pentatonic', 'B Locrian', 'B Locrian natural 2'])
     expect(at('C7sus4')).toEqual(['Bb Major Pentatonic', 'C Mixolydian', 'C Dorian'])
     expect(at('Cm6')).toEqual(['C Minor Pentatonic', 'C Dorian', 'C Melodic Minor']) // Dorian is m6's standard now
-    expect(at('Cdim7')).toEqual(['C Whole-Half Diminished', 'C Whole-Half Diminished', 'C# Harmonic Minor']) // no simpler one; C# avoids Db harmonic minor's Bbb
+    expect(at('Cdim7')).toEqual(['C Whole-Half Diminished', 'C Whole-Half Diminished', 'C Whole-Half Diminished']) // Harmonic Minor is a menu option (R3b)
     expect(scaleAtLevel('Cm7#5#9x', 'basic')).toBeNull()
+  })
+
+  it('climb a diatonic diminished Standard to Whole-Half at Basic and Advanced (R3b)', () => {
+    const at = (level: 'basic' | 'advanced', standard: string) => scaleAtLevel(`${standard.split(' ')[0]}dim7`, level, 0, '', standard)
+    for (const standard of ['Bb Diatonic Diminished bVI', 'C# Diatonic Diminished', 'Eb Diatonic Diminished bIII', 'C Diatonic Diminished I', 'G Diatonic Diminished V', 'F# Diatonic Diminished #IV']) {
+      const root = standard.split(' ')[0]
+      expect([at('basic', standard), at('advanced', standard)], standard).toEqual([`${root} Whole-Half Diminished`, `${root} Whole-Half Diminished`])
+    }
+    const dim7 = resolveQuality('Cdim7')?.options ?? []
+    expect(dim7.find((o) => o.default)?.scale).toBe('C Whole-Half Diminished')
+    expect(dim7.find((o) => o.scale === 'C# Harmonic Minor')?.level).toBeUndefined()
+    expect(dim7.map((o) => o.scale)).toEqual(expect.arrayContaining(['C Diatonic Diminished', 'C Diatonic Diminished bIII', 'C Diatonic Diminished bIII optional', 'C Diatonic Diminished bVI', 'C Diatonic Diminished I', 'C Diatonic Diminished I optional', 'C Diatonic Diminished V', 'C Diatonic Diminished #IV', 'C Diatonic Diminished #IV optional']))
   })
 
   it('tag at most one Basic and one Advanced option per quality', () => {

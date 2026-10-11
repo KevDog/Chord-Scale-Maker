@@ -24,15 +24,15 @@ A1 | 7  | Bb7    | Bb Mixolydian            # V7 of Eb: natural tensions
 A1 | 8  | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
 @copy A1 A2 8
 B  | 17 | EbMaj7 | Eb Ionian
-B  | 17 | Cdim7  | C Whole-Half Diminished  # passing diminished: a rootless dominant ♭9
+B  | 17 | Cdim7  | C Whole-Half Diminished  # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
 B  | 18 | Fm7    | F Dorian                 # ii: Dorian, the key’s own notes
 B  | 18 | Eb6    | Eb Ionian                # tonic: the 4th is in the key
 B  | 19 | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
-B  | 19 | Cdim7  | C Whole-Half Diminished  # passing diminished: a rootless dominant ♭9
+B  | 19 | Cdim7  | C Whole-Half Diminished  # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
 B  | 20 | Fm7    | F Dorian                 # ii: Dorian, the key’s own notes
 B  | 20 | Eb6    | Eb Ionian                # tonic: the 4th is in the key
 B  | 21 | EbMaj7 | Eb Ionian                # tonic: the 4th is in the key
-B  | 21 | Cdim7  | C Whole-Half Diminished  # passing diminished: a rootless dominant ♭9
+B  | 21 | Cdim7  | C Whole-Half Diminished  # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
 B  | 22 | Fm7    | F Dorian                 # ii: Dorian, the key’s own notes
 B  | 22 | Eb6    | Eb Ionian                # tonic: the 4th is in the key
 B  | 23 | F9     | F Mixolydian             # V7 of V7: the dominant of the dominant: natural tensions

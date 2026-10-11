@@ -1,7 +1,8 @@
+import { LIMITS } from '../limits'
 import { proseGlyphs, rootName, shiftBy } from '../pitch'
 import { degree, diatonic, hasRelatedII, impliedDiatonic, isDominantLike, type Key, keyText, makeKey, reference, tonicName } from './keys'
 import { ownNumeral, roman } from './degrees'
-import { downFifth, downHalf, type Entry, type Family, interval, nextOf, prevOf } from './stream'
+import { bassOf, bassPc, downFifth, downHalf, type Entry, type Family, interval, nextOf, prevOf } from './stream'
 
 /**
  * Passes 3 and 4 (docs/plan-analysis.md §6–7): each chord's function in its local key, and the scale the rules give
@@ -41,6 +42,7 @@ const NAME = {
   melodicMinor: 'Melodic Minor',
   locrian: 'Locrian',
   wholeHalf: 'Whole-Half Diminished',
+  diatonicDim: 'Diatonic Diminished',
 } as const
 
 const named = (e: Entry, scale: string): string => `${e.root ? rootName(e.root) : '?'} ${scale}`
@@ -354,19 +356,50 @@ export function hiddenDominant(dim: number, next: Neighbour | undefined, after: 
 export const passingReason = (h: Hidden | null): string =>
   h ? `passing diminished: ${h.root}7♭9 without its ${h.root}, the ${h.target}'s dominant${h.ii ? ` (${h.ii} its ii)` : ''}` : 'passing diminished: a rootless dominant ♭9'
 
+/** Q5: a °7 M&H's figures don't cover keeps the symmetric scale (N&G p. 114) */
+const SYMMETRIC = '; not functioning diatonically: the symmetric scale'
+
+/** a °7 a half step below the next chord's bass, a major or minor chord: ascending to it (D♯°7 → C/E, fig. 7.9) */
+export const ascends = (e: Pick<Entry, 'pc'>, n: Entry | undefined): n is Entry => !!n && (n.family === 'major' || n.family === 'minor') && interval(e.pc, bassPc(n)) === 1
+
+/**
+ * R3b: a °7's scale by its function in the local key (M&H pp. 152–161): in a major key ♯IV°7 to the tonic (over its
+ * 5th or not, fig. 7.12–7.15) takes the ♯II°7's notes; the ascending vii°7 of X (by X's bass) takes X's V7(♭9 ♯9 ♭13)
+ * from its root, in any key; in a major key the passing ♭III°7 and ♭VI°7 and the auxiliary I°7 and V°7 take their
+ * figure's scale (the chord tones plus the key's notes); any other is Whole-Half (Q5)
+ */
 function diminished(ctx: Context, i: number): Decision {
   const e = ctx.stream[i] as Entry
+  const key = ctx.keys[i] ?? ctx.global
   const n = nextOf(ctx.stream, i)
-  const scale = named(e, NAME.wholeHalf)
-  // auxiliary: the next chord is on its own root, whatever came before (C7 | C°7 | C6, G°7 | G7)
-  if (n && n.pc === e.pc) return { scale, rule: 'd1', fn: 'auxiliary diminished', reason: 'auxiliary diminished: it decorates the chord and returns to it' }
-  const hidden = hiddenDominant(e.pc, n, nextOf(ctx.stream, ctx.stream[i]?.next))
-  if (n && interval(e.pc, n.pc) === 1 && (n.family === 'major' || n.family === 'minor')) {
-    // a vii°7 always hides its target's V: the °7's root is that V's 3rd
-    const fn = `vii°7 of ${n.chord}`
-    return { scale, rule: 'd1', fn, reason: `${fn}: ${hidden?.root ?? 'its V'}7♭9 without its root` }
+  const d = interval(key.tonic, e.pc)
+  /** the figure's scale on this degree of a major key, or Whole-Half with Q5's reason */
+  const byDegree = (figures: Readonly<Record<number, string>>, reason: string, short = reason): Pick<Decision, 'scale' | 'reason'> => {
+    const variant = key.minor ? undefined : figures[d]
+    if (variant) return { scale: named(e, `${NAME.diatonicDim} ${variant}`), reason }
+    // R7: past the chart-comment limit, the shorter reason
+    return { scale: named(e, NAME.wholeHalf), reason: `${reason}${SYMMETRIC}`.length > LIMITS.maxMeta ? `${short}${SYMMETRIC}` : `${reason}${SYMMETRIC}` }
   }
-  return { scale, rule: 'd1', fn: 'passing diminished', reason: passingReason(hidden), fallback: true }
+  // auxiliary: the next chord is on its own root, whatever came before (C7 | C°7 | C6, G°7 | G7)
+  if (n && n.pc === e.pc) return { ...byDegree({ 0: 'I', 7: 'V' }, 'auxiliary diminished: it decorates the chord and returns to it'), rule: 'd1', fn: 'auxiliary diminished' }
+  if (!key.minor && d === 6 && e.root && n && n.pc === key.tonic && (n.family === 'major' || n.family === 'dominant')) {
+    // ♯IV°7 to I (I/5 above all): an inversion of ♯II°7, the V7/iii's 3rd, 5th, 7th and ♭9
+    const fn = `♯IV°7 to I${interval(n.pc, bassPc(n)) === 7 ? ' over its 5th' : ''}`
+    return { scale: named(e, `${NAME.diatonicDim} #IV`), rule: 'd1', fn, reason: `${fn}: ${rootName(shiftBy(e.root, 3, 5))}7♭9 without its root, the ♯II°7's notes` }
+  }
+  const hidden = hiddenDominant(e.pc, n, nextOf(ctx.stream, ctx.stream[i]?.next))
+  if (ascends(e, n)) {
+    // a vii°7 always hides its target's V: the °7's root is that V's 3rd (by the bass: D♯°7 → C/E hides B7)
+    const bass = bassOf(n)
+    if (bassPc(n) !== n.pc && bass) {
+      const fn = `vii°7 to ${n.chord}, up to its bass`
+      return { scale: named(e, NAME.diatonicDim), rule: 'd1', fn, reason: `${fn}: ${rootName(shiftBy(bass, 4, 7))}7♭9 without its root` }
+    }
+    const fn = `vii°7 of ${n.chord}`
+    return { scale: named(e, NAME.diatonicDim), rule: 'd1', fn, reason: `${fn}: ${hidden?.root ?? 'its V'}7♭9 without its root` }
+  }
+  const reason = passingReason(hidden)
+  return { ...byDegree({ 3: 'bIII', 8: 'bVI' }, reason, hidden ? passingReason({ root: hidden.root, target: hidden.target }) : reason), rule: 'd1', fn: 'passing diminished', fallback: true }
 }
 
 function sus(ctx: Context, i: number): Decision {
@@ -451,7 +484,7 @@ export const RULES: readonly RuleInfo[] = [
   { id: 'm7', family: 'minor', tier: 3, scale: 'Dorian, Aeolian or Phrygian', looksAt: 'its degree: another diatonic minor chord', summary: 'A diatonic minor chord takes the key’s own notes: vi of a major key Aeolian, v of a minor key Phrygian, any other Dorian.' },
   { id: 'm8', family: 'minor', tier: 5, scale: 'Dorian', looksAt: 'a minor chord the key does not hold', summary: 'A borrowed or chromatic minor chord is Dorian, its own key.', guess: 'always' },
   { id: 'h2', family: 'halfdim', tier: 4, scale: 'Locrian', looksAt: 'the next chord, a dominant a fourth up', summary: 'A half-diminished chord is Locrian (Locrian ♮2 at Advanced), in a modal chart too; with a dominant after it, it is the iiø7 of that minor ii–V; without one, iiø7 in a major key is borrowed from the parallel minor.', guess: 'no related dominant follows (but iiø7 in a major key)' },
-  { id: 'd1', family: 'dim', tier: 4, scale: 'Whole-Half Diminished', looksAt: 'the next chord', summary: 'A diminished seventh chord (a vii°7 leading up a half step, an auxiliary that returns to a chord on its own root, or a passing one) is Whole-Half Diminished.', guess: 'a passing diminished chord' },
+  { id: 'd1', family: 'dim', tier: 4, scale: 'Diatonic Diminished, or Whole-Half Diminished', looksAt: 'the next chord (its bass), and its degree in the key', summary: 'A diminished seventh chord takes the diatonic diminished scale of its function: a vii°7 leading up a half step (to the next chord’s bass: ♯II°7 to I/3), the V7♭9♯9♭13 of the chord it leads to, from its own root; in a major key, ♯IV°7 to I (over its 5th or not), the ♯II°7’s notes; a passing ♭III°7 or ♭VI°7 or an auxiliary I°7 or V°7 (one that returns to a chord on its own root), its chord tones plus the key’s notes. Any other is not functioning diatonically: Whole-Half Diminished, the symmetric scale. Whole-Half at Advanced.', guess: 'a passing diminished chord' },
   { id: 's1', family: 'sus', tier: 1, scale: 'Phrygian', looksAt: 'a b9 in the symbol', summary: 'A sus b9 is Phrygian.' },
   { id: 's2', family: 'sus', tier: 4, scale: 'Mixolydian or Mixolydian b6', looksAt: 'the next chord, a fifth down (in a chart that is not modal, held under four bars)', summary: 'A resolving sus takes its 13 from the key: Mixolydian, or Mixolydian b6 when the key holds the b13.' },
   { id: 's3', family: 'sus', tier: 4, scale: 'Mixolydian', looksAt: 'no resolution: a modal chart, a sus held four bars or more, or none that falls a fifth; or, outside a modal chart, the dominant on its own root next', summary: 'A static sus is Mixolydian; so is a sus before its dominant on the same root, a subdominant suspension (its 4th a chord tone).' },

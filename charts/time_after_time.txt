@@ -40,11 +40,11 @@ C | 22 | C7     | C Mixolydian              # V7/IV in C: natural tensions
 C | 23 | FMaj7  | F Ionian                  # the C7 before it makes F the key of the moment: the 4th is in the key
 C | 24 | Bb7    | Bb Lydian Dominant        # back door bVII7 to CMaj7: the #11 is in the key
 D | 25 | CMaj7  | C Ionian                  # tonic: the 4th is in the key
-D | 26 | Gbdim7 | Gb Whole-Half Diminished  # passing diminished: a rootless dominant ♭9
+D | 26 | Gbdim7 | Gb Whole-Half Diminished  # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
 D | 26 | Fm6    | F Dorian                  # a minor sixth chord: Dorian
 D | 27 | Em7    | E Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 D | 27 | Am7/G  | A Aeolian                 # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-D | 28 | Gbdim7 | Gb Whole-Half Diminished  # passing diminished: a rootless dominant ♭9
+D | 28 | Gbdim7 | Gb Whole-Half Diminished  # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
 D | 28 | Fm7    | F Dorian                  # a borrowed minor chord: Dorian, its own key
 D | 29 | Em7    | E Phrygian                # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 D | 29 | A7alt  | A Altered                 # from the symbol: altered
