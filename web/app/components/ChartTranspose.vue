@@ -30,7 +30,7 @@ import { ArrowsUpDownIcon } from '@heroicons/vue/16/solid'
 import { type ChartDoc, chartMeta, isValidKey, keyLabel, noteText, setMeta, TRANSPOSE_KEYS, transposeChart } from '@chord-scale-maker/engine'
 
 /**
- * "Transpose…": rewrites the chart in another concert key (engine/transpose.ts).
+ * "Transpose…": rewrites the chart in another concert key (engine/src/transpose.ts).
  * `current` returns the chart as of now (the editor parses pending typing first).
  */
 const props = defineProps<{ current: () => ChartDoc }>()

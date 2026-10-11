@@ -23,7 +23,7 @@
 <script setup lang="ts">
 import { ClipboardDocumentIcon } from '@heroicons/vue/16/solid'
 
-/** the share link for the editor's chart (engine/share.ts), with Copy; `link` is null while it's being made */
+/** the share link for the editor's chart (engine/src/share.ts), with Copy; `link` is null while it's being made */
 const props = defineProps<{ open: boolean; link: string | null }>()
 const emit = defineEmits<{ close: [] }>()
 

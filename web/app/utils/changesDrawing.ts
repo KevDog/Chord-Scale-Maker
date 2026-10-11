@@ -2,7 +2,7 @@ import { accText, type ChangesBar, type ChangesLine, type GuideNote, type Pitche
 import { BAR_UNITS, cropBand, fitSvg, headCentre, signatureLead, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
 
 /**
- * Drawing a Changes line (engine/changes.ts) with VexFlow: one stave, one slash a beat, repeat and final barlines,
+ * Drawing a Changes line (engine/src/changes.ts) with VexFlow: one stave, one slash a beat, repeat and final barlines,
  * the time signature on the first line. Chords, numerals and scales are HTML placed over and under the slashes.
  * With a clef (key signatures or a guide tone on): the first line (timeSignature) starts with the clef, and with the
  * chart's key signature when a bar carries one; the rest with neither; without, no clef, as before.

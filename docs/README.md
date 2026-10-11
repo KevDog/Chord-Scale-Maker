@@ -3,6 +3,7 @@
 | File | What it is |
 |---|---|
 | [design.md](design.md) | **Current design of the web app**: architecture, engine, rendering, print, security, testing, decisions. Start here. |
+| [superpowers/specs/2026-10-11-engine-ui-split-design.md](superpowers/specs/2026-10-11-engine-ui-split-design.md) | The engine as its own package (built), and the conditions and steps for a separate engine repo (not scheduled). |
 | [requirements.md](requirements.md) | The original requirements for the web app. |
 | [roadmap.md](roadmap.md) | Work in progress (the Changes sheet) and ideas agreed but not yet scheduled. |
 | [plan-phase1.md](plan-phase1.md) … [plan-phase4.md](plan-phase4.md) | Historical records of how phases 1–4 were built (engine port, app, transposition, hardening). |

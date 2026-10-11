@@ -113,7 +113,7 @@ const rowNumber = computed(() => {
 })
 const functionsOn = useFeature('functions')
 const { notes } = usePreferences()
-/** the live analysis beside each row (engine/notes.ts): its note, its problem, its key area; and its function options */
+/** the live analysis beside each row (engine/src/notes.ts): its note, its problem, its key area; and its function options */
 const notesByLine = computed<ReadonlyMap<number, RowNote>>(() => (functionsOn ? rowNotes(props.doc) : new Map()))
 const choicesByLine = computed<ReadonlyMap<number, readonly FunctionChoice[]>>(() => (functionsOn ? functionChoices(props.doc) : new Map()))
 /** section, bar, chord, scale, [function], [notes], actions */
