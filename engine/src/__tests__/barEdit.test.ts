@@ -2,7 +2,8 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { barView } from '../bars'
 import { type ChartDoc, parseChart, serializeChart } from '../chart'
-import { addSection, deleteBar, insertBar, renameSection, repeatSection, setBarChords, setEnding, setMark, setNav } from '../edit'
+import { parseBarLine } from '../barLine'
+import { addSection, deleteBar, insertBar, insertBars, renameSection, repeatSection, setBarChords, setEnding, setMark, setNav } from '../edit'
 
 const chart = (name: string): ChartDoc => parseChart(readFileSync(`charts/${name}.txt`, 'utf8')).value
 const text = (lines: readonly string[]): ChartDoc => parseChart(lines.join('\n')).value
@@ -137,6 +138,42 @@ describe('insertBar', () => {
   it('edits written sections only: a repeat is changed through the section it repeats', () => {
     const doc = chart('autumn_leaves')
     expect(insertBar(doc, 'A2', 10)).toBe(doc)
+  })
+})
+
+describe('insertBars', () => {
+  it('inserts the bars in order before a bar, moving the later bars along', () => {
+    expect(out(insertBars(small, 'A', 2, [['Dm7'], ['G7']]))).toEqual([
+      'A | 1 | C',
+      'A | 2 | Dm7',
+      'A | 3 | G7',
+      'A | 4 | F',
+      'A | 5 | G',
+      'A | 6 | C',
+      'B | 7 | Dm7',
+      'B | 9 | G7',
+    ])
+  })
+
+  it('leaves an empty bar held, and counts it', () => {
+    expect(out(insertBars(small, 'A', 2, [['Dm7', 'G7'], []])).slice(0, 4)).toEqual(['A | 1 | C', 'A | 2 | Dm7', 'A | 2 | G7', 'A | 4 | F'])
+    expect(spans(insertBars(small, 'A', 2, [['Dm7', 'G7'], []]))[0]).toEqual(['A', 1, 6])
+  })
+
+  it('appends after the last bar of the chart, a held bar and all', () => {
+    const last = barView(small).sections.at(-1)?.bars.at(-1)?.bar ?? 0
+    expect(out(insertBars(small, 'B', last + 1, [['C'], [], ['F']])).slice(-2)).toEqual([`B | ${last + 1} | C`, `B | ${last + 3} | F`])
+  })
+
+  it('takes what parseBarLine reads', () => {
+    expect(out(insertBars(small, 'A', 5, parseBarLine('| E7 | % |').value)).slice(4)).toEqual(['A | 5 | E7', 'B | 7 | Dm7', 'B | 9 | G7'])
+  })
+
+  it('refuses them all if one would be refused: a held bar starting a section, a chord that would not read back', () => {
+    expect(insertBars(small, 'B', 5, [[], ['C']])).toBe(small)
+    expect(insertBars(small, 'A', 2, [['C'], ['C|7']])).toBe(small)
+    expect(insertBars(small, 'A', 9, [['C']])).toBe(small)
+    expect(insertBars(small, 'A', 2, [])).toBe(small)
   })
 })
 

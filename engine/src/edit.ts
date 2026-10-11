@@ -255,6 +255,30 @@ export function setBarChords(doc: ChartDoc, section: string, bar: number, chords
   return { lines: next.lines.flatMap((l, i) => (removed.has(i) ? [] : i === old.at(-1) ? [l, ...extra] : [l])) }
 }
 
+/**
+ * new bars in a section from `bar` on, in order (as parseBarLine reads them; an empty bar is held), moving every later
+ * bar along as insertBar does. All or nothing: the same doc if any bar would be refused.
+ */
+export function insertBars(doc: ChartDoc, section: string, bar: number, bars: readonly (readonly string[])[]): ChartDoc {
+  if (!bars.length) return doc
+  // a held bar goes in holding a stand-in chord, cleared after the rest: an empty bar at the very end of a part
+  // wouldn't count, and the bars after it couldn't follow
+  const HOLD = '%'
+  let next = doc
+  for (const [k, chords] of bars.entries()) {
+    const step = insertBar(next, section, bar + k, chords.length ? chords : [HOLD])
+    if (step === next) return doc
+    next = step
+  }
+  for (const [k, chords] of bars.entries()) {
+    if (chords.length) continue
+    const step = setBarChords(next, section, bar + k, [])
+    if (step === next) return doc
+    next = step
+  }
+  return next
+}
+
 /** rename a section on its rows and every directive that names it; not to a name in use, or into or out of the form */
 export function renameSection(doc: ChartDoc, from: string, to: string): ChartDoc {
   const names = new Set(barView(doc).sections.map((s) => s.name))
