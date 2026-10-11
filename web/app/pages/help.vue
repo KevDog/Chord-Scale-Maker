@@ -189,7 +189,7 @@
             chord-scale for each chord, and <strong class="font-semibold">Advanced</strong> reaches for bebop,
             Lydian and altered colours. <strong class="font-semibold">Random</strong> deals a different inside scale
             to every chord, so you can't coast; hit <strong class="font-semibold">Shuffle</strong> for a new hand.
-            It's above the chart grid, and it writes the scales into the chart, so they save, print and share with
+            It's in the toolbar above the sheet, and it writes the scales into the chart, so they save, print and share with
             it. Scales you picked yourself stay put, and Standard puts everything else back.
           </dd>
         </div>
@@ -225,32 +225,33 @@
     <section class="scroll-mt-6 space-y-4" aria-labelledby="editing">
       <UiSubheading id="editing">Editing a chart</UiSubheading>
       <UiText>
-        Every library chart opens in the editor, and you can change anything: a reharmonisation, a different scale
-        choice, a bridge you play differently. The <strong class="font-semibold text-zinc-950 dark:text-white">Chart</strong>
-        grid and the <strong class="font-semibold text-zinc-950 dark:text-white">Text</strong> box are two views of the
-        same chart; edit either and the other (and the preview) keeps up. The Text box is tucked away until you press
-        <strong class="font-semibold text-zinc-950 dark:text-white">Show text</strong>, and it stays out once you do.
-      </UiText>
-      <UiText>
-        A row's Function cell takes a Roman numeral such as <UiCode>V7/ii</UiCode> or <UiCode>subV7</UiCode>, which tells
-        the rules what the chord does. <UiTextLink href="/functions#writing">Functions and rules</UiTextLink> shows how to
-        write one and the scale each gives.
+        You can change anything in a chart: a reharmonisation, a different scale choice, a bridge you play differently.
+        Press <strong class="font-semibold text-zinc-950 dark:text-white">Edit</strong>, next to the title, and the chart opens as bars, four to a line, always in
+        concert pitch; <strong class="font-semibold text-zinc-950 dark:text-white">Done</strong> puts it away. The sheet keeps up as you go, and ⌘Z (Ctrl+Z off a Mac)
+        undoes.
       </UiText>
 
-      <UiSubheading :level="3" class="pt-2">The grid</UiSubheading>
+      <UiSubheading :level="3" class="pt-2">The bars</UiSubheading>
       <ul class="list-disc space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
-        <li>One row per chord: section, bar, chord and scale. Two chords in a bar are two rows with the same bar number.</li>
-        <li>Use the row buttons to add a row after this one, or delete it.</li>
+        <li>Pick a chord and type to replace it. Space adds a second chord to the bar, Tab and the arrow keys move on, <UiCode>%</UiCode> repeats the bar before, and ⌫ clears it.</li>
         <li>
-          The scale dropdown starts with the usual choice for that chord, then the other scales that fit, then an
-          <strong class="font-semibold">Outside</strong> group for when you want some tension to resolve. <strong class="font-semibold">Other…</strong> lets you pick any root and any
-          scale.
+          Beside the bars, the chord's scales: the usual choice first, then the others that fit, then an
+          <strong class="font-semibold">Outside</strong> group for when you want some tension to resolve. Type in the
+          search box for any scale at all. Under them, its function (a Roman numeral such as <UiCode>V7/ii</UiCode>,
+          which tells the rules what the chord does; <UiTextLink href="/functions#writing">Functions and rules</UiTextLink>
+          shows the scale each gives) and why I chose that scale.
         </li>
+        <li>The bar's own buttons add a bar before or after, delete it, start a new section or a key change there, and add endings, a segno, a coda or a jump.</li>
+        <li>Under the bars: <strong class="font-semibold text-zinc-950 dark:text-white">+ Bar</strong>, <strong class="font-semibold text-zinc-950 dark:text-white">+ Section…</strong>, <strong class="font-semibold text-zinc-950 dark:text-white">Repeat a section…</strong> and <strong class="font-semibold text-zinc-950 dark:text-white">Paste bars…</strong>. <strong class="font-semibold text-zinc-950 dark:text-white">Numerals &amp; scales</strong> shows each chord's numeral and scale under it.</li>
         <li>If a chord comes up amber, I don't recognise it. Pick a scale for it and it'll draw.</li>
+        <li>With the editor open, you can also tap a chord on the Changes sheet to change it there. On a phone that's the way to edit: the bars need a bigger screen.</li>
       </ul>
 
-      <UiSubheading :level="3" class="pt-2">The text</UiSubheading>
-      <UiText>It's plain text, one line per chord, always in concert pitch:</UiText>
+      <UiSubheading :level="3" class="pt-2">The source</UiSubheading>
+      <UiText>
+        Under the <strong class="font-semibold text-zinc-950 dark:text-white">⋯</strong> menu, <strong class="font-semibold text-zinc-950 dark:text-white">Show source</strong> opens the chart as plain
+        text, the same chart as the bars (edit either), one line per chord, always in concert pitch:
+      </UiText>
       <pre class="overflow-x-auto rounded-lg bg-zinc-950/2.5 p-4 font-mono text-sm/6 text-zinc-950 ring-1 ring-zinc-950/10 dark:bg-white/5 dark:text-white dark:ring-white/10">{{ EXAMPLE }}</pre>
       <ul class="list-disc space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
         <li>Leave the scale off and you get the chord's default (<UiCode>Cm7</UiCode> gives C Dorian).</li>
@@ -272,7 +273,7 @@
           what you get without it). With a guide tone line on, the Changes sheet writes its guide tones in it.
         </li>
         <li><UiCode>title:</UiCode> and <UiCode>subtitle:</UiCode> set the heading. <UiCode>composer:</UiCode>, <UiCode>style:</UiCode>, <UiCode>key:</UiCode> and <UiCode>form:</UiCode> fill in the line under it (the subtitle, if there is one, takes the style's place), and lines starting with <UiCode>#</UiCode> are notes to yourself. A row can end in a note too, after a space and a <UiCode>#</UiCode>: the library's say why each scale was chosen.</li>
-        <li>Anything I can't make sense of is listed under the text box, with the line number.</li>
+        <li>Anything I can't make sense of is listed under the source, with the line number.</li>
       </ul>
 
       <UiSubheading :level="3" class="pt-2">Transposing</UiSubheading>
