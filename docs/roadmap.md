@@ -16,6 +16,15 @@ drawing constants and practice key, plus the `glyphs()` Bebop fix), and the cont
 - **Engine coverage** — `voiceLeading.ts` (Viterbi) and `stream.ts` have no direct unit tests; adding them is pure
   upside but wants careful, fresh attention to avoid pinning current behavior as "correct".
 
+### Rule popover on the chord chart (2026-10-11)
+
+Clicking a rule id on the chart (the "· rule M3" link in a chord's note, `ChangesNote.vue`) opens a modal with that
+rule — its id, what it chooses and why, as the /functions page's rules table states it — instead of navigating to
+`/functions#rule-…`. The user stays in the context of the chart. Build it from the Catalyst `Dialog` in
+`web/app/components/ui/` and the rules data the functions page already renders (one source, no copy), with a link to
+the full page inside the modal. The grid's "How to write a function" links (`ChartGrid.vue`) are candidates for the
+same treatment.
+
 ## Done
 
 ### Guide tone ranges per instrument
