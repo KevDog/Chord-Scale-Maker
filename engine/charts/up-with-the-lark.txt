@@ -1,0 +1,136 @@
+title: Up with the Lark
+composer: Jerome Kern
+style: Medium jazz waltz
+key: C
+time: 3/4
+form: ABC, 64 bars
+source:
+# analysis: 2026-10-12, rules v1; C
+# as played by Bill Evans; solos on the form (ABC); after solos, D.S. al Coda
+# the book: "Use chords in parentheses for solos."
+
+# section | bar | chord
+# the intro is piano only
+Intro | 1  | CMaj7/G    # tonic: the 4th is in the key
+Intro | 2  | C6/G       # tonic: the 4th is in the key
+Intro | 3  | G9sus4     # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+Intro | 4  | G7         # V7 of C: natural tensions
+Intro | 5  | CMaj7/G    # tonic: the 4th is in the key
+Intro | 6  | C6/G       # tonic: the 4th is in the key
+Intro | 7  | G9sus4     # static sus: Mixolydian
+Intro | 7  | Ab13/G     # tritone substitute: resolves down a half step to G13
+Intro | 8  | G13        # V7 in C, not resolving: natural tensions
+Intro | 8  | G9#5       # V7 of C: #11 and b13 from the symbol
+Intro | 9  | CMaj7/G    # tonic: the 4th is in the key
+Intro | 10 | C6/G       # tonic: the 4th is in the key
+Intro | 11 | G9sus4     # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+Intro | 12 | G7         # V7 of C: natural tensions
+Intro | 13 | C6         # tonic: the 4th is in the key
+Intro | 14 | Eb13       # V7/bVI in C: the #11 is in the key
+Intro | 15 | AbMaj7     # ♭VImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
+Intro | 16 | G7#5#9     # V7 of C: b9, #9, #11 and b13 from the symbol
+A     | 1  | C6         # tonic: the 4th is in the key
+A     | 2  | G9         # V7 of C: natural tensions
+A     | 3  | C69        # tonic: the 4th is in the key
+A     | 4  | G9sus4     # static sus: Mixolydian
+A     | 4  | FmMaj7     # from the symbol: minor-major 7th
+# alt (solos): bar 4 (G9)
+A     | 5  | Em11       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+# book: Em7(add 11)
+A     | 6  | Am11       # ii of D13: Dorian
+# book: Am7(add 11)
+A     | 8  | D13        # V7/V in C: natural tensions
+A     | 9  | Dm11       # ii of G13: Dorian
+# book: Dm7(add 11)
+A     | 10 | G13        # V7/I in C: natural tensions
+A     | 11 | Dm9        # ii of the ii–V to C
+A     | 12 | G13        # V7 of C: natural tensions
+A     | 13 | C69        # tonic: the 4th is in the key
+A     | 14 | Eb13       # V7/bVI in C: the #11 is in the key
+A     | 15 | AbMaj7     # ♭VImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
+A     | 16 | G7#5#9     # V7 of C: b9, #9, #11 and b13 from the symbol
+B     | 17 | C6         # tonic: the 4th is in the key
+B     | 18 | G9         # V7 of C: natural tensions
+B     | 19 | C69        # tonic: the 4th is in the key
+B     | 20 | Gm7        # a borrowed minor chord: Dorian, its own key
+B     | 21 | F#m11      # ii of the ii–V to E
+# book: F#m7(add 11)
+B     | 22 | B7         # V7/III in C: b9 and b13 are in the key
+B     | 23 | E69        # a non-tonic major chord: Lydian
+B     | 24 | C#m7       # a borrowed minor chord: Dorian, its own key
+B     | 25 | F#m11      # ii of the ii–V to E
+# book: F#m7(add 11)
+B     | 26 | B7         # V7/III in C: b9 and b13 are in the key
+B     | 27 | EMaj7      # a non-tonic major chord: Lydian
+B     | 29 | Fm11       # ii of the ii–V to Eb
+# book: Fm7(add 11)
+B     | 30 | Bb7        # V7/bIII in C: the #11 is in the key
+B     | 31 | Eb69       # ♭III6, borrowed from C minor: Lydian (its ♯11 is in the key)
+# alt (solos): bar 32 (Eb6/9)
+B     | 33 | A13        # VI7 in C, not resolving: the 13 from the symbol
+B     | 34 | A7#5       # V7/II in C: the b13 is in the key, the #11 from the symbol
+B     | 35 | DMaj7      # a non-tonic major chord: Lydian
+B     | 37 | B/G        # a non-tonic major chord: Lydian
+# alt (solos): bar 37 (GMaj7)
+B     | 38 | A/F        # a non-tonic major chord: Lydian
+# alt (solos): bar 38 (FMaj7)
+B     | 39 | G/Eb       # V without its 7th: Mixolydian, the key’s own notes
+# alt (solos): bar 39 (EbMaj7)
+B     | 40 | F/Db       # IV: the #4 is the key’s 7th
+# alt (solos): bar 40 (DbMaj7)
+C     | 41 | C6         # tonic: the 4th is in the key
+C     | 42 | G9         # V7 of C: natural tensions
+C     | 43 | C69        # tonic: the 4th is in the key
+C     | 44 | FmMaj7     # from the symbol: minor-major 7th
+C     | 45 | Em11       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+# book: Em7(add 11)
+C     | 46 | Am11       # ii of D7: Dorian
+# book: Am7(add 11)
+C     | 47 | D7         # V7/V in C: natural tensions
+C     | 48 | Ab7        # ♭VI7 from the parallel minor: Lydian Dominant, it returns to I
+C     | 49 | CMaj7/G    # tonic: the 4th is in the key
+C     | 50 | C6/G       # tonic: the 4th is in the key
+C     | 51 | G9sus4     # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+C     | 52 | G7         # V7 of C: natural tensions
+C     | 53 | C6         # tonic: the 4th is in the key
+C     | 54 | Eb13       # V7/bVI in C: the #11 is in the key
+# bars 54–56: solo break
+C     | 55 | AbMaj7     # ♭VImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
+C     | 56 | G7#5#9     # V7 of C: b9, #9, #11 and b13 from the symbol
+Coda  | 1  | CMaj7/G    # tonic: the 4th is in the key
+Coda  | 2  | C6/G       # tonic: the 4th is in the key
+Coda  | 3  | G9sus4     # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+Coda  | 4  | G7         # V7 of C: natural tensions
+Coda  | 5  | CMaj7/G    # tonic: the 4th is in the key
+Coda  | 6  | C6/G       # tonic: the 4th is in the key
+Coda  | 7  | G9sus4     # static sus: Mixolydian
+Coda  | 7  | Ab13/G     # tritone substitute: resolves down a half step to G13
+Coda  | 8  | G13        # V7 in C, not resolving: natural tensions
+Coda  | 8  | G9#5       # V7 of C: #11 and b13 from the symbol
+Coda  | 9  | CMaj7/G    # tonic: the 4th is in the key
+Coda  | 10 | C6/G       # tonic: the 4th is in the key
+Coda  | 11 | G9sus4     # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+Coda  | 12 | G7         # V7 in C, not resolving: natural tensions
+Coda  | 12 | G9sus4     # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+Coda  | 12 | G7#5b9     # V7 of C: b9, #11 and b13 from the symbol
+Coda  | 13 | C69        # tonic: the 4th is in the key
+Coda  | 13 | Gm11       # a borrowed minor chord: Dorian, its own key
+# book: Gm7(add 11)
+Coda  | 14 | F#m11      # a borrowed minor chord: Dorian, its own key
+# book: F#m7(add 11)
+Coda  | 14 | Fm7        # a borrowed minor chord: Dorian, its own key
+Coda  | 14 | FmMaj7     # from the symbol: minor-major 7th
+Coda  | 15 | Em11       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+# book: Em7(add 11)
+Coda  | 15 | Bb9#11     # tritone substitute: resolves down a half step to Am11
+Coda  | 16 | Am11       # ii of D9#11: Dorian
+# book: Am7(add 11)
+Coda  | 16 | D9#11      # tritone substitute: resolves down a half step to DbMaj7#11
+Coda  | 16 | DbMaj7#11  # from the symbol: #11
+Coda  | 17 | CMaj9#11   # from the symbol: #11
+# book: CMa13(#11)
+@segno A 1
+@coda C 48
+# the coda sign stands before bar 49: on the D.S., play to bar 48 and take the coda
+@nav C 56 D.S. al Coda
+@key Intro 1 C

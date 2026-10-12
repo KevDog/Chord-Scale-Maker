@@ -1,0 +1,67 @@
+title: Your Mind Is on Vacation
+composer: Mose Allison
+style: Medium swing
+key: Eb
+form: ABC, 40 bars
+context: blues
+source:
+# analysis: 2026-10-12, rules v1; Eb, blues
+# Med. swing (blues); A is a 12-bar blues verse, B a 16-bar verse (segno), C the 12-bar solo blues (repeated)
+# after solos, D.S. (3rd verse) al Coda
+# the pickup bar is a piano Db figure, not a bar of the form
+# the break bars: Eb7 on beat 1, then a piano Db figure at the end of the bar
+
+# section | bar | chord
+A    | 1  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+A    | 1  | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+A    | 2  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+A    | 2  | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+A    | 3  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+A    | 3  | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+A    | 4  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+A    | 4  | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+A    | 5  | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A    | 7  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+A    | 9  | Bb7  # V7 in Eb, not resolving: natural tensions
+A    | 10 | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+A    | 11 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+A    | 12 | Eb7
+A    | 12 | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+B    | 13 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+B    | 13 | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+B    | 14 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+B    | 14 | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+B    | 15 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+B    | 15 | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+B    | 16 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+B    | 16 | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+B    | 17 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+B    | 17 | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+B    | 18 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+B    | 18 | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+B    | 19 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+B    | 19 | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+B    | 20 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+# bar 20: a piano figure at the end of the bar with no chord symbol (the other break bars print Db); Eb7 holds
+B    | 21 | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+B    | 23 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+B    | 25 | Bb7  # V7 in Eb, not resolving: natural tensions
+B    | 26 | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+B    | 27 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+# alt: bar 28, beats 3–4 (Bb7)
+@segno B 13
+@coda B 27
+C    | 29 | Eb7
+C    | 33 | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+C    | 35 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+C    | 37 | B7   # tritone substitute: resolves down a half step to Bb7
+C    | 38 | Bb7  # extended dominant: V7 of Eb7
+C    | 39 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+# bar 40: Eb7 held (repeated for the D.S. marker)
+C    | 40 | Eb7
+@nav C 40 D.S. al Coda
+Coda | 1  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+Coda | 1  | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+Coda | 2  | Bb7  # extended dominant: V7 of Eb7
+Coda | 2  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+@coda Coda 1

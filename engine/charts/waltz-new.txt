@@ -1,0 +1,68 @@
+title: Waltz New
+composer: Jim Hall
+style: Medium up straight eighths
+key: Bb
+form: AB, 32 bars
+time: 3/4
+source:
+# analysis: 2026-10-12, rules v1; Bb
+# book: Medium-Up Straight 1/8's, quarter = 184. Based on the chords of "Someday My Prince Will Come".
+# repeat signs around A–B; last time, bar 32 goes to the Coda (coda sign at bar 32).
+
+# section | bar | chord
+# area: Bb major (bars 1–13)
+A    | 1  | Bb6     # tonic: the 4th is in the key
+A    | 2  | D7#5    # III7 in Bb, not resolving: b9 and b13 are in the key, the #11 from the symbol
+A    | 3  | EbMaj7  # IV: the #4 is the key’s 7th
+A    | 4  | G7#5    # V7/ii in Bb: the b13 is in the key, the #11 from the symbol
+A    | 5  | Cm7     # ii: Dorian, the key’s own notes
+A    | 6  | G7#5    # V7/ii in Bb: the b13 is in the key, the #11 from the symbol
+A    | 7  | Cm7     # ii of F7: Dorian
+A    | 8  | F7      # V7/I in Bb: natural tensions
+A    | 9  | Dm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A    | 10 | C#dim7  # passing diminished: C7♭9 without its C, the F7's dominant (Cm7 its ii)
+A    | 11 | Cm7     # ii of F7: Dorian
+A    | 12 | F7      # V7/I in Bb: natural tensions
+A    | 13 | Dm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+# area: Cb major (bars 14–15)
+A    | 14 | Dbm7    # ii of the ii–V to Cb
+A    | 14 | Gb7     # V7 of Cb: natural tensions
+A    | 15 | CbMaj7  # tonic: the 4th is in the key
+# area: Bb major (bars 16–11)
+A    | 16 | Cm7     # ii of the ii–V to Bb
+A    | 16 | F7      # V7 of Bb: natural tensions
+B    | 17 | Bb6     # tonic: the 4th is in the key
+B    | 18 | D7#5    # III7 in Bb, not resolving: b9 and b13 are in the key, the #11 from the symbol
+B    | 19 | EbMaj7  # IV: the #4 is the key’s 7th
+B    | 20 | G7#5    # V7/ii in Bb: the b13 is in the key, the #11 from the symbol
+B    | 21 | Cm7     # ii: Dorian, the key’s own notes
+B    | 22 | G7#5    # extended dominant: each one falls a fifth into the next: #11 and b13 from the symbol
+B    | 23 | C7      # V7 of V7: the dominant of the dominant: natural tensions
+B    | 24 | F7      # V7 in Bb, not resolving: natural tensions
+B    | 25 | Fm9     # ii of the ii–V to Eb
+B    | 26 | Bb13    # V7/IV in Bb: natural tensions
+B    | 27 | EbMaj7  # the Bb13 before it makes Eb the key of the moment: the 4th is in the key
+B    | 28 | A7      # V7/iii in Bb: b9 and b13 are in the key
+B    | 29 | Dm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B    | 29 | G7      # V7/ii in Bb: the b13 is in the key
+B    | 30 | Cm7     # ii of the ii–V to Bb
+B    | 30 | F7      # V7 of Bb: natural tensions
+B    | 31 | BbMaj7  # tonic: the 4th is in the key
+@coda B 32
+B    | 32 | Cm7     # ii of the ii–V to Bb
+B    | 32 | F7      # V7 of Bb: natural tensions
+@coda Coda 1
+Coda | 1  | Bb      # tonic: the 4th is in the key
+# Coda bar 2 on: slower
+Coda | 2  | Eb      # IV: the #4 is the key’s 7th
+Coda | 3  | Bb/D    # tonic: the 4th is in the key
+Coda | 4  | Cm7     # ii: Dorian, the key’s own notes
+# book: Cm7(omit5)
+Coda | 5  | Bbsus   # static sus: Mixolydian
+Coda | 5  | Bb      # tonic: the 4th is in the key
+Coda | 6  | D7      # III7 in Bb, not resolving: b9 and b13 are in the key
+Coda | 7  | Eb6     # IV: the #4 is the key’s 7th
+Coda | 8  | Em7b5   # #ivø7 in Bb: Locrian, its own mode (the chord is outside the key)
+Coda | 9  | Fsus    # static sus: Mixolydian
+Coda | 10 | F       # V without its 7th: Mixolydian, the key’s own notes
+Coda | 11 | Bb      # tonic: the 4th is in the key

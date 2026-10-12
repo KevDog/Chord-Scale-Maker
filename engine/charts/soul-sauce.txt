@@ -1,0 +1,63 @@
+title: Soul Sauce
+aka: Wachi Wara; Guarachi Guaro
+composer: Dizzy Gillespie, Chano Pozo
+style: Latin
+key: C
+form: ABCD + solos, 32 bars
+source:
+context: modal
+# analysis: 2026-10-12, rules v1; C, modal
+# book: Med. Latin, quarter = 152 (as played by Cal Tjader)
+# the pickup is vibes alone; bass and drums play a downbeat (C bass) on bar 1 of A every time but the first
+# the book's road map: A B C D, D.C. al Coda One (from the end of A, bar 8) to the solos; after solos, continue to E;
+# E then D.C. al Coda Two (from the end of A again) to the Coda, vamp and fade
+
+# section | bar | chord
+# bars 1–2: N.C. (the vibes melody)
+A     | 3  | C7       # modal: its own mode
+# bar 3: N.C. until the C7 stabs ("Wa-chi Wa-ra") late in the bar
+A     | 4  | C7
+# bars 5–6: N.C. (the vibes melody)
+A     | 7  | C7
+A     | 8  | C7
+@coda A 8
+# the coda sign (1, 2) stands at the end of bar 8
+# B, bars 9–16: N.C., a 4-bar bass line played twice (2nd time add congas, then cowbell)
+# C, bars 17–24: N.C., a 2-bar vibes figure played 3 times, then 2 more bars
+D     | 25 | C13      # modal: its own mode
+D     | 25 | Bb13     # modal: its own mode
+D     | 25 | Ab13     # modal: its own mode
+D     | 25 | Db13#11  # modal: its own mode; #11 from the symbol
+D     | 26 | C13      # modal: its own mode
+# book: this C13 is anticipated on the last eighth of the bar before
+# alt: bar 26 (Ab13 Gm7) on beats 3–4
+D     | 27 | C13
+D     | 27 | Bb13     # modal: its own mode
+D     | 27 | Ab13     # modal: its own mode
+D     | 27 | Db13#11  # modal: its own mode; #11 from the symbol
+D     | 28 | C13      # modal: its own mode
+# alt: bar 28 (Ab13 Gm7) on beats 3–4
+D     | 29 | C13
+D     | 29 | Bb13     # modal: its own mode
+D     | 29 | Ab13     # modal: its own mode
+D     | 29 | Db13#11  # modal: its own mode; #11 from the symbol
+D     | 30 | C13      # modal: its own mode
+# alt: bar 30 (Ab13 Gm7) on beats 3–4
+@nav D 30 D.C. al Coda
+# D is a 2-bar figure played 3 times, written out
+@coda Solos 31
+Solos | 31 | Gm7      # modal minor: Dorian
+Solos | 31 | C7       # modal: its own mode
+Solos | 32 | Gm7      # modal minor: Dorian
+Solos | 32 | C7       # modal: its own mode
+# the solos vamp on these 2 bars until cued; solos may also be played over C7 Gm7 (one bar each beat 1 and 3, a 2-bar repeat)
+# after solos, continue to E
+# E (on cue): N.C., a 2-bar vibes and bass figure played 3 times, then 2 more bars; then D.C. al Coda Two
+@coda Coda 1
+Coda  | 1  | C13      # modal: its own mode
+Coda  | 1  | Bb13     # modal: its own mode
+Coda  | 1  | Ab13     # modal: its own mode
+Coda  | 1  | Db13#11  # modal: its own mode; #11 from the symbol
+Coda  | 2  | C13      # modal: its own mode
+# alt: bar 2 (Ab13 Gm7) on beats 3–4
+# the coda repeats: vamp and fade
