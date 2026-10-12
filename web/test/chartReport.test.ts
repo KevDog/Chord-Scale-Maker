@@ -23,5 +23,6 @@ describe('guidesText', () => {
     expect(guidesText('off')).toBe('')
     expect(guidesText('third')).toBe('from 3rd')
     expect(guidesText('seventh')).toBe('from 7th')
+    expect(guidesText('up-2nd')).toBe('7th chords: Up · 2nd inv')
   })
 })

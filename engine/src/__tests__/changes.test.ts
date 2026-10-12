@@ -406,3 +406,22 @@ describe('breakLines', () => {
     expect(breakLines(sheet.lines, new Set(['A 1', 'A 5']))).toEqual(sheet.lines)
   })
 })
+
+describe('buildChanges with an arpeggio line', () => {
+  const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 1 | G7\nA | 2 | CMaj7\n').value
+  it("fills each bar's voice with the arpeggio, and no guide labels", () => {
+    const sheet = buildChanges(doc, CONCERT, 4, false, 'up-root')
+    const [bar1, bar2] = sheet.lines[0]?.bars ?? []
+    expect(bar1?.voice).toHaveLength(8)
+    expect(bar2?.voice).toHaveLength(4)
+    expect(sheet.lines.flatMap((l) => l.bars.flatMap((b) => b.chords.map((c) => c.guide)))).toEqual(['', '', ''])
+  })
+  it('still draws guide tones for third and seventh, and nothing for off', () => {
+    expect(buildChanges(doc, CONCERT, 4, false, 'third').lines[0]?.bars[0]?.voice).toHaveLength(2)
+    expect(buildChanges(doc, CONCERT, 4, false, 'off').lines[0]?.bars[0]?.voice).toEqual([])
+  })
+  it('gives an arpeggio line the page count of a guide tone line', () => {
+    const rows = { numerals: true, scales: true }
+    expect(changesLinesPerPage('up-root', rows)).toBe(changesLinesPerPage('third', rows))
+  })
+})

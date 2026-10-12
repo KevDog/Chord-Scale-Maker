@@ -9,7 +9,7 @@
         <SheetHeading :doc="doc" @update:doc="emit('update:doc', $event)" />
       </template>
       <template #default="{ page }">
-        <div :class="['space-y-4', signatures || guideOn ? 'print:space-y-0' : 'print:space-y-1']">
+        <div :class="['space-y-4', signatures || lineOn ? 'print:space-y-0' : 'print:space-y-1']">
           <ChangesSystem
             v-for="l in page.lines"
             :key="l.index"
@@ -19,7 +19,8 @@
             :bars-per-line="barsPerLine"
             :numerals="numerals"
             :scales="scales"
-            :clef="signatures || guideOn ? part.clef : undefined"
+            :arpeggio="arpeggio"
+            :clef="signatures || lineOn ? part.clef : undefined"
             :editable="editable"
             :selected-line="selectedLine"
             :doc="doc"
@@ -51,7 +52,7 @@
 <script setup lang="ts">
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
-import { breakLines, buildChanges, changesLinesPerPage, type ChartDoc, type ChordPreview, chunk, type GuideLine, pageSubtitle, type Part, type ScaleView } from '@chord-scale-maker/engine'
+import { breakLines, buildChanges, changesLinesPerPage, type ChartDoc, type ChordPreview, chunk, isArpeggioPattern, pageSubtitle, type Part, type ScaleView, type SheetLine } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
 const props = defineProps<{
@@ -64,7 +65,7 @@ const props = defineProps<{
   numerals: boolean
   scales: boolean
   signatures?: boolean // the part's clef and the chart's key signature, once, at the start of the first line
-  guideLine?: GuideLine // a guide tone line, from the 3rd or the 7th, as notes in place of the slashes (the clef then always starts line 1)
+  line?: SheetLine // a guide tone or arpeggio line, as notes in place of the slashes (the clef then always starts line 1)
   editable?: boolean // tap a chord to edit it
   selectedLine?: number | null // the chart line of the chord the editor is on
   view?: ScaleView // the level blank cells play at; undefined: Standard
@@ -89,8 +90,9 @@ const emit = defineEmits<{
 const wide = useMediaQuery('(min-width: 640px), print')
 const barsPerLine = computed(() => (wide.value ? 4 : 2))
 
-const line = computed((): GuideLine => props.guideLine ?? 'off')
-const guideOn = computed(() => line.value !== 'off')
+const line = computed((): SheetLine => props.line ?? 'off')
+const lineOn = computed(() => line.value !== 'off')
+const arpeggio = computed(() => isArpeggioPattern(line.value))
 const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, props.signatures, line.value, props.view))
 /** the bars that start a line because the names before them didn't fit (ChangesSystem measures): until the sheet changes */
 const breaks = shallowRef<ReadonlySet<string>>(new Set())

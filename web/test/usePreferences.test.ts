@@ -31,31 +31,28 @@ describe('usePreferences', () => {
     expect(prefs().intervals.value).toBe(false)
   })
 
-  it('keeps the guide tone line off until chosen, and remembers it', async () => {
+  it('starts with no line, guide tones from the 3rd and arpeggios Up · root, and remembers each', async () => {
     const p = prefs()
-    expect(p.guideLine.value).toBe('off')
-    p.guideLine.value = 'third'
+    expect([p.lineMode.value, p.guideLine.value, p.arpeggio.value]).toEqual(['off', 'third', 'up-root'])
+    p.lineMode.value = 'arpeggio'
+    p.arpeggio.value = 'voice-led'
+    p.guideLine.value = 'seventh'
     await nextTick()
-    expect(localStorage.getItem('csm-guide-line')).toBe('third')
+    expect([localStorage.getItem('csm-line'), localStorage.getItem('csm-arpeggio'), localStorage.getItem('csm-guide-line')]).toEqual(['arpeggio', 'voice-led', 'seventh'])
     const again = prefs()
-    expect(again.guideLine.value).toBe('third')
-    again.guideLine.value = 'seventh'
-    await nextTick()
-    expect(localStorage.getItem('csm-guide-line')).toBe('seventh')
-    again.guideLine.value = 'off'
-    await nextTick()
-    expect(localStorage.getItem('csm-guide-line')).toBe('off')
+    expect([again.lineMode.value, again.arpeggio.value, again.guideLine.value]).toEqual(['arpeggio', 'voice-led', 'seventh'])
     expect(Object.keys(p)).not.toContain('fromThird')
   })
 
-  it('falls back to off on a stored guide line it does not know, and ignores the old keys', () => {
-    for (const junk of ['both', 'on', 'Third', '']) {
-      localStorage.setItem('csm-guide-line', junk)
-      expect(prefs().guideLine.value).toBe('off')
-    }
-    localStorage.removeItem('csm-guide-line')
+  it('falls back from stored values it does not know, and ignores the old keys', () => {
+    localStorage.setItem('csm-line', 'both')
+    localStorage.setItem('csm-guide-line', 'off')
+    localStorage.setItem('csm-arpeggio', 'sideways')
+    const p = prefs()
+    expect([p.lineMode.value, p.guideLine.value, p.arpeggio.value]).toEqual(['off', 'third', 'up-root'])
+    localStorage.clear()
     localStorage.setItem('csm-guide-3rd', 'on')
-    expect(prefs().guideLine.value).toBe('off')
+    expect(prefs().lineMode.value).toBe('off')
   })
 
   it('remembers choices in this browser', async () => {
@@ -87,17 +84,24 @@ describe('usePreferences', () => {
 describe('linkPreferences', () => {
   afterEach(() => localStorage.clear())
 
-  it("takes a link's guide tone line over your own, for this visit only", async () => {
+  it("takes a link's line over your own, for this visit only", async () => {
+    localStorage.setItem('csm-line', 'arpeggio')
     localStorage.setItem('csm-guide-line', 'seventh')
-    const p = linked({ guideLine: 'third' })
-    expect(p.guideLine.value).toBe('third')
-    p.guideLine.value = 'off'
+    const p = linked({ line: 'third' })
+    expect([p.lineMode.value, p.guideLine.value]).toEqual(['guide', 'third'])
+    p.lineMode.value = 'off'
+    p.guideLine.value = 'seventh'
     await nextTick()
+    expect(localStorage.getItem('csm-line')).toBe('arpeggio')
     expect(localStorage.getItem('csm-guide-line')).toBe('seventh')
   })
 
-  it('opens a link without a guide line with the line off, whatever your own', () => {
-    localStorage.setItem('csm-guide-line', 'seventh')
-    expect(linked({ sheet: 'changes' }).guideLine.value).toBe('off')
+  it("takes a link's arpeggio, and no line when it has none, whatever your own", () => {
+    expect(linked({ line: 'down-1st' }).lineMode.value).toBe('arpeggio')
+    expect(linked({ line: 'down-1st' }).arpeggio.value).toBe('down-1st')
+    expect(linked({ line: 'seventh' }).guideLine.value).toBe('seventh')
+    localStorage.setItem('csm-line', 'guide')
+    expect(linked({}).lineMode.value).toBe('off')
+    expect(linked({ sheet: 'changes' }).lineMode.value).toBe('off')
   })
 })

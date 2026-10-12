@@ -46,6 +46,7 @@ engine/                   # @chord-scale-maker/engine (superpowers/specs/2026-10
     guideTones.ts         # guide tones per chord, voiced for the Changes sheet (guideVoices)
     guideToneLines.ts     #   the two lines, from the 3rd and from the 7th, built together (guideToneLine)
     guideToneTimeline.ts  #   when each chord starts and how long it lasts, in the chart's metre
+    arpeggios.ts          # 7th chord arpeggios for the Changes sheet (arpeggioVoices)
     voiceLeading.ts       #   RANGES (the clefs' default ranges), and voiceLead (Viterbi over pairs), kept only to compare
     tune.ts               # tuneSummary, tuneDescription (a tune page's text), tuneGaps/tuneAdvice (§7b)
     util.ts               # orNull, chunk
@@ -379,9 +380,11 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   crowded. Names that still don't fit shrink (to 60% at least); a line whose names would shrink below 80% breaks
   before the bar that doesn't fit (`breakLines`, until the chart changes), so on a phone a bar of four chords may get
   a line of its own.
-- `Numerals` and `Scales` toggles and a **Guide Tones** segmented control (Off · From 3rd · From 7th) replace Intervals on
-  this sheet (`csm-numerals`, `csm-scale-names`, both on; `csm-guide-line`, `off | third | seventh`, off; share links carry
-  them and the sheet, the line as `guideLine`, absent meaning off).
+- `Numerals` and `Scales` toggles and a **Line** segmented control (Off · Guide Tones · 7th Chords) with the mode's
+  listbox beside it (From 3rd · From 7th; or the ten arpeggio patterns) replace Intervals on this sheet (`csm-numerals`,
+  `csm-scale-names`, both on; `csm-line` `off | guide | arpeggio`, off; `csm-guide-line` `third | seventh`;
+  `csm-arpeggio`, `up-root`; share links carry the sheet's line as `line`, absent meaning off). 7th Chords is behind the
+  `arpeggios` flag.
 
 ### Guide tones on Changes ([spec](superpowers/specs/2026-10-10-guide-tone-lines-design.md), amended by [independent lines](superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md) and [the diverge note](superpowers/specs/2026-10-11-guide-lines-diverge-note.md); first built as [guide tones on Changes](superpowers/specs/2026-10-10-guide-tones-on-changes-design.md))
 
@@ -434,6 +437,26 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     over each chord's first note.
   - Line 1 gets the part's clef whenever a line is on; the key signature only with signatures on.
   - The aria-label adds `; guide tones: F4 3, F4 7, …` after `Bars: …`.
+
+### 7th chord arpeggios on Changes ([spec](superpowers/specs/2026-10-12-seventh-chord-arpeggios-design.md))
+
+- **Tones:** each chord's four chord tones from its base quality (`DEGREES` in `engine/src/arpeggios.ts`): altered 5ths
+  kept, extensions dropped; a triad's three, its first tone again as the fourth.
+- **Patterns** (ten): Up and Down from the root or the 1st, 2nd or 3rd inversion (Down reverses Up), Up & down
+  (alternating per arpeggio across the run), Voice-led (Up from the chord tone nearest the last note).
+- **Note value, per bar:** the longest of ♩ ♪ 𝅘𝅥𝅯 giving the bar's shortest chord four notes or more (4/4: one chord ♩,
+  two ♪, three or four 𝅘𝅥𝅯; 3/4 and 2/4: one ♪, more 𝅘𝅥𝅯). Timing is the guide tone timeline's, so a last chord holds
+  through the empty bars after it.
+- **Filling:** a chord's slots repeat its pattern from the start (6 eighths in 3/4: 1 3 5 7 1 3), again in each bar it
+  lasts into.
+- **Octave:** each arpeggio placed whole, its first note nearest the previous note among the octaves inside the part's
+  range (`rangeOf`); a run's first nearest the centre.
+- **Rests:** a chord without chord tones (N.C.) rests and ends the run.
+- **Model:** `arpeggioVoices` fills `ChangesBar.voice` (guide labels stay empty); `buildChanges` and
+  `changesLinesPerPage` take a `SheetLine` (`off`, `third`, `seventh` or a pattern id).
+- **Drawing:** the guide tone line's two passes, the notes beamed by the beat (`Beam.generateBeams`, post-formatted before
+  the stem tips are read for the crop and the ending's bracket); no label row; the aria-label adds
+  `; 7th chords: C4 E4 G4 B4 | …` after `Bars: …`.
 
 ### Shared
 
@@ -496,7 +519,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - `SheetPages`, which lays out both sheets' printed pages. On screen they form one continuous card, with a dashed
     "Page N" divider where each printed page starts and the header shown once. In print each page is a bare letter
     page with its own header.
-  - `PreviewControls`, the preview toolbar: Work on, Instrument, From root/From X, then Show: Intervals (on the Changes, Analysis: Numerals and Scales, and Guide Tones: Off · From 3rd · From 7th) with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
+  - `PreviewControls`, the preview toolbar: Work on, Instrument, From root/From X, then Show: Intervals (on the Changes, Analysis: Numerals and Scales, and Line: Off · Guide Tones · 7th Chords, with From 3rd · From 7th or the arpeggio pattern beside it) with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
 - **Dark mode** is a `.dark` class on `<html>`, toggled in the navbar.
   - The default is light, and the choice is saved per browser.
   - `public/theme-init.js` applies it before first paint. It's a file, not an inline script, so the CSP needs no
@@ -513,9 +536,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Scale sheets:** 12 staves a page, with 8px between staves. A full page fills
   about 9.6in, even when every note has ledger lines (e.g. trombone from B). Autumn Leaves prints on 4 pages.
 - **Changes:** 8 four-bar lines a page with guide tones off, so a 32-bar AABA prints on one page.
-  - With guide tones on, `changesLinesPerPage` (`engine/src/changes.ts`) gives fewer: 6 with a line on and
-    numerals and scales, one more with both rows off. `print.spec.ts` prints the tallest case (one line,
-    numerals, scales, an ending and a bass part) a sheet page to a letter page.
+  - With a line on, `changesLinesPerPage` (`engine/src/changes.ts`) gives fewer: 6 with a line on and
+    numerals and scales, one more with both rows off; an arpeggio line the same. `print.spec.ts` prints the tallest
+    case (one line, numerals, scales, an ending and a bass part, guide tones or 7th chords) a sheet page to a letter page.
   - The chord row and spacing are shorter in print; lines with a clef or guide tones close up (`print:space-y-0`).
   - Print always uses 4 bars a line.
   - Lines never split across pages.
@@ -725,7 +748,7 @@ its reasons into a chart as comments.
 - **`useChartHistory(editor)`:** undo and redo over the editor's text (§4), with `onKeydown` for ⌘Z and ⇧⌘Z.
   - Immutable updates only. The sheet (the Changes, the default, or Scales) and the mode are page state.
 - **`usePreferences()`:** the instrument, the start note, the Intervals toggle and the Changes sheet's toggles
-  (Numerals, Scales, and the guide tone line, Off · From 3rd · From 7th, off until chosen, as `csm-guide-line`), each a `storedRef` saved per browser. A
+  (Numerals, Scales, and the Line, off until chosen, as `csm-line`, with `csm-guide-line` and `csm-arpeggio`), each a `storedRef` saved per browser. A
   stored value that isn't a known instrument or picker root falls back to the default.
 - **Browser storage** goes through `utils/storage.ts` (`readStored`, `writeStored`). It's best-effort, because
   storage can be blocked or full. It holds the theme, the preferences, practice picks and My charts. Nothing is
@@ -755,7 +778,7 @@ its reasons into a chart as comments.
   - `npm run e2e` builds with every flag on.
   - `myCharts` (My charts, New chart, Download/Open, share links), `changes` (the Changes sheet),
     `practice` (the Practice panel), `keySignatures` and `functions` are on, since sign-off. Guide tones on the
-    Changes sheet have no flag: their toggles start off. The bar editor shipped behind `barEditor`; at its sign-off
+    Changes sheet have no flag: their toggles start off. `arpeggios` (7th Chords on the Line control) is off. The bar editor shipped behind `barEditor`; at its sign-off
     the old row grid went, and the flag with it. `scaleLevels` (the Scale level control), `proposedScales` (a blank
     scale cell plays the analysis, §7a) and `leadSheetEditor` (the Changes sheet as the editor; at its sign-off the
     bar grid went, #141) went the same way at theirs.
@@ -895,14 +918,16 @@ static file, §7b), so the attack surface is small. The measures:
     picker and drop), share links in a fresh browser context, damaged links
   - Transpose
   - interval labels
-  - guide tones on the Changes sheet: the Off · From 3rd · From 7th control and its labels, redrawing on each choice, one voice's stems and ties (and their
+  - guide tones on the Changes sheet: the Line control with From 3rd · From 7th and its labels, redrawing on each choice, one voice's stems and ties (and their
     half-ties over a line break), one rest for an unknown chord, accidentals against the signature, B♭ and bass-clef
     parts, a waltz, dark mode, endings above the stems, and no collisions in a 4-chord bar
+  - 7th chords on the Changes sheet: quarters, eighths and sixteenths by chords a bar, beamed, no label row, a 3/4
+    bar of eighths, the pattern remembered and carried by a share link
   - transposing instruments and the bass clef, and that the choices persist
   - dark mode
   - print:
     - scale sheets, 4 pages for Autumn Leaves, including the tallest staves
-    - the Changes, 8 lines a page with guide tones off, and the tallest guide tone lines at `changesLinesPerPage`
+    - the Changes, 8 lines a page with guide tones off, and the tallest guide tone and 7th chord lines at `changesLinesPerPage`
   - the CSP meta on every page, and the not-found page
 
   Every test fails on a page error, a console error or a CSP violation. Run them with `make e2e`.

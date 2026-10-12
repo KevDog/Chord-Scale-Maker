@@ -1,4 +1,4 @@
-import { chooseInstrument, chooseSheet, drawn, expect, guidesDrawn, pickOption, showGuides, staves, test } from './fixtures'
+import { arpeggiosDrawn, chooseInstrument, chooseSheet, drawn, expect, guidesDrawn, pickOption, showArpeggios, showGuides, staves, test } from './fixtures'
 
 const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length
 
@@ -76,3 +76,19 @@ test(`prints the Changes with a guide tone line (${line}), a sheet page to a let
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
 })
 }
+
+// an arpeggio line: sixteenths and beams on the tuba's bass staff, the same tune; again a sheet page to a letter page
+test('prints the Changes with a 7th chord line, a sheet page to a letter page', async ({ page }) => {
+  await page.goto('/song/stardust')
+  await chooseInstrument(page, 'Tuba')
+  await showArpeggios(page, 'Up · root')
+  await expect(page.getByRole('button', { name: 'Numerals' })).toHaveAttribute('aria-pressed', 'true')
+  await expect(page.getByRole('button', { name: 'Scales', exact: true })).toHaveAttribute('aria-pressed', 'true')
+  await arpeggiosDrawn(page)
+  const svgs = page.locator('svg[aria-label^="Bars:"]')
+  const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+  expect(sheetPages).toBeGreaterThanOrEqual(2) // at least one full page
+  await page.emulateMedia({ media: 'print' })
+  await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+  expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
+})

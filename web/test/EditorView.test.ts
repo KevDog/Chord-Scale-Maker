@@ -1,5 +1,6 @@
 import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
+import { flushPromises } from '@vue/test-utils'
 import { nextTick } from 'vue'
 import EditorView from '~/components/EditorView.vue'
 import { CHART_REPORT_KEY } from '~/utils/chartReport'
@@ -159,64 +160,98 @@ describe('EditorView', () => {
 })
 
 describe('EditorView guide tones', () => {
+  beforeEach(() => {
+    useRuntimeConfig().public.features.arpeggios = true
+  })
   afterEach(() => {
+    useRuntimeConfig().public.features.arpeggios = false
     localStorage.clear()
     sessionStorage.clear()
     navigate.mockClear()
   })
 
-  /** the Guide Tones control's radios, by visible label */
-  const guideOptions = (w: Wrapper) =>
-    w.findAll('label').filter((l) => l.find('input[type="radio"][name="guide-line"]').exists())
-  const checkedGuide = (w: Wrapper) => guideOptions(w).filter((l) => (l.find('input').element as HTMLInputElement).checked).map((l) => l.text())
-  async function chooseGuide(w: Wrapper, label: string): Promise<void> {
-    const option = guideOptions(w).find((l) => l.text() === label)
-    if (!option) throw new Error(`no guide option ${label}`)
+  /** the Line control's radios, by visible label */
+  const modeOptions = (w: Wrapper) => w.findAll('label').filter((l) => l.find('input[type="radio"][name="line-mode"]').exists())
+  const checkedMode = (w: Wrapper) => modeOptions(w).filter((l) => (l.find('input').element as HTMLInputElement).checked).map((l) => l.text())
+  async function chooseLine(w: Wrapper, label: string): Promise<void> {
+    const option = modeOptions(w).find((l) => l.text() === label)
+    if (!option) throw new Error(`no line option ${label}`)
     await option.find('input').setValue(true)
+    await flushPromises()
+  }
+  /** open the Guide tone line listbox and pick From 3rd or From 7th */
+  async function chooseGuide(w: Wrapper, label: string): Promise<void> {
+    const btn = w.findAll('button').find((b) => b.attributes('aria-label') === 'Guide tone line')
+    if (!btn) throw new Error('no guide tone line control')
+    await btn.trigger('click')
+    await nextTick()
+    const option = w.findAll('[role=option]').find((o) => o.text() === label)
+    if (!option) throw new Error(`no guide option ${label}`)
+    await option.trigger('click')
     await nextTick()
   }
 
-  it('shows Off, From 3rd and From 7th as one choice under Guide Tones, Off chosen', async () => {
+  it('offers Line: Off, Guide Tones, 7th Chords, off at first', async () => {
     const w = await mount()
-    expect(w.findAll('label').some((l) => l.text() === 'Guide Tones')).toBe(true)
-    expect(w.findAll('fieldset').find((f) => f.find('legend').text() === 'Guide tones')?.exists()).toBe(true)
-    expect(guideOptions(w).map((l) => l.text())).toEqual(['Off', 'From 3rd', 'From 7th'])
-    expect(checkedGuide(w)).toEqual(['Off'])
-    expect(changesSheet(w).props('guideLine')).toBe('off')
-    expect(guideOptions(w)[1]?.attributes('title')).toBe("A line that starts on the first chord's 3rd and moves to the nearest guide tone of each chord")
-    expect(guideOptions(w)[2]?.attributes('title')).toBe("A line that starts on the first chord's 7th and moves to the nearest guide tone of each chord")
+    expect(w.findAll('label').some((l) => l.text() === 'Line')).toBe(true)
+    expect(modeOptions(w).map((l) => l.text())).toEqual(['Off', 'Guide Tones', '7th Chords'])
+    expect(checkedMode(w)).toEqual(['Off'])
+    expect(changesSheet(w).props('line')).toBe('off')
     expect(buttonCalled(w, 'From 3rd')).toBeUndefined() // no toggle buttons
     w.unmount()
   })
 
-  it('passes the line chosen to the Changes sheet, one at a time, and remembers it', async () => {
+  it('leaves out 7th Chords with the arpeggios flag off', async () => {
+    useRuntimeConfig().public.features.arpeggios = false
     const w = await mount()
-    await chooseGuide(w, 'From 3rd')
-    expect(changesSheet(w).props('guideLine')).toBe('third')
-    expect(checkedGuide(w)).toEqual(['From 3rd'])
+    expect(modeOptions(w).map((l) => l.text())).toEqual(['Off', 'Guide Tones'])
+    w.unmount()
+  })
+
+  it('passes guide tones from the 3rd, then an arpeggio Up · root, and remembers the mode', async () => {
+    const w = await mount()
+    await chooseLine(w, 'Guide Tones')
+    expect(changesSheet(w).props('line')).toBe('third')
+    await chooseLine(w, '7th Chords')
+    expect(changesSheet(w).props('line')).toBe('up-root')
+    expect(localStorage.getItem('csm-line')).toBe('arpeggio')
+    w.unmount()
+  })
+
+  it('picks the guide tones from the 7th in its listbox, and remembers it', async () => {
+    const w = await mount()
+    await chooseLine(w, 'Guide Tones')
     await chooseGuide(w, 'From 7th')
-    expect(changesSheet(w).props('guideLine')).toBe('seventh')
-    expect(checkedGuide(w)).toEqual(['From 7th'])
+    expect(changesSheet(w).props('line')).toBe('seventh')
     expect(localStorage.getItem('csm-guide-line')).toBe('seventh')
-    await chooseGuide(w, 'Off')
-    expect(changesSheet(w).props('guideLine')).toBe('off')
-    expect(localStorage.getItem('csm-guide-line')).toBe('off')
+    await chooseLine(w, 'Off')
+    expect(changesSheet(w).props('line')).toBe('off')
     w.unmount()
   })
 
   it('starts on the line remembered', async () => {
-    localStorage.setItem('csm-guide-line', 'third')
+    localStorage.setItem('csm-line', 'guide')
+    localStorage.setItem('csm-guide-line', 'seventh')
     const w = await mount()
-    expect(checkedGuide(w)).toEqual(['From 3rd'])
-    expect(changesSheet(w).props('guideLine')).toBe('third')
+    expect(checkedMode(w)).toEqual(['Guide Tones'])
+    expect(changesSheet(w).props('line')).toBe('seventh')
+    w.unmount()
+  })
+
+  it('shows no line, Off checked, with the flag off and an arpeggio remembered', async () => {
+    useRuntimeConfig().public.features.arpeggios = false
+    localStorage.setItem('csm-line', 'arpeggio')
+    const w = await mount()
+    expect(changesSheet(w).props('line')).toBe('off')
+    expect(checkedMode(w)).toEqual(['Off'])
     w.unmount()
   })
 
   it('offers the guide tone line on the Changes sheet only', async () => {
     const w = await mount()
-    expect(guideOptions(w)).toHaveLength(3)
+    expect(modeOptions(w)).toHaveLength(3)
     await chooseSheet(w, 'Scales')
-    expect(guideOptions(w)).toHaveLength(0)
+    expect(modeOptions(w)).toHaveLength(0)
     expect(buttonCalled(w, 'Intervals')).toBeDefined()
     w.unmount()
   })
@@ -232,24 +267,34 @@ describe('EditorView guide tones', () => {
   }
 
   it("applies a share link's line for the visit, and a share link carries it", async () => {
-    const w = await mount({ sheet: 'changes', guideLine: 'seventh' })
-    expect(changesSheet(w).props('guideLine')).toBe('seventh')
-    expect(checkedGuide(w)).toEqual(['From 7th'])
+    const w = await mount({ sheet: 'changes', line: 'seventh' })
+    expect(changesSheet(w).props('line')).toBe('seventh')
+    expect(checkedMode(w)).toEqual(['Guide Tones'])
     expect(localStorage.getItem('csm-guide-line')).toBeNull()
-    expect(await linkOf(w)).toMatchObject({ sheet: 'changes', guideLine: 'seventh' })
+    expect(localStorage.getItem('csm-line')).toBeNull()
+    expect(await linkOf(w)).toMatchObject({ sheet: 'changes', line: 'seventh' })
+    w.unmount()
+  })
+
+  it('shares an arpeggio line, and opens a link with one', async () => {
+    const w = await mount({ sheet: 'changes', line: 'down-1st' })
+    expect(changesSheet(w).props('line')).toBe('down-1st')
+    expect(checkedMode(w)).toEqual(['7th Chords'])
+    expect(await linkOf(w)).toMatchObject({ line: 'down-1st' })
     w.unmount()
   })
 
   it('opens a link without a line with the line off, whatever your own, and shares no line with it off', async () => {
-    localStorage.setItem('csm-guide-line', 'third')
+    localStorage.setItem('csm-line', 'guide')
     const w = await mount({ sheet: 'changes' })
-    expect(changesSheet(w).props('guideLine')).toBe('off')
-    expect(await linkOf(w)).not.toHaveProperty('guideLine')
+    expect(changesSheet(w).props('line')).toBe('off')
+    expect(await linkOf(w)).not.toHaveProperty('line')
     w.unmount()
   })
 
   it('reports the sheet and the guides with a chart error', async () => {
     const w = await mount()
+    await chooseLine(w, 'Guide Tones')
     await chooseGuide(w, 'From 7th')
     await buttonCalled(w, 'Report a chart error')?.trigger('click')
     expect(JSON.parse(sessionStorage.getItem(CHART_REPORT_KEY) ?? '{}')).toMatchObject({ sheet: 'changes', guides: 'from 7th' })

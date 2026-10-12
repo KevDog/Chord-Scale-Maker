@@ -1,10 +1,11 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseInstrument, chooseSheet, type Drawn, drawn, expect, GLYPH, guidesDrawn, openEditor, sheetChord, showGuides, test, writeChart } from './fixtures'
+import { chooseInstrument, chooseSheet, type Drawn, drawn, expect, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, sheetChord, showArpeggios, showGuides, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the controls above it (whose menus name the same scales) */
 const sheetOf = (page: Page) => lines(page).first().locator('xpath=ancestor::div[contains(@class,"rounded-xl")][1]')
-const guide = (page: Page, name: 'Off' | 'From 3rd' | 'From 7th') => page.getByRole('radio', { name, exact: true })
+const lineOff = (page: Page) => page.getByRole('radio', { name: 'Off', exact: true })
+const guideLine = (page: Page) => page.getByLabel('Guide tone line')
 /** a line's guide tone labels: the row between its staff and its numerals */
 const labelRow = (line: Locator) => line.locator('xpath=ancestor::*[@data-slot="system"][1]//*[@data-slot="guides"]')
 /** each chord's x on a line, as a fraction of its width (ChangesSystem sets a mark's left 0.012 before its beat) */
@@ -161,7 +162,7 @@ test('From 3rd or From 7th puts each chord’s guide tone in place of its slashe
   await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 1 | G7sus4\nA | 2 | C6\nA | 2 | C\nA | 3 | Em7\nA | 3 | A7\nA | 4 | Dm7\nA | 4 | G7\n')
   const line = lines(page).first()
   await expect(line).toHaveAttribute('aria-label', /^Bars: Dm7 G7sus4 \| C6 C \| Em7 A7 \| Dm7 G7$/) // no guide tones yet
-  await expect(guide(page, 'Off')).toBeChecked() // off until chosen
+  await expect(lineOff(page)).toBeChecked() // off until chosen
   await expect.poll(async () => (await drawn(line)).slashes).toBe(16) // four bars of slashes
   await showGuides(page, 'From 3rd')
   await expect(line).toHaveAttribute('aria-label', /^Bars: Dm7 G7sus4 \| C6 C \| Em7 A7 \| Dm7 G7; guide tones: /)
@@ -169,12 +170,12 @@ test('From 3rd or From 7th puts each chord’s guide tone in place of its slashe
   expect((await drawn(line)).slashes).toBe(0)
   await expect(labelRow(line)).toHaveText(/^\s*3\s*7\s*3\s*3\s*7\s*7\s*3\s*7\s*$/) // from the Dm7's 3rd (F5, the run placed nearest the centre): F5 F5 E5 E5 D5 G5 F5 F5. G7sus4's nearest guide tone is its 7th (the F, a common tone); the lines meet on D5 at Em7, and A, above before, goes up to G5 at A7 (G2: D is not a guide tone of A7; alone it would take C#5); at the last G7, F5 again
   await showGuides(page, 'From 7th')
-  await expect(guide(page, 'From 3rd')).not.toBeChecked()
+  await expect(guideLine(page)).toContainText('From 7th')
   await expect(labelRow(line)).toHaveText(/^\s*7\s*4\s*6\s*1\s*7\s*3\s*7\s*3\s*$/) // from the Dm7's 7th: a sus chord's 4th, a 6 chord's 6th, a triad's root
   await expect.poll(async () => (await drawn(line)).heads.length).toBe(8) // one line at a time
   await expectChordsOnHeads(line)
   await page.reload()
-  await expect(guide(page, 'From 7th')).toBeChecked() // remembered
+  await expect(guideLine(page)).toContainText('From 7th') // remembered
   await expect(lines(page).first()).toHaveAttribute('aria-label', /; guide tones: /)
 })
 
@@ -202,7 +203,7 @@ test('the guide tone choice survives a reload and rides a share link', async ({ 
   await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n')
   await showGuides(page, 'From 7th')
   await page.reload()
-  await expect(guide(page, 'From 7th')).toBeChecked()
+  await expect(guideLine(page)).toContainText('From 7th')
   await expect(labelRow(lines(page).first())).toHaveText(/^\s*7\s*3\s*7\s*$/)
   await page.getByRole('button', { name: 'Share' }).click()
   const box = page.getByRole('dialog').getByLabel('Link')
@@ -211,8 +212,51 @@ test('the guide tone choice survives a reload and rides a share link', async ({ 
   const other = await browser.newContext() // fresh storage: its own preference is Off
   const visitor = await other.newPage()
   await visitor.goto(link)
-  await expect(guide(visitor, 'From 7th')).toBeChecked()
+  await expect(guideLine(visitor)).toContainText('From 7th')
   await expect(labelRow(lines(visitor).first())).toHaveText(/^\s*7\s*3\s*7\s*$/)
+  await other.close()
+})
+
+test('7th Chords arpeggiates each chord: quarters for one a bar, eighths for two, sixteenths for more, beamed', async ({ page }) => {
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | Dm7\nA | 2 | G7\nA | 3 | Dm7\nA | 3 | G7\nA | 3 | C\nA | 4 | CMaj7\n')
+  const line = lines(page).first()
+  await showArpeggios(page, 'Up · root')
+  await arpeggiosDrawn(page)
+  await expect(line).toHaveAttribute('aria-label', /; 7th chords: C4 E4 G4 B4 \| D4 F4 A4 C5, G4 B4 D5 F5 \| /)
+  await expect.poll(async () => (await drawn(line)).heads.length).toBe(4 + 8 + 16 + 4)
+  expect((await drawn(line)).slashes).toBe(0)
+  expect(await line.locator('.vf-beam').count()).toBeGreaterThan(0)
+  await expect(labelRow(line)).toHaveCount(0) // no labels under arpeggio notes
+  await showArpeggios(page, 'Down · root')
+  await expect(line).toHaveAttribute('aria-label', /; 7th chords: B4 G4 E4 C4 \|/)
+  await page.reload()
+  await expect(page.getByRole('radio', { name: '7th Chords', exact: true })).toBeChecked() // remembered
+  await expect(page.getByLabel('Arpeggio pattern')).toContainText('Down · root')
+})
+
+test('7th Chords in 3/4: six eighths for a bar of one chord', async ({ page }) => {
+  await writeChart(page, 'title: W\nkey: C\ntime: 3/4\nA | 1 | CMaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | CMaj7\n') // a full line: a last chord holds through the empty bars after it
+  const line = lines(page).first()
+  await showArpeggios(page, 'Up · root')
+  await arpeggiosDrawn(page)
+  await expect(line).toHaveAttribute('aria-label', /; 7th chords: C4 E4 G4 B4 C4 E4 \| D4 F4 A4 C5 D4 F4 \| /) // the pattern restarts to fill the bar
+  await expect.poll(async () => (await drawn(line)).heads.length).toBe(4 * 6)
+})
+
+test('a share link carries the arpeggio pattern', async ({ page, browser }) => {
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | CMaj7\n')
+  await showArpeggios(page, 'Voice-led')
+  await arpeggiosDrawn(page)
+  await page.getByRole('button', { name: 'Share' }).click()
+  const box = page.getByRole('dialog').getByLabel('Link')
+  await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/) // made, not "Making the link…"
+  const link = await box.inputValue()
+  const other = await browser.newContext() // fresh storage: its own preference is Off
+  const visitor = await other.newPage()
+  await visitor.goto(link)
+  await expect(visitor.getByRole('radio', { name: '7th Chords', exact: true })).toBeChecked()
+  await expect(visitor.getByLabel('Arpeggio pattern')).toContainText('Voice-led')
+  await arpeggiosDrawn(visitor)
   await other.close()
 })
 
