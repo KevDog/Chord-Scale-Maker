@@ -141,6 +141,12 @@ test('transposing rewrites the chart in another key', async ({ page }) => {
   await expect(text).toHaveValue(/A \| 6 +\| Edim7 +# /) // the analysis chooses its scale in the new key
   await expect(text).toHaveValue(/title: F Jazz Blues/) // titles stay as typed
   await expect(sheetChord(page, 'Bb7', 'A', 1)).toBeVisible()
+  // back in the original key, the message clears
+  await page.getByRole('button', { name: 'Transpose…' }).click()
+  await page.getByLabel('To key').selectOption('F')
+  await page.getByRole('button', { name: 'Transpose', exact: true }).click()
+  await expect(page.getByRole('status').filter({ hasText: 'Transposed' })).toHaveCount(0)
+  await expect(sheetChord(page, 'F7', 'A', 1)).toBeVisible()
 })
 
 test('interval labels show on screen, against the chord root, on until turned off', async ({ page }) => {

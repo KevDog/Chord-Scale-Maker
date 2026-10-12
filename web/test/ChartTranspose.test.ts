@@ -13,6 +13,17 @@ const select = (label: string) => {
 }
 const button = (name: string) =>
   [...document.querySelectorAll<HTMLButtonElement>('[role=dialog] button')].find((b) => b.textContent?.includes(name))
+/** opens the dialog, picks the To key and transposes */
+const transposeTo = async (w: { find: (s: string) => { trigger: (e: string) => Promise<void> } }, key: string) => {
+  await w.find('button').trigger('click')
+  await settle()
+  const to = select('To key')
+  to.value = key
+  to.dispatchEvent(new Event('change'))
+  await settle()
+  button('Transpose')?.click()
+  await settle()
+}
 
 describe('ChartTranspose', () => {
   it("starts from the chart's key and emits the chart in the new key", async () => {
@@ -69,6 +80,31 @@ describe('ChartTranspose', () => {
     const text = serializeChart(out)
     expect(text).toContain('# analysis: 2026-01-02, rules v1; C\nA | 1 | Dm7    # ii of the ii–V to C\n')
     expect(text).not.toMatch(/Eb|Bb7/)
+    w.unmount()
+  })
+  it("names the chart's original key across transposes, and clears the message back in it", async () => {
+    let doc = parseChart('title: F Blues\nkey: F\nA | 1 | F7\n').value
+    const w = await mountSuspended(ChartTranspose, {
+      props: { current: () => doc, 'onUpdate:doc': (d: typeof doc) => void (doc = d) },
+      attachTo: document.body,
+    })
+    await transposeTo(w, 'Bb')
+    await transposeTo(w, 'G')
+    await transposeTo(w, 'F')
+    expect(w.emitted('transposed')).toEqual([['Transposed from F to B♭.'], ['Transposed from F to G.'], ['']])
+    w.unmount()
+  })
+
+  it('starts afresh when the key was changed some other way', async () => {
+    let doc = parseChart('title: F Blues\nkey: F\nA | 1 | F7\n').value
+    const w = await mountSuspended(ChartTranspose, {
+      props: { current: () => doc, 'onUpdate:doc': (d: typeof doc) => void (doc = d) },
+      attachTo: document.body,
+    })
+    await transposeTo(w, 'Bb')
+    doc = parseChart('title: Other\nkey: D\nA | 1 | D7\n').value
+    await transposeTo(w, 'F')
+    expect(w.emitted('transposed')).toEqual([['Transposed from F to B♭.'], ['Transposed from D to F.']])
     w.unmount()
   })
 })
