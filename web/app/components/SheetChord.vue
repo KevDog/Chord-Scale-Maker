@@ -65,6 +65,7 @@
 import { barView, cellError, type ChartDoc, chordCompletions, chordPreview, type ChordPreview, chordsAfterTyping, type ChordToken, chordTokens, CONCERT, type GridPos, posOfLine, setBarChords, sheetScale } from '@chord-scale-maker/engine'
 import type { SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
+import { barFull, NO_FIRST_CHORD, notAChord } from '~/utils/refusals'
 
 /**
  * A chord on the Changes sheet while the editor is shown (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md
@@ -160,7 +161,7 @@ watch(draft, () => {
 const error = computed(() => {
   const t = draft.value.trim()
   const bad = t && t !== '%' ? cellError(t) : null
-  return bad ? `“${t}” can’t go in a chart: ${bad}.` : refused.value
+  return bad ? notAChord(t, bad) : refused.value
 })
 
 /** the bar's chords once `text` is written at pos (a slot inserts, a chord replaces) */
@@ -196,7 +197,7 @@ function commit(text = draft.value): boolean {
   if (chords.length === barChords.value.length && chords.every((c, k) => c === barChords.value[k])) return true // nothing changed, or an empty slot
   const next = setBarChords(props.doc, p.section, p.bar, chords)
   if (next === props.doc) {
-    refused.value = chords.length ? `“${t}” can’t go in a chart: it’s not a chord.` : 'A section’s first bar needs a chord.'
+    refused.value = chords.length ? notAChord(t, 'it’s not a chord') : NO_FIRST_CHORD
     return refuse(refused.value)
   }
   if (chords.length < barChords.value.length) taken = p
@@ -261,7 +262,7 @@ function onKey(e: KeyboardEvent): void {
     e.preventDefault()
     if (!commit()) return
     if (chordsWith(draft.value).length >= view.value.beats) {
-      emit('said', `A bar holds at most ${view.value.beats} chords.`)
+      emit('said', barFull(view.value.beats))
       finish('stay')
       return
     }

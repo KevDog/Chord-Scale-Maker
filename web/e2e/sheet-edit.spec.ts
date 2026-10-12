@@ -26,6 +26,19 @@ test('clicking a chord on the Changes sheet opens its field in place', async ({ 
   await expect(page.getByRole('button', { name: 'Edit Db7, A bar 2' })).toBeVisible()
 })
 
+test('the new chord slot in a bar whose last chord is on its last beat sits past that chord’s name (#143)', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 1 | G7\nA | 1 | C7\nA | 2 | FMaj7\n')
+  const last = page.getByRole('button', { name: 'Edit C7, A bar 1' })
+  await last.click()
+  await page.getByRole('combobox', { name: 'Chord, A bar 1' }).press(' ')
+  const slot = page.getByRole('combobox', { name: 'Chord, A bar 1' })
+  await expect(slot).toHaveValue('')
+  const name = await page.getByRole('button', { name: 'Edit C7, A bar 1' }).boundingBox()
+  const box = await slot.boundingBox()
+  expect(name && box && box.x >= name.x + name.width).toBe(true) // not over C7
+})
+
 test('on a phone the grid gives way to light edits: tap a chord, change it in a bottom sheet', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await expect(page.getByText('Full editing works on a larger screen.')).toBeVisible()
