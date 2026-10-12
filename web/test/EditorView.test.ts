@@ -22,6 +22,12 @@ const sheet = (w: Wrapper) => w.findComponent({ name: 'ScaleSheet' })
 const changesSheet = (w: Wrapper) => w.findComponent({ name: 'ChangesSheet' })
 /** a button by its exact visible text */
 const buttonCalled = (w: Wrapper, name: string) => w.findAll('button').find((b) => b.text() === name)
+/** open the rail's More menu and choose an item */
+const moreAction = async (w: Wrapper, name: string): Promise<void> => {
+  await w.find('button[aria-label="More actions"]').trigger('click')
+  await nextTick()
+  await buttonCalled(w, name)?.trigger('click')
+}
 /** the control a toolbar label (Catalyst Field) points at */
 const control = (w: Wrapper, label: string) => {
   const id = w.findAll('label').find((l) => l.text() === label)?.attributes('for')
@@ -324,7 +330,7 @@ describe('EditorView guide tones', () => {
     const w = await mount()
     await chooseLine(w, 'Guide Tones')
     await chooseGuide(w, 'From 7th')
-    await buttonCalled(w, 'Report a chart error')?.trigger('click')
+    await moreAction(w, 'Report a chart error')
     expect(JSON.parse(sessionStorage.getItem(CHART_REPORT_KEY) ?? '{}')).toMatchObject({ sheet: 'changes', guides: 'from 7th' })
     expect(navigate).toHaveBeenCalledWith('/contact')
     w.unmount()
@@ -451,7 +457,7 @@ describe('EditorView scale level', () => {
       global: { stubs: { ScaleSheet: true, ChangesSheet: true } },
       attachTo: document.body,
     })
-    await buttonCalled(w, 'Revert to library version')?.trigger('click')
+    await moreAction(w, 'Revert to library version')
     await nextTick()
     const confirm = [...document.querySelectorAll('[role=dialog] button')].find((b) => b.textContent?.trim() === 'Revert')
     if (!(confirm instanceof HTMLElement)) throw new Error('no Revert in the dialog')

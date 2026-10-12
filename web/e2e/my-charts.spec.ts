@@ -1,4 +1,4 @@
-import { chooseInstrument, chooseSheet, expect, openEditor, pickOption, sheetChord, test, typeChord } from './fixtures'
+import { chooseInstrument, chooseSheet, expect, moreAction, openEditor, pickOption, sheetChord, test, typeChord } from './fixtures'
 
 const status = (page: import('@playwright/test').Page) => page.getByRole('status').filter({ hasText: /in this browser|Saving/ })
 
@@ -27,17 +27,19 @@ test('edits to a library chart are kept as your version, until you revert', asyn
   await page.goto('/')
   await expect(page.getByRole('region', { name: 'My charts' }).getByRole('row', { name: /Autumn Leaves/ })).toContainText('Edited')
   await page.getByRole('region', { name: 'My charts' }).getByRole('link', { name: 'Autumn Leaves' }).click()
-  await page.getByRole('button', { name: 'Revert to library version' }).click()
+  await moreAction(page, 'Revert to library version')
   await page.getByRole('dialog').getByRole('button', { name: 'Revert' }).click()
   await expect(sheetChord(page, 'Cm7', 'A1', 1)).toBeVisible()
-  await expect(page.getByRole('button', { name: 'Revert to library version' })).toHaveCount(0)
+  await page.getByRole('button', { name: 'More actions', exact: true }).click()
+  await expect(page.getByRole('menuitem', { name: 'Revert to library version' })).toHaveCount(0)
+  await page.keyboard.press('Escape')
   await page.goto('/')
   await expect(page.getByRole('region', { name: 'My charts' })).toHaveCount(0)
 })
 
 test('Save as a copy keeps a variation beside your version, and Delete removes one', async ({ page }) => {
   await page.goto('/song/so-what')
-  await page.getByRole('button', { name: 'Save as a copy' }).click()
+  await moreAction(page, 'Save as a copy')
   await expect(page).toHaveURL(/\/song\?mine=/)
   await expect(page.getByRole('heading', { name: 'So What (copy)', level: 1 })).toBeVisible()
   await page.goto('/')
@@ -56,7 +58,7 @@ test('a chart that isn’t saved here says so', async ({ page }) => {
 test('Download saves the chart as text, and Open brings it back as a new chart', async ({ page }) => {
   await page.goto('/song/blue-bossa')
   const downloading = page.waitForEvent('download')
-  await page.getByRole('button', { name: 'Download' }).click()
+  await moreAction(page, 'Download')
   const file = await downloading
   expect(file.suggestedFilename()).toBe('Blue Bossa.txt')
   const text = await (await file.createReadStream()).toArray().then((chunks) => Buffer.concat(chunks).toString('utf8'))
@@ -142,7 +144,9 @@ test('choosing a scale and then the analysed one again leaves the library chart 
   await list.getByRole('radio', { name: /^C Dorian 1/ }).click() // the analysed option: blanks the cell, as the library has it
   await expect(page.getByLabel('Chart text')).toHaveValue(/A1 \| 1 +\| Cm7 +#/)
   await expect(status(page)).toHaveText('Edits are saved in this browser as your version.') // back to the library version
-  await expect(page.getByRole('button', { name: 'Revert to library version' })).toHaveCount(0)
+  await page.getByRole('button', { name: 'More actions', exact: true }).click()
+  await expect(page.getByRole('menuitem', { name: 'Revert to library version' })).toHaveCount(0)
+  await page.keyboard.press('Escape')
   await page.goto('/')
   await expect(page.getByRole('region', { name: 'My charts' })).toHaveCount(0)
   await page.goto('/song/autumn-leaves')

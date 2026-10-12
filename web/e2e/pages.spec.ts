@@ -1,7 +1,7 @@
 import { crc32, deflateSync } from 'node:zlib'
 import { readFileSync } from 'node:fs'
 import { shownQuotes } from '../build/quotes'
-import { expect, test } from './fixtures'
+import { expect, moreAction, test } from './fixtures'
 
 test('About credits Jazz Lab and loads the video only when played, from the no-cookie domain', async ({ page }) => {
   const youtube: string[] = []
@@ -134,7 +134,7 @@ test('Help is in the navbar and footer, and its contents jump to each section', 
 
 test('Report a chart error opens the contact form, pre-filled with the chart and details', async ({ page }) => {
   await page.goto('/song/autumn-leaves')
-  await page.getByRole('button', { name: 'Report a chart error' }).click()
+  await moreAction(page, 'Report a chart error')
   await expect(page).toHaveURL(/\/contact/)
   const message = page.getByRole('textbox', { name: 'Message' })
   await expect(message).toHaveValue(/version:/)

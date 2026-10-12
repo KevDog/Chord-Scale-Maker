@@ -83,6 +83,12 @@ export async function openEditor(page: import('@playwright/test').Page): Promise
 /** a chord on the Changes sheet while editing: its button ("Edit G7, A bar 2"), which opens its field (from md up) or the bottom sheet */
 export const sheetChord = (page: Page, chord: string, section: string, bar: number) => page.getByRole('button', { name: `Edit ${chord}, ${section} bar ${bar}`, exact: true })
 
+/** choose an action from the song page's More menu (the rail's ⋯) */
+export async function moreAction(page: Page, name: string): Promise<void> {
+  await page.getByRole('button', { name: 'More actions', exact: true }).click()
+  await page.getByRole('menuitem', { name }).click()
+}
+
 /** type a chord over one on the Changes sheet (from md up: its field opens with the chord selected), and confirm it */
 export async function typeChord(page: Page, section: string, bar: number, from: string, to: string): Promise<void> {
   await sheetChord(page, from, section, bar).click()

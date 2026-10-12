@@ -1,17 +1,7 @@
 <template>
   <div class="space-y-10">
-    <!-- the sheet's own heading is the page's (SheetPages), its save status under it -->
-    <div v-if="sheetEditing || saved || shared" class="min-w-0 space-y-3 print:hidden">
-      <UiText v-if="sheetEditing" class="md:hidden">Full editing works on a larger screen. Tap a chord on the sheet to change it.</UiText>
-      <!-- My charts: what you can do with this chart -->
-      <div v-if="saved || shared" class="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <UiButton v-if="shared" outline :disabled="editor.fatal.value" @click="saveShared"><BookmarkIcon data-slot="icon" />Save to My charts</UiButton>
-        <UiButton v-if="saved?.edited.value" plain @click="revertOpen = true"><ArrowUturnLeftIcon data-slot="icon" />Revert to library version</UiButton>
-        <UiButton v-if="saved" outline :disabled="editor.fatal.value" @click="saveCopy"><DocumentDuplicateIcon data-slot="icon" />Save as a copy</UiButton>
-        <UiButton outline @click="download"><ArrowDownTrayIcon data-slot="icon" />Download</UiButton>
-        <UiButton outline :disabled="editor.fatal.value" @click="openShare"><LinkIcon data-slot="icon" />Share</UiButton>
-      </div>
-    </div>
+    <!-- the sheet's own heading is the page's (SheetPages), its save status under it; the actions are in the rail -->
+    <UiText v-if="sheetEditing" class="md:hidden print:hidden">Full editing works on a larger screen. Tap a chord on the sheet to change it.</UiText>
 
     <ShareDialog :open="shareOpen" :link="shareLink" @close="shareOpen = false" />
     <SheetChordEditor :doc="editor.doc.value" :target="sheetChord" @update:doc="editor.setDoc" @said="said = $event" @close="sheetChord = null" />
@@ -101,7 +91,9 @@
         <div v-if="focus.on.value" ref="focusBar" class="sticky top-0 z-10 -mx-4 flex justify-end bg-stand/90 px-4 py-3 backdrop-blur-sm print:hidden">
           <UiButton outline @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-500 dark:text-zinc-400">Esc</kbd></UiButton>
         </div>
-        <div v-show="!focus.on.value" class="space-y-4 print:hidden">
+        <!-- display: contents, so the rail inside sticks over the whole section (the paper's top margin stands in for this
+             box's own, which a contents box doesn't have) -->
+        <div v-show="!focus.on.value" class="contents space-y-4 print:hidden">
           <!-- the sheet is the editor (from md up): a banner says so, in concert pitch, with Undo, Redo, Source, Save and Done editing -->
           <div v-if="sheetEditor" class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-note-800 px-4 py-2 text-sm text-white dark:bg-note-900">
             <span class="font-semibold">Editing the sheet</span>
@@ -140,15 +132,22 @@
             <template v-if="!editor.fatal.value" #transpose>
               <ChartTranspose :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
             </template>
-            <template v-if="!editor.fatal.value" #display>
-              <ToggleButton :model-value="editorShown" expands title="Show or hide the chart editor" @update:model-value="toggleEditor"><PencilSquareIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</ToggleButton>
-              <UiButton outline title="Show only the sheet music (Esc to leave)" @click="enterFocus"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
-              <UiButton color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
+            <!-- the actions: Edit, Share, Focus, Print (the view's one primary), the rest under More -->
+            <template #actions>
+              <ToggleButton v-if="!editor.fatal.value" :model-value="editorShown" expands title="Show or hide the chart editor" @update:model-value="toggleEditor"><PencilSquareIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</ToggleButton>
+              <UiButton v-if="shared" outline :disabled="editor.fatal.value" @click="saveShared"><BookmarkIcon data-slot="icon" />Save to My charts</UiButton>
+              <UiButton v-if="myChartsOn" outline :disabled="editor.fatal.value" @click="openShare"><LinkIcon data-slot="icon" />Share</UiButton>
+              <template v-if="!editor.fatal.value">
+                <UiButton outline title="Show only the sheet music (Esc to leave)" @click="enterFocus"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
+                <UiButton color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
+              </template>
+              <MoreMenu :items="moreItems" @action="onMore" />
             </template>
           </PreviewControls>
-          <UiText v-if="transposed" role="status">{{ transposed }}</UiText>
+          <UiText v-if="transposed" role="status" class="mt-4">{{ transposed }}</UiText>
           <PracticePanel
             v-if="practiceOn && sheet === 'scales' && !editor.fatal.value"
+            class="mt-4"
             :mode="mode"
             :start-text="start"
             :boxes="practiceBoxesNow"
@@ -156,12 +155,9 @@
             :lit="litNow"
             @update:selection="practice.setSelection(mode, $event)"
           />
-          <div class="pt-1">
-            <UiButton plain class="text-sm!" title="Something wrong with this chart? Send it over with the details" @click="reportError"><FlagIcon data-slot="icon" />Report a chart error</UiButton>
-          </div>
         </div>
   
-        <div :class="['relative', focus.on.value && 'mx-auto max-w-6xl print:max-w-none']">
+        <div :class="['relative mt-4', focus.on.value && 'mx-auto max-w-6xl print:max-w-none']">
           <div v-if="rendering.busy.value" role="status" aria-label="Loading" class="pointer-events-none absolute inset-0 z-10 flex items-start justify-center pt-10 print:hidden"><UiSpinner /></div>
           <template v-if="editor.fatal.value">
             <UiHeading class="mb-1">{{ editor.meta.value.title || 'Untitled' }}</UiHeading>
@@ -245,7 +241,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, BookmarkIcon, CodeBracketIcon, DocumentDuplicateIcon, EllipsisHorizontalIcon, FlagIcon, LinkIcon, PencilSquareIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
+import { ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, BookmarkIcon, CodeBracketIcon, EllipsisHorizontalIcon, LinkIcon, PencilSquareIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import { ISSUE_CONTEXT, issuePart } from '~/utils/issueReport'
 import { CHART_REPORT_KEY, type ChartReport, guidesText } from '~/utils/chartReport'
 import { sheetLineOf } from '~/utils/sheetLine'
@@ -289,6 +285,7 @@ import type { SaveTarget } from '~/composables/useSavedChart'
 import { nextChordLine, type SheetChordEdit, type SheetDone, type SheetEdit, type SheetFocus, type SheetPlace } from '~/utils/sheetChordEdit'
 import { SCALE_VIEW } from '~/utils/scaleView'
 import { firstSheet, type SheetKind } from '~/utils/sheets'
+import { type MoreAction, moreMenuItems } from '~/utils/moreMenu'
 import { spellView } from '~/utils/scaleChoices'
 
 /**
@@ -350,6 +347,7 @@ const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
 const signaturesOn = useFeature('keySignatures')
 const arpeggiosOn = useFeature('arpeggios')
+const myChartsOn = useFeature('myCharts')
 const sheetLine = computed(() => sheetLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value, arpeggiosOn))
 /** chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor) */
 const sheetEditing = computed(() => editorShown.value && !editor.fatal.value)
@@ -650,6 +648,15 @@ function print(): void {
 }
 
 /** send the chart and its context to the contact form (via sessionStorage), pre-filled for a bug report */
+/** the rail's More menu: what this chart offers now */
+const moreItems = computed(() => moreMenuItems({ saved: !!saved, edited: !!saved?.edited.value, fatal: editor.fatal.value, files: myChartsOn }))
+function onMore(action: MoreAction): void {
+  if (action === 'copy') saveCopy()
+  else if (action === 'download') download()
+  else if (action === 'revert') revertOpen.value = true
+  else reportError()
+}
+
 function reportError(): void {
   editor.flush()
   const report: ChartReport = {
