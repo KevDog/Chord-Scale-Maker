@@ -1,4 +1,4 @@
-import { chooseSheet, expect, openEditor, pickOption, setScaleLevel, sheetChord, staves, test, writeChart } from './fixtures'
+import { chooseSheet, expect, openEditor, pickOption, setScaleLevel, sheetChord, showLine, staves, test, writeChart } from './fixtures'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/song?new=1')
@@ -297,6 +297,15 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
     await chooseSheet(page, sheet)
     const { rows, widths } = await layout()
     expect(rows, `${sheet} (${widths})`).toBeLessThanOrEqual(2)
+  }
+  // a line's detail (From 3rd, the arpeggio pattern) opens beneath the Line control: nothing moves
+  const line = page.locator('#preview-toolbar [data-slot=label]').getByText('Line', { exact: true })
+  const at = await line.boundingBox()
+  for (const mode of ['Guide Tones', '7th Chords'] as const) {
+    await showLine(page, mode)
+    const { rows, widths } = await layout()
+    expect(rows, `Changes, ${mode} (${widths})`).toBeLessThanOrEqual(2)
+    expect(await line.boundingBox(), mode).toEqual(at)
   }
 })
 
