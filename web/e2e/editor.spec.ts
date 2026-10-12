@@ -116,15 +116,14 @@ test('text edits update the sheets; an unknown chord is flagged on the sheet, an
   await expect(staves(page)).toHaveCount(4)
 })
 
-test('the mode toggle shows one spelling at a time, and Start on only for From', async ({ page }) => {
+test("one picker spells every scale from the chart's key (the default), any note, or each root", async ({ page }) => {
   const mode = page.getByRole('button', { name: 'Where each scale starts' })
-  await expect(mode).toContainText('From root') // the default
-  await expect(page.getByLabel('Start on')).toHaveCount(0)
-  await pickOption(page, 'Where each scale starts', 'From C')
+  await expect(mode).toContainText('From key (C)') // the default
   await expect(staves(page)).toHaveCount(3)
   await expect(page.locator('section header p').first()).toHaveText('C (Spelled from C)')
-  await page.getByLabel('Start on').selectOption('Eb')
+  await pickOption(page, 'Where each scale starts', 'From E♭')
   await expect(mode).toContainText('From E♭')
+  await expect(page.locator('section header p').first()).toHaveText('C (Spelled from E♭)')
   await pickOption(page, 'Where each scale starts', 'From root')
   await expect(page.locator('section header p').first()).toHaveText('C (Spelled from the Root)')
 })
@@ -181,6 +180,7 @@ test('the text editor explains itself on hover and on focus', async ({ page }) =
 test('practice highlights the chosen notes, remembers them per chart, and prints them', async ({ page }) => {
   await page.goto('/song/autumn-leaves')
   await chooseSheet(page, 'Scales') // practice is on the scale sheet
+  await pickOption(page, 'Where each scale starts', 'From root') // the presets are From root's
   const panel = page.locator('fieldset', { hasText: 'Practice' })
   await panel.getByRole('button', { name: 'Guide tones' }).click()
   await expect(page.locator('.vf-selected')).toHaveCount(78) // two per staff, 39 staves
@@ -284,7 +284,7 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/song/autumn-leaves')
   await chooseSheet(page, 'Scales')
-  await pickOption(page, 'Where each scale starts', 'From C') // Scales with its Start on menu: the most controls
+  await pickOption(page, 'Where each scale starts', 'From C') // Scales, spelled from a note: the most controls
   // how many rows the toolbar's labelled groups fall on (the content is capped at 72rem, so six groups can take two)
   const layout = () =>
     page.locator('#preview-toolbar').evaluate((el) => {

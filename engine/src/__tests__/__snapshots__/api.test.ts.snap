@@ -109,6 +109,7 @@ exports[`exports the same names 1`] = `
   "keyShift",
   "keySide",
   "keySignature",
+  "keyStart",
   "ladderScale",
   "lilyNote",
   "litKeys",

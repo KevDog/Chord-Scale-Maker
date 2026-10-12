@@ -2,6 +2,7 @@ import type { Ref } from 'vue'
 import { type ArpeggioPattern, type InstrumentName, isArpeggioPattern, isInstrumentName, type ShareView } from '@chord-scale-maker/engine'
 import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
+import { isSpell, type Spell } from '~/utils/scaleChoices'
 
 /** a ref kept in this browser's storage; a stored value that doesn't parse falls back */
 function storedRef<T>(key: string, parse: (raw: string) => T | undefined, fallback: T, store: (v: T) => string = String): Ref<T> {
@@ -11,10 +12,10 @@ function storedRef<T>(key: string, parse: (raw: string) => T | undefined, fallba
   return value
 }
 
-/** the preview's instrument, start note and interval labels, and whether the editor is shown, remembered in this browser (client-only) */
+/** the preview's instrument, spelling (from the chart's key until another is picked) and interval labels, and whether the editor is shown, remembered in this browser (client-only) */
 export function usePreferences() {
   const instrument = storedRef<InstrumentName>('csm-instrument', (s) => (isInstrumentName(s) ? s : undefined), 'concert')
-  const start = storedRef<string>('csm-start', (s) => ((PICKER_ROOTS as readonly string[]).includes(s) ? s : undefined), 'C')
+  const spell = storedRef<Spell>('csm-spell', (s) => (isSpell(s) ? s : undefined), 'key') // csm-start, the old note, is ignored
   const intervals = storedRef<boolean>('csm-intervals', (s) => s === 'on', true, (v) => (v ? 'on' : 'off')) // on until turned off: they show each note's job over the chord
   const showEditor = storedRef<boolean>('csm-editor', (s) => s === 'on', false, (v) => (v ? 'on' : 'off')) // the editor: hidden until shown, song-first
   // the Changes sheet's study rows: each chord's numeral and its scale, both on until turned off
@@ -28,17 +29,19 @@ export function usePreferences() {
   const source = storedRef<boolean>('csm-source', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the /functions page's key: C major until another is picked
   const functionsKey = storedRef<string>('csm-functions-key', (s) => (FUNCTIONS_KEYS.includes(s) ? s : undefined), 'C')
-  return { instrument, start, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, arpeggio, source, functionsKey }
+  return { instrument, spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, arpeggio, source, functionsKey }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
 export function linkPreferences(view: ShareView) {
   const own = usePreferences()
   const choice = lineChoiceOf(view.line)
-  const start = view.start && (PICKER_ROOTS as readonly string[]).includes(view.start) ? view.start : own.start.value
+  // a link's spelling: from the root, its note, or (from, without a note) the key
+  const note = PICKER_ROOTS.find((r) => r === view.start)
+  const linked: Spell | undefined = view.mode === 'root' ? 'root' : view.mode === 'from' ? (note ?? 'key') : undefined
   return {
     instrument: ref<InstrumentName>(view.instrument ?? own.instrument.value),
-    start: ref<string>(start),
+    spell: ref<Spell>(linked ?? own.spell.value),
     intervals: ref<boolean>(view.intervals ?? own.intervals.value),
     numerals: ref<boolean>(view.numerals ?? own.numerals.value),
     scaleNames: ref<boolean>(view.scaleNames ?? own.scaleNames.value),

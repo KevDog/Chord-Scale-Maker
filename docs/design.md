@@ -328,8 +328,11 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Stave:** one stave with a clef, no time signature, and whole notes. Every altered note gets an explicit
   accidental (as LilyPond's `\accidentalStyle forget` did for the old CLI). Each staff ends with a double bar
   line, the last with a final one.
-- **One spelling at a time:** "From X", where every scale starts on the Start on note, or "From root". The
-  default is From root, and the Start on select only appears for From. The engine still supports `both`.
+- **One spelling at a time,** from one picker ("Where each scale starts"): "From key (X)", the default, where every
+  scale starts on the chart's `key:` tonic written for the part (`keyStart`; a minor key's own tonic; C with no key),
+  following the chart and instrument; "From root"; or "From X" for any of the 17 written notes. Remembered as
+  `csm-spell` (`root`, `key` or a note; the old `csm-start` is ignored). Share links carry `mode` and, for a picked
+  note, `start` (from without a start: the key). The engine still supports `both`.
 - **Subtitles** (`pageSubtitle`): "Subtitle – Tenor Sax (Bb) (Spelled from C)".
 - **Interval labels:** the Intervals toggle, on by default and saved per browser, labels every note against the chord's written
   root (`engine/src/intervals.ts`). Labels read b9, #9, #11 and b13, a minor 3rd reads #9 on chords with a major
@@ -519,7 +522,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - `SheetPages`, which lays out both sheets' printed pages. On screen they form one continuous card, with a dashed
     "Page N" divider where each printed page starts and the header shown once. In print each page is a bare letter
     page with its own header.
-  - `PreviewControls`, the preview toolbar: Work on, Instrument, From root/From X, then Show: Intervals (on the Changes, Analysis: Numerals and Scales, and Line: Off · Guide Tones · 7th Chords, with From 3rd · From 7th or the arpeggio pattern beside it) with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
+  - `PreviewControls`, the preview toolbar: Work on, Instrument, Spell Scale (From key/From root/From X), then Show: Intervals (on the Changes, Analysis: Numerals and Scales, and Line: Off · Guide Tones · 7th Chords, with From 3rd · From 7th or the arpeggio pattern beside it) with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
 - **Dark mode** is a `.dark` class on `<html>`, toggled in the navbar.
   - The default is light, and the choice is saved per browser.
   - `public/theme-init.js` applies it before first paint. It's a file, not an inline script, so the CSP needs no
@@ -984,7 +987,7 @@ static file, §7b), so the attack surface is small. The measures:
    about 6× on concert treble, 4–8× across the parts measured; gentle keeps meetings near strict's and cuts those
    leaps below #102's on five of six parts, trombone the exception). The older
    per-degree toggles and the Viterbi pair search (`voiceLead`, now only a comparison) are superseded.
-8. **One spelling at a time** in the preview (From X or From root).
+8. **One spelling at a time** in the preview (From key, From X or From root).
 9. **Transpose, interval labels and guide tones** were built on the ported engine, so they inherit its spelling
    rules.
 10. **Versioning: the commit is the release.** Every merge to main deploys, so there's no number to bump. The

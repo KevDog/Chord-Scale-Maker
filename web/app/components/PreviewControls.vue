@@ -69,13 +69,10 @@
       <UiField v-if="sheet === 'scales'">
         <UiLabel class="pl-3">Spell Scale</UiLabel>
         <div class="flex flex-wrap items-center gap-2">
-          <UiListbox v-model="mode" class="w-32" aria-label="Where each scale starts">
-            <template #selected="{ value }"><UiListboxLabel>{{ modeLabel(value) }}</UiListboxLabel></template>
-            <UiListboxOption v-for="m in modes" :key="m.value" :value="m.value"><UiListboxLabel>{{ m.label }}</UiListboxLabel></UiListboxOption>
+          <UiListbox v-model="spell" class="w-40" aria-label="Where each scale starts" aria-describedby="start-help">
+            <template #selected="{ value }"><UiListboxLabel>{{ spellLabel(value, keyStart) }}</UiListboxLabel></template>
+            <UiListboxOption v-for="s in SPELLS" :key="s" :value="s"><UiListboxLabel>{{ spellLabel(s, keyStart) }}</UiListboxLabel></UiListboxOption>
           </UiListbox>
-          <UiSelect v-if="mode === 'from'" v-model="start" class="w-[4.5rem]" aria-label="Start on" aria-describedby="start-help">
-            <option v-for="r in PICKER_ROOTS" :key="r" :value="r">{{ noteText(r) }}</option>
-          </UiSelect>
         </div>
       </UiField>
       </div>
@@ -84,7 +81,7 @@
         <div class="flex flex-wrap justify-end gap-2 *:whitespace-nowrap"><slot name="display" /></div>
       </UiField>
     </div>
-    <UiText id="start-help" class="sr-only">Written pitch the "from" part starts on</UiText>
+    <UiText id="start-help" class="sr-only">Each scale from its root, or from a written pitch: the chart's key or any note</UiText>
     <UiText aria-live="polite">
       <template v-if="part.trans !== 'C'">The chart is in concert pitch; the preview is transposed for {{ instrumentOption(instrument).toLowerCase() }}.</template>
       <template v-else-if="part.clef === 'bass'">The preview is in bass clef, concert pitch, for {{ instrumentOption(instrument).toLowerCase() }}.</template>
@@ -93,15 +90,15 @@
 </template>
 
 <script setup lang="ts">
-import { ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpeggioPattern, INSTRUMENTS, type InstrumentName, type Mode, noteText, partFor } from '@chord-scale-maker/engine'
+import { ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpeggioPattern, INSTRUMENTS, type InstrumentName, partFor } from '@chord-scale-maker/engine'
 import type { GuideFrom, LineMode } from '~/utils/sheetLine'
+import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
 import type { SheetKind } from '~/utils/sheets'
 
 /** the preview toolbar, in labelled groups: Work on (sheet), Instrument, #level, Show (on the Changes: Analysis, Guide Tones), Transposition (+ #transpose), #display */
 const sheet = defineModel<SheetKind>('sheet', { required: true })
 const instrument = defineModel<InstrumentName>('instrument', { required: true })
-const mode = defineModel<Mode>('mode', { required: true })
-const start = defineModel<string>('start', { required: true })
+const spell = defineModel<Spell>('spell', { required: true })
 const intervals = defineModel<boolean>('intervals', { required: true })
 const numerals = defineModel<boolean>('numerals', { default: true })
 const scaleNames = defineModel<boolean>('scaleNames', { default: true })
@@ -109,16 +106,13 @@ const lineMode = defineModel<LineMode>('lineMode', { default: 'off' })
 const guideLine = defineModel<GuideFrom>('guideLine', { default: 'third' })
 const arpeggio = defineModel<ArpeggioPattern>('arpeggio', { default: 'up-root' })
 /** the sheet editor is open: numerals and scales are shown (they are the pickers), their toggles rest */
-defineProps<{ lockLabels?: boolean }>()
+/** keyStart: the chart's key, written for the instrument (what "From key" starts on) */
+defineProps<{ lockLabels?: boolean; keyStart: string }>()
 const LOCKED = 'Shown while you edit: they are the pickers'
 
 const changes = useFeature('changes')
 const arpeggios = useFeature('arpeggios')
 const sheets = computed(() => SHEETS.filter((s) => s.value !== 'changes' || changes))
-const modes = computed((): readonly { value: Mode; label: string }[] => [
-  { value: 'from', label: `From ${noteText(start.value)}` },
-  { value: 'root', label: 'From root' },
-])
 // a solid white fill for the "off" toggles so they read on the tinted box (an outline button is transparent)
 const OFF_FILL = 'bg-white hover:bg-zinc-50 dark:bg-white/10 dark:hover:bg-white/15'
 // the Changes sheet's line, at most one: guide tones or 7th chord arpeggios (with the flag on)
@@ -132,7 +126,6 @@ const GUIDE_LINES = [
   { value: 'seventh', label: 'From 7th', title: "A line that starts on the first chord's 7th and moves to the nearest guide tone of each chord" },
 ] as const
 const guideLabel = (v: GuideFrom): string => GUIDE_LINES.find((g) => g.value === v)?.label ?? ''
-const modeLabel = (v: Mode): string => modes.value.find((m) => m.value === v)?.label ?? ''
 const sheetLabel = (v: SheetKind): string => sheets.value.find((s) => s.value === v)?.label ?? ''
 const part = computed(() => partFor(instrument.value))
 // the flag off with an arpeggio saved: nothing is drawn, so rest the mode on Off

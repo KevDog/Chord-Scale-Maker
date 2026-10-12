@@ -12,10 +12,7 @@ for (const [instrument, start] of [
     await page.goto('/song/autumn-leaves')
     await chooseSheet(page, 'Scales') // a chart opens on the Changes
     await chooseInstrument(page, instrument)
-    if (start) {
-      await pickOption(page, 'Where each scale starts', 'From C')
-      await page.getByLabel('Start on').selectOption(start)
-    }
+    await pickOption(page, 'Where each scale starts', start ? `From ${start}` : 'From root')
     await expect(staves(page)).toHaveCount(39)
     await page.emulateMedia({ media: 'print' })
     await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden() // editor hidden in print

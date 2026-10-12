@@ -98,28 +98,43 @@ describe('EditorView', () => {
     w.unmount()
   })
 
-  it('previews in concert pitch by default', async () => {
+  it("previews in concert pitch by default, spelled from the chart's key", async () => {
     const w = await mount()
     await chooseSheet(w, 'Scales')
-    expect(sheet(w).props()).toMatchObject({ part: { clef: 'treble', trans: 'C' }, instrumentLabel: '', start: 'C', mode: 'root' })
+    expect(sheet(w).props()).toMatchObject({ part: { clef: 'treble', trans: 'C' }, instrumentLabel: '', start: 'C', mode: 'from' })
     expect(w.text()).not.toContain('the preview is')
   })
 
-  it('offers one spelling at a time, with Start on only for From', async () => {
+  it('offers the root, the key and every note in one picker', async () => {
     const w = await mount()
     await chooseSheet(w, 'Scales')
-    expect(w.find('[aria-label="Start on"]').exists()).toBe(false)
-    await chooseMode(w, 'From C')
-    expect(sheet(w).props('mode')).toBe('from')
-    expect(w.find('[aria-label="Start on"]').exists()).toBe(true)
+    await chooseMode(w, 'From root')
+    expect(sheet(w).props('mode')).toBe('root')
+    await chooseMode(w, 'From D♭')
+    expect(sheet(w).props()).toMatchObject({ mode: 'from', start: 'Db' })
+  })
+
+  it("follows the chart's key, written for the instrument, until a note is picked", async () => {
+    const w = await mountSuspended(EditorView, {
+      props: { initialText: 'title: T\nkey: Eb\nA | 1 | Cm7\n' },
+      global: { stubs: { ScaleSheet: true, ChangesSheet: true } },
+      attachTo: document.body,
+    })
+    await chooseSheet(w, 'Scales')
+    expect(sheet(w).props('start')).toBe('Eb')
+    await chooseInstrument(w, 'Tenor Sax')
+    expect(sheet(w).props()).toMatchObject({ mode: 'from', start: 'F' })
+    expect(w.text()).toContain('From key (F)')
+    await chooseMode(w, 'From A')
+    await chooseInstrument(w, 'Alto Sax')
+    expect(sheet(w).props('start')).toBe('A')
   })
 
   it('transposes the preview for the chosen instrument and start note', async () => {
     const w = await mount()
     await chooseSheet(w, 'Scales')
     await chooseInstrument(w, 'Tenor Sax')
-    await chooseMode(w, 'From C')
-    await w.find('[aria-label="Start on"]').setValue('Eb')
+    await chooseMode(w, 'From E♭')
     expect(sheet(w).props()).toMatchObject({ part: { clef: 'treble', trans: 'Bb' }, instrumentLabel: 'Tenor Sax (Bb)', start: 'Eb' })
     expect(w.text()).toContain('the preview is transposed for tenor sax')
     expect(w.text()).toContain('From E♭')
@@ -290,6 +305,19 @@ describe('EditorView guide tones', () => {
     expect(changesSheet(w).props('line')).toBe('off')
     expect(await linkOf(w)).not.toHaveProperty('line')
     w.unmount()
+  })
+
+  it("shares a picked note, and the key as no note; old links' notes still open", async () => {
+    const w = await mount({ sheet: 'scales', mode: 'from', start: 'Eb' })
+    expect(sheet(w).props()).toMatchObject({ mode: 'from', start: 'Eb' })
+    expect(await linkOf(w)).toMatchObject({ mode: 'from', start: 'Eb' })
+    w.unmount()
+    const k = await mount({ sheet: 'scales', mode: 'from' })
+    expect(sheet(k).props()).toMatchObject({ mode: 'from', start: 'C' })
+    const view = await linkOf(k)
+    expect(view).toMatchObject({ mode: 'from' })
+    expect(view).not.toHaveProperty('start')
+    k.unmount()
   })
 
   it('reports the sheet and the guides with a chart error', async () => {

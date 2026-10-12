@@ -20,9 +20,20 @@ function linked(view: ShareView) {
 describe('usePreferences', () => {
   afterEach(() => localStorage.clear())
 
-  it('defaults to concert pitch starting on C, with interval labels on', () => {
+  it("defaults to concert pitch spelled from the chart's key, with interval labels on", () => {
     const p = prefs()
-    expect([p.instrument.value, p.start.value, p.intervals.value]).toEqual(['concert', 'C', true])
+    expect([p.instrument.value, p.spell.value, p.intervals.value]).toEqual(['concert', 'key', true])
+  })
+
+  it('remembers spelling from the root', async () => {
+    prefs().spell.value = 'root'
+    await nextTick()
+    expect(prefs().spell.value).toBe('root')
+  })
+
+  it('ignores the old start note, kept before the key was the default', () => {
+    localStorage.setItem('csm-start', 'Eb')
+    expect(prefs().spell.value).toBe('key')
   })
 
   it('keeps interval labels off once turned off', async () => {
@@ -58,17 +69,17 @@ describe('usePreferences', () => {
   it('remembers choices in this browser', async () => {
     const p = prefs()
     p.instrument.value = 'alto-sax'
-    p.start.value = 'Eb'
+    p.spell.value = 'Eb'
     await nextTick()
     const again = prefs()
-    expect([again.instrument.value, again.start.value]).toEqual(['alto-sax', 'Eb'])
+    expect([again.instrument.value, again.spell.value]).toEqual(['alto-sax', 'Eb'])
   })
 
   it('ignores stored values it does not recognise', () => {
     localStorage.setItem('csm-instrument', 'kazoo')
-    localStorage.setItem('csm-start', 'H')
+    localStorage.setItem('csm-spell', 'H')
     const p = prefs()
-    expect([p.instrument.value, p.start.value]).toEqual(['concert', 'C'])
+    expect([p.instrument.value, p.spell.value]).toEqual(['concert', 'key'])
   })
 
   it("remembers the functions page's key, C major until chosen", async () => {
@@ -94,6 +105,21 @@ describe('linkPreferences', () => {
     await nextTick()
     expect(localStorage.getItem('csm-line')).toBe('arpeggio')
     expect(localStorage.getItem('csm-guide-line')).toBe('seventh')
+  })
+
+  it("reads a link's spelling: its start note, from the root, or the key when it has no note", () => {
+    expect(linked({ mode: 'from', start: 'Eb' }).spell.value).toBe('Eb')
+    expect(linked({ mode: 'root', start: 'C' }).spell.value).toBe('root')
+    expect(linked({ mode: 'from' }).spell.value).toBe('key')
+  })
+
+  it('keeps your own spelling for a link without one, and saves nothing', async () => {
+    localStorage.setItem('csm-spell', 'root')
+    const p = linked({ sheet: 'scales' })
+    expect(p.spell.value).toBe('root')
+    p.spell.value = 'D'
+    await nextTick()
+    expect(localStorage.getItem('csm-spell')).toBe('root')
   })
 
   it("takes a link's arpeggio, and no line when it has none, whatever your own", () => {
