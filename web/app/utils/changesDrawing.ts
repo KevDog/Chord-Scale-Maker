@@ -1,5 +1,5 @@
 import { accText, type ChangesBar, type ChangesLine, type GuideNote, type Pitched, signatureAccidentals, toVexKey } from '@chord-scale-maker/engine'
-import { BAR_UNITS, cropBand, fitSvg, headCentre, signatureLead, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
+import { BAR_UNITS, cropBand, fitSvg, headCentre, inkStave, signatureLead, STAVE_Y, svgContext, TIME_SPACE, type VexFlowModule } from './vexflow'
 
 /**
  * Drawing a Changes line (engine/src/changes.ts) with VexFlow: one stave, one slash a beat, repeat and final barlines,
@@ -160,7 +160,7 @@ const endsOf = (widths: readonly number[], total: number): number[] => widths.ma
 
 /** a bar's stave with its signatures (first bar only) and barlines; its bracket comes from setVolta */
 function staveFor(vf: VexFlowModule, bar: ChangesBar, first: boolean, x: number, width: number, clef: Clef | undefined, opts: Opts): Stave {
-  const stave = new vf.Stave(x, STAVE_Y, width)
+  const stave = inkStave(vf, x, STAVE_Y, width)
   if (first && clef) stave.addClef(clef)
   if (first && clef && bar.keySig) stave.addKeySignature(bar.keySig)
   if (first && opts.timeSignature) stave.addTimeSignature(`${opts.beats}/4`)

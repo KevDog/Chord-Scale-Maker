@@ -55,6 +55,13 @@ export function svgContext(vf: VexFlowModule, el: HTMLElement, width: number): C
   return renderer.getContext().setFillStyle('currentColor').setStrokeStyle('currentColor')
 }
 
+/** a stave whose ledger lines follow CSS `color` too (VexFlow draws them #444, unseen in dark mode) */
+export function inkStave(vf: VexFlowModule, x: number, y: number, width: number): InstanceType<VexFlowModule['Stave']> {
+  const stave = new vf.Stave(x, y, width)
+  stave.setDefaultLedgerLineStyle({ strokeStyle: 'currentColor', lineWidth: 2 }) // VexFlow's width
+  return stave
+}
+
 /**
  * crop el's SVG to the band that was drawn (SVG getBBox measures glyphs by font ascent, not ink), let it scale with
  * its container instead of VexFlow's fixed pixel size, and name it for screen readers
@@ -81,7 +88,7 @@ export const headCentre = (n: { getNoteHeadBeginX(): number; getNoteHeadEndX(): 
 export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel, clef: 'treble' | 'bass'): number[] {
   const ctx = svgContext(vf, el, STAFF_WIDTH)
 
-  const stave = new vf.Stave(0, STAVE_Y, STAFF_WIDTH - 1)
+  const stave = inkStave(vf, 0, STAVE_Y, STAFF_WIDTH - 1)
   if (staff.showClefAndKey) stave.addClef(clef) // with key signatures: each part's first staff only
   if (staff.showClefAndKey && staff.keySig) stave.addKeySignature(staff.keySig)
   stave.setEndBarType(staff.last ? vf.BarlineType.END : vf.BarlineType.DOUBLE)
