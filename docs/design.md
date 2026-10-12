@@ -324,8 +324,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 - **Layout:** one `ScaleStaff` per line: each scale a chart uses, once (`scaleLines`: the scale, the written
   chord's root and canonical quality; first-appearance order). An HTML label column on the left holds the scale name
-  and, under it, the chord symbols the line covers (`Cm7 · Cm9`); the VexFlow SVG stave is on the right. HTML labels give better typography and
-  accessibility than VexFlow text.
+  and, under it, the chord symbols the line covers (`Cm7 · Cm9`); the VexFlow SVG stave is on the right. HTML labels
+  give better typography and accessibility than VexFlow text.
 - **Stave:** one stave with a clef, no time signature, and whole notes. Every altered note gets an explicit
   accidental (as LilyPond's `\accidentalStyle forget` did for the old CLI). Each staff ends with a double bar
   line, the last with a final one.

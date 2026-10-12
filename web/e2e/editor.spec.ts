@@ -197,7 +197,7 @@ test('practice highlights the chosen notes, remembers them per chart, and prints
   await pickOption(page, 'Where each scale starts', 'From root')
   await page.emulateMedia({ media: 'print' })
   const pdf = await page.pdf({ format: 'Letter' })
-  expect((pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length).toBe(2) // still 12 staves a page
+  expect((pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length).toBe(2) // 14 lines, 12 a page
 })
 
 test('focus mode shows only the sheet, leaves on Escape or its button, and still prints 2 pages', async ({ page }) => {
@@ -232,7 +232,7 @@ test('the Scales sheet draws each scale once, naming the chords it covers', asyn
   await writeChart(page, 'title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\nA | 3 | Cm9\nA | 4 | F7\n')
   await chooseSheet(page, 'Scales')
   await expect(scaleStaves(page)).toHaveCount(2)
-  await expect(scaleStaves(page).nth(0)).toContainText('C–7 · C–9')
+  await expect(scaleStaves(page).nth(0)).toContainText('C–7, · C–9')
   await expect(scaleStaves(page).nth(0)).not.toContainText('Bar')
 })
 

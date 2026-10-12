@@ -20,6 +20,18 @@ for (const [instrument, start] of [
   })
 }
 
+// a line that covers several chords (wish-for-now's F Bebop Dorian: four) has the tallest label, yet still prints 12 staves a page
+test('prints 12 staves per letter page when a line names several chords (wish-for-now)', async ({ page }) => {
+  await page.goto('/song/wish-for-now')
+  await chooseSheet(page, 'Scales')
+  await expect(page.locator('.text-right').filter({ hasText: /(·[^·]*){3}/ }).first()).toBeVisible() // a line of four chords
+  const lines = await staves(page).count()
+  expect(lines).toBeGreaterThan(12)
+  await page.emulateMedia({ media: 'print' })
+  await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+  expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(Math.ceil(lines / 12))
+})
+
 // eight lines a page with guide tones off: a 32-bar AABA written out (Satin Doll) on one; Tunisia's nine lines (with the tag) on two
 for (const [chart, pages] of [
   ['autumn-leaves', 1],

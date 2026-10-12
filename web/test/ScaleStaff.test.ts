@@ -14,7 +14,7 @@ describe('ScaleStaff', () => {
     const w = await mountSuspended(ScaleStaff, { props: { staff, clef: 'treble' } })
     const label = w.find('.text-right').text()
     expect(label).toMatch(/^C\s*Dorian/)
-    expect(label).toContain('C–7 · C–9')
+    expect(label).toContain('C–7, · C–9') // the sr-only comma separates the chords for a screen reader; the dot is for the eye
     expect(label).not.toContain('Bar')
   })
 })
