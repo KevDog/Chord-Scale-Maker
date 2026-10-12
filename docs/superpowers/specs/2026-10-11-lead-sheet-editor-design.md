@@ -154,7 +154,11 @@ While editing (and only then), the numeral and the scale under each chord are bu
   Unpin as in the inspector. The Why under it.
 - The guessed-function mark (`fallback`, signature 2): the numeral's dotted underline is amber (`decoration-amber-500`)
   and its popover opens on the function list with the line "The rules could only guess here; stating the function
-  settles it" above it.
+  settles it" above it, beside an **Accept guess** button that states the function Auto stands for
+  (`FunctionChoice.accept`, PR function-field).
+- **Other function** (PR function-field): under the function list, a field takes any function in full, as the chart
+  cell would (`cellError`, then `parseFunction`); while the draft reads it shows the scale it would give, Enter writes
+  it (a key prefix kept as typed) and clears the field, and a draft that doesn't read stays with the parser's message.
 - A pinned scale (`source === 'written'`) shows `MapPinIcon` before its label (signature 3).
 - Read mode (editor closed) keeps today's `ChangesNote` Why popovers unchanged.
 

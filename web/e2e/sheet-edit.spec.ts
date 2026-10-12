@@ -119,6 +119,32 @@ test('the numeral opens the function list and the scale label the scale list; a 
   await expect(page.getByRole('button', { name: 'G Altered', exact: true }).first().locator('[data-pin]')).toBeVisible()
 })
 
+test('the numeral picker accepts a guessed function, and takes any function typed in full', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\nA | 5 | CMaj7\n')
+  const guessed = page.getByRole('button', { name: 'II7', exact: true }).first() // D7: II7 in C, not resolving (ruling D5, a guess)
+  await expect(guessed).toHaveClass(/decoration-amber-500/)
+  await guessed.click()
+  const d7 = page.getByRole('dialog', { name: 'Function: D7' })
+  await expect(d7).toContainText('could only guess here')
+  await d7.getByRole('button', { name: 'Accept guess' }).click()
+  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| D7 \| +\| II7\n/)
+  await expect(page.getByRole('button', { name: 'II7', exact: true }).first()).not.toHaveClass(/decoration-amber-500/)
+  await page.keyboard.press('Escape')
+  await page.getByRole('button', { name: 'V7', exact: true }).first().click()
+  const g7 = page.getByRole('dialog', { name: 'Function: G7' })
+  const other = g7.getByRole('textbox', { name: 'Other function' })
+  await other.fill('banana')
+  await other.press('Enter')
+  await expect(g7).toContainText("\"banana\" isn't a function")
+  await expect.poll(() => plain(page)).toMatch(/A \| 4 \| G7\n/)
+  await other.fill('F: V7/V') // G7 heard in F: its key prefix stays as typed
+  await expect(g7.getByRole('status', { name: 'The scale it gives' })).toContainText(/^→ G /)
+  await other.press('Enter')
+  await expect.poll(() => plain(page)).toMatch(/A \| 4 \| G7 \| +\| F: V7\/V\n/)
+  await expect(page.getByRole('button', { name: 'V7/V', exact: true }).first()).toBeVisible()
+})
+
 test('the bar toolbar inserts and deletes bars, the ghost bar adds one, + Section adds a section', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   await page.getByRole('button', { name: 'Edit G7, A bar 2' }).hover()
