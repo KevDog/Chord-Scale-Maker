@@ -60,7 +60,7 @@ web/                      # Nuxt app (Vercel root directory); imports @chord-sca
     pages/help.vue        # how it all works, in the owner's voice: sheets, controls, practice, editing, printing
     pages/about.vue, contact.vue, privacy.vue  # About (Jazz Lab thanks, the video, credits), the form, privacy
     pages/ui.vue          # dev-only showcase of the Catalyst components (removed from production builds)
-    components/           # AppShell, EditorView, BarEditor, BarInspector, ChordChoices, SheetChordEditor,
+    components/           # AppShell, EditorView, ChordChoices, SheetChordEditor, BarDialog,
                           # SheetChord, SheetLabelPicker, SheetBarToolbar, SheetHeading (the sheet as the editor),
                           # ChartHeadingFields, MetaInput, ChartText, ChartTranspose,
                           # PreviewControls, SheetPages, ScaleSheet, ScaleStaff,
@@ -226,43 +226,24 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   field (`MetaInput`), and the doc keeps the last good value.
 - **Scales follow the chord:** a default scale is written into the text by name (`C Dorian`), and follows when the
   chord changes (`setRowChord`, `setBarChords`: Cm7 → F7 takes C Dorian to F Mixolydian); a scale you chose stays.
-- **Bar editor** ([proposal §3 B](superpowers/proposals/editor-ux/README.md); Edit, next to the title, opens it, and
-  Done closes it). **Retired from `md` up** since the lead-sheet editor shipped (2026-10-11): the Chart pane (heading,
-  Undo/Redo/Save/⋯, heading fields, grid) is rendered only below `md` (the heading fields and the phone note) and on
-  a chart over a size limit (the notice, and the Source); the code stays until a later PR deletes it. As built:
-  `BarEditor` shows the chart as bars, four to a line, each written section its own ARIA grid
-  headed by its name, key area and bars (`barView` and `gridLines`); a `@copy` section is one line ("A2 repeats A1 ·
-  bars 9–16") whose bars show on request. One chord is selected (`GridPos`), the grid's one Tab stop. Typing replaces
-  it, Space adds a chord to the bar, Tab or the arrows move (`moveInGrid`: chord by chord, then bar by bar; ↑ ↓ keep
-  the column), `%` is the bar before as it plays, ⌫ clears it (`chordsAfterTyping`, then `setBarChords`; a refused
-  edit leaves the same doc, and the grid says why). An unknown chord gets an amber underline. Numerals and scales
-  under the chords sit behind a toggle (off). The inspector (`BarInspector`) has the chord's scales as a radio list
-  (the usual one, inside, outside, any scale by search: `searchScales`), its function with the scale each gives,
-  the analysis' Why, and the bar's actions: a held bar before or after (`insertHeldBar`, which writes the sounding
-  chord at a part's end, where a held bar wouldn't count), Delete bar, 1st / 2nd ending (`toggleEnding`: on, grown
-  onto the bar next to it, or off), Segno and Coda (`setMark`), a jump (`setNav`), New section here (`splitSection`)
-  and Key change here. Under the grid: + Bar (after the selected section's last, before a part's rounding-out bars),
-  + Section (`addSection`), Repeat a section (`repeatSection`) and Paste bars (`parseBarLine`, inserted by
-  `insertBars` only without diagnostics, before or after the selected bar); their fields are in `BarDialog`. A
-  section's chip renames it (`renameSection`); a repeat's line has Write out (`writeOutCopy`: the `@copy` becomes
-  rows). Endings, marks and jumps show under a bar's chords and in its label. Every refused change leaves the same
-  doc and says why, in the grid or the dialog. The heading fields are `ChartHeadingFields`, with the time and,
-  under Details, the composer, style and form (`chartDetails`); the text is the Source, under the ⋯ menu
-  (remembered, `csm-source`). Concert pitch always. The inspector's Scale, Function and Why are `ChordChoices`,
-  shared with the sheet's chord editor.
-  - **Tap to edit:** while the editor is shown, each chord on the Changes sheet is a button ("Edit Dm7, A bar
-    3"; a transposed part's adds "(concert C7)"). It opens `SheetChordEditor`, a Headless UI dialog: from `md` up a
-    popover by the chord (`popoverPlace`: under it, or above it near the window's foot), below `md` a bottom sheet. It
-    holds the chord in concert pitch (`setLineChord`: as typing it into the grid there, so blank takes it out and `%`
-    is the bar before; refused with why) and its `ChordChoices`. Each drawn chord carries its chart `line`
-    (`ChangesChord.line`); a repeat's points at the row it repeats, and the editor says a change there changes the
-    section it repeats. The chord selected in the grid is outlined on the sheet.
-  - **Phones (below `md`): light edits only.** The grid, its structure actions and the inspector are hidden; the
-    note "Full editing works on a larger screen" sits under the title, and chords are changed on the sheet. The
-    heading fields, Undo, the Source under ⋯ and Transpose stay. The library hides New chart there.
-  - **Lead-sheet editor** ([spec](superpowers/specs/2026-10-11-lead-sheet-editor-design.md); the `leadSheetEditor`
-    flag, on): from `md` up, with the editor open, the Changes sheet is the editor (the bar grid pane is not rendered
-    there), under a banner ("Editing the sheet", Undo, Redo, Source, Save, Done editing). A chord is a button that
+- **Bar editor: deleted** (2026-10-12, [#141](https://github.com/KevDog/Chord-Scale-Maker/issues/141)). The sheet is the
+  editor from `md` up (the lead-sheet editor, below); the grid's own actions (Paste bars, Repeat a section, Rename
+  section, Time, Details) wait for the sheet in [#142](https://github.com/KevDog/Chord-Scale-Maker/issues/142), and
+  their engine edits (`repeatSection`, `renameSection`, `insertBars`, `parseBarLine`) stay for it. Edit, next to the
+  title, opens the editor, and Done closes it. The Chart pane (heading, Undo/Redo/Save/⋯, heading fields) is
+  rendered only below `md` and on a chart over a size limit (the notice, and the Source). The heading fields are
+  `ChartHeadingFields`, with the time and, under Details, the composer, style and form (`chartDetails`); the text is
+  the Source (in the banner from `md` up, under the ⋯ menu below; remembered, `csm-source`). Concert pitch always.
+  - **Phones (below `md`): light edits only.** The note "Full editing works on a larger screen" sits under the
+    title, and the heading fields, Undo, the Source under ⋯ and Transpose stay. Each chord on the Changes sheet is
+    a button ("Edit Dm7, A bar 3"; a transposed part's adds "(concert C7)") that opens `SheetChordEditor`, a
+    Headless UI dialog as a bottom sheet: the chord in concert pitch (`setLineChord`: blank takes it out and `%` is
+    the bar before; refused with why) and its `ChordChoices` (Scale, Function, Why; shared with the sheet's label
+    pickers). Each drawn chord carries its chart `line` (`ChangesChord.line`); a repeat's points at the row it
+    repeats, and the editor says a change there changes the section it repeats. The library hides New chart there.
+  - **Lead-sheet editor** ([spec](superpowers/specs/2026-10-11-lead-sheet-editor-design.md)): from `md` up, with
+    the editor open, the Changes sheet is the editor,
+    under a banner ("Editing the sheet", Undo, Redo, Source, Save, Done editing). A chord is a button that
     opens into a field on its beat (`SheetChord`) with completions that read each candidate in that bar
     (`chordCompletions`, `chordPreview`: numeral → scale at the sheet's level, labelled as the sheet labels scales,
     `sheetScale`); Enter and Tab commit (Tab to the next bar's first chord, ⇧Tab the previous; → at the end of the
@@ -719,11 +700,11 @@ its reasons into a chart as comments.
     overrides one for a build or `make dev`.
   - `npm run e2e` builds with every flag on.
   - `myCharts` (My charts, New chart, Download/Open, share links), `changes` (the Changes sheet),
-    `practice` (the Practice panel), `keySignatures`, `functions` and `leadSheetEditor` (the Changes sheet as the
-    editor) are on, since sign-off. Guide tones on the Changes sheet have no flag: their
-    toggles start off. The bar editor shipped behind `barEditor`; at its sign-off the old row grid went, and the flag
-    with it. `scaleLevels` (the Scale level control) and `proposedScales` (a blank scale cell plays the analysis,
-    §7a) went the same way at theirs.
+    `practice` (the Practice panel), `keySignatures` and `functions` are on, since sign-off. Guide tones on the
+    Changes sheet have no flag: their toggles start off. The bar editor shipped behind `barEditor`; at its sign-off
+    the old row grid went, and the flag with it. `scaleLevels` (the Scale level control), `proposedScales` (a blank
+    scale cell plays the analysis, §7a) and `leadSheetEditor` (the Changes sheet as the editor; at its sign-off the
+    bar grid went, #141) went the same way at theirs.
 
 ## 9. Security
 
@@ -840,9 +821,8 @@ Pages are static, and the only server code is the contact function, so the attac
 - **App tests (`web/test/`):** `@nuxt/test-utils` (Nuxt runtime, happy-dom) with Vue Test Utils. They cover:
   - `useChartEditor` sync and debounce, and `useChartHistory` undo
   - library build and search
-  - scale choices, the bar editor (`BarEditor`, `BarInspector`, `ChordChoices`, `SheetChordEditor`), the sheet
-    editor (`SheetChord`, `SheetLabelPicker`, `SheetBarToolbar`, `SheetHeading`, `SheetPages`) and the heading
-    fields' validation
+  - scale choices (`ChordChoices`, `SheetChordEditor`), the sheet editor (`SheetChord`, `SheetLabelPicker`,
+    `SheetBarToolbar`, `SheetHeading`, `SheetPages`, `BarDialog`) and the heading fields' validation
   - `ChartTranspose`
   - the preview controls (`EditorView`)
   - `ScaleSheet` pagination with `ScaleStaff` stubbed; `ChangesSheet` (the clef with a guide on, the print gap, lines

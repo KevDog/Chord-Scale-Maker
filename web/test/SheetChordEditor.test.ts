@@ -7,7 +7,7 @@ import type { SheetChordEdit } from '~/utils/sheetChordEdit'
 
 // lines: 0 title, 1 key, 2 A1 Dm7, 3 A2 G7, 4 A3 CMaj7, 5 @copy A B 4
 const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n@copy A B 4\n').value
-const target = (line: number, section = 'A', bar = String(line - 1)): SheetChordEdit => ({ line, section, bar, anchor: { left: 100, top: 100, bottom: 120 } })
+const target = (line: number, section = 'A', bar = String(line - 1)): SheetChordEdit => ({ line, section, bar })
 const rows = (d: ChartDoc | undefined): string[] => (d ? serializeChart(d).split('\n').filter((l) => /^A \|/.test(l)).map((l) => l.replace(/\s+/g, ' ').trim()) : [])
 const settle = async () => {
   for (let i = 0; i < 3; i++) await nextTick()

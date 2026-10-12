@@ -3,14 +3,10 @@
     <template v-for="piece in parts" :key="piece">
       <section v-if="piece === 'scale'" :aria-labelledby="`${id}-scale`" class="space-y-2">
         <div class="flex items-center gap-2">
-          <UiSubheading :id="`${id}-scale`" :level="3">
-            <button v-if="collapsible" type="button" :class="FOLD" :aria-expanded="scaleOpen" :aria-controls="scaleOpen ? `${id}-scale-body` : undefined" @click="scaleOpen = !scaleOpen"><ChevronRightIcon :class="[CHEVRON, scaleOpen && 'rotate-90']" aria-hidden="true" />Scale</button>
-            <template v-else>Scale</template>
-          </UiSubheading>
+          <UiSubheading :id="`${id}-scale`" :level="3">Scale</UiSubheading>
           <MapPinIcon v-if="pinned" class="size-4 text-note-600 dark:text-note-400" aria-hidden="true" />
-          <UiText v-if="!scaleOpen" class="min-w-0 truncate text-sm/6!">{{ selectedScale || analysed }}</UiText>
         </div>
-        <div v-if="scaleOpen" :id="`${id}-scale-body`" class="space-y-2">
+        <div class="space-y-2">
           <div v-if="pinned" class="flex flex-wrap items-center justify-between gap-2">
             <UiText class="text-sm/6!">{{ pinnedText }}</UiText>
             <UiButton outline @click="setScale('')">Unpin</UiButton>
@@ -42,19 +38,15 @@
       <section v-else-if="piece === 'function' && functionsOn && fnChoices.length" :aria-labelledby="`${id}-function`" class="space-y-2">
         <div class="flex items-baseline justify-between gap-2">
           <div class="flex min-w-0 items-baseline gap-2">
-            <UiSubheading :id="`${id}-function`" :level="3">
-              <button v-if="collapsible" type="button" :class="FOLD" :aria-expanded="functionOpen" :aria-controls="functionOpen ? `${id}-function-body` : undefined" @click="functionOpen = !functionOpen"><ChevronRightIcon :class="[CHEVRON, functionOpen && 'rotate-90']" aria-hidden="true" />Function</button>
-              <template v-else>Function</template>
-            </UiSubheading>
-            <UiText v-if="!functionOpen" class="min-w-0 truncate text-sm/6!">{{ functionText }}</UiText>
+            <UiSubheading :id="`${id}-function`" :level="3">Function</UiSubheading>
           </div>
-          <NuxtLink v-if="functionOpen" to="/functions#writing" class="text-xs/5 text-zinc-600 underline dark:text-zinc-400">How to write a function</NuxtLink>
+          <NuxtLink to="/functions#writing" class="text-xs/5 text-zinc-600 underline dark:text-zinc-400">How to write a function</NuxtLink>
         </div>
-        <div v-if="functionOpen && fallbackNote" class="flex flex-wrap items-center justify-between gap-2">
+        <div v-if="fallbackNote" class="flex flex-wrap items-center justify-between gap-2">
           <UiText class="text-sm/6! text-amber-800! dark:text-amber-400!">{{ fallbackNote }}</UiText>
           <UiButton v-if="accept" plain @click="setFunction(accept)">Accept guess</UiButton>
         </div>
-        <UiRadioGroup v-if="functionOpen" :id="`${id}-function-body`" :model-value="selectedFunction" aria-label="Function" :class="ROOMY" @update:model-value="(v) => v !== undefined && setFunction(v)">
+        <UiRadioGroup :model-value="selectedFunction" aria-label="Function" :class="ROOMY" @update:model-value="(v) => v !== undefined && setFunction(v)">
           <UiRadio v-for="c in fnChoices" :key="c.value" :value="c.value">
             <span class="flex flex-wrap justify-between gap-x-3">
               <span>{{ c.value ? c.label : `Auto: ${c.label}` }}</span>
@@ -64,7 +56,7 @@
           <UiRadio v-if="!matchingFunction && row.function" :value="row.function"><span>{{ row.function }}</span></UiRadio>
         </UiRadioGroup>
         <UiErrorMessage v-if="note?.problem">{{ note.problem }}</UiErrorMessage>
-        <div v-if="functionOpen" class="space-y-1">
+        <div class="space-y-1">
           <div class="flex items-center gap-3">
             <UiInput v-model="draft" aria-label="Other function" placeholder="Other function: Eb: V7/ii" :invalid="!!draftError" autocomplete="off" autocapitalize="off" spellcheck="false" @keydown.enter.prevent="applyDraft" />
             <output v-if="draftScale" aria-label="The scale it gives" class="shrink-0 text-sm/6 text-zinc-600 dark:text-zinc-400">→ {{ draftScale }}</output>
@@ -73,7 +65,7 @@
         </div>
       </section>
 
-      <section v-else-if="piece === 'why' && functionsOn && note?.note && (scaleOpen || part === 'function')" :aria-labelledby="`${id}-why`" class="space-y-1">
+      <section v-else-if="piece === 'why' && functionsOn && note?.note" :aria-labelledby="`${id}-why`" class="space-y-1">
         <UiSubheading :id="`${id}-why`" :level="3">Why</UiSubheading>
         <UiText class="text-sm/6!">{{ note.note }}</UiText>
       </section>
@@ -83,31 +75,24 @@
 
 <script setup lang="ts">
 import { cellError, type ChartDoc, functionChoices, parseChord, parseFunction, rootName, type RowLine, type RowNote, rowNotes, sameFunction, samePitchScale, setRowField } from '@chord-scale-maker/engine'
-import { ChevronRightIcon, MapPinIcon } from '@heroicons/vue/16/solid'
+import { MapPinIcon } from '@heroicons/vue/16/solid'
 import ScaleOptionLabel from './ScaleOptionLabel.vue'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 
 /**
  * A chord's scale (the usual one, the alternates inside and outside, any scale by search), its function with the
  * scale each gives, and why the analysis chose what it did: the chord written on `line` of the chart. Shared by the
- * bar editor's inspector and the Changes sheet's chord editor. The function comes first, and the first scale is the
+ * sheet's label pickers and the phone's chord editor. The function comes first, and the first scale is the
  * analysed one: choosing it, or Unpin, blanks the cell; any other scale pins it.
- * `collapsible` (the inspector's): the scale (with its why) and the function each fold away to their choice, remembered.
  * `part` (the sheet's label pickers): 'function' shows the function list and why; 'scale' the scale list and why.
  * `fallbackNote`: a line above the function list (the rules could only guess here).
  */
-const props = withDefaults(defineProps<{ doc: ChartDoc; line: number; collapsible?: boolean; part?: 'function' | 'scale' | 'all'; fallbackNote?: string }>(), { part: 'all', fallbackNote: '' })
+const props = withDefaults(defineProps<{ doc: ChartDoc; line: number; part?: 'function' | 'scale' | 'all'; fallbackNote?: string }>(), { part: 'all', fallbackNote: '' })
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; said: [text: string] }>()
 
 const id = useId()
 /** 44 px rows below md, for fingers */
 const ROOMY = 'max-md:[&_[role=radio]]:py-2.5'
-/** the heading's fold toggle (the inspector's), its chevron turning down when open */
-const FOLD = 'flex items-center gap-1 rounded-sm focus:outline-2 focus:outline-blue-500'
-const CHEVRON = 'size-4 text-zinc-500 transition-transform dark:text-zinc-400'
-const prefs = props.collapsible ? usePreferences() : null
-const scaleOpen = computed({ get: () => prefs?.inspectorScale.value ?? true, set: (v) => prefs && (prefs.inspectorScale.value = v) })
-const functionOpen = computed({ get: () => prefs?.inspectorFunction.value ?? true, set: (v) => prefs && (prefs.inspectorFunction.value = v) })
 const functionsOn = useFeature('functions')
 const parts = computed((): readonly ('function' | 'scale' | 'why')[] => (props.part === 'function' ? ['function', 'why'] : props.part === 'scale' ? ['scale', 'why'] : ['function', 'scale', 'why']))
 const row = computed((): RowLine | null => {
@@ -166,12 +151,6 @@ const draftText = computed((): string => {
 })
 /** the scale the draft would give the row, from a trial doc with it stated */
 const draftScale = computed((): string => (draftText.value ? (rowNotes(setRowField(props.doc, props.line, 'function', draftText.value), scaleView.value).get(props.line)?.analysed ?? '') : ''))
-/** the chosen function, as its option reads, shown while the list is folded away */
-const functionText = computed(() => {
-  const c = matchingFunction.value
-  return c ? (c.value ? c.label : `Auto: ${c.label}`) : (row.value?.function ?? '')
-})
-
 const rootText = computed((): string => {
   try {
     return rootName(parseChord(row.value?.chord ?? '').root)

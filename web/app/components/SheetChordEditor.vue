@@ -1,13 +1,7 @@
 <template>
   <HDialog :open="!!target && !!row" class="relative z-50" @close="emit('close')">
-    <div :class="['fixed inset-0', wide ? 'bg-transparent' : 'bg-zinc-950/25 dark:bg-zinc-950/50']" aria-hidden="true" />
-    <HDialogPanel
-      :class="[
-        'fixed flex flex-col overflow-hidden bg-white shadow-lg ring-1 ring-zinc-950/10 dark:bg-zinc-900 dark:ring-white/10 forced-colors:outline',
-        wide ? 'w-88 rounded-2xl' : 'inset-x-0 bottom-0 max-h-[85dvh] rounded-t-3xl',
-      ]"
-      :style="panelStyle"
-    >
+    <div class="fixed inset-0 bg-zinc-950/25 dark:bg-zinc-950/50" aria-hidden="true" />
+    <HDialogPanel class="fixed inset-x-0 bottom-0 flex max-h-[85dvh] flex-col overflow-hidden rounded-t-3xl bg-white shadow-lg ring-1 ring-zinc-950/10 dark:bg-zinc-900 dark:ring-white/10 forced-colors:outline">
       <div class="space-y-6 overflow-y-auto p-5">
         <div class="space-y-3">
           <div class="flex items-center gap-2">
@@ -37,18 +31,15 @@
 import { Dialog as HDialog, DialogPanel as HDialogPanel, DialogTitle as HDialogTitle } from '@headlessui/vue'
 import { cellError, type ChartDoc, type RowLine, setLineChord } from '@chord-scale-maker/engine'
 import ChordChoices from './ChordChoices.vue'
-import { popoverPlace, type SheetChordEdit } from '~/utils/sheetChordEdit'
+import type { SheetChordEdit } from '~/utils/sheetChordEdit'
 
 /**
- * A chord tapped on the Changes sheet, to change (docs/superpowers/proposals/editor-ux/README.md §3 B): its symbol
- * in concert pitch, then its scale and function (ChordChoices). From md up it's a popover by the chord; below, a
- * bottom sheet. Either way a dialog: focus stays in it, and Escape or a tap outside closes it.
+ * A chord tapped on the Changes sheet below md (a phone), to change: its symbol in concert pitch, then its scale and
+ * function (ChordChoices), in a bottom sheet. A dialog: focus stays in it, and Escape or a tap outside closes it.
+ * From md up the sheet is the editor itself (SheetChord), and no chord is tapped here.
  */
 const props = defineProps<{ doc: ChartDoc; target: SheetChordEdit | null }>()
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; said: [text: string]; close: [] }>()
-
-const wide = useMediaQuery('(min-width: 768px)')
-const PANEL = { width: 352, minHeight: 320 } // w-88
 
 const row = computed((): RowLine | null => {
   const l = props.target ? props.doc.lines[props.target.line] : undefined
@@ -85,11 +76,4 @@ function apply(): void {
   emit('said', `${place.value}: ${text || 'chord taken out'}`)
   if (!text) emit('close')
 }
-
-const panelStyle = computed(() => {
-  const t = props.target
-  if (!wide.value || !t || typeof window === 'undefined') return undefined
-  const p = popoverPlace(t.anchor, { width: window.innerWidth, height: window.innerHeight }, PANEL)
-  return { left: `${p.left}px`, maxHeight: `${p.maxHeight}px`, ...(p.top !== undefined ? { top: `${p.top}px` } : { bottom: `${p.bottom}px` }) }
-})
 </script>

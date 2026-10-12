@@ -64,9 +64,9 @@ const props = defineProps<{
   signatures?: boolean // the part's clef and the chart's key signature, once, at the start of the first line
   guideLine?: GuideLine // a guide tone line, from the 3rd or the 7th, as notes in place of the slashes (the clef then always starts line 1)
   editable?: boolean // tap a chord to edit it
-  selectedLine?: number | null // the chart line of the chord selected in the bar editor
+  selectedLine?: number | null // the chart line of the chord the editor is on
   view?: ScaleView // the level blank cells play at; undefined: Standard
-  editing?: SheetEdit | null // the sheet is the editor (leadSheetEditor): what it's editing; undefined: tap opens the chord editor dialog
+  editing?: SheetEdit | null // the sheet is the editor (from md up): what it's editing; undefined: tap opens the chord editor's bottom sheet
   preview?: ChordPreview | null // the open field's draft, read in its bar
   focusAt?: SheetFocus | null // a chord the editor wants focus on
 }>()

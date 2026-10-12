@@ -9,7 +9,7 @@
             <span v-if="m.marker" class="rounded-sm border border-zinc-400 px-1 font-semibold text-zinc-700 dark:border-zinc-500 dark:text-zinc-300 print:border-neutral-600 print:text-black">{{ m.marker }}</span>
             <span v-if="m.keyArea" class="text-note-800 italic dark:text-note-300 print:text-neutral-700">{{ m.keyArea }}</span>
           </div>
-          <!-- the sheet as the editor (leadSheetEditor): each chord a SheetChord, a button or the field in its place -->
+          <!-- the sheet as the editor (from md up): each chord a SheetChord, a button or the field in its place -->
           <SheetChord
             v-if="editing !== undefined && doc && m.line >= 0"
             :doc="doc"
@@ -30,13 +30,13 @@
             @done="emit('done', $event)"
           />
           <div v-else class="text-base font-semibold print:text-sm/4">
-            <!-- the chord as a button while editing: it opens the chord editor (EditorView) -->
+            <!-- the chord as a button while editing below md: it opens the chord editor's bottom sheet (EditorView) -->
             <button
               v-if="editable && m.line >= 0"
               type="button"
               :aria-label="editLabel(m)"
               :class="['relative -mx-1 cursor-pointer rounded px-1 hover:bg-note-100 focus-visible:outline-2 focus-visible:outline-blue-500 dark:hover:bg-white/10', m.line === selectedLine && 'ring-2 ring-note-600 max-md:ring-0 dark:ring-note-400']"
-              @click="emit('tap', { line: m.line, section: m.row.section, bar: m.row.bar, anchor: ($event.currentTarget as HTMLElement).getBoundingClientRect() })"
+              @click="emit('tap', { line: m.line, section: m.row.section, bar: m.row.bar })"
             >
               <UiTouchTarget><ChordSymbol v-if="m.tokens" :tokens="m.tokens" /><span v-else>{{ m.text }}</span></UiTouchTarget>
             </button>
@@ -151,7 +151,7 @@ const props = defineProps<{
   scales: boolean
   clef?: 'treble' | 'bass' // with key signatures or a guide tone on: the part's clef, drawn (with any signature) on the first line only
   editable?: boolean // each chord a button that asks to edit it
-  selectedLine?: number | null // the chart line of the chord selected in the bar editor, outlined
+  selectedLine?: number | null // the chart line of the chord the editor is on, outlined
   doc?: ChartDoc // the chart, for the sheet editor's field
   editing?: SheetEdit | null // the sheet is the editor: what it's editing (null: nothing yet); undefined: the chord editor dialog instead
   preview?: ChordPreview | null // the reading of the draft in the open field, shown under its chord

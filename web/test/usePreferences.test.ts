@@ -31,14 +31,6 @@ describe('usePreferences', () => {
     expect(prefs().intervals.value).toBe(false)
   })
 
-  it('keeps the grid notes hidden until shown, and remembers', async () => {
-    const p = prefs()
-    expect(p.notes.value).toBe(false)
-    p.notes.value = true
-    await nextTick()
-    expect(prefs().notes.value).toBe(true)
-  })
-
   it('keeps the guide tone line off until chosen, and remembers it', async () => {
     const p = prefs()
     expect(p.guideLine.value).toBe('off')

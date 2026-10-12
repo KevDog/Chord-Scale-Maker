@@ -1,7 +1,7 @@
 import { barView, type ChartDoc, type GridPos, moveInGrid, posOfLine } from '@chord-scale-maker/engine'
 
-/** a chord tapped on the Changes sheet: the chart line it was written on, where it's drawn, and its box on screen */
-export type SheetChordEdit = Readonly<{ line: number; section: string; bar: string; anchor: Readonly<{ left: number; top: number; bottom: number }> }>
+/** a chord tapped on the Changes sheet (below md): the chart line it was written on, and where it's drawn */
+export type SheetChordEdit = Readonly<{ line: number; section: string; bar: string }>
 
 /**
  * what the sheet is editing: a chord by its doc line and where it is drawn (a written-out repeat draws a line twice),
@@ -11,28 +11,6 @@ export type SheetEdit = Readonly<{ kind: 'chord'; line: number; at: SheetPlace }
 export type SheetPlace = Readonly<{ section: string; bar: string }>
 /** a chord the editor wants focus on (its button), by line and where it is drawn; n makes each request its own */
 export type SheetFocus = Readonly<{ line: number; at: SheetPlace; n: number }>
-
-export type PopoverPlace = Readonly<{ left: number; top?: number; bottom?: number; maxHeight: number }>
-
-const MARGIN = 16
-const GAP = 8
-
-/**
- * where the chord editor's popover goes (from md up): under the chord, at its left edge, kept inside the window; above
- * it when there's less than the panel's minimum height below and more room above
- */
-export function popoverPlace(
-  anchor: SheetChordEdit['anchor'],
-  view: Readonly<{ width: number; height: number }>,
-  panel: Readonly<{ width: number; minHeight: number }>,
-): PopoverPlace {
-  const left = Math.max(MARGIN, Math.min(anchor.left, view.width - panel.width - MARGIN))
-  const below = view.height - anchor.bottom - GAP - MARGIN
-  const above = anchor.top - GAP - MARGIN
-  return below >= panel.minHeight || below >= above
-    ? { left, top: anchor.bottom + GAP, maxHeight: below }
-    : { left, bottom: view.height - anchor.top + GAP, maxHeight: above }
-}
 
 /** how the chord field closed, and where it wants to go: a bar (Tab), a chord (← →), a new chord slot, or nowhere */
 export type SheetDone = 'stay' | 'next' | 'prev' | 'nextChord' | 'prevChord' | 'add' | 'cancel'
