@@ -1,4 +1,5 @@
 import { isSheetLine, type SheetLine } from './arpeggios'
+import { type ArpDirection, type ArpNotes, isArpDirection, isArpNotes } from './arpeggioSheet'
 import { type InstrumentName, isInstrumentName } from './instruments'
 import { isScaleLevel, type ScaleLevel } from './levels'
 import { LIMITS } from './limits'
@@ -12,7 +13,7 @@ import { type PracticeSelection, practiceSelectionFrom } from './practice'
  * (including while inflating, so a tiny link can't expand into megabytes), validates every field, drops what it
  * doesn't know, and returns null instead of throwing.
  */
-export type ShareSheet = 'scales' | 'changes' // a link from the retired Guide tones sheet drops its sheet and opens the default
+export type ShareSheet = 'scales' | 'changes' | 'arpeggios' // a link from the retired Guide tones sheet drops its sheet and opens the default
 export type ShareView = Readonly<{
   instrument?: InstrumentName
   mode?: Mode
@@ -24,6 +25,9 @@ export type ShareView = Readonly<{
   /** the Changes sheet's line: a guide tone line or an arpeggio pattern; absent: off */
   line?: SheetLine
   sheet?: ShareSheet
+  /** the Arpeggios sheet's choices: 7th Chord or Extended; Up, Down or Up & down */
+  arpNotes?: ArpNotes
+  arpDir?: ArpDirection
   practice?: PracticeSelection
   level?: ScaleLevel
   seed?: number
@@ -97,7 +101,9 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(typeof o.numerals === 'boolean' ? { numerals: o.numerals } : {}),
     ...(typeof o.scaleNames === 'boolean' ? { scaleNames: o.scaleNames } : {}),
     ...(isSheetLine(o.line) && o.line !== 'off' ? { line: o.line } : {}), // anything else: off
-    ...(o.sheet === 'scales' || o.sheet === 'changes' ? { sheet: o.sheet } : {}),
+    ...(o.sheet === 'scales' || o.sheet === 'changes' || o.sheet === 'arpeggios' ? { sheet: o.sheet } : {}),
+    ...(isArpNotes(o.arpNotes) ? { arpNotes: o.arpNotes } : {}),
+    ...(isArpDirection(o.arpDir) ? { arpDir: o.arpDir } : {}),
     ...(practice ? { practice } : {}),
     ...(isScaleLevel(o.level) ? { level: o.level } : {}),
     ...(Number.isInteger(o.seed) && (o.seed as number) >= 0 && (o.seed as number) < 2 ** 32 ? { seed: o.seed as number } : {}),

@@ -132,6 +132,8 @@
             v-model:line-mode="prefs.lineMode.value"
             v-model:guide-line="prefs.guideLine.value"
             v-model:arpeggio="prefs.arpeggio.value"
+            v-model:arp-notes="prefs.arpNotes.value"
+            v-model:arp-dir="prefs.arpDir.value"
             :key-start="keyStartNote"
             :lock-labels="sheetEditor"
           >
@@ -200,7 +202,7 @@
             @repeat-section="openSheetDialog('repeat', '', 0)"
           />
           <ScaleSheet
-            v-else
+            v-else-if="sheet === 'scales'"
             :rows="editor.rows.value"
             :title="editor.meta.value.title"
             :subtitle="editor.heading.value.subtitle"
@@ -212,6 +214,21 @@
             :per-page="PER_PAGE"
             :intervals="prefs.intervals.value"
             :practice="selection"
+            :home-key="homeKey"
+            :resolved="resolved"
+          />
+          <ArpeggioSheet
+            v-else
+            :rows="editor.rows.value"
+            :title="editor.meta.value.title"
+            :subtitle="editor.heading.value.subtitle"
+            :composer="editor.heading.value.composer"
+            :part="part"
+            :instrument-label="instrumentLabel(prefs.instrument.value)"
+            :per-page="PER_PAGE"
+            :notes="prefs.arpNotes.value"
+            :dir="prefs.arpDir.value"
+            :intervals="prefs.intervals.value"
             :home-key="homeKey"
             :resolved="resolved"
           />
@@ -323,7 +340,7 @@ const keyStartNote = computed(() => keyStart(chartKeyOf(editor.doc.value), part.
 const spelled = computed(() => spellView(prefs.spell.value, keyStartNote.value))
 const mode = computed((): Mode => spelled.value.mode)
 const start = computed(() => spelled.value.start)
-const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeature('changes') }))
+const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeature('changes'), arpeggios: useFeature('arpeggios') }))
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
 const signaturesOn = useFeature('keySignatures')
@@ -557,6 +574,7 @@ async function shareUrl(): Promise<string> {
     scaleNames: prefs.scaleNames.value,
     ...(sheetLine.value !== 'off' ? { line: sheetLine.value } : {}), // absent: off
     sheet: sheet.value,
+    ...(sheet.value === 'arpeggios' ? { arpNotes: prefs.arpNotes.value, arpDir: prefs.arpDir.value } : {}),
     ...(selection.value ? { practice: selection.value } : {}),
     ...(scaleLevel.level.value !== 'standard' ? { level: scaleLevel.level.value, seed: scaleLevel.seed.value } : {}),
   }

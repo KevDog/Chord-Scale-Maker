@@ -343,6 +343,24 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   "Choose a scale"), and components only draw it. The live preview re-renders only staves that changed: each
   staff's `id` combines its line's chords and scale, the part and the mode, not its position.
 
+### Arpeggios sheet ([spec](superpowers/specs/2026-10-12-arpeggios-sheet-design.md); the `arpeggios` flag, off)
+
+- **Lines:** exactly the Scales sheet's (`scaleLines`), in eighth notes, one stave each, no time signature. 12 lines a
+  printed page. Controls (Arpeggio group): 7th Chord · Extended, and a direction listbox Up · Down · Up & down
+  (`aria-label="Arpeggio direction"`); Show: Intervals as on the Scales; no Spell Scale, no practice panel.
+- **Notes:** the line's first chord's tones (`arpeggioTones`: 1 3 5 7; a triad plays 1 3 5 8 in 7th Chord mode). Extended
+  stacks the scale's other notes above (`tensionsOf`): 7ths (triads and 6 chords only), then 9s, 11s, 13s by compound
+  degree of the interval label, ties by pitch.
+- **Direction:** Up is chord tones then tensions, each the next of its pitch class above the last; Down reverses it; Up &
+  down plays both without repeating the top note. Placed as one run by `placeRun` (fewest notes out of range, then
+  nearest the range's centre).
+- **Drawing:** `drawArpeggioStaff` beams eighths by group (the chord tones, then the tensions; a group of one gets a
+  flag; each beamed group takes one stem direction); accidentals by the measure rule over the whole line, with or
+  without a key signature. `buildArpeggioSheet` (`engine/src/arpeggioSheet.ts`)
+  builds the model; the components only draw it.
+- **Preferences and links:** `csm-arp-notes` (`seventh` | `extended`), `csm-arp-dir` (`up` | `down` | `up-down`); share
+  links carry `sheet: 'arpeggios'`, `arpNotes`, `arpDir`, and open on the sheet only when the flag is on.
+
 ### Practice selection ([plan-practice.md](plan-practice.md))
 
 - **What it does:** a subset of each scale's notes to improvise with. The chosen notes are highlighted on the
@@ -524,7 +542,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - `SheetPages`, which lays out both sheets' printed pages. On screen they form one continuous card, with a dashed
     "Page N" divider where each printed page starts and the header shown once. In print each page is a bare letter
     page with its own header.
-  - `PreviewControls`, the preview toolbar: Work on, Instrument, Spell Scale (From key/From root/From X), then Show: Intervals (on the Changes, Analysis: Numerals and Scales, and Line: Off · Guide Tones · 7th Chords, with From 3rd · From 7th or the arpeggio pattern beneath it; Analysis hides while the sheet editor is open) with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
+  - `PreviewControls`, the preview toolbar: Work on (Changes, Scales, Arpeggios), Instrument, Spell Scale (From key/From root/From X), then Show: Intervals (on the Changes, Analysis: Numerals and Scales, and Line: Off · Guide Tones · 7th Chords, with From 3rd · From 7th or the arpeggio pattern beneath it; Analysis hides while the sheet editor is open) with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
 - **Dark mode** is a `.dark` class on `<html>`, toggled in the navbar.
   - The default is light, and the choice is saved per browser.
   - `public/theme-init.js` applies it before first paint. It's a file, not an inline script, so the CSP needs no
@@ -783,7 +801,7 @@ its reasons into a chart as comments.
   - `npm run e2e` builds with every flag on.
   - `myCharts` (My charts, New chart, Download/Open, share links), `changes` (the Changes sheet),
     `practice` (the Practice panel), `keySignatures` and `functions` are on, since sign-off. Guide tones on the
-    Changes sheet have no flag: their toggles start off. `arpeggios` (7th Chords on the Line control) is off. The bar editor shipped behind `barEditor`; at its sign-off
+    Changes sheet have no flag: their toggles start off. `arpeggios` (7th Chords on the Line control, and the Arpeggios sheet) is off. The bar editor shipped behind `barEditor`; at its sign-off
     the old row grid went, and the flag with it. `scaleLevels` (the Scale level control), `proposedScales` (a blank
     scale cell plays the analysis, §7a) and `leadSheetEditor` (the Changes sheet as the editor; at its sign-off the
     bar grid went, #141) went the same way at theirs.

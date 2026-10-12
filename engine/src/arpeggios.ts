@@ -144,6 +144,11 @@ function place(pcs: readonly number[], up: boolean, range: Range, prev: number |
   return [...options].sort((a, b) => cmp(key(a), key(b)))[0]?.midi ?? rel.map((r) => range.centre + r)
 }
 
+/** a run's start: the octave with the fewest notes out of range, then the average nearest the centre (a tie: the higher) */
+export function placeRun(pcs: readonly number[], up: boolean, range: Range): readonly number[] {
+  return place(pcs, up, range, null)
+}
+
 const readable = (chord: string): boolean => orNull(() => parseChord(chord)) !== null
 
 type Segment = Readonly<{ chord: number; bar: number; beat: number; length: number }>

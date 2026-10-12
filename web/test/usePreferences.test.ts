@@ -130,4 +130,17 @@ describe('linkPreferences', () => {
     expect(linked({}).lineMode.value).toBe('off')
     expect(linked({ sheet: 'changes' }).lineMode.value).toBe('off')
   })
+
+  it('keeps the Arpeggios choices, and a link overrides them for the visit only', async () => {
+    const p = prefs()
+    expect([p.arpNotes.value, p.arpDir.value]).toEqual(['seventh', 'up'])
+    p.arpNotes.value = 'extended'
+    await nextTick()
+    expect(prefs().arpNotes.value).toBe('extended')
+    localStorage.setItem('csm-arp-dir', 'sideways')
+    expect(prefs().arpDir.value).toBe('up')
+    const l = linked({ sheet: 'arpeggios', arpNotes: 'seventh', arpDir: 'down' })
+    expect([l.arpNotes.value, l.arpDir.value]).toEqual(['seventh', 'down'])
+    expect(linked({}).arpNotes.value).toBe('extended')
+  })
 })
