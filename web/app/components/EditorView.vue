@@ -3,7 +3,7 @@
     <div class="min-w-0 print:hidden">
       <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
         <UiHeading>{{ editor.meta.value.title || 'Untitled' }}</UiHeading>
-        <ToggleButton v-if="!editor.fatal.value" :model-value="editorShown" :aria-expanded="editorShown" title="Show or hide the chart editor" @update:model-value="toggleEditor"><PencilSquareIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</ToggleButton>
+        <ToggleButton v-if="!editor.fatal.value" :model-value="editorShown" expands title="Show or hide the chart editor" @update:model-value="toggleEditor"><PencilSquareIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</ToggleButton>
       </div>
       <UiText v-if="byline" class="mt-1">{{ byline }}</UiText>
       <UiText v-if="sheetEditing" class="mt-1 md:hidden">Full editing works on a larger screen. Tap a chord on the sheet to change it.</UiText>

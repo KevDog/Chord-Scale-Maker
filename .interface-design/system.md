@@ -43,18 +43,21 @@ Shadows, not borders, for lift; one recipe each. Borders only for dividers and i
 ## Radius
 
 6 px controls (`rounded-control`), 10 px paper and panels (`rounded-paper`), 14 px dialogs (`rounded-dialog`).
-Nested radius = inner + padding. (Tailwind v4: use the named utilities, not `rounded-[--radius-…]`.)
+Catalyst's buttons, toggles and segmented controls keep its `rounded-lg` (8 px) so they line up;
+`rounded-control` is for the rest. Nested radius = inner + padding. (Tailwind v4: use the named utilities, not `rounded-[--radius-…]`.)
 
 ## Buttons, by role
 
 - **primary** (solid navy, `color="note"`): one per view. Song page: Print; library: New chart; dialogs: the confirm.
 - **action** (`outline`): Share, Transpose, Focus.
 - **toggle** (`ToggleButton`, `aria-pressed`): off = outline; on = accent tint (`note-100` bg, `note-800` text,
-  `note-300` ring; dark: `note-300/15` bg, `note-200` text). Numerals, Scales, Intervals.
+  `note-500` edge; dark: `note-300/15` bg, `note-200` text, `note-300` edge). Numerals, Scales, Intervals, the
+  Practice presets; Edit too, as a disclosure (`expands`: `aria-expanded`, not `aria-pressed`).
 - **choice** (`SegmentedControl`): its checked state uses the toggle's on style (one accent).
 - `ToggleButton` is the Catalyst button's base (size, focus, icon slot) with the outline style off and the tint on, so it
   lines up with `UiButton`s beside it. Toggle-on contrast: note-800 on note-100 8.1:1; dark note-200 on note-300/15
-  over zinc-950 9.4:1. Practice presets and boxes use the same tint.
+  over zinc-950 9.4:1; the on edge (note-500 / note-300) is 4.7:1 on white, 8.9:1 on zinc-950. The
+  choices (segments, Practice boxes) keep a white fill when unchecked, like inputs.
 - **quiet** (`plain`): menu triggers, Report, Revert.
 
 ## Type

@@ -13,6 +13,13 @@ describe('ToggleButton', () => {
     expect(b.text()).toBe('Numerals')
   })
 
+  it('reads as expanded, not pressed, when it shows a panel', async () => {
+    const w = await mountSuspended(ToggleButton, { props: { modelValue: true, expands: true }, slots: { default: 'Done' } })
+    const b = w.get('button')
+    expect(b.attributes('aria-expanded')).toBe('true')
+    expect(b.attributes('aria-pressed')).toBeUndefined()
+  })
+
   it('stays put when disabled', async () => {
     const w = await mountSuspended(ToggleButton, { props: { modelValue: true, disabled: true }, slots: { default: 'Scales' } })
     await w.get('button').trigger('click')
