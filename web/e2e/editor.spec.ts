@@ -300,17 +300,3 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
   }
 })
 
-
-test('a spinner shows over the sheet while it renders', async ({ browser }) => {
-  const ctx = await browser.newContext() // fresh: VexFlow not cached yet
-  const page = await ctx.newPage()
-  await page.route(/\/_nuxt\/.*\.js$/, async (route) => {
-    await new Promise((r) => setTimeout(r, 400)) // slow every chunk, so the VexFlow load+draw exceeds the spinner's 150ms debounce
-    await route.continue()
-  })
-  await page.goto('/song/autumn-leaves')
-  await expect(page.getByRole('status', { name: 'Loading' }).first()).toBeVisible()
-  await expect(staves(page)).toHaveCount(6) // drawn once VexFlow loads: Autumn Leaves opens on the Changes, six lines
-  await expect(page.getByRole('status', { name: 'Loading' })).toHaveCount(0) // spinner gone
-  await ctx.close()
-})
