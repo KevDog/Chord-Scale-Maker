@@ -134,9 +134,9 @@ export function drawArpeggioStaff(vf: VexFlowModule, el: HTMLElement, staff: Arp
   })
   if (notes.length > 0) {
     const voice = new vf.Voice({ numBeats: notes.length, beatValue: 8 }).setMode(vf.Voice.Mode.SOFT).addTickables(notes)
-    // beams are made before the notes draw, so the notes leave their flags to them
+    // beams are made before the notes draw, so the notes leave their flags to them; autoStem gives a group one stem direction
     const beams = staff.groups.reduce<{ at: number; beams: InstanceType<VexFlowModule['Beam']>[] }>(
-      (acc, g) => ({ at: acc.at + g, beams: g > 1 ? [...acc.beams, new vf.Beam(notes.slice(acc.at, acc.at + g))] : acc.beams }),
+      (acc, g) => ({ at: acc.at + g, beams: g > 1 ? [...acc.beams, new vf.Beam(notes.slice(acc.at, acc.at + g), true)] : acc.beams }),
       { at: 0, beams: [] },
     ).beams
     new vf.Formatter().joinVoices([voice]).format([voice], STAFF_WIDTH - stave.getNoteStartX() - 24)
