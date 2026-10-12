@@ -22,3 +22,10 @@ describe('firstSheet', () => {
     expect(firstSheet('changes', { changes: false })).toBe('scales')
   })
 })
+
+describe('firstSheet with an Arpeggios link', () => {
+  it('opens it as Changes, or Scales when Changes is off', () => {
+    expect(firstSheet('arpeggios', { changes: true })).toBe('changes')
+    expect(firstSheet('arpeggios', { changes: false })).toBe('scales')
+  })
+})

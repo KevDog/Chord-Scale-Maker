@@ -122,3 +122,40 @@ describe('buildArpeggioSheet', () => {
     expect(bad).toMatchObject({ error: 'No chord tones for Xyz', notes: [], intervals: null })
   })
 })
+
+describe('buildArpeggioSheet: errors, keys and the last line', () => {
+  it('never throws on an unreadable scale: Extended shows the Scales sheet error, 7th Chord still draws', () => {
+    const rows = [row('Cm7', 'Foo Bar')]
+    const scalesError = buildSheet(rows, CONCERT, 'root', 'C', 12)[0]?.pages.flat()[0]?.error
+    expect(scalesError).toEqual(expect.any(String))
+    const ext = buildArpeggioSheet(rows, CONCERT, 12, 'extended', 'up').pages.flat()[0]
+    expect(ext).toMatchObject({ error: scalesError, notes: [], intervals: null })
+    const sev = buildArpeggioSheet(rows, CONCERT, 12, 'seventh', 'up').pages.flat()[0]
+    expect(sev?.error).toBeNull()
+    expect(sev?.notes).toHaveLength(4)
+    expect(sev?.intervals).toEqual(['1', 'b3', '5', 'b7'])
+  })
+
+  it('says Choose a scale for an Extended line with no scale', () => {
+    const resolved = new Map([[0, { scale: null, source: 'default' as const }]])
+    const [s] = buildArpeggioSheet([row('Cm7')], CONCERT, 12, 'extended', 'up', undefined, resolved).pages.flat()
+    expect(s).toMatchObject({ error: 'Choose a scale', notes: [], intervals: null, scale: null })
+  })
+
+  it('marks an error line that ends the sheet as last', () => {
+    const pages = buildArpeggioSheet([row('Cm7'), row('Xyz')], CONCERT, 12, 'extended', 'up').pages.flat()
+    expect(pages.map((s) => s.last)).toEqual([false, true])
+  })
+
+  it('draws the key signature on the first line only, and marks accidentals by the measure rule', () => {
+    const eb = { tonic: 3, minor: false, name: 'Eb' } as const
+    const rows = [row('Cm7', 'C Dorian'), row('Fm7', 'F Dorian')]
+    const plain = buildArpeggioSheet(rows, CONCERT, 12, 'seventh', 'up').pages.flat()
+    expect(plain[0]?.accidentals).toContain('b')
+    const keyed = buildArpeggioSheet(rows, CONCERT, 12, 'seventh', 'up', eb).pages.flat()
+    expect(keyed.map((s) => s.showClefAndKey)).toEqual([true, false])
+    expect(keyed[0]?.keySig).not.toBeNull()
+    expect(keyed[0]?.accidentals).not.toContain('b')
+    expect(keyed[0]?.accidentals).toEqual(keyed[0]?.notes.map(() => null))
+  })
+})

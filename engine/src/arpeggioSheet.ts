@@ -1,7 +1,7 @@
 import type { Key } from './analysis/keys'
 import { arpeggioTones, placeRun } from './arpeggios'
 import { type Row, qualityScale } from './chart'
-import { type ChordToken, chordTokensOrNull, writtenChordRoot, writtenChordRootLenient } from './chord'
+import { type ChordToken, chordTokensOrNull, writtenChordRootLenient } from './chord'
 import { accidentalsInBar, keySignature, octaveOf } from './keySignature'
 import { intervalLabels } from './intervals'
 import { type Part, type Pitched, type ScaleLabel, rangeOf, scaleLabel, writtenScale } from './part'
@@ -60,8 +60,16 @@ export type ArpeggioSheetModel = Readonly<{ heading: string; pages: readonly (re
 /** one line's notes, and the length of each beamed group in order */
 export type ArpeggioLineNotes = Readonly<{ notes: readonly Pitched[]; groups: readonly number[] }>
 
-/** one scale line's arpeggio: chord tones (a triad's root again on top in 7th Chord mode), Extended adds the tensions above */
+/** one scale line's arpeggio: chord tones (a triad's root again on top in 7th Chord mode), Extended adds the tensions above; an unreadable scale is an error, never a throw */
 export function arpeggioLine(part: Part, chord: string, scale: string | null, notes: ArpNotes, dir: ArpDirection): ArpeggioLineNotes | Readonly<{ error: string }> {
+  try {
+    return playLine(part, chord, scale, notes, dir)
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : String(e) }
+  }
+}
+
+function playLine(part: Part, chord: string, scale: string | null, notes: ArpNotes, dir: ArpDirection): ArpeggioLineNotes | Readonly<{ error: string }> {
   const tones = arpeggioTones(part, chord, scale ?? undefined)
   if (!tones) return { error: `No chord tones for ${chord}` }
   if (notes === 'extended' && scale === null) return { error: 'Choose a scale' }
@@ -120,7 +128,7 @@ export function buildArpeggioSheet(
               played.notes.map((p) => ({ letter: p.letter, acc: p.acc, octave: octaveOf(p) })),
               keySig,
             ),
-      intervals: orNull(() => intervalLabels(writtenChordRoot(part, r.chord, scale ?? ''), played.notes, resolveQuality(r.chord)?.quality ?? null)),
+      intervals: orNull(() => intervalLabels(writtenChordRootLenient(part, r.chord, scale), played.notes, resolveQuality(r.chord)?.quality ?? null)),
       error: null,
     }
   })
