@@ -156,12 +156,14 @@
           </dd>
         </div>
         <div>
-          <dt class="font-semibold text-zinc-950 dark:text-white">From root or From C</dt>
+          <dt class="font-semibold text-zinc-950 dark:text-white">From key, From root, or From any note</dt>
           <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
-            <strong class="font-semibold">From root</strong> starts every scale on its own chord's root: the D Dorian on
-            D, the G Mixolydian on G. <strong class="font-semibold">From C</strong> (or whatever note you pick in
-            <strong class="font-semibold">Start on</strong>) starts every scale on the same note. That one's sneaky
-            good: the staves line up, so you can see exactly which notes change from chord to chord and which stay put.
+            <strong class="font-semibold">From key</strong>, where every chart starts, begins every scale on the tune's
+            key note, written for your instrument. <strong class="font-semibold">From C</strong> (or any other note in
+            the same list) starts every scale on that note instead. Both are sneaky good: the staves line up, so you
+            can see exactly which notes change from chord to chord and which stay put.
+            <strong class="font-semibold">From root</strong> starts every scale on its own chord's root: the D Dorian
+            on D, the G Mixolydian on G.
           </dd>
         </div>
         <div>
@@ -218,7 +220,7 @@
         </li>
         <li>Tick or untick a box while a preset's on and you get your own mix, starting from what the preset showed.</li>
         <li><strong class="font-semibold text-zinc-950 dark:text-white">Clear</strong> turns it all off.</li>
-        <li>Your picks are remembered for each library chart, in this browser, separately for From root and From C.</li>
+        <li>Your picks are remembered for each library chart, in this browser, separately for From root and from a note.</li>
       </ul>
     </section>
 
@@ -313,7 +315,7 @@
         </li>
         <li>
           <strong class="font-semibold text-zinc-950 dark:text-white">Share</strong> makes a link with the whole chart
-          packed inside, plus your instrument, From root or From C, and practice picks. Open it on your phone, or
+          packed inside, plus your instrument, where the scales start, and practice picks. Open it on your phone, or
           send it to your bandmates. Nothing is uploaded: the chart lives in the link itself.
         </li>
       </ul>

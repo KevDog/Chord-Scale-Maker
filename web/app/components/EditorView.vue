@@ -125,12 +125,12 @@
           <PreviewControls
             v-model:sheet="sheet"
             v-model:instrument="prefs.instrument.value"
-            v-model:mode="mode"
-            v-model:start="prefs.start.value"
+            v-model:spell="prefs.spell.value"
             v-model:intervals="prefs.intervals.value"
             v-model:numerals="prefs.numerals.value"
             v-model:scale-names="prefs.scaleNames.value"
             v-model:guide-line="prefs.guideLine.value"
+            :key-start="keyStartNote"
             :lock-labels="sheetEditor"
           >
             <!-- Level: how sophisticated each chord's scale is (engine/src/levels.ts); a dropdown in the toolbar -->
@@ -153,7 +153,7 @@
           <PracticePanel
             v-if="practiceOn && sheet === 'scales' && !editor.fatal.value"
             :mode="mode"
-            :start-text="prefs.start.value"
+            :start-text="start"
             :boxes="practiceBoxesNow"
             :selection="selection"
             :lit="litNow"
@@ -205,7 +205,7 @@
             :composer="editor.heading.value.composer"
             :part="part"
             :instrument-label="instrumentLabel(prefs.instrument.value)"
-            :start="prefs.start.value"
+            :start="start"
             :mode="mode"
             :per-page="PER_PAGE"
             :intervals="prefs.intervals.value"
@@ -235,6 +235,7 @@ import {
   encodeShare,
   insertBars,
   insertHeldBar,
+  keyStart,
   renameSection,
   repeatSection,
   setNav,
@@ -261,6 +262,7 @@ import type { SaveTarget } from '~/composables/useSavedChart'
 import { nextChordLine, type SheetChordEdit, type SheetDone, type SheetEdit, type SheetFocus, type SheetPlace } from '~/utils/sheetChordEdit'
 import { SCALE_VIEW } from '~/utils/scaleView'
 import { firstSheet, type SheetKind } from '~/utils/sheets'
+import { spellView } from '~/utils/scaleChoices'
 
 /**
  * practiceKey: what practice selections are remembered under (a library slug, or mine:<id>); none for the visit only.
@@ -312,8 +314,11 @@ function toggleEditor(): void {
   prefs.showEditor.value = !editorShown.value
   bornNew.value = false
 }
-/** one spelling at a time: every scale from the Start on note, or each from its own root */
-const mode = ref<Mode>(props.shared?.mode ?? 'root')
+/** one spelling at a time: every scale from the chart's key (written for the part) or a picked note, or each from its own root */
+const keyStartNote = computed(() => keyStart(chartKeyOf(editor.doc.value), part.value))
+const spelled = computed(() => spellView(prefs.spell.value, keyStartNote.value))
+const mode = computed((): Mode => spelled.value.mode)
+const start = computed(() => spelled.value.start)
 const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeature('changes') }))
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
@@ -344,9 +349,9 @@ if (props.shared?.practice) practice.setSelection(mode.value, props.shared.pract
 const selection = computed(() => (practiceOn ? practice.selection(mode.value) : null))
 // every staff with its practice keys, for the panel's boxes and what the selection lights
 const practiceStaves = computed(() =>
-  practiceOn ? buildSheet(editor.rows.value, part.value, mode.value, prefs.start.value, LIMITS.maxExpandedRows, selection.value, undefined, resolved.value).flatMap((p) => p.pages.flat()) : [],
+  practiceOn ? buildSheet(editor.rows.value, part.value, mode.value, start.value, LIMITS.maxExpandedRows, selection.value, undefined, resolved.value).flatMap((p) => p.pages.flat()) : [],
 )
-const practiceBoxesNow = computed(() => practiceBoxes(practiceStaves.value, mode.value, prefs.start.value))
+const practiceBoxesNow = computed(() => practiceBoxes(practiceStaves.value, mode.value, start.value))
 const litNow = computed(() => litKeys(practiceStaves.value))
 const transposed = ref('')
 const focus = useFocusMode()
@@ -534,7 +539,7 @@ async function shareUrl(): Promise<string> {
   const view: ShareView = {
     instrument: prefs.instrument.value,
     mode: mode.value,
-    start: prefs.start.value,
+    ...(mode.value === 'from' && prefs.spell.value !== 'key' ? { start: start.value } : {}), // none: from the key
     intervals: prefs.intervals.value,
     numerals: prefs.numerals.value,
     scaleNames: prefs.scaleNames.value,

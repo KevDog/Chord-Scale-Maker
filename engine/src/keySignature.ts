@@ -17,6 +17,13 @@ export function keySignature(key: Key | null, part: Part): string | null {
   return rootName(simplifyRoot(writtenRoot(part, major, 'ionian'), 'ionian'))
 }
 
+/** the Scales sheet's default start note: the key's tonic (a minor key's own) written for the part; C with no key */
+export function keyStart(key: Key | null, part: Part): string {
+  if (!key) return 'C'
+  const scale = key.minor ? 'aeolian' : 'ionian'
+  return rootName(simplifyRoot(writtenRoot(part, tonicOf(key), scale), scale))
+}
+
 /** the letters a signature alters, and by how much (Eb: E, A and B a flat) */
 export function signatureAccidentals(spec: string | null): ReadonlyMap<Letter, number> {
   if (!spec) return new Map()

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { parseScale } from '@chord-scale-maker/engine'
-import { PICKER_SCALES, scaleChoices, scaleFormula, searchScales } from '~/utils/scaleChoices'
+import { PICKER_SCALES, scaleChoices, scaleFormula, searchScales, spellLabel, spellView } from '~/utils/scaleChoices'
 
 describe('scaleChoices', () => {
   it('splits the default from the alternates', () => {
@@ -44,5 +44,21 @@ describe('searchScales', () => {
     expect(searchScales('  ', 'C')).toEqual([])
     expect(searchScales('zzz', 'C')).toEqual([])
     expect(searchScales('C', 'C')).toHaveLength(8)
+  })
+})
+
+describe('spellView', () => {
+  it("spells from the root, the chart's key or a picked note", () => {
+    expect(spellView('root', 'F')).toEqual({ mode: 'root', start: 'F' })
+    expect(spellView('key', 'F')).toEqual({ mode: 'from', start: 'F' })
+    expect(spellView('Eb', 'F')).toEqual({ mode: 'from', start: 'Eb' })
+  })
+})
+
+describe('spellLabel', () => {
+  it('names each choice, the key with its note', () => {
+    expect(spellLabel('root', 'Bb')).toBe('From root')
+    expect(spellLabel('key', 'Bb')).toBe('From key (B♭)')
+    expect(spellLabel('F#', 'Bb')).toBe('From F♯')
   })
 })

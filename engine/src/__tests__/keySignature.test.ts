@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { type Key, parseKey } from '../analysis/keys'
-import { accidentalsInBar, keySignature, octaveOf, signatureAccidentals } from '../keySignature'
+import { accidentalsInBar, keySignature, keyStart, octaveOf, signatureAccidentals } from '../keySignature'
 import { CONCERT, partFor } from '../part'
 
 const key = (t: string): Key => parseKey(t) ?? (() => { throw new Error(t) })()
@@ -58,5 +58,28 @@ describe('accidentalsInBar', () => {
   it('reads a pitched note the way VexFlow places it', () => {
     expect(octaveOf({ letter: 0, acc: 0, midi: 60 })).toBe(4)
     expect(octaveOf({ letter: 6, acc: 1, midi: 72 })).toBe(4) // B#4 sounds as C5
+  })
+})
+
+describe('keyStart', () => {
+  it('writes the key\'s tonic for the part', () => {
+    expect(keyStart(key('Eb'), CONCERT)).toBe('Eb')
+    expect(keyStart(key('Eb'), partFor('tenor-sax'))).toBe('F')
+    expect(keyStart(key('Eb'), partFor('alto-sax'))).toBe('C')
+    expect(keyStart(key('Db'), partFor('tenor-sax'))).toBe('Eb')
+  })
+
+  it('starts a minor key on its own tonic, not its relative major', () => {
+    expect(keyStart(key('Gm'), CONCERT)).toBe('G')
+    expect(keyStart(key('Gm'), partFor('trumpet'))).toBe('A')
+  })
+
+  it('spells the tonic without B#, E#, Cb or Fb', () => {
+    expect(keyStart(key('Gb'), partFor('tenor-sax'))).toBe('Ab')
+    expect(keyStart(key('B'), partFor('alto-sax'))).toBe('Ab')
+  })
+
+  it('starts on C when the chart has no key', () => {
+    expect(keyStart(null, partFor('alto-sax'))).toBe('C')
   })
 })
