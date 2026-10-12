@@ -5,7 +5,7 @@ import { type ChordToken, chordTokensOrNull, writtenChordRootLenient } from './c
 import { accidentalsInBar, keySignature, octaveOf } from './keySignature'
 import { intervalLabels } from './intervals'
 import { type Part, type Pitched, type ScaleLabel, rangeOf, scaleLabel, writtenScale } from './part'
-import { accText, mod, pcOf, type Spelled } from './pitch'
+import { mod, pcOf, type Spelled } from './pitch'
 import { resolveQuality } from './qualities'
 import type { Resolved } from './resolve'
 import { scaleLines } from './sheet'
@@ -107,7 +107,8 @@ export function buildArpeggioSheet(
     const r = rows[l.row] as Row
     const scale = scaleOf(r, l.row)
     const showClefAndKey = key === undefined || n === 0
-    const id = [l.chords.join(' '), scale, part.clef, part.trans, notes, dir, keySig, showClefAndKey ? '' : 'bare'].join('|')
+    const range = rangeOf(part)
+    const id = [l.chords.join(' '), scale, part.clef, part.trans, `${range.lo}-${range.hi}-${range.centre}`, notes, dir, keySig, showClefAndKey ? '' : 'bare'].join('|')
     const base = {
       id,
       chords: l.chords.map((c) => chordTokensOrNull(part, c, scale)),
@@ -121,13 +122,10 @@ export function buildArpeggioSheet(
     return {
       ...base,
       ...played,
-      accidentals:
-        keySig === null
-          ? played.notes.map((p) => (p.acc ? accText(p.acc) : null))
-          : accidentalsInBar(
-              played.notes.map((p) => ({ letter: p.letter, acc: p.acc, octave: octaveOf(p) })),
-              keySig,
-            ),
+      accidentals: accidentalsInBar(
+        played.notes.map((p) => ({ letter: p.letter, acc: p.acc, octave: octaveOf(p) })),
+        keySig,
+      ),
       intervals: orNull(() => intervalLabels(writtenChordRootLenient(part, r.chord, scale), played.notes, resolveQuality(r.chord)?.quality ?? null)),
       error: null,
     }

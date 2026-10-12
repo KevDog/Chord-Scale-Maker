@@ -159,3 +159,31 @@ describe('buildArpeggioSheet: errors, keys and the last line', () => {
     expect(keyed[0]?.accidentals).toEqual(keyed[0]?.notes.map(() => null))
   })
 })
+
+describe('buildArpeggioSheet: range and the bar rule without a key', () => {
+  it('changes the id and the notes with the range, for the same clef and transposition', () => {
+    const r = rangeOf(CONCERT)
+    const wide = { ...CONCERT, range: { ...r, lo: r.lo - 12, hi: r.hi + 12 } }
+    const low = { ...CONCERT, range: { ...r, lo: r.lo - 24, hi: r.lo + 6, centre: r.lo - 9 } }
+    const first = (p: typeof CONCERT) => buildArpeggioSheet([row('G7', 'G Altered')], p, 12, 'extended', 'up').pages[0]?.[0]
+    const a = first(CONCERT)
+    const b = first(low)
+    expect(a?.id).not.toBe(b?.id)
+    expect(a?.notes.map((n) => n.midi)).not.toEqual(b?.notes.map((n) => n.midi))
+    expect(first(wide)?.id).not.toBe(a?.id)
+  })
+
+  it('marks each flat once in Up & down with no key', () => {
+    const [s] = buildArpeggioSheet([row('Cm7', 'C Dorian')], CONCERT, 12, 'seventh', 'up-down').pages.flat()
+    expect(s?.notes.map(rootName)).toEqual(['C', 'Eb', 'G', 'Bb', 'G', 'Eb', 'C'])
+    expect(s?.accidentals).toEqual([null, 'b', null, 'b', null, null, null])
+  })
+
+  it('prints a natural for the B after a Bb in the same octave (bebop dominant, no key)', () => {
+    const [s] = buildArpeggioSheet([row('C7', 'C Bebop Dominant')], CONCERT, 12, 'extended', 'up').pages.flat()
+    const ns = s?.notes ?? []
+    const i = ns.findIndex((n) => rootName(n) === 'B')
+    expect(i).toBeGreaterThan(0)
+    expect(s?.accidentals[i]).toBe('n')
+  })
+})

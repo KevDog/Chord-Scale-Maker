@@ -355,7 +355,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   down plays both without repeating the top note. Placed as one run by `placeRun` (fewest notes out of range, then
   nearest the range's centre).
 - **Drawing:** `drawArpeggioStaff` beams eighths by group (the chord tones, then the tensions; a group of one gets a
-  flag); accidentals by the measure rule over the whole line. `buildArpeggioSheet` (`engine/src/arpeggioSheet.ts`)
+  flag; each beamed group takes one stem direction); accidentals by the measure rule over the whole line, with or
+  without a key signature. `buildArpeggioSheet` (`engine/src/arpeggioSheet.ts`)
   builds the model; the components only draw it.
 - **Preferences and links:** `csm-arp-notes` (`seventh` | `extended`), `csm-arp-dir` (`up` | `down` | `up-down`); share
   links carry `sheet: 'arpeggios'`, `arpNotes`, `arpDir`, and open on the sheet only when the flag is on.
