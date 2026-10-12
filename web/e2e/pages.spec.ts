@@ -1,4 +1,6 @@
 import { crc32, deflateSync } from 'node:zlib'
+import { readFileSync } from 'node:fs'
+import { shownQuotes } from '../build/quotes'
 import { expect, test } from './fixtures'
 
 test('About credits Jazz Lab and loads the video only when played, from the no-cookie domain', async ({ page }) => {
@@ -139,4 +141,34 @@ test('Report a chart error opens the contact form, pre-filled with the chart and
   await expect(message).toHaveValue(/Cm7/) // the chart text came along
   await page.reload() // the report is used once, then cleared
   await expect(page.getByRole('textbox', { name: 'Message' })).toHaveValue('')
+})
+
+test('the header is the same height whatever the quote, and keeps the whole quote', async ({ page }) => {
+  const quotes = shownQuotes(JSON.parse(readFileSync(new URL('../../data/quotes.json', import.meta.url), 'utf8')))
+  const byLength = quotes.map((q, i) => ({ i, n: q.quote.length + q.author.length })).sort((a, b) => a.n - b.n)
+  const longest = quotes[byLength.at(-1)!.i]!
+  const at = (i: number): number => (i + 0.5) / quotes.length // the Math.random value that picks quote i
+  const picks = [byLength.at(-1)!.i, byLength[0]!.i, 0, quotes.length - 1, byLength[Math.floor(byLength.length / 2)]!.i, 1]
+  const paths = ['/', '/help', '/about', '/contact', '/functions', '/song/autumn-leaves']
+  const heights = new Set<number>()
+  for (const [n, path] of paths.entries()) {
+    await page.addInitScript((r) => (Math.random = () => r), at(picks[n]!)) // init scripts run in order: the last added wins
+    await page.goto(path)
+    const quote = page.getByRole('banner').locator('figure')
+    await expect(quote).toBeVisible()
+    expect((await quote.boundingBox())?.height).toBe(20) // one line
+    if (n === 0) {
+      await expect(page.getByRole('banner').locator('[title]')).toHaveAttribute('title', `“${longest.quote}” — ${longest.author}`)
+      await expect(quote).toHaveText(`“${longest.quote}” — ${longest.author}`) // clipped on screen, whole for screen readers
+      expect(await quote.evaluate((f) => f.scrollWidth > f.clientWidth)).toBe(true)
+    }
+    heights.add(Math.round((await page.getByRole('banner').boundingBox())?.height ?? 0))
+    expect((await page.getByRole('banner').getByRole('navigation').first().boundingBox())?.height).toBeLessThanOrEqual(64)
+  }
+  await page.setViewportSize({ width: 390, height: 844 }) // a phone: the menu button's row, no quote
+  for (const path of ['/', '/song/autumn-leaves']) {
+    await page.goto(path)
+    heights.add(Math.round((await page.getByRole('banner').boundingBox())?.height ?? 0))
+  }
+  expect([...heights]).toEqual([64])
 })

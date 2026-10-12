@@ -63,7 +63,7 @@ test('a quote in the header, kept while navigating', async ({ page }) => {
   await page.goto('/')
   const quote = page.locator('nav figure')
   await expect(quote).toBeVisible()
-  await expect(quote.locator('figcaption')).toHaveText(/^— [^·]+$/) // the author only
+  await expect(quote.locator('figcaption')).toHaveText(/^ ?— [^·]+$/) // the author only
   const text = await quote.textContent()
   await page.getByRole('link', { name: 'Autumn Leaves', exact: true }).click()
   await expect(page).toHaveURL(/song/)
