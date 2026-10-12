@@ -11,7 +11,7 @@
     </HPopoverButton>
     <HPopoverPanel
       role="dialog"
-      :style="{ left: `${shift}px` }"
+      :style="{ left: `${shift}px`, ...(pageZoom !== 1 ? { zoom: 1 / pageZoom } : {}) }"
       :aria-label="`Why: ${chord}`"
       class="absolute top-full left-0 z-20 mt-2 w-72 rounded-lg max-sm:w-[calc(100vw-2rem)] bg-white p-3 text-left text-sm/6 font-normal text-zinc-700 shadow-lg ring-1 ring-zinc-950/10 dark:bg-zinc-800 dark:text-zinc-200 dark:ring-white/10 print:hidden"
     >
@@ -45,6 +45,7 @@
 import { Popover as HPopover, PopoverButton as HPopoverButton, PopoverPanel as HPopoverPanel } from '@headlessui/vue'
 import { type ChangesChord, ruleParts } from '@chord-scale-maker/engine'
 import { panelShift } from '~/utils/notePlacement'
+import { PAGE_ZOOM } from '~/utils/sheetPaged'
 import { ISSUE_CONTEXT, ISSUE_TEXT_KEY, issueText, issueTitle, issueUrl } from '~/utils/issueReport'
 
 /**
@@ -58,6 +59,9 @@ const props = withDefaults(
   { problem: '', wrap: false },
 )
 const shift = ref(0)
+/** in focus mode's zoomed page, the panel undoes the zoom, to read at full size */
+const pageZoomRef = inject(PAGE_ZOOM, ref(1))
+const pageZoom = computed(() => pageZoomRef.value)
 /**
  * on a click that opens the panel (keyboard activation clicks too): measure it, then move it so it stays on the
  * screen, on a phone and near the sheet's right edge (it opens at its numeral's left edge)

@@ -225,6 +225,44 @@ test('focus mode shows only the sheet, leaves on Escape or its button, and still
   await expect(page.getByRole('button', { name: 'Work on' })).toBeVisible()
 })
 
+test('focus mode shows the sheet as pages, each fitted to the window, scrolling from one to the next', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/song/autumn-leaves')
+  await chooseSheet(page, 'Scales') // 2 printed pages
+  await page.getByRole('button', { name: 'Focus', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'Focus mode' })
+  const pages = dialog.locator('[data-slot=page]')
+  await expect(pages).toHaveCount(2)
+  await expect(dialog.locator('svg[aria-label]')).toHaveCount(14)
+  // fitted: the first page whole in the window under the Exit bar, every page smaller than the window, page-shaped
+  await expect.poll(async () => (await pages.nth(0).boundingBox())!.y + (await pages.nth(0).boundingBox())!.height).toBeLessThanOrEqual(800)
+  for (const p of await pages.all()) {
+    const box = (await p.boundingBox())!
+    expect(box.height).toBeLessThan(800)
+    expect(box.width / box.height).toBeCloseTo(816 / 1056, 1) // a letter page's shape
+    await expect(p.locator('header').first()).toBeVisible() // each page under its own heading, as printed
+  }
+  await expect(pages.nth(0)).toBeInViewport({ ratio: 0.9 })
+  await pages.nth(1).scrollIntoViewIfNeeded()
+  await expect(pages.nth(1)).toBeInViewport({ ratio: 0.9 })
+})
+
+test('on a phone, focus mode’s pages lay out as printed: four bars a line', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/song/autumn-leaves')
+  await expect(page.locator('svg[aria-label^="Bars:"]')).toHaveCount(12) // 24 bars, two a line on the phone's screen
+  await page.getByRole('button', { name: 'Controls', exact: true }).click()
+  await page.getByRole('dialog', { name: 'Controls' }).getByRole('button', { name: 'Focus', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'Focus mode' })
+  await expect(dialog.locator('svg[aria-label^="Bars:"]')).toHaveCount(6) // four a line, as printed
+  await expect.poll(() => dialog.evaluate((d) => d.scrollWidth <= d.clientWidth)).toBe(true) // fitted to the width: no sideways scroll
+  // a chord's Why panel reads at full size, not the page's zoom
+  await dialog.getByRole('button', { name: 'C Dorian', exact: true }).first().click()
+  const why = page.getByRole('dialog', { name: /^Why:/ })
+  await expect(why).toBeVisible()
+  expect((await why.boundingBox())!.width).toBeGreaterThan(300)
+})
+
 /** the Scales sheet's staves, with their headings (chord and scale) */
 const scaleStaves = (page: import('@playwright/test').Page) => page.locator('.break-inside-avoid')
 
