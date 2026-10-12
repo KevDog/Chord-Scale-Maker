@@ -40,8 +40,9 @@
 
     <!-- phones: a list, one tune a row, nothing off screen sideways -->
     <ul v-if="charts.length" class="mt-4 divide-y divide-zinc-950/5 sm:hidden dark:divide-white/5">
-      <li v-for="chart in charts" :key="chart.slug" :data-letter="firstOf[chart.slug]" class="scroll-mt-4 py-3">
-        <UiLink :href="songPath(chart.slug)" class="text-[15px]/6 font-semibold text-note-800 dark:text-note-300">{{ chart.title }}</UiLink>
+      <li v-for="chart in charts" :key="chart.slug" :data-letter="firstOf[chart.slug]" class="relative scroll-mt-4 py-3">
+        <!-- the whole row is the link's tap target -->
+        <UiLink :href="songPath(chart.slug)" class="text-[15px]/6 font-semibold text-note-800 after:absolute after:inset-0 dark:text-note-300">{{ chart.title }}</UiLink>
         <p class="truncate text-sm/5 text-zinc-500 dark:text-zinc-400">{{ [chart.composer, chart.details].filter(Boolean).join(' · ') }}</p>
       </li>
     </ul>
@@ -98,8 +99,14 @@ const firstOf: Readonly<Record<string, string>> = Object.fromEntries(letters.map
 function jump(letter: string): void {
   const target = [...document.querySelectorAll<HTMLElement>(`[data-letter="${letter}"]`)].find((e) => e.offsetParent !== null)
   target?.scrollIntoView({ block: 'start' })
+  target?.querySelector('a')?.focus({ preventScroll: true }) // the keyboard goes on from the tune, not the next letter
   history.replaceState(history.state, '', `#letter-${letter}`)
 }
+// arriving at /#letter-R (a reload, a link): the ids are on the table's rows, hidden on a phone
+onMounted(() => {
+  const letter = /^#letter-(.)$/.exec(location.hash)?.[1]
+  if (letter) nextTick(() => jump(letter))
+})
 const opener = useOpenChart()
 const fileInput = ref<HTMLInputElement | null>(null)
 

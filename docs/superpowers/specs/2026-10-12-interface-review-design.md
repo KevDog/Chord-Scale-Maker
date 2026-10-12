@@ -101,7 +101,7 @@ Applied to the song page, the library header, the Practice panel (All/Clear stay
 - Phones (< sm): rows become a list (title 15 px/600, then composer and details on one muted line), no sideways
   scroll; from `sm` up the table stays.
 - An A–Z bar (letters with tunes link to the first tune of each letter; a leading article ("A", "The") files under its
-  own letter as titles sort today); hidden while searching.
+  own letter as titles sort today; a leading apostrophe is ignored: 'Round Midnight files under R); hidden while searching.
 - Details is built, not free text: `style · key · form` from the chart's headers (`tuneSummary`'s `style`,
   `keyLabel`, `form`), so every row reads the same. `subtitle:` stays on the sheet.
 

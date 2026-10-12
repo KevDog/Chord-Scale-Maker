@@ -175,8 +175,13 @@ test('one Library heading, an A–Z bar that jumps to a letter and hides while s
   await expect(page.getByText('Chart library')).toHaveCount(0)
   await expect(page.getByRole('heading', { name: 'Library', level: 2 })).toHaveCount(0) // no My charts above it
   const az = page.getByRole('navigation', { name: 'Jump to letter' })
-  await az.getByRole('link', { name: 'R', exact: true }).click()
-  await expect(page.getByRole('link', { name: "'Round Midnight", exact: true })).toBeInViewport()
+  const round = page.getByRole('link', { name: 'Recorda-Me', exact: true }) // R's first tune ('Round Midnight files after it)
+  // retried: before hydration the link is a plain #letter-R jump, which scrolls but leaves focus behind
+  await expect(async () => {
+    await az.getByRole('link', { name: 'R', exact: true }).click()
+    await expect(round).toBeFocused({ timeout: 1000 })
+  }).toPass({ timeout: 10_000 })
+  await expect(round).toBeInViewport()
   await expect(page.getByRole('row', { name: /^All Blues/ })).toContainText('Blues · G · A, 12 bars') // details, built
   await page.getByPlaceholder('Search by title').fill('blue')
   await expect(az).toBeHidden()
@@ -190,5 +195,7 @@ test('on a phone the library is a list: no sideways scroll, each tune with its c
   await expect(page.getByRole('table')).toBeHidden()
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390)
   await page.getByRole('navigation', { name: 'Jump to letter' }).getByRole('link', { name: 'W', exact: true }).click()
-  await expect(page.getByRole('link', { name: /^Well, You Needn|^Waltz|^Wave/ }).first()).toBeInViewport()
+  await expect(page.getByRole('link', { name: 'Waltz for Ellington', exact: true })).toBeInViewport()
+  await page.reload() // the address keeps the letter: back to it on a phone too
+  await expect(page.getByRole('link', { name: 'Waltz for Ellington', exact: true })).toBeInViewport()
 })

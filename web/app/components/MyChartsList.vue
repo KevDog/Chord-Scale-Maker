@@ -47,7 +47,7 @@ import { songPath } from '~/utils/site'
 
 /** My charts on the library page: your edited versions, copies and new charts, newest first (client-only) */
 const props = defineProps<{ query: string }>()
-/** count: how many show (the page's second "Library" heading is only needed below them) */
+/** count: how many are saved (the section shows, matched or not, and the page's second "Library" heading below it) */
 const emit = defineEmits<{ count: [n: number] }>()
 
 const KIND_COLOR: Readonly<Record<SavedMeta['kind'], BadgeColor>> = { edited: 'amber', copy: 'zinc', new: 'note' }
