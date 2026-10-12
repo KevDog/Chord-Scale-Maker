@@ -36,3 +36,12 @@ export function removeStored(key: string): void {
     // unavailable: nothing was stored
   }
 }
+
+/** every key in this browser's localStorage (none when it's unavailable) */
+export function storedKeys(): string[] {
+  try {
+    return Array.from({ length: localStorage.length }, (_, i) => localStorage.key(i)).filter((k): k is string => k !== null)
+  } catch {
+    return []
+  }
+}

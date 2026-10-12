@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { deleteChart, filenameFor, listCharts, loadChart, migrateDraft, MY_CHARTS_MAX, newChartId, saveChart, versionOf } from '~/utils/myCharts'
+import { deleteChart, filenameFor, listCharts, loadChart, migrateChartNames, migrateDraft, MY_CHARTS_MAX, newChartId, saveChart, versionOf } from '~/utils/myCharts'
 
 const chart = (title: string, chord = 'Cm7'): string => `title: ${title}\nA | 1 | ${chord}\n`
 
@@ -71,5 +71,67 @@ describe('My charts', () => {
       'Cafe Re mi.txt',
       'etc.txt',
     ])
+  })
+})
+
+describe('migrateChartNames', () => {
+  afterEach(() => {
+    localStorage.clear()
+    vi.restoreAllMocks()
+  })
+  const meta = (id: string, basedOn?: string) => ({ id, title: 'T', kind: basedOn ? 'edited' : 'new', ...(basedOn ? { basedOn } : {}), createdAt: 1, updatedAt: 1 })
+
+  it('moves practice picks and the scale level saved under a chart’s old name', () => {
+    localStorage.setItem('csm-practice:autumn_leaves:root', '{"a":1}')
+    localStorage.setItem('csm-practice:autumn_leaves:from', '{"b":2}')
+    localStorage.setItem('csm-level:autumn_leaves', '{"level":"advanced","seed":1}')
+    migrateChartNames()
+    expect(localStorage.getItem('csm-practice:autumn-leaves:root')).toBe('{"a":1}')
+    expect(localStorage.getItem('csm-practice:autumn-leaves:from')).toBe('{"b":2}')
+    expect(localStorage.getItem('csm-level:autumn-leaves')).toBe('{"level":"advanced","seed":1}')
+    expect(localStorage.getItem('csm-practice:autumn_leaves:root')).toBeNull()
+    expect(localStorage.getItem('csm-level:autumn_leaves')).toBeNull()
+  })
+
+  it('points an edited library chart at the new name', () => {
+    localStorage.setItem('csm-charts', JSON.stringify([meta('aaaaaa1', 'autumn_leaves'), meta('bbbbbb2')]))
+    migrateChartNames()
+    expect(versionOf('autumn-leaves')?.id).toBe('aaaaaa1')
+    expect(listCharts().find((m) => m.id === 'bbbbbb2')?.basedOn).toBeUndefined()
+  })
+
+  it('keeps the new key when both exist, and drops the old', () => {
+    localStorage.setItem('csm-level:so_what', 'old')
+    localStorage.setItem('csm-level:so-what', 'new')
+    migrateChartNames()
+    expect(localStorage.getItem('csm-level:so-what')).toBe('new')
+    expect(localStorage.getItem('csm-level:so_what')).toBeNull()
+  })
+
+  it('leaves your own charts’ keys alone', () => {
+    localStorage.setItem('csm-practice:mine:ab_cd12:root', 'x')
+    localStorage.setItem('csm-level:mine:ab_cd12', 'y')
+    migrateChartNames()
+    expect(localStorage.getItem('csm-practice:mine:ab_cd12:root')).toBe('x')
+    expect(localStorage.getItem('csm-level:mine:ab_cd12')).toBe('y')
+  })
+
+  it('keeps the old key when the new one can’t be written (storage full)', () => {
+    localStorage.setItem('csm-level:so_what', 'old')
+    const full = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
+      throw new DOMException('full', 'QuotaExceededError')
+    })
+    migrateChartNames()
+    full.mockRestore()
+    expect(localStorage.getItem('csm-level:so_what')).toBe('old')
+  })
+
+  it('changes nothing the second time', () => {
+    localStorage.setItem('csm-level:so_what', 'v')
+    localStorage.setItem('csm-charts', JSON.stringify([meta('aaaaaa1', 'so_what')]))
+    migrateChartNames()
+    const once = JSON.stringify({ ...localStorage })
+    migrateChartNames()
+    expect(JSON.stringify({ ...localStorage })).toBe(once)
   })
 })

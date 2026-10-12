@@ -153,3 +153,16 @@ test('choosing a scale and then the analysed one again leaves the library chart 
   await expect(page.getByLabel('Chart text')).toHaveValue(/A1 \| 1 +\| Cm7 +\| C Dorian/) // the name pins it, though the analyser agrees
   await expect(status(page)).toHaveText(/^Your edited version of Autumn Leaves/)
 })
+
+test('an edited library chart and its scale level, saved under the chart’s old name, still open', async ({ page }) => {
+  await page.goto('/help')
+  await page.evaluate(() => {
+    localStorage.setItem('csm-charts', JSON.stringify([{ id: 'oldname01', title: 'My Leaves', kind: 'edited', basedOn: 'autumn_leaves', createdAt: 1, updatedAt: 1 }]))
+    localStorage.setItem('csm-chart:oldname01', 'title: My Leaves\nkey: Gm\nA | 1 | Cm7')
+    localStorage.setItem('csm-level:autumn_leaves', JSON.stringify({ level: 'advanced', seed: 1 }))
+  })
+  await page.goto('/song?chart=autumn-leaves')
+  await expect(page).toHaveTitle('My Leaves · Chord Scale Maker')
+  expect(await page.evaluate(() => [localStorage.getItem('csm-level:autumn_leaves'), JSON.parse(localStorage.getItem('csm-level:autumn-leaves') ?? '{}').level]))
+    .toEqual([null, 'advanced'])
+})
