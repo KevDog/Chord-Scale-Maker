@@ -182,7 +182,7 @@ describe('EditorView guide tones', () => {
     expect(w.findAll('fieldset').find((f) => f.find('legend').text() === 'Guide tones')?.exists()).toBe(true)
     expect(guideOptions(w).map((l) => l.text())).toEqual(['Off', 'From 3rd', 'From 7th'])
     expect(checkedGuide(w)).toEqual(['Off'])
-    expect(changesSheet(w).props('guideLine')).toBe('off')
+    expect(changesSheet(w).props('line')).toBe('off')
     expect(guideOptions(w)[1]?.attributes('title')).toBe("A line that starts on the first chord's 3rd and moves to the nearest guide tone of each chord")
     expect(guideOptions(w)[2]?.attributes('title')).toBe("A line that starts on the first chord's 7th and moves to the nearest guide tone of each chord")
     expect(buttonCalled(w, 'From 3rd')).toBeUndefined() // no toggle buttons
@@ -192,14 +192,14 @@ describe('EditorView guide tones', () => {
   it('passes the line chosen to the Changes sheet, one at a time, and remembers it', async () => {
     const w = await mount()
     await chooseGuide(w, 'From 3rd')
-    expect(changesSheet(w).props('guideLine')).toBe('third')
+    expect(changesSheet(w).props('line')).toBe('third')
     expect(checkedGuide(w)).toEqual(['From 3rd'])
     await chooseGuide(w, 'From 7th')
-    expect(changesSheet(w).props('guideLine')).toBe('seventh')
+    expect(changesSheet(w).props('line')).toBe('seventh')
     expect(checkedGuide(w)).toEqual(['From 7th'])
     expect(localStorage.getItem('csm-guide-line')).toBe('seventh')
     await chooseGuide(w, 'Off')
-    expect(changesSheet(w).props('guideLine')).toBe('off')
+    expect(changesSheet(w).props('line')).toBe('off')
     expect(localStorage.getItem('csm-guide-line')).toBe('off')
     w.unmount()
   })
@@ -208,7 +208,7 @@ describe('EditorView guide tones', () => {
     localStorage.setItem('csm-guide-line', 'third')
     const w = await mount()
     expect(checkedGuide(w)).toEqual(['From 3rd'])
-    expect(changesSheet(w).props('guideLine')).toBe('third')
+    expect(changesSheet(w).props('line')).toBe('third')
     w.unmount()
   })
 
@@ -233,7 +233,7 @@ describe('EditorView guide tones', () => {
 
   it("applies a share link's line for the visit, and a share link carries it", async () => {
     const w = await mount({ sheet: 'changes', line: 'seventh' })
-    expect(changesSheet(w).props('guideLine')).toBe('seventh')
+    expect(changesSheet(w).props('line')).toBe('seventh')
     expect(checkedGuide(w)).toEqual(['From 7th'])
     expect(localStorage.getItem('csm-guide-line')).toBeNull()
     expect(await linkOf(w)).toMatchObject({ sheet: 'changes', line: 'seventh' })
@@ -243,7 +243,7 @@ describe('EditorView guide tones', () => {
   it('opens a link without a line with the line off, whatever your own, and shares no line with it off', async () => {
     localStorage.setItem('csm-guide-line', 'third')
     const w = await mount({ sheet: 'changes' })
-    expect(changesSheet(w).props('guideLine')).toBe('off')
+    expect(changesSheet(w).props('line')).toBe('off')
     expect(await linkOf(w)).not.toHaveProperty('line')
     w.unmount()
   })

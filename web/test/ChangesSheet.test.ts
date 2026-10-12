@@ -2,21 +2,27 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { nextTick } from 'vue'
 import { describe, expect, it } from 'vitest'
 import ChangesSheet from '~/components/ChangesSheet.vue'
-import { changesLinesPerPage, type ChartDoc, type GuideLine, parseChart, type ScaleView } from '@chord-scale-maker/engine'
+import { changesLinesPerPage, type ChartDoc, parseChart, type ScaleView, type SheetLine } from '@chord-scale-maker/engine'
 
 const doc = parseChart('title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\n').value
 // 64 bars: more lines than any page holds, at 2 or 4 bars a line
 const long = parseChart(`title: L\nkey: C\n${Array.from({ length: 64 }, (_, i) => `A | ${i + 1} | ${['Dm7', 'G7', 'CMaj7', 'A7'][i % 4]}`).join('\n')}\n`).value
 
-const mountSheet = (over: Readonly<{ doc?: ChartDoc; signatures?: boolean; guideLine?: GuideLine; numerals?: boolean; scales?: boolean; editing?: null }> = {}) =>
+const mountSheet = (over: Readonly<{ doc?: ChartDoc; signatures?: boolean; line?: SheetLine; numerals?: boolean; scales?: boolean; editing?: null }> = {}) =>
   mountSuspended(ChangesSheet, {
     props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: false, ...over },
     global: { stubs: { ChangesSystem: true } },
   })
-const systemOf = async (signatures: boolean, guideLine?: GuideLine) =>
-  (await mountSheet({ signatures, ...(guideLine ? { guideLine } : {}) })).findComponent({ name: 'ChangesSystem' })
+const systemOf = async (signatures: boolean, line?: SheetLine) =>
+  (await mountSheet({ signatures, ...(line ? { line } : {}) })).findComponent({ name: 'ChangesSystem' })
 
 describe('ChangesSheet', () => {
+  it('tells each system it draws an arpeggio line, and gives line 1 the clef', async () => {
+    const system = (await mountSheet({ line: 'up-root' })).findComponent({ name: 'ChangesSystem' })
+    expect(system.props('arpeggio')).toBe(true)
+    expect(system.props('clef')).toBe('bass') // the part's clef (this mount's part is bass)
+  })
+
   it('plays a blank cell at the level it is given, Standard without one', async () => {
     const scaleAt = async (view?: ScaleView) =>
       (await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: true, ...(view ? { view } : {}) }, global: { stubs: { ChangesSystem: true } } }))
@@ -80,13 +86,13 @@ describe('ChangesSheet', () => {
   })
 
   it('pages the lines by changesLinesPerPage', async () => {
-    for (const guideLine of ['off', 'third'] as const)
+    for (const line of ['off', 'third', 'up-root'] as const)
       for (const rows of [{ numerals: true, scales: true }, { numerals: false, scales: false }]) {
-        const w = await mountSheet({ doc: long, guideLine, ...rows })
-        const per = changesLinesPerPage(guideLine, rows)
+        const w = await mountSheet({ doc: long, line, ...rows })
+        const per = changesLinesPerPage(line, rows)
         const total = w.findAllComponents({ name: 'ChangesSystem' }).length
         const pages = w.findAll('section')
-        expect(total, `${guideLine} ${JSON.stringify(rows)}`).toBeGreaterThan(per)
+        expect(total, `${line} ${JSON.stringify(rows)}`).toBeGreaterThan(per)
         expect(pages[0]?.findAll('changes-system-stub')).toHaveLength(per)
         expect(pages).toHaveLength(Math.ceil(total / per))
         w.unmount()

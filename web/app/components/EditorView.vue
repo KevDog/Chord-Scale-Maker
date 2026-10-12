@@ -178,7 +178,7 @@
             :numerals="sheetEditor || prefs.numerals.value"
             :scales="sheetEditor || prefs.scaleNames.value"
             :signatures="signaturesOn"
-            :guide-line="prefs.guideLine.value"
+            :line="prefs.guideLine.value"
             :editable="sheetEditing && !focus.on.value"
             :selected-line="selectedLine"
             :view="scaleView"

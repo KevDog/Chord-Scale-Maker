@@ -31,8 +31,9 @@ export type ChangesLayout = Readonly<{ xs: readonly (readonly number[])[]; ends:
 
 type Clef = 'treble' | 'bass'
 /** names: each bar's chords, their widths as fractions of the line, to widen the bars they crowd (fitBars) */
-type Opts = Readonly<{ timeSignature: boolean; beats: 2 | 3 | 4; barsPerLine: number; clef?: Clef; names?: readonly (readonly NamedBeat[])[] }>
+type Opts = Readonly<{ timeSignature: boolean; beats: 2 | 3 | 4; barsPerLine: number; clef?: Clef; names?: readonly (readonly NamedBeat[])[]; arpeggio?: boolean }>
 type Band = Readonly<{ top: number; bottom: number }>
+type Beam = InstanceType<VexFlowModule['Beam']>
 type Stave = InstanceType<VexFlowModule['Stave']>
 type StaveNote = InstanceType<VexFlowModule['StaveNote']>
 type GhostNote = InstanceType<VexFlowModule['GhostNote']>
@@ -133,6 +134,22 @@ export function guideAria(line: ChangesLine): string {
     return chords.join(', ') || '–'
   })
   return `; guide tones: ${bars.join(' | ')}`
+}
+
+/** the aria-label's arpeggio line: each chord's notes, "rest" for a rest, "–" for a bar without chords; '' when off */
+export function arpeggioAria(line: ChangesLine): string {
+  if (!line.bars.some((b) => b.voice.length)) return ''
+  const bars = line.bars.map((bar) => {
+    const chords = bar.chords.map((c, k) => {
+      const end = bar.chords[k + 1]?.beat ?? Infinity
+      return bar.voice
+        .filter((n) => n.beat >= c.beat && n.beat < end)
+        .map((n) => (n.pitch ? pitchName(n.pitch) : 'rest'))
+        .join(' ')
+    })
+    return chords.join(', ') || '–'
+  })
+  return `; 7th chords: ${bars.join(' | ')}`
 }
 
 const barsLabel = (line: ChangesLine): string => `Bars: ${line.bars.map((b) => b.chords.map((c) => c.text).join(' ') || '–').join(' | ')}`
@@ -240,6 +257,7 @@ type Laid = Readonly<{
   grid: readonly GhostNote[] // a ghost a beat, formatted with the notes: where each beat falls
   plain: readonly StaveNote[] // slashes, for a bar without guide tones
   all: readonly Voice[]
+  beams: readonly Beam[] // eighths and sixteenths of an arpeggio line, grouped by the beat
 }>
 
 /** a line with guide tones: lay out every bar, place the brackets over the stem tips, then draw */
@@ -262,9 +280,10 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
       ticks.forEach((t) => t.setStave(stave))
       return voiceOf(vf, opts.beats, ticks)
     })
+    const beams = opts.arpeggio ? vf.Beam.generateBeams(ticks.filter((t) => !t.isRest()), { groups: [new vf.Fraction(1, 4)] }) : []
     new vf.Formatter().joinVoices(all).format(all, room(stave, x, width))
     x += width
-    return { bar, stave, model, ticks, grid, plain, all }
+    return { bar, stave, model, ticks, grid, plain, all, beams }
   })
 
   // pass 2: raise the brackets over the highest stem tip or accidental, level across the line; draw staves, then notes
@@ -279,6 +298,7 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
     l.stave.setContext(ctx).draw()
   })
   laid.forEach((l) => l.all.forEach((v) => v.draw(ctx, l.stave)))
+  laid.forEach((l) => l.beams.forEach((b) => b.setContext(ctx).draw()))
 
   // ties, one chain across the line: open at its end, and a half-tie in where the line starts tied
   const chain = laid.flatMap((l) => l.model.map((m, i) => ({ m, t: l.ticks[i] ?? null })))
@@ -300,6 +320,6 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
     })
     return beatXs(starts, l.grid.map((g) => g.getAbsoluteX()), total)
   })
-  fitSvg(el, voicedBand([...heads, ...tips], bracket === null ? null : bracket + shift), total, barsLabel(line) + guideAria(line))
+  fitSvg(el, voicedBand([...heads, ...tips], bracket === null ? null : bracket + shift), total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line) : guideAria(line)))
   return { xs, ends: endsOf(widths, total), scales, fits }
 }

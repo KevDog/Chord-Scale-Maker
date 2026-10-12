@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter } from '@chord-scale-maker/engine'
-import { beatXs, fitBars, guideAria, restatedAccidental, voicedBand, voltaShift } from '~/utils/changesDrawing'
+import { arpeggioAria, beatXs, DURATIONS, fitBars, guideAria, restatedAccidental, voicedBand, voltaShift } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   beat,
@@ -150,5 +150,22 @@ describe('fitBars', () => {
     expect(fit.shares.map((s) => +s.toFixed(6))).toEqual([+(2 / 2.25).toFixed(6), +(0.25 / 2.25).toFixed(6)])
     expect(fit.scales[0]?.map((s) => +s.toFixed(3))).toEqual([0.6, +(2 / 2.25 / 4 / 0.25).toFixed(3), 1, 1])
     expect(fit.scales[1]).toEqual([1])
+  })
+})
+
+describe('DURATIONS', () => {
+  it('has eighths and sixteenths for arpeggio notes', () => {
+    expect([DURATIONS[0.5], DURATIONS[0.25]]).toEqual(['8', '16'])
+  })
+})
+
+describe('arpeggioAria', () => {
+  it('is empty without a voice', () => {
+    expect(arpeggioAria({ bars: [bar([chord(0, 'C', '')], [])] } as ChangesLine)).toBe('')
+  })
+  it("groups each chord's notes, chords by comma, bars by bar", () => {
+    const n = (letter: Letter, midi: number, beat: number): GuideNote => ({ pitch: { letter, acc: 0, midi }, beat, beats: 0.5, tie: false, tiedIn: false, accidental: null })
+    const b = bar([chord(0, 'Dm7', ''), chord(2, 'G7', '')], [n(1, 62, 0), n(3, 65, 0.5), n(5, 69, 1), n(0, 72, 1.5), n(4, 67, 2), n(6, 71, 2.5), n(1, 74, 3), n(3, 77, 3.5)])
+    expect(arpeggioAria({ bars: [b] } as ChangesLine)).toBe('; 7th chords: D4 F4 A4 C5, G4 B4 D5 F5')
   })
 })

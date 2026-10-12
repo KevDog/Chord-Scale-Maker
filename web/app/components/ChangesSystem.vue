@@ -164,6 +164,7 @@ const props = defineProps<{
   numerals: boolean
   scales: boolean
   clef?: 'treble' | 'bass' // with key signatures or a guide tone on: the part's clef, drawn (with any signature) on the first line only
+  arpeggio?: boolean // the voice is an arpeggio line: beamed, no label row
   editable?: boolean // each chord a button that asks to edit it
   selectedLine?: number | null // the chart line of the chord the editor is on, outlined
   doc?: ChartDoc // the chart, for the sheet editor's field
@@ -264,7 +265,7 @@ const repeats = computed(() =>
   props.line.bars.flatMap((bar, b) => (bar.repeatEnd > 2 ? [{ key: b, x: Math.min(1, (xs.value[b]?.at(-1) ?? 1) + 0.03), times: bar.repeatEnd }] : [])),
 )
 /** whether the line draws a guide tone line (else slashes), and so its label row */
-const hasGuideLine = computed(() => props.line.bars.some((b) => b.voice.length > 0))
+const hasGuideLine = computed(() => !props.arpeggio && props.line.bars.some((b) => b.voice.length > 0))
 
 /**
  * each bar's chord names (and the marker or key area over its first), their widths as fractions of the line, which
@@ -290,7 +291,7 @@ async function draw(): Promise<void> {
     await document.fonts?.ready // names measured in their own font
     const names = measureNames()
     drawn = key(names)
-    const layout = drawChangesLine(vf, el.value, props.line, { timeSignature: props.first, beats: props.beats, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}), ...(names ? { names } : {}) })
+    const layout = drawChangesLine(vf, el.value, props.line, { timeSignature: props.first, beats: props.beats, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}), ...(props.arpeggio ? { arpeggio: true } : {}), ...(names ? { names } : {}) })
     xs.value = layout.xs
     ends.value = layout.ends
     nameScales.value = layout.scales
@@ -320,5 +321,5 @@ onBeforeUnmount(() => {
   observer?.disconnect()
   clearTimeout(resized)
 })
-watch(() => [props.line, props.first, props.beats, props.barsPerLine, props.clef], () => nextTick(draw))
+watch(() => [props.line, props.first, props.beats, props.barsPerLine, props.clef, props.arpeggio], () => nextTick(draw))
 </script>
