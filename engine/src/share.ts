@@ -21,7 +21,6 @@ export type ShareView = Readonly<{
   /** the Changes sheet's numerals and scale rows */
   numerals?: boolean
   scaleNames?: boolean
-  /** the Changes sheet's guide tone line: from the 3rd (A) or from the 7th (B); absent: off */
   /** the Changes sheet's line: a guide tone line or an arpeggio pattern; absent: off */
   line?: SheetLine
   sheet?: ShareSheet

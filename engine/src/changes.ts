@@ -13,8 +13,8 @@ import { chunk, orNull } from './util'
 
 /**
  * The Changes sheet (docs/plan-changes.md): the chart as a study lead sheet. Bars of slashes in the chart's metre
- * (or, with a guide tone line on, the line from the 3rd or the one from the 7th, a note a chord held for the chord's
- * length),
+ * (or, with a line on, a guide tone line from the 3rd or the 7th, a note a chord held for the chord's length, or a
+ * 7th chord arpeggio line, each chord's tones struck in quarters, eighths or sixteenths),
  * each chord on its beat with its Roman numeral and its scale, a key-area label where the key changes, section
  * markers, and repeat signs for a @copy straight after its source. No DOM, like sheet.ts and guideTones.ts.
  */

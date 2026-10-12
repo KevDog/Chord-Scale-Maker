@@ -136,7 +136,7 @@ const modeLabel = (v: Mode): string => modes.value.find((m) => m.value === v)?.l
 const sheetLabel = (v: SheetKind): string => sheets.value.find((s) => s.value === v)?.label ?? ''
 const part = computed(() => partFor(instrument.value))
 // the flag off with an arpeggio saved: nothing is drawn, so rest the mode on Off
-watch([arpeggios, lineMode], () => {
+watch(lineMode, () => {
   if (!arpeggios && lineMode.value === 'arpeggio') lineMode.value = 'off'
 }, { immediate: true })
 </script>

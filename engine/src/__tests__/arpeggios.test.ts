@@ -3,6 +3,7 @@ import { ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, arpeggioOrder, arpeggioTones, arpeg
 import type { GuideInput, GuideNote } from '../guideTones'
 import { CONCERT, type Part } from '../part'
 import { rootName } from '../pitch'
+import chordScales from '../../chord_scales.json'
 import { toVexKey } from '../sheet'
 
 const TENOR: Part = { clef: 'treble', trans: 'Bb' }
@@ -29,11 +30,35 @@ describe('arpeggio tones', () => {
     expect(names('Em7b5')).toEqual(['E', 'G', 'Bb', 'D'])
     expect(names('Bdim7')).toEqual(['B', 'D', 'F', 'Ab'])
     expect(names('CMaj7#5')).toEqual(['C', 'E', 'G#', 'B'])
-    expect(names('G7#9')).toEqual(['G', 'B', 'D#', 'F'])
+    expect(names('G7#9')).toEqual(['G', 'B', 'D', 'F'])
     expect(names('FMaj7#11')).toEqual(['F', 'A', 'C', 'E'])
     expect(names('C6')).toEqual(['C', 'E', 'G', 'A'])
     expect(names('G7sus4')).toEqual(['G', 'C', 'D', 'F'])
     expect(names('G7alt')).toEqual(['G', 'B', 'D#', 'F'])
+  })
+  it('follows the written symbol for the 5th: #5, +, aug and alt raise it, b5 lowers it, else the quality is kept', () => {
+    expect(names('G7#9b13')).toEqual(['G', 'B', 'D', 'F']) // b13 is not a 5th alteration
+    expect(names('C7b5')).toEqual(['C', 'E', 'Gb', 'Bb'])
+    expect(names('C7(b5)')).toEqual(['C', 'E', 'Gb', 'Bb'])
+    expect(names('G7#5')).toEqual(['G', 'B', 'D#', 'F'])
+    expect(names('G7+')).toEqual(['G', 'B', 'D#', 'F'])
+    expect(names('G7alt')).toEqual(['G', 'B', 'D#', 'F'])
+    expect(names('G7b13')).toEqual(['G', 'B', 'D', 'F'])
+    expect(names('G7b9b13')).toEqual(['G', 'B', 'D', 'F'])
+    expect(names('Em7b5')).toEqual(['E', 'G', 'Bb', 'D'])
+    expect(names('Bdim7')).toEqual(['B', 'D', 'F', 'Ab'])
+  })
+  it('has the other rows too', () => {
+    expect(names('Cm6')).toEqual(['C', 'Eb', 'G', 'A'])
+    expect(names('CmMaj7')).toEqual(['C', 'Eb', 'G', 'B'])
+    expect(names('C7b9')).toEqual(['C', 'E', 'G', 'Bb'])
+    expect(names('C7#11')).toEqual(['C', 'E', 'G', 'Bb'])
+    expect(names('C7sus4b9')).toEqual(['C', 'F', 'G', 'Bb'])
+  })
+  it('has a row for every canonical quality in chord_scales.json', () => {
+    const qualities = Object.keys((chordScales as { qualities: object }).qualities)
+    expect(qualities.length).toBeGreaterThan(10)
+    expect(qualities.filter((q) => arpeggioTones(CONCERT, `C${q === 'maj' ? '' : q}`) === null)).toEqual([])
   })
   it('takes three from a triad, and the chord as written over a slash bass', () => {
     expect(names('C')).toEqual(['C', 'E', 'G'])
@@ -131,6 +156,20 @@ describe('arpeggio voices', () => {
     const { bars } = voice(seq(['Dm7', 4], ['G7', 4]), 'voice-led')
     expect(pitches(bars.get(0))).toEqual(['d/4', 'f/4', 'a/4', 'c/5'])
     expect(pitches(bars.get(1))).toEqual(['b/4', 'd/5', 'f/5', 'g/5']) // B4 is a step below C5
+  })
+  it('voice-led: never repeats the note it just played, a held chord starts its next arpeggio on the nearest other tone', () => {
+    const { bars } = voice(seq(['Dm7', 8]), 'voice-led')
+    expect(pitches(bars.get(0))).toEqual(['d/4', 'f/4', 'a/4', 'c/5'])
+    expect(pitches(bars.get(1))[0]).toBe('d/4') // D, not C again (D5 up would leave the range)
+    expect(pitches(voice(seq(['Dm7', 3]), 'voice-led', CONCERT, 3).bars.get(0))).toEqual(['d/4', 'f/4', 'a/4', 'c/5', 'd/4', 'f/4'])
+  })
+  it('voice-led: a chord sharing the last note starts on its next nearest tone', () => {
+    const { bars } = voice(seq(['Dm7', 4], ['FMaj7', 4]), 'voice-led') // C5 just played: A4 is nearest of F A C E
+    expect(pitches(bars.get(1))).toEqual(['a/4', 'c/5', 'e/5', 'f/5'])
+  })
+  it('voice-led: a tie between a tone above and below goes lower', () => {
+    const { bars } = voice(seq(['Dm7', 4], ['Cdim7', 4]), 'voice-led') // C5 played: Eb5 and Bbb4 (A) are both 3 away
+    expect(bars.get(1)?.[0]?.pitch?.midi).toBe(69)
   })
   it('rests: a chord it cannot read rests and restarts the run near the centre', () => {
     const { bars, missing } = voice(seq(['CMaj7', 4], ['N.C.', 4], ['CMaj7', 4]), 'up-root')

@@ -136,7 +136,7 @@ export function guideAria(line: ChangesLine): string {
   return `; guide tones: ${bars.join(' | ')}`
 }
 
-/** the aria-label's arpeggio line: each chord's notes, "rest" for a rest, "–" for a bar without chords; '' when off */
+/** the aria-label's arpeggio line: each chord's notes, "rest" for a rest, a bar without chord symbols lists its notes, "–" if it has none; '' when off */
 export function arpeggioAria(line: ChangesLine): string {
   if (!line.bars.some((b) => b.voice.length)) return ''
   const bars = line.bars.map((bar) => {
@@ -147,7 +147,8 @@ export function arpeggioAria(line: ChangesLine): string {
         .map((n) => (n.pitch ? pitchName(n.pitch) : 'rest'))
         .join(' ')
     })
-    return chords.join(', ') || '–'
+    const held = bar.voice.map((n) => (n.pitch ? pitchName(n.pitch) : 'rest')).join(' ') // no chord symbol: a chord held over
+    return chords.join(', ') || held || '–'
   })
   return `; 7th chords: ${bars.join(' | ')}`
 }

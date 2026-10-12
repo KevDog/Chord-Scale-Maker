@@ -33,7 +33,7 @@ export const ARPEGGIO_LABELS: Readonly<Record<ArpeggioPattern, string>> = {
 export type SheetLine = GuideLine | ArpeggioPattern
 export const isSheetLine = (x: unknown): x is SheetLine => x === 'off' || x === 'third' || x === 'seventh' || isArpeggioPattern(x)
 
-/** canonical quality -> its arpeggio's degrees: four, a triad's three; extensions dropped, altered 5ths kept */
+/** canonical quality -> its arpeggio's degrees: four, a triad's three; extensions dropped, a written altered 5th kept (fifthFor) */
 const DEGREES: Readonly<Record<string, readonly string[]>> = {
   maj: ['1', '3', '5'],
   m: ['1', 'b3', '5'],
@@ -51,17 +51,27 @@ const DEGREES: Readonly<Record<string, readonly string[]>> = {
   '7b13': ['1', '3', '5', 'b7'],
   '7b9b13': ['1', '3', '5', 'b7'],
   '7#11': ['1', '3', '5', 'b7'],
-  '7alt': ['1', '3', '#5', 'b7'],
+  '7alt': ['1', '3', '5', 'b7'], // 7#9 and the like read here; the written symbol raises the 5th (fifthFor)
   m7b5: ['1', 'b3', 'b5', 'b7'],
   dim7: ['1', 'b3', 'b5', 'bb7'],
+}
+
+/** the 5th as written: alt, #5, + or aug raise it, b5 lowers it (the written symbol wins), else the quality's own */
+function fifthFor(written: string, own: string | undefined): string | undefined {
+  const q = written.replace(/[()]/g, '')
+  if (/alt|#5|\+|aug/.test(q)) return '#5'
+  if (/b5/.test(q)) return 'b5'
+  return own
 }
 
 /** a chord's arpeggio tones, spelled from its written root; null if the chord or its quality is unknown */
 export function arpeggioTones(part: Part, chord: string, scale?: string): readonly Spelled[] | null {
   try {
-    const degrees = DEGREES[baseQuality(parseChord(chord).quality) ?? '']
+    const written = parseChord(chord).quality
+    const degrees = DEGREES[baseQuality(written) ?? '']
     if (!degrees) return null
-    return spellFrom(writtenChordRootLenient(part, chord, scale), degrees.join(' ')).map(({ letter, acc }) => ({ letter, acc }))
+    const shaped = degrees.map((d, i) => (i === 2 ? (fifthFor(written, d) ?? d) : d))
+    return spellFrom(writtenChordRootLenient(part, chord, scale), shaped.join(' ')).map(({ letter, acc }) => ({ letter, acc }))
   } catch {
     return null
   }
@@ -84,7 +94,7 @@ export const noteValue = (shortest: number): NoteValue => NOTE_VALUES.find((v) =
 
 const INVERSION: Readonly<Record<string, number>> = { root: 0, '1st': 1, '2nd': 2, '3rd': 3 }
 
-/** the tone nearest `prev` at any octave (ties: the lower pitch), as an index into the tones */
+/** the tone nearest `prev` at any octave, but never prev itself (ties: the lower pitch), as an index into the tones */
 function nearestTone(tones: readonly Spelled[], prev: number): number {
   const best = tones
     .map((t, i) => {
@@ -92,6 +102,7 @@ function nearestTone(tones: readonly Spelled[], prev: number): number {
       const down = (12 - up) % 12
       return { i, midi: down <= up ? prev - down : prev + up }
     })
+    .filter((c) => c.midi !== prev)
     .sort((a, b) => Math.abs(a.midi - prev) - Math.abs(b.midi - prev) || a.midi - b.midi)[0]
   return best?.i ?? 0
 }

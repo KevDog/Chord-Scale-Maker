@@ -168,4 +168,9 @@ describe('arpeggioAria', () => {
     const b = bar([chord(0, 'Dm7', ''), chord(2, 'G7', '')], [n(1, 62, 0), n(3, 65, 0.5), n(5, 69, 1), n(0, 72, 1.5), n(4, 67, 2), n(6, 71, 2.5), n(1, 74, 3), n(3, 77, 3.5)])
     expect(arpeggioAria({ bars: [b] } as ChangesLine)).toBe('; 7th chords: D4 F4 A4 C5, G4 B4 D5 F5')
   })
+  it('lists the notes of a bar with no chord symbols (a chord held over), rest for a rest', () => {
+    const n = (letter: Letter, midi: number, beat: number): GuideNote => ({ pitch: { letter, acc: 0, midi }, beat, beats: 1, tie: false, tiedIn: false, accidental: null })
+    const held = bar([], [n(1, 62, 0), n(3, 65, 1), rest(2, 2)])
+    expect(arpeggioAria({ bars: [held] } as ChangesLine)).toBe('; 7th chords: D4 F4 rest')
+  })
 })

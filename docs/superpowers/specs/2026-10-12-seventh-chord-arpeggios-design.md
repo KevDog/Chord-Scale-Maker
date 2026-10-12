@@ -26,7 +26,9 @@ picks between the two kinds of line.
   - a 7th chord: 1 3 5 7 as spelled (m7b5 keeps b5, 7#5 keeps #5, dim7 keeps bb7);
   - a triad: 1 3 5 8; a 6 chord: 1 3 5 6; a sus chord: 1 4 5 b7;
   - extensions and alterations other than the 5th are dropped (7#9 → 1 3 5 b7; Maj7#11 → 1 3 5 7);
-  - an alt chord (no 5th in `CHORD_TONES`): 1 3 #5 b7.
+  - the 5th follows the written symbol: alt, #5, + or aug → #5; b5 → b5 (C7b5 → C E Gb Bb); otherwise the quality's
+    own (7b13 and 7b9b13 keep the natural 5);
+  - an alt chord: 1 3 #5 b7.
   - A slash chord uses the chord as written; its bass is ignored (as guide tones).
   - Spelling follows the part's spelling of the chord (as the guide tones do).
 - **Pattern.** The order of the four tones within one arpeggio:
@@ -36,7 +38,7 @@ picks between the two kinds of line.
   - A triad has three tones; its fourth note is the arpeggio's first tone an octave on (Up · root 1 3 5 8,
     Up · 1st inv 3 5 8 3); it has no 3rd inversion (Up · 3rd inv plays root position).
   - Up & down: root position, alternating Up · root and Down · root each arpeggio (not each chord), starting Up.
-  - Voice-led: ascending, starting on the chord tone nearest the previous note (ties: the lower).
+  - Voice-led: ascending, starting on the chord tone nearest the previous note (never the note just played; ties: the lower).
 - **Range** and **centre.** `rangeOf(part)`, as guide tones (`{ lo, hi, centre }`).
 
 ## Rules
