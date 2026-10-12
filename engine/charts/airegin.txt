@@ -1,0 +1,61 @@
+title: Airegin
+composer: Sonny Rollins
+style: Medium up Latin
+key: Fm
+form: ABAC, 36 bars
+source: 
+# analysis: 2026-10-12, rules v1; F minor
+# the book: "Medium-Up Latin (Head Swings)", as played by Miles Davis; letter A is marked (Swing)
+# the intro (4 bars, repeated) is a melodic figure with no chords
+# the book writes B as the 1st ending and C as the 2nd ending of a repeated A; written out here
+# solo on the form (ABAC); after solos, D.S. al Coda
+
+# section | bar | chord
+# area: F minor (bars 1–9)
+A1   | 1  | Fm      # tonic minor: Dorian by convention
+A1   | 2  | C7#9b5  # V7 of F minor: b9, #9, #11 and 13 from the symbol
+A1   | 3  | Fm      # tonic minor: Dorian by convention
+A1   | 4  | F7      # V7/iv in F minor: the b13 is in the key
+A1   | 5  | Bbm     # iv: Dorian, the key’s own notes
+A1   | 6  | F7#9#5  # V7/iv in F minor: the b13 is in the key, b9, #9 and #11 from the symbol
+A1   | 7  | Bbm7    # iv: Dorian, the key’s own notes
+@segno A1 1
+B    | 9  | Bbm7
+# area: C major (bars 10–11)
+B    | 10 | Dm7     # ii of the ii–V to C
+B    | 10 | G7      # V7 of C: natural tensions
+B    | 11 | CMaj7   # tonic: the 4th is in the key
+# area: B major (bars 12–13)
+B    | 12 | C#m7    # ii of the ii–V to B
+B    | 12 | F#7     # V7 of B: natural tensions
+B    | 13 | BMaj7   # tonic: the 4th is in the key
+# area: Bb major (bars 14–15)
+B    | 14 | Cm7     # ii of the ii–V to Bb
+B    | 14 | F7      # V7 of Bb: natural tensions
+B    | 15 | BbMaj7  # tonic: the 4th is in the key
+# area: F minor (bars 17–26)
+B    | 17 | Bbm7    # ii of the ii–V to Ab
+B    | 18 | Eb7     # V7/bIII in F minor: natural tensions
+B    | 19 | AbMaj7  # bIII of F minor: the relative major itself
+B    | 20 | Gm7b5   # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B    | 20 | C7      # V7 of F minor: b9 and b13 are in the key
+@copy A1 A2 20
+C    | 29 | Bbm7
+C    | 30 | Bbm7
+C    | 30 | Eb7     # V7 of Ab: natural tensions
+C    | 31 | AbMaj7  # tonic: the 4th is in the key
+C    | 32 | Cm7b5   # iiø7 of Bb minor: Locrian, the key's own notes (its ♭2 is a passing note)
+C    | 32 | F7      # V7/ii in Ab: the b13 is in the key
+C    | 33 | Bbm7    # ii of the ii–V to Ab
+C    | 34 | Bbm7
+C    | 34 | Eb7b9   # V7 of Ab: the b9 from the symbol
+C    | 35 | Ab6     # tonic: the 4th is in the key
+# area: F minor (bars 36–1)
+C    | 36 | Gm7b5   # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
+C    | 36 | C7      # V7 of F minor: b9 and b13 are in the key
+# bars 35–36: solo break on the head
+@coda C 34
+@nav C 36 D.S. al Coda
+@coda Coda 1
+Coda | 1  | Ab6     # bIII of F minor: the relative major itself
+# Coda bar 1 beat 3 – bar 2: N.C. (piano and bass figure)

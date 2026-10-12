@@ -1,0 +1,82 @@
+title: Blizzard of Lies
+composer: Dave Frishberg
+style: Medium swing
+key: Cm
+form: ABC, 30 bars
+source: 
+# analysis: 2026-10-12, rules v1; C minor
+
+# the book's 13sus chords are written 9sus4 (Bb13sus → Bb9sus4); its Cm(add9) as Cm
+# the head is played three times (three verses): the 5-bar Eb pedal interlude returns to A; 3rd time, B's last bar goes to the coda
+# section | bar | chord
+# Intro: Eb pedal (Ebm7), a piano and bass figure; the book prints no barlines (5 bars)
+# area: C minor (bars 1–3)
+Intro     | 1  | Ebm7       # a borrowed minor chord: Dorian, its own key
+A         | 1  | Bb9sus4    # static sus: Mixolydian
+# bar 2, beat 4½ – bar 3: N.C. hits (piano with bass), then Bb13sus and B13sus on the last two triplet quarters
+A         | 3  | Bb9sus4
+A         | 3  | B9sus4     # static sus: Mixolydian
+@key A 4 Db
+# area: Db major (bars 4–9)
+A         | 4  | C9sus4     # V7sus4 of F9: the b13 is in the key
+# bar 5, beat 4½ – bar 6: N.C. hits
+# alt (optional): bar 6, beats 3–4 (C7)
+A         | 7  | F9         # extended dominant: each one falls a fifth into the next: natural tensions
+A         | 7  | Bb9        # extended dominant: each one falls a fifth into the next: natural tensions
+A         | 8  | Eb9        # V7 of V7: the dominant of the dominant: natural tensions
+A         | 8  | Ab9        # V7 of Db: natural tensions
+A         | 9  | DbMaj9#11  # from the symbol: #11
+@key B 11 Cm
+# area: C minor (bars 11–24)
+B         | 11 | Cm         # tonic minor: Dorian by convention
+B         | 11 | Bb13       # bVII7 in C minor, not resolving: natural tensions
+B         | 12 | Ab9        # tritone substitute: resolves down a half step to G9
+B         | 12 | G9         # tritone substitute: resolves down a half step to Gb13
+B         | 12 | Gb13       # tritone substitute: resolves down a half step to F9
+B         | 13 | F9         # IV7 in C minor, not resolving: natural tensions
+# bar 14: piano fill
+B         | 15 | Cm         # tonic minor: Dorian by convention
+B         | 15 | Bb13       # bVII7 in C minor, not resolving: natural tensions
+B         | 16 | Ab9        # tritone substitute: resolves down a half step to G9
+B         | 16 | G9         # tritone substitute: resolves down a half step to Gb13
+B         | 16 | Gb13       # tritone substitute: resolves down a half step to F9
+B         | 17 | F9         # IV7 in C minor, not resolving: natural tensions
+# bar 18: piano fill
+@coda B 18
+@nav B 18 To Coda (3rd time)
+C         | 19 | Ab         # a non-tonic major chord: Lydian
+C         | 20 | Adim7      # vii°7 to Eb/Bb, up to its bass: F7♭9 without its root
+C         | 21 | Eb/Bb      # bIII of C minor: the relative major itself
+C         | 22 | Bdim7      # vii°7 of Cm: G7♭9 without its root
+C         | 23 | Cm         # tonic minor: Dorian by convention
+C         | 23 | Bb7/D      # V7/bIII in C minor: natural tensions
+C         | 23 | Eb         # bIII of C minor: the relative major itself
+C         | 24 | AbMaj7     # a non-tonic major chord: Lydian
+C         | 24 | G9         # tritone substitute: resolves down a half step to Gb13
+C         | 24 | Gb13       # tritone substitute: resolves down a half step to Fm7
+@key C 25 Ebm
+# area: Eb minor (bars 25–26)
+C         | 25 | Fm7        # ii of the ii–V to Eb minor
+C         | 25 | Bb7        # V7 of Eb minor: b9 and b13 are in the key
+# Interlude: Eb pedal (Ebm7), as the intro (5 bars, 26–30), then back to A
+Interlude | 26 | Ebm7       # tonic minor: Dorian by convention
+@key Coda 1 Cm
+@coda Coda 1
+# area: C minor (bars 1–13)
+Coda      | 1  | Ab9        # extended ii–V: a side-step, its own key
+Coda      | 2  | Adim7      # vii°7 to Eb/Bb, up to its bass: F7♭9 without its root
+Coda      | 3  | Eb/Bb      # bIII of C minor: the relative major itself
+Coda      | 4  | Bdim7      # vii°7 of Cm: G7♭9 without its root
+# Cm is anticipated on the last eighth of bar 4; bars 5–6: break (piano fill)
+Coda      | 5  | Cm         # tonic minor: Dorian by convention
+Coda      | 7  | Ab9        # bVI7 in C minor, not resolving: the #11 is in the key
+# bars 7–8: break (piano fill)
+Coda      | 9  | Cm         # tonic minor: Dorian by convention
+Coda      | 9  | Bb13       # bVII7 in C minor, not resolving: natural tensions
+Coda      | 10 | Ab9        # V7/bII in C minor: the #11 is in the key
+# bar 10: break
+# alt (optional): bar 10, beats 3–4 (G7 Gb13), bar 11 (F)
+# bar 12: ad lib.
+Coda      | 12 | DbMaj9#11  # from the symbol: #11
+Coda      | 13 | Cm         # tonic minor: Dorian by convention
+# bar 13: printed Cm(add9); bar 14: a rest bar with a fermata
