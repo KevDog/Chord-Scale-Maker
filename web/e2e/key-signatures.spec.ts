@@ -88,7 +88,7 @@ test('an @key draws no second signature; the Changes sheet shows it as a key are
   await showGuides(page, 'From 3rd')
   await expect(lines(page).first()).toHaveAttribute('aria-label', /; guide tones: /)
   await expect(signatures(page.locator('body'))).toHaveCount(1) // the key change goes by accidentals, never a new signature
-  const sheet = lines(page).first().locator('xpath=ancestor::div[contains(@class,"rounded-xl")][1]')
+  const sheet = lines(page).first().locator('xpath=ancestor::div[@data-slot="paper"][1]')
   await expect(sheet.getByText('D major', { exact: true })).toBeVisible()
 })
 

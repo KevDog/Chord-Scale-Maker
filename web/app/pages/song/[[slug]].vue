@@ -27,9 +27,9 @@
       <div v-if="song" class="space-y-1">
         <UiHeading>{{ song.title }}</UiHeading>
         <UiText v-if="song.composer">{{ song.composer }}</UiText>
-        <UiText class="text-zinc-500">Loading the practice sheets…</UiText>
+        <UiText>Loading the practice sheets…</UiText>
       </div>
-      <p v-else class="text-zinc-500">Loading editor…</p>
+      <p v-else class="text-zinc-600 dark:text-zinc-400">Loading editor…</p>
     </template>
   </ClientOnly>
 </template>

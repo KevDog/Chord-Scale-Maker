@@ -3,7 +3,7 @@ import { chooseInstrument, chooseSheet, type Drawn, drawn, expect, GLYPH, arpegg
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the controls above it (whose menus name the same scales) */
-const sheetOf = (page: Page) => lines(page).first().locator('xpath=ancestor::div[contains(@class,"rounded-xl")][1]')
+const sheetOf = (page: Page) => lines(page).first().locator('xpath=ancestor::div[@data-slot="paper"][1]')
 const lineOff = (page: Page) => page.getByRole('radio', { name: 'Off', exact: true })
 const guideLine = (page: Page) => page.getByLabel('Guide tone line')
 /** a line's guide tone labels: the row between its staff and its numerals */

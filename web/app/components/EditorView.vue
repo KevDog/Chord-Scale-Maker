@@ -45,9 +45,8 @@
       </UiDialogActions>
     </UiDialog>
 
-    <!-- the working area, set off from the header in a tinted box (Blue Note palette); muted text darkens to
-         zinc-600 on the tint so it keeps AA contrast (zinc-500 would drop below 4.5:1 on any non-white background) -->
-    <div class="space-y-8 rounded-2xl bg-note-100 p-5 ring-1 ring-note-200 sm:p-6 [&_[data-slot=text]]:text-zinc-600 [&_th]:text-zinc-600 dark:bg-white/5 dark:ring-white/10 dark:[&_[data-slot=text]]:text-zinc-400 dark:[&_th]:text-zinc-400 print:rounded-none print:bg-transparent print:p-0 print:ring-0">
+    <!-- the working area, on the stand (the song page's layout keeps its muted text at AA contrast) -->
+    <div class="space-y-4">
       <UiText v-if="!editorShown && editor.diagnostics.value.length" role="status" class="text-amber-800! print:hidden dark:text-amber-400!">
         The chart's text has {{ editor.diagnostics.value.length === 1 ? 'a problem' : `${editor.diagnostics.value.length} problems` }}.
         <button type="button" class="font-semibold underline" @click="toggleEditor">Edit</button> to fix {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
@@ -102,11 +101,11 @@
         v-bind="focus.on.value ? { role: 'dialog', 'aria-modal': 'true', 'aria-label': 'Focus mode' } : { 'aria-label': 'Preview' }"
         :class="[
           'space-y-6',
-          focus.on.value && 'fixed inset-0 z-50 overflow-y-auto bg-zinc-100 px-4 pb-8 dark:bg-zinc-900 print:static print:overflow-visible print:bg-white print:p-0',
+          focus.on.value && 'fixed inset-0 z-50 overflow-y-auto bg-stand px-4 pb-8 print:static print:overflow-visible print:bg-white print:p-0',
         ]"
         @keydown="onSheetKeydown"
       >
-        <div v-if="focus.on.value" ref="focusBar" class="sticky top-0 z-10 -mx-4 flex justify-end bg-zinc-100/90 px-4 py-3 backdrop-blur-sm dark:bg-zinc-900/90 print:hidden">
+        <div v-if="focus.on.value" ref="focusBar" class="sticky top-0 z-10 -mx-4 flex justify-end bg-stand/90 px-4 py-3 backdrop-blur-sm print:hidden">
           <UiButton outline @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-500 dark:text-zinc-400">Esc</kbd></UiButton>
         </div>
         <div v-show="!focus.on.value" class="space-y-4 print:hidden">
@@ -168,7 +167,7 @@
           </div>
         </div>
   
-        <div :class="['relative rounded-xl bg-white p-4 ring-1 ring-note-200 dark:bg-zinc-900 dark:ring-white/10 print:rounded-none print:bg-transparent print:p-0 print:ring-0', focus.on.value && 'mx-auto max-w-6xl print:max-w-none']">
+        <div :class="['relative', focus.on.value && 'mx-auto max-w-6xl print:max-w-none']">
           <div v-if="rendering.busy.value" role="status" aria-label="Loading" class="pointer-events-none absolute inset-0 z-10 flex items-start justify-center pt-10 print:hidden"><UiSpinner /></div>
           <UiText v-if="editor.fatal.value" class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
           <ChangesSheet
