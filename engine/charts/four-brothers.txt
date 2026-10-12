@@ -1,0 +1,59 @@
+title: Four Brothers
+composer: Jimmy Giuffre
+style: Medium up
+key: Ab
+form: AABA, 32 bars
+source:
+# analysis: 2026-10-12, rules v1; Ab
+# book: as played by Woody Herman
+
+# section | bar | chord
+# area: Ab major (bars 1–10)
+A | 1  | Bb9     # II7 in Ab, not resolving: natural tensions
+A | 2  | Bbm7    # ii of the ii–V to Ab
+A | 2  | Eb7#5   # V7 of Ab: #11 and b13 from the symbol
+A | 3  | AbMaj7  # tonic: the 4th is in the key
+A | 4  | F9      # V7/ii in Ab: the b13 is in the key
+# brass kicks, bar 4 of A and C: (F9)
+A | 5  | Bbm7    # ii: Dorian, the key’s own notes
+A | 6  | Cm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A | 6  | F7      # V7/ii in Ab: the b13 is in the key
+A | 7  | Bbm7    # ii of the ii–V to Ab
+A | 7  | Eb7     # V7 of Ab: natural tensions
+A | 8  | AbMaj7  # tonic: the 4th is in the key
+A | 8  | F7      # V7/ii in Ab: the b13 is in the key
+@ending 1 A 7 8
+A | 9  | Bbm7    # ii of the ii–V to Ab
+A | 9  | Eb7     # V7 of Ab: natural tensions
+A | 10 | Ab6     # tonic: the 4th is in the key
+@ending 2 A 9 10
+# area: B major (bars 11–12)
+B | 11 | C#m7    # ii of the ii–V to B
+B | 11 | F#7     # V7 of B: natural tensions
+B | 12 | BMaj7   # tonic: the 4th is in the key
+# area: D major (bars 13–14)
+B | 13 | Em7     # ii of the ii–V to D
+B | 13 | A7      # V7 of D: natural tensions
+B | 14 | DMaj7   # tonic: the 4th is in the key
+# area: C major (bars 15–18)
+B | 15 | Dm7     # ii of the ii–V to C
+B | 15 | G7      # V7 of C: natural tensions
+B | 16 | CMaj7   # tonic: the 4th is in the key
+B | 16 | C#dim7  # vii°7 of Dm7: A7♭9 without its root
+B | 17 | Dm7     # ii of the ii–V to C minor
+B | 17 | G7      # V7 of C: natural tensions
+B | 18 | Cm7     # ii of F7: Dorian
+B | 18 | F7      # extended dominant: V7 of Bb9
+@key C 19 Ab
+# area: Ab major (bars 19–26)
+C | 19 | Bb9     # II7 in Ab, not resolving: natural tensions
+C | 20 | Bbm7    # ii of the ii–V to Ab
+C | 20 | Eb7#5   # V7 of Ab: #11 and b13 from the symbol
+C | 21 | AbMaj7  # tonic: the 4th is in the key
+C | 22 | F9      # V7/ii in Ab: the b13 is in the key
+C | 23 | Bbm7    # ii: Dorian, the key’s own notes
+C | 24 | Cm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+C | 24 | F7      # V7/ii in Ab: the b13 is in the key
+C | 25 | Bbm7    # ii of the ii–V to Ab
+C | 25 | Eb7     # V7 of Ab: natural tensions
+C | 26 | Ab6     # tonic: the 4th is in the key

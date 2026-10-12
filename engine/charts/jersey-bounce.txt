@@ -1,0 +1,39 @@
+title: Jersey Bounce
+composer: Bobby Plater, Tiny Bradshaw, Edward Johnson
+style: Medium swing
+# book: Med. Bounce (Swing)
+key: F
+form: ABC, 32 bars
+source:
+# analysis: 2026-10-12, rules v1; F
+
+# the book's A is two 8-bar A's (AABA); its C is the last A
+# section | bar | chord
+A | 1  | F6      # tonic: the 4th is in the key
+A | 3  | G7      # II7 in F, not resolving: natural tensions
+A | 5  | Gm7     # ii of the ii–V to F
+A | 6  | C9      # V7 of F: natural tensions
+A | 7  | F6      # tonic: the 4th is in the key
+A | 7  | Abdim7  # passing diminished: G7♭9 without its G, the C13's dominant (Gm7 its ii)
+A | 8  | Gm7     # ii of the ii–V to F
+A | 8  | C13     # V7 of F: natural tensions
+A | 9  | F6      # tonic: the 4th is in the key
+A | 11 | G7      # II7 in F, not resolving: natural tensions
+A | 13 | Gm7     # ii of the ii–V to F
+A | 14 | C9      # V7 of F: natural tensions
+A | 15 | F6      # tonic: the 4th is in the key
+A | 15 | Db9     # ♭VI7 from the parallel minor: Lydian Dominant, it returns to I
+A | 16 | F6      # tonic: the 4th is in the key
+B | 17 | F13     # I7 in F, not resolving: natural tensions
+B | 19 | Eb13    # ♭VII7 from the parallel minor: Lydian Dominant
+B | 21 | Db13    # tritone substitute: resolves down a half step to C7
+B | 23 | C7      # V7 in F, not resolving: natural tensions
+B | 24 | C7#5    # V7 of F: #11 and b13 from the symbol
+# alternate bridge (printed below, a melody variant): F13 Eb13 Db13 C7, two bars each (bar 24 C7, no C7#5)
+C | 25 | F6      # tonic: the 4th is in the key
+C | 27 | G7      # II7 in F, not resolving: natural tensions
+C | 29 | Gm7     # ii of the ii–V to F
+C | 30 | C9      # V7 of F: natural tensions
+C | 31 | F6      # tonic: the 4th is in the key
+C | 31 | Db9     # ♭VI7 from the parallel minor: Lydian Dominant, it returns to I
+C | 32 | F6      # tonic: the 4th is in the key

@@ -1,0 +1,146 @@
+title: Hallucinations
+aka: Budo
+composer: Bud Powell
+style: Up
+key: F
+form: AABCD EEFG, 70 bars
+source:
+# analysis: 2026-10-12, rules v1; F
+# book: Bright bebop. Head: A A B C D; solos on E E F G; after solos, D.C. al Coda (from bar 25).
+# the pickup before A has no chord; chords the book pushes an eighth before a barline are written in the next bar
+
+# section | bar | chord
+A    | 1  | F6      # tonic: the 4th is in the key
+A    | 1  | Bb7     # tritone substitute: resolves down a half step to A7
+A    | 2  | A7      # extended dominant: each one falls a fifth into the next: natural tensions
+A    | 2  | D7      # extended dominant: each one falls a fifth into the next: natural tensions
+A    | 2  | G7      # V7 of V7: the dominant of the dominant: natural tensions
+A    | 3  | C13b9   # V7 of F: the b9 from the symbol
+A    | 4  | F6      # tonic: the 4th is in the key
+A    | 4  | F7      # extended dominant: V7 of Bb7
+A    | 5  | Bb7     # IV7 in F, not resolving: the #11 is in the key
+A    | 5  | Bdim7   # ♯IV°7 to I over its 5th: E7♭9 without its root, the ♯II°7's notes
+A    | 6  | F7/C    # I7 in F, not resolving: natural tensions
+A    | 6  | D7b5    # extended dominant: V7 of G7sus4; #11 from the symbol
+A    | 7  | G7sus4  # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+A    | 7  | G7      # V7 of V7: the dominant of the dominant: natural tensions
+A    | 7  | C7b9    # V7 of F: the b9 from the symbol
+A    | 8  | F6      # tonic: the 4th is in the key
+A    | 8  | C7      # V7 of F: natural tensions
+@ending 1 A 8
+A    | 9  | F6      # tonic: the 4th is in the key
+A    | 9  | Eb7     # tritone substitute: resolves down a half step to Dm7
+@ending 2 A 9
+B    | 10 | Dm7     # ii of the ii–V to C minor
+B    | 10 | G7      # V7/v in F: natural tensions
+B    | 11 | Cm7     # ii of the ii–V to Bb minor
+B    | 11 | F7      # V7/iv in F: natural tensions
+B    | 12 | Bbm7    # ii of Eb7: Dorian
+B    | 12 | Eb7     # extended ii–V: a side-step, its own key
+B    | 13 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B    | 13 | D7      # V7/ii in F: the b13 is in the key
+B    | 14 | Gm      # ii: Dorian, the key’s own notes
+B    | 14 | D7/A    # V7 of the Gm before it: the b13 is in the key
+B    | 15 | Bb6     # IV: the #4 is the key’s 7th
+B    | 15 | C7      # V7 of F: natural tensions
+B    | 16 | F6      # tonic: the 4th is in the key
+B    | 16 | D7      # V7/ii in F: the b13 is in the key
+B    | 17 | Gm7     # ii of the ii–V to F
+B    | 17 | C7      # V7 of F: natural tensions
+C    | 18 | F6      # tonic: the 4th is in the key
+C    | 18 | Bb7     # tritone substitute: resolves down a half step to A7
+C    | 19 | A7      # extended dominant: each one falls a fifth into the next: natural tensions
+C    | 19 | D7      # extended dominant: each one falls a fifth into the next: natural tensions
+C    | 19 | G7      # V7 of V7: the dominant of the dominant: natural tensions
+C    | 20 | C13b9   # V7 of F: the b9 from the symbol
+C    | 21 | F6      # tonic: the 4th is in the key
+C    | 21 | F7      # extended dominant: V7 of Bb7
+C    | 22 | Bb7     # IV7 in F, not resolving: the #11 is in the key
+C    | 22 | Bdim7   # ♯IV°7 to I over its 5th: E7♭9 without its root, the ♯II°7's notes
+C    | 23 | F7/C    # I7 in F, not resolving: natural tensions
+C    | 23 | D7b5    # extended dominant: V7 of G7sus4; #11 from the symbol
+C    | 24 | G7sus4  # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+C    | 24 | G7      # V7 of V7: the dominant of the dominant: natural tensions
+C    | 24 | C7b9    # V7 of F: the b9 from the symbol
+C    | 25 | F6      # tonic: the 4th is in the key
+# the coda sign stands over the start of bar 25: after solos the Coda replaces it
+@coda C 25
+D    | 26 | Bm7b5   # iiø7 of E7: Locrian, the key's own notes (its ♭2 is a passing note)
+D    | 26 | E7      # V7/iii in F: b9 and b13 are in the key
+D    | 27 | Am7b5   # iiø7 of D7: Locrian, the key's own notes (its ♭2 is a passing note)
+D    | 27 | D7      # V7/ii in F: the b13 is in the key
+D    | 28 | Gm7b5   # iiø7, borrowed from F minor: Locrian
+D    | 29 | B9      # tritone substitute: resolves down a half step to Bb9
+D    | 29 | Bb9     # IV7 in F, not resolving: the #11 is in the key
+D    | 29 | Gb      # ♭II, borrowed from F Phrygian: Lydian (its ♯11 is in the key)
+D    | 29 | F       # tonic: the 4th is in the key
+# book, bar 29 (eighth-note hits): B9 Bb9 Abm Gm Gb F; Abm and Gm left out (at most 4 chords a bar)
+# bars 30–31: solo break; alt (optional): bars 30–31 (F6 | Gm7 C7)
+# alternate letter D (4 bars): Bm7b5 E7 | Am7b5 D7 | Gm7 C7 | F6 (solo break)
+E    | 32 | F6      # tonic: the 4th is in the key
+# alt: bar 32 (Bm7b5 for F6)
+E    | 32 | Bb7     # tritone substitute: resolves down a half step to A7
+E    | 33 | A7      # extended dominant: each one falls a fifth into the next: natural tensions
+E    | 33 | D7      # extended dominant: each one falls a fifth into the next: natural tensions
+E    | 34 | G7      # V7 of V7: the dominant of the dominant: natural tensions
+E    | 34 | C7      # V7 of F: natural tensions
+E    | 35 | F6      # tonic: the 4th is in the key
+E    | 35 | F7      # extended dominant: V7 of Bb7
+E    | 36 | Bb7     # IV7 in F, not resolving: the #11 is in the key
+E    | 36 | Bdim7   # ♯IV°7 to I over its 5th: E7♭9 without its root, the ♯II°7's notes
+E    | 37 | F7/C    # I7 in F, not resolving: natural tensions
+E    | 37 | D7      # V7/ii in F: the b13 is in the key
+E    | 38 | Gm7     # ii of the ii–V to F
+E    | 38 | C7      # V7 of F: natural tensions
+E    | 39 | F6      # tonic: the 4th is in the key
+E    | 39 | C7      # V7 of F: natural tensions
+@ending 1 E 39
+E    | 40 | F6      # tonic: the 4th is in the key
+# alt (optional): bar 40 (F6 Eb7)
+@ending 2 E 40
+F    | 41 | Dm7     # ii of the ii–V to C minor
+F    | 41 | G7      # V7/v in F: natural tensions
+F    | 42 | Cm7     # ii of the ii–V to Bb minor
+F    | 42 | F7      # V7/iv in F: natural tensions
+F    | 43 | Bbm7    # ii of Eb7: Dorian
+F    | 43 | Eb7     # extended ii–V: a side-step, its own key
+F    | 44 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+F    | 44 | D7      # V7/ii in F: the b13 is in the key
+F    | 45 | Gm      # ii: Dorian, the key’s own notes
+F    | 45 | D7/A    # V7 of the Gm before it: the b13 is in the key
+F    | 46 | Bb6     # IV: the #4 is the key’s 7th
+F    | 46 | C7      # V7 of F: natural tensions
+F    | 47 | F6      # tonic: the 4th is in the key
+F    | 47 | D7      # V7/ii in F: the b13 is in the key
+F    | 48 | Gm7     # ii of the ii–V to F
+F    | 48 | C7      # V7 of F: natural tensions
+G    | 49 | F6      # tonic: the 4th is in the key
+# alt: bar 49 (Bm7b5 for F6)
+G    | 49 | Bb7     # tritone substitute: resolves down a half step to A7
+G    | 50 | A7      # extended dominant: each one falls a fifth into the next: natural tensions
+G    | 50 | D7      # extended dominant: each one falls a fifth into the next: natural tensions
+G    | 51 | G7      # V7 of V7: the dominant of the dominant: natural tensions
+G    | 51 | C7      # V7 of F: natural tensions
+G    | 52 | F6      # tonic: the 4th is in the key
+G    | 52 | F7      # extended dominant: V7 of Bb7
+G    | 53 | Bb7     # IV7 in F, not resolving: the #11 is in the key
+G    | 53 | Bdim7   # ♯IV°7 to I over its 5th: E7♭9 without its root, the ♯II°7's notes
+G    | 54 | F7/C    # I7 in F, not resolving: natural tensions
+G    | 54 | D7      # V7/ii in F: the b13 is in the key
+G    | 55 | Gm7     # ii of the ii–V to F
+G    | 55 | C7      # V7 of F: natural tensions
+G    | 56 | F6      # tonic: the 4th is in the key
+G    | 56 | C7      # V7 of F: natural tensions
+@nav G 56 D.C. al Coda
+@coda Coda 1
+Coda | 1  | F6      # tonic: the 4th is in the key
+Coda | 1  | F7      # extended dominant: V7 of Bb7
+Coda | 2  | Bb7     # IV7 in F, not resolving: the #11 is in the key
+Coda | 2  | Bdim7   # ♯IV°7 to I over its 5th: E7♭9 without its root, the ♯II°7's notes
+Coda | 3  | F7/C    # I7 in F, not resolving: natural tensions
+Coda | 3  | D7b5    # extended dominant: V7 of G7sus4; #11 from the symbol
+Coda | 4  | G7sus4  # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+Coda | 4  | G7      # tritone substitute: resolves down a half step to Gb7#9
+Coda | 4  | Gb7#9   # tritone substitute: resolves down a half step to FMaj9; b9 and #9 from the symbol
+# alt (optional): bar 4 (C7b9 before Gb7#9)
+Coda | 5  | FMaj9   # tonic: the 4th is in the key
