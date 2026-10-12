@@ -1,5 +1,8 @@
 title: Impressions
-subtitle: AABA, 32 Bars (the So What Form)
+subtitle: The So What Form
+composer: John Coltrane
+style: Up
+form: AABA, 32 bars
 key: Dm
 # analysis: 2026-10-11, rules v1; D minor, modal
 

@@ -7,6 +7,7 @@ const TUNE: TuneSummary = {
   subtitle: '',
   composer: 'John Coltrane',
   aka: [],
+  kind: 'tune',
   key: 'Eb',
   keyLabel: 'E♭',
   style: 'Blues',
@@ -66,6 +67,11 @@ describe('tuneLd', () => {
     const ld = tuneLd({ ...TUNE, composer: '', key: '', keyLabel: '' }, PATH)
     expect(ld).not.toHaveProperty('composer')
     expect(ld).not.toHaveProperty('musicalKey')
+  })
+
+  it('is a creative work, not a composition, for a form or an exercise', () => {
+    expect(tuneLd({ ...TUNE, kind: 'form', composer: '' }, PATH)['@type']).toBe('CreativeWork')
+    expect(tuneLd({ ...TUNE, kind: 'exercise', composer: '' }, PATH)['@type']).toBe('CreativeWork')
   })
 
   it('gives its other titles', () => {

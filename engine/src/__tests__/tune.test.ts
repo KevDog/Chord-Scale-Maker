@@ -4,7 +4,7 @@ import { buildChanges } from '../changes'
 import { keyLabel, parseChart } from '../chart'
 import { LIMITS } from '../limits'
 import { CONCERT } from '../part'
-import { tuneDescription, tuneSummary } from '../tune'
+import { tuneAdvice, tuneDescription, tuneGaps, tuneSummary } from '../tune'
 import { isSyncCopy } from '../util'
 
 const read = (name: string) => readFileSync(`charts/${name}`, 'utf8')
@@ -82,5 +82,42 @@ describe('tuneDescription', () => {
 
   it.each(charts)('fits in 160 characters: %s', (file) => {
     expect(tuneDescription(tuneSummary(read(file))).length).toBeLessThanOrEqual(160)
+  })
+})
+
+describe('tuneGaps: what a tune page needs from its chart', () => {
+  const doc = (head: string) => parseChart(`${head}\nA | 1 | C`).value
+  const TUNE = 'title: Blue Trane\ncomposer: John Coltrane\nkey: Eb\nstyle: Blues\nform: A, 12 bars'
+
+  it('finds none in a complete tune', () => {
+    expect(tuneGaps(doc(TUNE))).toEqual([])
+  })
+
+  it('asks a tune for its composer, with or without kind: tune', () => {
+    const noComposer = TUNE.replace('composer: John Coltrane\n', '')
+    expect(tuneGaps(doc(noComposer))).toEqual(['no composer: a tune’s page needs one (or write kind: form or kind: exercise)'])
+    expect(tuneGaps(doc(`kind: tune\n${noComposer}`))).toHaveLength(1)
+  })
+
+  it('asks no composer of a form or an exercise', () => {
+    const noComposer = TUNE.replace('composer: John Coltrane\n', '')
+    expect(tuneGaps(doc(`kind: form\n${noComposer}`))).toEqual([])
+    expect(tuneGaps(doc(`kind: exercise\n${noComposer}`))).toEqual([])
+  })
+
+  it('asks every kind for its title, key, style and form', () => {
+    expect(tuneGaps(doc('kind: form\nA | 1 | C'))).toEqual(['no title:', 'no key:', 'no style:', 'no form:'])
+  })
+})
+
+describe('tuneAdvice: what a tune page could also use', () => {
+  const doc = (head: string) => parseChart(`${head}\nA | 1 | C`).value
+
+  it('suggests source: and aka: when they are missing', () => {
+    expect(tuneAdvice(doc('title: X'))).toEqual([
+      'no source: say where the chart came from, if a book or recording',
+      'no aka: add the tune’s other common titles, if it has any',
+    ])
+    expect(tuneAdvice(doc('title: X\nsource: Real Book\naka: Y'))).toEqual([])
   })
 })

@@ -1,5 +1,7 @@
 title: So What
-subtitle: AABA, 32 Bars
+composer: Miles Davis
+style: Medium
+form: AABA, 32 bars
 key: Dm
 # analysis: 2026-10-11, rules v1; D minor, modal
 

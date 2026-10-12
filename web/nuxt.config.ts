@@ -9,19 +9,14 @@ import { addCspMeta } from './build/csp'
 import { quotesPlugin } from './build/quotes'
 import { SECURITY_HEADERS } from './build/headers'
 import { buildVersion } from './build/version'
-import { isSyncCopy } from '@chord-scale-maker/engine'
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, tunePath } from './app/utils/site'
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from './app/utils/site'
+import { sitemapPaths, tunePathsOf } from './app/utils/sitemap'
 
 /** the engine package's folder (engine/ in the workspace): its charts/ is the library */
 const ENGINE_DIR = dirname(createRequire(import.meta.url).resolve('@chord-scale-maker/engine/package.json'))
 
-/** every library chart's tune page (pages/tunes/[slug].vue), as app/utils/library.ts finds the charts */
-const TUNE_ROUTES = readdirSync(join(ENGINE_DIR, 'charts'))
-  .filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
-  .map((f) => tunePath(f.replace(/\.txt$/, '')))
-
-/** the pages search engines should find (server/routes/sitemap.xml.ts); never /song (noindex) or /ui */
-const SITEMAP_PATHS = ['/', '/help', '/functions', '/about', '/contact', '/privacy', ...TUNE_ROUTES]
+/** the pages search engines should find (server/routes/sitemap.xml.ts): the site's, then every library chart's tune page */
+const SITEMAP_PATHS = sitemapPaths(tunePathsOf(readdirSync(join(ENGINE_DIR, 'charts'))))
 
 /** dev: the engine's charts/ and chord_scales.json sit outside Vite's root, so it doesn't watch them by itself
  *  (quotes.json is watched by its own plugin) */

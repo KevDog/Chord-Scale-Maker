@@ -1,5 +1,8 @@
 title: F Jazz Blues
+kind: form
 subtitle: 12-Bar Blues with ii–V Turnarounds
+style: Blues
+form: A, 12 bars
 key: F
 # analysis: 2026-10-11, rules v1; F, blues
 

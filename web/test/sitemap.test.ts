@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { canonicalUrl } from '~/utils/site'
-import { sitemapXml } from '~/utils/sitemap'
+import { sitemapPaths, sitemapXml, tunePathsOf } from '~/utils/sitemap'
 
 describe('sitemapXml', () => {
   it('is an XML urlset in the sitemap namespace', () => {
@@ -18,5 +18,15 @@ describe('sitemapXml', () => {
   it('escapes & and <', () => {
     const xml = sitemapXml(['/a&b<c'])
     expect(xml).toContain('<loc>https://www.chordscalemaker.com/a&amp;b&lt;c</loc>')
+  })
+})
+
+describe('sitemap paths', () => {
+  it('maps chart files to tune paths, skipping other files and sync copies', () => {
+    expect(tunePathsOf(['blue_trane.txt', 'README.md', 'so_what 2.txt'])).toEqual(['/tunes/blue-trane'])
+  })
+
+  it('lists the site pages, then the tunes', () => {
+    expect(sitemapPaths(['/tunes/a'])).toEqual(['/', '/help', '/functions', '/about', '/contact', '/privacy', '/tunes/a'])
   })
 })

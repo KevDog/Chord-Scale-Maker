@@ -1,5 +1,8 @@
 title: Modes of Melodic Minor
+kind: exercise
 subtitle: C Melodic Minor from Each Degree
+style: Study
+form: 7 bars, a mode each
 key: Cm
 # analysis: 2026-10-11, rules v1; C minor
 

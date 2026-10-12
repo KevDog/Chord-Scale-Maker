@@ -1,18 +1,18 @@
 /**
  * The analyser (docs/plan-analysis.md §12): reads charts, reports the rules' scale for every row and why, and with
- * flags writes the result back.
+ * flags writes the result back. Each chart's report ends with its tune page: what it lacks, and its search listing.
  *
  *   npm run analyse -- charts/autumn_leaves.txt      report one chart
  *   npm run analyse -- --all                          report every chart, then a summary
  *   --strip    blank every written scale the rules reproduce (not `# keep:` rows); list the ones they don't
  *   --save     write the analysis into the chart as comments (a reason per row, `# area:` lines, a header)
- *   --quiet    only the summary
+ *   --quiet    only the summary (and any tune page's gaps: they fail the build)
  *   --ambiguous   list what a function, an @key or a context: could settle, and problems with the ones written
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
 import { ambiguities, analyse, applyAnalysis, type Analysis, contextLine } from '../src/analysis'
-import { isSyncCopy, parseChart, sameScale, serializeChart } from '../src'
+import { type ChartDoc, isSyncCopy, parseChart, sameScale, serializeChart, tuneAdvice, tuneDescription, tuneGaps, tuneSummary } from '../src'
 
 const args = process.argv.slice(2)
 const flag = (f: string): boolean => args.includes(f)
@@ -39,6 +39,19 @@ function report(name: string, a: Analysis): string[] {
   return [head, `  ${contextLine(a)}`, ...areas]
 }
 
+/** the chart's tune page as search engines will list it, and what it lacks (libraryMeta.test.ts fails on a gap) */
+function tunePage(text: string, doc: ChartDoc): string[] {
+  const t = tuneSummary(text)
+  const description = tuneDescription(t)
+  return [
+    '  Tune page:',
+    ...tuneGaps(doc).map((g) => `    ✗ ${g}`),
+    ...tuneAdvice(doc).map((g) => `    · ${g}`),
+    `    title: ${t.title}`,
+    `    description (${description.length}): ${description}`,
+  ]
+}
+
 let agree = 0
 let differ = 0
 let blank = 0
@@ -46,6 +59,7 @@ let unreached = 0
 let written = 0
 const disagreements: string[] = []
 const toReview: string[] = []
+const gaps: string[] = []
 for (const file of files) {
   const text = readFileSync(file, 'utf8')
   const doc = parseChart(text).value
@@ -82,6 +96,8 @@ for (const file of files) {
     if (scales === 'strip') toReview.push(...overrides.map((o) => `${name} line ${o.line + 1}: bar ${o.bar} ${o.chord} ${o.scale}, rules ${o.rules}`))
     for (const c of conflicts) lines.push(`  @copy: bar ${c.bar} ${c.chord} would be ${c.copy} in the repeat; the source row has ${c.source}`)
   }
+  gaps.push(...tuneGaps(doc).map((g) => `${name}: ${g}`))
+  lines.push(...tunePage(text, doc))
   if (!quiet) console.log(lines.join('\n') + '\n')
 }
 const filled = agree + differ
@@ -90,5 +106,10 @@ if (!ambiguous)
   console.log(
     `${files.length} chart(s): ${agree} rows agree, ${differ} differ${filled ? ` (${Math.round((100 * agree) / filled)}% of written scales)` : ''}, ${blank} blank, ${unreached} unreached${written ? `; ${written} file(s) written` : ''}`,
   )
+if (!ambiguous) {
+  const missing = new Set(gaps.map((g) => g.slice(0, g.indexOf(':')))).size
+  console.log(`Tune pages: ${files.length - missing} complete, ${missing} missing data`)
+}
+if (quiet && gaps.length) console.log(gaps.join('\n'))
 if (quiet && disagreements.length) console.log(disagreements.join('\n'))
 if (toReview.length) console.log(['left as written, without # keep: (add one with its reason, or blank the cell):', ...toReview.map((l) => `  ${l}`)].join('\n'))

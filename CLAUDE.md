@@ -47,9 +47,10 @@ README.md for the chart format. The original Python/LilyPond CLI was retired aft
 
 ## Typical requests
 - "Make a chart for <tune>": create `engine/charts/<tune>.txt` in concert pitch, one row per chord change, chords only, with
-  `key:` (and `composer:`, `style:`, `form:`, `source:` when known); then `cd engine && npm run analyse --
-  charts/<tune>.txt --save` to save the reasons, read the report, then `--ambiguous`, and `make golden` (the
-  fixtures cover every library chart). Leave the scale cells blank: they play the analysis. A scale the melody
+  `key:`, `composer:`, `style:`, `form:` (and `source:` when known, `aka:` for its other common titles; `kind: form`
+  or `kind: exercise` for a chart with no composer, like F Blues); then `cd engine && npm run analyse --
+  charts/<tune>.txt --save` to save the reasons, read the report (its Tune page section must show no gaps: they
+  fail `make test`), then `--ambiguous`, and `make golden` (the fixtures cover every library chart). Leave the scale cells blank: they play the analysis. A scale the melody
   demands over the rules: write it, with `# keep: …`. Otherwise, where the analyser can only guess, write the
   function (`| | V7/ii`) or an `@key` rather than a scale: a function lets the rules still choose the tensions.
 - Changing an analysis rule (`engine/src/analysis/`, docs/plan-analysis.md): a test first, then `make golden`, and

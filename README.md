@@ -51,6 +51,7 @@ A1 | 3 | E7    | E Mixolydian
 | `title:`, `subtitle:` | The heading on each page. |
 | `composer:`, `style:`, `key:`, `form:`, `source:` | About the tune: who wrote it, the feel (`Ballad`, `Medium up`, `Latin`…), the key (`Eb`, `Fm`), the form (`AABA, 32 bars`) and where the chart came from. Kept with the chart, not shown; `key:` is the analyser's starting point. |
 | `aka:` | The tune's other titles, `;` between them (a title may hold a comma): `aka: Blue Train`. Shown on its tune page and found by the library search. |
+| `kind:` | `tune` (the default), `form` (a progression with no composer: F Blues, Rhythm Changes) or `exercise`. A library chart needs `title:`, `key:`, `style:` and `form:`, and a tune its `composer:`; `make test` fails without them. |
 | `#` | Comment line. A row may also end in a comment: `A \| 6 \| D7 \| D Phrygian Dominant  # V7 of G minor: b9 and b13 are in the key` (the `#` needs a space before it). |
 
 Chord symbols: `Cm7`, `C-7`, `Cmi7`, `Bbm7`, `Am7b5`, `D7#5`, `G7#9b13`, `EbMaj7`, `C9`, `Csus`, `C7sus4b9`,

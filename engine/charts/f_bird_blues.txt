@@ -1,5 +1,8 @@
 title: F Bird Blues
+kind: form
 subtitle: Blues for Alice Changes
+style: Blues
+form: A, 12 bars
 key: F
 context: blues
 # analysis: 2026-10-11, rules v1; F, blues

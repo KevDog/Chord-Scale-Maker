@@ -1,5 +1,8 @@
 title: Modes of the Major Scale
+kind: exercise
 subtitle: C Major from Each Degree
+style: Study
+form: 7 bars, a mode each
 key: C
 # analysis: 2026-10-11, rules v1; C
 

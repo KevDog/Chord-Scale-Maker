@@ -1,5 +1,8 @@
 title: Rhythm Changes
-subtitle: Bb, AABA, Standard Changes
+kind: form
+subtitle: Standard Changes
+style: Medium up
+form: AABA, 32 bars
 key: Bb
 # analysis: 2026-10-11, rules v1; Bb
 
