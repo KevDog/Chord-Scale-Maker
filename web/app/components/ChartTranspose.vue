@@ -43,6 +43,8 @@ const to = ref<string>('C')
 const keys = computed(() => transposeKeys(from.value))
 /** the chart's declared key is the source; Transpose is unavailable until it's a valid key */
 const keyValid = computed(() => isValidKey(chartMeta(props.current()).key))
+/** the key the chart had before a run of transposes, and the key the last one left it in; a key changed otherwise ends the run */
+const run = ref<{ origin: string; at: string } | null>(null)
 
 function openDialog(): void {
   from.value = chartMeta(props.current()).key.trim()
@@ -56,8 +58,11 @@ function apply(): void {
   // the analysis reads the key, so it's set first; a saved analysis then names the new key
   const doc = refreshAnalysis(setMeta(moved, 'key', newKey))
   emit('update:doc', doc)
+  const origin = run.value?.at === from.value ? run.value.origin : from.value
+  run.value = { origin, at: newKey }
   const note = skipped ? `; ${skipped} ${skipped === 1 ? 'row' : 'rows'} could not be read and stayed as typed` : ''
-  emit('transposed', `Transposed from ${keyLabel(from.value)} to ${keyLabel(newKey)}${note}.`)
+  // back in the key it started in: nothing to say
+  emit('transposed', newKey === origin ? '' : `Transposed from ${keyLabel(origin)} to ${keyLabel(newKey)}${note}.`)
   open.value = false
 }
 </script>
