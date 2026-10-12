@@ -19,7 +19,7 @@ const VOLTA_MARGIN = 4 // guide tones: between an ending bracket's foot and the 
 const VOLTA_PAD = 4 // guide tones: shown above a bracket's top
 const ACCIDENTAL_RISE = 20 // a flat's top over its note head's centre (about two spaces)
 const HALF_HEAD = 6 // half a note head's width: a beat with no note starting on it sits where a head would
-export const DURATIONS = { 4: 'w', 3: 'hd', 2: 'h', 1: 'q' } as const // 3 beats: a dotted half
+export const DURATIONS = { 4: 'w', 3: 'hd', 2: 'h', 1: 'q', 0.5: '8', 0.25: '16' } as const // 3 beats: a dotted half
 export const REST_KEY = { treble: 'b/4', bass: 'd/3' } as const
 export const INK = { fillStyle: 'currentColor', strokeStyle: 'currentColor' } // follows light/dark mode, prints black
 
