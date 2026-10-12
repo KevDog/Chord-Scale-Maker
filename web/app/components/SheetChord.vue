@@ -50,22 +50,23 @@
       </ul>
       <UiErrorMessage v-if="error" class="px-3 py-1.5">{{ error }}</UiErrorMessage>
       <UiText v-if="repeatOf" role="note" class="px-3 py-1.5 text-xs/5!">{{ section }} repeats {{ repeatOf }}: a change here changes {{ repeatOf }} and every repeat of it.</UiText>
-      <p class="border-t border-zinc-950/5 px-3 py-1.5 text-xs/5 text-zinc-600 dark:border-white/5 dark:text-zinc-400"><kbd>Tab</kbd> next bar · <kbd>Space</kbd> add a chord · <kbd>Esc</kbd> cancel</p>
+      <p class="border-t border-zinc-950/5 px-3 py-1.5 text-xs/5 text-zinc-600 dark:border-white/5 dark:text-zinc-400"><kbd>←</kbd> <kbd>→</kbd> chord · <kbd>Tab</kbd> bar · <kbd>Space</kbd> add a chord · <kbd>Esc</kbd> cancel</p>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
 import { barView, cellError, type ChartDoc, chordCompletions, chordPreview, type ChordPreview, chordsAfterTyping, type ChordToken, chordTokens, CONCERT, type GridPos, posOfLine, setBarChords, sheetScale } from '@chord-scale-maker/engine'
-import type { SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
+import type { SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 
 /**
  * A chord on the Changes sheet while the editor is shown (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md
  * §1.1–1.2): a button ("Edit G7, A bar 2"), or, when `editing` names it, a field in its place with completions that
- * read each candidate in this bar. Enter and Tab commit (Tab then asks to move), Space commits and asks for a new chord
- * slot, Esc cancels, blank takes the chord out, % is the bar before. A slot instance (`adding`) is the new chord after
- * the bar's: it opens empty and commits as an added chord. The doc is written once, on commit.
+ * read each candidate in this bar. Enter and Tab commit (Tab then asks to move a bar; → at the end of the text and ←
+ * at its start, a chord), Space commits and asks for a new chord slot, Esc cancels, blank takes the chord out, % is
+ * the bar before. A slot instance (`adding`) is the new chord after the bar's: it opens empty and commits as an added
+ * chord. The doc is written once, on commit.
  */
 const props = defineProps<{
   doc: ChartDoc
@@ -85,7 +86,7 @@ const emit = defineEmits<{
   'update:doc': [doc: ChartDoc]
   said: [text: string]
   preview: [preview: ChordPreview | null]
-  done: [then: 'stay' | 'next' | 'prev' | 'add' | 'cancel']
+  done: [then: SheetDone]
 }>()
 
 const id = useId()
@@ -194,7 +195,7 @@ function commit(text = draft.value): boolean {
   emit('said', `${p.section}, bar ${p.bar}: ${chords.join(', ') || 'held'}`)
   return true
 }
-function finish(then: 'stay' | 'next' | 'prev' | 'add' | 'cancel'): void {
+function finish(then: SheetDone): void {
   settled = true
   emit('preview', null)
   emit('done', then)
@@ -230,6 +231,15 @@ function onKey(e: KeyboardEvent): void {
   if (e.key === 'Tab') {
     e.preventDefault()
     if (commit()) finish(e.shiftKey ? 'prev' : 'next')
+    return
+  }
+  if ((e.key === 'ArrowRight' || e.key === 'ArrowLeft') && !e.shiftKey && !e.altKey && !e.metaKey && !e.ctrlKey) {
+    // the caret at the text's end (→) or start (←), or the text selected: on to the next or previous chord; inside the text, the browser moves the caret
+    const el = input.value
+    const atEdge = e.key === 'ArrowRight' ? el?.selectionEnd === draft.value.length : el?.selectionStart === 0
+    if (!el || !atEdge) return
+    e.preventDefault()
+    if (commit()) finish(e.key === 'ArrowRight' ? 'nextChord' : 'prevChord')
     return
   }
   if (e.key === ' ') {

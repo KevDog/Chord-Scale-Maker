@@ -1,4 +1,4 @@
-import { barCell, chooseInstrument, expect, openEditor, test, writeChart } from './fixtures'
+import { chooseInstrument, expect, openEditor, test, writeChart } from './fixtures'
 
 /** the chart text without its column padding */
 const plain = async (page: import('@playwright/test').Page): Promise<string> => (await page.getByLabel('Chart text').inputValue()).replace(/[ \t]*\|[ \t]*/g, ' | ')
@@ -8,7 +8,7 @@ test.beforeEach(async ({ page }) => {
   await openEditor(page)
 })
 
-test('clicking a chord on the Changes sheet opens its field in place, and selects it in the grid', async ({ page }) => {
+test('clicking a chord on the Changes sheet opens its field in place', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   const chord = page.getByRole('button', { name: 'Edit G7, A bar 2' })
   const at = await chord.boundingBox()
@@ -19,7 +19,7 @@ test('clicking a chord on the Changes sheet opens its field in place, and select
   const box = await field.boundingBox()
   expect(box && at && Math.abs(box.x - at.x) < 16).toBe(true) // on the chord's beat (the click scrolls it into view, so y moves)
   await expect(page.getByRole('dialog')).toHaveCount(0)
-  await expect(barCell(page, 'A', 2)).toHaveAttribute('aria-selected', 'true')
+  await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toHaveCount(0) // the sheet is the editor: no bar grid
   await field.fill('Db7')
   await field.press('Enter')
   await expect.poll(() => plain(page)).toMatch(/A \| 2 \| Db7/)
@@ -29,7 +29,9 @@ test('clicking a chord on the Changes sheet opens its field in place, and select
 test('on a phone the grid gives way to light edits: tap a chord, change it in a bottom sheet', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
   await expect(page.getByText('Full editing works on a larger screen.')).toBeVisible()
-  await expect(barCell(page, 'A', 1)).toBeHidden()
+  await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeVisible() // the Chart pane stays below md: its heading fields
+  await expect(page.getByLabel('Time', { exact: true })).toBeVisible()
+  await expect(page.getByRole('gridcell')).toHaveCount(0)
   await expect(page.getByRole('group', { name: 'Structure' })).toBeHidden()
 
   await page.getByRole('button', { name: 'Edit Dm7, A bar 1' }).click()
@@ -162,6 +164,8 @@ test('the heading is edited where it prints, and nothing of the editor prints', 
   await expect(page.getByRole('heading', { name: 'My Tune' })).toBeVisible() // the page's heading follows
   await sheet.getByRole('combobox', { name: 'Key', exact: true }).selectOption('Em')
   await expect.poll(() => plain(page)).toMatch(/^key: Em$/m)
+  await sheet.getByRole('textbox', { name: 'Composer', exact: true }).fill('Kosma')
+  await expect.poll(() => plain(page)).toMatch(/^composer: Kosma$/m)
   await page.emulateMedia({ media: 'print' })
   await expect(title).toBeHidden()
   await expect(page.getByText('Editing the sheet')).toBeHidden()
@@ -179,6 +183,36 @@ test('⇧Tab moves back a bar; Tab from the last chord returns focus to its butt
   await page.getByRole('combobox', { name: 'Chord, A bar 3' }).press('Tab')
   await expect(page.getByRole('button', { name: 'Edit CMaj7, A bar 3' })).toBeFocused()
   await expect(page.getByRole('combobox', { name: /^Chord, / })).toHaveCount(0)
+})
+
+test('→ and ← walk the chords: through a bar’s, then into the next or previous bar’s; inside the text they move the caret', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | Em7\nA | 2 | G7\nA | 2 | Db7\nA | 3 | CMaj7\n')
+  await page.getByRole('button', { name: 'Edit G7, A bar 2' }).click()
+  const fields = page.getByRole('combobox', { name: /^Chord, / })
+  await expect(fields).toHaveValue('G7') // selected: → is the next chord
+  await page.keyboard.press('ArrowRight')
+  await expect(fields).toHaveValue('Db7') // the bar's second chord
+  await page.keyboard.press('ArrowRight')
+  await expect(fields).toHaveValue('CMaj7') // the next bar's first
+  await expect(fields).toHaveAccessibleName('Chord, A bar 3')
+  await page.keyboard.press('ArrowLeft')
+  await expect(fields).toHaveValue('Db7') // back: the previous bar's last
+  await page.keyboard.press('ArrowLeft')
+  await expect(fields).toHaveValue('G7')
+  await page.keyboard.type('G13') // over the selection; the caret is now at the end
+  await page.keyboard.press('ArrowLeft') // inside the text: the caret moves, the field stays
+  await expect(fields).toHaveValue('G13')
+  await expect(fields).toHaveJSProperty('selectionStart', 2)
+  await page.keyboard.press('ArrowLeft')
+  await page.keyboard.press('ArrowLeft')
+  await expect(fields).toHaveJSProperty('selectionStart', 0)
+  await page.keyboard.press('ArrowLeft') // at the start: commits, and opens the previous bar's chord
+  await expect(fields).toHaveValue('Em7')
+  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| G13/)
+  await page.keyboard.press('ArrowLeft') // the first chord: nowhere to go, focus back on its button
+  await expect(page.getByRole('button', { name: 'Edit Em7, A bar 1' })).toBeFocused()
+  await expect(fields).toHaveCount(0)
 })
 
 test('a chord drawn twice (a written-out repeat) opens one field, where it was clicked (review)', async ({ page }) => {

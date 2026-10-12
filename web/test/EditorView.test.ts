@@ -69,8 +69,12 @@ async function showSource(w: Wrapper): Promise<void> {
 }
 
 describe('EditorView help', () => {
+  beforeEach(() => {
+    useRuntimeConfig().public.features.leadSheetEditor = false // the Source under the grid's ⋯
+  })
   afterEach(() => {
     useRuntimeConfig().public.features.functions = true
+    useRuntimeConfig().public.features.leadSheetEditor = true
     localStorage.clear()
   })
   it('mentions functions and @key only with the flag on', async () => {
@@ -288,7 +292,14 @@ describe('EditorView key signatures', () => {
 })
 
 describe('EditorView editing', () => {
-  afterEach(() => localStorage.clear())
+  // the bar grid: shown with the lead-sheet editor off (from md up the sheet is the editor, and the grid is not rendered)
+  beforeEach(() => {
+    useRuntimeConfig().public.features.leadSheetEditor = false
+  })
+  afterEach(() => {
+    useRuntimeConfig().public.features.leadSheetEditor = true
+    localStorage.clear()
+  })
 
   it('puts Edit next to the title, and Done closes the editor', async () => {
     const w = await mount()
@@ -429,7 +440,11 @@ describe('EditorView scale level', () => {
 })
 
 describe('EditorView Save', () => {
+  beforeEach(() => {
+    useRuntimeConfig().public.features.leadSheetEditor = false // beside the grid's Undo; the banner's Save is tested with the lead-sheet editor
+  })
   afterEach(() => {
+    useRuntimeConfig().public.features.leadSheetEditor = true
     localStorage.clear()
     navigate.mockClear()
   })
@@ -530,6 +545,62 @@ describe('EditorView lead-sheet editor', () => {
     await sheetEmit(w, 'done', 'next') // the last chord: nowhere to go
     expect(changesSheet(w).props('editing')).toBeNull()
     expect(changesSheet(w).props('focusAt')).toMatchObject({ line: 4, at: { section: 'A', bar: '3' } })
+  })
+
+  it('moves the field by chords (← →): through a bar’s chords, then into the next or previous bar', async () => {
+    const TWO = 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 2 | Db7\nA | 3 | CMaj7\n' // lines 2, 3, 4, 5
+    const w = await mountSuspended(EditorView, { props: { initialText: TWO }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await sheetEmit(w, 'edit', { kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
+    await sheetEmit(w, 'done', 'nextChord')
+    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 4, at: { section: 'A', bar: '2' } })
+    await sheetEmit(w, 'done', 'nextChord')
+    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 5, at: { section: 'A', bar: '3' } })
+    await sheetEmit(w, 'done', 'prevChord')
+    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 4, at: { section: 'A', bar: '2' } })
+    await sheetEmit(w, 'done', 'prevChord')
+    await sheetEmit(w, 'done', 'prevChord')
+    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 2, at: { section: 'A', bar: '1' } })
+    await sheetEmit(w, 'done', 'prevChord') // the first chord: nowhere to go
+    expect(changesSheet(w).props('editing')).toBeNull()
+    expect(changesSheet(w).props('focusAt')).toMatchObject({ line: 2, at: { section: 'A', bar: '1' } })
+  })
+
+  it('is the editor: the bar grid and its Chart heading are not rendered from md up; the Source is in the banner', async () => {
+    const w = await mount()
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await nextTick()
+    expect(w.text()).toContain('Editing the sheet')
+    expect(w.find('[role=gridcell]').exists()).toBe(false)
+    expect(w.find('#grid-heading').exists()).toBe(false)
+    expect(w.find('button[aria-label="More editing options"]').exists()).toBe(false)
+    expect(w.find('textarea[aria-label="Chart text"]').exists()).toBe(false)
+    await buttonCalled(w, 'Source')?.trigger('click')
+    await nextTick()
+    expect(w.find('textarea[aria-label="Chart text"]').exists()).toBe(true)
+  })
+
+  it('keeps the Chart heading, with the grid, on a chart over a size limit', async () => {
+    const w = await mountSuspended(EditorView, { props: { initialText: 'title: T\n' + 'A | 1 | Cm7\n'.repeat(3000) }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    expect(w.find('#grid-heading').exists()).toBe(true)
+    expect(w.text()).toContain('Shorten it in the Source')
+  })
+
+  it('saves from the banner: Save rests while nothing is unsaved, and saves a sheet edit at once', async () => {
+    saveChart({ id: 'abc123abc123', text: THREE, kind: 'new' })
+    const w = await mountSuspended(EditorView, { props: { initialText: THREE, practiceKey: 'mine:abc123abc123', saveTarget: { kind: 'mine', id: 'abc123abc123' } }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await nextTick()
+    const save = () => buttonCalled(w, 'Save')
+    expect(save()?.attributes('disabled')).toBeDefined()
+    expect(save()?.element.closest('div')?.textContent).toContain('Editing the sheet')
+    await sheetEmit(w, 'update:doc', parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | Db7\nA | 3 | CMaj7\n').value)
+    expect(loadChart('abc123abc123')?.text).not.toContain('Db7') // the autosave waits for a pause
+    expect(save()?.attributes('disabled')).toBeUndefined()
+    await save()?.trigger('click')
+    await nextTick()
+    expect(loadChart('abc123abc123')?.text).toContain('Db7')
+    expect(save()?.attributes('disabled')).toBeDefined()
   })
 
   it('from the new chord slot, Tab moves on and Enter gives focus to the bar’s last chord (review: Important 2)', async () => {

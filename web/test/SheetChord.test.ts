@@ -121,6 +121,38 @@ describe('SheetChord', () => {
     }
   })
 
+  it('→ at the end of the text, or ← at its start, commits and asks for the next or previous chord', async () => {
+    for (const [key, at, then] of [['ArrowRight', 3, 'nextChord'], ['ArrowLeft', 0, 'prevChord']] as const) {
+      document.body.innerHTML = ''
+      const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
+      await type(w, 'G13')
+      field(w).element.setSelectionRange(at, at)
+      await field(w).trigger('keydown', { key })
+      await settle()
+      expect(rows(lastDoc(w))[1], key).toBe('A | 2 | G13')
+      expect(w.emitted('done')?.[0], key).toEqual([then])
+    }
+  })
+
+  it('→ and ← with the text selected (as the field opens) move to the next and previous chord', async () => {
+    const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
+    await settle()
+    await field(w).trigger('keydown', { key: 'ArrowLeft' })
+    expect(w.emitted('done')?.[0]).toEqual(['prevChord'])
+    expect(w.emitted('update:doc')).toBeUndefined() // nothing changed
+  })
+
+  it('→ and ← with the caret inside the text are the browser’s own: the field stays', async () => {
+    const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
+    await type(w, 'G13')
+    field(w).element.setSelectionRange(1, 1)
+    await field(w).trigger('keydown', { key: 'ArrowRight' })
+    await field(w).trigger('keydown', { key: 'ArrowLeft' })
+    expect(w.emitted('done')).toBeUndefined()
+    expect(w.emitted('update:doc')).toBeUndefined()
+    expect(w.text()).toMatch(/← →\s*chord.*Tab\s*bar/)
+  })
+
   it('gives focus to its button when the editor asks (Review Focus 2: Tab with nowhere to go)', async () => {
     const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
     await settle()

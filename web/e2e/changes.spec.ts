@@ -1,8 +1,8 @@
 import type { Locator, Page } from '@playwright/test'
-import { barCell, chooseInstrument, chooseSheet, type Drawn, drawn, expect, GLYPH, guidesDrawn, openEditor, showGuides, test, writeChart } from './fixtures'
+import { chooseInstrument, chooseSheet, type Drawn, drawn, expect, GLYPH, guidesDrawn, openEditor, sheetChord, showGuides, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
-/** the sheet itself, not the chart grid above it (whose menus name the same scales) */
+/** the sheet itself, not the controls above it (whose menus name the same scales) */
 const sheetOf = (page: Page) => lines(page).first().locator('xpath=ancestor::div[contains(@class,"rounded-xl")][1]')
 const guide = (page: Page, name: 'Off' | 'From 3rd' | 'From 7th') => page.getByRole('radio', { name, exact: true })
 /** a line's guide tone labels: the row between its staff and its numerals */
@@ -91,26 +91,22 @@ test('a numeral or scale with a note looks clickable on screen (dotted underline
   await expect(numeral).toHaveCSS('text-decoration-line', 'none')
 })
 
-test('a function from the inspector: the Changes sheet shows it, its note opens on a click, and keys change from the grid', async ({ page }) => {
-  await page.goto('/song?new=1')
-  await openEditor(page)
-  await page.getByLabel('Chart text').fill('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\n')
-  await barCell(page, 'A', 2).click() // D7
-  const fns = page.getByRole('radiogroup', { name: 'Function' })
-  await expect(fns.getByRole('radio').first()).toHaveAccessibleName(/^Auto: II7\s*→ D Mixolydian$/)
-  await expect(page.getByText('II7 in C, not resolving: natural tensions', { exact: true })).toBeVisible() // the inspector's Why (the default Changes sheet's tooltips say it too)
-  await fns.getByRole('radio', { name: /^V7\/V \(to G\)\s*→ D Mixolydian$/ }).click()
-  await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 2 \| D7\s+\|\s+\| V7\/V/)
-  await chooseSheet(page, 'Changes')
+test('a function from the numeral’s picker: the sheet shows it, its note opens on a click once done, and a key change comes from the bar’s menu', async ({ page }) => {
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\n')
+  const text = page.getByLabel('Chart text')
   const sheet = sheetOf(page)
-  const numeral = sheet.getByRole('button', { name: 'V7/V' })
-  await numeral.click()
-  const picker = page.getByRole('dialog', { name: 'Function: D7' }) // while editing, the numeral is the function picker, with the why under it
-  await expect(picker.getByRole('radiogroup', { name: 'Function' }).getByRole('radio', { name: /^V7\/V \(to G\)/ })).toBeChecked()
-  await expect(picker).toContainText('natural tensions')
+  await sheet.getByRole('button', { name: 'II7', exact: true }).click() // D7's numeral: while editing, the function picker, with the why under it
+  const picker = page.getByRole('dialog', { name: 'Function: D7' })
+  const fns = picker.getByRole('radiogroup', { name: 'Function' })
+  await expect(fns.getByRole('radio').first()).toHaveAccessibleName(/^Auto: II7\s*→ D Mixolydian$/)
+  await expect(picker.getByText('II7 in C, not resolving: natural tensions', { exact: true })).toBeVisible() // the Why (the default Changes sheet's tooltips say it too)
+  await fns.getByRole('radio', { name: /^V7\/V \(to G\)\s*→ D Mixolydian$/ }).click()
+  await expect(text).toHaveValue(/A \| 2 \| D7\s+\|\s+\| V7\/V/)
+  await expect(fns.getByRole('radio', { name: /^V7\/V \(to G\)/ })).toBeChecked()
   await page.keyboard.press('Escape')
   await expect(picker).toBeHidden()
-  await page.getByRole('button', { name: 'Done', exact: true }).click() // not editing: the numeral opens why
+  const numeral = sheet.getByRole('button', { name: 'V7/V' })
+  await page.getByRole('button', { name: 'Done editing' }).click() // not editing: the numeral opens why
   await numeral.click()
   const note = page.getByRole('dialog', { name: 'Why: D7' })
   await expect(note).toContainText('* V7/V in C: natural tensions')
@@ -119,29 +115,37 @@ test('a function from the inspector: the Changes sheet shows it, its note opens 
   await page.keyboard.press('Escape')
   await expect(note).toBeHidden()
   await openEditor(page)
-  await page.getByLabel('Chart text').fill('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7 | | Db: V7/ii\nA | 3 | Dm7\nA | 4 | G7\n')
-  await barCell(page, 'A', 2).click()
-  await expect(page.getByText('V7/ii in Db is on Bb, not D7', { exact: true })).toBeVisible() // the inspector says what's wrong with the function
-  await barCell(page, 'A', 3).click()
-  await page.getByRole('button', { name: 'Key change here' }).click()
-  await expect(page.getByLabel('Chart text')).toHaveValue(/@key A 3 C\nA \| 3 \| Dm7/)
+  await text.fill('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7 | | Db: V7/ii\nA | 3 | Dm7\nA | 4 | G7\n')
+  await expect(sheetChord(page, 'Dm7', 'A', 3)).toBeAttached() // parsed
+  await sheet.getByRole('button', { name: 'II7', exact: true }).click() // the written function doesn't fit: the sheet reads the analysis
+  await expect(picker.getByText('V7/ii in Db is on Bb, not D7', { exact: true })).toBeVisible() // the picker says what's wrong with the function
+  await page.keyboard.press('Escape')
+  await sheetChord(page, 'Dm7', 'A', 3).hover()
+  await page.getByRole('button', { name: 'More actions for A bar 3' }).click()
+  await page.getByRole('menuitem', { name: 'Key change here' }).click()
+  await expect(text).toHaveValue(/@key A 3 C\nA \| 3 \| Dm7/)
 })
 
-test('a function picked in the inspector changes the scale the Changes sheet plays on a blank cell', async ({ page }) => {
+test('a function picked from the numeral changes the scale the Changes sheet plays on a blank cell', async ({ page }) => {
   await writeChart(page, 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\nA | 5 | CMaj7\n')
   const sheet = sheetOf(page)
   await expect(sheet).toContainText('D Mixo') // the sheet's short names
-  await barCell(page, 'A', 2).click() // D7
-  await expect(page.getByRole('heading', { level: 3 }).filter({ hasText: /^(Function|Scale|Why)$/ })).toHaveText(['Function', 'Scale', 'Why'])
-  const scales = page.getByRole('radiogroup', { name: 'Scale' }).getByRole('radio')
+  await sheet.getByRole('button', { name: 'D Mixo', exact: true }).click() // D7's scale label: the scale list
+  const scalePicker = page.getByRole('dialog', { name: 'Scale: D7' })
+  const scales = scalePicker.getByRole('radiogroup', { name: 'Scale' }).getByRole('radio')
   await expect(scales.first()).toContainText('D Mixolydian')
   await expect(scales.first()).toBeChecked()
-  await page.getByRole('radiogroup', { name: 'Function' }).getByRole('radio').filter({ hasText: '→ D Lydian Dominant' }).first().click()
+  await page.keyboard.press('Escape')
+  await sheet.getByRole('button', { name: 'II7', exact: true }).click() // its numeral: the function list
+  const fnPicker = page.getByRole('dialog', { name: 'Function: D7' })
+  await fnPicker.getByRole('radiogroup', { name: 'Function' }).getByRole('radio').filter({ hasText: '→ D Lydian Dominant' }).first().click()
   await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 2 \| D7\s+\|\s+\| \S/) // the function written, the scale cell left blank
+  await page.keyboard.press('Escape')
   await expect(sheet).toContainText('D Lyd Dom')
+  await sheet.getByRole('button', { name: 'D Lyd Dom', exact: true }).click()
   await expect(scales.first()).toContainText('D Lydian Dominant') // the analysed option follows the function
   await expect(scales.first()).toBeChecked()
-  await expect(page.getByRole('button', { name: 'Unpin' })).toHaveCount(0)
+  await expect(scalePicker.getByRole('button', { name: 'Unpin' })).toHaveCount(0)
 })
 
 test('a chart opens on the Changes sheet, and Scales is the only other sheet', async ({ page }) => {
