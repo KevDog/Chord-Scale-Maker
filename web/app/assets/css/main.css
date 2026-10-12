@@ -41,17 +41,41 @@
 
   --color-accent: var(--color-note-600);
   --color-accent-strong: var(--color-note-800);
+
+  /* surfaces, depth and radius (.interface-design/system.md): the stand (page ground) → the paper (the sheet) →
+     raised (menus, dialogs, the stuck rail); one hue, lightness only; lift by shadow, not border */
+  --color-stand: var(--color-zinc-100);
+  --color-paper: #ffffff;
+  --color-raised: #ffffff;
+  --shadow-paper: var(--depth-paper); /* indirect: Tailwind inlines a shadow's value, so html.dark sets --depth-* */
+  --shadow-raised: var(--depth-raised);
+  --radius-control: 6px;
+  --radius-paper: 10px;
+  --radius-dialog: 14px;
 }
 
 @layer base {
   html {
     @apply bg-zinc-50 text-zinc-800 antialiased;
+    --depth-paper:
+      0 0 0 1px rgb(8 17 31 / 0.06), 0 1px 2px -1px rgb(8 17 31 / 0.08), 0 4px 12px rgb(8 17 31 / 0.05);
+    --depth-raised: 0 0 0 1px rgb(8 17 31 / 0.06), 0 8px 24px rgb(8 17 31 / 0.12);
   }
   html.dark {
     @apply bg-zinc-950 text-zinc-200;
     --color-accent: var(--color-note-300);
     --color-accent-strong: var(--color-note-200);
+    --color-stand: var(--color-zinc-950);
+    --color-paper: var(--color-zinc-900);
+    --color-raised: var(--color-zinc-800);
+    --depth-paper: 0 0 0 1px rgb(255 255 255 / 0.08); /* depth shadows don't read on dark: a ring only */
+    --depth-raised: 0 0 0 1px rgb(255 255 255 / 0.1);
     color-scheme: dark;
+  }
+  h1,
+  h2,
+  h3 {
+    text-wrap: balance;
   }
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-note-500 dark:outline-note-300;
