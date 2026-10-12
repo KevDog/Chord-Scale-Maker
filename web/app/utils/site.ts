@@ -41,7 +41,7 @@ export const PAGE_HEAD = {
     description: 'Chord Scale Maker’s privacy policy, in short: nothing is tracked, sold or shared, and the charts you save stay in your browser.',
   },
   song: {
-    title: 'Editor',
+    title: 'Practice sheets',
     description: 'Edit a chord chart and print its practice sheets: the changes and a scale for every chord, written for your instrument.',
     robots: 'noindex',
   },

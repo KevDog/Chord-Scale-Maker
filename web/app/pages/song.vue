@@ -107,7 +107,7 @@ function reload(): void {
 }
 
 useSeoMeta(seoMeta(PAGE_HEAD.song))
-// in the browser, the tab and history name the chart ("Blue Trane · Editor"); the prerender has none
+// in the browser, the tab and history name the chart ("Blue Trane · Chord Scale Maker"); the prerender has none
 const chartTitle = computed(() => (import.meta.client && source.value.kind === 'chart' ? chartHeading(parseChart(source.value.text).value).title : ''))
-useHead({ title: () => (chartTitle.value ? `${chartTitle.value} · ${PAGE_HEAD.song.title}` : PAGE_HEAD.song.title) })
+useHead({ title: () => chartTitle.value || PAGE_HEAD.song.title })
 </script>

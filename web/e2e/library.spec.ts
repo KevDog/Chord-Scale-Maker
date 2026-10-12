@@ -89,7 +89,7 @@ test('pages carry a link preview: Open Graph tags and a 1200×630 image', async 
 
 test('the editor is noindex, its canonical never carries the chart or a share link, and its tab names the chart', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves')
-  await expect(page).toHaveTitle('Autumn Leaves · Editor · Chord Scale Maker')
+  await expect(page).toHaveTitle('Autumn Leaves · Chord Scale Maker')
   await expect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'noindex')
   await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', 'https://www.chordscalemaker.com/song')
 })
