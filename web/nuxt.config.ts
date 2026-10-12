@@ -5,6 +5,7 @@ import { fileURLToPath } from 'node:url'
 import tailwindcss from '@tailwindcss/vite'
 import type { Plugin } from 'vite'
 import { analyticsScripts } from './build/analytics'
+import { chartsPlugin } from './build/charts'
 import { addCspMeta } from './build/csp'
 import { quotesPlugin } from './build/quotes'
 import { SECURITY_HEADERS } from './build/headers'
@@ -116,7 +117,7 @@ export default defineNuxtConfig({
     },
   },
   vite: {
-    plugins: [tailwindcss(), watchRepoData(), quotesPlugin(fileURLToPath(new URL('../data/quotes.json', import.meta.url)))],
+    plugins: [tailwindcss(), watchRepoData(), chartsPlugin(join(ENGINE_DIR, 'charts')), quotesPlugin(fileURLToPath(new URL('../data/quotes.json', import.meta.url)))],
     // the engine package (engine/, beside web/: its source, chord_scales.json, charts) and the navbar quotes (../data)
     server: { fs: { allow: ['..'] } },
   },
