@@ -7,7 +7,7 @@ test('searches the library and opens a chart', async ({ page }) => {
   await expect(page.getByText('No charts match')).toBeVisible()
   await page.getByPlaceholder('Search by title').fill('autumn')
   await page.getByRole('link', { name: 'Open Autumn Leaves in the editor' }).click()
-  await expect(page).toHaveURL(/song\?chart=autumn-leaves/)
+  await expect(page).toHaveURL(/\/song\/autumn-leaves$/)
   await expect(staves(page)).toHaveCount(6) // it opens on the Changes: 24 bars, four a line
 })
 
@@ -18,7 +18,7 @@ test('a library title leads to its tune page, and on to the editor', async ({ pa
   await expect(page).toHaveURL(/\/tunes\/on-green-dolphin-street$/)
   await expect(page.getByRole('heading', { name: 'On Green Dolphin Street' })).toBeVisible()
   await page.getByRole('link', { name: 'Open practice sheets' }).click()
-  await expect(page).toHaveURL(/song\?chart=on-green-dolphin-street/)
+  await expect(page).toHaveURL(/\/song\/on-green-dolphin-street$/)
 })
 
 test('finds a tune by another title, and its page names that title', async ({ page }) => {
@@ -106,11 +106,11 @@ test('pages carry a link preview: Open Graph tags and a 1200×630 image', async 
   expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1200, 630]) // the PNG header's width and height
 })
 
-test('the editor is noindex, its canonical never carries the chart or a share link, and its tab names the chart', async ({ page }) => {
-  await page.goto('/song?chart=autumn-leaves')
+test('the editor is noindex, its canonical never carries a share link, and its tab names the chart', async ({ page }) => {
+  await page.goto('/song/autumn-leaves')
   await expect(page).toHaveTitle('Autumn Leaves · Chord Scale Maker')
   await expect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'noindex')
-  await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', 'https://www.chordscalemaker.com/song')
+  await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', 'https://www.chordscalemaker.com/song/autumn-leaves')
 })
 
 test('a library chart’s practice sheets live at /song/<name>', async ({ page }) => {
