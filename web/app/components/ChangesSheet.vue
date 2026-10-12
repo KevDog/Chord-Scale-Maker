@@ -51,6 +51,7 @@
 </template>
 
 <script setup lang="ts">
+import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 import { breakLines, buildChanges, changesLinesPerPage, type ChartDoc, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type Part, type ScaleView, type SheetLine } from '@chord-scale-maker/engine'
@@ -90,7 +91,8 @@ const emit = defineEmits<{
 }>()
 
 const wide = useMediaQuery('(min-width: 640px), print')
-const barsPerLine = computed(() => (wide.value ? 4 : 2))
+const paged = inject(SHEET_PAGED, ref(false)) // focus mode's pages are a printed page wide, whatever the window
+const barsPerLine = computed(() => (wide.value || paged.value ? 4 : 2))
 
 const line = computed((): SheetLine => props.line ?? 'off')
 const lineOn = computed(() => line.value !== 'off')

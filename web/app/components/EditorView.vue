@@ -163,7 +163,7 @@
           />
         </div>
   
-        <div :class="['relative mt-4', focus.on.value && 'mx-auto max-w-6xl print:max-w-none']">
+        <div class="relative mt-4">
           <div v-if="rendering.busy.value" role="status" aria-label="Loading" class="pointer-events-none absolute inset-0 z-10 flex items-start justify-center pt-10 print:hidden"><UiSpinner /></div>
           <template v-if="editor.fatal.value">
             <UiHeading class="mb-1">{{ editor.meta.value.title || 'Untitled' }}</UiHeading>
@@ -292,6 +292,7 @@ import { nextChordLine, type SheetChordEdit, type SheetDone, type SheetEdit, typ
 import { SCALE_VIEW } from '~/utils/scaleView'
 import { firstSheet, type SheetKind } from '~/utils/sheets'
 import { type MoreAction, moreMenuItems } from '~/utils/moreMenu'
+import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { spellView } from '~/utils/scaleChoices'
 
 /**
@@ -396,6 +397,8 @@ const focusBar = ref<HTMLElement | null>(null)
  */
 // this view is client-only: start from the real width, so a phone's first paint already has the compact rail
 const WIDE = '(min-width: 768px)'
+// focus mode shows the sheet as pages fitted to the window (SheetPages)
+provide(SHEET_PAGED, focus.on)
 const wide = useMediaQuery(WIDE, import.meta.client ? window.matchMedia(WIDE).matches : true)
 /** phones, with the flag on: the short rail, its other controls in a dialog */
 const compactRail = computed(() => compactRailOn && !wide.value)

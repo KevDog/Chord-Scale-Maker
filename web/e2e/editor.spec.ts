@@ -225,6 +225,37 @@ test('focus mode shows only the sheet, leaves on Escape or its button, and still
   await expect(page.getByRole('button', { name: 'Work on' })).toBeVisible()
 })
 
+test('focus mode shows the sheet as pages, each fitted to the window, scrolling from one to the next', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/song/autumn-leaves')
+  await chooseSheet(page, 'Scales') // 2 printed pages
+  await page.getByRole('button', { name: 'Focus', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'Focus mode' })
+  const pages = dialog.locator('[data-slot=page]')
+  await expect(pages).toHaveCount(2)
+  await expect(dialog.locator('svg[aria-label]')).toHaveCount(14)
+  for (const p of await pages.all()) {
+    const box = (await p.boundingBox())!
+    expect(box.height).toBeLessThanOrEqual(800)
+    expect(box.width).toBeLessThan(box.height) // a page's shape, not the window's
+    await expect(p.locator('header').first()).toBeVisible() // each page under its own heading, as printed
+  }
+  await expect(pages.nth(0)).toBeInViewport({ ratio: 0.9 })
+  await pages.nth(1).scrollIntoViewIfNeeded()
+  await expect(pages.nth(1)).toBeInViewport({ ratio: 0.9 })
+})
+
+test('on a phone, focus mode’s pages lay out as printed: four bars a line', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/song/autumn-leaves')
+  await expect(page.locator('svg[aria-label^="Bars:"]')).toHaveCount(12) // 24 bars, two a line on the phone's screen
+  await page.getByRole('button', { name: 'Controls', exact: true }).click()
+  await page.getByRole('dialog', { name: 'Controls' }).getByRole('button', { name: 'Focus', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'Focus mode' })
+  await expect(dialog.locator('svg[aria-label^="Bars:"]')).toHaveCount(6) // four a line, as printed
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390)
+})
+
 /** the Scales sheet's staves, with their headings (chord and scale) */
 const scaleStaves = (page: import('@playwright/test').Page) => page.locator('.break-inside-avoid')
 
