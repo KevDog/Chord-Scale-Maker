@@ -30,5 +30,5 @@ test('bass clef instruments and the start note', async ({ page }) => {
   await pickOption(page, 'Where each scale starts', 'From B')
   await expect(page.getByRole('button', { name: 'Where each scale starts' })).toContainText('From B')
   await expect(page.locator('section header p').first()).toHaveText('Full Form, Alternate Changes · G minor · AAB – Trombone (Spelled from B)')
-  await expect(staves(page)).toHaveCount(39)
+  await expect(staves(page)).toHaveCount(14)
 })

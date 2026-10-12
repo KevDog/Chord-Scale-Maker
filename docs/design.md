@@ -322,8 +322,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 ### Scale sheet
 
-- **Layout:** one `ScaleStaff` per expanded row. An HTML label column on the left holds section · bar, the chord
-  symbol and the scale name; the VexFlow SVG stave is on the right. HTML labels give better typography and
+- **Layout:** one `ScaleStaff` per line: each scale a chart uses, once (`scaleLines`: the scale, the written
+  chord's root and canonical quality; first-appearance order). An HTML label column on the left holds the scale name
+  and, under it, the chord symbols the line covers (`Cm7 · Cm9`); the VexFlow SVG stave is on the right. HTML labels give better typography and
   accessibility than VexFlow text.
 - **Stave:** one stave with a clef, no time signature, and whole notes. Every altered note gets an explicit
   accidental (as LilyPond's `\accidentalStyle forget` did for the old CLI). Each staff ends with a double bar
@@ -340,7 +341,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   the print layout doesn't change.
 - **View model:** `engine/src/sheet.ts` builds the `StaffModel` (labels, notes, intervals, or an error such as
   "Choose a scale"), and components only draw it. The live preview re-renders only staves that changed: each
-  staff's `id` combines its position, its row content, the part and the mode.
+  staff's `id` combines its line's chords and scale, the part and the mode, not its position.
 
 ### Practice selection ([plan-practice.md](plan-practice.md))
 
@@ -538,7 +539,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   toolbar, and each page of `SheetPages` breaks after itself with its own header. On screen the pages run
   together as one card, with "Page N" dividers marking the breaks.
 - **Scale sheets:** 12 staves a page, with 8px between staves. A full page fills
-  about 9.6in, even when every note has ledger lines (e.g. trombone from B). Autumn Leaves prints on 4 pages.
+  about 9.6in, even when every note has ledger lines (e.g. trombone from B). Autumn Leaves prints on 2 pages.
 - **Changes:** 8 four-bar lines a page with guide tones off, so a 32-bar AABA prints on one page.
   - With a line on, `changesLinesPerPage` (`engine/src/changes.ts`) gives fewer: 6 with a line on and
     numerals and scales, one more with both rows off; an arpeggio line the same. `print.spec.ts` prints the tallest
@@ -930,7 +931,7 @@ static file, §7b), so the attack surface is small. The measures:
   - transposing instruments and the bass clef, and that the choices persist
   - dark mode
   - print:
-    - scale sheets, 4 pages for Autumn Leaves, including the tallest staves
+    - scale sheets, 2 pages for Autumn Leaves, including the tallest staves
     - the Changes, 8 lines a page with guide tones off, and the tallest guide tone and 7th chord lines at `changesLinesPerPage`
   - the CSP meta on every page, and the not-found page
 
@@ -1003,3 +1004,6 @@ static file, §7b), so the attack surface is small. The measures:
     reason to exist: a second consumer, outside work on the analysis, or a release cadence of its own
     ([spec](superpowers/specs/2026-10-11-engine-ui-split-design.md), Phase 2). Until then a change that spans both
     is one PR, and the commit is still the release (decision 10).
+13. **One line per scale on the Scales sheet** (#189): the sheet is a tune's scale vocabulary; the Changes sheet
+    follows the form. Lines merge by scale, chord root and canonical quality, so interval labels and presets hold for
+    every chord on a line.

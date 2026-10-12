@@ -2,7 +2,7 @@ import { arpeggiosDrawn, chooseInstrument, chooseSheet, drawn, expect, guidesDra
 
 const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length
 
-// 39 rows at 12 staves per letter page, even when every staff has ledger lines (trombone from B)
+// 14 lines at 12 staves per letter page, even when every staff has ledger lines (trombone from B)
 for (const [instrument, start] of [
   ['Concert', null],
   ['Concert', 'C'],
@@ -13,10 +13,10 @@ for (const [instrument, start] of [
     await chooseSheet(page, 'Scales') // a chart opens on the Changes
     await chooseInstrument(page, instrument)
     await pickOption(page, 'Where each scale starts', start ? `From ${start}` : 'From root')
-    await expect(staves(page)).toHaveCount(39)
+    await expect(staves(page)).toHaveCount(14)
     await page.emulateMedia({ media: 'print' })
     await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden() // editor hidden in print
-    expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(4)
+    expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(2)
   })
 }
 
