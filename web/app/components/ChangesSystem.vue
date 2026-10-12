@@ -67,6 +67,7 @@
         :title="notesOn && m.reason ? undefined : m.numeral"
       >
         <template v-if="drafted(m)">{{ preview?.readable ? preview.numeral : '' }}</template>
+        <SheetLabelPicker v-else-if="editing !== undefined && doc && m.line >= 0 && m.numeral" :doc="doc" :line="m.line" kind="numeral" :chord="m.text" :fallback="m.fallback" :pinned="false" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.numeral }}</SheetLabelPicker>
         <ChangesNote v-else-if="notesOn && m.reason && m.numeral" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row">{{ m.numeral }}</ChangesNote>
         <template v-else>{{ m.numeral }}</template>
       </span>
@@ -81,6 +82,7 @@
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
         <template v-if="drafted(m)">{{ preview?.readable ? sheetScale(CONCERT, preview.scale) : '' }}</template>
+        <SheetLabelPicker v-else-if="editing !== undefined && doc && m.line >= 0 && m.scale" :doc="doc" :line="m.line" kind="scale" :chord="m.text" :fallback="false" :pinned="notes?.get(m.line)?.source === 'written'" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.scale }}</SheetLabelPicker>
         <ChangesNote v-else-if="notesOn && m.reason && m.scale" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row" wrap>{{ m.scale }}</ChangesNote>
         <template v-else>{{ m.scale }}</template>
       </span>
@@ -90,8 +92,9 @@
 </template>
 
 <script setup lang="ts">
-import { type ChangesLine, type ChartDoc, type ChordPreview, CONCERT, sheetScale } from '@chord-scale-maker/engine'
+import { type ChangesLine, type ChartDoc, type ChordPreview, CONCERT, rowNotes, sheetScale } from '@chord-scale-maker/engine'
 import { drawChangesLine } from '~/utils/changesDrawing'
+import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 import type { SheetChordEdit, SheetEdit } from '~/utils/sheetChordEdit'
 
 /**
@@ -147,6 +150,9 @@ const marks = computed(() => {
   })
   return all.map((m, i) => ({ ...m, room: Math.max(0.05, (all[i + 1]?.x ?? 1) - m.x) }))
 })
+/** each row's notes while the sheet is the editor: a written scale shows its pin on the label */
+const scaleView = inject(SCALE_VIEW, shallowRef(DEFAULT_VIEW))
+const notes = computed(() => (props.doc && props.editing !== undefined ? rowNotes(props.doc, scaleView.value) : null))
 /** whether the mark is the chord in the open field, whose labels show the draft's reading */
 const drafted = (m: { line: number; slot: boolean }): boolean => props.preview !== undefined && props.editing?.kind === 'chord' && !m.slot && m.line === props.editing.line
 /** "Edit Dm7, A bar 3"; a transposed part's chord says its concert pitch too, as the editor shows it */
