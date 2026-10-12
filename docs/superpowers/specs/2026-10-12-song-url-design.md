@@ -50,9 +50,9 @@ Three things a visitor's browser holds name a library chart:
 ## Part 2: practice sheets at /song/<name>
 
 ### Decisions
-- **One page**: `web/app/pages/song.vue` becomes `web/app/pages/song/[[slug]].vue` (optional param). `/song` and
-  `/song/<name>` are one component, so moving between a library chart, `?mine=`, `?new=1` and `#s=` doesn't
-  remount the page (the editor still restarts on `fullPath`, as now).
+- **One page**: `web/app/pages/song.vue` becomes `web/app/pages/song/[[slug]].vue` (optional param). One page file
+  serves `/song` and `/song/<name>`. Nuxt's page key includes params, so moving between `/song/<a>` and `/song?mine=`
+  remounts the page (harmless); either way the editor restarts on a different chart (on `fullPath`, as now).
 - **Only library charts move**. `?mine=<id>`, `?new=1` and `#s=<payload>` stay on a bare `/song`.
 
 ### Units
