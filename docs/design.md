@@ -58,7 +58,7 @@ web/                      # Nuxt app (Vercel root directory); imports @chord-sca
   app/
     pages/index.vue       # library + title/composer search
     pages/tunes/[slug].vue  # a library chart's tune page (/tunes/<name>, §7b)
-    pages/song.vue        # the editor: ?chart=<slug>; with myCharts also ?mine=<id>, ?new=1 and share links (#s=…)
+    pages/song/[[slug]].vue  # the editor: /song/<name> (old ?chart=<name> moves there); with myCharts also ?mine=<id>, ?new=1 and share links (#s=…)
     pages/help.vue        # how it all works, in the owner's voice: sheets, controls, practice, editing, printing
     pages/about.vue, contact.vue, privacy.vue  # About (Jazz Lab thanks, the video, credits), the form, privacy
     pages/ui.vue          # dev-only showcase of the Catalyst components (removed from production builds)
@@ -684,7 +684,7 @@ its reasons into a chart as comments.
 - **Tune pages:** every library chart has one at `/tunes/<name>` (`pages/tunes/[slug].vue`; `<name>` is the chart's file
   name: lowercase, hyphens, which search engines read as word breaks). It shows the heading fields, `aka:` titles, the
   source, and the changes as a table (section, bar, chord, function, scale) in concert pitch, with a button to the
-  practice sheets (`/song?chart=<slug>`). The library links each title to its page.
+  practice sheets (`/song/<name>`, `songPath`). The library links each title to its page.
   - **Text:** `tuneSummary` (engine `tune.ts`) gives the heading and one row per chord as the Changes sheet draws it;
     `tuneDescription` is the meta description, one sentence of at most 160 characters, dropping clauses to fit.
     `tuneTitle` (`utils/site.ts`) is the title: "Blue Trane (John Coltrane): changes and chord scales".
@@ -698,7 +698,7 @@ its reasons into a chart as comments.
   - **Canonical** (`app.vue`, every page): `canonicalUrl(route.path)`, the production origin and the path alone,
     with no query or fragment (a share link's chart never leaks) and no trailing slash but the root's. `og:url` is
     the same.
-  - **`/song`** (the editor) is `noindex`, and its canonical is `/song`: its query names a chart, not a page.
+  - **`/song`** (the editor) is `noindex`; its canonical is its own path (`/song/<name>` for a library chart, `/song` otherwise), never a query or share link. Every library chart's `/song/<name>` is prerendered, never in the sitemap.
 - **Structured data** (`utils/structuredData.ts`): JSON-LD for the site (`WebSite`, `WebApplication`) and each tune
   (a `MusicComposition`, or a `CreativeWork` for a form or an exercise, and a breadcrumb). It's a `<script type="application/ld+json">`, a data block the browser
   never runs, so the CSP doesn't apply and `web/build/csp.ts` doesn't hash it. `jsonLd()` escapes `<`, so chart

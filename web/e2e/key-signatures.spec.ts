@@ -10,7 +10,7 @@ const glyphs = (group: ReturnType<Page['locator']>) => group.locator('path, text
 const noteAccidentals = async (page: Page): Promise<number[]> => (await Promise.all((await lines(page).all()).map(drawn))).flatMap((d) => d.accidentals.map((a) => a.code))
 
 test('each sheet draws the clef and key signature once, at its start, guide tones or not', async ({ page }) => {
-  await page.goto('/song?chart=misty')
+  await page.goto('/song/misty')
   await chooseSheet(page, 'Scales')
   await expect(staves(page).first()).toBeVisible()
   await expect(clefs(staves(page).first())).toHaveCount(1)
@@ -41,7 +41,7 @@ test('each sheet draws the clef and key signature once, at its start, guide tone
 })
 
 test('the signature is written for the instrument', async ({ page }) => {
-  await page.goto('/song?chart=misty')
+  await page.goto('/song/misty')
   await chooseSheet(page, 'Scales')
   const first = staves(page).first()
   await expect(signatures(first)).toHaveCount(1)

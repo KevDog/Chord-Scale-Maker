@@ -8,7 +8,7 @@
       <UiText v-if="details">{{ details }}</UiText>
       <UiText v-if="summary.source" class="text-sm/6!">Source: {{ summary.source }}</UiText>
       <div class="flex flex-wrap items-center gap-x-4 gap-y-2 pt-3">
-        <UiButton color="note" :href="`/song?chart=${chart.slug}`">Open practice sheets</UiButton>
+        <UiButton color="note" :href="songPath(chart.slug)">Open practice sheets</UiButton>
         <UiText>Written for your instrument: the Changes, with guide tones, and the Scales.</UiText>
       </div>
     </header>
@@ -47,7 +47,7 @@
 <script setup lang="ts">
 import { tuneDescription, tuneSummary } from '@chord-scale-maker/engine'
 import { findChart } from '~/utils/library'
-import { seoMeta, tunePath, tuneTitle } from '~/utils/site'
+import { seoMeta, songPath, tunePath, tuneTitle } from '~/utils/site'
 import { breadcrumbLd, jsonLd, tuneLd } from '~/utils/structuredData'
 
 const route = useRoute()

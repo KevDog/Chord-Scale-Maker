@@ -25,8 +25,8 @@ describe('feature flags', () => {
   })
 
   it('opens library, new and saved charts, and sends a bare /song home', async () => {
-    const song = (await import('~/pages/song.vue')).default
-    for (const route of ['/song?new=1', '/song?chart=f-blues', '/song?mine=abcdef123456']) {
+    const song = (await import('~/pages/song/[[slug]].vue')).default
+    for (const route of ['/song?new=1', '/song/f-blues', '/song?mine=abcdef123456']) {
       await mountSuspended(song, { route })
       expect(navigate, route).not.toHaveBeenCalled()
     }

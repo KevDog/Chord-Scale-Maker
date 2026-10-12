@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { canonicalUrl } from '~/utils/site'
-import { sitemapPaths, sitemapXml, tunePathsOf } from '~/utils/sitemap'
+import { chartSlugsOf, sitemapPaths, sitemapXml, tunePathsOf } from '~/utils/sitemap'
 
 describe('sitemapXml', () => {
   it('is an XML urlset in the sitemap namespace', () => {
@@ -24,6 +24,10 @@ describe('sitemapXml', () => {
 describe('sitemap paths', () => {
   it('maps chart files to tune paths, skipping other files and sync copies', () => {
     expect(tunePathsOf(['blue-trane.txt', 'README.md', 'so-what 2.txt'])).toEqual(['/tunes/blue-trane'])
+  })
+
+  it('lists the chart files’ names, skipping other files and sync copies', () => {
+    expect(chartSlugsOf(['blue-trane.txt', 'README.md', 'so-what 2.txt'])).toEqual(['blue-trane'])
   })
 
   it('lists the site pages, then the tunes', () => {
