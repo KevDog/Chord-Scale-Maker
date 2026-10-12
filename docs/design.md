@@ -511,14 +511,19 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 ## 6. Styling
 
+The interface system (surfaces, depth, radius, button roles, type, spacing and the component recipes: the sheet's
+paper and its focus-mode pages, the rail, the More menu, the header, the library, the On this page index) is in
+`.interface-design/system.md` (from #200); this section covers the tooling and history.
+
 - **Tailwind CSS v4** through `@tailwindcss/vite` in `nuxt.config.ts`. Styles are utility classes on
   components. A single `app/assets/css/main.css` holds `@import "tailwindcss"`, the theme tokens and the print
   rules.
 - **Palette: Duotone Blue**, Blue Note-inspired (chosen from three mocked directions).
   - **Neutrals:** `zinc` is retuned in `main.css` to cool, navy-tinted greys (paper `#F3F6FB` to night `#08111F`).
     Catalyst's `zinc-*` class strings therefore stay verbatim and recolour together.
-  - **Accent:** a `note` blue scale. `note-800` navy is the primary button (`<UiButton color="note">`). `note-500`
-    marks selected toggles, the current page and focus rings. A `note-100` tint backs the library's heading tab.
+  - **Accent:** a `note` blue scale. `note-800` navy is the one primary button of a view (`<UiButton color="note">`)
+    and the header's band (the sleeve); the accent (`note-600`, dark `note-300`) marks the selected state, focus
+    and links.
   - **Dark mode:** a brighter `note-600` for buttons, and `note-300` for selected toggles, links and the brand.
   - **Contrast** (AA): white on `note-500` is 4.7:1, `note-600` text on paper 5.9:1, `zinc-500` text on white 5.0:1.
 - **Headings:** Jost, a geometric typeface in the style of Futura (`font-display`). It's bundled from
@@ -533,16 +538,19 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - A dev-only `/ui` page shows every component; it's removed from the production build.
 - **Header quote:** a random quote in the navbar on tablet and desktop widths, kept for the visit
   (`HeaderQuote`, `useQuote`).
-  - It shows the quote and its author.
+  - It shows the whole quote (two lines at most) and its author under it, inside the header's fixed 64 px.
   - `build/quotes.ts` reduces `data/quotes.json` at build time to `cited` entries with those two fields. The
     file marks the rest "unverified".
   - The list is served as the separate `virtual:quotes` chunk, about 20 KB gzipped, fetched after mount. So the
     prerendered HTML is the same for everyone.
 - **App components** compose the Catalyst ones:
-  - `SheetPages`, which lays out both sheets' printed pages. On screen they form one continuous card, with a dashed
-    "Page N" divider where each printed page starts and the header shown once. In print each page is a bare letter
-    page with its own header.
-  - `PreviewControls`, the preview toolbar: Work on (Changes, Scales, Arpeggios), Instrument, Spell Scale (From key/From root/From X), then Show: Intervals (on the Changes, Analysis: Numerals and Scales, and Line: Off · Guide Tones · 7th Chords, with From 3rd · From 7th or the arpeggio pattern beneath it; Analysis hides while the sheet editor is open) with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
+  - `SheetPages`, which lays out a sheet's printed pages. On screen they form one paper, the header shown once (its
+    title the page's `h1`); in focus mode each page is its own paper, fitted to the window; in print each page is a
+    bare letter page with its own header.
+  - `PreviewControls` in `SheetRail`, the control rail: Work on (Changes, Scales, Arpeggios), Instrument, Level, the
+    sheet's own controls (on the Changes, Analysis: Numerals and Scales, and Line: Off · Guide Tones · 7th Chords;
+    on the Scales, Intervals and Spell Scale), Transposition; at right Edit, Share, Focus, Print and More
+    (`MoreMenu`). On a phone with `compactRail`, the rest sit in the Controls dialog.
 - **Dark mode** is a `.dark` class on `<html>`, toggled in the navbar.
   - The default is light, and the choice is saved per browser.
   - `public/theme-init.js` applies it before first paint. It's a file, not an inline script, so the CSP needs no
