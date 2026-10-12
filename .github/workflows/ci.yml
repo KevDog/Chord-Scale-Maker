@@ -12,11 +12,12 @@ concurrency:
   cancel-in-progress: true
 # actions are pinned to commit SHAs (tags can move); Dependabot proposes updates
 jobs:
-  # does the PR touch anything besides docs (docs/**, *.md)?
+  # does the PR touch anything besides docs (docs/**, *.md)? and does it only add charts (with their fixtures)?
   changes:
     runs-on: ubuntu-latest
     outputs:
       code: ${{ steps.diff.outputs.code }}
+      charts_only: ${{ steps.diff.outputs.charts_only }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -27,6 +28,11 @@ jobs:
         run: |
           if git diff --name-only "origin/$BASE_REF...HEAD" | grep -qvE '^docs/|\.md$'; then code=true; else code=false; fi
           echo "code=$code" >> "$GITHUB_OUTPUT"
+          # new library charts and the regenerated fixtures, nothing else: an edited or deleted chart may be one a spec
+          # opens, so it runs every spec
+          other=$(git diff --name-status "origin/$BASE_REF...HEAD" | grep -vE $'^[A-Z0-9]+\t(docs/|[^\t]*\.md$)' | grep -vcE $'^A\tengine/charts/[^/]+\.txt$|^M\tengine/fixtures/(golden|analysis)\.json$' || true)
+          if [ "$code" = true ] && [ "$other" = 0 ]; then charts_only=true; else charts_only=false; fi
+          echo "charts_only=$charts_only" >> "$GITHUB_OUTPUT"
   engine:
     needs: changes
     if: needs.changes.outputs.code == 'true'
@@ -74,8 +80,19 @@ jobs:
           cache-dependency-path: package-lock.json
       - run: npm ci
         working-directory: .
-      - run: npx playwright install --with-deps chromium
-      - run: npm run e2e
+      # Chromium is cached by Playwright version; only a miss downloads it with its system packages (the runner image
+      # has what a cached browser needs)
+      - id: playwright
+        run: echo "version=$(npx playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+      - id: browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - if: steps.browsers.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      # a PR that only adds charts runs the specs that read the whole library (A–Z, sitemap, every song page)
+      - run: npm run e2e ${{ needs.changes.outputs.charts_only == 'true' && '-- e2e/library.spec.ts e2e/seo.spec.ts' || '' }}
       - if: failure()
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
