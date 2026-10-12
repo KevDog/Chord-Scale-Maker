@@ -144,5 +144,5 @@ const ROWS = [
   ['A1', '2', 'F7', 'F Mixolydian'],
   ['A1', '3', 'Bm7', 'B Dorian'],
 ]
-useHead({ title: 'Components · Chord Scale Maker' })
+useHead({ title: 'Components' })
 </script>

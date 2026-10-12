@@ -70,11 +70,14 @@ test('Request a chart opens the contact form', async ({ page }) => {
 })
 
 test('pages carry a link preview: Open Graph tags and a 1200×630 image', async ({ page, request }) => {
-  for (const path of ['/', '/help', '/about']) {
+  for (const [path, title] of [['/', 'Chord Scale Maker'], ['/help', 'Help · Chord Scale Maker'], ['/about', 'About · Chord Scale Maker']] as const) {
     await page.goto(path)
     const og = (p: string) => page.locator(`head meta[property="${p}"]`).getAttribute('content')
-    expect(await og('og:title')).toBe('Chord Scale Maker')
-    expect(await og('og:description')).toMatch(/jazz improvisation/)
+    await expect(page).toHaveTitle(title)
+    expect(await og('og:title')).toBe(title)
+    expect(await og('og:description')).toBe(await page.locator('head meta[name="description"]').getAttribute('content'))
+    expect(await og('og:url')).toBe(`https://www.chordscalemaker.com${path}`)
+    await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', `https://www.chordscalemaker.com${path}`)
     expect(await og('og:image')).toBe('https://www.chordscalemaker.com/og-image.png')
     expect(await page.locator('head meta[name="twitter:card"]').getAttribute('content')).toBe('summary_large_image')
   }
@@ -82,4 +85,11 @@ test('pages carry a link preview: Open Graph tags and a 1200×630 image', async 
   expect(image.status()).toBe(200)
   const png = await image.body()
   expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1200, 630]) // the PNG header's width and height
+})
+
+test('the editor is noindex, its canonical never carries the chart or a share link, and its tab names the chart', async ({ page }) => {
+  await page.goto('/song?chart=autumn_leaves')
+  await expect(page).toHaveTitle('Autumn Leaves · Chord Scale Maker')
+  await expect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'noindex')
+  await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', 'https://www.chordscalemaker.com/song')
 })

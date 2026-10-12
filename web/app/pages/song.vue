@@ -28,7 +28,8 @@
 </template>
 
 <script setup lang="ts">
-import { decodeShare, type ShareView } from '@chord-scale-maker/engine'
+import { PAGE_HEAD, seoMeta } from '~/utils/site'
+import { chartHeading, decodeShare, parseChart, type ShareView } from '@chord-scale-maker/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 
 /**
@@ -105,5 +106,8 @@ function reload(): void {
   editorKey.value = `${route.fullPath}#${generation.value}`
 }
 
-useHead({ title: 'Editor · Chord Scale Maker' })
+useSeoMeta(seoMeta(PAGE_HEAD.song))
+// in the browser, the tab and history name the chart ("Blue Trane · Chord Scale Maker"); the prerender has none
+const chartTitle = computed(() => (import.meta.client && source.value.kind === 'chart' ? chartHeading(parseChart(source.value.text).value).title : ''))
+useHead({ title: () => chartTitle.value || PAGE_HEAD.song.title })
 </script>

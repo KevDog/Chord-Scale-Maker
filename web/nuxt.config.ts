@@ -8,6 +8,7 @@ import { addCspMeta } from './build/csp'
 import { quotesPlugin } from './build/quotes'
 import { SECURITY_HEADERS } from './build/headers'
 import { buildVersion } from './build/version'
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from './app/utils/site'
 
 /** the engine package's folder (engine/ in the workspace): its charts/ is the library */
 const ENGINE_DIR = dirname(createRequire(import.meta.url).resolve('@chord-scale-maker/engine/package.json'))
@@ -22,10 +23,6 @@ const watchRepoData = (): Plugin => ({
 })
 
 // Fully static site (nuxt generate). Engine + rendering run in the browser; see docs/design.md.
-/** where the site lives: link previews need absolute image URLs (previews of preview deployments show production's) */
-const SITE_URL = 'https://www.chordscalemaker.com'
-const DESCRIPTION = 'Practice sheets for jazz improvisation: every chord’s scale, the changes with their guide tones, and practice picks, written for your instrument.'
-
 export default defineNuxtConfig({
   // copies a sync tool (iCloud, Finder) makes beside changed files, "arrivalHash.client 2.ts": never load them as
   // plugins, components or pages (that one ran on the server and broke every page in `make dev`)
@@ -41,16 +38,14 @@ export default defineNuxtConfig({
   app: {
     head: {
       htmlAttrs: { lang: 'en' },
-      title: 'Chord Scale Maker',
+      title: SITE_NAME,
       meta: [
-        { name: 'description', content: DESCRIPTION },
+        { name: 'description', content: SITE_DESCRIPTION }, // a fallback: pages set their own (utils/site.ts)
         { name: 'theme-color', content: '#123e85' },
         // the link preview on Facebook, Slack, iMessage and the like (Open Graph); the image is drawn by
-        // scripts/icons.mjs. No og:url, so each page shares as its own address.
+        // scripts/icons.mjs. Pages set og:title and og:description; app.vue sets og:url to the canonical URL.
         { property: 'og:type', content: 'website' },
-        { property: 'og:site_name', content: 'Chord Scale Maker' },
-        { property: 'og:title', content: 'Chord Scale Maker' },
-        { property: 'og:description', content: DESCRIPTION },
+        { property: 'og:site_name', content: SITE_NAME },
         { property: 'og:image', content: `${SITE_URL}/og-image.png` },
         { property: 'og:image:type', content: 'image/png' },
         { property: 'og:image:width', content: '1200' },

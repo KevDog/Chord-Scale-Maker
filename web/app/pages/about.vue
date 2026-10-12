@@ -71,6 +71,7 @@
 </template>
 
 <script setup lang="ts">
+import { PAGE_HEAD, seoMeta } from '~/utils/site'
 const CREDITS = [
   { name: 'VexFlow', what: 'music notation', licence: 'MIT', url: 'https://www.vexflow.com/' },
   { name: 'Bravura', what: 'the music font, by Steinberg', licence: 'SIL Open Font License', url: 'https://github.com/steinbergmedia/bravura' },
@@ -83,5 +84,5 @@ const CREDITS = [
   { name: 'Catalyst', what: 'the interface kit, by Tailwind Labs', licence: 'used under the Tailwind Plus licence', url: 'https://tailwindcss.com/plus' },
 ] as const
 
-useHead({ title: 'About · Chord Scale Maker' })
+useSeoMeta(seoMeta(PAGE_HEAD.about))
 </script>

@@ -212,6 +212,7 @@
 </template>
 
 <script setup lang="ts">
+import { PAGE_HEAD, seoMeta } from '~/utils/site'
 import {
   dominantScaleTable,
   FUNCTION_GROUPS,
@@ -323,8 +324,5 @@ onMounted(() => {
 })
 onBeforeUnmount(() => observer?.disconnect())
 
-useHead({
-  title: 'Functions and rules · Chord Scale Maker',
-  meta: [{ name: 'description', content: 'How to write a chord’s function in a chart, the scale every function gets in any key, and the rules that choose it.' }],
-})
+useSeoMeta(seoMeta(PAGE_HEAD.functions))
 </script>
