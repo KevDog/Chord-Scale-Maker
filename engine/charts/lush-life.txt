@@ -1,0 +1,149 @@
+title: Lush Life
+composer: Billy Strayhorn
+style: Ballad
+key: Db
+form: ABCD, 54 bars
+source:
+# analysis: 2026-10-12, rules v1; Db
+# book: as played by John Coltrane. A: freely (verse); B: faster; C–D: medium ballad (quarter = 58).
+# routing: A, B, C, D; repeat C–D for solos (double-time feel swing; the first solo begins at bars 53–54);
+# after solos, D.S. al Coda (from C to bar 50, then the Coda).
+
+# section | bar | chord
+# area: Db major (bars 1–6)
+A    | 1  | Db6      # tonic: the 4th is in the key
+A    | 1  | Cb9      # back door bVII7 to DbMaj7: the #11 is in the key
+A    | 2  | DbMaj7   # tonic: the 4th is in the key
+A    | 2  | Cb9      # back door bVII7 to DbMaj7: the #11 is in the key
+A    | 3  | DbMaj7   # tonic: the 4th is in the key
+A    | 3  | Cb9      # back door bVII7 to DbMaj7: the #11 is in the key
+A    | 4  | DbMaj7   # tonic: the 4th is in the key
+A    | 4  | Ebm7     # ii: Dorian, the key’s own notes
+A    | 4  | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A    | 4  | F#m7     # a borrowed minor chord: Dorian, its own key
+A    | 5  | Abm7     # a borrowed minor chord: Dorian, its own key
+A    | 5  | D13#11   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A    | 6  | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+# area: Db minor (bars 6–7)
+A    | 6  | D9#11    # tritone substitute: resolves down a half step to Dbm6/9
+A    | 7  | Dbm6/9   # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+# area: Db major (bars 7–13)
+A    | 7  | D13#11   # tritone substitute: resolves down a half step to Db6
+A    | 8  | Db6      # tonic: the 4th is in the key
+A    | 8  | Cb9      # back door bVII7 to DbMaj7: the #11 is in the key
+A    | 9  | DbMaj7   # tonic: the 4th is in the key
+A    | 9  | Cb9      # back door bVII7 to DbMaj7: the #11 is in the key
+A    | 10 | DbMaj7   # tonic: the 4th is in the key
+A    | 10 | Cb9      # back door bVII7 to DbMaj7: the #11 is in the key
+A    | 11 | DbMaj7   # tonic: the 4th is in the key
+A    | 11 | Ebm7     # ii: Dorian, the key’s own notes
+A    | 11 | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A    | 11 | F#m7     # a borrowed minor chord: Dorian, its own key
+A    | 12 | Abm7     # a borrowed minor chord: Dorian, its own key
+A    | 12 | D13#11   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+A    | 13 | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+# area: Db minor (bars 13–14)
+A    | 13 | D9#11    # tritone substitute: resolves down a half step to Dbm6/9
+A    | 14 | Dbm6/9   # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+# area: Db major (bar 14)
+A    | 14 | Gm7b5    # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
+A    | 14 | C7       # V7/iii in Db: b9 and b13 are in the key
+@key B 15 Fm
+# area: F minor (bars 15–21)
+B    | 15 | Fm       # tonic minor: Dorian by convention
+B    | 15 | Fm6      # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+B    | 16 | Fm       # tonic minor: Dorian by convention
+B    | 16 | Fm7      # tonic minor: Dorian by convention
+B    | 17 | Fm       # tonic minor: Dorian by convention
+B    | 18 | Gm7b5    # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B    | 18 | C7       # V7 of F minor: b9 and b13 are in the key
+B    | 19 | Fm       # tonic minor: Dorian by convention
+B    | 19 | Fm6      # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+B    | 20 | Fm       # tonic minor: Dorian by convention
+B    | 20 | Fm7      # tonic minor: Dorian by convention
+B    | 21 | Fm       # tonic minor: Dorian by convention
+@key B 22 Db
+# area: Db major (bars 22–2)
+B    | 22 | Ab13     # V7 in Db, not resolving: natural tensions
+B    | 23 | B9b5     # tritone substitute: resolves down a half step to Bb9
+# slower from bar 23
+B    | 24 | Bb9      # V7/ii in Db: the b13 is in the key
+B    | 25 | Ebm7     # ii: Dorian, the key’s own notes
+B    | 26 | A9b5     # ♭VI7 from the parallel minor: Lydian Dominant
+B    | 27 | Ebm11    # ii: Dorian, the key’s own notes
+# book: Ebmi7(add 11)
+B    | 28 | D13#11   # tritone substitute: resolves down a half step to DbMaj7
+@segno C 29
+C    | 29 | DbMaj7   # tonic: the 4th is in the key
+C    | 29 | D13#11   # tritone substitute: resolves down a half step to DbMaj7
+C    | 30 | DbMaj7   # tonic: the 4th is in the key
+C    | 30 | D13#11   # tritone substitute: resolves down a half step to Db6
+C    | 31 | Db6      # tonic: the 4th is in the key
+C    | 31 | F#m7     # ii of the ii–V to E
+C    | 31 | B13      # V7/bIII in Db: the #11 is in the key
+C    | 32 | EMaj7    # ♭IIImaj7, borrowed from Db minor: Lydian (its ♯11 is in the key)
+C    | 32 | D13#11   # tritone substitute: resolves down a half step to DbMaj7
+C    | 33 | DbMaj7   # tonic: the 4th is in the key
+C    | 33 | D13#11   # tritone substitute: resolves down a half step to DbMaj7
+C    | 34 | DbMaj7   # tonic: the 4th is in the key
+C    | 34 | D13#11   # tritone substitute: resolves down a half step to Db6
+C    | 35 | Db6      # tonic: the 4th is in the key
+C    | 35 | Db9      # tritone substitute: resolves down a half step to C13
+C    | 35 | C13      # V7/III in Db: the b9 is in the key, the 13 from the symbol
+C    | 36 | FMaj7    # a non-tonic major chord: Lydian
+C    | 36 | A13      # tritone substitute: resolves down a half step to AbMaj7
+C    | 37 | AbMaj7   # a non-tonic major chord: Lydian
+C    | 37 | Eb7#5#9  # V7/V in Db: b9, #9, #11 and b13 from the symbol
+C    | 38 | AbMaj7   # a non-tonic major chord: Lydian
+C    | 38 | Em7      # ii of the ii–V to D
+C    | 38 | A7       # V7/bII in Db: b9 and #11 are in the key
+C    | 39 | DMaj7    # ♭IImaj7, borrowed from Db Phrygian: Lydian (its ♯11 is in the key)
+C    | 39 | Dm7      # ii of the ii–V to C
+C    | 39 | G7       # V7/VII in Db: b9 and b13 are in the key
+C    | 40 | CMaj7    # a non-tonic major chord: Lydian
+C    | 40 | Ab13     # V7 of Db: natural tensions
+D    | 41 | DbMaj7   # tonic: the 4th is in the key
+D    | 41 | D13#11   # tritone substitute: resolves down a half step to DbMaj7
+D    | 42 | DbMaj7   # tonic: the 4th is in the key
+D    | 42 | D13#11   # tritone substitute: resolves down a half step to Db6
+D    | 43 | Db6      # tonic: the 4th is in the key
+D    | 43 | C7#9#11  # tritone substitute: resolves down a half step to B13; b9 and #9 from the symbol
+D    | 43 | B13      # ♭VII7 from the parallel minor: Lydian Dominant
+D    | 44 | Fm11     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+# book: Fmi7(add 11)
+D    | 44 | Bb7      # extended ii–V: a side-step, its own key
+D    | 45 | F#m9     # ii of B13: Dorian
+D    | 45 | B13      # extended ii–V: a side-step, its own key
+D    | 46 | A9#5     # tritone substitute: resolves down a half step to Ab13; b13 from the symbol
+D    | 46 | Ab13     # V7 of Db: natural tensions
+D    | 47 | DbMaj7   # tonic: the 4th is in the key
+D    | 47 | Gb13     # tritone substitute: resolves down a half step to Fm7
+D    | 48 | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+D    | 48 | Bb7      # extended ii–V: a side-step, its own key
+D    | 49 | F#m9     # ii of B13: Dorian
+D    | 49 | B13      # extended ii–V: a side-step, its own key
+D    | 50 | A9#5     # tritone substitute: resolves down a half step to Ab13; b13 from the symbol
+D    | 50 | Ab13     # V7 in Db, not resolving: natural tensions
+@coda D 50
+D    | 51 | Ab7#9    # V7 in Db, not resolving: b9, #9 and #11 from the symbol
+D    | 51 | A7#9     # ♭VI7 from the parallel minor: Lydian Dominant; b9 and #9 from the symbol
+D    | 51 | Bb7#9    # VI7 in Db, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
+D    | 51 | B7#9     # ♭VII7 from the parallel minor: Lydian Dominant; b9 and #9 from the symbol
+D    | 52 | C7#9     # VII7 in Db, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
+D    | 52 | D13#11   # tritone substitute: resolves down a half step to DbMaj7
+D    | 52 | DbMaj7   # tonic: the 4th is in the key
+D    | 52 | Ab13     # V7 of Db: natural tensions
+D    | 53 | DbMaj7   # tonic: the 4th is in the key
+D    | 53 | D13#11   # tritone substitute: resolves down a half step to DbMaj7
+D    | 54 | DbMaj7   # tonic: the 4th is in the key
+D    | 54 | D13#11   # tritone substitute: resolves down a half step to Db6
+@nav D 54 D.S. al Coda
+@coda Coda 1
+Coda | 1  | Ab7#9    # V7 in Db, not resolving: b9, #9 and #11 from the symbol
+Coda | 1  | A7#9     # ♭VI7 from the parallel minor: Lydian Dominant; b9 and #9 from the symbol
+Coda | 1  | Bb7#9    # VI7 in Db, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
+Coda | 1  | B7#9     # ♭VII7 from the parallel minor: Lydian Dominant; b9 and #9 from the symbol
+Coda | 2  | C7#9     # VII7 in Db, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
+Coda | 2  | D13#11   # tritone substitute: resolves down a half step to DbMaj7
+Coda | 2  | DbMaj7   # tonic: the 4th is in the key
+# molto rit.; fermata on the last chord
