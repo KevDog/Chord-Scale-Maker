@@ -247,23 +247,25 @@ function analyseNow(doc: ChartDoc): Analysis {
 }
 
 /** one option of the grid's Function dropdown: value '' is Auto (the analyser's own reading, labelled with
- * its numeral; "Auto" when it has none, "Auto (extended dominant)" for a chain link the sheet marks →)
+ * its numeral; "Auto" when it has none, "Auto (extended dominant)" for a chain link the sheet marks →).
+ * accept (on Auto, where the rules could only guess and the row states nothing): the function that reads and
+ * sounds just like Auto, so stating it settles the guess
  */
-export type FunctionChoice = Readonly<{ value: string; label: string; scale: string | null }>
+export type FunctionChoice = Readonly<{ value: string; label: string; scale: string | null; accept?: string }>
 
 /**
  * each row's Function options, keyed by doc line: Auto, then every function that fits the chord in its key area,
  * each with the scale the rules give when it's stated (the other rows' statements stand); one that would read and
- * sound just like Auto is left out
+ * sound just like Auto is left out (and named as Auto's `accept` when Auto is only a guess)
  */
 export function functionChoices(doc: ChartDoc): ReadonlyMap<number, readonly FunctionChoice[]> {
   const out = new Map<number, readonly FunctionChoice[]>()
   const p = prepare(doc)
   if (p.global === null) return out
-  const verdict = (i: number, s: Stated | undefined): { scale: string | null; numeral: string } => {
+  const verdict = (i: number, s: Stated | undefined): { scale: string | null; numeral: string; guess: boolean } => {
     const ctx = contextFor(p, p.stated.map((x, j) => (j === i ? s : x)))
     const d = decide(ctx, i)
-    return { scale: d.scale, numeral: s ? s.fn.text : numeral(ctx, i, d) }
+    return { scale: d.scale, numeral: s ? s.fn.text : numeral(ctx, i, d), guess: !!d.fallback }
   }
   p.stream.forEach((e, i) => {
     if (!e.family) return
@@ -276,7 +278,9 @@ export function functionChoices(doc: ChartDoc): ReadonlyMap<number, readonly Fun
       const t = impliedTarget(fn, key)
       const to = t ? ` (to ${rootName(shiftBy(tonicOf(key), t.steps, t.semis))}${t.minor ? 'm' : ''})` : ''
       const choice = { value: text, label: `${fn.text}${to}`, scale: verdict(i, { fn, key }).scale }
-      if (choice.label !== choices[0]?.label || choice.scale !== choices[0]?.scale) choices.push(choice)
+      const same = choice.label === choices[0]?.label && choice.scale === choices[0]?.scale
+      if (!same) choices.push(choice)
+      else if (auto.guess && !p.stated[i] && choices[0] && !choices[0].accept) choices[0] = { ...choices[0], accept: text }
     }
     for (const r of e.rows) {
       const line = p.rows[r]?.line

@@ -271,7 +271,12 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     chord slot, Esc cancels, blank takes the chord out, `%` is the bar before; a refused draft keeps the field open
     with why. The numeral and
     scale under each chord open the function and scale lists (`SheetLabelPicker` over `ChordChoices`, with its why);
-    a function the rules only guessed is underlined amber; a pinned scale shows its pin. The bar under the pointer
+    a function the rules only guessed is underlined amber, and its list offers Accept guess (`FunctionChoice.accept`
+    on Auto: the candidate that reads and sounds like Auto, named only where the decision is a `fallback` and the row
+    states nothing), which writes that function and leaves the scale cell blank; under the function list an Other
+    function field takes any function in full (`cellError`, then `parseFunction`, live: a draft that reads shows the
+    scale it would give from a trial doc, Enter writes it with its key prefix as typed, and one that doesn't read stays
+    with the parser's own message); a pinned scale shows its pin. The bar under the pointer
     gets a toolbar (`SheetBarToolbar`: the inspector's actions by name; Write out alone on a written-out repeat); a
     ghost "+ bar" ends each section (`ChangesLine.sectionEnd`, `ChangesBar.at`); + Section follows the sheet; the
     jump and the new section use `BarDialog`. The heading is edited where it prints (`SheetHeading` in `SheetPages`'

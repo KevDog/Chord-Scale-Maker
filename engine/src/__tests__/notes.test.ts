@@ -50,7 +50,7 @@ describe('rowNotes', () => {
 describe('functionChoices', () => {
   it("offers the analyser's reading, then each function that fits, with the scale it would give", () => {
     const d7 = functionChoices(parseChart(C_TUNE).value).get(3) ?? []
-    expect(d7[0]).toEqual({ value: '', label: 'II7', scale: 'D Mixolydian' })
+    expect(d7[0]).toMatchObject({ value: '', label: 'II7', scale: 'D Mixolydian' })
     expect(d7).toContainEqual({ value: 'V7/V', label: 'V7/V (to G)', scale: 'D Mixolydian' })
     expect(d7).toContainEqual({ value: 'subV7/♭II', label: 'subV7/♭II (to Db)', scale: 'D Lydian Dominant' })
     expect(d7.map((c) => c.value)).toEqual(['', 'V7/V', 'V7/v', 'subV7/♭II', 'subV7/♭ii', '♭VII7/III'])
@@ -59,6 +59,18 @@ describe('functionChoices', () => {
   it("leaves out a function that would read and sound the same as the analyser's", () => {
     const d7 = functionChoices(parseChart(C_TUNE).value).get(3) ?? []
     expect(d7.filter((c) => c.label === 'II7' && c.scale === 'D Mixolydian')).toHaveLength(1)
+  })
+
+  it('names, on Auto, the function that states a guess (ruling D5): the left-out candidate that reads and sounds like Auto', () => {
+    const d7 = functionChoices(parseChart(C_TUNE).value).get(3) ?? []
+    expect(d7[0]).toEqual({ value: '', label: 'II7', scale: 'D Mixolydian', accept: 'II7' })
+  })
+
+  it('gives Auto no accept where the rules decided, or where the row already states its function', () => {
+    const choices = functionChoices(parseChart(C_TUNE).value)
+    expect(choices.get(5)?.[0]).toEqual({ value: '', label: 'V7', scale: 'G Mixolydian' }) // diatonic, decided
+    const stated = functionChoices(parseChart(C_TUNE.replace('A | 2 | D7', 'A | 2 | D7 | | II7')).value).get(3) ?? []
+    expect(stated[0]).toEqual({ value: '', label: 'II7', scale: 'D Mixolydian' })
   })
 
   it("shows Auto as the analyser's own reading even when the row states a function", () => {

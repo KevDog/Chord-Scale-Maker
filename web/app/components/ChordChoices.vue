@@ -50,7 +50,10 @@
           </div>
           <NuxtLink v-if="functionOpen" to="/functions#writing" class="text-xs/5 text-zinc-600 underline dark:text-zinc-400">How to write a function</NuxtLink>
         </div>
-        <UiText v-if="functionOpen && fallbackNote" class="text-sm/6! text-amber-800! dark:text-amber-400!">{{ fallbackNote }}</UiText>
+        <div v-if="functionOpen && fallbackNote" class="flex flex-wrap items-center justify-between gap-2">
+          <UiText class="text-sm/6! text-amber-800! dark:text-amber-400!">{{ fallbackNote }}</UiText>
+          <UiButton v-if="accept" plain @click="setFunction(accept)">Accept guess</UiButton>
+        </div>
         <UiRadioGroup v-if="functionOpen" :id="`${id}-function-body`" :model-value="selectedFunction" aria-label="Function" :class="ROOMY" @update:model-value="(v) => v !== undefined && setFunction(v)">
           <UiRadio v-for="c in fnChoices" :key="c.value" :value="c.value">
             <span class="flex flex-wrap justify-between gap-x-3">
@@ -61,6 +64,13 @@
           <UiRadio v-if="!matchingFunction && row.function" :value="row.function"><span>{{ row.function }}</span></UiRadio>
         </UiRadioGroup>
         <UiErrorMessage v-if="note?.problem">{{ note.problem }}</UiErrorMessage>
+        <div v-if="functionOpen" class="space-y-1">
+          <div class="flex items-center gap-3">
+            <UiInput v-model="draft" aria-label="Other function" placeholder="Other function: Eb: V7/ii" :invalid="!!draftError" autocomplete="off" autocapitalize="off" spellcheck="false" @keydown.enter.prevent="applyDraft" />
+            <output v-if="draftScale" aria-label="The scale it gives" class="shrink-0 text-sm/6 text-zinc-600 dark:text-zinc-400">→ {{ draftScale }}</output>
+          </div>
+          <UiErrorMessage v-if="draftError">{{ draftError }}</UiErrorMessage>
+        </div>
       </section>
 
       <section v-else-if="piece === 'why' && functionsOn && note?.note && (scaleOpen || part === 'function')" :aria-labelledby="`${id}-why`" class="space-y-1">
@@ -72,7 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { type ChartDoc, functionChoices, parseChord, rootName, type RowLine, type RowNote, rowNotes, sameFunction, samePitchScale, setRowField } from '@chord-scale-maker/engine'
+import { cellError, type ChartDoc, functionChoices, parseChord, parseFunction, rootName, type RowLine, type RowNote, rowNotes, sameFunction, samePitchScale, setRowField } from '@chord-scale-maker/engine'
 import { ChevronRightIcon, MapPinIcon } from '@heroicons/vue/16/solid'
 import ScaleOptionLabel from './ScaleOptionLabel.vue'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
@@ -133,6 +143,29 @@ const matchingFunction = computed(() => {
   return fn ? fnChoices.value.find((c) => c.value && sameFunction(c.value, fn)) : fnChoices.value[0]
 })
 const selectedFunction = computed(() => matchingFunction.value?.value ?? row.value?.function ?? '')
+/** the function that states the rules' guess (Auto's `accept`), offered under the fallback note */
+const accept = computed(() => (props.fallbackNote ? fnChoices.value[0]?.accept : undefined))
+
+/** a function typed in full: read as the chart would read it, so Enter writes it as the sheet prints it */
+const draft = ref('')
+watch(() => props.line, () => (draft.value = ''))
+const parsedDraft = computed(() => {
+  const text = draft.value.trim()
+  if (!text) return null
+  const bad = cellError(text)
+  if (bad) return bad
+  return parseFunction(text)
+})
+const draftError = computed(() => (typeof parsedDraft.value === 'string' ? parsedDraft.value : ''))
+/** the draft as the row would hold it: its key prefix as typed, the function as the sheet prints it */
+const draftText = computed((): string => {
+  const p = parsedDraft.value
+  if (!p || typeof p === 'string') return ''
+  const colon = draft.value.indexOf(':')
+  return colon >= 0 ? `${draft.value.slice(0, colon).trim()}: ${p.text}` : p.text
+})
+/** the scale the draft would give the row, from a trial doc with it stated */
+const draftScale = computed((): string => (draftText.value ? (rowNotes(setRowField(props.doc, props.line, 'function', draftText.value), scaleView.value).get(props.line)?.analysed ?? '') : ''))
 /** the chosen function, as its option reads, shown while the list is folded away */
 const functionText = computed(() => {
   const c = matchingFunction.value
@@ -162,5 +195,11 @@ function setFunction(fn: string): void {
   emit('update:doc', setRowField(props.doc, props.line, 'function', fn))
   const c = fnChoices.value.find((x) => x.value === fn)
   emit('said', `${row.value?.chord}: ${fn || 'Auto'}${c?.scale ? `, ${c.scale}` : ''}`)
+}
+/** Enter in the field: a function that reads is written and the field cleared; one that doesn't stays, with why */
+function applyDraft(): void {
+  if (!draftText.value) return
+  setFunction(draftText.value)
+  draft.value = ''
 }
 </script>
