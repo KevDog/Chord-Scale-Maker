@@ -690,7 +690,7 @@ its reasons into a chart as comments.
   - **The gate:** `tuneGaps` lists what a library chart's page lacks (`title:`, `key:`, `style:`, `form:`, and
     `composer:` unless `kind:` is `form` or `exercise`); `libraryMeta.test.ts` fails on any. `tuneAdvice` (no
     `source:`, no `aka:`) is only reported, by `npm run analyse`.
-  - An unknown name is a 404 (`findTune` in `utils/library.ts`).
+  - An unknown name is a 404 (`findChart` in `utils/library.ts`).
 - **Head tags** (`utils/site.ts`):
   - `PAGE_HEAD` holds each fixed page's title and description; `seoMeta` turns one into `useSeoMeta` input, the
     link preview's title carrying the site name as the browser's does (`pageTitle`).
