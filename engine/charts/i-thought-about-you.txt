@@ -1,0 +1,71 @@
+title: I Thought About You
+composer: Jimmy Van Heusen
+style: Ballad
+key: F
+form: AB, 32 bars
+source:
+# analysis: 2026-10-12, rules v1; F
+# the book: Med. Ballad
+
+# section | bar | chord
+A | 1  | Bm7b5   # #ivø7 in F: Locrian, its own mode (the chord is outside the key)
+A | 1  | Bb9#11  # tritone substitute: resolves down a half step to A7
+# alt: bar 1 (FMaj7)
+A | 2  | A7      # extended dominant: V7 of D7#5
+A | 2  | D7#5    # extended dominant: V7 of G9; #11 and b13 from the symbol
+A | 3  | G9      # II7 in F, not resolving: natural tensions
+A | 3  | Ab13    # tritone substitute: resolves down a half step to G9
+A | 4  | G9      # II7 in F, not resolving: natural tensions
+A | 5  | Gm7     # ii: Dorian, the key’s own notes
+A | 6  | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+A | 6  | A7      # V7/vi in F: b9 and b13 are in the key
+A | 7  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+A | 7  | Db7     # tritone substitute: resolves down a half step to Cm7
+A | 8  | Cm7     # ii of the ii–V to Bb
+A | 8  | F7      # V7/IV in F: natural tensions
+A | 9  | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
+A | 10 | Bbm7    # ii of Eb13: Dorian
+A | 10 | Eb13    # back door bVII7 to FMaj7: the #11 is in the key
+A | 11 | FMaj7   # tonic: the 4th is in the key
+A | 11 | C7      # V7 of F: natural tensions
+A | 12 | FMaj7   # tonic: the 4th is in the key
+# alt: bars 11–12 (Gm7 Am7 | BbMaj7)
+A | 13 | Bm7b5   # iiø7 of E7#5: Locrian, the key's own notes (its ♭2 is a passing note)
+A | 13 | E7#5    # V7/iii in F: b9 and b13 are in the key, the #11 from the symbol
+A | 13 | E7      # VII7 in F, not resolving: b9 and b13 are in the key
+A | 14 | Bm7b5   # iiø7 of E7#5: Locrian, the key's own notes (its ♭2 is a passing note)
+A | 14 | E7#5    # V7/iii in F: b9 and b13 are in the key, the #11 from the symbol
+A | 14 | E7      # V7/iii in F: b9 and b13 are in the key
+# bars 13–14: Bm7b5 for two beats, E7#5 on beat 3, E7 on beat 4
+A | 15 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A | 15 | Ab7     # tritone substitute: resolves down a half step to Gm7
+A | 16 | Gm7     # ii of C7: Dorian
+A | 16 | C7      # V7/I in F: natural tensions
+B | 17 | Bm7b5   # #ivø7 in F: Locrian, its own mode (the chord is outside the key)
+B | 17 | Bb9#11  # tritone substitute: resolves down a half step to A7
+# alt: bar 17 (FMaj7)
+B | 18 | A7      # extended dominant: V7 of D7#5
+B | 18 | D7#5    # extended dominant: V7 of G9; #11 and b13 from the symbol
+B | 19 | G9      # II7 in F, not resolving: natural tensions
+B | 19 | Ab13    # tritone substitute: resolves down a half step to G9
+B | 20 | G9      # II7 in F, not resolving: natural tensions
+B | 21 | Gm7     # ii: Dorian, the key’s own notes
+B | 22 | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B | 22 | A7      # V7/vi in F: b9 and b13 are in the key
+B | 23 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+B | 23 | Db7     # tritone substitute: resolves down a half step to Cm7
+B | 24 | Cm7     # ii of the ii–V to Bb
+B | 24 | F7      # V7/IV in F: natural tensions
+B | 25 | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
+B | 26 | Bbm7    # ii of Eb13: Dorian
+B | 26 | Eb13    # back door bVII7 to FMaj7: the #11 is in the key
+B | 27 | FMaj7   # tonic: the 4th is in the key
+B | 27 | Dm7/C   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+B | 28 | Bm7b5   # #ivø7 in F: Locrian, its own mode (the chord is outside the key)
+B | 28 | Bb9#11  # tritone substitute: resolves down a half step to Am7
+B | 29 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B | 29 | Ab7     # tritone substitute: resolves down a half step to Gm7
+B | 30 | Gm7     # ii of the ii–V to F
+B | 30 | C7      # V7 of F: natural tensions
+B | 31 | F6      # tonic: the 4th is in the key
+# alt: bar 32 (Gm7 C7)

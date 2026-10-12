@@ -1,0 +1,98 @@
+title: Gemini
+composer: Jimmy Heath
+style: Bright jazz waltz
+key: Eb
+time: 3/4
+form: ABCD, 112 bars
+source:
+# analysis: 2026-10-12, rules v1; Eb
+# book: as played by Cannonball Adderley
+# routing: Intro vamp, A (head), D.S. al solos; solo form is A (once), B (indefinitely, till cue);
+# play C before the 2nd solo and D before the last solo (then to A); after solos, D.S. al Coda.
+# The opening bass-only figure (8 bars, N.C.) is left out: it has no chords. The vamp from the sign follows.
+
+# section | bar | chord
+@segno Intro 1
+Intro | 1  | Eb       # tonic: the 4th is in the key
+Intro | 2  | Db       # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+Intro | 3  | Eb       # tonic: the 4th is in the key
+Intro | 4  | Db       # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+@ending 1 Intro 4
+Intro | 5  | Db
+@ending 2 Intro 5
+A     | 1  | Eb       # tonic: the 4th is in the key
+A     | 2  | Db       # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+A     | 3  | Eb       # tonic: the 4th is in the key
+A     | 4  | Db       # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+A     | 5  | Eb       # tonic: the 4th is in the key
+A     | 6  | Db       # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+A     | 7  | Eb       # tonic: the 4th is in the key
+A     | 8  | Db       # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+A     | 9  | Ebm7     # a borrowed minor chord: Dorian, its own key
+A     | 10 | Fm/Gb    # ii: Dorian, the key’s own notes
+# horn parts: Ab13 for Fm/Gb (bars 10 and 12)
+A     | 11 | Ebm7     # a borrowed minor chord: Dorian, its own key
+A     | 12 | Fm/Gb    # ii: Dorian, the key’s own notes
+A     | 13 | Eb       # tonic: the 4th is in the key
+A     | 14 | Db       # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+A     | 15 | Eb       # tonic: the 4th is in the key
+A     | 15 | G7#5#9   # extended dominant: each one falls a fifth into the next: b9, #9, #11 and b13 from the symbol
+A     | 16 | C7#9     # extended dominant: each one falls a fifth into the next: b9, #9 and #11 from the symbol
+A     | 17 | F7b9     # V7 of V7: the dominant of the dominant: the b9 from the symbol
+A     | 19 | Bb7#5#9  # V7 of Eb: b9, #9, #11 and b13 from the symbol
+A     | 21 | Eb       # tonic: the 4th is in the key
+A     | 22 | Db       # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+A     | 23 | Eb       # tonic: the 4th is in the key
+A     | 24 | Db       # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+@coda A 24
+@nav A 24 D.S. al solos
+B     | 25 | Eb7      # extended dominant: V7 of Ab7
+# alt (optional): bar 25 (Eb7#9)
+B     | 33 | Ab7      # IV7 in Eb, not resolving: the #11 is in the key
+B     | 34 | A7       # tritone substitute: resolves down a half step to Ab7
+# alt (optional): bars 34–35 (A7 Ab7); the book's plain chord is Ab7 throughout bars 33–36
+B     | 35 | Ab7      # IV7 in Eb, not resolving: the #11 is in the key
+B     | 37 | Eb7      # I7 in Eb, not resolving: natural tensions
+# alt (optional): bar 37 (Eb7#9)
+B     | 40 | C7#9     # extended dominant: each one falls a fifth into the next: b9, #9 and #11 from the symbol
+B     | 41 | F7#9#11  # V7 of V7: the dominant of the dominant: b9, #9 and #11 from the symbol
+B     | 43 | Bb7#9    # extended dominant: V7 of Eb7; b9, #9 and #11 from the symbol
+B     | 45 | Eb7      # static dominant: its own mode
+# alt (optional): bar 45 (Eb7#9)
+B     | 48 | Eb7
+@nav B 48 D.S. al Coda
+# C: interlude, played before the 2nd solo
+C     | 49 | Eb       # tonic: the 4th is in the key
+# book: Eb bass (pedal under the horn voicings, bars 49–50)
+C     | 51 | Eb7      # tritone substitute: resolves down a half step to D7b9
+C     | 51 | D7b9     # tritone substitute: resolves down a half step to Db7; b9 from the symbol
+C     | 51 | Db7      # tritone substitute: resolves down a half step to C7
+C     | 52 | C7       # VI7 in Eb, not resolving: the b13 is in the key
+C     | 53 | Bb       # V without its 7th: Mixolydian, the key’s own notes
+# book: Bb bass (pedal under the horn voicings, bars 53–54)
+C     | 55 | Bb7      # tritone substitute: resolves down a half step to A7b9
+C     | 55 | A7b9     # tritone substitute: resolves down a half step to Ab7; b9 from the symbol
+C     | 55 | Ab7      # tritone substitute: resolves down a half step to G7
+C     | 56 | G7       # III7 in Eb, not resolving: b9 and b13 are in the key
+# book: G7(add MA7)
+C     | 57 | F7#9#11  # V7 of V7: the dominant of the dominant: b9, #9 and #11 from the symbol
+C     | 61 | Bb7#9    # V7 of Eb: b9, #9 and #11 from the symbol
+# D: interlude, played before the last solo; repeated (1st time 8va bassa)
+D     | 65 | Eb       # tonic: the 4th is in the key
+D     | 73 | Ab9sus4  # static sus: Mixolydian
+# book: Ab9sus
+D     | 77 | Eb       # tonic: the 4th is in the key
+D     | 79 | G7alt    # from the symbol: altered
+D     | 80 | C7#9     # extended dominant: each one falls a fifth into the next: b9, #9 and #11 from the symbol
+D     | 81 | F13      # V7 of V7: the dominant of the dominant: natural tensions
+D     | 83 | Bb7      # extended dominant: V7 of Eb7#9
+D     | 85 | Eb7#9    # static dominant: its own mode; b9, #9 and #11 from the symbol
+@copy D D2 24
+# Coda: vamp bars 1–2 till cue, then bar 3 on cue (rit., fermata)
+@coda Coda 1
+Coda  | 1  | Eb       # tonic: the 4th is in the key
+Coda  | 1  | Db       # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+Coda  | 2  | Eb       # tonic: the 4th is in the key
+Coda  | 2  | Db       # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+Coda  | 3  | Eb       # tonic: the 4th is in the key
+Coda  | 3  | Bbm7     # a borrowed minor chord: Dorian, its own key

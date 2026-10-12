@@ -1,0 +1,42 @@
+title: Gee Baby, Ain't I Good to You
+composer: Don Redman
+style: Medium slow
+key: Eb
+form: AB, 16 bars
+source:
+# analysis: 2026-10-12, rules v1; Eb
+# book: Med.-Slow Swing (Bluesy); the melody is freely interpreted, in a blues style
+
+# section | bar | chord
+A | 1  | C7      # VI7 in Eb, not resolving: the b13 is in the key
+A | 1  | Ab7     # tritone substitute: resolves down a half step to G7
+A | 2  | G7      # extended dominant: each one falls a fifth into the next: natural tensions
+A | 2  | C7      # extended dominant: each one falls a fifth into the next: natural tensions
+A | 3  | F7      # V7 of V7: the dominant of the dominant: natural tensions
+A | 3  | Bb7     # V7 of Eb: natural tensions
+A | 4  | Eb6     # tonic: the 4th is in the key
+A | 4  | G7      # extended dominant: V7 of C7
+A | 5  | C7      # VI7 in Eb, not resolving: the b13 is in the key
+A | 5  | Ab7     # tritone substitute: resolves down a half step to G7
+A | 6  | G7      # extended dominant: each one falls a fifth into the next: natural tensions
+A | 6  | C7      # extended dominant: each one falls a fifth into the next: natural tensions
+A | 7  | F7      # V7 of V7: the dominant of the dominant: natural tensions
+A | 7  | Bb7     # V7 of Eb: natural tensions
+A | 8  | Eb6     # tonic: the 4th is in the key
+A | 8  | Eb7     # V7/IV in Eb: natural tensions
+B | 9  | Ab6     # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
+B | 9  | Adim7   # ♯IV°7 to I over its 5th: D7♭9 without its root, the ♯II°7's notes
+B | 10 | Eb6/Bb  # tonic: the 4th is in the key
+B | 10 | Eb7     # V7/IV in Eb: natural tensions
+B | 11 | Ab6     # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
+B | 11 | Adim7   # passing diminished: D7♭9 without its D, the G7's dominant; not functioning diatonically: the symmetric scale
+B | 12 | Dm7b5   # iiø7 of G7: Locrian, the key's own notes (its ♭2 is a passing note)
+B | 12 | G7      # extended dominant: V7 of C7
+B | 13 | C7      # VI7 in Eb, not resolving: the b13 is in the key
+B | 13 | Ab7     # tritone substitute: resolves down a half step to G7
+B | 14 | G7      # extended dominant: each one falls a fifth into the next: natural tensions
+B | 14 | C7      # extended dominant: each one falls a fifth into the next: natural tensions
+B | 15 | F7      # V7 of V7: the dominant of the dominant: natural tensions
+B | 15 | Bb7     # V7 of Eb: natural tensions
+B | 16 | Eb6     # tonic: the 4th is in the key
+# alt (optional): bar 16, beats 3–4 (Ab7 G7)

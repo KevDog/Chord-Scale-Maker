@@ -1,0 +1,99 @@
+title: I'm All Smiles
+composer: Michael Leonard
+style: Jazz waltz
+# book: Med. Jazz Waltz
+key: D
+form: AABC, 78 bars
+time: 3/4
+source:
+# analysis: 2026-10-12, rules v1; D
+
+# the C section is 30 bars, as printed
+# section | bar | chord
+# area: G minor (bars 1–8)
+A | 1  | D7#9      # V7 of G minor: the b13 is in the key, b9, #9 and #11 from the symbol
+A | 2  | Gm7       # tonic minor: Dorian by convention
+A | 3  | C#7#9     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b9 and #9 from the symbol
+A | 4  | B6/C      # a non-tonic major chord: Lydian
+A | 4  | C6        # a non-tonic major chord: Lydian
+# alt: bar 4 (E/F FMaj7)
+A | 5  | Am7       # ii of D9: Dorian
+A | 6  | D9        # extended ii–V: a side-step, its own key
+A | 7  | Bm7       # ii of E9: Dorian
+A | 8  | E9        # extended ii–V: a side-step, its own key
+# area: B major (bars 9–12)
+A | 9  | C#m7      # ii of the ii–V to B
+A | 10 | F#9       # V7 of B: natural tensions
+A | 11 | BMaj7     # tonic: the 4th is in the key
+A | 12 | G#m7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+# area: D major (bars 13–24)
+A | 13 | Em7       # ii of the ii–V to D
+A | 14 | A7        # V7 of D: natural tensions
+A | 15 | DMaj9     # tonic: the 4th is in the key
+A | 16 | DMaj9
+# bar 16: DMaj9 held (repeated for the ending bracket) under an instrumental fill
+A | 17 | Em7       # ii of the ii–V to D
+A | 18 | A7        # V7 of D: natural tensions
+A | 19 | DMaj7     # tonic: the 4th is in the key
+A | 20 | DMaj7
+# bar 20: DMaj7 held (repeated for the ending bracket)
+# alt: bars 19–20 (F#m7 D/F#)
+@ending 1 A 13 16
+@ending 2 A 17 20
+B | 21 | GbMaj7    # a non-tonic major chord: Lydian
+B | 22 | Ab9       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+# alt: bar 22 (Ab9/Gb)
+B | 23 | Fm7       # ii of Bb7: Dorian
+B | 24 | Bb7       # extended ii–V: a side-step, its own key
+# area: F major (bars 25–27)
+B | 25 | Gm7b5     # iiø7 of F: Locrian, the key's own notes (its ♭2 is a passing note)
+B | 26 | C7b5      # V7 of F: the #11 from the symbol
+B | 27 | FMaj7     # tonic: the 4th is in the key
+# alt: bar 28 (BbMaj7)
+# area: D major (bars 29–35)
+B | 29 | Em11      # ii of the ii–V to D
+# book: Em7(add 11)
+B | 30 | A7        # V7 of D: natural tensions
+B | 31 | DMaj7     # tonic: the 4th is in the key
+B | 33 | GMaj9#11  # from the symbol: #11
+B | 34 | F#m11     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B | 34 | B7b5      # tritone substitute: resolves down a half step to Bb9b5
+B | 35 | Bb9b5     # tritone substitute: resolves down a half step to A9
+# area: G minor (bars 36–44)
+B | 36 | A9        # V7 of V7: the dominant of the dominant, on the way to G minor: the b13 is in the key, the 9 from the symbol
+C | 37 | D7#9      # V7 of G minor, the chain's last link: the b13 is in the key, b9, #9 and #11 from the symbol
+C | 38 | Gm7       # tonic minor: Dorian by convention
+C | 39 | C#7#9     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b9 and #9 from the symbol
+C | 40 | B6/C      # a non-tonic major chord: Lydian
+C | 40 | C6        # a non-tonic major chord: Lydian
+# alt: bar 40 (E/F FMaj7)
+C | 41 | Am7       # ii of D9: Dorian
+C | 42 | D9        # extended ii–V: a side-step, its own key
+C | 43 | Bm7       # ii of E9: Dorian
+C | 44 | E9        # extended ii–V: a side-step, its own key
+# area: B major (bars 45–48)
+C | 45 | C#m7      # ii of the ii–V to B
+C | 46 | F#9       # V7 of B: natural tensions
+C | 47 | BMaj7     # tonic: the 4th is in the key
+C | 48 | G#m7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+# area: D major (bars 49–65)
+C | 49 | Em7       # ii of the ii–V to D
+C | 50 | A7        # V7 of D: natural tensions
+C | 51 | DMaj7     # tonic: the 4th is in the key
+C | 52 | D7        # I7 in D, not resolving: natural tensions
+C | 53 | F#/G      # a non-tonic major chord: Lydian
+C | 53 | GMaj7     # IV: the #4 is the key’s 7th
+C | 54 | E7/G#     # V7 of V7: the dominant of the dominant: natural tensions
+C | 55 | A7        # V7 in D, not resolving: natural tensions
+C | 56 | A7/G      # V7 in D, not resolving: natural tensions
+C | 57 | F#m7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+C | 58 | Bm7       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+C | 59 | Em7       # ii of A9sus4: Dorian
+C | 60 | A9sus4    # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+C | 60 | A7/G      # V7 in D, not resolving: natural tensions
+C | 61 | F#7       # V7/vi in D: b9 and b13 are in the key
+C | 62 | Bm7       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+C | 63 | Em7       # ii of A9sus4: Dorian
+C | 64 | A9sus4    # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+C | 64 | A7        # V7 of D: natural tensions
+C | 65 | D6        # tonic: the 4th is in the key
