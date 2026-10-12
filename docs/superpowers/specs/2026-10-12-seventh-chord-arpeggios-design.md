@@ -76,9 +76,9 @@ picks between the two kinds of line.
 
 - `PreviewControls.vue`: the segmented control and the mode's listbox, using `ui/` components; phone layout as today.
 - Preferences: `csm-line` (`off | guide | arpeggio`, default off), `csm-guide-line` (`third | seventh`, kept),
-  `csm-arpeggio` (pattern id, default `up-root`). A stored `csm-guide-line` of `third`/`seventh` with no `csm-line`
-  reads as `guide`; `off` reads as off.
-- Share links: `line` and `arpeggio`; an old link's `guideLine` still opens guide tones.
+  `csm-arpeggio` (pattern id, default `up-root`). `csm-guide-line` loses its `off` value. No migration: nothing has
+  been shared yet.
+- Share links: `line`, `guideLine` (`third | seventh`) and `arpeggio`; no compatibility with the old `guideLine`.
 - `utils/changesDrawing.ts`: many notes a bar, beamed per beat (`Beam.generateBeams`, groups of a beat), stems
   automatic, no ties; the ghost voice still marks every beat so chords sit over their first note; the crop takes in
   noteheads, stems and beams. Line 1 gets the clef whenever a line is on.
@@ -89,7 +89,7 @@ picks between the two kinds of line.
 - Engine unit tests first (TDD): chord tones per quality (triad, 6, sus, alt, m7b5, dim7, extensions), note value for
   every split in every metre, each pattern's order, filling and repeating, Up & down alternation across chords,
   voice-led nearest-tone start, octave placement against range edges, run start, rests, repeats and endings.
-- Web unit: preference and share-link round trips, including old `guideLine` links.
+- Web unit: preference and share-link round trips.
 - e2e: switch to 7th Chords, pick a pattern, beamed notes render, a 3/4 chart, print.
 
 ## Out of scope
