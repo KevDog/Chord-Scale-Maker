@@ -14,9 +14,8 @@ const TUNE: TuneSummary = {
   form: 'A, 12 bars',
   time: '',
   source: '',
-  rows: [],
 }
-const PATH = '/tunes/blue-trane'
+const PATH = '/song/blue-trane'
 
 describe('websiteLd', () => {
   it('names the site at its root', () => {
@@ -55,7 +54,7 @@ describe('tuneLd', () => {
       name: 'Blue Trane',
       composer: { '@type': 'Person', name: 'John Coltrane' },
       musicalKey: 'E♭ major',
-      url: 'https://www.chordscalemaker.com/tunes/blue-trane',
+      url: 'https://www.chordscalemaker.com/song/blue-trane',
     })
   })
 
@@ -87,7 +86,7 @@ describe('breadcrumbLd', () => {
       '@type': 'BreadcrumbList',
       itemListElement: [
         { '@type': 'ListItem', position: 1, name: 'Library', item: 'https://www.chordscalemaker.com/' },
-        { '@type': 'ListItem', position: 2, name: 'Blue Trane', item: 'https://www.chordscalemaker.com/tunes/blue-trane' },
+        { '@type': 'ListItem', position: 2, name: 'Blue Trane', item: 'https://www.chordscalemaker.com/song/blue-trane' },
       ],
     })
   })

@@ -1,9 +1,9 @@
 import { readdirSync } from 'node:fs'
 import { isSyncCopy } from '@chord-scale-maker/engine'
 import { describe, expect, it } from 'vitest'
-import { findChart, LIBRARY, searchLibrary, toLibrary, TUNE_PATHS } from '~/utils/library'
-import { tunePath } from '~/utils/site'
-import { sitemapPaths, sitemapXml, tunePathsOf } from '~/utils/sitemap'
+import { findChart, LIBRARY, searchLibrary, toLibrary } from '~/utils/library'
+import { songPath } from '~/utils/site'
+import { sitemapPaths, sitemapXml, chartSlugsOf } from '~/utils/sitemap'
 
 describe('library', () => {
   it('builds entries from chart files, sorted by title', () => {
@@ -51,17 +51,15 @@ describe('library', () => {
     expect(bad).toEqual([])
   })
 
-  it('maps every library chart to its own tune path, and back', () => {
-    const paths = LIBRARY.map((c) => tunePath(c.slug))
-    expect(new Set(paths).size).toBe(LIBRARY.length)
-    for (const c of LIBRARY) expect(findChart(tunePath(c.slug).replace('/tunes/', ''))).toBe(c)
-  })
-
-  it('lists one tune path per chart file, the same list the config prerenders and the sitemap carries', () => {
+  it('maps every library chart to its own song path, in the sitemap, and back', () => {
     const files = readdirSync('../engine/charts')
-    expect(TUNE_PATHS.length).toBe(LIBRARY.length)
-    expect([...TUNE_PATHS].sort()).toEqual([...tunePathsOf(files)].sort())
-    const locs = [...sitemapXml(sitemapPaths(tunePathsOf(files))).matchAll(/<loc>https:\/\/[^/]+(\/tunes\/.*?)<\/loc>/g)].map((m) => m[1])
-    expect(locs.sort()).toEqual([...TUNE_PATHS].sort())
+    const paths = sitemapPaths(chartSlugsOf(files).map(songPath))
+    expect(new Set(LIBRARY.map((c) => songPath(c.slug))).size).toBe(LIBRARY.length)
+    for (const c of LIBRARY) {
+      expect(paths).toContain(songPath(c.slug))
+      expect(findChart(c.slug)).toBe(c)
+    }
+    const locs = [...sitemapXml(paths).matchAll(/<loc>https:\/\/[^/]+(\/song\/.*?)<\/loc>/g)].map((m) => m[1])
+    expect(locs.sort()).toEqual(LIBRARY.map((c) => songPath(c.slug)).sort())
   })
 })

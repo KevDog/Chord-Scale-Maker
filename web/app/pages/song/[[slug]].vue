@@ -23,12 +23,20 @@
       @created="adopt"
       @reload="reload"
     />
-    <template #fallback><p class="text-zinc-500">Loading editor…</p></template>
+    <template #fallback>
+      <div v-if="song" class="space-y-1">
+        <UiHeading>{{ song.title }}</UiHeading>
+        <UiText v-if="song.composer">{{ song.composer }}</UiText>
+        <UiText class="text-zinc-500">Loading the practice sheets…</UiText>
+      </div>
+      <p v-else class="text-zinc-500">Loading editor…</p>
+    </template>
   </ClientOnly>
 </template>
 
 <script setup lang="ts">
 import { PAGE_HEAD, seoMeta } from '~/utils/site'
+import { songHead } from '~/utils/songHead'
 import { chartHeading, decodeShare, parseChart, type ShareView } from '@chord-scale-maker/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 
@@ -118,8 +126,11 @@ function reload(): void {
   editorKey.value = `${route.fullPath}#${generation.value}`
 }
 
-useSeoMeta(seoMeta(PAGE_HEAD.song))
+// the library head only at the clean address; null for /song, ?mine=, ?new=1, share links and old underscore addresses
+const song = route.path.replace(/\/$/, '') === songPath(slug()) ? songHead(slug()) : null
+useSeoMeta(seoMeta(song?.head ?? PAGE_HEAD.song))
+if (song) useHead({ script: [{ type: 'application/ld+json', innerHTML: song.ld }] })
 // in the browser, the tab and history name the chart ("Blue Trane · Chord Scale Maker"); the prerender has none
 const chartTitle = computed(() => (import.meta.client && source.value.kind === 'chart' ? chartHeading(parseChart(source.value.text).value).title : ''))
-useHead({ title: () => chartTitle.value || PAGE_HEAD.song.title })
+useHead({ title: () => chartTitle.value || (song?.head ?? PAGE_HEAD.song).title })
 </script>

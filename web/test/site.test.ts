@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { PAGE_HEAD, SITE_NAME, canonicalUrl, chartSlug, pageTitle, seoMeta, songPath, tunePath, tuneTitle } from '~/utils/site'
+import { PAGE_HEAD, SITE_NAME, canonicalUrl, chartSlug, pageTitle, seoMeta, songPath, tuneTitle } from '~/utils/site'
 
 describe('canonicalUrl', () => {
   it('is the site root for /', () => {
@@ -65,11 +65,7 @@ describe('seoMeta', () => {
   })
 })
 
-describe('tune pages', () => {
-  it("live at /tunes/ and the chart's name", () => {
-    expect(tunePath('blue-trane')).toBe('/tunes/blue-trane')
-  })
-
+describe('song pages', () => {
   it('are titled by the tune and its composer, with no parentheses without one', () => {
     expect(tuneTitle({ title: 'Blue Trane', composer: 'John Coltrane' })).toBe('Blue Trane (John Coltrane): changes and chord scales')
     expect(tuneTitle({ title: 'Bb Blues', composer: '' })).toBe('Bb Blues: changes and chord scales')

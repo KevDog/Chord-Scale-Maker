@@ -16,10 +16,3 @@ test('unknown addresses get a themed not-found page under the same CSP', async (
   await page.getByRole('button', { name: 'Go to the chart library' }).click()
   await expect(page.getByRole('heading', { name: 'Chart library' })).toBeVisible()
 })
-
-test('an unknown tune gets a 404 and the site’s not-found page', async ({ page }) => {
-  const res = await page.goto('/tunes/no-such-tune')
-  expect(res?.status()).toBe(404)
-  await expect(page.getByRole('heading', { name: 'Page not found' })).toBeVisible()
-  await expect(page.getByText('Error 404')).toBeVisible()
-})

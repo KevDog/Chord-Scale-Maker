@@ -5,7 +5,7 @@
         <!-- an album-cover style tab over the heading -->
         <p class="mb-2 inline-block bg-note-100 px-2 py-0.5 font-display text-xs font-bold tracking-[0.2em] text-note-800 uppercase dark:bg-note-900 dark:text-note-200" aria-hidden="true">Library</p>
         <UiHeading>Chart library</UiHeading>
-        <UiText class="mt-1">Pick a tune to see its changes or open it in the editor{{ myCharts ? ', or start a new chart' : '' }}. Charts are written in concert pitch.</UiText>
+        <UiText class="mt-1">Pick a tune to open its practice sheets{{ myCharts ? ', or start a new chart' : '' }}. Charts are written in concert pitch.</UiText>
       </div>
       <div class="flex flex-wrap gap-3">
         <UiButton outline href="/contact">Request a chart</UiButton>
@@ -34,19 +34,15 @@
           <UiTableHeader>Title</UiTableHeader>
           <UiTableHeader>Composer</UiTableHeader>
           <UiTableHeader>Details</UiTableHeader>
-          <UiTableHeader><span class="sr-only">Editor</span></UiTableHeader>
         </UiTableRow>
       </UiTableHead>
       <UiTableBody>
         <UiTableRow v-for="chart in charts" :key="chart.slug">
           <UiTableCell class="font-medium">
-            <UiLink :href="tunePath(chart.slug)" class="text-note-800 hover:underline dark:text-note-300">{{ chart.title }}</UiLink>
+            <UiLink :href="songPath(chart.slug)" class="text-note-800 hover:underline dark:text-note-300">{{ chart.title }}</UiLink>
           </UiTableCell>
           <UiTableCell class="text-zinc-500 dark:text-zinc-400">{{ chart.composer }}</UiTableCell>
           <UiTableCell class="text-zinc-500 dark:text-zinc-400">{{ chart.subtitle }}</UiTableCell>
-          <UiTableCell class="text-right">
-            <UiLink :href="songPath(chart.slug)" :aria-label="`Open ${chart.title} in the editor`" class="text-sm text-note-800 hover:underline dark:text-note-300">Open</UiLink>
-          </UiTableCell>
         </UiTableRow>
       </UiTableBody>
     </UiTable>
@@ -63,7 +59,7 @@
 </template>
 
 <script setup lang="ts">
-import { PAGE_HEAD, seoMeta, songPath, tunePath } from '~/utils/site'
+import { PAGE_HEAD, seoMeta, songPath } from '~/utils/site'
 import { jsonLd, webAppLd, websiteLd } from '~/utils/structuredData'
 import { FolderOpenIcon, MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/16/solid'
 import { MusicalNoteIcon } from '@heroicons/vue/24/outline'

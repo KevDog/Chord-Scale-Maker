@@ -56,15 +56,12 @@ export const seoMeta = (head: PageHead) => ({
   ...(head.robots ? { robots: head.robots } : {}),
 })
 
-/** a chart's tune page: its file name (round-midnight.txt -> /tunes/round-midnight) */
-export const tunePath = (slug: string): string => `/tunes/${slug}`
-
 /** a library chart's practice sheets (round-midnight.txt -> /song/round-midnight) */
 export const songPath = (slug: string): string => `/song/${slug}`
 
 /** a chart's name from an address; old addresses and bookmarks used underscores (round_midnight) */
 export const chartSlug = (name: string): string => name.replaceAll('_', '-')
 
-/** a tune page's title, without the site name (the template adds it) */
+/** a song page's title, without the site name (the template adds it) */
 export const tuneTitle = (t: Readonly<{ title: string; composer: string }>): string =>
   `${t.title}${t.composer ? ` (${t.composer})` : ''}: changes and chord scales`

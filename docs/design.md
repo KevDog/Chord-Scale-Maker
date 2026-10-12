@@ -48,7 +48,7 @@ engine/                   # @chord-scale-maker/engine (superpowers/specs/2026-10
     guideToneTimeline.ts  #   when each chord starts and how long it lasts, in the chart's metre
     arpeggios.ts          # 7th chord arpeggios for the Changes sheet (arpeggioVoices)
     voiceLeading.ts       #   RANGES (the clefs' default ranges), and voiceLead (Viterbi over pairs), kept only to compare
-    tune.ts               # tuneSummary, tuneDescription (a tune page's text), tuneGaps/tuneAdvice (§7b)
+    tune.ts               # tuneSummary, tuneDescription (a song page's text), tuneGaps/tuneAdvice (§7b)
     util.ts               # orNull, chunk
     limits.ts             # input caps
     index.ts
@@ -58,8 +58,7 @@ docs/                     # this file, requirements, phase plans (docs/README.md
 web/                      # Nuxt app (Vercel root directory); imports @chord-scale-maker/engine
   app/
     pages/index.vue       # library + title/composer search
-    pages/tunes/[slug].vue  # a library chart's tune page (/tunes/<name>, §7b)
-    pages/song/[[slug]].vue  # the editor: /song/<name> (old ?chart=<name> moves there); with myCharts also ?mine=<id>, ?new=1 and share links (#s=…)
+    pages/song/[[slug]].vue  # one URL per tune: /song/<name> is the prerendered, indexable page and the editor (§7b; old ?chart=<name> moves there); with myCharts also ?mine=<id>, ?new=1 and share links (#s=…)
     pages/help.vue        # how it all works, in the owner's voice: sheets, controls, practice, editing, printing
     pages/about.vue, contact.vue, privacy.vue  # About (Jazz Lab thanks, the video, credits), the form, privacy
     pages/ui.vue          # dev-only showcase of the Catalyst components (removed from production builds)
@@ -728,39 +727,43 @@ its reasons into a chart as comments.
 ## 7b. Search and discoverability ([plan](superpowers/plans/2026-10-12-seo-discoverability.md))
 
 - **Chart file names** match `[a-z0-9]+(-[a-z0-9]+)*.txt` (`web/test/library.test.ts`); the name is the address.
-- **Tune pages:** every library chart has one at `/tunes/<name>` (`pages/tunes/[slug].vue`; `<name>` is the chart's file
-  name: lowercase, hyphens, which search engines read as word breaks). It shows the heading fields, `aka:` titles, the
-  source, and the changes as a table (section, bar, chord, function, scale) in concert pitch, with a button to the
-  practice sheets (`/song/<name>`, `songPath`). The library links each title to its page.
-  - **Text:** `tuneSummary` (engine `tune.ts`) gives the heading and one row per chord as the Changes sheet draws it;
+- **One URL per tune:** every library chart lives at `/song/<name>` (`pages/song/[[slug]].vue`; `<name>` is the chart's
+  file name: lowercase, hyphens, which search engines read as word breaks). It is prerendered with the head, the
+  JSON-LD and a fallback (`<h1>` title, composer, "Loading the practice sheets…") that the sheets replace once the
+  script runs; there is no separate tune page. The library links each title to `songPath(slug)`. `/tunes/**` is
+  a 301 to `/song/**` (`routeRules` in `nuxt.config.ts`), for old links and search results.
+  - **Text:** `tuneSummary` (engine `tune.ts`) gives the heading fields (title, subtitle, composer, aka, kind, key, style, form);
     `tuneDescription` is the meta description, one sentence of at most 160 characters, dropping clauses to fit.
-    `tuneTitle` (`utils/site.ts`) is the title: "Blue Trane (John Coltrane): changes and chord scales".
-  - **The gate:** `tuneGaps` lists what a library chart's page lacks (`title:`, `key:`, `style:`, `form:`, and
+    `tuneTitle` (`utils/site.ts`) is the title: "Blue Trane (John Coltrane): changes and chord scales". The head
+    comes from `songHead` (`utils/songHead.ts`).
+  - **The gate:** `tuneGaps` lists what a library chart's song page lacks (`title:`, `key:`, `style:`, `form:`, and
     `composer:` unless `kind:` is `form` or `exercise`); `libraryMeta.test.ts` fails on any. `tuneAdvice` (no
     `source:`, no `aka:`) is only reported, by `npm run analyse`.
-  - An unknown name is a 404 (`findChart` in `utils/library.ts`).
+  - An unknown name (`findChart` in `utils/library.ts`) goes to the library.
 - **Head tags** (`utils/site.ts`):
   - `PAGE_HEAD` holds each fixed page's title and description; `seoMeta` turns one into `useSeoMeta` input, the
     link preview's title carrying the site name as the browser's does (`pageTitle`).
   - **Canonical** (`app.vue`, every page): `canonicalUrl(route.path)`, the production origin and the path alone,
     with no query or fragment (a share link's chart never leaks) and no trailing slash but the root's. `og:url` is
     the same.
-  - **`/song`** (the editor) is `noindex`; its canonical is its own path (`/song/<name>` for a library chart, `/song` otherwise), never a query or share link. Every library chart's `/song/<name>` is prerendered, never in the sitemap.
+  - **`/song/<name>`** for a library chart is indexable, with its own title, description and canonical (never a query
+    or share link). **`/song`** itself, `?new=1`, and a chart that is not a library chart (`?mine=`, a share link)
+    are `noindex`.
 - **Structured data** (`utils/structuredData.ts`): JSON-LD for the site (`WebSite`, `WebApplication`) and each tune
   (a `MusicComposition`, or a `CreativeWork` for a form or an exercise, and a breadcrumb). It's a `<script type="application/ld+json">`, a data block the browser
   never runs, so the CSP doesn't apply and `web/build/csp.ts` doesn't hash it. `jsonLd()` escapes `<`, so chart
   text can't close the tag.
 - **Sitemap and robots:**
-  - `SITEMAP_PATHS` in `nuxt.config.ts`: the fixed pages and a tune page for each file in the engine's `charts/`
-    (`readdirSync`, `tunePathsOf`; the config can't load the `#charts` glob), never `/song` or `/ui`. The same list
+  - `SITEMAP_PATHS` in `nuxt.config.ts`: the fixed pages and a song page (`songPath`) for each file in the engine's
+    `charts/` (`readdirSync`; the config can't load the `#charts` glob), never `/song` or `/ui`. The same list
     is prerendered, and reaches the route as the `#sitemap-paths` virtual module.
   - `server/routes/sitemap.xml.ts` (`sitemapXml`, `utils/sitemap.ts`) is prerendered to a static file: each
     canonical URL once, no `lastmod` (Vercel's shallow clone has no history).
   - `public/robots.txt` allows everything and names the sitemap.
 - **Privacy:** no third-party origins for any of it: no search-console tags, tracking pixels or social widgets. The
   link preview image is our own (`og-image.png`).
-- **Tests:** `web/e2e/seo.spec.ts` (tune pages, canonicals, JSON-LD, the sitemap against `charts/`),
-  `not-found.spec.ts` (an unknown tune), `library.spec.ts` (the editor's `noindex` and canonical).
+- **Tests:** `web/e2e/seo.spec.ts` (song pages, canonicals, JSON-LD, the `/tunes` 301, the sitemap against `charts/`),
+  `library.spec.ts` (a song's canonical, the title link, an unknown song going to the library).
 
 ## 8. State
 

@@ -9,16 +9,16 @@ import { addCspMeta } from './build/csp'
 import { quotesPlugin } from './build/quotes'
 import { SECURITY_HEADERS } from './build/headers'
 import { buildVersion } from './build/version'
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, songPath, tunePath } from './app/utils/site'
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, songPath } from './app/utils/site'
 import { chartSlugsOf, sitemapPaths } from './app/utils/sitemap'
 
 /** the engine package's folder (engine/ in the workspace): its charts/ is the library */
 const ENGINE_DIR = dirname(createRequire(import.meta.url).resolve('@chord-scale-maker/engine/package.json'))
 
-/** the pages search engines should find (server/routes/sitemap.xml.ts): the site's, then every library chart's tune page */
+/** the pages search engines should find (server/routes/sitemap.xml.ts): the site's, then every library song */
 // (the library's charts, by file name: the config can't load the #charts glob)
 const CHART_SLUGS = chartSlugsOf(readdirSync(join(ENGINE_DIR, 'charts')))
-const SITEMAP_PATHS = sitemapPaths(CHART_SLUGS.map(tunePath))
+const SITEMAP_PATHS = sitemapPaths(CHART_SLUGS.map(songPath))
 
 /** dev: the engine's charts/ and chord_scales.json sit outside Vite's root, so it doesn't watch them by itself
  *  (quotes.json is watched by its own plugin) */
@@ -97,11 +97,15 @@ export default defineNuxtConfig({
       if (process.env.NODE_ENV === 'production') pages.splice(0, pages.length, ...pages.filter((p) => p.path !== '/ui'))
     },
   },
-  routeRules: { '/**': { headers: SECURITY_HEADERS }, '/_nuxt/**': { headers: SECURITY_HEADERS } },
+  routeRules: {
+    '/**': { headers: SECURITY_HEADERS },
+    '/_nuxt/**': { headers: SECURITY_HEADERS },
+    '/tunes/**': { redirect: { to: '/song/**', statusCode: 301 } },
+  },
   nitro: {
     // every page is prerendered and served as a static file; only /api/contact (and unknown URLs) run on the server
-    // + each library chart's practice sheets (noindex: never in the sitemap)
-    prerender: { routes: [...SITEMAP_PATHS, '/song', ...CHART_SLUGS.map(songPath), '/sitemap.xml'] },
+    // the library songs are in the sitemap
+    prerender: { routes: [...SITEMAP_PATHS, '/song', '/sitemap.xml'] },
     virtual: { '#sitemap-paths': `export default ${JSON.stringify(SITEMAP_PATHS)}` },
     hooks: {
       // hash each page's inline scripts into a CSP <meta> (build/csp.ts)
