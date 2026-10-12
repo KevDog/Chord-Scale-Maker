@@ -17,9 +17,9 @@ README.md for the chart format. The original Python/LilyPond CLI was retired aft
   over a wide input set (`engine/src/__tests__/goldenFixture.ts`); after an intended change to the engine,
   `chord_scales.json` or `charts/`, run `make golden` and review the fixture's diff. The golden test fails until then.
 - App code is in `web/app/`, its unit tests in `web/test/`, browser tests in `web/e2e/`. Pages must run under the
-  hashed CSP (`web/build/csp.ts`): no inline `<script>` of our own, no `eval`, no third-party origins (one
+  hashed CSP (`web/build/csp.ts`): no inline executable `<script>` of our own (JSON-LD data blocks are fine), no `eval`, no third-party origins (one
   exception: the About video's frame from `youtube-nocookie.com`). Pages are prerendered; the only server code is
-  `web/server/` (the contact form). Keep `engine/` free of Vue/DOM imports (its lint rule bars Vue, VexFlow and app imports; its tsconfig has no DOM); put view logic that can be pure in
+  `web/server/` (the contact form, and the sitemap, prerendered). Keep `engine/` free of Vue/DOM imports (its lint rule bars Vue, VexFlow and app imports; its tsconfig has no DOM); put view logic that can be pure in
   the engine (`sheet.ts`, `edit.ts`).
 - Runtime `dependencies` are only what ships to browsers (`vue`, `vexflow`, `@headlessui/vue`, `@heroicons/vue`,
   `@fontsource-variable/jost`, and the workspace's own `@chord-scale-maker/engine`, which has no dependencies);
