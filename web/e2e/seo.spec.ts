@@ -1,7 +1,7 @@
-import { readdirSync, readFileSync } from 'node:fs'
+import { readdirSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { pathToFileURL } from 'node:url'
-import { SITE_URL, tunePath } from '../app/utils/site'
+import { SITE_URL, songPath } from '../app/utils/site'
 import { expect, test } from './fixtures'
 
 // the engine can't be imported here (its JSON import needs a bundler): read its charts/ through the package
@@ -10,34 +10,42 @@ const SLUGS = readdirSync(CHARTS)
   .filter((f) => f.endsWith('.txt') && !/ \d+\.txt$/.test(f)) // not an iCloud sync copy (isSyncCopy)
   .map((f) => f.replace(/\.txt$/, ''))
 
-/** a chart's chords as written, in order (Blue Trane has no repeats, so as drawn too) */
-const chordsOf = (slug: string): string[] =>
-  readFileSync(new URL(`${slug}.txt`, CHARTS), 'utf8')
-    .split('\n')
-    .map((l) => l.replace(/(^|\s)#(\s.*)?$/, '').split('|').map((c) => c.trim()))
-    .filter((cells) => cells.length >= 3 && cells[2])
-    .map((cells) => cells[2] as string)
-
 const attr = (html: string, tag: RegExp, name: string): string | undefined => html.match(tag)?.[0].match(new RegExp(`${name}="([^"]*)"`))?.[1]
 
 test.describe('without JavaScript', () => {
   test.use({ javaScriptEnabled: false })
 
-  test('a tune page is all there in its HTML: heading, composer, every chord and the editor link', async ({ page }) => {
-    await page.goto('/tunes/blue-trane')
+  test('a song is all there in its HTML: heading, composer, structured data, canonical, indexable', async ({ page }) => {
+    await page.goto('/song/blue-trane')
     await expect(page.getByRole('heading', { name: 'Blue Trane', level: 1 })).toBeVisible()
     await expect(page.getByText('John Coltrane', { exact: true })).toBeVisible()
-    const chords = await page.locator('tbody tr td:nth-child(3)').allTextContents()
-    expect(chords.map((c) => c.trim())).toEqual(chordsOf('blue-trane'))
-    await expect(page.getByRole('link', { name: 'Open practice sheets' })).toHaveAttribute('href', '/song/blue-trane')
+    await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', `${SITE_URL}/song/blue-trane`)
+    await expect(page.locator('head meta[name="robots"]')).toHaveCount(0)
+    const ld = JSON.parse((await page.locator('script[type="application/ld+json"]').last().textContent()) ?? '[]') as { '@type': string }[]
+    expect(ld.map((d) => d['@type'])).toContain('MusicComposition')
   })
+})
+
+test('/song itself, a new chart and a share link stay out of search; a query keeps the clean canonical', async ({ page }) => {
+  for (const url of ['/song?new=1', '/song']) {
+    await page.goto(url)
+    await expect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'noindex')
+  }
+  await page.goto('/song/autumn-leaves?mine=x')
+  await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', `${SITE_URL}/song/autumn-leaves`)
+})
+
+test('old tune pages move to the song', async ({ request }) => {
+  const res = await request.get('/tunes/autumn-leaves', { maxRedirects: 0 })
+  expect(res.status()).toBe(301)
+  expect(res.headers().location).toMatch(/\/song\/autumn-leaves$/)
 })
 
 test('every sitemap URL is a page: 200, its own canonical, indexable, its own title and a description', async ({ request }) => {
   const sitemap = await request.get('/sitemap.xml')
   expect(sitemap.status()).toBe(200)
   const locs = Array.from((await sitemap.text()).matchAll(/<loc>([^<]+)<\/loc>/g), (m) => m[1] as string)
-  for (const slug of SLUGS) expect(locs, slug).toContain(`${SITE_URL}${tunePath(slug)}`)
+  for (const slug of SLUGS) expect(locs, slug).toContain(`${SITE_URL}${songPath(slug)}`)
 
   const titles = new Map<string, string>()
   for (const loc of locs) {
@@ -61,7 +69,7 @@ test('pages load nothing from another origin', async ({ page, baseURL }) => {
   page.on('request', (r) => {
     if (!r.url().startsWith('data:') && new URL(r.url()).origin !== origin) elsewhere.push(r.url())
   })
-  for (const path of ['/', '/tunes/blue-trane', '/help']) {
+  for (const path of ['/', '/song/blue-trane', '/help']) {
     await page.goto(path)
     await page.waitForLoadState('networkidle')
   }

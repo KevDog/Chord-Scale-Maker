@@ -6,27 +6,27 @@ test('searches the library and opens a chart', async ({ page }) => {
   await page.getByPlaceholder('Search by title').fill('zzz')
   await expect(page.getByText('No charts match')).toBeVisible()
   await page.getByPlaceholder('Search by title').fill('autumn')
-  await page.getByRole('link', { name: 'Open Autumn Leaves in the editor' }).click()
+  await page.getByRole('link', { name: 'Autumn Leaves', exact: true }).click()
   await expect(page).toHaveURL(/\/song\/autumn-leaves$/)
   await expect(staves(page)).toHaveCount(6) // it opens on the Changes: 24 bars, four a line
 })
 
-test('a library title leads to its tune page, and on to the editor', async ({ page }) => {
+test('a library title leads straight to its song, and links there', async ({ page }) => {
   await page.goto('/')
   await page.getByPlaceholder('Search by title').fill('green dolphin')
-  await page.getByRole('link', { name: 'On Green Dolphin Street', exact: true }).click()
-  await expect(page).toHaveURL(/\/tunes\/on-green-dolphin-street$/)
-  await expect(page.getByRole('heading', { name: 'On Green Dolphin Street' })).toBeVisible()
-  await page.getByRole('link', { name: 'Open practice sheets' }).click()
+  const title = page.getByRole('link', { name: 'On Green Dolphin Street', exact: true })
+  await expect(title).toHaveAttribute('href', '/song/on-green-dolphin-street')
+  await title.click()
   await expect(page).toHaveURL(/\/song\/on-green-dolphin-street$/)
+  await expect(staves(page).first()).toBeVisible()
 })
 
-test('finds a tune by another title, and its page names that title', async ({ page }) => {
+test('finds a tune by another title, and its song names that title', async ({ page }) => {
   await page.goto('/')
   await page.getByPlaceholder('Search by title').fill('blue train')
   await page.getByRole('link', { name: 'Blue Trane', exact: true }).click()
-  await expect(page).toHaveURL(/\/tunes\/blue-trane$/)
-  await expect(page.getByText('Also known as Blue Train')).toBeVisible()
+  await expect(page).toHaveURL(/\/song\/blue-trane$/)
+  await expect(staves(page).first()).toBeVisible()
   await expect(page.locator('meta[name=description]')).toHaveAttribute('content', /Blue Trane \(also Blue Train\)/)
 })
 
@@ -34,7 +34,7 @@ test('finds a tune by its composer, and the sheet carries the composer and the t
   await page.goto('/')
   await page.getByPlaceholder('Search by title or composer').fill('kaper')
   await expect(page.getByRole('link', { name: 'Invitation', exact: true })).toBeVisible()
-  await page.getByRole('link', { name: 'Open On Green Dolphin Street in the editor' }).click()
+  await page.getByRole('link', { name: 'On Green Dolphin Street', exact: true }).click()
   await expect(page.getByText('Latin / swing · C · ABCD, 32 bars — Bronisław Kaper')).toBeVisible() // under the editor heading
   const header = page.locator('section header').first()
   await expect(header).toContainText('Latin / swing · C · ABCD, 32 bars')
@@ -65,7 +65,7 @@ test('a quote in the header, kept while navigating', async ({ page }) => {
   await expect(quote).toBeVisible()
   await expect(quote.locator('figcaption')).toHaveText(/^— [^·]+$/) // the author only
   const text = await quote.textContent()
-  await page.getByRole('link', { name: 'Open Autumn Leaves in the editor' }).click()
+  await page.getByRole('link', { name: 'Autumn Leaves', exact: true }).click()
   await expect(page).toHaveURL(/song/)
   await expect(page.locator('nav figure')).toHaveText(text ?? '')
 })
@@ -106,10 +106,10 @@ test('pages carry a link preview: Open Graph tags and a 1200×630 image', async 
   expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1200, 630]) // the PNG header's width and height
 })
 
-test('the editor is noindex, its canonical never carries a share link, and its tab names the chart', async ({ page }) => {
+test('a song is indexable, its canonical never carries a share link, and its tab names the chart', async ({ page }) => {
   await page.goto('/song/autumn-leaves')
   await expect(page).toHaveTitle('Autumn Leaves · Chord Scale Maker')
-  await expect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'noindex')
+  await expect(page.locator('head meta[name="robots"]')).toHaveCount(0)
   await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', 'https://www.chordscalemaker.com/song/autumn-leaves')
 })
 
@@ -118,7 +118,6 @@ test('a library chart’s practice sheets live at /song/<name>', async ({ page }
   await expect(page).toHaveTitle('Autumn Leaves · Chord Scale Maker')
   await expect(staves(page)).toHaveCount(6)
   await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', 'https://www.chordscalemaker.com/song/autumn-leaves')
-  await expect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'noindex')
 })
 
 test('old ?chart= links and underscore names move to /song/<name>, without a history entry', async ({ page }) => {
