@@ -108,4 +108,12 @@ describe('ChangesSheet', () => {
     const reading = await mountSheet()
     expect(reading.findAll('button').find((b) => b.text().includes('Repeat a section'))).toBeUndefined()
   })
+
+  it('names + Section for what it does: Add a section (#143)', async () => {
+    const w = await mountSheet({ editing: null })
+    const add = w.find('button[aria-label="Add a section"]')
+    expect(add.text()).toBe('Section')
+    await add.trigger('click')
+    expect(w.emitted('addSection')).toHaveLength(1)
+  })
 })

@@ -24,6 +24,15 @@ async function type(w: W, value: string) {
 }
 const lastDoc = (w: W): ChartDoc | undefined => (w.emitted('update:doc')?.at(-1) as [ChartDoc] | undefined)?.[0]
 
+/** a refusal is said, and the field is marked invalid and described by why (#143) */
+async function expectRefusal(w: W, why: string) {
+  expect((w.emitted('said')?.at(-1) as [string] | undefined)?.[0]).toContain(why)
+  const input = field(w)
+  expect(input.attributes('aria-invalid')).toBe('true')
+  const described = input.attributes('aria-describedby')
+  expect(described && document.getElementById(described)?.textContent).toContain(why)
+}
+
 describe('SheetChord', () => {
   beforeEach(() => (document.body.innerHTML = ''))
 
@@ -33,6 +42,15 @@ describe('SheetChord', () => {
     expect(b.attributes('aria-label')).toBe('Edit G7, A bar 2')
     await b.trigger('click')
     expect(w.emitted('edit')?.[0]).toEqual([{ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } }])
+  })
+
+  it('prints the chord as it is while its field is open: the field is screen-only (#143)', async () => {
+    const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
+    await type(w, 'Db7')
+    expect(field(w).element.closest('.print\\:hidden')).not.toBeNull()
+    const printed = w.find('[data-print]')
+    expect(printed.text()).toBe('G7')
+    expect(printed.element.closest('.print\\:hidden')).toBeNull()
   })
 
   it('opens only where the edit says the chord is drawn: a written-out repeat draws the same line twice (review: Critical 1)', async () => {
@@ -121,6 +139,15 @@ describe('SheetChord', () => {
     }
   })
 
+  it('a chord taken out says where it was, as its line no longer names it (#143)', async () => {
+    const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
+    await type(w, '')
+    await field(w).trigger('keydown', { key: 'Tab' })
+    await settle()
+    expect(rows(lastDoc(w))).toEqual(['A | 1 | Dm7', 'A | 3 | CMaj7'])
+    expect(w.emitted('done')?.[0]).toEqual(['next', { section: 'A', bar: 2, chord: 0 }])
+  })
+
   it('→ at the end of the text, or ← at its start, commits and asks for the next or previous chord', async () => {
     for (const [key, at, then] of [['ArrowRight', 3, 'nextChord'], ['ArrowLeft', 0, 'prevChord']] as const) {
       document.body.innerHTML = ''
@@ -181,6 +208,7 @@ describe('SheetChord', () => {
     expect(w.emitted('update:doc')).toBeUndefined()
     expect(w.emitted('done')).toBeUndefined()
     expect(w.text()).toContain('can’t go in a chart')
+    await expectRefusal(w, '“G7 | x” can’t go in a chart')
   })
 
   it('refuses taking out a section’s first chord', async () => {
@@ -190,6 +218,7 @@ describe('SheetChord', () => {
     await settle()
     expect(w.emitted('update:doc')).toBeUndefined()
     expect(w.text()).toContain('first bar needs a chord')
+    await expectRefusal(w, 'A section’s first bar needs a chord.')
   })
 
   it('% is the bar before', async () => {

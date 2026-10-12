@@ -125,6 +125,19 @@ describe('ChangesSystem as the editor', () => {
     expect(reading.findAllComponents({ name: 'ChangesNote' })).toHaveLength(2)
   })
 
+  it('gives a chord with no numeral or scale a blank picker in each row, but not the new chord slot (#143)', async () => {
+    const pickers = (w: Awaited<ReturnType<typeof mountSuspended>>) => w.findAllComponents({ name: 'SheetLabelPicker' })
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: null } })
+    expect(pickers(w).map((c) => [c.props('kind'), c.props('chord'), c.props('blank')])).toEqual([
+      ['numeral', 'Dm7', true],
+      ['numeral', 'G7', true],
+      ['scale', 'Dm7', true],
+      ['scale', 'G7', true],
+    ])
+    const adding = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: { kind: 'slot', section: 'A', bar: '1' } } })
+    expect(pickers(adding)).toHaveLength(4)
+  })
+
   it('shows the bar toolbar for the bar under the pointer, named for the bar, and relays its changes', async () => {
     const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: null } })
     expect(w.find('[role=toolbar]').exists()).toBe(false)
@@ -163,6 +176,15 @@ describe('ChangesSystem as the editor', () => {
     expect(pill.element.closest('[data-slot=after]')).not.toBeNull() // under the line, not over its last bar
     const reading = await mountSuspended(ChangesSystem, { props: { ...base, line: { ...line(), sectionEnd: true } } })
     expect(reading.find('button[aria-label="Add a bar at the end of A"]').exists()).toBe(false)
+  })
+
+  it('offers no ghost bar at the end of a written-out copy: its bars are the section it repeats (#143)', async () => {
+    const copy = (): ChangesLine => ({ bars: line().bars.map((b) => ({ ...b, repeatOf: 'B' })), sectionEnd: true })
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: copy(), editing: null } })
+    expect(w.find('button[aria-label^="Add a bar at the end of"]').exists()).toBe(false)
+    const one = bar([at(chord(0, 'Dm7', ''), 2)], [])
+    const full = await mountSuspended(ChangesSystem, { props: { ...base, line: { bars: [one, one, one, one].map((b) => ({ ...b, repeatOf: 'B' })), sectionEnd: true }, editing: null } })
+    expect(full.find('button[aria-label^="Add a bar at the end of"]').exists()).toBe(false)
   })
 
   it('makes the section’s marker a button while the sheet is the editor, which asks for the rename dialog', async () => {

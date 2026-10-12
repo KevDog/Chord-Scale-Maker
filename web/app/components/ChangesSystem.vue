@@ -41,7 +41,7 @@
             @update:doc="emit('update:doc', $event)"
             @said="emit('said', $event)"
             @preview="emit('preview', $event)"
-            @done="emit('done', $event)"
+            @done="(then, taken) => emit('done', then, taken)"
           />
           <div v-else class="text-base font-semibold print:text-sm/4">
             <!-- the chord as a button while editing below md: it opens the chord editor's bottom sheet (EditorView) -->
@@ -117,7 +117,7 @@
         :title="notesOn && m.reason ? undefined : m.numeral"
       >
         <template v-if="drafted(m)">{{ preview?.readable ? preview.numeral : '' }}</template>
-        <SheetLabelPicker v-else-if="editing !== undefined && doc && m.line >= 0 && m.numeral" :doc="doc" :line="m.line" kind="numeral" :chord="m.text" :fallback="m.fallback" :pinned="false" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 no-underline dark:text-amber-400 print:hidden" aria-hidden="true">⚠</span></SheetLabelPicker>
+        <SheetLabelPicker v-else-if="editing !== undefined && doc && m.line >= 0 && !m.slot" :doc="doc" :line="m.line" kind="numeral" :chord="m.text" :fallback="m.fallback" :pinned="false" :blank="!m.numeral" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 no-underline dark:text-amber-400 print:hidden" aria-hidden="true">⚠</span></SheetLabelPicker>
         <ChangesNote v-else-if="notesOn && m.reason && m.numeral" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row" :problem="m.problem">{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 no-underline dark:text-amber-400 print:hidden" aria-hidden="true">⚠</span></ChangesNote>
         <template v-else>{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 dark:text-amber-400 print:hidden" :title="m.problem">⚠</span></template>
       </span>
@@ -132,7 +132,7 @@
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
         <template v-if="drafted(m)">{{ preview?.readable ? sheetScale(CONCERT, preview.scale) : '' }}</template>
-        <SheetLabelPicker v-else-if="editing !== undefined && doc && m.line >= 0 && m.scale" :doc="doc" :line="m.line" kind="scale" :chord="m.text" :fallback="false" :pinned="notes?.get(m.line)?.source === 'written'" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.scale }}</SheetLabelPicker>
+        <SheetLabelPicker v-else-if="editing !== undefined && doc && m.line >= 0 && !m.slot" :doc="doc" :line="m.line" kind="scale" :chord="m.text" :fallback="false" :blank="!m.scale" :pinned="notes?.get(m.line)?.source === 'written'" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.scale }}</SheetLabelPicker>
         <ChangesNote v-else-if="notesOn && m.reason && m.scale" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row" :problem="m.problem" wrap>{{ m.scale }}</ChangesNote>
         <template v-else>{{ m.scale }}</template>
       </span>
@@ -146,7 +146,7 @@
 </template>
 
 <script setup lang="ts">
-import { barKey, type ChangesLine, type ChartDoc, type ChordPreview, CONCERT, rowNotes, sheetScale } from '@chord-scale-maker/engine'
+import { barKey, type ChangesLine, type ChartDoc, type ChordPreview, CONCERT, type GridPos, rowNotes, sheetScale } from '@chord-scale-maker/engine'
 import { drawChangesLine, type NamedBeat } from '~/utils/changesDrawing'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
@@ -178,7 +178,7 @@ const emit = defineEmits<{
   'update:doc': [doc: ChartDoc]
   said: [text: string]
   preview: [preview: ChordPreview | null]
-  done: [then: SheetDone]
+  done: [then: SheetDone, taken?: GridPos]
   refused: [text: string]
   dialog: [kind: 'split' | 'nav' | 'paste' | 'rename', section: string, bar: number]
   addBar: [section: string]
@@ -243,10 +243,13 @@ const toolbarBar = computed(() => {
 })
 const MARKER = 'rounded-sm border border-zinc-400 px-1 font-semibold text-zinc-700 dark:border-zinc-500 dark:text-zinc-300 print:border-neutral-600 print:text-black'
 const GHOST = 'rounded-md border border-dashed border-zinc-400 text-xs font-semibold text-zinc-500 hover:border-note-500 hover:text-note-700 focus-visible:border-note-500 focus-visible:outline-none dark:border-zinc-500 dark:text-zinc-400 dark:hover:border-note-400 dark:hover:text-note-300 print:hidden'
-/** the ghost bar (a section's last line, the sheet as the editor): the next bar's slot when the line has room, else a pill under the line */
+/**
+ * the ghost bar (a section's last line, the sheet as the editor): the next bar's slot when the line has room, else a pill
+ * under the line; none after a written-out copy, whose bars are the section it repeats
+ */
 const ghost = computed(() => {
   const last = props.line.bars.at(-1)
-  if (!last || !props.line.sectionEnd) return null
+  if (!last || !props.line.sectionEnd || last.repeatOf) return null
   const n = props.line.bars.length
   const full = n >= props.barsPerLine
   const left = ends.value[n - 1] ?? n / props.barsPerLine

@@ -32,7 +32,7 @@
             @update:doc="emit('update:doc', $event)"
             @said="emit('said', $event)"
             @preview="emit('preview', $event)"
-            @done="emit('done', $event)"
+            @done="(then, taken) => emit('done', then, taken)"
             @refused="emit('refused', $event)"
             @dialog="(kind, section, bar) => emit('dialog', kind, section, bar)"
             @add-bar="emit('addBar', $event)"
@@ -44,7 +44,7 @@
     <!-- the sheet as the editor: a new section after the last, or a repeat of one -->
     <div v-if="editing !== undefined" class="flex justify-end gap-2 print:hidden">
       <UiButton outline @click="emit('repeatSection')"><Square2StackIcon data-slot="icon" />Repeat a section…</UiButton>
-      <UiButton outline @click="emit('addSection')"><PlusIcon data-slot="icon" />Section</UiButton>
+      <UiButton outline aria-label="Add a section" @click="emit('addSection')"><PlusIcon data-slot="icon" />Section</UiButton>
     </div>
   </div>
 </template>
@@ -52,7 +52,7 @@
 <script setup lang="ts">
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
-import { breakLines, buildChanges, changesLinesPerPage, type ChartDoc, type ChordPreview, chunk, isArpeggioPattern, pageSubtitle, type Part, type ScaleView, type SheetLine } from '@chord-scale-maker/engine'
+import { breakLines, buildChanges, changesLinesPerPage, type ChartDoc, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type Part, type ScaleView, type SheetLine } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
 const props = defineProps<{
@@ -79,7 +79,7 @@ const emit = defineEmits<{
   'update:doc': [doc: ChartDoc]
   said: [text: string]
   preview: [preview: ChordPreview | null]
-  done: [then: SheetDone]
+  done: [then: SheetDone, taken?: GridPos]
   refused: [text: string]
   dialog: [kind: 'split' | 'nav' | 'paste' | 'rename', section: string, bar: number]
   addBar: [section: string]
