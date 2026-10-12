@@ -110,8 +110,21 @@ export async function writeChart(page: Page, text: string): Promise<void> {
   if (chord) await expect(sheetChord(page, chord, section, Number(bar))).toBeAttached()
 }
 
+/** on a phone (compactRail) the sheet's other controls are in the Controls dialog: open it around these steps */
+export async function inControls(page: Page, steps: () => Promise<void>): Promise<void> {
+  if ((page.viewportSize()?.width ?? 1280) >= 768) return steps()
+  await page.getByRole('button', { name: 'Controls', exact: true }).click()
+  await steps()
+  const dialog = page.getByRole('dialog', { name: 'Controls' })
+  if (await dialog.isVisible()) await dialog.getByRole('button', { name: 'Close', exact: true }).click()
+}
+
 /** choose the Changes sheet's line mode (Off · Guide Tones · 7th Chords), confirmed checked (retried: a click before hydration is lost) */
 export async function showLine(page: Page, name: 'Off' | 'Guide Tones' | '7th Chords'): Promise<void> {
+  await inControls(page, () => pickLine(page, name))
+}
+
+async function pickLine(page: Page, name: 'Off' | 'Guide Tones' | '7th Chords'): Promise<void> {
   const radio = page.getByRole('radio', { name, exact: true })
   await expect(async () => {
     if (!(await radio.isChecked())) await page.locator('label').filter({ has: radio }).click({ timeout: 1000 })
@@ -121,8 +134,10 @@ export async function showLine(page: Page, name: 'Off' | 'Guide Tones' | '7th Ch
 
 /** choose the Changes sheet's guide tone line: Off, or Guide Tones from the 3rd or the 7th */
 export async function showGuides(page: Page, name: 'Off' | 'From 3rd' | 'From 7th'): Promise<void> {
-  await showLine(page, name === 'Off' ? 'Off' : 'Guide Tones')
-  if (name !== 'Off') await pickOption(page, 'Guide tone line', name)
+  await inControls(page, async () => {
+    await pickLine(page, name === 'Off' ? 'Off' : 'Guide Tones')
+    if (name !== 'Off') await pickOption(page, 'Guide tone line', name)
+  })
 }
 
 /** wait until every Changes line has been drawn with its guide tones (each line draws on its own) */
@@ -134,8 +149,10 @@ export async function guidesDrawn(page: Page): Promise<void> {
 
 /** choose 7th Chords with a pattern ("Up · root", "Voice-led", …) */
 export async function showArpeggios(page: Page, pattern: string): Promise<void> {
-  await showLine(page, '7th Chords')
-  await pickOption(page, 'Arpeggio pattern', pattern)
+  await inControls(page, async () => {
+    await pickLine(page, '7th Chords')
+    await pickOption(page, 'Arpeggio pattern', pattern)
+  })
 }
 
 /** wait until every Changes line has been drawn with its arpeggios */
