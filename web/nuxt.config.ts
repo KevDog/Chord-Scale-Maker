@@ -86,6 +86,7 @@ export default defineNuxtConfig({
         changes: true, // the Changes sheet: the chart as a study lead sheet, numerals and scales under the chords (docs/plan-changes.md); on since sign-off
         keySignatures: true, // the clef and key signature once, at the start of each sheet (docs/superpowers/specs/2026-10-10-key-signatures-design.md); on since sign-off
         arpeggios: true, // 7th chord arpeggios: the Changes sheet's 7th Chords line and the Arpeggios sheet (docs/superpowers/specs/2026-10-12-seventh-chord-arpeggios-design.md, 2026-10-12-arpeggios-sheet-design.md); on since sign-off
+        compactRail: false, // phones: the rail holds Work on, Instrument, Controls (a dialog of the rest), Print and More (docs/superpowers/specs/2026-10-12-interface-review-design.md §A)
         functions: true, // author functions, @key areas and live analysis notes (docs/superpowers/specs/2026-10-09-chart-functions-design.md); on since sign-off
       },
     },
