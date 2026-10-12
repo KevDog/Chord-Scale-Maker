@@ -112,6 +112,17 @@ describe('ChangesSystem as the editor', () => {
     expect(w.find('[data-slot=numeral][data-draft]').text()).toBe('')
   })
 
+  it('makes the numeral and scale pickers while the sheet is the editor, notes when it is not', async () => {
+    const withReason = (): ChangesLine => ({ bars: [bar([{ ...at(chord(2, 'G7', ''), 3), numeral: 'V7', scale: 'G Mixolydian', reason: 'the V of C', rule: 'D1' }], [])] })
+    const picking = await mountSuspended(ChangesSystem, { props: { ...base, line: withReason(), editing: null } })
+    expect(picking.findAllComponents({ name: 'SheetLabelPicker' })).toHaveLength(2)
+    expect(picking.findAllComponents({ name: 'ChangesNote' })).toHaveLength(0)
+    expect(picking.findAllComponents({ name: 'SheetLabelPicker' }).map((c) => c.props('kind'))).toEqual(['numeral', 'scale'])
+    const reading = await mountSuspended(ChangesSystem, { props: { ...base, line: withReason() } })
+    expect(reading.findAllComponents({ name: 'SheetLabelPicker' })).toHaveLength(0)
+    expect(reading.findAllComponents({ name: 'ChangesNote' })).toHaveLength(2)
+  })
+
   it('without an editing prop, taps a chord the old way', async () => {
     const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line() } })
     await w.find('button').trigger('click')

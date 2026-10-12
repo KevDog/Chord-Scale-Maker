@@ -1,7 +1,7 @@
 <template>
   <div v-if="row" class="space-y-6">
-    <template v-for="part in parts" :key="part">
-      <section v-if="part === 'scale'" :aria-labelledby="`${id}-scale`" class="space-y-2">
+    <template v-for="piece in parts" :key="piece">
+      <section v-if="piece === 'scale'" :aria-labelledby="`${id}-scale`" class="space-y-2">
         <div class="flex items-center gap-2">
           <UiSubheading :id="`${id}-scale`" :level="3">
             <button v-if="collapsible" type="button" :class="FOLD" :aria-expanded="scaleOpen" :aria-controls="scaleOpen ? `${id}-scale-body` : undefined" @click="scaleOpen = !scaleOpen"><ChevronRightIcon :class="[CHEVRON, scaleOpen && 'rotate-90']" aria-hidden="true" />Scale</button>
@@ -39,7 +39,7 @@
         </div>
       </section>
 
-      <section v-else-if="part === 'function' && functionsOn && fnChoices.length" :aria-labelledby="`${id}-function`" class="space-y-2">
+      <section v-else-if="piece === 'function' && functionsOn && fnChoices.length" :aria-labelledby="`${id}-function`" class="space-y-2">
         <div class="flex items-baseline justify-between gap-2">
           <div class="flex min-w-0 items-baseline gap-2">
             <UiSubheading :id="`${id}-function`" :level="3">
@@ -50,6 +50,7 @@
           </div>
           <NuxtLink v-if="functionOpen" to="/functions#writing" class="text-xs/5 text-zinc-600 underline dark:text-zinc-400">How to write a function</NuxtLink>
         </div>
+        <UiText v-if="functionOpen && fallbackNote" class="text-sm/6! text-amber-800! dark:text-amber-400!">{{ fallbackNote }}</UiText>
         <UiRadioGroup v-if="functionOpen" :id="`${id}-function-body`" :model-value="selectedFunction" aria-label="Function" :class="ROOMY" @update:model-value="(v) => v !== undefined && setFunction(v)">
           <UiRadio v-for="c in fnChoices" :key="c.value" :value="c.value">
             <span class="flex flex-wrap justify-between gap-x-3">
@@ -62,7 +63,7 @@
         <UiErrorMessage v-if="note?.problem">{{ note.problem }}</UiErrorMessage>
       </section>
 
-      <section v-else-if="part === 'why' && functionsOn && note?.note && scaleOpen" :aria-labelledby="`${id}-why`" class="space-y-1">
+      <section v-else-if="piece === 'why' && functionsOn && note?.note && (scaleOpen || part === 'function')" :aria-labelledby="`${id}-why`" class="space-y-1">
         <UiSubheading :id="`${id}-why`" :level="3">Why</UiSubheading>
         <UiText class="text-sm/6!">{{ note.note }}</UiText>
       </section>
@@ -82,8 +83,10 @@ import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
  * bar editor's inspector and the Changes sheet's chord editor. The function comes first, and the first scale is the
  * analysed one: choosing it, or Unpin, blanks the cell; any other scale pins it.
  * `collapsible` (the inspector's): the scale (with its why) and the function each fold away to their choice, remembered.
+ * `part` (the sheet's label pickers): 'function' shows the function list and why; 'scale' the scale list and why.
+ * `fallbackNote`: a line above the function list (the rules could only guess here).
  */
-const props = defineProps<{ doc: ChartDoc; line: number; collapsible?: boolean }>()
+const props = withDefaults(defineProps<{ doc: ChartDoc; line: number; collapsible?: boolean; part?: 'function' | 'scale' | 'all'; fallbackNote?: string }>(), { part: 'all', fallbackNote: '' })
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; said: [text: string] }>()
 
 const id = useId()
@@ -96,7 +99,7 @@ const prefs = props.collapsible ? usePreferences() : null
 const scaleOpen = computed({ get: () => prefs?.inspectorScale.value ?? true, set: (v) => prefs && (prefs.inspectorScale.value = v) })
 const functionOpen = computed({ get: () => prefs?.inspectorFunction.value ?? true, set: (v) => prefs && (prefs.inspectorFunction.value = v) })
 const functionsOn = useFeature('functions')
-const parts = ['function', 'scale', 'why'] as const
+const parts = computed((): readonly ('function' | 'scale' | 'why')[] => (props.part === 'function' ? ['function', 'why'] : props.part === 'scale' ? ['scale', 'why'] : ['function', 'scale', 'why']))
 const row = computed((): RowLine | null => {
   const l = props.doc.lines[props.line]
   return l?.kind === 'row' ? l : null

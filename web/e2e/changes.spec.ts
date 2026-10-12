@@ -105,12 +105,20 @@ test('a function from the inspector: the Changes sheet shows it, its note opens 
   const sheet = sheetOf(page)
   const numeral = sheet.getByRole('button', { name: 'V7/V' })
   await numeral.click()
+  const picker = page.getByRole('dialog', { name: 'Function: D7' }) // while editing, the numeral is the function picker, with the why under it
+  await expect(picker.getByRole('radiogroup', { name: 'Function' }).getByRole('radio', { name: /^V7\/V \(to G\)/ })).toBeChecked()
+  await expect(picker).toContainText('natural tensions')
+  await page.keyboard.press('Escape')
+  await expect(picker).toBeHidden()
+  await page.getByRole('button', { name: 'Done', exact: true }).click() // not editing: the numeral opens why
+  await numeral.click()
   const note = page.getByRole('dialog', { name: 'Why: D7' })
   await expect(note).toContainText('* V7/V in C: natural tensions')
   await expect(note).toContainText('in C major')
   await expect(note.getByRole('link', { name: 'D4' })).toHaveAttribute('href', '/functions#rule-D4')
   await page.keyboard.press('Escape')
   await expect(note).toBeHidden()
+  await openEditor(page)
   await page.getByLabel('Chart text').fill('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7 | | Db: V7/ii\nA | 3 | Dm7\nA | 4 | G7\n')
   await barCell(page, 'A', 2).click()
   await expect(page.getByText('V7/ii in Db is on Bb, not D7', { exact: true })).toBeVisible() // the inspector says what's wrong with the function

@@ -57,6 +57,7 @@ test('a bad key in the link falls back to C major', async ({ page }) => {
 test('a rule link from the Changes sheet lands on its row', async ({ page }) => {
   await writeChart(page, CHART)
   await saved(page)
+  await page.getByRole('button', { name: 'Done', exact: true }).click() // while editing, the numeral opens the function list instead
   await page.getByRole('button', { name: 'ii7' }).first().click()
   await page.getByRole('dialog', { name: 'Why: Dm7' }).getByRole('link', { name: 'm4' }).click()
   await expect(page).toHaveURL(/\/functions#rule-m4$/)
@@ -67,6 +68,7 @@ test('Report issue copies the report and offers the contact form and GitHub', as
   await context.grantPermissions(['clipboard-read', 'clipboard-write'])
   await writeChart(page, CHART)
   await saved(page)
+  await page.getByRole('button', { name: 'Done', exact: true }).click() // while editing, the numeral opens the function list instead
   await page.getByRole('button', { name: 'ii7' }).first().click()
   const note = page.getByRole('dialog', { name: 'Why: Dm7' })
   const copy = note.getByRole('button', { name: 'Report issue' })
