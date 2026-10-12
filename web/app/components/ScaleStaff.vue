@@ -1,9 +1,10 @@
 <template>
   <div class="grid grid-cols-[8rem_1fr] items-center gap-3 break-inside-avoid print:grid-cols-[8.5rem_1fr]">
     <div class="text-right leading-tight">
-      <div class="text-xs text-zinc-500 dark:text-zinc-400 print:text-neutral-600">{{ staff.section }} · Bar {{ staff.bar }}</div>
-      <div class="text-lg font-semibold"><ChordSymbol v-if="staff.chord" :tokens="staff.chord" /><span v-else>—</span></div>
-      <div v-if="staff.scale" class="whitespace-nowrap text-sm italic"><NoteName :note="staff.scale.root" /> {{ staff.scale.name }}</div>
+      <div v-if="staff.scale" class="text-base font-semibold"><NoteName :note="staff.scale.root" /> {{ staff.scale.name }}</div>
+      <div class="text-sm text-zinc-500 dark:text-zinc-400 print:text-neutral-600">
+        <template v-for="(tokens, i) in staff.chords" :key="i"><template v-if="i"><span class="sr-only">,</span><span aria-hidden="true"> · </span></template><ChordSymbol v-if="tokens" :tokens="tokens" /><span v-else>—</span></template>
+      </div>
     </div>
     <div v-if="staff.error || drawError" class="rounded border border-dashed border-amber-500 px-3 py-6 text-sm text-amber-700 dark:text-amber-400">
       {{ staff.error || drawError }}

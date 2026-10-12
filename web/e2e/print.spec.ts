@@ -2,7 +2,7 @@ import { arpeggiosDrawn, chooseInstrument, chooseSheet, drawn, expect, guidesDra
 
 const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length
 
-// 39 rows at 12 staves per letter page, even when every staff has ledger lines (trombone from B)
+// 14 lines at 12 staves per letter page, even when every staff has ledger lines (trombone from B)
 for (const [instrument, start] of [
   ['Concert', null],
   ['Concert', 'C'],
@@ -13,12 +13,24 @@ for (const [instrument, start] of [
     await chooseSheet(page, 'Scales') // a chart opens on the Changes
     await chooseInstrument(page, instrument)
     await pickOption(page, 'Where each scale starts', start ? `From ${start}` : 'From root')
-    await expect(staves(page)).toHaveCount(39)
+    await expect(staves(page)).toHaveCount(14)
     await page.emulateMedia({ media: 'print' })
     await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden() // editor hidden in print
-    expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(4)
+    expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(2)
   })
 }
+
+// a line that covers several chords (wish-for-now's F Bebop Dorian: four) has the tallest label, yet still prints 12 staves a page
+test('prints 12 staves per letter page when a line names several chords (wish-for-now)', async ({ page }) => {
+  await page.goto('/song/wish-for-now')
+  await chooseSheet(page, 'Scales')
+  await expect(page.locator('.text-right').filter({ hasText: /(·[^·]*){3}/ }).first()).toBeVisible() // a line of four chords
+  const lines = await staves(page).count()
+  expect(lines).toBeGreaterThan(12)
+  await page.emulateMedia({ media: 'print' })
+  await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+  expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(Math.ceil(lines / 12))
+})
 
 // eight lines a page with guide tones off: a 32-bar AABA written out (Satin Doll) on one; Tunisia's nine lines (with the tag) on two
 for (const [chart, pages] of [

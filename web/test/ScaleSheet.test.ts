@@ -3,7 +3,8 @@ import { describe, expect, it } from 'vitest'
 import { chartKeyOf, CONCERT, parseChart, type Resolved, type Row } from '@chord-scale-maker/engine'
 import ScaleSheet from '~/components/ScaleSheet.vue'
 
-const rows: Row[] = Array.from({ length: 13 }, (_, i) => ({ section: 'A', bar: String(i + 1), chord: 'Cm7', scale: '' }))
+const ROOTS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B']
+const rows: Row[] = Array.from({ length: 13 }, (_, i) => ({ section: 'A', bar: String(i + 1), chord: `${ROOTS[i % 12]}${i < 12 ? 'm7' : '7'}`, scale: '' }))
 const stubs = { ScaleStaff: true } // VexFlow needs a real browser
 
 describe('ScaleSheet', () => {

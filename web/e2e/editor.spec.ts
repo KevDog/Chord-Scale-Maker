@@ -183,12 +183,12 @@ test('practice highlights the chosen notes, remembers them per chart, and prints
   await pickOption(page, 'Where each scale starts', 'From root') // the presets are From root's
   const panel = page.locator('fieldset', { hasText: 'Practice' })
   await panel.getByRole('button', { name: 'Guide tones' }).click()
-  await expect(page.locator('.vf-selected')).toHaveCount(78) // two per staff, 39 staves
+  await expect(page.locator('.vf-selected')).toHaveCount(28) // two per staff, 14 lines
   await expect(page.locator('svg[aria-label*="; practice:"]').first()).toBeAttached()
   await page.reload()
   await chooseSheet(page, 'Scales')
   await expect(page.locator('fieldset', { hasText: 'Practice' }).getByRole('button', { name: 'Guide tones' })).toHaveAttribute('aria-pressed', 'true')
-  await expect(page.locator('.vf-selected')).toHaveCount(78)
+  await expect(page.locator('.vf-selected')).toHaveCount(28)
   // From C keeps its own selection
   await pickOption(page, 'Where each scale starts', 'From C')
   await expect(page.locator('.vf-selected')).toHaveCount(0)
@@ -197,24 +197,24 @@ test('practice highlights the chosen notes, remembers them per chart, and prints
   await pickOption(page, 'Where each scale starts', 'From root')
   await page.emulateMedia({ media: 'print' })
   const pdf = await page.pdf({ format: 'Letter' })
-  expect((pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length).toBe(4) // still 12 staves a page
+  expect((pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length).toBe(2) // 14 lines, 12 a page
 })
 
-test('focus mode shows only the sheet, leaves on Escape or its button, and still prints 4 pages', async ({ page }) => {
+test('focus mode shows only the sheet, leaves on Escape or its button, and still prints 2 pages', async ({ page }) => {
   await page.goto('/song/autumn-leaves')
-  await chooseSheet(page, 'Scales') // 39 staves, 4 printed pages
+  await chooseSheet(page, 'Scales') // 14 lines, 2 printed pages
   const focus = page.getByRole('button', { name: 'Focus', exact: true })
   const dialog = page.getByRole('dialog', { name: 'Focus mode' })
   const exit = page.getByRole('button', { name: /Exit focus/ })
   await focus.click()
   await expect(dialog).toBeVisible()
-  await expect(dialog.locator('svg[aria-label]')).toHaveCount(39)
+  await expect(dialog.locator('svg[aria-label]')).toHaveCount(14)
   await expect(exit).toBeFocused()
   await expect(page.getByRole('button', { name: 'Work on' })).toBeHidden()
   // the overlay covers the page: nothing behind it takes a click
   expect(await page.evaluate(() => document.elementFromPoint(20, 200)?.closest('[role=dialog]') != null)).toBe(true)
   await page.emulateMedia({ media: 'print' })
-  expect((await page.pdf({ format: 'Letter' })).toString('latin1').match(/\/Type\s*\/Page[^s]/g)?.length).toBe(4)
+  expect((await page.pdf({ format: 'Letter' })).toString('latin1').match(/\/Type\s*\/Page[^s]/g)?.length).toBe(2)
   await page.emulateMedia({ media: 'screen' })
   await page.keyboard.press('Escape')
   await expect(dialog).toHaveCount(0)
@@ -227,6 +227,14 @@ test('focus mode shows only the sheet, leaves on Escape or its button, and still
 
 /** the Scales sheet's staves, with their headings (chord and scale) */
 const scaleStaves = (page: import('@playwright/test').Page) => page.locator('.break-inside-avoid')
+
+test('the Scales sheet draws each scale once, naming the chords it covers', async ({ page }) => {
+  await writeChart(page, 'title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\nA | 3 | Cm9\nA | 4 | F7\n')
+  await chooseSheet(page, 'Scales')
+  await expect(scaleStaves(page)).toHaveCount(2)
+  await expect(scaleStaves(page).nth(0)).toContainText('C–7, · C–9')
+  await expect(scaleStaves(page).nth(0)).not.toContainText('Bar')
+})
 
 test('the scale level plays on the sheets without editing the chart, and a scale you pinned stays', async ({ page }) => {
   await writeChart(page, 'title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\nA | 3 | BbMaj7\n')

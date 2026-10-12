@@ -71,6 +71,13 @@ describe('practice selection', () => {
     expect(picked(staves(rows, 'from', { keys: ['3'] }, 'Eb'))).toEqual([['G']])
   })
 
+  it('lights a merged line like its first chord: Cm7 + Cm9 over C Dorian are one staff', () => {
+    const merged = staves([row('Cm7', 'C Dorian', '1'), row('Cm9', 'C Dorian', '2')], 'root', { preset: 'chordTones' })
+    expect(merged).toHaveLength(1)
+    expect(picked(merged)).toEqual(picked(staves([row('Cm7', 'C Dorian')], 'root', { preset: 'chordTones' })))
+    expect(picked(staves([row('Cm7', 'C Dorian', '1'), row('Cm9', 'C Dorian', '2')], 'root', { preset: 'guideTones' }))).toEqual([['Eb', 'Bb']])
+  })
+
   it('presets pick per chord, from its quality', () => {
     const rows = [row('G7alt', '', '1'), row('G7sus4', '', '2'), row('C6', 'C Ionian', '3'), row('Bm7b5', '', '4')]
     expect(picked(staves(rows, 'root', { preset: 'chordTones' }))).toEqual([
