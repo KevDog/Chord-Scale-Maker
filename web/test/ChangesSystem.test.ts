@@ -102,6 +102,23 @@ describe('ChangesSystem as the editor', () => {
     await vi.waitFor(() => expect(parseFloat(slot?.element.parentElement?.style.left ?? '')).toBeCloseTo(68.8)) // xs[0][3], the beat after G7's
   })
 
+  it('puts the slot after the last chord’s name when that chord is on the bar’s last beat (#143)', async () => {
+    const full = (): ChangesLine => ({ bars: [bar([at(chord(0, 'Dm7', ''), 2), at(chord(2, 'G7', ''), 3), at(chord(3, 'C7', ''), 4)], [])], sectionEnd: false })
+    const rect = vi.spyOn(Element.prototype, 'getBoundingClientRect').mockImplementation(function (this: Element) {
+      const name = (this as HTMLElement).dataset?.name
+      if (name === '0-2') return DOMRect.fromRect({ x: 700, width: 60, height: 20 }) // C7's name, from beat 4 (xs 0.7)
+      if ((this as HTMLElement).dataset?.slot === 'names') return DOMRect.fromRect({ x: 0, width: 1000, height: 48 }) // the names' row
+      return DOMRect.fromRect()
+    })
+    try {
+      const w = await mountSuspended(ChangesSystem, { props: { ...base, line: full(), editing: { kind: 'slot', section: 'A', bar: '1' } } })
+      const slot = w.findAllComponents({ name: 'SheetChord' }).find((c) => c.props('adding'))
+      await vi.waitFor(() => expect(parseFloat(slot?.element.parentElement?.style.left ?? '')).toBeCloseTo(76.8)) // C7's name's end, and a gap
+    } finally {
+      rect.mockRestore()
+    }
+  })
+
   it('shows the draft’s reading under the chord being edited, italic and muted', async () => {
     const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: { kind: 'chord', line: 3, at: { section: 'A', bar: '1' } }, preview: { numeral: 'V7', scale: 'G Altered', readable: true } } })
     expect(w.find('[data-slot=numeral][data-draft]').text()).toBe('V7')

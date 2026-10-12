@@ -1,7 +1,7 @@
 <template>
   <div ref="root" data-slot="system" class="relative break-inside-avoid" @pointerleave="leaveBar" @focusout="leaveBar">
     <!-- section markers and key areas, then chord symbols, over their beats -->
-    <div class="relative h-12 print:h-7">
+    <div ref="names" data-slot="names" class="relative h-12 print:h-7">
       <template v-for="m in marks" :key="m.key">
         <div
           :data-name="m.slot ? undefined : m.key"
@@ -187,6 +187,7 @@ const emit = defineEmits<{
 
 const root = ref<HTMLElement | null>(null)
 const el = ref<HTMLElement | null>(null)
+const names = ref<HTMLElement | null>(null)
 const xs = ref<readonly (readonly number[])[]>([])
 const ends = ref<readonly number[]>([]) // each bar's right edge
 const nameScales = ref<readonly (readonly number[])[]>([]) // each chord name's scale, where the line can't fit it
@@ -203,18 +204,36 @@ const marks = computed(() => {
     const at = (beat: number): number => Math.max(0, (xs.value[b]?.[beat] ?? 0) - 0.012)
     const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, barIndex: b, k, beat: c.beat, lastInBar: k === bar.chords.length - 1, line: c.line, slot: false, x: at(c.beat), tokens: c.tokens, text: c.text, written: c.written, row: c.at, numeral: c.numeral, scale: c.scale, reason: c.reason, problem: c.problem, rule: c.rule, fallback: c.fallback, heardIn: c.heardIn, keyFrom: c.keyFrom, guide: c.guide, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
     if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, barIndex: b, k: 0, beat: 0, lastInBar: true, line: -1, slot: false, x: at(0), tokens: null, text: '', written: '', row: { section: '', bar: '' }, numeral: '', scale: null, reason: '', problem: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
-    // the new chord slot after a bar's chords (Space in the field), on the beat after the last chord's
+    // the new chord slot after a bar's chords (Space in the field), on the beat after the last chord's, else after its name
     const e = props.editing
     const last = bar.chords.at(-1)
     if (e?.kind === 'slot' && last && last.at.section === e.section && last.at.bar === e.bar) {
       const prev = chords.at(-1)
       if (prev) prev.lastInBar = false
-      chords.push({ key: `${b}-slot`, barIndex: b, k: -1, beat: last.beat + 1, lastInBar: true, line: last.line, slot: true, x: at(Math.min(last.beat + 1, props.beats - 1)), tokens: null, text: '', written: '', row: last.at, numeral: '', scale: null, reason: '', problem: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: '', keyArea: '', segno: false, coda: false, nav: '' })
+      chords.push({ key: `${b}-slot`, barIndex: b, k: -1, beat: last.beat + 1, lastInBar: true, line: last.line, slot: true, x: last.beat + 1 < props.beats ? at(last.beat + 1) : (nameEnd.value ?? at(last.beat)), tokens: null, text: '', written: '', row: last.at, numeral: '', scale: null, reason: '', problem: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: '', keyArea: '', segno: false, coda: false, nav: '' })
     }
     return chords
   })
   return all.map((m, i) => ({ ...m, room: Math.max(0.05, (all[i + 1]?.x ?? 1) - m.x) }))
 })
+/** the bar's last chord, when the new chord slot follows it with no beat left in the bar: the slot goes after its name */
+const crowded = computed((): string | null => {
+  const e = props.editing
+  if (e?.kind !== 'slot') return null
+  const b = props.line.bars.findIndex((bar) => bar.chords.at(-1)?.at.section === e.section && bar.chords.at(-1)?.at.bar === e.bar)
+  const k = (props.line.bars[b]?.chords.length ?? 0) - 1
+  return b >= 0 && (props.line.bars[b]?.chords[k]?.beat ?? 0) + 1 >= props.beats ? `${b}-${k}` : null
+})
+/** where that chord's name ends, and a gap, as a fraction of the line; null until measured */
+const nameEnd = ref<number | null>(null)
+watch([crowded, xs], ([k]) => {
+  nameEnd.value = null
+  if (k) void nextTick(() => {
+    const name = names.value?.querySelector<HTMLElement>(`[data-name="${k}"]`)?.getBoundingClientRect()
+    const row = names.value?.getBoundingClientRect()
+    if (name && row?.width) nameEnd.value = (name.right + NAME_GAP - row.left) / row.width
+  })
+}, { immediate: true })
 /** each row's notes while the sheet is the editor: a written scale shows its pin on the label */
 const scaleView = inject(SCALE_VIEW, shallowRef(DEFAULT_VIEW))
 const notes = computed(() => (props.doc && props.editing !== undefined ? rowNotes(props.doc, scaleView.value) : null))

@@ -75,8 +75,8 @@ describe('SheetChordEditor', () => {
     await settle()
     await type('')
     expect(first.emitted('update:doc')).toBeUndefined()
-    expect(dialog()?.textContent).toContain('A section’s first chord can’t be taken out.')
-    expect(first.emitted('said')?.at(-1)).toEqual(['A section’s first chord can’t be taken out.'])
+    expect(dialog()?.textContent).toContain('A section’s first bar needs a chord.')
+    expect(first.emitted('said')?.at(-1)).toEqual(['A section’s first bar needs a chord.'])
   })
 
   it('says a repeat’s chord changes the section it repeats', async () => {
