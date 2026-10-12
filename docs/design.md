@@ -344,7 +344,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   "Choose a scale"), and components only draw it. The live preview re-renders only staves that changed: each
   staff's `id` combines its line's chords and scale, the part and the mode, not its position.
 
-### Arpeggios sheet ([spec](superpowers/specs/2026-10-12-arpeggios-sheet-design.md); the `arpeggios` flag, off)
+### Arpeggios sheet ([spec](superpowers/specs/2026-10-12-arpeggios-sheet-design.md); the `arpeggios` flag, on since sign-off)
 
 - **Lines:** exactly the Scales sheet's (`scaleLines`), in eighth notes, one stave each, no time signature. 12 lines a
   printed page. Controls (Arpeggio group): 7th Chord · Extended, and a direction listbox Up · Down · Up & down
