@@ -1,4 +1,5 @@
 import { chartHeading, isSyncCopy, parseChart } from '@chord-scale-maker/engine'
+import { tunePath } from './site'
 
 /** subtitle: the heading line (subtitle or style, key, form), as on the sheet */
 export type LibraryChart = Readonly<{ slug: string; title: string; subtitle: string; composer: string; text: string }>
@@ -26,3 +27,6 @@ export const searchLibrary = (charts: readonly LibraryChart[], query: string): L
   charts.filter((c) => [c.title, c.composer].some((s) => fold(s).includes(fold(query.trim()))))
 
 export const findChart = (slug: string): LibraryChart | undefined => LIBRARY.find((c) => c.slug === slug)
+
+/** the chart whose tune page is /tunes/<pathSlug> */
+export const findTune = (pathSlug: string): LibraryChart | undefined => LIBRARY.find((c) => tunePath(c.slug) === `/tunes/${pathSlug}`)

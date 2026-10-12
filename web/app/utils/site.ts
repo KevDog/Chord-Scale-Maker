@@ -55,3 +55,10 @@ export const seoMeta = (head: PageHead) => ({
   ogDescription: head.description,
   ...(head.robots ? { robots: head.robots } : {}),
 })
+
+/** a chart's tune page: hyphens for the slug's underscores, which search engines read as word breaks (blue_trane -> /tunes/blue-trane) */
+export const tunePath = (slug: string): string => `/tunes/${slug.replaceAll('_', '-')}`
+
+/** a tune page's title, without the site name (the template adds it) */
+export const tuneTitle = (t: Readonly<{ title: string; composer: string }>): string =>
+  `${t.title}${t.composer ? ` (${t.composer})` : ''}: changes and chord scales`

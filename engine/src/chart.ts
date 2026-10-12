@@ -211,7 +211,7 @@ export type FormPart = 'before' | 'form' | 'after'
 export const formPart = (section: string): FormPart => (!isOutsideForm(section) ? 'form' : /^intro/i.test(section.trim()) ? 'before' : 'after')
 
 /** a meta value as written (the last line wins), or the fallback */
-const metaValue = (doc: ChartDoc, key: MetaKey, fallback = ''): string =>
+export const metaValue = (doc: ChartDoc, key: MetaKey, fallback = ''): string =>
   doc.lines.reduce((v, l) => (l.kind === 'meta' && l.key === key ? l.value : v), fallback)
 
 /** the chart's beats a bar, from its `time:` line (4 without one) */

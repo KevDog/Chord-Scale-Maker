@@ -1,3 +1,4 @@
+import { readdirSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -8,10 +9,16 @@ import { addCspMeta } from './build/csp'
 import { quotesPlugin } from './build/quotes'
 import { SECURITY_HEADERS } from './build/headers'
 import { buildVersion } from './build/version'
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from './app/utils/site'
+import { isSyncCopy } from '@chord-scale-maker/engine'
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, tunePath } from './app/utils/site'
 
 /** the engine package's folder (engine/ in the workspace): its charts/ is the library */
 const ENGINE_DIR = dirname(createRequire(import.meta.url).resolve('@chord-scale-maker/engine/package.json'))
+
+/** every library chart's tune page (pages/tunes/[slug].vue), as app/utils/library.ts finds the charts */
+const TUNE_ROUTES = readdirSync(join(ENGINE_DIR, 'charts'))
+  .filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
+  .map((f) => tunePath(f.replace(/\.txt$/, '')))
 
 /** dev: the engine's charts/ and chord_scales.json sit outside Vite's root, so it doesn't watch them by itself
  *  (quotes.json is watched by its own plugin) */
@@ -92,7 +99,7 @@ export default defineNuxtConfig({
   routeRules: { '/**': { headers: SECURITY_HEADERS }, '/_nuxt/**': { headers: SECURITY_HEADERS } },
   nitro: {
     // every page is prerendered and served as a static file; only /api/contact (and unknown URLs) run on the server
-    prerender: { routes: ['/', '/song', '/help', '/functions', '/about', '/contact', '/privacy'] },
+    prerender: { routes: ['/', '/song', '/help', '/functions', '/about', '/contact', '/privacy', ...TUNE_ROUTES] },
     hooks: {
       // hash each page's inline scripts into a CSP <meta> (build/csp.ts)
       'prerender:generate'(route) {

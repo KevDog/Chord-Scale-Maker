@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { PAGE_HEAD, SITE_NAME, canonicalUrl, pageTitle, seoMeta } from '~/utils/site'
+import { PAGE_HEAD, SITE_NAME, canonicalUrl, pageTitle, seoMeta, tunePath, tuneTitle } from '~/utils/site'
 
 describe('canonicalUrl', () => {
   it('is the site root for /', () => {
@@ -62,5 +62,16 @@ describe('seoMeta', () => {
     })
     expect(seoMeta(PAGE_HEAD.index).ogTitle).toBe(SITE_NAME)
     expect(seoMeta(PAGE_HEAD.song).robots).toBe('noindex')
+  })
+})
+
+describe('tune pages', () => {
+  it('live at the slug with hyphens for underscores', () => {
+    expect(tunePath('blue_trane')).toBe('/tunes/blue-trane')
+  })
+
+  it('are titled by the tune and its composer, with no parentheses without one', () => {
+    expect(tuneTitle({ title: 'Blue Trane', composer: 'John Coltrane' })).toBe('Blue Trane (John Coltrane): changes and chord scales')
+    expect(tuneTitle({ title: 'Bb Blues', composer: '' })).toBe('Bb Blues: changes and chord scales')
   })
 })
