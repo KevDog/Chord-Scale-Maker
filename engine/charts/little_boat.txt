@@ -1,4 +1,5 @@
 title: Little Boat
+aka: O Barquinho
 subtitle: Bossa nova (O Barquinho)
 composer: Roberto Menescal
 style: Latin

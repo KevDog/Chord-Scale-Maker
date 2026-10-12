@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { beatsPerBar, chartBeats, chartDetails, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, parseChart, parseContext, qualityScale, serializeChart } from '../chart'
+import { beatsPerBar, chartAka, chartBeats, chartDetails, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, parseChart, parseContext, qualityScale, serializeChart } from '../chart'
 import { LIMITS } from '../limits'
 
 describe('isValidKey', () => {
@@ -62,6 +62,21 @@ describe('chart', () => {
     const { value: doc, diagnostics } = parseChart('A | 1\n@copy A\nA | 2 | C')
     expect(diagnostics.map((d) => d.line)).toEqual([1, 2])
     expect(serializeChart(doc)).toBe('A | 1\n@copy A\nA | 2 | C\n')
+  })
+
+  it('gives each aka: name, split at semicolons (titles may hold commas)', () => {
+    const aka = (text: string) => chartAka(parseChart(text).value)
+    expect(aka('aka: Blue Train; Blue Trane (alt take)')).toEqual(['Blue Train', 'Blue Trane (alt take)'])
+    expect(aka('aka: Me, Myself and I')).toEqual(['Me, Myself and I'])
+    expect(aka('aka: ;  \nA | 1 | C')).toEqual([])
+    expect(aka('A | 1 | C')).toEqual([])
+  })
+
+  it('keeps an aka: line as written, round-trip', () => {
+    const text = 'title: Blue Trane\naka: Blue Train; Blue Trane (alt take)\nA | 1 | C\n'
+    const doc = parseChart(text).value
+    expect(doc.lines[1]).toEqual({ kind: 'meta', key: 'aka', value: 'Blue Train; Blue Trane (alt take)' })
+    expect(serializeChart(doc)).toBe(text)
   })
 
   it('serializes canonically and round-trips', () => {

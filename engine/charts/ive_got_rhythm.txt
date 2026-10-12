@@ -1,4 +1,5 @@
 title: I've Got Rhythm
+aka: I Got Rhythm
 subtitle: Rhythm changes
 composer: George Gershwin
 style: Up

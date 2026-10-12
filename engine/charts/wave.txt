@@ -1,4 +1,5 @@
 title: Wave
+aka: Vou Te Contar
 subtitle: Bossa nova (12 12 8 12)
 composer: Antonio Carlos Jobim
 style: Latin

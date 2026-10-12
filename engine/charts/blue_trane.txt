@@ -1,4 +1,5 @@
 title: Blue Trane
+aka: Blue Train
 subtitle: Medium blues
 composer: John Coltrane
 style: Blues

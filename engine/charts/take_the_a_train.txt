@@ -1,4 +1,5 @@
 title: Take the "A" Train
+aka: Take the A Train
 composer: Billy Strayhorn
 style: Latin
 key: C

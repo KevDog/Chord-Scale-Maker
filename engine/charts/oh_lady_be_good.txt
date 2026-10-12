@@ -1,4 +1,5 @@
 title: Oh, Lady Be Good
+aka: Lady Be Good
 composer: George Gershwin
 style: Medium up
 key: F

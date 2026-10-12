@@ -1,4 +1,5 @@
 title: The Girl from Ipanema
+aka: Garota de Ipanema
 subtitle: Bossa nova
 composer: Antonio Carlos Jobim
 style: Latin

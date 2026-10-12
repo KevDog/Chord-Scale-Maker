@@ -1,4 +1,5 @@
 title: One Note Samba
+aka: Samba de Uma Nota Só
 subtitle: Samba (Samba de Uma Nota Só)
 composer: Antonio Carlos Jobim
 style: Latin

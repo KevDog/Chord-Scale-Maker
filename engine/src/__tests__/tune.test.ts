@@ -17,7 +17,7 @@ describe('tuneSummary', () => {
       title: 'Blue Trane',
       subtitle: 'Medium blues',
       composer: 'John Coltrane',
-      aka: [],
+      aka: ['Blue Train'],
       key: 'Eb',
       keyLabel: keyLabel('Eb'),
       style: 'Blues',
@@ -41,6 +41,12 @@ describe('tuneSummary', () => {
     expect(rows('A | 1 | C\nA | 2 | G7\n@copy A A2 2')).toEqual(['A 1 C', 'A 2 G7'])
   })
 
+  it('gives each aka: name, split at semicolons (titles may hold commas)', () => {
+    expect(tuneSummary('aka: Blue Train; Blue Trane (alt take)\nA | 1 | C').aka).toEqual(['Blue Train', 'Blue Trane (alt take)'])
+    expect(tuneSummary('aka: Me, Myself and I\nA | 1 | C').aka).toEqual(['Me, Myself and I'])
+    expect(tuneSummary('aka: ;  \nA | 1 | C').aka).toEqual([])
+  })
+
   it('leaves the fields a chart lacks empty', () => {
     const t = tuneSummary('A | 1 | C')
     expect(t).toMatchObject({ title: 'Untitled', composer: '', key: '', keyLabel: '', form: '', source: '' })
@@ -48,15 +54,22 @@ describe('tuneSummary', () => {
 })
 
 describe('tuneDescription', () => {
-  it('names the tune, its composer and its key', () => {
+  it('names the tune, its other title, its composer and its key', () => {
     expect(tuneDescription(tuneSummary(read('blue_trane.txt')))).toBe(
-      'Chord-scale practice sheets for Blue Trane by John Coltrane in E♭: the changes as a study lead sheet with guide tones, and a scale for every chord.',
+      'Chord-scale practice sheets for Blue Trane (also Blue Train) by John Coltrane in E♭: the changes as a study lead sheet with guide tones.',
     )
   })
 
   it('has no "by" or empty commas without a composer or key', () => {
     const d = tuneDescription(tuneSummary('title: Tune\nA | 1 | C'))
     expect(d).toBe('Chord-scale practice sheets for Tune: the changes as a study lead sheet with guide tones, and a scale for every chord, for your instrument.')
+  })
+
+  it('adds the other titles after the title when they fit with the composer and key', () => {
+    const t = tuneSummary('title: Tune\naka: Song; Ditty\ncomposer: Someone\nkey: C\nA | 1 | C')
+    expect(tuneDescription(t)).toMatch(/^Chord-scale practice sheets for Tune \(also Song or Ditty\) by Someone in C: /)
+    const long = tuneSummary(`title: Tune\naka: ${'x'.repeat(120)}\ncomposer: Someone\nkey: C\nA | 1 | C`)
+    expect(tuneDescription(long)).toMatch(/^Chord-scale practice sheets for Tune by Someone in C: /)
   })
 
   it('drops clauses from the end to fit', () => {

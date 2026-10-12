@@ -1,4 +1,5 @@
 title: Saint James Infirmary
+aka: St. James Infirmary
 composer: Traditional
 style: Medium
 key: Dm
