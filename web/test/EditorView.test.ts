@@ -612,6 +612,7 @@ describe('EditorView lead-sheet editor', () => {
     const w = await mountSuspended(EditorView, { props: { initialText: 'title: T\n' + 'A | 1 | Cm7\n'.repeat(3000) }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
     expect(w.find('#grid-heading').exists()).toBe(true)
     expect(w.text()).toContain('Shorten it in the Source')
+    expect(w.findAll('h1')).toHaveLength(1) // no sheet: the page keeps a heading (the text isn't parsed: Untitled)
   })
 
   it('saves from the banner: Save rests while nothing is unsaved, and saves a sheet edit at once', async () => {

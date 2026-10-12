@@ -164,6 +164,7 @@
         <div :class="['relative', focus.on.value && 'mx-auto max-w-6xl print:max-w-none']">
           <div v-if="rendering.busy.value" role="status" aria-label="Loading" class="pointer-events-none absolute inset-0 z-10 flex items-start justify-center pt-10 print:hidden"><UiSpinner /></div>
           <template v-if="editor.fatal.value">
+            <UiHeading class="mb-1">{{ editor.meta.value.title || 'Untitled' }}</UiHeading>
             <SheetStatus v-if="statusText || copyError" :text="statusText" :failed="saveFailed" :error="copyError" class="mb-2 print:hidden" />
             <UiText class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
           </template>
@@ -198,7 +199,7 @@
             @add-section="openSheetDialog('section', '', 0)"
             @repeat-section="openSheetDialog('repeat', '', 0)"
           >
-            <template v-if="statusText || copyError" #status><SheetStatus :text="statusText" :failed="saveFailed" :error="copyError" /></template>
+            <template v-if="!focus.on.value && (statusText || copyError)" #status><SheetStatus :text="statusText" :failed="saveFailed" :error="copyError" /></template>
           </ChangesSheet>
           <ScaleSheet
             v-else-if="sheet === 'scales'"
@@ -217,7 +218,7 @@
             :home-key="homeKey"
             :resolved="resolved"
           >
-            <template v-if="statusText || copyError" #status><SheetStatus :text="statusText" :failed="saveFailed" :error="copyError" /></template>
+            <template v-if="!focus.on.value && (statusText || copyError)" #status><SheetStatus :text="statusText" :failed="saveFailed" :error="copyError" /></template>
           </ScaleSheet>
           <ArpeggioSheet
             v-else
@@ -235,7 +236,7 @@
             :home-key="homeKey"
             :resolved="resolved"
           >
-            <template v-if="statusText || copyError" #status><SheetStatus :text="statusText" :failed="saveFailed" :error="copyError" /></template>
+            <template v-if="!focus.on.value && (statusText || copyError)" #status><SheetStatus :text="statusText" :failed="saveFailed" :error="copyError" /></template>
           </ArpeggioSheet>
         </div>
       </section>

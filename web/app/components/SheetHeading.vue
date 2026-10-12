@@ -1,7 +1,7 @@
 <template>
   <div class="mb-4 space-y-1 text-center">
     <!-- the title field is the sheet's heading, at its level (the page's h1 on the song page) -->
-    <component :is="level === 1 ? 'h1' : 'h2'">
+    <component :is="level === 1 ? 'h1' : 'h2'" :aria-label="shown('title') || 'Untitled'">
       <input
         :value="shown('title')"
         type="text"

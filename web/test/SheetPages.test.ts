@@ -24,4 +24,19 @@ describe('SheetPages', () => {
     expect(printed?.element.closest('.print\\:block')?.classList.contains('hidden')).toBe(true)
     expect(w.findAll('header')[1]?.find('input').exists()).toBe(false)
   })
+
+  it('as the page’s heading: an h1 on the first page only, the status under it', async () => {
+    const w = await mountSuspended(SheetPages, { props: { title: 'T', pages, headingLevel: 1 }, slots: { default: () => h('p', 'music'), status: () => h('p', 'Saved') } })
+    expect(w.findAll('h1').map((e) => e.text())).toEqual(['T'])
+    expect(w.findAll('header')[1]?.find('h2').text()).toBe('T')
+    expect(w.findAll('header')[0]?.text()).toContain('Saved')
+    expect(w.findAll('header')[1]?.text()).not.toContain('Saved')
+  })
+
+  it('a chart with nothing to draw still shows its heading and status', async () => {
+    const w = await mountSuspended(SheetPages, { props: { title: 'T', pages: [], headingLevel: 1 }, slots: { default: () => h('p', 'music'), status: () => h('p', 'Saved') } })
+    expect(w.find('h1').text()).toBe('T')
+    expect(w.text()).toContain('Saved')
+    expect(w.text()).not.toContain('music')
+  })
 })
