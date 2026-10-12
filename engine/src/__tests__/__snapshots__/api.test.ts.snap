@@ -164,6 +164,7 @@ exports[`exports the same names 1`] = `
   "scaleAtLevel",
   "scaleKey",
   "scaleLabel",
+  "scaleLines",
   "scaleNotes",
   "seededUnit",
   "selectedNotes",

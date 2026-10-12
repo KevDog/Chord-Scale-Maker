@@ -1,14 +1,15 @@
 import type { Row } from './chart'
 import { qualityScale } from './chart'
-import { type ChordToken, chordTokensOrNull, writtenChordRoot, writtenChordRootLenient } from './chord'
+import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRoot, writtenChordRootLenient } from './chord'
 import { intervalLabels } from './intervals'
 import { type PracticeSelection, practiceKeys, selectedNotes, startReference } from './practice'
-import { resolveQuality } from './qualities'
+import { baseQuality, resolveQuality } from './qualities'
+import { parseScale } from './scales'
 import type { Key } from './analysis/keys'
 import { accidentalsInBar, keySignature, octaveOf } from './keySignature'
 import { chunk, orNull } from './util'
 import { type Mode, type Part, type Pitched, type ScaleLabel, resolveStart, scaleLabel, scaleNotes } from './part'
-import { accText, glyphs, LETTERS, mod, NAT_PC, parseRoot, rootName } from './pitch'
+import { accText, glyphs, LETTERS, mod, NAT_PC, parseRoot, pcOf, rootName } from './pitch'
 import type { Resolved } from './resolve'
 
 /**
@@ -34,6 +35,32 @@ export type StaffModel = Readonly<{
   last: boolean // final bar line
 }>
 export type SheetPart = Readonly<{ mode: Mode; heading: string; pages: readonly (readonly StaffModel[])[] }>
+
+/** one line of the scale sheet: the rows that play one scale over one chord (row: the first; chords: as written, once each) */
+export type ScaleLine = Readonly<{ row: number; chords: readonly string[] }>
+
+/** what puts two rows on one line: the scale and the written chord's root and canonical quality; text when either can't be read */
+function lineKey(chord: string, scale: string | null): string {
+  const read = orNull(() => {
+    const s = parseScale(scale ?? '')
+    const c = parseChord(chord)
+    const quality = baseQuality(c.quality)
+    return quality === null ? null : [pcOf(s.root), s.key, pcOf(c.root), quality].join(' ')
+  })
+  return read ?? `?${chord}|${scale ?? ''}`
+}
+
+/** the chart's rows as scale sheet lines, in order of first appearance */
+export function scaleLines(rows: readonly Row[], scaleOf: (row: Row, index: number) => string | null): ScaleLine[] {
+  const lines = new Map<string, { row: number; chords: string[] }>()
+  rows.forEach((r, i) => {
+    const key = lineKey(r.chord, scaleOf(r, i))
+    const line = lines.get(key)
+    if (!line) lines.set(key, { row: i, chords: [r.chord] })
+    else if (!line.chords.includes(r.chord)) line.chords.push(r.chord)
+  })
+  return [...lines.values()]
+}
 export type ModeChoice = Mode | 'both'
 
 export const modesFor = (choice: ModeChoice): readonly Mode[] => (choice === 'both' ? ['from', 'root'] : [choice])

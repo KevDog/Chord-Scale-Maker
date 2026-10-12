@@ -1,10 +1,10 @@
 import { describe, expect, it } from 'vitest'
-import { expandRows, parseChart, type Row } from '../chart'
+import { expandRows, parseChart, qualityScale, type Row } from '../chart'
 import type { ScaleLevel } from '../levels'
 import { CONCERT } from '../part'
 import { rootName } from '../pitch'
 import { resolveScales } from '../resolve'
-import { type ModeChoice, type StaffModel, buildSheet, noteText, pageSubtitle, toVexKey } from '../sheet'
+import { type ModeChoice, type StaffModel, buildSheet, noteText, pageSubtitle, scaleLines, toVexKey } from '../sheet'
 import { parseKey } from '../analysis/keys'
 
 const row = (chord: string, scale = '', bar = '1'): Row => ({ section: 'A', bar, chord, scale })
@@ -166,5 +166,46 @@ describe('sheet', () => {
     it('plays each row’s own scale or its quality’s default with nothing resolved', () => {
       expect((staves(expandRows(doc).value) ?? []).map((s) => s.scale && `${rootName(s.scale.root)} ${s.scale.name}`)).toEqual(['A Locrian', 'D Mixolydian', 'G Dorian'])
     })
+  })
+})
+
+describe('scaleLines', () => {
+  const lines = (rows: readonly Row[]) => scaleLines(rows, (r) => qualityScale(r))
+
+  it('gives each scale use one line, in order of first appearance', () => {
+    expect(lines([row('Cm7'), row('F7'), row('Cm7'), row('BbMaj7'), row('F7')])).toEqual([
+      { row: 0, chords: ['Cm7'] },
+      { row: 1, chords: ['F7'] },
+      { row: 3, chords: ['BbMaj7'] },
+    ])
+    expect(lines([])).toEqual([])
+  })
+
+  it('merges chords of one root and canonical quality over one scale, listing each symbol once', () => {
+    expect(lines([row('Cm9'), row('Cm7'), row('Cm9')])).toEqual([{ row: 0, chords: ['Cm9', 'Cm7'] }])
+    expect(lines([row('C#m7', 'C# Dorian'), row('Dbm7', 'Db Dorian')])).toEqual([{ row: 0, chords: ['C#m7', 'Dbm7'] }])
+    expect(lines([row('D7'), row('D7/F#')])).toEqual([{ row: 0, chords: ['D7', 'D7/F#'] }])
+  })
+
+  it('splits a scale over different qualities or roots', () => {
+    expect(lines([row('CmMaj7', 'C Melodic Minor'), row('Cm6', 'C Melodic Minor')])).toHaveLength(2)
+    expect(lines([row('C7', 'C Half-Whole'), row('C7b9', 'C Half-Whole')])).toHaveLength(2)
+    expect(lines([row('DbMaj7/C', 'C Phrygian'), row('C7sus4b9', 'C Phrygian')])).toHaveLength(2) // a slash chord counts as written
+  })
+
+  it('keeps one chord on two lines when it plays two scales', () => {
+    expect(lines([row('E7', 'E Mixolydian'), row('E7', 'E Altered'), row('E7', 'E Mixolydian')])).toEqual([
+      { row: 0, chords: ['E7'] },
+      { row: 1, chords: ['E7'] },
+    ])
+  })
+
+  it('keeps rows it cannot read apart, merging only the same chord and scale text', () => {
+    expect(lines([row('Cm7'), row('Xyz'), row('Cm7', 'C Dorain'), row('Xyz'), row('Cm7#5#9x'), row('Cm7', 'C Dorain')])).toEqual([
+      { row: 0, chords: ['Cm7'] },
+      { row: 1, chords: ['Xyz'] },
+      { row: 2, chords: ['Cm7'] },
+      { row: 4, chords: ['Cm7#5#9x'] },
+    ])
   })
 })
