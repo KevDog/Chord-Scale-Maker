@@ -1,5 +1,5 @@
 title: Blizzard of Lies
-composer: Dave Frishberg, Samantha Frishberg
+composer: Dave Frishberg
 style: Medium swing
 key: Cm
 form: ABC, 30 bars
