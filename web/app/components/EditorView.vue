@@ -3,7 +3,7 @@
     <div class="min-w-0 print:hidden">
       <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
         <UiHeading>{{ editor.meta.value.title || 'Untitled' }}</UiHeading>
-        <UiButton v-if="!editor.fatal.value" color="note" :aria-expanded="editorShown" title="Show or hide the chart editor" @click="toggleEditor"><PencilSquareIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</UiButton>
+        <ToggleButton v-if="!editor.fatal.value" :model-value="editorShown" expands title="Show or hide the chart editor" @update:model-value="toggleEditor"><PencilSquareIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</ToggleButton>
       </div>
       <UiText v-if="byline" class="mt-1">{{ byline }}</UiText>
       <UiText v-if="sheetEditing" class="mt-1 md:hidden">Full editing works on a larger screen. Tap a chord on the sheet to change it.</UiText>
@@ -11,11 +11,11 @@
       <div v-if="saved || shared" class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
         <UiText v-if="saved" role="status" :class="['text-sm/6!', saved.status.value.state === 'failed' && 'text-red-700! dark:text-red-400!']">{{ saveText }}</UiText>
         <UiText v-else role="status" class="text-sm/6!">A shared chart. It isn’t saved in this browser until you save it.</UiText>
-        <UiButton v-if="shared" color="note" :disabled="editor.fatal.value" @click="saveShared"><BookmarkIcon data-slot="icon" />Save to My charts</UiButton>
+        <UiButton v-if="shared" outline :disabled="editor.fatal.value" @click="saveShared"><BookmarkIcon data-slot="icon" />Save to My charts</UiButton>
         <UiButton v-if="saved?.edited.value" plain @click="revertOpen = true"><ArrowUturnLeftIcon data-slot="icon" />Revert to library version</UiButton>
-        <UiButton v-if="saved" color="note" :disabled="editor.fatal.value" @click="saveCopy"><DocumentDuplicateIcon data-slot="icon" />Save as a copy</UiButton>
-        <UiButton color="note" @click="download"><ArrowDownTrayIcon data-slot="icon" />Download</UiButton>
-        <UiButton color="note" :disabled="editor.fatal.value" @click="openShare"><LinkIcon data-slot="icon" />Share</UiButton>
+        <UiButton v-if="saved" outline :disabled="editor.fatal.value" @click="saveCopy"><DocumentDuplicateIcon data-slot="icon" />Save as a copy</UiButton>
+        <UiButton outline @click="download"><ArrowDownTrayIcon data-slot="icon" />Download</UiButton>
+        <UiButton outline :disabled="editor.fatal.value" @click="openShare"><LinkIcon data-slot="icon" />Share</UiButton>
       </div>
       <UiText v-if="copyError" role="alert" class="mt-2 text-sm/6! text-red-700! dark:text-red-400!">{{ copyError }}</UiText>
     </div>
@@ -142,13 +142,13 @@
                 <template #selected="{ value }"><UiListboxLabel>{{ levelLabel(value) }}</UiListboxLabel></template>
                 <UiListboxOption v-for="o in LEVEL_OPTIONS" :key="o.value" :value="o.value"><UiListboxLabel>{{ o.label }}</UiListboxLabel></UiListboxOption>
               </UiListbox>
-              <UiButton v-if="scaleLevel.level.value === 'random'" color="note" aria-label="Shuffle" title="Deal a new random scale for each chord" @click="scaleLevel.shuffle"><ArrowPathIcon data-slot="icon" /></UiButton>
+              <UiButton v-if="scaleLevel.level.value === 'random'" outline aria-label="Shuffle" title="Deal a new random scale for each chord" @click="scaleLevel.shuffle"><ArrowPathIcon data-slot="icon" /></UiButton>
             </template>
             <template v-if="!editor.fatal.value" #transpose>
               <ChartTranspose :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
             </template>
             <template v-if="!editor.fatal.value" #display>
-              <UiButton color="note" title="Show only the sheet music (Esc to leave)" @click="enterFocus"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
+              <UiButton outline title="Show only the sheet music (Esc to leave)" @click="enterFocus"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
               <UiButton color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
             </template>
           </PreviewControls>

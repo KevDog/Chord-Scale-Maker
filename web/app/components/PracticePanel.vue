@@ -7,16 +7,7 @@
     </UiText>
 
     <div class="flex flex-wrap items-center gap-2">
-      <UiButton
-        v-for="p in PRESETS[mode]"
-        :key="p"
-        v-bind="activePreset === p ? { color: 'note' } : { outline: true }"
-        :class="activePreset === p ? '' : 'bg-white hover:bg-zinc-50 dark:bg-white/10 dark:hover:bg-white/15'"
-        :aria-pressed="activePreset === p"
-        @click="pickPreset(p)"
-      >
-        {{ PRESET_LABELS[p] }}
-      </UiButton>
+      <ToggleButton v-for="p in PRESETS[mode]" :key="p" :model-value="activePreset === p" @update:model-value="pickPreset(p)">{{ PRESET_LABELS[p] }}</ToggleButton>
       <UiButton plain :disabled="!selection" @click="emit('update:selection', null)">Clear</UiButton>
     </div>
 
@@ -24,7 +15,7 @@
       <label
         v-for="b in boxes"
         :key="b.key"
-        class="relative inline-flex h-9 min-w-11 cursor-default items-center justify-center rounded-lg bg-white px-2.5 text-sm/5 font-semibold text-zinc-950 ring-1 ring-zinc-950/10 ring-inset hover:bg-zinc-50 has-checked:bg-note-500 has-checked:text-white has-checked:ring-note-600 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-note-500 dark:bg-white/5 dark:text-white dark:ring-white/10 dark:hover:bg-white/10 dark:has-checked:bg-note-300 dark:has-checked:text-zinc-950"
+        class="relative inline-flex h-9 min-w-11 cursor-default items-center justify-center rounded-lg bg-white px-2.5 text-sm/5 font-semibold text-zinc-950 ring-1 ring-zinc-950/10 ring-inset hover:bg-zinc-50 has-checked:bg-note-100 has-checked:text-note-800 has-checked:ring-note-500 has-focus-visible:outline-2 has-focus-visible:outline-offset-2 has-focus-visible:outline-accent dark:bg-white/5 dark:text-white dark:ring-white/10 dark:hover:bg-white/10 dark:has-checked:bg-note-300/15 dark:has-checked:text-note-200 dark:has-checked:ring-note-300"
       >
         <input type="checkbox" class="sr-only" :checked="checked.has(b.key)" @change="toggle(b.key)">{{ b.label }}
       </label>

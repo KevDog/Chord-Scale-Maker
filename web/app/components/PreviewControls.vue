@@ -34,15 +34,15 @@
       <UiField v-if="sheet !== 'changes'">
         <UiLabel class="pl-3">Show</UiLabel>
         <div class="flex flex-wrap gap-2 *:whitespace-nowrap">
-          <UiButton v-bind="intervals ? { color: 'note' } : { outline: true }" :class="intervals ? '' : OFF_FILL" :aria-pressed="intervals" title="Label each note against the chord root (on screen only)" @click="intervals = !intervals">Intervals</UiButton>
+          <ToggleButton v-model="intervals" title="Label each note against the chord root (on screen only)">Intervals</ToggleButton>
         </div>
       </UiField>
       <template v-else>
         <UiField v-if="!lockLabels">
           <UiLabel class="pl-3">Analysis</UiLabel>
           <div class="flex flex-wrap gap-2 *:whitespace-nowrap">
-            <UiButton v-bind="numerals ? { color: 'note' } : { outline: true }" :class="numerals ? '' : OFF_FILL" :aria-pressed="numerals" title="Each chord's Roman numeral in its key" @click="numerals = !numerals">Numerals</UiButton>
-            <UiButton v-bind="scaleNames ? { color: 'note' } : { outline: true }" :class="scaleNames ? '' : OFF_FILL" :aria-pressed="scaleNames" title="Each chord's scale, under its numeral" @click="scaleNames = !scaleNames">Scales</UiButton>
+            <ToggleButton v-model="numerals" title="Each chord's Roman numeral in its key">Numerals</ToggleButton>
+            <ToggleButton v-model="scaleNames" title="Each chord's scale, under its numeral">Scales</ToggleButton>
           </div>
         </UiField>
         <UiField>
@@ -126,8 +126,6 @@ const changes = useFeature('changes')
 const arpeggios = useFeature('arpeggios')
 const sheets = computed(() => SHEETS.filter((s) => (s.value !== 'changes' || changes) && (s.value !== 'arpeggios' || arpeggios)))
 const arpNoteOptions = ARP_NOTES.map((value) => ({ value, label: ARP_NOTES_LABELS[value] }))
-// a solid white fill for the "off" toggles so they read on the tinted box (an outline button is transparent)
-const OFF_FILL = 'bg-white hover:bg-zinc-50 dark:bg-white/10 dark:hover:bg-white/15'
 // the Changes sheet's line, at most one: guide tones or 7th chord arpeggios (with the flag on)
 const lineModes = computed((): { value: LineMode; label: string; title: string }[] => [
   { value: 'off', label: 'Off', title: 'No line: slashes' },

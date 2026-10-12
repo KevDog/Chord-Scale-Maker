@@ -52,7 +52,7 @@
       <UiSubheading class="mt-2" :level="2">No charts match "{{ query }}"</UiSubheading>
       <UiText class="mt-1">Try another title or composer, or {{ myCharts ? 'start a new chart' : 'request one' }}.</UiText>
       <div v-if="myCharts" class="mt-6">
-        <UiButton v-if="myCharts" color="note" href="/song?new=1" class="max-md:hidden"><PlusIcon data-slot="icon" />New chart</UiButton>
+        <UiButton v-if="myCharts" outline href="/song?new=1" class="max-md:hidden"><PlusIcon data-slot="icon" />New chart</UiButton>
       </div>
     </div>
   </div>

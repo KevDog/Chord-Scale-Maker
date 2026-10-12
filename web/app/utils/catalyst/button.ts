@@ -1,4 +1,4 @@
-// Catalyst button styles, copied verbatim (only the colours this app uses) from catalyst-ui-kit/typescript/button.tsx (Tailwind Plus licence)
+// Catalyst button styles, copied verbatim (only the colours this app uses; focus takes the accent, #200) from catalyst-ui-kit/typescript/button.tsx (Tailwind Plus licence)
 export const buttonStyles = {
   base: [
     // Base
@@ -6,7 +6,7 @@ export const buttonStyles = {
     // Sizing
     'px-[calc(--spacing(3.5)-1px)] py-[calc(--spacing(2.5)-1px)] sm:px-[calc(--spacing(3)-1px)] sm:py-[calc(--spacing(1.5)-1px)] sm:text-sm/6',
     // Focus
-    'focus:not-data-focus:outline-hidden data-focus:outline-2 data-focus:outline-offset-2 data-focus:outline-blue-500',
+    'focus:not-data-focus:outline-hidden data-focus:outline-2 data-focus:outline-offset-2 data-focus:outline-accent',
     // Disabled
     'data-disabled:opacity-50',
     // Icon
