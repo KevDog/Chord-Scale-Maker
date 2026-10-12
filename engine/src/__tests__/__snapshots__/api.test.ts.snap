@@ -136,6 +136,7 @@ exports[`exports the same names 1`] = `
   "parseStart",
   "partFor",
   "pcOf",
+  "placeRun",
   "posOfLine",
   "practiceBoxes",
   "practiceKeys",
