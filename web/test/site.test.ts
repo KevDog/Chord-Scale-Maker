@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { PAGE_HEAD, SITE_NAME, canonicalUrl, pageTitle, seoMeta, tunePath, tuneTitle } from '~/utils/site'
+import { PAGE_HEAD, SITE_NAME, canonicalUrl, chartSlug, pageTitle, seoMeta, songPath, tunePath, tuneTitle } from '~/utils/site'
 
 describe('canonicalUrl', () => {
   it('is the site root for /', () => {
@@ -73,5 +73,16 @@ describe('tune pages', () => {
   it('are titled by the tune and its composer, with no parentheses without one', () => {
     expect(tuneTitle({ title: 'Blue Trane', composer: 'John Coltrane' })).toBe('Blue Trane (John Coltrane): changes and chord scales')
     expect(tuneTitle({ title: 'Bb Blues', composer: '' })).toBe('Bb Blues: changes and chord scales')
+  })
+})
+
+describe('songPath and chartSlug', () => {
+  it('puts a chart’s practice sheets at /song/<name>', () => {
+    expect(songPath('round-midnight')).toBe('/song/round-midnight')
+  })
+
+  it('reads an old underscore name as the chart’s name', () => {
+    expect(chartSlug('round_midnight')).toBe('round-midnight')
+    expect(chartSlug('round-midnight')).toBe('round-midnight')
   })
 })
