@@ -1,8 +1,12 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { arpeggioTones } from '../arpeggios'
+import { expandRows, parseChart, type Row } from '../chart'
+import { resolveScales } from '../resolve'
+import { buildSheet } from '../sheet'
 import { CONCERT, rangeOf } from '../part'
 import { rootName } from '../pitch'
-import { arpeggioLine, ARP_DIRECTION_LABELS, ARP_NOTES_LABELS, isArpDirection, isArpNotes, tensionsOf } from '../arpeggioSheet'
+import { arpeggioLine, ARP_DIRECTION_LABELS, ARP_NOTES_LABELS, buildArpeggioSheet, isArpDirection, isArpNotes, tensionsOf } from '../arpeggioSheet'
 
 const names = (chord: string, scale: string): string[] =>
   tensionsOf(CONCERT, chord, scale, arpeggioTones(CONCERT, chord, scale) ?? []).map(rootName)
@@ -83,5 +87,38 @@ describe('arpeggioLine', () => {
     expect(Object.values(ARP_NOTES_LABELS)).toEqual(['7th Chord', 'Extended'])
     expect(Object.values(ARP_DIRECTION_LABELS)).toEqual(['Up', 'Down', 'Up & down'])
     expect([isArpNotes('extended'), isArpNotes('up'), isArpDirection('up-down'), isArpDirection('x')]).toEqual([true, false, true, false])
+  })
+})
+
+const row = (chord: string, scale = ''): Row => ({ section: 'A', bar: '1', chord, scale })
+
+describe('buildArpeggioSheet', () => {
+  it("draws the Scales sheet's lines, with its labels", () => {
+    const doc = parseChart(readFileSync(new URL('../../charts/autumn-leaves.txt', import.meta.url), 'utf8')).value
+    const rows = expandRows(doc).value
+    const resolved = resolveScales(doc, { level: 'standard', seed: 0 })
+    const arp = buildArpeggioSheet(rows, CONCERT, 12, 'seventh', 'up', undefined, resolved).pages.flat()
+    const scales = buildSheet(rows, CONCERT, 'root', 'C', 12, null, undefined, resolved)[0]?.pages.flat() ?? []
+    expect(arp.map((s) => [s.chords, s.scale])).toEqual(scales.map((s) => [s.chords, s.scale]))
+    expect(arp.at(-1)?.last).toBe(true)
+  })
+
+  it('heads the sheet by mode and splits pages', () => {
+    const rows = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B', 'C'].map((r, i) => row(`${r}${i < 12 ? 'm7' : '7'}`))
+    const s = buildArpeggioSheet(rows, CONCERT, 12, 'extended', 'up')
+    expect(s.heading).toBe('Extended arpeggios')
+    expect(s.pages.map((p) => p.length)).toEqual([12, 1])
+    expect(buildArpeggioSheet(rows, CONCERT, 12, 'seventh', 'up').heading).toBe('Arpeggios')
+  })
+
+  it('changes ids with mode and direction', () => {
+    const id = (n: 'seventh' | 'extended', d: 'up' | 'down') => buildArpeggioSheet([row('Cm7')], CONCERT, 12, n, d).pages[0]?.[0]?.id
+    expect(new Set([id('seventh', 'up'), id('extended', 'up'), id('seventh', 'down')]).size).toBe(3)
+  })
+
+  it('labels intervals and reports errors per line', () => {
+    const [ok, bad] = buildArpeggioSheet([row('Cm7'), row('Xyz')], CONCERT, 12, 'extended', 'up').pages.flat()
+    expect(ok?.intervals).toEqual(['1', 'b3', '5', 'b7', '9', '11', '13'])
+    expect(bad).toMatchObject({ error: 'No chord tones for Xyz', notes: [], intervals: null })
   })
 })

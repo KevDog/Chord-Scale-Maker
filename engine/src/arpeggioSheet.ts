@@ -1,9 +1,15 @@
+import type { Key } from './analysis/keys'
 import { arpeggioTones, placeRun } from './arpeggios'
-import { writtenChordRootLenient } from './chord'
+import { type Row, qualityScale } from './chart'
+import { type ChordToken, chordTokensOrNull, writtenChordRoot, writtenChordRootLenient } from './chord'
+import { accidentalsInBar, keySignature, octaveOf } from './keySignature'
 import { intervalLabels } from './intervals'
-import { type Part, type Pitched, rangeOf, writtenScale } from './part'
-import { mod, pcOf, type Spelled } from './pitch'
+import { type Part, type Pitched, type ScaleLabel, rangeOf, scaleLabel, writtenScale } from './part'
+import { accText, mod, pcOf, type Spelled } from './pitch'
 import { resolveQuality } from './qualities'
+import type { Resolved } from './resolve'
+import { scaleLines } from './sheet'
+import { chunk, orNull } from './util'
 
 /**
  * The Arpeggios sheet (docs/superpowers/specs/2026-10-12-arpeggios-sheet-design.md): each scale line as an arpeggio,
@@ -35,6 +41,22 @@ export const isArpDirection = (x: unknown): x is ArpDirection => (ARP_DIRECTIONS
 export const ARP_NOTES_LABELS: Readonly<Record<ArpNotes, string>> = { seventh: '7th Chord', extended: 'Extended' }
 export const ARP_DIRECTION_LABELS: Readonly<Record<ArpDirection, string>> = { up: 'Up', down: 'Down', 'up-down': 'Up & down' }
 
+/** one staff on the Arpeggios sheet: the Scales sheet's line, its arpeggio's notes and beam groups, or the error that stands in for them */
+export type ArpeggioStaffModel = Readonly<{
+  id: string // unique per sheet; stable while the line, its notes and the view are unchanged
+  chords: readonly (readonly ChordToken[] | null)[]
+  scale: ScaleLabel | null
+  notes: readonly Pitched[]
+  groups: readonly number[] // each beamed group's length, in order
+  keySig: string | null
+  showClefAndKey: boolean
+  accidentals: readonly (string | null)[]
+  intervals: readonly string[] | null // each note against the chord root; null if the chord can't be read
+  error: string | null
+  last: boolean
+}>
+export type ArpeggioSheetModel = Readonly<{ heading: string; pages: readonly (readonly ArpeggioStaffModel[])[] }>
+
 /** one line's notes, and the length of each beamed group in order */
 export type ArpeggioLineNotes = Readonly<{ notes: readonly Pitched[]; groups: readonly number[] }>
 
@@ -55,4 +77,52 @@ export function arpeggioLine(part: Part, chord: string, scale: string | null, no
   if (dir === 'down') return { notes: desc, groups: descGroups }
   const turn = (descGroups[0] ?? 1) - 1
   return { notes: [...asc, ...desc.slice(1)], groups: [...groups, ...[turn, ...descGroups.slice(1)].filter((g) => g > 0)] }
+}
+
+/**
+ * the Arpeggios sheet: the Scales sheet's lines (scaleLines), each its arpeggio, in pages of perPage; never throws.
+ * key and resolved as in buildSheet: the signature (undefined: off) and the scale each row plays.
+ */
+export function buildArpeggioSheet(
+  rows: readonly Row[],
+  part: Part,
+  perPage: number,
+  notes: ArpNotes,
+  dir: ArpDirection,
+  key?: Key | null,
+  resolved?: ReadonlyMap<number, Resolved>,
+): ArpeggioSheetModel {
+  const scaleOf = (r: Row, i: number): string | null => (resolved?.has(i) ? (resolved.get(i)?.scale ?? null) : qualityScale(r))
+  const lines = scaleLines(rows, scaleOf)
+  const keySig = key === undefined ? null : keySignature(key, part)
+  const staves = lines.map((l, n): ArpeggioStaffModel => {
+    const r = rows[l.row] as Row
+    const scale = scaleOf(r, l.row)
+    const showClefAndKey = key === undefined || n === 0
+    const id = [l.chords.join(' '), scale, part.clef, part.trans, notes, dir, keySig, showClefAndKey ? '' : 'bare'].join('|')
+    const base = {
+      id,
+      chords: l.chords.map((c) => chordTokensOrNull(part, c, scale)),
+      scale: orNull(() => (scale ? scaleLabel(part, scale) : null)),
+      keySig,
+      showClefAndKey,
+      last: n === lines.length - 1,
+    }
+    const played = arpeggioLine(part, r.chord, scale, notes, dir)
+    if ('error' in played) return { ...base, notes: [], groups: [], accidentals: [], intervals: null, error: played.error }
+    return {
+      ...base,
+      ...played,
+      accidentals:
+        keySig === null
+          ? played.notes.map((p) => (p.acc ? accText(p.acc) : null))
+          : accidentalsInBar(
+              played.notes.map((p) => ({ letter: p.letter, acc: p.acc, octave: octaveOf(p) })),
+              keySig,
+            ),
+      intervals: orNull(() => intervalLabels(writtenChordRoot(part, r.chord, scale ?? ''), played.notes, resolveQuality(r.chord)?.quality ?? null)),
+      error: null,
+    }
+  })
+  return { heading: notes === 'extended' ? 'Extended arpeggios' : 'Arpeggios', pages: chunk(staves, perPage) }
 }
