@@ -35,7 +35,6 @@ test('finds a tune by its composer, and the sheet carries the composer and the t
   await page.getByPlaceholder('Search by title or composer').fill('kaper')
   await expect(page.getByRole('link', { name: 'Invitation', exact: true })).toBeVisible()
   await page.getByRole('link', { name: 'On Green Dolphin Street', exact: true }).click()
-  await expect(page.getByText('Latin / swing · C · ABCD, 32 bars — Bronisław Kaper')).toBeVisible() // under the editor heading
   const header = page.locator('section header').first()
   await expect(header).toContainText('Latin / swing · C · ABCD, 32 bars')
   await expect(header.getByText('Bronisław Kaper')).toBeVisible()
@@ -155,4 +154,17 @@ test('an unknown chart, old or new address, goes to the library', async ({ page 
   await expect(page).toHaveURL(/\/$/)
   await page.goto('/song?chart=no_such_tune')
   await expect(page).toHaveURL(/\/$/)
+})
+
+test('the sheet’s heading is the page’s only heading, its save status under it', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.goto('/song/autumn-leaves')
+  await expect(staves(page).first()).toBeVisible()
+  const h1 = page.getByRole('heading', { level: 1 })
+  await expect(h1).toHaveCount(1)
+  await expect(h1).toHaveText('Autumn Leaves')
+  await expect(page.locator('[data-slot=paper]').getByRole('status').filter({ hasText: 'in this browser' })).toBeVisible()
+  await page.getByRole('button', { name: 'Edit' }).click()
+  await expect(h1).toHaveCount(1)
+  await expect(h1.getByRole('textbox', { name: 'Title', exact: true })).toHaveValue('Autumn Leaves') // the editable heading is the h1
 })

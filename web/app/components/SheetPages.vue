@@ -10,7 +10,7 @@
       <header :class="['mb-4 text-center', compact && 'print:mb-1', !headerOnScreen(i) && 'hidden print:block']">
         <div v-if="$slots.heading && i === 0" class="print:hidden"><slot name="heading" /></div>
         <div :class="$slots.heading && i === 0 && 'hidden print:block'">
-          <h2 class="font-display text-2xl/8 font-bold tracking-tight text-zinc-950 dark:text-white print:text-black">{{ title }}</h2>
+          <component :is="i === 0 && headingLevel === 1 ? 'h1' : 'h2'" class="font-display text-2xl/8 font-bold tracking-tight text-balance text-zinc-950 dark:text-white print:text-black">{{ title }}</component>
           <!-- with a composer, print lays the line out as a lead sheet does: the style at left, the composer at right (first
                page only), on one line so a page holds as much music as without; on screen the composer goes under it -->
           <div :class="composer && 'print:flex print:items-baseline print:justify-between print:gap-6 print:text-left'">
@@ -18,6 +18,7 @@
             <p v-if="composer && i === 0" class="mt-1 text-right text-sm text-zinc-600 italic dark:text-zinc-400 print:mt-0 print:shrink-0 print:text-neutral-700">{{ composer }}</p>
           </div>
         </div>
+        <div v-if="$slots.status && i === 0" class="mt-2 print:hidden"><slot name="status" /></div>
       </header>
       <slot :page="page" :index="i" />
     </section>
@@ -31,6 +32,7 @@ const props = defineProps<{
   composer?: string
   pages: readonly T[]
   compact?: boolean // less space under the header in print (the Changes fits its lines a page)
+  headingLevel?: 1 | 2 // 1: the sheet's title is the page's heading (the song page); later pages' headers stay h2
 }>()
 
 const headerOnScreen = (i: number): boolean => i === 0 || props.pages[i]?.subtitle !== props.pages[i - 1]?.subtitle

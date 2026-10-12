@@ -1,17 +1,20 @@
 <template>
   <div class="mb-4 space-y-1 text-center">
-    <input
-      :value="shown('title')"
-      type="text"
-      aria-label="Title"
-      placeholder="Title"
-      autocomplete="off"
-      spellcheck="false"
-      :aria-invalid="errors.title ? 'true' : undefined"
-      :title="errors.title ?? undefined"
-      :class="[FIELD, 'font-display mx-auto block w-2/3 text-center text-2xl/8 font-bold tracking-tight text-zinc-950 dark:text-white', errors.title && BAD]"
-      @input="edit('title', ($event.target as HTMLInputElement).value)"
-    >
+    <!-- the title field is the sheet's heading, at its level (the page's h1 on the song page) -->
+    <component :is="level === 1 ? 'h1' : 'h2'">
+      <input
+        :value="shown('title')"
+        type="text"
+        aria-label="Title"
+        placeholder="Title"
+        autocomplete="off"
+        spellcheck="false"
+        :aria-invalid="errors.title ? 'true' : undefined"
+        :title="errors.title ?? undefined"
+        :class="[FIELD, 'font-display mx-auto block w-2/3 text-center text-2xl/8 font-bold tracking-tight text-zinc-950 dark:text-white', errors.title && BAD]"
+        @input="edit('title', ($event.target as HTMLInputElement).value)"
+      >
+    </component>
     <div class="flex items-baseline justify-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
       <input
         :value="shown('subtitle')"
@@ -64,7 +67,7 @@ import { KEY_OPTIONS } from '~/utils/keyOptions'
  * hint they take typing. A value the chart can't hold stays in its field, flagged with why; the doc keeps the last
  * good one (as MetaInput does).
  */
-const props = defineProps<{ doc: ChartDoc }>()
+const props = defineProps<{ doc: ChartDoc; level?: 1 | 2 }>()
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc] }>()
 
 type Field = Extract<MetaKey, 'title' | 'subtitle' | 'composer'>

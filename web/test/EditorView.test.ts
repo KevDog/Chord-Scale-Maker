@@ -362,10 +362,10 @@ describe('EditorView editing', () => {
   afterEach(() => localStorage.clear())
   const banner = (w: Wrapper) => w.text().includes('Editing the sheet')
 
-  it('puts Edit next to the title, and Done closes the editor', async () => {
+  it('puts Edit with the sheet controls, and Done closes the editor', async () => {
     const w = await mount()
     const edit = buttonCalled(w, 'Edit')
-    expect(edit?.element.parentElement?.querySelector('h1')?.textContent).toBe('T')
+    expect(edit?.element.parentElement?.textContent).toContain('Print') // beside Focus and Print, not by a title
     expect(edit?.attributes('aria-expanded')).toBe('false')
     expect(banner(w)).toBe(false)
     await edit?.trigger('click')

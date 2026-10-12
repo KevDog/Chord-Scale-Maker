@@ -1,23 +1,16 @@
 <template>
   <div class="space-y-10">
-    <div class="min-w-0 print:hidden">
-      <div class="flex flex-wrap items-center gap-x-4 gap-y-2">
-        <UiHeading>{{ editor.meta.value.title || 'Untitled' }}</UiHeading>
-        <ToggleButton v-if="!editor.fatal.value" :model-value="editorShown" expands title="Show or hide the chart editor" @update:model-value="toggleEditor"><PencilSquareIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</ToggleButton>
-      </div>
-      <UiText v-if="byline" class="mt-1">{{ byline }}</UiText>
-      <UiText v-if="sheetEditing" class="mt-1 md:hidden">Full editing works on a larger screen. Tap a chord on the sheet to change it.</UiText>
-      <!-- My charts: where this chart is saved, and what you can do with it -->
-      <div v-if="saved || shared" class="mt-3 flex flex-wrap items-center gap-x-4 gap-y-2">
-        <UiText v-if="saved" role="status" :class="['text-sm/6!', saved.status.value.state === 'failed' && 'text-red-700! dark:text-red-400!']">{{ saveText }}</UiText>
-        <UiText v-else role="status" class="text-sm/6!">A shared chart. It isn’t saved in this browser until you save it.</UiText>
+    <!-- the sheet's own heading is the page's (SheetPages), its save status under it -->
+    <div v-if="sheetEditing || saved || shared" class="min-w-0 space-y-3 print:hidden">
+      <UiText v-if="sheetEditing" class="md:hidden">Full editing works on a larger screen. Tap a chord on the sheet to change it.</UiText>
+      <!-- My charts: what you can do with this chart -->
+      <div v-if="saved || shared" class="flex flex-wrap items-center gap-x-4 gap-y-2">
         <UiButton v-if="shared" outline :disabled="editor.fatal.value" @click="saveShared"><BookmarkIcon data-slot="icon" />Save to My charts</UiButton>
         <UiButton v-if="saved?.edited.value" plain @click="revertOpen = true"><ArrowUturnLeftIcon data-slot="icon" />Revert to library version</UiButton>
         <UiButton v-if="saved" outline :disabled="editor.fatal.value" @click="saveCopy"><DocumentDuplicateIcon data-slot="icon" />Save as a copy</UiButton>
         <UiButton outline @click="download"><ArrowDownTrayIcon data-slot="icon" />Download</UiButton>
         <UiButton outline :disabled="editor.fatal.value" @click="openShare"><LinkIcon data-slot="icon" />Share</UiButton>
       </div>
-      <UiText v-if="copyError" role="alert" class="mt-2 text-sm/6! text-red-700! dark:text-red-400!">{{ copyError }}</UiText>
     </div>
 
     <ShareDialog :open="shareOpen" :link="shareLink" @close="shareOpen = false" />
@@ -148,6 +141,7 @@
               <ChartTranspose :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
             </template>
             <template v-if="!editor.fatal.value" #display>
+              <ToggleButton :model-value="editorShown" expands title="Show or hide the chart editor" @update:model-value="toggleEditor"><PencilSquareIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</ToggleButton>
               <UiButton outline title="Show only the sheet music (Esc to leave)" @click="enterFocus"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
               <UiButton color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
             </template>
@@ -169,11 +163,15 @@
   
         <div :class="['relative', focus.on.value && 'mx-auto max-w-6xl print:max-w-none']">
           <div v-if="rendering.busy.value" role="status" aria-label="Loading" class="pointer-events-none absolute inset-0 z-10 flex items-start justify-center pt-10 print:hidden"><UiSpinner /></div>
-          <UiText v-if="editor.fatal.value" class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
+          <template v-if="editor.fatal.value">
+            <SheetStatus v-if="statusText || copyError" :text="statusText" :failed="saveFailed" :error="copyError" class="mb-2 print:hidden" />
+            <UiText class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
+          </template>
           <ChangesSheet
             v-else-if="sheet === 'changes'"
             :doc="editor.doc.value"
             :title="editor.meta.value.title"
+            :heading-level="1"
             :subtitle="editor.heading.value.subtitle"
             :composer="editor.heading.value.composer"
             :part="sheetPart"
@@ -199,11 +197,14 @@
             @add-bar="sheetAddBar"
             @add-section="openSheetDialog('section', '', 0)"
             @repeat-section="openSheetDialog('repeat', '', 0)"
-          />
+          >
+            <template v-if="statusText || copyError" #status><SheetStatus :text="statusText" :failed="saveFailed" :error="copyError" /></template>
+          </ChangesSheet>
           <ScaleSheet
             v-else-if="sheet === 'scales'"
             :rows="editor.rows.value"
             :title="editor.meta.value.title"
+            :heading-level="1"
             :subtitle="editor.heading.value.subtitle"
             :composer="editor.heading.value.composer"
             :part="part"
@@ -215,11 +216,14 @@
             :practice="selection"
             :home-key="homeKey"
             :resolved="resolved"
-          />
+          >
+            <template v-if="statusText || copyError" #status><SheetStatus :text="statusText" :failed="saveFailed" :error="copyError" /></template>
+          </ScaleSheet>
           <ArpeggioSheet
             v-else
             :rows="editor.rows.value"
             :title="editor.meta.value.title"
+            :heading-level="1"
             :subtitle="editor.heading.value.subtitle"
             :composer="editor.heading.value.composer"
             :part="part"
@@ -230,7 +234,9 @@
             :intervals="prefs.intervals.value"
             :home-key="homeKey"
             :resolved="resolved"
-          />
+          >
+            <template v-if="statusText || copyError" #status><SheetStatus :text="statusText" :failed="saveFailed" :error="copyError" /></template>
+          </ArpeggioSheet>
         </div>
       </section>
     </div>
@@ -322,7 +328,6 @@ const editor = useChartEditor(openingText)
 const chartHistory = useChartHistory(editor)
 const rendering = useRendering()
 /** under the heading: "Ballad · E♭ · AABA, 32 bars — Johnny Green" */
-const byline = computed(() => [editor.heading.value.subtitle, editor.heading.value.composer].filter(Boolean).join(' — '))
 const prefs = props.shared ? linkPreferences(props.shared) : usePreferences()
 const part = computed(() => partFor(prefs.instrument.value))
 /** the editor: hidden by default (song-first), shown for a new chart or one over a size limit (only the text can fix it) */
@@ -531,6 +536,10 @@ const saveText = computed((): string => {
     return props.libraryTitle ? `Your edited version of ${props.libraryTitle}, saved in this browser ${timeText(s.at)}.` : `Saved in this browser ${timeText(s.at)}.`
   return props.saveTarget?.kind === 'library' ? 'Edits are saved in this browser as your version.' : 'Saved in this browser once you start editing.'
 })
+
+/** the line under the sheet's heading: where the chart is saved (a shared chart: not yet) */
+const statusText = computed((): string => (saved ? saveText.value : props.shared ? 'A shared chart. It isn’t saved in this browser until you save it.' : ''))
+const saveFailed = computed(() => saved?.status.value.state === 'failed')
 
 /** edits not saved yet: the autosave is waiting, or failed and will try again; a shared chart is never saved */
 const unsaved = computed(() => !editor.fatal.value && (props.shared ? true : ['pending', 'failed'].includes(saved?.status.value.state ?? '')))
