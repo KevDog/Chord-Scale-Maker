@@ -680,8 +680,9 @@ its reasons into a chart as comments.
 
 ## 7b. Search and discoverability ([plan](superpowers/plans/2026-10-12-seo-discoverability.md))
 
-- **Tune pages:** every library chart has one at `/tunes/<name>` (`pages/tunes/[slug].vue`; `tunePath` turns the
-  slug's `_` into `-`, which search engines read as word breaks). It shows the heading fields, `aka:` titles, the
+- **Chart file names** match `[a-z0-9]+(-[a-z0-9]+)*.txt` (`web/test/library.test.ts`); the name is the address.
+- **Tune pages:** every library chart has one at `/tunes/<name>` (`pages/tunes/[slug].vue`; `<name>` is the chart's file
+  name: lowercase, hyphens, which search engines read as word breaks). It shows the heading fields, `aka:` titles, the
   source, and the changes as a table (section, bar, chord, function, scale) in concert pitch, with a button to the
   practice sheets (`/song?chart=<slug>`). The library links each title to its page.
   - **Text:** `tuneSummary` (engine `tune.ts`) gives the heading and one row per chord as the Changes sheet draws it;
@@ -737,6 +738,9 @@ its reasons into a chart as comments.
     chart back to its library text removes your version (`sameChart`: same lines, ignoring spacing and whether a
     default scale is written out). A new chart's first save moves the address to
     `?mine=<id>` without restarting the editor.
+  - Charts once had underscore names. `plugins/chartNames.client.ts` runs `migrateChartNames` (`utils/myCharts.ts`) on
+    load: it moves `csm-practice:` and `csm-level:` keys and an edited chart's `basedOn` from the old names. `mine:`
+    keys are untouched; a key that can't be written stays.
   - Download writes the text as a Blob; Open (`readChartFile`) takes a `.txt` up to the size limit.
   - Share links (`engine/src/share.ts`): `{ v: 1, chart, view }` as deflate-raw JSON in base64url after `#s=`. The view
     applies for that visit only (`linkPreferences`), and nothing is saved until **Save to My charts**. The router
