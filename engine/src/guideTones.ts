@@ -68,7 +68,7 @@ export type GuideNote = Readonly<{
   pitch: Pitched | null
   /** where it starts in the bar, from 0 */
   beat: number
-  beats: 1 | 2 | 3 | 4
+  beats: 0.25 | 0.5 | 1 | 2 | 3 | 4
   /** tied into this voice's next note (in the next bar, which may be on the next line) */
   tie: boolean
   /** continues the previous note: no accidental, no label */

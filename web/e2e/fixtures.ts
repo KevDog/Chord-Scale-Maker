@@ -104,8 +104,8 @@ export async function writeChart(page: Page, text: string): Promise<void> {
   if (chord) await expect(sheetChord(page, chord, section, Number(bar))).toBeAttached()
 }
 
-/** choose the Changes sheet's guide tone line, confirmed checked (retried: a click before hydration is lost) */
-export async function showGuides(page: Page, name: 'Off' | 'From 3rd' | 'From 7th'): Promise<void> {
+/** choose the Changes sheet's line mode (Off · Guide Tones · 7th Chords), confirmed checked (retried: a click before hydration is lost) */
+export async function showLine(page: Page, name: 'Off' | 'Guide Tones' | '7th Chords'): Promise<void> {
   const radio = page.getByRole('radio', { name, exact: true })
   await expect(async () => {
     if (!(await radio.isChecked())) await page.locator('label').filter({ has: radio }).click({ timeout: 1000 })
@@ -113,10 +113,29 @@ export async function showGuides(page: Page, name: 'Off' | 'From 3rd' | 'From 7t
   }).toPass({ timeout: 10_000 })
 }
 
+/** choose the Changes sheet's guide tone line: Off, or Guide Tones from the 3rd or the 7th */
+export async function showGuides(page: Page, name: 'Off' | 'From 3rd' | 'From 7th'): Promise<void> {
+  await showLine(page, name === 'Off' ? 'Off' : 'Guide Tones')
+  if (name !== 'Off') await pickOption(page, 'Guide tone line', name)
+}
+
 /** wait until every Changes line has been drawn with its guide tones (each line draws on its own) */
 export async function guidesDrawn(page: Page): Promise<void> {
   await expect
     .poll(() => page.locator('svg[aria-label^="Bars:"]').evaluateAll((els) => els.length > 0 && els.every((e) => e.getAttribute('aria-label')?.includes('; guide tones: '))))
+    .toBe(true)
+}
+
+/** choose 7th Chords with a pattern ("Up · root", "Voice-led", …) */
+export async function showArpeggios(page: Page, pattern: string): Promise<void> {
+  await showLine(page, '7th Chords')
+  await pickOption(page, 'Arpeggio pattern', pattern)
+}
+
+/** wait until every Changes line has been drawn with its arpeggios */
+export async function arpeggiosDrawn(page: Page): Promise<void> {
+  await expect
+    .poll(() => page.locator('svg[aria-label^="Bars:"]').evaluateAll((els) => els.length > 0 && els.every((e) => e.getAttribute('aria-label')?.includes('; 7th chords: '))))
     .toBe(true)
 }
 

@@ -43,6 +43,7 @@
 import { ArrowDownTrayIcon, TrashIcon } from '@heroicons/vue/16/solid'
 import type { BadgeColor } from '~/utils/catalyst/badge'
 import type { SavedMeta } from '~/utils/myCharts'
+import { songPath } from '~/utils/site'
 
 /** My charts on the library page: your edited versions, copies and new charts, newest first (client-only) */
 const props = defineProps<{ query: string }>()
@@ -66,7 +67,7 @@ onBeforeUnmount(() => window.removeEventListener('storage', onStorage))
 
 const shown = computed(() => charts.value.filter((c) => searchLibrary([{ slug: c.id, title: c.title, subtitle: '', composer: '', aka: [], text: '' }], props.query).length))
 
-const openHref = (c: SavedMeta): string => (c.kind === 'edited' && c.basedOn ? `/song?chart=${c.basedOn}` : `/song?mine=${c.id}`)
+const openHref = (c: SavedMeta): string => (c.kind === 'edited' && c.basedOn ? songPath(c.basedOn) : `/song?mine=${c.id}`)
 const kindLabel = (c: SavedMeta): string => (c.kind === 'edited' ? 'Edited' : c.kind === 'copy' ? 'Copy' : 'Mine')
 const changed = (at: number): string => {
   const d = new Date(at)

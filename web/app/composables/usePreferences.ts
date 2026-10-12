@@ -1,5 +1,6 @@
 import type { Ref } from 'vue'
-import { type GuideLine, type InstrumentName, isInstrumentName, type ShareView } from '@chord-scale-maker/engine'
+import { type ArpeggioPattern, type InstrumentName, isArpeggioPattern, isInstrumentName, type ShareView } from '@chord-scale-maker/engine'
+import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
 
@@ -20,18 +21,21 @@ export function usePreferences() {
   // the Changes sheet's study rows: each chord's numeral and its scale, both on until turned off
   const numerals = storedRef<boolean>('csm-numerals', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
   const scaleNames = storedRef<boolean>('csm-scale-names', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
-  // the Changes sheet's guide tone line, at most one: from the 3rd (A) or from the 7th (B); off until chosen
-  const guideLine = storedRef<GuideLine>('csm-guide-line', (s) => (s === 'off' || s === 'third' || s === 'seventh' ? s : undefined), 'off')
+  // the Changes sheet's line: off, guide tones (from the 3rd or the 7th) or 7th chord arpeggios (a pattern); off until chosen
+  const lineMode = storedRef<LineMode>('csm-line', (s) => (s === 'off' || s === 'guide' || s === 'arpeggio' ? s : undefined), 'off')
+  const guideLine = storedRef<GuideFrom>('csm-guide-line', (s) => (s === 'third' || s === 'seventh' ? s : undefined), 'third')
+  const arpeggio = storedRef<ArpeggioPattern>('csm-arpeggio', (s) => (isArpeggioPattern(s) ? s : undefined), 'up-root')
   // the editor's Source (the chart's text): hidden until shown
   const source = storedRef<boolean>('csm-source', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the /functions page's key: C major until another is picked
   const functionsKey = storedRef<string>('csm-functions-key', (s) => (FUNCTIONS_KEYS.includes(s) ? s : undefined), 'C')
-  return { instrument, spell, intervals, showEditor, numerals, scaleNames, guideLine, source, functionsKey }
+  return { instrument, spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, arpeggio, source, functionsKey }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
 export function linkPreferences(view: ShareView) {
   const own = usePreferences()
+  const choice = lineChoiceOf(view.line)
   // a link's spelling: from the root, its note, or (from, without a note) the key
   const note = PICKER_ROOTS.find((r) => r === view.start)
   const linked: Spell | undefined = view.mode === 'root' ? 'root' : view.mode === 'from' ? (note ?? 'key') : undefined
@@ -41,7 +45,9 @@ export function linkPreferences(view: ShareView) {
     intervals: ref<boolean>(view.intervals ?? own.intervals.value),
     numerals: ref<boolean>(view.numerals ?? own.numerals.value),
     scaleNames: ref<boolean>(view.scaleNames ?? own.scaleNames.value),
-    guideLine: ref<GuideLine>(view.guideLine ?? 'off'), // a link without one shows no line
+    lineMode: ref<LineMode>(choice.mode), // a link without a line shows none
+    guideLine: ref<GuideFrom>(choice.guide ?? own.guideLine.value),
+    arpeggio: ref<ArpeggioPattern>(choice.arpeggio ?? own.arpeggio.value),
     showEditor: own.showEditor, // whether the editor is open: yours, and remembered
     source: own.source,
   }

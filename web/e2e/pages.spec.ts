@@ -131,7 +131,7 @@ test('Help is in the navbar and footer, and its contents jump to each section', 
 })
 
 test('Report a chart error opens the contact form, pre-filled with the chart and details', async ({ page }) => {
-  await page.goto('/song?chart=autumn-leaves')
+  await page.goto('/song/autumn-leaves')
   await page.getByRole('button', { name: 'Report a chart error' }).click()
   await expect(page).toHaveURL(/\/contact/)
   const message = page.getByRole('textbox', { name: 'Message' })

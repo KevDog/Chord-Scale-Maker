@@ -29,7 +29,7 @@ test.describe('without JavaScript', () => {
     await expect(page.getByText('John Coltrane', { exact: true })).toBeVisible()
     const chords = await page.locator('tbody tr td:nth-child(3)').allTextContents()
     expect(chords.map((c) => c.trim())).toEqual(chordsOf('blue-trane'))
-    await expect(page.getByRole('link', { name: 'Open practice sheets' })).toHaveAttribute('href', '/song?chart=blue-trane')
+    await expect(page.getByRole('link', { name: 'Open practice sheets' })).toHaveAttribute('href', '/song/blue-trane')
   })
 })
 

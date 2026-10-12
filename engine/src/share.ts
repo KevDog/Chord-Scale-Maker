@@ -1,4 +1,4 @@
-import type { GuideLine } from './guideTones'
+import { isSheetLine, type SheetLine } from './arpeggios'
 import { type InstrumentName, isInstrumentName } from './instruments'
 import { isScaleLevel, type ScaleLevel } from './levels'
 import { LIMITS } from './limits'
@@ -21,8 +21,8 @@ export type ShareView = Readonly<{
   /** the Changes sheet's numerals and scale rows */
   numerals?: boolean
   scaleNames?: boolean
-  /** the Changes sheet's guide tone line: from the 3rd (A) or from the 7th (B); absent: off */
-  guideLine?: GuideLine
+  /** the Changes sheet's line: a guide tone line or an arpeggio pattern; absent: off */
+  line?: SheetLine
   sheet?: ShareSheet
   practice?: PracticeSelection
   level?: ScaleLevel
@@ -96,7 +96,7 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(typeof o.intervals === 'boolean' ? { intervals: o.intervals } : {}),
     ...(typeof o.numerals === 'boolean' ? { numerals: o.numerals } : {}),
     ...(typeof o.scaleNames === 'boolean' ? { scaleNames: o.scaleNames } : {}),
-    ...(o.guideLine === 'third' || o.guideLine === 'seventh' ? { guideLine: o.guideLine } : {}), // anything else: off
+    ...(isSheetLine(o.line) && o.line !== 'off' ? { line: o.line } : {}), // anything else: off
     ...(o.sheet === 'scales' || o.sheet === 'changes' ? { sheet: o.sheet } : {}),
     ...(practice ? { practice } : {}),
     ...(isScaleLevel(o.level) ? { level: o.level } : {}),

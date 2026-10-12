@@ -9,14 +9,16 @@ import { addCspMeta } from './build/csp'
 import { quotesPlugin } from './build/quotes'
 import { SECURITY_HEADERS } from './build/headers'
 import { buildVersion } from './build/version'
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from './app/utils/site'
-import { sitemapPaths, tunePathsOf } from './app/utils/sitemap'
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, songPath, tunePath } from './app/utils/site'
+import { chartSlugsOf, sitemapPaths } from './app/utils/sitemap'
 
 /** the engine package's folder (engine/ in the workspace): its charts/ is the library */
 const ENGINE_DIR = dirname(createRequire(import.meta.url).resolve('@chord-scale-maker/engine/package.json'))
 
 /** the pages search engines should find (server/routes/sitemap.xml.ts): the site's, then every library chart's tune page */
-const SITEMAP_PATHS = sitemapPaths(tunePathsOf(readdirSync(join(ENGINE_DIR, 'charts'))))
+// (the library's charts, by file name: the config can't load the #charts glob)
+const CHART_SLUGS = chartSlugsOf(readdirSync(join(ENGINE_DIR, 'charts')))
+const SITEMAP_PATHS = sitemapPaths(CHART_SLUGS.map(tunePath))
 
 /** dev: the engine's charts/ and chord_scales.json sit outside Vite's root, so it doesn't watch them by itself
  *  (quotes.json is watched by its own plugin) */
@@ -83,6 +85,7 @@ export default defineNuxtConfig({
         practice: true, // highlight a chosen subset of each scale's notes (docs/plan-practice.md); on since sign-off
         changes: true, // the Changes sheet: the chart as a study lead sheet, numerals and scales under the chords (docs/plan-changes.md); on since sign-off
         keySignatures: true, // the clef and key signature once, at the start of each sheet (docs/superpowers/specs/2026-10-10-key-signatures-design.md); on since sign-off
+        arpeggios: false, // 7th chord arpeggios on the Changes sheet (docs/superpowers/specs/2026-10-12-seventh-chord-arpeggios-design.md)
         functions: true, // author functions, @key areas and live analysis notes (docs/superpowers/specs/2026-10-09-chart-functions-design.md); on since sign-off
       },
     },
@@ -97,7 +100,8 @@ export default defineNuxtConfig({
   routeRules: { '/**': { headers: SECURITY_HEADERS }, '/_nuxt/**': { headers: SECURITY_HEADERS } },
   nitro: {
     // every page is prerendered and served as a static file; only /api/contact (and unknown URLs) run on the server
-    prerender: { routes: [...SITEMAP_PATHS, '/song', '/sitemap.xml'] },
+    // + each library chart's practice sheets (noindex: never in the sitemap)
+    prerender: { routes: [...SITEMAP_PATHS, '/song', ...CHART_SLUGS.map(songPath), '/sitemap.xml'] },
     virtual: { '#sitemap-paths': `export default ${JSON.stringify(SITEMAP_PATHS)}` },
     hooks: {
       // hash each page's inline scripts into a CSP <meta> (build/csp.ts)

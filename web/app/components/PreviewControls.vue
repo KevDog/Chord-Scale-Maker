@@ -46,8 +46,18 @@
           </div>
         </UiField>
         <UiField>
-          <UiLabel class="pl-3">Guide Tones</UiLabel>
-          <SegmentedControl v-model="guideLine" legend="Guide tones" name="guide-line" :options="GUIDE_LINES" />
+          <UiLabel class="pl-3">Line</UiLabel>
+          <div class="flex flex-wrap items-center gap-2">
+            <SegmentedControl v-model="lineMode" legend="Line" name="line-mode" :options="lineModes" />
+            <UiListbox v-if="lineMode === 'guide'" v-model="guideLine" class="w-32" aria-label="Guide tone line">
+              <template #selected="{ value }"><UiListboxLabel>{{ guideLabel(value) }}</UiListboxLabel></template>
+              <UiListboxOption v-for="g in GUIDE_LINES" :key="g.value" :value="g.value" :title="g.title"><UiListboxLabel>{{ g.label }}</UiListboxLabel></UiListboxOption>
+            </UiListbox>
+            <UiListbox v-else-if="lineMode === 'arpeggio'" v-model="arpeggio" class="w-40" aria-label="Arpeggio pattern">
+              <template #selected="{ value }"><UiListboxLabel>{{ ARPEGGIO_LABELS[value] }}</UiListboxLabel></template>
+              <UiListboxOption v-for="p in ARPEGGIO_PATTERNS" :key="p" :value="p"><UiListboxLabel>{{ ARPEGGIO_LABELS[p] }}</UiListboxLabel></UiListboxOption>
+            </UiListbox>
+          </div>
         </UiField>
       </template>
       <UiField>
@@ -80,7 +90,8 @@
 </template>
 
 <script setup lang="ts">
-import { type GuideLine, INSTRUMENTS, type InstrumentName, partFor } from '@chord-scale-maker/engine'
+import { ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpeggioPattern, INSTRUMENTS, type InstrumentName, partFor } from '@chord-scale-maker/engine'
+import type { GuideFrom, LineMode } from '~/utils/sheetLine'
 import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
 import type { SheetKind } from '~/utils/sheets'
 
@@ -91,22 +102,34 @@ const spell = defineModel<Spell>('spell', { required: true })
 const intervals = defineModel<boolean>('intervals', { required: true })
 const numerals = defineModel<boolean>('numerals', { default: true })
 const scaleNames = defineModel<boolean>('scaleNames', { default: true })
-const guideLine = defineModel<GuideLine>('guideLine', { default: 'off' })
+const lineMode = defineModel<LineMode>('lineMode', { default: 'off' })
+const guideLine = defineModel<GuideFrom>('guideLine', { default: 'third' })
+const arpeggio = defineModel<ArpeggioPattern>('arpeggio', { default: 'up-root' })
 /** the sheet editor is open: numerals and scales are shown (they are the pickers), their toggles rest */
 /** keyStart: the chart's key, written for the instrument (what "From key" starts on) */
 defineProps<{ lockLabels?: boolean; keyStart: string }>()
 const LOCKED = 'Shown while you edit: they are the pickers'
 
 const changes = useFeature('changes')
+const arpeggios = useFeature('arpeggios')
 const sheets = computed(() => SHEETS.filter((s) => s.value !== 'changes' || changes))
 // a solid white fill for the "off" toggles so they read on the tinted box (an outline button is transparent)
 const OFF_FILL = 'bg-white hover:bg-zinc-50 dark:bg-white/10 dark:hover:bg-white/15'
-// the Changes sheet's guide tone line: at most one at a time
+// the Changes sheet's line, at most one: guide tones or 7th chord arpeggios (with the flag on)
+const lineModes = computed((): { value: LineMode; label: string; title: string }[] => [
+  { value: 'off', label: 'Off', title: 'No line: slashes' },
+  { value: 'guide', label: 'Guide Tones', title: "A line that starts on the first chord's 3rd or 7th and moves to the nearest guide tone of each chord" },
+  ...(arpeggios ? [{ value: 'arpeggio' as const, label: '7th Chords', title: "Each chord's four chord tones, arpeggiated: quarters, eighths or sixteenths as the bar has one, two or more chords" }] : []),
+])
 const GUIDE_LINES = [
-  { value: 'off', label: 'Off', title: 'No guide tones: slashes' },
   { value: 'third', label: 'From 3rd', title: "A line that starts on the first chord's 3rd and moves to the nearest guide tone of each chord" },
   { value: 'seventh', label: 'From 7th', title: "A line that starts on the first chord's 7th and moves to the nearest guide tone of each chord" },
 ] as const
+const guideLabel = (v: GuideFrom): string => GUIDE_LINES.find((g) => g.value === v)?.label ?? ''
 const sheetLabel = (v: SheetKind): string => sheets.value.find((s) => s.value === v)?.label ?? ''
 const part = computed(() => partFor(instrument.value))
+// the flag off with an arpeggio saved: nothing is drawn, so rest the mode on Off
+watch(lineMode, () => {
+  if (!arpeggios && lineMode.value === 'arpeggio') lineMode.value = 'off'
+}, { immediate: true })
 </script>
