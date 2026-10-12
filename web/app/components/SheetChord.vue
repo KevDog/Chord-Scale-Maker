@@ -1,14 +1,15 @@
 <template>
   <div v-if="!isEditing" class="text-base font-semibold print:text-sm/4">
     <button
+      ref="button"
       type="button"
       :aria-label="label"
       :class="[
         'relative -mx-1 cursor-pointer rounded px-1 hover:bg-note-100 focus-visible:outline-2 focus-visible:outline-blue-500 dark:hover:bg-white/10',
-        selected && 'ring-2 ring-note-600 dark:ring-note-400',
+        selected && 'ring-2 ring-note-600 dark:ring-note-400 print:ring-0',
         unknown && 'underline decoration-amber-500 decoration-2 underline-offset-4',
       ]"
-      @click="emit('edit', adding ? { kind: 'slot', section, bar } : { kind: 'chord', line })"
+      @click="emit('edit', adding ? { kind: 'slot', section, bar } : { kind: 'chord', line, at: { section, bar } })"
     >
       <UiTouchTarget><ChordSymbol v-if="tokens" :tokens="tokens" /><span v-else>{{ text }}</span></UiTouchTarget>
     </button>
@@ -56,7 +57,7 @@
 
 <script setup lang="ts">
 import { barView, cellError, type ChartDoc, chordCompletions, chordPreview, type ChordPreview, chordsAfterTyping, type ChordToken, chordTokens, CONCERT, type GridPos, posOfLine, setBarChords, sheetScale } from '@chord-scale-maker/engine'
-import type { SheetEdit } from '~/utils/sheetChordEdit'
+import type { SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 
 /**
@@ -77,6 +78,7 @@ const props = defineProps<{
   editing: SheetEdit | null
   selected: boolean
   adding?: boolean // the new chord slot after the bar's chords, not a chord that exists
+  focusAt?: SheetFocus | null // the editor asks for focus on this chord's button (the field closed with nowhere to go)
 }>()
 const emit = defineEmits<{
   edit: [edit: SheetEdit]
@@ -88,12 +90,15 @@ const emit = defineEmits<{
 
 const id = useId()
 const input = ref<HTMLInputElement | null>(null)
+const button = ref<HTMLButtonElement | null>(null)
 const scaleView = inject(SCALE_VIEW, shallowRef(DEFAULT_VIEW))
 const isEditing = computed(() => {
   const e = props.editing
   if (!e) return false
-  return props.adding ? e.kind === 'slot' && e.section === props.section && e.bar === props.bar : e.kind === 'chord' && e.line === props.line
+  return props.adding ? e.kind === 'slot' && e.section === props.section && e.bar === props.bar : e.kind === 'chord' && e.line === props.line && here(e.at)
 })
+/** whether a place is this chord's: the same line can be drawn again by a written-out repeat */
+const here = (at: Readonly<{ section: string; bar: string }>): boolean => at.section === props.section && at.bar === props.bar
 const unknown = computed(() => !props.adding && !!props.text && !scaleChoices(props.text).known)
 
 const view = computed(() => barView(props.doc))
@@ -131,6 +136,13 @@ function open(): void {
 }
 watch(isEditing, (on) => on && open())
 onMounted(() => isEditing.value && open())
+/** the editor asks for focus on the button (the field closed by a key with nowhere to go) */
+watch(
+  () => props.focusAt,
+  (f) => {
+    if (f && !props.adding && f.line === props.line && here(f.at)) nextTick(() => button.value?.focus())
+  },
+)
 watch(draft, () => {
   refused.value = ''
   active.value = 0
@@ -162,7 +174,8 @@ function tokensOf(text: string): readonly ChordToken[] | null {
   }
 }
 const options = computed(() => (isEditing.value ? chordCompletions(draft.value).map((text) => ({ text, tokens: tokensOf(text), preview: previewOf(text) })) : []))
-watch([draft, isEditing], () => emit('preview', isEditing.value ? previewOf(draft.value) : null))
+// while open, the draft's reading; closing says nothing (finish did, and another chord may have opened since)
+watch([draft, isEditing], () => isEditing.value && emit('preview', previewOf(draft.value)))
 
 /** the draft into its bar; false (and the field stays) when the chart can't take it */
 function commit(text = draft.value): boolean {

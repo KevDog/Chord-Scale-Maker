@@ -3,8 +3,14 @@ import { barView, type ChartDoc, type GridPos, moveInGrid, posOfLine } from '@ch
 /** a chord tapped on the Changes sheet: the chart line it was written on, where it's drawn, and its box on screen */
 export type SheetChordEdit = Readonly<{ line: number; section: string; bar: string; anchor: Readonly<{ left: number; top: number; bottom: number }> }>
 
-/** what the sheet is editing: a chord by its doc line, or a new chord slot after a bar's chords */
-export type SheetEdit = Readonly<{ kind: 'chord'; line: number } | { kind: 'slot'; section: string; bar: string }>
+/**
+ * what the sheet is editing: a chord by its doc line and where it is drawn (a written-out repeat draws a line twice),
+ * or a new chord slot after a bar's chords (the bar as written)
+ */
+export type SheetEdit = Readonly<{ kind: 'chord'; line: number; at: SheetPlace } | { kind: 'slot'; section: string; bar: string }>
+export type SheetPlace = Readonly<{ section: string; bar: string }>
+/** a chord the editor wants focus on (its button), by line and where it is drawn; n makes each request its own */
+export type SheetFocus = Readonly<{ line: number; at: SheetPlace; n: number }>
 
 export type PopoverPlace = Readonly<{ left: number; top?: number; bottom?: number; maxHeight: number }>
 

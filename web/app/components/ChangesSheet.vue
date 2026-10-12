@@ -25,6 +25,7 @@
             :doc="doc"
             :editing="editing"
             :preview="preview"
+            :focus-at="focusAt"
             @tap="emit('tap', $event)"
             @edit="emit('edit', $event)"
             @update:doc="emit('update:doc', $event)"
@@ -47,7 +48,7 @@
 
 <script setup lang="ts">
 import { PlusIcon } from '@heroicons/vue/16/solid'
-import type { SheetChordEdit, SheetEdit } from '~/utils/sheetChordEdit'
+import type { SheetChordEdit, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 import { buildChanges, changesLinesPerPage, type ChartDoc, type ChordPreview, chunk, type GuideLine, pageSubtitle, type Part, type ScaleView } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones) */
@@ -67,6 +68,7 @@ const props = defineProps<{
   view?: ScaleView // the level blank cells play at; undefined: Standard
   editing?: SheetEdit | null // the sheet is the editor (leadSheetEditor): what it's editing; undefined: tap opens the chord editor dialog
   preview?: ChordPreview | null // the open field's draft, read in its bar
+  focusAt?: SheetFocus | null // a chord the editor wants focus on
 }>()
 const emit = defineEmits<{
   tap: [chord: SheetChordEdit]

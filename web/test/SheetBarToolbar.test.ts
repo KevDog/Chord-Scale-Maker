@@ -44,6 +44,7 @@ describe('SheetBarToolbar', () => {
     await press(first, 'Delete A bar 1')
     expect(first.emitted('update:doc')).toBeUndefined()
     expect(first.emitted('refused')?.[0]?.[0]).toMatch(/can’t start with a held bar/)
+    expect(first.text()).toMatch(/can’t start with a held bar/) // shown under the toolbar, not only announced (review: Important 5)
   })
 
   it('on a repeat’s bar offers Write out only', async () => {

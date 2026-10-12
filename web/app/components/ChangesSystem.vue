@@ -1,25 +1,9 @@
 <template>
-  <div data-slot="system" class="relative break-inside-avoid" @pointerleave="leaveBar">
+  <div data-slot="system" class="relative break-inside-avoid" @pointerleave="leaveBar" @focusout="leaveBar">
     <!-- section markers and key areas, then chord symbols, over their beats -->
     <div class="relative h-12 print:h-7">
-      <!-- the bar toolbar (the sheet as the editor), over the bar under the pointer, above its first beat -->
-      <SheetBarToolbar
-        v-if="toolbarBar"
-        :key="toolbarBar.key"
-        :doc="doc!"
-        :section="toolbarBar.section"
-        :bar="toolbarBar.bar"
-        :repeat-of="toolbarBar.repeatOf"
-        class="absolute top-0 z-20 -translate-y-full"
-        :style="{ left: `${toolbarBar.x * 100}%` }"
-        @pointerenter="holdBar"
-        @update:doc="emit('update:doc', $event)"
-        @said="emit('said', $event)"
-        @refused="emit('refused', $event)"
-        @dialog="(kind, section, bar) => emit('dialog', kind, section, bar)"
-      />
       <template v-for="m in marks" :key="m.key">
-        <div class="absolute bottom-0 whitespace-nowrap" :style="{ left: `${m.x * 100}%` }" @pointerenter="enterBar(m.barIndex)">
+        <div class="absolute bottom-0 whitespace-nowrap" :style="{ left: `${m.x * 100}%` }" @pointerenter="enterBar(m.barIndex)" @focusin="enterBar(m.barIndex)">
           <ChangesMarks v-if="m.segno || m.coda || m.nav" :segno="m.segno" :coda="m.coda" :nav="m.nav" />
           <div v-if="m.marker || m.keyArea" class="flex items-baseline gap-2 text-[0.65rem] print:text-[0.55rem]/3">
             <span v-if="m.marker" class="rounded-sm border border-zinc-400 px-1 font-semibold text-zinc-700 dark:border-zinc-500 dark:text-zinc-300 print:border-neutral-600 print:text-black">{{ m.marker }}</span>
@@ -38,6 +22,7 @@
             :editing="editing"
             :adding="m.slot"
             :selected="m.line === selectedLine"
+            :focus-at="focusAt"
             @edit="emit('edit', $event)"
             @update:doc="emit('update:doc', $event)"
             @said="emit('said', $event)"
@@ -58,6 +43,24 @@
             <template v-else><ChordSymbol v-if="m.tokens" :tokens="m.tokens" /><span v-else>{{ m.text }}</span></template>
           </div>
         </div>
+        <!-- the bar toolbar (the sheet as the editor), for the bar under the pointer or with focus: right after the bar's
+             last chord in the Tab order, above the bar's first beat (from the line's right edge for a bar past the middle) -->
+        <SheetBarToolbar
+          v-if="toolbarBar && m.barIndex === toolbarBar.index && m.lastInBar"
+          :key="toolbarBar.key"
+          :doc="doc!"
+          :section="toolbarBar.section"
+          :bar="toolbarBar.bar"
+          :repeat-of="toolbarBar.repeatOf"
+          class="absolute top-0 z-20 -translate-y-full whitespace-nowrap"
+          :style="toolbarBar.x > 0.6 ? { right: 0 } : { left: `${toolbarBar.x * 100}%` }"
+          @pointerenter="holdBar"
+          @focusin="holdBar"
+          @update:doc="emit('update:doc', $event)"
+          @said="emit('said', $event)"
+          @refused="emit('refused', $event)"
+          @dialog="(kind, section, bar) => emit('dialog', kind, section, bar)"
+        />
       </template>
       <span v-for="r in repeats" :key="`r${r.key}`" class="absolute bottom-0 -translate-x-full text-xs font-semibold text-zinc-600 dark:text-zinc-400 print:text-black" :style="{ left: `${r.x * 100}%` }">×{{ r.times }}</span>
     </div>
@@ -66,11 +69,11 @@
       <!-- the sheet as the editor: each bar's strip over the staff tells which bar the pointer is on -->
       <template v-if="editing !== undefined">
         <div v-for="(b, i) in line.bars" :key="`h${i}`" :data-bar="i" class="absolute inset-y-0 print:hidden" :style="{ left: `${barLeft(i) * 100}%`, width: `${(barLeft(i + 1) - barLeft(i)) * 100}%` }" @pointerenter="enterBar(i)" />
-        <!-- the ghost bar at the end of a section: the next bar, to add -->
+        <!-- the ghost bar at the end of a section with room on its last line: the next bar's slot, to add -->
         <button
-          v-if="line.sectionEnd && ghost"
+          v-if="ghost && !ghost.full"
           type="button"
-          :class="['absolute top-2 h-9 rounded-md border border-dashed border-zinc-400 text-xs font-semibold text-zinc-500 hover:border-note-500 hover:text-note-700 focus-visible:border-note-500 focus-visible:outline-none dark:border-zinc-500 dark:text-zinc-400 dark:hover:border-note-400 dark:hover:text-note-300 print:hidden', ghost.below && 'top-auto -bottom-1']"
+          :class="[GHOST, 'absolute top-2 h-9']"
           :style="ghost.style"
           :aria-label="`Add a bar at the end of ${ghost.section}`"
           @click="emit('addBar', ghost.section)"
@@ -120,6 +123,10 @@
         <template v-else>{{ m.scale }}</template>
       </span>
     </div>
+    <!-- a full last line: the ghost bar as a pill under it -->
+    <div v-if="editing !== undefined && ghost?.full" data-slot="after" class="flex justify-end pt-1 print:hidden">
+      <button type="button" :class="[GHOST, 'h-6 px-2']" :aria-label="`Add a bar at the end of ${ghost.section}`" @click="emit('addBar', ghost.section)">+ bar</button>
+    </div>
     <p v-if="drawError" class="rounded border border-dashed border-amber-500 px-3 py-2 text-sm text-amber-700 dark:text-amber-400">{{ drawError }}</p>
   </div>
 </template>
@@ -128,7 +135,7 @@
 import { type ChangesLine, type ChartDoc, type ChordPreview, CONCERT, rowNotes, sheetScale } from '@chord-scale-maker/engine'
 import { drawChangesLine } from '~/utils/changesDrawing'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
-import type { SheetChordEdit, SheetEdit } from '~/utils/sheetChordEdit'
+import type { SheetChordEdit, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 
 /**
  * one line of the Changes sheet: slashes (or guide tones), the chords over them, guide tone labels and the analysis
@@ -148,6 +155,7 @@ const props = defineProps<{
   doc?: ChartDoc // the chart, for the sheet editor's field
   editing?: SheetEdit | null // the sheet is the editor: what it's editing (null: nothing yet); undefined: the chord editor dialog instead
   preview?: ChordPreview | null // the reading of the draft in the open field, shown under its chord
+  focusAt?: SheetFocus | null // a chord the editor wants focus on (its field closed with nowhere to go)
 }>()
 const emit = defineEmits<{
   tap: [chord: SheetChordEdit] // a chord tapped, for the chord editor dialog
@@ -174,13 +182,15 @@ const notesOn = useFeature('functions')
 const marks = computed(() => {
   const all = props.line.bars.flatMap((bar, b) => {
     const at = (beat: number): number => Math.max(0, (xs.value[b]?.[beat] ?? 0) - 0.012)
-    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, barIndex: b, line: c.line, slot: false, x: at(c.beat), tokens: c.tokens, text: c.text, written: c.written, row: c.at, numeral: c.numeral, scale: c.scale, reason: c.reason, rule: c.rule, fallback: c.fallback, heardIn: c.heardIn, keyFrom: c.keyFrom, guide: c.guide, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
-    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, barIndex: b, line: -1, slot: false, x: at(0), tokens: null, text: '', written: '', row: { section: '', bar: '' }, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
+    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, barIndex: b, lastInBar: k === bar.chords.length - 1, line: c.line, slot: false, x: at(c.beat), tokens: c.tokens, text: c.text, written: c.written, row: c.at, numeral: c.numeral, scale: c.scale, reason: c.reason, rule: c.rule, fallback: c.fallback, heardIn: c.heardIn, keyFrom: c.keyFrom, guide: c.guide, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
+    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, barIndex: b, lastInBar: true, line: -1, slot: false, x: at(0), tokens: null, text: '', written: '', row: { section: '', bar: '' }, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
     // the new chord slot after a bar's chords (Space in the field), on the beat after the last chord's
     const e = props.editing
     const last = bar.chords.at(-1)
     if (e?.kind === 'slot' && last && last.at.section === e.section && last.at.bar === e.bar) {
-      chords.push({ key: `${b}-slot`, barIndex: b, line: last.line, slot: true, x: at(Math.min(last.beat + 1, props.beats - 1)), tokens: null, text: '', written: '', row: last.at, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: '', keyArea: '', segno: false, coda: false, nav: '' })
+      const prev = chords.at(-1)
+      if (prev) prev.lastInBar = false
+      chords.push({ key: `${b}-slot`, barIndex: b, lastInBar: true, line: last.line, slot: true, x: at(Math.min(last.beat + 1, props.beats - 1)), tokens: null, text: '', written: '', row: last.at, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: '', keyArea: '', segno: false, coda: false, nav: '' })
     }
     return chords
   })
@@ -189,7 +199,7 @@ const marks = computed(() => {
 /** each row's notes while the sheet is the editor: a written scale shows its pin on the label */
 const scaleView = inject(SCALE_VIEW, shallowRef(DEFAULT_VIEW))
 const notes = computed(() => (props.doc && props.editing !== undefined ? rowNotes(props.doc, scaleView.value) : null))
-/** the bar under the pointer (the sheet as the editor), kept while the pointer is on its toolbar */
+/** the bar under the pointer or with focus (the sheet as the editor), kept while the pointer or focus is on its toolbar */
 const hoverBar = ref<number | null>(null)
 let leaving: ReturnType<typeof setTimeout> | undefined
 function enterBar(i: number): void {
@@ -210,16 +220,16 @@ const toolbarBar = computed(() => {
   const i = hoverBar.value
   const bar = i === null ? undefined : props.line.bars[i]
   if (i === null || !bar || !props.doc) return null
-  return { key: `${bar.at.section}-${bar.at.bar}`, section: bar.at.section, bar: Number(bar.at.bar), repeatOf: bar.repeatOf, x: Math.max(0, (xs.value[i]?.[0] ?? i / props.barsPerLine) - 0.012) }
+  return { key: `${bar.at.section}-${bar.at.bar}`, index: i, section: bar.at.section, bar: Number(bar.at.bar), repeatOf: bar.repeatOf, x: Math.max(0, (xs.value[i]?.[0] ?? i / props.barsPerLine) - 0.012) }
 })
-/** the ghost bar's place: the next bar's slot when the line has room, else a tab under the line's end */
+const GHOST = 'rounded-md border border-dashed border-zinc-400 text-xs font-semibold text-zinc-500 hover:border-note-500 hover:text-note-700 focus-visible:border-note-500 focus-visible:outline-none dark:border-zinc-500 dark:text-zinc-400 dark:hover:border-note-400 dark:hover:text-note-300 print:hidden'
+/** the ghost bar (a section's last line, the sheet as the editor): the next bar's slot when the line has room, else a pill under the line */
 const ghost = computed(() => {
   const last = props.line.bars.at(-1)
-  if (!last) return null
+  if (!last || !props.line.sectionEnd) return null
   const n = props.line.bars.length
   const full = n >= props.barsPerLine
-  const width = 100 / props.barsPerLine
-  return { section: last.at.section, below: full, style: full ? { right: '0', width: `${width / 2}%` } : { left: `${(n / props.barsPerLine) * 100}%`, width: `${width}%` } }
+  return { section: last.at.section, full, style: { left: `${(n / props.barsPerLine) * 100}%`, width: `${100 / props.barsPerLine}%` } }
 })
 /** whether the mark is the chord in the open field, whose labels show the draft's reading */
 const drafted = (m: { line: number; slot: boolean }): boolean => props.preview !== undefined && props.editing?.kind === 'chord' && !m.slot && m.line === props.editing.line

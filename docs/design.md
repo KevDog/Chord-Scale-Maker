@@ -61,6 +61,7 @@ web/                      # Nuxt app (Vercel root directory); imports @chord-sca
     pages/about.vue, contact.vue, privacy.vue  # About (Jazz Lab thanks, the video, credits), the form, privacy
     pages/ui.vue          # dev-only showcase of the Catalyst components (removed from production builds)
     components/           # AppShell, EditorView, BarEditor, BarInspector, ChordChoices, SheetChordEditor,
+                          # SheetChord, SheetLabelPicker, SheetBarToolbar, SheetHeading (the sheet as the editor),
                           # ChartHeadingFields, MetaInput, ChartText, ChartTranspose,
                           # PreviewControls, SheetPages, ScaleSheet, ScaleStaff,
                           # ChangesSheet, ChangesSystem, ChordSymbol, NoteName
@@ -257,6 +258,21 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - **Phones (below `md`): light edits only.** The grid, its structure actions and the inspector are hidden; the
     note "Full editing works on a larger screen" sits under the title, and chords are changed on the sheet. The
     heading fields, Undo, the Source under ⋯ and Transpose stay. The library hides New chart there.
+  - **Lead-sheet editor** ([spec](superpowers/specs/2026-10-11-lead-sheet-editor-design.md); the `leadSheetEditor`
+    flag, on): from `md` up, with the editor open, the Changes sheet is itself an editing surface beside the bar grid,
+    under a banner ("Editing the sheet", Source, Done editing). A chord is a button that opens into a field on its
+    beat (`SheetChord`) with completions that read each candidate in that bar (`chordCompletions`, `chordPreview`:
+    numeral → scale at the sheet's level, labelled as the sheet labels scales, `sheetScale`); Enter and Tab commit
+    (Tab to the next bar's first chord, `nextChordLine`, skipping held bars), Space adds a chord slot, Esc cancels,
+    blank takes the chord out, `%` is the bar before; a refused draft keeps the field open with why. The numeral and
+    scale under each chord open the function and scale lists (`SheetLabelPicker` over `ChordChoices`, with its why);
+    a function the rules only guessed is underlined amber; a pinned scale shows its pin. The bar under the pointer
+    gets a toolbar (`SheetBarToolbar`: the inspector's actions by name; Write out alone on a written-out repeat); a
+    ghost "+ bar" ends each section (`ChangesLine.sectionEnd`, `ChangesBar.at`); + Section follows the sheet; the
+    jump and the new section use `BarDialog`. The heading is edited where it prints (`SheetHeading` in `SheetPages`'
+    `#heading` slot; the printed heading stays for print). The sheet keeps the instrument's clef and range but reads
+    in concert pitch while editing, with numerals and scales shown (their toggles rest); both return on Done. Phones
+    keep the bottom sheet alone. Every mark is hidden in print.
 - **Scale level** (`engine/src/levels.ts`): Basic / Standard / Advanced / Random, in the
   preview's toolbar. The level is a **view preference**, like the instrument: it is never written into the rows, so
   changing it is no edit (no undo step, the chart stays clean). The sheets play every blank scale cell at it
@@ -693,7 +709,8 @@ its reasons into a chart as comments.
     overrides one for a build or `make dev`.
   - `npm run e2e` builds with every flag on.
   - `myCharts` (My charts, New chart, Download/Open, share links), `changes` (the Changes sheet),
-    and `practice` (the Practice panel) are on, since sign-off. Guide tones on the Changes sheet have no flag: their
+    `practice` (the Practice panel), `keySignatures`, `functions` and `leadSheetEditor` (the Changes sheet as the
+    editor) are on, since sign-off. Guide tones on the Changes sheet have no flag: their
     toggles start off. The bar editor shipped behind `barEditor`; at its sign-off the old row grid went, and the flag
     with it. `scaleLevels` (the Scale level control) and `proposedScales` (a blank scale cell plays the analysis,
     §7a) went the same way at theirs.
@@ -813,7 +830,8 @@ Pages are static, and the only server code is the contact function, so the attac
 - **App tests (`web/test/`):** `@nuxt/test-utils` (Nuxt runtime, happy-dom) with Vue Test Utils. They cover:
   - `useChartEditor` sync and debounce, and `useChartHistory` undo
   - library build and search
-  - scale choices, the bar editor (`BarEditor`, `BarInspector`, `ChordChoices`, `SheetChordEditor`) and the heading
+  - scale choices, the bar editor (`BarEditor`, `BarInspector`, `ChordChoices`, `SheetChordEditor`), the sheet
+    editor (`SheetChord`, `SheetLabelPicker`, `SheetBarToolbar`, `SheetHeading`, `SheetPages`) and the heading
     fields' validation
   - `ChartTranspose`
   - the preview controls (`EditorView`)

@@ -11,7 +11,7 @@ const rows = (d: ChartDoc | undefined): string[] => (d ? serializeChart(d).split
 const settle = async () => {
   for (let i = 0; i < 3; i++) await nextTick()
 }
-const mount = (editing: SheetEdit | null, over: Partial<{ line: number; bar: string; text: string; adding: boolean }> = {}) =>
+const mount = (editing: SheetEdit | null, over: Partial<{ line: number; section: string; bar: string; text: string; adding: boolean }> = {}) =>
   mountSuspended(SheetChord, {
     props: { doc, line: 3, section: 'A', bar: '2', text: 'G7', tokens: null, label: 'Edit G7, A bar 2', editing, selected: false, ...over },
     attachTo: document.body,
@@ -32,11 +32,35 @@ describe('SheetChord', () => {
     const b = w.find('button')
     expect(b.attributes('aria-label')).toBe('Edit G7, A bar 2')
     await b.trigger('click')
-    expect(w.emitted('edit')?.[0]).toEqual([{ kind: 'chord', line: 3 }])
+    expect(w.emitted('edit')?.[0]).toEqual([{ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } }])
+  })
+
+  it('opens only where the edit says the chord is drawn: a written-out repeat draws the same line twice (review: Critical 1)', async () => {
+    const drawnInRepeat = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } }, { section: 'C', bar: '2' })
+    expect(drawnInRepeat.find('input').exists()).toBe(false)
+    expect(drawnInRepeat.find('button').exists()).toBe(true)
+    document.body.innerHTML = ''
+    const drawnHere = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
+    expect(drawnHere.find('input').exists()).toBe(true)
+  })
+
+  it('closed for another chord, it neither takes focus back nor blanks the preview (review: Important 1)', async () => {
+    const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
+    await settle()
+    await type(w, 'G7b9')
+    const previews = w.emitted('preview')?.length ?? 0
+    await field(w).trigger('keydown', { key: 'Tab', shiftKey: true })
+    expect(w.emitted('done')?.[0]).toEqual(['prev'])
+    const afterKey = w.emitted('preview')?.length ?? 0
+    expect(afterKey).toBe(previews + 1) // the one null that goes with done
+    await w.setProps({ editing: { kind: 'chord', line: 2, at: { section: 'A', bar: '1' } } })
+    await settle()
+    expect(w.emitted('preview')?.length).toBe(afterKey) // nothing more
+    expect(document.activeElement).not.toBe(w.find('button').element)
   })
 
   it('is a field with the chord selected when editing', async () => {
-    const w = await mount({ kind: 'chord', line: 3 })
+    const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
     await settle()
     const el = field(w)
     expect(el.attributes('aria-label')).toBe('Chord, A bar 2')
@@ -47,7 +71,7 @@ describe('SheetChord', () => {
   })
 
   it('lists completions with each one’s reading in this bar, the typed text first', async () => {
-    const w = await mount({ kind: 'chord', line: 3 })
+    const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
     await type(w, 'G7b')
     const options = w.findAll('[role=option]').map((o) => o.text().replace(/\s+/g, ' '))
     expect(options[0]).toMatch(/^G7b/)
@@ -56,7 +80,7 @@ describe('SheetChord', () => {
   })
 
   it('reports the draft’s reading as it changes, and nothing once done', async () => {
-    const w = await mount({ kind: 'chord', line: 3 })
+    const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
     await type(w, 'G7b9')
     expect(w.emitted('preview')?.at(-1)?.[0]).toMatchObject({ numeral: 'V7', readable: true })
     await type(w, 'Gxyz')
@@ -66,7 +90,7 @@ describe('SheetChord', () => {
   })
 
   it('commits on Enter once, and says so', async () => {
-    const w = await mount({ kind: 'chord', line: 3 })
+    const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
     await type(w, 'Db7')
     await field(w).trigger('keydown', { key: 'Enter' })
     await settle()
@@ -77,7 +101,7 @@ describe('SheetChord', () => {
   })
 
   it('takes the active completion on Enter', async () => {
-    const w = await mount({ kind: 'chord', line: 3 })
+    const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
     await type(w, 'G7b')
     await field(w).trigger('keydown', { key: 'ArrowDown' })
     await field(w).trigger('keydown', { key: 'Enter' })
@@ -88,7 +112,7 @@ describe('SheetChord', () => {
   it('commits and moves on Tab and ⇧Tab, commits and adds on Space', async () => {
     for (const [key, shift, then] of [['Tab', false, 'next'], ['Tab', true, 'prev'], [' ', false, 'add']] as const) {
       document.body.innerHTML = ''
-      const w = await mount({ kind: 'chord', line: 3 })
+      const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
       await type(w, 'G13')
       await field(w).trigger('keydown', { key, shiftKey: shift })
       await settle()
@@ -97,8 +121,20 @@ describe('SheetChord', () => {
     }
   })
 
+  it('gives focus to its button when the editor asks (Review Focus 2: Tab with nowhere to go)', async () => {
+    const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
+    await settle()
+    await field(w).trigger('keydown', { key: 'Tab' })
+    await w.setProps({ editing: null, focusAt: { line: 3, at: { section: 'A', bar: '2' }, n: 1 } })
+    await settle()
+    expect(document.activeElement).toBe(w.find('button').element)
+    await w.setProps({ focusAt: { line: 3, at: { section: 'C', bar: '2' }, n: 2 } }) // drawn elsewhere: not this one
+    await settle()
+    expect(document.activeElement).toBe(w.find('button').element) // unchanged, not re-taken from another instance
+  })
+
   it('cancels on Escape without writing', async () => {
-    const w = await mount({ kind: 'chord', line: 3 })
+    const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
     await type(w, 'Db7')
     await field(w).trigger('keydown', { key: 'Escape' })
     expect(w.emitted('update:doc')).toBeUndefined()
@@ -106,7 +142,7 @@ describe('SheetChord', () => {
   })
 
   it('refuses a draft the chart can’t hold, and keeps the field open with why (Review Focus 4)', async () => {
-    const w = await mount({ kind: 'chord', line: 3 })
+    const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
     await type(w, 'G7 | x')
     await field(w).trigger('keydown', { key: 'Enter' })
     await settle()
@@ -116,7 +152,7 @@ describe('SheetChord', () => {
   })
 
   it('refuses taking out a section’s first chord', async () => {
-    const w = await mount({ kind: 'chord', line: 2 }, { line: 2, bar: '1', text: 'Dm7' })
+    const w = await mount({ kind: 'chord', line: 2, at: { section: 'A', bar: '1' } }, { line: 2, bar: '1', text: 'Dm7' })
     await type(w, '')
     await field(w).trigger('keydown', { key: 'Enter' })
     await settle()
@@ -125,7 +161,7 @@ describe('SheetChord', () => {
   })
 
   it('% is the bar before', async () => {
-    const w = await mount({ kind: 'chord', line: 3 })
+    const w = await mount({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
     await type(w, '%')
     await field(w).trigger('keydown', { key: 'Enter' })
     await settle()
@@ -149,7 +185,7 @@ describe('SheetChord', () => {
 
   it('refuses a fifth chord in a 4/4 bar on Space (Review Focus 1)', async () => {
     const full = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 1 | G7\nA | 1 | Em7\nA | 1 | A7\nA | 2 | CMaj7\n').value
-    const w = await mountSuspended(SheetChord, { props: { doc: full, line: 5, section: 'A', bar: '1', text: 'A7', tokens: null, label: 'Edit A7, A bar 1', editing: { kind: 'chord', line: 5 }, selected: false }, attachTo: document.body })
+    const w = await mountSuspended(SheetChord, { props: { doc: full, line: 5, section: 'A', bar: '1', text: 'A7', tokens: null, label: 'Edit A7, A bar 1', editing: { kind: 'chord', line: 5, at: { section: 'A', bar: '1' } }, selected: false }, attachTo: document.body })
     await settle()
     await field(w).trigger('keydown', { key: ' ' })
     await settle()

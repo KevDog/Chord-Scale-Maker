@@ -4,7 +4,7 @@ import { nextTick } from 'vue'
 import EditorView from '~/components/EditorView.vue'
 import { CHART_REPORT_KEY } from '~/utils/chartReport'
 import { loadChart, saveChart } from '~/utils/myCharts'
-import { decodeShare, type ShareView } from '@chord-scale-maker/engine'
+import { decodeShare, parseChart, serializeChart, type ShareView } from '@chord-scale-maker/engine'
 
 const { navigate } = vi.hoisted(() => ({ navigate: vi.fn() }))
 mockNuxtImport('navigateTo', () => navigate)
@@ -487,7 +487,7 @@ describe('EditorView lead-sheet editor', () => {
     useRuntimeConfig().public.features.leadSheetEditor = true
   })
   afterEach(() => {
-    useRuntimeConfig().public.features.leadSheetEditor = false
+    useRuntimeConfig().public.features.leadSheetEditor = true
     localStorage.clear()
   })
 
@@ -511,6 +511,55 @@ describe('EditorView lead-sheet editor', () => {
     expect(changesSheet(w).props('numerals')).toBe(true)
     expect(localStorage.getItem('csm-numerals')).toBe('off')
     expect(buttonCalled(w, 'Numerals')?.attributes('disabled')).toBeDefined()
+  })
+
+  const THREE = 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n' // lines 2, 3, 4
+  const mountThree = () => mountSuspended(EditorView, { props: { initialText: THREE }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+  const sheetEmit = async (w: Wrapper, event: string, ...args: unknown[]) => {
+    changesSheet(w).vm.$emit(event, ...args)
+    await nextTick()
+  }
+
+  it('moves the field by bars, carries where the chord is drawn, and asks for focus back where there is nowhere to go', async () => {
+    const w = await mountThree()
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await sheetEmit(w, 'edit', { kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
+    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
+    await sheetEmit(w, 'done', 'next')
+    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 4, at: { section: 'A', bar: '3' } })
+    await sheetEmit(w, 'done', 'next') // the last chord: nowhere to go
+    expect(changesSheet(w).props('editing')).toBeNull()
+    expect(changesSheet(w).props('focusAt')).toMatchObject({ line: 4, at: { section: 'A', bar: '3' } })
+  })
+
+  it('from the new chord slot, Tab moves on and Enter gives focus to the bar’s last chord (review: Important 2)', async () => {
+    const w = await mountThree()
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await sheetEmit(w, 'edit', { kind: 'chord', line: 2, at: { section: 'A', bar: '1' } })
+    await sheetEmit(w, 'done', 'add')
+    expect(changesSheet(w).props('editing')).toEqual({ kind: 'slot', section: 'A', bar: '1' })
+    await sheetEmit(w, 'update:doc', parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 1 | A7\nA | 2 | G7\nA | 3 | CMaj7\n').value)
+    await sheetEmit(w, 'done', 'next')
+    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 4, at: { section: 'A', bar: '2' } })
+    await sheetEmit(w, 'done', 'add')
+    await sheetEmit(w, 'done', 'stay') // the slot closed empty
+    expect(changesSheet(w).props('editing')).toBeNull()
+    expect(changesSheet(w).props('focusAt')).toMatchObject({ line: 4, at: { section: 'A', bar: '2' } })
+  })
+
+  it('undoes from the sheet: ⌘Z in the preview and the banner’s Undo (review: Important 4)', async () => {
+    const w = await mountThree()
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    const before = changesSheet(w).props('doc')
+    await sheetEmit(w, 'update:doc', parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | Db7\nA | 3 | CMaj7\n').value)
+    expect(changesSheet(w).props('doc')).not.toBe(before)
+    await w.find('[aria-label="Preview"]').trigger('keydown', { key: 'z', metaKey: true })
+    await nextTick()
+    expect(serializeChart(changesSheet(w).props('doc'))).toMatch(/A \| 2 \| G7/)
+    await sheetEmit(w, 'update:doc', parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | Db7\nA | 3 | CMaj7\n').value)
+    await w.find('button[aria-label="Undo the last change"]').trigger('click')
+    await nextTick()
+    expect(serializeChart(changesSheet(w).props('doc'))).toMatch(/A \| 2 \| G7/)
   })
 
   it('shows no banner with the flag off', async () => {
