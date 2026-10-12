@@ -32,8 +32,13 @@ the Changes sheet.
 - **Chord list.** The distinct chord symbols (by text) of the line's rows, in first-appearance order.
 - **Representative.** A line's first row. Its notes, interval labels, practice keys and preset picks are the line's.
   They hold for every chord on it, since all are defined by the scale, chord root and quality.
-- **Rows that can't be drawn** ("Choose a scale", "Can't read this chord", a start error) are lines too. They merge
-  only with rows of the same chord text and the same error, and sit in first-appearance order like the rest.
+- A slash chord whose bass doesn't change its reading merges with the plain chord: D7/F♯ joins D7's line
+  (same root and quality), and its symbol is listed (`D7 · D7/F♯`).
+- **Rows whose scale or chord can't be read** ("Choose a scale", "Can't read this chord", an unknown scale or
+  quality) are lines too. They merge only with rows of the same chord text and the same scale text, and sit in
+  first-appearance order like the rest. A start error (From X with a bad note) is sheet-wide, so it doesn't affect
+  the lines.
+- One chord can appear on two lines when it plays two scales (Autumn Leaves' E7: 14 lines from 39 rows).
 
 ## Engine (`engine/src/sheet.ts`)
 
@@ -63,13 +68,13 @@ the Changes sheet.
 
 - Engine, test first (`engine/src/__tests__/sheet.test.ts`):
   - `scaleLines`: repeats merge; order is first appearance; Cm7 + Cm9 merge; CmMaj7 + Cm6 split; C7 + C7♭9 split;
-    C♯m7 + D♭m7 merge; the slash chord stays apart; error rows merge only with the same chord and error; an empty
+    C♯m7 + D♭m7 merge; the slash chord stays apart; rows that can't be read merge only with the same chord and scale text; an empty
     chart gives no lines; the chord list keeps first-appearance order without duplicates.
   - `buildSheet`: Autumn Leaves (library chart) gives its distinct-line count, not 39; pages split lines; the last
     line is `last`; ids are stable when a repeat is added further on; `chords` holds every symbol.
   - `practice.test.ts`: presets on a merged line light the representative's picks.
 - `web/test/ScaleSheet.test.ts`: the label shows the scale and the chord list; no bar text.
-- e2e: re-pin the stave counts on the Scales sheet (`transposition.spec.ts`, `print.spec.ts`). The print test's
-  "12 staves a page with ledger lines" needs a chart with more than 12 distinct lines; write one in the test
-  (`writeChart`) rather than relying on a library chart.
+- e2e: re-pin the Scales sheet's counts on Autumn Leaves, 39 staves to 14 and 4 printed pages to 2 (12 + 2), in
+  `print.spec.ts`, `transposition.spec.ts` and `editor.spec.ts` (practice: 78 guide tones to 28; focus mode). 14 lines
+  still fill a page, so the "12 staves a page with ledger lines" check keeps Autumn Leaves.
 - `make golden` is unaffected (the fixture holds scales per row, not sheet layout); confirm it stays green.
