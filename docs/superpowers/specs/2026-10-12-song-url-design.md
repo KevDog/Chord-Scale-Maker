@@ -35,10 +35,10 @@ Three things a visitor's browser holds name a library chart:
 - practice picks: `csm-practice:round_midnight:<mode>`
 - the scale level: `csm-level:round_midnight`
 
-`migrateChartNames(slugs)` (`web/app/utils/myCharts.ts`, beside `migrateDraft`), run once on load where
-`migrateDraft` runs:
-- rewrites `basedOn` and the two key families when the name with `_` → `-` is a library chart's slug
-  (so `mine:<id>` keys and unknown names are untouched);
+`migrateChartNames()` (`web/app/utils/myCharts.ts`, beside `migrateDraft`), run on every load by a client plugin
+(`web/app/plugins/chartNames.client.ts`):
+- rewrites `basedOn` and the two key families whose chart name has a `_` (found by listing the keys, so the
+  plugin needn't load the library); `mine:<id>` keys are untouched;
 - if both the old and the new key exist, keeps the new and removes the old;
 - is idempotent: a second run changes nothing; storage that throws (private mode) is skipped, as `storage.ts` does.
 
@@ -85,7 +85,7 @@ existing `prerender:generate` hook.
 
 ## Testing
 - Part 1, unit: the name test over `engine/charts/`; `tunePath`; `migrateChartNames` (each key family, `basedOn`,
-  both-keys collision, `mine:` and unknown names untouched, idempotent).
+  both-keys collision, `mine:` keys untouched, a full storage keeps the old key, idempotent).
 - Part 1, e2e: an edited library chart and practice picks saved under the old names survive a reload (storage
   seeded before load).
 - Part 2, unit: `songPath`, `chartSlug`. e2e: `/song/<name>` opens the chart (canonical, `noindex`); the redirects
