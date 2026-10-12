@@ -1,0 +1,72 @@
+title: Shaw 'Nuff
+composer: Charlie Parker, Dizzy Gillespie
+style: Up
+key: Bb
+form: AABA, 32 bars
+source:
+# analysis: 2026-10-12, rules v1; Bb
+
+# book tempo marking: Fast Bebop
+# solo on the form (ABC); after solos, D.S. (to A), play the head, then D.C. (to the intro) al Fine: the Fine is in Intro bar 18
+# section | bar | chord
+# Intro bars 1–4: N.C. (drums with piano), repeated
+@key Intro 5 Bbm
+# area: Bb minor (bars 5–13)
+Intro | 5  | BbmMaj7  # from the symbol: minor-major 7th
+Intro | 7  | Cb/Eb    # a non-tonic major chord: Lydian
+Intro | 9  | BbmMaj7  # from the symbol: minor-major 7th
+Intro | 11 | Cb7      # tritone substitute: resolves down a half step to Bbm
+Intro | 13 | Bbm      # tonic minor: Dorian by convention
+# Intro bars 14–18: N.C. (hi-hat continues; drums in 17–18); bar 18: the Fine (fermata, to end)
+# alt (optional): Intro bars 19–20 (Bb6), a break with a sample piano fill
+@key A 1 Bb
+# area: Bb major (bars 1–32)
+A     | 1  | Bb6      # tonic: the 4th is in the key
+@segno A 1
+A     | 1  | Gm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+A     | 2  | Cm7      # ii of the ii–V to Bb
+A     | 2  | F7       # V7 of Bb: natural tensions
+A     | 3  | Bb6      # tonic: the 4th is in the key
+A     | 3  | G7#5     # V7/ii in Bb: the b13 is in the key, the #11 from the symbol
+A     | 4  | Cm7      # ii of F7#5: Dorian
+A     | 4  | F7#5     # extended dominant: V7 of Bb7; #11 and b13 from the symbol
+A     | 5  | Bb7      # V7/IV in Bb: natural tensions
+A     | 6  | Eb6      # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
+A     | 6  | Edim7    # ♯IV°7 to I over its 5th: A7♭9 without its root, the ♯II°7's notes
+A     | 7  | Bb6/F    # tonic: the 4th is in the key
+A     | 7  | G7       # V7/ii in Bb: the b13 is in the key
+A     | 8  | Cm7      # ii of the ii–V to Bb
+A     | 8  | F7       # V7 of Bb: natural tensions
+A     | 9  | Bb6      # tonic: the 4th is in the key
+A     | 9  | Gm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+A     | 10 | Cm7      # ii of the ii–V to Bb
+A     | 10 | F7       # V7 of Bb: natural tensions
+A     | 11 | Bb6      # tonic: the 4th is in the key
+A     | 11 | G7#5     # V7/ii in Bb: the b13 is in the key, the #11 from the symbol
+A     | 12 | Cm7      # ii of F7#5: Dorian
+A     | 12 | F7#5     # extended dominant: V7 of Bb7; #11 and b13 from the symbol
+A     | 13 | Bb7      # V7/IV in Bb: natural tensions
+A     | 14 | Eb6      # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
+A     | 14 | Edim7    # ♯IV°7 to I over its 5th: A7♭9 without its root, the ♯II°7's notes
+A     | 15 | Bb6/F    # tonic: the 4th is in the key
+A     | 15 | F7       # V7 of Bb: natural tensions
+A     | 16 | Bb6      # tonic: the 4th is in the key
+B     | 17 | D7b5     # extended dominant: each one falls a fifth into the next: the #11 from the symbol
+B     | 19 | G7b5     # extended dominant: each one falls a fifth into the next: the #11 from the symbol
+B     | 21 | C13      # V7 of V7: the dominant of the dominant: natural tensions
+B     | 23 | F7       # V7 of Bb: natural tensions
+C     | 25 | Bb6      # tonic: the 4th is in the key
+C     | 25 | Gm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+C     | 26 | Cm7      # ii of the ii–V to Bb
+C     | 26 | F7       # V7 of Bb: natural tensions
+C     | 27 | Bb6      # tonic: the 4th is in the key
+C     | 27 | G7#5     # V7/ii in Bb: the b13 is in the key, the #11 from the symbol
+C     | 28 | Cm7      # ii of F7#5: Dorian
+C     | 28 | F7#5     # extended dominant: V7 of Bb7; #11 and b13 from the symbol
+C     | 29 | Bb7      # V7/IV in Bb: natural tensions
+C     | 30 | Eb6      # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
+C     | 30 | Edim7    # ♯IV°7 to I over its 5th: A7♭9 without its root, the ♯II°7's notes
+C     | 31 | Bb6/F    # tonic: the 4th is in the key
+C     | 31 | F7       # V7 of Bb: natural tensions
+C     | 32 | Bb6      # tonic: the 4th is in the key
+@nav C 32 D.S.

@@ -1,0 +1,82 @@
+title: Search for Peace
+composer: McCoy Tyner
+style: Medium ballad
+key: F
+form: AABC, 32 bars
+source:
+# analysis: 2026-10-12, rules v1; F
+
+# the book's Gm7(add11) is written Gm11
+# the chords in parentheses (G9) are not used during solos
+# solo on the form (AABC); after solos, D.C. al Coda (no repeat): the coda is taken in A bar 8, on the E7/B
+# section | bar | chord
+@key A1 1 F
+A1   | 1  | Am7b5      # iiø7 of D7alt: Locrian, the key's own notes (its ♭2 is a passing note)
+A1   | 1  | D7alt      # from the symbol: altered
+A1   | 2  | FMaj7/G    # tonic: the 4th is in the key
+# alt (optional): bar 2, beat 2 (G9), then FMaj7/G again on beat 3
+A1   | 2  | G9         # II7 in F, not resolving: natural tensions
+A1   | 3  | Am7b5      # iiø7 of D7alt: Locrian, the key's own notes (its ♭2 is a passing note)
+A1   | 3  | D7alt      # from the symbol: altered
+A1   | 4  | FMaj7/G    # tonic: the 4th is in the key
+# alt (optional): bar 4, beat 2 (G9), then FMaj7/G again on beat 3
+A1   | 4  | G9         # II7 in F, not resolving: natural tensions
+# book: Gm7(add11)
+A1   | 5  | Gm11       # ii of the ii–V to F minor
+A1   | 5  | C7b9       # V7 of F: the b9 from the symbol
+A1   | 6  | Fm7        # a borrowed minor chord: Dorian, its own key
+A1   | 6  | AbMaj7/Bb  # ♭IIImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
+A1   | 6  | Bb7b9      # V7/bvii in F: the #11 is in the key, the b9 from the symbol
+A1   | 7  | Ebm7       # a borrowed minor chord: Dorian, its own key
+A1   | 7  | GbMaj7/Ab  # ♭IImaj7, borrowed from F Phrygian: Lydian (its ♯11 is in the key)
+A1   | 7  | Ab7b9      # V7/bvi in F: the #11 is in the key, the b9 from the symbol
+A1   | 8  | C#m7       # a borrowed minor chord: Dorian, its own key
+A1   | 8  | E7sus4/B   # VII7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+A1   | 8  | E7/B       # V7/iii in F: b9 and b13 are in the key
+@coda A1 8
+@nav A1 8 To Coda (after solos)
+@copy A1 A2 8
+# B: a C pedal (C13, Ab13/C) to the dominant of F
+@key B 17 F
+B    | 17 | C13        # V7 in F, not resolving: natural tensions
+B    | 17 | Ab13/C     # ♭III7 from the parallel minor: Lydian Dominant
+B    | 18 | C13        # V7 in F, not resolving: natural tensions
+B    | 18 | Ab13/C     # ♭III7 from the parallel minor: Lydian Dominant
+B    | 19 | C13        # V7 in F, not resolving: natural tensions
+B    | 19 | Ab13/C     # ♭III7 from the parallel minor: Lydian Dominant
+B    | 20 | Am7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B    | 20 | D7         # V7/ii in F: the b13 is in the key
+B    | 21 | Gm9        # ii: Dorian, the key’s own notes
+B    | 21 | AbMaj7/G   # from the symbol: sus b9
+B    | 22 | Gm9        # ii: Dorian, the key’s own notes
+B    | 22 | AbMaj7/G   # from the symbol: sus b9
+B    | 23 | Gm9        # ii: Dorian, the key’s own notes
+B    | 23 | AbMaj7/G   # from the symbol: sus b9
+B    | 24 | FMaj7/G    # tonic: the 4th is in the key
+B    | 24 | G13        # II7 in F, not resolving: natural tensions
+C    | 25 | Am7b5      # iiø7 of D7alt: Locrian, the key's own notes (its ♭2 is a passing note)
+C    | 25 | D7alt      # from the symbol: altered
+C    | 26 | FMaj7/G    # tonic: the 4th is in the key
+# alt (optional): bar 26, beat 2 (G9), then FMaj7/G again on beat 3
+C    | 26 | G9         # II7 in F, not resolving: natural tensions
+C    | 27 | Am7b5      # iiø7 of D7alt: Locrian, the key's own notes (its ♭2 is a passing note)
+C    | 27 | D7alt      # from the symbol: altered
+C    | 28 | FMaj7/G    # tonic: the 4th is in the key
+# alt (optional): bar 28, beat 2 (G9), then FMaj7/G again on beat 3
+C    | 28 | G9         # II7 in F, not resolving: natural tensions
+# book: Gm7(add11)
+C    | 29 | Gm11       # ii of the ii–V to F minor
+C    | 29 | C7b9       # V7 of F: the b9 from the symbol
+C    | 30 | Fm7        # a borrowed minor chord: Dorian, its own key
+C    | 30 | AbMaj7/Bb  # ♭IIImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
+C    | 30 | Bb7b9      # V7/bvii in F: the #11 is in the key, the b9 from the symbol
+C    | 31 | Ebm7       # a borrowed minor chord: Dorian, its own key
+C    | 31 | GbMaj7/Ab  # ♭IImaj7, borrowed from F Phrygian: Lydian (its ♯11 is in the key)
+C    | 31 | Ab7b9      # V7/bvi in F: the #11 is in the key, the b9 from the symbol
+C    | 32 | C#m7       # a borrowed minor chord: Dorian, its own key
+C    | 32 | E7sus4/B   # VII7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+C    | 32 | E7/B       # V7/iii in F: b9 and b13 are in the key
+@nav C 32 D.C. al Coda
+# Coda: C13 held (fermata), a piano fill
+Coda | 1  | C13        # static dominant: its own mode
+@coda Coda 1

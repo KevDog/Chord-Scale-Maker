@@ -1,0 +1,52 @@
+title: Robbin's Nest
+composer: Illinois Jacquet, Sir Charles Thompson
+style: Medium swing
+key: Db
+form: AABC, 32 bars
+source:
+# analysis: 2026-10-12, rules v1; Db
+# book: composers printed as "Illinois" Batiste Jacquet, Sir Charles Thompson
+# book: solo on the form (AABC); after the solos, D.S. al Coda
+
+# section | bar | chord
+# intro bar 1 is a two-beat pickup (bass with piano)
+Intro | 1  | D13    # tritone substitute: resolves down a half step to Db6
+Intro | 1  | Db6    # tonic: the 4th is in the key
+# intro bars 2–5: N.C. (bass figure)
+
+A     | 1  | Db6    # tonic: the 4th is in the key
+@segno A 1
+A     | 3  | A9     # ♭VI7 from the parallel minor: Lydian Dominant
+A     | 5  | Fm7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+A     | 5  | Edim7  # passing diminished: Eb7♭9 without its Eb, the Ab13's dominant (Ebm7 its ii)
+A     | 6  | Ebm7   # ii of the ii–V to Db
+A     | 6  | Ab13   # V7 of Db: natural tensions
+A     | 7  | Db6    # tonic: the 4th is in the key
+A     | 7  | Bb7    # V7/ii in Db: the b13 is in the key
+A     | 8  | Ebm7   # ii of the ii–V to Db
+A     | 8  | Ab7    # V7 of Db: natural tensions
+@ending 1 A 7 8
+A     | 9  | Db6    # tonic: the 4th is in the key
+A     | 10 | Db6
+@ending 2 A 9 10
+
+B     | 11 | F7     # extended dominant: V7 of Bb7
+B     | 13 | Bb7    # extended dominant: V7 of Eb7
+B     | 15 | Eb7    # II7 in Db, not resolving: natural tensions
+B     | 17 | Ebm7   # ii of the ii–V to Db
+B     | 18 | Ab7    # V7 of Db: natural tensions
+
+C     | 19 | Db6    # tonic: the 4th is in the key
+C     | 21 | A9     # ♭VI7 from the parallel minor: Lydian Dominant
+C     | 23 | Fm7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+C     | 23 | Edim7  # passing diminished: Eb7♭9 without its Eb, the Ab13's dominant (Ebm7 its ii)
+C     | 24 | Ebm7   # ii of the ii–V to Db
+C     | 24 | Ab13   # V7 of Db: natural tensions
+C     | 25 | Db6    # tonic: the 4th is in the key
+@coda C 25
+C     | 25 | Bb7    # V7/ii in Db: the b13 is in the key
+C     | 26 | Ebm7   # ii of the ii–V to Db
+C     | 26 | Ab7    # V7 of Db: natural tensions
+@nav C 26 D.S. al Coda
+
+# Coda: 4 bars N.C. (bass with piano, unison figure on Db), rit., ending on Db

@@ -1,0 +1,55 @@
+title: Self Portrait in Three Colors
+composer: Charles Mingus
+style: Medium ballad
+key: Eb
+form: AB, 15 bars
+source:
+# analysis: 2026-10-12, rules v1; Eb
+
+# book tempo marking: Medium Swing Ballad
+# metre: 4/4, except A bar 6 in 2/4
+# played three times (no solos on the recording): 1st/2nd ending (bars 14–15) twice, then the 3rd ending (bars 16–17)
+# section | bar | chord
+# area: Eb major (bars 1–2)
+Intro | 1  | Bb69       # a non-tonic major chord: Lydian
+Intro | 1  | EbMaj7/Bb  # tonic: the 4th is in the key
+Intro | 2  | Cm7/Bb     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+Intro | 2  | Db/Cb      # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+Intro | 2  | Cb         # ♭VI, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+@key A 1 Gb
+# area: Gb major (bars 1–3)
+A     | 1  | Bbm6       # a minor sixth chord: Dorian
+A     | 1  | Ebm7       # ii of Ab13: Dorian
+A     | 2  | Ab13       # V7 of V7: the dominant of the dominant: natural tensions
+A     | 2  | Db7        # V7 of Gb: natural tensions
+A     | 3  | GbMaj7     # tonic: the 4th is in the key
+A     | 3  | B9         # IV7 in Gb, not resolving: the #11 is in the key
+@key A 4 Eb
+# area: Eb major (bars 4–17)
+A     | 4  | Cm7        # ii of F7#5: Dorian
+A     | 4  | F7#5       # V7/V in Eb: #11 and b13 from the symbol
+A     | 5  | Ebm7       # ii of Ab13: Dorian
+A     | 5  | Ab13       # extended ii–V: a side-step, its own key
+# bar 6: 2/4
+A     | 6  | E13#11     # tritone substitute: resolves down a half step to EbMaj7
+B     | 7  | EbMaj7     # tonic: the 4th is in the key
+# book: A7(b9 b5)
+B     | 7  | A7b9       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b9 from the symbol
+B     | 8  | EMaj7      # ♭IImaj7, borrowed from Eb Phrygian: Lydian (its ♯11 is in the key)
+B     | 9  | EbMaj7     # tonic: the 4th is in the key
+B     | 9  | Gm7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B     | 10 | C9         # V7/ii in Eb: the b13 is in the key
+B     | 11 | Fm7        # ii of Bb13: Dorian
+B     | 12 | Bb13       # V7/I in Eb: natural tensions
+B     | 13 | Fm7        # ii of the ii–V to Eb
+B     | 13 | Bb7#5      # V7 of Eb: #11 and b13 from the symbol
+B     | 14 | EbMaj7     # tonic: the 4th is in the key
+B     | 14 | Db13       # ♭VII7 from the parallel minor: Lydian Dominant
+B     | 15 | Cm7b5      # viø7 in Eb: Locrian, its own mode (the chord is outside the key)
+B     | 15 | Db/Cb      # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+B     | 15 | Cb         # ♭VI, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+@ending 1 B 14 15
+# 3rd ending: EbMaj7 held two bars (fermata), a tenor fill
+B     | 16 | EbMaj7     # tonic: the 4th is in the key
+B     | 17 | EbMaj7
+@ending 2 B 16 17
