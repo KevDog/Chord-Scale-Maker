@@ -46,4 +46,31 @@ describe('nextChordLine', () => {
       expect(nextChordLine(doc, 2, 'prev', 'chord')).toBeNull()
     })
   })
+
+  describe('from the place of a chord taken out (its line is gone, or holds the chord after it)', () => {
+    // A1 held: Dm7 taken out of a one-chord bar 2 (lines: 2 A1 Cmaj7, 3 A3 Em7, 4 B1 Fm7)
+    const held = parseChart('title: T\nkey: C\nA | 1 | CMaj7\nA | 3 | Em7\nB | 1 | Fm7\n').value
+    const gone = { section: 'A', bar: 2, chord: 0 }
+
+    it('Tab and ⇧Tab move to the next and previous bars’ first chords, skipping none', () => {
+      expect(nextChordLine(held, gone, 'next')).toBe(3)
+      expect(nextChordLine(held, gone, 'prev')).toBe(2)
+    })
+
+    it('→ takes the chord now in its place, ← the one before it', () => {
+      // Dm7 G7 in A2, Dm7 taken out: G7 (line 3) is now at chord 0
+      const two = parseChart('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | G7\nA | 3 | Em7\n').value
+      expect(nextChordLine(two, gone, 'next', 'chord')).toBe(3)
+      expect(nextChordLine(two, gone, 'prev', 'chord')).toBe(2)
+      expect(nextChordLine(two, gone, 'next')).toBe(4)
+      expect(nextChordLine(held, gone, 'next', 'chord')).toBe(3)
+    })
+
+    it('works after the section’s last bar is taken out', () => {
+      const end = { section: 'A', bar: 4, chord: 0 }
+      expect(nextChordLine(held, end, 'next')).toBe(4)
+      expect(nextChordLine(held, end, 'prev')).toBe(3)
+      expect(nextChordLine(held, end, 'next', 'chord')).toBe(4)
+    })
+  })
 })

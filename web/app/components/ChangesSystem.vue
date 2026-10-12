@@ -1,7 +1,7 @@
 <template>
   <div ref="root" data-slot="system" class="relative break-inside-avoid" @pointerleave="leaveBar" @focusout="leaveBar">
     <!-- section markers and key areas, then chord symbols, over their beats -->
-    <div class="relative h-12 print:h-7">
+    <div ref="names" data-slot="names" class="relative h-12 print:h-7">
       <template v-for="m in marks" :key="m.key">
         <div
           :data-name="m.slot ? undefined : m.key"
@@ -41,7 +41,7 @@
             @update:doc="emit('update:doc', $event)"
             @said="emit('said', $event)"
             @preview="emit('preview', $event)"
-            @done="emit('done', $event)"
+            @done="(then, taken) => emit('done', then, taken)"
           />
           <div v-else class="text-base font-semibold print:text-sm/4">
             <!-- the chord as a button while editing below md: it opens the chord editor's bottom sheet (EditorView) -->
@@ -117,7 +117,7 @@
         :title="notesOn && m.reason ? undefined : m.numeral"
       >
         <template v-if="drafted(m)">{{ preview?.readable ? preview.numeral : '' }}</template>
-        <SheetLabelPicker v-else-if="editing !== undefined && doc && m.line >= 0 && m.numeral" :doc="doc" :line="m.line" kind="numeral" :chord="m.text" :fallback="m.fallback" :pinned="false" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 no-underline dark:text-amber-400 print:hidden" aria-hidden="true">⚠</span></SheetLabelPicker>
+        <SheetLabelPicker v-else-if="editing !== undefined && doc && m.line >= 0 && !m.slot" :doc="doc" :line="m.line" kind="numeral" :chord="m.text" :fallback="m.fallback" :pinned="false" :blank="!m.numeral" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 no-underline dark:text-amber-400 print:hidden" aria-hidden="true">⚠</span></SheetLabelPicker>
         <ChangesNote v-else-if="notesOn && m.reason && m.numeral" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row" :problem="m.problem">{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 no-underline dark:text-amber-400 print:hidden" aria-hidden="true">⚠</span></ChangesNote>
         <template v-else>{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 dark:text-amber-400 print:hidden" :title="m.problem">⚠</span></template>
       </span>
@@ -132,7 +132,7 @@
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
         <template v-if="drafted(m)">{{ preview?.readable ? sheetScale(CONCERT, preview.scale) : '' }}</template>
-        <SheetLabelPicker v-else-if="editing !== undefined && doc && m.line >= 0 && m.scale" :doc="doc" :line="m.line" kind="scale" :chord="m.text" :fallback="false" :pinned="notes?.get(m.line)?.source === 'written'" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.scale }}</SheetLabelPicker>
+        <SheetLabelPicker v-else-if="editing !== undefined && doc && m.line >= 0 && !m.slot" :doc="doc" :line="m.line" kind="scale" :chord="m.text" :fallback="false" :blank="!m.scale" :pinned="notes?.get(m.line)?.source === 'written'" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.scale }}</SheetLabelPicker>
         <ChangesNote v-else-if="notesOn && m.reason && m.scale" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row" :problem="m.problem" wrap>{{ m.scale }}</ChangesNote>
         <template v-else>{{ m.scale }}</template>
       </span>
@@ -146,7 +146,7 @@
 </template>
 
 <script setup lang="ts">
-import { barKey, type ChangesLine, type ChartDoc, type ChordPreview, CONCERT, rowNotes, sheetScale } from '@chord-scale-maker/engine'
+import { barKey, type ChangesLine, type ChartDoc, type ChordPreview, CONCERT, type GridPos, rowNotes, sheetScale } from '@chord-scale-maker/engine'
 import { drawChangesLine, type NamedBeat } from '~/utils/changesDrawing'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
@@ -178,7 +178,7 @@ const emit = defineEmits<{
   'update:doc': [doc: ChartDoc]
   said: [text: string]
   preview: [preview: ChordPreview | null]
-  done: [then: SheetDone]
+  done: [then: SheetDone, taken?: GridPos]
   refused: [text: string]
   dialog: [kind: 'split' | 'nav' | 'paste' | 'rename', section: string, bar: number]
   addBar: [section: string]
@@ -187,6 +187,7 @@ const emit = defineEmits<{
 
 const root = ref<HTMLElement | null>(null)
 const el = ref<HTMLElement | null>(null)
+const names = ref<HTMLElement | null>(null)
 const xs = ref<readonly (readonly number[])[]>([])
 const ends = ref<readonly number[]>([]) // each bar's right edge
 const nameScales = ref<readonly (readonly number[])[]>([]) // each chord name's scale, where the line can't fit it
@@ -203,18 +204,36 @@ const marks = computed(() => {
     const at = (beat: number): number => Math.max(0, (xs.value[b]?.[beat] ?? 0) - 0.012)
     const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, barIndex: b, k, beat: c.beat, lastInBar: k === bar.chords.length - 1, line: c.line, slot: false, x: at(c.beat), tokens: c.tokens, text: c.text, written: c.written, row: c.at, numeral: c.numeral, scale: c.scale, reason: c.reason, problem: c.problem, rule: c.rule, fallback: c.fallback, heardIn: c.heardIn, keyFrom: c.keyFrom, guide: c.guide, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
     if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, barIndex: b, k: 0, beat: 0, lastInBar: true, line: -1, slot: false, x: at(0), tokens: null, text: '', written: '', row: { section: '', bar: '' }, numeral: '', scale: null, reason: '', problem: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
-    // the new chord slot after a bar's chords (Space in the field), on the beat after the last chord's
+    // the new chord slot after a bar's chords (Space in the field), on the beat after the last chord's, else after its name
     const e = props.editing
     const last = bar.chords.at(-1)
     if (e?.kind === 'slot' && last && last.at.section === e.section && last.at.bar === e.bar) {
       const prev = chords.at(-1)
       if (prev) prev.lastInBar = false
-      chords.push({ key: `${b}-slot`, barIndex: b, k: -1, beat: last.beat + 1, lastInBar: true, line: last.line, slot: true, x: at(Math.min(last.beat + 1, props.beats - 1)), tokens: null, text: '', written: '', row: last.at, numeral: '', scale: null, reason: '', problem: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: '', keyArea: '', segno: false, coda: false, nav: '' })
+      chords.push({ key: `${b}-slot`, barIndex: b, k: -1, beat: last.beat + 1, lastInBar: true, line: last.line, slot: true, x: last.beat + 1 < props.beats ? at(last.beat + 1) : (nameEnd.value ?? at(last.beat)), tokens: null, text: '', written: '', row: last.at, numeral: '', scale: null, reason: '', problem: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: '', keyArea: '', segno: false, coda: false, nav: '' })
     }
     return chords
   })
   return all.map((m, i) => ({ ...m, room: Math.max(0.05, (all[i + 1]?.x ?? 1) - m.x) }))
 })
+/** the bar's last chord, when the new chord slot follows it with no beat left in the bar: the slot goes after its name */
+const crowded = computed((): string | null => {
+  const e = props.editing
+  if (e?.kind !== 'slot') return null
+  const b = props.line.bars.findIndex((bar) => bar.chords.at(-1)?.at.section === e.section && bar.chords.at(-1)?.at.bar === e.bar)
+  const k = (props.line.bars[b]?.chords.length ?? 0) - 1
+  return b >= 0 && (props.line.bars[b]?.chords[k]?.beat ?? 0) + 1 >= props.beats ? `${b}-${k}` : null
+})
+/** where that chord's name ends, and a gap, as a fraction of the line; null until measured */
+const nameEnd = ref<number | null>(null)
+watch([crowded, xs], ([k]) => {
+  nameEnd.value = null
+  if (k) void nextTick(() => {
+    const name = names.value?.querySelector<HTMLElement>(`[data-name="${k}"]`)?.getBoundingClientRect()
+    const row = names.value?.getBoundingClientRect()
+    if (name && row?.width) nameEnd.value = (name.right + NAME_GAP - row.left) / row.width
+  })
+}, { immediate: true })
 /** each row's notes while the sheet is the editor: a written scale shows its pin on the label */
 const scaleView = inject(SCALE_VIEW, shallowRef(DEFAULT_VIEW))
 const notes = computed(() => (props.doc && props.editing !== undefined ? rowNotes(props.doc, scaleView.value) : null))
@@ -243,10 +262,13 @@ const toolbarBar = computed(() => {
 })
 const MARKER = 'rounded-sm border border-zinc-400 px-1 font-semibold text-zinc-700 dark:border-zinc-500 dark:text-zinc-300 print:border-neutral-600 print:text-black'
 const GHOST = 'rounded-md border border-dashed border-zinc-400 text-xs font-semibold text-zinc-500 hover:border-note-500 hover:text-note-700 focus-visible:border-note-500 focus-visible:outline-none dark:border-zinc-500 dark:text-zinc-400 dark:hover:border-note-400 dark:hover:text-note-300 print:hidden'
-/** the ghost bar (a section's last line, the sheet as the editor): the next bar's slot when the line has room, else a pill under the line */
+/**
+ * the ghost bar (a section's last line, the sheet as the editor): the next bar's slot when the line has room, else a pill
+ * under the line; none after a written-out copy, whose bars are the section it repeats
+ */
 const ghost = computed(() => {
   const last = props.line.bars.at(-1)
-  if (!last || !props.line.sectionEnd) return null
+  if (!last || !props.line.sectionEnd || last.repeatOf) return null
   const n = props.line.bars.length
   const full = n >= props.barsPerLine
   const left = ends.value[n - 1] ?? n / props.barsPerLine

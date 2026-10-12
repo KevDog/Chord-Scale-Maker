@@ -234,6 +234,7 @@ import {
   type ChartDoc,
   type ChordPreview,
   CONCERT,
+  type GridPos,
   type Part,
   encodeShare,
   insertBars,
@@ -392,8 +393,11 @@ function openSheetEdit(e: SheetEdit): void {
   sheetEdit.value = e
   if (e.kind === 'chord') selectedLine.value = e.line
 }
-/** the field closed: stay on the chord, move to the next (previous) bar's or chord, open the new chord slot, or nothing */
-function sheetDone(then: SheetDone): void {
+/**
+ * the field closed: stay on the chord, move to the next (previous) bar's or chord, open the new chord slot, or nothing.
+ * A chord taken out (blank) comes with its place: its line is gone, or names the chord after it, so moves go from there.
+ */
+function sheetDone(then: SheetDone, taken?: GridPos): void {
   const e = sheetEdit.value
   sheetPreview.value = null
   if (!e) return
@@ -407,14 +411,14 @@ function sheetDone(then: SheetDone): void {
   const line = e.kind === 'chord' ? e.line : doc.lines.findLastIndex((l) => l.kind === 'row' && l.section === e.section && l.bar === e.bar)
   const at = e.kind === 'chord' ? e.at : { section: e.section, bar: e.bar }
   if (line < 0) return void (sheetEdit.value = null)
-  if (then === 'add') {
+  if (then === 'add' && !taken) {
     const slotAt = writtenAt(line)
     sheetEdit.value = slotAt ? { kind: 'slot', ...slotAt } : null
     return
   }
   const move = MOVES[then]
   if (move) {
-    const to = nextChordLine(doc, line, move.dir, move.step)
+    const to = nextChordLine(doc, taken ?? line, move.dir, move.step)
     const toAt = to === null ? null : writtenAt(to)
     if (to !== null && toAt) {
       sheetEdit.value = { kind: 'chord', line: to, at: toAt }
@@ -423,7 +427,10 @@ function sheetDone(then: SheetDone): void {
     }
   }
   sheetEdit.value = null
-  sheetFocus.value = { line, at, n: (sheetFocus.value?.n ?? 0) + 1 }
+  // focus back on the chord's button; one taken out gives it to the chord now in its place, or the one before
+  const stay = taken ? (nextChordLine(doc, taken, 'next', 'chord') ?? nextChordLine(doc, taken, 'prev', 'chord')) : line
+  const stayAt = taken ? (stay === null ? null : writtenAt(stay)) : at
+  if (stay !== null && stayAt) sheetFocus.value = { line: stay, at: stayAt, n: (sheetFocus.value?.n ?? 0) + 1 }
 }
 
 /** how each closing key moves the field: Tab and ⇧Tab by bars, → and ← by chords */

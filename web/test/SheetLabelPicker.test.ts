@@ -9,7 +9,7 @@ const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7
 const settle = async () => {
   for (let i = 0; i < 3; i++) await nextTick()
 }
-const mount = (kind: 'numeral' | 'scale', over: Partial<{ fallback: boolean; pinned: boolean }> = {}) =>
+const mount = (kind: 'numeral' | 'scale', over: Partial<{ fallback: boolean; pinned: boolean; blank: boolean }> = {}) =>
   mountSuspended(SheetLabelPicker, {
     props: { doc, line: 3, kind, chord: 'G7', fallback: false, pinned: false, ...over },
     slots: { default: () => (kind === 'numeral' ? 'V7' : 'G Mixolydian') },
@@ -19,6 +19,19 @@ const panel = () => document.querySelector('[role=dialog]')
 
 describe('SheetLabelPicker', () => {
   beforeEach(() => (document.body.innerHTML = ''))
+
+  it('blank (no label to click): a dash named for its picker, which opens it (#143)', async () => {
+    for (const [kind, name] of [['numeral', 'Function: G7'], ['scale', 'Scale: G7']] as const) {
+      document.body.innerHTML = ''
+      const w = await mountSuspended(SheetLabelPicker, { props: { doc, line: 3, kind, chord: 'G7', fallback: false, pinned: false, blank: true }, attachTo: document.body })
+      const button = w.find('button')
+      expect(button.text()).toBe('—')
+      expect(button.attributes('aria-label')).toBe(name)
+      await button.trigger('click')
+      await settle()
+      expect(panel()?.getAttribute('aria-label')).toBe(name)
+    }
+  })
 
   it('the numeral opens the function list, with Why under it', async () => {
     const w = await mount('numeral')

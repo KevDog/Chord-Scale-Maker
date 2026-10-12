@@ -38,22 +38,23 @@
         </div>
       </UiField>
       <template v-else>
-        <UiField>
+        <UiField v-if="!lockLabels">
           <UiLabel class="pl-3">Analysis</UiLabel>
           <div class="flex flex-wrap gap-2 *:whitespace-nowrap">
-            <UiButton v-bind="numerals || lockLabels ? { color: 'note' } : { outline: true }" :class="numerals || lockLabels ? '' : OFF_FILL" :aria-pressed="numerals || lockLabels" :disabled="lockLabels" :title="lockLabels ? LOCKED : 'Each chord\'s Roman numeral in its key'" @click="numerals = !numerals">Numerals</UiButton>
-            <UiButton v-bind="scaleNames || lockLabels ? { color: 'note' } : { outline: true }" :class="scaleNames || lockLabels ? '' : OFF_FILL" :aria-pressed="scaleNames || lockLabels" :disabled="lockLabels" :title="lockLabels ? LOCKED : 'Each chord\'s scale, under its numeral'" @click="scaleNames = !scaleNames">Scales</UiButton>
+            <UiButton v-bind="numerals ? { color: 'note' } : { outline: true }" :class="numerals ? '' : OFF_FILL" :aria-pressed="numerals" title="Each chord's Roman numeral in its key" @click="numerals = !numerals">Numerals</UiButton>
+            <UiButton v-bind="scaleNames ? { color: 'note' } : { outline: true }" :class="scaleNames ? '' : OFF_FILL" :aria-pressed="scaleNames" title="Each chord's scale, under its numeral" @click="scaleNames = !scaleNames">Scales</UiButton>
           </div>
         </UiField>
         <UiField>
           <UiLabel class="pl-3">Line</UiLabel>
-          <div class="flex flex-wrap items-center gap-2">
+          <!-- the detail opens beneath the modes, so the Line group keeps its width and place (#187) -->
+          <div class="flex flex-col gap-2">
             <SegmentedControl v-model="lineMode" legend="Line" name="line-mode" :options="lineModes" />
-            <UiListbox v-if="lineMode === 'guide'" v-model="guideLine" class="w-32" aria-label="Guide tone line">
+            <UiListbox v-if="lineMode === 'guide'" v-model="guideLine" class="w-full" aria-label="Guide tone line">
               <template #selected="{ value }"><UiListboxLabel>{{ guideLabel(value) }}</UiListboxLabel></template>
               <UiListboxOption v-for="g in GUIDE_LINES" :key="g.value" :value="g.value" :title="g.title"><UiListboxLabel>{{ g.label }}</UiListboxLabel></UiListboxOption>
             </UiListbox>
-            <UiListbox v-else-if="lineMode === 'arpeggio'" v-model="arpeggio" class="w-40" aria-label="Arpeggio pattern">
+            <UiListbox v-else-if="lineMode === 'arpeggio'" v-model="arpeggio" class="w-full" aria-label="Arpeggio pattern">
               <template #selected="{ value }"><UiListboxLabel>{{ ARPEGGIO_LABELS[value] }}</UiListboxLabel></template>
               <UiListboxOption v-for="p in ARPEGGIO_PATTERNS" :key="p" :value="p"><UiListboxLabel>{{ ARPEGGIO_LABELS[p] }}</UiListboxLabel></UiListboxOption>
             </UiListbox>
@@ -105,10 +106,9 @@ const scaleNames = defineModel<boolean>('scaleNames', { default: true })
 const lineMode = defineModel<LineMode>('lineMode', { default: 'off' })
 const guideLine = defineModel<GuideFrom>('guideLine', { default: 'third' })
 const arpeggio = defineModel<ArpeggioPattern>('arpeggio', { default: 'up-root' })
-/** the sheet editor is open: numerals and scales are shown (they are the pickers), their toggles rest */
+/** the sheet editor is open: numerals and scales are shown (they are the pickers), their toggles hide */
 /** keyStart: the chart's key, written for the instrument (what "From key" starts on) */
 defineProps<{ lockLabels?: boolean; keyStart: string }>()
-const LOCKED = 'Shown while you edit: they are the pickers'
 
 const changes = useFeature('changes')
 const arpeggios = useFeature('arpeggios')

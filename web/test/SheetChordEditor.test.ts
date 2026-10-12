@@ -67,6 +67,7 @@ describe('SheetChordEditor', () => {
     await settle()
     await type('G7 | x')
     expect(dialog()?.textContent).toContain('can’t go in a chart: may not contain | or line breaks')
+    expect(w.emitted('said')?.at(-1)?.[0]).toContain('can’t go in a chart') // said, not only shown (#143)
     await type('')
     expect(w.emitted('update:doc')).toHaveLength(1) // the second chord can go
     w.unmount()
@@ -74,7 +75,8 @@ describe('SheetChordEditor', () => {
     await settle()
     await type('')
     expect(first.emitted('update:doc')).toBeUndefined()
-    expect(dialog()?.textContent).toContain('A section’s first chord can’t be taken out.')
+    expect(dialog()?.textContent).toContain('A section’s first bar needs a chord.')
+    expect(first.emitted('said')?.at(-1)).toEqual(['A section’s first bar needs a chord.'])
   })
 
   it('says a repeat’s chord changes the section it repeats', async () => {

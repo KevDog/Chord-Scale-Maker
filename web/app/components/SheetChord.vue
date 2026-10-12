@@ -14,43 +14,49 @@
       <UiTouchTarget><ChordSymbol v-if="tokens" :tokens="tokens" /><span v-else>{{ text }}</span></UiTouchTarget>
     </button>
   </div>
-  <div v-else class="relative print:hidden">
-    <input
-      ref="input"
-      v-model="draft"
-      type="text"
-      :aria-label="`Chord, ${section} bar ${bar}`"
-      role="combobox"
-      aria-autocomplete="list"
-      :aria-expanded="options.length > 0"
-      :aria-controls="`${id}-list`"
-      :aria-activedescendant="active >= 0 && options.length ? `${id}-${active}` : undefined"
-      autocomplete="off"
-      autocapitalize="off"
-      spellcheck="false"
-      :style="{ width: `max(3ch, ${draft.length + 1}ch)` }"
-      class="-mx-1 rounded bg-white px-1 text-base font-semibold text-zinc-950 ring-2 ring-note-500 outline-none dark:bg-zinc-900 dark:text-white"
-      @keydown="onKey"
-      @blur="onBlur"
-    >
-    <div class="absolute top-full left-0 z-30 mt-1 w-72 rounded-lg bg-white text-sm shadow-lg ring-1 ring-zinc-950/10 dark:bg-zinc-800 dark:ring-white/10">
-      <ul v-if="options.length" :id="`${id}-list`" role="listbox" aria-label="Completions">
-        <li
-          v-for="(o, i) in options"
-          :id="`${id}-${i}`"
-          :key="o.text"
-          role="option"
-          :aria-selected="i === active"
-          :class="['flex justify-between gap-3 px-3 py-1.5', i === active ? 'bg-note-500 text-white' : 'text-zinc-950 dark:text-white']"
-          @mousedown.prevent="take(o.text)"
-        >
-          <b><ChordSymbol v-if="o.tokens" :tokens="o.tokens" /><span v-else>{{ o.text }}</span></b>
-          <span :class="['truncate text-xs/5', i === active ? 'opacity-90' : 'text-zinc-600 dark:text-zinc-400']">{{ readingOf(o.preview) }}</span>
-        </li>
-      </ul>
-      <UiErrorMessage v-if="error" class="px-3 py-1.5">{{ error }}</UiErrorMessage>
-      <UiText v-if="repeatOf" role="note" class="px-3 py-1.5 text-xs/5!">{{ section }} repeats {{ repeatOf }}: a change here changes {{ repeatOf }} and every repeat of it.</UiText>
-      <p class="border-t border-zinc-950/5 px-3 py-1.5 text-xs/5 text-zinc-600 dark:border-white/5 dark:text-zinc-400"><kbd>←</kbd> <kbd>→</kbd> chord · <kbd>Tab</kbd> bar · <kbd>Space</kbd> add a chord · <kbd>Esc</kbd> cancel</p>
+  <div v-else class="relative">
+    <!-- printed while the field is open: the chord as it is (the field and its list are screen-only) -->
+    <span v-if="!adding" data-print class="hidden text-base font-semibold print:inline print:text-sm/4"><ChordSymbol v-if="tokens" :tokens="tokens" /><span v-else>{{ text }}</span></span>
+    <div class="print:hidden">
+      <input
+        ref="input"
+        v-model="draft"
+        type="text"
+        :aria-label="`Chord, ${section} bar ${bar}`"
+        role="combobox"
+        aria-autocomplete="list"
+        :aria-expanded="options.length > 0"
+        :aria-controls="`${id}-list`"
+        :aria-activedescendant="active >= 0 && options.length ? `${id}-${active}` : undefined"
+        :aria-invalid="error ? 'true' : undefined"
+        :aria-describedby="error ? `${id}-error` : undefined"
+        autocomplete="off"
+        autocapitalize="off"
+        spellcheck="false"
+        :style="{ width: `max(3ch, ${draft.length + 1}ch)` }"
+        class="-mx-1 rounded bg-white px-1 text-base font-semibold text-zinc-950 ring-2 ring-note-500 outline-none dark:bg-zinc-900 dark:text-white"
+        @keydown="onKey"
+        @blur="onBlur"
+      >
+      <div class="absolute top-full left-0 z-30 mt-1 w-72 rounded-lg bg-white text-sm shadow-lg ring-1 ring-zinc-950/10 dark:bg-zinc-800 dark:ring-white/10">
+        <ul v-if="options.length" :id="`${id}-list`" role="listbox" aria-label="Completions">
+          <li
+            v-for="(o, i) in options"
+            :id="`${id}-${i}`"
+            :key="o.text"
+            role="option"
+            :aria-selected="i === active"
+            :class="['flex justify-between gap-3 px-3 py-1.5', i === active ? 'bg-note-500 text-white' : 'text-zinc-950 dark:text-white']"
+            @mousedown.prevent="take(o.text)"
+          >
+            <b><ChordSymbol v-if="o.tokens" :tokens="o.tokens" /><span v-else>{{ o.text }}</span></b>
+            <span :class="['truncate text-xs/5', i === active ? 'opacity-90' : 'text-zinc-600 dark:text-zinc-400']">{{ readingOf(o.preview) }}</span>
+          </li>
+        </ul>
+        <UiErrorMessage v-if="error" :id="`${id}-error`" class="px-3 py-1.5">{{ error }}</UiErrorMessage>
+        <UiText v-if="repeatOf" role="note" class="px-3 py-1.5 text-xs/5!">{{ section }} repeats {{ repeatOf }}: a change here changes {{ repeatOf }} and every repeat of it.</UiText>
+        <p class="border-t border-zinc-950/5 px-3 py-1.5 text-xs/5 text-zinc-600 dark:border-white/5 dark:text-zinc-400"><kbd>←</kbd> <kbd>→</kbd> chord · <kbd>Tab</kbd> bar · <kbd>Space</kbd> add a chord · <kbd>Esc</kbd> cancel</p>
+      </div>
     </div>
   </div>
 </template>
@@ -59,6 +65,7 @@
 import { barView, cellError, type ChartDoc, chordCompletions, chordPreview, type ChordPreview, chordsAfterTyping, type ChordToken, chordTokens, CONCERT, type GridPos, posOfLine, setBarChords, sheetScale } from '@chord-scale-maker/engine'
 import type { SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
+import { barFull, NO_FIRST_CHORD, notAChord } from '~/utils/refusals'
 
 /**
  * A chord on the Changes sheet while the editor is shown (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md
@@ -86,7 +93,7 @@ const emit = defineEmits<{
   'update:doc': [doc: ChartDoc]
   said: [text: string]
   preview: [preview: ChordPreview | null]
-  done: [then: SheetDone]
+  done: [then: SheetDone, taken?: GridPos] // taken: the place of a chord the commit took out (its line no longer names it)
 }>()
 
 const id = useId()
@@ -124,12 +131,14 @@ const draft = ref('')
 const refused = ref('')
 const active = ref(0)
 let settled = false // the field closed by a key, so blur writes nothing twice
+let taken: GridPos | null = null // the commit took a chord out of the bar: where it was
 /** the field opens on the chord as it is, selected, so typing replaces it */
 function open(): void {
   draft.value = props.adding ? '' : props.text
   refused.value = ''
   active.value = 0
   settled = false
+  taken = null
   nextTick(() => {
     input.value?.focus()
     input.value?.select()
@@ -152,7 +161,7 @@ watch(draft, () => {
 const error = computed(() => {
   const t = draft.value.trim()
   const bad = t && t !== '%' ? cellError(t) : null
-  return bad ? `“${t}” can’t go in a chart: ${bad}.` : refused.value
+  return bad ? notAChord(t, bad) : refused.value
 })
 
 /** the bar's chords once `text` is written at pos (a slot inserts, a chord replaces) */
@@ -183,22 +192,29 @@ function commit(text = draft.value): boolean {
   const p = pos.value
   if (!p) return true
   const t = text.trim()
-  if (error.value) return false
+  if (error.value) return refuse(error.value)
   const chords = chordsWith(t)
   if (chords.length === barChords.value.length && chords.every((c, k) => c === barChords.value[k])) return true // nothing changed, or an empty slot
   const next = setBarChords(props.doc, p.section, p.bar, chords)
   if (next === props.doc) {
-    refused.value = chords.length ? `“${t}” can’t go in a chart: it’s not a chord.` : 'A section’s first bar needs a chord.'
-    return false
+    refused.value = chords.length ? notAChord(t, 'it’s not a chord') : NO_FIRST_CHORD
+    return refuse(refused.value)
   }
+  if (chords.length < barChords.value.length) taken = p
   emit('update:doc', next)
   emit('said', `${p.section}, bar ${p.bar}: ${chords.join(', ') || 'held'}`)
   return true
 }
+/** the field stays, marked invalid, and why is said (the message under it is only seen) */
+function refuse(why: string): false {
+  emit('said', why)
+  return false
+}
 function finish(then: SheetDone): void {
   settled = true
   emit('preview', null)
-  emit('done', then)
+  if (taken) emit('done', then, taken)
+  else emit('done', then)
 }
 function take(text: string): void {
   draft.value = text
@@ -246,7 +262,7 @@ function onKey(e: KeyboardEvent): void {
     e.preventDefault()
     if (!commit()) return
     if (chordsWith(draft.value).length >= view.value.beats) {
-      emit('said', `A bar holds at most ${view.value.beats} chords.`)
+      emit('said', barFull(view.value.beats))
       finish('stay')
       return
     }

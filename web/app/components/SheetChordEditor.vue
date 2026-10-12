@@ -31,6 +31,7 @@
 import { Dialog as HDialog, DialogPanel as HDialogPanel, DialogTitle as HDialogTitle } from '@headlessui/vue'
 import { cellError, type ChartDoc, type RowLine, setLineChord } from '@chord-scale-maker/engine'
 import ChordChoices from './ChordChoices.vue'
+import { CANT_TAKE, NO_FIRST_CHORD, notAChord } from '~/utils/refusals'
 import type { SheetChordEdit } from '~/utils/sheetChordEdit'
 
 /**
@@ -61,16 +62,20 @@ watch(draft, () => (refused.value = ''))
 const error = computed(() => {
   const text = draft.value.trim()
   const bad = text ? cellError(text) : null
-  return bad ? `“${text}” can’t go in a chart: ${bad}.` : refused.value
+  return bad ? notAChord(text, bad) : refused.value
 })
 
-/** the chord as typed, into the chart: blank takes it out; refused (and said why) when the chart can't take it */
+/** the chord as typed, into the chart: blank takes it out; refused (and why said) when the chart can't take it */
 function apply(): void {
   const t = props.target
   const text = draft.value.trim()
-  if (!t || !row.value || text === written || error.value) return
+  if (!t || !row.value || text === written) return
+  if (error.value) return void emit('said', error.value) // shown under the field, and said
   const next = setLineChord(props.doc, t.line, text)
-  if (next === props.doc) return void (refused.value = text ? 'The chart can’t take that chord here.' : 'A section’s first chord can’t be taken out.')
+  if (next === props.doc) {
+    refused.value = text ? CANT_TAKE : NO_FIRST_CHORD
+    return void emit('said', refused.value)
+  }
   written = text
   emit('update:doc', next)
   emit('said', `${place.value}: ${text || 'chord taken out'}`)

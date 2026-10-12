@@ -33,6 +33,7 @@
 
 <script setup lang="ts">
 import { barView, type ChartDoc, deleteBar, insertHeldBar, insertKeyChange, setBarChords, setMark, toggleEnding, writeOutCopy } from '@chord-scale-maker/engine'
+import { barFull, CANT_TAKE } from '~/utils/refusals'
 
 /**
  * The lead-sheet editor's bar toolbar (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md §1.4): the
@@ -57,7 +58,7 @@ const why = ref('')
 /** a bar action's new doc: the same doc means the chart can't take it, and why is shown and said */
 function change(next: ChartDoc, said: string, refused: string): void {
   if (next === props.doc) {
-    why.value = refused || 'The chart can’t take that here.'
+    why.value = refused || CANT_TAKE
     return emit('refused', why.value)
   }
   why.value = ''
@@ -72,6 +73,6 @@ function split(): void {
     why.value = 'A held bar has no chord to split.'
     return emit('refused', why.value)
   }
-  change(setBarChords(props.doc, props.section, props.bar, [...chords, last]), `bar ${props.bar} split`, `A bar holds at most ${barView(props.doc).beats} chords.`)
+  change(setBarChords(props.doc, props.section, props.bar, [...chords, last]), `bar ${props.bar} split`, barFull(barView(props.doc).beats))
 }
 </script>
