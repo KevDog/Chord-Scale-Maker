@@ -64,7 +64,7 @@ onMounted(() => {
 })
 onBeforeUnmount(() => window.removeEventListener('storage', onStorage))
 
-const shown = computed(() => charts.value.filter((c) => searchLibrary([{ slug: c.id, title: c.title, subtitle: '', composer: '', text: '' }], props.query).length))
+const shown = computed(() => charts.value.filter((c) => searchLibrary([{ slug: c.id, title: c.title, subtitle: '', composer: '', aka: [], text: '' }], props.query).length))
 
 const openHref = (c: SavedMeta): string => (c.kind === 'edited' && c.basedOn ? `/song?chart=${c.basedOn}` : `/song?mine=${c.id}`)
 const kindLabel = (c: SavedMeta): string => (c.kind === 'edited' ? 'Edited' : c.kind === 'copy' ? 'Copy' : 'Mine')

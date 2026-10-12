@@ -3,6 +3,7 @@
     <header class="space-y-3">
       <p class="mb-2 inline-block bg-note-100 px-2 py-0.5 font-display text-xs font-bold tracking-[0.2em] text-note-800 uppercase dark:bg-note-900 dark:text-note-200" aria-hidden="true">Library</p>
       <UiHeading>{{ summary.title }}</UiHeading>
+      <UiText v-if="summary.aka.length">Also known as {{ summary.aka.join(' · ') }}</UiText>
       <UiText v-if="summary.composer" class="text-zinc-950! dark:text-white!">{{ summary.composer }}</UiText>
       <UiText v-if="details">{{ details }}</UiText>
       <UiText v-if="summary.source" class="text-sm/6!">Source: {{ summary.source }}</UiText>

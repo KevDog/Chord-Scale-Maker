@@ -1,4 +1,5 @@
 title: Slow Boat to China
+aka: On a Slow Boat to China
 subtitle: Medium (On a Slow Boat to China)
 composer: Frank Loesser
 style: Medium

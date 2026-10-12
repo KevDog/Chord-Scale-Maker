@@ -47,6 +47,7 @@ exports[`exports the same names 1`] = `
   "canUndo",
   "cellError",
   "changesLinesPerPage",
+  "chartAka",
   "chartBeats",
   "chartDetails",
   "chartHeading",

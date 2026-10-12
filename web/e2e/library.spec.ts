@@ -21,6 +21,15 @@ test('a library title leads to its tune page, and on to the editor', async ({ pa
   await expect(page).toHaveURL(/song\?chart=on_green_dolphin_street/)
 })
 
+test('finds a tune by another title, and its page names that title', async ({ page }) => {
+  await page.goto('/')
+  await page.getByPlaceholder('Search by title').fill('blue train')
+  await page.getByRole('link', { name: 'Blue Trane', exact: true }).click()
+  await expect(page).toHaveURL(/\/tunes\/blue-trane$/)
+  await expect(page.getByText('Also known as Blue Train')).toBeVisible()
+  await expect(page.locator('meta[name=description]')).toHaveAttribute('content', /Blue Trane \(also Blue Train\)/)
+})
+
 test('finds a tune by its composer, and the sheet carries the composer and the tune line', async ({ page }) => {
   await page.goto('/')
   await page.getByPlaceholder('Search by title or composer').fill('kaper')

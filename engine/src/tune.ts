@@ -1,5 +1,5 @@
 import { buildChanges } from './changes'
-import { keyLabel, metaValue, parseChart } from './chart'
+import { chartAka, keyLabel, metaValue, parseChart } from './chart'
 import { CONCERT } from './part'
 
 /**
@@ -36,7 +36,7 @@ export function tuneSummary(text: string): TuneSummary {
     title: metaValue(doc, 'title', 'Untitled'),
     subtitle: metaValue(doc, 'subtitle'),
     composer: metaValue(doc, 'composer'),
-    aka: [],
+    aka: chartAka(doc),
     key,
     keyLabel: keyLabel(key),
     style: metaValue(doc, 'style'),
@@ -50,17 +50,23 @@ export function tuneSummary(text: string): TuneSummary {
 /** a search result's snippet, at most this long */
 const DESCRIPTION_MAX = 160
 
-/** one sentence for a tune page's description, clauses dropped from the end to fit (a title of LIMITS.maxMeta fits alone) */
+/**
+ * one sentence for a tune page's description, clauses dropped to fit (a title of LIMITS.maxMeta fits alone): the
+ * closing ones from the end first, then the other titles, the lead sheet's, the key and the composer
+ */
 export function tuneDescription(t: TuneSummary): string {
-  const clauses = [
-    t.composer && ` by ${t.composer}`,
-    t.keyLabel && ` in ${t.keyLabel}`,
-    ': the changes as a study lead sheet with guide tones',
-    ', and a scale for every chord',
-    ', for your instrument',
-  ].filter(Boolean)
-  const sentence = (n: number): string => `Chord-scale practice sheets for ${t.title}${clauses.slice(0, n).join('')}.`
-  let n = clauses.length
-  while (n > 0 && sentence(n).length > DESCRIPTION_MAX) n--
-  return sentence(n)
+  // [text, the order it drops in]
+  const clauses: readonly (readonly [string, number])[] = [
+    [t.aka.length ? ` (also ${t.aka.join(' or ')})` : '', 4],
+    [t.composer && ` by ${t.composer}`, 1],
+    [t.keyLabel && ` in ${t.keyLabel}`, 2],
+    [': the changes as a study lead sheet with guide tones', 3],
+    [', and a scale for every chord', 5],
+    [', for your instrument', 6],
+  ]
+  const sentence = (keep: number): string =>
+    `Chord-scale practice sheets for ${t.title}${clauses.map(([text, rank]) => (rank <= keep ? text : '')).join('')}.`
+  let keep = clauses.length
+  while (keep > 0 && sentence(keep).length > DESCRIPTION_MAX) keep--
+  return sentence(keep)
 }

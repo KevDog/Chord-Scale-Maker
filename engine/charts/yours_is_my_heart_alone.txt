@@ -1,4 +1,5 @@
 title: Yours Is My Heart Alone
+aka: Dein ist mein ganzes Herz
 composer: Franz Lehár
 style: Medium
 key: C

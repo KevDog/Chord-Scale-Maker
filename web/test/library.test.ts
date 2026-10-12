@@ -26,6 +26,12 @@ describe('library', () => {
     expect(searchLibrary(lib, 'zzz')).toEqual([])
   })
 
+  it('searches other titles too', () => {
+    const lib = toLibrary({ 'a.txt': 'title: Blue Trane\naka: Blue Train; Trane Blues', 'b.txt': 'title: Beta' })
+    expect(searchLibrary(lib, 'train').map((c) => c.slug)).toEqual(['a'])
+    expect(searchLibrary(lib, 'trane blues').map((c) => c.slug)).toEqual(['a'])
+  })
+
   it('includes the repo charts', () => {
     expect(LIBRARY.map((c) => c.slug)).toContain('autumn_leaves')
     expect(findChart('autumn_leaves')?.title).toBe('Autumn Leaves')

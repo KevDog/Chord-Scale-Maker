@@ -9,10 +9,10 @@ import { defaultScaleOrNull } from './qualities'
 /**
  * title: and subtitle: are the heading. key:, bars: and context: are hints for the analyser (docs/plan-analysis.md
  * §12; context: functional, modal or blues, §5.4); minor: is reserved (accepted, ignored); composer:, style:, form:
- * and source: describe the tune (where the chart came from). The site keeps the rest and shows only the heading.
+ * and source: describe the tune (where the chart came from); aka: lists its other titles, `;` between them. The site keeps the rest and shows only the heading.
  */
-export type MetaKey = 'title' | 'subtitle' | 'key' | 'bars' | 'time' | 'context' | 'minor' | 'composer' | 'style' | 'form' | 'source'
-export const META_KEYS: readonly MetaKey[] = ['title', 'subtitle', 'key', 'bars', 'time', 'context', 'minor', 'composer', 'style', 'form', 'source']
+export type MetaKey = 'title' | 'subtitle' | 'key' | 'bars' | 'time' | 'context' | 'minor' | 'composer' | 'style' | 'form' | 'source' | 'aka'
+export const META_KEYS: readonly MetaKey[] = ['title', 'subtitle', 'key', 'bars', 'time', 'context', 'minor', 'composer', 'style', 'form', 'source', 'aka']
 
 /** how the analyser reads a chart (docs/plan-analysis.md §5.4): its rule families and whether key areas are found */
 export type ChartContext = 'functional' | 'modal' | 'blues'
@@ -221,6 +221,10 @@ export const chartBeats = (doc: ChartDoc): 2 | 3 | 4 => beatsPerBar(metaValue(do
 export function chartMeta(doc: ChartDoc): Readonly<{ title: string; subtitle: string; key: string }> {
   return { title: metaValue(doc, 'title', 'Untitled'), subtitle: metaValue(doc, 'subtitle'), key: metaValue(doc, 'key') }
 }
+
+/** the tune's other titles (aka:), `;` between them since a title may hold a comma */
+export const chartAka = (doc: ChartDoc): readonly string[] =>
+  metaValue(doc, 'aka').split(';').map((s) => s.trim()).filter(Boolean)
 
 /** the time and the tune's details as written (what the editor's Details fields edit) */
 export function chartDetails(doc: ChartDoc): Readonly<{ time: string; composer: string; style: string; form: string }> {

@@ -1,4 +1,5 @@
 title: Milestones
+aka: Miles
 subtitle: AABBA, 40 Bars
 key: Gm
 # analysis: 2026-10-11, rules v1; G minor, modal

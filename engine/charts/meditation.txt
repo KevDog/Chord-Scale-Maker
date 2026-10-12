@@ -1,4 +1,5 @@
 title: Meditation
+aka: Meditação
 subtitle: Bossa nova (Meditação)
 composer: Antonio Carlos Jobim
 style: Latin
