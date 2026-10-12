@@ -10,7 +10,15 @@
             <option v-for="s in sections" :key="s" :value="s">{{ s }}</option>
           </UiSelect>
         </UiField>
-        <UiField v-if="kind !== 'paste'">
+        <UiField v-if="kind === 'nav'">
+          <UiLabel>Jump</UiLabel>
+          <UiDescription>Where to go at the end of bar {{ bar }} of {{ section }}.</UiDescription>
+          <UiSelect v-model="navText" autofocus>
+            <option value="">None</option>
+            <option v-for="t in navOptions" :key="t" :value="t">{{ t }}</option>
+          </UiSelect>
+        </UiField>
+        <UiField v-if="kind !== 'paste' && kind !== 'nav'">
           <UiLabel>{{ kind === 'repeat' ? 'Name of the repeat' : 'Section name' }}</UiLabel>
           <UiInput v-model="name" autofocus :placeholder="kind === 'section' ? 'B' : ''" />
         </UiField>
@@ -50,7 +58,7 @@ import { parseBarLine } from '@chord-scale-maker/engine'
  * pasted bars, a section's new name, and a new section from a bar. It only collects the fields; the editor makes
  * the change and passes back why it couldn't (`error`).
  */
-const props = defineProps<{ kind: BarDialogKind | null; sections: readonly string[]; section: string; bar: number; beats: 2 | 3 | 4; error: string }>()
+const props = defineProps<{ kind: BarDialogKind | null; sections: readonly string[]; section: string; bar: number; beats: 2 | 3 | 4; error: string; nav?: string }>()
 const emit = defineEmits<{ close: []; submit: [value: BarDialogSubmit] }>()
 
 const TITLES: Readonly<Record<BarDialogKind, string>> = {
@@ -59,8 +67,10 @@ const TITLES: Readonly<Record<BarDialogKind, string>> = {
   paste: 'Paste bars',
   rename: 'Rename section',
   split: 'New section here',
+  nav: 'Jump at the end of the bar',
 }
-const ACTIONS: Readonly<Record<Exclude<BarDialogKind, 'paste'>, string>> = { section: 'Add section', repeat: 'Repeat', rename: 'Rename', split: 'Start section' }
+const ACTIONS: Readonly<Record<Exclude<BarDialogKind, 'paste'>, string>> = { section: 'Add section', repeat: 'Repeat', rename: 'Rename', split: 'Start section', nav: 'Set' }
+
 const description = computed(() => {
   switch (props.kind) {
     case 'section':
@@ -71,6 +81,8 @@ const description = computed(() => {
       return `Renames ${props.section} everywhere the chart names it.`
     case 'split':
       return `Bar ${props.bar} and the rest of ${props.section} become a section of their own.`
+    case 'nav':
+      return ''
     default:
       return ''
   }
@@ -80,6 +92,8 @@ const name = ref('')
 const chords = ref('')
 const src = ref('')
 const text = ref('')
+const navText = ref(props.nav ?? '')
+const navOptions = computed(() => (navText.value && !NAVS.includes(navText.value) ? [...NAVS, navText.value] : NAVS))
 watch(
   () => props.kind,
   (k) => {
@@ -87,6 +101,7 @@ watch(
     chords.value = ''
     src.value = props.sections.includes(props.section) ? props.section : (props.sections[0] ?? '')
     text.value = ''
+    navText.value = props.nav ?? ''
   },
 )
 
@@ -106,15 +121,20 @@ function submit(before = false): void {
     case 'rename':
     case 'split':
       return emit('submit', { kind: props.kind, name: n })
+    case 'nav':
+      return emit('submit', { kind: 'nav', text: navText.value })
   }
 }
 </script>
 
 <script lang="ts">
-export type BarDialogKind = 'section' | 'repeat' | 'paste' | 'rename' | 'split'
+/** the jumps a bar can end with (the inspector offers the same) */
+export const NAVS = ['D.S. al Coda', 'D.S. al Fine', 'D.C. al Coda', 'D.C. al Fine', 'To Coda', 'Fine']
+export type BarDialogKind = 'section' | 'repeat' | 'paste' | 'rename' | 'split' | 'nav'
 export type BarDialogSubmit =
   | Readonly<{ kind: 'section'; name: string; chords: readonly string[] }>
   | Readonly<{ kind: 'repeat'; src: string; name: string }>
   | Readonly<{ kind: 'paste'; bars: readonly (readonly string[])[]; before: boolean }>
   | Readonly<{ kind: 'rename' | 'split'; name: string }>
+  | Readonly<{ kind: 'nav'; text: string }>
 </script>

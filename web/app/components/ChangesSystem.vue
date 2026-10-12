@@ -1,9 +1,25 @@
 <template>
-  <div class="break-inside-avoid">
+  <div data-slot="system" class="relative break-inside-avoid" @pointerleave="leaveBar">
     <!-- section markers and key areas, then chord symbols, over their beats -->
     <div class="relative h-12 print:h-7">
+      <!-- the bar toolbar (the sheet as the editor), over the bar under the pointer, above its first beat -->
+      <SheetBarToolbar
+        v-if="toolbarBar"
+        :key="toolbarBar.key"
+        :doc="doc!"
+        :section="toolbarBar.section"
+        :bar="toolbarBar.bar"
+        :repeat-of="toolbarBar.repeatOf"
+        class="absolute top-0 z-20 -translate-y-full"
+        :style="{ left: `${toolbarBar.x * 100}%` }"
+        @pointerenter="holdBar"
+        @update:doc="emit('update:doc', $event)"
+        @said="emit('said', $event)"
+        @refused="emit('refused', $event)"
+        @dialog="(kind, section, bar) => emit('dialog', kind, section, bar)"
+      />
       <template v-for="m in marks" :key="m.key">
-        <div class="absolute bottom-0 whitespace-nowrap" :style="{ left: `${m.x * 100}%` }">
+        <div class="absolute bottom-0 whitespace-nowrap" :style="{ left: `${m.x * 100}%` }" @pointerenter="enterBar(m.barIndex)">
           <ChangesMarks v-if="m.segno || m.coda || m.nav" :segno="m.segno" :coda="m.coda" :nav="m.nav" />
           <div v-if="m.marker || m.keyArea" class="flex items-baseline gap-2 text-[0.65rem] print:text-[0.55rem]/3">
             <span v-if="m.marker" class="rounded-sm border border-zinc-400 px-1 font-semibold text-zinc-700 dark:border-zinc-500 dark:text-zinc-300 print:border-neutral-600 print:text-black">{{ m.marker }}</span>
@@ -45,7 +61,24 @@
       </template>
       <span v-for="r in repeats" :key="`r${r.key}`" class="absolute bottom-0 -translate-x-full text-xs font-semibold text-zinc-600 dark:text-zinc-400 print:text-black" :style="{ left: `${r.x * 100}%` }">×{{ r.times }}</span>
     </div>
-    <div ref="el" class="text-zinc-900 dark:text-zinc-100 print:text-black" />
+    <div class="relative">
+      <div ref="el" class="text-zinc-900 dark:text-zinc-100 print:text-black" />
+      <!-- the sheet as the editor: each bar's strip over the staff tells which bar the pointer is on -->
+      <template v-if="editing !== undefined">
+        <div v-for="(b, i) in line.bars" :key="`h${i}`" :data-bar="i" class="absolute inset-y-0 print:hidden" :style="{ left: `${barLeft(i) * 100}%`, width: `${(barLeft(i + 1) - barLeft(i)) * 100}%` }" @pointerenter="enterBar(i)" />
+        <!-- the ghost bar at the end of a section: the next bar, to add -->
+        <button
+          v-if="line.sectionEnd && ghost"
+          type="button"
+          :class="['absolute top-2 h-9 rounded-md border border-dashed border-zinc-400 text-xs font-semibold text-zinc-500 hover:border-note-500 hover:text-note-700 focus-visible:border-note-500 focus-visible:outline-none dark:border-zinc-500 dark:text-zinc-400 dark:hover:border-note-400 dark:hover:text-note-300 print:hidden', ghost.below && 'top-auto -bottom-1']"
+          :style="ghost.style"
+          :aria-label="`Add a bar at the end of ${ghost.section}`"
+          @click="emit('addBar', ghost.section)"
+        >
+          + bar
+        </button>
+      </template>
+    </div>
     <!-- with a guide tone line on: each chord's label (3, 7; 4 on a sus chord, 1 on a triad, 6 on a 6 chord) -->
     <div v-if="hasGuideLine" data-slot="guides" aria-hidden="true" class="relative h-4 print:h-3">
       <span
@@ -123,6 +156,9 @@ const emit = defineEmits<{
   said: [text: string]
   preview: [preview: ChordPreview | null]
   done: [then: 'stay' | 'next' | 'prev' | 'add' | 'cancel']
+  refused: [text: string]
+  dialog: [kind: 'split' | 'nav', section: string, bar: number]
+  addBar: [section: string]
 }>()
 
 const el = ref<HTMLElement | null>(null)
@@ -138,13 +174,13 @@ const notesOn = useFeature('functions')
 const marks = computed(() => {
   const all = props.line.bars.flatMap((bar, b) => {
     const at = (beat: number): number => Math.max(0, (xs.value[b]?.[beat] ?? 0) - 0.012)
-    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, line: c.line, slot: false, x: at(c.beat), tokens: c.tokens, text: c.text, written: c.written, row: c.at, numeral: c.numeral, scale: c.scale, reason: c.reason, rule: c.rule, fallback: c.fallback, heardIn: c.heardIn, keyFrom: c.keyFrom, guide: c.guide, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
-    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, line: -1, slot: false, x: at(0), tokens: null, text: '', written: '', row: { section: '', bar: '' }, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
+    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, barIndex: b, line: c.line, slot: false, x: at(c.beat), tokens: c.tokens, text: c.text, written: c.written, row: c.at, numeral: c.numeral, scale: c.scale, reason: c.reason, rule: c.rule, fallback: c.fallback, heardIn: c.heardIn, keyFrom: c.keyFrom, guide: c.guide, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
+    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, barIndex: b, line: -1, slot: false, x: at(0), tokens: null, text: '', written: '', row: { section: '', bar: '' }, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
     // the new chord slot after a bar's chords (Space in the field), on the beat after the last chord's
     const e = props.editing
     const last = bar.chords.at(-1)
     if (e?.kind === 'slot' && last && last.at.section === e.section && last.at.bar === e.bar) {
-      chords.push({ key: `${b}-slot`, line: last.line, slot: true, x: at(Math.min(last.beat + 1, props.beats - 1)), tokens: null, text: '', written: '', row: last.at, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: '', keyArea: '', segno: false, coda: false, nav: '' })
+      chords.push({ key: `${b}-slot`, barIndex: b, line: last.line, slot: true, x: at(Math.min(last.beat + 1, props.beats - 1)), tokens: null, text: '', written: '', row: last.at, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: '', keyArea: '', segno: false, coda: false, nav: '' })
     }
     return chords
   })
@@ -153,6 +189,38 @@ const marks = computed(() => {
 /** each row's notes while the sheet is the editor: a written scale shows its pin on the label */
 const scaleView = inject(SCALE_VIEW, shallowRef(DEFAULT_VIEW))
 const notes = computed(() => (props.doc && props.editing !== undefined ? rowNotes(props.doc, scaleView.value) : null))
+/** the bar under the pointer (the sheet as the editor), kept while the pointer is on its toolbar */
+const hoverBar = ref<number | null>(null)
+let leaving: ReturnType<typeof setTimeout> | undefined
+function enterBar(i: number): void {
+  clearTimeout(leaving)
+  if (props.editing !== undefined) hoverBar.value = i
+}
+function holdBar(): void {
+  clearTimeout(leaving)
+}
+function leaveBar(): void {
+  clearTimeout(leaving)
+  leaving = setTimeout(() => (hoverBar.value = null), 200)
+}
+onBeforeUnmount(() => clearTimeout(leaving))
+/** where a bar starts, as a fraction of the width: its first beat, a little left; the end of the line for one past the last */
+const barLeft = (i: number): number => (i >= props.line.bars.length ? 1 : Math.max(0, (xs.value[i]?.[0] ?? i / props.barsPerLine) - 0.03))
+const toolbarBar = computed(() => {
+  const i = hoverBar.value
+  const bar = i === null ? undefined : props.line.bars[i]
+  if (i === null || !bar || !props.doc) return null
+  return { key: `${bar.at.section}-${bar.at.bar}`, section: bar.at.section, bar: Number(bar.at.bar), repeatOf: bar.repeatOf, x: Math.max(0, (xs.value[i]?.[0] ?? i / props.barsPerLine) - 0.012) }
+})
+/** the ghost bar's place: the next bar's slot when the line has room, else a tab under the line's end */
+const ghost = computed(() => {
+  const last = props.line.bars.at(-1)
+  if (!last) return null
+  const n = props.line.bars.length
+  const full = n >= props.barsPerLine
+  const width = 100 / props.barsPerLine
+  return { section: last.at.section, below: full, style: full ? { right: '0', width: `${width / 2}%` } : { left: `${(n / props.barsPerLine) * 100}%`, width: `${width}%` } }
+})
 /** whether the mark is the chord in the open field, whose labels show the draft's reading */
 const drafted = (m: { line: number; slot: boolean }): boolean => props.preview !== undefined && props.editing?.kind === 'chord' && !m.slot && m.line === props.editing.line
 /** "Edit Dm7, A bar 3"; a transposed part's chord says its concert pitch too, as the editor shows it */

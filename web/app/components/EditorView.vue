@@ -22,6 +22,18 @@
 
     <ShareDialog :open="shareOpen" :link="shareLink" @close="shareOpen = false" />
     <SheetChordEditor :doc="editor.doc.value" :target="sheetChord" @update:doc="editor.setDoc" @said="said = $event" @close="sheetChord = null" />
+    <!-- the sheet editor's structure dialogs: a new section, a section from a bar, a jump -->
+    <BarDialog
+      :kind="sheetDialog?.kind ?? null"
+      :sections="sheetSections"
+      :section="sheetDialog?.section ?? ''"
+      :bar="sheetDialog?.bar ?? 0"
+      :beats="sheetBeats"
+      :error="sheetDialogError"
+      :nav="sheetDialog?.nav"
+      @close="sheetDialog = null"
+      @submit="applySheetDialog"
+    />
     <p class="sr-only" aria-live="polite">{{ said }}</p>
 
     <UiDialog :open="revertOpen" size="md" @close="revertOpen = false">
@@ -177,6 +189,10 @@
             @said="said = $event"
             @preview="sheetPreview = $event"
             @done="sheetDone"
+            @refused="said = $event"
+            @dialog="openSheetDialog"
+            @add-bar="sheetAddBar"
+            @add-section="openSheetDialog('section', '', 0)"
           />
           <ScaleSheet
             v-else
@@ -205,6 +221,8 @@ import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeft
 import { ISSUE_CONTEXT, issuePart } from '~/utils/issueReport'
 import { CHART_REPORT_KEY, type ChartReport, guidesText } from '~/utils/chartReport'
 import {
+  addSection,
+  barView,
   buildSheet,
   chartKeyOf,
   type ChartDoc,
@@ -212,6 +230,9 @@ import {
   CONCERT,
   type Part,
   encodeShare,
+  insertHeldBar,
+  setNav,
+  splitSection,
   instrumentLabel,
   LEVEL_LABELS,
   parseChart,
@@ -229,6 +250,7 @@ import {
   type ShareView,
   unlevel,
 } from '@chord-scale-maker/engine'
+import BarDialog, { type BarDialogKind, type BarDialogSubmit } from './BarDialog.vue'
 import type { SaveTarget } from '~/composables/useSavedChart'
 import { nextChordLine, type SheetChordEdit, type SheetEdit } from '~/utils/sheetChordEdit'
 import { SCALE_VIEW } from '~/utils/scaleView'
@@ -369,6 +391,50 @@ function sheetDone(then: 'stay' | 'next' | 'prev' | 'add' | 'cancel'): void {
     return
   }
   sheetEdit.value = null
+}
+
+/** the sheet editor's structure actions (spec §1.4): the toolbar's and the ghost bar's, by the grid's engine calls */
+const sheetView = computed(() => barView(editor.doc.value))
+const sheetSections = computed(() => sheetView.value.sections.filter((x) => !x.copy).map((x) => x.name))
+const sheetBeats = computed(() => sheetView.value.beats)
+const sheetDialog = ref<{ kind: BarDialogKind; section: string; bar: number; nav?: string } | null>(null)
+const sheetDialogError = ref('')
+function openSheetDialog(kind: 'section' | 'split' | 'nav', section: string, bar: number): void {
+  const cell = sheetView.value.sections.find((s) => s.name === section)?.bars.find((b) => b.bar === bar)
+  sheetDialog.value = { kind, section, bar, ...(kind === 'nav' ? { nav: cell?.nav[0]?.text ?? '' } : {}) }
+  sheetDialogError.value = ''
+}
+const NAME_RULE = 'a name without spaces that no other section has'
+function applySheetDialog(v: BarDialogSubmit): void {
+  const d = sheetDialog.value
+  const doc = editor.doc.value
+  if (!d) return
+  const change = ((): { next: ChartDoc; said: string; why: string } | null => {
+    switch (v.kind) {
+      case 'section':
+        return { next: addSection(doc, v.name, v.chords), said: `${v.name} added`, why: `A new section needs ${NAME_RULE}, and a chord or more.` }
+      case 'split':
+        return { next: splitSection(doc, d.section, d.bar, v.name), said: `${v.name} starts at bar ${d.bar}`, why: `A new section needs ${NAME_RULE}, and starts on a bar with a chord, after the first, not inside an ending, and not in a section that’s repeated.` }
+      case 'nav':
+        return { next: setNav(doc, d.section, d.bar, v.text), said: `${d.section}, bar ${d.bar}: ${v.text || 'no jump'}`, why: 'The chart can’t take a jump there.' }
+      default:
+        return null
+    }
+  })()
+  if (!change) return
+  if (change.next === doc) return void (sheetDialogError.value = change.why)
+  editor.setDoc(change.next)
+  said.value = change.said
+  sheetDialog.value = null
+}
+/** the ghost bar: a bar after the section's last (before a part's rounding-out bars), as the grid's + Bar does */
+function sheetAddBar(section: string): void {
+  const last = sheetView.value.sections.find((x) => x.name === section)?.bars.findLast((b) => b.kind !== 'implied')?.bar
+  if (last === undefined) return
+  const next = insertHeldBar(editor.doc.value, section, last + 1)
+  if (next === editor.doc.value) return void (said.value = 'No bar can go there.')
+  editor.setDoc(next)
+  said.value = `${section}: bar ${last + 1} added`
 }
 
 const saved = props.saveTarget ? useSavedChart(editor.text, props.saveTarget, (id) => emit('created', id)) : null

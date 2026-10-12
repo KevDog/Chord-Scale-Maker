@@ -50,6 +50,10 @@ export type ChangesChord = Readonly<{
   guide: string
 }>
 export type ChangesBar = Readonly<{
+  /** the bar's place in the chart, held bars too: the section as drawn (a repeat's own name) and its bar number */
+  at: Readonly<{ section: string; bar: string }>
+  /** for a bar of a written-out @copy, the section it repeats (edits go to that section); null otherwise */
+  repeatOf: string | null
   /** the chart's key signature, written for the part; null when signatures are off or it has no key: */
   keySig: string | null
   chords: readonly ChangesChord[]
@@ -73,7 +77,8 @@ export type ChangesBar = Readonly<{
   /** a navigation instruction above this bar ("D.S. al Coda"); '' = none; several joined with " · " */
   nav: string
 }>
-export type ChangesLine = Readonly<{ bars: readonly ChangesBar[] }>
+/** sectionEnd: the line is its section's last, where the editor offers a bar to add */
+export type ChangesLine = Readonly<{ bars: readonly ChangesBar[]; sectionEnd: boolean }>
 export type ChangesSheet = Readonly<{ lines: readonly ChangesLine[]; beats: 2 | 3 | 4; diagnostics: readonly string[] }>
 
 /** a run of rows in one section, as the chart plays them; a copy names the section it repeats */
@@ -219,6 +224,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   let lastKey = ''
   const lastForm = blocks.findLastIndex((b) => b.part === 'form')
   const lines = blocks.flatMap((block, k) => {
+    const firstBar = Number((rows[block.rows[0] ?? -1] as LinedRow | undefined)?.bar ?? 1)
     const bars = Array.from({ length: Math.max(1, block.to - block.from + 1) }, (_, j): ChangesBar => {
       const bar = block.from + j
       const chords = block.rows
@@ -251,6 +257,8 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
       const last = j === block.to - block.from
       const hasEndings = sectionsWithEndings.has(block.section)
       return {
+        at: { section: block.section, bar: String(firstBar + j) },
+        repeatOf: block.copyOf,
         keySig,
         chords,
         voice: guideLine?.bars.get(bar) ?? [],
@@ -265,7 +273,8 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         nav: (navAt.get(bar) ?? []).join(' · '),
       }
     })
-    return chunk(bars, barsPerLine).map((b) => ({ bars: b }))
+    const chunks = chunk(bars, barsPerLine)
+    return chunks.map((b, c): ChangesLine => ({ bars: b, sectionEnd: c === chunks.length - 1 }))
   })
 
   // within each line, blank a chord's scale when it repeats the previous chord's (the first chord always shows its scale)
@@ -279,7 +288,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         return c
       }),
     }))
-    return { bars }
+    return { bars, sectionEnd: line.sectionEnd }
   })
   return { lines: deduped, beats, diagnostics: guideLine ? [...diagnostics, ...guideLine.missing] : diagnostics }
 }
