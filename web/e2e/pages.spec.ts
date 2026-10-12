@@ -156,14 +156,24 @@ test('the header is the same height whatever the quote, and keeps the whole quot
     await page.goto(path)
     const quote = page.getByRole('banner').locator('figure')
     await expect(quote).toBeVisible()
-    expect((await quote.boundingBox())?.height).toBe(20) // one line
+    expect((await quote.boundingBox())?.height).toBeLessThanOrEqual(64)
     if (n === 0) {
       await expect(page.getByRole('banner').locator('[title]')).toHaveAttribute('title', `“${longest.quote}” — ${longest.author}`)
-      await expect(quote).toHaveText(`“${longest.quote}” — ${longest.author}`) // clipped on screen, whole for screen readers
-      expect(await quote.evaluate((f) => f.scrollWidth > f.clientWidth)).toBe(true)
+      await expect(quote.locator('figcaption')).toHaveText(`— ${longest.author}`)
     }
     heights.add(Math.round((await page.getByRole('banner').boundingBox())?.height ?? 0))
     expect((await page.getByRole('banner').getByRole('navigation').first().boundingBox())?.height).toBeLessThanOrEqual(64)
+  }
+  // the longest quotes, at the narrowest width that shows one: whole, and the author whole under them
+  await page.setViewportSize({ width: 1280, height: 800 })
+  for (const { i } of byLength.slice(-6)) {
+    await page.addInitScript((r) => (Math.random = () => r), at(i))
+    await page.goto('/help')
+    const quote = page.getByRole('banner').locator('figure')
+    await expect(quote).toBeVisible()
+    const clipped = await quote.evaluate((f) => Array.from(f.children).some((c) => c.scrollHeight > c.clientHeight + 1 || c.scrollWidth > c.clientWidth + 1))
+    expect(clipped, quotes[i]!.quote).toBe(false)
+    heights.add(Math.round((await page.getByRole('banner').boundingBox())?.height ?? 0))
   }
   await page.setViewportSize({ width: 390, height: 844 }) // a phone: the menu button's row, no quote
   for (const path of ['/', '/song/autumn-leaves']) {
