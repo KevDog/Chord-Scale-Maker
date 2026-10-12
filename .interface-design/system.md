@@ -28,6 +28,10 @@ new component recipes here as they land.
 | `--color-stand`   | zinc-100  | zinc-950 | the page ground (`bg-stand`)               |
 | `--color-paper`   | white     | zinc-900 | the sheet, content cards (`bg-paper`)      |
 | `--color-raised`  | white     | zinc-800 | menus, dialogs, the stuck rail (`bg-raised`) |
+| `--color-sleeve`  | note-800  | note-900 | the header's band (`bg-sleeve`), the label's navy |
+
+The header is the sleeve: a navy band whatever the theme, so it takes `class="dark"` (Catalyst's light-on-dark
+styles) and the dark accent (note-300); its icons note-200; the logo mark keeps a `ring-white/30` edge on it.
 
 ## Depth
 

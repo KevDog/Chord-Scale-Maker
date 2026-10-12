@@ -28,7 +28,8 @@
     </HTransitionRoot>
 
     <!-- Navbar -->
-    <header class="flex h-16 items-center px-4 print:hidden">
+    <!-- the sleeve: a navy band, read as a dark surface in either theme (Catalyst's dark styles, the dark accent) -->
+    <header class="dark flex h-16 items-center bg-sleeve px-4 [--color-accent:var(--color-note-300)] **:data-[slot=icon]:fill-note-200! print:hidden">
       <div class="py-2.5 lg:hidden">
         <UiNavbarItem aria-label="Open navigation" @click="menuOpen = true">
           <svg data-slot="icon" viewBox="0 0 20 20" aria-hidden="true">
