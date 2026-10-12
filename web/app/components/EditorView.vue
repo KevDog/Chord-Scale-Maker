@@ -121,6 +121,7 @@
             :key-start="keyStartNote"
             :lock-labels="sheetEditor"
             :compact="compactRail"
+            :sticky-rail="sheetEditing"
           >
             <!-- Level: how sophisticated each chord's scale is (engine/src/levels.ts); a dropdown in the toolbar -->
             <template v-if="!editor.fatal.value" #level>

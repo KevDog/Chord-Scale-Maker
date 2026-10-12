@@ -318,7 +318,17 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
 })
 
 
-test('the rail sticks over the sheet from lg, and a chord tapped under it opens clear of it', async ({ page }) => {
+test('practising, the rail scrolls away with the page: the notes are what matter', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/song/autumn-leaves')
+  const rail = page.getByRole('group', { name: 'Sheet controls' })
+  await expect(rail.getByRole('button', { name: 'Print' })).toBeVisible()
+  await page.evaluate(() => window.scrollTo(0, 800))
+  await expect.poll(async () => (await rail.boundingBox())!.y).toBeLessThan(-100)
+  await expect(rail).not.toHaveAttribute('data-stuck')
+})
+
+test('editing, the rail sticks over the sheet from lg, and a chord tapped under it opens clear of it', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto('/song/autumn-leaves')
   const rail = page.getByRole('group', { name: 'Sheet controls' })

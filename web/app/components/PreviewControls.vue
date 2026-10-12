@@ -2,7 +2,7 @@
   <!-- display: contents, so the rail's sticky box is the whole Preview section -->
   <div id="preview-toolbar" class="contents space-y-4">
     <!-- the rail: labelled groups wrap on the left (Work on · Instrument · Level · Show (on the Changes: Analysis · Line) · Transposition · Spell Scale), the actions pinned right (on their own line, still right, once the row is too narrow); top-aligned so every label sits on one line -->
-    <SheetRail>
+    <SheetRail :sticky="stickyRail">
       <template #left>
         <UiField v-if="sheets.length > 1" class="w-36">
           <UiLabel class="pl-3">Work on</UiLabel>
@@ -129,7 +129,8 @@ const arpDir = defineModel<ArpDirection>('arpDir', { default: 'up' })
 /** the sheet editor is open: numerals and scales are shown (they are the pickers), their toggles hide */
 /** keyStart: the chart's key, written for the instrument (what "From key" starts on) */
 /** compact: a phone with compactRail on: the rail keeps Work on, Instrument and the slot's rail actions; Controls opens the rest */
-const props = defineProps<{ lockLabels?: boolean; keyStart: string; compact?: boolean }>()
+/** stickyRail: the rail sticks over the sheet (lg up): while editing */
+const props = defineProps<{ lockLabels?: boolean; keyStart: string; compact?: boolean; stickyRail?: boolean }>()
 defineSlots<{ level?: () => unknown; transpose?: () => unknown; actions?: (p: { place: 'rail' | 'dialog'; after: (run: () => void) => void }) => unknown }>()
 const controlsOpen = ref(false)
 watch(() => props.compact, () => (controlsOpen.value = false))

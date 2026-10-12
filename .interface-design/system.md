@@ -81,6 +81,6 @@ phone).
   bordered page.
 - **Rail** (above the paper, on the stand): left = Work on · Instrument · Level (Shuffle) · the sheet's own controls
   · Transpose; right = Edit (toggle) · Share · Focus · Print (primary) · ⋯ More. `flex flex-wrap items-end gap-2
-  p-3`; sticky from `lg`, `bg-raised shadow-raised rounded-paper` once stuck (no shadow at rest).
+  p-3`; sticky from `lg` while editing only (practising, it scrolls away), `bg-raised shadow-raised rounded-paper` once stuck (no shadow at rest).
 - **More menu:** `UiDropdown` behind a plain "More actions" trigger: Save as a copy, Download, Revert to library
   version, Report a chart error.
