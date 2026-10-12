@@ -45,6 +45,8 @@
   /* surfaces, depth and radius (.interface-design/system.md): the stand (page ground) → the paper (the sheet) →
      raised (menus, dialogs, the stuck rail); one hue, lightness only; lift by shadow, not border */
   --color-stand: var(--color-zinc-100);
+  /* the sleeve: the header's band, the label's navy (white on it 10:1; note-300 4.6:1) */
+  --color-sleeve: var(--color-note-800);
   --color-paper: #ffffff;
   --color-raised: #ffffff;
   --shadow-paper: var(--depth-paper); /* indirect: Tailwind inlines a shadow's value, so html.dark sets --depth-* */
@@ -72,6 +74,7 @@
     --color-accent: var(--color-note-300);
     --color-accent-strong: var(--color-note-200);
     --color-stand: var(--color-zinc-950);
+    --color-sleeve: var(--color-note-900);
     --color-paper: var(--color-zinc-900);
     --color-raised: var(--color-zinc-800);
     --depth-paper: 0 0 0 1px rgb(255 255 255 / 0.08); /* depth shadows don't read on dark: a ring only */
