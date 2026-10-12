@@ -1,11 +1,10 @@
 <template>
-  <!-- one line whatever its length, so the navbar never changes height; the whole quote is in the title (screen readers
-       get it all from the text, which is only clipped) -->
-  <!-- the title (the tooltip) is on a wrapper with no role, so screen readers don't read the quote a second time -->
+  <!-- the whole quote in two lines at most (the longest cited is 151 characters), the author on a line under it: 54 px,
+       inside the navbar's fixed 64. The title (a tooltip) is on a wrapper with no role, so it isn't read twice -->
   <div v-if="quote" :title="`“${quote.quote}” — ${quote.author}`" class="min-w-0">
-    <figure class="truncate text-sm/5 text-white/90">
-      <blockquote class="inline italic">“{{ quote.quote }}”</blockquote>
-      <figcaption class="inline text-note-200"> — {{ quote.author }}</figcaption>
+    <figure class="text-white/90">
+      <blockquote class="line-clamp-2 text-sm/[18px] text-balance italic">“{{ quote.quote }}”</blockquote>
+      <figcaption class="mt-0.5 truncate text-xs/4 text-note-200">— {{ quote.author }}</figcaption>
     </figure>
   </div>
 </template>
