@@ -35,6 +35,7 @@
             @refused="emit('refused', $event)"
             @dialog="(kind, section, bar) => emit('dialog', kind, section, bar)"
             @add-bar="emit('addBar', $event)"
+            @overfull="breakAt"
           />
         </div>
       </template>
@@ -50,9 +51,9 @@
 <script setup lang="ts">
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
-import { buildChanges, changesLinesPerPage, type ChartDoc, type ChordPreview, chunk, type GuideLine, pageSubtitle, type Part, type ScaleView } from '@chord-scale-maker/engine'
+import { breakLines, buildChanges, changesLinesPerPage, type ChartDoc, type ChordPreview, chunk, type GuideLine, pageSubtitle, type Part, type ScaleView } from '@chord-scale-maker/engine'
 
-/** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones) */
+/** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
 const props = defineProps<{
   doc: ChartDoc
   title: string
@@ -90,7 +91,14 @@ const barsPerLine = computed(() => (wide.value ? 4 : 2))
 
 const line = computed((): GuideLine => props.guideLine ?? 'off')
 const guideOn = computed(() => line.value !== 'off')
-const sheet = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, props.signatures, line.value, props.view))
+const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, props.signatures, line.value, props.view))
+/** the bars that start a line because the names before them didn't fit (ChangesSystem measures): until the sheet changes */
+const breaks = shallowRef<ReadonlySet<string>>(new Set())
+watch(built, () => (breaks.value = new Set()))
+function breakAt(at: string): void {
+  if (!breaks.value.has(at)) breaks.value = new Set([...breaks.value, at])
+}
+const sheet = computed(() => ({ ...built.value, lines: breakLines(built.value.lines, breaks.value) }))
 // 8 lines with slashes (a 32-bar AABA, one section a line pair); fewer with a guide tone line, whose notes and labels are taller
 const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: props.numerals, scales: props.scales }))
 const subtitleText = computed(() => pageSubtitle(props.subtitle, props.instrumentLabel, 'Changes'))

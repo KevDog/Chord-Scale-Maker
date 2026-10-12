@@ -369,6 +369,12 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   the slashes, each wrapping within the room up to the next chord (a button while the bar editor is shown: tap to
   edit, §4). Eight lines a printed page (a 32-bar AABA), fewer
   with a guide tone line on (§6a).
+- Chord names never run into each other (#145): `ChangesSystem` measures each name (with the marker or key area over
+  it) against the line as drawn or as printed, whichever is tighter, and `fitBars` widens a bar its names crowd (a
+  beat is its bar's width over its beats), the others sharing the rest evenly; bars stay even when nothing is
+  crowded. Names that still don't fit shrink (to 60% at least); a line whose names would shrink below 80% breaks
+  before the bar that doesn't fit (`breakLines`, until the chart changes), so on a phone a bar of four chords may get
+  a line of its own.
 - `Numerals` and `Scales` toggles and a **Guide Tones** segmented control (Off · From 3rd · From 7th) replace Intervals on
   this sheet (`csm-numerals`, `csm-scale-names`, both on; `csm-guide-line`, `off | third | seventh`, off; share links carry
   them and the sheet, the line as `guideLine`, absent meaning off).

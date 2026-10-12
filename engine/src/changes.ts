@@ -113,6 +113,19 @@ export function changesLinesPerPage(line: GuideLine, rows: Readonly<{ numerals: 
 
 const STANDARD: ScaleView = { level: 'standard', seed: 0 }
 
+/** a bar's name for breakLines: "A 2" */
+export const barKey = (at: Readonly<{ section: string; bar: string }>): string => `${at.section} ${at.bar}`
+
+/** the lines with a new line started at each bar named (barKey) that isn't already a line's first: where names don't fit */
+export function breakLines(lines: readonly ChangesLine[], at: ReadonlySet<string>): readonly ChangesLine[] {
+  if (!at.size) return lines
+  return lines.flatMap((line) => {
+    const starts = line.bars.flatMap((b, i) => (i === 0 || at.has(barKey(b.at)) ? [i] : []))
+    if (starts.length === 1) return [line]
+    return starts.map((s, k): ChangesLine => ({ bars: line.bars.slice(s, starts[k + 1]), sectionEnd: line.sectionEnd && k === starts.length - 1 }))
+  })
+}
+
 /** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only */
 export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: GuideLine = 'off', view: ScaleView = STANDARD): ChangesSheet {
   const rows = expandRowLines(doc).value

@@ -1,4 +1,5 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { nextTick } from 'vue'
 import { describe, expect, it } from 'vitest'
 import ChangesSheet from '~/components/ChangesSheet.vue'
 import { changesLinesPerPage, type ChartDoc, type GuideLine, parseChart, type ScaleView } from '@chord-scale-maker/engine'
@@ -35,6 +36,18 @@ describe('ChangesSheet', () => {
     const line = await systemOf(false)
     expect(line.props('clef')).toBeUndefined()
     expect(line.props('line').bars[0].keySig).toBeNull()
+  })
+
+  it("starts a new line where a line's names don't fit, until the chart changes", async () => {
+    const four = parseChart('title: F\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\nA | 4 | A7\n').value
+    const sheet = await mountSheet({ doc: four })
+    const lines = () => sheet.findAllComponents({ name: 'ChangesSystem' }).map((s) => s.props('line').bars.map((b: { at: { bar: string } }) => b.at.bar).join(' '))
+    expect(lines()).toEqual(['1 2', '3 4']) // 2 bars a line (a phone's width)
+    sheet.findComponent({ name: 'ChangesSystem' }).vm.$emit('overfull', 'A 2')
+    await nextTick()
+    expect(lines()).toEqual(['1', '2', '3 4'])
+    await sheet.setProps({ doc: parseChart('title: F\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | C6\nA | 4 | A7\n').value })
+    expect(lines()).toEqual(['1 2', '3 4'])
   })
 
   it('keeps the print gap between lines unless signatures are on', async () => {

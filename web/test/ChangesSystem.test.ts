@@ -5,7 +5,7 @@ import { type ChangesBar, type ChangesChord, type ChangesLine, type GuideNote, t
 
 vi.mock('~/utils/changesDrawing', async (importOriginal) => ({
   ...(await importOriginal<typeof import('~/utils/changesDrawing')>()),
-  drawChangesLine: () => ({ xs: [[0.1, 0.3, 0.5, 0.7]] }),
+  drawChangesLine: () => ({ xs: [[0.1, 0.3, 0.5, 0.7]], ends: [0.25], scales: [] }),
 }))
 mockNuxtImport('loadVexFlow', () => () => Promise.resolve({}))
 
