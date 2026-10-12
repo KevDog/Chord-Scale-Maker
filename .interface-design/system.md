@@ -66,7 +66,7 @@ Catalyst's buttons, toggles and segmented controls keep its `rounded-lg` (8 px) 
 
 ## Type
 
-- Jost (`font-display`) for display: sheet title 28 px/700, page titles 28 px.
+- Jost (`font-display`) for display: sheet title 24 px/700 (the song page's h1), page titles 28 px.
 - System sans 14 px body; labels 12 px/500 zinc-500.
 - Three tiers by weight and colour, not size alone. Headings `text-wrap: balance`.
 
@@ -79,8 +79,26 @@ phone).
 
 - **Paper** (the sheet, `SheetPages`): `bg-paper shadow-paper rounded-paper p-4 sm:p-6`; no ring stack, no inner
   bordered page.
-- **Rail** (above the paper, on the stand): left = Work on · Instrument · Level (Shuffle) · the sheet's own controls
-  · Transpose; right = Edit (toggle) · Share · Focus · Print (primary) · ⋯ More. `flex flex-wrap items-end gap-2
-  p-3`; sticky from `lg` while editing only (practising, it scrolls away), `bg-raised shadow-raised rounded-paper` once stuck (no shadow at rest).
-- **More menu:** `UiDropdown` behind a plain "More actions" trigger: Save as a copy, Download, Revert to library
-  version, Report a chart error.
+- **Paper, focus mode** (`SheetPages` paged, `utils/sheetPaged.ts`): one paper a printed page, 816 px wide and at
+  least 1056 tall (a letter page at 96 dpi, so it lays out as printed), `gap-6` apart, all CSS-`zoom`ed by one factor
+  so the tallest fits the window under the Exit bar; popovers on it undo the zoom (`PAGE_ZOOM`).
+- **Heading:** the sheet's title is the page's only `h1` (Jost 24/32 700, balanced); the save status one muted line
+  under it (`SheetStatus`, 14/24 zinc-500).
+- **Rail** (`SheetRail`, a labelled group "Sheet controls", above the paper, on the stand): left = Work on ·
+  Instrument · Level (Shuffle) · the sheet's own controls · Transpose; right = Edit (toggle) · Share · Focus · Print
+  (primary) · ⋯ More. `-mx-3 flex flex-wrap items-end gap-x-4 gap-y-3 p-3`; 16 px to the paper. Sticky from `lg`
+  while editing only (practising, it scrolls away): `bg-raised shadow-raised rounded-paper` once stuck (a sentinel's
+  IntersectionObserver), no shadow at rest; z-10, z-40 while one of its menus is open. Its parents up to the Preview
+  section are `display: contents` so it sticks the sheet's length.
+- **Rail on a phone** (`compactRail` flag, below md): Work on · Instrument · Controls (outline,
+  AdjustmentsHorizontal) · Print · ⋯; Controls opens `ControlsDialog` ("Controls") with the other groups (the same
+  components) and Edit · Share · Focus, which run once it has closed. While editing, Done sits on the rail.
+- **More menu** (`MoreMenu`, items from `moreMenuItems`): `UiDropdown` behind an outline "More actions" ⋯: Save as a
+  copy, Download, Revert to library version, Report a chart error.
+- **Header** (the sleeve): fixed 64 px; the quote (from xl) in two lines at most, 14/18 italic white/90, the author
+  under it 12/16 note-200; the whole quote in a tooltip.
+- **Library:** heading "Library"; an A–Z bar (`size-8` links, `rounded-control`, accent text) jumping to and focusing
+  each letter's first tune; details built `style · key · form`; below sm a list (title 15/24 600, then composer ·
+  details 14/20 muted, one line, the whole row the tap target).
+- **On this page** (`PageIndex`): from lg a 14rem column beside 42rem of text, `sticky top-8`, links `border-l`
+  stacked, the current one `border-accent text-accent font-semibold` (`aria-current`); below lg inline links.
