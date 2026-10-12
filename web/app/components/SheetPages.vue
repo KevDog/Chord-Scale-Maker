@@ -2,6 +2,7 @@
   <!-- on screen: one continuous paper; in focus mode (paged), one paper a page, zoomed to fit the window; in print:
        bare letter pages, each breaking after itself under its own header -->
   <div
+    ref="root"
     data-slot="paper"
     :class="paged
       ? 'flex flex-col items-center gap-6 print:block'
@@ -40,7 +41,7 @@
 </template>
 
 <script setup lang="ts" generic="T extends { subtitle: string }">
-import { PAGE_HEIGHT, PAGE_WIDTH, pageZoom, SHEET_PAGED } from '~/utils/sheetPaged'
+import { PAGE_HEIGHT, PAGE_WIDTH, PAGE_ZOOM, pageZoom, SHEET_PAGED } from '~/utils/sheetPaged'
 
 /** a sheet's printed pages: continuous on screen, one letter page each in print */
 const props = defineProps<{
@@ -52,26 +53,39 @@ const props = defineProps<{
 }>()
 
 const shown = computed((): readonly (T | null)[] => (props.pages.length ? props.pages : [null]))
+const headerOnScreen = (i: number): boolean => i === 0 || props.pages[i]?.subtitle !== props.pages[i - 1]?.subtitle
 
 // focus mode: each page its own paper, all zoomed by one factor so the tallest fits the window
 const paged = inject(SHEET_PAGED, ref(false))
+const root = useTemplateRef<HTMLElement>('root')
 const sections = useTemplateRef<HTMLElement[]>('sections')
 const tallest = ref(0)
 const room = ref({ width: 0, height: 0 })
 const zoom = computed(() => pageZoom(room.value, tallest.value))
+provide(PAGE_ZOOM, computed(() => (paged.value ? zoom.value : 1)))
+// focus mode's chrome above and below a page: its Exit bar (60) and the bar's margin (24), the space above the
+// paper (16) and below it (32), and a little for the paper's shadow
+const FOCUS_CHROME = 136
 let sized: ResizeObserver | undefined
+let mounted = false
 const measure = (): void => {
   tallest.value = Math.max(0, ...(sections.value ?? []).map((s) => s.offsetHeight)) // offsetHeight: before the zoom
-  room.value = { width: window.innerWidth - 32, height: window.innerHeight - FOCUS_CHROME }
+  const scroller = root.value?.closest<HTMLElement>('[aria-modal]') // the focus overlay; its scrollbar isn't room
+  room.value = { width: (scroller?.clientWidth ?? window.innerWidth) - 32, height: window.innerHeight - FOCUS_CHROME }
 }
-const FOCUS_CHROME = 96 // focus mode's Exit bar and the space around a page
+const unwatch = (): void => {
+  sized?.disconnect()
+  sized = undefined
+  window.removeEventListener('resize', measure)
+}
+// every page, including ones added while paged (an overfull line re-chunks them): watch the count, not the refs
 watch(
-  [paged, () => sections.value?.length],
+  [paged, () => shown.value.length],
   () => {
-    sized?.disconnect()
-    window.removeEventListener('resize', measure)
+    unwatch()
     if (!paged.value) return
     nextTick(() => {
+      if (!mounted || !paged.value) return
       sized = new ResizeObserver(measure)
       for (const s of sections.value ?? []) sized.observe(s)
       window.addEventListener('resize', measure)
@@ -80,9 +94,9 @@ watch(
   },
   { flush: 'post' },
 )
+onMounted(() => (mounted = true))
 onBeforeUnmount(() => {
-  sized?.disconnect()
-  if (import.meta.client) window.removeEventListener('resize', measure)
+  mounted = false
+  unwatch()
 })
-const headerOnScreen = (i: number): boolean => i === 0 || props.pages[i]?.subtitle !== props.pages[i - 1]?.subtitle
 </script>
