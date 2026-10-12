@@ -30,6 +30,10 @@
         <option value="" disabled>Key</option>
         <option v-for="k in KEY_OPTIONS" :key="k" :value="k">{{ keyLabel(k) }}</option>
       </select>
+      <span aria-hidden="true">·</span>
+      <select :value="time" aria-label="Time" :class="[FIELD, 'cursor-pointer appearance-none pr-1']" @change="emit('update:doc', setMeta(doc, 'time', ($event.target as HTMLSelectElement).value))">
+        <option v-for="t in TIMES" :key="t" :value="t">{{ t }}</option>
+      </select>
     </div>
     <div class="flex justify-end">
       <input
@@ -51,12 +55,12 @@
 </template>
 
 <script setup lang="ts">
-import { cellError, type ChartDoc, chartHeading, chartMeta, isValidKey, keyLabel, LIMITS, type MetaKey, setMeta } from '@chord-scale-maker/engine'
+import { cellError, type ChartDoc, chartDetails, chartHeading, chartMeta, isValidKey, keyLabel, LIMITS, type MetaKey, setMeta } from '@chord-scale-maker/engine'
 import { KEY_OPTIONS } from '~/utils/keyOptions'
 
 /**
  * The chart's heading edited where it prints (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md §1.5):
- * the title, subtitle, key and composer as fields laid out as the printed heading is, a dashed underline the one
+ * the title, subtitle, key, time and composer as fields laid out as the printed heading is, a dashed underline the one
  * hint they take typing. A value the chart can't hold stays in its field, flagged with why; the doc keeps the last
  * good one (as MetaInput does).
  */
@@ -67,7 +71,9 @@ type Field = Extract<MetaKey, 'title' | 'subtitle' | 'composer'>
 const FIELD = 'rounded-none border-0 border-b border-dashed border-note-400 bg-transparent px-1 placeholder:text-zinc-400 focus:border-note-600 focus:outline-none dark:border-note-500/60 dark:placeholder:text-zinc-500'
 const BAD = 'border-red-500! text-red-700 dark:text-red-400'
 
+const TIMES = ['4/4', '3/4', '2/4'] as const
 const meta = computed(() => chartMeta(props.doc))
+const time = computed(() => chartDetails(props.doc).time || '4/4')
 const heading = computed(() => chartHeading(props.doc))
 const values = computed((): Record<Field, string> => ({ title: meta.value.title, subtitle: meta.value.subtitle, composer: heading.value.composer }))
 /** a refused draft, kept in its field with why, until it is fixed or the heading changes underneath */

@@ -165,6 +165,18 @@ describe('ChangesSystem as the editor', () => {
     expect(reading.find('button[aria-label="Add a bar at the end of A"]').exists()).toBe(false)
   })
 
+  it('makes the section’s marker a button while the sheet is the editor, which asks for the rename dialog', async () => {
+    const marked = (): ChangesLine => ({ bars: [{ ...line().bars[0]!, marker: 'A' }], sectionEnd: false })
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: marked(), editing: null } })
+    const label = w.find('button[aria-label="Rename A"]')
+    expect(label.text()).toBe('A')
+    await label.trigger('click')
+    expect(w.emitted('dialog')?.[0]).toEqual(['rename', 'A', 1])
+    const reading = await mountSuspended(ChangesSystem, { props: { ...base, line: marked() } })
+    expect(reading.find('button[aria-label="Rename A"]').exists()).toBe(false)
+    expect(reading.text()).toContain('A')
+  })
+
   it('without an editing prop, taps a chord the old way', async () => {
     const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line() } })
     await w.find('button').trigger('click')

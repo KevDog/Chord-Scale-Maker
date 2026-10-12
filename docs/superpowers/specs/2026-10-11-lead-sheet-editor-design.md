@@ -169,7 +169,8 @@ first beat (D7), `print:hidden`, in the Tab order after that bar's chords: **+ b
 bar)`), **+ after** (`insertHeldBar(doc, section, bar + 1)`, with the proposal's rule for a part's end), **Split**
 (`setBarChords` with the chord twice, so the second half can be typed), **Delete** (`deleteBar`), **⋯** a menu (Headless
 UI `Menu`): Key change here (`insertKeyChange`), 1st ending / 2nd ending (`toggleEnding`), Segno, Coda (`setMark`),
-Jump… (`setNav`, with the text in a `BarDialog`), New section here (`splitSection`, name in a `BarDialog`). On a
+Jump… (`setNav`, with the text in a `BarDialog`), New section here (`splitSection`, name in a `BarDialog`), Paste bars…
+(`parseBarLine`, then `insertBars` before or after the bar, in a `BarDialog`; #142). On a
 repeat's bar: **Write out** only (D10). Every refused change leaves the doc as it was and says why in a `UiText`
 under the toolbar and in the live region, as the grid does. The toolbar's buttons are labelled with the bar: "Insert a
 held bar before A bar 8".
@@ -178,13 +179,15 @@ held bar before A bar 8".
 
 After each section's last bar, in the staff's line, a dashed box the width of a bar (signature 4): **+ bar**
 (`insertHeldBar` after the section's last, before a part's rounding-out bars, as the grid's + Bar). Under the last line,
-**+ section** opens the grid's `BarDialog` for a section (`addSection`). Both `print:hidden`, both focusable, both
+**+ section** opens the grid's `BarDialog` for a section (`addSection`), and **Repeat a section…** beside it one for a
+repeat (`repeatSection`; #142). While editing, a section's marker is a button that renames it (`renameSection`, the
+name in a `BarDialog`; #142). Both `print:hidden`, both focusable, both
 quiet until hovered (`text-zinc-500`, `border-zinc-400` dashed → `note` on hover and focus).
 
 ### 1.6 The heading, where it prints
 
 `SheetPages`' heading, while editing, swaps its title, subtitle, key and composer for `MetaInput` fields styled as the
-printed text with a dashed underline (signature 5): the same validation, the same refusal display (the value stays,
+printed text with a dashed underline (signature 5), and the time beside the key (#142): the same validation, the same refusal display (the value stays,
 flagged), the same `setDoc` path as `ChartHeadingFields`, which stays in the grid pane as it is. The key field is the
 grid's key control (a listbox of the keys; a chart with no key shows "Pick the chart's key" there).
 
