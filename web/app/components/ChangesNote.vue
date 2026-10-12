@@ -15,6 +15,7 @@
       :aria-label="`Why: ${chord}`"
       class="absolute top-full left-0 z-20 mt-2 w-72 rounded-lg max-sm:w-[calc(100vw-2rem)] bg-white p-3 text-left text-sm/6 font-normal text-zinc-700 shadow-lg ring-1 ring-zinc-950/10 dark:bg-zinc-800 dark:text-zinc-200 dark:ring-white/10 print:hidden"
     >
+      <span v-if="problem" class="mb-1 block text-amber-700 dark:text-amber-400">⚠ {{ problem }}</span>
       <span class="block">
         {{ reason }}<template v-if="rule">
           · rule <template v-for="(id, k) in parts" :key="id"><template v-if="k">+</template><NuxtLink :to="`/functions#rule-${id}`" class="underline decoration-zinc-950/30 hover:decoration-zinc-950 dark:decoration-white/30 dark:hover:decoration-white">{{ id }}</NuxtLink></template><template v-if="fallback">, a guess — an @key or a function would settle it</template>
@@ -50,11 +51,11 @@ import { ISSUE_CONTEXT, ISSUE_TEXT_KEY, issueText, issueTitle, issueUrl } from '
  * why the analysis gave a chord its function and scale (engine/src/changes.ts reason, rule, heardIn, keyFrom), opened by a
  * click or tap; Escape or a click outside closes it. A key the author set, by an @key or the function's own key, is
  * starred, as in the grid's Function dropdown. The rule id links to its row on /functions. chord is the symbol as
- * drawn for the part (written), concert the chart's own.
+ * drawn for the part (written), concert the chart's own. problem: why the written function was set aside, said first.
  */
 const props = withDefaults(
-  defineProps<{ reason: string; heardIn: string; keyFrom: ChangesChord['keyFrom']; rule: string; fallback: boolean; chord: string; concert: string; numeral: string; scale: string | null; at: Readonly<{ section: string; bar: string }>; wrap?: boolean }>(),
-  { wrap: false },
+  defineProps<{ reason: string; heardIn: string; keyFrom: ChangesChord['keyFrom']; rule: string; fallback: boolean; chord: string; concert: string; numeral: string; scale: string | null; at: Readonly<{ section: string; bar: string }>; problem?: string; wrap?: boolean }>(),
+  { problem: '', wrap: false },
 )
 const shift = ref(0)
 /**

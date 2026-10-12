@@ -43,6 +43,8 @@ export type ChangesChord = Readonly<{
   fallback: boolean
   /** its function was written in the chart, not found */
   stated: boolean
+  /** why its written function was set aside (it doesn't read, or doesn't fit the chord); '' when it has none or it fits */
+  problem: string
   /** the key it's heard in, written for the part ("B♭ major"); '' when the analysis doesn't reach it */
   heardIn: string
   /** where that key came from: the key before its function's colon, an @key over its area, or the analysis */
@@ -136,6 +138,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const resolved = resolveScales(doc, view, analysis)
   const keySig = signatures ? keySignature(chartKeyOf(doc), part) : null
   const byRow = new Map(analysis.rows.map((r) => [r.row, r]))
+  const problemAt = new Map(analysis.problems.map((p) => [p.line, p.message]))
   const index = new Map<LinedRow, number>(rows.map((r, i) => [r, i]))
   const eventAt = new Map(events.map((e) => [index.get(e.row as LinedRow) ?? -1, e]))
   const barOf = (i: number): number | undefined => {
@@ -261,6 +264,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             rule: a?.rule && a.rule !== '?' ? a.rule : '',
             fallback: !!a?.fallback && !a?.stated,
             stated: a?.stated ?? false,
+            problem: problemAt.get(row.line) ?? '',
             heardIn: a ? keyName((a.statedKey ?? a.key).name, part) : '',
             keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',
             guide: voices?.labels.get(i) ?? '',

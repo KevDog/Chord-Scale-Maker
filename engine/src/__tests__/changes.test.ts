@@ -107,6 +107,14 @@ describe('the Changes sheet', () => {
     expect(chords.find((c) => c.text === 'G7')).toMatchObject({ stated: false, heardIn: 'C major', reason: 'V7 of C: natural tensions' })
   })
 
+  it("keeps the rules' numeral on a chord whose written function doesn't fit, and says why", () => {
+    const doc = parseChart('title: T\nkey: Eb\nA | 1 | EbMaj7\nA | 2 | G7 | | Eb: V7/ii\nA | 3 | Fm7\nA | 4 | Bb7 | | V7/q\n').value
+    const chords = buildChanges(doc, CONCERT).lines.flatMap((l) => l.bars).flatMap((b) => b.chords)
+    expect(chords.find((c) => c.text === 'G7')).toMatchObject({ numeral: 'III7', stated: false, problem: 'V7/ii in Eb is on C, not G7' })
+    expect(chords.find((c) => c.text === 'Bb7')?.problem).not.toBe('')
+    expect(chords.find((c) => c.text === 'Fm7')?.problem).toBe('')
+  })
+
   it('says where the key it is heard in came from: found, an @key, or the function', () => {
     const doc = parseChart('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | Bb7 | | D: ♭VI7\nA | 3 | G7\nA | 4 | CMaj7\n@key B 5 F\nB | 5 | Gm7\nB | 6 | C7\nB | 7 | FMaj7\n').value
     const chords = buildChanges(doc, CONCERT).lines.flatMap((l) => l.bars).flatMap((b) => b.chords)
