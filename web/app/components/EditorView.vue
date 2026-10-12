@@ -135,12 +135,13 @@
             </template>
             <!-- the actions: Edit, Share, Focus, Print (the view's one primary), the rest under More; on a phone (compact)
                  Edit, Share and Focus are in the Controls dialog -->
-            <template #actions="{ place }">
+            <template #actions="{ place, after }">
+              <!-- Edit: in the rail, or on a phone in the dialog, but in the rail while editing (its Done the way out) -->
+              <ToggleButton v-if="!editor.fatal.value && (place === 'rail') === (!compactRail || editorShown)" :model-value="editorShown" expands title="Show or hide the chart editor" @update:model-value="toggleEditor"><PencilSquareIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</ToggleButton>
               <template v-if="place === 'dialog' || !compactRail">
-                <ToggleButton v-if="!editor.fatal.value" :model-value="editorShown" expands title="Show or hide the chart editor" @update:model-value="toggleEditor"><PencilSquareIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</ToggleButton>
                 <UiButton v-if="shared" outline :disabled="editor.fatal.value" @click="saveShared"><BookmarkIcon data-slot="icon" />Save to My charts</UiButton>
-                <UiButton v-if="myChartsOn" outline :disabled="editor.fatal.value" @click="openShare"><LinkIcon data-slot="icon" />Share</UiButton>
-                <UiButton v-if="!editor.fatal.value" outline title="Show only the sheet music (Esc to leave)" @click="enterFocus"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
+                <UiButton v-if="myChartsOn" outline :disabled="editor.fatal.value" @click="after(openShare)"><LinkIcon data-slot="icon" />Share</UiButton>
+                <UiButton v-if="!editor.fatal.value" outline title="Show only the sheet music (Esc to leave)" @click="after(enterFocus)"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
               </template>
               <template v-if="place === 'rail'">
                 <UiButton v-if="!editor.fatal.value" color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
@@ -392,7 +393,9 @@ const focusBar = ref<HTMLElement | null>(null)
  * from md up, while the editor is open on a chart the sheet can draw, outside focus mode. It shows concert pitch (D2)
  * with numerals and scales on (D3): they are the pickers.
  */
-const wide = useMediaQuery('(min-width: 768px)')
+// this view is client-only: start from the real width, so a phone's first paint already has the compact rail
+const WIDE = '(min-width: 768px)'
+const wide = useMediaQuery(WIDE, import.meta.client ? window.matchMedia(WIDE).matches : true)
 /** phones, with the flag on: the short rail, its other controls in a dialog */
 const compactRail = computed(() => compactRailOn && !wide.value)
 const sheetEditor = computed(() => wide.value && sheetEditing.value && !focus.on.value)
@@ -645,7 +648,7 @@ function currentDoc(): ChartDoc {
 /** focus mode, with keyboard focus on its exit button */
 function enterFocus(): void {
   editor.flush()
-  focus.enter()
+  focus.enter(compactRail.value ? document.getElementById('controls-button') : undefined) // from the Controls dialog: back to Controls
   nextTick(() => focusBar.value?.querySelector('button')?.focus())
 }
 

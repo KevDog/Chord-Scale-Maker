@@ -29,7 +29,7 @@
           </div>
         </UiField>
         <!-- the other groups: in the rail, or on a phone (compact) in the Controls dialog -->
-        <component :is="compact ? ControlsDialog : Passthrough" v-bind="compact ? { open: controlsOpen, onClose: () => (controlsOpen = false) } : {}">
+        <component :is="compact ? ControlsDialog : Passthrough" v-bind="compact ? { open: controlsOpen, onClose: () => (controlsOpen = false), onClosed: runAfterClose } : {}">
           <UiField v-if="$slots.level">
             <UiLabel class="pl-3">Level</UiLabel>
             <div class="flex items-center gap-2"><slot name="level" /></div>
@@ -89,12 +89,12 @@
               </UiListbox>
             </div>
           </UiField>
-          <template v-if="compact" #actions><slot name="actions" place="dialog" /></template>
+          <template v-if="compact" #actions><slot name="actions" place="dialog" :after="afterClose" /></template>
         </component>
       </template>
       <template #right>
-        <UiButton v-if="compact" outline @click="controlsOpen = true"><AdjustmentsHorizontalIcon data-slot="icon" />Controls</UiButton>
-        <slot name="actions" place="rail" />
+        <UiButton v-if="compact" id="controls-button" outline aria-haspopup="dialog" @click="controlsOpen = true"><AdjustmentsHorizontalIcon data-slot="icon" />Controls</UiButton>
+        <slot name="actions" place="rail" :after="now" />
       </template>
     </SheetRail>
     <UiText id="start-help" class="sr-only">Each scale from its root, or from a written pitch: the chart's key or any note</UiText>
@@ -129,9 +129,19 @@ const arpDir = defineModel<ArpDirection>('arpDir', { default: 'up' })
 /** the sheet editor is open: numerals and scales are shown (they are the pickers), their toggles hide */
 /** keyStart: the chart's key, written for the instrument (what "From key" starts on) */
 /** compact: a phone with compactRail on: the rail keeps Work on, Instrument and the slot's rail actions; Controls opens the rest */
-defineProps<{ lockLabels?: boolean; keyStart: string; compact?: boolean }>()
-defineSlots<{ level?: () => unknown; transpose?: () => unknown; actions?: (p: { place: 'rail' | 'dialog' }) => unknown }>()
+const props = defineProps<{ lockLabels?: boolean; keyStart: string; compact?: boolean }>()
+defineSlots<{ level?: () => unknown; transpose?: () => unknown; actions?: (p: { place: 'rail' | 'dialog'; after: (run: () => void) => void }) => unknown }>()
 const controlsOpen = ref(false)
+watch(() => props.compact, () => (controlsOpen.value = false))
+/** an action chosen in the dialog runs once it has closed (Headless UI then returns focus to Controls first); in the rail, now */
+let pending: (() => void) | null = null
+const afterClose = (run: () => void): void => void (pending = run)
+const now = (run: () => void): void => run()
+function runAfterClose(): void {
+  const run = pending
+  pending = null
+  run?.()
+} // across md the groups move: don't reopen it later by itself
 /** the groups' wrapper in the rail: none */
 const Passthrough: FunctionalComponent = (_, { slots }) => slots.default?.()
 

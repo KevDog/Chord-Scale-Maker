@@ -16,9 +16,10 @@ export function useFocusMode() {
     for (const c of LOCK) document.documentElement.classList.toggle(c, locked)
   }
 
-  function enter(): void {
+  /** back: where focus returns on exit, if not the focused element (from a dialog that has closed: its opener) */
+  function enter(back?: HTMLElement | null): void {
     if (on.value) return
-    opener = document.activeElement instanceof HTMLElement ? document.activeElement : null
+    opener = back ?? (document.activeElement instanceof HTMLElement ? document.activeElement : null)
     on.value = true
     lock(true)
     window.addEventListener('keydown', onKey)

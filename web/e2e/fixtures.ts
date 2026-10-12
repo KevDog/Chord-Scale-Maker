@@ -112,11 +112,11 @@ export async function writeChart(page: Page, text: string): Promise<void> {
 
 /** on a phone (compactRail) the sheet's other controls are in the Controls dialog: open it around these steps */
 export async function inControls(page: Page, steps: () => Promise<void>): Promise<void> {
-  const controls = page.getByRole('button', { name: 'Controls', exact: true })
-  if (!(await controls.isVisible())) return steps()
-  await controls.click()
+  if ((page.viewportSize()?.width ?? 1280) >= 768) return steps()
+  await page.getByRole('button', { name: 'Controls', exact: true }).click()
   await steps()
-  await page.getByRole('dialog', { name: 'Sheet controls' }).getByRole('button', { name: 'Close', exact: true }).click()
+  const dialog = page.getByRole('dialog', { name: 'Controls' })
+  if (await dialog.isVisible()) await dialog.getByRole('button', { name: 'Close', exact: true }).click()
 }
 
 /** choose the Changes sheet's line mode (Off · Guide Tones · 7th Chords), confirmed checked (retried: a click before hydration is lost) */
