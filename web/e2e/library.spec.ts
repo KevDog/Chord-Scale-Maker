@@ -134,6 +134,23 @@ test('old ?chart= links and underscore names move to /song/<name>, without a his
   await expect(page).toHaveURL(/\/song\/round-midnight$/)
 })
 
+test('an old ?chart= link keeps its hash when it moves', async ({ page }) => {
+  await page.goto('/song?chart=autumn_leaves#s=abc')
+  await expect(page).toHaveURL(/\/song\/autumn-leaves#s=abc$/)
+})
+
+test('an old ?chart= address reached inside the editor moves to /song/<name> too', async ({ page }) => {
+  await page.goto('/song?mine=000000000000')
+  await expect(page.getByRole('heading', { name: 'That chart isn’t here' })).toBeVisible()
+  // the router's own back/forward path: the address changes without a page load
+  await page.evaluate(() => {
+    history.pushState(history.state, '', '/song?chart=autumn_leaves')
+    dispatchEvent(new PopStateEvent('popstate', { state: history.state }))
+  })
+  await expect(page).toHaveURL(/\/song\/autumn-leaves$/)
+  await expect(staves(page)).toHaveCount(6)
+})
+
 test('an unknown chart, old or new address, goes to the library', async ({ page }) => {
   await page.goto('/song/no-such-tune')
   await expect(page).toHaveURL(/\/$/)

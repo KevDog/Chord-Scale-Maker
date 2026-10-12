@@ -60,14 +60,20 @@ let adopted = ''
 const hash = import.meta.client ? (route.hash || (useNuxtApp().$arrivalHash as string | undefined) || location.hash) : ''
 const link = myCharts && hash.startsWith('#s=') ? await decodeShare(hash.slice(3)) : undefined
 
-// a library chart's other addresses move to its own; without My charts the editor only opens library charts, and
-// with it a bare /song has nothing to open (not on the prerender, which has no query)
+/** a library chart's other addresses move to its own, the hash kept (the router may have dropped it, see `hash`) */
+const atOwnAddress = (): boolean => !findChart(slug()) || route.path === songPath(slug())
+const moveToOwnAddress = () => navigateTo({ path: songPath(slug()), hash }, { replace: true })
+
+// without My charts the editor only opens library charts, and with it a bare /song has nothing to open (not on the
+// prerender, which has no query)
 if (import.meta.client) {
-  if (findChart(slug()) && route.path !== songPath(slug())) await navigateTo({ path: songPath(slug()), hash: route.hash }, { replace: true })
+  if (!atOwnAddress()) await moveToOwnAddress()
   else if (!findChart(slug()) && (route.params.slug || !myCharts || (!query('mine') && route.query.new === undefined && link === undefined)))
     await navigateTo('/', { replace: true })
 }
 if (import.meta.client && myCharts) migrateDraft(STARTER_CHART)
+// the page stays mounted when only the query changes (and while it hydrates the router briefly shows a bare /song)
+if (import.meta.client) watch(() => route.query.chart, () => atOwnAddress() || moveToOwnAddress())
 
 const source = computed((): Source => {
   void generation.value // a revert reads storage again
