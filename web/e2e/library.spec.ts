@@ -6,16 +6,26 @@ test('searches the library and opens a chart', async ({ page }) => {
   await page.getByPlaceholder('Search by title').fill('zzz')
   await expect(page.getByText('No charts match')).toBeVisible()
   await page.getByPlaceholder('Search by title').fill('autumn')
-  await page.getByRole('link', { name: /Autumn Leaves/ }).click()
+  await page.getByRole('link', { name: 'Open Autumn Leaves in the editor' }).click()
   await expect(page).toHaveURL(/song\?chart=autumn_leaves/)
   await expect(staves(page)).toHaveCount(6) // it opens on the Changes: 24 bars, four a line
+})
+
+test('a library title leads to its tune page, and on to the editor', async ({ page }) => {
+  await page.goto('/')
+  await page.getByPlaceholder('Search by title').fill('green dolphin')
+  await page.getByRole('link', { name: 'On Green Dolphin Street', exact: true }).click()
+  await expect(page).toHaveURL(/\/tunes\/on-green-dolphin-street$/)
+  await expect(page.getByRole('heading', { name: 'On Green Dolphin Street' })).toBeVisible()
+  await page.getByRole('link', { name: 'Open practice sheets' }).click()
+  await expect(page).toHaveURL(/song\?chart=on_green_dolphin_street/)
 })
 
 test('finds a tune by its composer, and the sheet carries the composer and the tune line', async ({ page }) => {
   await page.goto('/')
   await page.getByPlaceholder('Search by title or composer').fill('kaper')
-  await expect(page.getByRole('link', { name: 'Invitation' })).toBeVisible()
-  await page.getByRole('link', { name: 'On Green Dolphin Street' }).click()
+  await expect(page.getByRole('link', { name: 'Invitation', exact: true })).toBeVisible()
+  await page.getByRole('link', { name: 'Open On Green Dolphin Street in the editor' }).click()
   await expect(page.getByText('Latin / swing · C · ABCD, 32 bars — Bronisław Kaper')).toBeVisible() // under the editor heading
   const header = page.locator('section header').first()
   await expect(header).toContainText('Latin / swing · C · ABCD, 32 bars')
@@ -46,7 +56,7 @@ test('a quote in the header, kept while navigating', async ({ page }) => {
   await expect(quote).toBeVisible()
   await expect(quote.locator('figcaption')).toHaveText(/^— [^·]+$/) // the author only
   const text = await quote.textContent()
-  await page.getByRole('link', { name: /Autumn Leaves/ }).click()
+  await page.getByRole('link', { name: 'Open Autumn Leaves in the editor' }).click()
   await expect(page).toHaveURL(/song/)
   await expect(page.locator('nav figure')).toHaveText(text ?? '')
 })
