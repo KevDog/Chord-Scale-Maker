@@ -1,14 +1,10 @@
-import { buildChanges } from './changes'
 import { type ChartDoc, type ChartKind, chartAka, chartKind, keyLabel, metaValue, parseChart } from './chart'
-import { CONCERT } from './part'
 
 /**
- * What a tune page shows (docs/superpowers/plans/2026-10-12-seo-discoverability.md): a chart's heading fields as
- * written and its changes as text, in concert pitch. No DOM, like changes.ts.
+ * What a song page shows (docs/superpowers/plans/2026-10-12-seo-discoverability.md): a chart's heading fields as
+ * written. No DOM.
  */
 
-/** a chord as the Changes sheet draws it: its bar, its symbol, its numeral ('' where the analysis doesn't reach) and its scale */
-export type TuneRow = Readonly<{ section: string; bar: string; chord: string; numeral: string; scale: string | null }>
 export type TuneSummary = Readonly<{
   title: string
   subtitle: string
@@ -23,15 +19,10 @@ export type TuneSummary = Readonly<{
   form: string
   time: string
   source: string
-  /** one per chord, repeats included as drawn */
-  rows: readonly TuneRow[]
 }>
 
 export function tuneSummary(text: string): TuneSummary {
   const doc = parseChart(text).value
-  const rows = buildChanges(doc, CONCERT).lines.flatMap((l) =>
-    l.bars.flatMap((b) => b.chords.map((c) => ({ section: c.at.section, bar: c.at.bar, chord: c.text, numeral: c.numeral, scale: c.scale }))),
-  )
   const key = metaValue(doc, 'key')
   return {
     title: metaValue(doc, 'title', 'Untitled'),
@@ -45,7 +36,6 @@ export function tuneSummary(text: string): TuneSummary {
     form: metaValue(doc, 'form'),
     time: metaValue(doc, 'time'),
     source: metaValue(doc, 'source'),
-    rows,
   }
 }
 
@@ -53,7 +43,7 @@ export function tuneSummary(text: string): TuneSummary {
 const DESCRIPTION_MAX = 160
 
 /**
- * one sentence for a tune page's description, clauses dropped to fit (a title of LIMITS.maxMeta fits alone): the
+ * one sentence for a song page's description, clauses dropped to fit (a title of LIMITS.maxMeta fits alone): the
  * closing ones from the end first, then the other titles, the lead sheet's, the key and the composer
  */
 export function tuneDescription(t: TuneSummary): string {
@@ -73,7 +63,7 @@ export function tuneDescription(t: TuneSummary): string {
   return sentence(keep)
 }
 
-/** what a library chart's tune page lacks, each with its fix: libraryMeta.test.ts fails on any */
+/** what a library chart's song page lacks, each with its fix: libraryMeta.test.ts fails on any */
 export function tuneGaps(doc: ChartDoc): readonly string[] {
   const missing = (key: 'title' | 'key' | 'style' | 'form' | 'composer') => !metaValue(doc, key)
   return [
@@ -85,7 +75,7 @@ export function tuneGaps(doc: ChartDoc): readonly string[] {
   ].filter((g): g is string => !!g)
 }
 
-/** what a tune page could also use: reported where charts are made, never failing */
+/** what a song page could also use: reported where charts are made, never failing */
 export function tuneAdvice(doc: ChartDoc): readonly string[] {
   return [
     !metaValue(doc, 'source') && 'no source: say where the chart came from, if a book or recording',

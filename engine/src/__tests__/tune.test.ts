@@ -1,9 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { buildChanges } from '../changes'
 import { keyLabel, parseChart } from '../chart'
 import { LIMITS } from '../limits'
-import { CONCERT } from '../part'
 import { tuneAdvice, tuneDescription, tuneGaps, tuneSummary } from '../tune'
 import { isSyncCopy } from '../util'
 
@@ -25,20 +23,6 @@ describe('tuneSummary', () => {
       time: '',
       source: 'Colorado Cookbook, p. 33',
     })
-  })
-
-  it('gives one row per chord, as the Changes sheet draws it in concert pitch', () => {
-    const text = read('blue-trane.txt')
-    const chords = buildChanges(parseChart(text).value, CONCERT).lines.flatMap((l) => l.bars.flatMap((b) => b.chords))
-    const t = tuneSummary(text)
-    expect(t.rows[0]).toEqual({ section: 'A', bar: '1', chord: 'Eb7#9', numeral: chords[0]?.numeral, scale: chords[0]?.scale })
-    expect(t.rows).toEqual(chords.map((c) => ({ section: c.at.section, bar: c.at.bar, chord: c.text, numeral: c.numeral, scale: c.scale })))
-  })
-
-  it('includes a repeated section as drawn: written out after another section, once under repeat signs', () => {
-    const rows = (text: string) => tuneSummary(text).rows.map((r) => `${r.section} ${r.bar} ${r.chord}`)
-    expect(rows('A | 1 | C\nB | 2 | F\n@copy A A2 2')).toEqual(['A 1 C', 'B 2 F', 'A2 3 C'])
-    expect(rows('A | 1 | C\nA | 2 | G7\n@copy A A2 2')).toEqual(['A 1 C', 'A 2 G7'])
   })
 
   it('gives each aka: name, split at semicolons (titles may hold commas)', () => {
@@ -85,7 +69,7 @@ describe('tuneDescription', () => {
   })
 })
 
-describe('tuneGaps: what a tune page needs from its chart', () => {
+describe('tuneGaps: what a song page needs from its chart', () => {
   const doc = (head: string) => parseChart(`${head}\nA | 1 | C`).value
   const TUNE = 'title: Blue Trane\ncomposer: John Coltrane\nkey: Eb\nstyle: Blues\nform: A, 12 bars'
 
@@ -110,7 +94,7 @@ describe('tuneGaps: what a tune page needs from its chart', () => {
   })
 })
 
-describe('tuneAdvice: what a tune page could also use', () => {
+describe('tuneAdvice: what a song page could also use', () => {
   const doc = (head: string) => parseChart(`${head}\nA | 1 | C`).value
 
   it('suggests source: and aka: when they are missing', () => {

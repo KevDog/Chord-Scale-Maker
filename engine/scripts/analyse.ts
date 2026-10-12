@@ -1,12 +1,12 @@
 /**
  * The analyser (docs/plan-analysis.md §12): reads charts, reports the rules' scale for every row and why, and with
- * flags writes the result back. Each chart's report ends with its tune page: what it lacks, and its search listing.
+ * flags writes the result back. Each chart's report ends with its song page: what it lacks, and its search listing.
  *
  *   npm run analyse -- charts/autumn-leaves.txt      report one chart
  *   npm run analyse -- --all                          report every chart, then a summary
  *   --strip    blank every written scale the rules reproduce (not `# keep:` rows); list the ones they don't
  *   --save     write the analysis into the chart as comments (a reason per row, `# area:` lines, a header)
- *   --quiet    only the summary (and any tune page's gaps: they fail the build)
+ *   --quiet    only the summary (and any song page's gaps: they fail the build)
  *   --ambiguous   list what a function, an @key or a context: could settle, and problems with the ones written
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
@@ -39,12 +39,12 @@ function report(name: string, a: Analysis): string[] {
   return [head, `  ${contextLine(a)}`, ...areas]
 }
 
-/** the chart's tune page as search engines will list it, and what it lacks (libraryMeta.test.ts fails on a gap) */
+/** the chart's song page as search engines will list it, and what it lacks (libraryMeta.test.ts fails on a gap) */
 function tunePage(text: string, doc: ChartDoc): string[] {
   const t = tuneSummary(text)
   const description = tuneDescription(t)
   return [
-    '  Tune page:',
+    '  Song page:',
     ...tuneGaps(doc).map((g) => `    ✗ ${g}`),
     ...tuneAdvice(doc).map((g) => `    · ${g}`),
     `    title: ${t.title}`,
@@ -108,7 +108,7 @@ if (!ambiguous)
   )
 if (!ambiguous) {
   const missing = new Set(gaps.map((g) => g.slice(0, g.indexOf(':')))).size
-  console.log(`Tune pages: ${files.length - missing} complete, ${missing} missing data`)
+  console.log(`Song pages: ${files.length - missing} complete, ${missing} missing data`)
 }
 if (quiet && gaps.length) console.log(gaps.join('\n'))
 if (quiet && disagreements.length) console.log(disagreements.join('\n'))

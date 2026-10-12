@@ -14,7 +14,6 @@ const TUNE: TuneSummary = {
   form: 'A, 12 bars',
   time: '',
   source: '',
-  rows: [],
 }
 const PATH = '/song/blue-trane'
 
