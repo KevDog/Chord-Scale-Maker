@@ -64,13 +64,17 @@ const error = computed(() => {
   return bad ? `“${text}” can’t go in a chart: ${bad}.` : refused.value
 })
 
-/** the chord as typed, into the chart: blank takes it out; refused (and said why) when the chart can't take it */
+/** the chord as typed, into the chart: blank takes it out; refused (and why said) when the chart can't take it */
 function apply(): void {
   const t = props.target
   const text = draft.value.trim()
-  if (!t || !row.value || text === written || error.value) return
+  if (!t || !row.value || text === written) return
+  if (error.value) return void emit('said', error.value) // shown under the field, and said
   const next = setLineChord(props.doc, t.line, text)
-  if (next === props.doc) return void (refused.value = text ? 'The chart can’t take that chord here.' : 'A section’s first chord can’t be taken out.')
+  if (next === props.doc) {
+    refused.value = text ? 'The chart can’t take that chord here.' : 'A section’s first chord can’t be taken out.'
+    return void emit('said', refused.value)
+  }
   written = text
   emit('update:doc', next)
   emit('said', `${place.value}: ${text || 'chord taken out'}`)

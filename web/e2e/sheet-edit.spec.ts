@@ -96,8 +96,10 @@ test('a refused chord keeps the field open and says why; Escape restores the cho
   const field = page.getByRole('combobox', { name: 'Chord, A bar 2' })
   await field.fill('G7 | x')
   await field.press('Enter')
-  await expect(page.getByText(/can’t go in a chart/)).toBeVisible()
-  await expect(field).toBeVisible()
+  await expect(page.locator('[data-slot=error]').getByText(/can’t go in a chart/)).toBeVisible()
+  await expect(field).toHaveAttribute('aria-invalid', 'true')
+  await expect(field).toHaveAccessibleDescription(/can’t go in a chart/)
+  await expect(page.locator('[aria-live]').getByText(/can’t go in a chart/)).toHaveCount(1) // said, too (#143)
   await field.press('Escape')
   await expect(page.getByRole('button', { name: 'Edit G7, A bar 2' })).toBeVisible()
   await expect.poll(() => plain(page)).toMatch(/A \| 2 \| G7\n/)
@@ -155,7 +157,7 @@ test('the bar toolbar inserts and deletes bars, the ghost bar adds one, + Sectio
   await expect.poll(() => plain(page)).not.toMatch(/CMaj7/)
   await page.getByRole('button', { name: 'Add a bar at the end of A' }).click()
   await expect.poll(() => plain(page)).toMatch(/A \| 1 \| Dm7\nA \| 2 \| G7\nA \| 3 \| G7/) // at the part's end a held bar wouldn't count: the sounding chord is written
-  await page.getByRole('button', { name: 'Section', exact: true }).click()
+  await page.getByRole('button', { name: 'Add a section' }).click()
   const dialog = page.getByRole('dialog')
   await dialog.getByLabel('Section name').fill('B')
   await dialog.getByLabel('First chords').fill('Fm7 Bb7')
@@ -236,6 +238,27 @@ test('⇧Tab moves back a bar; Tab from the last chord returns focus to its butt
   await page.getByRole('combobox', { name: 'Chord, A bar 3' }).press('Tab')
   await expect(page.getByRole('button', { name: 'Edit CMaj7, A bar 3' })).toBeFocused()
   await expect(page.getByRole('combobox', { name: /^Chord, / })).toHaveCount(0)
+})
+
+test('a chord with no numeral or scale still opens its pickers, from a dash in each row (#143)', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | Hm7\nA | 3 | CMaj7\n')
+  const fn = page.getByRole('button', { name: 'Function: Hm7' })
+  await expect(fn).toHaveText('—')
+  await expect(page.getByRole('button', { name: 'Scale: Hm7' })).toHaveText('—')
+  await fn.click()
+  await expect(page.getByRole('dialog', { name: 'Function: Hm7' })).toBeVisible()
+})
+
+test('blank + Tab takes a one-chord bar’s chord out and moves to the next bar, skipping none (#143)', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | Em7\nA | 2 | G7\nA | 3 | Dm7\nA | 4 | CMaj7\n')
+  await page.getByRole('button', { name: 'Edit G7, A bar 2' }).click()
+  const field = page.getByRole('combobox', { name: 'Chord, A bar 2' })
+  await field.fill('')
+  await field.press('Tab')
+  await expect.poll(() => plain(page)).not.toMatch(/G7/)
+  await expect(page.getByRole('combobox', { name: 'Chord, A bar 3' })).toHaveValue('Dm7')
 })
 
 test('→ and ← walk the chords: through a bar’s, then into the next or previous bar’s; inside the text they move the caret', async ({ page }) => {
