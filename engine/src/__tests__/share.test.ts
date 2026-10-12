@@ -56,6 +56,11 @@ describe('share links', () => {
     }
   })
 
+  it('keeps the Arpeggios sheet and its choices, dropping bad ones', () => {
+    expect(shareViewFrom({ sheet: 'arpeggios', arpNotes: 'extended', arpDir: 'up-down' })).toEqual({ sheet: 'arpeggios', arpNotes: 'extended', arpDir: 'up-down' })
+    expect(shareViewFrom({ sheet: 'arps', arpNotes: 'ninth', arpDir: 'sideways' })).toBeUndefined()
+  })
+
   it('read any other line as none (absent), and the old guideLine not at all', async () => {
     for (const line of ['off', 'both', 'Up · root', true, 3, null]) expect(shareViewFrom({ sheet: 'changes', line })).toEqual({ sheet: 'changes' })
     expect(shareViewFrom({ sheet: 'changes', guideLine: 'third' })).toEqual({ sheet: 'changes' })
