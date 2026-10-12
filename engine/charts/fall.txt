@@ -1,0 +1,33 @@
+title: Fall
+composer: Wayne Shorter
+style: Ballad
+# the book: "Medium Ballad (with triplet undercurrent)", quarter = 82 ("As played by Miles Davis")
+key: Em
+form: A, 16 bars
+source:
+# analysis: 2026-10-12, rules v1; E minor
+
+# section | bar | chord
+# area: E minor (bars 1–9)
+A | 1  | F#7sus4   # V7sus4 of B13b9: the b13 is in the key
+# book: F#7sus(add3)
+A | 2  | B13b9     # extended dominant: V7 of E9sus4; b9 from the symbol
+A | 3  | E9sus4    # static sus: Mixolydian
+A | 4  | EbMaj7b5  # a non-tonic major chord: Lydian
+A | 5  | F#7sus4   # V7sus4 of B13b9: the b13 is in the key
+# book: F#7sus(add3)
+A | 6  | B13b9     # extended dominant: V7 of E9sus4; b9 from the symbol
+A | 7  | E9sus4    # static sus: Mixolydian
+A | 8  | EbMaj7b5  # a non-tonic major chord: Lydian
+A | 9  | DMaj7     # ♭VII of E minor: D major, the notes of E Dorian
+# area: G minor (bars 10–12)
+A | 10 | D13b9     # V7 of G minor: the b9 is in the key, the 13 from the symbol
+A | 11 | Gm11      # tonic minor: Dorian by convention
+A | 12 | Bm9       # a borrowed minor chord: Dorian, its own key
+A | 12 | AbMaj7b5  # a non-tonic major chord: Lydian
+# area: E minor (bars 13–15)
+A | 13 | F#7sus4   # V7sus4 of B13b9: the b13 is in the key
+# book: F#7sus(add3)
+A | 14 | B13b9     # V7 of E minor, the chain's last link: the b9 is in the key, the 13 from the symbol
+A | 15 | Em11      # tonic minor: Dorian by convention
+A | 15 | Am11/B    # iv: Dorian, the key’s own notes

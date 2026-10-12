@@ -1,0 +1,48 @@
+title: Creek
+composer: Victor Brasil
+style: Up samba
+key: F
+form: AB, 38 bars
+source: 
+# analysis: 2026-10-12, rules v1; F
+# A is played twice before the solos (2nd time the solo starts at bar 19), once after; B is the solo section
+# the B solo chorus repeats; after solos, D.S. al Coda
+
+# section | bar | chord
+# the intro's first bar is a bass figure with no chord
+Intro | 1  | F13     # I7 in F, not resolving: natural tensions
+Intro | 2  | F9sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+# book: F13sus
+Intro | 3  | F13     # I7 in F, not resolving: natural tensions
+Intro | 4  | F9sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+# book: F13sus
+A     | 1  | F7      # V7/IV in F: natural tensions
+A     | 2  | Bb      # the F7 before it makes Bb the key of the moment: the 4th is in the key
+A     | 3  | F7      # V7/IV in F: natural tensions
+A     | 5  | F7
+A     | 6  | Bb      # the F7 before it makes Bb the key of the moment: the 4th is in the key
+A     | 7  | F7      # extended dominant: V7 of Bb7
+A     | 9  | Bb7     # extended dominant: V7 of Eb7
+A     | 11 | Eb7     # ♭VII7 from the parallel minor: Lydian Dominant
+A     | 13 | C7      # extended dominant: V7 of F7
+A     | 15 | F7      # static dominant: its own mode
+A     | 19 | F13     # I7 in F, not resolving: natural tensions
+A     | 20 | F9sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+# book: F13sus
+A     | 21 | F13     # I7 in F, not resolving: natural tensions
+A     | 22 | F9sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+# book: F13sus
+@segno A 1
+@coda A 21
+B     | 23 | F7      # extended dominant: V7 of Bb7
+B     | 31 | Bb7     # extended dominant: V7 of Eb7
+B     | 33 | Eb7     # ♭VII7 from the parallel minor: Lydian Dominant
+B     | 35 | C7      # extended dominant: V7 of F7
+B     | 37 | F7      # I7 in F, not resolving: natural tensions
+B     | 38 | F7
+@nav B 38 D.S. al Coda
+# D.S. al Coda falls at the end of bar 38 (F7 held from bar 37)
+# Coda: vamp, solo and fade
+Coda  | 1  | F13     # I7 in F, not resolving: natural tensions
+Coda  | 2  | F9sus4  # static sus: Mixolydian
+# book: F13sus

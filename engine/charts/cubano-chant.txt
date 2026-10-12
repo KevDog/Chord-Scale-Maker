@@ -1,0 +1,165 @@
+title: Cubano Chant
+composer: Ray Bryant
+style: Medium up Latin
+key: Ebm
+form: ABCDEF, 64 bars
+source:
+# analysis: 2026-10-12, rules v1; Eb minor
+# head ABC; solos on D D E F (D has 1st/2nd endings); after solos, D.S. al Coda
+# chords pushed an eighth early are written on the bar they land in
+
+# section | bar | chord
+# the intro starts with a piano pickup; it repeats with 1st/2nd endings
+Intro | 1  | Ebm      # tonic minor: Dorian by convention
+Intro | 1  | Fm/Bb    # a borrowed minor chord: Dorian, its own key
+Intro | 2  | Ebm      # tonic minor: Dorian by convention
+Intro | 2  | Fm/Bb    # a borrowed minor chord: Dorian, its own key
+Intro | 3  | Ebm7     # tonic minor: Dorian by convention
+Intro | 3  | Ab/Bb    # a non-tonic major chord: Lydian
+Intro | 4  | Bbm/Eb   # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+Intro | 5  | Bbm/Eb
+Intro | 5  | Ab/Bb    # a non-tonic major chord: Lydian
+Intro | 6  | Ebm7     # tonic minor: Dorian by convention
+Intro | 6  | Fm/Bb    # a borrowed minor chord: Dorian, its own key
+Intro | 7  | Ebm      # tonic minor: Dorian by convention
+Intro | 7  | Fm/Bb    # a borrowed minor chord: Dorian, its own key
+Intro | 8  | Ebm      # tonic minor: Dorian by convention
+Intro | 9  | Ebm
+@ending 1 Intro 8
+@ending 2 Intro 9
+# segno at A bar 1 (N.C. bars, so no @segno: the D.S. returns to the start of A)
+# bars 1–2: N.C.
+A     | 3  | Db       # ♭VII of E♭ minor: D♭ major, the notes of E♭ Dorian
+A     | 3  | Ebm      # tonic minor: Dorian by convention
+A     | 4  | Bbm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+A     | 4  | Ebm      # tonic minor: Dorian by convention
+# bars 5–6: N.C.
+A     | 7  | Db       # ♭VII of E♭ minor: D♭ major, the notes of E♭ Dorian
+A     | 7  | Abm7     # iv: Dorian, the key’s own notes
+A     | 8  | Bbm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+A     | 8  | Ebm      # tonic minor: Dorian by convention
+# bars 9–10: N.C.
+A     | 11 | Db       # ♭VII of E♭ minor: D♭ major, the notes of E♭ Dorian
+A     | 11 | Ebm      # tonic minor: Dorian by convention
+A     | 12 | Bbm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+A     | 12 | Ebm      # tonic minor: Dorian by convention
+# bars 13–14: N.C.
+A     | 15 | Db       # ♭VII of E♭ minor: D♭ major, the notes of E♭ Dorian
+A     | 15 | Abm7     # iv: Dorian, the key’s own notes
+A     | 16 | Bbm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+A     | 16 | Ebm      # tonic minor: Dorian by convention
+B     | 17 | Abm7     # iv: Dorian, the key’s own notes
+B     | 17 | Gb7      # tritone substitute: resolves down a half step to F7
+B     | 18 | F7       # V7 of V7: the dominant of the dominant: natural tensions
+B     | 18 | Bb7#5    # V7 in Eb minor, not resolving: b9 and b13 are in the key, the #11 from the symbol
+B     | 19 | Ab/Eb    # a non-tonic major chord: Lydian
+B     | 20 | Ebm7     # tonic minor: Dorian by convention
+B     | 20 | Eb7      # I7 in Eb minor, not resolving: the b13 is in the key
+B     | 21 | Db/Ab    # ♭VII of E♭ minor: D♭ major, the notes of E♭ Dorian
+B     | 21 | Abm7     # iv: Dorian, the key’s own notes
+B     | 21 | Gb7      # tritone substitute: resolves down a half step to F7
+B     | 22 | F7       # V7 of V7: the dominant of the dominant: natural tensions
+B     | 23 | Bb7      # V7 in Eb minor, not resolving: b9 and b13 are in the key
+B     | 23 | F        # a non-tonic major chord: Lydian
+B     | 23 | Bb7      # V7 in Eb minor, not resolving: b9 and b13 are in the key
+B     | 24 | Gb7      # tritone substitute: resolves down a half step to F7
+B     | 24 | F7       # tritone substitute: resolves down a half step to E7
+B     | 24 | E7       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+# bar 24: then a Bb in the bass alone
+# bars 25–26: N.C.
+C     | 27 | Db       # ♭VII of E♭ minor: D♭ major, the notes of E♭ Dorian
+C     | 27 | Ebm      # tonic minor: Dorian by convention
+C     | 28 | Bbm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+C     | 28 | Ebm      # tonic minor: Dorian by convention
+# bars 29–30: N.C.
+C     | 31 | Db       # ♭VII of E♭ minor: D♭ major, the notes of E♭ Dorian
+C     | 31 | Abm7     # iv: Dorian, the key’s own notes
+C     | 32 | Bbm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+C     | 32 | Ebm      # tonic minor: Dorian by convention
+C     | 33 | Db       # ♭VII of E♭ minor: D♭ major, the notes of E♭ Dorian
+C     | 33 | Abm7     # iv: Dorian, the key’s own notes
+C     | 34 | Bbm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+C     | 34 | Ebm      # ii of Ab7: Dorian
+C     | 34 | Ab7      # extended dominant: V7 of Db7
+C     | 35 | Db7      # extended dominant: V7 of Gb7
+C     | 35 | Gb7      # extended dominant: V7 of B7
+C     | 36 | B7       # V7/bII in Eb minor: the #11 is in the key
+C     | 36 | EMaj7b5  # a non-tonic major chord: Lydian
+C     | 36 | Bb7sus4  # V7sus4 of Ebm6: the b13 is in the key
+# book: Bb7sus (omit 5)
+C     | 37 | Ebm6     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+C     | 37 | Cm7b5    # iiø7 of F7#5: Locrian, the key's own notes (its ♭2 is a passing note)
+C     | 37 | F7#5     # V7 of V7: the dominant of the dominant: #11 and b13 from the symbol
+C     | 37 | Bb7      # extended dominant: V7 of Eb7
+C     | 38 | Eb7      # I7 in Eb minor, not resolving: the b13 is in the key
+# bar 38: Eb7 pushed an eighth early from bar 37, then the solo break; the ⊕ (to Coda) is before bar 38
+@coda C 38
+D     | 39 | Ebm7     # tonic minor: Dorian by convention
+D     | 39 | Cm7b5    # iiø7 of F7: Locrian, the key's own notes (its ♭2 is a passing note)
+D     | 40 | F7       # V7 of V7: the dominant of the dominant, on the way to Eb minor: b9 and b13 are in the key
+D     | 40 | Bb7      # V7 of Eb minor, the chain's last link: b9 and b13 are in the key
+D     | 41 | Ebm7     # tonic minor: Dorian by convention
+D     | 41 | Cm7b5    # iiø7 of F7: Locrian, the key's own notes (its ♭2 is a passing note)
+D     | 42 | F7       # V7 of V7: the dominant of the dominant: natural tensions
+D     | 42 | Bb7      # extended dominant: V7 of Eb7
+D     | 43 | Eb7      # I7 in Eb minor, not resolving: the b13 is in the key
+D     | 43 | Eb7/G    # extended dominant: V7 of Ab7
+D     | 44 | Ab7      # IV7 in Eb minor, not resolving: natural tensions
+D     | 44 | Adim7    # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
+D     | 45 | Eb7/Bb   # I7 in Eb minor, not resolving: the b13 is in the key
+D     | 45 | C7       # extended dominant: each one falls a fifth into the next: natural tensions
+D     | 46 | F7       # V7 of V7: the dominant of the dominant: natural tensions
+D     | 46 | Bb7      # extended dominant: V7 of Eb7/Bb
+D     | 47 | Eb7/Bb   # I7 in Eb minor, not resolving: the b13 is in the key
+D     | 47 | Bb7      # extended dominant: V7 of Eb7
+D     | 48 | Eb7      # extended dominant: V7 of Ab7
+@ending 1 D 45 46
+@ending 2 D 47 48
+E     | 49 | Ab7      # IV7 in Eb minor, not resolving: natural tensions
+E     | 51 | Eb7      # V7/iv in Eb minor: the b13 is in the key
+E     | 53 | Abm7     # iv: Dorian, the key’s own notes
+E     | 53 | Gb7      # tritone substitute: resolves down a half step to F7
+E     | 54 | F7       # V7 of V7: the dominant of the dominant: natural tensions
+E     | 55 | Bb7      # V7 in Eb minor, not resolving: b9 and b13 are in the key
+E     | 55 | Ab7      # IV7 in Eb minor, not resolving: natural tensions
+E     | 56 | Gb7      # bIII7 in Eb minor, not resolving: natural tensions
+E     | 56 | E7       # tritone substitute: resolves down a half step to Ebm7
+F     | 57 | Ebm7     # tonic minor: Dorian by convention
+F     | 57 | Cm7b5    # iiø7 of F7: Locrian, the key's own notes (its ♭2 is a passing note)
+F     | 58 | F7       # V7 of V7: the dominant of the dominant, on the way to Eb minor: b9 and b13 are in the key
+F     | 58 | Bb7      # V7 of Eb minor, the chain's last link: b9 and b13 are in the key
+F     | 59 | Ebm7     # tonic minor: Dorian by convention
+F     | 59 | Cm7b5    # iiø7 of F7: Locrian, the key's own notes (its ♭2 is a passing note)
+F     | 60 | F7       # V7 of V7: the dominant of the dominant: natural tensions
+F     | 60 | Bb7      # extended dominant: V7 of Eb7
+F     | 61 | Eb7      # I7 in Eb minor, not resolving: the b13 is in the key
+F     | 61 | Eb7/G    # extended dominant: V7 of Ab7
+F     | 62 | Ab7      # IV7 in Eb minor, not resolving: natural tensions
+F     | 62 | Adim7    # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
+F     | 63 | Eb7/Bb   # I7 in Eb minor, not resolving: the b13 is in the key
+F     | 63 | C7       # extended dominant: each one falls a fifth into the next: natural tensions
+F     | 64 | F7       # V7 of V7: the dominant of the dominant: natural tensions
+F     | 64 | Bb7      # V7 in Eb minor, not resolving: b9 and b13 are in the key
+@nav F 64 D.S. al Coda
+# Coda: bar 1 is N.C. until a Bb7sus pickup on its last eighth
+Coda  | 1  | Bb7sus4  # V7sus4 of Ebm6: the b13 is in the key
+# book: Bb7sus (omit 5)
+Coda  | 2  | Ebm6     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+Coda  | 2  | Cm7b5    # iiø7 of F7#5: Locrian, the key's own notes (its ♭2 is a passing note)
+Coda  | 2  | F7#5     # V7 of V7: the dominant of the dominant: #11 and b13 from the symbol
+Coda  | 2  | Bb7      # extended dominant: V7 of Eb7
+Coda  | 3  | Eb7      # extended dominant: V7 of Ab7
+# bar 3: Eb7 pushed an eighth early from bar 2, then rests, then Ab7 on the last beat
+Coda  | 3  | Ab7      # extended dominant: V7 of Db7
+Coda  | 4  | Db7      # extended dominant: V7 of Gb7
+Coda  | 4  | Gb7      # extended dominant: V7 of B7
+Coda  | 5  | B7       # V7/bII in Eb minor: the #11 is in the key
+Coda  | 5  | EMaj7b5  # a non-tonic major chord: Lydian
+Coda  | 5  | Bb7sus4  # V7sus4 of Ebm6: the b13 is in the key
+# book: Bb7sus (omit 5)
+Coda  | 6  | Ebm6     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+Coda  | 6  | Cm7b5    # iiø7 of F7#5: Locrian, the key's own notes (its ♭2 is a passing note)
+Coda  | 6  | F7#5     # V7 of V7: the dominant of the dominant: #11 and b13 from the symbol
+Coda  | 6  | Bb7      # extended dominant: V7 of Eb7
+Coda  | 7  | Eb7      # I7 in Eb minor, not resolving: the b13 is in the key
+# bar 7: Eb7 pushed an eighth early from bar 6, held under a fermata (tremolo chord)

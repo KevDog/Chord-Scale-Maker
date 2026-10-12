@@ -1,0 +1,45 @@
+title: Eighty One
+aka: 81
+composer: Ron Carter
+style: Medium Latin rock
+key: F
+form: ABC, 36 bars
+source:
+# analysis: 2026-10-12, rules v1; F, modal
+
+# section | bar | chord
+# book: "As played by Miles Davis". Each solo moves from Latin to swing feel; sus chords are sometimes played
+# as dominant 9th chords (with the 3rd)
+A    | 1  | F9sus4   # static sus: Mixolydian
+A    | 2  | Bb9sus4  # static sus: Mixolydian
+# alt (optional): bar 2, beat 3 (GbMaj7/Bb)
+A    | 3  | F9sus4   # static sus: Mixolydian
+A    | 5  | Bb9sus4  # static sus: Mixolydian
+A    | 7  | F9sus4   # static sus: Mixolydian
+A    | 9  | C9sus4   # static sus: Mixolydian
+A    | 10 | Bb9sus4  # static sus: Mixolydian
+A    | 11 | F9sus4   # static sus: Mixolydian
+# alt (optional): bar 11 (DbMaj7b5/F)
+B    | 13 | F9sus4
+B    | 14 | Bb9sus4  # static sus: Mixolydian
+B    | 15 | F9sus4   # static sus: Mixolydian
+B    | 17 | Bb9sus4  # static sus: Mixolydian
+B    | 19 | F9sus4   # static sus: Mixolydian
+B    | 21 | C9sus4   # static sus: Mixolydian
+B    | 22 | Bb9sus4  # static sus: Mixolydian
+B    | 23 | F9sus4   # static sus: Mixolydian
+# the coda sign stands at the end of bar 24 (F9sus held from bar 23)
+B    | 24 | F9sus4
+@coda B 24
+# C: solos
+C    | 25 | F9sus4
+C    | 29 | Bb9sus4  # static sus: Mixolydian
+C    | 31 | F9sus4   # static sus: Mixolydian
+C    | 33 | C9sus4   # static sus: Mixolydian
+C    | 34 | Bb9sus4  # static sus: Mixolydian
+C    | 35 | F9sus4   # static sus: Mixolydian
+# D.C. al Coda at the end of bar 36 (F9sus held from bar 35)
+C    | 36 | F9sus4
+@nav C 36 D.C. al Coda
+# Coda: F9sus throughout; bars 5–6 vamp and fade till cue, bar 7 the fermata on cue
+Coda | 1  | F9sus4   # static sus: Mixolydian

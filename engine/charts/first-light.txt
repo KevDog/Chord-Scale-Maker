@@ -1,0 +1,63 @@
+title: First Light
+composer: Freddie Hubbard
+style: Medium Latin
+key: G#m
+form: ABC, 34 bars
+source:
+# analysis: 2026-10-12, rules v1; G# minor
+# the book: "Medium Latin", quarter = 154; key signature of 6 flats, the tonic chord is Abm7 (key: G#m stands for Ab minor)
+# intro: bars 1–2 played 7 times (add drums 5th time), then bars 3–4
+# A and B repeat (|: at A, :| at the end of B); flute solos over B, drums fill
+# B's chords are mostly anticipated by an eighth note; written on the beat they belong to
+# C: solos, indefinite vamp; play B after each solo; after the last solo play B, then D.S. al Coda
+# the coda vamps (solo and fade)
+
+# section | bar | chord
+Intro | 1  | Abm7      # tonic minor: Dorian by convention
+Intro | 2  | Bbm7      # a borrowed minor chord: Dorian, its own key
+Intro | 3  | Abm7      # tonic minor: Dorian by convention
+Intro | 4  | Bbm7      # a borrowed minor chord: Dorian, its own key
+@segno A 1
+A     | 1  | Abm7      # tonic minor: Dorian by convention
+A     | 2  | Bbm7      # a borrowed minor chord: Dorian, its own key
+A     | 3  | Abm7      # tonic minor: Dorian by convention
+A     | 4  | Bbm7      # a borrowed minor chord: Dorian, its own key
+A     | 5  | Abm7      # tonic minor: Dorian by convention
+A     | 6  | Bbm7      # a borrowed minor chord: Dorian, its own key
+A     | 7  | Abm7      # tonic minor: Dorian by convention
+A     | 8  | Bbm7      # a borrowed minor chord: Dorian, its own key
+A     | 9  | Abm7      # tonic minor: Dorian by convention
+A     | 10 | Bbm7      # a borrowed minor chord: Dorian, its own key
+A     | 11 | Abm7      # tonic minor: Dorian by convention
+A     | 12 | Bbm7      # a borrowed minor chord: Dorian, its own key
+A     | 13 | Abm7      # tonic minor: Dorian by convention
+A     | 14 | Bbm7      # a borrowed minor chord: Dorian, its own key
+A     | 15 | Abm7      # tonic minor: Dorian by convention
+A     | 16 | Bbm7      # a borrowed minor chord: Dorian, its own key
+@coda A 16
+B     | 17 | C7#5#9    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b9, #9 and b13 from the symbol
+B     | 18 | EMaj7b5   # a non-tonic major chord: Lydian
+B     | 19 | C7#5#9    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b9, #9 and b13 from the symbol
+B     | 20 | AMaj7     # a non-tonic major chord: Lydian
+B     | 21 | C7#5#9    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b9, #9 and b13 from the symbol
+B     | 22 | EMaj7b5   # a non-tonic major chord: Lydian
+B     | 23 | GMaj7b5   # a non-tonic major chord: Lydian
+B     | 23 | BbMaj7b5  # a non-tonic major chord: Lydian
+B     | 24 | EbMaj7b5  # a non-tonic major chord: Lydian
+B     | 24 | AbMaj7    # a non-tonic major chord: Lydian
+B     | 25 | C7#5#9    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b9, #9 and b13 from the symbol
+B     | 26 | EMaj7b5   # a non-tonic major chord: Lydian
+B     | 27 | C7#5#9    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b9, #9 and b13 from the symbol
+B     | 28 | AMaj7     # a non-tonic major chord: Lydian
+B     | 29 | C7#5#9    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b9, #9 and b13 from the symbol
+B     | 30 | EMaj7b5   # a non-tonic major chord: Lydian
+B     | 31 | GMaj7b5   # a non-tonic major chord: Lydian
+B     | 31 | BbMaj7b5  # a non-tonic major chord: Lydian
+B     | 32 | EbMaj7b5  # a non-tonic major chord: Lydian
+B     | 32 | AbMaj7    # a non-tonic major chord: Lydian
+C     | 33 | Abm7      # tonic minor: Dorian by convention
+C     | 34 | Bbm7      # a borrowed minor chord: Dorian, its own key
+@nav C 34 Play B, then D.S. al Coda
+@coda Coda 1
+Coda  | 1  | Abm7      # tonic minor: Dorian by convention
+Coda  | 2  | Bbm7      # a borrowed minor chord: Dorian, its own key
