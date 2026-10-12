@@ -1,7 +1,7 @@
 import { readdirSync } from 'node:fs'
 import { isSyncCopy } from '@chord-scale-maker/engine'
 import { describe, expect, it } from 'vitest'
-import { findChart, LIBRARY, searchLibrary, toLibrary } from '~/utils/library'
+import { findChart, findTune, LIBRARY, searchLibrary, toLibrary, tunePath } from '~/utils/library'
 
 describe('library', () => {
   it('builds entries from chart files, sorted by title', () => {
@@ -36,5 +36,18 @@ describe('library', () => {
     const files = readdirSync('../engine/charts').filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
     expect(files.length).toBeGreaterThan(200)
     expect(LIBRARY.map((c) => `${c.slug}.txt`).sort()).toEqual([...files].sort())
+  })
+
+  it('gives each chart a tune page at a hyphenated path', () => {
+    expect(tunePath('blue_trane')).toBe('/tunes/blue-trane')
+    expect(findTune('blue-trane')?.slug).toBe('blue_trane')
+    expect(findTune('blue_trane')).toBeUndefined()
+    expect(findTune('no-such-tune')).toBeUndefined()
+  })
+
+  it('maps every library chart to its own tune path, and back', () => {
+    const paths = LIBRARY.map((c) => tunePath(c.slug))
+    expect(new Set(paths).size).toBe(LIBRARY.length)
+    for (const c of LIBRARY) expect(findTune(tunePath(c.slug).replace('/tunes/', ''))).toBe(c)
   })
 })

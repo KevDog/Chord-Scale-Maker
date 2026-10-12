@@ -26,3 +26,9 @@ export const searchLibrary = (charts: readonly LibraryChart[], query: string): L
   charts.filter((c) => [c.title, c.composer].some((s) => fold(s).includes(fold(query.trim()))))
 
 export const findChart = (slug: string): LibraryChart | undefined => LIBRARY.find((c) => c.slug === slug)
+
+/** a chart's tune page: hyphens for the slug's underscores, which search engines read as word breaks (blue_trane -> /tunes/blue-trane) */
+export const tunePath = (slug: string): string => `/tunes/${slug.replaceAll('_', '-')}`
+
+/** the chart whose tune page is /tunes/<pathSlug> */
+export const findTune = (pathSlug: string): LibraryChart | undefined => LIBRARY.find((c) => tunePath(c.slug) === `/tunes/${pathSlug}`)
