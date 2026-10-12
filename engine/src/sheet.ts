@@ -13,16 +13,14 @@ import { accText, glyphs, LETTERS, mod, NAT_PC, parseRoot, pcOf, rootName } from
 import type { Resolved } from './resolve'
 
 /**
- * The scale sheet's view model: every chart row becomes a StaffModel (labels, written notes, interval labels or an
+ * The scale sheet's view model: every scale sheet line (`scaleLines`) becomes a StaffModel (labels, written notes, interval labels or an
  * error), split into pages, one part per mode. Components only draw it.
  */
 
 /** one staff on the page: everything a component needs, no DOM */
 export type StaffModel = Readonly<{
-  id: string // unique per sheet; stable while the row, the scale it plays and its position are unchanged
-  section: string
-  bar: string
-  chord: readonly ChordToken[] | null // null: chord can't be read
+  id: string // unique per sheet; stable while the line's scale, chords and the view are unchanged
+  chords: readonly (readonly ChordToken[] | null)[] // the line's chord symbols, as written, once each (null: can't be read)
   scale: ScaleLabel | null
   notes: readonly Pitched[]
   keySig: string | null // VexFlow major spec for the staff's key signature; null: none drawn
@@ -107,8 +105,8 @@ function practiceFor(
 
 function staff(
   row: Row,
+  chordTexts: readonly string[],
   scale: string | null,
-  index: number,
   part: Part,
   mode: Mode,
   start: Start,
@@ -120,18 +118,18 @@ function staff(
 ): StaffModel {
   const startKey = 'midi' in start ? start.midi : start.error
   const keySig = key === undefined ? null : keySignature(key, part)
-  const id = [index, row.section, row.bar, row.chord, scale, part.clef, part.trans, mode, startKey, keySig, showClefAndKey ? '' : 'bare'].join('|')
-  const base = { id, section: row.section, bar: row.bar, last, keySig, showClefAndKey }
-  const chord = chordTokensOrNull(part, row.chord, scale)
+  const id = [chordTexts.join(' '), scale, part.clef, part.trans, mode, startKey, keySig, showClefAndKey ? '' : 'bare'].join('|')
+  const base = { id, last, keySig, showClefAndKey }
+  const chords = chordTexts.map((c) => chordTokensOrNull(part, c, scale))
   const none = { notes: [], accidentals: [], intervals: null, keys: null, selected: null }
-  if (scale === null) return { ...base, ...none, chord, scale: null, error: chord ? 'Choose a scale' : "Can't read this chord" }
+  if (scale === null) return { ...base, ...none, chords, scale: null, error: chords[0] ? 'Choose a scale' : "Can't read this chord" }
   try {
     const label = scaleLabel(part, scale)
-    if ('error' in start) return { ...base, ...none, chord, scale: label, error: start.error }
+    if ('error' in start) return { ...base, ...none, chords, scale: label, error: start.error }
     const notes = scaleNotes(part, scale, mode, start.midi)
     return {
       ...base,
-      chord,
+      chords,
       scale: label,
       notes,
       accidentals: keySig === null ? notes.map((n) => (n.acc ? accText(n.acc) : null)) : accidentalsInBar(notes.map((n) => ({ letter: n.letter, acc: n.acc, octave: octaveOf(n) })), keySig),
@@ -140,7 +138,7 @@ function staff(
       error: null,
     }
   } catch (e) {
-    return { ...base, ...none, chord, scale: null, error: message(e) }
+    return { ...base, ...none, chords, scale: null, error: message(e) }
   }
 }
 
@@ -164,7 +162,7 @@ export function pageSubtitle(subtitle: string, instrument: string, heading: stri
 
 
 /**
- * the printable sheet: one part per mode, each split into pages of perPage staves; never throws.
+ * the printable sheet: one part per mode, each split into pages of perPage lines (`scaleLines`); never throws.
  * key: the chart's home key for the signature (null: no key: line, no signature); undefined: signatures off. With
  * signatures, only each part's first staff starts with the clef and signature, and every staff's accidentals go against it.
  * resolved: resolveScales over the document the rows come from, at the sheet's level; without it each row plays its
@@ -181,13 +179,17 @@ export function buildSheet(
   resolved?: ReadonlyMap<number, Resolved>,
 ): SheetPart[] {
   const scaleOf = (r: Row, i: number): string | null => (resolved?.has(i) ? (resolved.get(i)?.scale ?? null) : qualityScale(r))
+  const lines = scaleLines(rows, scaleOf)
   return modesFor(choice).map((mode) => {
     const start = startFor(part, mode, startText)
     return {
       mode,
       heading: mode === 'from' ? `Spelled from ${noteText(startText)}` : 'Spelled from the Root',
       pages: chunk(
-        rows.map((r, i) => staff(r, scaleOf(r, i), i, part, mode, start, i === rows.length - 1, startText, practice, key, key === undefined || i === 0)),
+        lines.map((l, n) => {
+          const r = rows[l.row] as Row
+          return staff(r, l.chords, scaleOf(r, l.row), part, mode, start, n === lines.length - 1, startText, practice, key, key === undefined || n === 0)
+        }),
         perPage,
       ),
     }

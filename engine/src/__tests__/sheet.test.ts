@@ -1,3 +1,4 @@
+import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { expandRows, parseChart, qualityScale, type Row } from '../chart'
 import type { ScaleLevel } from '../levels'
@@ -8,6 +9,10 @@ import { type ModeChoice, type StaffModel, buildSheet, noteText, pageSubtitle, s
 import { parseKey } from '../analysis/keys'
 
 const row = (chord: string, scale = '', bar = '1'): Row => ({ section: 'A', bar, chord, scale })
+
+/** n rows that are n different lines: m7 chords on the 12 roots, then 7ths */
+const distinct = (n: number): Row[] =>
+  Array.from({ length: n }, (_, i) => row(`${['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B'][i % 12]}${i < 12 ? 'm7' : '7'}`, '', String(i + 1)))
 
 /** every staff of the first part, across pages */
 const staves = (rows: readonly Row[], mode: ModeChoice = 'root'): StaffModel[] =>
@@ -28,7 +33,7 @@ describe('sheet', () => {
   })
 
   it('builds one part per mode with pages of perPage staves', () => {
-    const rows = Array.from({ length: 13 }, (_, i) => row('Cm7', '', String(i + 1)))
+    const rows = distinct(13)
     const sheet = buildSheet(rows, CONCERT, 'both', 'C', 12)
     expect(sheet.map((p) => [p.mode, p.heading, p.pages.map((pg) => pg.length)])).toEqual([
       ['from', 'Spelled from C', [12, 1]],
@@ -43,7 +48,7 @@ describe('sheet', () => {
     if (!s) throw new Error('no staff')
     expect(s.scale).toEqual({ root: { letter: 0, acc: 0 }, name: 'Dorian' })
     expect(s.notes.map(toVexKey)).toEqual(['c/4', 'd/4', 'eb/4', 'f/4', 'g/4', 'a/4', 'bb/4'])
-    expect(s.chord).toEqual([{ kind: 'text', text: 'C–7' }])
+    expect(s.chords).toEqual([[{ kind: 'text', text: 'C–7' }]])
     expect(s.error).toBeNull()
   })
 
@@ -60,9 +65,9 @@ describe('sheet', () => {
   it('reports staves that need attention instead of throwing', () => {
     const [unknown, bad, typo] = staves([row('Cm7#5#9x'), row('Xyz'), row('Cm7', 'C Dorain')])
     expect(unknown).toMatchObject({ error: 'Choose a scale' })
-    expect(unknown?.chord).not.toBeNull()
-    expect(bad).toMatchObject({ chord: null, error: "Can't read this chord" })
-    expect(typo).toMatchObject({ scale: null, error: 'unknown scale "Dorain"', chord: [{ kind: 'text', text: 'C–7' }] })
+    expect(unknown?.chords[0]).not.toBeNull()
+    expect(bad).toMatchObject({ chords: [null], error: "Can't read this chord" })
+    expect(typo).toMatchObject({ scale: null, error: 'unknown scale "Dorain"', chords: [[{ kind: 'text', text: 'C–7' }]] })
   })
 
   it('rejects a pitch that does not match its spelling', () => {
@@ -84,10 +89,28 @@ describe('sheet', () => {
     const id = (rows: readonly Row[]): string[] => staves(rows).map((s) => s.id)
     expect(id([row('Cm7')])).toEqual(id([row('Cm7')]))
     expect(id([row('Cm7')])).not.toEqual(id([row('Cm7', 'C Aeolian')]))
-    const [a, b] = id([row('Cm7'), row('Cm7')])
+    const [a, b] = id([row('Cm7'), row('F7')])
     expect(a).not.toBe(b)
     const bb = buildSheet([row('Cm7')], { clef: 'treble', trans: 'Bb' }, 'root', 'C', 12)[0]?.pages.flat()[0]?.id
     expect(bb).not.toBe(id([row('Cm7')])[0]) // a different instrument redraws
+  })
+
+  it('draws each line once, listing its chords', () => {
+    const s = staves([row('Cm7'), row('F7'), row('Cm9'), row('F7')])
+    expect(s.map((st) => st.chords.length)).toEqual([2, 1])
+    expect(s[0]?.chords[1]).toEqual([{ kind: 'text', text: 'C–9' }])
+    expect(s.map((st) => st.last)).toEqual([false, true])
+  })
+
+  it('keeps ids when a repeat is added', () => {
+    const ids = (rows: readonly Row[]) => staves(rows).map((s) => s.id)
+    expect(ids([row('Cm7'), row('F7'), row('Cm7')])).toEqual(ids([row('Cm7'), row('F7')]))
+  })
+
+  it('gives Autumn Leaves 14 lines', () => {
+    const doc = parseChart(readFileSync(new URL('../../charts/autumn-leaves.txt', import.meta.url), 'utf8')).value
+    const sheet = buildSheet(expandRows(doc).value, CONCERT, 'root', 'C', 12, null, undefined, resolveScales(doc, { level: 'standard', seed: 0 }))
+    expect(sheet[0]?.pages.map((p) => p.length)).toEqual([12, 2])
   })
 
   it('builds page subtitles', () => {
@@ -99,7 +122,7 @@ describe('sheet', () => {
 
   it('writes the sheet for a transposing instrument', () => {
     const [s] = buildSheet([row('Cm7')], { clef: 'treble', trans: 'Bb' }, 'root', 'C', 12)[0]?.pages.flat() ?? []
-    expect(s?.chord).toEqual([{ kind: 'text', text: 'D–7' }])
+    expect(s?.chords).toEqual([[{ kind: 'text', text: 'D–7' }]])
     expect(s?.scale?.name).toBe('Dorian')
     expect(s?.notes.map(toVexKey)).toEqual(['d/4', 'e/4', 'f/4', 'g/4', 'a/4', 'b/4', 'c/5'])
     const [b] = buildSheet([row('Cm7')], { clef: 'bass', trans: 'C' }, 'from', 'C', 12)[0]?.pages.flat() ?? []
