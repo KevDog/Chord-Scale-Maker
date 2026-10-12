@@ -47,6 +47,8 @@ import { songPath } from '~/utils/site'
 
 /** My charts on the library page: your edited versions, copies and new charts, newest first (client-only) */
 const props = defineProps<{ query: string }>()
+/** count: how many show (the page's second "Library" heading is only needed below them) */
+const emit = defineEmits<{ count: [n: number] }>()
 
 const KIND_COLOR: Readonly<Record<SavedMeta['kind'], BadgeColor>> = { edited: 'amber', copy: 'zinc', new: 'note' }
 const charts = ref<SavedMeta[]>([])
@@ -65,7 +67,8 @@ onMounted(() => {
 })
 onBeforeUnmount(() => window.removeEventListener('storage', onStorage))
 
-const shown = computed(() => charts.value.filter((c) => searchLibrary([{ slug: c.id, title: c.title, subtitle: '', composer: '', aka: [], text: '' }], props.query).length))
+watch(() => charts.value.length, (n) => emit('count', n), { immediate: true })
+const shown = computed(() => charts.value.filter((c) => searchLibrary([{ slug: c.id, title: c.title, subtitle: '', details: '', composer: '', aka: [], text: '' }], props.query).length))
 
 const openHref = (c: SavedMeta): string => (c.kind === 'edited' && c.basedOn ? songPath(c.basedOn) : `/song?mine=${c.id}`)
 const kindLabel = (c: SavedMeta): string => (c.kind === 'edited' ? 'Edited' : c.kind === 'copy' ? 'Copy' : 'Mine')

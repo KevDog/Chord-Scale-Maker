@@ -14,6 +14,16 @@ describe('library', () => {
     ])
   })
 
+  it('files a title with a leading apostrophe under its letter', () => {
+    const lib = toLibrary({ 'q.txt': 'title: Quiet', 'r.txt': "title: 'Round Midnight", 's.txt': 'title: Ruby', 'a.txt': 'title: Alpha' })
+    expect(lib.map((c) => c.slug)).toEqual(['a', 'q', 'r', 's'])
+  })
+
+  it('builds the details from style, key and form, whatever the subtitle', () => {
+    const [chart] = toLibrary({ 'a.txt': 'title: A\nsubtitle: AABA, 36 Bars\nstyle: Ballad\nkey: Ab\nform: AABC' })
+    expect(chart?.details).toBe('Ballad · A♭ · AABC')
+  })
+
   it('shows the heading line and the composer', () => {
     const [chart] = toLibrary({ 'a.txt': 'title: A\ncomposer: Bronisław Kaper\nstyle: Ballad\nkey: Ebm\nform: ABAC' })
     expect([chart?.subtitle, chart?.composer]).toEqual(['Ballad · E♭ minor · ABAC', 'Bronisław Kaper'])

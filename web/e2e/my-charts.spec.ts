@@ -81,7 +81,7 @@ test('a file dropped on the library opens, and a wrong one says why', async ({ p
       d.items.add(new File([b ?? ''], n ?? '', { type: t ?? '' }))
       return d
     }, [name, body, type])
-    await page.getByRole('heading', { name: 'Chart library' }).dispatchEvent('drop', { dataTransfer: dt })
+    await page.getByRole('heading', { name: 'Library', level: 1 }).dispatchEvent('drop', { dataTransfer: dt })
   }
   await drop('photo.png', 'x', 'image/png')
   await expect(page.getByRole('alert')).toHaveText('Please open a chart saved as a .txt file.')

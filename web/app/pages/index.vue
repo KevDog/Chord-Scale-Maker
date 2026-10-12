@@ -2,9 +2,7 @@
   <div @dragover="onDragOver" @drop="onDrop">
     <div class="flex flex-wrap items-end justify-between gap-4">
       <div class="max-w-xl">
-        <!-- an album-cover style tab over the heading -->
-        <p class="mb-2 inline-block bg-note-100 px-2 py-0.5 font-display text-xs font-bold tracking-[0.2em] text-note-800 uppercase dark:bg-note-900 dark:text-note-200" aria-hidden="true">Library</p>
-        <UiHeading>Chart library</UiHeading>
+        <UiHeading>Library</UiHeading>
         <UiText class="mt-1">Pick a tune to open its practice sheets{{ myCharts ? ', or start a new chart' : '' }}. Charts are written in concert pitch.</UiText>
       </div>
       <div class="flex flex-wrap gap-3">
@@ -25,10 +23,30 @@
       </UiInputGroup>
     </div>
 
-    <ClientOnly v-if="myCharts"><MyChartsList :query="query" /></ClientOnly>
-    <UiSubheading v-if="myCharts && charts.length" :level="2" class="mt-8">Library</UiSubheading>
+    <ClientOnly v-if="myCharts"><MyChartsList :query="query" @count="mine = $event" /></ClientOnly>
+    <!-- "Library" again only to set it apart from My charts above it -->
+    <UiSubheading v-if="mine && charts.length" :level="2" class="mt-8">Library</UiSubheading>
 
-    <UiTable v-if="charts.length" :class="[myCharts ? 'mt-3' : 'mt-6', '[--gutter:--spacing(6)] lg:[--gutter:--spacing(10)]']">
+    <!-- A–Z: each letter with tunes jumps to its first; hidden while searching -->
+    <nav v-if="!query.trim() && charts.length" aria-label="Jump to letter" :class="[mine ? 'mt-3' : 'mt-6', 'flex flex-wrap gap-1']">
+      <a
+        v-for="l in letters"
+        :key="l.letter"
+        :href="`#letter-${l.letter}`"
+        class="grid size-8 place-items-center rounded-control text-sm/6 font-semibold text-note-800 hover:bg-note-100 focus-visible:outline-2 focus-visible:outline-accent dark:text-note-300 dark:hover:bg-white/10"
+        @click.prevent="jump(l.letter)"
+      >{{ l.letter }}</a>
+    </nav>
+
+    <!-- phones: a list, one tune a row, nothing off screen sideways -->
+    <ul v-if="charts.length" class="mt-4 divide-y divide-zinc-950/5 sm:hidden dark:divide-white/5">
+      <li v-for="chart in charts" :key="chart.slug" :data-letter="firstOf[chart.slug]" class="scroll-mt-4 py-3">
+        <UiLink :href="songPath(chart.slug)" class="text-[15px]/6 font-semibold text-note-800 dark:text-note-300">{{ chart.title }}</UiLink>
+        <p class="truncate text-sm/5 text-zinc-500 dark:text-zinc-400">{{ [chart.composer, chart.details].filter(Boolean).join(' · ') }}</p>
+      </li>
+    </ul>
+
+    <UiTable v-if="charts.length" :class="['mt-4 max-sm:hidden', '[--gutter:--spacing(6)] lg:[--gutter:--spacing(10)]']">
       <UiTableHead>
         <UiTableRow>
           <UiTableHeader>Title</UiTableHeader>
@@ -37,12 +55,12 @@
         </UiTableRow>
       </UiTableHead>
       <UiTableBody>
-        <UiTableRow v-for="chart in charts" :key="chart.slug">
+        <UiTableRow v-for="chart in charts" :id="firstOf[chart.slug] && `letter-${firstOf[chart.slug]}`" :key="chart.slug" :data-letter="firstOf[chart.slug]" class="scroll-mt-4">
           <UiTableCell class="font-medium">
             <UiLink :href="songPath(chart.slug)" class="text-note-800 hover:underline dark:text-note-300">{{ chart.title }}</UiLink>
           </UiTableCell>
           <UiTableCell class="text-zinc-500 dark:text-zinc-400">{{ chart.composer }}</UiTableCell>
-          <UiTableCell class="text-zinc-500 dark:text-zinc-400">{{ chart.subtitle }}</UiTableCell>
+          <UiTableCell class="text-zinc-500 dark:text-zinc-400">{{ chart.details }}</UiTableCell>
         </UiTableRow>
       </UiTableBody>
     </UiTable>
@@ -60,6 +78,7 @@
 
 <script setup lang="ts">
 import { PAGE_HEAD, seoMeta, songPath } from '~/utils/site'
+import { letterIndex } from '~/utils/libraryIndex'
 import { jsonLd, webAppLd, websiteLd } from '~/utils/structuredData'
 import { FolderOpenIcon, MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/16/solid'
 import { MusicalNoteIcon } from '@heroicons/vue/24/outline'
@@ -70,6 +89,17 @@ useHead({ script: [{ type: 'application/ld+json', innerHTML: jsonLd([websiteLd()
 const query = ref('')
 const charts = computed(() => searchLibrary(LIBRARY, query.value))
 const myCharts = useFeature('myCharts')
+/** how many of My charts show above the library (0: none, so no second "Library") */
+const mine = ref(0)
+const letters = letterIndex(LIBRARY)
+/** the first tune of each letter (slug → letter), the A–Z bar's targets */
+const firstOf: Readonly<Record<string, string>> = Object.fromEntries(letters.map((l) => [l.slug, l.letter]))
+/** to a letter's first tune, in whichever of the table or the list is showing */
+function jump(letter: string): void {
+  const target = [...document.querySelectorAll<HTMLElement>(`[data-letter="${letter}"]`)].find((e) => e.offsetParent !== null)
+  target?.scrollIntoView({ block: 'start' })
+  history.replaceState(history.state, '', `#letter-${letter}`)
+}
 const opener = useOpenChart()
 const fileInput = ref<HTMLInputElement | null>(null)
 
