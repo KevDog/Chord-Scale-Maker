@@ -2,7 +2,7 @@ import { expect, staves, test } from './fixtures'
 
 test('searches the library and opens a chart', async ({ page }) => {
   await page.goto('/')
-  await expect(page.getByRole('heading', { name: 'Chart library' })).toBeVisible()
+  await expect(page.getByRole('heading', { name: 'Library', level: 1 })).toBeVisible()
   await page.getByPlaceholder('Search by title').fill('zzz')
   await expect(page.getByText('No charts match')).toBeVisible()
   await page.getByPlaceholder('Search by title').fill('autumn')
@@ -167,4 +167,35 @@ test('the sheet’s heading is the page’s only heading, its save status under 
   await page.getByRole('button', { name: 'Edit' }).click()
   await expect(h1).toHaveCount(1)
   await expect(h1.getByRole('textbox', { name: 'Title', exact: true })).toHaveValue('Autumn Leaves') // the editable heading is the h1
+})
+
+test('one Library heading, an A–Z bar that jumps to a letter and hides while searching', async ({ page }) => {
+  await page.goto('/')
+  await expect(page.getByRole('heading', { name: 'Library', level: 1 })).toBeVisible()
+  await expect(page.getByText('Chart library')).toHaveCount(0)
+  await expect(page.getByRole('heading', { name: 'Library', level: 2 })).toHaveCount(0) // no My charts above it
+  const az = page.getByRole('navigation', { name: 'Jump to letter' })
+  const round = page.getByRole('link', { name: 'Recorda-Me', exact: true }) // R's first tune ('Round Midnight files after it)
+  // retried: before hydration the link is a plain #letter-R jump, which scrolls but leaves focus behind
+  await expect(async () => {
+    await az.getByRole('link', { name: 'R', exact: true }).click()
+    await expect(round).toBeFocused({ timeout: 1000 })
+  }).toPass({ timeout: 10_000 })
+  await expect(round).toBeInViewport()
+  await expect(page.getByRole('row', { name: /^All Blues/ })).toContainText('Blues · G · A, 12 bars') // details, built
+  await page.getByPlaceholder('Search by title').fill('blue')
+  await expect(az).toBeHidden()
+})
+
+test('on a phone the library is a list: no sideways scroll, each tune with its composer', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 844 })
+  await page.goto('/')
+  const item = page.getByRole('listitem').filter({ has: page.getByRole('link', { name: 'Autumn Leaves', exact: true }) })
+  await expect(item).toContainText('Joseph Kosma')
+  await expect(page.getByRole('table')).toBeHidden()
+  expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390)
+  await page.getByRole('navigation', { name: 'Jump to letter' }).getByRole('link', { name: 'W', exact: true }).click()
+  await expect(page.getByRole('link', { name: 'Waltz for Ellington', exact: true })).toBeInViewport()
+  await page.reload() // the address keeps the letter: back to it on a phone too
+  await expect(page.getByRole('link', { name: 'Waltz for Ellington', exact: true })).toBeInViewport()
 })
