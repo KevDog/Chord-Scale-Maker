@@ -60,6 +60,7 @@
 </template>
 
 <script setup lang="ts">
+import { PAGE_HEAD, seoMeta } from '~/utils/site'
 const myCharts = useFeature('myCharts')
-useHead({ title: 'Privacy · Chord Scale Maker' })
+useSeoMeta(seoMeta(PAGE_HEAD.privacy))
 </script>

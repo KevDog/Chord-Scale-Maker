@@ -367,6 +367,7 @@
 </template>
 
 <script setup lang="ts">
+import { PAGE_HEAD, seoMeta } from '~/utils/site'
 import { guideRanges } from '~/utils/instrumentChoices'
 
 const myCharts = useFeature('myCharts')
@@ -392,5 +393,5 @@ A1 | 3 | BbMaj7
 A1 | 4 | EbMaj7
 @copy A1 A2 4`
 
-useHead({ title: 'Help · Chord Scale Maker' })
+useSeoMeta(seoMeta(PAGE_HEAD.help))
 </script>

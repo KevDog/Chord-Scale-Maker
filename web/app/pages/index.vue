@@ -59,8 +59,11 @@
 </template>
 
 <script setup lang="ts">
+import { PAGE_HEAD, seoMeta } from '~/utils/site'
 import { FolderOpenIcon, MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/16/solid'
 import { MusicalNoteIcon } from '@heroicons/vue/24/outline'
+
+useSeoMeta(seoMeta(PAGE_HEAD.index))
 
 const query = ref('')
 const charts = computed(() => searchLibrary(LIBRARY, query.value))

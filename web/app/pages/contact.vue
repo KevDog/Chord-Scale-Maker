@@ -49,6 +49,7 @@
 </template>
 
 <script setup lang="ts">
+import { PAGE_HEAD, seoMeta } from '~/utils/site'
 import type { ReadyAttachment } from '~/utils/attachment'
 import { ISSUE_TEXT_KEY } from '~/utils/issueReport'
 import { CONTACT_LIMITS, type ContactField as Field, EMAIL } from '../../server/utils/contactMessage'
@@ -126,5 +127,5 @@ function reset(): void {
   startedAt = Date.now()
 }
 
-useHead({ title: 'Contact · Chord Scale Maker' })
+useSeoMeta(seoMeta(PAGE_HEAD.contact))
 </script>

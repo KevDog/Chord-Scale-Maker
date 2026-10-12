@@ -43,7 +43,7 @@ const copy = computed(() =>
 const navbarQuote = useQuote()
 const quote = useQuote('errorQuote', navbarQuote)
 
-useHead({ title: computed(() => `${notFound.value ? 'Page not found' : 'Error'} · Chord Scale Maker`) })
+useHead({ title: computed(() => (notFound.value ? 'Page not found' : 'Error')) })
 
 const home = () => clearError({ redirect: '/' })
 const retry = () => window.location.reload()
