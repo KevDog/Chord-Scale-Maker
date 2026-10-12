@@ -112,3 +112,31 @@ test('the editor is noindex, its canonical never carries the chart or a share li
   await expect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'noindex')
   await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', 'https://www.chordscalemaker.com/song')
 })
+
+test('a library chart’s practice sheets live at /song/<name>', async ({ page }) => {
+  await page.goto('/song/autumn-leaves')
+  await expect(page).toHaveTitle('Autumn Leaves · Chord Scale Maker')
+  await expect(staves(page)).toHaveCount(6)
+  await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', 'https://www.chordscalemaker.com/song/autumn-leaves')
+  await expect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'noindex')
+})
+
+test('old ?chart= links and underscore names move to /song/<name>, without a history entry', async ({ page }) => {
+  await page.goto('/help')
+  await page.goto('/song?chart=autumn_leaves')
+  await expect(page).toHaveURL(/\/song\/autumn-leaves$/)
+  await expect(staves(page)).toHaveCount(6)
+  await page.goBack()
+  await expect(page).toHaveURL(/\/help$/)
+  await page.goto('/song?chart=round-midnight')
+  await expect(page).toHaveURL(/\/song\/round-midnight$/)
+  await page.goto('/song/round_midnight')
+  await expect(page).toHaveURL(/\/song\/round-midnight$/)
+})
+
+test('an unknown chart, old or new address, goes to the library', async ({ page }) => {
+  await page.goto('/song/no-such-tune')
+  await expect(page).toHaveURL(/\/$/)
+  await page.goto('/song?chart=no_such_tune')
+  await expect(page).toHaveURL(/\/$/)
+})

@@ -34,7 +34,8 @@ import type { SaveTarget } from '~/composables/useSavedChart'
 
 /**
  * The editor's chart and where it saves:
- * - ?chart=<slug>: a library chart, or your edited version of it (My charts)
+ * - /song/<name>: a library chart, or your edited version of it (My charts); /song?chart=<name> and
+ *   /song/<old_name> move there
  * - ?mine=<id>: one of your saved charts
  * - ?new=1: a blank chart, saved on its first edit (the address then becomes ?mine=<id>)
  * - #s=<payload>: a share link (engine/src/share.ts): the chart and its view, not saved until you save it
@@ -49,6 +50,8 @@ const route = useRoute()
 const router = useRouter()
 const myCharts = useFeature('myCharts')
 const query = (name: string): string => (typeof route.query[name] === 'string' ? (route.query[name] as string) : '')
+/** the library chart in the address: /song/<name>, or an old /song?chart=<name> */
+const slug = (): string => chartSlug(typeof route.params.slug === 'string' ? route.params.slug : query('chart'))
 const generation = ref(0)
 /** the id our own first save put in the address: the editor stays as it is */
 let adopted = ''
@@ -57,22 +60,25 @@ let adopted = ''
 const hash = import.meta.client ? (route.hash || (useNuxtApp().$arrivalHash as string | undefined) || location.hash) : ''
 const link = myCharts && hash.startsWith('#s=') ? await decodeShare(hash.slice(3)) : undefined
 
-// without My charts the editor only opens library charts; with it, a bare /song has nothing to open
-// (not on the prerender, which has no query)
-if (import.meta.client && !findChart(query('chart')) && (!myCharts || (!query('mine') && route.query.new === undefined && link === undefined)))
-  await navigateTo('/', { replace: true })
+// a library chart's other addresses move to its own; without My charts the editor only opens library charts, and
+// with it a bare /song has nothing to open (not on the prerender, which has no query)
+if (import.meta.client) {
+  if (findChart(slug()) && route.path !== songPath(slug())) await navigateTo({ path: songPath(slug()), hash: route.hash }, { replace: true })
+  else if (!findChart(slug()) && (route.params.slug || !myCharts || (!query('mine') && route.query.new === undefined && link === undefined)))
+    await navigateTo('/', { replace: true })
+}
 if (import.meta.client && myCharts) migrateDraft(STARTER_CHART)
 
 const source = computed((): Source => {
   void generation.value // a revert reads storage again
-  const slug = query('chart')
-  const library = findChart(slug)
+  const chart = slug()
+  const library = findChart(chart)
   if (library) {
-    if (!myCharts) return { kind: 'chart', text: library.text, practiceKey: slug }
-    const version = versionOf(slug)
+    if (!myCharts) return { kind: 'chart', text: library.text, practiceKey: chart }
+    const version = versionOf(chart)
     const saved = version ? loadChart(version.id) : null
-    const target: SaveTarget = { kind: 'library', slug, libraryText: library.text, ...(saved ? { id: saved.meta.id } : {}) }
-    return { kind: 'chart', text: saved?.text ?? library.text, practiceKey: slug, target, libraryTitle: library.title }
+    const target: SaveTarget = { kind: 'library', slug: chart, libraryText: library.text, ...(saved ? { id: saved.meta.id } : {}) }
+    return { kind: 'chart', text: saved?.text ?? library.text, practiceKey: chart, target, libraryTitle: library.title }
   }
   const mine = query('mine')
   if (mine) {
