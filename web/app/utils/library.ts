@@ -1,5 +1,6 @@
 import { chartAka, chartHeading, isSyncCopy, parseChart, tuneSummary } from '@chord-scale-maker/engine'
 import { filingTitle, libraryDetails } from './libraryIndex'
+import { publishedChart } from './published'
 
 /** subtitle: the heading line (subtitle or style, key, form), as on the sheet; details: style · key · form, the same
  * for every row; aka: the tune's other titles */
@@ -11,7 +12,8 @@ const files = import.meta.glob<string>('#charts/*.txt', { query: '?raw', import:
 export function toLibrary(entries: Readonly<Record<string, string>>): LibraryChart[] {
   return Object.entries(entries)
     .filter(([path]) => !isSyncCopy(path))
-    .map(([path, text]) => {
+    .map(([path, raw]) => {
+      const text = publishedChart(raw) // the build already strips it (build/charts.ts); this keeps toLibrary honest
       const doc = parseChart(text).value
       return { slug: path.slice(path.lastIndexOf('/') + 1).replace(/\.txt$/, ''), ...chartHeading(doc), details: libraryDetails(tuneSummary(text)), aka: chartAka(doc), text }
     })

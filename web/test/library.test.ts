@@ -14,6 +14,15 @@ describe('library', () => {
     ])
   })
 
+  it('leaves out the source: line, which is for internal use only', () => {
+    const [chart] = toLibrary({ 'a.txt': 'title: A\nsource: Some Book, p. 12\n# source: earlier from Another, p. 3\nkey: C\n\nA | 1 | C' })
+    expect(chart?.text).toBe('title: A\nkey: C\n\nA | 1 | C')
+  })
+
+  it('ships no library chart with a source: line', () => {
+    expect(LIBRARY.filter((c) => /^(#\s*)?source:/m.test(c.text)).map((c) => c.slug)).toEqual([])
+  })
+
   it('files a title with a leading apostrophe under its letter', () => {
     const lib = toLibrary({ 'q.txt': 'title: Quiet', 'r.txt': "title: 'Round Midnight", 's.txt': 'title: Ruby', 'a.txt': 'title: Alpha' })
     expect(lib.map((c) => c.slug)).toEqual(['a', 'q', 'r', 's'])
