@@ -34,7 +34,7 @@
       </header>
 
       <section class="scroll-mt-6 space-y-4" aria-labelledby="quick">
-        <UiSubheading id="quick">The short version</UiSubheading>
+        <UiSubheading id="quick" class="scroll-mt-6">The short version</UiSubheading>
         <ol class="list-decimal space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
           <li>Pick a tune from the <UiTextLink href="/">library</UiTextLink>.</li>
           <li>Choose your instrument from the <strong class="font-semibold text-zinc-950 dark:text-white">Instrument</strong> menu in the toolbar. The sheet is rewritten for it.</li>
@@ -44,7 +44,7 @@
       </section>
 
       <section class="scroll-mt-6 space-y-4" aria-labelledby="sheets">
-        <UiSubheading id="sheets">The two sheets</UiSubheading>
+        <UiSubheading id="sheets" class="scroll-mt-6">The two sheets</UiSubheading>
         <UiText>
           <strong class="font-semibold text-zinc-950 dark:text-white">Changes</strong> is the default view, where a chart opens: the tune as a lead sheet without
           the melody, in slashes, four bars a line, with each chord's Roman numeral and scale under it, and the key written
@@ -143,7 +143,7 @@
       </section>
 
       <section class="scroll-mt-6 space-y-4" aria-labelledby="controls">
-        <UiSubheading id="controls">The preview controls</UiSubheading>
+        <UiSubheading id="controls" class="scroll-mt-6">The preview controls</UiSubheading>
         <dl class="space-y-4 text-base/6 sm:text-sm/6">
           <div>
             <dt class="font-semibold text-zinc-950 dark:text-white">Instrument</dt>
@@ -197,7 +197,7 @@
       </section>
 
       <section class="scroll-mt-6 space-y-4" aria-labelledby="practice">
-        <UiSubheading id="practice">Practice: improvise with fewer notes</UiSubheading>
+        <UiSubheading id="practice" class="scroll-mt-6">Practice: improvise with fewer notes</UiSubheading>
         <UiText>
           On the Scales sheet, the <strong class="font-semibold text-zinc-950 dark:text-white">Practice</strong> panel
           lets you pick a handful of notes from each scale. Those stay bold and the rest fade back, on screen and in
@@ -223,7 +223,7 @@
       </section>
 
       <section class="scroll-mt-6 space-y-4" aria-labelledby="editing">
-        <UiSubheading id="editing">Editing a chart</UiSubheading>
+        <UiSubheading id="editing" class="scroll-mt-6">Editing a chart</UiSubheading>
         <UiText>
           You can change anything in a chart: a reharmonisation, a different scale choice, a bridge you play differently.
           Press <strong class="font-semibold text-zinc-950 dark:text-white">Edit</strong>, next to the title, and the chart opens as bars, four to a line, always in
@@ -292,7 +292,7 @@
       </section>
 
       <section v-if="myCharts" class="scroll-mt-6 space-y-4" aria-labelledby="saving">
-        <UiSubheading id="saving">Saving your work</UiSubheading>
+        <UiSubheading id="saving" class="scroll-mt-6">Saving your work</UiSubheading>
         <UiText>
           There are no accounts here, so there's nothing to sign in to. Your work is kept three ways instead, and your
           scale choices come along every time, because they're part of the chart.
@@ -325,7 +325,7 @@
       </section>
 
       <section class="scroll-mt-6 space-y-4" aria-labelledby="printing">
-        <UiSubheading id="printing">Printing and Focus</UiSubheading>
+        <UiSubheading id="printing" class="scroll-mt-6">Printing and Focus</UiSubheading>
         <ul class="list-disc space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
           <li>
             <strong class="font-semibold text-zinc-950 dark:text-white">Print</strong> gives you clean letter
@@ -342,7 +342,7 @@
       </section>
 
       <section class="scroll-mt-6 space-y-4" aria-labelledby="odds">
-        <UiSubheading id="odds">Odds and ends</UiSubheading>
+        <UiSubheading id="odds" class="scroll-mt-6">Odds and ends</UiSubheading>
         <ul class="list-disc space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
           <li>The moon (or sun) at the top right switches between light and dark mode.</li>
           <li>
