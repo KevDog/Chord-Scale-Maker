@@ -47,6 +47,7 @@ engine/                   # @chord-scale-maker/engine (superpowers/specs/2026-10
     guideToneLines.ts     #   the two lines, from the 3rd and from the 7th, built together (guideToneLine)
     guideToneTimeline.ts  #   when each chord starts and how long it lasts, in the chart's metre
     voiceLeading.ts       #   RANGES (the clefs' default ranges), and voiceLead (Viterbi over pairs), kept only to compare
+    tune.ts               # tuneSummary, tuneDescription (a tune page's text), tuneGaps/tuneAdvice (§7b)
     util.ts               # orNull, chunk
     limits.ts             # input caps
     index.ts
@@ -56,7 +57,8 @@ docs/                     # this file, requirements, phase plans (docs/README.md
 web/                      # Nuxt app (Vercel root directory); imports @chord-scale-maker/engine
   app/
     pages/index.vue       # library + title/composer search
-    pages/editor.vue      # ?chart=<slug>; with myCharts also ?mine=<id>, ?new=1 and share links (#s=…)
+    pages/tunes/[slug].vue  # a library chart's tune page (/tunes/<name>, §7b)
+    pages/song.vue        # the editor: ?chart=<slug>; with myCharts also ?mine=<id>, ?new=1 and share links (#s=…)
     pages/help.vue        # how it all works, in the owner's voice: sheets, controls, practice, editing, printing
     pages/about.vue, contact.vue, privacy.vue  # About (Jazz Lab thanks, the video, credits), the form, privacy
     pages/ui.vue          # dev-only showcase of the Catalyst components (removed from production builds)
@@ -72,16 +74,18 @@ web/                      # Nuxt app (Vercel root directory); imports @chord-sca
                           # vexflow (loader, scale staves, shared SVG helpers), changesDrawing,
                           # storage (safe localStorage), myCharts (saved charts), chartFile (Download/Open),
                           # starterChart, catalyst/ (button and badge styles),
-                          # field, table, interactive (Catalyst wiring)
+                          # field, table, interactive (Catalyst wiring),
+                          # site (canonical URLs, page heads), structuredData (JSON-LD), sitemap (§7b)
     assets/css/main.css   # Tailwind, theme tokens, print rules
   build/                  # csp.ts, headers.ts, analytics.ts, quotes.ts (+ tests, check-headers)
-  server/                 # api/contact.post.ts, utils/contactMessage.ts (+ test: message and attachment checks), plugins/csp.ts
+  server/                 # routes/sitemap.xml.ts (prerendered, §7b), api/contact.post.ts, utils/contactMessage.ts (+ test: message and attachment checks), plugins/csp.ts
   public/theme-init.js    # applies the saved theme before first paint
   public/analytics-before-send.js  # strips a share link's #… before Web Analytics sends a page view
   public/favicon.*, icon-*.png, apple-touch-icon.png, site.webmanifest
                           # the mark (four note heads climbing a navy tile, the top one in a blue corner), drawn
                           # by scripts/icons.mjs (`npm run icons`; needs rsvg-convert and ImageMagick); the navbar
                           # shows favicon.svg before the wordmark
+  public/robots.txt       # allows everything, names the sitemap
   public/og-image.png     # the 1200×630 link preview (Open Graph tags in nuxt.config.ts), drawn by the same script
   test/                   # app tests (@nuxt/test-utils, happy-dom)
   e2e/                    # Playwright tests against the production build
@@ -674,6 +678,42 @@ its reasons into a chart as comments.
   on an enharmonically equal root is that entry, so F♯ Whole-Half on G♭°7 selects the default, and its spelling is
   never changed by the match (the scale cell, a chord change's default following, and the Level control).
 
+## 7b. Search and discoverability ([plan](superpowers/plans/2026-10-12-seo-discoverability.md))
+
+- **Tune pages:** every library chart has one at `/tunes/<name>` (`pages/tunes/[slug].vue`; `tunePath` turns the
+  slug's `_` into `-`, which search engines read as word breaks). It shows the heading fields, `aka:` titles, the
+  source, and the changes as a table (section, bar, chord, function, scale) in concert pitch, with a button to the
+  practice sheets (`/song?chart=<slug>`). The library links each title to its page.
+  - **Text:** `tuneSummary` (engine `tune.ts`) gives the heading and one row per chord as the Changes sheet draws it;
+    `tuneDescription` is the meta description, one sentence of at most 160 characters, dropping clauses to fit.
+    `tuneTitle` (`utils/site.ts`) is the title: "Blue Trane (John Coltrane): changes and chord scales".
+  - **The gate:** `tuneGaps` lists what a library chart's page lacks (`title:`, `key:`, `style:`, `form:`, and
+    `composer:` unless `kind:` is `form` or `exercise`); `libraryMeta.test.ts` fails on any. `tuneAdvice` (no
+    `source:`, no `aka:`) is only reported, by `npm run analyse`.
+  - An unknown name is a 404 (`findTune` in `utils/library.ts`).
+- **Head tags** (`utils/site.ts`):
+  - `PAGE_HEAD` holds each fixed page's title and description; `seoMeta` turns one into `useSeoMeta` input, the
+    link preview's title carrying the site name as the browser's does (`pageTitle`).
+  - **Canonical** (`app.vue`, every page): `canonicalUrl(route.path)`, the production origin and the path alone,
+    with no query or fragment (a share link's chart never leaks) and no trailing slash but the root's. `og:url` is
+    the same.
+  - **`/song`** (the editor) is `noindex`, and its canonical is `/song`: its query names a chart, not a page.
+- **Structured data** (`utils/structuredData.ts`): JSON-LD for the site (`WebSite`, `WebApplication`) and each tune
+  (a `MusicComposition`, or a `CreativeWork` for a form or an exercise, and a breadcrumb). It's a `<script type="application/ld+json">`, a data block the browser
+  never runs, so the CSP doesn't apply and `web/build/csp.ts` doesn't hash it. `jsonLd()` escapes `<`, so chart
+  text can't close the tag.
+- **Sitemap and robots:**
+  - `SITEMAP_PATHS` in `nuxt.config.ts`: the fixed pages and a tune page for each file in the engine's `charts/`
+    (`readdirSync`, `tunePathsOf`; the config can't load the `#charts` glob), never `/song` or `/ui`. The same list
+    is prerendered, and reaches the route as the `#sitemap-paths` virtual module.
+  - `server/routes/sitemap.xml.ts` (`sitemapXml`, `utils/sitemap.ts`) is prerendered to a static file: each
+    canonical URL once, no `lastmod` (Vercel's shallow clone has no history).
+  - `public/robots.txt` allows everything and names the sitemap.
+- **Privacy:** no third-party origins for any of it: no search-console tags, tracking pixels or social widgets. The
+  link preview image is our own (`og-image.png`).
+- **Tests:** `web/e2e/seo.spec.ts` (tune pages, canonicals, JSON-LD, the sitemap against `charts/`),
+  `not-found.spec.ts` (an unknown tune), `library.spec.ts` (the editor's `noindex` and canonical).
+
 ## 8. State
 
 - **`useChartEditor(initialText)`:**
@@ -718,7 +758,8 @@ its reasons into a chart as comments.
 
 ## 9. Security
 
-Pages are static, and the only server code is the contact function, so the attack surface is small. The measures:
+Pages are static, and the only server code is the contact function (the sitemap route is prerendered to a
+static file, §7b), so the attack surface is small. The measures:
 
 - **Edge:** Vercel's automatic DDoS mitigation in front of everything. Pages are static files on the CDN, so they need
   no rate limit of their own. The plan allows one rate-limit rule, and it guards the contact form (below).
