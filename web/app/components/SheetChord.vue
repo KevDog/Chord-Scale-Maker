@@ -5,7 +5,7 @@
       :aria-label="label"
       :class="[
         'relative -mx-1 cursor-pointer rounded px-1 hover:bg-note-100 focus-visible:outline-2 focus-visible:outline-blue-500 dark:hover:bg-white/10',
-        selected && 'ring-2 ring-note-600 dark:ring-note-400',
+        selected && 'ring-2 ring-note-600 dark:ring-note-400 print:ring-0',
         unknown && 'underline decoration-amber-500 decoration-2 underline-offset-4',
       ]"
       @click="emit('edit', adding ? { kind: 'slot', section, bar } : { kind: 'chord', line })"

@@ -2,7 +2,8 @@
   <div data-slot="system" class="relative break-inside-avoid" @pointerleave="leaveBar">
     <!-- section markers and key areas, then chord symbols, over their beats -->
     <div class="relative h-12 print:h-7">
-      <!-- the bar toolbar (the sheet as the editor), over the bar under the pointer, above its first beat -->
+      <!-- the bar toolbar (the sheet as the editor), over the bar under the pointer, above its first beat (from the
+           line's right edge for a bar past the middle, so it stays on the sheet) -->
       <SheetBarToolbar
         v-if="toolbarBar"
         :key="toolbarBar.key"
@@ -10,8 +11,8 @@
         :section="toolbarBar.section"
         :bar="toolbarBar.bar"
         :repeat-of="toolbarBar.repeatOf"
-        class="absolute top-0 z-20 -translate-y-full"
-        :style="{ left: `${toolbarBar.x * 100}%` }"
+        class="absolute top-0 z-20 -translate-y-full whitespace-nowrap"
+        :style="toolbarBar.x > 0.6 ? { right: 0 } : { left: `${toolbarBar.x * 100}%` }"
         @pointerenter="holdBar"
         @update:doc="emit('update:doc', $event)"
         @said="emit('said', $event)"
@@ -66,11 +67,11 @@
       <!-- the sheet as the editor: each bar's strip over the staff tells which bar the pointer is on -->
       <template v-if="editing !== undefined">
         <div v-for="(b, i) in line.bars" :key="`h${i}`" :data-bar="i" class="absolute inset-y-0 print:hidden" :style="{ left: `${barLeft(i) * 100}%`, width: `${(barLeft(i + 1) - barLeft(i)) * 100}%` }" @pointerenter="enterBar(i)" />
-        <!-- the ghost bar at the end of a section: the next bar, to add -->
+        <!-- the ghost bar at the end of a section with room on its last line: the next bar's slot, to add -->
         <button
-          v-if="line.sectionEnd && ghost"
+          v-if="ghost && !ghost.full"
           type="button"
-          :class="['absolute top-2 h-9 rounded-md border border-dashed border-zinc-400 text-xs font-semibold text-zinc-500 hover:border-note-500 hover:text-note-700 focus-visible:border-note-500 focus-visible:outline-none dark:border-zinc-500 dark:text-zinc-400 dark:hover:border-note-400 dark:hover:text-note-300 print:hidden', ghost.below && 'top-auto -bottom-1']"
+          :class="[GHOST, 'absolute top-2 h-9']"
           :style="ghost.style"
           :aria-label="`Add a bar at the end of ${ghost.section}`"
           @click="emit('addBar', ghost.section)"
@@ -119,6 +120,10 @@
         <ChangesNote v-else-if="notesOn && m.reason && m.scale" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row" wrap>{{ m.scale }}</ChangesNote>
         <template v-else>{{ m.scale }}</template>
       </span>
+    </div>
+    <!-- a full last line: the ghost bar as a pill under it -->
+    <div v-if="editing !== undefined && ghost?.full" data-slot="after" class="flex justify-end pt-1 print:hidden">
+      <button type="button" :class="[GHOST, 'h-6 px-2']" :aria-label="`Add a bar at the end of ${ghost.section}`" @click="emit('addBar', ghost.section)">+ bar</button>
     </div>
     <p v-if="drawError" class="rounded border border-dashed border-amber-500 px-3 py-2 text-sm text-amber-700 dark:text-amber-400">{{ drawError }}</p>
   </div>
@@ -212,14 +217,14 @@ const toolbarBar = computed(() => {
   if (i === null || !bar || !props.doc) return null
   return { key: `${bar.at.section}-${bar.at.bar}`, section: bar.at.section, bar: Number(bar.at.bar), repeatOf: bar.repeatOf, x: Math.max(0, (xs.value[i]?.[0] ?? i / props.barsPerLine) - 0.012) }
 })
-/** the ghost bar's place: the next bar's slot when the line has room, else a tab under the line's end */
+const GHOST = 'rounded-md border border-dashed border-zinc-400 text-xs font-semibold text-zinc-500 hover:border-note-500 hover:text-note-700 focus-visible:border-note-500 focus-visible:outline-none dark:border-zinc-500 dark:text-zinc-400 dark:hover:border-note-400 dark:hover:text-note-300 print:hidden'
+/** the ghost bar (a section's last line, the sheet as the editor): the next bar's slot when the line has room, else a pill under the line */
 const ghost = computed(() => {
   const last = props.line.bars.at(-1)
-  if (!last) return null
+  if (!last || !props.line.sectionEnd) return null
   const n = props.line.bars.length
   const full = n >= props.barsPerLine
-  const width = 100 / props.barsPerLine
-  return { section: last.at.section, below: full, style: full ? { right: '0', width: `${width / 2}%` } : { left: `${(n / props.barsPerLine) * 100}%`, width: `${width}%` } }
+  return { section: last.at.section, full, style: { left: `${(n / props.barsPerLine) * 100}%`, width: `${100 / props.barsPerLine}%` } }
 })
 /** whether the mark is the chord in the open field, whose labels show the draft's reading */
 const drafted = (m: { line: number; slot: boolean }): boolean => props.preview !== undefined && props.editing?.kind === 'chord' && !m.slot && m.line === props.editing.line

@@ -9,7 +9,7 @@
       spellcheck="false"
       :aria-invalid="errors.title ? 'true' : undefined"
       :title="errors.title ?? undefined"
-      :class="[FIELD, 'font-display w-full text-2xl/8 font-bold tracking-tight text-zinc-950 dark:text-white', errors.title && BAD]"
+      :class="[FIELD, 'font-display mx-auto block w-2/3 text-center text-2xl/8 font-bold tracking-tight text-zinc-950 dark:text-white', errors.title && BAD]"
       @input="edit('title', ($event.target as HTMLInputElement).value)"
     >
     <div class="flex items-baseline justify-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">

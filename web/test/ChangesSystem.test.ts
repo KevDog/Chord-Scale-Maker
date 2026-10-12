@@ -144,6 +144,11 @@ describe('ChangesSystem as the editor', () => {
     expect(w.emitted('addBar')?.[0]).toEqual(['A'])
     const mid = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: null } })
     expect(mid.find('button[aria-label="Add a bar at the end of A"]').exists()).toBe(false)
+    const one = bar([at(chord(0, 'Dm7', ''), 2)], [])
+    const full = await mountSuspended(ChangesSystem, { props: { ...base, line: { bars: [one, one, one, one], sectionEnd: true }, editing: null } })
+    const pill = full.find('button[aria-label="Add a bar at the end of A"]')
+    expect(pill.exists()).toBe(true)
+    expect(pill.element.closest('[data-slot=after]')).not.toBeNull() // under the line, not over its last bar
     const reading = await mountSuspended(ChangesSystem, { props: { ...base, line: { ...line(), sectionEnd: true } } })
     expect(reading.find('button[aria-label="Add a bar at the end of A"]').exists()).toBe(false)
   })
