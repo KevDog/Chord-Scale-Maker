@@ -85,7 +85,7 @@ export default defineNuxtConfig({
         practice: true, // highlight a chosen subset of each scale's notes (docs/plan-practice.md); on since sign-off
         changes: true, // the Changes sheet: the chart as a study lead sheet, numerals and scales under the chords (docs/plan-changes.md); on since sign-off
         keySignatures: true, // the clef and key signature once, at the start of each sheet (docs/superpowers/specs/2026-10-10-key-signatures-design.md); on since sign-off
-        arpeggios: false, // 7th chord arpeggios on the Changes sheet (docs/superpowers/specs/2026-10-12-seventh-chord-arpeggios-design.md)
+        arpeggios: false, // 7th chord arpeggios: the Changes sheet's 7th Chords line and the Arpeggios sheet (docs/superpowers/specs/2026-10-12-seventh-chord-arpeggios-design.md, 2026-10-12-arpeggios-sheet-design.md)
         functions: true, // author functions, @key areas and live analysis notes (docs/superpowers/specs/2026-10-09-chart-functions-design.md); on since sign-off
       },
     },

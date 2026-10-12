@@ -153,12 +153,12 @@ test('a function picked from the numeral changes the scale the Changes sheet pla
   await expect(scalePicker.getByRole('button', { name: 'Unpin' })).toHaveCount(0)
 })
 
-test('a chart opens on the Changes sheet, and Scales is the only other sheet', async ({ page }) => {
+test('a chart opens on the Changes sheet, and Scales and Arpeggios are the other sheets', async ({ page }) => {
   await page.goto('/song/autumn-leaves')
   await expect(page.getByRole('button', { name: 'Work on' })).toContainText('Changes')
   await expect(lines(page)).toHaveCount(6)
   await page.getByRole('button', { name: 'Work on' }).click()
-  await expect(page.getByRole('option')).toHaveText(['Changes', 'Scales'])
+  await expect(page.getByRole('option')).toHaveText(['Changes', 'Scales', 'Arpeggios'])
   await page.keyboard.press('Escape')
 })
 
