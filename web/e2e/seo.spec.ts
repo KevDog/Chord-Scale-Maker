@@ -1,0 +1,75 @@
+import { readdirSync, readFileSync } from 'node:fs'
+import { createRequire } from 'node:module'
+import { pathToFileURL } from 'node:url'
+import { SITE_URL, tunePath } from '../app/utils/site'
+import { expect, test } from './fixtures'
+
+// the engine can't be imported here (its JSON import needs a bundler): read its charts/ through the package
+const CHARTS = new URL('charts/', pathToFileURL(createRequire(import.meta.url).resolve('@chord-scale-maker/engine/package.json')))
+const SLUGS = readdirSync(CHARTS)
+  .filter((f) => f.endsWith('.txt') && !/ \d+\.txt$/.test(f)) // not an iCloud sync copy (isSyncCopy)
+  .map((f) => f.replace(/\.txt$/, ''))
+
+/** a chart's chords as written, in order (Blue Trane has no repeats, so as drawn too) */
+const chordsOf = (slug: string): string[] =>
+  readFileSync(new URL(`${slug}.txt`, CHARTS), 'utf8')
+    .split('\n')
+    .map((l) => l.replace(/(^|\s)#(\s.*)?$/, '').split('|').map((c) => c.trim()))
+    .filter((cells) => cells.length >= 3 && cells[2])
+    .map((cells) => cells[2] as string)
+
+const attr = (html: string, tag: RegExp, name: string): string | undefined => html.match(tag)?.[0].match(new RegExp(`${name}="([^"]*)"`))?.[1]
+
+test.describe('without JavaScript', () => {
+  test.use({ javaScriptEnabled: false })
+
+  test('a tune page is all there in its HTML: heading, composer, every chord and the editor link', async ({ page }) => {
+    await page.goto('/tunes/blue-trane')
+    await expect(page.getByRole('heading', { name: 'Blue Trane', level: 1 })).toBeVisible()
+    await expect(page.getByText('John Coltrane', { exact: true })).toBeVisible()
+    const chords = await page.locator('tbody tr td:nth-child(3)').allTextContents()
+    expect(chords.map((c) => c.trim())).toEqual(chordsOf('blue_trane'))
+    await expect(page.getByRole('link', { name: 'Open practice sheets' })).toHaveAttribute('href', '/song?chart=blue_trane')
+  })
+})
+
+test('every sitemap URL is a page: 200, its own canonical, indexable, its own title and a description', async ({ request }) => {
+  const sitemap = await request.get('/sitemap.xml')
+  expect(sitemap.status()).toBe(200)
+  const locs = Array.from((await sitemap.text()).matchAll(/<loc>([^<]+)<\/loc>/g), (m) => m[1] as string)
+  for (const slug of SLUGS) expect(locs, slug).toContain(`${SITE_URL}${tunePath(slug)}`)
+
+  const titles = new Map<string, string>()
+  for (const loc of locs) {
+    expect(loc.startsWith(SITE_URL), loc).toBe(true)
+    const res = await request.get(loc.slice(SITE_URL.length) || '/')
+    expect(res.status(), loc).toBe(200)
+    const html = await res.text()
+    expect(attr(html, /<link rel="canonical"[^>]*>/, 'href'), loc).toBe(loc)
+    expect(attr(html, /<meta name="robots"[^>]*>/, 'content') ?? '', loc).not.toMatch(/noindex/)
+    expect(attr(html, /<meta name="description"[^>]*>/, 'content'), loc).toBeTruthy()
+    const title = html.match(/<title>([^<]*)<\/title>/)?.[1]?.trim() ?? ''
+    expect(title, loc).not.toBe('')
+    expect(titles.get(title), `${loc} has the title of`).toBeUndefined()
+    titles.set(title, loc)
+  }
+})
+
+test('pages load nothing from another origin', async ({ page, baseURL }) => {
+  const origin = new URL(baseURL ?? '').origin
+  const elsewhere: string[] = []
+  page.on('request', (r) => {
+    if (!r.url().startsWith('data:') && new URL(r.url()).origin !== origin) elsewhere.push(r.url())
+  })
+  for (const path of ['/', '/tunes/blue-trane', '/help']) {
+    await page.goto(path)
+    await page.waitForLoadState('networkidle')
+  }
+  expect(elsewhere).toEqual([])
+})
+
+test('robots.txt is served and names the sitemap', async ({ request }) => {
+  const robots = await request.get('/robots.txt')
+  expect(robots.status()).toBe(200)
+  expect(await robots.text()).toContain(`Sitemap: ${SITE_URL}/sitemap.xml`)
+})
