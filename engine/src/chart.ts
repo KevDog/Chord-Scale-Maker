@@ -9,10 +9,15 @@ import { defaultScaleOrNull } from './qualities'
 /**
  * title: and subtitle: are the heading. key:, bars: and context: are hints for the analyser (docs/plan-analysis.md
  * §12; context: functional, modal or blues, §5.4); minor: is reserved (accepted, ignored); composer:, style:, form:
- * and source: describe the tune (where the chart came from); aka: lists its other titles, `;` between them. The site keeps the rest and shows only the heading.
+ * and source: describe the tune (where the chart came from); aka: lists its other titles, `;` between them; kind: says
+ * whether it's a tune (the default), a form with no composer (F Blues) or an exercise. The site keeps the rest and shows only the heading.
  */
-export type MetaKey = 'title' | 'subtitle' | 'key' | 'bars' | 'time' | 'context' | 'minor' | 'composer' | 'style' | 'form' | 'source' | 'aka'
-export const META_KEYS: readonly MetaKey[] = ['title', 'subtitle', 'key', 'bars', 'time', 'context', 'minor', 'composer', 'style', 'form', 'source', 'aka']
+export type MetaKey = 'title' | 'subtitle' | 'key' | 'bars' | 'time' | 'context' | 'minor' | 'composer' | 'style' | 'form' | 'source' | 'aka' | 'kind'
+export const META_KEYS: readonly MetaKey[] = ['title', 'subtitle', 'key', 'bars', 'time', 'context', 'minor', 'composer', 'style', 'form', 'source', 'aka', 'kind']
+
+export type ChartKind = 'tune' | 'form' | 'exercise'
+const CHART_KINDS: readonly ChartKind[] = ['tune', 'form', 'exercise']
+const asKind = (value: string): ChartKind | undefined => CHART_KINDS.find((k) => k === value.trim().toLowerCase())
 
 /** how the analyser reads a chart (docs/plan-analysis.md §5.4): its rule families and whether key areas are found */
 export type ChartContext = 'functional' | 'modal' | 'blues'
@@ -70,6 +75,7 @@ function parseLine(line: string): ChartLine | string {
       const value = line.slice(key.length + 1).trim()
       if (value.length > LIMITS.maxMeta) return `${key} longer than ${LIMITS.maxMeta} characters`
       if (key === 'time' && beatsPerBar(value) === null) return 'time: 2/4, 3/4 or 4/4'
+      if (key === 'kind' && value && !asKind(value)) return 'kind: tune, form or exercise'
       return { kind: 'meta', key, value }
     }
   }
@@ -221,6 +227,9 @@ export const chartBeats = (doc: ChartDoc): 2 | 3 | 4 => beatsPerBar(metaValue(do
 export function chartMeta(doc: ChartDoc): Readonly<{ title: string; subtitle: string; key: string }> {
   return { title: metaValue(doc, 'title', 'Untitled'), subtitle: metaValue(doc, 'subtitle'), key: metaValue(doc, 'key') }
 }
+
+/** what the chart is (kind:): a tune without one */
+export const chartKind = (doc: ChartDoc): ChartKind => asKind(metaValue(doc, 'kind')) ?? 'tune'
 
 /** the tune's other titles (aka:), `;` between them since a title may hold a comma */
 export const chartAka = (doc: ChartDoc): readonly string[] =>

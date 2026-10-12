@@ -27,7 +27,8 @@ export const tuneLd = (t: TuneSummary, path: string) => {
   const key = musicalKey(t)
   return {
     '@context': CONTEXT,
-    '@type': 'MusicComposition',
+    // a form (F Blues) or an exercise has no composer: a work, not a composition
+    '@type': t.kind === 'tune' ? 'MusicComposition' : 'CreativeWork',
     name: t.title,
     ...(t.aka.length ? { alternateName: t.aka } : {}),
     ...(t.composer ? { composer: { '@type': 'Person', name: t.composer } } : {}),

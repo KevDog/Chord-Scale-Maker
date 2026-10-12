@@ -1,8 +1,9 @@
 import { readdirSync } from 'node:fs'
 import { isSyncCopy } from '@chord-scale-maker/engine'
 import { describe, expect, it } from 'vitest'
-import { findChart, findTune, LIBRARY, searchLibrary, toLibrary } from '~/utils/library'
+import { findChart, findTune, LIBRARY, searchLibrary, toLibrary, TUNE_PATHS } from '~/utils/library'
 import { tunePath } from '~/utils/site'
+import { sitemapPaths, sitemapXml, tunePathsOf } from '~/utils/sitemap'
 
 describe('library', () => {
   it('builds entries from chart files, sorted by title', () => {
@@ -56,5 +57,13 @@ describe('library', () => {
     const paths = LIBRARY.map((c) => tunePath(c.slug))
     expect(new Set(paths).size).toBe(LIBRARY.length)
     for (const c of LIBRARY) expect(findTune(tunePath(c.slug).replace('/tunes/', ''))).toBe(c)
+  })
+
+  it('lists one tune path per chart file, the same list the config prerenders and the sitemap carries', () => {
+    const files = readdirSync('../engine/charts')
+    expect(TUNE_PATHS.length).toBe(LIBRARY.length)
+    expect([...TUNE_PATHS].sort()).toEqual([...tunePathsOf(files)].sort())
+    const locs = [...sitemapXml(sitemapPaths(tunePathsOf(files))).matchAll(/<loc>https:\/\/[^/]+(\/tunes\/.*?)<\/loc>/g)].map((m) => m[1])
+    expect(locs.sort()).toEqual([...TUNE_PATHS].sort())
   })
 })

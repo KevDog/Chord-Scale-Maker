@@ -19,6 +19,9 @@ export function toLibrary(entries: Readonly<Record<string, string>>): LibraryCha
 
 export const LIBRARY: readonly LibraryChart[] = toLibrary(files)
 
+/** every library chart's tune page; nuxt.config.ts derives the same list for prerendering and the sitemap (test/library.test.ts) */
+export const TUNE_PATHS: readonly string[] = LIBRARY.map((c) => tunePath(c.slug))
+
 /** by title, other title or composer, case- and accent-insensitive */
 const fold = (s: string): string => s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
 

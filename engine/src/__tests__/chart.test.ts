@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { beatsPerBar, chartAka, chartBeats, chartDetails, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, parseChart, parseContext, qualityScale, serializeChart } from '../chart'
+import { beatsPerBar, chartAka, chartBeats, chartKind, chartDetails, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, parseChart, parseContext, qualityScale, serializeChart } from '../chart'
 import { LIMITS } from '../limits'
 
 describe('isValidKey', () => {
@@ -148,6 +148,13 @@ describe('chart', () => {
     expect(['3/4', '2/4', '4/4', '', '6/8', 'waltz'].map(beatsPerBar)).toEqual([3, 2, 4, 4, null, null])
     expect(chartBeats(parseChart('time: 3/4\nA | 1 | C').value)).toBe(3)
     expect(parseChart('time: 6/8\nA | 1 | C').diagnostics.map((d) => d.message)).toEqual(['time: 2/4, 3/4 or 4/4'])
+  })
+
+  it('reads a kind: line (a tune without one), and flags one it can’t use', () => {
+    expect(chartKind(parseChart('A | 1 | C').value)).toBe('tune')
+    expect(chartKind(parseChart('kind: Form\nA | 1 | C').value)).toBe('form')
+    expect(chartKind(parseChart('kind: exercise\nA | 1 | C').value)).toBe('exercise')
+    expect(parseChart('kind: etude\nA | 1 | C').diagnostics.map((d) => d.message)).toEqual(['kind: tune, form or exercise'])
   })
 })
 

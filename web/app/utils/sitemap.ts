@@ -1,4 +1,5 @@
-import { canonicalUrl } from './site'
+import { isSyncCopy } from '@chord-scale-maker/engine'
+import { canonicalUrl, tunePath } from './site'
 
 const escapeXml = (s: string): string => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
 
@@ -11,3 +12,10 @@ export const sitemapXml = (paths: readonly string[]): string =>
     '</urlset>',
     '',
   ].join('\n')
+
+/** every chart file's tune page, from a listing of the engine's charts/ (the config can't load the library's #charts glob) */
+export const tunePathsOf = (files: readonly string[]): string[] =>
+  files.filter((f) => f.endsWith('.txt') && !isSyncCopy(f)).map((f) => tunePath(f.replace(/\.txt$/, '')))
+
+/** the pages search engines should find, prerendered too; never /song (noindex) or /ui */
+export const sitemapPaths = (tunePaths: readonly string[]): string[] => ['/', '/help', '/functions', '/about', '/contact', '/privacy', ...tunePaths]

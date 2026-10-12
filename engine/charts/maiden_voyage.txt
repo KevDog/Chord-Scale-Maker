@@ -1,5 +1,8 @@
 title: Maiden Voyage
-subtitle: AABA, 32 Bars, Four Bars per Chord
+subtitle: Four Bars per Chord
+composer: Herbie Hancock
+style: Even 8ths
+form: AABA, 32 bars
 key: D
 # analysis: 2026-10-11, rules v1; D, modal
 

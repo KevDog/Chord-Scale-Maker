@@ -1,5 +1,5 @@
 import { buildChanges } from './changes'
-import { chartAka, keyLabel, metaValue, parseChart } from './chart'
+import { type ChartDoc, type ChartKind, chartAka, chartKind, keyLabel, metaValue, parseChart } from './chart'
 import { CONCERT } from './part'
 
 /**
@@ -15,6 +15,7 @@ export type TuneSummary = Readonly<{
   composer: string
   /** other titles the tune goes by */
   aka: readonly string[]
+  kind: ChartKind
   /** as written ("Eb"); keyLabel is how it reads ("E♭") */
   key: string
   keyLabel: string
@@ -37,6 +38,7 @@ export function tuneSummary(text: string): TuneSummary {
     subtitle: metaValue(doc, 'subtitle'),
     composer: metaValue(doc, 'composer'),
     aka: chartAka(doc),
+    kind: chartKind(doc),
     key,
     keyLabel: keyLabel(key),
     style: metaValue(doc, 'style'),
@@ -69,4 +71,24 @@ export function tuneDescription(t: TuneSummary): string {
   let keep = clauses.length
   while (keep > 0 && sentence(keep).length > DESCRIPTION_MAX) keep--
   return sentence(keep)
+}
+
+/** what a library chart's tune page lacks, each with its fix: libraryMeta.test.ts fails on any */
+export function tuneGaps(doc: ChartDoc): readonly string[] {
+  const missing = (key: 'title' | 'key' | 'style' | 'form' | 'composer') => !metaValue(doc, key)
+  return [
+    missing('title') && 'no title:',
+    missing('composer') && chartKind(doc) === 'tune' && 'no composer: a tune’s page needs one (or write kind: form or kind: exercise)',
+    missing('key') && 'no key:',
+    missing('style') && 'no style:',
+    missing('form') && 'no form:',
+  ].filter((g): g is string => !!g)
+}
+
+/** what a tune page could also use: reported where charts are made, never failing */
+export function tuneAdvice(doc: ChartDoc): readonly string[] {
+  return [
+    !metaValue(doc, 'source') && 'no source: say where the chart came from, if a book or recording',
+    !metaValue(doc, 'aka') && 'no aka: add the tune’s other common titles, if it has any',
+  ].filter((g): g is string => !!g)
 }
