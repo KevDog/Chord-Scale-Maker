@@ -130,7 +130,9 @@
             v-model:intervals="prefs.intervals.value"
             v-model:numerals="prefs.numerals.value"
             v-model:scale-names="prefs.scaleNames.value"
+            v-model:line-mode="prefs.lineMode.value"
             v-model:guide-line="prefs.guideLine.value"
+            v-model:arpeggio="prefs.arpeggio.value"
             :lock-labels="sheetEditor"
           >
             <!-- Level: how sophisticated each chord's scale is (engine/src/levels.ts); a dropdown in the toolbar -->
@@ -178,7 +180,7 @@
             :numerals="sheetEditor || prefs.numerals.value"
             :scales="sheetEditor || prefs.scaleNames.value"
             :signatures="signaturesOn"
-            :line="prefs.guideLine.value"
+            :line="sheetLine"
             :editable="sheetEditing && !focus.on.value"
             :selected-line="selectedLine"
             :view="scaleView"
@@ -223,6 +225,7 @@
 import { ArrowDownTrayIcon, ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, BookmarkIcon, CodeBracketIcon, DocumentDuplicateIcon, EllipsisHorizontalIcon, FlagIcon, LinkIcon, PencilSquareIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import { ISSUE_CONTEXT, issuePart } from '~/utils/issueReport'
 import { CHART_REPORT_KEY, type ChartReport, guidesText } from '~/utils/chartReport'
+import { sheetLineOf } from '~/utils/sheetLine'
 import {
   addSection,
   barView,
@@ -318,6 +321,8 @@ const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeatu
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
 const signaturesOn = useFeature('keySignatures')
+const arpeggiosOn = useFeature('arpeggios')
+const sheetLine = computed(() => sheetLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value, arpeggiosOn))
 /** chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor) */
 const sheetEditing = computed(() => editorShown.value && !editor.fatal.value)
 const sheetChord = ref<SheetChordEdit | null>(null)
@@ -538,7 +543,7 @@ async function shareUrl(): Promise<string> {
     intervals: prefs.intervals.value,
     numerals: prefs.numerals.value,
     scaleNames: prefs.scaleNames.value,
-    ...(prefs.guideLine.value !== 'off' ? { line: prefs.guideLine.value } : {}), // absent: off
+    ...(sheetLine.value !== 'off' ? { line: sheetLine.value } : {}), // absent: off
     sheet: sheet.value,
     ...(selection.value ? { practice: selection.value } : {}),
     ...(scaleLevel.level.value !== 'standard' ? { level: scaleLevel.level.value, seed: scaleLevel.seed.value } : {}),
@@ -615,7 +620,7 @@ function reportError(): void {
     version: String(useRuntimeConfig().public.version ?? ''),
     instrument: instrumentOption(prefs.instrument.value),
     sheet: sheet.value,
-    guides: guidesText(prefs.guideLine.value),
+    guides: guidesText(sheetLine.value),
     level: scaleLevel.level.value,
     url: location.href,
   }
