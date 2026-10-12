@@ -1,0 +1,41 @@
+title: Black Narcissus
+composer: Joe Henderson
+style: Jazz waltz
+time: 3/4
+key: G#m
+# key: the book writes Ab minor; G#m is the key signature the app offers
+form: AB, 24 bars
+context: modal
+source: 
+# analysis: 2026-10-12, rules v1; G# minor, modal
+
+# the head is played twice before and after the solos; Fine at the end of B
+# section | bar | chord
+A | 1  | Abm9       # modal minor: Dorian
+A | 2  | Bbm7/Ab    # modal minor: Dorian
+A | 3  | Abm9       # modal minor: Dorian
+A | 4  | Bbm7/Ab    # modal minor: Dorian
+A | 5  | Abm9       # modal minor: Dorian
+A | 6  | Bbm7/Ab    # modal minor: Dorian
+A | 7  | Abm9       # modal minor: Dorian
+A | 8  | CbMaj9#11  # from the symbol: #11
+A | 9  | F#m9       # modal minor: Dorian
+A | 10 | G#m7/F#    # modal minor: Dorian
+A | 11 | F#m9       # modal minor: Dorian
+A | 12 | G#m7/F#    # modal minor: Dorian
+A | 13 | F#m9       # modal minor: Dorian
+A | 14 | G#m7/F#    # modal minor: Dorian
+A | 15 | F#m9       # modal minor: Dorian
+A | 16 | AMaj9#11   # from the symbol: #11
+B | 17 | EbMaj7b5   # modal major: Lydian
+B | 18 | FMaj7b5    # modal major: Lydian
+B | 19 | BbMaj7b5   # modal major: Lydian
+B | 20 | CMaj7b5    # modal major: Lydian
+B | 21 | EbMaj7b5   # modal major: Lydian
+B | 22 | FMaj7b5    # modal major: Lydian
+B | 22 | BbMaj7b5   # modal major: Lydian
+B | 23 | GMaj7b5    # modal major: Lydian
+B | 23 | AbMaj7b5   # modal major: Lydian
+B | 24 | BbMaj7b5   # modal major: Lydian
+B | 24 | CMaj7b5    # modal major: Lydian
+@nav B 24 Fine

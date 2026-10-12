@@ -1,0 +1,112 @@
+title: Breakfast Wine
+composer: Randy Aldcroft
+style: Medium up
+key: Bb
+form: AABCD + Interlude, 98 bars
+source: 
+# analysis: 2026-10-12, rules v1; Bb
+# as played by Bobby Shew
+# the Bb and Eb chords falling on beat 3 in the head are played on beat 1 for solos (the book's (Bb) on beat 1);
+# in the head the slash chord comes on the and of 3 and is tied into the next bar
+# B and D are in 2
+# solo on the form (AABCD); after solos D.S. al Coda (to the Coda from the end of D)
+
+# section | bar | chord
+Intro     | 1  | Bb         # tonic: the 4th is in the key
+Intro     | 1  | Ebm6/Bb    # a minor sixth chord: Dorian
+Intro     | 2  | Bb         # tonic: the 4th is in the key
+Intro     | 2  | Ebm6/Bb    # a minor sixth chord: Dorian
+# the intro vamps (etc.)
+@segno A 1
+A         | 1  | Bb         # tonic: the 4th is in the key
+A         | 1  | Ebm6/Bb    # a minor sixth chord: Dorian
+A         | 3  | Bb         # tonic: the 4th is in the key
+A         | 3  | Ebm6/Bb    # a minor sixth chord: Dorian
+A         | 5  | Bb         # tonic: the 4th is in the key
+A         | 5  | Ebm6/Bb    # a minor sixth chord: Dorian
+A         | 7  | Bb         # tonic: the 4th is in the key
+A         | 7  | Ebm6/Bb    # a minor sixth chord: Dorian
+A         | 9  | Bb         # tonic: the 4th is in the key
+A         | 9  | Ebm6/Bb    # a minor sixth chord: Dorian
+# alt: bar 10 beat 3 (Ebm6/A)
+A         | 11 | Gm7        # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+A         | 12 | BbMaj9/F   # tonic: the 4th is in the key
+A         | 13 | EbMaj7     # IV: the #4 is the key’s 7th
+A         | 13 | Eb         # IV: the #4 is the key’s 7th
+A         | 13 | Abm6/Eb    # a minor sixth chord: Dorian
+# bar 13: EbMaj7 pushed in on the and of 4 of bar 12; Eb on beat 3, Abm6/Eb on the and of 3
+A         | 15 | Eb         # IV: the #4 is the key’s 7th
+A         | 15 | Abm6/Eb    # a minor sixth chord: Dorian
+A         | 17 | Eb         # IV: the #4 is the key’s 7th
+A         | 17 | G13        # VI7 in Bb, not resolving: the 13 from the symbol
+A         | 18 | G7#5       # V7/ii in Bb: the b13 is in the key, the #11 from the symbol
+# bar 18: G7#5 on beat 3
+@ending 1 A 15 16
+@ending 2 A 17 18
+B         | 19 | Cm7        # ii: Dorian, the key’s own notes
+B         | 20 | EbMaj9/Bb  # IV: the #4 is the key’s 7th
+B         | 21 | Am7b5      # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B         | 22 | D7#9       # V7/vi in Bb: the b13 is in the key, b9, #9 and #11 from the symbol
+B         | 23 | Gm7        # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+B         | 24 | Gm7/F      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+B         | 25 | Em7b5      # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B         | 26 | A7#9       # V7/iii in Bb: the b13 is in the key, b9, #9 and #11 from the symbol
+B         | 27 | Dm7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B         | 28 | EbMaj9#11  # from the symbol: #11
+B         | 29 | Dm7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B         | 30 | EbMaj9#11  # from the symbol: #11
+B         | 31 | Dm7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B         | 32 | G13        # extended ii–V: a side-step, its own key
+B         | 32 | G7#5       # extended dominant: V7 of C9sus4; #11 and b13 from the symbol
+# bars 28, 30, 32: the chord is pushed in on the and of 4 of the bar before; bar 32: G7#5 on beat 4
+B         | 33 | C9sus4     # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+B         | 35 | F9sus4     # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+C         | 37 | Bb         # tonic: the 4th is in the key
+C         | 37 | Ebm6/Bb    # a minor sixth chord: Dorian
+C         | 39 | Bb         # tonic: the 4th is in the key
+C         | 39 | Ebm6/Bb    # a minor sixth chord: Dorian
+C         | 41 | Bb         # tonic: the 4th is in the key
+C         | 41 | Ebm6/Bb    # a minor sixth chord: Dorian
+C         | 43 | Bb         # tonic: the 4th is in the key
+C         | 43 | Ebm6/Bb    # a minor sixth chord: Dorian
+C         | 45 | Bb         # tonic: the 4th is in the key
+C         | 45 | Ebm6/Bb    # a minor sixth chord: Dorian
+# alt: bar 46 beat 3 (Ebm6/A)
+C         | 47 | Gm7        # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+C         | 48 | BbMaj9/F   # tonic: the 4th is in the key
+C         | 49 | EbMaj7     # IV: the #4 is the key’s 7th
+C         | 49 | Eb         # IV: the #4 is the key’s 7th
+C         | 49 | Abm6/Eb    # a minor sixth chord: Dorian
+# bar 49: EbMaj7 pushed in on the and of 4 of bar 48
+C         | 51 | Eb         # IV: the #4 is the key’s 7th
+C         | 51 | G7#5       # V7/ii in Bb: the b13 is in the key, the #11 from the symbol
+D         | 53 | Cm7        # ii: Dorian, the key’s own notes
+D         | 54 | Cm7/Bb     # ii: Dorian, the key’s own notes
+D         | 55 | Am7b5      # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+D         | 56 | D7#5#9     # V7/vi in Bb: the b13 is in the key, b9, #9 and #11 from the symbol
+D         | 57 | Gm11       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+D         | 58 | Gm11/F     # ii of C9/E: Dorian
+# bars 57–58, 63: printed Gm7(add11), /F, Cm7(add11): add11 is not in the chord syntax, written m11
+D         | 59 | C9/E       # V7/V in Bb: natural tensions
+D         | 60 | Ebm6       # a minor sixth chord: Dorian
+D         | 61 | Dm7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+D         | 62 | G7#5       # V7/ii in Bb: the b13 is in the key, the #11 from the symbol
+D         | 63 | Cm11       # ii of the ii–V to Bb
+D         | 64 | F13        # V7 of Bb: natural tensions
+@coda D 64
+Interlude | 65 | Bb         # tonic: the 4th is in the key
+Interlude | 65 | Ebm6/Bb    # a minor sixth chord: Dorian
+Interlude | 66 | Bb         # tonic: the 4th is in the key
+Interlude | 66 | Ebm6/Bb    # a minor sixth chord: Dorian
+Interlude | 67 | Bb         # tonic: the 4th is in the key
+Interlude | 67 | Ebm6/Bb    # a minor sixth chord: Dorian
+Interlude | 68 | Bb         # tonic: the 4th is in the key
+Interlude | 68 | Ebm6/Bb    # a minor sixth chord: Dorian
+@nav Interlude 68 D.S. al Coda
+@coda Coda 1
+Coda      | 1  | Bb         # tonic: the 4th is in the key
+Coda      | 1  | Ebm6/Bb    # a minor sixth chord: Dorian
+Coda      | 2  | Bb         # tonic: the 4th is in the key
+Coda      | 2  | Ebm6/Bb    # a minor sixth chord: Dorian
+# bars 1–2 vamp till cue
+Coda      | 3  | BbMaj7#11  # from the symbol: #11

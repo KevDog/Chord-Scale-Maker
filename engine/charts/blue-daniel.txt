@@ -1,0 +1,35 @@
+title: Blue Daniel
+composer: Frank Rosolino
+style: Jazz waltz
+time: 3/4
+key: D
+form: AA, 28 bars
+source:
+# analysis: 2026-10-12, rules v1; D
+
+# the book's A13sus is written A9sus4, the nearest symbol the library reads
+# the 14-bar A is repeated; the Ending follows the last time
+# section | bar | chord
+A1     | 1  | D6      # tonic: the 4th is in the key
+A1     | 2  | C9      # tritone substitute: resolves down a half step to Bm7
+A1     | 3  | Bm7     # ii of E13: Dorian
+A1     | 4  | E13     # V7/V in D: natural tensions
+A1     | 5  | Bm9     # ii of E13#11: Dorian
+A1     | 6  | E13#11  # V7/V in D: the #11 from the symbol
+A1     | 7  | Bm9     # ii of E13#11: Dorian
+A1     | 8  | E13#11  # V7/V in D: the #11 from the symbol
+A1     | 9  | Gm9     # ii of C13: Dorian
+A1     | 10 | C13     # back door bVII7 to DMaj7: the #11 is in the key
+A1     | 11 | DMaj7   # tonic: the 4th is in the key
+A1     | 12 | C13#11  # ♭VII7 from the parallel minor: Lydian Dominant
+A1     | 13 | Em9     # ii of A9sus4: Dorian
+A1     | 14 | A9sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+A1     | 14 | A13     # V7 of D: natural tensions
+@copy A1 A2 14
+Ending | 1  | D6      # tonic: the 4th is in the key
+Ending | 1  | C9      # tritone substitute: resolves down a half step to Bm7
+Ending | 2  | Bm7     # ii of E13#11: Dorian
+Ending | 3  | E13#11  # extended dominant: V7 of A9sus4; #11 from the symbol
+Ending | 4  | A9sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+Ending | 4  | A13     # V7 of D: natural tensions
+Ending | 5  | DMaj7   # tonic: the 4th is in the key
