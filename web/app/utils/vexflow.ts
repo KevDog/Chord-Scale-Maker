@@ -1,4 +1,4 @@
-import { type StaffModel, toVexKey } from '@chord-scale-maker/engine'
+import { type ArpeggioStaffModel, type StaffModel, toVexKey } from '@chord-scale-maker/engine'
 
 export type VexFlowModule = typeof import('vexflow/bravura')
 type Context = ReturnType<InstanceType<VexFlowModule['Renderer']>['getContext']>
@@ -115,6 +115,35 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
   const picked = staff.selected ? names.filter((_, i) => staff.selected?.[i]) : null
   const label = names.join(' ') + (picked ? `; practice: ${picked.length ? picked.join(' ') : 'none'}` : '')
   fitSvg(el, cropBand(notes.flatMap((n) => n.getYs())), STAFF_WIDTH, label)
+  return notes.map((n) => headCentre(n, STAFF_WIDTH))
+}
+
+/** draw one Arpeggios line: eighths, each group beamed on its own; returns each head's centre as a fraction of the width */
+export function drawArpeggioStaff(vf: VexFlowModule, el: HTMLElement, staff: ArpeggioStaffModel, clef: 'treble' | 'bass'): number[] {
+  const ctx = svgContext(vf, el, STAFF_WIDTH)
+  const stave = inkStave(vf, 0, STAVE_Y, STAFF_WIDTH - 1)
+  if (staff.showClefAndKey) stave.addClef(clef)
+  if (staff.showClefAndKey && staff.keySig) stave.addKeySignature(staff.keySig)
+  stave.setEndBarType(staff.last ? vf.BarlineType.END : vf.BarlineType.DOUBLE)
+  stave.setContext(ctx).draw()
+  const notes = staff.notes.map((n, i) => {
+    const note = new vf.StaveNote({ keys: [toVexKey(n)], duration: '8', clef, autoStem: true })
+    const acc = staff.accidentals[i]
+    if (acc) note.addModifier(new vf.Accidental(acc), 0)
+    return note
+  })
+  if (notes.length > 0) {
+    const voice = new vf.Voice({ numBeats: notes.length, beatValue: 8 }).setMode(vf.Voice.Mode.SOFT).addTickables(notes)
+    // beams are made before the notes draw, so the notes leave their flags to them
+    const beams = staff.groups.reduce<{ at: number; beams: InstanceType<VexFlowModule['Beam']>[] }>(
+      (acc, g) => ({ at: acc.at + g, beams: g > 1 ? [...acc.beams, new vf.Beam(notes.slice(acc.at, acc.at + g))] : acc.beams }),
+      { at: 0, beams: [] },
+    ).beams
+    new vf.Formatter().joinVoices([voice]).format([voice], STAFF_WIDTH - stave.getNoteStartX() - 24)
+    voice.draw(ctx, stave)
+    beams.forEach((b) => b.setContext(ctx).draw())
+  }
+  fitSvg(el, cropBand(notes.flatMap((n) => [...n.getYs(), n.getStemExtents().topY])), STAFF_WIDTH, staff.notes.map((n) => toVexKey(n).replace('/', '')).join(' '))
   return notes.map((n) => headCentre(n, STAFF_WIDTH))
 }
 

@@ -2,30 +2,28 @@ import { describe, expect, it } from 'vitest'
 import { firstSheet, SHEETS } from '~/utils/sheets'
 
 describe('SHEETS', () => {
-  it('offers Scales and Changes only: guide tones are on the Changes sheet', () => {
-    expect(SHEETS.map((s) => s.value)).toEqual(['changes', 'scales'])
-    expect(SHEETS.map((s) => s.label)).toEqual(['Changes', 'Scales'])
+  it('offers Changes, Scales and Arpeggios: guide tones are on the Changes sheet', () => {
+    expect(SHEETS.map((s) => s.value)).toEqual(['changes', 'scales', 'arpeggios'])
+    expect(SHEETS.map((s) => s.label)).toEqual(['Changes', 'Scales', 'Arpeggios'])
   })
 })
 
 describe('firstSheet', () => {
   it('opens on the Changes sheet', () => {
-    expect(firstSheet(undefined, { changes: true })).toBe('changes')
+    expect(firstSheet(undefined, { changes: true, arpeggios: true })).toBe('changes')
   })
 
   it("opens a share link's own sheet", () => {
-    for (const s of ['scales', 'changes'] as const) expect(firstSheet(s, { changes: true })).toBe(s)
+    for (const s of ['scales', 'changes'] as const) expect(firstSheet(s, { changes: true, arpeggios: true })).toBe(s)
   })
 
   it('falls back to Scales without the Changes sheet', () => {
-    expect(firstSheet(undefined, { changes: false })).toBe('scales')
-    expect(firstSheet('changes', { changes: false })).toBe('scales')
+    expect(firstSheet(undefined, { changes: false, arpeggios: true })).toBe('scales')
+    expect(firstSheet('changes', { changes: false, arpeggios: true })).toBe('scales')
   })
-})
 
-describe('firstSheet with an Arpeggios link', () => {
-  it('opens it as Changes, or Scales when Changes is off', () => {
-    expect(firstSheet('arpeggios', { changes: true })).toBe('changes')
-    expect(firstSheet('arpeggios', { changes: false })).toBe('scales')
+  it('opens a link on Arpeggios only with the flag on', () => {
+    expect(firstSheet('arpeggios', { changes: true, arpeggios: true })).toBe('arpeggios')
+    expect(firstSheet('arpeggios', { changes: true, arpeggios: false })).toBe('changes')
   })
 })

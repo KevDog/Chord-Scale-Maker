@@ -67,6 +67,16 @@
           <slot name="transpose" />
         </div>
       </UiField>
+      <UiField v-if="sheet === 'arpeggios'">
+        <UiLabel class="pl-3">Arpeggio</UiLabel>
+        <div class="flex flex-wrap items-center gap-2">
+          <SegmentedControl v-model="arpNotes" legend="Arpeggio" name="arp-notes" :options="arpNoteOptions" />
+          <UiListbox v-model="arpDir" class="w-32" aria-label="Arpeggio direction">
+            <template #selected="{ value }"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[value] }}</UiListboxLabel></template>
+            <UiListboxOption v-for="d in ARP_DIRECTIONS" :key="d" :value="d"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[d] }}</UiListboxLabel></UiListboxOption>
+          </UiListbox>
+        </div>
+      </UiField>
       <UiField v-if="sheet === 'scales'">
         <UiLabel class="pl-3">Spell Scale</UiLabel>
         <div class="flex flex-wrap items-center gap-2">
@@ -91,7 +101,7 @@
 </template>
 
 <script setup lang="ts">
-import { ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpeggioPattern, INSTRUMENTS, type InstrumentName, partFor } from '@chord-scale-maker/engine'
+import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, partFor } from '@chord-scale-maker/engine'
 import type { GuideFrom, LineMode } from '~/utils/sheetLine'
 import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
 import type { SheetKind } from '~/utils/sheets'
@@ -106,13 +116,16 @@ const scaleNames = defineModel<boolean>('scaleNames', { default: true })
 const lineMode = defineModel<LineMode>('lineMode', { default: 'off' })
 const guideLine = defineModel<GuideFrom>('guideLine', { default: 'third' })
 const arpeggio = defineModel<ArpeggioPattern>('arpeggio', { default: 'up-root' })
+const arpNotes = defineModel<ArpNotes>('arpNotes', { default: 'seventh' })
+const arpDir = defineModel<ArpDirection>('arpDir', { default: 'up' })
 /** the sheet editor is open: numerals and scales are shown (they are the pickers), their toggles hide */
 /** keyStart: the chart's key, written for the instrument (what "From key" starts on) */
 defineProps<{ lockLabels?: boolean; keyStart: string }>()
 
 const changes = useFeature('changes')
 const arpeggios = useFeature('arpeggios')
-const sheets = computed(() => SHEETS.filter((s) => s.value !== 'changes' || changes))
+const sheets = computed(() => SHEETS.filter((s) => (s.value !== 'changes' || changes) && (s.value !== 'arpeggios' || arpeggios)))
+const arpNoteOptions = ARP_NOTES.map((value) => ({ value, label: ARP_NOTES_LABELS[value] }))
 // a solid white fill for the "off" toggles so they read on the tinted box (an outline button is transparent)
 const OFF_FILL = 'bg-white hover:bg-zinc-50 dark:bg-white/10 dark:hover:bg-white/15'
 // the Changes sheet's line, at most one: guide tones or 7th chord arpeggios (with the flag on)

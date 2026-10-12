@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import { type ArpeggioPattern, type InstrumentName, isArpeggioPattern, isInstrumentName, type ShareView } from '@chord-scale-maker/engine'
+import { type ArpDirection, type ArpeggioPattern, type ArpNotes, type InstrumentName, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, type ShareView } from '@chord-scale-maker/engine'
 import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
@@ -25,11 +25,14 @@ export function usePreferences() {
   const lineMode = storedRef<LineMode>('csm-line', (s) => (s === 'off' || s === 'guide' || s === 'arpeggio' ? s : undefined), 'off')
   const guideLine = storedRef<GuideFrom>('csm-guide-line', (s) => (s === 'third' || s === 'seventh' ? s : undefined), 'third')
   const arpeggio = storedRef<ArpeggioPattern>('csm-arpeggio', (s) => (isArpeggioPattern(s) ? s : undefined), 'up-root')
+  // the Arpeggios sheet: 7th chords or extended, and the direction
+  const arpNotes = storedRef<ArpNotes>('csm-arp-notes', (s) => (isArpNotes(s) ? s : undefined), 'seventh')
+  const arpDir = storedRef<ArpDirection>('csm-arp-dir', (s) => (isArpDirection(s) ? s : undefined), 'up')
   // the editor's Source (the chart's text): hidden until shown
   const source = storedRef<boolean>('csm-source', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the /functions page's key: C major until another is picked
   const functionsKey = storedRef<string>('csm-functions-key', (s) => (FUNCTIONS_KEYS.includes(s) ? s : undefined), 'C')
-  return { instrument, spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, arpeggio, source, functionsKey }
+  return { instrument, spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, arpeggio, arpNotes, arpDir, source, functionsKey }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
@@ -48,6 +51,8 @@ export function linkPreferences(view: ShareView) {
     lineMode: ref<LineMode>(choice.mode), // a link without a line shows none
     guideLine: ref<GuideFrom>(choice.guide ?? own.guideLine.value),
     arpeggio: ref<ArpeggioPattern>(choice.arpeggio ?? own.arpeggio.value),
+    arpNotes: ref<ArpNotes>(view.arpNotes ?? own.arpNotes.value),
+    arpDir: ref<ArpDirection>(view.arpDir ?? own.arpDir.value),
     showEditor: own.showEditor, // whether the editor is open: yours, and remembered
     source: own.source,
   }
