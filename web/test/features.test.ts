@@ -12,7 +12,7 @@ describe('feature flags', () => {
   beforeEach(() => navigate.mockClear())
 
   it('reads flags from runtime config', () => {
-    expect(useRuntimeConfig().public.features).toEqual({ myCharts: true, practice: true, changes: true, functions: true, keySignatures: true, arpeggios: true, compactRail: false })
+    expect(useRuntimeConfig().public.features).toEqual({ myCharts: true, practice: true, changes: true, functions: true, keySignatures: true, arpeggios: true, compactRail: true })
     expect(useFeature('myCharts')).toBe(true)
     expect(useFeature('functions')).toBe(true)
   })
