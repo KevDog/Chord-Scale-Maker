@@ -96,7 +96,7 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
 
   const notes = staff.notes.map((n, i) => {
     const note = new vf.StaveNote({ keys: [toVexKey(n)], duration: 'w', clef })
-    const acc = staff.accidentals[i] // without a key signature: explicit on every altered note
+    const acc = staff.accidentals[i] // the bar rule, against the key signature if any (accidentalsInBar)
     if (acc) note.addModifier(new vf.Accidental(acc), 0)
     return note
   })
