@@ -1,0 +1,27 @@
+title: Fire
+composer: Joe Henderson
+style: Medium Latin
+key: Am
+form: ABC, 28 bars
+source:
+# analysis: 2026-10-12, rules v1; A minor, modal
+# the book: "Med. Latin", half note = 110
+# the intro is a bass figure with no chords (N.C., vamp till cue; bass simile till B)
+# A is Am6/9 throughout (24 bars, the chord reprinted in parentheses as a reminder)
+# B (tenor solo) and C (solo continues) are 2-bar vamps till cue; vamp at B is long, at C much shorter
+# on cue, D.S., play the head (A), continue to the next solo; after the last solo, D.S. al Coda
+# the coda is a 2-bar Em11 vamp and fade
+
+# section | bar | chord
+@segno A 1
+A    | 1  | Am6/9  # a minor sixth chord: Dorian
+# book: the coda sign is at the end of A bar 24 (Am69 held from bar 1)
+A    | 24 | Am6/9
+@coda A 24
+B    | 25 | Em11   # modal minor: Dorian
+C    | 27 | Am6/9  # a minor sixth chord: Dorian
+# book: D.S. at the end of C bar 28 (Am6/9 held from 27)
+C    | 28 | Am6/9
+@nav C 28 D.S. al Coda
+@coda Coda 1
+Coda | 1  | Em11   # modal minor: Dorian

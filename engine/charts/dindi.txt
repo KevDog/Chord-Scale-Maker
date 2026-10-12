@@ -1,0 +1,71 @@
+title: Dindi
+composer: Antonio Carlos Jobim
+style: Slow bossa nova
+key: Eb
+form: ABC, 32 bars
+source:
+# analysis: 2026-10-12, rules v1; Eb
+
+# section | bar | chord
+# the intro is played freely
+Intro | 1  | EbMaj7   # tonic: the 4th is in the key
+Intro | 2  | DbMaj7   # ♭VIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+Intro | 3  | EbMaj7   # tonic: the 4th is in the key
+Intro | 4  | DbMaj7   # ♭VIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+Intro | 5  | CMaj7    # a non-tonic major chord: Lydian
+Intro | 6  | Am9      # a borrowed minor chord: Dorian, its own key
+Intro | 7  | Dm9      # ii of G13: Dorian
+Intro | 8  | G13      # extended ii–V: a side-step, its own key
+Intro | 9  | EbMaj7   # tonic: the 4th is in the key
+Intro | 10 | DbMaj7   # ♭VIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+Intro | 11 | EbMaj7   # tonic: the 4th is in the key
+Intro | 12 | DbMaj7   # ♭VIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+Intro | 13 | CMaj7    # a non-tonic major chord: Lydian
+Intro | 14 | Am9      # a borrowed minor chord: Dorian, its own key
+Intro | 15 | Dm9      # ii of G13: Dorian
+Intro | 16 | G13      # extended ii–V: a side-step, its own key
+@segno A 1
+A     | 1  | EbMaj7   # tonic: the 4th is in the key
+A     | 2  | DbMaj7   # ♭VIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+A     | 3  | EbMaj7   # tonic: the 4th is in the key
+A     | 4  | Bbm7     # ii of the ii–V to Ab
+A     | 4  | Eb7b9    # V7/IV in Eb: the b9 from the symbol
+A     | 5  | AbMaj7   # the Eb7b9 before it makes Ab the key of the moment: the 4th is in the key
+A     | 6  | AbmMaj7  # from the symbol: minor-major 7th
+# alt (optional): bar 6 (Db13#11), per the book's footnote
+A     | 7  | Eb6      # tonic: the 4th is in the key
+A     | 8  | Bbm7     # a borrowed minor chord: Dorian, its own key
+A     | 9  | EbMaj7   # tonic: the 4th is in the key
+A     | 10 | DbMaj7   # ♭VIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+A     | 11 | EbMaj7   # tonic: the 4th is in the key
+A     | 12 | Bbm7     # ii of the ii–V to Ab
+A     | 12 | Eb7b9    # V7/IV in Eb: the b9 from the symbol
+A     | 13 | AbMaj7   # the Eb7b9 before it makes Ab the key of the moment: the 4th is in the key
+A     | 14 | AbmMaj7  # from the symbol: minor-major 7th
+# alt (optional): bar 14 (Db13#11), per the book's footnote
+A     | 15 | Eb6      # tonic: the 4th is in the key
+A     | 16 | Am7b5    # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+A     | 16 | D7       # V7/iii in Eb: b9 and b13 are in the key
+B     | 17 | Gm       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B     | 18 | Ebm6     # a minor sixth chord: Dorian
+B     | 19 | Gm       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B     | 19 | Ebm6     # a minor sixth chord: Dorian
+B     | 20 | Gm       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+B     | 20 | C7b9     # V7/ii in Eb: the b13 is in the key, the b9 from the symbol
+B     | 21 | Fm       # ii: Dorian, the key’s own notes
+B     | 22 | C#m6     # a minor sixth chord: Dorian
+B     | 23 | Fm       # ii: Dorian, the key’s own notes
+B     | 23 | C#m6     # a minor sixth chord: Dorian
+B     | 24 | Fm7      # ii of the ii–V to Eb
+B     | 24 | Bb7b9    # V7 of Eb: the b9 from the symbol
+C     | 25 | EbMaj7   # tonic: the 4th is in the key
+C     | 26 | DbMaj7   # ♭VIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+C     | 27 | EbMaj7   # tonic: the 4th is in the key
+C     | 28 | Bbm7     # ii of the ii–V to Ab
+C     | 28 | Eb7b9    # V7/IV in Eb: the b9 from the symbol
+C     | 29 | AbMaj7   # the Eb7b9 before it makes Ab the key of the moment: the 4th is in the key
+C     | 30 | AbmMaj7  # from the symbol: minor-major 7th
+# alt (optional): bar 30 (Db13#11), per the book's footnote
+C     | 31 | Eb6      # tonic: the 4th is in the key
+# alt (optional): bar 32 (Db13)
+# repeat from A (segno at A 1)
