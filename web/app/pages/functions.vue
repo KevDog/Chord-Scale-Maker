@@ -99,7 +99,7 @@
         </div>
       </div>
 
-      <nav ref="groupNav" aria-label="Groups" class="sticky top-0 z-10 -mx-2 flex flex-wrap gap-x-4 bg-white/90 px-2 py-2 text-sm/6 backdrop-blur dark:bg-zinc-900/90 print:hidden">
+      <nav ref="groupNav" aria-label="Groups" class="sticky top-0 z-10 -mx-2 flex flex-wrap gap-x-4 bg-paper/90 px-2 py-2 text-sm/6 backdrop-blur print:hidden">
         <a
           v-for="g in FUNCTION_GROUPS"
           :key="g.id"

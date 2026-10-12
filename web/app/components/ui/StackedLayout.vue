@@ -1,5 +1,6 @@
 <template>
-  <div class="relative isolate flex min-h-svh w-full flex-col bg-white lg:bg-zinc-100 dark:bg-zinc-900 dark:lg:bg-zinc-950 print:bg-white">
+  <!-- below lg a content page is one surface (paper); from lg its paper sits on the stand. The song page is bare: all stand -->
+  <div :class="['relative isolate flex min-h-svh w-full flex-col print:bg-white', bare ? 'bg-stand' : 'bg-paper lg:bg-stand']">
     <!-- Sidebar on mobile -->
     <HTransitionRoot :show="menuOpen" as="template">
       <HDialog class="lg:hidden print:hidden" @close="menuOpen = false">
@@ -40,7 +41,9 @@
 
     <!-- Content -->
     <main class="flex flex-1 flex-col pb-2 lg:px-2 print:p-0">
-      <div class="grow p-6 lg:rounded-lg lg:bg-white lg:p-10 lg:shadow-xs lg:ring-1 lg:ring-zinc-950/5 dark:lg:bg-zinc-900 dark:lg:ring-white/10 print:p-0 print:shadow-none print:ring-0 print:lg:bg-white">
+      <!-- bare: no card, the page sets its own paper on the stand (the song page); muted text darkens to zinc-600 there
+           so it keeps AA contrast (zinc-500 drops below 4.5:1 on the stand) -->
+      <div :class="['grow print:p-0', bare ? 'px-4 py-4 lg:px-8 [&_[data-slot=text]]:text-zinc-600 [&_th]:text-zinc-600 dark:[&_[data-slot=text]]:text-zinc-400 dark:[&_th]:text-zinc-400' : 'p-6 lg:rounded-paper lg:bg-paper lg:p-10 lg:shadow-paper print:bg-white print:shadow-none']">
         <div class="mx-auto max-w-6xl print:max-w-none"><slot /></div>
       </div>
     </main>
@@ -54,6 +57,7 @@
 import { Dialog as HDialog, DialogPanel as HDialogPanel, TransitionChild as HTransitionChild, TransitionRoot as HTransitionRoot } from '@headlessui/vue'
 
 /** Catalyst StackedLayout: a top navbar; below lg, a menu button opens #sidebar in a drawer */
+defineProps<{ bare?: boolean }>()
 const menuOpen = ref(false)
 const onMenuClick = (e: MouseEvent): void => {
   if ((e.target as HTMLElement | null)?.closest('a')) menuOpen.value = false

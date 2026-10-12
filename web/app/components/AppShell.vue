@@ -1,5 +1,5 @@
 <template>
-  <UiStackedLayout>
+  <UiStackedLayout :bare="route.path.startsWith('/song')">
     <template #navbar>
       <UiNavbar>
         <UiNavbarItem href="/" aria-label="Chord Scale Maker, home">

@@ -1,7 +1,8 @@
 <template>
-  <!-- on screen: one continuous card; in print: bare letter pages, each breaking after itself under its own header -->
+  <!-- on screen: one continuous paper; in print: bare letter pages, each breaking after itself under its own header -->
   <div
-    class="rounded-xl bg-white p-6 shadow-xs ring-1 ring-zinc-950/10 dark:bg-zinc-950 dark:ring-white/10 print:rounded-none print:bg-white print:p-0 print:shadow-none print:ring-0"
+    data-slot="paper"
+    class="rounded-paper bg-paper p-4 shadow-paper sm:p-6 print:rounded-none print:bg-white print:p-0 print:shadow-none"
   >
     <section v-for="(page, i) in pages" :key="i" class="print:break-after-page print:last:break-after-auto">
       <!-- every printed page repeats the header; on screen only where the subtitle changes (the first page). With a
