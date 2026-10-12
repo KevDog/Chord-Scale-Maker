@@ -1,0 +1,70 @@
+title: Madagascar
+composer: Richie Beirach
+style: Medium slow, straight eighths
+key: Em
+form: AB + Interlude, 32 bars
+context: modal
+source:
+# analysis: 2026-10-12, rules v1; E minor, modal
+# book: as played by John Abercrombie. A repeating piano figure (two bars, the second held) is played throughout,
+# solos too (with some variation).
+# routing: Intro (repeated), A1 and A2 (each repeated, 1st and 2nd endings), B, Interlude (repeated);
+# solos on the form (A1 A2 B, 24 bars); after solos, D.S. (to A1) al Ending.
+# book: every "Ab(add 9 omit 3)" is written Ab, every "Db(add 9 omit 3)" Db (a 5th with the 9th, no 3rd);
+# "Absus(add b9)" and "Dbsus(add b9)" are written Absus4b9 and Dbsus4b9;
+# "EMa7(b5)" is written EMaj7#11.
+
+# section | bar | chord
+# the Intro is played twice
+Intro     | 1  | EmMaj7/G  # from the symbol: minor-major 7th
+Intro     | 1  | Ab        # modal major: Lydian
+Intro     | 3  | EmMaj7/G  # from the symbol: minor-major 7th
+Intro     | 3  | Ab        # modal major: Lydian
+Intro     | 4  | Ab
+@segno A1 1
+A1        | 1  | EmMaj7/G  # from the symbol: minor-major 7th
+A1        | 1  | Ab        # modal major: Lydian
+A1        | 3  | EmMaj7/G  # from the symbol: minor-major 7th
+A1        | 3  | Ab        # modal major: Lydian
+A1        | 4  | Ab
+# bar 4 (1st ending): Ab held
+@ending 1 A1 4
+A1        | 5  | Ab
+A1        | 5  | Absus4b9  # from the symbol: sus b9
+@ending 2 A1 5
+A2        | 6  | AmMaj7/C  # from the symbol: minor-major 7th
+A2        | 6  | Db        # modal major: Lydian
+A2        | 8  | AmMaj7/C  # from the symbol: minor-major 7th
+A2        | 8  | Db        # modal major: Lydian
+A2        | 9  | Db
+# bar 9 (1st ending): Db held
+@ending 1 A2 9
+A2        | 10 | Db
+A2        | 10 | Dbsus4b9  # from the symbol: sus b9
+@ending 2 A2 10
+B         | 11 | EMaj7#11  # from the symbol: #11
+B         | 11 | Ebsus     # static sus: Mixolydian
+B         | 13 | Ebsus
+B         | 13 | EMaj7#11  # from the symbol: #11
+B         | 15 | EMaj7#11
+B         | 15 | Ebsus     # static sus: Mixolydian
+B         | 17 | Ebsus
+B         | 17 | EMaj7#11  # from the symbol: #11
+# alt (solos): bars 11–18 ([EMaj7b5] 2 bars, [Eb7sus] 2 bars, [EMaj7b5] 2 bars, [Eb7#9#5] 2 bars), the changes in brackets used for solos
+# Interlude (ff): unlettered in the book, four bars played twice (bars 19–26)
+Interlude | 19 | EmMaj7/G  # from the symbol: minor-major 7th
+Interlude | 19 | Ab        # modal major: Lydian
+Interlude | 21 | EmMaj7/G  # from the symbol: minor-major 7th
+Interlude | 21 | Ab        # modal major: Lydian
+Interlude | 23 | EmMaj7/G  # from the symbol: minor-major 7th
+Interlude | 23 | Ab        # modal major: Lydian
+Interlude | 25 | EmMaj7/G  # from the symbol: minor-major 7th
+Interlude | 25 | Ab        # modal major: Lydian
+Interlude | 26 | Ab
+@nav Interlude 26 D.S. al Ending
+# Ending (guitar solo): bars 1–2 vamp and solo till cue; on cue, bar 3 (fermata)
+Ending    | 1  | EmMaj7/G  # from the symbol: minor-major 7th
+Ending    | 1  | Ab        # modal major: Lydian
+Ending    | 2  | Ab
+Ending    | 3  | EmMaj7/G  # from the symbol: minor-major 7th
+Ending    | 3  | Ab        # modal major: Lydian
