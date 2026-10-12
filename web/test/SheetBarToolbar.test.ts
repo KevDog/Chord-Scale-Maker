@@ -54,15 +54,20 @@ describe('SheetBarToolbar', () => {
     expect(serializeChart(next(w))).not.toContain('@copy')
   })
 
-  it('offers the rest under ⋯, and asks for the dialogs for a jump and a new section', async () => {
+  it('offers the rest under ⋯, and asks for the dialogs for a jump, a new section and pasted bars', async () => {
     const w = await mount()
     await press(w, 'More actions for A bar 2')
     await nextTick()
     const items = [...document.querySelectorAll<HTMLElement>('[role=menuitem]')]
-    expect(items.map((m) => m.textContent?.trim())).toEqual(['Key change here', '1st ending', '2nd ending', 'Segno', 'Coda', 'Jump…', 'New section here…'])
-    items.at(-1)?.click()
+    expect(items.map((m) => m.textContent?.trim())).toEqual(['Key change here', '1st ending', '2nd ending', 'Segno', 'Coda', 'Jump…', 'New section here…', 'Paste bars…'])
+    items.at(-2)?.click()
     await nextTick()
     expect(w.emitted('dialog')?.[0]).toEqual(['split', 'A', 2])
+    await press(w, 'More actions for A bar 2')
+    await nextTick()
+    ;[...document.querySelectorAll<HTMLElement>('[role=menuitem]')].at(-1)?.click()
+    await nextTick()
+    expect(w.emitted('dialog')?.[1]).toEqual(['paste', 'A', 2])
   })
 
   it('toggles an ending from the menu', async () => {

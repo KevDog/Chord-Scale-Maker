@@ -7,7 +7,7 @@ const doc = parseChart('title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\n').value
 // 64 bars: more lines than any page holds, at 2 or 4 bars a line
 const long = parseChart(`title: L\nkey: C\n${Array.from({ length: 64 }, (_, i) => `A | ${i + 1} | ${['Dm7', 'G7', 'CMaj7', 'A7'][i % 4]}`).join('\n')}\n`).value
 
-const mountSheet = (over: Readonly<{ doc?: ChartDoc; signatures?: boolean; guideLine?: GuideLine; numerals?: boolean; scales?: boolean }> = {}) =>
+const mountSheet = (over: Readonly<{ doc?: ChartDoc; signatures?: boolean; guideLine?: GuideLine; numerals?: boolean; scales?: boolean; editing?: null }> = {}) =>
   mountSuspended(ChangesSheet, {
     props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: false, ...over },
     global: { stubs: { ChangesSystem: true } },
@@ -78,5 +78,15 @@ describe('ChangesSheet', () => {
         expect(pages).toHaveLength(Math.ceil(total / per))
         w.unmount()
       }
+  })
+
+  it('while the sheet is the editor, offers Repeat a section beside + Section', async () => {
+    const w = await mountSheet({ editing: null })
+    const button = w.findAll('button').find((b) => b.text().includes('Repeat a section'))
+    expect(button).toBeDefined()
+    await button?.trigger('click')
+    expect(w.emitted('repeatSection')).toHaveLength(1)
+    const reading = await mountSheet()
+    expect(reading.findAll('button').find((b) => b.text().includes('Repeat a section'))).toBeUndefined()
   })
 })

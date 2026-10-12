@@ -227,9 +227,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Scales follow the chord:** a default scale is written into the text by name (`C Dorian`), and follows when the
   chord changes (`setRowChord`, `setBarChords`: Cm7 → F7 takes C Dorian to F Mixolydian); a scale you chose stays.
 - **Bar editor: deleted** (2026-10-12, [#141](https://github.com/KevDog/Chord-Scale-Maker/issues/141)). The sheet is the
-  editor from `md` up (the lead-sheet editor, below); the grid's own actions (Paste bars, Repeat a section, Rename
-  section, Time, Details) wait for the sheet in [#142](https://github.com/KevDog/Chord-Scale-Maker/issues/142), and
-  their engine edits (`repeatSection`, `renameSection`, `insertBars`, `parseBarLine`) stay for it. Edit, next to the
+  editor from `md` up (the lead-sheet editor, below), which took over the grid's own actions (Paste bars, Repeat a
+  section, Rename section, Time; [#142](https://github.com/KevDog/Chord-Scale-Maker/issues/142)); the Details are in
+  the Source there. Edit, next to the
   title, opens the editor, and Done closes it. The Chart pane (heading, Undo/Redo/Save/⋯, heading fields) is
   rendered only below `md` and on a chart over a size limit (the notice, and the Source). The heading fields are
   `ChartHeadingFields`, with the time and, under Details, the composer, style and form (`chartDetails`); the text is
@@ -259,9 +259,13 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     scale it would give from a trial doc, Enter writes it with its key prefix as typed, and one that doesn't read stays
     with the parser's own message); a pinned scale shows its pin. The bar under the pointer
     gets a toolbar (`SheetBarToolbar`: the inspector's actions by name; Write out alone on a written-out repeat); a
-    ghost "+ bar" ends each section (`ChangesLine.sectionEnd`, `ChangesBar.at`); + Section follows the sheet; the
-    jump and the new section use `BarDialog`. The heading is edited where it prints (`SheetHeading` in `SheetPages`'
-    `#heading` slot; the printed heading stays for print). The sheet keeps the instrument's clef and range but reads
+    ghost "+ bar" ends each section (`ChangesLine.sectionEnd`, `ChangesBar.at`); + Section and Repeat a section…
+    (`repeatSection`: an `@copy` after the part's last section) follow the sheet; a section's marker is a button that
+    renames it (`renameSection`). The toolbar's ⋯ menu also pastes bars (`parseBarLine`, then `insertBars` before or
+    after the bar; refused while the text has diagnostics). The jump, the new section, the pasted bars, the repeat and
+    the rename use `BarDialog`; a refused one stays open with why. The heading is edited where it prints
+    (`SheetHeading` in `SheetPages`' `#heading` slot, with the time beside the key; the printed heading stays for
+    print). The sheet keeps the instrument's clef and range but reads
     in concert pitch while editing, with numerals and scales shown (their toggles rest); both return on Done. Phones
     keep the bottom sheet alone. Every mark is hidden in print.
 - **Scale level** (`engine/src/levels.ts`): Basic / Standard / Advanced / Random, in the

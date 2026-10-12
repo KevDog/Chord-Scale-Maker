@@ -18,6 +18,13 @@ describe('SheetHeading', () => {
     expect(value(w, 'select[aria-label=Key]')).toBe('Gm')
   })
 
+  it('shows the time next to the key, 4/4 when the chart has none, and writes a change', async () => {
+    const w = await mount()
+    expect(value(w, 'select[aria-label=Time]')).toBe('4/4')
+    await w.find('select[aria-label=Time]').setValue('3/4')
+    expect(serializeChart(lastDoc(w))).toMatch(/^time: 3\/4$/m)
+  })
+
   it('writes a changed title into the doc, and a key', async () => {
     const w = await mount()
     await w.find('input[aria-label=Title]').setValue('Les Feuilles Mortes')

@@ -22,7 +22,7 @@
 
     <ShareDialog :open="shareOpen" :link="shareLink" @close="shareOpen = false" />
     <SheetChordEditor :doc="editor.doc.value" :target="sheetChord" @update:doc="editor.setDoc" @said="said = $event" @close="sheetChord = null" />
-    <!-- the sheet editor's structure dialogs: a new section, a section from a bar, a jump -->
+    <!-- the sheet editor's structure dialogs: a new section, a section from a bar, a jump, pasted bars, a repeat, a rename -->
     <BarDialog
       :kind="sheetDialog?.kind ?? null"
       :sections="sheetSections"
@@ -195,6 +195,7 @@
             @dialog="openSheetDialog"
             @add-bar="sheetAddBar"
             @add-section="openSheetDialog('section', '', 0)"
+            @repeat-section="openSheetDialog('repeat', '', 0)"
           />
           <ScaleSheet
             v-else
@@ -232,7 +233,10 @@ import {
   CONCERT,
   type Part,
   encodeShare,
+  insertBars,
   insertHeldBar,
+  renameSection,
+  repeatSection,
   setNav,
   splitSection,
   instrumentLabel,
@@ -426,7 +430,7 @@ const sheetSections = computed(() => sheetView.value.sections.filter((x) => !x.c
 const sheetBeats = computed(() => sheetView.value.beats)
 const sheetDialog = ref<{ kind: BarDialogKind; section: string; bar: number; nav?: string } | null>(null)
 const sheetDialogError = ref('')
-function openSheetDialog(kind: 'section' | 'split' | 'nav', section: string, bar: number): void {
+function openSheetDialog(kind: BarDialogKind, section: string, bar: number): void {
   const cell = sheetView.value.sections.find((s) => s.name === section)?.bars.find((b) => b.bar === bar)
   sheetDialog.value = { kind, section, bar, ...(kind === 'nav' ? { nav: cell?.nav[0]?.text ?? '' } : {}) }
   sheetDialogError.value = ''
@@ -444,6 +448,14 @@ function applySheetDialog(v: BarDialogSubmit): void {
         return { next: splitSection(doc, d.section, d.bar, v.name), said: `${v.name} starts at bar ${d.bar}`, why: `A new section needs ${NAME_RULE}, and starts on a bar with a chord, after the first, not inside an ending, and not in a section that’s repeated.` }
       case 'nav':
         return { next: setNav(doc, d.section, d.bar, v.text), said: `${d.section}, bar ${d.bar}: ${v.text || 'no jump'}`, why: 'The chart can’t take a jump there.' }
+      case 'paste': {
+        const bar = d.bar + (v.before ? 0 : 1)
+        return { next: insertBars(doc, d.section, bar, v.bars), said: `${d.section}: ${v.bars.length === 1 ? '1 bar' : `${v.bars.length} bars`} added at bar ${bar}`, why: v.before ? 'Those bars can’t go there: a section can’t start with a held bar.' : 'Those bars can’t go there.' }
+      }
+      case 'repeat':
+        return { next: repeatSection(doc, v.src, v.name), said: `${v.name} repeats ${v.src}`, why: `A repeat needs ${NAME_RULE}, in the same part as ${v.src}.` }
+      case 'rename':
+        return { next: renameSection(doc, d.section, v.name), said: `${d.section} is now ${v.name}`, why: `A section needs ${NAME_RULE}, and stays in or out of the form.` }
       default:
         return null
     }

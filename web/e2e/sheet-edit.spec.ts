@@ -181,6 +181,31 @@ test('the toolbar’s menu sets a jump and starts a new section at a bar', async
   await expect.poll(() => plain(page)).toMatch(/A \| 1 \| Dm7\nB \| 2 \| G7/)
 })
 
+test('the toolbar’s menu pastes bars; a section is renamed from its marker and repeated from beside + Section', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.getByRole('button', { name: 'Edit G7, A bar 2' }).hover()
+  await page.getByRole('button', { name: 'More actions for A bar 2' }).click()
+  await page.getByRole('menuitem', { name: 'Paste bars…' }).click()
+  const paste = page.getByRole('dialog')
+  await paste.getByLabel('Bars').fill('| Fm7 | Bb7 Eb7 |')
+  await expect(paste.getByText('2 bars')).toBeVisible()
+  await paste.getByRole('button', { name: 'Insert after bar 2' }).click()
+  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| G7\nA \| 3 \| Fm7\nA \| 4 \| Bb7\nA \| 4 \| Eb7\nA \| 5 \| CMaj7/)
+  await page.getByRole('button', { name: 'Rename A' }).click()
+  const rename = page.getByRole('dialog')
+  await expect(rename.getByLabel('Section name')).toHaveValue('A')
+  await rename.getByLabel('Section name').fill('Verse')
+  await rename.getByRole('button', { name: 'Rename' }).click()
+  await expect.poll(() => plain(page)).toMatch(/Verse \| 1 \| Dm7/)
+  await page.getByRole('button', { name: 'Repeat a section…' }).click()
+  const repeat = page.getByRole('dialog')
+  await expect(repeat.getByLabel('Section to repeat')).toHaveValue('Verse')
+  await repeat.getByLabel('Name of the repeat').fill('Verse2')
+  await repeat.getByRole('button', { name: 'Repeat', exact: true }).click()
+  await expect.poll(() => plain(page)).toMatch(/@copy Verse Verse2 8/) // after the Verse's eight bars
+  await expect(page.getByText('Verse · Verse2')).toBeVisible() // the repeat straight after its source: one marker, ×2
+})
+
 test('the heading is edited where it prints, and nothing of the editor prints', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   const sheet = page.getByRole('region', { name: 'Preview' }) // the grid's heading fields have the same names
@@ -192,6 +217,8 @@ test('the heading is edited where it prints, and nothing of the editor prints', 
   await expect.poll(() => plain(page)).toMatch(/^key: Em$/m)
   await sheet.getByRole('textbox', { name: 'Composer', exact: true }).fill('Kosma')
   await expect.poll(() => plain(page)).toMatch(/^composer: Kosma$/m)
+  await sheet.getByRole('combobox', { name: 'Time', exact: true }).selectOption('3/4')
+  await expect.poll(() => plain(page)).toMatch(/^time: 3\/4$/m)
   await page.emulateMedia({ media: 'print' })
   await expect(title).toBeHidden()
   await expect(page.getByText('Editing the sheet')).toBeHidden()

@@ -21,6 +21,7 @@
           <UiDropdownItem v-for="m in MARKS" :key="m" @click="change(setMark(doc, section, bar, m, !hasMark(m)), `${MARK_LABELS[m]} ${hasMark(m) ? 'off' : 'on'}`, '')">{{ MARK_LABELS[m] }}</UiDropdownItem>
           <UiDropdownItem @click="emit('dialog', 'nav', section, bar)">Jump…</UiDropdownItem>
           <UiDropdownItem @click="emit('dialog', 'split', section, bar)">New section here…</UiDropdownItem>
+          <UiDropdownItem @click="emit('dialog', 'paste', section, bar)">Paste bars…</UiDropdownItem>
         </UiDropdownMenu>
       </UiDropdown>
     </template>
@@ -36,11 +37,11 @@ import { barView, type ChartDoc, deleteBar, insertHeldBar, insertKeyChange, setB
 /**
  * The lead-sheet editor's bar toolbar (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md §1.4): the
  * inspector's bar actions by name, for the bar under the pointer. A change the chart can't take is refused with why.
- * On a repeat's bar (a written-out @copy), Write out alone: its chords are the source section's. The jump and the
- * new section need a dialog (`dialog`), which the editor opens.
+ * On a repeat's bar (a written-out @copy), Write out alone: its chords are the source section's. The jump, the new
+ * section and pasted bars need a dialog (`dialog`), which the editor opens.
  */
 const props = defineProps<{ doc: ChartDoc; section: string; bar: number; repeatOf: string | null }>()
-const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; said: [text: string]; refused: [text: string]; dialog: [kind: 'split' | 'nav', section: string, bar: number] }>()
+const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; said: [text: string]; refused: [text: string]; dialog: [kind: 'split' | 'nav' | 'paste', section: string, bar: number] }>()
 
 const ITEM = 'rounded px-2 py-1 hover:bg-note-50 focus-visible:outline-2 focus-visible:outline-blue-500 dark:hover:bg-white/10'
 const ENDINGS = [1, 2] as const

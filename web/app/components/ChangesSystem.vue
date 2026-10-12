@@ -6,7 +6,17 @@
         <div class="absolute bottom-0 whitespace-nowrap" :style="{ left: `${m.x * 100}%` }" @pointerenter="enterBar(m.barIndex)" @focusin="enterBar(m.barIndex)">
           <ChangesMarks v-if="m.segno || m.coda || m.nav" :segno="m.segno" :coda="m.coda" :nav="m.nav" />
           <div v-if="m.marker || m.keyArea" class="flex items-baseline gap-2 text-[0.65rem] print:text-[0.55rem]/3">
-            <span v-if="m.marker" class="rounded-sm border border-zinc-400 px-1 font-semibold text-zinc-700 dark:border-zinc-500 dark:text-zinc-300 print:border-neutral-600 print:text-black">{{ m.marker }}</span>
+            <!-- the sheet as the editor: the section's marker opens its rename -->
+            <button
+              v-if="m.marker && editing !== undefined && m.row.section"
+              type="button"
+              :class="[MARKER, 'cursor-pointer hover:border-note-600 hover:text-note-800 focus-visible:outline-2 focus-visible:outline-blue-500 dark:hover:border-note-400 dark:hover:text-note-300']"
+              :aria-label="`Rename ${m.row.section}`"
+              @click="emit('dialog', 'rename', m.row.section, Number(m.row.bar))"
+            >
+              {{ m.marker }}
+            </button>
+            <span v-else-if="m.marker" :class="MARKER">{{ m.marker }}</span>
             <span v-if="m.keyArea" class="text-note-800 italic dark:text-note-300 print:text-neutral-700">{{ m.keyArea }}</span>
           </div>
           <!-- the sheet as the editor (from md up): each chord a SheetChord, a button or the field in its place -->
@@ -165,7 +175,7 @@ const emit = defineEmits<{
   preview: [preview: ChordPreview | null]
   done: [then: SheetDone]
   refused: [text: string]
-  dialog: [kind: 'split' | 'nav', section: string, bar: number]
+  dialog: [kind: 'split' | 'nav' | 'paste' | 'rename', section: string, bar: number]
   addBar: [section: string]
 }>()
 
@@ -222,6 +232,7 @@ const toolbarBar = computed(() => {
   if (i === null || !bar || !props.doc) return null
   return { key: `${bar.at.section}-${bar.at.bar}`, index: i, section: bar.at.section, bar: Number(bar.at.bar), repeatOf: bar.repeatOf, x: Math.max(0, (xs.value[i]?.[0] ?? i / props.barsPerLine) - 0.012) }
 })
+const MARKER = 'rounded-sm border border-zinc-400 px-1 font-semibold text-zinc-700 dark:border-zinc-500 dark:text-zinc-300 print:border-neutral-600 print:text-black'
 const GHOST = 'rounded-md border border-dashed border-zinc-400 text-xs font-semibold text-zinc-500 hover:border-note-500 hover:text-note-700 focus-visible:border-note-500 focus-visible:outline-none dark:border-zinc-500 dark:text-zinc-400 dark:hover:border-note-400 dark:hover:text-note-300 print:hidden'
 /** the ghost bar (a section's last line, the sheet as the editor): the next bar's slot when the line has room, else a pill under the line */
 const ghost = computed(() => {

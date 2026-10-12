@@ -39,15 +39,16 @@
         </div>
       </template>
     </SheetPages>
-    <!-- the sheet as the editor: a new section after the last -->
-    <div v-if="editing !== undefined" class="flex justify-end print:hidden">
+    <!-- the sheet as the editor: a new section after the last, or a repeat of one -->
+    <div v-if="editing !== undefined" class="flex justify-end gap-2 print:hidden">
+      <UiButton outline @click="emit('repeatSection')"><Square2StackIcon data-slot="icon" />Repeat a section…</UiButton>
       <UiButton outline @click="emit('addSection')"><PlusIcon data-slot="icon" />Section</UiButton>
     </div>
   </div>
 </template>
 
 <script setup lang="ts">
-import { PlusIcon } from '@heroicons/vue/16/solid'
+import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 import { buildChanges, changesLinesPerPage, type ChartDoc, type ChordPreview, chunk, type GuideLine, pageSubtitle, type Part, type ScaleView } from '@chord-scale-maker/engine'
 
@@ -78,9 +79,10 @@ const emit = defineEmits<{
   preview: [preview: ChordPreview | null]
   done: [then: SheetDone]
   refused: [text: string]
-  dialog: [kind: 'split' | 'nav', section: string, bar: number]
+  dialog: [kind: 'split' | 'nav' | 'paste' | 'rename', section: string, bar: number]
   addBar: [section: string]
   addSection: []
+  repeatSection: []
 }>()
 
 const wide = useMediaQuery('(min-width: 640px), print')
