@@ -296,7 +296,7 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
   // how many rows the toolbar's labelled groups fall on (the content is capped at 72rem, so six groups can take two)
   const layout = () =>
     page.locator('#preview-toolbar').evaluate((el) => {
-      const row = el.querySelector('[role=toolbar]')?.firstElementChild as HTMLElement // the rail's wrapping left groups (the actions pinned right beside them)
+      const row = el.querySelector('[aria-label="Sheet controls"]')?.firstElementChild as HTMLElement // the rail's wrapping left groups (the actions pinned right beside them)
       const kids = Array.from(row.children, (c) => c.getBoundingClientRect())
       // groups are top-aligned (items-start), so distinct tops = visual rows
       return { rows: new Set(kids.map((r) => Math.round(r.top))).size, widths: `${row.clientWidth}: ${kids.map((r) => Math.round(r.width)).join(' + ')}` }
@@ -321,7 +321,7 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
 test('the rail sticks over the sheet from lg, and a chord tapped under it opens clear of it', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 })
   await page.goto('/song/autumn-leaves')
-  const rail = page.getByRole('toolbar', { name: 'Sheet controls' })
+  const rail = page.getByRole('group', { name: 'Sheet controls' })
   await expect(rail).not.toHaveAttribute('data-stuck')
   await expect(rail.getByRole('button', { name: 'Print' })).toBeVisible()
   await rail.getByRole('button', { name: 'Edit' }).click()
@@ -334,6 +334,15 @@ test('the rail sticks over the sheet from lg, and a chord tapped under it opens 
   const field = page.getByLabel('Chord, B bar 17', { exact: true })
   await expect(field).toBeFocused()
   expect((await field.boundingBox())!.y).toBeGreaterThanOrEqual(railBox.y + railBox.height)
+  await page.keyboard.press('Escape')
+  // a taller rail (the guide line's detail under Line): a chord focused from the keyboard still scrolls in clear of it
   await page.evaluate(() => window.scrollTo(0, 0))
   await expect(rail).not.toHaveAttribute('data-stuck')
+  await showLine(page, 'Guide Tones')
+  const chord = sheetChord(page, 'Am7b5', 'B', 29)
+  await chord.evaluate((el) => window.scrollBy(0, el.getBoundingClientRect().top - 60)) // under the stuck rail
+  await chord.focus()
+  await expect(rail).toHaveAttribute('data-stuck')
+  const tall = (await rail.boundingBox())!
+  expect((await chord.boundingBox())!.y).toBeGreaterThanOrEqual(tall.y + tall.height)
 })

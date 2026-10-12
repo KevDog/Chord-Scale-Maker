@@ -136,7 +136,7 @@
             <template #actions>
               <ToggleButton v-if="!editor.fatal.value" :model-value="editorShown" expands title="Show or hide the chart editor" @update:model-value="toggleEditor"><PencilSquareIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</ToggleButton>
               <UiButton v-if="shared" outline :disabled="editor.fatal.value" @click="saveShared"><BookmarkIcon data-slot="icon" />Save to My charts</UiButton>
-              <UiButton outline :disabled="editor.fatal.value" @click="openShare"><LinkIcon data-slot="icon" />Share</UiButton>
+              <UiButton v-if="myChartsOn" outline :disabled="editor.fatal.value" @click="openShare"><LinkIcon data-slot="icon" />Share</UiButton>
               <template v-if="!editor.fatal.value">
                 <UiButton outline title="Show only the sheet music (Esc to leave)" @click="enterFocus"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
                 <UiButton color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
@@ -347,6 +347,7 @@ const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
 const signaturesOn = useFeature('keySignatures')
 const arpeggiosOn = useFeature('arpeggios')
+const myChartsOn = useFeature('myCharts')
 const sheetLine = computed(() => sheetLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value, arpeggiosOn))
 /** chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor) */
 const sheetEditing = computed(() => editorShown.value && !editor.fatal.value)
@@ -648,7 +649,7 @@ function print(): void {
 
 /** send the chart and its context to the contact form (via sessionStorage), pre-filled for a bug report */
 /** the rail's More menu: what this chart offers now */
-const moreItems = computed(() => moreMenuItems({ saved: !!saved, edited: !!saved?.edited.value, shared: !!props.shared, fatal: editor.fatal.value }))
+const moreItems = computed(() => moreMenuItems({ saved: !!saved, edited: !!saved?.edited.value, fatal: editor.fatal.value, files: myChartsOn }))
 function onMore(action: MoreAction): void {
   if (action === 'copy') saveCopy()
   else if (action === 'download') download()

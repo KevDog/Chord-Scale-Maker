@@ -55,10 +55,10 @@
 }
 
 @layer base {
-  /* the sheet's controls scroll into view clear of the sticky rail (lg up; two rows of it at most) */
+  /* the sheet's controls scroll into view clear of the sticky rail (lg up; SheetRail measures it) */
   @media (width >= 64rem) {
     [data-slot='paper'] :is(button, input, select) {
-      scroll-margin-top: 10rem;
+      scroll-margin-top: calc(var(--rail-h, 10rem) + 1rem);
     }
   }
   html {
