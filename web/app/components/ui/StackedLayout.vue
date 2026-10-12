@@ -28,7 +28,7 @@
     </HTransitionRoot>
 
     <!-- Navbar -->
-    <header class="flex items-center px-4 print:hidden">
+    <header class="flex h-16 items-center px-4 print:hidden">
       <div class="py-2.5 lg:hidden">
         <UiNavbarItem aria-label="Open navigation" @click="menuOpen = true">
           <svg data-slot="icon" viewBox="0 0 20 20" aria-hidden="true">
