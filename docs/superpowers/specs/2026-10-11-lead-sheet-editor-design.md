@@ -1,6 +1,6 @@
 # Lead-sheet editor: edit chords where they print
 
-Date: 2026-10-11. Status: **accepted** (D1–D12 reviewed and accepted by the user, 2026-10-11). Plan:
+Date: 2026-10-11. Status: **shipped** (flag on, 2026-10-11; D1–D12 reviewed and accepted by the user, 2026-10-11). Plan:
 [2026-10-11-lead-sheet-editor.md](../plans/2026-10-11-lead-sheet-editor.md). Builds on the editor UX proposal ([mockup A](../proposals/editor-ux/mockup-a-lead-sheet.html),
 [README §3 A](../proposals/editor-ux/README.md)), the bar editor that shipped from it (proposal B, stages 1–3), and the
 proposed-scales spec (2026-10-11): the function decides, the scale cell overrides.

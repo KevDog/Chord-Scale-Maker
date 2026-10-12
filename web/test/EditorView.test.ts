@@ -487,7 +487,7 @@ describe('EditorView lead-sheet editor', () => {
     useRuntimeConfig().public.features.leadSheetEditor = true
   })
   afterEach(() => {
-    useRuntimeConfig().public.features.leadSheetEditor = false
+    useRuntimeConfig().public.features.leadSheetEditor = true
     localStorage.clear()
   })
 
