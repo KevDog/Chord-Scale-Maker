@@ -1,4 +1,4 @@
-import { barCell, chooseInstrument, expect, openEditor, test } from './fixtures'
+import { barCell, chooseInstrument, expect, openEditor, test, writeChart } from './fixtures'
 
 /** the chart text without its column padding */
 const plain = async (page: import('@playwright/test').Page): Promise<string> => (await page.getByLabel('Chart text').inputValue()).replace(/[ \t]*\|[ \t]*/g, ' | ')
@@ -167,4 +167,30 @@ test('the heading is edited where it prints, and nothing of the editor prints', 
   await expect(page.getByText('Editing the sheet')).toBeHidden()
   await expect(page.getByRole('toolbar')).toHaveCount(0)
   await expect(page.getByRole('button', { name: 'Add a bar at the end of A' })).toBeHidden()
+})
+
+test('⇧Tab moves back a bar; Tab from the last chord returns focus to its button (review)', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.getByRole('button', { name: 'Edit G7, A bar 2' }).click()
+  await page.getByRole('combobox', { name: 'Chord, A bar 2' }).press('Shift+Tab')
+  await expect(page.getByRole('combobox', { name: 'Chord, A bar 1' })).toBeFocused()
+  await page.keyboard.press('Escape')
+  await page.getByRole('button', { name: 'Edit CMaj7, A bar 3' }).click()
+  await page.getByRole('combobox', { name: 'Chord, A bar 3' }).press('Tab')
+  await expect(page.getByRole('button', { name: 'Edit CMaj7, A bar 3' })).toBeFocused()
+  await expect(page.getByRole('combobox', { name: /^Chord, / })).toHaveCount(0)
+})
+
+test('a chord drawn twice (a written-out repeat) opens one field, where it was clicked (review)', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nB | 1 | Fm7\n@copy A C 0\n')
+  await page.getByRole('button', { name: 'Edit G7, C bar 2' }).click()
+  const field = page.getByRole('combobox', { name: 'Chord, C bar 2' })
+  await expect(field).toBeFocused()
+  await expect(page.getByRole('combobox', { name: /^Chord, / })).toHaveCount(1)
+  await expect(page.getByText('C repeats A')).toBeVisible()
+  await field.fill('Db7')
+  await field.press('Enter')
+  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| Db7/)
+  await expect(page.getByRole('button', { name: 'Edit Db7, C bar 2' })).toBeVisible()
 })

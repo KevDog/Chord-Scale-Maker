@@ -107,16 +107,19 @@
           'space-y-6',
           focus.on.value && 'fixed inset-0 z-50 overflow-y-auto bg-zinc-100 px-4 pb-8 dark:bg-zinc-900 print:static print:overflow-visible print:bg-white print:p-0',
         ]"
+        @keydown="onSheetKeydown"
       >
         <div v-if="focus.on.value" ref="focusBar" class="sticky top-0 z-10 -mx-4 flex justify-end bg-zinc-100/90 px-4 py-3 backdrop-blur-sm dark:bg-zinc-900/90 print:hidden">
           <UiButton outline @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-500 dark:text-zinc-400">Esc</kbd></UiButton>
         </div>
         <div v-show="!focus.on.value" class="space-y-4 print:hidden">
-          <!-- the sheet is the editor (leadSheetEditor, from md up): a banner says so, in concert pitch, with Source and Done editing (Undo is on the grid toolbar above) -->
+          <!-- the sheet is the editor (leadSheetEditor, from md up): a banner says so, in concert pitch, with Undo, Redo, Source and Done editing -->
           <div v-if="sheetEditor" class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-note-800 px-4 py-2 text-sm text-white dark:bg-note-900">
             <span class="font-semibold">Editing the sheet</span>
             <span v-if="concertNote" class="text-note-100">{{ concertNote }}</span>
             <span class="flex items-center gap-2">
+              <UiButton plain class="text-white! hover:bg-white/10!" :disabled="!chartHistory.canUndo.value" aria-label="Undo the last change" title="Undo (⌘Z)" @click="chartHistory.undo"><ArrowUturnLeftIcon data-slot="icon" class="text-white!" />Undo</UiButton>
+              <UiButton plain class="text-white! hover:bg-white/10!" :disabled="!chartHistory.canRedo.value" aria-label="Redo the last change" title="Redo (⇧⌘Z)" @click="chartHistory.redo"><ArrowUturnRightIcon data-slot="icon" class="text-white!" />Redo</UiButton>
               <UiButton plain class="text-white! hover:bg-white/10!" :aria-pressed="sourceShown" title="Show or hide the chart's text" @click="prefs.source.value = !sourceShown"><CodeBracketIcon data-slot="icon" class="text-white!" />Source</UiButton>
               <UiButton color="white" @click="toggleEditor">Done editing</UiButton>
             </span>
@@ -183,6 +186,7 @@
             :view="scaleView"
             :editing="sheetEditor ? sheetEdit : undefined"
             :preview="sheetPreview"
+            :focus-at="sheetFocus"
             @tap="editSheetChord"
             @edit="openSheetEdit"
             @update:doc="editor.setDoc"
@@ -252,7 +256,7 @@ import {
 } from '@chord-scale-maker/engine'
 import BarDialog, { type BarDialogKind, type BarDialogSubmit } from './BarDialog.vue'
 import type { SaveTarget } from '~/composables/useSavedChart'
-import { nextChordLine, type SheetChordEdit, type SheetEdit } from '~/utils/sheetChordEdit'
+import { nextChordLine, type SheetChordEdit, type SheetEdit, type SheetFocus, type SheetPlace } from '~/utils/sheetChordEdit'
 import { SCALE_VIEW } from '~/utils/scaleView'
 import { firstSheet, type SheetKind } from '~/utils/sheets'
 
@@ -357,6 +361,15 @@ const wide = useMediaQuery('(min-width: 768px)')
 const sheetEditor = computed(() => leadSheetOn && wide.value && sheetEditing.value && !focus.on.value)
 const sheetEdit = ref<SheetEdit | null>(null)
 const sheetPreview = ref<ChordPreview | null>(null)
+/** a chord the sheet should give focus to (its field closed by a key with nowhere to go) */
+const sheetFocus = ref<SheetFocus | null>(null)
+/** ⌘Z and ⇧⌘Z over the sheet while it is the editor; a text field keeps its own undo */
+function onSheetKeydown(e: KeyboardEvent): void {
+  if (!sheetEditor.value) return
+  const t = e.target as HTMLElement | null
+  if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return
+  chartHistory.onKeydown(e)
+}
 /** the part the sheet draws while editing: the instrument's clef and range, in concert pitch */
 const sheetPart = computed((): Part => (sheetEditor.value ? { ...part.value, trans: CONCERT.trans } : part.value))
 const concertNote = computed(() =>
@@ -378,19 +391,33 @@ function sheetDone(then: 'stay' | 'next' | 'prev' | 'add' | 'cancel'): void {
   const e = sheetEdit.value
   sheetPreview.value = null
   if (!e) return
+  const doc = editor.doc.value
+  /** a row's place as written */
+  const writtenAt = (line: number): SheetPlace | null => {
+    const l = doc.lines[line]
+    return l?.kind === 'row' ? { section: l.section, bar: l.bar } : null
+  }
+  // the chord the field was on: a slot's is the bar's last row (the chord it added, or the one before it)
+  const line = e.kind === 'chord' ? e.line : doc.lines.findLastIndex((l) => l.kind === 'row' && l.section === e.section && l.bar === e.bar)
+  const at = e.kind === 'chord' ? e.at : { section: e.section, bar: e.bar }
+  if (line < 0) return void (sheetEdit.value = null)
   if (then === 'add') {
-    const l = e.kind === 'chord' ? editor.doc.value.lines[e.line] : null
-    const at = l?.kind === 'row' ? { section: l.section, bar: l.bar } : e.kind === 'slot' ? { section: e.section, bar: e.bar } : null
-    sheetEdit.value = at ? { kind: 'slot', ...at } : null
+    const slotAt = writtenAt(line)
+    sheetEdit.value = slotAt ? { kind: 'slot', ...slotAt } : null
     return
   }
-  if ((then === 'next' || then === 'prev') && e.kind === 'chord') {
-    const line = nextChordLine(editor.doc.value, e.line, then)
-    sheetEdit.value = line === null ? null : { kind: 'chord', line }
-    if (line !== null) selectedLine.value = line
-    return
+  if (then === 'next' || then === 'prev') {
+    const to = nextChordLine(doc, line, then)
+    const toAt = to === null ? null : writtenAt(to)
+    if (to !== null && toAt) {
+      sheetEdit.value = { kind: 'chord', line: to, at: toAt }
+      selectedLine.value = to
+      barEditor.value?.selectLine(to)
+      return
+    }
   }
   sheetEdit.value = null
+  sheetFocus.value = { line, at, n: (sheetFocus.value?.n ?? 0) + 1 }
 }
 
 /** the sheet editor's structure actions (spec §1.4): the toolbar's and the ghost bar's, by the grid's engine calls */

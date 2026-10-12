@@ -90,7 +90,7 @@ describe('ChangesSystem as the editor', () => {
   const base = { first: true, beats: 4 as const, barsPerLine: 4, numerals: true, scales: true, editable: true, doc }
 
   it('renders each chord as a SheetChord while editable, with the one being edited a field', async () => {
-    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: { kind: 'chord', line: 3 } } })
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: { kind: 'chord', line: 3, at: { section: 'A', bar: '1' } } } })
     expect(w.findAllComponents({ name: 'SheetChord' })).toHaveLength(2)
     expect(w.find('input[aria-label="Chord, A bar 1"]').exists()).toBe(true)
   })
@@ -103,14 +103,14 @@ describe('ChangesSystem as the editor', () => {
   })
 
   it('shows the draft’s reading under the chord being edited, italic and muted', async () => {
-    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: { kind: 'chord', line: 3 }, preview: { numeral: 'V7', scale: 'G Altered', readable: true } } })
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: { kind: 'chord', line: 3, at: { section: 'A', bar: '1' } }, preview: { numeral: 'V7', scale: 'G Altered', readable: true } } })
     expect(w.find('[data-slot=numeral][data-draft]').text()).toBe('V7')
     expect(w.find('[data-slot=scale][data-draft]').text()).toBe('G Altered') // no abbreviation for Altered; the sheet's own label
     expect(w.find('[data-slot=scale][data-draft]').classes()).toContain('italic')
   })
 
   it('blanks the draft’s labels when the draft can’t be read', async () => {
-    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: { kind: 'chord', line: 3 }, preview: { numeral: null, scale: null, readable: false } } })
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: { kind: 'chord', line: 3, at: { section: 'A', bar: '1' } }, preview: { numeral: null, scale: null, readable: false } } })
     expect(w.find('[data-slot=numeral][data-draft]').text()).toBe('')
   })
 
@@ -134,6 +134,18 @@ describe('ChangesSystem as the editor', () => {
     await toolbar.findAll('button').find((b) => b.attributes('aria-label') === 'Insert a held bar after A bar 1')?.trigger('click')
     expect(w.emitted('update:doc')).toHaveLength(1)
     expect(w.emitted('said')?.[0]).toEqual(['A: bar 2 added'])
+  })
+
+  it('shows the toolbar for the bar whose chord has focus, right after that bar’s chords in the Tab order (review: Important 3)', async () => {
+    const two = (): ChangesLine => ({ bars: [bar([at(chord(0, 'Dm7', ''), 2)], []), { ...bar([{ ...at(chord(0, 'G7', ''), 3), at: { section: 'A', bar: '2' } }], []), at: { section: 'A', bar: '2' } }], sectionEnd: false })
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: two(), editing: null }, attachTo: document.body })
+    const buttons = w.findAll('button[aria-label^="Edit "]')
+    await buttons[0]!.trigger('focusin')
+    const toolbar = w.find('[role=toolbar]')
+    expect(toolbar.attributes('aria-label')).toBe('Bar 1 of A')
+    const order = buttons[0]!.element.compareDocumentPosition(toolbar.element)
+    expect(order & Node.DOCUMENT_POSITION_FOLLOWING).toBeTruthy()
+    expect(buttons[1]!.element.compareDocumentPosition(toolbar.element) & Node.DOCUMENT_POSITION_PRECEDING).toBeTruthy() // before bar 2’s chord
   })
 
   it('offers a ghost bar at the end of a section’s last line, which asks for a bar', async () => {

@@ -1,9 +1,10 @@
 <template>
-  <div
-    role="toolbar"
-    :aria-label="`Bar ${bar} of ${section}`"
-    class="flex items-center gap-0.5 rounded-lg bg-white p-0.5 text-xs font-semibold text-zinc-800 shadow-lg ring-1 ring-zinc-950/10 dark:bg-zinc-800 dark:text-zinc-100 dark:ring-white/10 print:hidden"
-  >
+  <div class="print:hidden">
+    <div
+      role="toolbar"
+      :aria-label="`Bar ${bar} of ${section}`"
+      class="flex items-center gap-0.5 rounded-lg bg-white p-0.5 text-xs font-semibold text-zinc-800 shadow-lg ring-1 ring-zinc-950/10 dark:bg-zinc-800 dark:text-zinc-100 dark:ring-white/10"
+    >
     <template v-if="repeatOf">
       <button type="button" :class="ITEM" :aria-label="`Write out ${section}, which repeats ${repeatOf}`" @click="change(writeOutCopy(doc, section), `${section} written out`, `${section} can’t be written out.`)">Write out</button>
     </template>
@@ -23,6 +24,9 @@
         </UiDropdownMenu>
       </UiDropdown>
     </template>
+    </div>
+    <!-- a refused change, shown as well as announced -->
+    <p v-if="why" role="alert" class="mt-1 max-w-72 rounded-md bg-white px-2 py-1 text-xs/5 font-normal whitespace-normal text-red-700 shadow-lg ring-1 ring-zinc-950/10 dark:bg-zinc-800 dark:text-red-400 dark:ring-white/10">{{ why }}</p>
   </div>
 </template>
 
@@ -46,10 +50,16 @@ const cell = computed(() => barView(props.doc).sections.find((s) => s.name === p
 const chordLine = computed(() => cell.value?.chords[0]?.line ?? null)
 const ending = computed(() => cell.value?.ending?.n ?? null)
 const hasMark = (m: 'segno' | 'coda'): boolean => !!cell.value?.marks.some((x) => x.mark === m)
+/** the last refusal, shown under the toolbar until the next action */
+const why = ref('')
 
-/** a bar action's new doc: the same doc means the chart can't take it, and why is said */
+/** a bar action's new doc: the same doc means the chart can't take it, and why is shown and said */
 function change(next: ChartDoc, said: string, refused: string): void {
-  if (next === props.doc) return emit('refused', refused || 'The chart can’t take that here.')
+  if (next === props.doc) {
+    why.value = refused || 'The chart can’t take that here.'
+    return emit('refused', why.value)
+  }
+  why.value = ''
   emit('update:doc', next)
   emit('said', `${props.section}: ${said}`)
 }
@@ -57,7 +67,10 @@ function change(next: ChartDoc, said: string, refused: string): void {
 function split(): void {
   const chords = cell.value?.chords.map((c) => c.chord) ?? []
   const last = chords.at(-1)
-  if (last === undefined) return emit('refused', 'A held bar has no chord to split.')
+  if (last === undefined) {
+    why.value = 'A held bar has no chord to split.'
+    return emit('refused', why.value)
+  }
   change(setBarChords(props.doc, props.section, props.bar, [...chords, last]), `bar ${props.bar} split`, `A bar holds at most ${barView(props.doc).beats} chords.`)
 }
 </script>
