@@ -264,7 +264,7 @@ const editLabel = (m: { written: string; text: string; row: { section: string; b
 const repeats = computed(() =>
   props.line.bars.flatMap((bar, b) => (bar.repeatEnd > 2 ? [{ key: b, x: Math.min(1, (xs.value[b]?.at(-1) ?? 1) + 0.03), times: bar.repeatEnd }] : [])),
 )
-/** whether the line draws a guide tone line (else slashes), and so its label row */
+/** whether the line draws a guide tone line (else slashes, or an arpeggio line, which has no label row), and so its label row */
 const hasGuideLine = computed(() => !props.arpeggio && props.line.bars.some((b) => b.voice.length > 0))
 
 /**

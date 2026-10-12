@@ -280,8 +280,9 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
       ticks.forEach((t) => t.setStave(stave))
       return voiceOf(vf, opts.beats, ticks)
     })
-    const beams = opts.arpeggio ? vf.Beam.generateBeams(ticks.filter((t) => !t.isRest()), { groups: [new vf.Fraction(1, 4)] }) : []
+    const beams = opts.arpeggio ? vf.Beam.generateBeams(ticks, { groups: [new vf.Fraction(1, 4)] }) : []
     new vf.Formatter().joinVoices(all).format(all, room(stave, x, width))
+    beams.forEach((b) => b.postFormat()) // beamed stems change length here, before the crop and the bracket read their tips
     x += width
     return { bar, stave, model, ticks, grid, plain, all, beams }
   })
