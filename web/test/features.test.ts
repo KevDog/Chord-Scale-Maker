@@ -12,9 +12,9 @@ describe('feature flags', () => {
   beforeEach(() => navigate.mockClear())
 
   it('reads flags from runtime config', () => {
-    expect(useRuntimeConfig().public.features).toEqual({ myCharts: true, practice: true, changes: true, functions: true, keySignatures: true, leadSheetEditor: true })
+    expect(useRuntimeConfig().public.features).toEqual({ myCharts: true, practice: true, changes: true, functions: true, keySignatures: true })
     expect(useFeature('myCharts')).toBe(true)
-    expect(useFeature('leadSheetEditor')).toBe(true)
+    expect(useFeature('functions')).toBe(true)
   })
 
   it('offers New chart in the library, not the header', async () => {

@@ -1,73 +1,46 @@
 import type { BarView, ChartBar } from './bars'
 
 /**
- * The bar editor's grid (docs/superpowers/proposals/editor-ux/README.md §3 B): the written sections of a barView in
- * lines of four bars, a selection on it, and how keys move the selection and typing changes a bar. A repeated
- * section (@copy) has no lines: it changes through the section it repeats. No DOM.
+ * A chord's place on a barView, and how the sheet editor walks and types over it: the written sections' bars in
+ * order (a repeated section, @copy, has none: it changes through the section it repeats), a position on them, how
+ * Tab and the arrows move it, and what a bar's chords become once something is typed. No DOM.
  */
 
-export const BARS_PER_LINE = 4
-
-/** a chord on the grid: its bar, and its place in the bar (0 for a bar with none) */
+/** a chord on the chart: its bar, and its place in the bar (0 for a bar with none) */
 export type GridPos = Readonly<{ section: string; bar: number; chord: number }>
-export type GridLine = Readonly<{ section: string; bars: readonly ChartBar[] }>
-export type GridMove = 'next' | 'prev' | 'up' | 'down'
+export type GridMove = 'next' | 'prev'
 
-export function gridLines(view: BarView): GridLine[] {
-  return view.sections
-    .filter((s) => !s.copy)
-    .flatMap((s) =>
-      Array.from({ length: Math.ceil(s.bars.length / BARS_PER_LINE) }, (_, k) => ({ section: s.name, bars: s.bars.slice(k * BARS_PER_LINE, (k + 1) * BARS_PER_LINE) })),
-    )
-}
+type Cell = Readonly<{ section: string; bar: ChartBar }>
 
-type Cell = Readonly<{ line: number; col: number; bar: ChartBar }>
-
-function cellsOf(lines: readonly GridLine[]): Cell[] {
-  return lines.flatMap((l, line) => l.bars.map((bar, col) => ({ line, col, bar })))
-}
+/** the written sections' bars, in order */
+const written = (view: BarView): Cell[] => view.sections.filter((s) => !s.copy).flatMap((s) => s.bars.map((bar) => ({ section: s.name, bar })))
 
 const lastChord = (bar: ChartBar): number => Math.max(0, bar.chords.length - 1)
 const at = (section: string, bar: ChartBar, chord = 0): GridPos => ({ section, bar: bar.bar, chord })
 
-/** where a key takes the selection: null off either end with next or prev (so Tab can leave the grid) */
+/**
+ * where a key takes the position: chord by chord, then bar by bar, across sections; null off either end (so Tab can
+ * leave the sheet). A position that isn't on the chart goes to the first chord, or null for a chart with none.
+ */
 export function moveInGrid(view: BarView, pos: GridPos, move: GridMove): GridPos | null {
-  const lines = gridLines(view)
-  const cells = cellsOf(lines)
-  const k = cells.findIndex((c) => lines[c.line]?.section === pos.section && c.bar.bar === pos.bar)
+  const cells = written(view)
+  const k = cells.findIndex((c) => c.section === pos.section && c.bar.bar === pos.bar)
   const here = cells[k]
-  if (!here) return firstPos(view)
-  const sectionOf = (c: Cell): string => lines[c.line]?.section ?? ''
+  if (!here) {
+    const first = cells[0]
+    return first ? at(first.section, first.bar) : null
+  }
   if (move === 'next') {
     if (pos.chord < lastChord(here.bar)) return { ...pos, chord: pos.chord + 1 }
     const next = cells[k + 1]
-    return next ? at(sectionOf(next), next.bar) : null
+    return next ? at(next.section, next.bar) : null
   }
-  if (move === 'prev') {
-    if (pos.chord > 0) return { ...pos, chord: pos.chord - 1 }
-    const prev = cells[k - 1]
-    return prev ? at(sectionOf(prev), prev.bar, lastChord(prev.bar)) : null
-  }
-  const line = lines[here.line + (move === 'down' ? 1 : -1)]
-  const bar = line?.bars[Math.min(here.col, line.bars.length - 1)]
-  return line && bar ? at(line.section, bar) : pos
+  if (pos.chord > 0) return { ...pos, chord: pos.chord - 1 }
+  const prev = cells[k - 1]
+  return prev ? at(prev.section, prev.bar, lastChord(prev.bar)) : null
 }
 
-export function firstPos(view: BarView): GridPos | null {
-  const line = gridLines(view)[0]
-  const bar = line?.bars[0]
-  return line && bar ? at(line.section, bar) : null
-}
-
-/** the position again after the chart changed: the same chord if it's still there, else the nearest on the grid */
-export function placePos(view: BarView, pos: GridPos): GridPos | null {
-  const s = view.sections.find((x) => x.name === pos.section && !x.copy)
-  const bar = s?.bars.find((b) => b.bar === pos.bar) ?? s?.bars.findLast((b) => b.bar < pos.bar) ?? s?.bars[0]
-  if (!s || !bar) return firstPos(view)
-  return at(s.name, bar, Math.min(pos.chord, lastChord(bar)))
-}
-
-/** where the chord written on line `line` of the chart is on the grid; null for a line that isn't one there */
+/** where the chord written on line `line` of the chart is; null for a line that isn't a written chord */
 export function posOfLine(view: BarView, line: number): GridPos | null {
   for (const s of view.sections.filter((x) => !x.copy))
     for (const b of s.bars) {

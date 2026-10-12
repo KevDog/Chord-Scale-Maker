@@ -53,9 +53,9 @@
         <button type="button" class="font-semibold underline" @click="toggleEditor">Edit</button> to fix {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
       </UiText>
   
-      <!-- the bar editor: the chart as bars with an inspector, its text under ⋯ as the Source. From md up the sheet is the
-           editor (leadSheetEditor) and the Chart pane is not rendered: it stays below md (the heading fields and the
-           phone note) and on a chart over a size limit (the notice, and the Source) -->
+      <!-- the Chart pane: the heading fields, Undo/Redo/Save, and the text under ⋯ as the Source. From md up the sheet
+           is the editor and this pane is not rendered: it stays below md (the heading fields and the phone note) and
+           on a chart over a size limit (the notice, and the Source) -->
       <div v-if="editorShown" class="space-y-8 print:hidden" @keydown="chartHistory.onKeydown">
         <section v-if="!sheetEditor" aria-labelledby="grid-heading" class="min-w-0 space-y-5">
           <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
@@ -76,13 +76,8 @@
           <div v-if="editor.fatal.value" class="rounded-lg bg-red-500/10 p-4 text-sm/6 text-red-700 dark:text-red-400">
             This chart is over a size limit. Shorten it in the Source to edit it here.
           </div>
-          <template v-else>
-            <ChartHeadingFields :doc="editor.doc.value" @update:doc="editor.setDoc" />
-            <!-- below md, light edits only: chords are changed on the Changes sheet -->
-            <div class="max-md:hidden">
-              <BarEditor :doc="editor.doc.value" @update:doc="editor.setDoc" @source="prefs.source.value = true" @selected="selectedLine = $event" />
-            </div>
-          </template>
+          <!-- below md, light edits only: the heading fields here, chords on the Changes sheet -->
+          <ChartHeadingFields v-else :doc="editor.doc.value" @update:doc="editor.setDoc" />
         </section>
         <section v-if="sourceShown" id="text-pane" aria-labelledby="text-heading" class="min-w-0">
           <div class="relative mb-3 flex items-center gap-2">
@@ -115,7 +110,7 @@
           <UiButton outline @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-500 dark:text-zinc-400">Esc</kbd></UiButton>
         </div>
         <div v-show="!focus.on.value" class="space-y-4 print:hidden">
-          <!-- the sheet is the editor (leadSheetEditor, from md up): a banner says so, in concert pitch, with Undo, Redo, Source, Save and Done editing -->
+          <!-- the sheet is the editor (from md up): a banner says so, in concert pitch, with Undo, Redo, Source, Save and Done editing -->
           <div v-if="sheetEditor" class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-note-800 px-4 py-2 text-sm text-white dark:bg-note-900">
             <span class="font-semibold">Editing the sheet</span>
             <span v-if="concertNote" class="text-note-100">{{ concertNote }}</span>
@@ -324,12 +319,12 @@ const sheetEditing = computed(() => editorShown.value && !editor.fatal.value)
 const sheetChord = ref<SheetChordEdit | null>(null)
 const selectedLine = ref<number | null>(null)
 const said = ref('')
-/** a chord tapped on the sheet: edit it in the chord editor (the bottom sheet below md; the popover with the flag off) */
+/** a chord tapped on the sheet below md: edit it in the chord editor's bottom sheet */
 function editSheetChord(chord: SheetChordEdit): void {
   editor.flush()
   sheetChord.value = chord
 }
-/** the bar editor's Source: under ⋯, remembered; always shown for a chart over a size limit (only the text can fix it) */
+/** the Source: in the banner, or under ⋯ below md, remembered; always shown for a chart over a size limit (only the text can fix it) */
 const sourceShown = computed(() => prefs.source.value || editor.fatal.value)
 /** the chart's key, for the sheets' key signature, drawn once at the start (undefined when the flag is off: drawn as before) */
 const homeKey = computed(() => (signaturesOn ? chartKeyOf(editor.doc.value) : undefined))
@@ -354,12 +349,11 @@ const focus = useFocusMode()
 const focusBar = ref<HTMLElement | null>(null)
 /**
  * the lead-sheet editor (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md): the sheet itself is the editor
- * when the flag is on, from md up, while the editor is open on a chart the sheet can draw, outside focus mode. It
- * shows concert pitch (D2) with numerals and scales on (D3): they are the pickers.
+ * from md up, while the editor is open on a chart the sheet can draw, outside focus mode. It shows concert pitch (D2)
+ * with numerals and scales on (D3): they are the pickers.
  */
-const leadSheetOn = useFeature('leadSheetEditor')
 const wide = useMediaQuery('(min-width: 768px)')
-const sheetEditor = computed(() => leadSheetOn && wide.value && sheetEditing.value && !focus.on.value)
+const sheetEditor = computed(() => wide.value && sheetEditing.value && !focus.on.value)
 const sheetEdit = ref<SheetEdit | null>(null)
 const sheetPreview = ref<ChordPreview | null>(null)
 /** a chord the sheet should give focus to (its field closed by a key with nowhere to go) */
@@ -426,7 +420,7 @@ const MOVES: Partial<Record<SheetDone, Readonly<{ dir: 'next' | 'prev'; step: 'b
   prevChord: { dir: 'prev', step: 'chord' },
 }
 
-/** the sheet editor's structure actions (spec §1.4): the toolbar's and the ghost bar's, by the grid's engine calls */
+/** the sheet editor's structure actions (spec §1.4): the toolbar's and the ghost bar's, by the engine's edits */
 const sheetView = computed(() => barView(editor.doc.value))
 const sheetSections = computed(() => sheetView.value.sections.filter((x) => !x.copy).map((x) => x.name))
 const sheetBeats = computed(() => sheetView.value.beats)
@@ -460,7 +454,7 @@ function applySheetDialog(v: BarDialogSubmit): void {
   said.value = change.said
   sheetDialog.value = null
 }
-/** the ghost bar: a bar after the section's last (before a part's rounding-out bars), as the grid's + Bar does */
+/** the ghost bar: a bar after the section's last (before a part's rounding-out bars) */
 function sheetAddBar(section: string): void {
   const last = sheetView.value.sections.find((x) => x.name === section)?.bars.findLast((b) => b.kind !== 'implied')?.bar
   if (last === undefined) return

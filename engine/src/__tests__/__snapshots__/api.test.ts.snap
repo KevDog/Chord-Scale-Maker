@@ -3,7 +3,6 @@
 exports[`exports the same names 1`] = `
 [
   "ALIASES",
-  "BARS_PER_LINE",
   "CAPS",
   "CATALOGUE_KEYS",
   "CLEF_ROOT_LOW",
@@ -70,12 +69,10 @@ exports[`exports the same names 1`] = `
   "enharmonics",
   "expandRowLines",
   "expandRows",
-  "firstPos",
   "formPart",
   "functionChoices",
   "functionsTable",
   "glyphs",
-  "gridLines",
   "guideLabel",
   "guideToneDegrees",
   "guideToneLine",
@@ -125,7 +122,6 @@ exports[`exports the same names 1`] = `
   "parseStart",
   "partFor",
   "pcOf",
-  "placePos",
   "posOfLine",
   "practiceBoxes",
   "practiceKeys",
