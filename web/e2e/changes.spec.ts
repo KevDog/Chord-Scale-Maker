@@ -301,22 +301,24 @@ test('guide tone notes follow dark mode (no hard-coded black)', async ({ page })
   await expect(black).toHaveCount(0)
 })
 
-for (const [width, bars] of [
-  [1400, 4],
-  [390, 2],
+// on a phone, two bars of four chords don't fit a line together (their names would shrink too far): each gets its own
+for (const [width, bars, label] of [
+  [1400, 4, /^Bars: Em7 A7 Dm7 G7 \| Ebm7 Ab7 Dbm7 Gb7.*; guide tones: /],
+  [390, 2, /^Bars: Em7 A7 Dm7 G7; guide tones: /],
 ] as const) {
   test(`four chords a bar, a guide tone line, ${bars} bars a line: no notehead or accidental collides, and each chord sits on its note`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 })
     await writeChart(page, 'title: T\nkey: C\nA | 1 | Em7\nA | 1 | A7\nA | 1 | Dm7\nA | 1 | G7\nA | 2 | Ebm7\nA | 2 | Ab7\nA | 2 | Dbm7\nA | 2 | Gb7\nA | 3 | CMaj7\nA | 4 | C#m7b5\nA | 4 | F#7\n')
     await showGuides(page, 'From 3rd')
     const line = lines(page).first()
-    await expect(line).toHaveAttribute('aria-label', /^Bars: Em7 A7 Dm7 G7 \| Ebm7 Ab7 Dbm7 Gb7.*; guide tones: /)
-    const d = await drawn(line)
-    expect(d.width).toBe(300 * bars)
-    expect(d.heads.length).toBeGreaterThanOrEqual(8)
-    expect(d.accidentals.length).toBeGreaterThan(0)
-    expectNoCollisions(d)
-    await expectChordsOnHeads(line)
+    await expect(line).toHaveAttribute('aria-label', label)
+    await guidesDrawn(page)
+    const all = await Promise.all((await lines(page).all()).map(drawn))
+    for (const d of all) expect(d.width).toBe(300 * bars)
+    expect(all.flatMap((d) => d.heads).length).toBeGreaterThanOrEqual(11)
+    expect(all.flatMap((d) => d.accidentals).length).toBeGreaterThan(0)
+    for (const d of all) expectNoCollisions(d)
+    for (const l of await lines(page).all()) await expectChordsOnHeads(l)
   })
 }
 
@@ -366,4 +368,45 @@ test('on a line with an ending, the bracket clears the guide tonesâ€™ stems (Bâ™
     expect(d.voltaBottom, `${await svg.getAttribute('aria-label')}`).toBeLessThan(tip)
   }
   expect(endings).toBeGreaterThan(0) // the verse's 1st and 2nd endings
+})
+
+/** each chord name's box on the first line (with the marker or key area over its bar's first) */
+const nameBoxes = (page: Page) =>
+  page
+    .locator('[data-slot="system"]')
+    .first()
+    .locator('[data-name]')
+    .evaluateAll((els) => els.map((e) => ({ text: e.textContent?.trim() ?? '', ...e.getBoundingClientRect().toJSON() }) as { text: string; left: number; right: number }))
+
+/** no chord name runs into the next one's */
+async function expectNamesApart(page: Page): Promise<void> {
+  await expect(page.locator('[data-slot="system"]').first().locator('svg')).toBeVisible()
+  await expect(async () => {
+    const boxes = await nameBoxes(page)
+    expect(boxes.length).toBeGreaterThanOrEqual(4)
+    boxes.slice(1).forEach((b, i) => expect(b.left, `${boxes[i]?.text} runs into ${b.text}`).toBeGreaterThanOrEqual(boxes[i]?.right ?? 0))
+  }).toPass({ timeout: 5000 })
+}
+
+const CROWDED = 'key: Bb\nA | 1 | Bbmaj7#11\nA | 1 | Eb7alt\nA | 1 | Abm7b5\nA | 1 | Db7sus4\nA | 2 | Dm7\nA | 2 | G7\nA | 3 | Cmaj7\nA | 4 | C7\n'
+test('chords on consecutive beats keep their names apart: the crowded bar widens', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await writeChart(page, CROWDED)
+  await expectNamesApart(page)
+  await expect(page.locator('[data-slot="system"]').first().locator('[data-name]')).toHaveCount(8) // one line
+})
+
+test('on a phone, a line whose names would shrink too far breaks: the crowded bar on a line of its own', async ({ page }) => {
+  await page.setViewportSize({ width: 390, height: 900 })
+  await writeChart(page, 'key: C\nA | 1 | Cmaj7\nA | 1 | A7b9\nA | 1 | Dm7\nA | 1 | G7sus4\nA | 2 | Em7b5\nA | 2 | A7\nA | 3 | Dm7\nA | 4 | G7\n')
+  await expectNamesApart(page)
+  await expect(page.locator('[data-slot="system"]').first().locator('[data-name]')).toHaveCount(4)
+})
+
+test('chords on consecutive beats keep their names apart in print', async ({ page }) => {
+  await page.setViewportSize({ width: 740, height: 1000 }) // a letter page's printed width
+  await writeChart(page, CROWDED)
+  await page.emulateMedia({ media: 'print' })
+  await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+  await expectNamesApart(page)
 })

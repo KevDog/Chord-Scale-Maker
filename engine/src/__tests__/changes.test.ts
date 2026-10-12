@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it, vi } from 'vitest'
-import { buildChanges, type ChangesSheet, changesLinesPerPage } from '../changes'
+import { breakLines, buildChanges, type ChangesSheet, changesLinesPerPage } from '../changes'
 import { parseChart } from '../chart'
 import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
 import { CONCERT, type Part } from '../part'
@@ -385,5 +385,24 @@ describe('a drawn chord’s line', () => {
       ['Cm7', 'C', 1],
       ['F7', 'C', 2],
     ])
+  })
+})
+
+describe('breakLines', () => {
+  const sheet = buildChanges(parseChart('A | 1 | C\nA | 2 | D\nA | 3 | E\nA | 4 | F\nA | 5 | G\nB | 1 | C\nB | 2 | D\n').value, CONCERT, 4)
+  const bars = (lines: ChangesSheet['lines']) => lines.map((l) => [l.bars.map((b) => `${b.at.section}${b.at.bar}`).join(' '), l.sectionEnd])
+  it('starts a new line at each bar named, the section still ending on its last', () => {
+    expect(bars(sheet.lines)).toEqual([['A1 A2 A3 A4', false], ['A5', true], ['B1 B2 B3 B4', true]])
+    expect(bars(breakLines(sheet.lines, new Set(['A 2', 'A 4', 'B 2'])))).toEqual([
+      ['A1', false],
+      ['A2 A3', false],
+      ['A4', false],
+      ['A5', true],
+      ['B1', false],
+      ['B2 B3 B4', true],
+    ])
+  })
+  it("ignores a line's first bar, and leaves the lines as they are with nothing named", () => {
+    expect(breakLines(sheet.lines, new Set(['A 1', 'A 5']))).toEqual(sheet.lines)
   })
 })

@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter } from '@chord-scale-maker/engine'
-import { beatXs, guideAria, restatedAccidental, voicedBand, voltaShift } from '~/utils/changesDrawing'
+import { beatXs, fitBars, guideAria, restatedAccidental, voicedBand, voltaShift } from '~/utils/changesDrawing'
 
 const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   beat,
@@ -109,5 +109,46 @@ describe('guideAria', () => {
   it('spells accidentals and names a rest', () => {
     const line: ChangesLine = { bars: [bar([chord(0, 'Gm7', '3'), chord(2, 'Cm7#5#9x', '')], [note(6, -1, 70, 0, 2), rest(2, 2)])] }
     expect(guideAria(line)).toBe('; guide tones: B♭4 3, rest')
+  })
+})
+
+describe('fitBars', () => {
+  const at = (beat: number, width: number) => ({ beat, width })
+  it('keeps bars even when every name fits', () => {
+    expect(fitBars(4, [[at(0, 0.1)], [at(0, 0.05), at(2, 0.05)], [], [at(0, 0.2)]])).toEqual({ shares: [0.25, 0.25, 0.25, 0.25], scales: [[1], [1, 1], [], [1]], fits: 4 })
+  })
+  it('widens a crowded bar by what its names need, and the others share the rest evenly', () => {
+    const fit = fitBars(4, [[at(0, 0.1), at(1, 0.1), at(2, 0.1), at(3, 0.1)], [at(0, 0.05)], [], [at(0, 0.05)]])
+    expect(fit.shares.map((s) => +s.toFixed(6))).toEqual([0.4, 0.2, 0.2, 0.2])
+    expect(fit.scales).toEqual([[1, 1, 1, 1], [1], [], [1]])
+  })
+  it("gives a name the beats up to the next chord, the bar's last up to the bar's end", () => {
+    const fit = fitBars(4, [[at(0, 0.3), at(2, 0.1)], []])
+    expect(fit.shares.map((s) => +s.toFixed(6))).toEqual([0.6, 0.4])
+  })
+  it('lets a bar take the room of a slot past the line\'s last bar (null) when it needs it', () => {
+    const fit = fitBars(4, [[at(0, 0.225), at(1, 0.225), at(2, 0.225), at(3, 0.225)], null])
+    expect(fit.shares.map((s) => +s.toFixed(6))).toEqual([0.9, 0.1])
+    expect(fitBars(4, [[at(0, 0.1)], null]).shares).toEqual([0.5, 0.5])
+  })
+  it('counts the leading bars that fit the line on their own, their names at no less than 0.8 (at least one): where a line too full breaks', () => {
+    const crowded = [at(0, 0.25), at(1, 0.25), at(2, 0.25), at(3, 0.25)] // needs the whole line
+    expect(fitBars(4, [[at(0, 0.1)], [at(0, 0.2), at(1, 0.2), at(2, 0.2), at(3, 0.2)], [], []]).fits).toBe(4) // 1.175 of the line: names at 0.85
+    expect(fitBars(4, [[at(0, 0.2)], crowded, [], []]).fits).toBe(2) // 0.2 + 1 fit, a third bar's 0.125 doesn't
+    expect(fitBars(4, [crowded, [at(0, 0.3)], null, null]).fits).toBe(1)
+    expect(fitBars(4, [crowded, [at(0, 0.2)], null, null]).fits).toBe(2)
+    expect(fitBars(4, [[at(0, 0.2), at(1, 0.2), at(2, 0.2), at(3, 0.5)], [at(0, 0.1)]]).fits).toBe(1)
+    expect(fitBars(4, [[at(0, 0.1)], []]).fits).toBe(2)
+  })
+  it('never squeezes a bar below half its even share', () => {
+    const fit = fitBars(4, [[at(0, 0.225), at(1, 0.225), at(2, 0.225), at(3, 0.225)], [at(0, 0.01)]])
+    expect(fit.shares.map((s) => +s.toFixed(6))).toEqual([+(0.9 / 1.15).toFixed(6), +(0.25 / 1.15).toFixed(6)])
+  })
+  it("shares an overfull line by need and shrinks the names that still don't fit, to no less than 0.6", () => {
+    // needs 2 (0.5 over one beat) and 0.25 (the floor): shares 2/2.25 and 0.25/2.25, a beat of bar 0 is 0.2222 of the line
+    const fit = fitBars(4, [[at(0, 0.5), at(1, 0.25), at(2, 0.1), at(3, 0.1)], [at(0, 0.01)]])
+    expect(fit.shares.map((s) => +s.toFixed(6))).toEqual([+(2 / 2.25).toFixed(6), +(0.25 / 2.25).toFixed(6)])
+    expect(fit.scales[0]?.map((s) => +s.toFixed(3))).toEqual([0.6, +(2 / 2.25 / 4 / 0.25).toFixed(3), 1, 1])
+    expect(fit.scales[1]).toEqual([1])
   })
 })

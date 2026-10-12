@@ -1,9 +1,13 @@
 <template>
-  <div data-slot="system" class="relative break-inside-avoid" @pointerleave="leaveBar" @focusout="leaveBar">
+  <div ref="root" data-slot="system" class="relative break-inside-avoid" @pointerleave="leaveBar" @focusout="leaveBar">
     <!-- section markers and key areas, then chord symbols, over their beats -->
     <div class="relative h-12 print:h-7">
       <template v-for="m in marks" :key="m.key">
-        <div class="absolute bottom-0 whitespace-nowrap" :style="{ left: `${m.x * 100}%` }" @pointerenter="enterBar(m.barIndex)" @focusin="enterBar(m.barIndex)">
+        <div
+          :data-name="m.slot ? undefined : m.key"
+          class="absolute bottom-0 origin-bottom-left whitespace-nowrap"
+          :style="{ left: `${m.x * 100}%`, transform: shrunk(m) === 1 ? undefined : `scale(${shrunk(m)})` }"
+          @pointerenter="enterBar(m.barIndex)" @focusin="enterBar(m.barIndex)">
           <ChangesMarks v-if="m.segno || m.coda || m.nav" :segno="m.segno" :coda="m.coda" :nav="m.nav" />
           <div v-if="m.marker || m.keyArea" class="flex items-baseline gap-2 text-[0.65rem] print:text-[0.55rem]/3">
             <!-- the sheet as the editor: the section's marker opens its rename -->
@@ -142,8 +146,8 @@
 </template>
 
 <script setup lang="ts">
-import { type ChangesLine, type ChartDoc, type ChordPreview, CONCERT, rowNotes, sheetScale } from '@chord-scale-maker/engine'
-import { drawChangesLine } from '~/utils/changesDrawing'
+import { barKey, type ChangesLine, type ChartDoc, type ChordPreview, CONCERT, rowNotes, sheetScale } from '@chord-scale-maker/engine'
+import { drawChangesLine, type NamedBeat } from '~/utils/changesDrawing'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 
@@ -177,10 +181,14 @@ const emit = defineEmits<{
   refused: [text: string]
   dialog: [kind: 'split' | 'nav' | 'paste' | 'rename', section: string, bar: number]
   addBar: [section: string]
+  overfull: [at: string] // the names don't fit the line: break it before this bar (barKey)
 }>()
 
+const root = ref<HTMLElement | null>(null)
 const el = ref<HTMLElement | null>(null)
 const xs = ref<readonly (readonly number[])[]>([])
+const ends = ref<readonly number[]>([]) // each bar's right edge
+const nameScales = ref<readonly (readonly number[])[]>([]) // each chord name's scale, where the line can't fit it
 const drawError = ref<string | null>(null)
 const rendering = useRendering()
 const notesOn = useFeature('functions')
@@ -192,15 +200,15 @@ const notesOn = useFeature('functions')
 const marks = computed(() => {
   const all = props.line.bars.flatMap((bar, b) => {
     const at = (beat: number): number => Math.max(0, (xs.value[b]?.[beat] ?? 0) - 0.012)
-    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, barIndex: b, lastInBar: k === bar.chords.length - 1, line: c.line, slot: false, x: at(c.beat), tokens: c.tokens, text: c.text, written: c.written, row: c.at, numeral: c.numeral, scale: c.scale, reason: c.reason, rule: c.rule, fallback: c.fallback, heardIn: c.heardIn, keyFrom: c.keyFrom, guide: c.guide, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
-    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, barIndex: b, lastInBar: true, line: -1, slot: false, x: at(0), tokens: null, text: '', written: '', row: { section: '', bar: '' }, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
+    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, barIndex: b, k, beat: c.beat, lastInBar: k === bar.chords.length - 1, line: c.line, slot: false, x: at(c.beat), tokens: c.tokens, text: c.text, written: c.written, row: c.at, numeral: c.numeral, scale: c.scale, reason: c.reason, rule: c.rule, fallback: c.fallback, heardIn: c.heardIn, keyFrom: c.keyFrom, guide: c.guide, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
+    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, barIndex: b, k: 0, beat: 0, lastInBar: true, line: -1, slot: false, x: at(0), tokens: null, text: '', written: '', row: { section: '', bar: '' }, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
     // the new chord slot after a bar's chords (Space in the field), on the beat after the last chord's
     const e = props.editing
     const last = bar.chords.at(-1)
     if (e?.kind === 'slot' && last && last.at.section === e.section && last.at.bar === e.bar) {
       const prev = chords.at(-1)
       if (prev) prev.lastInBar = false
-      chords.push({ key: `${b}-slot`, barIndex: b, lastInBar: true, line: last.line, slot: true, x: at(Math.min(last.beat + 1, props.beats - 1)), tokens: null, text: '', written: '', row: last.at, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: '', keyArea: '', segno: false, coda: false, nav: '' })
+      chords.push({ key: `${b}-slot`, barIndex: b, k: -1, beat: last.beat + 1, lastInBar: true, line: last.line, slot: true, x: at(Math.min(last.beat + 1, props.beats - 1)), tokens: null, text: '', written: '', row: last.at, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: '', keyArea: '', segno: false, coda: false, nav: '' })
     }
     return chords
   })
@@ -240,8 +248,12 @@ const ghost = computed(() => {
   if (!last || !props.line.sectionEnd) return null
   const n = props.line.bars.length
   const full = n >= props.barsPerLine
-  return { section: last.at.section, full, style: { left: `${(n / props.barsPerLine) * 100}%`, width: `${100 / props.barsPerLine}%` } }
+  const left = ends.value[n - 1] ?? n / props.barsPerLine
+  return { section: last.at.section, full, style: { left: `${left * 100}%`, width: `${Math.min(1 / props.barsPerLine, 1 - left) * 100}%` } }
 })
+/** a chord name's scale: shrunk where its bar can't be widened enough, but never the chord being edited */
+const shrunk = (m: { barIndex: number; k: number; line: number }): number =>
+  props.editing?.kind === 'chord' && props.editing.line === m.line ? 1 : (nameScales.value[m.barIndex]?.[m.k] ?? 1)
 /** whether the mark is the chord in the open field, whose labels show the draft's reading */
 const drafted = (m: { line: number; slot: boolean }): boolean => props.preview !== undefined && props.editing?.kind === 'chord' && !m.slot && m.line === props.editing.line
 /** "Edit Dm7, A bar 3"; a transposed part's chord says its concert pitch too, as the editor shows it */
@@ -254,12 +266,36 @@ const repeats = computed(() =>
 /** whether the line draws a guide tone line (else slashes), and so its label row */
 const hasGuideLine = computed(() => props.line.bars.some((b) => b.voice.length > 0))
 
+/**
+ * each bar's chord names (and the marker or key area over its first), their widths as fractions of the line, which
+ * widen the bars they crowd: measured at their full size, against the line as drawn or as printed (narrower, at
+ * PRINT_LINE px with screen-size names), whichever is tighter; undefined while the line isn't laid out
+ */
+function measureNames(): NamedBeat[][] | undefined {
+  const width = Math.min(el.value?.clientWidth ?? 0, PRINT_LINE)
+  if (!width || !root.value) return undefined
+  const px = new Map(Array.from(root.value.querySelectorAll<HTMLElement>('[data-name]'), (n) => [n.dataset.name, n.offsetWidth]))
+  return props.line.bars.map((_, b) => marks.value.filter((m) => m.barIndex === b && !m.slot).map((m) => ({ beat: m.beat, width: ((px.get(m.key) ?? 0) + NAME_GAP) / width })))
+}
+const PRINT_LINE = 800 // a printed line (about 700px) with the print's smaller names (text-sm: 14/16), in screen px
+const NAME_GAP = 8 // px between a name and the next
+const key = (names: readonly (readonly NamedBeat[])[] | undefined): string => JSON.stringify(names?.map((b) => b.map((c) => [c.beat, +c.width.toFixed(3)])))
+let drawn = ''
+
 async function draw(): Promise<void> {
   if (!el.value) return
   const done = rendering.begin()
   try {
     const vf = await loadVexFlow()
-    xs.value = drawChangesLine(vf, el.value, props.line, { timeSignature: props.first, beats: props.beats, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}) }).xs
+    await document.fonts?.ready // names measured in their own font
+    const names = measureNames()
+    drawn = key(names)
+    const layout = drawChangesLine(vf, el.value, props.line, { timeSignature: props.first, beats: props.beats, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}), ...(names ? { names } : {}) })
+    xs.value = layout.xs
+    ends.value = layout.ends
+    nameScales.value = layout.scales
+    const breakAt = props.line.bars[layout.fits]
+    if (breakAt) emit('overfull', barKey(breakAt.at))
     drawError.value = null
   } catch (e) {
     drawError.value = `Couldn't draw these bars (${e instanceof Error ? e.message : String(e)})`
@@ -268,6 +304,21 @@ async function draw(): Promise<void> {
   }
 }
 
-onMounted(draw)
+/** a resize that changes how much of the line the names take redraws it (not wider than PRINT_LINE: they don't) */
+let resized: ReturnType<typeof setTimeout> | undefined
+const observer = import.meta.client && 'ResizeObserver' in window ? new ResizeObserver(() => {
+  clearTimeout(resized)
+  resized = setTimeout(() => {
+    if (key(measureNames()) !== drawn) void draw()
+  }, 100)
+}) : null
+onMounted(() => {
+  if (el.value) observer?.observe(el.value)
+  void draw()
+})
+onBeforeUnmount(() => {
+  observer?.disconnect()
+  clearTimeout(resized)
+})
 watch(() => [props.line, props.first, props.beats, props.barsPerLine, props.clef], () => nextTick(draw))
 </script>
