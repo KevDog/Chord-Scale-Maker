@@ -3,7 +3,7 @@ import { chooseInstrument, chooseSheet, expect, openEditor, pickOption, staves, 
 const firstStaff = (page: import('@playwright/test').Page) => page.locator('.break-inside-avoid').first()
 
 test('writes the sheet for a transposing instrument and remembers it', async ({ page }) => {
-  await page.goto('/song?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn-leaves')
   await chooseSheet(page, 'Scales')
   await expect(firstStaff(page)).toContainText('C–7')
   await chooseInstrument(page, 'Tenor Sax')
@@ -15,7 +15,7 @@ test('writes the sheet for a transposing instrument and remembers it', async ({ 
 })
 
 test('Transpose needs the chart key', async ({ page }) => {
-  await page.goto('/song?chart=autumn_leaves') // has key: Gm
+  await page.goto('/song?chart=autumn-leaves') // has key: Gm
   await expect(page.getByRole('button', { name: /Transpose/ }).first()).toBeEnabled()
   await page.goto('/song?new=1')
   await openEditor(page)
@@ -24,7 +24,7 @@ test('Transpose needs the chart key', async ({ page }) => {
 })
 
 test('bass clef instruments and the start note', async ({ page }) => {
-  await page.goto('/song?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn-leaves')
   await chooseSheet(page, 'Scales') // the start note is the scale sheet's
   await chooseInstrument(page, 'Trombone')
   await pickOption(page, 'Where each scale starts', 'From C')

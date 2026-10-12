@@ -37,7 +37,7 @@ describe('scale levels', () => {
   it('keep a Q5 Whole-Half Standard whose root the analysis respelled at Basic and Advanced (Gbdim7: F# Whole-Half)', () => {
     const at = (level: 'basic' | 'advanced') => scaleAtLevel('Gbdim7', level, 0, '', 'F# Whole-Half Diminished')
     expect([at('basic'), at('advanced')]).toEqual(['F# Whole-Half Diminished', 'F# Whole-Half Diminished'])
-    const tat = parseChart(readFileSync('charts/time_after_time.txt', 'utf8')).value
+    const tat = parseChart(readFileSync('charts/time-after-time.txt', 'utf8')).value
     for (const bar of [26, 28]) {
       const r = analyse(tat).rows.find((x) => `${x.bar} ${x.chord}` === `${bar} Gbdim7`)
       expect(r?.scale, `bar ${bar}`).toBe('F# Whole-Half Diminished')

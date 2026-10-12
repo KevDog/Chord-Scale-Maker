@@ -112,9 +112,9 @@ describe('analysis: dominants (§7.1)', () => {
   })
 
   it('D5 IV7 of a blues is Mixolydian, I7 Mixolydian, both D5 (R2)', () => {
-    const v = verdicts(library('f_blues'))
+    const v = verdicts(library('f-blues'))
     expect([v['1 F7'], v['2 Bb7']]).toEqual(['F Mixolydian (D5)', 'Bb Mixolydian (D5)'])
-    expect(analyse(parseChart(library('f_blues')).value).context).toBe('blues')
+    expect(analyse(parseChart(library('f-blues')).value).context).toBe('blues')
   })
 
   it('D6 a chromatic dominant that goes nowhere is Lydian Dominant (Killer Joe)', () => {
@@ -245,27 +245,27 @@ describe('reasons from the sources (docs/superpowers/specs/2026-10-10-analysis-r
     expect(differs.diagnostics).toEqual([])
     const comment = differs.value.lines.find((l) => l.kind === 'row' && l.chord === 'Edim7')
     expect(comment).toMatchObject({ scale: 'E Diatonic Diminished #IV', comment: expect.stringMatching(/^≠ rules: E Whole-Half Diminished \(passing diminished: .*…\)$/) })
-    for (const name of ['body_and_soul', 'rhythm_changes']) expect(parseChart(library(name)).diagnostics, name).toEqual([])
-    expect(verdict(library('body_and_soul'), '22 Ebdim7')).toBe('Eb Whole-Half Diminished (d1)')
-    expect(verdict(library('rhythm_changes'), '14 Edim7')).toBe('E Whole-Half Diminished (d1)')
+    for (const name of ['body-and-soul', 'rhythm-changes']) expect(parseChart(library(name)).diagnostics, name).toEqual([])
+    expect(verdict(library('body-and-soul'), '22 Ebdim7')).toBe('Eb Whole-Half Diminished (d1)')
+    expect(verdict(library('rhythm-changes'), '14 Edim7')).toBe('E Whole-Half Diminished (d1)')
   })
 
   it('d1 R9: a °7’s scale root is spelled by the project rule, on the concert sheet too (no double accidental, no B♯ E♯ C♭ F♭)', () => {
     const ugly = (n: { letter: number; acc: number }) => Math.abs(n.acc) > 1 || (n.acc === 1 && (n.letter === 2 || n.letter === 6)) || (n.acc === -1 && (n.letter === 0 || n.letter === 3))
     const cases: [string, string, string][] = [
-      ['below_zero', '26 Ebdim7', 'D# Diatonic Diminished'],
+      ['below-zero', '26 Ebdim7', 'D# Diatonic Diminished'],
       ['meditation', '6 Ebdim7', 'D# Diatonic Diminished'],
       ['meditation', '30 Ebdim7', 'D# Diatonic Diminished'],
-      ['slow_boat_to_china', '4 Dbdim7', 'C# Diatonic Diminished'],
-      ['slow_boat_to_china', '20 Dbdim7', 'C# Diatonic Diminished'],
-      ['all_the_things_you_are', '32 Bdim7', 'B Diatonic Diminished'], // ♭III°7 lettered as ♯II°7 (fig. 7.22's pitches)
-      ['baubles_bangles_and_beads', '4 Bdim7', 'B Diatonic Diminished'],
-      ['our_delight', '7 Bdim7', 'B Diatonic Diminished'],
-      ['our_delight', '15 Bdim7', 'B Diatonic Diminished'],
-      ['our_delight', '31 Bdim7', 'B Diatonic Diminished'],
-      ['body_and_soul', '4 Edim7', 'E Diatonic Diminished'],
-      ['body_and_soul', '12 Edim7', 'E Diatonic Diminished'],
-      ['body_and_soul', '28 Edim7', 'E Diatonic Diminished'],
+      ['slow-boat-to-china', '4 Dbdim7', 'C# Diatonic Diminished'],
+      ['slow-boat-to-china', '20 Dbdim7', 'C# Diatonic Diminished'],
+      ['all-the-things-you-are', '32 Bdim7', 'B Diatonic Diminished'], // ♭III°7 lettered as ♯II°7 (fig. 7.22's pitches)
+      ['baubles-bangles-and-beads', '4 Bdim7', 'B Diatonic Diminished'],
+      ['our-delight', '7 Bdim7', 'B Diatonic Diminished'],
+      ['our-delight', '15 Bdim7', 'B Diatonic Diminished'],
+      ['our-delight', '31 Bdim7', 'B Diatonic Diminished'],
+      ['body-and-soul', '4 Edim7', 'E Diatonic Diminished'],
+      ['body-and-soul', '12 Edim7', 'E Diatonic Diminished'],
+      ['body-and-soul', '28 Edim7', 'E Diatonic Diminished'],
     ]
     for (const [name, barChord, want] of cases) {
       const scale = verdict(library(name), barChord)?.replace(/ \(d1\)$/, '') ?? ''
@@ -348,12 +348,12 @@ describe('R1: a IV reached by its own dominant is Ionian (docs/superpowers/specs
   }
 
   it('V7/IV → IV: Ionian, M3 (Stella bars 5–7)', () => {
-    expect(reasoned(library('stella_by_starlight'), '7 EbMaj7')).toBe('Eb Ionian (M3): the Bb7 before it makes Eb the key of the moment: the 4th is in the key')
+    expect(reasoned(library('stella-by-starlight'), '7 EbMaj7')).toBe('Eb Ionian (M3): the Bb7 before it makes Eb the key of the moment: the 4th is in the key')
     expect(reasoned(chart('Bb', '5 Fm7, 6 Bb7, 7 EbMaj7, 8 Ab7, 9 BbMaj7'), '7 EbMaj7')).toBe('Eb Ionian (M3): the Bb7 before it makes Eb the key of the moment: the 4th is in the key')
   })
 
   it('V7/IV → IV: Ionian (Moment’s Notice bars 10–11 and 26–27)', () => {
-    expect([verdict(library('moments_notice'), '11 AbMaj7'), verdict(library('moments_notice'), '27 AbMaj7')]).toEqual(['Ab Ionian (M3)', 'Ab Ionian (M3)'])
+    expect([verdict(library('moments-notice'), '11 AbMaj7'), verdict(library('moments-notice'), '27 AbMaj7')]).toEqual(['Ab Ionian (M3)', 'Ab Ionian (M3)'])
   })
 
   it('subV7/IV → IV: Ionian (E7 is a half step above Eb)', () => {
@@ -361,7 +361,7 @@ describe('R1: a IV reached by its own dominant is Ionian (docs/superpowers/specs
   })
 
   it('a IV not so prepared stays Lydian (All the Things bar 5: DbMaj7 after AbMaj7)', () => {
-    expect(verdict(library('all_the_things_you_are'), '5 DbMaj7')).toBe('Db Lydian (M4)')
+    expect(verdict(library('all-the-things-you-are'), '5 DbMaj7')).toBe('Db Lydian (M4)')
     expect(verdict(chart('C', '1 CMaj7, 2 FMaj7, 3 Dm7, 4 G7, 5 CMaj7'), '2 FMaj7')).toBe('F Lydian (M4)')
   })
 
@@ -378,7 +378,7 @@ describe('R2: the blues I7 and IV7 by D5 before D3 (docs/superpowers/specs/2026-
     const r = analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === barChord)
     return r && `${r.scale} (${r.rule}): ${r.reason}`
   }
-  const fJazzBlues = library('f_jazz_blues')
+  const fJazzBlues = library('f-jazz-blues')
 
   it('I7 of the blues is D5, not an extended dominant (F Jazz Blues bar 1)', () => {
     expect(reasoned(fJazzBlues, '1 F7')).toBe('F Mixolydian (D5): I7 of the blues: a tonic with dominant colour, natural tensions')
@@ -392,17 +392,17 @@ describe('R2: the blues I7 and IV7 by D5 before D3 (docs/superpowers/specs/2026-
     const text = chart('', '1 Eb7, 5 Ab7#11, 7 Eb7, 9 Bb7, 10 Ab7, 11 Eb7, 12 Bb7')
     expect(analyse(parseChart(text).value).context).toBe('blues')
     expect(reasoned(text, '5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D5): IV7 of the blues: a subdominant with dominant colour; #11 from the symbol')
-    expect(reasoned(library('blue_trane'), '5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D5): IV7 of the blues: a subdominant with dominant colour; #11 from the symbol')
+    expect(reasoned(library('blue-trane'), '5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D5): IV7 of the blues: a subdominant with dominant colour; #11 from the symbol')
   })
 
   it('an I7 whose symbol moves it names the symbol’s notes, not natural tensions (Eb7#9)', () => {
-    expect(reasoned(library('blue_trane'), '1 Eb7#9')).toBe('Eb Half-Whole Diminished (D1+D5): I7 of the blues: a tonic with dominant colour, b9, #9 and #11 from the symbol')
+    expect(reasoned(library('blue-trane'), '1 Eb7#9')).toBe('Eb Half-Whole Diminished (D1+D5): I7 of the blues: a tonic with dominant colour, b9, #9 and #11 from the symbol')
   })
 
   it('no I7 row of any library blues is reasoned by D3', () => {
     const files = readdirSync('charts').filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
     const blues = files.map((f) => [f, analyse(parseChart(readFileSync(`charts/${f}`, 'utf8')).value)] as const).filter(([, a]) => a.context === 'blues')
-    expect(blues.map(([f]) => f)).toContain('f_jazz_blues.txt')
+    expect(blues.map(([f]) => f)).toContain('f-jazz-blues.txt')
     const d3 = blues.flatMap(([f, a]) =>
       a.rows.filter((r) => { const c = readChord(r.chord); return c && c.quality === '7' && a.key && pcOf(c.root) === a.key.tonic && r.rule.includes('D3') }).map((r) => `${f} ${r.bar} ${r.chord}`),
     )
@@ -477,7 +477,7 @@ describe('R6: the small bundle (docs/superpowers/specs/2026-10-10-analysis-rules
   }
 
   it('m2 a tonic minor sixth chord is Melodic Minor (A Night in Tunisia)', () => {
-    expect(reasoned(library('a_night_in_tunisia'), '2 Dm6/9')).toBe('D Melodic Minor (m2): tonic minor sixth chord: melodic minor, the raised 7th is a tension')
+    expect(reasoned(library('a-night-in-tunisia'), '2 Dm6/9')).toBe('D Melodic Minor (m2): tonic minor sixth chord: melodic minor, the raised 7th is a tension')
     expect(reasoned(chart('Dm', '1 Eb7, 2 Dm6/9'), '2 Dm6/9')).toBe('D Melodic Minor (m2): tonic minor sixth chord: melodic minor, the raised 7th is a tension')
   })
 
@@ -520,22 +520,22 @@ describe('analysis: keys (§5)', () => {
   })
 
   it('scores the key when the chart doesn’t say (Autumn Leaves: G minor)', () => {
-    const a = analyse(parseChart(library('autumn_leaves').replace(/^key:.*\n/m, '')).value)
+    const a = analyse(parseChart(library('autumn-leaves').replace(/^key:.*\n/m, '')).value)
     expect([a.key?.name, a.keyFrom]).toEqual(['G minor', 'scored'])
   })
 
   it('opens key areas from cadences, and the top of the form takes the turnaround’s key (Giant Steps)', () => {
-    const a = analyse(parseChart(library('giant_steps')).value)
+    const a = analyse(parseChart(library('giant-steps')).value)
     expect(new Set(a.areas.map((x) => x.key.name))).toEqual(new Set(['Eb major', 'G major', 'B major']))
-    expect(verdict(library('giant_steps'), '1 BMaj7')).toBe('B Ionian (M3)')
+    expect(verdict(library('giant-steps'), '1 BMaj7')).toBe('B Ionian (M3)')
   })
 
   it('a minor ii of the next ii–V opens no area (Bird Blues: G7 | Cm7 F7 is V7/V)', () => {
-    expect(verdict(library('f_bird_blues'), '3 G7')).toBe('G Mixolydian (D4)')
+    expect(verdict(library('f-bird-blues'), '3 G7')).toBe('G Mixolydian (D4)')
   })
 
   it('a cadence into the home tonic comes home (Long Ago and Far Away: C7 | FMaj7 after a bridge in C)', () => {
-    expect(verdict(library('long_ago_and_far_away'), '17 FMaj7')).toBe('F Ionian (M3)')
+    expect(verdict(library('long-ago-and-far-away'), '17 FMaj7')).toBe('F Ionian (M3)')
   })
 
   it('a section that starts on the home tonic is home again (Nardis: the last A after a bridge in C)', () => {
@@ -544,19 +544,19 @@ describe('analysis: keys (§5)', () => {
   })
 
   it('in a minor key, a ii–V–I into a major chord opens its key (Bernie’s Tune’s bridge is in Bb)', () => {
-    expect(verdict(library('bernies_tune'), '19 G7')).toBe('G Mixolydian b6 (D4)') // V7/ii in Bb
-    expect(verdict(library('autumn_leaves'), '24 EbMaj7')).toBe('Eb Lydian (M4)') // a tritone cadence doesn't
+    expect(verdict(library('bernies-tune'), '19 G7')).toBe('G Mixolydian b6 (D4)') // V7/ii in Bb
+    expect(verdict(library('autumn-leaves'), '24 EbMaj7')).toBe('Eb Lydian (M4)') // a tritone cadence doesn't
   })
 
   it('in a major area, a ii–V that doesn’t land but implies a chord of home brings home back (Lady Bird bars 11–12)', () => {
-    const rows = analyse(parseChart(library('lady_bird')).value).rows
+    const rows = analyse(parseChart(library('lady-bird')).value).rows
     expect(rows.filter((r) => r.bar === '11' || r.bar === '12').map((r) => `${r.numeral} ${r.key.name}`)).toEqual(['vi7 C major', 'V7/V C major'])
-    expect(verdict(library('whisper_not'), '19 Gm')).toMatch(/^G Dorian/) // a minor area keeps its own reading, not v Phrygian
+    expect(verdict(library('whisper-not'), '19 Gm')).toMatch(/^G Dorian/) // a minor area keeps its own reading, not v Phrygian
   })
 
   it('finds modal tunes', () => {
-    for (const name of ['so_what', 'maiden_voyage', 'footprints']) expect(analyse(parseChart(library(name)).value).context, name).toBe('modal')
-    expect(analyse(parseChart(library('stella_by_starlight')).value).context).toBe('functional')
+    for (const name of ['so-what', 'maiden-voyage', 'footprints']) expect(analyse(parseChart(library(name)).value).context, name).toBe('modal')
+    expect(analyse(parseChart(library('stella-by-starlight')).value).context).toBe('functional')
   })
 })
 
@@ -579,11 +579,11 @@ describe('analysis: numerals', () => {
     analyse(parseChart(library(name)).value).rows.filter((r) => bars.includes(r.bar)).map((r) => `${r.chord} ${r.numeral}`)
 
   it('name each chord’s degree and quality in its key area, and what a dominant or a ii leads to', () => {
-    expect(numerals('rhythm_changes', ['1', '2', '17', '19', '21', '23'])).toEqual(['Bb6 I6', 'G7b9 V7/ii', 'Cm7 ii7', 'F7 V7', 'D7 →', 'G7 →', 'C7 V7/V', 'F7 V7'])
-    expect(numerals('stella_by_starlight', ['1', '2', '12', '13', '29', '30'])).toEqual([
+    expect(numerals('rhythm-changes', ['1', '2', '17', '19', '21', '23'])).toEqual(['Bb6 I6', 'G7b9 V7/ii', 'Cm7 ii7', 'F7 V7', 'D7 →', 'G7 →', 'C7 V7/V', 'F7 V7'])
+    expect(numerals('stella-by-starlight', ['1', '2', '12', '13', '29', '30'])).toEqual([
       'Em7b5 iiø7/iii', 'A7b9 V7/iii', 'Bbm7 iv7/V', 'Eb7 ♭VII7/V', 'FMaj7 Vmaj7', 'Cm7b5 iiø7', 'F7b9 V7',
     ])
-    expect(numerals('autumn_leaves', ['1', '2', '5', '6', '7', '23', '24'])).toEqual([
+    expect(numerals('autumn-leaves', ['1', '2', '5', '6', '7', '23', '24'])).toEqual([
       'Cm7 ii7/♭III', 'F7 V7/♭III', 'Am7b5 iiø7', 'D7 V7', 'Gm i', 'Bm7 ii7/II', 'E7 subV7/♭VI', 'EbMaj7 ♭VImaj7',
     ])
   })
@@ -748,7 +748,7 @@ describe('refreshAnalysis', () => {
   const moved = (text: string, from: string, to: string): ChartDoc => setMeta(transposeChart(parseChart(text).value, from, to).doc, 'key', to)
 
   it('rewrites a transposed chart’s analysis for its new key, keeping the header’s date', () => {
-    const doc = refreshAnalysis(moved(library('round_midnight'), 'Ebm', 'Cm'))
+    const doc = refreshAnalysis(moved(library('round-midnight'), 'Ebm', 'Cm'))
     const text = comments(doc)
     expect(text).toContain('# analysis: 2026-10-11, rules v1; C minor')
     expect(text).toContain('# area: C minor (bars 1–3)')

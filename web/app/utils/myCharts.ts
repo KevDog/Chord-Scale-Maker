@@ -94,6 +94,27 @@ export function migrateDraft(starter: string, now = Date.now()): void {
   removeStored('csm-draft')
 }
 
+/** a library chart's practice picks and scale level, saved under its name (never `mine:<id>`): csm-practice:<name>:<mode>, csm-level:<name> */
+const OLD_NAME_KEY = /^(csm-practice:|csm-level:)(?!mine:)([a-z0-9]+(?:_[a-z0-9]+)+)(:[a-z]+)?$/
+
+/**
+ * Chart files were renamed from round_midnight.txt to round-midnight.txt (2026-10): move what this browser saved under
+ * the old names. A key that can't be written stays where it was, to try again on the next visit.
+ */
+export function migrateChartNames(): void {
+  for (const key of storedKeys()) {
+    const m = OLD_NAME_KEY.exec(key)
+    const value = m ? readStored(key) : null
+    if (!m || value === null) continue
+    const to = `${m[1]}${m[2]!.replaceAll('_', '-')}${m[3] ?? ''}`
+    if (readStored(to) === null && !tryWriteStored(to, value)) continue
+    removeStored(key)
+  }
+  const index = readIndex()
+  if (index.some((c) => c.basedOn?.includes('_')))
+    tryWriteStored(INDEX, JSON.stringify(index.map((c) => (c.basedOn?.includes('_') ? { ...c, basedOn: c.basedOn.replaceAll('_', '-') } : c))))
+}
+
 /** a download's file name: the title, safe on every system */
 export function filenameFor(title: string): string {
   const safe = title

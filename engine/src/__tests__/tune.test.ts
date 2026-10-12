@@ -12,7 +12,7 @@ const charts = readdirSync('charts').filter((f) => f.endsWith('.txt') && !isSync
 
 describe('tuneSummary', () => {
   it('gives the heading fields as written', () => {
-    const t = tuneSummary(read('blue_trane.txt'))
+    const t = tuneSummary(read('blue-trane.txt'))
     expect(t).toMatchObject({
       title: 'Blue Trane',
       subtitle: 'Medium blues',
@@ -28,7 +28,7 @@ describe('tuneSummary', () => {
   })
 
   it('gives one row per chord, as the Changes sheet draws it in concert pitch', () => {
-    const text = read('blue_trane.txt')
+    const text = read('blue-trane.txt')
     const chords = buildChanges(parseChart(text).value, CONCERT).lines.flatMap((l) => l.bars.flatMap((b) => b.chords))
     const t = tuneSummary(text)
     expect(t.rows[0]).toEqual({ section: 'A', bar: '1', chord: 'Eb7#9', numeral: chords[0]?.numeral, scale: chords[0]?.scale })
@@ -55,7 +55,7 @@ describe('tuneSummary', () => {
 
 describe('tuneDescription', () => {
   it('names the tune, its other title, its composer and its key', () => {
-    expect(tuneDescription(tuneSummary(read('blue_trane.txt')))).toBe(
+    expect(tuneDescription(tuneSummary(read('blue-trane.txt')))).toBe(
       'Chord-scale practice sheets for Blue Trane (also Blue Train) by John Coltrane in E♭: the changes as a study lead sheet with guide tones.',
     )
   })

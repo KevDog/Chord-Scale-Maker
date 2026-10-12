@@ -46,12 +46,12 @@
 
 <script setup lang="ts">
 import { tuneDescription, tuneSummary } from '@chord-scale-maker/engine'
-import { findTune } from '~/utils/library'
+import { findChart } from '~/utils/library'
 import { seoMeta, tunePath, tuneTitle } from '~/utils/site'
 import { breadcrumbLd, jsonLd, tuneLd } from '~/utils/structuredData'
 
 const route = useRoute()
-const found = findTune(String(route.params.slug))
+const found = findChart(String(route.params.slug))
 if (!found) throw createError({ statusCode: 404, statusMessage: 'Tune not found', fatal: true })
 const chart = found
 const summary = tuneSummary(chart.text)
