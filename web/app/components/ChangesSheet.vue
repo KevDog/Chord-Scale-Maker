@@ -3,10 +3,11 @@
     <ul v-if="sheet.diagnostics.length" class="space-y-1 text-sm text-amber-700 print:hidden dark:text-amber-400">
       <li v-for="d in sheet.diagnostics" :key="d">{{ d }}</li>
     </ul>
-    <SheetPages :title="title" :composer="composer" :pages="pages" compact>
+    <SheetPages :title="title" :composer="composer" :pages="pages" :heading-level="headingLevel" compact>
+      <template v-if="$slots.status" #status><slot name="status" /></template>
       <!-- the sheet as the editor: the heading edited where it prints -->
       <template v-if="editing !== undefined" #heading>
-        <SheetHeading :doc="doc" @update:doc="emit('update:doc', $event)" />
+        <SheetHeading :doc="doc" :level="headingLevel" @update:doc="emit('update:doc', $event)" />
       </template>
       <template #default="{ page }">
         <div :class="['space-y-4', signatures || lineOn ? 'print:space-y-0' : 'print:space-y-1']">
@@ -60,6 +61,7 @@ const props = defineProps<{
   title: string
   subtitle: string
   composer?: string
+  headingLevel?: 1 | 2 // the title as the page's h1 (SheetPages)
   part: Part
   instrumentLabel: string // '' for concert
   numerals: boolean

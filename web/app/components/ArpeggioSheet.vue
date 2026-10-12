@@ -1,5 +1,6 @@
 <template>
-  <SheetPages :title="title" :composer="composer" :pages="pages">
+  <SheetPages :title="title" :composer="composer" :pages="pages" :heading-level="headingLevel">
+    <template v-if="$slots.status" #status><slot name="status" /></template>
     <template #default="{ page }">
       <div class="space-y-1 print:space-y-2">
         <ArpeggioStaff v-for="s in page.staves" :key="s.id" :staff="s" :clef="part.clef" :intervals="intervals" />
@@ -16,6 +17,7 @@ const props = defineProps<{
   title: string
   subtitle: string
   composer?: string
+  headingLevel?: 1 | 2 // the title as the page's h1 (SheetPages)
   part: Part
   instrumentLabel: string
   perPage: number
