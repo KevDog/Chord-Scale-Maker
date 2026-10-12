@@ -20,6 +20,9 @@ const TUNE_ROUTES = readdirSync(join(ENGINE_DIR, 'charts'))
   .filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
   .map((f) => tunePath(f.replace(/\.txt$/, '')))
 
+/** the pages search engines should find (server/routes/sitemap.xml.ts); never /song (noindex) or /ui */
+const SITEMAP_PATHS = ['/', '/help', '/functions', '/about', '/contact', '/privacy', ...TUNE_ROUTES]
+
 /** dev: the engine's charts/ and chord_scales.json sit outside Vite's root, so it doesn't watch them by itself
  *  (quotes.json is watched by its own plugin) */
 const watchRepoData = (): Plugin => ({
@@ -99,7 +102,8 @@ export default defineNuxtConfig({
   routeRules: { '/**': { headers: SECURITY_HEADERS }, '/_nuxt/**': { headers: SECURITY_HEADERS } },
   nitro: {
     // every page is prerendered and served as a static file; only /api/contact (and unknown URLs) run on the server
-    prerender: { routes: ['/', '/song', '/help', '/functions', '/about', '/contact', '/privacy', ...TUNE_ROUTES] },
+    prerender: { routes: [...SITEMAP_PATHS, '/song', '/sitemap.xml'] },
+    virtual: { '#sitemap-paths': `export default ${JSON.stringify(SITEMAP_PATHS)}` },
     hooks: {
       // hash each page's inline scripts into a CSP <meta> (build/csp.ts)
       'prerender:generate'(route) {
