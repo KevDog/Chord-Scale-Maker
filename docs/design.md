@@ -326,8 +326,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   chord's root and canonical quality; first-appearance order). An HTML label column on the left holds the scale name
   and, under it, the chord symbols the line covers (`Cm7 · Cm9`); the VexFlow SVG stave is on the right. HTML labels
   give better typography and accessibility than VexFlow text.
-- **Stave:** one stave with a clef, no time signature, and whole notes. Every altered note gets an explicit
-  accidental (as LilyPond's `\accidentalStyle forget` did for the old CLI). Each staff ends with a double bar
+- **Stave:** one stave with a clef, no time signature, and whole notes. Accidentals follow the bar rule (`accidentalsInBar`):
+  one shows only where a note differs from what is in force (the key signature, if any, or an earlier note on the
+  same letter and octave), and a natural cancels an earlier one. Each staff ends with a double bar
   line, the last with a final one.
 - **One spelling at a time,** from one picker ("Where each scale starts"): "From key (X)", the default, where every
   scale starts on the chart's `key:` tonic written for the part (`keyStart`; a minor key's own tonic; C with no key),

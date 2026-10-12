@@ -145,6 +145,13 @@ describe('sheet', () => {
     const [b] = buildSheet(rows, CONCERT, 'root', 'C', 12).flatMap((p) => p.pages.flat())
     expect([a?.keySig, a?.accidentals]).toEqual([null, b?.accidentals])
   })
+  it('without a key, follows the bar rule: a natural cancels an earlier flat in the octave', () => {
+    const spelled = (s: StaffModel | undefined) => s?.notes.map((n, i) => (s.accidentals[i] ?? '') + 'CDEFGAB'[n.letter])
+    const [bebop] = buildSheet([row('C7', 'C Bebop Dominant')], CONCERT, 'root', 'C', 12).flatMap((p) => p.pages.flat())
+    expect(spelled(bebop)).toEqual(['C', 'D', 'E', 'F', 'G', 'A', 'bB', 'nB'])
+    const [locrian] = buildSheet([row('Cm7b5', 'C Locrian')], CONCERT, 'root', 'C', 12).flatMap((p) => p.pages.flat())
+    expect(spelled(locrian)).toEqual(['C', 'bD', 'bE', 'F', 'bG', 'bA', 'bB'])
+  })
   it('writes the signature for a transposing part', () => {
     const rows = [row('EbMaj7', 'Eb Ionian')]
     const [staff] = buildSheet(rows, { clef: 'treble', trans: 'Bb' }, 'root', 'C', 12, null, parseKey('Eb')).flatMap((p) => p.pages.flat())
