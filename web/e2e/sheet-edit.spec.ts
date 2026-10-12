@@ -152,3 +152,19 @@ test('the toolbar’s menu sets a jump and starts a new section at a bar', async
   await split.getByRole('button', { name: 'Start section' }).click()
   await expect.poll(() => plain(page)).toMatch(/A \| 1 \| Dm7\nB \| 2 \| G7/)
 })
+
+test('the heading is edited where it prints, and nothing of the editor prints', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  const sheet = page.getByRole('region', { name: 'Preview' }) // the grid's heading fields have the same names
+  const title = sheet.getByRole('textbox', { name: 'Title', exact: true })
+  await title.fill('My Tune')
+  await expect.poll(() => plain(page)).toMatch(/^title: My Tune/)
+  await expect(page.getByRole('heading', { name: 'My Tune' })).toBeVisible() // the page's heading follows
+  await sheet.getByRole('combobox', { name: 'Key', exact: true }).selectOption('Em')
+  await expect.poll(() => plain(page)).toMatch(/^key: Em$/m)
+  await page.emulateMedia({ media: 'print' })
+  await expect(title).toBeHidden()
+  await expect(page.getByText('Editing the sheet')).toBeHidden()
+  await expect(page.getByRole('toolbar')).toHaveCount(0)
+  await expect(page.getByRole('button', { name: 'Add a bar at the end of A' })).toBeHidden()
+})

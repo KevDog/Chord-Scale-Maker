@@ -4,6 +4,10 @@
       <li v-for="d in sheet.diagnostics" :key="d">{{ d }}</li>
     </ul>
     <SheetPages :title="title" :composer="composer" :pages="pages" compact>
+      <!-- the sheet as the editor: the heading edited where it prints -->
+      <template v-if="editing !== undefined" #heading>
+        <SheetHeading :doc="doc" @update:doc="emit('update:doc', $event)" />
+      </template>
       <template #default="{ page }">
         <div :class="['space-y-4', signatures || guideOn ? 'print:space-y-0' : 'print:space-y-1']">
           <ChangesSystem
