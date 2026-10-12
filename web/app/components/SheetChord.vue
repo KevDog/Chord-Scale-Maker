@@ -1,6 +1,7 @@
 <template>
   <div v-if="!isEditing" class="text-base font-semibold print:text-sm/4">
     <button
+      ref="button"
       type="button"
       :aria-label="label"
       :class="[
@@ -88,6 +89,7 @@ const emit = defineEmits<{
 
 const id = useId()
 const input = ref<HTMLInputElement | null>(null)
+const button = ref<HTMLButtonElement | null>(null)
 const scaleView = inject(SCALE_VIEW, shallowRef(DEFAULT_VIEW))
 const isEditing = computed(() => {
   const e = props.editing
@@ -129,7 +131,14 @@ function open(): void {
     input.value?.select()
   })
 }
-watch(isEditing, (on) => on && open())
+/** the field closed by a key: when the editor finds nowhere to go (the chart's last chord), focus comes back to the button */
+let focusBack = false
+watch(isEditing, (on) => {
+  if (on) return open()
+  if (!focusBack) return
+  focusBack = false
+  nextTick(() => button.value?.focus())
+})
 onMounted(() => isEditing.value && open())
 watch(draft, () => {
   refused.value = ''
@@ -183,6 +192,7 @@ function commit(text = draft.value): boolean {
 }
 function finish(then: 'stay' | 'next' | 'prev' | 'add' | 'cancel'): void {
   settled = true
+  focusBack = document.activeElement === input.value
   emit('preview', null)
   emit('done', then)
 }

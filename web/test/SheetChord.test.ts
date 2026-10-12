@@ -97,6 +97,15 @@ describe('SheetChord', () => {
     }
   })
 
+  it('gives focus back to the chord’s button when the field closes by key with nowhere to go (Review Focus 2)', async () => {
+    const w = await mount({ kind: 'chord', line: 3 })
+    await settle()
+    await field(w).trigger('keydown', { key: 'Tab' })
+    await w.setProps({ editing: null }) // the editor had no next bar
+    await settle()
+    expect(document.activeElement).toBe(w.find('button').element)
+  })
+
   it('cancels on Escape without writing', async () => {
     const w = await mount({ kind: 'chord', line: 3 })
     await type(w, 'Db7')
