@@ -56,8 +56,6 @@ export const seoMeta = (head: PageHead) => ({
   ...(head.robots ? { robots: head.robots } : {}),
 })
 
-/** a chart's tune page: its file name (round-midnight.txt -> /tunes/round-midnight) */
-export const tunePath = (slug: string): string => `/tunes/${slug}`
 
 /** a library chart's practice sheets (round-midnight.txt -> /song/round-midnight) */
 export const songPath = (slug: string): string => `/song/${slug}`

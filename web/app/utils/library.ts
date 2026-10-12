@@ -1,5 +1,4 @@
 import { chartAka, chartHeading, isSyncCopy, parseChart } from '@chord-scale-maker/engine'
-import { tunePath } from './site'
 
 /** subtitle: the heading line (subtitle or style, key, form), as on the sheet; aka: the tune's other titles */
 export type LibraryChart = Readonly<{ slug: string; title: string; subtitle: string; composer: string; aka: readonly string[]; text: string }>
@@ -18,9 +17,6 @@ export function toLibrary(entries: Readonly<Record<string, string>>): LibraryCha
 }
 
 export const LIBRARY: readonly LibraryChart[] = toLibrary(files)
-
-/** every library chart's tune page; nuxt.config.ts derives the same list for prerendering and the sitemap (test/library.test.ts) */
-export const TUNE_PATHS: readonly string[] = LIBRARY.map((c) => tunePath(c.slug))
 
 /** by title, other title or composer, case- and accent-insensitive */
 const fold = (s: string): string => s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()

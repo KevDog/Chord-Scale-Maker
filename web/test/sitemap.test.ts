@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { canonicalUrl } from '~/utils/site'
-import { chartSlugsOf, sitemapPaths, sitemapXml, tunePathsOf } from '~/utils/sitemap'
+import { chartSlugsOf, sitemapPaths, sitemapXml } from '~/utils/sitemap'
 
 describe('sitemapXml', () => {
   it('is an XML urlset in the sitemap namespace', () => {
@@ -11,8 +11,8 @@ describe('sitemapXml', () => {
   })
 
   it('lists each path once, at its canonical URL', () => {
-    const locs = [...sitemapXml(['/', '/help', '/tunes/blue-trane', '/help']).matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1])
-    expect(locs).toEqual(['/', '/help', '/tunes/blue-trane'].map(canonicalUrl))
+    const locs = [...sitemapXml(['/', '/help', '/song/blue-trane', '/help']).matchAll(/<loc>(.*?)<\/loc>/g)].map((m) => m[1])
+    expect(locs).toEqual(['/', '/help', '/song/blue-trane'].map(canonicalUrl))
   })
 
   it('escapes & and <', () => {
@@ -22,15 +22,11 @@ describe('sitemapXml', () => {
 })
 
 describe('sitemap paths', () => {
-  it('maps chart files to tune paths, skipping other files and sync copies', () => {
-    expect(tunePathsOf(['blue-trane.txt', 'README.md', 'so-what 2.txt'])).toEqual(['/tunes/blue-trane'])
-  })
-
   it('lists the chart files’ names, skipping other files and sync copies', () => {
     expect(chartSlugsOf(['blue-trane.txt', 'README.md', 'so-what 2.txt'])).toEqual(['blue-trane'])
   })
 
-  it('lists the site pages, then the tunes', () => {
-    expect(sitemapPaths(['/tunes/a'])).toEqual(['/', '/help', '/functions', '/about', '/contact', '/privacy', '/tunes/a'])
+  it('lists the site pages, then the songs', () => {
+    expect(sitemapPaths(['/song/a'])).toEqual(['/', '/help', '/functions', '/about', '/contact', '/privacy', '/song/a'])
   })
 })
