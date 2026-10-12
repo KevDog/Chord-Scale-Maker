@@ -1,5 +1,4 @@
 <template>
-  <!-- a chord on the Changes sheet while the editor is shown: a button, or the field it opens into, in place -->
   <div v-if="!isEditing" class="text-base font-semibold print:text-sm/4">
     <button
       type="button"
@@ -9,7 +8,7 @@
         selected && 'ring-2 ring-note-600 dark:ring-note-400',
         unknown && 'underline decoration-amber-500 decoration-2 underline-offset-4',
       ]"
-      @click="emit('edit', slot ? { kind: 'slot', section, bar } : { kind: 'chord', line })"
+      @click="emit('edit', adding ? { kind: 'slot', section, bar } : { kind: 'chord', line })"
     >
       <UiTouchTarget><ChordSymbol v-if="tokens" :tokens="tokens" /><span v-else>{{ text }}</span></UiTouchTarget>
     </button>
@@ -56,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { barView, cellError, type ChartDoc, chordCompletions, chordPreview, type ChordPreview, chordsAfterTyping, type ChordToken, chordTokens, CONCERT, type GridPos, posOfLine, setBarChords } from '@chord-scale-maker/engine'
+import { barView, cellError, type ChartDoc, chordCompletions, chordPreview, type ChordPreview, chordsAfterTyping, type ChordToken, chordTokens, CONCERT, type GridPos, posOfLine, setBarChords, sheetScale } from '@chord-scale-maker/engine'
 import type { SheetEdit } from '~/utils/sheetChordEdit'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 
@@ -64,7 +63,7 @@ import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
  * A chord on the Changes sheet while the editor is shown (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md
  * §1.1–1.2): a button ("Edit G7, A bar 2"), or, when `editing` names it, a field in its place with completions that
  * read each candidate in this bar. Enter and Tab commit (Tab then asks to move), Space commits and asks for a new chord
- * slot, Esc cancels, blank takes the chord out, % is the bar before. A slot instance (`slot`) is the new chord after
+ * slot, Esc cancels, blank takes the chord out, % is the bar before. A slot instance (`adding`) is the new chord after
  * the bar's: it opens empty and commits as an added chord. The doc is written once, on commit.
  */
 const props = defineProps<{
@@ -77,7 +76,7 @@ const props = defineProps<{
   label: string
   editing: SheetEdit | null
   selected: boolean
-  slot?: boolean
+  adding?: boolean // the new chord slot after the bar's chords, not a chord that exists
 }>()
 const emit = defineEmits<{
   edit: [edit: SheetEdit]
@@ -93,14 +92,14 @@ const scaleView = inject(SCALE_VIEW, shallowRef(DEFAULT_VIEW))
 const isEditing = computed(() => {
   const e = props.editing
   if (!e) return false
-  return props.slot ? e.kind === 'slot' && e.section === props.section && e.bar === props.bar : e.kind === 'chord' && e.line === props.line
+  return props.adding ? e.kind === 'slot' && e.section === props.section && e.bar === props.bar : e.kind === 'chord' && e.line === props.line
 })
-const unknown = computed(() => !props.slot && !!props.text && !scaleChoices(props.text).known)
+const unknown = computed(() => !props.adding && !!props.text && !scaleChoices(props.text).known)
 
 const view = computed(() => barView(props.doc))
 /** the chord's place on the grid; a slot's is after the bar's last chord (insert) */
 const pos = computed((): GridPos | null => {
-  if (props.slot) {
+  if (props.adding) {
     const bars = view.value.sections.find((s) => s.name === props.section)?.bars
     const b = bars?.find((x) => String(x.bar) === props.bar)
     return b ? { section: props.section, bar: b.bar, chord: b.chords.length } : null
@@ -108,7 +107,7 @@ const pos = computed((): GridPos | null => {
   return posOfLine(view.value, props.line)
 })
 /** the bar's chords as they are */
-const barChords = computed((): string[] => (pos.value ? chordsAfterTyping(view.value, pos.value, props.slot ? '' : props.text, false) : []))
+const barChords = computed((): string[] => (pos.value ? chordsAfterTyping(view.value, pos.value, props.adding ? '' : props.text, false) : []))
 /** the section a repeat's chord is written in (the drawn section differs): changing it changes that section */
 const repeatOf = computed(() => {
   const l = props.doc.lines[props.line]
@@ -121,7 +120,7 @@ const active = ref(0)
 let settled = false // the field closed by a key, so blur writes nothing twice
 /** the field opens on the chord as it is, selected, so typing replaces it */
 function open(): void {
-  draft.value = props.slot ? '' : props.text
+  draft.value = props.adding ? '' : props.text
   refused.value = ''
   active.value = 0
   settled = false
@@ -144,7 +143,7 @@ const error = computed(() => {
 })
 
 /** the bar's chords once `text` is written at pos (a slot inserts, a chord replaces) */
-const chordsWith = (text: string): string[] => (pos.value ? chordsAfterTyping(view.value, pos.value, text, !!props.slot) : [])
+const chordsWith = (text: string): string[] => (pos.value ? chordsAfterTyping(view.value, pos.value, text, !!props.adding) : [])
 const previewOf = (text: string): ChordPreview | null => {
   const p = pos.value
   const t = text.trim()
@@ -153,7 +152,8 @@ const previewOf = (text: string): ChordPreview | null => {
   const index = t === '%' ? Math.max(0, chords.length - 1) : Math.min(p.chord, chords.length - 1)
   return chordPreview(props.doc, p.section, p.bar, chords, index, scaleView.value)
 }
-const readingOf = (p: ChordPreview | null): string => (p?.readable ? [p.numeral, p.scale].filter(Boolean).join(' → ') : '')
+/** "V7 → G H/W Dim.": the candidate's reading, its scale written as the sheet labels it (concert while editing, D2) */
+const readingOf = (p: ChordPreview | null): string => (p?.readable ? [p.numeral, sheetScale(CONCERT, p.scale)].filter(Boolean).join(' → ') : '')
 function tokensOf(text: string): readonly ChordToken[] | null {
   try {
     return chordTokens(CONCERT, text) // the sheet edits in concert pitch (D2)

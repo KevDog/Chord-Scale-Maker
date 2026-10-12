@@ -9,14 +9,33 @@
             <span v-if="m.marker" class="rounded-sm border border-zinc-400 px-1 font-semibold text-zinc-700 dark:border-zinc-500 dark:text-zinc-300 print:border-neutral-600 print:text-black">{{ m.marker }}</span>
             <span v-if="m.keyArea" class="text-note-800 italic dark:text-note-300 print:text-neutral-700">{{ m.keyArea }}</span>
           </div>
-          <div class="text-base font-semibold print:text-sm/4">
+          <!-- the sheet as the editor (leadSheetEditor): each chord a SheetChord, a button or the field in its place -->
+          <SheetChord
+            v-if="editing !== undefined && doc && m.line >= 0"
+            :doc="doc"
+            :line="m.line"
+            :section="m.row.section"
+            :bar="m.row.bar"
+            :text="m.text"
+            :tokens="m.tokens"
+            :label="editLabel(m)"
+            :editing="editing"
+            :adding="m.slot"
+            :selected="m.line === selectedLine"
+            @edit="emit('edit', $event)"
+            @update:doc="emit('update:doc', $event)"
+            @said="emit('said', $event)"
+            @preview="emit('preview', $event)"
+            @done="emit('done', $event)"
+          />
+          <div v-else class="text-base font-semibold print:text-sm/4">
             <!-- the chord as a button while editing: it opens the chord editor (EditorView) -->
             <button
               v-if="editable && m.line >= 0"
               type="button"
               :aria-label="editLabel(m)"
               :class="['relative -mx-1 cursor-pointer rounded px-1 hover:bg-note-100 focus-visible:outline-2 focus-visible:outline-blue-500 dark:hover:bg-white/10', m.line === selectedLine && 'ring-2 ring-note-600 max-md:ring-0 dark:ring-note-400']"
-              @click="emit('edit', { line: m.line, section: m.row.section, bar: m.row.bar, anchor: ($event.currentTarget as HTMLElement).getBoundingClientRect() })"
+              @click="emit('tap', { line: m.line, section: m.row.section, bar: m.row.bar, anchor: ($event.currentTarget as HTMLElement).getBoundingClientRect() })"
             >
               <UiTouchTarget><ChordSymbol v-if="m.tokens" :tokens="m.tokens" /><span v-else>{{ m.text }}</span></UiTouchTarget>
             </button>
@@ -41,11 +60,14 @@
       <span
         v-for="m in marks"
         :key="`n${m.key}`"
-        :class="['absolute text-sm font-medium text-zinc-800 dark:text-zinc-200 print:text-xs/3.5 print:text-black', !(notesOn && m.reason) && 'truncate']"
+        data-slot="numeral"
+        :data-draft="drafted(m) ? '' : undefined"
+        :class="['absolute text-sm font-medium print:text-xs/3.5 print:text-black', drafted(m) ? 'text-zinc-500 italic dark:text-zinc-400' : 'text-zinc-800 dark:text-zinc-200', !(notesOn && m.reason) && 'truncate']"
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
         :title="notesOn && m.reason ? undefined : m.numeral"
       >
-        <ChangesNote v-if="notesOn && m.reason && m.numeral" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row">{{ m.numeral }}</ChangesNote>
+        <template v-if="drafted(m)">{{ preview?.readable ? preview.numeral : '' }}</template>
+        <ChangesNote v-else-if="notesOn && m.reason && m.numeral" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row">{{ m.numeral }}</ChangesNote>
         <template v-else>{{ m.numeral }}</template>
       </span>
     </div>
@@ -53,10 +75,13 @@
       <span
         v-for="m in marks"
         :key="`s${m.key}`"
-        class="absolute pr-1 text-[0.7rem]/3.5 text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700"
+        data-slot="scale"
+        :data-draft="drafted(m) ? '' : undefined"
+        :class="['absolute pr-1 text-[0.7rem]/3.5 print:text-[0.6rem]/3 print:text-neutral-700', drafted(m) ? 'text-zinc-500 italic dark:text-zinc-400' : 'text-zinc-600 dark:text-zinc-400']"
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
-        <ChangesNote v-if="notesOn && m.reason && m.scale" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row" wrap>{{ m.scale }}</ChangesNote>
+        <template v-if="drafted(m)">{{ preview?.readable ? sheetScale(CONCERT, preview.scale) : '' }}</template>
+        <ChangesNote v-else-if="notesOn && m.reason && m.scale" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row" wrap>{{ m.scale }}</ChangesNote>
         <template v-else>{{ m.scale }}</template>
       </span>
     </div>
@@ -65,11 +90,15 @@
 </template>
 
 <script setup lang="ts">
-import type { ChangesLine } from '@chord-scale-maker/engine'
+import { type ChangesLine, type ChartDoc, type ChordPreview, CONCERT, sheetScale } from '@chord-scale-maker/engine'
 import { drawChangesLine } from '~/utils/changesDrawing'
-import type { SheetChordEdit } from '~/utils/sheetChordEdit'
+import type { SheetChordEdit, SheetEdit } from '~/utils/sheetChordEdit'
 
-/** one line of the Changes sheet: slashes (or guide tones), the chords over them, guide tone labels and the analysis under them */
+/**
+ * one line of the Changes sheet: slashes (or guide tones), the chords over them, guide tone labels and the analysis
+ * under them. With `editing` given (the lead-sheet editor, docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md)
+ * each chord is a SheetChord: a button, or the field in its place, with the draft's reading under it.
+ */
 const props = defineProps<{
   line: ChangesLine
   first: boolean // gets the time signature
@@ -80,8 +109,18 @@ const props = defineProps<{
   clef?: 'treble' | 'bass' // with key signatures or a guide tone on: the part's clef, drawn (with any signature) on the first line only
   editable?: boolean // each chord a button that asks to edit it
   selectedLine?: number | null // the chart line of the chord selected in the bar editor, outlined
+  doc?: ChartDoc // the chart, for the sheet editor's field
+  editing?: SheetEdit | null // the sheet is the editor: what it's editing (null: nothing yet); undefined: the chord editor dialog instead
+  preview?: ChordPreview | null // the reading of the draft in the open field, shown under its chord
 }>()
-const emit = defineEmits<{ edit: [chord: SheetChordEdit] }>()
+const emit = defineEmits<{
+  tap: [chord: SheetChordEdit] // a chord tapped, for the chord editor dialog
+  edit: [edit: SheetEdit]
+  'update:doc': [doc: ChartDoc]
+  said: [text: string]
+  preview: [preview: ChordPreview | null]
+  done: [then: 'stay' | 'next' | 'prev' | 'add' | 'cancel']
+}>()
 
 const el = ref<HTMLElement | null>(null)
 const xs = ref<readonly (readonly number[])[]>([])
@@ -96,12 +135,20 @@ const notesOn = useFeature('functions')
 const marks = computed(() => {
   const all = props.line.bars.flatMap((bar, b) => {
     const at = (beat: number): number => Math.max(0, (xs.value[b]?.[beat] ?? 0) - 0.012)
-    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, line: c.line, x: at(c.beat), tokens: c.tokens, text: c.text, written: c.written, row: c.at, numeral: c.numeral, scale: c.scale, reason: c.reason, rule: c.rule, fallback: c.fallback, heardIn: c.heardIn, keyFrom: c.keyFrom, guide: c.guide, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
-    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, line: -1, x: at(0), tokens: null, text: '', written: '', row: { section: '', bar: '' }, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
+    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, line: c.line, slot: false, x: at(c.beat), tokens: c.tokens, text: c.text, written: c.written, row: c.at, numeral: c.numeral, scale: c.scale, reason: c.reason, rule: c.rule, fallback: c.fallback, heardIn: c.heardIn, keyFrom: c.keyFrom, guide: c.guide, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '' }))
+    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, line: -1, slot: false, x: at(0), tokens: null, text: '', written: '', row: { section: '', bar: '' }, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav }]
+    // the new chord slot after a bar's chords (Space in the field), on the beat after the last chord's
+    const e = props.editing
+    const last = bar.chords.at(-1)
+    if (e?.kind === 'slot' && last && last.at.section === e.section && last.at.bar === e.bar) {
+      chords.push({ key: `${b}-slot`, line: last.line, slot: true, x: at(Math.min(last.beat + 1, props.beats - 1)), tokens: null, text: '', written: '', row: last.at, numeral: '', scale: null, reason: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: '', keyArea: '', segno: false, coda: false, nav: '' })
+    }
     return chords
   })
   return all.map((m, i) => ({ ...m, room: Math.max(0.05, (all[i + 1]?.x ?? 1) - m.x) }))
 })
+/** whether the mark is the chord in the open field, whose labels show the draft's reading */
+const drafted = (m: { line: number; slot: boolean }): boolean => props.preview !== undefined && props.editing?.kind === 'chord' && !m.slot && m.line === props.editing.line
 /** "Edit Dm7, A bar 3"; a transposed part's chord says its concert pitch too, as the editor shows it */
 const editLabel = (m: { written: string; text: string; row: { section: string; bar: string } }): string =>
   `Edit ${m.written}${m.written === m.text ? '' : ` (concert ${m.text})`}, ${m.row.section} bar ${m.row.bar}`

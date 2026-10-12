@@ -168,6 +168,7 @@ exports[`exports the same names 1`] = `
   "setRowChord",
   "setRowField",
   "shareViewFrom",
+  "sheetScale",
   "shiftBy",
   "shiftNote",
   "signatureAccidentals",

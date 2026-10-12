@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
 import { parseChart } from '../chart'
+import { sheetScale } from '../changes'
 import { chordCompletions, chordPreview } from '../completions'
+import { CONCERT } from '../part'
 
 const C = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n').value
 const GM = parseChart('title: T\nkey: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm7\n').value
@@ -59,5 +61,14 @@ describe('chordPreview', () => {
 
   it('previews the row as it is when the chart refuses the chords', () => {
     expect(chordPreview(C, 'A', 1, [], 0)).toEqual({ numeral: 'ii7', scale: 'D Dorian', readable: false }) // a section’s first bar can’t be emptied
+  })
+})
+
+describe('sheetScale', () => {
+  it('writes a preview’s scale as the Changes sheet labels it: the part’s root, the long words shortened', () => {
+    expect(sheetScale(CONCERT, 'G Half-Whole Diminished')).toBe('G H/W Dim.')
+    expect(sheetScale(CONCERT, 'Db Mixolydian')).toBe('D♭ Mixo')
+    expect(sheetScale({ clef: 'treble', trans: 'Bb' }, 'G Mixolydian')).toBe('A Mixo')
+    expect(sheetScale(CONCERT, null)).toBeNull()
   })
 })

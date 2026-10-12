@@ -1,4 +1,4 @@
-import { barCell, expect, openEditor, test } from './fixtures'
+import { barCell, chooseInstrument, expect, openEditor, test } from './fixtures'
 
 /** the chart text without its column padding */
 const plain = async (page: import('@playwright/test').Page): Promise<string> => (await page.getByLabel('Chart text').inputValue()).replace(/[ \t]*\|[ \t]*/g, ' | ')
@@ -8,28 +8,22 @@ test.beforeEach(async ({ page }) => {
   await openEditor(page)
 })
 
-test('tapping a chord on the Changes sheet edits it in a popover, and selects it in the grid', async ({ page }) => {
+test('clicking a chord on the Changes sheet opens its field in place, and selects it in the grid', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   const chord = page.getByRole('button', { name: 'Edit G7, A bar 2' })
-  const at = await chord.boundingBox() // (the page is inert while the popover is open)
+  const at = await chord.boundingBox()
   await chord.click()
-  const editor = page.getByRole('dialog')
-  await expect(editor).toContainText('A, bar 2')
-  // a popover by the chord, not a sheet across the window
-  const box = await editor.locator('[id^=headlessui-dialog-panel]').boundingBox()
-  expect(box && at && Math.abs(box.x - at.x) < 40 && box.width < 400).toBe(true)
-
-  const input = editor.getByRole('textbox', { name: 'Chord' })
-  await expect(input).toHaveValue('G7')
-  await input.fill('Db7')
-  await input.press('Enter')
-  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| Db7/)
-  await editor.getByRole('radiogroup', { name: 'Scale' }).getByRole('radio', { name: /^Db Mixolydian 1/ }).click() // not the analysed Db Lydian Dominant: this one pins
-  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| Db7 \| Db Mixolydian/)
-  await editor.getByRole('button', { name: 'Done' }).click()
-  await expect(editor).toBeHidden()
-  await expect(page.getByRole('button', { name: 'Edit Db7, A bar 2' })).toBeVisible()
+  const field = page.getByRole('combobox', { name: 'Chord, A bar 2' })
+  await expect(field).toBeFocused()
+  await expect(field).toHaveValue('G7')
+  const box = await field.boundingBox()
+  expect(box && at && Math.abs(box.x - at.x) < 16).toBe(true) // on the chord's beat (the click scrolls it into view, so y moves)
+  await expect(page.getByRole('dialog')).toHaveCount(0)
   await expect(barCell(page, 'A', 2)).toHaveAttribute('aria-selected', 'true')
+  await field.fill('Db7')
+  await field.press('Enter')
+  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| Db7/)
+  await expect(page.getByRole('button', { name: 'Edit Db7, A bar 2' })).toBeVisible()
 })
 
 test('on a phone the grid gives way to light edits: tap a chord, change it in a bottom sheet', async ({ page }) => {
@@ -50,4 +44,59 @@ test('on a phone the grid gives way to light edits: tap a chord, change it in a 
   await expect(editor).toBeHidden()
   await expect(page.getByRole('button', { name: 'Edit Em7, A bar 1' })).toBeVisible()
   await expect.poll(() => page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390)
+})
+
+test('the sheet is the editor: type into a chord with completions that read the bar, Tab moves, Space adds', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await expect(page.getByText('Editing the sheet')).toBeVisible()
+  await page.getByRole('button', { name: 'Edit G7, A bar 2' }).click()
+  const field = page.getByRole('combobox', { name: 'Chord, A bar 2' })
+  await expect(field).toHaveValue('G7')
+  await field.fill('G7b')
+  const options = page.getByRole('listbox', { name: 'Completions' }).getByRole('option')
+  await expect(options.first()).toHaveText(/^G7b/)
+  await expect(options.nth(1)).toContainText('→ G ')
+  const reading = (await options.nth(1).textContent())?.split('→')[1]?.trim() ?? ''
+  await field.press('ArrowDown')
+  await field.press('Enter')
+  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| G7b9/)
+  // the label under the chord now reads what the completion promised
+  await expect(page.locator('[data-slot=scale]', { hasText: reading }).first()).toBeVisible()
+
+  await page.getByRole('button', { name: 'Edit Dm7, A bar 1' }).click()
+  await page.getByRole('combobox', { name: 'Chord, A bar 1' }).press('Tab')
+  await expect(page.getByRole('combobox', { name: 'Chord, A bar 2' })).toBeFocused()
+  await page.keyboard.press('Escape')
+
+  await page.getByRole('button', { name: 'Edit Dm7, A bar 1' }).click()
+  await page.getByRole('combobox', { name: 'Chord, A bar 1' }).press(' ')
+  const slot = page.getByRole('combobox', { name: 'Chord, A bar 1' })
+  await expect(slot).toHaveValue('')
+  await slot.fill('A7')
+  await slot.press('Enter')
+  await expect.poll(() => plain(page)).toMatch(/A \| 1 \| Dm7\nA \| 1 \| A7/)
+  await expect(page.getByRole('button', { name: 'Edit A7, A bar 1' })).toBeVisible()
+})
+
+test('a transposing part is shown in concert pitch while editing, and comes back on Done', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await chooseInstrument(page, 'Tenor')
+  await expect(page.getByText(/Concert pitch while you edit/)).toBeVisible()
+  await expect(page.getByRole('button', { name: 'Edit G7, A bar 2' })).toBeVisible() // not A7, the tenor's
+  await page.getByRole('button', { name: 'Done editing' }).click()
+  await expect(page.getByText(/Concert pitch while you edit/)).toBeHidden()
+  await expect(page.getByText('A7').first()).toBeVisible()
+})
+
+test('a refused chord keeps the field open and says why; Escape restores the chord', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await page.getByRole('button', { name: 'Edit G7, A bar 2' }).click()
+  const field = page.getByRole('combobox', { name: 'Chord, A bar 2' })
+  await field.fill('G7 | x')
+  await field.press('Enter')
+  await expect(page.getByText(/can’t go in a chart/)).toBeVisible()
+  await expect(field).toBeVisible()
+  await field.press('Escape')
+  await expect(page.getByRole('button', { name: 'Edit G7, A bar 2' })).toBeVisible()
+  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| G7\n/)
 })

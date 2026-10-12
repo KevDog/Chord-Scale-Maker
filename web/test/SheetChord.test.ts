@@ -11,7 +11,7 @@ const rows = (d: ChartDoc | undefined): string[] => (d ? serializeChart(d).split
 const settle = async () => {
   for (let i = 0; i < 3; i++) await nextTick()
 }
-const mount = (editing: SheetEdit | null, over: Partial<{ line: number; bar: string; text: string; slot: boolean }> = {}) =>
+const mount = (editing: SheetEdit | null, over: Partial<{ line: number; bar: string; text: string; adding: boolean }> = {}) =>
   mountSuspended(SheetChord, {
     props: { doc, line: 3, section: 'A', bar: '2', text: 'G7', tokens: null, label: 'Edit G7, A bar 2', editing, selected: false, ...over },
     attachTo: document.body,
@@ -133,7 +133,7 @@ describe('SheetChord', () => {
   })
 
   it('a slot: opens empty, commits as the bar’s added chord, adds nothing on an empty commit', async () => {
-    const w = await mount({ kind: 'slot', section: 'A', bar: '2' }, { slot: true, text: '' })
+    const w = await mount({ kind: 'slot', section: 'A', bar: '2' }, { adding: true, text: '' })
     await settle()
     expect(field(w).element.value).toBe('')
     await type(w, 'Db7')
@@ -141,7 +141,7 @@ describe('SheetChord', () => {
     await settle()
     expect(rows(lastDoc(w))).toEqual(['A | 1 | Dm7', 'A | 2 | G7', 'A | 2 | Db7', 'A | 3 | CMaj7'])
     document.body.innerHTML = ''
-    const w2 = await mount({ kind: 'slot', section: 'A', bar: '2' }, { slot: true, text: '' })
+    const w2 = await mount({ kind: 'slot', section: 'A', bar: '2' }, { adding: true, text: '' })
     await field(w2).trigger('keydown', { key: 'Enter' })
     expect(w2.emitted('update:doc')).toBeUndefined()
     expect(w2.emitted('done')?.[0]).toEqual(['stay'])

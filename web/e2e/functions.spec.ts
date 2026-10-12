@@ -87,6 +87,7 @@ test('on a transposing part the note names the chord as drawn, and the report sa
   await context.grantPermissions(['clipboard-read', 'clipboard-write'])
   await writeChart(page, CHART)
   await saved(page)
+  await page.getByRole('button', { name: 'Done', exact: true }).click() // the sheet editor would show concert pitch
   await chooseInstrument(page, 'Trumpet')
   await page.getByRole('button', { name: 'V7', exact: true }).first().click()
   const note = page.getByRole('dialog', { name: 'Why: A7' })
