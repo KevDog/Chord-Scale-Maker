@@ -506,13 +506,16 @@ describe('EditorView lead-sheet editor', () => {
     expect(changesSheet(w).props('editing')).toBeUndefined()
   })
 
-  it('forces numerals and scales on while editing, without changing the preferences', async () => {
+  it('forces numerals and scales on while editing, without changing the preferences, and hides their toggles', async () => {
     localStorage.setItem('csm-numerals', 'off')
     const w = await mount()
     await buttonCalled(w, 'Edit')?.trigger('click')
     expect(changesSheet(w).props('numerals')).toBe(true)
     expect(localStorage.getItem('csm-numerals')).toBe('off')
-    expect(buttonCalled(w, 'Numerals')?.attributes('disabled')).toBeDefined()
+    expect(buttonCalled(w, 'Numerals')).toBeUndefined()
+    expect(buttonCalled(w, 'Scales')).toBeUndefined()
+    await buttonCalled(w, 'Done')?.trigger('click')
+    expect(buttonCalled(w, 'Numerals')?.attributes('aria-pressed')).toBe('false')
   })
 
   const THREE = 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n' // lines 2, 3, 4

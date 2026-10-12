@@ -271,7 +271,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     the rename use `BarDialog`; a refused one stays open with why. The heading is edited where it prints
     (`SheetHeading` in `SheetPages`' `#heading` slot, with the time beside the key; the printed heading stays for
     print). The sheet keeps the instrument's clef and range but reads
-    in concert pitch while editing, with numerals and scales shown (their toggles rest); both return on Done. Phones
+    in concert pitch while editing, with numerals and scales shown (their toggles hide); both return on Done. Phones
     keep the bottom sheet alone. Every mark is hidden in print.
 - **Scale level** (`engine/src/levels.ts`): Basic / Standard / Advanced / Random, in the
   preview's toolbar. The level is a **view preference**, like the instrument: it is never written into the rows, so
@@ -385,7 +385,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   before the bar that doesn't fit (`breakLines`, until the chart changes), so on a phone a bar of four chords may get
   a line of its own.
 - `Numerals` and `Scales` toggles and a **Line** segmented control (Off · Guide Tones · 7th Chords) with the mode's
-  listbox beside it (From 3rd · From 7th; or the ten arpeggio patterns) replace Intervals on this sheet (`csm-numerals`,
+  listbox beneath it, so the control stays where it was clicked (From 3rd · From 7th; or the ten arpeggio patterns) replace Intervals on this sheet (`csm-numerals`,
   `csm-scale-names`, both on; `csm-line` `off | guide | arpeggio`, off; `csm-guide-line` `third | seventh`;
   `csm-arpeggio`, `up-root`; share links carry the sheet's line as `line`, absent meaning off). 7th Chords is behind the
   `arpeggios` flag.
@@ -523,7 +523,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - `SheetPages`, which lays out both sheets' printed pages. On screen they form one continuous card, with a dashed
     "Page N" divider where each printed page starts and the header shown once. In print each page is a bare letter
     page with its own header.
-  - `PreviewControls`, the preview toolbar: Work on, Instrument, Spell Scale (From key/From root/From X), then Show: Intervals (on the Changes, Analysis: Numerals and Scales, and Line: Off · Guide Tones · 7th Chords, with From 3rd · From 7th or the arpeggio pattern beside it) with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
+  - `PreviewControls`, the preview toolbar: Work on, Instrument, Spell Scale (From key/From root/From X), then Show: Intervals (on the Changes, Analysis: Numerals and Scales, and Line: Off · Guide Tones · 7th Chords, with From 3rd · From 7th or the arpeggio pattern beneath it; Analysis hides while the sheet editor is open) with the chart's actions (Transpose…, Focus, Print), a row of their own below lg and two by two on a phone.
 - **Dark mode** is a `.dark` class on `<html>`, toggled in the navbar.
   - The default is light, and the choice is saved per browser.
   - `public/theme-init.js` applies it before first paint. It's a file, not an inline script, so the CSP needs no
