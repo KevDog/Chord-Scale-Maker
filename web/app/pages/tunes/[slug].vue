@@ -46,7 +46,8 @@
 <script setup lang="ts">
 import { tuneDescription, tuneSummary } from '@chord-scale-maker/engine'
 import { findTune } from '~/utils/library'
-import { seoMeta, tuneTitle } from '~/utils/site'
+import { seoMeta, tunePath, tuneTitle } from '~/utils/site'
+import { breadcrumbLd, jsonLd, tuneLd } from '~/utils/structuredData'
 
 const route = useRoute()
 const found = findTune(String(route.params.slug))
@@ -56,4 +57,6 @@ const summary = tuneSummary(chart.text)
 const details = [summary.style, summary.keyLabel, summary.form, summary.time].filter(Boolean).join(' · ')
 
 useSeoMeta(seoMeta({ title: tuneTitle(summary), description: tuneDescription(summary) }))
+const path = tunePath(chart.slug)
+useHead({ script: [{ type: 'application/ld+json', innerHTML: jsonLd([tuneLd(summary, path), breadcrumbLd(summary, path)]) }] })
 </script>

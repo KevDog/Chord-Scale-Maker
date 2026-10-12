@@ -18,6 +18,11 @@ describe('csp', () => {
     ])
   })
 
+  it('does not hash structured data (application/ld+json is a data block)', () => {
+    const page = PAGE.replace('</head>', '<script type="application/ld+json">{"@type":"WebSite"}</script></head>')
+    expect(inlineScriptHashes(page)).toEqual(inlineScriptHashes(PAGE))
+  })
+
   it('builds a strict policy around those hashes', () => {
     const policy = contentSecurityPolicy(["'sha256-x'"])
     expect(policy).toContain("script-src 'self' 'sha256-x'")

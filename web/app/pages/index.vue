@@ -64,10 +64,12 @@
 
 <script setup lang="ts">
 import { PAGE_HEAD, seoMeta, tunePath } from '~/utils/site'
+import { jsonLd, webAppLd, websiteLd } from '~/utils/structuredData'
 import { FolderOpenIcon, MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/16/solid'
 import { MusicalNoteIcon } from '@heroicons/vue/24/outline'
 
 useSeoMeta(seoMeta(PAGE_HEAD.index))
+useHead({ script: [{ type: 'application/ld+json', innerHTML: jsonLd([websiteLd(), webAppLd()]) }] })
 
 const query = ref('')
 const charts = computed(() => searchLibrary(LIBRARY, query.value))
