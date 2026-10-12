@@ -232,11 +232,11 @@ describe('EditorView guide tones', () => {
   }
 
   it("applies a share link's line for the visit, and a share link carries it", async () => {
-    const w = await mount({ sheet: 'changes', guideLine: 'seventh' })
+    const w = await mount({ sheet: 'changes', line: 'seventh' })
     expect(changesSheet(w).props('guideLine')).toBe('seventh')
     expect(checkedGuide(w)).toEqual(['From 7th'])
     expect(localStorage.getItem('csm-guide-line')).toBeNull()
-    expect(await linkOf(w)).toMatchObject({ sheet: 'changes', guideLine: 'seventh' })
+    expect(await linkOf(w)).toMatchObject({ sheet: 'changes', line: 'seventh' })
     w.unmount()
   })
 
@@ -244,7 +244,7 @@ describe('EditorView guide tones', () => {
     localStorage.setItem('csm-guide-line', 'third')
     const w = await mount({ sheet: 'changes' })
     expect(changesSheet(w).props('guideLine')).toBe('off')
-    expect(await linkOf(w)).not.toHaveProperty('guideLine')
+    expect(await linkOf(w)).not.toHaveProperty('line')
     w.unmount()
   })
 

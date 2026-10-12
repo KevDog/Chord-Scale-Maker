@@ -89,7 +89,7 @@ describe('linkPreferences', () => {
 
   it("takes a link's guide tone line over your own, for this visit only", async () => {
     localStorage.setItem('csm-guide-line', 'seventh')
-    const p = linked({ guideLine: 'third' })
+    const p = linked({ line: 'third' })
     expect(p.guideLine.value).toBe('third')
     p.guideLine.value = 'off'
     await nextTick()

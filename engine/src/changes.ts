@@ -2,7 +2,8 @@ import { analyse, chartKeyOf, parseKey } from './analysis'
 import { type ChartDoc, type ChartLine, chartBeats, expandRowLines, formPart, type FormPart, type LinedRow, qualityScale } from './chart'
 import { type ChordToken, chordTokensOrNull, writtenChordTextOrNull } from './chord'
 import { guideToneTimeline } from './guideToneTimeline'
-import { type GuideInput, type GuideLine, type GuideNote, guideVoices } from './guideTones'
+import { arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
+import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
 import { keySignature } from './keySignature'
 import { type Part, scaleLabel, writtenRoot } from './part'
 import { glyphs, parseRoot, rootName } from './pitch'
@@ -57,7 +58,7 @@ export type ChangesBar = Readonly<{
   /** the chart's key signature, written for the part; null when signatures are off or it has no key: */
   keySig: string | null
   chords: readonly ChangesChord[]
-  /** the guide tone line's notes in place of the slashes; [] with the line off */
+  /** the guide tone or arpeggio line's notes in place of the slashes; [] with the line off */
   voice: readonly GuideNote[]
   /** a section marker on its first bar: "A1", "A3 (= A1)", "Intro", "Coda (after the last chorus)" */
   marker: string
@@ -101,12 +102,12 @@ export const sheetScale = (part: Part, scale: string | null): string | null => {
 
 /**
  * Changes lines on a printed page: 8 with no guide tones (a 32-bar AABA, one section a line pair, with its numerals
- * and scales), whatever rows are shown. Notes, stems and the label row take more height, so with a guide tone line
+ * and scales), whatever rows are shown. Notes, stems and the label row take more height, so with a guide tone or arpeggio line
  * and numerals or scales shown it's 6, and one more with both rows off: measured over the library in every
  * transposition at letter width, with a page's tallest lines (an ending raised over the stems). print.spec checks the
  * worst case.
  */
-export function changesLinesPerPage(line: GuideLine, rows: Readonly<{ numerals: boolean; scales: boolean }>): number {
+export function changesLinesPerPage(line: SheetLine, rows: Readonly<{ numerals: boolean; scales: boolean }>): number {
   if (line === 'off') return 8
   return 6 + (!rows.numerals && !rows.scales ? 1 : 0)
 }
@@ -127,7 +128,7 @@ export function breakLines(lines: readonly ChangesLine[], at: ReadonlySet<string
 }
 
 /** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only */
-export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: GuideLine = 'off', view: ScaleView = STANDARD): ChangesSheet {
+export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: SheetLine = 'off', view: ScaleView = STANDARD): ChangesSheet {
   const rows = expandRowLines(doc).value
   const beats = chartBeats(doc)
   const { events, diagnostics } = guideToneTimeline(rows, beats)
@@ -232,7 +233,8 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
       }),
     )
   }
-  const guideLine = line === 'off' ? null : guideVoices(drawn(), part, beats, keySig, line)
+  const voices: { bars: ReadonlyMap<number, readonly GuideNote[]>; labels: ReadonlyMap<number, string>; missing: readonly string[] } | null =
+    line === 'off' ? null : isArpeggioPattern(line) ? { ...arpeggioVoices(drawn(), part, beats, keySig, line), labels: new Map() } : guideVoices(drawn(), part, beats, keySig, line)
 
   let lastKey = ''
   const lastForm = blocks.findLastIndex((b) => b.part === 'form')
@@ -261,7 +263,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             stated: a?.stated ?? false,
             heardIn: a ? keyName((a.statedKey ?? a.key).name, part) : '',
             keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',
-            guide: guideLine?.labels.get(i) ?? '',
+            guide: voices?.labels.get(i) ?? '',
           }
         })
       const firstKey = block.rows.map((i) => byRow.get(i)).find((a) => a && barOf(a.row) === bar)?.key.name
@@ -274,7 +276,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         repeatOf: block.copyOf,
         keySig,
         chords,
-        voice: guideLine?.bars.get(bar) ?? [],
+        voice: voices?.bars.get(bar) ?? [],
         marker: j === 0 ? block.marker : '',
         keyArea,
         repeatStart: hasEndings ? j === 0 : j === 0 && block.times > 1,
@@ -303,5 +305,5 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     }))
     return { bars, sectionEnd: line.sectionEnd }
   })
-  return { lines: deduped, beats, diagnostics: guideLine ? [...diagnostics, ...guideLine.missing] : diagnostics }
+  return { lines: deduped, beats, diagnostics: voices ? [...diagnostics, ...voices.missing] : diagnostics }
 }

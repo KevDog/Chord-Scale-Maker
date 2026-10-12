@@ -49,15 +49,16 @@ describe('share links', () => {
     expect(await decodeShare(await packed({ v: 1, chart: CHART, view: { mode: 'root', bogus: true } }))).toEqual({ chart: CHART, view: { mode: 'root' } })
   })
 
-  it("carry the Changes sheet's guide tone line, from the 3rd or the 7th", async () => {
-    for (const guideLine of ['third', 'seventh'] as const) {
-      const view = { sheet: 'changes', numerals: true, guideLine } as const
+  it("carry the Changes sheet's line: a guide tone line or an arpeggio pattern", async () => {
+    for (const line of ['third', 'seventh', 'up-root', 'voice-led'] as const) {
+      const view = { sheet: 'changes', numerals: true, line } as const
       expect(await decodeShare(await encodeShare({ chart: CHART, view }))).toEqual({ chart: CHART, view })
     }
   })
 
-  it("read any other guideLine as no line (absent), and the old fields not at all", async () => {
-    for (const guideLine of ['off', 'both', 'Third', true, 3, null]) expect(shareViewFrom({ sheet: 'changes', guideLine })).toEqual({ sheet: 'changes' })
+  it('read any other line as none (absent), and the old guideLine not at all', async () => {
+    for (const line of ['off', 'both', 'Up · root', true, 3, null]) expect(shareViewFrom({ sheet: 'changes', line })).toEqual({ sheet: 'changes' })
+    expect(shareViewFrom({ sheet: 'changes', guideLine: 'third' })).toEqual({ sheet: 'changes' })
     expect(shareViewFrom({ fromThird: true, fromSeventh: true, guideThird: true, guideSeventh: true })).toBeUndefined()
     expect(await decodeShare(await packed({ v: 1, chart: CHART, view: { sheet: 'changes', fromSeventh: true } }))).toEqual({ chart: CHART, view: { sheet: 'changes' } })
   })

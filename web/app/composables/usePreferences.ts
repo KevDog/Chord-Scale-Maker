@@ -38,7 +38,7 @@ export function linkPreferences(view: ShareView) {
     intervals: ref<boolean>(view.intervals ?? own.intervals.value),
     numerals: ref<boolean>(view.numerals ?? own.numerals.value),
     scaleNames: ref<boolean>(view.scaleNames ?? own.scaleNames.value),
-    guideLine: ref<GuideLine>(view.guideLine ?? 'off'), // a link without one shows no line
+    guideLine: ref<GuideLine>(view.line === 'third' || view.line === 'seventh' ? view.line : 'off'), // a link without one shows no line
     showEditor: own.showEditor, // whether the editor is open: yours, and remembered
     source: own.source,
   }

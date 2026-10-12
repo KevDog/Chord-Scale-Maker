@@ -538,7 +538,7 @@ async function shareUrl(): Promise<string> {
     intervals: prefs.intervals.value,
     numerals: prefs.numerals.value,
     scaleNames: prefs.scaleNames.value,
-    ...(prefs.guideLine.value !== 'off' ? { guideLine: prefs.guideLine.value } : {}), // absent: off
+    ...(prefs.guideLine.value !== 'off' ? { line: prefs.guideLine.value } : {}), // absent: off
     sheet: sheet.value,
     ...(selection.value ? { practice: selection.value } : {}),
     ...(scaleLevel.level.value !== 'standard' ? { level: scaleLevel.level.value, seed: scaleLevel.seed.value } : {}),
