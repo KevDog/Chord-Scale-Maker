@@ -1,7 +1,8 @@
 import { readdirSync } from 'node:fs'
 import { isSyncCopy } from '@chord-scale-maker/engine'
 import { describe, expect, it } from 'vitest'
-import { findChart, findTune, LIBRARY, searchLibrary, toLibrary, tunePath } from '~/utils/library'
+import { findChart, findTune, LIBRARY, searchLibrary, toLibrary } from '~/utils/library'
+import { tunePath } from '~/utils/site'
 
 describe('library', () => {
   it('builds entries from chart files, sorted by title', () => {
