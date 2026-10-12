@@ -17,7 +17,7 @@ test('a new chart saves itself, gets its own address, and is listed in My charts
 })
 
 test('edits to a library chart are kept as your version, until you revert', async ({ page }) => {
-  await page.goto('/song?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn-leaves')
   await expect(status(page)).toHaveText('Edits are saved in this browser as your version.')
   await openEditor(page)
   await typeChord(page, 'A1', 1, 'Cm7', 'Cm9')
@@ -36,7 +36,7 @@ test('edits to a library chart are kept as your version, until you revert', asyn
 })
 
 test('Save as a copy keeps a variation beside your version, and Delete removes one', async ({ page }) => {
-  await page.goto('/song?chart=so_what')
+  await page.goto('/song?chart=so-what')
   await page.getByRole('button', { name: 'Save as a copy' }).click()
   await expect(page).toHaveURL(/\/song\?mine=/)
   await expect(page.getByRole('heading', { name: 'So What (copy)', level: 1 })).toBeVisible()
@@ -54,7 +54,7 @@ test('a chart that isn’t saved here says so', async ({ page }) => {
 })
 
 test('Download saves the chart as text, and Open brings it back as a new chart', async ({ page }) => {
-  await page.goto('/song?chart=blue_bossa')
+  await page.goto('/song?chart=blue-bossa')
   const downloading = page.waitForEvent('download')
   await page.getByRole('button', { name: 'Download' }).click()
   const file = await downloading
@@ -88,7 +88,7 @@ test('a file dropped on the library opens, and a wrong one says why', async ({ p
 })
 
 test('a share link carries the chart and the view to a browser that has never seen it', async ({ page, browser }) => {
-  await page.goto('/song?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn-leaves')
   await openEditor(page)
   await typeChord(page, 'A1', 1, 'Cm7', 'Cm9') // on the Changes sheet, the editor
   await chooseSheet(page, 'Scales') // From C and the practice picks are the scale sheet's; the link carries the sheet
@@ -117,7 +117,7 @@ test('a share link carries the chart and the view to a browser that has never se
   await expect(visitor.getByLabel('Chart text')).toHaveValue(/A1 \| 1 +\| Cm9/)
   await visitor.getByRole('button', { name: 'Save to My charts' }).click()
   await expect(visitor).toHaveURL(/\/song\?mine=/)
-  await visitor.goto('/song?chart=so_what')
+  await visitor.goto('/song?chart=so-what')
   await expect(visitor.locator('section header p').first()).not.toContainText('Tenor') // the link didn't change their own settings
   await visitor.goto('/')
   await expect(visitor.getByRole('region', { name: 'My charts' }).getByRole('link', { name: 'Autumn Leaves' })).toBeVisible()
@@ -130,7 +130,7 @@ test('a damaged share link says so', async ({ page }) => {
 })
 
 test('choosing a scale and then the analysed one again leaves the library chart unedited; choosing it by name pins it', async ({ page }) => {
-  await page.goto('/song?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn-leaves')
   await openEditor(page)
   const scaleList = async () => {
     await page.getByRole('button', { name: 'C Dorian', exact: true }).first().click() // Cm7's scale label on the sheet
@@ -145,11 +145,24 @@ test('choosing a scale and then the analysed one again leaves the library chart 
   await expect(page.getByRole('button', { name: 'Revert to library version' })).toHaveCount(0)
   await page.goto('/')
   await expect(page.getByRole('region', { name: 'My charts' })).toHaveCount(0)
-  await page.goto('/song?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn-leaves')
   await openEditor(page)
   const again = await scaleList()
   await again.getByRole('searchbox', { name: 'Any scale' }).fill('C dor')
   await again.getByRole('list', { name: 'Scales found' }).getByRole('button', { name: /^C Dorian \d/ }).click()
   await expect(page.getByLabel('Chart text')).toHaveValue(/A1 \| 1 +\| Cm7 +\| C Dorian/) // the name pins it, though the analyser agrees
   await expect(status(page)).toHaveText(/^Your edited version of Autumn Leaves/)
+})
+
+test('an edited library chart and its scale level, saved under the chart’s old name, still open', async ({ page }) => {
+  await page.goto('/help')
+  await page.evaluate(() => {
+    localStorage.setItem('csm-charts', JSON.stringify([{ id: 'oldname01', title: 'My Leaves', kind: 'edited', basedOn: 'autumn_leaves', createdAt: 1, updatedAt: 1 }]))
+    localStorage.setItem('csm-chart:oldname01', 'title: My Leaves\nkey: Gm\nA | 1 | Cm7')
+    localStorage.setItem('csm-level:autumn_leaves', JSON.stringify({ level: 'advanced', seed: 1 }))
+  })
+  await page.goto('/song?chart=autumn-leaves')
+  await expect(page).toHaveTitle('My Leaves · Chord Scale Maker')
+  expect(await page.evaluate(() => [localStorage.getItem('csm-level:autumn_leaves'), JSON.parse(localStorage.getItem('csm-level:autumn-leaves') ?? '{}').level]))
+    .toEqual([null, 'advanced'])
 })

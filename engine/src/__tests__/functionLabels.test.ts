@@ -143,7 +143,7 @@ describe('L2 a diatonic chord acting as a related ii prints its degree (major ke
   })
 
   it('a minor key area is unchanged (Autumn Leaves)', () => {
-    const r = analyse(parseChart(readFileSync(new URL('../../charts/autumn_leaves.txt', import.meta.url), 'utf8')).value).rows.find((x) => x.bar === '1')
+    const r = analyse(parseChart(readFileSync(new URL('../../charts/autumn-leaves.txt', import.meta.url), 'utf8')).value).rows.find((x) => x.bar === '1')
     expect([r?.chord, r?.numeral, r?.key.name, r?.scale, r?.rule, r?.fn]).toEqual(['Cm7', 'ii7/♭III', 'G minor', 'C Dorian', 'm4', 'ii of F7'])
   })
 })

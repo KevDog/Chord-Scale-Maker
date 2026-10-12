@@ -2,7 +2,7 @@
  * The analyser (docs/plan-analysis.md §12): reads charts, reports the rules' scale for every row and why, and with
  * flags writes the result back. Each chart's report ends with its tune page: what it lacks, and its search listing.
  *
- *   npm run analyse -- charts/autumn_leaves.txt      report one chart
+ *   npm run analyse -- charts/autumn-leaves.txt      report one chart
  *   npm run analyse -- --all                          report every chart, then a summary
  *   --strip    blank every written scale the rules reproduce (not `# keep:` rows); list the ones they don't
  *   --save     write the analysis into the chart as comments (a reason per row, `# area:` lines, a header)

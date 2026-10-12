@@ -24,8 +24,8 @@ describe('issue report', () => {
   })
 
   it('a library chart as published is named by its slug and needs no share link', () => {
-    const text = issueText({ ...F, library: 'autumn_leaves', link: null })
-    expect(text.split('\n')[0]).toBe('Chart: Autumn Leaves (library chart autumn_leaves)')
+    const text = issueText({ ...F, library: 'autumn-leaves', link: null })
+    expect(text.split('\n')[0]).toBe('Chart: Autumn Leaves (library chart autumn-leaves)')
     expect(text).not.toContain('Link:')
   })
 

@@ -43,14 +43,14 @@ describe('useSavedChart', () => {
 
   it('keeps edits to a library chart as your version, and drops it when edited back', async () => {
     text.value = LIB
-    const { api } = await harness({ kind: 'library', slug: 'autumn_leaves', libraryText: LIB })
+    const { api } = await harness({ kind: 'library', slug: 'autumn-leaves', libraryText: LIB })
     expect(api.status.value.state).toBe('clean')
     await type(`${LIB}A1 | 2 | F7\n`)
     expect(api.status.value.state).toBe('saved')
     expect(api.edited.value).toBe(true)
-    expect(versionOf('autumn_leaves')).toMatchObject({ kind: 'edited', title: 'Autumn Leaves' })
+    expect(versionOf('autumn-leaves')).toMatchObject({ kind: 'edited', title: 'Autumn Leaves' })
     await type(LIB)
-    expect(versionOf('autumn_leaves')).toBeNull()
+    expect(versionOf('autumn-leaves')).toBeNull()
     expect(api.edited.value).toBe(false)
   })
 

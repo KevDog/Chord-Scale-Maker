@@ -399,10 +399,10 @@ describe('EditorView scale level', () => {
   })
 
   it('keeps the level when your version is reverted to the library’s', async () => {
-    saveChart({ id: 'eeeeee1', text: TEXT, kind: 'edited', basedOn: 'autumn_leaves' })
-    localStorage.setItem('csm-level:autumn_leaves', JSON.stringify({ level: 'basic', seed: 7 }))
+    saveChart({ id: 'eeeeee1', text: TEXT, kind: 'edited', basedOn: 'autumn-leaves' })
+    localStorage.setItem('csm-level:autumn-leaves', JSON.stringify({ level: 'basic', seed: 7 }))
     const w = await mountSuspended(EditorView, {
-      props: { initialText: TEXT, practiceKey: 'autumn_leaves', saveTarget: { kind: 'library', slug: 'autumn_leaves', libraryText: TEXT, id: 'eeeeee1' } },
+      props: { initialText: TEXT, practiceKey: 'autumn-leaves', saveTarget: { kind: 'library', slug: 'autumn-leaves', libraryText: TEXT, id: 'eeeeee1' } },
       global: { stubs: { ScaleSheet: true, ChangesSheet: true } },
       attachTo: document.body,
     })
@@ -414,7 +414,7 @@ describe('EditorView scale level', () => {
     await nextTick()
     expect(w.emitted('reload')).toHaveLength(1)
     expect(loadChart('eeeeee1')).toBeNull()
-    expect(JSON.parse(localStorage.getItem('csm-level:autumn_leaves') ?? '{}')).toEqual({ level: 'basic', seed: 7 })
+    expect(JSON.parse(localStorage.getItem('csm-level:autumn-leaves') ?? '{}')).toEqual({ level: 'basic', seed: 7 })
     expect(changesSheet(w).props('view')).toEqual({ level: 'basic', seed: 7 })
   })
 })

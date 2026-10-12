@@ -31,9 +31,9 @@ const VAMP = Array.from({ length: 16 }, (_, i) => `${i + 1} G7`).join(', ')
 
 describe('a stated context (§2)', () => {
   it('is used, and says so; without one the context is detected', () => {
-    const so = read(library('so_what'))
+    const so = read(library('so-what'))
     expect([so.context, so.contextSource]).toEqual(['modal', 'detected'])
-    const pinned = read(library('so_what').replace('key: Dm\n', 'key: Dm\ncontext: functional\n'))
+    const pinned = read(library('so-what').replace('key: Dm\n', 'key: Dm\ncontext: functional\n'))
     expect([pinned.context, pinned.contextSource]).toEqual(['functional', 'stated'])
   })
 
@@ -45,7 +45,7 @@ describe('a stated context (§2)', () => {
   })
 
   it('beats a detected blues: context: functional on a 12-bar blues keeps its key areas', () => {
-    const a = read(library('f_blues').replace(/^key:.*\n/m, (k) => `${k}context: functional\n`))
+    const a = read(library('f-blues').replace(/^key:.*\n/m, (k) => `${k}context: functional\n`))
     expect([a.context, a.contextSource]).toEqual(['functional', 'stated'])
     expect(a.rows.some((r) => r.reason.startsWith('I7 of the blues'))).toBe(false)
   })
@@ -60,8 +60,8 @@ describe('a stated context (§2)', () => {
   })
 
   it('blues on a minor blues: key areas off, the minor-key rules inside (Mr. P.C.)', () => {
-    const before = read(library('mr_pc'))
-    const after = read(library('mr_pc').replace(/^key:.*\n/m, (k) => `${k}context: blues\n`))
+    const before = read(library('mr-pc'))
+    const after = read(library('mr-pc').replace(/^key:.*\n/m, (k) => `${k}context: blues\n`))
     expect([after.context, after.key?.name, after.areas.length]).toEqual(['blues', 'C minor', 1])
     expect(after.rows.map((r) => r.scale)).toEqual(before.rows.map((r) => r.scale))
   })
@@ -139,7 +139,7 @@ describe('the detection (§2)', () => {
   })
 
   it('Tee Pee Time (12-12-8-12) is a blues by its first section', () => {
-    expect(read(undeclared('tee_pee_time')).detection.blues).toBe('section')
+    expect(read(undeclared('tee-pee-time')).detection.blues).toBe('section')
   })
 
   it('12 bars repeated: the first 12-bar section is tested', () => {
@@ -161,7 +161,7 @@ describe('the detection (§2)', () => {
 
 describe('the report line (§1, §4)', () => {
   it('stated', () => {
-    expect(contextLine(read(library('so_what').replace('key: Dm\n', 'key: Dm\ncontext: modal\n')))).toBe('context: modal (stated)')
+    expect(contextLine(read(library('so-what').replace('key: Dm\n', 'key: Dm\ncontext: modal\n')))).toBe('context: modal (stated)')
   })
 
   it('detected, with its numbers', () => {
@@ -194,7 +194,7 @@ describe('--ambiguous: a detection within one chord of a threshold (§4)', () =>
   })
 
   it('no cadence share flips by one chord from none: a cadence takes two (So What, Impressions, Milestones)', () => {
-    for (const name of ['so_what', 'impressions', 'milestones']) expect(ambiguities(read(undeclared(name))).filter((l) => l.startsWith('context:')), name).toEqual([])
+    for (const name of ['so-what', 'impressions', 'milestones']) expect(ambiguities(read(undeclared(name))).filter((l) => l.startsWith('context:')), name).toEqual([])
   })
 
   it('names the median when one chord would lift it to two bars', () => {
@@ -213,6 +213,6 @@ describe('--ambiguous: a detection within one chord of a threshold (§4)', () =>
   })
 
   it('a detection far from every threshold says nothing', () => {
-    expect(ambiguities(read(library('autumn_leaves'))).filter((l) => l.startsWith('context:'))).toEqual([])
+    expect(ambiguities(read(library('autumn-leaves'))).filter((l) => l.startsWith('context:'))).toEqual([])
   })
 })

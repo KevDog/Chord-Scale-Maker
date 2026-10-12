@@ -1,7 +1,7 @@
 import { readdirSync } from 'node:fs'
 import { isSyncCopy } from '@chord-scale-maker/engine'
 import { describe, expect, it } from 'vitest'
-import { findChart, findTune, LIBRARY, searchLibrary, toLibrary, TUNE_PATHS } from '~/utils/library'
+import { findChart, LIBRARY, searchLibrary, toLibrary, TUNE_PATHS } from '~/utils/library'
 import { tunePath } from '~/utils/site'
 import { sitemapPaths, sitemapXml, tunePathsOf } from '~/utils/sitemap'
 
@@ -34,8 +34,8 @@ describe('library', () => {
   })
 
   it('includes the repo charts', () => {
-    expect(LIBRARY.map((c) => c.slug)).toContain('autumn_leaves')
-    expect(findChart('autumn_leaves')?.title).toBe('Autumn Leaves')
+    expect(LIBRARY.map((c) => c.slug)).toContain('autumn-leaves')
+    expect(findChart('autumn-leaves')?.title).toBe('Autumn Leaves')
     expect(findChart('nope')).toBeUndefined()
   })
 
@@ -46,17 +46,15 @@ describe('library', () => {
     expect(LIBRARY.map((c) => `${c.slug}.txt`).sort()).toEqual([...files].sort())
   })
 
-  it('gives each chart a tune page at a hyphenated path', () => {
-    expect(tunePath('blue_trane')).toBe('/tunes/blue-trane')
-    expect(findTune('blue-trane')?.slug).toBe('blue_trane')
-    expect(findTune('blue_trane')).toBeUndefined()
-    expect(findTune('no-such-tune')).toBeUndefined()
+  it('names every chart file in lowercase with hyphens (round-midnight.txt)', () => {
+    const bad = readdirSync('../engine/charts').filter((f) => f.endsWith('.txt') && !isSyncCopy(f) && !/^[a-z0-9]+(-[a-z0-9]+)*\.txt$/.test(f))
+    expect(bad).toEqual([])
   })
 
   it('maps every library chart to its own tune path, and back', () => {
     const paths = LIBRARY.map((c) => tunePath(c.slug))
     expect(new Set(paths).size).toBe(LIBRARY.length)
-    for (const c of LIBRARY) expect(findTune(tunePath(c.slug).replace('/tunes/', ''))).toBe(c)
+    for (const c of LIBRARY) expect(findChart(tunePath(c.slug).replace('/tunes/', ''))).toBe(c)
   })
 
   it('lists one tune path per chart file, the same list the config prerenders and the sitemap carries', () => {

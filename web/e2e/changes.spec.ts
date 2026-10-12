@@ -44,7 +44,7 @@ function expectNoCollisions(d: Drawn): void {
   )
 }
 test('the Changes sheet: slashes, chords, numerals and scales, a repeat, and toggles that stick', async ({ page }) => {
-  await page.goto('/song?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn-leaves')
   await chooseSheet(page, 'Changes')
   await expect(lines(page)).toHaveCount(6) // A1 · A2 played twice, then B: 24 bars, four a line
   const sheet = sheetOf(page)
@@ -65,7 +65,7 @@ test('the Changes sheet: slashes, chords, numerals and scales, a repeat, and tog
 })
 
 test('a later copy is written out, a tag follows a double barline, and a share link opens on the sheet', async ({ page, browser }) => {
-  await page.goto('/song?chart=a_night_in_tunisia')
+  await page.goto('/song?chart=a-night-in-tunisia')
   await chooseSheet(page, 'Changes')
   await expect(page.getByText('A3 (= A1)', { exact: true })).toBeVisible()
   await expect(page.getByText('Tag', { exact: true })).toBeVisible()
@@ -149,7 +149,7 @@ test('a function picked from the numeral changes the scale the Changes sheet pla
 })
 
 test('a chart opens on the Changes sheet, and Scales is the only other sheet', async ({ page }) => {
-  await page.goto('/song?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn-leaves')
   await expect(page.getByRole('button', { name: 'Work on' })).toContainText('Changes')
   await expect(lines(page)).toHaveCount(6)
   await page.getByRole('button', { name: 'Work on' }).click()
@@ -261,7 +261,7 @@ test('a chord held over a line break: an open tie ends line 1, a half-tie starts
 })
 
 test('guide tones are written for the part, in its range: a B♭ trumpet within G3–G5, a trombone in bass clef within E2–E4', async ({ page }) => {
-  await page.goto('/song?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn-leaves')
   await showGuides(page, 'From 3rd')
   await chooseInstrument(page, 'Trumpet')
   await expect(lines(page).first()).toHaveAttribute('aria-label', /; guide tones: F\d 3/) // concert C–7 is written D–7: 3rd F
@@ -281,7 +281,7 @@ test('guide tones are written for the part, in its range: a B♭ trumpet within 
 })
 
 test('a waltz’s guide tones are in 3/4: a bar-long chord is a dotted half', async ({ page }) => {
-  await page.goto('/song?chart=someday_my_prince_will_come')
+  await page.goto('/song?chart=someday-my-prince-will-come')
   await showGuides(page, 'From 7th')
   const line = lines(page).first()
   await expect(line).toHaveAttribute('aria-label', /; guide tones: /)
@@ -293,7 +293,7 @@ test('a waltz’s guide tones are in 3/4: a bar-long chord is a dotted half', as
 })
 
 test('guide tone notes follow dark mode (no hard-coded black)', async ({ page }) => {
-  await page.goto('/song?chart=f_jazz_blues')
+  await page.goto('/song?chart=f-jazz-blues')
   await page.getByRole('button', { name: /Switch to dark mode/ }).click()
   await showGuides(page, 'From 3rd')
   await guidesDrawn(page)

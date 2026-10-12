@@ -11,7 +11,7 @@ test.beforeEach(async ({ page }) => {
 const plain = async (text: import('@playwright/test').Locator): Promise<string> => (await text.inputValue()).replace(/[ \t]*\|[ \t]*/g, ' | ')
 
 test('the editor is hidden until opened, remembered, and flags problems while hidden', async ({ page }) => {
-  await page.goto('/song?chart=autumn_leaves') // song-first: editor hidden
+  await page.goto('/song?chart=autumn-leaves') // song-first: editor hidden
   const edit = page.getByRole('button', { name: 'Edit', exact: true })
   const banner = page.getByText('Editing the sheet')
   await expect(banner).toBeHidden()
@@ -129,7 +129,7 @@ test("one picker spells every scale from the chart's key (the default), any note
 })
 
 test('transposing rewrites the chart in another key', async ({ page }) => {
-  await page.goto('/song?chart=f_jazz_blues')
+  await page.goto('/song?chart=f-jazz-blues')
   await page.getByRole('button', { name: 'Transpose…' }).click()
   await expect(page.getByRole('dialog')).toContainText('From key') // From is the chart's key (read-only); the status below confirms it's F
   await page.getByLabel('To key').selectOption('Bb')
@@ -178,7 +178,7 @@ test('the text editor explains itself on hover and on focus', async ({ page }) =
 })
 
 test('practice highlights the chosen notes, remembers them per chart, and prints them', async ({ page }) => {
-  await page.goto('/song?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn-leaves')
   await chooseSheet(page, 'Scales') // practice is on the scale sheet
   await pickOption(page, 'Where each scale starts', 'From root') // the presets are From root's
   const panel = page.locator('fieldset', { hasText: 'Practice' })
@@ -201,7 +201,7 @@ test('practice highlights the chosen notes, remembers them per chart, and prints
 })
 
 test('focus mode shows only the sheet, leaves on Escape or its button, and still prints 4 pages', async ({ page }) => {
-  await page.goto('/song?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn-leaves')
   await chooseSheet(page, 'Scales') // 39 staves, 4 printed pages
   const focus = page.getByRole('button', { name: 'Focus', exact: true })
   const dialog = page.getByRole('dialog', { name: 'Focus mode' })
@@ -261,7 +261,7 @@ test('the scale level plays on the sheets without editing the chart, and a scale
 })
 
 test('a level leaves a library chart as published', async ({ page }) => {
-  await page.goto('/song?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn-leaves')
   await openEditor(page)
   const text = page.getByLabel('Chart text')
   const published = await text.inputValue()
@@ -272,7 +272,7 @@ test('a level leaves a library chart as published', async ({ page }) => {
 })
 
 test('the toolbar groups the controls under labels, with the scale level as a dropdown', async ({ page }) => {
-  await page.goto('/song?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn-leaves')
   for (const label of ['Work on', 'Instrument', 'Level', 'Analysis', 'Guide Tones', 'Transposition', 'Display']) await expect(page.getByText(label, { exact: true }).first()).toBeVisible()
   await chooseSheet(page, 'Scales')
   await expect(page.getByText('Show', { exact: true }).first()).toBeVisible() // Intervals, in place of Analysis and Guide Tones
@@ -282,7 +282,7 @@ test('the toolbar groups the controls under labels, with the scale level as a dr
 
 test('the preview toolbar stays tidy (at most two rows), in every sheet', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
-  await page.goto('/song?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn-leaves')
   await chooseSheet(page, 'Scales')
   await pickOption(page, 'Where each scale starts', 'From C') // Scales, spelled from a note: the most controls
   // how many rows the toolbar's labelled groups fall on (the content is capped at 72rem, so six groups can take two)
@@ -308,7 +308,7 @@ test('a spinner shows over the sheet while it renders', async ({ browser }) => {
     await new Promise((r) => setTimeout(r, 400)) // slow every chunk, so the VexFlow load+draw exceeds the spinner's 150ms debounce
     await route.continue()
   })
-  await page.goto('/song?chart=autumn_leaves')
+  await page.goto('/song?chart=autumn-leaves')
   await expect(page.getByRole('status', { name: 'Loading' }).first()).toBeVisible()
   await expect(staves(page)).toHaveCount(6) // drawn once VexFlow loads: Autumn Leaves opens on the Changes, six lines
   await expect(page.getByRole('status', { name: 'Loading' })).toHaveCount(0) // spinner gone

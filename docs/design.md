@@ -529,7 +529,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Loading:** `import.meta.glob('#charts/*.txt', { query: '?raw', eager: true })` (`#charts` is the engine package's
   `charts/`) in
   `app/utils/library.ts` gives `{ slug, title, subtitle, composer, text }[]` at build time, skipping sync-tool
-  copies (`giant_steps 2.txt`, `isSyncCopy`). The same parser runs, and a test fails the build if any library
+  copies (`giant-steps 2.txt`, `isSyncCopy`). The same parser runs, and a test fails the build if any library
   chart has errors. Search matches the title or the composer.
 - **Heading:** `chartHeading` (engine/src/chart.ts) gives what the library, the editor and every sheet show: the title,
   a line built from the subtitle (or, without one, `style:`), `key:` (`E♭ minor`) and `form:`, and the composer
@@ -683,8 +683,9 @@ its reasons into a chart as comments.
 
 ## 7b. Search and discoverability ([plan](superpowers/plans/2026-10-12-seo-discoverability.md))
 
-- **Tune pages:** every library chart has one at `/tunes/<name>` (`pages/tunes/[slug].vue`; `tunePath` turns the
-  slug's `_` into `-`, which search engines read as word breaks). It shows the heading fields, `aka:` titles, the
+- **Chart file names** match `[a-z0-9]+(-[a-z0-9]+)*.txt` (`web/test/library.test.ts`); the name is the address.
+- **Tune pages:** every library chart has one at `/tunes/<name>` (`pages/tunes/[slug].vue`; `<name>` is the chart's file
+  name: lowercase, hyphens, which search engines read as word breaks). It shows the heading fields, `aka:` titles, the
   source, and the changes as a table (section, bar, chord, function, scale) in concert pitch, with a button to the
   practice sheets (`/song?chart=<slug>`). The library links each title to its page.
   - **Text:** `tuneSummary` (engine `tune.ts`) gives the heading and one row per chord as the Changes sheet draws it;
@@ -693,7 +694,7 @@ its reasons into a chart as comments.
   - **The gate:** `tuneGaps` lists what a library chart's page lacks (`title:`, `key:`, `style:`, `form:`, and
     `composer:` unless `kind:` is `form` or `exercise`); `libraryMeta.test.ts` fails on any. `tuneAdvice` (no
     `source:`, no `aka:`) is only reported, by `npm run analyse`.
-  - An unknown name is a 404 (`findTune` in `utils/library.ts`).
+  - An unknown name is a 404 (`findChart` in `utils/library.ts`).
 - **Head tags** (`utils/site.ts`):
   - `PAGE_HEAD` holds each fixed page's title and description; `seoMeta` turns one into `useSeoMeta` input, the
     link preview's title carrying the site name as the browser's does (`pageTitle`).
@@ -740,6 +741,9 @@ its reasons into a chart as comments.
     chart back to its library text removes your version (`sameChart`: same lines, ignoring spacing and whether a
     default scale is written out). A new chart's first save moves the address to
     `?mine=<id>` without restarting the editor.
+  - Charts once had underscore names. `plugins/chartNames.client.ts` runs `migrateChartNames` (`utils/myCharts.ts`) on
+    load: it moves `csm-practice:` and `csm-level:` keys and an edited chart's `basedOn` from the old names. `mine:`
+    keys are untouched; a key that can't be written stays.
   - Download writes the text as a Blob; Open (`readChartFile`) takes a `.txt` up to the size limit.
   - Share links (`engine/src/share.ts`): `{ v: 1, chart, view }` as deflate-raw JSON in base64url after `#s=`. The view
     applies for that visit only (`linkPreferences`), and nothing is saved until **Save to My charts**. The router

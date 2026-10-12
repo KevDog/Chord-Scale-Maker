@@ -13,7 +13,7 @@ describe('util', () => {
   })
 
   it('spots sync-tool copies', () => {
-    expect(['giant_steps 2.txt', '../../charts/so_what 12.txt', 'levels 2.ts'].map(isSyncCopy)).toEqual([true, true, true])
-    expect(['giant_steps.txt', 'take_5.txt', 'charts 2/x.txt', 'a2.txt'].map(isSyncCopy)).toEqual([false, false, false, false])
+    expect(['giant-steps 2.txt', '../../charts/so-what 12.txt', 'levels 2.ts'].map(isSyncCopy)).toEqual([true, true, true])
+    expect(['giant-steps.txt', 'take_5.txt', 'charts 2/x.txt', 'a2.txt'].map(isSyncCopy)).toEqual([false, false, false, false])
   })
 })

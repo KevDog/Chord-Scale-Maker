@@ -17,7 +17,7 @@ const bar = (doc: ChartDoc, section: string, n: number) => {
 
 describe('barView', () => {
   it('gives Autumn Leaves as its sections in order, bars numbered as the chart numbers them', () => {
-    const view = barView(chart('autumn_leaves'))
+    const view = barView(chart('autumn-leaves'))
     expect(view.beats).toBe(4)
     expect(view.sections.map((s) => [s.name, s.bars[0]?.bar, s.bars.at(-1)?.bar])).toEqual([
       ['A1', 1, 8],
@@ -28,7 +28,7 @@ describe('barView', () => {
   })
 
   it('splits a bar between its chords, each with the line it was written on', () => {
-    const doc = chart('autumn_leaves')
+    const doc = chart('autumn-leaves')
     expect(bar(doc, 'A1', 3)).toMatchObject({
       kind: 'chords',
       chords: [
@@ -39,7 +39,7 @@ describe('barView', () => {
   })
 
   it('links a @copy section to its source, its chords pointing at the source rows', () => {
-    const doc = chart('autumn_leaves')
+    const doc = chart('autumn-leaves')
     const a2 = barView(doc).sections[1]
     expect(a2?.copy).toEqual({ of: 'A1', line: lineOf(doc, (l) => l.kind === 'copy') })
     expect(a2?.bars[2]?.chords.map((c) => c.line)).toEqual([rowLine(doc, 'A1', '3', 'Bm7'), rowLine(doc, 'A1', '3', 'E7')])
@@ -47,7 +47,7 @@ describe('barView', () => {
   })
 
   it('marks a bar with no row as held, and the bars a section is rounded up by as implied', () => {
-    const doc = chart('its_you_or_no_one')
+    const doc = chart('its-you-or-no-one')
     expect(bar(doc, 'A', 8)).toMatchObject({ kind: 'held', chords: [] })
     expect(bar(doc, 'D', 31).kind).toBe('chords')
     expect(bar(doc, 'D', 32)).toMatchObject({ kind: 'implied', chords: [] })
@@ -55,7 +55,7 @@ describe('barView', () => {
   })
 
   it('keeps the order the chart plays, an intro and a coda as their own parts', () => {
-    const view = barView(chart('its_you_or_no_one'))
+    const view = barView(chart('its-you-or-no-one'))
     expect(view.sections.map((s) => [s.name, s.part])).toEqual([
       ['Intro', 'before'],
       ['Coda', 'after'],
@@ -67,7 +67,7 @@ describe('barView', () => {
   })
 
   it('attaches segno, coda and nav to their bars', () => {
-    const doc = chart('its_you_or_no_one')
+    const doc = chart('its-you-or-no-one')
     const at = (kind: string, section: string) => lineOf(doc, (l) => l.kind === kind && 'section' in l && l.section === section)
     expect(bar(doc, 'A', 1).marks).toEqual([{ mark: 'segno', line: at('mark', 'A') }])
     expect(bar(doc, 'D', 31).marks).toEqual([{ mark: 'coda', line: at('mark', 'D') }])
