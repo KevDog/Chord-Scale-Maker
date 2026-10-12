@@ -364,7 +364,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - A study lead sheet: `engine/src/changes.ts` `buildChanges(doc, part, barsPerLine, signatures, guides)` lays the chart
   out in lines of four bars (two on phones), each section on a new line, one slash a beat in the chart's metre.
   Chords sit on their beats (the guide tone timeline's timing), each with its Roman numeral (`analysis/numerals.ts`)
-  and its scale, both written for the part; key-area labels where the key changes; section markers; a `@copy`
+  and its scale, both written for the part (a written function that doesn't read or fit its chord is set aside: the
+  rules' numeral, marked ⚠, its note saying why first; #144); key-area labels where the key changes; section markers; a `@copy`
   straight after its source folded into repeat signs ("A1 · A2"), a later one written out ("A3 (= A1)"); a double
   barline at the end of the form when a tag or coda follows (a coda or ending headed "after the last chorus"), a
   final one at the end.

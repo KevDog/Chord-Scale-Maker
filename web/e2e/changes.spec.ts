@@ -118,13 +118,17 @@ test('a function from the numeral’s picker: the sheet shows it, its note opens
   await openEditor(page)
   await text.fill('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7 | | Db: V7/ii\nA | 3 | Dm7\nA | 4 | G7\n')
   await expect(sheetChord(page, 'Dm7', 'A', 3)).toBeAttached() // parsed
-  await sheet.getByRole('button', { name: 'II7', exact: true }).click() // the written function doesn't fit: the sheet reads the analysis
+  await expect(sheet.getByRole('button', { name: 'II7', exact: true })).toContainText('⚠') // marked: the written function doesn't fit
+  await sheet.getByRole('button', { name: 'II7', exact: true }).click() // the sheet reads the analysis
   await expect(picker.getByText('V7/ii in Db is on Bb, not D7', { exact: true })).toBeVisible() // the picker says what's wrong with the function
   await page.keyboard.press('Escape')
   await sheetChord(page, 'Dm7', 'A', 3).hover()
   await page.getByRole('button', { name: 'More actions for A bar 3' }).click()
   await page.getByRole('menuitem', { name: 'Key change here' }).click()
   await expect(text).toHaveValue(/@key A 3 C\nA \| 3 \| Dm7/)
+  await page.getByRole('button', { name: 'Done editing' }).click()
+  await sheet.getByRole('button', { name: 'II7', exact: true }).click() // not editing: why opens, saying first what's wrong
+  await expect(page.getByRole('dialog', { name: 'Why: D7' })).toContainText('⚠ V7/ii in Db is on Bb, not D7')
 })
 
 test('a function picked from the numeral changes the scale the Changes sheet plays on a blank cell', async ({ page }) => {
