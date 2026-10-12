@@ -172,3 +172,19 @@ test('the header is the same height whatever the quote, and keeps the whole quot
   }
   expect([...heights]).toEqual([64])
 })
+
+test('Help’s On this page index stays beside the text from lg, marking the section being read', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 800 })
+  await page.goto('/help')
+  const index = page.getByRole('navigation', { name: 'On this page' })
+  await expect(index).toHaveCount(1)
+  // scrolled by hand into the middle: the section under the reading line
+  await page.evaluate(() => window.scrollBy(0, (document.getElementById('editing')?.getBoundingClientRect().top ?? 0) - 40))
+  await expect(index).toBeInViewport()
+  await expect(index.getByRole('link', { name: 'Editing a chart' })).toHaveAttribute('aria-current', 'true')
+  // a link to a section near the end, where the page can't scroll it up to the line: the one followed
+  await index.getByRole('link', { name: 'Printing and Focus' }).click()
+  await expect(index).toBeInViewport()
+  await expect(index.getByRole('link', { name: 'Printing and Focus' })).toHaveAttribute('aria-current', 'true')
+  await expect(index.locator('[aria-current]')).toHaveCount(1)
+})
