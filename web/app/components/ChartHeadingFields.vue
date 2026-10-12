@@ -34,13 +34,13 @@
 <script setup lang="ts">
 import { ChevronRightIcon } from '@heroicons/vue/16/solid'
 import { type ChartDoc, chartDetails, chartMeta, isValidKey, keyLabel, type MetaKey, setMeta } from '@chord-scale-maker/engine'
+import { KEY_OPTIONS } from '~/utils/keyOptions'
 
 /** the chart's heading as fields: title, subtitle, key and time and, folded away, the composer, style and form (the rest stays in the text) */
 const props = defineProps<{ doc: ChartDoc }>()
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc] }>()
 
 const META_KEYS: readonly Extract<MetaKey, 'title' | 'subtitle' | 'key'>[] = ['title', 'subtitle', 'key']
-const KEY_OPTIONS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B', 'Cm', 'C#m', 'Dm', 'D#m', 'Em', 'Fm', 'F#m', 'Gm', 'G#m', 'Am', 'Bbm', 'Bm'] as const
 
 const TIMES = ['4/4', '3/4', '2/4'] as const
 const DETAIL_KEYS: readonly Extract<MetaKey, 'composer' | 'style' | 'form'>[] = ['composer', 'style', 'form']
