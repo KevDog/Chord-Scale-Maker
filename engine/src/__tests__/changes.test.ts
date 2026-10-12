@@ -85,6 +85,15 @@ describe('the Changes sheet', () => {
     expect(chords.map((c) => c.at)).toEqual([{ section: 'A', bar: '1' }, { section: 'A', bar: '2' }, { section: 'B', bar: '9' }])
   })
 
+  it('gives each bar its place in the chart (held bars too), the section a written-out copy repeats, and marks a section’s last line', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 4 | CMaj7\nA | 5 | Am7\nA | 6 | D7\nB | 1 | Fm7\n@copy A C 0\n').value
+    const sheet = buildChanges(doc, CONCERT)
+    expect(sheet.lines.map((l) => l.bars.map((b) => `${b.at.section}${b.at.bar}`))).toEqual([['A1', 'A2', 'A3', 'A4'], ['A5', 'A6'], ['B1'], ['C1', 'C2', 'C3', 'C4'], ['C5', 'C6']])
+    expect(sheet.lines[0]?.bars[2]?.chords).toEqual([]) // bar 3 holds G7
+    expect(sheet.lines.map((l) => l.sectionEnd)).toEqual([false, true, true, false, true])
+    expect(sheet.lines.map((l) => l.bars[0]?.repeatOf ?? null)).toEqual([null, null, null, 'A', 'A'])
+  })
+
   it('counts a waltz in 3', () => {
     expect(buildChanges(library('someday_my_prince_will_come'), CONCERT).beats).toBe(3)
   })

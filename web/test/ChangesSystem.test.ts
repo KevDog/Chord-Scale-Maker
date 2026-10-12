@@ -22,6 +22,8 @@ const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   guide,
 })
 const bar = (chords: readonly ChangesChord[], voice: readonly GuideNote[]): ChangesBar => ({
+  at: { section: chords[0]?.at?.section ?? 'A', bar: chords[0]?.at?.bar ?? '1' },
+  repeatOf: null,
   keySig: null,
   chords,
   marker: '',
@@ -84,7 +86,7 @@ describe('ChangesSystem chords while editing', () => {
 describe('ChangesSystem as the editor', () => {
   const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 1 | G7\n').value
   const at = (c: ChangesChord, line: number): ChangesChord => ({ ...c, at: { section: 'A', bar: '1' }, line, written: c.text })
-  const line = (): ChangesLine => ({ bars: [bar([at(chord(0, 'Dm7', ''), 2), at(chord(2, 'G7', ''), 3)], [])] })
+  const line = (): ChangesLine => ({ bars: [bar([at(chord(0, 'Dm7', ''), 2), at(chord(2, 'G7', ''), 3)], [])], sectionEnd: false })
   const base = { first: true, beats: 4 as const, barsPerLine: 4, numerals: true, scales: true, editable: true, doc }
 
   it('renders each chord as a SheetChord while editable, with the one being edited a field', async () => {
@@ -121,6 +123,29 @@ describe('ChangesSystem as the editor', () => {
     const reading = await mountSuspended(ChangesSystem, { props: { ...base, line: withReason() } })
     expect(reading.findAllComponents({ name: 'SheetLabelPicker' })).toHaveLength(0)
     expect(reading.findAllComponents({ name: 'ChangesNote' })).toHaveLength(2)
+  })
+
+  it('shows the bar toolbar for the bar under the pointer, named for the bar, and relays its changes', async () => {
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: null } })
+    expect(w.find('[role=toolbar]').exists()).toBe(false)
+    await w.find('[data-bar="0"]').trigger('pointerenter')
+    const toolbar = w.find('[role=toolbar]')
+    expect(toolbar.attributes('aria-label')).toBe('Bar 1 of A')
+    await toolbar.findAll('button').find((b) => b.attributes('aria-label') === 'Insert a held bar after A bar 1')?.trigger('click')
+    expect(w.emitted('update:doc')).toHaveLength(1)
+    expect(w.emitted('said')?.[0]).toEqual(['A: bar 2 added'])
+  })
+
+  it('offers a ghost bar at the end of a section’s last line, which asks for a bar', async () => {
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: { ...line(), sectionEnd: true }, editing: null } })
+    const ghost = w.find('button[aria-label="Add a bar at the end of A"]')
+    expect(ghost.exists()).toBe(true)
+    await ghost.trigger('click')
+    expect(w.emitted('addBar')?.[0]).toEqual(['A'])
+    const mid = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: null } })
+    expect(mid.find('button[aria-label="Add a bar at the end of A"]').exists()).toBe(false)
+    const reading = await mountSuspended(ChangesSystem, { props: { ...base, line: { ...line(), sectionEnd: true } } })
+    expect(reading.find('button[aria-label="Add a bar at the end of A"]').exists()).toBe(false)
   })
 
   it('without an editing prop, taps a chord the old way', async () => {

@@ -6,7 +6,7 @@ const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 const sheetOf = (page: Page) => lines(page).first().locator('xpath=ancestor::div[contains(@class,"rounded-xl")][1]')
 const guide = (page: Page, name: 'Off' | 'From 3rd' | 'From 7th') => page.getByRole('radio', { name, exact: true })
 /** a line's guide tone labels: the row between its staff and its numerals */
-const labelRow = (line: Locator) => line.locator('xpath=../following-sibling::div[1]')
+const labelRow = (line: Locator) => line.locator('xpath=ancestor::*[@data-slot="system"][1]//*[@data-slot="guides"]')
 /** each chord's x on a line, as a fraction of its width (ChangesSystem sets a mark's left 0.012 before its beat) */
 const chordXs = (line: Locator): Promise<number[]> =>
   line.evaluate((el) =>

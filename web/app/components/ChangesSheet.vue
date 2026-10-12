@@ -27,14 +27,22 @@
             @said="emit('said', $event)"
             @preview="emit('preview', $event)"
             @done="emit('done', $event)"
+            @refused="emit('refused', $event)"
+            @dialog="(kind, section, bar) => emit('dialog', kind, section, bar)"
+            @add-bar="emit('addBar', $event)"
           />
         </div>
       </template>
     </SheetPages>
+    <!-- the sheet as the editor: a new section after the last -->
+    <div v-if="editing !== undefined" class="flex justify-end print:hidden">
+      <UiButton outline @click="emit('addSection')"><PlusIcon data-slot="icon" />Section</UiButton>
+    </div>
   </div>
 </template>
 
 <script setup lang="ts">
+import { PlusIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetEdit } from '~/utils/sheetChordEdit'
 import { buildChanges, changesLinesPerPage, type ChartDoc, type ChordPreview, chunk, type GuideLine, pageSubtitle, type Part, type ScaleView } from '@chord-scale-maker/engine'
 
@@ -63,6 +71,10 @@ const emit = defineEmits<{
   said: [text: string]
   preview: [preview: ChordPreview | null]
   done: [then: 'stay' | 'next' | 'prev' | 'add' | 'cancel']
+  refused: [text: string]
+  dialog: [kind: 'split' | 'nav', section: string, bar: number]
+  addBar: [section: string]
+  addSection: []
 }>()
 
 const wide = useMediaQuery('(min-width: 640px), print')

@@ -169,6 +169,7 @@ import {
   type RowNote,
   rowNotes,
   setBarChords,
+  setNav,
   splitSection,
   writeOutCopy,
 } from '@chord-scale-maker/engine'
@@ -491,6 +492,8 @@ function dialogChange(v: BarDialogSubmit, d: ChartDoc, p: GridPos | null, sectio
         said: `${v.name} starts at bar ${p?.bar}`,
         why: `A new section needs ${NAME_RULE}, and starts on a bar with a chord, after the first, not inside an ending, and not in a section that’s repeated.`,
       }
+    case 'nav':
+      return { next: p ? setNav(d, p.section, p.bar, v.text) : d, at: p, said: v.text || 'No jump', why: 'The chart can’t take a jump there.' }
     case 'paste': {
       const bar = (p?.bar ?? 0) + (v.before ? 0 : 1)
       return {
