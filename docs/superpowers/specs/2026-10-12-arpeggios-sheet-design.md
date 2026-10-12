@@ -42,7 +42,7 @@ tensions. It's the scale heard as a chord, and the arpeggio a player runs over e
   labelled #9 is a 9), 11s (11 #11; 4 as 11), 13s (b13 13; 6 as 13, #5 as b13); ties by pitch, lower first.
   - Cm7 / C Dorian: C E♭ G B♭ · D F A
   - G7 / G Altered: G B D F · A♭ B♭ C♯ E♭
-  - C7 / C Half-Whole: C E G B♭ · D♭ D♯ F♯ A
+  - C7 / C Half-Whole: C E G B♭ · D♭ E♭ F♯ A (the scale spells its ♯9 as E♭)
   - CMaj7 / C Major Pentatonic: C E G B · D A
   - A scale with no notes outside the chord tones plays the chord tones alone.
 - **Direction:**
