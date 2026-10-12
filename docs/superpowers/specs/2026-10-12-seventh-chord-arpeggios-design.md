@@ -33,6 +33,8 @@ picks between the two kinds of line.
   - Up · root 1 3 5 7; Up · 1st inv 3 5 7 1; Up · 2nd inv 5 7 1 3; Up · 3rd inv 7 1 3 5 — each note above the last.
   - Down · root 7 5 3 1 (down to the root); Down · 1st inv 1 7 5 3; Down · 2nd inv 3 1 7 5; Down · 3rd inv 5 3 1 7 —
     each note below the last, so each Down pattern ends on the tone its Up inversion starts on.
+  - A triad has three tones; its fourth note is the arpeggio's first tone an octave on (Up · root 1 3 5 8,
+    Up · 1st inv 3 5 8 3); it has no 3rd inversion (Up · 3rd inv plays root position).
   - Up & down: root position, alternating Up · root and Down · root each arpeggio (not each chord), starting Up.
   - Voice-led: ascending, starting on the chord tone nearest the previous note (ties: the lower).
 - **Range** and **centre.** `rangeOf(part)`, as guide tones (`{ lo, hi, centre }`).
@@ -63,10 +65,9 @@ picks between the two kinds of line.
 - `engine/src/arpeggios.ts` (pure): `arpeggioTones(quality)`, `noteValue(chordBeats, barBeats)`, `ARPEGGIO_PATTERNS`,
   `arpeggioVoices(input, pattern)` returning each drawn bar's notes. Reuses `guideToneTimeline`, `rangeOf` and the
   guide tones' spelling.
-- `GuideNote` gains a `duration` (`'q' | '8' | '16'`; guide notes keep theirs from their length). `buildChanges` takes
-  `line: { kind: 'off' } | { kind: 'guide'; from: 'third' | 'seventh' } | { kind: 'arpeggio'; pattern }` in place of
-  its guide line argument; `ChangesBar.voice` holds the bar's notes either way; `ChangesChord.guide` stays empty for
-  arpeggios.
+- `GuideNote.beats` widens to `0.25 | 0.5 | 1 | 2 | 3 | 4`. `SheetLine = GuideLine | ArpeggioPattern` (`'off'`,
+  `'third'`, `'seventh'` or a pattern id); `buildChanges` and `changesLinesPerPage` take it in place of `GuideLine`;
+  `ChangesBar.voice` holds the bar's notes either way; `ChangesChord.guide` stays empty for arpeggios.
 - `changesLinesPerPage` gives the arpeggio line the same count as a guide tone line, unless a measured line needs
   fewer (16ths with ledger lines).
 - New exports go into `index.ts` and the `api.test.ts` snapshot. Golden fixtures change only if they include voices;
@@ -75,10 +76,10 @@ picks between the two kinds of line.
 ## Web
 
 - `PreviewControls.vue`: the segmented control and the mode's listbox, using `ui/` components; phone layout as today.
-- Preferences: `csm-line` (`off | guide | arpeggio`, default off), `csm-guide-line` (`third | seventh`, kept),
+- Preferences: `csm-line` (`off | guide | arpeggio`, default off), `csm-guide-line` (`third | seventh`, default third),
   `csm-arpeggio` (pattern id, default `up-root`). `csm-guide-line` loses its `off` value. No migration: nothing has
   been shared yet.
-- Share links: `line`, `guideLine` (`third | seventh`) and `arpeggio`; no compatibility with the old `guideLine`.
+- Share links: `line` (a `SheetLine`, absent meaning off) replaces `guideLine`; no compatibility with the old field.
 - `utils/changesDrawing.ts`: many notes a bar, beamed per beat (`Beam.generateBeams`, groups of a beat), stems
   automatic, no ties; the ghost voice still marks every beat so chords sit over their first note; the crop takes in
   noteheads, stems and beams. Line 1 gets the clef whenever a line is on.
