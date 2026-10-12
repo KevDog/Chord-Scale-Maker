@@ -40,7 +40,7 @@ function report(name: string, a: Analysis): string[] {
 }
 
 /** the chart's song page as search engines will list it, and what it lacks (libraryMeta.test.ts fails on a gap) */
-function tunePage(text: string, doc: ChartDoc): string[] {
+function songPage(text: string, doc: ChartDoc): string[] {
   const t = tuneSummary(text)
   const description = tuneDescription(t)
   return [
@@ -97,7 +97,7 @@ for (const file of files) {
     for (const c of conflicts) lines.push(`  @copy: bar ${c.bar} ${c.chord} would be ${c.copy} in the repeat; the source row has ${c.source}`)
   }
   gaps.push(...tuneGaps(doc).map((g) => `${name}: ${g}`))
-  lines.push(...tunePage(text, doc))
+  lines.push(...songPage(text, doc))
   if (!quiet) console.log(lines.join('\n') + '\n')
 }
 const filled = agree + differ

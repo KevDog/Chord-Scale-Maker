@@ -732,7 +732,7 @@ its reasons into a chart as comments.
   JSON-LD and a fallback (`<h1>` title, composer, "Loading the practice sheets…") that the sheets replace once the
   script runs; there is no separate tune page. The library links each title to `songPath(slug)`. `/tunes/**` is
   a 301 to `/song/**` (`routeRules` in `nuxt.config.ts`), for old links and search results.
-  - **Text:** `tuneSummary` (engine `tune.ts`) gives the heading and one row per chord as the Changes sheet draws it;
+  - **Text:** `tuneSummary` (engine `tune.ts`) gives the heading fields (title, subtitle, composer, aka, kind, key, style, form);
     `tuneDescription` is the meta description, one sentence of at most 160 characters, dropping clauses to fit.
     `tuneTitle` (`utils/site.ts`) is the title: "Blue Trane (John Coltrane): changes and chord scales". The head
     comes from `songHead` (`utils/songHead.ts`).

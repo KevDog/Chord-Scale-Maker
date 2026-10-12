@@ -4,7 +4,7 @@ import { parseChart } from '../chart'
 import { tuneGaps } from '../tune'
 import { isSyncCopy } from '../util'
 
-/** every library chart has what its tune page needs (title, key, style, form; a tune's composer): the fix is in the message */
+/** every library chart has what its song page needs (title, key, style, form; a tune's composer): the fix is in the message */
 describe('library charts', () => {
   it('leave no tune-page gaps', () => {
     const gaps = readdirSync('charts')

@@ -65,7 +65,7 @@ describe('seoMeta', () => {
   })
 })
 
-describe('tune pages', () => {
+describe('song pages', () => {
   it('are titled by the tune and its composer, with no parentheses without one', () => {
     expect(tuneTitle({ title: 'Blue Trane', composer: 'John Coltrane' })).toBe('Blue Trane (John Coltrane): changes and chord scales')
     expect(tuneTitle({ title: 'Bb Blues', composer: '' })).toBe('Bb Blues: changes and chord scales')

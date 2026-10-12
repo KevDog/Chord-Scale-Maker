@@ -31,6 +31,8 @@ test('/song itself, a new chart and a share link stay out of search; a query kee
     await page.goto(url)
     await expect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'noindex')
   }
+  await page.goto('/song/autumn_leaves') // an old underscore address is a duplicate of the clean one
+  await expect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'noindex')
   await page.goto('/song/autumn-leaves?mine=x')
   await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', `${SITE_URL}/song/autumn-leaves`)
 })

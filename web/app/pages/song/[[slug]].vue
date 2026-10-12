@@ -126,7 +126,8 @@ function reload(): void {
   editorKey.value = `${route.fullPath}#${generation.value}`
 }
 
-const song = songHead(slug()) // null for /song, ?mine=, ?new=1, share links
+// the library head only at the clean address; null for /song, ?mine=, ?new=1, share links and old underscore addresses
+const song = route.path.replace(/\/$/, '') === songPath(slug()) ? songHead(slug()) : null
 useSeoMeta(seoMeta(song?.head ?? PAGE_HEAD.song))
 if (song) useHead({ script: [{ type: 'application/ld+json', innerHTML: song.ld }] })
 // in the browser, the tab and history name the chart ("Blue Trane · Chord Scale Maker"); the prerender has none
