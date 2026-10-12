@@ -45,4 +45,24 @@ describe('nextChordLine', () => {
     expect(nextChordLine(doc, 2, 'prev')).toBeNull()
     expect(nextChordLine(doc, 0, 'next')).toBeNull()
   })
+
+  describe('chord by chord (← →)', () => {
+    it('moves to the next chord of the bar, then into the next bar’s first', () => {
+      expect(nextChordLine(doc, 2, 'next', 'chord')).toBe(3)
+      expect(nextChordLine(doc, 3, 'next', 'chord')).toBe(4)
+    })
+
+    it('moves back to the previous chord of the bar, or the previous bar’s last', () => {
+      expect(nextChordLine(doc, 3, 'prev', 'chord')).toBe(2)
+      expect(nextChordLine(doc, 4, 'prev', 'chord')).toBe(3)
+    })
+
+    it('skips a held bar, crosses into the next section, and is null off either end', () => {
+      expect(nextChordLine(doc, 4, 'next', 'chord')).toBe(6)
+      expect(nextChordLine(doc, 6, 'prev', 'chord')).toBe(4)
+      expect(nextChordLine(doc, 6, 'next', 'chord')).toBe(7)
+      expect(nextChordLine(doc, 7, 'next', 'chord')).toBeNull()
+      expect(nextChordLine(doc, 2, 'prev', 'chord')).toBeNull()
+    })
+  })
 })

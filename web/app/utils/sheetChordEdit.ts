@@ -34,21 +34,25 @@ export function popoverPlace(
     : { left, bottom: view.height - anchor.top + GAP, maxHeight: above }
 }
 
+/** how the chord field closed, and where it wants to go: a bar (Tab), a chord (← →), a new chord slot, or nowhere */
+export type SheetDone = 'stay' | 'next' | 'prev' | 'nextChord' | 'prevChord' | 'add' | 'cancel'
+
 /**
- * where Tab (⇧Tab) takes the chord field: the first chord of the next (previous) bar that has one of its own, over
- * line and section ends; null off either end (the field then closes). Held bars have nothing to edit and are skipped.
+ * where a key takes the chord field, over line and section ends; null off either end (the field then closes). By
+ * `bar` (Tab, ⇧Tab): the first chord of the next (previous) bar that has one of its own. By `chord` (→, ←): the next
+ * (previous) chord, in this bar or the next (previous) bar with one. Held bars have nothing to edit and are skipped.
  */
-export function nextChordLine(doc: ChartDoc, line: number, dir: 'next' | 'prev'): number | null {
+export function nextChordLine(doc: ChartDoc, line: number, dir: 'next' | 'prev', step: 'bar' | 'chord' = 'bar'): number | null {
   const view = barView(doc)
   const from = posOfLine(view, line)
   if (!from) return null
   const chordAt = (p: GridPos): number | undefined =>
-    view.sections.find((s) => s.name === p.section)?.bars.find((b) => b.bar === p.bar)?.chords[0]?.line
+    view.sections.find((s) => s.name === p.section)?.bars.find((b) => b.bar === p.bar)?.chords[step === 'bar' ? 0 : p.chord]?.line
   let p: GridPos | null = from
   for (;;) {
     p = moveInGrid(view, p, dir)
     if (!p) return null
-    if (p.section === from.section && p.bar === from.bar) continue // another chord of the same bar
+    if (step === 'bar' && p.section === from.section && p.bar === from.bar) continue // another chord of the same bar
     const found = chordAt(p)
     if (found !== undefined) return found
   }

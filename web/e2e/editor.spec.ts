@@ -1,21 +1,26 @@
-import { barCell, chooseSheet, expect, openEditor, pickOption, setScaleLevel, staves, test, typeChord, writeChart } from './fixtures'
+import { chooseSheet, expect, openEditor, pickOption, setScaleLevel, sheetChord, staves, test, writeChart } from './fixtures'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/song?new=1')
   await chooseSheet(page, 'Scales') // a chart opens on the Changes; these tests are about the scale sheet
   await expect(staves(page)).toHaveCount(3) // starter chart: 3 rows, from the root
-  await openEditor(page) // ?new=1 opens the editor; the Source is under ⋯
+  await openEditor(page) // ?new=1 opens the editor; the Source is behind the banner's Source
 })
+
+/** the chart text without its column padding */
+const plain = async (text: import('@playwright/test').Locator): Promise<string> => (await text.inputValue()).replace(/[ \t]*\|[ \t]*/g, ' | ')
 
 test('the editor is hidden until opened, remembered, and flags problems while hidden', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves') // song-first: editor hidden
   const edit = page.getByRole('button', { name: 'Edit', exact: true })
-  await expect(barCell(page, 'A1', 1)).toBeHidden()
+  const banner = page.getByText('Editing the sheet')
+  await expect(banner).toBeHidden()
   await expect(edit).toHaveAttribute('aria-expanded', 'false')
   await edit.click()
-  await expect(barCell(page, 'A1', 1)).toBeVisible()
+  await expect(banner).toBeVisible()
+  await expect(page.getByRole('gridcell')).toHaveCount(0) // the sheet is the editor: no bar grid from md up
   await page.reload()
-  await expect(barCell(page, 'A1', 1)).toBeVisible() // remembered (csm-editor)
+  await expect(banner).toBeVisible() // remembered (csm-editor)
   await expect(page.getByLabel('Chart text')).toBeVisible() // and the Source, opened in beforeEach (csm-source)
   // make a problem, then close the editor: it's flagged with an Edit prompt
   await page.getByLabel('Chart text').fill('title: T\nA | 1 | Cm7 | C Dorian | ii7 | extra\n')
@@ -24,101 +29,50 @@ test('the editor is hidden until opened, remembered, and flags problems while hi
   await expect(page.getByRole('status').filter({ hasText: 'text has a problem' })).toBeVisible()
 })
 
-test('grid edits update the text at once, and the inspector offers the chord’s scales', async ({ page }) => {
-  await typeChord(page, 'A', 1, 'Ebm7b5')
-  await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 1 \| Ebm7b5/)
-  await expect(barCell(page, 'A', 1)).toBeFocused() // back on the bar, ready for the next key
-  const scales = page.getByRole('radiogroup', { name: 'Scale' }).getByRole('radio')
-  await expect(scales.first()).toContainText('Eb Locrian') // the usual choice, first
-  await expect(scales.filter({ hasText: 'B Major Pentatonic' })).toHaveCount(1)
-})
-
-test('entering a tune is type, Space, type, Tab', async ({ page }) => {
-  await barCell(page, 'A', 1).click()
-  await page.keyboard.type('Em7 A7')
-  await page.keyboard.press('Tab')
+test('entering a tune on the sheet is type, Space, type, Tab; → from the last chord returns to its button', async ({ page }) => {
+  await chooseSheet(page, 'Changes') // the sheet is the editor
+  await sheetChord(page, 'Dm7', 'A', 1).click()
+  await page.keyboard.type('Em7') // over the selected chord
+  await page.keyboard.press(' ') // commits, and opens the new chord slot
+  await page.keyboard.type('A7')
+  await page.keyboard.press('Tab') // commits, on to bar 2's chord
   await page.keyboard.type('%')
   await page.keyboard.press('Tab')
   await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 1 \| Em7\s*\nA \| 1 \| A7\s*\nA \| 2 \| Em7\s*\nA \| 2 \| A7\s*\n/)
-  await expect(barCell(page, 'A', 3)).toBeFocused()
-  await page.keyboard.press('ArrowUp') // the top line: stays
-  await expect(barCell(page, 'A', 3)).toBeFocused()
+  const last = page.getByRole('combobox', { name: 'Chord, A bar 3' })
+  await expect(last).toBeFocused()
+  await last.press('ArrowRight') // the text is selected: → asks for the next chord, and there is none
+  await expect(sheetChord(page, 'CMaj7', 'A', 3)).toBeFocused()
 })
 
-/** the chart text without its column padding */
-const plain = async (text: import('@playwright/test').Locator): Promise<string> => (await text.inputValue()).replace(/[ \t]*\|[ \t]*/g, ' | ')
-
-test('structure: paste bars, add and repeat a section, write the repeat out, and rename a section', async ({ page }) => {
+test('a repeat’s bar offers Write out alone, and writes the section out', async ({ page }) => {
   const text = page.getByLabel('Chart text')
-  await text.fill('title: T\nkey: C\nA | 1 | C\nA | 2 | F\n')
-  await expect(barCell(page, 'A', 2)).toHaveAccessibleName('A, bar 2: F')
-  await barCell(page, 'A', 2).click()
-  await page.getByRole('button', { name: 'Paste bars…' }).click()
-  const dialog = page.getByRole('dialog')
-  await dialog.getByLabel('Bars').fill('| Dm7 | G7 |')
-  await dialog.getByRole('button', { name: 'Insert after bar 2' }).click()
-  await expect(dialog).toBeHidden()
-  await expect.poll(() => plain(text)).toMatch(/A \| 3 \| Dm7\s*\nA \| 4 \| G7/)
-  await expect(barCell(page, 'A', 3)).toBeFocused()
-
-  await page.getByRole('button', { name: 'Add section…' }).click()
-  await dialog.getByLabel('Section name').fill('B')
-  await dialog.getByLabel('First chords').fill('Em7 A7')
-  await dialog.getByRole('button', { name: 'Add section' }).click()
-  await expect.poll(() => plain(text)).toMatch(/B \| 5 \| Em7\s*\nB \| 5 \| A7/)
-
-  await page.getByRole('button', { name: 'Repeat a section…' }).click()
-  await dialog.getByLabel('Section to repeat').selectOption('A')
-  await dialog.getByLabel('Name of the repeat').fill('A2')
-  await dialog.getByRole('button', { name: 'Repeat', exact: true }).click()
-  await expect.poll(() => plain(text)).toMatch(/@copy A A2 8/)
-  await expect(page.getByText('repeats A · bars 9–12')).toBeVisible()
-  await page.getByRole('button', { name: 'Write out A2' }).click()
-  await expect.poll(() => plain(text)).toMatch(/A2 \| 9 \| C\s*\nA2 \| 10 \| F/)
-  await expect(barCell(page, 'A2', 9)).toBeVisible()
-
-  await page.getByRole('button', { name: 'Rename section B' }).click()
-  await dialog.getByLabel('Section name').fill('Bridge')
-  await dialog.getByRole('button', { name: 'Rename' }).click()
-  await expect.poll(() => plain(text)).toMatch(/Bridge \| 5 \| Em7/)
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | C\nA | 2 | F\nB | 3 | Em7\n@copy A A2 4\n')
+  await sheetChord(page, 'C', 'A2', 5).hover()
+  const toolbar = page.getByRole('toolbar', { name: 'Bar 5 of A2' })
+  await expect(toolbar.getByRole('button')).toHaveCount(1)
+  await toolbar.getByRole('button', { name: 'Write out A2, which repeats A' }).click()
+  await expect.poll(() => plain(text)).toMatch(/A2 \| 5 \| C\s*\nA2 \| 6 \| F/)
+  await expect.poll(() => plain(text)).not.toMatch(/@copy/)
 })
 
-test('bar actions: a bar in and out, an ending, a segno, a jump and a new section', async ({ page }) => {
+test('a bar’s menu on the sheet: an ending, a coda, and a jump', async ({ page }) => {
   const text = page.getByLabel('Chart text')
-  await text.fill('title: T\nkey: C\nA | 1 | C\nA | 2 | F\nA | 3 | G7\nA | 4 | C\n')
-  await expect(barCell(page, 'A', 4)).toHaveAccessibleName('A, bar 4: C')
-  await barCell(page, 'A', 2).click()
-  const inspector = page.getByRole('complementary')
-  await inspector.getByRole('button', { name: 'Bar after' }).click()
-  await expect.poll(() => plain(text)).toMatch(/A \| 2 \| F\s*\nA \| 4 \| G7/)
-  await expect(barCell(page, 'A', 3)).toHaveAccessibleName('A, bar 3: held')
-  await inspector.getByRole('button', { name: 'Delete bar' }).click()
-  await expect.poll(() => plain(text)).toMatch(/A \| 3 \| G7/)
-
-  await barCell(page, 'A', 4).click()
-  await inspector.getByRole('button', { name: '2nd ending' }).click()
-  await inspector.getByRole('button', { name: 'Coda' }).click()
-  await inspector.getByLabel('Jump at the end of the bar').selectOption('D.C. al Fine')
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | C\nA | 2 | F\nA | 3 | G7\nA | 4 | C\n')
+  const menu = async (item: string) => {
+    await sheetChord(page, 'C', 'A', 4).hover()
+    await page.getByRole('button', { name: 'More actions for A bar 4' }).click()
+    await page.getByRole('menuitem', { name: item }).click()
+  }
+  await menu('2nd ending')
   await expect.poll(() => plain(text)).toMatch(/@ending 2 A 4/)
+  await menu('Coda')
   await expect.poll(() => plain(text)).toMatch(/@coda A 4/)
+  await menu('Jump…')
+  const jump = page.getByRole('dialog')
+  await jump.getByLabel('Jump').selectOption('D.C. al Fine')
+  await jump.getByRole('button', { name: 'Set' }).click()
   await expect.poll(() => plain(text)).toMatch(/@nav A 4 D\.C\. al Fine/)
-  await expect(barCell(page, 'A', 4)).toHaveAccessibleName('A, bar 4: C; 2nd ending; Coda; D.C. al Fine')
-
-  await barCell(page, 'A', 3).click()
-  await inspector.getByRole('button', { name: 'New section here…' }).click()
-  await page.getByRole('dialog').getByLabel('Section name').fill('B')
-  await page.getByRole('dialog').getByRole('button', { name: 'Start section' }).click()
-  await expect.poll(() => plain(text)).toMatch(/B \| 3 \| G7\s*\nB \| 4 \| C/)
-  await expect.poll(() => plain(text)).toMatch(/@ending 2 B 4/)
-})
-
-test('the header sets the time and, under Details, the composer', async ({ page }) => {
-  const text = page.getByLabel('Chart text')
-  await page.getByLabel('Time', { exact: true }).selectOption('3/4')
-  await expect(text).toHaveValue(/^time: 3\/4$/m)
-  await page.getByRole('button', { name: 'Details', exact: true }).click()
-  await page.getByLabel('Composer').fill('Kosma')
-  await expect(text).toHaveValue(/^composer: Kosma$/m)
 })
 
 test('a new chart starts in C, the key of its chords', async ({ page }) => {
@@ -126,17 +80,19 @@ test('a new chart starts in C, the key of its chords', async ({ page }) => {
 })
 
 test('⌘Z undoes an edit and ⇧⌘Z redoes it, wherever it was made', async ({ page }) => {
+  await chooseSheet(page, 'Changes')
   const text = page.getByLabel('Chart text')
-  await barCell(page, 'A', 2).click()
-  await page.keyboard.press('Delete') // G7 out: bar 2 holds Dm7
-  await expect(text).not.toHaveValue(/G7/)
-  await expect(barCell(page, 'A', 2)).toHaveAccessibleName('A, bar 2: held')
-  await page.keyboard.press('ControlOrMeta+z')
+  await sheetChord(page, 'G7', 'A', 2).click()
+  await page.keyboard.type('Db7')
+  await page.keyboard.press('Enter') // the field closes, focus back on the chord
+  await expect(text).toHaveValue(/A \| 2 \| Db7/)
+  await expect(sheetChord(page, 'Db7', 'A', 2)).toBeFocused()
+  await page.keyboard.press('ControlOrMeta+z') // over the sheet
   await expect(text).toHaveValue(/A \| 2 \| G7/)
-  await expect(barCell(page, 'A', 2)).toHaveAccessibleName('A, bar 2: G7')
-  await text.press('ControlOrMeta+Shift+z')
-  await expect(text).not.toHaveValue(/G7/)
-  await page.getByRole('button', { name: 'Undo', exact: true }).click()
+  await expect(sheetChord(page, 'G7', 'A', 2)).toBeVisible()
+  await text.press('ControlOrMeta+Shift+z') // in the Source
+  await expect(text).toHaveValue(/A \| 2 \| Db7/)
+  await page.getByRole('button', { name: 'Undo the last change' }).click() // the banner's
   await expect(text).toHaveValue(/A \| 2 \| G7/)
 })
 
@@ -148,24 +104,15 @@ test('on a phone the page never scrolls sideways', async ({ page }) => {
   await expect.poll(width).toBeLessThanOrEqual(390)
 })
 
-test('a value that would corrupt the text is rejected but stays visible', async ({ page }) => {
-  await typeChord(page, 'A', 1, 'C|7')
-  const input = page.getByRole('textbox', { name: 'Chord' })
-  await expect(input).toHaveValue('C|7')
-  await expect(input).toHaveAttribute('aria-invalid', 'true')
-  await expect(page.getByRole('alert')).toContainText('may not contain |')
-  await expect(page.getByLabel('Chart text')).not.toHaveValue(/C\|7/)
-})
-
-test('text edits update the grid and preview; an unknown chord is flagged and takes any scale', async ({ page }) => {
+test('text edits update the sheets; an unknown chord is flagged on the sheet, and draws once given a scale', async ({ page }) => {
   const text = page.getByLabel('Chart text')
   await text.fill(`${await text.inputValue()}B | 9 | Cm7#5#9x\n`)
   await expect(staves(page)).toHaveCount(3) // the new row has no scale yet, so it isn't drawn
-  await barCell(page, 'B', 9).getByTitle('Not a chord the app knows').click()
-  await expect(page.getByRole('note').filter({ hasText: 'isn’t a chord I know' })).toBeVisible()
-  await page.getByRole('searchbox', { name: 'Any scale' }).fill('alt')
-  await page.getByRole('list', { name: 'Scales found' }).getByRole('button', { name: /^C Altered/ }).click()
-  await expect(text).toHaveValue(/Cm7#5#9x \| C Altered/)
+  await chooseSheet(page, 'Changes')
+  await expect(sheetChord(page, 'Cm7#5#9x', 'B', 9)).toHaveClass(/decoration-amber-500/) // the amber underline
+  await text.fill((await text.inputValue()).replace(/Cm7#5#9x[ \t]*$/m, 'Cm7#5#9x | C Altered'))
+  await expect(text).toHaveValue(/Cm7#5#9x +\| C Altered/)
+  await chooseSheet(page, 'Scales')
   await expect(staves(page)).toHaveCount(4)
 })
 
@@ -193,7 +140,7 @@ test('transposing rewrites the chart in another key', async ({ page }) => {
   const text = page.getByLabel('Chart text')
   await expect(text).toHaveValue(/A \| 6 +\| Edim7 +# /) // the analysis chooses its scale in the new key
   await expect(text).toHaveValue(/title: F Jazz Blues/) // titles stay as typed
-  await expect(barCell(page, 'A', 1)).toHaveAccessibleName('A, bar 1: Bb7')
+  await expect(sheetChord(page, 'Bb7', 'A', 1)).toBeVisible()
 })
 
 test('interval labels show on screen, against the chord root, on until turned off', async ({ page }) => {
@@ -278,9 +225,10 @@ const scaleStaves = (page: import('@playwright/test').Page) => page.locator('.br
 test('the scale level plays on the sheets without editing the chart, and a scale you pinned stays', async ({ page }) => {
   await writeChart(page, 'title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\nA | 3 | BbMaj7\n')
   const text = page.getByLabel('Chart text')
-  await barCell(page, 'A', 2).click() // F7
-  await page.getByRole('radio', { name: /^F Lydian Dominant/ }).click() // a pick of your own
+  await page.getByRole('button', { name: 'F Mixo', exact: true }).first().click() // F7's scale label: the scale list
+  await page.getByRole('dialog', { name: 'Scale: F7' }).getByRole('radio', { name: /^F Lydian Dominant/ }).click() // a pick of your own
   await expect(text).toHaveValue(/F7 +\| F Lydian Dominant/)
+  await page.keyboard.press('Escape')
   const written = await text.inputValue()
   await chooseSheet(page, 'Scales')
   await setScaleLevel(page, 'Basic')

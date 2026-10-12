@@ -227,7 +227,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Scales follow the chord:** a default scale is written into the text by name (`C Dorian`), and follows when the
   chord changes (`setRowChord`, `setBarChords`: Cm7 → F7 takes C Dorian to F Mixolydian); a scale you chose stays.
 - **Bar editor** ([proposal §3 B](superpowers/proposals/editor-ux/README.md); Edit, next to the title, opens it, and
-  Done closes it): `BarEditor` shows the chart as bars, four to a line, each written section its own ARIA grid
+  Done closes it). **Retired from `md` up** since the lead-sheet editor shipped (2026-10-11): the Chart pane (heading,
+  Undo/Redo/Save/⋯, heading fields, grid) is rendered only below `md` (the heading fields and the phone note) and on
+  a chart over a size limit (the notice, and the Source); the code stays until a later PR deletes it. As built:
+  `BarEditor` shows the chart as bars, four to a line, each written section its own ARIA grid
   headed by its name, key area and bars (`barView` and `gridLines`); a `@copy` section is one line ("A2 repeats A1 ·
   bars 9–16") whose bars show on request. One chord is selected (`GridPos`), the grid's one Tab stop. Typing replaces
   it, Space adds a chord to the bar, Tab or the arrows move (`moveInGrid`: chord by chord, then bar by bar; ↑ ↓ keep
@@ -253,18 +256,20 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     holds the chord in concert pitch (`setLineChord`: as typing it into the grid there, so blank takes it out and `%`
     is the bar before; refused with why) and its `ChordChoices`. Each drawn chord carries its chart `line`
     (`ChangesChord.line`); a repeat's points at the row it repeats, and the editor says a change there changes the
-    section it repeats. The tap also selects the chord in the grid (`posOfLine`), and the chord selected in the grid
-    is outlined on the sheet.
+    section it repeats. The chord selected in the grid is outlined on the sheet.
   - **Phones (below `md`): light edits only.** The grid, its structure actions and the inspector are hidden; the
     note "Full editing works on a larger screen" sits under the title, and chords are changed on the sheet. The
     heading fields, Undo, the Source under ⋯ and Transpose stay. The library hides New chart there.
   - **Lead-sheet editor** ([spec](superpowers/specs/2026-10-11-lead-sheet-editor-design.md); the `leadSheetEditor`
-    flag, on): from `md` up, with the editor open, the Changes sheet is itself an editing surface beside the bar grid,
-    under a banner ("Editing the sheet", Source, Done editing). A chord is a button that opens into a field on its
-    beat (`SheetChord`) with completions that read each candidate in that bar (`chordCompletions`, `chordPreview`:
-    numeral → scale at the sheet's level, labelled as the sheet labels scales, `sheetScale`); Enter and Tab commit
-    (Tab to the next bar's first chord, `nextChordLine`, skipping held bars), Space adds a chord slot, Esc cancels,
-    blank takes the chord out, `%` is the bar before; a refused draft keeps the field open with why. The numeral and
+    flag, on): from `md` up, with the editor open, the Changes sheet is the editor (the bar grid pane is not rendered
+    there), under a banner ("Editing the sheet", Undo, Redo, Source, Save, Done editing). A chord is a button that
+    opens into a field on its beat (`SheetChord`) with completions that read each candidate in that bar
+    (`chordCompletions`, `chordPreview`: numeral → scale at the sheet's level, labelled as the sheet labels scales,
+    `sheetScale`); Enter and Tab commit (Tab to the next bar's first chord, ⇧Tab the previous; → at the end of the
+    text and ← at its start to the next or previous chord, through the bar and then into the next bar's: both
+    `nextChordLine`, by bar or by chord, skipping held bars; inside the text the arrows move the caret), Space adds a
+    chord slot, Esc cancels, blank takes the chord out, `%` is the bar before; a refused draft keeps the field open
+    with why. The numeral and
     scale under each chord open the function and scale lists (`SheetLabelPicker` over `ChordChoices`, with its why);
     a function the rules only guessed is underlined amber; a pinned scale shows its pin. The bar under the pointer
     gets a toolbar (`SheetBarToolbar`: the inspector's actions by name; Write out alone on a written-out repeat); a

@@ -135,7 +135,7 @@
 import { type ChangesLine, type ChartDoc, type ChordPreview, CONCERT, rowNotes, sheetScale } from '@chord-scale-maker/engine'
 import { drawChangesLine } from '~/utils/changesDrawing'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
-import type { SheetChordEdit, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
+import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 
 /**
  * one line of the Changes sheet: slashes (or guide tones), the chords over them, guide tone labels and the analysis
@@ -163,7 +163,7 @@ const emit = defineEmits<{
   'update:doc': [doc: ChartDoc]
   said: [text: string]
   preview: [preview: ChordPreview | null]
-  done: [then: 'stay' | 'next' | 'prev' | 'add' | 'cancel']
+  done: [then: SheetDone]
   refused: [text: string]
   dialog: [kind: 'split' | 'nav', section: string, bar: number]
   addBar: [section: string]

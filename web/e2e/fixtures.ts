@@ -55,14 +55,20 @@ export async function chooseSheet(page: import('@playwright/test').Page, label: 
   await pickOption(page, 'Work on', label)
 }
 
-/** reveal the editor and its text (the bar editor's Source, under ⋯) if they aren't already shown — the page is song-first, editor hidden by default */
+/**
+ * reveal the editor and its text (the Source: the sheet banner's button from md up, the bar editor's ⋯ menu below) if
+ * they aren't already shown — the page is song-first, editor hidden by default
+ */
 export async function openEditor(page: import('@playwright/test').Page): Promise<void> {
   const text = page.getByLabel('Chart text')
+  const source = page.getByRole('button', { name: 'Source', exact: true })
   const more = page.getByRole('button', { name: 'More editing options' })
   // retry the clicks: before hydration the handlers aren't attached yet, so a single click can be lost
   await expect(async () => {
     if (!(await text.isVisible())) {
-      if (await more.isVisible()) {
+      if (await source.isVisible()) {
+        await source.click({ timeout: 1000 })
+      } else if (await more.isVisible()) {
         await more.click({ timeout: 1000 })
         await page.getByRole('menuitem', { name: 'Show source' }).click({ timeout: 1000 })
       } else {
@@ -74,24 +80,28 @@ export async function openEditor(page: import('@playwright/test').Page): Promise
   }).toPass({ timeout: 10_000 })
 }
 
-/** a bar of the bar editor's grid, by its section and number */
-export const barCell = (page: Page, section: string, bar: number) => page.getByRole('gridcell', { name: new RegExp(`^${section}, bar ${bar}:`) })
+/** a chord on the Changes sheet while editing: its button ("Edit G7, A bar 2"), which opens its field (from md up) or the bottom sheet */
+export const sheetChord = (page: Page, chord: string, section: string, bar: number) => page.getByRole('button', { name: `Edit ${chord}, ${section} bar ${bar}`, exact: true })
 
-/** type a chord over the selected chord of a bar, and confirm it */
-export async function typeChord(page: Page, section: string, bar: number, chord: string): Promise<void> {
-  await barCell(page, section, bar).click()
-  await page.keyboard.type(chord)
+/** type a chord over one on the Changes sheet (from md up: its field opens with the chord selected), and confirm it */
+export async function typeChord(page: Page, section: string, bar: number, from: string, to: string): Promise<void> {
+  await sheetChord(page, from, section, bar).click()
+  await page.keyboard.type(to)
   await page.keyboard.press('Enter')
 }
 
-/** a new chart with this text, the editor open (it opens on the Changes sheet) */
+/**
+ * a new chart with this text, the editor open (it opens on the Changes sheet). Give it a first chord the starter
+ * chart (Dm7 G7 CMaj7) hasn't at that bar, or the wait below is over before the text is parsed and the sheet redraws
+ * under the next click.
+ */
 export async function writeChart(page: Page, text: string): Promise<void> {
   await page.goto('/song?new=1')
   await openEditor(page)
   await page.getByLabel('Chart text').fill(text)
-  // the text is parsed after a short pause (useChartEditor): wait until the grid shows the first chord written
+  // the text is parsed after a short pause (useChartEditor): wait until the sheet shows the first chord written
   const [, section = '', bar = '', chord = ''] = text.match(/^([^#|\n][^|\n]*?)\s*\|\s*(\d+)\s*\|\s*([^|\n]+?)\s*(?:\||$)/m) ?? []
-  if (chord) await expect(page.locator(`[role=gridcell][aria-label^="${section}, bar ${bar}: ${chord}"]`)).toBeAttached() // by attribute: the grid is hidden on phones, still there
+  if (chord) await expect(sheetChord(page, chord, section, Number(bar))).toBeAttached()
 }
 
 /** choose the Changes sheet's guide tone line, confirmed checked (retried: a click before hydration is lost) */

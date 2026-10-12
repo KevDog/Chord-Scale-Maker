@@ -53,9 +53,11 @@
         <button type="button" class="font-semibold underline" @click="toggleEditor">Edit</button> to fix {{ editor.diagnostics.value.length === 1 ? 'it' : 'them' }}.
       </UiText>
   
-      <!-- the bar editor: the chart as bars with an inspector, its text under ⋯ as the Source -->
+      <!-- the bar editor: the chart as bars with an inspector, its text under ⋯ as the Source. From md up the sheet is the
+           editor (leadSheetEditor) and the Chart pane is not rendered: it stays below md (the heading fields and the
+           phone note) and on a chart over a size limit (the notice, and the Source) -->
       <div v-if="editorShown" class="space-y-8 print:hidden" @keydown="chartHistory.onKeydown">
-        <section aria-labelledby="grid-heading" class="min-w-0 space-y-5">
+        <section v-if="!sheetEditor" aria-labelledby="grid-heading" class="min-w-0 space-y-5">
           <div class="flex flex-wrap items-center gap-x-3 gap-y-2">
             <UiSubheading id="grid-heading">Chart</UiSubheading>
             <UiBadge color="zinc" title="The chart is written and edited in concert pitch, whatever the instrument">Concert pitch</UiBadge>
@@ -78,7 +80,7 @@
             <ChartHeadingFields :doc="editor.doc.value" @update:doc="editor.setDoc" />
             <!-- below md, light edits only: chords are changed on the Changes sheet -->
             <div class="max-md:hidden">
-              <BarEditor ref="barEditor" :doc="editor.doc.value" @update:doc="editor.setDoc" @source="prefs.source.value = true" @selected="selectedLine = $event" />
+              <BarEditor :doc="editor.doc.value" @update:doc="editor.setDoc" @source="prefs.source.value = true" @selected="selectedLine = $event" />
             </div>
           </template>
         </section>
@@ -113,7 +115,7 @@
           <UiButton outline @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-500 dark:text-zinc-400">Esc</kbd></UiButton>
         </div>
         <div v-show="!focus.on.value" class="space-y-4 print:hidden">
-          <!-- the sheet is the editor (leadSheetEditor, from md up): a banner says so, in concert pitch, with Undo, Redo, Source and Done editing -->
+          <!-- the sheet is the editor (leadSheetEditor, from md up): a banner says so, in concert pitch, with Undo, Redo, Source, Save and Done editing -->
           <div v-if="sheetEditor" class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-note-800 px-4 py-2 text-sm text-white dark:bg-note-900">
             <span class="font-semibold">Editing the sheet</span>
             <span v-if="concertNote" class="text-note-100">{{ concertNote }}</span>
@@ -121,6 +123,7 @@
               <UiButton plain class="text-white! hover:bg-white/10!" :disabled="!chartHistory.canUndo.value" aria-label="Undo the last change" title="Undo (⌘Z)" @click="chartHistory.undo"><ArrowUturnLeftIcon data-slot="icon" class="text-white!" />Undo</UiButton>
               <UiButton plain class="text-white! hover:bg-white/10!" :disabled="!chartHistory.canRedo.value" aria-label="Redo the last change" title="Redo (⇧⌘Z)" @click="chartHistory.redo"><ArrowUturnRightIcon data-slot="icon" class="text-white!" />Redo</UiButton>
               <UiButton plain class="text-white! hover:bg-white/10!" :aria-pressed="sourceShown" title="Show or hide the chart's text" @click="prefs.source.value = !sourceShown"><CodeBracketIcon data-slot="icon" class="text-white!" />Source</UiButton>
+              <UiButton v-if="saved || shared" plain class="text-white! hover:bg-white/10!" :disabled="!unsaved" title="Save in this browser now (edits also save a moment after you stop)" @click="saveNow"><BookmarkIcon data-slot="icon" class="text-white!" />Save</UiButton>
               <UiButton color="white" @click="toggleEditor">Done editing</UiButton>
             </span>
           </div>
@@ -256,7 +259,7 @@ import {
 } from '@chord-scale-maker/engine'
 import BarDialog, { type BarDialogKind, type BarDialogSubmit } from './BarDialog.vue'
 import type { SaveTarget } from '~/composables/useSavedChart'
-import { nextChordLine, type SheetChordEdit, type SheetEdit, type SheetFocus, type SheetPlace } from '~/utils/sheetChordEdit'
+import { nextChordLine, type SheetChordEdit, type SheetDone, type SheetEdit, type SheetFocus, type SheetPlace } from '~/utils/sheetChordEdit'
 import { SCALE_VIEW } from '~/utils/scaleView'
 import { firstSheet, type SheetKind } from '~/utils/sheets'
 
@@ -321,12 +324,10 @@ const sheetEditing = computed(() => editorShown.value && !editor.fatal.value)
 const sheetChord = ref<SheetChordEdit | null>(null)
 const selectedLine = ref<number | null>(null)
 const said = ref('')
-const barEditor = ref<{ selectLine: (line: number) => void } | null>(null)
-/** a chord tapped on the sheet: edit it, and select it in the bar grid */
+/** a chord tapped on the sheet: edit it in the chord editor (the bottom sheet below md; the popover with the flag off) */
 function editSheetChord(chord: SheetChordEdit): void {
   editor.flush()
   sheetChord.value = chord
-  barEditor.value?.selectLine(chord.line)
 }
 /** the bar editor's Source: under ⋯, remembered; always shown for a chart over a size limit (only the text can fix it) */
 const sourceShown = computed(() => prefs.source.value || editor.fatal.value)
@@ -381,13 +382,10 @@ watch(sheetEditor, (on) => {
 function openSheetEdit(e: SheetEdit): void {
   editor.flush()
   sheetEdit.value = e
-  if (e.kind === 'chord') {
-    selectedLine.value = e.line
-    barEditor.value?.selectLine(e.line)
-  }
+  if (e.kind === 'chord') selectedLine.value = e.line
 }
-/** the field closed: stay on the chord, move to the next (previous) bar's, open the new chord slot, or nothing */
-function sheetDone(then: 'stay' | 'next' | 'prev' | 'add' | 'cancel'): void {
+/** the field closed: stay on the chord, move to the next (previous) bar's or chord, open the new chord slot, or nothing */
+function sheetDone(then: SheetDone): void {
   const e = sheetEdit.value
   sheetPreview.value = null
   if (!e) return
@@ -406,18 +404,26 @@ function sheetDone(then: 'stay' | 'next' | 'prev' | 'add' | 'cancel'): void {
     sheetEdit.value = slotAt ? { kind: 'slot', ...slotAt } : null
     return
   }
-  if (then === 'next' || then === 'prev') {
-    const to = nextChordLine(doc, line, then)
+  const move = MOVES[then]
+  if (move) {
+    const to = nextChordLine(doc, line, move.dir, move.step)
     const toAt = to === null ? null : writtenAt(to)
     if (to !== null && toAt) {
       sheetEdit.value = { kind: 'chord', line: to, at: toAt }
       selectedLine.value = to
-      barEditor.value?.selectLine(to)
       return
     }
   }
   sheetEdit.value = null
   sheetFocus.value = { line, at, n: (sheetFocus.value?.n ?? 0) + 1 }
+}
+
+/** how each closing key moves the field: Tab and ⇧Tab by bars, → and ← by chords */
+const MOVES: Partial<Record<SheetDone, Readonly<{ dir: 'next' | 'prev'; step: 'bar' | 'chord' }>>> = {
+  next: { dir: 'next', step: 'bar' },
+  prev: { dir: 'prev', step: 'bar' },
+  nextChord: { dir: 'next', step: 'chord' },
+  prevChord: { dir: 'prev', step: 'chord' },
 }
 
 /** the sheet editor's structure actions (spec §1.4): the toolbar's and the ghost bar's, by the grid's engine calls */

@@ -41,11 +41,11 @@ Recommendations, in the order they matter. Each is referenced from the section t
 
 | # | Question | Decision | Why |
 | --- | --- | --- | --- |
-| D1 | Does the sheet editor replace the bar grid? | **No: a second editing surface over the same doc.** The grid (`BarEditor`, its inspector) stays as the structural overview and the keyboard-first path. Retiring it is a later decision, after the sheet editor has been used. | Two surfaces share every engine operation and `ChordChoices`, so the cost is UI only. The grid is where whole-tune entry (type, Tab, type) is fastest and where a screen reader has a real grid. |
+| D1 | Does the sheet editor replace the bar grid? | **No: a second editing surface over the same doc.** The grid (`BarEditor`, its inspector) stays as the structural overview and the keyboard-first path. Retiring it is a later decision, after the sheet editor has been used. **Amended after sign-off (2026-10-11): yes, from `md` up.** The sheet is the editor there; the Chart pane (grid, inspector, heading fields, its Undo/Redo/Save/⋯) is not rendered from `md` up, and stays below `md` (heading fields, D8) and on a chart over a size limit. Save moved into the banner. The field walks chords with ← → (D5). The code stays until a later PR deletes it; Paste bars, Repeat a section, Rename section, Time and the Details fields are in the Source alone meanwhile. | Two surfaces share every engine operation and `ChordChoices`, so the cost is UI only. The grid is where whole-tune entry (type, Tab, type) is fastest and where a screen reader has a real grid. Amendment: with the toolbar, ghost bars and the heading in place, the sheet covered the grid's daily use, and two surfaces for one doc read as clutter. |
 | D2 | Pitch while editing a transposed part. | **Concert pitch, the chart's own, while the editor is open**; a banner says so ("Concert pitch while you edit · your B♭ part comes back when you're done"). Done restores the part. | What you type is what the chart stores (proposal B, decision 1); a field that prints A7 and stores G7 is a trap, and the pickers' scales are concert already. |
 | D3 | Guide tones, numerals and scales while editing. | **Stay as the viewer set them.** The chord positions come from the drawing either way. Numerals and scales are forced **on** while editing (they are the pickers). | Changing the view on Edit is one surprise too many; the mockup turned guide tones off only to keep its drawing simple. |
 | D4 | What a completion shows. | The candidate's **numeral → scale in this bar**, from the analysis, computed by trying the candidate in the doc (`chordPreview`). Six at most, matched on the quality typed after the root; the typed text is always the first row, as is. | Measured over all 242 library charts: a candidate costs 0.6 ms on average, 2.2 ms at worst, so six per keystroke is under the frame budget. |
-| D5 | Keys in the field. | **Enter** and **Tab** commit; Tab then opens the next bar's first chord (over line ends; ⇧Tab the previous). **Space** commits and adds a chord to the bar on its next free beat (two chords split 2 + 2, as the format means; a third is allowed, as `setBarChords` allows). **Esc** cancels. Blank takes the chord out; `%` is the bar before, as the grid has it. | The same vocabulary as the grid (`chordsAfterTyping`), so one habit serves both. |
+| D5 | Keys in the field. | **Enter** and **Tab** commit; Tab then opens the next bar's first chord (over line ends; ⇧Tab the previous). **→** with the caret at the end of the text (or the text selected, as the field opens) and **←** at its start commit and open the next or previous chord, through the bar and then into the next bar's (added 2026-10-11, with the D1 amendment; inside the text the arrows move the caret, ↑ ↓ stay on the completions). **Space** commits and adds a chord to the bar on its next free beat (two chords split 2 + 2, as the format means; a third is allowed, as `setBarChords` allows). **Esc** cancels. Blank takes the chord out; `%` is the bar before, as the grid has it. | The same vocabulary as the grid (`chordsAfterTyping`), so one habit serves both. |
 | D6 | Where the pickers open. | In a popover anchored to the label (as `ChangesNote` is today), holding the one `ChordChoices` part: function from the numeral, scale from the scale label, each with Why under it. | One component, three doors. The bottom sheet below `md` keeps all three together, as now. |
 | D7 | The bar toolbar's look. | The site's popover surface (white / zinc-800, `ring-1 ring-zinc-950/10`, `shadow-lg`), not the mockup's dark pill: + before, + after, Split, Delete, ⋯ (Key change here, 1st / 2nd ending, Segno, Coda, Jump…, New section here). It shows for the hovered bar and for the bar whose chord has focus, and it is in the Tab order after that bar's chords. | One depth strategy on the page. Every action is the inspector's, by name, so the two surfaces never disagree. |
 | D8 | Phones (below `md`). | **Unchanged**: tap a chord → the bottom sheet; no inline field, toolbar, ghost bars or heading fields; the note "Full editing works on a larger screen" stays. | Decided in the proposal (2026-10-11): phone use is reading, transposing and fixing a chord. |
@@ -96,8 +96,8 @@ Edit (next to the title) opens the editor as today. With the flag on, on screens
   untouched.
 - Numerals and scales are shown (D3) whatever `csm-numerals` / `csm-scale-names` say; the toggles are disabled with
   a title saying why. The preferences are not changed.
-- The bar grid pane stays where it is (D1). The chord selected in either surface is the one outlined on the sheet and
-  selected in the grid (`selectedLine`, `posOfLine`, both existing).
+- The bar grid pane stays where it is (D1; since the D1 amendment it is not rendered from `md` up). The chord being
+  edited is the one outlined on the sheet (`selectedLine`).
 
 ### 1.1 The chord field
 
@@ -245,6 +245,7 @@ Each a PR; `make test`, `make lint`, `make e2e` green; the flag off until the la
 4. **Structure:** the bar toolbar, the ghost bar, + section.
 5. **The heading** in place.
 6. **Sign-off:** flag on in `nuxt.config.ts`; `docs/design.md`; then a short note deciding the grid's future (D1).
+   Decided 2026-10-11: hidden from `md` up (the D1 amendment); deletion a later PR.
 
 ## Risks
 

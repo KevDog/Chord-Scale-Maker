@@ -144,8 +144,10 @@ test('on a phone the note is reachable by keyboard and closes on Escape and outs
 test('the editor links to how to write a function', async ({ page }) => {
   await writeChart(page, 'title: T\nkey: C\nA | 1 | D7 | | X7\n')
   await saved(page)
-  await expect(page.getByRole('link', { name: 'How to write a function' }).first()).toBeVisible()
-  await page.getByRole('link', { name: 'How to write a function' }).first().click()
+  await page.getByRole('button', { name: 'II7', exact: true }).click() // the numeral on the sheet: the function list, with the link under it
+  const link = page.getByRole('dialog', { name: 'Function: D7' }).getByRole('link', { name: 'How to write a function' })
+  await expect(link).toBeVisible()
+  await link.click()
   await expect(page).toHaveURL(/\/functions#writing$/)
 })
 

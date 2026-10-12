@@ -48,7 +48,7 @@
 
 <script setup lang="ts">
 import { PlusIcon } from '@heroicons/vue/16/solid'
-import type { SheetChordEdit, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
+import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 import { buildChanges, changesLinesPerPage, type ChartDoc, type ChordPreview, chunk, type GuideLine, pageSubtitle, type Part, type ScaleView } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones) */
@@ -76,7 +76,7 @@ const emit = defineEmits<{
   'update:doc': [doc: ChartDoc]
   said: [text: string]
   preview: [preview: ChordPreview | null]
-  done: [then: 'stay' | 'next' | 'prev' | 'add' | 'cancel']
+  done: [then: SheetDone]
   refused: [text: string]
   dialog: [kind: 'split' | 'nav', section: string, bar: number]
   addBar: [section: string]
