@@ -126,6 +126,19 @@ export async function guidesDrawn(page: Page): Promise<void> {
     .toBe(true)
 }
 
+/** choose 7th Chords with a pattern ("Up · root", "Voice-led", …) */
+export async function showArpeggios(page: Page, pattern: string): Promise<void> {
+  await showLine(page, '7th Chords')
+  await pickOption(page, 'Arpeggio pattern', pattern)
+}
+
+/** wait until every Changes line has been drawn with its arpeggios */
+export async function arpeggiosDrawn(page: Page): Promise<void> {
+  await expect
+    .poll(() => page.locator('svg[aria-label^="Bars:"]').evaluateAll((els) => els.length > 0 && els.every((e) => e.getAttribute('aria-label')?.includes('; 7th chords: '))))
+    .toBe(true)
+}
+
 /** Bravura code points VexFlow draws as SVG text */
 export const GLYPH = { flat: 0xe260, natural: 0xe261, sharp: 0xe262, gClef: 0xe050, fClef: 0xe062 } as const
 
