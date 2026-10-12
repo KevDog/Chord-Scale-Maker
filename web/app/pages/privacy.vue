@@ -2,7 +2,7 @@
   <article class="max-w-3xl space-y-8">
     <header>
       <UiHeading>Privacy</UiHeading>
-      <UiText class="mt-1">Short version: nothing is tracked, sold or shared.</UiText>
+      <UiText class="mt-1">Short version: Nothing is tracked, sold or shared. I don't know anything about you, and you don't know anything about me.</UiText>
     </header>
 
     <section class="space-y-3" aria-labelledby="contact">
