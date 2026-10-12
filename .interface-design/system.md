@@ -52,6 +52,9 @@ Nested radius = inner + padding. (Tailwind v4: use the named utilities, not `rou
 - **toggle** (`ToggleButton`, `aria-pressed`): off = outline; on = accent tint (`note-100` bg, `note-800` text,
   `note-300` ring; dark: `note-300/15` bg, `note-200` text). Numerals, Scales, Intervals.
 - **choice** (`SegmentedControl`): its checked state uses the toggle's on style (one accent).
+- `ToggleButton` is the Catalyst button's base (size, focus, icon slot) with the outline style off and the tint on, so it
+  lines up with `UiButton`s beside it. Toggle-on contrast: note-800 on note-100 8.1:1; dark note-200 on note-300/15
+  over zinc-950 9.4:1. Practice presets and boxes use the same tint.
 - **quiet** (`plain`): menu triggers, Report, Revert.
 
 ## Type
