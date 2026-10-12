@@ -52,7 +52,7 @@ Recommendations, in the order they matter. Each is referenced from the section t
 | D9 | Flag. | `leadSheetEditor` in `runtimeConfig.public.features`, **off**; on in e2e builds, as every flag is. Off, the sheet keeps today's tap-to-edit. | CLAUDE.md. |
 | D10 | Repeats. | A chord in a folded repeat ("A1 · A2") or a written-out one ("A3 (= A1)") edits its source row (`ChangesChord.line` already points there); the field's hint line says "A2 repeats A1: a change here changes A1 and every repeat of it", as the bottom sheet does. The toolbar on a repeat's bar offers **Write out** (`writeOutCopy`) and nothing else. | Structure edits inside a `@copy` have no row to land on. |
 | D11 | Printing. | Every editing mark is `print:hidden`: banner, field, toolbar, ghosts, heading fields, dotted underlines (already). Print from the editor prints the sheet as it reads. | Existing pattern on the sheet. |
-| D12 | New engine code. | `engine/src/completions.ts`, pure: `chordCompletions(text, limit)` and `chordPreview(doc, line, text, view)`. Exported from `index.ts` (the API snapshot test updates). No change to any existing function. | Keeps the view logic that can be pure in the engine (CLAUDE.md). |
+| D12 | New engine code. | `engine/src/completions.ts`, pure: `chordCompletions(text, limit)` and `chordPreview(doc, section, bar, chords, index, view)`. Exported from `index.ts` (the API snapshot test updates). No change to any existing function. | Keeps the view logic that can be pure in the engine (CLAUDE.md). |
 
 ## Design direction
 
@@ -137,7 +137,7 @@ the typed text always the first option):
   order; aliases that read as the same quality appear once. With no suffix, the six most common qualities (`7`,
   `m7`, `maj7`, `m7b5`, `7b9`, `dim7`). Formatting uses the site's glyphs (♭ ♯) for display and the plain text for
   the chart.
-- Each option shows the candidate's symbol and `chordPreview(doc, line, candidate, view)`: `numeral → scale`
+- Each option shows the candidate's symbol and `chordPreview(doc, section, bar, chords-with-candidate, index, view)`: `numeral → scale`
   (`V7 → D Phrygian Dominant`); a candidate the analysis doesn't reach shows the quality's default scale, muted;
   an unreadable one shows nothing.
 - Taking an option commits it (as Enter does) and stays in the bar: the user may still Tab or Space.

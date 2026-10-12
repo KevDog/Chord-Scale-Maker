@@ -52,6 +52,8 @@ exports[`exports the same names 1`] = `
   "chartKey",
   "chartKeyOf",
   "chartMeta",
+  "chordCompletions",
+  "chordPreview",
   "chordTokens",
   "chordTokensOrNull",
   "chordsAfterTyping",
