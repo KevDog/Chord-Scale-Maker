@@ -1,0 +1,108 @@
+title: Simple Samba
+composer: Jim Hall
+style: Up samba
+key: C
+form: ABCDE, 90 bars (solos on ABCD, 70 bars)
+source:
+# analysis: 2026-10-12, rules v1; C
+
+# book tempo marking: Fast Samba, in cut time
+# solo on ABCD (play through the drum fills); after solos, D.C. al Coda: the coda is taken in E after bar 18
+# kicks on beat 4 may be omitted for solos; bass and piano tacet during the drum fills in the head
+# section | bar | chord
+# a guitar pickup into A
+# area: C major (bars 1–28)
+A    | 1  | CMaj7      # tonic: the 4th is in the key
+A    | 3  | Bm7b5      # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+A    | 4  | E7         # V7/vi in C: b9 and b13 are in the key
+A    | 5  | Am7        # ii of the ii–V to G minor
+A    | 6  | D7         # V7/v in C: natural tensions
+A    | 7  | Gm7        # ii of the ii–V to F
+A    | 8  | C7         # V7/IV in C: natural tensions
+A    | 9  | FMaj7      # the C7 before it makes F the key of the moment: the 4th is in the key
+A    | 10 | Dm7b5      # iiø7, borrowed from C minor: Locrian
+# AMaj7 is anticipated on bar 10, beat 4
+A    | 11 | AMaj7      # a non-tonic major chord: Lydian
+# bars 11–14: drum fill (piano pickup in bar 14)
+B    | 15 | DMaj7      # a non-tonic major chord: Lydian
+B    | 17 | C#m7b5     # iiø7 of B minor: Locrian, the key's own notes (its ♭2 is a passing note)
+B    | 18 | F#7        # V7/vii in C: b9 and b13 are in the key
+B    | 19 | Bm7        # ii of the ii–V to A minor
+B    | 20 | E7         # V7/vi in C: b9 and b13 are in the key
+B    | 21 | Am7        # ii of D7: Dorian
+B    | 22 | D7         # V7/V in C: natural tensions
+B    | 23 | G#m7b5     # bviø7 in C: Locrian, its own mode (the chord is outside the key)
+B    | 24 | Gm7        # a borrowed minor chord: Dorian, its own key
+B    | 25 | F#m7       # a borrowed minor chord: Dorian, its own key
+B    | 26 | Bm7        # a borrowed minor chord: Dorian, its own key
+B    | 27 | Fm7        # ii of Bb7: Dorian
+B    | 28 | Bb7        # extended ii–V: a side-step, its own key
+@key B 29 Ab
+# area: Ab major (bars 29–32)
+B    | 29 | Bbm7       # ii of the ii–V to Ab
+B    | 30 | Eb7        # V7 of Ab: natural tensions
+B    | 31 | AbMaj7     # tonic: the 4th is in the key
+B    | 32 | Fm7b5      # viø7 in Ab: Locrian, its own mode (the chord is outside the key)
+# CMaj7 is anticipated on bar 32, beat 4
+@key B 33 C
+# area: C major (bars 33–37)
+B    | 33 | CMaj7      # tonic: the 4th is in the key
+# bars 33–36: drum fill (guitar pickup in bar 36)
+C    | 37 | FMaj7      # IV: the #4 is the key’s 7th
+@key C 39 Eb
+# area: Eb major (bars 39–41)
+C    | 39 | Fm7        # ii of the ii–V to Eb
+C    | 40 | Bb7        # V7 of Eb: natural tensions
+C    | 41 | EbMaj7     # tonic: the 4th is in the key
+@key C 43 Db
+# area: Db major (bars 43–49)
+C    | 43 | Ebm7       # ii of the ii–V to Db
+C    | 44 | Ab7        # V7 of Db: natural tensions
+C    | 45 | DbMaj7     # tonic: the 4th is in the key
+C    | 47 | Gb9#11     # tritone substitute: resolves down a half step to Fm7
+C    | 49 | Fm7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+# book: Bb(b9)sus
+@key C 51 Eb
+# area: Eb major (bars 51–67)
+C    | 51 | Bb7sus4b9  # from the symbol: sus b9
+C    | 52 | Bb13       # V7 of Eb: natural tensions
+D    | 53 | EbMaj7     # tonic: the 4th is in the key
+D    | 55 | Dm7b5      # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+D    | 56 | G7         # V7/vi in Eb: b9 and b13 are in the key
+D    | 57 | Cm7        # ii of the ii–V to Bb minor
+D    | 58 | F7         # V7/v in Eb: natural tensions
+D    | 59 | Bbm7       # ii of Eb7: Dorian
+D    | 60 | Eb7        # V7/IV in Eb: natural tensions
+D    | 61 | Am7b5      # #ivø7 in Eb: Locrian, its own mode (the chord is outside the key)
+D    | 62 | Abm7       # a borrowed minor chord: Dorian, its own key
+D    | 63 | Gm7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+D    | 64 | C7b9       # V7/ii in Eb: the b13 is in the key, the b9 from the symbol
+D    | 65 | Fm9b5      # ii of the ii–V to Eb
+D    | 66 | Bb7#5b9    # V7 of Eb: b9, #11 and b13 from the symbol
+# Eb69 is anticipated on bar 66, beat 4
+D    | 67 | Eb69       # tonic: the 4th is in the key
+# bars 67–70: drum fill (piano with bass pickup in bar 70)
+# E (head only): the book prints its chords in parentheses, (Ebm9) and (Dbm9), naming the written-out guitar voicings; they are its only chords, so they are rows here
+@key E 71 Ebm
+# area: Eb minor (bars 71–77)
+E    | 71 | Ebm9       # ii of the ii–V to Db minor
+# book: "Ab bass" under the voicing, pushed on bar 76, beat 4 (written Ebm9/Ab)
+E    | 77 | Ebm9/Ab    # static sus: Mixolydian
+# bars 78–80: rests (a Db pickup on bar 80, beat 4)
+@key E 81 Dbm
+# area: Db minor (bars 81–90)
+E    | 81 | Dbm9       # ii of Dbm9/Gb: Dorian
+# book: "Gb bass" under the voicing, pushed on bar 86, beat 4 (written Dbm9/Gb)
+E    | 87 | Dbm9/Gb    # static sus: Mixolydian
+# bars 88–90: rests; the coda sign stands after bar 88
+E    | 88 | Dbm9/Gb
+@coda E 88
+@nav E 88 To Coda
+E    | 90 | Dbm9/Gb
+@nav E 90 D.C. al Coda
+# Coda: bar 1 a rest (piano), the guitar's E9b5 on bar 2; bars 3–5 N.C. (melody, then drums); Eb hit on bar 6, beat 4
+@key Coda 2 Eb
+# area: Eb major (bars 2–6)
+Coda | 2  | E9b5       # tritone substitute: resolves down a half step to Eb
+@coda Coda 2
+Coda | 6  | Eb         # tonic: the 4th is in the key

@@ -1,0 +1,84 @@
+title: Partido Alto
+composer: Jose Bertrami
+style: Latin
+key: Gm
+form: ABCDE, 72 bars
+source:
+# analysis: 2026-10-12, rules v1; G minor
+# book: Med. Latin/Funk (quarter = 172), as played by Airto. A and B are played twice (the repeat goes back to A);
+# C and D are for solos (repeated); after solos E (a bass vamp, 4x), then D.S. al Coda: from the segno, A to its last bar, then the Coda
+# the book writes most chords over an eighth-note anticipation; each is placed in the bar it anticipates
+# the book's Am7(add 11) is written Am11
+
+# section | bar | chord
+# Intro bars 1–4: an electric bass figure, played 5x (piano enters 3rd x); bar 5 follows the repeat
+Intro | 1  | Gm11     # tonic minor: Dorian by convention
+# Intro bars 6–9: the segno; D.S. returns here
+Intro | 6  | Gm11
+@segno Intro 6
+A     | 1  | Gm11     # tonic minor: Dorian by convention
+A     | 16 | Eb/Db    # a non-tonic major chord: Lydian
+@coda A 16
+# book: Cm7 with the coda sign on the last eighth of bar 16 (the anticipation of B's Cm7); on the D.S., to the Coda from here
+B     | 17 | Cm7      # iv: Dorian, the key’s own notes
+B     | 18 | Bbm7     # a borrowed minor chord: Dorian, its own key
+B     | 19 | Am11     # ii of D9sus4: Dorian
+# bar 19: break
+B     | 20 | D9sus4   # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+B     | 20 | D7#5/F#  # V7 of G minor: b9 and b13 are in the key, the #11 from the symbol
+B     | 21 | Gm11     # tonic minor: Dorian by convention
+B     | 24 | Eb/Db    # a non-tonic major chord: Lydian
+B     | 25 | Cm7      # iv: Dorian, the key’s own notes
+B     | 26 | Bbm7     # a borrowed minor chord: Dorian, its own key
+B     | 27 | Am11     # ii of D9sus4: Dorian
+B     | 27 | D9sus4   # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+# bar 27: break; the book writes Am7(add 11) over the last eighth of bar 26 and D9sus over the hit in bar 27
+B     | 28 | D9sus4
+B     | 28 | D7#5/F#  # V7 of G minor: b9 and b13 are in the key, the #11 from the symbol
+B     | 29 | Gm11     # tonic minor: Dorian by convention
+B     | 33 | Gm11
+@ending 1 B 29 32
+@ending 2 B 33 36
+# the 1st ending repeats to A
+# C: solos
+C     | 37 | Gm11
+C     | 52 | Eb/Db    # a non-tonic major chord: Lydian
+D     | 53 | Cm7      # iv: Dorian, the key’s own notes
+D     | 54 | Bbm7     # a borrowed minor chord: Dorian, its own key
+D     | 55 | Am11     # ii of D9sus4: Dorian
+D     | 56 | D9sus4   # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+D     | 56 | D7#5/F#  # V7 of G minor: b9 and b13 are in the key, the #11 from the symbol
+D     | 57 | Gm11     # tonic minor: Dorian by convention
+D     | 60 | Eb/Db    # a non-tonic major chord: Lydian
+D     | 61 | Cm7      # iv: Dorian, the key’s own notes
+D     | 62 | Bbm7     # a borrowed minor chord: Dorian, its own key
+D     | 63 | Am11     # ii of D9sus4: Dorian
+D     | 64 | D9sus4   # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+D     | 64 | D7#5/F#  # V7 of G minor: b9 and b13 are in the key, the #11 from the symbol
+D     | 65 | Gm11     # tonic minor: Dorian by convention
+# book: C and D repeat for solos; after solos, continue to E
+# E: bass vamp, bars 69–70 played 4x, then bars 71–72 (repeated) and D.S. al Coda
+E     | 69 | Gm11
+E     | 72 | Gm11
+@nav E 72 D.S. al Coda
+Coda  | 1  | Cm7      # iv: Dorian, the key’s own notes
+Coda  | 2  | Bbm7     # a borrowed minor chord: Dorian, its own key
+Coda  | 3  | Am11     # ii of D9sus4: Dorian
+# bar 3: break
+Coda  | 4  | D9sus4   # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+Coda  | 4  | D7#5/F#  # V7 of G minor: b9 and b13 are in the key, the #11 from the symbol
+Coda  | 5  | Gm11     # tonic minor: Dorian by convention
+Coda  | 8  | Eb/Db    # a non-tonic major chord: Lydian
+Coda  | 9  | Cm7      # iv: Dorian, the key’s own notes
+Coda  | 10 | Bbm7     # a borrowed minor chord: Dorian, its own key
+Coda  | 11 | Am11     # ii of D9sus4: Dorian
+# bar 11: break
+Coda  | 12 | D9sus4   # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+Coda  | 12 | D7#5/F#  # V7 of G minor: b9 and b13 are in the key, the #11 from the symbol
+Coda  | 13 | Gm11     # tonic minor: Dorian by convention
+Coda  | 16 | Eb/Db    # a non-tonic major chord: Lydian
+Coda  | 17 | Cm7      # iv: Dorian, the key’s own notes
+Coda  | 18 | Bbm7     # a borrowed minor chord: Dorian, its own key
+Coda  | 19 | Am11     # ii of D9sus4: Dorian
+Coda  | 19 | D9sus4   # static sus: Mixolydian
+# bar 19: the final hit; the book writes Am7(add 11) over the last eighth of bar 18 and D9sus over the hit

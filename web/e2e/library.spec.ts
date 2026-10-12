@@ -175,7 +175,7 @@ test('one Library heading, an A–Z bar that jumps to a letter and hides while s
   await expect(page.getByText('Chart library')).toHaveCount(0)
   await expect(page.getByRole('heading', { name: 'Library', level: 2 })).toHaveCount(0) // no My charts above it
   const az = page.getByRole('navigation', { name: 'Jump to letter' })
-  const round = page.getByRole('link', { name: 'Recorda-Me', exact: true }) // R's first tune ('Round Midnight files after it)
+  const round = page.getByRole('link', { name: 'Rapture', exact: true }) // R's first tune
   // retried: before hydration the link is a plain #letter-R jump, which scrolls but leaves focus behind
   await expect(async () => {
     await az.getByRole('link', { name: 'R', exact: true }).click()
