@@ -96,7 +96,7 @@ describe('cleanLettering (R9): a scale on a pitch, on the root the project rule 
 
 describe('samePitchScale (R18): the same menu entry, however its root is spelled', () => {
   it('matches the same scale on an enharmonically equal root, however the name is written', () => {
-    expect(samePitchScale('F# Whole-Half Diminished', 'Gb Whole-Half Diminished')).toBe(true) // time_after_time's G♭°7
+    expect(samePitchScale('F# Whole-Half Diminished', 'Gb Whole-Half Diminished')).toBe(true) // time-after-time's G♭°7
     expect(samePitchScale('D# Diatonic Diminished', 'Eb Diatonic Diminished')).toBe(true)
     expect(samePitchScale('D Half-Whole', 'D Half-Whole Diminished')).toBe(true)
   })

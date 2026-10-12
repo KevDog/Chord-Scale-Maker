@@ -12,17 +12,17 @@ describe('useScaleLevel', () => {
   afterEach(() => localStorage.clear())
 
   it('starts at Standard and remembers a level and seed per chart', async () => {
-    const a = make('autumn_leaves')
+    const a = make('autumn-leaves')
     expect(a.level.value).toBe('standard')
     a.level.value = 'random'
     await nextTick()
-    const again = make('autumn_leaves')
+    const again = make('autumn-leaves')
     expect([again.level.value, again.seed.value]).toEqual(['random', a.seed.value])
-    expect(make('so_what').level.value).toBe('standard')
+    expect(make('so-what').level.value).toBe('standard')
   })
 
   it('shuffles to a new seed, and forgets the chart once back at Standard', async () => {
-    const a = make('f_blues')
+    const a = make('f-blues')
     a.level.value = 'random'
     const before = a.seed.value
     a.shuffle()
@@ -30,7 +30,7 @@ describe('useScaleLevel', () => {
     await nextTick()
     a.level.value = 'standard'
     await nextTick()
-    expect(localStorage.getItem('csm-level:f_blues')).toBeNull()
+    expect(localStorage.getItem('csm-level:f-blues')).toBeNull()
   })
 
   it('takes a share link’s level for the visit only, and ignores stored junk', async () => {

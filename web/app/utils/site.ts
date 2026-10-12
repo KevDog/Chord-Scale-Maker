@@ -56,8 +56,8 @@ export const seoMeta = (head: PageHead) => ({
   ...(head.robots ? { robots: head.robots } : {}),
 })
 
-/** a chart's tune page: hyphens for the slug's underscores, which search engines read as word breaks (blue_trane -> /tunes/blue-trane) */
-export const tunePath = (slug: string): string => `/tunes/${slug.replaceAll('_', '-')}`
+/** a chart's tune page: its file name (round-midnight.txt -> /tunes/round-midnight) */
+export const tunePath = (slug: string): string => `/tunes/${slug}`
 
 /** a tune page's title, without the site name (the template adds it) */
 export const tuneTitle = (t: Readonly<{ title: string; composer: string }>): string =>

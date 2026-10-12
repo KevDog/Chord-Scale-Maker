@@ -11,7 +11,7 @@ describe('My charts', () => {
 
   it('saves, lists newest first, loads and deletes', () => {
     const a = saveChart({ id: 'aaaaaa1', text: chart('Alpha'), kind: 'new' }, 1)
-    saveChart({ id: 'bbbbbb2', text: chart('Beta'), kind: 'copy', basedOn: 'autumn_leaves' }, 2)
+    saveChart({ id: 'bbbbbb2', text: chart('Beta'), kind: 'copy', basedOn: 'autumn-leaves' }, 2)
     expect(a).toMatchObject({ ok: true, meta: { title: 'Alpha', kind: 'new', createdAt: 1 } })
     expect(listCharts().map((m) => m.title)).toEqual(['Beta', 'Alpha'])
     expect(loadChart('aaaaaa1')?.text).toBe(chart('Alpha'))
@@ -21,11 +21,11 @@ describe('My charts', () => {
   })
 
   it('updates a chart in place, keeping its kind and origin', () => {
-    saveChart({ id: 'eeeeee1', text: chart('Autumn Leaves'), kind: 'edited', basedOn: 'autumn_leaves' }, 1)
+    saveChart({ id: 'eeeeee1', text: chart('Autumn Leaves'), kind: 'edited', basedOn: 'autumn-leaves' }, 1)
     saveChart({ id: 'eeeeee1', text: chart('Autumn Leaves', 'F7'), kind: 'new' }, 5)
-    expect(versionOf('autumn_leaves')).toMatchObject({ id: 'eeeeee1', kind: 'edited', createdAt: 1, updatedAt: 5 })
+    expect(versionOf('autumn-leaves')).toMatchObject({ id: 'eeeeee1', kind: 'edited', createdAt: 1, updatedAt: 5 })
     expect(loadChart('eeeeee1')?.text).toContain('F7')
-    expect(versionOf('so_what')).toBeNull()
+    expect(versionOf('so-what')).toBeNull()
   })
 
   it('stops at the cap and at the size limit, and says why', () => {

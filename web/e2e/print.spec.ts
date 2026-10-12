@@ -9,7 +9,7 @@ for (const [instrument, start] of [
   ['Trombone', 'B'],
 ] as const) {
   test(`prints 12 staves per letter page (${instrument}, from ${start ?? 'the root'})`, async ({ page }) => {
-    await page.goto('/song?chart=autumn_leaves')
+    await page.goto('/song?chart=autumn-leaves')
     await chooseSheet(page, 'Scales') // a chart opens on the Changes
     await chooseInstrument(page, instrument)
     if (start) {
@@ -25,11 +25,11 @@ for (const [instrument, start] of [
 
 // eight lines a page with guide tones off: a 32-bar AABA written out (Satin Doll) on one; Tunisia's nine lines (with the tag) on two
 for (const [chart, pages] of [
-  ['autumn_leaves', 1],
-  ['satin_doll', 1],
-  ['a_night_in_tunisia', 2],
+  ['autumn-leaves', 1],
+  ['satin-doll', 1],
+  ['a-night-in-tunisia', 2],
   ['stardust', 2],
-  ['its_you_or_no_one', 2],
+  ['its-you-or-no-one', 2],
 ] as const) {
   test(`prints the Changes eight lines a page (${chart})`, async ({ page }) => {
     await page.goto(`/song?chart=${chart}`)
@@ -42,7 +42,7 @@ for (const [chart, pages] of [
 }
 
 test('the Changes sheet shows 1st/2nd endings and a D.S. al Coda', async ({ page }) => {
-  await page.goto('/song?chart=its_you_or_no_one')
+  await page.goto('/song?chart=its-you-or-no-one')
   await chooseSheet(page, 'Changes')
   await expect(page.locator('svg[aria-label^="Bars:"]').first()).toBeVisible()
   await expect(page.getByText('D.S. al Coda')).toBeVisible()

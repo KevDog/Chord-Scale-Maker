@@ -21,7 +21,7 @@ const bars = (name: string, part = CONCERT) => buildChanges(library(name), part)
 
 describe('the Changes sheet', () => {
   it('lays a chart out four bars a line, each section on a new line, a @copy straight after its source as a repeat', () => {
-    const sheet = buildChanges(library('autumn_leaves'), CONCERT)
+    const sheet = buildChanges(library('autumn-leaves'), CONCERT)
     expect(sheet.lines.map((l) => l.bars.length)).toEqual([4, 4, 4, 4, 4, 4]) // A1·A2 (8 bars, played twice), B (16)
     const [first] = sheet.lines[0]?.bars ?? []
     expect([first?.marker, first?.keyArea, first?.repeatStart]).toEqual(['A1 · A2', 'G minor', true])
@@ -31,7 +31,7 @@ describe('the Changes sheet', () => {
   })
 
   it('puts each chord on its beat with its numeral and its scale', () => {
-    const bar3 = bars('autumn_leaves')[2]
+    const bar3 = bars('autumn-leaves')[2]
     expect(bar3?.chords.map((c) => [c.text, c.beat, c.numeral, c.scale])).toEqual([
       ['Bm7', 0, 'ii7/II', 'B Dorian'],
       ['E7', 2, 'V7/II', 'E Mixo'],
@@ -39,7 +39,7 @@ describe('the Changes sheet', () => {
   })
 
   it('prints an intro before the form, writes a later copy out, marks key areas, and closes both with a double bar before a tag', () => {
-    const b = bars('a_night_in_tunisia')
+    const b = bars('a-night-in-tunisia')
     expect(b.filter((x) => x.marker).map((x) => x.marker)).toEqual(['Intro', 'A1 · A2', 'B', 'A3 (= A1)', 'Tag'])
     expect(b.filter((x) => x.keyArea).map((x) => x.keyArea)).toEqual(['D minor', 'F major', 'D minor'])
     expect(b.map((x) => x.end).filter((e) => e !== 'none')).toEqual(['double', 'double', 'final'])
@@ -68,7 +68,7 @@ describe('the Changes sheet', () => {
   })
 
   it('writes chords, scales and key areas for a transposing instrument; numerals stay', () => {
-    const [first] = bars('autumn_leaves', TENOR)
+    const [first] = bars('autumn-leaves', TENOR)
     expect([first?.keyArea, first?.chords[0]?.scale, first?.chords[0]?.numeral]).toEqual(['A minor', 'D Dorian', 'ii7/♭III'])
   })
 
@@ -95,7 +95,7 @@ describe('the Changes sheet', () => {
   })
 
   it('counts a waltz in 3', () => {
-    expect(buildChanges(library('someday_my_prince_will_come'), CONCERT).beats).toBe(3)
+    expect(buildChanges(library('someday-my-prince-will-come'), CONCERT).beats).toBe(3)
   })
 
   it('gives each chord its reason, the key it is heard in, and whether its function was stated', () => {
@@ -204,7 +204,7 @@ describe('guide tones on the Changes sheet', () => {
 
   it("leaves the sheet as it was with the line 'off': no voice, no labels, and no voice leading run", () => {
     vi.mocked(guideVoices).mockClear()
-    const doc = library('autumn_leaves')
+    const doc = library('autumn-leaves')
     const sheet = buildChanges(doc, CONCERT, 4, false, 'off')
     expect(sheet).toEqual(buildChanges(doc, CONCERT))
     const b = sheet.lines.flatMap((l) => l.bars)

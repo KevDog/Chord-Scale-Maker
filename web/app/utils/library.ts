@@ -30,5 +30,3 @@ export const searchLibrary = (charts: readonly LibraryChart[], query: string): L
 
 export const findChart = (slug: string): LibraryChart | undefined => LIBRARY.find((c) => c.slug === slug)
 
-/** the chart whose tune page is /tunes/<pathSlug> */
-export const findTune = (pathSlug: string): LibraryChart | undefined => LIBRARY.find((c) => tunePath(c.slug) === `/tunes/${pathSlug}`)

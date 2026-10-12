@@ -23,7 +23,7 @@ describe('sitemapXml', () => {
 
 describe('sitemap paths', () => {
   it('maps chart files to tune paths, skipping other files and sync copies', () => {
-    expect(tunePathsOf(['blue_trane.txt', 'README.md', 'so_what 2.txt'])).toEqual(['/tunes/blue-trane'])
+    expect(tunePathsOf(['blue-trane.txt', 'README.md', 'so-what 2.txt'])).toEqual(['/tunes/blue-trane'])
   })
 
   it('lists the site pages, then the tunes', () => {

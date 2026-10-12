@@ -66,8 +66,8 @@ describe('seoMeta', () => {
 })
 
 describe('tune pages', () => {
-  it('live at the slug with hyphens for underscores', () => {
-    expect(tunePath('blue_trane')).toBe('/tunes/blue-trane')
+  it("live at /tunes/ and the chart's name", () => {
+    expect(tunePath('blue-trane')).toBe('/tunes/blue-trane')
   })
 
   it('are titled by the tune and its composer, with no parentheses without one', () => {

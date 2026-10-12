@@ -115,7 +115,7 @@ make golden    # rewrite engine/fixtures/golden.json after an intended engine ch
   'Lydian Dominant']`), pair it with chord qualities in `chord_scales.json`, add tests, then `make golden` and
   review the fixture's diff.
 - **Add an instrument:** `INSTRUMENTS` in `engine/src/instruments.ts`.
-- **Add a chart:** a `.txt` file in `engine/charts/`, then `make golden` (the fixture covers every library chart).
+- **Add a chart:** a `.txt` file in `engine/charts/`, named in lowercase with hyphens (`round-midnight.txt`), then `make golden` (the fixture covers every library chart).
 
 `engine/fixtures/golden.json` freezes the engine's answers over a wide set of scales, chords, start notes and charts. It
 began as the Python engine's answers, and the TypeScript engine reproduces them exactly; any change in behaviour

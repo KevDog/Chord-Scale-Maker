@@ -106,7 +106,7 @@ describe('insertBar', () => {
   })
 
   it('adds the bar to every repeat of the section, and moves each repeat after it (Autumn Leaves)', () => {
-    const doc = insertBar(chart('autumn_leaves'), 'A1', 3)
+    const doc = insertBar(chart('autumn-leaves'), 'A1', 3)
     expect(spans(doc)).toEqual([
       ['A1', 1, 9],
       ['A2', 10, 18],
@@ -131,12 +131,12 @@ describe('insertBar', () => {
   })
 
   it("leaves a repeat's offset alone when the bar goes after the section it repeats", () => {
-    const doc = insertBar(chart('autumn_leaves'), 'B', 20)
+    const doc = insertBar(chart('autumn-leaves'), 'B', 20)
     expect(doc.lines.find((l) => l.kind === 'copy')).toEqual({ kind: 'copy', src: 'A1', dst: 'A2', offset: 8 })
   })
 
   it('edits written sections only: a repeat is changed through the section it repeats', () => {
-    const doc = chart('autumn_leaves')
+    const doc = chart('autumn-leaves')
     expect(insertBar(doc, 'A2', 10)).toBe(doc)
   })
 })
@@ -205,7 +205,7 @@ describe('deleteBar', () => {
   })
 
   it('removes the bar from every repeat of the section (Autumn Leaves)', () => {
-    const doc = deleteBar(chart('autumn_leaves'), 'A1', 3)
+    const doc = deleteBar(chart('autumn-leaves'), 'A1', 3)
     expect(spans(doc)).toEqual([
       ['A1', 1, 7],
       ['A2', 8, 14],
@@ -216,7 +216,7 @@ describe('deleteBar', () => {
 
   it("won't leave a section starting on a held bar, and won't edit a repeat", () => {
     expect(deleteBar(small, 'B', 5)).toBe(small)
-    const doc = chart('autumn_leaves')
+    const doc = chart('autumn-leaves')
     expect(deleteBar(doc, 'A2', 9)).toBe(doc)
     expect(deleteBar(doc, 'A1', 12)).toBe(doc)
   })
@@ -287,7 +287,7 @@ describe('setBarChords', () => {
     expect(setBarChords(small, 'A', 1, ['C'])).toBe(small)
     expect(setBarChords(small, 'A', 9, ['C'])).toBe(small)
     expect(setBarChords(small, 'A', 1, ['#x'])).toBe(small)
-    const doc = chart('autumn_leaves')
+    const doc = chart('autumn-leaves')
     expect(setBarChords(doc, 'A2', 9, ['C'])).toBe(doc)
   })
 })
@@ -320,7 +320,7 @@ describe('sections', () => {
   })
 
   it('repeats a section with a @copy, after the last section of its part', () => {
-    const doc = repeatSection(chart('autumn_leaves'), 'A1', 'A3')
+    const doc = repeatSection(chart('autumn-leaves'), 'A1', 'A3')
     expect(doc.lines.at(-1)).toEqual({ kind: 'copy', src: 'A1', dst: 'A3', offset: 32 })
     expect(spans(doc).at(-1)).toEqual(['A3', 33, 40])
     expect(barView(doc).sections.at(-1)?.copy).toMatchObject({ of: 'A1' })
