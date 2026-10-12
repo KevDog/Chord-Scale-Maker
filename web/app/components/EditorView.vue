@@ -100,6 +100,15 @@
           <UiButton outline @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-500 dark:text-zinc-400">Esc</kbd></UiButton>
         </div>
         <div v-show="!focus.on.value" class="space-y-4 print:hidden">
+          <!-- the sheet is the editor (leadSheetEditor, from md up): a banner says so, in concert pitch, with Source and Done editing (Undo is on the grid toolbar above) -->
+          <div v-if="sheetEditor" class="flex flex-wrap items-center justify-between gap-2 rounded-xl bg-note-800 px-4 py-2 text-sm text-white dark:bg-note-900">
+            <span class="font-semibold">Editing the sheet</span>
+            <span v-if="concertNote" class="text-note-100">{{ concertNote }}</span>
+            <span class="flex items-center gap-2">
+              <UiButton plain class="text-white! hover:bg-white/10!" :aria-pressed="sourceShown" title="Show or hide the chart's text" @click="prefs.source.value = !sourceShown"><CodeBracketIcon data-slot="icon" class="text-white!" />Source</UiButton>
+              <UiButton color="white" @click="toggleEditor">Done editing</UiButton>
+            </span>
+          </div>
           <PreviewControls
             v-model:sheet="sheet"
             v-model:instrument="prefs.instrument.value"
@@ -109,6 +118,7 @@
             v-model:numerals="prefs.numerals.value"
             v-model:scale-names="prefs.scaleNames.value"
             v-model:guide-line="prefs.guideLine.value"
+            :lock-labels="sheetEditor"
           >
             <!-- Level: how sophisticated each chord's scale is (engine/src/levels.ts); a dropdown in the toolbar -->
             <template v-if="!editor.fatal.value" #level>
@@ -150,16 +160,23 @@
             :title="editor.meta.value.title"
             :subtitle="editor.heading.value.subtitle"
             :composer="editor.heading.value.composer"
-            :part="part"
-            :instrument-label="instrumentLabel(prefs.instrument.value)"
-            :numerals="prefs.numerals.value"
-            :scales="prefs.scaleNames.value"
+            :part="sheetPart"
+            :instrument-label="sheetEditor ? '' : instrumentLabel(prefs.instrument.value)"
+            :numerals="sheetEditor || prefs.numerals.value"
+            :scales="sheetEditor || prefs.scaleNames.value"
             :signatures="signaturesOn"
             :guide-line="prefs.guideLine.value"
             :editable="sheetEditing && !focus.on.value"
             :selected-line="selectedLine"
             :view="scaleView"
-            @edit="editSheetChord"
+            :editing="sheetEditor ? sheetEdit : undefined"
+            :preview="sheetPreview"
+            @tap="editSheetChord"
+            @edit="openSheetEdit"
+            @update:doc="editor.setDoc"
+            @said="said = $event"
+            @preview="sheetPreview = $event"
+            @done="sheetDone"
           />
           <ScaleSheet
             v-else
@@ -191,6 +208,9 @@ import {
   buildSheet,
   chartKeyOf,
   type ChartDoc,
+  type ChordPreview,
+  CONCERT,
+  type Part,
   encodeShare,
   instrumentLabel,
   LEVEL_LABELS,
@@ -210,7 +230,7 @@ import {
   unlevel,
 } from '@chord-scale-maker/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
-import type { SheetChordEdit } from '~/utils/sheetChordEdit'
+import { nextChordLine, type SheetChordEdit, type SheetEdit } from '~/utils/sheetChordEdit'
 import { SCALE_VIEW } from '~/utils/scaleView'
 import { firstSheet, type SheetKind } from '~/utils/sheets'
 
@@ -305,6 +325,51 @@ const litNow = computed(() => litKeys(practiceStaves.value))
 const transposed = ref('')
 const focus = useFocusMode()
 const focusBar = ref<HTMLElement | null>(null)
+/**
+ * the lead-sheet editor (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md): the sheet itself is the editor
+ * when the flag is on, from md up, while the editor is open on a chart the sheet can draw, outside focus mode. It
+ * shows concert pitch (D2) with numerals and scales on (D3): they are the pickers.
+ */
+const leadSheetOn = useFeature('leadSheetEditor')
+const wide = useMediaQuery('(min-width: 768px)')
+const sheetEditor = computed(() => leadSheetOn && wide.value && sheetEditing.value && !focus.on.value)
+const sheetEdit = ref<SheetEdit | null>(null)
+const sheetPreview = ref<ChordPreview | null>(null)
+/** the part the sheet draws while editing: the instrument's clef and range, in concert pitch */
+const sheetPart = computed((): Part => (sheetEditor.value ? { ...part.value, trans: CONCERT.trans } : part.value))
+const concertNote = computed(() =>
+  sheetEditor.value && part.value.trans !== 'C' ? `Concert pitch while you edit · your ${instrumentLabel(prefs.instrument.value)} part comes back when you’re done` : '',
+)
+watch(sheetEditor, (on) => {
+  if (!on) sheetEdit.value = null
+})
+function openSheetEdit(e: SheetEdit): void {
+  editor.flush()
+  sheetEdit.value = e
+  if (e.kind === 'chord') {
+    selectedLine.value = e.line
+    barEditor.value?.selectLine(e.line)
+  }
+}
+/** the field closed: stay on the chord, move to the next (previous) bar's, open the new chord slot, or nothing */
+function sheetDone(then: 'stay' | 'next' | 'prev' | 'add' | 'cancel'): void {
+  const e = sheetEdit.value
+  sheetPreview.value = null
+  if (!e) return
+  if (then === 'add') {
+    const l = e.kind === 'chord' ? editor.doc.value.lines[e.line] : null
+    const at = l?.kind === 'row' ? { section: l.section, bar: l.bar } : e.kind === 'slot' ? { section: e.section, bar: e.bar } : null
+    sheetEdit.value = at ? { kind: 'slot', ...at } : null
+    return
+  }
+  if ((then === 'next' || then === 'prev') && e.kind === 'chord') {
+    const line = nextChordLine(editor.doc.value, e.line, then)
+    sheetEdit.value = line === null ? null : { kind: 'chord', line }
+    if (line !== null) selectedLine.value = line
+    return
+  }
+  sheetEdit.value = null
+}
 
 const saved = props.saveTarget ? useSavedChart(editor.text, props.saveTarget, (id) => emit('created', id)) : null
 if (openingText !== props.initialText) saved?.saveNow()

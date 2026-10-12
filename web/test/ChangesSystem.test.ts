@@ -1,7 +1,7 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
 import ChangesSystem from '~/components/ChangesSystem.vue'
-import type { ChangesBar, ChangesChord, ChangesLine, GuideNote, Letter } from '@chord-scale-maker/engine'
+import { type ChangesBar, type ChangesChord, type ChangesLine, type GuideNote, type Letter, parseChart } from '@chord-scale-maker/engine'
 
 vi.mock('~/utils/changesDrawing', async (importOriginal) => ({
   ...(await importOriginal<typeof import('~/utils/changesDrawing')>()),
@@ -77,6 +77,44 @@ describe('ChangesSystem chords while editing', () => {
     expect(buttons.map((b) => b.attributes('aria-label'))).toEqual(['Edit Dm7, A bar 3', 'Edit A7 (concert G7), A bar 3'])
     expect(buttons[1]?.classes()).toContain('ring-2') // selected in the bar editor
     await buttons[0]?.trigger('click')
-    expect(w.emitted('edit')?.[0]?.[0]).toMatchObject({ line: 4, section: 'A', bar: '3' })
+    expect(w.emitted('tap')?.[0]?.[0]).toMatchObject({ line: 4, section: 'A', bar: '3' })
+  })
+})
+
+describe('ChangesSystem as the editor', () => {
+  const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 1 | G7\n').value
+  const at = (c: ChangesChord, line: number): ChangesChord => ({ ...c, at: { section: 'A', bar: '1' }, line, written: c.text })
+  const line = (): ChangesLine => ({ bars: [bar([at(chord(0, 'Dm7', ''), 2), at(chord(2, 'G7', ''), 3)], [])] })
+  const base = { first: true, beats: 4 as const, barsPerLine: 4, numerals: true, scales: true, editable: true, doc }
+
+  it('renders each chord as a SheetChord while editable, with the one being edited a field', async () => {
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: { kind: 'chord', line: 3 } } })
+    expect(w.findAllComponents({ name: 'SheetChord' })).toHaveLength(2)
+    expect(w.find('input[aria-label="Chord, A bar 1"]').exists()).toBe(true)
+  })
+
+  it('adds a slot after the bar’s chords when editing one, at the next beat', async () => {
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: { kind: 'slot', section: 'A', bar: '1' } } })
+    const slot = w.findAllComponents({ name: 'SheetChord' }).find((c) => c.props('adding'))
+    expect(slot?.find('input').exists()).toBe(true)
+    await vi.waitFor(() => expect(parseFloat(slot?.element.parentElement?.style.left ?? '')).toBeCloseTo(68.8)) // xs[0][3], the beat after G7's
+  })
+
+  it('shows the draft’s reading under the chord being edited, italic and muted', async () => {
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: { kind: 'chord', line: 3 }, preview: { numeral: 'V7', scale: 'G Altered', readable: true } } })
+    expect(w.find('[data-slot=numeral][data-draft]').text()).toBe('V7')
+    expect(w.find('[data-slot=scale][data-draft]').text()).toBe('G Altered') // no abbreviation for Altered; the sheet's own label
+    expect(w.find('[data-slot=scale][data-draft]').classes()).toContain('italic')
+  })
+
+  it('blanks the draft’s labels when the draft can’t be read', async () => {
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: { kind: 'chord', line: 3 }, preview: { numeral: null, scale: null, readable: false } } })
+    expect(w.find('[data-slot=numeral][data-draft]').text()).toBe('')
+  })
+
+  it('without an editing prop, taps a chord the old way', async () => {
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line() } })
+    await w.find('button').trigger('click')
+    expect(w.emitted('tap')?.[0]?.[0]).toMatchObject({ line: 2, section: 'A', bar: '1' })
   })
 })

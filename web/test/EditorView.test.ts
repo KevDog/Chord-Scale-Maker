@@ -1,5 +1,5 @@
 import { mountSuspended, mockNuxtImport } from '@nuxt/test-utils/runtime'
-import { afterEach, describe, expect, it, vi } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it, vi } from 'vitest'
 import { nextTick } from 'vue'
 import EditorView from '~/components/EditorView.vue'
 import { CHART_REPORT_KEY } from '~/utils/chartReport'
@@ -479,5 +479,51 @@ describe('EditorView Save', () => {
     await nextTick()
     expect(saveButton(w)).toBeUndefined()
     w.unmount()
+  })
+})
+
+describe('EditorView lead-sheet editor', () => {
+  beforeEach(() => {
+    useRuntimeConfig().public.features.leadSheetEditor = true
+  })
+  afterEach(() => {
+    useRuntimeConfig().public.features.leadSheetEditor = false
+    localStorage.clear()
+  })
+
+  it('shows the banner with concert pitch for a transposing instrument while the editor is open, from md up', async () => {
+    const w = await mount()
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await chooseInstrument(w, 'Tenor')
+    expect(w.text()).toContain('Concert pitch while you edit')
+    expect(changesSheet(w).props('part').trans).toBe('C')
+    expect(changesSheet(w).props('editing')).toBeNull()
+    await buttonCalled(w, 'Done')?.trigger('click')
+    expect(w.text()).not.toContain('Concert pitch while you edit')
+    expect(changesSheet(w).props('part').trans).toBe('Bb')
+    expect(changesSheet(w).props('editing')).toBeUndefined()
+  })
+
+  it('forces numerals and scales on while editing, without changing the preferences', async () => {
+    localStorage.setItem('csm-numerals', 'off')
+    const w = await mount()
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    expect(changesSheet(w).props('numerals')).toBe(true)
+    expect(localStorage.getItem('csm-numerals')).toBe('off')
+    expect(buttonCalled(w, 'Numerals')?.attributes('disabled')).toBeDefined()
+  })
+
+  it('shows no banner with the flag off', async () => {
+    useRuntimeConfig().public.features.leadSheetEditor = false
+    const w = await mount()
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    expect(w.text()).not.toContain('Editing the sheet')
+    expect(changesSheet(w).props('editing')).toBeUndefined()
+  })
+
+  it('shows no banner, and no field, on a chart over a size limit (Review Focus 5)', async () => {
+    const w = await mountSuspended(EditorView, { props: { initialText: 'title: T\n' + 'A | 1 | Cm7\n'.repeat(3000) }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    expect(w.text()).toContain('over a size limit')
+    expect(w.text()).not.toContain('Editing the sheet')
   })
 })

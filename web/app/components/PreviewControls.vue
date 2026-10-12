@@ -41,8 +41,8 @@
         <UiField>
           <UiLabel class="pl-3">Analysis</UiLabel>
           <div class="flex flex-wrap gap-2 *:whitespace-nowrap">
-            <UiButton v-bind="numerals ? { color: 'note' } : { outline: true }" :class="numerals ? '' : OFF_FILL" :aria-pressed="numerals" title="Each chord's Roman numeral in its key" @click="numerals = !numerals">Numerals</UiButton>
-            <UiButton v-bind="scaleNames ? { color: 'note' } : { outline: true }" :class="scaleNames ? '' : OFF_FILL" :aria-pressed="scaleNames" title="Each chord's scale, under its numeral" @click="scaleNames = !scaleNames">Scales</UiButton>
+            <UiButton v-bind="numerals || lockLabels ? { color: 'note' } : { outline: true }" :class="numerals || lockLabels ? '' : OFF_FILL" :aria-pressed="numerals || lockLabels" :disabled="lockLabels" :title="lockLabels ? LOCKED : 'Each chord\'s Roman numeral in its key'" @click="numerals = !numerals">Numerals</UiButton>
+            <UiButton v-bind="scaleNames || lockLabels ? { color: 'note' } : { outline: true }" :class="scaleNames || lockLabels ? '' : OFF_FILL" :aria-pressed="scaleNames || lockLabels" :disabled="lockLabels" :title="lockLabels ? LOCKED : 'Each chord\'s scale, under its numeral'" @click="scaleNames = !scaleNames">Scales</UiButton>
           </div>
         </UiField>
         <UiField>
@@ -95,6 +95,9 @@ const intervals = defineModel<boolean>('intervals', { required: true })
 const numerals = defineModel<boolean>('numerals', { default: true })
 const scaleNames = defineModel<boolean>('scaleNames', { default: true })
 const guideLine = defineModel<GuideLine>('guideLine', { default: 'off' })
+/** the sheet editor is open: numerals and scales are shown (they are the pickers), their toggles rest */
+defineProps<{ lockLabels?: boolean }>()
+const LOCKED = 'Shown while you edit: they are the pickers'
 
 const changes = useFeature('changes')
 const sheets = computed(() => SHEETS.filter((s) => s.value !== 'changes' || changes))

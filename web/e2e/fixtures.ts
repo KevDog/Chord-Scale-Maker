@@ -89,6 +89,9 @@ export async function writeChart(page: Page, text: string): Promise<void> {
   await page.goto('/song?new=1')
   await openEditor(page)
   await page.getByLabel('Chart text').fill(text)
+  // the text is parsed after a short pause (useChartEditor): wait until the grid shows the first chord written
+  const [, section = '', bar = '', chord = ''] = text.match(/^([^#|\n][^|\n]*?)\s*\|\s*(\d+)\s*\|\s*([^|\n]+?)\s*(?:\||$)/m) ?? []
+  if (chord) await expect(page.locator(`[role=gridcell][aria-label^="${section}, bar ${bar}: ${chord}"]`)).toBeAttached() // by attribute: the grid is hidden on phones, still there
 }
 
 /** choose the Changes sheet's guide tone line, confirmed checked (retried: a click before hydration is lost) */

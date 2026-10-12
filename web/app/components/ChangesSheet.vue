@@ -18,7 +18,15 @@
             :clef="signatures || guideOn ? part.clef : undefined"
             :editable="editable"
             :selected-line="selectedLine"
+            :doc="doc"
+            :editing="editing"
+            :preview="preview"
+            @tap="emit('tap', $event)"
             @edit="emit('edit', $event)"
+            @update:doc="emit('update:doc', $event)"
+            @said="emit('said', $event)"
+            @preview="emit('preview', $event)"
+            @done="emit('done', $event)"
           />
         </div>
       </template>
@@ -27,8 +35,8 @@
 </template>
 
 <script setup lang="ts">
-import type { SheetChordEdit } from '~/utils/sheetChordEdit'
-import { buildChanges, changesLinesPerPage, type ChartDoc, chunk, type GuideLine, pageSubtitle, type Part, type ScaleView } from '@chord-scale-maker/engine'
+import type { SheetChordEdit, SheetEdit } from '~/utils/sheetChordEdit'
+import { buildChanges, changesLinesPerPage, type ChartDoc, type ChordPreview, chunk, type GuideLine, pageSubtitle, type Part, type ScaleView } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones) */
 const props = defineProps<{
@@ -45,8 +53,17 @@ const props = defineProps<{
   editable?: boolean // tap a chord to edit it
   selectedLine?: number | null // the chart line of the chord selected in the bar editor
   view?: ScaleView // the level blank cells play at; undefined: Standard
+  editing?: SheetEdit | null // the sheet is the editor (leadSheetEditor): what it's editing; undefined: tap opens the chord editor dialog
+  preview?: ChordPreview | null // the open field's draft, read in its bar
 }>()
-const emit = defineEmits<{ edit: [chord: SheetChordEdit] }>()
+const emit = defineEmits<{
+  tap: [chord: SheetChordEdit]
+  edit: [edit: SheetEdit]
+  'update:doc': [doc: ChartDoc]
+  said: [text: string]
+  preview: [preview: ChordPreview | null]
+  done: [then: 'stay' | 'next' | 'prev' | 'add' | 'cancel']
+}>()
 
 const wide = useMediaQuery('(min-width: 640px), print')
 const barsPerLine = computed(() => (wide.value ? 4 : 2))

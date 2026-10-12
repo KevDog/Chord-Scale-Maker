@@ -87,7 +87,8 @@ function keyName(name: string, part: Part): string {
   return glyphs(`${rootName(writtenRoot(part, parseRoot(root)))} ${k.minor ? 'minor' : 'major'}`)
 }
 
-const writtenScale = (part: Part, scale: string | null): string | null => {
+/** a scale as the sheet labels it: its root written for the part (♭/♯ glyphs), the long words shortened; null for none */
+export const sheetScale = (part: Part, scale: string | null): string | null => {
   if (!scale) return null
   const label = orNull(() => scaleLabel(part, scale))
   return label ? glyphs(`${rootName(label.root)} ${abbreviateScale(label.name)}`) : scale
@@ -234,7 +235,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             line: row.line,
             tokens: chordTokensOrNull(part, row.chord, scale),
             numeral: a?.numeral && a.numeral !== '?' ? a.numeral : '',
-            scale: writtenScale(part, scale),
+            scale: sheetScale(part, scale),
             reason: a?.reason ?? '',
             rule: a?.rule && a.rule !== '?' ? a.rule : '',
             fallback: !!a?.fallback && !a?.stated,
