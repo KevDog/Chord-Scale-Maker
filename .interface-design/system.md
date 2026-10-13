@@ -102,10 +102,17 @@ phone).
   details 14/20 muted, one line, the whole row the tap target).
 - **On this page** (`PageIndex`): from lg a 14rem column beside 42rem of text, `sticky top-8`, links `border-l`
   stacked, the current one `border-accent text-accent font-semibold` (`aria-current`); below lg inline links.
-- **Home** (`pages/index.vue`, `TuneSearch`, `RecentCharts`): one 42rem column, left-aligned; the h1 is display size
-  (Jost 44/1.05 600, -0.025em; 34 on a phone), the only place type goes above 28 px. The search is paper (`bg-paper
-  shadow-paper rounded-paper`), 64 px tall, 20 px input text (17 on a phone), the focus ring on the strip
-  (`focus-within`), the instrument `UiListbox` inside it on the right. Suggestions: `bg-raised shadow-raised
-  rounded-paper p-1.5`, 8 px under; a row is the title 15/22 600 (the match underlined in the accent), composer ·
-  style 13/18 muted, and on the right the written key (Jost 22 600) over "concert X" 11/14; the active row the toggle
-  tint. Recently opened: a 12 px label, then one paper list, rows 12 px × 20 px, the whole row the link.
+- **Home** (`pages/index.vue`, `TuneSearch`, `RecentCharts`, `TuneOfTheDay`): left-aligned, `max-w-5xl`; the heading
+  and search in a 42rem column. The h1 is display size (Jost 44/1.05 600, -0.025em; 34 on a phone), the only place type
+  goes above 28 px. The search is paper (`bg-paper shadow-paper rounded-paper`), 64 px tall, 20 px input text (17 on a
+  phone), the focus ring on the strip (`focus-within`), the instrument `UiListbox` inside it on the right. Suggestions:
+  `bg-raised shadow-raised rounded-paper p-1.5`, 8 px under; a row is the title 15/22 600 (the match underlined in the
+  accent), composer · style 13/18 muted, and on the right the written key (Jost 22 600) over "concert X" 11/14; the
+  active row the toggle tint. Under the search, 40 px: from lg one row, Recently opened (`flex-1`) beside Tune of the
+  day (20rem), their 12 px labels level; with no recents the tune of the day sits under the search. Recently opened:
+  one paper list, rows 12 px × 20 px, the whole row the link. Tune of the day: "Another →" (accent, 12/16 500) at the
+  right of its label; one paper card `p-5`, the title Jost 24/30 700, composer 13/20 muted, the written key Jost 28 600
+  over "concert X", then style · form 12 px muted over a hairline; the whole card the link; picked in the browser
+  (`utils/tuneOfTheDay.ts`), the card's size held until then. Then, past a hairline 56 px down, what the site does: a
+  Jost 28 heading and 15/24 intro (1fr) beside a two-column grid (2fr) of blocks, a Jost 17 600 title over 14/22 muted
+  text, no boxes.

@@ -54,3 +54,15 @@ test('an old /#letter-R library link goes to the library', async ({ page }) => {
   await expect(page).toHaveURL(/\/library#letter-R$/)
   await expect(page.getByRole('link', { name: 'Rapture', exact: true })).toBeInViewport()
 })
+
+test('the tune of the day opens its song, and Another picks a different one', async ({ page }) => {
+  await page.goto('/')
+  const totd = page.getByRole('region', { name: 'Tune of the day' })
+  const link = totd.getByRole('link')
+  const first = await link.getAttribute('href')
+  await totd.getByRole('button', { name: 'Another tune' }).click()
+  await expect(link).not.toHaveAttribute('href', first!)
+  await link.click()
+  await expect(page).toHaveURL(/\/song\/[a-z0-9-]+$/)
+  await expect(staves(page).first()).toBeVisible()
+})
