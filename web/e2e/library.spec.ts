@@ -6,7 +6,9 @@ test('searches the library and opens a chart', async ({ page }) => {
   await page.getByPlaceholder('Search by title').fill('zzz')
   await expect(page.getByText('No charts match')).toBeVisible()
   await page.getByPlaceholder('Search by title').fill('autumn')
-  await page.getByRole('link', { name: 'Autumn Leaves', exact: true }).click()
+  const title = page.getByRole('link', { name: 'Autumn Leaves', exact: true })
+  await expect(title).toHaveAttribute('href', '/song/autumn-leaves') // not an old address the redirect would mend
+  await title.click()
   await expect(page).toHaveURL(/\/song\/autumn-leaves$/)
   await expect(staves(page)).toHaveCount(6) // it opens on the Changes: 24 bars, four a line
 })
@@ -105,17 +107,11 @@ test('pages carry a link preview: Open Graph tags and a 1200×630 image', async 
   expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1200, 630]) // the PNG header's width and height
 })
 
-test('a song is indexable, its canonical never carries a share link, and its tab names the chart', async ({ page }) => {
-  await page.goto('/song/autumn-leaves')
-  await expect(page).toHaveTitle('Autumn Leaves · Chord Scale Maker')
-  await expect(page.locator('head meta[name="robots"]')).toHaveCount(0)
-  await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', 'https://www.chordscalemaker.com/song/autumn-leaves')
-})
-
-test('a library chart’s practice sheets live at /song/<name>', async ({ page }) => {
+test('a library chart’s practice sheets live at /song/<name>: indexable, its own canonical, its tab naming the chart', async ({ page }) => {
   await page.goto('/song/autumn-leaves')
   await expect(page).toHaveTitle('Autumn Leaves · Chord Scale Maker')
   await expect(staves(page)).toHaveCount(6)
+  await expect(page.locator('head meta[name="robots"]')).toHaveCount(0)
   await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', 'https://www.chordscalemaker.com/song/autumn-leaves')
 })
 
@@ -198,6 +194,7 @@ test('on a phone the library is a list: no sideways scroll, each tune with its c
   await page.goto('/')
   const item = page.getByRole('listitem').filter({ has: page.getByRole('link', { name: 'Autumn Leaves', exact: true }) })
   await expect(item).toContainText('Joseph Kosma')
+  await expect(item.getByRole('link', { name: 'Autumn Leaves', exact: true })).toHaveAttribute('href', '/song/autumn-leaves')
   await expect(page.getByRole('table')).toBeHidden()
   expect(await page.evaluate(() => document.documentElement.scrollWidth)).toBeLessThanOrEqual(390)
   await page.getByRole('navigation', { name: 'Jump to letter' }).getByRole('link', { name: 'W', exact: true }).click()

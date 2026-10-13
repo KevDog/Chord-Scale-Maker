@@ -26,7 +26,9 @@ test('edits to a library chart are kept as your version, until you revert', asyn
   await expect(sheetChord(page, 'Cm9', 'A1', 1)).toBeVisible()
   await page.goto('/')
   await expect(page.getByRole('region', { name: 'My charts' }).getByRole('row', { name: /Autumn Leaves/ })).toContainText('Edited')
-  await page.getByRole('region', { name: 'My charts' }).getByRole('link', { name: 'Autumn Leaves' }).click()
+  const edited = page.getByRole('region', { name: 'My charts' }).getByRole('link', { name: 'Autumn Leaves' })
+  await expect(edited).toHaveAttribute('href', '/song/autumn-leaves') // your version lives at the library chart's address
+  await edited.click()
   await moreAction(page, 'Revert to library version')
   await page.getByRole('dialog').getByRole('button', { name: 'Revert' }).click()
   await expect(sheetChord(page, 'Cm7', 'A1', 1)).toBeVisible()
