@@ -68,8 +68,8 @@ let adopted = ''
 const hash = import.meta.client ? (route.hash || (useNuxtApp().$arrivalHash as string | undefined) || location.hash) : ''
 const link = myCharts && hash.startsWith('#s=') ? await decodeShare(hash.slice(3)) : undefined
 
-/** a library chart's other addresses move to its own, the hash kept (the router may have dropped it, see `hash`) */
-const atOwnAddress = (): boolean => !findChart(slug()) || route.path === songPath(slug())
+/** a library chart's other addresses (and a stray ?mine=) move to its own, the hash kept (the router may have dropped it, see `hash`) */
+const atOwnAddress = (): boolean => !findChart(slug()) || (route.path === songPath(slug()) && route.query.mine === undefined)
 const moveToOwnAddress = () => navigateTo({ path: songPath(slug()), hash }, { replace: true })
 
 // without My charts the editor only opens library charts, and with it a bare /song has nothing to open (not on the
@@ -80,8 +80,9 @@ if (import.meta.client) {
     await navigateTo('/', { replace: true })
 }
 if (import.meta.client && myCharts) migrateDraft(STARTER_CHART)
-// the page stays mounted when only the query changes (and while it hydrates the router briefly shows a bare /song)
-if (import.meta.client) watch(() => route.query.chart, () => atOwnAddress() || moveToOwnAddress())
+// the page stays mounted when only the query changes (and while it hydrates the router briefly shows a bare /song, so a
+// ?chart= or stray ?mine= is often only seen here)
+if (import.meta.client) watch(() => [route.query.chart, route.query.mine], () => atOwnAddress() || moveToOwnAddress())
 
 const source = computed((): Source => {
   void generation.value // a revert reads storage again

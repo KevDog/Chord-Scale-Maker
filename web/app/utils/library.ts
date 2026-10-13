@@ -30,4 +30,3 @@ export const searchLibrary = (charts: readonly LibraryChart[], query: string): L
   charts.filter((c) => [c.title, ...c.aka, c.composer].some((s) => fold(s).includes(fold(query.trim()))))
 
 export const findChart = (slug: string): LibraryChart | undefined => LIBRARY.find((c) => c.slug === slug)
-
