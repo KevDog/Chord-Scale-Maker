@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { PAGE_HEAD, SITE_NAME, canonicalUrl, chartSlug, pageTitle, seoMeta, songPath, tuneTitle } from '~/utils/site'
+import { PAGE_HEAD, SITE_NAME, canonicalUrl, chartSlug, letterRedirect, libraryPath, pageTitle, seoMeta, songPath, tuneTitle } from '~/utils/site'
 
 describe('canonicalUrl', () => {
   it('is the site root for /', () => {
@@ -80,5 +80,25 @@ describe('songPath and chartSlug', () => {
   it('reads an old underscore name as the chart’s name', () => {
     expect(chartSlug('round_midnight')).toBe('round-midnight')
     expect(chartSlug('round-midnight')).toBe('round-midnight')
+  })
+})
+
+describe('libraryPath', () => {
+  it('is /library, with a search when there is one', () => {
+    expect(libraryPath()).toBe('/library')
+    expect(libraryPath('  ')).toBe('/library')
+    expect(libraryPath(' blue monk ')).toBe('/library?q=blue%20monk')
+  })
+
+  it('titles the library page', () => {
+    expect(PAGE_HEAD.library.title).toBe('Library')
+  })
+})
+
+describe('letterRedirect', () => {
+  it('sends an old /#letter-X link to the library', () => {
+    expect(letterRedirect('#letter-R')).toBe('/library#letter-R')
+    expect(letterRedirect('#letter-RR')).toBeNull()
+    expect(letterRedirect('')).toBeNull()
   })
 })

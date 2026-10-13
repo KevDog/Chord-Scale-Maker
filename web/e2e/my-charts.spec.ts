@@ -11,7 +11,7 @@ test('a new chart saves itself, gets its own address, and is listed in My charts
   await page.reload()
   await openEditor(page) // after reload it's a saved chart: song-first, so reopen the editor
   await expect(sheetChord(page, 'F7', 'A', 1)).toBeVisible()
-  await page.goto('/')
+  await page.goto('/library')
   const mine = page.getByRole('region', { name: 'My charts' })
   await expect(mine.getByRole('row', { name: /Untitled/ })).toContainText('Mine')
 })
@@ -24,7 +24,7 @@ test('edits to a library chart are kept as your version, until you revert', asyn
   await expect(status(page)).toHaveText(/^Your edited version of Autumn Leaves, saved in this browser/)
   await page.reload()
   await expect(sheetChord(page, 'Cm9', 'A1', 1)).toBeVisible()
-  await page.goto('/')
+  await page.goto('/library')
   await expect(page.getByRole('region', { name: 'My charts' }).getByRole('row', { name: /Autumn Leaves/ })).toContainText('Edited')
   const edited = page.getByRole('region', { name: 'My charts' }).getByRole('link', { name: 'Autumn Leaves' })
   await expect(edited).toHaveAttribute('href', '/song/autumn-leaves') // your version lives at the library chart's address
@@ -35,7 +35,7 @@ test('edits to a library chart are kept as your version, until you revert', asyn
   await page.getByRole('button', { name: 'More actions', exact: true }).click()
   await expect(page.getByRole('menuitem', { name: 'Revert to library version' })).toHaveCount(0)
   await page.keyboard.press('Escape')
-  await page.goto('/')
+  await page.goto('/library')
   await expect(page.getByRole('region', { name: 'My charts' })).toHaveCount(0)
 })
 
@@ -44,7 +44,7 @@ test('Save as a copy keeps a variation beside your version, and Delete removes o
   await moreAction(page, 'Save as a copy')
   await expect(page).toHaveURL(/\/song\?mine=/)
   await expect(page.getByRole('heading', { name: 'So What (copy)', level: 1 })).toBeVisible()
-  await page.goto('/')
+  await page.goto('/library')
   const mine = page.getByRole('region', { name: 'My charts' })
   await expect(mine.getByRole('row', { name: /So What \(copy\)/ })).toContainText('Copy')
   await mine.getByRole('button', { name: 'Delete So What (copy)' }).click()
@@ -65,7 +65,7 @@ test('Download saves the chart as text, and Open brings it back as a new chart',
   expect(file.suggestedFilename()).toBe('Blue Bossa.txt')
   const text = await (await file.createReadStream()).toArray().then((chunks) => Buffer.concat(chunks).toString('utf8'))
   expect(text).toMatch(/^A \| 6 +\| G7#5#9 +# /m) // as the library has it: the analysis chooses the scale
-  await page.goto('/')
+  await page.goto('/library')
   const chooser = page.waitForEvent('filechooser')
   await page.getByRole('button', { name: 'Open chart…' }).click()
   await (await chooser).setFiles({ name: 'Blue Bossa.txt', mimeType: 'text/plain', buffer: Buffer.from(text.replace('title: Blue Bossa', 'title: Blue Bossa (mine)')) })
@@ -76,7 +76,7 @@ test('Download saves the chart as text, and Open brings it back as a new chart',
 })
 
 test('a file dropped on the library opens, and a wrong one says why', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/library')
   const drop = async (name: string, body: string, type: string) => {
     const dt = await page.evaluateHandle(([n, b, t]) => {
       const d = new DataTransfer()
@@ -123,7 +123,7 @@ test('a share link carries the chart and the view to a browser that has never se
   await expect(visitor).toHaveURL(/\/song\?mine=/)
   await visitor.goto('/song/so-what')
   await expect(visitor.locator('section header p').first()).not.toContainText('Tenor') // the link didn't change their own settings
-  await visitor.goto('/')
+  await visitor.goto('/library')
   await expect(visitor.getByRole('region', { name: 'My charts' }).getByRole('link', { name: 'Autumn Leaves' })).toBeVisible()
   await other.close()
 })
@@ -149,7 +149,7 @@ test('choosing a scale and then the analysed one again leaves the library chart 
   await page.getByRole('button', { name: 'More actions', exact: true }).click()
   await expect(page.getByRole('menuitem', { name: 'Revert to library version' })).toHaveCount(0)
   await page.keyboard.press('Escape')
-  await page.goto('/')
+  await page.goto('/library')
   await expect(page.getByRole('region', { name: 'My charts' })).toHaveCount(0)
   await page.goto('/song/autumn-leaves')
   await openEditor(page)

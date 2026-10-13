@@ -3,12 +3,12 @@
     <div v-if="source.kind === 'missing'" class="max-w-xl space-y-4">
       <UiHeading>That chart isn’t here</UiHeading>
       <UiText>It isn’t saved in this browser. Saved charts stay in the browser they were made in; on another device, open it from a share link or a downloaded file.</UiText>
-      <UiButton color="note" href="/">Go to the chart library</UiButton>
+      <UiButton color="note" href="/library">Go to the chart library</UiButton>
     </div>
     <div v-else-if="source.kind === 'badLink'" class="max-w-xl space-y-4">
       <UiHeading>That link doesn’t open a chart</UiHeading>
       <UiText>It may have been cut short when it was copied or sent. Ask for it again, or for the chart as a downloaded file.</UiText>
-      <UiButton color="note" href="/">Go to the chart library</UiButton>
+      <UiButton color="note" href="/library">Go to the chart library</UiButton>
     </div>
     <!-- keyed by the chart being edited: another chart, or a revert, starts a fresh editor -->
     <EditorView
@@ -35,7 +35,8 @@
 </template>
 
 <script setup lang="ts">
-import { PAGE_HEAD, seoMeta } from '~/utils/site'
+import { libraryPath, PAGE_HEAD, seoMeta } from '~/utils/site'
+import { rememberRecent } from '~/utils/recentCharts'
 import { songHead } from '~/utils/songHead'
 import { chartHeading, decodeShare, parseChart, type ShareView } from '@chord-scale-maker/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
@@ -77,7 +78,7 @@ const moveToOwnAddress = () => navigateTo({ path: songPath(slug()), hash }, { re
 if (import.meta.client) {
   if (!atOwnAddress()) await moveToOwnAddress()
   else if (!findChart(slug()) && (route.params.slug || !myCharts || (!query('mine') && route.query.new === undefined && link === undefined)))
-    await navigateTo('/', { replace: true })
+    await navigateTo(libraryPath(), { replace: true })
 }
 if (import.meta.client && myCharts) migrateDraft(STARTER_CHART)
 // the page stays mounted when only the query changes (and while it hydrates the router briefly shows a bare /song, so a
@@ -105,6 +106,18 @@ const source = computed((): Source => {
   const id = newChartId()
   return { kind: 'chart', text: STARTER_CHART, practiceKey: `mine:${id}`, target: { kind: 'new', id, savedKind: 'new' } }
 })
+
+// the home page's Recently opened: a library tune or one of yours, not a blank new chart or a share link
+if (import.meta.client)
+  watch(
+    source,
+    (s) => {
+      if (s.kind !== 'chart' || !s.practiceKey || s.target?.kind === 'new') return
+      const mine = s.target?.kind === 'mine' ? s.target.id : ''
+      rememberRecent(mine ? { kind: 'mine', id: mine, at: Date.now() } : { kind: 'library', id: s.practiceKey, at: Date.now() })
+    },
+    { immediate: true },
+  )
 
 const editorKey = ref(`${route.fullPath}#0`)
 watch(

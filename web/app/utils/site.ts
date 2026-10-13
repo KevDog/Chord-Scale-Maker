@@ -20,6 +20,10 @@ export const PAGE_HEAD = {
   index: {
     description: 'A library of jazz standards as practice sheets: the changes with their guide tones, and a scale for every chord, written for your instrument.',
   },
+  library: {
+    title: 'Library',
+    description: 'Every jazz standard in Chord Scale Maker, A to Z: open one for its changes and a scale for every chord, written for your instrument.',
+  },
   help: {
     title: 'Help',
     description: 'How to use Chord Scale Maker: the Changes and Scales sheets, practice, editing and saving charts, and printing.',
@@ -55,6 +59,12 @@ export const seoMeta = (head: PageHead) => ({
   ogDescription: head.description,
   ...(head.robots ? { robots: head.robots } : {}),
 })
+
+/** the library page, searching for `query` when there is one */
+export const libraryPath = (query = ''): string => (query.trim() ? `/library?q=${encodeURIComponent(query.trim())}` : '/library')
+
+/** an old library link (/#letter-R, from when the library was the home page): its place on the library page */
+export const letterRedirect = (hash: string): string | null => (/^#letter-.$/u.test(hash) ? `/library${hash}` : null)
 
 /** a library chart's practice sheets (round-midnight.txt -> /song/round-midnight) */
 export const songPath = (slug: string): string => `/song/${slug}`

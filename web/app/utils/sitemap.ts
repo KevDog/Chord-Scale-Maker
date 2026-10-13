@@ -18,4 +18,4 @@ export const chartSlugsOf = (files: readonly string[]): string[] =>
   files.filter((f) => f.endsWith('.txt') && !isSyncCopy(f)).map((f) => f.replace(/\.txt$/, ''))
 
 /** the pages search engines should find, prerendered too: the site's, then each library song; never a bare /song (noindex) or /ui */
-export const sitemapPaths = (songPaths: readonly string[]): string[] => ['/', '/help', '/functions', '/about', '/contact', '/privacy', ...songPaths]
+export const sitemapPaths = (songPaths: readonly string[]): string[] => ['/', '/library', '/help', '/functions', '/about', '/contact', '/privacy', ...songPaths]

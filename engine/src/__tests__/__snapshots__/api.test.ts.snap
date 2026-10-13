@@ -222,6 +222,7 @@ exports[`exports the same names 1`] = `
   "writtenChordRootLenient",
   "writtenChordText",
   "writtenChordTextOrNull",
+  "writtenKey",
   "writtenRoot",
   "writtenScale",
 ]

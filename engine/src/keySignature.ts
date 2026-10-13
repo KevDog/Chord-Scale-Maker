@@ -1,5 +1,5 @@
 import { tonicOf } from './analysis/functions'
-import type { Key } from './analysis/keys'
+import { type Key, parseKey } from './analysis/keys'
 import { type Part, type Pitched, writtenRoot } from './part'
 import { accText, type Letter, NAT_PC, parseRoot, rootName, shiftBy } from './pitch'
 import { SCALES, simplifyRoot, spellFrom } from './scales'
@@ -22,6 +22,12 @@ export function keyStart(key: Key | null, part: Part): string {
   if (!key) return 'C'
   const scale = key.minor ? 'aeolian' : 'ionian'
   return rootName(simplifyRoot(writtenRoot(part, tonicOf(key), scale), scale))
+}
+
+/** a chart's key: as written for the part ("Bb" on tenor: "C"; "Cm" on alto: "Am"); '' with none */
+export function writtenKey(text: string, part: Part): string {
+  const key = parseKey(text)
+  return key ? `${keyStart(key, part)}${key.minor ? 'm' : ''}` : ''
 }
 
 /** the letters a signature alters, and by how much (Eb: E, A and B a flat) */

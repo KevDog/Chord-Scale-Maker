@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { type Key, parseKey } from '../analysis/keys'
-import { accidentalsInBar, keySignature, keyStart, octaveOf, signatureAccidentals } from '../keySignature'
+import { accidentalsInBar, keySignature, keyStart, octaveOf, signatureAccidentals, writtenKey } from '../keySignature'
 import { CONCERT, partFor } from '../part'
 
 const key = (t: string): Key => parseKey(t) ?? (() => { throw new Error(t) })()
@@ -58,6 +58,20 @@ describe('accidentalsInBar', () => {
   it('reads a pitched note the way VexFlow places it', () => {
     expect(octaveOf({ letter: 0, acc: 0, midi: 60 })).toBe(4)
     expect(octaveOf({ letter: 6, acc: 1, midi: 72 })).toBe(4) // B#4 sounds as C5
+  })
+})
+
+describe('writtenKey', () => {
+  it('writes a chart\'s key text for the part, keeping minor', () => {
+    expect(writtenKey('Ab', CONCERT)).toBe('Ab')
+    expect(writtenKey('Bb', partFor('tenor-sax'))).toBe('C')
+    expect(writtenKey('Cm', partFor('alto-sax'))).toBe('Am')
+    expect(writtenKey('Gm', partFor('horn'))).toBe('Dm')
+  })
+
+  it('gives nothing for a missing or unreadable key', () => {
+    expect(writtenKey('', partFor('tenor-sax'))).toBe('')
+    expect(writtenKey('blues', partFor('tenor-sax'))).toBe('')
   })
 })
 

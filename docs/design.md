@@ -11,7 +11,7 @@ library is built into the site at build time from `engine/charts/*.txt` (the eng
 `/api/contact` (the contact form). Unknown URLs are also rendered there, as the 404 page. There is no database.
 
 ```text
-engine/charts/*.txt ─────┐                          ┌─> Library page (title and composer search)
+engine/charts/*.txt ─────┐                          ┌─> Home page (tune search) and Library page
 engine/chord_scales.json ┼─> build (Vite raw import) ┤
                          │                          └─> Editor: text ⇄ grid ─> engine ─> VexFlow preview ─> browser print
 engine ──> engine/fixtures/golden.json (frozen answers, `make golden`) ──> vitest golden test
@@ -57,7 +57,8 @@ data/quotes.json          # quotes for the navbar (web only)
 docs/                     # this file, requirements, phase plans (docs/README.md)
 web/                      # Nuxt app (Vercel root directory); imports @chord-scale-maker/engine
   app/
-    pages/index.vue       # library + title/composer search
+    pages/index.vue       # home: one large tune search (live suggestions, keys written for your instrument), recently opened (§7)
+    pages/library.vue     # the library, A–Z, with title/composer search (/library?q=…)
     pages/song/[[slug]].vue  # one URL per tune: /song/<name> is the prerendered, indexable page and the editor (§7b; old ?chart=<name> moves there); with myCharts also ?mine=<id>, ?new=1 and share links (#s=…)
     pages/help.vue        # how it all works, in the owner's voice: sheets, controls, practice, editing, printing
     pages/about.vue, contact.vue, privacy.vue  # About (Jazz Lab thanks, the video, credits), the form, privacy
@@ -596,6 +597,12 @@ paper and its focus-mode pages, the rail, the More menu, the header, the library
   - Modal tunes: So What, Impressions, Milestones, Maiden Voyage, Footprints.
   - Modes of the major scale and of melodic minor.
 - **Search:** a case- and accent-insensitive substring filter on the title, client-side.
+- **Home page** (`/`, issue #243): one large search (`TuneSearch`, a Headless UI combobox). As you type, the top 6
+  matches (`suggestTunes`: title starts, then a title word's start, then other matches, then composers), each with
+  its key written for this browser's instrument (`csm-instrument`, shared with the song page; `writtenKey` in the
+  engine) and the concert key under it; "See all N in the library" when there are more (`/library?q=…`). Enter
+  opens the first. Under it, Recently opened (`csm-recent`, `utils/recentCharts.ts`: the song page records each
+  library tune or My chart it opens, at most 5). The library moved to `/library`; old `/#letter-X` links follow it.
 - **Opening a chart** copies it into the editor's state; library files are never changed.
 - **Requests:** "Request a chart" opens the contact form, where a photo or PDF of the changes can be attached.
 
