@@ -19,7 +19,7 @@ const ENGINE_DIR = dirname(createRequire(import.meta.url).resolve('@chord-scale-
 /** the pages search engines should find (server/routes/sitemap.xml.ts): the site's, then every library song */
 // (the library's charts, by file name: the config can't load the #charts glob)
 const CHART_SLUGS = chartSlugsOf(readdirSync(join(ENGINE_DIR, 'charts')))
-const SITEMAP_PATHS = sitemapPaths(CHART_SLUGS.map(songPath))
+const SITEMAP_PATHS = sitemapPaths(CHART_SLUGS.map((s) => songPath(s)))
 
 /** dev: the engine's charts/ and chord_scales.json sit outside Vite's root, so it doesn't watch them by itself
  *  (quotes.json is watched by its own plugin) */

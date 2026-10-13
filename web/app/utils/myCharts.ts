@@ -95,7 +95,7 @@ export function migrateDraft(starter: string, now = Date.now()): void {
 }
 
 /** a library chart's practice picks and scale level, saved under its name (never `mine:<id>`): csm-practice:<name>:<mode>, csm-level:<name> */
-const OLD_NAME_KEY = /^(csm-practice:|csm-level:)(?!mine:)([a-z0-9]+(?:_[a-z0-9]+)+)(:[a-z]+)?$/
+const OLD_NAME_KEY = /^(?:csm-practice:(?!mine:)[a-z0-9]+(?:_[a-z0-9]+)+:[a-z]+|csm-level:(?!mine:)[a-z0-9]+(?:_[a-z0-9]+)+)$/
 
 /**
  * Chart files were renamed from round_midnight.txt to round-midnight.txt (2026-10): move what this browser saved under
@@ -103,10 +103,9 @@ const OLD_NAME_KEY = /^(csm-practice:|csm-level:)(?!mine:)([a-z0-9]+(?:_[a-z0-9]
  */
 export function migrateChartNames(): void {
   for (const key of storedKeys()) {
-    const m = OLD_NAME_KEY.exec(key)
-    const value = m ? readStored(key) : null
-    if (!m || value === null) continue
-    const to = `${m[1]}${m[2]!.replaceAll('_', '-')}${m[3] ?? ''}`
+    const value = OLD_NAME_KEY.test(key) ? readStored(key) : null
+    if (value === null) continue
+    const to = key.replaceAll('_', '-')
     if (readStored(to) === null && !tryWriteStored(to, value)) continue
     removeStored(key)
   }

@@ -132,6 +132,12 @@ test('old ?chart= links and underscore names move to /song/<name>, without a his
   await expect(page).toHaveURL(/\/song\/round-midnight$/)
 })
 
+test('a library chart drops a stray ?mine= from its address', async ({ page }) => {
+  await page.goto('/song/autumn-leaves?mine=000000000000')
+  await expect(page).toHaveURL(/\/song\/autumn-leaves$/)
+  await expect(staves(page)).toHaveCount(6)
+})
+
 test('an old ?chart= link keeps its hash when it moves', async ({ page }) => {
   await page.goto('/song?chart=autumn_leaves#s=abc')
   await expect(page).toHaveURL(/\/song\/autumn-leaves#s=abc$/)

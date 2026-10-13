@@ -72,7 +72,7 @@ describe('library', () => {
 
   it('maps every library chart to its own song path, in the sitemap, and back', () => {
     const files = readdirSync('../engine/charts')
-    const paths = sitemapPaths(chartSlugsOf(files).map(songPath))
+    const paths = sitemapPaths(chartSlugsOf(files).map((s) => songPath(s)))
     expect(new Set(LIBRARY.map((c) => songPath(c.slug))).size).toBe(LIBRARY.length)
     for (const c of LIBRARY) {
       expect(paths).toContain(songPath(c.slug))

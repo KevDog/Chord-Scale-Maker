@@ -116,6 +116,16 @@ describe('migrateChartNames', () => {
     expect(localStorage.getItem('csm-level:mine:ab_cd12')).toBe('y')
   })
 
+  it('moves only the documented shapes: practice with a mode, level without', () => {
+    localStorage.setItem('csm-practice:so_what', 'p')
+    localStorage.setItem('csm-level:so_what:root', 'l')
+    migrateChartNames()
+    expect(localStorage.getItem('csm-practice:so_what')).toBe('p')
+    expect(localStorage.getItem('csm-level:so_what:root')).toBe('l')
+    expect(localStorage.getItem('csm-practice:so-what')).toBeNull()
+    expect(localStorage.getItem('csm-level:so-what:root')).toBeNull()
+  })
+
   it('keeps the old key when the new one can’t be written (storage full)', () => {
     localStorage.setItem('csm-level:so_what', 'old')
     const full = vi.spyOn(localStorage, 'setItem').mockImplementation(() => {
