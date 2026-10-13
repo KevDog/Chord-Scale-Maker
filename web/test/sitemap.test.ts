@@ -27,6 +27,6 @@ describe('sitemap paths', () => {
   })
 
   it('lists the site pages, then the songs', () => {
-    expect(sitemapPaths(['/song/a'])).toEqual(['/', '/help', '/functions', '/about', '/contact', '/privacy', '/song/a'])
+    expect(sitemapPaths(['/song/a'])).toEqual(['/', '/library', '/help', '/functions', '/about', '/contact', '/privacy', '/song/a'])
   })
 })

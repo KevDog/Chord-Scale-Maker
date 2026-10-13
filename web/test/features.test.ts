@@ -24,13 +24,13 @@ describe('feature flags', () => {
     expect(index.text()).toContain('start a new chart')
   })
 
-  it('opens library, new and saved charts, and sends a bare /song home', async () => {
+  it('opens library, new and saved charts, and sends a bare /song to the library', async () => {
     const song = (await import('~/pages/song/[[slug]].vue')).default
     for (const route of ['/song?new=1', '/song/f-blues', '/song?mine=abcdef123456']) {
       await mountSuspended(song, { route })
       expect(navigate, route).not.toHaveBeenCalled()
     }
     await mountSuspended(song, { route: '/song' })
-    expect(navigate).toHaveBeenCalledWith('/', { replace: true })
+    expect(navigate).toHaveBeenCalledWith('/library', { replace: true })
   })
 })

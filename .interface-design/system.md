@@ -102,3 +102,10 @@ phone).
   details 14/20 muted, one line, the whole row the tap target).
 - **On this page** (`PageIndex`): from lg a 14rem column beside 42rem of text, `sticky top-8`, links `border-l`
   stacked, the current one `border-accent text-accent font-semibold` (`aria-current`); below lg inline links.
+- **Home** (`pages/index.vue`, `TuneSearch`, `RecentCharts`): one 42rem column, left-aligned; the h1 is display size
+  (Jost 44/1.05 600, -0.025em; 34 on a phone), the only place type goes above 28 px. The search is paper (`bg-paper
+  shadow-paper rounded-paper`), 64 px tall, 20 px input text (17 on a phone), the focus ring on the strip
+  (`focus-within`), the instrument `UiListbox` inside it on the right. Suggestions: `bg-raised shadow-raised
+  rounded-paper p-1.5`, 8 px under; a row is the title 15/22 600 (the match underlined in the accent), composer ·
+  style 13/18 muted, and on the right the written key (Jost 22 600) over "concert X" 11/14; the active row the toggle
+  tint. Recently opened: a 12 px label, then one paper list, rows 12 px × 20 px, the whole row the link.

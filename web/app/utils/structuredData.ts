@@ -1,5 +1,5 @@
 import type { TuneSummary } from '@chord-scale-maker/engine'
-import { SITE_DESCRIPTION, SITE_NAME, canonicalUrl } from './site'
+import { SITE_DESCRIPTION, SITE_NAME, canonicalUrl, libraryPath } from './site'
 
 /** schema.org structured data for search engines, as JSON-LD (docs/superpowers/plans/2026-10-12-seo-discoverability.md, Task 6) */
 
@@ -41,7 +41,7 @@ export const breadcrumbLd = (t: TuneSummary, path: string) => ({
   '@context': CONTEXT,
   '@type': 'BreadcrumbList',
   itemListElement: [
-    { '@type': 'ListItem', position: 1, name: 'Library', item: canonicalUrl('/') },
+    { '@type': 'ListItem', position: 1, name: 'Library', item: canonicalUrl(libraryPath()) },
     { '@type': 'ListItem', position: 2, name: t.title, item: canonicalUrl(path) },
   ],
 })

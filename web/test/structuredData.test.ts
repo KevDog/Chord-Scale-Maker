@@ -85,7 +85,7 @@ describe('breadcrumbLd', () => {
       '@context': 'https://schema.org',
       '@type': 'BreadcrumbList',
       itemListElement: [
-        { '@type': 'ListItem', position: 1, name: 'Library', item: 'https://www.chordscalemaker.com/' },
+        { '@type': 'ListItem', position: 1, name: 'Library', item: 'https://www.chordscalemaker.com/library' },
         { '@type': 'ListItem', position: 2, name: 'Blue Trane', item: 'https://www.chordscalemaker.com/song/blue-trane' },
       ],
     })

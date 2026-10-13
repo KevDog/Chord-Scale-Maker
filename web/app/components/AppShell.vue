@@ -8,7 +8,7 @@
         </UiNavbarItem>
         <UiNavbarDivider class="max-lg:hidden" />
         <UiNavbarSection class="max-lg:hidden" aria-label="Main">
-          <UiNavbarItem href="/" :current="route.path === '/'">Library</UiNavbarItem>
+          <UiNavbarItem href="/library" :current="route.path === '/library'">Library</UiNavbarItem>
           <UiNavbarItem href="/help" :current="route.path === '/help'">Help</UiNavbarItem>
           <UiNavbarItem href="/about" :current="route.path === '/about'">About</UiNavbarItem>
           <UiNavbarItem href="/contact" :current="route.path === '/contact'">Contact</UiNavbarItem>
@@ -24,7 +24,7 @@
       </UiNavbar>
     </template>
     <template #sidebar>
-      <UiNavbarItem href="/"><BookOpenIcon data-slot="icon" />Library</UiNavbarItem>
+      <UiNavbarItem href="/library"><BookOpenIcon data-slot="icon" />Library</UiNavbarItem>
       <UiNavbarItem href="/help"><QuestionMarkCircleIcon data-slot="icon" />Help</UiNavbarItem>
       <UiNavbarItem href="/about"><InformationCircleIcon data-slot="icon" />About</UiNavbarItem>
       <UiNavbarItem href="/contact"><EnvelopeIcon data-slot="icon" />Contact</UiNavbarItem>

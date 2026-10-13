@@ -1,7 +1,7 @@
 import { readdirSync } from 'node:fs'
 import { isSyncCopy } from '@chord-scale-maker/engine'
 import { describe, expect, it } from 'vitest'
-import { findChart, LIBRARY, searchLibrary, toLibrary } from '~/utils/library'
+import { findChart, keyName, LIBRARY, matchSpan, searchLibrary, suggestTunes, toLibrary } from '~/utils/library'
 import { songPath } from '~/utils/site'
 import { sitemapPaths, sitemapXml, chartSlugsOf } from '~/utils/sitemap'
 
@@ -44,6 +44,43 @@ describe('library', () => {
     expect(searchLibrary(lib, 'kaper').map((c) => c.slug)).toEqual(['a'])
     expect(searchLibrary(lib, '  ').map((c) => c.slug)).toEqual(['a', 'b'])
     expect(searchLibrary(lib, 'zzz')).toEqual([])
+  })
+
+  it('keeps the key as written, for the written-key column', () => {
+    const [chart] = toLibrary({ 'a.txt': 'title: A\nkey: Ebm' })
+    expect(chart?.key).toBe('Ebm')
+  })
+
+  it('suggests title starts first, then word starts, then other matches, then composers', () => {
+    const lib = toLibrary({
+      'composer.txt': 'title: Zed\ncomposer: Star Man',
+      'inside.txt': 'title: Upstart',
+      'word.txt': 'title: Stella by Starlight',
+      'start.txt': 'title: Stardust',
+      'aka.txt': 'title: Quux\naka: Lodestar',
+    })
+    expect(suggestTunes(lib, 'star', 10).tunes.map((c) => c.slug)).toEqual(['start', 'word', 'aka', 'inside', 'composer'])
+  })
+
+  it('suggests at most the limit, and counts every match', () => {
+    const lib = toLibrary({ 'a.txt': 'title: Blue A', 'b.txt': 'title: Blue B', 'c.txt': 'title: Blue C' })
+    const { tunes, total } = suggestTunes(lib, 'blue', 2)
+    expect([tunes.map((c) => c.slug), total]).toEqual([['a', 'b'], 3])
+  })
+
+  it('suggests nothing for a blank query', () => {
+    expect(suggestTunes(LIBRARY, '  ', 6)).toEqual({ tunes: [], total: 0 })
+  })
+
+  it('finds where a query matches a title, ignoring case and accents', () => {
+    expect(matchSpan('Stella by Starlight', ' STAR ')).toEqual([10, 14])
+    expect(matchSpan('Álpha', 'alp')).toEqual([0, 3])
+    expect(matchSpan('Beta', 'zz')).toBeNull()
+    expect(matchSpan('Beta', ' ')).toBeNull()
+  })
+
+  it('names a key short, with real accidentals', () => {
+    expect(['Bb', 'F#m', 'C', ''].map(keyName)).toEqual(['B♭', 'F♯m', 'C', ''])
   })
 
   it('searches other titles too', () => {

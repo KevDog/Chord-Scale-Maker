@@ -26,6 +26,7 @@
 
 <script setup lang="ts">
 import type { NuxtError } from '#app'
+import { libraryPath } from '~/utils/site'
 
 /**
  * our own error page, for unknown addresses and errors (Nuxt's built-in one injects an inline script the CSP rightly
@@ -45,6 +46,6 @@ const quote = useQuote('errorQuote', navbarQuote)
 
 useHead({ title: computed(() => (notFound.value ? 'Page not found' : 'Error')) })
 
-const home = () => clearError({ redirect: '/' })
+const home = () => clearError({ redirect: libraryPath() })
 const retry = () => window.location.reload()
 </script>

@@ -1,7 +1,7 @@
 import { expect, staves, test } from './fixtures'
 
 test('searches the library and opens a chart', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/library')
   await expect(page.getByRole('heading', { name: 'Library', level: 1 })).toBeVisible()
   await page.getByPlaceholder('Search by title').fill('zzz')
   await expect(page.getByText('No charts match')).toBeVisible()
@@ -12,7 +12,7 @@ test('searches the library and opens a chart', async ({ page }) => {
 })
 
 test('a library title leads straight to its song, and links there', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/library')
   await page.getByPlaceholder('Search by title').fill('green dolphin')
   const title = page.getByRole('link', { name: 'On Green Dolphin Street', exact: true })
   await expect(title).toHaveAttribute('href', '/song/on-green-dolphin-street')
@@ -22,7 +22,7 @@ test('a library title leads straight to its song, and links there', async ({ pag
 })
 
 test('finds a tune by another title, and its song names that title', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/library')
   await page.getByPlaceholder('Search by title').fill('blue train')
   await page.getByRole('link', { name: 'Blue Trane', exact: true }).click()
   await expect(page).toHaveURL(/\/song\/blue-trane$/)
@@ -31,7 +31,7 @@ test('finds a tune by another title, and its song names that title', async ({ pa
 })
 
 test('finds a tune by its composer, and the sheet carries the composer and the tune line', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/library')
   await page.getByPlaceholder('Search by title or composer').fill('kaper')
   await expect(page.getByRole('link', { name: 'Invitation', exact: true })).toBeVisible()
   await page.getByRole('link', { name: 'On Green Dolphin Street', exact: true }).click()
@@ -41,7 +41,7 @@ test('finds a tune by its composer, and the sheet carries the composer and the t
 })
 
 test('every page carries a hashed Content-Security-Policy', async ({ page }) => {
-  for (const path of ['/', '/song', '/help', '/about', '/contact', '/privacy']) {
+  for (const path of ['/', '/library', '/song', '/help', '/about', '/contact', '/privacy']) {
     await page.goto(path)
     const csp = await page.locator('meta[http-equiv="Content-Security-Policy"]').getAttribute('content')
     expect(csp).toMatch(/script-src 'self' 'sha256-[^']+' 'sha256-[^']+'/)
@@ -50,7 +50,7 @@ test('every page carries a hashed Content-Security-Policy', async ({ page }) => 
 })
 
 test('dark mode toggles and survives a reload', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/library')
   await page.getByRole('button', { name: /dark mode/ }).click()
   await expect(page.locator('html')).toHaveClass(/dark/)
   await page.reload()
@@ -59,7 +59,7 @@ test('dark mode toggles and survives a reload', async ({ page }) => {
 
 test('a quote in the header, kept while navigating', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 800 })
-  await page.goto('/')
+  await page.goto('/library')
   const quote = page.locator('nav figure')
   await expect(quote).toBeVisible()
   await expect(quote.locator('figcaption')).toHaveText(/^ ?— [^·]+$/) // the author only
@@ -70,7 +70,7 @@ test('a quote in the header, kept while navigating', async ({ page }) => {
 })
 
 test('the icons are linked and served, and the mark leads the navbar', async ({ page, request }) => {
-  await page.goto('/')
+  await page.goto('/library')
   const hrefs = await page.locator('head link[rel=icon], head link[rel=apple-touch-icon], head link[rel=manifest]').evaluateAll((ls) => ls.map((l) => l.getAttribute('href')))
   expect(hrefs).toEqual(['/favicon.ico', '/favicon.svg', '/apple-touch-icon.png', '/site.webmanifest'])
   const manifest = (await (await request.get('/site.webmanifest')).json()) as { icons: { src: string }[] }
@@ -81,14 +81,14 @@ test('the icons are linked and served, and the mark leads the navbar', async ({ 
 })
 
 test('Request a chart opens the contact form', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/library')
   await page.getByRole('link', { name: 'Request a chart' }).click()
   await expect(page).toHaveURL(/\/contact$/)
   await expect(page.getByRole('heading', { name: 'Contact' })).toBeVisible()
 })
 
 test('pages carry a link preview: Open Graph tags and a 1200×630 image', async ({ page, request }) => {
-  for (const [path, title] of [['/', 'Chord Scale Maker'], ['/help', 'Help · Chord Scale Maker'], ['/about', 'About · Chord Scale Maker']] as const) {
+  for (const [path, title] of [['/', 'Chord Scale Maker'], ['/library', 'Library · Chord Scale Maker'], ['/help', 'Help · Chord Scale Maker'], ['/about', 'About · Chord Scale Maker']] as const) {
     await page.goto(path)
     const og = (p: string) => page.locator(`head meta[property="${p}"]`).getAttribute('content')
     await expect(page).toHaveTitle(title)
@@ -157,9 +157,9 @@ test('an old ?chart= address reached inside the editor moves to /song/<name> too
 
 test('an unknown chart, old or new address, goes to the library', async ({ page }) => {
   await page.goto('/song/no-such-tune')
-  await expect(page).toHaveURL(/\/$/)
+  await expect(page).toHaveURL(/\/library$/)
   await page.goto('/song?chart=no_such_tune')
-  await expect(page).toHaveURL(/\/$/)
+  await expect(page).toHaveURL(/\/library$/)
 })
 
 test('the sheet’s heading is the page’s only heading, its save status under it', async ({ page }) => {
@@ -176,7 +176,7 @@ test('the sheet’s heading is the page’s only heading, its save status under 
 })
 
 test('one Library heading, an A–Z bar that jumps to a letter and hides while searching', async ({ page }) => {
-  await page.goto('/')
+  await page.goto('/library')
   await expect(page.getByRole('heading', { name: 'Library', level: 1 })).toBeVisible()
   await expect(page.getByText('Chart library')).toHaveCount(0)
   await expect(page.getByRole('heading', { name: 'Library', level: 2 })).toHaveCount(0) // no My charts above it
@@ -195,7 +195,7 @@ test('one Library heading, an A–Z bar that jumps to a letter and hides while s
 
 test('on a phone the library is a list: no sideways scroll, each tune with its composer', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 844 })
-  await page.goto('/')
+  await page.goto('/library')
   const item = page.getByRole('listitem').filter({ has: page.getByRole('link', { name: 'Autumn Leaves', exact: true }) })
   await expect(item).toContainText('Joseph Kosma')
   await expect(page.getByRole('table')).toBeHidden()
