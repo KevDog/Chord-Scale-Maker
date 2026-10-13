@@ -24,11 +24,6 @@
             links in various places that will show you the reasoning behind the analysis, and you can use those to check
             the logic for yourself or to tell me what to fix.
           </UiText>
-          <UiText>
-            As you probably suspect for a solo project this complex, I relied on AI to boil down the analysis logic into
-            a series of rules as well as the documentation. Claude Code kept me honest, provided planning and
-            specification help, and filled in gaps in my knowledge.
-          </UiText>
         </div>
         <PageIndex :sections="SECTIONS" />
       </header>
