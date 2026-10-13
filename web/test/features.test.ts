@@ -33,4 +33,10 @@ describe('feature flags', () => {
     await mountSuspended(song, { route: '/song' })
     expect(navigate).toHaveBeenCalledWith('/', { replace: true })
   })
+
+  it('moves an old ?chart= link to /song/<name>, without a history entry', async () => {
+    const song = (await import('~/pages/song/[[slug]].vue')).default
+    await mountSuspended(song, { route: '/song?chart=f_blues' })
+    expect(navigate).toHaveBeenCalledWith(expect.objectContaining({ path: '/song/f-blues' }), { replace: true })
+  })
 })
