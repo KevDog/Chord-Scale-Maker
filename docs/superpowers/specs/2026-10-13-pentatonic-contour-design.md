@@ -53,10 +53,9 @@ labels tinted by rung, and a thin step line under each line showing the rung, so
 
 ### Print
 
-The band is another row: `changesLinesPerPage(line, rows)` takes `rows.contour`. The counts are measured, not
-guessed: run `print.spec`'s worst case (Stardust, tuba, From 7th) with Numerals, Scales, Pentatonics (Side-slip) and the
-contour on, with and without a guide tone line, and lower the line counts only as far as needed to fit a letter page.
-`print.spec` gains that case.
+The band costs no line: `changesLinesPerPage(line, rows)` is unchanged and takes no contour option. The counts were
+measured with the band drawn, on Stardust (tuba, From 7th, Side-slip), and held: 7 with no line and 5 with a guide line,
+all three rows; 8 and 6 with Pentatonics plus one other row. `print.spec` gains that case.
 
 ## Engine
 
@@ -77,7 +76,7 @@ export function pentatonicContour(lines: readonly ChangesLine[]): readonly Conto
 - `entry` is the previous line's last chord's rung when that chord has a pentatonic, this line's first chord has one,
   and the two differ; else `null`.
 - Lines with no pentatonics give `{ entry: null, runs: [] }`.
-- `changesLinesPerPage(line, rows)`: `rows` gains `contour?: boolean`.
+- `changesLinesPerPage(line, rows)`: unchanged; the band costs no line.
 
 ## App
 
@@ -87,7 +86,7 @@ export function pentatonicContour(lines: readonly ChangesLine[]): readonly Conto
   run's end) and draws the band.
 - Labels: with the plan's `counts` true, the label's text class is its rung's tint (`text-rung-0` … `text-rung-6`,
   print included); otherwise as now.
-- Print: the sheet passes `contour` into `changesLinesPerPage`.
+- Print: `changesLinesPerPage` is called as before; the band takes no line.
 
 ## Testing
 
@@ -98,7 +97,7 @@ Tests first (TDD), engine before app:
   runs, and no entry when the gap is at a line edge); a mid-line step if rungs differ inside a line; a section wrapped
   over two lines (breakLines) gives no riser; labels blanked by `showPentatonics` don't break runs; no pentatonics →
   empty runs.
-- `changesLinesPerPage` with `contour`, at the measured counts.
+- `changesLinesPerPage` at the measured counts (the band costs no line).
 - Token contrast: every `--color-rung-*` ≥ 4.5:1 on paper in light and dark.
 - App unit: band and tint only with a path other than One rung; band absent with the row off or the flag off; tint
   class per rung; ChordRef → x mapping (run end at the next chord, or the line's end); riser drawn from `entry`.
