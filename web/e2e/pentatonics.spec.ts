@@ -40,6 +40,10 @@ test('Side-slip takes the bridge a half step out, and comes home', async ({ page
   await expect(page.getByRole('button', { name: 'Pentatonic rung' })).toHaveCount(0)
   for (const s of ['A1', 'A2', 'A3']) await expect(sectionLabels(page, s).first()).toHaveText(/♪ 5$/)
   await expect(sectionLabels(page, 'B').first()).toHaveText(/♪ 1$/)
+  await sectionLabels(page, 'B').first().click()
+  const rung5 = page.getByRole('dialog', { name: /^B · / }).locator('li').filter({ hasText: /^5 ·/ })
+  await expect(rung5.locator('[data-pent]').first()).toHaveAttribute('aria-current', 'true') // the ♭ side, not the ♯
+  await page.keyboard.press('Escape')
   await page.reload()
   await expect(sectionLabels(page, 'B').first()).toHaveText(/♪ 1$/) // kept for this chart
 })
@@ -49,11 +53,18 @@ test('a pick in one section’s ladder changes that section only', async ({ page
   await chooseSheet(page, 'Changes')
   await showPentatonics(page)
   await choosePath(page, 'Fifths')
-  const before = await sectionLabels(page, 'A1').first().textContent()
+  const texts = async () => page.locator('[data-slot="pentatonic"] [data-section]').evaluateAll(els => els.map(e => `${e.getAttribute('data-section')}: ${e.textContent}`))
+  const before = await texts()
+  await expect(sectionLabels(page, 'A2').first()).not.toHaveText(/♪ 5$/) // the climber is not Home under Fifths
   await sectionLabels(page, 'B').first().click()
-  await page.getByRole('dialog', { name: /^B · / }).locator('[data-pent]').first().click() // Home
+  await page.getByRole('dialog', { name: /^B · / }).locator('li').first().locator('[data-pent]').click() // the Home row
   await expect(sectionLabels(page, 'B').first()).toHaveText(/♪ 5$/)
-  await expect(sectionLabels(page, 'A1').first()).toHaveText(before ?? '')
+  const after = await texts()
+  expect(after.length).toBe(before.length)
+  expect(before.length).toBeGreaterThan(1)
+  const changed = after.filter((t, i) => t !== before[i]).map(t => t.split(':')[0])
+  expect(changed.length).toBeGreaterThan(0)
+  expect(new Set(changed)).toEqual(new Set(['B']))
   await expect(page.getByRole('button', { name: 'Pentatonic path' })).toContainText('Custom')
 })
 
