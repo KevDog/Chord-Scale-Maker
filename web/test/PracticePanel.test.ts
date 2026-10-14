@@ -13,9 +13,9 @@ const mount = (props: Record<string, unknown>) =>
 
 describe('PracticePanel', () => {
   it('offers per-chord presets from the root, All from a start note', async () => {
-    expect((await mount({})).findAll('button').map((b) => b.text())).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Clear'])
+    expect((await mount({})).findAll('button').map((b) => b.text())).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Pentatonic', 'Clear'])
     const from = await mount({ mode: 'from', startText: 'Eb' })
-    expect(from.findAll('button').map((b) => b.text())).toEqual(['All', 'Clear'])
+    expect(from.findAll('button').map((b) => b.text())).toEqual(['All', 'Pentatonic', 'Clear'])
     expect(from.text()).toContain('pitches spelled from E♭')
   })
 

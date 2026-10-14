@@ -44,7 +44,7 @@ const checked = computed(() => new Set(props.selection && 'keys' in props.select
 const startName = computed(() => noteText(props.startText))
 
 function pickPreset(p: Preset): void {
-  emit('update:selection', activePreset.value === p ? null : { preset: p })
+  emit('update:selection', activePreset.value === p ? null : (p === 'pentatonic' ? { preset: p, rank: 1 } : { preset: p }))
 }
 
 function toggle(key: string): void {

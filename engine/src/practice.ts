@@ -3,6 +3,7 @@ import { guideToneDegrees } from './guideTones'
 import { spelledInterval } from './intervals'
 import type { Mode } from './part'
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled } from './pitch'
+import { PENTATONIC_RANKS } from './pentatonics'
 import { baseQuality } from './qualities'
 import { spellFrom } from './scales'
 import { orNull } from './util'
@@ -13,16 +14,25 @@ import { orNull } from './util'
  * start note in From X mode (so "b3" from C is E♭). Presets pick per chord, from the chord's quality.
  */
 
-export type Preset = 'chordTones' | 'guideTones' | 'tensions' | 'all'
-/** a preset, or explicit keys; keys are relative to the mode's reference, so they survive instrument changes */
-export type PracticeSelection = Readonly<{ preset: Preset }> | Readonly<{ keys: readonly string[] }>
+export type Preset = 'chordTones' | 'guideTones' | 'tensions' | 'all' | 'pentatonic'
+/** a preset, or explicit keys; keys are relative to the mode's reference, so they survive instrument changes. Pentatonic: a rank 1–12 on each staff's ladder (#266) */
+export type PracticeSelection =
+  | Readonly<{ preset: Exclude<Preset, 'pentatonic'> }>
+  | Readonly<{ preset: 'pentatonic'; rank: number }>
+  | Readonly<{ keys: readonly string[] }>
+
+export const isPentatonicSelection = (s: PracticeSelection | null): s is Readonly<{ preset: 'pentatonic'; rank: number }> =>
+  s !== null && 'preset' in s && s.preset === 'pentatonic'
+
+const rankFrom = (v: unknown): number => (Number.isInteger(v) && (v as number) >= 1 && (v as number) <= PENTATONIC_RANKS ? (v as number) : 1)
 
 const PRACTICE_KEY = /^(?:b{1,2}|#{1,2})?[1-7]$/
 
 /** a practice selection read from untrusted data (storage, a share link), or null if it isn't one */
 export function practiceSelectionFrom(v: unknown): PracticeSelection | null {
   if (!v || typeof v !== 'object') return null
-  if ('preset' in v && typeof v.preset === 'string' && Object.values(PRESETS).flat().includes(v.preset as Preset)) return { preset: v.preset as Preset }
+  if ('preset' in v && v.preset === 'pentatonic') return { preset: 'pentatonic', rank: rankFrom('rank' in v ? v.rank : undefined) }
+  if ('preset' in v && typeof v.preset === 'string' && Object.values(PRESETS).flat().includes(v.preset as Preset)) return { preset: v.preset as Exclude<Preset, 'pentatonic'> }
   if ('keys' in v && Array.isArray(v.keys)) {
     const keys = v.keys.filter((k): k is string => typeof k === 'string' && PRACTICE_KEY.test(k))
     return keys.length ? { keys } : null
@@ -32,14 +42,15 @@ export function practiceSelectionFrom(v: unknown): PracticeSelection | null {
 
 /** the presets each mode offers: function-based ones only make sense from the root */
 export const PRESETS: Readonly<Record<Mode, readonly Preset[]>> = {
-  root: ['chordTones', 'guideTones', 'tensions'],
-  from: ['all'],
+  root: ['chordTones', 'guideTones', 'tensions', 'pentatonic'],
+  from: ['all', 'pentatonic'],
 }
 export const PRESET_LABELS: Readonly<Record<Preset, string>> = {
   chordTones: 'Chord tones',
   guideTones: 'Guide tones',
   tensions: 'Tensions',
   all: 'All',
+  pentatonic: 'Pentatonic',
 }
 
 /** canonical quality -> its chord tones as spelled degrees (6 chords: the 6; sus: the 4; alt: no 5th) */
@@ -78,7 +89,7 @@ export const practiceKeys = (reference: Spelled, notes: readonly Spelled[], qual
 const rawQuality = (chord: string): string | null => orNull(() => parseChord(chord).quality)
 
 /** which keys a preset lights on one chord (its keys are measured from that chord's root) */
-function presetKeys(preset: Preset, chord: string, keys: readonly string[]): ReadonlySet<string> {
+function presetKeys(preset: Exclude<Preset, 'pentatonic'>, chord: string, keys: readonly string[]): ReadonlySet<string> {
   if (preset === 'all') return new Set(keys)
   const raw = rawQuality(chord)
   const quality = raw === null ? null : baseQuality(raw)
@@ -88,8 +99,9 @@ function presetKeys(preset: Preset, chord: string, keys: readonly string[]): Rea
   return new Set(quality ? keys.filter((k) => !tones.has(k)) : []) // tensions: the scale's other notes; none if unknown
 }
 
-/** per note of one staff: is it selected? */
+/** per note of one staff: is it selected? (a Pentatonic selection lights per staff, in buildSheet: here, nothing) */
 export function selectedNotes(selection: PracticeSelection, chord: string, keys: readonly string[]): boolean[] {
+  if (isPentatonicSelection(selection)) return keys.map(() => false)
   const lit = 'preset' in selection ? presetKeys(selection.preset, chord, keys) : new Set(selection.keys)
   return keys.map((k) => lit.has(k))
 }
