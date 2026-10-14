@@ -144,3 +144,31 @@ describe('linkPreferences', () => {
     expect(linked({}).arpNotes.value).toBe('extended')
   })
 })
+
+describe('pentatonic preferences', () => {
+  afterEach(() => localStorage.clear())
+
+  it('keeps the pentatonic row off at Home, flat side, until chosen, and remembers the choice', async () => {
+    const p = prefs()
+    expect([p.pentatonics.value, p.pentRung.value, p.pentSide.value]).toEqual([false, 0, 'flat'])
+    p.pentatonics.value = true
+    p.pentRung.value = 4
+    p.pentSide.value = 'sharp'
+    await nextTick()
+    expect([localStorage.getItem('csm-pentatonics'), localStorage.getItem('csm-pent-rung'), localStorage.getItem('csm-pent-side')]).toEqual(['on', '4', 'sharp'])
+  })
+
+  it('falls back from a stored rung or side it cannot read', () => {
+    localStorage.setItem('csm-pent-rung', '9')
+    localStorage.setItem('csm-pent-side', 'x')
+    const p = prefs()
+    expect([p.pentRung.value, p.pentSide.value]).toEqual([0, 'flat'])
+  })
+
+  it('keeps your own pentatonic choices when you open a share link', () => {
+    localStorage.setItem('csm-pentatonics', 'on')
+    localStorage.setItem('csm-pent-rung', '3')
+    const p = linked({})
+    expect([p.pentatonics.value, p.pentRung.value]).toEqual([true, 3])
+  })
+})

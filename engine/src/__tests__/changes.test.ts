@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it, vi } from 'vitest'
-import { breakLines, buildChanges, type ChangesSheet, changesLinesPerPage } from '../changes'
+import { breakLines, buildChanges, type ChangesSheet, changesLinesPerPage, showPentatonics } from '../changes'
 import { parseChart } from '../chart'
 import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
 import { CONCERT, type Part } from '../part'
@@ -119,6 +119,59 @@ describe('the Changes sheet', () => {
     const doc = parseChart('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | Bb7 | | D: ♭VI7\nA | 3 | G7\nA | 4 | CMaj7\n@key B 5 F\nB | 5 | Gm7\nB | 6 | C7\nB | 7 | FMaj7\n').value
     const chords = buildChanges(doc, CONCERT).lines.flatMap((l) => l.bars).flatMap((b) => b.chords)
     expect(['Bb7', 'G7', 'C7'].map((t) => chords.find((c) => c.text === t)?.keyFrom)).toEqual(['function', 'found', 'area'])
+  })
+
+  const pents = (sheet: ChangesSheet) => sheet.lines.map((l) => l.bars.flatMap((b) => b.chords.map((c) => c.pentatonic?.label ?? '')).filter(Boolean))
+
+  it('names each key area’s pentatonic at a rung and side, only where the area changes or a line starts', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | Cmaj7\nA | 4 | Cmaj7\nA | 5 | F#m7b5\nA | 6 | B7\nA | 7 | Em7\nA | 8 | Em7\n@key A 5 Em').value
+    const sheet = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, { rung: 2, side: 'flat' }).lines)
+    expect(pents({ lines: sheet, beats: 4, diagnostics: [] })).toEqual([['Gm♪'], ['Dm♪']]) // C major ♭2 Gm; E minor (home Em) ♭2 Dm
+  })
+
+  it('writes the ladder for the part: a B♭ part over concert C major reads D major’s', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7').value
+    const [chord] = buildChanges(doc, TENOR, 4, false, 'off', undefined, { rung: 0, side: 'flat' }).lines[0]?.bars[0]?.chords ?? []
+    expect([chord?.pentatonic?.label, chord?.pentatonic?.key, chord?.pentatonic?.ladder.length]).toEqual(['Bm♪', 'D major', 12])
+  })
+
+  it('spells the title from the ladder’s Home, so a transposed minor area and its Home agree', () => {
+    const minor = parseChart('title: T\nkey: Bm\nA | 1 | Bm7').value
+    const bar = buildChanges(minor, TENOR, 4, false, 'off', undefined, { rung: 0, side: 'flat' }).lines[0]?.bars[0]
+    expect([bar?.chords[0]?.pentatonic?.key, bar?.chords[0]?.pentatonic?.label, bar?.keyArea]).toEqual(['C♯ minor', 'C♯m♪', 'C♯ minor'])
+    const major = parseChart('title: T\nkey: C#\nA | 1 | C#maj7').value
+    const [chord] = buildChanges(major, CONCERT, 4, false, 'off', undefined, { rung: 0, side: 'flat' }).lines[0]?.bars[0]?.chords ?? []
+    expect([chord?.pentatonic?.key, chord?.pentatonic?.label]).toEqual(['D♭ major', 'B♭m♪'])
+  })
+
+  it('does not repeat the label across relative keys, but each chord keeps its own area’s key', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Am7\n@key A 2 Am').value
+    const lines = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, { rung: 0, side: 'flat' }).lines)
+    const chords = lines[0]?.bars.flatMap((b) => b.chords) ?? []
+    expect(chords.map((c) => c.pentatonic?.label ?? '')).toEqual(['Am♪', '']) // printed once: the same home
+    expect(chords.map((c) => c.pentatonic?.key)).toEqual(['C major', 'A minor'])
+  })
+
+  it('labels the first chord of a line the app breaks off', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | C\nA | 2 | F\nA | 3 | G\nA | 4 | C').value
+    const built = buildChanges(doc, CONCERT, 4, false, 'off', undefined, { rung: 1, side: 'sharp' })
+    const lines = showPentatonics(breakLines(built.lines, new Set(['A 3'])))
+    expect(pents({ lines, beats: 4, diagnostics: [] })).toEqual([['Em♪'], ['Em♪']])
+  })
+
+  it('has no pentatonics with no view, and none where the analysis finds no key', () => {
+    expect(bars('autumn-leaves').flatMap((b) => b.chords).every((c) => c.pentatonic === null)).toBe(true)
+    const doc = parseChart('title: T\nA | 1 | N.C.').value
+    expect(buildChanges(doc, CONCERT, 4, false, 'off', undefined, { rung: 0, side: 'flat' }).lines.flatMap((l) => l.bars.flatMap((b) => b.chords)).every((c) => c.pentatonic === null)).toBe(true)
+  })
+
+  it('counts the pentatonic row as a row: 7 with a line and every row off, else 6, 5 with all three rows; 8 with no line, 7 with all three rows', () => {
+    expect(changesLinesPerPage('third', { numerals: false, scales: false, pentatonics: true })).toBe(6)
+    expect(changesLinesPerPage('third', { numerals: false, scales: false, pentatonics: false })).toBe(7)
+    expect(changesLinesPerPage('third', { numerals: true, scales: true, pentatonics: true })).toBe(5)
+    expect(changesLinesPerPage('seventh', { numerals: true, scales: false, pentatonics: true })).toBe(6)
+    expect(changesLinesPerPage('off', { numerals: true, scales: true, pentatonics: true })).toBe(7)
+    expect(changesLinesPerPage('off', { numerals: true, scales: false, pentatonics: true })).toBe(8)
   })
 })
 

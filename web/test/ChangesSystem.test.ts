@@ -20,6 +20,7 @@ const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   heardIn: '',
   keyFrom: 'found',
   guide,
+  pentatonic: null,
 })
 const bar = (chords: readonly ChangesChord[], voice: readonly GuideNote[]): ChangesBar => ({
   at: { section: chords[0]?.at?.section ?? 'A', bar: chords[0]?.at?.bar ?? '1' },

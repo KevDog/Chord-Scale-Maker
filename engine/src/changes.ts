@@ -6,7 +6,8 @@ import { arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
 import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
 import { keySignature } from './keySignature'
 import { type Part, scaleLabel, writtenRoot } from './part'
-import { glyphs, parseRoot, rootName } from './pitch'
+import { glyphs, parseRoot, rootName, shiftBy } from './pitch'
+import { pentatonicAt, pentatonicLadder, type PentatonicRung, type PentatonicView } from './pentatonics'
 import { resolveScales, type ScaleView } from './resolve'
 import { abbreviateScale } from './scales'
 import { chunk, orNull } from './util'
@@ -18,6 +19,9 @@ import { chunk, orNull } from './util'
  * each chord on its beat with its Roman numeral and its scale, a key-area label where the key changes, section
  * markers, and repeat signs for a @copy straight after its source. No DOM, like sheet.ts and guideTones.ts.
  */
+
+/** a chord's key-area pentatonic at the player's rung (issue #255): the label, the area's key and its whole ladder, written for the part */
+export type ChangesPentatonic = Readonly<{ label: string; key: string; ladder: readonly PentatonicRung[] }>
 
 export type ChangesChord = Readonly<{
   /** the beat it starts on, from 0 */
@@ -51,6 +55,8 @@ export type ChangesChord = Readonly<{
   keyFrom: 'found' | 'area' | 'function'
   /** its guide tone's label ("3", "7"; "4" on a sus chord); '' with the line off or none found */
   guide: string
+  /** its key area's pentatonic at the sheet's rung; null with the row off or no key. `label: ''` where showPentatonics leaves it unprinted */
+  pentatonic: ChangesPentatonic | null
 }>
 export type ChangesBar = Readonly<{
   /** the bar's place in the chart, held bars too: the section as drawn (a repeat's own name) and its bar number */
@@ -92,7 +98,7 @@ function keyName(name: string, part: Part): string {
   const k = parseKey(name.replace(/ major$/, '').replace(/ minor$/, 'm'))
   const root = /^[A-G][b#]?/.exec(name)?.[0]
   if (!k || !root) return glyphs(name)
-  return glyphs(`${rootName(writtenRoot(part, parseRoot(root)))} ${k.minor ? 'minor' : 'major'}`)
+  return glyphs(`${rootName(writtenRoot(part, parseRoot(root), k.minor ? 'aeolian' : 'ionian'))} ${k.minor ? 'minor' : 'major'}`)
 }
 
 /** a scale as the sheet labels it: its root written for the part (♭/♯ glyphs), the long words shortened; null for none */
@@ -103,15 +109,32 @@ export const sheetScale = (part: Part, scale: string | null): string | null => {
 }
 
 /**
- * Changes lines on a printed page: 8 with no guide tones (a 32-bar AABA, one section a line pair, with its numerals
- * and scales), whatever rows are shown. Notes, stems and the label row take more height, so with a guide tone or arpeggio line
- * and numerals or scales shown it's 6, and one more with both rows off: measured over the library in every
- * transposition at letter width, with a page's tallest lines (an ending raised over the stems). print.spec checks the
- * worst case.
+ * a key area's ladder, written for the part, with the key it is named by: home is the tonic minor (a major key's
+ * relative minor), and the key is spelled from that home so the title and the ladder's Home always agree
  */
-export function changesLinesPerPage(line: SheetLine, rows: Readonly<{ numerals: boolean; scales: boolean }>): number {
-  if (line === 'off') return 8
-  return 6 + (!rows.numerals && !rows.scales ? 1 : 0)
+function areaLadder(name: string, part: Part): Readonly<{ ladder: readonly PentatonicRung[]; key: string }> | null {
+  const root = /^[A-G][b#]?/.exec(name)?.[0]
+  if (!root) return null
+  const minor = / minor$/.test(name)
+  const tonic = parseRoot(root)
+  const home = minor ? tonic : shiftBy(tonic, 5, 9) // a major 6th up: the relative minor
+  const ladder = pentatonicLadder(writtenRoot(part, home, 'aeolian'))
+  const homeRoot = ladder[0]!.root
+  return { ladder, key: glyphs(minor ? `${rootName(homeRoot)} minor` : `${rootName(shiftBy(homeRoot, 2, 3))} major`) } // a minor third above home
+}
+
+/**
+ * Changes lines on a printed page, one rule a line:
+ * - no guide line: 8, or 7 with numerals, scales and pentatonics all shown;
+ * - a guide tone or arpeggio line: 5 with all three rows, 6 with any row, 7 with none.
+ * Notes, stems and the label row take more height. Measured over the library in every transposition at letter width,
+ * with a page's tallest lines (an ending raised over the stems); the 5 and 7 were measured on Stardust (tuba, From
+ * 7th), the documented worst case, and print.spec checks it.
+ */
+export function changesLinesPerPage(line: SheetLine, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean }>): number {
+  if (line === 'off') return rows.pentatonics && rows.numerals && rows.scales ? 7 : 8
+  if (rows.pentatonics && rows.numerals && rows.scales) return 5
+  return 6 + (!rows.numerals && !rows.scales && !rows.pentatonics ? 1 : 0)
 }
 
 const STANDARD: ScaleView = { level: 'standard', seed: 0 }
@@ -129,8 +152,29 @@ export function breakLines(lines: readonly ChangesLine[], at: ReadonlySet<string
   })
 }
 
+/**
+ * the pentatonic row as printed (#255), run after breakLines: a chord's label stays on a line's first labelled chord
+ * and wherever it differs from the last one shown on the line (relative keys share a home: shown once); elsewhere
+ * its label is '' (not printed), its key and ladder kept for nothing but the model's completeness
+ */
+export function showPentatonics(lines: readonly ChangesLine[]): readonly ChangesLine[] {
+  return lines.map((line): ChangesLine => {
+    let last: string | null = null // the label last shown on this line
+    const bars = line.bars.map((bar): ChangesBar => ({
+      ...bar,
+      chords: bar.chords.map((c): ChangesChord => {
+        if (!c.pentatonic) return c
+        const shown = c.pentatonic.label !== last
+        last = c.pentatonic.label
+        return shown ? c : { ...c, pentatonic: { ...c.pentatonic, label: '' } }
+      }),
+    }))
+    return { ...line, bars }
+  })
+}
+
 /** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only */
-export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: SheetLine = 'off', view: ScaleView = STANDARD): ChangesSheet {
+export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: SheetLine = 'off', view: ScaleView = STANDARD, pentatonic: PentatonicView | null = null): ChangesSheet {
   const rows = expandRowLines(doc).value
   const beats = chartBeats(doc)
   const { events, diagnostics } = guideToneTimeline(rows, beats)
@@ -239,6 +283,14 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const voices: { bars: ReadonlyMap<number, readonly GuideNote[]>; labels: ReadonlyMap<number, string>; missing: readonly string[] } | null =
     line === 'off' ? null : isArpeggioPattern(line) ? { ...arpeggioVoices(drawn(), part, beats, keySig, line), labels: new Map() } : guideVoices(drawn(), part, beats, keySig, line)
 
+  const ladders = new Map<string, ReturnType<typeof areaLadder>>()
+  const pentatonicOf = (name: string | undefined): ChangesPentatonic | null => {
+    if (!pentatonic || !name) return null
+    if (!ladders.has(name)) ladders.set(name, areaLadder(name, part))
+    const area = ladders.get(name)
+    return area ? { label: `${pentatonicAt(area.ladder, pentatonic).name}♪`, key: area.key, ladder: area.ladder } : null
+  }
+
   let lastKey = ''
   const lastForm = blocks.findLastIndex((b) => b.part === 'form')
   const lines = blocks.flatMap((block, k) => {
@@ -268,6 +320,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             heardIn: a ? keyName((a.statedKey ?? a.key).name, part) : '',
             keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',
             guide: voices?.labels.get(i) ?? '',
+            pentatonic: pentatonicOf(a?.key.name),
           }
         })
       const firstKey = block.rows.map((i) => byRow.get(i)).find((a) => a && barOf(a.row) === bar)?.key.name

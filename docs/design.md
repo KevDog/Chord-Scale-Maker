@@ -482,6 +482,20 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   the stem tips are read for the crop and the ending's bracket); no label row; the aria-label adds
   `; 7th chords: C4 E4 G4 B4 | …` after `Bars: …`.
 
+### Pentatonics on Changes ([spec](superpowers/specs/2026-10-13-pentatonic-ladders-design.md); the `pentatonics` flag, off)
+
+- **Ladder** (`engine/src/pentatonics.ts`): a key area's 12 minor pentatonics round the circle of fifths from home
+  (its tonic minor: Am in C major), ranked by notes shared with the key's Aeolian: rung 0–6 share 5 5 4 3 2 1 0.
+  Spelled by walking fifths (♯ side sharps, ♭ side flats; rung 6 the ♭ walk's), then `simplifyRoot(…, 'aeolian')`.
+- **Model:** `buildChanges(…, pentatonic)` gives each chord its area's `pentatonic` ({ label, key, ladder }, written for
+  the part); `showPentatonics` (after `breakLines`) blanks the label except on a line's first *labelled* chord and
+  wherever it differs from the last one shown (relative keys share a home, so print once). `changesLinesPerPage`
+  counts the row: with no guide line 8 a page, 7 with numerals, scales and pentatonics all shown; with a line 7 with no
+  row, 6 with any row, 5 with all three (the 5 and 7 measured on Stardust, tuba, From 7th).
+- **UI:** a Pentatonics toggle in Analysis (it stays while editing), Rung (`Home · 5 shared` … `6 · 0 shared
+  (Outside)`) and Side (♭ | ♯, hidden at 0 and 6) under it; `csm-pentatonics`, `csm-pent-rung`, `csm-pent-side`, not in
+  share links. Each label is a `PentatonicLadder` popover: the area's ladder, a pick sets the sheet's rung and side.
+
 ### Shared
 
 - **Loading VexFlow:** it loads client-only, by dynamic import of `vexflow/bravura` on the editor page only. It's

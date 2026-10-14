@@ -113,6 +113,9 @@
             v-model:intervals="prefs.intervals.value"
             v-model:numerals="prefs.numerals.value"
             v-model:scale-names="prefs.scaleNames.value"
+            v-model:pentatonics="prefs.pentatonics.value"
+            v-model:pent-rung="prefs.pentRung.value"
+            v-model:pent-side="prefs.pentSide.value"
             v-model:line-mode="prefs.lineMode.value"
             v-model:guide-line="prefs.guideLine.value"
             v-model:arpeggio="prefs.arpeggio.value"
@@ -189,6 +192,8 @@
             :editing="sheetEditor ? sheetEdit : undefined"
             :preview="sheetPreview"
             :focus-at="sheetFocus"
+            :pentatonic="pentatonicView"
+            @pentatonic="(v) => { prefs.pentRung.value = v.rung; prefs.pentSide.value = v.side }"
             @tap="editSheetChord"
             @edit="openSheetEdit"
             @update:doc="editor.setDoc"
@@ -280,6 +285,7 @@ import {
   resolveScales,
   SCALE_LEVELS,
   type LevelState,
+  type PentatonicView,
   type ScaleView,
   serializeChart,
   setMeta,
@@ -352,6 +358,9 @@ const start = computed(() => spelled.value.start)
 const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeature('changes'), arpeggios: useFeature('arpeggios') }))
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
+const pentatonicsOn = useFeature('pentatonics')
+/** the sheet's Pentatonics view; one object until a pref changes, so the sheet isn't rebuilt on every render */
+const pentatonicView = computed((): PentatonicView | null => (pentatonicsOn && prefs.pentatonics.value ? { rung: prefs.pentRung.value, side: prefs.pentSide.value } : null))
 const signaturesOn = useFeature('keySignatures')
 const arpeggiosOn = useFeature('arpeggios')
 const myChartsOn = useFeature('myCharts')

@@ -1,4 +1,4 @@
-import { chooseSheet, expect, openEditor, pickOption, setScaleLevel, sheetChord, showLine, staves, test, writeChart } from './fixtures'
+import { chooseSheet, expect, openEditor, pickOption, setScaleLevel, sheetChord, showLine, showPentatonics, staves, test, writeChart } from './fixtures'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/song?new=1')
@@ -344,6 +344,12 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
     const { rows, widths } = await layout()
     expect(rows, `${sheet} (${widths})`).toBeLessThanOrEqual(2)
   }
+  // the Pentatonics row on, at a rung with a side: its controls stack under Analysis, so the rail keeps two rows (#255)
+  await showPentatonics(page)
+  await pickOption(page, 'Pentatonic rung', '2 · 4 shared')
+  await expect(page.getByRole('group', { name: 'Pentatonic side' })).toBeVisible()
+  const pent = await layout()
+  expect(pent.rows, `Changes, Pentatonics (${pent.widths})`).toBeLessThanOrEqual(2)
   // a line's detail (From 3rd, the arpeggio pattern) opens beneath the Line control: nothing moves
   const line = page.locator('#preview-toolbar [data-slot=label]').getByText('Line', { exact: true })
   const at = await line.boundingBox()
