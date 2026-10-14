@@ -271,14 +271,22 @@ describe('ChangesSystem pentatonic ladders', () => {
     w.unmount()
   })
 
-  it('ends a run at the next chord, across a held bar, not at a marker or the new-chord slot', async () => {
+  it('ends a run at the next chord across a held bar, and the new-chord slot does not end it', async () => {
     const text = 'title: T\nkey: C\nA | 1 | Cmaj7\nA | 3 | N.C.\nA | 4 | Cmaj7'
     const w = await mountLine(text, slip, 0, { kind: 'slot', section: 'A', bar: '1' }, 2)
     const runs = w.findAll('[data-slot="contour"] line[data-kind="run"]')
     expect(runs).toHaveLength(2)
     const [a, b] = runs.map((r) => [Number(r.attributes('x1')), Number(r.attributes('x2'))])
     expect(a![1]).toBeGreaterThan(400)
+    expect(a![1]).toBe(Math.round((2 * 0.25 + 0.1 / 4 - 0.012) * 1000)) // stops at the N.C. chord in bar 3, where the gap is
     expect(a![1]).toBeLessThanOrEqual(b![0]!)
+    w.unmount()
+  })
+
+  it('keeps an empty band on a line with no pentatonic, so row heights match', async () => {
+    const w = await mountLine('title: T\nkey: C\nA | 1 | Cmaj7', slip, 0, undefined, 0)
+    expect(w.find('[data-slot="contour"]').exists()).toBe(true)
+    expect(w.findAll('[data-slot="contour"] line')).toHaveLength(0)
     w.unmount()
   })
 })

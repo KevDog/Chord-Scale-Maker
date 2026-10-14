@@ -151,7 +151,7 @@
       </span>
     </div>
     <!-- the tension contour (#265): the line's rung as a step line, Home low, 6 high, with a riser from the line before -->
-    <div v-if="contourLines.length" data-slot="contour" aria-hidden="true" class="relative h-3 print:h-2">
+    <div v-if="contour && pentatonic?.counts" data-slot="contour" aria-hidden="true" class="relative h-3 print:h-2">
       <svg class="absolute inset-0 size-full overflow-visible" viewBox="0 0 1000 60" preserveAspectRatio="none">
         <line
           v-for="(s, i) in contourLines"
@@ -264,9 +264,11 @@ const contourLines = computed(() => {
   if (!c || !props.pentatonic?.counts) return []
   const chords = marks.value.filter((m) => !m.slot && m.line >= 0)
   const at = (r: ChordRef) => chords.findIndex((m) => m.barIndex === r.bar && m.k === r.chord)
-  const runs = c.runs.map((run) => {
+  const runs = c.runs.flatMap((run) => {
+    const start = at(run.from)
     const end = at(run.to)
-    return { rung: run.rung, x1: Math.round((chords[at(run.from)]?.x ?? 0) * 1000), x2: Math.round((chords[end + 1]?.x ?? 1) * 1000) }
+    if (start < 0 || end < 0) return []
+    return [{ rung: run.rung, x1: Math.round((chords[start]?.x ?? 0) * 1000), x2: Math.round((chords[end + 1]?.x ?? 1) * 1000) }]
   })
   const steps = runs.slice(1).flatMap((r, i) => (runs[i]!.x2 === r.x1 && runs[i]!.rung !== r.rung ? [{ kind: 'step', rung: r.rung, x1: r.x1, x2: r.x1, y1: rungY(runs[i]!.rung), y2: rungY(r.rung) }] : []))
   const riser = c.entry !== null && runs[0] ? [{ kind: 'riser', rung: runs[0].rung, x1: runs[0].x1, x2: runs[0].x1, y1: rungY(c.entry), y2: rungY(runs[0].rung) }] : []
