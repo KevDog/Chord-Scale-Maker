@@ -38,6 +38,9 @@ function transposeRoot(n: Spelled, trans: Transposition): Spelled {
 export const writtenRoot = (part: Part, n: Spelled, key?: ScaleKey): Spelled =>
   part.trans === 'C' ? n : simplifyRoot(transposeRoot(n, part.trans), key)
 
+/** a written pitch class back to concert for the part */
+export const concertPc = (part: Part, written: number): number => mod(written - pcOf(writtenRoot(part, parseRoot('C'), 'ionian')), 12)
+
 /** concert scale text -> written root, key and spelled notes */
 export function writtenScale(part: Part, text: string): WrittenScale {
   const { root, key } = parseScale(text)

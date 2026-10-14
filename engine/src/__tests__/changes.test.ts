@@ -3,7 +3,7 @@ import { describe, expect, it, vi } from 'vitest'
 import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, type PentatonicPlan, pentatonicContour, showPentatonics } from '../changes'
 import { parseChart } from '../chart'
 import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
-import { CONCERT, type Part } from '../part'
+import { CONCERT, concertPc, type Part } from '../part'
 import { rootName } from '../pitch'
 import type { ScaleView } from '../resolve'
 import { abbreviateScale } from '../scales'
@@ -235,7 +235,7 @@ describe('the Changes sheet', () => {
       const [line] = showPentatonics(buildChanges(parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 1 | Dm7').value, CONCERT, 4, false, 'off', undefined, side(0)).lines)
       const bar = line!.bars[0]!
       const second = bar.chords[1]!
-      const stepped = { ...line!, bars: [{ ...bar, chords: [bar.chords[0]!, { ...second, pentatonic: { ...second.pentatonic!, view: { rung: 3, side: 'sharp' as const } } }] }] }
+      const stepped = { ...line!, bars: [{ ...bar, chords: [bar.chords[0]!, { ...second, pentatonic: { ...second.pentatonic!, view: { rung: 3, side: 'sharp' as const }, level: 3 } }] }] }
       expect(pentatonicContour([stepped])[0]?.runs.map((r) => [r.from.chord, r.to.chord, r.rung])).toEqual([[0, 0, 0], [1, 1, 3]])
     })
 
@@ -276,6 +276,46 @@ describe('scale labels', () => {
     const lines = chords(text)
     expect(lines[0]!.map((c) => c[1])).toEqual(['D Dorian', null, null, null])
     expect(lines[1]![0]![1]).toBe('D Dorian')
+  })
+
+  const chordPlan = (rank = 1): PentatonicPlan => ({ bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, basis: 'chord', rank })
+  const flat = (lines: readonly ChangesLine[]) => lines.flatMap((l) => l.bars.flatMap((b) => b.chords))
+
+  it('ranks each chord against its own scale under the chord basis: Waltz for Debby bars 1–4', () => {
+    const built = buildChanges(library('waltz-for-debby'), CONCERT, 4, false, 'off', undefined, chordPlan())
+    const first4 = flat(built.lines).slice(0, 4)
+    // F Ionian from F, D Aeolian, G Dorian, C Mixolydian: all F major's notes, ties by fifths from each chord root
+    expect(first4.map((c) => c.pentatonic?.name)).toEqual(['Gm', 'Dm', 'Gm', 'Gm'])
+    expect(first4.map((c) => [c.pentatonic?.rank, c.pentatonic?.shared, c.pentatonic?.level])).toEqual([[1, 5, 0], [1, 5, 0], [1, 5, 0], [1, 5, 0]])
+    expect(showPentatonics(built.lines)[0]?.bars.flatMap((b) => b.chords.map((c) => c.pentatonic?.label))).toEqual(['Gm♪ 5', 'Dm♪ 5', 'Gm♪ 5', ''])
+  })
+
+  it('names the chord basis title and keeps its ranking; rank 12 is the farthest', () => {
+    const doc = parseChart('title: T\nkey: F\nA | 1 | Dm7').value
+    const [c] = flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, chordPlan(12)).lines)
+    expect([c?.pentatonic?.basis, c?.pentatonic?.title, c?.pentatonic?.ranking.length, c?.pentatonic?.rank, c?.pentatonic?.shared, c?.pentatonic?.level]).toEqual(['chord', 'Dm7 · D Dorian pentatonic ranking', 12, 12, 0, 6])
+  })
+
+  it('spells the chord basis for the part, and reports the root in concert', () => {
+    const doc = parseChart('title: T\nkey: F\nA | 1 | Dm7').value
+    const [c] = flat(buildChanges(doc, TENOR, 4, false, 'off', undefined, chordPlan()).lines)
+    expect([c?.pentatonic?.name, c?.pentatonic?.pc]).toEqual(['Em', 2]) // written E minor = concert D
+    expect(concertPc(TENOR, 4)).toBe(2)
+  })
+
+  it('gives a chord with no scale no label under the chord basis', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | N.C.\nA | 3 | Cmaj7').value
+    const chords = flat(showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, chordPlan()).lines))
+    expect(chords[1]?.pentatonic).toBeNull()
+    expect(chords.map((c) => c.pentatonic?.label ?? null)).toEqual(['Dm♪ 5', null, 'Dm♪ 5']) // a gap: the label prints again
+  })
+
+  it('keys each chord by its drawn bar and index, and keeps the key basis’s title and level', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 1 | Dm7\nB | 2 | Cmaj7').value
+    const plan: PentatonicPlan = { bySection: { B: { rung: 3, side: 'sharp' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
+    const chords = flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)
+    expect(chords.map((c) => c.pentatonic?.chord)).toEqual(['A:1:0', 'A:1:1', 'B:2:0'])
+    expect([chords[2]?.pentatonic?.title, chords[2]?.pentatonic?.level, chords[2]?.pentatonic?.rank, chords[2]?.pentatonic?.basis]).toEqual(['B · C major pentatonic ladder', 3, 0, 'key'])
   })
 })
 
