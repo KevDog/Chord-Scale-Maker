@@ -373,7 +373,7 @@ const pentPath = usePentatonicPath(props.practiceKey, pentSections, computed(() 
 const pentPathModel = computed({ get: () => pentPath.path.value, set: (v) => pentPath.setPath(v) })
 /** the sheet's Pentatonics plan; null with the row off */
 const pentPicks = usePentatonicPicks(props.practiceKey)
-watch([pentPath.path, prefs.pentRung, prefs.pentSide, prefs.pentRank, prefs.pentBasis], () => pentPicks.clear())
+watch([pentPath.path, prefs.pentRung, prefs.pentSide, prefs.pentRank, prefs.pentBasis, () => JSON.stringify(chartKeyOf(editor.doc.value))], () => pentPicks.clear()) // picks are concert pitches: a transposed chart lands them elsewhere
 const pentatonicPlan = computed((): PentatonicPlan | null => (pentatonicsOn && prefs.pentatonics.value
   ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, rank: prefs.pentRank.value, picks: pentPicks.picks.value }
   : null))
