@@ -6,6 +6,7 @@ import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
 import { CONCERT, concertPc, type Part } from '../part'
 import { rootName } from '../pitch'
 import type { ScaleView } from '../resolve'
+import { PENTATONIC_HOME, type PentatonicPathName, type PentatonicStep } from '../pentatonics'
 import { abbreviateScale } from '../scales'
 import { isSyncCopy } from '../util'
 
@@ -122,12 +123,12 @@ describe('the Changes sheet', () => {
     expect(['Bb7', 'G7', 'C7'].map((t) => chords.find((c) => c.text === t)?.keyFrom)).toEqual(['function', 'found', 'area'])
   })
 
-  const pents = (sheet: ChangesSheet) => sheet.lines.map((l) => l.bars.flatMap((b) => b.chords.map((c) => c.pentatonic?.label ?? '')).filter(Boolean))
+  const pents = (sheet: Pick<ChangesSheet, 'lines'>) => sheet.lines.map((l) => l.bars.flatMap((b) => b.chords.map((c) => c.pentatonic?.label ?? '')).filter(Boolean))
 
   it('names each key area’s pentatonic at a rung and side, only where the area changes or a line starts', () => {
     const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | Cmaj7\nA | 4 | Cmaj7\nA | 5 | F#m7b5\nA | 6 | B7\nA | 7 | Em7\nA | 8 | Em7\n@key A 5 Em').value
     const sheet = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, one(2, 'flat')).lines)
-    expect(pents({ lines: sheet, beats: 4, diagnostics: [] })).toEqual([['Gm♪'], ['Dm♪']]) // C major ♭2 Gm; E minor (home Em) ♭2 Dm
+    expect(pents({ lines: sheet })).toEqual([['Gm♪'], ['Dm♪']]) // C major ♭2 Gm; E minor (home Em) ♭2 Dm
   })
 
   it('plays a section named after an Object built-in at the fallback', () => {
@@ -163,7 +164,7 @@ describe('the Changes sheet', () => {
     const doc = parseChart('title: T\nkey: C\nA | 1 | C\nA | 2 | F\nA | 3 | G\nA | 4 | C').value
     const built = buildChanges(doc, CONCERT, 4, false, 'off', undefined, one(1, 'sharp'))
     const lines = showPentatonics(breakLines(built.lines, new Set(['A 3'])))
-    expect(pents({ lines, beats: 4, diagnostics: [] })).toEqual([['Em♪'], ['Em♪']])
+    expect(pents({ lines })).toEqual([['Em♪'], ['Em♪']])
   })
 
   it('lists the sections it draws: a repeat drawn once and a section with endings are one each', () => {
@@ -176,7 +177,7 @@ describe('the Changes sheet', () => {
     const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Cmaj7\nB | 3 | Cmaj7\nB | 4 | Cmaj7').value
     const plan: PentatonicPlan = { bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
     const lines = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)
-    expect(pents({ lines, beats: 4, diagnostics: [] })).toEqual([['Am♪ 5'], ['B♭m♪ 1']]) // each section starts a line, so its label prints
+    expect(pents({ lines })).toEqual([['Am♪ 5'], ['B♭m♪ 1']]) // each section starts a line, so its label prints
     const b = lines[1]?.bars[0]?.chords[0]?.pentatonic
     expect([b?.section, b?.view, b?.shared]).toEqual(['B', { rung: 5, side: 'flat' }, 1])
   })
@@ -185,13 +186,83 @@ describe('the Changes sheet', () => {
     const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Gmaj7\n@key B 2 G').value
     const plan: PentatonicPlan = { bySection: { B: { rung: 6, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
     const lines = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)
-    expect(pents({ lines, beats: 4, diagnostics: [] })).toEqual([['Am♪ 5'], ['B♭m♪ 0']]) // G major's home Em, its rung 6 B♭m
+    expect(pents({ lines })).toEqual([['Am♪ 5'], ['B♭m♪ 0']]) // G major's home Em, its rung 6 B♭m
   })
 
   it('gives a merged repeat’s chords the first section’s rung', () => {
     const plan: PentatonicPlan = { bySection: { A1: { rung: 2, side: 'flat' }, A2: { rung: 6, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: false }
     const first = buildChanges(library('autumn-leaves'), CONCERT, 4, false, 'off', undefined, plan).lines[0]?.bars[0]?.chords[0]?.pentatonic
     expect([first?.section, first?.view.rung]).toEqual(['A1', 2])
+  })
+
+  describe('a preset’s steps (#276)', () => {
+    const tag = (v: { rung: number; side: string } | undefined): string => (!v ? '' : v.rung === 0 || v.rung === 6 ? String(v.rung) : `${v.rung}${v.side === 'flat' ? '♭' : '♯'}`)
+    const rungs = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars.flatMap((b) => b.chords.map((c) => tag(c.pentatonic?.view))))
+    const preset = (path: PentatonicPathName, step?: PentatonicStep, extra: Partial<PentatonicPlan> = {}): PentatonicPlan => ({ bySection: {}, fallback: PENTATONIC_HOME, counts: true, path, ...(step ? { step } : {}), ...extra })
+    const build = (text: string, plan: PentatonicPlan, part = CONCERT) => buildChanges(parseChart(text).value, part, 4, false, 'off', undefined, plan)
+    const ABC = 'title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Cmaj7\nC | 3 | Cmaj7\n'
+    const bars = (section: string, from: number, n: number) => Array.from({ length: n }, (_, i) => `${section} | ${from + i} | Cmaj7`).join('\n')
+
+    it('by section, moves every section after the first: A B C is Home, then out, then further', () => {
+      const sheet = build(ABC, preset('minor-thirds', { unit: 'section', bars: 4 }))
+      expect(rungs(sheet)).toEqual(['0', '3♭', '6'])
+      expect(pents({ lines: showPentatonics(sheet.lines) })).toEqual([['Am♪ 5'], ['Cm♪ 3'], ['E♭m♪ 0']])
+    })
+
+    it('steps by section when the plan has no step', () => {
+      expect(rungs(build(ABC, preset('fifths')))).toEqual(['0', '1♯', '2♯'])
+    })
+
+    it('plays Home outside the form, and counts only the form', () => {
+      const text = 'title: T\nkey: C\nIntro | 1 | Cmaj7\nA | 2 | Cmaj7\nB | 3 | Cmaj7\nCoda | 4 | Cmaj7\n'
+      expect(rungs(build(text, preset('fifths', { unit: 'section', bars: 4 })))).toEqual(['0', '0', '1♯', '0'])
+      expect(rungs(build(text, preset('fifths', { unit: 'bars', bars: 2 })))).toEqual(['0', '0', '0', '0'])
+    })
+
+    it('a chart with no form plays Home', () => {
+      const sheet = build('title: T\nkey: C\nIntro | 1 | Cmaj7\n', preset('fifths', { unit: 'bars', bars: 2 }))
+      expect(rungs(sheet)).toEqual(['0'])
+      expect(sheet.pentatonicCaption).toBe('Pentatonics: Fifths · every 2 bars')
+    })
+
+    it('every N bars counts on through a section break', () => {
+      const text = `title: T\nkey: C\n${bars('A', 1, 3)}\n${bars('B', 4, 3)}\n`
+      expect(rungs(build(text, preset('side-slip', { unit: 'bars', bars: 2 })))).toEqual(['0', '0', '5♭', '5♭', '0', '0'])
+    })
+
+    it('every 2, 4 or 8 bars', () => {
+      const text = `title: T\nkey: C\n${bars('A', 1, 8)}\n`
+      expect(rungs(build(text, preset('fifths', { unit: 'bars', bars: 2 })))).toEqual(['0', '0', '1♯', '1♯', '2♯', '2♯', '3♯', '3♯'])
+      expect(rungs(build(text, preset('fifths', { unit: 'bars', bars: 4 })))).toEqual(['0', '0', '0', '0', '1♯', '1♯', '1♯', '1♯'])
+      expect(rungs(build(text, preset('fifths', { unit: 'bars', bars: 8 })))).toEqual(Array(8).fill('0'))
+    })
+
+    it('counts a repeat drawn once by its drawn bars', () => {
+      const sheet = buildChanges(library('autumn-leaves'), CONCERT, 4, false, 'off', undefined, preset('fifths', { unit: 'bars', bars: 4 }))
+      expect(sheet.lines.slice(0, 3).map((l) => tag(l.bars[0]?.chords[0]?.pentatonic?.view))).toEqual(['0', '1♯', '2♯']) // A1 · A2's 8 bars, then B at form bar 8
+    })
+
+    it('by key area, a revisit takes the next step', () => {
+      const text = 'title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Fmaj7\nA | 3 | Cmaj7\n@key A 2 F\n@key A 3 C\n'
+      expect(rungs(build(text, preset('minor-thirds', { unit: 'key-area', bars: 4 })))).toEqual(['0', '3♭', '6'])
+    })
+
+    it('steps the same for a B♭ part', () => {
+      expect(rungs(build(ABC, preset('minor-thirds'), TENOR))).toEqual(['0', '3♭', '6'])
+    })
+
+    it('a pick still wins over the preset', () => {
+      const [, b] = build(ABC, preset('minor-thirds', undefined, { picks: { 'B:2:0': 9 } })).lines.flatMap((l) => l.bars.flatMap((x) => x.chords)) // concert A: Am, Home
+      expect([tag(b?.pentatonic?.view), b?.pentatonic?.picked]).toEqual(['0', true])
+    })
+
+    it('names the path for a preset on the key basis only', () => {
+      expect(build(ABC, preset('minor-thirds', { unit: 'bars', bars: 4 })).pentatonicCaption).toBe('Pentatonics: Minor thirds · every 4 bars')
+      expect(build(ABC, preset('fifths', undefined, { basis: 'chord' })).pentatonicCaption).toBeNull()
+      expect(build(ABC, one(2, 'flat')).pentatonicCaption).toBeNull()
+      expect(build(ABC, preset('custom')).pentatonicCaption).toBeNull()
+      expect(buildChanges(parseChart(ABC).value, CONCERT).pentatonicCaption).toBeNull()
+    })
   })
 
   describe('pentatonicContour', () => {

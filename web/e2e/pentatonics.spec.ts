@@ -32,33 +32,33 @@ async function choosePath(page: Page, name: string): Promise<void> {
   await page.getByRole('option', { name }).click()
 }
 
-test('Side-slip takes the bridge a half step out, and comes home', async ({ page }) => {
+test('Side-slip alternates by section: A2 and A3 a half step out, A1 and the bridge home (#276)', async ({ page }) => {
   await page.goto('/song/satin-doll')
   await chooseSheet(page, 'Changes')
   await showPentatonics(page)
   await choosePath(page, 'Side-slip')
   await expect(page.getByRole('button', { name: 'Pentatonic rung' })).toHaveCount(0)
-  for (const s of ['A1', 'A2', 'A3']) await expect(sectionLabels(page, s).first()).toHaveText(/♪ 5$/)
-  await expect(sectionLabels(page, 'B').first()).toHaveText(/♪ 1$/)
-  await sectionLabels(page, 'B').first().click()
-  const rung5 = page.getByRole('dialog', { name: /^B · / }).locator('li').filter({ hasText: /^5 ·/ })
+  for (const s of ['A1', 'B']) await expect(sectionLabels(page, s).first()).toHaveText(/♪ 5$/)
+  for (const s of ['A2', 'A3']) await expect(sectionLabels(page, s).first()).toHaveText(/♪ 1$/)
+  await sectionLabels(page, 'A2').first().click()
+  const rung5 = page.getByRole('dialog', { name: /^A2 · / }).locator('li').filter({ hasText: /^5 ·/ })
   await expect(rung5.locator('[data-pent]').first()).toHaveAttribute('aria-current', 'true') // the ♭ side, not the ♯
   await page.keyboard.press('Escape')
   await page.reload()
-  await expect(sectionLabels(page, 'B').first()).toHaveText(/♪ 1$/) // kept for this chart
+  await expect(sectionLabels(page, 'A2').first()).toHaveText(/♪ 1$/) // kept for this chart
 })
 
-test('a path that varies tints the labels and draws the contour: the bridge high, with a riser', async ({ page }) => {
+test('a path that varies tints the labels and draws the contour: A2 high, with a riser', async ({ page }) => {
   await page.goto('/song/satin-doll')
   await chooseSheet(page, 'Changes')
   await showPentatonics(page)
   await expect(page.locator('[data-slot="contour"]')).toHaveCount(0) // One rung: no band
   await choosePath(page, 'Side-slip')
   await expect(page.locator('[data-slot="contour"]').first()).toBeAttached()
-  const bridge = page.locator('[data-slot="system"]').filter({ has: sectionLabels(page, 'B') }).first()
-  await expect(bridge.locator('[data-slot="contour"] line[data-kind="run"]').first()).toHaveAttribute('data-rung', '5')
-  await expect(bridge.locator('[data-slot="contour"] line[data-kind="riser"]')).toHaveCount(1)
-  await expect(page.locator('[data-slot="pentatonic"] [data-section="B"]').first()).toHaveClass(/text-rung-5/)
+  const out = page.locator('[data-slot="system"]').filter({ has: sectionLabels(page, 'A2') }).first()
+  await expect(out.locator('[data-slot="contour"] line[data-kind="run"]').first()).toHaveAttribute('data-rung', '5')
+  await expect(out.locator('[data-slot="contour"] line[data-kind="riser"]')).toHaveCount(1)
+  await expect(page.locator('[data-slot="pentatonic"] [data-section="A2"]').first()).toHaveClass(/text-rung-5/)
   await expect(page.locator('[data-slot="pentatonic"] [data-section="A1"]').first()).toHaveClass(/text-rung-0/)
 })
 
@@ -156,4 +156,57 @@ test('in print the longest pentatonic captions stay on one line', async ({ page 
   expect(await long.count()).toBeGreaterThan(0)
   const wrapped = await long.evaluateAll((els) => els.filter((el) => el.getBoundingClientRect().height > 1.5 * parseFloat(getComputedStyle(el).fontSize)).length)
   expect(wrapped).toBe(0)
+})
+
+/** check a SegmentedControl's radio (sr-only: click its label; retried, a click before hydration is lost) */
+async function checkRadio(page: Page, group: string, name: string): Promise<void> {
+  const set = page.getByRole('group', { name: group })
+  const radio = set.getByRole('radio', { name, exact: true })
+  await expect(async () => {
+    if (!(await radio.isChecked())) await set.locator('label').filter({ has: page.getByRole('radio', { name, exact: true }) }).click({ timeout: 1000 })
+    await expect(radio).toBeChecked({ timeout: 1000 })
+  }).toPass({ timeout: 10_000 })
+}
+
+test('a preset moves every section after the first: Waltz for Debby’s A B C', async ({ page }) => {
+  await page.goto('/song/waltz-for-debby')
+  await chooseSheet(page, 'Changes')
+  await showPentatonics(page)
+  await expect(page.getByRole('group', { name: 'Pentatonic step' })).toHaveCount(0) // One rung: no step
+  await choosePath(page, 'Minor thirds')
+  await expect(sectionLabels(page, 'A').first()).toHaveText(/♪ 5$/)
+  await expect(sectionLabels(page, 'B').first()).toHaveText(/♪ 3$/)
+  await expect(sectionLabels(page, 'C').first()).toHaveText(/♪ 0$/)
+  await expect(page.getByText('Pentatonics: Minor thirds · by section').first()).toBeVisible()
+})
+
+test('every 4 bars moves page 1’s second line, prints the path, and is kept over a reload', async ({ page }) => {
+  await page.goto('/song/satin-doll')
+  await chooseSheet(page, 'Changes')
+  await showPentatonics(page)
+  await choosePath(page, 'Minor thirds')
+  await checkRadio(page, 'Pentatonic step', 'Bars')
+  await checkRadio(page, 'Bars a step', '4')
+  const at = (chord: string) => page.locator(`[data-slot="pentatonic"] [data-chord="${chord}"]`) // by chord, not by line: a line the app breaks early would shift a line count
+  await expect(at('A1:1:0')).toHaveText(/♪ 5$/)
+  await expect(at('A1:5:0')).toHaveText(/♪ 3$/) // bars 5–8: the second unit, 3♭
+  await page.reload()
+  await expect(at('A1:5:0')).toHaveText(/♪ 3$/)
+  await page.emulateMedia({ media: 'print' })
+  await expect(page.getByText('Pentatonics: Minor thirds · every 4 bars').first()).toBeVisible()
+})
+
+test('a change of step clears the picks', async ({ page }) => {
+  await page.goto('/song/satin-doll')
+  await chooseSheet(page, 'Changes')
+  await showPentatonics(page)
+  await choosePath(page, 'Fifths')
+  const target = sectionLabels(page, 'B').first()
+  const before = await target.textContent()
+  await target.click()
+  await page.getByRole('dialog', { name: /^B · / }).locator('li').last().locator('[data-pent]').click() // rung 6
+  await expect(target).not.toHaveText(before ?? '')
+  await checkRadio(page, 'Pentatonic step', 'Key area')
+  await checkRadio(page, 'Pentatonic step', 'Section')
+  await expect(target).toHaveText(before ?? '')
 })

@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { effectScope, nextTick, ref, type Ref } from 'vue'
+import { effectScope, nextTick, ref } from 'vue'
 import { type ChangesSection, PENTATONIC_HOME, type PentatonicView } from '@chord-scale-maker/engine'
 import { usePentatonicPath } from '~/composables/usePentatonicPath'
 
@@ -10,21 +10,51 @@ const make = (key: string | undefined, sections = AABA, fallback: PentatonicView
   return s
 }
 
-const live = (sections: ChangesSection[]) => {
-  const list: Ref<ChangesSection[]> = ref(sections)
-  const s = effectScope().run(() => usePentatonicPath('live', list, ref({ rung: 2, side: 'flat' } as PentatonicView)))
-  if (!s) throw new Error('no path')
-  return { s, list }
-}
-
 describe('usePentatonicPath', () => {
   afterEach(() => localStorage.clear())
 
-  it('treats a section named after an Object built-in as an ordinary one', () => {
-    const p = make(undefined, ['constructor', 'toString', 'B'].map((key) => ({ key, marker: key, part: 'form' as const })))
+  it('treats a Custom section named after an Object built-in as an ordinary one', () => {
+    localStorage.setItem('csm-pent-path:b', JSON.stringify({ path: 'custom', sections: { constructor: { rung: 2, side: 'flat' } } }))
+    const p = make('b', ['constructor', 'toString', 'B'].map((key) => ({ key, marker: key, part: 'form' as const })))
+    expect(p.plan.value.bySection.constructor).toEqual({ rung: 2, side: 'flat' })
+    expect(Object.hasOwn(p.plan.value.bySection, 'toString')).toBe(false)
+  })
+
+  it('hands a preset to the engine with its step, with counts, and remembers both per chart', async () => {
+    const p = make('satin-doll')
+    p.setPath('side-slip')
+    expect(p.plan.value).toEqual({ bySection: {}, fallback: PENTATONIC_HOME, counts: true, path: 'side-slip', step: { unit: 'section', bars: 4 } })
+    p.setStep({ unit: 'bars', bars: 8 })
+    expect(p.plan.value.step).toEqual({ unit: 'bars', bars: 8 })
+    await nextTick()
+    expect(JSON.parse(localStorage.getItem('csm-pent-path:satin-doll') ?? '{}')).toEqual({ path: 'side-slip', step: { unit: 'bars', bars: 8 }, sections: {} })
+    const again = make('satin-doll')
+    expect([again.path.value, again.step.value]).toEqual(['side-slip', { unit: 'bars', bars: 8 }])
+    expect(make('autumn-leaves').path.value).toBe('one')
+  })
+
+  it('keeps the step when the path changes, and carries it to another chart', async () => {
+    const p = make('satin-doll')
+    p.setStep({ unit: 'key-area', bars: 4 })
     p.setPath('fifths')
-    expect(p.plan.value.bySection.constructor).toEqual(expect.objectContaining({ rung: expect.any(Number), side: expect.any(String) }))
-    expect(Object.values(p.plan.value.bySection).every((v) => typeof v === 'object' && 'rung' in v)).toBe(true)
+    expect(p.step.value).toEqual({ unit: 'key-area', bars: 4 })
+    await nextTick()
+    p.carryTo('mine:3')
+    expect(make('mine:3').step.value).toEqual({ unit: 'key-area', bars: 4 })
+  })
+
+  it('reads an old stored path as Section, every 4 bars', () => {
+    for (const raw of [{ path: 'fifths', sections: {} }, { path: 'fifths', step: { unit: 'chord', bars: 4 }, sections: {} }, { path: 'fifths', step: { unit: 'bars', bars: 5 } }]) {
+      localStorage.setItem('csm-pent-path:old', JSON.stringify(raw))
+      expect(make('old').step.value).toEqual({ unit: 'section', bars: 4 })
+    }
+  })
+
+  it('starts Custom empty from a preset', () => {
+    const p = make('satin-doll')
+    p.setPath('fifths')
+    p.setPath('custom')
+    expect(p.plan.value).toEqual({ bySection: {}, fallback: PENTATONIC_HOME, counts: true })
   })
 
   it('carries a stored path to another chart key, and leaves One rung unwritten', async () => {
@@ -43,25 +73,6 @@ describe('usePentatonicPath', () => {
     expect(p.plan.value).toEqual({ bySection: {}, fallback: { rung: 2, side: 'flat' }, counts: false })
   })
 
-  it('fills the sections from a preset, with counts, and remembers it per chart', async () => {
-    const p = make('satin-doll')
-    p.setPath('side-slip')
-    expect(p.plan.value.bySection.B).toEqual({ rung: 5, side: 'flat' })
-    expect(p.plan.value.counts).toBe(true)
-    await nextTick()
-    expect(make('satin-doll').path.value).toBe('side-slip')
-    expect(make('autumn-leaves').path.value).toBe('one')
-  })
-
-  it('stores a preset without its sections, so it follows the chart when the sections change', async () => {
-    const { s, list } = live(['A1', 'B', 'A3'].map((key) => ({ key, marker: key, part: 'form' as const })))
-    s.setPath('side-slip')
-    await nextTick()
-    expect(JSON.parse(localStorage.getItem('csm-pent-path:live') ?? '{}').sections).toEqual({})
-    list.value = AABA
-    expect(s.plan.value.bySection).toEqual({ A1: PENTATONIC_HOME, A2: PENTATONIC_HOME, B: { rung: 5, side: 'flat' }, A3: PENTATONIC_HOME })
-  })
-
   it('ignores stale sections and plays a new one Home under Custom', async () => {
     localStorage.setItem('csm-pent-path:x', JSON.stringify({ path: 'custom', sections: { Gone: { rung: 4, side: 'flat' }, A1: { rung: 1, side: 'sharp' } } }))
     const p = make('x')
@@ -76,15 +87,6 @@ describe('usePentatonicPath', () => {
     const again = make('satin-doll')
     expect(again.path.value).toBe('custom')
     expect(again.plan.value.bySection.A2).toEqual({ rung: 3, side: 'sharp' })
-  })
-
-  it('switching from a preset to Custom keeps what the preset played', async () => {
-    const p = make('satin-doll')
-    p.setPath('side-slip')
-    const played = { ...p.plan.value.bySection }
-    p.setPath('custom')
-    expect(p.path.value).toBe('custom')
-    expect(p.plan.value.bySection).toEqual(played)
   })
 
   it('ignores junk', () => {

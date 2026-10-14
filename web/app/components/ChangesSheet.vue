@@ -8,6 +8,8 @@
       <!-- the sheet as the editor: the heading edited where it prints -->
       <template v-if="editing !== undefined" #heading>
         <SheetHeading :doc="doc" :level="headingLevel" @update:doc="emit('update:doc', $event)" />
+        <!-- the heading replaces the subtitle on screen, so the path a preset plays shows under it (print has it in the subtitle) -->
+        <p v-if="built.pentatonicCaption" data-slot="pent-caption" class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ built.pentatonicCaption }}</p>
       </template>
       <template #default="{ page }">
         <div :class="['space-y-4', signatures || lineOn ? 'print:space-y-0' : 'print:space-y-1']">
@@ -117,7 +119,7 @@ const counted = computed(() => !!props.pentatonic && (props.pentatonic.counts ||
 const contour = computed(() => (counted.value ? pentatonicContour(sheet.value.lines) : null))
 // 8 lines with slashes (a 32-bar AABA, one section a line pair); fewer with a guide tone line, whose notes and labels are taller
 const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: props.numerals, scales: props.scales, pentatonics: !!props.pentatonic }))
-const subtitleText = computed(() => pageSubtitle(props.subtitle, props.instrumentLabel, 'Changes'))
+const subtitleText = computed(() => [pageSubtitle(props.subtitle, props.instrumentLabel, 'Changes'), built.value.pentatonicCaption].filter(Boolean).join(' · '))
 const pages = computed(() =>
   chunk(
     sheet.value.lines.map((line, index) => ({ line, index })),
