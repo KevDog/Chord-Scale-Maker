@@ -39,4 +39,12 @@ describe('the pentatonic ladder popover', () => {
     expect(await panelStyle(0.5)).toContain('zoom: 2')
     expect(await panelStyle()).not.toContain('zoom')
   })
+
+  it('names the section in the ladder’s title', async () => {
+    const w = await mountSuspended(PentatonicLadder, { props: { ...props, section: 'B' }, attachTo: document.body })
+    await w.find('button').trigger('click')
+    await flushPromises()
+    expect(w.find('[role="dialog"]').attributes('aria-label')).toBe('B · C major ladder')
+    w.unmount()
+  })
 })

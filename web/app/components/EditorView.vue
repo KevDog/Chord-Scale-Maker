@@ -116,6 +116,7 @@
             v-model:pentatonics="prefs.pentatonics.value"
             v-model:pent-rung="prefs.pentRung.value"
             v-model:pent-side="prefs.pentSide.value"
+            v-model:pent-path="pentPathModel"
             v-model:line-mode="prefs.lineMode.value"
             v-model:guide-line="prefs.guideLine.value"
             v-model:arpeggio="prefs.arpeggio.value"
@@ -192,8 +193,8 @@
             :editing="sheetEditor ? sheetEdit : undefined"
             :preview="sheetPreview"
             :focus-at="sheetFocus"
-            :pentatonic="pentatonicView"
-            @pentatonic="(v) => { prefs.pentRung.value = v.rung; prefs.pentSide.value = v.side }"
+            :pentatonic="pentatonicPlan"
+            @pentatonic="(section, view) => pentPath.setSection(section, view)"
             @tap="editSheetChord"
             @edit="openSheetEdit"
             @update:doc="editor.setDoc"
@@ -259,6 +260,7 @@ import { sheetLineOf } from '~/utils/sheetLine'
 import {
   addSection,
   barView,
+  changesSections,
   buildSheet,
   chartKeyOf,
   type ChartDoc,
@@ -285,7 +287,7 @@ import {
   resolveScales,
   SCALE_LEVELS,
   type LevelState,
-  type PentatonicView,
+  type PentatonicPlan,
   type ScaleView,
   serializeChart,
   setMeta,
@@ -359,8 +361,12 @@ const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeatu
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
 const pentatonicsOn = useFeature('pentatonics')
-/** the sheet's Pentatonics view; one object until a pref changes, so the sheet isn't rebuilt on every render */
-const pentatonicView = computed((): PentatonicView | null => (pentatonicsOn && prefs.pentatonics.value ? { rung: prefs.pentRung.value, side: prefs.pentSide.value } : null))
+/** the chart's sections as the Changes sheet draws them, for the path presets (#264) */
+const pentSections = computed(() => changesSections(editor.doc.value))
+const pentPath = usePentatonicPath(props.practiceKey, pentSections, computed(() => ({ rung: prefs.pentRung.value, side: prefs.pentSide.value })))
+const pentPathModel = computed({ get: () => pentPath.path.value, set: (v) => pentPath.setPath(v) })
+/** the sheet's Pentatonics plan; null with the row off */
+const pentatonicPlan = computed((): PentatonicPlan | null => (pentatonicsOn && prefs.pentatonics.value ? pentPath.plan.value : null))
 const signaturesOn = useFeature('keySignatures')
 const arpeggiosOn = useFeature('arpeggios')
 const myChartsOn = useFeature('myCharts')

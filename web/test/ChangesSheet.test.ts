@@ -19,12 +19,12 @@ const systemOf = async (signatures: boolean, line?: SheetLine) =>
 
 describe('ChangesSheet', () => {
   it('prints the pentatonic row where the key area changes, and passes a pick up', async () => {
-    const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: false, pentatonic: { rung: 2, side: 'flat' } } }) // ChangesSystem drawn, not stubbed
+    const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: false, pentatonic: { bySection: {}, fallback: { rung: 2, side: 'flat' }, counts: false } } }) // ChangesSystem drawn, not stubbed
     const labels = w.findAll('[data-slot="pentatonic"] button').map((b) => b.text())
     expect(labels.length).toBeGreaterThan(0)
     expect(labels.every((l) => /^[A-G][♭♯]?m♪$/.test(l))).toBe(true)
     w.findComponent(PentatonicLadder).vm.$emit('pick', { rung: 3, side: 'sharp' })
-    expect(w.emitted('pentatonic')?.[0]).toEqual([{ rung: 3, side: 'sharp' }])
+    expect(w.emitted('pentatonic')?.[0]).toEqual([expect.any(String), { rung: 3, side: 'sharp' }])
   })
 
   it('has no pentatonic row without a view', async () => {

@@ -137,16 +137,17 @@
         <template v-else>{{ m.scale }}</template>
       </span>
     </div>
-    <!-- the key area's pentatonic at the sheet's rung (#255): where the area changes and at the line's start -->
+    <!-- the key area's pentatonic at its section's rung (#255, #264): where the area changes and at the line's start -->
     <div v-if="pentatonic" data-slot="pentatonic" class="relative h-5 print:h-3">
       <span
         v-for="m in pentatonicMarks"
         :key="`p${m.key}`"
         class="absolute whitespace-nowrap text-[0.7rem]/3.5 text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700"
+        :data-section="m.p.section"
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
         <span class="hidden print:inline">{{ m.p.label }}</span>
-        <PentatonicLadder class="print:hidden" :label="m.p.label" :key-name="m.p.key" :ladder="m.p.ladder" :current="pentatonic" @pick="emit('pentatonic', $event)" />
+        <PentatonicLadder class="print:hidden" :label="m.p.label" :key-name="m.p.key" :ladder="m.p.ladder" :current="m.p.view" :section="m.p.section" @pick="emit('pentatonic', m.p.section, $event)" />
       </span>
     </div>
     <!-- a full last line: the ghost bar as a pill under it -->
@@ -158,7 +159,7 @@
 </template>
 
 <script setup lang="ts">
-import { barKey, type ChangesLine, type ChartDoc, type ChordPreview, CONCERT, type GridPos, type PentatonicView, rowNotes, sheetScale } from '@chord-scale-maker/engine'
+import { barKey, type ChangesLine, type ChartDoc, type ChordPreview, CONCERT, type GridPos, type PentatonicPlan, type PentatonicView, rowNotes, sheetScale } from '@chord-scale-maker/engine'
 import { drawChangesLine, type NamedBeat } from '~/utils/changesDrawing'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
@@ -183,11 +184,11 @@ const props = defineProps<{
   editing?: SheetEdit | null // the sheet is the editor: what it's editing (null: nothing yet); undefined: the chord editor dialog instead
   preview?: ChordPreview | null // the reading of the draft in the open field, shown under its chord
   focusAt?: SheetFocus | null // a chord the editor wants focus on (its field closed with nowhere to go)
-  pentatonic?: PentatonicView | null // the Pentatonics row's rung and side; null/undefined: no row
+  pentatonic?: PentatonicPlan | null // the Pentatonics row's rungs; null/undefined: no row
 }>()
 const emit = defineEmits<{
   tap: [chord: SheetChordEdit] // a chord tapped, for the chord editor dialog
-  pentatonic: [view: PentatonicView] // a rung picked in a label's ladder
+  pentatonic: [section: string, view: PentatonicView] // a rung picked in a label's ladder, for its section
   edit: [edit: SheetEdit]
   'update:doc': [doc: ChartDoc]
   said: [text: string]

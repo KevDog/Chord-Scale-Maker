@@ -49,13 +49,19 @@
                   <ToggleButton v-model="numerals" title="Each chord's Roman numeral in its key">Numerals</ToggleButton>
                   <ToggleButton v-model="scaleNames" title="Each chord's scale, under its numeral">Scales</ToggleButton>
                 </div>
-                <ToggleButton v-if="pentatonicsOn" v-model="pentatonics" class="whitespace-nowrap" title="Each key area's minor pentatonic, at the rung you choose on its tension ladder">Pentatonics</ToggleButton>
+                <ToggleButton v-if="pentatonicsOn" v-model="pentatonics" class="whitespace-nowrap" title="Each key area's minor pentatonic, at a rung of its tension ladder: one for the sheet, or a path through the form">Pentatonics</ToggleButton>
                 <div v-if="pentatonicsOn && pentatonics" class="flex flex-col items-start gap-2">
+                  <UiListbox v-model="pentPath" class="w-48" aria-label="Pentatonic path">
+                    <template #selected="{ value }"><UiListboxLabel>{{ pathLabel(value) }}</UiListboxLabel></template>
+                    <UiListboxOption v-for="p in pathChoices" :key="p.value" :value="p.value"><UiListboxLabel>{{ p.label }}</UiListboxLabel></UiListboxOption>
+                  </UiListbox>
+                  <template v-if="pentPath === 'one'">
                   <UiListbox v-model="pentRung" class="w-48" aria-label="Pentatonic rung">
                     <template #selected="{ value }"><UiListboxLabel>{{ rungLabel(value) }}</UiListboxLabel></template>
                     <UiListboxOption v-for="r in PENT_RUNGS" :key="r.value" :value="r.value"><UiListboxLabel>{{ r.label }}</UiListboxLabel></UiListboxOption>
                   </UiListbox>
                   <SegmentedControl v-if="sideShown(pentRung)" v-model="pentSide" legend="Side" name="pent-side" aria-label="Pentatonic side" :options="PENT_SIDES" />
+                  </template>
                 </div>
               </div>
             </UiField>
@@ -117,8 +123,8 @@
 </template>
 
 <script setup lang="ts">
-import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, partFor, type PentatonicSide } from '@chord-scale-maker/engine'
-import { PENT_RUNGS, PENT_SIDES, rungLabel, sideShown } from '~/utils/pentatonics'
+import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, partFor, type PentatonicPathName, type PentatonicSide } from '@chord-scale-maker/engine'
+import { PENT_PATHS, PENT_RUNGS, PENT_SIDES, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
 import type { GuideFrom, LineMode } from '~/utils/sheetLine'
 import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
 import type { SheetKind } from '~/utils/sheets'
@@ -136,6 +142,8 @@ const scaleNames = defineModel<boolean>('scaleNames', { default: true })
 const pentatonics = defineModel<boolean>('pentatonics', { default: false })
 const pentRung = defineModel<number>('pentRung', { default: 0 })
 const pentSide = defineModel<PentatonicSide>('pentSide', { default: 'flat' })
+const pentPath = defineModel<PentatonicPathName>('pentPath', { default: 'one' })
+const pathChoices = computed(() => PENT_PATHS.filter((p) => p.value !== 'custom' || pentPath.value === 'custom'))
 const pentatonicsOn = useFeature('pentatonics')
 const lineMode = defineModel<LineMode>('lineMode', { default: 'off' })
 const guideLine = defineModel<GuideFrom>('guideLine', { default: 'third' })
