@@ -98,10 +98,12 @@ function practiceFor(
   startText: string,
   scale: string,
   notes: readonly Pitched[],
+  degrees: readonly Pitched[],
   practice: PracticeSelection | null,
 ): Pick<StaffModel, 'keys' | 'selected' | 'pentatonic'> {
   const reference = mode === 'from' ? startReference(startText) : orNull(() => writtenChordRootLenient(part, row.chord, scale))
-  const keys = reference ? practiceKeys(reference, notes, mode === 'root' ? (resolveQuality(row.chord)?.quality ?? null) : null) : null
+  // from the root, a key is the note's degree: in the formula's letters, whatever letters the staff shows (#279)
+  const keys = reference ? practiceKeys(reference, mode === 'root' ? degrees : notes, mode === 'root' ? (resolveQuality(row.chord)?.quality ?? null) : null) : null
   if (isPentatonicSelection(practice)) {
     const chordRoot = orNull(() => writtenChordRootLenient(part, row.chord, scale)) ?? scaleLabel(part, scale).root
     const { pentatonic, lit } = pentatonicPick(notes.map((n) => pcOf(n)), chordRoot, practice.rank)
@@ -134,14 +136,15 @@ function staff(
     const label = scaleLabel(part, scale)
     if ('error' in start) return { ...base, ...none, chords, scale: label, error: start.error }
     const notes = scaleNotes(part, scale, mode, start.midi)
+    const degrees = scaleNotes(part, scale, mode, start.midi, 'degrees')
     return {
       ...base,
       chords,
       scale: label,
       notes,
       accidentals: accidentalsInBar(notes.map((n) => ({ letter: n.letter, acc: n.acc, octave: octaveOf(n) })), keySig),
-      intervals: intervalsOrNull(part, row.chord, scale, notes),
-      ...practiceFor(row, part, mode, startText, scale, notes, practice),
+      intervals: intervalsOrNull(part, row.chord, scale, degrees),
+      ...practiceFor(row, part, mode, startText, scale, notes, degrees, practice),
       error: null,
     }
   } catch (e) {

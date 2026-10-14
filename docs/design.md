@@ -134,7 +134,7 @@ type ChordToken =
 | Python | TS | Notes |
 |---|---|---|
 | `parse_root`, `root_name`, `pc_of`, `acc_for`, `enharmonics` | `pitch.ts` | identical arithmetic; JS `%` needs a `mod()` helper for negatives |
-| `simplify_root` | `scales.ts` `simplifyRoot` | same cost tuple `(ugly, total, sameDir)`; tie order = order of `enharmonics()` |
+| `simplify_root` | `scales.ts` `simplifyRoot` | same cost tuple `(ugly, total, sameDir)`; tie order = order of `enharmonics()`; a relettered scale (below) uses `(ugly, sameDir)` |
 | `spell_from`, `spell_scale`, `parse_scale`, `norm` | `scales.ts` | formulas copied verbatim from `SCALES`; `norm` accepts ♭/♯/♮ so page labels parse back |
 | `Part.written_root/scale/scale_notes/scale_label` | `part.ts` | functions taking a `Part` value |
 | `Part.chord_markup` | `chord.ts` `chordTokens(part, chord, scaleText?)` | returns `ChordToken[]`, not LilyPond |
@@ -151,6 +151,12 @@ type ChordToken =
     on a chord it can't parse.
   - An option's scale root is the chord root plus an interval, by letter-step arithmetic: `b3` over C → Eb.
     Interval-derived roots are respelled by `simplifyRoot` for their scale: `b2` over Bb → B, not Cb.
+- `scales.ts` `spellScale` (#279): the half-whole and whole-half diminished scales, where their formula spells badly on a
+  root, take another lettering of the same notes (a letter repeated or skipped): the fewest double accidentals, then
+  B♯/E♯/C♭/F♭, then accidentals, then accidentals against the root's side, then closest to the formula. D♭ half-whole
+  is D♭ D E F G A♭ B♭ B, not D♭ E𝄫 F♭ F G A♭ B♭ C♭. The root stays as written whenever a lettering is clean (F♯°7 keeps
+  F♯). Intervals and practice keys from the root still read the formula's degrees (`part.ts` `writtenScale().degrees`),
+  so the B above is still the ♭7 and lights with the chord tones.
   - `baseQuality(text)` reads an extended symbol as the known quality it starts with, when the rest is only
     alterations (`Maj7#11` → `Maj7`, `7(9)` → `7`). Guide tones use it.
 - `chart.ts` `qualityScale(row)`: the explicit scale cell, else the default, else `null` (the UI prompts); the
