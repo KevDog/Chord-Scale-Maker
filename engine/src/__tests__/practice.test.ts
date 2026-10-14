@@ -135,3 +135,46 @@ describe('the Pentatonic selection (#266)', () => {
     expect(isPentatonicSelection(null)).toBe(false)
   })
 })
+
+describe('the Pentatonic preset on the Scales sheet (#266)', () => {
+  const pent = (rank: number): PracticeSelection => ({ preset: 'pentatonic', rank })
+
+  it('selects nothing by keys', () => {
+    expect(selectedNotes({ preset: 'pentatonic', rank: 1 }, 'Dm7', ['1', 'b3'])).toEqual([false, false])
+  })
+
+  it('lights each staff’s pentatonic at the rank and names it', () => {
+    const [d, g] = staves([row('Dm7'), row('G7', '', '2')], 'root', pent(1))
+    expect(d?.pentatonic).toEqual({ name: 'Dm', rank: 1, shared: 5, best: 5 })
+    expect(picked([d!])[0]).toEqual(['D', 'F', 'G', 'A', 'C'])
+    expect(g?.pentatonic?.name).toBe('Dm')
+  })
+
+  it('lights fewer notes farther down the ladder, in From X mode too', () => {
+    const [far] = staves([row('Dm7')], 'from', pent(12))
+    expect(far?.pentatonic?.shared).toBe(0)
+    expect(far?.selected?.every((s) => !s)).toBe(true)
+  })
+
+  it('names the written pentatonic for a transposing part, lighting the same degrees', () => {
+    const [concert] = staves([row('Dm7')], 'root', pent(1))
+    const [tenor] = staves([row('Dm7')], 'root', pent(1), 'C', TENOR)
+    expect(tenor?.pentatonic?.name).toBe('Em')
+    expect(tenor?.selected).toEqual(concert?.selected)
+  })
+
+  it('is null under other selections and on staves that can’t be drawn', () => {
+    expect(staves([row('Dm7')], 'root', { preset: 'guideTones' })[0]?.pentatonic).toBeNull()
+    expect(staves([row('Dm7')], 'root')[0]?.pentatonic).toBeNull()
+    expect(staves([row('Xq7')], 'root', pent(1))[0]?.pentatonic).toBeNull()
+  })
+
+  it('ranks from the scale’s root when the chord can’t be read', () => {
+    const [s] = staves([row('Xq7', 'D Dorian')], 'root', pent(1))
+    expect(s?.pentatonic?.name).toBe('Dm')
+  })
+
+  it('reports a best under 5 on a whole-tone staff', () => {
+    expect(staves([row('C7#5', 'C Whole Tone')], 'root', pent(1))[0]?.pentatonic?.best).toBe(3)
+  })
+})
