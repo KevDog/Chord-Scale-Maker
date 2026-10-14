@@ -1,3 +1,4 @@
+import type { Page } from '@playwright/test'
 import { arpeggiosDrawn, chooseInstrument, chooseSheet, drawn, expect, guidesDrawn, pickOption, showArpeggios, showGuides, showPentatonics, staves, test } from './fixtures'
 
 const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length
@@ -122,6 +123,40 @@ test('prints the Changes seven lines a page with Numerals, Scales and Pentatonic
   await chooseSheet(page, 'Changes')
   await showPentatonics(page)
   await expect(page.locator('[data-slot="pentatonic"]').first()).toBeVisible()
+  const svgs = page.locator('svg[aria-label^="Bars:"]')
+  await expect(svgs.first()).toBeVisible()
+  const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+  expect(sheetPages).toBeGreaterThanOrEqual(2)
+  await page.emulateMedia({ media: 'print' })
+  expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
+})
+
+async function sideSlip(page: Page): Promise<void> {
+  await page.getByRole('button', { name: 'Pentatonic path' }).click()
+  await page.getByRole('option', { name: 'Side-slip' }).click()
+  await expect(page.locator('[data-slot="contour"]').first()).toBeAttached()
+}
+
+// the contour band (#265) under Numerals, Scales and Pentatonics, with a guide tone line on the tuba: the tallest case
+test('prints the Changes with a guide tone line and the pentatonic contour, a sheet page to a letter page', async ({ page }) => {
+  await page.goto('/song/stardust')
+  await chooseInstrument(page, 'Tuba')
+  await showGuides(page, 'From 7th')
+  await showPentatonics(page)
+  await sideSlip(page)
+  await guidesDrawn(page)
+  const svgs = page.locator('svg[aria-label^="Bars:"]')
+  const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+  await page.emulateMedia({ media: 'print' })
+  await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+  expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
+})
+
+test('prints the Changes with the pentatonic contour and no line, a sheet page to a letter page', async ({ page }) => {
+  await page.goto('/song/stardust')
+  await chooseSheet(page, 'Changes')
+  await showPentatonics(page)
+  await sideSlip(page)
   const svgs = page.locator('svg[aria-label^="Bars:"]')
   await expect(svgs.first()).toBeVisible()
   const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)

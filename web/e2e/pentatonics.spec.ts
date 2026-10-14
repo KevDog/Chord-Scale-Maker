@@ -48,6 +48,20 @@ test('Side-slip takes the bridge a half step out, and comes home', async ({ page
   await expect(sectionLabels(page, 'B').first()).toHaveText(/♪ 1$/) // kept for this chart
 })
 
+test('a path that varies tints the labels and draws the contour: the bridge high, with a riser', async ({ page }) => {
+  await page.goto('/song/satin-doll')
+  await chooseSheet(page, 'Changes')
+  await showPentatonics(page)
+  await expect(page.locator('[data-slot="contour"]')).toHaveCount(0) // One rung: no band
+  await choosePath(page, 'Side-slip')
+  await expect(page.locator('[data-slot="contour"]').first()).toBeAttached()
+  const bridge = page.locator('[data-slot="system"]').filter({ has: sectionLabels(page, 'B') }).first()
+  await expect(bridge.locator('[data-slot="contour"] line[data-kind="run"]').first()).toHaveAttribute('data-rung', '5')
+  await expect(bridge.locator('[data-slot="contour"] line[data-kind="riser"]')).toHaveCount(1)
+  await expect(page.locator('[data-slot="pentatonic"] [data-section="B"]').first()).toHaveClass(/text-rung-5/)
+  await expect(page.locator('[data-slot="pentatonic"] [data-section="A1"]').first()).toHaveClass(/text-rung-0/)
+})
+
 test('a pick in one section’s ladder changes that section only', async ({ page }) => {
   await page.goto('/song/satin-doll')
   await chooseSheet(page, 'Changes')

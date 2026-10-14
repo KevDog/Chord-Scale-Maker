@@ -113,7 +113,7 @@ const sheet = computed(() => ({ ...built.value, lines: showPentatonics(breakLine
 /** the tension contour (#265), over the lines as drawn, with a path that varies by section */
 const contour = computed(() => (props.pentatonic?.counts ? pentatonicContour(sheet.value.lines) : null))
 // 8 lines with slashes (a 32-bar AABA, one section a line pair); fewer with a guide tone line, whose notes and labels are taller
-const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: props.numerals, scales: props.scales, pentatonics: !!props.pentatonic, contour: !!props.pentatonic?.counts }))
+const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: props.numerals, scales: props.scales, pentatonics: !!props.pentatonic }))
 const subtitleText = computed(() => pageSubtitle(props.subtitle, props.instrumentLabel, 'Changes'))
 const pages = computed(() =>
   chunk(

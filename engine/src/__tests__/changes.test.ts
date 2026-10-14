@@ -258,10 +258,6 @@ describe('the Changes sheet', () => {
     expect(changesLinesPerPage('seventh', { numerals: true, scales: false, pentatonics: true })).toBe(6)
     expect(changesLinesPerPage('off', { numerals: true, scales: true, pentatonics: true })).toBe(7)
     expect(changesLinesPerPage('off', { numerals: true, scales: false, pentatonics: true })).toBe(8)
-    expect(changesLinesPerPage('seventh', { numerals: true, scales: true, pentatonics: true, contour: true })).toBe(4)
-    expect(changesLinesPerPage('seventh', { numerals: false, scales: false, pentatonics: true, contour: true })).toBe(6)
-    expect(changesLinesPerPage('off', { numerals: true, scales: true, pentatonics: true, contour: true })).toBe(6)
-    expect(changesLinesPerPage('off', { numerals: true, scales: false, pentatonics: true, contour: true })).toBe(8)
   })
 })
 

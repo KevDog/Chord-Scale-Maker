@@ -139,14 +139,13 @@ function areaLadder(name: string, part: Part): Readonly<{ ladder: readonly Penta
  * - a guide tone or arpeggio line: 5 with all three rows, 6 with any row, 7 with none.
  * Notes, stems and the label row take more height. Measured over the library in every transposition at letter width,
  * with a page's tallest lines (an ending raised over the stems); the 5 and 7 were measured on Stardust (tuba, From
- * 7th), the documented worst case, and print.spec checks it. With the pentatonic contour (#265) under all three rows,
- * one line fewer.
+ * 7th), the documented worst case, and print.spec checks it. The pentatonic contour band (#265) costs no line: the same
+ * counts measured with it drawn (Side-slip) held, and one more line a page (8 and 6) spilled to a third page.
  */
-export function changesLinesPerPage(line: SheetLine, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean; contour?: boolean }>): number {
+export function changesLinesPerPage(line: SheetLine, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean }>): number {
   const all = !!(rows.pentatonics && rows.numerals && rows.scales)
-  const less = all && rows.contour ? 1 : 0 // the contour band under all three rows (#265)
-  if (line === 'off') return (all ? 7 : 8) - less
-  if (all) return 5 - less
+  if (line === 'off') return all ? 7 : 8
+  if (all) return 5
   return 6 + (!rows.numerals && !rows.scales && !rows.pentatonics ? 1 : 0)
 }
 
