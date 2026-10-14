@@ -154,25 +154,76 @@ function minBy<T>(xs: readonly T[], key: (x: T) => readonly number[]): T {
   return rest.reduce((best, x) => (lexLess(key(x), key(best)) ? x : best), first)
 }
 
+/** the symmetric diminished scales: players letter their notes as they spell best (D♭ D E F G A♭ B♭ B), not one letter per degree */
+const RELETTERED: ReadonlySet<ScaleKey> = new Set<ScaleKey>(['half whole diminished', 'whole half diminished'])
+
+/** every formula for these semitones above a root: letters ascending (the last may be the root's octave, F♯ … D♯ F),
+ * a letter repeated or skipped, no triple accidental */
+function letterings(semis: readonly number[]): string[] {
+  const out: string[] = []
+  const go = (i: number, letter: number, tokens: readonly string[]): void => {
+    if (i === semis.length) return void out.push(tokens.join(' '))
+    for (const step of i === 0 ? [0] : [0, 1, 2]) {
+      const l = letter + step
+      const acc = (semis[i] ?? 0) - (l === 7 ? 12 : (NAT_PC[l] ?? Infinity))
+      if (l <= 7 && Math.abs(acc) <= 2) go(i + 1, l, [...tokens, `${(acc < 0 ? 'b' : '#').repeat(Math.abs(acc))}${l + 1}`])
+    }
+  }
+  go(0, 0, [])
+  return out
+}
+
+const LETTERINGS = new Map<ScaleKey, readonly string[]>()
+const letteringsOf = (key: ScaleKey): readonly string[] => {
+  const known = LETTERINGS.get(key)
+  if (known) return known
+  const all = letterings(spellFrom({ letter: 0, acc: 0 }, SCALES[key][0]).map((n) => n.semis))
+  LETTERINGS.set(key, all)
+  return all
+}
+
+/**
+ * #279: a scale's notes on a root as written. The formula's letters, unless the scale is symmetric diminished and they
+ * spell badly: then the same notes lettered with the fewest double accidentals, then B♯/E♯/C♭/F♭, then accidentals, then
+ * accidentals against the root's side, then closest to the formula.
+ */
+function lettered(root: Spelled, key: ScaleKey): ScaleNote[] {
+  const formula = SCALES[key][0]
+  const notes = spellFrom(root, formula)
+  if (!RELETTERED.has(key) || !notes.some(isUgly)) return notes
+  const degrees = formula.split(/\s+/)
+  const side = Math.sign(root.acc)
+  const cost = (f: string): readonly number[] => {
+    const ns = spellFrom(root, f)
+    return [
+      ns.filter((n) => Math.abs(n.acc) > 1).length,
+      ns.filter(isUgly).length,
+      ns.reduce((sum, n) => sum + Math.abs(n.acc), 0),
+      ns.filter((n) => side !== 0 && n.acc !== 0 && Math.sign(n.acc) !== side).length,
+      f.split(' ').filter((d, i) => d !== degrees[i]).length,
+    ]
+  }
+  return spellFrom(root, minBy(letteringsOf(key), cost))
+}
+
 /**
  * friendliest spelling of a root, judged over the whole scale: no B#/E#/Cb/Fb or
  * double accidentals if avoidable, then fewest accidentals; ties keep the original
- * direction, else flats (but F# over Gb)
+ * direction, else flats (but F# over Gb). A relettered scale skips the count: it keeps the written side (F♯°7: F♯).
  */
 export function simplifyRoot(n: Spelled, key: ScaleKey = 'ionian'): Spelled {
-  const formula = SCALES[key][0]
   const cost = (o: Spelled): readonly number[] => {
-    const notes = spellFrom(o, formula)
+    const notes = lettered(o, key)
     const ugly = notes.filter(isUgly).length
     const total = notes.reduce((s, x) => s + Math.abs(x.acc), 0)
     const sameDir = o.acc === n.acc || (n.acc === 0 && (o.acc <= 0 || pcOf(o) === 6)) ? 0 : 1
-    return [ugly, total, sameDir]
+    return RELETTERED.has(key) ? [ugly, sameDir] : [ugly, total, sameDir]
   }
   return minBy(enharmonics(n), cost)
 }
 
 /** the scale spells cleanly on this root: no double accidental, no B♯ E♯ C♭ F♭ */
-export const spellsCleanly = (root: Spelled, key: ScaleKey): boolean => !spellFrom(root, SCALES[key][0]).some(isUgly)
+export const spellsCleanly = (root: Spelled, key: ScaleKey): boolean => !lettered(root, key).some(isUgly)
 
 /** two formulas with the same notes, lettered differently (♭III°7's and the ascending diatonic diminished) */
 export function samePitches(a: ScaleKey, b: ScaleKey): boolean {
@@ -245,7 +296,7 @@ export function samePitchScale(a: string, b: string | null | undefined): boolean
 }
 
 export function spellScale(root: Spelled, key: ScaleKey): ScaleNote[] {
-  const notes = spellFrom(root, SCALES[key][0])
+  const notes = lettered(root, key)
   if (notes.some((n) => Math.abs(n.acc) > 2))
     throw new Error(`${rootName(root)} ${key} needs a triple accidental; pick an enharmonic root`)
   if (notes.some((n, i) => i > 0 && n.semis <= (notes[i - 1]?.semis ?? -1)))

@@ -19,6 +19,14 @@ const staves = (rows: readonly Row[], mode: ModeChoice = 'root'): StaffModel[] =
   buildSheet(rows, CONCERT, mode, 'C', 12)[0]?.pages.flat() ?? []
 
 describe('sheet', () => {
+  it('letters a diminished staff cleanly but keeps its intervals and practice keys (#279)', () => {
+    const [s] = buildSheet([row('Db7#9', 'Db Half-Whole')], CONCERT, 'root', 'C', 12, { preset: 'chordTones' })[0]?.pages.flat() ?? []
+    expect(s?.notes.map((n) => rootName(n)).join(' ')).toBe('Db D E F G Ab Bb B')
+    expect(s?.intervals).toEqual(['1', 'b9', '#9', '3', '#11', '5', '13', 'b7'])
+    expect(s?.keys).toEqual(['1', 'b2', 'b3', '3', '#4', '5', '6', 'b7'])
+    expect(s?.selected).toEqual([true, false, false, true, false, false, false, true])
+  })
+
   it('converts pitched notes to VexFlow keys', () => {
     expect(toVexKey({ letter: 2, acc: -1, midi: 63 })).toBe('eb/4')
     expect(toVexKey({ letter: 0, acc: -1, midi: 59 })).toBe('cb/4') // Cb4 sounds as B3

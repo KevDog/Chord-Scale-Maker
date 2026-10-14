@@ -1,6 +1,6 @@
 import { type Clef, type InstrumentName, type Range, type Transposition, CLEF_ROOT_LOW, CLEF_START, INSTRUMENTS, TRANSPOSITIONS } from './instruments'
 import { type Spelled, LETTERS, mod, NAT_PC, parseRoot, pcOf, shiftBy } from './pitch'
-import { type ScaleKey, type ScaleNote, parseScale, SCALES, simplifyRoot, spellScale } from './scales'
+import { type ScaleKey, type ScaleNote, parseScale, SCALES, simplifyRoot, spellFrom, spellScale } from './scales'
 import { RANGES } from './voiceLeading'
 
 /**
@@ -15,7 +15,8 @@ export type Mode = 'from' | 'root'
 /** the practice modes, for iterating (From root picks intervals, From X picks pitches) */
 export const MODES: readonly Mode[] = ['root', 'from']
 export type Pitched = Readonly<Spelled & { midi: number }>
-type WrittenScale = Readonly<{ root: Spelled; key: ScaleKey; notes: readonly ScaleNote[] }>
+/** notes: as shown (a diminished scale lettered cleanly, #279); degrees: the same notes in the formula's letters, for intervals */
+type WrittenScale = Readonly<{ root: Spelled; key: ScaleKey; notes: readonly ScaleNote[]; degrees: readonly ScaleNote[] }>
 export type ScaleLabel = Readonly<{ root: Spelled; name: string }>
 
 export const CONCERT: Part = { clef: 'treble', trans: 'C' }
@@ -45,11 +46,13 @@ export const concertPc = (part: Part, written: number): number => mod(written - 
 export function writtenScale(part: Part, text: string): WrittenScale {
   const { root, key } = parseScale(text)
   const written = writtenRoot(part, root, key)
-  return { root: written, key, notes: spellScale(written, key) }
+  return { root: written, key, notes: spellScale(written, key), degrees: spellFrom(written, SCALES[key][0]) }
 }
 
-export function scaleNotes(part: Part, text: string, mode: Mode, start: number): Pitched[] {
-  const { root, notes } = writtenScale(part, text)
+export function scaleNotes(part: Part, text: string, mode: Mode, start: number, letters: 'notes' | 'degrees' = 'notes'): Pitched[] {
+  const written = writtenScale(part, text)
+  const { root } = written
+  const notes = written[letters]
   const rootPc = pcOf(root)
   if (mode === 'root') {
     const low = CLEF_ROOT_LOW[part.clef]
