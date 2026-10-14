@@ -1,4 +1,4 @@
-import { chooseInstrument, chooseSheet, expect, showPentatonics, test } from './fixtures'
+import { chooseInstrument, chooseSheet, expect, pickOption, showPentatonics, test } from './fixtures'
 import type { Page } from '@playwright/test'
 
 const labels = (page: Page) => page.locator('[data-slot="pentatonic"] button')
@@ -90,4 +90,24 @@ test.describe('on a phone', () => {
     await showPentatonics(page)
     await expect(labels(page).first()).toBeVisible()
   })
+})
+
+test('the Pentatonic practice preset ranks each scale’s pentatonics, remembers the rank, and prints', async ({ page }) => {
+  await page.goto('/song/autumn-leaves')
+  await chooseSheet(page, 'Scales')
+  await pickOption(page, 'Where each scale starts', 'From root')
+  const panel = page.locator('fieldset', { hasText: 'Practice' })
+  await panel.getByRole('button', { name: 'Pentatonic', exact: true }).click()
+  const captions = page.locator('[data-slot="pentatonic"]')
+  await expect(captions).toHaveCount(14) // one per line
+  await expect(captions.first()).toHaveText(/ pent/)
+  const closest = await page.locator('.vf-selected').count()
+  await pickOption(page, 'Pentatonic rank', '12 · farthest')
+  await expect.poll(() => page.locator('.vf-selected').count()).toBeLessThan(closest)
+  await page.reload()
+  await chooseSheet(page, 'Scales')
+  await expect(page.getByRole('button', { name: 'Pentatonic rank' })).toContainText('12 · farthest')
+  await page.emulateMedia({ media: 'print' })
+  const pdf = await page.pdf({ format: 'Letter' })
+  expect((pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length).toBe(2) // 14 lines, 12 a page, as without the caption
 })
