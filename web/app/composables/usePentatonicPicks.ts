@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import type { ChordAt } from '@chord-scale-maker/engine'
+import { carryPicks, type ChordAt, type DrawnChord } from '@chord-scale-maker/engine'
 
 type Picks = Readonly<Record<ChordAt, number>>
 
@@ -37,6 +37,10 @@ export function usePentatonicPicks(key: string | undefined) {
     },
     clear(): void {
       if (Object.keys(picks.value).length) picks.value = {}
+    },
+    /** after an edit: each pick follows its chord to its new place, or goes with it (#275) */
+    carry(before: readonly DrawnChord[], after: readonly DrawnChord[]): void {
+      if (Object.keys(picks.value).length) picks.value = carryPicks(before, after, picks.value)
     },
     carryTo(otherKey: string): void {
       if (Object.keys(picks.value).length) writeStored(`csm-pent-picks:${otherKey}`, JSON.stringify(picks.value))

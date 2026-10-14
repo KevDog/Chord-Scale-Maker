@@ -21,6 +21,8 @@ import { chunk, orNull } from './util'
  */
 
 export type ChordAt = string // `${section}:${bar}:${k}`: the drawn bar's at.section, at.bar, the chord's index in the bar
+/** a chord the Changes sheet draws, by its ChordAt, with its chart text */
+export type DrawnChord = Readonly<{ at: ChordAt; text: string }>
 export type PentatonicBasis = 'key' | 'chord'
 /** a chord's pentatonic (#255, #264, #272): its label, and what made it (the key area's ladder or its own scale's ranking) */
 export type ChangesPentatonic = Readonly<{
@@ -308,6 +310,28 @@ function drawnBlocks(doc: ChartDoc, rows: readonly LinedRow[], t: Timing, sectio
   return blocks
 }
 
+/** each drawn row's ChordAt: its block's section, the block's written first bar plus the layout offset, its index in the bar */
+function chordKeys(rows: readonly LinedRow[], blocks: readonly Run[], barOf: (i: number) => number | undefined): ReadonlyMap<number, ChordAt> {
+  const keys = new Map<number, ChordAt>()
+  for (const block of blocks) {
+    const firstBar = Number(rows[block.rows[0] ?? -1]?.bar ?? 1)
+    for (let j = 0; j <= block.to - block.from; j++) {
+      block.rows.filter((i) => barOf(i) === block.from + j).forEach((i, k) => keys.set(i, `${block.section}:${firstBar + j}:${k}`))
+    }
+  }
+  return keys
+}
+
+/** the chords the Changes sheet draws, in order, by ChordAt with their chart text: for carrying picks across an edit (#275) */
+export function drawnChords(doc: ChartDoc): readonly DrawnChord[] {
+  const rows = expandRowLines(doc).value
+  const beats = chartBeats(doc)
+  const t = timing(rows, guideToneTimeline(rows, beats).events, beats)
+  const withEndings = new Set(doc.lines.flatMap((l) => (l.kind === 'ending' ? [l.section] : [])))
+  const keys = chordKeys(rows, drawnBlocks(doc, rows, t, withEndings), t.barOf)
+  return [...keys].sort(([a], [b]) => a - b).map(([i, at]) => ({ at, text: rows[i]?.chord ?? '' }))
+}
+
 /** the sections the Changes sheet draws, in order: a repeat drawn once (A1 · A2) or a section with endings is one (#264) */
 export function changesSections(doc: ChartDoc): readonly ChangesSection[] {
   const rows = expandRowLines(doc).value
@@ -370,6 +394,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   }
 
   const blocks = drawnBlocks(doc, rows, t, sectionsWithEndings)
+  const keyOf = chordKeys(rows, blocks, barOf)
 
   // guide tones, as a line over the rows as drawn (a folded repeat is drawn once, so it's voiced once), before the
   // lines are cut, so the pitches don't depend on how many bars a line holds. Holds start afresh at each block and
@@ -473,13 +498,12 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   let lastKey = ''
   const lastForm = blocks.findLastIndex((b) => b.part === 'form')
   const lines = blocks.flatMap((block, k) => {
-    const unitAt = (j: number, i: number): number | null => unitOf(k, j, i) // the chords' map below shadows k
     const firstBar = Number((rows[block.rows[0] ?? -1] as LinedRow | undefined)?.bar ?? 1)
     const bars = Array.from({ length: Math.max(1, block.to - block.from + 1) }, (_, j): ChangesBar => {
       const bar = block.from + j
       const chords = block.rows
         .filter((i) => barOf(i) === bar)
-        .map((i, k): ChangesChord => {
+        .map((i): ChangesChord => {
           const row = rows[i] as LinedRow
           const a = byRow.get(i)
           const scale = resolved.get(i)?.scale ?? null
@@ -501,7 +525,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             heardIn: a ? keyName((a.statedKey ?? a.key).name, part) : '',
             keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',
             guide: voices?.labels.get(i) ?? '',
-            pentatonic: pentatonicOf(a?.key.name, block.section, `${block.section}:${firstBar + j}:${k}`, written, scale, row.chord, unitAt(j, i)),
+            pentatonic: pentatonicOf(a?.key.name, block.section, keyOf.get(i) ?? '', written, scale, row.chord, unitOf(k, j, i)),
           }
         })
       const firstKey = block.rows.map((i) => byRow.get(i)).find((a) => a && barOf(a.row) === bar)?.key.name

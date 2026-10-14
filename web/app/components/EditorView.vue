@@ -277,6 +277,7 @@ import {
   type Part,
   encodeShare,
   insertBars,
+  drawnChords,
   insertHeldBar,
   isPentatonicSelection,
   keyStart,
@@ -378,6 +379,7 @@ const pentStepBars = computed({ get: () => pentPath.step.value.bars, set: (bars)
 /** the sheet's Pentatonics plan; null with the row off */
 const pentPicks = usePentatonicPicks(props.practiceKey)
 watch([pentPath.path, () => JSON.stringify(pentPath.step.value), prefs.pentRung, prefs.pentSide, prefs.pentRank, prefs.pentBasis, () => JSON.stringify(chartKeyOf(editor.doc.value))], () => pentPicks.clear()) // picks are concert pitches: a transposed chart lands them elsewhere
+watch(() => editor.doc.value, (doc, old) => { if (Object.keys(pentPicks.picks.value).length) pentPicks.carry(drawnChords(old), drawnChords(doc)) }) // a bar in or out moves later chords' keys (#275)
 const pentatonicPlan = computed((): PentatonicPlan | null => (pentatonicsOn && prefs.pentatonics.value
   ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, rank: prefs.pentRank.value, picks: pentPicks.picks.value }
   : null))

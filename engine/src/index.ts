@@ -34,3 +34,4 @@ export { CATALOGUE_KEYS, FUNCTION_GROUPS, type FunctionGroup, type FunctionRow, 
 export { dominantScale, dominantScaleTable, FUNCTION_ERRORS, parseFunction, RULES, type RuleInfo, ruleParts, type Slots, type Spelling, spellings, SUFFIXES, TIERS } from './analysis'
 export * from './ladder'
 export * from './pentatonics'
+export * from './picks'
