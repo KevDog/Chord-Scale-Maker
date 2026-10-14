@@ -11,7 +11,7 @@ const props = { label: 'Gm♪', keyName: 'C major', ladder: pentatonicLadder(par
 describe('the pentatonic ladder popover', () => {
   it('is a button naming the pentatonic, its shared notes and the key', async () => {
     const w = await mountSuspended(PentatonicLadder, { props })
-    expect(w.find('button').attributes('aria-label')).toBe('Pentatonic: Gm, 4 of 5 notes in C major. Show the ladder')
+    expect(w.find('button').attributes('aria-label')).toBe('Pentatonic: G minor, 4 of 5 notes in C major. Show the ladder')
     expect(w.find('button').text()).toBe('Gm♪')
   })
 

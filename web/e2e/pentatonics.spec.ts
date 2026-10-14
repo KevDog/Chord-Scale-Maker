@@ -1,15 +1,6 @@
-import { chooseInstrument, chooseSheet, expect, inControls, test } from './fixtures'
+import { chooseInstrument, chooseSheet, expect, showPentatonics, test } from './fixtures'
 import type { Page } from '@playwright/test'
 
-async function showPentatonics(page: Page): Promise<void> {
-  await inControls(page, async () => {
-    const toggle = page.getByRole('button', { name: 'Pentatonics', exact: true })
-    await expect(async () => {
-      if ((await toggle.getAttribute('aria-pressed')) !== 'true') await toggle.click({ timeout: 1000 })
-      await expect(toggle).toHaveAttribute('aria-pressed', 'true', { timeout: 1000 })
-    }).toPass({ timeout: 10_000 })
-  })
-}
 const labels = (page: Page) => page.locator('[data-slot="pentatonic"] button')
 
 test('the Pentatonics row names each key area’s pentatonic, and the ladder changes the rung', async ({ page }) => {

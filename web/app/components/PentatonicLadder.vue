@@ -2,7 +2,7 @@
   <!-- a key area's pentatonic on the Changes sheet (#255); a click opens its tension ladder: pick another rung -->
   <HPopover class="relative inline-block max-w-full">
     <HPopoverButton
-      :aria-label="`Pentatonic: ${current_.name}, ${current_.shared} of 5 notes in ${keyName}. Show the ladder`"
+      :aria-label="`Pentatonic: ${longName}, ${current_.shared} of 5 notes in ${keyName}. Show the ladder`"
       class="block cursor-pointer rounded-sm text-left underline decoration-note-500/60 decoration-dotted underline-offset-[3px] hover:bg-note-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500 dark:decoration-note-300/60 dark:hover:bg-white/5 print:no-underline"
       @click="place"
     >{{ label }}</HPopoverButton>
@@ -30,7 +30,7 @@
 import { Popover as HPopover, PopoverButton as HPopoverButton, PopoverPanel as HPopoverPanel } from '@headlessui/vue'
 import { panelShift } from '~/utils/notePlacement'
 import { PAGE_ZOOM } from '~/utils/sheetPaged'
-import { pentatonicAt, type PentatonicRung, type PentatonicView } from '@chord-scale-maker/engine'
+import { glyphs, pentatonicAt, rootName, type PentatonicRung, type PentatonicView } from '@chord-scale-maker/engine'
 
 /** a Changes label and its key area's ladder: one row a rung (Home first), ♭ side then ♯ side; a pick sets the sheet's rung */
 const props = defineProps<{ label: string; keyName: string; ladder: readonly PentatonicRung[]; current: PentatonicView }>()
@@ -48,6 +48,7 @@ async function place(e: MouseEvent): Promise<void> {
   if (panel && anchor) shift.value = panelShift(anchor.getBoundingClientRect().left, panel.offsetWidth, document.documentElement.clientWidth)
 }
 const current_ = computed(() => pentatonicAt(props.ladder, props.current))
+const longName = computed(() => glyphs(`${rootName(current_.value.root)} minor`))
 const rungs = computed(() => [0, 1, 2, 3, 4, 5, 6].map((rung) => {
   const picks = props.ladder.filter((p) => p.rung === rung)
   return { rung, shared: picks[0]?.shared ?? 0, picks }

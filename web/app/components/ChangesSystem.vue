@@ -142,7 +142,7 @@
       <span
         v-for="m in pentatonicMarks"
         :key="`p${m.key}`"
-        class="absolute text-[0.7rem]/3.5 text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700"
+        class="absolute whitespace-nowrap text-[0.7rem]/3.5 text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700"
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
         <span class="hidden print:inline">{{ m.p.label }}</span>
