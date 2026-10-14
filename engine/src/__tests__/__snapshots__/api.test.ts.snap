@@ -60,6 +60,7 @@ exports[`exports the same names 1`] = `
   "canUndo",
   "cellError",
   "changesLinesPerPage",
+  "changesSections",
   "chartAka",
   "chartBeats",
   "chartDetails",
