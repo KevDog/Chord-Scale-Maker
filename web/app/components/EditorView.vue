@@ -197,7 +197,6 @@
             :preview="sheetPreview"
             :focus-at="sheetFocus"
             :pentatonic="pentatonicPlan"
-            @pentatonic="(section, view) => pentPath.setSection(section, view)"
             @tap="editSheetChord"
             @edit="openSheetEdit"
             @update:doc="editor.setDoc"

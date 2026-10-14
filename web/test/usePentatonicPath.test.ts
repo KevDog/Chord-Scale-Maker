@@ -22,8 +22,8 @@ describe('usePentatonicPath', () => {
 
   it('treats a section named after an Object built-in as an ordinary one', () => {
     const p = make(undefined, ['constructor', 'toString', 'B'].map((key) => ({ key, marker: key, part: 'form' as const })))
-    p.setSection('B', { rung: 3, side: 'sharp' })
-    expect(p.plan.value.bySection.constructor).toEqual({ rung: 2, side: 'flat' })
+    p.setPath('fifths')
+    expect(p.plan.value.bySection.constructor).toBeDefined()
     expect(Object.values(p.plan.value.bySection).every((v) => typeof v === 'object' && 'rung' in v)).toBe(true)
   })
 
@@ -62,16 +62,6 @@ describe('usePentatonicPath', () => {
     expect(s.plan.value.bySection).toEqual({ A1: PENTATONIC_HOME, A2: PENTATONIC_HOME, B: { rung: 5, side: 'flat' }, A3: PENTATONIC_HOME })
   })
 
-  it('edits one section into Custom, seeding the rest with what they played', async () => {
-    const p = make('satin-doll')
-    p.setSection('A2', { rung: 3, side: 'sharp' })
-    expect(p.path.value).toBe('custom')
-    expect(p.plan.value.bySection).toEqual({ A1: { rung: 2, side: 'flat' }, A2: { rung: 3, side: 'sharp' }, B: { rung: 2, side: 'flat' }, A3: { rung: 2, side: 'flat' } })
-    p.setPath('one')
-    await nextTick()
-    expect(localStorage.getItem('csm-pent-path:satin-doll')).toBeNull()
-  })
-
   it('ignores stale sections and plays a new one Home under Custom', async () => {
     localStorage.setItem('csm-pent-path:x', JSON.stringify({ path: 'custom', sections: { Gone: { rung: 4, side: 'flat' }, A1: { rung: 1, side: 'sharp' } } }))
     const p = make('x')
@@ -81,10 +71,8 @@ describe('usePentatonicPath', () => {
     expect(p.plan.value.fallback).toEqual(PENTATONIC_HOME)
   })
 
-  it('writes a Custom edit and reloads it', async () => {
-    const p = make('satin-doll')
-    p.setSection('A2', { rung: 3, side: 'sharp' })
-    await nextTick()
+  it('reloads a stored Custom path', () => {
+    localStorage.setItem('csm-pent-path:satin-doll', JSON.stringify({ path: 'custom', sections: { A2: { rung: 3, side: 'sharp' } } }))
     const again = make('satin-doll')
     expect(again.path.value).toBe('custom')
     expect(again.plan.value.bySection.A2).toEqual({ rung: 3, side: 'sharp' })
