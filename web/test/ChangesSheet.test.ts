@@ -23,8 +23,8 @@ describe('ChangesSheet', () => {
     const labels = w.findAll('[data-slot="pentatonic"] button').map((b) => b.text())
     expect(labels.length).toBeGreaterThan(0)
     expect(labels.every((l) => /^[A-G][♭♯]?m♪$/.test(l))).toBe(true)
-    w.findComponent(PentatonicLadder).vm.$emit('pick', { rung: 3, side: 'sharp' })
-    expect(w.emitted('pentatonic')?.[0]).toEqual([expect.any(String), { rung: 3, side: 'sharp' }])
+    w.findComponent(PentatonicLadder).vm.$emit('pick', 6)
+    expect(w.emitted('pentatonic')?.[0]).toEqual([expect.any(Array), 6])
   })
 
   it('has no pentatonic row without a view', async () => {

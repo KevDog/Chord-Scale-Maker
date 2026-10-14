@@ -197,6 +197,7 @@
             :preview="sheetPreview"
             :focus-at="sheetFocus"
             :pentatonic="pentatonicPlan"
+            @pentatonic="onPentatonic"
             @tap="editSheetChord"
             @edit="openSheetEdit"
             @update:doc="editor.setDoc"
@@ -266,7 +267,9 @@ import {
   buildSheet,
   chartKeyOf,
   type ChartDoc,
+  type ChordAt,
   type ChordPreview,
+  concertPc,
   CONCERT,
   type GridPos,
   type Part,
@@ -369,7 +372,16 @@ const pentSections = computed(() => changesSections(editor.doc.value))
 const pentPath = usePentatonicPath(props.practiceKey, pentSections, computed(() => ({ rung: prefs.pentRung.value, side: prefs.pentSide.value })))
 const pentPathModel = computed({ get: () => pentPath.path.value, set: (v) => pentPath.setPath(v) })
 /** the sheet's Pentatonics plan; null with the row off */
-const pentatonicPlan = computed((): PentatonicPlan | null => (pentatonicsOn && prefs.pentatonics.value ? pentPath.plan.value : null))
+const pentPicks = usePentatonicPicks(props.practiceKey)
+watch([pentPath.path, prefs.pentRung, prefs.pentSide, prefs.pentRank, prefs.pentBasis], () => pentPicks.clear())
+const pentatonicPlan = computed((): PentatonicPlan | null => (pentatonicsOn && prefs.pentatonics.value
+  ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, rank: prefs.pentRank.value, picks: pentPicks.picks.value }
+  : null))
+/** a label's popover (#272): a pick (written for the part) covers its run, stored concert; null resets the run */
+function onPentatonic(run: readonly ChordAt[], written: number | null): void {
+  if (written === null) pentPicks.reset(run)
+  else pentPicks.pick(run, concertPc(sheetPart.value, written))
+}
 const signaturesOn = useFeature('keySignatures')
 const arpeggiosOn = useFeature('arpeggios')
 const myChartsOn = useFeature('myCharts')
@@ -599,6 +611,7 @@ function saveCopy(): void {
   if (!result.ok) return
   scaleLevel.carryTo(`mine:${id}`)
   pentPath.carryTo(`mine:${id}`)
+  pentPicks.carryTo(`mine:${id}`)
   navigateTo({ path: '/song', query: { mine: id } })
 }
 
@@ -649,6 +662,7 @@ function saveShared(): void {
   for (const m of ['root', 'from'] as const) kept.setSelection(m, practice.selection(m))
   scaleLevel.carryTo(`mine:${id}`)
   pentPath.carryTo(`mine:${id}`)
+  pentPicks.carryTo(`mine:${id}`)
   navigateTo({ path: '/song', query: { mine: id } })
 }
 
