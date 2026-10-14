@@ -51,10 +51,9 @@ then `simplifyRoot(…, 'aeolian')`, as `pentatonicLadder` spells; the name is `
   - `PracticeSelection` = `{ preset: Exclude<Preset, 'pentatonic'> } | { preset: 'pentatonic'; rank: number } |
     { keys }`.
   - `practiceSelectionFrom`: a pentatonic selection needs an integer `rank` 1–12; a missing or bad rank reads as 1.
-  - `selectedNotes` takes the staff's note pitch classes and reference pc as well (an options argument); under a
-    pentatonic selection it lights each note whose pitch class is in the pentatonic at that rank, ranked against
-    the staff's own pitch classes.
-  - `PENTATONIC_RANKS = 12`.
+  - `selectedNotes` lights nothing under a pentatonic selection; staves light it through `pentatonicPick`
+    (`pentatonics.ts`: the pentatonic at the rank against the staff's own pitch classes, and which notes it lights).
+  - `isPentatonicSelection`; `PENTATONIC_RANKS = 12` lives in `pentatonics.ts`.
 - `sheet.ts`
   - `StaffModel.pentatonic: Readonly<{ name: string; rank: number; shared: number; best: number }> | null`: set under
     a pentatonic selection (`best`: rank 1's shared count), null otherwise or when the staff has an error.
@@ -78,8 +77,8 @@ then `simplifyRoot(…, 'aeolian')`, as `pentatonicLadder` spells; the name is `
 ## Testing
 
 - Engine (TDD): `rankByFifths` ties and ♭-first; `pentatonicRanking` gives 12 distinct roots for every scale in
-  `SCALES`, shared counts non-increasing; the table above computed; a scale whose best is under 5 (altered, whole
-  tone) reported as such; `practiceSelectionFrom` round-trips and clamps rank; `selectedNotes` lights the shared
+  `SCALES`, shared counts non-increasing; the table above computed; a scale whose best is under 5 (whole tone: 3;
+  half-whole) reported as such; `practiceSelectionFrom` round-trips and clamps rank; `selectedNotes` lights the shared
   pitch classes; `buildSheet` sets `pentatonic` only under the preset; share link round-trip.
 - Web unit: `PracticePanel` shows the preset only with the flag, emits rank picks; `ScaleStaff` caption both forms.
 - e2e (`practice.spec` or new): Scales sheet, Practice on, Pentatonic, rank 1 → captions present and lit notes per
