@@ -101,3 +101,29 @@ test('prints the Changes with a 7th chord line, a sheet page to a letter page', 
   await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
 })
+
+// the Pentatonics row adds a row under Numerals and Scales: with a guide tone line on the tuba it's the tallest case
+test('prints the Changes with a guide tone line and the Pentatonics row, a sheet page to a letter page', async ({ page }) => {
+  await page.goto('/song/stardust')
+  await chooseInstrument(page, 'Tuba')
+  await showGuides(page, 'From 7th')
+  await page.getByRole('button', { name: 'Pentatonics', exact: true }).click()
+  await expect(page.locator('[data-slot="pentatonic"]').first()).toBeVisible()
+  await guidesDrawn(page)
+  const svgs = page.locator('svg[aria-label^="Bars:"]')
+  const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+  await page.emulateMedia({ media: 'print' })
+  await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+  expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
+})
+
+test('prints the Changes eight lines a page with Numerals, Scales and Pentatonics and no line', async ({ page }) => {
+  await page.goto('/song/stardust')
+  await chooseSheet(page, 'Changes')
+  await page.getByRole('button', { name: 'Pentatonics', exact: true }).click()
+  await expect(page.locator('[data-slot="pentatonic"]').first()).toBeVisible()
+  const svgs = page.locator('svg[aria-label^="Bars:"]')
+  const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+  await page.emulateMedia({ media: 'print' })
+  expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
+})

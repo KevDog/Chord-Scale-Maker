@@ -156,10 +156,13 @@ describe('the Changes sheet', () => {
     expect(buildChanges(doc, CONCERT, 4, false, 'off', undefined, { rung: 0, side: 'flat' }).lines.flatMap((l) => l.bars.flatMap((b) => b.chords)).every((c) => c.pentatonic === null)).toBe(true)
   })
 
-  it('counts the pentatonic row as a row: 7 with a line and every row off, else 6; 8 with no line', () => {
+  it('counts the pentatonic row as a row: 7 with a line and every row off, else 6, 5 with all three rows; 8 with no line, 7 with all three rows', () => {
     expect(changesLinesPerPage('third', { numerals: false, scales: false, pentatonics: true })).toBe(6)
     expect(changesLinesPerPage('third', { numerals: false, scales: false, pentatonics: false })).toBe(7)
-    expect(changesLinesPerPage('off', { numerals: true, scales: true, pentatonics: true })).toBe(8)
+    expect(changesLinesPerPage('third', { numerals: true, scales: true, pentatonics: true })).toBe(5)
+    expect(changesLinesPerPage('seventh', { numerals: true, scales: false, pentatonics: true })).toBe(6)
+    expect(changesLinesPerPage('off', { numerals: true, scales: true, pentatonics: true })).toBe(7)
+    expect(changesLinesPerPage('off', { numerals: true, scales: false, pentatonics: true })).toBe(8)
   })
 })
 

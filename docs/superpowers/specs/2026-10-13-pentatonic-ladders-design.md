@@ -56,13 +56,13 @@ key's scale (`SCALES` Ionian or Aeolian on its tonic). A test checks the table a
 
 ### The label row
 
-- A row under the chord, below Numerals and Scales, on the first chord of each key area and the first chord of each
-  line; other chords have none. A chord the analysis doesn't reach (no key) has none.
+- A row under the chord, below Numerals and Scales. A label prints on a line's first labelled chord and wherever it
+  differs from the last one shown on the line, so relative keys (C major and A minor share home Am) print once. A
+  chord the analysis doesn't reach (no key) has none.
 - Text: the pentatonic's root and `m♪`, written for the part: `Gm♪`, `E♭m♪`. No shared count (the Rung control shows
   it; it's the same on every label). No tint (one rung for the whole sheet: a tint would say nothing).
 - Style: as the Scales row (its size and muted colour).
-- Fits (#145): the label is measured with the chord's name, numeral and scale, so `fitBars` and `breakLines` make room
-  for it as for the others.
+- Fits: the label fits in its chord's room, as the Scales row does, rather than widening bars via `fitBars`.
 
 ### Spelling
 
@@ -86,9 +86,10 @@ D major's ladder (`Bm♪` home).
 
 ### Print
 
-The row prints. `changesLinesPerPage` takes the pentatonic row as a third row: with a guide tone or arpeggio line, 6
-lines a page while any of Numerals, Scales or Pentatonics is on, 7 with all three off; with no line, 8. `print.spec`
-re-measures the worst case (all three rows and a line, in every transposition) and the counts change if it fails.
+The row prints. `changesLinesPerPage` counts the pentatonic row as a third row. With a guide tone or arpeggio line:
+6 lines a page while any of Numerals, Scales or Pentatonics is on, 7 with all three off, and 5 with all three on (6
+overflowed a letter page in `print.spec`'s worst case, Stardust on the tuba, From 7th). With no line: 8, but 7 with all
+three rows on (8 overflowed Stardust). `print.spec` checks both worst cases.
 
 ## Engine
 
@@ -99,10 +100,10 @@ set transposed 12 ways against a scale. It knows nothing of pentatonics, fifths 
 triad pair's set.
 
 ```ts
-export type Transposition = Readonly<{ root: number; shared: number }>
+export type LadderTransposition = Readonly<{ root: number; shared: number }> // not `Transposition`: instruments exports that
 export function pitchClasses(formula: string, rootPc?: number): ReadonlySet<number>
 export function sharedCount(shape: ReadonlySet<number>, root: number, scale: ReadonlySet<number>): number
-export function rankTranspositions(shape: ReadonlySet<number>, scale: ReadonlySet<number>): readonly Transposition[]
+export function rankTranspositions(shape: ReadonlySet<number>, scale: ReadonlySet<number>): readonly LadderTransposition[]
 ```
 
 **`engine/src/pentatonics.ts`**, built on it: the fifths walk, rung and side, and spelling.
@@ -110,19 +111,22 @@ export function rankTranspositions(shape: ReadonlySet<number>, scale: ReadonlySe
 ```ts
 export type PentatonicSide = 'flat' | 'sharp'
 export type PentatonicView = Readonly<{ rung: number; side: PentatonicSide }> // rung 0–6
-export type PentatonicRung = Readonly<{ rung: number; side: PentatonicSide | null; root: Spelled; shared: number }>
+export type PentatonicRung = Readonly<{ rung: number; side: PentatonicSide | null; root: Spelled; name: string; shared: number }>
 
 /** a key's 12 minor pentatonics, Home first, then rung 1 ♭, 1 ♯ … 5 ♭, 5 ♯, 6; spelled as §Spelling */
-export function pentatonicLadder(key: Key, home: Spelled): readonly PentatonicRung[]
+export function pentatonicLadder(home: Spelled): readonly PentatonicRung[]
 /** the one at a view's rung and side (side ignored at 0 and 6) */
 export function pentatonicAt(ladder: readonly PentatonicRung[], view: PentatonicView): PentatonicRung
+export const isPentatonicView: (v: unknown) => v is PentatonicView
 ```
 
-- `home` is the written spelling of the key's tonic minor, so the ladder spells for the part.
-- `buildChanges` gains a last parameter, `pentatonic: PentatonicView | null = null`. With a view, each
-  `ChangesChord` that starts a key area or a line gets `pentatonic: string` (the label, `''` otherwise) and
-  `ladder: readonly PentatonicRung[] | null` (its key area's, for the popover; `null` otherwise). With `null`, both are
-  empty, and nothing else in the sheet changes.
+- `home` is the written spelling of the key's tonic minor, so the ladder spells for the part; `name` is the rung's
+  root as written (`Fm`).
+- **`engine/src/changes.ts`:** `ChangesPentatonic = { label, key, ladder }`; `ChangesChord.pentatonic: ChangesPentatonic
+  | null` (`null` with the row off or no key; `label: ''` where it isn't printed). `buildChanges` gains a last
+  parameter, `pentatonic: PentatonicView | null = null`; with `null` nothing in the sheet changes.
+- `showPentatonics(lines)`, run after `breakLines`, blanks each label except on a line's first labelled chord and
+  where it differs from the last one shown on the line.
 - `changesLinesPerPage(line, rows)` takes `rows.pentatonics` as well.
 
 ## Testing

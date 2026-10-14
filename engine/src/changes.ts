@@ -119,13 +119,14 @@ function areaLadder(name: string, part: Part): readonly PentatonicRung[] | null 
 
 /**
  * Changes lines on a printed page: 8 with no guide tones (a 32-bar AABA, one section a line pair, with its numerals
- * and scales), whatever rows are shown. Notes, stems and the label row take more height, so with a guide tone or arpeggio line
+ * and scales), whatever rows are shown, but 7 with numerals, scales and pentatonics all shown (5 with a line too). Notes, stems and the label row take more height, so with a guide tone or arpeggio line
  * and numerals or scales shown it's 6, and one more with both rows off: measured over the library in every
  * transposition at letter width, with a page's tallest lines (an ending raised over the stems). print.spec checks the
  * worst case. The pentatonic row counts as a row, like numerals or scales.
  */
 export function changesLinesPerPage(line: SheetLine, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean }>): number {
-  if (line === 'off') return 8
+  if (line === 'off') return rows.pentatonics && rows.numerals && rows.scales ? 7 : 8
+  if (rows.pentatonics && rows.numerals && rows.scales) return 5
   return 6 + (!rows.numerals && !rows.scales && !rows.pentatonics ? 1 : 0)
 }
 
