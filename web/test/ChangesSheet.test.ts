@@ -18,6 +18,15 @@ const systemOf = async (signatures: boolean, line?: SheetLine) =>
   (await mountSheet({ signatures, ...(line ? { line } : {}) })).findComponent({ name: 'ChangesSystem' })
 
 describe('ChangesSheet', () => {
+  it('shows a preset’s path on screen while the sheet is the editor, and in the subtitle otherwise (#276)', async () => {
+    const pentatonic: PentatonicPlan = { bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: true, path: 'fifths', step: { unit: 'bars', bars: 4 } }
+    const editing = await mountSheet({ editing: null, pentatonic })
+    expect(editing.find('[data-slot="pent-caption"]').text()).toBe('Pentatonics: Fifths · every 4 bars')
+    const viewing = await mountSheet({ pentatonic })
+    expect(viewing.find('[data-slot="pent-caption"]').exists()).toBe(false)
+    expect(viewing.text()).toContain('Changes · Pentatonics: Fifths · every 4 bars')
+  })
+
   it('prints the pentatonic row where the key area changes, and passes a pick up', async () => {
     const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: false, pentatonic: { bySection: {}, fallback: { rung: 2, side: 'flat' }, counts: false } } }) // ChangesSystem drawn, not stubbed
     const labels = w.findAll('[data-slot="pentatonic"] button').map((b) => b.text())
