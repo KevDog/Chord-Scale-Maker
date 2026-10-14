@@ -40,7 +40,7 @@ export type ChangesPentatonic = Readonly<{
   root: Spelled // written
   name: string // 'Dm'
   shared: number
-  level: number // 0–6 (contour height, tint)
+  level: number // 0–6, by shared count (the label's tint)
   pc: number // concert pitch class of root
   picked: boolean
   run: readonly ChordAt[] // a printed label's chord and the following ones it stands for; [] on an unprinted label
@@ -58,12 +58,6 @@ export type PentatonicPlan = Readonly<{
   path?: PentatonicPathName // a preset (#276): each chord plays its unit's step of it; bySection and fallback then unused
   step?: PentatonicStep // what a preset steps by; default PENTATONIC_STEP
 }>
-/** a chord on a line: its bar's index in the line and its index in the bar */
-export type ChordRef = Readonly<{ bar: number; chord: number }>
-/** chords in a row, across bars, at one rung (`to` inclusive) */
-export type ContourRun = Readonly<{ from: ChordRef; to: ChordRef; rung: number }>
-/** a line's tension contour (#265): its runs, and the rung the line before ended on where this one starts on another */
-export type ContourLine = Readonly<{ entry: number | null; runs: readonly ContourRun[] }>
 
 export type ChangesChord = Readonly<{
   /** the beat it starts on, from 0 */
@@ -172,9 +166,8 @@ function areaLadder(name: string, part: Part): Readonly<{ ladder: readonly Penta
  * - a guide tone or arpeggio line: 5 with all three rows, 6 with any row, 7 with none.
  * Notes, stems and the label row take more height. Measured over the library in every transposition at letter width,
  * with a page's tallest lines (an ending raised over the stems); the 5 and 7 were measured on Stardust (tuba, From
- * 7th), the documented worst case, and print.spec checks it. The pentatonic contour band (#265) costs no line, so this
- * function takes no contour option: measured with the band drawn on Stardust, all three rows give 7 (no line) and 5 (a
- * line), and one more line spills; with Pentatonics plus Numerals or Scales, 8 and 6 hold.
+ * 7th), the documented worst case, and print.spec checks it. With Pentatonics plus Numerals or Scales, 8 and 6 hold
+ * (measured with the contour band #265 drew, since removed: #277).
  */
 export function changesLinesPerPage(line: SheetLine, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean }>): number {
   const all = !!(rows.pentatonics && rows.numerals && rows.scales)
@@ -198,7 +191,7 @@ export function breakLines(lines: readonly ChangesLine[], at: ReadonlySet<string
   })
 }
 
-/** a pentatonic's tension, 0–6, for the contour and tints: the rung (key basis), else from the notes it shares (5 → 0, 4 → 2 … 0 → 6) */
+/** a pentatonic's tension, 0–6, for the tints: the rung (key basis), else from the notes it shares (5 → 0, 4 → 2 … 0 → 6) */
 const levelOf = (shared: number): number => (shared >= 5 ? 0 : 6 - shared)
 const clampRank = (rank: number | undefined): number => (Number.isInteger(rank) ? Math.min(Math.max(rank!, 1), PENTATONIC_RANKS) : 1)
 const flatChords = (lines: readonly ChangesLine[]): ChangesChord[] => lines.flatMap((l) => l.bars.flatMap((b) => b.chords))
@@ -239,27 +232,6 @@ export function showPentatonics(lines: readonly ChangesLine[]): readonly Changes
       const run = runAt(i)
       return { ...c, pentatonic: { ...c.pentatonic, run: run.map((p) => p.chord), picked: run.some((p) => p.picked) } }
     })
-  })
-}
-
-/**
- * the tension contour (#265), run on the lines as drawn: each line's runs of one level (the rung, or the chord basis's level; a chord with no pentatonic is a
- * gap; blanked labels still have their view), and its entry, the previous line's last rung where this line's first
- * chord sits on another
- */
-export function pentatonicContour(lines: readonly ChangesLine[]): readonly ContourLine[] {
-  let before: number | null = null // the rung the previous line ended on; null: a gap, or no line yet
-  return lines.map((line): ContourLine => {
-    const rungs = line.bars.flatMap((bar, b) => bar.chords.map((c, k) => ({ at: { bar: b, chord: k }, rung: c.pentatonic?.level ?? null })))
-    const runs = rungs.reduce<ContourRun[]>((acc, { at, rung }, i) => {
-      if (rung === null) return acc
-      const last = acc.at(-1)
-      return last && last.rung === rung && rungs[i - 1]?.rung === rung ? [...acc.slice(0, -1), { ...last, to: at }] : [...acc, { from: at, to: at, rung }]
-    }, [])
-    const first = rungs[0]?.rung ?? null
-    const entry = before !== null && first !== null && first !== before ? before : null
-    before = rungs.at(-1)?.rung ?? null
-    return { entry, runs }
   })
 }
 

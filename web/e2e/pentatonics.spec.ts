@@ -48,18 +48,18 @@ test('Side-slip alternates by section: A2 and A3 a half step out, A1 and the bri
   await expect(sectionLabels(page, 'A2').first()).toHaveText(/♪ 1$/) // kept for this chart
 })
 
-test('a path that varies tints the labels and draws the contour: A2 high, with a riser', async ({ page }) => {
+test('a path that varies tints the labels, with the shared count and no contour band (#277)', async ({ page }) => {
   await page.goto('/song/satin-doll')
   await chooseSheet(page, 'Changes')
   await showPentatonics(page)
-  await expect(page.locator('[data-slot="contour"]')).toHaveCount(0) // One rung: no band
+  await expect(page.locator('[data-slot="pentatonic"] [class*="text-rung-"]')).toHaveCount(0) // One rung: no tint
   await choosePath(page, 'Side-slip')
-  await expect(page.locator('[data-slot="contour"]').first()).toBeAttached()
-  const out = page.locator('[data-slot="system"]').filter({ has: sectionLabels(page, 'A2') }).first()
-  await expect(out.locator('[data-slot="contour"] line[data-kind="run"]').first()).toHaveAttribute('data-rung', '5')
-  await expect(out.locator('[data-slot="contour"] line[data-kind="riser"]')).toHaveCount(1)
-  await expect(page.locator('[data-slot="pentatonic"] [data-section="A2"]').first()).toHaveClass(/text-rung-5/)
+  const a2 = page.locator('[data-slot="pentatonic"] [data-section="A2"]').first()
+  await expect(a2).toHaveClass(/text-rung-5/)
+  await expect(a2).toHaveText(/♪ 1$/)
+  await expect(a2.getByRole('button')).toHaveAccessibleName(/, 1 of 5 notes in /)
   await expect(page.locator('[data-slot="pentatonic"] [data-section="A1"]').first()).toHaveClass(/text-rung-0/)
+  await expect(page.locator('[data-slot="contour"]')).toHaveCount(0)
 })
 
 test('a pick changes its label’s run only, and Reset restores it', async ({ page }) => {

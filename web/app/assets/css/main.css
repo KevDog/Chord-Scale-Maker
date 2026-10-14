@@ -42,14 +42,14 @@
   --color-accent: var(--color-note-600);
   --color-accent-strong: var(--color-note-800);
 
-  /* the pentatonic rungs (#265), Home → Outside: muted ink, blue, violet, rose, red-orange; each ≥ 4.5:1 on the paper */
-  --color-rung-0: #4a5a75;
-  --color-rung-1: #2f6fe0;
-  --color-rung-2: #1d4aa3;
-  --color-rung-3: #7c3aed;
-  --color-rung-4: #9333ea;
-  --color-rung-5: #be185d;
-  --color-rung-6: #c2410c;
+  /* the pentatonic rungs (#265, #277), Home → Outside: slate, blue, indigo, violet, purple, rose, rust; darker each rung (brighter in dark), so they read without hue; each ≥ 4.5:1 on the paper */
+  --color-rung-0: #66758c;
+  --color-rung-1: #2461e5;
+  --color-rung-2: #5148e5;
+  --color-rung-3: #6c33cf;
+  --color-rung-4: #7127b3;
+  --color-rung-5: #901246;
+  --color-rung-6: #792807;
 
   /* surfaces, depth and radius (.interface-design/system.md): the stand (page ground) → the paper (the sheet) →
      raised (menus, dialogs, the stuck rail); one hue, lightness only; lift by shadow, not border */
@@ -93,13 +93,13 @@
   /* dark rung tints on screen only: print is light (below), so it keeps the light ones */
   @media screen {
     html.dark {
-      --color-rung-0: #8395b1;
-      --color-rung-1: #8fb4f8;
-      --color-rung-2: #6393ec;
-      --color-rung-3: #a78bfa;
-      --color-rung-4: #c084fc;
-      --color-rung-5: #f472b6;
-      --color-rung-6: #fb923c;
+      --color-rung-0: #7d8a9c;
+      --color-rung-1: #5897e5;
+      --color-rung-2: #919af9;
+      --color-rung-3: #b7a0fb;
+      --color-rung-4: #d1a6fd;
+      --color-rung-5: #f9aed5;
+      --color-rung-6: #fdc394;
     }
   }
   h1,
