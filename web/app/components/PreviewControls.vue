@@ -57,17 +57,17 @@
                     <UiListboxOption v-for="r in PENT_RANK_CHOICES" :key="r.value" :value="r.value"><UiListboxLabel>{{ r.label }}</UiListboxLabel></UiListboxOption>
                   </UiListbox>
                   <template v-else>
-                  <UiListbox v-model="pentPath" class="w-48" aria-label="Pentatonic path">
-                    <template #selected="{ value }"><UiListboxLabel>{{ pathLabel(value) }}</UiListboxLabel></template>
-                    <UiListboxOption v-for="p in pathChoices" :key="p.value" :value="p.value"><UiListboxLabel>{{ p.label }}</UiListboxLabel></UiListboxOption>
-                  </UiListbox>
-                  <template v-if="pentPath === 'one'">
-                  <UiListbox v-model="pentRung" class="w-48" aria-label="Pentatonic rung">
-                    <template #selected="{ value }"><UiListboxLabel>{{ rungLabel(value) }}</UiListboxLabel></template>
-                    <UiListboxOption v-for="r in PENT_RUNGS" :key="r.value" :value="r.value"><UiListboxLabel>{{ r.label }}</UiListboxLabel></UiListboxOption>
-                  </UiListbox>
-                  <SegmentedControl v-if="sideShown(pentRung)" v-model="pentSide" legend="Side" name="pent-side" aria-label="Pentatonic side" :options="PENT_SIDES" />
-                  </template>
+                    <UiListbox v-model="pentPath" class="w-48" aria-label="Pentatonic path">
+                      <template #selected="{ value }"><UiListboxLabel>{{ pathLabel(value) }}</UiListboxLabel></template>
+                      <UiListboxOption v-for="p in pathChoices" :key="p.value" :value="p.value"><UiListboxLabel>{{ p.label }}</UiListboxLabel></UiListboxOption>
+                    </UiListbox>
+                    <template v-if="pentPath === 'one'">
+                      <UiListbox v-model="pentRung" class="w-48" aria-label="Pentatonic rung">
+                        <template #selected="{ value }"><UiListboxLabel>{{ rungLabel(value) }}</UiListboxLabel></template>
+                        <UiListboxOption v-for="r in PENT_RUNGS" :key="r.value" :value="r.value"><UiListboxLabel>{{ r.label }}</UiListboxLabel></UiListboxOption>
+                      </UiListbox>
+                      <SegmentedControl v-if="sideShown(pentRung)" v-model="pentSide" legend="Side" name="pent-side" aria-label="Pentatonic side" :options="PENT_SIDES" />
+                    </template>
                   </template>
                 </div>
               </div>
