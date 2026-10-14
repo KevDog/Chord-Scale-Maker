@@ -2,13 +2,13 @@ import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { nextTick } from 'vue'
 import { describe, expect, it } from 'vitest'
 import ChangesSheet from '~/components/ChangesSheet.vue'
-import { changesLinesPerPage, type ChartDoc, parseChart, type ScaleView, type SheetLine } from '@chord-scale-maker/engine'
+import { changesLinesPerPage, type ChartDoc, parseChart, type PentatonicView, type ScaleView, type SheetLine } from '@chord-scale-maker/engine'
 
 const doc = parseChart('title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\n').value
 // 64 bars: more lines than any page holds, at 2 or 4 bars a line
 const long = parseChart(`title: L\nkey: C\n${Array.from({ length: 64 }, (_, i) => `A | ${i + 1} | ${['Dm7', 'G7', 'CMaj7', 'A7'][i % 4]}`).join('\n')}\n`).value
 
-const mountSheet = (over: Readonly<{ doc?: ChartDoc; signatures?: boolean; line?: SheetLine; numerals?: boolean; scales?: boolean; editing?: null }> = {}) =>
+const mountSheet = (over: Readonly<{ doc?: ChartDoc; signatures?: boolean; line?: SheetLine; numerals?: boolean; scales?: boolean; editing?: null; pentatonic?: PentatonicView | null }> = {}) =>
   mountSuspended(ChangesSheet, {
     props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: false, ...over },
     global: { stubs: { ChangesSystem: true } },
@@ -17,6 +17,18 @@ const systemOf = async (signatures: boolean, line?: SheetLine) =>
   (await mountSheet({ signatures, ...(line ? { line } : {}) })).findComponent({ name: 'ChangesSystem' })
 
 describe('ChangesSheet', () => {
+  it('prints the pentatonic row where the key area changes, and passes a pick up', async () => {
+    const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: false, pentatonic: { rung: 2, side: 'flat' } } }) // ChangesSystem drawn, not stubbed
+    const labels = w.findAll('[data-slot="pentatonic"] button').map((b) => b.text())
+    expect(labels.length).toBeGreaterThan(0)
+    expect(labels.every((l) => /^[A-G][♭♯]?m♪$/.test(l))).toBe(true)
+  })
+
+  it('has no pentatonic row without a view', async () => {
+    const w = await mountSheet({})
+    expect(w.find('[data-slot="pentatonic"]').exists()).toBe(false)
+  })
+
   it('tells each system it draws an arpeggio line, and gives line 1 the clef', async () => {
     const system = (await mountSheet({ line: 'up-root' })).findComponent({ name: 'ChangesSystem' })
     expect(system.props('arpeggio')).toBe(true)

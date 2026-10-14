@@ -192,6 +192,8 @@
             :editing="sheetEditor ? sheetEdit : undefined"
             :preview="sheetPreview"
             :focus-at="sheetFocus"
+            :pentatonic="pentatonicsOn && prefs.pentatonics.value ? { rung: prefs.pentRung.value, side: prefs.pentSide.value } : null"
+            @pentatonic="(v) => { prefs.pentRung.value = v.rung; prefs.pentSide.value = v.side }"
             @tap="editSheetChord"
             @edit="openSheetEdit"
             @update:doc="editor.setDoc"
@@ -355,6 +357,7 @@ const start = computed(() => spelled.value.start)
 const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeature('changes'), arpeggios: useFeature('arpeggios') }))
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
+const pentatonicsOn = useFeature('pentatonics')
 const signaturesOn = useFeature('keySignatures')
 const arpeggiosOn = useFeature('arpeggios')
 const myChartsOn = useFeature('myCharts')
