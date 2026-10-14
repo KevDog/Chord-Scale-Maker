@@ -674,3 +674,24 @@ describe('EditorView lead-sheet editor', () => {
     expect(w.text()).not.toContain('Editing the sheet')
   })
 })
+
+describe('EditorView pentatonic practice (#266)', () => {
+  afterEach(() => {
+    useRuntimeConfig().public.features.pentatonics = false
+    localStorage.clear()
+  })
+  const shared = { sheet: 'scales', practice: { preset: 'pentatonic', rank: 1 } } as const
+
+  it('ignores a shared Pentatonic selection with the flag off', async () => {
+    useRuntimeConfig().public.features.pentatonics = false
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT, shared }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
+    expect(buttonCalled(w, 'Pentatonic')).toBeUndefined()
+    expect(w.find('fieldset button[aria-pressed=true]').exists()).toBe(false)
+  })
+
+  it('plays it with the flag on', async () => {
+    useRuntimeConfig().public.features.pentatonics = true
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT, shared }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
+    expect(w.find('fieldset button[aria-pressed=true]').text()).toBe('Pentatonic')
+  })
+})
