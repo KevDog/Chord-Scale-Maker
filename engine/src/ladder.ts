@@ -22,3 +22,19 @@ export function rankTranspositions(shape: ReadonlySet<number>, scale: ReadonlySe
     (a, b) => b.shared - a.shared || a.root - b.root,
   )
 }
+
+/** a transposition with its signed distance round the circle of fifths from a reference (+ ♯ side, − ♭ side, −6 the tritone) */
+export type FifthsTransposition = Readonly<{ root: number; shared: number; fifths: number }>
+
+/** the fifths from refPc to root: 1–5 up (♯ side), −1 … −6 down (♭ side, the tritone included) */
+export const fifthsFrom = (root: number, refPc: number): number => {
+  const d = mod(7 * (root - refPc), 12)
+  return d < 6 ? d : d - 12
+}
+
+/** the shape on all 12 roots, most shared first; ties by fewest fifths from refPc, ♭ side first (#266) */
+export function rankByFifths(shape: ReadonlySet<number>, scale: ReadonlySet<number>, refPc: number): readonly FifthsTransposition[] {
+  return Array.from({ length: 12 }, (_, root) => ({ root, shared: sharedCount(shape, root, scale), fifths: fifthsFrom(root, refPc) })).sort(
+    (a, b) => b.shared - a.shared || Math.abs(a.fifths) - Math.abs(b.fifths) || a.fifths - b.fifths,
+  )
+}
