@@ -43,15 +43,14 @@
           <template v-else>
             <UiField v-if="!lockLabels || pentatonicsOn">
               <UiLabel class="pl-3">Analysis</UiLabel>
-              <div class="flex flex-col gap-2">
-                <div class="flex flex-wrap gap-2 *:whitespace-nowrap">
-                  <template v-if="!lockLabels">
-                    <ToggleButton v-model="numerals" title="Each chord's Roman numeral in its key">Numerals</ToggleButton>
-                    <ToggleButton v-model="scaleNames" title="Each chord's scale, under its numeral">Scales</ToggleButton>
-                  </template>
-                  <ToggleButton v-if="pentatonicsOn" v-model="pentatonics" title="Each key area's minor pentatonic, at the rung you choose on its tension ladder">Pentatonics</ToggleButton>
+              <!-- stacked, so the group keeps the width of Numerals and Scales and the rail its two rows (#255) -->
+              <div class="flex flex-col items-start gap-2">
+                <div v-if="!lockLabels" class="flex flex-wrap gap-2 *:whitespace-nowrap">
+                  <ToggleButton v-model="numerals" title="Each chord's Roman numeral in its key">Numerals</ToggleButton>
+                  <ToggleButton v-model="scaleNames" title="Each chord's scale, under its numeral">Scales</ToggleButton>
                 </div>
-                <div v-if="pentatonicsOn && pentatonics" class="flex flex-wrap items-center gap-2">
+                <ToggleButton v-if="pentatonicsOn" v-model="pentatonics" class="whitespace-nowrap" title="Each key area's minor pentatonic, at the rung you choose on its tension ladder">Pentatonics</ToggleButton>
+                <div v-if="pentatonicsOn && pentatonics" class="flex flex-col items-start gap-2">
                   <UiListbox v-model="pentRung" class="w-48" aria-label="Pentatonic rung">
                     <template #selected="{ value }"><UiListboxLabel>{{ rungLabel(value) }}</UiListboxLabel></template>
                     <UiListboxOption v-for="r in PENT_RUNGS" :key="r.value" :value="r.value"><UiListboxLabel>{{ r.label }}</UiListboxLabel></UiListboxOption>
