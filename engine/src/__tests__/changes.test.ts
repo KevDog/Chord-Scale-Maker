@@ -352,6 +352,15 @@ describe('scale labels', () => {
       expect(chords.map((c) => [c.pentatonic?.key, c.pentatonic?.name, c.pentatonic?.view.rung])).toEqual([['C major', 'Dm', 1], ['A minor', 'Dm', 1]])
     })
 
+    it('marks a printed label picked when a chord it stands for is, though the pick merges into the label before', () => {
+      const doc = 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | Dm7\nA | 3 | Dm7'
+      const plan: PentatonicPlan = { ...keyPlan({ 'A:2:0': 2 }), basis: 'chord', rank: 1 } // Dm, the default, picked on the second Dm7: its label is the first's
+      const chords = shown(doc, plan)
+      expect(chords.map((c) => c.pentatonic?.label)).toEqual(['Dm♪ 5', '', ''])
+      expect(chords[0]?.pentatonic?.run).toContain('A:2:0')
+      expect(chords[0]?.pentatonic?.picked).toBe(true)
+    })
+
     it('ignores a stale pick: no counts, nothing picked', () => {
       const chords = shown(C4, keyPlan({ 'Z:9:0': 7 }))
       expect(chords.map((c) => c.pentatonic?.label)).toEqual(['Am♪', '', '', ''])

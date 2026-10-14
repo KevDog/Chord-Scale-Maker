@@ -205,7 +205,8 @@ const mapPentatonics = (line: ChangesLine, f: (p: ChangesPentatonic) => ChangesP
  * and wherever it differs from the last one shown on the line (relative keys share a home: shown once); elsewhere
  * its label is '' (not printed), its key and ladder kept for nothing but the model's completeness. A chord with no
  * pentatonic ends the line's last shown label: the label after the gap prints again. A printed label's run (#272) is its
- * chord and the following ones it stands for, to the next printed label, a chord with no pentatonic, or the line's end
+ * chord and the following ones it stands for, to the next printed label, a chord with no pentatonic, or the line's end;
+ * it is picked when any chord in its run is
  */
 export function showPentatonics(lines: readonly ChangesLine[]): readonly ChangesLine[] {
   return lines.map((line): ChangesLine => {
@@ -220,16 +221,18 @@ export function showPentatonics(lines: readonly ChangesLine[]): readonly Changes
       last = c.pentatonic.label
       return shown
     })
-    const runAt = (i: number): ChordAt[] => {
-      const out = [all[i]!.pentatonic!.chord]
-      for (let j = i + 1; j < all.length && all[j]!.pentatonic && !printed[j]; j++) out.push(all[j]!.pentatonic!.chord)
+    const runAt = (i: number): ChangesPentatonic[] => {
+      const out = [all[i]!.pentatonic!]
+      for (let j = i + 1; j < all.length && all[j]!.pentatonic && !printed[j]; j++) out.push(all[j]!.pentatonic!)
       return out
     }
     let n = 0
     return mapChords(line, (c) => {
       const i = n++
       if (!c.pentatonic) return c
-      return { ...c, pentatonic: printed[i] ? { ...c.pentatonic, run: runAt(i) } : { ...c.pentatonic, label: '' } }
+      if (!printed[i]) return { ...c, pentatonic: { ...c.pentatonic, label: '' } }
+      const run = runAt(i)
+      return { ...c, pentatonic: { ...c.pentatonic, run: run.map((p) => p.chord), picked: run.some((p) => p.picked) } }
     })
   })
 }
