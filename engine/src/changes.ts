@@ -26,6 +26,12 @@ export type ChangesPentatonic = Readonly<{ label: string; key: string; ladder: r
 export type ChangesSection = Readonly<{ key: string; marker: string; part: FormPart }>
 /** the pentatonic row's rungs (#264): a section's own view, else fallback; counts: the shared count follows each label */
 export type PentatonicPlan = Readonly<{ bySection: Readonly<Record<string, PentatonicView>>; fallback: PentatonicView; counts: boolean }>
+/** a chord on a line: its bar's index in the line and its index in the bar */
+export type ChordRef = Readonly<{ bar: number; chord: number }>
+/** chords in a row, across bars, at one rung (`to` inclusive) */
+export type ContourRun = Readonly<{ from: ChordRef; to: ChordRef; rung: number }>
+/** a line's tension contour (#265): its runs, and the rung the line before ended on where this one starts on another */
+export type ContourLine = Readonly<{ entry: number | null; runs: readonly ContourRun[] }>
 
 export type ChangesChord = Readonly<{
   /** the beat it starts on, from 0 */
@@ -174,6 +180,27 @@ export function showPentatonics(lines: readonly ChangesLine[]): readonly Changes
       }),
     }))
     return { ...line, bars }
+  })
+}
+
+/**
+ * the tension contour (#265), run on the lines as drawn: each line's runs of one rung (a chord with no pentatonic is a
+ * gap; blanked labels still have their view), and its entry, the previous line's last rung where this line's first
+ * chord sits on another
+ */
+export function pentatonicContour(lines: readonly ChangesLine[]): readonly ContourLine[] {
+  let before: number | null = null // the rung the previous line ended on; null: a gap, or no line yet
+  return lines.map((line): ContourLine => {
+    const rungs = line.bars.flatMap((bar, b) => bar.chords.map((c, k) => ({ at: { bar: b, chord: k }, rung: c.pentatonic?.view.rung ?? null })))
+    const runs = rungs.reduce<ContourRun[]>((acc, { at, rung }, i) => {
+      if (rung === null) return acc
+      const last = acc.at(-1)
+      return last && last.rung === rung && rungs[i - 1]?.rung === rung ? [...acc.slice(0, -1), { ...last, to: at }] : [...acc, { from: at, to: at, rung }]
+    }, [])
+    const first = rungs[0]?.rung ?? null
+    const entry = before !== null && first !== null && first !== before ? before : null
+    before = rungs.at(-1)?.rung ?? null
+    return { entry, runs }
   })
 }
 

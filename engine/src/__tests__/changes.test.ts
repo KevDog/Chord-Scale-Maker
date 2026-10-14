@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it, vi } from 'vitest'
-import { breakLines, buildChanges, type ChangesSheet, changesLinesPerPage, changesSections, type PentatonicPlan, showPentatonics } from '../changes'
+import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, type PentatonicPlan, pentatonicContour, showPentatonics } from '../changes'
 import { parseChart } from '../chart'
 import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
 import { CONCERT, type Part } from '../part'
@@ -192,6 +192,57 @@ describe('the Changes sheet', () => {
     const plan: PentatonicPlan = { bySection: { A1: { rung: 2, side: 'flat' }, A2: { rung: 6, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: false }
     const first = buildChanges(library('autumn-leaves'), CONCERT, 4, false, 'off', undefined, plan).lines[0]?.bars[0]?.chords[0]?.pentatonic
     expect([first?.section, first?.view.rung]).toEqual(['A1', 2])
+  })
+
+  describe('pentatonicContour', () => {
+    const side = (rung: number): PentatonicPlan => ({ bySection: { B: { rung, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true })
+    const contour = (text: string, plan: PentatonicPlan | null, breaks: readonly string[] = []) =>
+      pentatonicContour(showPentatonics(breakLines(buildChanges(parseChart(text).value, CONCERT, 4, false, 'off', undefined, plan).lines, new Set(breaks))))
+    const AABA = 'title: T\nkey: C\nA1 | 1 | Cmaj7\nA2 | 2 | Cmaj7\nB | 3 | Dm7\nB | 3 | G7\nA3 | 4 | Cmaj7'
+
+    it('gives each line one run at its section’s rung, and a riser where the rung changed from the line before', () => {
+      expect(contour(AABA, side(5))).toEqual([
+        { entry: null, runs: [{ from: { bar: 0, chord: 0 }, to: { bar: 0, chord: 0 }, rung: 0 }] },
+        { entry: null, runs: [{ from: { bar: 0, chord: 0 }, to: { bar: 0, chord: 0 }, rung: 0 }] },
+        { entry: 0, runs: [{ from: { bar: 0, chord: 0 }, to: { bar: 0, chord: 1 }, rung: 5 }] },
+        { entry: 5, runs: [{ from: { bar: 0, chord: 0 }, to: { bar: 0, chord: 0 }, rung: 0 }] },
+      ])
+    })
+
+    it('ignores blanked labels: a run spans chords whose label showPentatonics left unprinted', () => {
+      const runs = contour('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Dm7\nA | 3 | G7', side(5))[0]?.runs
+      expect(runs).toEqual([{ from: { bar: 0, chord: 0 }, to: { bar: 2, chord: 0 }, rung: 0 }])
+    })
+
+    it('keeps a wrapped section’s rung with no riser on its second line', () => {
+      const text = 'title: T\nkey: C\nB | 1 | Cmaj7\nB | 2 | Cmaj7\nB | 3 | Cmaj7\nB | 4 | Cmaj7'
+      const lines = contour(text, side(5), ['B 3'])
+      expect(lines.map((l) => [l.entry, l.runs.map((r) => r.rung)])).toEqual([[null, [5]], [null, [5]]])
+    })
+
+    it('breaks a run at a chord with no key, and gives no riser across a gap at a line’s edge', () => {
+      // a keyed chart gives N.C. its area's pentatonic, so the gaps are hand-built: no pentatonic on the N.C. chords
+      const text = 'title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | N.C.\nA | 3 | Cmaj7\nB | 4 | N.C.\nB | 5 | Cmaj7'
+      const gap = (line: ChangesLine, bar: number): ChangesLine => ({ ...line, bars: line.bars.map((b, i) => (i === bar ? { ...b, chords: b.chords.map((c) => ({ ...c, pentatonic: null })) } : b)) })
+      const [a, b] = showPentatonics(buildChanges(parseChart(text).value, CONCERT, 4, false, 'off', undefined, side(5)).lines)
+      const lines = pentatonicContour([gap(a!, 1), gap(b!, 0)])
+      expect(lines[0]?.runs.map((r) => [r.from.bar, r.to.bar, r.rung])).toEqual([[0, 0, 0], [2, 2, 0]])
+      expect(lines[1]).toEqual({ entry: null, runs: [{ from: { bar: 1, chord: 0 }, to: { bar: 1, chord: 0 }, rung: 5 }] })
+    })
+
+    it('steps mid-line where the rung changes inside a line', () => {
+      // a hand-built line: two chords at different rungs
+      const [line] = showPentatonics(buildChanges(parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 1 | Dm7').value, CONCERT, 4, false, 'off', undefined, side(0)).lines)
+      const bar = line!.bars[0]!
+      const second = bar.chords[1]!
+      const stepped = { ...line!, bars: [{ ...bar, chords: [bar.chords[0]!, { ...second, pentatonic: { ...second.pentatonic!, view: { rung: 3, side: 'sharp' as const } } }] }] }
+      expect(pentatonicContour([stepped])[0]?.runs.map((r) => [r.from.chord, r.to.chord, r.rung])).toEqual([[0, 0, 0], [1, 1, 3]])
+    })
+
+    it('has no runs with the row off, and resets the riser across a line with no chords', () => {
+      expect(contour(AABA, null).every((l) => l.entry === null && l.runs.length === 0)).toBe(true)
+      expect(pentatonicContour([{ bars: [], sectionEnd: true }])).toEqual([{ entry: null, runs: [] }])
+    })
   })
 
   it('has no pentatonics with no view, and none where the analysis finds no key', () => {
