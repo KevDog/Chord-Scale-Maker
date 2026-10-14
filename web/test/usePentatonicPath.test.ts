@@ -20,6 +20,23 @@ const live = (sections: ChangesSection[]) => {
 describe('usePentatonicPath', () => {
   afterEach(() => localStorage.clear())
 
+  it('treats a section named after an Object built-in as an ordinary one', () => {
+    const p = make(undefined, ['constructor', 'toString', 'B'].map((key) => ({ key, marker: key, part: 'form' as const })))
+    p.setSection('B', { rung: 3, side: 'sharp' })
+    expect(p.plan.value.bySection.constructor).toEqual({ rung: 2, side: 'flat' })
+    expect(Object.values(p.plan.value.bySection).every((v) => typeof v === 'object' && 'rung' in v)).toBe(true)
+  })
+
+  it('carries a stored path to another chart key, and leaves One rung unwritten', async () => {
+    const p = make('satin-doll')
+    p.carryTo('mine:1')
+    expect(localStorage.getItem('csm-pent-path:mine:1')).toBeNull()
+    p.setPath('fifths')
+    await nextTick()
+    p.carryTo('mine:2')
+    expect(make('mine:2').path.value).toBe('fifths')
+  })
+
   it('starts at One rung: the sheet’s rung everywhere, no counts', () => {
     const p = make('satin-doll')
     expect(p.path.value).toBe('one')

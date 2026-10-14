@@ -52,7 +52,7 @@ and side by fifths: `d = 7s mod 12`; `d ≤ 6` → rung `d`, ♯ side; else rung
 So in C major, minor thirds go Am, Cm (3 ♭), E♭m (6), F♯m (3 ♯), …; major thirds Am, C♯m (4 ♯), Fm (4 ♭), …; the
 half step is B♭m (5 ♭).
 
-AABA over C major (`A1 · A2` drawn once is one section; with A1 and A2 drawn apart it would be four):
+AABA over C major, its four sections drawn apart (as Satin Doll). With `A1 · A2` drawn once (three sections), A1 · A2 is inside, B outside, A3 returning:
 
 | | Side-slip | Fifths | Minor thirds | Major thirds |
 | --- | --- | --- | --- | --- |

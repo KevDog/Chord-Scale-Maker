@@ -591,6 +591,7 @@ function saveCopy(): void {
   copyError.value = result.ok ? '' : "Couldn't save a copy: this browser's storage is full, or My charts is at its limit."
   if (!result.ok) return
   scaleLevel.carryTo(`mine:${id}`)
+  pentPath.carryTo(`mine:${id}`)
   navigateTo({ path: '/song', query: { mine: id } })
 }
 
@@ -640,6 +641,7 @@ function saveShared(): void {
   const kept = usePractice(`mine:${id}`)
   for (const m of ['root', 'from'] as const) kept.setSelection(m, practice.selection(m))
   scaleLevel.carryTo(`mine:${id}`)
+  pentPath.carryTo(`mine:${id}`)
   navigateTo({ path: '/song', query: { mine: id } })
 }
 

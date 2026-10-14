@@ -316,7 +316,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     if (!ladders.has(name)) ladders.set(name, areaLadder(name, part))
     const area = ladders.get(name)
     if (!area) return null
-    const view = pentatonic.bySection[section] ?? pentatonic.fallback
+    const view = (Object.hasOwn(pentatonic.bySection, section) ? pentatonic.bySection[section] : undefined) ?? pentatonic.fallback
     const p = pentatonicAt(area.ladder, view)
     return { label: `${p.name}♪${pentatonic.counts ? ` ${p.shared}` : ''}`, key: area.key, ladder: area.ladder, section, view, shared: p.shared }
   }

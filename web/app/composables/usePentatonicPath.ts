@@ -38,7 +38,7 @@ export function usePentatonicPath(key: string | undefined, sections: Ref<readonl
     return { bySection: { ...pentatonicPreset(s.path, sections.value), ...own }, fallback: PENTATONIC_HOME, counts: true }
   })
   /** each section as it plays now, frozen for Custom */
-  const seeded = (): Readonly<Record<string, PentatonicView>> => Object.fromEntries(sections.value.map((x) => [x.key, plan.value.bySection[x.key] ?? plan.value.fallback]))
+  const seeded = (): Readonly<Record<string, PentatonicView>> => Object.fromEntries(sections.value.map((x) => [x.key, (Object.hasOwn(plan.value.bySection, x.key) ? plan.value.bySection[x.key] : undefined) ?? plan.value.fallback]))
   return {
     path: computed(() => state.value.path),
     plan,
@@ -49,6 +49,10 @@ export function usePentatonicPath(key: string | undefined, sections: Ref<readonl
     /** one section's rung and side: the path becomes Custom, every other section keeping what it played */
     setSection(section: string, view: PentatonicView): void {
       state.value = { path: 'custom', sections: { ...seeded(), [section]: view } }
+    },
+    /** the same path for another chart (a copy, or a shared chart once saved) */
+    carryTo(otherKey: string): void {
+      if (state.value.path !== 'one') writeStored(`csm-pent-path:${otherKey}`, JSON.stringify(state.value))
     },
   }
 }

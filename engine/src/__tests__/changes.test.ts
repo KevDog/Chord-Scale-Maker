@@ -130,6 +130,12 @@ describe('the Changes sheet', () => {
     expect(pents({ lines: sheet, beats: 4, diagnostics: [] })).toEqual([['Gm♪'], ['Dm♪']]) // C major ♭2 Gm; E minor (home Em) ♭2 Dm
   })
 
+  it('plays a section named after an Object built-in at the fallback', () => {
+    const doc = parseChart('title: T\nkey: C\nconstructor | 1 | Dm7\nconstructor | 2 | G7\ntoString | 3 | Cmaj7\n').value
+    const sheet = buildChanges(doc, CONCERT, 4, false, 'off', undefined, one(2, 'flat'))
+    expect(pents(sheet).flat().length).toBeGreaterThan(0)
+  })
+
   it('writes the ladder for the part: a B♭ part over concert C major reads D major’s', () => {
     const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7').value
     const [chord] = buildChanges(doc, TENOR, 4, false, 'off', undefined, one(0, 'flat')).lines[0]?.bars[0]?.chords ?? []
