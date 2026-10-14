@@ -3,7 +3,7 @@ import { nextTick } from 'vue'
 import { describe, expect, it } from 'vitest'
 import PentatonicLadder from '~/components/PentatonicLadder.vue'
 import ChangesSheet from '~/components/ChangesSheet.vue'
-import { changesLinesPerPage, type ChartDoc, parseChart, type PentatonicPlan, type ScaleView, type SheetLine } from '@chord-scale-maker/engine'
+import { changesLinesPerPage, type ChartDoc, CONCERT, parseChart, type PentatonicPlan, type ScaleView, type SheetLine } from '@chord-scale-maker/engine'
 
 const doc = parseChart('title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\n').value
 // 64 bars: more lines than any page holds, at 2 or 4 bars a line
@@ -130,5 +130,22 @@ describe('ChangesSheet', () => {
     expect(add.text()).toBe('Section')
     await add.trigger('click')
     expect(w.emitted('addSection')).toHaveLength(1)
+  })
+})
+
+describe('ChangesSheet pentatonic contour (#265)', () => {
+  const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Cmaj7\nA | 3 | Cmaj7').value
+  const plan = (counts: boolean): PentatonicPlan => ({ bySection: counts ? { B: { rung: 5, side: 'flat' } } : {}, fallback: { rung: 0, side: 'flat' }, counts })
+
+  it('gives each line its contour, with the riser carried across lines', async () => {
+    const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: true, scales: true, pentatonic: plan(true) } })
+    const bands = w.findAll('[data-slot="contour"]')
+    expect(bands).toHaveLength(3)
+    expect(bands.map((b) => b.findAll('line[data-kind="riser"]').length)).toEqual([0, 1, 1])
+  })
+
+  it('has no band with One rung', async () => {
+    const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: true, scales: true, pentatonic: plan(false) } })
+    expect(w.find('[data-slot="contour"]').exists()).toBe(false)
   })
 })
