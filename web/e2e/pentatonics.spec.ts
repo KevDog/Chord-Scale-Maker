@@ -1,4 +1,4 @@
-import { chooseInstrument, chooseSheet, expect, pickOption, rankedAgainstChord, showPentatonics, test } from './fixtures'
+import { chooseInstrument, chooseSheet, expect, pickOption, rankedAgainstChord, showPentatonics, test, writeChart } from './fixtures'
 import type { Page } from '@playwright/test'
 
 const labels = (page: Page) => page.locator('[data-slot="pentatonic"] button')
@@ -209,4 +209,20 @@ test('a change of step clears the picks', async ({ page }) => {
   await checkRadio(page, 'Pentatonic step', 'Key area')
   await checkRadio(page, 'Pentatonic step', 'Section')
   await expect(target).toHaveText(before ?? '')
+})
+
+test('a pick stays on its chord when a bar goes in before it (#275)', async ({ page }) => {
+  await page.setViewportSize({ width: 1280, height: 900 })
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\nA | 4 | A7')
+  await showPentatonics(page)
+  await rankedAgainstChord(page)
+  const at = (chord: string) => page.locator(`[data-slot="pentatonic"] [data-chord="${chord}"] button`)
+  await at('A:4:0').click()
+  await page.getByRole('dialog', { name: /pentatonic ranking$/ }).locator('li').nth(2).locator('[data-pent]').click() // rank 3
+  await expect(at('A:4:0')).toHaveAttribute('aria-label', /your pick/)
+  await page.getByRole('button', { name: 'Edit Dm7, A bar 1' }).hover()
+  await page.getByRole('button', { name: 'Insert a held bar after A bar 1' }).click()
+  await expect(page.getByRole('button', { name: 'Edit A7, A bar 5' })).toBeVisible()
+  await expect(at('A:5:0')).toHaveAttribute('aria-label', /your pick/)
+  await expect(page.locator('[data-slot="pentatonic"] button[aria-label*="your pick"]')).toHaveCount(1)
 })

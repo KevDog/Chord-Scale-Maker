@@ -45,4 +45,13 @@ describe('usePentatonicPicks', () => {
     p.carryTo('mine:1')
     expect(make('mine:1').picks.value).toEqual({ 'A:1:0': 3 })
   })
+
+  it('carries picks to their chords’ new places after an edit, and stores them', async () => {
+    const p = make('c')
+    p.pick(['A:2:0'], 7)
+    p.carry([{ at: 'A:1:0', text: 'C' }, { at: 'A:2:0', text: 'G7' }], [{ at: 'A:1:0', text: 'C' }, { at: 'A:2:0', text: 'F' }, { at: 'A:3:0', text: 'G7' }])
+    await nextTick()
+    expect(p.picks.value).toEqual({ 'A:3:0': 7 })
+    expect(JSON.parse(localStorage.getItem('csm-pent-picks:c')!)).toEqual({ 'A:3:0': 7 })
+  })
 })

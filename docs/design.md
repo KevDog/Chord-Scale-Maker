@@ -518,7 +518,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   the sheet; counts, tints and the contour by shared count, `level`). Preferences `csm-pent-basis`, `csm-pent-rank`.
 - **Picks** (#272): a label's popover pick covers its `run` (that chord and those its label stands for), stored as
   the concert root per drawn chord (`ChordAt`) in `csm-pent-picks:<slug>`; cleared by any change of Path, Rung, Side,
-  Rank or basis; Reset in the popover. A pick no longer makes the path Custom (a stored Custom still plays).
+  Step, Rank, basis or the chart's key; Reset in the popover. A pick no longer makes the path Custom (a stored Custom still plays).
+  An edit carries picks with their chords (#275): `carryPicks` lines up the chords drawn before and after
+  (`drawnChords`, the longest common run of chord texts), so a bar put in or taken out moves a pick to its chord's new
+  key; a pick on a chord removed or written over goes (undo doesn't bring it back).
 
 ### Shared
 
