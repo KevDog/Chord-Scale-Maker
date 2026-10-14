@@ -1,6 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { nextTick } from 'vue'
 import { describe, expect, it } from 'vitest'
+import PentatonicLadder from '~/components/PentatonicLadder.vue'
 import ChangesSheet from '~/components/ChangesSheet.vue'
 import { changesLinesPerPage, type ChartDoc, parseChart, type PentatonicView, type ScaleView, type SheetLine } from '@chord-scale-maker/engine'
 
@@ -22,6 +23,8 @@ describe('ChangesSheet', () => {
     const labels = w.findAll('[data-slot="pentatonic"] button').map((b) => b.text())
     expect(labels.length).toBeGreaterThan(0)
     expect(labels.every((l) => /^[A-G][♭♯]?m♪$/.test(l))).toBe(true)
+    w.findComponent(PentatonicLadder).vm.$emit('pick', { rung: 3, side: 'sharp' })
+    expect(w.emitted('pentatonic')?.[0]).toEqual([{ rung: 3, side: 'sharp' }])
   })
 
   it('has no pentatonic row without a view', async () => {

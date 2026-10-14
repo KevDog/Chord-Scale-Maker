@@ -192,7 +192,7 @@
             :editing="sheetEditor ? sheetEdit : undefined"
             :preview="sheetPreview"
             :focus-at="sheetFocus"
-            :pentatonic="pentatonicsOn && prefs.pentatonics.value ? { rung: prefs.pentRung.value, side: prefs.pentSide.value } : null"
+            :pentatonic="pentatonicView"
             @pentatonic="(v) => { prefs.pentRung.value = v.rung; prefs.pentSide.value = v.side }"
             @tap="editSheetChord"
             @edit="openSheetEdit"
@@ -285,6 +285,7 @@ import {
   resolveScales,
   SCALE_LEVELS,
   type LevelState,
+  type PentatonicView,
   type ScaleView,
   serializeChart,
   setMeta,
@@ -358,6 +359,8 @@ const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeatu
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
 const pentatonicsOn = useFeature('pentatonics')
+/** the sheet's Pentatonics view; one object until a pref changes, so the sheet isn't rebuilt on every render */
+const pentatonicView = computed((): PentatonicView | null => (pentatonicsOn && prefs.pentatonics.value ? { rung: prefs.pentRung.value, side: prefs.pentSide.value } : null))
 const signaturesOn = useFeature('keySignatures')
 const arpeggiosOn = useFeature('arpeggios')
 const myChartsOn = useFeature('myCharts')
