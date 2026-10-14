@@ -65,6 +65,52 @@ export function pentatonicStep(semitones: number): PentatonicView {
   return d < 6 ? { rung: d, side: 'sharp' } : { rung: 12 - d, side: 'flat' }
 }
 
+/** what a preset steps by (#276): each section of the form, each run of one key area, or every `bars` bars of the form */
+export type PentatonicStepUnit = 'section' | 'key-area' | 'bars'
+export type PentatonicStep = Readonly<{ unit: PentatonicStepUnit; bars: 2 | 4 | 8 }>
+export const PENTATONIC_STEP_UNITS: readonly PentatonicStepUnit[] = ['section', 'key-area', 'bars']
+export const PENTATONIC_STEP_BARS = [2, 4, 8] as const
+export const PENTATONIC_STEP: PentatonicStep = { unit: 'section', bars: 4 }
+export const isPentatonicStep = (v: unknown): v is PentatonicStep => {
+  if (typeof v !== 'object' || v === null) return false
+  const { unit, bars } = v as Partial<PentatonicStep>
+  return (PENTATONIC_STEP_UNITS as readonly unknown[]).includes(unit) && (PENTATONIC_STEP_BARS as readonly unknown[]).includes(bars)
+}
+
+export const PENTATONIC_PATH_LABELS: Readonly<Record<PentatonicPathName, string>> = {
+  one: 'One rung',
+  'side-slip': 'Side-slip',
+  fifths: 'Fifths',
+  'minor-thirds': 'Minor thirds',
+  'major-thirds': 'Major thirds',
+  custom: 'Custom',
+}
+/** a path laid over the form by the cycle (not One rung, not a stored Custom) */
+export const isPentatonicPreset = (p: PentatonicPathName | undefined): boolean => p !== undefined && p !== 'one' && p !== 'custom'
+
+/** unit i's view under a preset (#276): i steps of it from Home, wrapping round; Home for One rung and Custom */
+export function pentatonicCycle(path: PentatonicPathName, i: number): PentatonicView {
+  switch (path) {
+    case 'side-slip':
+      return i % 2 === 1 ? pentatonicStep(1) : PENTATONIC_HOME
+    case 'fifths':
+      return pentatonicStep(7 * i)
+    case 'minor-thirds':
+      return pentatonicStep(3 * i)
+    case 'major-thirds':
+      return pentatonicStep(4 * i)
+    default:
+      return PENTATONIC_HOME
+  }
+}
+
+/** "Pentatonics: Minor thirds · every 4 bars"; null for One rung and Custom */
+export function pentatonicPathCaption(path: PentatonicPathName, step: PentatonicStep = PENTATONIC_STEP): string | null {
+  if (!isPentatonicPreset(path)) return null
+  const unit = step.unit === 'bars' ? `every ${step.bars} bars` : step.unit === 'section' ? 'by section' : 'by key area'
+  return `Pentatonics: ${PENTATONIC_PATH_LABELS[path]} · ${unit}`
+}
+
 /**
  * each section's view under a preset (none for 'one' or 'custom'). The form's sections take roles by position:
  * the first is inside and the last returning (both Home), the one before last outside, any between climbing; with

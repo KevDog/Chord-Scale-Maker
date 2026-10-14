@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isPentatonicPathName, isPentatonicView, PENTATONIC_HOME, PENTATONIC_RANKS, pentatonicAt, pentatonicCaption, pentatonicLadder, pentatonicPick, pentatonicPreset, pentatonicRanking, pentatonicStep, type PentatonicSection } from '../pentatonics'
+import { isPentatonicPathName, isPentatonicPreset, isPentatonicStep, PENTATONIC_PATH_LABELS, PENTATONIC_STEP, pentatonicCycle, pentatonicPathCaption, isPentatonicView, PENTATONIC_HOME, PENTATONIC_RANKS, pentatonicAt, pentatonicCaption, pentatonicLadder, pentatonicPick, pentatonicPreset, pentatonicRanking, pentatonicStep, type PentatonicSection } from '../pentatonics'
 import { pitchClasses } from '../ladder'
 import { LETTERS, parseRoot, pcOf, type Spelled } from '../pitch'
 import { SCALES } from '../scales'
@@ -57,6 +57,34 @@ const show = (r: Readonly<Record<string, { rung: number; side: string }>>) =>
   Object.fromEntries(Object.entries(r).map(([k, v]) => [k, v.rung === 0 || v.rung === 6 ? String(v.rung) : `${v.rung}${v.side === 'flat' ? '♭' : '♯'}`]))
 
 describe('pentatonic paths', () => {
+  const cycle = (path: Parameters<typeof pentatonicCycle>[0], n: number) => Array.from({ length: n }, (_, i) => show({ s: pentatonicCycle(path, i) }).s)
+
+  it('cycles each preset from Home, one step a unit, wrapping round (#276)', () => {
+    expect(cycle('side-slip', 4)).toEqual(['0', '5♭', '0', '5♭'])
+    expect(cycle('fifths', 13)).toEqual(['0', '1♯', '2♯', '3♯', '4♯', '5♯', '6', '5♭', '4♭', '3♭', '2♭', '1♭', '0'])
+    expect(cycle('minor-thirds', 5)).toEqual(['0', '3♭', '6', '3♯', '0'])
+    expect(cycle('major-thirds', 4)).toEqual(['0', '4♯', '4♭', '0'])
+    expect(cycle('one', 3)).toEqual(['0', '0', '0'])
+    expect(cycle('custom', 2)).toEqual(['0', '0'])
+  })
+
+  it('knows a step: a unit and 2, 4 or 8 bars, by default each section', () => {
+    expect(PENTATONIC_STEP).toEqual({ unit: 'section', bars: 4 })
+    expect([{ unit: 'section', bars: 4 }, { unit: 'key-area', bars: 2 }, { unit: 'bars', bars: 8 }].every(isPentatonicStep)).toBe(true)
+    expect([null, {}, { unit: 'chord', bars: 4 }, { unit: 'bars', bars: 3 }, { unit: 'bars' }, 'bars'].some(isPentatonicStep)).toBe(false)
+  })
+
+  it('names the path playing, for a preset only', () => {
+    expect(pentatonicPathCaption('minor-thirds', { unit: 'bars', bars: 4 })).toBe('Pentatonics: Minor thirds · every 4 bars')
+    expect(pentatonicPathCaption('side-slip')).toBe('Pentatonics: Side-slip · by section')
+    expect(pentatonicPathCaption('fifths', { unit: 'key-area', bars: 2 })).toBe('Pentatonics: Fifths · by key area')
+    expect(pentatonicPathCaption('one')).toBeNull()
+    expect(pentatonicPathCaption('custom')).toBeNull()
+    expect(PENTATONIC_PATH_LABELS['major-thirds']).toBe('Major thirds')
+    expect(['side-slip', 'fifths', 'minor-thirds', 'major-thirds'].every((p) => isPentatonicPreset(p as never))).toBe(true)
+    expect([undefined, 'one', 'custom'].some((p) => isPentatonicPreset(p as never))).toBe(false)
+  })
+
   it('steps by semitones round the circle of fifths', () => {
     expect([0, 1, 3, 6, 9, 4, 8].map((s) => show({ s: pentatonicStep(s) }).s)).toEqual(['0', '5♭', '3♭', '6', '3♯', '4♯', '4♭'])
     expect(pentatonicStep(12)).toEqual(PENTATONIC_HOME)
