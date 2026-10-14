@@ -29,9 +29,10 @@
             :preview="preview"
             :focus-at="focusAt"
             :pentatonic="pentatonic"
+            :counted="counted"
             :contour="contour?.[l.index] ?? null"
             @tap="emit('tap', $event)"
-            @pentatonic="(s, v) => emit('pentatonic', s, v)"
+            @pentatonic="(run, w) => emit('pentatonic', run, w)"
             @edit="emit('edit', $event)"
             @update:doc="emit('update:doc', $event)"
             @said="emit('said', $event)"
@@ -57,7 +58,7 @@
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
-import { breakLines, buildChanges, changesLinesPerPage, type ChartDoc, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type Part, type PentatonicPlan, pentatonicContour, type PentatonicView, type ScaleView, showPentatonics, type SheetLine } from '@chord-scale-maker/engine'
+import { breakLines, buildChanges, changesLinesPerPage, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type Part, type PentatonicPlan, pentatonicContour, type ScaleView, showPentatonics, type SheetLine } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
 const props = defineProps<{
@@ -82,7 +83,7 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{
   tap: [chord: SheetChordEdit]
-  pentatonic: [section: string, view: PentatonicView]
+  pentatonic: [run: readonly ChordAt[], written: number | null]
   edit: [edit: SheetEdit]
   'update:doc': [doc: ChartDoc]
   said: [text: string]
@@ -111,7 +112,9 @@ function breakAt(at: string): void {
 }
 const sheet = computed(() => ({ ...built.value, lines: showPentatonics(breakLines(built.value.lines, breaks.value)) }))
 /** the tension contour (#265), over the lines as drawn, with a path that varies by section */
-const contour = computed(() => (props.pentatonic?.counts ? pentatonicContour(sheet.value.lines) : null))
+/** the plan counts: a path, the chord basis or a pick (the engine's post-pass rule) */
+const counted = computed(() => !!props.pentatonic && (props.pentatonic.counts || props.pentatonic.basis === 'chord' || built.value.lines.some((l) => l.bars.some((b) => b.chords.some((c) => c.pentatonic?.picked)))))
+const contour = computed(() => (counted.value ? pentatonicContour(sheet.value.lines) : null))
 // 8 lines with slashes (a 32-bar AABA, one section a line pair); fewer with a guide tone line, whose notes and labels are taller
 const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: props.numerals, scales: props.scales, pentatonics: !!props.pentatonic }))
 const subtitleText = computed(() => pageSubtitle(props.subtitle, props.instrumentLabel, 'Changes'))

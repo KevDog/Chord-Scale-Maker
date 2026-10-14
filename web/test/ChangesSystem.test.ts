@@ -226,18 +226,18 @@ describe('ChangesSystem as the editor', () => {
 })
 
 describe('ChangesSystem pentatonic ladders', () => {
-  it('opens a label’s ladder at its section’s rung, and a pick names the section', async () => {
+  it('opens a label’s ladder at its section’s rung, and a pick names the run', async () => {
     const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Cmaj7').value
     const plan = { bySection: { B: { rung: 5, side: 'flat' as const } }, fallback: { rung: 0, side: 'flat' as const }, counts: true }
     const line = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)[1]!
-    const w = await mountSuspended(ChangesSystem, { props: { line, first: true, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, pentatonic: plan }, attachTo: document.body })
+    const w = await mountSuspended(ChangesSystem, { props: { line, first: true, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, pentatonic: plan, counted: true }, attachTo: document.body })
     const label = w.find('[data-slot="pentatonic"] [data-section="B"] button')
     expect(label.text()).toBe('B♭m♪ 1')
     await label.trigger('click')
     await flushPromises()
     expect(w.find('[aria-current="true"]').text()).toBe('B♭m')
     await w.findAll('[data-pent]').find((p) => p.text() === 'Gm')?.trigger('click')
-    expect(w.emitted('pentatonic')?.[0]).toEqual(['B', { rung: 2, side: 'flat' }])
+    expect(w.emitted('pentatonic')?.[0]).toEqual([['B:2:0'], 7])
     w.unmount()
   })
 
@@ -245,7 +245,7 @@ describe('ChangesSystem pentatonic ladders', () => {
     const built = showPentatonics(buildChanges(parseChart(text).value, CONCERT, 4, false, 'off', undefined, plan).lines)
     const lines = gapBar === undefined ? built : built.map((l) => ({ ...l, bars: l.bars.map((b, i) => (i === gapBar ? { ...b, chords: b.chords.map((c) => ({ ...c, pentatonic: null })) } : b)) }))
     const contour = plan.counts ? pentatonicContour(lines)[index] : null
-    return mountSuspended(ChangesSystem, { props: { line: lines[index]!, first: index === 0, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, pentatonic: plan, contour, ...(editing ? { editing } : {}) }, attachTo: document.body })
+    return mountSuspended(ChangesSystem, { props: { line: lines[index]!, first: index === 0, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, pentatonic: plan, counted: plan.counts, contour, ...(editing ? { editing } : {}) }, attachTo: document.body })
   }
   const slip: PentatonicPlan = { bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
   const AB = 'title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Dm7\nB | 2 | G7\nB | 3 | Cmaj7'

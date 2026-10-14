@@ -20,7 +20,7 @@ function parse(raw: string | null): Stored {
 /**
  * the chart's pentatonic path (#264), per chart in this browser under `csm-pent-path:<key>` (a library slug or
  * mine:<id>); without a key it lasts for the visit. One rung plays `fallback` (the sheet's Rung and Side) everywhere;
- * a preset fills every section; an edit to one section makes the path Custom. Never in the chart or a share link.
+ * a preset fills every section; a stored Custom path (from before #272) still plays its sections. Never in the chart or a share link.
  */
 export function usePentatonicPath(key: string | undefined, sections: Ref<readonly ChangesSection[]>, fallback: Ref<PentatonicView>) {
   const storeKey = key ? `csm-pent-path:${key}` : null
@@ -45,10 +45,6 @@ export function usePentatonicPath(key: string | undefined, sections: Ref<readonl
     /** a preset is stored by name alone, so it follows the chart's sections; Custom keeps what the sections played */
     setPath(name: PentatonicPathName): void {
       state.value = name === 'custom' ? { path: name, sections: state.value.path === 'custom' ? state.value.sections : seeded() } : { path: name, sections: {} }
-    },
-    /** one section's rung and side: the path becomes Custom, every other section keeping what it played */
-    setSection(section: string, view: PentatonicView): void {
-      state.value = { path: 'custom', sections: { ...seeded(), [section]: view } }
     },
     /** the same path for another chart (a copy, or a shared chart once saved) */
     carryTo(otherKey: string): void {

@@ -1,13 +1,13 @@
 import { analyse, chartKeyOf, parseKey } from './analysis'
 import { type ChartDoc, type ChartLine, chartBeats, expandRowLines, formPart, type FormPart, type LinedRow, qualityScale } from './chart'
-import { type ChordToken, chordTokensOrNull, writtenChordTextOrNull } from './chord'
+import { type ChordToken, chordTokensOrNull, writtenChordRootLenient, writtenChordTextOrNull } from './chord'
 import { guideToneTimeline } from './guideToneTimeline'
 import { arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
 import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
 import { keySignature } from './keySignature'
-import { type Part, scaleLabel, writtenRoot } from './part'
-import { glyphs, parseRoot, rootName, shiftBy } from './pitch'
-import { pentatonicAt, pentatonicLadder, type PentatonicRung, type PentatonicView } from './pentatonics'
+import { concertPc, type Part, scaleLabel, writtenRoot, writtenScale } from './part'
+import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled, shiftBy } from './pitch'
+import { PENTATONIC_HOME, PENTATONIC_RANKS, pentatonicAt, pentatonicLadder, type PentatonicRank, pentatonicRanking, type PentatonicRung, type PentatonicView } from './pentatonics'
 import { resolveScales, type ScaleView } from './resolve'
 import { abbreviateScale } from './scales'
 import { chunk, orNull } from './util'
@@ -20,12 +20,40 @@ import { chunk, orNull } from './util'
  * markers, and repeat signs for a @copy straight after its source. No DOM, like sheet.ts and guideTones.ts.
  */
 
-/** a chord's key-area pentatonic at its section's rung (#255, #264): the label, the area's key, its whole ladder, and the section, view and shared count behind the label */
-export type ChangesPentatonic = Readonly<{ label: string; key: string; ladder: readonly PentatonicRung[]; section: string; view: PentatonicView; shared: number }>
+export type ChordAt = string // `${section}:${bar}:${k}`: the drawn bar's at.section, at.bar, the chord's index in the bar
+export type PentatonicBasis = 'key' | 'chord'
+/** a chord's pentatonic (#255, #264, #272): its label, and what made it (the key area's ladder or its own scale's ranking) */
+export type ChangesPentatonic = Readonly<{
+  label: string
+  basis: PentatonicBasis
+  title: string // 'B · F major pentatonic ladder' | 'Dm7 · D Aeolian pentatonic ranking'
+  key: string // key basis: the area's key; chord basis: ''
+  scale: string // chord basis: its scale, written ('D Aeolian'); key basis: ''
+  ladder: readonly PentatonicRung[] // key basis; [] for chord
+  ranking: readonly PentatonicRank[] // chord basis; [] for key
+  section: string
+  chord: ChordAt
+  view: PentatonicView // key basis: the rung played; chord basis: PENTATONIC_HOME
+  rank: number // chord basis; 0 for key
+  root: Spelled // written
+  name: string // 'Dm'
+  shared: number
+  level: number // 0–6 (contour height, tint)
+  pc: number // concert pitch class of root
+  picked: boolean
+  run: readonly ChordAt[] // a printed label's chord and the following ones it stands for; [] on an unprinted label
+}>
 /** a section the Changes sheet draws (a block): its key (its first section's name), its marker, its place in the form */
 export type ChangesSection = Readonly<{ key: string; marker: string; part: FormPart }>
 /** the pentatonic row's rungs (#264): a section's own view, else fallback; counts: the shared count follows each label */
-export type PentatonicPlan = Readonly<{ bySection: Readonly<Record<string, PentatonicView>>; fallback: PentatonicView; counts: boolean }>
+export type PentatonicPlan = Readonly<{
+  bySection: Readonly<Record<string, PentatonicView>>
+  fallback: PentatonicView
+  counts: boolean
+  basis?: PentatonicBasis // default 'key'
+  rank?: number // chord basis, 1–12, default 1
+  picks?: Readonly<Record<ChordAt, number>> // concert pc of a picked pentatonic's root
+}>
 /** a chord on a line: its bar's index in the line and its index in the bar */
 export type ChordRef = Readonly<{ bar: number; chord: number }>
 /** chords in a row, across bars, at one rung (`to` inclusive) */
@@ -65,7 +93,7 @@ export type ChangesChord = Readonly<{
   keyFrom: 'found' | 'area' | 'function'
   /** its guide tone's label ("3", "7"; "4" on a sus chord); '' with the line off or none found */
   guide: string
-  /** its key area's pentatonic at the sheet's rung; null with the row off or no key. `label: ''` where showPentatonics leaves it unprinted */
+  /** its pentatonic (key area's ladder or its own scale's ranking); null with the row off, no key (key basis) or no scale (chord basis). `label: ''` where showPentatonics leaves it unprinted */
   pentatonic: ChangesPentatonic | null
 }>
 export type ChangesBar = Readonly<{
@@ -165,36 +193,59 @@ export function breakLines(lines: readonly ChangesLine[], at: ReadonlySet<string
   })
 }
 
+/** a pentatonic's tension, 0–6, for the contour and tints: the rung (key basis), else from the notes it shares (5 → 0, 4 → 2 … 0 → 6) */
+const levelOf = (shared: number): number => (shared >= 5 ? 0 : 6 - shared)
+const clampRank = (rank: number | undefined): number => (Number.isInteger(rank) ? Math.min(Math.max(rank!, 1), PENTATONIC_RANKS) : 1)
+const flatChords = (lines: readonly ChangesLine[]): ChangesChord[] => lines.flatMap((l) => l.bars.flatMap((b) => b.chords))
+const mapChords = (line: ChangesLine, f: (c: ChangesChord) => ChangesChord): ChangesLine => ({ ...line, bars: line.bars.map((bar) => ({ ...bar, chords: bar.chords.map(f) })) })
+const mapPentatonics = (line: ChangesLine, f: (p: ChangesPentatonic) => ChangesPentatonic): ChangesLine => mapChords(line, (c) => (c.pentatonic ? { ...c, pentatonic: f(c.pentatonic) } : c))
+
 /**
  * the pentatonic row as printed (#255), run after breakLines: a chord's label stays on a line's first labelled chord
  * and wherever it differs from the last one shown on the line (relative keys share a home: shown once); elsewhere
- * its label is '' (not printed), its key and ladder kept for nothing but the model's completeness
+ * its label is '' (not printed), its key and ladder kept for nothing but the model's completeness. A chord with no
+ * pentatonic ends the line's last shown label: the label after the gap prints again. A printed label's run (#272) is its
+ * chord and the following ones it stands for, to the next printed label, a chord with no pentatonic, or the line's end;
+ * it is picked when any chord in its run is
  */
 export function showPentatonics(lines: readonly ChangesLine[]): readonly ChangesLine[] {
   return lines.map((line): ChangesLine => {
+    const all = line.bars.flatMap((b) => b.chords)
     let last: string | null = null // the label last shown on this line
-    const bars = line.bars.map((bar): ChangesBar => ({
-      ...bar,
-      chords: bar.chords.map((c): ChangesChord => {
-        if (!c.pentatonic) return c
-        const shown = c.pentatonic.label !== last
-        last = c.pentatonic.label
-        return shown ? c : { ...c, pentatonic: { ...c.pentatonic, label: '' } }
-      }),
-    }))
-    return { ...line, bars }
+    const printed = all.map((c) => {
+      if (!c.pentatonic) {
+        last = null
+        return false
+      }
+      const shown = c.pentatonic.label !== last
+      last = c.pentatonic.label
+      return shown
+    })
+    const runAt = (i: number): ChangesPentatonic[] => {
+      const out = [all[i]!.pentatonic!]
+      for (let j = i + 1; j < all.length && all[j]!.pentatonic && !printed[j]; j++) out.push(all[j]!.pentatonic!)
+      return out
+    }
+    let n = 0
+    return mapChords(line, (c) => {
+      const i = n++
+      if (!c.pentatonic) return c
+      if (!printed[i]) return { ...c, pentatonic: { ...c.pentatonic, label: '' } }
+      const run = runAt(i)
+      return { ...c, pentatonic: { ...c.pentatonic, run: run.map((p) => p.chord), picked: run.some((p) => p.picked) } }
+    })
   })
 }
 
 /**
- * the tension contour (#265), run on the lines as drawn: each line's runs of one rung (a chord with no pentatonic is a
+ * the tension contour (#265), run on the lines as drawn: each line's runs of one level (the rung, or the chord basis's level; a chord with no pentatonic is a
  * gap; blanked labels still have their view), and its entry, the previous line's last rung where this line's first
  * chord sits on another
  */
 export function pentatonicContour(lines: readonly ChangesLine[]): readonly ContourLine[] {
   let before: number | null = null // the rung the previous line ended on; null: a gap, or no line yet
   return lines.map((line): ContourLine => {
-    const rungs = line.bars.flatMap((bar, b) => bar.chords.map((c, k) => ({ at: { bar: b, chord: k }, rung: c.pentatonic?.view.rung ?? null })))
+    const rungs = line.bars.flatMap((bar, b) => bar.chords.map((c, k) => ({ at: { bar: b, chord: k }, rung: c.pentatonic?.level ?? null })))
     const runs = rungs.reduce<ContourRun[]>((acc, { at, rung }, i) => {
       if (rung === null) return acc
       const last = acc.at(-1)
@@ -340,15 +391,47 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const voices: { bars: ReadonlyMap<number, readonly GuideNote[]>; labels: ReadonlyMap<number, string>; missing: readonly string[] } | null =
     line === 'off' ? null : isArpeggioPattern(line) ? { ...arpeggioVoices(drawn(), part, beats, keySig, line), labels: new Map() } : guideVoices(drawn(), part, beats, keySig, line)
 
+  const basis = pentatonic?.basis ?? 'key'
+  const toWritten = pcOf(writtenRoot(part, parseRoot('C'), 'ionian')) // concert pc + this = written pc
+  const rankings = new Map<string, Readonly<{ entries: readonly PentatonicRank[]; scaleName: string }> | null>()
+  const rankingOf = (scale: string, chordText: string) => {
+    const k = `${scale}|${chordText}`
+    if (!rankings.has(k)) {
+      rankings.set(
+        k,
+        orNull(() => {
+          const w = writtenScale(part, scale)
+          const label = scaleLabel(part, scale)
+          return { entries: pentatonicRanking(new Set(w.notes.map((n) => mod(pcOf(w.root) + n.semis, 12))), orNull(() => writtenChordRootLenient(part, chordText, scale)) ?? w.root), scaleName: glyphs(`${rootName(label.root)} ${label.name}`) }
+        }),
+      )
+    }
+    return rankings.get(k) ?? null
+  }
   const ladders = new Map<string, ReturnType<typeof areaLadder>>()
-  const pentatonicOf = (name: string | undefined, section: string): ChangesPentatonic | null => {
-    if (!pentatonic || !name) return null
-    if (!ladders.has(name)) ladders.set(name, areaLadder(name, part))
-    const area = ladders.get(name)
+  const pentatonicOf = (keyName: string | undefined, section: string, chord: ChordAt, written: string, scale: string | null, chordText: string): ChangesPentatonic | null => {
+    if (!pentatonic) return null
+    const picks = pentatonic.picks ?? {}
+    const pick = Object.hasOwn(picks, chord) ? picks[chord] : undefined
+    const want = pick === undefined ? null : mod(pick + toWritten, 12) // the pick, written
+    const common = { section, chord, run: [] as readonly ChordAt[] }
+    if (basis === 'chord') {
+      if (!scale) return null
+      const r = rankingOf(scale, chordText)
+      if (!r) return null
+      const found = want === null ? undefined : r.entries.find((e) => pcOf(e.root) === want)
+      const at = found ?? r.entries[clampRank(pentatonic.rank) - 1]!
+      return { ...common, label: `${at.name}♪`, basis, title: `${written} · ${r.scaleName} pentatonic ranking`, key: '', scale: r.scaleName, ladder: [], ranking: r.entries, view: PENTATONIC_HOME, rank: at.rank, root: at.root, name: at.name, shared: at.shared, level: levelOf(at.shared), pc: concertPc(part, pcOf(at.root)), picked: !!found }
+    }
+    if (!keyName) return null
+    if (!ladders.has(keyName)) ladders.set(keyName, areaLadder(keyName, part))
+    const area = ladders.get(keyName)
     if (!area) return null
-    const view = (Object.hasOwn(pentatonic.bySection, section) ? pentatonic.bySection[section] : undefined) ?? pentatonic.fallback
-    const p = pentatonicAt(area.ladder, view)
-    return { label: `${p.name}♪${pentatonic.counts ? ` ${p.shared}` : ''}`, key: area.key, ladder: area.ladder, section, view, shared: p.shared }
+    const found = want === null ? undefined : area.ladder.find((e) => pcOf(e.root) === want)
+    const sectionView = (Object.hasOwn(pentatonic.bySection, section) ? pentatonic.bySection[section] : undefined) ?? pentatonic.fallback
+    const p = found ?? pentatonicAt(area.ladder, sectionView)
+    const view = found ? { rung: found.rung, side: found.side ?? sectionView.side } : sectionView
+    return { ...common, label: `${p.name}♪`, basis, title: `${section} · ${area.key} pentatonic ladder`, key: area.key, scale: '', ladder: area.ladder, ranking: [], view, rank: 0, root: p.root, name: p.name, shared: p.shared, level: p.rung, pc: concertPc(part, pcOf(p.root)), picked: !!found }
   }
 
   let lastKey = ''
@@ -359,14 +442,15 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
       const bar = block.from + j
       const chords = block.rows
         .filter((i) => barOf(i) === bar)
-        .map((i): ChangesChord => {
+        .map((i, k): ChangesChord => {
           const row = rows[i] as LinedRow
           const a = byRow.get(i)
           const scale = resolved.get(i)?.scale ?? null
+          const written = writtenChordTextOrNull(part, row.chord, scale) ?? row.chord
           return {
             beat: (eventAt.get(i)?.start ?? bar * beats) - bar * beats,
             text: row.chord,
-            written: writtenChordTextOrNull(part, row.chord, scale) ?? row.chord,
+            written,
             at: { section: row.section, bar: row.bar },
             line: row.line,
             tokens: chordTokensOrNull(part, row.chord, scale),
@@ -380,7 +464,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             heardIn: a ? keyName((a.statedKey ?? a.key).name, part) : '',
             keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',
             guide: voices?.labels.get(i) ?? '',
-            pentatonic: pentatonicOf(a?.key.name, block.section),
+            pentatonic: pentatonicOf(a?.key.name, block.section, `${block.section}:${firstBar + j}:${k}`, written, scale, row.chord),
           }
         })
       const firstKey = block.rows.map((i) => byRow.get(i)).find((a) => a && barOf(a.row) === bar)?.key.name
@@ -422,5 +506,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     }))
     return { bars, sectionEnd: line.sectionEnd }
   })
-  return { lines: deduped, beats, diagnostics: voices ? [...diagnostics, ...voices.missing] : diagnostics }
+  const counts = !!pentatonic && (pentatonic.counts || basis === 'chord' || flatChords(deduped).some((c) => c.pentatonic?.picked))
+  const counted = counts ? deduped.map((l) => mapPentatonics(l, (p) => ({ ...p, label: `${p.label} ${p.shared}` }))) : deduped
+  return { lines: counted, beats, diagnostics: voices ? [...diagnostics, ...voices.missing] : diagnostics }
 }

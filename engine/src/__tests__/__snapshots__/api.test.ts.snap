@@ -78,6 +78,7 @@ exports[`exports the same names 1`] = `
   "chunk",
   "cleanLettering",
   "compareKeys",
+  "concertPc",
   "decodeShare",
   "defaultScale",
   "defaultScaleOrNull",

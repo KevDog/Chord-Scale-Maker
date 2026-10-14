@@ -171,4 +171,18 @@ describe('pentatonic preferences', () => {
     const p = linked({})
     expect([p.pentatonics.value, p.pentRung.value]).toEqual([true, 3])
   })
+
+  it('reads a stored basis and rank, rejecting junk, and keeps them through a share link', () => {
+    localStorage.setItem('csm-pent-basis', 'chord')
+    localStorage.setItem('csm-pent-rank', '12')
+    expect([prefs().pentBasis.value, prefs().pentRank.value]).toEqual(['chord', 12])
+    const l = linked({})
+    expect([l.pentBasis.value, l.pentRank.value]).toEqual(['chord', 12])
+    localStorage.setItem('csm-pent-basis', 'junk')
+    expect(prefs().pentBasis.value).toBe('key')
+    for (const bad of ['0', '13', 'x']) {
+      localStorage.setItem('csm-pent-rank', bad)
+      expect(prefs().pentRank.value).toBe(1)
+    }
+  })
 })
