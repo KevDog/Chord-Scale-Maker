@@ -31,8 +31,8 @@ describe('usePentatonicPicks', () => {
   })
 
   it('ignores junk: bad JSON, non-integer or out-of-range pcs, own-property names', () => {
-    localStorage.setItem('csm-pent-picks:j', '{"A:1:0": 13, "A:2:0": "x", "A:3:0": 4, "constructor": 1.5}')
-    expect(make('j').picks.value).toEqual({ 'A:3:0': 4 })
+    localStorage.setItem('csm-pent-picks:j', '{"A:1:0": 13, "A:2:0": "x", "A:3:0": 4, "constructor": 1.5, "toString": 3}')
+    expect(make('j').picks.value).toEqual({ 'A:3:0': 4, toString: 3 })
     localStorage.setItem('csm-pent-picks:k', 'not json')
     expect(make('k').picks.value).toEqual({})
   })

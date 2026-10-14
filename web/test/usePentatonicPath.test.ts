@@ -23,7 +23,7 @@ describe('usePentatonicPath', () => {
   it('treats a section named after an Object built-in as an ordinary one', () => {
     const p = make(undefined, ['constructor', 'toString', 'B'].map((key) => ({ key, marker: key, part: 'form' as const })))
     p.setPath('fifths')
-    expect(p.plan.value.bySection.constructor).toBeDefined()
+    expect(p.plan.value.bySection.constructor).toEqual(expect.objectContaining({ rung: expect.any(Number), side: expect.any(String) }))
     expect(Object.values(p.plan.value.bySection).every((v) => typeof v === 'object' && 'rung' in v)).toBe(true)
   })
 
@@ -95,6 +95,15 @@ describe('usePentatonicPath', () => {
     }
     localStorage.setItem('csm-pent-path:j', '{"path":"thirds"}')
     expect(make('j').path.value).toBe('one')
+  })
+
+  it('stores nothing for One rung, even after another path', async () => {
+    const p = make('satin-doll')
+    p.setPath('fifths')
+    await nextTick()
+    p.setPath('one')
+    await nextTick()
+    expect(localStorage.getItem('csm-pent-path:satin-doll')).toBeNull()
   })
 
   it('keeps the path for the visit only with no chart key', async () => {
