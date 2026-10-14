@@ -34,7 +34,7 @@ many notes with the key's scale:
 | C major, ♯ side | Am | Em | Bm | F♯m | C♯m | G♯m | E♭m |
 
 Rungs 1–5 have two pentatonics each, one a side; Home and 6 have one. The counts are computed, never typed:
-`sharedNotes` counts the pitch classes a minor pentatonic (`SCALES['minor pentatonic']`) on a root shares with the
+`sharedCount` (`ladder.ts`) counts the pitch classes a minor pentatonic (`SCALES['minor pentatonic']`) on a root shares with the
 key's scale (`SCALES` Ionian or Aeolian on its tonic). A test checks the table above against it for every key.
 
 ## What the player sees
@@ -92,16 +92,26 @@ re-measures the worst case (all three rows and a line, in every transposition) a
 
 ## Engine
 
-`engine/src/pentatonics.ts`, pure TypeScript (no Vue or DOM), exported from `engine/src/index.ts` (so the API
-snapshot test changes):
+Two modules, pure TypeScript (no Vue or DOM), exported from `engine/src/index.ts` (so the API snapshot test changes).
+
+**`engine/src/ladder.ts`, generic** (per the #255 comment of 2026-10-14 and #262, triad pairs): ranks any pitch-class
+set transposed 12 ways against a scale. It knows nothing of pentatonics, fifths or spelling; #262 reuses it with a
+triad pair's set.
+
+```ts
+export type Transposition = Readonly<{ root: number; shared: number }>
+export function pitchClasses(formula: string, rootPc?: number): ReadonlySet<number>
+export function sharedCount(shape: ReadonlySet<number>, root: number, scale: ReadonlySet<number>): number
+export function rankTranspositions(shape: ReadonlySet<number>, scale: ReadonlySet<number>): readonly Transposition[]
+```
+
+**`engine/src/pentatonics.ts`**, built on it: the fifths walk, rung and side, and spelling.
 
 ```ts
 export type PentatonicSide = 'flat' | 'sharp'
 export type PentatonicView = Readonly<{ rung: number; side: PentatonicSide }> // rung 0–6
 export type PentatonicRung = Readonly<{ rung: number; side: PentatonicSide | null; root: Spelled; shared: number }>
 
-/** how many of a minor pentatonic's notes on rootPc are in pcs */
-export function sharedNotes(rootPc: number, pcs: ReadonlySet<number>): number
 /** a key's 12 minor pentatonics, Home first, then rung 1 ♭, 1 ♯ … 5 ♭, 5 ♯, 6; spelled as §Spelling */
 export function pentatonicLadder(key: Key, home: Spelled): readonly PentatonicRung[]
 /** the one at a view's rung and side (side ignored at 0 and 6) */
@@ -119,7 +129,9 @@ export function pentatonicAt(ladder: readonly PentatonicRung[], view: Pentatonic
 
 Tests first (TDD), engine before app:
 
-- `sharedNotes`: the table above for C major and A minor; every key's counts by rung are `5 5 4 3 2 1 0`.
+- `ladder.ts`: `rankTranspositions` over C major for the minor pentatonic (the table above) and for a triad pair over C
+  Lydian (C/D on top with 6).
+- `sharedCount`: the table above for C major and A minor; every key's counts by rung are `5 5 4 3 2 1 0`.
 - `pentatonicLadder`: Home is Am in C major and Cm in C minor; rung 2 ♭ in C major is Gm, ♯ is Bm; rung 6 is one
   entry.
 - Spelling: every rung and side in a sharp key (E major), a flat key (A♭ major), F♯ major / G♭ major, and a minor

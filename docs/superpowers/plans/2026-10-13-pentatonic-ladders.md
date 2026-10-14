@@ -4,7 +4,7 @@
 
 **Goal:** A Pentatonics row on the Changes sheet that names, in each key area, the minor pentatonic at the rung and side the player chose, with a popover showing the key area's whole ladder.
 
-**Architecture:** A new pure engine module (`engine/src/pentatonics.ts`) builds a key's 12-pentatonic ladder from scale formulas. `buildChanges` attaches each chord's key-area ladder and label; a new pure `showPentatonics` keeps a label only where the key area changes or a line starts (run after `breakLines`, so app-side line breaks are respected). The app adds a flag, three preferences, the controls, a label row in `ChangesSystem` and a `PentatonicLadder` popover.
+**Architecture:** A generic engine module (`engine/src/ladder.ts`) ranks any pitch-class set transposed 12 ways against a scale (shared with #262, triad pairs); `engine/src/pentatonics.ts` builds a key's 12-pentatonic ladder on it, adding the fifths walk and spelling. `buildChanges` attaches each chord's key-area ladder and label; a new pure `showPentatonics` keeps a label only where the key area changes or a line starts (run after `breakLines`, so app-side line breaks are respected). The app adds a flag, three preferences, the controls, a label row in `ChangesSystem` and a `PentatonicLadder` popover.
 
 **Tech Stack:** TypeScript (strict), Vue 3 / Nuxt, Headless UI (`@headlessui/vue` Popover), Vitest, Playwright.
 
@@ -25,15 +25,130 @@
 
 ## Review Focus
 
-1. **Relative keys** (C major → A minor area): same home (Am), so the label must not repeat at the area change, but the popover title must name the area's own key. Test in Task 2.
-2. **Line breaks made by the app** (`breakLines` on a phone or a crowded bar): the first chord of each new line must get a label. Test in Task 2 (`showPentatonics` after `breakLines`).
-3. **Transposing parts on far keys** (E♭ part over concert F♯ major, B♭ part over D♭): no double accidentals or B♯/E♯/C♭/F♭ in any label. Test in Task 1 (all 12 homes × 12 entries).
-4. **Chords the analysis doesn't reach** (no key area, e.g. a chart of only `N.C.` or before any key is found): no label, no popover, no crash. Test in Task 2.
-5. **Stored preference garbage** (`csm-pent-rung=9`, `csm-pent-side=x`): falls back to `0` / `flat`. Test in Task 3.
+1. **Relative keys** (C major → A minor area): same home (Am), so the label must not repeat at the area change, but the popover title must name the area's own key. Test in Task 3.
+2. **Line breaks made by the app** (`breakLines` on a phone or a crowded bar): the first chord of each new line must get a label. Test in Task 3 (`showPentatonics` after `breakLines`).
+3. **Transposing parts on far keys** (E♭ part over concert F♯ major, B♭ part over D♭): no double accidentals or B♯/E♯/C♭/F♭ in any label. Test in Task 2 (all 12 homes × 12 entries).
+4. **Chords the analysis doesn't reach** (no key area, e.g. a chart of only `N.C.` or before any key is found): no label, no popover, no crash. Test in Task 3.
+5. **Stored preference garbage** (`csm-pent-rung=9`, `csm-pent-side=x`): falls back to `0` / `flat`. Test in Task 4.
 
 ---
 
-### Task 1: Engine ladder module
+### Task 1: Generic ladder module
+
+Per the #255 comment (2026-10-14) and #262: one engine module ranks **any** pitch-class set (a minor pentatonic now; a
+triad pair, hexatonics later) transposed 12 ways against a scale. It knows nothing of pentatonics, fifths or spelling.
+
+**Files:**
+- Create: `engine/src/ladder.ts`
+- Modify: `engine/src/index.ts` (add `export * from './ladder'`)
+- Test: `engine/src/__tests__/ladder.test.ts`
+
+**Interfaces:**
+- Produces:
+  ```ts
+  export type Transposition = Readonly<{ root: number; shared: number }> // root: a pitch class 0–11
+  /** a formula's pitch classes on a root pc (default 0: the shape) */
+  export function pitchClasses(formula: string, rootPc?: number): ReadonlySet<number>
+  /** how many of a shape's notes, moved to root, are in scale */
+  export function sharedCount(shape: ReadonlySet<number>, root: number, scale: ReadonlySet<number>): number
+  /** the shape on all 12 roots, most shared first; ties by root pc */
+  export function rankTranspositions(shape: ReadonlySet<number>, scale: ReadonlySet<number>): readonly Transposition[]
+  ```
+
+- [ ] **Step 1: Write the failing tests**
+
+```ts
+// engine/src/__tests__/ladder.test.ts
+import { describe, expect, it } from 'vitest'
+import { pitchClasses, rankTranspositions, sharedCount } from '../ladder'
+import { SCALES } from '../scales'
+
+const C_MAJOR = pitchClasses(SCALES.ionian[0])
+const MINOR_PENT = pitchClasses(SCALES['minor pentatonic'][0])
+
+describe('the generic ladder', () => {
+  it('reads a formula as pitch classes on a root', () => {
+    expect([...pitchClasses(SCALES['minor pentatonic'][0], 9)].sort((a, b) => a - b)).toEqual([0, 2, 4, 7, 9]) // A C D E G
+  })
+
+  it('counts a minor pentatonic’s notes in C major on every root', () => {
+    expect([9, 2, 4, 7, 11, 0, 6, 5, 1, 10, 8, 3].map((r) => sharedCount(MINOR_PENT, r, C_MAJOR))).toEqual([5, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0])
+  })
+
+  it('ranks all 12 transpositions, most shared first, ties by root', () => {
+    const ranked = rankTranspositions(MINOR_PENT, C_MAJOR)
+    expect(ranked).toHaveLength(12)
+    expect(ranked.map((t) => t.shared)).toEqual([5, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0])
+    expect(ranked.slice(0, 3).map((t) => t.root)).toEqual([2, 4, 9]) // Dm Em Am
+  })
+
+  it('ranks any set: a triad pair (major triads a whole step apart) over C Lydian', () => {
+    const pair = new Set([0, 4, 7, 2, 6, 9]) // C and D major triads on root 0
+    const lydian = pitchClasses(SCALES.lydian[0])
+    const ranked = rankTranspositions(pair, lydian)
+    expect(ranked[0]).toEqual({ root: 0, shared: 6 }) // C/D: all six inside C Lydian
+    expect(ranked.every((t) => t.shared <= 6)).toBe(true)
+  })
+})
+```
+
+- [ ] **Step 2: Run to verify it fails**
+
+Run: `cd engine && npx vitest run src/__tests__/ladder.test.ts`
+Expected: FAIL, `Cannot find module '../ladder'`.
+
+- [ ] **Step 3: Implement**
+
+```ts
+// engine/src/ladder.ts
+import { mod } from './pitch'
+import { spellFrom } from './scales'
+
+/**
+ * Tension ladders (#255, #262): any pitch-class set (a minor pentatonic, a triad pair, a hexatonic) moved to all 12
+ * roots and ranked by how many of its notes a scale holds: the most shared is home, the fewest the most outside.
+ * Generic: the set is the only difference between ladders; spelling and naming belong to their callers.
+ */
+export type Transposition = Readonly<{ root: number; shared: number }>
+
+/** a formula's pitch classes on a root pc (default 0: the shape itself) */
+export const pitchClasses = (formula: string, rootPc = 0): ReadonlySet<number> =>
+  new Set(spellFrom({ letter: 0, acc: 0 }, formula).map((n) => mod(rootPc + n.semis, 12)))
+
+/** how many of a shape's notes, moved to root, are in scale */
+export const sharedCount = (shape: ReadonlySet<number>, root: number, scale: ReadonlySet<number>): number =>
+  [...shape].filter((pc) => scale.has(mod(root + pc, 12))).length
+
+/** the shape on all 12 roots, most shared first; ties by root pc */
+export function rankTranspositions(shape: ReadonlySet<number>, scale: ReadonlySet<number>): readonly Transposition[] {
+  return Array.from({ length: 12 }, (_, root) => ({ root, shared: sharedCount(shape, root, scale) })).sort((a, b) => b.shared - a.shared || a.root - b.root)
+}
+```
+
+Add `export * from './ladder'` to `engine/src/index.ts`.
+
+- [ ] **Step 4: Run to verify it passes**
+
+Run: `cd engine && npx vitest run src/__tests__/ladder.test.ts`
+Expected: PASS (4 tests).
+
+- [ ] **Step 5: Update the API snapshot**
+
+Run: `cd engine && npx vitest run -u src/__tests__/api.test.ts && git diff src/__tests__/__snapshots__/api.test.ts.snap`
+Expected: `pitchClasses`, `rankTranspositions`, `sharedCount` added. Then `make test` from the root: green.
+
+- [ ] **Step 6: Commit**
+
+```bash
+git add engine/src/ladder.ts engine/src/index.ts engine/src/__tests__/ladder.test.ts engine/src/__tests__/__snapshots__/api.test.ts.snap
+git commit -m "Engine: a generic tension ladder for any pitch-class set (#255, #262)
+
+Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
+```
+
+---
+
+### Task 2: Pentatonic ladder
 
 **Files:**
 - Create: `engine/src/pentatonics.ts`
@@ -42,12 +157,12 @@
 - Snapshot: `engine/src/__tests__/__snapshots__/api.test.ts.snap`
 
 **Interfaces:**
+- Consumes: `pitchClasses`, `sharedCount` (Task 1).
 - Produces:
   ```ts
   export type PentatonicSide = 'flat' | 'sharp'
   export type PentatonicView = Readonly<{ rung: number; side: PentatonicSide }> // rung 0–6
   export type PentatonicRung = Readonly<{ rung: number; side: PentatonicSide | null; root: Spelled; name: string; shared: number }> // name: "E♭m"
-  export function sharedNotes(rootPc: number, pcs: ReadonlySet<number>): number
   export function pentatonicLadder(home: Spelled): readonly PentatonicRung[] // 12: Home, 1♭, 1♯, … 5♭, 5♯, 6
   export function pentatonicAt(ladder: readonly PentatonicRung[], view: PentatonicView): PentatonicRung
   export function isPentatonicView(v: unknown): v is PentatonicView
@@ -59,18 +174,13 @@
 ```ts
 // engine/src/__tests__/pentatonics.test.ts
 import { describe, expect, it } from 'vitest'
-import { isPentatonicView, pentatonicAt, pentatonicLadder, sharedNotes } from '../pentatonics'
+import { isPentatonicView, pentatonicAt, pentatonicLadder } from '../pentatonics'
 import { LETTERS, parseRoot, pcOf, type Spelled } from '../pitch'
 
 const names = (home: string) => pentatonicLadder(parseRoot(home)).map((r) => `${r.rung}${r.side === 'flat' ? '♭' : r.side === 'sharp' ? '♯' : ''} ${r.name} ${r.shared}`)
 const ugly = (n: Spelled) => Math.abs(n.acc) > 1 || ['B#', 'E#', 'Cb', 'Fb'].includes(LETTERS[n.letter] + (n.acc > 0 ? '#' : n.acc < 0 ? 'b' : ''))
 
 describe('pentatonic ladders', () => {
-  it('counts the notes a minor pentatonic shares with a scale', () => {
-    const cMajor = new Set([0, 2, 4, 5, 7, 9, 11])
-    expect([9, 2, 4, 7, 11, 0, 6, 5, 1, 10, 8, 3].map((pc) => sharedNotes(pc, cMajor))).toEqual([5, 5, 5, 4, 4, 3, 3, 2, 2, 1, 1, 0])
-  })
-
   it("ranks C major's ladder from Am, by fifths each side", () => {
     expect(names('A')).toEqual(['0 Am 5', '1♭ Dm 5', '1♯ Em 5', '2♭ Gm 4', '2♯ Bm 4', '3♭ Cm 3', '3♯ F♯m 3', '4♭ Fm 2', '4♯ C♯m 2', '5♭ B♭m 1', '5♯ G♯m 1', '6 E♭m 0'])
   })
@@ -125,8 +235,9 @@ Expected: FAIL, `Cannot find module '../pentatonics'`.
 
 ```ts
 // engine/src/pentatonics.ts
-import { glyphs, mod, pcOf, rootName, shiftBy, type Spelled } from './pitch'
-import { SCALES, simplifyRoot, spellFrom } from './scales'
+import { pitchClasses, sharedCount } from './ladder'
+import { glyphs, pcOf, rootName, shiftBy, type Spelled } from './pitch'
+import { SCALES, simplifyRoot } from './scales'
 
 /**
  * Pentatonic tension ladders (issue #255, docs/superpowers/specs/2026-10-13-pentatonic-ladders-design.md): a key's 12
@@ -139,22 +250,16 @@ export type PentatonicView = Readonly<{ rung: number; side: PentatonicSide }>
 /** one pentatonic on a key's ladder; name: its root and "m", with glyphs ("E♭m") */
 export type PentatonicRung = Readonly<{ rung: number; side: PentatonicSide | null; root: Spelled; name: string; shared: number }>
 
-const pcsOf = (root: Spelled, formula: string): Set<number> => new Set(spellFrom(root, formula).map((n) => mod(pcOf(root) + n.semis, 12)))
-const MINOR_PENT = SCALES['minor pentatonic'][0]
-
-/** how many of a minor pentatonic's notes on rootPc are in pcs */
-export function sharedNotes(rootPc: number, pcs: ReadonlySet<number>): number {
-  return [...pcsOf({ letter: 0, acc: 0 }, MINOR_PENT)].filter((pc) => pcs.has(mod(rootPc + pc, 12))).length
-}
+const MINOR_PENT = pitchClasses(SCALES['minor pentatonic'][0])
 
 const entry = (rung: number, side: PentatonicSide | null, walked: Spelled, scale: ReadonlySet<number>): PentatonicRung => {
   const root = simplifyRoot(walked, 'aeolian')
-  return { rung, side, root, name: glyphs(`${rootName(root)}m`), shared: sharedNotes(pcOf(root), scale) }
+  return { rung, side, root, name: glyphs(`${rootName(root)}m`), shared: sharedCount(MINOR_PENT, pcOf(root), scale) }
 }
 
 /** a key's ladder from its home (written for the part): Home, then 1♭, 1♯ … 5♭, 5♯, then 6 (both walks meet: the ♭ walk's) */
 export function pentatonicLadder(home: Spelled): readonly PentatonicRung[] {
-  const scale = pcsOf(home, SCALES.aeolian[0])
+  const scale = pitchClasses(SCALES.aeolian[0], pcOf(home))
   const out: PentatonicRung[] = [entry(0, null, home, scale)]
   let flat = home
   let sharp = home
@@ -183,12 +288,12 @@ Add to `engine/src/index.ts`, beside the other `export * from` lines: `export * 
 - [ ] **Step 4: Run to verify it passes**
 
 Run: `cd engine && npx vitest run src/__tests__/pentatonics.test.ts`
-Expected: PASS (8 tests). If the E major / A♭ major spelling test fails, print `names('C#')` and compare against the spec's §Spelling before changing either.
+Expected: PASS (7 tests). If the E major / A♭ major spelling test fails, print `names('C#')` and compare against the spec's §Spelling before changing either.
 
 - [ ] **Step 5: Update the API snapshot and run the engine suite**
 
 Run: `cd engine && npx vitest run -u src/__tests__/api.test.ts && git diff src/__tests__/__snapshots__/api.test.ts.snap`
-Expected: only the new names added (`isPentatonicView`, `pentatonicAt`, `pentatonicLadder`, `sharedNotes`).
+Expected: only the new names added (`isPentatonicView`, `pentatonicAt`, `pentatonicLadder`).
 Run: `make test` from the repo root. Expected: all green.
 
 - [ ] **Step 6: Commit**
@@ -202,7 +307,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ---
 
-### Task 2: Pentatonics in the Changes model
+### Task 3: Pentatonics in the Changes model
 
 **Files:**
 - Modify: `engine/src/changes.ts` (types near lines 22–55, `buildChanges` at line 133, `changesLinesPerPage` at line 112; add `showPentatonics`)
@@ -210,7 +315,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Modify (fixtures that build `ChangesChord` literals): `web/test/ChangesSystem.test.ts`, `web/test/changesDrawing.test.ts`
 
 **Interfaces:**
-- Consumes: `pentatonicLadder`, `pentatonicAt`, `PentatonicView`, `PentatonicRung` (Task 1).
+- Consumes: `pentatonicLadder`, `pentatonicAt`, `PentatonicView`, `PentatonicRung` (Task 2).
 - Produces:
   ```ts
   export type ChangesPentatonic = Readonly<{ label: string; key: string; ladder: readonly PentatonicRung[] }> // label "Gm♪"; key "B♭ major" (written)
@@ -341,7 +446,7 @@ In `engine/src/changes.ts`:
 - [ ] **Step 4: Fix fixtures that build `ChangesChord` literals**
 
 Run: `grep -rn "guide," web/test/ChangesSystem.test.ts web/test/changesDrawing.test.ts`
-In each `ChangesChord` literal (the `chord` helper in `web/test/ChangesSystem.test.ts` and any in `web/test/changesDrawing.test.ts`), add `pentatonic: null,` after `guide`. In `web/app/components/ChangesSystem.vue` lines 206 and 213 (the marker-only and slot marks), nothing yet: Task 5 adds the field to marks.
+In each `ChangesChord` literal (the `chord` helper in `web/test/ChangesSystem.test.ts` and any in `web/test/changesDrawing.test.ts`), add `pentatonic: null,` after `guide`. In `web/app/components/ChangesSystem.vue` lines 206 and 213 (the marker-only and slot marks), nothing yet: Task 6 adds the field to marks.
 
 - [ ] **Step 5: Run to verify**
 
@@ -359,7 +464,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ---
 
-### Task 3: Flag and preferences
+### Task 4: Flag and preferences
 
 **Files:**
 - Modify: `web/app/composables/useFeature.ts:5` (the `Feature` union)
@@ -441,7 +546,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ---
 
-### Task 4: Controls
+### Task 5: Controls
 
 **Files:**
 - Create: `web/app/utils/pentatonics.ts` (rung labels)
@@ -450,7 +555,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Test: `web/test/PreviewControls.test.ts` (create if absent; else add to it) and `web/test/pentatonics.test.ts`
 
 **Interfaces:**
-- Consumes: `pentatonics`, `pentRung`, `pentSide` refs (Task 3); `useFeature('pentatonics')`.
+- Consumes: `pentatonics`, `pentRung`, `pentSide` refs (Task 4); `useFeature('pentatonics')`.
 - Produces: `PreviewControls` models `v-model:pentatonics` (boolean), `v-model:pent-rung` (number), `v-model:pent-side` (`PentatonicSide`); `PENT_RUNGS: readonly { value: number; label: string }[]` and `PENT_SIDES` in `~/utils/pentatonics`.
 
 - [ ] **Step 1: Write the failing tests**
@@ -593,7 +698,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ---
 
-### Task 5: The label row and the ladder popover
+### Task 6: The label row and the ladder popover
 
 **Files:**
 - Create: `web/app/components/PentatonicLadder.vue`
@@ -603,7 +708,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 - Test: `web/test/PentatonicLadder.test.ts`, `web/test/ChangesSheet.test.ts`
 
 **Interfaces:**
-- Consumes: `ChangesChord.pentatonic: ChangesPentatonic | null` (`label === ''` means not printed), `showPentatonics`, `changesLinesPerPage(…, { pentatonics })` (Task 2); `PentatonicView`, `PentatonicRung` (Task 1); prefs (Task 3).
+- Consumes: `ChangesChord.pentatonic: ChangesPentatonic | null` (`label === ''` means not printed), `showPentatonics`, `changesLinesPerPage(…, { pentatonics })` (Task 3); `PentatonicView`, `PentatonicRung` (Task 2); prefs (Task 4).
 - Produces: `PentatonicLadder` props `{ label: string; keyName: string; ladder: readonly PentatonicRung[]; current: PentatonicView }`, emit `pick: [view: PentatonicView]`. `ChangesSystem` prop `pentatonic?: PentatonicView | null`, emit `pentatonic: [view: PentatonicView]`. `ChangesSheet` prop `pentatonic?: PentatonicView | null`, emit `pentatonic: [view: PentatonicView]`.
 
 - [ ] **Step 1: Write the failing tests**
@@ -768,7 +873,7 @@ Co-Authored-By: Claude Opus 5.5 <noreply@anthropic.com>"
 
 ---
 
-### Task 6: Browser tests, print, docs, follow-ups
+### Task 7: Browser tests, print, docs, follow-ups
 
 **Files:**
 - Create: `web/e2e/pentatonics.spec.ts`
@@ -860,7 +965,7 @@ test('prints the Changes eight lines a page with Numerals, Scales and Pentatonic
 - [ ] **Step 3: Run e2e**
 
 Run: `make e2e`
-Expected: all pass. **If the second print test fails** (8 lines + the row overflow a letter page), change `changesLinesPerPage`'s first line in `engine/src/changes.ts` to `if (line === 'off') return rows.pentatonics && rows.numerals && rows.scales ? 7 : 8`, update the Task 2 lines-per-page test's last expectation to `7`, add `expect(changesLinesPerPage('off', { numerals: true, scales: false, pentatonics: true })).toBe(8)`, rerun `make test` and `make e2e`, and update the spec's §Print to match.
+Expected: all pass. **If the second print test fails** (8 lines + the row overflow a letter page), change `changesLinesPerPage`'s first line in `engine/src/changes.ts` to `if (line === 'off') return rows.pentatonics && rows.numerals && rows.scales ? 7 : 8`, update the Task 3 lines-per-page test's last expectation to `7`, add `expect(changesLinesPerPage('off', { numerals: true, scales: false, pentatonics: true })).toBe(8)`, rerun `make test` and `make e2e`, and update the spec's §Print to match.
 
 - [ ] **Step 4: Golden check**
 
@@ -904,7 +1009,7 @@ File the four later phases as issues (each body links #255 and the spec's §Late
 ```bash
 gh issue create --label enhancement --title "Pentatonic ladders: section rungs and path presets" --body "Phase 2 of #255 (spec: docs/superpowers/specs/2026-10-13-pentatonic-ladders-design.md, Later phases 1). A rung per section (inside, climbing, outside, returning) and presets: side-slip home → outside → home, gradual by fifths, symmetric by minor or major thirds. Labels carry their shared count once it varies."
 gh issue create --label enhancement --title "Pentatonic ladders: tension contour and tint by rung" --body "Phase 3 of #255 (spec Later phases 2). A thin line along each Changes line showing the arc across the bars; labels tinted by rung. Needs section rungs first."
-gh issue create --label enhancement --title "Scales sheet: Tension practice preset" --body "From #255 (spec Later phases 3). Each distinct scale's pentatonic ladder as a practice highlight, ranked against the chord's scale (any scale; labelled by rank and shared count where the best match is under 5). Reuses engine/src/pentatonics.ts (sharedNotes)."
+gh issue create --label enhancement --title "Scales sheet: Tension practice preset" --body "From #255 (spec Later phases 3). Each distinct scale's pentatonic ladder as a practice highlight, ranked against the chord's scale (any scale; labelled by rank and shared count where the best match is under 5). Reuses engine/src/ladder.ts (rankTranspositions)."
 gh issue create --label enhancement --title "One layers menu for the Changes sheet" --body "From #255 open question 3 (spec Later phases 4). If the Analysis group gets crowded: one menu for guide tones, pentatonics, approach notes (#251) and enclosures (#252)."
 ```
 
