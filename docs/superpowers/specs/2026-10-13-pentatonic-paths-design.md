@@ -95,7 +95,7 @@ Per chart, in this browser (`storage.ts`), never in the chart or share links, un
 
 - With One rung: `Am♪`, as phase 1. With any other path the shared count follows: `B♭m♪ 1` (the count varies by
   section now). The count is in the label's `aria-label` already.
-- A label also prints at each section's first labelled chord (beside phase 1's line starts and changes).
+- A label prints at each section's first labelled chord: already so, since every section starts a line.
 - Width: the label still fits its chord's room, as the Scales row does.
 
 ### The popover
@@ -134,8 +134,8 @@ export type PentatonicPlan = Readonly<{ bySection: Readonly<Record<string, Penta
 
 - `buildChanges`'s last parameter becomes `pentatonic: PentatonicPlan | null = null`: each chord's view is its
   section's, else `fallback`. `counts` adds the shared count to the label. `null` changes nothing.
-- `ChangesPentatonic` gains `section` (the key) and `shared`.
-- `showPentatonics(lines)` also keeps the label at a section's first labelled chord.
+- `ChangesPentatonic` gains `section` (the key), `shared` and `view`.
+- `showPentatonics` is unchanged: every section starts a line, so its first label prints already.
 - `changesSections` and `buildChanges` share the block-building code, so they can't disagree.
 
 **App:** a composable `usePentatonicPath(slug, sections)` reads and writes `csm-pent-path:<slug>`, and gives the
