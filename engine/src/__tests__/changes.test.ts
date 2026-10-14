@@ -317,6 +317,58 @@ describe('scale labels', () => {
     expect(chords.map((c) => c.pentatonic?.chord)).toEqual(['A:1:0', 'A:1:1', 'B:2:0'])
     expect([chords[2]?.pentatonic?.title, chords[2]?.pentatonic?.level, chords[2]?.pentatonic?.rank, chords[2]?.pentatonic?.basis]).toEqual(['B · C major pentatonic ladder', 3, 0, 'key'])
   })
+
+  describe('picks', () => {
+    const C4 = 'title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | Cmaj7'
+    const keyPlan = (picks: Record<string, number> = {}): PentatonicPlan => ({ bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, picks })
+    const shown = (text: string, plan: PentatonicPlan, part = CONCERT) => flat(showPentatonics(buildChanges(parseChart(text).value, part, 4, false, 'off', undefined, plan).lines))
+
+    it('gives each printed label the run of chords it covers', () => {
+      expect(shown(C4, keyPlan()).map((c) => c.pentatonic?.run)).toEqual([['A:1:0', 'A:2:0', 'A:3:0', 'A:4:0'], [], [], []])
+    })
+
+    it('plays a picked pentatonic on its chords only, marks it, and turns the counts on', () => {
+      const chords = shown(C4, keyPlan({ 'A:2:0': 7, 'A:3:0': 7 })) // concert G: rung 2 flat of C major (home Am)
+      expect(chords.map((c) => c.pentatonic?.label)).toEqual(['Am♪ 5', 'Gm♪ 4', '', 'Am♪ 5'])
+      expect(chords.map((c) => c.pentatonic?.picked)).toEqual([false, true, true, false])
+      expect(chords[1]?.pentatonic?.view).toEqual({ rung: 2, side: 'flat' })
+      expect(chords[1]?.pentatonic?.run).toEqual(['A:2:0', 'A:3:0'])
+    })
+
+    it('reports a chord-basis pick’s own rank and shared on each chord', () => {
+      const plan: PentatonicPlan = { ...keyPlan({ 'A:1:0': 4, 'A:2:0': 4 }), basis: 'chord', rank: 1 } // Em on Cmaj7 and Dm7
+      const chords = shown(C4, plan)
+      expect(chords.slice(0, 2).map((c) => [c.pentatonic?.name, c.pentatonic?.rank, c.pentatonic?.shared, c.pentatonic?.picked])).toEqual([['Em', 3, 5, true], ['Em', 3, 5, true]])
+    })
+
+    it('keeps a pick’s sounding pentatonic on a transposed part', () => {
+      const chords = shown(C4, keyPlan({ 'A:1:0': 7 }), TENOR) // concert G, written A on a Bb part
+      expect([chords[0]?.pentatonic?.name, chords[0]?.pentatonic?.pc, chords[0]?.pentatonic?.picked]).toEqual(['Am', 7, true])
+    })
+
+    it('finds a pick in each chord’s own ladder across relative keys', () => {
+      const doc = 'title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Am7\n@key A 2 Am'
+      const chords = shown(doc, keyPlan({ 'A:1:0': 2, 'A:2:0': 2 })) // Dm: C major rung 1 flat, A minor rung 1 flat
+      expect(chords.map((c) => [c.pentatonic?.key, c.pentatonic?.name, c.pentatonic?.view.rung])).toEqual([['C major', 'Dm', 1], ['A minor', 'Dm', 1]])
+    })
+
+    it('ignores a stale pick: no counts, nothing picked', () => {
+      const chords = shown(C4, keyPlan({ 'Z:9:0': 7 }))
+      expect(chords.map((c) => c.pentatonic?.label)).toEqual(['Am♪', '', '', ''])
+      expect(chords.some((c) => c.pentatonic?.picked)).toBe(false)
+    })
+
+    it('ends a run at a chord with no pentatonic', () => {
+      const plan: PentatonicPlan = { ...keyPlan(), basis: 'chord', rank: 1 }
+      const chords = shown('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | N.C.\nA | 3 | Cmaj7', plan)
+      expect(chords.map((c) => c.pentatonic?.run ?? null)).toEqual([['A:1:0'], null, ['A:3:0']])
+    })
+
+    it('clamps the chord basis rank: 0, 2.5 and omitted give 1, 99 gives 12', () => {
+      const rankOf = (rank?: number) => shown('title: T\nkey: F\nA | 1 | Dm7', { ...keyPlan(), basis: 'chord', ...(rank === undefined ? {} : { rank }) })[0]?.pentatonic?.rank
+      expect([0, 2.5, undefined, 99].map(rankOf)).toEqual([1, 1, 1, 12])
+    })
+  })
 })
 
 describe('scales from the resolver', () => {

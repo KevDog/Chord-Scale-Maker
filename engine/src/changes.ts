@@ -20,9 +20,9 @@ import { chunk, orNull } from './util'
  * markers, and repeat signs for a @copy straight after its source. No DOM, like sheet.ts and guideTones.ts.
  */
 
-/** a chord's pentatonic (#255, #264, #272): its label, and what made it (the key area's ladder or its own scale's ranking) */
 export type ChordAt = string // `${section}:${bar}:${k}`: the drawn bar's at.section, at.bar, the chord's index in the bar
 export type PentatonicBasis = 'key' | 'chord'
+/** a chord's pentatonic (#255, #264, #272): its label, and what made it (the key area's ladder or its own scale's ranking) */
 export type ChangesPentatonic = Readonly<{
   label: string
   basis: PentatonicBasis
@@ -41,7 +41,7 @@ export type ChangesPentatonic = Readonly<{
   level: number // 0–6 (contour height, tint)
   pc: number // concert pitch class of root
   picked: boolean
-  run: readonly ChordAt[] // Task 2; [] until then
+  run: readonly ChordAt[] // a printed label's chord and the following ones it stands for; [] on an unprinted label
 }>
 /** a section the Changes sheet draws (a block): its key (its first section's name), its marker, its place in the form */
 export type ChangesSection = Readonly<{ key: string; marker: string; part: FormPart }>
@@ -52,7 +52,7 @@ export type PentatonicPlan = Readonly<{
   counts: boolean
   basis?: PentatonicBasis // default 'key'
   rank?: number // chord basis, 1–12, default 1
-  picks?: Readonly<Record<ChordAt, number>> // concert pc of a picked pentatonic's root (Task 2)
+  picks?: Readonly<Record<ChordAt, number>> // concert pc of a picked pentatonic's root
 }>
 /** a chord on a line: its bar's index in the line and its index in the bar */
 export type ChordRef = Readonly<{ bar: number; chord: number }>
@@ -197,32 +197,40 @@ export function breakLines(lines: readonly ChangesLine[], at: ReadonlySet<string
 const levelOf = (shared: number): number => (shared >= 5 ? 0 : 6 - shared)
 const clampRank = (rank: number | undefined): number => (Number.isInteger(rank) ? Math.min(Math.max(rank!, 1), PENTATONIC_RANKS) : 1)
 const flatChords = (lines: readonly ChangesLine[]): ChangesChord[] => lines.flatMap((l) => l.bars.flatMap((b) => b.chords))
-const mapPentatonics = (line: ChangesLine, f: (p: ChangesPentatonic) => ChangesPentatonic): ChangesLine => ({
-  ...line,
-  bars: line.bars.map((bar) => ({ ...bar, chords: bar.chords.map((c) => (c.pentatonic ? { ...c, pentatonic: f(c.pentatonic) } : c)) })),
-})
+const mapChords = (line: ChangesLine, f: (c: ChangesChord) => ChangesChord): ChangesLine => ({ ...line, bars: line.bars.map((bar) => ({ ...bar, chords: bar.chords.map(f) })) })
+const mapPentatonics = (line: ChangesLine, f: (p: ChangesPentatonic) => ChangesPentatonic): ChangesLine => mapChords(line, (c) => (c.pentatonic ? { ...c, pentatonic: f(c.pentatonic) } : c))
 
 /**
  * the pentatonic row as printed (#255), run after breakLines: a chord's label stays on a line's first labelled chord
  * and wherever it differs from the last one shown on the line (relative keys share a home: shown once); elsewhere
- * its label is '' (not printed), its key and ladder kept for nothing but the model's completeness
+ * its label is '' (not printed), its key and ladder kept for nothing but the model's completeness. A chord with no
+ * pentatonic ends the line's last shown label: the label after the gap prints again. A printed label's run (#272) is its
+ * chord and the following ones it stands for, to the next printed label, a chord with no pentatonic, or the line's end
  */
 export function showPentatonics(lines: readonly ChangesLine[]): readonly ChangesLine[] {
   return lines.map((line): ChangesLine => {
+    const all = line.bars.flatMap((b) => b.chords)
     let last: string | null = null // the label last shown on this line
-    const bars = line.bars.map((bar): ChangesBar => ({
-      ...bar,
-      chords: bar.chords.map((c): ChangesChord => {
-        if (!c.pentatonic) {
-          last = null // a gap: the label after it prints again
-          return c
-        }
-        const shown = c.pentatonic.label !== last
-        last = c.pentatonic.label
-        return shown ? c : { ...c, pentatonic: { ...c.pentatonic, label: '' } }
-      }),
-    }))
-    return { ...line, bars }
+    const printed = all.map((c) => {
+      if (!c.pentatonic) {
+        last = null
+        return false
+      }
+      const shown = c.pentatonic.label !== last
+      last = c.pentatonic.label
+      return shown
+    })
+    const runAt = (i: number): ChordAt[] => {
+      const out = [all[i]!.pentatonic!.chord]
+      for (let j = i + 1; j < all.length && all[j]!.pentatonic && !printed[j]; j++) out.push(all[j]!.pentatonic!.chord)
+      return out
+    }
+    let n = 0
+    return mapChords(line, (c) => {
+      const i = n++
+      if (!c.pentatonic) return c
+      return { ...c, pentatonic: printed[i] ? { ...c.pentatonic, run: runAt(i) } : { ...c.pentatonic, label: '' } }
+    })
   })
 }
 
@@ -391,7 +399,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         orNull(() => {
           const w = writtenScale(part, scale)
           const label = scaleLabel(part, scale)
-          return { entries: pentatonicRanking(new Set(w.notes.map((n) => mod(pcOf(w.root) + n.semis, 12))), writtenChordRootLenient(part, chordText, scale)), scaleName: glyphs(`${rootName(label.root)} ${label.name}`) }
+          return { entries: pentatonicRanking(new Set(w.notes.map((n) => mod(pcOf(w.root) + n.semis, 12))), orNull(() => writtenChordRootLenient(part, chordText, scale)) ?? w.root), scaleName: glyphs(`${rootName(label.root)} ${label.name}`) }
         }),
       )
     }
