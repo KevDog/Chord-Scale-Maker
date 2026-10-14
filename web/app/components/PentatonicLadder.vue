@@ -3,8 +3,8 @@
   <HPopover class="relative inline-block max-w-full">
     <HPopoverButton
       :aria-label="ariaLabel"
-      :class="['block cursor-pointer rounded-sm text-left underline underline-offset-[3px]', p.picked ? 'decoration-solid decoration-note-600' : 'decoration-dotted']"
-      class="decoration-note-500/60 hover:bg-note-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500 dark:decoration-note-300/60 dark:hover:bg-white/5 print:no-underline"
+      :class="['block cursor-pointer rounded-sm text-left underline underline-offset-[3px]', p.picked ? 'decoration-solid decoration-note-600 dark:decoration-note-300' : 'decoration-dotted decoration-note-500/60 dark:decoration-note-300/60']"
+      class="hover:bg-note-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500 dark:hover:bg-white/5 print:no-underline"
       @click="place"
     >{{ p.label }}</HPopoverButton>
     <HPopoverPanel v-slot="{ close }" role="dialog" :style="{ left: `${shift}px`, ...(pageZoom !== 1 ? { zoom: 1 / pageZoom } : {}) }" :aria-label="p.title" class="absolute top-full z-20 mt-2 w-64 rounded-paper bg-raised p-1.5 text-sm shadow-raised max-sm:w-[calc(100vw-2rem)] print:hidden">
