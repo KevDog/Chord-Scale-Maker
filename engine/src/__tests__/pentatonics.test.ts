@@ -135,6 +135,12 @@ describe('pentatonics ranked against any scale (#266)', () => {
     expect(far.lit.every((l) => !l)).toBe(true)
   })
 
+  it('reads a non-integer rank as 1 and clamps the rest to 1-12', () => {
+    const pcs = [...pitchClasses(SCALES['dorian'][0]!, pcOf(parseRoot('D')))]
+    const rank = (r: number) => pentatonicPick(pcs, parseRoot('D'), r).pentatonic.rank
+    expect([NaN, 2.5, 0, -3, 99].map(rank)).toEqual([1, 1, 1, 1, 12])
+  })
+
   it('reports a best match under 5 on scales a pentatonic can’t fit', () => {
     const wt = [...on('whole tone', 'C')]
     expect(pentatonicPick(wt, parseRoot('C'), 1).pentatonic.best).toBe(3)

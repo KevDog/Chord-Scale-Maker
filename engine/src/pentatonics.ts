@@ -113,7 +113,7 @@ export type StaffPentatonic = Readonly<{ name: string; rank: number; shared: num
 /** the pentatonic at `rank` against a staff's notes (their pitch classes, in order), and which notes it lights */
 export function pentatonicPick(pcs: readonly number[], chordRoot: Spelled, rank: number): Readonly<{ pentatonic: StaffPentatonic; lit: boolean[] }> {
   const ranked = pentatonicRanking(new Set(pcs), chordRoot)
-  const at = ranked[Math.min(Math.max(rank, 1), PENTATONIC_RANKS) - 1]!
+  const at = ranked[(Number.isInteger(rank) ? Math.min(Math.max(rank, 1), PENTATONIC_RANKS) : 1) - 1]!
   const shape = pitchClasses(SCALES['minor pentatonic'][0]!, pcOf(at.root))
   return { pentatonic: { name: at.name, rank: at.rank, shared: at.shared, best: ranked[0]!.shared }, lit: pcs.map((pc) => shape.has(pc)) }
 }

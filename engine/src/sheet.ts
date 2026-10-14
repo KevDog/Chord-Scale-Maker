@@ -105,7 +105,7 @@ function practiceFor(
   if (isPentatonicSelection(practice)) {
     const chordRoot = orNull(() => writtenChordRootLenient(part, row.chord, scale)) ?? scaleLabel(part, scale).root
     const { pentatonic, lit } = pentatonicPick(notes.map((n) => pcOf(n)), chordRoot, practice.rank)
-    return { keys, selected: keys ? lit : null, pentatonic }
+    return { keys, selected: lit, pentatonic }
   }
   return { keys, selected: practice && keys ? selectedNotes(practice, row.chord, keys) : null, pentatonic: null }
 }

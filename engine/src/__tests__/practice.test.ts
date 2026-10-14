@@ -174,6 +174,12 @@ describe('the Pentatonic preset on the Scales sheet (#266)', () => {
     expect(s?.pentatonic?.name).toBe('Dm')
   })
 
+  it('still lights what the caption names when the reference can’t be read', () => {
+    const [s] = staves([row('Xq7', 'D Dorian')], 'root', pent(1))
+    expect(s?.keys).toBeNull()
+    expect(s?.selected?.filter(Boolean)).toHaveLength(5)
+  })
+
   it('reports a best under 5 on a whole-tone staff', () => {
     expect(staves([row('C7#5', 'C Whole Tone')], 'root', pent(1))[0]?.pentatonic?.best).toBe(3)
   })

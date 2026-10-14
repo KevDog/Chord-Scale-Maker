@@ -378,7 +378,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   shared like any pick). Each staff ranks the 12 minor pentatonics against its own scale (`pentatonicRanking`: most
   shared, then fewest fifths from the written chord root, ♭ side first), lights the scale notes the one at that rank
   shares (`pentatonicPick`) and captions the staff (`Dm pent`; `F♯m pent · #2 · 3 shared` where the best shares
-  under 5). In print the caption is `text-xs leading-none`, so 12 staves still fit a page. Spec:
+  under 5). In print the caption is 10px on one line, so 12 staves still fit a page. Spec:
   docs/superpowers/specs/2026-10-14-pentatonic-practice-design.md.
 - **Highlighting:** `drawStaff` tags each note's group `vf-selected` or `vf-dimmed`, and `main.css` colours them:
   on screen, picked notes keep the staff's ink in light mode (as the clef) and take the accent in dark mode, while
