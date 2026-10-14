@@ -151,25 +151,6 @@
         <PentatonicLadder class="print:hidden" :p="m.p" @pick="emit('pentatonic', m.p.run, $event)" @reset="emit('pentatonic', m.p.run, null)" />
       </span>
     </div>
-    <!-- the tension contour (#265): the line's rung as a step line, Home low, 6 high, with a riser from the line before; drawn when the sheet counts (a path, chord basis or a pick) -->
-    <div v-if="contour && counted" data-slot="contour" aria-hidden="true" class="relative h-3 print:h-2">
-      <svg class="absolute inset-0 size-full overflow-visible" viewBox="0 0 1000 60" preserveAspectRatio="none">
-        <line
-          v-for="(s, i) in contourLines"
-          :key="i"
-          :data-kind="s.kind"
-          :data-rung="s.rung"
-          :x1="s.x1"
-          :x2="s.x2"
-          :y1="s.y1"
-          :y2="s.y2"
-          :class="[RUNG_TINT[s.rung], '[stroke-width:1.5] print:[stroke-width:1]']"
-          stroke="currentColor"
-          stroke-linecap="round"
-          vector-effect="non-scaling-stroke"
-        />
-      </svg>
-    </div>
     <!-- a full last line: the ghost bar as a pill under it -->
     <div v-if="editing !== undefined && ghost?.full" data-slot="after" class="flex justify-end pt-1 print:hidden">
       <button type="button" :class="[GHOST, 'h-6 px-2']" :aria-label="`Add a bar at the end of ${ghost.section}`" @click="emit('addBar', ghost.section)">+ bar</button>
@@ -179,7 +160,7 @@
 </template>
 
 <script setup lang="ts">
-import { barKey, type ChangesLine, type ChartDoc, type ChordAt, type ChordPreview, type ChordRef, CONCERT, type ContourLine, type GridPos, type PentatonicPlan, rowNotes, sheetScale } from '@chord-scale-maker/engine'
+import { barKey, type ChangesLine, type ChartDoc, type ChordAt, type ChordPreview, CONCERT, type GridPos, type PentatonicPlan, rowNotes, sheetScale } from '@chord-scale-maker/engine'
 import { drawChangesLine, type NamedBeat } from '~/utils/changesDrawing'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
@@ -205,8 +186,7 @@ const props = defineProps<{
   preview?: ChordPreview | null // the reading of the draft in the open field, shown under its chord
   focusAt?: SheetFocus | null // a chord the editor wants focus on (its field closed with nowhere to go)
   pentatonic?: PentatonicPlan | null // the Pentatonics row's rungs; null/undefined: no row
-  counted?: boolean // the sheet's pentatonics count (tints, contour)
-  contour?: ContourLine | null // the line's tension contour (#265); null/undefined: no band
+  counted?: boolean // the sheet's pentatonics count (tints)
 }>()
 const emit = defineEmits<{
   tap: [chord: SheetChordEdit] // a chord tapped, for the chord editor dialog
@@ -255,27 +235,9 @@ const marks = computed(() => {
 })
 /** the marks that print a pentatonic label (#255) */
 const pentatonicMarks = computed(() => marks.value.flatMap((m) => (m.pentatonic?.label ? [{ key: m.key, x: m.x, room: m.room, p: m.pentatonic }] : [])))
-/** the rung tints (#265), spelled out so Tailwind sees them */
+/** the rung tints (#265, #277), spelled out so Tailwind sees them; the label's shared count says the same without colour */
 const RUNG_TINT = ['text-rung-0', 'text-rung-1', 'text-rung-2', 'text-rung-3', 'text-rung-4', 'text-rung-5', 'text-rung-6'] as const
 const tint = (rung: number): string => (props.counted ? (RUNG_TINT[rung] ?? '') : '')
-/** a rung's height in the band's 1000 × 60 box: Home on the bottom, 6 on the top, inset for the stroke */
-const rungY = (rung: number): number => 54 - rung * 8
-/** the contour's strokes (#265): each run from its first chord to the next chord (or the line's end), a step where two runs meet, the entry riser */
-const contourLines = computed(() => {
-  const c = props.contour
-  if (!c || !props.counted) return []
-  const chords = marks.value.filter((m) => !m.slot && m.line >= 0)
-  const at = (r: ChordRef) => chords.findIndex((m) => m.barIndex === r.bar && m.k === r.chord)
-  const runs = c.runs.flatMap((run) => {
-    const start = at(run.from)
-    const end = at(run.to)
-    if (start < 0 || end < 0) return []
-    return [{ rung: run.rung, x1: Math.round((chords[start]?.x ?? 0) * 1000), x2: Math.round((chords[end + 1]?.x ?? 1) * 1000) }]
-  })
-  const steps = runs.slice(1).flatMap((r, i) => (runs[i]!.x2 === r.x1 && runs[i]!.rung !== r.rung ? [{ kind: 'step', rung: r.rung, x1: r.x1, x2: r.x1, y1: rungY(runs[i]!.rung), y2: rungY(r.rung) }] : []))
-  const riser = c.entry !== null && runs[0] ? [{ kind: 'riser', rung: runs[0].rung, x1: runs[0].x1, x2: runs[0].x1, y1: rungY(c.entry), y2: rungY(runs[0].rung) }] : []
-  return [...runs.map((r) => ({ kind: 'run', ...r, y1: rungY(r.rung), y2: rungY(r.rung) })), ...steps, ...riser]
-})
 /** the bar's last chord, when the new chord slot follows it with no beat left in the bar: the slot goes after its name */
 const crowded = computed((): string | null => {
   const e = props.editing

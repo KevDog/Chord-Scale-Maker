@@ -508,14 +508,13 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   (Outside)`) and Side (♭ | ♯, hidden at 0 and 6) under it; `csm-pentatonics`, `csm-pent-rung`, `csm-pent-side`, not in
   share links. Each label is a `PentatonicLadder` popover: the area's ladder, a pick covers that label's run (see Picks).
 - **Paths** (#264, #276, [spec](superpowers/specs/2026-10-13-pentatonic-paths-design.md), [steps](superpowers/specs/2026-10-14-pentatonic-path-steps-design.md)): Path listbox: One rung (Rung + Side, as before), Side-slip, Fifths, Minor thirds, Major thirds. A preset cycles from Home one step a unit (`pentatonicCycle`): Step by Section (each form section), Key area (each run of one key area; a revisit takes the next step) or Bars (every 2, 4 or 8 bars of the form, through section breaks); outside the form, Home. `buildChanges` lays it over the units (`PentatonicPlan.path`/`step`) and names it in the Changes subtitle (`ChangesSheet.pentatonicCaption`). A pick in a label's ladder doesn't change the path (see Picks); a stored Custom still plays its sections. Per chart, with its step: `csm-pent-path:<slug>` (`usePentatonicPath`). Labels carry the shared count (`B♭m♪ 1`) off One rung.
-- **Contour and tint** (#265, [spec](superpowers/specs/2026-10-13-pentatonic-contour-design.md)): off One rung, labels take
-  their rung's tint (`--color-rung-0…6`, Home muted → 6 red-orange; dark values on screen only) and a band under the row
-  draws the rung as a step line (`pentatonicContour`: runs of one rung per line, a gap where no key, a riser from the
-  previous line's rung). The band prints and costs no line a page: `changesLinesPerPage` is unchanged (measured with it
-  drawn on Stardust, tuba, From 7th).
+- **Tint** (#265, #277): off One rung, labels take their rung's tint (`--color-rung-0…6`, Home slate → 6 rust; dark
+  values on screen only), ordered by lightness (darker each rung on light paper, brighter on dark) so the ramp reads
+  without hue. The shared count printed after each label (and in its accessible name) is the non-colour cue, so there
+  is no rung-number setting. The contour band #265 drew under the row was removed (#277); triad pairs (#262) follow.
 - **Ranked against** (#272, [spec](superpowers/specs/2026-10-14-pentatonic-per-chord-design.md)): Key (the area's
   ladder, as above) or Chord (each chord ranks the 12 against its own scale, `pentatonicRanking`, at one Rank 1-12 for
-  the sheet; counts, tints and the contour by shared count, `level`). Preferences `csm-pent-basis`, `csm-pent-rank`.
+  the sheet; counts and tints by shared count, `level`). Preferences `csm-pent-basis`, `csm-pent-rank`.
 - **Picks** (#272): a label's popover pick covers its `run` (that chord and those its label stands for), stored as
   the concert root per drawn chord (`ChordAt`) in `csm-pent-picks:<slug>`; cleared by any change of Path, Rung, Side,
   Step, Rank, basis or the chart's key; Reset in the popover. A pick no longer makes the path Custom (a stored Custom still plays).

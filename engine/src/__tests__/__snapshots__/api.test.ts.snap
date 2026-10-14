@@ -163,7 +163,6 @@ exports[`exports the same names 1`] = `
   "pcOf",
   "pentatonicAt",
   "pentatonicCaption",
-  "pentatonicContour",
   "pentatonicCycle",
   "pentatonicLadder",
   "pentatonicPathCaption",

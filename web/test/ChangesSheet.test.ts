@@ -142,45 +142,38 @@ describe('ChangesSheet', () => {
   })
 })
 
-describe('ChangesSheet pentatonic contour (#265)', () => {
+describe('ChangesSheet pentatonic tints, no contour band (#265, #277)', () => {
   const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Cmaj7\nA | 3 | Cmaj7').value
-  const plan = (counts: boolean): PentatonicPlan => ({ bySection: counts ? { B: { rung: 5, side: 'flat' } } : {}, fallback: { rung: 0, side: 'flat' }, counts })
+  const plan: PentatonicPlan = { bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
 
-  it('gives each line its contour, with the riser carried across lines', async () => {
-    const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: true, scales: true, pentatonic: plan(true) } })
-    const bands = w.findAll('[data-slot="contour"]')
-    expect(bands).toHaveLength(3)
-    expect(bands.map((b) => b.findAll('line[data-kind="riser"]').length)).toEqual([0, 1, 1])
-  })
-
-  it('has no band with One rung', async () => {
-    const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: true, scales: true, pentatonic: plan(false) } })
+  it('tints the labels by rung and draws no band, the shared count carrying the rung without colour', async () => {
+    const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: true, scales: true, pentatonic: plan } })
     expect(w.find('[data-slot="contour"]').exists()).toBe(false)
+    const b = w.find('[data-slot="pentatonic"] [data-section="B"]')
+    expect(b.classes()).toContain('text-rung-5')
+    expect(b.text()).toMatch(/♪ 1$/)
   })
 })
 
-describe('ChangesSheet chord-basis contour (#272)', () => {
+describe('ChangesSheet chord-basis tints (#272)', () => {
   const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | Cmaj7').value
   const base = { bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, rank: 12 } as const
   const mountPlan = (pentatonic: PentatonicPlan) => mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: false, scales: false, pentatonic } })
   const hasRungLabel = (w: Awaited<ReturnType<typeof mountPlan>>) => w.findAll('[data-slot="pentatonic"] [data-chord]').some((e) => /text-rung-/.test(e.classes().join(' ')))
 
-  it('draws the band and tints on the chord basis', async () => {
+  it('tints on the chord basis', async () => {
     const w = await mountPlan({ ...base, basis: 'chord' })
-    expect(w.find('[data-slot="contour"]').exists()).toBe(true)
     expect(hasRungLabel(w)).toBe(true)
   })
 
-  it('draws neither on the key basis without picks', async () => {
+  it('does not tint on the key basis without picks', async () => {
     const w = await mountPlan({ ...base, basis: 'key' })
-    expect(w.find('[data-slot="contour"]').exists()).toBe(false)
     expect(hasRungLabel(w)).toBe(false)
   })
 
-  it('draws both on the key basis with a pick', async () => {
+  it('tints on the key basis with a pick', async () => {
     const at = buildChanges(doc, CONCERT, 4, false, 'off', undefined, { ...base, basis: 'chord' }).lines[0]!.bars[0]!.chords[0]!.pentatonic!.chord
     const w = await mountPlan({ ...base, basis: 'key', picks: { [at]: 0 } })
-    expect(w.find('[data-slot="contour"]').exists()).toBe(true)
     expect(hasRungLabel(w)).toBe(true)
   })
 })

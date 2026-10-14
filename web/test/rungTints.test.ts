@@ -31,6 +31,15 @@ describe('rung tints (#265)', () => {
     for (const c of tints(screenDark)) expect(contrast(c, PAPER.dark)).toBeGreaterThanOrEqual(4.5)
   })
 
+  it('orders the rungs by lightness, so the ramp reads without hue (#277): darker outward on the light paper, brighter on the dark', () => {
+    const light = tints(theme).map(luminance)
+    const dark = tints(screenDark).map(luminance)
+    for (let i = 1; i < 7; i++) {
+      expect(light[i], `light rung ${i}`).toBeLessThan(light[i - 1]! * 0.9)
+      expect(dark[i], `dark rung ${i}`).toBeGreaterThan(dark[i - 1]! * 1.1)
+    }
+  })
+
   it('keeps the dark tints off the page in print (print is light)', () => {
     expect(css).toMatch(/@media screen \{\s*html\.dark \{[^}]*--color-rung-0/)
     const print = [...css.matchAll(/@media print \{([\s\S]*?)\n\}/g)].map((m) => m[1]).join('\n')

@@ -150,11 +150,11 @@ test('prints the Changes seven lines a page with Numerals, Scales and Pentatonic
 async function sideSlip(page: Page): Promise<void> {
   await page.getByRole('button', { name: 'Pentatonic path' }).click()
   await page.getByRole('option', { name: 'Side-slip' }).click()
-  await expect(page.locator('[data-slot="contour"]').first()).toBeAttached()
+  await expect(page.locator('[data-slot="pentatonic"] [class*="text-rung-"]').first()).toBeAttached()
 }
 
-// the contour band (#265) under Numerals, Scales and Pentatonics, with a guide tone line on the tuba: the tallest case
-test('prints the Changes with a guide tone line and the pentatonic contour, a sheet page to a letter page', async ({ page }) => {
+// Numerals, Scales and counted Pentatonics, with a guide tone line on the tuba: the tallest case
+test('prints the Changes with a guide tone line and a pentatonic path, a sheet page to a letter page', async ({ page }) => {
   await page.goto('/song/stardust')
   await chooseInstrument(page, 'Tuba')
   await showGuides(page, 'From 7th')
@@ -168,7 +168,7 @@ test('prints the Changes with a guide tone line and the pentatonic contour, a sh
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
 })
 
-test('prints the Changes with the pentatonic contour and no line, a sheet page to a letter page', async ({ page }) => {
+test('prints the Changes with a pentatonic path and no line, a sheet page to a letter page', async ({ page }) => {
   await page.goto('/song/stardust')
   await chooseSheet(page, 'Changes')
   await showPentatonics(page)
