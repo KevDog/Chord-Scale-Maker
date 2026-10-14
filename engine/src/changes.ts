@@ -20,8 +20,12 @@ import { chunk, orNull } from './util'
  * markers, and repeat signs for a @copy straight after its source. No DOM, like sheet.ts and guideTones.ts.
  */
 
-/** a chord's key-area pentatonic at the player's rung (issue #255): the label, the area's key and its whole ladder, written for the part */
-export type ChangesPentatonic = Readonly<{ label: string; key: string; ladder: readonly PentatonicRung[] }>
+/** a chord's key-area pentatonic at its section's rung (#255, #264): the label, the area's key, its whole ladder, and the section, view and shared count behind the label */
+export type ChangesPentatonic = Readonly<{ label: string; key: string; ladder: readonly PentatonicRung[]; section: string; view: PentatonicView; shared: number }>
+/** a section the Changes sheet draws (a block): its key (its first section's name), its marker, its place in the form */
+export type ChangesSection = Readonly<{ key: string; marker: string; part: FormPart }>
+/** the pentatonic row's rungs (#264): a section's own view, else fallback; counts: the shared count follows each label */
+export type PentatonicPlan = Readonly<{ bySection: Readonly<Record<string, PentatonicView>>; fallback: PentatonicView; counts: boolean }>
 
 export type ChangesChord = Readonly<{
   /** the beat it starts on, from 0 */
@@ -173,8 +177,64 @@ export function showPentatonics(lines: readonly ChangesLine[]): readonly Changes
   })
 }
 
-/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only */
-export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: SheetLine = 'off', view: ScaleView = STANDARD, pentatonic: PentatonicView | null = null): ChangesSheet {
+type TimelineEvent = ReturnType<typeof guideToneTimeline>['events'][number]
+type Timing = Readonly<{ eventAt: ReadonlyMap<number, TimelineEvent>; barOf: (i: number) => number | undefined; totalBars: number }>
+function timing(rows: readonly LinedRow[], events: readonly TimelineEvent[], beats: number): Timing {
+  const index = new Map<LinedRow, number>(rows.map((r, i) => [r, i]))
+  const eventAt = new Map(events.map((e) => [index.get(e.row as LinedRow) ?? -1, e]))
+  const barOf = (i: number): number | undefined => {
+    const e = eventAt.get(i)
+    return e ? Math.floor(e.start / beats) : undefined
+  }
+  const totalBars = Math.ceil(events.reduce((m, e) => Math.max(m, e.start + e.beats), 0) / beats)
+  return { eventAt, barOf, totalBars }
+}
+
+/** the blocks the sheet draws: runs of rows in a section, a @copy straight after its source folded into it as a repeat */
+function drawnBlocks(doc: ChartDoc, rows: readonly LinedRow[], t: Timing, sectionsWithEndings: ReadonlySet<string>): Run[] {
+  // runs of rows in one section; a run whose rows come from another section's lines is a @copy of it
+  const runs: Run[] = []
+  rows.forEach((r, i) => {
+    const source = doc.lines[r.line]
+    const copyOf = source?.kind === 'row' && source.section !== r.section ? source.section : null
+    const last = runs.at(-1)
+    if (last && last.section === r.section) last.rows.push(i)
+    else runs.push({ section: r.section, part: formPart(r.section), rows: [i], copyOf, from: 0, to: 0, times: 1, marker: r.section })
+  })
+  runs.forEach((run, k) => {
+    run.from = t.barOf(run.rows[0] ?? 0) ?? 0
+    const next = runs[k + 1]
+    run.to = (next ? (t.barOf(next.rows[0] ?? 0) ?? t.totalBars) : t.totalBars) - 1
+  })
+
+  // a copy straight after its source (or after the source's earlier repeats) is a repeat; a later one is written out
+  const blocks: Run[] = []
+  for (const run of runs) {
+    const prev = blocks.at(-1)
+    const contiguous = prev && run.from === prev.to + 1 + (prev.to - prev.from + 1) * (prev.times - 1)
+    if (run.copyOf && prev && prev.section === run.copyOf && contiguous && run.to - run.from === prev.to - prev.from && !sectionsWithEndings.has(run.section) && !sectionsWithEndings.has(prev.section)) {
+      prev.times++
+      prev.marker = `${prev.marker} · ${run.section}`
+      continue
+    }
+    if (run.copyOf) run.marker = `${run.section} (= ${run.copyOf})`
+    if (run.part === 'after' && /^(coda|ending)/i.test(run.section)) run.marker = `${run.section} (after the last chorus)`
+    blocks.push(run)
+  }
+  return blocks
+}
+
+/** the sections the Changes sheet draws, in order: a repeat drawn once (A1 · A2) or a section with endings is one (#264) */
+export function changesSections(doc: ChartDoc): readonly ChangesSection[] {
+  const rows = expandRowLines(doc).value
+  const beats = chartBeats(doc)
+  const t = timing(rows, guideToneTimeline(rows, beats).events, beats)
+  const withEndings = new Set(doc.lines.flatMap((l) => (l.kind === 'ending' ? [l.section] : [])))
+  return drawnBlocks(doc, rows, t, withEndings).map((b) => ({ key: b.section, marker: b.marker, part: b.part }))
+}
+
+/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; pentatonic: the row's rungs by section (null: no row) */
+export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: SheetLine = 'off', view: ScaleView = STANDARD, pentatonic: PentatonicPlan | null = null): ChangesSheet {
   const rows = expandRowLines(doc).value
   const beats = chartBeats(doc)
   const { events, diagnostics } = guideToneTimeline(rows, beats)
@@ -183,13 +243,8 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const keySig = signatures ? keySignature(chartKeyOf(doc), part) : null
   const byRow = new Map(analysis.rows.map((r) => [r.row, r]))
   const problemAt = new Map(analysis.problems.map((p) => [p.line, p.message]))
-  const index = new Map<LinedRow, number>(rows.map((r, i) => [r, i]))
-  const eventAt = new Map(events.map((e) => [index.get(e.row as LinedRow) ?? -1, e]))
-  const barOf = (i: number): number | undefined => {
-    const e = eventAt.get(i)
-    return e ? Math.floor(e.start / beats) : undefined
-  }
-  const totalBars = Math.ceil(events.reduce((m, e) => Math.max(m, e.start + e.beats), 0) / beats)
+  const t = timing(rows, events, beats)
+  const { eventAt, barOf } = t
 
   // directives read straight from doc.lines (like the @copy detection), keyed by section + written bar
   const rowKey = (section: string, bar: number | string): string => `${section}|${bar}`
@@ -230,35 +285,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     }
   }
 
-  // runs of rows in one section; a run whose rows come from another section's lines is a @copy of it
-  const runs: Run[] = []
-  rows.forEach((r, i) => {
-    const source = doc.lines[r.line]
-    const copyOf = source?.kind === 'row' && source.section !== r.section ? source.section : null
-    const last = runs.at(-1)
-    if (last && last.section === r.section) last.rows.push(i)
-    else runs.push({ section: r.section, part: formPart(r.section), rows: [i], copyOf, from: 0, to: 0, times: 1, marker: r.section })
-  })
-  runs.forEach((run, k) => {
-    run.from = barOf(run.rows[0] ?? 0) ?? 0
-    const next = runs[k + 1]
-    run.to = (next ? (barOf(next.rows[0] ?? 0) ?? totalBars) : totalBars) - 1
-  })
-
-  // a copy straight after its source (or after the source's earlier repeats) is a repeat; a later one is written out
-  const blocks: Run[] = []
-  for (const run of runs) {
-    const prev = blocks.at(-1)
-    const contiguous = prev && run.from === prev.to + 1 + (prev.to - prev.from + 1) * (prev.times - 1)
-    if (run.copyOf && prev && prev.section === run.copyOf && contiguous && run.to - run.from === prev.to - prev.from && !sectionsWithEndings.has(run.section) && !sectionsWithEndings.has(prev.section)) {
-      prev.times++
-      prev.marker = `${prev.marker} · ${run.section}`
-      continue
-    }
-    if (run.copyOf) run.marker = `${run.section} (= ${run.copyOf})`
-    if (run.part === 'after' && /^(coda|ending)/i.test(run.section)) run.marker = `${run.section} (after the last chorus)`
-    blocks.push(run)
-  }
+  const blocks = drawnBlocks(doc, rows, t, sectionsWithEndings)
 
   // guide tones, as a line over the rows as drawn (a folded repeat is drawn once, so it's voiced once), before the
   // lines are cut, so the pitches don't depend on how many bars a line holds. Holds start afresh at each block and
@@ -284,11 +311,14 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     line === 'off' ? null : isArpeggioPattern(line) ? { ...arpeggioVoices(drawn(), part, beats, keySig, line), labels: new Map() } : guideVoices(drawn(), part, beats, keySig, line)
 
   const ladders = new Map<string, ReturnType<typeof areaLadder>>()
-  const pentatonicOf = (name: string | undefined): ChangesPentatonic | null => {
+  const pentatonicOf = (name: string | undefined, section: string): ChangesPentatonic | null => {
     if (!pentatonic || !name) return null
     if (!ladders.has(name)) ladders.set(name, areaLadder(name, part))
     const area = ladders.get(name)
-    return area ? { label: `${pentatonicAt(area.ladder, pentatonic).name}♪`, key: area.key, ladder: area.ladder } : null
+    if (!area) return null
+    const view = (Object.hasOwn(pentatonic.bySection, section) ? pentatonic.bySection[section] : undefined) ?? pentatonic.fallback
+    const p = pentatonicAt(area.ladder, view)
+    return { label: `${p.name}♪${pentatonic.counts ? ` ${p.shared}` : ''}`, key: area.key, ladder: area.ladder, section, view, shared: p.shared }
   }
 
   let lastKey = ''
@@ -320,7 +350,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             heardIn: a ? keyName((a.statedKey ?? a.key).name, part) : '',
             keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',
             guide: voices?.labels.get(i) ?? '',
-            pentatonic: pentatonicOf(a?.key.name),
+            pentatonic: pentatonicOf(a?.key.name, block.section),
           }
         })
       const firstKey = block.rows.map((i) => byRow.get(i)).find((a) => a && barOf(a.row) === bar)?.key.name

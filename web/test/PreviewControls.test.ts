@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import PreviewControls from '~/components/PreviewControls.vue'
 
 const mount = (props: Record<string, unknown> = {}) =>
-  mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'concert', spell: 'key', intervals: true, keyStart: 'C', pentatonics: false, pentRung: 0, pentSide: 'flat', ...props } })
+  mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'concert', spell: 'key', intervals: true, keyStart: 'C', pentatonics: false, pentRung: 0, pentSide: 'flat', pentPath: 'one', ...props } })
 
 describe('the pentatonic controls', () => {
   afterEach(() => (useRuntimeConfig().public.features.pentatonics = false))
@@ -21,6 +21,19 @@ describe('the pentatonic controls', () => {
     expect(home.text()).not.toContain('♯')
     const two = await mount({ pentatonics: true, pentRung: 2 })
     expect(two.text()).toContain('♯')
+  })
+
+  it('offers the paths, Custom only while current, and Rung and Side only with One rung', async () => {
+    useRuntimeConfig().public.features.pentatonics = true
+    const one = await mount({ pentatonics: true, pentPath: 'one' })
+    expect(one.find('[aria-label="Pentatonic path"]').exists()).toBe(true)
+    expect(one.find('[aria-label="Pentatonic rung"]').exists()).toBe(true)
+    const slip = await mount({ pentatonics: true, pentPath: 'side-slip', pentRung: 2 })
+    expect(slip.find('[aria-label="Pentatonic rung"]').exists()).toBe(false)
+    expect(slip.find('[aria-label="Pentatonic side"]').exists()).toBe(false)
+    expect(slip.find('[aria-label="Pentatonic path"]').text()).toContain('Side-slip')
+    const custom = await mount({ pentatonics: true, pentPath: 'custom' })
+    expect(custom.find('[aria-label="Pentatonic path"]').text()).toContain('Custom')
   })
 
   it('keeps the toggle while editing, when Numerals and Scales hide', async () => {

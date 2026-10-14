@@ -1,7 +1,8 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
+import { flushPromises } from '@vue/test-utils'
 import ChangesSystem from '~/components/ChangesSystem.vue'
-import { type ChangesBar, type ChangesChord, type ChangesLine, type GuideNote, type Letter, parseChart } from '@chord-scale-maker/engine'
+import { buildChanges, type ChangesBar, type ChangesChord, type ChangesLine, type GuideNote, type Letter, CONCERT, parseChart, showPentatonics } from '@chord-scale-maker/engine'
 
 vi.mock('~/utils/changesDrawing', async (importOriginal) => ({
   ...(await importOriginal<typeof import('~/utils/changesDrawing')>()),
@@ -221,5 +222,22 @@ describe('ChangesSystem as the editor', () => {
     const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line() } })
     await w.find('button').trigger('click')
     expect(w.emitted('tap')?.[0]?.[0]).toMatchObject({ line: 2, section: 'A', bar: '1' })
+  })
+})
+
+describe('ChangesSystem pentatonic ladders', () => {
+  it('opens a label’s ladder at its section’s rung, and a pick names the section', async () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Cmaj7').value
+    const plan = { bySection: { B: { rung: 5, side: 'flat' as const } }, fallback: { rung: 0, side: 'flat' as const }, counts: true }
+    const line = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)[1]!
+    const w = await mountSuspended(ChangesSystem, { props: { line, first: true, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, pentatonic: plan }, attachTo: document.body })
+    const label = w.find('[data-slot="pentatonic"] [data-section="B"] button')
+    expect(label.text()).toBe('B♭m♪ 1')
+    await label.trigger('click')
+    await flushPromises()
+    expect(w.find('[aria-current="true"]').text()).toBe('B♭m')
+    await w.findAll('[data-pent]').find((p) => p.text() === 'Gm')?.trigger('click')
+    expect(w.emitted('pentatonic')?.[0]).toEqual(['B', { rung: 2, side: 'flat' }])
+    w.unmount()
   })
 })

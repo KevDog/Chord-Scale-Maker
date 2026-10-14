@@ -1,3 +1,4 @@
+import type { FormPart } from './chart'
 import { pitchClasses, sharedCount } from './ladder'
 import { glyphs, pcOf, rootName, shiftBy, type Spelled } from './pitch'
 import { SCALES, simplifyRoot } from './scales'
@@ -46,4 +47,43 @@ export const isPentatonicView = (v: unknown): v is PentatonicView => {
   if (typeof v !== 'object' || v === null) return false
   const { rung, side } = v as Partial<PentatonicView>
   return Number.isInteger(rung) && rung! >= 0 && rung! <= 6 && (side === 'flat' || side === 'sharp')
+}
+
+/** how a chart's sections take their rungs (#264): one rung for all, a preset laid over the form, or edited by hand */
+export type PentatonicPathName = 'one' | 'side-slip' | 'fifths' | 'minor-thirds' | 'major-thirds' | 'custom'
+export const PENTATONIC_PATHS: readonly PentatonicPathName[] = ['one', 'side-slip', 'fifths', 'minor-thirds', 'major-thirds', 'custom']
+export const isPentatonicPathName = (v: unknown): v is PentatonicPathName => typeof v === 'string' && (PENTATONIC_PATHS as readonly string[]).includes(v)
+export const PENTATONIC_HOME: PentatonicView = { rung: 0, side: 'flat' }
+/** a section of the Changes sheet as a preset sees it: its key (the block's section) and whether it is in the form */
+export type PentatonicSection = Readonly<{ key: string; part: FormPart }>
+
+/** the rung and side of the pentatonic `semitones` above home: 7s mod 12 fifths, ♯ side up to 6, ♭ side past it */
+export function pentatonicStep(semitones: number): PentatonicView {
+  const d = (((7 * semitones) % 12) + 12) % 12
+  if (d === 0) return PENTATONIC_HOME
+  if (d === 6) return { rung: 6, side: 'flat' }
+  return d < 6 ? { rung: d, side: 'sharp' } : { rung: 12 - d, side: 'flat' }
+}
+
+/**
+ * each section's view under a preset (none for 'one' or 'custom'). The form's sections take roles by position:
+ * the first is inside and the last returning (both Home), the one before last outside, any between climbing; with
+ * two, inside and outside. Sections outside the form are Home. The thirds presets step section i by i thirds.
+ */
+export function pentatonicPreset(path: PentatonicPathName, sections: readonly PentatonicSection[]): Readonly<Record<string, PentatonicView>> {
+  if (path === 'one' || path === 'custom') return {}
+  const form = sections.filter((s) => s.part === 'form').map((s) => s.key)
+  const n = form.length
+  const outside = n === 2 ? 1 : n - 2
+  const climbers = Math.max(0, n - 3)
+  const viewAt = (i: number): PentatonicView => {
+    if (i === 0 || (n >= 3 && i === n - 1)) return PENTATONIC_HOME
+    if (path === 'minor-thirds') return pentatonicStep(3 * i)
+    if (path === 'major-thirds') return pentatonicStep(4 * i)
+    if (i === outside) return path === 'side-slip' ? pentatonicStep(1) : { rung: 6, side: 'flat' }
+    if (path === 'side-slip') return PENTATONIC_HOME
+    return { rung: Math.round((6 * i) / (climbers + 1)), side: 'sharp' } // climber i of climbers (i = 1 … climbers)
+  }
+  const views = new Map(form.map((key, i) => [key, viewAt(i)]))
+  return Object.fromEntries(sections.map((s) => [s.key, views.get(s.key) ?? PENTATONIC_HOME]))
 }

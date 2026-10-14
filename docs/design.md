@@ -494,7 +494,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   row, 6 with any row, 5 with all three (the 5 and 7 measured on Stardust, tuba, From 7th).
 - **UI:** a Pentatonics toggle in Analysis (it stays while editing), Rung (`Home · 5 shared` … `6 · 0 shared
   (Outside)`) and Side (♭ | ♯, hidden at 0 and 6) under it; `csm-pentatonics`, `csm-pent-rung`, `csm-pent-side`, not in
-  share links. Each label is a `PentatonicLadder` popover: the area's ladder, a pick sets the sheet's rung and side.
+  share links. Each label is a `PentatonicLadder` popover: the area's ladder, a pick sets its section's rung and side.
+- **Paths** (#264, [spec](superpowers/specs/2026-10-13-pentatonic-paths-design.md)): a rung per section (a block as drawn, keyed by its first section). Path listbox: One rung (Rung + Side, as before), Side-slip, Fifths, Minor thirds, Major thirds; a preset fills every section by role (`pentatonicPreset`), a pick in a label's ladder sets its section and makes the path Custom. Per chart: `csm-pent-path:<slug>` (`usePentatonicPath`). Labels carry the shared count (`B♭m♪ 1`) off One rung.
 
 ### Shared
 
