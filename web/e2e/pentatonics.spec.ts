@@ -111,3 +111,15 @@ test('the Pentatonic practice preset ranks each scale’s pentatonics, remembers
   const pdf = await page.pdf({ format: 'Letter' })
   expect((pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length).toBe(2) // 14 lines, 12 a page, as without the caption
 })
+
+test('in print the longest pentatonic captions stay on one line', async ({ page }) => {
+  await page.goto('/song/all-the-things-you-are')
+  await chooseSheet(page, 'Scales')
+  await pickOption(page, 'Where each scale starts', 'From root')
+  await page.locator('fieldset', { hasText: 'Practice' }).getByRole('button', { name: 'Pentatonic', exact: true }).click()
+  await page.emulateMedia({ media: 'print' })
+  const long = page.locator('[data-slot="pentatonic"]', { hasText: 'shared' })
+  expect(await long.count()).toBeGreaterThan(0)
+  const wrapped = await long.evaluateAll((els) => els.filter((el) => el.getBoundingClientRect().height > 1.5 * parseFloat(getComputedStyle(el).fontSize)).length)
+  expect(wrapped).toBe(0)
+})
