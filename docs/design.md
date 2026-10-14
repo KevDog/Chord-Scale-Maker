@@ -496,6 +496,11 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   (Outside)`) and Side (♭ | ♯, hidden at 0 and 6) under it; `csm-pentatonics`, `csm-pent-rung`, `csm-pent-side`, not in
   share links. Each label is a `PentatonicLadder` popover: the area's ladder, a pick sets its section's rung and side.
 - **Paths** (#264, [spec](superpowers/specs/2026-10-13-pentatonic-paths-design.md)): a rung per section (a block as drawn, keyed by its first section). Path listbox: One rung (Rung + Side, as before), Side-slip, Fifths, Minor thirds, Major thirds; a preset fills every section by role (`pentatonicPreset`), a pick in a label's ladder sets its section and makes the path Custom. Per chart: `csm-pent-path:<slug>` (`usePentatonicPath`). Labels carry the shared count (`B♭m♪ 1`) off One rung.
+- **Contour and tint** (#265, [spec](superpowers/specs/2026-10-13-pentatonic-contour-design.md)): off One rung, labels take
+  their rung's tint (`--color-rung-0…6`, Home muted → 6 red-orange; dark values on screen only) and a band under the row
+  draws the rung as a step line (`pentatonicContour`: runs of one rung per line, a gap where no key, a riser from the
+  previous line's rung). The band prints and costs no line a page: `changesLinesPerPage` is unchanged (measured with it
+  drawn on Stardust, tuba, From 7th).
 
 ### Shared
 

@@ -150,6 +150,7 @@ exports[`exports the same names 1`] = `
   "partFor",
   "pcOf",
   "pentatonicAt",
+  "pentatonicContour",
   "pentatonicLadder",
   "pentatonicPreset",
   "pentatonicStep",

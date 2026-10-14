@@ -26,6 +26,12 @@ export type ChangesPentatonic = Readonly<{ label: string; key: string; ladder: r
 export type ChangesSection = Readonly<{ key: string; marker: string; part: FormPart }>
 /** the pentatonic row's rungs (#264): a section's own view, else fallback; counts: the shared count follows each label */
 export type PentatonicPlan = Readonly<{ bySection: Readonly<Record<string, PentatonicView>>; fallback: PentatonicView; counts: boolean }>
+/** a chord on a line: its bar's index in the line and its index in the bar */
+export type ChordRef = Readonly<{ bar: number; chord: number }>
+/** chords in a row, across bars, at one rung (`to` inclusive) */
+export type ContourRun = Readonly<{ from: ChordRef; to: ChordRef; rung: number }>
+/** a line's tension contour (#265): its runs, and the rung the line before ended on where this one starts on another */
+export type ContourLine = Readonly<{ entry: number | null; runs: readonly ContourRun[] }>
 
 export type ChangesChord = Readonly<{
   /** the beat it starts on, from 0 */
@@ -133,11 +139,14 @@ function areaLadder(name: string, part: Part): Readonly<{ ladder: readonly Penta
  * - a guide tone or arpeggio line: 5 with all three rows, 6 with any row, 7 with none.
  * Notes, stems and the label row take more height. Measured over the library in every transposition at letter width,
  * with a page's tallest lines (an ending raised over the stems); the 5 and 7 were measured on Stardust (tuba, From
- * 7th), the documented worst case, and print.spec checks it.
+ * 7th), the documented worst case, and print.spec checks it. The pentatonic contour band (#265) costs no line, so this
+ * function takes no contour option: measured with the band drawn on Stardust, all three rows give 7 (no line) and 5 (a
+ * line), and one more line spills; with Pentatonics plus Numerals or Scales, 8 and 6 hold.
  */
 export function changesLinesPerPage(line: SheetLine, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean }>): number {
-  if (line === 'off') return rows.pentatonics && rows.numerals && rows.scales ? 7 : 8
-  if (rows.pentatonics && rows.numerals && rows.scales) return 5
+  const all = !!(rows.pentatonics && rows.numerals && rows.scales)
+  if (line === 'off') return all ? 7 : 8
+  if (all) return 5
   return 6 + (!rows.numerals && !rows.scales && !rows.pentatonics ? 1 : 0)
 }
 
@@ -174,6 +183,27 @@ export function showPentatonics(lines: readonly ChangesLine[]): readonly Changes
       }),
     }))
     return { ...line, bars }
+  })
+}
+
+/**
+ * the tension contour (#265), run on the lines as drawn: each line's runs of one rung (a chord with no pentatonic is a
+ * gap; blanked labels still have their view), and its entry, the previous line's last rung where this line's first
+ * chord sits on another
+ */
+export function pentatonicContour(lines: readonly ChangesLine[]): readonly ContourLine[] {
+  let before: number | null = null // the rung the previous line ended on; null: a gap, or no line yet
+  return lines.map((line): ContourLine => {
+    const rungs = line.bars.flatMap((bar, b) => bar.chords.map((c, k) => ({ at: { bar: b, chord: k }, rung: c.pentatonic?.view.rung ?? null })))
+    const runs = rungs.reduce<ContourRun[]>((acc, { at, rung }, i) => {
+      if (rung === null) return acc
+      const last = acc.at(-1)
+      return last && last.rung === rung && rungs[i - 1]?.rung === rung ? [...acc.slice(0, -1), { ...last, to: at }] : [...acc, { from: at, to: at, rung }]
+    }, [])
+    const first = rungs[0]?.rung ?? null
+    const entry = before !== null && first !== null && first !== before ? before : null
+    before = rungs.at(-1)?.rung ?? null
+    return { entry, runs }
   })
 }
 

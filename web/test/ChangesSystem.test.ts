@@ -2,11 +2,11 @@ import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import ChangesSystem from '~/components/ChangesSystem.vue'
-import { buildChanges, type ChangesBar, type ChangesChord, type ChangesLine, type GuideNote, type Letter, CONCERT, parseChart, showPentatonics } from '@chord-scale-maker/engine'
+import { buildChanges, type ChangesBar, type ChangesChord, type ChangesLine, type GuideNote, type Letter, CONCERT, parseChart, type PentatonicPlan, pentatonicContour, showPentatonics } from '@chord-scale-maker/engine'
 
 vi.mock('~/utils/changesDrawing', async (importOriginal) => ({
   ...(await importOriginal<typeof import('~/utils/changesDrawing')>()),
-  drawChangesLine: () => ({ xs: [[0.1, 0.3, 0.5, 0.7]], ends: [0.25], scales: [] }),
+  drawChangesLine: () => ({ xs: [0, 1, 2, 3].map((b) => [0.1, 0.3, 0.5, 0.7].map((x) => (b === 0 ? x : b * 0.25 + x / 4))), ends: [0.25, 0.5, 0.75, 1], scales: [] }),
 }))
 mockNuxtImport('loadVexFlow', () => () => Promise.resolve({}))
 
@@ -238,6 +238,55 @@ describe('ChangesSystem pentatonic ladders', () => {
     expect(w.find('[aria-current="true"]').text()).toBe('B♭m')
     await w.findAll('[data-pent]').find((p) => p.text() === 'Gm')?.trigger('click')
     expect(w.emitted('pentatonic')?.[0]).toEqual(['B', { rung: 2, side: 'flat' }])
+    w.unmount()
+  })
+
+  const mountLine = async (text: string, plan: PentatonicPlan, index: number, editing?: unknown, gapBar?: number) => {
+    const built = showPentatonics(buildChanges(parseChart(text).value, CONCERT, 4, false, 'off', undefined, plan).lines)
+    const lines = gapBar === undefined ? built : built.map((l) => ({ ...l, bars: l.bars.map((b, i) => (i === gapBar ? { ...b, chords: b.chords.map((c) => ({ ...c, pentatonic: null })) } : b)) }))
+    const contour = plan.counts ? pentatonicContour(lines)[index] : null
+    return mountSuspended(ChangesSystem, { props: { line: lines[index]!, first: index === 0, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, pentatonic: plan, contour, ...(editing ? { editing } : {}) }, attachTo: document.body })
+  }
+  const slip: PentatonicPlan = { bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
+  const AB = 'title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Dm7\nB | 2 | G7\nB | 3 | Cmaj7'
+
+  it('tints a label by its rung, and draws its line’s contour with a riser from the line before', async () => {
+    const w = await mountLine(AB, slip, 1)
+    expect(w.find('[data-slot="pentatonic"] [data-section="B"]').classes()).toContain('text-rung-5')
+    const band = w.find('[data-slot="contour"]')
+    expect(band.attributes('aria-hidden')).toBe('true')
+    const runs = band.findAll('line[data-kind="run"]')
+    expect(runs.map((r) => r.attributes('data-rung'))).toEqual(['5'])
+    expect(Number(runs[0]!.attributes('x2'))).toBe(1000)
+    const riser = band.find('line[data-kind="riser"]')
+    expect([riser.attributes('data-rung'), riser.attributes('y1'), riser.attributes('y2')]).toEqual(['5', '54', '14'])
+    w.unmount()
+  })
+
+  it('draws no band and no tint with One rung', async () => {
+    const one: PentatonicPlan = { bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false }
+    const w = await mountLine(AB, one, 0)
+    expect(w.find('[data-slot="contour"]').exists()).toBe(false)
+    expect(w.find('[data-slot="pentatonic"] [data-section]').classes().some((c) => c.startsWith('text-rung-'))).toBe(false)
+    w.unmount()
+  })
+
+  it('ends a run at the next chord across a held bar, and the new-chord slot does not end it', async () => {
+    const text = 'title: T\nkey: C\nA | 1 | Cmaj7\nA | 3 | N.C.\nA | 4 | Cmaj7'
+    const w = await mountLine(text, slip, 0, { kind: 'slot', section: 'A', bar: '1' }, 2)
+    const runs = w.findAll('[data-slot="contour"] line[data-kind="run"]')
+    expect(runs).toHaveLength(2)
+    const [a, b] = runs.map((r) => [Number(r.attributes('x1')), Number(r.attributes('x2'))])
+    expect(a![1]).toBeGreaterThan(400)
+    expect(a![1]).toBe(Math.round((2 * 0.25 + 0.1 / 4 - 0.012) * 1000)) // stops at the N.C. chord in bar 3, where the gap is
+    expect(a![1]).toBeLessThanOrEqual(b![0]!)
+    w.unmount()
+  })
+
+  it('keeps an empty band on a line with no pentatonic, so row heights match', async () => {
+    const w = await mountLine('title: T\nkey: C\nA | 1 | Cmaj7', slip, 0, undefined, 0)
+    expect(w.find('[data-slot="contour"]').exists()).toBe(true)
+    expect(w.findAll('[data-slot="contour"] line')).toHaveLength(0)
     w.unmount()
   })
 })
