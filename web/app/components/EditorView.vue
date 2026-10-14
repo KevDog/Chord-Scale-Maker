@@ -116,6 +116,8 @@
             v-model:pentatonics="prefs.pentatonics.value"
             v-model:pent-rung="prefs.pentRung.value"
             v-model:pent-side="prefs.pentSide.value"
+            v-model:pent-basis="prefs.pentBasis.value"
+            v-model:pent-rank="prefs.pentRank.value"
             v-model:pent-path="pentPathModel"
             v-model:line-mode="prefs.lineMode.value"
             v-model:guide-line="prefs.guideLine.value"

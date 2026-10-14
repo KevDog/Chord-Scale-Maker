@@ -49,8 +49,14 @@
                   <ToggleButton v-model="numerals" title="Each chord's Roman numeral in its key">Numerals</ToggleButton>
                   <ToggleButton v-model="scaleNames" title="Each chord's scale, under its numeral">Scales</ToggleButton>
                 </div>
-                <ToggleButton v-if="pentatonicsOn" v-model="pentatonics" class="whitespace-nowrap" title="Each key area's minor pentatonic, at a rung of its tension ladder: one for the sheet, or a path through the form">Pentatonics</ToggleButton>
+                <ToggleButton v-if="pentatonicsOn" v-model="pentatonics" class="whitespace-nowrap" title="Each key area's or each chord's minor pentatonic, ranked by how far out it is">Pentatonics</ToggleButton>
                 <div v-if="pentatonicsOn && pentatonics" class="flex flex-col items-start gap-2">
+                  <SegmentedControl v-model="pentBasis" legend="Ranked against" name="pent-basis" aria-label="Pentatonics ranked against" :options="PENT_BASES" />
+                  <UiListbox v-if="pentBasis === 'chord'" v-model="pentRank" class="w-48" aria-label="Pentatonic rank">
+                    <template #selected="{ value }"><UiListboxLabel>{{ rankLabel(value) }}</UiListboxLabel></template>
+                    <UiListboxOption v-for="r in PENT_RANK_CHOICES" :key="r.value" :value="r.value"><UiListboxLabel>{{ r.label }}</UiListboxLabel></UiListboxOption>
+                  </UiListbox>
+                  <template v-else>
                   <UiListbox v-model="pentPath" class="w-48" aria-label="Pentatonic path">
                     <template #selected="{ value }"><UiListboxLabel>{{ pathLabel(value) }}</UiListboxLabel></template>
                     <UiListboxOption v-for="p in pathChoices" :key="p.value" :value="p.value"><UiListboxLabel>{{ p.label }}</UiListboxLabel></UiListboxOption>
@@ -61,6 +67,7 @@
                     <UiListboxOption v-for="r in PENT_RUNGS" :key="r.value" :value="r.value"><UiListboxLabel>{{ r.label }}</UiListboxLabel></UiListboxOption>
                   </UiListbox>
                   <SegmentedControl v-if="sideShown(pentRung)" v-model="pentSide" legend="Side" name="pent-side" aria-label="Pentatonic side" :options="PENT_SIDES" />
+                  </template>
                   </template>
                 </div>
               </div>
@@ -123,8 +130,8 @@
 </template>
 
 <script setup lang="ts">
-import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, partFor, type PentatonicPathName, type PentatonicSide } from '@chord-scale-maker/engine'
-import { PENT_PATHS, PENT_RUNGS, PENT_SIDES, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
+import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, partFor, type PentatonicBasis, type PentatonicPathName, type PentatonicSide } from '@chord-scale-maker/engine'
+import { PENT_BASES, PENT_PATHS, PENT_RANK_CHOICES, PENT_RUNGS, PENT_SIDES, pathLabel, rankLabel, rungLabel, sideShown } from '~/utils/pentatonics'
 import type { GuideFrom, LineMode } from '~/utils/sheetLine'
 import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
 import type { SheetKind } from '~/utils/sheets'
@@ -142,6 +149,8 @@ const scaleNames = defineModel<boolean>('scaleNames', { default: true })
 const pentatonics = defineModel<boolean>('pentatonics', { default: false })
 const pentRung = defineModel<number>('pentRung', { default: 0 })
 const pentSide = defineModel<PentatonicSide>('pentSide', { default: 'flat' })
+const pentBasis = defineModel<PentatonicBasis>('pentBasis', { default: 'key' })
+const pentRank = defineModel<number>('pentRank', { default: 1 })
 const pentPath = defineModel<PentatonicPathName>('pentPath', { default: 'one' })
 const pathChoices = computed(() => PENT_PATHS.filter((p) => p.value !== 'custom' || pentPath.value === 'custom'))
 const pentatonicsOn = useFeature('pentatonics')

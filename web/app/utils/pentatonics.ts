@@ -1,4 +1,4 @@
-import type { PentatonicPathName, PentatonicSide } from '@chord-scale-maker/engine'
+import { PENTATONIC_RANKS, type PentatonicBasis, type PentatonicPathName, type PentatonicSide } from '@chord-scale-maker/engine'
 
 /** the Pentatonics row's controls (#255): rung 0–6 with the notes it shares with the key, and the side */
 export const PENT_RUNGS = [
@@ -28,3 +28,11 @@ export const PENT_PATHS: readonly { value: PentatonicPathName; label: string }[]
   { value: 'custom', label: 'Custom' },
 ]
 export const pathLabel = (p: PentatonicPathName): string => PENT_PATHS.find((x) => x.value === p)?.label ?? ''
+
+/** what the Pentatonics row ranks against (#272): the key area's ladder, or each chord's own scale */
+export const PENT_BASES: readonly { value: PentatonicBasis; label: string; title: string }[] = [
+  { value: 'key', label: 'Key', title: 'One pentatonic per key area, on its tension ladder' },
+  { value: 'chord', label: 'Chord', title: 'Each chord’s own pentatonic, ranked against its scale' },
+]
+export const rankLabel = (r: number): string => (r === 1 ? '1 · closest' : r === PENTATONIC_RANKS ? `${r} · farthest` : String(r))
+export const PENT_RANK_CHOICES = Array.from({ length: PENTATONIC_RANKS }, (_, i) => ({ value: i + 1, label: rankLabel(i + 1) }))

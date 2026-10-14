@@ -29,6 +29,7 @@
 </template>
 
 <script setup lang="ts">
+import { rankLabel } from '~/utils/pentatonics'
 import { compareKeys, isPentatonicSelection, type Mode, noteText, PENTATONIC_RANKS, type PracticeBox, type PracticeSelection, type Preset, PRESET_LABELS, PRESETS } from '@chord-scale-maker/engine'
 
 /**
@@ -51,7 +52,6 @@ const startName = computed(() => noteText(props.startText))
 
 const presets = computed(() => PRESETS[props.mode].filter((p) => p !== 'pentatonic' || props.pentatonic))
 const RANKS = Array.from({ length: PENTATONIC_RANKS }, (_, i) => i + 1)
-const rankLabel = (r: number): string => (r === 1 ? '1 · closest' : r === PENTATONIC_RANKS ? `${r} · farthest` : String(r))
 
 function pickPreset(p: Preset): void {
   if (activePreset.value === p) emit('update:selection', null)

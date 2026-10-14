@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { PENT_PATHS, PENT_RUNGS, PENT_SIDES, pathLabel, sideShown } from '~/utils/pentatonics'
+import { PENT_BASES, PENT_PATHS, PENT_RANK_CHOICES, PENT_RUNGS, PENT_SIDES, pathLabel, rankLabel, sideShown } from '~/utils/pentatonics'
 
 describe('pentatonic controls', () => {
   it('labels the rungs with their shared notes', () => {
@@ -14,5 +14,11 @@ describe('pentatonic controls', () => {
   it('names the paths', () => {
     expect(PENT_PATHS.map((p) => p.label)).toEqual(['One rung', 'Side-slip', 'Fifths', 'Minor thirds', 'Major thirds', 'Custom'])
     expect(pathLabel('minor-thirds')).toBe('Minor thirds')
+  })
+
+  it('offers Key | Chord and twelve ranks, closest and farthest named', () => {
+    expect(PENT_BASES.map((b) => b.value)).toEqual(['key', 'chord'])
+    expect(PENT_RANK_CHOICES.map((r) => r.label)).toEqual(['1 · closest', '2', '3', '4', '5', '6', '7', '8', '9', '10', '11', '12 · farthest'])
+    expect(rankLabel(1)).toBe('1 · closest')
   })
 })
