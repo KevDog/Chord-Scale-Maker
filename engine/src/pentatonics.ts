@@ -20,7 +20,7 @@ const entry = (rung: number, side: PentatonicSide | null, walked: Spelled, scale
   return { rung, side, root, name: glyphs(`${rootName(root)}m`), shared: sharedCount(MINOR_PENT, pcOf(root), scale) }
 }
 
-/** a key's ladder from its home (written for the part): Home, then 1♭, 1♯ … 5♭, 5♯, then 6 (both walks meet: the ♭ walk's) */
+/** a key's ladder from its home (written for the part): Home, then 1♭, 1♯ … 5♭, 5♯, then 6 (both walks reach the same pitch class, spelled differently: the ♭ walk's spelling) */
 export function pentatonicLadder(home: Spelled): readonly PentatonicRung[] {
   const scale = pitchClasses(SCALES.aeolian[0], pcOf(home))
   const out: PentatonicRung[] = [entry(0, null, home, scale)]

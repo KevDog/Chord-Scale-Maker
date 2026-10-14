@@ -135,6 +135,15 @@ describe('the Changes sheet', () => {
     expect([chord?.pentatonic?.label, chord?.pentatonic?.key, chord?.pentatonic?.ladder.length]).toEqual(['Bm♪', 'D major', 12])
   })
 
+  it('spells the title from the ladder’s Home, so a transposed minor area and its Home agree', () => {
+    const minor = parseChart('title: T\nkey: Bm\nA | 1 | Bm7').value
+    const bar = buildChanges(minor, TENOR, 4, false, 'off', undefined, { rung: 0, side: 'flat' }).lines[0]?.bars[0]
+    expect([bar?.chords[0]?.pentatonic?.key, bar?.chords[0]?.pentatonic?.label, bar?.keyArea]).toEqual(['C♯ minor', 'C♯m♪', 'C♯ minor'])
+    const major = parseChart('title: T\nkey: C#\nA | 1 | C#maj7').value
+    const [chord] = buildChanges(major, CONCERT, 4, false, 'off', undefined, { rung: 0, side: 'flat' }).lines[0]?.bars[0]?.chords ?? []
+    expect([chord?.pentatonic?.key, chord?.pentatonic?.label]).toEqual(['D♭ major', 'B♭m♪'])
+  })
+
   it('does not repeat the label across relative keys, but each chord keeps its own area’s key', () => {
     const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Am7\n@key A 2 Am').value
     const lines = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, { rung: 0, side: 'flat' }).lines)

@@ -98,7 +98,7 @@ function keyName(name: string, part: Part): string {
   const k = parseKey(name.replace(/ major$/, '').replace(/ minor$/, 'm'))
   const root = /^[A-G][b#]?/.exec(name)?.[0]
   if (!k || !root) return glyphs(name)
-  return glyphs(`${rootName(writtenRoot(part, parseRoot(root)))} ${k.minor ? 'minor' : 'major'}`)
+  return glyphs(`${rootName(writtenRoot(part, parseRoot(root), k.minor ? 'aeolian' : 'ionian'))} ${k.minor ? 'minor' : 'major'}`)
 }
 
 /** a scale as the sheet labels it: its root written for the part (♭/♯ glyphs), the long words shortened; null for none */
@@ -108,21 +108,28 @@ export const sheetScale = (part: Part, scale: string | null): string | null => {
   return label ? glyphs(`${rootName(label.root)} ${abbreviateScale(label.name)}`) : scale
 }
 
-/** a key area's ladder, written for the part: home is its tonic minor (a major key's relative minor) */
-function areaLadder(name: string, part: Part): readonly PentatonicRung[] | null {
+/**
+ * a key area's ladder, written for the part, with the key it is named by: home is the tonic minor (a major key's
+ * relative minor), and the key is spelled from that home so the title and the ladder's Home always agree
+ */
+function areaLadder(name: string, part: Part): Readonly<{ ladder: readonly PentatonicRung[]; key: string }> | null {
   const root = /^[A-G][b#]?/.exec(name)?.[0]
   if (!root) return null
+  const minor = / minor$/.test(name)
   const tonic = parseRoot(root)
-  const home = / minor$/.test(name) ? tonic : shiftBy(tonic, 5, 9) // a major 6th up: the relative minor
-  return pentatonicLadder(writtenRoot(part, home, 'aeolian'))
+  const home = minor ? tonic : shiftBy(tonic, 5, 9) // a major 6th up: the relative minor
+  const ladder = pentatonicLadder(writtenRoot(part, home, 'aeolian'))
+  const homeRoot = ladder[0]!.root
+  return { ladder, key: glyphs(minor ? `${rootName(homeRoot)} minor` : `${rootName(shiftBy(homeRoot, 2, 3))} major`) } // a minor third above home
 }
 
 /**
- * Changes lines on a printed page: 8 with no guide tones (a 32-bar AABA, one section a line pair, with its numerals
- * and scales), whatever rows are shown, but 7 with numerals, scales and pentatonics all shown (5 with a line too). Notes, stems and the label row take more height, so with a guide tone or arpeggio line
- * and numerals or scales shown it's 6, and one more with both rows off: measured over the library in every
- * transposition at letter width, with a page's tallest lines (an ending raised over the stems). print.spec checks the
- * worst case. The pentatonic row counts as a row, like numerals or scales.
+ * Changes lines on a printed page, one rule a line:
+ * - no guide line: 8, or 7 with numerals, scales and pentatonics all shown;
+ * - a guide tone or arpeggio line: 5 with all three rows, 6 with any row, 7 with none.
+ * Notes, stems and the label row take more height. Measured over the library in every transposition at letter width,
+ * with a page's tallest lines (an ending raised over the stems); the 5 and 7 were measured on Stardust (tuba, From
+ * 7th), the documented worst case, and print.spec checks it.
  */
 export function changesLinesPerPage(line: SheetLine, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean }>): number {
   if (line === 'off') return rows.pentatonics && rows.numerals && rows.scales ? 7 : 8
@@ -276,12 +283,12 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const voices: { bars: ReadonlyMap<number, readonly GuideNote[]>; labels: ReadonlyMap<number, string>; missing: readonly string[] } | null =
     line === 'off' ? null : isArpeggioPattern(line) ? { ...arpeggioVoices(drawn(), part, beats, keySig, line), labels: new Map() } : guideVoices(drawn(), part, beats, keySig, line)
 
-  const ladders = new Map<string, readonly PentatonicRung[] | null>()
+  const ladders = new Map<string, ReturnType<typeof areaLadder>>()
   const pentatonicOf = (name: string | undefined): ChangesPentatonic | null => {
     if (!pentatonic || !name) return null
     if (!ladders.has(name)) ladders.set(name, areaLadder(name, part))
-    const ladder = ladders.get(name)
-    return ladder ? { label: `${pentatonicAt(ladder, pentatonic).name}♪`, key: keyName(name, part), ladder } : null
+    const area = ladders.get(name)
+    return area ? { label: `${pentatonicAt(area.ladder, pentatonic).name}♪`, key: area.key, ladder: area.ladder } : null
   }
 
   let lastKey = ''
