@@ -219,3 +219,14 @@ export async function showPentatonics(page: Page): Promise<void> {
     }).toPass({ timeout: 10_000 })
   })
 }
+
+/** choose Ranked against: Chord (inside Controls on a phone), retried: a click before hydration is lost */
+export async function rankedAgainstChord(page: Page): Promise<void> {
+  await inControls(page, async () => {
+    const radio = page.getByRole('radio', { name: 'Chord', exact: true })
+    await expect(async () => {
+      if (!(await radio.isChecked())) await page.locator('label').filter({ has: radio }).click({ timeout: 1000 })
+      await expect(radio).toBeChecked({ timeout: 1000 })
+    }).toPass({ timeout: 10_000 })
+  })
+}

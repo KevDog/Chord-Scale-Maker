@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { arpeggiosDrawn, chooseInstrument, chooseSheet, drawn, expect, guidesDrawn, inControls, pickOption, showArpeggios, showGuides, showPentatonics, staves, test } from './fixtures'
+import { arpeggiosDrawn, chooseInstrument, chooseSheet, drawn, expect, guidesDrawn, pickOption, rankedAgainstChord, showArpeggios, showGuides, showPentatonics, staves, test } from './fixtures'
 
 const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length
 
@@ -123,11 +123,7 @@ test('prints the Changes with a guide tone line and the Pentatonics row ranked a
   await chooseInstrument(page, 'Tuba')
   await showGuides(page, 'From 7th')
   await showPentatonics(page)
-  await inControls(page, async () => {
-    const radio = page.getByRole('radio', { name: 'Chord', exact: true })
-    await page.locator('label').filter({ has: radio }).click()
-    await expect(radio).toBeChecked()
-  })
+  await rankedAgainstChord(page)
   await expect(page.locator('[data-slot="pentatonic"]').first()).toBeVisible()
   await guidesDrawn(page)
   const svgs = page.locator('svg[aria-label^="Bars:"]')
@@ -135,7 +131,6 @@ test('prints the Changes with a guide tone line and the Pentatonics row ranked a
   await page.emulateMedia({ media: 'print' })
   await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
   const pages = pdfPages(await page.pdf({ format: 'Letter' }))
-  console.log(`chord-basis print: sheetPages=${sheetPages} pdfPages=${pages}`)
   expect(pages).toBe(sheetPages)
 })
 

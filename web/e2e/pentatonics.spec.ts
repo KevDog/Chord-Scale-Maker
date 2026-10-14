@@ -1,4 +1,4 @@
-import { chooseInstrument, chooseSheet, expect, inControls, pickOption, showPentatonics, test } from './fixtures'
+import { chooseInstrument, chooseSheet, expect, pickOption, rankedAgainstChord, showPentatonics, test } from './fixtures'
 import type { Page } from '@playwright/test'
 
 const labels = (page: Page) => page.locator('[data-slot="pentatonic"] button')
@@ -80,16 +80,6 @@ test('a pick changes its label’s run only, and Reset restores it', async ({ pa
   await page.locator('[data-reset]').click()
   await expect.poll(texts).toEqual(before)
 })
-
-async function rankedAgainstChord(page: Page): Promise<void> {
-  await inControls(page, async () => {
-    const radio = page.getByRole('radio', { name: 'Chord', exact: true })
-    await expect(async () => {
-      if (!(await radio.isChecked())) await page.locator('label').filter({ has: radio }).click({ timeout: 1000 })
-      await expect(radio).toBeChecked({ timeout: 1000 })
-    }).toPass({ timeout: 10_000 })
-  })
-}
 
 test('Ranked against Chord follows each chord: Waltz for Debby’s first bars', async ({ page }) => {
   await page.goto('/song/waltz-for-debby')
