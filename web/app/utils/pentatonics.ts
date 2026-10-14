@@ -1,4 +1,4 @@
-import { PENTATONIC_RANKS, type PentatonicBasis, type PentatonicPathName, type PentatonicSide } from '@chord-scale-maker/engine'
+import { PENTATONIC_PATH_LABELS, PENTATONIC_PATHS, PENTATONIC_RANKS, PENTATONIC_STEP_BARS, type PentatonicBasis, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
 
 /** the Pentatonics row's controls (#255): rung 0–6 with the notes it shares with the key, and the side */
 export const PENT_RUNGS = [
@@ -19,15 +19,16 @@ export const sideShown = (rung: number): boolean => rung > 0 && rung < 6
 export const rungLabel = (rung: number): string => PENT_RUNGS.find((r) => r.value === rung)?.label ?? ''
 
 /** the Path listbox (#264); Custom is listed only while it is the current path */
-export const PENT_PATHS: readonly { value: PentatonicPathName; label: string }[] = [
-  { value: 'one', label: 'One rung' },
-  { value: 'side-slip', label: 'Side-slip' },
-  { value: 'fifths', label: 'Fifths' },
-  { value: 'minor-thirds', label: 'Minor thirds' },
-  { value: 'major-thirds', label: 'Major thirds' },
-  { value: 'custom', label: 'Custom' },
+export const PENT_PATHS: readonly { value: PentatonicPathName; label: string }[] = PENTATONIC_PATHS.map((value) => ({ value, label: PENTATONIC_PATH_LABELS[value] }))
+export const pathLabel = (p: PentatonicPathName): string => PENTATONIC_PATH_LABELS[p] ?? ''
+
+/** what a preset steps by (#276) */
+export const PENT_STEP_UNITS: readonly { value: PentatonicStepUnit; label: string; title: string }[] = [
+  { value: 'section', label: 'Section', title: 'The next step at each section of the form' },
+  { value: 'key-area', label: 'Key area', title: 'The next step at each change of key area' },
+  { value: 'bars', label: 'Bars', title: 'The next step every few bars, through the form' },
 ]
-export const pathLabel = (p: PentatonicPathName): string => PENT_PATHS.find((x) => x.value === p)?.label ?? ''
+export const PENT_STEP_BARS: readonly { value: '2' | '4' | '8'; label: string }[] = PENTATONIC_STEP_BARS.map((n) => ({ value: String(n) as '2' | '4' | '8', label: String(n) }))
 
 /** what the Pentatonics row ranks against (#272): the key area's ladder, or each chord's own scale */
 export const PENT_BASES: readonly { value: PentatonicBasis; label: string; title: string }[] = [

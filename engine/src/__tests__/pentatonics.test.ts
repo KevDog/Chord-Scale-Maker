@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isPentatonicPathName, isPentatonicPreset, isPentatonicStep, PENTATONIC_PATH_LABELS, PENTATONIC_STEP, pentatonicCycle, pentatonicPathCaption, isPentatonicView, PENTATONIC_HOME, PENTATONIC_RANKS, pentatonicAt, pentatonicCaption, pentatonicLadder, pentatonicPick, pentatonicPreset, pentatonicRanking, pentatonicStep, type PentatonicSection } from '../pentatonics'
+import { isPentatonicPathName, isPentatonicPreset, isPentatonicStep, PENTATONIC_PATH_LABELS, PENTATONIC_STEP, pentatonicCycle, pentatonicPathCaption, isPentatonicView, PENTATONIC_HOME, PENTATONIC_RANKS, pentatonicAt, pentatonicCaption, pentatonicLadder, pentatonicPick, pentatonicRanking, pentatonicStep } from '../pentatonics'
 import { pitchClasses } from '../ladder'
 import { LETTERS, parseRoot, pcOf, type Spelled } from '../pitch'
 import { SCALES } from '../scales'
@@ -52,7 +52,6 @@ describe('pentatonic ladders', () => {
   })
 })
 
-const form = (...keys: string[]): PentatonicSection[] => keys.map((key) => ({ key, part: 'form' }))
 const show = (r: Readonly<Record<string, { rung: number; side: string }>>) =>
   Object.fromEntries(Object.entries(r).map(([k, v]) => [k, v.rung === 0 || v.rung === 6 ? String(v.rung) : `${v.rung}${v.side === 'flat' ? '♭' : '♯'}`]))
 
@@ -66,6 +65,8 @@ describe('pentatonic paths', () => {
     expect(cycle('major-thirds', 4)).toEqual(['0', '4♯', '4♭', '0'])
     expect(cycle('one', 3)).toEqual(['0', '0', '0'])
     expect(cycle('custom', 2)).toEqual(['0', '0'])
+    expect(['one', 'fifths', 'custom'].every(isPentatonicPathName)).toBe(true)
+    expect([undefined, 'thirds', 3].some(isPentatonicPathName)).toBe(false)
   })
 
   it('knows a step: a unit and 2, 4 or 8 bars, by default each section', () => {
@@ -91,42 +92,6 @@ describe('pentatonic paths', () => {
     expect(pentatonicStep(-3)).toEqual(pentatonicStep(9))
   })
 
-  it('lays each preset over AABA by role (A1 · A2 merged: three sections)', () => {
-    const s = form('A1', 'B', 'A3')
-    expect(show(pentatonicPreset('side-slip', s))).toEqual({ A1: '0', B: '5♭', A3: '0' })
-    expect(show(pentatonicPreset('fifths', s))).toEqual({ A1: '0', B: '6', A3: '0' })
-    expect(show(pentatonicPreset('minor-thirds', s))).toEqual({ A1: '0', B: '3♭', A3: '0' })
-    expect(show(pentatonicPreset('major-thirds', s))).toEqual({ A1: '0', B: '4♯', A3: '0' })
-  })
-
-  it('lays each preset over AABA written out (four sections)', () => {
-    const s = form('A1', 'A2', 'B', 'A3')
-    expect(show(pentatonicPreset('side-slip', s))).toEqual({ A1: '0', A2: '0', B: '5♭', A3: '0' })
-    expect(show(pentatonicPreset('fifths', s))).toEqual({ A1: '0', A2: '3♯', B: '6', A3: '0' })
-    expect(show(pentatonicPreset('minor-thirds', s))).toEqual({ A1: '0', A2: '3♭', B: '6', A3: '0' })
-    expect(show(pentatonicPreset('major-thirds', s))).toEqual({ A1: '0', A2: '4♯', B: '4♭', A3: '0' })
-  })
-
-  it('spreads the fifths climb over more sections', () => {
-    expect(show(pentatonicPreset('fifths', form('A', 'B', 'C', 'D', 'E')))).toEqual({ A: '0', B: '2♯', C: '4♯', D: '6', E: '0' })
-  })
-
-  it('tiny forms: one section is Home, two are inside and outside; Intro and Coda are Home', () => {
-    expect(show(pentatonicPreset('fifths', form('A')))).toEqual({ A: '0' })
-    expect(show(pentatonicPreset('side-slip', form('A', 'B')))).toEqual({ A: '0', B: '5♭' })
-    expect(show(pentatonicPreset('minor-thirds', form('A', 'B')))).toEqual({ A: '0', B: '3♭' })
-    const withIntro: PentatonicSection[] = [{ key: 'Intro', part: 'before' }, ...form('A', 'B', 'C'), { key: 'Coda', part: 'after' }]
-    expect(show(pentatonicPreset('side-slip', withIntro))).toEqual({ Intro: '0', A: '0', B: '5♭', C: '0', Coda: '0' })
-    expect(pentatonicPreset('side-slip', [{ key: 'Intro', part: 'before' }])).toEqual({ Intro: PENTATONIC_HOME })
-    expect(pentatonicPreset('fifths', [])).toEqual({})
-  })
-
-  it('has no preset for One rung or Custom, and knows its path names', () => {
-    expect(pentatonicPreset('one', form('A', 'B'))).toEqual({})
-    expect(pentatonicPreset('custom', form('A', 'B'))).toEqual({})
-    expect(['one', 'fifths', 'custom'].every(isPentatonicPathName)).toBe(true)
-    expect([undefined, 'thirds', 3].some(isPentatonicPathName)).toBe(false)
-  })
 })
 
 describe('pentatonics ranked against any scale (#266)', () => {

@@ -166,7 +166,6 @@ exports[`exports the same names 1`] = `
   "pentatonicLadder",
   "pentatonicPathCaption",
   "pentatonicPick",
-  "pentatonicPreset",
   "pentatonicRanking",
   "pentatonicStep",
   "pitchClasses",

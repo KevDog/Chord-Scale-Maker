@@ -1,26 +1,28 @@
 import type { ComputedRef, Ref } from 'vue'
-import { type ChangesSection, isPentatonicPathName, isPentatonicView, PENTATONIC_HOME, pentatonicPreset, type PentatonicPathName, type PentatonicPlan, type PentatonicView } from '@chord-scale-maker/engine'
+import { type ChangesSection, isPentatonicPathName, isPentatonicStep, isPentatonicView, PENTATONIC_HOME, PENTATONIC_STEP, type PentatonicPathName, type PentatonicPlan, type PentatonicStep, type PentatonicView } from '@chord-scale-maker/engine'
 
-type Stored = Readonly<{ path: PentatonicPathName; sections: Readonly<Record<string, PentatonicView>> }>
-const ONE: Stored = { path: 'one', sections: {} }
+type Stored = Readonly<{ path: PentatonicPathName; step: PentatonicStep; sections: Readonly<Record<string, PentatonicView>> }>
+const ONE: Stored = { path: 'one', step: PENTATONIC_STEP, sections: {} }
 
-/** a stored path, if it is one; its invalid section views dropped */
+/** a stored path, if it is one; its invalid section views dropped, a missing or invalid step read as Section */
 function parse(raw: string | null): Stored {
   if (raw === null) return ONE
   try {
     const v: unknown = JSON.parse(raw)
     if (!v || typeof v !== 'object' || !('path' in v) || !isPentatonicPathName(v.path)) return ONE
+    const step = 'step' in v && isPentatonicStep(v.step) ? v.step : PENTATONIC_STEP
     const given = 'sections' in v && v.sections && typeof v.sections === 'object' ? Object.entries(v.sections as Record<string, unknown>) : []
-    return { path: v.path, sections: Object.fromEntries(given.filter((e): e is [string, PentatonicView] => isPentatonicView(e[1]))) }
+    return { path: v.path, step, sections: Object.fromEntries(given.filter((e): e is [string, PentatonicView] => isPentatonicView(e[1]))) }
   } catch {
     return ONE
   }
 }
 
 /**
- * the chart's pentatonic path (#264), per chart in this browser under `csm-pent-path:<key>` (a library slug or
+ * the chart's pentatonic path (#264, #276), per chart in this browser under `csm-pent-path:<key>` (a library slug or
  * mine:<id>); without a key it lasts for the visit. One rung plays `fallback` (the sheet's Rung and Side) everywhere;
- * a preset fills every section; a stored Custom path (from before #272) still plays its sections. Never in the chart or a share link.
+ * a preset goes to the engine with its step, which lays it over the form; a stored Custom path (from before #272)
+ * still plays its sections. Never in the chart or a share link.
  */
 export function usePentatonicPath(key: string | undefined, sections: Ref<readonly ChangesSection[]>, fallback: Ref<PentatonicView>) {
   const storeKey = key ? `csm-pent-path:${key}` : null
@@ -33,18 +35,20 @@ export function usePentatonicPath(key: string | undefined, sections: Ref<readonl
   const plan: ComputedRef<PentatonicPlan> = computed(() => {
     const s = state.value
     if (s.path === 'one') return { bySection: {}, fallback: fallback.value, counts: false }
+    if (s.path !== 'custom') return { bySection: {}, fallback: PENTATONIC_HOME, counts: true, path: s.path, step: s.step }
     const known = new Set(sections.value.map((x) => x.key))
-    const own = s.path === 'custom' ? Object.fromEntries(Object.entries(s.sections).filter(([k]) => known.has(k))) : {}
-    return { bySection: { ...pentatonicPreset(s.path, sections.value), ...own }, fallback: PENTATONIC_HOME, counts: true }
+    return { bySection: Object.fromEntries(Object.entries(s.sections).filter(([k]) => known.has(k))), fallback: PENTATONIC_HOME, counts: true }
   })
-  /** each section as it plays now, frozen for Custom */
-  const seeded = (): Readonly<Record<string, PentatonicView>> => Object.fromEntries(sections.value.map((x) => [x.key, (Object.hasOwn(plan.value.bySection, x.key) ? plan.value.bySection[x.key] : undefined) ?? plan.value.fallback]))
   return {
     path: computed(() => state.value.path),
+    step: computed(() => state.value.step),
     plan,
-    /** a preset is stored by name alone, so it follows the chart's sections; Custom keeps what the sections played */
+    /** the step stays with the chart whatever the path; Custom keeps its own sections, and starts empty from anything else */
     setPath(name: PentatonicPathName): void {
-      state.value = name === 'custom' ? { path: name, sections: state.value.path === 'custom' ? state.value.sections : seeded() } : { path: name, sections: {} }
+      state.value = { path: name, step: state.value.step, sections: name === 'custom' && state.value.path === 'custom' ? state.value.sections : {} }
+    },
+    setStep(step: PentatonicStep): void {
+      state.value = { ...state.value, step }
     },
     /** the same path for another chart (a copy, or a shared chart once saved) */
     carryTo(otherKey: string): void {
