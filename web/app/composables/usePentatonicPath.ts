@@ -34,21 +34,21 @@ export function usePentatonicPath(key: string | undefined, sections: Ref<readonl
     const s = state.value
     if (s.path === 'one') return { bySection: {}, fallback: fallback.value, counts: false }
     const known = new Set(sections.value.map((x) => x.key))
-    const own = Object.fromEntries(Object.entries(s.sections).filter(([k]) => known.has(k)))
+    const own = s.path === 'custom' ? Object.fromEntries(Object.entries(s.sections).filter(([k]) => known.has(k))) : {}
     return { bySection: { ...pentatonicPreset(s.path, sections.value), ...own }, fallback: PENTATONIC_HOME, counts: true }
   })
+  /** each section as it plays now, frozen for Custom */
+  const seeded = (): Readonly<Record<string, PentatonicView>> => Object.fromEntries(sections.value.map((x) => [x.key, plan.value.bySection[x.key] ?? plan.value.fallback]))
   return {
     path: computed(() => state.value.path),
     plan,
-    /** a preset fills every section; One rung forgets them */
+    /** a preset is stored by name alone, so it follows the chart's sections; Custom keeps what the sections played */
     setPath(name: PentatonicPathName): void {
-      state.value = name === 'one' || name === 'custom' ? { path: name, sections: name === 'custom' ? state.value.sections : {} } : { path: name, sections: pentatonicPreset(name, sections.value) }
+      state.value = name === 'custom' ? { path: name, sections: state.value.path === 'custom' ? state.value.sections : seeded() } : { path: name, sections: {} }
     },
     /** one section's rung and side: the path becomes Custom, every other section keeping what it played */
     setSection(section: string, view: PentatonicView): void {
-      const p = plan.value
-      const seeded = Object.fromEntries(sections.value.map((x) => [x.key, p.bySection[x.key] ?? p.fallback]))
-      state.value = { path: 'custom', sections: { ...seeded, [section]: view } }
+      state.value = { path: 'custom', sections: { ...seeded(), [section]: view } }
     },
   }
 }

@@ -1,6 +1,6 @@
 import { afterEach, describe, expect, it } from 'vitest'
-import { effectScope, nextTick, ref } from 'vue'
-import type { ChangesSection, PentatonicView } from '@chord-scale-maker/engine'
+import { effectScope, nextTick, ref, type Ref } from 'vue'
+import { type ChangesSection, PENTATONIC_HOME, type PentatonicView } from '@chord-scale-maker/engine'
 import { usePentatonicPath } from '~/composables/usePentatonicPath'
 
 const AABA: ChangesSection[] = ['A1', 'A2', 'B', 'A3'].map((key) => ({ key, marker: key, part: 'form' }))
@@ -8,6 +8,13 @@ const make = (key: string | undefined, sections = AABA, fallback: PentatonicView
   const s = effectScope().run(() => usePentatonicPath(key, ref(sections), ref(fallback)))
   if (!s) throw new Error('no path')
   return s
+}
+
+const live = (sections: ChangesSection[]) => {
+  const list: Ref<ChangesSection[]> = ref(sections)
+  const s = effectScope().run(() => usePentatonicPath('live', list, ref({ rung: 2, side: 'flat' } as PentatonicView)))
+  if (!s) throw new Error('no path')
+  return { s, list }
 }
 
 describe('usePentatonicPath', () => {
@@ -29,6 +36,15 @@ describe('usePentatonicPath', () => {
     expect(make('autumn-leaves').path.value).toBe('one')
   })
 
+  it('stores a preset without its sections, so it follows the chart when the sections change', async () => {
+    const { s, list } = live(['A1', 'B', 'A3'].map((key) => ({ key, marker: key, part: 'form' as const })))
+    s.setPath('side-slip')
+    await nextTick()
+    expect(JSON.parse(localStorage.getItem('csm-pent-path:live') ?? '{}').sections).toEqual({})
+    list.value = AABA
+    expect(s.plan.value.bySection).toEqual({ A1: PENTATONIC_HOME, A2: PENTATONIC_HOME, B: { rung: 5, side: 'flat' }, A3: PENTATONIC_HOME })
+  })
+
   it('edits one section into Custom, seeding the rest with what they played', async () => {
     const p = make('satin-doll')
     p.setSection('A2', { rung: 3, side: 'sharp' })
@@ -43,7 +59,27 @@ describe('usePentatonicPath', () => {
     localStorage.setItem('csm-pent-path:x', JSON.stringify({ path: 'custom', sections: { Gone: { rung: 4, side: 'flat' }, A1: { rung: 1, side: 'sharp' } } }))
     const p = make('x')
     expect(p.plan.value.bySection.A1).toEqual({ rung: 1, side: 'sharp' })
-    expect(p.plan.value.bySection.B ?? p.plan.value.fallback).toEqual({ rung: 0, side: 'flat' })
+    expect('Gone' in p.plan.value.bySection).toBe(false)
+    expect('B' in p.plan.value.bySection).toBe(false)
+    expect(p.plan.value.fallback).toEqual(PENTATONIC_HOME)
+  })
+
+  it('writes a Custom edit and reloads it', async () => {
+    const p = make('satin-doll')
+    p.setSection('A2', { rung: 3, side: 'sharp' })
+    await nextTick()
+    const again = make('satin-doll')
+    expect(again.path.value).toBe('custom')
+    expect(again.plan.value.bySection.A2).toEqual({ rung: 3, side: 'sharp' })
+  })
+
+  it('switching from a preset to Custom keeps what the preset played', async () => {
+    const p = make('satin-doll')
+    p.setPath('side-slip')
+    const played = { ...p.plan.value.bySection }
+    p.setPath('custom')
+    expect(p.path.value).toBe('custom')
+    expect(p.plan.value.bySection).toEqual(played)
   })
 
   it('ignores junk', () => {
