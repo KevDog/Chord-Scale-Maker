@@ -1,6 +1,8 @@
 import { describe, expect, it } from 'vitest'
-import { isPentatonicPathName, isPentatonicView, PENTATONIC_HOME, pentatonicAt, pentatonicLadder, pentatonicPreset, pentatonicStep, type PentatonicSection } from '../pentatonics'
+import { isPentatonicPathName, isPentatonicView, PENTATONIC_HOME, PENTATONIC_RANKS, pentatonicAt, pentatonicCaption, pentatonicLadder, pentatonicPick, pentatonicPreset, pentatonicRanking, pentatonicStep, type PentatonicSection } from '../pentatonics'
+import { pitchClasses } from '../ladder'
 import { LETTERS, parseRoot, pcOf, type Spelled } from '../pitch'
+import { SCALES } from '../scales'
 
 const names = (home: string) => pentatonicLadder(parseRoot(home)).map((r) => `${r.rung}${r.side === 'flat' ? '♭' : r.side === 'sharp' ? '♯' : ''} ${r.name} ${r.shared}`)
 const ugly = (n: Spelled) => Math.abs(n.acc) > 1 || ['B#', 'E#', 'Cb', 'Fb'].includes(LETTERS[n.letter] + (n.acc > 0 ? '#' : n.acc < 0 ? 'b' : ''))
@@ -96,5 +98,52 @@ describe('pentatonic paths', () => {
     expect(pentatonicPreset('custom', form('A', 'B'))).toEqual({})
     expect(['one', 'fifths', 'custom'].every(isPentatonicPathName)).toBe(true)
     expect([undefined, 'thirds', 3].some(isPentatonicPathName)).toBe(false)
+  })
+})
+
+describe('pentatonics ranked against any scale (#266)', () => {
+  const on = (name: keyof typeof SCALES, root: string): ReadonlySet<number> => pitchClasses(SCALES[name][0]!, pcOf(parseRoot(root)))
+  const names = (scale: ReadonlySet<number>, root: string): string[] => pentatonicRanking(scale, parseRoot(root)).map((p) => p.name)
+
+  it('ranks the spec’s examples by fifths from the chord root', () => {
+    expect(names(on('dorian', 'D'), 'D').slice(0, 3)).toEqual(['Dm', 'Am', 'Em'])
+    expect(names(on('ionian', 'C'), 'C').slice(0, 3)).toEqual(['Dm', 'Am', 'Em'])
+    expect(names(on('mixolydian', 'G'), 'G').slice(0, 3)).toEqual(['Dm', 'Am', 'Em'])
+  })
+
+  it('gives every scale 12 distinct pentatonics, ranks 1–12, shared never rising', () => {
+    for (const name of Object.keys(SCALES) as (keyof typeof SCALES)[]) {
+      const ranked = pentatonicRanking(on(name, 'C'), parseRoot('C'))
+      expect(ranked.map((p) => p.rank)).toEqual(Array.from({ length: PENTATONIC_RANKS }, (_, i) => i + 1))
+      expect(new Set(ranked.map((p) => pcOf(p.root))).size).toBe(12)
+      ranked.slice(1).forEach((p, i) => expect(p.shared).toBeLessThanOrEqual(ranked[i]!.shared))
+    }
+  })
+
+  it('spells on the chord’s side and without double accidentals', () => {
+    expect(names(on('dorian', 'Eb'), 'Eb')[0]).toBe('E♭m')
+    expect(names(on('ionian', 'F#'), 'F#').every((n) => !/𝄪|𝄫/.test(n))).toBe(true)
+  })
+
+  it('picks a staff’s pentatonic and lights the notes it shares', () => {
+    const pcs = [...on('dorian', 'D')].sort((a, b) => a - b) // C D E F G A B as pcs
+    const top = pentatonicPick(pcs, parseRoot('D'), 1)
+    expect(top.pentatonic).toEqual({ name: 'Dm', rank: 1, shared: 5, best: 5 })
+    expect(top.lit.filter(Boolean)).toHaveLength(5)
+    const far = pentatonicPick(pcs, parseRoot('D'), 12)
+    expect(far.pentatonic.shared).toBe(0)
+    expect(far.lit.every((l) => !l)).toBe(true)
+  })
+
+  it('reports a best match under 5 on scales a pentatonic can’t fit', () => {
+    const wt = [...on('whole tone', 'C')]
+    expect(pentatonicPick(wt, parseRoot('C'), 1).pentatonic.best).toBe(3)
+    expect(pentatonicPick([...on('half whole diminished', 'C')], parseRoot('C'), 1).pentatonic.best).toBeLessThan(5)
+  })
+
+  it('captions by name, adding rank and shared count where the best is under 5', () => {
+    expect(pentatonicCaption({ name: 'Dm', rank: 1, shared: 5, best: 5 })).toBe('Dm pent')
+    expect(pentatonicCaption({ name: 'Gm', rank: 7, shared: 3, best: 5 })).toBe('Gm pent')
+    expect(pentatonicCaption({ name: 'F♯m', rank: 2, shared: 3, best: 3 })).toBe('F♯m pent · #2 · 3 shared')
   })
 })
