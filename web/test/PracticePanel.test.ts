@@ -39,3 +39,27 @@ describe('PracticePanel', () => {
     expect(off.emitted('update:selection')).toEqual([[{ keys: ['b3'] }]])
   })
 })
+
+describe('PracticePanel’s Pentatonic preset (#266)', () => {
+  it('is offered only with the flag', async () => {
+    expect((await mount({})).findAll('button').map((b) => b.text())).not.toContain('Pentatonic')
+    expect((await mount({ pentatonic: true })).findAll('button').map((b) => b.text())).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Pentatonic', 'Clear'])
+    expect((await mount({ pentatonic: true, mode: 'from', startText: 'Eb' })).findAll('button').map((b) => b.text())).toEqual(['All', 'Pentatonic', 'Clear'])
+  })
+
+  it('starts at rank 1 and shows the rank picker while on', async () => {
+    const off = await mount({ pentatonic: true })
+    expect(off.find('[aria-label="Pentatonic rank"]').exists()).toBe(false)
+    await off.findAll('button').find((b) => b.text() === 'Pentatonic')?.trigger('click')
+    expect(off.emitted('update:selection')).toEqual([[{ preset: 'pentatonic', rank: 1 }]])
+    const on = await mount({ pentatonic: true, selection: { preset: 'pentatonic', rank: 12 }, lit: ['1'] })
+    expect(on.find('[aria-label="Pentatonic rank"]').text()).toContain('12 · farthest')
+    expect(on.find('button[aria-pressed=true]').text()).toBe('Pentatonic')
+  })
+
+  it('edits a box into a custom selection from what it lit', async () => {
+    const w = await mount({ pentatonic: true, selection: { preset: 'pentatonic', rank: 1 }, lit: ['1', 'b3'] })
+    await w.findAll('input[type=checkbox]')[3]?.trigger('change') // ♭7
+    expect(w.emitted('update:selection')).toEqual([[{ keys: ['1', 'b3', 'b7'] }]])
+  })
+})

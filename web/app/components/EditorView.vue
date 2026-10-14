@@ -163,6 +163,7 @@
             :boxes="practiceBoxesNow"
             :selection="selection"
             :lit="litNow"
+            :pentatonic="pentatonicsOn"
             @update:selection="practice.setSelection(mode, $event)"
           />
         </div>
@@ -271,6 +272,7 @@ import {
   encodeShare,
   insertBars,
   insertHeldBar,
+  isPentatonicSelection,
   keyStart,
   renameSection,
   repeatSection,
@@ -395,7 +397,11 @@ provide(SCALE_VIEW, scaleView)
 const resolved = computed(() => resolveScales(editor.doc.value, scaleView.value))
 
 if (props.shared?.practice) practice.setSelection(mode.value, props.shared.practice)
-const selection = computed(() => (practiceOn ? practice.selection(mode.value) : null))
+/** a Pentatonic selection (stored or shared) plays only with the pentatonics flag (#266) */
+const selection = computed(() => {
+  const s = practiceOn ? practice.selection(mode.value) : null
+  return isPentatonicSelection(s) && !pentatonicsOn ? null : s
+})
 // every staff with its practice keys, for the panel's boxes and what the selection lights
 const practiceStaves = computed(() =>
   practiceOn ? buildSheet(editor.rows.value, part.value, mode.value, start.value, LIMITS.maxExpandedRows, selection.value, undefined, resolved.value).flatMap((p) => p.pages.flat()) : [],

@@ -2,7 +2,8 @@ import type { Row } from './chart'
 import { qualityScale } from './chart'
 import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRoot, writtenChordRootLenient } from './chord'
 import { intervalLabels } from './intervals'
-import { type PracticeSelection, practiceKeys, selectedNotes, startReference } from './practice'
+import { isPentatonicSelection, type PracticeSelection, practiceKeys, selectedNotes, startReference } from './practice'
+import { pentatonicPick, type StaffPentatonic } from './pentatonics'
 import { baseQuality, resolveQuality } from './qualities'
 import { parseScale } from './scales'
 import type { Key } from './analysis/keys'
@@ -29,6 +30,7 @@ export type StaffModel = Readonly<{
   intervals: readonly string[] | null // each note against the chord root (b9, #11…); null if the chord can't be read
   keys: readonly string[] | null // practice keys: each note's spelled interval from the mode's reference
   selected: readonly boolean[] | null // practice: which notes are picked; null when practice is off
+  pentatonic: StaffPentatonic | null // the Pentatonic preset's pick for this staff (#266); null otherwise
   error: string | null // shown instead of notes
   last: boolean // final bar line
 }>
@@ -97,10 +99,15 @@ function practiceFor(
   scale: string,
   notes: readonly Pitched[],
   practice: PracticeSelection | null,
-): Pick<StaffModel, 'keys' | 'selected'> {
+): Pick<StaffModel, 'keys' | 'selected' | 'pentatonic'> {
   const reference = mode === 'from' ? startReference(startText) : orNull(() => writtenChordRootLenient(part, row.chord, scale))
   const keys = reference ? practiceKeys(reference, notes, mode === 'root' ? (resolveQuality(row.chord)?.quality ?? null) : null) : null
-  return { keys, selected: practice && keys ? selectedNotes(practice, row.chord, keys) : null }
+  if (isPentatonicSelection(practice)) {
+    const chordRoot = orNull(() => writtenChordRootLenient(part, row.chord, scale)) ?? scaleLabel(part, scale).root
+    const { pentatonic, lit } = pentatonicPick(notes.map((n) => pcOf(n)), chordRoot, practice.rank)
+    return { keys, selected: lit, pentatonic }
+  }
+  return { keys, selected: practice && keys ? selectedNotes(practice, row.chord, keys) : null, pentatonic: null }
 }
 
 function staff(
@@ -121,7 +128,7 @@ function staff(
   const id = [chordTexts.join(' '), scale, part.clef, part.trans, mode, startKey, keySig, showClefAndKey ? '' : 'bare'].join('|')
   const base = { id, last, keySig, showClefAndKey }
   const chords = chordTexts.map((c) => chordTokensOrNull(part, c, scale))
-  const none = { notes: [], accidentals: [], intervals: null, keys: null, selected: null }
+  const none = { notes: [], accidentals: [], intervals: null, keys: null, selected: null, pentatonic: null }
   if (scale === null) return { ...base, ...none, chords, scale: null, error: chords[0] ? 'Choose a scale' : "Can't read this chord" }
   try {
     const label = scaleLabel(part, scale)

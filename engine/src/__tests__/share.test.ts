@@ -20,6 +20,11 @@ describe('share links', () => {
     expect(await decodeShare(await encodeShare({ chart: CHART }))).toEqual({ chart: CHART })
   })
 
+  it('carry a Pentatonic practice selection', async () => {
+    const view = { instrument: 'tenor-sax', mode: 'root', start: 'C', intervals: false, sheet: 'scales', practice: { preset: 'pentatonic', rank: 4 } } as const
+    expect((await decodeShare(await encodeShare({ chart: CHART, view })))?.view?.practice).toEqual({ preset: 'pentatonic', rank: 4 })
+  })
+
   it('stay short for an ordinary chart', async () => {
     expect((await encodeShare({ chart: CHART.repeat(4) })).length).toBeLessThan(300)
   })

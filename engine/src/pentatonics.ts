@@ -1,5 +1,5 @@
 import type { FormPart } from './chart'
-import { pitchClasses, sharedCount } from './ladder'
+import { pitchClasses, rankByFifths, sharedCount } from './ladder'
 import { glyphs, pcOf, rootName, shiftBy, type Spelled } from './pitch'
 import { SCALES, simplifyRoot } from './scales'
 
@@ -87,3 +87,36 @@ export function pentatonicPreset(path: PentatonicPathName, sections: readonly Pe
   const views = new Map(form.map((key, i) => [key, viewAt(i)]))
   return Object.fromEntries(sections.map((s) => [s.key, views.get(s.key) ?? PENTATONIC_HOME]))
 }
+
+/** the Scales sheet's Pentatonic practice preset (#266): ranks 1 (closest to the staff's scale) to 12 */
+export const PENTATONIC_RANKS = 12
+export type PentatonicRank = Readonly<{ rank: number; root: Spelled; name: string; shared: number }>
+
+/** the chord root walked `fifths` round the circle (+ up, − down), spelled as the ladder spells */
+const walkFifths = (from: Spelled, fifths: number): Spelled => {
+  let n = from
+  for (let i = 0; i < Math.abs(fifths); i++) n = fifths > 0 ? shiftBy(n, 4, 7) : shiftBy(n, -4, -7)
+  return simplifyRoot(n, 'aeolian')
+}
+
+/** the 12 minor pentatonics against a scale (any), most shared first, ties by fewest fifths from the chord root, ♭ side first */
+export function pentatonicRanking(scale: ReadonlySet<number>, chordRoot: Spelled): readonly PentatonicRank[] {
+  return rankByFifths(MINOR_PENT, scale, pcOf(chordRoot)).map((t, i) => {
+    const root = walkFifths(chordRoot, t.fifths)
+    return { rank: i + 1, root, name: glyphs(`${rootName(root)}m`), shared: t.shared }
+  })
+}
+
+/** a staff's pentatonic under the preset: best is rank 1's shared count */
+export type StaffPentatonic = Readonly<{ name: string; rank: number; shared: number; best: number }>
+
+/** the pentatonic at `rank` against a staff's notes (their pitch classes, in order), and which notes it lights */
+export function pentatonicPick(pcs: readonly number[], chordRoot: Spelled, rank: number): Readonly<{ pentatonic: StaffPentatonic; lit: boolean[] }> {
+  const ranked = pentatonicRanking(new Set(pcs), chordRoot)
+  const at = ranked[(Number.isInteger(rank) ? Math.min(Math.max(rank, 1), PENTATONIC_RANKS) : 1) - 1]!
+  const shape = pitchClasses(SCALES['minor pentatonic'][0]!, pcOf(at.root))
+  return { pentatonic: { name: at.name, rank: at.rank, shared: at.shared, best: ranked[0]!.shared }, lit: pcs.map((pc) => shape.has(pc)) }
+}
+
+/** "Dm pent"; with the rank and shared count where no pentatonic fits the scale whole ("F♯m pent · #2 · 3 shared") */
+export const pentatonicCaption = (p: StaffPentatonic): string => `${p.name} pent${p.best < 5 ? ` · #${p.rank} · ${p.shared} shared` : ''}`

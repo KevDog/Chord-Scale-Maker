@@ -17,4 +17,15 @@ describe('ScaleStaff', () => {
     expect(label).toContain('C–7, · C–9') // the sr-only comma separates the chords for a screen reader; the dot is for the eye
     expect(label).not.toContain('Bar')
   })
+
+  it('captions the staff with its pentatonic under the Pentatonic preset', async () => {
+    const sheet = (scale: string, rank: number) =>
+      buildSheet([{ section: 'A', bar: '1', chord: 'C7#5', scale }], CONCERT, 'root', 'C', 12, { preset: 'pentatonic', rank })[0]?.pages.flat()[0]
+    const fits = await mountSuspended(ScaleStaff, { props: { staff: buildSheet([row('Dm7', '1')], CONCERT, 'root', 'C', 12, { preset: 'pentatonic', rank: 1 })[0]?.pages.flat()[0], clef: 'treble' } })
+    expect(fits.find('[data-slot="pentatonic"]').text()).toBe('Dm pent')
+    const wt = await mountSuspended(ScaleStaff, { props: { staff: sheet('C Whole Tone', 2), clef: 'treble' } })
+    expect(wt.find('[data-slot="pentatonic"]').text()).toMatch(/ pent · #2 · \d shared$/)
+    const none = await mountSuspended(ScaleStaff, { props: { staff: buildSheet([row('Dm7', '1')], CONCERT, 'root', 'C', 12)[0]?.pages.flat()[0], clef: 'treble' } })
+    expect(none.find('[data-slot="pentatonic"]').exists()).toBe(false)
+  })
 })
