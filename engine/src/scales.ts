@@ -187,10 +187,14 @@ const letteringsOf = (key: ScaleKey): readonly string[] => {
  * spell badly: then the same notes lettered with the fewest double accidentals, then B♯/E♯/C♭/F♭, then accidentals, then
  * accidentals against the root's side, then closest to the formula.
  */
+const LETTERED = new Map<string, string>() // `${letter} ${acc} ${key}` -> the formula chosen
 function lettered(root: Spelled, key: ScaleKey): ScaleNote[] {
   const formula = SCALES[key][0]
   const notes = spellFrom(root, formula)
   if (!RELETTERED.has(key) || !notes.some(isUgly)) return notes
+  const id = `${root.letter} ${root.acc} ${key}`
+  const known = LETTERED.get(id)
+  if (known) return spellFrom(root, known)
   const degrees = formula.split(/\s+/)
   const side = Math.sign(root.acc)
   const cost = (f: string): readonly number[] => {
@@ -203,7 +207,9 @@ function lettered(root: Spelled, key: ScaleKey): ScaleNote[] {
       f.split(' ').filter((d, i) => d !== degrees[i]).length,
     ]
   }
-  return spellFrom(root, minBy(letteringsOf(key), cost))
+  const best = minBy(letteringsOf(key), cost)
+  LETTERED.set(id, best)
+  return spellFrom(root, best)
 }
 
 /**
