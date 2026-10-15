@@ -13,9 +13,9 @@ const mount = (props: Record<string, unknown>) =>
 
 describe('PracticePanel', () => {
   it('offers per-chord presets from the root, All from a start note', async () => {
-    expect((await mount({})).findAll('button').map((b) => b.text())).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Clear'])
+    expect((await mount({})).findAll('button').map((b) => b.text())).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Pentatonic', 'Hexatonic', 'Clear'])
     const from = await mount({ mode: 'from', startText: 'Eb' })
-    expect(from.findAll('button').map((b) => b.text())).toEqual(['All', 'Clear'])
+    expect(from.findAll('button').map((b) => b.text())).toEqual(['All', 'Pentatonic', 'Hexatonic', 'Clear'])
     expect(from.text()).toContain('pitches spelled from E♭')
   })
 
@@ -41,24 +41,18 @@ describe('PracticePanel', () => {
 })
 
 describe('PracticePanel’s Pentatonic preset (#266)', () => {
-  it('is offered only with the flag', async () => {
-    expect((await mount({})).findAll('button').map((b) => b.text())).not.toContain('Pentatonic')
-    expect((await mount({ pentatonic: true })).findAll('button').map((b) => b.text())).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Pentatonic', 'Clear'])
-    expect((await mount({ pentatonic: true, mode: 'from', startText: 'Eb' })).findAll('button').map((b) => b.text())).toEqual(['All', 'Pentatonic', 'Clear'])
-  })
-
   it('starts at rank 1 and shows the rank picker while on', async () => {
-    const off = await mount({ pentatonic: true })
+    const off = await mount({})
     expect(off.find('[aria-label="Pentatonic rank"]').exists()).toBe(false)
     await off.findAll('button').find((b) => b.text() === 'Pentatonic')?.trigger('click')
     expect(off.emitted('update:selection')).toEqual([[{ preset: 'pentatonic', rank: 1 }]])
-    const on = await mount({ pentatonic: true, selection: { preset: 'pentatonic', rank: 12 }, lit: ['1'] })
+    const on = await mount({ selection: { preset: 'pentatonic', rank: 12 }, lit: ['1'] })
     expect(on.find('[aria-label="Pentatonic rank"]').text()).toContain('12 · farthest')
     expect(on.find('button[aria-pressed=true]').text()).toBe('Pentatonic')
   })
 
   it('edits a box into a custom selection from what it lit', async () => {
-    const w = await mount({ pentatonic: true, selection: { preset: 'pentatonic', rank: 1 }, lit: ['1', 'b3'] })
+    const w = await mount({ selection: { preset: 'pentatonic', rank: 1 }, lit: ['1', 'b3'] })
     await w.findAll('input[type=checkbox]')[3]?.trigger('change') // ♭7
     expect(w.emitted('update:selection')).toEqual([[{ keys: ['1', 'b3', 'b7'] }]])
   })
@@ -66,16 +60,14 @@ describe('PracticePanel’s Pentatonic preset (#266)', () => {
 
 describe('PracticePanel interface levels', () => {
   afterEach(() => {
-    useRuntimeConfig().public.features.interfaceLevels = false
     useInterface().level.value = 'everything'
   })
 
   it('offers the Pentatonic preset only at Everything', async () => {
-    useRuntimeConfig().public.features.interfaceLevels = true
     useInterface().level.value = 'intermediate'
-    expect((await mount({ pentatonic: true })).text()).not.toContain('Pentatonic')
+    expect((await mount({})).text()).not.toContain('Pentatonic')
     useInterface().level.value = 'everything'
-    expect((await mount({ pentatonic: true })).text()).toContain('Pentatonic')
+    expect((await mount({})).text()).toContain('Pentatonic')
   })
 })
 
@@ -83,29 +75,27 @@ describe('PracticePanel’s Hexatonic preset', () => {
   const texts = async (props: Record<string, unknown>) => (await mount(props)).findAll('button[aria-pressed]').map((b) => b.text())
   const hex = (pair: number, grouping: string) => ({ selection: { preset: 'hexatonic', pair, grouping }, lit: ['1', '3'] })
 
-  it('is offered only with the flag, after Pentatonic', async () => {
-    expect(await texts({})).not.toContain('Hexatonic')
-    expect(await texts({ hexatonic: true })).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Hexatonic'])
-    expect(await texts({ hexatonic: true, pentatonic: true })).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Pentatonic', 'Hexatonic'])
-    expect(await texts({ hexatonic: true, mode: 'from', startText: 'Eb' })).toEqual(['All', 'Hexatonic'])
+  it('is offered after Pentatonic', async () => {
+    expect(await texts({})).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Pentatonic', 'Hexatonic'])
+    expect(await texts({ mode: 'from', startText: 'Eb' })).toEqual(['All', 'Pentatonic', 'Hexatonic'])
   })
 
   it('starts at Auto and Triad pair, and shows its two listboxes only while it is the selection', async () => {
-    const off = await mount({ hexatonic: true })
+    const off = await mount({})
     expect(off.find('[aria-label="Hexatonic pair"]').exists()).toBe(false)
     expect(off.find('[aria-label="Hexatonic grouping"]').exists()).toBe(false)
     await off.findAll('button').find((b) => b.text() === 'Hexatonic')?.trigger('click')
     expect(off.emitted('update:selection')).toEqual([[{ preset: 'hexatonic', pair: 0, grouping: 'triads' }]])
-    const on = await mount({ hexatonic: true, ...hex(0, 'triads') })
+    const on = await mount({ ...hex(0, 'triads') })
     expect(on.find('button[aria-pressed=true]').text()).toBe('Hexatonic')
     expect(on.find('[aria-label="Hexatonic pair"]').text()).toContain('Pair: Auto')
-    expect((await mount({ hexatonic: true, ...hex(5, 'triads') })).find('[aria-label="Hexatonic pair"]').text()).toContain('Pair: 5')
+    expect((await mount({ ...hex(5, 'triads') })).find('[aria-label="Hexatonic pair"]').text()).toContain('Pair: 5')
     expect(on.find('[aria-label="Hexatonic grouping"]').text()).toContain('Triad pair')
-    expect((await mount({ hexatonic: true, pentatonic: true, selection: { preset: 'pentatonic', rank: 1 } })).find('[aria-label="Hexatonic pair"]').exists()).toBe(false)
+    expect((await mount({ selection: { preset: 'pentatonic', rank: 1 } })).find('[aria-label="Hexatonic pair"]').exists()).toBe(false)
   })
 
   it('offers Auto and pairs 1 … 8, and the four groupings; a pick keeps the other value', async () => {
-    const w = await mount({ hexatonic: true, ...hex(3, 'pent') })
+    const w = await mount({ ...hex(3, 'pent') })
     await w.find('[aria-label="Hexatonic pair"]').trigger('click')
     expect(w.findAll('[role=option]').map((o) => o.text())).toEqual(['Auto', '1', '2', '3', '4', '5', '6', '7', '8'])
     await w.findAll('[role=option]')[5]?.trigger('click')
@@ -116,7 +106,7 @@ describe('PracticePanel’s Hexatonic preset', () => {
   })
 
   it('names the grouping’s two groups in a legend (never “+1”)', async () => {
-    const legend = async (grouping: string) => (await mount({ hexatonic: true, ...hex(0, grouping) })).findAll('[data-slot="hex-legend"] li').map((l) => l.text())
+    const legend = async (grouping: string) => (await mount({ ...hex(0, grouping) })).findAll('[data-slot="hex-legend"] li').map((l) => l.text())
     expect(await legend('triads')).toEqual(['Lower triad', 'Upper triad'])
     expect(await legend('tones')).toEqual(['Chord tones', 'Color'])
     expect(await legend('pent')).toEqual(['Pentatonic', 'Other'])
@@ -124,12 +114,11 @@ describe('PracticePanel’s Hexatonic preset', () => {
   })
 
   it('explains the pairs in its help text', async () => {
-    expect((await mount({ hexatonic: true })).text()).toContain('leaves out degree')
-    expect((await mount({})).text()).not.toContain('leaves out degree')
+    expect((await mount({})).text()).toContain('leaves out degree')
   })
 
   it('edits a box into a custom selection from what it lit', async () => {
-    const w = await mount({ hexatonic: true, ...hex(0, 'triads') })
+    const w = await mount({ ...hex(0, 'triads') })
     await w.findAll('input[type=checkbox]')[3]?.trigger('change') // ♭7
     expect(w.emitted('update:selection')).toEqual([[{ keys: ['1', '3', 'b7'] }]])
   })
@@ -137,15 +126,13 @@ describe('PracticePanel’s Hexatonic preset', () => {
 
 describe('PracticePanel’s Hexatonic preset and interface levels', () => {
   afterEach(() => {
-    useRuntimeConfig().public.features.interfaceLevels = false
     useInterface().level.value = 'everything'
   })
 
   it('is offered only at Everything', async () => {
-    useRuntimeConfig().public.features.interfaceLevels = true
     useInterface().level.value = 'intermediate'
-    expect((await mount({ hexatonic: true })).text()).not.toContain('Hexatonic')
+    expect((await mount({})).text()).not.toContain('Hexatonic')
     useInterface().level.value = 'everything'
-    expect((await mount({ hexatonic: true })).text()).toContain('Hexatonic')
+    expect((await mount({})).text()).toContain('Hexatonic')
   })
 })

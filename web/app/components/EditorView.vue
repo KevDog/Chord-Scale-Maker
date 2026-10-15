@@ -65,8 +65,8 @@
           <div class="relative mb-3 flex items-center gap-2">
             <UiSubheading id="text-heading">Source</UiSubheading>
             <HelpTip label="How the text editor works">
-              <span class="block">One line per chord: <code class="font-mono text-xs whitespace-nowrap">section | bar | chord | scale<template v-if="functionsOn"> | function</template></code>, in concert pitch. Leave the scale out to use the chord's default.</span>
-              <span class="mt-2 block"><code class="font-mono text-xs">title:</code>, <code class="font-mono text-xs">subtitle:</code>, <code class="font-mono text-xs">composer:</code>, <code class="font-mono text-xs">key:</code> and <code class="font-mono text-xs">form:</code> set the heading, lines starting with <code class="font-mono text-xs">#</code> are comments, and <code class="font-mono text-xs">@copy A B 8</code> repeats section A as B, 8 bars later<template v-if="functionsOn">, and <code class="font-mono text-xs">@key B 17 D</code> puts bars from B 17 in D until the next @key</template>.</span>
+              <span class="block">One line per chord: <code class="font-mono text-xs whitespace-nowrap">section | bar | chord | scale | function</code>, in concert pitch. Leave the scale out to use the chord's default.</span>
+              <span class="mt-2 block"><code class="font-mono text-xs">title:</code>, <code class="font-mono text-xs">subtitle:</code>, <code class="font-mono text-xs">composer:</code>, <code class="font-mono text-xs">key:</code> and <code class="font-mono text-xs">form:</code> set the heading, lines starting with <code class="font-mono text-xs">#</code> are comments, and <code class="font-mono text-xs">@copy A B 8</code> repeats section A as B, 8 bars later, and <code class="font-mono text-xs">@key B 17 D</code> puts bars from B 17 in D until the next @key.</span>
               <span class="mt-2 block">The Source and the bars stay in sync: edit either one. Problems are listed under the text.</span>
             </HelpTip>
             <UiButton v-if="!editor.fatal.value" plain class="ml-auto" @click="prefs.source.value = false">Hide source</UiButton>
@@ -149,7 +149,7 @@
               <ToggleButton v-if="!editor.fatal.value && (place === 'rail') === (!compactRail || editorShown)" :model-value="editorShown" expands title="Show or hide the chart editor" @update:model-value="toggleEditor"><PencilSquareIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</ToggleButton>
               <template v-if="place === 'dialog' || !compactRail">
                 <UiButton v-if="shared" outline :disabled="editor.fatal.value" @click="saveShared"><BookmarkIcon data-slot="icon" />Save to My charts</UiButton>
-                <UiButton v-if="myChartsOn" outline :disabled="editor.fatal.value" @click="after(openShare)"><LinkIcon data-slot="icon" />Share</UiButton>
+                <UiButton outline :disabled="editor.fatal.value" @click="after(openShare)"><LinkIcon data-slot="icon" />Share</UiButton>
                 <UiButton v-if="!editor.fatal.value" outline title="Show only the sheet music (Esc to leave)" @click="after(enterFocus)"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
               </template>
               <template v-if="place === 'rail'">
@@ -161,15 +161,13 @@
           <InterfaceNotice v-if="hidden" :needs="hidden.needs" class="mt-4" @show="ui.level.value = hidden.needs" @reset="resetHidden" />
           <UiText v-if="transposed" role="status" class="mt-4">{{ transposed }}</UiText>
           <PracticePanel
-            v-if="practiceOn && ui.shows('practice') && sheet === 'scales' && !editor.fatal.value"
+            v-if="ui.shows('practice') && sheet === 'scales' && !editor.fatal.value"
             class="mt-4"
             :mode="mode"
             :start-text="start"
             :boxes="practiceBoxesNow"
             :selection="selection"
             :lit="litNow"
-            :pentatonic="pentatonicsOn"
-            :hexatonic="hexatonicsOn"
             @update:selection="practice.setSelection(mode, $event)"
           />
         </div>
@@ -192,7 +190,6 @@
             :instrument-label="sheetEditor ? '' : instrumentLabel(prefs.instrument.value)"
             :numerals="sheetEditor || prefs.numerals.value"
             :scales="sheetEditor || prefs.scaleNames.value"
-            :signatures="signaturesOn"
             :line="sheetLine"
             :editable="sheetEditing && !focus.on.value"
             :selected-line="selectedLine"
@@ -282,8 +279,6 @@ import {
   insertBars,
   drawnChords,
   insertHeldBar,
-  isHexatonicSelection,
-  isPentatonicSelection,
   keyStart,
   renameSection,
   repeatSection,
@@ -316,7 +311,6 @@ import { firstSheet, type SheetKind } from '~/utils/sheets'
 import { type MoreAction, moreMenuItems } from '~/utils/moreMenu'
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { spellView } from '~/utils/scaleChoices'
-import { overlayInForce } from '~/utils/overlay'
 
 const HEXATONIC_PLAN: OverlayPlan = { kind: 'hexatonic' }
 
@@ -374,11 +368,7 @@ const keyStartNote = computed(() => keyStart(chartKeyOf(editor.doc.value), part.
 const spelled = computed(() => spellView(prefs.spell.value, keyStartNote.value))
 const mode = computed((): Mode => spelled.value.mode)
 const start = computed(() => spelled.value.start)
-const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeature('changes'), arpeggios: useFeature('arpeggios') }))
-const practiceOn = useFeature('practice')
-const functionsOn = useFeature('functions')
-const pentatonicsOn = useFeature('pentatonics')
-const hexatonicsOn = useFeature('hexatonics')
+const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet))
 /** the Interface level (#273): which controls show */
 const ui = useInterface()
 /** the chart's sections as the Changes sheet draws them, for the path presets (#264) */
@@ -387,26 +377,20 @@ const pentPath = usePentatonicPath(props.practiceKey, pentSections, computed(() 
 const pentPathModel = computed({ get: () => pentPath.path.value, set: (v) => pentPath.setPath(v) })
 const pentStepUnit = computed({ get: () => pentPath.step.value.unit, set: (unit) => pentPath.setStep({ ...pentPath.step.value, unit }) })
 const pentStepBars = computed({ get: () => pentPath.step.value.bars, set: (bars) => pentPath.setStep({ ...pentPath.step.value, bars }) })
-/** the overlay in force (#273's notice reads it too): one whose flag is off is Off */
-const overlay = computed(() => overlayInForce(prefs.overlay.value, { pentatonics: pentatonicsOn, hexatonics: hexatonicsOn }))
 /** the sheet's Pentatonic overlay plan; null under another overlay or none */
 const pentPicks = usePentatonicPicks(props.practiceKey)
 watch([pentPath.path, () => JSON.stringify(pentPath.step.value), prefs.pentRung, prefs.pentSide, prefs.pentRank, prefs.pentBasis, () => JSON.stringify(chartKeyOf(editor.doc.value))], () => pentPicks.clear()) // picks are concert pitches: a transposed chart lands them elsewhere
 watch(() => editor.doc.value, (doc, old) => { if (Object.keys(pentPicks.picks.value).length) pentPicks.carry(drawnChords(old), drawnChords(doc)) }) // a bar in or out moves later chords' keys (#275)
-const pentatonicPlan = computed((): PentatonicPlan | null => (overlay.value === 'pentatonic'
+const pentatonicPlan = computed((): PentatonicPlan | null => (prefs.overlay.value === 'pentatonic'
   ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, rank: prefs.pentRank.value, picks: pentPicks.picks.value }
   : null))
-const overlayPlan = computed((): OverlayPlan | null => (overlay.value === 'hexatonic' ? HEXATONIC_PLAN : pentatonicPlan.value))
+const overlayPlan = computed((): OverlayPlan | null => (prefs.overlay.value === 'hexatonic' ? HEXATONIC_PLAN : pentatonicPlan.value))
 /** a label's popover (#272): a pick (written for the part) covers its run, stored concert; null resets the run */
 function onPentatonic(run: readonly ChordAt[], written: number | null): void {
   if (written === null) pentPicks.reset(run)
   else pentPicks.pick(run, concertPc(sheetPart.value, written))
 }
-const signaturesOn = useFeature('keySignatures')
-const arpeggiosOn = useFeature('arpeggios')
-const myChartsOn = useFeature('myCharts')
-const compactRailOn = useFeature('compactRail')
-const sheetLine = computed(() => sheetLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value, arpeggiosOn))
+const sheetLine = computed(() => sheetLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value))
 /** chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor) */
 const sheetEditing = computed(() => editorShown.value && !editor.fatal.value)
 const sheetChord = ref<SheetChordEdit | null>(null)
@@ -421,8 +405,8 @@ function editSheetChord(chord: SheetChordEdit): void {
 /** the Source is offered from Everything, and at any level while the text has a problem (only the text can fix it) */
 const sourceOffered = computed(() => ui.shows('source') || editor.diagnostics.value.length > 0)
 const sourceShown = computed(() => (sourceOffered.value && prefs.source.value) || editor.fatal.value)
-/** the chart's key, for the sheets' key signature, drawn once at the start (undefined when the flag is off: drawn as before) */
-const homeKey = computed(() => (signaturesOn ? chartKeyOf(editor.doc.value) : undefined))
+/** the chart's key, for the sheets' key signature, drawn once at the start */
+const homeKey = computed(() => chartKeyOf(editor.doc.value))
 const practice = usePractice(props.practiceKey)
 const LEVEL_OPTIONS = SCALE_LEVELS.map((value) => ({ value, label: LEVEL_LABELS[value] }))
 const levelLabel = (v: (typeof SCALE_LEVELS)[number]): string => LEVEL_LABELS[v]
@@ -432,23 +416,17 @@ provide(SCALE_VIEW, scaleView)
 const resolved = computed(() => resolveScales(editor.doc.value, scaleView.value))
 
 if (props.shared?.practice) practice.setSelection(mode.value, props.shared.practice)
-/** a Pentatonic or Hexatonic selection (stored or shared) plays only with its flag (#266) */
-const selection = computed(() => {
-  const s = practiceOn ? practice.selection(mode.value) : null
-  return (isPentatonicSelection(s) && !pentatonicsOn) || (isHexatonicSelection(s) && !hexatonicsOn) ? null : s
-})
+const selection = computed(() => practice.selection(mode.value))
 // every staff with its practice keys, for the panel's boxes and what the selection lights
 const practiceStaves = computed(() =>
-  practiceOn ? buildSheet(editor.rows.value, part.value, mode.value, start.value, LIMITS.maxExpandedRows, selection.value, undefined, resolved.value).flatMap((p) => p.pages.flat()) : [],
+  buildSheet(editor.rows.value, part.value, mode.value, start.value, LIMITS.maxExpandedRows, selection.value, undefined, resolved.value).flatMap((p) => p.pages.flat()),
 )
 const practiceBoxesNow = computed(() => practiceBoxes(practiceStaves.value, mode.value, start.value))
 const litNow = computed(() => litKeys(practiceStaves.value))
 const transposed = ref('')
 /** settings in force whose controls this Interface level hides (a share link, a stored preference): the notice offers to show them or reset them */
 const hidden = computed(() =>
-  ui.on
-    ? hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: prefs.numerals.value, scaleNames: prefs.scaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: overlay.value })
-    : null,
+  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: prefs.numerals.value, scaleNames: prefs.scaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value }),
 )
 /** each reset, given the mode in force before any of them ran (resetting the spelling changes the mode) */
 const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
@@ -476,8 +454,8 @@ const WIDE = '(min-width: 768px)'
 // focus mode shows the sheet as pages fitted to the window (SheetPages)
 provide(SHEET_PAGED, focus.on)
 const wide = useMediaQuery(WIDE, import.meta.client ? window.matchMedia(WIDE).matches : true)
-/** phones, with the flag on: the short rail, its other controls in a dialog */
-const compactRail = computed(() => compactRailOn && !wide.value)
+/** phones: the short rail, its other controls in a dialog */
+const compactRail = computed(() => !wide.value)
 const sheetEditor = computed(() => wide.value && sheetEditing.value && !focus.on.value)
 const sheetEdit = ref<SheetEdit | null>(null)
 const sheetPreview = ref<ChordPreview | null>(null)
@@ -743,7 +721,7 @@ function print(): void {
 
 /** send the chart and its context to the contact form (via sessionStorage), pre-filled for a bug report */
 /** the rail's More menu: what this chart offers now */
-const moreItems = computed(() => moreMenuItems({ saved: !!saved, edited: !!saved?.edited.value, fatal: editor.fatal.value, files: myChartsOn }))
+const moreItems = computed(() => moreMenuItems({ saved: !!saved, edited: !!saved?.edited.value, fatal: editor.fatal.value }))
 function onMore(action: MoreAction): void {
   if (action === 'copy') saveCopy()
   else if (action === 'download') download()

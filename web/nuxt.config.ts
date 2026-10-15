@@ -80,19 +80,9 @@ export default defineNuxtConfig({
     contact: { resendApiKey: '', to: '', from: '', dryRun: false },
     public: {
       version: buildVersion(process.env), // "2026.10.07 · 1e2bea5": the commit's date and the commit (build/version.ts)
-      // feature flags (useFeature): new ones start off; NUXT_PUBLIC_FEATURES_<NAME>=true|false overrides one
-      features: {
-        myCharts: true, // My charts: edits and new charts saved in this browser, files, share links (docs/plan-saving.md); on since sign-off
-        practice: true, // highlight a chosen subset of each scale's notes (docs/plan-practice.md); on since sign-off
-        changes: true, // the Changes sheet: the chart as a study lead sheet, numerals and scales under the chords (docs/plan-changes.md); on since sign-off
-        keySignatures: true, // the clef and key signature once, at the start of each sheet (docs/superpowers/specs/2026-10-10-key-signatures-design.md); on since sign-off
-        arpeggios: true, // 7th chord arpeggios: the Changes sheet's 7th Chords line and the Arpeggios sheet (docs/superpowers/specs/2026-10-12-seventh-chord-arpeggios-design.md, 2026-10-12-arpeggios-sheet-design.md); on since sign-off
-        compactRail: true, // phones: the rail holds Work on, Instrument, Controls (a dialog of the rest), Print and More (docs/superpowers/specs/2026-10-12-interface-review-design.md §A); on since sign-off
-        functions: true, // author functions, @key areas and live analysis notes (docs/superpowers/specs/2026-10-09-chart-functions-design.md); on since sign-off
-        pentatonics: false, // pentatonic tension ladders: the Changes sheet's Pentatonics row (docs/superpowers/specs/2026-10-13-pentatonic-ladders-design.md)
-        hexatonics: false, // hexatonic practice: the Practice panel's Hexatonic preset and the Changes sheet's overlay (docs/superpowers/specs/2026-10-14-hexatonic-practice-design.md)
-        interfaceLevels: false, // hide controls by audience: Essentials / Intermediate / Everything (docs/superpowers/specs/2026-10-14-interface-levels-design.md)
-      },
+      // feature flags (useFeature): none now (#296). A new one starts off here; NUXT_PUBLIC_FEATURES_<NAME>=true|false
+      // overrides one, and the e2e script (package.json) builds with each on
+      features: {},
     },
   },
   // '/_nuxt/**' too: Nitro emits a separate cache-header route for assets that ends Vercel's routing

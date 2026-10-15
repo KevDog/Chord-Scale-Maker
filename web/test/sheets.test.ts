@@ -10,20 +10,10 @@ describe('SHEETS', () => {
 
 describe('firstSheet', () => {
   it('opens on the Changes sheet', () => {
-    expect(firstSheet(undefined, { changes: true, arpeggios: true })).toBe('changes')
+    expect(firstSheet(undefined)).toBe('changes')
   })
 
   it("opens a share link's own sheet", () => {
-    for (const s of ['scales', 'changes'] as const) expect(firstSheet(s, { changes: true, arpeggios: true })).toBe(s)
-  })
-
-  it('falls back to Scales without the Changes sheet', () => {
-    expect(firstSheet(undefined, { changes: false, arpeggios: true })).toBe('scales')
-    expect(firstSheet('changes', { changes: false, arpeggios: true })).toBe('scales')
-  })
-
-  it('opens a link on Arpeggios only with the flag on', () => {
-    expect(firstSheet('arpeggios', { changes: true, arpeggios: true })).toBe('arpeggios')
-    expect(firstSheet('arpeggios', { changes: true, arpeggios: false })).toBe('changes')
+    for (const s of ['scales', 'changes', 'arpeggios'] as const) expect(firstSheet(s)).toBe(s)
   })
 })

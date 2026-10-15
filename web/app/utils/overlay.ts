@@ -5,24 +5,8 @@ export const isOverlay = (s: string): s is Overlay => (OVERLAYS as readonly stri
 const LABELS: Readonly<Record<Overlay, string>> = { off: 'Off', pentatonic: 'Pentatonic', hexatonic: 'Hexatonic' }
 export const overlayLabel = (o: Overlay): string => LABELS[o]
 
-/** the feature flags the overlays need */
-export type OverlayFlags = Readonly<{ pentatonics: boolean; hexatonics: boolean }>
+/** the Overlay listbox's options */
+export const OVERLAY_CHOICES: readonly { value: Overlay; label: string }[] = OVERLAYS.map((value) => ({ value, label: LABELS[value] }))
 
-/** an overlay plays only with its flag: a stored one whose flag is off reads as Off */
-export const overlayInForce = (o: Overlay, flags: OverlayFlags): Overlay =>
-  (o === 'pentatonic' && !flags.pentatonics) || (o === 'hexatonic' && !flags.hexatonics) ? 'off' : o
-
-/** the Overlay listbox's options: Off, and each overlay whose flag is on */
-export const overlayChoices = (flags: OverlayFlags): readonly { value: Overlay; label: string }[] =>
-  OVERLAYS.filter((o) => overlayInForce(o, flags) === o).map((value) => ({ value, label: LABELS[value] }))
-
-const DESCRIPTIONS: Readonly<Record<Exclude<Overlay, 'off'>, string>> = {
-  pentatonic: "each key area's or each chord's minor pentatonic, ranked by how far out it is",
-  hexatonic: "each chord's hexatonic triad pair",
-}
-
-/** the Overlay listbox's title: what the options on offer put under the chords */
-export const overlayTitle = (choices: readonly { value: Overlay }[]): string => {
-  const parts = choices.flatMap((c) => (c.value === 'off' ? [] : [DESCRIPTIONS[c.value]]))
-  return parts.length ? `A row under the chords: ${parts.join(', or ')}` : 'A row under the chords'
-}
+/** the Overlay listbox's title: what each overlay puts under the chords */
+export const OVERLAY_TITLE = "A row under the chords: each key area's or each chord's minor pentatonic, ranked by how far out it is, or each chord's hexatonic triad pair"

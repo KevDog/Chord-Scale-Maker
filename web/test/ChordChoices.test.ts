@@ -123,12 +123,10 @@ describe('ChordChoices interface levels', () => {
   const all = (line: number) => mountSuspended(ChordChoices, { props: { doc, line, part: 'all' }, attachTo: document.body })
   const headings = (w: W) => w.findAll('h3').map((h) => h.text())
   const at = (level: 'essentials' | 'intermediate' | 'everything') => {
-    useRuntimeConfig().public.features.interfaceLevels = true
     useInterface().level.value = level
   }
   beforeEach(() => (document.body.innerHTML = ''))
   afterEach(() => {
-    useRuntimeConfig().public.features.interfaceLevels = false
     useInterface().level.value = 'everything'
   })
 

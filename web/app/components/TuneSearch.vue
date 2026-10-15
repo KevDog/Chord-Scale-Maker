@@ -50,7 +50,7 @@
         </li>
       </HComboboxOption>
       <li v-else-if="!found.total" class="px-3 py-3.5 text-zinc-500 dark:text-zinc-400">
-        No tune matches “{{ query.trim() }}”. <UiTextLink href="/contact">Request it</UiTextLink><template v-if="myCharts"> or <UiTextLink href="/song?new=1">start a new chart</UiTextLink></template>.
+        No tune matches “{{ query.trim() }}”. <UiTextLink href="/contact">Request it</UiTextLink> or <UiTextLink href="/song?new=1">start a new chart</UiTextLink>.
       </li>
     </HComboboxOptions>
   </HCombobox>
@@ -73,7 +73,6 @@ const query = ref('')
 const picked = ref<string | null>(null)
 const found = computed(() => suggestTunes(LIBRARY, query.value, SHOWN))
 const { instrument } = usePreferences()
-const myCharts = useFeature('myCharts')
 const transposing = computed(() => INSTRUMENTS[instrument.value].trans !== 'C')
 const written = (key: string): string => writtenKey(key, INSTRUMENTS[instrument.value])
 

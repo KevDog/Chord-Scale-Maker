@@ -35,7 +35,7 @@
         </div>
       </section>
 
-      <section v-else-if="piece === 'function' && functionsOn && fnChoices.length" :aria-labelledby="`${id}-function`" class="space-y-2">
+      <section v-else-if="piece === 'function' && fnChoices.length" :aria-labelledby="`${id}-function`" class="space-y-2">
         <div class="flex items-baseline justify-between gap-2">
           <div class="flex min-w-0 items-baseline gap-2">
             <UiSubheading :id="`${id}-function`" :level="3">Function</UiSubheading>
@@ -65,7 +65,7 @@
         </div>
       </section>
 
-      <section v-else-if="piece === 'why' && functionsOn && note?.note" :aria-labelledby="`${id}-why`" class="space-y-1">
+      <section v-else-if="piece === 'why' && note?.note" :aria-labelledby="`${id}-why`" class="space-y-1">
         <UiSubheading :id="`${id}-why`" :level="3">Why</UiSubheading>
         <UiText class="text-sm/6!">{{ note.note }}</UiText>
       </section>
@@ -93,7 +93,6 @@ const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; said: [text: string] }
 const id = useId()
 /** 44 px rows below md, for fingers */
 const ROOMY = 'max-md:[&_[role=radio]]:py-2.5'
-const functionsOn = useFeature('functions')
 const { shows } = useInterface()
 // what this Interface level shows (#273): a chord's function from Everything, its scale and why from Intermediate
 const SHOWN = { function: 'function-choice', scale: 'scale-choice', why: 'why' } as const
@@ -127,7 +126,7 @@ const selectedScale = computed((): string => {
 })
 const custom = computed(() => !!row.value?.scale && selectedScale.value === row.value.scale && !samePitchScale(row.value.scale, choices.value.defaultScale) && !choices.value.alternates.some((o) => o.scale === row.value?.scale))
 
-const fnChoices = computed(() => (row.value && functionsOn ? (functionChoices(props.doc).get(props.line) ?? []) : []))
+const fnChoices = computed(() => (row.value ? (functionChoices(props.doc).get(props.line) ?? []) : []))
 const matchingFunction = computed(() => {
   const fn = row.value?.function ?? ''
   return fn ? fnChoices.value.find((c) => c.value && sameFunction(c.value, fn)) : fnChoices.value[0]

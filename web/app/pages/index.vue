@@ -29,14 +29,14 @@
           <h3 class="font-display text-[17px]/6 font-semibold text-zinc-900 dark:text-white">Bring your own tune</h3>
           <p class="mt-1.5 max-w-[36em] text-sm/[22px] text-pretty text-zinc-500 dark:text-zinc-400">
             Not in the library?
-            <template v-if="myCharts">Start a new chart, type the changes into the sheet, and it’s saved in this browser. Or </template><template v-else>You can </template><UiTextLink href="/contact">ask for it</UiTextLink> and it may join the library.
+            Start a new chart, type the changes into the sheet, and it’s saved in this browser. Or <UiTextLink href="/contact">ask for it</UiTextLink> and it may join the library.
           </p>
         </div>
       </div>
     </section>
 
     <p class="mt-10 text-zinc-500 dark:text-zinc-400">
-      Or <UiTextLink href="/library">browse the library A–Z</UiTextLink><template v-if="myCharts">, or <UiTextLink href="/song?new=1">start a new chart</UiTextLink></template>.
+      Or <UiTextLink href="/library">browse the library A–Z</UiTextLink>, or <UiTextLink href="/song?new=1">start a new chart</UiTextLink>.
     </p>
   </div>
 </template>
@@ -50,7 +50,6 @@ import { jsonLd, webAppLd, websiteLd } from '~/utils/structuredData'
  * whole library is at /library */
 useSeoMeta(seoMeta(PAGE_HEAD.index))
 useHead({ script: [{ type: 'application/ld+json', innerHTML: jsonLd([websiteLd(), webAppLd()]) }] })
-const myCharts = useFeature('myCharts')
 
 /** what the site does (issue #249); the last, Bring your own tune, has links */
 const USES = [

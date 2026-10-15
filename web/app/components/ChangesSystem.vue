@@ -220,9 +220,8 @@ const nameScales = ref<readonly (readonly number[])[]>([]) // each chord name's 
 const drawError = ref<string | null>(null)
 const rendering = useRendering()
 const { shows } = useInterface()
-/** the "why" notes: the functions flag, from Intermediate */
-const functionsOn = useFeature('functions')
-const notesOn = computed(() => functionsOn && shows('why'))
+/** the "why" notes, from Intermediate */
+const notesOn = computed(() => shows('why'))
 
 /**
  * each chord over the slash of its beat (markers and key areas ride on a bar's first chord, or its first beat), with

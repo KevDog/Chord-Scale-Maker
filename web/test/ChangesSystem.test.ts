@@ -272,11 +272,9 @@ describe('ChangesSystem interface levels', () => {
   const withReason = (): ChangesLine => ({ bars: [bar([{ ...at(chord(2, 'G7', ''), 3), numeral: 'V7', scale: 'G Mixolydian', reason: 'the V of C', rule: 'D1' }], [])] })
   const base = { first: true, beats: 4 as const, barsPerLine: 4, numerals: true, scales: true, editable: true, doc }
   const level = (l: 'essentials' | 'intermediate' | 'everything') => {
-    useRuntimeConfig().public.features.interfaceLevels = true
     useInterface().level.value = l
   }
   afterEach(() => {
-    useRuntimeConfig().public.features.interfaceLevels = false
     useInterface().level.value = 'everything'
   })
 
@@ -301,12 +299,10 @@ describe('ChangesSystem interface levels', () => {
 
 describe('ChangesSystem pentatonic ladder by interface level', () => {
   afterEach(() => {
-    useRuntimeConfig().public.features.interfaceLevels = false
     useInterface().level.value = 'everything'
   })
 
   it('below Everything the row prints its labels, no ladder to open', async () => {
-    useRuntimeConfig().public.features.interfaceLevels = true
     useInterface().level.value = 'intermediate'
     const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Cmaj7').value
     const plan = { kind: 'pentatonic', bySection: { B: { rung: 5, side: 'flat' as const } }, fallback: { rung: 0, side: 'flat' as const }, counts: true }

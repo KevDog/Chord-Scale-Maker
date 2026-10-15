@@ -12,7 +12,7 @@
         <p v-if="built.pentatonicCaption" data-slot="pent-caption" class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ built.pentatonicCaption }}</p>
       </template>
       <template #default="{ page }">
-        <div :class="['space-y-4', signatures || lineOn ? 'print:space-y-0' : 'print:space-y-1']">
+        <div class="space-y-4 print:space-y-0">
           <ChangesSystem
             v-for="l in page.lines"
             :key="l.index"
@@ -23,7 +23,7 @@
             :numerals="numerals"
             :scales="scales"
             :arpeggio="arpeggio"
-            :clef="signatures || lineOn ? part.clef : undefined"
+            :clef="part.clef"
             :editable="editable"
             :selected-line="selectedLine"
             :doc="doc"
@@ -73,7 +73,6 @@ const props = defineProps<{
   instrumentLabel: string // '' for concert
   numerals: boolean
   scales: boolean
-  signatures?: boolean // the part's clef and the chart's key signature, once, at the start of the first line
   line?: SheetLine // a guide tone or arpeggio line, as notes in place of the slashes (the clef then always starts line 1)
   editable?: boolean // tap a chord to edit it
   selectedLine?: number | null // the chart line of the chord the editor is on
@@ -103,9 +102,8 @@ const paged = inject(SHEET_PAGED, ref(false)) // focus mode's pages are a printe
 const barsPerLine = computed(() => (wide.value || paged.value ? 4 : 2))
 
 const line = computed((): SheetLine => props.line ?? 'off')
-const lineOn = computed(() => line.value !== 'off')
 const arpeggio = computed(() => isArpeggioPattern(line.value))
-const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, props.signatures, line.value, props.view, props.overlay ?? null))
+const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null))
 /** the bars that start a line because the names before them didn't fit (ChangesSystem measures): until the sheet changes */
 const breaks = shallowRef<ReadonlySet<string>>(new Set())
 watch(built, () => (breaks.value = new Set()))

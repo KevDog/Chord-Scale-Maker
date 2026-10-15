@@ -48,7 +48,6 @@ import type { SaveTarget } from '~/composables/useSavedChart'
  * - ?mine=<id>: one of your saved charts
  * - ?new=1: a blank chart, saved on its first edit (the address then becomes ?mine=<id>)
  * - #s=<payload>: a share link (engine/src/share.ts): the chart and its view, not saved until you save it
- * Without the myCharts feature only library charts open, and nothing is saved.
  */
 type Source =
   | Readonly<{ kind: 'chart'; text: string; practiceKey?: string; target?: SaveTarget; libraryTitle?: string; shared?: ShareView }>
@@ -57,7 +56,6 @@ type Source =
 
 const route = useRoute()
 const router = useRouter()
-const myCharts = useFeature('myCharts')
 const query = (name: string): string => (typeof route.query[name] === 'string' ? (route.query[name] as string) : '')
 /** the library chart in the address: /song/<name>, or an old /song?chart=<name> */
 const slug = (): string => chartSlug(typeof route.params.slug === 'string' ? route.params.slug : query('chart'))
@@ -67,20 +65,19 @@ let adopted = ''
 
 /** a share link's chart: undefined without one, null if it's damaged */
 const hash = import.meta.client ? (route.hash || (useNuxtApp().$arrivalHash as string | undefined) || location.hash) : ''
-const link = myCharts && hash.startsWith('#s=') ? await decodeShare(hash.slice(3)) : undefined
+const link = hash.startsWith('#s=') ? await decodeShare(hash.slice(3)) : undefined
 
 /** a library chart's other addresses (and a stray ?mine=) move to its own, the hash kept (the router may have dropped it, see `hash`) */
 const atOwnAddress = (): boolean => !findChart(slug()) || (route.path === songPath(slug()) && route.query.mine === undefined)
 const moveToOwnAddress = () => navigateTo({ path: songPath(slug()), hash }, { replace: true })
 
-// without My charts the editor only opens library charts, and with it a bare /song has nothing to open (not on the
-// prerender, which has no query)
+// a bare /song has nothing to open (not on the prerender, which has no query)
 if (import.meta.client) {
   if (!atOwnAddress()) await moveToOwnAddress()
-  else if (!findChart(slug()) && (route.params.slug || !myCharts || (!query('mine') && route.query.new === undefined && link === undefined)))
+  else if (!findChart(slug()) && (route.params.slug || (!query('mine') && route.query.new === undefined && link === undefined)))
     await navigateTo(libraryPath(), { replace: true })
 }
-if (import.meta.client && myCharts) migrateDraft(STARTER_CHART)
+if (import.meta.client) migrateDraft(STARTER_CHART)
 // the page stays mounted when only the query changes (and while it hydrates the router briefly shows a bare /song, so a
 // ?chart= or stray ?mine= is often only seen here)
 if (import.meta.client) watch(() => [route.query.chart, route.query.mine], () => atOwnAddress() || moveToOwnAddress())
@@ -90,7 +87,6 @@ const source = computed((): Source => {
   const chart = slug()
   const library = findChart(chart)
   if (library) {
-    if (!myCharts) return { kind: 'chart', text: library.text, practiceKey: chart }
     const version = versionOf(chart)
     const saved = version ? loadChart(version.id) : null
     const target: SaveTarget = { kind: 'library', slug: chart, libraryText: library.text, ...(saved ? { id: saved.meta.id } : {}) }

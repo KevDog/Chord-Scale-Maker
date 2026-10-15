@@ -9,13 +9,13 @@ const doc = parseChart('title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\n').value
 // 64 bars: more lines than any page holds, at 2 or 4 bars a line
 const long = parseChart(`title: L\nkey: C\n${Array.from({ length: 64 }, (_, i) => `A | ${i + 1} | ${['Dm7', 'G7', 'CMaj7', 'A7'][i % 4]}`).join('\n')}\n`).value
 
-const mountSheet = (over: Readonly<{ doc?: ChartDoc; signatures?: boolean; line?: SheetLine; numerals?: boolean; scales?: boolean; editing?: null; overlay?: OverlayPlan | null }> = {}) =>
+const mountSheet = (over: Readonly<{ doc?: ChartDoc; line?: SheetLine; numerals?: boolean; scales?: boolean; editing?: null; overlay?: OverlayPlan | null }> = {}) =>
   mountSuspended(ChangesSheet, {
     props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: false, ...over },
     global: { stubs: { ChangesSystem: true } },
   })
-const systemOf = async (signatures: boolean, line?: SheetLine) =>
-  (await mountSheet({ signatures, ...(line ? { line } : {}) })).findComponent({ name: 'ChangesSystem' })
+const systemOf = async (line?: SheetLine) =>
+  (await mountSheet(line ? { line } : {})).findComponent({ name: 'ChangesSystem' })
 
 describe('ChangesSheet', () => {
   it('shows a preset’s path on screen while the sheet is the editor, and in the subtitle otherwise (#276)', async () => {
@@ -56,16 +56,10 @@ describe('ChangesSheet', () => {
     expect(await scaleAt({ level: 'basic', seed: 0 })).toMatch(/^C Min.*Pent/)
   })
 
-  it("with signatures, gives the lines the chart's key and the part's clef (drawn on the first line only)", async () => {
-    const line = await systemOf(true)
+  it("gives the lines the chart's key and the part's clef (drawn on the first line only)", async () => {
+    const line = await systemOf()
     expect(line.props('clef')).toBe('bass')
     expect(line.props('line').bars[0].keySig).toBe('Bb')
-  })
-
-  it('without, neither (drawn as before)', async () => {
-    const line = await systemOf(false)
-    expect(line.props('clef')).toBeUndefined()
-    expect(line.props('line').bars[0].keySig).toBeNull()
   })
 
   it("starts a new line where a line's names don't fit, until the chart changes", async () => {
@@ -80,33 +74,24 @@ describe('ChangesSheet', () => {
     expect(lines()).toEqual(['1 2', '3 4'])
   })
 
-  it('keeps the print gap between lines unless signatures are on', async () => {
-    const gap = async (signatures: boolean) => (await systemOf(signatures)).element.parentElement?.className
-    expect(await gap(false)).toContain('print:space-y-1')
-    expect(await gap(true)).toContain('print:space-y-0')
-    expect(await gap(true)).not.toContain('print:space-y-1')
+  it('closes the print gap between lines', async () => {
+    const className = (await systemOf()).element.parentElement?.className
+    expect(className).toContain('print:space-y-0')
+    expect(className).not.toContain('print:space-y-1')
   })
 
   it('with the line off, or no line given, draws slashes: no voice, no labels', async () => {
-    for (const bar of [(await systemOf(false, 'off')).props('line').bars[0], (await systemOf(false)).props('line').bars[0]]) {
+    for (const bar of [(await systemOf('off')).props('line').bars[0], (await systemOf()).props('line').bars[0]]) {
       expect(bar.voice).toEqual([])
       expect(bar.chords[0].guide).toBe('')
     }
   })
 
-  it('with a line on, gives the first line the clef even without signatures, and the notes and labels', async () => {
-    const third = await systemOf(false, 'third')
-    expect(third.props('clef')).toBe('bass')
-    expect(third.props('line').bars[0].keySig).toBeNull()
+  it('with a line on, gives the first line the notes and labels', async () => {
+    const third = await systemOf('third')
     expect(third.props('line').bars[0].voice.map((n: { pitch: unknown }) => n.pitch)).not.toContain(null)
     expect(third.props('line').bars[0].chords[0].guide).toBe('3')
-    expect((await systemOf(false, 'seventh')).props('line').bars[0].chords[0].guide).toBe('7')
-  })
-
-  it('closes the print gap when a line is on', async () => {
-    const className = (await systemOf(false, 'seventh')).element.parentElement?.className
-    expect(className).toContain('print:space-y-0')
-    expect(className).not.toContain('print:space-y-1')
+    expect((await systemOf('seventh')).props('line').bars[0].chords[0].guide).toBe('7')
   })
 
   it('pages the lines by changesLinesPerPage', async () => {

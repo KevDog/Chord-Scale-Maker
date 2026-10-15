@@ -32,7 +32,7 @@
           browser's own storage so they're there next time. They're never sent anywhere. Clearing your browser's data
           for this site removes them.
         </UiText>
-        <UiText v-if="myCharts">
+        <UiText>
           That includes My charts: your saved and edited charts stay in this browser only. A share link carries its
           chart in the part of the address after the <UiCode>#</UiCode>, which browsers don't send to the website, and
           which is removed before a visit is counted. Downloaded files are yours alone.
@@ -66,7 +66,6 @@
 
 <script setup lang="ts">
 import { PAGE_HEAD, seoMeta } from '~/utils/site'
-const myCharts = useFeature('myCharts')
 const SECTIONS = [
   { id: 'contact', title: 'The contact form' },
   { id: 'stats', title: 'Visitor statistics' },

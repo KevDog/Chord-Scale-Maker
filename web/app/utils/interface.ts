@@ -34,7 +34,7 @@ const rank = (l: InterfaceLevel): number => INTERFACE_LEVELS.indexOf(l)
 export const shows = (level: InterfaceLevel, id: ControlId): boolean => rank(level) >= rank(CONTROL_TIERS[id])
 
 /** the sheet's settings a control governs: what decides the notice */
-export type ViewSettings = Readonly<{ sheet: SheetKind; scaleLevel: ScaleLevel; numerals: boolean; scaleNames: boolean; lineMode: LineMode; spell: Spell; practice: PracticeSelection | null; overlay: Overlay }> // overlay: the one in force (flag-filtered)
+export type ViewSettings = Readonly<{ sheet: SheetKind; scaleLevel: ScaleLevel; numerals: boolean; scaleNames: boolean; lineMode: LineMode; spell: Spell; practice: PracticeSelection | null; overlay: Overlay }>
 export type HiddenSetting = 'scale-level' | 'numerals' | 'scale-names' | 'line' | 'spell' | 'practice' | 'pentatonics'
 
 /** each setting away from its default on this sheet, and the level its control needs */

@@ -50,7 +50,7 @@ import { compareKeys, type HexGrouping, isHexatonicSelection, isPentatonicSelect
 
 /**
  * the practice controls: per-chord presets (From root) or All (From X), a box per spelled interval or pitch in the
- * chart, and Clear. With the pentatonics flag, a Pentatonic preset with a rank picker (#266); with the hexatonics flag,
+ * chart, and Clear. A Pentatonic preset with a rank picker (#266), and
  * a Hexatonic preset with Pair and grouping pickers and a legend of its two groups. Editing a box while a preset is active starts a custom selection from what the preset lit.
  */
 const props = defineProps<{
@@ -59,8 +59,6 @@ const props = defineProps<{
   boxes: readonly PracticeBox[]
   selection: PracticeSelection | null
   lit: readonly string[] // the keys the current selection lights somewhere in the chart
-  pentatonic?: boolean // the pentatonics flag: offer the Pentatonic preset (#266)
-  hexatonic?: boolean // the hexatonics flag: offer the Hexatonic preset
 }>()
 const emit = defineEmits<{ 'update:selection': [selection: PracticeSelection | null] }>()
 
@@ -69,10 +67,9 @@ const checked = computed(() => new Set(props.selection && 'keys' in props.select
 const startName = computed(() => noteText(props.startText))
 
 const { shows } = useInterface()
-/** the Pentatonic preset: the flag, from Everything */
-const pentatonicShown = computed(() => !!props.pentatonic && shows('practice-pentatonic'))
-/** the Hexatonic preset: the flag, from Everything */
-const hexatonicShown = computed(() => !!props.hexatonic && shows('practice-hexatonic'))
+/** the Pentatonic and Hexatonic presets: from Everything */
+const pentatonicShown = computed(() => shows('practice-pentatonic'))
+const hexatonicShown = computed(() => shows('practice-hexatonic'))
 const presets = computed(() => PRESETS[props.mode].filter((p) => (p !== 'pentatonic' || pentatonicShown.value) && (p !== 'hexatonic' || hexatonicShown.value)))
 const RANKS = Array.from({ length: PENTATONIC_RANKS }, (_, i) => i + 1)
 

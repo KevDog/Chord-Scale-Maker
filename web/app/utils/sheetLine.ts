@@ -4,9 +4,9 @@ import { type ArpeggioPattern, isArpeggioPattern, type SheetLine } from '@chord-
 export type LineMode = 'off' | 'guide' | 'arpeggio'
 export type GuideFrom = 'third' | 'seventh'
 
-/** the line shown: the mode with its choice; with the arpeggios flag off, an arpeggio mode shows none */
-export const sheetLineOf = (mode: LineMode, guide: GuideFrom, arpeggio: ArpeggioPattern, arpeggiosOn: boolean): SheetLine =>
-  mode === 'guide' ? guide : mode === 'arpeggio' && arpeggiosOn ? arpeggio : 'off'
+/** the line shown: the mode with its choice */
+export const sheetLineOf = (mode: LineMode, guide: GuideFrom, arpeggio: ArpeggioPattern): SheetLine =>
+  mode === 'guide' ? guide : mode === 'arpeggio' ? arpeggio : 'off'
 
 /** a line (a share link's) as the mode and the choice it sets */
 export function lineChoiceOf(line: SheetLine | undefined): Readonly<{ mode: LineMode; guide?: GuideFrom; arpeggio?: ArpeggioPattern }> {
