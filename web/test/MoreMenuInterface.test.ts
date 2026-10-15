@@ -14,12 +14,10 @@ const levels = () => [...document.querySelectorAll<HTMLElement>('[role=menuitem]
 describe('MoreMenu Interface', () => {
   beforeEach(() => (document.body.innerHTML = ''))
   afterEach(() => {
-    useRuntimeConfig().public.features.interfaceLevels = false
     useInterface().level.value = 'everything'
   })
 
   it('offers the three levels, the current one marked, and picks one', async () => {
-    useRuntimeConfig().public.features.interfaceLevels = true
     useInterface().level.value = 'essentials'
     await open()
     expect(document.body.textContent).toContain('Interface')
@@ -27,11 +25,5 @@ describe('MoreMenu Interface', () => {
     levels()[1]?.click()
     await nextTick()
     expect(useInterface().level.value).toBe('intermediate')
-  })
-
-  it('has no Interface with the flag off', async () => {
-    await open()
-    expect(levels()).toHaveLength(0)
-    expect(document.body.textContent).toContain('Report a chart error')
   })
 })

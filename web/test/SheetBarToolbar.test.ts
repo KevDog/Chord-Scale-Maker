@@ -82,7 +82,6 @@ describe('SheetBarToolbar', () => {
 
 describe('SheetBarToolbar interface levels', () => {
   const at = (level: 'essentials' | 'intermediate' | 'everything') => {
-    useRuntimeConfig().public.features.interfaceLevels = true
     useInterface().level.value = level
   }
   const labels = (w: W) => w.findAll('button').map((b) => b.attributes('aria-label') ?? b.text())
@@ -93,7 +92,6 @@ describe('SheetBarToolbar interface levels', () => {
   }
   beforeEach(() => (document.body.innerHTML = ''))
   afterEach(() => {
-    useRuntimeConfig().public.features.interfaceLevels = false
     useInterface().level.value = 'everything'
   })
 

@@ -23,12 +23,11 @@ import { songPath } from '~/utils/site'
 /** the home page's recently opened charts, from this browser (utils/recentCharts.ts); nothing until it has some */
 type Row = Readonly<{ href: string; title: string; composer: string; mine: boolean; when: string }>
 
-const myCharts = useFeature('myCharts')
 const rows = ref<Row[]>([])
 
 onMounted(() => {
   const now = Date.now()
-  const mine = myCharts ? listCharts() : []
+  const mine = listCharts()
   rows.value = loadRecent().flatMap((r): Row[] => {
     const when = openedWhen(r.at, now)
     if (r.kind === 'library') {

@@ -2,7 +2,7 @@ import { type BrowserContext, test as base, expect, type Locator, type Page } fr
 
 export type InterfaceLevel = 'essentials' | 'intermediate' | 'everything'
 
-/** a browser that has chosen an Interface level (null: a new browser, which decides its own). Every flag is on in e2e builds; specs expect every control unless they say otherwise */
+/** a browser that has chosen an Interface level (null: a new browser, which decides its own). Specs expect every control unless they say otherwise */
 export async function chooseInterface(context: BrowserContext, level: InterfaceLevel): Promise<void> {
   await context.addInitScript((l) => {
     try {

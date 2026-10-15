@@ -4,13 +4,13 @@
     <!-- the rail: labelled groups wrap on the left (Work on · Instrument · Level · Show (on the Changes: Analysis · Line) · Transposition · Spell Scale), the actions pinned right (on their own line, still right, once the row is too narrow); top-aligned so every label sits on one line -->
     <SheetRail :sticky="stickyRail">
       <template #left>
-        <UiField v-if="sheets.length > 1" class="w-36">
+        <UiField class="w-36">
           <UiLabel class="pl-3">Work on</UiLabel>
           <!-- a plain wrapper (not data-slot=control) so the label gap matches the other groups -->
           <div class="flex items-center gap-2">
             <UiListbox v-model="sheet" class="w-full">
               <template #selected="{ value }"><UiListboxLabel>{{ sheetLabel(value) }}</UiListboxLabel></template>
-              <UiListboxOption v-for="s in sheets" :key="s.value" :value="s.value"><UiListboxLabel>{{ s.label }}</UiListboxLabel></UiListboxOption>
+              <UiListboxOption v-for="s in SHEETS" :key="s.value" :value="s.value"><UiListboxLabel>{{ s.label }}</UiListboxLabel></UiListboxOption>
             </UiListbox>
           </div>
         </UiField>
@@ -51,11 +51,11 @@
                 </div>
                 <!-- the row under the chords: Off, each key area's or chord's minor pentatonic, or each chord's hexatonic pair; the Pentatonic options open to its right, over the sheet, so the rail keeps its two rows (#293), stacked under it in the Controls dialog -->
                 <div v-if="overlayShown" :class="compact ? 'flex flex-col items-start gap-2' : 'flex items-start gap-1'">
-                  <UiListbox v-model="overlayModel" class="w-48" aria-label="Overlay" :title="overlayTitle(overlayOptions)">
+                  <UiListbox v-model="overlay" class="w-48" aria-label="Overlay" :title="OVERLAY_TITLE">
                     <template #selected="{ value }"><UiListboxLabel>Overlay: {{ overlayLabel(value) }}</UiListboxLabel></template>
-                    <UiListboxOption v-for="o in overlayOptions" :key="o.value" :value="o.value"><UiListboxLabel>{{ o.label }}</UiListboxLabel></UiListboxOption>
+                    <UiListboxOption v-for="o in OVERLAY_CHOICES" :key="o.value" :value="o.value"><UiListboxLabel>{{ o.label }}</UiListboxLabel></UiListboxOption>
                   </UiListbox>
-                  <RailPopover v-if="overlayModel === 'pentatonic'" v-model:open="pentOptionsOpen" :inline="compact" label="Pentatonic options">
+                  <RailPopover v-if="overlay === 'pentatonic'" v-model:open="pentOptionsOpen" :inline="compact" label="Pentatonic options">
                     <SegmentedControl v-model="pentBasis" legend="Ranked against" name="pent-basis" aria-label="Pentatonics ranked against" :options="PENT_BASES" />
                     <UiListbox v-if="pentBasis === 'chord'" v-model="pentRank" class="w-48" aria-label="Pentatonic rank">
                       <template #selected="{ value }"><UiListboxLabel>{{ rankLabel(value) }}</UiListboxLabel></template>
@@ -86,7 +86,7 @@
               <UiLabel class="pl-3">Line</UiLabel>
               <!-- the detail opens beneath the modes, so the Line group keeps its width and place (#187) -->
               <div class="flex flex-col gap-2">
-                <SegmentedControl v-model="lineMode" legend="Line" name="line-mode" :options="lineModes" />
+                <SegmentedControl v-model="lineMode" legend="Line" name="line-mode" :options="LINE_MODES" />
                 <UiListbox v-if="lineMode === 'guide'" v-model="guideLine" class="w-full" aria-label="Guide tone line">
                   <template #selected="{ value }"><UiListboxLabel>{{ guideLabel(value) }}</UiListboxLabel></template>
                   <UiListboxOption v-for="g in GUIDE_LINES" :key="g.value" :value="g.value" :title="g.title"><UiListboxLabel>{{ g.label }}</UiListboxLabel></UiListboxOption>
@@ -143,7 +143,7 @@
 import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, partFor, type PentatonicBasis, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
 import { PENT_BASES, PENT_PATHS, PENT_RANK_CHOICES, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rankLabel, rungLabel, sideShown } from '~/utils/pentatonics'
 import type { GuideFrom, LineMode } from '~/utils/sheetLine'
-import { type Overlay, overlayChoices, overlayInForce, overlayLabel, overlayTitle } from '~/utils/overlay'
+import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
 import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
 import type { SheetKind } from '~/utils/sheets'
 import type { FunctionalComponent } from 'vue'
@@ -169,17 +169,13 @@ const pentStepUnit = defineModel<PentatonicStepUnit>('pentStepUnit', { default: 
 const pentStepBars = defineModel<2 | 4 | 8>('pentStepBars', { default: 4 })
 /** SegmentedControl's values are strings */
 const pentStepBarsText = computed({ get: () => String(pentStepBars.value) as '2' | '4' | '8', set: (v) => (pentStepBars.value = Number(v) as 2 | 4 | 8) })
-const overlayFlags = { pentatonics: useFeature('pentatonics'), hexatonics: useFeature('hexatonics') }
-const overlayOptions = overlayChoices(overlayFlags)
-/** the overlay in force: one whose flag is off reads Off */
-const overlayModel = computed({ get: () => overlayInForce(overlay.value, overlayFlags), set: (v: Overlay) => (overlay.value = v) })
 /** the Pentatonic options' popover: it opens as the Overlay turns to Pentatonic, and closes as it leaves (#293) */
 const pentOptionsOpen = ref(false)
-watch(overlayModel, (o) => (pentOptionsOpen.value = o === 'pentatonic'))
+watch(overlay, (o) => (pentOptionsOpen.value = o === 'pentatonic'))
 const { shows } = useInterface()
-/** what this Interface level shows (#273): Numerals and Scales (hidden while editing too), the Overlay (with either overlay's flag on) */
+/** what this Interface level shows (#273): Numerals and Scales (hidden while editing too), the Overlay */
 const analysisShown = computed(() => !props.lockLabels && shows('analysis'))
-const overlayShown = computed(() => overlayOptions.length > 1 && shows('pentatonics'))
+const overlayShown = computed(() => shows('pentatonics'))
 const lineMode = defineModel<LineMode>('lineMode', { default: 'off' })
 const guideLine = defineModel<GuideFrom>('guideLine', { default: 'third' })
 const arpeggio = defineModel<ArpeggioPattern>('arpeggio', { default: 'up-root' })
@@ -205,25 +201,18 @@ function runAfterClose(): void {
 /** the groups' wrapper in the rail: none */
 const Passthrough: FunctionalComponent = (_, { slots }) => slots.default?.()
 
-const changes = useFeature('changes')
-const arpeggios = useFeature('arpeggios')
-const sheets = computed(() => SHEETS.filter((s) => (s.value !== 'changes' || changes) && (s.value !== 'arpeggios' || arpeggios)))
 const arpNoteOptions = ARP_NOTES.map((value) => ({ value, label: ARP_NOTES_LABELS[value] }))
-// the Changes sheet's line, at most one: guide tones or 7th chord arpeggios (with the flag on)
-const lineModes = computed((): { value: LineMode; label: string; title: string }[] => [
+// the Changes sheet's line, at most one: guide tones or 7th chord arpeggios
+const LINE_MODES: readonly { value: LineMode; label: string; title: string }[] = [
   { value: 'off', label: 'Off', title: 'No line: slashes' },
   { value: 'guide', label: 'Guide Tones', title: "A line that starts on the first chord's 3rd or 7th and moves to the nearest guide tone of each chord" },
-  ...(arpeggios ? [{ value: 'arpeggio' as const, label: '7th Chords', title: "Each chord's four chord tones, arpeggiated: quarters, eighths or sixteenths as the bar has one, two or more chords" }] : []),
-])
+  { value: 'arpeggio', label: '7th Chords', title: "Each chord's four chord tones, arpeggiated: quarters, eighths or sixteenths as the bar has one, two or more chords" },
+]
 const GUIDE_LINES = [
   { value: 'third', label: 'From 3rd', title: "A line that starts on the first chord's 3rd and moves to the nearest guide tone of each chord" },
   { value: 'seventh', label: 'From 7th', title: "A line that starts on the first chord's 7th and moves to the nearest guide tone of each chord" },
 ] as const
 const guideLabel = (v: GuideFrom): string => GUIDE_LINES.find((g) => g.value === v)?.label ?? ''
-const sheetLabel = (v: SheetKind): string => sheets.value.find((s) => s.value === v)?.label ?? ''
+const sheetLabel = (v: SheetKind): string => SHEETS.find((s) => s.value === v)?.label ?? ''
 const part = computed(() => partFor(instrument.value))
-// the flag off with an arpeggio saved: nothing is drawn, so rest the mode on Off
-watch(lineMode, () => {
-  if (!arpeggios && lineMode.value === 'arpeggio') lineMode.value = 'off'
-}, { immediate: true })
 </script>

@@ -7,7 +7,7 @@ export default defineConfig({
       // pure TypeScript, no Nuxt: the build helpers and the server's checks
       { test: { name: 'node', include: ['build/**/*.test.ts', 'server/**/*.test.ts'], environment: 'node' } },
       // components and composables inside a Nuxt runtime (happy-dom)
-      await defineVitestProject({ test: { name: 'app', include: ['test/**/*.test.ts'], environment: 'nuxt' } }),
+      await defineVitestProject({ test: { name: 'app', include: ['test/**/*.test.ts'], environment: 'nuxt', setupFiles: ['test/setup.ts'] } }),
     ],
   },
 })

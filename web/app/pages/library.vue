@@ -3,17 +3,15 @@
     <div class="flex flex-wrap items-end justify-between gap-4">
       <div class="max-w-xl">
         <UiHeading>Library</UiHeading>
-        <UiText class="mt-1">Pick a tune to open its practice sheets{{ myCharts ? ', or start a new chart' : '' }}. Charts are written in concert pitch.</UiText>
+        <UiText class="mt-1">Pick a tune to open its practice sheets, or start a new chart. Charts are written in concert pitch.</UiText>
       </div>
       <div class="flex flex-wrap gap-3">
         <UiButton outline href="/contact">Request a chart</UiButton>
-        <template v-if="myCharts">
-          <UiButton outline :disabled="opener.busy.value" title="Open a chart saved as a .txt file (or drop one on this page)" @click="fileInput?.click()"><FolderOpenIcon data-slot="icon" />Open chart…</UiButton>
-          <UiButton color="note" href="/song?new=1" class="max-md:hidden"><PlusIcon data-slot="icon" />New chart</UiButton>
-        </template>
+        <UiButton outline :disabled="opener.busy.value" title="Open a chart saved as a .txt file (or drop one on this page)" @click="fileInput?.click()"><FolderOpenIcon data-slot="icon" />Open chart…</UiButton>
+        <UiButton color="note" href="/song?new=1" class="max-md:hidden"><PlusIcon data-slot="icon" />New chart</UiButton>
       </div>
     </div>
-    <input v-if="myCharts" ref="fileInput" type="file" accept=".txt,text/plain" class="sr-only" tabindex="-1" aria-hidden="true" @change="pick">
+    <input ref="fileInput" type="file" accept=".txt,text/plain" class="sr-only" tabindex="-1" aria-hidden="true" @change="pick">
     <UiText v-if="opener.error.value" role="alert" class="mt-3 text-red-700! dark:text-red-400!">{{ opener.error.value }}</UiText>
 
     <div class="mt-8 max-w-md">
@@ -23,7 +21,7 @@
       </UiInputGroup>
     </div>
 
-    <ClientOnly v-if="myCharts"><MyChartsList :query="query" @count="mine = $event" /></ClientOnly>
+    <ClientOnly><MyChartsList :query="query" @count="mine = $event" /></ClientOnly>
     <!-- "Library" again only to set it apart from My charts above it -->
     <UiSubheading v-if="mine && charts.length" :level="2" class="mt-8">Library</UiSubheading>
 
@@ -69,9 +67,9 @@
     <div v-else class="mt-12 text-center">
       <MusicalNoteIcon class="mx-auto size-12 text-zinc-400 dark:text-zinc-500" aria-hidden="true" />
       <UiSubheading class="mt-2" :level="2">No charts match "{{ query }}"</UiSubheading>
-      <UiText class="mt-1">Try another title or composer, or {{ myCharts ? 'start a new chart' : 'request one' }}.</UiText>
-      <div v-if="myCharts" class="mt-6">
-        <UiButton v-if="myCharts" outline href="/song?new=1" class="max-md:hidden"><PlusIcon data-slot="icon" />New chart</UiButton>
+      <UiText class="mt-1">Try another title or composer, or start a new chart.</UiText>
+      <div class="mt-6">
+        <UiButton outline href="/song?new=1" class="max-md:hidden"><PlusIcon data-slot="icon" />New chart</UiButton>
       </div>
     </div>
   </div>
@@ -92,7 +90,6 @@ onMounted(() => {
   if (typeof route.query.q === 'string') query.value = route.query.q
 })
 const charts = computed(() => searchLibrary(LIBRARY, query.value))
-const myCharts = useFeature('myCharts')
 /** how many of My charts show above the library (0: none, so no second "Library") */
 const mine = ref(0)
 const letters = letterIndex(LIBRARY)
@@ -122,7 +119,7 @@ function pick(e: Event): void {
   input.value = '' // the same file again still fires change
 }
 /** with My charts, a chart file dropped anywhere on the page opens it */
-const hasFile = (e: DragEvent): boolean => myCharts && (e.dataTransfer?.types.includes('Files') ?? false)
+const hasFile = (e: DragEvent): boolean => (e.dataTransfer?.types.includes('Files') ?? false)
 function onDragOver(e: DragEvent): void {
   if (hasFile(e)) e.preventDefault() // allow the drop
 }

@@ -13,56 +13,30 @@ const opened = async (props: Record<string, unknown> = {}) => {
 }
 
 describe('the pentatonic controls', () => {
-  afterEach(() => {
-    useRuntimeConfig().public.features.pentatonics = false
-    useRuntimeConfig().public.features.hexatonics = false
-  })
   const overlay = (w: Awaited<ReturnType<typeof mount>>) => w.find('[aria-label="Overlay"]')
   const options = async (w: Awaited<ReturnType<typeof mount>>) => {
     await overlay(w).trigger('click')
     return w.findAll('[role=option]').map((o) => o.text())
   }
 
-  it('has no Overlay with neither flag on', async () => {
-    const w = await mount()
-    expect(overlay(w).exists()).toBe(false)
-    expect(w.text()).not.toContain('Pentatonic')
-  })
-
-  it('offers Off and each overlay whose flag is on', async () => {
-    useRuntimeConfig().public.features.pentatonics = true
-    expect(await options(await mount())).toEqual(['Off', 'Pentatonic'])
-    useRuntimeConfig().public.features.hexatonics = true
+  it('offers Off, Pentatonic and Hexatonic', async () => {
     expect(await options(await mount())).toEqual(['Off', 'Pentatonic', 'Hexatonic'])
-    useRuntimeConfig().public.features.pentatonics = false
-    expect(await options(await mount())).toEqual(['Off', 'Hexatonic'])
-  })
-
-  it('shows the overlay in force: one whose flag is off reads Off, with no sub-controls', async () => {
-    useRuntimeConfig().public.features.hexatonics = true
-    const w = await mount({ overlay: 'pentatonic' })
-    expect(overlay(w).text()).toContain('Off')
-    expect(w.find('[aria-label="Pentatonic path"]').exists()).toBe(false)
   })
 
   it('adds no control for Hexatonic', async () => {
-    useRuntimeConfig().public.features.pentatonics = true
-    useRuntimeConfig().public.features.hexatonics = true
     const w = await mount({ overlay: 'hexatonic' })
     expect(overlay(w).text()).toContain('Hexatonic')
     for (const label of ['Pentatonic path', 'Pentatonic rung', 'Pentatonic side', 'Pentatonic rank', 'Pentatonics ranked against']) expect(w.find(`[aria-label="${label}"]`).exists()).toBe(false)
   })
 
   it('picks an overlay', async () => {
-    useRuntimeConfig().public.features.hexatonics = true
     const w = await mount()
     await overlay(w).trigger('click')
-    await w.findAll('[role=option]')[1]?.trigger('click')
+    await w.findAll('[role=option]')[2]?.trigger('click')
     expect(w.emitted('update:overlay')?.[0]).toEqual(['hexatonic'])
   })
 
   it('opens the Pentatonic options beside the Overlay as it turns to Pentatonic, and closes them with Escape or a click outside (#293)', async () => {
-    useRuntimeConfig().public.features.pentatonics = true
     const w = await mount({ 'onUpdate:overlay': (o: string) => w.setProps({ overlay: o }) })
     const panel = () => w.find('[role="dialog"][aria-label="Pentatonic options"]')
     await overlay(w).trigger('click')
@@ -79,14 +53,12 @@ describe('the pentatonic controls', () => {
   })
 
   it('starts the Pentatonic options closed when the overlay is already on (a reload)', async () => {
-    useRuntimeConfig().public.features.pentatonics = true
     const w = await mount({ overlay: 'pentatonic' })
     expect(w.find('button[aria-label="Pentatonic options"]').attributes('aria-expanded')).toBe('false')
     expect(w.find('[aria-label="Pentatonic path"]').exists()).toBe(false)
   })
 
   it('shows Rung, and Side away from Home and 6, once the row is on', async () => {
-    useRuntimeConfig().public.features.pentatonics = true
     expect((await mount()).find('[aria-label="Pentatonic rung"]').exists()).toBe(false)
     const home = await opened({ overlay: 'pentatonic', pentRung: 0 })
     expect(home.find('[aria-label="Pentatonic rung"]').exists()).toBe(true)
@@ -96,7 +68,6 @@ describe('the pentatonic controls', () => {
   })
 
   it('offers the paths, Custom only while current, and Rung and Side only with One rung', async () => {
-    useRuntimeConfig().public.features.pentatonics = true
     const one = await opened({ overlay: 'pentatonic', pentPath: 'one' })
     expect(one.find('[aria-label="Pentatonic path"]').exists()).toBe(true)
     expect(one.find('[aria-label="Pentatonic rung"]').exists()).toBe(true)
@@ -109,7 +80,6 @@ describe('the pentatonic controls', () => {
   })
 
   it('shows Rank in place of Path under the chord basis', async () => {
-    useRuntimeConfig().public.features.pentatonics = true
     const w = await opened({ overlay: 'pentatonic', pentBasis: 'chord' })
     expect(w.find('[aria-label="Pentatonic rank"]').exists()).toBe(true)
     expect(w.find('[aria-label="Pentatonic path"]').exists()).toBe(false)
@@ -120,7 +90,6 @@ describe('the pentatonic controls', () => {
   })
 
   it('keeps the Overlay while editing, when Numerals and Scales hide', async () => {
-    useRuntimeConfig().public.features.pentatonics = true
     const w = await mount({ lockLabels: true })
     expect(overlay(w).exists()).toBe(true)
     expect(w.text()).not.toContain('Numerals')
@@ -131,12 +100,9 @@ describe('interface levels', () => {
   const withLevel = (props: Record<string, unknown> = {}) =>
     mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'concert', spell: 'key', intervals: true, keyStart: 'C', ...props }, slots: { level: () => 'level-slot' } })
   const at = (level: 'essentials' | 'intermediate' | 'everything') => {
-    useRuntimeConfig().public.features.interfaceLevels = true
     useInterface().level.value = level
   }
   afterEach(() => {
-    useRuntimeConfig().public.features.interfaceLevels = false
-    useRuntimeConfig().public.features.pentatonics = false
     useInterface().level.value = 'everything'
   })
 
@@ -152,7 +118,6 @@ describe('interface levels', () => {
 
   it('Intermediate shows them but not the Overlay', async () => {
     at('intermediate')
-    useRuntimeConfig().public.features.pentatonics = true
     const w = await withLevel()
     expect(w.text()).toMatch(/level-slot[\s\S]*Analysis[\s\S]*Numerals[\s\S]*Line/)
     expect(w.find('[aria-label="Overlay"]').exists()).toBe(false)
@@ -161,7 +126,6 @@ describe('interface levels', () => {
 
   it('Everything shows the Overlay', async () => {
     at('everything')
-    useRuntimeConfig().public.features.pentatonics = true
     expect((await withLevel()).find('[aria-label="Overlay"]').exists()).toBe(true)
   })
 })

@@ -11,10 +11,8 @@ const myChartsLinks = (html: string) => html.match(/song\?new=1/g) ?? []
 describe('feature flags', () => {
   beforeEach(() => navigate.mockClear())
 
-  it('reads flags from runtime config', () => {
-    expect(useRuntimeConfig().public.features).toEqual({ myCharts: true, practice: true, changes: true, functions: true, keySignatures: true, arpeggios: true, compactRail: true, pentatonics: false, hexatonics: false, interfaceLevels: false })
-    expect(useFeature('myCharts')).toBe(true)
-    expect(useFeature('functions')).toBe(true)
+  it('has no flags: every feature is on (#296)', () => {
+    expect(useRuntimeConfig().public.features).toEqual({})
   })
 
   it('offers New chart in the library, not the header', async () => {

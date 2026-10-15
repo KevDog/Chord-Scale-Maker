@@ -59,7 +59,7 @@ web/                      # Nuxt app (Vercel root directory); imports @chord-sca
   app/
     pages/index.vue       # home: one large tune search (live suggestions, keys written for your instrument), recently opened (§7)
     pages/library.vue     # the library, A–Z, with title/composer search (/library?q=…)
-    pages/song/[[slug]].vue  # one URL per tune: /song/<name> is the prerendered, indexable page and the editor (§7b; old ?chart=<name> moves there); with myCharts also ?mine=<id>, ?new=1 and share links (#s=…)
+    pages/song/[[slug]].vue  # one URL per tune: /song/<name> is the prerendered, indexable page and the editor (§7b; old ?chart=<name> moves there); also ?mine=<id>, ?new=1 and share links (#s=…)
     pages/help.vue        # how it all works, in the owner's voice: sheets, controls, practice, editing, printing
     pages/about.vue, contact.vue, privacy.vue  # About (Jazz Lab thanks, the video, credits), the form, privacy
     pages/ui.vue          # dev-only showcase of the Catalyst components (removed from production builds)
@@ -350,7 +350,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   "Choose a scale"), and components only draw it. The live preview re-renders only staves that changed: each
   staff's `id` combines its line's chords and scale, the part and the mode, not its position.
 
-### Arpeggios sheet ([spec](superpowers/specs/2026-10-12-arpeggios-sheet-design.md); the `arpeggios` flag, on since sign-off)
+### Arpeggios sheet ([spec](superpowers/specs/2026-10-12-arpeggios-sheet-design.md))
 
 - **Lines:** exactly the Scales sheet's (`scaleLines`), in eighth notes, one stave each, no time signature. 12 lines a
   printed page. Controls (Arpeggio group): 7th Chord · Extended, and a direction listbox Up · Down · Up & down
@@ -366,7 +366,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   without a key signature. `buildArpeggioSheet` (`engine/src/arpeggioSheet.ts`)
   builds the model; the components only draw it.
 - **Preferences and links:** `csm-arp-notes` (`seventh` | `extended`), `csm-arp-dir` (`up` | `down` | `up-down`); share
-  links carry `sheet: 'arpeggios'`, `arpNotes`, `arpDir`, and open on the sheet only when the flag is on.
+  links carry `sheet: 'arpeggios'`, `arpNotes`, `arpDir`, and open on the sheet.
 
 ### Practice selection ([plan-practice.md](plan-practice.md))
 
@@ -380,13 +380,13 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Presets** (From root only) work per chord, from the chord quality: chord tones, guide tones (the guide tone
   table), and tensions (the rest). From X mode has All.
 - **Storage:** `usePractice` remembers a selection per library chart and per mode in this browser.
-- **Pentatonic** (#266, flag `pentatonics`; both modes): a rank 1–12 (`{ preset: 'pentatonic', rank }`, stored and
+- **Pentatonic** (#266; both modes): a rank 1–12 (`{ preset: 'pentatonic', rank }`, stored and
   shared like any pick). Each staff ranks the 12 minor pentatonics against its own scale (`pentatonicRanking`: most
   shared, then fewest fifths from the written chord root, ♭ side first), lights the scale notes the one at that rank
   shares (`pentatonicPick`) and captions the staff (`Dm pent`; `F♯m pent · #2 · 3 shared` where the best shares
   under 5). In print the caption is 10px on one line, so 12 staves still fit a page. Spec:
   docs/superpowers/specs/2026-10-14-pentatonic-practice-design.md.
-- **Hexatonic** (flag `hexatonics`; both modes): `{ preset: 'hexatonic', pair, grouping }`, pair 0 (Auto) or 1–8,
+- **Hexatonic** (both modes): `{ preset: 'hexatonic', pair, grouping }`, pair 0 (Auto) or 1–8,
   grouping Triad pair, Chord tones + color, Pentatonic + 1 or Trichords 3+3. After Gary Campbell, *Triad Pairs for
   Jazz* (2001), pp. 4–8: each staff's candidates are the valid links of its scale's triad chain (`triadChain`: on a
   seven-note scale the triads on degrees 1–7; otherwise from the first major, else minor, triad; each note up a step,
@@ -403,7 +403,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   clef) and take the accent in dark mode, group B a second accent, while the rest are faint (35% opacity in dark
   mode). In print, picked notes are black, group B mid-grey and the rest light grey.
 
-### Changes sheet ([plan-changes.md](plan-changes.md); the `changes` flag, on)
+### Changes sheet ([plan-changes.md](plan-changes.md))
 
 - **The default view:** a chart opens on the Changes; a share link may open it on Scales.
 - A study lead sheet: `engine/src/changes.ts` `buildChanges(doc, part, barsPerLine, signatures, guides)` lays the chart
@@ -432,8 +432,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - `Numerals` and `Scales` toggles and a **Line** segmented control (Off · Guide Tones · 7th Chords) with the mode's
   listbox beneath it, so the control stays where it was clicked (From 3rd · From 7th; or the ten arpeggio patterns) replace Intervals on this sheet (`csm-numerals`,
   `csm-scale-names`, both on; `csm-line` `off | guide | arpeggio`, off; `csm-guide-line` `third | seventh`;
-  `csm-arpeggio`, `up-root`; share links carry the sheet's line as `line`, absent meaning off). 7th Chords is behind the
-  `arpeggios` flag.
+  `csm-arpeggio`, `up-root`; share links carry the sheet's line as `line`, absent meaning off).
 
 ### Guide tones on Changes ([spec](superpowers/specs/2026-10-10-guide-tone-lines-design.md), amended by [independent lines](superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md) and [the diverge note](superpowers/specs/2026-10-11-guide-lines-diverge-note.md); first built as [guide tones on Changes](superpowers/specs/2026-10-10-guide-tones-on-changes-design.md))
 
@@ -507,7 +506,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   the stem tips are read for the crop and the ending's bracket); no label row; the aria-label adds
   `; 7th chords: C4 E4 G4 B4 | …` after `Bars: …`.
 
-### Pentatonics on Changes ([spec](superpowers/specs/2026-10-13-pentatonic-ladders-design.md); the `pentatonics` flag, off)
+### Pentatonics on Changes ([spec](superpowers/specs/2026-10-13-pentatonic-ladders-design.md))
 
 - **Ladder** (`engine/src/pentatonics.ts`): a key area's 12 minor pentatonics round the circle of fifths from home
   (its tonic minor: Am in C major), ranked by notes shared with the key's Aeolian: rung 0–6 share 5 5 4 3 2 1 0.
@@ -517,8 +516,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   wherever it differs from the last one shown (relative keys share a home, so print once). `changesLinesPerPage`
   counts the row: with no guide line 8 a page, 7 with numerals, scales and pentatonics all shown; with a line 7 with no
   row, 6 with any row, 5 with all three (the 5 and 7 measured on Stardust, tuba, From 7th).
-- **UI:** the Overlay listbox in Analysis (it stays while editing): Off | Pentatonic | Hexatonic, each option only with
-  its flag (`utils/overlay.ts`; a stored option whose flag is off reads Off). Under Pentatonic, Rung (`Home · 5 shared`
+- **UI:** the Overlay listbox in Analysis (it stays while editing): Off | Pentatonic | Hexatonic
+  (`utils/overlay.ts`). Under Pentatonic, Rung (`Home · 5 shared`
   … `6 · 0 shared (Outside)`) and Side (♭ | ♯, hidden at 0 and 6); Hexatonic adds no control and puts each chord's Auto
   pair (`G/Am`) in the row's place, blank where its scale has none (`showHexatonics`). `csm-overlay` (an old
   `csm-pentatonics: on` with none reads Pentatonic), `csm-pent-rung`, `csm-pent-side`, not in share links. Each
@@ -552,15 +551,15 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   - A minimum band keeps ordinary staves aligned.
   - Changes lines of slashes keep fixed bands (`BAND`, `CLEF_BAND`, `VOLTA_BAND`); a line with guide tones crops to
     its noteheads and stem tips, never inside `CLEF_BAND`, and takes in a raised ending bracket.
-- **Clefs and key signatures (the `keySignatures` flag, on):** the clef and the chart's key as written for the instrument
+- **Clefs and key signatures:** the clef and the chart's key as written for the instrument
   (`keySignature` in `engine/src/keySignature.ts`; a minor key by its relative major, none without a `key:`), once at the
   start, as on a jazz lead sheet: the first staff of each scale sheet part (`StaffModel.showClefAndKey`) and the
-  first Changes line; every other staff and line has neither. With a guide tone on, the first Changes line gets the
-  clef even with the flag off or without a `key:`. The key is the chart's `key:` (`chartKeyOf`) throughout: key
+  first Changes line; every other staff and line has neither. The first Changes line always gets the clef, even
+  without a `key:`. The key is the chart's `key:` (`chartKeyOf`) throughout: key
   changes go by accidentals only, and show in the analysis (the Changes sheet's key-area labels), never as a new
   signature. Notes follow the measure rule (`accidentalsInBar`): an accidental shows only where it differs from what
   is in force in the bar (guide tones: the voice, against C without a signature). The first Changes line
-  uses a taller crop band (`CLEF_BAND`). With the flag off, every scale staff has its clef, as before.
+  uses a taller crop band (`CLEF_BAND`).
 - **Shared helpers:** `svgContext`, `fitSvg` and `headCentre` in `utils/vexflow.ts`.
 - **Instrument choice:** 16 presets, grouped by what they read (C treble, B♭, E♭, F, bass clef). The
   choice sets the `Part` (clef + transposition) for the whole preview, so notes, chord symbols and scale names
@@ -607,7 +606,7 @@ paper and its focus-mode pages, the rail, the More menu, the header, the library
   - `PreviewControls` in `SheetRail`, the control rail: Work on (Changes, Scales, Arpeggios), Instrument, Level, the
     sheet's own controls (on the Changes, Analysis: Numerals and Scales, and Line: Off · Guide Tones · 7th Chords;
     on the Scales, Intervals and Spell Scale), Transposition; at right Edit, Share, Focus, Print and More
-    (`MoreMenu`). On a phone with `compactRail`, the rest sit in the Controls dialog.
+    (`MoreMenu`). On a phone the rail is compact: the rest sit in the Controls dialog.
 - **Dark mode** is a `.dark` class on `<html>`, toggled in the navbar.
   - The default is light, and the choice is saved per browser.
   - `public/theme-init.js` applies it before first paint. It's a file, not an inline script, so the CSP needs no
@@ -701,7 +700,7 @@ its reasons into a chart as comments.
   bars)`); `--ambiguous` also names a detection within one chord of a threshold. `rowNotes` (`engine/src/notes.ts`) gives each row's reason, key,
   the scale played and its `source`; it says "analyser: X (reason); you chose Y" only of a written scale that differs;
   the inspector's Why and the Changes sheet's numeral/scale notes show it, the note with where its key
-  came from (a key the author set is starred), behind the `functions` flag (on).
+  came from (a key the author set is starred).
 - **The scale played** (`engine/src/resolve.ts`, [proposed scales spec](superpowers/specs/2026-10-11-proposed-scales-design.md)
   §2): `resolveScales(doc, view, analysis?)` gives each expanded row (keyed by its
   index in `expandRowLines`, so a `@copy` repeat resolves on its own row) a `Resolved` scale and its `source`:
@@ -851,7 +850,7 @@ its reasons into a chart as comments.
 - **Browser storage** goes through `utils/storage.ts` (`readStored`, `writeStored`). It's best-effort, because
   storage can be blocked or full. It holds the theme, the preferences, practice picks and My charts. Nothing is
   sent anywhere.
-- **My charts** (the `myCharts` flag, on; [plan-saving.md](plan-saving.md)):
+- **My charts** ([plan-saving.md](plan-saving.md)):
   - `utils/myCharts.ts`: an index of small records (`csm-charts`) plus one key per chart text (`csm-chart:<id>`).
     Kinds: `edited` (your version of a library chart, one per slug), `copy`, `new`. At most 200 charts of
     `LIMITS.maxChars` each; a failed write reports `full` and never leaves an index entry without its text.
@@ -867,7 +866,7 @@ its reasons into a chart as comments.
     applies for that visit only (`linkPreferences`), and nothing is saved until **Save to My charts**. The router
     rewrites the address without its `#` while a prerendered page hydrates, so `plugins/arrivalHash.client.ts`
     keeps the original.
-- **Interface levels** (the `interfaceLevels` flag, off; [spec](superpowers/specs/2026-10-14-interface-levels-design.md), #273):
+- **Interface levels** ([spec](superpowers/specs/2026-10-14-interface-levels-design.md), #273):
   Essentials / Intermediate / Everything, chosen in the More actions menu and kept as `csm-interface`, never in share
   links. `utils/interface.ts` holds the tier table (`CONTROL_TIERS`), `shows`, `hiddenSettings` and `initialLevel`;
   `useInterface()` shares the level, decided once at start by `plugins/interface.client.ts` (Essentials, or
@@ -881,9 +880,9 @@ its reasons into a chart as comments.
   - New flags start off, and every flag is fixed at build time. `NUXT_PUBLIC_FEATURES_<NAME>=true|false`
     overrides one for a build or `make dev`.
   - `npm run e2e` builds with every flag on.
-  - `myCharts` (My charts, New chart, Download/Open, share links), `changes` (the Changes sheet),
-    `practice` (the Practice panel), `keySignatures` and `functions` are on, since sign-off. Guide tones on the
-    Changes sheet have no flag: their toggles start off. `arpeggios` (7th Chords on the Line control, and the Arpeggios sheet) is off. The bar editor shipped behind `barEditor`; at its sign-off
+  - There are none now: #296 turned the last ones on for good and removed them with their flag-off code (`myCharts`,
+    `practice`, `changes`, `keySignatures`, `arpeggios`, `compactRail`, `functions`, `pentatonics`, `hexatonics`,
+    `interfaceLevels`); `Feature` is `never` until a new flag names itself. The bar editor shipped behind `barEditor`; at its sign-off
     the old row grid went, and the flag with it. `scaleLevels` (the Scale level control), `proposedScales` (a blank
     scale cell plays the analysis, §7a) and `leadSheetEditor` (the Changes sheet as the editor; at its sign-off the
     bar grid went, #141) went the same way at theirs.
@@ -1014,7 +1013,7 @@ static file, §7b), so the attack surface is small. The measures:
 
   VexFlow drawing needs a real browser, so the E2E tests cover it.
 - **Local preview:** `make dev` (live reload) and `make preview` (the production static build, served locally).
-- **E2E (`web/e2e/`, Playwright with Chromium, against the production static build, all flags on):**
+- **E2E (`web/e2e/`, Playwright with Chromium, against the production static build, any flags on):**
   - library search and open, and the staff count
   - the bar editor: Edit and Done, bars ⇄ Source sync, typing and moving, the inspector, structure, undo; tap to
     edit on the Changes sheet, and the phone's light edits

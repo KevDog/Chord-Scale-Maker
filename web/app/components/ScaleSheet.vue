@@ -25,7 +25,7 @@ const props = defineProps<{
   perPage: number
   intervals?: boolean // label notes against the chord root, on screen only
   practice?: PracticeSelection | null // highlight these notes, dim the rest
-  homeKey?: Key | null // the chart's key, for the key signature (null: no key: line); undefined: signatures off
+  homeKey?: Key | null // the chart's key, for the key signature (null: no key: line); undefined: none
   resolved?: ReadonlyMap<number, Resolved> // what each row plays (resolveScales); undefined: its own scale or its quality's default
 }>()
 

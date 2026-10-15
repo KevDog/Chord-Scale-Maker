@@ -166,12 +166,10 @@
               and <strong class="font-semibold">Scales</strong>, which turn those rows on and off. <strong class="font-semibold">Guide Tones</strong>
               chooses <strong class="font-semibold">Off</strong>, <strong class="font-semibold">From 3rd</strong> or <strong class="font-semibold">From 7th</strong>, the guide tone
               line described above.
-              <template v-if="hexatonics">
-                <strong class="font-semibold">Overlay</strong> puts a row under the chords: <strong class="font-semibold">Off</strong>,
-                <strong class="font-semibold">Pentatonic</strong> (each key area's minor pentatonic) or
-                <strong class="font-semibold">Hexatonic</strong> (each chord's best triad pair from its scale, such as
-                <UiCode>G/Am</UiCode> over Cmaj7: the chord tones it covers first, then two major or minor triads).
-              </template>
+              <strong class="font-semibold">Overlay</strong> puts a row under the chords: <strong class="font-semibold">Off</strong>,
+              <strong class="font-semibold">Pentatonic</strong> (each key area's minor pentatonic) or
+              <strong class="font-semibold">Hexatonic</strong> (each chord's best triad pair from its scale, such as
+              <UiCode>G/Am</UiCode> over Cmaj7: the chord tones it covers first, then two major or minor triads).
             </dd>
           </div>
           <div>
@@ -194,7 +192,7 @@
               it. Scales you picked yourself stay put, and Standard puts everything else back.
             </dd>
           </div>
-          <div v-if="interfaceLevels">
+          <div>
             <dt class="font-semibold text-zinc-950 dark:text-white">Interface</dt>
             <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
               In <strong class="font-semibold">⋯ More actions</strong>, it chooses how many controls show.
@@ -228,7 +226,7 @@
             same numbers. In From C mode the boxes are pitches instead (tick E♭ and every E♭ lights
             up), which shows you where a note survives a chord change and where it doesn't.
           </li>
-          <li v-if="hexatonics">
+          <li>
             <strong class="font-semibold text-zinc-950 dark:text-white">Hexatonic</strong> lights two triads from each
             scale, six notes, after Gary Campbell's <em>Triad Pairs for Jazz</em>. <strong class="font-semibold">Pair</strong>
             <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff's scale; on a seven-note scale
@@ -305,14 +303,9 @@
           sheet is written.
         </UiText>
 
-        <UiText v-if="!myCharts">
-          <strong class="font-semibold text-zinc-950 dark:text-white">One catch:</strong> your edits aren't saved yet.
-          Reload the page or open another tune and the chart is back to the library version. If you've made something you
-          want to keep, print it, or copy the text out and keep it somewhere safe.
-        </UiText>
       </section>
 
-      <section v-if="myCharts" class="scroll-mt-6 space-y-4" aria-labelledby="saving">
+      <section class="scroll-mt-6 space-y-4" aria-labelledby="saving">
         <UiSubheading id="saving" class="scroll-mt-6">Saving your work</UiSubheading>
         <UiText>
           There are no accounts here, so there's nothing to sign in to. Your work is kept three ways instead, and your
@@ -393,9 +386,6 @@
 import { PAGE_HEAD, seoMeta } from '~/utils/site'
 import { guideRanges } from '~/utils/instrumentChoices'
 
-const myCharts = useFeature('myCharts')
-const interfaceLevels = useFeature('interfaceLevels')
-const hexatonics = useFeature('hexatonics')
 const GUIDE_RANGES = guideRanges()
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },
@@ -403,7 +393,7 @@ const SECTIONS = [
   { id: 'controls', title: 'Preview controls' },
   { id: 'practice', title: 'Practice' },
   { id: 'editing', title: 'Editing a chart' },
-  ...(myCharts ? [{ id: 'saving', title: 'Saving your work' }] : []),
+  { id: 'saving', title: 'Saving your work' },
   { id: 'printing', title: 'Printing and Focus' },
   { id: 'odds', title: 'Odds and ends' },
 ]
