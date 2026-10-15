@@ -21,7 +21,7 @@ export const CONTROL_TIERS = {
   'scale-choice': 'intermediate', // a chord's scale: the scale label picker, ChordChoices' Scale section
   'form-editing': 'intermediate', // Repeat a section, Write out, endings, segno, coda, Jump, New section here, Paste bars
   why: 'intermediate', // the "why" notes on numerals and scales, ChordChoices' why
-  pentatonics: 'everything', // Analysis: Overlay and its sub-controls, the ladder
+  pentatonics: 'everything', // Analysis: Superimpose and its sub-controls, the ladder
   'practice-pentatonic': 'everything', // the Practice panel's Pentatonic preset
   'practice-hexatonic': 'everything', // the Practice panel's Hexatonic preset, its Pair and grouping
   'key-change': 'everything', // Key change here
@@ -48,7 +48,7 @@ function setAway(v: ViewSettings): readonly (readonly [HiddenSetting, InterfaceL
     ...(changes && v.lineMode !== 'off' ? [['line', 'intermediate'] as const] : []),
     ...(scales && v.spell !== 'key' ? [['spell', 'intermediate'] as const] : []),
     ...(scales && v.practice ? [['practice', isPentatonicSelection(v.practice) || isHexatonicSelection(v.practice) ? 'everything' : 'intermediate'] as const] : []),
-    ...(changes && v.overlay !== 'off' ? [['pentatonics', 'everything'] as const] : []), // the Overlay's control id
+    ...(changes && v.overlay !== 'off' ? [['pentatonics', 'everything'] as const] : []), // Superimpose's control id
   ]
 }
 

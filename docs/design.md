@@ -522,7 +522,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   wherever it differs from the last one shown (relative keys share a home, so print once). `changesLinesPerPage`
   counts the row: with no guide line 8 a page, 7 with numerals, scales and pentatonics all shown; with a line 7 with no
   row, 6 with any row, 5 with all three (the 5 and 7 measured on Stardust, tuba, From 7th).
-- **UI:** the Overlay listbox in Analysis (it stays while editing): Off | Pentatonic | Hexatonic
+- **UI:** the Superimpose listbox in Analysis (it stays while editing): Off | Pentatonic | Hexatonic
   (`utils/overlay.ts`). Under Pentatonic, Rung (`Home · 5 shared`
   … `6 · 0 shared (Outside)`) and Side (♭ | ♯, hidden at 0 and 6); Hexatonic adds no control and puts each chord's Auto
   pair (`G/Am`) in the row's place, blank where its scale has none (`showHexatonics`). `csm-overlay` (an old

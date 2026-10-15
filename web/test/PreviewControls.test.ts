@@ -13,7 +13,7 @@ const opened = async (props: Record<string, unknown> = {}) => {
 }
 
 describe('the pentatonic controls', () => {
-  const overlay = (w: Awaited<ReturnType<typeof mount>>) => w.find('[aria-label="Overlay"]')
+  const overlay = (w: Awaited<ReturnType<typeof mount>>) => w.find('[aria-label="Superimpose"]')
   const options = async (w: Awaited<ReturnType<typeof mount>>) => {
     await overlay(w).trigger('click')
     return w.findAll('[role=option]').map((o) => o.text())
@@ -36,7 +36,7 @@ describe('the pentatonic controls', () => {
     expect(w.emitted('update:overlay')?.[0]).toEqual(['hexatonic'])
   })
 
-  it('opens the Pentatonic options beside the Overlay as it turns to Pentatonic, and closes them with Escape or a click outside (#293)', async () => {
+  it('opens the Pentatonic options beside the Superimpose as it turns to Pentatonic, and closes them with Escape or a click outside (#293)', async () => {
     const w = await mount({ 'onUpdate:overlay': (o: string) => w.setProps({ overlay: o }) })
     const panel = () => w.find('[role="dialog"][aria-label="Pentatonic options"]')
     await overlay(w).trigger('click')
@@ -90,7 +90,7 @@ describe('the pentatonic controls', () => {
     expect(key.find('[aria-label="Pentatonic path"]').exists()).toBe(true)
   })
 
-  it('keeps the Overlay while editing, when Numerals and Scales hide', async () => {
+  it('keeps the Superimpose while editing, when Numerals and Scales hide', async () => {
     const w = await mount({ lockLabels: true })
     expect(overlay(w).exists()).toBe(true)
     expect(w.text()).not.toContain('Numerals')
@@ -117,16 +117,16 @@ describe('interface levels', () => {
     expect(scales.text()).toContain('Intervals')
   })
 
-  it('Intermediate shows them but not the Overlay', async () => {
+  it('Intermediate shows them but not the Superimpose', async () => {
     at('intermediate')
     const w = await withLevel()
     expect(w.text()).toMatch(/level-slot[\s\S]*Analysis[\s\S]*Numerals[\s\S]*Line/)
-    expect(w.find('[aria-label="Overlay"]').exists()).toBe(false)
+    expect(w.find('[aria-label="Superimpose"]').exists()).toBe(false)
     expect((await withLevel({ sheet: 'scales' })).text()).toContain('Spell Scale')
   })
 
-  it('Everything shows the Overlay', async () => {
+  it('Everything shows the Superimpose', async () => {
     at('everything')
-    expect((await withLevel()).find('[aria-label="Overlay"]').exists()).toBe(true)
+    expect((await withLevel()).find('[aria-label="Superimpose"]').exists()).toBe(true)
   })
 })
