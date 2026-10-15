@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { CONTROL_TIERS, hiddenSettings, initialLevel, INTERFACE_LEVELS, isInterfaceLevel, levelLabel, shows, type ViewSettings } from '~/utils/interface'
 
-const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, overlay: 'off' }
+const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, overlay: 'off', picks: false }
 
 describe('interface levels', () => {
   it('orders the levels and names them', () => {
@@ -63,6 +63,13 @@ describe('hiddenSettings', () => {
   it('puts a pentatonic practice selection at Everything', () => {
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', practice: { preset: 'chordTones' } })).toEqual({ settings: ['practice'], needs: 'intermediate' })
     expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'scales', practice: { preset: 'pentatonic', degree: 2 } })).toEqual({ settings: ['practice'], needs: 'everything' })
+  })
+
+  it('names chord picks in force on the Changes and Scales sheets at Everything, never on the Arpeggios sheet', () => {
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'scales', picks: true })).toEqual({ settings: ['chord-picks'], needs: 'everything' })
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'changes', picks: true })).toEqual({ settings: ['chord-picks'], needs: 'everything' })
+    expect(hiddenSettings('everything', { ...DEFAULTS, sheet: 'scales', picks: true })).toBeNull()
+    expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'arpeggios', picks: true })).toBeNull()
   })
 
   it('puts a hexatonic practice selection at Everything', () => {
