@@ -851,6 +851,13 @@ its reasons into a chart as comments.
     applies for that visit only (`linkPreferences`), and nothing is saved until **Save to My charts**. The router
     rewrites the address without its `#` while a prerendered page hydrates, so `plugins/arrivalHash.client.ts`
     keeps the original.
+- **Interface levels** (the `interfaceLevels` flag, off; [spec](superpowers/specs/2026-10-14-interface-levels-design.md), #273):
+  Essentials / Intermediate / Everything, chosen in the More actions menu and kept as `csm-interface`, never in share
+  links. `utils/interface.ts` holds the tier table (`CONTROL_TIERS`), `shows`, `hiddenSettings` and `initialLevel`;
+  `useInterface()` shares the level, decided once at start by `plugins/interface.client.ts` (Essentials, or
+  Everything when the browser already holds a `csm-*` key). Components add `shows('<id>') &&` to a control's `v-if`;
+  nothing moves. Settings in force whose controls are hidden still render, with `InterfaceNotice` (Show controls /
+  Reset) above the sheet. e2e specs start at Everything (`interfaceLevel` fixture, `chooseInterface` for new contexts).
 - **The instrument picker** only changes `part` and the subtitle label (`partFor` and `instrumentLabel` in the
   engine).
 - **Feature flags:**
