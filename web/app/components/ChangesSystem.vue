@@ -112,7 +112,7 @@
         :key="`n${m.key}`"
         data-slot="numeral"
         :data-draft="drafted(m) ? '' : undefined"
-        :class="['absolute text-sm font-medium print:text-xs/3.5 print:text-black', drafted(m) ? 'text-zinc-500 italic dark:text-zinc-400' : 'text-zinc-800 dark:text-zinc-200', !(notesOn && m.reason) && 'truncate']"
+        :class="['absolute text-base/5 font-medium print:text-xs/3.5 print:text-black', drafted(m) ? 'text-zinc-500 italic dark:text-zinc-400' : 'text-zinc-800 dark:text-zinc-200', !(notesOn && m.reason) && 'truncate']"
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
         :title="notesOn && m.reason ? undefined : m.numeral"
       >
@@ -128,7 +128,7 @@
         :key="`s${m.key}`"
         data-slot="scale"
         :data-draft="drafted(m) ? '' : undefined"
-        :class="['absolute pr-1 text-[0.7rem]/3.5 print:text-[0.6rem]/3 print:text-neutral-700', drafted(m) ? 'text-zinc-500 italic dark:text-zinc-400' : 'text-zinc-600 dark:text-zinc-400']"
+        :class="['absolute pr-1 text-[0.8rem]/4 print:text-[0.6rem]/3 print:text-neutral-700', drafted(m) ? 'text-zinc-500 italic dark:text-zinc-400' : 'text-zinc-600 dark:text-zinc-400']"
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
         <template v-if="drafted(m)">{{ preview?.readable ? sheetScale(CONCERT, preview.scale) : '' }}</template>
@@ -142,7 +142,7 @@
       <span
         v-for="m in pentatonicMarks"
         :key="`p${m.key}`"
-        :class="['absolute whitespace-nowrap text-[0.7rem]/3.5 print:text-[0.6rem]/3', tint(m.p.level) || 'text-zinc-600 dark:text-zinc-400 print:text-neutral-700']"
+        :class="['absolute whitespace-nowrap text-[0.8rem]/4 print:text-[0.6rem]/3', tint(m.p.level) ? `${tint(m.p.level)} font-medium print:font-normal` : 'text-zinc-600 dark:text-zinc-400 print:text-neutral-700']"
         :data-section="m.p.section"
         :data-chord="m.p.chord"
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
@@ -156,7 +156,7 @@
       <span
         v-for="m in hexatonicMarks"
         :key="`h${m.key}`"
-        class="absolute whitespace-nowrap text-[0.7rem]/3.5 text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700"
+        class="absolute whitespace-nowrap text-[0.8rem]/4 text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700"
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >{{ m.label }}</span>
     </div>
