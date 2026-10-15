@@ -19,6 +19,7 @@ import {
   defaultScale,
   expandRows,
   hexatonicAuto,
+  hexatonicChoices,
   hexatonicPairs,
   isSyncCopy,
   lilyNote,
@@ -26,6 +27,9 @@ import {
   parseChart,
   parseChord,
   parseRoot,
+  pcOf,
+  pentatonicChoices,
+  pentatonicRanking,
   QUALITY_NAMES,
   resolveQuality,
   resolveScales,
@@ -51,9 +55,13 @@ export type Golden = {
   options: Record<string, { options: readonly ScaleOption[] | null; default: string | null }>
   charts: Record<string, { text: string; title: string; subtitle: string; key: string; rows: (string | null)[][] }> // a null scale: unresolved
   hexatonics: Hexatonics
+  pentatonics: Pentatonics
 }
 /** pairs: every scale's pairs on C (no chord tones); auto: each quality's Auto pair on C over its default scale */
-export type Hexatonics = { pairs: Record<string, string[]>; auto: Record<string, { scale: string | null; pair: string | null }> }
+/** choices: each quality's default scale on C, its pairs in the popover's (Auto's) order (#303) */
+export type Hexatonics = { pairs: Record<string, string[]>; auto: Record<string, { scale: string | null; pair: string | null }>; choices: Record<string, string[]> }
+/** ranking: every scale on C, its 12 minor pentatonics as [degree, name, shared]; auto: each quality's Auto pentatonic over its default scale on C (#305) */
+export type Pentatonics = { ranking: Record<string, [number, string, number][]>; auto: Record<string, { scale: string | null; name: string | null }> }
 
 const PARTS: Record<string, Part> = Object.fromEntries(
   (
@@ -158,7 +166,30 @@ export function hexatonicCases(): Hexatonics {
       return [chord, { scale, pair }]
     }),
   )
-  return { pairs, auto }
+  const choices = Object.fromEntries(
+    QUALITY_NAMES.flatMap((q) => {
+      const chord = `C${q}`
+      const scale = attempt(() => defaultScale(chord))
+      return scale === null ? [] : [[chord, hexatonicChoices(chord, scale, CONCERT).map((c) => c.name)]]
+    }),
+  )
+  return { pairs, auto, choices }
+}
+
+/** every scale on C, its pentatonic ranking; each quality's Auto pentatonic over its default scale on C */
+export function pentatonicCases(): Pentatonics {
+  const C = parseRoot('C')
+  const ranking = Object.fromEntries(
+    (Object.keys(SCALES) as ScaleKey[]).map((k) => [k, pentatonicRanking(new Set(spellScale(C, k).map(pcOf)), C).map((p): [number, string, number] => [p.degree, p.name, p.shared])]),
+  )
+  const auto = Object.fromEntries(
+    QUALITY_NAMES.map((q) => {
+      const chord = `C${q}`
+      const scale = attempt(() => defaultScale(chord))
+      return [chord, { scale, name: scale === null ? null : (pentatonicChoices(chord, scale, CONCERT)[0]?.name ?? null) }]
+    }),
+  )
+  return { ranking, auto }
 }
 
 /** the fixture as the engine would write it now */
@@ -194,6 +225,7 @@ export function buildGolden(): Golden {
     ),
     charts,
     hexatonics: hexatonicCases(),
+    pentatonics: pentatonicCases(),
   }
 }
 

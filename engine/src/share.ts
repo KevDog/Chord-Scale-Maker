@@ -1,5 +1,6 @@
 import { isSheetLine, type SheetLine } from './arpeggios'
 import { type ArpDirection, type ArpNotes, isArpDirection, isArpNotes } from './arpeggioSheet'
+import { type ChordPicks, chordPicksFrom, hasPicks } from './chordPicks'
 import { type InstrumentName, isInstrumentName } from './instruments'
 import { isScaleLevel, type ScaleLevel } from './levels'
 import { LIMITS } from './limits'
@@ -31,6 +32,8 @@ export type ShareView = Readonly<{
   practice?: PracticeSelection
   level?: ScaleLevel
   seed?: number
+  /** chord picks (#303), only when there are live ones; an old link has none */
+  picks?: ChordPicks
 }>
 export type SharePayload = Readonly<{ chart: string; view?: ShareView }>
 
@@ -93,6 +96,7 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
   if (!v || typeof v !== 'object') return undefined
   const o = v as Record<string, unknown>
   const practice = practiceSelectionFrom(o.practice)
+  const picks = chordPicksFrom(Object.hasOwn(o, 'picks') ? o.picks : undefined)
   const view: ShareView = {
     ...(typeof o.instrument === 'string' && isInstrumentName(o.instrument) ? { instrument: o.instrument } : {}),
     ...(o.mode === 'root' || o.mode === 'from' ? { mode: o.mode } : {}),
@@ -107,6 +111,7 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(practice ? { practice } : {}),
     ...(isScaleLevel(o.level) ? { level: o.level } : {}),
     ...(Number.isInteger(o.seed) && (o.seed as number) >= 0 && (o.seed as number) < 2 ** 32 ? { seed: o.seed as number } : {}),
+    ...(hasPicks(picks) ? { picks } : {}),
   }
   return Object.keys(view).length ? view : undefined
 }
