@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
-import { isPentatonicPathName, isPentatonicPreset, isPentatonicStep, PENTATONIC_PATH_LABELS, PENTATONIC_STEP, pentatonicCycle, pentatonicPathCaption, isPentatonicView, PENTATONIC_DEGREE_LABELS, PENTATONIC_HOME, pentatonicAt, pentatonicDegreeFrom, pentatonicCaption, pentatonicLadder, pentatonicPick, pentatonicRanking, pentatonicStep } from '../pentatonics'
+import { isPentatonicPathName, isPentatonicPreset, isPentatonicStep, PENTATONIC_PATH_LABELS, PENTATONIC_STEP, pentatonicCycle, pentatonicPathCaption, isPentatonicView, PENTATONIC_DEGREE_LABELS, PENTATONIC_HOME, pentatonicAt, pentatonicDegreeFrom, pentatonicCaption, outsideNotes, pentatonicLadder, pentatonicPick, pentatonicRanking, pentatonicStep } from '../pentatonics'
 import { pitchClasses } from '../ladder'
-import { LETTERS, parseRoot, pcOf, type Spelled } from '../pitch'
+import { LETTERS, parseRoot, pcOf, rootName, type Spelled } from '../pitch'
 import { SCALES } from '../scales'
 
 const names = (home: string) => pentatonicLadder(parseRoot(home)).map((r) => `${r.rung}${r.side === 'flat' ? '♭' : r.side === 'sharp' ? '♯' : ''} ${r.name} ${r.shared}`)
@@ -127,6 +127,14 @@ describe('pentatonics ranked against any scale (#266)', () => {
     const far = pentatonicPick(pcs, parseRoot('D'), 3) // Fm on ♭3 of D Dorian: F A♭ B♭ C E♭, only F and C inside
     expect(far.pentatonic).toMatchObject({ name: 'Fm', degree: 3, shared: 2 })
     expect(far.lit.filter(Boolean)).toHaveLength(2)
+  })
+
+  it('gives a pentatonic’s notes outside the scale, spelled from its root, in the octave from low (#308)', () => {
+    const dorian = [...on('dorian', 'D')]
+    const far = outsideNotes(parseRoot('F'), dorian, 62) // Fm against D Dorian from D4
+    expect(far.map((n) => [rootName(n), n.midi])).toEqual([['Ab', 68], ['Bb', 70], ['Eb', 63]])
+    expect(outsideNotes(parseRoot('D'), dorian, 62)).toEqual([])
+    expect(outsideNotes(parseRoot('G#'), dorian, 60).map((n) => rootName(n))).toEqual(['G#', 'C#', 'D#', 'F#'])
   })
 
   it('spells each degree from the chord root as the ranking does', () => {

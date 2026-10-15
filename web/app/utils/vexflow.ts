@@ -109,11 +109,13 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
   // practice: VexFlow keeps an element's classes off its drawn group, so tag the groups after drawing (main.css styles them)
   notes.forEach((n, i) => {
     const pick = staff.selected?.[i]
-    if (pick !== undefined) n.getSVGElement()?.classList.add(...(pick ? ['vf-selected', ...(staff.second?.[i] ? ['vf-second'] : [])] : ['vf-dimmed']))
+    // a hexatonic's group B, or a pentatonic's notes from outside the scale (#308), take the second accent
+    if (pick !== undefined) n.getSVGElement()?.classList.add(...(pick ? ['vf-selected', ...(staff.second?.[i] || staff.outside?.[i] ? ['vf-second'] : [])] : ['vf-dimmed']))
   })
   const names = staff.notes.map((n) => toVexKey(n).replace('/', ''))
   const picked = staff.selected ? names.filter((_, i) => staff.selected?.[i]) : null
-  const label = names.join(' ') + (picked ? `; practice: ${picked.length ? picked.join(' ') : 'none'}` : '')
+  const added = names.filter((_, i) => staff.outside?.[i])
+  const label = names.join(' ') + (picked ? `; practice: ${picked.length ? picked.join(' ') : 'none'}` : '') + (added.length ? `; added from the pentatonic: ${added.join(' ')}` : '')
   fitSvg(el, cropBand(notes.flatMap((n) => n.getYs())), STAFF_WIDTH, label)
   return notes.map((n) => headCentre(n, STAFF_WIDTH))
 }

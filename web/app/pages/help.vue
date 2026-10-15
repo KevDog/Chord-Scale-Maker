@@ -228,8 +228,8 @@
             up), which shows you where a note survives a chord change and where it doesn't.
           </li>
           <li>
-            <strong class="font-semibold text-zinc-950 dark:text-white">Pentatonic</strong> lights the notes each scale
-            shares with a minor pentatonic. <strong class="font-semibold">Built on</strong> picks the degree of each chord
+            <strong class="font-semibold text-zinc-950 dark:text-white">Pentatonic</strong> lights a minor pentatonic over
+            each scale: the notes they share, and the pentatonic's others added to the staff in a second colour. <strong class="font-semibold">Built on</strong> picks the degree of each chord
             it starts from: on 2 over Cmaj7 is Dm pentatonic, and over G7 it's Am. <strong class="font-semibold">Auto</strong>
             picks the one that shares the most, nearest the chord's root. The caption under each chord names it and
             counts the notes it shares (<UiCode>Dm pent · 5 shared</UiCode>). {{ PENT_INSIDE_HELP }}

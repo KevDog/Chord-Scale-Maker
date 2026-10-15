@@ -169,6 +169,7 @@ exports[`exports the same names 1`] = `
   "octaveOf",
   "offeredKey",
   "orNull",
+  "outsideNotes",
   "pageSubtitle",
   "parseBarLine",
   "parseChart",
