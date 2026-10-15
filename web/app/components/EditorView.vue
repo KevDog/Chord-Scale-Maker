@@ -287,7 +287,8 @@ import {
   instrumentLabel,
   LEVEL_LABELS,
   parseChart,
-  chordPicksFrom,
+  hasPicks,
+  pickTargets,
   LIMITS,
   litKeys,
   type Mode,
@@ -378,18 +379,22 @@ const pentPath = usePentatonicPath(props.practiceKey, pentSections, computed(() 
 const pentPathModel = computed({ get: () => pentPath.path.value, set: (v) => pentPath.setPath(v) })
 const pentStepUnit = computed({ get: () => pentPath.step.value.unit, set: (unit) => pentPath.setStep({ ...pentPath.step.value, unit }) })
 const pentStepBars = computed({ get: () => pentPath.step.value.bars, set: (bars) => pentPath.setStep({ ...pentPath.step.value, bars }) })
+/** what the sheets and the grid play a blank cell at; one resolution per revision, shared by the Scales sheet and practice */
+const scaleView = computed((): ScaleView => ({ level: scaleLevel.level.value, seed: scaleLevel.seed.value }))
+provide(SCALE_VIEW, scaleView)
+const resolved = computed(() => resolveScales(editor.doc.value, scaleView.value))
 /** the sheet's Pentatonic overlay plan; null under another overlay or none */
-const pentPicks = usePentatonicPicks(props.practiceKey)
-watch([pentPath.path, () => JSON.stringify(pentPath.step.value), prefs.pentRung, prefs.pentSide, prefs.pentDegree, prefs.pentBasis, () => JSON.stringify(chartKeyOf(editor.doc.value))], () => pentPicks.clear()) // picks are concert pitches: a transposed chart lands them elsewhere
-watch(() => editor.doc.value, (doc, old) => { if (Object.keys(pentPicks.picks.value).length) pentPicks.carry(drawnChords(old), drawnChords(doc)) }) // a bar in or out moves later chords' keys (#275)
+const pentPicks = useChordPicks(props.practiceKey, computed(() => pickTargets(editor.doc.value, resolved.value)))
+watch([pentPath.path, () => JSON.stringify(pentPath.step.value), prefs.pentRung, prefs.pentSide, prefs.pentDegree, prefs.pentBasis, () => JSON.stringify(chartKeyOf(editor.doc.value))], () => pentPicks.clearAll()) // picks are concert pitches: a transposed chart lands them elsewhere
+watch(() => editor.doc.value, (doc, old) => { if (hasPicks(pentPicks.picks.value)) pentPicks.carry(drawnChords(old), drawnChords(doc)) }) // a bar in or out moves later chords' keys (#275)
 const pentatonicPlan = computed((): PentatonicPlan | null => (prefs.overlay.value === 'pentatonic'
-  ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, degree: prefs.pentDegree.value, picks: chordPicksFrom(pentPicks.picks.value).pentatonic } // legacy picks until useChordPicks (#303 Task 11)
+  ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, degree: prefs.pentDegree.value, picks: pentPicks.picks.value.pentatonic } // the Changes sheet ignores stale picks by their for
   : null))
 const overlayPlan = computed((): OverlayPlan | null => (prefs.overlay.value === 'hexatonic' ? HEXATONIC_PLAN : pentatonicPlan.value))
 /** a label's popover (#272): a pick (written for the part) covers its run, stored concert; null resets the run */
 function onPentatonic(run: readonly ChordAt[], written: number | null): void {
-  if (written === null) pentPicks.reset(run)
-  else pentPicks.pick(run, concertPc(sheetPart.value, written))
+  if (written === null) pentPicks.clear('pentatonic', run)
+  else pentPicks.pick('pentatonic', run, concertPc(sheetPart.value, written))
 }
 const sheetLine = computed(() => sheetLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value))
 /** chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor) */
@@ -411,10 +416,6 @@ const homeKey = computed(() => chartKeyOf(editor.doc.value))
 const practice = usePractice(props.practiceKey)
 const LEVEL_OPTIONS = SCALE_LEVELS.map((value) => ({ value, label: LEVEL_LABELS[value] }))
 const levelLabel = (v: (typeof SCALE_LEVELS)[number]): string => LEVEL_LABELS[v]
-/** what the sheets and the grid play a blank cell at; one resolution per revision, shared by the Scales sheet and practice */
-const scaleView = computed((): ScaleView => ({ level: scaleLevel.level.value, seed: scaleLevel.seed.value }))
-provide(SCALE_VIEW, scaleView)
-const resolved = computed(() => resolveScales(editor.doc.value, scaleView.value))
 
 if (props.shared?.practice) practice.setSelection(mode.value, props.shared.practice)
 const selection = computed(() => practice.selection(mode.value))
