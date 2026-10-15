@@ -138,16 +138,21 @@ export function pentatonicRanking(scale: ReadonlySet<number>, chordRoot: Spelled
   })
 }
 
-/** a staff's pentatonic under the preset: its name, the degree it's built on (Auto resolved) and the notes it shares with the staff */
-export type StaffPentatonic = Readonly<{ name: string; degree: number; shared: number }>
+/** a staff's pentatonic under the preset: its name, the degree it's built on (Auto resolved), the notes it shares with the staff; picked: a chord pick (#303); sheet: what the degree plays */
+export type StaffPentatonic = Readonly<{ name: string; degree: number; shared: number; picked: boolean; sheet: string }>
 
-/** the pentatonic on `degree` (a bad one reads as Auto) against a staff's notes (their pitch classes, in order), and which notes it lights */
-export function pentatonicPick(pcs: readonly number[], chordRoot: Spelled, degree: PentatonicDegree): Readonly<{ pentatonic: StaffPentatonic; lit: boolean[] }> {
+/**
+ * the pentatonic on `degree` (a bad one reads as Auto) against a staff's notes (their pitch classes, in order), and
+ * which notes it lights; a pick (#303, the written pc of its root) plays over the degree
+ */
+export function pentatonicPick(pcs: readonly number[], chordRoot: Spelled, degree: PentatonicDegree, picked: number | null = null): Readonly<{ pentatonic: StaffPentatonic; lit: boolean[] }> {
   const ranked = pentatonicRanking(new Set(pcs), chordRoot)
-  const at = (isDegree(degree) ? ranked.find((p) => p.degree === degree) : undefined) ?? ranked[0]!
+  const auto = (isDegree(degree) ? ranked.find((p) => p.degree === degree) : undefined) ?? ranked[0]!
+  const found = picked === null ? undefined : ranked.find((p) => pcOf(p.root) === picked)
+  const at = found ?? auto
   const shape = pitchClasses(SCALES['minor pentatonic'][0]!, pcOf(at.root))
-  return { pentatonic: { name: at.name, degree: at.degree, shared: at.shared }, lit: pcs.map((pc) => shape.has(pc)) }
+  return { pentatonic: { name: at.name, degree: at.degree, shared: at.shared, picked: !!found, sheet: auto.name }, lit: pcs.map((pc) => shape.has(pc)) }
 }
 
-/** "Dm pent · 5 shared": how inside the choice is, always */
-export const pentatonicCaption = (p: StaffPentatonic): string => `${p.name} pent · ${p.shared} shared`
+/** "Dm pent · 5 shared": how inside the choice is, always; " · varies" where the staff's chords have different picks */
+export const pentatonicCaption = (p: StaffPentatonic, varies = false): string => `${p.name} pent · ${p.shared} shared${varies ? ' · varies' : ''}`

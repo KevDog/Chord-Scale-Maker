@@ -241,8 +241,8 @@ describe('hexatonicPick', () => {
   })
 
   it('names the pair it used: Auto, a number, a wrap', () => {
-    expect(hexatonicPick(scale('C', 'ionian'), C, 'Maj7', 0, 'triads').hexatonic).toEqual({ name: 'G/Am', link: 5 })
-    expect(hexatonicPick(scale('C', 'ionian'), C, 'Maj7', 8, 'triads').hexatonic).toEqual({ name: 'C/Dm', link: 1 })
+    expect(hexatonicPick(scale('C', 'ionian'), C, 'Maj7', 0, 'triads').hexatonic).toEqual({ name: 'G/Am', link: 5, picked: false, sheet: 'G/Am' })
+    expect(hexatonicPick(scale('C', 'ionian'), C, 'Maj7', 8, 'triads').hexatonic).toEqual({ name: 'C/Dm', link: 1, picked: false, sheet: 'C/Dm' })
   })
 
   it('maps the pick onto given staff notes (an octave, From X)', () => {
@@ -259,7 +259,27 @@ describe('hexatonicPick', () => {
   })
 
   it('captions both forms', () => {
-    expect(hexatonicCaption({ name: 'G/Am', link: 5 })).toBe('G/Am hex')
+    expect(hexatonicCaption({ name: 'G/Am', link: 5, picked: false, sheet: 'G/Am' })).toBe('G/Am hex')
     expect(hexatonicCaption(null)).toBe('no triad pair')
+  })
+
+  it('adds varies to the caption (#303)', () => {
+    expect(hexatonicCaption({ name: 'G/Am', link: 5, picked: false, sheet: 'G/Am' }, true)).toBe('G/Am hex · varies')
+    expect(hexatonicCaption(null, true)).toBe('no triad pair')
+  })
+
+  it('plays a pick (written roots among the pairs) over the Pair control, and names the control’s as the sheet’s (#303)', () => {
+    const s = scale('C', 'ionian')
+    const picked = hexatonicPick(s, C, 'Maj7', 0, 'triads', undefined, [0, 2]) // C/Dm over Auto G/Am
+    expect(picked.hexatonic).toEqual({ name: 'C/Dm', link: 1, picked: true, sheet: 'G/Am' })
+    expect(picked.lit).toEqual(s.map((n) => [0, 4, 7, 2, 5, 9].includes(pcOf(n))))
+    expect(picked.second).toEqual(s.map((n) => [2, 5, 9].includes(pcOf(n))))
+  })
+
+  it('ignores roots not among the pairs (reversed too): the Pair control’s pair, not picked', () => {
+    const s = scale('C', 'ionian')
+    for (const roots of [[1, 3], [2, 0], [0, 4]] as const) expect(hexatonicPick(s, C, 'Maj7', 8, 'triads', undefined, roots).hexatonic).toEqual({ name: 'C/Dm', link: 1, picked: false, sheet: 'C/Dm' })
+    expect(hexatonicPick(s, C, 'Maj7', 0, 'triads', undefined, null).hexatonic).toMatchObject({ name: 'G/Am', picked: false })
+    expect(hexatonicPick(scale('C', 'blues'), C, '7', 0, 'triads', undefined, [0, 2]).hexatonic).toBeNull() // no pairs: no pick lands
   })
 })

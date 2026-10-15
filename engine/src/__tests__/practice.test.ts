@@ -150,19 +150,19 @@ describe('the Pentatonic preset on the Scales sheet (#266)', () => {
 
   it('lights each staff’s Auto pentatonic and names it with its degree and shared count', () => {
     const [d, g] = staves([row('Dm7'), row('G7', '', '2')], 'root', pent('auto'))
-    expect(d?.pentatonic).toEqual({ name: 'Dm', degree: 0, shared: 5 })
+    expect(d?.pentatonic).toMatchObject({ name: 'Dm', degree: 0, shared: 5 })
     expect(picked([d!])[0]).toEqual(['D', 'F', 'G', 'A', 'C'])
-    expect(g?.pentatonic).toEqual({ name: 'Dm', degree: 7, shared: 5 })
+    expect(g?.pentatonic).toMatchObject({ name: 'Dm', degree: 7, shared: 5 })
   })
 
   it('builds on the same degree over each chord: on the 6 gives Bm over Dm7 and Em over G7', () => {
     const [d, g] = staves([row('Dm7'), row('G7', '', '2')], 'root', pent(9))
-    expect([d?.pentatonic, g?.pentatonic]).toEqual([{ name: 'Bm', degree: 9, shared: 4 }, { name: 'Em', degree: 9, shared: 5 }])
+    expect([d?.pentatonic, g?.pentatonic]).toEqual([{ name: 'Bm', degree: 9, shared: 4, picked: false, sheet: 'Bm' }, { name: 'Em', degree: 9, shared: 5, picked: false, sheet: 'Em' }])
   })
 
   it('lights fewer notes farther out, in From X mode too', () => {
     const [far] = staves([row('Dm7')], 'from', pent(6)) // G♯m on ♯4 of D Dorian: G♯ B C♯ D♯ F♯, only B inside
-    expect(far?.pentatonic).toEqual({ name: 'G♯m', degree: 6, shared: 1 })
+    expect(far?.pentatonic).toMatchObject({ name: 'G♯m', degree: 6, shared: 1 })
     expect(far?.selected?.filter(Boolean)).toHaveLength(1)
   })
 
@@ -232,14 +232,14 @@ describe('the Hexatonic preset on the Scales sheet', () => {
 
   it('lights the Auto pair and marks group B on a CMaj7 staff', () => {
     const [s] = staves([row('CMaj7')], 'root', hex())
-    expect(s?.hexatonic).toEqual({ name: 'G/Am', link: 5 })
+    expect(s?.hexatonic).toMatchObject({ name: 'G/Am', link: 5 })
     expect(picked([s!])[0]).toEqual(['C', 'D', 'E', 'G', 'A', 'B'])
     expect(s?.second).toEqual([true, false, true, false, false, true, false]) // Am: A C E
   })
 
   it('plays the pair asked for, wrapping round the staff’s pairs', () => {
-    expect(staves([row('CMaj7')], 'root', hex(2))[0]?.hexatonic).toEqual({ name: 'Dm/Em', link: 2 })
-    expect(staves([row('CMaj7')], 'root', hex(8))[0]?.hexatonic).toEqual({ name: 'C/Dm', link: 1 })
+    expect(staves([row('CMaj7')], 'root', hex(2))[0]?.hexatonic).toMatchObject({ name: 'Dm/Em', link: 2 })
+    expect(staves([row('CMaj7')], 'root', hex(8))[0]?.hexatonic).toMatchObject({ name: 'C/Dm', link: 1 })
   })
 
   it('lines up with the drawn notes in From X mode', () => {

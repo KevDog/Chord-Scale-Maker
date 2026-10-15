@@ -121,11 +121,11 @@ describe('pentatonics ranked against any scale (#266)', () => {
   it('picks a staff’s pentatonic on a degree and lights the notes it shares', () => {
     const pcs = [...on('dorian', 'D')].sort((a, b) => a - b) // C D E F G A B as pcs
     const home = pentatonicPick(pcs, parseRoot('D'), 0)
-    expect(home.pentatonic).toEqual({ name: 'Dm', degree: 0, shared: 5 })
+    expect(home.pentatonic).toEqual({ name: 'Dm', degree: 0, shared: 5, picked: false, sheet: 'Dm' })
     expect(home.lit.filter(Boolean)).toHaveLength(5)
-    expect(pentatonicPick(pcs, parseRoot('D'), 7).pentatonic).toEqual({ name: 'Am', degree: 7, shared: 5 })
+    expect(pentatonicPick(pcs, parseRoot('D'), 7).pentatonic).toMatchObject({ name: 'Am', degree: 7, shared: 5 })
     const far = pentatonicPick(pcs, parseRoot('D'), 3) // Fm on ♭3 of D Dorian: F A♭ B♭ C E♭, only F and C inside
-    expect(far.pentatonic).toEqual({ name: 'Fm', degree: 3, shared: 2 })
+    expect(far.pentatonic).toMatchObject({ name: 'Fm', degree: 3, shared: 2 })
     expect(far.lit.filter(Boolean)).toHaveLength(2)
   })
 
@@ -140,7 +140,7 @@ describe('pentatonics ranked against any scale (#266)', () => {
     for (const [scale, root] of [['ionian', 'C'], ['dorian', 'D'], ['mixolydian', 'G'], ['whole tone', 'C'], ['altered', 'Bb'], ['lydian', 'F#']] as const) {
       const pcs = [...on(scale, root)]
       const first = pentatonicRanking(new Set(pcs), parseRoot(root))[0]!
-      expect(pentatonicPick(pcs, parseRoot(root), 'auto').pentatonic).toEqual({ name: first.name, degree: first.degree, shared: first.shared })
+      expect(pentatonicPick(pcs, parseRoot(root), 'auto').pentatonic).toEqual({ name: first.name, degree: first.degree, shared: first.shared, picked: false, sheet: first.name })
     }
     expect(pentatonicPick([...on('ionian', 'C')], parseRoot('C'), 'auto').pentatonic.name).toBe('Dm') // on the 2
     expect(pentatonicPick([...on('mixolydian', 'G')], parseRoot('G'), 'auto').pentatonic.name).toBe('Dm') // on the 5
@@ -170,7 +170,21 @@ describe('pentatonics ranked against any scale (#266)', () => {
   })
 
   it('captions every pick with its name and shared count', () => {
-    expect(pentatonicCaption({ name: 'Dm', degree: 2, shared: 5 })).toBe('Dm pent · 5 shared')
-    expect(pentatonicCaption({ name: 'F♯m', degree: 6, shared: 3 })).toBe('F♯m pent · 3 shared')
+    expect(pentatonicCaption({ name: 'Dm', degree: 2, shared: 5, picked: false, sheet: 'Dm' })).toBe('Dm pent · 5 shared')
+    expect(pentatonicCaption({ name: 'F♯m', degree: 6, shared: 3, picked: true, sheet: 'Dm' })).toBe('F♯m pent · 3 shared')
+  })
+
+  it('adds varies to the caption where a staff’s positions differ (#303)', () => {
+    expect(pentatonicCaption({ name: 'Dm', degree: 2, shared: 5, picked: false, sheet: 'Dm' }, true)).toBe('Dm pent · 5 shared · varies')
+    expect(pentatonicCaption({ name: 'Dm', degree: 2, shared: 5, picked: false, sheet: 'Dm' }, false)).toBe('Dm pent · 5 shared')
+  })
+
+  it('plays a pick (a written pc in the ranking) over the degree, and names the degree’s as the sheet’s (#303)', () => {
+    const pcs = [...on('dorian', 'D')].sort((a, b) => a - b)
+    const picked = pentatonicPick(pcs, parseRoot('D'), 7, 4) // Em, over Am on the 5
+    expect(picked.pentatonic).toEqual({ name: 'Em', degree: 2, shared: 5, picked: true, sheet: 'Am' })
+    expect(picked.lit).toEqual(pcs.map((pc) => [4, 7, 9, 11, 2].includes(pc)))
+    expect(pentatonicPick(pcs, parseRoot('D'), 'auto', null).pentatonic).toMatchObject({ name: 'Dm', picked: false, sheet: 'Dm' })
+    expect(pentatonicPick(pcs, parseRoot('D'), 'auto', 3).pentatonic).toMatchObject({ name: 'E♭m', picked: true, sheet: 'Dm' }) // every pc is in the ranking
   })
 })

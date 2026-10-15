@@ -145,12 +145,13 @@ function groupB(pair: HexPair, grouping: HexGrouping, chordRoot: Spelled, qualit
   }
 }
 
-/** a staff's hexatonic under the preset: the pair used, and its link number */
-export type StaffHexatonic = Readonly<{ name: string; link: number }>
+/** a staff's hexatonic under the preset: the pair used, and its link number; picked: a chord pick (#303); sheet: the Pair control's pair */
+export type StaffHexatonic = Readonly<{ name: string; link: number; picked: boolean; sheet: string }>
 
 /**
  * the hexatonic for the Pair control's value on a staff's scale (its notes from the root, spelled as written), and
- * which of the staff's notes (`pcs`, the scale's own by default) it lights; second: the lit notes in group B
+ * which of the staff's notes (`pcs`, the scale's own by default) it lights; second: the lit notes in group B. A pick
+ * (#303, its triads' written root pcs, lower first) plays over the control where it is one of the scale's pairs
  */
 export function hexatonicPick(
   scale: readonly Spelled[],
@@ -159,12 +160,16 @@ export function hexatonicPick(
   pair: number,
   grouping: HexGrouping,
   pcs: readonly number[] = scale.map(pcOf),
+  picked: readonly [number, number] | null = null,
 ): Readonly<{ hexatonic: StaffHexatonic | null; lit: boolean[]; second: boolean[] }> {
-  const used = resolvePair(hexatonicPairs(scale, chordRoot, quality), pair, chordRoot)
+  const pairs = hexatonicPairs(scale, chordRoot, quality)
+  const auto = resolvePair(pairs, pair, chordRoot)
+  const found = picked === null ? undefined : pairs.find((p) => pcOf(p.lower.root) === picked[0] && pcOf(p.upper.root) === picked[1])
+  const used = found ?? auto
   if (used === null) return { hexatonic: null, lit: pcs.map(() => false), second: pcs.map(() => false) }
   const b = groupB(used, grouping, chordRoot, quality)
-  return { hexatonic: { name: used.name, link: used.link }, lit: pcs.map((pc) => used.tones.includes(pc)), second: pcs.map((pc) => b.has(pc)) }
+  return { hexatonic: { name: used.name, link: used.link, picked: !!found, sheet: auto?.name ?? '' }, lit: pcs.map((pc) => used.tones.includes(pc)), second: pcs.map((pc) => b.has(pc)) }
 }
 
-/** "G/Am hex", or "no triad pair" */
-export const hexatonicCaption = (h: StaffHexatonic | null): string => (h ? `${h.name} hex` : 'no triad pair')
+/** "G/Am hex", or "no triad pair"; " · varies" where the staff's chords have different picks */
+export const hexatonicCaption = (h: StaffHexatonic | null, varies = false): string => (h ? `${h.name} hex${varies ? ' · varies' : ''}` : 'no triad pair')

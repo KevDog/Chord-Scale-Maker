@@ -1,14 +1,17 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { chordPositions } from '../changes'
+import { chordPositions, pickTargets } from '../changes'
+import { type ChordPicks, NO_PICKS, withPick } from '../chordPicks'
+import type { PracticeSelection } from '../practice'
 import { expandRowLines, expandRows, parseChart, qualityScale, type Row } from '../chart'
 import type { ScaleLevel } from '../levels'
-import { CONCERT } from '../part'
+import { CONCERT, type Part } from '../part'
 import { rootName } from '../pitch'
 import { resolveScales } from '../resolve'
 import { type ModeChoice, type StaffModel, buildSheet, linePositions, noteText, pageSubtitle, scaleLines, toVexKey } from '../sheet'
 import { parseKey } from '../analysis/keys'
 
+const TENOR: Part = { clef: 'treble', trans: 'Bb' }
 const row = (chord: string, scale = '', bar = '1'): Row => ({ section: 'A', bar, chord, scale })
 
 /** n rows that are n different lines: m7 chords on the 12 roots, then 7ths */
@@ -287,5 +290,71 @@ describe('linePositions', () => {
     const only = scaleLines(expandRowLines(d).value, (_, i) => r.get(i)?.scale ?? null).find((l) => l.rows.includes(3))!
     expect(only.rows).toEqual([3]) // the copy's row alone
     expect(linePositions(only, chordPositions(d))).toEqual([])
+  })
+})
+
+describe('chord picks on the Scales sheet (#303)', () => {
+  const doc = parseChart(FORM).value
+  const rows = expandRows(doc).value
+  const res = resolveScales(doc, { level: 'standard', seed: 0 })
+  const at = chordPositions(doc)
+  const targets = pickTargets(doc, res)
+  const PENT = { preset: 'pentatonic', degree: 'auto' } as const
+  const staves = (picks: ChordPicks, practice: PracticeSelection = PENT, part = CONCERT) =>
+    buildSheet(rows, part, 'root', 'C', 12, practice, undefined, res, { picks, at })[0]!.pages.flat()
+  const dm = (s: readonly StaffModel[]) => s[0]! // lines in order of first appearance: Dm7 first
+  const g7 = (s: readonly StaffModel[]) => s[1]!
+
+  it('lists the positions it covers and its concert source', () => {
+    expect(rows.length).toBe(expandRowLines(doc).value.length)
+    expect(dm(staves(NO_PICKS))).toMatchObject({ positions: ['A1:1:0', 'B:5:0', 'A3:9:0'], varies: false, source: { chord: 'Dm7', scale: res.get(0)?.scale } })
+    expect(g7(staves(NO_PICKS))).toMatchObject({ positions: ['A1:2:0', 'B:8:0', 'A3:10:0'], source: { chord: 'G7', scale: 'G Mixolydian' } }) // a 2nd ending and a written-out copy
+    expect(dm(staves(NO_PICKS, PENT, TENOR)).source).toEqual({ chord: 'Dm7', scale: 'D Dorian' })
+  })
+  it('takes its first position’s pick', () => {
+    const picks = withPick(NO_PICKS, 'pentatonic', ['A1:1:0'], 4, targets) // Em
+    expect(dm(staves(picks)).pentatonic).toMatchObject({ name: 'Em', picked: true, sheet: 'Dm' })
+    expect(dm(staves(picks)).selected).toEqual(dm(staves(NO_PICKS, { preset: 'pentatonic', degree: 2 })).selected) // Em is on the 2 of D Dorian
+  })
+  it('varies where its positions’ picks differ (a pick and none count as different)', () => {
+    const picks = withPick(NO_PICKS, 'pentatonic', ['B:5:0'], 4, targets)
+    const s = dm(staves(picks))
+    expect([s.pentatonic?.name, s.pentatonic?.picked, s.varies]).toEqual(['Dm', false, true]) // first position A1:1:0 has none
+    expect(dm(staves(withPick(picks, 'pentatonic', ['A1:1:0'], 9, targets))).varies).toBe(true) // two different picks
+  })
+  it('does not vary when every position has the same pick', () => {
+    expect(dm(staves(withPick(NO_PICKS, 'pentatonic', ['A1:1:0', 'B:5:0', 'A3:9:0'], 4, targets))).varies).toBe(false)
+  })
+  it('ignores a stale pick and the other kind’s picks', () => {
+    expect(dm(staves({ pentatonic: { 'A1:1:0': { pc: 4, for: 'Dm7|D Aeolian' } }, hexatonic: {} })).pentatonic?.picked).toBe(false)
+    expect(dm(staves({ pentatonic: { 'B:5:0': { pc: 4, for: 'Dm7|D Aeolian' } }, hexatonic: {} })).varies).toBe(false) // stale: counts as none
+    expect(dm(staves(withPick(NO_PICKS, 'hexatonic', ['A1:1:0'], [0, 2], targets))).varies).toBe(false)
+  })
+  it('applies a hexatonic pick under the Hexatonic preset', () => {
+    const s = dm(staves(withPick(NO_PICKS, 'hexatonic', ['A1:1:0', 'B:5:0', 'A3:9:0'], [5, 7], targets), { preset: 'hexatonic', pair: 0, grouping: 'triads' }))
+    expect(s.hexatonic).toMatchObject({ name: 'F/G', picked: true })
+    expect(s.varies).toBe(false)
+    const one = dm(staves(withPick(NO_PICKS, 'hexatonic', ['B:5:0'], [5, 7], targets), { preset: 'hexatonic', pair: 0, grouping: 'triads' }))
+    expect([one.hexatonic?.picked, one.varies]).toEqual([false, true])
+  })
+  it('keeps the sounding pick on a B♭ part', () => {
+    expect(dm(staves(withPick(NO_PICKS, 'pentatonic', ['A1:1:0'], 4, targets), PENT, TENOR)).pentatonic).toMatchObject({ name: 'F♯m', picked: true })
+    expect(dm(staves(withPick(NO_PICKS, 'hexatonic', ['A1:1:0'], [5, 7], targets), { preset: 'hexatonic', pair: 0, grouping: 'triads' }, TENOR)).hexatonic).toMatchObject({ name: 'G/A', picked: true })
+  })
+  it('without picks or positions, staves have positions [] and varies false; error staves too', () => {
+    const s = buildSheet(rows, CONCERT, 'root', 'C', 12, PENT, undefined, res)[0]!.pages.flat()
+    expect(s.every((x) => x.positions.length === 0 && !x.varies && x.source !== null)).toBe(true)
+    const bad = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | Xyz\n').value
+    const br = resolveScales(bad, { level: 'standard', seed: 0 })
+    const err = buildSheet(expandRows(bad).value, CONCERT, 'root', 'C', 12, PENT, undefined, br, { picks: NO_PICKS, at: chordPositions(bad) })[0]!.pages.flat()
+    expect(err.map((x) => [x.error !== null, x.positions, x.varies, x.source])).toEqual([[false, ['A:1:0'], false, { chord: 'Dm7', scale: 'D Dorian' }], [true, ['A:2:0'], false, null]])
+  })
+  it('gives a staff whose rows are all in a folded repeat no positions and no varies', () => {
+    const d = parseChart('title: T\nkey: C\nA1 | 1 | Dm7\nA1 | 2 | G7\n@copy A1 A2 2\nB | 5 | Cm7\nB | 6 | Cm7\n').value
+    const r = resolveScales(d, { level: 'standard', seed: 0 })
+    const picks = withPick(NO_PICKS, 'pentatonic', ['A1:2:0'], 2, pickTargets(d, r))
+    const s = buildSheet(expandRows(d).value, CONCERT, 'root', 'C', 12, PENT, undefined, r, { picks, at: chordPositions(d) })[0]!.pages.flat()
+    const copy = s.find((x) => x.scale?.name === 'Phrygian Dominant')!
+    expect([copy.positions, copy.varies, copy.pentatonic?.picked]).toEqual([[], false, false])
   })
 })
