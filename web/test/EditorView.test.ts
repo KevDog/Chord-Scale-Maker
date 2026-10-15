@@ -517,6 +517,7 @@ describe('EditorView lead-sheet editor', () => {
     const w = await mount()
     await buttonCalled(w, 'Edit')?.trigger('click')
     expect(changesSheet(w).props('numerals')).toBe(true)
+    expect(localStorage.getItem('csm-numerals')).toBeNull() // a link's settings are for the visit: Reset leaves your own alone
     expect(localStorage.getItem('csm-numerals')).toBe('off')
     expect(buttonCalled(w, 'Numerals')).toBeUndefined()
     expect(buttonCalled(w, 'Scales')).toBeUndefined()
@@ -727,5 +728,51 @@ describe('EditorView interface levels', () => {
     expect(buttonCalled(w, 'Source')).toBeUndefined()
     const big = await mountSuspended(EditorView, { props: { initialText: 'title: T\n' + 'A | 1 | Cm7\n'.repeat(3000) }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
     expect(big.find('textarea[aria-label="Chart text"]').exists()).toBe(true)
+  })
+})
+
+describe('EditorView interface notice', () => {
+  const notice = (w: Wrapper) => w.findComponent({ name: 'InterfaceNotice' })
+  const at = (level: 'essentials' | 'intermediate' | 'everything') => {
+    useRuntimeConfig().public.features.interfaceLevels = true
+    useInterface().level.value = level
+  }
+  afterEach(() => {
+    useRuntimeConfig().public.features.interfaceLevels = false
+    useInterface().level.value = 'everything'
+    localStorage.clear()
+  })
+
+  it("a share link's hidden settings show a notice naming the level", async () => {
+    at('essentials')
+    const w = await mount({ sheet: 'changes', level: 'advanced', seed: 1 })
+    expect(notice(w).exists()).toBe(true)
+    expect(notice(w).props('needs')).toBe('intermediate')
+  })
+
+  it('Show controls raises the level; the notice goes', async () => {
+    at('essentials')
+    const w = await mount({ sheet: 'changes', level: 'advanced', seed: 1 })
+    notice(w).vm.$emit('show')
+    await nextTick()
+    expect(useInterface().level.value).toBe('intermediate')
+    expect(notice(w).exists()).toBe(false)
+  })
+
+  it('Reset returns the hidden settings to their defaults', async () => {
+    at('essentials')
+    const w = await mount({ sheet: 'changes', level: 'advanced', seed: 1, numerals: false })
+    notice(w).vm.$emit('reset')
+    await nextTick()
+    expect(notice(w).exists()).toBe(false)
+    expect(useInterface().level.value).toBe('essentials')
+    expect(changesSheet(w).props('numerals')).toBe(true)
+  })
+
+  it('no notice when nothing is hidden, or with the flag off', async () => {
+    at('essentials')
+    expect(notice(await mount({ sheet: 'changes' })).exists()).toBe(false)
+    useRuntimeConfig().public.features.interfaceLevels = false
+    expect(notice(await mount({ sheet: 'changes', level: 'advanced', seed: 1 })).exists()).toBe(false)
   })
 })

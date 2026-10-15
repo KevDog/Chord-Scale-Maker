@@ -158,6 +158,7 @@
               </template>
             </template>
           </PreviewControls>
+          <InterfaceNotice v-if="hidden" :needs="hidden.needs" class="mt-4" @show="ui.level.value = hidden.needs" @reset="resetHidden" />
           <UiText v-if="transposed" role="status" class="mt-4">{{ transposed }}</UiText>
           <PracticePanel
             v-if="practiceOn && ui.shows('practice') && sheet === 'scales' && !editor.fatal.value"
@@ -262,6 +263,7 @@ import { ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, ArrowUturnRig
 import { ISSUE_CONTEXT, issuePart } from '~/utils/issueReport'
 import { CHART_REPORT_KEY, type ChartReport, guidesText } from '~/utils/chartReport'
 import { sheetLineOf } from '~/utils/sheetLine'
+import { type HiddenSetting, hiddenSettings } from '~/utils/interface'
 import {
   addSection,
   barView,
@@ -430,6 +432,24 @@ const practiceStaves = computed(() =>
 const practiceBoxesNow = computed(() => practiceBoxes(practiceStaves.value, mode.value, start.value))
 const litNow = computed(() => litKeys(practiceStaves.value))
 const transposed = ref('')
+/** settings in force whose controls this Interface level hides (a share link, a stored preference): the notice offers to show them or reset them */
+const hidden = computed(() =>
+  ui.on
+    ? hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: prefs.numerals.value, scaleNames: prefs.scaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, pentatonics: pentatonicsOn && prefs.pentatonics.value })
+    : null,
+)
+const RESETS: Readonly<Record<HiddenSetting, () => void>> = {
+  'scale-level': () => (scaleLevel.level.value = 'standard'),
+  numerals: () => (prefs.numerals.value = true),
+  'scale-names': () => (prefs.scaleNames.value = true),
+  line: () => (prefs.lineMode.value = 'off'),
+  spell: () => (prefs.spell.value = 'key'),
+  practice: () => practice.setSelection(mode.value, null),
+  pentatonics: () => (prefs.pentatonics.value = false),
+}
+function resetHidden(): void {
+  for (const s of hidden.value?.settings ?? []) RESETS[s]()
+}
 const focus = useFocusMode()
 const focusBar = ref<HTMLElement | null>(null)
 /**
