@@ -744,6 +744,13 @@ describe('the Hexatonic overlay', () => {
     expect(flat(showHexatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, HEX).lines))[1]?.hexatonic).toEqual({ label: '', name: 'G/Am' })
   })
 
+  it('is idempotent, and gives a blanked label back where a new break starts a line on it', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Cmaj7\nA | 3 | Cmaj7').value
+    const once = showHexatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, HEX).lines)
+    expect(showHexatonics(once)).toEqual(once)
+    expect(flat(showHexatonics(breakLines(once, new Set(['A 2'])))).map((c) => c.hexatonic?.label)).toEqual(['G/Am', 'G/Am', ''])
+  })
+
   it('counts the hexatonic row as the pentatonic row', () => {
     for (const line of ['off', 'third', 'seventh', 'up-root'] as const)
       for (const numerals of [true, false])

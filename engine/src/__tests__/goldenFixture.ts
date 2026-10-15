@@ -8,6 +8,7 @@ import { readdirSync, readFileSync } from 'node:fs'
 import raw from '../../chord_scales.json'
 import {
   ALIASES,
+  baseQuality,
   type ChartDoc,
   type ChordToken,
   type Clef,
@@ -23,9 +24,9 @@ import {
   lilyNote,
   type Part,
   parseChart,
+  parseChord,
   parseRoot,
   QUALITY_NAMES,
-  readChord,
   resolveQuality,
   resolveScales,
   resolveStart,
@@ -151,7 +152,7 @@ export function hexatonicCases(): Hexatonics {
       const scale = attempt(() => defaultScale(chord))
       const pair = scale === null ? null : attempt(() => {
         const notes = scaleNotes(CONCERT, scale, 'root', 0)
-        const quality = readChord(chord)?.quality ?? null
+        const quality = baseQuality(parseChord(chord).quality) // as the app reads it (changes.ts)
         return hexatonicAuto(hexatonicPairs(notes, C, quality), C)?.name ?? null
       })
       return [chord, { scale, pair }]

@@ -247,7 +247,7 @@ export function showPentatonics(lines: readonly ChangesLine[]): readonly Changes
   })
 }
 
-/** the hexatonic row as printed, run after breakLines: a label where it differs from the last one shown on the line; a chord with none ends it */
+/** the hexatonic row as printed, run after breakLines: a label where its name differs from the last one on the line; a chord with none ends it. Idempotent: a label reads its name */
 export function showHexatonics(lines: readonly ChangesLine[]): readonly ChangesLine[] {
   return lines.map((line): ChangesLine => {
     let last: string | null = null
@@ -256,9 +256,9 @@ export function showHexatonics(lines: readonly ChangesLine[]): readonly ChangesL
         last = null
         return c
       }
-      const shown = c.hexatonic.label !== last
-      last = c.hexatonic.label
-      return shown ? c : { ...c, hexatonic: { ...c.hexatonic, label: '' } }
+      const shown = c.hexatonic.name !== last
+      last = c.hexatonic.name
+      return { ...c, hexatonic: { ...c.hexatonic, label: shown ? c.hexatonic.name : '' } }
     })
   })
 }
