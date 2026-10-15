@@ -53,12 +53,14 @@ const startName = computed(() => noteText(props.startText))
 const { shows } = useInterface()
 /** the Pentatonic preset: the flag, from Everything */
 const pentatonicShown = computed(() => !!props.pentatonic && shows('practice-pentatonic'))
-const presets = computed(() => PRESETS[props.mode].filter((p) => p !== 'pentatonic' || pentatonicShown.value))
+const presets = computed(() => PRESETS[props.mode].filter((p) => p !== 'hexatonic' && (p !== 'pentatonic' || pentatonicShown.value))) // Hexatonic: not offered yet
 const RANKS = Array.from({ length: PENTATONIC_RANKS }, (_, i) => i + 1)
 
 function pickPreset(p: Preset): void {
   if (activePreset.value === p) emit('update:selection', null)
-  else emit('update:selection', p === 'pentatonic' ? { preset: 'pentatonic', rank: 1 } : { preset: p })
+  else if (p === 'pentatonic') emit('update:selection', { preset: 'pentatonic', rank: 1 })
+  else if (p === 'hexatonic') emit('update:selection', { preset: 'hexatonic', pair: 0, grouping: 'triads' })
+  else emit('update:selection', { preset: p })
 }
 
 function pickRank(rank: number | undefined): void {

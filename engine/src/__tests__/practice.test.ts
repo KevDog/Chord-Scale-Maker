@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Row } from '../chart'
 import { CONCERT, type Part } from '../part'
 import { parseRoot, rootName } from '../pitch'
-import { compareKeys, isPentatonicSelection, litKeys, type PracticeSelection, practiceBoxes, practiceKeys, practiceSelectionFrom, PRESETS, selectedNotes, startReference } from '../practice'
+import { compareKeys, isHexatonicSelection, isPentatonicSelection, litKeys, type PracticeSelection, practiceBoxes, practiceKeys, practiceSelectionFrom, PRESET_LABELS, PRESETS, selectedNotes, startReference } from '../practice'
 import { buildSheet, type StaffModel } from '../sheet'
 
 const row = (chord: string, scale = '', bar = '1'): Row => ({ section: 'A', bar, chord, scale })
@@ -116,8 +116,8 @@ describe('practice boxes', () => {
 
 describe('the Pentatonic selection (#266)', () => {
   it('is offered in both modes, last', () => {
-    expect(PRESETS.root.at(-1)).toBe('pentatonic')
-    expect(PRESETS.from).toEqual(['all', 'pentatonic'])
+    expect(PRESETS.root.at(-2)).toBe('pentatonic')
+    expect(PRESETS.from).toEqual(['all', 'pentatonic', 'hexatonic'])
   })
 
   it('reads from untrusted data with a rank 1–12; a missing or bad rank reads as 1', () => {
@@ -182,5 +182,92 @@ describe('the Pentatonic preset on the Scales sheet (#266)', () => {
 
   it('reports a best under 5 on a whole-tone staff', () => {
     expect(staves([row('C7#5', 'C Whole Tone')], 'root', pent(1))[0]?.pentatonic?.best).toBe(3)
+  })
+})
+
+describe('the Hexatonic selection', () => {
+  it('is offered in both modes, last', () => {
+    expect(PRESETS.root.at(-1)).toBe('hexatonic')
+    expect(PRESETS.from.at(-1)).toBe('hexatonic')
+    expect(PRESET_LABELS.hexatonic).toBe('Hexatonic')
+  })
+
+  it('reads from untrusted data: pair an integer 0–8 (else 0), grouping one of four (else triads)', () => {
+    expect(practiceSelectionFrom({ preset: 'hexatonic', pair: 5, grouping: 'pent' })).toEqual({ preset: 'hexatonic', pair: 5, grouping: 'pent' })
+    expect(practiceSelectionFrom({ preset: 'hexatonic', pair: 8, grouping: 'trichords' })).toEqual({ preset: 'hexatonic', pair: 8, grouping: 'trichords' })
+    expect(practiceSelectionFrom({ preset: 'hexatonic' })).toEqual({ preset: 'hexatonic', pair: 0, grouping: 'triads' })
+    for (const pair of [9, -1, 2.5, '3', null]) expect(practiceSelectionFrom({ preset: 'hexatonic', pair, grouping: 'tones' })).toEqual({ preset: 'hexatonic', pair: 0, grouping: 'tones' })
+    for (const grouping of ['x', 3, null, 'Triads']) expect(practiceSelectionFrom({ preset: 'hexatonic', pair: 1, grouping })).toEqual({ preset: 'hexatonic', pair: 1, grouping: 'triads' })
+  })
+
+  it('is told apart from the other selections', () => {
+    expect(isHexatonicSelection({ preset: 'hexatonic', pair: 0, grouping: 'triads' })).toBe(true)
+    expect(isHexatonicSelection({ preset: 'pentatonic', rank: 1 })).toBe(false)
+    expect(isPentatonicSelection({ preset: 'hexatonic', pair: 0, grouping: 'triads' })).toBe(false)
+    expect(isHexatonicSelection({ keys: ['1'] })).toBe(false)
+    expect(isHexatonicSelection(null)).toBe(false)
+  })
+
+  it('selects nothing by keys', () => {
+    expect(selectedNotes({ preset: 'hexatonic', pair: 0, grouping: 'triads' }, 'Dm7', ['1', 'b3'])).toEqual([false, false])
+  })
+})
+
+describe('the Hexatonic preset on the Scales sheet', () => {
+  const hex = (pair = 0, grouping: 'triads' | 'tones' | 'pent' | 'trichords' = 'triads'): PracticeSelection => ({ preset: 'hexatonic', pair, grouping })
+
+  it('lights the Auto pair and marks group B on a CMaj7 staff', () => {
+    const [s] = staves([row('CMaj7')], 'root', hex())
+    expect(s?.hexatonic).toEqual({ name: 'G/Am', link: 5 })
+    expect(picked([s!])[0]).toEqual(['C', 'D', 'E', 'G', 'A', 'B'])
+    expect(s?.second).toEqual([true, false, true, false, false, true, false]) // Am: A C E
+  })
+
+  it('plays the pair asked for, wrapping round the staff’s pairs', () => {
+    expect(staves([row('CMaj7')], 'root', hex(2))[0]?.hexatonic).toEqual({ name: 'Dm/Em', link: 2 })
+    expect(staves([row('CMaj7')], 'root', hex(8))[0]?.hexatonic).toEqual({ name: 'C/Dm', link: 1 })
+  })
+
+  it('lines up with the drawn notes in From X mode', () => {
+    const [s] = staves([row('CMaj7')], 'from', hex(), 'E') // E F G A B C D
+    expect(s?.notes.map((n) => rootName(n))).toEqual(['E', 'F', 'G', 'A', 'B', 'C', 'D'])
+    expect(s?.selected).toEqual([true, false, true, true, true, true, true])
+    expect(s?.second).toEqual([true, false, false, true, false, true, false])
+  })
+
+  it('splits by the grouping asked for', () => {
+    const [s] = staves([row('CMaj7')], 'root', hex(0, 'trichords')) // from G: G A B | C D E, group B the high trichord
+    expect(s?.second).toEqual([true, true, true, false, false, false, false])
+  })
+
+  it('names the written pair for a transposing part, lighting the same degrees', () => {
+    const [concert] = staves([row('CMaj7')], 'root', hex())
+    const [tenor] = staves([row('CMaj7')], 'root', hex(), 'C', TENOR)
+    expect(tenor?.hexatonic?.name).toBe('A/Bm')
+    expect(tenor?.selected).toEqual(concert?.selected)
+    expect(tenor?.second).toEqual(concert?.second)
+  })
+
+  it('measures Auto from the scale’s root when the chord can’t be read, with no chord tones to cover', () => {
+    expect(staves([row('Xq7', 'C Major')], 'root', hex())[0]?.hexatonic?.name).toBe('C/Dm')
+  })
+
+  it('lights nothing where the scale has no pair', () => {
+    const [s] = staves([row('C7#5', 'C Whole Tone')], 'root', hex())
+    expect(s?.hexatonic).toBeNull()
+    expect(s?.selected?.some(Boolean)).toBe(false)
+    expect(s?.second?.some(Boolean)).toBe(false)
+  })
+
+  it('is null under other selections and on staves that can’t be drawn', () => {
+    for (const practice of [{ preset: 'guideTones' } as const, { preset: 'pentatonic', rank: 1 } as const, null]) {
+      const [s] = staves([row('CMaj7')], 'root', practice)
+      expect(s?.hexatonic).toBeNull()
+      expect(s?.second).toBeNull()
+    }
+    const [bad] = staves([row('Xq7')], 'root', hex())
+    expect(bad?.error).not.toBeNull()
+    expect(bad?.hexatonic).toBeNull()
+    expect(bad?.second).toBeNull()
   })
 })
