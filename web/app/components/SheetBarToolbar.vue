@@ -5,28 +5,28 @@
       :aria-label="`Bar ${bar} of ${section}`"
       class="flex items-center gap-0.5 rounded-lg bg-white p-0.5 text-xs font-semibold text-zinc-800 shadow-lg ring-1 ring-zinc-950/10 dark:bg-zinc-800 dark:text-zinc-100 dark:ring-white/10"
     >
-    <template v-if="repeatOf">
-      <button type="button" :class="ITEM" :aria-label="`Write out ${section}, which repeats ${repeatOf}`" @click="change(writeOutCopy(doc, section), `${section} written out`, `${section} can’t be written out.`)">Write out</button>
-    </template>
-    <template v-else>
-      <button type="button" :class="ITEM" :aria-label="`Insert a held bar before ${section} bar ${bar}`" @click="change(insertHeldBar(doc, section, bar), `bar ${bar} added`, 'A section can’t start with a held bar.')">+ before</button>
-      <button type="button" :class="ITEM" :aria-label="`Insert a held bar after ${section} bar ${bar}`" @click="change(insertHeldBar(doc, section, bar + 1), `bar ${bar + 1} added`, 'No bar can go there.')">+ after</button>
-      <button type="button" :class="ITEM" :aria-label="`Split ${section} bar ${bar}`" @click="split">Split</button>
-      <button type="button" :class="ITEM" :aria-label="`Delete ${section} bar ${bar}`" @click="change(deleteBar(doc, section, bar), `bar ${bar} deleted`, 'A section can’t start with a held bar: give the next bar a chord first.')">Delete</button>
-      <UiDropdown v-if="shows('form-editing') || (chordLine !== null && shows('key-change'))">
-        <UiDropdownButton plain :class="[ITEM, 'py-0.5! text-xs!']" :aria-label="`More actions for ${section} bar ${bar}`">⋯</UiDropdownButton>
-        <UiDropdownMenu anchor="start">
-          <UiDropdownItem v-if="chordLine !== null && shows('key-change')" @click="change(insertKeyChange(doc, chordLine), 'key change added', 'A key change can’t go here.')">Key change here</UiDropdownItem>
-          <template v-if="shows('form-editing')">
-            <UiDropdownItem v-for="n in ENDINGS" :key="n" @click="change(toggleEnding(doc, section, n, bar), `${n === 1 ? '1st' : '2nd'} ending ${ending === n ? 'off' : 'on'}`, 'An ending can’t go over the other one.')">{{ n === 1 ? '1st' : '2nd' }} ending</UiDropdownItem>
-          <UiDropdownItem v-for="m in MARKS" :key="m" @click="change(setMark(doc, section, bar, m, !hasMark(m)), `${MARK_LABELS[m]} ${hasMark(m) ? 'off' : 'on'}`, '')">{{ MARK_LABELS[m] }}</UiDropdownItem>
-          <UiDropdownItem @click="emit('dialog', 'nav', section, bar)">Jump…</UiDropdownItem>
-          <UiDropdownItem @click="emit('dialog', 'split', section, bar)">New section here…</UiDropdownItem>
-          <UiDropdownItem @click="emit('dialog', 'paste', section, bar)">Paste bars…</UiDropdownItem>
-          </template>
-        </UiDropdownMenu>
-      </UiDropdown>
-    </template>
+      <template v-if="repeatOf">
+        <button type="button" :class="ITEM" :aria-label="`Write out ${section}, which repeats ${repeatOf}`" @click="change(writeOutCopy(doc, section), `${section} written out`, `${section} can’t be written out.`)">Write out</button>
+      </template>
+      <template v-else>
+        <button type="button" :class="ITEM" :aria-label="`Insert a held bar before ${section} bar ${bar}`" @click="change(insertHeldBar(doc, section, bar), `bar ${bar} added`, 'A section can’t start with a held bar.')">+ before</button>
+        <button type="button" :class="ITEM" :aria-label="`Insert a held bar after ${section} bar ${bar}`" @click="change(insertHeldBar(doc, section, bar + 1), `bar ${bar + 1} added`, 'No bar can go there.')">+ after</button>
+        <button type="button" :class="ITEM" :aria-label="`Split ${section} bar ${bar}`" @click="split">Split</button>
+        <button type="button" :class="ITEM" :aria-label="`Delete ${section} bar ${bar}`" @click="change(deleteBar(doc, section, bar), `bar ${bar} deleted`, 'A section can’t start with a held bar: give the next bar a chord first.')">Delete</button>
+        <UiDropdown v-if="shows('form-editing') || (chordLine !== null && shows('key-change'))">
+          <UiDropdownButton plain :class="[ITEM, 'py-0.5! text-xs!']" :aria-label="`More actions for ${section} bar ${bar}`">⋯</UiDropdownButton>
+          <UiDropdownMenu anchor="start">
+            <UiDropdownItem v-if="chordLine !== null && shows('key-change')" @click="change(insertKeyChange(doc, chordLine), 'key change added', 'A key change can’t go here.')">Key change here</UiDropdownItem>
+            <template v-if="shows('form-editing')">
+              <UiDropdownItem v-for="n in ENDINGS" :key="n" @click="change(toggleEnding(doc, section, n, bar), `${n === 1 ? '1st' : '2nd'} ending ${ending === n ? 'off' : 'on'}`, 'An ending can’t go over the other one.')">{{ n === 1 ? '1st' : '2nd' }} ending</UiDropdownItem>
+              <UiDropdownItem v-for="m in MARKS" :key="m" @click="change(setMark(doc, section, bar, m, !hasMark(m)), `${MARK_LABELS[m]} ${hasMark(m) ? 'off' : 'on'}`, '')">{{ MARK_LABELS[m] }}</UiDropdownItem>
+              <UiDropdownItem @click="emit('dialog', 'nav', section, bar)">Jump…</UiDropdownItem>
+              <UiDropdownItem @click="emit('dialog', 'split', section, bar)">New section here…</UiDropdownItem>
+              <UiDropdownItem @click="emit('dialog', 'paste', section, bar)">Paste bars…</UiDropdownItem>
+            </template>
+          </UiDropdownMenu>
+        </UiDropdown>
+      </template>
     </div>
     <!-- a refused change, shown as well as announced -->
     <p v-if="why" role="alert" class="mt-1 max-w-72 rounded-md bg-white px-2 py-1 text-xs/5 font-normal whitespace-normal text-red-700 shadow-lg ring-1 ring-zinc-950/10 dark:bg-zinc-800 dark:text-red-400 dark:ring-white/10">{{ why }}</p>

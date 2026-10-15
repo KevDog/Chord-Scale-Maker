@@ -1,6 +1,6 @@
 <template>
-  <div v-if="row" class="space-y-6">
-    <template v-for="piece in parts" :key="piece">
+  <div v-if="row && shown.length" class="space-y-6">
+    <template v-for="piece in shown" :key="piece">
       <section v-if="piece === 'scale'" :aria-labelledby="`${id}-scale`" class="space-y-2">
         <div class="flex items-center gap-2">
           <UiSubheading :id="`${id}-scale`" :level="3">Scale</UiSubheading>
@@ -35,7 +35,7 @@
         </div>
       </section>
 
-      <section v-else-if="piece === 'function' && fnChoices.length" :aria-labelledby="`${id}-function`" class="space-y-2">
+      <section v-else-if="piece === 'function'" :aria-labelledby="`${id}-function`" class="space-y-2">
         <div class="flex items-baseline justify-between gap-2">
           <div class="flex min-w-0 items-baseline gap-2">
             <UiSubheading :id="`${id}-function`" :level="3">Function</UiSubheading>
@@ -127,6 +127,8 @@ const selectedScale = computed((): string => {
 const custom = computed(() => !!row.value?.scale && selectedScale.value === row.value.scale && !samePitchScale(row.value.scale, choices.value.defaultScale) && !choices.value.alternates.some((o) => o.scale === row.value?.scale))
 
 const fnChoices = computed(() => (row.value ? (functionChoices(props.doc).get(props.line) ?? []) : []))
+/** the parts with something to show: none (Essentials, or nothing to say), and no wrapper renders (#291) */
+const shown = computed((): readonly Part[] => parts.value.filter((p) => (p === 'function' ? fnChoices.value.length > 0 : p === 'why' ? !!note.value?.note : true)))
 const matchingFunction = computed(() => {
   const fn = row.value?.function ?? ''
   return fn ? fnChoices.value.find((c) => c.value && sameFunction(c.value, fn)) : fnChoices.value[0]

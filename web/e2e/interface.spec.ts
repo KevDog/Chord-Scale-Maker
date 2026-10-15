@@ -29,6 +29,16 @@ test.describe('Essentials', () => {
     await page.reload()
     await expect(level(page)).toBeVisible() // remembered
   })
+
+  test('on a phone, the chord editor’s bottom sheet has no empty space under the Chord field (#291)', async ({ page }) => {
+    await page.setViewportSize({ width: 390, height: 844 })
+    await page.goto('/song?new=1')
+    await expect(page.getByRole('group', { name: 'Sheet controls' }).getByRole('button', { name: 'Done', exact: true })).toBeVisible() // a new chart opens in the editor
+    await page.getByRole('button', { name: 'Edit Dm7, A bar 1' }).click()
+    const editor = page.getByRole('dialog')
+    await expect(editor.getByRole('textbox', { name: 'Chord' })).toBeVisible()
+    await expect(editor.locator('[id^=headlessui-dialog-panel] > .overflow-y-auto > *')).toHaveCount(1) // the Chord field's group alone
+  })
 })
 
 test.describe('Intermediate', () => {

@@ -188,8 +188,8 @@
             :composer="editor.heading.value.composer"
             :part="sheetPart"
             :instrument-label="sheetEditor ? '' : instrumentLabel(prefs.instrument.value)"
-            :numerals="sheetEditor || prefs.numerals.value"
-            :scales="sheetEditor || prefs.scaleNames.value"
+            :numerals="showNumerals"
+            :scales="showScaleNames"
             :line="sheetLine"
             :editable="sheetEditing && !focus.on.value"
             :selected-line="selectedLine"
@@ -447,7 +447,7 @@ const picksInForce = computed((): boolean => {
 })
 /** settings in force whose controls this Interface level hides (a share link, a stored preference): the notice offers to show them or reset them */
 const hidden = computed(() =>
-  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: prefs.numerals.value, scaleNames: prefs.scaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value }),
+  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: showNumerals.value, scaleNames: showScaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value }),
 )
 /** each reset, given the mode in force before any of them ran (resetting the spelling changes the mode) */
 const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
@@ -457,7 +457,10 @@ const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
   line: () => (prefs.lineMode.value = 'off'),
   spell: () => (prefs.spell.value = 'key'),
   practice: (inForce) => practice.setSelection(inForce, null),
-  pentatonics: () => (prefs.overlay.value = 'off'),
+  pentatonics: () => {
+    prefs.overlay.value = 'off'
+    pentPath.reset() // this chart's stored path too; other charts' are their own settings (#291)
+  },
   'chord-picks': () => chordPicks.clearAll(),
 }
 function resetHidden(): void {
@@ -479,6 +482,9 @@ const wide = useMediaQuery(WIDE, import.meta.client ? window.matchMedia(WIDE).ma
 /** phones: the short rail, its other controls in a dialog */
 const compactRail = computed(() => !wide.value)
 const sheetEditor = computed(() => wide.value && sheetEditing.value && !focus.on.value)
+/** numerals and scales as the sheet draws them: the editor forces both on (D3), so they don't count toward the notice while it's open (#291) */
+const showNumerals = computed(() => sheetEditor.value || prefs.numerals.value)
+const showScaleNames = computed(() => sheetEditor.value || prefs.scaleNames.value)
 const sheetEdit = ref<SheetEdit | null>(null)
 const sheetPreview = ref<ChordPreview | null>(null)
 /** a chord the sheet should give focus to (its field closed by a key with nowhere to go) */

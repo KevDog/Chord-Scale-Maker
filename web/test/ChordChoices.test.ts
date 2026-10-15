@@ -142,4 +142,11 @@ describe('ChordChoices interface levels', () => {
     at('essentials')
     expect(headings(await all(3))).toEqual([])
   })
+
+  it('renders nothing, not an empty wrapper, when the level shows none of its parts (#291)', async () => {
+    at('essentials')
+    const w = await all(3)
+    expect(w.html()).not.toContain('space-y-6')
+    expect(w.element.nodeType).not.toBe(Node.ELEMENT_NODE)
+  })
 })
