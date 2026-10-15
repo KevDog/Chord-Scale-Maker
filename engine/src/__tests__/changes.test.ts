@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it, vi } from 'vitest'
 import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, type PentatonicPlan, pickTargets, showHexatonics, showPentatonics } from '../changes'
-import { expandRowLines, parseChart } from '../chart'
+import { type ChartDoc, expandRowLines, parseChart } from '../chart'
 import { NO_PICKS, pickTarget, withPick } from '../chordPicks'
 import { resolveScales } from '../resolve'
 import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
@@ -593,19 +593,29 @@ describe('guide tones on the Changes sheet', () => {
   })
 })
 
-describe('guide tone lines over the library', () => {
+// a sweep of the whole library (200+ charts, several sheets each): ~1 s alone, slower on a busy CI runner (#302)
+describe('guide tone lines over the library', { timeout: 30_000 }, () => {
   const LIBRARY = new URL('../../charts/', import.meta.url)
   const docs = readdirSync(LIBRARY)
     .filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
     .map((f) => ({ f, doc: parseChart(readFileSync(new URL(f, LIBRARY), 'utf8')).value }))
   const voiceOf = (s: ChangesSheet) => s.lines.flatMap((l) => l.bars.map((b) => b.voice))
   const plain = (s: ChangesSheet) => s.lines.map((l) => l.bars.map(({ voice: _v, ...b }) => ({ ...b, chords: b.chords.map(({ guide: _g, ...c }) => c) })))
+  // each sheet is built once and shared by the tests that read it
+  const cache = new Map<string, ChangesSheet>()
+  const sheetOf = (f: string, key: string, build: () => ChangesSheet): ChangesSheet => {
+    const k = `${f}|${key}`
+    if (!cache.has(k)) cache.set(k, build())
+    return cache.get(k)!
+  }
+  const on = (f: string, doc: ChartDoc, bars: 2 | 4, line: 'third' | 'seventh') => sheetOf(f, `${line}:${bars}`, () => buildChanges(doc, CONCERT, bars, false, line))
+  const off = (f: string, doc: ChartDoc) => sheetOf(f, 'off', () => buildChanges(doc, CONCERT))
 
   for (const line of ['third', 'seventh'] as const) {
     it(`from the ${line}: strike (or hold) one note per chord, on its beat, and fill every bar`, () => {
       expect(docs.length).toBeGreaterThan(200)
       for (const { f, doc } of docs) {
-        const sheet = buildChanges(doc, CONCERT, 4, false, line)
+        const sheet = on(f, doc, 4, line)
         for (const bar of sheet.lines.flatMap((l) => l.bars)) {
           const voice = bar.voice
           expect(voice.reduce((s, n) => s + n.beats, 0), f).toBe(sheet.beats)
@@ -621,7 +631,7 @@ describe('guide tone lines over the library', () => {
 
     it(`from the ${line}: tie only inside a block, across line breaks too: a tie lands on a tiedIn piece of the same pitch, and a block starts fresh`, () => {
       for (const { f, doc } of docs) {
-        const all = buildChanges(doc, CONCERT, 4, false, line).lines.flatMap((l) => l.bars)
+        const all = on(f, doc, 4, line).lines.flatMap((l) => l.bars)
         let prev: GuideNote | undefined
         for (const bar of all) {
           if (bar.marker) {
@@ -640,12 +650,11 @@ describe('guide tone lines over the library', () => {
 
     it(`from the ${line}: voice the same at 2 or 4 bars a line, and change nothing but the voice, labels and diagnostics`, () => {
       for (const { f, doc } of docs) {
-        const on4 = buildChanges(doc, CONCERT, 4, false, line)
-        const on2 = buildChanges(doc, CONCERT, 2, false, line)
-        const off = buildChanges(doc, CONCERT)
-        expect(voiceOf(on2), f).toEqual(voiceOf(on4))
-        expect(plain(on4), f).toEqual(plain(off))
-        expect(on4.diagnostics, f).toEqual(off.diagnostics)
+        const on4 = on(f, doc, 4, line)
+        const plainSheet = off(f, doc)
+        expect(voiceOf(on(f, doc, 2, line)), f).toEqual(voiceOf(on4))
+        expect(plain(on4), f).toEqual(plain(plainSheet))
+        expect(on4.diagnostics, f).toEqual(plainSheet.diagnostics)
       }
     })
   }
