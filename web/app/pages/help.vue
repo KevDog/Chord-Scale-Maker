@@ -171,6 +171,7 @@
               Chord, each chord's, <strong class="font-semibold">Built on</strong> the degree you choose) or
               <strong class="font-semibold">Hexatonic</strong> (each chord's best triad pair from its scale, such as
               <UiCode>G/Am</UiCode> over Cmaj7: the chord tones it covers first, then two major or minor triads).
+              Click a chord's pentatonic or triad pair (Changes) or a staff's caption (Scales) to pick another for that chord; the list runs from inside to outside. A pick on the Scales sheet sets every bar that staff covers. <strong class="font-semibold">Sheet's choice</strong> undoes it; <strong class="font-semibold">More → Reset chord picks</strong> undoes them all.
             </dd>
           </div>
           <div>
@@ -200,7 +201,7 @@
               <strong class="font-semibold">Essentials</strong>: the sheet, instrument, transposing, printing, sharing and
               editing chords, bars and sections. <strong class="font-semibold">Intermediate</strong> adds the scale level,
               the analysis rows, lines, scale spelling, Practice, repeats and endings, and choosing a chord's scale.
-              <strong class="font-semibold">Everything</strong> adds pentatonics, functions and key changes, and the
+              <strong class="font-semibold">Everything</strong> adds pentatonics, chord picks, functions and key changes, and the
               chart's source. A sheet set up with controls you can't see says so above it, with Show controls and Reset.
             </dd>
           </div>
@@ -242,6 +243,10 @@
             picks the pair that covers the most chord tones. The grouping splits the six notes in two (the two triads,
             chord tones and colour, a pentatonic and one more, or the lowest three and highest three), tinted apart; the
             caption under each chord names the pair.
+          </li>
+          <li>
+            Click a chord's pentatonic or triad pair (Changes) or a staff's caption (Scales) to pick another for that chord; the list runs from inside to outside. A pick on the Scales sheet sets every bar that staff covers. <strong class="font-semibold text-zinc-950 dark:text-white">Sheet's choice</strong> undoes it; <strong class="font-semibold text-zinc-950 dark:text-white">More → Reset chord picks</strong> undoes them all.
+            Picks are the same on both sheets, survive a change of Built on or Pair, and go with a share link.
           </li>
           <li>Tick or untick a box while a preset's on and you get your own mix, starting from what the preset showed.</li>
           <li><strong class="font-semibold text-zinc-950 dark:text-white">Clear</strong> turns it all off.</li>

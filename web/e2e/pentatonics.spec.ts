@@ -9,7 +9,7 @@ test('the Pentatonics row names each key area’s pentatonic, and the ladder cha
   await showPentatonics(page)
   await expect(labels(page).first()).toHaveText('Gm♪') // G minor, Home
   await labels(page).first().click()
-  const ladder = page.getByRole('dialog', { name: 'A1 · G minor pentatonic ladder' })
+  const ladder = page.getByRole('dialog', { name: 'Cm7 Dorian · bars 1, 2, 3, 4' }) // headed by the chord; the ladder's title (A1 · G minor pentatonic ladder) under it
   await ladder.getByRole('button', { name: 'Fm', exact: true }).click() // rung 2, ♭ side, for A1 only
   await expect(labels(page).first()).toHaveText('Fm♪ 4')
   await expect(page.getByRole('button', { name: 'Pentatonic path' })).toContainText('One rung')
@@ -41,8 +41,9 @@ test('Side-slip alternates by section: A2 and A3 a half step out, A1 and the bri
   for (const s of ['A1', 'B']) await expect(sectionLabels(page, s).first()).toHaveText(/♪ 5$/)
   for (const s of ['A2', 'A3']) await expect(sectionLabels(page, s).first()).toHaveText(/♪ 1$/)
   await sectionLabels(page, 'A2').first().click()
-  const rung5 = page.getByRole('dialog', { name: /^A2 · / }).locator('li').filter({ hasText: /^5 ·/ })
-  await expect(rung5.locator('[data-pent]').first()).toHaveAttribute('aria-current', 'true') // the ♭ side, not the ♯
+  const ladder = page.getByRole('dialog', { name: /· bars? [\d, ]+$/ })
+  const flat = await ladder.locator('li').filter({ hasText: /^5 ·/ }).locator('[data-pent]').first().textContent()
+  await expect(ladder.locator('[data-sheet-choice]')).toHaveText(`Sheet’s choice (${flat})`) // the ♭ side, not the ♯
   await page.keyboard.press('Escape')
   await page.reload()
   await expect(sectionLabels(page, 'A2').first()).toHaveText(/♪ 1$/) // kept for this chart
@@ -62,7 +63,7 @@ test('a path that varies tints the labels, with the shared count and no contour 
   await expect(page.locator('[data-slot="contour"]')).toHaveCount(0)
 })
 
-test('a pick changes its label’s run only, and Reset restores it', async ({ page }) => {
+test('a pick changes its label’s run only, and the sheet’s choice restores it', async ({ page }) => {
   await page.goto('/song/satin-doll')
   await chooseSheet(page, 'Changes')
   await showPentatonics(page)
@@ -71,13 +72,13 @@ test('a pick changes its label’s run only, and Reset restores it', async ({ pa
   const before = await texts()
   const target = sectionLabels(page, 'B').first()
   await target.click()
-  await page.getByRole('dialog', { name: /^B · / }).locator('li').first().locator('[data-pent]').click() // Home
+  await page.getByRole('dialog', { name: /· bars? [\d, ]+$/ }).locator('[data-pent]').first().click() // Home
   await expect(target).toHaveText(/♪ 5$/)
   const after = await texts()
   expect(after.filter((t, i) => t !== before[i])).toHaveLength(1)
   await expect(page.getByRole('button', { name: 'Pentatonic path' })).toContainText('Fifths')
   await target.click()
-  await page.locator('[data-reset]').click()
+  await page.locator('[data-sheet-choice]').click()
   await expect.poll(texts).toEqual(before)
 })
 
@@ -96,21 +97,22 @@ test('Ranked against Chord follows each chord: Waltz for Debby’s first bars', 
   await expect(page.getByRole('button', { name: 'Pentatonic built on' })).toHaveText('Built on: ♭3')
 })
 
-test('a pick is per chart, kept over a reload, and cleared by a change of Built on', async ({ page }) => {
+test('a pick is per chart, kept over a reload, and survives a change of Built on (#303)', async ({ page }) => {
   await page.goto('/song/waltz-for-debby')
   await chooseSheet(page, 'Changes')
   await showPentatonics(page)
   await rankedAgainstChord(page)
   const second = page.locator('[data-slot="pentatonic"] [data-chord]').nth(1)
   await second.locator('button').click()
-  await page.getByRole('dialog', { name: /pentatonic ranking$/ }).locator('li').nth(2).locator('[data-pent]').click() // the third in the ranking
+  await page.getByRole('dialog', { name: /· bars? [\d, ]+$/ }).locator('[data-choice]').nth(2).click() // the third in the ranking
   const picked = await second.textContent()
   await page.reload()
   await expect(second).toHaveText(picked!)
   await expect(second.locator('button')).toHaveAttribute('aria-label', /your pick/)
   await openPentatonicOptions(page)
   await pickOption(page, 'Pentatonic built on', '2')
-  await expect(second.locator('button')).not.toHaveAttribute('aria-label', /your pick/)
+  await expect(second.locator('button')).toHaveAttribute('aria-label', /your pick/)
+  await expect(second).toHaveText(picked!)
 })
 
 test.describe('on a phone', () => {
@@ -200,7 +202,7 @@ test('every 4 bars moves page 1’s second line, prints the path, and is kept ov
   await expect(page.getByText('Pentatonics: Minor thirds · every 4 bars').first()).toBeVisible()
 })
 
-test('a change of step clears the picks', async ({ page }) => {
+test('a pick survives a change of step (#303)', async ({ page }) => {
   await page.goto('/song/satin-doll')
   await chooseSheet(page, 'Changes')
   await showPentatonics(page)
@@ -208,11 +210,13 @@ test('a change of step clears the picks', async ({ page }) => {
   const target = sectionLabels(page, 'B').first()
   const before = await target.textContent()
   await target.click()
-  await page.getByRole('dialog', { name: /^B · / }).locator('li').last().locator('[data-pent]').click() // rung 6
+  await page.getByRole('dialog', { name: /· bars? [\d, ]+$/ }).locator('li').last().locator('[data-pent]').click() // rung 6
   await expect(target).not.toHaveText(before ?? '')
+  const picked = await target.textContent()
   await checkRadio(page, 'Pentatonic step', 'Key area')
   await checkRadio(page, 'Pentatonic step', 'Section')
-  await expect(target).toHaveText(before ?? '')
+  await expect(target).toHaveText(picked ?? '')
+  await expect(target).toHaveAttribute('aria-label', /your pick/)
 })
 
 test('a pick stays on its chord when a bar goes in before it (#275)', async ({ page }) => {
@@ -222,7 +226,7 @@ test('a pick stays on its chord when a bar goes in before it (#275)', async ({ p
   await rankedAgainstChord(page)
   const at = (chord: string) => page.locator(`[data-slot="pentatonic"] [data-chord="${chord}"] button`)
   await at('A:4:0').click()
-  await page.getByRole('dialog', { name: /pentatonic ranking$/ }).locator('li').nth(2).locator('[data-pent]').click() // the third in the ranking
+  await page.getByRole('dialog', { name: /· bars? [\d, ]+$/ }).locator('[data-choice]').nth(2).click() // the third in the ranking
   await expect(at('A:4:0')).toHaveAttribute('aria-label', /your pick/)
   await page.getByRole('button', { name: 'Edit Dm7, A bar 1' }).hover()
   await page.getByRole('button', { name: 'Insert a held bar after A bar 1' }).click()

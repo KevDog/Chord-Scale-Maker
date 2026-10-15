@@ -1,5 +1,7 @@
 # Chord picks: pick one chord's pentatonic or triad pair, on either sheet (issue #303)
 
+**Status:** built (branch `chord-picks`).
+
 ## Goal
 
 A player can override the sheet-wide choice for one chord: click a chord's pentatonic or hexatonic label (Changes

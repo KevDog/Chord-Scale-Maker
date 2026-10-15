@@ -1,16 +1,9 @@
-import { chooseSuperimpose, chooseSheet, expect, pickOption, staves, test, writeChart } from './fixtures'
+import { chooseSuperimpose, expect, hexatonicPreset, pickOption, staves, test, writeChart } from './fixtures'
 import type { Page } from '@playwright/test'
 
 // one staff per chord: C Ionian, D Dorian, G Mixolydian, B Locrian (the chords' own scales in C), and two written
 // scales: whole tone (no triad pair) and half-whole (eight notes, Campbell's chain)
 const CHART = 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | Bm7b5\nA | 5 | C7 | C Whole Tone\nA | 6 | C7 | C Half-Whole'
-
-/** the Hexatonic preset on the Scales sheet, from the root */
-async function hexatonicPreset(page: Page): Promise<void> {
-  await chooseSheet(page, 'Scales')
-  await pickOption(page, 'Where each scale starts', 'From root')
-  await page.locator('fieldset', { hasText: 'Practice' }).getByRole('button', { name: 'Hexatonic', exact: true }).click()
-}
 
 type Row = Readonly<{ caption: string; notes: number; a: number; b: number }>
 
@@ -67,9 +60,9 @@ test('Pair 5 on a C major staff is G/Am, leaving out F; Pair 1 is C/Dm, leaving 
 test('the Changes sheet’s Superimpose: Hexatonic shows each chord’s pair and no pentatonic controls; Pentatonic restores them', async ({ page }) => {
   await writeChart(page, CHART)
   await chooseSuperimpose(page, 'Hexatonic')
-  const labels = page.locator('[data-slot="hexatonic"] span')
-  await expect(labels.first()).toHaveText('G/Am')
-  await expect.poll(() => labels.allTextContents()).toEqual(['G/Am', 'C/Dm', 'Dm/Em', 'E♭/Am']) // Bm7♭5 repeats Dm/Em; whole tone has none
+  const labels = page.locator('[data-slot="hexatonic"] > span') // each label's inner text: on screen its trigger, in print plain text (#303)
+  await expect(labels.first()).toHaveText('G/Am', { useInnerText: true })
+  await expect.poll(() => labels.allInnerTexts()).toEqual(['G/Am', 'C/Dm', 'Dm/Em', 'E♭/Am']) // Bm7♭5 repeats Dm/Em; whole tone has none
   await expect(page.locator('[data-slot="pentatonic"]')).toHaveCount(0)
   await expect(page.locator('[data-slot="contour"]')).toHaveCount(0)
   await expect(page.getByRole('button', { name: 'Pentatonic rung' })).toHaveCount(0)

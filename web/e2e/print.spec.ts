@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { arpeggiosDrawn, chooseInstrument, chooseSuperimpose, chooseSheet, drawn, expect, guidesDrawn, pickOption, rankedAgainstChord, showArpeggios, showGuides, showPentatonics, staves, test, writeChart } from './fixtures'
+import { arpeggiosDrawn, chooseInstrument, chooseSuperimpose, chooseSheet, drawn, expect, guidesDrawn, hexatonicPreset, pentatonicPreset, pickOption, rankedAgainstChord, showArpeggios, showGuides, showPentatonics, staves, test, writeChart } from './fixtures'
 
 const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length
 
@@ -181,17 +181,9 @@ test('prints the Changes with a pentatonic path and no line, a sheet page to a l
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
 })
 
-/** the Scales sheet's Hexatonic practice preset, from the root */
-async function hexatonicPreset(page: Page): Promise<void> {
-  await chooseSheet(page, 'Scales')
-  await pickOption(page, 'Where each scale starts', 'From root')
-  await page.locator('fieldset', { hasText: 'Practice' }).getByRole('button', { name: 'Hexatonic', exact: true }).click()
-  await expect(page.locator('[data-slot="hexatonic"]').first()).toBeVisible()
-}
-
 /** how many captions are taller than one line of their text */
-const wrappedCaptions = (page: Page): Promise<number> =>
-  page.locator('[data-slot="hexatonic"]').evaluateAll((els) => els.filter((el) => el.getBoundingClientRect().height > 1.5 * parseFloat(getComputedStyle(el).fontSize)).length)
+const wrappedCaptions = (page: Page, slot: 'hexatonic' | 'pentatonic' = 'hexatonic'): Promise<number> =>
+  page.locator(`[data-slot="${slot}"]`).evaluateAll((els) => els.filter((el) => el.getBoundingClientRect().height > 1.5 * parseFloat(getComputedStyle(el).fontSize)).length)
 
 test('prints 12 staves per letter page with the Hexatonic preset, each caption on one line', async ({ page }) => {
   await page.goto('/song/autumn-leaves')
@@ -236,6 +228,71 @@ test('prints the longest hexatonic captions on one line', async ({ page }) => {
   await page.emulateMedia({ media: 'print' })
   await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
   expect(await wrappedCaptions(page)).toBe(0)
+})
+
+// chord picks (#303): a pick on one of a staff's Changes bars makes its caption end "· varies"; print keeps it on one line
+/** pick a chord's second choice on the Changes sheet (Pentatonic ranked against Chord, or Hexatonic), then back to Scales */
+async function pickOnChanges(page: Page, kind: 'pentatonic' | 'hexatonic', chord: string): Promise<void> {
+  await chooseSheet(page, 'Changes')
+  if (kind === 'pentatonic') {
+    await showPentatonics(page)
+    await rankedAgainstChord(page)
+  } else await chooseSuperimpose(page, 'Hexatonic')
+  await page.locator(`[data-slot="${kind}"] [data-chord="${chord}"] button`).click()
+  await page.getByRole('dialog', { name: /· bars? [\d, ]+$/ }).locator('[data-choice]').nth(1).click()
+  await expect(page.locator(`[data-slot="${kind}"] [data-chord="${chord}"] button`)).toHaveAttribute('aria-label', /your pick/)
+  await chooseSheet(page, 'Scales')
+}
+
+/** how many captions' text runs wider than their column (they don't wrap in print, so a long one would overflow) */
+const overflowingCaptions = (page: Page, slot: 'hexatonic' | 'pentatonic'): Promise<number> =>
+  page.locator(`[data-slot="${slot}"]`).evaluateAll((els) =>
+    els.filter((el) => {
+      const r = document.createRange()
+      r.selectNodeContents(el)
+      return r.getBoundingClientRect().width > el.getBoundingClientRect().width + 0.5
+    }).length,
+  )
+
+for (const kind of ['pentatonic', 'hexatonic'] as const) {
+  // Autumn Leaves' 12 lines, its Cm7 again in bar 13 (the first staff's), so 12 staves on one page
+  test(`prints 12 staves on a letter page with a ${kind} caption that varies`, async ({ page }) => {
+    const rows = [...AUTUMN_LINES.slice(0, 12), AUTUMN_LINES[0]!].map((line, i) => `A | ${i + 1} | ${line}`)
+    await writeChart(page, `title: T\nkey: Gm\n${rows.join('\n')}`)
+    await pickOnChanges(page, kind, 'A:13:0')
+    await (kind === 'pentatonic' ? pentatonicPreset(page) : hexatonicPreset(page))
+    await expect(page.locator(`[data-slot="${kind}"]`)).toHaveCount(12)
+    await expect(page.locator(`[data-slot="${kind}"]`).first()).toHaveText(/ · varies$/)
+    await page.emulateMedia({ media: 'print' })
+    await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+    expect(await wrappedCaptions(page, kind)).toBe(0)
+    expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(1)
+  })
+}
+
+// the longest captions with "· varies" (no page count, as above): F♯ half-whole in bars 13 and 15 (F♯m pent · 4 shared),
+// C melodic minor in bars 16 and 18 (Pair 3: E♭+/F), a pick in the second bar of each. The pentatonic one is the
+// widest caption there is (about 133px of the 136 at 10px on macOS): print tightens its tracking for other platforms
+test('prints the longest captions that vary on one line', async ({ page }) => {
+  const kinds = ['7 | {} Whole Tone', 'mMaj7 | {} Melodic Minor', 'm6 | {} Harmonic Minor', '7 | {} Half-Whole', '7 | {} Bebop Dominant']
+  const roots = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']
+  const rows = [...roots.map((r, i) => `${r}${kinds[i % kinds.length]!.replace('{}', r)}`), 'F#7 | F# Half-Whole', 'C7 | C Whole Tone', 'F#7 | F# Half-Whole', 'CmMaj7 | C Melodic Minor', 'C7 | C Whole Tone', 'CmMaj7 | C Melodic Minor']
+  await writeChart(page, `title: T\nkey: C\n${rows.map((row, i) => `A | ${i + 1} | ${row}`).join('\n')}`)
+  await pickOnChanges(page, 'pentatonic', 'A:15:0')
+  await pentatonicPreset(page)
+  await expect(page.locator('[data-slot="pentatonic"]', { hasText: 'F♯m pent · 4 shared · varies' })).toHaveCount(1)
+  await page.emulateMedia({ media: 'print' })
+  expect(await wrappedCaptions(page, 'pentatonic')).toBe(0)
+  expect(await overflowingCaptions(page, 'pentatonic')).toBe(0)
+  await page.emulateMedia({ media: 'screen' })
+  await pickOnChanges(page, 'hexatonic', 'A:18:0')
+  await hexatonicPreset(page)
+  await pickOption(page, 'Hexatonic pair', '3')
+  await expect(page.locator('[data-slot="hexatonic"]', { hasText: 'E♭+/F hex · varies' })).toHaveCount(1)
+  await page.emulateMedia({ media: 'print' })
+  await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+  expect(await wrappedCaptions(page, 'hexatonic')).toBe(0)
+  expect(await overflowingCaptions(page, 'hexatonic')).toBe(0)
 })
 
 // the Hexatonic overlay's row takes the Pentatonics row's place: the same lines a page, with and without a guide tone line
