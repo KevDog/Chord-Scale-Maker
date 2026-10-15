@@ -28,4 +28,15 @@ describe('ScaleStaff', () => {
     const none = await mountSuspended(ScaleStaff, { props: { staff: buildSheet([row('Dm7', '1')], CONCERT, 'root', 'C', 12)[0]?.pages.flat()[0], clef: 'treble' } })
     expect(none.find('[data-slot="pentatonic"]').exists()).toBe(false)
   })
+
+  it('captions the staff with its triad pair under the Hexatonic preset, or says it has none', async () => {
+    const hex = { preset: 'hexatonic', pair: 0, grouping: 'triads' } as const
+    const staffOf = (chord: string, scale = '') => buildSheet([{ section: 'A', bar: '1', chord, scale }], CONCERT, 'root', 'C', 12, hex)[0]?.pages.flat()[0]
+    const g7 = await mountSuspended(ScaleStaff, { props: { staff: staffOf('G7'), clef: 'treble' } })
+    expect(g7.find('[data-slot="hexatonic"]').text()).toBe('Dm/Em hex')
+    const wt = await mountSuspended(ScaleStaff, { props: { staff: staffOf('C7#5', 'C Whole Tone'), clef: 'treble' } })
+    expect(wt.find('[data-slot="hexatonic"]').text()).toBe('no triad pair')
+    const none = await mountSuspended(ScaleStaff, { props: { staff: buildSheet([row('Dm7', '1')], CONCERT, 'root', 'C', 12)[0]?.pages.flat()[0], clef: 'treble' } })
+    expect(none.find('[data-slot="hexatonic"]').exists()).toBe(false)
+  })
 })

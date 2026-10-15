@@ -169,6 +169,7 @@
             :selection="selection"
             :lit="litNow"
             :pentatonic="pentatonicsOn"
+            :hexatonic="hexatonicsOn"
             @update:selection="practice.setSelection(mode, $event)"
           />
         </div>
@@ -281,6 +282,7 @@ import {
   insertBars,
   drawnChords,
   insertHeldBar,
+  isHexatonicSelection,
   isPentatonicSelection,
   keyStart,
   renameSection,
@@ -372,6 +374,7 @@ const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeatu
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
 const pentatonicsOn = useFeature('pentatonics')
+const hexatonicsOn = useFeature('hexatonics')
 /** the Interface level (#273): which controls show */
 const ui = useInterface()
 /** the chart's sections as the Changes sheet draws them, for the path presets (#264) */
@@ -422,10 +425,10 @@ provide(SCALE_VIEW, scaleView)
 const resolved = computed(() => resolveScales(editor.doc.value, scaleView.value))
 
 if (props.shared?.practice) practice.setSelection(mode.value, props.shared.practice)
-/** a Pentatonic selection (stored or shared) plays only with the pentatonics flag (#266) */
+/** a Pentatonic or Hexatonic selection (stored or shared) plays only with its flag (#266) */
 const selection = computed(() => {
   const s = practiceOn ? practice.selection(mode.value) : null
-  return isPentatonicSelection(s) && !pentatonicsOn ? null : s
+  return (isPentatonicSelection(s) && !pentatonicsOn) || (isHexatonicSelection(s) && !hexatonicsOn) ? null : s
 })
 // every staff with its practice keys, for the panel's boxes and what the selection lights
 const practiceStaves = computed(() =>

@@ -1,4 +1,4 @@
-import { isPentatonicSelection, type PracticeSelection, type ScaleLevel } from '@chord-scale-maker/engine'
+import { isHexatonicSelection, isPentatonicSelection, type PracticeSelection, type ScaleLevel } from '@chord-scale-maker/engine'
 import type { LineMode } from '~/utils/sheetLine'
 import type { Spell } from '~/utils/scaleChoices'
 import type { SheetKind } from '~/utils/sheets'
@@ -22,6 +22,7 @@ export const CONTROL_TIERS = {
   why: 'intermediate', // the "why" notes on numerals and scales, ChordChoices' why
   pentatonics: 'everything', // Analysis: Pentatonics and its sub-controls, the ladder
   'practice-pentatonic': 'everything', // the Practice panel's Pentatonic preset
+  'practice-hexatonic': 'everything', // the Practice panel's Hexatonic preset, its Pair and grouping
   'key-change': 'everything', // Key change here
   'function-choice': 'everything', // the numeral label picker, ChordChoices' Function section
   source: 'everything', // Show/Hide source, Source, Chart text
@@ -45,7 +46,7 @@ function setAway(v: ViewSettings): readonly (readonly [HiddenSetting, InterfaceL
     ...(changes && !v.scaleNames ? [['scale-names', 'intermediate'] as const] : []),
     ...(changes && v.lineMode !== 'off' ? [['line', 'intermediate'] as const] : []),
     ...(scales && v.spell !== 'key' ? [['spell', 'intermediate'] as const] : []),
-    ...(scales && v.practice ? [['practice', isPentatonicSelection(v.practice) ? 'everything' : 'intermediate'] as const] : []),
+    ...(scales && v.practice ? [['practice', isPentatonicSelection(v.practice) || isHexatonicSelection(v.practice) ? 'everything' : 'intermediate'] as const] : []),
     ...(changes && v.pentatonics ? [['pentatonics', 'everything'] as const] : []),
   ]
 }

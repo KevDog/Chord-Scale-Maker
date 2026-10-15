@@ -23,6 +23,7 @@ describe('interface levels', () => {
       why: 'intermediate',
       pentatonics: 'everything',
       'practice-pentatonic': 'everything',
+      'practice-hexatonic': 'everything',
       'key-change': 'everything',
       'function-choice': 'everything',
       source: 'everything',
@@ -59,6 +60,12 @@ describe('hiddenSettings', () => {
   it('puts a pentatonic practice selection at Everything', () => {
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', practice: { preset: 'chordTones' } })).toEqual({ settings: ['practice'], needs: 'intermediate' })
     expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'scales', practice: { preset: 'pentatonic', rank: 2 } })).toEqual({ settings: ['practice'], needs: 'everything' })
+  })
+
+  it('puts a hexatonic practice selection at Everything', () => {
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'scales', practice: { preset: 'hexatonic', pair: 0, grouping: 'triads' } })).toEqual({ settings: ['practice'], needs: 'everything' })
+    expect(hiddenSettings('everything', { ...DEFAULTS, sheet: 'scales', practice: { preset: 'hexatonic', pair: 3, grouping: 'pent' } })).toBeNull()
+    expect(shows('intermediate', 'practice-hexatonic')).toBe(false)
   })
 })
 

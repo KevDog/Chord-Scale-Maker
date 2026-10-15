@@ -675,6 +675,29 @@ describe('EditorView lead-sheet editor', () => {
   })
 })
 
+describe('EditorView hexatonic practice', () => {
+  afterEach(() => {
+    useRuntimeConfig().public.features.hexatonics = false
+    localStorage.clear()
+  })
+  const shared = { sheet: 'scales', practice: { preset: 'hexatonic', pair: 2, grouping: 'tones' } } as const
+
+  it('ignores a shared Hexatonic selection with the flag off', async () => {
+    useRuntimeConfig().public.features.hexatonics = false
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT, shared }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
+    expect(buttonCalled(w, 'Hexatonic')).toBeUndefined()
+    expect(w.find('fieldset button[aria-pressed=true]').exists()).toBe(false)
+    expect(w.findComponent({ name: 'ScaleSheet' }).props('practice')).toBeNull()
+  })
+
+  it('plays it with the flag on', async () => {
+    useRuntimeConfig().public.features.hexatonics = true
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT, shared }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
+    expect(w.find('fieldset button[aria-pressed=true]').text()).toBe('Hexatonic')
+    expect(w.findComponent({ name: 'ScaleSheet' }).props('practice')).toEqual(shared.practice)
+  })
+})
+
 describe('EditorView pentatonic practice (#266)', () => {
   afterEach(() => {
     useRuntimeConfig().public.features.pentatonics = false
