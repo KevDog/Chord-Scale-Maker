@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { drawnChords } from '../changes'
 import { type ChartDoc, parseChart } from '../chart'
 import { deleteBar, insertBar, repeatSection, setBarChords, splitSection } from '../edit'
-import { carryPicks } from '../picks'
+import { carryChordPicks, carryPicks } from '../picks'
 
 const C4 = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | Cmaj7\nB | 5 | Em7\nB | 6 | A7').value
 const carried = (before: ChartDoc, after: ChartDoc, picks: Record<string, number>) => carryPicks(drawnChords(before), drawnChords(after), picks)
@@ -38,6 +38,11 @@ describe('carryPicks', () => {
 
   it('drops a pick on a chord the chart no longer draws', () => {
     expect(carried(C4, C4, { 'Z:9:0': 3 })).toEqual({})
+  })
+
+  it('carries both kinds of chord picks, for and all', () => {
+    const picks = { pentatonic: { 'A:3:0': { pc: 7, for: 'G7|G Mixolydian' } }, hexatonic: { 'B:6:0': { roots: [0, 2] as const } } }
+    expect(carryChordPicks(drawnChords(C4), drawnChords(insertBar(C4, 'A', 2, ['F7'])), picks)).toEqual({ pentatonic: { 'A:4:0': { pc: 7, for: 'G7|G Mixolydian' } }, hexatonic: { 'B:7:0': { roots: [0, 2] } } })
   })
 })
 
