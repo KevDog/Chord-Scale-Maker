@@ -7,7 +7,7 @@
       class="hover:bg-note-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500 dark:hover:bg-white/5 print:no-underline"
       @click="place"
     >{{ text }}</HPopoverButton>
-    <HPopoverPanel v-slot="{ close }" role="dialog" :style="{ left: `${shift}px`, ...(pageZoom !== 1 ? { zoom: 1 / pageZoom } : {}) }" :aria-labelledby="headerId" class="absolute top-full z-20 mt-2 w-72 rounded-paper bg-raised p-1.5 text-sm shadow-raised max-sm:w-[calc(100vw-2rem)] print:hidden">
+    <HPopoverPanel v-slot="{ close }" role="dialog" :style="{ left: `${shift}px`, ...(pageZoom !== 1 ? { zoom: 1 / pageZoom } : {}) }" :aria-labelledby="headerId" class="absolute top-full z-20 mt-2 w-72 rounded-paper bg-raised p-1.5 text-left text-sm shadow-raised max-sm:w-[calc(100vw-2rem)] print:hidden">
       <p :id="headerId" class="px-2 pt-1 pb-2 text-xs/4 font-medium text-zinc-500 dark:text-zinc-400">{{ header }}</p>
       <ul class="border-y border-zinc-950/5 py-1 dark:border-white/10">
         <li><button type="button" data-sheet-choice :aria-current="picked ? undefined : 'true'" :class="rowClass(!picked)" @click="clear(close)">Sheet’s choice ({{ sheetChoice }})</button></li>

@@ -62,7 +62,7 @@ describe('ScaleStaff', () => {
     it('makes the pentatonic caption a trigger: header, footer, 12 rows ranked', async () => {
       const w = await mount(dm())
       const slot = w.find('[data-slot="pentatonic"]')
-      expect(slot.classes()).toEqual(expect.arrayContaining(['print:whitespace-nowrap']))
+      expect(slot.classes()).toEqual(expect.arrayContaining(['print:whitespace-nowrap', 'print:tracking-tight'])) // a varies caption fits 8.5rem in print
       const b = slot.find('button')
       expect(b.text()).toBe('Dm pent · 5 shared')
       expect(b.classes()).toContain('print:no-underline')

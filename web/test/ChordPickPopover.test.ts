@@ -42,7 +42,7 @@ describe('the chord pick popover', () => {
     const id = d.attributes('aria-labelledby')
     expect(id).toBeTruthy()
     expect(d.find(`[id="${id}"]`).text()).toBe(base.header)
-    expect(d.classes()).toContain('print:hidden')
+    expect(d.classes()).toEqual(expect.arrayContaining(['print:hidden', 'text-left'])) // left-aligned under a right-aligned Scales caption
     expect(d.text().startsWith(base.header)).toBe(true)
     expect(d.text().endsWith(base.footer)).toBe(true)
     const sheet = w.find('[data-sheet-choice]')

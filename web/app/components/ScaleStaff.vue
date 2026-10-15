@@ -6,7 +6,7 @@
         <template v-for="(tokens, i) in staff.chords" :key="i"><template v-if="i"><span class="sr-only">,</span><span aria-hidden="true"> · </span></template><ChordSymbol v-if="tokens" :tokens="tokens" /><span v-else>—</span></template>
       </div>
       <!-- the Pentatonic preset's pentatonic, or the Hexatonic preset's pair or none (staff.second is set only under it); a trigger for every bar it covers (#303) -->
-      <div v-if="kind" :data-slot="kind" class="text-sm text-zinc-500 dark:text-zinc-400 print:text-[0.625rem] print:leading-none print:whitespace-nowrap print:text-neutral-600">
+      <div v-if="kind" :data-slot="kind" class="text-sm text-zinc-500 dark:text-zinc-400 print:text-[0.625rem] print:leading-none print:tracking-tight print:whitespace-nowrap print:text-neutral-600">
         <ChordPickPopover
           v-if="canPick"
           :text="caption"
