@@ -236,7 +236,7 @@ describe('ChangesSystem pentatonic ladders', () => {
     expect(label.text()).toBe('B♭m♪ 1')
     await label.trigger('click')
     await flushPromises()
-    expect(w.find('[aria-current="true"]').text()).toBe('B♭m')
+    expect(w.find('[data-pent][aria-current="true"]').text()).toBe('B♭m')
     await w.findAll('[data-pent]').find((p) => p.text() === 'Gm')?.trigger('click')
     expect(w.emitted('pentatonic')?.[0]).toEqual([['B:2:0'], 7])
     w.unmount()

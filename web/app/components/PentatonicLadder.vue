@@ -1,5 +1,5 @@
 <template>
-  <!-- a pentatonic label on the Changes sheet (#255, #272); a click opens a key's ladder or a chord's ranking: pick another -->
+  <!-- a Key-basis pentatonic label on the Changes sheet (#255, #272, #303); a click opens the key's ladder: pick another, or the sheet's choice -->
   <HPopover class="relative inline-block max-w-full">
     <HPopoverButton
       :aria-label="ariaLabel"
@@ -7,9 +7,19 @@
       class="hover:bg-note-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500 dark:hover:bg-white/5 print:no-underline"
       @click="place"
     >{{ p.label }}</HPopoverButton>
-    <HPopoverPanel v-slot="{ close }" role="dialog" :style="{ left: `${shift}px`, ...(pageZoom !== 1 ? { zoom: 1 / pageZoom } : {}) }" :aria-label="p.title" class="absolute top-full z-20 mt-2 w-64 rounded-paper bg-raised p-1.5 text-sm shadow-raised max-sm:w-[calc(100vw-2rem)] print:hidden">
-      <p class="px-2 pt-1 pb-2 text-xs/4 font-medium text-zinc-500 dark:text-zinc-400">{{ p.title }}</p>
-      <ul>
+    <HPopoverPanel v-slot="{ close }" role="dialog" :style="{ left: `${shift}px`, ...(pageZoom !== 1 ? { zoom: 1 / pageZoom } : {}) }" :aria-label="header" class="absolute top-full z-20 mt-2 w-64 rounded-paper bg-raised p-1.5 text-sm shadow-raised max-sm:w-[calc(100vw-2rem)] print:hidden">
+      <p class="px-2 pt-1 text-xs/4 font-medium text-zinc-500 dark:text-zinc-400">{{ header }}</p>
+      <p class="px-2 pb-2 text-xs/4 text-zinc-500 dark:text-zinc-400">{{ p.title }}</p>
+      <ul class="border-y border-zinc-950/5 py-1 dark:border-white/10">
+        <li class="px-2 py-1">
+          <button
+            type="button"
+            data-sheet-choice
+            :aria-current="p.picked ? undefined : 'true'"
+            :class="['w-full rounded-control px-2 py-0.5 text-left text-zinc-900 hover:bg-note-50 dark:text-white dark:hover:bg-white/5', !p.picked && 'bg-note-100 text-note-800 dark:bg-note-300/15 dark:text-note-200']"
+            @click="reset(close)"
+          >Sheet’s choice ({{ p.sheet }})</button>
+        </li>
         <li v-for="r in rows" :key="r.key" class="grid grid-cols-[4.5rem_1fr_1fr] items-center gap-1 px-2 py-1">
           <span class="text-xs text-zinc-500 tabular-nums dark:text-zinc-400">{{ r.head }}</span>
           <button
@@ -23,7 +33,7 @@
           >{{ x.name }}</button>
         </li>
       </ul>
-      <button v-if="p.picked" type="button" data-reset class="mt-1 w-full rounded-control px-2 py-1 text-left text-xs text-zinc-600 hover:bg-note-50 dark:text-zinc-300 dark:hover:bg-white/5" @click="reset(close)">Reset to {{ p.basis === 'chord' ? 'the sheet’s Built on' : 'the path' }}</button>
+      <p class="px-2 pt-2 pb-1 text-xs/4 text-zinc-600 dark:text-zinc-300">{{ footer }}</p>
     </HPopoverPanel>
   </HPopover>
 </template>
@@ -32,10 +42,10 @@
 import { Popover as HPopover, PopoverButton as HPopoverButton, PopoverPanel as HPopoverPanel } from '@headlessui/vue'
 import { panelShift } from '~/utils/notePlacement'
 import { PAGE_ZOOM } from '~/utils/sheetPaged'
-import { glyphs, rootName, pcOf, type ChangesPentatonic, PENTATONIC_DEGREE_LABELS, type PentatonicRung, type RankedPentatonic } from '@chord-scale-maker/engine'
+import { glyphs, rootName, pcOf, type ChangesPentatonic, type PentatonicRung } from '@chord-scale-maker/engine'
 
-/** a Changes label and its popover: a key area's ladder (one row a rung, ♭ then ♯) or a chord's ranking (one row a pentatonic, by the degree it's built on); a pick covers the label's run */
-const props = defineProps<{ p: ChangesPentatonic }>()
+/** a Key-basis Changes label and its popover: the chord's header, the sheet's choice, the key area's ladder (one row a rung, ♭ then ♯), then what a pick sets; a pick covers the label's run */
+const props = defineProps<{ p: ChangesPentatonic; header: string; footer: string }>()
 const emit = defineEmits<{ pick: [written: number]; reset: [] }>()
 const shift = ref(0)
 /** in focus mode's zoomed page, the panel undoes the zoom, to read at full size */
@@ -51,18 +61,15 @@ async function place(e: MouseEvent): Promise<void> {
 }
 const longName = computed(() => glyphs(`${rootName(props.p.root)} minor`))
 const mine = computed(() => (props.p.picked ? ', your pick' : ''))
-const ariaLabel = computed(() => props.p.basis === 'chord'
-  ? `Pentatonic: ${longName.value}, built on ${PENTATONIC_DEGREE_LABELS[props.p.degree ?? 0]}, ${props.p.shared} of 5 notes in ${props.p.scale}${mine.value}. Show the ranking`
-  : `Pentatonic: ${longName.value}, ${props.p.shared} of 5 notes in ${props.p.key}${mine.value}. Show the ladder`)
-type Row = Readonly<{ key: string; head: string; picks: readonly (PentatonicRung | RankedPentatonic)[] }>
-const rows = computed((): readonly Row[] => props.p.basis === 'chord'
-  ? props.p.ranking.map((r) => ({ key: `d${r.degree}`, head: `${PENTATONIC_DEGREE_LABELS[r.degree]} · ${r.shared} shared`, picks: [r] }))
-  : [0, 1, 2, 3, 4, 5, 6].map((rung) => {
-      const picks = props.p.ladder.filter((x) => x.rung === rung)
-      return { key: `g${rung}`, head: `${rung === 0 ? 'Home' : rung === 6 ? '6 Outside' : rung} · ${picks[0]?.shared ?? 0}`, picks }
-    }))
-const isCurrent = (x: PentatonicRung | RankedPentatonic): boolean => x.name === props.p.name
-function pick(x: PentatonicRung | RankedPentatonic, close: () => void): void {
+const ariaLabel = computed(() => `Pentatonic: ${longName.value}, ${props.p.shared} of 5 notes in ${props.p.key}${mine.value}. Show the ladder`)
+type Row = Readonly<{ key: string; head: string; picks: readonly PentatonicRung[] }>
+const rows = computed((): readonly Row[] =>
+  [0, 1, 2, 3, 4, 5, 6].map((rung) => {
+    const picks = props.p.ladder.filter((x) => x.rung === rung)
+    return { key: `g${rung}`, head: `${rung === 0 ? 'Home' : rung === 6 ? '6 Outside' : rung} · ${picks[0]?.shared ?? 0}`, picks }
+  }))
+const isCurrent = (x: PentatonicRung): boolean => x.name === props.p.name
+function pick(x: PentatonicRung, close: () => void): void {
   emit('pick', pcOf(x.root))
   close()
 }

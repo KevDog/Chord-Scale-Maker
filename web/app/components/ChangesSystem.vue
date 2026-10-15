@@ -148,7 +148,7 @@
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
         <span :class="shows('pentatonics') && 'hidden print:inline'">{{ m.p.label }}</span>
-        <PentatonicLadder v-if="shows('pentatonics')" class="print:hidden" :p="m.p" @pick="emit('pentatonic', m.p.run, $event)" @reset="emit('pentatonic', m.p.run, null)" />
+        <PentatonicLadder v-if="shows('pentatonics')" class="print:hidden" :p="m.p" :header="pickHeader(m.p.title, pickBars(m.p.run))" :footer="pickFooter('changes', pickBars(m.p.run), false)" @pick="emit('pentatonic', m.p.run, $event)" @reset="emit('pentatonic', m.p.run, null)" />
       </span>
     </div>
     <!-- the Hexatonic overlay, in the pentatonic row's place: each chord's Auto pair where it changes; blank where its scale has none -->
@@ -169,7 +169,8 @@
 </template>
 
 <script setup lang="ts">
-import { barKey, type ChangesLine, type ChartDoc, type ChordAt, type ChordPreview, CONCERT, type GridPos, type OverlayPlan, rowNotes, sheetScale } from '@chord-scale-maker/engine'
+import { barKey, type ChangesLine, type ChartDoc, type ChordAt, type ChordPreview, CONCERT, type GridPos, type OverlayPlan, pickBars, rowNotes, sheetScale } from '@chord-scale-maker/engine'
+import { pickFooter, pickHeader } from '~/utils/chordPicks' // header from the ladder's title until Task 10 (#303)
 import { drawChangesLine, type NamedBeat } from '~/utils/changesDrawing'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
