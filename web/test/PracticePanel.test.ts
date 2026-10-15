@@ -69,6 +69,27 @@ describe('PracticePanel’s Pentatonic preset (#266)', () => {
     expect(text).toContain(PENT_INSIDE_HELP)
   })
 
+  it('presses no box, and says a click starts a custom pick (#308)', async () => {
+    for (const selection of [{ preset: 'pentatonic', degree: 'auto' }, { preset: 'hexatonic', pair: 0, grouping: 'triads' }]) {
+      const w = await mount({ selection, lit: ['1', 'b3'] })
+      expect(w.findAll('input[type=checkbox]').some((b) => (b.element as HTMLInputElement).checked)).toBe(false)
+      expect(w.text()).toContain('Click a box to start a custom pick from these notes')
+    }
+    expect((await mount({ selection: { preset: 'guideTones' }, lit: ['b3'] })).text()).not.toContain('Click a box')
+  })
+
+  it('turns a lit box on, not off, as it seeds the custom pick: it showed unpressed', async () => {
+    const w = await mount({ selection: { preset: 'pentatonic', degree: 'auto' }, lit: ['1', 'b3'] })
+    await w.findAll('input[type=checkbox]')[1]?.trigger('change') // ♭3
+    expect(w.emitted('update:selection')).toEqual([[{ keys: ['1', 'b3'] }]])
+  })
+
+  it('names its added notes in a legend (#308)', async () => {
+    const w = await mount({ selection: { preset: 'pentatonic', degree: 'auto' }, lit: ['1'] })
+    expect(w.findAll('[data-slot="pent-legend"] li').map((l) => l.text())).toEqual(['In the scale', 'Outside the scale'])
+    expect((await mount({})).find('[data-slot="pent-legend"]').exists()).toBe(false)
+  })
+
   it('edits a box into a custom selection from what it lit', async () => {
     const w = await mount({ selection: { preset: 'pentatonic', degree: 'auto' }, lit: ['1', 'b3'] })
     await w.findAll('input[type=checkbox]')[3]?.trigger('change') // ♭7

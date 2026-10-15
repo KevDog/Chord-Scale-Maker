@@ -100,11 +100,11 @@ export const compareKeys = (a: string, b: string): number => degreeOf(a) - degre
 export type PracticeBox = Readonly<{ key: string; label: string }>
 
 /**
- * the boxes for a chart: every key that occurs on some staff, in order. Labels are intervals from the root (♭3), or
+ * the boxes for a chart: every key that occurs on some staff (not a pentatonic's added notes, #308), in order. Labels are intervals from the root (♭3), or
  * in From X mode the pitch spelled from the start note (E♭).
  */
-export function practiceBoxes(staves: readonly { keys: readonly string[] | null }[], mode: Mode, startText: string): PracticeBox[] {
-  const keys = [...new Set(staves.flatMap((s) => s.keys ?? []))].sort(compareKeys)
+export function practiceBoxes(staves: readonly { keys: readonly string[] | null; outside?: readonly boolean[] | null }[], mode: Mode, startText: string): PracticeBox[] {
+  const keys = [...new Set(staves.flatMap((s) => (s.keys ?? []).filter((_, i) => !s.outside?.[i])))].sort(compareKeys)
   const start = mode === 'from' ? startReference(startText) : null
   return keys.map((key) => {
     const note = start ? orNull(() => spellFrom(start, key)[0]) : null
@@ -112,6 +112,6 @@ export function practiceBoxes(staves: readonly { keys: readonly string[] | null 
   })
 }
 
-/** the keys a selection lights anywhere in the chart: where a custom selection starts from a preset */
-export const litKeys = (staves: readonly { keys: readonly string[] | null; selected: readonly boolean[] | null }[]): string[] =>
-  [...new Set(staves.flatMap((s) => (s.keys ?? []).filter((_, i) => s.selected?.[i])))].sort(compareKeys)
+/** the keys a selection lights anywhere in the chart: where a custom selection starts from a preset; a pentatonic's notes outside the scale (#308) aren't the scale's, so not among them */
+export const litKeys = (staves: readonly { keys: readonly string[] | null; selected: readonly boolean[] | null; outside?: readonly boolean[] | null }[]): string[] =>
+  [...new Set(staves.flatMap((s) => (s.keys ?? []).filter((_, i) => s.selected?.[i] && !s.outside?.[i])))].sort(compareKeys)

@@ -387,7 +387,12 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   (`pentatonicRanking`: most shared, then fewest fifths from the written chord root, ♭ side first; each spelled by
   walking the fifths from the chord root, then `simplifyRoot`); Auto is the first, else the one on the degree. It
   lights the scale notes that one shares (`pentatonicPick`) and captions the staff with its name and shared count,
-  always (`Dm pent · 5 shared`). The usual inside choices (all five shared): on 2, 3 or 6 over Ionian, 1, 2 or 5
+  always (`Dm pent · 5 shared`). Its other notes join the staff (#308, `outsideNotes`): spelled from the pentatonic,
+  in pitch order within the staff's octave (from the root, or from the start note), lit in the second accent
+  (`vf-second`, mid-grey in print), flagged in `StaffModel.outside` and named in the staff's accessible label; they
+  are not the scale's, so they make no practice box and aren't among the lit keys a custom pick starts from. Under
+  Pentatonic and Hexatonic the boxes show no pressed state (each staff lights its own degrees); a click starts a
+  custom pick from the lit keys, with that box on. The usual inside choices (all five shared): on 2, 3 or 6 over Ionian, 1, 2 or 5
   over Dorian, 2, 5 or 6 over Mixolydian (the Practice panel and Help say so). `pentatonicDegreeFrom` reads untrusted
   data: a bad degree, and the old `{ preset: 'pentatonic', rank }` (#266's 1–12 rank, stored or in a link), read as
   Auto. In print the caption is 10px on one line, so 12 staves still fit a page. At Everything the caption opens the

@@ -163,7 +163,7 @@ describe('the Pentatonic preset on the Scales sheet (#266)', () => {
   it('lights fewer notes farther out, in From X mode too', () => {
     const [far] = staves([row('Dm7')], 'from', pent(6)) // G♯m on ♯4 of D Dorian: G♯ B C♯ D♯ F♯, only B inside
     expect(far?.pentatonic).toMatchObject({ name: 'G♯m', degree: 6, shared: 1 })
-    expect(far?.selected?.filter(Boolean)).toHaveLength(1)
+    expect(far?.selected?.filter((lit, i) => lit && !far.outside?.[i])).toHaveLength(1)
   })
 
   it('names the written pentatonic for a transposing part, lighting the same degrees', () => {
@@ -192,6 +192,44 @@ describe('the Pentatonic preset on the Scales sheet (#266)', () => {
     const [s] = staves([row('Xq7', 'D Dorian')], 'root', pent('auto'))
     expect(s?.keys).toBeNull()
     expect(s?.selected?.filter(Boolean)).toHaveLength(5)
+  })
+
+  it('adds an outside pentatonic’s other notes to the staff, spelled from it, in order within the octave (#308)', () => {
+    const [far] = staves([row('Dm7')], 'root', pent(3)) // Fm on ♭3 of D Dorian: F A♭ B♭ C E♭, only F and C inside
+    expect(far!.notes.map((n) => rootName(n))).toEqual(['D', 'Eb', 'E', 'F', 'G', 'Ab', 'A', 'Bb', 'B', 'C'])
+    expect(far!.notes.every((n, i) => i === 0 || n.midi > far!.notes[i - 1]!.midi && n.midi < far!.notes[0]!.midi + 12)).toBe(true)
+    expect(far!.outside).toEqual([false, true, false, false, false, true, false, true, false, false])
+    expect(picked([far!])[0]).toEqual(['Eb', 'F', 'Ab', 'Bb', 'C'])
+    expect(far!.pentatonic?.shared).toBe(2)
+    expect(far!.accidentals).toEqual([null, 'b', 'n', null, null, 'b', 'n', 'b', 'n', null])
+    expect(far!.intervals).toHaveLength(10)
+    expect(far!.keys).toHaveLength(10)
+  })
+
+  it('adds nothing when the pentatonic is wholly inside, and is null under other selections', () => {
+    const [home] = staves([row('Dm7')], 'root', pent(0))
+    expect(home!.notes).toHaveLength(7)
+    expect(home!.outside).toEqual(Array(7).fill(false))
+    expect(staves([row('Dm7')], 'root', { preset: 'guideTones' })[0]?.outside).toBeNull()
+    expect(staves([row('Dm7')], 'root', { preset: 'hexatonic', pair: 0, grouping: 'triads' })[0]?.outside).toBeNull()
+  })
+
+  it('places the added notes in the octave from the start note in From X mode', () => {
+    const [far] = staves([row('Dm7')], 'from', pent(6)) // G♯m: G♯ B C♯ D♯ F♯ over D Dorian from C
+    expect(far!.notes.map((n) => rootName(n))).toEqual(['C', 'C#', 'D', 'D#', 'E', 'F', 'F#', 'G', 'G#', 'A', 'B'])
+    expect(far!.notes.at(-1)!.midi - far!.notes[0]!.midi).toBeLessThan(12)
+  })
+
+  it('spells the added notes for a transposing part from the written pentatonic', () => {
+    const [far] = staves([row('Dm7')], 'root', pent(3), 'C', TENOR) // written E Dorian; Gm on its ♭3: G B♭ C D F
+    expect(far!.pentatonic?.name).toBe('Gm')
+    expect(far!.notes.filter((_, i) => far!.outside?.[i]).map((n) => rootName(n))).toEqual(['F', 'Bb', 'C'])
+  })
+
+  it('keeps the added notes out of the practice boxes and the lit keys a custom pick starts from', () => {
+    const s = staves([row('Dm7')], 'root', pent(3))
+    expect(practiceBoxes(s, 'root', 'C').map((b) => b.key)).toEqual(['1', '2', 'b3', '4', '5', '6', 'b7'])
+    expect(litKeys(s)).toEqual(['b3', 'b7'])
   })
 
   it('reports the shared count on a whole-tone staff, where none fits whole', () => {

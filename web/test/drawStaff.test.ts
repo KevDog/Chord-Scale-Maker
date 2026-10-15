@@ -20,6 +20,16 @@ describe('drawStaff practice tags', () => {
     expect(tags(staff)).toEqual(expected)
   })
 
+  it('tags a pentatonic’s added notes vf-second and names them in the label (#308)', () => {
+    const staff = staffOf({ preset: 'pentatonic', degree: 0 }) // Gm over G Mixolydian: B♭ from outside
+    expect(staff.outside?.filter(Boolean)).toHaveLength(1)
+    expect(tags(staff)).toEqual(staff.selected!.map((on, i) => (staff.outside![i] ? 'vf-selected vf-second' : on ? 'vf-selected' : 'vf-dimmed')))
+    const el = document.body.appendChild(document.createElement('div'))
+    drawStaff(vf, el, staff, 'treble')
+    el.remove()
+    expect(el.querySelector('svg')?.getAttribute('aria-label')).toMatch(/; added from the pentatonic: bb4$/)
+  })
+
   it('tags none vf-second without a hexatonic', () => {
     expect(tags(staffOf({ preset: 'chordTones' })).some((t) => t.includes('vf-second'))).toBe(false)
     expect(tags(staffOf(null)).every((t) => t === '')).toBe(true)

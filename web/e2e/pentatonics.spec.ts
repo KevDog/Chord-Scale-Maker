@@ -143,7 +143,10 @@ test('the Pentatonic practice preset builds on a degree, remembers it, and print
   const auto = await page.locator('.vf-selected').count()
   await pickOption(page, 'Pentatonic built on', '♭3')
   await expect(captions.first()).toHaveText(/ pent · [0-4] shared$/)
-  await expect.poll(() => page.locator('.vf-selected').count()).toBeLessThan(auto)
+  // all five still lit on each staff (#308): fewer from the scale, the rest added from outside it in the second accent
+  await expect.poll(() => page.locator('.vf-selected.vf-second').count()).toBeGreaterThan(0)
+  expect(await page.locator('.vf-selected').count()).toBe(auto)
+  await expect(page.locator('svg[aria-label*="; added from the pentatonic: "]').first()).toBeAttached()
   await page.reload()
   await chooseSheet(page, 'Scales')
   await expect(page.getByRole('button', { name: 'Pentatonic built on' })).toHaveText('Built on: ♭3')

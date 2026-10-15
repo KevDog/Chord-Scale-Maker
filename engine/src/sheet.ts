@@ -6,7 +6,7 @@ import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRoot, writt
 import { intervalLabels } from './intervals'
 import { type HexPair, hexatonicPairs, hexatonicPick, type StaffHexatonic } from './hexatonics'
 import { isHexatonicSelection, isPentatonicSelection, type PracticeSelection, practiceKeys, selectedNotes, startReference } from './practice'
-import { pentatonicPick, type StaffPentatonic } from './pentatonics'
+import { outsideNotes, pentatonicPick, type StaffPentatonic } from './pentatonics'
 import { baseQuality, resolveQuality } from './qualities'
 import { parseScale } from './scales'
 import type { Key } from './analysis/keys'
@@ -36,6 +36,7 @@ export type StaffModel = Readonly<{
   pentatonic: StaffPentatonic | null // the Pentatonic preset's pick for this staff (#266); null otherwise
   hexatonic: StaffHexatonic | null // the Hexatonic preset's pair for this staff; null otherwise, and where the scale has none
   second: readonly boolean[] | null // the Hexatonic preset: which selected notes are in group B; null otherwise
+  outside: readonly boolean[] | null // the Pentatonic preset (#308): which notes are its pentatonic's, added from outside the scale; null otherwise
   positions: readonly ChordAt[] // the drawn chords it covers (#303), in form order; [] without picks given, or all in a folded repeat
   varies: boolean // its positions have different picks of the preset's kind (a pick and none differ)
   source: Readonly<{ chord: string; scale: string }> | null // what a pick on it is made for: its first row's chord and scale, concert; null with no scale
@@ -119,23 +120,30 @@ function practiceFor(
   degrees: readonly Pitched[],
   practice: PracticeSelection | null,
   pick: StaffPick,
-): Pick<StaffModel, 'keys' | 'selected' | 'pentatonic' | 'hexatonic' | 'second'> {
+  low: number,
+): Pick<StaffModel, 'notes' | 'keys' | 'selected' | 'pentatonic' | 'hexatonic' | 'second' | 'outside'> & Readonly<{ degrees: readonly Pitched[] }> {
   const reference = mode === 'from' ? startReference(startText) : orNull(() => writtenChordRootLenient(part, row.chord, scale))
   // from the root, a key is the note's degree: in the formula's letters, whatever letters the staff shows (#279)
-  const keys = reference ? practiceKeys(reference, mode === 'root' ? degrees : notes, mode === 'root' ? (resolveQuality(row.chord)?.quality ?? null) : null) : null
-  const none = { pentatonic: null, hexatonic: null, second: null }
+  const keysOf = (ns: readonly Pitched[], ds: readonly Pitched[]) => (reference ? practiceKeys(reference, mode === 'root' ? ds : ns, mode === 'root' ? (resolveQuality(row.chord)?.quality ?? null) : null) : null)
+  const keys = keysOf(notes, degrees)
+  const none = { notes, degrees, pentatonic: null, hexatonic: null, second: null, outside: null }
   const chordRoot = () => orNull(() => writtenChordRootLenient(part, row.chord, scale)) ?? scaleLabel(part, scale).root
   if (isPentatonicSelection(practice)) {
-    const { pentatonic, lit } = pentatonicPick(notes.map((n) => pcOf(n)), chordRoot(), practice.degree, typeof pick === 'number' ? pick : null)
-    return { keys, selected: lit, ...none, pentatonic }
+    const pcs = notes.map((n) => pcOf(n))
+    const { pentatonic, lit, root } = pentatonicPick(pcs, chordRoot(), practice.degree, typeof pick === 'number' ? pick : null)
+    // the pentatonic's notes outside the scale join the staff, lit, in pitch order (#308)
+    const added = outsideNotes(root, pcs, low)
+    const all = [...notes.map((n, i) => ({ n, d: degrees[i] ?? n, lit: lit[i] ?? false, out: false })), ...added.map((n) => ({ n, d: n, lit: true, out: true }))].sort((a, b) => a.n.midi - b.n.midi)
+    const merged = { notes: all.map((x) => x.n), degrees: all.map((x) => x.d) }
+    return { ...none, ...merged, keys: keysOf(merged.notes, merged.degrees), selected: all.map((x) => x.lit), outside: all.map((x) => x.out), pentatonic }
   }
   if (isHexatonicSelection(practice)) {
     const quality = orNull(() => baseQuality(parseChord(row.chord).quality))
     const pcs = notes.map((n) => pcOf(n))
     const { hexatonic, lit, second } = hexatonicPick(writtenScale(part, scale).notes, chordRoot(), quality, practice.pair, practice.grouping, pcs, Array.isArray(pick) ? (pick as readonly [number, number]) : null)
-    return { keys, selected: lit, ...none, hexatonic, second }
+    return { ...none, keys, selected: lit, hexatonic, second }
   }
-  return { keys, selected: practice && keys ? selectedNotes(practice, row.chord, keys) : null, ...none }
+  return { ...none, keys, selected: practice && keys ? selectedNotes(practice, row.chord, keys) : null }
 }
 
 function staff(
@@ -157,21 +165,22 @@ function staff(
   const id = [chordTexts.join(' '), scale, part.clef, part.trans, mode, startKey, keySig, showClefAndKey ? '' : 'bare'].join('|')
   const base = { id, last, keySig, showClefAndKey, positions: covers.positions, source: scale === null ? null : { chord: row.chord, scale } }
   const chords = chordTexts.map((c) => chordTokensOrNull(part, c, scale))
-  const none = { notes: [], accidentals: [], intervals: null, keys: null, selected: null, pentatonic: null, hexatonic: null, second: null, varies: false }
+  const none = { notes: [], accidentals: [], intervals: null, keys: null, selected: null, pentatonic: null, hexatonic: null, second: null, outside: null, varies: false }
   if (scale === null) return { ...base, ...none, chords, scale: null, error: chords[0] ? 'Choose a scale' : "Can't read this chord" }
   try {
     const label = scaleLabel(part, scale)
     if ('error' in start) return { ...base, ...none, chords, scale: label, error: start.error }
-    const notes = scaleNotes(part, scale, mode, start.midi)
-    const degrees = scaleNotes(part, scale, mode, start.midi, 'degrees')
+    const scaleOnly = scaleNotes(part, scale, mode, start.midi)
+    const low = mode === 'root' ? (scaleOnly[0]?.midi ?? 0) : start.midi
+    const { degrees, ...practiced } = practiceFor(row, part, mode, startText, scale, scaleOnly, scaleNotes(part, scale, mode, start.midi, 'degrees'), practice, covers.pick, low)
+    const { notes } = practiced
     return {
       ...base,
       chords,
       scale: label,
-      notes,
       accidentals: accidentalsInBar(notes.map((n) => ({ letter: n.letter, acc: n.acc, octave: octaveOf(n) })), keySig),
       intervals: intervalsOrNull(part, row.chord, scale, degrees),
-      ...practiceFor(row, part, mode, startText, scale, notes, degrees, practice, covers.pick),
+      ...practiced,
       varies: covers.varies,
       error: null,
     }

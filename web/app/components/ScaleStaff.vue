@@ -104,5 +104,5 @@ async function draw(): Promise<void> {
 
 onMounted(draw)
 // a primitive key: re-parses create new staff objects, but only real changes should redraw
-watch(() => `${props.staff.id}|${props.staff.last}|${props.clef}|${props.staff.selected?.join() ?? ''}|${props.staff.second?.join() ?? ''}`, () => nextTick(draw))
+watch(() => `${props.staff.id}|${props.staff.last}|${props.clef}|${props.staff.selected?.join() ?? ''}|${props.staff.second?.join() ?? ''}|${props.staff.outside?.join() ?? ''}`, () => nextTick(draw))
 </script>
