@@ -41,11 +41,39 @@
             </div>
           </UiField>
           <template v-else>
-            <UiField v-if="!lockLabels">
+            <UiField v-if="!lockLabels || pentatonicsOn">
               <UiLabel class="pl-3">Analysis</UiLabel>
-              <div class="flex flex-wrap gap-2 *:whitespace-nowrap">
-                <ToggleButton v-model="numerals" title="Each chord's Roman numeral in its key">Numerals</ToggleButton>
-                <ToggleButton v-model="scaleNames" title="Each chord's scale, under its numeral">Scales</ToggleButton>
+              <!-- stacked, so the group keeps the width of Numerals and Scales and the rail its two rows (#255) -->
+              <div class="flex flex-col items-start gap-2">
+                <div v-if="!lockLabels" class="flex flex-wrap gap-2 *:whitespace-nowrap">
+                  <ToggleButton v-model="numerals" title="Each chord's Roman numeral in its key">Numerals</ToggleButton>
+                  <ToggleButton v-model="scaleNames" title="Each chord's scale, under its numeral">Scales</ToggleButton>
+                </div>
+                <ToggleButton v-if="pentatonicsOn" v-model="pentatonics" class="whitespace-nowrap" title="Each key area's or each chord's minor pentatonic, ranked by how far out it is">Pentatonics</ToggleButton>
+                <div v-if="pentatonicsOn && pentatonics" class="flex flex-col items-start gap-2">
+                  <SegmentedControl v-model="pentBasis" legend="Ranked against" name="pent-basis" aria-label="Pentatonics ranked against" :options="PENT_BASES" />
+                  <UiListbox v-if="pentBasis === 'chord'" v-model="pentRank" class="w-48" aria-label="Pentatonic rank">
+                    <template #selected="{ value }"><UiListboxLabel>{{ rankLabel(value) }}</UiListboxLabel></template>
+                    <UiListboxOption v-for="r in PENT_RANK_CHOICES" :key="r.value" :value="r.value"><UiListboxLabel>{{ r.label }}</UiListboxLabel></UiListboxOption>
+                  </UiListbox>
+                  <template v-else>
+                    <UiListbox v-model="pentPath" class="w-48" aria-label="Pentatonic path">
+                      <template #selected="{ value }"><UiListboxLabel>{{ pathLabel(value) }}</UiListboxLabel></template>
+                      <UiListboxOption v-for="p in pathChoices" :key="p.value" :value="p.value"><UiListboxLabel>{{ p.label }}</UiListboxLabel></UiListboxOption>
+                    </UiListbox>
+                    <template v-if="pentPath === 'one'">
+                      <UiListbox v-model="pentRung" class="w-48" aria-label="Pentatonic rung">
+                        <template #selected="{ value }"><UiListboxLabel>{{ rungLabel(value) }}</UiListboxLabel></template>
+                        <UiListboxOption v-for="r in PENT_RUNGS" :key="r.value" :value="r.value"><UiListboxLabel>{{ r.label }}</UiListboxLabel></UiListboxOption>
+                      </UiListbox>
+                      <SegmentedControl v-if="sideShown(pentRung)" v-model="pentSide" legend="Side" name="pent-side" aria-label="Pentatonic side" :options="PENT_SIDES" />
+                    </template>
+                    <template v-else-if="pentPath !== 'custom'">
+                      <SegmentedControl v-model="pentStepUnit" legend="Step by" name="pent-step" aria-label="Pentatonic step" :options="PENT_STEP_UNITS" />
+                      <SegmentedControl v-if="pentStepUnit === 'bars'" v-model="pentStepBarsText" legend="Bars" name="pent-step-bars" aria-label="Bars a step" :options="PENT_STEP_BARS" />
+                    </template>
+                  </template>
+                </div>
               </div>
             </UiField>
             <UiField>
@@ -106,7 +134,8 @@
 </template>
 
 <script setup lang="ts">
-import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, partFor } from '@chord-scale-maker/engine'
+import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, partFor, type PentatonicBasis, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
+import { PENT_BASES, PENT_PATHS, PENT_RANK_CHOICES, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rankLabel, rungLabel, sideShown } from '~/utils/pentatonics'
 import type { GuideFrom, LineMode } from '~/utils/sheetLine'
 import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
 import type { SheetKind } from '~/utils/sheets'
@@ -121,6 +150,18 @@ const spell = defineModel<Spell>('spell', { required: true })
 const intervals = defineModel<boolean>('intervals', { required: true })
 const numerals = defineModel<boolean>('numerals', { default: true })
 const scaleNames = defineModel<boolean>('scaleNames', { default: true })
+const pentatonics = defineModel<boolean>('pentatonics', { default: false })
+const pentRung = defineModel<number>('pentRung', { default: 0 })
+const pentSide = defineModel<PentatonicSide>('pentSide', { default: 'flat' })
+const pentBasis = defineModel<PentatonicBasis>('pentBasis', { default: 'key' })
+const pentRank = defineModel<number>('pentRank', { default: 1 })
+const pentPath = defineModel<PentatonicPathName>('pentPath', { default: 'one' })
+const pathChoices = computed(() => PENT_PATHS.filter((p) => p.value !== 'custom' || pentPath.value === 'custom'))
+const pentStepUnit = defineModel<PentatonicStepUnit>('pentStepUnit', { default: 'section' })
+const pentStepBars = defineModel<2 | 4 | 8>('pentStepBars', { default: 4 })
+/** SegmentedControl's values are strings */
+const pentStepBarsText = computed({ get: () => String(pentStepBars.value) as '2' | '4' | '8', set: (v) => (pentStepBars.value = Number(v) as 2 | 4 | 8) })
+const pentatonicsOn = useFeature('pentatonics')
 const lineMode = defineModel<LineMode>('lineMode', { default: 'off' })
 const guideLine = defineModel<GuideFrom>('guideLine', { default: 'third' })
 const arpeggio = defineModel<ArpeggioPattern>('arpeggio', { default: 'up-root' })

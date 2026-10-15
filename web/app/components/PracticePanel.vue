@@ -4,12 +4,17 @@
     <UiText class="-mt-1">
       Pick the notes to improvise with; the rest are dimmed, on screen and in print.
       {{ mode === 'root' ? 'Boxes are intervals from each chord’s root, even when its scale starts elsewhere: over B♭–7, B♭ is 1.' : `Boxes are pitches spelled from ${startName}.` }}
+      <template v-if="pentatonic"> Pentatonic lights the notes each scale shares with a minor pentatonic: rank 1 the closest, 12 the farthest.</template>
     </UiText>
 
     <div class="flex flex-wrap items-center gap-2">
-      <ToggleButton v-for="p in PRESETS[mode]" :key="p" :model-value="activePreset === p" @update:model-value="pickPreset(p)">{{ PRESET_LABELS[p] }}</ToggleButton>
+      <ToggleButton v-for="p in presets" :key="p" :model-value="activePreset === p" @update:model-value="pickPreset(p)">{{ PRESET_LABELS[p] }}</ToggleButton>
       <UiButton plain :disabled="!selection" @click="emit('update:selection', null)">Clear</UiButton>
     </div>
+    <UiListbox v-if="isPentatonicSelection(selection)" :model-value="selection.rank" class="w-44" aria-label="Pentatonic rank" @update:model-value="pickRank">
+      <template #selected="{ value }"><UiListboxLabel>{{ rankLabel(value) }}</UiListboxLabel></template>
+      <UiListboxOption v-for="r in RANKS" :key="r" :value="r"><UiListboxLabel>{{ rankLabel(r) }}</UiListboxLabel></UiListboxOption>
+    </UiListbox>
 
     <div role="group" aria-label="Notes to practise" class="flex flex-wrap gap-1.5">
       <label
@@ -24,11 +29,12 @@
 </template>
 
 <script setup lang="ts">
-import { compareKeys, type Mode, noteText, type PracticeBox, type PracticeSelection, type Preset, PRESET_LABELS, PRESETS } from '@chord-scale-maker/engine'
+import { rankLabel } from '~/utils/pentatonics'
+import { compareKeys, isPentatonicSelection, type Mode, noteText, PENTATONIC_RANKS, type PracticeBox, type PracticeSelection, type Preset, PRESET_LABELS, PRESETS } from '@chord-scale-maker/engine'
 
 /**
  * the practice controls: per-chord presets (From root) or All (From X), a box per spelled interval or pitch in the
- * chart, and Clear. Editing a box while a preset is active starts a custom selection from what the preset lit.
+ * chart, and Clear. With the pentatonics flag, a Pentatonic preset with a rank picker (#266). Editing a box while a preset is active starts a custom selection from what the preset lit.
  */
 const props = defineProps<{
   mode: Mode
@@ -36,6 +42,7 @@ const props = defineProps<{
   boxes: readonly PracticeBox[]
   selection: PracticeSelection | null
   lit: readonly string[] // the keys the current selection lights somewhere in the chart
+  pentatonic?: boolean // the pentatonics flag: offer the Pentatonic preset (#266)
 }>()
 const emit = defineEmits<{ 'update:selection': [selection: PracticeSelection | null] }>()
 
@@ -43,8 +50,16 @@ const activePreset = computed(() => (props.selection && 'preset' in props.select
 const checked = computed(() => new Set(props.selection && 'keys' in props.selection ? props.selection.keys : props.lit))
 const startName = computed(() => noteText(props.startText))
 
+const presets = computed(() => PRESETS[props.mode].filter((p) => p !== 'pentatonic' || props.pentatonic))
+const RANKS = Array.from({ length: PENTATONIC_RANKS }, (_, i) => i + 1)
+
 function pickPreset(p: Preset): void {
-  emit('update:selection', activePreset.value === p ? null : { preset: p })
+  if (activePreset.value === p) emit('update:selection', null)
+  else emit('update:selection', p === 'pentatonic' ? { preset: 'pentatonic', rank: 1 } : { preset: p })
+}
+
+function pickRank(rank: number | undefined): void {
+  if (rank !== undefined) emit('update:selection', { preset: 'pentatonic', rank })
 }
 
 function toggle(key: string): void {

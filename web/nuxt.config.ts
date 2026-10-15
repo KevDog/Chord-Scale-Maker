@@ -89,6 +89,7 @@ export default defineNuxtConfig({
         arpeggios: true, // 7th chord arpeggios: the Changes sheet's 7th Chords line and the Arpeggios sheet (docs/superpowers/specs/2026-10-12-seventh-chord-arpeggios-design.md, 2026-10-12-arpeggios-sheet-design.md); on since sign-off
         compactRail: true, // phones: the rail holds Work on, Instrument, Controls (a dialog of the rest), Print and More (docs/superpowers/specs/2026-10-12-interface-review-design.md §A); on since sign-off
         functions: true, // author functions, @key areas and live analysis notes (docs/superpowers/specs/2026-10-09-chart-functions-design.md); on since sign-off
+        pentatonics: false, // pentatonic tension ladders: the Changes sheet's Pentatonics row (docs/superpowers/specs/2026-10-13-pentatonic-ladders-design.md)
       },
     },
   },

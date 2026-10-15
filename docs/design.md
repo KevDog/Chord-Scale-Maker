@@ -134,7 +134,7 @@ type ChordToken =
 | Python | TS | Notes |
 |---|---|---|
 | `parse_root`, `root_name`, `pc_of`, `acc_for`, `enharmonics` | `pitch.ts` | identical arithmetic; JS `%` needs a `mod()` helper for negatives |
-| `simplify_root` | `scales.ts` `simplifyRoot` | same cost tuple `(ugly, total, sameDir)`; tie order = order of `enharmonics()` |
+| `simplify_root` | `scales.ts` `simplifyRoot` | same cost tuple `(ugly, total, sameDir)`; tie order = order of `enharmonics()`; a relettered scale (below) uses `(ugly, sameDir)` |
 | `spell_from`, `spell_scale`, `parse_scale`, `norm` | `scales.ts` | formulas copied verbatim from `SCALES`; `norm` accepts ♭/♯/♮ so page labels parse back |
 | `Part.written_root/scale/scale_notes/scale_label` | `part.ts` | functions taking a `Part` value |
 | `Part.chord_markup` | `chord.ts` `chordTokens(part, chord, scaleText?)` | returns `ChordToken[]`, not LilyPond |
@@ -151,6 +151,12 @@ type ChordToken =
     on a chord it can't parse.
   - An option's scale root is the chord root plus an interval, by letter-step arithmetic: `b3` over C → Eb.
     Interval-derived roots are respelled by `simplifyRoot` for their scale: `b2` over Bb → B, not Cb.
+- `scales.ts` `spellScale` (#279): the half-whole and whole-half diminished scales, where their formula spells badly on a
+  root, take another lettering of the same notes (a letter repeated or skipped): the fewest double accidentals, then
+  B♯/E♯/C♭/F♭, then accidentals, then accidentals against the root's side, then closest to the formula. D♭ half-whole
+  is D♭ D E F G A♭ B♭ B, not D♭ E𝄫 F♭ F G A♭ B♭ C♭. The root stays as written whenever a lettering is clean (F♯°7 keeps
+  F♯). Intervals and practice keys from the root still read the formula's degrees (`part.ts` `writtenScale().degrees`),
+  so the B above is still the ♭7 and lights with the chord tones.
   - `baseQuality(text)` reads an extended symbol as the known quality it starts with, when the rest is only
     alterations (`Maj7#11` → `Maj7`, `7(9)` → `7`). Guide tones use it.
 - `chart.ts` `qualityScale(row)`: the explicit scale cell, else the default, else `null` (the UI prompts); the
@@ -374,6 +380,12 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Presets** (From root only) work per chord, from the chord quality: chord tones, guide tones (the guide tone
   table), and tensions (the rest). From X mode has All.
 - **Storage:** `usePractice` remembers a selection per library chart and per mode in this browser.
+- **Pentatonic** (#266, flag `pentatonics`; both modes): a rank 1–12 (`{ preset: 'pentatonic', rank }`, stored and
+  shared like any pick). Each staff ranks the 12 minor pentatonics against its own scale (`pentatonicRanking`: most
+  shared, then fewest fifths from the written chord root, ♭ side first), lights the scale notes the one at that rank
+  shares (`pentatonicPick`) and captions the staff (`Dm pent`; `F♯m pent · #2 · 3 shared` where the best shares
+  under 5). In print the caption is 10px on one line, so 12 staves still fit a page. Spec:
+  docs/superpowers/specs/2026-10-14-pentatonic-practice-design.md.
 - **Highlighting:** `drawStaff` tags each note's group `vf-selected` or `vf-dimmed`, and `main.css` colours them:
   on screen, picked notes keep the staff's ink in light mode (as the clef) and take the accent in dark mode, while
   the rest are faint (35% opacity in dark mode). In print, picked notes are black and the rest light grey.
@@ -481,6 +493,34 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Drawing:** the guide tone line's two passes, the notes beamed by the beat (`Beam.generateBeams`, post-formatted before
   the stem tips are read for the crop and the ending's bracket); no label row; the aria-label adds
   `; 7th chords: C4 E4 G4 B4 | …` after `Bars: …`.
+
+### Pentatonics on Changes ([spec](superpowers/specs/2026-10-13-pentatonic-ladders-design.md); the `pentatonics` flag, off)
+
+- **Ladder** (`engine/src/pentatonics.ts`): a key area's 12 minor pentatonics round the circle of fifths from home
+  (its tonic minor: Am in C major), ranked by notes shared with the key's Aeolian: rung 0–6 share 5 5 4 3 2 1 0.
+  Spelled by walking fifths (♯ side sharps, ♭ side flats; rung 6 the ♭ walk's), then `simplifyRoot(…, 'aeolian')`.
+- **Model:** `buildChanges(…, pentatonic)` gives each chord its area's `pentatonic` ({ label, key, ladder }, written for
+  the part); `showPentatonics` (after `breakLines`) blanks the label except on a line's first *labelled* chord and
+  wherever it differs from the last one shown (relative keys share a home, so print once). `changesLinesPerPage`
+  counts the row: with no guide line 8 a page, 7 with numerals, scales and pentatonics all shown; with a line 7 with no
+  row, 6 with any row, 5 with all three (the 5 and 7 measured on Stardust, tuba, From 7th).
+- **UI:** a Pentatonics toggle in Analysis (it stays while editing), Rung (`Home · 5 shared` … `6 · 0 shared
+  (Outside)`) and Side (♭ | ♯, hidden at 0 and 6) under it; `csm-pentatonics`, `csm-pent-rung`, `csm-pent-side`, not in
+  share links. Each label is a `PentatonicLadder` popover: the area's ladder, a pick covers that label's run (see Picks).
+- **Paths** (#264, #276, [spec](superpowers/specs/2026-10-13-pentatonic-paths-design.md), [steps](superpowers/specs/2026-10-14-pentatonic-path-steps-design.md)): Path listbox: One rung (Rung + Side, as before), Side-slip, Fifths, Minor thirds, Major thirds. A preset cycles from Home one step a unit (`pentatonicCycle`): Step by Section (each form section), Key area (each run of one key area; a revisit takes the next step) or Bars (every 2, 4 or 8 bars of the form, through section breaks); outside the form, Home. `buildChanges` lays it over the units (`PentatonicPlan.path`/`step`) and names it in the Changes subtitle (`ChangesSheet.pentatonicCaption`). A pick in a label's ladder doesn't change the path (see Picks); a stored Custom still plays its sections. Per chart, with its step: `csm-pent-path:<slug>` (`usePentatonicPath`). Labels carry the shared count (`B♭m♪ 1`) off One rung.
+- **Tint** (#265, #277): off One rung, labels take their rung's tint (`--color-rung-0…6`, Home slate → 6 rust; dark
+  values on screen only), ordered by lightness (darker each rung on light paper, brighter on dark) so the ramp reads
+  without hue. The shared count printed after each label (and in its accessible name) is the non-colour cue, so there
+  is no rung-number setting. The contour band #265 drew under the row was removed (#277); triad pairs (#262) follow.
+- **Ranked against** (#272, [spec](superpowers/specs/2026-10-14-pentatonic-per-chord-design.md)): Key (the area's
+  ladder, as above) or Chord (each chord ranks the 12 against its own scale, `pentatonicRanking`, at one Rank 1-12 for
+  the sheet; counts and tints by shared count, `level`). Preferences `csm-pent-basis`, `csm-pent-rank`.
+- **Picks** (#272): a label's popover pick covers its `run` (that chord and those its label stands for), stored as
+  the concert root per drawn chord (`ChordAt`) in `csm-pent-picks:<slug>`; cleared by any change of Path, Rung, Side,
+  Step, Rank, basis or the chart's key; Reset in the popover. A pick no longer makes the path Custom (a stored Custom still plays).
+  An edit carries picks with their chords (#275): `carryPicks` lines up the chords drawn before and after
+  (`drawnChords`, the longest common run of chord texts), so a bar put in or taken out moves a pick to its chord's new
+  key; a pick on a chord removed or written over goes (undo doesn't bring it back).
 
 ### Shared
 

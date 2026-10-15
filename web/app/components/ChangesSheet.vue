@@ -8,6 +8,8 @@
       <!-- the sheet as the editor: the heading edited where it prints -->
       <template v-if="editing !== undefined" #heading>
         <SheetHeading :doc="doc" :level="headingLevel" @update:doc="emit('update:doc', $event)" />
+        <!-- the heading replaces the subtitle on screen, so the path a preset plays shows under it (print has it in the subtitle) -->
+        <p v-if="built.pentatonicCaption" data-slot="pent-caption" class="mt-1 text-sm text-zinc-600 dark:text-zinc-400">{{ built.pentatonicCaption }}</p>
       </template>
       <template #default="{ page }">
         <div :class="['space-y-4', signatures || lineOn ? 'print:space-y-0' : 'print:space-y-1']">
@@ -28,7 +30,10 @@
             :editing="editing"
             :preview="preview"
             :focus-at="focusAt"
+            :pentatonic="pentatonic"
+            :counted="counted"
             @tap="emit('tap', $event)"
+            @pentatonic="(run, w) => emit('pentatonic', run, w)"
             @edit="emit('edit', $event)"
             @update:doc="emit('update:doc', $event)"
             @said="emit('said', $event)"
@@ -54,7 +59,7 @@
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
-import { breakLines, buildChanges, changesLinesPerPage, type ChartDoc, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type Part, type ScaleView, type SheetLine } from '@chord-scale-maker/engine'
+import { breakLines, buildChanges, changesLinesPerPage, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type Part, type PentatonicPlan, type ScaleView, showPentatonics, type SheetLine } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
 const props = defineProps<{
@@ -75,9 +80,11 @@ const props = defineProps<{
   editing?: SheetEdit | null // the sheet is the editor (from md up): what it's editing; undefined: tap opens the chord editor's bottom sheet
   preview?: ChordPreview | null // the open field's draft, read in its bar
   focusAt?: SheetFocus | null // a chord the editor wants focus on
+  pentatonic?: PentatonicPlan | null // the Pentatonics row's rungs; null: off
 }>()
 const emit = defineEmits<{
   tap: [chord: SheetChordEdit]
+  pentatonic: [run: readonly ChordAt[], written: number | null]
   edit: [edit: SheetEdit]
   'update:doc': [doc: ChartDoc]
   said: [text: string]
@@ -97,17 +104,19 @@ const barsPerLine = computed(() => (wide.value || paged.value ? 4 : 2))
 const line = computed((): SheetLine => props.line ?? 'off')
 const lineOn = computed(() => line.value !== 'off')
 const arpeggio = computed(() => isArpeggioPattern(line.value))
-const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, props.signatures, line.value, props.view))
+const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, props.signatures, line.value, props.view, props.pentatonic ?? null))
 /** the bars that start a line because the names before them didn't fit (ChangesSystem measures): until the sheet changes */
 const breaks = shallowRef<ReadonlySet<string>>(new Set())
 watch(built, () => (breaks.value = new Set()))
 function breakAt(at: string): void {
   if (!breaks.value.has(at)) breaks.value = new Set([...breaks.value, at])
 }
-const sheet = computed(() => ({ ...built.value, lines: breakLines(built.value.lines, breaks.value) }))
+const sheet = computed(() => ({ ...built.value, lines: showPentatonics(breakLines(built.value.lines, breaks.value)) }))
+/** the plan counts: a path, the chord basis or a pick (the engine's post-pass rule) */
+const counted = computed(() => !!props.pentatonic && (props.pentatonic.counts || props.pentatonic.basis === 'chord' || built.value.lines.some((l) => l.bars.some((b) => b.chords.some((c) => c.pentatonic?.picked)))))
 // 8 lines with slashes (a 32-bar AABA, one section a line pair); fewer with a guide tone line, whose notes and labels are taller
-const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: props.numerals, scales: props.scales }))
-const subtitleText = computed(() => pageSubtitle(props.subtitle, props.instrumentLabel, 'Changes'))
+const linesPerPage = computed(() => changesLinesPerPage(line.value, { numerals: props.numerals, scales: props.scales, pentatonics: !!props.pentatonic }))
+const subtitleText = computed(() => [pageSubtitle(props.subtitle, props.instrumentLabel, 'Changes'), built.value.pentatonicCaption].filter(Boolean).join(' · '))
 const pages = computed(() =>
   chunk(
     sheet.value.lines.map((line, index) => ({ line, index })),

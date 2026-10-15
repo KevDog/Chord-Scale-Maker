@@ -1,11 +1,12 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
+import { flushPromises } from '@vue/test-utils'
 import ChangesSystem from '~/components/ChangesSystem.vue'
-import { type ChangesBar, type ChangesChord, type ChangesLine, type GuideNote, type Letter, parseChart } from '@chord-scale-maker/engine'
+import { buildChanges, type ChangesBar, type ChangesChord, type ChangesLine, type GuideNote, type Letter, CONCERT, parseChart, type PentatonicPlan, showPentatonics } from '@chord-scale-maker/engine'
 
 vi.mock('~/utils/changesDrawing', async (importOriginal) => ({
   ...(await importOriginal<typeof import('~/utils/changesDrawing')>()),
-  drawChangesLine: () => ({ xs: [[0.1, 0.3, 0.5, 0.7]], ends: [0.25], scales: [] }),
+  drawChangesLine: () => ({ xs: [0, 1, 2, 3].map((b) => [0.1, 0.3, 0.5, 0.7].map((x) => (b === 0 ? x : b * 0.25 + x / 4))), ends: [0.25, 0.5, 0.75, 1], scales: [] }),
 }))
 mockNuxtImport('loadVexFlow', () => () => Promise.resolve({}))
 
@@ -20,6 +21,7 @@ const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   heardIn: '',
   keyFrom: 'found',
   guide,
+  pentatonic: null,
 })
 const bar = (chords: readonly ChangesChord[], voice: readonly GuideNote[]): ChangesBar => ({
   at: { section: chords[0]?.at?.section ?? 'A', bar: chords[0]?.at?.bar ?? '1' },
@@ -220,5 +222,45 @@ describe('ChangesSystem as the editor', () => {
     const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line() } })
     await w.find('button').trigger('click')
     expect(w.emitted('tap')?.[0]?.[0]).toMatchObject({ line: 2, section: 'A', bar: '1' })
+  })
+})
+
+describe('ChangesSystem pentatonic ladders', () => {
+  it('opens a label’s ladder at its section’s rung, and a pick names the run', async () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Cmaj7').value
+    const plan = { bySection: { B: { rung: 5, side: 'flat' as const } }, fallback: { rung: 0, side: 'flat' as const }, counts: true }
+    const line = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)[1]!
+    const w = await mountSuspended(ChangesSystem, { props: { line, first: true, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, pentatonic: plan, counted: true }, attachTo: document.body })
+    const label = w.find('[data-slot="pentatonic"] [data-section="B"] button')
+    expect(label.text()).toBe('B♭m♪ 1')
+    await label.trigger('click')
+    await flushPromises()
+    expect(w.find('[aria-current="true"]').text()).toBe('B♭m')
+    await w.findAll('[data-pent]').find((p) => p.text() === 'Gm')?.trigger('click')
+    expect(w.emitted('pentatonic')?.[0]).toEqual([['B:2:0'], 7])
+    w.unmount()
+  })
+
+  const mountLine = async (text: string, plan: PentatonicPlan, index: number) => {
+    const lines = showPentatonics(buildChanges(parseChart(text).value, CONCERT, 4, false, 'off', undefined, plan).lines)
+    return mountSuspended(ChangesSystem, { props: { line: lines[index]!, first: index === 0, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, pentatonic: plan, counted: plan.counts }, attachTo: document.body })
+  }
+  const slip: PentatonicPlan = { bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
+  const AB = 'title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Dm7\nB | 2 | G7\nB | 3 | Cmaj7'
+
+  it('tints a label by its rung, its shared count and accessible name saying the same without colour (#277)', async () => {
+    const w = await mountLine(AB, slip, 1)
+    const label = w.find('[data-slot="pentatonic"] [data-section="B"]')
+    expect(label.classes()).toContain('text-rung-5')
+    expect(label.find('button').attributes('aria-label')).toMatch(/, 1 of 5 notes in /)
+    expect(w.find('[data-slot="contour"]').exists()).toBe(false)
+    w.unmount()
+  })
+
+  it('draws no tint with One rung', async () => {
+    const one: PentatonicPlan = { bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false }
+    const w = await mountLine(AB, one, 0)
+    expect(w.find('[data-slot="pentatonic"] [data-section]').classes().some((c) => c.startsWith('text-rung-'))).toBe(false)
+    w.unmount()
   })
 })

@@ -34,14 +34,14 @@ describe('scale levels', () => {
     expect(dim7.map((o) => o.scale)).toEqual(expect.arrayContaining(['B# Diatonic Diminished', 'C Diatonic Diminished bIII', 'C Diatonic Diminished bIII optional', 'C Diatonic Diminished bVI', 'C Diatonic Diminished I', 'C Diatonic Diminished I optional', 'C Diatonic Diminished V', 'C Diatonic Diminished #IV', 'B# Diatonic Diminished #IV optional']))
   })
 
-  it('keep a Q5 Whole-Half Standard whose root the analysis respelled at Basic and Advanced (Gbdim7: F# Whole-Half)', () => {
+  it('keep a Q5 Whole-Half Standard written on another root at Basic and Advanced (Gbdim7: F# Whole-Half)', () => {
     const at = (level: 'basic' | 'advanced') => scaleAtLevel('Gbdim7', level, 0, '', 'F# Whole-Half Diminished')
     expect([at('basic'), at('advanced')]).toEqual(['F# Whole-Half Diminished', 'F# Whole-Half Diminished'])
     const tat = parseChart(readFileSync('charts/time-after-time.txt', 'utf8')).value
     for (const bar of [26, 28]) {
       const r = analyse(tat).rows.find((x) => `${x.bar} ${x.chord}` === `${bar} Gbdim7`)
-      expect(r?.scale, `bar ${bar}`).toBe('F# Whole-Half Diminished')
-      expect(scaleAtLevel('Gbdim7', 'advanced', 0, '', r?.scale ?? undefined), `bar ${bar}`).toBe('F# Whole-Half Diminished')
+      expect(r?.scale, `bar ${bar}`).toBe('Gb Whole-Half Diminished') // G♭ now letters cleanly (#279): no respelling
+      expect(scaleAtLevel('Gbdim7', 'advanced', 0, '', r?.scale ?? undefined), `bar ${bar}`).toBe('Gb Whole-Half Diminished')
     }
   })
 

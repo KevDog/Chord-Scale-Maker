@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import { type ArpDirection, type ArpeggioPattern, type ArpNotes, type InstrumentName, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, type ShareView } from '@chord-scale-maker/engine'
+import { type ArpDirection, type ArpeggioPattern, type ArpNotes, type InstrumentName, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, type PentatonicBasis, type PentatonicSide, type ShareView } from '@chord-scale-maker/engine'
 import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
@@ -28,11 +28,18 @@ export function usePreferences() {
   // the Arpeggios sheet: 7th chords or extended, and the direction
   const arpNotes = storedRef<ArpNotes>('csm-arp-notes', (s) => (isArpNotes(s) ? s : undefined), 'seventh')
   const arpDir = storedRef<ArpDirection>('csm-arp-dir', (s) => (isArpDirection(s) ? s : undefined), 'up')
+  // the Changes sheet's pentatonic row (#255): off until turned on; its rung (0 Home … 6) and side
+  const pentatonics = storedRef<boolean>('csm-pentatonics', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
+  const pentRung = storedRef<number>('csm-pent-rung', (s) => (/^[0-6]$/.test(s) ? Number(s) : undefined), 0)
+  const pentSide = storedRef<PentatonicSide>('csm-pent-side', (s) => (s === 'flat' || s === 'sharp' ? s : undefined), 'flat')
+  // #272: what the row ranks against, and the chord basis's rank
+  const pentBasis = storedRef<PentatonicBasis>('csm-pent-basis', (s) => (s === 'key' || s === 'chord' ? s : undefined), 'key')
+  const pentRank = storedRef<number>('csm-pent-rank', (s) => (/^([1-9]|1[0-2])$/.test(s) ? Number(s) : undefined), 1)
   // the editor's Source (the chart's text): hidden until shown
   const source = storedRef<boolean>('csm-source', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the /functions page's key: C major until another is picked
   const functionsKey = storedRef<string>('csm-functions-key', (s) => (FUNCTIONS_KEYS.includes(s) ? s : undefined), 'C')
-  return { instrument, spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, arpeggio, arpNotes, arpDir, source, functionsKey }
+  return { instrument, spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, arpeggio, arpNotes, arpDir, pentatonics, pentRung, pentSide, pentBasis, pentRank, source, functionsKey }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
@@ -53,6 +60,11 @@ export function linkPreferences(view: ShareView) {
     arpeggio: ref<ArpeggioPattern>(choice.arpeggio ?? own.arpeggio.value),
     arpNotes: ref<ArpNotes>(view.arpNotes ?? own.arpNotes.value),
     arpDir: ref<ArpDirection>(view.arpDir ?? own.arpDir.value),
+    pentatonics: own.pentatonics, // not in links: yours
+    pentRung: own.pentRung,
+    pentSide: own.pentSide,
+    pentBasis: own.pentBasis,
+    pentRank: own.pentRank,
     showEditor: own.showEditor, // whether the editor is open: yours, and remembered
     source: own.source,
   }

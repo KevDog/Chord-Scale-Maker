@@ -13,6 +13,7 @@ const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   heardIn: '',
   keyFrom: 'found',
   guide,
+  pentatonic: null,
 })
 const bar = (chords: readonly ChangesChord[], voice: readonly GuideNote[]): ChangesBar => ({
   keySig: null,

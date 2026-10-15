@@ -674,3 +674,39 @@ describe('EditorView lead-sheet editor', () => {
     expect(w.text()).not.toContain('Editing the sheet')
   })
 })
+
+describe('EditorView pentatonic practice (#266)', () => {
+  afterEach(() => {
+    useRuntimeConfig().public.features.pentatonics = false
+    localStorage.clear()
+  })
+  const shared = { sheet: 'scales', practice: { preset: 'pentatonic', rank: 1 } } as const
+
+  it('ignores a shared Pentatonic selection with the flag off', async () => {
+    useRuntimeConfig().public.features.pentatonics = false
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT, shared }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
+    expect(buttonCalled(w, 'Pentatonic')).toBeUndefined()
+    expect(w.find('fieldset button[aria-pressed=true]').exists()).toBe(false)
+  })
+
+  it('plays it with the flag on', async () => {
+    useRuntimeConfig().public.features.pentatonics = true
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT, shared }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
+    expect(w.find('fieldset button[aria-pressed=true]').text()).toBe('Pentatonic')
+  })
+  it('clears the picks when the chart’s key changes (a transposed chart’s picks would land elsewhere)', async () => {
+    useRuntimeConfig().public.features.pentatonics = true
+    localStorage.setItem('csm-pentatonics', 'on')
+    const w = await mountSuspended(EditorView, { props: { initialText: 'title: T\nkey: C\nA | 1 | Cm7\n' }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
+    const picks = () => (changesSheet(w).props('pentatonic') as { picks?: Record<string, number> } | null)?.picks
+    changesSheet(w).vm.$emit('pentatonic', ['A:1:0'], 7)
+    await nextTick()
+    expect(picks()).toEqual({ 'A:1:0': 7 })
+    changesSheet(w).vm.$emit('update:doc', parseChart('title: T\nkey: C\nA | 1 | Cm7\nA | 2 | F7\n').value) // same key: kept
+    await nextTick()
+    expect(picks()).toEqual({ 'A:1:0': 7 })
+    changesSheet(w).vm.$emit('update:doc', parseChart('title: T\nkey: Bb\nA | 1 | Bbm7\nA | 2 | Eb7\n').value)
+    await nextTick()
+    expect(picks()).toEqual({})
+  })
+})

@@ -71,6 +71,88 @@ describe('scales', () => {
   })
 })
 
+describe('eight-note scales: lettered without C♭ F♭ B♯ E♯ or double accidentals (#281)', () => {
+  const EIGHTS = ['bebop dominant', 'bebop major', 'bebop dorian', 'spanish phrygian'] as const
+  const ROOTS = ['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'A', 'A#', 'Bb', 'B']
+  const ugly = (n: { letter: number; acc: number }): boolean =>
+    Math.abs(n.acc) > 1 || (n.acc === 1 && (n.letter === 6 || n.letter === 2)) || (n.acc === -1 && (n.letter === 0 || n.letter === 3))
+
+  it('letters the passing tone on a root the formula spells badly', () => {
+    expect(spelled('Db Bebop Dominant')).toBe('Db Eb F Gb Ab Bb B C') // ♭7 and 7 as B C, not C♭ C
+    expect(spelled('F# Bebop Dominant')).toBe('F# G# A# B C# D# E F') // not E♯
+    expect(spelled('Db Bebop Major')).toBe('Db Eb F Gb Ab A Bb C') // not B𝄫
+    expect(spelled('Ab Bebop Major')).toBe('Ab Bb C Db Eb E F G') // not F♭
+    expect(spelled('Ab Bebop Dorian')).toBe('Ab Bb B C Db Eb F Gb') // not C♭
+    expect(spelled('Bb Spanish Phrygian')).toBe('Bb B Db D Eb F Gb Ab') // not C♭
+  })
+
+  it('keeps the formula’s letters where they spell cleanly', () => {
+    expect(spelled('G Bebop Dominant')).toBe('G A B C D E F F#')
+    expect(spelled('C Bebop Major')).toBe('C D E F G Ab A B')
+    expect(spelled('E Spanish Phrygian')).toBe('E F G G# A B C D')
+  })
+
+  it('prefers a root the formula letters cleanly, then keeps the written side', () => {
+    expect(rootName(simplifyRoot(parseRoot('A#'), 'bebop dominant'))).toBe('Bb') // not A♯ C D D♯ …
+    expect(rootName(simplifyRoot(parseRoot('D#'), 'bebop dominant'))).toBe('Eb')
+    expect(rootName(simplifyRoot(parseRoot('Db'), 'bebop dominant'))).toBe('Db')
+    expect(rootName(simplifyRoot(parseRoot('Gb'), 'bebop dominant'))).toBe('Gb')
+  })
+
+  it('spells every root as simplifyRoot gives it with no double accidental and no B♯ E♯ C♭ F♭', () => {
+    for (const key of EIGHTS)
+      for (const name of ROOTS) {
+        const notes = spellScale(simplifyRoot(parseRoot(name), key), key)
+        expect(notes.filter(ugly).map(rootName), `${name} ${key}`).toEqual([])
+      }
+  })
+})
+
+describe('symmetric diminished scales: lettered without double accidentals (#279)', () => {
+  const DIMS = ['half whole diminished', 'whole half diminished'] as const
+  const ROOTS = ['C', 'C#', 'Db', 'D', 'D#', 'Eb', 'E', 'F', 'F#', 'Gb', 'G', 'G#', 'Ab', 'A', 'A#', 'Bb', 'B']
+  const ugly = (n: { letter: number; acc: number }): boolean =>
+    Math.abs(n.acc) > 1 || (n.acc === 1 && (n.letter === 6 || n.letter === 2)) || (n.acc === -1 && (n.letter === 0 || n.letter === 3))
+
+  it('letters a root the formula spells badly with the same notes, kept on the flat side', () => {
+    expect(spelled('Db Half-Whole')).toBe('Db D E F G Ab Bb B') // not D♭ E𝄫 F♭ F G A♭ B♭ C♭: Db7#9 in All the Things You Are
+    expect(spelled('Gb Half-Whole')).toBe('Gb G A Bb C Db Eb E')
+    expect(spelled('Db Whole-Half')).toBe('Db Eb E Gb G A Bb C')
+    expect(spelled('B Half-Whole')).toBe('B C D D# F F# G# A') // not E♯
+  })
+
+  it('keeps the formula’s letters where they spell cleanly', () => {
+    expect(spelled('D Half-Whole')).toBe('D Eb F F# G# A B C')
+    expect(spelled('C Whole-Half')).toBe('C D Eb F Gb Ab A B')
+  })
+
+  it('keeps a written root it can now spell cleanly', () => {
+    expect(rootName(simplifyRoot(parseRoot('Db'), 'half whole diminished'))).toBe('Db')
+    expect(rootName(simplifyRoot(parseRoot('Gb'), 'whole half diminished'))).toBe('Gb')
+  })
+
+  it('spells every root as simplifyRoot gives it with no double accidental and no B♯ E♯ C♭ F♭', () => {
+    for (const key of DIMS)
+      for (const name of ROOTS) {
+        const notes = spellScale(simplifyRoot(parseRoot(name), key), key)
+        expect(notes.filter(ugly).map(rootName), `${name} ${key}`).toEqual([])
+      }
+  })
+
+  it('never spells a written root worse than its formula does', () => {
+    for (const key of DIMS)
+      for (const name of ROOTS) {
+        const root = parseRoot(name)
+        const doubles = (ns: readonly { acc: number }[]): number => ns.filter((n) => Math.abs(n.acc) > 1).length
+        const formula = spellFrom(root, SCALES[key][0])
+        const shown = spellScale(root, key)
+        expect(shown.map((n) => n.semis), `${name} ${key}`).toEqual(formula.map((n) => n.semis))
+        expect(doubles(shown), `${name} ${key}`).toBeLessThanOrEqual(doubles(formula))
+        expect(shown.filter(ugly).length, `${name} ${key}`).toBeLessThanOrEqual(formula.filter(ugly).length)
+      }
+  })
+})
+
 describe('cleanLettering (R9): a scale on a pitch, on the root the project rule spells best', () => {
   const at = (root: string, key: Parameters<typeof cleanLettering>[1]) => {
     const r = cleanLettering(parseRoot(root), key)

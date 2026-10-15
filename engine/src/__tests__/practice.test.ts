@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Row } from '../chart'
 import { CONCERT, type Part } from '../part'
 import { parseRoot, rootName } from '../pitch'
-import { compareKeys, litKeys, type PracticeSelection, practiceBoxes, practiceKeys, selectedNotes, startReference } from '../practice'
+import { compareKeys, isPentatonicSelection, litKeys, type PracticeSelection, practiceBoxes, practiceKeys, practiceSelectionFrom, PRESETS, selectedNotes, startReference } from '../practice'
 import { buildSheet, type StaffModel } from '../sheet'
 
 const row = (chord: string, scale = '', bar = '1'): Row => ({ section: 'A', bar, chord, scale })
@@ -111,5 +111,76 @@ describe('practice boxes', () => {
   it('orders keys and reports what a selection lights', () => {
     expect(['5', 'b3', '#4', '3', '1', 'bb7', 'b7'].sort(compareKeys)).toEqual(['1', 'b3', '3', '#4', '5', 'bb7', 'b7'])
     expect(litKeys(staves([row('G7alt'), row('Dm7')], 'root', { preset: 'guideTones' }))).toEqual(['b3', '3', 'b7'])
+  })
+})
+
+describe('the Pentatonic selection (#266)', () => {
+  it('is offered in both modes, last', () => {
+    expect(PRESETS.root.at(-1)).toBe('pentatonic')
+    expect(PRESETS.from).toEqual(['all', 'pentatonic'])
+  })
+
+  it('reads from untrusted data with a rank 1–12; a missing or bad rank reads as 1', () => {
+    expect(practiceSelectionFrom({ preset: 'pentatonic', rank: 7 })).toEqual({ preset: 'pentatonic', rank: 7 })
+    expect(practiceSelectionFrom({ preset: 'pentatonic' })).toEqual({ preset: 'pentatonic', rank: 1 })
+    expect(practiceSelectionFrom({ preset: 'pentatonic', rank: 13 })).toEqual({ preset: 'pentatonic', rank: 1 })
+    expect(practiceSelectionFrom({ preset: 'pentatonic', rank: 2.5 })).toEqual({ preset: 'pentatonic', rank: 1 })
+    expect(practiceSelectionFrom({ preset: 'guideTones', rank: 3 })).toEqual({ preset: 'guideTones' })
+  })
+
+  it('is told apart from the other selections', () => {
+    expect(isPentatonicSelection({ preset: 'pentatonic', rank: 2 })).toBe(true)
+    expect(isPentatonicSelection({ preset: 'all' })).toBe(false)
+    expect(isPentatonicSelection({ keys: ['1'] })).toBe(false)
+    expect(isPentatonicSelection(null)).toBe(false)
+  })
+})
+
+describe('the Pentatonic preset on the Scales sheet (#266)', () => {
+  const pent = (rank: number): PracticeSelection => ({ preset: 'pentatonic', rank })
+
+  it('selects nothing by keys', () => {
+    expect(selectedNotes({ preset: 'pentatonic', rank: 1 }, 'Dm7', ['1', 'b3'])).toEqual([false, false])
+  })
+
+  it('lights each staff’s pentatonic at the rank and names it', () => {
+    const [d, g] = staves([row('Dm7'), row('G7', '', '2')], 'root', pent(1))
+    expect(d?.pentatonic).toEqual({ name: 'Dm', rank: 1, shared: 5, best: 5 })
+    expect(picked([d!])[0]).toEqual(['D', 'F', 'G', 'A', 'C'])
+    expect(g?.pentatonic?.name).toBe('Dm')
+  })
+
+  it('lights fewer notes farther down the ladder, in From X mode too', () => {
+    const [far] = staves([row('Dm7')], 'from', pent(12))
+    expect(far?.pentatonic?.shared).toBe(0)
+    expect(far?.selected?.every((s) => !s)).toBe(true)
+  })
+
+  it('names the written pentatonic for a transposing part, lighting the same degrees', () => {
+    const [concert] = staves([row('Dm7')], 'root', pent(1))
+    const [tenor] = staves([row('Dm7')], 'root', pent(1), 'C', TENOR)
+    expect(tenor?.pentatonic?.name).toBe('Em')
+    expect(tenor?.selected).toEqual(concert?.selected)
+  })
+
+  it('is null under other selections and on staves that can’t be drawn', () => {
+    expect(staves([row('Dm7')], 'root', { preset: 'guideTones' })[0]?.pentatonic).toBeNull()
+    expect(staves([row('Dm7')], 'root')[0]?.pentatonic).toBeNull()
+    expect(staves([row('Xq7')], 'root', pent(1))[0]?.pentatonic).toBeNull()
+  })
+
+  it('ranks from the scale’s root when the chord can’t be read', () => {
+    const [s] = staves([row('Xq7', 'D Dorian')], 'root', pent(1))
+    expect(s?.pentatonic?.name).toBe('Dm')
+  })
+
+  it('still lights what the caption names when the reference can’t be read', () => {
+    const [s] = staves([row('Xq7', 'D Dorian')], 'root', pent(1))
+    expect(s?.keys).toBeNull()
+    expect(s?.selected?.filter(Boolean)).toHaveLength(5)
+  })
+
+  it('reports a best under 5 on a whole-tone staff', () => {
+    expect(staves([row('C7#5', 'C Whole Tone')], 'root', pent(1))[0]?.pentatonic?.best).toBe(3)
   })
 })

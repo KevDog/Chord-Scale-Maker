@@ -113,6 +113,14 @@
             v-model:intervals="prefs.intervals.value"
             v-model:numerals="prefs.numerals.value"
             v-model:scale-names="prefs.scaleNames.value"
+            v-model:pentatonics="prefs.pentatonics.value"
+            v-model:pent-rung="prefs.pentRung.value"
+            v-model:pent-side="prefs.pentSide.value"
+            v-model:pent-basis="prefs.pentBasis.value"
+            v-model:pent-rank="prefs.pentRank.value"
+            v-model:pent-path="pentPathModel"
+            v-model:pent-step-unit="pentStepUnit"
+            v-model:pent-step-bars="pentStepBars"
             v-model:line-mode="prefs.lineMode.value"
             v-model:guide-line="prefs.guideLine.value"
             v-model:arpeggio="prefs.arpeggio.value"
@@ -159,6 +167,7 @@
             :boxes="practiceBoxesNow"
             :selection="selection"
             :lit="litNow"
+            :pentatonic="pentatonicsOn"
             @update:selection="practice.setSelection(mode, $event)"
           />
         </div>
@@ -189,6 +198,8 @@
             :editing="sheetEditor ? sheetEdit : undefined"
             :preview="sheetPreview"
             :focus-at="sheetFocus"
+            :pentatonic="pentatonicPlan"
+            @pentatonic="onPentatonic"
             @tap="editSheetChord"
             @edit="openSheetEdit"
             @update:doc="editor.setDoc"
@@ -254,16 +265,21 @@ import { sheetLineOf } from '~/utils/sheetLine'
 import {
   addSection,
   barView,
+  changesSections,
   buildSheet,
   chartKeyOf,
   type ChartDoc,
+  type ChordAt,
   type ChordPreview,
+  concertPc,
   CONCERT,
   type GridPos,
   type Part,
   encodeShare,
   insertBars,
+  drawnChords,
   insertHeldBar,
+  isPentatonicSelection,
   keyStart,
   renameSection,
   repeatSection,
@@ -280,6 +296,7 @@ import {
   resolveScales,
   SCALE_LEVELS,
   type LevelState,
+  type PentatonicPlan,
   type ScaleView,
   serializeChart,
   setMeta,
@@ -352,6 +369,25 @@ const start = computed(() => spelled.value.start)
 const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeature('changes'), arpeggios: useFeature('arpeggios') }))
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
+const pentatonicsOn = useFeature('pentatonics')
+/** the chart's sections as the Changes sheet draws them, for the path presets (#264) */
+const pentSections = computed(() => changesSections(editor.doc.value))
+const pentPath = usePentatonicPath(props.practiceKey, pentSections, computed(() => ({ rung: prefs.pentRung.value, side: prefs.pentSide.value })))
+const pentPathModel = computed({ get: () => pentPath.path.value, set: (v) => pentPath.setPath(v) })
+const pentStepUnit = computed({ get: () => pentPath.step.value.unit, set: (unit) => pentPath.setStep({ ...pentPath.step.value, unit }) })
+const pentStepBars = computed({ get: () => pentPath.step.value.bars, set: (bars) => pentPath.setStep({ ...pentPath.step.value, bars }) })
+/** the sheet's Pentatonics plan; null with the row off */
+const pentPicks = usePentatonicPicks(props.practiceKey)
+watch([pentPath.path, () => JSON.stringify(pentPath.step.value), prefs.pentRung, prefs.pentSide, prefs.pentRank, prefs.pentBasis, () => JSON.stringify(chartKeyOf(editor.doc.value))], () => pentPicks.clear()) // picks are concert pitches: a transposed chart lands them elsewhere
+watch(() => editor.doc.value, (doc, old) => { if (Object.keys(pentPicks.picks.value).length) pentPicks.carry(drawnChords(old), drawnChords(doc)) }) // a bar in or out moves later chords' keys (#275)
+const pentatonicPlan = computed((): PentatonicPlan | null => (pentatonicsOn && prefs.pentatonics.value
+  ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, rank: prefs.pentRank.value, picks: pentPicks.picks.value }
+  : null))
+/** a label's popover (#272): a pick (written for the part) covers its run, stored concert; null resets the run */
+function onPentatonic(run: readonly ChordAt[], written: number | null): void {
+  if (written === null) pentPicks.reset(run)
+  else pentPicks.pick(run, concertPc(sheetPart.value, written))
+}
 const signaturesOn = useFeature('keySignatures')
 const arpeggiosOn = useFeature('arpeggios')
 const myChartsOn = useFeature('myCharts')
@@ -380,7 +416,11 @@ provide(SCALE_VIEW, scaleView)
 const resolved = computed(() => resolveScales(editor.doc.value, scaleView.value))
 
 if (props.shared?.practice) practice.setSelection(mode.value, props.shared.practice)
-const selection = computed(() => (practiceOn ? practice.selection(mode.value) : null))
+/** a Pentatonic selection (stored or shared) plays only with the pentatonics flag (#266) */
+const selection = computed(() => {
+  const s = practiceOn ? practice.selection(mode.value) : null
+  return isPentatonicSelection(s) && !pentatonicsOn ? null : s
+})
 // every staff with its practice keys, for the panel's boxes and what the selection lights
 const practiceStaves = computed(() =>
   practiceOn ? buildSheet(editor.rows.value, part.value, mode.value, start.value, LIMITS.maxExpandedRows, selection.value, undefined, resolved.value).flatMap((p) => p.pages.flat()) : [],
@@ -576,6 +616,8 @@ function saveCopy(): void {
   copyError.value = result.ok ? '' : "Couldn't save a copy: this browser's storage is full, or My charts is at its limit."
   if (!result.ok) return
   scaleLevel.carryTo(`mine:${id}`)
+  pentPath.carryTo(`mine:${id}`)
+  pentPicks.carryTo(`mine:${id}`)
   navigateTo({ path: '/song', query: { mine: id } })
 }
 
@@ -625,6 +667,8 @@ function saveShared(): void {
   const kept = usePractice(`mine:${id}`)
   for (const m of ['root', 'from'] as const) kept.setSelection(m, practice.selection(m))
   scaleLevel.carryTo(`mine:${id}`)
+  pentPath.carryTo(`mine:${id}`)
+  pentPicks.carryTo(`mine:${id}`)
   navigateTo({ path: '/song', query: { mine: id } })
 }
 
