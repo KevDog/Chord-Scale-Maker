@@ -142,7 +142,7 @@
       <span
         v-for="m in pentatonicMarks"
         :key="`p${m.key}`"
-        :class="['absolute whitespace-nowrap text-[0.8rem]/4 print:text-[0.6rem]/3', tint(m.p.level) || 'text-zinc-600 dark:text-zinc-400 print:text-neutral-700']"
+        :class="['absolute whitespace-nowrap text-[0.8rem]/4 print:text-[0.6rem]/3', tint(m.p.level) ? `${tint(m.p.level)} font-medium print:font-normal` : 'text-zinc-600 dark:text-zinc-400 print:text-neutral-700']"
         :data-section="m.p.section"
         :data-chord="m.p.chord"
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
