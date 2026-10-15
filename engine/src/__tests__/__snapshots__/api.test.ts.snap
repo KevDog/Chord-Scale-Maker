@@ -11,6 +11,7 @@ exports[`exports the same names 1`] = `
   "ARP_NOTES_LABELS",
   "CAPS",
   "CATALOGUE_KEYS",
+  "CHORD_TONES",
   "CLEF_ROOT_LOW",
   "CLEF_START",
   "CONCERT",
