@@ -1,4 +1,4 @@
-import { chooseInstrument, chooseSheet, expect, pickOption, rankedAgainstChord, showPentatonics, test, writeChart } from './fixtures'
+import { chooseInstrument, chooseSheet, expect, openPentatonicOptions, pickOption, rankedAgainstChord, showPentatonics, test, writeChart } from './fixtures'
 import type { Page } from '@playwright/test'
 
 const labels = (page: Page) => page.locator('[data-slot="pentatonic"] button')
@@ -92,6 +92,7 @@ test('Ranked against Chord follows each chord: Waltz for Debby’s first bars', 
   await pickOption(page, 'Pentatonic rank', '12 · farthest')
   await expect(firstLine.first()).toHaveText(/♪ 0$/)
   await page.reload()
+  await openPentatonicOptions(page)
   await expect(page.getByRole('button', { name: 'Pentatonic rank' })).toContainText('12 · farthest')
 })
 
@@ -107,6 +108,7 @@ test('a pick is per chart, kept over a reload, and cleared by a change of Rank',
   await page.reload()
   await expect(second).toHaveText(picked!)
   await expect(second.locator('button')).toHaveAttribute('aria-label', /your pick/)
+  await openPentatonicOptions(page)
   await pickOption(page, 'Pentatonic rank', '2')
   await expect(second.locator('button')).not.toHaveAttribute('aria-label', /your pick/)
 })
