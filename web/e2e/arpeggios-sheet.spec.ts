@@ -1,4 +1,4 @@
-import { chooseSheet, expect, pickOption, staves, test } from './fixtures'
+import { chooseInterface, chooseSheet, expect, pickOption, staves, test } from './fixtures'
 
 const heads = (page: import('@playwright/test').Page) => page.locator('svg[role=img]').first().locator('.vf-stavenote')
 
@@ -22,7 +22,9 @@ test('a share link reopens the Arpeggios sheet with its choices', async ({ page,
   const box = page.getByRole('dialog').getByLabel('Link')
   await expect(box).toHaveValue(/\/song#s=/) // the link is made asynchronously
   const link = await box.inputValue()
-  const visitor = await (await browser.newContext()).newPage() // fresh storage: the link alone carries the choices
+  const fresh = await browser.newContext() // fresh storage: the link alone carries the choices
+  await chooseInterface(fresh, 'everything')
+  const visitor = await fresh.newPage()
   await visitor.goto(link)
   await expect(staves(visitor)).toHaveCount(14)
   await expect(visitor.getByRole('radio', { name: 'Extended' })).toBeChecked()

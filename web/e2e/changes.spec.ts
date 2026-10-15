@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseInstrument, chooseSheet, type Drawn, drawn, expect, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, sheetChord, showArpeggios, showGuides, test, writeChart } from './fixtures'
+import { chooseInstrument, chooseInterface, chooseSheet, type Drawn, drawn, expect, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, sheetChord, showArpeggios, showGuides, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the controls above it (whose menus name the same scales) */
@@ -75,6 +75,7 @@ test('a later copy is written out, a tag follows a double barline, and a share l
   await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/) // made, not "Making the link…"
   const link = await box.inputValue()
   const other = await browser.newContext()
+  await chooseInterface(other, 'everything')
   const visitor = await other.newPage()
   await visitor.goto(link)
   await expect(lines(visitor).first()).toBeVisible()
@@ -214,6 +215,7 @@ test('the guide tone choice survives a reload and rides a share link', async ({ 
   await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/) // made, not "Making the link…"
   const link = await box.inputValue()
   const other = await browser.newContext() // fresh storage: its own preference is Off
+  await chooseInterface(other, 'everything')
   const visitor = await other.newPage()
   await visitor.goto(link)
   await expect(guideLine(visitor)).toContainText('From 7th')
@@ -256,6 +258,7 @@ test('a share link carries the arpeggio pattern', async ({ page, browser }) => {
   await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/) // made, not "Making the link…"
   const link = await box.inputValue()
   const other = await browser.newContext() // fresh storage: its own preference is Off
+  await chooseInterface(other, 'everything')
   const visitor = await other.newPage()
   await visitor.goto(link)
   await expect(visitor.getByRole('radio', { name: '7th Chords', exact: true })).toBeChecked()

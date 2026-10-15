@@ -1,14 +1,29 @@
-import { test as base, expect, type Locator, type Page } from '@playwright/test'
+import { type BrowserContext, test as base, expect, type Locator, type Page } from '@playwright/test'
+
+export type InterfaceLevel = 'essentials' | 'intermediate' | 'everything'
+
+/** a browser that has chosen an Interface level (null: a new browser, which decides its own). Every flag is on in e2e builds; specs expect every control unless they say otherwise */
+export async function chooseInterface(context: BrowserContext, level: InterfaceLevel): Promise<void> {
+  await context.addInitScript((l) => {
+    try {
+      if (localStorage.getItem('csm-interface') === null) localStorage.setItem('csm-interface', l)
+    } catch {
+      // no storage on this page (about:blank)
+    }
+  }, level)
+}
 
 /**
  * Every test fails on a page error, a console error or a CSP violation: the site must run
  * under its own Content-Security-Policy. A spec can allow specific expected console errors
  * (e.g. the 404 itself) with test.use({ expectedConsoleError: /.../ }); CSP violations never are.
  */
-export const test = base.extend<{ expectedConsoleError: RegExp | null; problems: string[] }>({
+export const test = base.extend<{ expectedConsoleError: RegExp | null; interfaceLevel: InterfaceLevel | null; problems: string[] }>({
   expectedConsoleError: [null, { option: true }],
+  interfaceLevel: ['everything', { option: true }],
   problems: [
-    async ({ page, expectedConsoleError }, use) => {
+    async ({ page, expectedConsoleError, interfaceLevel }, use) => {
+      if (interfaceLevel) await chooseInterface(page.context(), interfaceLevel)
       const problems: string[] = []
       page.on('pageerror', (e) => problems.push(`pageerror: ${e.message}`))
       page.on('console', (m) => {
