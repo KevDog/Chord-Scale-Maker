@@ -8,14 +8,15 @@
     <section class="space-y-4" aria-labelledby="what">
       <UiSubheading id="what">What this is</UiSubheading>
       <UiText>
-        Chord Scale Maker turns a chord chart into practice sheets: one staff per chord, with the scale that goes with
-        it, written for your instrument. Pick a tune from the library or type your own changes, choose your
+        Chord Scale Maker turns a chord chart into practice sheets: the changes, and one staff per chord with its scale
+        or its arpeggio, written for your instrument. Pick a tune from the library or type your own changes, choose your
         instrument, and print.
       </UiText>
       <UiText>
         It's built for practising improvisation. Spell every scale from the same note to see exactly where the
-        harmony moves. Put guide tone lines, from the 3rd and from the 7th, over the changes and follow them through a tune. Or pick a few notes from each scale
-        and improvise with just those.
+        harmony moves. Put guide tone lines, from the 3rd and from the 7th, over the changes and follow them through a tune,
+        or run a 7th chord arpeggio through every change. Play each chord's arpeggio on its own staff, from its four
+        chord tones up through the 9th, 11th and 13th. Or pick a few notes from each scale and improvise with just those.
       </UiText>
     </section>
 
