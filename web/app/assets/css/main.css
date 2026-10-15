@@ -51,6 +51,10 @@
   --color-rung-5: #901246;
   --color-rung-6: #792807;
 
+  /* the Hexatonic preset's group B on the scale staves and its legend swatch: a second accent, apart from the ink
+     (group A, light) and note-300 (group A, dark); 5.4:1 on the light paper, 10:1 on the dark */
+  --color-second: #b4490c;
+
   /* surfaces, depth and radius (.interface-design/system.md): the stand (page ground) → the paper (the sheet) →
      raised (menus, dialogs, the stuck rail); one hue, lightness only; lift by shadow, not border */
   --color-stand: var(--color-zinc-100);
@@ -100,6 +104,7 @@
       --color-rung-4: #d1a6fd;
       --color-rung-5: #f9aed5;
       --color-rung-6: #fdc394;
+      --color-second: #fbbf72;
     }
   }
   h1,
@@ -114,9 +119,13 @@
 
 /* practice selection on the scale staves (utils/vexflow.ts tags each note): the rest are faint. Picked notes keep the
    staff's ink in light mode (the clef's colour) and take the accent in dark mode; in print they're black and the
-   rest light grey */
+   rest light grey. The Hexatonic preset's group B (vf-second) takes the second accent; mid-grey in print */
 .dark .vf-selected {
   color: var(--color-note-300);
+}
+.vf-selected.vf-second,
+.dark .vf-selected.vf-second {
+  color: var(--color-second);
 }
 .vf-dimmed {
   opacity: 0.25;
@@ -133,6 +142,11 @@
   .dark .vf-dimmed {
     opacity: 1;
     color: #b3b3b3;
+  }
+  /* group B mid-grey: between group A's black and the dimmed light grey */
+  .vf-selected.vf-second,
+  .dark .vf-selected.vf-second {
+    color: #666;
   }
 }
 

@@ -5,6 +5,7 @@
       Pick the notes to improvise with; the rest are dimmed, on screen and in print.
       {{ mode === 'root' ? 'Boxes are intervals from each chord’s root, even when its scale starts elsewhere: over B♭–7, B♭ is 1.' : `Boxes are pitches spelled from ${startName}.` }}
       <template v-if="pentatonicShown"> Pentatonic lights the notes each scale shares with a minor pentatonic: rank 1 the closest, 12 the farthest.</template>
+      <template v-if="hexatonicShown"> Hexatonic lights two triads from each scale, six notes in two groups. Pair <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff’s scale; on a seven-note scale it leaves out degree <em>n</em> − 1 (Pair 1 leaves out the 7th).</template>
     </UiText>
 
     <div class="flex flex-wrap items-center gap-2">
@@ -15,6 +16,20 @@
       <template #selected="{ value }"><UiListboxLabel>{{ rankLabel(value) }}</UiListboxLabel></template>
       <UiListboxOption v-for="r in RANKS" :key="r" :value="r"><UiListboxLabel>{{ rankLabel(r) }}</UiListboxLabel></UiListboxOption>
     </UiListbox>
+    <div v-if="isHexatonicSelection(selection)" class="flex flex-wrap items-center gap-2">
+      <UiListbox :model-value="selection.pair" class="w-36" aria-label="Hexatonic pair" @update:model-value="pickHex({ pair: $event })">
+        <template #selected="{ value }"><UiListboxLabel>Pair: {{ hexPairLabel(value) }}</UiListboxLabel></template>
+        <UiListboxOption v-for="p in HEX_PAIR_CHOICES" :key="p" :value="p"><UiListboxLabel>{{ hexPairLabel(p) }}</UiListboxLabel></UiListboxOption>
+      </UiListbox>
+      <UiListbox :model-value="selection.grouping" class="w-52" aria-label="Hexatonic grouping" @update:model-value="pickHex({ grouping: $event })">
+        <template #selected="{ value }"><UiListboxLabel>{{ groupingLabel(value) }}</UiListboxLabel></template>
+        <UiListboxOption v-for="g in HEX_GROUPING_CHOICES" :key="g.value" :value="g.value"><UiListboxLabel>{{ g.label }}</UiListboxLabel></UiListboxOption>
+      </UiListbox>
+      <ul data-slot="hex-legend" class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm/5 text-zinc-600 dark:text-zinc-400" aria-label="Groups">
+        <li class="inline-flex items-center gap-1.5"><span aria-hidden="true" class="size-2.5 rounded-full bg-zinc-900 dark:bg-note-300" />{{ HEX_GROUP_NAMES[selection.grouping][0] }}</li>
+        <li class="inline-flex items-center gap-1.5"><span aria-hidden="true" class="size-2.5 rounded-full bg-second" />{{ HEX_GROUP_NAMES[selection.grouping][1] }}</li>
+      </ul>
+    </div>
 
     <div role="group" aria-label="Notes to practise" class="flex flex-wrap gap-1.5">
       <label
@@ -29,12 +44,14 @@
 </template>
 
 <script setup lang="ts">
+import { groupingLabel, HEX_GROUP_NAMES, HEX_GROUPING_CHOICES, HEX_PAIR_CHOICES, hexPairLabel } from '~/utils/hexatonics'
 import { rankLabel } from '~/utils/pentatonics'
-import { compareKeys, isPentatonicSelection, type Mode, noteText, PENTATONIC_RANKS, type PracticeBox, type PracticeSelection, type Preset, PRESET_LABELS, PRESETS } from '@chord-scale-maker/engine'
+import { compareKeys, type HexGrouping, isHexatonicSelection, isPentatonicSelection, type Mode, noteText, PENTATONIC_RANKS, type PracticeBox, type PracticeSelection, type Preset, PRESET_LABELS, PRESETS } from '@chord-scale-maker/engine'
 
 /**
  * the practice controls: per-chord presets (From root) or All (From X), a box per spelled interval or pitch in the
- * chart, and Clear. With the pentatonics flag, a Pentatonic preset with a rank picker (#266). Editing a box while a preset is active starts a custom selection from what the preset lit.
+ * chart, and Clear. With the pentatonics flag, a Pentatonic preset with a rank picker (#266); with the hexatonics flag,
+ * a Hexatonic preset with Pair and grouping pickers and a legend of its two groups. Editing a box while a preset is active starts a custom selection from what the preset lit.
  */
 const props = defineProps<{
   mode: Mode
@@ -43,6 +60,7 @@ const props = defineProps<{
   selection: PracticeSelection | null
   lit: readonly string[] // the keys the current selection lights somewhere in the chart
   pentatonic?: boolean // the pentatonics flag: offer the Pentatonic preset (#266)
+  hexatonic?: boolean // the hexatonics flag: offer the Hexatonic preset
 }>()
 const emit = defineEmits<{ 'update:selection': [selection: PracticeSelection | null] }>()
 
@@ -53,16 +71,26 @@ const startName = computed(() => noteText(props.startText))
 const { shows } = useInterface()
 /** the Pentatonic preset: the flag, from Everything */
 const pentatonicShown = computed(() => !!props.pentatonic && shows('practice-pentatonic'))
-const presets = computed(() => PRESETS[props.mode].filter((p) => p !== 'pentatonic' || pentatonicShown.value))
+/** the Hexatonic preset: the flag, from Everything */
+const hexatonicShown = computed(() => !!props.hexatonic && shows('practice-hexatonic'))
+const presets = computed(() => PRESETS[props.mode].filter((p) => (p !== 'pentatonic' || pentatonicShown.value) && (p !== 'hexatonic' || hexatonicShown.value)))
 const RANKS = Array.from({ length: PENTATONIC_RANKS }, (_, i) => i + 1)
 
 function pickPreset(p: Preset): void {
   if (activePreset.value === p) emit('update:selection', null)
-  else emit('update:selection', p === 'pentatonic' ? { preset: 'pentatonic', rank: 1 } : { preset: p })
+  else if (p === 'pentatonic') emit('update:selection', { preset: 'pentatonic', rank: 1 })
+  else if (p === 'hexatonic') emit('update:selection', { preset: 'hexatonic', pair: 0, grouping: 'triads' })
+  else emit('update:selection', { preset: p })
 }
 
 function pickRank(rank: number | undefined): void {
   if (rank !== undefined) emit('update:selection', { preset: 'pentatonic', rank })
+}
+
+function pickHex(change: Readonly<{ pair?: number; grouping?: HexGrouping }>): void {
+  const s = props.selection
+  if (!isHexatonicSelection(s) || Object.values(change).some((v) => v === undefined)) return
+  emit('update:selection', { preset: 'hexatonic', pair: change.pair ?? s.pair, grouping: change.grouping ?? s.grouping })
 }
 
 function toggle(key: string): void {

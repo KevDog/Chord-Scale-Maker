@@ -1,6 +1,7 @@
 import { analyse, chartKeyOf, parseKey } from './analysis'
 import { type ChartDoc, type ChartLine, chartBeats, expandRowLines, formPart, type FormPart, type LinedRow, qualityScale } from './chart'
-import { type ChordToken, chordTokensOrNull, writtenChordRootLenient, writtenChordTextOrNull } from './chord'
+import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRootLenient, writtenChordTextOrNull } from './chord'
+import { hexatonicAuto, hexatonicPairs } from './hexatonics'
 import { guideToneTimeline } from './guideToneTimeline'
 import { arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
 import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
@@ -8,6 +9,7 @@ import { keySignature } from './keySignature'
 import { concertPc, type Part, scaleLabel, writtenRoot, writtenScale } from './part'
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled, shiftBy } from './pitch'
 import { isPentatonicPreset, PENTATONIC_HOME, PENTATONIC_RANKS, PENTATONIC_STEP, pentatonicAt, pentatonicCycle, pentatonicPathCaption, type PentatonicPathName, type PentatonicStep, pentatonicLadder, type PentatonicRank, pentatonicRanking, type PentatonicRung, type PentatonicView } from './pentatonics'
+import { baseQuality } from './qualities'
 import { resolveScales, type ScaleView } from './resolve'
 import { abbreviateScale } from './scales'
 import { chunk, orNull } from './util'
@@ -49,6 +51,7 @@ export type ChangesPentatonic = Readonly<{
 export type ChangesSection = Readonly<{ key: string; marker: string; part: FormPart }>
 /** the pentatonic row's rungs (#264): a section's own view, else fallback; counts: the shared count follows each label */
 export type PentatonicPlan = Readonly<{
+  kind: 'pentatonic'
   bySection: Readonly<Record<string, PentatonicView>>
   fallback: PentatonicView
   counts: boolean
@@ -58,6 +61,12 @@ export type PentatonicPlan = Readonly<{
   path?: PentatonicPathName // a preset (#276): each chord plays its unit's step of it; bySection and fallback then unused
   step?: PentatonicStep // what a preset steps by; default PENTATONIC_STEP
 }>
+/** the Hexatonic overlay: each chord's Auto pair on its resolved scale */
+export type HexatonicPlan = Readonly<{ kind: 'hexatonic' }>
+/** the row under the chords (Off | Pentatonic | Hexatonic): null for none */
+export type OverlayPlan = PentatonicPlan | HexatonicPlan
+/** a chord's hexatonic: its Auto pair's name ("G/Am"), and its label (the name; '' where showHexatonics leaves it unprinted) */
+export type ChangesHexatonic = Readonly<{ label: string; name: string }>
 
 export type ChangesChord = Readonly<{
   /** the beat it starts on, from 0 */
@@ -93,6 +102,8 @@ export type ChangesChord = Readonly<{
   guide: string
   /** its pentatonic (key area's ladder or its own scale's ranking); null with the row off, no key (key basis) or no scale (chord basis). `label: ''` where showPentatonics leaves it unprinted */
   pentatonic: ChangesPentatonic | null
+  /** its hexatonic (the Auto pair of its resolved scale, written for the part); null with the overlay not Hexatonic, no scale, or no pairs */
+  hexatonic: ChangesHexatonic | null
 }>
 export type ChangesBar = Readonly<{
   /** the bar's place in the chart, held bars too: the section as drawn (a repeat's own name) and its bar number */
@@ -169,11 +180,12 @@ function areaLadder(name: string, part: Part): Readonly<{ ladder: readonly Penta
  * 7th), the documented worst case, and print.spec checks it. With Pentatonics plus Numerals or Scales, 8 and 6 hold
  * (measured with the contour band #265 drew, since removed: #277).
  */
-export function changesLinesPerPage(line: SheetLine, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean }>): number {
-  const all = !!(rows.pentatonics && rows.numerals && rows.scales)
+export function changesLinesPerPage(line: SheetLine, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean; hexatonics?: boolean }>): number {
+  const overlay = !!(rows.pentatonics || rows.hexatonics) // the hexatonic row takes the pentatonic row's place and height
+  const all = overlay && rows.numerals && rows.scales
   if (line === 'off') return all ? 7 : 8
   if (all) return 5
-  return 6 + (!rows.numerals && !rows.scales && !rows.pentatonics ? 1 : 0)
+  return 6 + (!rows.numerals && !rows.scales && !overlay ? 1 : 0)
 }
 
 const STANDARD: ScaleView = { level: 'standard', seed: 0 }
@@ -231,6 +243,22 @@ export function showPentatonics(lines: readonly ChangesLine[]): readonly Changes
       if (!printed[i]) return { ...c, pentatonic: { ...c.pentatonic, label: '' } }
       const run = runAt(i)
       return { ...c, pentatonic: { ...c.pentatonic, run: run.map((p) => p.chord), picked: run.some((p) => p.picked) } }
+    })
+  })
+}
+
+/** the hexatonic row as printed, run after breakLines: a label where its name differs from the last one on the line; a chord with none ends it. Idempotent: a label reads its name */
+export function showHexatonics(lines: readonly ChangesLine[]): readonly ChangesLine[] {
+  return lines.map((line): ChangesLine => {
+    let last: string | null = null
+    return mapChords(line, (c) => {
+      if (!c.hexatonic) {
+        last = null
+        return c
+      }
+      const shown = c.hexatonic.name !== last
+      last = c.hexatonic.name
+      return { ...c, hexatonic: { ...c.hexatonic, label: shown ? c.hexatonic.name : '' } }
     })
   })
 }
@@ -313,8 +341,9 @@ export function changesSections(doc: ChartDoc): readonly ChangesSection[] {
   return drawnBlocks(doc, rows, t, withEndings).map((b) => ({ key: b.section, marker: b.marker, part: b.part }))
 }
 
-/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; pentatonic: the row's rungs by section (null: no row) */
-export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: SheetLine = 'off', view: ScaleView = STANDARD, pentatonic: PentatonicPlan | null = null): ChangesSheet {
+/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row) */
+export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: SheetLine = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null): ChangesSheet {
+  const pentatonic = overlay?.kind === 'pentatonic' ? overlay : null
   const rows = expandRowLines(doc).value
   const beats = chartBeats(doc)
   const { events, diagnostics } = guideToneTimeline(rows, beats)
@@ -467,6 +496,22 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     return { ...common, label: `${p.name}♪`, basis, title: `${section} · ${area.key} pentatonic ladder`, key: area.key, scale: '', ladder: area.ladder, ranking: [], view, rank: 0, root: p.root, name: p.name, shared: p.shared, level: p.rung, pc: concertPc(part, pcOf(p.root)), picked: !!found }
   }
 
+  const hexatonics = new Map<string, ChangesHexatonic | null>()
+  const hexatonicOf = (scale: string | null, chordText: string): ChangesHexatonic | null => {
+    if (overlay?.kind !== 'hexatonic' || !scale) return null
+    const k = `${scale}|${chordText}`
+    if (!hexatonics.has(k)) {
+      const auto = orNull(() => {
+        const w = writtenScale(part, scale)
+        const chordRoot = orNull(() => writtenChordRootLenient(part, chordText, scale)) ?? w.root
+        const quality = orNull(() => baseQuality(parseChord(chordText).quality))
+        return hexatonicAuto(hexatonicPairs(w.notes, chordRoot, quality), chordRoot)
+      })
+      hexatonics.set(k, auto ? { label: auto.name, name: auto.name } : null)
+    }
+    return hexatonics.get(k) ?? null
+  }
+
   let lastKey = ''
   const lastForm = blocks.findLastIndex((b) => b.part === 'form')
   const lines = blocks.flatMap((block, k) => {
@@ -498,6 +543,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',
             guide: voices?.labels.get(i) ?? '',
             pentatonic: pentatonicOf(a?.key.name, block.section, keyOf.get(i) ?? '', written, scale, row.chord, unitOf(k, j, i)),
+            hexatonic: hexatonicOf(scale, row.chord),
           }
         })
       const firstKey = block.rows.map((i) => byRow.get(i)).find((a) => a && barOf(a.row) === bar)?.key.name

@@ -2,9 +2,10 @@ import { parseChord } from './chord'
 import { guideToneDegrees } from './guideTones'
 import { spelledInterval } from './intervals'
 import type { Mode } from './part'
+import { HEX_GROUPINGS, HEX_PAIRS, type HexGrouping } from './hexatonics'
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled } from './pitch'
 import { PENTATONIC_RANKS } from './pentatonics'
-import { baseQuality } from './qualities'
+import { baseQuality, CHORD_TONES } from './qualities'
 import { spellFrom } from './scales'
 import { orNull } from './util'
 
@@ -14,17 +15,23 @@ import { orNull } from './util'
  * start note in From X mode (so "b3" from C is E♭). Presets pick per chord, from the chord's quality.
  */
 
-export type Preset = 'chordTones' | 'guideTones' | 'tensions' | 'all' | 'pentatonic'
-/** a preset, or explicit keys; keys are relative to the mode's reference, so they survive instrument changes. Pentatonic: a rank 1–12 on each staff's ladder (#266) */
-export type PracticeSelection =
-  | Readonly<{ preset: Exclude<Preset, 'pentatonic'> }>
-  | Readonly<{ preset: 'pentatonic'; rank: number }>
-  | Readonly<{ keys: readonly string[] }>
+export type Preset = 'chordTones' | 'guideTones' | 'tensions' | 'all' | 'pentatonic' | 'hexatonic'
+type KeyPreset = Exclude<Preset, 'pentatonic' | 'hexatonic'>
+export type PentatonicSelection = Readonly<{ preset: 'pentatonic'; rank: number }>
+/** Hexatonic: pair 0 (Auto) or 1 … HEX_PAIRS on each staff's chain, and how its six notes divide into groups A and B */
+export type HexatonicSelection = Readonly<{ preset: 'hexatonic'; pair: number; grouping: HexGrouping }>
+/**
+ * a preset, or explicit keys; keys are relative to the mode's reference, so they survive instrument changes.
+ * Pentatonic: a rank 1–12 on each staff's ladder (#266); Hexatonic: a pair and a grouping, lit per staff
+ */
+export type PracticeSelection = Readonly<{ preset: KeyPreset }> | PentatonicSelection | HexatonicSelection | Readonly<{ keys: readonly string[] }>
 
-export const isPentatonicSelection = (s: PracticeSelection | null): s is Readonly<{ preset: 'pentatonic'; rank: number }> =>
-  s !== null && 'preset' in s && s.preset === 'pentatonic'
+export const isPentatonicSelection = (s: PracticeSelection | null): s is PentatonicSelection => s !== null && 'preset' in s && s.preset === 'pentatonic'
+export const isHexatonicSelection = (s: PracticeSelection | null): s is HexatonicSelection => s !== null && 'preset' in s && s.preset === 'hexatonic'
 
 const rankFrom = (v: unknown): number => (Number.isInteger(v) && (v as number) >= 1 && (v as number) <= PENTATONIC_RANKS ? (v as number) : 1)
+const pairFrom = (v: unknown): number => (Number.isInteger(v) && (v as number) >= 0 && (v as number) <= HEX_PAIRS ? (v as number) : 0)
+const groupingFrom = (v: unknown): HexGrouping => (HEX_GROUPINGS as readonly unknown[]).includes(v) ? (v as HexGrouping) : 'triads'
 
 const PRACTICE_KEY = /^(?:b{1,2}|#{1,2})?[1-7]$/
 
@@ -32,7 +39,8 @@ const PRACTICE_KEY = /^(?:b{1,2}|#{1,2})?[1-7]$/
 export function practiceSelectionFrom(v: unknown): PracticeSelection | null {
   if (!v || typeof v !== 'object') return null
   if ('preset' in v && v.preset === 'pentatonic') return { preset: 'pentatonic', rank: rankFrom('rank' in v ? v.rank : undefined) }
-  if ('preset' in v && typeof v.preset === 'string' && Object.values(PRESETS).flat().includes(v.preset as Preset)) return { preset: v.preset as Exclude<Preset, 'pentatonic'> }
+  if ('preset' in v && v.preset === 'hexatonic') return { preset: 'hexatonic', pair: pairFrom('pair' in v ? v.pair : undefined), grouping: groupingFrom('grouping' in v ? v.grouping : undefined) }
+  if ('preset' in v && typeof v.preset === 'string' && Object.values(PRESETS).flat().includes(v.preset as Preset)) return { preset: v.preset as KeyPreset }
   if ('keys' in v && Array.isArray(v.keys)) {
     const keys = v.keys.filter((k): k is string => typeof k === 'string' && PRACTICE_KEY.test(k))
     return keys.length ? { keys } : null
@@ -42,8 +50,8 @@ export function practiceSelectionFrom(v: unknown): PracticeSelection | null {
 
 /** the presets each mode offers: function-based ones only make sense from the root */
 export const PRESETS: Readonly<Record<Mode, readonly Preset[]>> = {
-  root: ['chordTones', 'guideTones', 'tensions', 'pentatonic'],
-  from: ['all', 'pentatonic'],
+  root: ['chordTones', 'guideTones', 'tensions', 'pentatonic', 'hexatonic'],
+  from: ['all', 'pentatonic', 'hexatonic'],
 }
 export const PRESET_LABELS: Readonly<Record<Preset, string>> = {
   chordTones: 'Chord tones',
@@ -51,29 +59,7 @@ export const PRESET_LABELS: Readonly<Record<Preset, string>> = {
   tensions: 'Tensions',
   all: 'All',
   pentatonic: 'Pentatonic',
-}
-
-/** canonical quality -> its chord tones as spelled degrees (6 chords: the 6; sus: the 4; alt: no 5th) */
-const CHORD_TONES: Readonly<Record<string, readonly string[]>> = {
-  maj: ['1', '3', '5'],
-  m: ['1', 'b3', '5'],
-  Maj7: ['1', '3', '5', '7'],
-  'Maj7#11': ['1', '3', '5', '7'],
-  'Maj7#5': ['1', '3', '#5', '7'],
-  '6': ['1', '3', '5', '6'],
-  m7: ['1', 'b3', '5', 'b7'],
-  m6: ['1', 'b3', '5', '6'],
-  mMaj7: ['1', 'b3', '5', '7'],
-  '7': ['1', '3', '5', 'b7'],
-  '7sus4': ['1', '4', '5', 'b7'],
-  '7sus4b9': ['1', 'b2', '4', '5', 'b7'],
-  '7b9': ['1', '3', '5', 'b7'],
-  '7b13': ['1', '3', '5', 'b7'],
-  '7b9b13': ['1', '3', '5', 'b7'],
-  '7#11': ['1', '3', '5', 'b7'],
-  '7alt': ['1', '3', 'b7'],
-  m7b5: ['1', 'b3', 'b5', 'b7'],
-  dim7: ['1', 'b3', 'b5', 'bb7'],
+  hexatonic: 'Hexatonic',
 }
 
 /** the start text's note ("Eb", "F#3" -> F#), or null if it isn't one */
@@ -89,7 +75,7 @@ export const practiceKeys = (reference: Spelled, notes: readonly Spelled[], qual
 const rawQuality = (chord: string): string | null => orNull(() => parseChord(chord).quality)
 
 /** which keys a preset lights on one chord (its keys are measured from that chord's root) */
-function presetKeys(preset: Exclude<Preset, 'pentatonic'>, chord: string, keys: readonly string[]): ReadonlySet<string> {
+function presetKeys(preset: KeyPreset, chord: string, keys: readonly string[]): ReadonlySet<string> {
   if (preset === 'all') return new Set(keys)
   const raw = rawQuality(chord)
   const quality = raw === null ? null : baseQuality(raw)
@@ -99,9 +85,9 @@ function presetKeys(preset: Exclude<Preset, 'pentatonic'>, chord: string, keys: 
   return new Set(quality ? keys.filter((k) => !tones.has(k)) : []) // tensions: the scale's other notes; none if unknown
 }
 
-/** per note of one staff: is it selected? (a Pentatonic selection lights per staff, in buildSheet: here, nothing) */
+/** per note of one staff: is it selected? (a Pentatonic or Hexatonic selection lights per staff, in buildSheet: here, nothing) */
 export function selectedNotes(selection: PracticeSelection, chord: string, keys: readonly string[]): boolean[] {
-  if (isPentatonicSelection(selection)) return keys.map(() => false)
+  if (isPentatonicSelection(selection) || isHexatonicSelection(selection)) return keys.map(() => false)
   const lit = 'preset' in selection ? presetKeys(selection.preset, chord, keys) : new Set(selection.keys)
   return keys.map((k) => lit.has(k))
 }

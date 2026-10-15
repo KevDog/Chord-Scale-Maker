@@ -109,7 +109,7 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
   // practice: VexFlow keeps an element's classes off its drawn group, so tag the groups after drawing (main.css styles them)
   notes.forEach((n, i) => {
     const pick = staff.selected?.[i]
-    if (pick !== undefined) n.getSVGElement()?.classList.add(pick ? 'vf-selected' : 'vf-dimmed')
+    if (pick !== undefined) n.getSVGElement()?.classList.add(...(pick ? ['vf-selected', ...(staff.second?.[i] ? ['vf-second'] : [])] : ['vf-dimmed']))
   })
   const names = staff.notes.map((n) => toVexKey(n).replace('/', ''))
   const picked = staff.selected ? names.filter((_, i) => staff.selected?.[i]) : null

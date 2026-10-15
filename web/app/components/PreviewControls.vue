@@ -41,7 +41,7 @@
             </div>
           </UiField>
           <template v-else>
-            <UiField v-if="analysisShown || pentatonicsShown">
+            <UiField v-if="analysisShown || overlayShown">
               <UiLabel class="pl-3">Analysis</UiLabel>
               <!-- stacked, so the group keeps the width of Numerals and Scales and the rail its two rows (#255) -->
               <div class="flex flex-col items-start gap-2">
@@ -49,8 +49,12 @@
                   <ToggleButton v-model="numerals" title="Each chord's Roman numeral in its key">Numerals</ToggleButton>
                   <ToggleButton v-model="scaleNames" title="Each chord's scale, under its numeral">Scales</ToggleButton>
                 </div>
-                <ToggleButton v-if="pentatonicsShown" v-model="pentatonics" class="whitespace-nowrap" title="Each key area's or each chord's minor pentatonic, ranked by how far out it is">Pentatonics</ToggleButton>
-                <div v-if="pentatonicsShown && pentatonics" class="flex flex-col items-start gap-2">
+                <!-- the row under the chords: Off, each key area's or chord's minor pentatonic, or each chord's hexatonic pair -->
+                <UiListbox v-if="overlayShown" v-model="overlayModel" class="w-48" aria-label="Overlay" :title="overlayTitle(overlayOptions)">
+                  <template #selected="{ value }"><UiListboxLabel>Overlay: {{ overlayLabel(value) }}</UiListboxLabel></template>
+                  <UiListboxOption v-for="o in overlayOptions" :key="o.value" :value="o.value"><UiListboxLabel>{{ o.label }}</UiListboxLabel></UiListboxOption>
+                </UiListbox>
+                <div v-if="overlayShown && overlayModel === 'pentatonic'" class="flex flex-col items-start gap-2">
                   <SegmentedControl v-model="pentBasis" legend="Ranked against" name="pent-basis" aria-label="Pentatonics ranked against" :options="PENT_BASES" />
                   <UiListbox v-if="pentBasis === 'chord'" v-model="pentRank" class="w-48" aria-label="Pentatonic rank">
                     <template #selected="{ value }"><UiListboxLabel>{{ rankLabel(value) }}</UiListboxLabel></template>
@@ -137,6 +141,7 @@
 import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, partFor, type PentatonicBasis, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
 import { PENT_BASES, PENT_PATHS, PENT_RANK_CHOICES, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rankLabel, rungLabel, sideShown } from '~/utils/pentatonics'
 import type { GuideFrom, LineMode } from '~/utils/sheetLine'
+import { type Overlay, overlayChoices, overlayInForce, overlayLabel, overlayTitle } from '~/utils/overlay'
 import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
 import type { SheetKind } from '~/utils/sheets'
 import type { FunctionalComponent } from 'vue'
@@ -150,7 +155,7 @@ const spell = defineModel<Spell>('spell', { required: true })
 const intervals = defineModel<boolean>('intervals', { required: true })
 const numerals = defineModel<boolean>('numerals', { default: true })
 const scaleNames = defineModel<boolean>('scaleNames', { default: true })
-const pentatonics = defineModel<boolean>('pentatonics', { default: false })
+const overlay = defineModel<Overlay>('overlay', { default: 'off' })
 const pentRung = defineModel<number>('pentRung', { default: 0 })
 const pentSide = defineModel<PentatonicSide>('pentSide', { default: 'flat' })
 const pentBasis = defineModel<PentatonicBasis>('pentBasis', { default: 'key' })
@@ -161,11 +166,14 @@ const pentStepUnit = defineModel<PentatonicStepUnit>('pentStepUnit', { default: 
 const pentStepBars = defineModel<2 | 4 | 8>('pentStepBars', { default: 4 })
 /** SegmentedControl's values are strings */
 const pentStepBarsText = computed({ get: () => String(pentStepBars.value) as '2' | '4' | '8', set: (v) => (pentStepBars.value = Number(v) as 2 | 4 | 8) })
-const pentatonicsOn = useFeature('pentatonics')
+const overlayFlags = { pentatonics: useFeature('pentatonics'), hexatonics: useFeature('hexatonics') }
+const overlayOptions = overlayChoices(overlayFlags)
+/** the overlay in force: one whose flag is off reads Off */
+const overlayModel = computed({ get: () => overlayInForce(overlay.value, overlayFlags), set: (v: Overlay) => (overlay.value = v) })
 const { shows } = useInterface()
-/** what this Interface level shows (#273): Numerals and Scales (hidden while editing too), the Pentatonics row */
+/** what this Interface level shows (#273): Numerals and Scales (hidden while editing too), the Overlay (with either overlay's flag on) */
 const analysisShown = computed(() => !props.lockLabels && shows('analysis'))
-const pentatonicsShown = computed(() => pentatonicsOn && shows('pentatonics'))
+const overlayShown = computed(() => overlayOptions.length > 1 && shows('pentatonics'))
 const lineMode = defineModel<LineMode>('lineMode', { default: 'off' })
 const guideLine = defineModel<GuideFrom>('guideLine', { default: 'third' })
 const arpeggio = defineModel<ArpeggioPattern>('arpeggio', { default: 'up-root' })

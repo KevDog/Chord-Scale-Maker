@@ -90,6 +90,7 @@ export default defineNuxtConfig({
         compactRail: true, // phones: the rail holds Work on, Instrument, Controls (a dialog of the rest), Print and More (docs/superpowers/specs/2026-10-12-interface-review-design.md §A); on since sign-off
         functions: true, // author functions, @key areas and live analysis notes (docs/superpowers/specs/2026-10-09-chart-functions-design.md); on since sign-off
         pentatonics: false, // pentatonic tension ladders: the Changes sheet's Pentatonics row (docs/superpowers/specs/2026-10-13-pentatonic-ladders-design.md)
+        hexatonics: false, // hexatonic practice: the Practice panel's Hexatonic preset and the Changes sheet's overlay (docs/superpowers/specs/2026-10-14-hexatonic-practice-design.md)
         interfaceLevels: false, // hide controls by audience: Essentials / Intermediate / Everything (docs/superpowers/specs/2026-10-14-interface-levels-design.md)
       },
     },

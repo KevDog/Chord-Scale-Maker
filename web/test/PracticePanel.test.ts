@@ -78,3 +78,74 @@ describe('PracticePanel interface levels', () => {
     expect((await mount({ pentatonic: true })).text()).toContain('Pentatonic')
   })
 })
+
+describe('PracticePanel’s Hexatonic preset', () => {
+  const texts = async (props: Record<string, unknown>) => (await mount(props)).findAll('button[aria-pressed]').map((b) => b.text())
+  const hex = (pair: number, grouping: string) => ({ selection: { preset: 'hexatonic', pair, grouping }, lit: ['1', '3'] })
+
+  it('is offered only with the flag, after Pentatonic', async () => {
+    expect(await texts({})).not.toContain('Hexatonic')
+    expect(await texts({ hexatonic: true })).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Hexatonic'])
+    expect(await texts({ hexatonic: true, pentatonic: true })).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Pentatonic', 'Hexatonic'])
+    expect(await texts({ hexatonic: true, mode: 'from', startText: 'Eb' })).toEqual(['All', 'Hexatonic'])
+  })
+
+  it('starts at Auto and Triad pair, and shows its two listboxes only while it is the selection', async () => {
+    const off = await mount({ hexatonic: true })
+    expect(off.find('[aria-label="Hexatonic pair"]').exists()).toBe(false)
+    expect(off.find('[aria-label="Hexatonic grouping"]').exists()).toBe(false)
+    await off.findAll('button').find((b) => b.text() === 'Hexatonic')?.trigger('click')
+    expect(off.emitted('update:selection')).toEqual([[{ preset: 'hexatonic', pair: 0, grouping: 'triads' }]])
+    const on = await mount({ hexatonic: true, ...hex(0, 'triads') })
+    expect(on.find('button[aria-pressed=true]').text()).toBe('Hexatonic')
+    expect(on.find('[aria-label="Hexatonic pair"]').text()).toContain('Pair: Auto')
+    expect((await mount({ hexatonic: true, ...hex(5, 'triads') })).find('[aria-label="Hexatonic pair"]').text()).toContain('Pair: 5')
+    expect(on.find('[aria-label="Hexatonic grouping"]').text()).toContain('Triad pair')
+    expect((await mount({ hexatonic: true, pentatonic: true, selection: { preset: 'pentatonic', rank: 1 } })).find('[aria-label="Hexatonic pair"]').exists()).toBe(false)
+  })
+
+  it('offers Auto and pairs 1 … 8, and the four groupings; a pick keeps the other value', async () => {
+    const w = await mount({ hexatonic: true, ...hex(3, 'pent') })
+    await w.find('[aria-label="Hexatonic pair"]').trigger('click')
+    expect(w.findAll('[role=option]').map((o) => o.text())).toEqual(['Auto', '1', '2', '3', '4', '5', '6', '7', '8'])
+    await w.findAll('[role=option]')[5]?.trigger('click')
+    await w.find('[aria-label="Hexatonic grouping"]').trigger('click')
+    expect(w.findAll('[role=option]').map((o) => o.text())).toEqual(['Triad pair', 'Chord tones + color', 'Pentatonic + 1', 'Trichords 3+3'])
+    await w.findAll('[role=option]')[3]?.trigger('click')
+    expect(w.emitted('update:selection')).toEqual([[{ preset: 'hexatonic', pair: 5, grouping: 'pent' }], [{ preset: 'hexatonic', pair: 3, grouping: 'trichords' }]])
+  })
+
+  it('names the grouping’s two groups in a legend (never “+1”)', async () => {
+    const legend = async (grouping: string) => (await mount({ hexatonic: true, ...hex(0, grouping) })).findAll('[data-slot="hex-legend"] li').map((l) => l.text())
+    expect(await legend('triads')).toEqual(['Lower triad', 'Upper triad'])
+    expect(await legend('tones')).toEqual(['Chord tones', 'Color'])
+    expect(await legend('pent')).toEqual(['Pentatonic', 'Other'])
+    expect(await legend('trichords')).toEqual(['Lower three', 'Upper three'])
+  })
+
+  it('explains the pairs in its help text', async () => {
+    expect((await mount({ hexatonic: true })).text()).toContain('leaves out degree')
+    expect((await mount({})).text()).not.toContain('leaves out degree')
+  })
+
+  it('edits a box into a custom selection from what it lit', async () => {
+    const w = await mount({ hexatonic: true, ...hex(0, 'triads') })
+    await w.findAll('input[type=checkbox]')[3]?.trigger('change') // ♭7
+    expect(w.emitted('update:selection')).toEqual([[{ keys: ['1', '3', 'b7'] }]])
+  })
+})
+
+describe('PracticePanel’s Hexatonic preset and interface levels', () => {
+  afterEach(() => {
+    useRuntimeConfig().public.features.interfaceLevels = false
+    useInterface().level.value = 'everything'
+  })
+
+  it('is offered only at Everything', async () => {
+    useRuntimeConfig().public.features.interfaceLevels = true
+    useInterface().level.value = 'intermediate'
+    expect((await mount({ hexatonic: true })).text()).not.toContain('Hexatonic')
+    useInterface().level.value = 'everything'
+    expect((await mount({ hexatonic: true })).text()).toContain('Hexatonic')
+  })
+})

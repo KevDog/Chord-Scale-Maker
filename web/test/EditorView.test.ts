@@ -675,6 +675,76 @@ describe('EditorView lead-sheet editor', () => {
   })
 })
 
+describe('EditorView hexatonic practice', () => {
+  afterEach(() => {
+    useRuntimeConfig().public.features.hexatonics = false
+    localStorage.clear()
+  })
+  const shared = { sheet: 'scales', practice: { preset: 'hexatonic', pair: 2, grouping: 'tones' } } as const
+
+  it('ignores a shared Hexatonic selection with the flag off', async () => {
+    useRuntimeConfig().public.features.hexatonics = false
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT, shared }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
+    expect(buttonCalled(w, 'Hexatonic')).toBeUndefined()
+    expect(w.find('fieldset button[aria-pressed=true]').exists()).toBe(false)
+    expect(w.findComponent({ name: 'ScaleSheet' }).props('practice')).toBeNull()
+  })
+
+  it('plays it with the flag on', async () => {
+    useRuntimeConfig().public.features.hexatonics = true
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT, shared }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
+    expect(w.find('fieldset button[aria-pressed=true]').text()).toBe('Hexatonic')
+    expect(w.findComponent({ name: 'ScaleSheet' }).props('practice')).toEqual(shared.practice)
+  })
+
+  it('ignores a stored Hexatonic selection with the flag off', async () => {
+    localStorage.setItem('csm-practice:autumn-leaves:from', JSON.stringify(shared.practice))
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT, practiceKey: 'autumn-leaves' }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
+    await chooseSheet(w, 'Scales')
+    expect(buttonCalled(w, 'Hexatonic')).toBeUndefined()
+    expect(w.findComponent({ name: 'ScaleSheet' }).props('practice')).toBeNull()
+  })
+})
+
+describe('EditorView overlay', () => {
+  afterEach(() => {
+    useRuntimeConfig().public.features.pentatonics = false
+    useRuntimeConfig().public.features.hexatonics = false
+    useRuntimeConfig().public.features.interfaceLevels = false
+    useInterface().level.value = 'everything'
+    localStorage.clear()
+  })
+  const overlayOf = async () => changesSheet(await mountSuspended(EditorView, { props: { initialText: TEXT }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })).props('overlay')
+
+  it('hands the Changes sheet the Hexatonic overlay with its flag on, and nothing with it off', async () => {
+    localStorage.setItem('csm-overlay', 'hexatonic')
+    useRuntimeConfig().public.features.pentatonics = true
+    expect(await overlayOf()).toBeNull()
+    useRuntimeConfig().public.features.hexatonics = true
+    expect(await overlayOf()).toEqual({ kind: 'hexatonic' })
+  })
+
+  it('reads an old Pentatonics row turned on as the Pentatonic overlay', async () => {
+    localStorage.setItem('csm-pentatonics', 'on')
+    useRuntimeConfig().public.features.pentatonics = true
+    expect(await overlayOf()).toMatchObject({ kind: 'pentatonic' })
+  })
+
+  it('below Everything, an overlay in force shows the notice, and Reset turns it off', async () => {
+    useRuntimeConfig().public.features.hexatonics = true
+    useRuntimeConfig().public.features.interfaceLevels = true
+    useInterface().level.value = 'intermediate'
+    localStorage.setItem('csm-overlay', 'hexatonic')
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
+    const notice = w.findComponent({ name: 'InterfaceNotice' })
+    expect(notice.props('needs')).toBe('everything')
+    notice.vm.$emit('reset')
+    await nextTick()
+    expect(changesSheet(w).props('overlay')).toBeNull()
+    expect(localStorage.getItem('csm-overlay')).toBe('off')
+  })
+})
+
 describe('EditorView pentatonic practice (#266)', () => {
   afterEach(() => {
     useRuntimeConfig().public.features.pentatonics = false
@@ -696,9 +766,9 @@ describe('EditorView pentatonic practice (#266)', () => {
   })
   it('clears the picks when the chart’s key changes (a transposed chart’s picks would land elsewhere)', async () => {
     useRuntimeConfig().public.features.pentatonics = true
-    localStorage.setItem('csm-pentatonics', 'on')
+    localStorage.setItem('csm-overlay', 'pentatonic')
     const w = await mountSuspended(EditorView, { props: { initialText: 'title: T\nkey: C\nA | 1 | Cm7\n' }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
-    const picks = () => (changesSheet(w).props('pentatonic') as { picks?: Record<string, number> } | null)?.picks
+    const picks = () => (changesSheet(w).props('overlay') as { picks?: Record<string, number> } | null)?.picks
     changesSheet(w).vm.$emit('pentatonic', ['A:1:0'], 7)
     await nextTick()
     expect(picks()).toEqual({ 'A:1:0': 7 })

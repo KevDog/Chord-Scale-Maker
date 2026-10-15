@@ -113,3 +113,26 @@ export const defaultScaleOrNull = (chord: string): string | null => {
 
 /** canonical quality names, for validating chord_scales.json */
 export const QUALITY_NAMES: readonly string[] = Object.keys(DATA.qualities)
+
+/** canonical quality -> its chord tones as spelled degrees (6 chords: the 6; sus: the 4; alt: no 5th) */
+export const CHORD_TONES: Readonly<Record<string, readonly string[]>> = {
+  maj: ['1', '3', '5'],
+  m: ['1', 'b3', '5'],
+  Maj7: ['1', '3', '5', '7'],
+  'Maj7#11': ['1', '3', '5', '7'],
+  'Maj7#5': ['1', '3', '#5', '7'],
+  '6': ['1', '3', '5', '6'],
+  m7: ['1', 'b3', '5', 'b7'],
+  m6: ['1', 'b3', '5', '6'],
+  mMaj7: ['1', 'b3', '5', '7'],
+  '7': ['1', '3', '5', 'b7'],
+  '7sus4': ['1', '4', '5', 'b7'],
+  '7sus4b9': ['1', 'b2', '4', '5', 'b7'],
+  '7b9': ['1', '3', '5', 'b7'],
+  '7b13': ['1', '3', '5', 'b7'],
+  '7b9b13': ['1', '3', '5', 'b7'],
+  '7#11': ['1', '3', '5', 'b7'],
+  '7alt': ['1', '3', 'b7'],
+  m7b5: ['1', 'b3', 'b5', 'b7'],
+  dim7: ['1', 'b3', 'b5', 'bb7'],
+}

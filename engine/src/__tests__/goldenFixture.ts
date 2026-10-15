@@ -8,18 +8,25 @@ import { readdirSync, readFileSync } from 'node:fs'
 import raw from '../../chord_scales.json'
 import {
   ALIASES,
+  baseQuality,
   type ChartDoc,
   type ChordToken,
   type Clef,
   CLEF_START,
+  CONCERT,
   chartMeta,
   chordTokens,
   defaultScale,
   expandRows,
+  hexatonicAuto,
+  hexatonicPairs,
   isSyncCopy,
   lilyNote,
   type Part,
   parseChart,
+  parseChord,
+  parseRoot,
+  QUALITY_NAMES,
   resolveQuality,
   resolveScales,
   resolveStart,
@@ -28,6 +35,8 @@ import {
   type ScaleOption,
   scaleLabel,
   scaleNotes,
+  type ScaleKey,
+  spellScale,
 } from '..'
 
 export type ScaleCase =
@@ -41,7 +50,10 @@ export type Golden = {
   chords: { part: string; chord: string; scale: string | null; tokens: ChordToken[] | null }[]
   options: Record<string, { options: readonly ScaleOption[] | null; default: string | null }>
   charts: Record<string, { text: string; title: string; subtitle: string; key: string; rows: (string | null)[][] }> // a null scale: unresolved
+  hexatonics: Hexatonics
 }
+/** pairs: every scale's pairs on C (no chord tones); auto: each quality's Auto pair on C over its default scale */
+export type Hexatonics = { pairs: Record<string, string[]>; auto: Record<string, { scale: string | null; pair: string | null }> }
 
 const PARTS: Record<string, Part> = Object.fromEntries(
   (
@@ -130,6 +142,25 @@ function libraryCharts(): Record<string, string> {
   return Object.fromEntries(files.map((f) => [f.slice(0, -4), readFileSync(repo(`charts/${f}`), 'utf8')]))
 }
 
+/** the hexatonics over every scale on C, and the Auto pair over each quality's default scale on C */
+export function hexatonicCases(): Hexatonics {
+  const C = parseRoot('C')
+  const pairs = Object.fromEntries((Object.keys(SCALES) as ScaleKey[]).map((k) => [k, hexatonicPairs(spellScale(C, k), C, null).map((p) => p.name)]))
+  const auto = Object.fromEntries(
+    QUALITY_NAMES.map((q) => {
+      const chord = `C${q}`
+      const scale = attempt(() => defaultScale(chord))
+      const pair = scale === null ? null : attempt(() => {
+        const notes = scaleNotes(CONCERT, scale, 'root', 0)
+        const quality = attempt(() => baseQuality(parseChord(chord).quality)) // as the app reads it (changes.ts)
+        return hexatonicAuto(hexatonicPairs(notes, C, quality), C)?.name ?? null
+      })
+      return [chord, { scale, pair }]
+    }),
+  )
+  return { pairs, auto }
+}
+
 /** the fixture as the engine would write it now */
 export function buildGolden(): Golden {
   const chords = Object.entries(PARTS).flatMap(([id, part]) => [
@@ -162,6 +193,7 @@ export function buildGolden(): Golden {
       CHORDS.map((c) => [c, { options: attempt(() => resolveQuality(c)?.options ?? null), default: attempt(() => defaultScale(c)) }]),
     ),
     charts,
+    hexatonics: hexatonicCases(),
   }
 }
 
