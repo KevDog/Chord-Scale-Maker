@@ -1,7 +1,7 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it, vi } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
-import { buildSheet, type ChordPicks, chordPositions, CONCERT, expandRows, NO_PICKS, parseChart, type PracticeSelection, pickTargets, resolveScales, type Row, withPick } from '@chord-scale-maker/engine'
+import { buildSheet, type ChordPicks, chordPositions, CONCERT, expandRows, NO_PICKS, parseChart, partFor, type PracticeSelection, pickTargets, resolveScales, type Row, withPick } from '@chord-scale-maker/engine'
 import ScaleStaff from '~/components/ScaleStaff.vue'
 
 vi.mock('~/utils/vexflow', async (importOriginal) => ({ ...(await importOriginal<object>()), drawStaff: () => [] }))
@@ -49,8 +49,8 @@ describe('ScaleStaff', () => {
     const targets = pickTargets(doc, res)
     const PENT: PracticeSelection = { preset: 'pentatonic', degree: 'auto' }
     const HEX: PracticeSelection = { preset: 'hexatonic', pair: 0, grouping: 'triads' }
-    const dm = (picks: ChordPicks = NO_PICKS, practice = PENT, at = chordPositions(doc)) =>
-      buildSheet(expandRows(doc).value, CONCERT, 'root', 'C', 12, practice, undefined, res, { picks, at })[0]!.pages.flat()[0]!
+    const dm = (picks: ChordPicks = NO_PICKS, practice = PENT, at = chordPositions(doc), part = CONCERT) =>
+      buildSheet(expandRows(doc).value, part, 'root', 'C', 12, practice, undefined, res, { picks, at })[0]!.pages.flat()[0]!
     const mount = (staff: ReturnType<typeof dm>, extra: object = {}) =>
       mountSuspended(ScaleStaff, { props: { staff, clef: 'treble', part: CONCERT, pickable: true, ...extra }, attachTo: document.body })
     const open = async (w: Awaited<ReturnType<typeof mount>>) => {
@@ -66,7 +66,7 @@ describe('ScaleStaff', () => {
       const b = slot.find('button')
       expect(b.text()).toBe('Dm pent · 5 shared')
       expect(b.classes()).toContain('print:no-underline')
-      expect(b.attributes('aria-label')).toBe('Pentatonic: Dm pent · 5 shared. Show the choices')
+      expect(b.attributes('aria-label')).toBe('Pentatonic: D minor, built on 1, 5 of 5 notes in D Dorian. Show the choices')
       const d = await open(w)
       expect(d.find(`[id="${d.attributes('aria-labelledby')}"]`).text()).toBe('Dm7 Dorian · bars 1, 5')
       expect(d.text().endsWith('Sets bars 1 and 5 on the Changes sheet too.')).toBe(true)
@@ -87,9 +87,20 @@ describe('ScaleStaff', () => {
       w.unmount()
     })
 
+    it('on a B♭ tenor part: a written header and rows, the pick still concert', async () => {
+      const tenor = partFor('tenor-sax')
+      const w = await mount(dm(NO_PICKS, PENT, chordPositions(doc), tenor), { part: tenor })
+      expect(w.find('[data-slot="pentatonic"] button').attributes('aria-label')).toBe('Pentatonic: E minor, built on 1, 5 of 5 notes in E Dorian. Show the choices')
+      const d = await open(w)
+      expect(d.find(`[id="${d.attributes('aria-labelledby')}"]`).text()).toBe('Em7 Dorian · bars 1, 5')
+      await w.findAll('[data-choice]').find((r) => r.text().startsWith('F♯m pent'))!.trigger('click')
+      expect(w.emitted('pick')?.[0]).toEqual(['pentatonic', ['A:1:0', 'B:5:0'], 4]) // written F♯m sounds Em
+      w.unmount()
+    })
+
     it('says varies, and that a pick replaces the different picks', async () => {
       const w = await mount(dm(withPick(NO_PICKS, 'pentatonic', ['B:5:0'], 4, targets)))
-      expect(w.find('[data-slot="pentatonic"] button').attributes('aria-label')).toBe('Pentatonic: Dm pent · 5 shared · varies. Show the choices')
+      expect(w.find('[data-slot="pentatonic"] button').attributes('aria-label')).toBe('Pentatonic: D minor, built on 1, 5 of 5 notes in D Dorian, varies. Show the choices')
       expect(w.find('[data-slot="pentatonic"] button').text()).toBe('Dm pent · 5 shared · varies')
       const d = await open(w)
       expect(d.text().endsWith('Replaces the different picks in bars 1 and 5.')).toBe(true)
@@ -99,7 +110,7 @@ describe('ScaleStaff', () => {
     it('makes the hexatonic caption a trigger too', async () => {
       const w = await mount(dm(NO_PICKS, HEX))
       const picked = await mount(dm(withPick(NO_PICKS, 'hexatonic', ['A:1:0', 'B:5:0'], [0, 2], targets), HEX))
-      expect(picked.find('[data-slot="hexatonic"] button').attributes('aria-label')).toBe('Triad pair: C/Dm hex, your pick. Show the choices')
+      expect(picked.find('[data-slot="hexatonic"] button').attributes('aria-label')).toMatch(/^Triad pair: C\/Dm, covers \d chord tones, your pick\. Show the choices$/)
       picked.unmount()
       await open(w)
       const rows = w.findAll('[data-choice]')

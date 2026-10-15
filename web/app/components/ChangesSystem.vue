@@ -166,7 +166,7 @@
             v-else
             class="print:hidden"
             :p="m.p"
-            :header="headerOf(m.p.source, m.p.run, m.p.title)"
+            :header="headerOf(m.p.source, m.p.run, glyphs(m.written))"
             :footer="pickFooter('changes', pickBars(m.p.run), false)"
             @pick="emit('pick', 'pentatonic', m.p.run, concertPc(partNow, $event))"
             @reset="emit('pick', 'pentatonic', m.p.run, null)"
@@ -310,7 +310,7 @@ const marks = computed(() => {
   return all.map((m, i) => ({ ...m, room: Math.max(0.05, (all[i + 1]?.x ?? 1) - m.x) }))
 })
 /** the marks that print a pentatonic label (#255) */
-const pentatonicMarks = computed(() => marks.value.flatMap((m) => (m.pentatonic?.label ? [{ key: m.key, x: m.x, room: m.room, p: m.pentatonic }] : [])))
+const pentatonicMarks = computed(() => marks.value.flatMap((m) => (m.pentatonic?.label ? [{ key: m.key, x: m.x, room: m.room, written: m.written, p: m.pentatonic }] : [])))
 /** the marks that print a hexatonic label */
 const hexatonicMarks = computed(() => marks.value.flatMap((m) => (m.hexatonic?.label ? [{ key: m.key, x: m.x, room: m.room, h: m.hexatonic }] : [])))
 

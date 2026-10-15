@@ -10,7 +10,7 @@
         <ChordPickPopover
           v-if="canPick"
           :text="caption"
-          :trigger-label="`${kind === 'pentatonic' ? 'Pentatonic' : 'Triad pair'}: ${caption}`"
+          :trigger-label="triggerLabel"
           :header="header"
           :footer="footer"
           :sheet-choice="sheetChoice"
@@ -43,7 +43,7 @@
 </template>
 
 <script setup lang="ts">
-import { type ChordAt, glyphs, hexatonicCaption, hexatonicChoices, type Part, pentatonicCaption, pentatonicChoices, pickBars, pickHeading, type PickKind, type StaffModel } from '@chord-scale-maker/engine'
+import { type ChordAt, glyphs, hexatonicCaption, hexatonicChoices, type Part, PENTATONIC_DEGREE_LABELS, pentatonicCaption, pentatonicChoices, pickBars, pickHeading, type PickKind, rootName, type StaffModel } from '@chord-scale-maker/engine'
 import { choiceId, pickFooter, pickHeader } from '~/utils/chordPicks'
 import type { ChoiceRow } from './ChordPickPopover.vue'
 
@@ -65,6 +65,17 @@ const rows = computed((): readonly ChoiceRow[] =>
   kind.value === 'pentatonic'
     ? pentRows.value.map((c) => ({ id: choiceId.pent(c.pc), label: c.label, current: c.name === props.staff.pentatonic?.name }))
     : hexRows.value.map((c) => ({ id: choiceId.hex(c.roots), label: c.label, current: c.name === props.staff.hexatonic?.name })))
+/** the caption in words, as the Changes labels say it (#303); the popover adds ', your pick' */
+const triggerLabel = computed((): string => {
+  const p = props.staff.pentatonic
+  const sc = props.staff.scale ? ` in ${glyphs(`${rootName(props.staff.scale.root)} ${props.staff.scale.name}`)}` : ''
+  const varies = props.staff.varies ? ', varies' : ''
+  if (p) return `Pentatonic: ${p.name.replace(/m$/, '')} minor, built on ${PENTATONIC_DEGREE_LABELS[p.degree] ?? '1'}, ${p.shared} of 5 notes${sc}${varies}`
+  const h = props.staff.hexatonic
+  if (!h) return 'Triad pair: none'
+  const covers = hexRows.value.find((c) => c.name === h.name)?.coverage
+  return `Triad pair: ${glyphs(h.name)}${covers === undefined ? '' : `, covers ${covers} chord tones`}${varies}`
+})
 function choose(id: string): void {
   const p = pentRows.value.find((c) => choiceId.pent(c.pc) === id)
   const h = hexRows.value.find((c) => choiceId.hex(c.roots) === id)

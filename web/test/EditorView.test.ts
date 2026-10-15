@@ -778,7 +778,8 @@ describe('EditorView chord picks (#303)', () => {
     expect(items()).toContain('reset-picks')
     await moreAction(w, 'Reset chord picks')
     await nextTick()
-    expect(w.findComponent({ name: 'ChangesSheet' }).exists() && items()).not.toContain('reset-picks')
+    expect(items()).not.toContain('reset-picks')
+    expect(await linkOf(w)).not.toHaveProperty('picks')
     expect(w.find('[aria-live="polite"]').text()).toBe('Chord picks reset')
   })
 

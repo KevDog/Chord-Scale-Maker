@@ -403,6 +403,14 @@ describe('ChangesSystem chord picks (#303)', () => {
     w.unmount()
   })
 
+  it('Key basis on a chord with no scale: the header is the chord, and the ladder’s title stays its sub-line', async () => {
+    const w = await mountPlan('title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | C5', KEY, partFor('tenor-sax'), 1)
+    const { d, header } = await open(w, '[data-section="B"] button')
+    expect(header).toBe('D5 · bar 2')
+    expect(d.findAll('p').map((p) => p.text())).toContain('B · D major pentatonic ladder')
+    w.unmount()
+  })
+
   it('Hexatonic: each label opens the chord’s pairs; a pick names its roots, the sheet’s choice null', async () => {
     const w = await mountPlan(II_V, HEX)
     const label = w.find('[data-slot="hexatonic"] [data-chord="A:2:0"]')
