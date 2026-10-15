@@ -18,14 +18,26 @@ export const pickTarget = (chord: string, scale: string | null): string => `${ch
 
 const AT = /^\S{1,64}:\d{1,4}:\d{1,2}$/
 const isPc = (v: unknown): v is number => Number.isInteger(v) && (v as number) >= 0 && (v as number) < 12
-const forOf = (v: unknown): { for?: string } => (typeof v === 'string' && v.length <= 200 && v.includes('|') ? { for: v } : {})
 const isObject = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v)
+const own = (v: Record<string, unknown>, k: string): unknown => (Object.hasOwn(v, k) ? v[k] : undefined)
+/** an entry's for: {} when missing (a legacy pick), null when present but bad (the entry is dropped) */
+const forOf = (v: unknown): { for?: string } | null =>
+  v === undefined ? {} : typeof v === 'string' && v.length <= 200 && v.includes('|') ? { for: v } : null
 
-const pentFrom = (v: unknown): PentPick | null => (isPc(v) ? { pc: v } : isObject(v) && isPc(v.pc) ? { pc: v.pc, ...forOf(v.for) } : null)
+function pentFrom(v: unknown): PentPick | null {
+  if (isPc(v)) return { pc: v }
+  if (!isObject(v)) return null
+  const pc = own(v, 'pc')
+  const f = forOf(own(v, 'for'))
+  return isPc(pc) && f ? { pc, ...f } : null
+}
 function hexFrom(v: unknown): HexPick | null {
-  if (!isObject(v) || !Array.isArray(v.roots) || v.roots.length !== 2) return null
-  const [a, b] = v.roots as unknown[]
-  return isPc(a) && isPc(b) && a !== b ? { roots: [a, b], ...forOf(v.for) } : null
+  if (!isObject(v)) return null
+  const roots = own(v, 'roots')
+  const f = forOf(own(v, 'for'))
+  if (!f || !Array.isArray(roots) || roots.length !== 2) return null
+  const [a, b] = roots as unknown[]
+  return isPc(a) && isPc(b) && a !== b ? { roots: [a, b], ...f } : null
 }
 function entries<T>(v: unknown, read: (x: unknown) => T | null): Readonly<Record<ChordAt, T>> {
   if (!isObject(v)) return {}
@@ -41,7 +53,7 @@ function entries<T>(v: unknown, read: (x: unknown) => T | null): Readonly<Record
 /** picks read from untrusted data (storage, a share link): bad entries dropped; a #272 map of bare numbers is pentatonic picks */
 export function chordPicksFrom(v: unknown): ChordPicks {
   if (!isObject(v)) return NO_PICKS
-  if ('pentatonic' in v || 'hexatonic' in v) return { pentatonic: entries(v.pentatonic, pentFrom), hexatonic: entries(v.hexatonic, hexFrom) }
+  if (Object.hasOwn(v, 'pentatonic') || Object.hasOwn(v, 'hexatonic')) return { pentatonic: entries(own(v, 'pentatonic'), pentFrom), hexatonic: entries(own(v, 'hexatonic'), hexFrom) }
   return { pentatonic: entries(v, (x) => (isPc(x) ? { pc: x } : null)), hexatonic: {} }
 }
 

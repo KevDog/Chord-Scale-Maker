@@ -280,9 +280,12 @@ describe('linePositions', () => {
     expect(lines.find((l) => l.chords.includes('Dm7'))!.rows).toEqual([0, 2, 4, 8]) // A2's row 2 is folded: no position
   })
   it('gives a line whose rows are all in a folded repeat no positions', () => {
-    const text = 'title: T\nkey: C\nA1 | 1 | Dm7 | D Dorian\nA1 | 2 | G7 | G Mixolydian\n@copy A1 A2 2\n' // two bars: a lone last chord holds to a longer run, so a one-bar copy is written out, not folded
-    const d = parseChart(text).value
-    const only = { row: 2, rows: [2], chords: ['Dm7'] } // the copy's row alone, as a level could make it
+    // two bars (a one-bar copy is written out, not folded); blank cells: A2's G7 goes on to Cm7, so it resolves to its own scale
+    const d = parseChart('title: T\nkey: C\nA1 | 1 | Dm7\nA1 | 2 | G7\n@copy A1 A2 2\nB | 5 | Cm7\nB | 6 | Cm7\n').value
+    const r = resolveScales(d, { level: 'standard', seed: 0 })
+    expect([r.get(1)?.scale, r.get(3)?.scale]).toEqual(['G Mixolydian', 'G Phrygian Dominant'])
+    const only = scaleLines(expandRowLines(d).value, (_, i) => r.get(i)?.scale ?? null).find((l) => l.rows.includes(3))!
+    expect(only.rows).toEqual([3]) // the copy's row alone
     expect(linePositions(only, chordPositions(d))).toEqual([])
   })
 })

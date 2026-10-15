@@ -14,13 +14,27 @@ describe('chordPicksFrom', () => {
   })
   it('drops bad entries and never throws', () => {
     const bad = { pentatonic: { 'A:1:0': 12, 'A:2:0': { pc: 1.5 }, __proto__x: 3, constructor: { pc: 1 }, 'A:3:0': { pc: 4, for: 'x'.repeat(10_000) } }, hexatonic: { 'A:1:0': { roots: [2, 2] }, 'A:2:0': { roots: [1] }, 'A:3:0': { roots: [0, 13] } } }
-    expect(chordPicksFrom(bad)).toEqual({ pentatonic: { 'A:3:0': { pc: 4 } }, hexatonic: {} }) // an overlong for is dropped, the pick kept
+    expect(chordPicksFrom(bad)).toEqual(NO_PICKS)
     for (const v of [null, 3, 'x', [], { pentatonic: [] }]) expect(chordPicksFrom(v)).toEqual(NO_PICKS)
   })
-  it('keeps at most LIMITS.maxExpandedRows picks a kind', () => {
+  it('drops a pick whose for is present but bad (too long, no |, not a string); only a missing for is legacy', () => {
+    const p = (f: unknown) => chordPicksFrom({ pentatonic: { 'A:1:0': { pc: 4, for: f } }, hexatonic: { 'A:1:0': { roots: [0, 2], for: f } } })
+    for (const f of ['x'.repeat(10_000), `${'x'.repeat(200)}|`, 'Cmaj7 C Ionian', 7, null, { a: 1 }, ['a|b']]) expect(p(f)).toEqual(NO_PICKS)
+    expect(p(undefined)).toEqual({ pentatonic: { 'A:1:0': { pc: 4 } }, hexatonic: { 'A:1:0': { roots: [0, 2] } } })
+    expect(p('Cmaj7|C Ionian')).toEqual({ pentatonic: { 'A:1:0': { pc: 4, for: 'Cmaj7|C Ionian' } }, hexatonic: { 'A:1:0': { roots: [0, 2], for: 'Cmaj7|C Ionian' } } })
+  })
+  it('ignores own __proto__ keys, inside a kind and at the top', () => {
+    expect(chordPicksFrom(JSON.parse('{"pentatonic":{"__proto__":{"pc":1}}}'))).toEqual(NO_PICKS)
+    expect(chordPicksFrom(JSON.parse('{"__proto__":{"pentatonic":{"A:1:0":{"pc":1}}}}'))).toEqual(NO_PICKS)
+    expect(chordPicksFrom(JSON.parse('{"__proto__":{"A:1:0":1}}'))).toEqual(NO_PICKS)
+    expect(({} as Record<string, unknown>).pc).toBeUndefined() // nothing polluted
+  })
+  it('keeps exactly LIMITS.maxExpandedRows picks a kind', () => {
     expect(LIMITS.maxExpandedRows).toBe(1000)
     const many = Object.fromEntries(Array.from({ length: 5000 }, (_, i) => [`A:${i}:0`, 1]))
-    expect(Object.keys(chordPicksFrom(many).pentatonic).length).toBeLessThanOrEqual(LIMITS.maxExpandedRows)
+    expect(Object.keys(chordPicksFrom(many).pentatonic).length).toBe(LIMITS.maxExpandedRows)
+    const hex = Object.fromEntries(Array.from({ length: 5000 }, (_, i) => [`A:${i}:0`, { roots: [0, 2] }]))
+    expect(Object.keys(chordPicksFrom({ hexatonic: hex }).hexatonic).length).toBe(LIMITS.maxExpandedRows)
   })
 })
 
