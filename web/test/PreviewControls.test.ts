@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import PreviewControls from '~/components/PreviewControls.vue'
 
 const mount = (props: Record<string, unknown> = {}) =>
-  mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'concert', spell: 'key', intervals: true, keyStart: 'C', overlay: 'off', pentRung: 0, pentSide: 'flat', pentPath: 'one', pentBasis: 'key', pentRank: 1, ...props } })
+  mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'concert', spell: 'key', intervals: true, keyStart: 'C', overlay: 'off', pentRung: 0, pentSide: 'flat', pentPath: 'one', pentBasis: 'key', pentDegree: 'auto', ...props } })
 
 /** mounted with the Pentatonic options' popover opened from its chevron (#293) */
 const opened = async (props: Record<string, unknown> = {}) => {
@@ -26,7 +26,7 @@ describe('the pentatonic controls', () => {
   it('adds no control for Hexatonic', async () => {
     const w = await mount({ overlay: 'hexatonic' })
     expect(overlay(w).text()).toContain('Hexatonic')
-    for (const label of ['Pentatonic path', 'Pentatonic rung', 'Pentatonic side', 'Pentatonic rank', 'Pentatonics ranked against']) expect(w.find(`[aria-label="${label}"]`).exists()).toBe(false)
+    for (const label of ['Pentatonic path', 'Pentatonic rung', 'Pentatonic side', 'Pentatonic built on', 'Pentatonics ranked against']) expect(w.find(`[aria-label="${label}"]`).exists()).toBe(false)
   })
 
   it('picks an overlay', async () => {
@@ -79,13 +79,14 @@ describe('the pentatonic controls', () => {
     expect(custom.find('[aria-label="Pentatonic path"]').text()).toContain('Custom')
   })
 
-  it('shows Rank in place of Path under the chord basis', async () => {
-    const w = await opened({ overlay: 'pentatonic', pentBasis: 'chord' })
-    expect(w.find('[aria-label="Pentatonic rank"]').exists()).toBe(true)
+  it('shows Built on in place of Path under the chord basis', async () => {
+    const w = await opened({ overlay: 'pentatonic', pentBasis: 'chord', pentDegree: 9 })
+    expect(w.find('[aria-label="Pentatonic built on"]').text()).toBe('Built on: 6')
+    expect((await opened({ overlay: 'pentatonic', pentBasis: 'chord' })).find('[aria-label="Pentatonic built on"]').text()).toBe('Built on: Auto')
     expect(w.find('[aria-label="Pentatonic path"]').exists()).toBe(false)
     expect(w.find('[aria-label="Pentatonics ranked against"]').exists()).toBe(true)
     const key = await opened({ overlay: 'pentatonic' })
-    expect(key.find('[aria-label="Pentatonic rank"]').exists()).toBe(false)
+    expect(key.find('[aria-label="Pentatonic built on"]').exists()).toBe(false)
     expect(key.find('[aria-label="Pentatonic path"]').exists()).toBe(true)
   })
 

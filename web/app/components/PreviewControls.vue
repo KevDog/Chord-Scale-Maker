@@ -57,9 +57,9 @@
                   </UiListbox>
                   <RailPopover v-if="overlay === 'pentatonic'" v-model:open="pentOptionsOpen" :inline="compact" label="Pentatonic options">
                     <SegmentedControl v-model="pentBasis" legend="Ranked against" name="pent-basis" aria-label="Pentatonics ranked against" :options="PENT_BASES" />
-                    <UiListbox v-if="pentBasis === 'chord'" v-model="pentRank" class="w-48" aria-label="Pentatonic rank">
-                      <template #selected="{ value }"><UiListboxLabel>{{ rankLabel(value) }}</UiListboxLabel></template>
-                      <UiListboxOption v-for="r in PENT_RANK_CHOICES" :key="r.value" :value="r.value"><UiListboxLabel>{{ r.label }}</UiListboxLabel></UiListboxOption>
+                    <UiListbox v-if="pentBasis === 'chord'" v-model="pentDegree" class="w-48" aria-label="Pentatonic built on" title="The degree of each chord its minor pentatonic is built on; Auto: the most inside">
+                      <template #selected="{ value }"><UiListboxLabel>Built on: {{ degreeLabel(value) }}</UiListboxLabel></template>
+                      <UiListboxOption v-for="d in PENT_DEGREE_CHOICES" :key="d" :value="d"><UiListboxLabel>{{ degreeLabel(d) }}</UiListboxLabel></UiListboxOption>
                     </UiListbox>
                     <template v-else>
                       <UiListbox v-model="pentPath" class="w-48" aria-label="Pentatonic path">
@@ -140,8 +140,8 @@
 </template>
 
 <script setup lang="ts">
-import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, partFor, type PentatonicBasis, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
-import { PENT_BASES, PENT_PATHS, PENT_RANK_CHOICES, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rankLabel, rungLabel, sideShown } from '~/utils/pentatonics'
+import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, partFor, type PentatonicBasis, type PentatonicDegree, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
+import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
 import type { GuideFrom, LineMode } from '~/utils/sheetLine'
 import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
 import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
@@ -162,7 +162,7 @@ const overlay = defineModel<Overlay>('overlay', { default: 'off' })
 const pentRung = defineModel<number>('pentRung', { default: 0 })
 const pentSide = defineModel<PentatonicSide>('pentSide', { default: 'flat' })
 const pentBasis = defineModel<PentatonicBasis>('pentBasis', { default: 'key' })
-const pentRank = defineModel<number>('pentRank', { default: 1 })
+const pentDegree = defineModel<PentatonicDegree>('pentDegree', { default: 'auto' })
 const pentPath = defineModel<PentatonicPathName>('pentPath', { default: 'one' })
 const pathChoices = computed(() => PENT_PATHS.filter((p) => p.value !== 'custom' || pentPath.value === 'custom'))
 const pentStepUnit = defineModel<PentatonicStepUnit>('pentStepUnit', { default: 'section' })

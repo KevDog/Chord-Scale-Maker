@@ -1,4 +1,4 @@
-import { PENTATONIC_PATH_LABELS, PENTATONIC_PATHS, PENTATONIC_RANKS, PENTATONIC_STEP_BARS, type PentatonicBasis, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
+import { PENTATONIC_DEGREE_LABELS, PENTATONIC_PATH_LABELS, PENTATONIC_PATHS, PENTATONIC_STEP_BARS, type PentatonicBasis, type PentatonicDegree, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
 
 /** the Pentatonics row's controls (#255): rung 0–6 with the notes it shares with the key, and the side */
 export const PENT_RUNGS = [
@@ -33,7 +33,10 @@ export const PENT_STEP_BARS: readonly { value: '2' | '4' | '8'; label: string }[
 /** what the Pentatonics row ranks against (#272): the key area's ladder, or each chord's own scale */
 export const PENT_BASES: readonly { value: PentatonicBasis; label: string; title: string }[] = [
   { value: 'key', label: 'Key', title: 'One pentatonic per key area, on its tension ladder' },
-  { value: 'chord', label: 'Chord', title: 'Each chord’s own pentatonic, ranked against its scale' },
+  { value: 'chord', label: 'Chord', title: 'Each chord’s own pentatonic, built on the degree you choose' },
 ]
-export const rankLabel = (r: number): string => (r === 1 ? '1 · closest' : r === PENTATONIC_RANKS ? `${r} · farthest` : String(r))
-export const PENT_RANK_CHOICES = Array.from({ length: PENTATONIC_RANKS }, (_, i) => ({ value: i + 1, label: rankLabel(i + 1) }))
+/** the Built on listbox (#286): Auto, then the degree of the chord each minor pentatonic is built on, chromatically from 1 */
+export const PENT_DEGREE_CHOICES: readonly PentatonicDegree[] = ['auto', ...PENTATONIC_DEGREE_LABELS.map((_, d) => d)]
+export const degreeLabel = (d: PentatonicDegree): string => (d === 'auto' ? 'Auto' : (PENTATONIC_DEGREE_LABELS[d] ?? 'Auto'))
+/** the usual inside choices: the degrees whose minor pentatonic fits the scale whole (test/pentatonics.test.ts checks them against the engine) */
+export const PENT_INSIDE_HELP = 'Wholly inside: over a major chord (Ionian) on 2, 3 or 6; over a minor (Dorian) on 1, 2 or 5; over a dominant (Mixolydian) on 2, 5 or 6.'

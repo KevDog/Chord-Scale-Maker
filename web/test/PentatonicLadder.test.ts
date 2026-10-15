@@ -9,7 +9,7 @@ import { buildChanges, CONCERT, type ChangesPentatonic, parseChart, type Pentato
 const pentOf = (text: string, plan: PentatonicPlan): ChangesPentatonic =>
   showPentatonics(buildChanges(parseChart(text).value, CONCERT, 4, false, 'off', undefined, plan).lines)[0]!.bars[0]!.chords[0]!.pentatonic!
 const KEY = pentOf('title: T\nkey: C\nA | 1 | Cmaj7', { kind: 'pentatonic', bySection: {}, fallback: { rung: 2, side: 'flat' }, counts: false })
-const CHORD = pentOf('title: T\nkey: F\nA | 1 | Dm7', { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, basis: 'chord', rank: 2 })
+const CHORD = pentOf('title: T\nkey: F\nA | 1 | Dm7', { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, basis: 'chord', degree: 2 }) // Em, on the 2 of D Dorian
 const PICKED = pentOf('title: T\nkey: C\nA | 1 | Cmaj7', { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, picks: { 'A:1:0': 7 } })
 const props = { p: KEY }
 
@@ -32,15 +32,15 @@ describe('the pentatonic ladder popover', () => {
     w.unmount()
   })
 
-  it('lists a chord’s ranking, 12 rows with rank and shared', async () => {
+  it('lists a chord’s ranking, 12 rows with the degree each is built on and shared', async () => {
     const w = await mountSuspended(PentatonicLadder, { props: { p: CHORD }, attachTo: document.body })
-    expect(w.find('button').attributes('aria-label')).toBe(`Pentatonic: ${CHORD.name.replace('m', '')} minor, rank 2, ${CHORD.shared} of 5 notes in ${CHORD.scale}. Show the ranking`)
+    expect(w.find('button').attributes('aria-label')).toBe('Pentatonic: E minor, built on 2, 5 of 5 notes in D Dorian. Show the ranking')
     await w.find('button').trigger('click')
     await flushPromises()
     expect(w.find('[role="dialog"]').attributes('aria-label')).toBe(CHORD.title)
     const rows = w.findAll('li')
     expect(rows).toHaveLength(12)
-    expect(rows[0]?.text()).toMatch(/^1 · 5 shared/)
+    expect(rows.slice(0, 3).map((r) => r.text())).toEqual(['1 · 5 sharedDm', '5 · 5 sharedAm', '2 · 5 sharedEm'])
     expect(w.find('[aria-current="true"]').text()).toBe(CHORD.name)
     w.unmount()
   })

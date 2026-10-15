@@ -4,7 +4,7 @@
     <UiText class="-mt-1">
       Pick the notes to improvise with; the rest are dimmed, on screen and in print.
       {{ mode === 'root' ? 'Boxes are intervals from each chord’s root, even when its scale starts elsewhere: over B♭–7, B♭ is 1.' : `Boxes are pitches spelled from ${startName}.` }}
-      <template v-if="pentatonicShown"> Pentatonic lights the notes each scale shares with a minor pentatonic: rank 1 the closest, 12 the farthest.</template>
+      <template v-if="pentatonicShown"> Pentatonic lights the notes each scale shares with the minor pentatonic <em>Built on</em> a degree of each chord (Auto: the one sharing the most); each staff’s caption says how many it shares. {{ PENT_INSIDE_HELP }}</template>
       <template v-if="hexatonicShown"> Hexatonic lights two triads from each scale, six notes in two groups. Pair <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff’s scale; on a seven-note scale it leaves out degree <em>n</em> − 1 (Pair 1 leaves out the 7th).</template>
     </UiText>
 
@@ -12,9 +12,9 @@
       <ToggleButton v-for="p in presets" :key="p" :model-value="activePreset === p" @update:model-value="pickPreset(p)">{{ PRESET_LABELS[p] }}</ToggleButton>
       <UiButton plain :disabled="!selection" @click="emit('update:selection', null)">Clear</UiButton>
     </div>
-    <UiListbox v-if="isPentatonicSelection(selection)" :model-value="selection.rank" class="w-44" aria-label="Pentatonic rank" @update:model-value="pickRank">
-      <template #selected="{ value }"><UiListboxLabel>{{ rankLabel(value) }}</UiListboxLabel></template>
-      <UiListboxOption v-for="r in RANKS" :key="r" :value="r"><UiListboxLabel>{{ rankLabel(r) }}</UiListboxLabel></UiListboxOption>
+    <UiListbox v-if="isPentatonicSelection(selection)" :model-value="selection.degree" class="w-44" aria-label="Pentatonic built on" @update:model-value="pickDegree">
+      <template #selected="{ value }"><UiListboxLabel>Built on: {{ degreeLabel(value) }}</UiListboxLabel></template>
+      <UiListboxOption v-for="d in PENT_DEGREE_CHOICES" :key="d" :value="d"><UiListboxLabel>{{ degreeLabel(d) }}</UiListboxLabel></UiListboxOption>
     </UiListbox>
     <div v-if="isHexatonicSelection(selection)" class="flex flex-wrap items-center gap-2">
       <UiListbox :model-value="selection.pair" class="w-36" aria-label="Hexatonic pair" @update:model-value="pickHex({ pair: $event })">
@@ -45,12 +45,12 @@
 
 <script setup lang="ts">
 import { groupingLabel, HEX_GROUP_NAMES, HEX_GROUPING_CHOICES, HEX_PAIR_CHOICES, hexPairLabel } from '~/utils/hexatonics'
-import { rankLabel } from '~/utils/pentatonics'
-import { compareKeys, type HexGrouping, isHexatonicSelection, isPentatonicSelection, type Mode, noteText, PENTATONIC_RANKS, type PracticeBox, type PracticeSelection, type Preset, PRESET_LABELS, PRESETS } from '@chord-scale-maker/engine'
+import { degreeLabel, PENT_DEGREE_CHOICES, PENT_INSIDE_HELP } from '~/utils/pentatonics'
+import { compareKeys, type HexGrouping, isHexatonicSelection, isPentatonicSelection, type Mode, noteText, type PentatonicDegree, type PracticeBox, type PracticeSelection, type Preset, PRESET_LABELS, PRESETS } from '@chord-scale-maker/engine'
 
 /**
  * the practice controls: per-chord presets (From root) or All (From X), a box per spelled interval or pitch in the
- * chart, and Clear. A Pentatonic preset with a rank picker (#266), and
+ * chart, and Clear. A Pentatonic preset with a Built on picker (#266, #286), and
  * a Hexatonic preset with Pair and grouping pickers and a legend of its two groups. Editing a box while a preset is active starts a custom selection from what the preset lit.
  */
 const props = defineProps<{
@@ -71,17 +71,16 @@ const { shows } = useInterface()
 const pentatonicShown = computed(() => shows('practice-pentatonic'))
 const hexatonicShown = computed(() => shows('practice-hexatonic'))
 const presets = computed(() => PRESETS[props.mode].filter((p) => (p !== 'pentatonic' || pentatonicShown.value) && (p !== 'hexatonic' || hexatonicShown.value)))
-const RANKS = Array.from({ length: PENTATONIC_RANKS }, (_, i) => i + 1)
 
 function pickPreset(p: Preset): void {
   if (activePreset.value === p) emit('update:selection', null)
-  else if (p === 'pentatonic') emit('update:selection', { preset: 'pentatonic', rank: 1 })
+  else if (p === 'pentatonic') emit('update:selection', { preset: 'pentatonic', degree: 'auto' })
   else if (p === 'hexatonic') emit('update:selection', { preset: 'hexatonic', pair: 0, grouping: 'triads' })
   else emit('update:selection', { preset: p })
 }
 
-function pickRank(rank: number | undefined): void {
-  if (rank !== undefined) emit('update:selection', { preset: 'pentatonic', rank })
+function pickDegree(degree: PentatonicDegree | undefined): void {
+  if (degree !== undefined) emit('update:selection', { preset: 'pentatonic', degree })
 }
 
 function pickHex(change: Readonly<{ pair?: number; grouping?: HexGrouping }>): void {

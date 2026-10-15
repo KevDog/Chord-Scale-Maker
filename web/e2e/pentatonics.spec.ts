@@ -89,27 +89,27 @@ test('Ranked against Chord follows each chord: Waltz for Debby’s first bars', 
   await expect(page.getByRole('button', { name: 'Pentatonic path' })).toHaveCount(0)
   const firstLine = page.locator('[data-slot="system"]').first().locator('[data-slot="pentatonic"] button')
   await expect.poll(async () => (await firstLine.allTextContents()).slice(0, 3)).toEqual(['Gm♪ 5', 'Dm♪ 5', 'Gm♪ 5']) // bars 1–3; bar 4's C7 repeats Gm
-  await pickOption(page, 'Pentatonic rank', '12 · farthest')
-  await expect(firstLine.first()).toHaveText(/♪ 0$/)
+  await pickOption(page, 'Pentatonic built on', '♭3')
+  await expect(firstLine.first()).toHaveText('G♯m♪ 0') // on ♭3 of FMaj7 (F Ionian), spelled without C♭ and F♭: nothing shared
   await page.reload()
   await openPentatonicOptions(page)
-  await expect(page.getByRole('button', { name: 'Pentatonic rank' })).toContainText('12 · farthest')
+  await expect(page.getByRole('button', { name: 'Pentatonic built on' })).toHaveText('Built on: ♭3')
 })
 
-test('a pick is per chart, kept over a reload, and cleared by a change of Rank', async ({ page }) => {
+test('a pick is per chart, kept over a reload, and cleared by a change of Built on', async ({ page }) => {
   await page.goto('/song/waltz-for-debby')
   await chooseSheet(page, 'Changes')
   await showPentatonics(page)
   await rankedAgainstChord(page)
   const second = page.locator('[data-slot="pentatonic"] [data-chord]').nth(1)
   await second.locator('button').click()
-  await page.getByRole('dialog', { name: /pentatonic ranking$/ }).locator('li').nth(2).locator('[data-pent]').click() // rank 3
+  await page.getByRole('dialog', { name: /pentatonic ranking$/ }).locator('li').nth(2).locator('[data-pent]').click() // the third in the ranking
   const picked = await second.textContent()
   await page.reload()
   await expect(second).toHaveText(picked!)
   await expect(second.locator('button')).toHaveAttribute('aria-label', /your pick/)
   await openPentatonicOptions(page)
-  await pickOption(page, 'Pentatonic rank', '2')
+  await pickOption(page, 'Pentatonic built on', '2')
   await expect(second.locator('button')).not.toHaveAttribute('aria-label', /your pick/)
 })
 
@@ -128,7 +128,7 @@ test.describe('on a phone', () => {
   })
 })
 
-test('the Pentatonic practice preset ranks each scale’s pentatonics, remembers the rank, and prints', async ({ page }) => {
+test('the Pentatonic practice preset builds on a degree, remembers it, and prints', async ({ page }) => {
   await page.goto('/song/autumn-leaves')
   await chooseSheet(page, 'Scales')
   await pickOption(page, 'Where each scale starts', 'From root')
@@ -136,13 +136,15 @@ test('the Pentatonic practice preset ranks each scale’s pentatonics, remembers
   await panel.getByRole('button', { name: 'Pentatonic', exact: true }).click()
   const captions = page.locator('[data-slot="pentatonic"]')
   await expect(captions).toHaveCount(14) // one per line
-  await expect(captions.first()).toHaveText(/ pent/)
-  const closest = await page.locator('.vf-selected').count()
-  await pickOption(page, 'Pentatonic rank', '12 · farthest')
-  await expect.poll(() => page.locator('.vf-selected').count()).toBeLessThan(closest)
+  await expect(captions.first()).toHaveText(/ pent · 5 shared$/)
+  await expect(page.getByRole('button', { name: 'Pentatonic built on' })).toHaveText('Built on: Auto')
+  const auto = await page.locator('.vf-selected').count()
+  await pickOption(page, 'Pentatonic built on', '♭3')
+  await expect(captions.first()).toHaveText(/ pent · [0-4] shared$/)
+  await expect.poll(() => page.locator('.vf-selected').count()).toBeLessThan(auto)
   await page.reload()
   await chooseSheet(page, 'Scales')
-  await expect(page.getByRole('button', { name: 'Pentatonic rank' })).toContainText('12 · farthest')
+  await expect(page.getByRole('button', { name: 'Pentatonic built on' })).toHaveText('Built on: ♭3')
   await page.emulateMedia({ media: 'print' })
   const pdf = await page.pdf({ format: 'Letter' })
   expect((pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length).toBe(2) // 14 lines, 12 a page, as without the caption
@@ -220,7 +222,7 @@ test('a pick stays on its chord when a bar goes in before it (#275)', async ({ p
   await rankedAgainstChord(page)
   const at = (chord: string) => page.locator(`[data-slot="pentatonic"] [data-chord="${chord}"] button`)
   await at('A:4:0').click()
-  await page.getByRole('dialog', { name: /pentatonic ranking$/ }).locator('li').nth(2).locator('[data-pent]').click() // rank 3
+  await page.getByRole('dialog', { name: /pentatonic ranking$/ }).locator('li').nth(2).locator('[data-pent]').click() // the third in the ranking
   await expect(at('A:4:0')).toHaveAttribute('aria-label', /your pick/)
   await page.getByRole('button', { name: 'Edit Dm7, A bar 1' }).hover()
   await page.getByRole('button', { name: 'Insert a held bar after A bar 1' }).click()

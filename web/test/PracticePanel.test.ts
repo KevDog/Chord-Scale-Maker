@@ -1,6 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, describe, expect, it } from 'vitest'
 import PracticePanel from '~/components/PracticePanel.vue'
+import { PENT_INSIDE_HELP } from '~/utils/pentatonics'
 
 const boxes = [
   { key: '1', label: '1' },
@@ -41,18 +42,35 @@ describe('PracticePanel', () => {
 })
 
 describe('PracticePanel’s Pentatonic preset (#266)', () => {
-  it('starts at rank 1 and shows the rank picker while on', async () => {
+  it('starts at Auto and shows the Built on picker while on', async () => {
     const off = await mount({})
-    expect(off.find('[aria-label="Pentatonic rank"]').exists()).toBe(false)
+    expect(off.find('[aria-label="Pentatonic built on"]').exists()).toBe(false)
     await off.findAll('button').find((b) => b.text() === 'Pentatonic')?.trigger('click')
-    expect(off.emitted('update:selection')).toEqual([[{ preset: 'pentatonic', rank: 1 }]])
-    const on = await mount({ selection: { preset: 'pentatonic', rank: 12 }, lit: ['1'] })
-    expect(on.find('[aria-label="Pentatonic rank"]').text()).toContain('12 · farthest')
+    expect(off.emitted('update:selection')).toEqual([[{ preset: 'pentatonic', degree: 'auto' }]])
+    const auto = await mount({ selection: { preset: 'pentatonic', degree: 'auto' }, lit: ['1'] })
+    expect(auto.find('[aria-label="Pentatonic built on"]').text()).toBe('Built on: Auto')
+    const on = await mount({ selection: { preset: 'pentatonic', degree: 10 }, lit: ['1'] })
+    expect(on.find('[aria-label="Pentatonic built on"]').text()).toBe('Built on: ♭7')
     expect(on.find('button[aria-pressed=true]').text()).toBe('Pentatonic')
   })
 
+  it('picks a degree from Auto, 1, ♭2 … 7', async () => {
+    const w = await mount({ selection: { preset: 'pentatonic', degree: 'auto' }, lit: ['1'] })
+    await w.find('[aria-label="Pentatonic built on"]').trigger('click')
+    const options = w.findAll('[role="option"]')
+    expect(options.map((o) => o.text())).toEqual(['Auto', '1', '♭2', '2', '♭3', '3', '4', '♯4', '5', '♭6', '6', '♭7', '7'])
+    await options[3]?.trigger('click')
+    expect(w.emitted('update:selection')?.at(-1)).toEqual([{ preset: 'pentatonic', degree: 2 }])
+  })
+
+  it('says how Built on works, with the usual inside choices', async () => {
+    const text = (await mount({})).text()
+    expect(text).toContain('Built on')
+    expect(text).toContain(PENT_INSIDE_HELP)
+  })
+
   it('edits a box into a custom selection from what it lit', async () => {
-    const w = await mount({ selection: { preset: 'pentatonic', rank: 1 }, lit: ['1', 'b3'] })
+    const w = await mount({ selection: { preset: 'pentatonic', degree: 'auto' }, lit: ['1', 'b3'] })
     await w.findAll('input[type=checkbox]')[3]?.trigger('change') // ♭7
     expect(w.emitted('update:selection')).toEqual([[{ keys: ['1', 'b3', 'b7'] }]])
   })
@@ -91,7 +109,7 @@ describe('PracticePanel’s Hexatonic preset', () => {
     expect(on.find('[aria-label="Hexatonic pair"]').text()).toContain('Pair: Auto')
     expect((await mount({ ...hex(5, 'triads') })).find('[aria-label="Hexatonic pair"]').text()).toContain('Pair: 5')
     expect(on.find('[aria-label="Hexatonic grouping"]').text()).toContain('Triad pair')
-    expect((await mount({ selection: { preset: 'pentatonic', rank: 1 } })).find('[aria-label="Hexatonic pair"]').exists()).toBe(false)
+    expect((await mount({ selection: { preset: 'pentatonic', degree: 'auto' } })).find('[aria-label="Hexatonic pair"]').exists()).toBe(false)
   })
 
   it('offers Auto and pairs 1 … 8, and the four groupings; a pick keeps the other value', async () => {

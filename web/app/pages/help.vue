@@ -167,7 +167,8 @@
               chooses <strong class="font-semibold">Off</strong>, <strong class="font-semibold">From 3rd</strong> or <strong class="font-semibold">From 7th</strong>, the guide tone
               line described above.
               <strong class="font-semibold">Overlay</strong> puts a row under the chords: <strong class="font-semibold">Off</strong>,
-              <strong class="font-semibold">Pentatonic</strong> (each key area's minor pentatonic) or
+              <strong class="font-semibold">Pentatonic</strong> (each key area's minor pentatonic, or, ranked against
+              Chord, each chord's, <strong class="font-semibold">Built on</strong> the degree you choose) or
               <strong class="font-semibold">Hexatonic</strong> (each chord's best triad pair from its scale, such as
               <UiCode>G/Am</UiCode> over Cmaj7: the chord tones it covers first, then two major or minor triads).
             </dd>
@@ -225,6 +226,13 @@
             C minor pentatonic over B♭–7, B♭ is 1 and C is 2 (the 9th). The interval labels under the notes show the
             same numbers. In From C mode the boxes are pitches instead (tick E♭ and every E♭ lights
             up), which shows you where a note survives a chord change and where it doesn't.
+          </li>
+          <li>
+            <strong class="font-semibold text-zinc-950 dark:text-white">Pentatonic</strong> lights the notes each scale
+            shares with a minor pentatonic. <strong class="font-semibold">Built on</strong> picks the degree of each chord
+            it starts from: on 2 over Cmaj7 is Dm pentatonic, and over G7 it's Am. <strong class="font-semibold">Auto</strong>
+            picks the one that shares the most, nearest the chord's root. The caption under each chord names it and
+            counts the notes it shares (<UiCode>Dm pent · 5 shared</UiCode>). {{ PENT_INSIDE_HELP }}
           </li>
           <li>
             <strong class="font-semibold text-zinc-950 dark:text-white">Hexatonic</strong> lights two triads from each
@@ -385,6 +393,7 @@
 <script setup lang="ts">
 import { PAGE_HEAD, seoMeta } from '~/utils/site'
 import { guideRanges } from '~/utils/instrumentChoices'
+import { PENT_INSIDE_HELP } from '~/utils/pentatonics'
 
 const GUIDE_RANGES = guideRanges()
 const SECTIONS = [
