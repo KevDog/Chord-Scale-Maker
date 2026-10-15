@@ -116,9 +116,14 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
   return Object.keys(view).length ? view : undefined
 }
 
+/** a link to the payload; where its picks would make it too big to open (#303), the link leaves them out */
 export async function encodeShare(payload: SharePayload): Promise<string> {
-  const json = JSON.stringify({ v: VERSION, chart: payload.chart, ...(payload.view ? { view: payload.view } : {}) })
-  return toBase64Url(await deflate(new TextEncoder().encode(json)))
+  const bytes = (view: ShareView | undefined): Uint8Array<ArrayBuffer> =>
+    new TextEncoder().encode(JSON.stringify({ v: VERSION, chart: payload.chart, ...(view ? { view } : {}) }))
+  const full = bytes(payload.view)
+  if (full.length <= SHARE_LIMITS.inflated || !payload.view?.picks) return toBase64Url(await deflate(full))
+  const { picks: _dropped, ...rest } = payload.view
+  return toBase64Url(await deflate(bytes(Object.keys(rest).length ? rest : undefined)))
 }
 
 /** the payload a link carries, or null if it's damaged, too big, from a newer version, or not a chart */

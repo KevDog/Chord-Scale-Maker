@@ -42,6 +42,18 @@ describe('share links', () => {
     expect((await decodeShare(await encodeShare({ chart: CHART, view: { picks } })))?.view?.picks).toEqual(picks)
   })
 
+  it('leave the picks out where they would make a link too big to open, keeping the chart and the rest of the view', async () => {
+    const f = 'C#m7b5|C# Locrian Natural 2 and more text here' // a long for, as real scales can be
+    const pentatonic = Object.fromEntries(Array.from({ length: 800 }, (_, i) => [`A:${i + 1}:0`, { pc: 3, for: f }]))
+    const hexatonic = Object.fromEntries(Array.from({ length: 800 }, (_, i) => [`A:${i + 1}:0`, { roots: [0, 2] as const, for: f }]))
+    const view = { sheet: 'changes', picks: { pentatonic, hexatonic } } as const
+    expect(new TextEncoder().encode(JSON.stringify({ v: 1, chart: CHART, view })).length).toBeGreaterThan(SHARE_LIMITS.inflated)
+    const back = await decodeShare(await encodeShare({ chart: CHART, view }))
+    expect(back).toEqual({ chart: CHART, view: { sheet: 'changes' } })
+    const small = { pentatonic: { 'A:1:0': { pc: 3, for: f } }, hexatonic: {} }
+    expect((await decodeShare(await encodeShare({ chart: CHART, view: { picks: small } })))?.view?.picks).toEqual(small)
+  })
+
   it('open an old link with no picks', async () => {
     expect((await decodeShare(await encodeShare({ chart: CHART, view: { sheet: 'changes' } })))?.view?.picks).toBeUndefined()
   })

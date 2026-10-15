@@ -2,7 +2,7 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it, vi } from 'vitest'
 import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, type PentatonicPlan, pickTargets, showHexatonics, showPentatonics } from '../changes'
 import { expandRowLines, parseChart } from '../chart'
-import { pickTarget } from '../chordPicks'
+import { NO_PICKS, pickTarget, withPick } from '../chordPicks'
 import { resolveScales } from '../resolve'
 import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
 import { CONCERT, concertPc, type Part } from '../part'
@@ -849,6 +849,23 @@ describe('chord picks (#303)', () => {
 
   it('keeps a hexatonic pick’s sounding pair on a B♭ part', () => {
     expect(hex({ 'A:1:0': { roots: [0, 2], for: target('A:1:0') } }, TENOR)[0]).toMatchObject({ name: 'D/Em', picked: true })
+  })
+
+  it('ignores a pick while a level change makes it stale, and plays it again when the level comes back', () => {
+    const tear = library('a-little-tear')
+    const at = (level: 'standard' | 'advanced') => pickTargets(tear, resolveScales(tear, { level, seed: 0 }))
+    expect([at('standard').get('A:1:0'), at('advanced').get('A:1:0')]).toEqual(['Eb9|Eb Mixolydian', 'Eb9|Eb Bebop Dominant'])
+    const picks = withPick(NO_PICKS, 'pentatonic', ['A:1:0'], 0, at('standard')).pentatonic // Cm, picked at standard
+    const first = (level: 'standard' | 'advanced') => flat(buildChanges(tear, CONCERT, 4, false, 'off', { level, seed: 0 }, chordPlan(picks)).lines)[0]?.pentatonic
+    expect(first('standard')).toMatchObject({ name: 'Cm', picked: true })
+    expect(first('advanced')).toMatchObject({ name: 'B♭m', picked: false, sheet: 'B♭m' })
+    expect(first('standard')).toMatchObject({ name: 'Cm', picked: true })
+  })
+
+  it('gives a hexatonic pick on a chord whose scale has no pairs nothing to play', () => {
+    const wt = parseChart('title: T\nkey: C\nA | 1 | C7#5 | C Whole Tone').value
+    const sheet = showHexatonics(buildChanges(wt, CONCERT, 4, false, 'off', undefined, { kind: 'hexatonic', picks: { 'A:1:0': { roots: [0, 2], for: 'C7#5|C Whole Tone' } } }).lines)
+    expect(flat(sheet)[0]?.hexatonic).toBeNull()
   })
 
   it('shows the hexatonic row idempotently, picks and runs included', () => {

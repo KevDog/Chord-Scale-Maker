@@ -337,6 +337,13 @@ describe('chord picks on the Scales sheet (#303)', () => {
     const one = dm(staves(withPick(NO_PICKS, 'hexatonic', ['B:5:0'], [5, 7], targets), { preset: 'hexatonic', pair: 0, grouping: 'triads' }))
     expect([one.hexatonic?.picked, one.varies]).toEqual([false, true])
   })
+  it('does not vary for a hexatonic pick whose roots are not among the staff’s pairs (it plays the sheet’s pair)', () => {
+    const HEX = { preset: 'hexatonic', pair: 0, grouping: 'triads' } as const
+    const one = dm(staves(withPick(NO_PICKS, 'hexatonic', ['B:5:0'], [1, 3], targets), HEX))
+    expect([one.hexatonic?.picked, one.varies]).toEqual([false, false])
+    const mixed = dm(staves(withPick(withPick(NO_PICKS, 'hexatonic', ['A1:1:0'], [1, 3], targets), 'hexatonic', ['B:5:0', 'A3:9:0'], [5, 7], targets), HEX))
+    expect([mixed.hexatonic?.name, mixed.hexatonic?.picked, mixed.varies]).toEqual([dm(staves(NO_PICKS, HEX)).hexatonic?.name, false, true]) // the damaged one counts as none
+  })
   it('keeps the sounding pick on a B♭ part', () => {
     expect(dm(staves(withPick(NO_PICKS, 'pentatonic', ['A1:1:0'], 4, targets), PENT, TENOR)).pentatonic).toMatchObject({ name: 'F♯m', picked: true })
     expect(dm(staves(withPick(NO_PICKS, 'hexatonic', ['A1:1:0'], [5, 7], targets), { preset: 'hexatonic', pair: 0, grouping: 'triads' }, TENOR)).hexatonic).toMatchObject({ name: 'G/A', picked: true })
