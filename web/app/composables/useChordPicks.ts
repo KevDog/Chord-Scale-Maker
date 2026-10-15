@@ -46,6 +46,10 @@ export function useChordPicks(chartKey: string | undefined, targets: Readonly<Re
     clear(kind: PickKind, positions: readonly ChordAt[]): void {
       picks.value = withoutPicks(picks.value, kind, positions, targets.value)
     },
+    /** all of them at once (an undo, #315) */
+    set(p: ChordPicks): void {
+      picks.value = p
+    },
     clearAll(): void {
       if (hasPicks(picks.value)) picks.value = NO_PICKS
     },

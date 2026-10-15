@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { chooseInterface, chooseSheet, chooseSuperimpose, expect, moreAction, openPentatonicOptions, pentatonicPreset, pickOption, rankedAgainstChord, showPentatonics, test } from './fixtures'
+import { chooseInterface, chooseSheet, chooseSuperimpose, expect, moreAction, openPentatonicOptions, pentatonicPreset, pickOption, rankedAgainstChord, sheetChord, showPentatonics, test, typeChord } from './fixtures'
 
 // Blue Bossa (concert): G7♯5♯9, G Altered, in bars 6 and 14, and G7♯5 in bar 16 on the same Scales staff; the
 // Changes positions are A:6:0, B:14:0 and B:16:1. Its choices, inside to outside: B♭m (the sheet's), Cm, Fm, E♭m, …
@@ -127,4 +127,27 @@ test('the hexatonic label picks too', async ({ page }) => {
   await second.click()
   await expect(label).toHaveText(name)
   await expect(label).toHaveAttribute('aria-label', /your pick/)
+})
+
+test('⌘Z steps back through a pick, a pentatonic setting and a chord edit, in order, after a reload too (#315)', async ({ page }) => {
+  await page.goto('/song/blue-bossa')
+  await page.getByRole('button', { name: 'Edit', exact: true }).click()
+  await typeChord(page, 'A', 3, 'Fm7', 'Fm6')
+  await expect(sheetChord(page, 'Fm6', 'A', 3)).toBeVisible()
+  await changesByChord(page)
+  await at(page, BAR6).click()
+  await page.getByRole('dialog', { name: 'G7♯5♯9 Altered · bar 6' }).locator('[data-choice]').nth(2).click()
+  await expect(at(page, BAR6)).toHaveText('Fm♪ 4')
+  await page.reload()
+  await expect(at(page, BAR6)).toHaveText('Fm♪ 4')
+  await expect(sheetChord(page, 'Fm6', 'A', 3)).toBeVisible()
+  await page.keyboard.press('ControlOrMeta+z')
+  await expect(at(page, BAR6)).toHaveText('B♭m♪ 5')
+  await expect(sheetChord(page, 'Fm6', 'A', 3)).toBeVisible()
+  await page.keyboard.press('ControlOrMeta+z') // Ranked against: Chord, set in changesByChord
+  await page.keyboard.press('ControlOrMeta+z')
+  await expect(sheetChord(page, 'Fm7', 'A', 3)).toBeVisible()
+  for (let i = 0; i < 3; i++) await page.keyboard.press('ControlOrMeta+Shift+z')
+  await expect(sheetChord(page, 'Fm6', 'A', 3)).toBeVisible()
+  await expect(at(page, BAR6)).toHaveText('Fm♪ 4')
 })

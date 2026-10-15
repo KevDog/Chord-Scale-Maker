@@ -643,6 +643,25 @@ describe('EditorView hexatonic practice', () => {
   })
 })
 
+describe('EditorView note choices undo (#315)', () => {
+  afterEach(() => localStorage.clear())
+
+  it('undoes and redoes a Practice preset with ⌘Z anywhere on the page, the editor closed', async () => {
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT, shared: { sheet: 'scales' } }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    const panel = () => w.findComponent({ name: 'PracticePanel' })
+    panel().vm.$emit('update:selection', { preset: 'guideTones' })
+    await nextTick()
+    expect(panel().props('selection')).toEqual({ preset: 'guideTones' })
+    const press = (shiftKey: boolean) => document.body.dispatchEvent(new KeyboardEvent('keydown', { key: 'z', metaKey: true, shiftKey, bubbles: true, cancelable: true }))
+    press(false)
+    await nextTick()
+    expect(panel().props('selection')).toBeNull()
+    press(true)
+    await nextTick()
+    expect(panel().props('selection')).toEqual({ preset: 'guideTones' })
+  })
+})
+
 describe('EditorView overlay', () => {
   afterEach(() => {
     useInterface().level.value = 'everything'

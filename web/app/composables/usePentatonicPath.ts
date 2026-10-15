@@ -40,6 +40,11 @@ export function usePentatonicPath(key: string | undefined, sections: Ref<readonl
     return { kind: 'pentatonic', bySection: Object.fromEntries(Object.entries(s.sections).filter(([k]) => known.has(k))), fallback: PENTATONIC_HOME, counts: true }
   })
   return {
+    /** the whole of it, to give back with setState (an undo, #315) */
+    state: computed(() => state.value),
+    setState(s: Stored): void {
+      state.value = s
+    },
     path: computed(() => state.value.path),
     step: computed(() => state.value.step),
     plan,
