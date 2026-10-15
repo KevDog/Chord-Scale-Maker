@@ -23,7 +23,7 @@
           >{{ x.name }}</button>
         </li>
       </ul>
-      <button v-if="p.picked" type="button" data-reset class="mt-1 w-full rounded-control px-2 py-1 text-left text-xs text-zinc-600 hover:bg-note-50 dark:text-zinc-300 dark:hover:bg-white/5" @click="reset(close)">Reset to {{ p.basis === 'chord' ? 'the sheet’s rank' : 'the path' }}</button>
+      <button v-if="p.picked" type="button" data-reset class="mt-1 w-full rounded-control px-2 py-1 text-left text-xs text-zinc-600 hover:bg-note-50 dark:text-zinc-300 dark:hover:bg-white/5" @click="reset(close)">Reset to {{ p.basis === 'chord' ? 'the sheet’s Built on' : 'the path' }}</button>
     </HPopoverPanel>
   </HPopover>
 </template>
@@ -32,9 +32,9 @@
 import { Popover as HPopover, PopoverButton as HPopoverButton, PopoverPanel as HPopoverPanel } from '@headlessui/vue'
 import { panelShift } from '~/utils/notePlacement'
 import { PAGE_ZOOM } from '~/utils/sheetPaged'
-import { glyphs, rootName, pcOf, type ChangesPentatonic, type PentatonicRank, type PentatonicRung } from '@chord-scale-maker/engine'
+import { glyphs, rootName, pcOf, type ChangesPentatonic, PENTATONIC_DEGREE_LABELS, type PentatonicRung, type RankedPentatonic } from '@chord-scale-maker/engine'
 
-/** a Changes label and its popover: a key area's ladder (one row a rung, ♭ then ♯) or a chord's ranking (one row a rank); a pick covers the label's run */
+/** a Changes label and its popover: a key area's ladder (one row a rung, ♭ then ♯) or a chord's ranking (one row a pentatonic, by the degree it's built on); a pick covers the label's run */
 const props = defineProps<{ p: ChangesPentatonic }>()
 const emit = defineEmits<{ pick: [written: number]; reset: [] }>()
 const shift = ref(0)
@@ -52,17 +52,17 @@ async function place(e: MouseEvent): Promise<void> {
 const longName = computed(() => glyphs(`${rootName(props.p.root)} minor`))
 const mine = computed(() => (props.p.picked ? ', your pick' : ''))
 const ariaLabel = computed(() => props.p.basis === 'chord'
-  ? `Pentatonic: ${longName.value}, rank ${props.p.rank}, ${props.p.shared} of 5 notes in ${props.p.scale}${mine.value}. Show the ranking`
+  ? `Pentatonic: ${longName.value}, built on ${PENTATONIC_DEGREE_LABELS[props.p.degree ?? 0]}, ${props.p.shared} of 5 notes in ${props.p.scale}${mine.value}. Show the ranking`
   : `Pentatonic: ${longName.value}, ${props.p.shared} of 5 notes in ${props.p.key}${mine.value}. Show the ladder`)
-type Row = Readonly<{ key: string; head: string; picks: readonly (PentatonicRung | PentatonicRank)[] }>
+type Row = Readonly<{ key: string; head: string; picks: readonly (PentatonicRung | RankedPentatonic)[] }>
 const rows = computed((): readonly Row[] => props.p.basis === 'chord'
-  ? props.p.ranking.map((r) => ({ key: `r${r.rank}`, head: `${r.rank} · ${r.shared} shared`, picks: [r] }))
+  ? props.p.ranking.map((r) => ({ key: `d${r.degree}`, head: `${PENTATONIC_DEGREE_LABELS[r.degree]} · ${r.shared} shared`, picks: [r] }))
   : [0, 1, 2, 3, 4, 5, 6].map((rung) => {
       const picks = props.p.ladder.filter((x) => x.rung === rung)
       return { key: `g${rung}`, head: `${rung === 0 ? 'Home' : rung === 6 ? '6 Outside' : rung} · ${picks[0]?.shared ?? 0}`, picks }
     }))
-const isCurrent = (x: PentatonicRung | PentatonicRank): boolean => x.name === props.p.name
-function pick(x: PentatonicRung | PentatonicRank, close: () => void): void {
+const isCurrent = (x: PentatonicRung | RankedPentatonic): boolean => x.name === props.p.name
+function pick(x: PentatonicRung | RankedPentatonic, close: () => void): void {
   emit('pick', pcOf(x.root))
   close()
 }

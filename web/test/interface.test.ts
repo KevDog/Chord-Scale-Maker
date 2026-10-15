@@ -61,7 +61,7 @@ describe('hiddenSettings', () => {
 
   it('puts a pentatonic practice selection at Everything', () => {
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', practice: { preset: 'chordTones' } })).toEqual({ settings: ['practice'], needs: 'intermediate' })
-    expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'scales', practice: { preset: 'pentatonic', rank: 2 } })).toEqual({ settings: ['practice'], needs: 'everything' })
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'scales', practice: { preset: 'pentatonic', degree: 2 } })).toEqual({ settings: ['practice'], needs: 'everything' })
   })
 
   it('puts a hexatonic practice selection at Everything', () => {

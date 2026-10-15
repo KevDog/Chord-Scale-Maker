@@ -110,7 +110,7 @@ function practiceFor(
   const none = { pentatonic: null, hexatonic: null, second: null }
   const chordRoot = () => orNull(() => writtenChordRootLenient(part, row.chord, scale)) ?? scaleLabel(part, scale).root
   if (isPentatonicSelection(practice)) {
-    const { pentatonic, lit } = pentatonicPick(notes.map((n) => pcOf(n)), chordRoot(), practice.rank)
+    const { pentatonic, lit } = pentatonicPick(notes.map((n) => pcOf(n)), chordRoot(), practice.degree)
     return { keys, selected: lit, ...none, pentatonic }
   }
   if (isHexatonicSelection(practice)) {

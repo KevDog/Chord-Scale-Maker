@@ -193,17 +193,22 @@ describe('pentatonic preferences', () => {
     expect(prefs().overlay.value).toBe('off')
   })
 
-  it('reads a stored basis and rank, rejecting junk, and keeps them through a share link', () => {
+  it('reads a stored basis and Built on degree, rejecting junk, and keeps them through a share link', () => {
     localStorage.setItem('csm-pent-basis', 'chord')
-    localStorage.setItem('csm-pent-rank', '12')
-    expect([prefs().pentBasis.value, prefs().pentRank.value]).toEqual(['chord', 12])
+    localStorage.setItem('csm-pent-degree', '11')
+    expect([prefs().pentBasis.value, prefs().pentDegree.value]).toEqual(['chord', 11])
     const l = linked({})
-    expect([l.pentBasis.value, l.pentRank.value]).toEqual(['chord', 12])
+    expect([l.pentBasis.value, l.pentDegree.value]).toEqual(['chord', 11])
     localStorage.setItem('csm-pent-basis', 'junk')
     expect(prefs().pentBasis.value).toBe('key')
-    for (const bad of ['0', '13', 'x']) {
-      localStorage.setItem('csm-pent-rank', bad)
-      expect(prefs().pentRank.value).toBe(1)
+    for (const [raw, want] of [['0', 0], ['auto', 'auto'], ['12', 'auto'], ['-1', 'auto'], ['2.5', 'auto'], ['x', 'auto']] as const) {
+      localStorage.setItem('csm-pent-degree', raw)
+      expect(prefs().pentDegree.value).toBe(want)
     }
+  })
+
+  it('reads an old stored rank as Auto', () => {
+    localStorage.setItem('csm-pent-rank', '7')
+    expect(prefs().pentDegree.value).toBe('auto')
   })
 })

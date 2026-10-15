@@ -8,7 +8,7 @@ import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
 import { keySignature } from './keySignature'
 import { concertPc, type Part, scaleLabel, writtenRoot, writtenScale } from './part'
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled, shiftBy } from './pitch'
-import { isPentatonicPreset, PENTATONIC_HOME, PENTATONIC_RANKS, PENTATONIC_STEP, pentatonicAt, pentatonicCycle, pentatonicPathCaption, type PentatonicPathName, type PentatonicStep, pentatonicLadder, type PentatonicRank, pentatonicRanking, type PentatonicRung, type PentatonicView } from './pentatonics'
+import { isPentatonicPreset, type PentatonicDegree, pentatonicDegreeFrom, PENTATONIC_HOME, PENTATONIC_STEP, pentatonicAt, pentatonicCycle, pentatonicPathCaption, type PentatonicPathName, type PentatonicStep, pentatonicLadder, pentatonicRanking, type RankedPentatonic, type PentatonicRung, type PentatonicView } from './pentatonics'
 import { baseQuality } from './qualities'
 import { resolveScales, type ScaleView } from './resolve'
 import { abbreviateScale } from './scales'
@@ -34,11 +34,11 @@ export type ChangesPentatonic = Readonly<{
   key: string // key basis: the area's key; chord basis: ''
   scale: string // chord basis: its scale, written ('D Aeolian'); key basis: ''
   ladder: readonly PentatonicRung[] // key basis; [] for chord
-  ranking: readonly PentatonicRank[] // chord basis; [] for key
+  ranking: readonly RankedPentatonic[] // chord basis; [] for key
   section: string
   chord: ChordAt
   view: PentatonicView // key basis: the rung played; chord basis: PENTATONIC_HOME
-  rank: number // chord basis; 0 for key
+  degree: number | null // chord basis: the degree it's built on, semitones above the chord root; null for key
   root: Spelled // written
   name: string // 'Dm'
   shared: number
@@ -56,7 +56,7 @@ export type PentatonicPlan = Readonly<{
   fallback: PentatonicView
   counts: boolean
   basis?: PentatonicBasis // default 'key'
-  rank?: number // chord basis, 1–12, default 1
+  degree?: PentatonicDegree // chord basis (#286): the degree each chord's pentatonic is built on, 0–11, or Auto (the default; a bad one reads as Auto)
   picks?: Readonly<Record<ChordAt, number>> // concert pc of a picked pentatonic's root
   path?: PentatonicPathName // a preset (#276): each chord plays its unit's step of it; bySection and fallback then unused
   step?: PentatonicStep // what a preset steps by; default PENTATONIC_STEP
@@ -205,7 +205,6 @@ export function breakLines(lines: readonly ChangesLine[], at: ReadonlySet<string
 
 /** a pentatonic's tension, 0–6, for the tints: the rung (key basis), else from the notes it shares (5 → 0, 4 → 2 … 0 → 6) */
 const levelOf = (shared: number): number => (shared >= 5 ? 0 : 6 - shared)
-const clampRank = (rank: number | undefined): number => (Number.isInteger(rank) ? Math.min(Math.max(rank!, 1), PENTATONIC_RANKS) : 1)
 const flatChords = (lines: readonly ChangesLine[]): ChangesChord[] => lines.flatMap((l) => l.bars.flatMap((b) => b.chords))
 const mapChords = (line: ChangesLine, f: (c: ChangesChord) => ChangesChord): ChangesLine => ({ ...line, bars: line.bars.map((bar) => ({ ...bar, chords: bar.chords.map(f) })) })
 const mapPentatonics = (line: ChangesLine, f: (p: ChangesPentatonic) => ChangesPentatonic): ChangesLine => mapChords(line, (c) => (c.pentatonic ? { ...c, pentatonic: f(c.pentatonic) } : c))
@@ -422,7 +421,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
 
   const basis = pentatonic?.basis ?? 'key'
   const toWritten = pcOf(writtenRoot(part, parseRoot('C'), 'ionian')) // concert pc + this = written pc
-  const rankings = new Map<string, Readonly<{ entries: readonly PentatonicRank[]; scaleName: string }> | null>()
+  const rankings = new Map<string, Readonly<{ entries: readonly RankedPentatonic[]; scaleName: string }> | null>()
   const rankingOf = (scale: string, chordText: string) => {
     const k = `${scale}|${chordText}`
     if (!rankings.has(k)) {
@@ -480,8 +479,9 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
       const r = rankingOf(scale, chordText)
       if (!r) return null
       const found = want === null ? undefined : r.entries.find((e) => pcOf(e.root) === want)
-      const at = found ?? r.entries[clampRank(pentatonic.rank) - 1]!
-      return { ...common, label: `${at.name}♪`, basis, title: `${written} · ${r.scaleName} pentatonic ranking`, key: '', scale: r.scaleName, ladder: [], ranking: r.entries, view: PENTATONIC_HOME, rank: at.rank, root: at.root, name: at.name, shared: at.shared, level: levelOf(at.shared), pc: concertPc(part, pcOf(at.root)), picked: !!found }
+      const degree = pentatonicDegreeFrom(pentatonic.degree)
+      const at = found ?? (degree === 'auto' ? undefined : r.entries.find((e) => e.degree === degree)) ?? r.entries[0]!
+      return { ...common, label: `${at.name}♪`, basis, title: `${written} · ${r.scaleName} pentatonic ranking`, key: '', scale: r.scaleName, ladder: [], ranking: r.entries, view: PENTATONIC_HOME, degree: at.degree, root: at.root, name: at.name, shared: at.shared, level: levelOf(at.shared), pc: concertPc(part, pcOf(at.root)), picked: !!found }
     }
     if (!keyName) return null
     if (!ladders.has(keyName)) ladders.set(keyName, areaLadder(keyName, part))
@@ -493,7 +493,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
       : (Object.hasOwn(pentatonic.bySection, section) ? pentatonic.bySection[section] : undefined) ?? pentatonic.fallback
     const p = found ?? pentatonicAt(area.ladder, sectionView)
     const view = found ? { rung: found.rung, side: found.side ?? sectionView.side } : sectionView
-    return { ...common, label: `${p.name}♪`, basis, title: `${section} · ${area.key} pentatonic ladder`, key: area.key, scale: '', ladder: area.ladder, ranking: [], view, rank: 0, root: p.root, name: p.name, shared: p.shared, level: p.rung, pc: concertPc(part, pcOf(p.root)), picked: !!found }
+    return { ...common, label: `${p.name}♪`, basis, title: `${section} · ${area.key} pentatonic ladder`, key: area.key, scale: '', ladder: area.ladder, ranking: [], view, degree: null, root: p.root, name: p.name, shared: p.shared, level: p.rung, pc: concertPc(part, pcOf(p.root)), picked: !!found }
   }
 
   const hexatonics = new Map<string, ChangesHexatonic | null>()

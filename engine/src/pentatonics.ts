@@ -1,5 +1,5 @@
 import { pitchClasses, rankByFifths, sharedCount } from './ladder'
-import { glyphs, pcOf, rootName, shiftBy, type Spelled } from './pitch'
+import { glyphs, mod, pcOf, rootName, shiftBy, type Spelled } from './pitch'
 import { SCALES, simplifyRoot } from './scales'
 
 /**
@@ -108,9 +108,19 @@ export function pentatonicPathCaption(path: PentatonicPathName, step: Pentatonic
   return `Pentatonics: ${PENTATONIC_PATH_LABELS[path]} · ${unit}`
 }
 
-/** the Scales sheet's Pentatonic practice preset (#266): ranks 1 (closest to the staff's scale) to 12 */
-export const PENTATONIC_RANKS = 12
-export type PentatonicRank = Readonly<{ rank: number; root: Spelled; name: string; shared: number }>
+/**
+ * the Pentatonic choice (#266, #286): the degree a minor pentatonic is built on, in semitones above the chord root
+ * (0 = on the 1 … 11 = on the 7), or Auto: the most shared with the staff's scale, nearest the chord root by fifths
+ */
+export type PentatonicDegree = 'auto' | number
+/** the degrees' names, chromatically from 1 (index = semitones above the chord root) */
+export const PENTATONIC_DEGREE_LABELS: readonly string[] = ['1', '♭2', '2', '♭3', '3', '4', '♯4', '5', '♭6', '6', '♭7', '7']
+const isDegree = (v: unknown): v is number => Number.isInteger(v) && (v as number) >= 0 && (v as number) <= 11
+/** a degree read from untrusted data (storage, a share link): an integer 0–11, else Auto */
+export const pentatonicDegreeFrom = (v: unknown): PentatonicDegree => (isDegree(v) ? v : 'auto')
+
+/** one of a scale's 12 minor pentatonics: the degree it's built on, its root (written), its name ("Dm") and the notes it shares */
+export type RankedPentatonic = Readonly<{ degree: number; root: Spelled; name: string; shared: number }>
 
 /** the chord root walked `fifths` round the circle (+ up, − down), spelled as the ladder spells */
 const walkFifths = (from: Spelled, fifths: number): Spelled => {
@@ -119,24 +129,25 @@ const walkFifths = (from: Spelled, fifths: number): Spelled => {
   return simplifyRoot(n, 'aeolian')
 }
 
-/** the 12 minor pentatonics against a scale (any), most shared first, ties by fewest fifths from the chord root, ♭ side first */
-export function pentatonicRanking(scale: ReadonlySet<number>, chordRoot: Spelled): readonly PentatonicRank[] {
-  return rankByFifths(MINOR_PENT, scale, pcOf(chordRoot)).map((t, i) => {
+/** the 12 minor pentatonics against a scale (any), most shared first, ties by fewest fifths from the chord root, ♭ side first: the first is Auto */
+export function pentatonicRanking(scale: ReadonlySet<number>, chordRoot: Spelled): readonly RankedPentatonic[] {
+  const ref = pcOf(chordRoot)
+  return rankByFifths(MINOR_PENT, scale, ref).map((t) => {
     const root = walkFifths(chordRoot, t.fifths)
-    return { rank: i + 1, root, name: glyphs(`${rootName(root)}m`), shared: t.shared }
+    return { degree: mod(t.root - ref, 12), root, name: glyphs(`${rootName(root)}m`), shared: t.shared }
   })
 }
 
-/** a staff's pentatonic under the preset: best is rank 1's shared count */
-export type StaffPentatonic = Readonly<{ name: string; rank: number; shared: number; best: number }>
+/** a staff's pentatonic under the preset: its name, the degree it's built on (Auto resolved) and the notes it shares with the staff */
+export type StaffPentatonic = Readonly<{ name: string; degree: number; shared: number }>
 
-/** the pentatonic at `rank` against a staff's notes (their pitch classes, in order), and which notes it lights */
-export function pentatonicPick(pcs: readonly number[], chordRoot: Spelled, rank: number): Readonly<{ pentatonic: StaffPentatonic; lit: boolean[] }> {
+/** the pentatonic on `degree` (a bad one reads as Auto) against a staff's notes (their pitch classes, in order), and which notes it lights */
+export function pentatonicPick(pcs: readonly number[], chordRoot: Spelled, degree: PentatonicDegree): Readonly<{ pentatonic: StaffPentatonic; lit: boolean[] }> {
   const ranked = pentatonicRanking(new Set(pcs), chordRoot)
-  const at = ranked[(Number.isInteger(rank) ? Math.min(Math.max(rank, 1), PENTATONIC_RANKS) : 1) - 1]!
+  const at = (isDegree(degree) ? ranked.find((p) => p.degree === degree) : undefined) ?? ranked[0]!
   const shape = pitchClasses(SCALES['minor pentatonic'][0]!, pcOf(at.root))
-  return { pentatonic: { name: at.name, rank: at.rank, shared: at.shared, best: ranked[0]!.shared }, lit: pcs.map((pc) => shape.has(pc)) }
+  return { pentatonic: { name: at.name, degree: at.degree, shared: at.shared }, lit: pcs.map((pc) => shape.has(pc)) }
 }
 
-/** "Dm pent"; with the rank and shared count where no pentatonic fits the scale whole ("F♯m pent · #2 · 3 shared") */
-export const pentatonicCaption = (p: StaffPentatonic): string => `${p.name} pent${p.best < 5 ? ` · #${p.rank} · ${p.shared} shared` : ''}`
+/** "Dm pent · 5 shared": how inside the choice is, always */
+export const pentatonicCaption = (p: StaffPentatonic): string => `${p.name} pent · ${p.shared} shared`

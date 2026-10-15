@@ -5,7 +5,7 @@ import { nextTick } from 'vue'
 import EditorView from '~/components/EditorView.vue'
 import { CHART_REPORT_KEY } from '~/utils/chartReport'
 import { loadChart, saveChart } from '~/utils/myCharts'
-import { decodeShare, parseChart, serializeChart, type ShareView } from '@chord-scale-maker/engine'
+import { decodeShare, parseChart, practiceSelectionFrom, serializeChart, type ShareView } from '@chord-scale-maker/engine'
 
 const { navigate } = vi.hoisted(() => ({ navigate: vi.fn() }))
 mockNuxtImport('navigateTo', () => navigate)
@@ -675,11 +675,18 @@ describe('EditorView overlay', () => {
 
 describe('EditorView pentatonic practice (#266)', () => {
   afterEach(() => localStorage.clear())
-  const shared = { sheet: 'scales', practice: { preset: 'pentatonic', rank: 1 } } as const
+  const shared = { sheet: 'scales', practice: { preset: 'pentatonic', degree: 5 } } as const
 
   it('plays a shared Pentatonic selection', async () => {
     const w = await mountSuspended(EditorView, { props: { initialText: TEXT, shared }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
     expect(w.find('fieldset button[aria-pressed=true]').text()).toBe('Pentatonic')
+    expect(w.find('[aria-label="Pentatonic built on"]').text()).toBe('Built on: 4')
+  })
+
+  it('plays an old link’s Pentatonic rank as Auto', async () => {
+    const old = { sheet: 'scales', practice: practiceSelectionFrom({ preset: 'pentatonic', rank: 7 })! } as const
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT, shared: old }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
+    expect(w.find('[aria-label="Pentatonic built on"]').text()).toBe('Built on: Auto')
   })
   it('clears the picks when the chart’s key changes (a transposed chart’s picks would land elsewhere)', async () => {
     localStorage.setItem('csm-overlay', 'pentatonic')

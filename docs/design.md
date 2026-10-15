@@ -380,12 +380,18 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Presets** (From root only) work per chord, from the chord quality: chord tones, guide tones (the guide tone
   table), and tensions (the rest). From X mode has All.
 - **Storage:** `usePractice` remembers a selection per library chart and per mode in this browser.
-- **Pentatonic** (#266; both modes): a rank 1–12 (`{ preset: 'pentatonic', rank }`, stored and
-  shared like any pick). Each staff ranks the 12 minor pentatonics against its own scale (`pentatonicRanking`: most
-  shared, then fewest fifths from the written chord root, ♭ side first), lights the scale notes the one at that rank
-  shares (`pentatonicPick`) and captions the staff (`Dm pent`; `F♯m pent · #2 · 3 shared` where the best shares
-  under 5). In print the caption is 10px on one line, so 12 staves still fit a page. Spec:
-  docs/superpowers/specs/2026-10-14-pentatonic-practice-design.md.
+- **Pentatonic** (#266, #286; both modes): **Built on** a degree of each chord (`{ preset: 'pentatonic', degree }`,
+  `degree` `'auto'` or 0–11 semitones above the written chord root, 0 = on the 1; stored and shared like any pick).
+  The listbox (`aria-label="Pentatonic built on"`, showing `Built on: ♭3`) offers Auto, then 1, ♭2, 2, ♭3, 3, 4, ♯4,
+  5, ♭6, 6, ♭7, 7 (`PENTATONIC_DEGREE_LABELS`). Each staff ranks the 12 minor pentatonics against its own scale
+  (`pentatonicRanking`: most shared, then fewest fifths from the written chord root, ♭ side first; each spelled by
+  walking the fifths from the chord root, then `simplifyRoot`); Auto is the first, else the one on the degree. It
+  lights the scale notes that one shares (`pentatonicPick`) and captions the staff with its name and shared count,
+  always (`Dm pent · 5 shared`). The usual inside choices (all five shared): on 2, 3 or 6 over Ionian, 1, 2 or 5
+  over Dorian, 2, 5 or 6 over Mixolydian (the Practice panel and Help say so). `pentatonicDegreeFrom` reads untrusted
+  data: a bad degree, and the old `{ preset: 'pentatonic', rank }` (#266's 1–12 rank, stored or in a link), read as
+  Auto. In print the caption is 10px on one line, so 12 staves still fit a page. Spec:
+  docs/superpowers/specs/2026-10-14-pentatonic-practice-design.md (its rank superseded by #286).
 - **Hexatonic** (both modes): `{ preset: 'hexatonic', pair, grouping }`, pair 0 (Auto) or 1–8,
   grouping Triad pair, Chord tones + color, Pentatonic + 1 or Trichords 3+3. After Gary Campbell, *Triad Pairs for
   Jazz* (2001), pp. 4–8: each staff's candidates are the valid links of its scale's triad chain (`triadChain`: on a
@@ -528,11 +534,14 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   without hue. The shared count printed after each label (and in its accessible name) is the non-colour cue, so there
   is no rung-number setting. The contour band #265 drew under the row was removed (#277); triad pairs (#262) follow.
 - **Ranked against** (#272, [spec](superpowers/specs/2026-10-14-pentatonic-per-chord-design.md)): Key (the area's
-  ladder, as above) or Chord (each chord ranks the 12 against its own scale, `pentatonicRanking`, at one Rank 1-12 for
-  the sheet; counts and tints by shared count, `level`). Preferences `csm-pent-basis`, `csm-pent-rank`.
+  ladder, as above) or Chord (each chord ranks the 12 against its own scale, `pentatonicRanking`, and plays the one
+  **Built on** the sheet's degree, Auto or 1 … 7 as on the Scales sheet (#286; `PentatonicPlan.degree`,
+  `ChangesPentatonic.degree`, null on the key basis); its popover lists the ranking, each row the degree it's built on
+  and its shared count; counts and tints by shared count, `level`). Preferences `csm-pent-basis`, `csm-pent-degree`
+  (`auto` or 0–11; the old `csm-pent-rank` is ignored, so it reads as Auto).
 - **Picks** (#272): a label's popover pick covers its `run` (that chord and those its label stands for), stored as
   the concert root per drawn chord (`ChordAt`) in `csm-pent-picks:<slug>`; cleared by any change of Path, Rung, Side,
-  Step, Rank, basis or the chart's key; Reset in the popover. A pick no longer makes the path Custom (a stored Custom still plays).
+  Step, Built on, basis or the chart's key; Reset in the popover. A pick no longer makes the path Custom (a stored Custom still plays).
   An edit carries picks with their chords (#275): `carryPicks` lines up the chords drawn before and after
   (`drawnChords`, the longest common run of chord texts), so a bar put in or taken out moves a pick to its chord's new
   key; a pick on a chord removed or written over goes (undo doesn't bring it back).
