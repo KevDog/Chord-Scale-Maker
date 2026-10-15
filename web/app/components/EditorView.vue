@@ -86,7 +86,6 @@
           'space-y-6',
           focus.on.value && 'fixed inset-0 z-50 overflow-y-auto bg-stand px-4 pb-8 print:static print:overflow-visible print:bg-white print:p-0',
         ]"
-        @keydown="onSheetKeydown"
       >
         <div v-if="focus.on.value" ref="focusBar" class="sticky top-0 z-10 -mx-4 flex justify-end bg-stand/90 px-4 py-3 backdrop-blur-sm print:hidden">
           <UiButton outline @click="focus.exit"><XMarkIcon data-slot="icon" />Exit focus<kbd class="ml-1 font-sans text-xs text-zinc-500 dark:text-zinc-400">Esc</kbd></UiButton>
@@ -356,7 +355,6 @@ const openingText = ((): string => {
 })()
 
 const editor = useChartEditor(openingText)
-const chartHistory = useChartHistory(editor)
 const rendering = useRendering()
 /** under the heading: "Ballad · E♭ · AABA, 32 bars — Johnny Green" */
 const prefs = props.shared ? linkPreferences(props.shared) : usePreferences()
@@ -392,9 +390,6 @@ const resolved = computed(() => resolveScales(editor.doc.value, scaleView.value)
 const pickTargetsNow = computed(() => pickTargets(editor.doc.value, resolved.value))
 const positionsNow = computed(() => chordPositions(editor.doc.value))
 const chordPicks = useChordPicks(props.practiceKey, pickTargetsNow, props.shared?.picks)
-// picks survive Built on, Path, Step, Rung, Side and Ranked against; a transposed chart: a legacy pick has no for to catch it
-watch(() => JSON.stringify(chartKeyOf(editor.doc.value)), () => chordPicks.clearAll())
-watch(() => editor.doc.value, (doc, old) => { if (hasPicks(chordPicks.picks.value)) chordPicks.carry(drawnChords(old), drawnChords(doc)) }) // a bar in or out moves later chords' keys (#275)
 /** the sheet's Pentatonic overlay plan; null under another overlay or none */
 const pentatonicPlan = computed((): PentatonicPlan | null => (prefs.overlay.value === 'pentatonic'
   ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, degree: prefs.pentDegree.value, picks: chordPicks.picks.value.pentatonic } // the Changes sheet ignores stale picks by their for
@@ -430,6 +425,21 @@ const levelLabel = (v: (typeof SCALE_LEVELS)[number]): string => LEVEL_LABELS[v]
 
 if (props.shared?.practice) practice.setSelection(mode.value, props.shared.practice)
 const selection = computed(() => practice.selection(mode.value))
+/** ⌘Z and ⇧⌘Z (#315): the chart's text and its note choices, one history for both sheets; view preferences stay out */
+const chartHistory = useChartHistory(editor, {
+  picks: choice(() => chordPicks.picks.value, chordPicks.set),
+  pentPath: choice(() => pentPath.state.value, pentPath.setState),
+  pentRung: refChoice(prefs.pentRung),
+  pentSide: refChoice(prefs.pentSide),
+  pentBasis: refChoice(prefs.pentBasis),
+  pentDegree: refChoice(prefs.pentDegree),
+  practiceRoot: choice(() => practice.selection('root'), (s) => practice.setSelection('root', s)),
+  practiceFrom: choice(() => practice.selection('from'), (s) => practice.setSelection('from', s)),
+}, props.practiceKey)
+// picks survive Built on, Path, Step, Rung, Side and Ranked against; a transposed chart: a legacy pick has no for to catch it.
+// An undo sets its own picks back with the text, so neither runs then.
+watch(() => JSON.stringify(chartKeyOf(editor.doc.value)), () => { if (!chartHistory.restoring.value) chordPicks.clearAll() })
+watch(() => editor.doc.value, (doc, old) => { if (!chartHistory.restoring.value && hasPicks(chordPicks.picks.value)) chordPicks.carry(drawnChords(old), drawnChords(doc)) }) // a bar in or out moves later chords' keys (#275)
 // every staff with its practice keys, for the panel's boxes and what the selection lights
 const practiceStaves = computed(() =>
   buildSheet(editor.rows.value, part.value, mode.value, start.value, LIMITS.maxExpandedRows, selection.value, undefined, resolved.value, { picks: chordPicks.picks.value, at: positionsNow.value }).flatMap((p) => p.pages.flat()),
@@ -489,13 +499,14 @@ const sheetEdit = ref<SheetEdit | null>(null)
 const sheetPreview = ref<ChordPreview | null>(null)
 /** a chord the sheet should give focus to (its field closed by a key with nowhere to go) */
 const sheetFocus = ref<SheetFocus | null>(null)
-/** ⌘Z and ⇧⌘Z over the sheet while it is the editor; a text field keeps its own undo */
-function onSheetKeydown(e: KeyboardEvent): void {
-  if (!sheetEditor.value) return
+/** ⌘Z and ⇧⌘Z anywhere on the page (#315); a text field keeps its own undo (the editor's pane takes its own first) */
+function onPageKeydown(e: KeyboardEvent): void {
   const t = e.target as HTMLElement | null
-  if (t && /^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName)) return
+  if (t && (/^(INPUT|TEXTAREA|SELECT)$/.test(t.tagName) || t.isContentEditable)) return
   chartHistory.onKeydown(e)
 }
+onMounted(() => window.addEventListener('keydown', onPageKeydown))
+onBeforeUnmount(() => window.removeEventListener('keydown', onPageKeydown))
 /** the part the sheet draws while editing: the instrument's clef and range, in concert pitch */
 const sheetPart = computed((): Part => (sheetEditor.value ? { ...part.value, trans: CONCERT.trans } : part.value))
 const concertNote = computed(() =>

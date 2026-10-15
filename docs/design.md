@@ -227,9 +227,16 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     the canonical form applies only after a grid edit.
   - Grid edits make a new doc (an immutable update), which is serialized back into the text.
   - The text always wins. A grid edit made from a doc older than the typed text is dropped.
-  - **Undo:** ⌘Z and ⇧⌘Z (Ctrl off a Mac) in the grid or the text step through the text's history (`useChartHistory`
-    over the engine's pure `history.ts`). A state is recorded each time the doc changes: a grid edit or a
-    transposition at once, typing after the parse pause, so a burst of keystrokes is one step. It keeps 100 steps.
+  - **Undo (#315):** ⌘Z and ⇧⌘Z (Ctrl off a Mac) anywhere on the song page (a text field outside the editor keeps
+    its own), and Undo/Redo, step through one history of the chart's text and its note choices: chord picks, the
+    pentatonic path and step, Rung, Side, Ranked against, Built on, and the Practice selection per mode. View
+    preferences (level, instrument, spelling, sheet, overlay…) are not steps. `useChartHistory` over the engine's
+    pure `history.ts`: a step holds only the fields it changed (before and after), so undoing it leaves the rest as
+    they are now. A step is recorded each time the doc or a choice changes: a sheet edit or a transposition at once,
+    typing after the parse pause (a burst of keystrokes is one step); what changes in the same moment (an edit and
+    the picks it carries) is one step. It keeps 100 steps, per chart in this browser under `csm-undo:<key>` (shortened
+    from the oldest when storage is full), dropped on opening if the chart or a choice moved on since; a shared chart's
+    lasts for the visit.
 - **Cell validation** (`cellError`): a value may not contain `|` or line breaks, start or end with spaces, or
   start with `#`, `@`, `title:` or `subtitle:`; a row cell may not contain a `#` after a space (it would start a
   trailing comment). Otherwise the serialized text would re-parse as a different line. The bar editor and the
@@ -550,7 +557,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   stands for). Picks no longer clear on a change of Path, Rung, Side, Step, Built on or basis; a pick doesn't make the
   path Custom (a stored Custom still plays). An edit carries picks with their chords (#275): `carryPicks` lines up the
   chords drawn before and after (`drawnChords`, the longest common run of chord texts), so a bar put in or taken out
-  moves a pick to its chord's new key; a pick on a chord removed or written over goes (undo doesn't bring it back).
+  moves a pick to its chord's new key; a pick on a chord removed or written over goes (undoing the edit brings it back: #315).
 
 ### Chord picks ([spec](superpowers/specs/2026-10-15-chord-picks-design.md), #303)
 

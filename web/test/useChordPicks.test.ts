@@ -102,4 +102,15 @@ describe('useChordPicks', () => {
     p.carryTo('mine:1')
     expect(stored('mine:1')).toEqual(p.picks.value)
   })
+
+  it('sets all its picks back at once, for an undo (#315)', async () => {
+    const p = make('u')
+    p.pick('pentatonic', ['A:1:0'], 9)
+    const before = p.picks.value
+    p.pick('pentatonic', ['A:3:0'], 2)
+    p.set(before)
+    expect(p.picks.value).toEqual(before)
+    await nextTick()
+    expect(stored('u')).toEqual(before)
+  })
 })

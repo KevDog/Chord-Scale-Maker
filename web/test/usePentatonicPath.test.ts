@@ -128,4 +128,15 @@ describe('usePentatonicPath', () => {
     expect(localStorage.length).toBe(0)
     expect(p.path.value).toBe('fifths')
   })
+
+  it('gives its whole state, and takes one back, for an undo (#315)', async () => {
+    const p = make('autumn')
+    const before = p.state.value
+    p.setPath('side-slip')
+    p.setStep({ unit: 'bars', bars: 8 })
+    p.setState(before)
+    expect([p.path.value, p.step.value]).toEqual(['one', { unit: 'section', bars: 4 }])
+    await nextTick()
+    expect(localStorage.getItem('csm-pent-path:autumn')).toBeNull()
+  })
 })
