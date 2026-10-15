@@ -297,3 +297,21 @@ describe('ChangesSystem interface levels', () => {
     expect(reading.findAllComponents({ name: 'ChangesNote' })).toHaveLength(2)
   })
 })
+
+describe('ChangesSystem pentatonic ladder by interface level', () => {
+  afterEach(() => {
+    useRuntimeConfig().public.features.interfaceLevels = false
+    useInterface().level.value = 'everything'
+  })
+
+  it('below Everything the row prints its labels, no ladder to open', async () => {
+    useRuntimeConfig().public.features.interfaceLevels = true
+    useInterface().level.value = 'intermediate'
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Cmaj7').value
+    const plan = { bySection: { B: { rung: 5, side: 'flat' as const } }, fallback: { rung: 0, side: 'flat' as const }, counts: true }
+    const line = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)[1]!
+    const w = await mountSuspended(ChangesSystem, { props: { line, first: true, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, pentatonic: plan, counted: true } })
+    expect(w.findAllComponents({ name: 'PentatonicLadder' })).toHaveLength(0)
+    expect(w.find('[data-slot="pentatonic"] [data-section="B"]').text()).toContain('B♭m')
+  })
+})

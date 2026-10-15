@@ -776,3 +776,39 @@ describe('EditorView interface notice', () => {
     expect(notice(await mount({ sheet: 'changes', level: 'advanced', seed: 1 })).exists()).toBe(false)
   })
 })
+
+describe('EditorView interface fixes', () => {
+  afterEach(() => {
+    useRuntimeConfig().public.features.interfaceLevels = false
+    useInterface().level.value = 'everything'
+    localStorage.clear()
+  })
+
+  it('a chart whose text has a problem offers its Source at any level', async () => {
+    useRuntimeConfig().public.features.interfaceLevels = true
+    useInterface().level.value = 'essentials'
+    const w = await mountSuspended(EditorView, { props: { initialText: 'title: T\nA | 1 | Cm7\nwhat is this\n' }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await nextTick()
+    expect(w.text()).toContain('Editing the sheet')
+    const show = buttonCalled(w, 'Source')
+    expect(show).toBeDefined()
+    await show?.trigger('click')
+    await nextTick()
+    expect(w.find('textarea[aria-label="Chart text"]').exists()).toBe(true)
+  })
+
+  it('Reset clears the practice selection in force, not another mode’s', async () => {
+    useRuntimeConfig().public.features.interfaceLevels = true
+    useInterface().level.value = 'essentials'
+    localStorage.setItem('csm-spell', 'root')
+    localStorage.setItem('csm-practice:autumn-leaves:root', JSON.stringify({ preset: 'guideTones' }))
+    localStorage.setItem('csm-practice:autumn-leaves:from', JSON.stringify({ preset: 'all' }))
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT, practiceKey: 'autumn-leaves', shared: undefined }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    await chooseSheet(w, 'Scales')
+    w.findComponent({ name: 'InterfaceNotice' }).vm.$emit('reset')
+    await nextTick()
+    expect(localStorage.getItem('csm-practice:autumn-leaves:root')).toBeNull()
+    expect(localStorage.getItem('csm-practice:autumn-leaves:from')).not.toBeNull()
+  })
+})

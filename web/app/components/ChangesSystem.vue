@@ -147,8 +147,8 @@
         :data-chord="m.p.chord"
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
-        <span class="hidden print:inline">{{ m.p.label }}</span>
-        <PentatonicLadder class="print:hidden" :p="m.p" @pick="emit('pentatonic', m.p.run, $event)" @reset="emit('pentatonic', m.p.run, null)" />
+        <span :class="shows('pentatonics') && 'hidden print:inline'">{{ m.p.label }}</span>
+        <PentatonicLadder v-if="shows('pentatonics')" class="print:hidden" :p="m.p" @pick="emit('pentatonic', m.p.run, $event)" @reset="emit('pentatonic', m.p.run, null)" />
       </span>
     </div>
     <!-- a full last line: the ghost bar as a pill under it -->

@@ -47,7 +47,7 @@
               <UiButton plain :disabled="!chartHistory.canUndo.value" title="Undo (⌘Z)" @click="chartHistory.undo"><ArrowUturnLeftIcon data-slot="icon" />Undo</UiButton>
               <UiButton plain :disabled="!chartHistory.canRedo.value" title="Redo (⇧⌘Z)" @click="chartHistory.redo"><ArrowUturnRightIcon data-slot="icon" />Redo</UiButton>
               <UiButton v-if="saved || shared" plain :disabled="!unsaved" title="Save in this browser now (edits also save a moment after you stop)" @click="saveNow"><BookmarkIcon data-slot="icon" />Save</UiButton>
-              <UiDropdown v-if="ui.shows('source')">
+              <UiDropdown v-if="sourceOffered">
                 <UiDropdownButton plain aria-label="More editing options"><EllipsisHorizontalIcon data-slot="icon" /></UiDropdownButton>
                 <UiDropdownMenu anchor="end">
                   <UiDropdownItem @click="prefs.source.value = !sourceShown"><CodeBracketIcon data-slot="icon" />{{ sourceShown ? 'Hide source' : 'Show source' }}</UiDropdownItem>
@@ -101,7 +101,7 @@
             <span class="flex items-center gap-2">
               <UiButton plain class="text-white! hover:bg-white/10!" :disabled="!chartHistory.canUndo.value" aria-label="Undo the last change" title="Undo (⌘Z)" @click="chartHistory.undo"><ArrowUturnLeftIcon data-slot="icon" class="text-white!" />Undo</UiButton>
               <UiButton plain class="text-white! hover:bg-white/10!" :disabled="!chartHistory.canRedo.value" aria-label="Redo the last change" title="Redo (⇧⌘Z)" @click="chartHistory.redo"><ArrowUturnRightIcon data-slot="icon" class="text-white!" />Redo</UiButton>
-              <UiButton v-if="ui.shows('source')" plain class="text-white! hover:bg-white/10!" :aria-pressed="sourceShown" title="Show or hide the chart's text" @click="prefs.source.value = !sourceShown"><CodeBracketIcon data-slot="icon" class="text-white!" />Source</UiButton>
+              <UiButton v-if="sourceOffered" plain class="text-white! hover:bg-white/10!" :aria-pressed="sourceShown" title="Show or hide the chart's text" @click="prefs.source.value = !sourceShown"><CodeBracketIcon data-slot="icon" class="text-white!" />Source</UiButton>
               <UiButton v-if="saved || shared" plain class="text-white! hover:bg-white/10!" :disabled="!unsaved" title="Save in this browser now (edits also save a moment after you stop)" @click="saveNow"><BookmarkIcon data-slot="icon" class="text-white!" />Save</UiButton>
               <UiButton color="white" @click="toggleEditor">Done editing</UiButton>
             </span>
@@ -408,7 +408,9 @@ function editSheetChord(chord: SheetChordEdit): void {
   sheetChord.value = chord
 }
 /** the Source: in the banner, or under ⋯ below md, remembered; always shown for a chart over a size limit (only the text can fix it) */
-const sourceShown = computed(() => (ui.shows('source') && prefs.source.value) || editor.fatal.value)
+/** the Source is offered from Everything, and at any level while the text has a problem (only the text can fix it) */
+const sourceOffered = computed(() => ui.shows('source') || editor.diagnostics.value.length > 0)
+const sourceShown = computed(() => (sourceOffered.value && prefs.source.value) || editor.fatal.value)
 /** the chart's key, for the sheets' key signature, drawn once at the start (undefined when the flag is off: drawn as before) */
 const homeKey = computed(() => (signaturesOn ? chartKeyOf(editor.doc.value) : undefined))
 const practice = usePractice(props.practiceKey)
@@ -438,17 +440,19 @@ const hidden = computed(() =>
     ? hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: prefs.numerals.value, scaleNames: prefs.scaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, pentatonics: pentatonicsOn && prefs.pentatonics.value })
     : null,
 )
-const RESETS: Readonly<Record<HiddenSetting, () => void>> = {
+/** each reset, given the mode in force before any of them ran (resetting the spelling changes the mode) */
+const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
   'scale-level': () => (scaleLevel.level.value = 'standard'),
   numerals: () => (prefs.numerals.value = true),
   'scale-names': () => (prefs.scaleNames.value = true),
   line: () => (prefs.lineMode.value = 'off'),
   spell: () => (prefs.spell.value = 'key'),
-  practice: () => practice.setSelection(mode.value, null),
+  practice: (inForce) => practice.setSelection(inForce, null),
   pentatonics: () => (prefs.pentatonics.value = false),
 }
 function resetHidden(): void {
-  for (const s of hidden.value?.settings ?? []) RESETS[s]()
+  const inForce = mode.value
+  for (const s of hidden.value?.settings ?? []) RESETS[s](inForce)
 }
 const focus = useFocusMode()
 const focusBar = ref<HTMLElement | null>(null)
