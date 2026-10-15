@@ -691,13 +691,13 @@ describe('EditorView pentatonic practice (#266)', () => {
   it('clears the picks when the chart’s key changes (a transposed chart’s picks would land elsewhere)', async () => {
     localStorage.setItem('csm-overlay', 'pentatonic')
     const w = await mountSuspended(EditorView, { props: { initialText: 'title: T\nkey: C\nA | 1 | Cm7\n' }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
-    const picks = () => (changesSheet(w).props('overlay') as { picks?: Record<string, number> } | null)?.picks
+    const picks = () => (changesSheet(w).props('overlay') as { picks?: Record<string, { pc: number }> } | null)?.picks
     changesSheet(w).vm.$emit('pentatonic', ['A:1:0'], 7)
     await nextTick()
-    expect(picks()).toEqual({ 'A:1:0': 7 })
+    expect(picks()).toEqual({ 'A:1:0': { pc: 7 } })
     changesSheet(w).vm.$emit('update:doc', parseChart('title: T\nkey: C\nA | 1 | Cm7\nA | 2 | F7\n').value) // same key: kept
     await nextTick()
-    expect(picks()).toEqual({ 'A:1:0': 7 })
+    expect(picks()).toEqual({ 'A:1:0': { pc: 7 } })
     changesSheet(w).vm.$emit('update:doc', parseChart('title: T\nkey: Bb\nA | 1 | Bbm7\nA | 2 | Eb7\n').value)
     await nextTick()
     expect(picks()).toEqual({})

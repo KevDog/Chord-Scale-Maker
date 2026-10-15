@@ -1,9 +1,9 @@
 import { analyse, chartKeyOf, parseKey } from './analysis'
 import { type ChartDoc, type ChartLine, chartBeats, expandRowLines, formPart, type FormPart, type LinedRow, qualityScale } from './chart'
 import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRootLenient, writtenChordTextOrNull } from './chord'
-import { hexatonicAuto, hexatonicPairs } from './hexatonics'
+import { type HexPair, hexatonicPairs, hexatonicRanking } from './hexatonics'
 import { guideToneTimeline } from './guideToneTimeline'
-import { pickTarget } from './chordPicks'
+import { type HexPick, livePick, type PentPick, pickTarget } from './chordPicks'
 import { arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
 import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
 import { keySignature } from './keySignature'
@@ -27,13 +27,15 @@ export type ChordAt = string // `${section}:${bar}:${k}`: the drawn bar's at.sec
 /** a chord the Changes sheet draws, by its ChordAt, with its chart text */
 export type DrawnChord = Readonly<{ at: ChordAt; text: string }>
 export type PentatonicBasis = 'key' | 'chord'
+/** what a chord's pick would be made for (#303): its chart text and resolved scale, concert; null when it has no scale */
+export type PickSource = Readonly<{ chord: string; scale: string }> | null
 /** a chord's pentatonic (#255, #264, #272): its label, and what made it (the key area's ladder or its own scale's ranking) */
 export type ChangesPentatonic = Readonly<{
   label: string
   basis: PentatonicBasis
   title: string // 'B · F major pentatonic ladder' | 'Dm7 · D Aeolian pentatonic ranking'
   key: string // key basis: the area's key; chord basis: ''
-  scale: string // chord basis: its scale, written ('D Aeolian'); key basis: ''
+  scale: string // its scale, written ('D Aeolian'); '' when it has none
   ladder: readonly PentatonicRung[] // key basis; [] for chord
   ranking: readonly RankedPentatonic[] // chord basis; [] for key
   section: string
@@ -47,6 +49,8 @@ export type ChangesPentatonic = Readonly<{
   pc: number // concert pitch class of root
   picked: boolean
   run: readonly ChordAt[] // a printed label's chord and the following ones it stands for; [] on an unprinted label
+  sheet: string // the name it plays without a pick (#303)
+  source: PickSource
 }>
 /** a section the Changes sheet draws (a block): its key (its first section's name), its marker, its place in the form */
 export type ChangesSection = Readonly<{ key: string; marker: string; part: FormPart }>
@@ -58,16 +62,19 @@ export type PentatonicPlan = Readonly<{
   counts: boolean
   basis?: PentatonicBasis // default 'key'
   degree?: PentatonicDegree // chord basis (#286): the degree each chord's pentatonic is built on, 0–11, or Auto (the default; a bad one reads as Auto)
-  picks?: Readonly<Record<ChordAt, number>> // concert pc of a picked pentatonic's root
+  picks?: Readonly<Record<ChordAt, PentPick>> // a picked pentatonic's root, concert pc, and what it was picked for (#303)
   path?: PentatonicPathName // a preset (#276): each chord plays its unit's step of it; bySection and fallback then unused
   step?: PentatonicStep // what a preset steps by; default PENTATONIC_STEP
 }>
-/** the Hexatonic overlay: each chord's Auto pair on its resolved scale */
-export type HexatonicPlan = Readonly<{ kind: 'hexatonic' }>
+/** the Hexatonic overlay: each chord's Auto pair on its resolved scale, or its live pick (#303) */
+export type HexatonicPlan = Readonly<{ kind: 'hexatonic'; picks?: Readonly<Record<ChordAt, HexPick>> }>
 /** the row under the chords (Off | Pentatonic | Hexatonic): null for none */
 export type OverlayPlan = PentatonicPlan | HexatonicPlan
-/** a chord's hexatonic: its Auto pair's name ("G/Am"), and its label (the name; '' where showHexatonics leaves it unprinted) */
-export type ChangesHexatonic = Readonly<{ label: string; name: string }>
+/**
+ * a chord's hexatonic: the pair it plays ("G/Am", its pick or else Auto), and its label (the name; '' where
+ * showHexatonics leaves it unprinted); run and picked as the pentatonic row's (#303); sheet: Auto's name
+ */
+export type ChangesHexatonic = Readonly<{ label: string; name: string; chord: ChordAt; picked: boolean; run: readonly ChordAt[]; sheet: string; source: PickSource }>
 
 export type ChangesChord = Readonly<{
   /** the beat it starts on, from 0 */
@@ -247,18 +254,36 @@ export function showPentatonics(lines: readonly ChangesLine[]): readonly Changes
   })
 }
 
-/** the hexatonic row as printed, run after breakLines: a label where its name differs from the last one on the line; a chord with none ends it. Idempotent: a label reads its name */
+/**
+ * the hexatonic row as printed, run after breakLines: a label where its name differs from the last one on the line; a
+ * chord with none ends it. A printed label's run is its chord and the unprinted ones after it, picked when any in it
+ * is (#303). Idempotent: a label reads its name, and a run its chords' own picks
+ */
 export function showHexatonics(lines: readonly ChangesLine[]): readonly ChangesLine[] {
   return lines.map((line): ChangesLine => {
+    const all = line.bars.flatMap((b) => b.chords)
     let last: string | null = null
-    return mapChords(line, (c) => {
+    const printed = all.map((c) => {
       if (!c.hexatonic) {
         last = null
-        return c
+        return false
       }
       const shown = c.hexatonic.name !== last
       last = c.hexatonic.name
-      return { ...c, hexatonic: { ...c.hexatonic, label: shown ? c.hexatonic.name : '' } }
+      return shown
+    })
+    const runAt = (i: number): ChangesHexatonic[] => {
+      const out = [all[i]!.hexatonic!]
+      for (let j = i + 1; j < all.length && all[j]!.hexatonic && !printed[j]; j++) out.push(all[j]!.hexatonic!)
+      return out
+    }
+    let n = 0
+    return mapChords(line, (c) => {
+      const i = n++
+      if (!c.hexatonic) return c
+      if (!printed[i]) return { ...c, hexatonic: { ...c.hexatonic, label: '' } }
+      const run = runAt(i)
+      return { ...c, hexatonic: { ...c.hexatonic, label: c.hexatonic.name, run: run.map((h) => h.chord), picked: run.some((h) => h.picked) } }
     })
   })
 }
@@ -480,20 +505,20 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     return areaUnit.get(i) ?? 0
   }
   const ladders = new Map<string, ReturnType<typeof areaLadder>>()
-  const pentatonicOf = (keyName: string | undefined, section: string, chord: ChordAt, written: string, scale: string | null, chordText: string, unit: number | null): ChangesPentatonic | null => {
+  const pentatonicOf = (keyName: string | undefined, section: string, chord: ChordAt, written: string, scale: string | null, chordText: string, unit: number | null, target: string): ChangesPentatonic | null => {
     if (!pentatonic) return null
-    const picks = pentatonic.picks ?? {}
-    const pick = Object.hasOwn(picks, chord) ? picks[chord] : undefined
+    const pick = livePick(pentatonic.picks ?? {}, chord, target)?.pc
     const want = pick === undefined ? null : mod(pick + toWritten, 12) // the pick, written
-    const common = { section, chord, run: [] as readonly ChordAt[] }
+    const common = { section, chord, run: [] as readonly ChordAt[], source: scale ? { chord: chordText, scale } : null }
     if (basis === 'chord') {
       if (!scale) return null
       const r = rankingOf(scale, chordText)
       if (!r) return null
       const found = want === null ? undefined : r.entries.find((e) => pcOf(e.root) === want)
       const degree = pentatonicDegreeFrom(pentatonic.degree)
-      const at = found ?? (degree === 'auto' ? undefined : r.entries.find((e) => e.degree === degree)) ?? r.entries[0]!
-      return { ...common, label: `${at.name}♪`, basis, title: `${written} · ${r.scaleName} pentatonic ranking`, key: '', scale: r.scaleName, ladder: [], ranking: r.entries, view: PENTATONIC_HOME, degree: at.degree, root: at.root, name: at.name, shared: at.shared, level: levelOf(at.shared), pc: concertPc(part, pcOf(at.root)), picked: !!found }
+      const sheet = (degree === 'auto' ? undefined : r.entries.find((e) => e.degree === degree)) ?? r.entries[0]!
+      const at = found ?? sheet
+      return { ...common, sheet: sheet.name, label: `${at.name}♪`, basis, title: `${written} · ${r.scaleName} pentatonic ranking`, key: '', scale: r.scaleName, ladder: [], ranking: r.entries, view: PENTATONIC_HOME, degree: at.degree, root: at.root, name: at.name, shared: at.shared, level: levelOf(at.shared), pc: concertPc(part, pcOf(at.root)), picked: !!found }
     }
     if (!keyName) return null
     if (!ladders.has(keyName)) ladders.set(keyName, areaLadder(keyName, part))
@@ -503,25 +528,33 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     const sectionView = preset
       ? unit === null ? PENTATONIC_HOME : pentatonicCycle(pentatonic.path!, unit)
       : (Object.hasOwn(pentatonic.bySection, section) ? pentatonic.bySection[section] : undefined) ?? pentatonic.fallback
-    const p = found ?? pentatonicAt(area.ladder, sectionView)
+    const sheet = pentatonicAt(area.ladder, sectionView)
+    const p = found ?? sheet
     const view = found ? { rung: found.rung, side: found.side ?? sectionView.side } : sectionView
-    return { ...common, label: `${p.name}♪`, basis, title: `${section} · ${area.key} pentatonic ladder`, key: area.key, scale: '', ladder: area.ladder, ranking: [], view, degree: null, root: p.root, name: p.name, shared: p.shared, level: p.rung, pc: concertPc(part, pcOf(p.root)), picked: !!found }
+    return { ...common, sheet: sheet.name, label: `${p.name}♪`, basis, title: `${section} · ${area.key} pentatonic ladder`, key: area.key, scale: sheetScale(part, scale) ?? '', ladder: area.ladder, ranking: [], view, degree: null, root: p.root, name: p.name, shared: p.shared, level: p.rung, pc: concertPc(part, pcOf(p.root)), picked: !!found }
   }
 
-  const hexatonics = new Map<string, ChangesHexatonic | null>()
-  const hexatonicOf = (scale: string | null, chordText: string): ChangesHexatonic | null => {
+  const hexRankings = new Map<string, readonly HexPair[]>()
+  const hexatonicOf = (scale: string | null, chordText: string, at: ChordAt, target: string): ChangesHexatonic | null => {
     if (overlay?.kind !== 'hexatonic' || !scale) return null
     const k = `${scale}|${chordText}`
-    if (!hexatonics.has(k)) {
-      const auto = orNull(() => {
+    if (!hexRankings.has(k)) {
+      const ranking = orNull(() => {
         const w = writtenScale(part, scale)
         const chordRoot = orNull(() => writtenChordRootLenient(part, chordText, scale)) ?? w.root
         const quality = orNull(() => baseQuality(parseChord(chordText).quality))
-        return hexatonicAuto(hexatonicPairs(w.notes, chordRoot, quality), chordRoot)
+        return hexatonicRanking(hexatonicPairs(w.notes, chordRoot, quality), chordRoot)
       })
-      hexatonics.set(k, auto ? { label: auto.name, name: auto.name } : null)
+      hexRankings.set(k, ranking ?? [])
     }
-    return hexatonics.get(k) ?? null
+    const ranking = hexRankings.get(k)!
+    const auto = ranking[0]
+    if (!auto) return null
+    const pick = livePick(overlay.picks ?? {}, at, target)
+    const want = pick ? pick.roots.map((pc) => mod(pc + toWritten, 12)) : null // the pick, written
+    const found = want ? ranking.find((p) => pcOf(p.lower.root) === want[0] && pcOf(p.upper.root) === want[1]) : undefined
+    const used = found ?? auto
+    return { label: used.name, name: used.name, chord: at, picked: !!found, run: [], sheet: auto.name, source: { chord: chordText, scale } }
   }
 
   let lastKey = ''
@@ -554,8 +587,8 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             heardIn: a ? keyName((a.statedKey ?? a.key).name, part) : '',
             keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',
             guide: voices?.labels.get(i) ?? '',
-            pentatonic: pentatonicOf(a?.key.name, block.section, keyOf.get(i) ?? '', written, scale, row.chord, unitOf(k, j, i)),
-            hexatonic: hexatonicOf(scale, row.chord),
+            pentatonic: pentatonicOf(a?.key.name, block.section, keyOf.get(i) ?? '', written, scale, row.chord, unitOf(k, j, i), pickTarget(row.chord, scale)),
+            hexatonic: hexatonicOf(scale, row.chord, keyOf.get(i) ?? '', pickTarget(row.chord, scale)),
           }
         })
       const firstKey = block.rows.map((i) => byRow.get(i)).find((a) => a && barOf(a.row) === bar)?.key.name

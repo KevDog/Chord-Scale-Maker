@@ -254,7 +254,7 @@ describe('the Changes sheet', () => {
     })
 
     it('a pick still wins over the preset', () => {
-      const [, b] = build(ABC, preset('minor-thirds', undefined, { picks: { 'B:2:0': 9 } })).lines.flatMap((l) => l.bars.flatMap((x) => x.chords)) // concert A: Am, Home
+      const [, b] = build(ABC, preset('minor-thirds', undefined, { picks: { 'B:2:0': { pc: 9 } } })).lines.flatMap((l) => l.bars.flatMap((x) => x.chords)) // concert A: Am, Home
       expect([tag(b?.pentatonic?.view), b?.pentatonic?.picked]).toEqual(['0', true])
     })
 
@@ -348,7 +348,7 @@ describe('scale labels', () => {
 
   describe('picks', () => {
     const C4 = 'title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | Cmaj7'
-    const keyPlan = (picks: Record<string, number> = {}): PentatonicPlan => ({ kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, picks })
+    const keyPlan = (picks: Record<string, number> = {}): PentatonicPlan => ({ kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, picks: Object.fromEntries(Object.entries(picks).map(([k, pc]) => [k, { pc }])) })
     const shown = (text: string, plan: PentatonicPlan, part = CONCERT) => flat(showPentatonics(buildChanges(parseChart(text).value, part, 4, false, 'off', undefined, plan).lines))
 
     it('gives each printed label the run of chords it covers', () => {
@@ -713,10 +713,10 @@ describe('the Hexatonic overlay', () => {
     const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | Cmaj7').value
     const chords = flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, HEX).lines)
     expect(chords.map((c) => c.hexatonic)).toEqual([
-      { label: 'G/Am', name: 'G/Am' },
-      { label: 'C/Dm', name: 'C/Dm' },
-      { label: 'Dm/Em', name: 'Dm/Em' },
-      { label: 'G/Am', name: 'G/Am' },
+      expect.objectContaining({ label: 'G/Am', name: 'G/Am' }),
+      expect.objectContaining({ label: 'C/Dm', name: 'C/Dm' }),
+      expect.objectContaining({ label: 'Dm/Em', name: 'Dm/Em' }),
+      expect.objectContaining({ label: 'G/Am', name: 'G/Am' }),
     ])
     expect(chords.every((c) => c.pentatonic === null)).toBe(true)
   })
@@ -750,7 +750,7 @@ describe('the Hexatonic overlay', () => {
 
   it('keeps the name where the label is blanked', () => {
     const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Cmaj7').value
-    expect(flat(showHexatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, HEX).lines))[1]?.hexatonic).toEqual({ label: '', name: 'G/Am' })
+    expect(flat(showHexatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, HEX).lines))[1]?.hexatonic).toMatchObject({ label: '', name: 'G/Am' })
   })
 
   it('is idempotent, and gives a blanked label back where a new break starts a line on it', () => {
@@ -797,5 +797,62 @@ describe('chordPositions', () => {
     const resolved = resolveScales(doc, { level: 'standard', seed: 0 })
     expect(resolved.get(5)?.scale).toBe('E Phrygian Dominant')
     expect(pickTargets(doc, resolved).get('B:6:0')).toBe(pickTarget('E7', resolved.get(5)?.scale ?? null))
+  })
+})
+
+describe('chord picks (#303)', () => {
+  const C4 = 'title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | Cmaj7'
+  const doc = parseChart(C4).value
+  const flat = (lines: readonly ChangesLine[]) => lines.flatMap((l) => l.bars.flatMap((b) => b.chords))
+  const target = (at: string) => pickTargets(doc, resolveScales(doc, { level: 'standard', seed: 0 })).get(at)!
+  const chordPlan = (picks: Record<string, { pc: number; for?: string }>): PentatonicPlan => ({ kind: 'pentatonic', bySection: {}, fallback: PENTATONIC_HOME, counts: false, basis: 'chord', degree: 'auto', picks })
+  const keyPlan = (picks: Record<string, { pc: number; for?: string }>): PentatonicPlan => ({ kind: 'pentatonic', bySection: {}, fallback: PENTATONIC_HOME, counts: false, picks })
+  const hex = (picks: Record<string, { roots: readonly [number, number]; for?: string }> = {}, part = CONCERT) =>
+    flat(showHexatonics(buildChanges(doc, part, 4, false, 'off', undefined, { kind: 'hexatonic', picks }).lines)).map((c) => c.hexatonic)
+
+  it('applies a pentatonic pick made for its position’s chord and scale, on its run only', () => {
+    // every chord's Auto here is Dm (5 shared, nearest by fifths: pentatonicRanking), so Em on Dm7 is the only change
+    const chords = flat(showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, chordPlan({ 'A:2:0': { pc: 4, for: target('A:2:0') } })).lines))
+    expect(chords.map((c) => [c.pentatonic?.name, c.pentatonic?.picked, c.pentatonic?.sheet])).toEqual([['Dm', false, 'Dm'], ['Em', true, 'Dm'], ['Dm', false, 'Dm'], ['Dm', false, 'Dm']])
+  })
+
+  it('ignores a pick made for another chord or scale (a stale pick): the sheet’s choice, nothing picked', () => {
+    const chords = flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, chordPlan({ 'A:2:0': { pc: 4, for: 'Dm7|D Aeolian' } })).lines)
+    expect(chords[1]?.pentatonic).toMatchObject({ name: 'Dm', picked: false })
+  })
+
+  it('ignores a stale pick on the Key basis too, with no counts because of it; a live one plays', () => {
+    const stale = flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, keyPlan({ 'A:2:0': { pc: 7, for: 'Dm7|D Aeolian' } })).lines)
+    expect(stale.map((c) => c.pentatonic?.label)).toEqual(['Am♪', 'Am♪', 'Am♪', 'Am♪'])
+    const live = flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, keyPlan({ 'A:2:0': { pc: 7, for: target('A:2:0') } })).lines)
+    expect(live[1]?.pentatonic).toMatchObject({ name: 'Gm', picked: true, sheet: 'Am', scale: 'D Dorian', source: { chord: 'Dm7', scale: 'D Dorian' } })
+  })
+
+  it('gives each label its source, concert', () => {
+    const chords = flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, chordPlan({})).lines)
+    expect(chords[2]?.pentatonic?.source).toEqual({ chord: 'G7', scale: resolveScales(doc, { level: 'standard', seed: 0 }).get(2)?.scale })
+    expect(flat(buildChanges(doc, TENOR, 4, false, 'off', undefined, chordPlan({})).lines)[2]?.pentatonic?.source).toEqual({ chord: 'G7', scale: 'G Mixolydian' })
+  })
+
+  it('applies a hexatonic pick on its chord; the Auto pair elsewhere; runs like the pentatonic row', () => {
+    const h = hex({ 'A:1:0': { roots: [0, 2], for: target('A:1:0') } }) // C/Dm on Cmaj7
+    expect(h.map((x) => [x?.name, x?.picked, x?.sheet])).toEqual([['C/Dm', true, 'G/Am'], ['C/Dm', false, 'C/Dm'], ['Dm/Em', false, 'Dm/Em'], ['G/Am', false, 'G/Am']])
+    expect(h[0]?.run).toEqual(['A:1:0', 'A:2:0']) // Dm7's Auto is C/Dm too: its label merges into the pick's
+    expect(h[1]?.label).toBe('')
+    expect(h[0]?.source).toEqual({ chord: 'Cmaj7', scale: 'C Ionian' })
+  })
+
+  it('ignores a hexatonic pick whose roots are not among the chord’s pairs, or that is stale', () => {
+    expect(hex({ 'A:1:0': { roots: [1, 3], for: target('A:1:0') } })[0]).toMatchObject({ name: 'G/Am', picked: false })
+    expect(hex({ 'A:1:0': { roots: [0, 2], for: 'Cmaj7|C Lydian' } })[0]).toMatchObject({ name: 'G/Am', picked: false })
+  })
+
+  it('keeps a hexatonic pick’s sounding pair on a B♭ part', () => {
+    expect(hex({ 'A:1:0': { roots: [0, 2], for: target('A:1:0') } }, TENOR)[0]).toMatchObject({ name: 'D/Em', picked: true })
+  })
+
+  it('shows the hexatonic row idempotently, picks and runs included', () => {
+    const once = showHexatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, { kind: 'hexatonic', picks: { 'A:1:0': { roots: [0, 2], for: target('A:1:0') } } }).lines)
+    expect(showHexatonics(once)).toEqual(once)
   })
 })

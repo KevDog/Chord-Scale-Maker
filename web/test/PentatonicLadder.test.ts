@@ -10,7 +10,7 @@ const pentOf = (text: string, plan: PentatonicPlan): ChangesPentatonic =>
   showPentatonics(buildChanges(parseChart(text).value, CONCERT, 4, false, 'off', undefined, plan).lines)[0]!.bars[0]!.chords[0]!.pentatonic!
 const KEY = pentOf('title: T\nkey: C\nA | 1 | Cmaj7', { kind: 'pentatonic', bySection: {}, fallback: { rung: 2, side: 'flat' }, counts: false })
 const CHORD = pentOf('title: T\nkey: F\nA | 1 | Dm7', { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, basis: 'chord', degree: 2 }) // Em, on the 2 of D Dorian
-const PICKED = pentOf('title: T\nkey: C\nA | 1 | Cmaj7', { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, picks: { 'A:1:0': 7 } })
+const PICKED = pentOf('title: T\nkey: C\nA | 1 | Cmaj7', { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, picks: { 'A:1:0': { pc: 7 } } })
 const props = { p: KEY }
 
 describe('the pentatonic ladder popover', () => {

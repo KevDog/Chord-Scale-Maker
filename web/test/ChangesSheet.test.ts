@@ -177,7 +177,7 @@ describe('ChangesSheet chord-basis tints (#272)', () => {
 
   it('tints on the key basis with a pick', async () => {
     const at = buildChanges(doc, CONCERT, 4, false, 'off', undefined, { ...base, basis: 'chord' }).lines[0]!.bars[0]!.chords[0]!.pentatonic!.chord
-    const w = await mountPlan({ ...base, basis: 'key', picks: { [at]: 0 } })
+    const w = await mountPlan({ ...base, basis: 'key', picks: { [at]: { pc: 0 } } })
     expect(hasRungLabel(w)).toBe(true)
   })
 })

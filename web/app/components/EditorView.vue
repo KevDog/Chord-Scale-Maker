@@ -287,6 +287,7 @@ import {
   instrumentLabel,
   LEVEL_LABELS,
   parseChart,
+  chordPicksFrom,
   LIMITS,
   litKeys,
   type Mode,
@@ -382,7 +383,7 @@ const pentPicks = usePentatonicPicks(props.practiceKey)
 watch([pentPath.path, () => JSON.stringify(pentPath.step.value), prefs.pentRung, prefs.pentSide, prefs.pentDegree, prefs.pentBasis, () => JSON.stringify(chartKeyOf(editor.doc.value))], () => pentPicks.clear()) // picks are concert pitches: a transposed chart lands them elsewhere
 watch(() => editor.doc.value, (doc, old) => { if (Object.keys(pentPicks.picks.value).length) pentPicks.carry(drawnChords(old), drawnChords(doc)) }) // a bar in or out moves later chords' keys (#275)
 const pentatonicPlan = computed((): PentatonicPlan | null => (prefs.overlay.value === 'pentatonic'
-  ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, degree: prefs.pentDegree.value, picks: pentPicks.picks.value }
+  ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, degree: prefs.pentDegree.value, picks: chordPicksFrom(pentPicks.picks.value).pentatonic } // legacy picks until useChordPicks (#303 Task 11)
   : null))
 const overlayPlan = computed((): OverlayPlan | null => (prefs.overlay.value === 'hexatonic' ? HEXATONIC_PLAN : pentatonicPlan.value))
 /** a label's popover (#272): a pick (written for the part) covers its run, stored concert; null resets the run */
