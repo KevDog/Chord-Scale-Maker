@@ -33,6 +33,19 @@ describe('usePentatonicPath', () => {
     expect(make('autumn-leaves').path.value).toBe('one')
   })
 
+  it('reset forgets this chart’s path and step, and leaves other charts’ (#291)', async () => {
+    localStorage.setItem('csm-pent-path:autumn-leaves', JSON.stringify({ path: 'fifths', step: { unit: 'section', bars: 4 }, sections: {} }))
+    const p = make('satin-doll')
+    p.setPath('side-slip')
+    p.setStep({ unit: 'bars', bars: 8 })
+    await nextTick()
+    p.reset()
+    expect([p.path.value, p.step.value]).toEqual(['one', { unit: 'section', bars: 4 }])
+    await nextTick()
+    expect(localStorage.getItem('csm-pent-path:satin-doll')).toBeNull()
+    expect(localStorage.getItem('csm-pent-path:autumn-leaves')).not.toBeNull()
+  })
+
   it('keeps the step when the path changes, and carries it to another chart', async () => {
     const p = make('satin-doll')
     p.setStep({ unit: 'key-area', bars: 4 })

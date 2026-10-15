@@ -848,6 +848,40 @@ describe('EditorView interface notice', () => {
     expect(localStorage.getItem('csm-numerals')).toBeNull() // a link's settings are for the visit: Reset leaves your own alone
   })
 
+  it('while editing, settings the editor forces on do not count toward the notice (#291)', async () => {
+    at('essentials')
+    localStorage.setItem('csm-numerals', 'off')
+    localStorage.setItem('csm-scale-names', 'off')
+    const w = await mount()
+    expect(notice(w).exists()).toBe(true)
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await nextTick()
+    expect(notice(w).exists()).toBe(false)
+    await buttonCalled(w, 'Done')?.trigger('click')
+    await nextTick()
+    expect(notice(w).exists()).toBe(true)
+  })
+
+  it('Reset clears this chart’s stored pentatonic path and chord picks, not another chart’s path (#291)', async () => {
+    localStorage.setItem('csm-overlay', 'pentatonic')
+    localStorage.setItem('csm-pent-path:satin-doll', JSON.stringify({ path: 'side-slip', step: { unit: 'section', bars: 4 }, sections: {} }))
+    localStorage.setItem('csm-pent-path:autumn-leaves', JSON.stringify({ path: 'fifths', step: { unit: 'section', bars: 4 }, sections: {} }))
+    const w = await mountSuspended(EditorView, { props: { initialText: 'title: T\nkey: C\nA | 1 | Cm7\n', practiceKey: 'satin-doll' }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    changesSheet(w).vm.$emit('pick', 'pentatonic', ['A:1:0'], 7)
+    await nextTick()
+    expect(localStorage.getItem('csm-pent-picks:satin-doll')).not.toBeNull()
+    at('essentials')
+    await nextTick()
+    notice(w).vm.$emit('reset')
+    await flushPromises()
+    expect(notice(w).exists()).toBe(false)
+    expect(localStorage.getItem('csm-overlay')).toBe('off')
+    expect(localStorage.getItem('csm-pent-path:satin-doll')).toBeNull()
+    expect(localStorage.getItem('csm-pent-picks:satin-doll')).toBeNull()
+    expect(localStorage.getItem('csm-pent-path:autumn-leaves')).not.toBeNull()
+    expect(w.findComponent({ name: 'PreviewControls' }).props('pentPath')).toBe('one')
+  })
+
   it('no notice when nothing is hidden', async () => {
     at('essentials')
     expect(notice(await mount({ sheet: 'changes' })).exists()).toBe(false)

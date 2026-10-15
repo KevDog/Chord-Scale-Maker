@@ -50,6 +50,10 @@ export function usePentatonicPath(key: string | undefined, sections: Ref<readonl
     setStep(step: PentatonicStep): void {
       state.value = { ...state.value, step }
     },
+    /** back to One rung at the default step: this chart's stored path goes (the notice's Reset, #291) */
+    reset(): void {
+      state.value = ONE
+    },
     /** the same path for another chart (a copy, or a shared chart once saved) */
     carryTo(otherKey: string): void {
       if (state.value.path !== 'one') writeStored(`csm-pent-path:${otherKey}`, JSON.stringify(state.value))
