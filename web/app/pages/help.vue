@@ -166,6 +166,12 @@
               and <strong class="font-semibold">Scales</strong>, which turn those rows on and off. <strong class="font-semibold">Guide Tones</strong>
               chooses <strong class="font-semibold">Off</strong>, <strong class="font-semibold">From 3rd</strong> or <strong class="font-semibold">From 7th</strong>, the guide tone
               line described above.
+              <template v-if="hexatonics">
+                <strong class="font-semibold">Overlay</strong> puts a row under the chords: <strong class="font-semibold">Off</strong>,
+                <strong class="font-semibold">Pentatonic</strong> (each key area's minor pentatonic) or
+                <strong class="font-semibold">Hexatonic</strong> (each chord's best triad pair from its scale, such as
+                <UiCode>G/Am</UiCode> over Cmaj7: the chord tones it covers first, then two major or minor triads).
+              </template>
             </dd>
           </div>
           <div>
@@ -221,6 +227,15 @@
             C minor pentatonic over B♭–7, B♭ is 1 and C is 2 (the 9th). The interval labels under the notes show the
             same numbers. In From C mode the boxes are pitches instead (tick E♭ and every E♭ lights
             up), which shows you where a note survives a chord change and where it doesn't.
+          </li>
+          <li v-if="hexatonics">
+            <strong class="font-semibold text-zinc-950 dark:text-white">Hexatonic</strong> lights two triads from each
+            scale, six notes, after Gary Campbell's <em>Triad Pairs for Jazz</em>. <strong class="font-semibold">Pair</strong>
+            <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff's scale, so it leaves out
+            degree <em>n</em> − 1: Pair 5 over C major is G/Am, without the F. <strong class="font-semibold">Auto</strong>
+            picks the pair that covers the most chord tones. The grouping splits the six notes in two (the two triads,
+            chord tones and colour, a pentatonic and one more, or the lowest three and highest three), tinted apart; the
+            caption under each chord names the pair.
           </li>
           <li>Tick or untick a box while a preset's on and you get your own mix, starting from what the preset showed.</li>
           <li><strong class="font-semibold text-zinc-950 dark:text-white">Clear</strong> turns it all off.</li>
@@ -380,6 +395,7 @@ import { guideRanges } from '~/utils/instrumentChoices'
 
 const myCharts = useFeature('myCharts')
 const interfaceLevels = useFeature('interfaceLevels')
+const hexatonics = useFeature('hexatonics')
 const GUIDE_RANGES = guideRanges()
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },

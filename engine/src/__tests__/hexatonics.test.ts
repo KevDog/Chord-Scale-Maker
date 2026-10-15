@@ -1,10 +1,11 @@
 import { describe, expect, it } from 'vitest'
 import { HEX_GROUPINGS, HEX_PAIRS, hexatonicAuto, hexatonicCaption, hexatonicPick, type HexGrouping, hexatonicPairs, resolvePair, triadChain, type ChainTriad } from '../hexatonics'
-import { mod, parseRoot, pcOf, type Spelled } from '../pitch'
+import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled } from '../pitch'
 import { SCALES, type ScaleKey, spellScale } from '../scales'
 
 const C = parseRoot('C')
 const scale = (root: string, key: ScaleKey): readonly Spelled[] => spellScale(parseRoot(root), key)
+const SEVEN_NOTE_SCALES = 16 // the 7 major modes, 7 melodic minor modes, harmonic minor and phrygian dominant: a guard that never fired would count 0
 const SUFFIX = { maj: '', min: 'm', dim: '°', aug: '+' } as const
 const chainNames = (s: readonly Spelled[]): string[] => triadChain(s).map((t: ChainTriad | null) => (t ? t.name : '·'))
 const pairNames = (root: string, key: ScaleKey, chordRoot = root, quality: string | null = null): string[] =>
@@ -48,6 +49,7 @@ describe('the triad chain', () => {
 })
 
 describe('the pairs on every scale', () => {
+  const sevenNote: ScaleKey[] = []
   for (const key of Object.keys(SCALES) as ScaleKey[]) {
     it(`${key}: two disjoint triads inside the scale`, () => {
       const s = scale('C', key)
@@ -64,10 +66,11 @@ describe('the pairs on every scale', () => {
           const third = t.quality === 'min' || t.quality === 'dim' ? 3 : 4
           const fifth = t.quality === 'dim' ? 6 : t.quality === 'aug' ? 8 : 7
           expect(t.pcs).toEqual([pcOf(t.root), mod(pcOf(t.root) + third, 12), mod(pcOf(t.root) + fifth, 12)])
-          expect(t.name.endsWith(SUFFIX[t.quality]) || t.quality === 'maj').toBe(true)
+          expect(t.name).toBe(glyphs(rootName(t.root)) + SUFFIX[t.quality])
         }
       }
       if (s.length === 7 && chain.every((t) => t !== null)) {
+        sevenNote.push(key)
         expect(pairs).toHaveLength(7)
         pairs.forEach((p, i) => {
           const left = s.filter((n) => !p.tones.includes(pcOf(n)))
@@ -76,6 +79,9 @@ describe('the pairs on every scale', () => {
       }
     })
   }
+  it('takes the seven-note branch on every scale of seven standard triads', () => {
+    expect(sevenNote).toHaveLength(SEVEN_NOTE_SCALES)
+  })
 })
 
 describe('pair names', () => {

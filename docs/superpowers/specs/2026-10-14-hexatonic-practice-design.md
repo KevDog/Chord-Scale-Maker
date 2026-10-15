@@ -114,7 +114,7 @@ own scale notes are drawn, so the one or two dimmed notes show what the pair lea
 | --- | --- | --- |
 | Triad pair | the lower triad (first in the chain) | the upper triad |
 | Chord tones + color | the hexatonic's notes that are chord tones of the staff's chord | its other notes |
-| Pentatonic + 1 | the minor pentatonic with most notes inside the hexatonic (ties: `rankByFifths` from the chord root) | the hexatonic's notes outside that pentatonic (usually one) |
+| Pentatonic + 1 | the minor pentatonic with most notes inside the hexatonic (ties: `rankByFifths` from the chord root) | the hexatonic's notes outside that pentatonic (one on the seven-note scales; often two elsewhere, e.g. E♭/Am on C half-whole, where the best shares 4; so the legend reads "Pentatonic" / "Other", not "+1") |
 | Trichords 3+3 | the lowest three notes ascending from the lower root | the highest three |
 
 Where a chord's quality is unknown, Chord tones + color lights all six as group A. Trichord examples: `C/Dm` gives
@@ -181,7 +181,8 @@ Where a chord's quality is unknown, Chord tones + color lights all six as group 
   qualities), half-whole (Campbell's chain, p. 7), whole-half (starts on degree 2), bebop major (valid links only),
   whole tone, blues and the pentatonics (none); every valid pair is two disjoint triads inside the scale; on a
   seven-note scale pair *n* leaves out degree *n* − 1; the worked Auto table; the major/minor rule breaks a coverage
-  tie that fifths alone would order the other way (Cmaj7: G/Am over B°/C); an unknown quality drops the coverage rule;
+  tie that fifths alone would order the other way (Bm7♭5 on B Locrian: Dm/Em over Am/B°; Cmaj7's G/Am over B°/C
+  doesn't show it, as fifths alone put G/Am first); an unknown quality drops the coverage rule;
   pair resolution (Auto, exact, wrap on a seven-link chain, none); each grouping's A and B for a known pair; Pentatonic
   + 1 where the best pentatonic is not wholly inside; names spell with the staff's scale (`B°/C`, `E♭+/F`, a B♭ tenor
   part's written names); `practiceSelectionFrom` round-trips and clamps pair and grouping; `buildSheet` sets
@@ -211,8 +212,12 @@ Where a chord's quality is unknown, Chord tones + color lights all six as group 
 ## Open questions
 
 1. **Pair labels.** Plain numbers (1 … 8) read as degrees on seven-note staves. If players find them opaque, label the
-   first seven `1–2` … `7–1`; decide at the browser check.
+   first seven `1–2` … `7–1`; decide at the browser check. Decided 2026-10-14: plain numbers (Auto, 1 … 8); the help
+   text (Practice panel and Help page) says pair *n* is the triads on degrees *n* and *n* + 1, leaving out degree
+   *n* − 1.
 2. **Print legend.** Group A and B differ by grey level in print. If that is too faint on paper, add a suffix to the
-   caption (`G/Am hex · A|B`) or a legend line in the sheet heading. Decide at the print check.
+   caption (`G/Am hex · A|B`) or a legend line in the sheet heading. Decide at the print check. Decided 2026-10-14: no
+   suffix. In print emulation group B (#666) reads clearly apart from group A (black) and from the dimmed notes
+   (#b3b3b3), accidentals included; the legend stays on screen only, as the Practice panel's.
 3. **Where the Changes label draws its scale.** The overlay needs each chord's resolved scale at the sheet's level
    (`resolve.ts`, as the Scales row uses it); confirm in `changes.ts` that it is available at the label's point.

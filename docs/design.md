@@ -386,9 +386,22 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   shares (`pentatonicPick`) and captions the staff (`Dm pent`; `F♯m pent · #2 · 3 shared` where the best shares
   under 5). In print the caption is 10px on one line, so 12 staves still fit a page. Spec:
   docs/superpowers/specs/2026-10-14-pentatonic-practice-design.md.
-- **Highlighting:** `drawStaff` tags each note's group `vf-selected` or `vf-dimmed`, and `main.css` colours them:
-  on screen, picked notes keep the staff's ink in light mode (as the clef) and take the accent in dark mode, while
-  the rest are faint (35% opacity in dark mode). In print, picked notes are black and the rest light grey.
+- **Hexatonic** (flag `hexatonics`; both modes): `{ preset: 'hexatonic', pair, grouping }`, pair 0 (Auto) or 1–8,
+  grouping Triad pair, Chord tones + color, Pentatonic + 1 or Trichords 3+3. After Gary Campbell, *Triad Pairs for
+  Jazz* (2001), pp. 4–8: each staff's candidates are the valid links of its scale's triad chain (`triadChain`: on a
+  seven-note scale the triads on degrees 1–7; otherwise from the first major, else minor, triad; each note up a step,
+  as many times as the scale has notes), a link valid when both triads are major, minor, diminished or augmented and
+  share no note (`hexatonicPairs`). Pair *n* is the staff's *n*th pair, wrapping round (`resolvePair`): on a
+  seven-note scale the triads on degrees *n* and *n* + 1, leaving out degree *n* − 1. Auto (`hexatonicAuto`): most
+  chord tones covered, then both triads major or minor, then fewest fifths from the chord root to the lower root (♭
+  side first), then chain position. `hexatonicPick` lights the six notes as group A and group B (`StaffModel.selected`
+  and `second`) and captions the staff (`G/Am hex`, or `no triad pair`; 10px on one line in print). Pair listbox Auto,
+  1 … 8 (plain numbers; the help text says what *n* means), a grouping listbox, and a legend of the two groups. Spec:
+  docs/superpowers/specs/2026-10-14-hexatonic-practice-design.md.
+- **Highlighting:** `drawStaff` tags each note's group `vf-selected` or `vf-dimmed` (and a hexatonic's group B
+  `vf-second` too), and `main.css` colours them: on screen, picked notes keep the staff's ink in light mode (as the
+  clef) and take the accent in dark mode, group B a second accent, while the rest are faint (35% opacity in dark
+  mode). In print, picked notes are black, group B mid-grey and the rest light grey.
 
 ### Changes sheet ([plan-changes.md](plan-changes.md); the `changes` flag, on)
 
@@ -508,7 +521,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   its flag (`utils/overlay.ts`; a stored option whose flag is off reads Off). Under Pentatonic, Rung (`Home · 5 shared`
   … `6 · 0 shared (Outside)`) and Side (♭ | ♯, hidden at 0 and 6); Hexatonic adds no control and puts each chord's Auto
   pair (`G/Am`) in the row's place, blank where its scale has none (`showHexatonics`). `csm-overlay` (an old
-  `csm-pentatonics: on` with none reads Pentatonic), `csm-pent-rung`, `csm-pent-side`, not in share links. Each label is a `PentatonicLadder` popover: the area's ladder, a pick covers that label's run (see Picks).
+  `csm-pentatonics: on` with none reads Pentatonic), `csm-pent-rung`, `csm-pent-side`, not in share links. Each
+  pentatonic label is a `PentatonicLadder` popover: the area's ladder, a pick covers that label's run (see Picks).
 - **Paths** (#264, #276, [spec](superpowers/specs/2026-10-13-pentatonic-paths-design.md), [steps](superpowers/specs/2026-10-14-pentatonic-path-steps-design.md)): Path listbox: One rung (Rung + Side, as before), Side-slip, Fifths, Minor thirds, Major thirds. A preset cycles from Home one step a unit (`pentatonicCycle`): Step by Section (each form section), Key area (each run of one key area; a revisit takes the next step) or Bars (every 2, 4 or 8 bars of the form, through section breaks); outside the form, Home. `buildChanges` lays it over the units (`PentatonicPlan.path`/`step`) and names it in the Changes subtitle (`ChangesSheet.pentatonicCaption`). A pick in a label's ladder doesn't change the path (see Picks); a stored Custom still plays its sections. Per chart, with its step: `csm-pent-path:<slug>` (`usePentatonicPath`). Labels carry the shared count (`B♭m♪ 1`) off One rung.
 - **Tint** (#265, #277): off One rung, labels take their rung's tint (`--color-rung-0…6`, Home slate → 6 rust; dark
   values on screen only), ordered by lightness (darker each rung on light paper, brighter on dark) so the ramp reads

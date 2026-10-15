@@ -50,7 +50,7 @@
                   <ToggleButton v-model="scaleNames" title="Each chord's scale, under its numeral">Scales</ToggleButton>
                 </div>
                 <!-- the row under the chords: Off, each key area's or chord's minor pentatonic, or each chord's hexatonic pair -->
-                <UiListbox v-if="overlayShown" v-model="overlayModel" class="w-48" aria-label="Overlay" title="A row under the chords: each key area's or each chord's minor pentatonic, ranked by how far out it is, or each chord's hexatonic triad pair">
+                <UiListbox v-if="overlayShown" v-model="overlayModel" class="w-48" aria-label="Overlay" :title="overlayTitle(overlayOptions)">
                   <template #selected="{ value }"><UiListboxLabel>Overlay: {{ overlayLabel(value) }}</UiListboxLabel></template>
                   <UiListboxOption v-for="o in overlayOptions" :key="o.value" :value="o.value"><UiListboxLabel>{{ o.label }}</UiListboxLabel></UiListboxOption>
                 </UiListbox>
@@ -141,7 +141,7 @@
 import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, partFor, type PentatonicBasis, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
 import { PENT_BASES, PENT_PATHS, PENT_RANK_CHOICES, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rankLabel, rungLabel, sideShown } from '~/utils/pentatonics'
 import type { GuideFrom, LineMode } from '~/utils/sheetLine'
-import { type Overlay, overlayChoices, overlayInForce, overlayLabel } from '~/utils/overlay'
+import { type Overlay, overlayChoices, overlayInForce, overlayLabel, overlayTitle } from '~/utils/overlay'
 import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
 import type { SheetKind } from '~/utils/sheets'
 import type { FunctionalComponent } from 'vue'

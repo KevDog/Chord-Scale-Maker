@@ -152,7 +152,7 @@ export function hexatonicCases(): Hexatonics {
       const scale = attempt(() => defaultScale(chord))
       const pair = scale === null ? null : attempt(() => {
         const notes = scaleNotes(CONCERT, scale, 'root', 0)
-        const quality = baseQuality(parseChord(chord).quality) // as the app reads it (changes.ts)
+        const quality = attempt(() => baseQuality(parseChord(chord).quality)) // as the app reads it (changes.ts)
         return hexatonicAuto(hexatonicPairs(notes, C, quality), C)?.name ?? null
       })
       return [chord, { scale, pair }]
