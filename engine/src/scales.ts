@@ -154,8 +154,12 @@ function minBy<T>(xs: readonly T[], key: (x: T) => readonly number[]): T {
   return rest.reduce((best, x) => (lexLess(key(x), key(best)) ? x : best), first)
 }
 
-/** the symmetric diminished scales: players letter their notes as they spell best (D♭ D E F G A♭ B♭ B), not one letter per degree */
-const RELETTERED: ReadonlySet<ScaleKey> = new Set<ScaleKey>(['half whole diminished', 'whole half diminished'])
+/** the symmetric diminished scales: their root keeps the written side (F♯°7: F♯), not the fewest accidentals */
+const SYMMETRIC: ReadonlySet<ScaleKey> = new Set<ScaleKey>(['half whole diminished', 'whole half diminished'])
+
+/** the eight-note scales (#279, #281): players letter their notes as they spell best (D♭ D E F G A♭ B♭ B; D♭7 bebop's
+ * ♭7 and 7 as B C, not C♭ C), not one letter per degree */
+const RELETTERED: ReadonlySet<ScaleKey> = new Set<ScaleKey>([...SYMMETRIC, 'bebop dominant', 'bebop major', 'bebop dorian', 'spanish phrygian'])
 
 /** every formula for these semitones above a root: letters ascending (the last may be the root's octave, F♯ … D♯ F),
  * a letter repeated or skipped, no triple accidental */
@@ -183,7 +187,7 @@ const letteringsOf = (key: ScaleKey): readonly string[] => {
 }
 
 /**
- * #279: a scale's notes on a root as written. The formula's letters, unless the scale is symmetric diminished and they
+ * #279: a scale's notes on a root as written. The formula's letters, unless the scale has eight notes and they
  * spell badly: then the same notes lettered with the fewest double accidentals, then B♯/E♯/C♭/F♭, then accidentals, then
  * accidentals against the root's side, then closest to the formula.
  */
@@ -214,8 +218,9 @@ function lettered(root: Spelled, key: ScaleKey): ScaleNote[] {
 
 /**
  * friendliest spelling of a root, judged over the whole scale: no B#/E#/Cb/Fb or
- * double accidentals if avoidable, then fewest accidentals; ties keep the original
- * direction, else flats (but F# over Gb). A relettered scale skips the count: it keeps the written side (F♯°7: F♯).
+ * double accidentals if avoidable, then one letter per degree if a root allows it (B♭ bebop, not A♯ C D D♯ …), then
+ * fewest accidentals; ties keep the original direction, else flats (but F# over Gb). A symmetric scale skips the
+ * count: it keeps the written side (F♯°7: F♯).
  */
 export function simplifyRoot(n: Spelled, key: ScaleKey = 'ionian'): Spelled {
   const cost = (o: Spelled): readonly number[] => {
@@ -223,7 +228,9 @@ export function simplifyRoot(n: Spelled, key: ScaleKey = 'ionian'): Spelled {
     const ugly = notes.filter(isUgly).length
     const total = notes.reduce((s, x) => s + Math.abs(x.acc), 0)
     const sameDir = o.acc === n.acc || (n.acc === 0 && (o.acc <= 0 || pcOf(o) === 6)) ? 0 : 1
-    return RELETTERED.has(key) ? [ugly, sameDir] : [ugly, total, sameDir]
+    if (SYMMETRIC.has(key)) return [ugly, sameDir]
+    const relettered = spellFrom(o, SCALES[key][0]).some(isUgly) ? 1 : 0
+    return [ugly, relettered, total, sameDir]
   }
   return minBy(enharmonics(n), cost)
 }
