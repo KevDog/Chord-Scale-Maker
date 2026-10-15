@@ -51,7 +51,7 @@
                 </div>
                 <!-- the row under the chords: Off, each key area's or chord's minor pentatonic, or each chord's hexatonic pair; the Pentatonic options open to its right, over the sheet, so the rail keeps its two rows (#293), stacked under it in the Controls dialog -->
                 <div v-if="overlayShown" :class="compact ? 'flex flex-col items-start gap-2' : 'flex items-start gap-1'">
-                  <UiListbox v-model="overlay" class="w-48" aria-label="Superimpose" :title="OVERLAY_TITLE">
+                  <UiListbox v-model="overlay" class="w-60" aria-label="Superimpose" :title="OVERLAY_TITLE">
                     <template #selected="{ value }"><UiListboxLabel>Superimpose: {{ overlayLabel(value) }}</UiListboxLabel></template>
                     <UiListboxOption v-for="o in OVERLAY_CHOICES" :key="o.value" :value="o.value"><UiListboxLabel>{{ o.label }}</UiListboxLabel></UiListboxOption>
                   </UiListbox>
