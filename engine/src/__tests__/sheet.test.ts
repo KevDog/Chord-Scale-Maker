@@ -27,6 +27,12 @@ describe('sheet', () => {
     expect(s?.selected).toEqual([true, false, false, true, false, false, false, true])
   })
 
+  it('letters a bebop staff cleanly but keeps its intervals (#281)', () => {
+    const [s] = buildSheet([row('Db7', 'Db Bebop Dominant')], CONCERT, 'root', 'C', 12)[0]?.pages.flat() ?? []
+    expect(s?.notes.map((n) => rootName(n)).join(' ')).toBe('Db Eb F Gb Ab Bb B C')
+    expect(s?.intervals).toEqual(['1', '9', '3', '11', '5', '13', 'b7', '7'])
+  })
+
   it('converts pitched notes to VexFlow keys', () => {
     expect(toVexKey({ letter: 2, acc: -1, midi: 63 })).toBe('eb/4')
     expect(toVexKey({ letter: 0, acc: -1, midi: 59 })).toBe('cb/4') // Cb4 sounds as B3
