@@ -160,7 +160,7 @@
           </PreviewControls>
           <UiText v-if="transposed" role="status" class="mt-4">{{ transposed }}</UiText>
           <PracticePanel
-            v-if="practiceOn && sheet === 'scales' && !editor.fatal.value"
+            v-if="practiceOn && ui.shows('practice') && sheet === 'scales' && !editor.fatal.value"
             class="mt-4"
             :mode="mode"
             :start-text="start"
@@ -370,6 +370,8 @@ const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeatu
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
 const pentatonicsOn = useFeature('pentatonics')
+/** the Interface level (#273): which controls show */
+const ui = useInterface()
 /** the chart's sections as the Changes sheet draws them, for the path presets (#264) */
 const pentSections = computed(() => changesSections(editor.doc.value))
 const pentPath = usePentatonicPath(props.practiceKey, pentSections, computed(() => ({ rung: prefs.pentRung.value, side: prefs.pentSide.value })))

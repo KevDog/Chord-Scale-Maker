@@ -4,7 +4,7 @@
     <UiText class="-mt-1">
       Pick the notes to improvise with; the rest are dimmed, on screen and in print.
       {{ mode === 'root' ? 'Boxes are intervals from each chord’s root, even when its scale starts elsewhere: over B♭–7, B♭ is 1.' : `Boxes are pitches spelled from ${startName}.` }}
-      <template v-if="pentatonic"> Pentatonic lights the notes each scale shares with a minor pentatonic: rank 1 the closest, 12 the farthest.</template>
+      <template v-if="pentatonicShown"> Pentatonic lights the notes each scale shares with a minor pentatonic: rank 1 the closest, 12 the farthest.</template>
     </UiText>
 
     <div class="flex flex-wrap items-center gap-2">
@@ -50,7 +50,10 @@ const activePreset = computed(() => (props.selection && 'preset' in props.select
 const checked = computed(() => new Set(props.selection && 'keys' in props.selection ? props.selection.keys : props.lit))
 const startName = computed(() => noteText(props.startText))
 
-const presets = computed(() => PRESETS[props.mode].filter((p) => p !== 'pentatonic' || props.pentatonic))
+const { shows } = useInterface()
+/** the Pentatonic preset: the flag, from Everything */
+const pentatonicShown = computed(() => !!props.pentatonic && shows('practice-pentatonic'))
+const presets = computed(() => PRESETS[props.mode].filter((p) => p !== 'pentatonic' || pentatonicShown.value))
 const RANKS = Array.from({ length: PENTATONIC_RANKS }, (_, i) => i + 1)
 
 function pickPreset(p: Preset): void {
