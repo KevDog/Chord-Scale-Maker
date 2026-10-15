@@ -10,7 +10,7 @@
         <ChordPickPopover
           v-if="canPick"
           :text="caption"
-          :trigger-label="`${kind === 'pentatonic' ? 'Pentatonic' : 'Triad pair'}: ${caption}. Show the choices`"
+          :trigger-label="`${kind === 'pentatonic' ? 'Pentatonic' : 'Triad pair'}: ${caption}`"
           :header="header"
           :footer="footer"
           :sheet-choice="sheetChoice"

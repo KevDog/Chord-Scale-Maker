@@ -7,8 +7,8 @@
       class="hover:bg-note-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500 dark:hover:bg-white/5 print:no-underline"
       @click="place"
     >{{ p.label }}</HPopoverButton>
-    <HPopoverPanel v-slot="{ close }" role="dialog" :style="{ left: `${shift}px`, ...(pageZoom !== 1 ? { zoom: 1 / pageZoom } : {}) }" :aria-label="header" class="absolute top-full z-20 mt-2 w-64 rounded-paper bg-raised p-1.5 text-sm shadow-raised max-sm:w-[calc(100vw-2rem)] print:hidden">
-      <p class="px-2 pt-1 text-xs/4 font-medium text-zinc-500 dark:text-zinc-400">{{ header }}</p>
+    <HPopoverPanel v-slot="{ close }" role="dialog" :style="{ left: `${shift}px`, ...(pageZoom !== 1 ? { zoom: 1 / pageZoom } : {}) }" :aria-labelledby="headerId" class="absolute top-full z-20 mt-2 w-64 rounded-paper bg-raised p-1.5 text-sm shadow-raised max-sm:w-[calc(100vw-2rem)] print:hidden">
+      <p :id="headerId" class="px-2 pt-1 text-xs/4 font-medium text-zinc-500 dark:text-zinc-400">{{ header }}</p>
       <p class="px-2 pb-2 text-xs/4 text-zinc-500 dark:text-zinc-400">{{ p.title }}</p>
       <ul class="border-y border-zinc-950/5 py-1 dark:border-white/10">
         <li class="px-2 py-1">
@@ -16,7 +16,7 @@
             type="button"
             data-sheet-choice
             :aria-current="p.picked ? undefined : 'true'"
-            :class="['w-full rounded-control px-2 py-0.5 text-left text-zinc-900 hover:bg-note-50 dark:text-white dark:hover:bg-white/5', !p.picked && 'bg-note-100 text-note-800 dark:bg-note-300/15 dark:text-note-200']"
+            :class="['w-full rounded-control px-2 py-0.5 text-left font-display font-semibold text-zinc-900 hover:bg-note-50 dark:text-white dark:hover:bg-white/5', !p.picked && 'bg-note-100 text-note-800 dark:bg-note-300/15 dark:text-note-200']"
             @click="reset(close)"
           >Sheet’s choice ({{ p.sheet }})</button>
         </li>
@@ -47,6 +47,7 @@ import { glyphs, rootName, pcOf, type ChangesPentatonic, type PentatonicRung } f
 /** a Key-basis Changes label and its popover: the chord's header, the sheet's choice, the key area's ladder (one row a rung, ♭ then ♯), then what a pick sets; a pick covers the label's run */
 const props = defineProps<{ p: ChangesPentatonic; header: string; footer: string }>()
 const emit = defineEmits<{ pick: [written: number]; reset: [] }>()
+const headerId = useId()
 const shift = ref(0)
 /** in focus mode's zoomed page, the panel undoes the zoom, to read at full size */
 const pageZoomRef = inject(PAGE_ZOOM, ref(1))
@@ -68,7 +69,8 @@ const rows = computed((): readonly Row[] =>
     const picks = props.p.ladder.filter((x) => x.rung === rung)
     return { key: `g${rung}`, head: `${rung === 0 ? 'Home' : rung === 6 ? '6 Outside' : rung} · ${picks[0]?.shared ?? 0}`, picks }
   }))
-const isCurrent = (x: PentatonicRung): boolean => x.name === props.p.name
+/** the one current choice: the picked rung under a pick, else the sheet's choice row alone */
+const isCurrent = (x: PentatonicRung): boolean => props.p.picked && x.name === props.p.name
 function pick(x: PentatonicRung, close: () => void): void {
   emit('pick', pcOf(x.root))
   close()

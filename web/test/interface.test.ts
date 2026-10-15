@@ -22,6 +22,7 @@ describe('interface levels', () => {
       'form-editing': 'intermediate',
       why: 'intermediate',
       pentatonics: 'everything',
+      'chord-picks': 'everything',
       'practice-pentatonic': 'everything',
       'practice-hexatonic': 'everything',
       'key-change': 'everything',

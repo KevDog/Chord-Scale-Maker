@@ -147,8 +147,31 @@
         :data-chord="m.p.chord"
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
-        <span :class="shows('pentatonics') && 'hidden print:inline'">{{ m.p.label }}</span>
-        <PentatonicLadder v-if="shows('pentatonics')" class="print:hidden" :p="m.p" :header="pickHeader(m.p.title, pickBars(m.p.run))" :footer="pickFooter('changes', pickBars(m.p.run), false)" @pick="emit('pentatonic', m.p.run, $event)" @reset="emit('pentatonic', m.p.run, null)" />
+        <span :class="shows('chord-picks') && 'hidden print:inline'">{{ m.p.label }}</span>
+        <template v-if="shows('chord-picks')">
+          <ChordPickPopover
+            v-if="m.p.basis === 'chord' && m.p.source"
+            class="print:hidden"
+            :text="m.p.label"
+            :trigger-label="pentLabel(m.p)"
+            :header="headerOf(m.p.source, m.p.run)"
+            :footer="pickFooter('changes', pickBars(m.p.run), false)"
+            :sheet-choice="m.p.sheet"
+            :picked="m.p.picked"
+            :rows="pentRows(m.p)"
+            @choose="(id) => choosePent(m.p, id)"
+            @clear="emit('pick', 'pentatonic', m.p.run, null)"
+          />
+          <PentatonicLadder
+            v-else
+            class="print:hidden"
+            :p="m.p"
+            :header="headerOf(m.p.source, m.p.run, m.p.title)"
+            :footer="pickFooter('changes', pickBars(m.p.run), false)"
+            @pick="emit('pick', 'pentatonic', m.p.run, concertPc(partNow, $event))"
+            @reset="emit('pick', 'pentatonic', m.p.run, null)"
+          />
+        </template>
       </span>
     </div>
     <!-- the Hexatonic overlay, in the pentatonic row's place: each chord's Auto pair where it changes; blank where its scale has none -->
@@ -157,8 +180,24 @@
         v-for="m in hexatonicMarks"
         :key="`h${m.key}`"
         class="absolute whitespace-nowrap text-[0.8rem]/4 text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700"
+        :data-chord="m.h.chord"
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
-      >{{ m.label }}</span>
+      >
+        <span :class="hexPickable(m.h) && 'hidden print:inline'">{{ m.h.label }}</span>
+        <ChordPickPopover
+          v-if="hexPickable(m.h)"
+          class="print:hidden"
+          :text="m.h.label"
+          :trigger-label="hexLabel(m.h)"
+          :header="headerOf(m.h.source, m.h.run)"
+          :footer="pickFooter('changes', pickBars(m.h.run), false)"
+          :sheet-choice="m.h.sheet"
+          :picked="m.h.picked"
+          :rows="hexChoiceRows(m.h)"
+          @choose="(id) => chooseHex(m.h, id)"
+          @clear="emit('pick', 'hexatonic', m.h.run, null)"
+        />
+      </span>
     </div>
     <!-- a full last line: the ghost bar as a pill under it -->
     <div v-if="editing !== undefined && ghost?.full" data-slot="after" class="flex justify-end pt-1 print:hidden">
@@ -169,8 +208,32 @@
 </template>
 
 <script setup lang="ts">
-import { barKey, type ChangesLine, type ChartDoc, type ChordAt, type ChordPreview, CONCERT, type GridPos, type OverlayPlan, pickBars, rowNotes, sheetScale } from '@chord-scale-maker/engine'
-import { pickFooter, pickHeader } from '~/utils/chordPicks' // header from the ladder's title until Task 10 (#303)
+import {
+  barKey,
+  type ChangesHexatonic,
+  type ChangesLine,
+  type ChangesPentatonic,
+  type ChartDoc,
+  type ChordAt,
+  type ChordPreview,
+  CONCERT,
+  concertPc,
+  glyphs,
+  type GridPos,
+  hexatonicChoices,
+  type OverlayPlan,
+  type Part,
+  PENTATONIC_DEGREE_LABELS,
+  pentatonicChoices,
+  pickBars,
+  pickHeading,
+  type PickKind,
+  type PickSource,
+  rootName,
+  rowNotes,
+  sheetScale,
+} from '@chord-scale-maker/engine'
+import { choiceId, pickFooter, pickHeader } from '~/utils/chordPicks'
 import { drawChangesLine, type NamedBeat } from '~/utils/changesDrawing'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
@@ -197,10 +260,11 @@ const props = defineProps<{
   focusAt?: SheetFocus | null // a chord the editor wants focus on (its field closed with nowhere to go)
   overlay?: OverlayPlan | null // the row under the chords: the Pentatonic overlay's rungs, or the Hexatonic; null/undefined: no row
   counted?: boolean // the sheet's pentatonics count (tints)
+  part?: Part // the sheet's part, for the chord pick popovers' wording and picks (#303); concert without
 }>()
 const emit = defineEmits<{
   tap: [chord: SheetChordEdit] // a chord tapped, for the chord editor dialog
-  pentatonic: [run: readonly ChordAt[], written: number | null] // a pick in a label's popover, for its run; null: reset
+  pick: [kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null] // a label's chord pick for its run, concert; null: the sheet's choice
   edit: [edit: SheetEdit]
   'update:doc': [doc: ChartDoc]
   said: [text: string]
@@ -248,7 +312,31 @@ const marks = computed(() => {
 /** the marks that print a pentatonic label (#255) */
 const pentatonicMarks = computed(() => marks.value.flatMap((m) => (m.pentatonic?.label ? [{ key: m.key, x: m.x, room: m.room, p: m.pentatonic }] : [])))
 /** the marks that print a hexatonic label */
-const hexatonicMarks = computed(() => marks.value.flatMap((m) => (m.hexatonic?.label ? [{ key: m.key, x: m.x, room: m.room, label: m.hexatonic.label }] : [])))
+const hexatonicMarks = computed(() => marks.value.flatMap((m) => (m.hexatonic?.label ? [{ key: m.key, x: m.x, room: m.room, h: m.hexatonic }] : [])))
+
+/** the chord pick popovers (#303): the chord's header (written for the part), its choices, and picks passed up concert */
+const partNow = computed(() => props.part ?? CONCERT)
+const headerOf = (src: PickSource, run: readonly ChordAt[], fallback = ''): string =>
+  pickHeader(src ? pickHeading(partNow.value, src.chord, src.scale) : fallback, pickBars(run))
+const pentChoices = (p: ChangesPentatonic) => (p.source ? pentatonicChoices(p.source.chord, p.source.scale, partNow.value) : [])
+const pentRows = (p: ChangesPentatonic) => pentChoices(p).map((c) => ({ id: choiceId.pent(c.pc), label: c.label, current: c.name === p.name }))
+function choosePent(p: ChangesPentatonic, id: string): void {
+  const c = pentChoices(p).find((x) => choiceId.pent(x.pc) === id)
+  if (c) emit('pick', 'pentatonic', p.run, c.pc)
+}
+const pentLabel = (p: ChangesPentatonic): string =>
+  `Pentatonic: ${glyphs(`${rootName(p.root)} minor`)}, built on ${PENTATONIC_DEGREE_LABELS[p.degree ?? 0]}, ${p.shared} of 5 notes in ${glyphs(p.scale)}`
+const hexRows = (h: ChangesHexatonic) => (h.source ? hexatonicChoices(h.source.chord, h.source.scale, partNow.value) : [])
+const hexChoiceRows = (h: ChangesHexatonic) => hexRows(h).map((c) => ({ id: choiceId.hex(c.roots), label: c.label, current: c.name === h.name }))
+const hexPickable = (h: ChangesHexatonic): boolean => shows('chord-picks') && !!h.source && h.run.length > 0
+function chooseHex(h: ChangesHexatonic, id: string): void {
+  const c = hexRows(h).find((x) => choiceId.hex(x.roots) === id)
+  if (c) emit('pick', 'hexatonic', h.run, c.roots)
+}
+const hexLabel = (h: ChangesHexatonic): string => {
+  const covers = hexRows(h).find((c) => c.name === h.name)?.coverage
+  return `Triad pair: ${glyphs(h.name)}${covers === undefined ? '' : `, covers ${covers} chord tones`}`
+}
 /** the rung tints (#265, #277), spelled out so Tailwind sees them; the label's shared count says the same without colour */
 const RUNG_TINT = ['text-rung-0', 'text-rung-1', 'text-rung-2', 'text-rung-3', 'text-rung-4', 'text-rung-5', 'text-rung-6'] as const
 const tint = (rung: number): string => (props.counted ? (RUNG_TINT[rung] ?? '') : '')

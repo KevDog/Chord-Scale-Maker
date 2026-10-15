@@ -89,6 +89,7 @@ describe('ScaleStaff', () => {
 
     it('says varies, and that a pick replaces the different picks', async () => {
       const w = await mount(dm(withPick(NO_PICKS, 'pentatonic', ['B:5:0'], 4, targets)))
+      expect(w.find('[data-slot="pentatonic"] button').attributes('aria-label')).toBe('Pentatonic: Dm pent · 5 shared · varies. Show the choices')
       expect(w.find('[data-slot="pentatonic"] button').text()).toBe('Dm pent · 5 shared · varies')
       const d = await open(w)
       expect(d.text().endsWith('Replaces the different picks in bars 1 and 5.')).toBe(true)
@@ -97,6 +98,9 @@ describe('ScaleStaff', () => {
 
     it('makes the hexatonic caption a trigger too', async () => {
       const w = await mount(dm(NO_PICKS, HEX))
+      const picked = await mount(dm(withPick(NO_PICKS, 'hexatonic', ['A:1:0', 'B:5:0'], [0, 2], targets), HEX))
+      expect(picked.find('[data-slot="hexatonic"] button').attributes('aria-label')).toBe('Triad pair: C/Dm hex, your pick. Show the choices')
+      picked.unmount()
       await open(w)
       const rows = w.findAll('[data-choice]')
       expect(rows.every((r) => / · covers \d$/.test(r.text()))).toBe(true)

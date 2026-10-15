@@ -21,7 +21,8 @@ export const CONTROL_TIERS = {
   'scale-choice': 'intermediate', // a chord's scale: the scale label picker, ChordChoices' Scale section
   'form-editing': 'intermediate', // Repeat a section, Write out, endings, segno, coda, Jump, New section here, Paste bars
   why: 'intermediate', // the "why" notes on numerals and scales, ChordChoices' why
-  pentatonics: 'everything', // Analysis: Superimpose and its sub-controls, the ladder
+  pentatonics: 'everything', // Analysis: Superimpose and its sub-controls
+  'chord-picks': 'everything', // the chord pick popovers on both sheets (#303)
   'practice-pentatonic': 'everything', // the Practice panel's Pentatonic preset
   'practice-hexatonic': 'everything', // the Practice panel's Hexatonic preset, its Pair and grouping
   'key-change': 'everything', // Key change here

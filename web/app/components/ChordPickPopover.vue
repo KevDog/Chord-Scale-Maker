@@ -27,7 +27,8 @@ import { PAGE_ZOOM } from '~/utils/sheetPaged'
 export type ChoiceRow = Readonly<{ id: string; label: string; current: boolean }>
 const props = defineProps<{ text: string; triggerLabel: string; header: string; footer: string; sheetChoice: string; picked: boolean; rows: readonly ChoiceRow[]; triggerClass?: string }>()
 const emit = defineEmits<{ choose: [id: string]; clear: [] }>()
-const label = computed(() => `${props.triggerLabel}${props.picked ? ', your pick' : ''}`)
+/** triggerLabel: what the trigger shows, in words ('Pentatonic: D minor, …'); a pick and the action follow */
+const label = computed(() => `${props.triggerLabel}${props.picked ? ', your pick' : ''}. Show the choices`)
 const headerId = useId()
 const shift = ref(0)
 /** in focus mode's zoomed page, the panel undoes the zoom, to read at full size */

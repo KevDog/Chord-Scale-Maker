@@ -5,7 +5,7 @@ import ChordPickPopover from '~/components/ChordPickPopover.vue'
 
 const base = {
   text: 'Dm♪',
-  triggerLabel: 'Pentatonic: D minor. Show the choices',
+  triggerLabel: 'Pentatonic: D minor',
   header: 'Cmaj7 Ionian · bars 6, 22',
   footer: 'Sets bars 6 and 22.',
   sheetChoice: 'Dm',
@@ -31,7 +31,7 @@ describe('the chord pick popover', () => {
     expect(b.attributes('aria-label')).toBe('Pentatonic: D minor. Show the choices')
     expect(b.classes()).toEqual(expect.arrayContaining(['decoration-dotted', 'print:no-underline']))
     const p = await mountSuspended(ChordPickPopover, { props: { ...base, picked: true } })
-    expect(p.find('button').attributes('aria-label')).toBe('Pentatonic: D minor. Show the choices, your pick')
+    expect(p.find('button').attributes('aria-label')).toBe('Pentatonic: D minor, your pick. Show the choices')
     expect(p.find('button').classes()).toContain('decoration-solid')
   })
 
