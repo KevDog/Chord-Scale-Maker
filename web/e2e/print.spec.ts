@@ -203,23 +203,40 @@ test('prints 12 staves per letter page with the Hexatonic preset, each caption o
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(2) // 14 lines, 12 a page, as without the caption
 })
 
-// the longest captions (no triad pair, an augmented or diminished triad with an accidental): 12 lines print on 1 page, 13 on 2
+// the 12-a-page edge with captions, on Autumn Leaves' own lines (as the gates above print them): 12 on 1 page, 13 on 2
+const AUTUMN_LINES = ['Cm7 | C Dorian', 'F7 | F Mixolydian', 'Bm7 | B Dorian', 'E7 | E Mixolydian', 'Bbm7 | Bb Dorian', 'Eb7 | Eb Mixolydian', 'Am7b5 | A Locrian', 'D7 | D Phrygian Dominant', 'Gm | G Dorian', 'E7 | E Lydian Dominant', 'EbMaj7 | Eb Lydian', 'Fm7 | F Dorian', 'Bb7 | Bb Mixolydian']
 for (const [count, pages] of [[12, 1], [13, 2]] as const) {
-  test(`prints ${count} staves with the longest hexatonic captions on one line, ${pages} letter page${pages > 1 ? 's' : ''}`, async ({ page }) => {
-    const kinds = ['7 | {} Whole Tone', 'mMaj7 | {} Melodic Minor', 'm6 | {} Harmonic Minor', '7 | {} Half-Whole', '7 | {} Bebop Dominant']
-    const roots = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B', 'C'].slice(0, count)
-    const rows = roots.map((r, i) => `A | ${i + 1} | ${r}${kinds[i % kinds.length]!.replace('{}', r)}`)
-    await writeChart(page, `title: T\nkey: C\n${rows.join('\n')}`)
+  test(`prints ${count} staves with the Hexatonic preset, ${pages} letter page${pages > 1 ? 's' : ''}`, async ({ page }) => {
+    const rows = AUTUMN_LINES.slice(0, count).map((line, i) => `A | ${i + 1} | ${line}`)
+    await writeChart(page, `title: T\nkey: Gm\n${rows.join('\n')}`)
     await hexatonicPreset(page)
-    await pickOption(page, 'Hexatonic pair', '3') // E♭+/F on melodic and harmonic minor
-    await expect(page.locator('[data-slot="hexatonic"]', { hasText: '+/' }).first()).toBeVisible()
-    await expect(page.locator('[data-slot="hexatonic"]', { hasText: 'no triad pair' }).first()).toBeVisible()
-    await expect(staves(page)).toHaveCount(count)
+    await expect(page.locator('[data-slot="hexatonic"]')).toHaveCount(count)
     await page.emulateMedia({ media: 'print' })
+    await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
     expect(await wrappedCaptions(page)).toBe(0)
     expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(pages)
   })
 }
+
+// the longest captions (no triad pair, an augmented or diminished triad with an accidental) stay on one line in print.
+// No page count: these scale names (Harmonic Minor, Half-Whole Dim., Bebop Dominant after a root) wrap to two lines
+// in the label column, so the label, not the staff, sets those lines' height, and 12 of them end within a few px of
+// the page's foot: whether the 12th fits depends on the platform's font metrics (on macOS, not on Linux CI)
+test('prints the longest hexatonic captions on one line', async ({ page }) => {
+  const kinds = ['7 | {} Whole Tone', 'mMaj7 | {} Melodic Minor', 'm6 | {} Harmonic Minor', '7 | {} Half-Whole', '7 | {} Bebop Dominant']
+  const roots = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']
+  const rows = roots.map((r, i) => `A | ${i + 1} | ${r}${kinds[i % kinds.length]!.replace('{}', r)}`)
+  await writeChart(page, `title: T\nkey: C\n${rows.join('\n')}`)
+  await hexatonicPreset(page)
+  await pickOption(page, 'Hexatonic pair', '3') // E♭+/F on melodic and harmonic minor
+  await expect(page.locator('[data-slot="hexatonic"]', { hasText: '+/' }).first()).toBeVisible()
+  await expect(page.locator('[data-slot="hexatonic"]', { hasText: '°/' }).first()).toBeVisible()
+  await expect(page.locator('[data-slot="hexatonic"]', { hasText: 'no triad pair' }).first()).toBeVisible()
+  await expect(staves(page)).toHaveCount(12)
+  await page.emulateMedia({ media: 'print' })
+  await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+  expect(await wrappedCaptions(page)).toBe(0)
+})
 
 // the Hexatonic overlay's row takes the Pentatonics row's place: the same lines a page, with and without a guide tone line
 for (const tuba of [false, true]) {
