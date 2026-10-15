@@ -5,7 +5,7 @@
       Pick the notes to improvise with; the rest are dimmed, on screen and in print.
       {{ mode === 'root' ? 'Boxes are intervals from each chord’s root, even when its scale starts elsewhere: over B♭–7, B♭ is 1.' : `Boxes are pitches spelled from ${startName}.` }}
       <template v-if="pentatonicShown"> Pentatonic lights the notes each scale shares with a minor pentatonic: rank 1 the closest, 12 the farthest.</template>
-      <template v-if="hexatonicShown"> Hexatonic lights two triads from each scale, six notes in two groups. Pair <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff’s scale, and it leaves out degree <em>n</em> − 1.</template>
+      <template v-if="hexatonicShown"> Hexatonic lights two triads from each scale, six notes in two groups. Pair <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff’s scale; on a seven-note scale it leaves out degree <em>n</em> − 1 (Pair 1 leaves out the 7th).</template>
     </UiText>
 
     <div class="flex flex-wrap items-center gap-2">
@@ -18,7 +18,7 @@
     </UiListbox>
     <div v-if="isHexatonicSelection(selection)" class="flex flex-wrap items-center gap-2">
       <UiListbox :model-value="selection.pair" class="w-28" aria-label="Hexatonic pair" @update:model-value="pickHex({ pair: $event })">
-        <template #selected="{ value }"><UiListboxLabel>{{ hexPairLabel(value) }}</UiListboxLabel></template>
+        <template #selected="{ value }"><UiListboxLabel>Pair: {{ hexPairLabel(value) }}</UiListboxLabel></template>
         <UiListboxOption v-for="p in HEX_PAIR_CHOICES" :key="p" :value="p"><UiListboxLabel>{{ hexPairLabel(p) }}</UiListboxLabel></UiListboxOption>
       </UiListbox>
       <UiListbox :model-value="selection.grouping" class="w-52" aria-label="Hexatonic grouping" @update:model-value="pickHex({ grouping: $event })">

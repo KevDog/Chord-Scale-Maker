@@ -231,8 +231,8 @@
           <li v-if="hexatonics">
             <strong class="font-semibold text-zinc-950 dark:text-white">Hexatonic</strong> lights two triads from each
             scale, six notes, after Gary Campbell's <em>Triad Pairs for Jazz</em>. <strong class="font-semibold">Pair</strong>
-            <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff's scale, so it leaves out
-            degree <em>n</em> − 1: Pair 5 over C major is G/Am, without the F. <strong class="font-semibold">Auto</strong>
+            <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff's scale; on a seven-note scale
+            that leaves out degree <em>n</em> − 1 (Pair 1 leaves out the 7th). Pair 5 over C major is G/Am, without the F. <strong class="font-semibold">Auto</strong>
             picks the pair that covers the most chord tones. The grouping splits the six notes in two (the two triads,
             chord tones and colour, a pentatonic and one more, or the lowest three and highest three), tinted apart; the
             caption under each chord names the pair.

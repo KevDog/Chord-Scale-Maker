@@ -203,21 +203,23 @@ test('prints 12 staves per letter page with the Hexatonic preset, each caption o
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(2) // 14 lines, 12 a page, as without the caption
 })
 
-// the longest captions (no triad pair, an augmented or diminished triad with an accidental), 13 lines: still 12 a page
-test('prints the longest hexatonic captions on one line, 12 staves a page', async ({ page }) => {
-  const kinds = ['7 | {} Whole Tone', 'mMaj7 | {} Melodic Minor', 'm6 | {} Harmonic Minor', '7 | {} Half-Whole', '7 | {} Bebop Dominant']
-  const roots = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B', 'C']
-  const rows = roots.map((r, i) => `A | ${i + 1} | ${r}${kinds[i % kinds.length]!.replace('{}', r)}`)
-  await writeChart(page, `title: T\nkey: C\n${rows.join('\n')}`)
-  await hexatonicPreset(page)
-  await pickOption(page, 'Hexatonic pair', '3') // E♭+/F on melodic and harmonic minor
-  await expect(page.locator('[data-slot="hexatonic"]', { hasText: '+/' }).first()).toBeVisible()
-  await expect(page.locator('[data-slot="hexatonic"]', { hasText: 'no triad pair' }).first()).toBeVisible()
-  await expect(staves(page)).toHaveCount(13)
-  await page.emulateMedia({ media: 'print' })
-  expect(await wrappedCaptions(page)).toBe(0)
-  expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(2)
-})
+// the longest captions (no triad pair, an augmented or diminished triad with an accidental): 12 lines print on 1 page, 13 on 2
+for (const [count, pages] of [[12, 1], [13, 2]] as const) {
+  test(`prints ${count} staves with the longest hexatonic captions on one line, ${pages} letter page${pages > 1 ? 's' : ''}`, async ({ page }) => {
+    const kinds = ['7 | {} Whole Tone', 'mMaj7 | {} Melodic Minor', 'm6 | {} Harmonic Minor', '7 | {} Half-Whole', '7 | {} Bebop Dominant']
+    const roots = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B', 'C'].slice(0, count)
+    const rows = roots.map((r, i) => `A | ${i + 1} | ${r}${kinds[i % kinds.length]!.replace('{}', r)}`)
+    await writeChart(page, `title: T\nkey: C\n${rows.join('\n')}`)
+    await hexatonicPreset(page)
+    await pickOption(page, 'Hexatonic pair', '3') // E♭+/F on melodic and harmonic minor
+    await expect(page.locator('[data-slot="hexatonic"]', { hasText: '+/' }).first()).toBeVisible()
+    await expect(page.locator('[data-slot="hexatonic"]', { hasText: 'no triad pair' }).first()).toBeVisible()
+    await expect(staves(page)).toHaveCount(count)
+    await page.emulateMedia({ media: 'print' })
+    expect(await wrappedCaptions(page)).toBe(0)
+    expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(pages)
+  })
+}
 
 // the Hexatonic overlay's row takes the Pentatonics row's place: the same lines a page, with and without a guide tone line
 for (const tuba of [false, true]) {
