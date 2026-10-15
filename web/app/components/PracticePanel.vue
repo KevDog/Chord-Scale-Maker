@@ -17,7 +17,7 @@
       <UiListboxOption v-for="r in RANKS" :key="r" :value="r"><UiListboxLabel>{{ rankLabel(r) }}</UiListboxLabel></UiListboxOption>
     </UiListbox>
     <div v-if="isHexatonicSelection(selection)" class="flex flex-wrap items-center gap-2">
-      <UiListbox :model-value="selection.pair" class="w-28" aria-label="Hexatonic pair" @update:model-value="pickHex({ pair: $event })">
+      <UiListbox :model-value="selection.pair" class="w-36" aria-label="Hexatonic pair" @update:model-value="pickHex({ pair: $event })">
         <template #selected="{ value }"><UiListboxLabel>Pair: {{ hexPairLabel(value) }}</UiListboxLabel></template>
         <UiListboxOption v-for="p in HEX_PAIR_CHOICES" :key="p" :value="p"><UiListboxLabel>{{ hexPairLabel(p) }}</UiListboxLabel></UiListboxOption>
       </UiListbox>
