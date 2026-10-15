@@ -49,34 +49,36 @@
                   <ToggleButton v-model="numerals" title="Each chord's Roman numeral in its key">Numerals</ToggleButton>
                   <ToggleButton v-model="scaleNames" title="Each chord's scale, under its numeral">Scales</ToggleButton>
                 </div>
-                <!-- the row under the chords: Off, each key area's or chord's minor pentatonic, or each chord's hexatonic pair -->
-                <UiListbox v-if="overlayShown" v-model="overlayModel" class="w-48" aria-label="Overlay" :title="overlayTitle(overlayOptions)">
-                  <template #selected="{ value }"><UiListboxLabel>Overlay: {{ overlayLabel(value) }}</UiListboxLabel></template>
-                  <UiListboxOption v-for="o in overlayOptions" :key="o.value" :value="o.value"><UiListboxLabel>{{ o.label }}</UiListboxLabel></UiListboxOption>
-                </UiListbox>
-                <div v-if="overlayShown && overlayModel === 'pentatonic'" class="flex flex-col items-start gap-2">
-                  <SegmentedControl v-model="pentBasis" legend="Ranked against" name="pent-basis" aria-label="Pentatonics ranked against" :options="PENT_BASES" />
-                  <UiListbox v-if="pentBasis === 'chord'" v-model="pentRank" class="w-48" aria-label="Pentatonic rank">
-                    <template #selected="{ value }"><UiListboxLabel>{{ rankLabel(value) }}</UiListboxLabel></template>
-                    <UiListboxOption v-for="r in PENT_RANK_CHOICES" :key="r.value" :value="r.value"><UiListboxLabel>{{ r.label }}</UiListboxLabel></UiListboxOption>
+                <!-- the row under the chords: Off, each key area's or chord's minor pentatonic, or each chord's hexatonic pair; the Pentatonic options open to its right, over the sheet, so the rail keeps its two rows (#293), stacked under it in the Controls dialog -->
+                <div v-if="overlayShown" :class="compact ? 'flex flex-col items-start gap-2' : 'flex items-start gap-1'">
+                  <UiListbox v-model="overlayModel" class="w-48" aria-label="Overlay" :title="overlayTitle(overlayOptions)">
+                    <template #selected="{ value }"><UiListboxLabel>Overlay: {{ overlayLabel(value) }}</UiListboxLabel></template>
+                    <UiListboxOption v-for="o in overlayOptions" :key="o.value" :value="o.value"><UiListboxLabel>{{ o.label }}</UiListboxLabel></UiListboxOption>
                   </UiListbox>
-                  <template v-else>
-                    <UiListbox v-model="pentPath" class="w-48" aria-label="Pentatonic path">
-                      <template #selected="{ value }"><UiListboxLabel>{{ pathLabel(value) }}</UiListboxLabel></template>
-                      <UiListboxOption v-for="p in pathChoices" :key="p.value" :value="p.value"><UiListboxLabel>{{ p.label }}</UiListboxLabel></UiListboxOption>
+                  <RailPopover v-if="overlayModel === 'pentatonic'" v-model:open="pentOptionsOpen" :inline="compact" label="Pentatonic options">
+                    <SegmentedControl v-model="pentBasis" legend="Ranked against" name="pent-basis" aria-label="Pentatonics ranked against" :options="PENT_BASES" />
+                    <UiListbox v-if="pentBasis === 'chord'" v-model="pentRank" class="w-48" aria-label="Pentatonic rank">
+                      <template #selected="{ value }"><UiListboxLabel>{{ rankLabel(value) }}</UiListboxLabel></template>
+                      <UiListboxOption v-for="r in PENT_RANK_CHOICES" :key="r.value" :value="r.value"><UiListboxLabel>{{ r.label }}</UiListboxLabel></UiListboxOption>
                     </UiListbox>
-                    <template v-if="pentPath === 'one'">
-                      <UiListbox v-model="pentRung" class="w-48" aria-label="Pentatonic rung">
-                        <template #selected="{ value }"><UiListboxLabel>{{ rungLabel(value) }}</UiListboxLabel></template>
-                        <UiListboxOption v-for="r in PENT_RUNGS" :key="r.value" :value="r.value"><UiListboxLabel>{{ r.label }}</UiListboxLabel></UiListboxOption>
+                    <template v-else>
+                      <UiListbox v-model="pentPath" class="w-48" aria-label="Pentatonic path">
+                        <template #selected="{ value }"><UiListboxLabel>{{ pathLabel(value) }}</UiListboxLabel></template>
+                        <UiListboxOption v-for="p in pathChoices" :key="p.value" :value="p.value"><UiListboxLabel>{{ p.label }}</UiListboxLabel></UiListboxOption>
                       </UiListbox>
-                      <SegmentedControl v-if="sideShown(pentRung)" v-model="pentSide" legend="Side" name="pent-side" aria-label="Pentatonic side" :options="PENT_SIDES" />
+                      <template v-if="pentPath === 'one'">
+                        <UiListbox v-model="pentRung" class="w-48" aria-label="Pentatonic rung">
+                          <template #selected="{ value }"><UiListboxLabel>{{ rungLabel(value) }}</UiListboxLabel></template>
+                          <UiListboxOption v-for="r in PENT_RUNGS" :key="r.value" :value="r.value"><UiListboxLabel>{{ r.label }}</UiListboxLabel></UiListboxOption>
+                        </UiListbox>
+                        <SegmentedControl v-if="sideShown(pentRung)" v-model="pentSide" legend="Side" name="pent-side" aria-label="Pentatonic side" :options="PENT_SIDES" />
+                      </template>
+                      <template v-else-if="pentPath !== 'custom'">
+                        <SegmentedControl v-model="pentStepUnit" legend="Step by" name="pent-step" aria-label="Pentatonic step" :options="PENT_STEP_UNITS" />
+                        <SegmentedControl v-if="pentStepUnit === 'bars'" v-model="pentStepBarsText" legend="Bars" name="pent-step-bars" aria-label="Bars a step" :options="PENT_STEP_BARS" />
+                      </template>
                     </template>
-                    <template v-else-if="pentPath !== 'custom'">
-                      <SegmentedControl v-model="pentStepUnit" legend="Step by" name="pent-step" aria-label="Pentatonic step" :options="PENT_STEP_UNITS" />
-                      <SegmentedControl v-if="pentStepUnit === 'bars'" v-model="pentStepBarsText" legend="Bars" name="pent-step-bars" aria-label="Bars a step" :options="PENT_STEP_BARS" />
-                    </template>
-                  </template>
+                  </RailPopover>
                 </div>
               </div>
             </UiField>
@@ -147,6 +149,7 @@ import type { SheetKind } from '~/utils/sheets'
 import type { FunctionalComponent } from 'vue'
 import { AdjustmentsHorizontalIcon } from '@heroicons/vue/16/solid'
 import ControlsDialog from './ControlsDialog.vue'
+import RailPopover from './RailPopover.vue'
 
 /** the preview toolbar, in labelled groups: Work on (sheet), Instrument, #level, Show (on the Changes: Analysis, Guide Tones), Transposition (+ #transpose), in the rail, with #actions at its right */
 const sheet = defineModel<SheetKind>('sheet', { required: true })
@@ -170,6 +173,9 @@ const overlayFlags = { pentatonics: useFeature('pentatonics'), hexatonics: useFe
 const overlayOptions = overlayChoices(overlayFlags)
 /** the overlay in force: one whose flag is off reads Off */
 const overlayModel = computed({ get: () => overlayInForce(overlay.value, overlayFlags), set: (v: Overlay) => (overlay.value = v) })
+/** the Pentatonic options' popover: it opens as the Overlay turns to Pentatonic, and closes as it leaves (#293) */
+const pentOptionsOpen = ref(false)
+watch(overlayModel, (o) => (pentOptionsOpen.value = o === 'pentatonic'))
 const { shows } = useInterface()
 /** what this Interface level shows (#273): Numerals and Scales (hidden while editing too), the Overlay (with either overlay's flag on) */
 const analysisShown = computed(() => !props.lockLabels && shows('analysis'))

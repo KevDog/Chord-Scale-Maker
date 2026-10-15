@@ -241,6 +241,12 @@ export async function chooseOverlay(page: Page, name: 'Off' | 'Pentatonic' | 'He
 /** the Pentatonic overlay on */
 export const showPentatonics = (page: Page): Promise<void> => chooseOverlay(page, 'Pentatonic')
 
+/** open the Pentatonic options' popover beside the Overlay (#293): it opens as the Overlay turns to Pentatonic, not after a reload */
+export async function openPentatonicOptions(page: Page): Promise<void> {
+  const chevron = page.getByRole('button', { name: 'Pentatonic options' })
+  if ((await chevron.getAttribute('aria-expanded')) !== 'true') await chevron.click()
+}
+
 /** choose Ranked against: Chord (inside Controls on a phone), retried: a click before hydration is lost */
 export async function rankedAgainstChord(page: Page): Promise<void> {
   await inControls(page, async () => {
