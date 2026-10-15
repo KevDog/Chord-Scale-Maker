@@ -5,7 +5,7 @@ import ChordPickPopover from '~/components/ChordPickPopover.vue'
 
 const base = {
   text: 'Dm♪',
-  ariaLabel: 'Pentatonic: D minor. Show the choices',
+  triggerLabel: 'Pentatonic: D minor. Show the choices',
   header: 'Cmaj7 Ionian · bars 6, 22',
   footer: 'Sets bars 6 and 22.',
   sheetChoice: 'Dm',
@@ -38,7 +38,10 @@ describe('the chord pick popover', () => {
   it('heads the dialog, offers the sheet’s choice, then each row, then the footer', async () => {
     const w = await open()
     const d = w.find('[role="dialog"]')
-    expect(d.attributes('aria-label')).toBe(base.header)
+    expect(d.attributes('aria-label')).toBeUndefined()
+    const id = d.attributes('aria-labelledby')
+    expect(id).toBeTruthy()
+    expect(d.find(`[id="${id}"]`).text()).toBe(base.header)
     expect(d.classes()).toContain('print:hidden')
     expect(d.text().startsWith(base.header)).toBe(true)
     expect(d.text().endsWith(base.footer)).toBe(true)
@@ -47,13 +50,15 @@ describe('the chord pick popover', () => {
     expect(sheet.attributes('aria-current')).toBe('true')
     const rows = w.findAll('[data-choice]')
     expect(rows.map((r) => r.text())).toEqual(base.rows.map((r) => r.label))
-    expect(rows.map((r) => r.attributes('aria-current'))).toEqual(['true', undefined, undefined])
+    expect(rows.map((r) => r.attributes('aria-current'))).toEqual([undefined, undefined, undefined]) // nothing picked: only the sheet's choice is current
+    expect(w.findAll('[aria-current]')).toHaveLength(1)
     w.unmount()
   })
 
   it('marks no sheet’s choice under a pick', async () => {
     const w = await open({ picked: true })
     expect(w.find('[data-sheet-choice]').attributes('aria-current')).toBeUndefined()
+    expect(w.findAll('[data-choice]').map((r) => r.attributes('aria-current'))).toEqual(['true', undefined, undefined])
     w.unmount()
   })
 

@@ -8,6 +8,7 @@ describe('chord pick wording', () => {
   it('heads with the chord, scale and bars', () => {
     expect(pickHeader('D♭7 Mixolydian', ['6', '22'])).toBe('D♭7 Mixolydian · bars 6, 22')
     expect(pickHeader('D♭7 Mixolydian', ['6'])).toBe('D♭7 Mixolydian · bar 6')
+    expect(pickHeader('D♭7 Mixolydian', [])).toBe('D♭7 Mixolydian') // no bars: no trailing "· bars "
   })
   it('says what a pick changes: all three footers', () => {
     expect(pickFooter('changes', ['6'], false)).toBe('Sets bar 6.')

@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import { chartKeyOf, CONCERT, parseChart, type Resolved, type Row } from '@chord-scale-maker/engine'
+import { chartKeyOf, chordPositions, CONCERT, expandRows, NO_PICKS, parseChart, pickTargets, type Resolved, resolveScales, type Row, withPick } from '@chord-scale-maker/engine'
 import ScaleSheet from '~/components/ScaleSheet.vue'
 
 const ROOTS = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'Gb', 'G', 'Ab', 'A', 'Bb', 'B']
@@ -61,5 +61,21 @@ describe('ScaleSheet', () => {
       (await mountSuspended(ScaleSheet, { props: { ...props, ...extra }, global: { stubs } })).findComponent({ name: 'ScaleStaff' }).props('staff')
     expect(await staffOf({ homeKey })).toMatchObject({ keySig: 'Bb', showClefAndKey: true, accidentals: [null, null, null, null, null, null, null] }) // C dorian: Eb and Bb in the signature
     expect(await staffOf({})).toMatchObject({ keySig: null, showClefAndKey: true, accidentals: [null, null, 'b', null, null, null, 'b'] })
+  })
+
+  it('plays the picks it is given at their positions, passes part and pickable down, and re-emits a staff’s pick', async () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\n').value
+    const resolved = resolveScales(doc, { level: 'standard', seed: 0 })
+    const positions = chordPositions(doc)
+    const picks = withPick(NO_PICKS, 'pentatonic', ['A:1:0'], 4, pickTargets(doc, resolved))
+    const base = { rows: expandRows(doc).value, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', start: 'C', mode: 'root' as const, perPage: 12, resolved, practice: { preset: 'pentatonic', degree: 'auto' } as const }
+    const w = await mountSuspended(ScaleSheet, { props: { ...base, picks, positions, pickable: true }, global: { stubs } })
+    const staff = w.findComponent({ name: 'ScaleStaff' })
+    expect(staff.props('staff')).toMatchObject({ pentatonic: { name: 'Em', picked: true }, positions: ['A:1:0'] })
+    expect([staff.props('part'), staff.props('pickable')]).toEqual([CONCERT, true])
+    staff.vm.$emit('pick', 'pentatonic', ['A:1:0'], 9)
+    expect(w.emitted('pick')?.[0]).toEqual(['pentatonic', ['A:1:0'], 9])
+    const plain = await mountSuspended(ScaleSheet, { props: { ...base, picks }, global: { stubs } })
+    expect(plain.findComponent({ name: 'ScaleStaff' }).props('staff')).toMatchObject({ pentatonic: { picked: false }, positions: [] })
   })
 })
