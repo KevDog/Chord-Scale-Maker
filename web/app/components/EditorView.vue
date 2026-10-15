@@ -47,7 +47,7 @@
               <UiButton plain :disabled="!chartHistory.canUndo.value" title="Undo (⌘Z)" @click="chartHistory.undo"><ArrowUturnLeftIcon data-slot="icon" />Undo</UiButton>
               <UiButton plain :disabled="!chartHistory.canRedo.value" title="Redo (⇧⌘Z)" @click="chartHistory.redo"><ArrowUturnRightIcon data-slot="icon" />Redo</UiButton>
               <UiButton v-if="saved || shared" plain :disabled="!unsaved" title="Save in this browser now (edits also save a moment after you stop)" @click="saveNow"><BookmarkIcon data-slot="icon" />Save</UiButton>
-              <UiDropdown>
+              <UiDropdown v-if="ui.shows('source')">
                 <UiDropdownButton plain aria-label="More editing options"><EllipsisHorizontalIcon data-slot="icon" /></UiDropdownButton>
                 <UiDropdownMenu anchor="end">
                   <UiDropdownItem @click="prefs.source.value = !sourceShown"><CodeBracketIcon data-slot="icon" />{{ sourceShown ? 'Hide source' : 'Show source' }}</UiDropdownItem>
@@ -101,7 +101,7 @@
             <span class="flex items-center gap-2">
               <UiButton plain class="text-white! hover:bg-white/10!" :disabled="!chartHistory.canUndo.value" aria-label="Undo the last change" title="Undo (⌘Z)" @click="chartHistory.undo"><ArrowUturnLeftIcon data-slot="icon" class="text-white!" />Undo</UiButton>
               <UiButton plain class="text-white! hover:bg-white/10!" :disabled="!chartHistory.canRedo.value" aria-label="Redo the last change" title="Redo (⇧⌘Z)" @click="chartHistory.redo"><ArrowUturnRightIcon data-slot="icon" class="text-white!" />Redo</UiButton>
-              <UiButton plain class="text-white! hover:bg-white/10!" :aria-pressed="sourceShown" title="Show or hide the chart's text" @click="prefs.source.value = !sourceShown"><CodeBracketIcon data-slot="icon" class="text-white!" />Source</UiButton>
+              <UiButton v-if="ui.shows('source')" plain class="text-white! hover:bg-white/10!" :aria-pressed="sourceShown" title="Show or hide the chart's text" @click="prefs.source.value = !sourceShown"><CodeBracketIcon data-slot="icon" class="text-white!" />Source</UiButton>
               <UiButton v-if="saved || shared" plain class="text-white! hover:bg-white/10!" :disabled="!unsaved" title="Save in this browser now (edits also save a moment after you stop)" @click="saveNow"><BookmarkIcon data-slot="icon" class="text-white!" />Save</UiButton>
               <UiButton color="white" @click="toggleEditor">Done editing</UiButton>
             </span>
@@ -406,7 +406,7 @@ function editSheetChord(chord: SheetChordEdit): void {
   sheetChord.value = chord
 }
 /** the Source: in the banner, or under ⋯ below md, remembered; always shown for a chart over a size limit (only the text can fix it) */
-const sourceShown = computed(() => prefs.source.value || editor.fatal.value)
+const sourceShown = computed(() => (ui.shows('source') && prefs.source.value) || editor.fatal.value)
 /** the chart's key, for the sheets' key signature, drawn once at the start (undefined when the flag is off: drawn as before) */
 const homeKey = computed(() => (signaturesOn ? chartKeyOf(editor.doc.value) : undefined))
 const practice = usePractice(props.practiceKey)

@@ -1,5 +1,5 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it, vi } from 'vitest'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import ChangesSystem from '~/components/ChangesSystem.vue'
 import { buildChanges, type ChangesBar, type ChangesChord, type ChangesLine, type GuideNote, type Letter, CONCERT, parseChart, type PentatonicPlan, showPentatonics } from '@chord-scale-maker/engine'
@@ -262,5 +262,38 @@ describe('ChangesSystem pentatonic ladders', () => {
     const w = await mountLine(AB, one, 0)
     expect(w.find('[data-slot="pentatonic"] [data-section]').classes().some((c) => c.startsWith('text-rung-'))).toBe(false)
     w.unmount()
+  })
+})
+
+describe('ChangesSystem interface levels', () => {
+  const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 1 | G7\n').value
+  const at = (c: ChangesChord, line: number): ChangesChord => ({ ...c, at: { section: 'A', bar: '1' }, line, written: c.text })
+  const withReason = (): ChangesLine => ({ bars: [bar([{ ...at(chord(2, 'G7', ''), 3), numeral: 'V7', scale: 'G Mixolydian', reason: 'the V of C', rule: 'D1' }], [])] })
+  const base = { first: true, beats: 4 as const, barsPerLine: 4, numerals: true, scales: true, editable: true, doc }
+  const level = (l: 'essentials' | 'intermediate' | 'everything') => {
+    useRuntimeConfig().public.features.interfaceLevels = true
+    useInterface().level.value = l
+  }
+  afterEach(() => {
+    useRuntimeConfig().public.features.interfaceLevels = false
+    useInterface().level.value = 'everything'
+  })
+
+  it('Essentials: the labels are plain text, editing or not', async () => {
+    level('essentials')
+    const picking = await mountSuspended(ChangesSystem, { props: { ...base, line: withReason(), editing: null } })
+    expect(picking.findAllComponents({ name: 'SheetLabelPicker' })).toHaveLength(0)
+    expect(picking.find('[data-slot=numeral]').text()).toBe('V7')
+    const reading = await mountSuspended(ChangesSystem, { props: { ...base, line: withReason() } })
+    expect(reading.findAllComponents({ name: 'ChangesNote' })).toHaveLength(0)
+    expect(reading.find('[data-slot=scale]').text()).toBe('G Mixolydian')
+  })
+
+  it('Intermediate: the scale picker and the notes, not the function picker', async () => {
+    level('intermediate')
+    const picking = await mountSuspended(ChangesSystem, { props: { ...base, line: withReason(), editing: null } })
+    expect(picking.findAllComponents({ name: 'SheetLabelPicker' }).map((c) => c.props('kind'))).toEqual(['scale'])
+    const reading = await mountSuspended(ChangesSystem, { props: { ...base, line: withReason() } })
+    expect(reading.findAllComponents({ name: 'ChangesNote' })).toHaveLength(2)
   })
 })

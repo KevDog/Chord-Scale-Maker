@@ -710,3 +710,22 @@ describe('EditorView pentatonic practice (#266)', () => {
     expect(picks()).toEqual({})
   })
 })
+
+describe('EditorView interface levels', () => {
+  afterEach(() => {
+    useRuntimeConfig().public.features.interfaceLevels = false
+    useInterface().level.value = 'everything'
+    localStorage.clear()
+  })
+
+  it('Essentials hides the Source, but a chart over a size limit still shows it', async () => {
+    useRuntimeConfig().public.features.interfaceLevels = true
+    useInterface().level.value = 'essentials'
+    const w = await mount()
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await nextTick()
+    expect(buttonCalled(w, 'Source')).toBeUndefined()
+    const big = await mountSuspended(EditorView, { props: { initialText: 'title: T\n' + 'A | 1 | Cm7\n'.repeat(3000) }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    expect(big.find('textarea[aria-label="Chart text"]').exists()).toBe(true)
+  })
+})

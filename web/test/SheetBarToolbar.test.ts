@@ -1,5 +1,5 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { nextTick } from 'vue'
 import { type ChartDoc, parseChart, serializeChart } from '@chord-scale-maker/engine'
 import SheetBarToolbar from '~/components/SheetBarToolbar.vue'
@@ -77,5 +77,44 @@ describe('SheetBarToolbar', () => {
     ;[...document.querySelectorAll<HTMLElement>('[role=menuitem]')].find((m) => m.textContent?.trim() === '1st ending')?.click()
     await nextTick()
     expect(serializeChart(next(w))).toContain('@ending 1 A 2')
+  })
+})
+
+describe('SheetBarToolbar interface levels', () => {
+  const at = (level: 'essentials' | 'intermediate' | 'everything') => {
+    useRuntimeConfig().public.features.interfaceLevels = true
+    useInterface().level.value = level
+  }
+  const labels = (w: W) => w.findAll('button').map((b) => b.attributes('aria-label') ?? b.text())
+  const openMore = async (w: W) => {
+    await w.find('button[aria-label="More actions for A bar 2"]').trigger('click')
+    await nextTick()
+    return document.body.textContent ?? ''
+  }
+  beforeEach(() => (document.body.innerHTML = ''))
+  afterEach(() => {
+    useRuntimeConfig().public.features.interfaceLevels = false
+    useInterface().level.value = 'everything'
+  })
+
+  it('Essentials keeps the bar actions and drops the ⋯ and Write out', async () => {
+    at('essentials')
+    const w = await mount()
+    expect(labels(w)).toEqual(['Insert a held bar before A bar 2', 'Insert a held bar after A bar 2', 'Split A bar 2', 'Delete A bar 2'])
+    const repeat = await mount({ repeatOf: 'A' })
+    expect(repeat.find('[role=toolbar]').exists()).toBe(false)
+  })
+
+  it('Intermediate adds form editing but not Key change here', async () => {
+    at('intermediate')
+    const text = await openMore(await mount())
+    expect(text).toContain('1st ending')
+    expect(text).toContain('Paste bars…')
+    expect(text).not.toContain('Key change here')
+  })
+
+  it('Everything adds Key change here', async () => {
+    at('everything')
+    expect(await openMore(await mount())).toContain('Key change here')
   })
 })

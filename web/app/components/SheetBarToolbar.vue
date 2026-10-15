@@ -1,5 +1,5 @@
 <template>
-  <div class="print:hidden">
+  <div v-if="!repeatOf || shows('form-editing')" class="print:hidden">
     <div
       role="toolbar"
       :aria-label="`Bar ${bar} of ${section}`"
@@ -13,15 +13,17 @@
       <button type="button" :class="ITEM" :aria-label="`Insert a held bar after ${section} bar ${bar}`" @click="change(insertHeldBar(doc, section, bar + 1), `bar ${bar + 1} added`, 'No bar can go there.')">+ after</button>
       <button type="button" :class="ITEM" :aria-label="`Split ${section} bar ${bar}`" @click="split">Split</button>
       <button type="button" :class="ITEM" :aria-label="`Delete ${section} bar ${bar}`" @click="change(deleteBar(doc, section, bar), `bar ${bar} deleted`, 'A section can’t start with a held bar: give the next bar a chord first.')">Delete</button>
-      <UiDropdown>
+      <UiDropdown v-if="shows('form-editing') || (chordLine !== null && shows('key-change'))">
         <UiDropdownButton plain :class="[ITEM, 'py-0.5! text-xs!']" :aria-label="`More actions for ${section} bar ${bar}`">⋯</UiDropdownButton>
         <UiDropdownMenu anchor="start">
-          <UiDropdownItem v-if="chordLine !== null" @click="change(insertKeyChange(doc, chordLine), 'key change added', 'A key change can’t go here.')">Key change here</UiDropdownItem>
-          <UiDropdownItem v-for="n in ENDINGS" :key="n" @click="change(toggleEnding(doc, section, n, bar), `${n === 1 ? '1st' : '2nd'} ending ${ending === n ? 'off' : 'on'}`, 'An ending can’t go over the other one.')">{{ n === 1 ? '1st' : '2nd' }} ending</UiDropdownItem>
+          <UiDropdownItem v-if="chordLine !== null && shows('key-change')" @click="change(insertKeyChange(doc, chordLine), 'key change added', 'A key change can’t go here.')">Key change here</UiDropdownItem>
+          <template v-if="shows('form-editing')">
+            <UiDropdownItem v-for="n in ENDINGS" :key="n" @click="change(toggleEnding(doc, section, n, bar), `${n === 1 ? '1st' : '2nd'} ending ${ending === n ? 'off' : 'on'}`, 'An ending can’t go over the other one.')">{{ n === 1 ? '1st' : '2nd' }} ending</UiDropdownItem>
           <UiDropdownItem v-for="m in MARKS" :key="m" @click="change(setMark(doc, section, bar, m, !hasMark(m)), `${MARK_LABELS[m]} ${hasMark(m) ? 'off' : 'on'}`, '')">{{ MARK_LABELS[m] }}</UiDropdownItem>
           <UiDropdownItem @click="emit('dialog', 'nav', section, bar)">Jump…</UiDropdownItem>
           <UiDropdownItem @click="emit('dialog', 'split', section, bar)">New section here…</UiDropdownItem>
           <UiDropdownItem @click="emit('dialog', 'paste', section, bar)">Paste bars…</UiDropdownItem>
+          </template>
         </UiDropdownMenu>
       </UiDropdown>
     </template>
@@ -44,6 +46,7 @@ import { barFull, CANT_TAKE } from '~/utils/refusals'
 const props = defineProps<{ doc: ChartDoc; section: string; bar: number; repeatOf: string | null }>()
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; said: [text: string]; refused: [text: string]; dialog: [kind: 'split' | 'nav' | 'paste', section: string, bar: number] }>()
 
+const { shows } = useInterface()
 const ITEM = 'rounded px-2 py-1 hover:bg-note-50 focus-visible:outline-2 focus-visible:outline-blue-500 dark:hover:bg-white/10'
 const ENDINGS = [1, 2] as const
 const MARKS = ['segno', 'coda'] as const
