@@ -62,4 +62,29 @@ describe('home page', () => {
     await flushPromises()
     expect(w.text()).not.toContain('Recently opened')
   })
+
+  it('links to a tune of the day, written for the instrument', async () => {
+    localStorage.setItem('csm-instrument', 'tenor-sax')
+    const w = await mountSuspended(Index)
+    await flushPromises()
+    const totd = w.find('section[aria-labelledby="totd-heading"]')
+    expect(totd.find('h2').text()).toBe('Tune of the day')
+    expect(totd.find('a').attributes('href')).toMatch(/^\/song\/[a-z0-9-]+$/)
+    expect(totd.text()).toContain('concert')
+  })
+
+  it('picks another tune on request', async () => {
+    const w = await mountSuspended(Index)
+    await flushPromises()
+    const totd = () => w.find('section[aria-labelledby="totd-heading"]')
+    const before = totd().find('a').attributes('href')
+    await totd().find('button').trigger('click')
+    expect(totd().find('a').attributes('href')).not.toBe(before)
+  })
+
+  it('says what the site does, arpeggios included', async () => {
+    const w = await mountSuspended(Index)
+    const about = w.find('section[aria-labelledby="about-heading"]')
+    expect(about.findAll('h3').map((h) => h.text())).toEqual(['Follow the changes', 'Learn a scale for every chord', 'Run the arpeggios', 'Bring your own tune'])
+  })
 })
