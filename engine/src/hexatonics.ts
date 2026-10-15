@@ -1,7 +1,7 @@
-import { fifthsFrom } from './ladder'
+import { fifthsFrom, pitchClasses, rankByFifths } from './ladder'
 import { glyphs, mod, pcOf, rootName, type Spelled } from './pitch'
 import { CHORD_TONES } from './qualities'
-import { spellFrom } from './scales'
+import { SCALES, spellFrom } from './scales'
 
 /**
  * Hexatonics (docs/superpowers/specs/2026-10-14-hexatonic-practice-design.md): six-note sets made of two triads from a
@@ -32,7 +32,7 @@ const triad = (root: Spelled, quality: TriadQuality): ChainTriad => {
   return { root, quality, pcs: [pc, mod(pc + third, 12), mod(pc + fifth, 12)], name: glyphs(`${rootName(root)}${SUFFIX[quality]}`) }
 }
 
-/** three scale notes read as a triad (an augmented one rooted on `first`, the note its stacking started from), or null */
+/** three scale notes read as a triad (an augmented one, symmetric, on the note its stacking started from), or null */
 function readTriad(scale: readonly Spelled[], indices: readonly number[]): ChainTriad | null {
   const set = new Set(indices.map((i) => pcOf(scale[i]!)))
   if (set.size !== 3) return null
@@ -114,3 +114,57 @@ export function resolvePair(pairs: readonly HexPair[], pair: number, chordRoot: 
   if (!Number.isInteger(pair) || pair < 1) return hexatonicAuto(pairs, chordRoot)
   return pairs[(pair - 1) % pairs.length]!
 }
+
+/** how the six notes divide into group A and group B: the two triads, chord tones and color, a pentatonic and the rest, low and high trichords */
+export type HexGrouping = 'triads' | 'tones' | 'pent' | 'trichords'
+export const HEX_GROUPINGS: readonly HexGrouping[] = ['triads', 'tones', 'pent', 'trichords']
+export const HEX_GROUPING_LABELS: Readonly<Record<HexGrouping, string>> = {
+  triads: 'Triad pair',
+  tones: 'Chord tones + color',
+  pent: 'Pentatonic + 1',
+  trichords: 'Trichords 3+3',
+}
+
+const MINOR_PENT = pitchClasses(SCALES['minor pentatonic'][0])
+
+/** group B's pitch classes (group A is the rest of the six) */
+function groupB(pair: HexPair, grouping: HexGrouping, chordRoot: Spelled, quality: string | null): ReadonlySet<number> {
+  switch (grouping) {
+    case 'triads':
+      return new Set(pair.upper.pcs)
+    case 'tones': {
+      const tones = chordTonePcs(chordRoot, quality)
+      return new Set(tones.size ? pair.tones.filter((pc) => !tones.has(pc)) : [])
+    }
+    case 'pent': {
+      const best = rankByFifths(MINOR_PENT, new Set(pair.tones), pcOf(chordRoot))[0]!
+      return new Set(pair.tones.filter((pc) => !MINOR_PENT.has(mod(pc - best.root, 12))))
+    }
+    case 'trichords':
+      return new Set(pair.tones.slice(3))
+  }
+}
+
+/** a staff's hexatonic under the preset: the pair used, and its link number */
+export type StaffHexatonic = Readonly<{ name: string; link: number }>
+
+/**
+ * the hexatonic for the Pair control's value on a staff's scale (its notes from the root, spelled as written), and
+ * which of the staff's notes (`pcs`, the scale's own by default) it lights; second: the lit notes in group B
+ */
+export function hexatonicPick(
+  scale: readonly Spelled[],
+  chordRoot: Spelled,
+  quality: string | null,
+  pair: number,
+  grouping: HexGrouping,
+  pcs: readonly number[] = scale.map(pcOf),
+): Readonly<{ hexatonic: StaffHexatonic | null; lit: boolean[]; second: boolean[] }> {
+  const used = resolvePair(hexatonicPairs(scale, chordRoot, quality), pair, chordRoot)
+  if (used === null) return { hexatonic: null, lit: pcs.map(() => false), second: pcs.map(() => false) }
+  const b = groupB(used, grouping, chordRoot, quality)
+  return { hexatonic: { name: used.name, link: used.link }, lit: pcs.map((pc) => used.tones.includes(pc)), second: pcs.map((pc) => b.has(pc)) }
+}
+
+/** "G/Am hex", or "no triad pair" */
+export const hexatonicCaption = (h: StaffHexatonic | null): string => (h ? `${h.name} hex` : 'no triad pair')

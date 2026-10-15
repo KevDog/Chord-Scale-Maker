@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { HEX_PAIRS, hexatonicAuto, hexatonicPairs, resolvePair, triadChain, type ChainTriad } from '../hexatonics'
+import { HEX_GROUPINGS, HEX_PAIRS, hexatonicAuto, hexatonicCaption, hexatonicPick, type HexGrouping, hexatonicPairs, resolvePair, triadChain, type ChainTriad } from '../hexatonics'
 import { mod, parseRoot, pcOf, type Spelled } from '../pitch'
 import { SCALES, type ScaleKey, spellScale } from '../scales'
 
@@ -147,5 +147,92 @@ describe('resolvePair', () => {
   it('is null with no pairs', () => {
     expect(resolvePair([], 0, C)).toBeNull()
     expect(resolvePair(pairsOn('C', 'blues', '7'), 3, C)).toBeNull()
+  })
+})
+
+/** group A and B pitch classes of the staff's notes, sorted */
+const groups = (root: string, key: ScaleKey, quality: string | null, pair: number, grouping: HexGrouping, chordRoot = root) => {
+  const s = scale(root, key)
+  const { lit, second } = hexatonicPick(s, parseRoot(chordRoot), quality, pair, grouping)
+  const pcs = s.map(pcOf)
+  const sorted = (xs: number[]) => [...xs].sort((a, b) => a - b)
+  return { a: sorted(pcs.filter((_, i) => lit[i] && !second[i])), b: sorted(pcs.filter((_, i) => second[i])) }
+}
+const ab = (a: number[], b: number[]) => ({ a: [...a].sort((x, y) => x - y), b: [...b].sort((x, y) => x - y) })
+
+describe('the groupings', () => {
+  it('lists four', () => expect(HEX_GROUPINGS).toEqual(['triads', 'tones', 'pent', 'trichords']))
+
+  it('Triad pair: the lower triad, then the upper', () => {
+    expect(groups('C', 'ionian', 'Maj7', 1, 'triads')).toEqual(ab([0, 4, 7], [2, 5, 9])) // C/Dm
+    expect(groups('C', 'ionian', 'Maj7', 3, 'triads')).toEqual(ab([4, 7, 11], [5, 9, 0])) // Em/F
+    expect(groups('C', 'ionian', 'Maj7', 7, 'triads')).toEqual(ab([11, 2, 5], [0, 4, 7])) // B°/C
+    expect(groups('C', 'half whole diminished', '7', 3, 'triads')).toEqual(ab([3, 7, 10], [9, 0, 4])) // E♭/Am
+  })
+
+  it('Chord tones + color: the chord tones, then the rest', () => {
+    expect(groups('C', 'ionian', 'Maj7', 1, 'tones')).toEqual(ab([0, 4, 7], [2, 5, 9]))
+    expect(groups('C', 'ionian', 'Maj7', 3, 'tones')).toEqual(ab([4, 7, 11, 0], [5, 9]))
+    expect(groups('C', 'ionian', 'Maj7', 7, 'tones')).toEqual(ab([11, 0, 4, 7], [2, 5]))
+    expect(groups('C', 'half whole diminished', '7', 3, 'tones')).toEqual(ab([4, 7, 10, 0], [3, 9]))
+  })
+
+  it('Chord tones + color: all six as group A for an unknown quality', () => {
+    expect(groups('C', 'ionian', null, 1, 'tones')).toEqual(ab([0, 2, 4, 5, 7, 9], []))
+  })
+
+  it('Pentatonic + 1: the fifths rule picks between two pentatonics inside', () => {
+    expect(groups('C', 'ionian', 'Maj7', 1, 'pent')).toEqual(ab([2, 5, 7, 9, 0], [4])) // Dm (2 fifths from C) over Am (3)
+    expect(groups('C', 'ionian', 'Maj7', 1, 'pent', 'A')).toEqual(ab([9, 0, 2, 4, 7], [5])) // Am, on an A chord
+  })
+
+  it('Pentatonic + 1: the best four-note fit where none lies inside', () => {
+    expect(groups('C', 'ionian', 'Maj7', 3, 'pent')).toEqual(ab([5, 7, 9, 0], [4, 11])) // Em/F: Dm, Em, Am share 4; Dm nearest C
+    expect(groups('C', 'ionian', 'Maj7', 7, 'pent')).toEqual(ab([7, 0, 2, 5], [11, 4])) // B°/C: Gm
+    expect(groups('C', 'half whole diminished', '7', 3, 'pent')).toEqual(ab([0, 3, 7, 10], [4, 9])) // E♭/Am: Cm
+  })
+
+  it('Trichords 3+3: the lowest three from the lower root, then the highest', () => {
+    expect(groups('C', 'ionian', 'Maj7', 1, 'trichords')).toEqual(ab([0, 2, 4], [5, 7, 9]))
+    expect(groups('C', 'ionian', 'Maj7', 3, 'trichords')).toEqual(ab([4, 5, 7], [9, 11, 0]))
+    expect(groups('C', 'ionian', 'Maj7', 7, 'trichords')).toEqual(ab([11, 0, 2], [4, 5, 7]))
+    expect(groups('C', 'half whole diminished', '7', 3, 'trichords')).toEqual(ab([3, 4, 7], [9, 10, 0]))
+  })
+})
+
+describe('hexatonicPick', () => {
+  it("lights only the staff's notes in the hexatonic, group B inside them", () => {
+    for (const grouping of HEX_GROUPINGS)
+      for (let pair = 0; pair <= HEX_PAIRS; pair++) {
+        const s = scale('C', 'ionian')
+        const { hexatonic, lit, second } = hexatonicPick(s, C, 'Maj7', pair, grouping)
+        expect(lit.filter(Boolean)).toHaveLength(6)
+        expect(lit).toHaveLength(7)
+        expect(second.every((b, i) => !b || lit[i])).toBe(true)
+        expect(hexatonic).not.toBeNull()
+      }
+  })
+
+  it('names the pair it used: Auto, a number, a wrap', () => {
+    expect(hexatonicPick(scale('C', 'ionian'), C, 'Maj7', 0, 'triads').hexatonic).toEqual({ name: 'G/Am', link: 5 })
+    expect(hexatonicPick(scale('C', 'ionian'), C, 'Maj7', 8, 'triads').hexatonic).toEqual({ name: 'C/Dm', link: 1 })
+  })
+
+  it('maps the pick onto given staff notes (an octave, From X)', () => {
+    const pcs = [7, 9, 11, 0, 2, 4, 5, 7] // G to G over C Ionian
+    const { lit, second } = hexatonicPick(scale('C', 'ionian'), C, 'Maj7', 5, 'triads', pcs) // G/Am leaves out F
+    expect(lit).toEqual([true, true, true, true, true, true, false, true])
+    expect(second).toEqual([false, true, false, true, false, true, false, false])
+  })
+
+  it('lights nothing where there is no pair', () => {
+    const s = scale('C', 'blues')
+    const pick = hexatonicPick(s, C, '7', 0, 'triads')
+    expect(pick).toEqual({ hexatonic: null, lit: s.map(() => false), second: s.map(() => false) })
+  })
+
+  it('captions both forms', () => {
+    expect(hexatonicCaption({ name: 'G/Am', link: 5 })).toBe('G/Am hex')
+    expect(hexatonicCaption(null)).toBe('no triad pair')
   })
 })
