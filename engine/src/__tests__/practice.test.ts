@@ -120,16 +120,21 @@ describe('the Pentatonic selection (#266)', () => {
     expect(PRESETS.from).toEqual(['all', 'pentatonic', 'hexatonic'])
   })
 
-  it('reads from untrusted data with a rank 1–12; a missing or bad rank reads as 1', () => {
-    expect(practiceSelectionFrom({ preset: 'pentatonic', rank: 7 })).toEqual({ preset: 'pentatonic', rank: 7 })
-    expect(practiceSelectionFrom({ preset: 'pentatonic' })).toEqual({ preset: 'pentatonic', rank: 1 })
-    expect(practiceSelectionFrom({ preset: 'pentatonic', rank: 13 })).toEqual({ preset: 'pentatonic', rank: 1 })
-    expect(practiceSelectionFrom({ preset: 'pentatonic', rank: 2.5 })).toEqual({ preset: 'pentatonic', rank: 1 })
-    expect(practiceSelectionFrom({ preset: 'guideTones', rank: 3 })).toEqual({ preset: 'guideTones' })
+  it('reads from untrusted data with a degree 0–11 or Auto; a missing or bad degree reads as Auto', () => {
+    expect(practiceSelectionFrom({ preset: 'pentatonic', degree: 7 })).toEqual({ preset: 'pentatonic', degree: 7 })
+    expect(practiceSelectionFrom({ preset: 'pentatonic', degree: 0 })).toEqual({ preset: 'pentatonic', degree: 0 })
+    expect(practiceSelectionFrom({ preset: 'pentatonic', degree: 'auto' })).toEqual({ preset: 'pentatonic', degree: 'auto' })
+    expect(practiceSelectionFrom({ preset: 'pentatonic' })).toEqual({ preset: 'pentatonic', degree: 'auto' })
+    for (const degree of [12, -1, 2.5, '3', null]) expect(practiceSelectionFrom({ preset: 'pentatonic', degree })).toEqual({ preset: 'pentatonic', degree: 'auto' })
+    expect(practiceSelectionFrom({ preset: 'guideTones', degree: 3 })).toEqual({ preset: 'guideTones' })
+  })
+
+  it('reads the old rank shape, stored or shared, as Auto', () => {
+    for (const rank of [1, 7, 12]) expect(practiceSelectionFrom({ preset: 'pentatonic', rank })).toEqual({ preset: 'pentatonic', degree: 'auto' })
   })
 
   it('is told apart from the other selections', () => {
-    expect(isPentatonicSelection({ preset: 'pentatonic', rank: 2 })).toBe(true)
+    expect(isPentatonicSelection({ preset: 'pentatonic', degree: 2 })).toBe(true)
     expect(isPentatonicSelection({ preset: 'all' })).toBe(false)
     expect(isPentatonicSelection({ keys: ['1'] })).toBe(false)
     expect(isPentatonicSelection(null)).toBe(false)
@@ -137,51 +142,60 @@ describe('the Pentatonic selection (#266)', () => {
 })
 
 describe('the Pentatonic preset on the Scales sheet (#266)', () => {
-  const pent = (rank: number): PracticeSelection => ({ preset: 'pentatonic', rank })
+  const pent = (degree: number | 'auto'): PracticeSelection => ({ preset: 'pentatonic', degree })
 
   it('selects nothing by keys', () => {
-    expect(selectedNotes({ preset: 'pentatonic', rank: 1 }, 'Dm7', ['1', 'b3'])).toEqual([false, false])
+    expect(selectedNotes({ preset: 'pentatonic', degree: 'auto' }, 'Dm7', ['1', 'b3'])).toEqual([false, false])
   })
 
-  it('lights each staff’s pentatonic at the rank and names it', () => {
-    const [d, g] = staves([row('Dm7'), row('G7', '', '2')], 'root', pent(1))
-    expect(d?.pentatonic).toEqual({ name: 'Dm', rank: 1, shared: 5, best: 5 })
+  it('lights each staff’s Auto pentatonic and names it with its degree and shared count', () => {
+    const [d, g] = staves([row('Dm7'), row('G7', '', '2')], 'root', pent('auto'))
+    expect(d?.pentatonic).toEqual({ name: 'Dm', degree: 0, shared: 5 })
     expect(picked([d!])[0]).toEqual(['D', 'F', 'G', 'A', 'C'])
-    expect(g?.pentatonic?.name).toBe('Dm')
+    expect(g?.pentatonic).toEqual({ name: 'Dm', degree: 7, shared: 5 })
   })
 
-  it('lights fewer notes farther down the ladder, in From X mode too', () => {
-    const [far] = staves([row('Dm7')], 'from', pent(12))
-    expect(far?.pentatonic?.shared).toBe(0)
-    expect(far?.selected?.every((s) => !s)).toBe(true)
+  it('builds on the same degree over each chord: on the 6 gives Bm over Dm7 and Em over G7', () => {
+    const [d, g] = staves([row('Dm7'), row('G7', '', '2')], 'root', pent(9))
+    expect([d?.pentatonic, g?.pentatonic]).toEqual([{ name: 'Bm', degree: 9, shared: 4 }, { name: 'Em', degree: 9, shared: 5 }])
+  })
+
+  it('lights fewer notes farther out, in From X mode too', () => {
+    const [far] = staves([row('Dm7')], 'from', pent(6)) // G♯m on ♯4 of D Dorian: G♯ B C♯ D♯ F♯, only B inside
+    expect(far?.pentatonic).toEqual({ name: 'G♯m', degree: 6, shared: 1 })
+    expect(far?.selected?.filter(Boolean)).toHaveLength(1)
   })
 
   it('names the written pentatonic for a transposing part, lighting the same degrees', () => {
-    const [concert] = staves([row('Dm7')], 'root', pent(1))
-    const [tenor] = staves([row('Dm7')], 'root', pent(1), 'C', TENOR)
-    expect(tenor?.pentatonic?.name).toBe('Em')
-    expect(tenor?.selected).toEqual(concert?.selected)
+    for (const degree of ['auto', 0, 5, 10] as const) {
+      const [concert] = staves([row('Dm7')], 'root', pent(degree))
+      const [tenor] = staves([row('Dm7')], 'root', pent(degree), 'C', TENOR)
+      expect(tenor?.pentatonic?.degree).toBe(concert?.pentatonic?.degree)
+      expect(tenor?.selected).toEqual(concert?.selected)
+    }
+    expect(staves([row('Dm7')], 'root', pent('auto'), 'C', TENOR)[0]?.pentatonic?.name).toBe('Em')
+    expect(staves([row('Dm7')], 'root', pent(5), 'C', TENOR)[0]?.pentatonic?.name).toBe('Am') // on the 4 of written Em7
   })
 
   it('is null under other selections and on staves that can’t be drawn', () => {
     expect(staves([row('Dm7')], 'root', { preset: 'guideTones' })[0]?.pentatonic).toBeNull()
     expect(staves([row('Dm7')], 'root')[0]?.pentatonic).toBeNull()
-    expect(staves([row('Xq7')], 'root', pent(1))[0]?.pentatonic).toBeNull()
+    expect(staves([row('Xq7')], 'root', pent('auto'))[0]?.pentatonic).toBeNull()
   })
 
   it('ranks from the scale’s root when the chord can’t be read', () => {
-    const [s] = staves([row('Xq7', 'D Dorian')], 'root', pent(1))
+    const [s] = staves([row('Xq7', 'D Dorian')], 'root', pent('auto'))
     expect(s?.pentatonic?.name).toBe('Dm')
   })
 
   it('still lights what the caption names when the reference can’t be read', () => {
-    const [s] = staves([row('Xq7', 'D Dorian')], 'root', pent(1))
+    const [s] = staves([row('Xq7', 'D Dorian')], 'root', pent('auto'))
     expect(s?.keys).toBeNull()
     expect(s?.selected?.filter(Boolean)).toHaveLength(5)
   })
 
-  it('reports a best under 5 on a whole-tone staff', () => {
-    expect(staves([row('C7#5', 'C Whole Tone')], 'root', pent(1))[0]?.pentatonic?.best).toBe(3)
+  it('reports the shared count on a whole-tone staff, where none fits whole', () => {
+    expect(staves([row('C7#5', 'C Whole Tone')], 'root', pent('auto'))[0]?.pentatonic?.shared).toBe(3)
   })
 })
 
@@ -202,7 +216,7 @@ describe('the Hexatonic selection', () => {
 
   it('is told apart from the other selections', () => {
     expect(isHexatonicSelection({ preset: 'hexatonic', pair: 0, grouping: 'triads' })).toBe(true)
-    expect(isHexatonicSelection({ preset: 'pentatonic', rank: 1 })).toBe(false)
+    expect(isHexatonicSelection({ preset: 'pentatonic', degree: 'auto' })).toBe(false)
     expect(isPentatonicSelection({ preset: 'hexatonic', pair: 0, grouping: 'triads' })).toBe(false)
     expect(isHexatonicSelection({ keys: ['1'] })).toBe(false)
     expect(isHexatonicSelection(null)).toBe(false)
@@ -260,7 +274,7 @@ describe('the Hexatonic preset on the Scales sheet', () => {
   })
 
   it('is null under other selections and on staves that can’t be drawn', () => {
-    for (const practice of [{ preset: 'guideTones' } as const, { preset: 'pentatonic', rank: 1 } as const, null]) {
+    for (const practice of [{ preset: 'guideTones' } as const, { preset: 'pentatonic', degree: 'auto' } as const, null]) {
       const [s] = staves([row('CMaj7')], 'root', practice)
       expect(s?.hexatonic).toBeNull()
       expect(s?.second).toBeNull()

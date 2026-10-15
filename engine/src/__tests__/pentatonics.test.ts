@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { isPentatonicPathName, isPentatonicPreset, isPentatonicStep, PENTATONIC_PATH_LABELS, PENTATONIC_STEP, pentatonicCycle, pentatonicPathCaption, isPentatonicView, PENTATONIC_HOME, PENTATONIC_RANKS, pentatonicAt, pentatonicCaption, pentatonicLadder, pentatonicPick, pentatonicRanking, pentatonicStep } from '../pentatonics'
+import { isPentatonicPathName, isPentatonicPreset, isPentatonicStep, PENTATONIC_PATH_LABELS, PENTATONIC_STEP, pentatonicCycle, pentatonicPathCaption, isPentatonicView, PENTATONIC_DEGREE_LABELS, PENTATONIC_HOME, pentatonicAt, pentatonicDegreeFrom, pentatonicCaption, pentatonicLadder, pentatonicPick, pentatonicRanking, pentatonicStep } from '../pentatonics'
 import { pitchClasses } from '../ladder'
 import { LETTERS, parseRoot, pcOf, type Spelled } from '../pitch'
 import { SCALES } from '../scales'
@@ -104,11 +104,11 @@ describe('pentatonics ranked against any scale (#266)', () => {
     expect(names(on('mixolydian', 'G'), 'G').slice(0, 3)).toEqual(['Dm', 'Am', 'Em'])
   })
 
-  it('gives every scale 12 distinct pentatonics, ranks 1–12, shared never rising', () => {
+  it('gives every scale 12 distinct pentatonics, one per degree, shared never rising', () => {
     for (const name of Object.keys(SCALES) as (keyof typeof SCALES)[]) {
       const ranked = pentatonicRanking(on(name, 'C'), parseRoot('C'))
-      expect(ranked.map((p) => p.rank)).toEqual(Array.from({ length: PENTATONIC_RANKS }, (_, i) => i + 1))
-      expect(new Set(ranked.map((p) => pcOf(p.root))).size).toBe(12)
+      expect(ranked.map((p) => p.degree).toSorted((a, b) => a - b)).toEqual(Array.from({ length: 12 }, (_, i) => i))
+      expect(ranked.every((p) => pcOf(p.root) === p.degree)).toBe(true) // from C, the degree is the root's pc
       ranked.slice(1).forEach((p, i) => expect(p.shared).toBeLessThanOrEqual(ranked[i]!.shared))
     }
   })
@@ -118,31 +118,59 @@ describe('pentatonics ranked against any scale (#266)', () => {
     expect(names(on('ionian', 'F#'), 'F#').every((n) => !/𝄪|𝄫/.test(n))).toBe(true)
   })
 
-  it('picks a staff’s pentatonic and lights the notes it shares', () => {
+  it('picks a staff’s pentatonic on a degree and lights the notes it shares', () => {
     const pcs = [...on('dorian', 'D')].sort((a, b) => a - b) // C D E F G A B as pcs
-    const top = pentatonicPick(pcs, parseRoot('D'), 1)
-    expect(top.pentatonic).toEqual({ name: 'Dm', rank: 1, shared: 5, best: 5 })
-    expect(top.lit.filter(Boolean)).toHaveLength(5)
-    const far = pentatonicPick(pcs, parseRoot('D'), 12)
-    expect(far.pentatonic.shared).toBe(0)
-    expect(far.lit.every((l) => !l)).toBe(true)
+    const home = pentatonicPick(pcs, parseRoot('D'), 0)
+    expect(home.pentatonic).toEqual({ name: 'Dm', degree: 0, shared: 5 })
+    expect(home.lit.filter(Boolean)).toHaveLength(5)
+    expect(pentatonicPick(pcs, parseRoot('D'), 7).pentatonic).toEqual({ name: 'Am', degree: 7, shared: 5 })
+    const far = pentatonicPick(pcs, parseRoot('D'), 3) // Fm on ♭3 of D Dorian: F A♭ B♭ C E♭, only F and C inside
+    expect(far.pentatonic).toEqual({ name: 'Fm', degree: 3, shared: 2 })
+    expect(far.lit.filter(Boolean)).toHaveLength(2)
   })
 
-  it('reads a non-integer rank as 1 and clamps the rest to 1-12', () => {
-    const pcs = [...pitchClasses(SCALES['dorian'][0]!, pcOf(parseRoot('D')))]
-    const rank = (r: number) => pentatonicPick(pcs, parseRoot('D'), r).pentatonic.rank
-    expect([NaN, 2.5, 0, -3, 99].map(rank)).toEqual([1, 1, 1, 1, 12])
+  it('spells each degree from the chord root as the ranking does', () => {
+    const pcs = [...on('mixolydian', 'G')]
+    const at = (d: number) => pentatonicPick(pcs, parseRoot('G'), d).pentatonic.name
+    expect(PENTATONIC_DEGREE_LABELS.map((_, d) => at(d))).toEqual(['Gm', 'G♯m', 'Am', 'B♭m', 'Bm', 'Cm', 'C♯m', 'Dm', 'E♭m', 'Em', 'Fm', 'F♯m'])
+    expect(at(6)).toBe(pentatonicRanking(new Set(pcs), parseRoot('G')).find((p) => p.degree === 6)?.name)
   })
 
-  it('reports a best match under 5 on scales a pentatonic can’t fit', () => {
-    const wt = [...on('whole tone', 'C')]
-    expect(pentatonicPick(wt, parseRoot('C'), 1).pentatonic.best).toBe(3)
-    expect(pentatonicPick([...on('half whole diminished', 'C')], parseRoot('C'), 1).pentatonic.best).toBeLessThan(5)
+  it('plays Auto as the most shared, nearest the chord root by fifths: the old rank 1', () => {
+    for (const [scale, root] of [['ionian', 'C'], ['dorian', 'D'], ['mixolydian', 'G'], ['whole tone', 'C'], ['altered', 'Bb'], ['lydian', 'F#']] as const) {
+      const pcs = [...on(scale, root)]
+      const first = pentatonicRanking(new Set(pcs), parseRoot(root))[0]!
+      expect(pentatonicPick(pcs, parseRoot(root), 'auto').pentatonic).toEqual({ name: first.name, degree: first.degree, shared: first.shared })
+    }
+    expect(pentatonicPick([...on('ionian', 'C')], parseRoot('C'), 'auto').pentatonic.name).toBe('Dm') // on the 2
+    expect(pentatonicPick([...on('mixolydian', 'G')], parseRoot('G'), 'auto').pentatonic.name).toBe('Dm') // on the 5
   })
 
-  it('captions by name, adding rank and shared count where the best is under 5', () => {
-    expect(pentatonicCaption({ name: 'Dm', rank: 1, shared: 5, best: 5 })).toBe('Dm pent')
-    expect(pentatonicCaption({ name: 'Gm', rank: 7, shared: 3, best: 5 })).toBe('Gm pent')
-    expect(pentatonicCaption({ name: 'F♯m', rank: 2, shared: 3, best: 3 })).toBe('F♯m pent · #2 · 3 shared')
+  it('reads a bad degree as Auto', () => {
+    const pcs = [...on('dorian', 'D')]
+    const auto = pentatonicPick(pcs, parseRoot('D'), 'auto').pentatonic
+    for (const d of [NaN, 2.5, -1, 12, 99]) expect(pentatonicPick(pcs, parseRoot('D'), d).pentatonic).toEqual(auto)
+  })
+
+  it('reads a degree from untrusted data: an integer 0–11, else Auto', () => {
+    expect([0, 5, 11].map(pentatonicDegreeFrom)).toEqual([0, 5, 11])
+    for (const v of ['auto', undefined, null, -1, 12, 2.5, '3', NaN]) expect(pentatonicDegreeFrom(v)).toBe('auto')
+  })
+
+  it('labels the 12 degrees chromatically from 1', () => {
+    expect(PENTATONIC_DEGREE_LABELS).toEqual(['1', '♭2', '2', '♭3', '3', '4', '♯4', '5', '♭6', '6', '♭7', '7'])
+  })
+
+  it('finds the usual inside choices: on 2, 3, 6 over Ionian; 1, 2, 5 over Dorian; 2, 5, 6 over Mixolydian', () => {
+    const inside = (scale: keyof typeof SCALES) =>
+      pentatonicRanking(on(scale, 'C'), parseRoot('C')).filter((p) => p.shared === 5).map((p) => p.degree).toSorted((a, b) => a - b).map((d) => PENTATONIC_DEGREE_LABELS[d])
+    expect(inside('ionian')).toEqual(['2', '3', '6'])
+    expect(inside('dorian')).toEqual(['1', '2', '5'])
+    expect(inside('mixolydian')).toEqual(['2', '5', '6'])
+  })
+
+  it('captions every pick with its name and shared count', () => {
+    expect(pentatonicCaption({ name: 'Dm', degree: 2, shared: 5 })).toBe('Dm pent · 5 shared')
+    expect(pentatonicCaption({ name: 'F♯m', degree: 6, shared: 3 })).toBe('F♯m pent · 3 shared')
   })
 })

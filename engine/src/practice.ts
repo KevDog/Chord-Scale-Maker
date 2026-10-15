@@ -4,7 +4,7 @@ import { spelledInterval } from './intervals'
 import type { Mode } from './part'
 import { HEX_GROUPINGS, HEX_PAIRS, type HexGrouping } from './hexatonics'
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled } from './pitch'
-import { PENTATONIC_RANKS } from './pentatonics'
+import { type PentatonicDegree, pentatonicDegreeFrom } from './pentatonics'
 import { baseQuality, CHORD_TONES } from './qualities'
 import { spellFrom } from './scales'
 import { orNull } from './util'
@@ -17,19 +17,19 @@ import { orNull } from './util'
 
 export type Preset = 'chordTones' | 'guideTones' | 'tensions' | 'all' | 'pentatonic' | 'hexatonic'
 type KeyPreset = Exclude<Preset, 'pentatonic' | 'hexatonic'>
-export type PentatonicSelection = Readonly<{ preset: 'pentatonic'; rank: number }>
+/** Pentatonic: the degree each staff's minor pentatonic is built on (#286), or Auto */
+export type PentatonicSelection = Readonly<{ preset: 'pentatonic'; degree: PentatonicDegree }>
 /** Hexatonic: pair 0 (Auto) or 1 … HEX_PAIRS on each staff's chain, and how its six notes divide into groups A and B */
 export type HexatonicSelection = Readonly<{ preset: 'hexatonic'; pair: number; grouping: HexGrouping }>
 /**
  * a preset, or explicit keys; keys are relative to the mode's reference, so they survive instrument changes.
- * Pentatonic: a rank 1–12 on each staff's ladder (#266); Hexatonic: a pair and a grouping, lit per staff
+ * Pentatonic: a degree from each chord root, or Auto (#266, #286); Hexatonic: a pair and a grouping, lit per staff
  */
 export type PracticeSelection = Readonly<{ preset: KeyPreset }> | PentatonicSelection | HexatonicSelection | Readonly<{ keys: readonly string[] }>
 
 export const isPentatonicSelection = (s: PracticeSelection | null): s is PentatonicSelection => s !== null && 'preset' in s && s.preset === 'pentatonic'
 export const isHexatonicSelection = (s: PracticeSelection | null): s is HexatonicSelection => s !== null && 'preset' in s && s.preset === 'hexatonic'
 
-const rankFrom = (v: unknown): number => (Number.isInteger(v) && (v as number) >= 1 && (v as number) <= PENTATONIC_RANKS ? (v as number) : 1)
 const pairFrom = (v: unknown): number => (Number.isInteger(v) && (v as number) >= 0 && (v as number) <= HEX_PAIRS ? (v as number) : 0)
 const groupingFrom = (v: unknown): HexGrouping => (HEX_GROUPINGS as readonly unknown[]).includes(v) ? (v as HexGrouping) : 'triads'
 
@@ -38,7 +38,7 @@ const PRACTICE_KEY = /^(?:b{1,2}|#{1,2})?[1-7]$/
 /** a practice selection read from untrusted data (storage, a share link), or null if it isn't one */
 export function practiceSelectionFrom(v: unknown): PracticeSelection | null {
   if (!v || typeof v !== 'object') return null
-  if ('preset' in v && v.preset === 'pentatonic') return { preset: 'pentatonic', rank: rankFrom('rank' in v ? v.rank : undefined) }
+  if ('preset' in v && v.preset === 'pentatonic') return { preset: 'pentatonic', degree: pentatonicDegreeFrom('degree' in v ? v.degree : undefined) } // the old { rank } reads as Auto
   if ('preset' in v && v.preset === 'hexatonic') return { preset: 'hexatonic', pair: pairFrom('pair' in v ? v.pair : undefined), grouping: groupingFrom('grouping' in v ? v.grouping : undefined) }
   if ('preset' in v && typeof v.preset === 'string' && Object.values(PRESETS).flat().includes(v.preset as Preset)) return { preset: v.preset as KeyPreset }
   if ('keys' in v && Array.isArray(v.keys)) {

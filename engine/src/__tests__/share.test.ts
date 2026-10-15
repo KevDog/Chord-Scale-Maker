@@ -21,8 +21,15 @@ describe('share links', () => {
   })
 
   it('carry a Pentatonic practice selection', async () => {
-    const view = { instrument: 'tenor-sax', mode: 'root', start: 'C', intervals: false, sheet: 'scales', practice: { preset: 'pentatonic', rank: 4 } } as const
-    expect((await decodeShare(await encodeShare({ chart: CHART, view })))?.view?.practice).toEqual({ preset: 'pentatonic', rank: 4 })
+    const view = { instrument: 'tenor-sax', mode: 'root', start: 'C', intervals: false, sheet: 'scales', practice: { preset: 'pentatonic', degree: 4 } } as const
+    expect((await decodeShare(await encodeShare({ chart: CHART, view })))?.view?.practice).toEqual({ preset: 'pentatonic', degree: 4 })
+    const auto = { ...view, practice: { preset: 'pentatonic', degree: 'auto' } } as const
+    expect((await decodeShare(await encodeShare({ chart: CHART, view: auto })))?.view?.practice).toEqual({ preset: 'pentatonic', degree: 'auto' })
+  })
+
+  it('read an old link’s Pentatonic rank as Auto', async () => {
+    const old = await packed({ v: 1, chart: CHART, view: { sheet: 'scales', practice: { preset: 'pentatonic', rank: 4 } } })
+    expect((await decodeShare(old))?.view?.practice).toEqual({ preset: 'pentatonic', degree: 'auto' })
   })
 
   it('carry a Hexatonic practice selection', async () => {

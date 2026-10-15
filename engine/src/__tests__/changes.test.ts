@@ -6,7 +6,7 @@ import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
 import { CONCERT, concertPc, type Part } from '../part'
 import { rootName } from '../pitch'
 import type { ScaleView } from '../resolve'
-import { PENTATONIC_HOME, type PentatonicPathName, type PentatonicStep } from '../pentatonics'
+import { type PentatonicDegree, PENTATONIC_HOME, type PentatonicPathName, type PentatonicStep } from '../pentatonics'
 import { abbreviateScale } from '../scales'
 import { isSyncCopy } from '../util'
 
@@ -298,7 +298,7 @@ describe('scale labels', () => {
     expect(lines[1]![0]![1]).toBe('D Dorian')
   })
 
-  const chordPlan = (rank = 1): PentatonicPlan => ({ kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, basis: 'chord', rank })
+  const chordPlan = (degree: PentatonicDegree = 'auto'): PentatonicPlan => ({ kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, basis: 'chord', degree })
   const flat = (lines: readonly ChangesLine[]) => lines.flatMap((l) => l.bars.flatMap((b) => b.chords))
 
   it('ranks each chord against its own scale under the chord basis: Waltz for Debby bars 1–4', () => {
@@ -306,14 +306,20 @@ describe('scale labels', () => {
     const first4 = flat(built.lines).slice(0, 4)
     // F Ionian from F, D Aeolian, G Dorian, C Mixolydian: all F major's notes, ties by fifths from each chord root
     expect(first4.map((c) => c.pentatonic?.name)).toEqual(['Gm', 'Dm', 'Gm', 'Gm'])
-    expect(first4.map((c) => [c.pentatonic?.rank, c.pentatonic?.shared, c.pentatonic?.level])).toEqual([[1, 5, 0], [1, 5, 0], [1, 5, 0], [1, 5, 0]])
+    expect(first4.map((c) => [c.pentatonic?.degree, c.pentatonic?.shared, c.pentatonic?.level])).toEqual([[2, 5, 0], [0, 5, 0], [0, 5, 0], [7, 5, 0]]) // Auto: on the 2, 1, 1, 5
     expect(showPentatonics(built.lines)[0]?.bars.flatMap((b) => b.chords.map((c) => c.pentatonic?.label))).toEqual(['Gm♪ 5', 'Dm♪ 5', 'Gm♪ 5', ''])
   })
 
-  it('names the chord basis title and keeps its ranking; rank 12 is the farthest', () => {
+  it('names the chord basis title and keeps its ranking; builds on the degree chosen', () => {
     const doc = parseChart('title: T\nkey: F\nA | 1 | Dm7').value
-    const [c] = flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, chordPlan(12)).lines)
-    expect([c?.pentatonic?.basis, c?.pentatonic?.title, c?.pentatonic?.ranking.length, c?.pentatonic?.rank, c?.pentatonic?.shared, c?.pentatonic?.level]).toEqual(['chord', 'Dm7 · D Dorian pentatonic ranking', 12, 12, 0, 6])
+    const [c] = flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, chordPlan(1)).lines) // E♭m on ♭2 of D Dorian: none shared
+    expect([c?.pentatonic?.basis, c?.pentatonic?.title, c?.pentatonic?.ranking.length, c?.pentatonic?.name, c?.pentatonic?.degree, c?.pentatonic?.shared, c?.pentatonic?.level]).toEqual(['chord', 'Dm7 · D Dorian pentatonic ranking', 12, 'E♭m', 1, 0, 6])
+  })
+
+  it('builds on the same degree over each chord under the chord basis', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | Cmaj7').value
+    const chords = flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, chordPlan(9)).lines) // on the 6
+    expect(chords.map((c) => [c.pentatonic?.name, c.pentatonic?.degree, c.pentatonic?.shared])).toEqual([['Bm', 9, 4], ['Em', 9, 5], ['Am', 9, 5]])
   })
 
   it('spells the chord basis for the part, and reports the root in concert', () => {
@@ -335,7 +341,7 @@ describe('scale labels', () => {
     const plan: PentatonicPlan = { kind: 'pentatonic', bySection: { B: { rung: 3, side: 'sharp' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
     const chords = flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)
     expect(chords.map((c) => c.pentatonic?.chord)).toEqual(['A:1:0', 'A:1:1', 'B:2:0'])
-    expect([chords[2]?.pentatonic?.title, chords[2]?.pentatonic?.level, chords[2]?.pentatonic?.rank, chords[2]?.pentatonic?.basis]).toEqual(['B · C major pentatonic ladder', 3, 0, 'key'])
+    expect([chords[2]?.pentatonic?.title, chords[2]?.pentatonic?.level, chords[2]?.pentatonic?.degree, chords[2]?.pentatonic?.basis]).toEqual(['B · C major pentatonic ladder', 3, null, 'key'])
   })
 
   describe('picks', () => {
@@ -355,10 +361,10 @@ describe('scale labels', () => {
       expect(chords[1]?.pentatonic?.run).toEqual(['A:2:0', 'A:3:0'])
     })
 
-    it('reports a chord-basis pick’s own rank and shared on each chord', () => {
-      const plan: PentatonicPlan = { ...keyPlan({ 'A:1:0': 4, 'A:2:0': 4 }), basis: 'chord', rank: 1 } // Em on Cmaj7 and Dm7
+    it('reports a chord-basis pick’s own degree and shared on each chord', () => {
+      const plan: PentatonicPlan = { ...keyPlan({ 'A:1:0': 4, 'A:2:0': 4 }), basis: 'chord', degree: 'auto' } // Em on Cmaj7 and Dm7
       const chords = shown(C4, plan)
-      expect(chords.slice(0, 2).map((c) => [c.pentatonic?.name, c.pentatonic?.rank, c.pentatonic?.shared, c.pentatonic?.picked])).toEqual([['Em', 3, 5, true], ['Em', 3, 5, true]])
+      expect(chords.slice(0, 2).map((c) => [c.pentatonic?.name, c.pentatonic?.degree, c.pentatonic?.shared, c.pentatonic?.picked])).toEqual([['Em', 4, 5, true], ['Em', 2, 5, true]])
     })
 
     it('keeps a pick’s sounding pentatonic on a transposed part', () => {
@@ -374,7 +380,7 @@ describe('scale labels', () => {
 
     it('marks a printed label picked when a chord it stands for is, though the pick merges into the label before', () => {
       const doc = 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | Dm7\nA | 3 | Dm7'
-      const plan: PentatonicPlan = { ...keyPlan({ 'A:2:0': 2 }), basis: 'chord', rank: 1 } // Dm, the default, picked on the second Dm7: its label is the first's
+      const plan: PentatonicPlan = { ...keyPlan({ 'A:2:0': 2 }), basis: 'chord', degree: 'auto' } // Dm, the default, picked on the second Dm7: its label is the first's
       const chords = shown(doc, plan)
       expect(chords.map((c) => c.pentatonic?.label)).toEqual(['Dm♪ 5', '', ''])
       expect(chords[0]?.pentatonic?.run).toContain('A:2:0')
@@ -388,14 +394,15 @@ describe('scale labels', () => {
     })
 
     it('ends a run at a chord with no pentatonic', () => {
-      const plan: PentatonicPlan = { ...keyPlan(), basis: 'chord', rank: 1 }
+      const plan: PentatonicPlan = { ...keyPlan(), basis: 'chord', degree: 'auto' }
       const chords = shown('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | N.C.\nA | 3 | Cmaj7', plan)
       expect(chords.map((c) => c.pentatonic?.run ?? null)).toEqual([['A:1:0'], null, ['A:3:0']])
     })
 
-    it('clamps the chord basis rank: 0, 2.5 and omitted give 1, 99 gives 12', () => {
-      const rankOf = (rank?: number) => shown('title: T\nkey: F\nA | 1 | Dm7', { ...keyPlan(), basis: 'chord', ...(rank === undefined ? {} : { rank }) })[0]?.pentatonic?.rank
-      expect([0, 2.5, undefined, 99].map(rankOf)).toEqual([1, 1, 1, 12])
+    it('reads a bad or missing chord basis degree as Auto', () => {
+      const degreeOf = (degree?: PentatonicDegree) => shown('title: T\nkey: F\nA | 1 | Dm7', { ...keyPlan(), basis: 'chord', ...(degree === undefined ? {} : { degree }) })[0]?.pentatonic?.degree
+      expect([-1, 2.5, undefined, 12, 99, 'auto' as const].map(degreeOf)).toEqual([0, 0, 0, 0, 0, 0]) // Auto on Dm7 (D Dorian): Dm, on the 1
+      expect(degreeOf(11)).toBe(11)
     })
   })
 })
