@@ -1,4 +1,4 @@
-import { chooseInstrument, chooseSheet, expect, moreAction, openEditor, pickOption, sheetChord, test, typeChord } from './fixtures'
+import { chooseInstrument, chooseInterface, chooseSheet, expect, moreAction, openEditor, pickOption, sheetChord, test, typeChord } from './fixtures'
 
 const status = (page: import('@playwright/test').Page) => page.getByRole('status').filter({ hasText: /in this browser|Saving/ })
 
@@ -106,6 +106,7 @@ test('a share link carries the chart and the view to a browser that has never se
   expect(link.length).toBeLessThan(2_000)
 
   const other = await browser.newContext() // fresh storage: nothing saved there
+  await chooseInterface(other, 'everything')
   const visitor = await other.newPage()
   await visitor.goto(link)
   await expect(visitor.getByRole('status').filter({ hasText: 'A shared chart' })).toBeVisible()

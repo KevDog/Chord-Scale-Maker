@@ -117,7 +117,7 @@
         :title="notesOn && m.reason ? undefined : m.numeral"
       >
         <template v-if="drafted(m)">{{ preview?.readable ? preview.numeral : '' }}</template>
-        <SheetLabelPicker v-else-if="editing !== undefined && doc && m.line >= 0 && !m.slot" :doc="doc" :line="m.line" kind="numeral" :chord="m.text" :fallback="m.fallback" :pinned="false" :blank="!m.numeral" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 no-underline dark:text-amber-400 print:hidden" aria-hidden="true">⚠</span></SheetLabelPicker>
+        <SheetLabelPicker v-else-if="editing !== undefined && shows('function-choice') && doc && m.line >= 0 && !m.slot" :doc="doc" :line="m.line" kind="numeral" :chord="m.text" :fallback="m.fallback" :pinned="false" :blank="!m.numeral" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 no-underline dark:text-amber-400 print:hidden" aria-hidden="true">⚠</span></SheetLabelPicker>
         <ChangesNote v-else-if="notesOn && m.reason && m.numeral" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row" :problem="m.problem">{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 no-underline dark:text-amber-400 print:hidden" aria-hidden="true">⚠</span></ChangesNote>
         <template v-else>{{ m.numeral }}<span v-if="m.problem" class="ml-0.5 text-amber-700 dark:text-amber-400 print:hidden" :title="m.problem">⚠</span></template>
       </span>
@@ -132,7 +132,7 @@
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
         <template v-if="drafted(m)">{{ preview?.readable ? sheetScale(CONCERT, preview.scale) : '' }}</template>
-        <SheetLabelPicker v-else-if="editing !== undefined && doc && m.line >= 0 && !m.slot" :doc="doc" :line="m.line" kind="scale" :chord="m.text" :fallback="false" :blank="!m.scale" :pinned="notes?.get(m.line)?.source === 'written'" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.scale }}</SheetLabelPicker>
+        <SheetLabelPicker v-else-if="editing !== undefined && shows('scale-choice') && doc && m.line >= 0 && !m.slot" :doc="doc" :line="m.line" kind="scale" :chord="m.text" :fallback="false" :blank="!m.scale" :pinned="notes?.get(m.line)?.source === 'written'" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.scale }}</SheetLabelPicker>
         <ChangesNote v-else-if="notesOn && m.reason && m.scale" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row" :problem="m.problem" wrap>{{ m.scale }}</ChangesNote>
         <template v-else>{{ m.scale }}</template>
       </span>
@@ -147,8 +147,8 @@
         :data-chord="m.p.chord"
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
-        <span class="hidden print:inline">{{ m.p.label }}</span>
-        <PentatonicLadder class="print:hidden" :p="m.p" @pick="emit('pentatonic', m.p.run, $event)" @reset="emit('pentatonic', m.p.run, null)" />
+        <span :class="shows('pentatonics') && 'hidden print:inline'">{{ m.p.label }}</span>
+        <PentatonicLadder v-if="shows('pentatonics')" class="print:hidden" :p="m.p" @pick="emit('pentatonic', m.p.run, $event)" @reset="emit('pentatonic', m.p.run, null)" />
       </span>
     </div>
     <!-- a full last line: the ghost bar as a pill under it -->
@@ -210,7 +210,10 @@ const ends = ref<readonly number[]>([]) // each bar's right edge
 const nameScales = ref<readonly (readonly number[])[]>([]) // each chord name's scale, where the line can't fit it
 const drawError = ref<string | null>(null)
 const rendering = useRendering()
-const notesOn = useFeature('functions')
+const { shows } = useInterface()
+/** the "why" notes: the functions flag, from Intermediate */
+const functionsOn = useFeature('functions')
+const notesOn = computed(() => functionsOn && shows('why'))
 
 /**
  * each chord over the slash of its beat (markers and key areas ride on a bar's first chord, or its first beat), with

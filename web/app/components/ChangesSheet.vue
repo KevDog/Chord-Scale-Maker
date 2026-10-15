@@ -49,7 +49,7 @@
     </SheetPages>
     <!-- the sheet as the editor: a new section after the last, or a repeat of one -->
     <div v-if="editing !== undefined" class="flex justify-end gap-2 print:hidden">
-      <UiButton outline @click="emit('repeatSection')"><Square2StackIcon data-slot="icon" />Repeat a section…</UiButton>
+      <UiButton v-if="shows('form-editing')" outline @click="emit('repeatSection')"><Square2StackIcon data-slot="icon" />Repeat a section…</UiButton>
       <UiButton outline aria-label="Add a section" @click="emit('addSection')"><PlusIcon data-slot="icon" />Section</UiButton>
     </div>
   </div>
@@ -62,6 +62,7 @@ import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/s
 import { breakLines, buildChanges, changesLinesPerPage, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type Part, type PentatonicPlan, type ScaleView, showPentatonics, type SheetLine } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
+const { shows } = useInterface()
 const props = defineProps<{
   doc: ChartDoc
   title: string

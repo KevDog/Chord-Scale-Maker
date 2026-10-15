@@ -1,5 +1,5 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { describe, expect, it } from 'vitest'
+import { afterEach, describe, expect, it } from 'vitest'
 import PracticePanel from '~/components/PracticePanel.vue'
 
 const boxes = [
@@ -61,5 +61,20 @@ describe('PracticePanel’s Pentatonic preset (#266)', () => {
     const w = await mount({ pentatonic: true, selection: { preset: 'pentatonic', rank: 1 }, lit: ['1', 'b3'] })
     await w.findAll('input[type=checkbox]')[3]?.trigger('change') // ♭7
     expect(w.emitted('update:selection')).toEqual([[{ keys: ['1', 'b3', 'b7'] }]])
+  })
+})
+
+describe('PracticePanel interface levels', () => {
+  afterEach(() => {
+    useRuntimeConfig().public.features.interfaceLevels = false
+    useInterface().level.value = 'everything'
+  })
+
+  it('offers the Pentatonic preset only at Everything', async () => {
+    useRuntimeConfig().public.features.interfaceLevels = true
+    useInterface().level.value = 'intermediate'
+    expect((await mount({ pentatonic: true })).text()).not.toContain('Pentatonic')
+    useInterface().level.value = 'everything'
+    expect((await mount({ pentatonic: true })).text()).toContain('Pentatonic')
   })
 })

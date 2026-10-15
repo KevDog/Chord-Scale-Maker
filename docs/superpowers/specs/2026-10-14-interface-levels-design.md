@@ -1,4 +1,4 @@
-# Interface levels: Essentials, Practice, Everything (#273)
+# Interface levels: Essentials, Intermediate, Everything (#273)
 
 **Status:** accepted 2026-10-14, pending user testing with real players before the tiers are final.
 
@@ -18,7 +18,7 @@ sheet a chart and its settings produce is the same at every level. A level is a 
 - **Three levels**, each a superset of the one before:
   - **Essentials**: a student with a tune and light editing. Choose the sheet and instrument, transpose, print, share,
     save, and edit chords, bars and sections. All three sheets: Changes, Scales and Arpeggios.
-  - **Practice**: a player building vocabulary. Adds the scale level, analysis rows, lines, scale spelling, the Practice panel, choosing a chord's scale, and the "why" notes.
+  - **Intermediate**: a player building vocabulary. Adds the scale level, analysis rows, lines, scale spelling, the Practice panel, choosing a chord's scale, and the "why" notes.
   - **Everything**: today's interface. Adds pentatonics and hexatonics, functions and key areas, the chart source, and
     form editing beyond sections.
 - **Named Interface, not Level.** The rail's Level control already offers Basic / Standard / Advanced for the scale
@@ -27,7 +27,7 @@ sheet a chart and its settings produce is the same at every level. A level is a 
   functions, `@key` areas, repeats) renders the same at every level.
 - **Hidden settings stay in force, with a notice.** If a setting whose control is hidden at the current level differs
   from its default (from a share link, a stored preference, or a per-chart key), the sheet still renders it, and a
-  one-line notice sits above the sheet: *This sheet uses Practice settings · Show controls · Reset*. Show controls
+  one-line notice sits above the sheet: *This sheet uses Intermediate settings · Show controls · Reset*. Show controls
   raises the level to the lowest one that shows them; Reset returns those settings to their defaults for this visit
   (a share link) or for good (a stored preference). The notice is never shown when nothing is hidden.
 - **Feature flags still gate existence.** A level only hides what a flag has already let in. New flagged features say
@@ -36,11 +36,11 @@ sheet a chart and its settings produce is the same at every level. A level is a 
   ships starts at Everything, so no returning player loses a control they use.
 - **Where the switch lives.** An *Interface* radio group at the top of the More actions menu (the ⋯ button beside
   Print, `MoreMenu.vue`), present on every sheet and on phones (it stays in the compact rail). Help gains a short section. Preference `csm-interface`
-  (`essentials` | `practice` | `everything`), never in share links.
+  (`essentials` | `intermediate` | `everything`), never in share links.
 
 ## The tiers
 
-Built from the control inventory of 2026-10-14 (every control in `web/app/`). **E** Essentials, **P** Practice,
+Built from the control inventory of 2026-10-14 (every control in `web/app/`). **E** Essentials, **I** Intermediate,
 **A** Everything. Controls not listed (site navigation, home, library, My charts, help, contact, theme) are E.
 
 ### Rail
@@ -51,13 +51,13 @@ Built from the control inventory of 2026-10-14 (every control in `web/app/`). **
 | Instrument | E | |
 | Transpose… (and its dialog) | E | |
 | Show: Intervals (Scales, Arpeggios) | E | on |
-| Level (scale level) and Shuffle | P | Standard |
-| Analysis: Numerals, Scales | P | on |
+| Level (scale level) and Shuffle | I | Standard |
+| Analysis: Numerals, Scales | I | on |
 | Analysis: Pentatonics / Overlay and every sub-control (basis, rank or Built on, path, rung, side, step) | A | off |
-| Line: Off / Guide Tones / 7th Chords, guide line, arpeggio pattern | P | off |
+| Line: Off / Guide Tones / 7th Chords, guide line, arpeggio pattern | I | off |
 | Line: Pentatonic cells (#284), Triad pair line | A | (follows the overlay) |
 | Arpeggio: notes, direction (Arpeggios sheet) | E | |
-| Spell Scale | P | From key |
+| Spell Scale | I | From key |
 | Edit / Done, Save to My charts, Share, Focus, Print, More actions (⋯) | E | |
 | More actions: Save as a copy, Download, Revert, Report a chart error | E | |
 | More actions: Interface (new) | E | |
@@ -67,7 +67,7 @@ Built from the control inventory of 2026-10-14 (every control in `web/app/`). **
 
 | Control | Tier | Default when hidden |
 | --- | --- | --- |
-| The panel: presets Chord tones, Guide tones, Tensions, All; Clear; Notes to practise boxes | P | no selection |
+| The panel: presets Chord tones, Guide tones, Tensions, All; Clear; Notes to practise boxes | I | no selection |
 | Presets Pentatonic and Hexatonic, with their rank / Built on, Pair and Grouping controls | A | no selection |
 
 ### Editing (sheet editor, phone chart pane and tap sheet)
@@ -78,8 +78,8 @@ Built from the control inventory of 2026-10-14 (every control in `web/app/`). **
 | + bar, + before, + after, Split, Delete; Undo, Redo, Save, Done editing | E |
 | Heading fields: title, subtitle, key, time, composer, style, form | E |
 | Add a section, Rename section | E |
-| Repeat a section, New section here, Write out, 1st/2nd ending, Segno, Coda, Jump…, Paste bars… | P |
-| Scale choice on a chord (label picker's Scale section, Unpin, Any scale search) | P |
+| Repeat a section, New section here, Write out, 1st/2nd ending, Segno, Coda, Jump…, Paste bars… | I |
+| Scale choice on a chord (label picker's Scale section, Unpin, Any scale search) | I |
 | Key change here (`@key`) | A |
 | Function choice (Function radio, Other function, Accept guess, How to write a function) | A |
 | Source text: Show/Hide source, Source button, Chart text, its help tip | A |
@@ -91,7 +91,7 @@ the tap-mode sheet shows the Chord input without Chord choices.
 
 | Control | Tier |
 | --- | --- |
-| "Why" popover on a numeral or scale (and its Report issue) | P |
+| "Why" popover on a numeral or scale (and its Report issue) | I |
 | Pentatonic ladder popover and its picks | A |
 
 At Essentials the Numerals and Scales rows still print (they are on by default); they are just not buttons.
@@ -118,7 +118,7 @@ The notice names the lowest level that shows all of them. A chart whose *text* u
 - Components wrap each control's existing `v-if` with `shows('<id>') &&`; nothing else changes in them.
 - `InterfaceNotice.vue` above the sheet; the More actions menu's radio group; help section.
 - e2e builds start at Everything (as today's tests expect), with one spec per level checking which controls show,
-  and the notice for a share link carrying Practice settings opened at Essentials.
+  and the notice for a share link carrying Intermediate settings opened at Essentials.
 
 ## Out of scope
 
@@ -126,12 +126,13 @@ The notice names the lowest level that shows all of them. A chart whose *text* u
 - Per-control show/hide customisation.
 - Carrying the level in share links.
 
+## Resolved (2026-10-14)
+
+- **Names:** Essentials / Intermediate / Everything (Intermediate avoids clashing with the Practice panel).
+- **Form editing** (repeats, endings, segno, coda, jumps) stays at Intermediate.
+- **The switch** lives only in the More actions menu; no rail hint.
+
 ## Open questions
 
-1. **Names.** Essentials / Practice / Everything describe the audience and stay clear of the scale Level's Basic /
-   Standard / Advanced. Alternatives: Play / Practice / Study.
-2. **Form editing at Practice.** Repeats and endings are P on the view that a student types chords into an existing
-   form; a student entering a new tune may want them at E.
-3. **The More actions menu as the home of the switch.** Discoverable enough, or does a first-visit hint belong on the rail?
-4. **User testing.** Watch a few players at each level (a student at Essentials, a working player at Practice) before
+1. **User testing.** Watch a few players at each level (a student at Essentials, a working player at Intermediate) before
    the tier table is final; move controls between tiers from what they reach for.

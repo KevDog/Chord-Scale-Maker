@@ -94,7 +94,12 @@ const id = useId()
 /** 44 px rows below md, for fingers */
 const ROOMY = 'max-md:[&_[role=radio]]:py-2.5'
 const functionsOn = useFeature('functions')
-const parts = computed((): readonly ('function' | 'scale' | 'why')[] => (props.part === 'function' ? ['function', 'why'] : props.part === 'scale' ? ['scale', 'why'] : ['function', 'scale', 'why']))
+const { shows } = useInterface()
+// what this Interface level shows (#273): a chord's function from Everything, its scale and why from Intermediate
+const SHOWN = { function: 'function-choice', scale: 'scale-choice', why: 'why' } as const
+type Part = keyof typeof SHOWN
+const PARTS: Readonly<Record<'function' | 'scale' | 'all', readonly Part[]>> = { function: ['function', 'why'], scale: ['scale', 'why'], all: ['function', 'scale', 'why'] }
+const parts = computed((): readonly Part[] => PARTS[props.part].filter((p) => shows(SHOWN[p])))
 const row = computed((): RowLine | null => {
   const l = props.doc.lines[props.line]
   return l?.kind === 'row' ? l : null

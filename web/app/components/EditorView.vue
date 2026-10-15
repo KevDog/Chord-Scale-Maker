@@ -47,7 +47,7 @@
               <UiButton plain :disabled="!chartHistory.canUndo.value" title="Undo (⌘Z)" @click="chartHistory.undo"><ArrowUturnLeftIcon data-slot="icon" />Undo</UiButton>
               <UiButton plain :disabled="!chartHistory.canRedo.value" title="Redo (⇧⌘Z)" @click="chartHistory.redo"><ArrowUturnRightIcon data-slot="icon" />Redo</UiButton>
               <UiButton v-if="saved || shared" plain :disabled="!unsaved" title="Save in this browser now (edits also save a moment after you stop)" @click="saveNow"><BookmarkIcon data-slot="icon" />Save</UiButton>
-              <UiDropdown>
+              <UiDropdown v-if="sourceOffered">
                 <UiDropdownButton plain aria-label="More editing options"><EllipsisHorizontalIcon data-slot="icon" /></UiDropdownButton>
                 <UiDropdownMenu anchor="end">
                   <UiDropdownItem @click="prefs.source.value = !sourceShown"><CodeBracketIcon data-slot="icon" />{{ sourceShown ? 'Hide source' : 'Show source' }}</UiDropdownItem>
@@ -101,7 +101,7 @@
             <span class="flex items-center gap-2">
               <UiButton plain class="text-white! hover:bg-white/10!" :disabled="!chartHistory.canUndo.value" aria-label="Undo the last change" title="Undo (⌘Z)" @click="chartHistory.undo"><ArrowUturnLeftIcon data-slot="icon" class="text-white!" />Undo</UiButton>
               <UiButton plain class="text-white! hover:bg-white/10!" :disabled="!chartHistory.canRedo.value" aria-label="Redo the last change" title="Redo (⇧⌘Z)" @click="chartHistory.redo"><ArrowUturnRightIcon data-slot="icon" class="text-white!" />Redo</UiButton>
-              <UiButton plain class="text-white! hover:bg-white/10!" :aria-pressed="sourceShown" title="Show or hide the chart's text" @click="prefs.source.value = !sourceShown"><CodeBracketIcon data-slot="icon" class="text-white!" />Source</UiButton>
+              <UiButton v-if="sourceOffered" plain class="text-white! hover:bg-white/10!" :aria-pressed="sourceShown" title="Show or hide the chart's text" @click="prefs.source.value = !sourceShown"><CodeBracketIcon data-slot="icon" class="text-white!" />Source</UiButton>
               <UiButton v-if="saved || shared" plain class="text-white! hover:bg-white/10!" :disabled="!unsaved" title="Save in this browser now (edits also save a moment after you stop)" @click="saveNow"><BookmarkIcon data-slot="icon" class="text-white!" />Save</UiButton>
               <UiButton color="white" @click="toggleEditor">Done editing</UiButton>
             </span>
@@ -158,9 +158,10 @@
               </template>
             </template>
           </PreviewControls>
+          <InterfaceNotice v-if="hidden" :needs="hidden.needs" class="mt-4" @show="ui.level.value = hidden.needs" @reset="resetHidden" />
           <UiText v-if="transposed" role="status" class="mt-4">{{ transposed }}</UiText>
           <PracticePanel
-            v-if="practiceOn && sheet === 'scales' && !editor.fatal.value"
+            v-if="practiceOn && ui.shows('practice') && sheet === 'scales' && !editor.fatal.value"
             class="mt-4"
             :mode="mode"
             :start-text="start"
@@ -262,6 +263,7 @@ import { ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, ArrowUturnRig
 import { ISSUE_CONTEXT, issuePart } from '~/utils/issueReport'
 import { CHART_REPORT_KEY, type ChartReport, guidesText } from '~/utils/chartReport'
 import { sheetLineOf } from '~/utils/sheetLine'
+import { type HiddenSetting, hiddenSettings } from '~/utils/interface'
 import {
   addSection,
   barView,
@@ -370,6 +372,8 @@ const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, { changes: useFeatu
 const practiceOn = useFeature('practice')
 const functionsOn = useFeature('functions')
 const pentatonicsOn = useFeature('pentatonics')
+/** the Interface level (#273): which controls show */
+const ui = useInterface()
 /** the chart's sections as the Changes sheet draws them, for the path presets (#264) */
 const pentSections = computed(() => changesSections(editor.doc.value))
 const pentPath = usePentatonicPath(props.practiceKey, pentSections, computed(() => ({ rung: prefs.pentRung.value, side: prefs.pentSide.value })))
@@ -404,7 +408,9 @@ function editSheetChord(chord: SheetChordEdit): void {
   sheetChord.value = chord
 }
 /** the Source: in the banner, or under ⋯ below md, remembered; always shown for a chart over a size limit (only the text can fix it) */
-const sourceShown = computed(() => prefs.source.value || editor.fatal.value)
+/** the Source is offered from Everything, and at any level while the text has a problem (only the text can fix it) */
+const sourceOffered = computed(() => ui.shows('source') || editor.diagnostics.value.length > 0)
+const sourceShown = computed(() => (sourceOffered.value && prefs.source.value) || editor.fatal.value)
 /** the chart's key, for the sheets' key signature, drawn once at the start (undefined when the flag is off: drawn as before) */
 const homeKey = computed(() => (signaturesOn ? chartKeyOf(editor.doc.value) : undefined))
 const practice = usePractice(props.practiceKey)
@@ -428,6 +434,26 @@ const practiceStaves = computed(() =>
 const practiceBoxesNow = computed(() => practiceBoxes(practiceStaves.value, mode.value, start.value))
 const litNow = computed(() => litKeys(practiceStaves.value))
 const transposed = ref('')
+/** settings in force whose controls this Interface level hides (a share link, a stored preference): the notice offers to show them or reset them */
+const hidden = computed(() =>
+  ui.on
+    ? hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: prefs.numerals.value, scaleNames: prefs.scaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, pentatonics: pentatonicsOn && prefs.pentatonics.value })
+    : null,
+)
+/** each reset, given the mode in force before any of them ran (resetting the spelling changes the mode) */
+const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
+  'scale-level': () => (scaleLevel.level.value = 'standard'),
+  numerals: () => (prefs.numerals.value = true),
+  'scale-names': () => (prefs.scaleNames.value = true),
+  line: () => (prefs.lineMode.value = 'off'),
+  spell: () => (prefs.spell.value = 'key'),
+  practice: (inForce) => practice.setSelection(inForce, null),
+  pentatonics: () => (prefs.pentatonics.value = false),
+}
+function resetHidden(): void {
+  const inForce = mode.value
+  for (const s of hidden.value?.settings ?? []) RESETS[s](inForce)
+}
 const focus = useFocusMode()
 const focusBar = ref<HTMLElement | null>(null)
 /**

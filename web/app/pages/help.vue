@@ -188,6 +188,17 @@
               it. Scales you picked yourself stay put, and Standard puts everything else back.
             </dd>
           </div>
+          <div v-if="interfaceLevels">
+            <dt class="font-semibold text-zinc-950 dark:text-white">Interface</dt>
+            <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
+              In <strong class="font-semibold">⋯ More actions</strong>, it chooses how many controls show.
+              <strong class="font-semibold">Essentials</strong>: the sheet, instrument, transposing, printing, sharing and
+              editing chords, bars and sections. <strong class="font-semibold">Intermediate</strong> adds the scale level,
+              the analysis rows, lines, scale spelling, Practice, repeats and endings, and choosing a chord's scale.
+              <strong class="font-semibold">Everything</strong> adds pentatonics, functions and key changes, and the
+              chart's source. A sheet set up with controls you can't see says so above it, with Show controls and Reset.
+            </dd>
+          </div>
         </dl>
       </section>
 
@@ -368,6 +379,7 @@ import { PAGE_HEAD, seoMeta } from '~/utils/site'
 import { guideRanges } from '~/utils/instrumentChoices'
 
 const myCharts = useFeature('myCharts')
+const interfaceLevels = useFeature('interfaceLevels')
 const GUIDE_RANGES = guideRanges()
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },

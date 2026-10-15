@@ -710,3 +710,105 @@ describe('EditorView pentatonic practice (#266)', () => {
     expect(picks()).toEqual({})
   })
 })
+
+describe('EditorView interface levels', () => {
+  afterEach(() => {
+    useRuntimeConfig().public.features.interfaceLevels = false
+    useInterface().level.value = 'everything'
+    localStorage.clear()
+  })
+
+  it('Essentials hides the Source, but a chart over a size limit still shows it', async () => {
+    useRuntimeConfig().public.features.interfaceLevels = true
+    useInterface().level.value = 'essentials'
+    const w = await mount()
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await nextTick()
+    expect(buttonCalled(w, 'Source')).toBeUndefined()
+    const big = await mountSuspended(EditorView, { props: { initialText: 'title: T\n' + 'A | 1 | Cm7\n'.repeat(3000) }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    expect(big.find('textarea[aria-label="Chart text"]').exists()).toBe(true)
+  })
+})
+
+describe('EditorView interface notice', () => {
+  const notice = (w: Wrapper) => w.findComponent({ name: 'InterfaceNotice' })
+  const at = (level: 'essentials' | 'intermediate' | 'everything') => {
+    useRuntimeConfig().public.features.interfaceLevels = true
+    useInterface().level.value = level
+  }
+  afterEach(() => {
+    useRuntimeConfig().public.features.interfaceLevels = false
+    useInterface().level.value = 'everything'
+    localStorage.clear()
+  })
+
+  it("a share link's hidden settings show a notice naming the level", async () => {
+    at('essentials')
+    const w = await mount({ sheet: 'changes', level: 'advanced', seed: 1 })
+    expect(notice(w).exists()).toBe(true)
+    expect(notice(w).props('needs')).toBe('intermediate')
+  })
+
+  it('Show controls raises the level; the notice goes', async () => {
+    at('essentials')
+    const w = await mount({ sheet: 'changes', level: 'advanced', seed: 1 })
+    notice(w).vm.$emit('show')
+    await nextTick()
+    expect(useInterface().level.value).toBe('intermediate')
+    expect(notice(w).exists()).toBe(false)
+  })
+
+  it('Reset returns the hidden settings to their defaults', async () => {
+    at('essentials')
+    const w = await mount({ sheet: 'changes', level: 'advanced', seed: 1, numerals: false })
+    notice(w).vm.$emit('reset')
+    await nextTick()
+    expect(notice(w).exists()).toBe(false)
+    expect(useInterface().level.value).toBe('essentials')
+    expect(changesSheet(w).props('numerals')).toBe(true)
+    expect(localStorage.getItem('csm-numerals')).toBeNull() // a link's settings are for the visit: Reset leaves your own alone
+  })
+
+  it('no notice when nothing is hidden, or with the flag off', async () => {
+    at('essentials')
+    expect(notice(await mount({ sheet: 'changes' })).exists()).toBe(false)
+    useRuntimeConfig().public.features.interfaceLevels = false
+    expect(notice(await mount({ sheet: 'changes', level: 'advanced', seed: 1 })).exists()).toBe(false)
+  })
+})
+
+describe('EditorView interface fixes', () => {
+  afterEach(() => {
+    useRuntimeConfig().public.features.interfaceLevels = false
+    useInterface().level.value = 'everything'
+    localStorage.clear()
+  })
+
+  it('a chart whose text has a problem offers its Source at any level', async () => {
+    useRuntimeConfig().public.features.interfaceLevels = true
+    useInterface().level.value = 'essentials'
+    const w = await mountSuspended(EditorView, { props: { initialText: 'title: T\nA | 1 | Cm7\nwhat is this\n' }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    await buttonCalled(w, 'Edit')?.trigger('click')
+    await nextTick()
+    expect(w.text()).toContain('Editing the sheet')
+    const show = buttonCalled(w, 'Source')
+    expect(show).toBeDefined()
+    await show?.trigger('click')
+    await nextTick()
+    expect(w.find('textarea[aria-label="Chart text"]').exists()).toBe(true)
+  })
+
+  it('Reset clears the practice selection in force, not another mode’s', async () => {
+    useRuntimeConfig().public.features.interfaceLevels = true
+    useInterface().level.value = 'essentials'
+    localStorage.setItem('csm-spell', 'root')
+    localStorage.setItem('csm-practice:autumn-leaves:root', JSON.stringify({ preset: 'guideTones' }))
+    localStorage.setItem('csm-practice:autumn-leaves:from', JSON.stringify({ preset: 'all' }))
+    const w = await mountSuspended(EditorView, { props: { initialText: TEXT, practiceKey: 'autumn-leaves', shared: undefined }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    await chooseSheet(w, 'Scales')
+    w.findComponent({ name: 'InterfaceNotice' }).vm.$emit('reset')
+    await nextTick()
+    expect(localStorage.getItem('csm-practice:autumn-leaves:root')).toBeNull()
+    expect(localStorage.getItem('csm-practice:autumn-leaves:from')).not.toBeNull()
+  })
+})

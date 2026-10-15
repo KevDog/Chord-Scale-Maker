@@ -30,7 +30,7 @@
         </UiField>
         <!-- the other groups: in the rail, or on a phone (compact) in the Controls dialog -->
         <component :is="compact ? ControlsDialog : Passthrough" v-bind="compact ? { open: controlsOpen, onClose: () => (controlsOpen = false), onClosed: runAfterClose } : {}">
-          <UiField v-if="$slots.level">
+          <UiField v-if="$slots.level && shows('scale-level')">
             <UiLabel class="pl-3">Level</UiLabel>
             <div class="flex items-center gap-2"><slot name="level" /></div>
           </UiField>
@@ -41,16 +41,16 @@
             </div>
           </UiField>
           <template v-else>
-            <UiField v-if="!lockLabels || pentatonicsOn">
+            <UiField v-if="analysisShown || pentatonicsShown">
               <UiLabel class="pl-3">Analysis</UiLabel>
               <!-- stacked, so the group keeps the width of Numerals and Scales and the rail its two rows (#255) -->
               <div class="flex flex-col items-start gap-2">
-                <div v-if="!lockLabels" class="flex flex-wrap gap-2 *:whitespace-nowrap">
+                <div v-if="analysisShown" class="flex flex-wrap gap-2 *:whitespace-nowrap">
                   <ToggleButton v-model="numerals" title="Each chord's Roman numeral in its key">Numerals</ToggleButton>
                   <ToggleButton v-model="scaleNames" title="Each chord's scale, under its numeral">Scales</ToggleButton>
                 </div>
-                <ToggleButton v-if="pentatonicsOn" v-model="pentatonics" class="whitespace-nowrap" title="Each key area's or each chord's minor pentatonic, ranked by how far out it is">Pentatonics</ToggleButton>
-                <div v-if="pentatonicsOn && pentatonics" class="flex flex-col items-start gap-2">
+                <ToggleButton v-if="pentatonicsShown" v-model="pentatonics" class="whitespace-nowrap" title="Each key area's or each chord's minor pentatonic, ranked by how far out it is">Pentatonics</ToggleButton>
+                <div v-if="pentatonicsShown && pentatonics" class="flex flex-col items-start gap-2">
                   <SegmentedControl v-model="pentBasis" legend="Ranked against" name="pent-basis" aria-label="Pentatonics ranked against" :options="PENT_BASES" />
                   <UiListbox v-if="pentBasis === 'chord'" v-model="pentRank" class="w-48" aria-label="Pentatonic rank">
                     <template #selected="{ value }"><UiListboxLabel>{{ rankLabel(value) }}</UiListboxLabel></template>
@@ -76,7 +76,7 @@
                 </div>
               </div>
             </UiField>
-            <UiField>
+            <UiField v-if="shows('line')">
               <UiLabel class="pl-3">Line</UiLabel>
               <!-- the detail opens beneath the modes, so the Line group keeps its width and place (#187) -->
               <div class="flex flex-col gap-2">
@@ -108,7 +108,7 @@
               </UiListbox>
             </div>
           </UiField>
-          <UiField v-if="sheet === 'scales'">
+          <UiField v-if="sheet === 'scales' && shows('spell')">
             <UiLabel class="pl-3">Spell Scale</UiLabel>
             <div class="flex flex-wrap items-center gap-2">
               <UiListbox v-model="spell" class="w-40" aria-label="Where each scale starts" aria-describedby="start-help">
@@ -162,6 +162,10 @@ const pentStepBars = defineModel<2 | 4 | 8>('pentStepBars', { default: 4 })
 /** SegmentedControl's values are strings */
 const pentStepBarsText = computed({ get: () => String(pentStepBars.value) as '2' | '4' | '8', set: (v) => (pentStepBars.value = Number(v) as 2 | 4 | 8) })
 const pentatonicsOn = useFeature('pentatonics')
+const { shows } = useInterface()
+/** what this Interface level shows (#273): Numerals and Scales (hidden while editing too), the Pentatonics row */
+const analysisShown = computed(() => !props.lockLabels && shows('analysis'))
+const pentatonicsShown = computed(() => pentatonicsOn && shows('pentatonics'))
 const lineMode = defineModel<LineMode>('lineMode', { default: 'off' })
 const guideLine = defineModel<GuideFrom>('guideLine', { default: 'third' })
 const arpeggio = defineModel<ArpeggioPattern>('arpeggio', { default: 'up-root' })

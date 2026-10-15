@@ -1,5 +1,5 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
-import { beforeEach, describe, expect, it } from 'vitest'
+import { afterEach, beforeEach, describe, expect, it } from 'vitest'
 import { nextTick } from 'vue'
 import { type ChartDoc, parseChart } from '@chord-scale-maker/engine'
 import ChordChoices from '~/components/ChordChoices.vue'
@@ -116,5 +116,32 @@ describe('ChordChoices: the function', () => {
       await settle()
       expect(field(w).element.value).toBe('')
     })
+  })
+})
+
+describe('ChordChoices interface levels', () => {
+  const all = (line: number) => mountSuspended(ChordChoices, { props: { doc, line, part: 'all' }, attachTo: document.body })
+  const headings = (w: W) => w.findAll('h3').map((h) => h.text())
+  const at = (level: 'essentials' | 'intermediate' | 'everything') => {
+    useRuntimeConfig().public.features.interfaceLevels = true
+    useInterface().level.value = level
+  }
+  beforeEach(() => (document.body.innerHTML = ''))
+  afterEach(() => {
+    useRuntimeConfig().public.features.interfaceLevels = false
+    useInterface().level.value = 'everything'
+  })
+
+  it('shows the Function, Scale and why by level', async () => {
+    at('everything')
+    const every = headings(await all(3))
+    expect(every).toContain('Function')
+    expect(every).toContain('Scale')
+    at('intermediate')
+    const mid = headings(await all(3))
+    expect(mid).not.toContain('Function')
+    expect(mid).toContain('Scale')
+    at('essentials')
+    expect(headings(await all(3))).toEqual([])
   })
 })

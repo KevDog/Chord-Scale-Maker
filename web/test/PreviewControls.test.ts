@@ -54,3 +54,42 @@ describe('the pentatonic controls', () => {
     expect(w.text()).not.toContain('Numerals')
   })
 })
+
+describe('interface levels', () => {
+  const withLevel = (props: Record<string, unknown> = {}) =>
+    mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'concert', spell: 'key', intervals: true, keyStart: 'C', ...props }, slots: { level: () => 'level-slot' } })
+  const at = (level: 'essentials' | 'intermediate' | 'everything') => {
+    useRuntimeConfig().public.features.interfaceLevels = true
+    useInterface().level.value = level
+  }
+  afterEach(() => {
+    useRuntimeConfig().public.features.interfaceLevels = false
+    useRuntimeConfig().public.features.pentatonics = false
+    useInterface().level.value = 'everything'
+  })
+
+  it('Essentials hides Level, Analysis, Line and Spell Scale, and keeps Intervals', async () => {
+    at('essentials')
+    const changes = await withLevel()
+    expect(changes.text()).not.toMatch(/level-slot|Analysis|Line|Numerals/)
+    expect(changes.text()).toContain('Instrument')
+    const scales = await withLevel({ sheet: 'scales' })
+    expect(scales.text()).not.toContain('Spell Scale')
+    expect(scales.text()).toContain('Intervals')
+  })
+
+  it('Intermediate shows them but not Pentatonics', async () => {
+    at('intermediate')
+    useRuntimeConfig().public.features.pentatonics = true
+    const w = await withLevel()
+    expect(w.text()).toMatch(/level-slot[\s\S]*Analysis[\s\S]*Numerals[\s\S]*Line/)
+    expect(w.text()).not.toContain('Pentatonics')
+    expect((await withLevel({ sheet: 'scales' })).text()).toContain('Spell Scale')
+  })
+
+  it('Everything shows Pentatonics', async () => {
+    at('everything')
+    useRuntimeConfig().public.features.pentatonics = true
+    expect((await withLevel()).text()).toContain('Pentatonics')
+  })
+})
