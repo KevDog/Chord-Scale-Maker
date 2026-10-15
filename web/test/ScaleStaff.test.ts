@@ -130,5 +130,15 @@ describe('ScaleStaff', () => {
       expect(hex.find('[data-slot="hexatonic"] button').exists()).toBe(false)
       none.unmount()
     })
+
+    it('stays plain text under Hexatonic on a staff with no triad pair', async () => {
+      const wd = parseChart('title: T\nkey: C\nA | 1 | C7#5 | C Whole Tone\n').value
+      const wr = resolveScales(wd, { level: 'standard', seed: 0 })
+      const staff = buildSheet(expandRows(wd).value, CONCERT, 'root', 'C', 12, HEX, undefined, wr, { picks: NO_PICKS, at: chordPositions(wd) })[0]!.pages.flat()[0]!
+      const w = await mount(staff)
+      expect(w.find('[data-slot="hexatonic"]').text()).toBe('no triad pair')
+      expect(w.find('[data-slot="hexatonic"] button').exists()).toBe(false)
+      w.unmount()
+    })
   })
 })

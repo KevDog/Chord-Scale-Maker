@@ -318,7 +318,24 @@ const hexatonicMarks = computed(() => marks.value.flatMap((m) => (m.hexatonic?.l
 const partNow = computed(() => props.part ?? CONCERT)
 const headerOf = (src: PickSource, run: readonly ChordAt[], fallback = ''): string =>
   pickHeader(src ? pickHeading(partNow.value, src.chord, src.scale) : fallback, pickBars(run))
-const pentChoices = (p: ChangesPentatonic) => (p.source ? pentatonicChoices(p.source.chord, p.source.scale, partNow.value) : [])
+/** each source's choices, worked out once per part (the labels and popovers ask on every render) */
+const memo = <T,>(choices: (chord: string, scale: string, part: Part) => readonly T[]) =>
+  computed(() => {
+    const part = partNow.value
+    const seen = new Map<string, readonly T[]>()
+    return (src: PickSource): readonly T[] => {
+      if (!src) return []
+      const key = `${src.chord}|${src.scale}`
+      const hit = seen.get(key)
+      if (hit) return hit
+      const made = choices(src.chord, src.scale, part)
+      seen.set(key, made)
+      return made
+    }
+  })
+const pentMemo = memo(pentatonicChoices)
+const hexMemo = memo(hexatonicChoices)
+const pentChoices = (p: ChangesPentatonic) => pentMemo.value(p.source)
 const pentRows = (p: ChangesPentatonic) => pentChoices(p).map((c) => ({ id: choiceId.pent(c.pc), label: c.label, current: c.name === p.name }))
 function choosePent(p: ChangesPentatonic, id: string): void {
   const c = pentChoices(p).find((x) => choiceId.pent(x.pc) === id)
@@ -326,7 +343,7 @@ function choosePent(p: ChangesPentatonic, id: string): void {
 }
 const pentLabel = (p: ChangesPentatonic): string =>
   `Pentatonic: ${glyphs(`${rootName(p.root)} minor`)}, built on ${PENTATONIC_DEGREE_LABELS[p.degree ?? 0]}, ${p.shared} of 5 notes in ${glyphs(p.scale)}`
-const hexRows = (h: ChangesHexatonic) => (h.source ? hexatonicChoices(h.source.chord, h.source.scale, partNow.value) : [])
+const hexRows = (h: ChangesHexatonic) => hexMemo.value(h.source)
 const hexChoiceRows = (h: ChangesHexatonic) => hexRows(h).map((c) => ({ id: choiceId.hex(c.roots), label: c.label, current: c.name === h.name }))
 const hexPickable = (h: ChangesHexatonic): boolean => shows('chord-picks') && !!h.source && h.run.length > 0
 function chooseHex(h: ChangesHexatonic, id: string): void {

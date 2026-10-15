@@ -12,6 +12,11 @@ describe('chordPicksFrom', () => {
   it('reads a #272 map of bare numbers as pentatonic picks with no for', () => {
     expect(chordPicksFrom({ 'A:1:0': 7, 'A:2:0': 2 })).toEqual({ pentatonic: { 'A:1:0': { pc: 7 }, 'A:2:0': { pc: 2 } }, hexatonic: {} })
   })
+  it('keeps a position on a section name with spaces, new or #272', () => {
+    expect(chordPicksFrom({ pentatonic: { 'Out Chorus:1:0': { pc: 9 } }, hexatonic: {} })).toEqual({ pentatonic: { 'Out Chorus:1:0': { pc: 9 } }, hexatonic: {} })
+    expect(chordPicksFrom({ 'Out Chorus:1:0': 7 })).toEqual({ pentatonic: { 'Out Chorus:1:0': { pc: 7 } }, hexatonic: {} })
+    expect(chordPicksFrom({ 'A\nB:1:0': 7, [`${'x'.repeat(65)}:1:0`]: 7 })).toEqual(NO_PICKS)
+  })
   it('drops bad entries and never throws', () => {
     const bad = { pentatonic: { 'A:1:0': 12, 'A:2:0': { pc: 1.5 }, __proto__x: 3, constructor: { pc: 1 }, 'A:3:0': { pc: 4, for: 'x'.repeat(10_000) } }, hexatonic: { 'A:1:0': { roots: [2, 2] }, 'A:2:0': { roots: [1] }, 'A:3:0': { roots: [0, 13] } } }
     expect(chordPicksFrom(bad)).toEqual(NO_PICKS)

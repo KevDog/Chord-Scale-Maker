@@ -53,7 +53,7 @@ const emit = defineEmits<{ pick: [kind: PickKind, positions: readonly ChordAt[],
 
 const kind = computed((): PickKind | null => (props.staff.pentatonic ? 'pentatonic' : props.staff.second ? 'hexatonic' : null))
 const caption = computed(() => (props.staff.pentatonic ? pentatonicCaption(props.staff.pentatonic, props.staff.varies) : hexatonicCaption(props.staff.hexatonic, props.staff.varies)))
-const canPick = computed(() => !!props.pickable && !!props.part && !!props.staff.source && props.staff.positions.length > 0)
+const canPick = computed(() => !!props.pickable && !!props.part && !!props.staff.source && props.staff.positions.length > 0 && (kind.value !== 'hexatonic' || !!props.staff.hexatonic))
 const bars = computed(() => pickBars(props.staff.positions))
 const header = computed(() => (props.staff.source && props.part ? pickHeader(pickHeading(props.part, props.staff.source.chord, props.staff.source.scale), bars.value) : ''))
 const footer = computed(() => pickFooter('scales', bars.value, props.staff.varies))

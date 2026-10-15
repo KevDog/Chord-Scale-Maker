@@ -171,7 +171,6 @@
               Chord, each chord's, <strong class="font-semibold">Built on</strong> the degree you choose) or
               <strong class="font-semibold">Hexatonic</strong> (each chord's best triad pair from its scale, such as
               <UiCode>G/Am</UiCode> over Cmaj7: the chord tones it covers first, then two major or minor triads).
-              Click a chord's pentatonic or triad pair (Changes) or a staff's caption (Scales) to pick another for that chord; the list runs from inside to outside. A pick on the Scales sheet sets every bar that staff covers. <strong class="font-semibold">Sheet's choice</strong> undoes it; <strong class="font-semibold">More → Reset chord picks</strong> undoes them all.
             </dd>
           </div>
           <div>
@@ -245,12 +244,12 @@
             caption under each chord names the pair.
           </li>
           <li>
-            Click a chord's pentatonic or triad pair (Changes) or a staff's caption (Scales) to pick another for that chord; the list runs from inside to outside. A pick on the Scales sheet sets every bar that staff covers. <strong class="font-semibold text-zinc-950 dark:text-white">Sheet's choice</strong> undoes it; <strong class="font-semibold text-zinc-950 dark:text-white">More → Reset chord picks</strong> undoes them all.
+            Click a chord's pentatonic or triad pair (Changes) or a staff's caption (Scales) to pick another for that chord; the list runs from inside to outside. A pick on the Scales sheet sets every bar that staff covers. <strong class="font-semibold text-zinc-950 dark:text-white">Sheet’s choice</strong> undoes it; <strong class="font-semibold text-zinc-950 dark:text-white">⋯ More actions → Reset chord picks</strong> undoes them all.
             Picks are the same on both sheets, survive a change of Built on or Pair, and go with a share link.
           </li>
           <li>Tick or untick a box while a preset's on and you get your own mix, starting from what the preset showed.</li>
           <li><strong class="font-semibold text-zinc-950 dark:text-white">Clear</strong> turns it all off.</li>
-          <li>Your picks are remembered for each library chart, in this browser, separately for From root and from a note.</li>
+          <li>Your ticks are remembered for each library chart, in this browser, separately for From root and from a note.</li>
         </ul>
       </section>
 

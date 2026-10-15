@@ -16,7 +16,8 @@ export const NO_PICKS: ChordPicks = { pentatonic: {}, hexatonic: {} }
 /** what a pick was made for: the position's chord text and resolved scale, concert */
 export const pickTarget = (chord: string, scale: string | null): string => `${chord}|${scale ?? ''}`
 
-const AT = /^\S{1,64}:\d{1,4}:\d{1,2}$/
+/** a position key: a section name (any characters but line breaks; the chart caps it at LIMITS.maxCell), bar, chord */
+const AT = /^[^\r\n]{1,64}:\d{1,4}:\d{1,2}$/
 const isPc = (v: unknown): v is number => Number.isInteger(v) && (v as number) >= 0 && (v as number) < 12
 const isObject = (v: unknown): v is Record<string, unknown> => !!v && typeof v === 'object' && !Array.isArray(v)
 const own = (v: Record<string, unknown>, k: string): unknown => (Object.hasOwn(v, k) ? v[k] : undefined)

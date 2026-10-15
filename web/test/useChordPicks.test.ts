@@ -34,6 +34,14 @@ describe('useChordPicks', () => {
     expect(localStorage.getItem('csm-pent-picks:t')).toBeNull()
   })
 
+  it('round-trips a pick on a section name with spaces', async () => {
+    const p = make('sp', T([['Out Chorus:1:0', 'Cmaj7|Ionian']]))
+    p.pick('pentatonic', ['Out Chorus:1:0'], 9)
+    await nextTick()
+    expect(stored('sp')).toEqual({ pentatonic: { 'Out Chorus:1:0': { pc: 9, for: 'Cmaj7|Ionian' } }, hexatonic: {} })
+    expect(make('sp', T([['Out Chorus:1:0', 'Cmaj7|Ionian']])).picks.value.pentatonic).toEqual({ 'Out Chorus:1:0': { pc: 9, for: 'Cmaj7|Ionian' } })
+  })
+
   it('reads a legacy map of bare numbers as pentatonic picks, and bad JSON as none', () => {
     localStorage.setItem('csm-pent-picks:old', '{"A:1:0": 7}')
     expect(make('old').picks.value).toEqual({ pentatonic: { 'A:1:0': { pc: 7 } }, hexatonic: {} })
