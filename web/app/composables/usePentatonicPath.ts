@@ -34,10 +34,10 @@ export function usePentatonicPath(key: string | undefined, sections: Ref<readonl
   })
   const plan: ComputedRef<PentatonicPlan> = computed(() => {
     const s = state.value
-    if (s.path === 'one') return { bySection: {}, fallback: fallback.value, counts: false }
-    if (s.path !== 'custom') return { bySection: {}, fallback: PENTATONIC_HOME, counts: true, path: s.path, step: s.step }
+    if (s.path === 'one') return { kind: 'pentatonic', bySection: {}, fallback: fallback.value, counts: false }
+    if (s.path !== 'custom') return { kind: 'pentatonic', bySection: {}, fallback: PENTATONIC_HOME, counts: true, path: s.path, step: s.step }
     const known = new Set(sections.value.map((x) => x.key))
-    return { bySection: Object.fromEntries(Object.entries(s.sections).filter(([k]) => known.has(k))), fallback: PENTATONIC_HOME, counts: true }
+    return { kind: 'pentatonic', bySection: Object.fromEntries(Object.entries(s.sections).filter(([k]) => known.has(k))), fallback: PENTATONIC_HOME, counts: true }
   })
   return {
     path: computed(() => state.value.path),

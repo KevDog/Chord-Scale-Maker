@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it, vi } from 'vitest'
-import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, type PentatonicPlan, showPentatonics } from '../changes'
+import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, type PentatonicPlan, showHexatonics, showPentatonics } from '../changes'
 import { parseChart } from '../chart'
 import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
 import { CONCERT, concertPc, type Part } from '../part'
@@ -19,7 +19,7 @@ vi.mock('../guideTones', async (importOriginal) => {
 const library = (name: string) => parseChart(readFileSync(`charts/${name}.txt`, 'utf8')).value
 const TENOR: Part = { clef: 'treble', trans: 'Bb' }
 const bars = (name: string, part = CONCERT) => buildChanges(library(name), part).lines.flatMap((l) => l.bars)
-const one = (rung: number, side: 'flat' | 'sharp'): PentatonicPlan => ({ bySection: {}, fallback: { rung, side }, counts: false })
+const one = (rung: number, side: 'flat' | 'sharp'): PentatonicPlan => ({ kind: 'pentatonic', bySection: {}, fallback: { rung, side }, counts: false })
 
 describe('the Changes sheet', () => {
   it('lays a chart out four bars a line, each section on a new line, a @copy straight after its source as a repeat', () => {
@@ -175,7 +175,7 @@ describe('the Changes sheet', () => {
 
   it('plays each section at its own rung, with the shared count when asked', () => {
     const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Cmaj7\nB | 3 | Cmaj7\nB | 4 | Cmaj7').value
-    const plan: PentatonicPlan = { bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
+    const plan: PentatonicPlan = { kind: 'pentatonic', bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
     const lines = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)
     expect(pents({ lines })).toEqual([['Am♪ 5'], ['B♭m♪ 1']]) // each section starts a line, so its label prints
     const b = lines[1]?.bars[0]?.chords[0]?.pentatonic
@@ -184,13 +184,13 @@ describe('the Changes sheet', () => {
 
   it('keeps a section’s rung in the key of its own area', () => {
     const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Gmaj7\n@key B 2 G').value
-    const plan: PentatonicPlan = { bySection: { B: { rung: 6, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
+    const plan: PentatonicPlan = { kind: 'pentatonic', bySection: { B: { rung: 6, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
     const lines = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)
     expect(pents({ lines })).toEqual([['Am♪ 5'], ['B♭m♪ 0']]) // G major's home Em, its rung 6 B♭m
   })
 
   it('gives a merged repeat’s chords the first section’s rung', () => {
-    const plan: PentatonicPlan = { bySection: { A1: { rung: 2, side: 'flat' }, A2: { rung: 6, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: false }
+    const plan: PentatonicPlan = { kind: 'pentatonic', bySection: { A1: { rung: 2, side: 'flat' }, A2: { rung: 6, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: false }
     const first = buildChanges(library('autumn-leaves'), CONCERT, 4, false, 'off', undefined, plan).lines[0]?.bars[0]?.chords[0]?.pentatonic
     expect([first?.section, first?.view.rung]).toEqual(['A1', 2])
   })
@@ -198,7 +198,7 @@ describe('the Changes sheet', () => {
   describe('a preset’s steps (#276)', () => {
     const tag = (v: { rung: number; side: string } | undefined): string => (!v ? '' : v.rung === 0 || v.rung === 6 ? String(v.rung) : `${v.rung}${v.side === 'flat' ? '♭' : '♯'}`)
     const rungs = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars.flatMap((b) => b.chords.map((c) => tag(c.pentatonic?.view))))
-    const preset = (path: PentatonicPathName, step?: PentatonicStep, extra: Partial<PentatonicPlan> = {}): PentatonicPlan => ({ bySection: {}, fallback: PENTATONIC_HOME, counts: true, path, ...(step ? { step } : {}), ...extra })
+    const preset = (path: PentatonicPathName, step?: PentatonicStep, extra: Partial<PentatonicPlan> = {}): PentatonicPlan => ({ kind: 'pentatonic', bySection: {}, fallback: PENTATONIC_HOME, counts: true, path, ...(step ? { step } : {}), ...extra })
     const build = (text: string, plan: PentatonicPlan, part = CONCERT) => buildChanges(parseChart(text).value, part, 4, false, 'off', undefined, plan)
     const ABC = 'title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Cmaj7\nC | 3 | Cmaj7\n'
     const bars = (section: string, from: number, n: number) => Array.from({ length: n }, (_, i) => `${section} | ${from + i} | Cmaj7`).join('\n')
@@ -298,7 +298,7 @@ describe('scale labels', () => {
     expect(lines[1]![0]![1]).toBe('D Dorian')
   })
 
-  const chordPlan = (rank = 1): PentatonicPlan => ({ bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, basis: 'chord', rank })
+  const chordPlan = (rank = 1): PentatonicPlan => ({ kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, basis: 'chord', rank })
   const flat = (lines: readonly ChangesLine[]) => lines.flatMap((l) => l.bars.flatMap((b) => b.chords))
 
   it('ranks each chord against its own scale under the chord basis: Waltz for Debby bars 1–4', () => {
@@ -332,7 +332,7 @@ describe('scale labels', () => {
 
   it('keys each chord by its drawn bar and index, and keeps the key basis’s title and level', () => {
     const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 1 | Dm7\nB | 2 | Cmaj7').value
-    const plan: PentatonicPlan = { bySection: { B: { rung: 3, side: 'sharp' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
+    const plan: PentatonicPlan = { kind: 'pentatonic', bySection: { B: { rung: 3, side: 'sharp' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
     const chords = flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)
     expect(chords.map((c) => c.pentatonic?.chord)).toEqual(['A:1:0', 'A:1:1', 'B:2:0'])
     expect([chords[2]?.pentatonic?.title, chords[2]?.pentatonic?.level, chords[2]?.pentatonic?.rank, chords[2]?.pentatonic?.basis]).toEqual(['B · C major pentatonic ladder', 3, 0, 'key'])
@@ -340,7 +340,7 @@ describe('scale labels', () => {
 
   describe('picks', () => {
     const C4 = 'title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | Cmaj7'
-    const keyPlan = (picks: Record<string, number> = {}): PentatonicPlan => ({ bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, picks })
+    const keyPlan = (picks: Record<string, number> = {}): PentatonicPlan => ({ kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, picks })
     const shown = (text: string, plan: PentatonicPlan, part = CONCERT) => flat(showPentatonics(buildChanges(parseChart(text).value, part, 4, false, 'off', undefined, plan).lines))
 
     it('gives each printed label the run of chords it covers', () => {
@@ -691,5 +691,66 @@ describe('buildChanges with an arpeggio line', () => {
   it('gives an arpeggio line the page count of a guide tone line', () => {
     const rows = { numerals: true, scales: true }
     expect(changesLinesPerPage('up-root', rows)).toBe(changesLinesPerPage('third', rows))
+  })
+})
+
+describe('the Hexatonic overlay', () => {
+  const HEX = { kind: 'hexatonic' } as const
+  const flat = (lines: readonly ChangesLine[]) => lines.flatMap((l) => l.bars.flatMap((b) => b.chords))
+  const labels = (text: string, part = CONCERT, plan: Parameters<typeof buildChanges>[6] = HEX) =>
+    flat(showHexatonics(buildChanges(parseChart(text).value, part, 4, false, 'off', undefined, plan).lines)).map((c) => c.hexatonic?.label ?? null)
+
+  it('gives each chord the Auto pair of its resolved scale', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | Cmaj7').value
+    const chords = flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, HEX).lines)
+    expect(chords.map((c) => c.hexatonic)).toEqual([
+      { label: 'G/Am', name: 'G/Am' },
+      { label: 'C/Dm', name: 'C/Dm' },
+      { label: 'Dm/Em', name: 'Dm/Em' },
+      { label: 'G/Am', name: 'G/Am' },
+    ])
+    expect(chords.every((c) => c.pentatonic === null)).toBe(true)
+  })
+
+  it('names the written pair for a transposing part', () => {
+    expect(labels('title: T\nkey: C\nA | 1 | Cmaj7', TENOR)).toEqual(['A/Bm'])
+  })
+
+  it('has none with no plan, a pentatonic plan, no scale, or a scale with no pairs', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7').value
+    expect(flat(buildChanges(doc, CONCERT).lines)[0]?.hexatonic).toBeNull()
+    expect(flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, one(0, 'flat')).lines)[0]?.hexatonic).toBeNull()
+    expect(labels('title: T\nkey: C\nA | 1 | N.C.')).toEqual([null])
+    expect(labels('title: T\nkey: C\nA | 1 | C7#5 | C Whole Tone')).toEqual([null])
+  })
+
+  it('leaves the pentatonic plan as it was', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7').value
+    const sheet = buildChanges(doc, CONCERT, 4, false, 'off', undefined, one(2, 'flat'))
+    expect(flat(sheet.lines).map((c) => [c.pentatonic?.label, c.hexatonic])).toEqual([['Gm♪', null], ['Gm♪', null]])
+    const fifths: PentatonicPlan = { kind: 'pentatonic', bySection: {}, fallback: PENTATONIC_HOME, counts: true, path: 'fifths' }
+    expect(buildChanges(doc, CONCERT, 4, false, 'off', undefined, fifths).pentatonicCaption).not.toBeNull()
+    expect(buildChanges(doc, CONCERT, 4, false, 'off', undefined, HEX).pentatonicCaption).toBeNull()
+  })
+
+  it('prints a label only where it changes from the previous chord on the line, and again after a gap', () => {
+    expect(labels('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Cmaj7\nA | 3 | Dm7\nA | 4 | Cmaj7')).toEqual(['G/Am', '', 'C/Dm', 'G/Am'])
+    expect(labels('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | N.C.\nA | 3 | Cmaj7')).toEqual(['G/Am', null, 'G/Am'])
+    expect(labels('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Cmaj7\nA | 3 | Cmaj7\nA | 4 | Cmaj7\nA | 5 | Cmaj7')).toEqual(['G/Am', '', '', '', 'G/Am']) // a new line
+  })
+
+  it('keeps the name where the label is blanked', () => {
+    const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Cmaj7').value
+    expect(flat(showHexatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, HEX).lines))[1]?.hexatonic).toEqual({ label: '', name: 'G/Am' })
+  })
+
+  it('counts the hexatonic row as the pentatonic row', () => {
+    for (const line of ['off', 'third', 'seventh', 'up-root'] as const)
+      for (const numerals of [true, false])
+        for (const scales of [true, false]) {
+          const want = changesLinesPerPage(line, { numerals, scales, pentatonics: true })
+          expect(changesLinesPerPage(line, { numerals, scales, hexatonics: true })).toBe(want)
+          expect(changesLinesPerPage(line, { numerals, scales, pentatonics: false, hexatonics: true })).toBe(want)
+        }
   })
 })

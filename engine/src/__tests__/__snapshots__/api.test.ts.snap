@@ -231,6 +231,7 @@ exports[`exports the same names 1`] = `
   "sheetScale",
   "shiftBy",
   "shiftNote",
+  "showHexatonics",
   "showPentatonics",
   "signatureAccidentals",
   "simplifyRoot",

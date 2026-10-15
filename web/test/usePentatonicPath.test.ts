@@ -23,7 +23,7 @@ describe('usePentatonicPath', () => {
   it('hands a preset to the engine with its step, with counts, and remembers both per chart', async () => {
     const p = make('satin-doll')
     p.setPath('side-slip')
-    expect(p.plan.value).toEqual({ bySection: {}, fallback: PENTATONIC_HOME, counts: true, path: 'side-slip', step: { unit: 'section', bars: 4 } })
+    expect(p.plan.value).toEqual({ kind: 'pentatonic', bySection: {}, fallback: PENTATONIC_HOME, counts: true, path: 'side-slip', step: { unit: 'section', bars: 4 } })
     p.setStep({ unit: 'bars', bars: 8 })
     expect(p.plan.value.step).toEqual({ unit: 'bars', bars: 8 })
     await nextTick()
@@ -54,7 +54,7 @@ describe('usePentatonicPath', () => {
     const p = make('satin-doll')
     p.setPath('fifths')
     p.setPath('custom')
-    expect(p.plan.value).toEqual({ bySection: {}, fallback: PENTATONIC_HOME, counts: true })
+    expect(p.plan.value).toEqual({ kind: 'pentatonic', bySection: {}, fallback: PENTATONIC_HOME, counts: true })
   })
 
   it('carries a stored path to another chart key, and leaves One rung unwritten', async () => {
@@ -70,7 +70,7 @@ describe('usePentatonicPath', () => {
   it('starts at One rung: the sheet’s rung everywhere, no counts', () => {
     const p = make('satin-doll')
     expect(p.path.value).toBe('one')
-    expect(p.plan.value).toEqual({ bySection: {}, fallback: { rung: 2, side: 'flat' }, counts: false })
+    expect(p.plan.value).toEqual({ kind: 'pentatonic', bySection: {}, fallback: { rung: 2, side: 'flat' }, counts: false })
   })
 
   it('ignores stale sections and plays a new one Home under Custom', async () => {

@@ -19,7 +19,7 @@ const systemOf = async (signatures: boolean, line?: SheetLine) =>
 
 describe('ChangesSheet', () => {
   it('shows a preset’s path on screen while the sheet is the editor, and in the subtitle otherwise (#276)', async () => {
-    const pentatonic: PentatonicPlan = { bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: true, path: 'fifths', step: { unit: 'bars', bars: 4 } }
+    const pentatonic: PentatonicPlan = { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: true, path: 'fifths', step: { unit: 'bars', bars: 4 } }
     const editing = await mountSheet({ editing: null, pentatonic })
     expect(editing.find('[data-slot="pent-caption"]').text()).toBe('Pentatonics: Fifths · every 4 bars')
     const viewing = await mountSheet({ pentatonic })
@@ -28,7 +28,7 @@ describe('ChangesSheet', () => {
   })
 
   it('prints the pentatonic row where the key area changes, and passes a pick up', async () => {
-    const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: false, pentatonic: { bySection: {}, fallback: { rung: 2, side: 'flat' }, counts: false } } }) // ChangesSystem drawn, not stubbed
+    const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: false, pentatonic: { kind: 'pentatonic', bySection: {}, fallback: { rung: 2, side: 'flat' }, counts: false } } }) // ChangesSystem drawn, not stubbed
     const labels = w.findAll('[data-slot="pentatonic"] button').map((b) => b.text())
     expect(labels.length).toBeGreaterThan(0)
     expect(labels.every((l) => /^[A-G][♭♯]?m♪$/.test(l))).toBe(true)
@@ -144,7 +144,7 @@ describe('ChangesSheet', () => {
 
 describe('ChangesSheet pentatonic tints, no contour band (#265, #277)', () => {
   const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Cmaj7\nA | 3 | Cmaj7').value
-  const plan: PentatonicPlan = { bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
+  const plan: PentatonicPlan = { kind: 'pentatonic', bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
 
   it('tints the labels by rung and draws no band, the shared count carrying the rung without colour', async () => {
     const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: true, scales: true, pentatonic: plan } })
@@ -157,7 +157,7 @@ describe('ChangesSheet pentatonic tints, no contour band (#265, #277)', () => {
 
 describe('ChangesSheet chord-basis tints (#272)', () => {
   const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | Cmaj7').value
-  const base = { bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, rank: 12 } as const
+  const base = { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, rank: 12 } as const
   const mountPlan = (pentatonic: PentatonicPlan) => mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: false, scales: false, pentatonic } })
   const hasRungLabel = (w: Awaited<ReturnType<typeof mountPlan>>) => w.findAll('[data-slot="pentatonic"] [data-chord]').some((e) => /text-rung-/.test(e.classes().join(' ')))
 
