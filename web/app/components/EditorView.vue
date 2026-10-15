@@ -198,7 +198,7 @@
             :preview="sheetPreview"
             :focus-at="sheetFocus"
             :overlay="overlayPlan"
-            @pentatonic="onPentatonic"
+            @pick="onPick"
             @tap="editSheetChord"
             @edit="openSheetEdit"
             @update:doc="editor.setDoc"
@@ -229,6 +229,10 @@
             :practice="selection"
             :home-key="homeKey"
             :resolved="resolved"
+            :picks="chordPicks.picks.value"
+            :positions="positionsNow"
+            :pickable="ui.shows('chord-picks')"
+            @pick="onPick"
           >
             <template v-if="!focus.on.value && (statusText || copyError)" #status><SheetStatus :text="statusText" :failed="saveFailed" :error="copyError" /></template>
           </ScaleSheet>
@@ -271,7 +275,7 @@ import {
   type ChartDoc,
   type ChordAt,
   type ChordPreview,
-  concertPc,
+  chordPositions,
   CONCERT,
   type GridPos,
   type Part,
@@ -287,6 +291,11 @@ import {
   instrumentLabel,
   LEVEL_LABELS,
   parseChart,
+  hasPicks,
+  isHexatonicSelection,
+  isPentatonicSelection,
+  type PickKind,
+  pickTargets,
   LIMITS,
   litKeys,
   type Mode,
@@ -311,8 +320,6 @@ import { firstSheet, type SheetKind } from '~/utils/sheets'
 import { type MoreAction, moreMenuItems } from '~/utils/moreMenu'
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { spellView } from '~/utils/scaleChoices'
-
-const HEXATONIC_PLAN: OverlayPlan = { kind: 'hexatonic' }
 
 /**
  * practiceKey: what practice selections are remembered under (a library slug, or mine:<id>); none for the visit only.
@@ -377,18 +384,28 @@ const pentPath = usePentatonicPath(props.practiceKey, pentSections, computed(() 
 const pentPathModel = computed({ get: () => pentPath.path.value, set: (v) => pentPath.setPath(v) })
 const pentStepUnit = computed({ get: () => pentPath.step.value.unit, set: (unit) => pentPath.setStep({ ...pentPath.step.value, unit }) })
 const pentStepBars = computed({ get: () => pentPath.step.value.bars, set: (bars) => pentPath.setStep({ ...pentPath.step.value, bars }) })
+/** what the sheets and the grid play a blank cell at; one resolution per revision, shared by the Scales sheet and practice */
+const scaleView = computed((): ScaleView => ({ level: scaleLevel.level.value, seed: scaleLevel.seed.value }))
+provide(SCALE_VIEW, scaleView)
+const resolved = computed(() => resolveScales(editor.doc.value, scaleView.value))
+/** the chord picks (#272, #303): one set for both sheets, matched to what each drawn chord plays now */
+const pickTargetsNow = computed(() => pickTargets(editor.doc.value, resolved.value))
+const positionsNow = computed(() => chordPositions(editor.doc.value))
+const chordPicks = useChordPicks(props.practiceKey, pickTargetsNow, props.shared?.picks)
+// picks survive Built on, Path, Step, Rung, Side and Ranked against; a transposed chart: a legacy pick has no for to catch it
+watch(() => JSON.stringify(chartKeyOf(editor.doc.value)), () => chordPicks.clearAll())
+watch(() => editor.doc.value, (doc, old) => { if (hasPicks(chordPicks.picks.value)) chordPicks.carry(drawnChords(old), drawnChords(doc)) }) // a bar in or out moves later chords' keys (#275)
 /** the sheet's Pentatonic overlay plan; null under another overlay or none */
-const pentPicks = usePentatonicPicks(props.practiceKey)
-watch([pentPath.path, () => JSON.stringify(pentPath.step.value), prefs.pentRung, prefs.pentSide, prefs.pentDegree, prefs.pentBasis, () => JSON.stringify(chartKeyOf(editor.doc.value))], () => pentPicks.clear()) // picks are concert pitches: a transposed chart lands them elsewhere
-watch(() => editor.doc.value, (doc, old) => { if (Object.keys(pentPicks.picks.value).length) pentPicks.carry(drawnChords(old), drawnChords(doc)) }) // a bar in or out moves later chords' keys (#275)
 const pentatonicPlan = computed((): PentatonicPlan | null => (prefs.overlay.value === 'pentatonic'
-  ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, degree: prefs.pentDegree.value, picks: pentPicks.picks.value }
+  ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, degree: prefs.pentDegree.value, picks: chordPicks.picks.value.pentatonic } // the Changes sheet ignores stale picks by their for
   : null))
-const overlayPlan = computed((): OverlayPlan | null => (prefs.overlay.value === 'hexatonic' ? HEXATONIC_PLAN : pentatonicPlan.value))
-/** a label's popover (#272): a pick (written for the part) covers its run, stored concert; null resets the run */
-function onPentatonic(run: readonly ChordAt[], written: number | null): void {
-  if (written === null) pentPicks.reset(run)
-  else pentPicks.pick(run, concertPc(sheetPart.value, written))
+const hexatonicPlan = computed((): OverlayPlan => ({ kind: 'hexatonic', picks: chordPicks.picks.value.hexatonic }))
+const overlayPlan = computed((): OverlayPlan | null => (prefs.overlay.value === 'hexatonic' ? hexatonicPlan.value : pentatonicPlan.value))
+/** a popover's pick (concert) for its chords on either sheet; null: back to the sheet's choice */
+function onPick(kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null): void {
+  if (value === null) chordPicks.clear(kind, positions)
+  else if (kind === 'pentatonic' && typeof value === 'number') chordPicks.pick('pentatonic', positions, value)
+  else if (kind === 'hexatonic' && typeof value !== 'number') chordPicks.pick('hexatonic', positions, value)
 }
 const sheetLine = computed(() => sheetLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value))
 /** chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor) */
@@ -410,23 +427,27 @@ const homeKey = computed(() => chartKeyOf(editor.doc.value))
 const practice = usePractice(props.practiceKey)
 const LEVEL_OPTIONS = SCALE_LEVELS.map((value) => ({ value, label: LEVEL_LABELS[value] }))
 const levelLabel = (v: (typeof SCALE_LEVELS)[number]): string => LEVEL_LABELS[v]
-/** what the sheets and the grid play a blank cell at; one resolution per revision, shared by the Scales sheet and practice */
-const scaleView = computed((): ScaleView => ({ level: scaleLevel.level.value, seed: scaleLevel.seed.value }))
-provide(SCALE_VIEW, scaleView)
-const resolved = computed(() => resolveScales(editor.doc.value, scaleView.value))
 
 if (props.shared?.practice) practice.setSelection(mode.value, props.shared.practice)
 const selection = computed(() => practice.selection(mode.value))
 // every staff with its practice keys, for the panel's boxes and what the selection lights
 const practiceStaves = computed(() =>
-  buildSheet(editor.rows.value, part.value, mode.value, start.value, LIMITS.maxExpandedRows, selection.value, undefined, resolved.value).flatMap((p) => p.pages.flat()),
+  buildSheet(editor.rows.value, part.value, mode.value, start.value, LIMITS.maxExpandedRows, selection.value, undefined, resolved.value, { picks: chordPicks.picks.value, at: positionsNow.value }).flatMap((p) => p.pages.flat()),
 )
 const practiceBoxesNow = computed(() => practiceBoxes(practiceStaves.value, mode.value, start.value))
 const litNow = computed(() => litKeys(practiceStaves.value))
 const transposed = ref('')
+/** live chord picks of the kind the sheet shows: the Changes sheet's overlay, the Scales sheet's practice preset */
+const picksInForce = computed((): boolean => {
+  const s = selection.value
+  const kind: PickKind | null = sheet.value === 'changes'
+    ? (prefs.overlay.value === 'off' ? null : prefs.overlay.value)
+    : sheet.value === 'scales' && s ? (isPentatonicSelection(s) ? 'pentatonic' : isHexatonicSelection(s) ? 'hexatonic' : null) : null
+  return kind !== null && hasPicks(chordPicks.live.value, kind)
+})
 /** settings in force whose controls this Interface level hides (a share link, a stored preference): the notice offers to show them or reset them */
 const hidden = computed(() =>
-  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: prefs.numerals.value, scaleNames: prefs.scaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value }),
+  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: prefs.numerals.value, scaleNames: prefs.scaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value }),
 )
 /** each reset, given the mode in force before any of them ran (resetting the spelling changes the mode) */
 const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
@@ -437,6 +458,7 @@ const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
   spell: () => (prefs.spell.value = 'key'),
   practice: (inForce) => practice.setSelection(inForce, null),
   pentatonics: () => (prefs.overlay.value = 'off'),
+  'chord-picks': () => chordPicks.clearAll(),
 }
 function resetHidden(): void {
   const inForce = mode.value
@@ -631,7 +653,7 @@ function saveCopy(): void {
   if (!result.ok) return
   scaleLevel.carryTo(`mine:${id}`)
   pentPath.carryTo(`mine:${id}`)
-  pentPicks.carryTo(`mine:${id}`)
+  chordPicks.carryTo(`mine:${id}`)
   navigateTo({ path: '/song', query: { mine: id } })
 }
 
@@ -654,6 +676,7 @@ async function shareUrl(): Promise<string> {
     ...(sheet.value === 'arpeggios' ? { arpNotes: prefs.arpNotes.value, arpDir: prefs.arpDir.value } : {}),
     ...(selection.value ? { practice: selection.value } : {}),
     ...(scaleLevel.level.value !== 'standard' ? { level: scaleLevel.level.value, seed: scaleLevel.seed.value } : {}),
+    ...(hasPicks(chordPicks.live.value) ? { picks: chordPicks.live.value } : {}), // too big a link leaves them out (encodeShare)
   }
   return `${location.origin}/song#s=${await encodeShare({ chart: editor.text.value, view })}`
 }
@@ -682,7 +705,7 @@ function saveShared(): void {
   for (const m of ['root', 'from'] as const) kept.setSelection(m, practice.selection(m))
   scaleLevel.carryTo(`mine:${id}`)
   pentPath.carryTo(`mine:${id}`)
-  pentPicks.carryTo(`mine:${id}`)
+  chordPicks.carryTo(`mine:${id}`)
   navigateTo({ path: '/song', query: { mine: id } })
 }
 
@@ -721,11 +744,15 @@ function print(): void {
 
 /** send the chart and its context to the contact form (via sessionStorage), pre-filled for a bug report */
 /** the rail's More menu: what this chart offers now */
-const moreItems = computed(() => moreMenuItems({ saved: !!saved, edited: !!saved?.edited.value, fatal: editor.fatal.value }))
+const moreItems = computed(() => moreMenuItems({ saved: !!saved, edited: !!saved?.edited.value, fatal: editor.fatal.value, picks: hasPicks(chordPicks.live.value) }))
 function onMore(action: MoreAction): void {
   if (action === 'copy') saveCopy()
   else if (action === 'download') download()
   else if (action === 'revert') revertOpen.value = true
+  else if (action === 'reset-picks') {
+    chordPicks.clearAll()
+    said.value = 'Chord picks reset'
+  }
   else reportError()
 }
 

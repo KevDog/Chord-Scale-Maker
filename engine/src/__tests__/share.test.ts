@@ -37,6 +37,33 @@ describe('share links', () => {
     expect((await decodeShare(await encodeShare({ chart: CHART, view })))?.view?.practice).toEqual({ preset: 'hexatonic', pair: 5, grouping: 'tones' })
   })
 
+  it('carry chord picks, keyed by position', async () => {
+    const picks = { pentatonic: { 'A:6:0': { pc: 1, for: 'G7#5#9|G Altered' } }, hexatonic: { 'B:14:0': { roots: [1, 3] as const, for: 'G7#5#9|G Altered' } } }
+    expect((await decodeShare(await encodeShare({ chart: CHART, view: { picks } })))?.view?.picks).toEqual(picks)
+  })
+
+  it('leave the picks out where they would make a link too big to open, keeping the chart and the rest of the view', async () => {
+    const f = 'C#m7b5|C# Locrian Natural 2 and more text here' // a long for, as real scales can be
+    const pentatonic = Object.fromEntries(Array.from({ length: 800 }, (_, i) => [`A:${i + 1}:0`, { pc: 3, for: f }]))
+    const hexatonic = Object.fromEntries(Array.from({ length: 800 }, (_, i) => [`A:${i + 1}:0`, { roots: [0, 2] as const, for: f }]))
+    const view = { sheet: 'changes', picks: { pentatonic, hexatonic } } as const
+    expect(new TextEncoder().encode(JSON.stringify({ v: 1, chart: CHART, view })).length).toBeGreaterThan(SHARE_LIMITS.inflated)
+    const back = await decodeShare(await encodeShare({ chart: CHART, view }))
+    expect(back).toEqual({ chart: CHART, view: { sheet: 'changes' } })
+    const small = { pentatonic: { 'A:1:0': { pc: 3, for: f } }, hexatonic: {} }
+    expect((await decodeShare(await encodeShare({ chart: CHART, view: { picks: small } })))?.view?.picks).toEqual(small)
+  })
+
+  it('open an old link with no picks', async () => {
+    expect((await decodeShare(await encodeShare({ chart: CHART, view: { sheet: 'changes' } })))?.view?.picks).toBeUndefined()
+  })
+
+  it('drop damaged picks, and the field when none survive', () => {
+    expect(shareViewFrom({ picks: { pentatonic: { 'A:1:0': 99 } } })).toBeUndefined()
+    expect(shareViewFrom({ picks: { pentatonic: { 'A:1:0': 3, nope: 2 } } })?.picks).toEqual({ pentatonic: { 'A:1:0': { pc: 3 } }, hexatonic: {} })
+    expect(shareViewFrom({ sheet: 'changes', picks: JSON.parse('{"__proto__":{"pentatonic":{"A:1:0":{"pc":1}}},"hexatonic":{"A:1:0":{"roots":[2,2]}}}') })).toEqual({ sheet: 'changes' })
+  })
+
   it('stay short for an ordinary chart', async () => {
     expect((await encodeShare({ chart: CHART.repeat(4) })).length).toBeLessThan(300)
   })

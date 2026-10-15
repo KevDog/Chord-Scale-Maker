@@ -390,7 +390,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   always (`Dm pent · 5 shared`). The usual inside choices (all five shared): on 2, 3 or 6 over Ionian, 1, 2 or 5
   over Dorian, 2, 5 or 6 over Mixolydian (the Practice panel and Help say so). `pentatonicDegreeFrom` reads untrusted
   data: a bad degree, and the old `{ preset: 'pentatonic', rank }` (#266's 1–12 rank, stored or in a link), read as
-  Auto. In print the caption is 10px on one line, so 12 staves still fit a page. Spec:
+  Auto. In print the caption is 10px on one line, so 12 staves still fit a page. At Everything the caption opens the
+  staff's choices (see Chord picks). Spec:
   docs/superpowers/specs/2026-10-14-pentatonic-practice-design.md (its rank superseded by #286).
 - **Hexatonic** (both modes): `{ preset: 'hexatonic', pair, grouping }`, pair 0 (Auto) or 1–8,
   grouping Triad pair, Chord tones + color, Pentatonic + 1 or Trichords 3+3. After Gary Campbell, *Triad Pairs for
@@ -401,7 +402,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   seven-note scale the triads on degrees *n* and *n* + 1, leaving out degree *n* − 1. Auto (`hexatonicAuto`): most
   chord tones covered, then both triads major or minor, then fewest fifths from the chord root to the lower root (♭
   side first), then chain position. `hexatonicPick` lights the six notes as group A and group B (`StaffModel.selected`
-  and `second`) and captions the staff (`G/Am hex`, or `no triad pair`; 10px on one line in print). Pair listbox Auto,
+  and `second`) and captions the staff (`G/Am hex`, or `no triad pair`; 10px on one line in print; a pick's
+  popover, see Chord picks). Pair listbox Auto,
   1 … 8 (plain numbers; the help text says what *n* means), a grouping listbox, and a legend of the two groups. Spec:
   docs/superpowers/specs/2026-10-14-hexatonic-practice-design.md.
 - **Highlighting:** `drawStaff` tags each note's group `vf-selected` or `vf-dimmed` (and a hexatonic's group B
@@ -527,7 +529,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   … `6 · 0 shared (Outside)`) and Side (♭ | ♯, hidden at 0 and 6); Hexatonic adds no control and puts each chord's Auto
   pair (`G/Am`) in the row's place, blank where its scale has none (`showHexatonics`). `csm-overlay` (an old
   `csm-pentatonics: on` with none reads Pentatonic), `csm-pent-rung`, `csm-pent-side`, not in share links. Each
-  pentatonic label is a `PentatonicLadder` popover: the area's ladder, a pick covers that label's run (see Picks).
+  pentatonic label is a `PentatonicLadder` popover: the area's ladder, a pick covers that label's run (see Chord picks).
 - **Paths** (#264, #276, [spec](superpowers/specs/2026-10-13-pentatonic-paths-design.md), [steps](superpowers/specs/2026-10-14-pentatonic-path-steps-design.md)): Path listbox: One rung (Rung + Side, as before), Side-slip, Fifths, Minor thirds, Major thirds. A preset cycles from Home one step a unit (`pentatonicCycle`): Step by Section (each form section), Key area (each run of one key area; a revisit takes the next step) or Bars (every 2, 4 or 8 bars of the form, through section breaks); outside the form, Home. `buildChanges` lays it over the units (`PentatonicPlan.path`/`step`) and names it in the Changes subtitle (`ChangesSheet.pentatonicCaption`). A pick in a label's ladder doesn't change the path (see Picks); a stored Custom still plays its sections. Per chart, with its step: `csm-pent-path:<slug>` (`usePentatonicPath`). Labels carry the shared count (`B♭m♪ 1`) off One rung.
 - **Tint** (#265, #277): off One rung, labels take their rung's tint (`--color-rung-0…6`, Home slate → 6 rust; dark
   values on screen only), ordered by lightness (darker each rung on light paper, brighter on dark) so the ramp reads
@@ -539,12 +541,56 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   `ChangesPentatonic.degree`, null on the key basis); its popover lists the ranking, each row the degree it's built on
   and its shared count; counts and tints by shared count, `level`). Preferences `csm-pent-basis`, `csm-pent-degree`
   (`auto` or 0–11; the old `csm-pent-rank` is ignored, so it reads as Auto).
-- **Picks** (#272): a label's popover pick covers its `run` (that chord and those its label stands for), stored as
-  the concert root per drawn chord (`ChordAt`) in `csm-pent-picks:<slug>`; cleared by any change of Path, Rung, Side,
-  Step, Built on, basis or the chart's key; Reset in the popover. A pick no longer makes the path Custom (a stored Custom still plays).
-  An edit carries picks with their chords (#275): `carryPicks` lines up the chords drawn before and after
-  (`drawnChords`, the longest common run of chord texts), so a bar put in or taken out moves a pick to its chord's new
-  key; a pick on a chord removed or written over goes (undo doesn't bring it back).
+- **Picks** (#272, now chord picks, below): a label's popover pick covers its `run` (that chord and those its label
+  stands for). Picks no longer clear on a change of Path, Rung, Side, Step, Built on or basis; a pick doesn't make the
+  path Custom (a stored Custom still plays). An edit carries picks with their chords (#275): `carryPicks` lines up the
+  chords drawn before and after (`drawnChords`, the longest common run of chord texts), so a bar put in or taken out
+  moves a pick to its chord's new key; a pick on a chord removed or written over goes (undo doesn't bring it back).
+
+### Chord picks ([spec](superpowers/specs/2026-10-15-chord-picks-design.md), #303)
+
+- **What it does:** a player overrides the sheet's choice for one chord: the pentatonic or the triad pair. Click a
+  chord's pentatonic or hexatonic label (Changes, under Superimpose) or a staff's caption (Scales, under the Pentatonic
+  or Hexatonic preset), and a popover lists that chord's choices from inside to outside.
+- **Positions:** a pick belongs to one drawn chord, `ChordAt` (`${section}:${bar}:${k}`), per kind (`pentatonic`
+  `{ pc, for? }`, the concert root; `hexatonic` `{ roots: [lower, upper], for? }`, both triads' concert roots, chain
+  order). `chordPositions(doc)` maps each expanded row to its position, from the same keys as `drawnChords`: a folded
+  repeat (`A1 · A2`) has none of its own (Changes draws it once, as its source); ending bars and written-out copies
+  (`A3 (= A1)`) have theirs. A Scales staff covers every position its rows have (`ScaleLine.rows`,
+  `linePositions`); a staff with none has a plain caption.
+- **`for` matching:** a pick records `for: "<chord>|<scale>"` (concert chord text and resolved scale, `pickTarget`).
+  A pick whose position no longer plays that chord and scale (the chord rewritten, or the scale level changed its
+  scale) is ignored, and comes back if the level does; it is dropped the next time a pick is written (`withPick`,
+  `withoutPicks` run `livePicks` first), never by a watcher. A legacy #272 pick (a bare number) has no `for` and
+  applies as before; `chordPicksFrom` reads it (storage only) and drops damaged entries (`__proto__`, bad pcs, equal
+  roots, a long `for`, more than `LIMITS.maxExpandedRows` per kind).
+- **One set for both sheets:** `useChordPicks` keeps them in `csm-pent-picks:<slug>` as `{ pentatonic, hexatonic }`
+  (a legacy object of numbers reads as pentatonic picks; with no chart key, a shared chart, they last for the visit).
+  `buildChanges` (`PentatonicPlan.picks`, `OverlayPlan.picks`) and `buildSheet` (`SheetPicks = { picks, at }`) match
+  against the same resolved scales, so a pick made on one sheet plays on the other; Practice's boxes seed from it too.
+- **The Scales tie-break and `varies`:** a staff plays its first position's pick. Where its positions' picks differ (a
+  pick and none differ), `StaffModel.varies` adds ` · varies` to the caption (`Dm pent · 5 shared · varies`,
+  `E♭+/F hex · varies`), and the footer says the pick replaces them.
+- **The popover** (`ChordPickPopover`; the Key basis keeps `PentatonicLadder`, its ladder rows under the same header
+  and footer, with the ladder's title as a sub-line): the header is the chord and its scale, written for the part,
+  and its bars (`D♭7 Mixolydian · bars 6, 22`, `bar 6` for one; a chord with no scale shows the chord alone), and
+  names the dialog. The first row, **Sheet's choice (Dm)**, clears the pick; then the choices from
+  `pentatonicChoices` (`A♭m pent · on 5 · 5 shared`) or `hexatonicChoices` (`G/Am · covers 4`), inside to outside, the
+  current one marked. Footers: Changes `Sets bar 6.` / `Sets bars 6 and 7.`; Scales `Sets bars 6 and 22 on the
+  Changes sheet too.`, or under `varies` `Replaces the different picks in bars 6 and 22.`. Every `pick` event carries
+  concert values; a transposing part sees written names. A trigger's accessible name says the label in words
+  (`Pentatonic: D minor, built on 1, 5 of 5 notes in D Dorian, your pick. Show the choices`). In print the trigger is
+  plain text and the popover never shows; Scales captions stay one line (tracking tightened in print, so
+  `F♯m pent · 4 shared · varies` fits 8.5rem), 12 staves a page.
+- **What survives, what clears:** picks survive Built on, Path, Rung, Side, Step and Ranked against, and either basis
+  plays them. Only the popover's **Sheet's choice**, ⋯ More actions → **Reset chord picks** (`reset-picks`, listed
+  while there are live picks) and the hidden-settings notice's Reset clear them. A change of the chart's key still
+  clears them all (a legacy pick has no `for` to catch it). An edit carries them (`carryChordPicks`, keeping `for`).
+  They are never written into chart rows or the saved analysis.
+- **Share links:** `view.picks` (a `ChordPicks`), only when there are live picks; opened for the visit, never stored.
+  Where picks would make a link too big to open, `encodeShare` leaves them out. Old links open with none.
+- **Tier:** the popovers are at Everything (`CONTROL_TIERS` `chord-picks`); picks in force at a lower level are named
+  by the notice (`HiddenSetting` `chord-picks`).
 
 ### Shared
 
@@ -872,7 +918,8 @@ its reasons into a chart as comments.
     keys are untouched; a key that can't be written stays.
   - Download writes the text as a Blob; Open (`readChartFile`) takes a `.txt` up to the size limit.
   - Share links (`engine/src/share.ts`): `{ v: 1, chart, view }` as deflate-raw JSON in base64url after `#s=`. The view
-    applies for that visit only (`linkPreferences`), and nothing is saved until **Save to My charts**. The router
+    applies for that visit only (`linkPreferences`), and nothing is saved until **Save to My charts**. Chord picks
+    in a link (`view.picks`) go through `chordPicksFrom`, which drops any damaged entry. The router
     rewrites the address without its `#` while a prerendered page hydrates, so `plugins/arrivalHash.client.ts`
     keeps the original.
 - **Interface levels** ([spec](superpowers/specs/2026-10-14-interface-levels-design.md), #273):

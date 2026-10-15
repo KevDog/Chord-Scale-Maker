@@ -1,5 +1,6 @@
 import { isSheetLine, type SheetLine } from './arpeggios'
 import { type ArpDirection, type ArpNotes, isArpDirection, isArpNotes } from './arpeggioSheet'
+import { type ChordPicks, chordPicksFrom, hasPicks } from './chordPicks'
 import { type InstrumentName, isInstrumentName } from './instruments'
 import { isScaleLevel, type ScaleLevel } from './levels'
 import { LIMITS } from './limits'
@@ -31,6 +32,8 @@ export type ShareView = Readonly<{
   practice?: PracticeSelection
   level?: ScaleLevel
   seed?: number
+  /** chord picks (#303), only when there are live ones; an old link has none */
+  picks?: ChordPicks
 }>
 export type SharePayload = Readonly<{ chart: string; view?: ShareView }>
 
@@ -93,6 +96,7 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
   if (!v || typeof v !== 'object') return undefined
   const o = v as Record<string, unknown>
   const practice = practiceSelectionFrom(o.practice)
+  const picks = chordPicksFrom(Object.hasOwn(o, 'picks') ? o.picks : undefined)
   const view: ShareView = {
     ...(typeof o.instrument === 'string' && isInstrumentName(o.instrument) ? { instrument: o.instrument } : {}),
     ...(o.mode === 'root' || o.mode === 'from' ? { mode: o.mode } : {}),
@@ -107,13 +111,19 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(practice ? { practice } : {}),
     ...(isScaleLevel(o.level) ? { level: o.level } : {}),
     ...(Number.isInteger(o.seed) && (o.seed as number) >= 0 && (o.seed as number) < 2 ** 32 ? { seed: o.seed as number } : {}),
+    ...(hasPicks(picks) ? { picks } : {}),
   }
   return Object.keys(view).length ? view : undefined
 }
 
+/** a link to the payload; where its picks would make it too big to open (#303), the link leaves them out */
 export async function encodeShare(payload: SharePayload): Promise<string> {
-  const json = JSON.stringify({ v: VERSION, chart: payload.chart, ...(payload.view ? { view: payload.view } : {}) })
-  return toBase64Url(await deflate(new TextEncoder().encode(json)))
+  const bytes = (view: ShareView | undefined): Uint8Array<ArrayBuffer> =>
+    new TextEncoder().encode(JSON.stringify({ v: VERSION, chart: payload.chart, ...(view ? { view } : {}) }))
+  const full = bytes(payload.view)
+  if (full.length <= SHARE_LIMITS.inflated || !payload.view?.picks) return toBase64Url(await deflate(full))
+  const { picks: _dropped, ...rest } = payload.view
+  return toBase64Url(await deflate(bytes(Object.keys(rest).length ? rest : undefined)))
 }
 
 /** the payload a link carries, or null if it's damaged, too big, from a newer version, or not a chart */

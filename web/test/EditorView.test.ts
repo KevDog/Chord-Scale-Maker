@@ -652,7 +652,7 @@ describe('EditorView overlay', () => {
 
   it('hands the Changes sheet the Hexatonic overlay', async () => {
     localStorage.setItem('csm-overlay', 'hexatonic')
-    expect(await overlayOf()).toEqual({ kind: 'hexatonic' })
+    expect(await overlayOf()).toEqual({ kind: 'hexatonic', picks: {} })
   })
 
   it('reads an old Pentatonics row turned on as the Pentatonic overlay', async () => {
@@ -688,19 +688,109 @@ describe('EditorView pentatonic practice (#266)', () => {
     const w = await mountSuspended(EditorView, { props: { initialText: TEXT, shared: old }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
     expect(w.find('[aria-label="Pentatonic built on"]').text()).toBe('Built on: Auto')
   })
-  it('clears the picks when the chart’s key changes (a transposed chart’s picks would land elsewhere)', async () => {
+})
+
+describe('EditorView chord picks (#303)', () => {
+  afterEach(() => {
+    useInterface().level.value = 'everything'
+    localStorage.clear()
+  })
+  const KEYED = 'title: T\nkey: C\nA | 1 | Cm7\nA | 2 | Cm7\n'
+  const PICK = { 'A:1:0': { pc: 7, for: 'Cm7|C Dorian' } }
+  const mountKeyed = (extra: object = {}) =>
+    mountSuspended(EditorView, { props: { initialText: KEYED, ...extra }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+  const overlayPicks = (w: Wrapper) => (changesSheet(w).props('overlay') as { picks?: Record<string, unknown> } | null)?.picks
+  const linkOf = async (w: Wrapper) => {
+    await buttonCalled(w, 'Share')?.trigger('click')
+    const link = await vi.waitFor(() => {
+      const l = w.findComponent({ name: 'ShareDialog' }).props('link')
+      if (typeof l !== 'string') throw new Error('no link yet')
+      return l
+    })
+    return (await decodeShare(link.split('#s=')[1] ?? ''))?.view
+  }
+
+  it('keeps the picks through Built on, Path, Step, Rung, Side and Ranked against; a new key still clears them', async () => {
     localStorage.setItem('csm-overlay', 'pentatonic')
-    const w = await mountSuspended(EditorView, { props: { initialText: 'title: T\nkey: C\nA | 1 | Cm7\n' }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } } })
-    const picks = () => (changesSheet(w).props('overlay') as { picks?: Record<string, number> } | null)?.picks
-    changesSheet(w).vm.$emit('pentatonic', ['A:1:0'], 7)
+    const w = await mountKeyed()
+    changesSheet(w).vm.$emit('pick', 'pentatonic', ['A:1:0'], 7)
     await nextTick()
-    expect(picks()).toEqual({ 'A:1:0': 7 })
+    expect(overlayPicks(w)).toEqual(PICK)
+    const controls = w.findComponent({ name: 'PreviewControls' })
+    for (const [model, value] of [['pentDegree', 5], ['pentPath', 'fifths'], ['pentStepUnit', 'bars'], ['pentStepBars', 8], ['pentRung', 3], ['pentSide', 'sharp'], ['pentBasis', 'chord']] as const) {
+      controls.vm.$emit(`update:${model}`, value)
+      await nextTick()
+      expect(overlayPicks(w), model).toEqual(PICK)
+    }
     changesSheet(w).vm.$emit('update:doc', parseChart('title: T\nkey: C\nA | 1 | Cm7\nA | 2 | F7\n').value) // same key: kept
     await nextTick()
-    expect(picks()).toEqual({ 'A:1:0': 7 })
+    expect(overlayPicks(w)).toEqual(PICK)
     changesSheet(w).vm.$emit('update:doc', parseChart('title: T\nkey: Bb\nA | 1 | Bbm7\nA | 2 | Eb7\n').value)
     await nextTick()
-    expect(picks()).toEqual({})
+    expect(overlayPicks(w)).toEqual({})
+  })
+
+  it('a Scales staff’s pick reaches the Changes sheet at every position; the hexatonic overlay gets its picks', async () => {
+    localStorage.setItem('csm-overlay', 'pentatonic')
+    const w = await mountKeyed()
+    await chooseSheet(w, 'Scales')
+    expect(sheet(w).props()).toMatchObject({ pickable: true, picks: { pentatonic: {}, hexatonic: {} } })
+    expect([...(sheet(w).props('positions') as ReadonlyMap<number, string>).values()]).toEqual(['A:1:0', 'A:2:0'])
+    sheet(w).vm.$emit('pick', 'pentatonic', ['A:1:0', 'A:2:0'], 7)
+    sheet(w).vm.$emit('pick', 'hexatonic', ['A:2:0'], [5, 7])
+    await nextTick()
+    await chooseSheet(w, 'Changes')
+    expect(overlayPicks(w)).toEqual({ ...PICK, 'A:2:0': { pc: 7, for: 'Cm7|C Dorian' } })
+    changesSheet(w).vm.$emit('pick', 'pentatonic', ['A:2:0'], null)
+    await nextTick()
+    expect(overlayPicks(w)).toEqual(PICK)
+    w.findComponent({ name: 'PreviewControls' }).vm.$emit('update:overlay', 'hexatonic')
+    await nextTick()
+    expect(changesSheet(w).props('overlay')).toEqual({ kind: 'hexatonic', picks: { 'A:2:0': { roots: [5, 7], for: 'Cm7|C Dorian' } } })
+  })
+
+  it('makes the Scales captions pickable only at Everything', async () => {
+    useInterface().level.value = 'intermediate'
+    const w = await mountKeyed({ shared: { sheet: 'scales' } })
+    expect(sheet(w).props('pickable')).toBe(false)
+  })
+
+  it('shares the live picks, and none when there are none', async () => {
+    const w = await mountKeyed()
+    expect(await linkOf(w)).not.toHaveProperty('picks')
+    changesSheet(w).vm.$emit('pick', 'pentatonic', ['A:1:0'], 7)
+    await nextTick()
+    expect((await linkOf(w))?.picks).toEqual({ pentatonic: PICK, hexatonic: {} })
+  })
+
+  it('opens a link’s picks for the visit, writing nothing', async () => {
+    const w = await mountKeyed({ shared: { sheet: 'scales', picks: { pentatonic: PICK, hexatonic: {} } }, practiceKey: 'mine:x' })
+    expect(sheet(w).props('picks')).toEqual({ pentatonic: PICK, hexatonic: {} })
+    expect(Object.keys(localStorage).filter((k) => k.startsWith('csm-pent-picks'))).toEqual([])
+  })
+
+  it('More → Reset chord picks clears them, offered only while there are live picks', async () => {
+    const w = await mountKeyed()
+    const items = () => w.findComponent({ name: 'MoreMenu' }).props('items') as readonly string[]
+    expect(items()).not.toContain('reset-picks')
+    changesSheet(w).vm.$emit('pick', 'pentatonic', ['A:1:0'], 7)
+    await nextTick()
+    expect(items()).toContain('reset-picks')
+    await moreAction(w, 'Reset chord picks')
+    await nextTick()
+    expect(items()).not.toContain('reset-picks')
+    expect(await linkOf(w)).not.toHaveProperty('picks')
+    expect(w.find('[aria-live="polite"]').text()).toBe('Chord picks reset')
+  })
+
+  it('at Essentials, picks in force show the notice, and its Reset clears them', async () => {
+    useInterface().level.value = 'essentials'
+    const w = await mountKeyed({ shared: { sheet: 'scales', practice: { preset: 'pentatonic', degree: 'auto' }, picks: { pentatonic: PICK, hexatonic: {} } } })
+    const notice = w.findComponent({ name: 'InterfaceNotice' })
+    expect(notice.props('needs')).toBe('everything')
+    notice.vm.$emit('reset')
+    await nextTick()
+    expect(sheet(w).props('picks')).toEqual({ pentatonic: {}, hexatonic: {} })
   })
 })
 

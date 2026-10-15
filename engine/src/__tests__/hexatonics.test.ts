@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { HEX_GROUPINGS, HEX_PAIRS, hexatonicAuto, hexatonicCaption, hexatonicPick, type HexGrouping, hexatonicPairs, resolvePair, triadChain, type ChainTriad } from '../hexatonics'
+import { HEX_GROUPINGS, HEX_PAIRS, hexatonicAuto, hexatonicCaption, hexatonicPick, type HexGrouping, hexatonicPairs, hexatonicRanking, resolvePair, triadChain, type ChainTriad } from '../hexatonics'
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled } from '../pitch'
 import { SCALES, type ScaleKey, spellScale } from '../scales'
 
@@ -136,6 +136,27 @@ describe('Auto', () => {
   })
 })
 
+describe('hexatonicRanking', () => {
+  const TABLE: readonly [string, ScaleKey, string, string][] = [
+    ['C', 'ionian', 'Maj7', 'G/Am'],
+    ['D', 'dorian', 'm7', 'C/Dm'],
+    ['G', 'mixolydian', '7', 'Dm/Em'],
+    ['C', 'half whole diminished', '7', 'E♭/Am'],
+  ]
+  it('puts Auto’s pair first on the worked table, and is a permutation of the pairs', () => {
+    for (const [root, key, q, first] of TABLE) {
+      const pairs = pairsOn(root, key, q)
+      const ranked = hexatonicRanking(pairs, parseRoot(root))
+      expect(ranked[0]?.name).toBe(first)
+      expect(ranked[0]).toBe(hexatonicAuto(pairs, parseRoot(root)))
+      expect([...ranked].sort((a, b) => a.link - b.link)).toEqual([...pairs].sort((a, b) => a.link - b.link))
+    }
+  })
+  it('is empty without pairs', () => {
+    expect(hexatonicRanking([], C)).toEqual([])
+  })
+})
+
 describe('resolvePair', () => {
   const major = pairsOn('C', 'ionian', 'Maj7')
   const bebop = pairsOn('C', 'bebop major', 'Maj7')
@@ -220,8 +241,8 @@ describe('hexatonicPick', () => {
   })
 
   it('names the pair it used: Auto, a number, a wrap', () => {
-    expect(hexatonicPick(scale('C', 'ionian'), C, 'Maj7', 0, 'triads').hexatonic).toEqual({ name: 'G/Am', link: 5 })
-    expect(hexatonicPick(scale('C', 'ionian'), C, 'Maj7', 8, 'triads').hexatonic).toEqual({ name: 'C/Dm', link: 1 })
+    expect(hexatonicPick(scale('C', 'ionian'), C, 'Maj7', 0, 'triads').hexatonic).toEqual({ name: 'G/Am', link: 5, picked: false, sheet: 'G/Am' })
+    expect(hexatonicPick(scale('C', 'ionian'), C, 'Maj7', 8, 'triads').hexatonic).toEqual({ name: 'C/Dm', link: 1, picked: false, sheet: 'C/Dm' })
   })
 
   it('maps the pick onto given staff notes (an octave, From X)', () => {
@@ -238,7 +259,27 @@ describe('hexatonicPick', () => {
   })
 
   it('captions both forms', () => {
-    expect(hexatonicCaption({ name: 'G/Am', link: 5 })).toBe('G/Am hex')
+    expect(hexatonicCaption({ name: 'G/Am', link: 5, picked: false, sheet: 'G/Am' })).toBe('G/Am hex')
     expect(hexatonicCaption(null)).toBe('no triad pair')
+  })
+
+  it('adds varies to the caption (#303)', () => {
+    expect(hexatonicCaption({ name: 'G/Am', link: 5, picked: false, sheet: 'G/Am' }, true)).toBe('G/Am hex · varies')
+    expect(hexatonicCaption(null, true)).toBe('no triad pair')
+  })
+
+  it('plays a pick (written roots among the pairs) over the Pair control, and names the control’s as the sheet’s (#303)', () => {
+    const s = scale('C', 'ionian')
+    const picked = hexatonicPick(s, C, 'Maj7', 0, 'triads', undefined, [0, 2]) // C/Dm over Auto G/Am
+    expect(picked.hexatonic).toEqual({ name: 'C/Dm', link: 1, picked: true, sheet: 'G/Am' })
+    expect(picked.lit).toEqual(s.map((n) => [0, 4, 7, 2, 5, 9].includes(pcOf(n))))
+    expect(picked.second).toEqual(s.map((n) => [2, 5, 9].includes(pcOf(n))))
+  })
+
+  it('ignores roots not among the pairs (reversed too): the Pair control’s pair, not picked', () => {
+    const s = scale('C', 'ionian')
+    for (const roots of [[1, 3], [2, 0], [0, 4]] as const) expect(hexatonicPick(s, C, 'Maj7', 8, 'triads', undefined, roots).hexatonic).toEqual({ name: 'C/Dm', link: 1, picked: false, sheet: 'C/Dm' })
+    expect(hexatonicPick(s, C, 'Maj7', 0, 'triads', undefined, null).hexatonic).toMatchObject({ name: 'G/Am', picked: false })
+    expect(hexatonicPick(scale('C', 'blues'), C, '7', 0, 'triads', undefined, [0, 2]).hexatonic).toBeNull() // no pairs: no pick lands
   })
 })

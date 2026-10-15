@@ -32,8 +32,9 @@ describe('ChangesSheet', () => {
     const labels = w.findAll('[data-slot="pentatonic"] button').map((b) => b.text())
     expect(labels.length).toBeGreaterThan(0)
     expect(labels.every((l) => /^[A-G][♭♯]?m♪$/.test(l))).toBe(true)
+    expect(w.findComponent({ name: 'ChangesSystem' }).props('part')).toEqual({ clef: 'bass', trans: 'C' })
     w.findComponent(PentatonicLadder).vm.$emit('pick', 6)
-    expect(w.emitted('pentatonic')?.[0]).toEqual([expect.any(Array), 6])
+    expect(w.emitted('pick')?.[0]).toEqual(['pentatonic', expect.any(Array), 6])
   })
 
   it('has no pentatonic row without a view', async () => {
@@ -147,7 +148,7 @@ describe('ChangesSheet Hexatonic overlay', () => {
 
   it('labels each chord with its pair where it changes, blank where its scale has none, with no pentatonic row, band or caption', async () => {
     const w = await mountHex()
-    expect(w.findAll('[data-slot="hexatonic"] span').map((s) => s.text())).toEqual(['G/Am', 'C/Dm'])
+    expect(w.findAll('[data-slot="hexatonic"] > span').map((s) => s.find('span').text())).toEqual(['G/Am', 'C/Dm'])
     expect(w.find('[data-slot="pentatonic"]').exists()).toBe(false)
     expect(w.find('[data-slot="contour"]').exists()).toBe(false)
     expect((await mountHex({ editing: null })).find('[data-slot="pent-caption"]').exists()).toBe(false)
@@ -177,7 +178,7 @@ describe('ChangesSheet chord-basis tints (#272)', () => {
 
   it('tints on the key basis with a pick', async () => {
     const at = buildChanges(doc, CONCERT, 4, false, 'off', undefined, { ...base, basis: 'chord' }).lines[0]!.bars[0]!.chords[0]!.pentatonic!.chord
-    const w = await mountPlan({ ...base, basis: 'key', picks: { [at]: 0 } })
+    const w = await mountPlan({ ...base, basis: 'key', picks: { [at]: { pc: 0 } } })
     expect(hasRungLabel(w)).toBe(true)
   })
 })

@@ -257,3 +257,20 @@ export async function rankedAgainstChord(page: Page): Promise<void> {
     }).toPass({ timeout: 10_000 })
   })
 }
+
+/** the Scales sheet's Pentatonic practice preset, from the root (#266), its captions shown */
+export async function pentatonicPreset(page: Page): Promise<void> {
+  await practicePreset(page, 'Pentatonic')
+}
+
+/** the Scales sheet's Hexatonic practice preset, from the root, its captions shown */
+export async function hexatonicPreset(page: Page): Promise<void> {
+  await practicePreset(page, 'Hexatonic')
+}
+
+async function practicePreset(page: Page, name: 'Pentatonic' | 'Hexatonic'): Promise<void> {
+  await chooseSheet(page, 'Scales')
+  await pickOption(page, 'Where each scale starts', 'From root')
+  await page.locator('fieldset', { hasText: 'Practice' }).getByRole('button', { name, exact: true }).click()
+  await expect(page.locator(`[data-slot="${name.toLowerCase()}"]`).first()).toBeVisible()
+}

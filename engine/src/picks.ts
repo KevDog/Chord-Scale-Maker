@@ -4,10 +4,11 @@
  * to its chord's new key; a pick on a chord removed or written over goes.
  */
 import type { ChordAt, DrawnChord } from './changes'
+import type { ChordPicks } from './chordPicks'
 
 type Drawn = readonly DrawnChord[]
 
-export function carryPicks(before: Drawn, after: Drawn, picks: Readonly<Record<ChordAt, number>>): Record<ChordAt, number> {
+export function carryPicks<T>(before: Drawn, after: Drawn, picks: Readonly<Record<ChordAt, T>>): Record<ChordAt, T> {
   const n = before.length
   const m = after.length
   // lcs[i][j]: the longest common run of before[i..] and after[j..]
@@ -17,11 +18,11 @@ export function carryPicks(before: Drawn, after: Drawn, picks: Readonly<Record<C
       lcs[i]![j] = before[i]!.text === after[j]!.text ? lcs[i + 1]![j + 1]! + 1 : Math.max(lcs[i + 1]![j]!, lcs[i]![j + 1]!)
     }
   }
-  const moved: Record<ChordAt, number> = {}
+  const moved: Record<ChordAt, T> = {}
   for (let i = 0, j = 0; i < n && j < m; ) {
     if (before[i]!.text === after[j]!.text) {
-      const pc = picks[before[i]!.at]
-      if (pc !== undefined) moved[after[j]!.at] = pc
+      const p = Object.hasOwn(picks, before[i]!.at) ? picks[before[i]!.at] : undefined
+      if (p !== undefined) moved[after[j]!.at] = p
       i++
       j++
     } else if (lcs[i + 1]![j]! >= lcs[i]![j + 1]!) i++
@@ -29,3 +30,9 @@ export function carryPicks(before: Drawn, after: Drawn, picks: Readonly<Record<C
   }
   return moved
 }
+
+/** both kinds carried across an edit; each pick keeps what it was made for */
+export const carryChordPicks = (before: Drawn, after: Drawn, picks: ChordPicks): ChordPicks => ({
+  pentatonic: carryPicks(before, after, picks.pentatonic),
+  hexatonic: carryPicks(before, after, picks.hexatonic),
+})

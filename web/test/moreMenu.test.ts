@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { moreMenuItems } from '~/utils/moreMenu'
 
-const at = { saved: true, edited: false, fatal: false }
+const at = { saved: true, edited: false, fatal: false, picks: false }
 
 describe('moreMenuItems', () => {
   it('a library chart as published: a copy, the download, a report', () => {
@@ -18,5 +18,10 @@ describe('moreMenuItems', () => {
 
   it('over a size limit: no copy; the text still downloads, to shorten it elsewhere', () => {
     expect(moreMenuItems({ ...at, edited: true, fatal: true })).toEqual(['download', 'revert', 'report'])
+  })
+
+  it('with live chord picks: Reset chord picks, after revert', () => {
+    expect(moreMenuItems({ ...at, picks: true })).toEqual(['copy', 'download', 'reset-picks', 'report'])
+    expect(moreMenuItems({ ...at, edited: true, picks: true })).toEqual(['copy', 'download', 'revert', 'reset-picks', 'report'])
   })
 })

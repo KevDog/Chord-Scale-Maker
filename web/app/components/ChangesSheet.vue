@@ -24,6 +24,7 @@
             :scales="scales"
             :arpeggio="arpeggio"
             :clef="part.clef"
+            :part="part"
             :editable="editable"
             :selected-line="selectedLine"
             :doc="doc"
@@ -33,7 +34,7 @@
             :overlay="overlay"
             :counted="counted"
             @tap="emit('tap', $event)"
-            @pentatonic="(run, w) => emit('pentatonic', run, w)"
+            @pick="(kind, run, value) => emit('pick', kind, run, value)"
             @edit="emit('edit', $event)"
             @update:doc="emit('update:doc', $event)"
             @said="emit('said', $event)"
@@ -59,7 +60,7 @@
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
-import { breakLines, buildChanges, changesLinesPerPage, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type ScaleView, showHexatonics, showPentatonics, type SheetLine } from '@chord-scale-maker/engine'
+import { breakLines, buildChanges, changesLinesPerPage, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, type SheetLine } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
 const { shows } = useInterface()
@@ -84,7 +85,7 @@ const props = defineProps<{
 }>()
 const emit = defineEmits<{
   tap: [chord: SheetChordEdit]
-  pentatonic: [run: readonly ChordAt[], written: number | null]
+  pick: [kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null] // a chord pick, concert (#303)
   edit: [edit: SheetEdit]
   'update:doc': [doc: ChartDoc]
   said: [text: string]

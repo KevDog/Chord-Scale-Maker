@@ -14,7 +14,7 @@
 </template>
 
 <script setup lang="ts">
-import { ArrowDownTrayIcon, ArrowUturnLeftIcon, CheckIcon, DocumentDuplicateIcon, EllipsisHorizontalIcon, FlagIcon } from '@heroicons/vue/16/solid'
+import { ArrowDownTrayIcon, ArrowPathIcon, ArrowUturnLeftIcon, CheckIcon, DocumentDuplicateIcon, EllipsisHorizontalIcon, FlagIcon } from '@heroicons/vue/16/solid'
 import type { MoreAction } from '~/utils/moreMenu'
 import { INTERFACE_LEVELS, levelLabel } from '~/utils/interface'
 
@@ -27,6 +27,7 @@ const ITEMS = {
   copy: { label: 'Save as a copy', icon: DocumentDuplicateIcon },
   download: { label: 'Download', icon: ArrowDownTrayIcon },
   revert: { label: 'Revert to library version', icon: ArrowUturnLeftIcon },
+  'reset-picks': { label: 'Reset chord picks', icon: ArrowPathIcon },
   report: { label: 'Report a chart error', icon: FlagIcon },
 } as const
 </script>
