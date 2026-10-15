@@ -3,6 +3,7 @@ import { type ChartDoc, type ChartLine, chartBeats, expandRowLines, formPart, ty
 import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRootLenient, writtenChordTextOrNull } from './chord'
 import { hexatonicAuto, hexatonicPairs } from './hexatonics'
 import { guideToneTimeline } from './guideToneTimeline'
+import { pickTarget } from './chordPicks'
 import { arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
 import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
 import { keySignature } from './keySignature'
@@ -10,7 +11,7 @@ import { concertPc, type Part, scaleLabel, writtenRoot, writtenScale } from './p
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled, shiftBy } from './pitch'
 import { isPentatonicPreset, type PentatonicDegree, pentatonicDegreeFrom, PENTATONIC_HOME, PENTATONIC_STEP, pentatonicAt, pentatonicCycle, pentatonicPathCaption, type PentatonicPathName, type PentatonicStep, pentatonicLadder, pentatonicRanking, type RankedPentatonic, type PentatonicRung, type PentatonicView } from './pentatonics'
 import { baseQuality } from './qualities'
-import { resolveScales, type ScaleView } from './resolve'
+import { type Resolved, resolveScales, type ScaleView } from './resolve'
 import { abbreviateScale } from './scales'
 import { chunk, orNull } from './util'
 
@@ -321,14 +322,25 @@ function chordKeys(rows: readonly LinedRow[], blocks: readonly Run[], barOf: (i:
   return keys
 }
 
-/** the chords the Changes sheet draws, in order, by ChordAt with their chart text: for carrying picks across an edit (#275) */
-export function drawnChords(doc: ChartDoc): readonly DrawnChord[] {
+/** each drawn chord's position by its row in expandRowLines(doc); a folded repeat's rows have none (the sheet draws its source's) */
+export function chordPositions(doc: ChartDoc): ReadonlyMap<number, ChordAt> {
   const rows = expandRowLines(doc).value
   const beats = chartBeats(doc)
   const t = timing(rows, guideToneTimeline(rows, beats).events, beats)
   const withEndings = new Set(doc.lines.flatMap((l) => (l.kind === 'ending' ? [l.section] : [])))
-  const keys = chordKeys(rows, drawnBlocks(doc, rows, t, withEndings), t.barOf)
-  return [...keys].sort(([a], [b]) => a - b).map(([i, at]) => ({ at, text: rows[i]?.chord ?? '' }))
+  return chordKeys(rows, drawnBlocks(doc, rows, t, withEndings), t.barOf)
+}
+
+/** the chords the Changes sheet draws, in order, by ChordAt with their chart text: for carrying picks across an edit (#275) */
+export function drawnChords(doc: ChartDoc): readonly DrawnChord[] {
+  const rows = expandRowLines(doc).value
+  return [...chordPositions(doc)].sort(([a], [b]) => a - b).map(([i, at]) => ({ at, text: rows[i]?.chord ?? '' }))
+}
+
+/** what a pick at each drawn position is made for: its chord and the scale it plays at this view (#303) */
+export function pickTargets(doc: ChartDoc, resolved: ReadonlyMap<number, Resolved>): ReadonlyMap<ChordAt, string> {
+  const rows = expandRowLines(doc).value
+  return new Map([...chordPositions(doc)].map(([i, at]) => [at, pickTarget(rows[i]?.chord ?? '', resolved.get(i)?.scale ?? null)]))
 }
 
 /** the sections the Changes sheet draws, in order: a repeat drawn once (A1 · A2) or a section with endings is one (#264) */

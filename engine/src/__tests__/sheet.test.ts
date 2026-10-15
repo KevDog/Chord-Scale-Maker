@@ -1,11 +1,12 @@
 import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { expandRows, parseChart, qualityScale, type Row } from '../chart'
+import { chordPositions } from '../changes'
+import { expandRowLines, expandRows, parseChart, qualityScale, type Row } from '../chart'
 import type { ScaleLevel } from '../levels'
 import { CONCERT } from '../part'
 import { rootName } from '../pitch'
 import { resolveScales } from '../resolve'
-import { type ModeChoice, type StaffModel, buildSheet, noteText, pageSubtitle, scaleLines, toVexKey } from '../sheet'
+import { type ModeChoice, type StaffModel, buildSheet, linePositions, noteText, pageSubtitle, scaleLines, toVexKey } from '../sheet'
 import { parseKey } from '../analysis/keys'
 
 const row = (chord: string, scale = '', bar = '1'): Row => ({ section: 'A', bar, chord, scale })
@@ -218,17 +219,17 @@ describe('scaleLines', () => {
 
   it('gives each scale use one line, in order of first appearance', () => {
     expect(lines([row('Cm7'), row('F7'), row('Cm7'), row('BbMaj7'), row('F7')])).toEqual([
-      { row: 0, chords: ['Cm7'] },
-      { row: 1, chords: ['F7'] },
-      { row: 3, chords: ['BbMaj7'] },
+      { row: 0, rows: [0, 2], chords: ['Cm7'] },
+      { row: 1, rows: [1, 4], chords: ['F7'] },
+      { row: 3, rows: [3], chords: ['BbMaj7'] },
     ])
     expect(lines([])).toEqual([])
   })
 
   it('merges chords of one root and canonical quality over one scale, listing each symbol once', () => {
-    expect(lines([row('Cm9'), row('Cm7'), row('Cm9')])).toEqual([{ row: 0, chords: ['Cm9', 'Cm7'] }])
-    expect(lines([row('C#m7', 'C# Dorian'), row('Dbm7', 'Db Dorian')])).toEqual([{ row: 0, chords: ['C#m7', 'Dbm7'] }])
-    expect(lines([row('D7'), row('D7/F#')])).toEqual([{ row: 0, chords: ['D7', 'D7/F#'] }])
+    expect(lines([row('Cm9'), row('Cm7'), row('Cm9')])).toEqual([{ row: 0, rows: [0, 1, 2], chords: ['Cm9', 'Cm7'] }])
+    expect(lines([row('C#m7', 'C# Dorian'), row('Dbm7', 'Db Dorian')])).toEqual([{ row: 0, rows: [0, 1], chords: ['C#m7', 'Dbm7'] }])
+    expect(lines([row('D7'), row('D7/F#')])).toEqual([{ row: 0, rows: [0, 1], chords: ['D7', 'D7/F#'] }])
   })
 
   it('splits a scale over different qualities or roots', () => {
@@ -239,17 +240,49 @@ describe('scaleLines', () => {
 
   it('keeps one chord on two lines when it plays two scales', () => {
     expect(lines([row('E7', 'E Mixolydian'), row('E7', 'E Altered'), row('E7', 'E Mixolydian')])).toEqual([
-      { row: 0, chords: ['E7'] },
-      { row: 1, chords: ['E7'] },
+      { row: 0, rows: [0, 2], chords: ['E7'] },
+      { row: 1, rows: [1], chords: ['E7'] },
     ])
   })
 
   it('keeps rows it cannot read apart, merging only the same chord and scale text', () => {
     expect(lines([row('Cm7'), row('Xyz'), row('Cm7', 'C Dorain'), row('Xyz'), row('Cm7#5#9x'), row('Cm7', 'C Dorain')])).toEqual([
-      { row: 0, chords: ['Cm7'] },
-      { row: 1, chords: ['Xyz'] },
-      { row: 2, chords: ['Cm7'] },
-      { row: 4, chords: ['Cm7#5#9x'] },
+      { row: 0, rows: [0], chords: ['Cm7'] },
+      { row: 1, rows: [1, 3], chords: ['Xyz'] },
+      { row: 2, rows: [2, 5], chords: ['Cm7'] },
+      { row: 4, rows: [4], chords: ['Cm7#5#9x'] },
     ])
+  })
+})
+
+const FORM = [
+  'title: T', 'key: C',
+  'A1 | 1 | Dm7 | D Dorian', 'A1 | 2 | G7 | G Mixolydian',
+  '@copy A1 A2 2', // straight after its source: folded, drawn once as A1 · A2
+  'B | 5 | Dm7 | D Dorian', 'B | 6 | E7 | E Phrygian Dominant', 'B | 7 | Am7 | A Aeolian', 'B | 8 | G7 | G Mixolydian',
+  '@ending 1 B 7 7', '@ending 2 B 8 8',
+  '@copy A1 A3 8', // after B: written out, A3 (= A1)
+].join('\n') + '\n'
+
+describe('linePositions', () => {
+  const doc = parseChart(FORM).value
+  const rows = expandRowLines(doc).value
+  const res = resolveScales(doc, { level: 'standard', seed: 0 })
+  const lines = scaleLines(rows, (_, i) => res.get(i)?.scale ?? null)
+  const at = chordPositions(doc)
+  const of = (chord: string) => linePositions(lines.find((l) => l.chords.includes(chord))!, at)
+
+  it('covers every drawn position of its chord and scale, in form order: the source, a 2nd ending, a written-out copy', () => {
+    expect(of('Dm7')).toEqual(['A1:1:0', 'B:5:0', 'A3:9:0'])
+    expect(of('G7')).toEqual(['A1:2:0', 'B:8:0', 'A3:10:0'])
+  })
+  it('lists each row on its line', () => {
+    expect(lines.find((l) => l.chords.includes('Dm7'))!.rows).toEqual([0, 2, 4, 8]) // A2's row 2 is folded: no position
+  })
+  it('gives a line whose rows are all in a folded repeat no positions', () => {
+    const text = 'title: T\nkey: C\nA1 | 1 | Dm7 | D Dorian\nA1 | 2 | G7 | G Mixolydian\n@copy A1 A2 2\n' // two bars: a lone last chord holds to a longer run, so a one-bar copy is written out, not folded
+    const d = parseChart(text).value
+    const only = { row: 2, rows: [2], chords: ['Dm7'] } // the copy's row alone, as a level could make it
+    expect(linePositions(only, chordPositions(d))).toEqual([])
   })
 })

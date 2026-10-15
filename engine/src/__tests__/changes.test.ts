@@ -1,7 +1,9 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it, vi } from 'vitest'
-import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, type PentatonicPlan, showHexatonics, showPentatonics } from '../changes'
-import { parseChart } from '../chart'
+import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, type PentatonicPlan, pickTargets, showHexatonics, showPentatonics } from '../changes'
+import { expandRowLines, parseChart } from '../chart'
+import { pickTarget } from '../chordPicks'
+import { resolveScales } from '../resolve'
 import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
 import { CONCERT, concertPc, type Part } from '../part'
 import { rootName } from '../pitch'
@@ -766,5 +768,34 @@ describe('the Hexatonic overlay', () => {
           expect(changesLinesPerPage(line, { numerals, scales, hexatonics: true })).toBe(want)
           expect(changesLinesPerPage(line, { numerals, scales, pentatonics: false, hexatonics: true })).toBe(want)
         }
+  })
+})
+
+const FORM = [
+  'title: T', 'key: C',
+  'A1 | 1 | Dm7 | D Dorian', 'A1 | 2 | G7 | G Mixolydian',
+  '@copy A1 A2 2', // straight after its source: folded, drawn once as A1 · A2
+  'B | 5 | Dm7 | D Dorian', 'B | 6 | E7 | E Phrygian Dominant', 'B | 7 | Am7 | A Aeolian', 'B | 8 | G7 | G Mixolydian',
+  '@ending 1 B 7 7', '@ending 2 B 8 8',
+  '@copy A1 A3 8', // after B: written out, A3 (= A1)
+].join('\n') + '\n'
+
+describe('chordPositions', () => {
+  it('gives each drawn row its position; a folded repeat’s rows have none', () => {
+    const doc = parseChart(FORM).value
+    const rows = expandRowLines(doc).value
+    const at = chordPositions(doc)
+    expect(rows.map((r, i) => `${r.section}:${r.bar}=${at.get(i) ?? '-'}`)).toEqual([
+      'A1:1=A1:1:0', 'A1:2=A1:2:0', 'A2:3=-', 'A2:4=-',
+      'B:5=B:5:0', 'B:6=B:6:0', 'B:7=B:7:0', 'B:8=B:8:0',
+      'A3:9=A3:9:0', 'A3:10=A3:10:0',
+    ])
+    expect(drawnChords(doc).map((d) => d.at)).toEqual([...at].sort(([a], [b]) => a - b).map(([, k]) => k)) // drawnChords still agrees
+  })
+  it('targets each position with its chord and resolved scale', () => {
+    const doc = parseChart(FORM).value
+    const resolved = resolveScales(doc, { level: 'standard', seed: 0 })
+    expect(resolved.get(5)?.scale).toBe('E Phrygian Dominant')
+    expect(pickTargets(doc, resolved).get('B:6:0')).toBe(pickTarget('E7', resolved.get(5)?.scale ?? null))
   })
 })

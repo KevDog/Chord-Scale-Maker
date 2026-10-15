@@ -1,3 +1,4 @@
+import type { ChordAt } from './changes'
 import type { Row } from './chart'
 import { qualityScale } from './chart'
 import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRoot, writtenChordRootLenient } from './chord'
@@ -40,7 +41,7 @@ export type StaffModel = Readonly<{
 export type SheetPart = Readonly<{ mode: Mode; heading: string; pages: readonly (readonly StaffModel[])[] }>
 
 /** one line of the scale sheet: the rows that play one scale over one chord (row: the first; chords: as written, once each) */
-export type ScaleLine = Readonly<{ row: number; chords: readonly string[] }>
+export type ScaleLine = Readonly<{ row: number; rows: readonly number[]; chords: readonly string[] }>
 
 /** what puts two rows on one line: the scale and the written chord's root and canonical quality; text when either can't be read */
 function lineKey(chord: string, scale: string | null): string {
@@ -55,15 +56,21 @@ function lineKey(chord: string, scale: string | null): string {
 
 /** the chart's rows as scale sheet lines, in order of first appearance */
 export function scaleLines(rows: readonly Row[], scaleOf: (row: Row, index: number) => string | null): ScaleLine[] {
-  const lines = new Map<string, { row: number; chords: string[] }>()
+  const lines = new Map<string, { row: number; rows: number[]; chords: string[] }>()
   rows.forEach((r, i) => {
     const key = lineKey(r.chord, scaleOf(r, i))
     const line = lines.get(key)
-    if (!line) lines.set(key, { row: i, chords: [r.chord] })
-    else if (!line.chords.includes(r.chord)) line.chords.push(r.chord)
+    if (!line) lines.set(key, { row: i, rows: [i], chords: [r.chord] })
+    else {
+      line.rows.push(i)
+      if (!line.chords.includes(r.chord)) line.chords.push(r.chord)
+    }
   })
   return [...lines.values()]
 }
+
+/** the drawn positions a line covers (#303): its rows' positions on the Changes sheet, in form order, once each */
+export const linePositions = (line: ScaleLine, at: ReadonlyMap<number, ChordAt>): readonly ChordAt[] => [...new Set(line.rows.flatMap((i) => at.get(i) ?? []))]
 export type ModeChoice = Mode | 'both'
 
 export const modesFor = (choice: ModeChoice): readonly Mode[] => (choice === 'both' ? ['from', 'root'] : [choice])
