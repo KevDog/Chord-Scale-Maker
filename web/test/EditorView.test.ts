@@ -517,7 +517,6 @@ describe('EditorView lead-sheet editor', () => {
     const w = await mount()
     await buttonCalled(w, 'Edit')?.trigger('click')
     expect(changesSheet(w).props('numerals')).toBe(true)
-    expect(localStorage.getItem('csm-numerals')).toBeNull() // a link's settings are for the visit: Reset leaves your own alone
     expect(localStorage.getItem('csm-numerals')).toBe('off')
     expect(buttonCalled(w, 'Numerals')).toBeUndefined()
     expect(buttonCalled(w, 'Scales')).toBeUndefined()
@@ -767,6 +766,7 @@ describe('EditorView interface notice', () => {
     expect(notice(w).exists()).toBe(false)
     expect(useInterface().level.value).toBe('essentials')
     expect(changesSheet(w).props('numerals')).toBe(true)
+    expect(localStorage.getItem('csm-numerals')).toBeNull() // a link's settings are for the visit: Reset leaves your own alone
   })
 
   it('no notice when nothing is hidden, or with the flag off', async () => {
