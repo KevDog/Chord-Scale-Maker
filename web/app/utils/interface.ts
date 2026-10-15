@@ -1,5 +1,6 @@
 import { isHexatonicSelection, isPentatonicSelection, type PracticeSelection, type ScaleLevel } from '@chord-scale-maker/engine'
 import type { LineMode } from '~/utils/sheetLine'
+import type { Overlay } from '~/utils/overlay'
 import type { Spell } from '~/utils/scaleChoices'
 import type { SheetKind } from '~/utils/sheets'
 
@@ -20,7 +21,7 @@ export const CONTROL_TIERS = {
   'scale-choice': 'intermediate', // a chord's scale: the scale label picker, ChordChoices' Scale section
   'form-editing': 'intermediate', // Repeat a section, Write out, endings, segno, coda, Jump, New section here, Paste bars
   why: 'intermediate', // the "why" notes on numerals and scales, ChordChoices' why
-  pentatonics: 'everything', // Analysis: Pentatonics and its sub-controls, the ladder
+  pentatonics: 'everything', // Analysis: Overlay and its sub-controls, the ladder
   'practice-pentatonic': 'everything', // the Practice panel's Pentatonic preset
   'practice-hexatonic': 'everything', // the Practice panel's Hexatonic preset, its Pair and grouping
   'key-change': 'everything', // Key change here
@@ -33,7 +34,7 @@ const rank = (l: InterfaceLevel): number => INTERFACE_LEVELS.indexOf(l)
 export const shows = (level: InterfaceLevel, id: ControlId): boolean => rank(level) >= rank(CONTROL_TIERS[id])
 
 /** the sheet's settings a control governs: what decides the notice */
-export type ViewSettings = Readonly<{ sheet: SheetKind; scaleLevel: ScaleLevel; numerals: boolean; scaleNames: boolean; lineMode: LineMode; spell: Spell; practice: PracticeSelection | null; pentatonics: boolean }>
+export type ViewSettings = Readonly<{ sheet: SheetKind; scaleLevel: ScaleLevel; numerals: boolean; scaleNames: boolean; lineMode: LineMode; spell: Spell; practice: PracticeSelection | null; overlay: Overlay }> // overlay: the one in force (flag-filtered)
 export type HiddenSetting = 'scale-level' | 'numerals' | 'scale-names' | 'line' | 'spell' | 'practice' | 'pentatonics'
 
 /** each setting away from its default on this sheet, and the level its control needs */
@@ -47,7 +48,7 @@ function setAway(v: ViewSettings): readonly (readonly [HiddenSetting, InterfaceL
     ...(changes && v.lineMode !== 'off' ? [['line', 'intermediate'] as const] : []),
     ...(scales && v.spell !== 'key' ? [['spell', 'intermediate'] as const] : []),
     ...(scales && v.practice ? [['practice', isPentatonicSelection(v.practice) || isHexatonicSelection(v.practice) ? 'everything' : 'intermediate'] as const] : []),
-    ...(changes && v.pentatonics ? [['pentatonics', 'everything'] as const] : []),
+    ...(changes && v.overlay !== 'off' ? [['pentatonics', 'everything'] as const] : []), // the Overlay's control id
   ]
 }
 

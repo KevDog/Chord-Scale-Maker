@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { CONTROL_TIERS, hiddenSettings, initialLevel, INTERFACE_LEVELS, isInterfaceLevel, levelLabel, shows, type ViewSettings } from '~/utils/interface'
 
-const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, pentatonics: false }
+const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, overlay: 'off' }
 
 describe('interface levels', () => {
   it('orders the levels and names them', () => {
@@ -45,9 +45,11 @@ describe('hiddenSettings', () => {
 
   it('names settings away from their defaults whose controls are hidden, and the lowest level that shows them all', () => {
     expect(hiddenSettings('essentials', { ...DEFAULTS, scaleLevel: 'advanced', numerals: false })).toEqual({ settings: ['scale-level', 'numerals'], needs: 'intermediate' })
-    expect(hiddenSettings('essentials', { ...DEFAULTS, lineMode: 'guide', pentatonics: true })).toEqual({ settings: ['line', 'pentatonics'], needs: 'everything' })
-    expect(hiddenSettings('intermediate', { ...DEFAULTS, lineMode: 'guide', pentatonics: true })).toEqual({ settings: ['pentatonics'], needs: 'everything' })
-    expect(hiddenSettings('everything', { ...DEFAULTS, pentatonics: true })).toBeNull()
+    expect(hiddenSettings('essentials', { ...DEFAULTS, lineMode: 'guide', overlay: 'pentatonic' })).toEqual({ settings: ['line', 'pentatonics'], needs: 'everything' })
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, lineMode: 'guide', overlay: 'pentatonic' })).toEqual({ settings: ['pentatonics'], needs: 'everything' })
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, overlay: 'hexatonic' })).toEqual({ settings: ['pentatonics'], needs: 'everything' })
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'scales', overlay: 'hexatonic' })).toBeNull() // the overlay is the Changes sheet's
+    expect(hiddenSettings('everything', { ...DEFAULTS, overlay: 'pentatonic' })).toBeNull()
   })
 
   it('counts only what the current sheet uses', () => {

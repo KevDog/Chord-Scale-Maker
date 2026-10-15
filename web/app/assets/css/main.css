@@ -123,7 +123,6 @@
 .dark .vf-selected {
   color: var(--color-note-300);
 }
-/* the Hexatonic preset: group B among the picked notes takes the second accent */
 .vf-selected.vf-second,
 .dark .vf-selected.vf-second {
   color: var(--color-second);

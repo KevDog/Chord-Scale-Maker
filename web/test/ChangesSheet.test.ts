@@ -3,13 +3,13 @@ import { nextTick } from 'vue'
 import { describe, expect, it } from 'vitest'
 import PentatonicLadder from '~/components/PentatonicLadder.vue'
 import ChangesSheet from '~/components/ChangesSheet.vue'
-import { buildChanges, changesLinesPerPage, type ChartDoc, CONCERT, parseChart, type PentatonicPlan, type ScaleView, type SheetLine } from '@chord-scale-maker/engine'
+import { buildChanges, changesLinesPerPage, type ChartDoc, CONCERT, parseChart, type OverlayPlan, type PentatonicPlan, type ScaleView, type SheetLine } from '@chord-scale-maker/engine'
 
 const doc = parseChart('title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\n').value
 // 64 bars: more lines than any page holds, at 2 or 4 bars a line
 const long = parseChart(`title: L\nkey: C\n${Array.from({ length: 64 }, (_, i) => `A | ${i + 1} | ${['Dm7', 'G7', 'CMaj7', 'A7'][i % 4]}`).join('\n')}\n`).value
 
-const mountSheet = (over: Readonly<{ doc?: ChartDoc; signatures?: boolean; line?: SheetLine; numerals?: boolean; scales?: boolean; editing?: null; pentatonic?: PentatonicPlan | null }> = {}) =>
+const mountSheet = (over: Readonly<{ doc?: ChartDoc; signatures?: boolean; line?: SheetLine; numerals?: boolean; scales?: boolean; editing?: null; overlay?: OverlayPlan | null }> = {}) =>
   mountSuspended(ChangesSheet, {
     props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: false, ...over },
     global: { stubs: { ChangesSystem: true } },
@@ -20,15 +20,15 @@ const systemOf = async (signatures: boolean, line?: SheetLine) =>
 describe('ChangesSheet', () => {
   it('shows a preset’s path on screen while the sheet is the editor, and in the subtitle otherwise (#276)', async () => {
     const pentatonic: PentatonicPlan = { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: true, path: 'fifths', step: { unit: 'bars', bars: 4 } }
-    const editing = await mountSheet({ editing: null, pentatonic })
+    const editing = await mountSheet({ editing: null, overlay: pentatonic })
     expect(editing.find('[data-slot="pent-caption"]').text()).toBe('Pentatonics: Fifths · every 4 bars')
-    const viewing = await mountSheet({ pentatonic })
+    const viewing = await mountSheet({ overlay: pentatonic })
     expect(viewing.find('[data-slot="pent-caption"]').exists()).toBe(false)
     expect(viewing.text()).toContain('Changes · Pentatonics: Fifths · every 4 bars')
   })
 
   it('prints the pentatonic row where the key area changes, and passes a pick up', async () => {
-    const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: false, pentatonic: { kind: 'pentatonic', bySection: {}, fallback: { rung: 2, side: 'flat' }, counts: false } } }) // ChangesSystem drawn, not stubbed
+    const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: false, overlay: { kind: 'pentatonic', bySection: {}, fallback: { rung: 2, side: 'flat' }, counts: false } } }) // ChangesSystem drawn, not stubbed
     const labels = w.findAll('[data-slot="pentatonic"] button').map((b) => b.text())
     expect(labels.length).toBeGreaterThan(0)
     expect(labels.every((l) => /^[A-G][♭♯]?m♪$/.test(l))).toBe(true)
@@ -147,7 +147,7 @@ describe('ChangesSheet pentatonic tints, no contour band (#265, #277)', () => {
   const plan: PentatonicPlan = { kind: 'pentatonic', bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
 
   it('tints the labels by rung and draws no band, the shared count carrying the rung without colour', async () => {
-    const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: true, scales: true, pentatonic: plan } })
+    const w = await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: true, scales: true, overlay: plan } })
     expect(w.find('[data-slot="contour"]').exists()).toBe(false)
     const b = w.find('[data-slot="pentatonic"] [data-section="B"]')
     expect(b.classes()).toContain('text-rung-5')
@@ -155,10 +155,29 @@ describe('ChangesSheet pentatonic tints, no contour band (#265, #277)', () => {
   })
 })
 
+describe('ChangesSheet Hexatonic overlay', () => {
+  const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Cmaj7\nA | 3 | C7#5 | C Whole Tone\nA | 4 | Dm7').value
+  const HEX = { kind: 'hexatonic' } as const
+  const mountHex = (over: Readonly<Record<string, unknown>> = {}) => mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: true, scales: true, overlay: HEX, ...over } })
+
+  it('labels each chord with its pair where it changes, blank where its scale has none, with no pentatonic row, band or caption', async () => {
+    const w = await mountHex()
+    expect(w.findAll('[data-slot="hexatonic"] span').map((s) => s.text())).toEqual(['G/Am', 'C/Dm'])
+    expect(w.find('[data-slot="pentatonic"]').exists()).toBe(false)
+    expect(w.find('[data-slot="contour"]').exists()).toBe(false)
+    expect((await mountHex({ editing: null })).find('[data-slot="pent-caption"]').exists()).toBe(false)
+  })
+
+  it('pages the lines as with the Pentatonic overlay', async () => {
+    const w = await mountSuspended(ChangesSheet, { props: { doc: long, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: true, scales: true, overlay: HEX }, global: { stubs: { ChangesSystem: true } } })
+    expect(w.findAll('section')[0]?.findAll('changes-system-stub')).toHaveLength(changesLinesPerPage('off', { numerals: true, scales: true, pentatonics: true }))
+  })
+})
+
 describe('ChangesSheet chord-basis tints (#272)', () => {
   const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | Cmaj7').value
   const base = { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, rank: 12 } as const
-  const mountPlan = (pentatonic: PentatonicPlan) => mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: false, scales: false, pentatonic } })
+  const mountPlan = (pentatonic: PentatonicPlan) => mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: false, scales: false, overlay: pentatonic } })
   const hasRungLabel = (w: Awaited<ReturnType<typeof mountPlan>>) => w.findAll('[data-slot="pentatonic"] [data-chord]').some((e) => /text-rung-/.test(e.classes().join(' ')))
 
   it('tints on the chord basis', async () => {

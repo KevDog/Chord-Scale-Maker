@@ -150,12 +150,12 @@ describe('pentatonic preferences', () => {
 
   it('keeps the pentatonic row off at Home, flat side, until chosen, and remembers the choice', async () => {
     const p = prefs()
-    expect([p.pentatonics.value, p.pentRung.value, p.pentSide.value]).toEqual([false, 0, 'flat'])
-    p.pentatonics.value = true
+    expect([p.overlay.value, p.pentRung.value, p.pentSide.value]).toEqual(['off', 0, 'flat'])
+    p.overlay.value = 'pentatonic'
     p.pentRung.value = 4
     p.pentSide.value = 'sharp'
     await nextTick()
-    expect([localStorage.getItem('csm-pentatonics'), localStorage.getItem('csm-pent-rung'), localStorage.getItem('csm-pent-side')]).toEqual(['on', '4', 'sharp'])
+    expect([localStorage.getItem('csm-overlay'), localStorage.getItem('csm-pent-rung'), localStorage.getItem('csm-pent-side')]).toEqual(['pentatonic', '4', 'sharp'])
   })
 
   it('falls back from a stored rung or side it cannot read', () => {
@@ -166,10 +166,31 @@ describe('pentatonic preferences', () => {
   })
 
   it('keeps your own pentatonic choices when you open a share link', () => {
-    localStorage.setItem('csm-pentatonics', 'on')
+    localStorage.setItem('csm-overlay', 'hexatonic')
     localStorage.setItem('csm-pent-rung', '3')
     const p = linked({})
-    expect([p.pentatonics.value, p.pentRung.value]).toEqual([true, 3])
+    expect([p.overlay.value, p.pentRung.value]).toEqual(['hexatonic', 3])
+  })
+
+  it('reads and writes the overlay, Off | Pentatonic | Hexatonic; a value it cannot read is Off', async () => {
+    localStorage.setItem('csm-overlay', 'hexatonic')
+    const p = prefs()
+    expect(p.overlay.value).toBe('hexatonic')
+    p.overlay.value = 'off'
+    await nextTick()
+    expect(localStorage.getItem('csm-overlay')).toBe('off')
+    localStorage.setItem('csm-overlay', 'sparkles')
+    expect(prefs().overlay.value).toBe('off')
+  })
+
+  it('reads an old Pentatonics row turned on as the Pentatonic overlay, until an overlay is stored', () => {
+    localStorage.setItem('csm-pentatonics', 'on')
+    expect(prefs().overlay.value).toBe('pentatonic')
+    localStorage.setItem('csm-overlay', 'off')
+    expect(prefs().overlay.value).toBe('off')
+    localStorage.clear()
+    localStorage.setItem('csm-pentatonics', 'off')
+    expect(prefs().overlay.value).toBe('off')
   })
 
   it('reads a stored basis and rank, rejecting junk, and keeps them through a share link', () => {

@@ -504,9 +504,11 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   wherever it differs from the last one shown (relative keys share a home, so print once). `changesLinesPerPage`
   counts the row: with no guide line 8 a page, 7 with numerals, scales and pentatonics all shown; with a line 7 with no
   row, 6 with any row, 5 with all three (the 5 and 7 measured on Stardust, tuba, From 7th).
-- **UI:** a Pentatonics toggle in Analysis (it stays while editing), Rung (`Home · 5 shared` … `6 · 0 shared
-  (Outside)`) and Side (♭ | ♯, hidden at 0 and 6) under it; `csm-pentatonics`, `csm-pent-rung`, `csm-pent-side`, not in
-  share links. Each label is a `PentatonicLadder` popover: the area's ladder, a pick covers that label's run (see Picks).
+- **UI:** the Overlay listbox in Analysis (it stays while editing): Off | Pentatonic | Hexatonic, each option only with
+  its flag (`utils/overlay.ts`; a stored option whose flag is off reads Off). Under Pentatonic, Rung (`Home · 5 shared`
+  … `6 · 0 shared (Outside)`) and Side (♭ | ♯, hidden at 0 and 6); Hexatonic adds no control and puts each chord's Auto
+  pair (`G/Am`) in the row's place, blank where its scale has none (`showHexatonics`). `csm-overlay` (an old
+  `csm-pentatonics: on` with none reads Pentatonic), `csm-pent-rung`, `csm-pent-side`, not in share links. Each label is a `PentatonicLadder` popover: the area's ladder, a pick covers that label's run (see Picks).
 - **Paths** (#264, #276, [spec](superpowers/specs/2026-10-13-pentatonic-paths-design.md), [steps](superpowers/specs/2026-10-14-pentatonic-path-steps-design.md)): Path listbox: One rung (Rung + Side, as before), Side-slip, Fifths, Minor thirds, Major thirds. A preset cycles from Home one step a unit (`pentatonicCycle`): Step by Section (each form section), Key area (each run of one key area; a revisit takes the next step) or Bars (every 2, 4 or 8 bars of the form, through section breaks); outside the form, Home. `buildChanges` lays it over the units (`PentatonicPlan.path`/`step`) and names it in the Changes subtitle (`ChangesSheet.pentatonicCaption`). A pick in a label's ladder doesn't change the path (see Picks); a stored Custom still plays its sections. Per chart, with its step: `csm-pent-path:<slug>` (`usePentatonicPath`). Labels carry the shared count (`B♭m♪ 1`) off One rung.
 - **Tint** (#265, #277): off One rung, labels take their rung's tint (`--color-rung-0…6`, Home slate → 6 rust; dark
   values on screen only), ordered by lightness (darker each rung on light paper, brighter on dark) so the ramp reads

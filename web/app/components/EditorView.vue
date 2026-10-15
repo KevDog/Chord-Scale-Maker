@@ -113,7 +113,7 @@
             v-model:intervals="prefs.intervals.value"
             v-model:numerals="prefs.numerals.value"
             v-model:scale-names="prefs.scaleNames.value"
-            v-model:pentatonics="prefs.pentatonics.value"
+            v-model:overlay="prefs.overlay.value"
             v-model:pent-rung="prefs.pentRung.value"
             v-model:pent-side="prefs.pentSide.value"
             v-model:pent-basis="prefs.pentBasis.value"
@@ -200,7 +200,7 @@
             :editing="sheetEditor ? sheetEdit : undefined"
             :preview="sheetPreview"
             :focus-at="sheetFocus"
-            :pentatonic="pentatonicPlan"
+            :overlay="overlayPlan"
             @pentatonic="onPentatonic"
             @tap="editSheetChord"
             @edit="openSheetEdit"
@@ -300,6 +300,7 @@ import {
   resolveScales,
   SCALE_LEVELS,
   type LevelState,
+  type OverlayPlan,
   type PentatonicPlan,
   type ScaleView,
   serializeChart,
@@ -315,6 +316,9 @@ import { firstSheet, type SheetKind } from '~/utils/sheets'
 import { type MoreAction, moreMenuItems } from '~/utils/moreMenu'
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { spellView } from '~/utils/scaleChoices'
+import { overlayInForce } from '~/utils/overlay'
+
+const HEXATONIC_PLAN: OverlayPlan = { kind: 'hexatonic' }
 
 /**
  * practiceKey: what practice selections are remembered under (a library slug, or mine:<id>); none for the visit only.
@@ -383,13 +387,16 @@ const pentPath = usePentatonicPath(props.practiceKey, pentSections, computed(() 
 const pentPathModel = computed({ get: () => pentPath.path.value, set: (v) => pentPath.setPath(v) })
 const pentStepUnit = computed({ get: () => pentPath.step.value.unit, set: (unit) => pentPath.setStep({ ...pentPath.step.value, unit }) })
 const pentStepBars = computed({ get: () => pentPath.step.value.bars, set: (bars) => pentPath.setStep({ ...pentPath.step.value, bars }) })
-/** the sheet's Pentatonics plan; null with the row off */
+/** the overlay in force (#273's notice reads it too): one whose flag is off is Off */
+const overlay = computed(() => overlayInForce(prefs.overlay.value, { pentatonics: pentatonicsOn, hexatonics: hexatonicsOn }))
+/** the sheet's Pentatonic overlay plan; null under another overlay or none */
 const pentPicks = usePentatonicPicks(props.practiceKey)
 watch([pentPath.path, () => JSON.stringify(pentPath.step.value), prefs.pentRung, prefs.pentSide, prefs.pentRank, prefs.pentBasis, () => JSON.stringify(chartKeyOf(editor.doc.value))], () => pentPicks.clear()) // picks are concert pitches: a transposed chart lands them elsewhere
 watch(() => editor.doc.value, (doc, old) => { if (Object.keys(pentPicks.picks.value).length) pentPicks.carry(drawnChords(old), drawnChords(doc)) }) // a bar in or out moves later chords' keys (#275)
-const pentatonicPlan = computed((): PentatonicPlan | null => (pentatonicsOn && prefs.pentatonics.value
+const pentatonicPlan = computed((): PentatonicPlan | null => (overlay.value === 'pentatonic'
   ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, rank: prefs.pentRank.value, picks: pentPicks.picks.value }
   : null))
+const overlayPlan = computed((): OverlayPlan | null => (overlay.value === 'hexatonic' ? HEXATONIC_PLAN : pentatonicPlan.value))
 /** a label's popover (#272): a pick (written for the part) covers its run, stored concert; null resets the run */
 function onPentatonic(run: readonly ChordAt[], written: number | null): void {
   if (written === null) pentPicks.reset(run)
@@ -440,7 +447,7 @@ const transposed = ref('')
 /** settings in force whose controls this Interface level hides (a share link, a stored preference): the notice offers to show them or reset them */
 const hidden = computed(() =>
   ui.on
-    ? hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: prefs.numerals.value, scaleNames: prefs.scaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, pentatonics: pentatonicsOn && prefs.pentatonics.value })
+    ? hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: prefs.numerals.value, scaleNames: prefs.scaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: overlay.value })
     : null,
 )
 /** each reset, given the mode in force before any of them ran (resetting the spelling changes the mode) */
@@ -451,7 +458,7 @@ const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
   line: () => (prefs.lineMode.value = 'off'),
   spell: () => (prefs.spell.value = 'key'),
   practice: (inForce) => practice.setSelection(inForce, null),
-  pentatonics: () => (prefs.pentatonics.value = false),
+  pentatonics: () => (prefs.overlay.value = 'off'),
 }
 function resetHidden(): void {
   const inForce = mode.value

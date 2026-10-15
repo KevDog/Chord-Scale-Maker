@@ -138,7 +138,7 @@
       </span>
     </div>
     <!-- the key area's pentatonic at its section's rung (#255, #264): where the area changes and at the line's start -->
-    <div v-if="pentatonic" data-slot="pentatonic" class="relative h-5 print:h-3">
+    <div v-if="overlay?.kind === 'pentatonic'" data-slot="pentatonic" class="relative h-5 print:h-3">
       <span
         v-for="m in pentatonicMarks"
         :key="`p${m.key}`"
@@ -151,6 +151,15 @@
         <PentatonicLadder v-if="shows('pentatonics')" class="print:hidden" :p="m.p" @pick="emit('pentatonic', m.p.run, $event)" @reset="emit('pentatonic', m.p.run, null)" />
       </span>
     </div>
+    <!-- the Hexatonic overlay, in the pentatonic row's place: each chord's Auto pair where it changes; blank where its scale has none -->
+    <div v-if="overlay?.kind === 'hexatonic'" data-slot="hexatonic" class="relative h-5 print:h-3">
+      <span
+        v-for="m in hexatonicMarks"
+        :key="`h${m.key}`"
+        class="absolute whitespace-nowrap text-[0.7rem]/3.5 text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700"
+        :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
+      >{{ m.label }}</span>
+    </div>
     <!-- a full last line: the ghost bar as a pill under it -->
     <div v-if="editing !== undefined && ghost?.full" data-slot="after" class="flex justify-end pt-1 print:hidden">
       <button type="button" :class="[GHOST, 'h-6 px-2']" :aria-label="`Add a bar at the end of ${ghost.section}`" @click="emit('addBar', ghost.section)">+ bar</button>
@@ -160,7 +169,7 @@
 </template>
 
 <script setup lang="ts">
-import { barKey, type ChangesLine, type ChartDoc, type ChordAt, type ChordPreview, CONCERT, type GridPos, type PentatonicPlan, rowNotes, sheetScale } from '@chord-scale-maker/engine'
+import { barKey, type ChangesLine, type ChartDoc, type ChordAt, type ChordPreview, CONCERT, type GridPos, type OverlayPlan, rowNotes, sheetScale } from '@chord-scale-maker/engine'
 import { drawChangesLine, type NamedBeat } from '~/utils/changesDrawing'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
@@ -185,7 +194,7 @@ const props = defineProps<{
   editing?: SheetEdit | null // the sheet is the editor: what it's editing (null: nothing yet); undefined: the chord editor dialog instead
   preview?: ChordPreview | null // the reading of the draft in the open field, shown under its chord
   focusAt?: SheetFocus | null // a chord the editor wants focus on (its field closed with nowhere to go)
-  pentatonic?: PentatonicPlan | null // the Pentatonics row's rungs; null/undefined: no row
+  overlay?: OverlayPlan | null // the row under the chords: the Pentatonic overlay's rungs, or the Hexatonic; null/undefined: no row
   counted?: boolean // the sheet's pentatonics count (tints)
 }>()
 const emit = defineEmits<{
@@ -222,15 +231,15 @@ const notesOn = computed(() => functionsOn && shows('why'))
 const marks = computed(() => {
   const all = props.line.bars.flatMap((bar, b) => {
     const at = (beat: number): number => Math.max(0, (xs.value[b]?.[beat] ?? 0) - 0.012)
-    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, barIndex: b, k, beat: c.beat, lastInBar: k === bar.chords.length - 1, line: c.line, slot: false, x: at(c.beat), tokens: c.tokens, text: c.text, written: c.written, row: c.at, numeral: c.numeral, scale: c.scale, reason: c.reason, problem: c.problem, rule: c.rule, fallback: c.fallback, heardIn: c.heardIn, keyFrom: c.keyFrom, guide: c.guide, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '', pentatonic: c.pentatonic }))
-    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, barIndex: b, k: 0, beat: 0, lastInBar: true, line: -1, slot: false, x: at(0), tokens: null, text: '', written: '', row: { section: '', bar: '' }, numeral: '', scale: null, reason: '', problem: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav, pentatonic: null }]
+    const chords = bar.chords.map((c, k) => ({ key: `${b}-${k}`, barIndex: b, k, beat: c.beat, lastInBar: k === bar.chords.length - 1, line: c.line, slot: false, x: at(c.beat), tokens: c.tokens, text: c.text, written: c.written, row: c.at, numeral: c.numeral, scale: c.scale, reason: c.reason, problem: c.problem, rule: c.rule, fallback: c.fallback, heardIn: c.heardIn, keyFrom: c.keyFrom, guide: c.guide, marker: k === 0 ? bar.marker : '', keyArea: k === 0 ? bar.keyArea : '', segno: k === 0 && bar.segno, coda: k === 0 && bar.coda, nav: k === 0 ? bar.nav : '', pentatonic: c.pentatonic, hexatonic: c.hexatonic }))
+    if (!chords.length && (bar.marker || bar.keyArea || bar.segno || bar.coda || bar.nav)) return [{ key: `${b}-m`, barIndex: b, k: 0, beat: 0, lastInBar: true, line: -1, slot: false, x: at(0), tokens: null, text: '', written: '', row: { section: '', bar: '' }, numeral: '', scale: null, reason: '', problem: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: bar.marker, keyArea: bar.keyArea, segno: bar.segno, coda: bar.coda, nav: bar.nav, pentatonic: null, hexatonic: null }]
     // the new chord slot after a bar's chords (Space in the field), on the beat after the last chord's, else after its name
     const e = props.editing
     const last = bar.chords.at(-1)
     if (e?.kind === 'slot' && last && last.at.section === e.section && last.at.bar === e.bar) {
       const prev = chords.at(-1)
       if (prev) prev.lastInBar = false
-      chords.push({ key: `${b}-slot`, barIndex: b, k: -1, beat: last.beat + 1, lastInBar: true, line: last.line, slot: true, x: last.beat + 1 < props.beats ? at(last.beat + 1) : (nameEnd.value ?? at(last.beat)), tokens: null, text: '', written: '', row: last.at, numeral: '', scale: null, reason: '', problem: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: '', keyArea: '', segno: false, coda: false, nav: '', pentatonic: null })
+      chords.push({ key: `${b}-slot`, barIndex: b, k: -1, beat: last.beat + 1, lastInBar: true, line: last.line, slot: true, x: last.beat + 1 < props.beats ? at(last.beat + 1) : (nameEnd.value ?? at(last.beat)), tokens: null, text: '', written: '', row: last.at, numeral: '', scale: null, reason: '', problem: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: '', keyArea: '', segno: false, coda: false, nav: '', pentatonic: null, hexatonic: null })
     }
     return chords
   })
@@ -238,6 +247,8 @@ const marks = computed(() => {
 })
 /** the marks that print a pentatonic label (#255) */
 const pentatonicMarks = computed(() => marks.value.flatMap((m) => (m.pentatonic?.label ? [{ key: m.key, x: m.x, room: m.room, p: m.pentatonic }] : [])))
+/** the marks that print a hexatonic label */
+const hexatonicMarks = computed(() => marks.value.flatMap((m) => (m.hexatonic?.label ? [{ key: m.key, x: m.x, room: m.room, label: m.hexatonic.label }] : [])))
 /** the rung tints (#265, #277), spelled out so Tailwind sees them; the label's shared count says the same without colour */
 const RUNG_TINT = ['text-rung-0', 'text-rung-1', 'text-rung-2', 'text-rung-3', 'text-rung-4', 'text-rung-5', 'text-rung-6'] as const
 const tint = (rung: number): string => (props.counted ? (RUNG_TINT[rung] ?? '') : '')

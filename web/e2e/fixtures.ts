@@ -224,16 +224,22 @@ export const drawn = (svg: Locator): Promise<Drawn> =>
     }
   })
 
-/** turn the Pentatonics row on, retrying the click until the page has hydrated and the toggle reads pressed */
-export async function showPentatonics(page: Page): Promise<void> {
+/** choose the Changes sheet's Overlay (inside Controls on a phone), retried until the page has hydrated and the listbox reads it */
+export async function chooseOverlay(page: Page, name: 'Off' | 'Pentatonic' | 'Hexatonic'): Promise<void> {
   await inControls(page, async () => {
-    const toggle = page.getByRole('button', { name: 'Pentatonics', exact: true })
+    const listbox = page.getByRole('button', { name: 'Overlay', exact: true })
     await expect(async () => {
-      if ((await toggle.getAttribute('aria-pressed')) !== 'true') await toggle.click({ timeout: 1000 })
-      await expect(toggle).toHaveAttribute('aria-pressed', 'true', { timeout: 1000 })
+      if (!(await listbox.textContent())?.includes(`Overlay: ${name}`)) {
+        await listbox.click({ timeout: 1000 })
+        await page.getByRole('option', { name, exact: true }).click({ timeout: 1000 })
+      }
+      await expect(listbox).toContainText(`Overlay: ${name}`, { timeout: 1000 })
     }).toPass({ timeout: 10_000 })
   })
 }
+
+/** the Pentatonic overlay on */
+export const showPentatonics = (page: Page): Promise<void> => chooseOverlay(page, 'Pentatonic')
 
 /** choose Ranked against: Chord (inside Controls on a phone), retried: a click before hydration is lost */
 export async function rankedAgainstChord(page: Page): Promise<void> {

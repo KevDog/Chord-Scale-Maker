@@ -5,7 +5,7 @@ import type { Browser, Page } from '@playwright/test'
 const level = (page: Page) => page.getByRole('button', { name: 'Level', exact: true })
 const guideTones = (page: Page) => page.getByRole('radio', { name: 'Guide Tones', exact: true })
 const numerals = (page: Page) => page.getByRole('button', { name: 'Numerals', exact: true })
-const pentatonics = (page: Page) => page.getByRole('button', { name: 'Pentatonics', exact: true })
+const overlay = (page: Page) => page.getByRole('button', { name: 'Overlay', exact: true })
 const practice = (page: Page) => page.locator('fieldset', { hasText: 'Practice' })
 const spell = (page: Page) => page.getByRole('button', { name: 'Where each scale starts' })
 
@@ -34,12 +34,12 @@ test.describe('Essentials', () => {
 test.describe('Intermediate', () => {
   test.use({ interfaceLevel: 'intermediate' })
 
-  test('adds the level, analysis, lines and Practice, not pentatonics', async ({ page }) => {
+  test('adds the level, analysis, lines and Practice, not the Overlay', async ({ page }) => {
     await page.goto('/song/autumn-leaves')
     await expect(level(page)).toBeVisible()
     await expect(numerals(page)).toBeVisible()
     await expect(guideTones(page)).toBeVisible()
-    await expect(pentatonics(page)).toHaveCount(0)
+    await expect(overlay(page)).toHaveCount(0)
     await chooseSheet(page, 'Scales')
     await expect(practice(page)).toBeVisible()
     await expect(practice(page).getByRole('button', { name: 'Pentatonic' })).toHaveCount(0)
@@ -47,9 +47,9 @@ test.describe('Intermediate', () => {
 })
 
 test.describe('Everything', () => {
-  test('shows pentatonics', async ({ page }) => {
+  test('shows the Overlay', async ({ page }) => {
     await page.goto('/song/autumn-leaves')
-    await expect(pentatonics(page)).toBeVisible()
+    await expect(overlay(page)).toBeVisible()
   })
 })
 
@@ -71,7 +71,7 @@ test.describe('a new browser', () => {
       }
     })
     await page.goto('/song/autumn-leaves')
-    await expect(pentatonics(page)).toBeVisible()
+    await expect(overlay(page)).toBeVisible()
   })
 })
 
