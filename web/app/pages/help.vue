@@ -166,7 +166,7 @@
               and <strong class="font-semibold">Scales</strong>, which turn those rows on and off. <strong class="font-semibold">Guide Tones</strong>
               chooses <strong class="font-semibold">Off</strong>, <strong class="font-semibold">From 3rd</strong> or <strong class="font-semibold">From 7th</strong>, the guide tone
               line described above.
-              <strong class="font-semibold">Overlay</strong> puts a row under the chords: <strong class="font-semibold">Off</strong>,
+              <strong class="font-semibold">Superimpose</strong> puts a row under the chords: <strong class="font-semibold">Off</strong>,
               <strong class="font-semibold">Pentatonic</strong> (each key area's minor pentatonic, or, ranked against
               Chord, each chord's, <strong class="font-semibold">Built on</strong> the degree you choose) or
               <strong class="font-semibold">Hexatonic</strong> (each chord's best triad pair from its scale, such as

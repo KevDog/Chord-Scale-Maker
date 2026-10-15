@@ -1,4 +1,4 @@
-import { chooseOverlay, chooseSheet, expect, pickOption, staves, test, writeChart } from './fixtures'
+import { chooseSuperimpose, chooseSheet, expect, pickOption, staves, test, writeChart } from './fixtures'
 import type { Page } from '@playwright/test'
 
 // one staff per chord: C Ionian, D Dorian, G Mixolydian, B Locrian (the chords' own scales in C), and two written
@@ -64,19 +64,19 @@ test('Pair 5 on a C major staff is G/Am, leaving out F; Pair 1 is C/Dm, leaving 
   await expect(caption(5)).toHaveText('C/F♯m hex') // half-whole: Campbell's first link
 })
 
-test('the Changes sheet’s Overlay: Hexatonic shows each chord’s pair and no pentatonic controls; Pentatonic restores them', async ({ page }) => {
+test('the Changes sheet’s Superimpose: Hexatonic shows each chord’s pair and no pentatonic controls; Pentatonic restores them', async ({ page }) => {
   await writeChart(page, CHART)
-  await chooseOverlay(page, 'Hexatonic')
+  await chooseSuperimpose(page, 'Hexatonic')
   const labels = page.locator('[data-slot="hexatonic"] span')
   await expect(labels.first()).toHaveText('G/Am')
   await expect.poll(() => labels.allTextContents()).toEqual(['G/Am', 'C/Dm', 'Dm/Em', 'E♭/Am']) // Bm7♭5 repeats Dm/Em; whole tone has none
   await expect(page.locator('[data-slot="pentatonic"]')).toHaveCount(0)
   await expect(page.locator('[data-slot="contour"]')).toHaveCount(0)
   await expect(page.getByRole('button', { name: 'Pentatonic rung' })).toHaveCount(0)
-  await chooseOverlay(page, 'Pentatonic')
+  await chooseSuperimpose(page, 'Pentatonic')
   await expect(page.locator('[data-slot="hexatonic"]')).toHaveCount(0)
   await expect(page.locator('[data-slot="pentatonic"] button').first()).toBeVisible()
   await expect(page.getByRole('button', { name: 'Pentatonic rung' })).toBeVisible()
-  await chooseOverlay(page, 'Off')
+  await chooseSuperimpose(page, 'Off')
   await expect(page.locator('[data-slot="pentatonic"], [data-slot="hexatonic"]')).toHaveCount(0)
 })

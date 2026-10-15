@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { arpeggiosDrawn, chooseInstrument, chooseOverlay, chooseSheet, drawn, expect, guidesDrawn, pickOption, rankedAgainstChord, showArpeggios, showGuides, showPentatonics, staves, test, writeChart } from './fixtures'
+import { arpeggiosDrawn, chooseInstrument, chooseSuperimpose, chooseSheet, drawn, expect, guidesDrawn, pickOption, rankedAgainstChord, showArpeggios, showGuides, showPentatonics, staves, test, writeChart } from './fixtures'
 
 const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\s*\/Page[^s]/g) ?? []).length
 
@@ -247,7 +247,7 @@ for (const tuba of [false, true]) {
       await showGuides(page, 'From 7th')
       await guidesDrawn(page)
     } else await chooseSheet(page, 'Changes')
-    await chooseOverlay(page, 'Hexatonic')
+    await chooseSuperimpose(page, 'Hexatonic')
     await expect(page.locator('[data-slot="hexatonic"] span').first()).toBeVisible()
     const svgs = page.locator('svg[aria-label^="Bars:"]')
     const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)

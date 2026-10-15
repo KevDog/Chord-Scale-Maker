@@ -51,8 +51,8 @@
                 </div>
                 <!-- the row under the chords: Off, each key area's or chord's minor pentatonic, or each chord's hexatonic pair; the Pentatonic options open to its right, over the sheet, so the rail keeps its two rows (#293), stacked under it in the Controls dialog -->
                 <div v-if="overlayShown" :class="compact ? 'flex flex-col items-start gap-2' : 'flex items-start gap-1'">
-                  <UiListbox v-model="overlay" class="w-48" aria-label="Overlay" :title="OVERLAY_TITLE">
-                    <template #selected="{ value }"><UiListboxLabel>Overlay: {{ overlayLabel(value) }}</UiListboxLabel></template>
+                  <UiListbox v-model="overlay" class="w-60" aria-label="Superimpose" :title="OVERLAY_TITLE">
+                    <template #selected="{ value }"><UiListboxLabel>Superimpose: {{ overlayLabel(value) }}</UiListboxLabel></template>
                     <UiListboxOption v-for="o in OVERLAY_CHOICES" :key="o.value" :value="o.value"><UiListboxLabel>{{ o.label }}</UiListboxLabel></UiListboxOption>
                   </UiListbox>
                   <RailPopover v-if="overlay === 'pentatonic'" v-model:open="pentOptionsOpen" :inline="compact" label="Pentatonic options">
@@ -169,11 +169,11 @@ const pentStepUnit = defineModel<PentatonicStepUnit>('pentStepUnit', { default: 
 const pentStepBars = defineModel<2 | 4 | 8>('pentStepBars', { default: 4 })
 /** SegmentedControl's values are strings */
 const pentStepBarsText = computed({ get: () => String(pentStepBars.value) as '2' | '4' | '8', set: (v) => (pentStepBars.value = Number(v) as 2 | 4 | 8) })
-/** the Pentatonic options' popover: it opens as the Overlay turns to Pentatonic, and closes as it leaves (#293) */
+/** the Pentatonic options' popover: it opens as Superimpose turns to Pentatonic, and closes as it leaves (#293) */
 const pentOptionsOpen = ref(false)
 watch(overlay, (o) => (pentOptionsOpen.value = o === 'pentatonic'))
 const { shows } = useInterface()
-/** what this Interface level shows (#273): Numerals and Scales (hidden while editing too), the Overlay */
+/** what this Interface level shows (#273): Numerals and Scales (hidden while editing too), Superimpose */
 const analysisShown = computed(() => !props.lockLabels && shows('analysis'))
 const overlayShown = computed(() => shows('pentatonics'))
 const lineMode = defineModel<LineMode>('lineMode', { default: 'off' })

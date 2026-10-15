@@ -224,24 +224,24 @@ export const drawn = (svg: Locator): Promise<Drawn> =>
     }
   })
 
-/** choose the Changes sheet's Overlay (inside Controls on a phone), retried until the page has hydrated and the listbox reads it */
-export async function chooseOverlay(page: Page, name: 'Off' | 'Pentatonic' | 'Hexatonic'): Promise<void> {
+/** choose the Changes sheet's Superimpose (inside Controls on a phone), retried until the page has hydrated and the listbox reads it */
+export async function chooseSuperimpose(page: Page, name: 'Off' | 'Pentatonic' | 'Hexatonic'): Promise<void> {
   await inControls(page, async () => {
-    const listbox = page.getByRole('button', { name: 'Overlay', exact: true })
+    const listbox = page.getByRole('button', { name: 'Superimpose', exact: true })
     await expect(async () => {
-      if (!(await listbox.textContent())?.includes(`Overlay: ${name}`)) {
+      if (!(await listbox.textContent())?.includes(`Superimpose: ${name}`)) {
         await listbox.click({ timeout: 1000 })
         await page.getByRole('option', { name, exact: true }).click({ timeout: 1000 })
       }
-      await expect(listbox).toContainText(`Overlay: ${name}`, { timeout: 1000 })
+      await expect(listbox).toContainText(`Superimpose: ${name}`, { timeout: 1000 })
     }).toPass({ timeout: 10_000 })
   })
 }
 
 /** the Pentatonic overlay on */
-export const showPentatonics = (page: Page): Promise<void> => chooseOverlay(page, 'Pentatonic')
+export const showPentatonics = (page: Page): Promise<void> => chooseSuperimpose(page, 'Pentatonic')
 
-/** open the Pentatonic options' popover beside the Overlay (#293): it opens as the Overlay turns to Pentatonic, not after a reload */
+/** open the Pentatonic options' popover beside the Superimpose (#293): it opens as the Superimpose turns to Pentatonic, not after a reload */
 export async function openPentatonicOptions(page: Page): Promise<void> {
   const chevron = page.getByRole('button', { name: 'Pentatonic options' })
   if ((await chevron.getAttribute('aria-expanded')) !== 'true') await chevron.click()
