@@ -89,21 +89,21 @@ export function hexatonicPairs(scale: readonly Spelled[], chordRoot: Spelled, qu
 const standard = (t: ChainTriad): boolean => t.quality === 'maj' || t.quality === 'min'
 
 /**
- * Auto: most chord tones covered, then a pair of major and minor triads, then the lower root fewest fifths from the
- * chord root (♭ side first), then chain position. Null if there are no pairs.
+ * The pairs in Auto's order: most chord tones covered, then a pair of major and minor triads, then the lower root
+ * fewest fifths from the chord root (♭ side first), then chain position.
  */
-export function hexatonicAuto(pairs: readonly HexPair[], chordRoot: Spelled): HexPair | null {
+export function hexatonicRanking(pairs: readonly HexPair[], chordRoot: Spelled): readonly HexPair[] {
   const ref = pcOf(chordRoot)
   const key = (p: HexPair): readonly number[] => {
     const fifths = fifthsFrom(pcOf(p.lower.root), ref)
     return [-p.coverage, standard(p.lower) && standard(p.upper) ? 0 : 1, Math.abs(fifths), fifths, p.link]
   }
-  const less = (a: readonly number[], b: readonly number[]): boolean => {
-    const i = a.findIndex((x, j) => x !== b[j])
-    return i >= 0 && a[i]! < b[i]!
-  }
-  return pairs.reduce<HexPair | null>((best, p) => (best === null || less(key(p), key(best)) ? p : best), null)
+  const cmp = (a: readonly number[], b: readonly number[]): number => a.reduce((d, x, j) => d || x - b[j]!, 0)
+  return [...pairs].sort((a, b) => cmp(key(a), key(b)))
 }
+
+/** Auto: the first pair in hexatonicRanking's order; null if there are no pairs */
+export const hexatonicAuto = (pairs: readonly HexPair[], chordRoot: Spelled): HexPair | null => hexatonicRanking(pairs, chordRoot)[0] ?? null
 
 /** the Pair control's choices: 0 is Auto, 1 … HEX_PAIRS a link (eight-note scales have eight) */
 export const HEX_PAIRS = 8

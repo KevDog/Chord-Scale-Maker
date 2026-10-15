@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { HEX_GROUPINGS, HEX_PAIRS, hexatonicAuto, hexatonicCaption, hexatonicPick, type HexGrouping, hexatonicPairs, resolvePair, triadChain, type ChainTriad } from '../hexatonics'
+import { HEX_GROUPINGS, HEX_PAIRS, hexatonicAuto, hexatonicCaption, hexatonicPick, type HexGrouping, hexatonicPairs, hexatonicRanking, resolvePair, triadChain, type ChainTriad } from '../hexatonics'
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled } from '../pitch'
 import { SCALES, type ScaleKey, spellScale } from '../scales'
 
@@ -133,6 +133,27 @@ describe('Auto', () => {
 
   it('has no pick without pairs', () => {
     expect(hexatonicAuto([], C)).toBeNull()
+  })
+})
+
+describe('hexatonicRanking', () => {
+  const TABLE: readonly [string, ScaleKey, string, string][] = [
+    ['C', 'ionian', 'Maj7', 'G/Am'],
+    ['D', 'dorian', 'm7', 'C/Dm'],
+    ['G', 'mixolydian', '7', 'Dm/Em'],
+    ['C', 'half whole diminished', '7', 'E♭/Am'],
+  ]
+  it('puts Auto’s pair first on the worked table, and is a permutation of the pairs', () => {
+    for (const [root, key, q, first] of TABLE) {
+      const pairs = pairsOn(root, key, q)
+      const ranked = hexatonicRanking(pairs, parseRoot(root))
+      expect(ranked[0]?.name).toBe(first)
+      expect(ranked[0]).toBe(hexatonicAuto(pairs, parseRoot(root)))
+      expect([...ranked].sort((a, b) => a.link - b.link)).toEqual([...pairs].sort((a, b) => a.link - b.link))
+    }
+  })
+  it('is empty without pairs', () => {
+    expect(hexatonicRanking([], C)).toEqual([])
   })
 })
 
