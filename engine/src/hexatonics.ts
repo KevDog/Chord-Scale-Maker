@@ -1,3 +1,4 @@
+import { fifthsFrom } from './ladder'
 import { glyphs, mod, pcOf, rootName, type Spelled } from './pitch'
 import { CHORD_TONES } from './qualities'
 import { spellFrom } from './scales'
@@ -83,4 +84,33 @@ export function hexatonicPairs(scale: readonly Spelled[], chordRoot: Spelled, qu
     const six = [...lower.pcs, ...upper.pcs].sort((a, b) => mod(a - base, 12) - mod(b - base, 12))
     return { link: i + 1, lower, upper, name: `${lower.name}/${upper.name}`, tones: six, coverage: six.filter((pc) => tones.has(pc)).length }
   })
+}
+
+const standard = (t: ChainTriad): boolean => t.quality === 'maj' || t.quality === 'min'
+
+/**
+ * Auto: most chord tones covered, then a pair of major and minor triads, then the lower root fewest fifths from the
+ * chord root (♭ side first), then chain position. Null if there are no pairs.
+ */
+export function hexatonicAuto(pairs: readonly HexPair[], chordRoot: Spelled): HexPair | null {
+  const ref = pcOf(chordRoot)
+  const key = (p: HexPair): readonly number[] => {
+    const fifths = fifthsFrom(pcOf(p.lower.root), ref)
+    return [-p.coverage, standard(p.lower) && standard(p.upper) ? 0 : 1, Math.abs(fifths), fifths, p.link]
+  }
+  const less = (a: readonly number[], b: readonly number[]): boolean => {
+    const i = a.findIndex((x, j) => x !== b[j])
+    return i >= 0 && a[i]! < b[i]!
+  }
+  return pairs.reduce<HexPair | null>((best, p) => (best === null || less(key(p), key(best)) ? p : best), null)
+}
+
+/** the Pair control's choices: 0 is Auto, 1 … HEX_PAIRS a link (eight-note scales have eight) */
+export const HEX_PAIRS = 8
+
+/** a staff's pair for the control's value: 0 Auto, n the pair ((n − 1) mod count) + 1, wrapping round; null if there are no pairs */
+export function resolvePair(pairs: readonly HexPair[], pair: number, chordRoot: Spelled): HexPair | null {
+  if (pairs.length === 0) return null
+  if (!Number.isInteger(pair) || pair < 1) return hexatonicAuto(pairs, chordRoot)
+  return pairs[(pair - 1) % pairs.length]!
 }

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { hexatonicPairs, triadChain, type ChainTriad } from '../hexatonics'
+import { HEX_PAIRS, hexatonicAuto, hexatonicPairs, resolvePair, triadChain, type ChainTriad } from '../hexatonics'
 import { mod, parseRoot, pcOf, type Spelled } from '../pitch'
 import { SCALES, type ScaleKey, spellScale } from '../scales'
 
@@ -90,5 +90,62 @@ describe('pair names', () => {
     const [first] = hexatonicPairs(scale('C', 'ionian'), C, null)
     expect(first?.tones).toEqual([0, 2, 4, 5, 7, 9])
     expect(hexatonicPairs(scale('C', 'ionian'), C, null)[6]?.tones).toEqual([11, 0, 2, 4, 5, 7])
+  })
+})
+
+const pairsOn = (root: string, key: ScaleKey, quality: string | null, chordRoot = root) => hexatonicPairs(scale(root, key), parseRoot(chordRoot), quality)
+const auto = (root: string, key: ScaleKey, quality: string | null): string | undefined => hexatonicAuto(pairsOn(root, key, quality), parseRoot(root))?.name
+
+describe('Auto', () => {
+  it('picks the worked table', () => {
+    expect(auto('C', 'ionian', 'Maj7')).toBe('G/Am')
+    expect(auto('D', 'dorian', 'm7')).toBe('C/Dm')
+    expect(auto('G', 'mixolydian', '7')).toBe('Dm/Em')
+    expect(auto('C', 'half whole diminished', '7')).toBe('E♭/Am')
+  })
+
+  it("matches the table's coverage-4 pairs", () => {
+    const four = (root: string, key: ScaleKey, q: string) => pairsOn(root, key, q).filter((p) => p.coverage === 4).map((p) => p.name)
+    expect(four('C', 'ionian', 'Maj7')).toEqual(['Em/F', 'G/Am', 'B°/C'])
+    expect(four('D', 'dorian', 'm7')).toEqual(['F/G', 'Am/B°', 'C/Dm'])
+    expect(four('G', 'mixolydian', '7')).toEqual(['B°/C', 'Dm/Em', 'F/G'])
+    expect(four('C', 'half whole diminished', '7')).toEqual(['E♭/Am', 'E♭m/C'])
+  })
+
+  it('ranks a pair of major and minor triads ahead of a coverage tie with a diminished one', () => {
+    expect(auto('C', 'ionian', 'Maj7')).toBe('G/Am') // over B°/C (coverage 4)
+    // Bm7♭5, B Locrian: Am/B° is a fifth nearer (−2) than Dm/Em (−3); the major/minor rule puts Dm/Em first
+    expect(pairsOn('B', 'locrian', 'm7b5').filter((p) => p.coverage === 4).map((p) => p.name)).toEqual(['Dm/Em', 'F/G', 'Am/B°'])
+    expect(auto('B', 'locrian', 'm7b5')).toBe('Dm/Em')
+  })
+
+  it('drops the coverage rule for an unknown quality', () => {
+    expect(pairsOn('C', 'ionian', null).every((p) => p.coverage === 0)).toBe(true)
+    expect(auto('C', 'ionian', null)).toBe('C/Dm') // fifths alone: the pair on the chord root
+    expect(auto('G', 'mixolydian', null)).toBe('G/Am')
+  })
+
+  it('has no pick without pairs', () => {
+    expect(hexatonicAuto([], C)).toBeNull()
+  })
+})
+
+describe('resolvePair', () => {
+  const major = pairsOn('C', 'ionian', 'Maj7')
+  const bebop = pairsOn('C', 'bebop major', 'Maj7')
+  it('reads 0 as Auto', () => expect(resolvePair(major, 0, C)?.name).toBe('G/Am'))
+  it('takes pair n within the count', () => {
+    expect(resolvePair(major, 1, C)?.name).toBe('C/Dm')
+    expect(resolvePair(major, 7, C)?.name).toBe('B°/C')
+  })
+  it('wraps past the end', () => {
+    expect(HEX_PAIRS).toBe(8)
+    expect(resolvePair(major, 8, C)?.name).toBe('C/Dm')
+    expect(resolvePair(bebop, 3, C)?.name).toBe('Am/B°')
+    expect(resolvePair(bebop, 6, C)?.name).toBe('A♭°/Am')
+  })
+  it('is null with no pairs', () => {
+    expect(resolvePair([], 0, C)).toBeNull()
+    expect(resolvePair(pairsOn('C', 'blues', '7'), 3, C)).toBeNull()
   })
 })
