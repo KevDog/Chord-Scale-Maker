@@ -76,11 +76,15 @@ bars: 16
    in-block `@key` or `@context` holds from its bar to the section's end. The next section starts afresh by rule 7.
 8. **`copy: SRC`** repeats section SRC. The block has no rows of its own (a row in it is a diagnostic); it may have its
    own endings, marks and nav. It carries SRC's rows, its `key:`, `time:`, `context:` and `bars:`, and its in-block
-   `@key` and `@context`, except where the copying block sets its own field. SRC's endings, marks and nav are not
+   `@key` and `@context`, except where the copying block sets its own field. A copying block's own `key:` replaces
+   both SRC's `key:` and SRC's in-block `@key` lines (the same for `context:`). SRC may itself be a copy. SRC's endings, marks and nav are not
    carried: they are form navigation and are written per block. SRC must come earlier in the chart, or it is a
    diagnostic.
-9. **`time:`** is 2/4, 3/4 or 4/4, as the song-level `time:` is (5/4 and 6/4 stay with #234). The Changes sheet draws a
-   time signature at the first bar of any section whose metre differs from the section before it.
+9. **`time:`** is 2/4, 3/4 or 4/4, as the song-level `time:` is (5/4 and 6/4 stay with #234). It is parsed, kept and
+   carried by `copy:`, but a section whose metre differs from the song's gets a diagnostic ("drawn in the song's metre
+   until #235") and plays in the song's metre. Drawing a metre change (timing, arpeggio rhythms, every line's voices,
+   VexFlow bars and time signatures) is #235's work, for section and bar metres together. *(Changed while planning,
+   2026-10-16: per-bar metre runs through the whole drawing stack, which is #235's body, not a format change.)*
 10. **Outside the form.** Intro, Coda, Tag and Ending (with an optional number) stay outside the form by name, as
     today. `outside: yes` puts any other section outside it: before the form if it comes before the first section in
     the form, after it otherwise.
@@ -115,19 +119,20 @@ bars: 16
 
 ### Timing (`engine/src/guideToneTimeline.ts`)
 
-- The timeline takes the layout's sections, not a flat row list. Each section starts where the one before ended. A
+- The timeline takes the layout's rows and each section's length. Each section starts where the one before ended. A
   chord lasts until the next change in its section, and the section's last chord lasts to the section's `length`.
   Rows sharing a bar split it, as today, by that section's metre.
 - Intro, form and coda are still timed one after another.
 - The `finalBars` heuristic (the twin-section rule and rounding up to 4-bar phrases) is removed. The converter writes
   `bars:` wherever that heuristic gave a different length, so the library's timing does not change.
-- A per-section bar table (section, bar → start beat, beats) replaces `Math.floor(start / beats)` in `bars.ts`,
-  `changes.ts` and the arpeggio rhythms, so mixed metres place bars correctly.
+- The whole chart is timed in the song's metre (rule 9). Each layout row also carries `at`, its bar counted from the
+  start of its form part (Intro, form, Coda), for the analysis stream, which times by bar position.
 
 ### Consumers
 
 - `barView` (`bars.ts`) and `buildChanges` (`changes.ts`) read sections, lengths and directives from the layout,
-  not from `doc.lines` and absolute bars. `buildChanges` draws a time signature where a section's metre changes.
+  not from `doc.lines` and absolute bars. A bar's kind is `chords` or `held`: with lengths explicit, the `implied` kind
+  (bars the sheet rounded a part up to) is gone.
 - **Analysis** (`engine/src/analysis/`) reads each bar's stated key and context from the layout (rule 7). `# area:`
   comments name section-relative spans: `# area: F major (A 1–5)`, `# area: Db major (A 6 – B 2)`. The `--ambiguous`
   report suggests a pin as the section's `key:` (at bar 1) or as `@key BAR KEY` in the named section.
@@ -158,10 +163,12 @@ already has a `section:` line or has no rows. It is pure and is shared by the li
   the old `finalBars` result. `bars:` is written only where the length differs from the last relative bar.
 - **`@copy SRC DST OFFSET`** becomes `section: DST` and `copy: SRC`. Where the offset disagrees with the old timing,
   the source gets a `bars:` that makes them agree, or the chart is reported.
-- **Keys and contexts.** The converter works out the old effective key at every bar (an `@key` holds through later
-  sections and through `@copy`). It writes a section's `key:` where the section starts off the song's key, and an
-  in-block `@key` for each change inside a section. Contexts follow the same rule. The analysis therefore does not
-  change.
+- **Keys and contexts.** The converter replays the old rule: an `@key` holds, in play order, through later sections
+  and `@copy` repeats until the next `@key`, and before the first one the areas are found. A section that starts
+  inside an old `@key`'s span gets `key:` with that key, even when it equals the song's key: a stated key and a found
+  one analyse differently. A change inside a section becomes an in-block `@key`. Where a `copy:` would carry the
+  source's in-block `@key` lines into a different key plan from the old one, the converter writes that repeat out as
+  rows. Contexts follow the same rule. The analysis therefore does not change.
 - `@ending`, `@segno`, `@coda` and `@nav` move into their section's block with relative bars.
 - `# alt: bar N (…)` and `# alt: bars N–M (…)` are rewritten with relative bars. The header comment
   `# section | bar | chord…` becomes `# bar | chord…`. Other comments are left as written; those that name a bar are
@@ -184,8 +191,10 @@ already has a `section:` line or has no rows. It is pure and is shared by the li
 
 ### The app
 
-- **Saved My charts** (`csm-chart:<id>`) and the draft (`csm-draft`) are migrated when they open and saved back in the
-  new format (the pattern of `unlevel`).
+- **Every chart that opens in the editor** is migrated as it opens: saved My charts (`csm-chart:<id>`), the draft
+  (`csm-draft`) and a `.txt` file opened from disk. A saved chart is saved back in the new format (the pattern of
+  `unlevel`). `migrateChart` also returns a map from old line numbers to new ones, so the Scale-level migration
+  (`unlevel`, whose `owned` keys are `line:chord`) still finds its rows when both run on one opening.
 - **Share links:** the payload `VERSION` becomes 2. A version-1 payload decodes to `null`, which takes the existing
   "can't open this link" path.
 - **Undo history** for a migrated chart is dropped on opening (existing behaviour when the text moved on).
