@@ -3,72 +3,77 @@ composer: Oscar Levant
 style: Ballad
 key: Eb
 form: AB, 32 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; Eb
 
-# section | bar | chord
-A | 1  | EbMaj7   # tonic: the 4th is in the key
-A | 1  | Fm7      # ii: Dorian, the key’s own notes
-A | 2  | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 2  | Cm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A | 3  | Fm7      # ii: Dorian, the key’s own notes
-A | 3  | Edim7    # vii°7 of Fm7: C7♭9 without its root
-A | 4  | Fm7      # ii of Bb7: Dorian
-A | 4  | Bb7      # V7/I in Eb: natural tensions
-A | 5  | Fm       # ii: Dorian, the key’s own notes
-A | 5  | Edim7    # vii°7 of Fm7: C7♭9 without its root
-A | 6  | Fm7      # ii of Bb7: Dorian
-A | 6  | Bb7      # V7/I in Eb: natural tensions
-A | 7  | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 7  | Fm7      # ii of the ii–V to Eb
-A | 7  | Bb7      # V7 of Eb: natural tensions
-A | 8  | EbMaj7   # tonic: the 4th is in the key
-A | 8  | Eb7sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-A | 8  | Eb7      # V7/IV in Eb: natural tensions
-A | 9  | AbMaj7   # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
-A | 9  | Bb7      # V7 in Eb, not resolving: natural tensions
-A | 10 | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 10 | Cm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A | 11 | Fm7      # ii of the ii–V to Eb
-A | 11 | Bb7      # V7 of Eb: natural tensions
-A | 12 | EbMaj7   # tonic: the 4th is in the key
-A | 13 | Dm7b5    # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 13 | G7       # V7/vi in Eb: b9 and b13 are in the key
-A | 14 | Cm       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A | 15 | AbMaj7   # IV: the #4 is the key’s 7th
-A | 15 | C7       # extended dominant: V7 of F7
-A | 16 | F7       # extended dominant: V7 of Bb7sus4
-A | 16 | Bb7sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-A | 16 | Bb7      # V7 of Eb: natural tensions
-B | 17 | EbMaj7   # tonic: the 4th is in the key
-B | 17 | Fm7      # ii: Dorian, the key’s own notes
-B | 18 | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B | 18 | Cm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B | 19 | Fm7      # ii: Dorian, the key’s own notes
-B | 19 | Edim7    # vii°7 of Fm7: C7♭9 without its root
-B | 20 | Fm7      # ii of Bb7: Dorian
-B | 20 | Bb7      # V7/I in Eb: natural tensions
-B | 21 | Fm       # ii: Dorian, the key’s own notes
-B | 21 | Edim7    # vii°7 of Fm7: C7♭9 without its root
-B | 22 | Fm7      # ii of Bb7: Dorian
-B | 22 | Bb7      # V7/I in Eb: natural tensions
-B | 23 | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B | 23 | Fm7      # ii of the ii–V to Eb
-B | 23 | Bb7      # V7 of Eb: natural tensions
-B | 24 | EbMaj7   # tonic: the 4th is in the key
-B | 24 | Eb7sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-B | 24 | Eb7      # V7/IV in Eb: natural tensions
-B | 25 | AbMaj7   # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
-B | 25 | Bb7      # V7 in Eb, not resolving: natural tensions
-B | 26 | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B | 26 | Cm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B | 27 | Fm7      # ii: Dorian, the key’s own notes
-B | 27 | Fm7/Eb   # ii: Dorian, the key’s own notes
-B | 28 | Db9#11   # tritone substitute: resolves down a half step to C7
-B | 28 | C7       # V7/ii in Eb: the b13 is in the key
-B | 29 | Fm7      # ii: Dorian, the key’s own notes
-B | 29 | Edim7    # vii°7 of Fm7: C7♭9 without its root
-B | 30 | Fm7      # ii of the ii–V to Eb
-B | 30 | Bb7      # V7 of Eb: natural tensions
-B | 31 | Eb6      # tonic: the 4th is in the key
+# bar | chord
+
+section: A
+1  | EbMaj7   # tonic: the 4th is in the key
+1  | Fm7      # ii: Dorian, the key’s own notes
+2  | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+2  | Cm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3  | Fm7      # ii: Dorian, the key’s own notes
+3  | Edim7    # vii°7 of Fm7: C7♭9 without its root
+4  | Fm7      # ii of Bb7: Dorian
+4  | Bb7      # V7/I in Eb: natural tensions
+5  | Fm       # ii: Dorian, the key’s own notes
+5  | Edim7    # vii°7 of Fm7: C7♭9 without its root
+6  | Fm7      # ii of Bb7: Dorian
+6  | Bb7      # V7/I in Eb: natural tensions
+7  | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+7  | Fm7      # ii of the ii–V to Eb
+7  | Bb7      # V7 of Eb: natural tensions
+8  | EbMaj7   # tonic: the 4th is in the key
+8  | Eb7sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+8  | Eb7      # V7/IV in Eb: natural tensions
+9  | AbMaj7   # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
+9  | Bb7      # V7 in Eb, not resolving: natural tensions
+10 | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+10 | Cm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+11 | Fm7      # ii of the ii–V to Eb
+11 | Bb7      # V7 of Eb: natural tensions
+12 | EbMaj7   # tonic: the 4th is in the key
+13 | Dm7b5    # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+13 | G7       # V7/vi in Eb: b9 and b13 are in the key
+14 | Cm       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+15 | AbMaj7   # IV: the #4 is the key’s 7th
+15 | C7       # extended dominant: V7 of F7
+16 | F7       # extended dominant: V7 of Bb7sus4
+16 | Bb7sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+16 | Bb7      # V7 of Eb: natural tensions
+
+section: B
+bars: 16
+1  | EbMaj7   # tonic: the 4th is in the key
+1  | Fm7      # ii: Dorian, the key’s own notes
+2  | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+2  | Cm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3  | Fm7      # ii: Dorian, the key’s own notes
+3  | Edim7    # vii°7 of Fm7: C7♭9 without its root
+4  | Fm7      # ii of Bb7: Dorian
+4  | Bb7      # V7/I in Eb: natural tensions
+5  | Fm       # ii: Dorian, the key’s own notes
+5  | Edim7    # vii°7 of Fm7: C7♭9 without its root
+6  | Fm7      # ii of Bb7: Dorian
+6  | Bb7      # V7/I in Eb: natural tensions
+7  | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+7  | Fm7      # ii of the ii–V to Eb
+7  | Bb7      # V7 of Eb: natural tensions
+8  | EbMaj7   # tonic: the 4th is in the key
+8  | Eb7sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+8  | Eb7      # V7/IV in Eb: natural tensions
+9  | AbMaj7   # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
+9  | Bb7      # V7 in Eb, not resolving: natural tensions
+10 | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+10 | Cm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+11 | Fm7      # ii: Dorian, the key’s own notes
+11 | Fm7/Eb   # ii: Dorian, the key’s own notes
+12 | Db9#11   # tritone substitute: resolves down a half step to C7
+12 | C7       # V7/ii in Eb: the b13 is in the key
+13 | Fm7      # ii: Dorian, the key’s own notes
+13 | Edim7    # vii°7 of Fm7: C7♭9 without its root
+14 | Fm7      # ii of the ii–V to Eb
+14 | Bb7      # V7 of Eb: natural tensions
+15 | Eb6      # tonic: the 4th is in the key
 # alt (optional): bars 31–32 (Cm7 | Fm7 Bb7), a turnaround after the Eb6

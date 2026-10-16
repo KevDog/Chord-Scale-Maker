@@ -7,54 +7,65 @@ form: ABCD, 32 bars
 source: Colorado Cookbook, p. 232
 # analysis: 2026-10-11, rules v1; F
 
-# section | bar | chord | scale
+# bar | chord | scale
+
+section: Intro
+bars: 4
 # area: F major (bars 1–11)
-Intro | 1  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-Intro | 1  | D7b9    # V7/ii in F: the b13 is in the key, the b9 from the symbol
+1 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+1 | D7b9    # V7/ii in F: the b13 is in the key, the b9 from the symbol
+
+section: A
 # the melody horn intro is left out; the played intro (Am7 D7b9) is added
-A     | 1  | Gm9     # ii of the ii–V to F
-A     | 2  | C7      # V7 of F: natural tensions
-A     | 3  | FMaj7   # tonic: the 4th is in the key
-A     | 3  | BbMaj7  # IV: the #4 is the key’s 7th
-A     | 4  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A     | 4  | D7b9    # V7/ii in F: the b13 is in the key, the b9 from the symbol
-A     | 5  | Gm7     # ii of C7: Dorian
-A     | 5  | C7      # V7/I in F: natural tensions
-A     | 6  | Gm7     # ii of the ii–V to F
-A     | 6  | C7      # V7 of F: natural tensions
-A     | 7  | FMaj7   # tonic: the 4th is in the key
-A     | 8  | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A     | 8  | D7alt   # from the symbol: altered
-B     | 9  | Gm9     # ii of the ii–V to F
-B     | 10 | C7      # V7 of F: natural tensions
-B     | 11 | FMaj7   # tonic: the 4th is in the key
+1 | Gm9     # ii of the ii–V to F
+2 | C7      # V7 of F: natural tensions
+3 | FMaj7   # tonic: the 4th is in the key
+3 | BbMaj7  # IV: the #4 is the key’s 7th
+4 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+4 | D7b9    # V7/ii in F: the b13 is in the key, the b9 from the symbol
+5 | Gm7     # ii of C7: Dorian
+5 | C7      # V7/I in F: natural tensions
+6 | Gm7     # ii of the ii–V to F
+6 | C7      # V7 of F: natural tensions
+7 | FMaj7   # tonic: the 4th is in the key
+8 | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+8 | D7alt   # from the symbol: altered
+
+section: B
+1 | Gm9     # ii of the ii–V to F
+2 | C7      # V7 of F: natural tensions
+3 | FMaj7   # tonic: the 4th is in the key
 # area: A major (bars 12–16)
-B     | 12 | Bm7b5   # iiø7 of A: Locrian, the key's own notes (its ♭2 is a passing note)
-B     | 12 | E7alt   # from the symbol: altered
-B     | 13 | AMaj7   # tonic: the 4th is in the key
-B     | 14 | Bm7     # ii of E7: Dorian
-B     | 14 | E7      # V7 of A7, on the way to G minor: b9 and b13 are in the key
-B     | 15 | A7      # V7 of D7b9, on the way to G minor: b9 and b13 are in the key
-B     | 16 | D7b9    # V7 of G minor, the chain's last link: b9 and b13 are in the key
+4 | Bm7b5   # iiø7 of A: Locrian, the key's own notes (its ♭2 is a passing note)
+4 | E7alt   # from the symbol: altered
+5 | AMaj7   # tonic: the 4th is in the key
+6 | Bm7     # ii of E7: Dorian
+6 | E7      # V7 of A7, on the way to G minor: b9 and b13 are in the key
+7 | A7      # V7 of D7b9, on the way to G minor: b9 and b13 are in the key
+8 | D7b9    # V7 of G minor, the chain's last link: b9 and b13 are in the key
+
+section: C
 # area: F major (bars 17–32)
-C     | 17 | Gm9     # ii of the ii–V to F
-C     | 18 | C7      # V7 of F: natural tensions
-C     | 19 | FMaj7   # tonic: the 4th is in the key
-C     | 19 | BbMaj7  # IV: the #4 is the key’s 7th
-C     | 20 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-C     | 20 | D7b9    # V7/ii in F: the b13 is in the key, the b9 from the symbol
-C     | 21 | Gm7     # ii of C7: Dorian
-C     | 21 | C7      # V7/I in F: natural tensions
-C     | 22 | Gm7     # ii of C7: Dorian
-C     | 22 | C7      # V7/I in F: natural tensions
-C     | 23 | Eb7     # tritone substitute: resolves down a half step to D7alt
-C     | 24 | D7alt   # from the symbol: altered
-D     | 25 | Gm9     # ii: Dorian, the key’s own notes
-D     | 26 | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-D     | 26 | A7alt   # from the symbol: altered
-D     | 27 | Dm7     # ii of G7: Dorian
-D     | 28 | G7      # V7/V in F: natural tensions
-D     | 29 | Gm7     # ii of the ii–V to F
-D     | 30 | C7      # V7 of F: natural tensions
-D     | 31 | FMaj7   # tonic: the 4th is in the key
-D     | 32 | D7alt   # from the symbol: altered
+1 | Gm9     # ii of the ii–V to F
+2 | C7      # V7 of F: natural tensions
+3 | FMaj7   # tonic: the 4th is in the key
+3 | BbMaj7  # IV: the #4 is the key’s 7th
+4 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+4 | D7b9    # V7/ii in F: the b13 is in the key, the b9 from the symbol
+5 | Gm7     # ii of C7: Dorian
+5 | C7      # V7/I in F: natural tensions
+6 | Gm7     # ii of C7: Dorian
+6 | C7      # V7/I in F: natural tensions
+7 | Eb7     # tritone substitute: resolves down a half step to D7alt
+8 | D7alt   # from the symbol: altered
+
+section: D
+1 | Gm9     # ii: Dorian, the key’s own notes
+2 | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2 | A7alt   # from the symbol: altered
+3 | Dm7     # ii of G7: Dorian
+4 | G7      # V7/V in F: natural tensions
+5 | Gm7     # ii of the ii–V to F
+6 | C7      # V7 of F: natural tensions
+7 | FMaj7   # tonic: the 4th is in the key
+8 | D7alt   # from the symbol: altered

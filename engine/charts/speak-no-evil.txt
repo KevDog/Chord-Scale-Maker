@@ -7,31 +7,40 @@ form: AABC, 50 bars
 source: Colorado Cookbook, p. 217
 # analysis: 2026-10-11, rules v1; C minor
 
-# section | bar | chord | scale
-A1 | 1  | Cm         # tonic minor: Dorian by convention
-A1 | 2  | DbMaj7#11  # from the symbol: #11
-A1 | 3  | Cm         # tonic minor: Dorian by convention
-A1 | 4  | DbMaj7#11  # from the symbol: #11
-A1 | 5  | Cm         # tonic minor: Dorian by convention
-A1 | 6  | DbMaj7#11  # from the symbol: #11
-A1 | 7  | Cm         # tonic minor: Dorian by convention
-A1 | 8  | DbMaj7#11  # from the symbol: #11
-A1 | 8  | Ebm        # a borrowed minor chord: Dorian, its own key
-A1 | 9  | Em         # a borrowed minor chord: Dorian, its own key
-A1 | 9  | Cm         # tonic minor: Dorian by convention
-A1 | 10 | Dm         # a borrowed minor chord: Dorian, its own key
-A1 | 10 | Bbm        # a borrowed minor chord: Dorian, its own key
-A1 | 11 | A7#11      # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-A1 | 12 | Bbm        # a borrowed minor chord: Dorian, its own key
-A1 | 13 | A7#11      # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-A1 | 14 | Bbm        # a borrowed minor chord: Dorian, its own key
-@copy A1 A2 14
-B  | 29 | Am7b5      # viø7 in C minor: Locrian, its own mode (the chord is outside the key)
-B  | 30 | Ab7        # tritone substitute: resolves down a half step to Gm
-B  | 31 | Gm         # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
-B  | 32 | Gb7        # tritone substitute: resolves down a half step to Fm
-B  | 33 | Fm         # ii of Bb7alt: Dorian
-B  | 34 | Bb7alt     # from the symbol: altered
-B  | 35 | D/Eb       # a non-tonic major chord: Lydian
-B  | 36 | DbMaj7#11  # from the symbol: #11
-@copy A1 C 36
+# bar | chord | scale
+
+section: A1
+1  | Cm         # tonic minor: Dorian by convention
+2  | DbMaj7#11  # from the symbol: #11
+3  | Cm         # tonic minor: Dorian by convention
+4  | DbMaj7#11  # from the symbol: #11
+5  | Cm         # tonic minor: Dorian by convention
+6  | DbMaj7#11  # from the symbol: #11
+7  | Cm         # tonic minor: Dorian by convention
+8  | DbMaj7#11  # from the symbol: #11
+8  | Ebm        # a borrowed minor chord: Dorian, its own key
+9  | Em         # a borrowed minor chord: Dorian, its own key
+9  | Cm         # tonic minor: Dorian by convention
+10 | Dm         # a borrowed minor chord: Dorian, its own key
+10 | Bbm        # a borrowed minor chord: Dorian, its own key
+11 | A7#11      # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+12 | Bbm        # a borrowed minor chord: Dorian, its own key
+13 | A7#11      # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+14 | Bbm        # a borrowed minor chord: Dorian, its own key
+
+section: A2
+copy: A1
+
+section: B
+1  | Am7b5      # viø7 in C minor: Locrian, its own mode (the chord is outside the key)
+2  | Ab7        # tritone substitute: resolves down a half step to Gm
+3  | Gm         # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+4  | Gb7        # tritone substitute: resolves down a half step to Fm
+5  | Fm         # ii of Bb7alt: Dorian
+6  | Bb7alt     # from the symbol: altered
+7  | D/Eb       # a non-tonic major chord: Lydian
+8  | DbMaj7#11  # from the symbol: #11
+
+section: C
+bars: 16
+copy: A1

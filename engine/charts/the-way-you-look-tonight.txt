@@ -3,109 +3,118 @@ composer: Jerome Kern
 style: Medium up
 key: F
 form: AABC, 68 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; F
 # book: Med-Up Swing. Solo on form (AABC); after solos, D.S. al Fine. The last four bars of C (bars 50–53) may be
 # omitted for solos. The intro is repeated (written out here).
 
-# section | bar | chord
+# bar | chord
+
+section: Intro
 # area: F major (bars 1–16)
-Intro | 1  | F6      # tonic: the 4th is in the key
-Intro | 1  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-Intro | 1  | Gm9     # ii of the ii–V to F
-Intro | 1  | C7      # V7 of F: natural tensions
-Intro | 2  | FMaj7   # tonic: the 4th is in the key
-Intro | 2  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-Intro | 2  | Gm9     # ii of the ii–V to F
-Intro | 2  | C7      # V7 of F: natural tensions
-Intro | 3  | F6      # tonic: the 4th is in the key
-Intro | 3  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-Intro | 3  | Gm9     # ii of the ii–V to F
-Intro | 3  | C7      # V7 of F: natural tensions
-Intro | 4  | FMaj7   # tonic: the 4th is in the key
-Intro | 4  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-Intro | 4  | Gm9     # ii of the ii–V to F
-Intro | 4  | C7      # V7 of F: natural tensions
-@segno A 1
-A     | 1  | FMaj7   # tonic: the 4th is in the key
-A     | 2  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A     | 3  | Gm7     # ii of the ii–V to F
-A     | 4  | C7      # V7 of F: natural tensions
-A     | 5  | FMaj7   # tonic: the 4th is in the key
+1  | F6      # tonic: the 4th is in the key
+1  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+1  | Gm9     # ii of the ii–V to F
+1  | C7      # V7 of F: natural tensions
+2  | FMaj7   # tonic: the 4th is in the key
+2  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+2  | Gm9     # ii of the ii–V to F
+2  | C7      # V7 of F: natural tensions
+3  | F6      # tonic: the 4th is in the key
+3  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3  | Gm9     # ii of the ii–V to F
+3  | C7      # V7 of F: natural tensions
+4  | FMaj7   # tonic: the 4th is in the key
+4  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+4  | Gm9     # ii of the ii–V to F
+4  | C7      # V7 of F: natural tensions
+
+section: A
+@segno 1
+1  | FMaj7   # tonic: the 4th is in the key
+2  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3  | Gm7     # ii of the ii–V to F
+4  | C7      # V7 of F: natural tensions
+5  | FMaj7   # tonic: the 4th is in the key
 # alt (optional): bar 5, beats 3–4 (Eb13)
-A     | 6  | D7      # V7/ii in F: the b13 is in the key
-A     | 7  | Gm7     # ii of C7: Dorian
-A     | 8  | C7      # V7/I in F: natural tensions
-A     | 9  | Cm11    # ii of the ii–V to Bb
+6  | D7      # V7/ii in F: the b13 is in the key
+7  | Gm7     # ii of C7: Dorian
+8  | C7      # V7/I in F: natural tensions
+9  | Cm11    # ii of the ii–V to Bb
 # book: Cm7(add 11)
-A     | 10 | F7      # V7/IV in F: natural tensions
-A     | 11 | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
-A     | 12 | Gm7     # ii of the ii–V to F
-A     | 12 | C7      # V7 of F: natural tensions
-A     | 13 | F6      # tonic: the 4th is in the key
-A     | 13 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A     | 14 | Gm9     # ii of the ii–V to F
-A     | 14 | C7      # V7 of F: natural tensions
-A     | 15 | FMaj7   # tonic: the 4th is in the key
-A     | 15 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A     | 16 | Gm9     # ii of C7: Dorian
-A     | 16 | C7      # V7/I in F: natural tensions
+10 | F7      # V7/IV in F: natural tensions
+11 | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
+12 | Gm7     # ii of the ii–V to F
+12 | C7      # V7 of F: natural tensions
+13 | F6      # tonic: the 4th is in the key
+13 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+14 | Gm9     # ii of the ii–V to F
+14 | C7      # V7 of F: natural tensions
+15 | FMaj7   # tonic: the 4th is in the key
+15 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+16 | Gm9     # ii of C7: Dorian
+16 | C7      # V7/I in F: natural tensions
 # area: Ab major (bars 17–30)
-A     | 17 | Bbm7    # ii of the ii–V to Ab
-A     | 17 | Eb7     # V7 of Ab: natural tensions
-@ending 1 A 16
-@ending 2 A 17
-B     | 18 | AbMaj7  # tonic: the 4th is in the key
-B     | 19 | Adim7   # vii°7 of Bbm7: F7♭9 without its root
+17 | Bbm7    # ii of the ii–V to Ab
+17 | Eb7     # V7 of Ab: natural tensions
+@ending 1 16
+@ending 2 17
+
+section: B
+1  | AbMaj7  # tonic: the 4th is in the key
+2  | Adim7   # vii°7 of Bbm7: F7♭9 without its root
 # alt (optional): bar 19 (F7)
-B     | 20 | Bbm7    # ii of the ii–V to Ab
-B     | 21 | Eb7     # V7 of Ab: natural tensions
-B     | 22 | AbMaj7  # tonic: the 4th is in the key
-B     | 23 | Cm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B     | 23 | Bdim7   # passing diminished: Bb7♭9 without its Bb, the Eb9's dominant (Bbm7 its ii)
+3  | Bbm7    # ii of the ii–V to Ab
+4  | Eb7     # V7 of Ab: natural tensions
+5  | AbMaj7  # tonic: the 4th is in the key
+6  | Cm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+6  | Bdim7   # passing diminished: Bb7♭9 without its Bb, the Eb9's dominant (Bbm7 its ii)
 # alt (optional): bar 23 (Fm7)
-B     | 24 | Bbm7    # ii of the ii–V to Ab
-B     | 25 | Eb9     # V7 of Ab: natural tensions
-B     | 26 | AbMaj7  # tonic: the 4th is in the key
-B     | 27 | Adim7   # vii°7 of Bbm7: F7♭9 without its root
+7  | Bbm7    # ii of the ii–V to Ab
+8  | Eb9     # V7 of Ab: natural tensions
+9  | AbMaj7  # tonic: the 4th is in the key
+10 | Adim7   # vii°7 of Bbm7: F7♭9 without its root
 # alt (optional): bar 27 (F7)
-B     | 28 | Bbm7    # ii of the ii–V to Ab
-B     | 29 | Eb13    # V7 of Ab: natural tensions
-B     | 30 | AbMaj7  # tonic: the 4th is in the key
+11 | Bbm7    # ii of the ii–V to Ab
+12 | Eb13    # V7 of Ab: natural tensions
+13 | AbMaj7  # tonic: the 4th is in the key
 # alt (optional): bar 31 (DbMaj7)
 # area: F major (bars 32–53)
-B     | 32 | Gm11    # ii of the ii–V to F
+15 | Gm11    # ii of the ii–V to F
 # book: Gm7(add 11)
-B     | 33 | C7      # V7 of F: natural tensions
-C     | 34 | FMaj7   # tonic: the 4th is in the key
-C     | 35 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-C     | 36 | Gm7     # ii of the ii–V to F
-C     | 37 | C7      # V7 of F: natural tensions
-C     | 38 | FMaj7   # tonic: the 4th is in the key
+16 | C7      # V7 of F: natural tensions
+
+section: C
+bars: 23
+1  | FMaj7   # tonic: the 4th is in the key
+2  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3  | Gm7     # ii of the ii–V to F
+4  | C7      # V7 of F: natural tensions
+5  | FMaj7   # tonic: the 4th is in the key
 # alt (optional): bar 38, beats 3–4 (Eb13)
-C     | 39 | D7      # V7/ii in F: the b13 is in the key
-C     | 40 | Gm7     # ii of C7: Dorian
-C     | 41 | C7      # V7/I in F: natural tensions
-C     | 42 | Cm11    # ii of the ii–V to Bb
+6  | D7      # V7/ii in F: the b13 is in the key
+7  | Gm7     # ii of C7: Dorian
+8  | C7      # V7/I in F: natural tensions
+9  | Cm11    # ii of the ii–V to Bb
 # book: Cm7(add 11)
-C     | 43 | F7      # V7/IV in F: natural tensions
-C     | 44 | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
-C     | 45 | Gm7     # ii of the ii–V to F
-C     | 45 | C7      # V7 of F: natural tensions
-C     | 46 | F6      # tonic: the 4th is in the key
-C     | 46 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-C     | 47 | Gm9     # ii of the ii–V to F
-C     | 47 | C7      # V7 of F: natural tensions
-C     | 48 | FMaj7   # tonic: the 4th is in the key
-C     | 48 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-C     | 49 | Gm9     # ii of C7: Dorian
-C     | 49 | C7      # V7/I in F: natural tensions
-C     | 50 | Gm7     # ii of the ii–V to F
-C     | 51 | C7      # V7 of F: natural tensions
-C     | 52 | F6      # tonic: the 4th is in the key
-@nav C 52 Fine
-C     | 53 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-C     | 53 | Gm7     # ii of the ii–V to F
-C     | 53 | C7      # V7 of F: natural tensions
+10 | F7      # V7/IV in F: natural tensions
+11 | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
+12 | Gm7     # ii of the ii–V to F
+12 | C7      # V7 of F: natural tensions
+13 | F6      # tonic: the 4th is in the key
+13 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+14 | Gm9     # ii of the ii–V to F
+14 | C7      # V7 of F: natural tensions
+15 | FMaj7   # tonic: the 4th is in the key
+15 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+16 | Gm9     # ii of C7: Dorian
+16 | C7      # V7/I in F: natural tensions
+17 | Gm7     # ii of the ii–V to F
+18 | C7      # V7 of F: natural tensions
+19 | F6      # tonic: the 4th is in the key
+@nav 19 Fine
+20 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+20 | Gm7     # ii of the ii–V to F
+20 | C7      # V7 of F: natural tensions
 # bars 52–53: solo break after the F6
-@nav C 53 D.S. al Fine
+@nav 20 D.S. al Fine

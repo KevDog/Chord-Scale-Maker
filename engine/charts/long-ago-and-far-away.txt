@@ -6,48 +6,56 @@ form: ABCD, 32 bars
 source: Colorado Cookbook, p. 128
 # analysis: 2026-10-11, rules v1; F
 
-# section | bar | chord | scale
+# bar | chord | scale
+
+section: A
 # area: F major (bars 1–9)
-A | 1  | FMaj7   # tonic: the 4th is in the key
-A | 1  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A | 2  | Gm7     # ii of the ii–V to F
-A | 2  | C7      # V7 of F: natural tensions
-A | 3  | FMaj7   # tonic: the 4th is in the key
-A | 3  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A | 4  | Gm7     # ii of the ii–V to F
-A | 4  | C7      # V7 of F: natural tensions
-A | 5  | FMaj7   # tonic: the 4th is in the key
-A | 5  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A | 6  | Gm7     # ii of C7: Dorian
-A | 6  | C7      # V7/I in F: natural tensions
-A | 7  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 7  | D7      # V7/ii in F: the b13 is in the key
-A | 8  | Gm7     # ii of C7: Dorian
-A | 8  | C7      # V7/I in F: natural tensions
-B | 9  | AbMaj7  # ♭IIImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
-B | 9  | Fm7     # a borrowed minor chord: Dorian, its own key
+1 | FMaj7   # tonic: the 4th is in the key
+1 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+2 | Gm7     # ii of the ii–V to F
+2 | C7      # V7 of F: natural tensions
+3 | FMaj7   # tonic: the 4th is in the key
+3 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+4 | Gm7     # ii of the ii–V to F
+4 | C7      # V7 of F: natural tensions
+5 | FMaj7   # tonic: the 4th is in the key
+5 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+6 | Gm7     # ii of C7: Dorian
+6 | C7      # V7/I in F: natural tensions
+7 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+7 | D7      # V7/ii in F: the b13 is in the key
+8 | Gm7     # ii of C7: Dorian
+8 | C7      # V7/I in F: natural tensions
+
+section: B
+1 | AbMaj7  # ♭IIImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
+1 | Fm7     # a borrowed minor chord: Dorian, its own key
 # area: Ab major (bars 10–11)
-B | 10 | Bbm7    # ii of the ii–V to Ab
-B | 10 | Eb7     # V7 of Ab: natural tensions
-B | 11 | AbMaj7  # tonic: the 4th is in the key
+2 | Bbm7    # ii of the ii–V to Ab
+2 | Eb7     # V7 of Ab: natural tensions
+3 | AbMaj7  # tonic: the 4th is in the key
 # area: C major (bars 12–14)
-B | 12 | Dm7     # ii of the ii–V to C
-B | 12 | G7      # V7 of C: natural tensions
-B | 13 | CMaj7   # tonic: the 4th is in the key
-B | 14 | Am7     # ii of the ii–V to G minor
-B | 14 | D7alt   # from the symbol: altered
+4 | Dm7     # ii of the ii–V to C
+4 | G7      # V7 of C: natural tensions
+5 | CMaj7   # tonic: the 4th is in the key
+6 | Am7     # ii of the ii–V to G minor
+6 | D7alt   # from the symbol: altered
 # area: F major (bars 15–32)
-B | 15 | Gm7     # ii of the ii–V to F
-B | 16 | C7      # V7 of F: natural tensions
-@copy A C 16
-D | 25 | Cm7     # ii of the ii–V to Bb
-D | 26 | F7      # V7/IV in F: natural tensions
-D | 27 | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
-D | 28 | Eb7     # ♭VII7 from the parallel minor: Lydian Dominant
-D | 29 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-D | 29 | D7      # V7/ii in F: the b13 is in the key
-D | 30 | Gm7     # ii of the ii–V to F
-D | 30 | C7      # V7 of F: natural tensions
-D | 31 | FMaj7   # tonic: the 4th is in the key
-D | 32 | Gm7     # ii of the ii–V to F
-D | 32 | C7      # V7 of F: natural tensions
+7 | Gm7     # ii of the ii–V to F
+8 | C7      # V7 of F: natural tensions
+
+section: C
+copy: A
+
+section: D
+1 | Cm7     # ii of the ii–V to Bb
+2 | F7      # V7/IV in F: natural tensions
+3 | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
+4 | Eb7     # ♭VII7 from the parallel minor: Lydian Dominant
+5 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+5 | D7      # V7/ii in F: the b13 is in the key
+6 | Gm7     # ii of the ii–V to F
+6 | C7      # V7 of F: natural tensions
+7 | FMaj7   # tonic: the 4th is in the key
+8 | Gm7     # ii of the ii–V to F
+8 | C7      # V7 of F: natural tensions

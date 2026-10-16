@@ -6,53 +6,62 @@ form: AABA, 32 bars
 source: Colorado Cookbook, p. 245
 # analysis: 2026-10-11, rules v1; Eb
 
-# section | bar | chord | scale
-A1 | 1  | EbMaj7  # tonic: the 4th is in the key
-A1 | 2  | Am7b5   # iiø7 of D7b9: Locrian, the key's own notes (its ♭2 is a passing note)
-A1 | 2  | D7b9    # V7/iii in Eb: b9 and b13 are in the key
-A1 | 3  | Abm7    # ii of Db7: Dorian
-A1 | 3  | Db7     # extended ii–V: a side-step, its own key
-A1 | 4  | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1 | 4  | C7b9    # extended ii–V: a side-step, its own key; b9 from the symbol
-A1 | 5  | F#m7    # ii of B7b9: Dorian
-A1 | 5  | B7b9    # extended ii–V: a side-step, its own key; b9 from the symbol
-A1 | 6  | Fm7     # ii of Bb7b9: Dorian
-A1 | 6  | Bb7b9   # V7/I in Eb: the b9 from the symbol
-A1 | 7  | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1 | 7  | C7b9    # V7/ii in Eb: the b13 is in the key, the b9 from the symbol
-A1 | 8  | Fm7     # ii of the ii–V to Eb
-A1 | 8  | Bb7b9   # V7 of Eb: the b9 from the symbol
-A2 | 9  | EbMaj7  # tonic: the 4th is in the key
-A2 | 10 | Am7b5   # iiø7 of D7b9: Locrian, the key's own notes (its ♭2 is a passing note)
-A2 | 10 | D7b9    # V7/iii in Eb: b9 and b13 are in the key
-A2 | 11 | Abm7    # ii of Db7: Dorian
-A2 | 11 | Db7     # extended ii–V: a side-step, its own key
-A2 | 12 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A2 | 12 | C7b9    # extended ii–V: a side-step, its own key; b9 from the symbol
-A2 | 13 | F#m7    # ii of B7b9: Dorian
-A2 | 13 | B7b9    # extended ii–V: a side-step, its own key; b9 from the symbol
-A2 | 14 | Fm7     # ii of the ii–V to Eb
-A2 | 14 | Bb7b9   # V7 of Eb: the b9 from the symbol
-A2 | 15 | EbMaj7  # tonic: the 4th is in the key
-A2 | 16 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A2 | 16 | G7alt   # from the symbol: altered
-B  | 17 | Cm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B  | 19 | Gm      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B  | 21 | Bbm7    # ii of the ii–V to Ab
-B  | 21 | Eb7     # V7/IV in Eb: natural tensions
-B  | 22 | AbMaj7  # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
-B  | 23 | Dm7b5   # iiø7 of G7b9: Locrian, the key's own notes (its ♭2 is a passing note)
-B  | 23 | G7b9    # V7/vi in Eb: b9 and b13 are in the key
-B  | 24 | Db7#11  # back door bVII7 to EbMaj7: the #11 is in the key
-A3 | 25 | EbMaj7  # tonic: the 4th is in the key
-A3 | 26 | Am7b5   # iiø7 of D7b9: Locrian, the key's own notes (its ♭2 is a passing note)
-A3 | 26 | D7b9    # V7/iii in Eb: b9 and b13 are in the key
-A3 | 27 | Abm7    # ii of Db7: Dorian
-A3 | 27 | Db7     # extended ii–V: a side-step, its own key
-A3 | 28 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A3 | 28 | C7b9    # extended ii–V: a side-step, its own key; b9 from the symbol
-A3 | 29 | F#m7    # ii of B7b9: Dorian
-A3 | 29 | B7b9    # extended ii–V: a side-step, its own key; b9 from the symbol
-A3 | 30 | Fm7     # ii of the ii–V to Eb
-A3 | 30 | Bb7b9   # V7 of Eb: the b9 from the symbol
-A3 | 31 | EbMaj7  # tonic: the 4th is in the key
+# bar | chord | scale
+
+section: A1
+1 | EbMaj7  # tonic: the 4th is in the key
+2 | Am7b5   # iiø7 of D7b9: Locrian, the key's own notes (its ♭2 is a passing note)
+2 | D7b9    # V7/iii in Eb: b9 and b13 are in the key
+3 | Abm7    # ii of Db7: Dorian
+3 | Db7     # extended ii–V: a side-step, its own key
+4 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+4 | C7b9    # extended ii–V: a side-step, its own key; b9 from the symbol
+5 | F#m7    # ii of B7b9: Dorian
+5 | B7b9    # extended ii–V: a side-step, its own key; b9 from the symbol
+6 | Fm7     # ii of Bb7b9: Dorian
+6 | Bb7b9   # V7/I in Eb: the b9 from the symbol
+7 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+7 | C7b9    # V7/ii in Eb: the b13 is in the key, the b9 from the symbol
+8 | Fm7     # ii of the ii–V to Eb
+8 | Bb7b9   # V7 of Eb: the b9 from the symbol
+
+section: A2
+1 | EbMaj7  # tonic: the 4th is in the key
+2 | Am7b5   # iiø7 of D7b9: Locrian, the key's own notes (its ♭2 is a passing note)
+2 | D7b9    # V7/iii in Eb: b9 and b13 are in the key
+3 | Abm7    # ii of Db7: Dorian
+3 | Db7     # extended ii–V: a side-step, its own key
+4 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+4 | C7b9    # extended ii–V: a side-step, its own key; b9 from the symbol
+5 | F#m7    # ii of B7b9: Dorian
+5 | B7b9    # extended ii–V: a side-step, its own key; b9 from the symbol
+6 | Fm7     # ii of the ii–V to Eb
+6 | Bb7b9   # V7 of Eb: the b9 from the symbol
+7 | EbMaj7  # tonic: the 4th is in the key
+8 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+8 | G7alt   # from the symbol: altered
+
+section: B
+1 | Cm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3 | Gm      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+5 | Bbm7    # ii of the ii–V to Ab
+5 | Eb7     # V7/IV in Eb: natural tensions
+6 | AbMaj7  # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
+7 | Dm7b5   # iiø7 of G7b9: Locrian, the key's own notes (its ♭2 is a passing note)
+7 | G7b9    # V7/vi in Eb: b9 and b13 are in the key
+8 | Db7#11  # back door bVII7 to EbMaj7: the #11 is in the key
+
+section: A3
+bars: 8
+1 | EbMaj7  # tonic: the 4th is in the key
+2 | Am7b5   # iiø7 of D7b9: Locrian, the key's own notes (its ♭2 is a passing note)
+2 | D7b9    # V7/iii in Eb: b9 and b13 are in the key
+3 | Abm7    # ii of Db7: Dorian
+3 | Db7     # extended ii–V: a side-step, its own key
+4 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+4 | C7b9    # extended ii–V: a side-step, its own key; b9 from the symbol
+5 | F#m7    # ii of B7b9: Dorian
+5 | B7b9    # extended ii–V: a side-step, its own key; b9 from the symbol
+6 | Fm7     # ii of the ii–V to Eb
+6 | Bb7b9   # V7 of Eb: the b9 from the symbol
+7 | EbMaj7  # tonic: the 4th is in the key

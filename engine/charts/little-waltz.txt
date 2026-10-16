@@ -4,48 +4,55 @@ style: Jazz waltz
 key: Fm
 time: 3/4
 form: ABC, 34 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; F minor
 # book: Med.-Slow Jazz Waltz. Letters A (18 bars), B (8), C (8).
 
-# section | bar | chord
+# bar | chord
+
+section: A
 # area: F minor (bars 1–22)
-A | 1  | Fm      # tonic minor: Dorian by convention
-A | 2  | C7/E    # V7 of the Fm before it: b9 and b13 are in the key
-A | 3  | Ebm7    # a borrowed minor chord: Dorian, its own key
-A | 4  | DbMaj7  # a non-tonic major chord: Lydian
-A | 5  | G7      # V7 of V7: the dominant of the dominant, on the way to F minor: b9 and b13 are in the key
-A | 6  | C7      # V7 of F minor, the chain's last link: b9 and b13 are in the key
-A | 7  | Fm      # tonic minor: Dorian by convention
-A | 8  | C7      # V7 of F minor: b9 and b13 are in the key
-A | 9  | Fm      # tonic minor: Dorian by convention
-A | 10 | C7/E    # V7 of the Fm before it: b9 and b13 are in the key
-A | 11 | Ebm7    # a borrowed minor chord: Dorian, its own key
-A | 12 | DbMaj7  # a non-tonic major chord: Lydian
-A | 13 | G7      # V7 of V7: the dominant of the dominant, on the way to F minor: b9 and b13 are in the key
-A | 14 | C7      # V7 of F minor, the chain's last link: b9 and b13 are in the key
-A | 15 | Fm      # tonic minor: Dorian by convention
-A | 16 | C7      # V7 of F minor: b9 and b13 are in the key
-A | 17 | Fm      # tonic minor: Dorian by convention
-A | 18 | Fm
-A | 18 | C7/E    # V7 of F minor: b9 and b13 are in the key
-A | 18 | Fm/Eb   # tonic minor: Dorian by convention
-B | 19 | Dm7b5   # iiø7 of G7: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 20 | G7      # V7 of V7: the dominant of the dominant, on the way to Bb minor: b9 and b13 are in the key
-B | 21 | C7      # V7 of F7, on the way to Bb minor: b9 and b13 are in the key
-B | 22 | F7      # V7 of Bb minor, the chain's last link: b9 and b13 are in the key
+1  | Fm      # tonic minor: Dorian by convention
+2  | C7/E    # V7 of the Fm before it: b9 and b13 are in the key
+3  | Ebm7    # a borrowed minor chord: Dorian, its own key
+4  | DbMaj7  # a non-tonic major chord: Lydian
+5  | G7      # V7 of V7: the dominant of the dominant, on the way to F minor: b9 and b13 are in the key
+6  | C7      # V7 of F minor, the chain's last link: b9 and b13 are in the key
+7  | Fm      # tonic minor: Dorian by convention
+8  | C7      # V7 of F minor: b9 and b13 are in the key
+9  | Fm      # tonic minor: Dorian by convention
+10 | C7/E    # V7 of the Fm before it: b9 and b13 are in the key
+11 | Ebm7    # a borrowed minor chord: Dorian, its own key
+12 | DbMaj7  # a non-tonic major chord: Lydian
+13 | G7      # V7 of V7: the dominant of the dominant, on the way to F minor: b9 and b13 are in the key
+14 | C7      # V7 of F minor, the chain's last link: b9 and b13 are in the key
+15 | Fm      # tonic minor: Dorian by convention
+16 | C7      # V7 of F minor: b9 and b13 are in the key
+17 | Fm      # tonic minor: Dorian by convention
+18 | Fm
+18 | C7/E    # V7 of F minor: b9 and b13 are in the key
+18 | Fm/Eb   # tonic minor: Dorian by convention
+
+section: B
+1  | Dm7b5   # iiø7 of G7: Locrian, the key's own notes (its ♭2 is a passing note)
+2  | G7      # V7 of V7: the dominant of the dominant, on the way to Bb minor: b9 and b13 are in the key
+3  | C7      # V7 of F7, on the way to Bb minor: b9 and b13 are in the key
+4  | F7      # V7 of Bb minor, the chain's last link: b9 and b13 are in the key
 # area: Ab major (bars 23–25)
-B | 23 | Bbm7    # ii of the ii–V to Ab
-B | 24 | Eb7     # V7 of Ab: natural tensions
-B | 25 | Ab      # tonic: the 4th is in the key
+5  | Bbm7    # ii of the ii–V to Ab
+6  | Eb7     # V7 of Ab: natural tensions
+7  | Ab      # tonic: the 4th is in the key
 # area: F major (bars 26–33)
-B | 26 | G7      # V7 of V7: the dominant of the dominant: natural tensions
-B | 26 | C7      # V7 of F: natural tensions
-C | 27 | F       # tonic: the 4th is in the key
-C | 28 | C7/E    # V7 of the F before it: natural tensions
-C | 29 | Ebm7    # a borrowed minor chord: Dorian, its own key
-C | 30 | DbMaj7  # ♭VImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
-C | 31 | G7      # V7 of V7: the dominant of the dominant: natural tensions
-C | 32 | C7      # V7 of F: natural tensions
-C | 33 | F       # tonic: the 4th is in the key
+8  | G7      # V7 of V7: the dominant of the dominant: natural tensions
+8  | C7      # V7 of F: natural tensions
+
+section: C
+bars: 10
+1  | F       # tonic: the 4th is in the key
+2  | C7/E    # V7 of the F before it: natural tensions
+3  | Ebm7    # a borrowed minor chord: Dorian, its own key
+4  | DbMaj7  # ♭VImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
+5  | G7      # V7 of V7: the dominant of the dominant: natural tensions
+6  | C7      # V7 of F: natural tensions
+7  | F       # tonic: the 4th is in the key
 # alt (optional): bar 34 (C7)

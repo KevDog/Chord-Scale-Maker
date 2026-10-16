@@ -4,87 +4,94 @@ composer: Jack Strachey, Harry Link
 style: Medium ballad
 key: Eb
 form: AABA, 32 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; Eb
 # the book's letters: A (16 bars, the two A's), B, C (the last A)
 # alt (for soloing): bars 4, 12 and 28 (Cm9 F9 Bm9 E9)
 
-# section | bar | chord
+# bar | chord
+
+section: A
 # area: Eb major (bars 1–16)
-A | 1  | EbMaj7   # tonic: the 4th is in the key
-A | 1  | Cm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A | 2  | Fm9      # ii of the ii–V to Eb
-A | 2  | Bb7      # V7 of Eb: natural tensions
-A | 3  | EbMaj7   # tonic: the 4th is in the key
-A | 3  | Cm7      # ii of F9: Dorian
-A | 4  | F9       # V7 of V7: the dominant of the dominant: natural tensions
-A | 4  | Bb7      # extended dominant: V7 of Eb9sus4
-A | 5  | Eb9sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-A | 5  | Eb9      # V7/IV in Eb: natural tensions
+1  | EbMaj7   # tonic: the 4th is in the key
+1  | Cm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+2  | Fm9      # ii of the ii–V to Eb
+2  | Bb7      # V7 of Eb: natural tensions
+3  | EbMaj7   # tonic: the 4th is in the key
+3  | Cm7      # ii of F9: Dorian
+4  | F9       # V7 of V7: the dominant of the dominant: natural tensions
+4  | Bb7      # extended dominant: V7 of Eb9sus4
+5  | Eb9sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+5  | Eb9      # V7/IV in Eb: natural tensions
 # alt: bar 5, beat 4 (A9#11)
-A | 6  | AbMaj7   # the Eb9 before it makes Ab the key of the moment: the 4th is in the key
-A | 6  | G7#5     # extended dominant: V7 of C7#5; #11 and b13 from the symbol
-A | 6  | C7#5     # extended dominant: V7 of F9; #11 and b13 from the symbol
-A | 7  | F9       # II7 in Eb, not resolving: natural tensions
-A | 8  | Fm7      # ii of the ii–V to Eb
-A | 8  | Bb7      # V7 of Eb: natural tensions
-A | 9  | EbMaj7   # tonic: the 4th is in the key
-A | 9  | Cm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A | 10 | Fm9      # ii of the ii–V to Eb
-A | 10 | Bb7      # V7 of Eb: natural tensions
-A | 11 | EbMaj7   # tonic: the 4th is in the key
-A | 11 | Cm7      # ii of F9: Dorian
-A | 12 | F9       # V7 of V7: the dominant of the dominant: natural tensions
-A | 12 | Bb7      # extended dominant: V7 of Eb9sus4
-A | 13 | Eb9sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-A | 13 | Eb9      # V7/IV in Eb: natural tensions
+6  | AbMaj7   # the Eb9 before it makes Ab the key of the moment: the 4th is in the key
+6  | G7#5     # extended dominant: V7 of C7#5; #11 and b13 from the symbol
+6  | C7#5     # extended dominant: V7 of F9; #11 and b13 from the symbol
+7  | F9       # II7 in Eb, not resolving: natural tensions
+8  | Fm7      # ii of the ii–V to Eb
+8  | Bb7      # V7 of Eb: natural tensions
+9  | EbMaj7   # tonic: the 4th is in the key
+9  | Cm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+10 | Fm9      # ii of the ii–V to Eb
+10 | Bb7      # V7 of Eb: natural tensions
+11 | EbMaj7   # tonic: the 4th is in the key
+11 | Cm7      # ii of F9: Dorian
+12 | F9       # V7 of V7: the dominant of the dominant: natural tensions
+12 | Bb7      # extended dominant: V7 of Eb9sus4
+13 | Eb9sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+13 | Eb9      # V7/IV in Eb: natural tensions
 # alt: bar 13, beat 4 (A9#11)
-A | 14 | AbMaj7   # the Eb9 before it makes Ab the key of the moment: the 4th is in the key
-A | 14 | G7#5     # extended dominant: each one falls a fifth into the next: #11 and b13 from the symbol
-A | 14 | C7#5     # extended dominant: each one falls a fifth into the next: #11 and b13 from the symbol
-A | 15 | F9       # V7 of V7: the dominant of the dominant: natural tensions
-A | 15 | Bb7      # V7 of Eb: natural tensions
-A | 16 | Eb6      # tonic: the 4th is in the key
-A | 16 | Am7b5    # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 16 | D7       # V7/iii in Eb: b9 and b13 are in the key
-@key B 17 Gm
+14 | AbMaj7   # the Eb9 before it makes Ab the key of the moment: the 4th is in the key
+14 | G7#5     # extended dominant: each one falls a fifth into the next: #11 and b13 from the symbol
+14 | C7#5     # extended dominant: each one falls a fifth into the next: #11 and b13 from the symbol
+15 | F9       # V7 of V7: the dominant of the dominant: natural tensions
+15 | Bb7      # V7 of Eb: natural tensions
+16 | Eb6      # tonic: the 4th is in the key
+16 | Am7b5    # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+16 | D7       # V7/iii in Eb: b9 and b13 are in the key
+
+section: B
+key: Gm
 # area: G minor (bars 17–19)
-B | 17 | Gm       # tonic minor: Dorian by convention
-# alt: bar 17, beats 3–4 (Em7b5)
-B | 18 | Am7b5    # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 18 | D7       # V7 of G minor: b9 and b13 are in the key
-B | 19 | Gm       # tonic minor: Dorian by convention
-B | 19 | GmMaj7   # from the symbol: minor-major 7th
-B | 19 | Gm7      # ii of C9: Dorian
-@key B 20 Bb
+1  | Gm       # tonic minor: Dorian by convention
+# alt: bar 1, beats 3–4 (Em7b5)
+2  | Am7b5    # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2  | D7       # V7 of G minor: b9 and b13 are in the key
+3  | Gm       # tonic minor: Dorian by convention
+3  | GmMaj7   # from the symbol: minor-major 7th
+3  | Gm7      # ii of C9: Dorian
+@key 4 Bb
 # area: Bb major (bars 20–23)
-B | 20 | C9       # V7 of V7: the dominant of the dominant: natural tensions
-B | 20 | F13      # V7 of Bb: natural tensions
-B | 21 | BbMaj7   # tonic: the 4th is in the key
-B | 21 | Gm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B | 22 | Cm7      # ii of F7: Dorian
-B | 22 | F7       # extended dominant: V7 of Bb7
-B | 23 | Bb7      # I7 in Bb, not resolving: natural tensions
-B | 23 | Edim7    # vii°7 of Fm7: C7♭9 without its root
-@key B 24 Eb
+4  | C9       # V7 of V7: the dominant of the dominant: natural tensions
+4  | F13      # V7 of Bb: natural tensions
+5  | BbMaj7   # tonic: the 4th is in the key
+5  | Gm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+6  | Cm7      # ii of F7: Dorian
+6  | F7       # extended dominant: V7 of Bb7
+7  | Bb7      # I7 in Bb, not resolving: natural tensions
+7  | Edim7    # vii°7 of Fm7: C7♭9 without its root
+@key 8 Eb
 # area: Eb major (bars 24–32)
-B | 24 | Fm7      # ii of the ii–V to Eb
-B | 24 | Bb7      # V7 of Eb: natural tensions
-C | 25 | EbMaj7   # tonic: the 4th is in the key
-C | 25 | Cm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-C | 26 | Fm9      # ii of the ii–V to Eb
-C | 26 | Bb7      # V7 of Eb: natural tensions
-C | 27 | EbMaj7   # tonic: the 4th is in the key
-C | 27 | Cm7      # ii of F9: Dorian
-C | 28 | F9       # V7 of V7: the dominant of the dominant: natural tensions
-C | 28 | Bb7      # extended dominant: V7 of Eb9sus4
-C | 29 | Eb9sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-C | 29 | Eb9      # V7/IV in Eb: natural tensions
-# alt: bar 29, beat 4 (A9#11)
-C | 30 | AbMaj7   # the Eb9 before it makes Ab the key of the moment: the 4th is in the key
-C | 30 | G7#5     # extended dominant: each one falls a fifth into the next: #11 and b13 from the symbol
-C | 30 | C7#5     # extended dominant: each one falls a fifth into the next: #11 and b13 from the symbol
-C | 31 | F9       # V7 of V7: the dominant of the dominant: natural tensions
-C | 31 | Bb7      # V7 of Eb: natural tensions
-C | 32 | Eb6      # tonic: the 4th is in the key
-# alt: bar 32, beats 3–4 (Fm7 Bb7)
+8  | Fm7      # ii of the ii–V to Eb
+8  | Bb7      # V7 of Eb: natural tensions
+
+section: C
+key: Eb
+1  | EbMaj7   # tonic: the 4th is in the key
+1  | Cm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+2  | Fm9      # ii of the ii–V to Eb
+2  | Bb7      # V7 of Eb: natural tensions
+3  | EbMaj7   # tonic: the 4th is in the key
+3  | Cm7      # ii of F9: Dorian
+4  | F9       # V7 of V7: the dominant of the dominant: natural tensions
+4  | Bb7      # extended dominant: V7 of Eb9sus4
+5  | Eb9sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+5  | Eb9      # V7/IV in Eb: natural tensions
+# alt: bar 5, beat 4 (A9#11)
+6  | AbMaj7   # the Eb9 before it makes Ab the key of the moment: the 4th is in the key
+6  | G7#5     # extended dominant: each one falls a fifth into the next: #11 and b13 from the symbol
+6  | C7#5     # extended dominant: each one falls a fifth into the next: #11 and b13 from the symbol
+7  | F9       # V7 of V7: the dominant of the dominant: natural tensions
+7  | Bb7      # V7 of Eb: natural tensions
+8  | Eb6      # tonic: the 4th is in the key
+# alt: bar 8, beats 3–4 (Fm7 Bb7)

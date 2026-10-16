@@ -3,63 +3,67 @@ composer: Josef Zawinul
 style: Medium slow funky rock
 key: Bb
 form: A, 20 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; Bb
 # book: as played by Cannonball Adderley. One unlettered 20-bar section, repeated; last time, after bar 16, to the Coda.
 # bars 9–12: the last chord of each odd bar is pushed on the "and" of 4 and held into the next bar
 
-# section | bar | chord
-A    | 1  | Bb      # tonic: the 4th is in the key
-A    | 1  | Eb/Bb   # IV: the #4 is the key’s 7th
-A    | 1  | Bb7     # V7/IV in Bb: natural tensions
-A    | 2  | Eb      # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
-A    | 3  | Bb      # tonic: the 4th is in the key
-A    | 3  | Eb/Bb   # IV: the #4 is the key’s 7th
-A    | 3  | Bb7     # V7/IV in Bb: natural tensions
-A    | 4  | Eb      # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
-A    | 5  | Bb      # tonic: the 4th is in the key
-A    | 5  | Eb/Bb   # IV: the #4 is the key’s 7th
-A    | 5  | Bb7     # V7/IV in Bb: natural tensions
-A    | 6  | Eb      # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
-A    | 7  | Bb      # tonic: the 4th is in the key
-A    | 7  | Eb/Bb   # IV: the #4 is the key’s 7th
-A    | 7  | Bb7     # V7/IV in Bb: natural tensions
-A    | 8  | Eb      # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
-A    | 9  | Bb      # tonic: the 4th is in the key
-A    | 9  | Eb/Bb   # IV: the #4 is the key’s 7th
-A    | 9  | Bb7     # V7/IV in Bb: natural tensions
-A    | 10 | Eb/Bb   # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
-A    | 10 | Bb      # tonic: the 4th is in the key
-A    | 11 | Bb
-A    | 11 | Eb/Bb   # IV: the #4 is the key’s 7th
-A    | 11 | Bb7     # V7/IV in Bb: natural tensions
-A    | 12 | Eb/Bb   # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
-A    | 12 | Bb      # tonic: the 4th is in the key
-A    | 13 | Bb
-A    | 13 | Bb/D    # tonic: the 4th is in the key
-A    | 13 | Eb      # IV: the #4 is the key’s 7th
-A    | 14 | F       # V without its 7th: Mixolydian, the key’s own notes
-A    | 14 | F9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
-A    | 14 | Bb      # tonic: the 4th is in the key
+# bar | chord
+
+section: A
+1  | Bb      # tonic: the 4th is in the key
+1  | Eb/Bb   # IV: the #4 is the key’s 7th
+1  | Bb7     # V7/IV in Bb: natural tensions
+2  | Eb      # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
+3  | Bb      # tonic: the 4th is in the key
+3  | Eb/Bb   # IV: the #4 is the key’s 7th
+3  | Bb7     # V7/IV in Bb: natural tensions
+4  | Eb      # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
+5  | Bb      # tonic: the 4th is in the key
+5  | Eb/Bb   # IV: the #4 is the key’s 7th
+5  | Bb7     # V7/IV in Bb: natural tensions
+6  | Eb      # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
+7  | Bb      # tonic: the 4th is in the key
+7  | Eb/Bb   # IV: the #4 is the key’s 7th
+7  | Bb7     # V7/IV in Bb: natural tensions
+8  | Eb      # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
+9  | Bb      # tonic: the 4th is in the key
+9  | Eb/Bb   # IV: the #4 is the key’s 7th
+9  | Bb7     # V7/IV in Bb: natural tensions
+10 | Eb/Bb   # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
+10 | Bb      # tonic: the 4th is in the key
+11 | Bb
+11 | Eb/Bb   # IV: the #4 is the key’s 7th
+11 | Bb7     # V7/IV in Bb: natural tensions
+12 | Eb/Bb   # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
+12 | Bb      # tonic: the 4th is in the key
+13 | Bb
+13 | Bb/D    # tonic: the 4th is in the key
+13 | Eb      # IV: the #4 is the key’s 7th
+14 | F       # V without its 7th: Mixolydian, the key’s own notes
+14 | F9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+14 | Bb      # tonic: the 4th is in the key
 # book: F9sus; the Bb is pushed on the "and" of 4 and held into bar 15
-A    | 15 | Bb/D    # tonic: the 4th is in the key
-A    | 15 | Eb      # IV: the #4 is the key’s 7th
-A    | 16 | F       # V without its 7th: Mixolydian, the key’s own notes
-@coda A 16
-A    | 17 | Cm7     # ii: Dorian, the key’s own notes
-A    | 18 | Dm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A    | 19 | Gm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A    | 19 | F       # V without its 7th: Mixolydian, the key’s own notes
-A    | 19 | Gm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A    | 19 | F       # V without its 7th: Mixolydian, the key’s own notes
-A    | 20 | Gm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-@coda Coda 1
-Coda | 1  | Cm7     # ii: Dorian, the key’s own notes
-Coda | 2  | Dm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-Coda | 3  | Gm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-Coda | 3  | F       # V without its 7th: Mixolydian, the key’s own notes
-Coda | 3  | Gm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-Coda | 3  | F       # V without its 7th: Mixolydian, the key’s own notes
+15 | Bb/D    # tonic: the 4th is in the key
+15 | Eb      # IV: the #4 is the key’s 7th
+16 | F       # V without its 7th: Mixolydian, the key’s own notes
+@coda 16
+17 | Cm7     # ii: Dorian, the key’s own notes
+18 | Dm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+19 | Gm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+19 | F       # V without its 7th: Mixolydian, the key’s own notes
+19 | Gm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+19 | F       # V without its 7th: Mixolydian, the key’s own notes
+20 | Gm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+
+section: Coda
+@coda 1
+1  | Cm7     # ii: Dorian, the key’s own notes
+2  | Dm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+3  | Gm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3  | F       # V without its 7th: Mixolydian, the key’s own notes
+3  | Gm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3  | F       # V without its 7th: Mixolydian, the key’s own notes
 # molto rit.
-Coda | 4  | Gm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+4  | Gm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 # fermata; piano fill

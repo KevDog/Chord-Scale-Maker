@@ -3,34 +3,41 @@ composer: Jerome Kern
 style: Medium swing
 key: Dm
 form: AB, 32 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; D minor
 # Med. swing (or ballad); solo on the form (AB); after solos, D.C. al Fine (the Ending)
 
-# section | bar | chord
-A      | 1  | Dm      # tonic minor: Dorian by convention
-A      | 2  | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A      | 2  | A7      # V7 of D minor: b9 and b13 are in the key
-A      | 3  | Dm      # tonic minor: Dorian by convention
-A      | 4  | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A      | 4  | A7      # V7 of D minor: b9 and b13 are in the key
-A      | 5  | Dm      # tonic minor: Dorian by convention
-A      | 5  | C#7#5   # VII7 in D minor, not resolving: b9 and #11 are in the key, the b13 from the symbol
+# bar | chord
+
+section: A
+1  | Dm      # tonic minor: Dorian by convention
+2  | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2  | A7      # V7 of D minor: b9 and b13 are in the key
+3  | Dm      # tonic minor: Dorian by convention
+4  | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4  | A7      # V7 of D minor: b9 and b13 are in the key
+5  | Dm      # tonic minor: Dorian by convention
+5  | C#7#5   # VII7 in D minor, not resolving: b9 and #11 are in the key, the b13 from the symbol
 # book: C#+ (augmented triad; written C#7#5)
-A      | 6  | Dm7/C   # tonic minor: Dorian by convention
+6  | Dm7/C   # tonic minor: Dorian by convention
 # alt: bars 5–6 of A and B (Dm A7/C# Dm7/C G/B | Bb7 Dm/A G#dim7 C7/G), etc.
-A      | 7  | Bm7b5   # iiø7 of E7: Locrian, the key's own notes (its ♭2 is a passing note)
-A      | 8  | E7      # V7 of V7: the dominant of the dominant: natural tensions
-A      | 9  | A7#5    # extended dominant: V7 of D9; #11 and b13 from the symbol
-A      | 10 | D9      # extended dominant: V7 of G13
-A      | 11 | G13     # extended dominant: V7 of C9
-A      | 12 | C9      # extended dominant: V7 of F13
-A      | 13 | F13     # V7/bVI in D minor: natural tensions
-A      | 14 | BbMaj9  # a non-tonic major chord: Lydian
+7  | Bm7b5   # iiø7 of E7: Locrian, the key's own notes (its ♭2 is a passing note)
+8  | E7      # V7 of V7: the dominant of the dominant: natural tensions
+9  | A7#5    # extended dominant: V7 of D9; #11 and b13 from the symbol
+10 | D9      # extended dominant: V7 of G13
+11 | G13     # extended dominant: V7 of C9
+12 | C9      # extended dominant: V7 of F13
+13 | F13     # V7/bVI in D minor: natural tensions
+14 | BbMaj9  # a non-tonic major chord: Lydian
 # alt: bar 14, beats 3–4 (Gm7)
-A      | 15 | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A      | 16 | A7      # V7 of D minor: b9 and b13 are in the key
-@copy A B 16
-Ending | 1  | Dm      # tonic minor: Dorian by convention
+15 | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+16 | A7      # V7 of D minor: b9 and b13 are in the key
+
+section: B
+copy: A
+
+section: Ending
+bars: 4
+1  | Dm      # tonic minor: Dorian by convention
 # alt: Ending (DMaj7)
-@nav Ending 1 Fine
+@nav 1 Fine

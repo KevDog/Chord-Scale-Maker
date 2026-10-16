@@ -3,66 +3,72 @@ composer: Charles Mingus
 style: Medium up
 key: Db
 form: ABC, 51 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; Db
 # book: Medium-up swing (in 4); 2-beat feel from letter B, the original feel again at bar 33
 # book: the whole chart is in repeats; the last bar (51) is piano only every chorus, with a fermata the last time
 
-# section | bar | chord
+# bar | chord
+
+section: A
 # area: Ab major (bars 1–15)
-A | 1  | Bbm9      # ii of the ii–V to Ab
-A | 2  | Eb9       # V7 of Ab: natural tensions
-A | 3  | AbMaj7    # tonic: the 4th is in the key
-A | 4  | F7b9      # extended dominant: each one falls a fifth into the next: the b9 from the symbol
-A | 5  | Bb7b9b5   # V7 of V7: the dominant of the dominant: b9 and #11 from the symbol
-A | 6  | Eb7b9b5   # V7 of Ab: b9 and #11 from the symbol
-A | 7  | AbMaj7    # tonic: the 4th is in the key
-A | 8  | D69#11    # a non-tonic major chord: Lydian
-A | 9  | DbMaj9    # IV: the #4 is the key’s 7th
-A | 11 | C7#5#9    # V7 of F7#5#11, on the way to Eb minor: the b13 is in the key, b9, #9 and #11 from the symbol
-A | 13 | F7#5#11   # V7 of Bb7#5#9, on the way to Eb minor: the b13 is in the key, 9 and #11 from the symbol
-A | 15 | Bb7#5#9   # V7 of Eb minor, the chain's last link: the b13 is in the key, b9, #9 and #11 from the symbol
+1  | Bbm9      # ii of the ii–V to Ab
+2  | Eb9       # V7 of Ab: natural tensions
+3  | AbMaj7    # tonic: the 4th is in the key
+4  | F7b9      # extended dominant: each one falls a fifth into the next: the b9 from the symbol
+5  | Bb7b9b5   # V7 of V7: the dominant of the dominant: b9 and #11 from the symbol
+6  | Eb7b9b5   # V7 of Ab: b9 and #11 from the symbol
+7  | AbMaj7    # tonic: the 4th is in the key
+8  | D69#11    # a non-tonic major chord: Lydian
+9  | DbMaj9    # IV: the #4 is the key’s 7th
+11 | C7#5#9    # V7 of F7#5#11, on the way to Eb minor: the b13 is in the key, b9, #9 and #11 from the symbol
+13 | F7#5#11   # V7 of Bb7#5#9, on the way to Eb minor: the b13 is in the key, 9 and #11 from the symbol
+15 | Bb7#5#9   # V7 of Eb minor, the chain's last link: the b13 is in the key, b9, #9 and #11 from the symbol
 # bar 16: the book repeats (Bb7(#9 #5)) in parentheses as a reminder; held
 # area: Db major (bars 17–25)
-A | 17 | Ebm7      # ii of the ii–V to Db
-A | 19 | Ab13b9    # V7 of Db: the b9 from the symbol
-A | 21 | DbMaj9    # tonic: the 4th is in the key
-A | 23 | D69#11    # ♭II6, borrowed from Db Phrygian: Lydian (its ♯11 is in the key)
-A | 24 | D69#11
-A | 24 | Db69      # tonic: the 4th is in the key
+17 | Ebm7      # ii of the ii–V to Db
+19 | Ab13b9    # V7 of Db: the b9 from the symbol
+21 | DbMaj9    # tonic: the 4th is in the key
+23 | D69#11    # ♭II6, borrowed from Db Phrygian: Lydian (its ♯11 is in the key)
+24 | D69#11
+24 | Db69      # tonic: the 4th is in the key
 
-B | 25 | GbMaj7    # IV: the #4 is the key’s 7th
+section: B
+bars: 18
+1  | GbMaj7    # IV: the #4 is the key’s 7th
 # area: F major (bars 26–29)
-B | 26 | Gm7       # ii of the ii–V to F
-B | 26 | C7        # V7 of F: natural tensions
-B | 27 | FMaj7     # tonic: the 4th is in the key
-B | 29 | EMaj7     # a non-tonic major chord: Lydian
+2  | Gm7       # ii of the ii–V to F
+2  | C7        # V7 of F: natural tensions
+3  | FMaj7     # tonic: the 4th is in the key
+5  | EMaj7     # a non-tonic major chord: Lydian
 # area: Eb major (bars 30–33)
-B | 30 | Fm7       # ii of the ii–V to Eb
-B | 30 | Bb7       # V7 of Eb: natural tensions
-B | 31 | EbMaj7    # tonic: the 4th is in the key
-B | 32 | A7b5      # tritone substitute: resolves down a half step to AbMaj7
-B | 33 | AbMaj7    # the A7b5 before it makes Ab the key of the moment: the 4th is in the key
+6  | Fm7       # ii of the ii–V to Eb
+6  | Bb7       # V7 of Eb: natural tensions
+7  | EbMaj7    # tonic: the 4th is in the key
+8  | A7b5      # tritone substitute: resolves down a half step to AbMaj7
+9  | AbMaj7    # the A7b5 before it makes Ab the key of the moment: the 4th is in the key
 # area: Db major (bars 34–41)
-B | 34 | D7        # tritone substitute: resolves down a half step to DbMaj9
-B | 35 | DbMaj9    # tonic: the 4th is in the key
-B | 36 | C7#9      # V7 of F13#11b9, on the way to Eb minor: the b13 is in the key, b9, #9 and #11 from the symbol
-B | 37 | F13#11b9  # V7 of Bb7b9b5, on the way to Eb minor: the b9 is in the key, #11 and 13 from the symbol
-B | 38 | Bb7b9b5   # V7 of Eb minor, the chain's last link: the b9 is in the key, #11 and 13 from the symbol
-B | 39 | Ebm7      # ii of the ii–V to Db
-B | 40 | Ab13b9    # V7 of Db: the b9 from the symbol
-B | 41 | DbMaj9    # tonic: the 4th is in the key
+10 | D7        # tritone substitute: resolves down a half step to DbMaj9
+11 | DbMaj9    # tonic: the 4th is in the key
+12 | C7#9      # V7 of F13#11b9, on the way to Eb minor: the b13 is in the key, b9, #9 and #11 from the symbol
+13 | F13#11b9  # V7 of Bb7b9b5, on the way to Eb minor: the b9 is in the key, #11 and 13 from the symbol
+14 | Bb7b9b5   # V7 of Eb minor, the chain's last link: the b9 is in the key, #11 and 13 from the symbol
+15 | Ebm7      # ii of the ii–V to Db
+16 | Ab13b9    # V7 of Db: the b9 from the symbol
+17 | DbMaj9    # tonic: the 4th is in the key
 
+section: C
+bars: 10
 # area: Ab major (bars 43–50)
-C | 43 | Bbm9      # ii of the ii–V to Ab
-C | 44 | Eb9       # V7 of Ab: natural tensions
-C | 45 | AbMaj7    # tonic: the 4th is in the key
-C | 46 | F7b9      # extended dominant: each one falls a fifth into the next: the b9 from the symbol
-C | 47 | Bb7b9b5   # V7 of V7: the dominant of the dominant: b9 and #11 from the symbol
-C | 48 | Eb7b9b5   # V7 of Ab: b9 and #11 from the symbol
-C | 49 | AbMaj7    # tonic: the 4th is in the key
-C | 50 | D69#11    # a non-tonic major chord: Lydian
-@key C 51 Db
+1  | Bbm9      # ii of the ii–V to Ab
+2  | Eb9       # V7 of Ab: natural tensions
+3  | AbMaj7    # tonic: the 4th is in the key
+4  | F7b9      # extended dominant: each one falls a fifth into the next: the b9 from the symbol
+5  | Bb7b9b5   # V7 of V7: the dominant of the dominant: b9 and #11 from the symbol
+6  | Eb7b9b5   # V7 of Ab: b9 and #11 from the symbol
+7  | AbMaj7    # tonic: the 4th is in the key
+8  | D69#11    # a non-tonic major chord: Lydian
+@key 9 Db
 # area: Db major (bar 51)
-C | 51 | DbMaj9    # tonic: the 4th is in the key
+9  | DbMaj9    # tonic: the 4th is in the key
 # book: DbMa9 (add 13)

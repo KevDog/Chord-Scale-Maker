@@ -4,7 +4,7 @@ style: Medium slow, straight eighths
 key: Em
 form: AB + Interlude, 32 bars
 context: modal
-source:
+source: 
 # analysis: 2026-10-12, rules v1; E minor, modal
 # book: as played by John Abercrombie. A repeating piano figure (two bars, the second held) is played throughout,
 # solos too (with some variation).
@@ -14,57 +14,72 @@ source:
 # "Absus(add b9)" and "Dbsus(add b9)" are written Absus4b9 and Dbsus4b9;
 # "EMa7(b5)" is written EMaj7#11.
 
-# section | bar | chord
+# bar | chord
 # the Intro is played twice
-Intro     | 1  | EmMaj7/G  # from the symbol: minor-major 7th
-Intro     | 1  | Ab        # modal major: Lydian
-Intro     | 3  | EmMaj7/G  # from the symbol: minor-major 7th
-Intro     | 3  | Ab        # modal major: Lydian
-Intro     | 4  | Ab
-@segno A1 1
-A1        | 1  | EmMaj7/G  # from the symbol: minor-major 7th
-A1        | 1  | Ab        # modal major: Lydian
-A1        | 3  | EmMaj7/G  # from the symbol: minor-major 7th
-A1        | 3  | Ab        # modal major: Lydian
-A1        | 4  | Ab
+
+section: Intro
+1 | EmMaj7/G  # from the symbol: minor-major 7th
+1 | Ab        # modal major: Lydian
+3 | EmMaj7/G  # from the symbol: minor-major 7th
+3 | Ab        # modal major: Lydian
+4 | Ab
+
+section: A1
+@segno 1
+1 | EmMaj7/G  # from the symbol: minor-major 7th
+1 | Ab        # modal major: Lydian
+3 | EmMaj7/G  # from the symbol: minor-major 7th
+3 | Ab        # modal major: Lydian
+4 | Ab
 # bar 4 (1st ending): Ab held
-@ending 1 A1 4
-A1        | 5  | Ab
-A1        | 5  | Absus4b9  # from the symbol: sus b9
-@ending 2 A1 5
-A2        | 6  | AmMaj7/C  # from the symbol: minor-major 7th
-A2        | 6  | Db        # modal major: Lydian
-A2        | 8  | AmMaj7/C  # from the symbol: minor-major 7th
-A2        | 8  | Db        # modal major: Lydian
-A2        | 9  | Db
+@ending 1 4
+5 | Ab
+5 | Absus4b9  # from the symbol: sus b9
+@ending 2 5
+
+section: A2
+1 | AmMaj7/C  # from the symbol: minor-major 7th
+1 | Db        # modal major: Lydian
+3 | AmMaj7/C  # from the symbol: minor-major 7th
+3 | Db        # modal major: Lydian
+4 | Db
 # bar 9 (1st ending): Db held
-@ending 1 A2 9
-A2        | 10 | Db
-A2        | 10 | Dbsus4b9  # from the symbol: sus b9
-@ending 2 A2 10
-B         | 11 | EMaj7#11  # from the symbol: #11
-B         | 11 | Ebsus     # static sus: Mixolydian
-B         | 13 | Ebsus
-B         | 13 | EMaj7#11  # from the symbol: #11
-B         | 15 | EMaj7#11
-B         | 15 | Ebsus     # static sus: Mixolydian
-B         | 17 | Ebsus
-B         | 17 | EMaj7#11  # from the symbol: #11
+@ending 1 4
+5 | Db
+5 | Dbsus4b9  # from the symbol: sus b9
+@ending 2 5
+
+section: B
+bars: 8
+1 | EMaj7#11  # from the symbol: #11
+1 | Ebsus     # static sus: Mixolydian
+3 | Ebsus
+3 | EMaj7#11  # from the symbol: #11
+5 | EMaj7#11
+5 | Ebsus     # static sus: Mixolydian
+7 | Ebsus
+7 | EMaj7#11  # from the symbol: #11
+
+section: Interlude
+bars: 10
 # alt (solos): bars 11–18 ([EMaj7b5] 2 bars, [Eb7sus] 2 bars, [EMaj7b5] 2 bars, [Eb7#9#5] 2 bars), the changes in brackets used for solos
 # Interlude (ff): unlettered in the book, four bars played twice (bars 19–26)
-Interlude | 19 | EmMaj7/G  # from the symbol: minor-major 7th
-Interlude | 19 | Ab        # modal major: Lydian
-Interlude | 21 | EmMaj7/G  # from the symbol: minor-major 7th
-Interlude | 21 | Ab        # modal major: Lydian
-Interlude | 23 | EmMaj7/G  # from the symbol: minor-major 7th
-Interlude | 23 | Ab        # modal major: Lydian
-Interlude | 25 | EmMaj7/G  # from the symbol: minor-major 7th
-Interlude | 25 | Ab        # modal major: Lydian
-Interlude | 26 | Ab
-@nav Interlude 26 D.S. al Ending
+1 | EmMaj7/G  # from the symbol: minor-major 7th
+1 | Ab        # modal major: Lydian
+3 | EmMaj7/G  # from the symbol: minor-major 7th
+3 | Ab        # modal major: Lydian
+5 | EmMaj7/G  # from the symbol: minor-major 7th
+5 | Ab        # modal major: Lydian
+7 | EmMaj7/G  # from the symbol: minor-major 7th
+7 | Ab        # modal major: Lydian
+8 | Ab
+@nav 8 D.S. al Ending
+
+section: Ending
+bars: 4
 # Ending (guitar solo): bars 1–2 vamp and solo till cue; on cue, bar 3 (fermata)
-Ending    | 1  | EmMaj7/G  # from the symbol: minor-major 7th
-Ending    | 1  | Ab        # modal major: Lydian
-Ending    | 2  | Ab
-Ending    | 3  | EmMaj7/G  # from the symbol: minor-major 7th
-Ending    | 3  | Ab        # modal major: Lydian
+1 | EmMaj7/G  # from the symbol: minor-major 7th
+1 | Ab        # modal major: Lydian
+2 | Ab
+3 | EmMaj7/G  # from the symbol: minor-major 7th
+3 | Ab        # modal major: Lydian

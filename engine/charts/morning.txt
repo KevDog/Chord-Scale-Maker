@@ -6,63 +6,71 @@ form: AABC, 32 bars
 source: Colorado Cookbook, p. 140
 # analysis: 2026-10-11, rules v1; A minor
 
-# section | bar | chord | scale
+# bar | chord | scale
+
+section: A1
 # area: A minor (bars 1–16)
-A1 | 1  | Bm7     # ii of the ii–V to A minor
-A1 | 1  | E7      # V7 of A minor: b9 and b13 are in the key
-A1 | 2  | Am7     # ii of D7: Dorian
-A1 | 2  | D7      # V7/bVII in A minor: natural tensions
-A1 | 3  | Bm7     # ii of the ii–V to A minor
-A1 | 3  | E7      # V7 of A minor: b9 and b13 are in the key
-A1 | 4  | Am7     # ii of D7: Dorian
-A1 | 4  | D7      # V7/bVII in A minor: natural tensions
-A1 | 5  | Dm7     # ii of G7: Dorian
-A1 | 5  | G7      # V7/bIII in A minor: natural tensions
-A1 | 6  | Em7     # ii of A7: Dorian
-A1 | 6  | A7      # extended ii–V: a side-step, its own key
-A1 | 7  | Bm7     # ii of the ii–V to A minor
-A1 | 7  | E7      # V7 of A minor: b9 and b13 are in the key
-A1 | 8  | Am7     # ii of D7: Dorian
-A1 | 8  | D7      # V7/bVII in A minor: natural tensions
-A2 | 9  | Bm7     # ii of the ii–V to A minor
-A2 | 9  | E7      # V7 of A minor: b9 and b13 are in the key
-A2 | 10 | Am7     # ii of D7: Dorian
-A2 | 10 | D7      # V7/bVII in A minor: natural tensions
-A2 | 11 | Bm7     # ii of the ii–V to A minor
-A2 | 11 | E7      # V7 of A minor: b9 and b13 are in the key
-A2 | 12 | Am7     # ii of D7: Dorian
-A2 | 12 | D7      # V7/bVII in A minor: natural tensions
-A2 | 13 | Dm7     # ii of G7: Dorian
-A2 | 13 | G7      # V7/bIII in A minor: natural tensions
-A2 | 14 | Em7     # ii of A7: Dorian
-A2 | 14 | A7      # extended ii–V: a side-step, its own key
-A2 | 15 | Bm7     # ii of the ii–V to A minor
-A2 | 15 | E7      # V7 of A minor: b9 and b13 are in the key
-A2 | 16 | Am      # tonic minor: Dorian by convention
+1 | Bm7     # ii of the ii–V to A minor
+1 | E7      # V7 of A minor: b9 and b13 are in the key
+2 | Am7     # ii of D7: Dorian
+2 | D7      # V7/bVII in A minor: natural tensions
+3 | Bm7     # ii of the ii–V to A minor
+3 | E7      # V7 of A minor: b9 and b13 are in the key
+4 | Am7     # ii of D7: Dorian
+4 | D7      # V7/bVII in A minor: natural tensions
+5 | Dm7     # ii of G7: Dorian
+5 | G7      # V7/bIII in A minor: natural tensions
+6 | Em7     # ii of A7: Dorian
+6 | A7      # extended ii–V: a side-step, its own key
+7 | Bm7     # ii of the ii–V to A minor
+7 | E7      # V7 of A minor: b9 and b13 are in the key
+8 | Am7     # ii of D7: Dorian
+8 | D7      # V7/bVII in A minor: natural tensions
+
+section: A2
+1 | Bm7     # ii of the ii–V to A minor
+1 | E7      # V7 of A minor: b9 and b13 are in the key
+2 | Am7     # ii of D7: Dorian
+2 | D7      # V7/bVII in A minor: natural tensions
+3 | Bm7     # ii of the ii–V to A minor
+3 | E7      # V7 of A minor: b9 and b13 are in the key
+4 | Am7     # ii of D7: Dorian
+4 | D7      # V7/bVII in A minor: natural tensions
+5 | Dm7     # ii of G7: Dorian
+5 | G7      # V7/bIII in A minor: natural tensions
+6 | Em7     # ii of A7: Dorian
+6 | A7      # extended ii–V: a side-step, its own key
+7 | Bm7     # ii of the ii–V to A minor
+7 | E7      # V7 of A minor: b9 and b13 are in the key
+8 | Am      # tonic minor: Dorian by convention
+
+section: B
 # area: C major (bars 17–30)
-B  | 17 | Dm7     # ii of the ii–V to C
-B  | 18 | G7sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
-B  | 19 | C6      # tonic: the 4th is in the key
-B  | 19 | F7      # tritone substitute: resolves down a half step to Em7
-B  | 20 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B  | 20 | A7alt   # from the symbol: altered
-B  | 21 | Dm7     # ii of G7sus4: Dorian
-B  | 22 | G7sus4  # static sus: Mixolydian
-B  | 23 | Bm7b5   # iiø7 of E7: Locrian, the key's own notes (its ♭2 is a passing note)
-B  | 24 | E7      # V7/vi in C: b9 and b13 are in the key
-C  | 25 | Bm7     # ii of the ii–V to A minor
-C  | 25 | E7      # V7/vi in C: b9 and b13 are in the key
-C  | 26 | Am7     # ii of D7: Dorian
-C  | 26 | D7      # V7/V in C: natural tensions
-C  | 27 | Bm7     # ii of the ii–V to A minor
-C  | 27 | E7      # V7/vi in C: b9 and b13 are in the key
-C  | 28 | Am7     # ii of D7: Dorian
-C  | 28 | D7      # V7/V in C: natural tensions
-C  | 29 | Dm7     # ii of G7: Dorian
-C  | 29 | G7      # V7/I in C: natural tensions
-C  | 30 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-C  | 30 | A7      # extended ii–V: a side-step, its own key
+1 | Dm7     # ii of the ii–V to C
+2 | G7sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+3 | C6      # tonic: the 4th is in the key
+3 | F7      # tritone substitute: resolves down a half step to Em7
+4 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+4 | A7alt   # from the symbol: altered
+5 | Dm7     # ii of G7sus4: Dorian
+6 | G7sus4  # static sus: Mixolydian
+7 | Bm7b5   # iiø7 of E7: Locrian, the key's own notes (its ♭2 is a passing note)
+8 | E7      # V7/vi in C: b9 and b13 are in the key
+
+section: C
+1 | Bm7     # ii of the ii–V to A minor
+1 | E7      # V7/vi in C: b9 and b13 are in the key
+2 | Am7     # ii of D7: Dorian
+2 | D7      # V7/V in C: natural tensions
+3 | Bm7     # ii of the ii–V to A minor
+3 | E7      # V7/vi in C: b9 and b13 are in the key
+4 | Am7     # ii of D7: Dorian
+4 | D7      # V7/V in C: natural tensions
+5 | Dm7     # ii of G7: Dorian
+5 | G7      # V7/I in C: natural tensions
+6 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+6 | A7      # extended ii–V: a side-step, its own key
 # area: A minor (bars 31–32)
-C  | 31 | Bm7     # ii of the ii–V to A minor
-C  | 31 | E7      # V7 of A minor: b9 and b13 are in the key
-C  | 32 | Am      # tonic minor: Dorian by convention
+7 | Bm7     # ii of the ii–V to A minor
+7 | E7      # V7 of A minor: b9 and b13 are in the key
+8 | Am      # tonic minor: Dorian by convention

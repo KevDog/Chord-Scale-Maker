@@ -7,55 +7,60 @@ source:
 # analysis: 2026-10-12, rules v1; G
 # the pickup is melody only
 
-# section | bar | chord
-A | 1  | GMaj7    # tonic: the 4th is in the key
-A | 2  | Bm7b5    # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 2  | E7b9     # V7/ii in G: the b13 is in the key, the b9 from the symbol
-A | 3  | Am9      # ii: Dorian, the key’s own notes
-A | 4  | C#m7b5   # iiø7 of F#7b9: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 4  | F#7b9    # V7/iii in G: b9 and b13 are in the key
-A | 5  | GMaj7    # tonic: the 4th is in the key
-A | 6  | Bm7b5    # iiø7 of E7sus4: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 6  | E7sus4   # VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-A | 6  | E7       # extended dominant: each one falls a fifth into the next: natural tensions
-A | 7  | A9       # V7 of V7: the dominant of the dominant: natural tensions
-A | 9  | D13      # V7 in G, not resolving: natural tensions
-A | 9  | Cdim7    # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
+# bar | chord
+
+section: A
+1  | GMaj7    # tonic: the 4th is in the key
+2  | Bm7b5    # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2  | E7b9     # V7/ii in G: the b13 is in the key, the b9 from the symbol
+3  | Am9      # ii: Dorian, the key’s own notes
+4  | C#m7b5   # iiø7 of F#7b9: Locrian, the key's own notes (its ♭2 is a passing note)
+4  | F#7b9    # V7/iii in G: b9 and b13 are in the key
+5  | GMaj7    # tonic: the 4th is in the key
+6  | Bm7b5    # iiø7 of E7sus4: Locrian, the key's own notes (its ♭2 is a passing note)
+6  | E7sus4   # VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+6  | E7       # extended dominant: each one falls a fifth into the next: natural tensions
+7  | A9       # V7 of V7: the dominant of the dominant: natural tensions
+9  | D13      # V7 in G, not resolving: natural tensions
+9  | Cdim7    # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
 # bar 9: Cdim7 on beat 4
-A | 10 | Bm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 10 | Em7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A | 11 | Am7      # ii of D9sus4: Dorian
-A | 11 | D9sus4   # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-A | 11 | D7       # V7 of G: natural tensions
-A | 12 | GMaj7    # tonic: the 4th is in the key
+10 | Bm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+10 | Em7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+11 | Am7      # ii of D9sus4: Dorian
+11 | D9sus4   # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+11 | D7       # V7 of G: natural tensions
+12 | GMaj7    # tonic: the 4th is in the key
 # alt: bar 12 beat 4 (B7)
-A | 13 | Em7      # ii of A9: Dorian
-A | 14 | A9       # V7/V in G: natural tensions
-A | 15 | Am7      # ii of the ii–V to G
-A | 16 | D7       # V7 of G: natural tensions
-B | 17 | GMaj7    # tonic: the 4th is in the key
-B | 18 | Bm7b5    # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 18 | E7b9     # V7/ii in G: the b13 is in the key, the b9 from the symbol
-B | 19 | Am9      # ii: Dorian, the key’s own notes
-B | 20 | C#m7b5   # iiø7 of F#7b9: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 20 | F#7b9    # V7/iii in G: b9 and b13 are in the key
-B | 21 | GMaj7    # tonic: the 4th is in the key
-B | 22 | Bm7b5    # iiø7 of E7sus4: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 22 | E7sus4   # VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-B | 22 | E7       # extended dominant: each one falls a fifth into the next: natural tensions
-B | 23 | A9       # V7 of V7: the dominant of the dominant: natural tensions
-B | 25 | D7       # V7 in G, not resolving: natural tensions
-B | 25 | D7/C     # V7 in G, not resolving: natural tensions
-B | 26 | Bm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B | 26 | Em7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B | 27 | Am7      # ii: Dorian, the key’s own notes
-B | 27 | F#m7b5   # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 27 | B7       # V7/vi in G: b9 and b13 are in the key
-B | 28 | Em       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B | 28 | F9       # back door bVII7 to GMaj7/D: the #11 is in the key
-B | 29 | GMaj7/D  # tonic: the 4th is in the key
-B | 29 | E7       # V7/ii in G: the b13 is in the key
-B | 30 | Am7      # ii of the ii–V to G
-B | 30 | D7       # V7 of G: natural tensions
-B | 31 | G6       # tonic: the 4th is in the key
-# alt: bar 32 (Am7 D7), the turnaround for the repeat
+13 | Em7      # ii of A9: Dorian
+14 | A9       # V7/V in G: natural tensions
+15 | Am7      # ii of the ii–V to G
+16 | D7       # V7 of G: natural tensions
+
+section: B
+bars: 16
+1  | GMaj7    # tonic: the 4th is in the key
+2  | Bm7b5    # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2  | E7b9     # V7/ii in G: the b13 is in the key, the b9 from the symbol
+3  | Am9      # ii: Dorian, the key’s own notes
+4  | C#m7b5   # iiø7 of F#7b9: Locrian, the key's own notes (its ♭2 is a passing note)
+4  | F#7b9    # V7/iii in G: b9 and b13 are in the key
+5  | GMaj7    # tonic: the 4th is in the key
+6  | Bm7b5    # iiø7 of E7sus4: Locrian, the key's own notes (its ♭2 is a passing note)
+6  | E7sus4   # VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+6  | E7       # extended dominant: each one falls a fifth into the next: natural tensions
+7  | A9       # V7 of V7: the dominant of the dominant: natural tensions
+9  | D7       # V7 in G, not resolving: natural tensions
+9  | D7/C     # V7 in G, not resolving: natural tensions
+10 | Bm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+10 | Em7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+11 | Am7      # ii: Dorian, the key’s own notes
+11 | F#m7b5   # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
+11 | B7       # V7/vi in G: b9 and b13 are in the key
+12 | Em       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+12 | F9       # back door bVII7 to GMaj7/D: the #11 is in the key
+13 | GMaj7/D  # tonic: the 4th is in the key
+13 | E7       # V7/ii in G: the b13 is in the key
+14 | Am7      # ii of the ii–V to G
+14 | D7       # V7 of G: natural tensions
+15 | G6       # tonic: the 4th is in the key
+# alt: bar 16 (Am7 D7), the turnaround for the repeat

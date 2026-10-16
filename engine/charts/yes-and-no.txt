@@ -3,45 +3,53 @@ composer: Wayne Shorter
 style: Up
 key: Em
 form: AABA, 58 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; E minor
 # Fast swing, half note = 260; A is 12 bars + a 2-bar ending (14 bars); B is 16 bars
 # the book writes A (with 1st/2nd endings) and B, then D.S. al 2nd ending (AABA form);
 # after solos, play the entire head and take the Coda
 
-# section | bar | chord
+# bar | chord
 # bars 1–8: the bass plays a D pedal
+
+section: A
+bars: 16
 # area: E minor (bars 1–5)
-A    | 1  | D9sus4  # static sus: Mixolydian
+1  | D9sus4  # static sus: Mixolydian
 # book: D13sus (written D9sus4)
-A    | 5  | DMaj9   # ♭VII of E minor: D major, the notes of E Dorian
+5  | DMaj9   # ♭VII of E minor: D major, the notes of E Dorian
 # area: G major (bars 9–23)
-A    | 9  | Am7     # ii of the ii–V to G
-A    | 9  | D7      # V7 of G: natural tensions
-A    | 10 | GMaj7   # tonic: the 4th is in the key
-A    | 10 | Cm7     # a borrowed minor chord: Dorian, its own key
+9  | Am7     # ii of the ii–V to G
+9  | D7      # V7 of G: natural tensions
+10 | GMaj7   # tonic: the 4th is in the key
+10 | Cm7     # a borrowed minor chord: Dorian, its own key
 # alt: bar 10, beats 3–4 (F7#5): the piano often plays it, especially during the head
-A    | 11 | BbMaj7  # ♭IIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+11 | BbMaj7  # ♭IIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
 # the coda sign stands over bar 12 (BbMaj7 held)
-A    | 12 | BbMaj7
-A    | 13 | Em9     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A    | 15 | Em9
-@segno A 1
-@coda A 12
-@ending 1 A 13 14
-@ending 2 A 15 16
-B    | 17 | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B    | 19 | D7b9    # V7 of G: the b9 from the symbol
-B    | 21 | Gm9     # ii of the ii–V to F minor
-B    | 23 | C13     # V7/bvii in G: the #11 is in the key
+12 | BbMaj7
+13 | Em9     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+15 | Em9
+@segno 1
+@coda 12
+@ending 1 13 14
+@ending 2 15 16
+
+section: B
+1  | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+3  | D7b9    # V7 of G: the b9 from the symbol
+5  | Gm9     # ii of the ii–V to F minor
+7  | C13     # V7/bvii in G: the #11 is in the key
 # area: Eb major (bars 25–2)
-B    | 25 | Fm9     # ii of the ii–V to Eb
-B    | 27 | Bb13    # V7 of Eb: natural tensions
-B    | 29 | EbMaj7  # tonic: the 4th is in the key
-B    | 31 | Am9     # ii of D9sus4: Dorian
+9  | Fm9     # ii of the ii–V to Eb
+11 | Bb13    # V7 of Eb: natural tensions
+13 | EbMaj7  # tonic: the 4th is in the key
+15 | Am9     # ii of D9sus4: Dorian
 # bar 32: Am9 held (repeated for the D.S. marker)
-B    | 32 | Am9
-@nav B 32 D.S. al 2nd ending
-Coda | 1  | BbMaj7  # a non-tonic major chord: Lydian
-Coda | 2  | Em9     # a borrowed minor chord: Dorian, its own key
-@coda Coda 1
+16 | Am9
+@nav 16 D.S. al 2nd ending
+
+section: Coda
+bars: 4
+1  | BbMaj7  # a non-tonic major chord: Lydian
+2  | Em9     # a borrowed minor chord: Dorian, its own key
+@coda 1

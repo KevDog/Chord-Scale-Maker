@@ -5,91 +5,100 @@ style: Jazz waltz
 key: F
 form: ABCD, 64 bars
 time: 3/4
-source:
+source: 
 # analysis: 2026-10-12, rules v1; F
 
-# section | bar | chord
+# bar | chord
+
+section: A
 # area: F major (bars 1–5)
-A | 1  | F6      # tonic: the 4th is in the key
-A | 2  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A | 3  | Gm7     # ii of C7: Dorian
-A | 4  | C7      # V7/I in F: natural tensions
-A | 4  | C7/Bb   # V7 in F, not resolving: natural tensions
-A | 5  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+1  | F6      # tonic: the 4th is in the key
+2  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3  | Gm7     # ii of C7: Dorian
+4  | C7      # V7/I in F: natural tensions
+4  | C7/Bb   # V7 in F, not resolving: natural tensions
+5  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 # area: Db major (bars 6–10)
-A | 6  | Ab7     # V7 of Db: natural tensions
-A | 7  | DbMaj7  # tonic: the 4th is in the key
-A | 8  | Gb7     # IV7 in Db, not resolving: the #11 is in the key
+6  | Ab7     # V7 of Db: natural tensions
+7  | DbMaj7  # tonic: the 4th is in the key
+8  | Gb7     # IV7 in Db, not resolving: the #11 is in the key
 # alt: bar 8 (Gm7b5)
-A | 9  | A7alt   # from the symbol: altered
-A | 10 | D7b9    # V7 of G minor, the chain's last link: b9 and b13 are in the key
+9  | A7alt   # from the symbol: altered
+10 | D7b9    # V7 of G minor, the chain's last link: b9 and b13 are in the key
 # area: F major (bars 11–21)
-A | 11 | Gm7     # ii of the ii–V to F
-A | 12 | C7      # V7 of F: natural tensions
-A | 13 | F6      # tonic: the 4th is in the key
-A | 14 | Ab7     # tritone substitute: resolves down a half step to Gm7
-A | 15 | Gm7     # ii of the ii–V to F
+11 | Gm7     # ii of the ii–V to F
+12 | C7      # V7 of F: natural tensions
+13 | F6      # tonic: the 4th is in the key
+14 | Ab7     # tritone substitute: resolves down a half step to Gm7
+15 | Gm7     # ii of the ii–V to F
 # alt: bar 15 (DbMaj7)
-A | 16 | C7      # V7 of F: natural tensions
-B | 17 | F6      # tonic: the 4th is in the key
-B | 18 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B | 19 | Gm7     # ii of C7: Dorian
-B | 20 | C7      # V7/I in F: natural tensions
-B | 20 | C7/Bb   # V7 in F, not resolving: natural tensions
-B | 21 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+16 | C7      # V7 of F: natural tensions
+
+section: B
+1  | F6      # tonic: the 4th is in the key
+2  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3  | Gm7     # ii of C7: Dorian
+4  | C7      # V7/I in F: natural tensions
+4  | C7/Bb   # V7 in F, not resolving: natural tensions
+5  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 # area: Db major (bars 22–26)
-B | 22 | Ab7     # V7 of Db: natural tensions
-B | 23 | DbMaj7  # tonic: the 4th is in the key
-B | 24 | Gb7     # IV7 in Db, not resolving: the #11 is in the key
-# alt: bar 24 (Gm7b5)
-B | 25 | A7alt   # from the symbol: altered
-B | 26 | D7b9    # V7 of G minor, the chain's last link: b9 and b13 are in the key
+6  | Ab7     # V7 of Db: natural tensions
+7  | DbMaj7  # tonic: the 4th is in the key
+8  | Gb7     # IV7 in Db, not resolving: the #11 is in the key
+# alt: bar 8 (Gm7b5)
+9  | A7alt   # from the symbol: altered
+10 | D7b9    # V7 of G minor, the chain's last link: b9 and b13 are in the key
 # area: F major (bars 27–32)
-B | 27 | Gm7     # ii of the ii–V to F
-B | 28 | C7      # V7 of F: natural tensions
-B | 29 | F6      # tonic: the 4th is in the key
-# alt: bar 30 (Cm11)
+11 | Gm7     # ii of the ii–V to F
+12 | C7      # V7 of F: natural tensions
+13 | F6      # tonic: the 4th is in the key
+# alt: bar 14 (Cm11)
 # book: Cm7(add 11)
-B | 31 | Bm7b5   # iiø7 of E7: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 32 | E7      # tritone substitute: resolves down a half step to Ebm7
+15 | Bm7b5   # iiø7 of E7: Locrian, the key's own notes (its ♭2 is a passing note)
+16 | E7      # tritone substitute: resolves down a half step to Ebm7
+
+section: C
 # area: Db major (bars 33–40)
-C | 33 | Ebm7    # ii of the ii–V to Db
-C | 34 | Ab7     # V7 of Db: natural tensions
-C | 35 | DbMaj7  # tonic: the 4th is in the key
-C | 36 | Db6     # tonic: the 4th is in the key
-# alt: bar 36 (Bb7)
-C | 37 | Ebm7    # ii of the ii–V to Db
-C | 38 | Ab7     # V7 of Db: natural tensions
-C | 39 | DbMaj7  # tonic: the 4th is in the key
-# alt: bar 39 (C7)
-C | 40 | Db6     # tonic: the 4th is in the key
+1  | Ebm7    # ii of the ii–V to Db
+2  | Ab7     # V7 of Db: natural tensions
+3  | DbMaj7  # tonic: the 4th is in the key
+4  | Db6     # tonic: the 4th is in the key
+# alt: bar 4 (Bb7)
+5  | Ebm7    # ii of the ii–V to Db
+6  | Ab7     # V7 of Db: natural tensions
+7  | DbMaj7  # tonic: the 4th is in the key
+# alt: bar 7 (C7)
+8  | Db6     # tonic: the 4th is in the key
 # area: B major (bars 41–46)
-C | 41 | C#m7    # ii of the ii–V to B
-C | 42 | F#7     # V7 of B: natural tensions
-C | 43 | BMaj7   # tonic: the 4th is in the key
-C | 44 | EMaj7   # IV: the #4 is the key’s 7th
-C | 45 | Am7     # ii of the ii–V to G minor
-# alt: bar 45 (A7#5)
-C | 46 | D7      # V7/bvi in B: the #11 is in the key
+9  | C#m7    # ii of the ii–V to B
+10 | F#7     # V7 of B: natural tensions
+11 | BMaj7   # tonic: the 4th is in the key
+12 | EMaj7   # IV: the #4 is the key’s 7th
+13 | Am7     # ii of the ii–V to G minor
+# alt: bar 13 (A7#5)
+14 | D7      # V7/bvi in B: the #11 is in the key
 # area: F major (bars 47–53)
-C | 47 | Gm7     # ii of the ii–V to F
-C | 48 | C7      # V7 of F: natural tensions
-D | 49 | F6      # tonic: the 4th is in the key
-D | 50 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-# alt: bars 50–52 (Dm7/C Bm7b5 Bbm6)
-D | 51 | Gm7     # ii of C7: Dorian
-D | 52 | C7      # V7/I in F: natural tensions
-D | 52 | C7/Bb   # V7 in F, not resolving: natural tensions
-D | 53 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+15 | Gm7     # ii of the ii–V to F
+16 | C7      # V7 of F: natural tensions
+
+section: D
+bars: 16
+1  | F6      # tonic: the 4th is in the key
+2  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+# alt: bars 2–4 (Dm7/C Bm7b5 Bbm6)
+3  | Gm7     # ii of C7: Dorian
+4  | C7      # V7/I in F: natural tensions
+4  | C7/Bb   # V7 in F, not resolving: natural tensions
+5  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 # area: Db major (bars 54–58)
-D | 54 | Ab7     # V7 of Db: natural tensions
-D | 55 | DbMaj7  # tonic: the 4th is in the key
-D | 56 | Gb7     # IV7 in Db, not resolving: the #11 is in the key
-# alt: bar 56 (Gm7b5)
-D | 57 | A7alt   # from the symbol: altered
-D | 58 | D7b9    # V7 of G minor, the chain's last link: b9 and b13 are in the key
+6  | Ab7     # V7 of Db: natural tensions
+7  | DbMaj7  # tonic: the 4th is in the key
+8  | Gb7     # IV7 in Db, not resolving: the #11 is in the key
+# alt: bar 8 (Gm7b5)
+9  | A7alt   # from the symbol: altered
+10 | D7b9    # V7 of G minor, the chain's last link: b9 and b13 are in the key
 # area: F major (bars 59–61)
-D | 59 | Gm7     # ii of the ii–V to F
-D | 60 | C7      # V7 of F: natural tensions
-D | 61 | F6      # tonic: the 4th is in the key
+11 | Gm7     # ii of the ii–V to F
+12 | C7      # V7 of F: natural tensions
+13 | F6      # tonic: the 4th is in the key
 # alt (optional): bars 63–64 (Gm7 C7) turnaround

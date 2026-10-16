@@ -3,79 +3,89 @@ composer: Quincy Jones, Henri Salvador
 style: Ballad
 key: F
 form: AABA, 32 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; F
 # book: Medium Ballad; melody in straight eighths. Letters A (16 bars: two 8-bar A's), B, C (the last A).
 # the book's pickup bar carries C9sus; written as a one-bar Intro
 
-# section | bar | chord
+# bar | chord
+
+section: Intro
+bars: 4
 # area: F major (bars 1–16)
-Intro | 1  | C9sus4  # static sus: Mixolydian
-A     | 1  | FMaj7   # tonic: the 4th is in the key
-A     | 1  | Gm7     # ii: Dorian, the key’s own notes
-A     | 2  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A     | 2  | D7      # V7/ii in F: the b13 is in the key
-A     | 3  | Gm7     # ii: Dorian, the key’s own notes
-A     | 3  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A     | 4  | BbMaj7  # IV: the #4 is the key’s 7th
-A     | 4  | C7      # V7 in F, not resolving: natural tensions
-A     | 5  | Cm7     # ii of the ii–V to Bb
-A     | 5  | F7      # V7/IV in F: natural tensions
-A     | 6  | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
-A     | 6  | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A     | 6  | A7      # V7/vi in F: b9 and b13 are in the key
-A     | 7  | Dm7     # ii of G7: Dorian
-A     | 7  | G7      # extended dominant: V7 of C9sus4
-A     | 8  | C9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+1  | C9sus4  # static sus: Mixolydian
+
+section: A
+1  | FMaj7   # tonic: the 4th is in the key
+1  | Gm7     # ii: Dorian, the key’s own notes
+2  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+2  | D7      # V7/ii in F: the b13 is in the key
+3  | Gm7     # ii: Dorian, the key’s own notes
+3  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+4  | BbMaj7  # IV: the #4 is the key’s 7th
+4  | C7      # V7 in F, not resolving: natural tensions
+5  | Cm7     # ii of the ii–V to Bb
+5  | F7      # V7/IV in F: natural tensions
+6  | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
+6  | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+6  | A7      # V7/vi in F: b9 and b13 are in the key
+7  | Dm7     # ii of G7: Dorian
+7  | G7      # extended dominant: V7 of C9sus4
+8  | C9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 # bar 8: break
-A     | 9  | FMaj7   # tonic: the 4th is in the key
-A     | 9  | Gm7     # ii: Dorian, the key’s own notes
-A     | 10 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A     | 10 | D7      # V7/ii in F: the b13 is in the key
-A     | 11 | Gm7     # ii: Dorian, the key’s own notes
-A     | 11 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A     | 12 | BbMaj7  # IV: the #4 is the key’s 7th
-A     | 12 | C7      # V7 in F, not resolving: natural tensions
-A     | 13 | Cm7     # ii of the ii–V to Bb
-A     | 13 | F7      # V7/IV in F: natural tensions
-A     | 14 | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
-A     | 14 | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A     | 14 | A7      # V7/vi in F: b9 and b13 are in the key
-A     | 15 | Dm7     # ii of G7: Dorian
-A     | 15 | G7      # extended dominant: V7 of C9sus4
-A     | 15 | C9sus4  # static sus: Mixolydian
-A     | 15 | Gb7     # tritone substitute: resolves down a half step to F6
-A     | 16 | F6      # tonic: the 4th is in the key
+9  | FMaj7   # tonic: the 4th is in the key
+9  | Gm7     # ii: Dorian, the key’s own notes
+10 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+10 | D7      # V7/ii in F: the b13 is in the key
+11 | Gm7     # ii: Dorian, the key’s own notes
+11 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+12 | BbMaj7  # IV: the #4 is the key’s 7th
+12 | C7      # V7 in F, not resolving: natural tensions
+13 | Cm7     # ii of the ii–V to Bb
+13 | F7      # V7/IV in F: natural tensions
+14 | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
+14 | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+14 | A7      # V7/vi in F: b9 and b13 are in the key
+15 | Dm7     # ii of G7: Dorian
+15 | G7      # extended dominant: V7 of C9sus4
+15 | C9sus4  # static sus: Mixolydian
+15 | Gb7     # tritone substitute: resolves down a half step to F6
+16 | F6      # tonic: the 4th is in the key
+
+section: B
+bars: 8
 # area: Eb major (bars 17–22)
-B     | 17 | Fm7     # ii of the ii–V to Eb
-B     | 18 | Bb7     # V7 of Eb: natural tensions
-B     | 19 | EbMaj7  # tonic: the 4th is in the key
-B     | 20 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B     | 20 | Ab7     # IV7 in Eb, not resolving: the #11 is in the key
-B     | 20 | Am7     # a borrowed minor chord: Dorian, its own key
-# alt: bar 20 (Eb7 A7#9), the book's bracketed alternate changes
-B     | 21 | Bbm     # a borrowed minor chord: Dorian, its own key
-B     | 21 | Gb/Bb   # ♭III, borrowed from Eb minor: Lydian (its ♯11 is in the key)
-B     | 22 | Eb7     # I7 in Eb, not resolving: natural tensions
-B     | 22 | Db7     # tritone substitute: resolves down a half step to C9sus4
+1  | Fm7     # ii of the ii–V to Eb
+2  | Bb7     # V7 of Eb: natural tensions
+3  | EbMaj7  # tonic: the 4th is in the key
+4  | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+4  | Ab7     # IV7 in Eb, not resolving: the #11 is in the key
+4  | Am7     # a borrowed minor chord: Dorian, its own key
+# alt: bar 4 (Eb7 A7#9), the book's bracketed alternate changes
+5  | Bbm     # a borrowed minor chord: Dorian, its own key
+5  | Gb/Bb   # ♭III, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+6  | Eb7     # I7 in Eb, not resolving: natural tensions
+6  | Db7     # tritone substitute: resolves down a half step to C9sus4
 # area: F major (bars 23–32)
-B     | 23 | C9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+7  | C9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+
+section: C
 # bar 24: break (C9sus held)
-C     | 25 | FMaj7   # tonic: the 4th is in the key
-C     | 25 | Gm7     # ii: Dorian, the key’s own notes
-C     | 26 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-C     | 26 | D7      # V7/ii in F: the b13 is in the key
-C     | 27 | Gm7     # ii: Dorian, the key’s own notes
-C     | 27 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-C     | 28 | BbMaj7  # IV: the #4 is the key’s 7th
-C     | 28 | C7      # V7 in F, not resolving: natural tensions
-C     | 29 | Cm7     # ii of the ii–V to Bb
-C     | 29 | F7      # V7/IV in F: natural tensions
-C     | 30 | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
-C     | 30 | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-C     | 30 | A7      # V7/vi in F: b9 and b13 are in the key
-C     | 31 | Dm7     # ii of G7: Dorian
-C     | 31 | G7      # extended dominant: V7 of C9sus4
-C     | 31 | C9sus4  # static sus: Mixolydian
-C     | 31 | Gb7     # tritone substitute: resolves down a half step to F6
-C     | 32 | F6      # tonic: the 4th is in the key
+1  | FMaj7   # tonic: the 4th is in the key
+1  | Gm7     # ii: Dorian, the key’s own notes
+2  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+2  | D7      # V7/ii in F: the b13 is in the key
+3  | Gm7     # ii: Dorian, the key’s own notes
+3  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+4  | BbMaj7  # IV: the #4 is the key’s 7th
+4  | C7      # V7 in F, not resolving: natural tensions
+5  | Cm7     # ii of the ii–V to Bb
+5  | F7      # V7/IV in F: natural tensions
+6  | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
+6  | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+6  | A7      # V7/vi in F: b9 and b13 are in the key
+7  | Dm7     # ii of G7: Dorian
+7  | G7      # extended dominant: V7 of C9sus4
+7  | C9sus4  # static sus: Mixolydian
+7  | Gb7     # tritone substitute: resolves down a half step to F6
+8  | F6      # tonic: the 4th is in the key

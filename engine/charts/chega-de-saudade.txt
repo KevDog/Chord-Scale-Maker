@@ -9,78 +9,90 @@ source:
 
 # A and B in D minor, C and D in D major
 # printed A13sus (bar 62): written A9sus4, the nearest symbol the library reads
-# section | bar | chord
+# bar | chord
+
+section: A
+bars: 16
 # area: D minor (bars 1–31)
-A | 1  | Dm       # tonic minor: Dorian by convention
+1  | Dm       # tonic minor: Dorian by convention
 # alt (optional): bar 2 (Dm7/C)
-A | 3  | E7       # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key
+3  | E7       # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key
 # alt (optional): bar 3 (E7/B)
-A | 5  | A7b9#5   # V7 of D minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
+5  | A7b9#5   # V7 of D minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
 # alt (optional): bar 5 (Bbm6)
-A | 7  | Dm       # tonic minor: Dorian by convention
-A | 8  | Em7b5    # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 8  | A7       # V7 of D minor: b9 and b13 are in the key
-A | 9  | Dm       # tonic minor: Dorian by convention
-A | 10 | Bm7b5    # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 10 | E7       # V7/v in D minor: b9 and b13 are in the key
-A | 11 | Am       # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
-A | 13 | BbMaj7   # a non-tonic major chord: Lydian
-A | 14 | Bb6      # a non-tonic major chord: Lydian
-A | 15 | A7b9     # V7 of D minor: b9 and b13 are in the key
-B | 17 | Dm       # tonic minor: Dorian by convention
+7  | Dm       # tonic minor: Dorian by convention
+8  | Em7b5    # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+8  | A7       # V7 of D minor: b9 and b13 are in the key
+9  | Dm       # tonic minor: Dorian by convention
+10 | Bm7b5    # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+10 | E7       # V7/v in D minor: b9 and b13 are in the key
+11 | Am       # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+13 | BbMaj7   # a non-tonic major chord: Lydian
+14 | Bb6      # a non-tonic major chord: Lydian
+15 | A7b9     # V7 of D minor: b9 and b13 are in the key
+
+section: B
+1  | Dm       # tonic minor: Dorian by convention
 # alt (optional): bar 18 (Dm7/C)
-B | 19 | E7       # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key
+3  | E7       # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key
 # alt (optional): bar 19 (E7/B)
-B | 21 | A7b9#5   # V7 of D minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
+5  | A7b9#5   # V7 of D minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
 # alt (optional): bar 21 (Bbm6)
-B | 23 | Dm       # tonic minor: Dorian by convention
+7  | Dm       # tonic minor: Dorian by convention
 # alt (optional): bar 23 (D7)
-B | 24 | D7b9     # V7/iv in D minor: the b13 is in the key, the b9 from the symbol
-B | 25 | Gm       # iv: Dorian, the key’s own notes
-B | 26 | A7       # V7 of D minor: b9 and b13 are in the key
-B | 27 | Dm       # tonic minor: Dorian by convention
+8  | D7b9     # V7/iv in D minor: the b13 is in the key, the b9 from the symbol
+9  | Gm       # iv: Dorian, the key’s own notes
+10 | A7       # V7 of D minor: b9 and b13 are in the key
+11 | Dm       # tonic minor: Dorian by convention
 # alt (optional): bar 28 (Dm7/C)
-B | 29 | E7b9     # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key
+13 | E7b9     # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key
 # alt (optional): bar 29 (Bdim7)
-B | 30 | A7b9#5   # V7 of D minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
+14 | A7b9#5   # V7 of D minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
 # alt (optional): bar 30 (Bbm6)
-B | 31 | Dm       # tonic minor: Dorian by convention
+15 | Dm       # tonic minor: Dorian by convention
 # area: D major (bars 32–67)
-B | 32 | Em7      # ii of the ii–V to D
-B | 32 | A7       # V7 of D: natural tensions
-C | 33 | DMaj7    # tonic: the 4th is in the key
-C | 34 | B7#5/D#  # V7/ii in D: the b13 is in the key, the #11 from the symbol
-C | 35 | Em7      # ii of A9sus: Dorian
-C | 37 | A9sus    # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-C | 38 | A7       # V7 of D: natural tensions
-C | 39 | Ddim7    # auxiliary diminished: it decorates the chord and returns to it
-C | 40 | DMaj7    # tonic: the 4th is in the key
-C | 41 | F#m7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-C | 42 | Fdim7    # passing diminished: a rootless dominant ♭9
-C | 43 | Em7      # ii: Dorian, the key’s own notes
-C | 45 | E9       # II7 in D, not resolving: natural tensions
-C | 47 | Gm6      # a minor sixth chord: Dorian
-C | 48 | A7       # V7 of D: natural tensions
-D | 49 | DMaj7    # tonic: the 4th is in the key
-D | 50 | Bm7      # ii of E7: Dorian
-D | 51 | E7       # V7/V in D: natural tensions
-D | 53 | F#7      # V7/vi in D: b9 and b13 are in the key
-D | 55 | Bm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-D | 55 | Bbm7     # a borrowed minor chord: Dorian, its own key
-D | 56 | Am7      # ii of the ii–V to G
-D | 56 | D7       # V7/IV in D: natural tensions
-D | 57 | GMaj7    # the D7 before it makes G the key of the moment: the 4th is in the key
-D | 58 | Gm7      # a borrowed minor chord: Dorian, its own key
-D | 59 | F#m7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-D | 60 | B13      # extended ii–V: a side-step, its own key
-D | 60 | B7#5     # extended dominant: V7 of E9; #11 and b13 from the symbol
-D | 61 | E9       # extended dominant: V7 of A9sus4
-D | 62 | A9sus4   # static sus: Mixolydian
-D | 63 | F#m7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# alt (optional): bar 63 (F#7)
-D | 64 | B7#5     # extended dominant: V7 of E9; #11 and b13 from the symbol
-D | 65 | E9       # extended dominant: V7 of A9sus
-D | 66 | A9sus    # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
-D | 67 | D6       # tonic: the 4th is in the key
+16 | Em7      # ii of the ii–V to D
+16 | A7       # V7 of D: natural tensions
 # alt (optional): bar 68 (A7#5), back to the top
-@key B 32 D
+@key 16 D
+
+section: C
+key: D
+1  | DMaj7    # tonic: the 4th is in the key
+2  | B7#5/D#  # V7/ii in D: the b13 is in the key, the #11 from the symbol
+3  | Em7      # ii of A9sus: Dorian
+5  | A9sus    # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+6  | A7       # V7 of D: natural tensions
+7  | Ddim7    # auxiliary diminished: it decorates the chord and returns to it
+8  | DMaj7    # tonic: the 4th is in the key
+9  | F#m7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+10 | Fdim7    # passing diminished: a rootless dominant ♭9
+11 | Em7      # ii: Dorian, the key’s own notes
+13 | E9       # II7 in D, not resolving: natural tensions
+15 | Gm6      # a minor sixth chord: Dorian
+16 | A7       # V7 of D: natural tensions
+
+section: D
+key: D
+bars: 20
+1  | DMaj7    # tonic: the 4th is in the key
+2  | Bm7      # ii of E7: Dorian
+3  | E7       # V7/V in D: natural tensions
+5  | F#7      # V7/vi in D: b9 and b13 are in the key
+7  | Bm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+7  | Bbm7     # a borrowed minor chord: Dorian, its own key
+8  | Am7      # ii of the ii–V to G
+8  | D7       # V7/IV in D: natural tensions
+9  | GMaj7    # the D7 before it makes G the key of the moment: the 4th is in the key
+10 | Gm7      # a borrowed minor chord: Dorian, its own key
+11 | F#m7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+12 | B13      # extended ii–V: a side-step, its own key
+12 | B7#5     # extended dominant: V7 of E9; #11 and b13 from the symbol
+13 | E9       # extended dominant: V7 of A9sus4
+14 | A9sus4   # static sus: Mixolydian
+15 | F#m7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+# alt (optional): bar 63 (F#7)
+16 | B7#5     # extended dominant: V7 of E9; #11 and b13 from the symbol
+17 | E9       # extended dominant: V7 of A9sus
+18 | A9sus    # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+19 | D6       # tonic: the 4th is in the key

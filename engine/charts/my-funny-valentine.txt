@@ -6,60 +6,68 @@ form: ABCD, 36 bars
 source: Colorado Cookbook, p. 146
 # analysis: 2026-10-11, rules v1; C minor
 
-# section | bar | chord | scale
+# bar | chord | scale
 # the "standard" chords; the lead sheet also offers Fm F#m7 B7 Bbm7 Eb7 Dm7b5 G7b9 (bars 6–8)
 # and Am7b5 D7 Gm7 C7 F#m7 B7 (bars 14–16) as alternates
+
+section: A
 # area: C minor (bars 1–15)
-A | 1  | Cm         # tonic minor: Dorian by convention
-A | 2  | CmMaj7/B   # from the symbol: minor-major 7th
-A | 3  | Cm7/Bb     # tonic minor: Dorian by convention
-A | 4  | Am7b5      # viø7 in C minor: Locrian, its own mode (the chord is outside the key)
-A | 5  | AbMaj7#11  # from the symbol: #11
-A | 6  | Fm         # iv: Dorian, the key’s own notes
-A | 7  | Dm7b5      # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 8  | G7b9       # V7 of C minor: b9 and b13 are in the key
-B | 9  | Cm         # tonic minor: Dorian by convention
-B | 10 | CmMaj7/B   # from the symbol: minor-major 7th
-B | 11 | Cm7/Bb     # tonic minor: Dorian by convention
-B | 12 | Am7b5      # viø7 in C minor: Locrian, its own mode (the chord is outside the key)
-B | 13 | AbMaj7#11  # from the symbol: #11
-B | 14 | Fm         # iv: Dorian, the key’s own notes
-B | 15 | Fm7b5      # ivø7 in C minor: Locrian, its own mode (the chord is outside the key)
+1  | Cm         # tonic minor: Dorian by convention
+2  | CmMaj7/B   # from the symbol: minor-major 7th
+3  | Cm7/Bb     # tonic minor: Dorian by convention
+4  | Am7b5      # viø7 in C minor: Locrian, its own mode (the chord is outside the key)
+5  | AbMaj7#11  # from the symbol: #11
+6  | Fm         # iv: Dorian, the key’s own notes
+7  | Dm7b5      # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+8  | G7b9       # V7 of C minor: b9 and b13 are in the key
+
+section: B
+1  | Cm         # tonic minor: Dorian by convention
+2  | CmMaj7/B   # from the symbol: minor-major 7th
+3  | Cm7/Bb     # tonic minor: Dorian by convention
+4  | Am7b5      # viø7 in C minor: Locrian, its own mode (the chord is outside the key)
+5  | AbMaj7#11  # from the symbol: #11
+6  | Fm         # iv: Dorian, the key’s own notes
+7  | Fm7b5      # ivø7 in C minor: Locrian, its own mode (the chord is outside the key)
 # area: Eb major (bars 16–21)
-B | 16 | Fm7        # ii of the ii–V to Eb
-B | 16 | Bb7b9      # V7 of Eb: the b9 from the symbol
-C | 17 | EbMaj7     # tonic: the 4th is in the key
-C | 17 | Fm/Eb      # ii: Dorian, the key’s own notes
-C | 18 | EbMaj7     # tonic: the 4th is in the key
-C | 18 | Fm/Eb      # ii: Dorian, the key’s own notes
-C | 19 | EbMaj7     # tonic: the 4th is in the key
-C | 19 | Fm/Eb      # ii: Dorian, the key’s own notes
-C | 20 | EbMaj7     # tonic: the 4th is in the key
-C | 20 | Fm/Eb      # ii: Dorian, the key’s own notes
-C | 21 | EbMaj7     # tonic: the 4th is in the key
+8  | Fm7        # ii of the ii–V to Eb
+8  | Bb7b9      # V7 of Eb: the b9 from the symbol
+
+section: C
+1  | EbMaj7     # tonic: the 4th is in the key
+1  | Fm/Eb      # ii: Dorian, the key’s own notes
+2  | EbMaj7     # tonic: the 4th is in the key
+2  | Fm/Eb      # ii: Dorian, the key’s own notes
+3  | EbMaj7     # tonic: the 4th is in the key
+3  | Fm/Eb      # ii: Dorian, the key’s own notes
+4  | EbMaj7     # tonic: the 4th is in the key
+4  | Fm/Eb      # ii: Dorian, the key’s own notes
+5  | EbMaj7     # tonic: the 4th is in the key
 # area: C minor (bars 21–31)
-C | 21 | G7alt      # from the symbol: altered
-C | 22 | Cm         # tonic minor: Dorian by convention
-C | 22 | Bbm        # a borrowed minor chord: Dorian, its own key
-C | 23 | AbMaj7     # a non-tonic major chord: Lydian
-C | 24 | Dm7b5      # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-C | 24 | G7alt      # from the symbol: altered
-D | 25 | Cm         # tonic minor: Dorian by convention
-D | 26 | CmMaj7/B   # from the symbol: minor-major 7th
-D | 27 | Cm7/Bb     # tonic minor: Dorian by convention
-D | 28 | Am7b5      # viø7 in C minor: Locrian, its own mode (the chord is outside the key)
-D | 29 | AbMaj7#11  # from the symbol: #11
-D | 30 | Dm7b5      # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-D | 30 | G7alt      # from the symbol: altered
-D | 31 | Cm7        # ii of the ii–V to Bb minor
-D | 31 | F7b9       # V7/bvii in C minor: the b9 from the symbol
+5  | G7alt      # from the symbol: altered
+6  | Cm         # tonic minor: Dorian by convention
+6  | Bbm        # a borrowed minor chord: Dorian, its own key
+7  | AbMaj7     # a non-tonic major chord: Lydian
+8  | Dm7b5      # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+8  | G7alt      # from the symbol: altered
+
+section: D
+1  | Cm         # tonic minor: Dorian by convention
+2  | CmMaj7/B   # from the symbol: minor-major 7th
+3  | Cm7/Bb     # tonic minor: Dorian by convention
+4  | Am7b5      # viø7 in C minor: Locrian, its own mode (the chord is outside the key)
+5  | AbMaj7#11  # from the symbol: #11
+6  | Dm7b5      # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+6  | G7alt      # from the symbol: altered
+7  | Cm7        # ii of the ii–V to Bb minor
+7  | F7b9       # V7/bvii in C minor: the b9 from the symbol
 # area: Ab major (bars 32–33)
-D | 32 | Bbm7       # ii of the ii–V to Ab
-D | 32 | Eb7b9      # V7 of Ab: the b9 from the symbol
-D | 33 | AbMaj7     # tonic: the 4th is in the key
+8  | Bbm7       # ii of the ii–V to Ab
+8  | Eb7b9      # V7 of Ab: the b9 from the symbol
+9  | AbMaj7     # tonic: the 4th is in the key
 # area: C minor (bars 34–36)
-D | 34 | Fm7        # ii of the ii–V to Eb
-D | 34 | Bb7        # V7/bIII in C minor: natural tensions
-D | 35 | EbMaj7     # bIII of C minor: the relative major itself
-D | 36 | Dm7b5      # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-D | 36 | G7         # V7 of C minor: b9 and b13 are in the key
+10 | Fm7        # ii of the ii–V to Eb
+10 | Bb7        # V7/bIII in C minor: natural tensions
+11 | EbMaj7     # bIII of C minor: the relative major itself
+12 | Dm7b5      # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+12 | G7         # V7 of C minor: b9 and b13 are in the key

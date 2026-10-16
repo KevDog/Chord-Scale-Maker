@@ -5,8 +5,18 @@ form: AABA, 32 bars
 key: Dm
 # analysis: 2026-10-11, rules v1; D minor, modal
 
-# section | bar | chord | scale
-A1 | 1  | Dm7   # modal minor: Dorian
-@copy A1 A2 8
-B  | 17 | Ebm7  # modal minor: Dorian
-@copy A1 A3 24
+# bar | chord | scale
+
+section: A1
+bars: 8
+1 | Dm7   # modal minor: Dorian
+
+section: A2
+copy: A1
+
+section: B
+bars: 8
+1 | Ebm7  # modal minor: Dorian
+
+section: A3
+copy: A1

@@ -6,31 +6,39 @@ form: ABAB
 source: Colorado Cookbook, p. 101
 # analysis: 2026-10-11, rules v1; Eb
 
-# section | bar | chord | scale
-A1 | 1  | Fm7     # ii of the ii–V to Eb
-A1 | 2  | Bb7     # V7 of Eb: natural tensions
-A1 | 3  | EbMaj7  # tonic: the 4th is in the key
-A1 | 3  | Ab7     # tritone substitute: resolves down a half step to Gm7
-A1 | 4  | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1 | 4  | C7#9    # V7/ii in Eb: the b13 is in the key, b9, #9 and #11 from the symbol
-A1 | 5  | Fm7     # ii of the ii–V to Eb
-A1 | 6  | Bb7     # V7 of Eb: natural tensions
-A1 | 7  | EbMaj7  # tonic: the 4th is in the key
-A1 | 8  | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A1 | 8  | G7alt   # from the symbol: altered
-B1 | 9  | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B1 | 10 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B1 | 11 | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B1 | 12 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B1 | 13 | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B1 | 14 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B1 | 14 | C7#9    # V7/ii in Eb: the b13 is in the key, b9, #9 and #11 from the symbol
-B1 | 15 | Fm7     # ii of the ii–V to Eb
-B1 | 15 | Bb7     # V7 of Eb: natural tensions
-B1 | 16 | EbMaj7  # tonic: the 4th is in the key
-B1 | 16 | C7#9    # V7/ii in Eb: the b13 is in the key, b9, #9 and #11 from the symbol
-B1 | 17 | Fm7     # ii of the ii–V to Eb
-B1 | 17 | Bb7     # V7 of Eb: natural tensions
-B1 | 18 | EbMaj7  # tonic: the 4th is in the key
-@copy A1 A2 18
-@copy B1 B2 18
+# bar | chord | scale
+
+section: A1
+1  | Fm7     # ii of the ii–V to Eb
+2  | Bb7     # V7 of Eb: natural tensions
+3  | EbMaj7  # tonic: the 4th is in the key
+3  | Ab7     # tritone substitute: resolves down a half step to Gm7
+4  | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+4  | C7#9    # V7/ii in Eb: the b13 is in the key, b9, #9 and #11 from the symbol
+5  | Fm7     # ii of the ii–V to Eb
+6  | Bb7     # V7 of Eb: natural tensions
+7  | EbMaj7  # tonic: the 4th is in the key
+8  | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+8  | G7alt   # from the symbol: altered
+
+section: B1
+1  | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+2  | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+3  | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+4  | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+5  | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+6  | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+6  | C7#9    # V7/ii in Eb: the b13 is in the key, b9, #9 and #11 from the symbol
+7  | Fm7     # ii of the ii–V to Eb
+7  | Bb7     # V7 of Eb: natural tensions
+8  | EbMaj7  # tonic: the 4th is in the key
+8  | C7#9    # V7/ii in Eb: the b13 is in the key, b9, #9 and #11 from the symbol
+9  | Fm7     # ii of the ii–V to Eb
+9  | Bb7     # V7 of Eb: natural tensions
+10 | EbMaj7  # tonic: the 4th is in the key
+
+section: A2
+copy: A1
+
+section: B2
+copy: B1

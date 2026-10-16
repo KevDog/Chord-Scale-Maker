@@ -9,76 +9,89 @@ source:
 # the book's "(2)" bars are two-bar repeats, written out here
 # the book's 13sus chords are written 9sus4 (G13sus → G9sus4); its (add 9) triads as plain triads
 
-# section | bar | chord
+# bar | chord
+
+section: Intro
 # area: G major (bars 1–23)
-Intro  | 1  | G7sus4b9   # from the symbol: sus b9
-Intro  | 2  | EbMaj9/G   # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
-Intro  | 3  | G7sus4b9   # from the symbol: sus b9
-Intro  | 4  | EbMaj9/G   # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
-Intro  | 5  | G7sus4b9   # from the symbol: sus b9
-Intro  | 6  | EbMaj9/G   # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
-Intro  | 7  | G7sus4b9   # from the symbol: sus b9
-Intro  | 8  | EbMaj9/G   # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
-A      | 1  | GMaj7      # tonic: the 4th is in the key
+1  | G7sus4b9   # from the symbol: sus b9
+2  | EbMaj9/G   # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+3  | G7sus4b9   # from the symbol: sus b9
+4  | EbMaj9/G   # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+5  | G7sus4b9   # from the symbol: sus b9
+6  | EbMaj9/G   # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+7  | G7sus4b9   # from the symbol: sus b9
+8  | EbMaj9/G   # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+
+section: A
+1  | GMaj7      # tonic: the 4th is in the key
 # book: Eb(add 9)/G
-A      | 2  | Eb/G       # ♭VI, borrowed from G minor: Lydian (its ♯11 is in the key)
+2  | Eb/G       # ♭VI, borrowed from G minor: Lydian (its ♯11 is in the key)
 # book: G13sus
-A      | 3  | G9sus4     # static sus: Mixolydian
+3  | G9sus4     # static sus: Mixolydian
 # book: Eb(add 9)/G
-A      | 4  | Eb/G       # ♭VI, borrowed from G minor: Lydian (its ♯11 is in the key)
-A      | 5  | DbMaj7/F   # a non-tonic major chord: Lydian
-A      | 6  | GbMaj7#11  # from the symbol: #11
-A      | 7  | Abm7       # a borrowed minor chord: Dorian, its own key
-A      | 8  | Bb/Ab      # ♭III, borrowed from G minor: Lydian (its ♯11 is in the key)
-A      | 9  | Gm7        # ii of C9sus4: Dorian
-A      | 10 | C9sus4     # static sus: Mixolydian
-A      | 11 | D/C        # V without its 7th: Mixolydian, the key’s own notes
-A      | 12 | C9sus4     # static sus: Mixolydian
+4  | Eb/G       # ♭VI, borrowed from G minor: Lydian (its ♯11 is in the key)
+5  | DbMaj7/F   # a non-tonic major chord: Lydian
+6  | GbMaj7#11  # from the symbol: #11
+7  | Abm7       # a borrowed minor chord: Dorian, its own key
+8  | Bb/Ab      # ♭III, borrowed from G minor: Lydian (its ♯11 is in the key)
+9  | Gm7        # ii of C9sus4: Dorian
+10 | C9sus4     # static sus: Mixolydian
+11 | D/C        # V without its 7th: Mixolydian, the key’s own notes
+12 | C9sus4     # static sus: Mixolydian
 # book: Ab(add 9)/C
-A      | 13 | Ab/C       # ♭II, borrowed from G Phrygian: Lydian (its ♯11 is in the key)
-A      | 15 | G7sus4b9   # from the symbol: sus b9
-A      | 16 | EbMaj9/G   # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
-A      | 17 | G7sus4b9   # from the symbol: sus b9
-A      | 18 | EbMaj9/G   # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
-B      | 19 | GMaj7      # tonic: the 4th is in the key
+13 | Ab/C       # ♭II, borrowed from G Phrygian: Lydian (its ♯11 is in the key)
+15 | G7sus4b9   # from the symbol: sus b9
+16 | EbMaj9/G   # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+17 | G7sus4b9   # from the symbol: sus b9
+18 | EbMaj9/G   # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+
+section: B
+bars: 16
+1  | GMaj7      # tonic: the 4th is in the key
 # book: G13sus
-B      | 20 | G9sus4     # static sus: Mixolydian
-B      | 21 | Eb/F       # ♭VI, borrowed from G minor: Lydian (its ♯11 is in the key)
-B      | 21 | E7#9b5     # tritone substitute: resolves down a half step to Eb9sus4; b9 and #9 from the symbol
-B      | 22 | Eb9sus4    # static sus: Mixolydian
-B      | 23 | DMaj7      # a non-tonic major chord: Lydian
+2  | G9sus4     # static sus: Mixolydian
+3  | Eb/F       # ♭VI, borrowed from G minor: Lydian (its ♯11 is in the key)
+3  | E7#9b5     # tritone substitute: resolves down a half step to Eb9sus4; b9 and #9 from the symbol
+4  | Eb9sus4    # static sus: Mixolydian
+5  | DMaj7      # a non-tonic major chord: Lydian
 # area: Bb minor (bars 23–2)
-B      | 23 | F7#5       # V7 of Bb minor: b9 and b13 are in the key, the #11 from the symbol
+5  | F7#5       # V7 of Bb minor: b9 and b13 are in the key, the #11 from the symbol
 # book: Bbm(add 9)
-B      | 24 | Bbm        # tonic minor: Dorian by convention
-B      | 25 | Abm7       # a borrowed minor chord: Dorian, its own key
-B      | 26 | Bb/Ab      # a non-tonic major chord: Lydian
-B      | 27 | Gm7        # ii of C9sus4: Dorian
-B      | 28 | C9sus4     # static sus: Mixolydian
-B      | 29 | BbMaj7     # a non-tonic major chord: Lydian
-B      | 29 | Am7        # a borrowed minor chord: Dorian, its own key
-B      | 30 | Fm9        # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
-B      | 31 | Bb7sus4b9  # from the symbol: sus b9
+6  | Bbm        # tonic minor: Dorian by convention
+7  | Abm7       # a borrowed minor chord: Dorian, its own key
+8  | Bb/Ab      # a non-tonic major chord: Lydian
+9  | Gm7        # ii of C9sus4: Dorian
+10 | C9sus4     # static sus: Mixolydian
+11 | BbMaj7     # a non-tonic major chord: Lydian
+11 | Am7        # a borrowed minor chord: Dorian, its own key
+12 | Fm9        # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+13 | Bb7sus4b9  # from the symbol: sus b9
 # book: Db13sus
-B      | 33 | Db9sus4    # static sus: Mixolydian
-C      | 35 | Bm9        # a borrowed minor chord: Dorian, its own key
-C      | 37 | Ebm7       # iv: Dorian, the key’s own notes
-C      | 39 | DMaj7      # a non-tonic major chord: Lydian
-C      | 39 | F7#5       # V7 of Bb minor: b9 and b13 are in the key, the #11 from the symbol
+15 | Db9sus4    # static sus: Mixolydian
+
+section: C
+bars: 18
+1  | Bm9        # a borrowed minor chord: Dorian, its own key
+3  | Ebm7       # iv: Dorian, the key’s own notes
+5  | DMaj7      # a non-tonic major chord: Lydian
+5  | F7#5       # V7 of Bb minor: b9 and b13 are in the key, the #11 from the symbol
 # book: Bbm(add 9)
-C      | 40 | Bbm        # tonic minor: Dorian by convention
-C      | 41 | Abm7       # a borrowed minor chord: Dorian, its own key
-C      | 42 | Bb/Ab      # a non-tonic major chord: Lydian
-C      | 43 | Gm7        # ii of C9sus4: Dorian
-C      | 44 | C9sus4     # static sus: Mixolydian
-C      | 45 | BbMaj7     # a non-tonic major chord: Lydian
-C      | 45 | Am7        # a borrowed minor chord: Dorian, its own key
-C      | 46 | Fm9        # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
-C      | 46 | Em7        # a borrowed minor chord: Dorian, its own key
-C      | 47 | G7sus4b9   # from the symbol: sus b9
-C      | 48 | EbMaj9/G   # a non-tonic major chord: Lydian
-C      | 49 | G7sus4b9   # from the symbol: sus b9
-C      | 50 | EbMaj9/G   # a non-tonic major chord: Lydian
+6  | Bbm        # tonic minor: Dorian by convention
+7  | Abm7       # a borrowed minor chord: Dorian, its own key
+8  | Bb/Ab      # a non-tonic major chord: Lydian
+9  | Gm7        # ii of C9sus4: Dorian
+10 | C9sus4     # static sus: Mixolydian
+11 | BbMaj7     # a non-tonic major chord: Lydian
+11 | Am7        # a borrowed minor chord: Dorian, its own key
+12 | Fm9        # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+12 | Em7        # a borrowed minor chord: Dorian, its own key
+13 | G7sus4b9   # from the symbol: sus b9
+14 | EbMaj9/G   # a non-tonic major chord: Lydian
+15 | G7sus4b9   # from the symbol: sus b9
+16 | EbMaj9/G   # a non-tonic major chord: Lydian
+
+section: Ending
+bars: 4
 # repeat to A; then the book's letter D: soprano solo over a two-bar vamp, repeat and fade
-Ending | 1  | G7sus4b9   # from the symbol: sus b9
-Ending | 2  | EbMaj9/G   # a non-tonic major chord: Lydian
+1  | G7sus4b9   # from the symbol: sus b9
+2  | EbMaj9/G   # a non-tonic major chord: Lydian

@@ -3,84 +3,99 @@ composer: Dave Frishberg
 style: Medium samba
 key: Gm
 form: Interlude ABC, 54 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; G minor
 # book: Med. Samba, half note = 92. The repeat runs from the Interlude to the end of C, 3 times in all
 # book: (3 verses); the 3rd time, take the Coda after bar 52.
 # book: arrows mark pushed chords; a chord pushed onto beat 4 is written in the bar it leads into
 
-# section | bar | chord
+# bar | chord
+
+section: Intro
 # area: G minor (bar 1)
-Intro     | 1  | Gm       # tonic minor: Dorian by convention
+1  | Gm       # tonic minor: Dorian by convention
 # area: Eb major (bars 2–3)
-Intro     | 2  | Fm9      # ii of the ii–V to Eb
-Intro     | 2  | Bb13     # V7 of Eb: natural tensions
-Intro     | 3  | Eb       # tonic: the 4th is in the key
+2  | Fm9      # ii of the ii–V to Eb
+2  | Bb13     # V7 of Eb: natural tensions
+3  | Eb       # tonic: the 4th is in the key
 # area: G minor (bars 4–1)
-Intro     | 4  | D7#9     # V7 of G minor: the b13 is in the key, b9, #9 and #11 from the symbol
-Interlude | 1  | Gm       # tonic minor: Dorian by convention
+4  | D7#9     # V7 of G minor: the b13 is in the key, b9, #9 and #11 from the symbol
+
+section: Interlude
+bars: 6
+1  | Gm       # tonic minor: Dorian by convention
 # area: Eb major (bars 2–3)
-Interlude | 2  | Fm9      # ii of the ii–V to Eb
-Interlude | 2  | Bb13     # V7 of Eb: natural tensions
-Interlude | 3  | Eb       # tonic: the 4th is in the key
+2  | Fm9      # ii of the ii–V to Eb
+2  | Bb13     # V7 of Eb: natural tensions
+3  | Eb       # tonic: the 4th is in the key
 # area: G major (bars 4–16)
-Interlude | 4  | D7#9     # V7 of G: b9, #9 and #11 from the symbol
-Interlude | 5  | G        # tonic: the 4th is in the key
+4  | D7#9     # V7 of G: b9, #9 and #11 from the symbol
+5  | G        # tonic: the 4th is in the key
+
+section: A
 # book: G(add9); bars 5–6: break
-A         | 7  | Dm7b5/G  # vø7 in G: Locrian, its own mode (the chord is outside the key)
+1  | Dm7b5/G  # vø7 in G: Locrian, its own mode (the chord is outside the key)
 # alt (optional): bar 13 (C#dim7), the piano and bass figure; bar 14: drum break
-A         | 15 | Fm7      # ii of the ii–V to Eb minor
-A         | 16 | Bb9      # V7/bvi in G: the #11 is in the key
+9  | Fm7      # ii of the ii–V to Eb minor
+10 | Bb9      # V7/bvi in G: the #11 is in the key
 # area: Db major (bars 17–20)
-A         | 17 | Ebm7     # ii of the ii–V to Db
-A         | 18 | Ab9      # V7 of Db: natural tensions
-A         | 19 | DbMaj7   # tonic: the 4th is in the key
-A         | 20 | GbMaj9   # IV: the #4 is the key’s 7th
+11 | Ebm7     # ii of the ii–V to Db
+12 | Ab9      # V7 of Db: natural tensions
+13 | DbMaj7   # tonic: the 4th is in the key
+14 | GbMaj9   # IV: the #4 is the key’s 7th
 # area: G minor (bars 21–34)
-A         | 21 | Cm7      # ii of F7b9: Dorian
-A         | 22 | F7b9     # V7/bIII in G minor: the b9 from the symbol
-A         | 23 | Am7      # ii of D7: Dorian
-A         | 23 | D7       # extended dominant: V7 of G7
-A         | 24 | G7       # I7 in G minor, not resolving: the b13 is in the key
-B         | 25 | Dm7b5/G  # vø7 in G minor: Locrian, its own mode (the chord is outside the key)
+15 | Cm7      # ii of F7b9: Dorian
+16 | F7b9     # V7/bIII in G minor: the b9 from the symbol
+17 | Am7      # ii of D7: Dorian
+17 | D7       # extended dominant: V7 of G7
+18 | G7       # I7 in G minor, not resolving: the b13 is in the key
+
+section: B
+1  | Dm7b5/G  # vø7 in G minor: Locrian, its own mode (the chord is outside the key)
 # alt (optional): bar 31 (C#dim7), the piano and bass figure; bar 32: drum break
-B         | 33 | Fm7      # ii of the ii–V to Eb minor
-B         | 34 | Bb9      # V7/bvi in G minor: natural tensions
+9  | Fm7      # ii of the ii–V to Eb minor
+10 | Bb9      # V7/bvi in G minor: natural tensions
 # area: Db major (bars 35–38)
-B         | 35 | Ebm7     # ii of the ii–V to Db
-B         | 36 | Ab9      # V7 of Db: natural tensions
-B         | 37 | DbMaj7   # tonic: the 4th is in the key
-B         | 38 | GbMaj9   # IV: the #4 is the key’s 7th
+11 | Ebm7     # ii of the ii–V to Db
+12 | Ab9      # V7 of Db: natural tensions
+13 | DbMaj7   # tonic: the 4th is in the key
+14 | GbMaj9   # IV: the #4 is the key’s 7th
 # area: G minor (bars 39–44)
-B         | 39 | Cm7      # ii of F7b9: Dorian
-B         | 40 | F7b9     # V7/bIII in G minor: the b9 from the symbol
-B         | 41 | Ab9#11   # tritone substitute: resolves down a half step to G9
-B         | 42 | G9       # I7 in G minor, not resolving: the b13 is in the key
+15 | Cm7      # ii of F7b9: Dorian
+16 | F7b9     # V7/bIII in G minor: the b9 from the symbol
+17 | Ab9#11   # tritone substitute: resolves down a half step to G9
+18 | G9       # I7 in G minor, not resolving: the b13 is in the key
+
+section: C
+bars: 14
 # bar 42: break
-C         | 43 | F9sus4   # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
-C         | 44 | BbMaj7   # bIII of G minor: the relative major itself
+1  | F9sus4   # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+2  | BbMaj7   # bIII of G minor: the relative major itself
 # book: BbMaj7 pushed onto beat 4 of bar 43; bar 44: break
 # area: G major (bars 45–46)
-C         | 45 | D9sus4   # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
-C         | 46 | GMaj7    # tonic: the 4th is in the key
+3  | D9sus4   # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+4  | GMaj7    # tonic: the 4th is in the key
 # bar 46: break
 # area: G minor (bars 47–51)
-C         | 47 | F9sus4   # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
-C         | 48 | BbMaj7   # bIII of G minor: the relative major itself
+5  | F9sus4   # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+6  | BbMaj7   # bIII of G minor: the relative major itself
 # book: BbMaj7 pushed onto beat 4 of bar 47; bar 48: break
-C         | 49 | D9sus4   # V7sus4 of Gm: the b13 is in the key
+7  | D9sus4   # V7sus4 of Gm: the b13 is in the key
 # alt (optional): bar 50 beats 3–4 (D7#5)
-C         | 51 | Gm       # tonic minor: Dorian by convention
+9  | Gm       # tonic minor: Dorian by convention
 # area: Eb major (bars 52–53)
-C         | 52 | Fm9      # ii of the ii–V to Eb
-C         | 52 | Bb13     # V7 of Eb: natural tensions
-@coda C 52
-C         | 53 | Eb       # tonic: the 4th is in the key
+10 | Fm9      # ii of the ii–V to Eb
+10 | Bb13     # V7 of Eb: natural tensions
+@coda 10
+11 | Eb       # tonic: the 4th is in the key
 # area: G minor (bars 54–2)
-C         | 54 | D7#9     # V7 of G minor: the b13 is in the key, b9, #9 and #11 from the symbol
+12 | D7#9     # V7 of G minor: the b13 is in the key, b9, #9 and #11 from the symbol
+
+section: Coda
+bars: 4
 # repeat from the Interlude (3 times in all)
-Coda      | 1  | Eb       # a non-tonic major chord: Lydian
-@coda Coda 1
-Coda      | 2  | D7b9     # V7 in G minor, not resolving: b9 and b13 are in the key
+1  | Eb       # a non-tonic major chord: Lydian
+@coda 1
+2  | D7b9     # V7 in G minor, not resolving: b9 and b13 are in the key
 # bars 2–3: break
 # bar 4: a final piano stab over a G bass (no chord symbol)

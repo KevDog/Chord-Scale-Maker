@@ -8,35 +8,40 @@ source:
 # the pickup is a melodic figure with no chords
 # head played twice before and after solos; solo on Bb blues; last time to the Coda from bar 12
 
-# section | bar | chord
-A    | 1  | Bb7      # I7 of the blues: a tonic with dominant colour, natural tensions
+# bar | chord
+
+section: A
+1  | Bb7      # I7 of the blues: a tonic with dominant colour, natural tensions
 # alt: bar 2 beat 3 (Edim7)
-A    | 2  | Eb7      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A    | 3  | Bb7      # I7 of the blues: a tonic with dominant colour, natural tensions
-A    | 3  | Bb7sus4  # static sus: Mixolydian
-A    | 3  | Ab7sus4  # static sus: Mixolydian
-A    | 4  | F#7sus4  # static sus: Mixolydian
-A    | 4  | E7sus4   # static sus: Mixolydian
-A    | 4  | D7sus4   # static sus: Mixolydian
-A    | 5  | Eb7      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A    | 6  | Bb7#5#9  # I7 of the blues: a tonic with dominant colour, b9, #9, #11 and b13 from the symbol
+2  | Eb7      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+3  | Bb7      # I7 of the blues: a tonic with dominant colour, natural tensions
+3  | Bb7sus4  # static sus: Mixolydian
+3  | Ab7sus4  # static sus: Mixolydian
+4  | F#7sus4  # static sus: Mixolydian
+4  | E7sus4   # static sus: Mixolydian
+4  | D7sus4   # static sus: Mixolydian
+5  | Eb7      # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | Bb7#5#9  # I7 of the blues: a tonic with dominant colour, b9, #9, #11 and b13 from the symbol
 # bar 6: printed Bb7(#9 #5), entering after beat 1
-A    | 7  | Eb7sus4  # static sus: Mixolydian
-# bar 7: Eb7sus4 on the and of beat 3
+7  | Eb7sus4  # static sus: Mixolydian
 # alt: bar 7 beat 1 (Bb7)
-A    | 8  | D7alt    # from the symbol: altered
-A    | 8  | G7alt    # from the symbol: altered
-A    | 9  | Cm7      # ii of F7sus4: Dorian
-A    | 10 | F7sus4   # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
-A    | 11 | Bb7      # I7 of the blues: a tonic with dominant colour, natural tensions
-A    | 11 | G7#5#9   # extended dominant: each one falls a fifth into the next: b9, #9, #11 and b13 from the symbol
-A    | 12 | C7alt    # from the symbol: altered
-A    | 12 | F7alt    # from the symbol: altered
-@coda A 12
-@coda Coda 1
-Coda | 1  | C7alt    # from the symbol: altered
-Coda | 1  | F7alt    # from the symbol: altered
-Coda | 1  | Bb7#11   # I7 of the blues: a tonic with dominant colour, the #11 from the symbol
+# bar 7: Eb7sus4 on the and of beat 3
+8  | D7alt    # from the symbol: altered
+8  | G7alt    # from the symbol: altered
+9  | Cm7      # ii of F7sus4: Dorian
+10 | F7sus4   # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+11 | Bb7      # I7 of the blues: a tonic with dominant colour, natural tensions
+11 | G7#5#9   # extended dominant: each one falls a fifth into the next: b9, #9, #11 and b13 from the symbol
+12 | C7alt    # from the symbol: altered
+12 | F7alt    # from the symbol: altered
+@coda 12
+
+section: Coda
+bars: 4
+@coda 1
+1  | C7alt    # from the symbol: altered
+1  | F7alt    # from the symbol: altered
+1  | Bb7#11   # I7 of the blues: a tonic with dominant colour, the #11 from the symbol
 # Coda bar 1: Bb7#11 on beat 4
 # bar 2: N.C. (drum fill)
-Coda | 3  | E7#9     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b9 and #9 from the symbol
+3  | E7#9     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b9 and #9 from the symbol

@@ -6,73 +6,84 @@ form: AABCD, 40 bars
 source: Colorado Cookbook, p. 275
 # analysis: 2026-10-11, rules v1; Eb
 
-# section | bar | chord | scale
+# bar | chord | scale
+
+section: A1
 # area: Eb major (bar 1)
-A1 | 1  | EbMaj7  # tonic: the 4th is in the key
+1 | EbMaj7  # tonic: the 4th is in the key
 # area: Gb major (bars 2–5)
-A1 | 2  | Abm7    # ii of the ii–V to Gb
-A1 | 2  | Db7     # V7 of Gb: natural tensions
-A1 | 3  | GbMaj7  # tonic: the 4th is in the key
-A1 | 4  | F7      # V7 of Bb7, on the way to Eb minor: b9 and b13 are in the key
-A1 | 4  | Bb7     # V7 of Eb minor, the chain's last link: b9 and b13 are in the key
-A1 | 5  | Ebm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+2 | Abm7    # ii of the ii–V to Gb
+2 | Db7     # V7 of Gb: natural tensions
+3 | GbMaj7  # tonic: the 4th is in the key
+4 | F7      # V7 of Bb7, on the way to Eb minor: b9 and b13 are in the key
+4 | Bb7     # V7 of Eb minor, the chain's last link: b9 and b13 are in the key
+5 | Ebm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 # area: Eb major (bars 6–9)
-A1 | 6  | F7      # V7 of V7: the dominant of the dominant: natural tensions
-A1 | 6  | Bb7b9   # V7 of Eb: the b9 from the symbol
-A1 | 7  | EbMaj7  # tonic: the 4th is in the key
-A1 | 8  | Fm7     # ii of the ii–V to Eb
-A1 | 8  | Bb7b9   # V7 of Eb: the b9 from the symbol
-A2 | 9  | EbMaj7  # tonic: the 4th is in the key
+6 | F7      # V7 of V7: the dominant of the dominant: natural tensions
+6 | Bb7b9   # V7 of Eb: the b9 from the symbol
+7 | EbMaj7  # tonic: the 4th is in the key
+8 | Fm7     # ii of the ii–V to Eb
+8 | Bb7b9   # V7 of Eb: the b9 from the symbol
+
+section: A2
+1 | EbMaj7  # tonic: the 4th is in the key
 # area: Gb major (bars 10–13)
-A2 | 10 | Abm7    # ii of the ii–V to Gb
-A2 | 10 | Db7     # V7 of Gb: natural tensions
-A2 | 11 | GbMaj7  # tonic: the 4th is in the key
-A2 | 12 | F7      # V7 of Bb7, on the way to Eb minor: b9 and b13 are in the key
-A2 | 12 | Bb7     # V7 of Eb minor, the chain's last link: b9 and b13 are in the key
-A2 | 13 | Ebm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+2 | Abm7    # ii of the ii–V to Gb
+2 | Db7     # V7 of Gb: natural tensions
+3 | GbMaj7  # tonic: the 4th is in the key
+4 | F7      # V7 of Bb7, on the way to Eb minor: b9 and b13 are in the key
+4 | Bb7     # V7 of Eb minor, the chain's last link: b9 and b13 are in the key
+5 | Ebm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 # area: Eb major (bars 14–20)
-A2 | 14 | F7      # V7 of V7: the dominant of the dominant: natural tensions
-A2 | 14 | Bb7b9   # V7 of Eb: the b9 from the symbol
-A2 | 15 | EbMaj7  # tonic: the 4th is in the key
-A2 | 16 | Bbm7    # ii of the ii–V to Ab
-A2 | 16 | Eb7     # V7/IV in Eb: natural tensions
-B  | 17 | AbMaj7  # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
-B  | 18 | D7b9    # VII7 in Eb, not resolving: b9 and b13 are in the key
-B  | 19 | EbMaj7  # tonic: the 4th is in the key
-B  | 19 | Fm7     # ii of the ii–V to Eb
-B  | 19 | Bb7     # V7 of Eb: natural tensions
-B  | 20 | EbMaj7  # tonic: the 4th is in the key
+6 | F7      # V7 of V7: the dominant of the dominant: natural tensions
+6 | Bb7b9   # V7 of Eb: the b9 from the symbol
+7 | EbMaj7  # tonic: the 4th is in the key
+8 | Bbm7    # ii of the ii–V to Ab
+8 | Eb7     # V7/IV in Eb: natural tensions
+
+section: B
+1 | AbMaj7  # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
+2 | D7b9    # VII7 in Eb, not resolving: b9 and b13 are in the key
+3 | EbMaj7  # tonic: the 4th is in the key
+3 | Fm7     # ii of the ii–V to Eb
+3 | Bb7     # V7 of Eb: natural tensions
+4 | EbMaj7  # tonic: the 4th is in the key
 # area: G major (bars 21–22)
-B  | 21 | Am7     # ii of the ii–V to G
-B  | 21 | D7b9    # V7 of G: the b9 from the symbol
-B  | 22 | GMaj7   # tonic: the 4th is in the key
-B  | 22 | G#dim7  # vii°7 of Am7: E7♭9 without its root
+5 | Am7     # ii of the ii–V to G
+5 | D7b9    # V7 of G: the b9 from the symbol
+6 | GMaj7   # tonic: the 4th is in the key
+6 | G#dim7  # vii°7 of Am7: E7♭9 without its root
 # area: Eb major (bars 23–25)
-B  | 23 | Am7     # ii of the ii–V to G minor
-B  | 23 | D7alt   # from the symbol: altered
-B  | 24 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B  | 24 | Gbm7    # a borrowed minor chord: Dorian, its own key
-B  | 24 | Fm7     # ii of the ii–V to Eb
-B  | 24 | Bb7     # V7 of Eb: natural tensions
-C  | 25 | EbMaj7  # tonic: the 4th is in the key
+7 | Am7     # ii of the ii–V to G minor
+7 | D7alt   # from the symbol: altered
+8 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+8 | Gbm7    # a borrowed minor chord: Dorian, its own key
+8 | Fm7     # ii of the ii–V to Eb
+8 | Bb7     # V7 of Eb: natural tensions
+
+section: C
+1 | EbMaj7  # tonic: the 4th is in the key
 # area: Gb major (bars 26–29)
-C  | 26 | Abm7    # ii of the ii–V to Gb
-C  | 26 | Db7     # V7 of Gb: natural tensions
-C  | 27 | GbMaj7  # tonic: the 4th is in the key
-C  | 28 | F7      # V7 of Bb7, on the way to Eb minor: b9 and b13 are in the key
-C  | 28 | Bb7     # V7 of Eb minor, the chain's last link: b9 and b13 are in the key
-C  | 29 | Ebm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+2 | Abm7    # ii of the ii–V to Gb
+2 | Db7     # V7 of Gb: natural tensions
+3 | GbMaj7  # tonic: the 4th is in the key
+4 | F7      # V7 of Bb7, on the way to Eb minor: b9 and b13 are in the key
+4 | Bb7     # V7 of Eb minor, the chain's last link: b9 and b13 are in the key
+5 | Ebm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 # area: Eb major (bars 30–39)
-C  | 30 | F7      # V7 of V7: the dominant of the dominant: natural tensions
-C  | 30 | Bb7     # V7 of Eb: natural tensions
-C  | 31 | EbMaj7  # tonic: the 4th is in the key
-C  | 32 | Bbm7    # ii of the ii–V to Ab
-C  | 32 | Eb7b9   # V7/IV in Eb: the b9 from the symbol
-D  | 33 | AbMaj7  # the Eb7b9 before it makes Ab the key of the moment: the 4th is in the key
-D  | 34 | Db7     # back door bVII7 to EbMaj7: the #11 is in the key
-D  | 35 | EbMaj7  # tonic: the 4th is in the key
-D  | 36 | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-D  | 36 | Gbdim7  # passing diminished: F7♭9 without its F, the Bb7b9's dominant (Fm7 its ii)
-D  | 37 | Fm7     # ii of the ii–V to Eb
-D  | 38 | Bb7b9   # V7 of Eb: the b9 from the symbol
-D  | 39 | EbMaj7  # tonic: the 4th is in the key
+6 | F7      # V7 of V7: the dominant of the dominant: natural tensions
+6 | Bb7     # V7 of Eb: natural tensions
+7 | EbMaj7  # tonic: the 4th is in the key
+8 | Bbm7    # ii of the ii–V to Ab
+8 | Eb7b9   # V7/IV in Eb: the b9 from the symbol
+
+section: D
+bars: 8
+1 | AbMaj7  # the Eb7b9 before it makes Ab the key of the moment: the 4th is in the key
+2 | Db7     # back door bVII7 to EbMaj7: the #11 is in the key
+3 | EbMaj7  # tonic: the 4th is in the key
+4 | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+4 | Gbdim7  # passing diminished: F7♭9 without its F, the Bb7b9's dominant (Fm7 its ii)
+5 | Fm7     # ii of the ii–V to Eb
+6 | Bb7b9   # V7 of Eb: the b9 from the symbol
+7 | EbMaj7  # tonic: the 4th is in the key

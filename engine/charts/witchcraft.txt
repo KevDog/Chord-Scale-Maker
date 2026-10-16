@@ -3,44 +3,52 @@ composer: Cy Coleman
 style: Medium swing
 key: F
 form: ABC, 40 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; F
 # the head is played in 2 (letter B may be in 4); solos in 4
 
-# section | bar | chord
+# bar | chord
+
+section: A
+bars: 16
 # area: F major (bars 1–9)
-A | 1  | F6      # tonic: the 4th is in the key
-A | 3  | G#dim7  # passing diminished: G7♭9 without its G, the C9sus4's dominant (Gm7 its ii)
-A | 5  | Gm7     # ii of the ii–V to F
-A | 6  | C9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
-A | 7  | FMaj7   # tonic: the 4th is in the key
+1  | F6      # tonic: the 4th is in the key
+3  | G#dim7  # passing diminished: G7♭9 without its G, the C9sus4's dominant (Gm7 its ii)
+5  | Gm7     # ii of the ii–V to F
+6  | C9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+7  | FMaj7   # tonic: the 4th is in the key
 # alt (optional): bar 8 (F7)
-A | 9  | BbMaj7  # IV: the #4 is the key’s 7th
+9  | BbMaj7  # IV: the #4 is the key’s 7th
 # area: Ab major (bars 11–13)
-A | 11 | Eb9     # V7 of Ab: natural tensions
-A | 13 | Ab6     # tonic: the 4th is in the key
+11 | Eb9     # V7 of Ab: natural tensions
+13 | Ab6     # tonic: the 4th is in the key
 # area: F major (bars 14–39)
-A | 14 | G7#5    # V7 of V7: the dominant of the dominant: #11 and b13 from the symbol
-A | 15 | C7      # V7 of F: natural tensions
-B | 17 | FMaj9   # tonic: the 4th is in the key
-B | 19 | Bb13    # IV7 in F, not resolving: the #11 is in the key
-# alt: bars 19–20 (C9sus4/F)
-B | 21 | FMaj9   # tonic: the 4th is in the key
-B | 23 | Bm7b5   # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 24 | E7      # V7/iii in F: b9 and b13 are in the key
-B | 25 | Am      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B | 26 | F/A     # tonic: the 4th is in the key
-B | 27 | Am6     # a minor sixth chord: Dorian
-B | 28 | F/A     # tonic: the 4th is in the key
-B | 28 | Am      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B | 29 | Gm      # ii: Dorian, the key’s own notes
-B | 30 | Eb/G    # ♭VII, borrowed from F minor: Lydian (its ♯11 is in the key)
-B | 31 | Gm7     # ii of the ii–V to F
-B | 32 | C7      # V7 of F: natural tensions
-C | 33 | F6      # tonic: the 4th is in the key
-C | 35 | G#dim7  # passing diminished: G7♭9 without its G, the C9sus4's dominant (Gm7 its ii)
-C | 37 | Gm7     # ii of the ii–V to F
-C | 38 | C9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+14 | G7#5    # V7 of V7: the dominant of the dominant: #11 and b13 from the symbol
+15 | C7      # V7 of F: natural tensions
+
+section: B
+1  | FMaj9   # tonic: the 4th is in the key
+3  | Bb13    # IV7 in F, not resolving: the #11 is in the key
+# alt: bars 3–4 (C9sus4/F)
+5  | FMaj9   # tonic: the 4th is in the key
+7  | Bm7b5   # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+8  | E7      # V7/iii in F: b9 and b13 are in the key
+9  | Am      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+10 | F/A     # tonic: the 4th is in the key
+11 | Am6     # a minor sixth chord: Dorian
+12 | F/A     # tonic: the 4th is in the key
+12 | Am      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+13 | Gm      # ii: Dorian, the key’s own notes
+14 | Eb/G    # ♭VII, borrowed from F minor: Lydian (its ♯11 is in the key)
+15 | Gm7     # ii of the ii–V to F
+16 | C7      # V7 of F: natural tensions
+
+section: C
+bars: 8
+1  | F6      # tonic: the 4th is in the key
+3  | G#dim7  # passing diminished: G7♭9 without its G, the C9sus4's dominant (Gm7 its ii)
+5  | Gm7     # ii of the ii–V to F
+6  | C9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 # alt (optional): bar 38, beat 3 (C7)
-C | 39 | F6      # tonic: the 4th is in the key
+7  | F6      # tonic: the 4th is in the key
 # alt (optional): bar 40 (Gm7 C7)

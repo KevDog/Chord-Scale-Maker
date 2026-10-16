@@ -6,46 +6,55 @@ form: AABA, 64 bars
 source: Colorado Cookbook, p. 52
 # analysis: 2026-10-11, rules v1; Bb
 
-# section | bar | chord | scale
+# bar | chord | scale
 # the standard changes; the lead sheet's alternates (Eb7, Dm7 G7b9, Db7, Gb7#11, F7alt) are left out
+
+section: A1
 # area: Bb major (bars 1–29)
-A1 | 1  | BbMaj7  # tonic: the 4th is in the key
-A1 | 3  | Fm7     # ii of the ii–V to Eb
-A1 | 3  | Bb7     # V7/IV in Bb: natural tensions
-A1 | 4  | EbMaj7  # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
-A1 | 6  | Ab7#11  # back door bVII7 to BbMaj7: the #11 is in the key
-A1 | 7  | BbMaj7  # tonic: the 4th is in the key
-A1 | 9  | C7      # II7 in Bb, not resolving: natural tensions
-A1 | 11 | Cm7     # ii of the ii–V to Bb
-A1 | 12 | F7      # V7 of Bb: natural tensions
-A1 | 13 | BbMaj7  # tonic: the 4th is in the key
-A1 | 15 | Cm7     # ii of the ii–V to Bb
-A1 | 16 | F7      # V7 of Bb: natural tensions
-A2 | 17 | BbMaj7  # tonic: the 4th is in the key
-A2 | 19 | Fm7     # ii of the ii–V to Eb
-A2 | 19 | Bb7     # V7/IV in Bb: natural tensions
-A2 | 20 | EbMaj7  # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
-A2 | 22 | Ab7#11  # back door bVII7 to BbMaj7: the #11 is in the key
-A2 | 23 | BbMaj7  # tonic: the 4th is in the key
-A2 | 25 | C7      # II7 in Bb, not resolving: natural tensions
-A2 | 27 | Cm7     # ii of the ii–V to Bb
-A2 | 28 | F7      # V7 of Bb: natural tensions
-A2 | 29 | BbMaj7  # tonic: the 4th is in the key
+1  | BbMaj7  # tonic: the 4th is in the key
+3  | Fm7     # ii of the ii–V to Eb
+3  | Bb7     # V7/IV in Bb: natural tensions
+4  | EbMaj7  # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
+6  | Ab7#11  # back door bVII7 to BbMaj7: the #11 is in the key
+7  | BbMaj7  # tonic: the 4th is in the key
+9  | C7      # II7 in Bb, not resolving: natural tensions
+11 | Cm7     # ii of the ii–V to Bb
+12 | F7      # V7 of Bb: natural tensions
+13 | BbMaj7  # tonic: the 4th is in the key
+15 | Cm7     # ii of the ii–V to Bb
+16 | F7      # V7 of Bb: natural tensions
+
+section: A2
+bars: 16
+1  | BbMaj7  # tonic: the 4th is in the key
+3  | Fm7     # ii of the ii–V to Eb
+3  | Bb7     # V7/IV in Bb: natural tensions
+4  | EbMaj7  # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
+6  | Ab7#11  # back door bVII7 to BbMaj7: the #11 is in the key
+7  | BbMaj7  # tonic: the 4th is in the key
+9  | C7      # II7 in Bb, not resolving: natural tensions
+11 | Cm7     # ii of the ii–V to Bb
+12 | F7      # V7 of Bb: natural tensions
+13 | BbMaj7  # tonic: the 4th is in the key
+
+section: B
 # area: B major (bars 33–35)
-B  | 33 | C#m7    # ii of the ii–V to B
-B  | 34 | F#7     # V7 of B: natural tensions
-B  | 35 | BMaj7   # tonic: the 4th is in the key
+1  | C#m7    # ii of the ii–V to B
+2  | F#7     # V7 of B: natural tensions
+3  | BMaj7   # tonic: the 4th is in the key
 # area: A major (bars 37–39)
-B  | 37 | Bm7     # ii of the ii–V to A
-B  | 38 | E7      # V7 of A: natural tensions
-B  | 39 | AMaj7   # tonic: the 4th is in the key
+5  | Bm7     # ii of the ii–V to A
+6  | E7      # V7 of A: natural tensions
+7  | AMaj7   # tonic: the 4th is in the key
 # area: G major (bars 41–43)
-B  | 41 | Am7     # ii of the ii–V to G
-B  | 42 | D7      # V7 of G: natural tensions
-B  | 43 | GMaj7   # tonic: the 4th is in the key
+9  | Am7     # ii of the ii–V to G
+10 | D7      # V7 of G: natural tensions
+11 | GMaj7   # tonic: the 4th is in the key
 # area: Bb major (bars 45–61)
-B  | 45 | Gm7     # ii of C7: Dorian
-B  | 46 | C7      # V7/V in Bb: natural tensions
-B  | 47 | Cm7     # ii of the ii–V to Bb
-B  | 48 | F7      # V7 of Bb: natural tensions
-@copy A2 A3 32
+13 | Gm7     # ii of C7: Dorian
+14 | C7      # V7/V in Bb: natural tensions
+15 | Cm7     # ii of the ii–V to Bb
+16 | F7      # V7 of Bb: natural tensions
+
+section: A3
+copy: A2

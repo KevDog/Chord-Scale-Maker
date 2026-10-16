@@ -6,27 +6,33 @@ form: AB, 16 bars
 source: Colorado Cookbook, p. 228
 # analysis: 2026-10-11, rules v1; D minor
 
-# section | bar | chord | scale
+# bar | chord | scale
+
+section: Intro
 # area: D minor (bars 1–9)
-Intro | 1  | Dm      # tonic minor: Dorian by convention
-Intro | 2  | DmMaj7  # from the symbol: minor-major 7th
-Intro | 3  | Dm7     # tonic minor: Dorian by convention
-Intro | 4  | Dm6     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+1 | Dm      # tonic minor: Dorian by convention
+2 | DmMaj7  # from the symbol: minor-major 7th
+3 | Dm7     # tonic minor: Dorian by convention
+4 | Dm6     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+
+section: A
 # the melody-only horn intro is left out; the Dm vamp (also the ending, to fade) is the intro here; bar 4 can also be Gm7 C7, bar 5 FMaj7 BbMaj7
-A     | 1  | Dm      # tonic minor: Dorian by convention
-A     | 5  | Gm      # iv: Dorian, the key’s own notes
-A     | 7  | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A     | 8  | A7      # V7 of D minor: b9 and b13 are in the key
-B     | 9  | Dm      # tonic minor: Dorian by convention
+1 | Dm      # tonic minor: Dorian by convention
+5 | Gm      # iv: Dorian, the key’s own notes
+7 | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+8 | A7      # V7 of D minor: b9 and b13 are in the key
+
+section: B
+1 | Dm      # tonic minor: Dorian by convention
 # area: F major (bars 11–12)
-B     | 11 | Gm7     # ii of the ii–V to F
-B     | 11 | C7      # V7 of F: natural tensions
-B     | 12 | FMaj7   # tonic: the 4th is in the key
-B     | 12 | Bb7     # IV7 in F, not resolving: the #11 is in the key
+3 | Gm7     # ii of the ii–V to F
+3 | C7      # V7 of F: natural tensions
+4 | FMaj7   # tonic: the 4th is in the key
+4 | Bb7     # IV7 in F, not resolving: the #11 is in the key
 # area: D minor (bars 13–16)
-B     | 13 | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B     | 13 | A7      # V7 of D minor: b9 and b13 are in the key
-B     | 14 | Dm      # tonic minor: Dorian by convention
-B     | 15 | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B     | 15 | A7      # V7 of D minor: b9 and b13 are in the key
-B     | 16 | Dm      # tonic minor: Dorian by convention
+5 | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+5 | A7      # V7 of D minor: b9 and b13 are in the key
+6 | Dm      # tonic minor: Dorian by convention
+7 | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+7 | A7      # V7 of D minor: b9 and b13 are in the key
+8 | Dm      # tonic minor: Dorian by convention

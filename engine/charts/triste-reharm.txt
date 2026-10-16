@@ -3,45 +3,50 @@ composer: Antonio Carlos Jobim
 style: Bossa nova
 key: A
 form: AB, 32 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; A
 
-# section | bar | chord
+# bar | chord
+
+section: A
 # area: A major (bars 1–11)
-A | 1  | AMaj7       # tonic: the 4th is in the key
-A | 3  | FMaj7#11/A  # from the symbol: #11
-# book: FMa7(b5)/A
+1  | AMaj7       # tonic: the 4th is in the key
+3  | FMaj7#11/A  # from the symbol: #11
 # alt: bar 3 (FMaj7)
-A | 5  | AMaj7       # tonic: the 4th is in the key
-A | 7  | C#m7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 8  | F#7#5       # V7/ii in A: the b13 is in the key, the #11 from the symbol
-A | 9  | Bm7         # ii: Dorian, the key’s own notes
-A | 10 | G#m7b5      # iiø7 of F# minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 10 | C#7         # V7/vi in A: b9 and b13 are in the key
-A | 11 | F#mMaj7     # from the symbol: minor-major 7th
-A | 11 | F#m7        # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+# book: FMa7(b5)/A
+5  | AMaj7       # tonic: the 4th is in the key
+7  | C#m7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+8  | F#7#5       # V7/ii in A: the b13 is in the key, the #11 from the symbol
+9  | Bm7         # ii: Dorian, the key’s own notes
+10 | G#m7b5      # iiø7 of F# minor: Locrian, the key's own notes (its ♭2 is a passing note)
+10 | C#7         # V7/vi in A: b9 and b13 are in the key
+11 | F#mMaj7     # from the symbol: minor-major 7th
+11 | F#m7        # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 # area: C# major (bars 12–15)
-A | 12 | G#7#5#9     # V7 of C#: b9, #9, #11 and b13 from the symbol
+12 | G#7#5#9     # V7 of C#: b9, #9, #11 and b13 from the symbol
 # book: G#7(#9 #5)
-A | 13 | C#Maj7      # tonic: the 4th is in the key
-A | 14 | G#13        # V7 of C#: natural tensions
-A | 15 | C#Maj7      # tonic: the 4th is in the key
-A | 15 | F#7         # V7/bvii in C#: the #11 is in the key
+13 | C#Maj7      # tonic: the 4th is in the key
+14 | G#13        # V7 of C#: natural tensions
+15 | C#Maj7      # tonic: the 4th is in the key
+15 | F#7         # V7/bvii in C#: the #11 is in the key
 # area: A major (bars 16–31)
-A | 16 | Bm7         # ii of the ii–V to A
-A | 16 | E7          # V7 of A: natural tensions
-B | 17 | AMaj7       # tonic: the 4th is in the key
-B | 19 | Am7         # a borrowed minor chord: Dorian, its own key
-B | 20 | Am6         # a minor sixth chord: Dorian
-B | 21 | AMaj7       # tonic: the 4th is in the key
-B | 23 | Em7         # ii of the ii–V to D
-B | 24 | A7          # V7/IV in A: natural tensions
-B | 25 | DMaj7       # the A7 before it makes D the key of the moment: the 4th is in the key
-B | 26 | Dm6         # a minor sixth chord: Dorian
-B | 27 | C#m7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B | 28 | Cdim7       # passing diminished: B7♭9 without its B, the E9sus4's dominant (Bm7 its ii)
-B | 29 | Bm7         # ii of E9sus4: Dorian
-B | 30 | E9sus4      # static sus: Mixolydian
-B | 30 | E7sus4b9    # from the symbol: sus b9
-B | 31 | Am          # a borrowed minor chord: Dorian, its own key
-# alt: bars 31–32 (Am7 Am6 | Am7 Am6)
+16 | Bm7         # ii of the ii–V to A
+16 | E7          # V7 of A: natural tensions
+
+section: B
+bars: 16
+1  | AMaj7       # tonic: the 4th is in the key
+3  | Am7         # a borrowed minor chord: Dorian, its own key
+4  | Am6         # a minor sixth chord: Dorian
+5  | AMaj7       # tonic: the 4th is in the key
+7  | Em7         # ii of the ii–V to D
+8  | A7          # V7/IV in A: natural tensions
+9  | DMaj7       # the A7 before it makes D the key of the moment: the 4th is in the key
+10 | Dm6         # a minor sixth chord: Dorian
+11 | C#m7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+12 | Cdim7       # passing diminished: B7♭9 without its B, the E9sus4's dominant (Bm7 its ii)
+13 | Bm7         # ii of E9sus4: Dorian
+14 | E9sus4      # static sus: Mixolydian
+14 | E7sus4b9    # from the symbol: sus b9
+15 | Am          # a borrowed minor chord: Dorian, its own key
+# alt: bars 15–16 (Am7 Am6 | Am7 Am6)

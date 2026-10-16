@@ -4,63 +4,70 @@ composer: Joe Henderson
 style: Medium samba
 key: Am
 form: AABCC, 80 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; A minor
 # book: Med. Samba (half note = 114). Head A played twice; B is for solos (repeated); after solos C (twice), then head A twice, then D.C. al fine (the intro, ending at its 2nd ending)
 # the intro (8 bars with 1st/2nd endings, horns 2nd time only, ending at "fine") is a horn and bass figure with no chords
 # the book's 13sus chords are written 9sus4 (D13sus → D9sus4)
 
-# section | bar | chord
+# bar | chord
+
+section: A
 # area: A minor (bars 1–9)
-A | 1  | D9sus4    # static sus: Mixolydian
+1  | D9sus4    # static sus: Mixolydian
 # book: D13sus
-A | 3  | Am7       # tonic minor: Dorian by convention
-A | 5  | F9sus4    # static sus: Mixolydian
+3  | Am7       # tonic minor: Dorian by convention
+5  | F9sus4    # static sus: Mixolydian
 # book: F13sus
-A | 7  | Cm7       # a borrowed minor chord: Dorian, its own key
+7  | Cm7       # a borrowed minor chord: Dorian, its own key
 # alt: bar 8 (F13)
-A | 9  | BbMaj7    # a non-tonic major chord: Lydian
+9  | BbMaj7    # a non-tonic major chord: Lydian
 # area: Ab major (bars 10–11)
-A | 10 | Bbm7      # ii of the ii–V to Ab
-A | 10 | Eb7       # V7 of Ab: natural tensions
-A | 11 | AbMaj7    # tonic: the 4th is in the key
+10 | Bbm7      # ii of the ii–V to Ab
+10 | Eb7       # V7 of Ab: natural tensions
+11 | AbMaj7    # tonic: the 4th is in the key
 # area: Gb major (bars 12–13)
-A | 12 | Abm7      # ii of the ii–V to Gb
-A | 12 | Db7       # V7 of Gb: natural tensions
-A | 13 | GbMaj7    # tonic: the 4th is in the key
+12 | Abm7      # ii of the ii–V to Gb
+12 | Db7       # V7 of Gb: natural tensions
+13 | GbMaj7    # tonic: the 4th is in the key
 # area: A minor (bars 14–25)
-A | 14 | Gb7#9#11  # tritone substitute: resolves down a half step to FMaj7; b9 and #9 from the symbol
+14 | Gb7#9#11  # tritone substitute: resolves down a half step to FMaj7; b9 and #9 from the symbol
 # alt: bar 14 (Gm7 C7)
-A | 15 | FMaj7     # a non-tonic major chord: Lydian
-A | 16 | E7#5#9    # V7 of A minor: the b13 is in the key, b9, #9 and #11 from the symbol
+15 | FMaj7     # a non-tonic major chord: Lydian
+16 | E7#5#9    # V7 of A minor: the b13 is in the key, b9, #9 and #11 from the symbol
+
+section: B
 # bar 16 is the 1st ending; the 2nd ending is one bar with no chord (a held B) leading into the solos at B
-B | 17 | Am7       # tonic minor: Dorian by convention
-B | 21 | Cm7       # a borrowed minor chord: Dorian, its own key
-# alt: bar 24 (F13)
-B | 25 | BbMaj7    # a non-tonic major chord: Lydian
+1  | Am7       # tonic minor: Dorian by convention
+5  | Cm7       # a borrowed minor chord: Dorian, its own key
+# alt: bar 8 (F13)
+9  | BbMaj7    # a non-tonic major chord: Lydian
 # area: Ab major (bars 26–27)
-B | 26 | Bbm7      # ii of the ii–V to Ab
-B | 26 | Eb7       # V7 of Ab: natural tensions
-B | 27 | AbMaj7    # tonic: the 4th is in the key
+10 | Bbm7      # ii of the ii–V to Ab
+10 | Eb7       # V7 of Ab: natural tensions
+11 | AbMaj7    # tonic: the 4th is in the key
 # area: Gb major (bars 28–29)
-B | 28 | Abm7      # ii of the ii–V to Gb
-B | 28 | Db7       # V7 of Gb: natural tensions
-B | 29 | GbMaj7    # tonic: the 4th is in the key
+12 | Abm7      # ii of the ii–V to Gb
+12 | Db7       # V7 of Gb: natural tensions
+13 | GbMaj7    # tonic: the 4th is in the key
 # area: A minor (bars 30–49)
-B | 30 | Gb7#9#11  # tritone substitute: resolves down a half step to FMaj7; b9 and #9 from the symbol
+14 | Gb7#9#11  # tritone substitute: resolves down a half step to FMaj7; b9 and #9 from the symbol
 # book: bar 30 prints both (Gm7 C7) and (Gb7(#11 #9)) in parentheses; Gb7#9#11 as in the head, alt: (Gm7 C7)
-B | 31 | FMaj7     # a non-tonic major chord: Lydian
-B | 32 | E7#5#9    # V7 of A minor: the b13 is in the key, b9, #9 and #11 from the symbol
+15 | FMaj7     # a non-tonic major chord: Lydian
+16 | E7#5#9    # V7 of A minor: the b13 is in the key, b9, #9 and #11 from the symbol
+
+section: C
+bars: 20
 # book: after solos, continue to C
-C | 33 | Am7       # tonic minor: Dorian by convention
-C | 37 | Cm7       # a borrowed minor chord: Dorian, its own key
-C | 41 | BbMaj7    # a non-tonic major chord: Lydian
+1  | Am7       # tonic minor: Dorian by convention
+5  | Cm7       # a borrowed minor chord: Dorian, its own key
+9  | BbMaj7    # a non-tonic major chord: Lydian
 # book: bars 41–46 are breaks with ensemble hits; each new chord is anticipated on the and of 4
-C | 43 | AbMaj7    # a non-tonic major chord: Lydian
-C | 45 | GbMaj7    # a non-tonic major chord: Lydian
-C | 47 | FMaj7     # a non-tonic major chord: Lydian
-C | 48 | E7#5#9    # static dominant: its own mode; b9, #9, #11 and b13 from the symbol
-C | 49 | E7#5#9
-@ending 1 C 48
-@ending 2 C 49
+11 | AbMaj7    # a non-tonic major chord: Lydian
+13 | GbMaj7    # a non-tonic major chord: Lydian
+15 | FMaj7     # a non-tonic major chord: Lydian
+16 | E7#5#9    # static dominant: its own mode; b9, #9, #11 and b13 from the symbol
+17 | E7#5#9
+@ending 1 16
+@ending 2 17
 # book: after the 2nd ending, play head (A) twice, then D.C. al fine

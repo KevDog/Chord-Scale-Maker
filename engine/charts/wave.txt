@@ -9,55 +9,63 @@ source: Songbook Tom Jobim vol. 2 (Chediak), pp. 109–110
 # analysis: 2026-10-11, rules v1; D
 # source: earlier from the Colorado Cookbook, p. 261; now the Songbook's chords, with the tensions the format writes
 
-# section | bar | chord | scale
+# bar | chord | scale
+
+section: A1
 # area: D major (bars 1–22)
-A1 | 1  | DMaj9     # tonic: the 4th is in the key
-A1 | 2  | Bbdim7    # passing diminished: A7♭9 without its A, the D7b9's dominant (Am7 its ii)
-A1 | 3  | Am7       # ii of the ii–V to G
-A1 | 4  | D7b9      # V7/IV in D: the b9 from the symbol
-A1 | 5  | GMaj7     # the D7b9 before it makes G the key of the moment: the 4th is in the key
-A1 | 6  | Gm6       # a minor sixth chord: Dorian
-A1 | 7  | F#13     |  | V7/VI  # * V7/VI in D: the b9 is in the key, the 13 from the symbol
-A1 | 7  | F#7b13    # extended dominant: V7 of B9sus4; b13 from the symbol
-A1 | 8  | B9sus4    # VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-A1 | 8  | B7b9      # extended dominant: V7 of E9sus4; b9 from the symbol
-A1 | 9  | E9sus4    # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-A1 | 9  | E9       |  | V7/V   # * V7/V in D: natural tensions
-A1 | 10 | Bb9       # tritone substitute: resolves down a half step to A7b13
-A1 | 10 | A7b13     # V7 of D: the b13 from the symbol
-A1 | 11 | Dm9       # ii of G13: Dorian
-A1 | 11 | G13       # extended ii–V: a side-step, its own key
-A1 | 12 | Dm9       # ii of G13: Dorian
-A1 | 12 | G13       # extended ii–V: a side-step, its own key
-A2 | 13 | DMaj9     # tonic: the 4th is in the key
-A2 | 14 | Bbdim7    # passing diminished: A7♭9 without its A, the D7b9's dominant (Am7 its ii)
-A2 | 15 | Am7       # ii of the ii–V to G
-A2 | 16 | D7b9      # V7/IV in D: the b9 from the symbol
-A2 | 17 | GMaj7     # the D7b9 before it makes G the key of the moment: the 4th is in the key
-A2 | 18 | Gm6       # a minor sixth chord: Dorian
-A2 | 19 | F#13     |  | V7/VI  # * V7/VI in D: the b9 is in the key, the 13 from the symbol
-A2 | 19 | F#7b13    # extended dominant: V7 of B9sus4; b13 from the symbol
-A2 | 20 | B9sus4    # VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-A2 | 20 | B7b9      # extended dominant: V7 of E9sus4; b9 from the symbol
-A2 | 21 | E9sus4    # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-A2 | 21 | E9       |  | V7/V   # * V7/V in D: natural tensions
-A2 | 22 | Bb9       # tritone substitute: resolves down a half step to A7b13
+1  | DMaj9     # tonic: the 4th is in the key
+2  | Bbdim7    # passing diminished: A7♭9 without its A, the D7b9's dominant (Am7 its ii)
+3  | Am7       # ii of the ii–V to G
+4  | D7b9      # V7/IV in D: the b9 from the symbol
+5  | GMaj7     # the D7b9 before it makes G the key of the moment: the 4th is in the key
+6  | Gm6       # a minor sixth chord: Dorian
+7  | F#13     |  | V7/VI  # * V7/VI in D: the b9 is in the key, the 13 from the symbol
+7  | F#7b13    # extended dominant: V7 of B9sus4; b13 from the symbol
+8  | B9sus4    # VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+8  | B7b9      # extended dominant: V7 of E9sus4; b9 from the symbol
+9  | E9sus4    # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+9  | E9       |  | V7/V   # * V7/V in D: natural tensions
+10 | Bb9       # tritone substitute: resolves down a half step to A7b13
+10 | A7b13     # V7 of D: the b13 from the symbol
+11 | Dm9       # ii of G13: Dorian
+11 | G13       # extended ii–V: a side-step, its own key
+12 | Dm9       # ii of G13: Dorian
+12 | G13       # extended ii–V: a side-step, its own key
+
+section: A2
+1  | DMaj9     # tonic: the 4th is in the key
+2  | Bbdim7    # passing diminished: A7♭9 without its A, the D7b9's dominant (Am7 its ii)
+3  | Am7       # ii of the ii–V to G
+4  | D7b9      # V7/IV in D: the b9 from the symbol
+5  | GMaj7     # the D7b9 before it makes G the key of the moment: the 4th is in the key
+6  | Gm6       # a minor sixth chord: Dorian
+7  | F#13     |  | V7/VI  # * V7/VI in D: the b9 is in the key, the 13 from the symbol
+7  | F#7b13    # extended dominant: V7 of B9sus4; b13 from the symbol
+8  | B9sus4    # VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+8  | B7b9      # extended dominant: V7 of E9sus4; b9 from the symbol
+9  | E9sus4    # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+9  | E9       |  | V7/V   # * V7/V in D: natural tensions
+10 | Bb9       # tritone substitute: resolves down a half step to A7b13
 # area: D minor (bars 22–24)
-A2 | 22 | A7b13     # V7 of D minor: b9 and b13 are in the key
-A2 | 23 | Dm7       # tonic minor: Dorian by convention
-A2 | 23 | G/D      |  | C: V   # * V without its 7th: Mixolydian, the key’s own notes
-A2 | 24 | Dm7       # tonic minor: Dorian by convention
-A2 | 24 | G/D      |  | C: V   # * V without its 7th: Mixolydian, the key’s own notes
-@key B 25 F
+10 | A7b13     # V7 of D minor: b9 and b13 are in the key
+11 | Dm7       # tonic minor: Dorian by convention
+11 | G/D      |  | C: V   # * V without its 7th: Mixolydian, the key’s own notes
+12 | Dm7       # tonic minor: Dorian by convention
+12 | G/D      |  | C: V   # * V without its 7th: Mixolydian, the key’s own notes
+
+section: B
+key: F
 # area: F major (bars 25–27)
-B  | 25 | Gm7       # ii: Dorian, the key’s own notes
-B  | 26 | Gm6/Bb    # a minor sixth chord: Dorian
-B  | 27 | Am7       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-@key B 29 Eb
+1  | Gm7       # ii: Dorian, the key’s own notes
+2  | Gm6/Bb    # a minor sixth chord: Dorian
+3  | Am7       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+@key 5 Eb
 # area: Eb major (bars 29–32)
-B  | 29 | Bb9sus4   # static sus: Mixolydian
-B  | 30 | Fm6/Ab    # a minor sixth chord: Dorian
-B  | 31 | Gm7       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B  | 32 | A7sus4b9  # from the symbol: sus b9
-@copy A1 C 32
-@key C 33 D
+5  | Bb9sus4   # static sus: Mixolydian
+6  | Fm6/Ab    # a minor sixth chord: Dorian
+7  | Gm7       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+8  | A7sus4b9  # from the symbol: sus b9
+
+section: C
+key: D
+copy: A1

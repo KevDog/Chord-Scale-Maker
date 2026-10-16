@@ -3,49 +3,60 @@ composer: Mose Allison
 style: Medium up Latin
 key: Eb
 form: AB, 30 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; Eb
 # the book: "Medium-Up Funky Latin", quarter = 174
 # intro: piano solo, repeated with 1st and 2nd endings
 # A repeats (verse 2) with the 1st ending; the 2nd ending is letter B (piano solo)
 # after B: D.C. al 2nd ending al Coda (sing 3rd verse)
 
-# section | bar | chord
-Intro | 1  | Eb7   # extended dominant: V7 of Ab7
-Intro | 5  | Ab7   # IV7 in Eb, not resolving: the #11 is in the key
-Intro | 7  | Eb7   # I7 in Eb, not resolving: natural tensions
-Intro | 9  | Bb7   # extended dominant: V7 of Eb7
-Intro | 11 | Eb7   # static dominant: its own mode
-Intro | 12 | Eb7
-Intro | 13 | Eb7
-@ending 1 Intro 12
-@ending 2 Intro 13
-A     | 1  | Eb7   # static dominant: its own mode
+# bar | chord
+
+section: Intro
+bars: 16
+1  | Eb7   # extended dominant: V7 of Ab7
+5  | Ab7   # IV7 in Eb, not resolving: the #11 is in the key
+7  | Eb7   # I7 in Eb, not resolving: natural tensions
+9  | Bb7   # extended dominant: V7 of Eb7
+11 | Eb7   # static dominant: its own mode
+12 | Eb7
+13 | Eb7
+@ending 1 12
+@ending 2 13
+
+section: A
+1  | Eb7   # static dominant: its own mode
 # bar 7: break (Eb7)
-A     | 8  | A7b5  # tritone substitute: resolves down a half step to Ab7
-A     | 9  | Ab7   # IV7 in Eb, not resolving: the #11 is in the key
-A     | 11 | Eb7   # extended dominant: V7 of Ab7
-A     | 13 | Ab7   # IV7 in Eb, not resolving: the #11 is in the key
-A     | 15 | F7    # V7 of V7: the dominant of the dominant: natural tensions
+8  | A7b5  # tritone substitute: resolves down a half step to Ab7
+9  | Ab7   # IV7 in Eb, not resolving: the #11 is in the key
+11 | Eb7   # extended dominant: V7 of Ab7
+13 | Ab7   # IV7 in Eb, not resolving: the #11 is in the key
+15 | F7    # V7 of V7: the dominant of the dominant: natural tensions
 # bar 15: break
-A     | 16 | Bb7   # extended dominant: V7 of Eb7
+16 | Bb7   # extended dominant: V7 of Eb7
 # bar 16: Eb7 anticipated on the last eighth (into the 1st ending / the coda / B)
-@coda A 16
-A     | 17 | Eb7   # I7 in Eb, not resolving: natural tensions
-A     | 18 | Bb7   # extended dominant: V7 of Eb7
+@coda 16
+17 | Eb7   # I7 in Eb, not resolving: natural tensions
+18 | Bb7   # extended dominant: V7 of Eb7
 # bars 17–18: piano fill
-@ending 1 A 17 18
-B     | 19 | Eb7   # extended dominant: V7 of Ab7
-@ending 2 B 19
-B     | 23 | Ab7   # IV7 in Eb, not resolving: the #11 is in the key
-B     | 24 | Bb7   # V7 in Eb, not resolving: natural tensions
-B     | 25 | Ab7   # IV7 in Eb, not resolving: the #11 is in the key
-B     | 26 | Bb7   # extended dominant: V7 of Eb7
-B     | 29 | Eb7   # I7 in Eb, not resolving: natural tensions
-B     | 30 | Bb7   # extended dominant: V7 of Eb7
-@nav B 30 D.C. al Coda
-@coda Coda 1
-Coda  | 1  | Eb7   # I7 in Eb, not resolving: natural tensions
+@ending 1 17 18
+
+section: B
+bars: 14
+1  | Eb7   # extended dominant: V7 of Ab7
+@ending 2 1
+5  | Ab7   # IV7 in Eb, not resolving: the #11 is in the key
+6  | Bb7   # V7 in Eb, not resolving: natural tensions
+7  | Ab7   # IV7 in Eb, not resolving: the #11 is in the key
+8  | Bb7   # extended dominant: V7 of Eb7
+11 | Eb7   # I7 in Eb, not resolving: natural tensions
+12 | Bb7   # extended dominant: V7 of Eb7
+@nav 12 D.C. al Coda
+
+section: Coda
+bars: 4
+@coda 1
+1  | Eb7   # I7 in Eb, not resolving: natural tensions
 # bar 1: piano fill
-Coda  | 2  | Bb7   # extended dominant: V7 of Eb7
-Coda  | 2  | Eb7   # I7 in Eb, not resolving: natural tensions
+2  | Bb7   # extended dominant: V7 of Eb7
+2  | Eb7   # I7 in Eb, not resolving: natural tensions

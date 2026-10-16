@@ -10,38 +10,41 @@ source:
 # bar 4 is in 5/4; the rest is in 3/4
 # the book: "Chords in parentheses are used for solos."
 
-# section | bar | chord
-A | 1  | F#m11        # tonic minor: Dorian by convention
-A | 2  | EMaj7/B      # ♭VII of F♯ minor: E major, the notes of F♯ Dorian
+# bar | chord
+
+section: A
+bars: 32
+1  | F#m11        # tonic minor: Dorian by convention
+2  | EMaj7/B      # ♭VII of F♯ minor: E major, the notes of F♯ Dorian
 # alt (solos): bar 2 (B9)
-A | 3  | F#m11        # tonic minor: Dorian by convention
-A | 4  | Ebm11        # a borrowed minor chord: Dorian, its own key
+3  | F#m11        # tonic minor: Dorian by convention
+4  | Ebm11        # a borrowed minor chord: Dorian, its own key
 # book: Ebm13 (bar 4, in 5/4, a piano figure)
-A | 5  | AMaj9        # bIII of F# minor: the relative major itself
-A | 6  | E/F#         # ♭VII of F♯ minor: E major, the notes of F♯ Dorian
-A | 7  | Bm7b5        # ivø7 in F# minor: Locrian, its own mode (the chord is outside the key)
+5  | AMaj9        # bIII of F# minor: the relative major itself
+6  | E/F#         # ♭VII of F♯ minor: E major, the notes of F♯ Dorian
+7  | Bm7b5        # ivø7 in F# minor: Locrian, its own mode (the chord is outside the key)
 # book: Bm7(b9 b5)
-A | 8  | Em11         # a borrowed minor chord: Dorian, its own key
-A | 9  | Eb/F         # a non-tonic major chord: Lydian
-A | 10 | F/G          # a non-tonic major chord: Lydian
-A | 11 | G7/Db        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-A | 11 | G9/Db        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-A | 12 | A9/Eb        # bIII7 in F# minor, not resolving: natural tensions
+8  | Em11         # a borrowed minor chord: Dorian, its own key
+9  | Eb/F         # a non-tonic major chord: Lydian
+10 | F/G          # a non-tonic major chord: Lydian
+11 | G7/Db        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+11 | G9/Db        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+12 | A9/Eb        # bIII7 in F# minor, not resolving: natural tensions
 # alt (solos): bar 13 (A9/Eb)
-A | 14 | E7/Bb        # bVII7 in F# minor, not resolving: natural tensions
-A | 14 | E9/Bb        # bVII7 in F# minor, not resolving: natural tensions
-A | 15 | C9#5         # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b13 from the symbol
+14 | E7/Bb        # bVII7 in F# minor, not resolving: natural tensions
+14 | E9/Bb        # bVII7 in F# minor, not resolving: natural tensions
+15 | C9#5         # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b13 from the symbol
 # 2nd ending, bars 17–20: a written piano figure; the book gives its chords only in parentheses, for solos
-A | 17 | Db7/G        # extended dominant: V7 of F#13#11
-A | 19 | F#13#11      # tritone substitute: resolves down a half step to GbMaj7/F
-A | 21 | GbMaj7/F     # from the symbol: sus b9
-A | 23 | Fm9          # a borrowed minor chord: Dorian, its own key
-A | 25 | GMaj9        # a non-tonic major chord: Lydian
-A | 26 | GMaj9#11/Db  # from the symbol: #11
+17 | Db7/G        # extended dominant: V7 of F#13#11
+19 | F#13#11      # tritone substitute: resolves down a half step to GbMaj7/F
+21 | GbMaj7/F     # from the symbol: sus b9
+23 | Fm9          # a borrowed minor chord: Dorian, its own key
+25 | GMaj9        # a non-tonic major chord: Lydian
+26 | GMaj9#11/Db  # from the symbol: #11
 # book: GMaj13(#11)/Db
 # alt (solos): bar 26 (Db7#5#9)
-A | 27 | GbMaj9       # a non-tonic major chord: Lydian
-@ending 1 A 9 16
+27 | GbMaj9       # a non-tonic major chord: Lydian
+@ending 1 9 16
 # bars 28–30: GbMaj9 held
-A | 30 | GbMaj9
-@ending 2 A 17 30
+30 | GbMaj9
+@ending 2 17 30

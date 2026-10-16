@@ -4,177 +4,201 @@ style: Medium funk ballad
 key: Ab
 form: AABCDDEFG, 76 bars
 context: modal
-source:
+source: 
 # analysis: 2026-10-12, rules v1; Ab, modal
 # book: in 6/4 (quarter = 94); each bar is six beats (6/4 is not supported, written as 4/4); bars 32, 39 and 65 are 3/4 bars
 # the book prints separate bass and keyboard parts; where the lead sheet compresses a passage, the bar count follows them
 # "Ab bass": the bass alone on Ab (the keyboard part marks it N.C.) until Ab Eb7sus/Bb and the last chord on the last beats
 
-# section | bar | chord
-Intro  | 1  | EbMaj7#5/F  # from the symbol: #5
-Intro  | 2  | Eb/F        # modal major: Lydian
-Intro  | 2  | EbMaj7#5/F  # from the symbol: #5
-Intro  | 3  | F/G         # modal major: Lydian
-Intro  | 3  | FMaj7#5/G   # from the symbol: #5
-Intro  | 4  | G/A         # modal major: Lydian
-Intro  | 4  | GMaj7#5/A   # from the symbol: #5
-Intro  | 5  | Ab          # modal major: Lydian
-Intro  | 5  | Eb7sus4/Bb  # static sus: Mixolydian
-Intro  | 5  | Db/Eb       # modal major: Lydian
-Intro  | 6  | Ab          # modal major: Lydian
-Intro  | 6  | Eb7sus4/Bb  # static sus: Mixolydian
-Intro  | 6  | Db/Eb       # modal major: Lydian
-Intro  | 7  | Gb/Ab       # modal major: Lydian
-A      | 1  | Gb/Ab       # modal major: Lydian
-A      | 3  | C#m9        # modal minor: Dorian
-A      | 3  | A13         # modal: its own mode
-A      | 3  | GMaj7/A     # modal major: Lydian
-A      | 4  | GMaj7#5/A   # from the symbol: #5
-A      | 5  | EMaj9       # modal major: Lydian
-A      | 5  | Bbm11       # modal minor: Dorian
+# bar | chord
+
+section: Intro
+bars: 8
+1  | EbMaj7#5/F  # from the symbol: #5
+2  | Eb/F        # modal major: Lydian
+2  | EbMaj7#5/F  # from the symbol: #5
+3  | F/G         # modal major: Lydian
+3  | FMaj7#5/G   # from the symbol: #5
+4  | G/A         # modal major: Lydian
+4  | GMaj7#5/A   # from the symbol: #5
+5  | Ab          # modal major: Lydian
+5  | Eb7sus4/Bb  # static sus: Mixolydian
+5  | Db/Eb       # modal major: Lydian
+6  | Ab          # modal major: Lydian
+6  | Eb7sus4/Bb  # static sus: Mixolydian
+6  | Db/Eb       # modal major: Lydian
+7  | Gb/Ab       # modal major: Lydian
+
+section: A
+1  | Gb/Ab       # modal major: Lydian
+3  | C#m9        # modal minor: Dorian
+3  | A13         # modal: its own mode
+3  | GMaj7/A     # modal major: Lydian
+4  | GMaj7#5/A   # from the symbol: #5
+5  | EMaj9       # modal major: Lydian
+5  | Bbm11       # modal minor: Dorian
 # book: Bbm7(add 11)
-A      | 6  | DbMaj7/Eb   # modal major: Lydian
-A      | 6  | Bbm11       # modal minor: Dorian
+6  | DbMaj7/Eb   # modal major: Lydian
+6  | Bbm11       # modal minor: Dorian
 # book: Bbm7(add 11)
-A      | 7  | DbMaj7/Eb   # modal major: Lydian
+7  | DbMaj7/Eb   # modal major: Lydian
 # 1st ending bars 5–7 as in the bass and keyboard parts (the lead sheet writes it in two bars: Emaj9 Bbm7(add 11) | Dbmaj7/Eb Bbm7(add 11) Dbmaj7/Eb)
-A      | 8  | EMaj9       # modal major: Lydian
-A      | 8  | E/F#        # modal major: Lydian
-A      | 8  | C7sus4/G    # static sus: Mixolydian
-A      | 8  | A/D         # modal major: Lydian
-@ending 1 A 5 7
-@ending 2 A 8
+8  | EMaj9       # modal major: Lydian
+8  | E/F#        # modal major: Lydian
+8  | C7sus4/G    # static sus: Mixolydian
+8  | A/D         # modal major: Lydian
+@ending 1 5 7
+@ending 2 8
+
+section: B
 # bars 9–14: the book writes Bm9 E13 | Bm9(b13) E13 with a repeat, 3 times
-B      | 9  | Bm9         # modal minor: Dorian
-B      | 9  | E13         # modal: its own mode
-B      | 10 | Bm9b13      # from the symbol: b6
-B      | 10 | E13         # modal: its own mode
-B      | 11 | Bm9         # modal minor: Dorian
-B      | 11 | E13         # modal: its own mode
-B      | 12 | Bm9b13      # from the symbol: b6
-B      | 12 | E13         # modal: its own mode
-B      | 13 | Bm9         # modal minor: Dorian
-B      | 13 | E13         # modal: its own mode
-B      | 14 | Bm9b13      # from the symbol: b6
-B      | 14 | E13         # modal: its own mode
-B      | 15 | C/D         # modal major: Lydian
-B      | 15 | D13         # modal: its own mode
-B      | 16 | Db/Eb       # modal major: Lydian
-B      | 18 | C#m9        # modal minor: Dorian
-B      | 18 | A13         # modal: its own mode
-B      | 18 | GMaj7/A     # modal major: Lydian
-B      | 19 | GMaj7#5/A   # from the symbol: #5
-B      | 20 | EMaj9       # modal major: Lydian
-B      | 20 | Bbm11       # modal minor: Dorian
+1  | Bm9         # modal minor: Dorian
+1  | E13         # modal: its own mode
+2  | Bm9b13      # from the symbol: b6
+2  | E13         # modal: its own mode
+3  | Bm9         # modal minor: Dorian
+3  | E13         # modal: its own mode
+4  | Bm9b13      # from the symbol: b6
+4  | E13         # modal: its own mode
+5  | Bm9         # modal minor: Dorian
+5  | E13         # modal: its own mode
+6  | Bm9b13      # from the symbol: b6
+6  | E13         # modal: its own mode
+7  | C/D         # modal major: Lydian
+7  | D13         # modal: its own mode
+8  | Db/Eb       # modal major: Lydian
+10 | C#m9        # modal minor: Dorian
+10 | A13         # modal: its own mode
+10 | GMaj7/A     # modal major: Lydian
+11 | GMaj7#5/A   # from the symbol: #5
+12 | EMaj9       # modal major: Lydian
+12 | Bbm11       # modal minor: Dorian
 # book: Bbm7(add 11)
-B      | 20 | Eb7#5b9     # modal: its own mode; b9, #11 and b13 from the symbol
-B      | 21 | Eb7#5b9
-B      | 21 | Abm9        # modal minor: Dorian
-B      | 21 | Db7#5b9     # modal: its own mode; b9, #11 and b13 from the symbol
-B      | 22 | Db7#5b9
-B      | 22 | E/F#        # modal major: Lydian
-C      | 23 | BbMaj7/D    # modal major: Lydian
-C      | 24 | GMaj7/D     # modal major: Lydian
-C      | 25 | Gm9         # modal minor: Dorian
-C      | 25 | Gm9/F       # modal minor: Dorian
-C      | 26 | Em9b5       # modal minor: Dorian
-C      | 26 | C13#11      # modal: its own mode; #11 from the symbol
+12 | Eb7#5b9     # modal: its own mode; b9, #11 and b13 from the symbol
+13 | Eb7#5b9
+13 | Abm9        # modal minor: Dorian
+13 | Db7#5b9     # modal: its own mode; b9, #11 and b13 from the symbol
+14 | Db7#5b9
+14 | E/F#        # modal major: Lydian
+
+section: C
+bars: 7
+1  | BbMaj7/D    # modal major: Lydian
+2  | GMaj7/D     # modal major: Lydian
+3  | Gm9         # modal minor: Dorian
+3  | Gm9/F       # modal minor: Dorian
+4  | Em9b5       # modal minor: Dorian
+4  | C13#11      # modal: its own mode; #11 from the symbol
 # book: D/C7 (a D triad over C7)
-C      | 26 | B13#11      # modal: its own mode; #11 from the symbol
+4  | B13#11      # modal: its own mode; #11 from the symbol
 # book: C#/B7 (a C# triad over B7)
-C      | 27 | Bbm9        # modal minor: Dorian
+5  | Bbm9        # modal minor: Dorian
 # book: Bbm9(add 13)
-C      | 27 | Bbm9/Ab     # modal minor: Dorian
-C      | 28 | Ab/Db       # modal major: Lydian
-C      | 28 | BbMaj9/C    # modal major: Lydian
+5  | Bbm9/Ab     # modal minor: Dorian
+6  | Ab/Db       # modal major: Lydian
+6  | BbMaj9/C    # modal major: Lydian
+
+section: D1
 # bar 29: BbMaj9/C held
-D1     | 30 | Ab          # modal major: Lydian
-D1     | 30 | Eb7sus4/Bb  # static sus: Mixolydian
-D1     | 30 | Db/Eb       # modal major: Lydian
-D1     | 31 | Ab          # modal major: Lydian
-D1     | 31 | Eb7sus4/Bb  # static sus: Mixolydian
-D1     | 31 | E/F#        # modal major: Lydian
+1  | Ab          # modal major: Lydian
+1  | Eb7sus4/Bb  # static sus: Mixolydian
+1  | Db/Eb       # modal major: Lydian
+2  | Ab          # modal major: Lydian
+2  | Eb7sus4/Bb  # static sus: Mixolydian
+2  | E/F#        # modal major: Lydian
 # bar 32: a 3/4 bar, E/F# held
-D1     | 33 | BMaj9       # modal major: Lydian
+4  | BMaj9       # modal major: Lydian
 # book: Bmaj9(add 13)
-D1     | 33 | AMaj7/B     # modal major: Lydian
-D1     | 34 | Dm7b5       # #ivø7 in Ab: Locrian, its own mode (the chord is outside the key)
-D1     | 34 | Ab/Bb       # modal major: Lydian
-D1     | 34 | G/C         # modal major: Lydian
-D1     | 34 | Am9         # modal minor: Dorian
-D1     | 35 | D/E         # modal major: Lydian
-D1     | 36 | Ab/C        # modal major: Lydian
-@copy D1 D2 7
-E      | 44 | Gb/Ab       # modal major: Lydian
-E      | 46 | C#m9        # modal minor: Dorian
-E      | 46 | C#m9/B      # modal minor: Dorian
-E      | 47 | Gb/Bb       # modal major: Lydian
+4  | AMaj7/B     # modal major: Lydian
+5  | Dm7b5       # #ivø7 in Ab: Locrian, its own mode (the chord is outside the key)
+5  | Ab/Bb       # modal major: Lydian
+5  | G/C         # modal major: Lydian
+5  | Am9         # modal minor: Dorian
+6  | D/E         # modal major: Lydian
+7  | Ab/C        # modal major: Lydian
+
+section: D2
+copy: D1
+
+section: E
+1  | Gb/Ab       # modal major: Lydian
+3  | C#m9        # modal minor: Dorian
+3  | C#m9/B      # modal minor: Dorian
+4  | Gb/Bb       # modal major: Lydian
 # book: Gb(add 9)/Bb
-E      | 48 | Gb/Bb
-E      | 48 | E/F#        # modal major: Lydian
-E      | 48 | C7sus4/G    # static sus: Mixolydian
-E      | 48 | A/G#        # modal major: Lydian
-E      | 50 | A/C#        # modal major: Lydian
+5  | Gb/Bb
+5  | E/F#        # modal major: Lydian
+5  | C7sus4/G    # static sus: Mixolydian
+5  | A/G#        # modal major: Lydian
+7  | A/C#        # modal major: Lydian
+
+section: F
 # bars 51–56: the book writes Bm9 E13 | A13/B E13 and a 2-bar repeat twice
-F      | 51 | Bm9         # modal minor: Dorian
-F      | 51 | E13         # modal: its own mode
-F      | 52 | A13/B       # modal: its own mode
-F      | 52 | E13         # modal: its own mode
-F      | 53 | Bm9         # modal minor: Dorian
-F      | 53 | E13         # modal: its own mode
-F      | 54 | A13/B       # modal: its own mode
-F      | 54 | E13         # modal: its own mode
-F      | 55 | Bm9         # modal minor: Dorian
-F      | 55 | E13         # modal: its own mode
-F      | 56 | A13/B       # modal: its own mode
-F      | 56 | E13         # modal: its own mode
-F      | 57 | C/D         # modal major: Lydian
-F      | 57 | D13         # modal: its own mode
-F      | 58 | DbMaj7/Eb   # modal major: Lydian
-F      | 60 | C#m9        # modal minor: Dorian
-F      | 60 | A/D         # modal major: Lydian
-F      | 60 | E/D         # modal major: Lydian
-F      | 60 | A/D         # modal major: Lydian
+1  | Bm9         # modal minor: Dorian
+1  | E13         # modal: its own mode
+2  | A13/B       # modal: its own mode
+2  | E13         # modal: its own mode
+3  | Bm9         # modal minor: Dorian
+3  | E13         # modal: its own mode
+4  | A13/B       # modal: its own mode
+4  | E13         # modal: its own mode
+5  | Bm9         # modal minor: Dorian
+5  | E13         # modal: its own mode
+6  | A13/B       # modal: its own mode
+6  | E13         # modal: its own mode
+7  | C/D         # modal major: Lydian
+7  | D13         # modal: its own mode
+8  | DbMaj7/Eb   # modal major: Lydian
+10 | C#m9        # modal minor: Dorian
+10 | A/D         # modal major: Lydian
+10 | E/D         # modal major: Lydian
+10 | A/D         # modal major: Lydian
 # bar 60: the bass part writes C#m9 A/D only
-F      | 61 | AMaj7/D     # modal major: Lydian
-F      | 61 | C#m7        # modal minor: Dorian
-F      | 61 | E/F#        # modal major: Lydian
-F      | 61 | C#m/F#      # modal minor: Dorian
+11 | AMaj7/D     # modal major: Lydian
+11 | C#m7        # modal minor: Dorian
+11 | E/F#        # modal major: Lydian
+11 | C#m/F#      # modal minor: Dorian
 # book: bar 61 has E/F# E7/F# before C#m/F# (five chords; the bass part's four are written)
-F      | 62 | F#m/E       # modal minor: Dorian
-F      | 62 | F#sus/E     # static sus: Mixolydian
-F      | 62 | Ab/C        # modal major: Lydian
+12 | F#m/E       # modal minor: Dorian
+12 | F#sus/E     # static sus: Mixolydian
+12 | Ab/C        # modal major: Lydian
 # alt (optional): bar 62, last beat (D/C)
-F      | 63 | F#m/E       # modal minor: Dorian
-F      | 63 | F#sus/E     # static sus: Mixolydian
-F      | 63 | Ab/C        # modal major: Lydian
-F      | 63 | D/C         # modal major: Lydian
-F      | 64 | F#m/E       # modal minor: Dorian
-F      | 64 | F#sus/E     # static sus: Mixolydian
-F      | 64 | Ab/C        # modal major: Lydian
-F      | 64 | Abm/Cb      # modal minor: Dorian
-F      | 65 | Bb7         # modal: its own mode
+13 | F#m/E       # modal minor: Dorian
+13 | F#sus/E     # static sus: Mixolydian
+13 | Ab/C        # modal major: Lydian
+13 | D/C         # modal major: Lydian
+14 | F#m/E       # modal minor: Dorian
+14 | F#sus/E     # static sus: Mixolydian
+14 | Ab/C        # modal major: Lydian
+14 | Abm/Cb      # modal minor: Dorian
+15 | Bb7         # modal: its own mode
+
+section: G
+bars: 7
 # bar 65: a 3/4 bar; Bb7 enters on the last beat of bar 64 and is held through it
-G      | 66 | F/A         # modal major: Lydian
-G      | 66 | Ddim/A      # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
-G      | 67 | GMaj7/A     # modal major: Lydian
-G      | 68 | Gm9         # modal minor: Dorian
-G      | 68 | Gm9/F       # modal minor: Dorian
-G      | 69 | BbMaj7#5/E  # from the symbol: #5
-G      | 69 | C13#11      # modal: its own mode; #11 from the symbol
+1  | F/A         # modal major: Lydian
+1  | Ddim/A      # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
+2  | GMaj7/A     # modal major: Lydian
+3  | Gm9         # modal minor: Dorian
+3  | Gm9/F       # modal minor: Dorian
+4  | BbMaj7#5/E  # from the symbol: #5
+4  | C13#11      # modal: its own mode; #11 from the symbol
 # book: D/C7 (a D triad over C7)
-G      | 69 | B13#11      # modal: its own mode; #11 from the symbol
+4  | B13#11      # modal: its own mode; #11 from the symbol
 # book: C#/B7 (a C# triad over B7)
-G      | 70 | Bbm9        # modal minor: Dorian
+5  | Bbm9        # modal minor: Dorian
 # book: Bbm9(add 13)
-G      | 70 | Bbm9/Ab     # modal minor: Dorian
-G      | 71 | Ab/Db       # modal major: Lydian
-G      | 71 | BbMaj9/C    # modal major: Lydian
+5  | Bbm9/Ab     # modal minor: Dorian
+6  | Ab/Db       # modal major: Lydian
+6  | BbMaj9/C    # modal major: Lydian
+
+section: Ending
+bars: 4
 # bar 72: BbMaj9/C held
 # Ending bar 1: a vamp, played 7 times (flute tacet the 1st and 2nd times); bar 2 ends on E/F# with a fermata
-Ending | 1  | Ab          # modal major: Lydian
-Ending | 1  | Eb7sus4/Bb  # static sus: Mixolydian
-Ending | 1  | Db/Eb       # modal major: Lydian
-Ending | 2  | Ab          # modal major: Lydian
-Ending | 2  | Eb7sus4/Bb  # static sus: Mixolydian
-Ending | 2  | E/F#        # modal major: Lydian
+1  | Ab          # modal major: Lydian
+1  | Eb7sus4/Bb  # static sus: Mixolydian
+1  | Db/Eb       # modal major: Lydian
+2  | Ab          # modal major: Lydian
+2  | Eb7sus4/Bb  # static sus: Mixolydian
+2  | E/F#        # modal major: Lydian

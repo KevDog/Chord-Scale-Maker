@@ -3,46 +3,50 @@ composer: Art Farmer
 style: Medium up
 key: F
 form: AB, 24 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; F
 # the book: "Med.-Up Swing"
 # the intro (optional, N.C.) is a melodic figure with no chords
 # solos on F blues; after solos, D.S. al Fine (final lyric)
 
-# section | bar | chord
-@segno A 1
-A | 1  | F6      # tonic: the 4th is in the key
-A | 2  | Gm7     # ii of the ii–V to F
-A | 2  | C7      # V7 of F: natural tensions
-A | 3  | F6      # tonic: the 4th is in the key
-A | 4  | Cm7     # ii of the ii–V to Bb
-A | 4  | F7      # V7/IV in F: natural tensions
-A | 5  | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
-A | 6  | Bbm7    # ii of Eb7: Dorian
-A | 6  | Eb7     # extended ii–V: a side-step, its own key
-A | 7  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 8  | D7b9    # V7/ii in F: the b13 is in the key, the b9 from the symbol
-A | 9  | Gm7     # ii of the ii–V to F
-A | 10 | C7b9    # V7 of F: the b9 from the symbol
-A | 11 | F6      # tonic: the 4th is in the key
-A | 11 | AbMaj7  # ♭IIImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
-A | 12 | DbMaj7  # ♭VImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
-A | 12 | Gb7     # tritone substitute: resolves down a half step to F6
-B | 13 | F6      # tonic: the 4th is in the key
-B | 14 | Gm7     # ii of the ii–V to F
-B | 14 | C7      # V7 of F: natural tensions
-B | 15 | F6      # tonic: the 4th is in the key
-B | 16 | Cm7     # ii of the ii–V to Bb
-B | 16 | F7      # V7/IV in F: natural tensions
-B | 17 | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
-B | 18 | Bbm7    # ii of Eb7: Dorian
-B | 18 | Eb7     # extended ii–V: a side-step, its own key
-B | 19 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B | 20 | D7#5    # V7/ii in F: the b13 is in the key, the #11 from the symbol
-B | 21 | Gm7     # ii: Dorian, the key’s own notes
-B | 21 | Db7     # tritone substitute: resolves down a half step to C7#5
-B | 22 | C7#5    # V7 of F: #11 and b13 from the symbol
-B | 23 | F6      # tonic: the 4th is in the key
+# bar | chord
+
+section: A
+@segno 1
+1  | F6      # tonic: the 4th is in the key
+2  | Gm7     # ii of the ii–V to F
+2  | C7      # V7 of F: natural tensions
+3  | F6      # tonic: the 4th is in the key
+4  | Cm7     # ii of the ii–V to Bb
+4  | F7      # V7/IV in F: natural tensions
+5  | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
+6  | Bbm7    # ii of Eb7: Dorian
+6  | Eb7     # extended ii–V: a side-step, its own key
+7  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+8  | D7b9    # V7/ii in F: the b13 is in the key, the b9 from the symbol
+9  | Gm7     # ii of the ii–V to F
+10 | C7b9    # V7 of F: the b9 from the symbol
+11 | F6      # tonic: the 4th is in the key
+11 | AbMaj7  # ♭IIImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
+12 | DbMaj7  # ♭VImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
+12 | Gb7     # tritone substitute: resolves down a half step to F6
+
+section: B
+1  | F6      # tonic: the 4th is in the key
+2  | Gm7     # ii of the ii–V to F
+2  | C7      # V7 of F: natural tensions
+3  | F6      # tonic: the 4th is in the key
+4  | Cm7     # ii of the ii–V to Bb
+4  | F7      # V7/IV in F: natural tensions
+5  | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
+6  | Bbm7    # ii of Eb7: Dorian
+6  | Eb7     # extended ii–V: a side-step, its own key
+7  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+8  | D7#5    # V7/ii in F: the b13 is in the key, the #11 from the symbol
+9  | Gm7     # ii: Dorian, the key’s own notes
+9  | Db7     # tritone substitute: resolves down a half step to C7#5
+10 | C7#5    # V7 of F: #11 and b13 from the symbol
+11 | F6      # tonic: the 4th is in the key
 # bar 24: solo break on F6
-B | 24 | F6
-@nav B 24 Fine
+12 | F6
+@nav 12 Fine

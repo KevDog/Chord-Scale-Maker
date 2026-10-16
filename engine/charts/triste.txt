@@ -7,43 +7,51 @@ form: ABCD, 32 bars
 source: Colorado Cookbook, p. 251
 # analysis: 2026-10-11, rules v1; Bb
 
-# section | bar | chord | scale
+# bar | chord | scale
 # the lead sheet repeats Bbm7 Eb7 for two more bars before going back to the top
+
+section: A
 # area: Bb major (bars 1–11)
-A | 1  | BbMaj7  # tonic: the 4th is in the key
-A | 3  | GbMaj7  # ♭VImaj7, borrowed from Bb minor: Lydian (its ♯11 is in the key)
-A | 4  | B7#11   # tritone substitute: resolves down a half step to BbMaj7
-A | 5  | BbMaj7  # tonic: the 4th is in the key
-A | 7  | Dm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 8  | G7b9    # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
-B | 9  | Cm      # ii: Dorian, the key’s own notes
-B | 9  | Cm/Bb   # ii: Dorian, the key’s own notes
-B | 10 | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 10 | D7alt   # from the symbol: altered
-B | 11 | Gm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B | 11 | Gm/F    # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+1 | BbMaj7  # tonic: the 4th is in the key
+3 | GbMaj7  # ♭VImaj7, borrowed from Bb minor: Lydian (its ♯11 is in the key)
+4 | B7#11   # tritone substitute: resolves down a half step to BbMaj7
+5 | BbMaj7  # tonic: the 4th is in the key
+7 | Dm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+8 | G7b9    # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+
+section: B
+1 | Cm      # ii: Dorian, the key’s own notes
+1 | Cm/Bb   # ii: Dorian, the key’s own notes
+2 | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2 | D7alt   # from the symbol: altered
+3 | Gm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3 | Gm/F    # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 # area: D major (bars 12–15)
-B | 12 | Em7b5   # iiø7 of D: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 12 | A7alt   # from the symbol: altered
-B | 13 | DMaj7   # tonic: the 4th is in the key
-B | 14 | Em7     # ii of the ii–V to D minor
-B | 14 | A7      # V7 of D: natural tensions
-B | 15 | Dm7     # ii of the ii–V to C minor
-B | 15 | G7      # V7/bvii in D: the #11 is in the key
+4 | Em7b5   # iiø7 of D: Locrian, the key's own notes (its ♭2 is a passing note)
+4 | A7alt   # from the symbol: altered
+5 | DMaj7   # tonic: the 4th is in the key
+6 | Em7     # ii of the ii–V to D minor
+6 | A7      # V7 of D: natural tensions
+7 | Dm7     # ii of the ii–V to C minor
+7 | G7      # V7/bvii in D: the #11 is in the key
 # area: Bb major (bars 16–32)
-B | 16 | Cm7     # ii of the ii–V to Bb
-B | 16 | F7      # V7 of Bb: natural tensions
-C | 17 | BbMaj7  # tonic: the 4th is in the key
-C | 19 | GbMaj7  # ♭VImaj7, borrowed from Bb minor: Lydian (its ♯11 is in the key)
-C | 20 | B7#11   # tritone substitute: resolves down a half step to BbMaj7
-C | 21 | BbMaj7  # tonic: the 4th is in the key
-C | 23 | Fm7     # ii of the ii–V to Eb
-C | 24 | Bb7b9   # V7/IV in Bb: the b9 from the symbol
-D | 25 | EbMaj7  # the Bb7b9 before it makes Eb the key of the moment: the 4th is in the key
-D | 26 | Ab7#11  # tritone substitute: resolves down a half step to Gm7
-D | 27 | Gm7     # ii of C7#11: Dorian
-D | 28 | C7#11   # V7/V in Bb: the #11 from the symbol
-D | 29 | Cm7     # ii of the ii–V to Bb minor
-D | 30 | F7      # V7 of Bb: natural tensions
-D | 31 | Bbm7    # ii of Eb7: Dorian
-D | 32 | Eb7     # extended ii–V: a side-step, its own key
+8 | Cm7     # ii of the ii–V to Bb
+8 | F7      # V7 of Bb: natural tensions
+
+section: C
+1 | BbMaj7  # tonic: the 4th is in the key
+3 | GbMaj7  # ♭VImaj7, borrowed from Bb minor: Lydian (its ♯11 is in the key)
+4 | B7#11   # tritone substitute: resolves down a half step to BbMaj7
+5 | BbMaj7  # tonic: the 4th is in the key
+7 | Fm7     # ii of the ii–V to Eb
+8 | Bb7b9   # V7/IV in Bb: the b9 from the symbol
+
+section: D
+1 | EbMaj7  # the Bb7b9 before it makes Eb the key of the moment: the 4th is in the key
+2 | Ab7#11  # tritone substitute: resolves down a half step to Gm7
+3 | Gm7     # ii of C7#11: Dorian
+4 | C7#11   # V7/V in Bb: the #11 from the symbol
+5 | Cm7     # ii of the ii–V to Bb minor
+6 | F7      # V7 of Bb: natural tensions
+7 | Bbm7    # ii of Eb7: Dorian
+8 | Eb7     # extended ii–V: a side-step, its own key

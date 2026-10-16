@@ -7,49 +7,55 @@ form: AB, 16 bars
 source: Colorado Cookbook, p. 272
 # analysis: 2026-10-11, rules v1; F
 
-# section | bar | chord | scale
+# bar | chord | scale
+
+section: Coda
 # area: Db major (bars 1–3)
-Coda | 1  | Am7     # ii of D7alt: Dorian
-Coda | 2  | D7alt   # from the symbol: altered
-Coda | 3  | DbMaj7  # tonic: the 4th is in the key
+1 | Am7     # ii of D7alt: Dorian
+2 | D7alt   # from the symbol: altered
+3 | DbMaj7  # tonic: the 4th is in the key
 # area: F major (bars 3–5)
-Coda | 3  | C7alt   # from the symbol: altered
-Coda | 4  | FMaj7   # tonic: the 4th is in the key
+3 | C7alt   # from the symbol: altered
+4 | FMaj7   # tonic: the 4th is in the key
+
+section: A
 # the coda is Am7 D7 DbMaj7 C7alt to FMaj7
-A    | 1  | Em9     # ii of A7#11: Dorian
-A    | 1  | A7#11   # extended ii–V: a side-step, its own key; #11 from the symbol
-A    | 2  | Gm9     # ii of the ii–V to F
-A    | 2  | C7#11   # V7 of F: the #11 from the symbol
-A    | 3  | FMaj7   # tonic: the 4th is in the key
-A    | 3  | Bb7     # tritone substitute: resolves down a half step to Am7
-A    | 4  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A    | 4  | D7      # V7/ii in F: the b13 is in the key
-A    | 5  | Gm9     # ii of C7#11: Dorian
-A    | 5  | C7#11   # V7/I in F: the #11 from the symbol
+1 | Em9     # ii of A7#11: Dorian
+1 | A7#11   # extended ii–V: a side-step, its own key; #11 from the symbol
+2 | Gm9     # ii of the ii–V to F
+2 | C7#11   # V7 of F: the #11 from the symbol
+3 | FMaj7   # tonic: the 4th is in the key
+3 | Bb7     # tritone substitute: resolves down a half step to Am7
+4 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+4 | D7      # V7/ii in F: the b13 is in the key
+5 | Gm9     # ii of C7#11: Dorian
+5 | C7#11   # V7/I in F: the #11 from the symbol
 # area: Ab major (bars 6–7)
-A    | 6  | Bbm9    # ii of the ii–V to Ab
-A    | 6  | Eb7#11  # V7 of Ab: the #11 from the symbol
-A    | 7  | AbMaj7  # tonic: the 4th is in the key
-A    | 7  | G7alt   # from the symbol: altered
+6 | Bbm9    # ii of the ii–V to Ab
+6 | Eb7#11  # V7 of Ab: the #11 from the symbol
+7 | AbMaj7  # tonic: the 4th is in the key
+7 | G7alt   # from the symbol: altered
 # area: F major (bars 8–9)
-A    | 8  | Cm9     # ii of the ii–V to Bb
-A    | 8  | F7alt   # from the symbol: altered
-B    | 9  | BbMaj7  # the F7alt before it makes Bb the key of the moment: the 4th is in the key
-B    | 9  | A7alt   # from the symbol: altered
+8 | Cm9     # ii of the ii–V to Bb
+8 | F7alt   # from the symbol: altered
+
+section: B
+1 | BbMaj7  # the F7alt before it makes Bb the key of the moment: the 4th is in the key
+1 | A7alt   # from the symbol: altered
 # area: C major (bars 10–12)
-B    | 10 | Dm9     # ii of the ii–V to C
-B    | 10 | G7#11   # V7 of C: the #11 from the symbol
-B    | 11 | CMaj7   # tonic: the 4th is in the key
-B    | 11 | F7#11   # tritone substitute: resolves down a half step to Em9
-B    | 12 | Em9     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B    | 12 | A7#11   # extended ii–V: a side-step, its own key; #11 from the symbol
+2 | Dm9     # ii of the ii–V to C
+2 | G7#11   # V7 of C: the #11 from the symbol
+3 | CMaj7   # tonic: the 4th is in the key
+3 | F7#11   # tritone substitute: resolves down a half step to Em9
+4 | Em9     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+4 | A7#11   # extended ii–V: a side-step, its own key; #11 from the symbol
 # area: F major (bars 13–16)
-B    | 13 | Gm9     # ii of the ii–V to F
-B    | 13 | C7#11   # V7 of F: the #11 from the symbol
-B    | 14 | FMaj7   # tonic: the 4th is in the key
-B    | 14 | Bb7#11  # tritone substitute: resolves down a half step to A7b13
-B    | 15 | A7b13   # V7 of D7b9, on the way to G minor: b9 and b13 are in the key
-B    | 15 | D7b9    # V7 of G minor, the chain's last link: b9 and b13 are in the key
-B    | 16 | Gm9     # ii of C7sus4: Dorian
-B    | 16 | C7sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-B    | 16 | C7      # V7 in F, not resolving: natural tensions
+5 | Gm9     # ii of the ii–V to F
+5 | C7#11   # V7 of F: the #11 from the symbol
+6 | FMaj7   # tonic: the 4th is in the key
+6 | Bb7#11  # tritone substitute: resolves down a half step to A7b13
+7 | A7b13   # V7 of D7b9, on the way to G minor: b9 and b13 are in the key
+7 | D7b9    # V7 of G minor, the chain's last link: b9 and b13 are in the key
+8 | Gm9     # ii of C7sus4: Dorian
+8 | C7sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+8 | C7      # V7 in F, not resolving: natural tensions

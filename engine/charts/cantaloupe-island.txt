@@ -7,8 +7,11 @@ form: A, 16 bars
 source: Colorado Cookbook, p. 47
 # analysis: 2026-10-11, rules v1; F minor, modal
 
-# section | bar | chord | scale
-A | 1  | Fm   # modal minor: Dorian
-A | 5  | Db7  # modal: its own mode
-A | 9  | Dm   # modal minor: Dorian
-A | 13 | Fm   # modal minor: Dorian
+# bar | chord | scale
+
+section: A
+bars: 16
+1  | Fm   # modal minor: Dorian
+5  | Db7  # modal: its own mode
+9  | Dm   # modal minor: Dorian
+13 | Fm   # modal minor: Dorian

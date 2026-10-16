@@ -18,7 +18,9 @@
     "golden": "UPDATE_GOLDEN=1 vitest run src/__tests__/golden.test.ts src/__tests__/analysis.fixture.test.ts",
     "analyse": "vite-node scripts/analyse.ts --",
     "guide-lines": "vite-node scripts/guideLines.ts --",
-    "fixture-scales": "vite-node scripts/fixtureScales.ts --"
+    "fixture-scales": "vite-node scripts/fixtureScales.ts --",
+    "migrate-charts": "vite-node scripts/migrate-charts.ts",
+    "compare-golden": "vite-node scripts/compare-golden.ts --"
   },
   "devDependencies": {
     "@nuxt/eslint-config": "1.17.0",

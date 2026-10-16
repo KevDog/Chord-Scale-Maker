@@ -7,45 +7,49 @@ form: AB, 32 bars
 source: Colorado Cookbook, p. 51
 # analysis: 2026-10-11, rules v1; Ab
 
-# section | bar | chord | scale
-A | 1  | AbMaj7  # tonic: the 4th is in the key
-A | 2  | Bbm7    # ii of the ii–V to Ab
-A | 2  | Eb7     # V7 of Ab: natural tensions
-A | 3  | AbMaj7  # tonic: the 4th is in the key
-A | 4  | Ebm7    # ii of the ii–V to Db
-A | 4  | Ab7     # V7/IV in Ab: natural tensions
-A | 5  | DbMaj7  # the Ab7 before it makes Db the key of the moment: the 4th is in the key
-A | 6  | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 6  | G7#9    # V7/iii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
-A | 7  | Cm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 8  | F7#9    # V7/ii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
-A | 9  | Bbm7    # ii of Eb7: Dorian
-A | 10 | Eb7     # V7/I in Ab: natural tensions
-A | 11 | Cm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 12 | F7      # extended ii–V: a side-step, its own key
-A | 13 | Dm7     # ii of the ii–V to C minor
-A | 14 | G7      # V7/iii in Ab: b9 and b13 are in the key
-A | 15 | Cm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 15 | F7      # V7/ii in Ab: the b13 is in the key
-A | 16 | Bbm7    # ii of the ii–V to Ab
-A | 16 | Eb7     # V7 of Ab: natural tensions
-B | 17 | AbMaj7  # tonic: the 4th is in the key
-B | 18 | Bbm7    # ii of the ii–V to Ab
-B | 18 | Eb7     # V7 of Ab: natural tensions
-B | 19 | AbMaj7  # tonic: the 4th is in the key
-B | 20 | Ebm7    # ii of the ii–V to Db
-B | 20 | Ab7     # V7/IV in Ab: natural tensions
-B | 21 | DbMaj7  # the Ab7 before it makes Db the key of the moment: the 4th is in the key
-B | 22 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 22 | G7#9    # V7/iii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
-B | 23 | Cm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B | 24 | F7#9    # V7/ii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
-B | 25 | Bbm7    # ii of Eb7: Dorian
-B | 26 | Eb7     # V7/I in Ab: natural tensions
-B | 27 | Cm7b5   # iiø7 of Bb minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 28 | F7#9    # V7/ii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
-B | 29 | Bbm7    # ii of the ii–V to Ab
-B | 30 | Eb7     # V7 of Ab: natural tensions
-B | 31 | AbMaj7  # tonic: the 4th is in the key
-B | 32 | Bbm7    # ii of the ii–V to Ab
-B | 32 | Eb7     # V7 of Ab: natural tensions
+# bar | chord | scale
+
+section: A
+1  | AbMaj7  # tonic: the 4th is in the key
+2  | Bbm7    # ii of the ii–V to Ab
+2  | Eb7     # V7 of Ab: natural tensions
+3  | AbMaj7  # tonic: the 4th is in the key
+4  | Ebm7    # ii of the ii–V to Db
+4  | Ab7     # V7/IV in Ab: natural tensions
+5  | DbMaj7  # the Ab7 before it makes Db the key of the moment: the 4th is in the key
+6  | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+6  | G7#9    # V7/iii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
+7  | Cm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+8  | F7#9    # V7/ii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
+9  | Bbm7    # ii of Eb7: Dorian
+10 | Eb7     # V7/I in Ab: natural tensions
+11 | Cm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+12 | F7      # extended ii–V: a side-step, its own key
+13 | Dm7     # ii of the ii–V to C minor
+14 | G7      # V7/iii in Ab: b9 and b13 are in the key
+15 | Cm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+15 | F7      # V7/ii in Ab: the b13 is in the key
+16 | Bbm7    # ii of the ii–V to Ab
+16 | Eb7     # V7 of Ab: natural tensions
+
+section: B
+1  | AbMaj7  # tonic: the 4th is in the key
+2  | Bbm7    # ii of the ii–V to Ab
+2  | Eb7     # V7 of Ab: natural tensions
+3  | AbMaj7  # tonic: the 4th is in the key
+4  | Ebm7    # ii of the ii–V to Db
+4  | Ab7     # V7/IV in Ab: natural tensions
+5  | DbMaj7  # the Ab7 before it makes Db the key of the moment: the 4th is in the key
+6  | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+6  | G7#9    # V7/iii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
+7  | Cm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+8  | F7#9    # V7/ii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
+9  | Bbm7    # ii of Eb7: Dorian
+10 | Eb7     # V7/I in Ab: natural tensions
+11 | Cm7b5   # iiø7 of Bb minor: Locrian, the key's own notes (its ♭2 is a passing note)
+12 | F7#9    # V7/ii in Ab: the b13 is in the key, b9, #9 and #11 from the symbol
+13 | Bbm7    # ii of the ii–V to Ab
+14 | Eb7     # V7 of Ab: natural tensions
+15 | AbMaj7  # tonic: the 4th is in the key
+16 | Bbm7    # ii of the ii–V to Ab
+16 | Eb7     # V7 of Ab: natural tensions

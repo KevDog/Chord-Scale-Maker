@@ -3,127 +3,148 @@ composer: Victor Feldman
 style: Up
 key: Dm
 form: AABC head + DDEEEF solos, 104 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; D minor
 
 # the intro is a bass figure with no chords (the bass vamp continues under A and C)
 # metre: 4/4, except B bars 15–18 and E bars 48–53 (and E2, E3) in 3/4
-# section | bar | chord
-@segno A 1
+# bar | chord
+
+section: A
+@segno 1
 # area: D minor (bars 1–13)
-A    | 1  | Dm7       # tonic minor: Dorian by convention
-A    | 1  | D9sus4    # static sus: Mixolydian
+1  | Dm7       # tonic minor: Dorian by convention
+1  | D9sus4    # static sus: Mixolydian
 # bar 2: D9sus held through beats 1–2; Dm9 and Em9 on beats 3 and 4
-A    | 2  | D9sus4
-A    | 2  | Dm9       # tonic minor: Dorian by convention
-A    | 2  | Em9       # a borrowed minor chord: Dorian, its own key
-A    | 3  | Dm9       # tonic minor: Dorian by convention
-A    | 3  | D9sus4    # static sus: Mixolydian
-A    | 5  | Dm7       # tonic minor: Dorian by convention
-A    | 5  | D9sus4    # static sus: Mixolydian
-A    | 6  | D9sus4
-A    | 6  | Dm9       # tonic minor: Dorian by convention
-A    | 6  | Em9       # a borrowed minor chord: Dorian, its own key
-A    | 7  | Dm9       # tonic minor: Dorian by convention
-A    | 7  | D9sus4    # static sus: Mixolydian
-A    | 9  | Dm9       # tonic minor: Dorian by convention
-A    | 9  | Cm9       # a borrowed minor chord: Dorian, its own key
-A    | 10 | Bbm9      # a borrowed minor chord: Dorian, its own key
-A    | 10 | Cm9       # a borrowed minor chord: Dorian, its own key
-A    | 10 | Dm9       # tonic minor: Dorian by convention
+2  | D9sus4
+2  | Dm9       # tonic minor: Dorian by convention
+2  | Em9       # a borrowed minor chord: Dorian, its own key
+3  | Dm9       # tonic minor: Dorian by convention
+3  | D9sus4    # static sus: Mixolydian
+5  | Dm7       # tonic minor: Dorian by convention
+5  | D9sus4    # static sus: Mixolydian
+6  | D9sus4
+6  | Dm9       # tonic minor: Dorian by convention
+6  | Em9       # a borrowed minor chord: Dorian, its own key
+7  | Dm9       # tonic minor: Dorian by convention
+7  | D9sus4    # static sus: Mixolydian
+9  | Dm9       # tonic minor: Dorian by convention
+9  | Cm9       # a borrowed minor chord: Dorian, its own key
+10 | Bbm9      # a borrowed minor chord: Dorian, its own key
+10 | Cm9       # a borrowed minor chord: Dorian, its own key
+10 | Dm9       # tonic minor: Dorian by convention
 # bars 11–12 (1st ending): the Dm9 of bar 10 held
-A    | 11 | Dm9
-A    | 12 | Dm9
-@ending 1 A 11 12
-A    | 13 | Dm9
+11 | Dm9
+12 | Dm9
+@ending 1 11 12
+13 | Dm9
 # area: F major (bars 14–15)
-A    | 14 | Gm7       # ii of the ii–V to F
-A    | 14 | C7        # V7 of F: natural tensions
-@ending 2 A 13 14
-B    | 15 | FMaj7     # tonic: the 4th is in the key
+14 | Gm7       # ii of the ii–V to F
+14 | C7        # V7 of F: natural tensions
+@ending 2 13 14
+
+section: B
+1  | FMaj7     # tonic: the 4th is in the key
 # area: Eb major (bars 16–17)
-B    | 16 | Fm7       # ii of the ii–V to Eb
-B    | 16 | Bb7#5#9   # V7 of Eb: b9, #9, #11 and b13 from the symbol
-B    | 17 | EbMaj7    # tonic: the 4th is in the key
+2  | Fm7       # ii of the ii–V to Eb
+2  | Bb7#5#9   # V7 of Eb: b9, #9, #11 and b13 from the symbol
+3  | EbMaj7    # tonic: the 4th is in the key
 # area: Db major (bars 18–22)
-B    | 18 | Ebm7      # ii of the ii–V to Db
-B    | 18 | Ab7#5#9   # V7 of Db: b9, #9, #11 and b13 from the symbol
-B    | 19 | DbMaj7    # tonic: the 4th is in the key
+4  | Ebm7      # ii of the ii–V to Db
+4  | Ab7#5#9   # V7 of Db: b9, #9, #11 and b13 from the symbol
+5  | DbMaj7    # tonic: the 4th is in the key
 # bar 20: N.C. (break); the CMaj9#11 is anticipated on its last eighth
-B    | 21 | CMaj9#11  # from the symbol: #11
+7  | CMaj9#11  # from the symbol: #11
 # book: Bbm7(add13 add11)
-B    | 21 | Bbm11     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B    | 22 | F/E       # a non-tonic major chord: Lydian
+7  | Bbm11     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+8  | F/E       # a non-tonic major chord: Lydian
 # area: D minor (bars 22–46)
-B    | 22 | A13b9     # V7 of D minor: the b9 is in the key, the 13 from the symbol
-@coda B 22
-C    | 23 | Dm7       # tonic minor: Dorian by convention
-C    | 23 | D9sus4    # static sus: Mixolydian
-C    | 24 | D9sus4
-C    | 24 | Dm9       # tonic minor: Dorian by convention
-C    | 24 | Em9       # a borrowed minor chord: Dorian, its own key
-C    | 25 | Dm9       # tonic minor: Dorian by convention
-C    | 25 | D9sus4    # static sus: Mixolydian
-C    | 27 | Dm7       # tonic minor: Dorian by convention
-C    | 27 | D9sus4    # static sus: Mixolydian
-C    | 28 | D9sus4
-C    | 28 | Dm9       # tonic minor: Dorian by convention
-C    | 28 | Em9       # a borrowed minor chord: Dorian, its own key
-C    | 29 | Dm9       # tonic minor: Dorian by convention
-C    | 29 | D9sus4    # static sus: Mixolydian
-C    | 31 | Dm9       # tonic minor: Dorian by convention
-C    | 31 | Cm9       # a borrowed minor chord: Dorian, its own key
-C    | 32 | Bbm9      # a borrowed minor chord: Dorian, its own key
-C    | 32 | Cm9       # a borrowed minor chord: Dorian, its own key
-C    | 32 | Dm9       # tonic minor: Dorian by convention
+8  | A13b9     # V7 of D minor: the b9 is in the key, the 13 from the symbol
+@coda 8
+
+section: C
+bars: 12
+1  | Dm7       # tonic minor: Dorian by convention
+1  | D9sus4    # static sus: Mixolydian
+2  | D9sus4
+2  | Dm9       # tonic minor: Dorian by convention
+2  | Em9       # a borrowed minor chord: Dorian, its own key
+3  | Dm9       # tonic minor: Dorian by convention
+3  | D9sus4    # static sus: Mixolydian
+5  | Dm7       # tonic minor: Dorian by convention
+5  | D9sus4    # static sus: Mixolydian
+6  | D9sus4
+6  | Dm9       # tonic minor: Dorian by convention
+6  | Em9       # a borrowed minor chord: Dorian, its own key
+7  | Dm9       # tonic minor: Dorian by convention
+7  | D9sus4    # static sus: Mixolydian
+9  | Dm9       # tonic minor: Dorian by convention
+9  | Cm9       # a borrowed minor chord: Dorian, its own key
+10 | Bbm9      # a borrowed minor chord: Dorian, its own key
+10 | Cm9       # a borrowed minor chord: Dorian, its own key
+10 | Dm9       # tonic minor: Dorian by convention
+
+section: D
 # bars 33–34: Dm9 held
 # solos on D D E E E F
-D    | 35 | Dm7       # tonic minor: Dorian by convention
-D    | 43 | Dm7
-D    | 43 | Cm7       # a borrowed minor chord: Dorian, its own key
-D    | 44 | Bbm7      # a borrowed minor chord: Dorian, its own key
-D    | 44 | Cm7       # a borrowed minor chord: Dorian, its own key
-D    | 45 | Dm7       # tonic minor: Dorian by convention
-D    | 46 | Dm7
-@ending 1 D 46
+1  | Dm7       # tonic minor: Dorian by convention
+9  | Dm7
+9  | Cm7       # a borrowed minor chord: Dorian, its own key
+10 | Bbm7      # a borrowed minor chord: Dorian, its own key
+10 | Cm7       # a borrowed minor chord: Dorian, its own key
+11 | Dm7       # tonic minor: Dorian by convention
+12 | Dm7
+@ending 1 12
 # area: F major (bars 47–48)
-D    | 47 | Gm7       # ii of the ii–V to F
-D    | 47 | C7        # V7 of F: natural tensions
-@ending 2 D 47
-E    | 48 | FMaj7     # tonic: the 4th is in the key; the repeat at bar 56 would be F Lydian
+13 | Gm7       # ii of the ii–V to F
+13 | C7        # V7 of F: natural tensions
+@ending 2 13
+
+section: E
+1  | FMaj7     # tonic: the 4th is in the key; the repeat at bar 56 would be F Lydian
 # area: Eb major (bars 49–50)
-E    | 49 | Fm7       # ii of the ii–V to Eb
-E    | 49 | Bb7#5#9   # V7 of Eb: b9, #9, #11 and b13 from the symbol
-E    | 50 | EbMaj7    # tonic: the 4th is in the key
+2  | Fm7       # ii of the ii–V to Eb
+2  | Bb7#5#9   # V7 of Eb: b9, #9, #11 and b13 from the symbol
+3  | EbMaj7    # tonic: the 4th is in the key
 # area: Db major (bars 51–52)
-E    | 51 | Ebm7      # ii of the ii–V to Db
-E    | 51 | Ab7#5#9   # V7 of Db: b9, #9, #11 and b13 from the symbol
-E    | 52 | DbMaj7    # tonic: the 4th is in the key
+4  | Ebm7      # ii of the ii–V to Db
+4  | Ab7#5#9   # V7 of Db: b9, #9, #11 and b13 from the symbol
+5  | DbMaj7    # tonic: the 4th is in the key
 # area: C minor (bars 53–56)
-E    | 53 | G7#5#9    # V7 of C minor: the b13 is in the key, b9, #9 and #11 from the symbol
-E    | 54 | Cm7       # tonic minor: Dorian by convention
-E    | 54 | Bbm7      # a borrowed minor chord: Dorian, its own key
-E    | 55 | E7#5#9    # extended dominant: V7 of A7#5#9; b9, #9, #11 and b13 from the symbol
-E    | 55 | A7#5#9    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b9, #9 and b13 from the symbol
+6  | G7#5#9    # V7 of C minor: the b13 is in the key, b9, #9 and #11 from the symbol
+7  | Cm7       # tonic minor: Dorian by convention
+7  | Bbm7      # a borrowed minor chord: Dorian, its own key
+8  | E7#5#9    # extended dominant: V7 of A7#5#9; b9, #9, #11 and b13 from the symbol
+8  | A7#5#9    # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b9, #9 and b13 from the symbol
+
+section: E2
+copy: E
 # E is played three times
-@copy E E2 8
-@copy E E3 16
-F    | 72 | Dm7       # tonic minor: Dorian by convention
-F    | 80 | Dm7
-F    | 80 | Cm7       # a borrowed minor chord: Dorian, its own key
-F    | 81 | Bbm7      # a borrowed minor chord: Dorian, its own key
-F    | 81 | Cm7       # a borrowed minor chord: Dorian, its own key
-F    | 82 | Dm7       # tonic minor: Dorian by convention
-F    | 83 | Dm7
+
+section: E3
+copy: E
+
+section: F
+bars: 13
+1  | Dm7       # tonic minor: Dorian by convention
+9  | Dm7
+9  | Cm7       # a borrowed minor chord: Dorian, its own key
+10 | Bbm7      # a borrowed minor chord: Dorian, its own key
+10 | Cm7       # a borrowed minor chord: Dorian, its own key
+11 | Dm7       # tonic minor: Dorian by convention
+12 | Dm7
 # after solos, D.S. al Coda (to A; the coda is taken from the end of B, bar 22)
-@nav F 83 D.S. al Coda
-Coda | 1  | Dm11      # tonic minor: Dorian by convention
-Coda | 1  | Gm7       # iv: Dorian, the key’s own notes
-# bar 2: Db/G, then Db(add9 b5)/G on beat 3, then Dm11 anticipated on the last eighth
+@nav 12 D.S. al Coda
+
+section: Coda
+bars: 8
+1  | Dm11      # tonic minor: Dorian by convention
+1  | Gm7       # iv: Dorian, the key’s own notes
 # alt: bar 2 (Bbm7 Eb9) for Db/G Db(add9 b5)/G
-Coda | 2  | Db/G      # a non-tonic major chord: Lydian
-Coda | 2  | Dm11      # tonic minor: Dorian by convention
+# bar 2: Db/G, then Db(add9 b5)/G on beat 3, then Dm11 anticipated on the last eighth
+2  | Db/G      # a non-tonic major chord: Lydian
+2  | Dm11      # tonic minor: Dorian by convention
 # bars 5–10: Dm11 vamp (bass as in the intro)
-Coda | 5  | Dm11
+5  | Dm11
 # bar 11: N.C. (bass only, fermata)
-@coda Coda 1
+@coda 1

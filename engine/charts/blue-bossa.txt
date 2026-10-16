@@ -6,21 +6,26 @@ key: Cm
 form: AB
 # analysis: 2026-10-11, rules v1; C minor
 
-# section | bar | chord | scale
+# bar | chord | scale
+
+section: A
+bars: 8
 # area: C minor (bars 1–7)
-A | 1  | Cm7     # tonic minor: Dorian by convention
-A | 3  | Fm7     # ii of Bb7: Dorian
-A | 4  | Bb7     # V7/bIII in C minor: natural tensions
-A | 5  | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 6  | G7#5#9  # V7 of C minor: the b13 is in the key, b9, #9 and #11 from the symbol
-A | 7  | CmMaj7  # from the symbol: minor-major 7th
+1 | Cm7     # tonic minor: Dorian by convention
+3 | Fm7     # ii of Bb7: Dorian
+4 | Bb7     # V7/bIII in C minor: natural tensions
+5 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+6 | G7#5#9  # V7 of C minor: the b13 is in the key, b9, #9 and #11 from the symbol
+7 | CmMaj7  # from the symbol: minor-major 7th
+
+section: B
 # area: Db major (bars 9–11)
-B | 9  | Ebm7    # ii of the ii–V to Db
-B | 10 | Ab7     # V7 of Db: natural tensions
-B | 11 | DbMaj7  # tonic: the 4th is in the key
+1 | Ebm7    # ii of the ii–V to Db
+2 | Ab7     # V7 of Db: natural tensions
+3 | DbMaj7  # tonic: the 4th is in the key
 # area: C minor (bars 13–16)
-B | 13 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 14 | G7#5#9  # V7 of C minor: the b13 is in the key, b9, #9 and #11 from the symbol
-B | 15 | Cm      # tonic minor: Dorian by convention
-B | 16 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 16 | G7#5    # V7 of C minor: b9 and b13 are in the key, the #11 from the symbol
+5 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+6 | G7#5#9  # V7 of C minor: the b13 is in the key, b9, #9 and #11 from the symbol
+7 | Cm      # tonic minor: Dorian by convention
+8 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+8 | G7#5    # V7 of C minor: b9 and b13 are in the key, the #11 from the symbol

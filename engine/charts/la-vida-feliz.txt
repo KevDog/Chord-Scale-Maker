@@ -4,127 +4,147 @@ composer: McCoy Tyner
 style: Medium Latin
 key: Dm
 form: ABCD head + EFGH solos, 80 bars
-source:
+source: 
 context: modal
 # analysis: 2026-10-12, rules v1; D minor, modal
 
-# section | bar | chord
+# bar | chord
 # intro played 4 times (solo piano first; bass and drums added); the piano's voicings are marked (G(add9 sus)) and (A(add9 sus))
 # book: G9sus / A9sus throughout (sus = 9sus4)
-Intro | 1  | G9sus4     # static sus: Mixolydian
-Intro | 2  | A9sus4     # static sus: Mixolydian
-Intro | 3  | G9sus4     # static sus: Mixolydian
-Intro | 4  | A9sus4     # static sus: Mixolydian
-A     | 1  | BbMaj9#11  # from the symbol: #11
-A     | 2  | A9sus4     # static sus: Mixolydian
+
+section: Intro
+1  | G9sus4     # static sus: Mixolydian
+2  | A9sus4     # static sus: Mixolydian
+3  | G9sus4     # static sus: Mixolydian
+4  | A9sus4     # static sus: Mixolydian
+
+section: A
+bars: 20
+1  | BbMaj9#11  # from the symbol: #11
+2  | A9sus4     # static sus: Mixolydian
 # book: G13sus
-A     | 2  | G9sus4     # static sus: Mixolydian
-A     | 3  | G9sus4
-A     | 4  | A9sus4     # static sus: Mixolydian
-A     | 5  | G9sus4     # static sus: Mixolydian
-A     | 6  | A9sus4     # static sus: Mixolydian
-A     | 7  | G9sus4     # static sus: Mixolydian
-A     | 8  | A9sus4     # static sus: Mixolydian
-A     | 9  | G9sus4     # static sus: Mixolydian
+2  | G9sus4     # static sus: Mixolydian
+3  | G9sus4
+4  | A9sus4     # static sus: Mixolydian
+5  | G9sus4     # static sus: Mixolydian
+6  | A9sus4     # static sus: Mixolydian
+7  | G9sus4     # static sus: Mixolydian
+8  | A9sus4     # static sus: Mixolydian
+9  | G9sus4     # static sus: Mixolydian
 # bar 10: drum fill under the A9sus
-A     | 10 | A9sus4     # static sus: Mixolydian
-A     | 11 | A          # modal major: Lydian
-A     | 11 | Bb13       # modal: its own mode
-A     | 12 | C          # modal major: Lydian
-A     | 13 | F9sus4     # static sus: Mixolydian
-A     | 14 | D9sus4     # static sus: Mixolydian
-A     | 15 | F9sus4     # static sus: Mixolydian
-A     | 16 | D9sus4     # static sus: Mixolydian
-A     | 17 | F9sus4     # static sus: Mixolydian
-A     | 18 | D9sus4     # static sus: Mixolydian
-A     | 19 | F9sus4     # static sus: Mixolydian
+10 | A9sus4     # static sus: Mixolydian
+11 | A          # modal major: Lydian
+11 | Bb13       # modal: its own mode
+12 | C          # modal major: Lydian
+13 | F9sus4     # static sus: Mixolydian
+14 | D9sus4     # static sus: Mixolydian
+15 | F9sus4     # static sus: Mixolydian
+16 | D9sus4     # static sus: Mixolydian
+17 | F9sus4     # static sus: Mixolydian
+18 | D9sus4     # static sus: Mixolydian
+19 | F9sus4     # static sus: Mixolydian
+
+section: B
 # bar 20: N.C. (vibes and piano figure)
 # B: double-time feel in bar 21, original feel from bar 22
-B     | 21 | Bb13       # modal: its own mode
-B     | 22 | A13        # modal: its own mode
-B     | 23 | C13        # modal: its own mode
-B     | 24 | D9sus4     # static sus: Mixolydian
-B     | 25 | F9sus4     # static sus: Mixolydian
+1  | Bb13       # modal: its own mode
+2  | A13        # modal: its own mode
+3  | C13        # modal: its own mode
+4  | D9sus4     # static sus: Mixolydian
+5  | F9sus4     # static sus: Mixolydian
 # bar 26: G9sus (anticipated), then a sax break
-B     | 26 | G9sus4     # static sus: Mixolydian
-C     | 27 | Db         # modal major: Lydian
-C     | 27 | Eb         # modal major: Lydian
-C     | 28 | A          # modal major: Lydian
-C     | 28 | B          # modal major: Lydian
-C     | 29 | Db         # modal major: Lydian
-C     | 29 | Eb         # modal major: Lydian
-C     | 30 | A          # modal major: Lydian
-C     | 30 | G          # modal major: Lydian
-C     | 30 | F          # modal major: Lydian
-C     | 31 | Db         # modal major: Lydian
-C     | 31 | Eb         # modal major: Lydian
-C     | 32 | A          # modal major: Lydian
-C     | 32 | B          # modal major: Lydian
-C     | 33 | Db         # modal major: Lydian
-C     | 33 | Eb         # modal major: Lydian
-C     | 34 | A          # modal major: Lydian
-C     | 34 | G          # modal major: Lydian
-C     | 34 | F          # modal major: Lydian
-@nav C 34 Fine
+6  | G9sus4     # static sus: Mixolydian
+
+section: C
+1  | Db         # modal major: Lydian
+1  | Eb         # modal major: Lydian
+2  | A          # modal major: Lydian
+2  | B          # modal major: Lydian
+3  | Db         # modal major: Lydian
+3  | Eb         # modal major: Lydian
+4  | A          # modal major: Lydian
+4  | G          # modal major: Lydian
+4  | F          # modal major: Lydian
+5  | Db         # modal major: Lydian
+5  | Eb         # modal major: Lydian
+6  | A          # modal major: Lydian
+6  | B          # modal major: Lydian
+7  | Db         # modal major: Lydian
+7  | Eb         # modal major: Lydian
+8  | A          # modal major: Lydian
+8  | G          # modal major: Lydian
+8  | F          # modal major: Lydian
+@nav 8 Fine
+
+section: D
 # D: double-time feel (piano solo)
 # book: Db13sus
-D     | 35 | Db9sus4    # static sus: Mixolydian
+1  | Db9sus4    # static sus: Mixolydian
 # book: B13sus
-D     | 38 | B9sus4     # static sus: Mixolydian
-D     | 39 | Db9sus4    # static sus: Mixolydian
+4  | B9sus4     # static sus: Mixolydian
+5  | Db9sus4    # static sus: Mixolydian
 # bar 42: B13sus, then a solo break
-D     | 42 | B9sus4     # static sus: Mixolydian
+8  | B9sus4     # static sus: Mixolydian
+
+section: E
+bars: 16
 # solos on E F G H (original feel)
-E     | 43 | BbMaj9#11  # from the symbol: #11
-E     | 44 | A9sus4     # static sus: Mixolydian
-E     | 45 | G9sus4     # static sus: Mixolydian
-E     | 46 | A9sus4     # static sus: Mixolydian
+1  | BbMaj9#11  # from the symbol: #11
+2  | A9sus4     # static sus: Mixolydian
+3  | G9sus4     # static sus: Mixolydian
+4  | A9sus4     # static sus: Mixolydian
 # bars 47–50: two 2-bar repeat signs (each marked (2)) repeat bars 45–46 twice
-E     | 47 | G9sus4     # static sus: Mixolydian
-E     | 48 | A9sus4     # static sus: Mixolydian
-E     | 49 | G9sus4     # static sus: Mixolydian
-E     | 50 | A9sus4     # static sus: Mixolydian
-E     | 51 | A13        # modal: its own mode
-E     | 51 | Bb13       # modal: its own mode
-E     | 51 | C13        # modal: its own mode
-E     | 52 | C13
-E     | 53 | F9sus4     # static sus: Mixolydian
-E     | 54 | D9sus4     # static sus: Mixolydian
-E     | 55 | F9sus4     # static sus: Mixolydian
-E     | 56 | D9sus4     # static sus: Mixolydian
-E     | 57 | F9sus4     # static sus: Mixolydian
+5  | G9sus4     # static sus: Mixolydian
+6  | A9sus4     # static sus: Mixolydian
+7  | G9sus4     # static sus: Mixolydian
+8  | A9sus4     # static sus: Mixolydian
+9  | A13        # modal: its own mode
+9  | Bb13       # modal: its own mode
+9  | C13        # modal: its own mode
+10 | C13
+11 | F9sus4     # static sus: Mixolydian
+12 | D9sus4     # static sus: Mixolydian
+13 | F9sus4     # static sus: Mixolydian
+14 | D9sus4     # static sus: Mixolydian
+15 | F9sus4     # static sus: Mixolydian
+
+section: F
 # alt (optional): bar 58 (D9sus) under a written fill
 # F: double-time feel, original feel from the F9sus
-F     | 59 | Bb13       # modal: its own mode
-F     | 60 | A13        # modal: its own mode
-F     | 61 | C13        # modal: its own mode
-F     | 62 | D9sus4     # static sus: Mixolydian
-F     | 63 | F9sus4     # static sus: Mixolydian
+1  | Bb13       # modal: its own mode
+2  | A13        # modal: its own mode
+3  | C13        # modal: its own mode
+4  | D9sus4     # static sus: Mixolydian
+5  | F9sus4     # static sus: Mixolydian
 # bar 64: G9sus (anticipated), then a break
-F     | 64 | G9sus4     # static sus: Mixolydian
-G     | 65 | Db         # modal major: Lydian
-G     | 65 | Eb         # modal major: Lydian
-G     | 66 | A          # modal major: Lydian
-G     | 66 | B          # modal major: Lydian
-G     | 67 | Db         # modal major: Lydian
-G     | 67 | Eb         # modal major: Lydian
-G     | 68 | A          # modal major: Lydian
-G     | 68 | G          # modal major: Lydian
-G     | 68 | F          # modal major: Lydian
-G     | 69 | Db         # modal major: Lydian
-G     | 69 | Eb         # modal major: Lydian
-G     | 70 | A          # modal major: Lydian
-G     | 70 | B          # modal major: Lydian
-G     | 71 | Db         # modal major: Lydian
-G     | 71 | Eb         # modal major: Lydian
-G     | 72 | A          # modal major: Lydian
-G     | 72 | G          # modal major: Lydian
-G     | 72 | F          # modal major: Lydian
+6  | G9sus4     # static sus: Mixolydian
+
+section: G
+1  | Db         # modal major: Lydian
+1  | Eb         # modal major: Lydian
+2  | A          # modal major: Lydian
+2  | B          # modal major: Lydian
+3  | Db         # modal major: Lydian
+3  | Eb         # modal major: Lydian
+4  | A          # modal major: Lydian
+4  | G          # modal major: Lydian
+4  | F          # modal major: Lydian
+5  | Db         # modal major: Lydian
+5  | Eb         # modal major: Lydian
+6  | A          # modal major: Lydian
+6  | B          # modal major: Lydian
+7  | Db         # modal major: Lydian
+7  | Eb         # modal major: Lydian
+8  | A          # modal major: Lydian
+8  | G          # modal major: Lydian
+8  | F          # modal major: Lydian
+
+section: H
 # H: double-time feel
-H     | 73 | Db9sus4    # static sus: Mixolydian
-H     | 76 | B9sus4     # static sus: Mixolydian
-H     | 77 | Db9sus4    # static sus: Mixolydian
+1  | Db9sus4    # static sus: Mixolydian
+4  | B9sus4     # static sus: Mixolydian
+5  | Db9sus4    # static sus: Mixolydian
 # bar 80: B13sus, then a break
-H     | 80 | B9sus4     # static sus: Mixolydian
+8  | B9sus4     # static sus: Mixolydian
 # after solos, D.C. al Fine (vamp and fade on letter C)
-@nav H 80 D.C. al Fine
+@nav 8 D.C. al Fine

@@ -3,62 +3,69 @@ composer: Lionel Hampton, Sonny Burke
 style: Medium ballad
 key: C
 form: AABC, 50 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; C
 
-# section | bar | chord
+# bar | chord
+
+section: A
 # area: C major (bar 1)
-A | 1  | CMaj7     # tonic: the 4th is in the key
+1  | CMaj7     # tonic: the 4th is in the key
 # area: Bb major (bars 3–5)
-A | 3  | Cm7       # ii of the ii–V to Bb
-A | 3  | F9#11     # V7 of Bb: the #11 from the symbol
-A | 5  | BbMaj7    # tonic: the 4th is in the key
+3  | Cm7       # ii of the ii–V to Bb
+3  | F9#11     # V7 of Bb: the #11 from the symbol
+5  | BbMaj7    # tonic: the 4th is in the key
 # area: Ab major (bars 7–9)
-A | 7  | Bbm7      # ii of the ii–V to Ab
-A | 7  | Eb7b9#11  # V7 of Ab: b9 and #11 from the symbol
+7  | Bbm7      # ii of the ii–V to Ab
+7  | Eb7b9#11  # V7 of Ab: b9 and #11 from the symbol
 # book: Eb(b9)(#11), in every A and C
-A | 9  | AbMaj7    # tonic: the 4th is in the key
+9  | AbMaj7    # tonic: the 4th is in the key
 # area: C major (bars 11–15)
-A | 11 | Abm7      # ii of Db7b9#11: Dorian
-A | 11 | Db7b9#11  # tritone substitute: resolves down a half step to CMaj7; b9 from the symbol
-A | 13 | CMaj7     # tonic: the 4th is in the key
-A | 13 | Am7       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A | 14 | Dm7       # ii of the ii–V to C
-A | 14 | G7        # V7 of C: natural tensions
-@ending 1 A 13 14
-A | 15 | CMaj7     # tonic: the 4th is in the key
-A | 15 | Am7       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+11 | Abm7      # ii of Db7b9#11: Dorian
+11 | Db7b9#11  # tritone substitute: resolves down a half step to CMaj7; b9 from the symbol
+13 | CMaj7     # tonic: the 4th is in the key
+13 | Am7       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+14 | Dm7       # ii of the ii–V to C
+14 | G7        # V7 of C: natural tensions
+@ending 1 13 14
+15 | CMaj7     # tonic: the 4th is in the key
+15 | Am7       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 # area: E major (bars 16–17)
-A | 16 | F#m7b5    # iiø7 of E: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 16 | B7        # V7 of E: natural tensions
-@ending 2 A 15 16
-B | 17 | EMaj7     # tonic: the 4th is in the key
+16 | F#m7b5    # iiø7 of E: Locrian, the key's own notes (its ♭2 is a passing note)
+16 | B7        # V7 of E: natural tensions
+@ending 2 15 16
+
+section: B
+1  | EMaj7     # tonic: the 4th is in the key
 # area: D major (bars 18–21)
-B | 18 | Em7       # ii of the ii–V to D
-B | 18 | A7        # V7 of D: natural tensions
-B | 19 | DMaj7     # tonic: the 4th is in the key
+2  | Em7       # ii of the ii–V to D
+2  | A7        # V7 of D: natural tensions
+3  | DMaj7     # tonic: the 4th is in the key
 # alt (optional): bar 20 (Em7 Eb7b5)
-B | 21 | DMaj7
+5  | DMaj7
 # area: C major (bars 22–25)
-B | 22 | Dm7       # ii of G7: Dorian
-B | 22 | G7        # V7/I in C: natural tensions
-B | 23 | Em7       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B | 23 | Eb7       # tritone substitute: resolves down a half step to Dm7
-B | 24 | Dm7       # ii: Dorian, the key’s own notes
-B | 24 | Db7b9#11  # tritone substitute: resolves down a half step to CMaj7; b9 from the symbol
-C | 25 | CMaj7     # tonic: the 4th is in the key
+6  | Dm7       # ii of G7: Dorian
+6  | G7        # V7/I in C: natural tensions
+7  | Em7       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+7  | Eb7       # tritone substitute: resolves down a half step to Dm7
+8  | Dm7       # ii: Dorian, the key’s own notes
+8  | Db7b9#11  # tritone substitute: resolves down a half step to CMaj7; b9 from the symbol
+
+section: C
+bars: 16
+1  | CMaj7     # tonic: the 4th is in the key
 # area: Bb major (bars 27–29)
-C | 27 | Cm7       # ii of the ii–V to Bb
-C | 27 | F9#11     # V7 of Bb: the #11 from the symbol
-C | 29 | BbMaj7    # tonic: the 4th is in the key
+3  | Cm7       # ii of the ii–V to Bb
+3  | F9#11     # V7 of Bb: the #11 from the symbol
+5  | BbMaj7    # tonic: the 4th is in the key
 # area: Ab major (bars 31–33)
-C | 31 | Bbm7      # ii of the ii–V to Ab
-C | 31 | Eb7b9#11  # V7 of Ab: b9 and #11 from the symbol
-C | 33 | AbMaj7    # tonic: the 4th is in the key
+7  | Bbm7      # ii of the ii–V to Ab
+7  | Eb7b9#11  # V7 of Ab: b9 and #11 from the symbol
+9  | AbMaj7    # tonic: the 4th is in the key
 # area: C major (bars 35–38)
-C | 35 | Abm7      # ii of Db7b9#11: Dorian
-C | 35 | Db7b9#11  # tritone substitute: resolves down a half step to CMaj7; b9 from the symbol
-C | 37 | CMaj7     # tonic: the 4th is in the key
-C | 37 | Am7       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-C | 38 | Dm7       # ii of the ii–V to C
-C | 38 | G7        # V7 of C: natural tensions
+11 | Abm7      # ii of Db7b9#11: Dorian
+11 | Db7b9#11  # tritone substitute: resolves down a half step to CMaj7; b9 from the symbol
+13 | CMaj7     # tonic: the 4th is in the key
+13 | Am7       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+14 | Dm7       # ii of the ii–V to C
+14 | G7        # V7 of C: natural tensions

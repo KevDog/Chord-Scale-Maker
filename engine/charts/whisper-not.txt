@@ -6,67 +6,75 @@ form: AABC, 32 bars
 source: Colorado Cookbook, p. 269
 # analysis: 2026-10-11, rules v1; C minor
 
-# section | bar | chord | scale
+# bar | chord | scale
+
+section: A1
 # area: C minor (bars 1–3)
-A1 | 1  | Cm     # tonic minor: Dorian by convention
-A1 | 1  | Cm/Bb  # tonic minor: Dorian by convention
-A1 | 2  | Am7b5  # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A1 | 2  | D7b9   # V7/v in C minor: b9 and b13 are in the key
-A1 | 3  | Gm     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
-A1 | 3  | Gm/F   # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+1 | Cm     # tonic minor: Dorian by convention
+1 | Cm/Bb  # tonic minor: Dorian by convention
+2 | Am7b5  # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2 | D7b9   # V7/v in C minor: b9 and b13 are in the key
+3 | Gm     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+3 | Gm/F   # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
 # area: D minor (bars 4–8)
-A1 | 4  | Em7b5  # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A1 | 4  | A7b9   # V7 of D minor: b9 and b13 are in the key
-A1 | 5  | Dm     # tonic minor: Dorian by convention
-A1 | 5  | Bm7b5  # viø7 in D minor: Locrian, its own mode (the chord is outside the key)
-A1 | 6  | Em     # ii of the ii–V to D minor
-A1 | 6  | A7b9   # V7 of D minor: b9 and b13 are in the key
-A1 | 7  | Dm     # tonic minor: Dorian by convention
-A1 | 7  | Em     # a borrowed minor chord: Dorian, its own key
-A1 | 8  | Fm     # a borrowed minor chord: Dorian, its own key
+4 | Em7b5  # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4 | A7b9   # V7 of D minor: b9 and b13 are in the key
+5 | Dm     # tonic minor: Dorian by convention
+5 | Bm7b5  # viø7 in D minor: Locrian, its own mode (the chord is outside the key)
+6 | Em     # ii of the ii–V to D minor
+6 | A7b9   # V7 of D minor: b9 and b13 are in the key
+7 | Dm     # tonic minor: Dorian by convention
+7 | Em     # a borrowed minor chord: Dorian, its own key
+8 | Fm     # a borrowed minor chord: Dorian, its own key
 # area: C minor (bars 8–11)
-A1 | 8  | G7b9   # V7 of C minor: b9 and b13 are in the key
-A2 | 9  | Cm     # tonic minor: Dorian by convention
-A2 | 9  | Cm/Bb  # tonic minor: Dorian by convention
-A2 | 10 | Am7b5  # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A2 | 10 | D7b9   # V7/v in C minor: b9 and b13 are in the key
-A2 | 11 | Gm     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
-A2 | 11 | Gm/F   # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+8 | G7b9   # V7 of C minor: b9 and b13 are in the key
+
+section: A2
+1 | Cm     # tonic minor: Dorian by convention
+1 | Cm/Bb  # tonic minor: Dorian by convention
+2 | Am7b5  # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2 | D7b9   # V7/v in C minor: b9 and b13 are in the key
+3 | Gm     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+3 | Gm/F   # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
 # area: D minor (bars 12–22)
-A2 | 12 | Em7b5  # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A2 | 12 | A7b9   # V7 of D minor: b9 and b13 are in the key
-A2 | 13 | Dm     # tonic minor: Dorian by convention
-A2 | 13 | Bm7b5  # viø7 in D minor: Locrian, its own mode (the chord is outside the key)
-A2 | 14 | Em     # ii of the ii–V to D minor
-A2 | 14 | A7b9   # V7 of D minor: b9 and b13 are in the key
-A2 | 15 | Dm     # tonic minor: Dorian by convention
-A2 | 15 | Em     # a borrowed minor chord: Dorian, its own key
-A2 | 16 | Fm     # ii of Bb7: Dorian
-A2 | 16 | Bb7    # extended ii–V: a side-step, its own key
-B  | 17 | Am7b5  # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B  | 18 | D7b9   # V7/iv in D minor: the b13 is in the key, the b9 from the symbol
-B  | 19 | Gm     # iv: Dorian, the key’s own notes
-B  | 20 | Gm/F   # iv: Dorian, the key’s own notes
-B  | 21 | Em7b5  # iiø7 of A7b9: Locrian, the key's own notes (its ♭2 is a passing note)
-B  | 22 | A7b9   # V7 of D minor: b9 and b13 are in the key
+4 | Em7b5  # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4 | A7b9   # V7 of D minor: b9 and b13 are in the key
+5 | Dm     # tonic minor: Dorian by convention
+5 | Bm7b5  # viø7 in D minor: Locrian, its own mode (the chord is outside the key)
+6 | Em     # ii of the ii–V to D minor
+6 | A7b9   # V7 of D minor: b9 and b13 are in the key
+7 | Dm     # tonic minor: Dorian by convention
+7 | Em     # a borrowed minor chord: Dorian, its own key
+8 | Fm     # ii of Bb7: Dorian
+8 | Bb7    # extended ii–V: a side-step, its own key
+
+section: B
+1 | Am7b5  # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2 | D7b9   # V7/iv in D minor: the b13 is in the key, the b9 from the symbol
+3 | Gm     # iv: Dorian, the key’s own notes
+4 | Gm/F   # iv: Dorian, the key’s own notes
+5 | Em7b5  # iiø7 of A7b9: Locrian, the key's own notes (its ♭2 is a passing note)
+6 | A7b9   # V7 of D minor: b9 and b13 are in the key
 # area: C minor (bars 23–27)
-B  | 23 | Dm7b5  # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B  | 24 | G7b9   # V7 of C minor: b9 and b13 are in the key
-C  | 25 | Cm     # tonic minor: Dorian by convention
-C  | 25 | Cm/Bb  # tonic minor: Dorian by convention
-C  | 26 | Am7b5  # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-C  | 26 | D7b9   # V7/v in C minor: b9 and b13 are in the key
-C  | 27 | Gm     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
-C  | 27 | Gm/F   # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+7 | Dm7b5  # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+8 | G7b9   # V7 of C minor: b9 and b13 are in the key
+
+section: C
+1 | Cm     # tonic minor: Dorian by convention
+1 | Cm/Bb  # tonic minor: Dorian by convention
+2 | Am7b5  # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2 | D7b9   # V7/v in C minor: b9 and b13 are in the key
+3 | Gm     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+3 | Gm/F   # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
 # area: D minor (bars 28–32)
-C  | 28 | Em7b5  # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-C  | 28 | A7b9   # V7 of D minor: b9 and b13 are in the key
-C  | 29 | Dm     # tonic minor: Dorian by convention
-C  | 29 | Bm7b5  # viø7 in D minor: Locrian, its own mode (the chord is outside the key)
-C  | 30 | Em     # ii of the ii–V to D minor
-C  | 30 | A7b9   # V7 of D minor: b9 and b13 are in the key
-C  | 31 | Dm     # tonic minor: Dorian by convention
-C  | 31 | Dm/C   # tonic minor: Dorian by convention
-C  | 32 | Ab7    # tritone substitute: resolves down a half step to G7alt
+4 | Em7b5  # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4 | A7b9   # V7 of D minor: b9 and b13 are in the key
+5 | Dm     # tonic minor: Dorian by convention
+5 | Bm7b5  # viø7 in D minor: Locrian, its own mode (the chord is outside the key)
+6 | Em     # ii of the ii–V to D minor
+6 | A7b9   # V7 of D minor: b9 and b13 are in the key
+7 | Dm     # tonic minor: Dorian by convention
+7 | Dm/C   # tonic minor: Dorian by convention
+8 | Ab7    # tritone substitute: resolves down a half step to G7alt
 # area: C minor (bar 32)
-C  | 32 | G7alt  # from the symbol: altered
+8 | G7alt  # from the symbol: altered

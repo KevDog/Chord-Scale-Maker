@@ -8,27 +8,33 @@ form: AA, 32 bars
 source: Colorado Cookbook, p. 153
 # analysis: 2026-10-11, rules v1; D minor
 
-# section | bar | chord | scale
-A1 | 1  | Dm      # tonic minor: Dorian by convention
-A1 | 2  | Gm      # iv: Dorian, the key’s own notes
-A1 | 3  | Dm      # tonic minor: Dorian by convention
-A1 | 4  | Gm      # iv: Dorian, the key’s own notes
-A1 | 5  | DmMaj7  # from the symbol: minor-major 7th
-A1 | 6  | Dm7     # tonic minor: Dorian by convention
-A1 | 7  | Dm6     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-A1 | 8  | Gm      # iv: Dorian, the key’s own notes
-A1 | 11 | Dm      # tonic minor: Dorian by convention
-A1 | 13 | E7b9    # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key
-A1 | 15 | A7b9    # V7 of D minor, the chain's last link: b9 and b13 are in the key
-A2 | 17 | Dm      # tonic minor: Dorian by convention
-A2 | 18 | Gm      # iv: Dorian, the key’s own notes
-A2 | 19 | Dm      # tonic minor: Dorian by convention
-A2 | 20 | Gm      # iv: Dorian, the key’s own notes
-A2 | 21 | DmMaj7  # from the symbol: minor-major 7th
-A2 | 22 | Dm7     # tonic minor: Dorian by convention
-A2 | 23 | Dm6     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-A2 | 24 | Gm      # iv: Dorian, the key’s own notes
-A2 | 27 | Dm      # tonic minor: Dorian by convention
-A2 | 29 | E7b9    # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key
-A2 | 30 | A7alt   # from the symbol: altered
-A2 | 31 | Dm      # tonic minor: Dorian by convention
+# bar | chord | scale
+
+section: A1
+bars: 16
+1  | Dm      # tonic minor: Dorian by convention
+2  | Gm      # iv: Dorian, the key’s own notes
+3  | Dm      # tonic minor: Dorian by convention
+4  | Gm      # iv: Dorian, the key’s own notes
+5  | DmMaj7  # from the symbol: minor-major 7th
+6  | Dm7     # tonic minor: Dorian by convention
+7  | Dm6     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+8  | Gm      # iv: Dorian, the key’s own notes
+11 | Dm      # tonic minor: Dorian by convention
+13 | E7b9    # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key
+15 | A7b9    # V7 of D minor, the chain's last link: b9 and b13 are in the key
+
+section: A2
+bars: 16
+1  | Dm      # tonic minor: Dorian by convention
+2  | Gm      # iv: Dorian, the key’s own notes
+3  | Dm      # tonic minor: Dorian by convention
+4  | Gm      # iv: Dorian, the key’s own notes
+5  | DmMaj7  # from the symbol: minor-major 7th
+6  | Dm7     # tonic minor: Dorian by convention
+7  | Dm6     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+8  | Gm      # iv: Dorian, the key’s own notes
+11 | Dm      # tonic minor: Dorian by convention
+13 | E7b9    # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key
+14 | A7alt   # from the symbol: altered
+15 | Dm      # tonic minor: Dorian by convention

@@ -3,78 +3,88 @@ composer: Jerome Kern
 style: Medium up
 key: C
 form: AABA, 64 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; C
 # book: Med.-Up Swing
 # the book's letters: A, B (the second A), C (the bridge), D (the last A)
 
-# section | bar | chord
+# bar | chord
+
+section: A
 # area: C major (bars 1–31)
-A | 1  | CMaj7   # tonic: the 4th is in the key
-A | 2  | Ebdim7  # passing diminished: D7♭9 without its D, the G7's dominant (Dm7 its ii)
-A | 3  | Dm7     # ii of the ii–V to C
-A | 4  | G7      # V7 of C: natural tensions
-A | 5  | CMaj7   # tonic: the 4th is in the key
-A | 6  | A7      # V7/ii in C: the b13 is in the key
-A | 7  | Dm7     # ii of G7: Dorian
-A | 8  | G7      # V7/I in C: natural tensions
-A | 9  | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+1  | CMaj7   # tonic: the 4th is in the key
+2  | Ebdim7  # passing diminished: D7♭9 without its D, the G7's dominant (Dm7 its ii)
+3  | Dm7     # ii of the ii–V to C
+4  | G7      # V7 of C: natural tensions
+5  | CMaj7   # tonic: the 4th is in the key
+6  | A7      # V7/ii in C: the b13 is in the key
+7  | Dm7     # ii of G7: Dorian
+8  | G7      # V7/I in C: natural tensions
+9  | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 # alt: bar 9 (CMaj7) for Em7
-A | 10 | A7      # V7/ii in C: the b13 is in the key
-A | 11 | Dm7     # ii of G7: Dorian
-A | 12 | G7      # V7/I in C: natural tensions
-A | 13 | Fm7     # ii of Bb7: Dorian
+10 | A7      # V7/ii in C: the b13 is in the key
+11 | Dm7     # ii of G7: Dorian
+12 | G7      # V7/I in C: natural tensions
+13 | Fm7     # ii of Bb7: Dorian
 # alt: bar 13 (E7b9) for Fm7
-A | 14 | Bb7     # extended ii–V: a side-step, its own key
+14 | Bb7     # extended ii–V: a side-step, its own key
 # alt: bar 14 (Am7) for Bb7
-A | 15 | Dm7     # ii of the ii–V to C
+15 | Dm7     # ii of the ii–V to C
 # alt: bar 15 (Em7 A7) for Dm7
-A | 16 | G7      # V7 of C: natural tensions
+16 | G7      # V7 of C: natural tensions
 # alt: bar 16 (Dm7 G7) for G7
-B | 17 | CMaj7   # tonic: the 4th is in the key
-B | 18 | Ebdim7  # passing diminished: D7♭9 without its D, the G7's dominant (Dm7 its ii)
-B | 19 | Dm7     # ii of the ii–V to C
-B | 20 | G7      # V7 of C: natural tensions
-B | 21 | CMaj7   # tonic: the 4th is in the key
-B | 22 | A7      # V7/ii in C: the b13 is in the key
-B | 23 | Dm7     # ii of G7: Dorian
-B | 24 | G7      # V7/I in C: natural tensions
-B | 25 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# alt: bar 25 (CMaj7) for Em7
-B | 26 | A7      # V7/ii in C: the b13 is in the key
-B | 27 | Dm7     # ii of the ii–V to C
-B | 28 | G7      # V7 of C: natural tensions
-B | 29 | C6      # tonic: the 4th is in the key
-# alt: bar 30 (F7)
-B | 31 | C6
+
+section: B
+1  | CMaj7   # tonic: the 4th is in the key
+2  | Ebdim7  # passing diminished: D7♭9 without its D, the G7's dominant (Dm7 its ii)
+3  | Dm7     # ii of the ii–V to C
+4  | G7      # V7 of C: natural tensions
+5  | CMaj7   # tonic: the 4th is in the key
+6  | A7      # V7/ii in C: the b13 is in the key
+7  | Dm7     # ii of G7: Dorian
+8  | G7      # V7/I in C: natural tensions
+9  | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+# alt: bar 9 (CMaj7) for Em7
+10 | A7      # V7/ii in C: the b13 is in the key
+11 | Dm7     # ii of the ii–V to C
+12 | G7      # V7 of C: natural tensions
+13 | C6      # tonic: the 4th is in the key
+# alt: bar 14 (F7)
+15 | C6
 # area: E major (bars 32–47)
-B | 32 | F#m7b5  # iiø7 of E: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 32 | B7      # V7 of E: natural tensions
-C | 33 | EMaj7   # tonic: the 4th is in the key
-C | 35 | F#m7    # ii of the ii–V to E
-C | 36 | B7      # V7 of E: natural tensions
-C | 37 | EMaj7   # tonic: the 4th is in the key
-C | 39 | A#m7b5  # iiø7 of G# minor: Locrian, the key's own notes (its ♭2 is a passing note)
-C | 40 | D#7     # V7/iii in E: b9 and b13 are in the key
-C | 41 | G#m     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-C | 43 | C#9     # extended dominant: each one falls a fifth into the next: natural tensions
-C | 45 | F#13    # V7 of V7: the dominant of the dominant: natural tensions
-# alt: bar 46 (C9)
-C | 47 | B13     # V7 in E, not resolving: natural tensions
+16 | F#m7b5  # iiø7 of E: Locrian, the key's own notes (its ♭2 is a passing note)
+16 | B7      # V7 of E: natural tensions
+
+section: C
+bars: 16
+1  | EMaj7   # tonic: the 4th is in the key
+3  | F#m7    # ii of the ii–V to E
+4  | B7      # V7 of E: natural tensions
+5  | EMaj7   # tonic: the 4th is in the key
+7  | A#m7b5  # iiø7 of G# minor: Locrian, the key's own notes (its ♭2 is a passing note)
+8  | D#7     # V7/iii in E: b9 and b13 are in the key
+9  | G#m     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+11 | C#9     # extended dominant: each one falls a fifth into the next: natural tensions
+13 | F#13    # V7 of V7: the dominant of the dominant: natural tensions
+# alt: bar 14 (C9)
+15 | B13     # V7 in E, not resolving: natural tensions
+
+section: D
+bars: 16
 # area: C major (bars 49–61)
-D | 49 | CMaj7   # tonic: the 4th is in the key
-D | 50 | Ebdim7  # passing diminished: D7♭9 without its D, the G7's dominant (Dm7 its ii)
-D | 51 | Dm7     # ii of the ii–V to C
-D | 52 | G7      # V7 of C: natural tensions
-D | 53 | CMaj7   # tonic: the 4th is in the key
-D | 54 | Gm7     # ii of the ii–V to F
-D | 54 | C7      # V7/IV in C: natural tensions
-D | 55 | F6      # the C7 before it makes F the key of the moment: the 4th is in the key
-D | 56 | Bb9     # ♭VII7 from the parallel minor: Lydian Dominant
-D | 57 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# alt: bar 57 (CMaj7) for Em7
-D | 58 | A7      # V7/ii in C: the b13 is in the key
-D | 59 | Dm7     # ii of the ii–V to C
-D | 60 | G7      # V7 of C: natural tensions
-D | 61 | C6      # tonic: the 4th is in the key
+1  | CMaj7   # tonic: the 4th is in the key
+2  | Ebdim7  # passing diminished: D7♭9 without its D, the G7's dominant (Dm7 its ii)
+3  | Dm7     # ii of the ii–V to C
+4  | G7      # V7 of C: natural tensions
+5  | CMaj7   # tonic: the 4th is in the key
+6  | Gm7     # ii of the ii–V to F
+6  | C7      # V7/IV in C: natural tensions
+7  | F6      # the C7 before it makes F the key of the moment: the 4th is in the key
+8  | Bb9     # ♭VII7 from the parallel minor: Lydian Dominant
+9  | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+# alt: bar 9 (CMaj7) for Em7
+10 | A7      # V7/ii in C: the b13 is in the key
+11 | Dm7     # ii of the ii–V to C
+12 | G7      # V7 of C: natural tensions
+13 | C6      # tonic: the 4th is in the key
 # alt (optional): bars 62–64 (F7 | C6 | Dm7 G7), the turnaround
