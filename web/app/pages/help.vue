@@ -175,7 +175,8 @@
               <strong class="font-semibold">Pentatonic</strong>: each chord's labelled pentatonic in four-note cells, in the
               same quarters, eighths or sixteenths. <strong class="font-semibold">Leave out</strong> picks the note each
               cell drops (leave out 1 and Am pentatonic plays C D E G), and the direction goes up, down or both by turns;
-              each cell starts on its note nearest the last one you played.
+              each cell starts on its note nearest the last one you played, and turns the other way where it would
+              run past the top or bottom of your instrument's range.
             </dd>
           </div>
           <div>

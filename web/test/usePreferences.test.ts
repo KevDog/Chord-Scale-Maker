@@ -159,10 +159,10 @@ describe('pentatonic preferences', () => {
     expect(prefs().pentLeave.value).toBe('1')
   })
 
-  it("takes a link's Leave out for the visit; a link without one opens with the default", async () => {
+  it("takes a link's Leave out for the visit; a link without one keeps your own, as arpDir does", async () => {
     localStorage.setItem('csm-pent-leave', '5')
     expect(linked({ line: 'up-root', pentLeave: 'b3' }).pentLeave.value).toBe('b3')
-    expect(linked({ line: 'up-root' }).pentLeave.value).toBe('1')
+    expect(linked({ line: 'up-root' }).pentLeave.value).toBe('5')
     const l = linked({ line: 'up-root', pentLeave: 'b3' })
     l.pentLeave.value = '4'
     await nextTick()

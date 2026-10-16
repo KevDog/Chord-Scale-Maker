@@ -69,7 +69,7 @@ export function linkPreferences(view: ShareView) {
     pentSide: own.pentSide,
     pentBasis: own.pentBasis,
     pentDegree: own.pentDegree,
-    pentLeave: ref<PentatonicLeave>(view.pentLeave ?? PENTATONIC_LEAVE), // the link's, else the default (an old link has none)
+    pentLeave: ref<PentatonicLeave>(view.pentLeave ?? own.pentLeave.value), // the link's, else yours (an old link has none), as arpDir
     showEditor: own.showEditor, // whether the editor is open: yours, and remembered
     source: own.source,
   }

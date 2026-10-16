@@ -5,14 +5,14 @@ import { type ChartDoc, expandRowLines, parseChart } from '../chart'
 import { NO_PICKS, pickTarget, withPick } from '../chordPicks'
 import { resolveScales } from '../resolve'
 import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
-import { CONCERT, concertPc, type Part } from '../part'
+import { CONCERT, concertPc, type Part, partFor, rangeOf } from '../part'
 import { pcOf, rootName, type Spelled } from '../pitch'
 import type { PentatonicLine } from '../pentatonicLine'
 import { toVexKey } from '../sheet'
 import type { ScaleView } from '../resolve'
 import { type PentatonicDegree, PENTATONIC_HOME, type PentatonicPathName, type PentatonicStep } from '../pentatonics'
 import { abbreviateScale } from '../scales'
-import { isSyncCopy } from '../util'
+import { chunk, isSyncCopy } from '../util'
 
 // a transparent wrapper, so a test can see what buildChanges hands the voice leading
 vi.mock('../guideTones', async (importOriginal) => {
@@ -728,11 +728,25 @@ describe('buildChanges with a Pentatonic line (#284)', () => {
     ])
     expect(flatChords(sheet).map((c) => c.guide)).toEqual(['', '', ''])
   })
-  it('Autumn Leaves, concert: bar 2 starts from the note nearest bar 1’s last whose cell fits the range (no octave drop)', () => {
+  it('Autumn Leaves, concert, Up: bar 2 starts on the note nearest bar 1’s last, turning down at the range’s top', () => {
     const sheet = buildChanges(library('autumn-leaves'), CONCERT, 4, false, PENT, undefined, one(0, 'flat')) // Gm: B♭ C D F
     expect(keys(sheet)[0]?.slice(0, 4)).toEqual(['bb/4', 'c/5', 'd/5', 'f/5'])
-    expect(keys(sheet)[1]?.slice(0, 4)).toEqual(['bb/4', 'c/5', 'd/5', 'f/5']) // F5 → B♭4 (7): D5 and C5 up would pass A5; not D4 (15)
+    expect(keys(sheet)[1]?.slice(0, 4)).toEqual(['d/5', 'c/5', 'bb/4', 'f/4']) // D5, 3 below F5; up would pass A5: down from it
   })
+  /** the line's cells, four notes each, in order, as MIDI */
+  const cellsOf = (sheet: ChangesSheet) => chunk(sheet.lines.flatMap((l) => l.bars.flatMap((b) => b.voice.map((n) => n.pitch?.midi ?? -1))), 4).map((c) => c.join(' '))
+  for (const [name, part] of [['concert', CONCERT], ['trumpet', partFor('trumpet')], ['bass', partFor('bass')]] as const) {
+    for (const dir of ['up', 'down'] as const) {
+      it(`${name}, ${dir}, over a held Gm (Autumn Leaves, key basis): no two cells in a row the same, all in range`, () => {
+        const sheet = buildChanges(library('autumn-leaves'), part, 4, false, { ...PENT, dir }, undefined, one(0, 'flat'))
+        const cells = cellsOf(sheet)
+        expect(cells.length).toBeGreaterThan(20)
+        expect(cells.filter((c, k) => k > 0 && c === cells[k - 1])).toEqual([])
+        const range = rangeOf(part)
+        expect(cells.flatMap((c) => c.split(' ').map(Number)).every((m) => m >= range.lo && m <= range.hi)).toBe(true)
+      })
+    }
+  }
   it('follows the rung the label shows', () => {
     const sheet = buildChanges(doc, CONCERT, 4, false, PENT, undefined, one(1, 'flat')) // Dm
     expect(keys(sheet)[0]?.slice(0, 4)).toEqual(['f/4', 'g/4', 'a/4', 'c/5'])

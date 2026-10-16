@@ -279,9 +279,9 @@ describe('EditorView guide tones', () => {
     localStorage.setItem('csm-pent-leave', 'b3')
     localStorage.setItem('csm-arp-dir', 'down')
     const w = await mount({ sheet: 'changes', line: 'down-1st' })
-    expect(changesSheet(w).props('line')).toEqual({ kind: 'pentatonic', leave: '1', dir: 'down', arpeggio: 'down-1st' }) // the link's Leave out: none, the default
+    expect(changesSheet(w).props('line')).toEqual({ kind: 'pentatonic', leave: 'b3', dir: 'down', arpeggio: 'down-1st' }) // the link has no Leave out: yours
     expect(checkedMode(w)).toEqual(['Pentatonic'])
-    expect(await linkOf(w)).toMatchObject({ line: 'down-1st', pentLeave: '1', arpDir: 'down' })
+    expect(await linkOf(w)).toMatchObject({ line: 'down-1st', pentLeave: 'b3', arpDir: 'down' })
     w.unmount()
     localStorage.clear()
   })

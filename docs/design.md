@@ -536,10 +536,12 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Cells** (`engine/src/pentatonicLine.ts`): the minor pentatonic less one note (`pentatonicCell`), the degree picked
   by **Leave out** (1, ♭3, 4, 5, ♭7 in the minor pentatonic's degrees, `PENTATONIC_LEAVES`; default 1: ♭3-4-5-♭7, the
   relative major's 1-2-3-5). Direction: the Arpeggios sheet's Up · Down · Up & down (`arpDir`; Up & down alternates per
-  cell across the run). A run's first cell starts on its bottom (Up) or top (Down) note; every later cell starts on its
-  note nearest the last note played among the placements the part's range allows (each note as the start, at each
-  octave the whole cell fits), never that note itself (a tie: the lower); only with none that fits does the arpeggio's
-  range-first rule place it.
+  cell across the run). A run's first cell starts on its bottom (Up) or top (Down) note. Every later cell starts on
+  its note nearest the last note played (never that note itself; a tie: the lower) and goes the way chosen if the
+  whole cell fits the part's range, else the other way from that note (a turn at the range's wall, so a held
+  pentatonic keeps turning instead of repeating). Only if neither fits: the in-range placement nearest the last note
+  that differs from the last cell; with none, the arpeggio's range-first rule. Up & down keeps its alternation: the
+  nearest placement that fits, the way its turn says.
 - **Rhythm, octave, rests:** the arpeggio line's (`cellVoices`, shared with `arpeggioVoices`): ♩ ♪ 𝅘𝅥𝅯 by the bar's
   shortest chord. A chord with no pentatonic (no
   scale, no key area, unreadable) plays its 7th chord arpeggio in the stored pattern; one with no tones either rests.
@@ -550,7 +552,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   Pentatonic under the overlay and 7th Chords otherwise, no migration. `csm-pent-leave` (`1`); the direction is
   `csm-arp-dir`. The Line shows Direction (`aria-label="Pentatonic direction"`) in place of the pattern, and Leave out
   (`aria-label="Leave out"`, `Leave out: ♭3`) where the Superimpose shows (interface tier `pentatonics`). A share link
-  with an arpeggio line on the Changes carries `arpDir` and `pentLeave` (an old link has none: the default); the
+  with an arpeggio line on the Changes carries `arpDir` and `pentLeave` (an old link has none: the visitor's own); the
   overlay stays the receiver's own. Print: lines a page as for an arpeggio line.
 
 ### Pentatonics on Changes ([spec](superpowers/specs/2026-10-13-pentatonic-ladders-design.md))

@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { GuideInput, GuideNote } from '../guideTones'
 import { CONCERT, type Part, partFor, rangeOf } from '../part'
-import { parseRoot, pcOf, rootName, type Spelled } from '../pitch'
+import { mod, parseRoot, pcOf, rootName, type Spelled } from '../pitch'
 import { isPentatonicLeave, PENTATONIC_LEAVE, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, pentatonicCell, type PentatonicLine, pentatonicVoices } from '../pentatonicLine'
 import { SCALES } from '../scales'
 import { toVexKey } from '../sheet'
@@ -107,40 +107,45 @@ describe('pentatonic voices', () => {
   })
 })
 
-describe('the leap between cells (#284: each cell from its note nearest the last, inside the range)', () => {
-  /** the smallest leap from prev to any placement of the cell (any start, the direction's order, any octave) that fits the range; never prev itself */
-  const smallest = (cell: readonly Spelled[], up: boolean, prev: number, range: { lo: number; hi: number }): number => {
-    const pcs = cell.map(pcOf)
-    const leaps = pcs.flatMap((_, s) => {
-      const order = pcs.map((__, j) => pcs[(((s + (up ? j : -j)) % 4) + 4) % 4]!)
-      const rel = order.reduce<number[]>((acc, pc, i) => (i === 0 ? [0] : [...acc, acc[i - 1]! + (up ? ((pc - order[i - 1]! + 11) % 12) + 1 : -(((order[i - 1]! - pc + 11) % 12) + 1))]), [])
-      return Array.from({ length: 128 }, (__, m) => m)
-        .filter((m) => m % 12 === order[0] && m !== prev && rel.every((r) => m + r >= range.lo && m + r <= range.hi))
-        .map((m) => Math.abs(m - prev))
-    })
-    return Math.min(...leaps)
-  }
-  it('Down: the next cell starts from the nearest note whose whole cell fits, not an octave away', () => {
+describe('the next cell (#284): from the nearest note, turning at the range’s wall', () => {
+  /** the cell's note nearest prev at any octave, never prev itself (a tie: the lower) */
+  const nearest = (cell: readonly Spelled[], prev: number): number =>
+    cell
+      .flatMap((t) => [-1, 0, 1].map((o) => prev - mod(prev - pcOf(t), 12) + 12 * o))
+      .filter((m) => m !== prev)
+      .sort((a, b) => Math.abs(a - prev) - Math.abs(b - prev) || a - b)[0]!
+  it('Down: turns up from the nearest note where going down would leave the range', () => {
     const { bars } = voice(seq(['Am7', 8]), roots('A'), { dir: 'down' })
     expect(pitches(bars.get(0))).toEqual(['g/4', 'e/4', 'd/4', 'c/4'])
-    expect(pitches(bars.get(1))).toEqual(['g/4', 'e/4', 'd/4', 'c/4']) // D4 down would leave the range: G4, 7 from C4, not D5 (14)
+    expect(pitches(bars.get(1))).toEqual(['d/4', 'e/4', 'g/4', 'c/5']) // D4, 2 from C4; down would pass C4: up from it
   })
   for (const [name, part] of [['concert', CONCERT], ['trumpet (ceiling G5)', partFor('trumpet')], ['bass', BASS]] as const) {
-    for (const dir of ['up', 'down', 'up-down'] as const) {
-      it(`${name}, ${dir}: every cell after the first leaps the least that fits`, () => {
+    for (const dir of ['up', 'down'] as const) {
+      it(`${name}, ${dir}: each later cell starts on the nearest note, in the direction, else turned, in range`, () => {
         const names = ['A', 'D', 'G', 'C', 'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb', 'B', 'E']
         const { bars } = voice(seq(...names.map((n) => [`${n}m7`, 4] as const)), roots(...names), { dir }, part)
         const range = rangeOf(part)
         for (let b = 1; b < names.length; b++) {
           const prev = bars.get(b - 1)?.at(-1)?.pitch?.midi ?? 0
-          const notes = bars.get(b) ?? []
-          const midi = notes.map((n) => n.pitch?.midi ?? 0)
-          const up = midi[1]! > midi[0]!
-          expect(midi.every((m) => m >= range.lo && m <= range.hi)).toBe(true)
-          expect(Math.abs(midi[0]! - prev), `bar ${b}`).toBe(smallest(pentatonicCell(parseRoot(names[b]!), '1'), up, prev, range))
+          const midi = (bars.get(b) ?? []).map((n) => n.pitch?.midi ?? 0)
+          expect(midi.every((m) => m >= range.lo && m <= range.hi), `bar ${b} in range`).toBe(true)
+          const start = nearest(pentatonicCell(parseRoot(names[b]!), '1'), prev)
+          const fits = (up: boolean) => {
+            const cell = pentatonicCell(parseRoot(names[b]!), '1').map(pcOf)
+            const k = cell.indexOf(mod(start, 12))
+            const order = cell.map((_, j) => cell[mod(k + (up ? j : -j), 4)]!)
+            let m = start
+            return order.every((pc, j) => {
+              if (j > 0) m += up ? mod(pc - order[j - 1]! - 1, 12) + 1 : -(mod(order[j - 1]! - pc - 1, 12) + 1)
+              return m >= range.lo && m <= range.hi
+            })
+          }
+          if (fits(dir === 'up') || fits(dir !== 'up')) {
+            expect(midi[0], `bar ${b} starts nearest`).toBe(start)
+            expect(midi[1]! > midi[0]!, `bar ${b} direction`).toBe(fits(dir === 'up') ? dir === 'up' : dir !== 'up')
+          }
         }
       })
     }
   }
 })
-

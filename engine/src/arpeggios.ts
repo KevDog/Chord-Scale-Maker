@@ -154,8 +154,8 @@ const readable = (chord: string): boolean => orNull(() => parseChord(chord)) !==
 /** why a chord plays nothing: a diagnostic for the sheet */
 const noTonesFor = (chord: string): string => `no chord tones for ${chord || 'an empty chord'} (${readable(chord) ? 'unknown chord quality' : "can't read the chord"})`
 
-/** a chord's cells: its tones, and the next cell's order (indexes into them) and direction, given the last note and the run's count; midi: its pitches where the cell placed itself */
-export type Cells = Readonly<{ tones: readonly Spelled[]; next: (prev: number | null, count: number) => Readonly<{ order: readonly number[]; up: boolean; midi?: readonly number[] }> }>
+/** a chord's cells: its tones, and the next cell's order (indexes into them) and direction, given the last note, the run's count and the last cell's pitches; midi: its pitches where the cell placed itself */
+export type Cells = Readonly<{ tones: readonly Spelled[]; next: (prev: number | null, count: number, last: readonly number[] | null) => Readonly<{ order: readonly number[]; up: boolean; midi?: readonly number[] }> }>
 
 /** a chord's 7th chord arpeggio cells in a pattern; null if it has no tones */
 export function arpeggioCells(part: Part, chord: GuideInput, pattern: ArpeggioPattern): Cells | null {
@@ -204,12 +204,14 @@ export function cellVoices(
     bars.set(bar, [...(bars.get(bar) ?? []), note])
   }
   let prev: number | null = null
+  let last: readonly number[] | null = null
   let count = 0
   for (const s of segments) {
     const c = cells[s.chord]
     if (!c) {
       push(s.bar, { pitch: null, beat: s.beat, beats: s.length as GuideNote['beats'], tie: false, tiedIn: false, accidental: null })
       prev = null
+      last = null
       count = 0
       continue
     }
@@ -217,7 +219,7 @@ export function cellVoices(
     const v = noteValue(shortest.get(s.bar) ?? s.length)
     const slots = Math.round(s.length / v)
     for (let k = 0; k < slots; k += 4) {
-      const { order, up, midi: placed } = c.next(prev, count)
+      const { order, up, midi: placed } = c.next(prev, count, last)
       const midi: readonly number[] = placed ?? place(order.map((i) => pcOf(t[i] ?? (t[0] as Spelled))), up, range, prev)
       const take = Math.min(4, slots - k)
       for (let j = 0; j < take; j++) {
@@ -225,6 +227,7 @@ export function cellVoices(
         push(s.bar, { pitch: { ...tone, midi: midi[j] ?? 0 }, beat: s.beat + (k + j) * v, beats: v, tie: false, tiedIn: false, accidental: null })
       }
       prev = midi[take - 1] ?? prev
+      last = midi.slice(0, take)
       count++
     }
   }
