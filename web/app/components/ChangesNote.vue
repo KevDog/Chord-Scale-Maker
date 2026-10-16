@@ -4,7 +4,7 @@
   <HPopover class="relative inline-block max-w-full">
     <HPopoverButton
       :class="wrap ? 'whitespace-normal' : 'truncate'"
-      class="block max-w-full cursor-pointer rounded-sm text-left underline decoration-note-500/60 decoration-dotted underline-offset-[3px] hover:bg-note-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500 dark:decoration-note-300/60 dark:hover:bg-white/5 print:no-underline"
+      class="hit-target block max-w-full cursor-pointer rounded-sm text-left underline decoration-note-500/60 decoration-dotted underline-offset-[3px] hover:bg-note-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500 dark:decoration-note-300/60 dark:hover:bg-white/5 print:no-underline"
       @click="place"
     >
       <slot />

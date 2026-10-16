@@ -3,7 +3,7 @@
   <HPopover class="relative inline-block max-w-full">
     <HPopoverButton
       :aria-label="ariaLabel"
-      :class="['block cursor-pointer rounded-sm text-left underline underline-offset-[3px]', p.picked ? 'decoration-solid decoration-note-600 dark:decoration-note-300' : 'decoration-dotted decoration-note-500/60 dark:decoration-note-300/60']"
+      :class="['hit-target block cursor-pointer rounded-sm text-left underline underline-offset-[3px]', p.picked ? 'decoration-solid decoration-note-600 dark:decoration-note-300' : 'decoration-dotted decoration-note-500/60 dark:decoration-note-300/60']"
       class="hover:bg-note-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500 dark:hover:bg-white/5 print:no-underline"
       @click="place"
     >{{ p.label }}</HPopoverButton>

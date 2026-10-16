@@ -69,6 +69,14 @@
   --radius-dialog: 14px;
 }
 
+/* a 24px pointer target (WCAG 2.5.8, #321) for a small inline control, without moving the layout: padding grows a
+   one-line box to 24px tall and an equal negative margin takes it back; narrow labels (a blank, "I") get 24px wide */
+@utility hit-target {
+  min-width: 24px;
+  padding-block: max(0px, (24px - 1lh) / 2);
+  margin-block: min(0px, (1lh - 24px) / 2);
+}
+
 @layer base {
   /* the sheet's controls scroll into view clear of the sticky rail (lg up, while editing; SheetRail sets --rail-h) */
   @media (width >= 64rem) {
@@ -97,6 +105,7 @@
   /* dark rung tints on screen only: print is light (below), so it keeps the light ones */
   @media screen {
     html.dark {
+      --color-zinc-400: #96a7c0; /* dim text on raised zinc-800 4.6:1 even under a hover (#320); light and print keep #8395b1 */
       --color-rung-0: #7d8a9c;
       --color-rung-1: #5897e5;
       --color-rung-2: #919af9;

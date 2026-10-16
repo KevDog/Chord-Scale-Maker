@@ -9,16 +9,16 @@
           :style="{ left: `${m.x * 100}%`, transform: shrunk(m) === 1 ? undefined : `scale(${shrunk(m)})` }"
           @pointerenter="enterBar(m.barIndex)" @focusin="enterBar(m.barIndex)">
           <ChangesMarks v-if="m.segno || m.coda || m.nav" :segno="m.segno" :coda="m.coda" :nav="m.nav" />
-          <div v-if="m.marker || m.keyArea" class="flex items-baseline gap-2 text-[0.65rem] print:text-[0.55rem]/3">
-            <!-- the sheet as the editor: the section's marker opens its rename -->
+          <div v-if="m.marker || m.keyArea" class="mb-1.5 flex items-baseline gap-2 text-[0.65rem] print:mb-0 print:text-[0.55rem]/3">
+            <!-- the sheet as the editor: the section's marker opens its rename; the button is its 24px target, the badge inside (#321) -->
             <button
               v-if="m.marker && editing !== undefined && m.row.section"
               type="button"
-              :class="[MARKER, 'cursor-pointer hover:border-note-600 hover:text-note-800 focus-visible:outline-2 focus-visible:outline-blue-500 dark:hover:border-note-400 dark:hover:text-note-300']"
+              class="group hit-target cursor-pointer rounded-sm focus-visible:outline-2 focus-visible:outline-blue-500"
               :aria-label="`Rename ${m.row.section}`"
               @click="emit('dialog', 'rename', m.row.section, Number(m.row.bar))"
             >
-              {{ m.marker }}
+              <span :class="[MARKER, 'group-hover:border-note-600 group-hover:text-note-800 dark:group-hover:border-note-400 dark:group-hover:text-note-300']">{{ m.marker }}</span>
             </button>
             <span v-else-if="m.marker" :class="MARKER">{{ m.marker }}</span>
             <span v-if="m.keyArea" class="text-note-800 italic dark:text-note-300 print:text-neutral-700">{{ m.keyArea }}</span>
@@ -106,7 +106,8 @@
       >{{ m.guide }}</span>
     </div>
     <!-- the analysis under each chord: its numeral, then its scale -->
-    <div v-if="numerals" class="relative h-5 print:h-3.5">
+    <!-- the gaps between the label rows keep their 24px pointer targets apart on screen (#321) -->
+    <div v-if="numerals" class="relative mb-1.5 h-5 print:mb-0 print:h-3.5">
       <span
         v-for="m in marks"
         :key="`n${m.key}`"
@@ -138,7 +139,7 @@
       </span>
     </div>
     <!-- the key area's pentatonic at its section's rung (#255, #264): where the area changes and at the line's start -->
-    <div v-if="overlay?.kind === 'pentatonic'" data-slot="pentatonic" class="relative h-5 print:h-3">
+    <div v-if="overlay?.kind === 'pentatonic'" data-slot="pentatonic" class="relative mt-2 h-5 print:mt-0 print:h-3">
       <span
         v-for="m in pentatonicMarks"
         :key="`p${m.key}`"
@@ -175,7 +176,7 @@
       </span>
     </div>
     <!-- the Hexatonic overlay, in the pentatonic row's place: each chord's Auto pair where it changes; blank where its scale has none -->
-    <div v-if="overlay?.kind === 'hexatonic'" data-slot="hexatonic" class="relative h-5 print:h-3">
+    <div v-if="overlay?.kind === 'hexatonic'" data-slot="hexatonic" class="relative mt-2 h-5 print:mt-0 print:h-3">
       <span
         v-for="m in hexatonicMarks"
         :key="`h${m.key}`"

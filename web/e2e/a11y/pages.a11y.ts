@@ -60,7 +60,7 @@ for (const theme of ['light', 'dark'] as const) {
       await expectAccessible(page)
       await pentatonicPreset(page)
       await opens(page, page.locator('div.text-right [data-slot="pentatonic"] button').first(), page.getByRole('dialog', { name: /· bars? [\d, ]+$/ }))
-      await expectAccessible(page)
+      await expectAccessible(page, '[role="dialog"]')
     })
   })
 }
