@@ -26,7 +26,8 @@ const SUFFIX: Readonly<Record<TriadQuality, string>> = { maj: '', min: 'm', dim:
 const qualityOn = (root: number, pcs: ReadonlySet<number>): TriadQuality | null =>
   SHAPES.find(([, third, fifth]) => pcs.has(mod(root + third, 12)) && pcs.has(mod(root + fifth, 12)))?.[0] ?? null
 
-const triad = (root: Spelled, quality: TriadQuality): ChainTriad => {
+/** a triad on a root, of a quality */
+export const chainTriad = (root: Spelled, quality: TriadQuality): ChainTriad => {
   const [, third, fifth] = SHAPES.find(([q]) => q === quality)!
   const pc = pcOf(root)
   return { root, quality, pcs: [pc, mod(pc + third, 12), mod(pc + fifth, 12)], name: glyphs(`${rootName(root)}${SUFFIX[quality]}`) }
@@ -39,7 +40,7 @@ function readTriad(scale: readonly Spelled[], indices: readonly number[]): Chain
   const roots = indices.filter((i) => qualityOn(pcOf(scale[i]!), set) !== null)
   const at = roots.includes(indices[0]!) ? indices[0]! : roots[0]
   if (at === undefined) return null
-  return triad(scale[at]!, qualityOn(pcOf(scale[at]!), set)!)
+  return chainTriad(scale[at]!, qualityOn(pcOf(scale[at]!), set)!)
 }
 
 /** the start triad's scale indices: degrees 1 3 5 on a seven-note scale, else the first major triad from the root, else the first minor one */

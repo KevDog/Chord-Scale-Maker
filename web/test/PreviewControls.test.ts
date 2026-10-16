@@ -106,7 +106,15 @@ describe('the Line under the Pentatonic overlay (#284)', () => {
     expect((await mount({ overlay: 'pentatonic' })).text()).toContain('Pentatonic')
     expect((await mount({ overlay: 'pentatonic' })).text()).not.toContain('7th Chords')
     expect((await mount({ overlay: 'off' })).text()).toContain('7th Chords')
-    expect((await mount({ overlay: 'hexatonic' })).text()).toContain('7th Chords')
+    expect((await mount({ overlay: 'hexatonic' })).text()).toContain('Triad pair') // #325
+    expect((await mount({ overlay: 'hexatonic' })).text()).not.toContain('7th Chords')
+  })
+
+  it('offers the direction, and no Leave out, in place of the arpeggio pattern while the line is Triad pair (#325)', async () => {
+    const w = await mount({ overlay: 'hexatonic', lineMode: 'arpeggio', arpDir: 'up-down' })
+    expect(w.find('[aria-label="Triad pair direction"]').text()).toBe('Up & down')
+    expect(w.find('[aria-label="Leave out"]').exists()).toBe(false)
+    expect(w.find('[aria-label="Arpeggio pattern"]').exists()).toBe(false)
   })
 
   it('offers Leave out and the direction in place of the arpeggio pattern while the line is Pentatonic', async () => {

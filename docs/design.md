@@ -453,7 +453,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   listbox beneath it, so the control stays where it was clicked (From 3rd · From 7th; or the ten arpeggio patterns) replace Intervals on this sheet (`csm-numerals`,
   `csm-scale-names`, both on; `csm-line` `off | guide | arpeggio`, off; `csm-guide-line` `third | seventh`;
   `csm-arpeggio`, `up-root`; share links carry the sheet's line as `line`, absent meaning off). Under the
-  Pentatonic overlay the 7th Chords slot reads **Pentatonic** (see Pentatonic line).
+  Pentatonic overlay the 7th Chords slot reads **Pentatonic** (see Pentatonic line), under the Hexatonic **Triad pair**
+  (see Triad pair line).
 
 ### Guide tones on Changes ([spec](superpowers/specs/2026-10-10-guide-tone-lines-design.md), amended by [independent lines](superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md) and [the diverge note](superpowers/specs/2026-10-11-guide-lines-diverge-note.md); first built as [guide tones on Changes](superpowers/specs/2026-10-10-guide-tones-on-changes-design.md))
 
@@ -531,8 +532,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
 - **What:** while Superimpose is Pentatonic, the Line's 7th Chords slot is **Pentatonic** (`lineModes`): each chord
   plays exactly the pentatonic its label shows (`ChangesChord.pentatonic`: basis, rung/side/path, Built on and chord
-  picks), written for the part. Superimpose off (or Hexatonic) → 7th Chords again. Scope: Pentatonic only; the
-  Hexatonic overlay's Triad pair line is a follow-up.
+  picks), written for the part. Superimpose off → 7th Chords again; Hexatonic → Triad pair (below).
 - **Cells** (`engine/src/pentatonicLine.ts`): the minor pentatonic less one note (`pentatonicCell`), the degree picked
   by **Leave out** (1, ♭3, 4, 5, ♭7 in the minor pentatonic's degrees, `PENTATONIC_LEAVES`; default 1: ♭3-4-5-♭7, the
   relative major's 1-2-3-5). Direction: the Arpeggios sheet's Up · Down · Up & down (`arpDir`; Up & down alternates per
@@ -554,6 +554,21 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   (`aria-label="Leave out"`, `Leave out: ♭3`) where the Superimpose shows (interface tier `pentatonics`). A share link
   with an arpeggio line on the Changes carries `arpDir` and `pentLeave` (an old link has none: the visitor's own); the
   overlay stays the receiver's own. Print: lines a page as for an arpeggio line.
+
+### Triad pair line on Changes (#325)
+
+- **What:** while Superimpose is Hexatonic, the Line's 7th Chords slot is **Triad pair** (`lineModes`): each chord
+  plays exactly the pair its label shows (`ChangesChord.hexatonic`: Auto or its chord pick), written for the part.
+- **Cells** (`engine/src/triadPairLine.ts`): three notes, the pair's lower triad then its upper in turn, each chord
+  starting on its lower (`triadTones` spells each from its root). Direction, the run's first cell, the nearest-note
+  start and the turn at the range's wall: the Pentatonic line's (`nextCell`). A cell the bar line cuts goes on into
+  the chord's next bar (`Cells.carry`); one the chord's end cuts is dropped.
+- **Rhythm, rests, model:** `cellVoices`, which steps by each cell's length; a chord with no pair plays its 7th chord
+  arpeggio in the stored pattern. `ChangesLineChoice` adds `{ kind: 'triad-pair', dir, arpeggio }`; `buildChanges`
+  works out each chord's pair before the line. Aria-label `; triad pair: G4 B4 D5 C5 | …`.
+- **Preferences:** none new: the stored arpeggio line reads as Triad pair under the overlay; Direction
+  (`aria-label="Triad pair direction"`) is `csm-arp-dir`, shared as `arpDir`; no Leave out. Print: lines a page as for
+  an arpeggio line.
 
 ### Pentatonics on Changes ([spec](superpowers/specs/2026-10-13-pentatonic-ladders-design.md))
 

@@ -253,7 +253,7 @@ const props = defineProps<{
   scales: boolean
   clef?: 'treble' | 'bass' // with key signatures or a guide tone on: the part's clef, drawn (with any signature) on the first line only
   arpeggio?: boolean // the voice is an arpeggio line: beamed, no label row
-  pentatonicLine?: boolean // that arpeggio line is the Pentatonic line (#284): named so in the aria-label
+  lineName?: string // that arpeggio line's name in the aria-label: 'pentatonic' (#284), 'triad pair' (#325); else 7th chords
   editable?: boolean // each chord a button that asks to edit it
   selectedLine?: number | null // the chart line of the chord the editor is on, outlined
   doc?: ChartDoc // the chart, for the sheet editor's field
@@ -456,7 +456,7 @@ async function draw(): Promise<void> {
     await document.fonts?.ready // names measured in their own font
     const names = measureNames()
     drawn = key(names)
-    const layout = drawChangesLine(vf, el.value, props.line, { timeSignature: props.first, beats: props.beats, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}), ...(props.arpeggio ? { arpeggio: true } : {}), ...(props.pentatonicLine ? { pentatonic: true } : {}), ...(names ? { names } : {}) })
+    const layout = drawChangesLine(vf, el.value, props.line, { timeSignature: props.first, beats: props.beats, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}), ...(props.arpeggio ? { arpeggio: true } : {}), ...(props.lineName ? { lineName: props.lineName } : {}), ...(names ? { names } : {}) })
     xs.value = layout.xs
     ends.value = layout.ends
     nameScales.value = layout.scales
@@ -486,5 +486,5 @@ onBeforeUnmount(() => {
   observer?.disconnect()
   clearTimeout(resized)
 })
-watch(() => [props.line, props.first, props.beats, props.barsPerLine, props.clef, props.arpeggio, props.pentatonicLine], () => nextTick(draw))
+watch(() => [props.line, props.first, props.beats, props.barsPerLine, props.clef, props.arpeggio, props.lineName], () => nextTick(draw))
 </script>

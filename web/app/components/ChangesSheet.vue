@@ -23,7 +23,7 @@
             :numerals="numerals"
             :scales="scales"
             :arpeggio="arpeggio"
-            :pentatonic-line="pentatonicLine"
+            :line-name="lineName"
             :clef="part.clef"
             :part="part"
             :editable="editable"
@@ -104,9 +104,9 @@ const paged = inject(SHEET_PAGED, ref(false)) // focus mode's pages are a printe
 const barsPerLine = computed(() => (wide.value || paged.value ? 4 : 2))
 
 const line = computed((): ChangesLineChoice => props.line ?? 'off')
-/** an arpeggio or Pentatonic line: beamed cells, no label row */
-const pentatonicLine = computed(() => typeof line.value === 'object')
-const arpeggio = computed(() => pentatonicLine.value || isArpeggioPattern(line.value))
+/** an arpeggio, Pentatonic or Triad pair line: beamed cells, no label row; lineName: the latter two's, for the aria-label */
+const lineName = computed(() => (typeof line.value === 'object' ? (line.value.kind === 'pentatonic' ? 'pentatonic' : 'triad pair') : undefined))
+const arpeggio = computed(() => !!lineName.value || isArpeggioPattern(line.value))
 const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null))
 /** the bars that start a line because the names before them didn't fit (ChangesSystem measures): until the sheet changes */
 const breaks = shallowRef<ReadonlySet<string>>(new Set())

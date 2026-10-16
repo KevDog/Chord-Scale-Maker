@@ -1,4 +1,4 @@
-import { chooseSuperimpose, expect, hexatonicPreset, pickOption, staves, test, writeChart } from './fixtures'
+import { arpeggiosDrawn, chooseSuperimpose, expect, hexatonicPreset, pickOption, showArpeggios, staves, test, writeChart } from './fixtures'
 import type { Page } from '@playwright/test'
 
 // one staff per chord: C Ionian, D Dorian, G Mixolydian, B Locrian (the chords' own scales in C), and two written
@@ -72,4 +72,21 @@ test('the Changes sheet’s Superimpose: Hexatonic shows each chord’s pair and
   await expect(page.getByRole('button', { name: 'Pentatonic rung' })).toBeVisible()
   await chooseSuperimpose(page, 'Off')
   await expect(page.locator('[data-slot="pentatonic"], [data-slot="hexatonic"]')).toHaveCount(0)
+})
+
+test('the Line plays each chord’s labelled triad pair under the Hexatonic overlay, and 7th Chords again without it (#325)', async ({ page }) => {
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Dm7\n')
+  const line = page.locator('svg[aria-label^="Bars:"]').first()
+  await showArpeggios(page, 'Up · root')
+  await arpeggiosDrawn(page)
+  await chooseSuperimpose(page, 'Hexatonic')
+  await expect(page.getByRole('radio', { name: 'Triad pair', exact: true })).toBeChecked() // the stored arpeggio line, read as Triad pair
+  await expect(page.getByLabel('Leave out')).toHaveCount(0)
+  await expect(line).toHaveAttribute('aria-label', /; triad pair: G4 B4 D5 C5 \| E5 C5 G4 F4/) // G/Am, then C/Dm from the note nearest C5, turned at the top
+  await pickOption(page, 'Triad pair direction', 'Down')
+  await expect(line).toHaveAttribute('aria-label', /; triad pair: D5 B4 G4 /)
+  await chooseSuperimpose(page, 'Off')
+  await expect(page.getByRole('radio', { name: '7th Chords', exact: true })).toBeChecked()
+  await arpeggiosDrawn(page)
+  await expect(line).toHaveAttribute('aria-label', /; 7th chords: C4 E4 G4 B4/)
 })

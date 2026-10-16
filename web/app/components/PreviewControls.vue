@@ -91,13 +91,13 @@
                   <template #selected="{ value }"><UiListboxLabel>{{ guideLabel(value) }}</UiListboxLabel></template>
                   <UiListboxOption v-for="g in GUIDE_LINES" :key="g.value" :value="g.value" :title="g.title"><UiListboxLabel>{{ g.label }}</UiListboxLabel></UiListboxOption>
                 </UiListbox>
-                <!-- the Pentatonic line (#284): the direction (the Arpeggios sheet's), and Leave out where the Superimpose shows -->
-                <template v-else-if="lineMode === 'arpeggio' && overlay === 'pentatonic'">
-                  <UiListbox v-model="arpDir" class="w-full" aria-label="Pentatonic direction" title="Each cell up, down, or up and down by turns">
+                <!-- the Pentatonic line (#284) and the Triad pair line (#325): the direction (the Arpeggios sheet's), and the Pentatonic's Leave out where the Superimpose shows -->
+                <template v-else-if="lineMode === 'arpeggio' && overlay !== 'off'">
+                  <UiListbox v-model="arpDir" class="w-full" :aria-label="overlay === 'pentatonic' ? 'Pentatonic direction' : 'Triad pair direction'" title="Each cell up, down, or up and down by turns">
                     <template #selected="{ value }"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[value] }}</UiListboxLabel></template>
                     <UiListboxOption v-for="d in ARP_DIRECTIONS" :key="d" :value="d"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[d] }}</UiListboxLabel></UiListboxOption>
                   </UiListbox>
-                  <UiListbox v-if="overlayShown" v-model="pentLeave" class="w-full" aria-label="Leave out" title="The minor pentatonic's degree each four-note cell leaves out; 1: ♭3 4 5 ♭7, the relative major's 1 2 3 5">
+                  <UiListbox v-if="overlayShown && overlay === 'pentatonic'" v-model="pentLeave" class="w-full" aria-label="Leave out" title="The minor pentatonic's degree each four-note cell leaves out; 1: ♭3 4 5 ♭7, the relative major's 1 2 3 5">
                     <template #selected="{ value }"><UiListboxLabel>Leave out: {{ PENTATONIC_LEAVE_LABELS[value] }}</UiListboxLabel></template>
                     <UiListboxOption v-for="d in PENTATONIC_LEAVES" :key="d" :value="d"><UiListboxLabel>{{ PENTATONIC_LEAVE_LABELS[d] }}</UiListboxLabel></UiListboxOption>
                   </UiListbox>

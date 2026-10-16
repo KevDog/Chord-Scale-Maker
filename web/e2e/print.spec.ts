@@ -118,6 +118,21 @@ test('prints the Changes with the Pentatonic line, a sheet page to a letter page
   expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
 })
 
+test('prints the Changes with the Triad pair line, a sheet page to a letter page (#325)', async ({ page }) => {
+  await page.goto('/song/stardust')
+  await chooseInstrument(page, 'Tuba')
+  await showArpeggios(page, 'Up · root')
+  await chooseSuperimpose(page, 'Hexatonic')
+  await expect(page.locator('[data-slot="hexatonic"] span').first()).toBeVisible()
+  const svgs = page.locator('svg[aria-label^="Bars:"]')
+  await expect.poll(() => svgs.evaluateAll((els) => els.length > 0 && els.every((e) => e.getAttribute('aria-label')?.includes('; triad pair: ')))).toBe(true)
+  const sheetPages = await svgs.evaluateAll((els) => new Set(els.map((e) => e.closest('section'))).size)
+  expect(sheetPages).toBeGreaterThanOrEqual(2)
+  await page.emulateMedia({ media: 'print' })
+  await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toBeHidden()
+  expect(pdfPages(await page.pdf({ format: 'Letter' }))).toBe(sheetPages)
+})
+
 // the Pentatonics row adds a row under Numerals and Scales: with a guide tone line on the tuba it's the tallest case
 test('prints the Changes with a guide tone line and the Pentatonics row, a sheet page to a letter page', async ({ page }) => {
   await page.goto('/song/stardust')

@@ -177,6 +177,9 @@
               cell drops (leave out 1 and Am pentatonic plays C D E G), and the direction goes up, down or both by turns;
               each cell starts on its note nearest the last one you played, and turns the other way where it would
               run past the top or bottom of your instrument's range.
+              While Superimpose is Hexatonic, it becomes <strong class="font-semibold">Triad pair</strong>: each chord's
+              labelled pair a triad at a time, its lower triad first (<UiCode>G/Am</UiCode> plays G B D, then A C E from
+              the note nearest D), with the same direction, rhythm and turns.
             </dd>
           </div>
           <div>

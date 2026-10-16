@@ -8,6 +8,7 @@ import { arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
 import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
 import { keySignature } from './keySignature'
 import { type PentatonicLine, pentatonicVoices } from './pentatonicLine'
+import { type TriadPairLine, triadPairVoices } from './triadPairLine'
 import { concertPc, type Part, scaleLabel, writtenRoot, writtenScale } from './part'
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled, shiftBy } from './pitch'
 import { isPentatonicPreset, type PentatonicDegree, pentatonicDegreeFrom, PENTATONIC_HOME, PENTATONIC_STEP, pentatonicAt, pentatonicCycle, pentatonicPathCaption, type PentatonicPathName, type PentatonicStep, pentatonicLadder, pentatonicRanking, type RankedPentatonic, type PentatonicRung, type PentatonicView } from './pentatonics'
@@ -53,8 +54,8 @@ export type ChangesPentatonic = Readonly<{
   sheet: string // the name it plays without a pick (#303)
   source: PickSource
 }>
-/** the line the Changes sheet draws: off, a guide tone line, a 7th chord arpeggio pattern, or (#284) the Pentatonic line */
-export type ChangesLineChoice = SheetLine | PentatonicLine
+/** the line the Changes sheet draws: off, a guide tone line, a 7th chord arpeggio pattern, the Pentatonic line (#284) or the Triad pair line (#325) */
+export type ChangesLineChoice = SheetLine | PentatonicLine | TriadPairLine
 /** a section the Changes sheet draws (a block): its key (its first section's name), its marker, its place in the form */
 export type ChangesSection = Readonly<{ key: string; marker: string; part: FormPart }>
 /** the pentatonic row's rungs (#264): a section's own view, else fallback; counts: the shared count follows each label */
@@ -536,7 +537,8 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   }
 
   const hexRankings = new Map<string, readonly HexPair[]>()
-  const hexatonicOf = (scale: string | null, chordText: string, at: ChordAt, target: string): ChangesHexatonic | null => {
+  /** a chord's hexatonic and the pair it plays */
+  const hexatonicOf = (scale: string | null, chordText: string, at: ChordAt, target: string): Readonly<{ hex: ChangesHexatonic; pair: HexPair }> | null => {
     if (overlay?.kind !== 'hexatonic' || !scale) return null
     const k = `${scale}|${chordText}`
     if (!hexRankings.has(k)) {
@@ -555,8 +557,17 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     const want = pick ? pick.roots.map((pc) => mod(pc + toWritten, 12)) : null // the pick, written
     const found = want ? ranking.find((p) => pcOf(p.lower.root) === want[0] && pcOf(p.upper.root) === want[1]) : undefined
     const used = found ?? auto
-    return { label: used.name, name: used.name, chord: at, picked: !!found, run: [], sheet: auto.name, source: { chord: chordText, scale } }
+    return { hex: { label: used.name, name: used.name, chord: at, picked: !!found, run: [], sheet: auto.name, source: { chord: chordText, scale } }, pair: used }
   }
+  // each row's hexatonic, worked out before the line, which plays its pair (#325)
+  const hexAt = new Map(
+    blocks.flatMap((b) => b.rows).map((i) => {
+      const row = rows[i] as LinedRow
+      const scale = resolved.get(i)?.scale ?? null
+      return [i, hexatonicOf(scale, row.chord, keyOf.get(i) ?? '', pickTarget(row.chord, scale))] as const
+    }),
+  )
+  const hexPairs = new Map([...hexAt].flatMap(([i, h]) => (h ? [[i, h.pair] as const] : [])))
 
   // each drawn chord's pentatonic (its label's, picks and all), worked out before the line, which plays it (#284)
   const pentAt = new Map<number, ChangesPentatonic | null>()
@@ -575,7 +586,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     line === 'off'
       ? null
       : typeof line === 'object'
-        ? { ...pentatonicVoices(drawn(), part, beats, keySig, line, pentRoots), labels: new Map() }
+        ? { ...(line.kind === 'pentatonic' ? pentatonicVoices(drawn(), part, beats, keySig, line, pentRoots) : triadPairVoices(drawn(), part, beats, keySig, line, hexPairs)), labels: new Map() }
         : isArpeggioPattern(line)
           ? { ...arpeggioVoices(drawn(), part, beats, keySig, line), labels: new Map() }
           : guideVoices(drawn(), part, beats, keySig, line)
@@ -611,7 +622,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',
             guide: voices?.labels.get(i) ?? '',
             pentatonic: pentAt.get(i) ?? null,
-            hexatonic: hexatonicOf(scale, row.chord, keyOf.get(i) ?? '', pickTarget(row.chord, scale)),
+            hexatonic: hexAt.get(i)?.hex ?? null,
           }
         })
       const firstKey = block.rows.map((i) => byRow.get(i)).find((a) => a && barOf(a.row) === bar)?.key.name

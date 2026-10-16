@@ -6,8 +6,9 @@ import { NO_PICKS, pickTarget, withPick } from '../chordPicks'
 import { resolveScales } from '../resolve'
 import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
 import { CONCERT, concertPc, type Part, partFor, rangeOf } from '../part'
-import { pcOf, rootName, type Spelled } from '../pitch'
+import { parseRoot, pcOf, rootName, type Spelled } from '../pitch'
 import type { PentatonicLine } from '../pentatonicLine'
+import type { TriadPairLine } from '../triadPairLine'
 import { toVexKey } from '../sheet'
 import type { ScaleView } from '../resolve'
 import { type PentatonicDegree, PENTATONIC_HOME, type PentatonicPathName, type PentatonicStep } from '../pentatonics'
@@ -783,6 +784,40 @@ describe('buildChanges with a Pentatonic line (#284)', () => {
   it('gives a Pentatonic line the page count of an arpeggio line', () => {
     const rows = { numerals: true, scales: true, pentatonics: true }
     expect(changesLinesPerPage(PENT, rows)).toBe(changesLinesPerPage('up-root', rows))
+  })
+})
+
+describe('buildChanges with a Triad pair line (#325)', () => {
+  const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | Cmaj7\n').value
+  const HEX = { kind: 'hexatonic' } as const
+  const PAIR: TriadPairLine = { kind: 'triad-pair', dir: 'up', arpeggio: 'up-root' }
+  const keys = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars.map((b) => b.voice.map((n) => (n.pitch ? toVexKey(n.pitch) : 'r'))))
+  it("plays each chord's labelled pair: its lower triad, then its upper from the note nearest the last", () => {
+    const sheet = buildChanges(doc, CONCERT, 4, false, PAIR, undefined, HEX) // G/Am, C/Dm, …
+    expect(keys(sheet)[0]).toEqual(['g/4', 'b/4', 'd/5', 'c/5'])
+    expect(sheet.lines.flatMap((l) => l.bars.flatMap((b) => b.chords)).map((c) => c.guide)).toEqual(['', '', '', ''])
+  })
+  it('plays, on a transposing part and with a pick, only the notes of the pair each label names', () => {
+    const targets = pickTargets(doc, resolveScales(doc, { level: 'standard', seed: 0 }))
+    const picks = withPick(NO_PICKS, 'hexatonic', ['A:2:0'], [5, 7], targets).hexatonic // Dm7: F/G
+    for (const part of [CONCERT, TENOR]) {
+      const sheet = buildChanges(doc, part, 4, false, PAIR, undefined, { kind: 'hexatonic', picks })
+      for (const bar of sheet.lines.flatMap((l) => l.bars)) {
+        const c = bar.chords[0]!
+        const [lo, hi] = c.hexatonic!.name.split('/').map((n) => parseRoot(n.replace('m', '').replace('♭', 'b').replace('♯', '#')))
+        const shapes = c.hexatonic!.name.split('/').map((n) => (n.endsWith('m') ? [0, 3, 7] : [0, 4, 7]))
+        const pcs = new Set([...shapes[0]!.map((d) => (pcOf(lo!) + d) % 12), ...shapes[1]!.map((d) => (pcOf(hi!) + d) % 12)])
+        expect(bar.voice.every((n) => n.pitch && pcs.has(pcOf(n.pitch))), `${c.text} ${c.hexatonic!.name}`).toBe(true)
+      }
+      if (part === CONCERT) expect(sheet.lines[0]!.bars[1]!.chords[0]!.hexatonic!.name).toBe('F/G')
+    }
+  })
+  it('with no pair to play (no overlay), plays the 7th chord arpeggio in its pattern', () => {
+    expect(keys(buildChanges(doc, CONCERT, 4, false, PAIR))).toEqual(keys(buildChanges(doc, CONCERT, 4, false, 'up-root')))
+  })
+  it('gives a Triad pair line the page count of an arpeggio line', () => {
+    const rows = { numerals: true, scales: true, hexatonics: true }
+    expect(changesLinesPerPage(PAIR, rows)).toBe(changesLinesPerPage('up-root', rows))
   })
 })
 
