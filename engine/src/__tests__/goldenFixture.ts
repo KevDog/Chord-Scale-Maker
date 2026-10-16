@@ -6,6 +6,7 @@
  */
 import { readdirSync, readFileSync } from 'node:fs'
 import raw from '../../chord_scales.json'
+import { analyse } from '../analysis'
 import {
   ALIASES,
   baseQuality,
@@ -14,10 +15,12 @@ import {
   type Clef,
   CLEF_START,
   CONCERT,
+  chartBeats,
   chartMeta,
   chordTokens,
   defaultScale,
   expandRows,
+  guideToneTimeline,
   hexatonicAuto,
   hexatonicChoices,
   hexatonicPairs,
@@ -53,7 +56,8 @@ export type Golden = {
   scales: Record<string, Record<string, ScaleCase>>
   chords: { part: string; chord: string; scale: string | null; tokens: ChordToken[] | null }[]
   options: Record<string, { options: readonly ScaleOption[] | null; default: string | null }>
-  charts: Record<string, { text: string; title: string; subtitle: string; key: string; rows: (string | null)[][] }> // a null scale: unresolved
+  // a null scale: unresolved; timing: [start, beats, key, key stated] per row; areas: [key, section, from, to, stated]
+  charts: Record<string, { text: string; title: string; subtitle: string; key: string; rows: (string | null)[][]; timing: (number | string | boolean)[][]; areas: (string | boolean)[][] }>
   hexatonics: Hexatonics
   pentatonics: Pentatonics
 }
@@ -123,6 +127,20 @@ export function attempt<T>(f: () => T): T | null {
 export function playedRows(doc: ChartDoc): (string | null)[][] {
   const played = resolveScales(doc, { level: 'standard', seed: 0 })
   return expandRows(doc).value.map((r, i) => [r.section, r.bar, r.chord, played.get(i)?.scale ?? null])
+}
+
+/** each expanded row's start and length in beats and the key it is analysed in (stated or found); the key areas */
+export function chartTiming(doc: ChartDoc): { timing: (number | string | boolean)[][]; areas: (string | boolean)[][] } {
+  const rows = expandRows(doc).value
+  const eventOf = new Map(guideToneTimeline(rows, chartBeats(doc)).events.map((e) => [e.row, e]))
+  const a = analyse(doc)
+  const byRow = new Map(a.rows.map((r) => [r.row, r]))
+  const areaOf = (i: number) => a.areas.filter((x) => x.row <= i).at(-1)
+  const timing = rows.map((r, i) => {
+    const e = eventOf.get(r)
+    return [e?.start ?? -1, e?.beats ?? 0, byRow.get(i)?.key.name ?? '', areaOf(i)?.stated ?? false]
+  })
+  return { timing, areas: a.areas.map((x) => [x.key.name, x.section, x.from, x.to, x.stated]) }
 }
 
 export function scaleCase(part: Part, text: string, fromStarts: readonly string[]): ScaleCase {
@@ -209,7 +227,7 @@ export function buildGolden(): Golden {
     Object.entries({ ...libraryCharts(), ...CHART_TEXTS }).map(([name, text]) => {
       const doc = parseChart(text).value
       const meta = chartMeta(doc)
-      return [name, { text, title: meta.title, subtitle: meta.subtitle, key: meta.key, rows: playedRows(doc) }]
+      return [name, { text, title: meta.title, subtitle: meta.subtitle, key: meta.key, rows: playedRows(doc), ...chartTiming(doc) }]
     }),
   )
   return {
