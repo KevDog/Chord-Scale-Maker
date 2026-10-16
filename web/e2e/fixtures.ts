@@ -244,7 +244,7 @@ export const showPentatonics = (page: Page): Promise<void> => chooseSuperimpose(
 /** the Pentatonic line (#284): Superimpose Pentatonic, then the Line's Pentatonic, leaving out a degree ("1", "♭3" …) if given */
 export async function showPentatonicLine(page: Page, leave?: string): Promise<void> {
   await showPentatonics(page)
-  await page.keyboard.press('Escape') // the Pentatonic options' popover, opened as the Superimpose turned
+  await closePentatonicOptions(page)
   await inControls(page, async () => {
     await pickLine(page, 'Pentatonic')
     if (leave) await pickOption(page, 'Leave out', leave)
@@ -256,6 +256,18 @@ export async function pentatonicLineDrawn(page: Page): Promise<void> {
   await expect
     .poll(() => page.locator('svg[aria-label^="Bars:"]').evaluateAll((els) => els.length > 0 && els.every((e) => e.getAttribute('aria-label')?.includes('; pentatonic: '))))
     .toBe(true)
+}
+
+/** close the Pentatonic options' popover that opens as the Superimpose turns to Pentatonic (#293): wait for it to open, then
+ * toggle it shut with its chevron, so it can't cover the controls below it (Escape needs focus inside it, which it doesn't take) */
+export async function closePentatonicOptions(page: Page): Promise<void> {
+  const chevron = page.getByRole('button', { name: 'Pentatonic options' })
+  if (!(await chevron.isVisible())) return
+  await expect(chevron).toHaveAttribute('aria-expanded', 'true', { timeout: 5_000 }).catch(() => {})
+  await expect(async () => {
+    if ((await chevron.getAttribute('aria-expanded')) === 'true') await chevron.click({ timeout: 1_000 })
+    await expect(chevron).not.toHaveAttribute('aria-expanded', 'true', { timeout: 1_000 })
+  }).toPass({ timeout: 10_000 })
 }
 
 /** open the Pentatonic options' popover beside the Superimpose (#293): it opens as the Superimpose turns to Pentatonic, not after a reload */
