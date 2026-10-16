@@ -34,7 +34,7 @@
         <span
           v-for="(label, i) in staff.intervals"
           :key="i"
-          :class="['absolute -translate-x-1/2', staff.selected?.[i] === false && 'opacity-25 dark:opacity-35 print:opacity-100 print:text-neutral-400']"
+          :class="['absolute -translate-x-1/2', staff.selected?.[i] && 'font-semibold text-zinc-950 dark:text-zinc-50']"
           :style="{ left: `${(xs[i] ?? 0) * 100}%` }"
         >{{ glyphs(label) }}</span>
       </p>

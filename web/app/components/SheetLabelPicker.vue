@@ -2,7 +2,7 @@
   <HPopover :class="['relative inline-block max-w-full', blank && 'print:hidden']">
     <HPopoverButton
       :class="[
-        'block max-w-full cursor-pointer truncate rounded-sm text-left underline decoration-dotted underline-offset-[3px] hover:bg-note-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500 dark:hover:bg-white/5 print:no-underline',
+        'hit-target block max-w-full cursor-pointer truncate rounded-sm text-left underline decoration-dotted underline-offset-[3px] hover:bg-note-50 focus-visible:outline-2 focus-visible:outline-offset-1 focus-visible:outline-note-500 dark:hover:bg-white/5 print:no-underline',
         guessed ? 'decoration-amber-500' : 'decoration-note-500/60 dark:decoration-note-300/60',
         blank && 'text-zinc-400 dark:text-zinc-500',
       ]"
