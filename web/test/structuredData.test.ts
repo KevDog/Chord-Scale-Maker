@@ -23,6 +23,7 @@ describe('websiteLd', () => {
       '@context': 'https://schema.org',
       '@type': 'WebSite',
       name: 'Chord Scale Maker',
+      alternateName: ['CSM'],
       url: 'https://www.chordscalemaker.com/',
     })
   })
@@ -40,7 +41,8 @@ describe('webAppLd', () => {
       operatingSystem: 'Any',
       offers: { '@type': 'Offer', price: 0, priceCurrency: 'USD' },
     })
-    expect(ld.description).toBeTruthy()
+    expect(ld.description).toMatch(/^Endless improvisation practice sheets for jazz standards/)
+    expect(ld.featureList).toEqual(expect.arrayContaining([expect.stringMatching(/guide.tone/i), expect.stringMatching(/hexatonic/i), expect.stringMatching(/advanced/i)]))
     expect(ld.browserRequirements).toBeTruthy()
     expect(ld).not.toHaveProperty('aggregateRating')
   })

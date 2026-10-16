@@ -38,34 +38,40 @@ describe('tuneSummary', () => {
 })
 
 describe('tuneDescription', () => {
-  it('names the tune, its other title, its composer and its key', () => {
+  it('names the tune, its other title, its composer and its key, as a lead-sheet style chart with no melody', () => {
     expect(tuneDescription(tuneSummary(read('blue-trane.txt')))).toBe(
-      'Chord-scale practice sheets for Blue Trane (also Blue Train) by John Coltrane in E♭: the changes as a study lead sheet with guide tones.',
+      'Blue Trane (also Blue Train) by John Coltrane in E♭: the chord changes as a lead-sheet style practice chart, with guide tones. Chords only, no melody.',
     )
   })
 
   it('has no "by" or empty commas without a composer or key', () => {
     const d = tuneDescription(tuneSummary('title: Tune\nA | 1 | C'))
-    expect(d).toBe('Chord-scale practice sheets for Tune: the changes as a study lead sheet with guide tones, and a scale for every chord, for your instrument.')
+    expect(d).toBe(
+      'Tune: the chord changes as a lead-sheet style practice chart, with guide tones and a scale, arpeggio and pentatonic for every chord. Chords only, no melody.',
+    )
   })
 
   it('adds the other titles after the title when they fit with the composer and key', () => {
     const t = tuneSummary('title: Tune\naka: Song; Ditty\ncomposer: Someone\nkey: C\nA | 1 | C')
-    expect(tuneDescription(t)).toMatch(/^Chord-scale practice sheets for Tune \(also Song or Ditty\) by Someone in C: /)
+    expect(tuneDescription(t)).toMatch(/^Tune \(also Song or Ditty\) by Someone in C: /)
     const long = tuneSummary(`title: Tune\naka: ${'x'.repeat(120)}\ncomposer: Someone\nkey: C\nA | 1 | C`)
-    expect(tuneDescription(long)).toMatch(/^Chord-scale practice sheets for Tune by Someone in C: /)
+    expect(tuneDescription(long)).toMatch(/^Tune by Someone in C: /)
   })
 
-  it('drops clauses from the end to fit', () => {
-    const long = tuneDescription(tuneSummary(`title: ${'Long '.repeat(20)}Tune\ncomposer: Someone With A Long Name\nkey: F#m\nA | 1 | C`))
+  it('drops clauses from the end to fit, the lead-sheet clause last but for the title', () => {
+    const long = tuneDescription(tuneSummary(`title: ${'Long '.repeat(13)}Tune\ncomposer: Someone With A Long Name\nkey: F#m\nA | 1 | C`))
     expect(long.length).toBeLessThanOrEqual(160)
     expect(long).not.toMatch(/[,:]\s*$/)
+    expect(long).toContain('lead-sheet')
     const longest = 'x'.repeat(LIMITS.maxMeta) // a title as long as a chart allows still fits, alone
-    expect(tuneDescription(tuneSummary(`title: ${longest}\ncomposer: Someone\nA | 1 | C`))).toBe(`Chord-scale practice sheets for ${longest}.`)
+    expect(tuneDescription(tuneSummary(`title: ${longest}\ncomposer: Someone\nA | 1 | C`))).toBe(`${longest}.`)
   })
 
-  it.each(charts)('fits in 160 characters: %s', (file) => {
-    expect(tuneDescription(tuneSummary(read(file))).length).toBeLessThanOrEqual(160)
+  it.each(charts)('fits in 70–160 characters and says lead-sheet: %s', (file) => {
+    const d = tuneDescription(tuneSummary(read(file)))
+    expect(d.length).toBeGreaterThanOrEqual(70)
+    expect(d.length).toBeLessThanOrEqual(160)
+    expect(d).toContain('lead-sheet')
   })
 })
 

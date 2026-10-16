@@ -1,8 +1,8 @@
 /** where the site lives: canonical URLs and link previews are absolute (previews of preview deployments show production's) */
 export const SITE_URL = 'https://www.chordscalemaker.com'
 export const SITE_NAME = 'Chord Scale Maker'
-export const SITE_DESCRIPTION =
-  'Practice sheets for jazz improvisation: every chord’s scale, the changes with their guide tones, and practice picks, written for your instrument.'
+export const SITE_TAGLINE = 'Endless improvisation practice sheets for jazz standards'
+export const SITE_DESCRIPTION = `${SITE_TAGLINE}: chord changes with scales, guide tones, arpeggios and pentatonics, written for your instrument.`
 
 /** the page's address for search engines: the path alone (a share link's query or fragment never leaks), no trailing slash but the root's */
 export function canonicalUrl(path: string): string {
@@ -10,15 +10,17 @@ export function canonicalUrl(path: string): string {
   return `${SITE_URL}${bare || '/'}`
 }
 
-/** the browser and search title: "Help · Chord Scale Maker", or the site name alone */
-export const pageTitle = (title: string | undefined): string => (title && title !== SITE_NAME ? `${title} · ${SITE_NAME}` : SITE_NAME)
+/** the browser and search title: "Help · Chord Scale Maker", or the site name alone, or a title that leads with it */
+export const pageTitle = (title: string | undefined): string => (!title ? SITE_NAME : title.startsWith(SITE_NAME) ? title : `${title} · ${SITE_NAME}`)
 
-/** title without the site name (the template adds it; none on the home page) */
-export type PageHead = Readonly<{ title?: string; description: string; robots?: 'noindex' }>
+/** title without the site name (the template adds it), unless it leads with it; ogTitle when the preview's differs */
+export type PageHead = Readonly<{ title?: string; description: string; ogTitle?: string; robots?: 'noindex' | 'index, follow, max-image-preview:large' }>
 
 export const PAGE_HEAD = {
   index: {
-    description: 'A library of jazz standards as practice sheets: the changes with their guide tones, and a scale for every chord, written for your instrument.',
+    title: `${SITE_NAME}: Endless Practice Sheets for Jazz Standards`,
+    description: SITE_DESCRIPTION,
+    ogTitle: `${SITE_NAME}: Endless Improvisation Practice Sheets for Jazz Standards`,
   },
   library: {
     title: 'Library',
@@ -55,8 +57,9 @@ export const PAGE_HEAD = {
 export const seoMeta = (head: PageHead) => ({
   title: head.title,
   description: head.description,
-  ogTitle: pageTitle(head.title),
+  ogTitle: head.ogTitle ?? pageTitle(head.title),
   ogDescription: head.description,
+  twitterDescription: head.description,
   ...(head.robots ? { robots: head.robots } : {}),
 })
 
@@ -72,6 +75,10 @@ export const songPath = (slug: string): string => `/song/${slug}`
 /** a chart's name from an address; old addresses and bookmarks used underscores (round_midnight) */
 export const chartSlug = (name: string): string => name.replaceAll('_', '-')
 
+type TuneName = Readonly<{ title: string; composer: string }>
+
+/** a tune and its composer: "Blue Trane (John Coltrane)" */
+export const tuneName = (t: TuneName): string => `${t.title}${t.composer ? ` (${t.composer})` : ''}`
+
 /** a song page's title, without the site name (the template adds it) */
-export const tuneTitle = (t: Readonly<{ title: string; composer: string }>): string =>
-  `${t.title}${t.composer ? ` (${t.composer})` : ''}: changes and chord scales`
+export const tuneTitle = (t: TuneName): string => `${tuneName(t)}: Chord Changes and Lead Sheet Practice Charts`

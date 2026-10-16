@@ -1,37 +1,44 @@
 <template>
-  <ClientOnly>
-    <div v-if="source.kind === 'missing'" class="max-w-xl space-y-4">
-      <UiHeading>That chart isn’t here</UiHeading>
-      <UiText>It isn’t saved in this browser. Saved charts stay in the browser they were made in; on another device, open it from a share link or a downloaded file.</UiText>
-      <UiButton color="note" href="/library">Go to the chart library</UiButton>
-    </div>
-    <div v-else-if="source.kind === 'badLink'" class="max-w-xl space-y-4">
-      <UiHeading>That link doesn’t open a chart</UiHeading>
-      <UiText>It may have been cut short when it was copied or sent. Ask for it again, or for the chart as a downloaded file.</UiText>
-      <UiButton color="note" href="/library">Go to the chart library</UiButton>
-    </div>
-    <!-- keyed by the chart being edited: another chart, or a revert, starts a fresh editor -->
-    <EditorView
-      v-else
-      :key="editorKey"
-      :initial-text="source.text"
-      :practice-key="source.practiceKey"
-      :save-target="source.target"
-      :library-title="source.libraryTitle"
-      :shared="source.shared"
-      :is-new="source.target?.kind === 'new'"
-      @created="adopt"
-      @reload="reload"
-    />
-    <template #fallback>
-      <div v-if="song" class="space-y-1">
-        <UiHeading>{{ song.title }}</UiHeading>
-        <UiText v-if="song.composer">{{ song.composer }}</UiText>
-        <UiText>Loading the practice sheets…</UiText>
+  <div>
+    <ClientOnly>
+      <div v-if="source.kind === 'missing'" class="max-w-xl space-y-4">
+        <UiHeading>That chart isn’t here</UiHeading>
+        <UiText>It isn’t saved in this browser. Saved charts stay in the browser they were made in; on another device, open it from a share link or a downloaded file.</UiText>
+        <UiButton color="note" href="/library">Go to the chart library</UiButton>
       </div>
-      <p v-else class="text-zinc-600 dark:text-zinc-400">Loading editor…</p>
-    </template>
-  </ClientOnly>
+      <div v-else-if="source.kind === 'badLink'" class="max-w-xl space-y-4">
+        <UiHeading>That link doesn’t open a chart</UiHeading>
+        <UiText>It may have been cut short when it was copied or sent. Ask for it again, or for the chart as a downloaded file.</UiText>
+        <UiButton color="note" href="/library">Go to the chart library</UiButton>
+      </div>
+      <!-- keyed by the chart being edited: another chart, or a revert, starts a fresh editor -->
+      <EditorView
+        v-else
+        :key="editorKey"
+        :initial-text="source.text"
+        :practice-key="source.practiceKey"
+        :save-target="source.target"
+        :library-title="source.libraryTitle"
+        :shared="source.shared"
+        :is-new="source.target?.kind === 'new'"
+        @created="adopt"
+        @reload="reload"
+      />
+      <template #fallback>
+        <div v-if="song" class="space-y-1">
+          <UiHeading>{{ song.title }}</UiHeading>
+          <UiText v-if="song.composer">{{ song.composer }}</UiText>
+          <UiText>Loading the practice sheets…</UiText>
+        </div>
+        <p v-else class="text-zinc-600 dark:text-zinc-400">Loading editor…</p>
+      </template>
+    </ClientOnly>
+    <!-- a library tune says what its sheet is, in the prerendered page too: the changes, not the melody -->
+    <section v-if="song" aria-labelledby="lead-sheet-heading" class="mt-10 max-w-2xl print:hidden">
+      <UiSubheading id="lead-sheet-heading" :level="2">Chord changes (lead-sheet style)</UiSubheading>
+      <UiText class="mt-2">{{ song.leadSheet }}</UiText>
+    </section>
+  </div>
 </template>
 
 <script setup lang="ts">

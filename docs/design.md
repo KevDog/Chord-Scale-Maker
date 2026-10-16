@@ -870,16 +870,24 @@ its reasons into a chart as comments.
   script runs; there is no separate tune page. The library links each title to `songPath(slug)`. `/tunes/**` is
   a 301 to `/song/**` (`routeRules` in `nuxt.config.ts`), for old links and search results.
   - **Text:** `tuneSummary` (engine `tune.ts`) gives the heading fields (title, subtitle, composer, aka, kind, key, style, form);
-    `tuneDescription` is the meta description, one sentence of at most 160 characters, dropping clauses to fit.
-    `tuneTitle` (`utils/site.ts`) is the title: "Blue Trane (John Coltrane): changes and chord scales". The head
-    comes from `songHead` (`utils/songHead.ts`).
+    `tuneDescription` is the meta description, at most 160 characters, dropping clauses to fit but always saying
+    "lead-sheet style" (and "Chords only, no melody" where it fits). `tuneTitle` (`utils/site.ts`) is the title:
+    "Blue Trane (John Coltrane): Chord Changes and Lead Sheet Practice Charts"; the preview's is "Blue Trane (John
+    Coltrane) · Chord Scale Maker", and robots is `index, follow, max-image-preview:large`. The head comes from
+    `songHead` (`utils/songHead.ts`), with the text under the sheet: a "Chord changes (lead-sheet style)" heading
+    and a sentence that the page gives the changes, not the melody (its other titles too), prerendered (#310).
   - **The gate:** `tuneGaps` lists what a library chart's song page lacks (`title:`, `key:`, `style:`, `form:`, and
     `composer:` unless `kind:` is `form` or `exercise`); `libraryMeta.test.ts` fails on any. `tuneAdvice` (no
     `source:`, no `aka:`) is only reported, by `npm run analyse`.
   - An unknown name (`findChart` in `utils/library.ts`) goes to the library.
 - **Head tags** (`utils/site.ts`):
+  - The tagline is `SITE_TAGLINE`, "Endless improvisation practice sheets for jazz standards"; it opens
+    `SITE_DESCRIPTION` (the home page's and the fallback description), the manifest, the README and the two banners
+    `scripts/icons.mjs` draws (`og-image.png`, the brand cover).
   - `PAGE_HEAD` holds each fixed page's title and description; `seoMeta` turns one into `useSeoMeta` input, the
-    link preview's title carrying the site name as the browser's does (`pageTitle`).
+    link preview's title carrying the site name as the browser's does (`pageTitle`; a title that leads with the site
+    name, the home page's, stands alone), or its own `ogTitle`. Site-wide (`nuxt.config.ts`): `og:locale`, the
+    Open Graph and Twitter image with its alt text, `application-name`. No `meta keywords` (search engines ignore it).
   - **Canonical** (`app.vue`, every page): `canonicalUrl(route.path)`, the production origin and the path alone,
     with no query or fragment (a share link's chart never leaks) and no trailing slash but the root's. `og:url` is
     the same.

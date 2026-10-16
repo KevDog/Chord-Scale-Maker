@@ -1,6 +1,7 @@
 {
   "name": "Chord Scale Maker",
   "short_name": "Chord Scales",
+  "description": "Endless improvisation practice sheets for jazz standards",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",

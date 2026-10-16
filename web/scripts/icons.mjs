@@ -18,8 +18,10 @@ const HEADS = [
   [24.6, 9.4, NAVY],
 ]
 
+const TAGLINE = 'Endless improvisation practice sheets for jazz standards'
+
 /** banner layouts: the Patreon cover (a row, its middle survives a phone's crop), and the link preview that
- * Facebook, Slack, iMessage and the like show (Open Graph's 1200×630, stacked so it reads small too) */
+ * Facebook, Slack, iMessage and the like show (Open Graph's 1200×630, stacked so it reads small too; the address on its own line) */
 const COVER = { width: 3000, height: 750, row: true, mark: 300, title: 168, tagline: 50, gap: 72, corner: [2280, 720], heads: [260, 640, 430, 90, 120] }
 const SHARE = { width: 1200, height: 630, row: false, mark: 168, title: 92, tagline: 30, gap: 36, corner: [860, 340], heads: [90, 560, 190, 52, 54] }
 
@@ -79,11 +81,11 @@ async function banner(out, l) {
     .lockup img { width: ${l.mark}px; height: ${l.mark}px; border-radius: ${l.mark * 0.22}px; box-shadow: 0 0 0 ${l.mark / 75}px rgb(255 255 255 / 0.18), 0 ${l.mark / 12}px ${l.mark / 5}px rgb(0 0 0 / 0.35); }
     h1 { margin: 0; color: #fff; font-size: ${l.title}px; font-weight: 800; letter-spacing: -0.025em; line-height: 1; }
     h1 span { color: #8fb4f8; }
-    p { margin: ${l.tagline * 0.56}px 0 0 ${l.row ? 6 : 0}px; color: #bcd0f4; font-size: ${l.tagline}px; font-weight: 500; letter-spacing: 0.01em; }
+    p { margin: ${l.tagline * 0.56}px 0 0 ${l.row ? 6 : 0}px; color: #bcd0f4; font-size: ${l.tagline}px; font-weight: 500; letter-spacing: 0.01em; line-height: 1.35; }
   </style></head><body>
     <div class="corner"></div>
     <svg class="heads" viewBox="0 0 ${l.width} ${l.height}">${heads}</svg>
-    <div class="lockup"><img src="${mark}" alt=""><div><h1>Chord <span>Scale</span> Maker</h1><p>Practice sheets for jazz improvisation · chordscalemaker.com</p></div></div>
+    <div class="lockup"><img src="${mark}" alt=""><div><h1>Chord <span>Scale</span> Maker</h1><p>${TAGLINE}${l.row ? ' · ' : '<br>'}chordscalemaker.com</p></div></div>
   </body></html>`
   const file = join(tmp, 'banner.html')
   writeFileSync(file, html)

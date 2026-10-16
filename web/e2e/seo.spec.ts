@@ -10,29 +10,38 @@ const SLUGS = readdirSync(CHARTS)
   .filter((f) => f.endsWith('.txt') && !/ \d+\.txt$/.test(f)) // not an iCloud sync copy (isSyncCopy)
   .map((f) => f.replace(/\.txt$/, ''))
 
-const attr = (html: string, tag: RegExp, name: string): string | undefined => html.match(tag)?.[0].match(new RegExp(`${name}="([^"]*)"`))?.[1]
+const ENTITIES: Record<string, string> = { '&amp;': '&', '&quot;': '"', '&#39;': "'", '&lt;': '<', '&gt;': '>' }
+const attr = (html: string, tag: RegExp, name: string): string | undefined =>
+  html
+    .match(tag)?.[0]
+    .match(new RegExp(`${name}="([^"]*)"`))?.[1]
+    ?.replace(/&(?:amp|quot|#39|lt|gt);/g, (e) => ENTITIES[e] ?? e)
 
 test.describe('without JavaScript', () => {
   test.use({ javaScriptEnabled: false })
 
-  test('a song is all there in its HTML: heading, composer, structured data, canonical, indexable', async ({ page }) => {
+  test('a song is all there in its HTML: heading, composer, lead-sheet note, structured data, canonical, indexable', async ({ page }) => {
     await page.goto('/song/blue-trane')
     await expect(page.getByRole('heading', { name: 'Blue Trane', level: 1 })).toBeVisible()
     await expect(page.getByText('John Coltrane', { exact: true })).toBeVisible()
+    await expect(page.getByRole('heading', { name: 'Chord changes (lead-sheet style)', level: 2 })).toBeVisible()
+    await expect(page.getByText(/without the melody/)).toContainText('also known as Blue Train')
     await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', `${SITE_URL}/song/blue-trane`)
-    await expect(page.locator('head meta[name="robots"]')).toHaveCount(0)
+    await expect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'index, follow, max-image-preview:large')
+    await expect(page.locator('head meta[name="description"]')).toHaveAttribute('content', /lead-sheet/)
     const ld = JSON.parse((await page.locator('script[type="application/ld+json"]').last().textContent()) ?? '[]') as { '@type': string }[]
     expect(ld.map((d) => d['@type'])).toContain('MusicComposition')
   })
 })
 
-test('/song itself, a new chart and a share link stay out of search; a query keeps the clean canonical', async ({ page }) => {
+test('/song itself, a new chart and a share link stay out of search; a query keeps the clean canonical', async ({ page, request }) => {
   for (const url of ['/song?new=1', '/song']) {
     await page.goto(url)
     await expect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'noindex')
   }
-  await page.goto('/song/autumn_leaves') // an old underscore address is a duplicate of the clean one
-  await expect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'noindex')
+  // an old underscore address is a duplicate of the clean one (in the browser it moves to the clean one)
+  const old = await (await request.get('/song/autumn_leaves')).text()
+  expect(attr(old, /<meta name="robots"[^>]*>/, 'content')).toBe('noindex')
   await page.goto('/song/autumn-leaves?mine=x')
   await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', `${SITE_URL}/song/autumn-leaves`)
 })
@@ -57,12 +66,28 @@ test('every sitemap URL is a page: 200, its own canonical, indexable, its own ti
     const html = await res.text()
     expect(attr(html, /<link rel="canonical"[^>]*>/, 'href'), loc).toBe(loc)
     expect(attr(html, /<meta name="robots"[^>]*>/, 'content') ?? '', loc).not.toMatch(/noindex/)
-    expect(attr(html, /<meta name="description"[^>]*>/, 'content'), loc).toBeTruthy()
+    const description = attr(html, /<meta name="description"[^>]*>/, 'content') ?? ''
+    expect(description.length, loc).toBeGreaterThanOrEqual(70)
+    expect(description.length, loc).toBeLessThanOrEqual(160)
+    if (loc.includes('/song/')) expect(description, loc).toContain('lead-sheet')
     const title = html.match(/<title>([^<]*)<\/title>/)?.[1]?.trim() ?? ''
     expect(title, loc).not.toBe('')
     expect(titles.get(title), `${loc} has the title of`).toBeUndefined()
     titles.set(title, loc)
   }
+})
+
+test('the home page carries the tagline, and the link preview image is served at 1200×630', async ({ page, request }) => {
+  await page.goto('/')
+  await expect(page).toHaveTitle('Chord Scale Maker: Endless Practice Sheets for Jazz Standards')
+  await expect(page.locator('head meta[name="description"]')).toHaveAttribute('content', /^Endless improvisation practice sheets for jazz standards: /)
+  const image = await page.locator('head meta[property="og:image"]').getAttribute('content')
+  expect(image).toBe(`${SITE_URL}/og-image.png`)
+  await expect(page.locator('head meta[name="twitter:image"]')).toHaveAttribute('content', image ?? '')
+  const png = await (await request.get('/og-image.png')).body()
+  expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1200, 630]) // the IHDR's width and height
+  const manifest = (await (await request.get('/site.webmanifest')).json()) as { description: string }
+  expect(manifest.description).toBe('Endless improvisation practice sheets for jazz standards')
 })
 
 test('pages load nothing from another origin', async ({ page, baseURL }) => {

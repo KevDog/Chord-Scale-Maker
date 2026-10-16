@@ -90,11 +90,12 @@ test('Request a chart opens the contact form', async ({ page }) => {
 })
 
 test('pages carry a link preview: Open Graph tags and a 1200×630 image', async ({ page, request }) => {
-  for (const [path, title] of [['/', 'Chord Scale Maker'], ['/library', 'Library · Chord Scale Maker'], ['/help', 'Help · Chord Scale Maker'], ['/about', 'About · Chord Scale Maker']] as const) {
+  const home = ['Chord Scale Maker: Endless Practice Sheets for Jazz Standards', 'Chord Scale Maker: Endless Improvisation Practice Sheets for Jazz Standards']
+  for (const [path, title, ogTitle = title] of [['/', ...home], ['/library', 'Library · Chord Scale Maker'], ['/help', 'Help · Chord Scale Maker'], ['/about', 'About · Chord Scale Maker']] as const) {
     await page.goto(path)
     const og = (p: string) => page.locator(`head meta[property="${p}"]`).getAttribute('content')
     await expect(page).toHaveTitle(title)
-    expect(await og('og:title')).toBe(title)
+    expect(await og('og:title')).toBe(ogTitle)
     expect(await og('og:description')).toBe(await page.locator('head meta[name="description"]').getAttribute('content'))
     expect(await og('og:url')).toBe(`https://www.chordscalemaker.com${path}`)
     await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', `https://www.chordscalemaker.com${path}`)
@@ -111,7 +112,7 @@ test('a library chart’s practice sheets live at /song/<name>: indexable, its o
   await page.goto('/song/autumn-leaves')
   await expect(page).toHaveTitle('Autumn Leaves · Chord Scale Maker')
   await expect(staves(page)).toHaveCount(6)
-  await expect(page.locator('head meta[name="robots"]')).toHaveCount(0)
+  await expect(page.locator('head meta[name="robots"]')).toHaveAttribute('content', 'index, follow, max-image-preview:large')
   await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', 'https://www.chordscalemaker.com/song/autumn-leaves')
 })
 
