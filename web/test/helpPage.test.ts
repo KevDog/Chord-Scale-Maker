@@ -9,4 +9,10 @@ describe('the help page', () => {
     expect(text).toContain('Built on')
     expect(text).toContain(PENT_INSIDE_HELP)
   })
+
+  it('explains the Pentatonic line and its Leave out (#284)', async () => {
+    const text = (await mountSuspended(Help)).text().replace(/\s+/g, ' ')
+    expect(text).toContain('7th Chords becomes Pentatonic')
+    expect(text).toContain('Leave out picks the note each cell drops')
+  })
 })

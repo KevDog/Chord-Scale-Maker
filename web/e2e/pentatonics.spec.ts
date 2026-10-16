@@ -1,4 +1,4 @@
-import { chooseInstrument, chooseSheet, expect, openPentatonicOptions, pickOption, rankedAgainstChord, showPentatonics, test, writeChart } from './fixtures'
+import { arpeggiosDrawn, chooseInstrument, chooseSheet, chooseSuperimpose, expect, openPentatonicOptions, pentatonicLineDrawn, pickOption, rankedAgainstChord, showArpeggios, showPentatonicLine, showPentatonics, test, writeChart } from './fixtures'
 import type { Page } from '@playwright/test'
 
 const labels = (page: Page) => page.locator('[data-slot="pentatonic"] button')
@@ -236,4 +236,28 @@ test('a pick stays on its chord when a bar goes in before it (#275)', async ({ p
   await expect(page.getByRole('button', { name: 'Edit A7, A bar 5' })).toBeVisible()
   await expect(at('A:5:0')).toHaveAttribute('aria-label', /your pick/)
   await expect(page.locator('[data-slot="pentatonic"] button[aria-label*="your pick"]')).toHaveCount(1)
+})
+
+test('the Line plays each chord’s labelled pentatonic in cells under the Pentatonic overlay, and 7th Chords again without it (#284)', async ({ page }) => {
+  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 1 | G7\nA | 2 | CMaj7\n')
+  const line = page.locator('svg[aria-label^="Bars:"]').first()
+  await showArpeggios(page, 'Up · root')
+  await arpeggiosDrawn(page)
+  await expect(page.getByRole('radio', { name: '7th Chords', exact: true })).toBeChecked()
+  await showPentatonicLine(page)
+  await expect(page.getByRole('radio', { name: 'Pentatonic', exact: true })).toBeChecked() // the stored arpeggio line, read as Pentatonic
+  await pentatonicLineDrawn(page)
+  await expect(line).toHaveAttribute('aria-label', /; pentatonic: C4 D4 E4 G4, E4 G4 C5 D5 \| C5 D5 E5 G5/) // Am less A, each cell from its note nearest the last
+  await pickOption(page, 'Leave out', '♭7')
+  await expect(line).toHaveAttribute('aria-label', /; pentatonic: A4 C5 D5 E5, /)
+  await pickOption(page, 'Pentatonic direction', 'Down')
+  await expect(line).toHaveAttribute('aria-label', /; pentatonic: E5 D5 C5 A4, /)
+  await page.reload()
+  await expect(page.getByLabel('Leave out')).toContainText('Leave out: ♭7') // remembered
+  await pentatonicLineDrawn(page)
+  await chooseSuperimpose(page, 'Off')
+  await expect(page.getByRole('radio', { name: '7th Chords', exact: true })).toBeChecked()
+  await expect(page.getByLabel('Leave out')).toHaveCount(0)
+  await arpeggiosDrawn(page)
+  await expect(line).toHaveAttribute('aria-label', /; 7th chords: D4 F4 A4 C5/)
 })

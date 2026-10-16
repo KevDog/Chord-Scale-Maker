@@ -357,10 +357,10 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
   await expect(page.getByRole('group', { name: 'Bars a step' })).toBeVisible()
   const stepped = await layout()
   expect(stepped.rows, `Changes, Pentatonics stepped (${stepped.widths})`).toBeLessThanOrEqual(2)
-  // a line's detail (From 3rd, the arpeggio pattern) opens beneath the Line control: nothing moves
+  // a line's detail (From 3rd; under the Pentatonics, the Pentatonic line's direction and Leave out, #284) opens beneath the Line control: nothing moves
   const line = page.locator('#preview-toolbar [data-slot=label]').getByText('Line', { exact: true })
   const at = await line.boundingBox()
-  for (const mode of ['Guide Tones', '7th Chords'] as const) {
+  for (const mode of ['Guide Tones', 'Pentatonic'] as const) {
     await showLine(page, mode)
     const { rows, widths } = await layout()
     expect(rows, `Changes, ${mode} (${widths})`).toBeLessThanOrEqual(2)

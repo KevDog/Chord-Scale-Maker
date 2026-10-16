@@ -97,6 +97,48 @@ describe('the pentatonic controls', () => {
   })
 })
 
+describe('the Line under the Pentatonic overlay (#284)', () => {
+  afterEach(() => {
+    useInterface().level.value = 'everything'
+  })
+
+  it('names the 7th Chords slot Pentatonic while Superimpose is Pentatonic', async () => {
+    expect((await mount({ overlay: 'pentatonic' })).text()).toContain('Pentatonic')
+    expect((await mount({ overlay: 'pentatonic' })).text()).not.toContain('7th Chords')
+    expect((await mount({ overlay: 'off' })).text()).toContain('7th Chords')
+    expect((await mount({ overlay: 'hexatonic' })).text()).toContain('7th Chords')
+  })
+
+  it('offers Leave out and the direction in place of the arpeggio pattern while the line is Pentatonic', async () => {
+    const w = await mount({ overlay: 'pentatonic', lineMode: 'arpeggio', pentLeave: 'b3', arpDir: 'down' })
+    expect(w.find('[aria-label="Leave out"]').text()).toBe('Leave out: ♭3')
+    expect(w.find('[aria-label="Pentatonic direction"]').text()).toBe('Down')
+    expect(w.find('[aria-label="Arpeggio pattern"]').exists()).toBe(false)
+    await w.find('[aria-label="Leave out"]').trigger('click')
+    expect(w.findAll('[role=option]').map((o) => o.text())).toEqual(['1', '♭3', '4', '5', '♭7'])
+  })
+
+  it('keeps the arpeggio pattern, and no Leave out, under 7th Chords', async () => {
+    const w = await mount({ overlay: 'off', lineMode: 'arpeggio' })
+    expect(w.find('[aria-label="Arpeggio pattern"]').exists()).toBe(true)
+    expect(w.find('[aria-label="Leave out"]').exists()).toBe(false)
+    expect((await mount({ overlay: 'pentatonic', lineMode: 'guide' })).find('[aria-label="Leave out"]').exists()).toBe(false)
+  })
+
+  it('shows Leave out only where the Superimpose shows (Everything)', async () => {
+    useInterface().level.value = 'intermediate'
+    const w = await mount({ overlay: 'pentatonic', lineMode: 'arpeggio' })
+    expect(w.find('[aria-label="Leave out"]').exists()).toBe(false)
+  })
+
+  it('picks a Leave out', async () => {
+    const w = await mount({ overlay: 'pentatonic', lineMode: 'arpeggio' })
+    await w.find('[aria-label="Leave out"]').trigger('click')
+    await w.findAll('[role=option]')[4]?.trigger('click')
+    expect(w.emitted('update:pentLeave')?.[0]).toEqual(['b7'])
+  })
+})
+
 describe('interface levels', () => {
   const withLevel = (props: Record<string, unknown> = {}) =>
     mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'concert', spell: 'key', intervals: true, keyStart: 'C', ...props }, slots: { level: () => 'level-slot' } })

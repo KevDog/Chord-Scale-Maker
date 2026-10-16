@@ -274,6 +274,18 @@ describe('EditorView guide tones', () => {
     w.unmount()
   })
 
+  it('draws a stored arpeggio line as the Pentatonic line under the Pentatonic overlay, and shares its Leave out and direction (#284)', async () => {
+    localStorage.setItem('csm-overlay', 'pentatonic')
+    localStorage.setItem('csm-pent-leave', 'b3')
+    localStorage.setItem('csm-arp-dir', 'down')
+    const w = await mount({ sheet: 'changes', line: 'down-1st' })
+    expect(changesSheet(w).props('line')).toEqual({ kind: 'pentatonic', leave: 'b3', dir: 'down', arpeggio: 'down-1st' }) // the link has no Leave out: yours
+    expect(checkedMode(w)).toEqual(['Pentatonic'])
+    expect(await linkOf(w)).toMatchObject({ line: 'down-1st', pentLeave: 'b3', arpDir: 'down' })
+    w.unmount()
+    localStorage.clear()
+  })
+
   it('opens a link without a line with the line off, whatever your own, and shares no line with it off', async () => {
     localStorage.setItem('csm-line', 'guide')
     const w = await mount({ sheet: 'changes' })
