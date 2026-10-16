@@ -14,6 +14,7 @@
       <UiButton plain :disabled="disabled" :aria-label="`Remove ${model.attachment.filename}`" @click="model = null"><XMarkIcon data-slot="icon" />Remove</UiButton>
     </div>
 
+    <!-- eslint-disable-next-line vuejs-accessibility/no-static-element-interactions -- a drop zone; the file input inside is the keyboard way -->
     <div
       v-else
       :class="[

@@ -40,6 +40,7 @@
       >
       <div class="absolute top-full left-0 z-30 mt-1 w-72 rounded-lg bg-white text-sm shadow-lg ring-1 ring-zinc-950/10 dark:bg-zinc-800 dark:ring-white/10">
         <ul v-if="options.length" :id="`${id}-list`" role="listbox" aria-label="Completions">
+          <!-- eslint-disable-next-line vuejs-accessibility/interactive-supports-focus -- a combobox: focus stays in the input, aria-activedescendant points at the option -->
           <li
             v-for="(o, i) in options"
             :id="`${id}-${i}`"

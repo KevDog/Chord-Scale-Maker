@@ -28,7 +28,7 @@
           <p v-if="state === 'copied'" class="text-xs text-zinc-500 dark:text-zinc-400" role="status">Copied.</p>
           <template v-else>
             <p class="text-xs text-zinc-500 dark:text-zinc-400" role="status">Copy it from here:</p>
-            <textarea readonly rows="6" class="w-full rounded-md border border-zinc-950/10 bg-transparent p-2 font-mono text-xs dark:border-white/10" :value="text" @focus="($event.target as HTMLTextAreaElement).select()" />
+            <textarea readonly rows="6" aria-label="Issue report" class="w-full rounded-md border border-zinc-950/10 bg-transparent p-2 font-mono text-xs dark:border-white/10" :value="text" @focus="($event.target as HTMLTextAreaElement).select()" />
           </template>
           <div class="flex flex-col items-start gap-1">
             <UiButton plain data-contact class="text-sm!" @click="toContact">Send it with the contact form</UiButton>

@@ -1,6 +1,7 @@
 <template>
   <!-- shows on hover, and on focus so keyboard and touch users get it too; Escape hides it.
        On phones it spans the nearest positioned ancestor (give the heading row `relative`), so it never runs off the screen. -->
+  <!-- eslint-disable-next-line vuejs-accessibility/no-static-element-interactions -- Escape from the button inside bubbles here -->
   <span class="group/tip relative inline-flex max-sm:static" @keydown.escape="dismissed = true" @pointerleave="dismissed = false" @focusout="dismissed = false">
     <button
       type="button"

@@ -151,7 +151,7 @@
               <UiTableCell class="min-w-48 whitespace-normal text-zinc-600 dark:text-zinc-400">{{ proseGlyphs(r.looksAt) }}</UiTableCell>
               <UiTableCell class="min-w-64 whitespace-normal text-zinc-600 dark:text-zinc-400">
                 {{ proseGlyphs(r.summary) }}
-                <span v-if="r.guess" class="mt-1 block text-zinc-500 italic dark:text-zinc-500">{{ r.guess === 'always' ? 'Always a guess.' : `A guess when: ${proseGlyphs(r.guess)}.` }}</span>
+                <span v-if="r.guess" class="mt-1 block text-zinc-500 italic dark:text-zinc-400">{{ r.guess === 'always' ? 'Always a guess.' : `A guess when: ${proseGlyphs(r.guess)}.` }}</span>
               </UiTableCell>
             </UiTableRow>
           </UiTableBody>

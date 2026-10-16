@@ -1,0 +1,25 @@
+#!/bin/sh
+# runs `make a11y` (the accessibility lint and the axe scans) when the pushed commits touch the interface (web/app/);
+# other pushes go straight through. Installed by `make setup` (git config core.hooksPath .githooks); skip once with
+# `git push --no-verify`
+zero=0000000000000000000000000000000000000000
+changed=""
+while read -r _local_ref local_sha _remote_ref remote_sha; do
+  [ "$local_sha" = "$zero" ] && continue # a deleted branch
+  if [ "$remote_sha" = "$zero" ]; then
+    # a new branch: what it adds to main
+    base=$(git merge-base origin/main "$local_sha" 2>/dev/null) || base=""
+  else
+    base=$remote_sha
+  fi
+  if [ -n "$base" ]; then
+    changed="$changed$(git diff --name-only "$base" "$local_sha" -- web/app/)"
+  else
+    changed="${changed}unknown" # no base to compare with: check
+  fi
+done
+if [ -z "$changed" ]; then
+  exit 0
+fi
+echo "pre-push: the interface changed; running make a11y (skip with git push --no-verify)"
+exec make a11y

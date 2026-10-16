@@ -8,7 +8,8 @@ README.md for the chart format. The original Python/LilyPond CLI was retired aft
 
 ## Working here
 - `make setup` once, then `make test` after changes (typecheck + vitest); `make lint`; `make e2e` (Playwright);
-  `make dev` / `make preview`.
+  `make a11y` (template lint + axe scans in `web/e2e/a11y/`, not in `make e2e`; the pre-push hook runs it when a push
+  touches `web/app/`; known violations are exceptions in `web/e2e/a11y/axe.ts`, each with an issue); `make dev` / `make preview`.
 - The design is in `docs/design.md` (kept current; the `docs/plan-*.md` files are historical).
 - Two npm workspace packages: `engine/` (`@chord-scale-maker/engine`: the engine in `engine/src/`, pure TypeScript,
   with its data `chord_scales.json`, `charts/`, `fixtures/` and its tools in `engine/scripts/`) and `web/` (the Nuxt

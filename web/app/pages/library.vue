@@ -1,3 +1,4 @@
+<!-- eslint-disable vuejs-accessibility/no-static-element-interactions -- the whole page takes a dropped chart; the file input is the keyboard way -->
 <template>
   <div @dragover="onDragOver" @drop="onDrop">
     <div class="flex flex-wrap items-end justify-between gap-4">

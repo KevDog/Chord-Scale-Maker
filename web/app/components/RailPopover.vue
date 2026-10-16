@@ -1,6 +1,7 @@
 <template>
   <!-- inline: stacked under its toggle (in the Controls dialog); else a chevron whose panel opens to its right, over the sheet, so the rail keeps its rows (#293) -->
   <div v-if="inline" class="flex flex-col items-start gap-2"><slot /></div>
+  <!-- eslint-disable-next-line vuejs-accessibility/no-static-element-interactions -- Escape from the button or panel inside bubbles here -->
   <div v-else ref="root" class="relative" @keydown.esc="close">
     <UiButton ref="button" plain :aria-label="label" :aria-expanded="open" aria-haspopup="dialog" @click="open = !open">
       <ChevronRightIcon data-slot="icon" />
