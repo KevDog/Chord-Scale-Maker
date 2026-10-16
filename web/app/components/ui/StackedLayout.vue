@@ -18,6 +18,7 @@
                 </UiNavbarItem>
               </div>
               <!-- clicking a link in the menu closes it -->
+              <!-- eslint-disable-next-line vuejs-accessibility/click-events-have-key-events, vuejs-accessibility/no-static-element-interactions -- delegation: the links inside take the keys -->
               <div class="flex flex-col gap-0.5 p-4" @click="onMenuClick">
                 <slot name="sidebar" />
               </div>

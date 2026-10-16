@@ -104,12 +104,13 @@ one that is cancelled within a bar shows a natural.
 ## Developing
 
 ```bash
-make setup     # once: npm ci at the root (installs both packages: engine/ and web/)
+make setup     # once: npm ci at the root (installs both packages: engine/ and web/), and the git hooks
 make dev       # live-reloading dev server at http://localhost:3000
 make preview   # build the production site and serve it locally
 make test      # typecheck and unit tests (vitest), both packages
 make lint
 make e2e       # browser tests (Playwright, Chromium) against the production build
+make a11y      # accessibility: the template lint and axe scans (the pre-push hook runs it when web/app/ changed)
 make golden    # rewrite engine/fixtures/golden.json after an intended engine change
 ```
 

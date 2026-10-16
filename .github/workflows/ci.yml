@@ -18,6 +18,7 @@ jobs:
     outputs:
       code: ${{ steps.diff.outputs.code }}
       charts_only: ${{ steps.diff.outputs.charts_only }}
+      app: ${{ steps.diff.outputs.app }}
     steps:
       - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
         with:
@@ -33,6 +34,9 @@ jobs:
           other=$(git diff --name-status "origin/$BASE_REF...HEAD" | grep -vE $'^[A-Z0-9]+\t(docs/|[^\t]*\.md$)' | grep -vcE $'^A\tengine/charts/[^/]+\.txt$|^M\tengine/fixtures/(golden|analysis)\.json$' || true)
           if [ "$code" = true ] && [ "$other" = 0 ]; then charts_only=true; else charts_only=false; fi
           echo "charts_only=$charts_only" >> "$GITHUB_OUTPUT"
+          # the interface (web/app/): the accessibility scans run
+          if git diff --name-only "origin/$BASE_REF...HEAD" | grep -q '^web/app/'; then app=true; else app=false; fi
+          echo "app=$app" >> "$GITHUB_OUTPUT"
   engine:
     needs: changes
     if: needs.changes.outputs.code == 'true'
@@ -97,5 +101,39 @@ jobs:
         uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
         with:
           name: playwright-report
+          path: web/playwright-report
+          retention-days: 7
+  # the axe scans of key pages and popovers (web/e2e/a11y/; the template lint runs in engine's lint), on PRs that touch
+  # the interface; not a required check
+  a11y:
+    needs: changes
+    if: needs.changes.outputs.app == 'true'
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: web
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+        working-directory: .
+      - id: playwright
+        run: echo "version=$(npx playwright --version | awk '{print $2}')" >> "$GITHUB_OUTPUT"
+      - id: browsers
+        uses: actions/cache@55cc8345863c7cc4c66a329aec7e433d2d1c52a9 # v6.1.0
+        with:
+          path: ~/.cache/ms-playwright
+          key: playwright-${{ runner.os }}-${{ steps.playwright.outputs.version }}
+      - if: steps.browsers.outputs.cache-hit != 'true'
+        run: npx playwright install --with-deps chromium
+      - run: npm run a11y
+      - if: failure()
+        uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: a11y-report
           path: web/playwright-report
           retention-days: 7

@@ -1111,6 +1111,12 @@ static file, §7b), so the attack surface is small. The measures:
   - the CSP meta on every page, and the not-found page
 
   Every test fails on a page error, a console error or a CSP violation. Run them with `make e2e`.
+- **Accessibility:** `eslint-plugin-vuejs-accessibility` checks the templates (in `make lint`); axe scans
+  (`@axe-core/playwright`, `web/e2e/a11y/*.a11y.ts`, their own Playwright project, kept out of `make e2e`) check the
+  pages, the Changes and Scales sheets and their popovers (why notes, label pickers, the ladder, chord picks), in light
+  and dark, and at phone width. A serious or critical violation fails unless `EXCEPTIONS` in `web/e2e/a11y/axe.ts`
+  lists it with its reason and issue. `make a11y` runs both; the pre-push hook (`.githooks/`, set by `make setup`)
+  runs it when the pushed commits touch `web/app/`, and CI's a11y job (not required) on PRs that do.
 - **CI (GitHub Actions):**
   - The jobs: lint, typecheck (the engine's `tsc`, `nuxt typecheck`, the build and e2e tsconfigs) and vitest for
     both packages, then `nuxt build`, the header check, `npm audit --omit=dev` (gating), and an e2e job.

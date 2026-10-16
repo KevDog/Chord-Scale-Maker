@@ -1,6 +1,8 @@
-.PHONY: setup test lint e2e golden dev preview clean
+.PHONY: setup test lint e2e a11y golden dev preview clean
+# installs the dependencies and the repo's git hooks (.githooks/pre-push runs `make a11y` when a push touches web/app/)
 setup:
 	npm ci
+	git config core.hooksPath .githooks
 test:
 	npm run typecheck && npm test
 lint:
@@ -8,6 +10,10 @@ lint:
 # browser tests against the production build (installs Chromium for Playwright on first run)
 e2e:
 	cd web && npx playwright install chromium && npm run e2e
+# accessibility: the app's template lint (vuejs-accessibility) and the axe scans of key pages and popovers (web/e2e/a11y/)
+a11y:
+	npm run lint -w web
+	cd web && npx playwright install chromium && npm run a11y
 # rewrite engine/fixtures/golden.json and analysis.json from the engine after an intended change; review their diffs
 golden:
 	npm run golden -w engine
