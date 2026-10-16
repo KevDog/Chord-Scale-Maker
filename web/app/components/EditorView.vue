@@ -158,18 +158,19 @@
               </template>
             </template>
           </PreviewControls>
-          <InterfaceNotice v-if="hidden" :needs="hidden.needs" class="mt-4" @show="ui.level.value = hidden.needs" @reset="resetHidden" />
+          <!-- the notice and the Practice panel come and go with options: eased (#297) -->
+          <EaseReveal :show="!!hidden" class="mt-4"><InterfaceNotice v-if="hidden" :needs="hidden.needs" @show="ui.level.value = hidden.needs" @reset="resetHidden" /></EaseReveal>
           <UiText v-if="transposed" role="status" class="mt-4">{{ transposed }}</UiText>
-          <PracticePanel
-            v-if="ui.shows('practice') && sheet === 'scales' && !editor.fatal.value"
-            class="mt-4"
-            :mode="mode"
-            :start-text="start"
-            :boxes="practiceBoxesNow"
-            :selection="selection"
-            :lit="litNow"
-            @update:selection="practice.setSelection(mode, $event)"
-          />
+          <EaseReveal :show="ui.shows('practice') && sheet === 'scales' && !editor.fatal.value" class="mt-4">
+            <PracticePanel
+              :mode="mode"
+              :start-text="start"
+              :boxes="practiceBoxesNow"
+              :selection="selection"
+              :lit="litNow"
+              @update:selection="practice.setSelection(mode, $event)"
+            />
+          </EaseReveal>
         </div>
   
         <div class="relative mt-4">

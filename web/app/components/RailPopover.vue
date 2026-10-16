@@ -6,9 +6,11 @@
     <UiButton ref="button" plain :aria-label="label" :aria-expanded="open" aria-haspopup="dialog" @click="open = !open">
       <ChevronRightIcon data-slot="icon" />
     </UiButton>
-    <div v-if="open" role="dialog" :aria-label="label" class="absolute top-0 left-full z-20 ml-2 flex w-max flex-col items-start gap-2 rounded-paper bg-raised p-3 shadow-raised max-sm:top-full max-sm:left-0 max-sm:mt-2 max-sm:ml-0 print:hidden">
-      <slot />
-    </div>
+    <Transition name="ease-fade">
+      <div v-if="open" role="dialog" :aria-label="label" class="absolute top-0 left-full z-20 ml-2 flex w-max flex-col items-start gap-2 rounded-paper bg-raised p-3 shadow-raised max-sm:top-full max-sm:left-0 max-sm:mt-2 max-sm:ml-0 print:hidden">
+        <slot />
+      </div>
+    </Transition>
   </div>
 </template>
 

@@ -159,6 +159,85 @@
   }
 }
 
+/* controls easing in and out as options change (#297). Unlayered, so a margin here beats a utility's (mt-4).
+   ease: <EaseReveal>, a grid row from 0fr with a fade and a 4px rise, so what's below slides. ease-fade: fade only (rail
+   groups, popovers). ease-pop: <TransitionGroup> buttons; a leaver steps out of the flow so the rest slide over.
+   Reduced motion: fade only. Print: none */
+.ease-grid {
+  display: grid;
+  grid-template-rows: 1fr;
+}
+.ease-inner {
+  min-height: 0;
+}
+.ease-enter-active > .ease-inner,
+.ease-leave-active > .ease-inner {
+  overflow: hidden;
+}
+.ease-enter-active,
+.ease-fade-enter-active,
+.ease-pop-enter-active,
+.ease-pop-move {
+  transition-property: grid-template-rows, opacity, translate, margin, transform;
+  transition-duration: 180ms;
+  transition-timing-function: cubic-bezier(0, 0, 0.2, 1);
+}
+.ease-leave-active,
+.ease-fade-leave-active,
+.ease-pop-leave-active {
+  transition-property: grid-template-rows, opacity, translate, margin;
+  transition-duration: 150ms;
+  transition-timing-function: cubic-bezier(0.4, 0, 1, 1);
+}
+.ease-pop-leave-active {
+  position: absolute;
+}
+.ease-enter-from,
+.ease-leave-to,
+.ease-fade-enter-from,
+.ease-fade-leave-to,
+.ease-pop-enter-from,
+.ease-pop-leave-to {
+  opacity: 0;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .ease-enter-from,
+  .ease-leave-to {
+    grid-template-rows: 0fr;
+    translate: 0 -0.25rem;
+    margin-block: 0;
+  }
+  .ease-pop-enter-from,
+  .ease-pop-leave-to {
+    translate: 0 -0.25rem;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ease-enter-active,
+  .ease-leave-active,
+  .ease-fade-enter-active,
+  .ease-fade-leave-active,
+  .ease-pop-enter-active,
+  .ease-pop-leave-active {
+    transition-property: opacity;
+    transition-duration: 100ms;
+  }
+  .ease-pop-move {
+    transition: none;
+  }
+}
+@media print {
+  .ease-enter-active,
+  .ease-leave-active,
+  .ease-fade-enter-active,
+  .ease-fade-leave-active,
+  .ease-pop-enter-active,
+  .ease-pop-leave-active,
+  .ease-pop-move {
+    transition: none;
+  }
+}
+
 /* print: letter pages, light colors, only the sheet */
 @page {
   size: letter;

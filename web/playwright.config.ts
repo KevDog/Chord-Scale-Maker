@@ -10,7 +10,8 @@ export default defineConfig({
   retries: process.env.CI ? 1 : 0,
   failOnFlakyTests: !!process.env.CI, // a retry that passes still fails CI
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
-  use: { baseURL: `http://localhost:${PORT}`, trace: 'retain-on-failure' },
+  // reduced motion: controls that come and go (#297) only fade, so layout settles at once; e2e/easing.spec.ts turns it back on
+  use: { baseURL: `http://localhost:${PORT}`, trace: 'retain-on-failure', reducedMotion: 'reduce' },
   // the axe scans (e2e/a11y/*.a11y.ts) are their own project, kept out of `npm run e2e`: `npm run a11y` runs them
   projects: [
     { name: 'chromium', testMatch: '**/*.spec.ts', use: { ...devices['Desktop Chrome'], viewport: { width: 1400, height: 1000 } } },
