@@ -8,36 +8,41 @@
       <template v-if="hexatonicShown"> Hexatonic lights two triads from each scale, six notes in two groups. Pair <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff’s scale; on a seven-note scale it leaves out degree <em>n</em> − 1 (Pair 1 leaves out the 7th).</template>
     </UiText>
 
-    <div class="flex flex-wrap items-center gap-2">
+    <!-- the presets come and go with the Interface level: the rest slide over (#297) -->
+    <TransitionGroup name="ease-pop" tag="div" class="relative flex flex-wrap items-center gap-2">
       <ToggleButton v-for="p in presets" :key="p" :model-value="activePreset === p" @update:model-value="pickPreset(p)">{{ PRESET_LABELS[p] }}</ToggleButton>
-      <UiButton plain :disabled="!selection" @click="emit('update:selection', null)">Clear</UiButton>
-    </div>
-    <div v-if="isPentatonicSelection(selection)" class="flex flex-wrap items-center gap-2">
-      <UiListbox :model-value="selection.degree" class="w-44" aria-label="Pentatonic built on" @update:model-value="pickDegree">
-        <template #selected="{ value }"><UiListboxLabel>Built on: {{ degreeLabel(value) }}</UiListboxLabel></template>
-        <UiListboxOption v-for="d in PENT_DEGREE_CHOICES" :key="d" :value="d"><UiListboxLabel>{{ degreeLabel(d) }}</UiListboxLabel></UiListboxOption>
-      </UiListbox>
-      <ul data-slot="pent-legend" class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm/5 text-zinc-600 dark:text-zinc-400" aria-label="Notes">
-        <li class="inline-flex items-center gap-1.5"><span aria-hidden="true" class="size-2.5 rounded-full bg-zinc-900 dark:bg-note-300" />In the scale</li>
-        <li class="inline-flex items-center gap-1.5"><span aria-hidden="true" class="size-2.5 rounded-full bg-second" />Outside the scale</li>
-      </ul>
-    </div>
-    <div v-if="isHexatonicSelection(selection)" class="flex flex-wrap items-center gap-2">
-      <UiListbox :model-value="selection.pair" class="w-36" aria-label="Hexatonic pair" @update:model-value="pickHex({ pair: $event })">
-        <template #selected="{ value }"><UiListboxLabel>Pair: {{ hexPairLabel(value) }}</UiListboxLabel></template>
-        <UiListboxOption v-for="p in HEX_PAIR_CHOICES" :key="p" :value="p"><UiListboxLabel>{{ hexPairLabel(p) }}</UiListboxLabel></UiListboxOption>
-      </UiListbox>
-      <UiListbox :model-value="selection.grouping" class="w-52" aria-label="Hexatonic grouping" @update:model-value="pickHex({ grouping: $event })">
-        <template #selected="{ value }"><UiListboxLabel>{{ groupingLabel(value) }}</UiListboxLabel></template>
-        <UiListboxOption v-for="g in HEX_GROUPING_CHOICES" :key="g.value" :value="g.value"><UiListboxLabel>{{ g.label }}</UiListboxLabel></UiListboxOption>
-      </UiListbox>
-      <ul data-slot="hex-legend" class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm/5 text-zinc-600 dark:text-zinc-400" aria-label="Groups">
-        <li class="inline-flex items-center gap-1.5"><span aria-hidden="true" class="size-2.5 rounded-full bg-zinc-900 dark:bg-note-300" />{{ HEX_GROUP_NAMES[selection.grouping][0] }}</li>
-        <li class="inline-flex items-center gap-1.5"><span aria-hidden="true" class="size-2.5 rounded-full bg-second" />{{ HEX_GROUP_NAMES[selection.grouping][1] }}</li>
-      </ul>
-    </div>
+      <UiButton key="clear" plain :disabled="!selection" @click="emit('update:selection', null)">Clear</UiButton>
+    </TransitionGroup>
+    <EaseReveal :show="!!pent" inner-class="flex flex-wrap items-center gap-2">
+      <template v-if="pent">
+        <UiListbox :model-value="pent.degree" class="w-44" aria-label="Pentatonic built on" @update:model-value="pickDegree">
+          <template #selected="{ value }"><UiListboxLabel>Built on: {{ degreeLabel(value) }}</UiListboxLabel></template>
+          <UiListboxOption v-for="d in PENT_DEGREE_CHOICES" :key="d" :value="d"><UiListboxLabel>{{ degreeLabel(d) }}</UiListboxLabel></UiListboxOption>
+        </UiListbox>
+        <ul data-slot="pent-legend" class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm/5 text-zinc-600 dark:text-zinc-400" aria-label="Notes">
+          <li class="inline-flex items-center gap-1.5"><span aria-hidden="true" class="size-2.5 rounded-full bg-zinc-900 dark:bg-note-300" />In the scale</li>
+          <li class="inline-flex items-center gap-1.5"><span aria-hidden="true" class="size-2.5 rounded-full bg-second" />Outside the scale</li>
+        </ul>
+      </template>
+    </EaseReveal>
+    <EaseReveal :show="!!hex" inner-class="flex flex-wrap items-center gap-2">
+      <template v-if="hex">
+        <UiListbox :model-value="hex.pair" class="w-36" aria-label="Hexatonic pair" @update:model-value="pickHex({ pair: $event })">
+          <template #selected="{ value }"><UiListboxLabel>Pair: {{ hexPairLabel(value) }}</UiListboxLabel></template>
+          <UiListboxOption v-for="p in HEX_PAIR_CHOICES" :key="p" :value="p"><UiListboxLabel>{{ hexPairLabel(p) }}</UiListboxLabel></UiListboxOption>
+        </UiListbox>
+        <UiListbox :model-value="hex.grouping" class="w-52" aria-label="Hexatonic grouping" @update:model-value="pickHex({ grouping: $event })">
+          <template #selected="{ value }"><UiListboxLabel>{{ groupingLabel(value) }}</UiListboxLabel></template>
+          <UiListboxOption v-for="g in HEX_GROUPING_CHOICES" :key="g.value" :value="g.value"><UiListboxLabel>{{ g.label }}</UiListboxLabel></UiListboxOption>
+        </UiListbox>
+        <ul data-slot="hex-legend" class="flex flex-wrap items-center gap-x-3 gap-y-1 text-sm/5 text-zinc-600 dark:text-zinc-400" aria-label="Groups">
+          <li class="inline-flex items-center gap-1.5"><span aria-hidden="true" class="size-2.5 rounded-full bg-zinc-900 dark:bg-note-300" />{{ HEX_GROUP_NAMES[hex.grouping][0] }}</li>
+          <li class="inline-flex items-center gap-1.5"><span aria-hidden="true" class="size-2.5 rounded-full bg-second" />{{ HEX_GROUP_NAMES[hex.grouping][1] }}</li>
+        </ul>
+      </template>
+    </EaseReveal>
 
-    <UiText v-if="perStaff">Click a box to start a custom pick from these notes.</UiText>
+    <EaseReveal :show="perStaff"><UiText>Click a box to start a custom pick from these notes.</UiText></EaseReveal>
     <div role="group" aria-label="Notes to practise" class="flex flex-wrap gap-1.5">
       <label
         v-for="b in boxes"
@@ -71,8 +76,11 @@ const emit = defineEmits<{ 'update:selection': [selection: PracticeSelection | n
 
 const activePreset = computed(() => (props.selection && 'preset' in props.selection ? props.selection.preset : null))
 const checked = computed(() => new Set(props.selection && 'keys' in props.selection ? props.selection.keys : props.lit))
+/** the Pentatonic or Hexatonic selection, for its pickers (null: another) */
+const pent = computed(() => (isPentatonicSelection(props.selection) ? props.selection : null))
+const hex = computed(() => (isHexatonicSelection(props.selection) ? props.selection : null))
 /** Pentatonic and Hexatonic light different degrees on each staff, so one row of boxes can't show them: none pressed (#308) */
-const perStaff = computed(() => isPentatonicSelection(props.selection) || isHexatonicSelection(props.selection))
+const perStaff = computed(() => !!pent.value || !!hex.value)
 const startName = computed(() => noteText(props.startText))
 
 const { shows } = useInterface()
