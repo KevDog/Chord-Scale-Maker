@@ -148,6 +148,27 @@ describe('linkPreferences', () => {
 describe('pentatonic preferences', () => {
   afterEach(() => localStorage.clear())
 
+  it("keeps the Pentatonic line's Leave out at 1 until chosen, remembers it, and reads a bad one as 1 (#284)", async () => {
+    const p = prefs()
+    expect(p.pentLeave.value).toBe('1')
+    p.pentLeave.value = 'b7'
+    await nextTick()
+    expect(localStorage.getItem('csm-pent-leave')).toBe('b7')
+    expect(prefs().pentLeave.value).toBe('b7')
+    localStorage.setItem('csm-pent-leave', '♭7')
+    expect(prefs().pentLeave.value).toBe('1')
+  })
+
+  it("takes a link's Leave out for the visit; a link without one opens with the default", async () => {
+    localStorage.setItem('csm-pent-leave', '5')
+    expect(linked({ line: 'up-root', pentLeave: 'b3' }).pentLeave.value).toBe('b3')
+    expect(linked({ line: 'up-root' }).pentLeave.value).toBe('1')
+    const l = linked({ line: 'up-root', pentLeave: 'b3' })
+    l.pentLeave.value = '4'
+    await nextTick()
+    expect(localStorage.getItem('csm-pent-leave')).toBe('5')
+  })
+
   it('keeps the pentatonic row off at Home, flat side, until chosen, and remembers the choice', async () => {
     const p = prefs()
     expect([p.overlay.value, p.pentRung.value, p.pentSide.value]).toEqual(['off', 0, 'flat'])

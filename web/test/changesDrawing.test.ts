@@ -174,4 +174,8 @@ describe('arpeggioAria', () => {
     const held = bar([], [n(1, 62, 0), n(3, 65, 1), rest(2, 2)])
     expect(arpeggioAria({ bars: [held] } as ChangesLine)).toBe('; 7th chords: D4 F4 rest')
   })
+  it('names the Pentatonic line as such (#284)', () => {
+    const n = (letter: Letter, midi: number, beat: number): GuideNote => ({ pitch: { letter, acc: 0, midi }, beat, beats: 1, tie: false, tiedIn: false, accidental: null })
+    expect(arpeggioAria({ bars: [bar([chord(0, 'Am7', '')], [n(0, 60, 0), n(1, 62, 1), n(2, 64, 2), n(4, 67, 3)])] } as ChangesLine, 'pentatonic')).toBe('; pentatonic: C4 D4 E4 G4')
+  })
 })

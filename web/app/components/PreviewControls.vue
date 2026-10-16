@@ -86,11 +86,22 @@
               <UiLabel class="pl-3">Line</UiLabel>
               <!-- the detail opens beneath the modes, so the Line group keeps its width and place (#187) -->
               <div class="flex flex-col gap-2">
-                <SegmentedControl v-model="lineMode" legend="Line" name="line-mode" :options="LINE_MODES" />
+                <SegmentedControl v-model="lineMode" legend="Line" name="line-mode" :options="lineModes(overlay)" />
                 <UiListbox v-if="lineMode === 'guide'" v-model="guideLine" class="w-full" aria-label="Guide tone line">
                   <template #selected="{ value }"><UiListboxLabel>{{ guideLabel(value) }}</UiListboxLabel></template>
                   <UiListboxOption v-for="g in GUIDE_LINES" :key="g.value" :value="g.value" :title="g.title"><UiListboxLabel>{{ g.label }}</UiListboxLabel></UiListboxOption>
                 </UiListbox>
+                <!-- the Pentatonic line (#284): the direction (the Arpeggios sheet's), and Leave out where the Superimpose shows -->
+                <template v-else-if="lineMode === 'arpeggio' && overlay === 'pentatonic'">
+                  <UiListbox v-model="arpDir" class="w-full" aria-label="Pentatonic direction" title="Each cell up, down, or up and down by turns">
+                    <template #selected="{ value }"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[value] }}</UiListboxLabel></template>
+                    <UiListboxOption v-for="d in ARP_DIRECTIONS" :key="d" :value="d"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[d] }}</UiListboxLabel></UiListboxOption>
+                  </UiListbox>
+                  <UiListbox v-if="overlayShown" v-model="pentLeave" class="w-full" aria-label="Leave out" title="The minor pentatonic's degree each four-note cell leaves out; 1: ♭3 4 5 ♭7, the relative major's 1 2 3 5">
+                    <template #selected="{ value }"><UiListboxLabel>Leave out: {{ PENTATONIC_LEAVE_LABELS[value] }}</UiListboxLabel></template>
+                    <UiListboxOption v-for="d in PENTATONIC_LEAVES" :key="d" :value="d"><UiListboxLabel>{{ PENTATONIC_LEAVE_LABELS[d] }}</UiListboxLabel></UiListboxOption>
+                  </UiListbox>
+                </template>
                 <UiListbox v-else-if="lineMode === 'arpeggio'" v-model="arpeggio" class="w-full" aria-label="Arpeggio pattern">
                   <template #selected="{ value }"><UiListboxLabel>{{ ARPEGGIO_LABELS[value] }}</UiListboxLabel></template>
                   <UiListboxOption v-for="p in ARPEGGIO_PATTERNS" :key="p" :value="p"><UiListboxLabel>{{ ARPEGGIO_LABELS[p] }}</UiListboxLabel></UiListboxOption>
@@ -140,9 +151,9 @@
 </template>
 
 <script setup lang="ts">
-import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, partFor, type PentatonicBasis, type PentatonicDegree, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
+import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, partFor, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
 import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
-import type { GuideFrom, LineMode } from '~/utils/sheetLine'
+import { type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
 import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
 import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
 import type { SheetKind } from '~/utils/sheets'
@@ -181,6 +192,7 @@ const guideLine = defineModel<GuideFrom>('guideLine', { default: 'third' })
 const arpeggio = defineModel<ArpeggioPattern>('arpeggio', { default: 'up-root' })
 const arpNotes = defineModel<ArpNotes>('arpNotes', { default: 'seventh' })
 const arpDir = defineModel<ArpDirection>('arpDir', { default: 'up' })
+const pentLeave = defineModel<PentatonicLeave>('pentLeave', { default: '1' })
 /** the sheet editor is open: numerals and scales are shown (they are the pickers), their toggles hide */
 /** keyStart: the chart's key, written for the instrument (what "From key" starts on) */
 /** compact: a phone with compactRail on: the rail keeps Work on, Instrument and the slot's rail actions; Controls opens the rest */
@@ -202,12 +214,6 @@ function runAfterClose(): void {
 const Passthrough: FunctionalComponent = (_, { slots }) => slots.default?.()
 
 const arpNoteOptions = ARP_NOTES.map((value) => ({ value, label: ARP_NOTES_LABELS[value] }))
-// the Changes sheet's line, at most one: guide tones or 7th chord arpeggios
-const LINE_MODES: readonly { value: LineMode; label: string; title: string }[] = [
-  { value: 'off', label: 'Off', title: 'No line: slashes' },
-  { value: 'guide', label: 'Guide Tones', title: "A line that starts on the first chord's 3rd or 7th and moves to the nearest guide tone of each chord" },
-  { value: 'arpeggio', label: '7th Chords', title: "Each chord's four chord tones, arpeggiated: quarters, eighths or sixteenths as the bar has one, two or more chords" },
-]
 const GUIDE_LINES = [
   { value: 'third', label: 'From 3rd', title: "A line that starts on the first chord's 3rd and moves to the nearest guide tone of each chord" },
   { value: 'seventh', label: 'From 7th', title: "A line that starts on the first chord's 7th and moves to the nearest guide tone of each chord" },

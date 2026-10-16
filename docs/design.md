@@ -452,7 +452,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - `Numerals` and `Scales` toggles and a **Line** segmented control (Off · Guide Tones · 7th Chords) with the mode's
   listbox beneath it, so the control stays where it was clicked (From 3rd · From 7th; or the ten arpeggio patterns) replace Intervals on this sheet (`csm-numerals`,
   `csm-scale-names`, both on; `csm-line` `off | guide | arpeggio`, off; `csm-guide-line` `third | seventh`;
-  `csm-arpeggio`, `up-root`; share links carry the sheet's line as `line`, absent meaning off).
+  `csm-arpeggio`, `up-root`; share links carry the sheet's line as `line`, absent meaning off). Under the
+  Pentatonic overlay the 7th Chords slot reads **Pentatonic** (see Pentatonic line).
 
 ### Guide tones on Changes ([spec](superpowers/specs/2026-10-10-guide-tone-lines-design.md), amended by [independent lines](superpowers/specs/2026-10-10-independent-guide-tone-lines-design.md) and [the diverge note](superpowers/specs/2026-10-11-guide-lines-diverge-note.md); first built as [guide tones on Changes](superpowers/specs/2026-10-10-guide-tones-on-changes-design.md))
 
@@ -525,6 +526,30 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Drawing:** the guide tone line's two passes, the notes beamed by the beat (`Beam.generateBeams`, post-formatted before
   the stem tips are read for the crop and the ending's bracket); no label row; the aria-label adds
   `; 7th chords: C4 E4 G4 B4 | …` after `Bars: …`.
+
+### Pentatonic line on Changes (#284)
+
+- **What:** while Superimpose is Pentatonic, the Line's 7th Chords slot is **Pentatonic** (`lineModes`): each chord
+  plays exactly the pentatonic its label shows (`ChangesChord.pentatonic`: basis, rung/side/path, Built on and chord
+  picks), written for the part. Superimpose off (or Hexatonic) → 7th Chords again. Scope: Pentatonic only; the
+  Hexatonic overlay's Triad pair line is a follow-up.
+- **Cells** (`engine/src/pentatonicLine.ts`): the minor pentatonic less one note (`pentatonicCell`), the degree picked
+  by **Leave out** (1, ♭3, 4, 5, ♭7 in the minor pentatonic's degrees, `PENTATONIC_LEAVES`; default 1: ♭3-4-5-♭7, the
+  relative major's 1-2-3-5). Direction: the Arpeggios sheet's Up · Down · Up & down (`arpDir`; Up & down alternates per
+  cell across the run). A run's first cell starts on its bottom (Up) or top (Down) note; every later cell starts on its
+  note nearest the last note played, never that note itself (a tie: the lower), as Voice-led does.
+- **Rhythm, octave, rests:** the arpeggio line's (`cellVoices`, shared with `arpeggioVoices`): ♩ ♪ 𝅘𝅥𝅯 by the bar's
+  shortest chord, each cell placed whole in the part's range nearest the last note. A chord with no pentatonic (no
+  scale, no key area, unreadable) plays its 7th chord arpeggio in the stored pattern; one with no tones either rests.
+- **Model:** `buildChanges` takes a `ChangesLineChoice`: a `SheetLine` or `{ kind: 'pentatonic', leave, dir,
+  arpeggio }` (`changesLineOf` in `utils/sheetLine.ts` builds it); it works out each chord's pentatonic before the line
+  (`pentatonicVoices` gets the written roots by row). No label row; the aria-label adds `; pentatonic: C4 D4 E4 G4 | …`.
+- **Preferences:** the stored line is unchanged (`csm-line` `arpeggio`, `csm-arpeggio` its pattern): it reads as
+  Pentatonic under the overlay and 7th Chords otherwise, no migration. `csm-pent-leave` (`1`); the direction is
+  `csm-arp-dir`. The Line shows Direction (`aria-label="Pentatonic direction"`) in place of the pattern, and Leave out
+  (`aria-label="Leave out"`, `Leave out: ♭3`) where the Superimpose shows (interface tier `pentatonics`). A share link
+  with an arpeggio line on the Changes carries `arpDir` and `pentLeave` (an old link has none: the default); the
+  overlay stays the receiver's own. Print: lines a page as for an arpeggio line.
 
 ### Pentatonics on Changes ([spec](superpowers/specs/2026-10-13-pentatonic-ladders-design.md))
 
@@ -691,7 +716,7 @@ paper and its focus-mode pages, the rail, the More menu, the header, the library
   about 9.6in, even when every note has ledger lines (e.g. trombone from B). Autumn Leaves prints on 2 pages.
 - **Changes:** 8 four-bar lines a page with guide tones off, so a 32-bar AABA prints on one page.
   - With a line on, `changesLinesPerPage` (`engine/src/changes.ts`) gives fewer: 6 with a line on and
-    numerals and scales, one more with both rows off; an arpeggio line the same. `print.spec.ts` prints the tallest
+    numerals and scales, one more with both rows off; an arpeggio or Pentatonic line the same. `print.spec.ts` prints the tallest
     case (one line, numerals, scales, an ending and a bass part, guide tones or 7th chords) a sheet page to a letter page.
   - The chord row and spacing are shorter in print; lines with a clef or guide tones close up (`print:space-y-0`).
   - Print always uses 4 bars a line.

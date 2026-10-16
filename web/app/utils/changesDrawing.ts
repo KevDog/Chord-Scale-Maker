@@ -31,7 +31,7 @@ export type ChangesLayout = Readonly<{ xs: readonly (readonly number[])[]; ends:
 
 type Clef = 'treble' | 'bass'
 /** names: each bar's chords, their widths as fractions of the line, to widen the bars they crowd (fitBars) */
-type Opts = Readonly<{ timeSignature: boolean; beats: 2 | 3 | 4; barsPerLine: number; clef?: Clef; names?: readonly (readonly NamedBeat[])[]; arpeggio?: boolean }>
+type Opts = Readonly<{ timeSignature: boolean; beats: 2 | 3 | 4; barsPerLine: number; clef?: Clef; names?: readonly (readonly NamedBeat[])[]; arpeggio?: boolean; pentatonic?: boolean }>
 type Band = Readonly<{ top: number; bottom: number }>
 type Beam = InstanceType<VexFlowModule['Beam']>
 type Stave = InstanceType<VexFlowModule['Stave']>
@@ -136,8 +136,8 @@ export function guideAria(line: ChangesLine): string {
   return `; guide tones: ${bars.join(' | ')}`
 }
 
-/** the aria-label's arpeggio line: each chord's notes, "rest" for a rest, a bar without chord symbols lists its notes, "–" if it has none; '' when off */
-export function arpeggioAria(line: ChangesLine): string {
+/** the aria-label's arpeggio (or, named so, Pentatonic) line: each chord's notes, "rest" for a rest, a bar without chord symbols lists its notes, "–" if it has none; '' when off */
+export function arpeggioAria(line: ChangesLine, name = '7th chords'): string {
   if (!line.bars.some((b) => b.voice.length)) return ''
   const bars = line.bars.map((bar) => {
     const chords = bar.chords.map((c, k) => {
@@ -150,7 +150,7 @@ export function arpeggioAria(line: ChangesLine): string {
     const held = bar.voice.map((n) => (n.pitch ? pitchName(n.pitch) : 'rest')).join(' ') // no chord symbol: a chord held over
     return chords.join(', ') || held || '–'
   })
-  return `; 7th chords: ${bars.join(' | ')}`
+  return `; ${name}: ${bars.join(' | ')}`
 }
 
 const barsLabel = (line: ChangesLine): string => `Bars: ${line.bars.map((b) => b.chords.map((c) => c.text).join(' ') || '–').join(' | ')}`
@@ -322,6 +322,6 @@ function drawGuideLine(vf: VexFlowModule, el: HTMLElement, line: ChangesLine, op
     })
     return beatXs(starts, l.grid.map((g) => g.getAbsoluteX()), total)
   })
-  fitSvg(el, voicedBand([...heads, ...tips], bracket === null ? null : bracket + shift), total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line) : guideAria(line)))
+  fitSvg(el, voicedBand([...heads, ...tips], bracket === null ? null : bracket + shift), total, barsLabel(line) + (opts.arpeggio ? arpeggioAria(line, opts.pentatonic ? 'pentatonic' : undefined) : guideAria(line)))
   return { xs, ends: endsOf(widths, total), scales, fits }
 }

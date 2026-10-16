@@ -134,12 +134,12 @@ export async function inControls(page: Page, steps: () => Promise<void>): Promis
   if (await dialog.isVisible()) await dialog.getByRole('button', { name: 'Close', exact: true }).click()
 }
 
-/** choose the Changes sheet's line mode (Off · Guide Tones · 7th Chords), confirmed checked (retried: a click before hydration is lost) */
-export async function showLine(page: Page, name: 'Off' | 'Guide Tones' | '7th Chords'): Promise<void> {
+/** choose the Changes sheet's line mode (Off · Guide Tones · 7th Chords, or Pentatonic under the Pentatonic overlay), confirmed checked (retried: a click before hydration is lost) */
+export async function showLine(page: Page, name: 'Off' | 'Guide Tones' | '7th Chords' | 'Pentatonic'): Promise<void> {
   await inControls(page, () => pickLine(page, name))
 }
 
-async function pickLine(page: Page, name: 'Off' | 'Guide Tones' | '7th Chords'): Promise<void> {
+async function pickLine(page: Page, name: 'Off' | 'Guide Tones' | '7th Chords' | 'Pentatonic'): Promise<void> {
   const radio = page.getByRole('radio', { name, exact: true })
   await expect(async () => {
     if (!(await radio.isChecked())) await page.locator('label').filter({ has: radio }).click({ timeout: 1000 })
@@ -240,6 +240,23 @@ export async function chooseSuperimpose(page: Page, name: 'Off' | 'Pentatonic' |
 
 /** the Pentatonic overlay on */
 export const showPentatonics = (page: Page): Promise<void> => chooseSuperimpose(page, 'Pentatonic')
+
+/** the Pentatonic line (#284): Superimpose Pentatonic, then the Line's Pentatonic, leaving out a degree ("1", "♭3" …) if given */
+export async function showPentatonicLine(page: Page, leave?: string): Promise<void> {
+  await showPentatonics(page)
+  await page.keyboard.press('Escape') // the Pentatonic options' popover, opened as the Superimpose turned
+  await inControls(page, async () => {
+    await pickLine(page, 'Pentatonic')
+    if (leave) await pickOption(page, 'Leave out', leave)
+  })
+}
+
+/** wait until every Changes line has been drawn with the Pentatonic line */
+export async function pentatonicLineDrawn(page: Page): Promise<void> {
+  await expect
+    .poll(() => page.locator('svg[aria-label^="Bars:"]').evaluateAll((els) => els.length > 0 && els.every((e) => e.getAttribute('aria-label')?.includes('; pentatonic: '))))
+    .toBe(true)
+}
 
 /** open the Pentatonic options' popover beside the Superimpose (#293): it opens as the Superimpose turns to Pentatonic, not after a reload */
 export async function openPentatonicOptions(page: Page): Promise<void> {

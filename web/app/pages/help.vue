@@ -171,6 +171,11 @@
               Chord, each chord's, <strong class="font-semibold">Built on</strong> the degree you choose) or
               <strong class="font-semibold">Hexatonic</strong> (each chord's best triad pair from its scale, such as
               <UiCode>G/Am</UiCode> over Cmaj7: the chord tones it covers first, then two major or minor triads).
+              While Superimpose is Pentatonic, the line's <strong class="font-semibold">7th Chords</strong> becomes
+              <strong class="font-semibold">Pentatonic</strong>: each chord's labelled pentatonic in four-note cells, in the
+              same quarters, eighths or sixteenths. <strong class="font-semibold">Leave out</strong> picks the note each
+              cell drops (leave out 1 and Am pentatonic plays C D E G), and the direction goes up, down or both by turns;
+              each cell starts on its note nearest the last one you played.
             </dd>
           </div>
           <div>

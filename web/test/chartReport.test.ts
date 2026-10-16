@@ -24,5 +24,6 @@ describe('guidesText', () => {
     expect(guidesText('third')).toBe('from 3rd')
     expect(guidesText('seventh')).toBe('from 7th')
     expect(guidesText('up-2nd')).toBe('7th chords: Up · 2nd inv')
+    expect(guidesText({ kind: 'pentatonic', leave: 'b3', dir: 'up-down', arpeggio: 'up-2nd' })).toBe('pentatonic: leave out ♭3, Up & down')
   })
 })

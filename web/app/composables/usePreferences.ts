@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import { type ArpDirection, type ArpeggioPattern, type ArpNotes, type InstrumentName, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, type PentatonicBasis, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type ShareView } from '@chord-scale-maker/engine'
+import { type ArpDirection, type ArpeggioPattern, type ArpNotes, type InstrumentName, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, isPentatonicLeave, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type ShareView } from '@chord-scale-maker/engine'
 import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
@@ -37,11 +37,13 @@ export function usePreferences() {
   // #272: what the row ranks against; #286: the degree the chord basis builds on (csm-pent-rank, the old 1–12, is ignored: Auto)
   const pentBasis = storedRef<PentatonicBasis>('csm-pent-basis', (s) => (s === 'key' || s === 'chord' ? s : undefined), 'key')
   const pentDegree = storedRef<PentatonicDegree>('csm-pent-degree', (s) => pentatonicDegreeFrom(/^\d+$/.test(s) ? Number(s) : s), 'auto')
+  // #284: the Pentatonic line's Leave out (its direction is arpDir's)
+  const pentLeave = storedRef<PentatonicLeave>('csm-pent-leave', (s) => (isPentatonicLeave(s) ? s : undefined), PENTATONIC_LEAVE)
   // the editor's Source (the chart's text): hidden until shown
   const source = storedRef<boolean>('csm-source', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the /functions page's key: C major until another is picked
   const functionsKey = storedRef<string>('csm-functions-key', (s) => (FUNCTIONS_KEYS.includes(s) ? s : undefined), 'C')
-  return { instrument, spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, arpeggio, arpNotes, arpDir, overlay, pentRung, pentSide, pentBasis, pentDegree, source, functionsKey }
+  return { instrument, spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, arpeggio, arpNotes, arpDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, source, functionsKey }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
@@ -67,6 +69,7 @@ export function linkPreferences(view: ShareView) {
     pentSide: own.pentSide,
     pentBasis: own.pentBasis,
     pentDegree: own.pentDegree,
+    pentLeave: ref<PentatonicLeave>(view.pentLeave ?? PENTATONIC_LEAVE), // the link's, else the default (an old link has none)
     showEditor: own.showEditor, // whether the editor is open: yours, and remembered
     source: own.source,
   }

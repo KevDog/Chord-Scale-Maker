@@ -125,6 +125,7 @@
             v-model:arpeggio="prefs.arpeggio.value"
             v-model:arp-notes="prefs.arpNotes.value"
             v-model:arp-dir="prefs.arpDir.value"
+            v-model:pent-leave="prefs.pentLeave.value"
             :key-start="keyStartNote"
             :lock-labels="sheetEditor"
             :compact="compactRail"
@@ -189,7 +190,7 @@
             :instrument-label="sheetEditor ? '' : instrumentLabel(prefs.instrument.value)"
             :numerals="showNumerals"
             :scales="showScaleNames"
-            :line="sheetLine"
+            :line="changesLine"
             :editable="sheetEditing && !focus.on.value"
             :selected-line="selectedLine"
             :view="scaleView"
@@ -263,7 +264,7 @@
 import { ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, BookmarkIcon, CodeBracketIcon, EllipsisHorizontalIcon, LinkIcon, PencilSquareIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import { ISSUE_CONTEXT, issuePart } from '~/utils/issueReport'
 import { CHART_REPORT_KEY, type ChartReport, guidesText } from '~/utils/chartReport'
-import { sheetLineOf } from '~/utils/sheetLine'
+import { changesLineOf, sheetLineOf } from '~/utils/sheetLine'
 import { type HiddenSetting, hiddenSettings } from '~/utils/interface'
 import {
   addSection,
@@ -403,6 +404,8 @@ function onPick(kind: PickKind, positions: readonly ChordAt[], value: number | r
   else if (kind === 'hexatonic' && typeof value !== 'number') chordPicks.pick('hexatonic', positions, value)
 }
 const sheetLine = computed(() => sheetLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value))
+/** the line the Changes sheet draws: the stored one, the arpeggio slot read as the Pentatonic line under the Pentatonic overlay (#284) */
+const changesLine = computed(() => changesLineOf({ mode: prefs.lineMode.value, guide: prefs.guideLine.value, arpeggio: prefs.arpeggio.value, overlay: prefs.overlay.value, leave: prefs.pentLeave.value, dir: prefs.arpDir.value }))
 /** chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor) */
 const sheetEditing = computed(() => editorShown.value && !editor.fatal.value)
 const sheetChord = ref<SheetChordEdit | null>(null)
@@ -691,6 +694,7 @@ async function shareUrl(): Promise<string> {
     ...(sheetLine.value !== 'off' ? { line: sheetLine.value } : {}), // absent: off
     sheet: sheet.value,
     ...(sheet.value === 'arpeggios' ? { arpNotes: prefs.arpNotes.value, arpDir: prefs.arpDir.value } : {}),
+    ...(sheet.value === 'changes' && prefs.lineMode.value === 'arpeggio' ? { arpDir: prefs.arpDir.value, pentLeave: prefs.pentLeave.value } : {}), // the Pentatonic line's, under the receiver's own overlay (#284)
     ...(selection.value ? { practice: selection.value } : {}),
     ...(scaleLevel.level.value !== 'standard' ? { level: scaleLevel.level.value, seed: scaleLevel.seed.value } : {}),
     ...(hasPicks(chordPicks.live.value) ? { picks: chordPicks.live.value } : {}), // too big a link leaves them out (encodeShare)
@@ -782,7 +786,7 @@ function reportError(): void {
     version: String(useRuntimeConfig().public.version ?? ''),
     instrument: instrumentOption(prefs.instrument.value),
     sheet: sheet.value,
-    guides: guidesText(sheetLine.value),
+    guides: guidesText(changesLine.value),
     level: scaleLevel.level.value,
     url: location.href,
   }
