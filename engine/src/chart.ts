@@ -1,9 +1,13 @@
+import { sectionLayout } from './layout'
 import { LIMITS } from './limits'
 import { defaultScaleOrNull } from './qualities'
 
 /**
- * The chart text format (docs/design.md §4): a tolerant parser to a ChartDoc that keeps every line, the canonical
- * serializer, @copy expansion and the default-scale lookup. Port of read_chart, minus its exits.
+ * The chart text format (docs/design.md §4): a header of song fields, then section blocks: a `section:` line, its own
+ * fields (key:, time:, context:, bars:, outside:, copy:), then its rows (`bar | chord [| scale [| function]]`, bars
+ * from 1) and directives (@key, @context, @ending, @segno, @coda, @nav), until the next `section:`. A tolerant parser
+ * to a ChartDoc that keeps every line, the canonical serializer and the default-scale lookup; layout.ts resolves the
+ * blocks.
  */
 
 /**
@@ -34,25 +38,34 @@ export function beatsPerBar(time: string): 2 | 3 | 4 | null {
   const m = /^([234])\/4$/.exec(t)
   return m ? (Number(m[1]) as 2 | 3 | 4) : null
 }
+/** a section block's own fields (docs/design.md §4), in the order the serializer writes them */
+export type SectionField = 'key' | 'time' | 'context' | 'bars' | 'outside' | 'copy'
+export const SECTION_FIELDS: readonly SectionField[] = ['key', 'time', 'context', 'bars', 'outside', 'copy']
+/** a section's name: no spaces, at most maxCell characters */
+export const isSectionName = (name: string): boolean => !!name && !/\s/.test(name) && name.length <= LIMITS.maxCell
+
 export type ChartLine =
   | Readonly<{ kind: 'meta'; key: MetaKey; value: string }>
-  // scale '' = default; function: the author's harmonic function (V7/ii, D: V7/ii), absent when not written;
-  // comment: a trailing "# …" (the analysis, docs/plan-analysis.md §12.1), kept verbatim
-  | Readonly<{ kind: 'row'; section: string; bar: string; chord: string; scale: string; function?: string; comment?: string }>
-  | Readonly<{ kind: 'copy'; src: string; dst: string; offset: number }>
-  | Readonly<{ kind: 'ending'; n: number; section: string; from: number; to: number }>
-  | Readonly<{ kind: 'mark'; mark: 'segno' | 'coda'; section: string; bar: number }>
-  | Readonly<{ kind: 'nav'; section: string; bar: number; text: string }>
-  // the author's key area, from this bar until the next @key
-  | Readonly<{ kind: 'key'; section: string; bar: number; key: string }>
-  // the author's context, from this bar until the next @context (parsed; the analyser doesn't use it yet)
-  | Readonly<{ kind: 'context'; section: string; bar: number; context: ChartContext }>
+  // opens a block: the rows and directives after it, until the next section:, belong to it
+  | Readonly<{ kind: 'section'; name: string }>
+  | Readonly<{ kind: 'sectionMeta'; field: SectionField; value: string }>
+  // bar: counted from 1 in its section; scale '' = default; function: the author's harmonic function (V7/ii, D: V7/ii),
+  // absent when not written; comment: a trailing "# …" (the analysis, docs/plan-analysis.md §12.1), kept verbatim
+  | Readonly<{ kind: 'row'; bar: string; chord: string; scale: string; function?: string; comment?: string }>
+  | Readonly<{ kind: 'ending'; n: number; from: number; to: number }>
+  | Readonly<{ kind: 'mark'; mark: 'segno' | 'coda'; bar: number }>
+  | Readonly<{ kind: 'nav'; bar: number; text: string }>
+  // the author's key area, from this bar to the end of its section
+  | Readonly<{ kind: 'key'; bar: number; key: string }>
+  // the author's context, from this bar to the end of its section (parsed; the analyser doesn't use it yet)
+  | Readonly<{ kind: 'context'; bar: number; context: ChartContext }>
   | Readonly<{ kind: 'comment'; text: string }>
   | Readonly<{ kind: 'blank' }>
   | Readonly<{ kind: 'invalid'; text: string }> // kept verbatim so text round-trips
 export type ChartDoc = Readonly<{ lines: readonly ChartLine[] }>
 /** line is 1-based (0 = whole chart); fatal = over a hard input limit: don't render it or write it back */
 export type Diagnostic = Readonly<{ line: number; message: string; fatal?: true }>
+/** a row as played: its section filled in from its block, its bar counted from 1 in that section */
 export type Row = Readonly<{ section: string; bar: string; chord: string; scale: string; function?: string }>
 export type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 
@@ -64,75 +77,101 @@ export function matchKeyText(text: string): RegExpExecArray | null {
   const m = KEY_TEXT_RE.exec(text)
   return m && /^[A-G]/.test(m[1] ?? '') ? m : null
 }
-const OFFSET_RE = /^[+-]?\d{1,4}$/ // bar offsets stay well inside safe integers
 
-function parseLine(line: string): ChartLine | string {
+const HEADER_ONLY = 'directives go in a section: add  section: A  above'
+
+/** a directive's line, without a section (it belongs to its block) */
+function parseDirective(line: string, low: string): ChartLine | string | null {
+  if (low.startsWith('@copy')) return '@copy is gone: write  copy: SRC  under the section’s section: line'
+  if (low.startsWith('@ending')) {
+    const [, n = '', from = '', to = from, ...extra] = line.split(/\s+/)
+    if (extra.length > 0 || (n !== '1' && n !== '2') || !INT_RE.test(from) || !INT_RE.test(to)) return 'use  @ending N FIRST [LAST]'
+    if (Number(to) < Number(from)) return '@ending LAST must be at least FIRST'
+    return { kind: 'ending', n: Number(n), from: Number(from), to: Number(to) }
+  }
+  if (low.startsWith('@segno') || low.startsWith('@coda')) {
+    const [word = '', bar = '', ...extra] = line.split(/\s+/)
+    if (extra.length > 0 || !INT_RE.test(bar)) return 'use  @segno BAR  or  @coda BAR'
+    return { kind: 'mark', mark: word.toLowerCase() === '@coda' ? 'coda' : 'segno', bar: Number(bar) }
+  }
+  if (low.startsWith('@nav')) {
+    const m = /^@nav\s+(\S+)\s+(.+)$/i.exec(line)
+    if (!m || !INT_RE.test(m[1] ?? '')) return 'use  @nav BAR TEXT'
+    const text = (m[2] ?? '').trim()
+    if (text.length > LIMITS.maxMeta) return `nav text longer than ${LIMITS.maxMeta} characters`
+    return { kind: 'nav', bar: Number(m[1]), text }
+  }
+  if (low.startsWith('@key')) {
+    const m = /^@key\s+(\S+)\s+(.+)$/i.exec(line)
+    const k = (m?.[2] ?? '').trim()
+    if (!m || !INT_RE.test(m[1] ?? '') || !matchKeyText(k)) return 'use  @key BAR KEY  (a key like Eb or Cm)'
+    return { kind: 'key', bar: Number(m[1]), key: k }
+  }
+  if (low.startsWith('@context')) {
+    const m = /^@context\s+(\S+)\s+(\S+)$/i.exec(line)
+    const context = parseContext(m?.[2] ?? '')
+    if (!m || !INT_RE.test(m[1] ?? '') || !context) return 'use  @context BAR CONTEXT  (functional, modal or blues)'
+    return { kind: 'context', bar: Number(m[1]), context }
+  }
+  return null
+}
+
+/** a section field's line, in a block */
+function parseSectionField(field: SectionField, value: string): ChartLine | string {
+  if (field === 'key' && value && !matchKeyText(value)) return 'key: a key like Eb or Cm'
+  if (field === 'time' && beatsPerBar(value) === null) return 'time: 2/4, 3/4 or 4/4'
+  if (field === 'bars' && !(/^\d{1,4}$/.test(value) && Number(value) > 0)) return 'bars: a whole number of bars'
+  if (field === 'outside') {
+    const v = value.toLowerCase()
+    return v === 'yes' || v === 'no' ? { kind: 'sectionMeta', field, value: v } : 'outside: yes or no'
+  }
+  if (field === 'copy' && !isSectionName(value)) return 'copy: the name of a section above'
+  return { kind: 'sectionMeta', field, value }
+}
+
+function parseLine(line: string, inSection: boolean): ChartLine | string {
   if (!line) return { kind: 'blank' }
   if (line.startsWith('#')) return { kind: 'comment', text: line }
   const low = line.toLowerCase()
+  if (low.startsWith('section:')) {
+    const name = line.slice('section:'.length).trim()
+    return isSectionName(name) ? { kind: 'section', name } : `section: a name without spaces, at most ${LIMITS.maxCell} characters`
+  }
+  for (const field of ['outside', 'copy'] as const) {
+    if (!low.startsWith(`${field}:`)) continue
+    return inSection ? parseSectionField(field, line.slice(field.length + 1).trim()) : `${field}: belongs to a section`
+  }
   for (const key of META_KEYS) {
-    if (low.startsWith(`${key}:`)) {
-      const value = line.slice(key.length + 1).trim()
-      if (value.length > LIMITS.maxMeta) return `${key} longer than ${LIMITS.maxMeta} characters`
-      if (key === 'time' && beatsPerBar(value) === null) return 'time: 2/4, 3/4 or 4/4'
-      if (key === 'kind' && value && !asKind(value)) return 'kind: tune, form or exercise'
-      return { kind: 'meta', key, value }
+    if (!low.startsWith(`${key}:`)) continue
+    const value = line.slice(key.length + 1).trim()
+    if (value.length > LIMITS.maxMeta) return `${key} longer than ${LIMITS.maxMeta} characters`
+    if (inSection) {
+      if (key === 'key' || key === 'time' || key === 'context' || key === 'bars') return parseSectionField(key, value)
+      return `${key}: belongs in the header, before the first section:`
     }
+    if (key === 'time' && beatsPerBar(value) === null) return 'time: 2/4, 3/4 or 4/4'
+    if (key === 'kind' && value && !asKind(value)) return 'kind: tune, form or exercise'
+    return { kind: 'meta', key, value }
   }
-  if (low.startsWith('@copy')) {
-    const [, src = '', dst = '', offset = '', ...extra] = line.split(/\s+/)
-    if (extra.length > 0 || !OFFSET_RE.test(offset)) return 'use  @copy SRC DST BAR_OFFSET'
-    if (src.length > LIMITS.maxCell || dst.length > LIMITS.maxCell)
-      return `section name longer than ${LIMITS.maxCell} characters`
-    return { kind: 'copy', src, dst, offset: Number(offset) }
-  }
-  if (low.startsWith('@ending')) {
-    const [, n = '', section = '', from = '', to = from, ...extra] = line.split(/\s+/)
-    if (extra.length > 0 || (n !== '1' && n !== '2') || !INT_RE.test(from) || !INT_RE.test(to)) return 'use  @ending N SECTION FIRST [LAST]'
-    if (section.length > LIMITS.maxCell) return `section name longer than ${LIMITS.maxCell} characters`
-    if (Number(to) < Number(from)) return '@ending LAST must be at least FIRST'
-    return { kind: 'ending', n: Number(n), section, from: Number(from), to: Number(to) }
-  }
-  if (low.startsWith('@segno') || low.startsWith('@coda')) {
-    const [word = '', section = '', bar = '', ...extra] = line.split(/\s+/)
-    if (extra.length > 0 || !section || !INT_RE.test(bar)) return 'use  @segno SECTION BAR  or  @coda SECTION BAR'
-    if (section.length > LIMITS.maxCell) return `section name longer than ${LIMITS.maxCell} characters`
-    return { kind: 'mark', mark: word.toLowerCase() === '@coda' ? 'coda' : 'segno', section, bar: Number(bar) }
-  }
-  if (low.startsWith('@nav')) {
-    const m = /^@nav\s+(\S+)\s+(\S+)\s+(.+)$/.exec(line)
-    if (!m || !INT_RE.test(m[2] ?? '')) return 'use  @nav SECTION BAR TEXT'
-    const [, section = '', bar = '', text = ''] = m
-    if (section.length > LIMITS.maxCell) return `section name longer than ${LIMITS.maxCell} characters`
-    if (text.trim().length > LIMITS.maxMeta) return `nav text longer than ${LIMITS.maxMeta} characters`
-    return { kind: 'nav', section, bar: Number(bar), text: text.trim() }
-  }
-  if (low.startsWith('@key')) {
-    const m = /^@key\s+(\S+)\s+(\S+)\s+(.+)$/i.exec(line)
-    const k = (m?.[3] ?? '').trim()
-    if (!m || !INT_RE.test(m[2] ?? '') || !matchKeyText(k)) return 'use  @key SECTION BAR KEY  (a key like Eb or Cm)'
-    const [, section = '', bar = ''] = m
-    if (section.length > LIMITS.maxCell) return `section name longer than ${LIMITS.maxCell} characters`
-    return { kind: 'key', section, bar: Number(bar), key: k }
-  }
-  if (low.startsWith('@context')) {
-    const m = /^@context\s+(\S+)\s+(\S+)\s+(\S+)$/i.exec(line)
-    const context = parseContext(m?.[3] ?? '')
-    if (!m || !INT_RE.test(m[2] ?? '') || !context) return 'use  @context SECTION BAR CONTEXT  (functional, modal or blues)'
-    const [, section = '', bar = ''] = m
-    if (section.length > LIMITS.maxCell) return `section name longer than ${LIMITS.maxCell} characters`
-    return { kind: 'context', section, bar: Number(bar), context }
+  if (line.startsWith('@')) {
+    const d = parseDirective(line, low)
+    if (d === null) return `can't read ${line.split(/\s+/)[0]}`
+    return inSection || typeof d === 'string' ? d : HEADER_ONLY
   }
   // a trailing comment starts at a # with space on both sides (F#m7 and C# Lydian have none before theirs)
   const hash = /\s#(?=\s|$)/.exec(line)
   const body = hash ? line.slice(0, hash.index) : line
   const comment = hash ? line.slice(hash.index + 2).trim() : undefined
   const cells = body.split('|').map((c) => c.trim())
-  if (cells.length < 3 || cells.length > 5) return 'expected  section | bar | chord [| scale [| function]]'
+  if (!inSection) {
+    if (cells.length >= 3 && cells.length <= 5 && INT_RE.test(cells[1] ?? '')) return 'old chart format: put rows under a section: line, numbered from 1'
+    return 'bars go in a section: add  section: A  above'
+  }
+  if (cells.length < 2 || cells.length > 4) return 'expected  bar | chord [| scale [| function]]'
   if (cells.some((c) => c.length > LIMITS.maxCell)) return `cell longer than ${LIMITS.maxCell} characters`
   if (comment !== undefined && comment.length > LIMITS.maxMeta) return `comment longer than ${LIMITS.maxMeta} characters`
-  const [section = '', bar = '', chord = '', scale = '', fn = ''] = cells
-  return { kind: 'row', section, bar, chord, scale, ...(fn ? { function: fn } : {}), ...(comment === undefined ? {} : { comment }) }
+  const [bar = '', chord = '', scale = '', fn = ''] = cells
+  return { kind: 'row', bar, chord, scale, ...(fn ? { function: fn } : {}), ...(comment === undefined ? {} : { comment }) }
 }
 
 /** tolerant parse: bad lines become 'invalid' lines plus a diagnostic, never an exception */
@@ -140,17 +179,52 @@ export function parseChart(text: string): Parsed<ChartDoc> {
   if (text.length > LIMITS.maxChars)
     return { value: { lines: [] }, diagnostics: [{ line: 0, message: `chart longer than ${LIMITS.maxChars} characters`, fatal: true }] }
   const diagnostics: Diagnostic[] = []
+  const names = new Set<string>()
+  let songTime = ''
+  let block: { name: string; copy: boolean; body: boolean; lastBar: number; bars: { line: number; value: number } | null } | null = null
+  const closeBlock = (): void => {
+    if (block?.bars && block.bars.value < block.lastBar)
+      diagnostics.push({ line: block.bars.line, message: `bars: ${block.bars.value} is shorter than the section (its last bar is ${block.lastBar})` })
+  }
   const lines = text.split(/\r?\n/).map((raw, i): ChartLine => {
     const t = raw.trim()
-    const parsed = parseLine(t)
-    // a context: that is none of the three is kept, like a bad key:, and reported; the analyser detects instead (an
-    // empty one is absent, like an empty key:)
-    if (typeof parsed !== 'string' && parsed.kind === 'meta' && parsed.key === 'context' && parsed.value && !parseContext(parsed.value))
-      diagnostics.push({ line: i + 1, message: 'context: functional, modal or blues' })
+    let parsed = parseLine(t, block !== null)
+    const report = (message: string): void => void diagnostics.push({ line: i + 1, message })
+    if (typeof parsed !== 'string') {
+      if (parsed.kind === 'meta' && parsed.key === 'context' && parsed.value && !parseContext(parsed.value)) report('context: functional, modal or blues')
+      if (parsed.kind === 'meta' && parsed.key === 'time') songTime = parsed.value
+      if (parsed.kind === 'section') {
+        if (names.has(parsed.name)) parsed = `section ${parsed.name} is already in the chart`
+        else {
+          closeBlock()
+          names.add(parsed.name)
+          block = { name: parsed.name, copy: false, body: false, lastBar: 0, bars: null }
+        }
+      } else if (parsed.kind === 'sectionMeta' && block) {
+        if (block.body) parsed = 'section fields go straight under section:, before its bars'
+        else {
+          const { field, value } = parsed
+          if (field === 'context' && value && !parseContext(value)) report('context: functional, modal or blues')
+          if (field === 'copy') {
+            block.copy = true
+            if (!names.has(value) || value === block.name) report(`copy: ${value} must name a section above it`)
+          }
+          if (field === 'bars') block.bars = { line: i + 1, value: Number(value) }
+          if (field === 'time' && beatsPerBar(value) !== (beatsPerBar(songTime) ?? 4)) report("time: drawn in the song's metre until #235")
+        }
+      } else if (block && parsed.kind !== 'comment' && parsed.kind !== 'blank' && parsed.kind !== 'invalid') {
+        block.body = true
+        if (parsed.kind === 'row') {
+          if (block.copy) report('a section with copy: has no bars of its own')
+          if (INT_RE.test(parsed.bar)) block.lastBar = Math.max(block.lastBar, Number(parsed.bar))
+        }
+      }
+    }
     if (typeof parsed !== 'string') return parsed
-    diagnostics.push({ line: i + 1, message: parsed })
+    report(parsed)
     return { kind: 'invalid', text: t }
   })
+  closeBlock()
   if (lines.at(-1)?.kind === 'blank') lines.pop() // trailing newline
   if (lines.filter((l) => l.kind === 'row').length > LIMITS.maxRows)
     diagnostics.push({ line: 0, message: `more than ${LIMITS.maxRows} rows`, fatal: true })
@@ -159,11 +233,17 @@ export function parseChart(text: string): Parsed<ChartDoc> {
 
 export const isFatal = (diagnostics: readonly Diagnostic[]): boolean => diagnostics.some((d) => d.fatal)
 
+/** the section each line belongs to: the name of the block it is in, null in the header */
+export function lineSections(doc: ChartDoc): readonly (string | null)[] {
+  let name: string | null = null
+  return doc.lines.map((l) => (l.kind === 'section' ? (name = l.name) : name))
+}
+
 /** canonical text: chord rows column-aligned, everything else verbatim */
 export function serializeChart(doc: ChartDoc): string {
   const rows = doc.lines.filter((l) => l.kind === 'row')
   const width = (f: (r: (typeof rows)[number]) => string): number => Math.max(0, ...rows.map((r) => f(r).length))
-  const [ws, wb, wc] = [width((r) => r.section), width((r) => r.bar), width((r) => r.chord)]
+  const [wb, wc] = [width((r) => r.bar), width((r) => r.chord)]
   // scales line up where a comment or a function follows them; functions where a comment follows
   const wsc = Math.max(0, ...rows.filter((r) => r.comment !== undefined || r.function !== undefined).map((r) => r.scale.length))
   const wf = Math.max(0, ...rows.filter((r) => r.function !== undefined && r.comment !== undefined).map((r) => (r.function ?? '').length))
@@ -171,8 +251,12 @@ export function serializeChart(doc: ChartDoc): string {
     switch (l.kind) {
       case 'meta':
         return `${l.key}: ${l.value}`
+      case 'section':
+        return `section: ${l.name}`
+      case 'sectionMeta':
+        return `${l.field}: ${l.value}`
       case 'row': {
-        const head = `${l.section.padEnd(ws)} | ${l.bar.padEnd(wb)} | `
+        const head = `${l.bar.padEnd(wb)} | `
         const tail = l.comment !== undefined ? `  #${l.comment ? ` ${l.comment}` : ''}` : ''
         if (l.function !== undefined) {
           const fn = l.comment !== undefined ? l.function.padEnd(wf) : l.function
@@ -184,18 +268,16 @@ export function serializeChart(doc: ChartDoc): string {
         }
         return l.scale ? `${head}${l.chord.padEnd(wc)} | ${l.scale}` : `${head}${l.chord}`
       }
-      case 'copy':
-        return `@copy ${l.src} ${l.dst} ${l.offset}`
       case 'ending':
-        return `@ending ${l.n} ${l.section} ${l.from}${l.to !== l.from ? ` ${l.to}` : ''}`
+        return `@ending ${l.n} ${l.from}${l.to !== l.from ? ` ${l.to}` : ''}`
       case 'mark':
-        return `@${l.mark} ${l.section} ${l.bar}`
+        return `@${l.mark} ${l.bar}`
       case 'nav':
-        return `@nav ${l.section} ${l.bar} ${l.text}`
+        return `@nav ${l.bar} ${l.text}`
       case 'key':
-        return `@key ${l.section} ${l.bar} ${l.key}`
+        return `@key ${l.bar} ${l.key}`
       case 'context':
-        return `@context ${l.section} ${l.bar} ${l.context}`
+        return `@context ${l.bar} ${l.context}`
       case 'comment':
       case 'invalid':
         return l.text
@@ -260,43 +342,19 @@ export function chartHeading(doc: ChartDoc): Readonly<{ title: string; subtitle:
   return { title: metaValue(doc, 'title', 'Untitled'), subtitle: line.filter(Boolean).join(' · '), composer: metaValue(doc, 'composer') }
 }
 
-/** an expanded row and the line it came from (a @copy repeat points at its source row's line) */
-export type LinedRow = Row & Readonly<{ line: number }>
+/**
+ * an expanded row, the line it came from (a copy: repeat points at its source row's line) and `at`, its bar counted
+ * through its part (intro, form or coda) from 1: where the analysis stream places it
+ */
+export type LinedRow = Row & Readonly<{ line: number; at: number }>
 
-/** chart rows in order with @copy applied, each with its source line index; at most maxExpandedRows */
+/** chart rows in order with copy: applied, each with its source line index; at most maxExpandedRows (layout.ts) */
 export function expandRowLines(doc: ChartDoc): Parsed<readonly LinedRow[]> {
-  const diagnostics: Diagnostic[] = []
-  const rows: LinedRow[] = []
-  const tooMany = (line: number): Diagnostic => ({
-    line,
-    message: `more than ${LIMITS.maxExpandedRows} rows after @copy`,
-    fatal: true,
-  })
-  for (const [i, l] of doc.lines.entries()) {
-    if (l.kind === 'row') {
-      if (rows.length >= LIMITS.maxExpandedRows) {
-        diagnostics.push(tooMany(i + 1))
-        break
-      }
-      rows.push({ section: l.section, bar: l.bar, chord: l.chord, scale: l.scale, ...(l.function ? { function: l.function } : {}), line: i })
-    }
-    if (l.kind !== 'copy') continue
-    const src = rows.filter((r) => r.section === l.src)
-    if (src.some((r) => !INT_RE.test(r.bar))) {
-      diagnostics.push({ line: i + 1, message: `@copy needs whole-number bars in section ${l.src}` })
-      continue
-    }
-    if (rows.length + src.length > LIMITS.maxExpandedRows) {
-      // checked before growing: chained copies would otherwise double the rows each time
-      diagnostics.push(tooMany(i + 1))
-      break
-    }
-    rows.push(...src.map((r) => ({ ...r, section: l.dst, bar: String(Number(r.bar) + l.offset) })))
-  }
-  return { value: rows, diagnostics }
+  const { value, diagnostics } = sectionLayout(doc)
+  return { value: value.rows, diagnostics }
 }
 
-/** chart rows in order with @copy applied (a copy repeats the rows seen so far); at most maxExpandedRows */
+/** chart rows in order with copy: applied; at most maxExpandedRows */
 export function expandRows(doc: ChartDoc): Parsed<readonly Row[]> {
   const { value, diagnostics } = expandRowLines(doc)
   return { value: value.map(({ section, bar, chord, scale }) => ({ section, bar, chord, scale })), diagnostics }
