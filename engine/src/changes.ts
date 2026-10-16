@@ -7,6 +7,7 @@ import { type HexPick, livePick, type PentPick, pickTarget } from './chordPicks'
 import { arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
 import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
 import { keySignature } from './keySignature'
+import { type PentatonicLine, pentatonicVoices } from './pentatonicLine'
 import { concertPc, type Part, scaleLabel, writtenRoot, writtenScale } from './part'
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled, shiftBy } from './pitch'
 import { isPentatonicPreset, type PentatonicDegree, pentatonicDegreeFrom, PENTATONIC_HOME, PENTATONIC_STEP, pentatonicAt, pentatonicCycle, pentatonicPathCaption, type PentatonicPathName, type PentatonicStep, pentatonicLadder, pentatonicRanking, type RankedPentatonic, type PentatonicRung, type PentatonicView } from './pentatonics'
@@ -52,6 +53,8 @@ export type ChangesPentatonic = Readonly<{
   sheet: string // the name it plays without a pick (#303)
   source: PickSource
 }>
+/** the line the Changes sheet draws: off, a guide tone line, a 7th chord arpeggio pattern, or (#284) the Pentatonic line */
+export type ChangesLineChoice = SheetLine | PentatonicLine
 /** a section the Changes sheet draws (a block): its key (its first section's name), its marker, its place in the form */
 export type ChangesSection = Readonly<{ key: string; marker: string; part: FormPart }>
 /** the pentatonic row's rungs (#264): a section's own view, else fallback; counts: the shared count follows each label */
@@ -188,7 +191,7 @@ function areaLadder(name: string, part: Part): Readonly<{ ladder: readonly Penta
  * 7th), the documented worst case, and print.spec checks it. With Pentatonics plus Numerals or Scales, 8 and 6 hold
  * (measured with the contour band #265 drew, since removed: #277).
  */
-export function changesLinesPerPage(line: SheetLine, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean; hexatonics?: boolean }>): number {
+export function changesLinesPerPage(line: ChangesLineChoice, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean; hexatonics?: boolean }>): number {
   const overlay = !!(rows.pentatonics || rows.hexatonics) // the hexatonic row takes the pentatonic row's place and height
   const all = overlay && rows.numerals && rows.scales
   if (line === 'off') return all ? 7 : 8
@@ -378,7 +381,7 @@ export function changesSections(doc: ChartDoc): readonly ChangesSection[] {
 }
 
 /** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row) */
-export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: SheetLine = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null): ChangesSheet {
+export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null): ChangesSheet {
   const pentatonic = overlay?.kind === 'pentatonic' ? overlay : null
   const rows = expandRowLines(doc).value
   const beats = chartBeats(doc)
@@ -453,8 +456,6 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
       }),
     )
   }
-  const voices: { bars: ReadonlyMap<number, readonly GuideNote[]>; labels: ReadonlyMap<number, string>; missing: readonly string[] } | null =
-    line === 'off' ? null : isArpeggioPattern(line) ? { ...arpeggioVoices(drawn(), part, beats, keySig, line), labels: new Map() } : guideVoices(drawn(), part, beats, keySig, line)
 
   const basis = pentatonic?.basis ?? 'key'
   const toWritten = pcOf(writtenRoot(part, parseRoot('C'), 'ionian')) // concert pc + this = written pc
@@ -557,6 +558,28 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     return { label: used.name, name: used.name, chord: at, picked: !!found, run: [], sheet: auto.name, source: { chord: chordText, scale } }
   }
 
+  // each drawn chord's pentatonic (its label's, picks and all), worked out before the line, which plays it (#284)
+  const pentAt = new Map<number, ChangesPentatonic | null>()
+  blocks.forEach((block, k) => {
+    for (let j = 0; j < Math.max(1, block.to - block.from + 1); j++) {
+      for (const i of block.rows.filter((r) => barOf(r) === block.from + j)) {
+        const row = rows[i] as LinedRow
+        const scale = resolved.get(i)?.scale ?? null
+        const written = writtenChordTextOrNull(part, row.chord, scale) ?? row.chord
+        pentAt.set(i, pentatonicOf(byRow.get(i)?.key.name, block.section, keyOf.get(i) ?? '', written, scale, row.chord, unitOf(k, j, i), pickTarget(row.chord, scale)))
+      }
+    }
+  })
+  const pentRoots = new Map([...pentAt].flatMap(([i, p]) => (p ? [[i, p.root] as const] : [])))
+  const voices: { bars: ReadonlyMap<number, readonly GuideNote[]>; labels: ReadonlyMap<number, string>; missing: readonly string[] } | null =
+    line === 'off'
+      ? null
+      : typeof line === 'object'
+        ? { ...pentatonicVoices(drawn(), part, beats, keySig, line, pentRoots), labels: new Map() }
+        : isArpeggioPattern(line)
+          ? { ...arpeggioVoices(drawn(), part, beats, keySig, line), labels: new Map() }
+          : guideVoices(drawn(), part, beats, keySig, line)
+
   let lastKey = ''
   const lastForm = blocks.findLastIndex((b) => b.part === 'form')
   const lines = blocks.flatMap((block, k) => {
@@ -587,7 +610,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             heardIn: a ? keyName((a.statedKey ?? a.key).name, part) : '',
             keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',
             guide: voices?.labels.get(i) ?? '',
-            pentatonic: pentatonicOf(a?.key.name, block.section, keyOf.get(i) ?? '', written, scale, row.chord, unitOf(k, j, i), pickTarget(row.chord, scale)),
+            pentatonic: pentAt.get(i) ?? null,
             hexatonic: hexatonicOf(scale, row.chord, keyOf.get(i) ?? '', pickTarget(row.chord, scale)),
           }
         })

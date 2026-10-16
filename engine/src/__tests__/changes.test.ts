@@ -6,7 +6,9 @@ import { NO_PICKS, pickTarget, withPick } from '../chordPicks'
 import { resolveScales } from '../resolve'
 import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
 import { CONCERT, concertPc, type Part } from '../part'
-import { rootName } from '../pitch'
+import { pcOf, rootName, type Spelled } from '../pitch'
+import type { PentatonicLine } from '../pentatonicLine'
+import { toVexKey } from '../sheet'
 import type { ScaleView } from '../resolve'
 import { type PentatonicDegree, PENTATONIC_HOME, type PentatonicPathName, type PentatonicStep } from '../pentatonics'
 import { abbreviateScale } from '../scales'
@@ -709,6 +711,59 @@ describe('buildChanges with an arpeggio line', () => {
   it('gives an arpeggio line the page count of a guide tone line', () => {
     const rows = { numerals: true, scales: true }
     expect(changesLinesPerPage('up-root', rows)).toBe(changesLinesPerPage('third', rows))
+  })
+})
+
+describe('buildChanges with a Pentatonic line (#284)', () => {
+  const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 1 | G7\nA | 2 | CMaj7\n').value
+  const PENT: PentatonicLine = { kind: 'pentatonic', leave: '1', dir: 'up', arpeggio: 'up-root' }
+  const keys = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars.map((b) => b.voice.map((n) => (n.pitch ? toVexKey(n.pitch) : 'r'))))
+  const flatChords = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars.flatMap((b) => b.chords))
+  const pcSet = (root: Spelled) => new Set([0, 3, 5, 7, 10].map((d) => (pcOf(root) + d) % 12))
+  it("plays each chord's labelled pentatonic as cells, in the arpeggio's rhythm, each from the note nearest the last", () => {
+    const sheet = buildChanges(doc, CONCERT, 4, false, PENT, undefined, one(0, 'flat')) // C major: Am everywhere
+    expect(keys(sheet).slice(0, 2)).toEqual([
+      ['c/4', 'd/4', 'e/4', 'g/4', 'e/4', 'g/4', 'c/5', 'd/5'],
+      ['c/5', 'd/5', 'e/5', 'g/5'],
+    ])
+    expect(flatChords(sheet).map((c) => c.guide)).toEqual(['', '', ''])
+  })
+  it('follows the rung the label shows', () => {
+    const sheet = buildChanges(doc, CONCERT, 4, false, PENT, undefined, one(1, 'flat')) // Dm
+    expect(keys(sheet)[0]?.slice(0, 4)).toEqual(['f/4', 'g/4', 'a/4', 'c/5'])
+  })
+  it('honours a chord pick', () => {
+    const targets = pickTargets(doc, resolveScales(doc, { level: 'standard', seed: 0 }))
+    const picks = withPick(NO_PICKS, 'pentatonic', ['A:1:1'], 4, targets).pentatonic // G7: Em
+    const sheet = buildChanges(doc, CONCERT, 4, false, PENT, undefined, { ...one(0, 'flat'), picks })
+    expect(keys(sheet)[0]?.slice(4).map((k) => k.split('/')[0])).toEqual(['a', 'b', 'd', 'g']) // Em less E, from A4: nearest G4
+  })
+  it('plays, on the chord basis and on a transposing part, exactly the pentatonic each label names', () => {
+    const plan: PentatonicPlan = { kind: 'pentatonic', bySection: {}, fallback: PENTATONIC_HOME, counts: false, basis: 'chord', degree: 'auto' }
+    for (const part of [CONCERT, TENOR]) {
+      const sheet = buildChanges(library('autumn-leaves'), part, 4, false, PENT, undefined, plan)
+      for (const bar of sheet.lines.flatMap((l) => l.bars)) {
+        for (const c of bar.chords) {
+          const notes = bar.voice.filter((n) => n.beat >= c.beat && (bar.chords.find((d) => d.beat > c.beat)?.beat ?? Infinity) > n.beat)
+          expect(c.pentatonic).not.toBeNull()
+          expect(notes.every((n) => n.pitch && pcSet(c.pentatonic!.root).has(pcOf(n.pitch)))).toBe(true)
+        }
+      }
+    }
+  })
+  it('a transposing part plays the written pentatonic', () => {
+    expect(keys(buildChanges(doc, TENOR, 4, false, PENT, undefined, one(0, 'flat')))[1]?.map((k) => k.split('/')[0])).toEqual(['d', 'e', 'f#', 'a']) // Bm, written
+  })
+  it("leaves out the degree chosen, and goes the way chosen", () => {
+    const sheet = buildChanges(doc, CONCERT, 4, false, { ...PENT, leave: 'b7', dir: 'down' }, undefined, one(0, 'flat'))
+    expect(keys(sheet)[0]?.slice(0, 4).map((k) => k.split('/')[0])).toEqual(['e', 'd', 'c', 'a'])
+  })
+  it('with no pentatonic to play (no overlay), plays the 7th chord arpeggio in its pattern', () => {
+    expect(keys(buildChanges(doc, CONCERT, 4, false, PENT))).toEqual(keys(buildChanges(doc, CONCERT, 4, false, 'up-root')))
+  })
+  it('gives a Pentatonic line the page count of an arpeggio line', () => {
+    const rows = { numerals: true, scales: true, pentatonics: true }
+    expect(changesLinesPerPage(PENT, rows)).toBe(changesLinesPerPage('up-root', rows))
   })
 })
 

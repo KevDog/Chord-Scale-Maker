@@ -95,7 +95,7 @@ export const noteValue = (shortest: number): NoteValue => NOTE_VALUES.find((v) =
 const INVERSION: Readonly<Record<string, number>> = { root: 0, '1st': 1, '2nd': 2, '3rd': 3 }
 
 /** the tone nearest `prev` at any octave, but never prev itself (ties: the lower pitch), as an index into the tones */
-function nearestTone(tones: readonly Spelled[], prev: number): number {
+export function nearestTone(tones: readonly Spelled[], prev: number): number {
   const best = tones
     .map((t, i) => {
       const up = (pcOf(t) - (prev % 12) + 12) % 12
@@ -151,30 +151,40 @@ export function placeRun(pcs: readonly number[], up: boolean, range: Range): rea
 
 const readable = (chord: string): boolean => orNull(() => parseChord(chord)) !== null
 
+/** why a chord plays nothing: a diagnostic for the sheet */
+const noTonesFor = (chord: string): string => `no chord tones for ${chord || 'an empty chord'} (${readable(chord) ? 'unknown chord quality' : "can't read the chord"})`
+
+/** a chord's cells: its tones, and the next cell's order (indexes into them) and direction, given the last note and the run's count */
+export type Cells = Readonly<{ tones: readonly Spelled[]; next: (prev: number | null, count: number) => Readonly<{ order: readonly number[]; up: boolean }> }>
+
+/** a chord's 7th chord arpeggio cells in a pattern; null if it has no tones */
+export function arpeggioCells(part: Part, chord: GuideInput, pattern: ArpeggioPattern): Cells | null {
+  const tones = arpeggioTones(part, chord.chord, chord.scale)
+  return tones && { tones, next: (prev, count) => orderFor(pattern, tones, prev, count) }
+}
+
 type Segment = Readonly<{ chord: number; bar: number; beat: number; length: number }>
 
 /**
- * the arpeggio line's voice for chords in time order (docs/superpowers/specs/2026-10-12-seventh-chord-arpeggios-design.md):
- * by timeline bar, the bar's notes, each bar in its own note value (rule 2), each chord's slots filled by repeating
- * its pattern from the start (rule 3, again in each bar it lasts into); a chord without tones rests and ends the run
- * (rule 6); accidentals by the measure rule against keySig (null: C). missing: a diagnostic per unreadable chord.
+ * a line of four-note cells for chords in time order (the arpeggio line's rules, docs/superpowers/specs/2026-10-12-seventh-chord-arpeggios-design.md):
+ * by timeline bar, the bar's notes, each bar in its own note value (rule 2), each chord's slots filled by cell after
+ * cell (rule 3, again in each bar it lasts into), each placed whole nearest the last note in the part's range; a chord
+ * without cells rests and ends the run (rule 6); accidentals by the measure rule against keySig (null: C).
+ * missing: a diagnostic per chord without cells.
  */
-export function arpeggioVoices(
+export function cellVoices(
   chords: readonly GuideInput[],
   part: Part,
   beats: 2 | 3 | 4,
   keySig: string | null,
-  pattern: ArpeggioPattern,
+  cellsOf: (chord: GuideInput, index: number) => Cells | null,
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; missing: readonly string[] } {
   const range = rangeOf(part)
   const missing: string[] = []
-  const tones = chords.map((c) => {
-    const t = arpeggioTones(part, c.chord, c.scale)
-    if (!t) {
-      const why = `no chord tones for ${c.chord || 'an empty chord'} (${readable(c.chord) ? 'unknown chord quality' : "can't read the chord"})`
-      if (!missing.includes(why)) missing.push(why)
-    }
-    return t
+  const cells = chords.map((c, i) => {
+    const found = cellsOf(c, i)
+    if (!found && !missing.includes(noTonesFor(c.chord))) missing.push(noTonesFor(c.chord))
+    return found
   })
   const segments: Segment[] = chords.flatMap((c, chord) => {
     const out: Segment[] = []
@@ -196,17 +206,18 @@ export function arpeggioVoices(
   let prev: number | null = null
   let count = 0
   for (const s of segments) {
-    const t = tones[s.chord]
-    if (!t) {
+    const c = cells[s.chord]
+    if (!c) {
       push(s.bar, { pitch: null, beat: s.beat, beats: s.length as GuideNote['beats'], tie: false, tiedIn: false, accidental: null })
       prev = null
       count = 0
       continue
     }
+    const t = c.tones
     const v = noteValue(shortest.get(s.bar) ?? s.length)
     const slots = Math.round(s.length / v)
     for (let k = 0; k < slots; k += 4) {
-      const { order, up } = orderFor(pattern, t, prev, count)
+      const { order, up } = c.next(prev, count)
       const midi = place(order.map((i) => pcOf(t[i] ?? (t[0] as Spelled))), up, range, prev)
       const take = Math.min(4, slots - k)
       for (let j = 0; j < take; j++) {
@@ -219,4 +230,15 @@ export function arpeggioVoices(
   }
   for (const [bar, v] of bars) bars.set(bar, voiceAccidentals(v, keySig))
   return { bars, missing }
+}
+
+/** the arpeggio line's voice: each chord's 7th chord arpeggio cells in the pattern (cellVoices) */
+export function arpeggioVoices(
+  chords: readonly GuideInput[],
+  part: Part,
+  beats: 2 | 3 | 4,
+  keySig: string | null,
+  pattern: ArpeggioPattern,
+): { bars: ReadonlyMap<number, readonly GuideNote[]>; missing: readonly string[] } {
+  return cellVoices(chords, part, beats, keySig, (c) => arpeggioCells(part, c, pattern))
 }

@@ -2,6 +2,7 @@ import { isSheetLine, type SheetLine } from './arpeggios'
 import { type ArpDirection, type ArpNotes, isArpDirection, isArpNotes } from './arpeggioSheet'
 import { type ChordPicks, chordPicksFrom, hasPicks } from './chordPicks'
 import { type InstrumentName, isInstrumentName } from './instruments'
+import { isPentatonicLeave, type PentatonicLeave } from './pentatonicLine'
 import { isScaleLevel, type ScaleLevel } from './levels'
 import { LIMITS } from './limits'
 import type { Mode } from './part'
@@ -29,6 +30,8 @@ export type ShareView = Readonly<{
   /** the Arpeggios sheet's choices: 7th Chord or Extended; Up, Down or Up & down */
   arpNotes?: ArpNotes
   arpDir?: ArpDirection
+  /** the Changes sheet's Pentatonic line (#284), with an arpeggio line: its Leave out (its direction is arpDir); an old link has none */
+  pentLeave?: PentatonicLeave
   practice?: PracticeSelection
   level?: ScaleLevel
   seed?: number
@@ -108,6 +111,7 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(o.sheet === 'scales' || o.sheet === 'changes' || o.sheet === 'arpeggios' ? { sheet: o.sheet } : {}),
     ...(isArpNotes(o.arpNotes) ? { arpNotes: o.arpNotes } : {}),
     ...(isArpDirection(o.arpDir) ? { arpDir: o.arpDir } : {}),
+    ...(isPentatonicLeave(o.pentLeave) ? { pentLeave: o.pentLeave } : {}),
     ...(practice ? { practice } : {}),
     ...(isScaleLevel(o.level) ? { level: o.level } : {}),
     ...(Number.isInteger(o.seed) && (o.seed as number) >= 0 && (o.seed as number) < 2 ** 32 ? { seed: o.seed as number } : {}),
