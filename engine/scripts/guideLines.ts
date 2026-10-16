@@ -16,8 +16,9 @@
  */
 import { readdirSync, readFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
-import { buildChanges, chartBeats, CONCERT, expandRowLines, guideTonesFor, guideToneLine, guideToneTimeline, INSTRUMENTS, isInstrumentName, isSyncCopy, parseChart, partFor, rangeOf, qualityScale, rootName, voiceLead } from '../src'
-import type { ChartLine, GuideInput, LinedRow, Part, Pitched } from '../src'
+import { buildChanges, chartBeats, CONCERT, guideTonesFor, guideToneLine, guideToneTimeline, INSTRUMENTS, isInstrumentName, isSyncCopy, parseChart, partFor, rangeOf, qualityScale, rootName, voiceLead } from '../src'
+import type { Directive, GuideInput, LinedRow, Part, Pitched } from '../src'
+import { sectionLayout } from '../src/layout'
 import { octaveOf } from '../src/keySignature'
 
 const args = process.argv.slice(2)
@@ -38,9 +39,10 @@ type Chord = GuideInput & Readonly<{ at: string; bar: number }> // at: "A 5" (se
 /** the chords as the Changes sheet draws them (a mirror of buildChanges' `drawn`: its blocks, folds and endings) */
 function drawnChords(text: string): Chord[] {
   const doc = parseChart(text).value
-  const rows = expandRowLines(doc).value
+  const layout = sectionLayout(doc).value
+  const rows = layout.rows
   const beats = chartBeats(doc)
-  const { events } = guideToneTimeline(rows, beats)
+  const { events } = guideToneTimeline(rows, beats, layout.lengths)
   const index = new Map<LinedRow, number>(rows.map((r, i) => [r, i]))
   const eventAt = new Map(events.map((e) => [index.get(e.row as LinedRow) ?? -1, e]))
   const barOf = (i: number): number | undefined => {
@@ -57,7 +59,7 @@ function drawnChords(text: string): Chord[] {
     const i = rowIndexAt.get(`${section}|${bar}`)
     return i === undefined ? undefined : barOf(i)
   }
-  const endings = doc.lines.filter((l): l is Extract<ChartLine, { kind: 'ending' }> => l.kind === 'ending')
+  const endings = layout.directives.filter((d): d is Extract<Directive, { kind: 'ending' }> => d.kind === 'ending')
   const sectionsWithEndings = new Set(endings.map((e) => e.section))
   const voltaAt = new Map<number, number>()
   for (const e of endings) for (let w = e.from; w <= e.to; w++) {
@@ -67,8 +69,7 @@ function drawnChords(text: string): Chord[] {
   type Run = { section: string; rows: number[]; copyOf: string | null; from: number; to: number; times: number }
   const runs: Run[] = []
   rows.forEach((r, i) => {
-    const source = doc.lines[r.line]
-    const copyOf = source?.kind === 'row' && source.section !== r.section ? source.section : null
+    const copyOf = layout.sections.find((s) => s.name === r.section)?.copyOf ?? null
     const last = runs.at(-1)
     if (last && last.section === r.section) last.rows.push(i)
     else runs.push({ section: r.section, rows: [i], copyOf, from: 0, to: 0, times: 1 })

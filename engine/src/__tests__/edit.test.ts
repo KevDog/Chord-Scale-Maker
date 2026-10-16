@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { type ChartDoc, chartMeta, parseChart, serializeChart } from '../chart'
 import { cellError, insertKeyBefore, insertRowAfter, removeLine, sameChart, setKeyLine, setMeta, setRowChord, setRowField } from '../edit'
 
-const doc = parseChart('title: T\nA | 1 | Cm7\n# note\nA | 2 | F7 | F Mixolydian\n').value
+const doc = parseChart('title: T\n\nsection: A\nbars: 4\n1 | Cm7\n# note\n2 | F7 | F Mixolydian\n').value
 
 describe('edit', () => {
   it('rejects cell values that would re-parse as a different line', () => {
@@ -64,7 +64,7 @@ describe('chord changes and comparing charts', () => {
     expect(sameChart('A | 1 | Cm7 | C Dorian\n', 'A | 1 | Cm7\n')).toBe(false) // a written scale pins it; a blank plays the analysis
     expect(sameChart('A | 6 | D7 | D Half-Whole\n', 'A | 6 | D7 | D Half-Whole Diminished\n')).toBe(true)
     expect(sameChart('A | 1 | Cm7 | C Dorian\n', 'A | 1 | Cm7 | C Aeolian\n')).toBe(false)
-    expect(sameChart('# note\nA | 1 | Cm7\n', 'A | 1 | Cm7\n')).toBe(false) // comments count
+    expect(sameChart('# note\n\nsection: A\nbars: 4\n1 | Cm7\n', 'A | 1 | Cm7\n')).toBe(false) // comments count
   })
 })
 
@@ -85,10 +85,10 @@ describe('the function cell', () => {
 
 describe('@key lines', () => {
   it('starts a key change at a row, and changes its key', () => {
-    const doc = parseChart('A | 1 | Cm7\nB | 9 | DMaj7\n').value
+    const doc = parseChart('section: A\nbars: 8\n1 | Cm7\n\nsection: B\nbars: 4\n1 | DMaj7\n').value
     const added = insertKeyBefore(doc, 1, 'D')
-    expect(serializeChart(added)).toBe('A | 1 | Cm7\n@key B 9 D\nB | 9 | DMaj7\n')
-    expect(serializeChart(setKeyLine(added, 1, 'Eb'))).toBe('A | 1 | Cm7\n@key B 9 Eb\nB | 9 | DMaj7\n')
+    expect(serializeChart(added)).toBe('section: A\nbars: 8\n1 | Cm7\n\nsection: B\nkey: D\nbars: 4\n1 | DMaj7\n')
+    expect(serializeChart(setKeyLine(added, 1, 'Eb'))).toBe('section: A\nbars: 8\n1 | Cm7\n\nsection: B\nkey: Eb\nbars: 4\n1 | DMaj7\n')
   })
 
   it('leaves the doc alone for a line that is not a row, or a bar that is not a whole number', () => {

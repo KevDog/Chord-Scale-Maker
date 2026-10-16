@@ -66,7 +66,7 @@ export type Entry = Readonly<{
  * end, which is its stated length, else the next multiple of four bars (forms come in 12, 16, 32…)
  */
 function timing(rows: readonly LinedRow[], formBars?: number): { start: number; bars: number }[] {
-  const bars = rows.map((r) => Number(r.bar))
+  const bars = rows.map((r) => r.at) // its bar counted through its part (layout.ts)
   const first = bars.find((b) => Number.isFinite(b)) ?? 1
   const last = Math.max(first, ...bars.filter(Number.isFinite))
   const length = formBars !== undefined && first + formBars > last ? formBars : Math.ceil((last - first + 1) / 4) * 4

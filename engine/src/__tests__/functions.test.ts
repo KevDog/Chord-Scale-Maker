@@ -155,7 +155,7 @@ describe('a deceptive function changes no scale', () => {
 
   it("keeps the expected target's scale where the resolution doesn't come; the sheet prints the parentheses", () => {
     // D7 to E♭: the deceptive cadence of G minor (V to ♭VI)
-    const chart = (f: string) => `title: T\nkey: C\nbars: 4\nA | 1 | Cmaj7\nA | 2 | D7 | | ${f}\nA | 3 | Ebmaj7\nA | 4 | G7\n`
+    const chart = (f: string) => `title: T\nkey: C\nbars: 4\nsection: A\n1 | Cmaj7\n2 | D7 | | ${f}\n3 | Ebmaj7\n4 | G7\n`
     const d7 = (f: string) => analyse(parseChart(chart(f)).value).rows.find((r) => r.chord === 'D7')
     expect(d7('')).toMatchObject({ numeral: 'II7', scale: 'D Mixolydian' })
     expect(d7('Gm: V7')).toMatchObject({ numeral: 'V7', scale: 'D Phrygian Dominant', rule: 'D4' })

@@ -66,6 +66,6 @@ describe('withPick / withoutPicks', () => {
 })
 
 it('names the bars positions cover, once each, in order', () => {
-  expect(pickBars(['A1:6:0', 'A1:6:1', 'A3:22:0'])).toEqual(['6', '22'])
+  expect(pickBars(['A1:6:0', 'A1:6:1', 'A3:6:0'])).toEqual(['A1 bar 6', 'A3 bar 6'])
   expect(pickTarget('Db7', null)).toBe('Db7|')
 })

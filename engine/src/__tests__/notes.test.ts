@@ -5,43 +5,43 @@ import type { ScaleView } from '../resolve'
 
 const notes = (text: string, view?: ScaleView) => rowNotes(parseChart(text).value, view)
 const ON: ScaleView = { level: 'standard', seed: 0 }
-const C_TUNE = 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\nA | 5 | Am7\nA | 6 | Dm7\nA | 7 | G7\nA | 8 | CMaj7\n'
+const C_TUNE = 'title: T\nkey: C\n\nsection: A\n1 | CMaj7\n2 | D7\n3 | Dm7\n4 | G7\n5 | Am7\n6 | Dm7\n7 | G7\n8 | CMaj7\n'
 
 describe('rowNotes', () => {
   it('gives each row its reason and key area, keyed by doc line', () => {
-    expect(notes('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n').get(3)).toEqual({ note: 'V7 of C: natural tensions', problem: null, key: 'C', numeral: 'V7', scale: 'G Mixolydian', source: 'rules', analysed: 'G Mixolydian', rule: 'D4' })
+    expect(notes('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\n3 | CMaj7\n').get(3)).toEqual({ note: 'V7 of C: natural tensions', problem: null, key: 'C', numeral: 'V7', scale: 'G Mixolydian', source: 'rules', analysed: 'G Mixolydian', rule: 'D4' })
   })
 
   it("gives the analyser's scale and rule beside yours, at the sheet's level: what blanking the cell would play", () => {
-    expect(notes('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7 | G Altered\nA | 3 | CMaj7\n').get(3)).toMatchObject({ scale: 'G Altered', analysed: 'G Mixolydian', rule: 'D4' })
-    const minor = 'title: T\nkey: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm7 | G Dorian\n'
+    expect(notes('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7 | G Altered\n3 | CMaj7\n').get(3)).toMatchObject({ scale: 'G Altered', analysed: 'G Mixolydian', rule: 'D4' })
+    const minor = 'title: T\nkey: Gm\n\nsection: A\nbars: 4\n1 | Am7b5\n2 | D7\n3 | Gm7 | G Dorian\n'
     expect(notes(minor, { ...ON, level: 'basic' }).get(4)).toMatchObject({ scale: 'G Dorian', source: 'written', analysed: 'G Aeolian' })
   })
 
   it('gives the scale played: yours over the analyser’s; and the function you stated as the numeral', () => {
-    const n = notes('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7 | G Altered | V7/I\nA | 3 | CMaj7\n')
+    const n = notes('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7 | G Altered | V7/I\n3 | CMaj7\n')
     expect(n.get(3)).toMatchObject({ numeral: 'V7/I', scale: 'G Altered', source: 'written' })
   })
 
   it("says when your scale isn't the analyser's", () => {
-    expect(notes('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7 | G Altered\nA | 3 | CMaj7\n').get(3)?.note).toBe(
+    expect(notes('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7 | G Altered\n3 | CMaj7\n').get(3)?.note).toBe(
       'analyser: G Mixolydian (V7 of C: natural tensions); you chose G Altered',
     )
   })
 
   it('says "you chose" only of a written scale: a blank cell chose nothing', () => {
-    const stated = 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7 | | subV7/♭II\nA | 3 | Dm7\nA | 4 | G7\nA | 5 | CMaj7\n'
+    const stated = 'title: T\nkey: C\n\nsection: A\nbars: 8\n1 | CMaj7\n2 | D7 |  | subV7/♭II\n3 | Dm7\n4 | G7\n5 | CMaj7\n'
     expect(notes(stated, ON).get(3)).toMatchObject({ note: expect.stringMatching(/^\* /), scale: 'D Lydian Dominant', source: 'function' })
     expect(notes(stated.replace('| | subV7', '| D Mixolydian | subV7'), ON).get(3)).toMatchObject({ note: expect.stringContaining('; you chose D Mixolydian'), source: 'written' })
   })
 
   it('gives the scale played at the sheet’s level', () => {
-    const minor = 'title: T\nkey: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm7\n'
+    const minor = 'title: T\nkey: Gm\n\nsection: A\nbars: 4\n1 | Am7b5\n2 | D7\n3 | Gm7\n'
     expect(notes(minor, { ...ON, level: 'basic' }).get(3)).toMatchObject({ scale: 'G Minor Pentatonic', source: 'rules', note: expect.not.stringContaining('you chose') })
   })
 
   it("carries a row's function problem, and an @key's", () => {
-    const n = notes('title: T\nkey: C\n@key Z 9 D\nA | 1 | Dm7\nA | 2 | G7 | | ii7\nA | 3 | CMaj7\n')
+    const n = notes('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7 |  | ii7\n3 | CMaj7\n')
     expect(n.get(4)?.problem).toBe('ii7 is a minor chord, G7 a dominant one')
     expect(n.get(2)).toEqual({ note: '', problem: '@key Z 9: no bar 9 in section Z', key: '', numeral: '', scale: '', source: 'default', analysed: '', rule: '' })
   })
@@ -79,13 +79,13 @@ describe('functionChoices', () => {
   })
 
   it("keeps the other rows' statements while it works out one row's choices", () => {
-    const text = 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | F#m7\nA | 3 | B7 | | V7/III\nA | 4 | Em7\nA | 5 | G7\nA | 6 | CMaj7\n'
+    const text = 'title: T\nkey: C\n\nsection: A\nbars: 8\n1 | CMaj7\n2 | F#m7\n3 | B7 |  | V7/III\n4 | Em7\n5 | G7\n6 | CMaj7\n'
     expect(functionChoices(parseChart(text).value).get(3)?.[0]?.label).toBe('ii7/III')
     expect(functionChoices(parseChart(text.replace(' | | V7/III', '')).value).get(3)?.[0]?.label).toBe('ii7/iii') // unstated
   })
 
   it('labels Auto "Auto (extended dominant)" on a chain link the sheet marks with an arrow (ruling R7)', () => {
-    const bridge = functionChoices(parseChart('title: T\nkey: Bb\nA | 1 | BbMaj7\nA | 2 | D7\nA | 3 | G7\nA | 4 | C7\nA | 5 | F7\nA | 6 | BbMaj7\n').value)
+    const bridge = functionChoices(parseChart('title: T\nkey: Bb\n\nsection: A\nbars: 8\n1 | BbMaj7\n2 | D7\n3 | G7\n4 | C7\n5 | F7\n6 | BbMaj7\n').value)
     expect([3, 4, 5].map((line) => bridge.get(line)?.[0])).toEqual([
       { value: '', label: 'Auto (extended dominant)', scale: 'D Mixolydian' },
       { value: '', label: 'Auto (extended dominant)', scale: 'G Mixolydian' },
@@ -94,14 +94,14 @@ describe('functionChoices', () => {
   })
 
   it('gives a held row the choices of the chord it holds', () => {
-    const doc = parseChart('title: T\nkey: C\nA | 1 | D7\nA | 2 | D7\nA | 3 | G7\nA | 4 | CMaj7\n').value
+    const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | D7\n2 | D7\n3 | G7\n4 | CMaj7\n').value
     expect(functionChoices(doc).get(3)).toEqual(functionChoices(doc).get(2))
   })
 })
 
 describe('insertKeyChange', () => {
-  const MOVES = 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | CMaj7\nB | 5 | Am7\nB | 6 | D7\nB | 7 | GMaj7\nB | 8 | GMaj7\n'
-  const C = 'C | 9 | Dm7\nC | 10 | G7\nC | 11 | CMaj7\nC | 12 | CMaj7\n'
+  const MOVES = 'title: T\nkey: C\n\nsection: A\n1 | CMaj7\n2 | Dm7\n3 | G7\n4 | CMaj7\n\nsection: B\n1 | Am7\n2 | D7\n3 | GMaj7\n4 | GMaj7\n'
+  const C = 'section: C\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | CMaj7\n'
   const change = (text: string, i: number): string => serializeChart(insertKeyChange(parseChart(text).value, i))
   const tidy = (text: string): string => serializeChart(parseChart(text).value)
 
@@ -126,10 +126,10 @@ describe('insertKeyChange', () => {
 
 describe('chartKeyOf', () => {
   it("is the chart's key: line, whatever its @key areas", () => {
-    expect(chartKeyOf(parseChart('title: T\nkey: Eb\nA | 1 | EbMaj7\nB | 2 | DMaj7\n@key B 2 D\n').value)?.name).toBe('Eb major')
-    expect(chartKeyOf(parseChart('title: T\nkey: Gm\nA | 1 | Gm7\n').value)?.name).toBe('G minor')
+    expect(chartKeyOf(parseChart('title: T\nkey: Eb\n\nsection: A\n1 | EbMaj7\n\nsection: B\nkey: D\nbars: 3\n1 | DMaj7\n').value)?.name).toBe('Eb major')
+    expect(chartKeyOf(parseChart('title: T\nkey: Gm\n\nsection: A\nbars: 4\n1 | Gm7\n').value)?.name).toBe('G minor')
   })
   it('is null without a key: line', () => {
-    expect(chartKeyOf(parseChart('title: T\nA | 1 | Cm7\n').value)).toBeNull()
+    expect(chartKeyOf(parseChart('title: T\n\nsection: A\nbars: 4\n1 | Cm7\n').value)).toBeNull()
   })
 })

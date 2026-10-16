@@ -85,8 +85,8 @@ function rowOf(group: FunctionGroup, text: string, key: Key): FunctionRow | null
   const quality = QUALITY[f.family][written] ?? ''
   const chord = `${rootName(readable(functionRoot(f, key)))}${quality}`
   // a diminished chord with no target is read between tonics, where the rules can only call it passing (a guess)
-  const between = group === 'chromatic' && f.family === 'dim' ? `A | 1 | ${tonicChord(key)} | |\n` : ''
-  const doc = parseChart(`key: ${keyCode(key)}\nbars: ${between ? 2 : 1}\n${between}A | ${between ? 2 : 1} | ${chord} | | ${text}\n`).value
+  const between = group === 'chromatic' && f.family === 'dim' ? `1 | ${tonicChord(key)} | |\n` : ''
+  const doc = parseChart(`key: ${keyCode(key)}\nbars: ${between ? 2 : 1}\nsection: A\n${between}${between ? 2 : 1} | ${chord} | | ${text}\n`).value
   const a = analyse(doc).rows.at(-1)
   if (!a) return null
   return { group, fn: f.text, chord, scale: a.scale, rule: a.rule, reason: a.reason.replace(/^\* /, ''), fallback: !!a.fallback }

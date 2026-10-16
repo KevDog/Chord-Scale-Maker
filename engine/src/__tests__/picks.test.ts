@@ -4,7 +4,7 @@ import { type ChartDoc, parseChart } from '../chart'
 import { deleteBar, insertBar, repeatSection, setBarChords, splitSection } from '../edit'
 import { carryChordPicks, carryPicks } from '../picks'
 
-const C4 = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | Cmaj7\nB | 5 | Em7\nB | 6 | A7').value
+const C4 = parseChart('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n2 | Dm7\n3 | G7\n4 | Cmaj7\n\nsection: B\nbars: 4\n1 | Em7\n2 | A7').value
 const carried = (before: ChartDoc, after: ChartDoc, picks: Record<string, number>) => carryPicks(drawnChords(before), drawnChords(after), picks)
 
 describe('carryPicks', () => {
@@ -48,7 +48,7 @@ describe('carryPicks', () => {
 
 describe('drawnChords', () => {
   it('lists each drawn chord by the key the Changes sheet gives it, with its text', () => {
-    const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 1 | Dm7\nB | 2 | G7').value
+    const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n1 | Dm7\n\nsection: B\nbars: 3\n1 | G7').value
     expect(drawnChords(doc)).toEqual([{ at: 'A:1:0', text: 'Cmaj7' }, { at: 'A:1:1', text: 'Dm7' }, { at: 'B:2:0', text: 'G7' }])
   })
 })

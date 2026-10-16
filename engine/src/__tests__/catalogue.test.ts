@@ -62,7 +62,7 @@ describe('RULES against what the engine produces', () => {
       for (const r of analyse(parseChart(readFileSync(new URL(f, LIBRARY), 'utf8')).value).rows) ruleParts(r.rule).forEach((id) => seen.add(id))
     for (const k of CATALOGUE_KEYS) for (const r of table(k)) ruleParts(r.rule).forEach((id) => seen.add(id))
     for (const { chord, rule } of SYMBOL_EXAMPLES) {
-      const got = analyse(parseChart(`key: A\nbars: 1\nA | 1 | ${chord} | |\n`).value).rows[0]?.rule ?? '?'
+      const got = analyse(parseChart(`key: A\nbars: 1\nsection: A\n1 | ${chord} | |\n`).value).rows[0]?.rule ?? '?'
       expect(ruleParts(got)).toContain(rule)
       ruleParts(got).forEach((id) => seen.add(id))
     }

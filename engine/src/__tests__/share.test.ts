@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import { LIMITS } from '../limits'
 import { decodeShare, encodeShare, SHARE_LIMITS, shareViewFrom } from '../share'
 
-const CHART = 'title: Blue Bossa\n# section | bar | chord | scale\nA | 1 | Cm7 | C Dorian\nA | 3 | Fm7 | F Dorian\n'
+const CHART = 'title: Blue Bossa\n# bar | chord | scale\n\nsection: A\nbars: 4\n1 | Cm7 | C Dorian\n3 | Fm7 | F Dorian\n'
 const b64url = (s: string): string => btoa(s).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '')
 /** a link payload made by hand: raw JSON, deflated the same way */
 async function packed(value: unknown): Promise<string> {
@@ -124,7 +124,7 @@ describe('share links', () => {
   })
 
   it('carry function cells and @key lines unchanged', async () => {
-    const chart = 'title: T\nA | 1 | D7 |  | V7/V\n@key A 1 D\n'
+    const chart = 'title: T\n\nsection: A\nkey: D\nbars: 4\n1 | D7 |  | V7/V\n'
     expect((await decodeShare(await encodeShare({ chart })))?.chart).toBe(chart)
   })
 })

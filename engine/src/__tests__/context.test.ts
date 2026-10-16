@@ -2,6 +2,7 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { ambiguities, analyse, type Analysis, contextLine } from '../analysis'
 import { parseChart } from '../chart'
+import { migrateChart } from '../migrate'
 
 /**
  * The chart's context (docs/superpowers/specs/2026-10-10-chart-context-design.md): `context:` stated or detected,
@@ -11,7 +12,9 @@ import { parseChart } from '../chart'
 const library = (name: string): string => readFileSync(`charts/${name}.txt`, 'utf8')
 /** a library chart as if it had no context: line */
 const undeclared = (name: string): string => library(name).replace(/^context:.*\n/m, '')
-const read = (text: string): Analysis => analyse(parseChart(text).value)
+/** the analysis of a chart; this file builds its charts as rows naming their section and absolute bar (`A | 13 | Bb7`),
+ * which migrateChart turns into section blocks (a library chart passes through as it is) */
+const read = (text: string): Analysis => analyse(parseChart(migrateChart(text).text).value)
 /** "Eb Mixolydian (D5)" for the first row at "bar chord" */
 const verdict = (text: string, barChord: string): string | undefined => {
   const r = read(text).rows.find((x) => `${x.bar} ${x.chord}` === barChord)
@@ -91,28 +94,31 @@ describe('a stated key beats the blues key (§2)', () => {
 
 describe('what the analysis could not use (§1)', () => {
   it('a bad context: falls back to the detection, with a problem on its line', () => {
-    const a = read('title: T\nkey: Dm\ncontext: bossa\nA | 1 | Dm7\nA | 9 | EbMaj7\n')
+    const a = read('title: T\nkey: Dm\ncontext: bossa\n\nsection: A\nbars: 12\n1 | Dm7\n9 | EbMaj7\n')
     expect(a.contextSource).toBe('detected')
     expect(a.problems).toEqual([{ line: 2, message: 'context: bossa is not functional, modal or blues: the context is detected' }])
   })
 
   it('a context: with a trailing comment is stated', () => {
-    const a = read('title: T\nkey: C\ncontext: modal          # the whole tune\nA | 1 | Dm7\nA | 3 | G7\nA | 5 | CMaj7\n')
+    const a = read('title: T\nkey: C\ncontext: modal          # the whole tune\n\nsection: A\nbars: 8\n1 | Dm7\n3 | G7\n5 | CMaj7\n')
     expect([a.context, a.contextSource, a.problems]).toEqual(['modal', 'stated', []])
   })
 
   it('an empty context: is absent: detected, no problem', () => {
-    const a = read('title: T\nkey: Dm\ncontext:\nA | 1 | Dm7\nA | 9 | EbMaj7\n')
+    const a = read('title: T\nkey: Dm\ncontext:\n\nsection: A\nbars: 12\n1 | Dm7\n9 | EbMaj7\n')
     expect([a.contextSource, a.problems]).toEqual(['detected', []])
   })
 
   it('minor: is reserved, and ignored', () => {
-    expect(read('title: T\nkey: Dm\nminor: aeolian\nA | 1 | Dm7\n').problems).toEqual([{ line: 2, message: 'minor: is reserved, and ignored' }])
+    expect(read('title: T\nkey: Dm\nminor: aeolian\n\nsection: A\nbars: 4\n1 | Dm7\n').problems).toEqual([{ line: 2, message: 'minor: is reserved, and ignored' }])
   })
 
-  it("@context is not yet supported: the chart's context holds", () => {
-    const a = read('title: T\nkey: Dm\n@context A 1 blues\nA | 1 | Dm7\nA | 9 | EbMaj7\n')
-    expect(a.problems).toEqual([{ line: 2, message: "@context A 1 blues: not yet supported: using the chart's context" }])
+  it("a section's context: and @context are not yet supported: the chart's context holds", () => {
+    const a = read('title: T\nkey: Dm\n\nsection: A\ncontext: blues\nbars: 12\n1 | Dm7\n@context 9 functional\n9 | EbMaj7\n')
+    expect(a.problems).toEqual([
+      { line: 4, message: "context: blues in section A: not yet supported: using the chart's context" },
+      { line: 7, message: "@context 9 functional in section A: not yet supported: using the chart's context" },
+    ])
     expect(a.context).toBe('modal')
   })
 })

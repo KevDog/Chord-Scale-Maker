@@ -1,4 +1,5 @@
-import { type ChartContext, type ChartDoc, type ChartLine, expandRowLines, formPart, type LinedRow, parseContext } from '../chart'
+import { type ChartContext, type ChartDoc, type ChartLine, expandRowLines, formPart, lineSections, type LinedRow, parseContext } from '../chart'
+import { type Layout, sectionLayout, statedKeyAt } from '../layout'
 import { LIMITS } from '../limits'
 import { pcOf, rootName, shiftBy, type Spelled } from '../pitch'
 import { sameScale } from '../scales'
@@ -31,7 +32,12 @@ export const RULES_VERSION = 1
 export type RowAnalysis = Readonly<
   Decision & { row: number; line: number; bar: string; chord: string; key: Key; held: boolean; numeral: string; stated: boolean; statedKey?: Key }
 >
-export type Area = Readonly<{ key: Key; from: string; to: string; row: number; section: string; stated: boolean }>
+/** a key area: from a bar of `section` to a bar of `toSection` (the same section, or a later one) */
+export type Area = Readonly<{ key: Key; from: string; to: string; row: number; section: string; toSection: string; stated: boolean }>
+
+/** an area's bars as comments and reports name them: "A 1–5", "A 3", "A 11 – B 5" */
+export const areaSpan = (a: Area): string =>
+  a.section !== a.toSection ? `${a.section} ${a.from} – ${a.toSection} ${a.to}` : a.from === a.to ? `${a.section} ${a.from}` : `${a.section} ${a.from}–${a.to}`
 /** something in the chart the analysis couldn't use: a function that won't read or doesn't fit, an @key with no bar. line: the doc line */
 export type Problem = Readonly<{ line: number; message: string }>
 export type Analysis = Readonly<{
@@ -60,27 +66,31 @@ const addProblem = (problems: Problem[], p: Problem): void => {
 }
 
 /**
- * `@key` lines: each holds from its bar until the next; before the first, the areas as found. Its bar may be one a
- * chord is held through (no row of its own): the key starts with the entry that covers it, played in its section.
+ * stated keys (docs/design.md §4): a section's key: from its bar 1, an in-block @key from its bar, each until the
+ * section ends; elsewhere the areas as found. A change on a bar a chord is held through states the chord held there.
  */
-function statedAreas(doc: ChartDoc, rows: readonly LinedRow[], stream: readonly Entry[], found: readonly Key[], problems: Problem[]): { keys: Key[]; stated: boolean[] } {
-  const starts: { at: number; key: Key }[] = []
-  doc.lines.forEach((l, line) => {
-    if (l.kind !== 'key') return
-    const covers = (e: Entry): boolean => e.start <= l.bar && l.bar < e.start + e.bars && rows[e.rows.findLast((r) => Number(rows[r]?.bar) <= l.bar) ?? -1]?.section === l.section
-    const at = stream.findIndex(covers)
-    const key = parseKey(l.key)
-    if (at < 0 || !key) return void addProblem(problems, { line, message: `@key ${l.section} ${l.bar}: no bar ${l.bar} in section ${l.section}` })
-    starts.push({ at, key })
+function statedAreas(layout: Layout, rows: readonly LinedRow[], stream: readonly Entry[], found: readonly Key[], problems: Problem[]): { keys: Key[]; stated: boolean[] } {
+  for (const d of layout.directives) {
+    if (d.kind !== 'key') continue
+    const length = layout.lengths.get(d.section) ?? 0
+    if (d.bar < 1 || d.bar > length) addProblem(problems, { line: d.line, message: `@key ${d.bar}: no bar ${d.bar} in section ${d.section}` })
+    else if (!parseKey(d.key)) addProblem(problems, { line: d.line, message: `@key ${d.bar} ${d.key}: not a key` })
+  }
+  // each row's stated key: the last change before the next row's bar in its section, else the section's key:
+  const rowKey = rows.map((r, i): string | null => {
+    if (!/^\d+$/.test(r.bar)) return null
+    const nextBar = rows.slice(i + 1).find((x) => x.section === r.section && Number(x.bar) > Number(r.bar))?.bar
+    const before = nextBar === undefined ? (layout.lengths.get(r.section) ?? Number(r.bar)) : Number(nextBar) - 1
+    return statedKeyAt(layout, r.section, before)
   })
-  starts.sort((a, b) => a.at - b.at)
   const keys = [...found]
   const stated = stream.map(() => false)
-  starts.forEach(({ at, key }, k) => {
-    for (let i = at; i < (starts[k + 1]?.at ?? stream.length); i++) {
-      keys[i] = key
-      stated[i] = true
-    }
+  stream.forEach((e, i) => {
+    const k = e.rows.map((r) => rowKey[r] ?? null).filter((x): x is string => x !== null).at(-1)
+    const key = k ? parseKey(k) : null
+    if (!key) return
+    keys[i] = key
+    stated[i] = true
   })
   return { keys, stated }
 }
@@ -146,7 +156,7 @@ type Unkeyed = Readonly<{ global: null; keyFrom: Analysis['keyFrom']; context: C
 /** the lengths in bars of the form's sections, in order (a section is a run of rows with one label) */
 function sectionLengths(rows: readonly LinedRow[], formBars: number): number[] {
   const form = rows.filter((r) => formPart(r.section) === 'form' && /^\d+$/.test(r.bar))
-  const starts = form.flatMap((r, i) => (i === 0 || form[i - 1]?.section !== r.section ? [Number(r.bar)] : []))
+  const starts = form.flatMap((r, i) => (i === 0 || form[i - 1]?.section !== r.section ? [r.at] : []))
   const end = (starts[0] ?? 0) + formBars
   return starts.map((b, i) => (starts[i + 1] ?? end) - b)
 }
@@ -157,13 +167,16 @@ function sectionLengths(rows: readonly LinedRow[], formBars: number): number[] {
  */
 function statedContext(doc: ChartDoc, problems: Problem[]): ChartContext | null {
   let context: ChartContext | null = null
+  const sections = lineSections(doc)
   doc.lines.forEach((l, line) => {
     if (l.kind === 'meta' && l.key === 'context') {
       context = parseContext(l.value)
       if (!context && l.value) addProblem(problems, { line, message: `context: ${l.value} is not functional, modal or blues: the context is detected` })
     }
     if (l.kind === 'meta' && l.key === 'minor') addProblem(problems, { line, message: 'minor: is reserved, and ignored' })
-    if (l.kind === 'context') addProblem(problems, { line, message: `@context ${l.section} ${l.bar} ${l.context}: not yet supported: using the chart's context` })
+    if (l.kind === 'context') addProblem(problems, { line, message: `@context ${l.bar} ${l.context} in section ${sections[line]}: not yet supported: using the chart's context` })
+    if (l.kind === 'sectionMeta' && l.field === 'context' && l.value)
+      addProblem(problems, { line, message: `context: ${l.value} in section ${sections[line]}: not yet supported: using the chart's context` })
   })
   return context
 }
@@ -174,7 +187,8 @@ function statedContext(doc: ChartDoc, problems: Problem[]): ChartContext | null 
  */
 function prepare(doc: ChartDoc): Prepared | Unkeyed {
   const problems: Problem[] = []
-  const rows = expandRowLines(doc).value
+  const layout = sectionLayout(doc).value
+  const rows = layout.rows
   const bars = formBars(doc)
   const stream = buildStream(rows, bars)
   const cadences = findCadences(stream)
@@ -197,7 +211,7 @@ function prepare(doc: ChartDoc): Prepared | Unkeyed {
   const blues = context === 'blues' ? global : null
   const modal = context === 'modal'
   const found = modal || blues ? stream.map(() => global) : localKeys(stream, cadences, global)
-  const areas = statedAreas(doc, rows, stream, found, problems)
+  const areas = statedAreas(layout, rows, stream, found, problems)
   const fns = statedFunctions(stream, rows, areas.keys, global, problems)
   return { rows, stream, areaKeys: areas.keys, areaStated: areas.stated, stated: fns, global, blues, modal, keyFrom, context, contextSource, detection, problems }
 }
@@ -234,13 +248,13 @@ function analyseNow(doc: ChartDoc): Analysis {
     const prevKey = i > 0 ? p.areaKeys[i - 1] : undefined
     const firstRow = p.rows[e.rows[0] ?? 0]
     if (firstRow && (!prevKey || !sameKey(prevKey, key)))
-      areas.push({ key, from: firstRow.bar, to: firstRow.bar, row: e.rows[0] ?? 0, section: firstRow.section, stated: p.areaStated[i] ?? false })
+      areas.push({ key, from: firstRow.bar, to: firstRow.bar, row: e.rows[0] ?? 0, section: firstRow.section, toSection: firstRow.section, stated: p.areaStated[i] ?? false })
     const area = areas.at(-1)
     for (const [j, r] of e.rows.entries()) {
       const row = p.rows[r]
       if (!row) continue
       out.push({ ...decision, row: r, line: row.line, bar: row.bar, chord: row.chord, key, held: j > 0, numeral: roman, stated: !!s, ...(s?.fn.key ? { statedKey: s.key } : {}) })
-      if (area) areas[areas.length - 1] = { ...area, to: row.bar }
+      if (area) areas[areas.length - 1] = { ...area, to: row.bar, toSection: row.section }
     }
   })
   return { key: p.global, keyFrom: p.keyFrom, context: p.context, contextSource: p.contextSource, detection: p.detection, areas, rows: out, problems: p.problems }
@@ -307,7 +321,7 @@ export type Change = Readonly<{ line: number; bar: string; chord: string; from: 
 /** a written scale, without `# keep:`, that the rules don't reproduce at one of its occurrences (strip leaves it) */
 export type Override = Readonly<{ line: number; bar: string; chord: string; scale: string; rules: string }>
 /** a @copy repeat whose analysis differs from its source row's (only the source line can be written) */
-export type Conflict = Readonly<{ line: number; bar: string; chord: string; source: string; copy: string }>
+export type Conflict = Readonly<{ line: number; section: string; bar: string; chord: string; source: string; copy: string }>
 
 const isAnalysisComment = (l: ChartLine): boolean => l.kind === 'comment' && /^#\s*(analysis|area):/.test(l.text)
 const isKept = (l: ChartLine): boolean => l.kind === 'row' && /^keep:/.test(l.comment ?? '')
@@ -320,11 +334,12 @@ export function applyAnalysis(
   // each written line takes its first occurrence's verdict; a repeat that disagrees is reported
   const byLine = new Map<number, RowAnalysis>()
   const conflicts: Conflict[] = []
+  const played = expandRowLines(doc).value
   for (const r of analysis.rows) {
     const first = byLine.get(r.line)
     if (!first) byLine.set(r.line, r)
     else if (first.scale !== r.scale && !conflicts.some((c) => c.line === r.line))
-      conflicts.push({ line: r.line, bar: r.bar, chord: r.chord, source: first.scale ?? '?', copy: r.scale ?? '?' })
+      conflicts.push({ line: r.line, section: played[r.row]?.section ?? '', bar: r.bar, chord: r.chord, source: first.scale ?? '?', copy: r.scale ?? '?' })
   }
   const changes: Change[] = []
   const overrides: Override[] = []
@@ -332,7 +347,7 @@ export function applyAnalysis(
   for (const a of analysis.areas) {
     const line = analysis.rows.find((r) => r.row === a.row)?.line
     if (line !== undefined && byLine.get(line)?.row === a.row && !areaAt.has(line))
-      areaAt.set(line, `# area: ${a.key.name}${a.from === a.to ? ` (bar ${a.from})` : ` (bars ${a.from}–${a.to})`}`)
+      areaAt.set(line, `# area: ${a.key.name} (${areaSpan(a)})`)
   }
 
   const out: ChartLine[] = []
@@ -357,7 +372,7 @@ export function applyAnalysis(
         const repeat = conflicts.find((c) => c.line === i)
         const compose = (why: string): string | undefined => {
           const base = differs ? `≠ rules: ${r.scale} (${why})` : r.held ? undefined : why
-          return repeat ? `${base ?? why}; the repeat at bar ${repeat.bar} would be ${repeat.copy}` : base
+          return repeat ? `${base ?? why}; the repeat at ${repeat.section} bar ${repeat.bar} would be ${repeat.copy}` : base
         }
         const reason = fitComment(compose, r.short ? [r.reason, r.short] : [r.reason])
         const { comment: _, ...bare } = row

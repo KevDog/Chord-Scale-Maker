@@ -4,8 +4,8 @@ import { chordsAfterTyping, moveInGrid, posOfLine, soundingChords } from '../bar
 import { type ChartDoc, parseChart } from '../chart'
 
 const text = (lines: readonly string[]): ChartDoc => parseChart(lines.join('\n')).value
-// A: 6 bars (bar 3 two chords, bar 4 held), then B repeats A, then C: 2 bars
-const doc = text(['title: T', 'A | 1 | Cm7', 'A | 2 | F7', 'A | 3 | Bbmaj7', 'A | 3 | Eb7', 'A | 5 | Am7', 'A | 6 | D7', '@copy A B 8', 'C | 17 | Gm7', 'C | 18 | G7'])
+// A: 8 bars (bar 3 two chords, bar 4 held), then B repeats A, then C: 4 bars
+const doc = text(['title: T', 'section: A', 'bars: 8', '1 | Cm7', '2 | F7', '3 | Bbmaj7', '3 | Eb7', '5 | Am7', '6 | D7', 'section: B', 'copy: A', 'section: C', 'bars: 4', '1 | Gm7', '2 | G7'])
 const view = barView(doc)
 const pos = (section: string, bar: number, chord = 0) => ({ section, bar, chord })
 
@@ -14,14 +14,14 @@ describe('moveInGrid', () => {
     expect(moveInGrid(view, pos('A', 2), 'next')).toEqual(pos('A', 3, 0))
     expect(moveInGrid(view, pos('A', 3, 0), 'next')).toEqual(pos('A', 3, 1))
     expect(moveInGrid(view, pos('A', 3, 1), 'next')).toEqual(pos('A', 4, 0))
-    expect(moveInGrid(view, pos('A', 8), 'next')).toEqual(pos('C', 17, 0))
-    expect(moveInGrid(view, pos('C', 20), 'next')).toBeNull()
+    expect(moveInGrid(view, pos('A', 8), 'next')).toEqual(pos('C', 1, 0))
+    expect(moveInGrid(view, pos('C', 4), 'next')).toBeNull()
   })
 
   it('prev goes back to the last chord of the bar before; off the start is null', () => {
     expect(moveInGrid(view, pos('A', 4), 'prev')).toEqual(pos('A', 3, 1))
     expect(moveInGrid(view, pos('A', 3, 1), 'prev')).toEqual(pos('A', 3, 0))
-    expect(moveInGrid(view, pos('C', 17), 'prev')).toEqual(pos('A', 8, 0))
+    expect(moveInGrid(view, pos('C', 1), 'prev')).toEqual(pos('A', 8, 0))
     expect(moveInGrid(view, pos('A', 1), 'prev')).toBeNull()
   })
 
@@ -62,14 +62,14 @@ describe('chordsAfterTyping', () => {
 
 describe('posOfLine', () => {
   it('finds the chord written on a line of the chart', () => {
-    expect(posOfLine(view, 1)).toEqual(pos('A', 1, 0))
-    expect(posOfLine(view, 4)).toEqual(pos('A', 3, 1))
-    expect(posOfLine(view, 8)).toEqual(pos('C', 17, 0))
+    expect(posOfLine(view, 3)).toEqual(pos('A', 1, 0))
+    expect(posOfLine(view, 6)).toEqual(pos('A', 3, 1))
+    expect(posOfLine(view, 13)).toEqual(pos('C', 1, 0))
   })
 
   it('is null for a line that isn’t a written chord', () => {
     expect(posOfLine(view, 0)).toBeNull() // the title
-    expect(posOfLine(view, 7)).toBeNull() // the @copy
+    expect(posOfLine(view, 10)).toBeNull() // the copy:
     expect(posOfLine(view, 99)).toBeNull()
   })
 })

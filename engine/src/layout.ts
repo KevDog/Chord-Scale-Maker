@@ -32,6 +32,8 @@ export type LayoutSection = Readonly<{
   /** stated at its bar 1: its own key:, else its copy source's; null: none stated, the analysis finds it */
   key: string | null
   context: ChartContext | null
+  /** the lines of its own fields (not what a copy: carries) */
+  fieldLines: Readonly<Partial<Record<SectionField, number>>>
   rows: readonly LinedRow[]
 }>
 
@@ -100,6 +102,7 @@ export function sectionLayout(doc: ChartDoc): Parsed<Layout> {
       start,
       key: b.fields.key?.value || (b.fields.key ? null : (src?.section.key ?? null)),
       context: b.fields.context ? parseContext(b.fields.context.value) : (src?.section.context ?? null),
+      fieldLines: Object.fromEntries(Object.entries(b.fields).map(([f, v]) => [f, v.line])),
       rows,
     }
     byName.set(b.name, { section, plan: [...carried, ...b.directives.filter((d) => d.kind === 'key' || d.kind === 'context')] })
