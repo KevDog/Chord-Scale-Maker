@@ -1,4 +1,5 @@
 export * from './chart'
+export { migrateChart, type Migration } from './migrate'
 export * from './chord'
 export * from './instruments'
 export * from './limits'
