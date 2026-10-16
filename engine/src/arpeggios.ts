@@ -154,8 +154,8 @@ const readable = (chord: string): boolean => orNull(() => parseChord(chord)) !==
 /** why a chord plays nothing: a diagnostic for the sheet */
 const noTonesFor = (chord: string): string => `no chord tones for ${chord || 'an empty chord'} (${readable(chord) ? 'unknown chord quality' : "can't read the chord"})`
 
-/** a chord's cells: its tones, and the next cell's order (indexes into them) and direction, given the last note and the run's count */
-export type Cells = Readonly<{ tones: readonly Spelled[]; next: (prev: number | null, count: number) => Readonly<{ order: readonly number[]; up: boolean }> }>
+/** a chord's cells: its tones, and the next cell's order (indexes into them) and direction, given the last note and the run's count; midi: its pitches where the cell placed itself */
+export type Cells = Readonly<{ tones: readonly Spelled[]; next: (prev: number | null, count: number) => Readonly<{ order: readonly number[]; up: boolean; midi?: readonly number[] }> }>
 
 /** a chord's 7th chord arpeggio cells in a pattern; null if it has no tones */
 export function arpeggioCells(part: Part, chord: GuideInput, pattern: ArpeggioPattern): Cells | null {
@@ -217,8 +217,8 @@ export function cellVoices(
     const v = noteValue(shortest.get(s.bar) ?? s.length)
     const slots = Math.round(s.length / v)
     for (let k = 0; k < slots; k += 4) {
-      const { order, up } = c.next(prev, count)
-      const midi = place(order.map((i) => pcOf(t[i] ?? (t[0] as Spelled))), up, range, prev)
+      const { order, up, midi: placed } = c.next(prev, count)
+      const midi: readonly number[] = placed ?? place(order.map((i) => pcOf(t[i] ?? (t[0] as Spelled))), up, range, prev)
       const take = Math.min(4, slots - k)
       for (let j = 0; j < take; j++) {
         const tone = t[order[j] ?? 0] as Spelled

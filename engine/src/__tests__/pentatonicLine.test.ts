@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import type { GuideInput, GuideNote } from '../guideTones'
-import { CONCERT, type Part, rangeOf } from '../part'
-import { parseRoot, rootName, type Spelled } from '../pitch'
+import { CONCERT, type Part, partFor, rangeOf } from '../part'
+import { parseRoot, pcOf, rootName, type Spelled } from '../pitch'
 import { isPentatonicLeave, PENTATONIC_LEAVE, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, pentatonicCell, type PentatonicLine, pentatonicVoices } from '../pentatonicLine'
 import { SCALES } from '../scales'
 import { toVexKey } from '../sheet'
@@ -106,3 +106,41 @@ describe('pentatonic voices', () => {
     expect([...voice(seq(['Am7', 2], ['Dm7', 2]), roots('A', 'D')).bars.values()].flat().some((n) => n.tie || n.tiedIn)).toBe(false)
   })
 })
+
+describe('the leap between cells (#284: each cell from its note nearest the last, inside the range)', () => {
+  /** the smallest leap from prev to any placement of the cell (any start, the direction's order, any octave) that fits the range; never prev itself */
+  const smallest = (cell: readonly Spelled[], up: boolean, prev: number, range: { lo: number; hi: number }): number => {
+    const pcs = cell.map(pcOf)
+    const leaps = pcs.flatMap((_, s) => {
+      const order = pcs.map((__, j) => pcs[(((s + (up ? j : -j)) % 4) + 4) % 4]!)
+      const rel = order.reduce<number[]>((acc, pc, i) => (i === 0 ? [0] : [...acc, acc[i - 1]! + (up ? ((pc - order[i - 1]! + 11) % 12) + 1 : -(((order[i - 1]! - pc + 11) % 12) + 1))]), [])
+      return Array.from({ length: 128 }, (__, m) => m)
+        .filter((m) => m % 12 === order[0] && m !== prev && rel.every((r) => m + r >= range.lo && m + r <= range.hi))
+        .map((m) => Math.abs(m - prev))
+    })
+    return Math.min(...leaps)
+  }
+  it('Down: the next cell starts from the nearest note whose whole cell fits, not an octave away', () => {
+    const { bars } = voice(seq(['Am7', 8]), roots('A'), { dir: 'down' })
+    expect(pitches(bars.get(0))).toEqual(['g/4', 'e/4', 'd/4', 'c/4'])
+    expect(pitches(bars.get(1))).toEqual(['g/4', 'e/4', 'd/4', 'c/4']) // D4 down would leave the range: G4, 7 from C4, not D5 (14)
+  })
+  for (const [name, part] of [['concert', CONCERT], ['trumpet (ceiling G5)', partFor('trumpet')], ['bass', BASS]] as const) {
+    for (const dir of ['up', 'down', 'up-down'] as const) {
+      it(`${name}, ${dir}: every cell after the first leaps the least that fits`, () => {
+        const names = ['A', 'D', 'G', 'C', 'F', 'Bb', 'Eb', 'Ab', 'Db', 'Gb', 'B', 'E']
+        const { bars } = voice(seq(...names.map((n) => [`${n}m7`, 4] as const)), roots(...names), { dir }, part)
+        const range = rangeOf(part)
+        for (let b = 1; b < names.length; b++) {
+          const prev = bars.get(b - 1)?.at(-1)?.pitch?.midi ?? 0
+          const notes = bars.get(b) ?? []
+          const midi = notes.map((n) => n.pitch?.midi ?? 0)
+          const up = midi[1]! > midi[0]!
+          expect(midi.every((m) => m >= range.lo && m <= range.hi)).toBe(true)
+          expect(Math.abs(midi[0]! - prev), `bar ${b}`).toBe(smallest(pentatonicCell(parseRoot(names[b]!), '1'), up, prev, range))
+        }
+      })
+    }
+  }
+})
+

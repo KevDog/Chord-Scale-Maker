@@ -728,6 +728,11 @@ describe('buildChanges with a Pentatonic line (#284)', () => {
     ])
     expect(flatChords(sheet).map((c) => c.guide)).toEqual(['', '', ''])
   })
+  it('Autumn Leaves, concert: bar 2 starts from the note nearest bar 1’s last whose cell fits the range (no octave drop)', () => {
+    const sheet = buildChanges(library('autumn-leaves'), CONCERT, 4, false, PENT, undefined, one(0, 'flat')) // Gm: B♭ C D F
+    expect(keys(sheet)[0]?.slice(0, 4)).toEqual(['bb/4', 'c/5', 'd/5', 'f/5'])
+    expect(keys(sheet)[1]?.slice(0, 4)).toEqual(['bb/4', 'c/5', 'd/5', 'f/5']) // F5 → B♭4 (7): D5 and C5 up would pass A5; not D4 (15)
+  })
   it('follows the rung the label shows', () => {
     const sheet = buildChanges(doc, CONCERT, 4, false, PENT, undefined, one(1, 'flat')) // Dm
     expect(keys(sheet)[0]?.slice(0, 4)).toEqual(['f/4', 'g/4', 'a/4', 'c/5'])

@@ -537,9 +537,11 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   by **Leave out** (1, ♭3, 4, 5, ♭7 in the minor pentatonic's degrees, `PENTATONIC_LEAVES`; default 1: ♭3-4-5-♭7, the
   relative major's 1-2-3-5). Direction: the Arpeggios sheet's Up · Down · Up & down (`arpDir`; Up & down alternates per
   cell across the run). A run's first cell starts on its bottom (Up) or top (Down) note; every later cell starts on its
-  note nearest the last note played, never that note itself (a tie: the lower), as Voice-led does.
+  note nearest the last note played among the placements the part's range allows (each note as the start, at each
+  octave the whole cell fits), never that note itself (a tie: the lower); only with none that fits does the arpeggio's
+  range-first rule place it.
 - **Rhythm, octave, rests:** the arpeggio line's (`cellVoices`, shared with `arpeggioVoices`): ♩ ♪ 𝅘𝅥𝅯 by the bar's
-  shortest chord, each cell placed whole in the part's range nearest the last note. A chord with no pentatonic (no
+  shortest chord. A chord with no pentatonic (no
   scale, no key area, unreadable) plays its 7th chord arpeggio in the stored pattern; one with no tones either rests.
 - **Model:** `buildChanges` takes a `ChangesLineChoice`: a `SheetLine` or `{ kind: 'pentatonic', leave, dir,
   arpeggio }` (`changesLineOf` in `utils/sheetLine.ts` builds it); it works out each chord's pentatonic before the line
