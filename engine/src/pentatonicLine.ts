@@ -30,7 +30,7 @@ export function pentatonicCell(root: Spelled, leave: PentatonicLeave): readonly 
 }
 
 /** a cell's order from its index `from`, up or down */
-const orderFrom = (n: number, from: number, up: boolean): readonly number[] => Array.from({ length: n }, (_, j) => (((from + (up ? j : -j)) % n) + n) % n)
+export const orderFrom = (n: number, from: number, up: boolean): readonly number[] => Array.from({ length: n }, (_, j) => (((from + (up ? j : -j)) % n) + n) % n)
 
 /** the pitches of a cell in an order, from `first` (MIDI): each note the next of its pitch class above (up) or below (down) */
 const pitchesFrom = (pcs: readonly number[], up: boolean, first: number): readonly number[] =>
@@ -57,7 +57,7 @@ const byNearest = (prev: number) => (a: Placement, b: Placement): number => Math
  * placements the range allows, the nearest prev that differs from the last cell; with none, null (the arpeggio's rule).
  * Up & down (turn false) keeps its alternation: the nearest placement that fits, the way chosen
  */
-function nextCell(tones: readonly Spelled[], up: boolean, prev: number, last: readonly number[] | null, range: Range, turn: boolean): Placement | null {
+export function nextCell(tones: readonly Spelled[], up: boolean, prev: number, last: readonly number[] | null, range: Range, turn: boolean): Placement | null {
   if (!turn) return placements(tones, [up], prev, range).sort(byNearest(prev))[0] ?? null
   const start = tones
     .map((t, s) => {

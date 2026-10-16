@@ -21,7 +21,6 @@ describe('lineChoiceOf', () => {
 describe('the Pentatonic line (#284)', () => {
   it('plays the arpeggio slot as the Pentatonic line while Superimpose is Pentatonic, else as stored', () => {
     expect(changesLineOf({ mode: 'arpeggio', guide: 'third', arpeggio: 'down-2nd', overlay: 'pentatonic', leave: 'b3', dir: 'up-down' })).toEqual({ kind: 'pentatonic', leave: 'b3', dir: 'up-down', arpeggio: 'down-2nd' })
-    expect(changesLineOf({ mode: 'arpeggio', guide: 'third', arpeggio: 'down-2nd', overlay: 'hexatonic', leave: 'b3', dir: 'up' })).toBe('down-2nd')
     expect(changesLineOf({ mode: 'arpeggio', guide: 'third', arpeggio: 'down-2nd', overlay: 'off', leave: 'b3', dir: 'up' })).toBe('down-2nd')
     expect(changesLineOf({ mode: 'guide', guide: 'seventh', arpeggio: 'down-2nd', overlay: 'pentatonic', leave: '1', dir: 'up' })).toBe('seventh')
     expect(changesLineOf({ mode: 'off', guide: 'seventh', arpeggio: 'down-2nd', overlay: 'pentatonic', leave: '1', dir: 'up' })).toBe('off')
@@ -29,6 +28,15 @@ describe('the Pentatonic line (#284)', () => {
   it("names the slot Pentatonic under the Pentatonic overlay, 7th Chords otherwise; the value stays 'arpeggio'", () => {
     expect(lineModes('pentatonic').map((m) => [m.value, m.label])).toEqual([['off', 'Off'], ['guide', 'Guide Tones'], ['arpeggio', 'Pentatonic']])
     expect(lineModes('off').map((m) => m.label)).toEqual(['Off', 'Guide Tones', '7th Chords'])
-    expect(lineModes('hexatonic').map((m) => m.label)).toEqual(['Off', 'Guide Tones', '7th Chords'])
+  })
+})
+
+describe('the Triad pair line (#325)', () => {
+  it('plays the arpeggio slot as the Triad pair line while Superimpose is Hexatonic', () => {
+    expect(changesLineOf({ mode: 'arpeggio', guide: 'third', arpeggio: 'down-2nd', overlay: 'hexatonic', leave: 'b3', dir: 'up-down' })).toEqual({ kind: 'triad-pair', dir: 'up-down', arpeggio: 'down-2nd' })
+    expect(changesLineOf({ mode: 'guide', guide: 'seventh', arpeggio: 'down-2nd', overlay: 'hexatonic', leave: '1', dir: 'up' })).toBe('seventh')
+  })
+  it("names the slot Triad pair under the Hexatonic overlay; the value stays 'arpeggio'", () => {
+    expect(lineModes('hexatonic').map((m) => [m.value, m.label])).toEqual([['off', 'Off'], ['guide', 'Guide Tones'], ['arpeggio', 'Triad pair']])
   })
 })
