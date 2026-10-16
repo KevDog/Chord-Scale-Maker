@@ -10,8 +10,11 @@ import { addCspMeta } from './build/csp'
 import { quotesPlugin } from './build/quotes'
 import { SECURITY_HEADERS } from './build/headers'
 import { buildVersion } from './build/version'
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL, songPath } from './app/utils/site'
+import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL, songPath } from './app/utils/site'
 import { chartSlugsOf, sitemapPaths } from './app/utils/sitemap'
+
+/** the link preview image's alt text (the image is scripts/icons.mjs's) */
+const OG_IMAGE_ALT = `${SITE_NAME}: ${SITE_TAGLINE.toLowerCase()}`
 
 /** the engine package's folder (engine/ in the workspace): its charts/ is the library */
 const ENGINE_DIR = dirname(createRequire(import.meta.url).resolve('@chord-scale-maker/engine/package.json'))
@@ -50,16 +53,21 @@ export default defineNuxtConfig({
       meta: [
         { name: 'description', content: SITE_DESCRIPTION }, // a fallback: pages set their own (utils/site.ts)
         { name: 'theme-color', content: '#123e85' },
+        { name: 'application-name', content: SITE_NAME },
+        { name: 'apple-mobile-web-app-title', content: SITE_NAME },
         // the link preview on Facebook, Slack, iMessage and the like (Open Graph); the image is drawn by
         // scripts/icons.mjs. Pages set og:title and og:description; app.vue sets og:url to the canonical URL.
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: SITE_NAME },
+        { property: 'og:locale', content: 'en_US' },
         { property: 'og:image', content: `${SITE_URL}/og-image.png` },
         { property: 'og:image:type', content: 'image/png' },
         { property: 'og:image:width', content: '1200' },
         { property: 'og:image:height', content: '630' },
-        { property: 'og:image:alt', content: 'Chord Scale Maker: practice sheets for jazz improvisation' },
+        { property: 'og:image:alt', content: OG_IMAGE_ALT },
         { name: 'twitter:card', content: 'summary_large_image' },
+        { name: 'twitter:image', content: `${SITE_URL}/og-image.png` },
+        { name: 'twitter:image:alt', content: OG_IMAGE_ALT },
       ],
       // the icons are drawn by scripts/icons.mjs (npm run icons)
       link: [

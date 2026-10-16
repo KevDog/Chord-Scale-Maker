@@ -5,7 +5,7 @@ import { SITE_DESCRIPTION, SITE_NAME, canonicalUrl, libraryPath } from './site'
 
 const CONTEXT = 'https://schema.org'
 
-export const websiteLd = () => ({ '@context': CONTEXT, '@type': 'WebSite', name: SITE_NAME, url: canonicalUrl('/') })
+export const websiteLd = () => ({ '@context': CONTEXT, '@type': 'WebSite', name: SITE_NAME, alternateName: ['CSM'], url: canonicalUrl('/') })
 
 /** free, in any browser; no rating is invented (so no app rich result is expected) */
 export const webAppLd = () => ({
@@ -18,6 +18,14 @@ export const webAppLd = () => ({
   operatingSystem: 'Any',
   browserRequirements: 'Requires JavaScript and a modern web browser',
   offers: { '@type': 'Offer', price: 0, priceCurrency: 'USD' },
+  featureList: [
+    'Chord-scale theory: a scale for every chord of a jazz standard',
+    'Guide-tone lines from the 3rd or the 7th',
+    'Arpeggios through the changes',
+    'Pentatonic and hexatonic superimposition',
+    'Basic, standard and advanced levels',
+    'Written for your instrument, in any key',
+  ],
 })
 
 /** keyLabel reads "E♭" for a major key and "C minor" for a minor one */

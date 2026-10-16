@@ -43,21 +43,22 @@ export function tuneSummary(text: string): TuneSummary {
 const DESCRIPTION_MAX = 160
 
 /**
- * one sentence for a song page's description, clauses dropped to fit (a title of LIMITS.maxMeta fits alone): the
- * closing ones from the end first, then the other titles, the lead sheet's, the key and the composer
+ * a song page's description, clauses dropped to fit (a title of LIMITS.maxMeta fits alone): the closing ones from
+ * the end first, then the other titles, the guide tones, "no melody", the key, the composer and the lead sheet's
  */
 export function tuneDescription(t: TuneSummary): string {
   // [text, the order it drops in]
   const clauses: readonly (readonly [string, number])[] = [
-    [t.aka.length ? ` (also ${t.aka.join(' or ')})` : '', 4],
-    [t.composer && ` by ${t.composer}`, 1],
-    [t.keyLabel && ` in ${t.keyLabel}`, 2],
-    [': the changes as a study lead sheet with guide tones', 3],
-    [', and a scale for every chord', 5],
-    [', for your instrument', 6],
+    [t.aka.length ? ` (also ${t.aka.join(' or ')})` : '', 6],
+    [t.composer && ` by ${t.composer}`, 2],
+    [t.keyLabel && ` in ${t.keyLabel}`, 3],
+    [': the chord changes as a lead-sheet style practice chart', 1],
+    [', with guide tones', 5],
+    [' and a scale, arpeggio and pentatonic for every chord', 7],
+    [', for your instrument', 8],
+    ['. Chords only, no melody', 4],
   ]
-  const sentence = (keep: number): string =>
-    `Chord-scale practice sheets for ${t.title}${clauses.map(([text, rank]) => (rank <= keep ? text : '')).join('')}.`
+  const sentence = (keep: number): string => `${t.title}${clauses.map(([text, rank]) => (rank <= keep ? text : '')).join('')}.`
   let keep = clauses.length
   while (keep > 0 && sentence(keep).length > DESCRIPTION_MAX) keep--
   return sentence(keep)

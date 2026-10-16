@@ -1,6 +1,6 @@
 # Chord Scale Maker
 
-Chord-scale practice sheets from a chord chart, at [chordscalemaker.com](https://www.chordscalemaker.com). A chart
+Endless improvisation practice sheets for jazz standards, at [chordscalemaker.com](https://www.chordscalemaker.com). A chart
 opens on the Changes sheet, a study lead sheet with each chord's Roman numeral and scale under it; its Line control
 (Off · Guide Tones · 7th Chords) puts one line on the staff at a time. Guide Tones (From 3rd · From 7th) starts on the
 first chord's 3rd or 7th and moves to the nearest guide tone of each chord; 7th Chords arpeggiates each chord's four

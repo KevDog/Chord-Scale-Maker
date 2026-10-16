@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { PAGE_HEAD, SITE_NAME, canonicalUrl, chartSlug, letterRedirect, libraryPath, pageTitle, seoMeta, songPath, tuneTitle } from '~/utils/site'
+import { PAGE_HEAD, SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, canonicalUrl, chartSlug, letterRedirect, libraryPath, pageTitle, seoMeta, songPath, tuneTitle } from '~/utils/site'
 
 describe('canonicalUrl', () => {
   it('is the site root for /', () => {
@@ -28,6 +28,19 @@ describe('pageTitle', () => {
     expect(pageTitle('')).toBe(SITE_NAME)
     expect(pageTitle(SITE_NAME)).toBe(SITE_NAME)
   })
+
+  it('keeps a title that already leads with the site name (the home page)', () => {
+    expect(pageTitle(PAGE_HEAD.index.title)).toBe('Chord Scale Maker: Endless Practice Sheets for Jazz Standards')
+  })
+})
+
+describe('the tagline', () => {
+  it('opens the site description, which fits a search snippet', () => {
+    expect(SITE_TAGLINE).toBe('Endless improvisation practice sheets for jazz standards')
+    expect(SITE_DESCRIPTION.startsWith(`${SITE_TAGLINE}:`)).toBe(true)
+    expect(SITE_DESCRIPTION.length).toBeLessThanOrEqual(160)
+    expect(PAGE_HEAD.index.description).toBe(SITE_DESCRIPTION)
+  })
 })
 
 describe('PAGE_HEAD', () => {
@@ -39,9 +52,9 @@ describe('PAGE_HEAD', () => {
     for (const h of heads) expect(h.title ?? '').not.toContain('·')
   })
 
-  it('gives each page a description of 50–160 characters', () => {
+  it('gives each page a description of 70–160 characters', () => {
     for (const [page, h] of Object.entries(PAGE_HEAD)) {
-      expect(h.description.length, page).toBeGreaterThanOrEqual(50)
+      expect(h.description.length, page).toBeGreaterThanOrEqual(70)
       expect(h.description.length, page).toBeLessThanOrEqual(160)
     }
   })
@@ -59,16 +72,17 @@ describe('seoMeta', () => {
       description: PAGE_HEAD.help.description,
       ogTitle: 'Help · Chord Scale Maker',
       ogDescription: PAGE_HEAD.help.description,
+      twitterDescription: PAGE_HEAD.help.description,
     })
-    expect(seoMeta(PAGE_HEAD.index).ogTitle).toBe(SITE_NAME)
+    expect(seoMeta(PAGE_HEAD.index).ogTitle).toBe('Chord Scale Maker: Endless Improvisation Practice Sheets for Jazz Standards')
     expect(seoMeta(PAGE_HEAD.song).robots).toBe('noindex')
   })
 })
 
 describe('song pages', () => {
   it('are titled by the tune and its composer, with no parentheses without one', () => {
-    expect(tuneTitle({ title: 'Blue Trane', composer: 'John Coltrane' })).toBe('Blue Trane (John Coltrane): changes and chord scales')
-    expect(tuneTitle({ title: 'Bb Blues', composer: '' })).toBe('Bb Blues: changes and chord scales')
+    expect(tuneTitle({ title: 'Blue Trane', composer: 'John Coltrane' })).toBe('Blue Trane (John Coltrane): Chord Changes and Lead Sheet Practice Charts')
+    expect(tuneTitle({ title: 'Bb Blues', composer: '' })).toBe('Bb Blues: Chord Changes and Lead Sheet Practice Charts')
   })
 })
 
