@@ -249,15 +249,17 @@ test('7th Chords in 3/4: six eighths for a bar of one chord, turning back after 
   await expect.poll(async () => (await drawn(line)).heads.length).toBe(4 * 6)
 })
 
-test('Cells (#298): a cell on each beat 1 and 3 of a chord, eighths beamed in fours, and the choice stays and rides a share link', async ({ page, browser }) => {
+test('Cells (#298): a cell on each beat 1 and 3 of a chord, eighths beamed by the beat, and the choice stays and rides a share link', async ({ page, browser }) => {
   await page.goto('/song/autumn-leaves')
   const line = lines(page).first()
   await showLine(page, 'Cells')
   await inControls(page, () => pickOption(page, 'Cell', 'Root to root'))
   await expect(line).toHaveAttribute('aria-label', /; cells: C5 D5 E♭5 G5 C6 B♭5 A5 G5 \| F5 /)
-  await expect.poll(async () => (await drawn(line)).heads.length).toBe(32) // four bars: every chord has a cell a two beats
+  const bars = 4
+  const beats = 4 // Autumn Leaves is in 4/4
+  await expect.poll(async () => (await drawn(line)).heads.length).toBe(bars * beats * 2) // eighths throughout: every chord has a cell a two beats
   expect((await drawn(line)).slashes).toBe(0)
-  expect(await line.locator('.vf-beam').count()).toBe(16) // two elements for each of the 8 cells' beams: the eighths are beamed in fours
+  expect(await line.locator('.vf-beam').count()).toBe(bars * beats) // a beam for each beat's pair of eighths (changesDrawing beams by the beat)
   await expectChordsOnHeads(line) // each chord sits on a note, on its beat 1 or 3
   await expect(labelRow(line)).toHaveCount(0)
   await page.reload()
