@@ -1,5 +1,5 @@
 import { analyse, chartKeyOf, parseKey } from './analysis'
-import { type Beats, type ChartDoc, chartBeats, type FormPart, type LinedRow, qualityScale } from './chart'
+import { type Beats, type ChartDoc, chartBeats, type FormPart, type LinedRow, qualityScale, type Row } from './chart'
 import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRootLenient, writtenChordTextOrNull } from './chord'
 import { type HexPair, hexatonicPairs, hexatonicRanking } from './hexatonics'
 import { guideToneTimeline } from './guideToneTimeline'
@@ -448,8 +448,9 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
 
   // guide tones, as a line over the rows as drawn (a folded repeat is drawn once, so it's voiced once), before the
   // lines are cut, so the pitches don't depend on how many bars a line holds. Holds start afresh at each block and
-  // at each 2nd (or later) ending, so a tie never runs into a new section or from one ending into the next
-  const drawn = (): GuideInput[] => {
+  // at each 2nd (or later) ending, so a tie never runs into a new section or from one ending into the next.
+  // scaleOf: a chord's scale (default: its written scale, else its quality's)
+  const drawn = (scaleOf: (i: number, row: Row) => string | null = (_, row) => qualityScale(row)): GuideInput[] => {
     let block = -1
     let from = -1 // the sheet block the last chord was in
     let ending = 0
@@ -461,7 +462,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         if (k !== from || (volta > 1 && volta !== ending)) block++
         from = k
         ending = volta
-        const scale = qualityScale(e.row)
+        const scale = scaleOf(i, e.row)
         return [{ row: i, chord: e.chord, ...(scale ? { scale } : {}), start: e.start, beats: e.beats, block }]
       }),
     )
@@ -599,7 +600,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             ...(line.kind === 'pentatonic'
               ? pentatonicVoices(drawn(), part, clock, keySig, line, pentRoots)
               : line.kind === 'cells'
-                ? cellsVoices(drawn(), part, clock, keySig, line)
+                ? cellsVoices(drawn((i, row) => resolved.get(i)?.scale ?? qualityScale(row)), part, clock, keySig, line) // the scale the sheet shows
                 : triadPairVoices(drawn(), part, clock, keySig, line, hexPairs)),
             labels: new Map(),
           }

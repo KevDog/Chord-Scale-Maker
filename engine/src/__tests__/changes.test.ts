@@ -737,6 +737,16 @@ describe('buildChanges with an arpeggio line', () => {
   })
 })
 
+describe('buildChanges with a Cells line (#298)', () => {
+  it('reads each cell through the scale the sheet shows: 3rd to 5th’s A cell over D7 → Gm plays Eb, the analysis’s b13', () => {
+    const doc = parseChart('title: T\nkey: Gm\n\nsection: A\n1 | Am7b5\n2 | D7\n3 | Gm7\n4 | Gm7\n').value
+    expect(resolveScales(doc, { level: 'standard', seed: 0 }).get(1)?.scale).toBe('D Phrygian Dominant')
+    const sheet = buildChanges(doc, CONCERT, 4, false, { kind: 'cells', id: '3rd-5th' })
+    const d7 = sheet.lines.flatMap((l) => l.bars)[1]?.voice.map((n) => (n.pitch ? rootName(n.pitch) : 'r'))
+    expect(d7?.slice(0, 4)).toEqual(['F#', 'A', 'C', 'Eb'])
+  })
+})
+
 describe('buildChanges with a Pentatonic line (#284)', () => {
   const doc = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n1 | G7\n2 | CMaj7\n').value
   const PENT: PentatonicLine = { kind: 'pentatonic', leave: '1', dir: 'up', arpeggio: 'up-root' }
