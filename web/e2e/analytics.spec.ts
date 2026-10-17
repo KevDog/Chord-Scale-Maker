@@ -31,6 +31,22 @@ test('a song page is counted under its route', async ({ page }) => {
   await expect.poll(() => pageviews(page)).toEqual([{ route: '/song/[slug]', path: '/song/autumn-leaves' }])
 })
 
+// /song is prerendered without its query: while it hydrates the router briefly shows a bare /song (song/[[slug]].vue)
+test('a /song address with a query is counted once, as itself', async ({ page }) => {
+  await page.goto('/song?new=1')
+  await expect(page.getByRole('button', { name: 'Work on' })).toBeVisible()
+  await page.waitForLoadState('networkidle') // a late duplicate would land by now
+  expect(await pageviews(page)).toEqual([{ route: '/song/[slug]', path: '/song' }])
+  await page.goto('/song?chart=autumn-leaves')
+  await expect(page).toHaveURL(/\/song\/autumn-leaves$/)
+  await page.waitForLoadState('networkidle')
+  // an old ?chart= link: /song, then the tune it moves to (never a phantom /library)
+  expect(await pageviews(page)).toEqual([
+    { route: '/song/[slug]', path: '/song' },
+    { route: '/song/[slug]', path: '/song/autumn-leaves' },
+  ])
+})
+
 test('actions send one anonymous event each, none on load', async ({ page, browser }) => {
   await page.goto('/song/autumn-leaves')
   await expect(page.getByRole('button', { name: 'Work on' })).toBeVisible()
