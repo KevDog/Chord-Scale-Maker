@@ -12,4 +12,10 @@ describe('ArpeggioSheet', () => {
     expect(w.findAll('arpeggio-staff-stub')).toHaveLength(2)
     expect(w.find('section p').text()).toBe('S (Extended arpeggios)')
   })
+
+  it('draws a pattern over each line, headed Patterns, when given moves', async () => {
+    const w = await mountSuspended(ArpeggioSheet, { props: { ...props, notes: 'scale', moves: [2, -1] }, global: { stubs: { ArpeggioStaff: true } } })
+    expect(w.findAll('arpeggio-staff-stub')).toHaveLength(2)
+    expect(w.find('section p').text()).toBe('S (Patterns)')
+  })
 })

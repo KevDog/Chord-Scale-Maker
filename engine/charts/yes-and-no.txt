@@ -4,7 +4,10 @@ style: Up
 key: Em
 form: AABA, 58 bars
 source: 
+recording: Wayne Shorter; JuJu; Blue Note; 1965
+youtube: fK9CiB1Tu24
 # analysis: 2026-10-17, rules v1; E minor
+# recording: recorded 1964-08-03 (Wayne Shorter Quartet: McCoy Tyner, Reggie Workman, Elvin Jones), take 10, the first recording of it, BLP 4182, released July 1965 (jazzdisco.org, Wikipedia); video: JuJu (RVG 1999 remaster), the same take
 # Fast swing, half note = 260; A is 12 bars + a 2-bar ending (14 bars); B is 16 bars
 # the book writes A (with 1st/2nd endings) and B, then D.S. al 2nd ending (AABA form);
 # after solos, play the entire head and take the Coda

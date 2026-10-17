@@ -5,6 +5,8 @@ style: Ballad
 key: Bb
 form: A, 10 bars
 source: Colorado Cookbook, p. 173
+recording: Horace Silver; Blowin' the Blues Away; Blue Note; 1959
+youtube: ieaAHwvqljg
 # analysis: 2026-10-17, rules v1; Bb
 
 # bar | chord | scale

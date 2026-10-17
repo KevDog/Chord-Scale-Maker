@@ -137,9 +137,9 @@ Re-run it before milestones to catch link rot.
 3. Curation: a first batch of about 20 well-known tunes, reviewed for accuracy. Turn the flag on.
 4. Curation of the rest of the library's 361 tunes, in batches by composer. The section is simply absent on tunes not yet done.
 
-## 11. Open questions
+## 11. Decisions (formerly open questions; decided 2026-10-17)
 
-1. **Composer pages:** should the details line on composer pages also name the recording, as text only? It would add unique text there too, but lengthens rows on phones.
-2. **Non-embeddable videos:** keep a plain "Listen on YouTube ↗" link without a player, or omit YouTube entirely for that tune?
-3. **Description clause (§6):** adopt or not.
-4. **A second service:** whether a later `listen:` field (a single universal link) is wanted, or YouTube alone.
+1. **Composer pages:** no. Rows stay short on phones; the song page names the recording.
+2. **Non-embeddable videos:** keep the `youtube:` ID and show a plain "Listen on YouTube ↗" link, opening in a new tab, with no player (#363).
+3. **Description clause (§6):** adopt (#364).
+4. **A second service:** no. YouTube only.

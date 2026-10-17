@@ -120,6 +120,13 @@ describe('the Changes sheet', () => {
     expect(all.map((b) => b.voice.reduce((sum, n) => sum + n.beats, 0))).toEqual([4, 5, 3])
   })
 
+  it('puts an approach figure on the guide tone line, stepping in the scale the sheet shows', () => {
+    const doc = parseChart('section: A\n1 | Dm7\n2 | G7\n').value
+    const voice = (approach: 'none' | 'diatonic-above') => buildChanges(doc, CONCERT, 4, false, 'third', undefined, null, approach).lines.flatMap((l) => l.bars)[0]!.voice
+    expect(voice('none').map((n) => n.beats)).toEqual([4])
+    expect(voice('diatonic-above').map((n) => n.beats)).toEqual([3, 0.5, 0.5])
+  })
+
   it('gives each chord its reason, the key it is heard in, and whether its function was stated', () => {
     const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | CMaj7\n2 | Bb7 |  | D: ♭VI7\n3 | G7\n4 | CMaj7\n').value
     const chords = buildChanges(doc, CONCERT).lines.flatMap((l) => l.bars).flatMap((b) => b.chords)
@@ -734,6 +741,16 @@ describe('buildChanges with an arpeggio line', () => {
   it('gives an arpeggio line the page count of a guide tone line', () => {
     const rows = { numerals: true, scales: true }
     expect(changesLinesPerPage('up-root', rows)).toBe(changesLinesPerPage('third', rows))
+  })
+})
+
+describe('buildChanges with a Cells line (#298)', () => {
+  it('reads each cell through the scale the sheet shows: 3rd to 5th’s A cell over D7 → Gm plays Eb, the analysis’s b13', () => {
+    const doc = parseChart('title: T\nkey: Gm\n\nsection: A\n1 | Am7b5\n2 | D7\n3 | Gm7\n4 | Gm7\n').value
+    expect(resolveScales(doc, { level: 'standard', seed: 0 }).get(1)?.scale).toBe('D Phrygian Dominant')
+    const sheet = buildChanges(doc, CONCERT, 4, false, { kind: 'cells', id: '3rd-5th' })
+    const d7 = sheet.lines.flatMap((l) => l.bars)[1]?.voice.map((n) => (n.pitch ? rootName(n.pitch) : 'r'))
+    expect(d7?.slice(0, 4)).toEqual(['F#', 'A', 'C', 'Eb'])
   })
 })
 

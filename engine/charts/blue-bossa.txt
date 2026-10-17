@@ -4,6 +4,8 @@ composer: Kenny Dorham
 style: Latin
 key: Cm
 form: AB
+recording: Joe Henderson; Page One; Blue Note; 1963
+youtube: EUxv3AAaK_Y
 # analysis: 2026-10-17, rules v1; C minor
 
 # bar | chord | scale

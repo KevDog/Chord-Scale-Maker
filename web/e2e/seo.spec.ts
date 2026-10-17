@@ -41,6 +41,21 @@ test.describe('without JavaScript', () => {
     expect(ld.find((d) => d['@type'] === 'MusicComposition')?.recordedAs?.inAlbum.name).toBe('Blue Train')
   })
 
+  test('a song with a video offers its play button and a YouTube link in a new tab, loading nothing from YouTube', async ({ page }) => {
+    const youtube: string[] = []
+    page.on('request', (r) => {
+      if (/youtube/.test(r.url())) youtube.push(r.url())
+    })
+    await page.goto('/song/so-what')
+    await expect(page.getByText('Miles Davis, Kind of Blue (Columbia, 1959).')).toBeVisible()
+    await expect(page.getByRole('button', { name: /So What, Miles Davis.*Play the video/ })).toBeVisible()
+    const link = page.getByRole('link', { name: /Watch on YouTube/ })
+    await expect(link).toHaveAttribute('href', 'https://www.youtube.com/watch?v=ylXk1LBvIqU')
+    await expect(link).toHaveAttribute('target', '_blank')
+    await expect(link).toHaveAttribute('rel', 'noopener noreferrer')
+    expect(youtube).toEqual([])
+  })
+
   test('a song gives its chord changes bar by bar', async ({ page }) => {
     await page.goto('/song/blue-trane')
     const bars = page.getByRole('list', { name: 'A, bar by bar' }).getByRole('listitem')

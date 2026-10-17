@@ -4,6 +4,8 @@ composer: Miles Davis
 style: Up
 form: AABBA, 40 bars
 key: Gm
+recording: Miles Davis; Milestones; Columbia; 1958
+youtube: k94zDsJ-JMU
 # analysis: 2026-10-11, rules v1; G minor, modal
 
 # bar | chord | scale

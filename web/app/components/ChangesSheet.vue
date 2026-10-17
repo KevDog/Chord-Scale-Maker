@@ -60,7 +60,7 @@
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { PlusIcon, Square2StackIcon } from '@heroicons/vue/16/solid'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
-import { breakLines, buildChanges, changesLinesPerPage, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, type ChangesLineChoice } from '@chord-scale-maker/engine'
+import { type Approach, breakLines, buildChanges, changesLinesPerPage, type ChartDoc, type ChordAt, type ChordPreview, chunk, type GridPos, isArpeggioPattern, pageSubtitle, type OverlayPlan, type Part, type PentatonicPlan, type PickKind, type ScaleView, showHexatonics, showPentatonics, type ChangesLineChoice } from '@chord-scale-maker/engine'
 
 /** the Changes sheet (docs/plan-changes.md): the chart as a study lead sheet, 4 bars a line (2 on phones), fewer where the chords' names don't fit */
 const { shows } = useInterface()
@@ -74,6 +74,7 @@ const props = defineProps<{
   instrumentLabel: string // '' while editing in concert pitch
   numerals: boolean
   scales: boolean
+  approach?: Approach // the figure into each guide tone of the guide tone line (#298); undefined: none
   line?: ChangesLineChoice // a guide tone, arpeggio or Pentatonic line, as notes in place of the slashes (the clef then always starts line 1)
   editable?: boolean // tap a chord to edit it
   selectedLine?: number | null // the chart line of the chord the editor is on
@@ -103,10 +104,10 @@ const paged = inject(SHEET_PAGED, ref(false)) // focus mode's pages are a printe
 const barsPerLine = computed(() => (wide.value || paged.value ? 4 : 2))
 
 const line = computed((): ChangesLineChoice => props.line ?? 'off')
-/** an arpeggio, Pentatonic or Triad pair line: beamed cells, no label row; lineName: the latter two's, for the aria-label */
-const lineName = computed(() => (typeof line.value === 'object' ? (line.value.kind === 'pentatonic' ? 'pentatonic' : 'triad pair') : undefined))
+/** an arpeggio, Pentatonic, Triad pair or Cells line: beamed cells, no label row; lineName: the latter three's, for the aria-label */
+const lineName = computed(() => (typeof line.value === 'object' ? ({ pentatonic: 'pentatonic', 'triad-pair': 'triad pair', cells: 'cells' } as const)[line.value.kind] : undefined))
 const arpeggio = computed(() => !!lineName.value || isArpeggioPattern(line.value))
-const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null))
+const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null, props.approach ?? 'none'))
 /** the bars that start a line because the names before them didn't fit (ChangesSystem measures): until the sheet changes */
 const breaks = shallowRef<ReadonlySet<string>>(new Set())
 watch(built, () => (breaks.value = new Set()))

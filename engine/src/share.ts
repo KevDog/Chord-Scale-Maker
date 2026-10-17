@@ -1,4 +1,6 @@
 import { isSheetLine, type SheetLine } from './arpeggios'
+import { type Approach, isApproach } from './approaches'
+import { type CellId, isCellId } from './cells'
 import { type ArpDirection, type ArpNotes, isArpDirection, isArpNotes } from './arpeggioSheet'
 import { type ChordPicks, chordPicksFrom, hasPicks } from './chordPicks'
 import { type InstrumentName, isInstrumentName } from './instruments'
@@ -6,6 +8,7 @@ import { isPentatonicLeave, type PentatonicLeave } from './pentatonicLine'
 import { isScaleLevel, type ScaleLevel } from './levels'
 import { LIMITS } from './limits'
 import type { Mode } from './part'
+import { formatPattern, isPatternNotes, parsePattern, type PatternNotes } from './patterns'
 import { type PracticeSelection, practiceSelectionFrom } from './practice'
 
 /**
@@ -15,7 +18,11 @@ import { type PracticeSelection, practiceSelectionFrom } from './practice'
  * (including while inflating, so a tiny link can't expand into megabytes), validates every field, drops what it
  * doesn't know, and returns null instead of throwing.
  */
-export type ShareSheet = 'scales' | 'changes' | 'arpeggios' // a link from the retired Guide tones sheet drops its sheet and opens the default
+export type ShareSheet = 'scales' | 'changes' | 'arpeggios' | 'patterns' // a link from the retired Guide tones sheet drops its sheet and opens the default
+/** the Changes sheet's line in a link: a guide tone line, an arpeggio pattern, or cells:<id> (#298) */
+export type ShareLine = SheetLine | `cells:${CellId}`
+const lineFrom = (x: unknown): ShareLine | undefined =>
+  isSheetLine(x) ? x : typeof x === 'string' && x.startsWith('cells:') && isCellId(x.slice(6)) ? (x as `cells:${CellId}`) : undefined
 export type ShareView = Readonly<{
   instrument?: InstrumentName
   mode?: Mode
@@ -24,12 +31,18 @@ export type ShareView = Readonly<{
   /** the Changes sheet's numerals and scale rows */
   numerals?: boolean
   scaleNames?: boolean
-  /** the Changes sheet's line: a guide tone line or an arpeggio pattern; absent: off */
-  line?: SheetLine
+  /** the Changes sheet's line: a guide tone line, an arpeggio pattern or a cells line; absent: off */
+  line?: ShareLine
+  /** the guide tone line's Approach (#298); absent: none */
+  approach?: Approach
   sheet?: ShareSheet
   /** the Arpeggios sheet's choices: 7th Chord or Extended; Up, Down or Up & down */
   arpNotes?: ArpNotes
   arpDir?: ArpDirection
+  /** the Patterns sheet's choices (#298): the moves in canonical text, what they run over, the direction (arpDir's values) */
+  pattern?: string
+  patternNotes?: PatternNotes
+  patternDir?: ArpDirection
   /** the Changes sheet's Pentatonic line (#284), with an arpeggio line: its Leave out (its direction is arpDir); an old link has none */
   pentLeave?: PentatonicLeave
   practice?: PracticeSelection
@@ -102,6 +115,8 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
   const practice = practiceSelectionFrom(o.practice)
   const picks = chordPicksFrom(Object.hasOwn(o, 'picks') ? o.picks : undefined)
   const instrument = o.instrument === 'concert' ? 'piano' : o.instrument // #332: links made before the concert choice was retired
+  const line = lineFrom(o.line)
+  const parsed = typeof o.pattern === 'string' ? parsePattern(o.pattern) : undefined
   const view: ShareView = {
     ...(typeof instrument === 'string' && isInstrumentName(instrument) ? { instrument } : {}),
     ...(o.mode === 'root' || o.mode === 'from' ? { mode: o.mode } : {}),
@@ -109,10 +124,14 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(typeof o.intervals === 'boolean' ? { intervals: o.intervals } : {}),
     ...(typeof o.numerals === 'boolean' ? { numerals: o.numerals } : {}),
     ...(typeof o.scaleNames === 'boolean' ? { scaleNames: o.scaleNames } : {}),
-    ...(isSheetLine(o.line) && o.line !== 'off' ? { line: o.line } : {}), // anything else: off
-    ...(o.sheet === 'scales' || o.sheet === 'changes' || o.sheet === 'arpeggios' ? { sheet: o.sheet } : {}),
+    ...(line && line !== 'off' ? { line } : {}), // anything else: off
+    ...(isApproach(o.approach) ? { approach: o.approach } : {}),
+    ...(o.sheet === 'scales' || o.sheet === 'changes' || o.sheet === 'arpeggios' || o.sheet === 'patterns' ? { sheet: o.sheet } : {}),
     ...(isArpNotes(o.arpNotes) ? { arpNotes: o.arpNotes } : {}),
     ...(isArpDirection(o.arpDir) ? { arpDir: o.arpDir } : {}),
+    ...(parsed && 'moves' in parsed ? { pattern: formatPattern(parsed.moves) } : {}),
+    ...(isPatternNotes(o.patternNotes) ? { patternNotes: o.patternNotes } : {}),
+    ...(isArpDirection(o.patternDir) ? { patternDir: o.patternDir } : {}),
     ...(isPentatonicLeave(o.pentLeave) ? { pentLeave: o.pentLeave } : {}),
     ...(practice ? { practice } : {}),
     ...(isScaleLevel(o.level) ? { level: o.level } : {}),

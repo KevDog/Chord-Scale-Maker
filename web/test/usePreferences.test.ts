@@ -1,7 +1,11 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { effectScope, nextTick } from 'vue'
 import { linkPreferences, usePreferences } from '~/composables/usePreferences'
 import { INSTRUMENTS, type ShareView } from '@chord-scale-maker/engine'
+
+const flags = vi.hoisted(() => ({ cells: true, approaches: true }))
+mockNuxtImport('useFeature', () => (name: string) => (name === 'cells' && flags.cells) || (name === 'approaches' && flags.approaches))
 
 function prefs() {
   const scope = effectScope()
@@ -18,7 +22,11 @@ function linked(view: ShareView) {
 }
 
 describe('usePreferences', () => {
-  afterEach(() => localStorage.clear())
+  afterEach(() => {
+    localStorage.clear()
+    flags.cells = true
+    flags.approaches = true
+  })
 
   it("defaults to piano spelled from the chart's key, with interval labels on", () => {
     const p = prefs()
@@ -58,6 +66,63 @@ describe('usePreferences', () => {
     const again = prefs()
     expect([again.lineMode.value, again.arpeggio.value, again.guideLine.value]).toEqual(['arpeggio', 'voice-led', 'seventh'])
     expect(Object.keys(p)).not.toContain('fromThird')
+  })
+
+  it('remembers the Cells line: the mode and the cell, 3rd to 3rd until chosen, and rejects an unknown cell', async () => {
+    const p = prefs()
+    expect(p.cells.value).toBe('3rd-3rd')
+    p.lineMode.value = 'cells'
+    p.cells.value = '1-2-3-5'
+    await nextTick()
+    expect([localStorage.getItem('csm-line'), localStorage.getItem('csm-cells')]).toEqual(['cells', '1-2-3-5'])
+    const again = prefs()
+    expect([again.lineMode.value, again.cells.value]).toEqual(['cells', '1-2-3-5'])
+    localStorage.setItem('csm-cells', '9-9-9-9')
+    expect(prefs().cells.value).toBe('3rd-3rd')
+  })
+
+  it('remembers the Approach: None until chosen, rejects an unknown one', async () => {
+    const p = prefs()
+    expect(p.approach.value).toBe('none')
+    p.approach.value = 'enclosure'
+    await nextTick()
+    expect(localStorage.getItem('csm-approach')).toBe('enclosure')
+    expect(prefs().approach.value).toBe('enclosure')
+    localStorage.setItem('csm-approach', 'sideways')
+    expect(prefs().approach.value).toBe('none')
+  })
+
+  it('reads a stored Approach as None with the approaches flag off, and keeps it stored', async () => {
+    localStorage.setItem('csm-approach', 'enclosure')
+    flags.approaches = false
+    expect(prefs().approach.value).toBe('none')
+    expect(linked({ approach: 'delayed' }).approach.value).toBe('none')
+    await nextTick()
+    expect(localStorage.getItem('csm-approach')).toBe('enclosure')
+    flags.approaches = true
+    expect(prefs().approach.value).toBe('enclosure')
+  })
+
+  it("takes a link's Approach over your own, None when the link has none, for this visit only", async () => {
+    localStorage.setItem('csm-approach', 'enclosure')
+    const p = linked({ line: 'third', approach: 'delayed' })
+    expect(p.approach.value).toBe('delayed')
+    expect(linked({ line: 'third' }).approach.value).toBe('none')
+    p.approach.value = 'double-below'
+    await nextTick()
+    expect(localStorage.getItem('csm-approach')).toBe('enclosure')
+  })
+
+  it('shows a stored Cells line as Off with the cells flag off, and keeps it stored', async () => {
+    localStorage.setItem('csm-line', 'cells')
+    flags.cells = false
+    const p = prefs()
+    expect(p.lineMode.value).toBe('off')
+    await nextTick()
+    expect(localStorage.getItem('csm-line')).toBe('cells')
+    expect(linked({ line: 'cells:5-3-2-1' }).lineMode.value).toBe('off')
+    flags.cells = true
+    expect(prefs().lineMode.value).toBe('cells')
   })
 
   it('falls back from stored values it does not know, and ignores the old keys', () => {
@@ -112,6 +177,16 @@ describe('linkPreferences', () => {
     expect(localStorage.getItem('csm-guide-line')).toBe('seventh')
   })
 
+  it("takes a link's cells line over your own, for this visit only", async () => {
+    localStorage.setItem('csm-cells', '1-3-5-7')
+    const p = linked({ line: 'cells:5-3-2-1' })
+    expect([p.lineMode.value, p.cells.value]).toEqual(['cells', '5-3-2-1'])
+    expect(linked({ line: 'third' }).cells.value).toBe('1-3-5-7')
+    p.cells.value = '1-2-3-5'
+    await nextTick()
+    expect(localStorage.getItem('csm-cells')).toBe('1-3-5-7')
+  })
+
   it("reads a link's spelling: its start note, from the root, or the key when it has no note", () => {
     expect(linked({ mode: 'from', start: 'Eb' }).spell.value).toBe('Eb')
     expect(linked({ mode: 'root', start: 'C' }).spell.value).toBe('root')
@@ -147,6 +222,27 @@ describe('linkPreferences', () => {
     const l = linked({ sheet: 'arpeggios', arpNotes: 'seventh', arpDir: 'down' })
     expect([l.arpNotes.value, l.arpDir.value]).toEqual(['seventh', 'down'])
     expect(linked({}).arpNotes.value).toBe('extended')
+  })
+
+  it('keeps the Patterns choices in canonical form; text that does not parse reads as the default; a link overrides them for the visit only', async () => {
+    const p = prefs()
+    expect([p.pattern.value, p.patternNotes.value, p.patternDir.value]).toEqual(['+1 +1 +1 −2', 'scale', 'up'])
+    p.pattern.value = '+2 -1'
+    p.patternNotes.value = 'chord'
+    p.patternDir.value = 'up-down'
+    await nextTick()
+    const again = prefs()
+    expect([again.pattern.value, again.patternNotes.value, again.patternDir.value]).toEqual(['+2 −1', 'chord', 'up-down'])
+    expect(localStorage.getItem('csm-pattern')).toBe('+2 −1')
+    localStorage.setItem('csm-pattern', '+0 +1')
+    localStorage.setItem('csm-pattern-notes', 'x')
+    localStorage.setItem('csm-pattern-dir', 'sideways')
+    const bad = prefs()
+    expect([bad.pattern.value, bad.patternNotes.value, bad.patternDir.value]).toEqual(['+1 +1 +1 −2', 'scale', 'up'])
+    const l = linked({ sheet: 'patterns', pattern: '+3 -1', patternNotes: 'chord', patternDir: 'down' })
+    expect([l.pattern.value, l.patternNotes.value, l.patternDir.value]).toEqual(['+3 −1', 'chord', 'down'])
+    expect(localStorage.getItem('csm-pattern')).toBe('+0 +1')
+    expect(linked({}).pattern.value).toBe('+1 +1 +1 −2')
   })
 })
 

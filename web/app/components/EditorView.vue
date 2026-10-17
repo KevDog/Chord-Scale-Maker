@@ -123,9 +123,14 @@
             v-model:pent-step-bars="pentStepBars"
             v-model:line-mode="prefs.lineMode.value"
             v-model:guide-line="prefs.guideLine.value"
+            v-model:approach="prefs.approach.value"
             v-model:arpeggio="prefs.arpeggio.value"
+            v-model:cells="prefs.cells.value"
             v-model:arp-notes="prefs.arpNotes.value"
             v-model:arp-dir="prefs.arpDir.value"
+            v-model:pattern="prefs.pattern.value"
+            v-model:pattern-notes="prefs.patternNotes.value"
+            v-model:pattern-dir="prefs.patternDir.value"
             v-model:pent-leave="prefs.pentLeave.value"
             :key-start="keyStartNote"
             :lock-labels="sheetEditor"
@@ -193,6 +198,7 @@
             :numerals="showNumerals"
             :scales="showScaleNames"
             :line="changesLine"
+            :approach="prefs.approach.value"
             :editable="sheetEditing && !focus.on.value"
             :selected-line="selectedLine"
             :view="scaleView"
@@ -248,8 +254,9 @@
             :part="part"
             :instrument-label="instrumentLabel(prefs.instrument.value)"
             :per-page="PER_PAGE"
-            :notes="prefs.arpNotes.value"
-            :dir="prefs.arpDir.value"
+            :notes="sheet === 'patterns' ? prefs.patternNotes.value : prefs.arpNotes.value"
+            :moves="sheet === 'patterns' ? patternMoves : undefined"
+            :dir="sheet === 'patterns' ? prefs.patternDir.value : prefs.arpDir.value"
             :intervals="prefs.intervals.value"
             :home-key="homeKey"
             :resolved="resolved"
@@ -266,7 +273,7 @@
 import { ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, BookmarkIcon, CodeBracketIcon, EllipsisHorizontalIcon, LinkIcon, PencilSquareIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import { ISSUE_CONTEXT, issuePart } from '~/utils/issueReport'
 import { CHART_REPORT_KEY, type ChartReport, guidesText } from '~/utils/chartReport'
-import { changesLineOf, sheetLineOf } from '~/utils/sheetLine'
+import { changesLineOf, shareLineOf } from '~/utils/sheetLine'
 import { type HiddenSetting, hiddenSettings } from '~/utils/interface'
 import {
   addSection,
@@ -302,6 +309,7 @@ import {
   LIMITS,
   litKeys,
   type Mode,
+  parsePattern,
   partFor,
   practiceBoxes,
   resolveScales,
@@ -324,6 +332,7 @@ import type { SaveTarget } from '~/composables/useSavedChart'
 import { nextChordLine, type SheetChordEdit, type SheetDone, type SheetEdit, type SheetFocus, type SheetPlace } from '~/utils/sheetChordEdit'
 import { SCALE_VIEW } from '~/utils/scaleView'
 import { firstSheet, type SheetKind } from '~/utils/sheets'
+import { DEFAULT_PATTERN } from '~/composables/usePreferences'
 import { type MoreAction, moreMenuItems } from '~/utils/moreMenu'
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { spellView } from '~/utils/scaleChoices'
@@ -395,7 +404,7 @@ const keyStartNote = computed(() => keyStart(chartKeyOf(editor.doc.value), part.
 const spelled = computed(() => spellView(prefs.spell.value, keyStartNote.value))
 const mode = computed((): Mode => spelled.value.mode)
 const start = computed(() => spelled.value.start)
-const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet))
+const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, useFeature('patterns')))
 /** the Interface level (#273): which controls show */
 const ui = useInterface()
 /** the chart's sections as the Changes sheet draws them, for the path presets (#264) */
@@ -424,9 +433,16 @@ function onPick(kind: PickKind, positions: readonly ChordAt[], value: number | r
   else if (kind === 'pentatonic' && typeof value === 'number') chordPicks.pick('pentatonic', positions, value)
   else if (kind === 'hexatonic' && typeof value !== 'number') chordPicks.pick('hexatonic', positions, value)
 }
-const sheetLine = computed(() => sheetLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value))
+/** the stored pattern's moves (the text is canonical; an unparseable one draws as the default pattern rather than nothing) */
+const patternMoves = computed(() => {
+  const p = parsePattern(prefs.pattern.value)
+  if ('moves' in p) return p.moves
+  const fallback = parsePattern(DEFAULT_PATTERN)
+  return 'moves' in fallback ? fallback.moves : []
+})
+const sheetLine = computed(() => shareLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value, prefs.cells.value))
 /** the line the Changes sheet draws: the stored one, the arpeggio slot read as the Pentatonic line under the Pentatonic overlay (#284) */
-const changesLine = computed(() => changesLineOf({ mode: prefs.lineMode.value, guide: prefs.guideLine.value, arpeggio: prefs.arpeggio.value, overlay: prefs.overlay.value, leave: prefs.pentLeave.value, dir: prefs.arpDir.value }))
+const changesLine = computed(() => changesLineOf({ mode: prefs.lineMode.value, guide: prefs.guideLine.value, arpeggio: prefs.arpeggio.value, overlay: prefs.overlay.value, leave: prefs.pentLeave.value, dir: prefs.arpDir.value, cells: prefs.cells.value }))
 /** chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor) */
 const sheetEditing = computed(() => editorShown.value && !editor.fatal.value)
 const sheetChord = ref<SheetChordEdit | null>(null)
@@ -481,7 +497,7 @@ const picksInForce = computed((): boolean => {
 })
 /** settings in force whose controls this Interface level hides (a share link, a stored preference): the notice offers to show them or reset them */
 const hidden = computed(() =>
-  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: showNumerals.value, scaleNames: showScaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value }),
+  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: showNumerals.value, scaleNames: showScaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value, approach: prefs.lineMode.value === 'guide' ? prefs.approach.value : 'none' }),
 )
 /** each reset, given the mode in force before any of them ran (resetting the spelling changes the mode) */
 const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
@@ -489,6 +505,7 @@ const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
   numerals: () => (prefs.numerals.value = true),
   'scale-names': () => (prefs.scaleNames.value = true),
   line: () => (prefs.lineMode.value = 'off'),
+  approaches: () => (prefs.approach.value = 'none'),
   spell: () => (prefs.spell.value = 'key'),
   practice: (inForce) => practice.setSelection(inForce, null),
   pentatonics: () => {
@@ -496,6 +513,7 @@ const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
     pentPath.reset() // this chart's stored path too; other charts' are their own settings (#291)
   },
   'chord-picks': () => chordPicks.clearAll(),
+  patterns: () => (sheet.value = 'changes'),
 }
 function resetHidden(): void {
   const inForce = mode.value
@@ -716,6 +734,8 @@ async function shareUrl(): Promise<string> {
     scaleNames: prefs.scaleNames.value,
     ...(sheetLine.value !== 'off' ? { line: sheetLine.value } : {}), // absent: off
     sheet: sheet.value,
+    ...(sheet.value === 'changes' && prefs.lineMode.value === 'guide' && prefs.approach.value !== 'none' ? { approach: prefs.approach.value } : {}), // the guide tone line's Approach (#298)
+    ...(sheet.value === 'patterns' ? { pattern: prefs.pattern.value, patternNotes: prefs.patternNotes.value, patternDir: prefs.patternDir.value } : {}),
     ...(sheet.value === 'arpeggios' ? { arpNotes: prefs.arpNotes.value, arpDir: prefs.arpDir.value } : {}),
     ...(sheet.value === 'changes' && prefs.lineMode.value === 'arpeggio' ? { arpDir: prefs.arpDir.value, pentLeave: prefs.pentLeave.value } : {}), // the Pentatonic (#284) and Triad pair (#325) lines', under the receiver's own overlay
     ...(selection.value ? { practice: selection.value } : {}),

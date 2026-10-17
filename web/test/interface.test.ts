@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { CONTROL_TIERS, hiddenSettings, initialLevel, INTERFACE_LEVELS, isInterfaceLevel, levelLabel, shows, type ViewSettings } from '~/utils/interface'
 
-const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, overlay: 'off', picks: false }
+const DEFAULTS: ViewSettings = { sheet: 'changes', scaleLevel: 'standard', numerals: true, scaleNames: true, lineMode: 'off', spell: 'key', practice: null, overlay: 'off', picks: false, approach: 'none' }
 
 describe('interface levels', () => {
   it('orders the levels and names them', () => {
@@ -18,6 +18,9 @@ describe('interface levels', () => {
       line: 'intermediate',
       spell: 'intermediate',
       practice: 'intermediate',
+      patterns: 'intermediate',
+      cells: 'intermediate',
+      approaches: 'intermediate',
       'scale-choice': 'intermediate',
       'form-editing': 'intermediate',
       why: 'intermediate',
@@ -58,6 +61,17 @@ describe('hiddenSettings', () => {
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'changes', spell: 'root', practice: { preset: 'chordTones' } })).toBeNull()
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', spell: 'root' })).toEqual({ settings: ['spell'], needs: 'intermediate' })
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'arpeggios', scaleLevel: 'advanced', spell: 'root' })).toBeNull()
+  })
+
+  it('names a Patterns sheet at Essentials, and not at Intermediate', () => {
+    expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'patterns' })).toEqual({ settings: ['patterns'], needs: 'intermediate' })
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'patterns' })).toBeNull()
+  })
+
+  it('names an Approach in force on the Changes sheet at Intermediate, and not on other sheets', () => {
+    expect(hiddenSettings('essentials', { ...DEFAULTS, approach: 'enclosure' })).toEqual({ settings: ['approaches'], needs: 'intermediate' })
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, approach: 'enclosure' })).toBeNull()
+    expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', approach: 'enclosure' })).toBeNull()
   })
 
   it('puts a pentatonic practice selection at Everything', () => {

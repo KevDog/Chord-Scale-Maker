@@ -5,7 +5,10 @@ style: Medium
 key: F
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 263
+recording: Thelonious Monk; Genius of Modern Music; Blue Note; 1951
+youtube: euft-JZ6qy4
 # analysis: 2026-10-11, rules v1; F
+# recording: recorded 1947-10-24, first issued on 78 (Blue Note 543), LP 1951 (BLP 5002) (Wikipedia, jazzdisco); video: Genius Of Modern Music, Vol. 1 (2013)
 
 # bar | chord | scale
 # Miles' bridge: G7 | G7 | Ab7 | Ab7 | A7 Bb7 | B7 Bb7 | A7 Ab7 | G7 Gb7

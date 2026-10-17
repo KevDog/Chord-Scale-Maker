@@ -1,4 +1,4 @@
-import { ARP_DIRECTION_LABELS, ARPEGGIO_LABELS, type ChangesLineChoice, isArpeggioPattern, PENTATONIC_LEAVE_LABELS } from '@chord-scale-maker/engine'
+import { ARP_DIRECTION_LABELS, ARPEGGIO_LABELS, cellLabel, type ChangesLineChoice, isArpeggioPattern, PENTATONIC_LEAVE_LABELS } from '@chord-scale-maker/engine'
 
 export const CHART_REPORT_KEY = 'csm-chart-report'
 /** guides: the Changes sheet's line, as guidesText gives it */
@@ -9,7 +9,9 @@ export const guidesText = (line: ChangesLineChoice): string =>
   typeof line === 'object'
     ? line.kind === 'pentatonic'
       ? `pentatonic: leave out ${PENTATONIC_LEAVE_LABELS[line.leave]}, ${ARP_DIRECTION_LABELS[line.dir]}`
-      : `triad pair: ${ARP_DIRECTION_LABELS[line.dir]}`
+      : line.kind === 'cells'
+        ? `cells: ${cellLabel(line.id)}`
+        : `triad pair: ${ARP_DIRECTION_LABELS[line.dir]}`
     : isArpeggioPattern(line) ? `7th chords: ${ARPEGGIO_LABELS[line]}` : ({ off: '', third: 'from 3rd', seventh: 'from 7th' } as const)[line]
 
 /** the contact message a chart-error report pre-fills: a prompt for the reporter, a debug block, then the chart text */

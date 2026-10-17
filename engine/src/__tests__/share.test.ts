@@ -108,6 +108,27 @@ describe('share links', () => {
     }
   })
 
+  it("carries the Changes sheet's Cells line as cells:<id>, dropping an unknown id", async () => {
+    for (const line of ['cells:1-2-3-5', 'cells:3rd-3rd'] as const) {
+      const view = { sheet: 'changes', line } as const
+      expect(await decodeShare(await encodeShare({ chart: CHART, view }))).toEqual({ chart: CHART, view })
+    }
+    for (const line of ['cells:x', 'cells:', 'cells:1-2-3-4', 'cells']) expect(shareViewFrom({ sheet: 'changes', line })).toEqual({ sheet: 'changes' })
+  })
+
+  it("carries the Changes sheet's Approach (#298), dropping an unknown one", async () => {
+    for (const approach of ['enclosure', 'chromatic-below', 'none'] as const) {
+      const view = { sheet: 'changes', line: 'third', approach } as const
+      expect(await decodeShare(await encodeShare({ chart: CHART, view }))).toEqual({ chart: CHART, view })
+    }
+    for (const approach of ['x', '', 3, null, true]) expect(shareViewFrom({ sheet: 'changes', approach })).toEqual({ sheet: 'changes' })
+  })
+
+  it('keeps the Patterns sheet and its choices in canonical form, dropping bad ones', () => {
+    expect(shareViewFrom({ sheet: 'patterns', pattern: '+2 -1', patternNotes: 'chord', patternDir: 'up-down' })).toEqual({ sheet: 'patterns', pattern: '+2 −1', patternNotes: 'chord', patternDir: 'up-down' })
+    expect(shareViewFrom({ sheet: 'patterns', pattern: '+0', patternNotes: 'x', patternDir: 'sideways' })).toEqual({ sheet: 'patterns' })
+  })
+
   it('keeps the Arpeggios sheet and its choices, dropping bad ones', () => {
     expect(shareViewFrom({ sheet: 'arpeggios', arpNotes: 'extended', arpDir: 'up-down' })).toEqual({ sheet: 'arpeggios', arpNotes: 'extended', arpDir: 'up-down' })
     expect(shareViewFrom({ sheet: 'arps', arpNotes: 'ninth', arpDir: 'sideways' })).toBeUndefined()

@@ -4,7 +4,10 @@ style: Medium
 key: C
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 191
+recording: Duke Ellington; The Best of Duke Ellington; Capitol; 1961
+youtube: ruewfx57GQA
 # analysis: 2026-10-11, rules v1; C
+# recording: recorded 1953-04-06, first issued on 78 (Capitol 2458, 1953), first US LP 1961 (T-1602; French Capitol's Ultra De Luxe, 1959, came earlier) (Discogs, MusicBrainz); video: Jazz Profile: Duke Ellington, the same take
 
 # bar | chord | scale
 # the intro vamp is melody only (no chords) and is left out

@@ -23,7 +23,7 @@
         <span class="text-sm text-zinc-300">Play the video (loads YouTube)</span>
       </button>
     </div>
-    <figcaption class="text-sm text-zinc-500 dark:text-zinc-400"><slot /></figcaption>
+    <figcaption class="text-sm text-zinc-600 dark:text-zinc-400"><slot /></figcaption>
   </figure>
 </template>
 

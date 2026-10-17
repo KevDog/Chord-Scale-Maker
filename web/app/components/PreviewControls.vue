@@ -10,7 +10,7 @@
           <div class="flex items-center gap-2">
             <UiListbox v-model="sheet" class="w-full">
               <template #selected="{ value }"><UiListboxLabel>{{ sheetLabel(value) }}</UiListboxLabel></template>
-              <UiListboxOption v-for="s in SHEETS" :key="s.value" :value="s.value"><UiListboxLabel>{{ s.label }}</UiListboxLabel></UiListboxOption>
+              <UiListboxOption v-for="s in sheetsFor(patternsOn && shows('patterns'))" :key="s.value" :value="s.value"><UiListboxLabel>{{ s.label }}</UiListboxLabel></UiListboxOption>
             </UiListbox>
           </div>
         </UiField>
@@ -107,15 +107,20 @@
                     <UiLabel class="pl-3">Line</UiLabel>
                     <!-- the detail opens beneath the modes, so the Line group keeps its width and place (#187) -->
                     <div class="flex flex-col gap-2">
-                      <SegmentedControl v-model="lineMode" legend="Line" name="line-mode" :options="lineModes(overlay)" />
-                      <EaseReveal :show="lineMode === 'guide'">
+                      <SegmentedControl v-model="lineRadio" legend="Line" name="line-mode" :options="lineModes(overlay)" />
+                      <EaseReveal :show="lineMode === 'guide'" inner-class="flex flex-col gap-2">
                         <UiListbox v-model="guideLine" class="w-full" aria-label="Guide tone line">
                           <template #selected="{ value }"><UiListboxLabel>{{ guideLabel(value) }}</UiListboxLabel></template>
                           <UiListboxOption v-for="g in GUIDE_LINES" :key="g.value" :value="g.value" :title="g.title"><UiListboxLabel>{{ g.label }}</UiListboxLabel></UiListboxOption>
                         </UiListbox>
+                        <!-- the figure into each guide tone (#298): under the guide tone listbox, so the Line group keeps its width (w-0 min-w-full: the long figure names truncate rather than widen it, the tooltip the whole name) -->
+                        <UiListbox v-if="approachesOn && shows('approaches')" v-model="approach" class="w-0 min-w-full" aria-label="Approach" :title="approachLabel(approach)">
+                          <template #selected="{ value }"><UiListboxLabel>{{ approachLabel(value) }}</UiListboxLabel></template>
+                          <UiListboxOption v-for="a in APPROACHES" :key="a" :value="a"><UiListboxLabel>{{ APPROACH_LABELS[a] }}</UiListboxLabel></UiListboxOption>
+                        </UiListbox>
                       </EaseReveal>
                       <!-- the Pentatonic line (#284) and the Triad pair line (#325): the direction (the Arpeggios sheet's), and the Pentatonic's Leave out where the Superimpose shows -->
-                      <EaseReveal :show="lineMode === 'arpeggio' && overlay !== 'off'" inner-class="flex flex-col gap-2">
+                      <EaseReveal :show="inSlot && overlay !== 'off'" inner-class="flex flex-col gap-2">
                         <UiListbox v-model="arpDir" class="w-full" :aria-label="overlay === 'pentatonic' ? 'Pentatonic direction' : 'Triad pair direction'" title="Each cell up, down, or up and down by turns">
                           <template #selected="{ value }"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[value] }}</UiListboxLabel></template>
                           <UiListboxOption v-for="d in ARP_DIRECTIONS" :key="d" :value="d"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[d] }}</UiListboxLabel></UiListboxOption>
@@ -127,10 +132,19 @@
                           </UiListbox>
                         </EaseReveal>
                       </EaseReveal>
-                      <EaseReveal :show="lineMode === 'arpeggio' && overlay === 'off'">
-                        <UiListbox v-model="arpeggio" class="w-full" aria-label="Arpeggio pattern">
-                          <template #selected="{ value }"><UiListboxLabel>{{ ARPEGGIO_LABELS[value] }}</UiListboxLabel></template>
+                      <!-- the 7th Chords slot's pattern; with the Cells flag, also the melodic cells (#298): a system (A and B in turn) or one cell in every slot -->
+                      <EaseReveal :show="inSlot && overlay === 'off'">
+                        <UiListbox v-model="slotChoice" class="w-full" aria-label="Arpeggio pattern">
+                          <template #selected="{ value }"><UiListboxLabel>{{ slotLabel(value) }}</UiListboxLabel></template>
                           <UiListboxOption v-for="p in ARPEGGIO_PATTERNS" :key="p" :value="p"><UiListboxLabel>{{ ARPEGGIO_LABELS[p] }}</UiListboxLabel></UiListboxOption>
+                          <template v-if="cellsOn && shows('cells')">
+                            <UiListboxGroup label="Cell systems">
+                              <UiListboxOption v-for="id in SYSTEM_IDS" :key="id" :value="id"><UiListboxLabel>{{ cellLabel(id) }}</UiListboxLabel></UiListboxOption>
+                            </UiListboxGroup>
+                            <UiListboxGroup label="Cells">
+                              <UiListboxOption v-for="c in SINGLE_CELLS" :key="c.id" :value="c.id"><UiListboxLabel>{{ cellLabel(c.id) }}</UiListboxLabel></UiListboxOption>
+                            </UiListboxGroup>
+                          </template>
                         </UiListbox>
                       </EaseReveal>
                     </div>
@@ -148,6 +162,27 @@
                 <div class="flex flex-wrap items-center gap-2">
                   <SegmentedControl v-model="arpNotes" legend="Arpeggio" name="arp-notes" :options="arpNoteOptions" />
                   <UiListbox v-model="arpDir" class="w-32" aria-label="Arpeggio direction">
+                    <template #selected="{ value }"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[value] }}</UiListboxLabel></template>
+                    <UiListboxOption v-for="d in ARP_DIRECTIONS" :key="d" :value="d"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[d] }}</UiListboxLabel></UiListboxOption>
+                  </UiListbox>
+                </div>
+              </UiField>
+              <UiField v-if="sheet === 'patterns' && shows('patterns')">
+                <UiLabel class="pl-3">Pattern</UiLabel>
+                <div class="flex flex-wrap items-start gap-2">
+                  <div class="flex w-44 flex-col gap-2">
+                    <UiListbox v-model="patternChoice" class="w-full" aria-label="Pattern">
+                      <template #selected="{ value }"><UiListboxLabel>{{ patternChoiceLabel(value) }}</UiListboxLabel></template>
+                      <UiListboxOption v-for="p in PATTERN_LIBRARY" :key="p.id" :value="p.id"><UiListboxLabel>{{ p.label }}</UiListboxLabel></UiListboxOption>
+                      <UiListboxOption value="custom"><UiListboxLabel>{{ patternChoiceLabel('custom') }}</UiListboxLabel></UiListboxOption>
+                    </UiListbox>
+                    <template v-if="patternChoice === 'custom'">
+                      <UiInput v-model="patternText" aria-label="Custom pattern" placeholder="+1 +1 −1" :invalid="!!patternError" :aria-describedby="patternError ? 'pattern-error' : undefined" />
+                      <p v-if="patternError" id="pattern-error" class="text-sm/5 text-red-700 dark:text-red-400">{{ patternError }}</p>
+                    </template>
+                  </div>
+                  <SegmentedControl v-model="patternNotes" legend="Notes" name="pattern-notes" :options="patternNoteOptions" />
+                  <UiListbox v-model="patternDir" class="w-28" aria-label="Pattern direction">
                     <template #selected="{ value }"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[value] }}</UiListboxLabel></template>
                     <UiListboxOption v-for="d in ARP_DIRECTIONS" :key="d" :value="d"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[d] }}</UiListboxLabel></UiListboxOption>
                   </UiListbox>
@@ -181,7 +216,7 @@
     </template>
 
     <script setup lang="ts">
-    import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, fitRange, INSTRUMENTS, type InstrumentName, noteName, partFor, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
+    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, INSTRUMENTS, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
     import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
@@ -219,9 +254,14 @@
     const overlayShown = computed(() => shows('pentatonics'))
     const lineMode = defineModel<LineMode>('lineMode', { default: 'off' })
     const guideLine = defineModel<GuideFrom>('guideLine', { default: 'third' })
+    const approach = defineModel<Approach>('approach', { default: 'none' })
     const arpeggio = defineModel<ArpeggioPattern>('arpeggio', { default: 'up-root' })
+    const cells = defineModel<CellId>('cells', { default: '3rd-3rd' })
     const arpNotes = defineModel<ArpNotes>('arpNotes', { default: 'seventh' })
     const arpDir = defineModel<ArpDirection>('arpDir', { default: 'up' })
+    const pattern = defineModel<string>('pattern', { default: '+1 +1 +1 −2' })
+    const patternNotes = defineModel<PatternNotes>('patternNotes', { default: 'scale' })
+    const patternDir = defineModel<ArpDirection>('patternDir', { default: 'up' })
     const pentLeave = defineModel<PentatonicLeave>('pentLeave', { default: '1' })
     /** the sheet editor is open: numerals and scales are shown (they are the pickers), their toggles hide */
     /** keyStart: the chart's key, written for the instrument (what "From key" starts on) */
@@ -244,11 +284,63 @@
     const Passthrough: FunctionalComponent = (_, { slots }) => slots.default?.()
 
     const arpNoteOptions = ARP_NOTES.map((value) => ({ value, label: ARP_NOTES_LABELS[value] }))
+    const patternNoteOptions = [
+      { value: 'scale', label: 'Scale' },
+      { value: 'chord', label: 'Chord tones' },
+    ] as const
+    /** the library entry whose canonical text is the stored pattern, else Custom (the box shows the stored text) */
+    const libraryId = computed(() => PATTERN_LIBRARY.find((p) => formatPattern(p.moves) === pattern.value)?.id ?? 'custom')
+    const customChosen = ref(false)
+    const patternChoice = computed({
+      get: () => (customChosen.value ? 'custom' : libraryId.value),
+      set: (id: string) => {
+        customChosen.value = id === 'custom'
+        const entry = PATTERN_LIBRARY.find((p) => p.id === id)
+        if (!entry) return
+        // also the box: re-picking the stored entry changes no `pattern`, so the watch below would not clear bad text
+        patternText.value = formatPattern(entry.moves)
+        pattern.value = patternText.value
+      },
+    })
+    const patternChoiceLabel = (id: string): string => (id === 'custom' ? 'Custom…' : (PATTERN_LIBRARY.find((p) => p.id === id)?.label ?? ''))
+    const patternText = ref(pattern.value)
+    const parsed = computed(() => parsePattern(patternText.value))
+    const patternError = computed(() => ('error' in parsed.value ? parsed.value.error : ''))
+    // a typed pattern that parses is stored (canonical); one that doesn't leaves the stored one as it was
+    watch(patternText, () => {
+      if ('moves' in parsed.value) pattern.value = formatPattern(parsed.value.moves)
+    })
+    // the stored pattern changed from outside (a library choice, a reset): the box follows, unless it already says the same
+    watch(pattern, (v) => {
+      if ('moves' in parsed.value && formatPattern(parsed.value.moves) === v) return // typed here
+      patternText.value = v
+      if (PATTERN_LIBRARY.some((p) => formatPattern(p.moves) === v)) customChosen.value = false
+    })
     const GUIDE_LINES = [
       { value: 'third', label: 'From 3rd', title: "A line that starts on the first chord's 3rd and moves to the nearest guide tone of each chord" },
       { value: 'seventh', label: 'From 7th', title: "A line that starts on the first chord's 7th and moves to the nearest guide tone of each chord" },
     ] as const
     const guideLabel = (v: GuideFrom): string => GUIDE_LINES.find((g) => g.value === v)?.label ?? ''
+    const patternsOn = useFeature('patterns')
+    const cellsOn = useFeature('cells')
+    const approachesOn = useFeature('approaches')
+    /** the closed listbox reads Approach: None, not a bare None */
+    const approachLabel = (a: Approach): string => (a === 'none' ? 'Approach: None' : APPROACH_LABELS[a])
+    const SYSTEM_IDS = Object.keys(CELL_SYSTEMS) as (keyof typeof CELL_SYSTEMS)[]
+    // the Cells line shares the 7th Chords slot (#298): the radio reads 7th Chords while a cell is chosen, and picking
+    // a cell sets the mode and the cell, a pattern the mode and the pattern; leaving the slot for another mode and coming back restores 7th Chords
+    const inSlot = computed(() => lineMode.value === 'arpeggio' || lineMode.value === 'cells')
+    const lineRadio = computed<LineMode>({
+      get: () => (lineMode.value === 'cells' ? 'arpeggio' : lineMode.value),
+      set: (v) => { if (!(v === 'arpeggio' && inSlot.value)) lineMode.value = v },
+    })
+    const slotChoice = computed<ArpeggioPattern | CellId>({
+      get: () => (lineMode.value === 'cells' ? cells.value : arpeggio.value),
+      set: (v) => {
+        if (isCellId(v)) { cells.value = v; lineMode.value = 'cells' } else { arpeggio.value = v; lineMode.value = 'arpeggio' }
+      },
+    })
+    const slotLabel = (v: ArpeggioPattern | CellId): string => (isCellId(v) ? cellLabel(v) : ARPEGGIO_LABELS[v])
     const sheetLabel = (v: SheetKind): string => SHEETS.find((s) => s.value === v)?.label ?? ''
     const part = computed(() => partFor(instrument.value))
 

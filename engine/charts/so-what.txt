@@ -3,6 +3,8 @@ composer: Miles Davis
 style: Medium
 form: AABA, 32 bars
 key: Dm
+recording: Miles Davis; Kind of Blue; Columbia; 1959
+youtube: ylXk1LBvIqU
 # analysis: 2026-10-11, rules v1; D minor, modal
 
 # bar | chord | scale

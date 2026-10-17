@@ -4,7 +4,10 @@ style: Medium swing
 key: C
 form: A, 16 bars
 source: 
+recording: Bill Evans Trio; Moon Beams; Riverside; 1962
+youtube: Rbl_8k5v9x4
 # analysis: 2026-10-17, rules v1; C
+# recording: recorded 1962-05-29, NYC (Chuck Israels, Paul Motian), RLP 428 / RLP 9428, released December 1962; the title is an anagram of producer Orrin Keepnews (jazzdisco.org, Wikipedia)
 # book: the 16 bars are in repeats; to the coda after bar 12 on the last time; the coda is played freely
 # book: (add 9) chords are written as triads here; the augmented triads in bars 2–3 as CMaj7#5 and C9#5
 

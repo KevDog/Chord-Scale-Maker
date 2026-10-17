@@ -4,6 +4,8 @@ style: Medium up
 key: Gm
 form: AB, 32 bars
 source: 
+recording: Wes Montgomery; The Incredible Jazz Guitar of Wes Montgomery; Riverside; 1960
+youtube: MBM7R9IgoTg
 # analysis: 2026-10-17, rules v1; G minor
 # book: composer printed as John L. "Wes" Montgomery
 

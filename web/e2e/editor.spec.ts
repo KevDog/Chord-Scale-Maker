@@ -1,4 +1,4 @@
-import { chooseSheet, expect, openEditor, pickOption, setScaleLevel, sheetChord, showLine, showPentatonics, staves, test, writeChart } from './fixtures'
+import { chooseSheet, closePentatonicOptions, expect, openEditor, pickOption, setScaleLevel, sheetChord, showApproach, showLine, showPentatonics, staves, test, writeChart } from './fixtures'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/song?new=1')
@@ -342,13 +342,29 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
       const row = el.querySelector('[aria-label="Sheet controls"]')?.firstElementChild as HTMLElement // the rail's wrapping left groups (the actions pinned right beside them)
       const kids = Array.from(row.children, (c) => c.getBoundingClientRect())
       // groups are top-aligned (items-start), so distinct tops = visual rows
-      return { rows: new Set(kids.map((r) => Math.round(r.top))).size, widths: `${row.clientWidth}: ${kids.map((r) => Math.round(r.width)).join(' + ')}` }
+      const lineGroup = Array.from(row.children).find((c) => c.querySelector('[data-slot=label]')?.textContent?.trim() === 'Line')?.getBoundingClientRect().width ?? 0
+      return { rows: new Set(kids.map((r) => Math.round(r.top))).size, lineGroup: Math.round(lineGroup), widths: `${row.clientWidth}: ${kids.map((r) => Math.round(r.width)).join(' + ')}` }
     })
-  for (const sheet of ['Scales', 'Changes']) {
+  for (const sheet of ['Scales', 'Patterns', 'Changes']) {
     await chooseSheet(page, sheet)
     const { rows, widths } = await layout()
     expect(rows, `${sheet} (${widths})`).toBeLessThanOrEqual(2)
   }
+  // a line's detail (From 3rd; under the Pentatonics, the Pentatonic line's direction and Leave out, #284) opens beneath the Line control: nothing moves
+  const line = page.locator('#preview-toolbar [data-slot=label]').getByText('Line', { exact: true })
+  // where the label sits in the toolbar (not the viewport: a shorter sheet below can scroll the page)
+  const place = async () => {
+    const [l, t] = await Promise.all([line.boundingBox(), page.locator('#preview-toolbar').boundingBox()])
+    return l && t ? { x: l.x - t.x, y: l.y - t.y } : null
+  }
+  // the Cells (#298) are in the 7th Chords pattern listbox, not a fourth mode: with one chosen the rail keeps two rows and the label its place
+  const home = await place()
+  await showLine(page, '7th Chords')
+  await pickOption(page, 'Arpeggio pattern', 'Root to root')
+  const celled = await layout()
+  expect(celled.rows, `Changes, a cell (${celled.widths})`).toBeLessThanOrEqual(2)
+  expect(await place(), 'a cell').toEqual(home)
+  await showLine(page, 'Off')
   // the Pentatonics row on, at a rung with a side: its controls stack under Analysis, so the rail keeps two rows (#255)
   await showPentatonics(page)
   await pickOption(page, 'Pentatonic rung', '2 · 4 shared')
@@ -362,13 +378,6 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
   await expect(page.getByRole('group', { name: 'Bars a step' })).toBeVisible()
   const stepped = await layout()
   expect(stepped.rows, `Changes, Pentatonics stepped (${stepped.widths})`).toBeLessThanOrEqual(2)
-  // a line's detail (From 3rd; under the Pentatonics, the Pentatonic line's direction and Leave out, #284) opens beneath the Line control: nothing moves
-  const line = page.locator('#preview-toolbar [data-slot=label]').getByText('Line', { exact: true })
-  // where the label sits in the toolbar (not the viewport: a shorter sheet below can scroll the page)
-  const place = async () => {
-    const [l, t] = await Promise.all([line.boundingBox(), page.locator('#preview-toolbar').boundingBox()])
-    return l && t ? { x: l.x - t.x, y: l.y - t.y } : null
-  }
   const at = await place()
   for (const mode of ['Guide Tones', 'Pentatonic'] as const) {
     await showLine(page, mode)
@@ -376,6 +385,15 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
     expect(rows, `Changes, ${mode} (${widths})`).toBeLessThanOrEqual(2)
     expect(await place(), mode).toEqual(at)
   }
+  // the Approach (#298) is a listbox inside the Line group, under Guide tone line: the group keeps its width, the rail two rows
+  await showLine(page, 'Off') // the Line group without the Approach listbox: its width before the listbox could widen it
+  const bare = await layout()
+  await closePentatonicOptions(page) // its popover, open from the Pentatonic path above, can cover the Line group's foot
+  await showApproach(page, 'Diatonic above, chromatic below (enclosure)') // Guide Tones, under the Pentatonics row still: the most the Line group holds
+  const approached = await layout()
+  expect(approached.rows, `Changes, Guide Tones with an Approach (${approached.widths})`).toBeLessThanOrEqual(2)
+  expect(approached.lineGroup, 'the Line group does not widen').toBeLessThanOrEqual(bare.lineGroup)
+  expect(await place(), 'Approach').toEqual(at)
 })
 
 

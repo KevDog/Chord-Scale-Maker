@@ -1,14 +1,16 @@
 import { analyse, chartKeyOf, parseKey } from './analysis'
-import { type Beats, type ChartDoc, chartBeats, type FormPart, type LinedRow, qualityScale } from './chart'
+import { type Beats, type ChartDoc, chartBeats, type FormPart, type LinedRow, qualityScale, type Row } from './chart'
 import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRootLenient, writtenChordTextOrNull } from './chord'
 import { type HexPair, hexatonicPairs, hexatonicRanking } from './hexatonics'
 import { guideToneTimeline } from './guideToneTimeline'
 import { type Directive, type Layout, sectionLayout } from './layout'
 import { barAt, barLength, barStart, type Clock } from './metre'
 import { type HexPick, livePick, type PentPick, pickTarget } from './chordPicks'
+import type { Approach } from './approaches'
 import { arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
 import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
 import { keySignature } from './keySignature'
+import { type CellsLine, cellsVoices } from './cells'
 import { type PentatonicLine, pentatonicVoices } from './pentatonicLine'
 import { type TriadPairLine, triadPairVoices } from './triadPairLine'
 import { concertPc, type Part, scaleLabel, writtenRoot, writtenScale } from './part'
@@ -57,7 +59,7 @@ export type ChangesPentatonic = Readonly<{
   source: PickSource
 }>
 /** the line the Changes sheet draws: off, a guide tone line, a 7th chord arpeggio pattern, the Pentatonic line (#284) or the Triad pair line (#325) */
-export type ChangesLineChoice = SheetLine | PentatonicLine | TriadPairLine
+export type ChangesLineChoice = SheetLine | PentatonicLine | TriadPairLine | CellsLine
 /** a section the Changes sheet draws (a block): its key (its first section's name), its marker, its place in the form */
 export type ChangesSection = Readonly<{ key: string; marker: string; part: FormPart }>
 /** the pentatonic row's rungs (#264): a section's own view, else fallback; counts: the shared count follows each label */
@@ -394,8 +396,8 @@ export function changesSections(doc: ChartDoc): readonly ChangesSection[] {
   return drawnBlocks(layout, t, sectionsWithEndingsOf(layout)).map((b) => ({ key: b.section, marker: b.marker, part: b.part }))
 }
 
-/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row) */
-export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null): ChangesSheet {
+/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row); approach: the figure into the guide tone line's notes */
+export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null, approach: Approach = 'none'): ChangesSheet {
   const pentatonic = overlay?.kind === 'pentatonic' ? overlay : null
   const { layout, rows, beats, timeline, clock, t } = laidOut(doc)
   const { diagnostics } = timeline
@@ -447,8 +449,9 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
 
   // guide tones, as a line over the rows as drawn (a folded repeat is drawn once, so it's voiced once), before the
   // lines are cut, so the pitches don't depend on how many bars a line holds. Holds start afresh at each block and
-  // at each 2nd (or later) ending, so a tie never runs into a new section or from one ending into the next
-  const drawn = (): GuideInput[] => {
+  // at each 2nd (or later) ending, so a tie never runs into a new section or from one ending into the next.
+  // scaleOf: a chord's scale (default: its written scale, else its quality's)
+  const drawn = (scaleOf: (i: number, row: Row) => string | null = (_, row) => qualityScale(row)): GuideInput[] => {
     let block = -1
     let from = -1 // the sheet block the last chord was in
     let ending = 0
@@ -460,8 +463,9 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         if (k !== from || (volta > 1 && volta !== ending)) block++
         from = k
         ending = volta
-        const scale = qualityScale(e.row)
-        return [{ row: i, chord: e.chord, ...(scale ? { scale } : {}), start: e.start, beats: e.beats, block }]
+        const scale = scaleOf(i, e.row)
+        const shown = resolved.get(i)?.scale // what an approach's diatonic steps follow
+        return [{ row: i, chord: e.chord, ...(scale ? { scale } : {}), ...(shown ? { shown } : {}), start: e.start, beats: e.beats, block }]
       }),
     )
   }
@@ -594,10 +598,17 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     line === 'off'
       ? null
       : typeof line === 'object'
-        ? { ...(line.kind === 'pentatonic' ? pentatonicVoices(drawn(), part, clock, keySig, line, pentRoots) : triadPairVoices(drawn(), part, clock, keySig, line, hexPairs)), labels: new Map() }
+        ? {
+            ...(line.kind === 'pentatonic'
+              ? pentatonicVoices(drawn(), part, clock, keySig, line, pentRoots)
+              : line.kind === 'cells'
+                ? cellsVoices(drawn((i, row) => resolved.get(i)?.scale ?? qualityScale(row)), part, clock, keySig, line) // the scale the sheet shows
+                : triadPairVoices(drawn(), part, clock, keySig, line, hexPairs)),
+            labels: new Map(),
+          }
         : isArpeggioPattern(line)
           ? { ...arpeggioVoices(drawn(), part, clock, keySig, line), labels: new Map() }
-          : guideVoices(drawn(), part, clock, keySig, line)
+          : guideVoices(drawn(), part, clock, keySig, line, approach)
 
   let lastKey = ''
   const lastForm = blocks.findLastIndex((b) => b.part === 'form')

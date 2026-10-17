@@ -4,7 +4,10 @@ style: Medium swing
 key: Bb
 form: Blues, 12 bars
 source: 
+recording: McCoy Tyner; The Real McCoy; Blue Note; 1967
+youtube: aQFZNm7JGqg
 # analysis: 2026-10-12, rules v1; Bb, blues
+# recording: recorded 1967-04-21, take 7, Blue Note BLP 4264, with Joe Henderson, Ron Carter, Elvin Jones (jazzdisco.org, MusicBrainz release group)
 # the pickup is a melodic figure with no chords
 # head played twice before and after solos; solo on Bb blues; last time to the Coda from bar 12
 

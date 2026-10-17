@@ -4,7 +4,10 @@ style: Medium up
 key: Cm
 form: AB, 32 bars
 source: 
+recording: Bill Evans; The Interplay Sessions; Milestone; 1982
+youtube: JYxHWQ_dIP0
 # analysis: 2026-10-17, rules v1; C minor
+# recording: recorded 1962-08-21/22 (Bill Evans Quintet: Zoot Sims, Jim Hall, Ron Carter, Philly Joe Jones), unissued until the 2-LP M-47066; later on Loose Bloose (1983); first issued recording is Stan Getz & Bill Evans (Verve V6-8833, rec. 1964-05-06, rel. 1973/74); a 1956–57 rehearsal tape with Don Elliott came out in 2001 (jazzdisco.org, MusicBrainz, Wikipedia); video: The Complete Riverside Recordings, the same take
 # the A (head) repeats; B is for solos; after solos D.C. al Coda, the head twice, to the coda on its repeat
 # bass plays in two for the heads, in four for solos
 

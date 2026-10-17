@@ -4,7 +4,10 @@ style: Medium
 key: Em
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 152
+recording: Cannonball Adderley; Portrait of Cannonball; Riverside; 1958
+youtube: 3UGUpK8I-g4
 # analysis: 2026-10-17, rules v1; E minor
+# recording: recorded 1958-07-01 (Blue Mitchell, Bill Evans, Sam Jones, Philly Joe Jones), take 5, RLP 12-269; Miles wrote it for this session and never recorded it; the first recording (jazzdisco, Wikipedia)
 
 # bar | chord | scale
 

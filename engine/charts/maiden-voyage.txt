@@ -4,6 +4,8 @@ composer: Herbie Hancock
 style: Even 8ths
 form: AABA, 32 bars
 key: D
+recording: Herbie Hancock; Maiden Voyage; Blue Note; 1965
+youtube: EWC5x9G45yo
 # analysis: 2026-10-11, rules v1; D, modal
 
 # bar | chord  | scale

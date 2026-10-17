@@ -1,9 +1,18 @@
 import type { Ref, WritableComputedRef } from 'vue'
-import { type ArpDirection, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, INSTRUMENTS, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, isPentatonicLeave, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, type ShareView } from '@chord-scale-maker/engine'
+import { type Approach, type ArpDirection, type CellId, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, isPatternNotes, isPentatonicLeave, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, type ShareView } from '@chord-scale-maker/engine'
 import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
 import { isOverlay, type Overlay } from '~/utils/overlay'
+
+/** the pattern the Changes sheet and the Patterns sheet start with */
+export const DEFAULT_PATTERN = '+1 +1 +1 −2'
+
+/** a pattern's canonical text, or undefined when it doesn't parse */
+function canonicalPattern(text: string): string | undefined {
+  const parsed = parsePattern(text)
+  return 'moves' in parsed ? formatPattern(parsed.moves) : undefined
+}
 
 /** a ref kept in this browser's storage; a stored value that doesn't parse falls back */
 function storedRef<T>(key: string, parse: (raw: string) => T | undefined, fallback: T, store: (v: T) => string = String): Ref<T> {
@@ -39,13 +48,24 @@ export function usePreferences() {
   // the Changes sheet's study rows: each chord's numeral and its scale, both on until turned off
   const numerals = storedRef<boolean>('csm-numerals', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
   const scaleNames = storedRef<boolean>('csm-scale-names', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
-  // the Changes sheet's line: off, guide tones (from the 3rd or the 7th) or 7th chord arpeggios (a pattern); off until chosen
-  const lineMode = storedRef<LineMode>('csm-line', (s) => (s === 'off' || s === 'guide' || s === 'arpeggio' ? s : undefined), 'off')
+  // the Changes sheet's line: off, guide tones (from the 3rd or the 7th) or 7th chord arpeggios (a pattern) or cells; off until
+  // chosen. A stored Cells line with the flag off reads as Off but stays stored, for when the flag is on again
+  const cellsOn = useFeature('cells')
+  const lineMode = storedRef<LineMode>('csm-line', (s) => (s === 'off' || s === 'guide' || s === 'arpeggio' || (s === 'cells' && cellsOn) ? s : undefined), 'off')
   const guideLine = storedRef<GuideFrom>('csm-guide-line', (s) => (s === 'third' || s === 'seventh' ? s : undefined), 'third')
   const arpeggio = storedRef<ArpeggioPattern>('csm-arpeggio', (s) => (isArpeggioPattern(s) ? s : undefined), 'up-root')
+  // the guide tone line's Approach (#298): None until chosen; with the flag off a stored one reads as None but stays stored
+  const approachesOn = useFeature('approaches')
+  const approach = storedRef<Approach>('csm-approach', (s) => (isApproach(s) && approachesOn ? s : undefined), 'none')
+  // the Cells line's system or cell (#298)
+  const cells = storedRef<CellId>('csm-cells', (s) => (isCellId(s) ? s : undefined), '3rd-3rd')
   // the Arpeggios sheet: 7th chords or extended, and the direction
   const arpNotes = storedRef<ArpNotes>('csm-arp-notes', (s) => (isArpNotes(s) ? s : undefined), 'seventh')
   const arpDir = storedRef<ArpDirection>('csm-arp-dir', (s) => (isArpDirection(s) ? s : undefined), 'up')
+  // the Patterns sheet (#298): the moves (kept in canonical text; text that doesn't parse is the default), what they run over, the direction
+  const pattern = storedRef<string>('csm-pattern', canonicalPattern, DEFAULT_PATTERN, (v) => canonicalPattern(v) ?? v)
+  const patternNotes = storedRef<PatternNotes>('csm-pattern-notes', (s) => (isPatternNotes(s) ? s : undefined), 'scale')
+  const patternDir = storedRef<ArpDirection>('csm-pattern-dir', (s) => (isArpDirection(s) ? s : undefined), 'up')
   // the Changes sheet's overlay row: Off until chosen (a value it can't read is Off); the old Pentatonics toggle (#255), on, reads as Pentatonic
   const overlay = storedRef<Overlay>('csm-overlay', (s) => (isOverlay(s) ? s : 'off'), readStored('csm-pentatonics') === 'on' ? 'pentatonic' : 'off')
   // the Pentatonic overlay's rung (0 Home … 6) and side
@@ -60,7 +80,7 @@ export function usePreferences() {
   const source = storedRef<boolean>('csm-source', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the /functions page's key: C major until another is picked
   const functionsKey = storedRef<string>('csm-functions-key', (s) => (FUNCTIONS_KEYS.includes(s) ? s : undefined), 'C')
-  return { instrument, range: rangeRef(instrument), spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, arpeggio, arpNotes, arpDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, source, functionsKey }
+  return { instrument, range: rangeRef(instrument), spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, approach, arpeggio, cells, arpNotes, arpDir, pattern, patternNotes, patternDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, source, functionsKey }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
@@ -78,11 +98,16 @@ export function linkPreferences(view: ShareView) {
     intervals: ref<boolean>(view.intervals ?? own.intervals.value),
     numerals: ref<boolean>(view.numerals ?? own.numerals.value),
     scaleNames: ref<boolean>(view.scaleNames ?? own.scaleNames.value),
-    lineMode: ref<LineMode>(choice.mode), // a link without a line shows none
+    lineMode: ref<LineMode>(choice.mode === 'cells' && !useFeature('cells') ? 'off' : choice.mode), // a link without a line (or a Cells line, the flag off) shows none
     guideLine: ref<GuideFrom>(choice.guide ?? own.guideLine.value),
+    approach: ref<Approach>(useFeature('approaches') ? (view.approach ?? 'none') : 'none'), // a link shows what it was sent with: none without
     arpeggio: ref<ArpeggioPattern>(choice.arpeggio ?? own.arpeggio.value),
+    cells: ref<CellId>(choice.cells ?? own.cells.value),
     arpNotes: ref<ArpNotes>(view.arpNotes ?? own.arpNotes.value),
     arpDir: ref<ArpDirection>(view.arpDir ?? own.arpDir.value),
+    pattern: ref<string>((view.pattern && canonicalPattern(view.pattern)) || own.pattern.value),
+    patternNotes: ref<PatternNotes>(view.patternNotes ?? own.patternNotes.value),
+    patternDir: ref<ArpDirection>(view.patternDir ?? own.patternDir.value),
     overlay: own.overlay, // not in links: yours
     pentRung: own.pentRung,
     pentSide: own.pentSide,

@@ -4,7 +4,10 @@ style: Medium up
 key: Bb
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 172
+recording: Dizzy Gillespie; Dizzier and Dizzier; RCA Victor; 1954
+youtube: hzNfeq6mAJI
 # analysis: 2026-10-11, rules v1; Bb
+# recording: recorded 1947-08-22 by the big band; take 1 (D7VB1542-1), first issued on 78 (RCA Victor 20-2480, with Oop-Pop-A-Da), first LP 1954 (LJM-1009) (jazzdisco); video: The Complete RCA Victor Recordings, the same take
 
 # bar | chord | scale
 

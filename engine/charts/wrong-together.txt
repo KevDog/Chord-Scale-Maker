@@ -5,7 +5,10 @@ style: Ballad
 key: F
 form: AB, 16 bars
 source: Colorado Cookbook, p. 272
+recording: Steve Swallow; Real Book; XtraWATT; 1994
+youtube: IAV1hUbpfCo
 # analysis: 2026-10-17, rules v1; F
+# recording: recorded December 1993, Grog Kill Studio, Willow, NY; XtraWATT/7 (ECM 521 637-2), with Tom Harrell, Joe Lovano, Mulgrew Miller, Jack DeJohnette (jazzdisco.org, MusicBrainz release group, Wikipedia)
 
 # bar | chord | scale
 

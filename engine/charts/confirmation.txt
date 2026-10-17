@@ -4,7 +4,10 @@ style: Medium
 key: F
 form: AABA
 source: Colorado Cookbook, p. 54
+recording: Charlie Parker; Charlie Parker; Clef; 1954
+youtube: L2JNFHzRzzs
 # analysis: 2026-10-17, rules v1; F
+# recording: recorded 1953-07-28, Parker's first studio recording of it, 10" MGC-157 (jazzdisco, MusicBrainz); video: Charlie Parker (Verve reissue)
 
 # bar | chord | scale
 

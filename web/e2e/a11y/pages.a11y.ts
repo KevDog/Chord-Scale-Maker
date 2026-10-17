@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseSheet, expect, pentatonicPreset, showPentatonics, staves, test } from '../fixtures'
+import { chooseSheet, expect, pentatonicPreset, pickOption, showApproach, showCell, showPentatonics, staves, test } from '../fixtures'
 import { expectAccessible } from './axe'
 
 const SONG = '/song/autumn-leaves'
@@ -35,6 +35,13 @@ for (const theme of ['light', 'dark'] as const) {
       await expectAccessible(page)
     })
 
+    test('a song with its recording on video', async ({ page }) => {
+      await page.goto('/song/so-what')
+      if (theme === 'dark') await darkMode(page)
+      await expect(page.getByRole('button', { name: /Play the video/ })).toBeVisible()
+      await expectAccessible(page)
+    })
+
     test('the Changes and its popovers', async ({ page }) => {
       await page.goto(SONG)
       if (theme === 'dark') await darkMode(page)
@@ -61,6 +68,36 @@ for (const theme of ['light', 'dark'] as const) {
       // a pentatonic label: its ladder
       await showPentatonics(page)
       await opens(page, page.locator('[data-slot="pentatonic"] button').first(), page.getByRole('dialog', { name: / bar \d+$/ }))
+      await expectAccessible(page)
+    })
+
+    test('the Patterns sheet, with the Custom box open', async ({ page }) => {
+      await page.goto(SONG)
+      if (theme === 'dark') await darkMode(page)
+      await chooseSheet(page, 'Patterns')
+      await expect(staves(page).first()).toBeVisible()
+      await pickOption(page, /^Pattern$/, 'Custom…')
+      await page.getByLabel('Custom pattern').fill('+0')
+      await expect(page.locator('#pattern-error')).toBeVisible()
+      await expectAccessible(page)
+    })
+
+    test('the Changes sheet’s Cells line, with the Arpeggio pattern listbox open on its cells', async ({ page }) => {
+      await page.goto(SONG)
+      if (theme === 'dark') await darkMode(page)
+      await showCell(page, 'Root to root')
+      await expect(page.getByRole('button', { name: 'Arpeggio pattern', exact: true })).toBeVisible()
+      await page.getByRole('button', { name: 'Arpeggio pattern', exact: true }).click()
+      await expect(page.getByRole('listbox')).toBeVisible()
+      await expectAccessible(page)
+    })
+
+    test('the Changes sheet’s Guide Tones with the Approach listbox open', async ({ page }) => {
+      await page.goto(SONG)
+      if (theme === 'dark') await darkMode(page)
+      await showApproach(page, 'Diatonic above, chromatic below (enclosure)')
+      await page.getByRole('button', { name: 'Approach', exact: true }).click()
+      await expect(page.getByRole('listbox')).toBeVisible()
       await expectAccessible(page)
     })
 

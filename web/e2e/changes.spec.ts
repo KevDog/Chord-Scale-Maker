@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseInstrument, chooseInterface, chooseSheet, type Drawn, drawn, expect, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, sheetChord, showArpeggios, showGuides, test, writeChart } from './fixtures'
+import { chooseInstrument, chooseInterface, chooseSheet, type Drawn, drawn, expect, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, sheetChord, showArpeggios, showApproach, showCell, showGuides, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the controls above it (whose menus name the same scales) */
@@ -154,12 +154,12 @@ test('a function picked from the numeral changes the scale the Changes sheet pla
   await expect(scalePicker.getByRole('button', { name: 'Unpin' })).toHaveCount(0)
 })
 
-test('a chart opens on the Changes sheet, and Scales and Arpeggios are the other sheets', async ({ page }) => {
+test('a chart opens on the Changes sheet, and Scales, Arpeggios and Patterns are the other sheets', async ({ page }) => {
   await page.goto('/song/autumn-leaves')
   await expect(page.getByRole('button', { name: 'Work on' })).toContainText('Changes')
   await expect(lines(page)).toHaveCount(6)
   await page.getByRole('button', { name: 'Work on' }).click()
-  await expect(page.getByRole('option')).toHaveText(['Changes', 'Scales', 'Arpeggios'])
+  await expect(page.getByRole('option')).toHaveText(['Changes', 'Scales', 'Arpeggios', 'Patterns'])
   await page.keyboard.press('Escape')
 })
 
@@ -247,6 +247,60 @@ test('7th Chords in 3/4: six eighths for a bar of one chord, turning back after 
   await arpeggiosDrawn(page)
   await expect(line).toHaveAttribute('aria-label', /; 7th chords: C4 E4 G4 B4 G4 E4 \| D4 F4 A4 C5 A4 F4 \| /) // each next chord nearest the turn-back's last note
   await expect.poll(async () => (await drawn(line)).heads.length).toBe(4 * 6)
+})
+
+test('Approach (#298): an enclosure into each guide tone adds notes, the guide tones keep their beats, and the choice stays and rides a share link', async ({ page, browser }) => {
+  await page.goto('/song/autumn-leaves')
+  const line = lines(page).first()
+  await showGuides(page, 'From 3rd')
+  await guidesDrawn(page)
+  const labels = (await labelRow(line).textContent()) ?? ''
+  const plain = (await drawn(line)).heads.length
+  await showApproach(page, 'Diatonic above, chromatic below (enclosure)')
+  await expect.poll(async () => (await drawn(line)).heads.length).toBeGreaterThan(plain) // the figures are more noteheads than chords
+  await expect(labelRow(line)).toHaveText(labels) // each chord's first note is still its guide tone
+  await expectChordsOnHeads(line)
+  await page.reload()
+  await expect(page.getByLabel('Approach', { exact: true })).toContainText('enclosure') // remembered
+  await expect(page.getByLabel('Approach', { exact: true }).locator('..')).toHaveAttribute('title', 'Diatonic above, chromatic below (enclosure)') // the listbox's tooltip: the whole name, which the button truncates
+  await page.getByRole('button', { name: 'Share' }).click()
+  const box = page.getByRole('dialog').getByLabel('Link')
+  await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/)
+  const link = await box.inputValue()
+  const other = await browser.newContext()
+  await chooseInterface(other, 'everything')
+  const visitor = await other.newPage()
+  await visitor.goto(link)
+  await expect(visitor.getByLabel('Approach', { exact: true })).toContainText('enclosure')
+  await other.close()
+})
+
+test('Cells (#298): a cell on each beat 1 and 3 of a chord, eighths beamed by the beat, and the choice stays and rides a share link', async ({ page, browser }) => {
+  await page.goto('/song/autumn-leaves')
+  const line = lines(page).first()
+  await showCell(page, 'Root to root')
+  await expect(line).toHaveAttribute('aria-label', /; cells: C5 D5 E♭5 G5 C6 B♭5 A5 G5 \| F5 /)
+  const bars = 4
+  const beats = 4 // Autumn Leaves is in 4/4
+  await expect.poll(async () => (await drawn(line)).heads.length).toBe(bars * beats * 2) // eighths throughout: every chord has a cell a two beats
+  expect((await drawn(line)).slashes).toBe(0)
+  expect(await line.locator('.vf-beam').count()).toBe(bars * beats) // a beam for each beat's pair of eighths (changesDrawing beams by the beat)
+  await expectChordsOnHeads(line) // each chord sits on a note, on its beat 1 or 3
+  await expect(labelRow(line)).toHaveCount(0)
+  await page.reload()
+  await expect(page.getByRole('radio', { name: '7th Chords', exact: true })).toBeChecked() // remembered: the cells share its slot
+  await expect(page.getByLabel('Arpeggio pattern', { exact: true })).toContainText('Root to root')
+  await page.getByRole('button', { name: 'Share' }).click()
+  const box = page.getByRole('dialog').getByLabel('Link')
+  await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/)
+  const link = await box.inputValue()
+  const other = await browser.newContext()
+  await chooseInterface(other, 'everything')
+  const visitor = await other.newPage()
+  await visitor.goto(link)
+  await expect(visitor.getByRole('radio', { name: '7th Chords', exact: true })).toBeChecked()
+  await expect(visitor.getByLabel('Arpeggio pattern', { exact: true })).toContainText('Root to root')
+  await other.close()
 })
 
 test('a share link carries the arpeggio pattern', async ({ page, browser }) => {

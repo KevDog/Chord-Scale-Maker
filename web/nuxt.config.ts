@@ -95,10 +95,13 @@ export default defineNuxtConfig({
       // feature flags (useFeature). A new one starts off here; NUXT_PUBLIC_FEATURES_<NAME>=true|false
       // overrides one, and the e2e script (package.json) builds with each on
       features: {
-        offline: false, // the offline service worker and the Help page's install line (#324; build/sw.ts)
+        offline: true, // the offline service worker and the Help page's install line (#324; build/sw.ts)
         // six anonymous Web Analytics events (#149; docs/superpowers/specs/2026-10-12-analytics-routes-events-design.md): Pro only
         analyticsEvents: false,
-        recordings: false, // a library song's notable recording (docs/superpowers/specs/2026-10-17-notable-recordings.md)
+        cells: false, // the Changes sheet's Cells line (#298)
+        approaches: false, // the guide tone line's Approach (#298)
+        patterns: false, // the Patterns sheet (#298; docs/superpowers/specs/2026-10-17-practice-patterns-design.md)
+        recordings: true, // a library song's notable recording (docs/superpowers/specs/2026-10-17-notable-recordings.md)
         playerRange: false, // the player's range by the Instrument (#359)
       },
     },

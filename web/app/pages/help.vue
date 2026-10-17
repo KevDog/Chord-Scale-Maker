@@ -59,6 +59,12 @@
           chord, with the scale that goes with it, in the order the tune runs. Each staff is labelled with where it is in
           the form, the chord and the scale. Practice works on this sheet.
         </UiText>
+        <UiText v-if="patternsOn">
+          <strong class="font-semibold text-zinc-950 dark:text-white">Patterns</strong> runs a scale sequence over each scale line,
+          one staff a line: 1 2 3 4, thirds, triads and more, or one of your own, written as steps (<UiCode>+2 −1</UiCode> is up a third, back a step).
+          <strong class="font-semibold text-zinc-950 dark:text-white">Scale</strong> steps through the scale and
+          <strong class="font-semibold text-zinc-950 dark:text-white">Chord tones</strong> through the chord. Up, Down or Up &amp; down.
+        </UiText>
 
         <UiSubheading id="guide-lines" :level="3" class="scroll-mt-6 pt-2">How a guide tone line is built</UiSubheading>
         <UiText>It's the way you'd build one by hand, a chord at a time.</UiText>
@@ -167,6 +173,12 @@
               and <strong class="font-semibold">Scales</strong>, which turn those rows on and off. <strong class="font-semibold">Guide Tones</strong>
               chooses <strong class="font-semibold">Off</strong>, <strong class="font-semibold">From 3rd</strong> or <strong class="font-semibold">From 7th</strong>, the guide tone
               line described above.
+              <template v-if="approachesOn">
+                Under Guide Tones, <strong class="font-semibold">Approach</strong> leads into each chord's guide tone with a short figure of
+                eighths, played at the end of the chord before: a note a semitone below or above, a pair from one side, an enclosure
+                (a step above in the chord's scale, then a semitone below) and more. The guide tone still lands on the chord's first
+                beat; the chord before gives up the last beat or two to make room. The first chord, and a chord after a rest, has no approach.
+              </template>
               <strong class="font-semibold">Superimpose</strong> puts a row under the chords: <strong class="font-semibold">Off</strong>,
               <strong class="font-semibold">Pentatonic</strong> (each key area's minor pentatonic, or, ranked against
               Chord, each chord's, <strong class="font-semibold">Built on</strong> the degree you choose) or
@@ -181,6 +193,13 @@
               While Superimpose is Hexatonic, it becomes <strong class="font-semibold">Triad pair</strong>: each chord's
               labelled pair a triad at a time, its lower triad first (<UiCode>G/Am</UiCode> plays G B D, then A C E from
               the note nearest D), with the same direction, rhythm and turns.
+              <template v-if="cellsOn">
+                The 7th Chords pattern list also holds <strong class="font-semibold">Cells</strong>, which put a four-note cell on each chord, two beats each, after
+                Randy Vincent's <em>Building Solo Lines From Cells</em>. A cell is four scale degrees counted from the chord's root
+                (<UiCode>1 2 3 5</UiCode>), read through the chord's scale. Choose a cell system, whose cells A and B take turns so that
+                each ends a step from where the next begins, or a single cell that every two beats repeats. Under a Superimpose the slot
+                plays the Pentatonic or Triad pair line instead.
+              </template>
             </dd>
           </div>
           <div>
@@ -423,6 +442,9 @@ import { guideRanges } from '~/utils/instrumentChoices'
 import { PENT_INSIDE_HELP } from '~/utils/pentatonics'
 
 const offline = useFeature('offline')
+const patternsOn = useFeature('patterns')
+const cellsOn = useFeature('cells')
+const approachesOn = useFeature('approaches')
 const GUIDE_RANGES = guideRanges()
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },
