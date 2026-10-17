@@ -9,6 +9,7 @@ import { type HexPick, livePick, type PentPick, pickTarget } from './chordPicks'
 import { arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
 import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
 import { keySignature } from './keySignature'
+import { type CellsLine, cellsVoices } from './cells'
 import { type PentatonicLine, pentatonicVoices } from './pentatonicLine'
 import { type TriadPairLine, triadPairVoices } from './triadPairLine'
 import { concertPc, type Part, scaleLabel, writtenRoot, writtenScale } from './part'
@@ -57,7 +58,7 @@ export type ChangesPentatonic = Readonly<{
   source: PickSource
 }>
 /** the line the Changes sheet draws: off, a guide tone line, a 7th chord arpeggio pattern, the Pentatonic line (#284) or the Triad pair line (#325) */
-export type ChangesLineChoice = SheetLine | PentatonicLine | TriadPairLine
+export type ChangesLineChoice = SheetLine | PentatonicLine | TriadPairLine | CellsLine
 /** a section the Changes sheet draws (a block): its key (its first section's name), its marker, its place in the form */
 export type ChangesSection = Readonly<{ key: string; marker: string; part: FormPart }>
 /** the pentatonic row's rungs (#264): a section's own view, else fallback; counts: the shared count follows each label */
@@ -594,7 +595,14 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     line === 'off'
       ? null
       : typeof line === 'object'
-        ? { ...(line.kind === 'pentatonic' ? pentatonicVoices(drawn(), part, clock, keySig, line, pentRoots) : triadPairVoices(drawn(), part, clock, keySig, line, hexPairs)), labels: new Map() }
+        ? {
+            ...(line.kind === 'pentatonic'
+              ? pentatonicVoices(drawn(), part, clock, keySig, line, pentRoots)
+              : line.kind === 'cells'
+                ? cellsVoices(drawn(), part, clock, keySig, line)
+                : triadPairVoices(drawn(), part, clock, keySig, line, hexPairs)),
+            labels: new Map(),
+          }
         : isArpeggioPattern(line)
           ? { ...arpeggioVoices(drawn(), part, clock, keySig, line), labels: new Map() }
           : guideVoices(drawn(), part, clock, keySig, line)

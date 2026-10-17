@@ -199,7 +199,8 @@ type Carried = Readonly<{ chord: number; notes: readonly NonNullable<GuideNote['
  * by timeline bar, the bar's notes, each bar in its own note value (rule 2), each chord's slots filled by cell after
  * cell (rule 3, again in each bar it lasts into), each placed whole nearest the last note in the part's range; a chord
  * without cells rests and ends the run (rule 6); accidentals by the measure rule against keySig (null: C).
- * missing: a diagnostic per chord without cells.
+ * missing: a diagnostic per chord without cells. valueOf: a chord's note value from its whole length and its bar's
+ * shortest segment (default: the bar's, noteValue).
  */
 export function cellVoices(
   chords: readonly GuideInput[],
@@ -207,6 +208,7 @@ export function cellVoices(
   beats: Metre,
   keySig: string | null,
   cellsOf: (chord: GuideInput, index: number) => Cells | null,
+  valueOf: (chordBeats: number, barShortest: number) => NoteValue = (_, shortest) => noteValue(shortest),
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; missing: readonly string[] } {
   const range = rangeOf(part)
   const missing: string[] = []
@@ -253,7 +255,7 @@ export function cellVoices(
       continue
     }
     const t = c.tones
-    const v = noteValue(shortest.get(s.bar) ?? s.length)
+    const v = valueOf(chords[s.chord]?.beats ?? s.length, shortest.get(s.bar) ?? s.length)
     const slots = Math.round(s.length / v)
     let k = 0
     const play = (notes: readonly NonNullable<GuideNote['pitch']>[]): void => {

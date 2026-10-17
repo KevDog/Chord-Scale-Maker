@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, arpeggioOrder, arpeggioTones, arpeggioVoices, isArpeggioPattern, isSheetLine, noteValue } from '../arpeggios'
+import { ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, arpeggioCells, arpeggioOrder, arpeggioTones, arpeggioVoices, cellVoices, isArpeggioPattern, isSheetLine, noteValue } from '../arpeggios'
 import type { GuideInput, GuideNote } from '../guideTones'
 import { clockOf, type Metre } from '../metre'
 import { CONCERT, type Part } from '../part'
@@ -105,6 +105,22 @@ const pitches = (notes: readonly GuideNote[] | undefined) => (notes ?? []).map((
 describe('note value', () => {
   it('is the longest of quarter, eighth, sixteenth giving the shortest chord four notes', () => {
     expect([4, 3, 2, 1].map(noteValue)).toEqual([1, 0.5, 0.5, 0.25])
+  })
+})
+
+describe('cellVoices valueOf', () => {
+  it('takes the chord’s whole length and the bar’s shortest segment; the default is the bar’s noteValue', () => {
+    const seen: (readonly [number, number])[] = []
+    const cs = seq(['Dm7', 6])
+    const cells = (c: GuideInput) => arpeggioCells(CONCERT, c, 'up-root')
+    const { bars } = cellVoices(cs, CONCERT, 4, null, cells, (chordBeats, shortest) => {
+      seen.push([chordBeats, shortest])
+      return 1
+    })
+    expect(seen.every(([c]) => c === 6)).toBe(true) // the whole chord, though its second bar holds two beats
+    expect(seen.map(([, s]) => s)).toEqual([4, 2])
+    expect(bars.get(1)?.every((n) => n.beats === 1)).toBe(true)
+    expect(cellVoices(cs, CONCERT, 4, null, cells).bars).toEqual(arpeggioVoices(cs, CONCERT, 4, null, 'up-root').bars)
   })
 })
 
