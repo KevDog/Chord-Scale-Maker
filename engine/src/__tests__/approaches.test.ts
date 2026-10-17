@@ -37,6 +37,15 @@ describe('spelling', () => {
   it('into B♭ chromatic below is A', () => expect(names(approachNotes(note('Bb', 70), 'chromatic-below', null))).toEqual(['A']))
   it('into C♯ chromatic above is D', () => expect(names(approachNotes(note('C#', 61), 'chromatic-above', null))).toEqual(['D']))
   it('double below B♭ goes flat', () => expect(names(approachNotes(note('Bb', 70), 'double-below', null))).toEqual(['Ab', 'A']))
+  it.each([
+    ['Bb', 70, 'chromatic-above', ['B']],
+    ['Eb', 63, 'chromatic-above', ['E']],
+    ['F#', 66, 'chromatic-below', ['F']],
+    ['C#', 61, 'chromatic-below', ['C']],
+    ['Bb', 70, 'double-above', ['C', 'B']],
+  ] as const)('never B♯, E♯, C♭ or F♭: into %s %s', (name, midi, f, expected) => {
+    expect(names(approachNotes(note(name, midi), f, null))).toEqual(expected)
+  })
 })
 
 describe('needing a scale', () => {
@@ -159,5 +168,24 @@ describe('approaches on the guide tone line', () => {
       const pitched = [...g.bars.values()].flat().flatMap((n) => (n.pitch ? [n.pitch.midi] : []))
       expect(pitched.every((m) => m >= range.lo && m <= range.hi)).toBe(true)
     }
+  })
+  it('a figure starting on the guide tone before drops that note, which keeps its eighth', () => {
+    // G7 F -> CMaj7 E from above: F, the G7 note itself, so G7 holds its F to the bar's end
+    expect(bars(voices(['Dm7', 'G7', 'CMaj7'], 'chromatic-above')).slice(1)).toEqual(['0:f/4/4', '0:e/4/4'])
+  })
+  it('an enclosure starting on the guide tone before keeps only its chromatic note', () => {
+    const [dm, g7, c] = chords(['Dm7', 'G7', 'CMaj7'])
+    const g = guideVoices([{ ...dm!, scale: 'D dorian' }, { ...g7!, scale: 'G mixolydian' }, c!], CONCERT, 4, null, 'third', 'enclosure')
+    expect(bars(g)[1]).toBe('0:f/4/3~ 3:f/4/0.5^ 3.5:d#/4/0.5')
+  })
+  it('from the 7th, chromatic above into B after C is no figure', () => {
+    expect(bars(voices(['Dm7', 'G7', 'CMaj7'], 'chromatic-above', 4, 'seventh'))[0]).toBe('0:c/5/4')
+  })
+  it('a figure with a note outside the part range is not played', () => {
+    // Dm7 F4 -> G7 F4: chromatic above is G♭4, out of a range topping at F4
+    const part = (hi: number) => ({ ...CONCERT, range: { lo: 55, hi, centre: 60 } })
+    const at = (hi: number, a: Parameters<typeof guideVoices>[5]) => bars(guideVoices(chords(['Dm7', 'G7']), part(hi), 4, null, 'third', a))
+    expect(at(65, 'chromatic-above')).toEqual(at(65, 'none'))
+    expect(at(66, 'chromatic-above')[0]).toBe('0:f/4/3~ 3:f/4/0.5^ 3.5:gb/4/0.5')
   })
 })

@@ -157,8 +157,9 @@ const readable = (chord: string): boolean => orNull(() => parseChord(chord)) !==
  * line is one of the pair guideToneLine builds together (so they can go apart where they meet). A chord that repeats the guide tones in the same block is tied from the
  * one before; a chord without guide tones rests. keySig: the signature in force on every line (null: C). Nothing
  * when the line is 'off'. approach: a figure into each chord's guide tone after the first, as eighths at the end of the
- * chord before, which gives up that much of its note (and the tie into a held target); none where that chord rests or
- * would keep less than an eighth, or the figure needs a scale the chord doesn't have.
+ * chord before, which gives up that much of its note (and the tie into a held target); a figure's first notes that
+ * are that chord's guide tone are left to it; none where that chord rests or would keep less than an eighth, the
+ * figure needs a scale the chord doesn't have, or a note of it is outside the part's range.
  */
 export function guideVoices(
   chords: readonly GuideInput[],
@@ -180,14 +181,19 @@ export function guideVoices(
     }
     return t
   })
-  const notes = guideToneLine(tones, rangeOf(part), line, chords.map((c) => c.block ?? 0))
+  const range = rangeOf(part)
+  const notes = guideToneLine(tones, range, line, chords.map((c) => c.block ?? 0))
   const lead = chords.map((c, j) => {
     const target = notes[j]?.pitch
     const before = chords[j - 1]
-    if (approach === 'none' || !target || !before || !notes[j - 1] || before.start + before.beats !== c.start) return []
+    const prev = notes[j - 1]?.pitch
+    if (approach === 'none' || !target || !before || !prev || before.start + before.beats !== c.start) return []
     const text = before.shown ?? before.scale
     const scale = text ? orNull(() => writtenScale(part, text).notes) : null
-    const figure = approachNotes(target, approach, scale) ?? []
+    const all = approachNotes(target, approach, scale) ?? []
+    if (all.some((n) => n.midi < range.lo || n.midi > range.hi)) return []
+    const from = all.findIndex((n) => n.midi !== prev.midi) // the guide tone before goes on into it
+    const figure = from < 0 ? [] : all.slice(from)
     return before.beats - figure.length * APPROACH_BEATS >= APPROACH_BEATS ? figure : []
   })
   const voice: { bar: number; note: GuideNote }[] = []

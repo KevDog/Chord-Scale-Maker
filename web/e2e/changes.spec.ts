@@ -262,6 +262,7 @@ test('Approach (#298): an enclosure into each guide tone adds notes, the guide t
   await expectChordsOnHeads(line)
   await page.reload()
   await expect(page.getByLabel('Approach', { exact: true })).toContainText('enclosure') // remembered
+  await expect(page.getByLabel('Approach', { exact: true }).locator('..')).toHaveAttribute('title', 'Diatonic above, chromatic below (enclosure)') // the listbox's tooltip: the whole name, which the button truncates
   await page.getByRole('button', { name: 'Share' }).click()
   const box = page.getByRole('dialog').getByLabel('Link')
   await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/)

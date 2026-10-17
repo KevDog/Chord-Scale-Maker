@@ -386,9 +386,9 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
     expect(await place(), mode).toEqual(at)
   }
   // the Approach (#298) is a listbox inside the Line group, under Guide tone line: the group keeps its width, the rail two rows
-  await showLine(page, 'Guide Tones') // under the Pentatonics row still: the most the Line group holds
+  await showLine(page, 'Off') // the Line group without the Approach listbox: its width before the listbox could widen it
   const bare = await layout()
-  await showApproach(page, 'Diatonic above, chromatic below (enclosure)')
+  await showApproach(page, 'Diatonic above, chromatic below (enclosure)') // Guide Tones, under the Pentatonics row still: the most the Line group holds
   const approached = await layout()
   expect(approached.rows, `Changes, Guide Tones with an Approach (${approached.widths})`).toBeLessThanOrEqual(2)
   expect(approached.lineGroup, 'the Line group does not widen').toBeLessThanOrEqual(bare.lineGroup)

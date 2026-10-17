@@ -102,8 +102,8 @@
                           <template #selected="{ value }"><UiListboxLabel>{{ guideLabel(value) }}</UiListboxLabel></template>
                           <UiListboxOption v-for="g in GUIDE_LINES" :key="g.value" :value="g.value" :title="g.title"><UiListboxLabel>{{ g.label }}</UiListboxLabel></UiListboxOption>
                         </UiListbox>
-                        <!-- the figure into each guide tone (#298): under the guide tone listbox, so the Line group keeps its width (w-0 min-w-full: the long figure names truncate rather than widen it) -->
-                        <UiListbox v-if="approachesOn && shows('approaches')" v-model="approach" class="w-0 min-w-full" aria-label="Approach" title="A short figure of eighths that leads into each chord's guide tone from the end of the chord before">
+                        <!-- the figure into each guide tone (#298): under the guide tone listbox, so the Line group keeps its width (w-0 min-w-full: the long figure names truncate rather than widen it, the tooltip the whole name) -->
+                        <UiListbox v-if="approachesOn && shows('approaches')" v-model="approach" class="w-0 min-w-full" aria-label="Approach" :title="approachLabel(approach)">
                           <template #selected="{ value }"><UiListboxLabel>{{ approachLabel(value) }}</UiListboxLabel></template>
                           <UiListboxOption v-for="a in APPROACHES" :key="a" :value="a"><UiListboxLabel>{{ APPROACH_LABELS[a] }}</UiListboxLabel></UiListboxOption>
                         </UiListbox>

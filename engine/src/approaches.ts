@@ -26,16 +26,20 @@ export const APPROACHES = Object.keys(FIGURES) as readonly Approach[]
 export const isApproach = (x: unknown): x is Approach => typeof x === 'string' && x in FIGURES
 export const APPROACH_LABELS: Readonly<Record<Approach, string>> = Object.fromEntries(APPROACHES.map((a) => [a, FIGURES[a].label])) as Record<Approach, string>
 
+/** a double accidental or B♯/E♯/C♭/F♭, which the enharmonic rule avoids (scales.ts) */
+const awkward = ({ letter, acc }: Spelled): boolean => Math.abs(acc) > 1 || (acc === 1 && (letter === 2 || letter === 6)) || (acc === -1 && (letter === 0 || letter === 3))
+
 /**
- * the note n semitones from the target: one semitone is on the next letter over (into E: D♯, F; into B♭: A), two
- * on the simplest spelling (into E from below: D), a tie going flat below and sharp above
+ * the note n semitones from the target: one semitone is on the next letter over (into E: D♯, F; into B♭: A) unless
+ * that is B♯/E♯/C♭/F♭ (into B♭ above: B), two on the simplest spelling (into E from below: D), a tie going flat below
+ * and sharp above
  */
 function chromatic(target: Pitched, n: number): Pitched {
   const midi = target.midi + n
   if (Math.abs(n) === 1) {
     const letter = mod(target.letter + n, 7) as Letter
     const acc = mod(midi - NAT_PC[letter] + 6, 12) - 6
-    if (Math.abs(acc) <= 1) return { letter, acc, midi }
+    if (!awkward({ letter, acc })) return { letter, acc, midi }
   }
   // a tie follows the target's accidental (flat target: flat), a natural target the direction
   const flat = target.acc === 0 ? n < 0 : target.acc < 0
