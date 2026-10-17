@@ -5,7 +5,7 @@ style: Medium ballad
 key: Eb
 form: ABCD, 57 bars
 source: 
-# analysis: 2026-10-12, rules v1; Eb
+# analysis: 2026-10-17, rules v1; Eb
 # book: Medium Ballad. A is in Eb; B, C and D are in G
 # book: alternate changes (in parentheses) are played on beat 3 (or beats 3 and 4) of the bars in which they appear
 # book: at letter C, Gm11 may be substituted for C9sus
@@ -14,7 +14,7 @@ source:
 # bar | chord
 
 section: A
-# area: Eb major (bars 1–15)
+# area: Eb major (A 1–15)
 1  | EbMaj7   # tonic: the 4th is in the key
 1  | Bbm7     # a borrowed minor chord: Dorian, its own key
 # alt: bar 1, beat 3 (Fm7)
@@ -56,7 +56,7 @@ section: A
 14 | Bb9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 # book: Bb9sus
 15 | Eb6      # tonic: the 4th is in the key
-# area: G major (bars 16–57)
+# area: G major (A 16 – D 17)
 16 | Am7b5    # iiø7 of G: Locrian, the key's own notes (its ♭2 is a passing note)
 16 | D7       # V7 of G: natural tensions
 

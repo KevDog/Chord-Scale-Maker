@@ -4,12 +4,12 @@ style: Medium
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 162
-# analysis: 2026-10-11, rules v1; F
+# analysis: 2026-10-17, rules v1; F
 
 # bar | chord | scale
 
 section: Intro
-# area: F major (bars 1–12)
+# area: F major (Intro 1 – B 4)
 1 | F7      # I7 in F, not resolving: natural tensions
 2 | Eb7     # ♭VII7 from the parallel minor: Lydian Dominant
 3 | F7      # I7 in F, not resolving: natural tensions
@@ -31,7 +31,7 @@ section: B
 1 | BbMaj7  # the F7b9 before it makes Bb the key of the moment: the 4th is in the key
 3 | Bbm7    # ii of the ii–V to Ab minor
 4 | Eb7     # V7/biii in F: the #11 is in the key
-# area: Gb major (bars 13–17)
+# area: Gb major (B 5 – C 1)
 5 | Abm7    # ii of the ii–V to Gb
 5 | Db7     # V7 of Gb: natural tensions
 6 | GbMaj7  # tonic: the 4th is in the key
@@ -41,10 +41,10 @@ section: B
 
 section: C
 1 | F7      # VII7 in Gb, not resolving: b9 and b13 are in the key
-# area: D major (bars 18–19)
+# area: D major (C 2–3)
 2 | Eb7     # tritone substitute: resolves down a half step to DMaj7
 3 | DMaj7   # tonic: the 4th is in the key
-# area: F major (bars 21–32)
+# area: F major (C 5 – D 8)
 5 | Dm7     # ii of G7: Dorian
 6 | G7      # V7/V in F: natural tensions
 7 | Gm7     # ii of C7: Dorian

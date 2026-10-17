@@ -4,12 +4,12 @@ style: Ballad
 key: G
 form: AABC
 source: Colorado Cookbook, p. 61
-# analysis: 2026-10-11, rules v1; G
+# analysis: 2026-10-17, rules v1; G
 
 # bar | chord | scale
 
 section: A1
-# area: G major (bars 1–15)
+# area: G major (A1 1 – A2 7)
 1 | GMaj7   # tonic: the 4th is in the key
 1 | Bbm7    # ii of Eb7: Dorian
 1 | Eb7     # extended ii–V: a side-step, its own key
@@ -50,7 +50,7 @@ section: A2
 6 | Bbm7    # a borrowed minor chord: Dorian, its own key
 7 | Am7     # ii of D13: Dorian
 7 | D13     # V7/I in G: natural tensions
-# area: Eb major (bars 16–22)
+# area: Eb major (A2 8 – B 6)
 8 | Fm7     # ii of the ii–V to Eb
 8 | Bb7     # V7 of Eb: natural tensions
 
@@ -69,7 +69,7 @@ section: B
 6 | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 6 | D7      # V7/iii in Eb: b9 and b13 are in the key
 6 | Gm      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# area: G major (bars 23–32)
+# area: G major (B 7 – C 8)
 7 | Am7     # ii of D7: Dorian
 7 | D7      # V7/I in G: natural tensions
 8 | Bbm7    # ii of Eb7: Dorian

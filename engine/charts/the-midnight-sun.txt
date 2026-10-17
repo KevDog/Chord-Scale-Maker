@@ -4,23 +4,23 @@ style: Medium ballad
 key: C
 form: AABC, 50 bars
 source: 
-# analysis: 2026-10-12, rules v1; C
+# analysis: 2026-10-17, rules v1; C
 
 # bar | chord
 
 section: A
-# area: C major (bar 1)
+# area: C major (A 1)
 1  | CMaj7     # tonic: the 4th is in the key
-# area: Bb major (bars 3–5)
+# area: Bb major (A 3–5)
 3  | Cm7       # ii of the ii–V to Bb
 3  | F9#11     # V7 of Bb: the #11 from the symbol
 5  | BbMaj7    # tonic: the 4th is in the key
-# area: Ab major (bars 7–9)
+# area: Ab major (A 7–9)
 7  | Bbm7      # ii of the ii–V to Ab
 7  | Eb7b9#11  # V7 of Ab: b9 and #11 from the symbol
 # book: Eb(b9)(#11), in every A and C
 9  | AbMaj7    # tonic: the 4th is in the key
-# area: C major (bars 11–15)
+# area: C major (A 11–15)
 11 | Abm7      # ii of Db7b9#11: Dorian
 11 | Db7b9#11  # tritone substitute: resolves down a half step to CMaj7; b9 from the symbol
 13 | CMaj7     # tonic: the 4th is in the key
@@ -30,20 +30,20 @@ section: A
 @ending 1 13 14
 15 | CMaj7     # tonic: the 4th is in the key
 15 | Am7       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-# area: E major (bars 16–17)
+# area: E major (A 16 – B 1)
 16 | F#m7b5    # iiø7 of E: Locrian, the key's own notes (its ♭2 is a passing note)
 16 | B7        # V7 of E: natural tensions
 @ending 2 15 16
 
 section: B
 1  | EMaj7     # tonic: the 4th is in the key
-# area: D major (bars 18–21)
+# area: D major (B 2–5)
 2  | Em7       # ii of the ii–V to D
 2  | A7        # V7 of D: natural tensions
 3  | DMaj7     # tonic: the 4th is in the key
 # alt (optional): bar 20 (Em7 Eb7b5)
 5  | DMaj7
-# area: C major (bars 22–25)
+# area: C major (B 6 – C 1)
 6  | Dm7       # ii of G7: Dorian
 6  | G7        # V7/I in C: natural tensions
 7  | Em7       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
@@ -54,15 +54,15 @@ section: B
 section: C
 bars: 16
 1  | CMaj7     # tonic: the 4th is in the key
-# area: Bb major (bars 27–29)
+# area: Bb major (C 3–5)
 3  | Cm7       # ii of the ii–V to Bb
 3  | F9#11     # V7 of Bb: the #11 from the symbol
 5  | BbMaj7    # tonic: the 4th is in the key
-# area: Ab major (bars 31–33)
+# area: Ab major (C 7–9)
 7  | Bbm7      # ii of the ii–V to Ab
 7  | Eb7b9#11  # V7 of Ab: b9 and #11 from the symbol
 9  | AbMaj7    # tonic: the 4th is in the key
-# area: C major (bars 35–38)
+# area: C major (C 11–14)
 11 | Abm7      # ii of Db7b9#11: Dorian
 11 | Db7b9#11  # tritone substitute: resolves down a half step to CMaj7; b9 from the symbol
 13 | CMaj7     # tonic: the 4th is in the key

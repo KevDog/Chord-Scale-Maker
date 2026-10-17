@@ -4,12 +4,12 @@ style: Ballad
 key: Fm
 form: AABC, 33 bars
 source: Colorado Cookbook, p. 237
-# analysis: 2026-10-11, rules v1; F minor
+# analysis: 2026-10-17, rules v1; F minor
 
 # bar | chord | scale
 
 section: A1
-# area: F minor (bars 1–16)
+# area: F minor (A1 1 – A2 8)
 1 | Fm7      # tonic minor: Dorian by convention
 2 | Bbm7     # iv: Dorian, the key’s own notes
 3 | Ebm7     # a borrowed minor chord: Dorian, its own key
@@ -38,7 +38,7 @@ section: A2
 8 | Fm       # tonic minor: Dorian by convention
 
 section: B
-# area: C major (bars 17–24)
+# area: C major (B 1–8)
 1 | Dm7      # ii of the ii–V to C
 1 | G7       # V7 of C: natural tensions
 2 | CMaj7    # tonic: the 4th is in the key
@@ -55,7 +55,7 @@ section: B
 7 | E7b13    # V7/vi in C: b9 and b13 are in the key
 8 | Am7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 8 | Abdim7   # passing diminished: G7♭9 without its G, the C7#11's dominant (Gm7 its ii)
-# area: F minor (bars 25–33)
+# area: F minor (B 9 – C 8)
 9 | Gm7      # ii of the ii–V to F minor
 9 | C7#11    # V7 of F minor: 9, #11 and 13 from the symbol
 

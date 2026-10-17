@@ -4,7 +4,7 @@ style: Medium up
 key: Cm
 form: AB, 32 bars
 source: 
-# analysis: 2026-10-12, rules v1; C minor
+# analysis: 2026-10-17, rules v1; C minor
 # the A (head) repeats; B is for solos; after solos D.C. al Coda, the head twice, to the coda on its repeat
 # bass plays in two for the heads, in four for solos
 
@@ -12,19 +12,19 @@ source:
 
 section: A
 bars: 16
-# area: C minor (bars 1–7)
+# area: C minor (A 1–7)
 1  | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
 2  | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
 3  | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
 5  | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
 6  | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
 7  | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-# area: Ab major (bars 9–11)
+# area: Ab major (A 9–11)
 9  | Bbm9      # ii of the ii–V to Ab
 # book: bar 9 is Bbm9 (add 11), Bbm9 (add #11), Bbm9: one chord, its voicing moving
 10 | Eb9       # V7 of Ab: natural tensions
 11 | AbMaj7    # tonic: the 4th is in the key
-# area: C minor (bars 11–23)
+# area: C minor (A 11 – B 7)
 11 | Db9       # tritone substitute: resolves down a half step to Cm7
 12 | Cm7       # tonic minor: Dorian by convention
 12 | Fm7       # iv: Dorian, the key’s own notes
@@ -43,12 +43,12 @@ section: B
 6  | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
 7  | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
 # alt (optional): bar 24, beats 3–4 (Bm9)
-# area: Ab major (bars 25–27)
+# area: Ab major (B 9–11)
 9  | Bbm9      # ii of the ii–V to Ab
 10 | Bbm9
 10 | Eb9       # V7 of Ab: natural tensions
 11 | AbMaj7    # tonic: the 4th is in the key
-# area: C minor (bars 27–1)
+# area: C minor (B 11 – Coda 1)
 11 | Db9       # tritone substitute: resolves down a half step to Cm7
 12 | Cm7       # tonic minor: Dorian by convention
 12 | Fm7       # iv: Dorian, the key’s own notes

@@ -4,13 +4,13 @@ style: Up
 key: Cm
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 206
-# analysis: 2026-10-11, rules v1; C minor
+# analysis: 2026-10-17, rules v1; C minor
 
 # bar | chord | scale
 # the horn intro is a melody line (no chords), so it is left out
 
 section: A1
-# area: C minor (bars 1–15)
+# area: C minor (A1 1 – A2 7)
 1 | Cm      # tonic minor: Dorian by convention
 2 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 2 | G7b9    # V7 of C minor: b9 and b13 are in the key
@@ -35,7 +35,7 @@ section: A2
 6 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 6 | G7b9    # V7 of C minor: b9 and b13 are in the key
 7 | Cm      # tonic minor: Dorian by convention
-# area: Eb major (bars 16–22)
+# area: Eb major (A2 8 – B 6)
 8 | Fm7     # ii of the ii–V to Eb
 8 | Bb7b9   # V7 of Eb: the b9 from the symbol
 
@@ -47,7 +47,7 @@ section: B
 5 | Fm7     # ii: Dorian, the key’s own notes
 6 | Am7b5   # iiø7 of D7: Locrian, the key's own notes (its ♭2 is a passing note)
 6 | D7      # V7/iii in Eb: b9 and b13 are in the key
-# area: C minor (bars 23–32)
+# area: C minor (B 7 – A3 8)
 7 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 8 | G7b9    # V7 of C minor: b9 and b13 are in the key
 

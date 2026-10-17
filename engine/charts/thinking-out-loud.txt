@@ -4,13 +4,13 @@ style: Latin
 key: Db
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 246
-# analysis: 2026-10-11, rules v1; Db
+# analysis: 2026-10-17, rules v1; Db
 
 # bar | chord | scale
 
 section: Coda
 bars: 4
-# area: Db major (bars 1–4)
+# area: Db major (Coda 1 – A 4)
 1 | Ebm7    # ii of the ii–V to Db
 2 | Ab7alt  # from the symbol: altered
 3 | DbMaj7  # tonic: the 4th is in the key
@@ -22,10 +22,10 @@ section: A
 2 | F7alt   # from the symbol: altered
 3 | Bbm7    # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 4 | GbMaj7  # IV: the #4 is the key’s 7th
-# area: Ab minor (bars 4–5)
+# area: Ab minor (A 4–5)
 4 | Eb7alt  # from the symbol: altered
 5 | Abm7    # tonic minor: Dorian by convention
-# area: Bb major (bars 6–10)
+# area: Bb major (A 6 – B 2)
 6 | F7alt   # from the symbol: altered
 7 | BbMaj7  # tonic: the 4th is in the key
 8 | G7b9    # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
@@ -33,14 +33,14 @@ section: A
 section: B
 1 | Cm7     # ii: Dorian, the key’s own notes
 2 | AbMaj7  # ♭VIImaj7, borrowed from Bb minor: Lydian (its ♯11 is in the key)
-# area: Db major (bars 10–11)
+# area: Db major (B 2–3)
 2 | G7alt   # from the symbol: altered
 3 | GbMaj7  # the G7alt before it makes Gb the key of the moment: the 4th is in the key
-# area: Ab minor (bars 12–13)
+# area: Ab minor (B 4–5)
 4 | Bbm7    # ii of the ii–V to Ab minor
 4 | Eb7alt  # from the symbol: altered
 5 | Abm7    # tonic minor: Dorian by convention
-# area: Bb major (bars 14–22)
+# area: Bb major (B 6 – C 6)
 6 | F7alt   # from the symbol: altered
 7 | BbMaj7  # tonic: the 4th is in the key
 8 | E7alt   # from the symbol: altered
@@ -54,20 +54,20 @@ section: C
 4 | A7alt   # from the symbol: altered
 5 | Dm11    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 6 | G7      # extended ii–V: a side-step, its own key
-# area: Db major (bars 22–24)
+# area: Db major (C 6–8)
 6 | G7alt   # from the symbol: altered
 7 | GbMaj7  # the G7alt before it makes Gb the key of the moment: the 4th is in the key
 7 | CbMaj7  # ♭VIImaj7, borrowed from Db minor: Lydian (its ♯11 is in the key)
 8 | Bbm7    # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-# area: C minor (bars 24–25)
+# area: C minor (C 8 – D 1)
 8 | G7alt   # from the symbol: altered
 
 section: D
 1 | Cm7     # tonic minor: Dorian by convention
-# area: D minor (bars 26–27)
+# area: D minor (D 2–3)
 2 | A7alt   # from the symbol: altered
 3 | Dm7     # tonic minor: Dorian by convention
-# area: Db major (bars 28–32)
+# area: Db major (D 4–8)
 4 | Ab7     # V7 of Db: natural tensions
 5 | DbMaj7  # tonic: the 4th is in the key
 6 | C7alt   # from the symbol: altered

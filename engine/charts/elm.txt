@@ -5,13 +5,13 @@ style: Medium slow
 key: Gm
 form: A, 16 bars
 source: 
-# analysis: 2026-10-12, rules v1; G minor
+# analysis: 2026-10-17, rules v1; G minor
 
 # bar | chord
 
 section: Intro
 bars: 8
-# area: G minor (bars 1–2)
+# area: G minor (Intro 1 – Coda 2)
 1  | F#dim7/G   # vii°7 of Gm: D7♭9 without its root
 3  | Gm         # tonic minor: Dorian by convention
 4  | Gm
@@ -47,7 +47,7 @@ bars: 20
 # book: Am7(add11 b5)
 @coda 1
 2  | AbMaj9#11  # from the symbol: #11
-# area: G major (bars 3–19)
+# area: G major (Coda 3–19)
 3  | G          # tonic: the 4th is in the key
 # key signature changes to G major here
 @key 3 G

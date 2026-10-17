@@ -6,12 +6,12 @@ key: Ab
 time: 3/4
 form: ABCD, 36 bars
 source: Colorado Cookbook, p. 28
-# analysis: 2026-10-11, rules v1; Ab
+# analysis: 2026-10-17, rules v1; Ab
 
 # bar | chord | scale
 
 section: A
-# area: Ab major (bars 1–8)
+# area: Ab major (A 1–8)
 1  | Bbm7    # ii of the ii–V to Ab
 2  | Eb9     # V7 of Ab: natural tensions
 3  | AbMaj7  # tonic: the 4th is in the key
@@ -24,7 +24,7 @@ section: A
 8  | Ab6     # tonic: the 4th is in the key
 
 section: B
-# area: C major (bars 9–16)
+# area: C major (B 1–8)
 1  | Dm7     # ii of the ii–V to C
 2  | G9      # V7 of C: natural tensions
 3  | CMaj7   # tonic: the 4th is in the key
@@ -37,13 +37,13 @@ section: B
 8  | C6      # tonic: the 4th is in the key
 
 section: C
-# area: E major (bars 17–21)
+# area: E major (C 1–5)
 1  | F#m7    # ii of the ii–V to E
 2  | B9      # V7 of E: natural tensions
 3  | EMaj7   # tonic: the 4th is in the key
 4  | Bb9#11  # tritone substitute: resolves down a half step to AMaj7
 5  | AMaj7   # the Bb9#11 before it makes A the key of the moment: the 4th is in the key
-# area: Ab major (bars 22–35)
+# area: Ab major (C 6 – D 11)
 6  | Bbm11   # ii of the ii–V to Ab
 6  | Eb7     # V7 of Ab: natural tensions
 7  | AbMaj7  # tonic: the 4th is in the key

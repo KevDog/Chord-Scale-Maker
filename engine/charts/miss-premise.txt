@@ -6,12 +6,12 @@ key: Eb
 time: 3/4
 form: AB, 32 bars
 source: Colorado Cookbook, p. 135
-# analysis: 2026-10-11, rules v1; Eb
+# analysis: 2026-10-17, rules v1; Eb
 
 # bar | chord | scale
 
 section: A
-# area: Eb major (bars 1–23)
+# area: Eb major (A 1 – B 7)
 1  | EbMaj7#11  # from the symbol: #11
 2  | GbMaj7#5   # from the symbol: #5
 3  | Fm11       # ii: Dorian, the key’s own notes
@@ -47,11 +47,11 @@ bars: 16
 6  | F#7        # ♭III7 from the parallel minor: Lydian Dominant
 6  | Gdim7      # vii°7 of Abm7: Eb7♭9 without its root
 7  | Abm7       # a borrowed minor chord: Dorian, its own key
-# area: G major (bars 24–25)
+# area: G major (B 8–9)
 8  | Am7        # ii of the ii–V to G
 8  | D7         # V7 of G: natural tensions
 9  | GMaj7#11   # from the symbol: #11
-# area: D major (bars 26–31)
+# area: D major (B 10–15)
 10 | Eb7alt     # from the symbol: altered
 11 | DMaj7#11   # from the symbol: #11
 12 | Bb7alt     # from the symbol: altered

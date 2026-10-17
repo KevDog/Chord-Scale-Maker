@@ -4,12 +4,12 @@ style: Medium
 key: Bb
 form: AABA
 source: Colorado Cookbook, p. 105
-# analysis: 2026-10-11, rules v1; Bb
+# analysis: 2026-10-17, rules v1; Bb
 
 # bar | chord | scale
 
 section: A1
-# area: Bb major (bars 1–21)
+# area: Bb major (A1 1 – B 5)
 1 | BbMaj7  # tonic: the 4th is in the key
 1 | Gm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 2 | Cm7     # ii of the ii–V to Bb
@@ -47,11 +47,11 @@ section: B
 4 | Am7     # ii of the ii–V to G minor
 4 | D7      # V7/vi in Bb: b9 and b13 are in the key
 5 | Gm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-# area: D major (bars 22–23)
+# area: D major (B 6–7)
 6 | Em7b5   # iiø7 of D: Locrian, the key's own notes (its ♭2 is a passing note)
 6 | A7b9    # V7 of D: the b9 from the symbol
 7 | DMaj7   # tonic: the 4th is in the key
-# area: Bb major (bars 24–32)
+# area: Bb major (B 8 – A3 8)
 8 | Cm7     # ii of the ii–V to Bb
 8 | F7      # V7 of Bb: natural tensions
 

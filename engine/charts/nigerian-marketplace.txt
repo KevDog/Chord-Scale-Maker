@@ -4,7 +4,7 @@ style: Latin
 key: Eb
 form: AABBC, 64 bars
 source: 
-# analysis: 2026-10-12, rules v1; Eb
+# analysis: 2026-10-17, rules v1; Eb
 # book: Medium Latin, half note = 114. Head: Intro, A A, B B (segno at B), C (Fine).
 # book: solo on form (AABBC); after solos, D.S. al Fine. Solos evolve into a funky boogaloo feel.
 # key: no key signature; the A and C sections step down Am9 Gm9 Fm9 to Eb, and B cadences in Eb
@@ -15,17 +15,17 @@ source:
 
 section: Intro
 bars: 4
-# area: Eb major (bar 1)
+# area: Eb major (Intro 1 – A 1)
 1  | Am9        # a borrowed minor chord: Dorian, its own key
 
 section: A
 1  | Am9        # a borrowed minor chord: Dorian, its own key
 # bar 4: the book repeats (Am9) in parentheses as a reminder; held
 @key 5 Gm
-# area: G minor (bar 5)
+# area: G minor (A 5)
 5  | Gm9        # tonic minor: Dorian by convention
 @key 9 Eb
-# area: Eb major (bars 9–27)
+# area: Eb major (A 9 – C 1)
 9  | Fm9        # ii: Dorian, the key’s own notes
 12 | E9#11      # tritone substitute: resolves down a half step to EbMaj9#11
 13 | EbMaj9#11  # from the symbol: #11
@@ -69,10 +69,10 @@ key: Eb
 bars: 18
 1  | Am9        # a borrowed minor chord: Dorian, its own key
 @key 5 Gm
-# area: G minor (bar 31)
+# area: G minor (C 5)
 5  | Gm9        # tonic minor: Dorian by convention
 @key 9 Eb
-# area: Eb major (bars 35–42)
+# area: Eb major (C 9–16)
 9  | Fm9        # ii: Dorian, the key’s own notes
 12 | E9#11      # tritone substitute: resolves down a half step to EbMaj9#11
 # bar 38: last time, rall.

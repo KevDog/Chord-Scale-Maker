@@ -4,12 +4,12 @@ style: Latin
 key: Am
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 140
-# analysis: 2026-10-11, rules v1; A minor
+# analysis: 2026-10-17, rules v1; A minor
 
 # bar | chord | scale
 
 section: A1
-# area: A minor (bars 1–16)
+# area: A minor (A1 1 – A2 8)
 1 | Bm7     # ii of the ii–V to A minor
 1 | E7      # V7 of A minor: b9 and b13 are in the key
 2 | Am7     # ii of D7: Dorian
@@ -45,7 +45,7 @@ section: A2
 8 | Am      # tonic minor: Dorian by convention
 
 section: B
-# area: C major (bars 17–30)
+# area: C major (B 1 – C 6)
 1 | Dm7     # ii of the ii–V to C
 2 | G7sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 3 | C6      # tonic: the 4th is in the key
@@ -70,7 +70,7 @@ section: C
 5 | G7      # V7/I in C: natural tensions
 6 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 6 | A7      # extended ii–V: a side-step, its own key
-# area: A minor (bars 31–32)
+# area: A minor (C 7–8)
 7 | Bm7     # ii of the ii–V to A minor
 7 | E7      # V7 of A minor: b9 and b13 are in the key
 8 | Am      # tonic minor: Dorian by convention

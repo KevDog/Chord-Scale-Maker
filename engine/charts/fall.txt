@@ -5,13 +5,13 @@ style: Ballad
 key: Em
 form: A, 16 bars
 source: 
-# analysis: 2026-10-12, rules v1; E minor
+# analysis: 2026-10-17, rules v1; E minor
 
 # bar | chord
 
 section: A
 bars: 16
-# area: E minor (bars 1–9)
+# area: E minor (A 1–9)
 1  | F#7sus4   # V7sus4 of B13b9: the b13 is in the key
 # book: F#7sus(add3)
 2  | B13b9     # extended dominant: V7 of E9sus4; b9 from the symbol
@@ -23,12 +23,12 @@ bars: 16
 7  | E9sus4    # static sus: Mixolydian
 8  | EbMaj7b5  # a non-tonic major chord: Lydian
 9  | DMaj7     # ♭VII of E minor: D major, the notes of E Dorian
-# area: G minor (bars 10–12)
+# area: G minor (A 10–12)
 10 | D13b9     # V7 of G minor: the b9 is in the key, the 13 from the symbol
 11 | Gm11      # tonic minor: Dorian by convention
 12 | Bm9       # a borrowed minor chord: Dorian, its own key
 12 | AbMaj7b5  # a non-tonic major chord: Lydian
-# area: E minor (bars 13–15)
+# area: E minor (A 13–15)
 13 | F#7sus4   # V7sus4 of B13b9: the b13 is in the key
 # book: F#7sus(add3)
 14 | B13b9     # V7 of E minor, the chain's last link: the b9 is in the key, the 13 from the symbol

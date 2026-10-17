@@ -4,13 +4,13 @@ style: Medium up
 key: Ab
 form: AABA, 32 bars
 source: 
-# analysis: 2026-10-12, rules v1; Ab
+# analysis: 2026-10-17, rules v1; Ab
 # book: as played by Woody Herman
 
 # bar | chord
 
 section: A
-# area: Ab major (bars 1–10)
+# area: Ab major (A 1–10)
 1  | Bb9     # II7 in Ab, not resolving: natural tensions
 2  | Bbm7    # ii of the ii–V to Ab
 2  | Eb7#5   # V7 of Ab: #11 and b13 from the symbol
@@ -31,15 +31,15 @@ section: A
 @ending 2 9 10
 
 section: B
-# area: B major (bars 11–12)
+# area: B major (B 1–2)
 1  | C#m7    # ii of the ii–V to B
 1  | F#7     # V7 of B: natural tensions
 2  | BMaj7   # tonic: the 4th is in the key
-# area: D major (bars 13–14)
+# area: D major (B 3–4)
 3  | Em7     # ii of the ii–V to D
 3  | A7      # V7 of D: natural tensions
 4  | DMaj7   # tonic: the 4th is in the key
-# area: C major (bars 15–18)
+# area: C major (B 5–8)
 5  | Dm7     # ii of the ii–V to C
 5  | G7      # V7 of C: natural tensions
 6  | CMaj7   # tonic: the 4th is in the key
@@ -52,7 +52,7 @@ section: B
 section: C
 key: Ab
 bars: 10
-# area: Ab major (bars 19–26)
+# area: Ab major (C 1–8)
 1  | Bb9     # II7 in Ab, not resolving: natural tensions
 2  | Bbm7    # ii of the ii–V to Ab
 2  | Eb7#5   # V7 of Ab: #11 and b13 from the symbol

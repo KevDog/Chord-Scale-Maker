@@ -4,7 +4,7 @@ style: Medium up
 key: Gm
 form: AB, 32 bars
 source: 
-# analysis: 2026-10-12, rules v1; G minor
+# analysis: 2026-10-17, rules v1; G minor
 # book: composer printed as John L. "Wes" Montgomery
 
 # bar | chord
@@ -13,7 +13,7 @@ source:
 
 section: Intro
 bars: 4
-# area: G minor (bars 13–25)
+# area: G minor (Intro 1 – B 9)
 1  | BbMaj7    # bIII of G minor: the relative major itself
 1  | Gm11      # tonic minor: Dorian by convention
 # book: Gm7 (add 11, omit 5), and the same on G#m7 and Am7
@@ -70,13 +70,13 @@ section: B
 8  | Ebm7      # ii of Ab7: Dorian
 8  | Ab7       # tritone substitute: resolves down a half step to Gm7
 9  | Gm7       # tonic minor: Dorian by convention
-# area: Bb major (bars 28–30)
+# area: Bb major (B 12–14)
 12 | Cm7       # ii of the ii–V to Bb
 12 | F7        # V7 of Bb: natural tensions
 13 | BbMaj7    # tonic: the 4th is in the key
 # alt: bar 13, beat 3 (Gm7)
 14 | Eb7       # tritone substitute: resolves down a half step to D7
-# area: G minor (bars 30–2)
+# area: G minor (B 14 – Coda 2)
 14 | D7        # V7 of G minor: b9 and b13 are in the key
 15 | Gm7       # tonic minor: Dorian by convention
 16 | A7#5      # V7 of V7: the dominant of the dominant, on the way to G minor: b9 and b13 are in the key, the #11 from the symbol

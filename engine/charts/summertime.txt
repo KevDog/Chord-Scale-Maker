@@ -4,12 +4,12 @@ style: Medium
 key: Dm
 form: AB, 16 bars
 source: Colorado Cookbook, p. 228
-# analysis: 2026-10-11, rules v1; D minor
+# analysis: 2026-10-17, rules v1; D minor
 
 # bar | chord | scale
 
 section: Intro
-# area: D minor (bars 1–9)
+# area: D minor (Intro 1 – B 1)
 1 | Dm      # tonic minor: Dorian by convention
 2 | DmMaj7  # from the symbol: minor-major 7th
 3 | Dm7     # tonic minor: Dorian by convention
@@ -24,12 +24,12 @@ section: A
 
 section: B
 1 | Dm      # tonic minor: Dorian by convention
-# area: F major (bars 11–12)
+# area: F major (B 3–4)
 3 | Gm7     # ii of the ii–V to F
 3 | C7      # V7 of F: natural tensions
 4 | FMaj7   # tonic: the 4th is in the key
 4 | Bb7     # IV7 in F, not resolving: the #11 is in the key
-# area: D minor (bars 13–16)
+# area: D minor (B 5–8)
 5 | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 5 | A7      # V7 of D minor: b9 and b13 are in the key
 6 | Dm      # tonic minor: Dorian by convention

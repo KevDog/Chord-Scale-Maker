@@ -6,12 +6,12 @@ style: Latin
 form: AABA, 32 bars
 key: Dm
 source: Colorado Cookbook, p. 9
-# analysis: 2026-10-11, rules v1; D minor
+# analysis: 2026-10-17, rules v1; D minor
 
 # bar | chord | scale
 
 section: Intro
-# area: D minor (bars 1–19)
+# area: D minor (Intro 1 – B 3)
 1  | Eb7     # tritone substitute: resolves down a half step to Dm6/9
 2  | Dm6/9   # tonic minor sixth chord: melodic minor, the raised 7th is a tension
 3  | Eb7     # tritone substitute: resolves down a half step to Dm6/9
@@ -36,7 +36,7 @@ section: B
 1  | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 2  | D7#9    # V7/iv in D minor: the b13 is in the key, b9, #9 and #11 from the symbol
 3  | Gm      # iv: Dorian, the key’s own notes
-# area: F major (bars 21–24)
+# area: F major (B 5–8)
 5  | Gm7b5   # iiø7 of F: Locrian, the key's own notes (its ♭2 is a passing note)
 6  | C7#9    # V7 of F: b9, #9 and #11 from the symbol
 7  | FMaj7   # tonic: the 4th is in the key

@@ -4,12 +4,12 @@ style: Medium
 key: Fm
 form: A, 16 bars
 source: Colorado Cookbook, p. 29
-# analysis: 2026-10-11, rules v1; F minor
+# analysis: 2026-10-17, rules v1; F minor
 
 # bar | chord | scale
 
 section: A
-# area: F minor (bars 1–10)
+# area: F minor (A 1–10)
 1  | FMaj7   # a non-tonic major chord: Lydian
 2  | GbMaj7  # a non-tonic major chord: Lydian
 3  | FMaj7   # a non-tonic major chord: Lydian
@@ -21,7 +21,7 @@ section: A
 8  | Bbm     # iv: Dorian, the key’s own notes
 9  | Am      # a borrowed minor chord: Dorian, its own key
 10 | BbMaj7  # a non-tonic major chord: Lydian
-# area: D minor (bars 11–16)
+# area: D minor (A 11–16)
 11 | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 11 | A7      # V7 of D minor: b9 and b13 are in the key
 12 | Dm      # tonic minor: Dorian by convention

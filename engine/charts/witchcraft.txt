@@ -4,14 +4,14 @@ style: Medium swing
 key: F
 form: ABC, 40 bars
 source: 
-# analysis: 2026-10-12, rules v1; F
+# analysis: 2026-10-17, rules v1; F
 # the head is played in 2 (letter B may be in 4); solos in 4
 
 # bar | chord
 
 section: A
 bars: 16
-# area: F major (bars 1–9)
+# area: F major (A 1–9)
 1  | F6      # tonic: the 4th is in the key
 3  | G#dim7  # passing diminished: G7♭9 without its G, the C9sus4's dominant (Gm7 its ii)
 5  | Gm7     # ii of the ii–V to F
@@ -19,10 +19,10 @@ bars: 16
 7  | FMaj7   # tonic: the 4th is in the key
 # alt (optional): bar 8 (F7)
 9  | BbMaj7  # IV: the #4 is the key’s 7th
-# area: Ab major (bars 11–13)
+# area: Ab major (A 11–13)
 11 | Eb9     # V7 of Ab: natural tensions
 13 | Ab6     # tonic: the 4th is in the key
-# area: F major (bars 14–39)
+# area: F major (A 14 – C 7)
 14 | G7#5    # V7 of V7: the dominant of the dominant: #11 and b13 from the symbol
 15 | C7      # V7 of F: natural tensions
 

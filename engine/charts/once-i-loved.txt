@@ -6,12 +6,12 @@ style: Latin
 key: F
 form: AAB, 44 bars
 source: Colorado Cookbook, p. 168
-# analysis: 2026-10-11, rules v1; F
+# analysis: 2026-10-17, rules v1; F
 
 # bar | chord | scale
 
 section: A1
-# area: F major (bars 1–8)
+# area: F major (A1 1–8)
 1  | Gm7     # ii of the ii–V to F
 2  | C7      # V7 of F: natural tensions
 3  | FMaj7   # tonic: the 4th is in the key
@@ -24,18 +24,18 @@ section: A1
 7  | D7      # V7/ii in F: the b13 is in the key
 8  | Gm7     # ii of the ii–V to F minor
 8  | C7      # V7 of F: natural tensions
-# area: Eb major (bars 9–11)
+# area: Eb major (A1 9–11)
 9  | Fm7     # ii of the ii–V to Eb
 10 | Bb7     # V7 of Eb: natural tensions
 11 | EbMaj7  # tonic: the 4th is in the key
-# area: D major (bars 13–16)
+# area: D major (A1 13–16)
 13 | Em7b5   # iiø7 of D: Locrian, the key's own notes (its ♭2 is a passing note)
 14 | A7b9    # V7 of D: the b9 from the symbol
 15 | DMaj7   # tonic: the 4th is in the key
 16 | D7b9    # V7/iv in D: the b9 from the symbol
 
 section: A2
-# area: F major (bars 17–24)
+# area: F major (A2 1–8)
 1  | Gm7     # ii of the ii–V to F
 2  | C7      # V7 of F: natural tensions
 3  | FMaj7   # tonic: the 4th is in the key
@@ -48,21 +48,21 @@ section: A2
 7  | D7      # V7/ii in F: the b13 is in the key
 8  | Gm7     # ii of the ii–V to F minor
 8  | C7      # V7 of F: natural tensions
-# area: Eb major (bars 25–27)
+# area: Eb major (A2 9–11)
 9  | Fm7     # ii of the ii–V to Eb
 10 | Bb7     # V7 of Eb: natural tensions
 11 | EbMaj7  # tonic: the 4th is in the key
-# area: D major (bars 29–31)
+# area: D major (A2 13–15)
 13 | Em7b5   # iiø7 of D: Locrian, the key's own notes (its ♭2 is a passing note)
 14 | A7b9    # V7 of D: the b9 from the symbol
 15 | DMaj7   # tonic: the 4th is in the key
-# area: C major (bars 32–33)
+# area: C major (A2 16 – B 1)
 16 | Dm7     # ii of the ii–V to C
 16 | G7      # V7 of C: natural tensions
 
 section: B
 1  | CMaj7   # tonic: the 4th is in the key
-# area: F major (bars 34–44)
+# area: F major (B 2–12)
 2  | Cm7     # ii of the ii–V to Bb
 2  | F7      # V7/IV in F: natural tensions
 3  | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key

@@ -4,7 +4,7 @@ style: Ballad
 key: F
 form: AABC, 32 bars
 source: 
-# analysis: 2026-10-12, rules v1; F
+# analysis: 2026-10-17, rules v1; F
 # book: Med. Ballad (quarter = 57); melody is freely interpreted. Solo on form (AABC); after solos, D.S. al Coda
 
 # bar | chord
@@ -12,7 +12,7 @@ source:
 
 section: Intro
 bars: 4
-# area: F major (bars 1–3)
+# area: F major (Intro 1 – A 3)
 1  | A7#5#9    # extended dominant: V7 of D7b9#9; b9, #9, #11 and b13 from the symbol
 1  | D7b9#9    # VI7 in F, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
 2  | Eb69/G    # ♭VII6, borrowed from F minor: Lydian (its ♯11 is in the key)
@@ -26,17 +26,17 @@ section: A
 2  | Bb6       # the F7/A before it makes Bb the key of the moment: the 4th is in the key
 2  | Bdim7     # ♯IV°7 to I over its 5th: E7♭9 without its root, the ♯II°7's notes
 3  | F/C       # tonic: the 4th is in the key
-# area: A major (bars 3–5)
+# area: A major (A 3–5)
 3  | Bm7b5     # iiø7 of A: Locrian, the key's own notes (its ♭2 is a passing note)
 3  | E7/B      # V7 of A: natural tensions
 4  | AMaj7     # tonic: the 4th is in the key
 5  | Eb7sus4   # ♯IV7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-# area: Ab major (bars 5–6)
+# area: Ab major (A 5–6)
 5  | Eb7       # V7 of Ab: natural tensions
 5  | AbMaj7    # tonic: the 4th is in the key
 6  | D7sus4    # ♯IV7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 6  | D7       |  | F: V7/ii  # * V7/ii in F: the b13 is in the key
-# area: F major (bars 6–12)
+# area: F major (A 6 – B 2)
 6  | Gm        # ii of C9sus4: Dorian
 7  | C9sus4    # static sus: Mixolydian
 7  | Bbm6      # a minor sixth chord: Dorian
@@ -56,7 +56,7 @@ section: B
 1  | Eb7       # extended ii–V: a side-step, its own key
 2  | Cm7       # a borrowed minor chord: Dorian, its own key
 2  | Bdim7     # passing diminished: Bb7♭9 without its Bb, the Eb13's dominant; not functioning diatonically: the symmetric scale
-# area: Ab major (bars 13–18)
+# area: Ab major (B 3–8)
 3  | Bbm7      # ii of the ii–V to Ab
 3  | Eb13      # V7 of Ab: natural tensions
 4  | AbMaj7    # tonic: the 4th is in the key
@@ -67,7 +67,7 @@ section: B
 7  | Dm7b5     # iiø7 of G13: Locrian, the key's own notes (its ♭2 is a passing note)
 7  | G13       # V7/III in Ab: the b9 is in the key, the 13 from the symbol
 8  | C7sus4b9  # from the symbol: sus b9
-# area: F major (bars 18–21)
+# area: F major (B 8 – C 3)
 8  | C13       # V7 of F: natural tensions
 
 section: C
@@ -77,17 +77,17 @@ bars: 10
 2  | Bb6       # the F7/A before it makes Bb the key of the moment: the 4th is in the key
 2  | Bdim7     # ♯IV°7 to I over its 5th: E7♭9 without its root, the ♯II°7's notes
 3  | F/C       # tonic: the 4th is in the key
-# area: A major (bars 21–23)
+# area: A major (C 3–5)
 3  | Bm7b5     # iiø7 of A: Locrian, the key's own notes (its ♭2 is a passing note)
 3  | E7/B      # V7 of A: natural tensions
 4  | AMaj7     # tonic: the 4th is in the key
 5  | Eb7sus4   # ♯IV7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-# area: Ab major (bars 23–24)
+# area: Ab major (C 5–6)
 5  | Eb7       # V7 of Ab: natural tensions
 5  | AbMaj7    # tonic: the 4th is in the key
 6  | D7sus4    # ♯IV7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 6  | D7       |  | F: V7/ii  # * V7/ii in F: the b13 is in the key
-# area: F major (bars 24–7)
+# area: F major (C 6 – Coda 7)
 6  | Gm        # ii of C9sus4: Dorian
 @coda 6
 # book: the coda sign follows Gm at the end of bar 24; on the D.S., to the Coda from here

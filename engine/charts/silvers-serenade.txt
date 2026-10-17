@@ -4,13 +4,13 @@ style: Medium
 key: Em
 form: A, 16 bars
 source: Colorado Cookbook, p. 198
-# analysis: 2026-10-11, rules v1; E minor
+# analysis: 2026-10-17, rules v1; E minor
 
 # bar | chord | scale
 
 section: Coda
 bars: 4
-# area: E minor (bars 1–9)
+# area: E minor (Coda 1 – A 9)
 1  | D7        # V7/bIII in E minor: natural tensions
 3  | GMaj7#11  # from the symbol: #11
 
@@ -21,13 +21,13 @@ section: A
 5  | Am        # iv: Dorian, the key’s own notes
 7  | Ebm       # a borrowed minor chord: Dorian, its own key
 9  | Am        # iv: Dorian, the key’s own notes
-# area: Bb major (bars 11–14)
+# area: Bb major (A 11–14)
 11 | Cm7       # ii of the ii–V to Bb
 12 | F7        # V7 of Bb: natural tensions
 13 | BbMaj7    # tonic: the 4th is in the key
 13 | Cm7       # ii: Dorian, the key’s own notes
 14 | Dm7       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 14 | EbMaj7    # IV: the #4 is the key’s 7th
-# area: E minor (bars 15–16)
+# area: E minor (A 15–16)
 15 | Am7       # ii of D7: Dorian
 16 | D7        # V7/bIII in E minor: natural tensions

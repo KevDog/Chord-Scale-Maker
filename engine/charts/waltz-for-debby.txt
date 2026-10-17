@@ -5,7 +5,7 @@ key: F
 form: ABC, 80 bars
 time: 3/4
 source: 
-# analysis: 2026-10-12, rules v1; F
+# analysis: 2026-10-17, rules v1; F
 # book: Medium Jazz Waltz. Repeat signs around bars 1–80 (head, then solos in 3/4 on the same form, taking the
 # standard ending each time and ignoring the inversions, e.g. bars 5–12). After solos, D.C. al Coda (coda at bar 77).
 # bars 69–80 are the book's "Standard ending" (the end of the form).
@@ -25,7 +25,7 @@ source:
 # bar | chord
 
 section: A
-# area: F major (bars 1–26)
+# area: F major (A 1–26)
 1  | FMaj7/A   # tonic: the 4th is in the key
 # alt (solos): bar 1 (Am7)
 2  | Dm7       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
@@ -55,7 +55,7 @@ section: A
 24 | C7/Bb     # V7 in F, not resolving: natural tensions
 25 | A7        # V7/vi in F: b9 and b13 are in the key
 26 | Dm7       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-# area: A major (bars 27–32)
+# area: A major (A 27–32)
 27 | B7        # V7 of V7: the dominant of the dominant: natural tensions
 28 | E7        # V7 of A: natural tensions
 29 | A/C#      # tonic: the 4th is in the key
@@ -65,7 +65,7 @@ section: A
 
 section: B
 # alt (solos): bars 29–32 (AMaj7)
-# area: F major (bars 33–11)
+# area: F major (B 1 – Coda 11)
 1  | Gm7       # ii of C9: Dorian
 2  | C9        # V7/I in F: natural tensions
 3  | Am7       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)

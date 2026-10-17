@@ -4,7 +4,7 @@ style: Medium ballad
 key: G
 form: ABCDEFGH, 81 bars
 source: 
-# analysis: 2026-10-12, rules v1; G
+# analysis: 2026-10-17, rules v1; G
 # book: head A–D: March-like (quarter = 90), B Freely, D a tempo, ending at (fine) on C6/9.
 # Solos: Med. Ballad (quarter = 69) on E F G H (F "Swing (in 2)", H "in 4"; F and G may also be swung in 4); after solos, D.C. al fine
 # 4/4 except bars 11 and 18, in 3/4
@@ -13,7 +13,7 @@ source:
 # bar | chord
 
 section: A
-# area: G major (bars 1–7)
+# area: G major (A 1–7)
 1  | Gsus        # static sus: Mixolydian
 1  | G           # tonic: the 4th is in the key
 1  | D/F#        # V without its 7th: Mixolydian, the key’s own notes
@@ -34,7 +34,7 @@ section: A
 6  | E/Bb        # a non-tonic major chord: Lydian
 6  | EbMaj7      # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
 7  | A13         # II7 in G, not resolving: natural tensions
-# area: D major (bars 7–10)
+# area: D major (A 7 – B 2)
 7  | A7#5#9      # V7 of D: b9, #9, #11 and b13 from the symbol
 7  | DMaj9       # tonic: the 4th is in the key
 7  | G13#11      # IV7 in D, not resolving: the #11 is in the key
@@ -46,7 +46,7 @@ section: B
 1  | E7alt       # from the symbol: altered
 2  | A9sus4      # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 # book: A13sus
-# area: D minor (bars 10–16)
+# area: D minor (B 2 – C 1)
 2  | A7b9b5      # V7 of D minor: the b9 is in the key, #11 and 13 from the symbol
 # bar 11: 3/4
 3  | Dm11        # tonic minor: Dorian by convention
@@ -68,7 +68,7 @@ section: B
 section: C
 1  | Ebm11       # a borrowed minor chord: Dorian, its own key
 1  | Dbm11       # a borrowed minor chord: Dorian, its own key
-# area: Bb minor (bars 17–21)
+# area: Bb minor (C 2–6)
 2  | Cm11        # ii of the ii–V to Bb minor
 2  | F7b9b5      # V7 of Bb minor: the b9 is in the key, #11 and 13 from the symbol
 # bar 18: 3/4
@@ -82,7 +82,7 @@ section: C
 5  | Bb7b9b5     # V7/iv in Bb minor: b9, #11 and 13 from the symbol
 6  | Ebm7b5      # ivø7 in Bb minor: Locrian, its own mode (the chord is outside the key)
 # book: Ebm11(b5)
-# area: G major (bars 21–39)
+# area: G major (C 6 – E 10)
 6  | Am7         # ii of the ii–V to G
 6  | D7          # V7 of G: natural tensions
 
@@ -129,12 +129,12 @@ section: E
 8  | DbMaj9#11   # from the symbol: #11
 9  | GMaj7       # tonic: the 4th is in the key
 10 | D/F#        # V without its 7th: Mixolydian, the key’s own notes
-# area: Eb major (bars 40–42)
+# area: Eb major (E 11–13)
 11 | Fm7b5       # iiø7 of Eb: Locrian, the key's own notes (its ♭2 is a passing note)
 11 | Bb7#5#9     # V7 of Eb: b9, #9, #11 and b13 from the symbol
 12 | EbMaj7      # tonic: the 4th is in the key
 13 | A13         # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-# area: D major (bars 42–48)
+# area: D major (E 13 – F 3)
 13 | A7#5#9      # V7 of D: b9, #9, #11 and b13 from the symbol
 14 | DMaj9       # tonic: the 4th is in the key
 14 | G13#11      # IV7 in D, not resolving: the #11 is in the key
@@ -147,7 +147,7 @@ section: F
 1  | E7alt       # from the symbol: altered
 3  | A9sus4      # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 # book: A13sus
-# area: D minor (bars 49–60)
+# area: D minor (F 4 – G 1)
 4  | A7b9b5      # V7 of D minor: the b9 is in the key, #11 and 13 from the symbol
 5  | Dm11        # tonic minor: Dorian by convention
 6  | A/C#        # a non-tonic major chord: Lydian
@@ -169,7 +169,7 @@ section: F
 section: G
 1  | Ebm11       # a borrowed minor chord: Dorian, its own key
 1  | Dbm11       # a borrowed minor chord: Dorian, its own key
-# area: Bb minor (bars 61–65)
+# area: Bb minor (G 2–6)
 2  | Cm11        # ii of the ii–V to Bb minor
 2  | F7b9b5      # V7 of Bb minor: the b9 is in the key, #11 and 13 from the symbol
 3  | Bbm11       # tonic minor: Dorian by convention
@@ -182,7 +182,7 @@ section: G
 5  | Bb7b9b5     # V7/iv in Bb minor: b9, #11 and 13 from the symbol
 6  | Ebm7b5      # ivø7 in Bb minor: Locrian, its own mode (the chord is outside the key)
 # book: Ebm11(b5)
-# area: G major (bars 65–75)
+# area: G major (G 6 – H 10)
 6  | Am7         # ii of the ii–V to G
 6  | D7          # V7 of G: natural tensions
 
@@ -201,12 +201,12 @@ bars: 19
 8  | DbMaj9#11   # from the symbol: #11
 9  | GMaj7       # tonic: the 4th is in the key
 10 | D/F#        # V without its 7th: Mixolydian, the key’s own notes
-# area: Eb major (bars 76–78)
+# area: Eb major (H 11–13)
 11 | Fm7b5       # iiø7 of Eb: Locrian, the key's own notes (its ♭2 is a passing note)
 11 | Bb7#5#9     # V7 of Eb: b9, #9, #11 and b13 from the symbol
 12 | EbMaj7      # tonic: the 4th is in the key
 13 | B13#11      # V7/bii in Eb: the #11 is in the key, the 9 from the symbol
-# area: G major (bars 79–81)
+# area: G major (H 14–16)
 14 | Em11        # ii of A13: Dorian
 14 | A13         # extended dominant: V7 of D9sus4
 15 | D9sus4      # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here

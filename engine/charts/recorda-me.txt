@@ -5,34 +5,34 @@ style: Latin
 key: Am
 form: AB, 16 bars
 source: Colorado Cookbook, p. 178
-# analysis: 2026-10-11, rules v1; A minor
+# analysis: 2026-10-17, rules v1; A minor
 
 # bar | chord | scale
 
 section: Intro
 bars: 4
-# area: A minor (bars 1–5)
+# area: A minor (Intro 1 – A 5)
 1 | Am      # tonic minor: Dorian by convention
 
 section: A
 # the intro is a 4-bar Am bass solo
 1 | Am      # tonic minor: Dorian by convention
 5 | Cm      # a borrowed minor chord: Dorian, its own key
-# area: Bb major (bars 8–9)
+# area: Bb major (A 8 – B 1)
 8 | Cm7     # ii of the ii–V to Bb
 8 | F7      # V7 of Bb: natural tensions
 
 section: B
 1 | BbMaj7  # tonic: the 4th is in the key
-# area: Ab major (bars 10–11)
+# area: Ab major (B 2–3)
 2 | Bbm7    # ii of the ii–V to Ab
 2 | Eb7     # V7 of Ab: natural tensions
 3 | AbMaj7  # tonic: the 4th is in the key
-# area: Gb major (bars 12–13)
+# area: Gb major (B 4–5)
 4 | Abm7    # ii of the ii–V to Gb
 4 | Db7     # V7 of Gb: natural tensions
 5 | GbMaj7  # tonic: the 4th is in the key
-# area: A minor (bars 14–16)
+# area: A minor (B 6–8)
 6 | Gm7     # ii of the ii–V to F
 6 | C7      # V7/bVI in A minor: natural tensions
 7 | FMaj7   # a non-tonic major chord: Lydian

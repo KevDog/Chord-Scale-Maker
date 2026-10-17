@@ -4,14 +4,14 @@ style: Medium up
 key: F
 form: AABC, 68 bars
 source: 
-# analysis: 2026-10-12, rules v1; F
+# analysis: 2026-10-17, rules v1; F
 # book: Med-Up Swing. Solo on form (AABC); after solos, D.S. al Fine. The last four bars of C (bars 50–53) may be
 # omitted for solos. The intro is repeated (written out here).
 
 # bar | chord
 
 section: Intro
-# area: F major (bars 1–16)
+# area: F major (Intro 1 – A 16)
 1  | F6      # tonic: the 4th is in the key
 1  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 1  | Gm9     # ii of the ii–V to F
@@ -54,7 +54,7 @@ section: A
 15 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 16 | Gm9     # ii of C7: Dorian
 16 | C7      # V7/I in F: natural tensions
-# area: Ab major (bars 17–30)
+# area: Ab major (A 17 – B 13)
 17 | Bbm7    # ii of the ii–V to Ab
 17 | Eb7     # V7 of Ab: natural tensions
 @ending 1 16
@@ -79,7 +79,7 @@ section: B
 12 | Eb13    # V7 of Ab: natural tensions
 13 | AbMaj7  # tonic: the 4th is in the key
 # alt (optional): bar 31 (DbMaj7)
-# area: F major (bars 32–53)
+# area: F major (B 15 – C 20)
 15 | Gm11    # ii of the ii–V to F
 # book: Gm7(add 11)
 16 | C7      # V7 of F: natural tensions

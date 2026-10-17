@@ -6,12 +6,12 @@ key: Bb
 time: 3/4
 form: AB, 58 bars
 source: Colorado Cookbook, p. 257
-# analysis: 2026-10-11, rules v1; Bb
+# analysis: 2026-10-17, rules v1; Bb
 
 # bar | chord | scale
 
 section: A
-# area: Ab major (bars 1–13)
+# area: Ab major (A 1–13)
 1  | Gm7     # ii of C7: Dorian
 2  | C7      # extended dominant: V7 of Cm7/F
 3  | Cm7/F   # VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
@@ -25,7 +25,7 @@ section: A
 11 | Cm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 12 | Cm7/Bb  # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 13 | E/A     # ♭VI, borrowed from Ab minor: Lydian (its ♯11 is in the key)
-# area: G major (bars 14–20)
+# area: G major (A 14–20)
 14 | D7alt   # from the symbol: altered
 15 | GMaj7   # tonic: the 4th is in the key
 16 | Em7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
@@ -33,7 +33,7 @@ section: A
 18 | D7      # V7 of G: natural tensions
 19 | GMaj7   # tonic: the 4th is in the key
 20 | Em7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-# area: E major (bars 21–32)
+# area: E major (A 21–32)
 21 | F#m7    # ii of the ii–V to E
 22 | B7#11   # V7 of E: the #11 from the symbol
 23 | EMaj7   # tonic: the 4th is in the key
@@ -48,7 +48,7 @@ section: A
 
 section: B
 bars: 28
-# area: Ab major (bars 33–58)
+# area: Ab major (B 1–26)
 1  | Bbm7b5  # iiø7 of Ab: Locrian, the key's own notes (its ♭2 is a passing note)
 2  | Eb7alt  # from the symbol: altered
 3  | AbMaj7  # tonic: the 4th is in the key

@@ -4,20 +4,20 @@ style: Ballad
 key: C
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 122
-# analysis: 2026-10-11, rules v1; C
+# analysis: 2026-10-17, rules v1; C
 
 # bar | chord | scale
 # the lead sheet offers Bm7 E7 Am7 D7 over bar 4 and Am7 D7 Gm7 C7 over bar 8 as turnarounds;
 # the solo form (repeat to the top) is written, not the ending
 
 section: A
-# area: G major (bars 1–4)
+# area: G major (A 1–4)
 1 | Am9     # ii of the ii–V to G
 2 | D7b9    # V7 of G: the b9 from the symbol
 3 | GMaj7   # tonic: the 4th is in the key
 3 | C7      # IV7 in G, not resolving: the #11 is in the key
 4 | GMaj7   # tonic: the 4th is in the key
-# area: C major (bars 5–8)
+# area: C major (A 5–8)
 5 | Gm9     # ii of the ii–V to F
 6 | C7b9    # V7/IV in C: the b9 from the symbol
 7 | FMaj7   # the C7b9 before it makes F the key of the moment: the 4th is in the key
@@ -25,12 +25,12 @@ section: A
 8 | FMaj7   # IV: the #4 is the key’s 7th
 
 section: B
-# area: Eb major (bars 9–12)
+# area: Eb major (B 1–4)
 1 | Fm7     # ii of the ii–V to Eb
 2 | Bb7b9   # V7 of Eb: the b9 from the symbol
 3 | EbMaj7  # tonic: the 4th is in the key
 4 | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-# area: G major (bars 13–20)
+# area: G major (B 5 – C 4)
 5 | Am7b5   # iiø7 of G: Locrian, the key's own notes (its ♭2 is a passing note)
 6 | D7b9    # V7 of G: the b9 from the symbol
 7 | GMaj7   # tonic: the 4th is in the key
@@ -43,7 +43,7 @@ section: C
 3 | GMaj7   # tonic: the 4th is in the key
 3 | C7      # IV7 in G, not resolving: the #11 is in the key
 4 | GMaj7   # tonic: the 4th is in the key
-# area: C major (bars 21–32)
+# area: C major (C 5 – D 8)
 5 | Gm9     # ii of the ii–V to F
 6 | C7b9    # V7/IV in C: the b9 from the symbol
 7 | FMaj7   # the C7b9 before it makes F the key of the moment: the 4th is in the key

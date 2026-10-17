@@ -4,7 +4,7 @@ style: Medium swing
 key: Cm
 form: ABC, 30 bars
 source: 
-# analysis: 2026-10-12, rules v1; C minor
+# analysis: 2026-10-17, rules v1; C minor
 
 # the book's 13sus chords are written 9sus4 (Bb13sus → Bb9sus4); its Cm(add9) as Cm
 # the head is played three times (three verses): the 5-bar Eb pedal interlude returns to A; 3rd time, B's last bar goes to the coda
@@ -13,7 +13,7 @@ source:
 
 section: Intro
 bars: 4
-# area: C minor (bars 1–3)
+# area: C minor (Intro 1 – A 3)
 1  | Ebm7       # a borrowed minor chord: Dorian, its own key
 
 section: A
@@ -23,7 +23,7 @@ bars: 10
 3  | Bb9sus4
 3  | B9sus4     # static sus: Mixolydian
 @key 4 Db
-# area: Db major (bars 4–9)
+# area: Db major (A 4–9)
 4  | C9sus4     # V7sus4 of F9: the b13 is in the key
 # bar 5, beat 4½ – bar 6: N.C. hits
 # alt (optional): bar 6, beats 3–4 (C7)
@@ -36,7 +36,7 @@ bars: 10
 section: B
 key: Cm
 bars: 8
-# area: C minor (bars 11–24)
+# area: C minor (B 1 – C 6)
 1  | Cm         # tonic minor: Dorian by convention
 1  | Bb13       # bVII7 in C minor, not resolving: natural tensions
 2  | Ab9        # tritone substitute: resolves down a half step to G9
@@ -67,7 +67,7 @@ key: Cm
 6  | G9         # tritone substitute: resolves down a half step to Gb13
 6  | Gb13       # tritone substitute: resolves down a half step to Fm7
 @key 7 Ebm
-# area: Eb minor (bars 25–26)
+# area: Eb minor (C 7 – Interlude 1)
 7  | Fm7        # ii of the ii–V to Eb minor
 7  | Bb7        # V7 of Eb minor: b9 and b13 are in the key
 
@@ -81,7 +81,7 @@ section: Coda
 key: Cm
 bars: 16
 @coda 1
-# area: C minor (bars 1–13)
+# area: C minor (Coda 1–13)
 1  | Ab9        # extended ii–V: a side-step, its own key
 2  | Adim7      # vii°7 to Eb/Bb, up to its bass: F7♭9 without its root
 3  | Eb/Bb      # bIII of C minor: the relative major itself

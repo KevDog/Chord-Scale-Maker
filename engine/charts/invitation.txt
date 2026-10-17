@@ -5,13 +5,13 @@ style: Mixed
 key: Ebm
 form: ABCDEF, 48 bars
 source: Colorado Cookbook, p. 110
-# analysis: 2026-10-11, rules v1; Eb minor
+# analysis: 2026-10-17, rules v1; Eb minor
 
 # bar | chord | scale
 
 section: A
 bars: 8
-# area: Eb minor (bars 1–22)
+# area: Eb minor (A 1 – C 6)
 1 | Cm       # ii of F7: Dorian
 5 | F7       # V7 of V7: the dominant of the dominant, on the way to Eb minor: b9 and b13 are in the key
 7 | Bb7#11   # V7 of Eb minor, the chain's last link: 9, #11 and 13 from the symbol
@@ -30,14 +30,14 @@ bars: 8
 3 | BMaj7    # a non-tonic major chord: Lydian
 5 | Bm7      # ii of E7: Dorian
 6 | E7       # extended ii–V: a side-step, its own key
-# area: A major (bars 22–26)
+# area: A major (C 6 – D 2)
 6 | E7#9     # V7 of A: b9, #9 and #11 from the symbol
 7 | AMaj7    # tonic: the 4th is in the key
 
 section: D
 1 | Am7      # ii of D7: Dorian
 2 | D7       # extended ii–V: a side-step, its own key
-# area: G major (bars 26–32)
+# area: G major (D 2–8)
 2 | D7#9     # V7 of G: b9, #9 and #11 from the symbol
 3 | GMaj7    # tonic: the 4th is in the key
 5 | Em7b5    # iiø7 of A7alt: Locrian, the key's own notes (its ♭2 is a passing note)
@@ -47,7 +47,7 @@ section: D
 
 section: E
 bars: 8
-# area: Eb minor (bars 33–48)
+# area: Eb minor (E 1 – F 8)
 1 | Cm       # ii of F7: Dorian
 5 | F7       # V7 of V7: the dominant of the dominant, on the way to Eb minor: b9 and b13 are in the key
 7 | Bb7#11   # V7 of Eb minor, the chain's last link: 9, #11 and 13 from the symbol

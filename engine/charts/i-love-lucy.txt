@@ -4,7 +4,7 @@ style: Bright samba
 key: F
 form: AA, 32 bars
 source: 
-# analysis: 2026-10-12, rules v1; F
+# analysis: 2026-10-17, rules v1; F
 # book: as played by Richie Cole; cut time (2/2)
 # solo on A (both endings); after solos, D.S. al Coda
 
@@ -13,7 +13,7 @@ source:
 
 section: Intro
 bars: 4
-# area: F major (bars 1–10)
+# area: F major (Intro 1 – A 10)
 1  | FMaj9   # tonic: the 4th is in the key
 1  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 2  | Gm9     # ii of C7: Dorian
@@ -35,11 +35,11 @@ section: A
 8  | G#dim7  # vii°7 of Am7: E7♭9 without its root
 9  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 10 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-# area: D major (bars 11–13)
+# area: D major (A 11–13)
 11 | Em7     # ii of the ii–V to D
 12 | A7      # V7 of D: natural tensions
 13 | DMaj7   # tonic: the 4th is in the key
-# area: F major (bars 15–9)
+# area: F major (A 15 – Coda 9)
 15 | Gm9     # ii of C9sus4: Dorian
 16 | C9sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 # book: C13sus

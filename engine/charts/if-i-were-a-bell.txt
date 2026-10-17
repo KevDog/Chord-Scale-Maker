@@ -4,7 +4,7 @@ style: Medium swing
 key: F
 form: AB, 32 bars
 source: 
-# analysis: 2026-10-12, rules v1; F
+# analysis: 2026-10-17, rules v1; F
 # the book: as played by Miles Davis; in 2 for the head
 # the intro is a melodic figure with no chords (N.C., four bars with 1st and 2nd endings)
 # solo on AB; take the Coda to end each solo, to A for more solos; after solos D.S. al Coda
@@ -12,7 +12,7 @@ source:
 # bar | chord
 
 section: A
-# area: F major (bars 1–13)
+# area: F major (A 1–13)
 1  | G9      # extended dominant: V7 of C9sus4
 @segno 1
 2  | C9sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
@@ -33,13 +33,13 @@ section: A
 12 | A7      # V7/vi in F: b9 and b13 are in the key
 13 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 13 | Dm7/C   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-# area: A major (bars 14–15)
+# area: A major (A 14–15)
 14 | Bm7b5   # iiø7 of A: Locrian, the key's own notes (its ♭2 is a passing note)
 14 | E7      # V7 of A: natural tensions
 15 | AMaj7   # tonic: the 4th is in the key
 15 | Ddim7   # passing diminished: G7♭9 without its G, the C13's dominant; not functioning diatonically: the symmetric scale
 # alt: bar 15 from beat 3 (Bb7#11)
-# area: F major (bars 16–11)
+# area: F major (A 16 – Coda 11)
 16 | Gm7     # ii of C13: Dorian
 16 | C13     # V7/I in F: natural tensions
 # alt: bar 16 (AMaj7 D7)

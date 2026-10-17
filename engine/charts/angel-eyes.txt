@@ -4,14 +4,14 @@ style: Medium ballad
 key: Cm
 form: AABA, 32 bars
 source: 
-# analysis: 2026-10-12, rules v1; C minor
+# analysis: 2026-10-17, rules v1; C minor
 # the book letters the form A (two 8-bar A's, written out), B, C
 # alt: bars 1–2, 5–6, 9–10, 13–14, 25–26, 29–30 (Cm Cm/Bb Adim7 Abdim7 | Cm/G) or (Cm Eb/C D/C Db/C | Cm)
 
 # bar | chord
 
 section: A
-# area: C minor (bars 1–16)
+# area: C minor (A 1–16)
 1  | Cm      # tonic minor: Dorian by convention
 1  | D7      # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
 1  | G7      # V7 of C minor, the chain's last link: b9 and b13 are in the key
@@ -52,7 +52,7 @@ section: A
 16 | Cm      # tonic minor: Dorian by convention
 
 section: B
-# area: Ab major (bars 17–20)
+# area: Ab major (B 1–4)
 1  | Bbm9    # ii of the ii–V to Ab
 1  | Eb13    # V7 of Ab: natural tensions
 2  | AbMaj7  # tonic: the 4th is in the key
@@ -60,14 +60,14 @@ section: B
 3  | Bbm9    # ii of the ii–V to Ab
 3  | Eb13    # V7 of Ab: natural tensions
 4  | AbMaj7  # tonic: the 4th is in the key
-# area: G major (bars 21–23)
+# area: G major (B 5–7)
 5  | Am9     # ii of the ii–V to G
 5  | D13     # V7 of G: natural tensions
 6  | GMaj7   # tonic: the 4th is in the key
 # alt: bar 6 beat 3 (CMaj7)
 7  | C#m7    # ii of F#7: Dorian
 7  | F#7     # extended ii–V: a side-step, its own key
-# area: C minor (bars 24–3)
+# area: C minor (B 8 – Ending 3)
 8  | Dm7     # ii of the ii–V to C minor
 8  | G7      # V7 of C minor: b9 and b13 are in the key
 

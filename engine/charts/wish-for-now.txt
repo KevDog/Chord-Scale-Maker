@@ -5,12 +5,12 @@ style: Latin
 key: Am
 form: AB, 30 bars
 source: Colorado Cookbook, p. 270
-# analysis: 2026-10-11, rules v1; A minor
+# analysis: 2026-10-17, rules v1; A minor
 
 # bar | chord | scale
 
 section: A
-# area: A minor (bars 1–11)
+# area: A minor (A 1–11)
 1  | Dm7        # iv: Dorian, the key’s own notes
 2  | E7         # V7 in A minor, not resolving: b9 and b13 are in the key
 3  | F#m7b5     # viø7 in A minor: Locrian, its own mode (the chord is outside the key)
@@ -23,7 +23,7 @@ section: A
 9  | DMaj7#11   # from the symbol: #11
 10 | B7/D#      # II7 in A minor, not resolving: b9 and b13 are in the key
 11 | A/E        # a non-tonic major chord: Lydian
-# area: F# minor (bars 12–29)
+# area: F# minor (A 12 – B 13)
 12 | C#7alt/E#  # from the symbol: altered
 12 | F#m        # tonic minor: Dorian by convention
 13 | F#m

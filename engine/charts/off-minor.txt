@@ -4,7 +4,7 @@ style: Medium swing
 key: Gm
 form: AABC, 32 bars
 source: 
-# analysis: 2026-10-12, rules v1; G minor
+# analysis: 2026-10-17, rules v1; G minor
 # book: Med. Swing. Solo on form (AABC); after solos D.S., play head, then D.C. al fine (the intro, ending at bar 4)
 # book: chords in parentheses are not played by piano during the head; they are the changes (the intro's Gm and Bb13, bars 7 and 31's D13, bar 19's Bm7), so they are rows here
 # book: no kicks during solos; the first notes of A and C may be anticipated by an eighth note
@@ -12,7 +12,7 @@ source:
 # bar | chord
 
 section: Intro
-# area: G minor (bar 1)
+# area: G minor (Intro 1 – A1 1)
 1 | Gm        # tonic minor: Dorian by convention
 2 | Bb13b9b5  # bIII7 in G minor, not resolving: b9 and #11 from the symbol
 # bar 4: the fine; the Bb13 voicing is held through bar 3, its own row at bar 4 for the marker
@@ -22,11 +22,11 @@ section: Intro
 section: A1
 bars: 8
 1 | Gm        # tonic minor: Dorian by convention
-# area: B minor (bars 2–3)
+# area: B minor (A1 2–3)
 2 | C#7       # V7 of V7: the dominant of the dominant, on the way to B minor: b9 and b13 are in the key
 2 | F#7       # V7 of B minor, the chain's last link: b9 and b13 are in the key
 3 | Bm7       # tonic minor: Dorian by convention
-# area: G minor (bars 3–9)
+# area: G minor (A1 3 – A2 1)
 3 | Bb7       # V7/bVI in G minor: natural tensions
 4 | EbMaj7    # a non-tonic major chord: Lydian
 4 | D7        # V7 of G minor: b9 and b13 are in the key
@@ -54,7 +54,7 @@ bars: 8
 5 | Em7       # ii of A9sus4: Dorian
 6 | A9sus4    # ♭VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 # book: A9sus
-# area: G minor (bars 22–25)
+# area: G minor (B 6 – C 1)
 6 | A7        # V7 of V7: the dominant of the dominant, on the way to G minor: b9 and b13 are in the key
 7 | D13b9b5   # V7 of G minor, the chain's last link: the b9 is in the key, #11 and 13 from the symbol
 
@@ -62,11 +62,11 @@ section: C
 bars: 8
 # bar 24: no chord printed; the D13 holds
 1 | Gm        # tonic minor: Dorian by convention
-# area: B minor (bars 26–27)
+# area: B minor (C 2–3)
 2 | C#7       # V7 of V7: the dominant of the dominant, on the way to B minor: b9 and b13 are in the key
 2 | F#7       # V7 of B minor, the chain's last link: b9 and b13 are in the key
 3 | Bm7       # tonic minor: Dorian by convention
-# area: G minor (bars 27–31)
+# area: G minor (C 3–7)
 3 | Bb7       # V7/bVI in G minor: natural tensions
 4 | EbMaj7    # a non-tonic major chord: Lydian
 4 | D7        # V7 of G minor: b9 and b13 are in the key

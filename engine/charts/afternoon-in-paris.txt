@@ -4,23 +4,23 @@ style: Medium
 key: C
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 14
-# analysis: 2026-10-11, rules v1; C
+# analysis: 2026-10-17, rules v1; C
 
 # bar | chord | scale
 # the bridge's standard chords; the sheet's alternates (Fm7 Bb7, Em7 A7, Dbm7 Gb7) are left out
 
 section: A1
-# area: C major (bar 1)
+# area: C major (A1 1)
 1 | CMaj7   # tonic: the 4th is in the key
-# area: Bb major (bars 2–3)
+# area: Bb major (A1 2–3)
 2 | Cm7     # ii of the ii–V to Bb
 2 | F7      # V7 of Bb: natural tensions
 3 | BbMaj7  # tonic: the 4th is in the key
-# area: Ab major (bars 4–5)
+# area: Ab major (A1 4–5)
 4 | Bbm7    # ii of the ii–V to Ab
 4 | Eb7     # V7 of Ab: natural tensions
 5 | AbMaj7  # tonic: the 4th is in the key
-# area: C major (bars 6–9)
+# area: C major (A1 6 – A2 1)
 6 | Dm7b5   # iiø7 of C: Locrian, the key's own notes (its ♭2 is a passing note)
 6 | G7b9    # V7 of C: the b9 from the symbol
 7 | CMaj7   # tonic: the 4th is in the key
@@ -31,15 +31,15 @@ section: A1
 section: A2
 bars: 8
 1 | CMaj7   # tonic: the 4th is in the key
-# area: Bb major (bars 10–11)
+# area: Bb major (A2 2–3)
 2 | Cm7     # ii of the ii–V to Bb
 2 | F7      # V7 of Bb: natural tensions
 3 | BbMaj7  # tonic: the 4th is in the key
-# area: Ab major (bars 12–13)
+# area: Ab major (A2 4–5)
 4 | Bbm7    # ii of the ii–V to Ab
 4 | Eb7     # V7 of Ab: natural tensions
 5 | AbMaj7  # tonic: the 4th is in the key
-# area: C major (bars 14–25)
+# area: C major (A2 6 – C 1)
 6 | Dm7b5   # iiø7 of C: Locrian, the key's own notes (its ♭2 is a passing note)
 6 | G7b9    # V7 of C: the b9 from the symbol
 7 | CMaj7   # tonic: the 4th is in the key

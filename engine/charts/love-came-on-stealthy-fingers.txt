@@ -4,7 +4,7 @@ style: Ballad
 key: F
 form: AB, 32 bars
 source: 
-# analysis: 2026-10-12, rules v1; F
+# analysis: 2026-10-17, rules v1; F
 # book: Slow Ballad. The form repeats (repeat signs around A–B).
 # the Intro is a repeated 2-bar piano figure marked (C7); written out as 4 bars.
 # the 2nd time, C13(#11 b9) falls on the last beat of bar 4 (pickup to A).
@@ -12,7 +12,7 @@ source:
 # bar | chord
 
 section: Intro
-# area: F major (bars 1–5)
+# area: F major (Intro 1 – A 5)
 1  | C7        # V7 in F, not resolving: natural tensions
 4  | C7
 4  | C13#11b9  # V7 of F: b9 and #11 from the symbol
@@ -25,7 +25,7 @@ section: A
 3  | Gm7       # ii of the ii–V to F
 4  | C13b9     # V7 of F: the b9 from the symbol
 5  | FMaj7     # tonic: the 4th is in the key
-# area: G major (bars 5–8)
+# area: G major (A 5–8)
 5  | Am7b5     # iiø7 of G: Locrian, the key's own notes (its ♭2 is a passing note)
 6  | Am7b5
 6  | D7b9      # V7 of G: the b9 from the symbol
@@ -34,25 +34,25 @@ section: A
 7  | D13       # V7 of G: natural tensions
 8  | GMaj7     # tonic: the 4th is in the key
 8  | Bm7       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# area: Ab major (bars 9–10)
+# area: Ab major (A 9–10)
 9  | Bbm9      # ii of the ii–V to Ab
 9  | Eb7alt    # from the symbol: altered
 10 | AbMaj9    # tonic: the 4th is in the key
-# area: Gb major (bars 11–12)
+# area: Gb major (A 11–12)
 11 | Abm9      # ii of the ii–V to Gb
 11 | Db7alt    # from the symbol: altered
 12 | GbMaj9    # tonic: the 4th is in the key
-# area: E major (bars 13–14)
+# area: E major (A 13–14)
 13 | F#m9      # ii of the ii–V to E
 13 | B7alt     # from the symbol: altered
 14 | EMaj9     # tonic: the 4th is in the key
 14 | C#m7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-# area: Ab major (bars 15–16)
+# area: Ab major (A 15–16)
 15 | Bbm11     # ii of the ii–V to Ab
 # book: Bbmi7(add 11)
 15 | Eb7#5     # V7 of Ab: #11 and b13 from the symbol
 16 | AbMaj7    # tonic: the 4th is in the key
-# area: F major (bars 16–21)
+# area: F major (A 16 – B 5)
 16 | Gm7       # ii of the ii–V to F
 16 | C13b9     # V7 of F: the b9 from the symbol
 
@@ -64,13 +64,13 @@ section: B
 3  | Gm7       # ii of the ii–V to F
 4  | C13b9     # V7 of F: the b9 from the symbol
 5  | FMaj7     # tonic: the 4th is in the key
-# area: G major (bars 21–23)
+# area: G major (B 5–7)
 5  | Am7b5     # iiø7 of G: Locrian, the key's own notes (its ♭2 is a passing note)
 6  | Am7b5
 6  | D7b9      # V7 of G: the b9 from the symbol
 7  | GMaj7     # tonic: the 4th is in the key
 7  | G#m7      # a borrowed minor chord: Dorian, its own key
-# area: F major (bars 24–32)
+# area: F major (B 8–16)
 8  | Gm7       # ii of C7: Dorian
 8  | C7        # V7/I in F: natural tensions
 8  | Dm        # vi: Aeolian, the key's own notes (the ♭6 is a passing note)

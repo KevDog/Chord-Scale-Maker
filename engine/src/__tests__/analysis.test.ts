@@ -765,13 +765,14 @@ describe('refreshAnalysis', () => {
   it('rewrites a transposed chart’s analysis for its new key, keeping the header’s date', () => {
     const doc = refreshAnalysis(moved(library('round-midnight'), 'Ebm', 'Cm'))
     const text = comments(doc)
-    expect(text).toContain('# analysis: 2026-10-11, rules v1; C minor')
+    const date = /# analysis: ([^,]+),/.exec(library('round-midnight'))?.[1]
+    expect(text).toContain(`# analysis: ${date}, rules v1; C minor`)
     expect(text).toContain('# area: C minor (Intro 1–3)')
     expect(text).toContain('# area: C major (Intro 3–4)')
     expect(text).toContain('# area: Eb major (A1 5–6)') // was Gb major
     expect(doc.lines.find((l) => l.kind === 'row' && l.chord === 'F7b9')).toMatchObject({ comment: expect.stringMatching(/^IV7 in C minor/) })
     expect(text.filter((t) => /\b(Gb|Ab minor)\b/.test(t))).toEqual([])
-    expect(serializeChart(doc)).toBe(serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'none', save: true, date: '2026-10-11' }).doc))
+    expect(serializeChart(doc)).toBe(serializeChart(applyAnalysis(doc, analyse(doc), { scales: 'none', save: true, date: date ?? '' }).doc))
   })
 
   it('leaves a chart without an analysis header as it is: its comments are the user’s', () => {

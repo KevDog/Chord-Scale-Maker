@@ -4,20 +4,20 @@ style: Medium
 key: Ab
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 160
-# analysis: 2026-10-11, rules v1; Ab
+# analysis: 2026-10-17, rules v1; Ab
 
 # bar | chord | scale
 
 section: A1
-# area: Ab major (bars 1–3)
+# area: Ab major (A1 1–3)
 1 | AbMaj7  # tonic: the 4th is in the key
 2 | GbMaj7  # ♭VIImaj7, borrowed from Ab minor: Lydian (its ♯11 is in the key)
 3 | AbMaj7  # tonic: the 4th is in the key
-# area: Gb major (bars 4–6)
+# area: Gb major (A1 4–6)
 4 | Db9#11  # V7 of Gb: the #11 from the symbol
 5 | GbMaj7  # tonic: the 4th is in the key
 6 | E9#11   # ♭VII7 from the parallel minor: Lydian Dominant
-# area: Ab major (bars 7–11)
+# area: Ab major (A1 7 – A2 3)
 7 | Bbm7    # ii of the ii–V to Ab
 8 | Eb7     # V7 of Ab: natural tensions
 
@@ -25,15 +25,15 @@ section: A2
 1 | AbMaj7  # tonic: the 4th is in the key
 2 | GbMaj7  # ♭VIImaj7, borrowed from Ab minor: Lydian (its ♯11 is in the key)
 3 | AbMaj7  # tonic: the 4th is in the key
-# area: Gb major (bars 12–14)
+# area: Gb major (A2 4–6)
 4 | Db9#11  # V7 of Gb: the #11 from the symbol
 5 | GbMaj7  # tonic: the 4th is in the key
 6 | E9#11   # ♭VII7 from the parallel minor: Lydian Dominant
-# area: Ab major (bars 15–16)
+# area: Ab major (A2 7–8)
 7 | Bbm7    # ii of the ii–V to Ab
 7 | Eb7     # V7 of Ab: natural tensions
 8 | AbMaj7  # tonic: the 4th is in the key
-# area: Db minor (bars 16–23)
+# area: Db minor (A2 8 – B 7)
 8 | Ab7alt  # from the symbol: altered
 
 section: B
@@ -47,7 +47,7 @@ section: B
 6 | AbMaj7  # a non-tonic major chord: Lydian
 7 | Bm7     # ii of E7: Dorian
 7 | E7      # V7/bVI in Db minor: natural tensions
-# area: Ab major (bars 24–27)
+# area: Ab major (B 8 – C 3)
 8 | Bbm7    # ii of the ii–V to Ab
 8 | Eb7     # V7 of Ab: natural tensions
 
@@ -55,11 +55,11 @@ section: C
 1 | AbMaj7  # tonic: the 4th is in the key
 2 | GbMaj7  # ♭VIImaj7, borrowed from Ab minor: Lydian (its ♯11 is in the key)
 3 | AbMaj7  # tonic: the 4th is in the key
-# area: Gb major (bars 28–30)
+# area: Gb major (C 4–6)
 4 | Db9#11  # V7 of Gb: the #11 from the symbol
 5 | GbMaj7  # tonic: the 4th is in the key
 6 | E9#11   # ♭VII7 from the parallel minor: Lydian Dominant
-# area: Ab major (bars 31–32)
+# area: Ab major (C 7–8)
 7 | Bbm7    # ii of the ii–V to Ab
 7 | Eb7     # V7 of Ab: natural tensions
 8 | AbMaj7  # tonic: the 4th is in the key

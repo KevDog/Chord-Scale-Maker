@@ -4,13 +4,13 @@ style: Medium
 key: F
 form: ABCD, 36 bars
 source: Colorado Cookbook, p. 102
-# analysis: 2026-10-11, rules v1; F
+# analysis: 2026-10-17, rules v1; F
 
 # bar | chord | scale
 # the lead sheet writes the A sections in half time (four chords a bar); this counts two chords a bar
 
 section: A
-# area: F major (bars 1–19)
+# area: F major (A 1 – C 3)
 1  | FMaj7   # tonic: the 4th is in the key
 1  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 2  | Gm7     # ii of the ii–V to F
@@ -44,7 +44,7 @@ section: C
 2  | C7      # V7 of F: natural tensions
 3  | FMaj7   # tonic: the 4th is in the key
 3  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-# area: A major (bars 20–23)
+# area: A major (C 4–7)
 4  | Bm7b5   # iiø7 of A: Locrian, the key's own notes (its ♭2 is a passing note)
 4  | E7#9    # V7 of A: b9, #9 and #11 from the symbol
 5  | AMaj7   # tonic: the 4th is in the key
@@ -53,7 +53,7 @@ section: C
 6  | DMaj7   # IV: the #4 is the key’s 7th
 7  | E7      # V7 in A, not resolving: natural tensions
 7  | F#m7b5  # viø7 in A: Locrian, its own mode (the chord is outside the key)
-# area: F major (bars 24–36)
+# area: F major (C 8 – D 12)
 8  | Gm7     # ii of the ii–V to F
 8  | C7b9    # V7 of F: the b9 from the symbol
 

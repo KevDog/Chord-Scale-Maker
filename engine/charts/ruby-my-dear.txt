@@ -4,7 +4,7 @@ style: Ballad
 key: Eb
 form: AABC, 32 bars
 source: 
-# analysis: 2026-10-12, rules v1; Eb
+# analysis: 2026-10-17, rules v1; Eb
 # book: Med. Ballad; melody played with straight eighths; the intro is solo piano
 # book: solo on the form (AABC); after the solos, D.S. al Coda; the coda is played freely
 # book: m7(add 11) chords are written m11 here; (add 9) and (add 11) on major and dominant chords are left off
@@ -14,7 +14,7 @@ source:
 
 section: Intro
 bars: 4
-# area: Eb major (bars 1–2)
+# area: Eb major (Intro 1 – A 2)
 1 | EbMaj7#11#9  # from the symbol: #11
 1 | E9           # back door bVII7 to F#69: #11 and b13 are in the key, the 9 from the symbol
 # book: E9(add 11)
@@ -28,14 +28,14 @@ section: A
 1 | Bb7b9        # V7 of Eb: the b9 from the symbol
 2 | EbMaj7       # tonic: the 4th is in the key
 # book: bar 2 then has a piano fill of passing chords on the last five eighths: Fm7 F#m7 Gm7 Ab6 Gb/Bb
-# area: F major (bars 3–4)
+# area: F major (A 3–4)
 3 | Gm7          # ii of the ii–V to F
 3 | C7b9         # V7 of F: the b9 from the symbol
 4 | FMaj7        # tonic: the 4th is in the key
 4 | Gm7          # ii: Dorian, the key’s own notes
 4 | Abm7         # a borrowed minor chord: Dorian, its own key
 4 | Am7          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# area: Eb major (bars 5–9)
+# area: Eb major (A 5–9)
 5 | Bbm7         # ii of the ii–V to Ab
 5 | Eb7b9        # V7/IV in Eb: the b9 from the symbol
 6 | AbMaj7       # the Eb7b9 before it makes Ab the key of the moment: the 4th is in the key
@@ -51,7 +51,7 @@ section: A
 @ending 1 8
 9 | Bm11         # a borrowed minor chord: Dorian, its own key
 # book: Bmi7(add 11)
-# area: A major (bars 9–13)
+# area: A major (A 9 – B 4)
 9 | Bb7b5        # tritone substitute: resolves down a half step to AMaj7
 @ending 2 9
 
@@ -61,7 +61,7 @@ section: B
 2 | E7b9         # V7 of A: the b9 from the symbol
 3 | A69          # tonic: the 4th is in the key
 4 | Bb6          # ♭II6, borrowed from A Phrygian: Lydian (its ♯11 is in the key)
-# area: Eb major (bars 13–19)
+# area: Eb major (B 4 – C 2)
 4 | G7b9/B       # V7/vi in Eb: b9 and b13 are in the key
 5 | Cm           # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 5 | CmMaj7       # from the symbol: minor-major 7th
@@ -80,14 +80,14 @@ bars: 11
 1 | Bb7b9        # V7 of Eb: the b9 from the symbol
 2 | EbMaj7       # tonic: the 4th is in the key
 # book: bar 19 then has a piano fill of passing chords on the last five eighths: Fm7 F#m7 Gm7 Ab6 Gb/Bb
-# area: F major (bars 20–21)
+# area: F major (C 3–4)
 3 | Gm7          # ii of the ii–V to F
 3 | C7b9         # V7 of F: the b9 from the symbol
 4 | FMaj7        # tonic: the 4th is in the key
 4 | Gm7          # ii: Dorian, the key’s own notes
 4 | Abm7         # a borrowed minor chord: Dorian, its own key
 4 | Am7          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# area: Eb major (bars 22–3)
+# area: Eb major (C 5 – Coda 3)
 5 | Bbm7         # ii of the ii–V to Ab
 5 | Eb7b9        # V7/IV in Eb: the b9 from the symbol
 6 | AbMaj7       # the Eb7b9 before it makes Ab the key of the moment: the 4th is in the key
@@ -114,7 +114,7 @@ section: Coda
 2 | B7b9         # tritone substitute: resolves down a half step to Bb7b9; b9 from the symbol
 2 | Bb7b9        # tritone substitute: resolves down a half step to A7b5; b9 from the symbol
 3 | A7b5         # tritone substitute: resolves down a half step to Ab13b5
-# area: Db major (bars 3–4)
+# area: Db major (Coda 3–4)
 3 | Ab13b5       # V7 of Db: the #11 from the symbol
 # coda bar 3: whole-tone fill
 4 | DbMaj9       # tonic: the 4th is in the key

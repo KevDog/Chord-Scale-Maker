@@ -4,7 +4,7 @@ style: Up
 key: Dm
 form: AABC head + DDEEEF solos, 104 bars
 source: 
-# analysis: 2026-10-12, rules v1; D minor
+# analysis: 2026-10-17, rules v1; D minor
 
 # the intro is a bass figure with no chords (the bass vamp continues under A and C)
 # metre: 4/4, except B bars 15–18 and E bars 48–53 (and E2, E3) in 3/4
@@ -12,7 +12,7 @@ source:
 
 section: A
 @segno 1
-# area: D minor (bars 1–13)
+# area: D minor (A 1–13)
 1  | Dm7       # tonic minor: Dorian by convention
 1  | D9sus4    # static sus: Mixolydian
 # bar 2: D9sus held through beats 1–2; Dm9 and Em9 on beats 3 and 4
@@ -38,18 +38,18 @@ section: A
 12 | Dm9
 @ending 1 11 12
 13 | Dm9
-# area: F major (bars 14–15)
+# area: F major (A 14 – B 1)
 14 | Gm7       # ii of the ii–V to F
 14 | C7        # V7 of F: natural tensions
 @ending 2 13 14
 
 section: B
 1  | FMaj7     # tonic: the 4th is in the key
-# area: Eb major (bars 16–17)
+# area: Eb major (B 2–3)
 2  | Fm7       # ii of the ii–V to Eb
 2  | Bb7#5#9   # V7 of Eb: b9, #9, #11 and b13 from the symbol
 3  | EbMaj7    # tonic: the 4th is in the key
-# area: Db major (bars 18–22)
+# area: Db major (B 4–8)
 4  | Ebm7      # ii of the ii–V to Db
 4  | Ab7#5#9   # V7 of Db: b9, #9, #11 and b13 from the symbol
 5  | DbMaj7    # tonic: the 4th is in the key
@@ -58,7 +58,7 @@ section: B
 # book: Bbm7(add13 add11)
 7  | Bbm11     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 8  | F/E       # a non-tonic major chord: Lydian
-# area: D minor (bars 22–46)
+# area: D minor (B 8 – D 12)
 8  | A13b9     # V7 of D minor: the b9 is in the key, the 13 from the symbol
 @coda 8
 
@@ -95,22 +95,22 @@ section: D
 11 | Dm7       # tonic minor: Dorian by convention
 12 | Dm7
 @ending 1 12
-# area: F major (bars 47–48)
+# area: F major (D 13 – E 1)
 13 | Gm7       # ii of the ii–V to F
 13 | C7        # V7 of F: natural tensions
 @ending 2 13
 
 section: E
-1  | FMaj7     # tonic: the 4th is in the key; the repeat at bar 56 would be F Lydian
-# area: Eb major (bars 49–50)
+1  | FMaj7     # tonic: the 4th is in the key; the repeat at E2 bar 1 would be F Lydian
+# area: Eb major (E 2–3)
 2  | Fm7       # ii of the ii–V to Eb
 2  | Bb7#5#9   # V7 of Eb: b9, #9, #11 and b13 from the symbol
 3  | EbMaj7    # tonic: the 4th is in the key
-# area: Db major (bars 51–52)
+# area: Db major (E 4–5)
 4  | Ebm7      # ii of the ii–V to Db
 4  | Ab7#5#9   # V7 of Db: b9, #9, #11 and b13 from the symbol
 5  | DbMaj7    # tonic: the 4th is in the key
-# area: C minor (bars 53–56)
+# area: C minor (E 6 – E2 1)
 6  | G7#5#9    # V7 of C minor: the b13 is in the key, b9, #9 and #11 from the symbol
 7  | Cm7       # tonic minor: Dorian by convention
 7  | Bbm7      # a borrowed minor chord: Dorian, its own key

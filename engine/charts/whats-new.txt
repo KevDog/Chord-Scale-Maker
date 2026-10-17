@@ -4,15 +4,15 @@ style: Ballad
 key: C
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 266
-# analysis: 2026-10-11, rules v1; C
+# analysis: 2026-10-17, rules v1; C
 
 # bar | chord | scale
 
 section: A1
-# area: C major (bar 1)
+# area: C major (A1 1)
 1 | CMaj7   # tonic: the 4th is in the key
 1 | F13     # V7/bvii in C: the #11 is in the key
-# area: Ab major (bars 2–5)
+# area: Ab major (A1 2–5)
 2 | Bbm9    # ii of the ii–V to Ab
 2 | Eb7     # V7 of Ab: natural tensions
 3 | AbMaj7  # tonic: the 4th is in the key
@@ -21,7 +21,7 @@ section: A1
 4 | G7#11   # V7/iii in Ab: 9, #11 and 13 from the symbol
 5 | Cm      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 5 | Am7b5   # biiø7 in Ab: Locrian, its own mode (the chord is outside the key)
-# area: C major (bars 6–9)
+# area: C major (A1 6 – A2 1)
 6 | Dm7b5   # iiø7 of C: Locrian, the key's own notes (its ♭2 is a passing note)
 6 | G7alt   # from the symbol: altered
 7 | CMaj7   # tonic: the 4th is in the key
@@ -32,7 +32,7 @@ section: A1
 section: A2
 1 | CMaj7   # tonic: the 4th is in the key
 1 | F13     # V7/bvii in C: the #11 is in the key
-# area: Ab major (bars 10–13)
+# area: Ab major (A2 2–5)
 2 | Bbm9    # ii of the ii–V to Ab
 2 | Eb7     # V7 of Ab: natural tensions
 3 | AbMaj7  # tonic: the 4th is in the key
@@ -41,7 +41,7 @@ section: A2
 4 | G7#11   # V7/iii in Ab: 9, #11 and 13 from the symbol
 5 | Cm      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 5 | Am7b5   # biiø7 in Ab: Locrian, its own mode (the chord is outside the key)
-# area: C major (bars 14–17)
+# area: C major (A2 6 – B 1)
 6 | Dm7b5   # iiø7 of C: Locrian, the key's own notes (its ♭2 is a passing note)
 6 | G7alt   # from the symbol: altered
 7 | CMaj7   # tonic: the 4th is in the key
@@ -52,7 +52,7 @@ section: A2
 section: B
 1 | FMaj7   # the C7b9 before it makes F the key of the moment: the 4th is in the key
 1 | Bb13    # V7/biii in C: the #11 is in the key
-# area: Db major (bars 18–21)
+# area: Db major (B 2–5)
 2 | Ebm9    # ii of the ii–V to Db
 2 | Ab7     # V7 of Db: natural tensions
 3 | DbMaj7  # tonic: the 4th is in the key
@@ -61,7 +61,7 @@ section: B
 4 | C7alt   # from the symbol: altered
 5 | Fm      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 5 | Dm7b5   # biiø7 in Db: Locrian, its own mode (the chord is outside the key)
-# area: C major (bars 22–25)
+# area: C major (B 6 – A3 1)
 6 | Gm7b5   # iiø7 of F: Locrian, the key's own notes (its ♭2 is a passing note)
 6 | C7alt   # from the symbol: altered
 7 | FMaj7   # the C7alt before it makes F the key of the moment: the 4th is in the key

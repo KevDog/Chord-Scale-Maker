@@ -5,20 +5,20 @@ style: Ballad
 key: G
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 86
-# analysis: 2026-10-11, rules v1; G
+# analysis: 2026-10-17, rules v1; G
 
 # bar | chord | scale
 
 section: A
-# area: G major (bar 1)
+# area: G major (A 1)
 1 | GMaj7   # tonic: the 4th is in the key
 1 | Gb7alt  # from the symbol: altered
-# area: Eb major (bars 2–4)
+# area: Eb major (A 2–4)
 2 | Fm7     # ii of the ii–V to Eb
 2 | Bb7     # V7 of Eb: natural tensions
 3 | EbMaj7  # tonic: the 4th is in the key
 4 | AbMaj7  # IV: the #4 is the key’s 7th
-# area: G major (bars 5–8)
+# area: G major (A 5–8)
 5 | Am7     # ii of the ii–V to G
 6 | D7      # V7 of G: natural tensions
 7 | GMaj7   # tonic: the 4th is in the key
@@ -26,12 +26,12 @@ section: A
 8 | G7      # V7/iv in G: natural tensions
 
 section: B
-# area: Bb major (bars 9–12)
+# area: Bb major (B 1–4)
 1 | Cm7     # ii of the ii–V to Bb
 2 | F7      # V7 of Bb: natural tensions
 3 | BbMaj7  # tonic: the 4th is in the key
 4 | EbMaj7  # IV: the #4 is the key’s 7th
-# area: G major (bars 13–17)
+# area: G major (B 5 – C 1)
 5 | Am7     # ii of the ii–V to G
 6 | D7      # V7 of G: natural tensions
 7 | GMaj7   # tonic: the 4th is in the key

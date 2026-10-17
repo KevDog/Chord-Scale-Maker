@@ -4,12 +4,12 @@ style: Medium up
 key: G
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 190
-# analysis: 2026-10-11, rules v1; G
+# analysis: 2026-10-17, rules v1; G
 
 # bar | chord | scale
 
 section: Ending
-# area: G major (bar 1)
+# area: G major (Ending 1 – A 1)
 1 | D9sus4     # static sus: Mixolydian
 3 | AbMaj7#11  # from the symbol: #11
 4 | GMaj7      # tonic: the 4th is in the key
@@ -17,25 +17,25 @@ section: Ending
 section: A
 # the ending is a D9sus4 vamp, then AbMaj7#11 to GMaj7
 1 | GMaj7      # tonic: the 4th is in the key
-# area: Eb major (bars 1–2)
+# area: Eb major (A 1–2)
 1 | Bb7        # V7 of Eb: natural tensions
 2 | EbMaj7     # tonic: the 4th is in the key
-# area: B major (bars 2–3)
+# area: B major (A 2–3)
 2 | F#7        # V7 of B: natural tensions
 3 | BMaj7      # tonic: the 4th is in the key
 3 | D7         # V7/bvi in B: the #11 is in the key
-# area: F major (bars 4–5)
+# area: F major (A 4–5)
 4 | Gm7        # ii of the ii–V to F
 4 | C7         # V7 of F: natural tensions
 5 | FMaj7      # tonic: the 4th is in the key
-# area: Db major (bars 5–6)
+# area: Db major (A 5–6)
 5 | Ab7        # V7 of Db: natural tensions
 6 | DbMaj7     # tonic: the 4th is in the key
-# area: A major (bars 6–7)
+# area: A major (A 6–7)
 6 | E7         # V7 of A: natural tensions
 7 | AMaj7      # tonic: the 4th is in the key
 7 | C7         # V7/bvi in A: the #11 is in the key
-# area: Eb major (bars 8–15)
+# area: Eb major (A 8 – B 7)
 8 | Fm7        # ii of the ii–V to Eb
 8 | Bb7        # V7 of Eb: natural tensions
 
@@ -48,10 +48,10 @@ section: B
 6 | Fm7        # ii of the ii–V to Eb
 6 | Bb7        # V7 of Eb: natural tensions
 7 | EbMaj7     # tonic: the 4th is in the key
-# area: B major (bars 15–16)
+# area: B major (B 7–8)
 7 | Gb7        # V7 of B: natural tensions
 8 | BMaj7      # tonic: the 4th is in the key
-# area: G major (bars 16–17)
+# area: G major (B 8 – C 1)
 8 | D7         # V7 of G: natural tensions
 
 section: C
@@ -60,7 +60,7 @@ copy: A
 section: D
 bars: 8
 1 | EbMaj7     # tonic: the 4th is in the key
-# area: G major (bars 26–29)
+# area: G major (D 2–5)
 2 | Am7b5      # iiø7 of G: Locrian, the key's own notes (its ♭2 is a passing note)
 2 | D7         # V7 of G: natural tensions
 3 | G          # tonic: the 4th is in the key

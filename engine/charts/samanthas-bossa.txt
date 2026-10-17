@@ -5,13 +5,13 @@ style: Latin
 key: Eb
 form: AB, 16 bars
 source: Colorado Cookbook, p. 186
-# analysis: 2026-10-11, rules v1; Eb
+# analysis: 2026-10-17, rules v1; Eb
 
 # bar | chord | scale
 
 section: Coda
 bars: 4
-# area: B major (bar 1)
+# area: B major (Coda 1 – A 1)
 1 | BMaj7      # tonic: the 4th is in the key
 2 | Fm7        # a borrowed minor chord: Dorian, its own key
 2 | B7         # tritone substitute: resolves down a half step to Bb7
@@ -22,40 +22,40 @@ bars: 4
 section: A
 # the coda cadences through Fm7 B7 Bb7 E7 to EbMaj7#11
 1 | BMaj7      # tonic: the 4th is in the key
-# area: G major (bars 1–2)
+# area: G major (A 1–2)
 1 | D7         # V7 of G: natural tensions
 2 | GMaj7      # tonic: the 4th is in the key
-# area: Eb major (bars 2–3)
+# area: Eb major (A 2–3)
 2 | Bb7        # V7 of Eb: natural tensions
 3 | EbMaj7     # tonic: the 4th is in the key
-# area: G major (bars 4–5)
+# area: G major (A 4–5)
 4 | Am7        # ii of the ii–V to G
 4 | D7         # V7 of G: natural tensions
 5 | GMaj7      # tonic: the 4th is in the key
-# area: Eb major (bars 5–6)
+# area: Eb major (A 5–6)
 5 | Bb7        # V7 of Eb: natural tensions
 6 | EbMaj7     # tonic: the 4th is in the key
-# area: B major (bars 6–7)
+# area: B major (A 6–7)
 6 | F#7        # V7 of B: natural tensions
 7 | BMaj7      # tonic: the 4th is in the key
-# area: Eb major (bars 8–9)
+# area: Eb major (A 8 – B 1)
 8 | Fm7        # ii of the ii–V to Eb
 8 | Bb7        # V7 of Eb: natural tensions
 
 section: B
 1 | EbMaj7     # tonic: the 4th is in the key
-# area: G major (bars 10–11)
+# area: G major (B 2–3)
 2 | Am7        # ii of the ii–V to G
 2 | D7         # V7 of G: natural tensions
 3 | GMaj7      # tonic: the 4th is in the key
-# area: B major (bars 12–13)
+# area: B major (B 4–5)
 4 | C#m7       # ii of the ii–V to B
 4 | F#7        # V7 of B: natural tensions
 5 | BMaj7      # tonic: the 4th is in the key
-# area: Eb major (bars 14–15)
+# area: Eb major (B 6–7)
 6 | Fm7        # ii of the ii–V to Eb
 6 | Bb7        # V7 of Eb: natural tensions
 7 | EbMaj7     # tonic: the 4th is in the key
-# area: B major (bar 16)
+# area: B major (B 8)
 8 | C#m7       # ii of the ii–V to B
 8 | F#7        # V7 of B: natural tensions

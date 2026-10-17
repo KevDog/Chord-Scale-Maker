@@ -5,12 +5,12 @@ style: Even 8ths
 key: Bb
 form: AABC
 source: Colorado Cookbook, p. 30
-# analysis: 2026-10-11, rules v1; Bb
+# analysis: 2026-10-17, rules v1; Bb
 
 # bar | chord | scale
 
 section: A1
-# area: Bb major (bars 1–16)
+# area: Bb major (A1 1 – A2 6)
 1  | BbMaj7#5  # from the symbol: #5
 2  | Ebm7/Bb   # a borrowed minor chord: Dorian, its own key
 3  | BbMaj7#5  # from the symbol: #5
@@ -31,7 +31,7 @@ section: A2
 4  | Ebm7/Bb   # a borrowed minor chord: Dorian, its own key
 5  | E7#11     # tritone substitute: resolves down a half step to EbMaj7#5
 6  | EbMaj7#5  # from the symbol: #5
-# area: D major (bars 18–28)
+# area: D major (A2 8 – B 8)
 8  | Em7b5     # iiø7 of D: Locrian, the key's own notes (its ♭2 is a passing note)
 8  | A7        # V7 of D: natural tensions
 9  | DMaj7#5   # from the symbol: #5
@@ -51,7 +51,7 @@ section: B
 7  | Dm11      # a borrowed minor chord: Dorian, its own key
 8  | Dbm7      # ii of Gb7: Dorian
 8  | Gb7       # extended ii–V: a side-step, its own key
-# area: Bb major (bars 28–34)
+# area: Bb major (B 8 – C 6)
 8  | Cm7       # ii of the ii–V to Bb
 8  | F7        # V7 of Bb: natural tensions
 
@@ -63,10 +63,10 @@ bars: 12
 4  | Ebm7/Bb   # a borrowed minor chord: Dorian, its own key
 5  | E7#11     # tritone substitute: resolves down a half step to EbMaj7
 6  | EbMaj7    # the E7#11 before it makes Eb the key of the moment: the 4th is in the key
-# area: Ab minor (bars 35–36)
+# area: Ab minor (C 7–8)
 7  | Em7b5     # iiø7 of A7: Locrian, the key's own notes (its ♭2 is a passing note)
 7  | A7        # tritone substitute: resolves down a half step to Abm11
 8  | Abm11     # tonic minor: Dorian by convention
-# area: Bb major (bar 38)
+# area: Bb major (C 10)
 10 | Cm7b5     # iiø7 of Bb: Locrian, the key's own notes (its ♭2 is a passing note)
 10 | F7        # V7 of Bb: natural tensions

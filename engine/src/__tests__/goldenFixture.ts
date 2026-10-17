@@ -41,6 +41,7 @@ import {
   SCALES,
   type ScaleOption,
   scaleLabel,
+  sectionLayout,
   scaleNotes,
   type ScaleKey,
   spellScale,
@@ -107,8 +108,8 @@ const CHORD_SCALE_PAIRS = [
 ] as const
 /** inline charts for parser paths the library files don't hit */
 const CHART_TEXTS: Record<string, string> = {
-  inline_defaults: 'TITLE: Defaults\r\nA | 1 | Cm7\r\nA | 2 | F7 |\r\nA | 3 | Bbmaj7 | Bb Lydian\r\n',
-  inline_copy: 'title: Copy\nsubtitle: Neg\n# c\nA | 9 | Dm7b5\nA | 10 | G7alt\n@copy A B -8\n@copy B C 0\n',
+  inline_defaults: 'TITLE: Defaults\r\nsection: A\r\n1 | Cm7\r\n2 | F7 |\r\n3 | Bbmaj7 | Bb Lydian\r\n',
+  inline_copy: 'title: Copy\nsubtitle: Neg\n# c\nsection: A\n9 | Dm7b5\n10 | G7alt\nsection: B\ncopy: A\nsection: C\ncopy: B\n',
 }
 
 /** engine domain errors are plain Errors; anything else is a bug and must fail */
@@ -131,8 +132,9 @@ export function playedRows(doc: ChartDoc): (string | null)[][] {
 
 /** each expanded row's start and length in beats and the key it is analysed in (stated or found); the key areas */
 export function chartTiming(doc: ChartDoc): { timing: (number | string | boolean)[][]; areas: (string | boolean)[][] } {
-  const rows = expandRows(doc).value
-  const eventOf = new Map(guideToneTimeline(rows, chartBeats(doc)).events.map((e) => [e.row, e]))
+  const layout = sectionLayout(doc).value
+  const rows = layout.rows
+  const eventOf = new Map(guideToneTimeline(rows, chartBeats(doc), layout.lengths).events.map((e) => [e.row, e]))
   const a = analyse(doc)
   const byRow = new Map(a.rows.map((r) => [r.row, r]))
   const areaOf = (i: number) => a.areas.filter((x) => x.row <= i).at(-1)

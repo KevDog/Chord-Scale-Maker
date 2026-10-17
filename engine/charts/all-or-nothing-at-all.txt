@@ -4,12 +4,12 @@ style: Medium swing
 key: Am
 form: AABA, 64 bars
 source: 
-# analysis: 2026-10-12, rules v1; A minor
+# analysis: 2026-10-17, rules v1; A minor
 
 # bar | chord
 
 section: A
-# area: A minor (bars 1–31)
+# area: A minor (A 1 – B 15)
 1  | Am      # tonic minor: Dorian by convention
 2  | AmMaj7  # from the symbol: minor-major 7th
 3  | Am7     # tonic minor: Dorian by convention
@@ -42,7 +42,7 @@ section: B
 # book: Dm7(add11)
 14 | Db9#11  # tritone substitute: resolves down a half step to CMaj7
 15 | CMaj7   # bIII of A minor: the relative major itself
-# area: Ab major (bars 32–47)
+# area: Ab major (B 16 – C 15)
 16 | Bbm7    # ii of the ii–V to Ab
 16 | Eb7     # V7 of Ab: natural tensions
 
@@ -64,7 +64,7 @@ section: C
 13 | Fm7/Eb  # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 14 | Db9     # tritone substitute: resolves down a half step to C7
 15 | C7      # III7 in Ab, not resolving: b9 and b13 are in the key
-# area: A minor (bars 48–63)
+# area: A minor (C 16 – D 15)
 16 | E7      # V7 of A minor: b9 and b13 are in the key
 
 section: D

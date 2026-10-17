@@ -4,28 +4,28 @@ composer: Tadd Dameron
 style: Medium up
 key: C
 form: A
-# analysis: 2026-10-11, rules v1; C
+# analysis: 2026-10-17, rules v1; C
 
 # bar | chord | scale
 
 section: A
-# area: C major (bars 1–5)
+# area: C major (A 1–5)
 1  | CMaj7   # tonic: the 4th is in the key
 3  | Fm7     # ii of Bb7: Dorian
 4  | Bb7     # back door bVII7 to CMaj7: the #11 is in the key
 5  | CMaj7   # tonic: the 4th is in the key
-# area: Ab major (bars 7–9)
+# area: Ab major (A 7–9)
 7  | Bbm7    # ii of the ii–V to Ab
 8  | Eb7     # V7 of Ab: natural tensions
 9  | AbMaj7  # tonic: the 4th is in the key
-# area: C major (bars 11–15)
+# area: C major (A 11–15)
 11 | Am7     # ii of D7: Dorian
 12 | D7      # V7/V in C: natural tensions
 13 | Dm7     # ii of the ii–V to C
 14 | G7      # V7 of C: natural tensions
 15 | CMaj7   # tonic: the 4th is in the key
-# area: Ab major (bars 15–16)
+# area: Ab major (A 15–16)
 15 | Eb7     # V7 of Ab: natural tensions
 16 | AbMaj7  # tonic: the 4th is in the key
-# area: C major (bar 16)
+# area: C major (A 16)
 16 | G7#5    # V7 of C: #11 and b13 from the symbol

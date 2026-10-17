@@ -5,16 +5,16 @@ style: Medium up
 key: Ab
 form: ABC, 26 bars
 source: Colorado Cookbook, p. 143
-# analysis: 2026-10-11, rules v1; Ab
+# analysis: 2026-10-17, rules v1; Ab
 
 # bar | chord | scale
 
 section: A
-# area: Ab major (bars 1–2)
+# area: Ab major (A 1–2)
 1  | AbMaj7     # tonic: the 4th is in the key
 2  | Gm7b5      # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
 2  | C7alt      # from the symbol: altered
-# area: Eb major (bars 3–16)
+# area: Eb major (A 3 – B 8)
 3  | Fm7        # ii of the ii–V to Eb
 3  | Bb7        # V7 of Eb: natural tensions
 4  | EbMaj7     # tonic: the 4th is in the key
@@ -42,7 +42,7 @@ section: B
 
 section: C
 bars: 12
-# area: Gb major (bars 17–21)
+# area: Gb major (C 1–5)
 1  | G7b13      # tritone substitute: resolves down a half step to GbMaj7; b13 from the symbol
 2  | GbMaj7     # tonic: the 4th is in the key
 3  | F7b13      # V7/iii in Gb: b9 and b13 are in the key
@@ -50,7 +50,7 @@ bars: 12
 4  | Bbm/Ab     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 5  | Gm7b5      # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
 5  | C7alt      # from the symbol: altered
-# area: Eb major (bars 22–25)
+# area: Eb major (C 6–9)
 6  | Fm7        # ii of the ii–V to Eb
 6  | Bb7        # V7 of Eb: natural tensions
 7  | EbMaj7     # tonic: the 4th is in the key
@@ -58,6 +58,6 @@ bars: 12
 8  | G7alt      # from the symbol: altered
 9  | Cm7        # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 9  | B7         # tritone substitute: resolves down a half step to Bbm7
-# area: Ab major (bar 26)
+# area: Ab major (C 10)
 10 | Bbm7       # ii of the ii–V to Ab
 10 | Eb7        # V7 of Ab: natural tensions

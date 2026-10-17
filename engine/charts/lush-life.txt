@@ -4,7 +4,7 @@ style: Ballad
 key: Db
 form: ABCD, 54 bars
 source: 
-# analysis: 2026-10-12, rules v1; Db
+# analysis: 2026-10-17, rules v1; Db
 # book: as played by John Coltrane. A: freely (verse); B: faster; C–D: medium ballad (quarter = 58).
 # routing: A, B, C, D; repeat C–D for solos (double-time feel swing; the first solo begins at bars 53–54);
 # after solos, D.S. al Coda (from C to bar 50, then the Coda).
@@ -12,7 +12,7 @@ source:
 # bar | chord
 
 section: A
-# area: Db major (bars 1–6)
+# area: Db major (A 1–6)
 1  | Db6      # tonic: the 4th is in the key
 1  | Cb9      # back door bVII7 to DbMaj7: the #11 is in the key
 2  | DbMaj7   # tonic: the 4th is in the key
@@ -26,10 +26,10 @@ section: A
 5  | Abm7     # a borrowed minor chord: Dorian, its own key
 5  | D13#11   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
 6  | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# area: Db minor (bars 6–7)
+# area: Db minor (A 6–7)
 6  | D9#11    # tritone substitute: resolves down a half step to Dbm6/9
 7  | Dbm6/9   # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-# area: Db major (bars 7–13)
+# area: Db major (A 7–13)
 7  | D13#11   # tritone substitute: resolves down a half step to Db6
 8  | Db6      # tonic: the 4th is in the key
 8  | Cb9      # back door bVII7 to DbMaj7: the #11 is in the key
@@ -44,16 +44,16 @@ section: A
 12 | Abm7     # a borrowed minor chord: Dorian, its own key
 12 | D13#11   # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
 13 | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# area: Db minor (bars 13–14)
+# area: Db minor (A 13–14)
 13 | D9#11    # tritone substitute: resolves down a half step to Dbm6/9
 14 | Dbm6/9   # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-# area: Db major (bar 14)
+# area: Db major (A 14)
 14 | Gm7b5    # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
 14 | C7       # V7/iii in Db: b9 and b13 are in the key
 
 section: B
 key: Fm
-# area: F minor (bars 15–21)
+# area: F minor (B 1–7)
 1  | Fm       # tonic minor: Dorian by convention
 1  | Fm6      # tonic minor sixth chord: melodic minor, the raised 7th is a tension
 2  | Fm       # tonic minor: Dorian by convention
@@ -67,7 +67,7 @@ key: Fm
 6  | Fm7      # tonic minor: Dorian by convention
 7  | Fm       # tonic minor: Dorian by convention
 @key 8 Db
-# area: Db major (bars 22–2)
+# area: Db major (B 8 – Coda 2)
 8  | Ab13     # V7 in Db, not resolving: natural tensions
 9  | B9b5     # tritone substitute: resolves down a half step to Bb9
 # slower from bar 23

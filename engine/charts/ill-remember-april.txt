@@ -5,14 +5,14 @@ style: Mixed
 key: G
 form: ABA, 48 bars
 source: Colorado Cookbook, p. 100
-# analysis: 2026-10-11, rules v1; G
+# analysis: 2026-10-17, rules v1; G
 
 # bar | chord | scale
 # the standard 48-bar form; the lead sheet condenses the A sections
 
 section: A1
 bars: 16
-# area: G major (bars 1–15)
+# area: G major (A1 1–15)
 1  | GMaj7   # tonic: the 4th is in the key
 5  | Gm      # a borrowed minor chord: Dorian, its own key
 9  | Am7b5   # iiø7 of D7#9: Locrian, the key's own notes (its ♭2 is a passing note)
@@ -24,22 +24,22 @@ bars: 16
 15 | GMaj7   # tonic: the 4th is in the key
 
 section: B
-# area: Bb major (bars 17–23)
+# area: Bb major (B 1–7)
 1  | Cm7     # ii of the ii–V to Bb
 2  | F7      # V7 of Bb: natural tensions
 3  | BbMaj7  # tonic: the 4th is in the key
 5  | Cm7     # ii of the ii–V to Bb
 6  | F7      # V7 of Bb: natural tensions
 7  | BbMaj7  # tonic: the 4th is in the key
-# area: G major (bars 25–27)
+# area: G major (B 9–11)
 9  | Am7     # ii of the ii–V to G
 10 | D7#9    # V7 of G: b9, #9 and #11 from the symbol
 11 | GMaj7   # tonic: the 4th is in the key
-# area: E major (bars 29–31)
+# area: E major (B 13–15)
 13 | F#m7    # ii of the ii–V to E
 14 | B7      # V7 of E: natural tensions
 15 | EMaj7   # tonic: the 4th is in the key
-# area: G major (bars 32–47)
+# area: G major (B 16 – A2 15)
 16 | Am7     # ii of the ii–V to G
 16 | D7      # V7 of G: natural tensions
 

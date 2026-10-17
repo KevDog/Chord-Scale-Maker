@@ -5,14 +5,14 @@ style: Ballad
 key: Eb
 form: ABC, 36 bars
 source: 
-# analysis: 2026-10-12, rules v1; Eb
+# analysis: 2026-10-17, rules v1; Eb
 
 # the book's A is two 8-bar A's (AABA'); its C is the last A, 12 bars
 # a one-bar melodic pickup (no chords) leads into A
 # bar | chord
 
 section: A
-# area: Eb major (bars 1–19)
+# area: Eb major (A 1 – B 3)
 1  | EbMaj7   # tonic: the 4th is in the key
 1  | Edim7    # vii°7 of Fm7: C7♭9 without its root
 2  | Fm7      # ii of the ii–V to Eb
@@ -51,7 +51,7 @@ section: B
 2  | Am7      # ii of the ii–V to G minor
 2  | D7       # V7/iii in Eb: b9 and b13 are in the key
 3  | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# area: D minor (bars 20–23)
+# area: D minor (B 4–7)
 4  | Em7b5    # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 4  | A7b9     # V7 of D minor: b9 and b13 are in the key
 5  | Dm7      # tonic minor: Dorian by convention
@@ -59,7 +59,7 @@ section: B
 6  | Cm7      # ii of F7: Dorian
 6  | F7       # extended dominant: V7 of Bb9sus4
 7  | Bb9sus4  # ♭VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-# area: Eb major (bars 24–35)
+# area: Eb major (B 8 – C 11)
 8  | Bb7#5    # V7 of Eb: #11 and b13 from the symbol
 
 section: C

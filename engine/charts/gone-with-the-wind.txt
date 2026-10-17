@@ -4,12 +4,12 @@ style: Medium swing
 key: Eb
 form: AB, 32 bars
 source: 
-# analysis: 2026-10-12, rules v1; Eb
+# analysis: 2026-10-17, rules v1; Eb
 
 # bar | chord
 
 section: A
-# area: Eb major (bars 1–4)
+# area: Eb major (A 1–4)
 1  | Fm7     # ii of the ii–V to Eb
 1  | Bb7     # V7 of Eb: natural tensions
 2  | EbMaj7  # tonic: the 4th is in the key
@@ -18,7 +18,7 @@ section: A
 3  | Bb7     # V7 of Eb: natural tensions
 4  | EbMaj7  # tonic: the 4th is in the key
 @key 5 G
-# area: G major (bars 5–8)
+# area: G major (A 5–8)
 5  | Am7     # ii of the ii–V to G
 5  | D7      # V7 of G: natural tensions
 6  | G6      # tonic: the 4th is in the key
@@ -27,7 +27,7 @@ section: A
 7  | D7      # V7 of G: natural tensions
 8  | GMaj7   # tonic: the 4th is in the key
 @key 9 Eb
-# area: Eb major (bars 9–20)
+# area: Eb major (A 9 – B 4)
 9  | Gm      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 # alt: bar 9 (EbMaj7/G)
 10 | F#dim7  # passing diminished: F7♭9 without its F, the Bb7's dominant (Fm7 its ii)
@@ -51,7 +51,7 @@ bars: 16
 3  | Bb7     # V7 of Eb: natural tensions
 4  | EbMaj7  # tonic: the 4th is in the key
 @key 5 G
-# area: G major (bars 21–24)
+# area: G major (B 5–8)
 5  | Am7     # ii of the ii–V to G
 5  | D7      # V7 of G: natural tensions
 6  | G6      # tonic: the 4th is in the key
@@ -60,7 +60,7 @@ bars: 16
 7  | D7      # V7 of G: natural tensions
 8  | GMaj7   # tonic: the 4th is in the key
 @key 9 Eb
-# area: Eb major (bars 25–31)
+# area: Eb major (B 9–15)
 9  | Fm      # ii: Dorian, the key’s own notes
 10 | Cm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 11 | Fm7     # ii of Bb7: Dorian

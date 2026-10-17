@@ -4,7 +4,7 @@ style: Medium swing
 key: C
 form: A, 16 bars
 source: 
-# analysis: 2026-10-12, rules v1; C
+# analysis: 2026-10-17, rules v1; C
 
 # book: "As played by Miles Davis". No solos; melody is repeated many times; fade on cue to end.
 # book: tritone substitutions may be used: Ab13(#11) → D7(alt), Eb13(b5) → A7(alt)
@@ -12,11 +12,11 @@ source:
 # bar | chord
 
 section: A
-# area: Ab major (bars 1–2)
+# area: Ab major (A 1–2)
 1  | AbMaj7#11  # from the symbol: #11
 # book: AbMa7(b5)
 2  | Dbsus      # static sus: Mixolydian
-# area: B major (bars 3–14)
+# area: B major (A 3–14)
 3  | Gm7b5      # iiø7 of C7b9: Locrian, the key's own notes (its ♭2 is a passing note)
 4  | C7b9       # tritone substitute: resolves down a half step to BMaj7; b9 from the symbol
 # book: C7(b9 b5)
@@ -37,7 +37,7 @@ section: A
 # book: E9sus
 14 | Eb7b5      # III7 in B, not resolving: 9, #11 and 13 from the symbol
 # book: Eb13(b5)
-# area: Ab major (bars 15–16)
+# area: Ab major (A 15–16)
 15 | BbmMaj7    # from the symbol: minor-major 7th
 # book: Bbm9(Ma7)
 16 | Eb7b5      # V7 of Ab: the #11 from the symbol

@@ -4,14 +4,14 @@ style: Ballad
 key: C
 form: ABB, 40 bars
 source: 
-# analysis: 2026-10-12, rules v1; C
+# analysis: 2026-10-17, rules v1; C
 # style: the book says Medium Ballad
 # B is repeated (a second verse of lyrics): written out as B1 and B2
 
 # bar | chord
 
 section: A
-# area: C major (bars 1–5)
+# area: C major (A 1–5)
 1  | C       # tonic: the 4th is in the key
 1  | Dm7     # ii of the ii–V to C
 1  | G7      # V7 of C: natural tensions
@@ -23,15 +23,15 @@ section: A
 4  | CMaj7   # tonic: the 4th is in the key
 4  | C7      # V7/IV in C: natural tensions
 5  | F       # the C7 before it makes F the key of the moment: the 4th is in the key
-# area: Bb major (bars 5–6)
+# area: Bb major (A 5–6)
 5  | Cm7     # ii of the ii–V to Bb
 5  | F7      # V7 of Bb: natural tensions
 6  | BbMaj7  # tonic: the 4th is in the key
-# area: Ab major (bars 6–7)
+# area: Ab major (A 6–7)
 6  | Bbm7    # ii of the ii–V to Ab
 6  | Eb7     # V7 of Ab: natural tensions
 7  | AbMaj7  # tonic: the 4th is in the key
-# area: C major (bars 8–13)
+# area: C major (A 8–13)
 8  | Dm11    # ii of the ii–V to C
 # book: Dm7(add 11)
 8  | G7      # V7 of C: natural tensions
@@ -46,15 +46,15 @@ section: A
 12 | CMaj7   # tonic: the 4th is in the key
 12 | C7      # V7/IV in C: natural tensions
 13 | F       # the C7 before it makes F the key of the moment: the 4th is in the key
-# area: Bb major (bars 13–14)
+# area: Bb major (A 13–14)
 13 | Cm7     # ii of the ii–V to Bb
 13 | F7      # V7 of Bb: natural tensions
 14 | BbMaj7  # tonic: the 4th is in the key
-# area: Ab major (bars 14–15)
+# area: Ab major (A 14–15)
 14 | Bbm7    # ii of the ii–V to Ab
 14 | Eb7     # V7 of Ab: natural tensions
 15 | AbMaj7  # tonic: the 4th is in the key
-# area: C major (bars 16–21)
+# area: C major (A 16 – B1 5)
 16 | Dm11    # ii of the ii–V to C
 # book: Dm7(add 11)
 16 | G7      # V7 of C: natural tensions
@@ -72,14 +72,14 @@ bars: 12
 4  | C#dim7  # vii°7 of Dm7: A7♭9 without its root
 5  | Dm7     # ii of the ii–V to C
 5  | G7      # V7 of C: natural tensions
-# area: Bb major (bars 22–24)
+# area: Bb major (B1 6–8)
 6  | CMaj7   # a non-tonic major chord: Lydian
 6  | Cm7     # ii of the ii–V to Bb
 6  | F9      # V7 of Bb: natural tensions
 7  | BbMaj7  # tonic: the 4th is in the key
 8  | AMaj7   # a non-tonic major chord: Lydian
 8  | A7b9    # V7/iii in Bb: b9 and b13 are in the key
-# area: C major (bars 25–33)
+# area: C major (B1 9 – B2 5)
 9  | Dm7     # ii: Dorian, the key’s own notes
 9  | Am      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 10 | Dm7     # ii: Dorian, the key’s own notes
@@ -94,27 +94,29 @@ section: B2
 key: C
 bars: 12
 1  | C
-1  | Dm7
-1  | G7
-2  | CMaj7
-2  | C7
-3  | F
-3  | G7
-4  | CMaj7
-4  | C#dim7
-5  | Dm7
-5  | G7
-6  | CMaj7
-6  | Cm7
-6  | F9
-7  | BbMaj7
-8  | AMaj7
-8  | A7b9
-9  | Dm7
-9  | Am
-10 | Dm7
-10 | F/G
-10 | G7
-11 | C
+1  | Dm7     # ii of the ii–V to C
+1  | G7      # V7 of C: natural tensions
+2  | CMaj7   # tonic: the 4th is in the key
+2  | C7      # V7/IV in C: natural tensions
+3  | F       # the C7 before it makes F the key of the moment: the 4th is in the key
+3  | G7      # V7 of C: natural tensions
+4  | CMaj7   # tonic: the 4th is in the key
+4  | C#dim7  # vii°7 of Dm7: A7♭9 without its root
+5  | Dm7     # ii of the ii–V to C
+5  | G7      # V7 of C: natural tensions
+# area: Bb major (B2 6–8)
+6  | CMaj7   # a non-tonic major chord: Lydian
+6  | Cm7     # ii of the ii–V to Bb
+6  | F9      # V7 of Bb: natural tensions
+7  | BbMaj7  # tonic: the 4th is in the key
+8  | AMaj7   # a non-tonic major chord: Lydian
+8  | A7b9    # V7/iii in Bb: b9 and b13 are in the key
+# area: C major (B2 9–11)
+9  | Dm7     # ii: Dorian, the key’s own notes
+9  | Am      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+10 | Dm7     # ii: Dorian, the key’s own notes
+10 | F/G     # IV: the #4 is the key’s 7th
+10 | G7      # V7 of C: natural tensions
+11 | C       # tonic: the 4th is in the key
 @key 6 Bb
 @key 9 C

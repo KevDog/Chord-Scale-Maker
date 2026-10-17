@@ -5,13 +5,13 @@ style: Mixed
 key: Bbm
 form: AABBC, 64 bars
 source: Colorado Cookbook, p. 157
-# analysis: 2026-10-11, rules v1; Bb minor
+# analysis: 2026-10-17, rules v1; Bb minor
 
 # bar | chord | scale
 
 section: Intro
 bars: 8
-# area: Bb minor (bars 1–8)
+# area: Bb minor (Intro 1 – A1 8)
 1  | BbmMaj7  # from the symbol: minor-major 7th
 2  | AbmMaj7  # from the symbol: minor-major 7th
 3  | GbMaj7   # a non-tonic major chord: Lydian
@@ -27,13 +27,13 @@ bars: 16
 5  | BbmMaj7  # from the symbol: minor-major 7th
 7  | Ebm7     # ii of Ab7: Dorian
 8  | Ab7      # V7/bIII in Bb minor: natural tensions
-# area: Gb major (bars 9–12)
+# area: Gb major (A1 9–12)
 9  | Abm7     # ii of the ii–V to Gb
 10 | Db7      # V7 of Gb: natural tensions
 11 | GbMaj7   # tonic: the 4th is in the key
 11 | Db9      # tritone substitute: resolves down a half step to C7alt
 12 | C7alt    # from the symbol: altered
-# area: Bb minor (bars 13–24)
+# area: Bb minor (A1 13 – A2 8)
 13 | Cm7b5    # iiø7 of Bb minor: Locrian, the key's own notes (its ♭2 is a passing note)
 14 | F7alt    # from the symbol: altered
 15 | BbmMaj7  # from the symbol: minor-major 7th
@@ -47,7 +47,7 @@ section: B1
 3  | DbMaj7   # bIII of Bb minor: the relative major itself
 4  | Bb7b9    # extended dominant: V7 of Eb7; b9 from the symbol
 5  | Eb7      # IV7 in Bb minor, not resolving: natural tensions
-# area: Db major (bars 38–47)
+# area: Db major (B1 6 – B2 7)
 6  | Ebm7     # ii of the ii–V to Db
 6  | Ab7      # V7 of Db: natural tensions
 7  | DbMaj9   # tonic: the 4th is in the key
@@ -63,7 +63,7 @@ section: B2
 6  | Ebm7     # ii of the ii–V to Db
 6  | Ab7      # V7 of Db: natural tensions
 7  | DbMaj9   # tonic: the 4th is in the key
-# area: Bb minor (bars 48–56)
+# area: Bb minor (B2 8 – C 8)
 8  | F7alt    # from the symbol: altered
 
 section: C

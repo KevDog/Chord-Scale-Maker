@@ -5,13 +5,13 @@ style: Ballad
 key: Eb
 form: AABC, 26 bars
 source: Colorado Cookbook, p. 138
-# analysis: 2026-10-11, rules v1; Eb
+# analysis: 2026-10-17, rules v1; Eb
 
 # bar | chord | scale
 
 section: Tag
 bars: 4
-# area: Eb major (bars 1–12)
+# area: Eb major (Tag 1 – A2 6)
 1 | F7#11   # II7 in Eb, not resolving: the #11 from the symbol
 2 | Fm7     # ii: Dorian, the key’s own notes
 2 | E7      # tritone substitute: resolves down a half step to EbMaj7
@@ -35,7 +35,7 @@ section: A2
 copy: A1
 
 section: B
-# area: G major (bars 13–16)
+# area: G major (B 1–4)
 1 | Am7     # ii of the ii–V to G
 1 | D7      # V7 of G: natural tensions
 2 | GMaj7   # tonic: the 4th is in the key
@@ -43,7 +43,7 @@ section: B
 3 | Am7     # ii of the ii–V to G
 3 | D7      # V7 of G: natural tensions
 4 | GMaj7   # tonic: the 4th is in the key
-# area: Eb major (bars 17–26)
+# area: Eb major (B 5 – C 6)
 5 | Bbm7    # ii of the ii–V to Ab
 5 | Eb7     # V7/IV in Eb: natural tensions
 6 | AbMaj7  # the Eb7 before it makes Ab the key of the moment: the 4th is in the key

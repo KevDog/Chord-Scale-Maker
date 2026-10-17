@@ -4,12 +4,12 @@ style: Up
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 94
-# analysis: 2026-10-11, rules v1; F
+# analysis: 2026-10-17, rules v1; F
 
 # bar | chord | scale
 
 section: A
-# area: F major (bars 1–11)
+# area: F major (A 1 – B 3)
 1 | Gm7b5   # iiø7 of F: Locrian, the key's own notes (its ♭2 is a passing note)
 2 | C7b9    # V7 of F: the b9 from the symbol
 3 | FMaj7   # tonic: the 4th is in the key
@@ -27,7 +27,7 @@ section: B
 1 | Gm7b5   # iiø7 of F: Locrian, the key's own notes (its ♭2 is a passing note)
 2 | C7b9    # V7 of F: the b9 from the symbol
 3 | FMaj7   # tonic: the 4th is in the key
-# area: A major (bars 12–16)
+# area: A major (B 4–8)
 4 | Bm7b5   # iiø7 of A: Locrian, the key's own notes (its ♭2 is a passing note)
 4 | E7#9    # V7 of A: b9, #9 and #11 from the symbol
 5 | AMaj7   # tonic: the 4th is in the key
@@ -39,7 +39,7 @@ section: B
 8 | D7      # V7/bvii in A: the #11 is in the key
 
 section: C
-# area: F major (bars 17–32)
+# area: F major (C 1 – D 8)
 1 | Gm7     # ii of the ii–V to F
 2 | C7      # V7 of F: natural tensions
 3 | FMaj7   # tonic: the 4th is in the key
