@@ -82,7 +82,7 @@ test('the Line plays each chord’s labelled triad pair under the Hexatonic over
   await chooseSuperimpose(page, 'Hexatonic')
   await expect(page.getByRole('radio', { name: 'Triad pair', exact: true })).toBeChecked() // the stored arpeggio line, read as Triad pair
   await expect(page.getByLabel('Leave out')).toHaveCount(0)
-  await expect(line).toHaveAttribute('aria-label', /; triad pair: G4 B4 D5 C5 \| E5 G5 C6 A5/) // G/Am, then C/Dm from the note nearest C5, turned at piano's top (C6)
+  await expect(line).toHaveAttribute('aria-label', /; triad pair: G4 B4 D5 C5 \| E5 G5 C6 D6 \| A5 F5/) // G/Am, then C/Dm from the note nearest C5, Dm turned at piano's top (E6)
   await pickOption(page, 'Triad pair direction', 'Down')
   await expect(line).toHaveAttribute('aria-label', /; triad pair: D5 B4 G4 /)
   await chooseSuperimpose(page, 'Off')

@@ -8,9 +8,9 @@ export type Clef = 'treble' | 'bass'
 export type Range = Readonly<{ lo: number; hi: number; centre: number }>
 export type Instrument = Readonly<{ clef: Clef; trans: Transposition; description: string; range: Range }>
 
-/** the most a guide tone line may need on the staff: two ledger lines either side (treble G3–D6, bass B1–F4) */
+/** the most a guide tone line may need on the staff: three ledger lines either side in treble (E3–F6), two in bass (B1–F4) */
 export const CAPS: Readonly<Record<Clef, Readonly<{ lo: number; hi: number }>>> = {
-  treble: { lo: 55, hi: 86 },
+  treble: { lo: 52, hi: 89 },
   bass: { lo: 35, hi: 65 },
 }
 
@@ -24,7 +24,7 @@ export const TRANSPOSITIONS: Readonly<Record<Transposition, readonly [number, nu
 
 /** octave transpositions (guitar, bass, tenor, bari) don't matter: scales sit in a fixed written range */
 export const INSTRUMENTS = {
-  piano: { clef: 'treble', trans: 'C', description: 'concert pitch, treble clef: the right hand', range: { lo: 60, hi: 84, centre: 70 } }, // C4–C6, centre B♭4
+  piano: { clef: 'treble', trans: 'C', description: 'concert pitch, treble clef: the right hand', range: { lo: 53, hi: 88, centre: 70 } }, // F3–E6, centre B♭4
   vibes: { clef: 'treble', trans: 'C', description: 'concert pitch, treble clef', range: { lo: 55, hi: 86, centre: 70 } }, // G3–D6, centre the middle B♭ (B♭4)
   flute: { clef: 'treble', trans: 'C', description: 'concert pitch, treble clef; also oboe, violin and any other treble C instrument', range: { lo: 60, hi: 84, centre: 73 } }, // C4–C6, centre C♯5
   guitar: { clef: 'treble', trans: 'C', description: 'concert pitch, treble clef (sounds an octave lower)', range: { lo: 57, hi: 81, centre: 66 } }, // A3–A5 written, centre F♯4
