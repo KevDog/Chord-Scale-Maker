@@ -53,6 +53,7 @@
         <nav aria-label="Site" class="flex gap-4">
           <NuxtLink to="/help" class="hover:text-zinc-950 dark:hover:text-white">Help</NuxtLink>
           <NuxtLink to="/functions" class="hover:text-zinc-950 dark:hover:text-white">Functions</NuxtLink>
+          <NuxtLink to="/scales" class="hover:text-zinc-950 dark:hover:text-white">Scales</NuxtLink>
           <NuxtLink to="/about" class="hover:text-zinc-950 dark:hover:text-white">About</NuxtLink>
           <NuxtLink to="/contact" class="hover:text-zinc-950 dark:hover:text-white">Contact</NuxtLink>
           <NuxtLink to="/privacy" class="hover:text-zinc-950 dark:hover:text-white">Privacy</NuxtLink>

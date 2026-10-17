@@ -34,6 +34,10 @@ export const PAGE_HEAD = {
     title: 'Functions and rules',
     description: 'How to write a chord’s function in a chart, the scale every function gets in any key, and the rules that choose it.',
   },
+  scales: {
+    title: 'Scales',
+    description: 'Every scale Chord Scale Maker plays, by family: its formula, its notes, the chords it plays over and the jazz standards that use it.',
+  },
   about: {
     title: 'About',
     description: 'What Chord Scale Maker is, how its sheets help you practise jazz improvisation, and the Jazz Lab video it started with.',

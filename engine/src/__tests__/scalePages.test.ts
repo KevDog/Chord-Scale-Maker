@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { type ChordToken, playsOver, SCALES, type ScaleKey, scaleFromSlug, scaleSlug, scaleUsage } from '..'
+import { type ChordToken, playsOver, SCALES, type ScaleKey, scaleFromSlug, scaleSlug, scaleTitle, scaleUsage } from '..'
 
 const text = (tokens: readonly ChordToken[]): string => tokens.map((t) => (t.kind === 'text' ? t.text : t.acc)).join('')
 
@@ -10,6 +10,12 @@ describe('scale pages', () => {
     expect(scaleSlug('diatonic diminished #iv')).toMatch(/^[a-z0-9-]+$/)
     expect(scaleFromSlug('nope')).toBeNull()
     expect(scaleFromSlug('constructor')).toBeNull()
+  })
+
+  it('names a scale in full, for a page title', () => {
+    expect(scaleTitle('dorian')).toBe('Dorian')
+    expect(scaleTitle('half whole diminished')).toBe('Half-Whole Diminished')
+    expect(scaleTitle('diatonic diminished biii')).toBe('Diatonic Diminished (♭III°7)')
   })
 
   it('lists the chord qualities a scale plays over, with its root and tags', () => {

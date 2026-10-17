@@ -28,6 +28,7 @@
         @update:doc="emit('update:doc', $event)"
         @said="emit('said', $event)"
       />
+      <p v-if="about" class="mt-3 border-t border-zinc-950/5 pt-2 dark:border-white/5"><UiTextLink :href="about">About this scale</UiTextLink></p>
     </HPopoverPanel>
   </HPopover>
 </template>
@@ -38,17 +39,20 @@ import { MapPinIcon } from '@heroicons/vue/16/solid'
 import type { ChartDoc } from '@chord-scale-maker/engine'
 import ChordChoices from './ChordChoices.vue'
 import { panelShift } from '~/utils/notePlacement'
+import { scalePath } from '~/utils/scalePage'
 
 /**
  * A numeral or scale under a chord while the sheet is the editor (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md
  * §1.3): the label is the picker. The numeral opens the chord's function list (with why the analysis chose), the
  * scale its scale list; a guessed function is marked in amber; a pinned scale shows its pin. `line` is the chart line
  * the chord is written on (a repeat's chord points at the row it repeats). A chord with no label (no analysis, or a
- * row the sheet can't read) gets a blank one, a dash, so there is still something to click.
+ * row the sheet can't read) gets a blank one, a dash, so there is still something to click. `scale`: the scale the
+ * chord plays (concert), whose reference page the scale list links to.
  */
-const props = defineProps<{ doc: ChartDoc; line: number; kind: 'numeral' | 'scale'; chord: string; fallback: boolean; pinned: boolean; blank?: boolean }>()
+const props = defineProps<{ doc: ChartDoc; line: number; kind: 'numeral' | 'scale'; chord: string; fallback: boolean; pinned: boolean; blank?: boolean; scale?: string | null }>()
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc]; said: [text: string] }>()
 
+const about = computed(() => (props.kind === 'scale' && props.scale ? scalePath(props.scale) : null))
 const guessed = computed(() => props.fallback && props.kind === 'numeral')
 const name = computed(() => `${props.kind === 'numeral' ? 'Function' : 'Scale'}: ${props.chord}`)
 const PANEL_WIDTH = 320 // w-80

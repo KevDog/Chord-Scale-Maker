@@ -17,6 +17,9 @@ const BY_SLUG: ReadonlyMap<string, ScaleKey> = new Map((Object.keys(SCALES) as S
 
 export const scaleFromSlug = (slug: string): ScaleKey | null => BY_SLUG.get(slug) ?? null
 
+/** a scale's printed label in full ("Half-Whole Dim." -> "Half-Whole Diminished"), for a page's title */
+export const scaleTitle = (key: ScaleKey): string => SCALES[key][1].replace('Dim.', 'Diminished')
+
 export type PlaysOverTag = 'default' | 'basic' | 'advanced' | 'outside' | 'functional'
 /** chord: the quality on C as a chart writes it; root: the scale's root as an interval above the chord's ('1': the same) */
 export type PlaysOver = Readonly<{ quality: string; chord: string; symbolOnC: readonly ChordToken[]; root: string; tags: readonly PlaysOverTag[] }>

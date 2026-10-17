@@ -262,6 +262,7 @@ exports[`exports the same names 1`] = `
   "scaleLines",
   "scaleNotes",
   "scaleSlug",
+  "scaleTitle",
   "scaleUsage",
   "sectionLayout",
   "seededUnit",

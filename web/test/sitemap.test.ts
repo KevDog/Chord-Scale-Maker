@@ -1,3 +1,4 @@
+import { SCALES } from '@chord-scale-maker/engine'
 import { describe, expect, it } from 'vitest'
 import { canonicalUrl } from '~/utils/site'
 import { chartSlugsOf, sitemapPaths, sitemapXml } from '~/utils/sitemap'
@@ -26,7 +27,12 @@ describe('sitemap paths', () => {
     expect(chartSlugsOf(['blue-trane.txt', 'README.md', 'so-what 2.txt'])).toEqual(['blue-trane'])
   })
 
-  it('lists the site pages, then the songs', () => {
-    expect(sitemapPaths(['/song/a'])).toEqual(['/', '/library', '/help', '/functions', '/about', '/contact', '/privacy', '/song/a'])
+  it('lists the site pages, then the scales, then the songs', () => {
+    const paths = sitemapPaths(['/song/a'])
+    expect(paths.slice(0, 8)).toEqual(['/', '/library', '/help', '/functions', '/about', '/contact', '/privacy', '/scales'])
+    expect(paths).toContain('/scales/dorian')
+    expect(paths).toContain('/scales/diatonic-diminished-sharp-iv')
+    expect(paths.filter((p) => p.startsWith('/scales/'))).toHaveLength(Object.keys(SCALES).length)
+    expect(paths.at(-1)).toBe('/song/a')
   })
 })
