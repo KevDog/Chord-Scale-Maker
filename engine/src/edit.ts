@@ -269,7 +269,8 @@ export function deleteBar(doc: ChartDoc, section: string, bar: number): ChartDoc
     if (!r) return doc
     let start = r.start
     while (start > 0 && doc.lines[start - 1]?.kind === 'blank') start--
-    return { lines: [...doc.lines.slice(0, start), ...doc.lines.slice(r.end)] }
+    // a comment in it (often about the next section) stays
+    return { lines: doc.lines.filter((l, i) => i < start || i >= r.end || l.kind === 'comment') }
   }
   return tidyBars({ lines: shiftBars(doc, view, section, bar, -1) }, section, bars.length - 1)
 }
@@ -370,8 +371,14 @@ export function addSection(doc: ChartDoc, name: string, chords: readonly string[
 export function repeatSection(doc: ChartDoc, src: string, dst: string): ChartDoc {
   const view = barView(doc)
   const from = view.sections.find((s) => s.name === src)
-  if (!from || view.sections.some((s) => s.name === dst) || sectionError(dst) || formPart(dst) !== from.part) return doc
-  return insertBlock(doc, partEnd(doc, view, from.part), [{ kind: 'section', name: dst }, { kind: 'sectionMeta', field: 'copy', value: src }])
+  const outside = fieldIndex(doc, src, 'outside') >= 0 && (doc.lines[fieldIndex(doc, src, 'outside')] as Extract<ChartLine, { kind: 'sectionMeta' }>).value === 'yes'
+  if (!from || view.sections.some((s) => s.name === dst) || sectionError(dst) || (!outside && formPart(dst) !== from.part)) return doc
+  const block: ChartLine[] = [
+    { kind: 'section', name: dst },
+    ...(outside ? [{ kind: 'sectionMeta', field: 'outside', value: 'yes' } as ChartLine] : []),
+    { kind: 'sectionMeta', field: 'copy', value: src },
+  ]
+  return insertBlock(doc, partEnd(doc, view, from.part), block)
 }
 
 /** a repeat written out: its copy: becomes rows of its own, in its place, with what it carried (key, time, context, bars, key changes) */
@@ -402,10 +409,11 @@ export function splitSection(doc: ChartDoc, section: string, bar: number, name: 
   const view = barView(doc)
   const found = writtenBar(view, section, bar)
   if (!found || found.bar.kind !== 'chords' || bar === 1) return doc
-  if (view.sections.some((s) => s.name === name) || sectionError(name) || formPart(name) !== found.section.part) return doc
-  if (view.sections.some((s) => s.copy?.of === section)) return doc
   const sections = lineSections(doc)
   const mine = (i: number): boolean => sections[i] === section
+  const outside = doc.lines.some((l, i) => mine(i) && l.kind === 'sectionMeta' && l.field === 'outside' && l.value === 'yes')
+  if (view.sections.some((s) => s.name === name) || sectionError(name) || (!outside && formPart(name) !== found.section.part)) return doc
+  if (view.sections.some((s) => s.copy?.of === section)) return doc
   if (doc.lines.some((l, i) => mine(i) && l.kind === 'ending' && l.from < bar && l.to >= bar)) return doc
   const r = blockRange(doc, section)
   if (!r) return doc
@@ -426,10 +434,15 @@ export function splitSection(doc: ChartDoc, section: string, bar: number, name: 
   const removedBefore = doc.lines.slice(0, r.end).filter((l, i) => moves(l, i)).length
   const kept = doc.lines.filter((l, i) => !moves(l, i))
   const time = doc.lines.find((l, i) => mine(i) && l.kind === 'sectionMeta' && l.field === 'time')
+  // the context in force at the split: the last @context before it, else the section's context:
+  const contextLine = doc.lines.findLast((l, i) => mine(i) && ((l.kind === 'context' && l.bar <= bar) || (l.kind === 'sectionMeta' && l.field === 'context')))
+  const context = contextLine?.kind === 'context' ? contextLine.context : contextLine?.kind === 'sectionMeta' ? contextLine.value : null
   const block: ChartLine[] = [
     { kind: 'section', name },
     ...(key ? [{ kind: 'sectionMeta', field: 'key', value: key } as ChartLine] : []),
     ...(time ? [time] : []),
+    ...(context ? [{ kind: 'sectionMeta', field: 'context', value: context } as ChartLine] : []),
+    ...(outside ? [{ kind: 'sectionMeta', field: 'outside', value: 'yes' } as ChartLine] : []),
     ...moved,
   ]
   const length = found.section.bars.length

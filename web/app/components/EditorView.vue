@@ -311,6 +311,7 @@ import {
   setMeta,
   type ShareView,
   unlevel,
+  isFatal,
   lineSections,
   migrateChart,
   remapOwned,
@@ -323,6 +324,7 @@ import { firstSheet, type SheetKind } from '~/utils/sheets'
 import { type MoreAction, moreMenuItems } from '~/utils/moreMenu'
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { spellView } from '~/utils/scaleChoices'
+import { writeStored } from '~/utils/storage'
 
 /**
  * practiceKey: what practice selections are remembered under (a library slug, or mine:<id>); none for the visit only.
@@ -350,8 +352,14 @@ const baseline = ((): ChartDoc | undefined => {
  * then the rows it owned are forgotten. A scale you chose stays. Either change is saved back.
  */
 const openingText = ((): string => {
-  const migrated = migrateChart(props.initialText)
-  if (migrated.problems.length) console.info(`Chart format: ${migrated.problems.join('; ')}`)
+  const found = migrateChart(props.initialText)
+  // a migration that would take the chart over a limit is left undone: the parser then says what's wrong
+  const migrated = found.text !== props.initialText && isFatal(parseChart(found.text).diagnostics) ? { ...found, text: props.initialText } : found
+  if (migrated.text !== props.initialText) {
+    // the chart as it was, kept in this browser in case the migration misread it (#329)
+    if (props.practiceKey) writeStored(`csm-premigration:${props.practiceKey}`, props.initialText)
+    if (migrated.problems.length) console.info(`Chart format: ${migrated.problems.join('; ')}`)
+  }
   const owned = scaleLevel.owned.value
   if (!owned) return migrated.text
   scaleLevel.owned.value = undefined

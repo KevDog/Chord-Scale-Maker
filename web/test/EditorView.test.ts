@@ -415,6 +415,7 @@ describe('EditorView scale level', () => {
     expect(cells(changesSheet(w).props('doc'))).toEqual(['', 'F Lydian Dominant', 'Bb Major Pentatonic'])
     expect(loadChart('abc123abc123')?.text).not.toContain('C Minor Pentatonic') // saved
     expect(loadChart('abc123abc123')?.text).toContain('section: A\n') // in section blocks
+    expect(localStorage.getItem('csm-premigration:mine:abc123abc123')).toBe(LEVELLED) // the old text kept, in case
     expect(JSON.parse(localStorage.getItem('csm-level:mine:abc123abc123') ?? '{}')).toEqual({ level: 'basic', seed: 1 })
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/1 scale/))
     await buttonCalled(w, 'Edit')?.trigger('click')

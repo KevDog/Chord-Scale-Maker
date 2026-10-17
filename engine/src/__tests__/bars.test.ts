@@ -82,6 +82,15 @@ describe('barView', () => {
     ])
   })
 
+  it('keeps a section with no rows in place: its bars held, the sections after it where they were (review)', () => {
+    const v = barView(parseChart(['section: A', '1 | C', '2 | F', 'section: B', 'bars: 4', 'section: C', '1 | G7', '2 | Bb'].join('\n')).value)
+    expect(v.sections.map((s) => [s.name, s.bars.map((b) => b.chords.map((c) => c.chord).join() || '-').join(' ')])).toEqual([
+      ['A', 'C F'],
+      ['B', '- - - -'],
+      ['C', 'G7 Bb'],
+    ])
+  })
+
   it('attaches segno, coda and nav to their bars', () => {
     const doc = chart('its-you-or-no-one')
     const at = (kind: ChartLine['kind'], section: string) => inSection(doc, kind, section)

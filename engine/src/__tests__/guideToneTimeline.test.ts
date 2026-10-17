@@ -39,6 +39,11 @@ describe('timeline', () => {
     expect(end('section: A\nbars: 12\n1 | C7\n12 | G7\n')).toBe(12 * 4)
   })
 
+  it('counts a section with no rows by its length', () => {
+    const l = sectionLayout(parseChart('section: A\n1 | C\nsection: B\nbars: 4\nsection: C\n1 | G7\n').value).value
+    expect(guideToneTimeline(l.rows, 4, l.lengths).events.map((e) => [e.chord, e.start])).toEqual([['C', 0], ['G7', 20]])
+  })
+
   it('without lengths, a section lasts to its last written bar', () => {
     const rows = [row('1', 'C'), row('2', 'F'), { ...row('1', 'G'), section: 'B' }]
     expect(guideToneTimeline(rows, 4).events.map((e) => e.start)).toEqual([0, 4, 8])

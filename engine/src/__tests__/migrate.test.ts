@@ -94,9 +94,40 @@ describe('migrateChart', () => {
     expect(m.text).toContain('# the coda after bar 27')
   })
 
+  it('writes a repeat out when its section also had rows of its own, keeping them (review)', () => {
+    const t = lines(migrateChart('A | 1 | C\nA | 2 | F\nB | 3 | G\n@copy A A2 4\nA2 | 7 | Bb\n').text)
+    const a2 = t.indexOf('section: A2')
+    expect(t.slice(a2)).toEqual(['section: A2', 'bars: 4', '1 | C', '2 | F', '3 | Bb']) // 4 bars: the old engine rounded the form up
+  })
+
+  it('keeps the functions on a repeat it writes out (review)', () => {
+    const t = lines(migrateChart('A | 1 | Dm7 | | ii7\nA | 2 | G7 | | V7/ii\n@copy A A2 2\n@key A2 4 Eb\n').text)
+    expect(t.slice(t.indexOf('section: A2'))).toEqual(['section: A2', '1 | Dm7 |  | ii7', '2 | G7 |  | V7/ii', '@key 2 Eb'])
+  })
+
+  it('gives a section that comes back after another a name of its own, so it plays where it stands (review)', () => {
+    const m = migrateChart('A | 1 | C\nB | 5 | F\nA | 9 | G7\n')
+    expect(lines(m.text)).toEqual(['section: A', 'bars: 4', '1 | C', '', 'section: B', 'bars: 4', '1 | F', '', 'section: A2', 'bars: 4', '1 | G7'])
+  })
+
+  it('moves a header field written among the rows up into the header (review)', () => {
+    const t = lines(migrateChart('A | 1 | C\nA | 5 | F\nkey: F\nB | 9 | G7\ntitle: Late\n').text)
+    expect(t.slice(0, t.indexOf('section: A'))).toEqual(['key: F', 'title: Late', ''])
+    expect(t.filter((l) => l.startsWith('key:'))).toEqual(['key: F'])
+  })
+
+  it('takes the spaces out of a section name, and names an unnamed section (review)', () => {
+    expect(lines(migrateChart('A | 1 | C\nA | 5 | F\nTag 2 | 9 | G7\n').text)).toContain('section: Tag2')
+    expect(lines(migrateChart('| 1 | C\n| 2 | F\n').text)[0]).toBe('section: A')
+  })
+
+  it('keeps a row whose bar is not a number as a row, its bar as written (review)', () => {
+    const t = lines(migrateChart('A | 1 | C\nA | x | F\n').text)
+    expect(t).toEqual(['section: A', '1 | C', 'x | F'])
+  })
+
   it('reports what it cannot carry: a section that comes back, a directive on a missing section', () => {
-    expect(migrateChart('A | 1 | C\nB | 2 | F\nA | 3 | C\n').problems).toContain('section A appears again after another section (line 3)')
-    expect(migrateChart('A | 1 | C\n@segno Z 1\n').problems).toContain('@segno names no section Z (line 2)')
+        expect(migrateChart('A | 1 | C\n@segno Z 1\n').problems).toContain('@segno names no section Z (line 2)')
   })
 })
 

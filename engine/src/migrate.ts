@@ -20,7 +20,8 @@ export type Migration = Readonly<{
 
 const INT = /^[+-]?\d{1,6}$/
 type Item =
-  | { t: 'row'; section: string; bar: number; cells: string[]; comment?: string; line: number }
+  // bar: NaN where the old row's bar wasn't a whole number (barText keeps it as written)
+  | { t: 'row'; section: string; bar: number; barText?: string; cells: string[]; comment?: string; line: number }
   | { t: 'copy'; src: string; dst: string; offset: number; line: number }
   | { t: 'key' | 'context'; section: string; bar: number; value: string; line: number }
   | { t: 'ending'; section: string; n: string; from: number; to: number; line: number }
@@ -51,12 +52,16 @@ function read(text: string, line: number): Item {
   const hash = /\s#(?=\s|$)/.exec(t)
   const body = hash ? t.slice(0, hash.index) : t
   const cells = body.split('|').map((c) => c.trim())
-  if (cells.length >= 3 && cells.length <= 5 && cells[0] && INT.test(cells[1] ?? ''))
-    return { t: 'row', section: cells[0], bar: Number(cells[1]), cells: cells.slice(2), ...(hash ? { comment: t.slice(hash.index + 2).trim() } : {}), line }
+  if (cells.length >= 3 && cells.length <= 5) {
+    // a section name loses its spaces ("Tag 2" → "Tag2"); an empty one is named later
+    const bar = cells[1] ?? ''
+    const whole = INT.test(bar)
+    return { t: 'row', section: (cells[0] ?? '').replace(/\s+/g, ''), bar: whole ? Number(bar) : NaN, ...(whole ? {} : { barText: bar }), cells: cells.slice(2), ...(hash ? { comment: t.slice(hash.index + 2).trim() } : {}), line }
+  }
   return { t: 'other', text: t, line }
 }
 
-type Played = { section: string; bar: string; chord: string; scale: string }
+type Played = { section: string; bar: string; chord: string; scale: string; fn: string; copied: boolean }
 const WHOLE = /^[+-]?\d{1,6}$/
 const shapeStart = (rows: readonly Played[], section: string): number => Math.min(...rows.filter((r) => r.section === section).map((r) => Number(r.bar)))
 const shape = (rows: readonly Played[], section: string): string => {
@@ -85,11 +90,40 @@ export function migrateChart(text: string): Migration {
   if (text.length > LIMITS.maxChars) return { text, lineMap: [], prose: [], problems: [] }
   const raw = text.split(/\r?\n/)
   if (raw.at(-1) === '') raw.pop()
-  const items = raw.map(read)
+  const read0 = raw.map(read)
   const identity = (): Migration => ({ text, lineMap: raw.map((_, i) => i), prose: [], problems: [] })
-  if (raw.some((l) => /^section:/i.test(l.trim())) || !items.some((x) => x.t === 'row')) return identity()
+  if (raw.some((l) => /^section:/i.test(l.trim())) || !read0.some((x) => x.t === 'row')) return identity()
 
   const problems: string[] = []
+  // names a block can take: an unnamed section named, and a section that comes back after another a name of its own
+  // (A, B, A plays A, B, A2); a directive names the latest occurrence of its section
+  const used = new Set(read0.flatMap((x) => (x.t === 'row' ? [x.section] : x.t === 'copy' ? [x.dst] : [])))
+  const fresh = (base: string): string => {
+    let n = 2
+    while (used.has(`${base}${n}`)) n++
+    used.add(`${base}${n}`)
+    return `${base}${n}`
+  }
+  const unnamed = !used.has('') ? '' : used.has('A') ? fresh('A') : 'A'
+  const alias = new Map<string, string>()
+  const aliasOf = (name: string): string => alias.get(name) ?? (name === '' ? unnamed : name)
+  let lastName: string | null = null
+  const items: Item[] = read0.map((x): Item => {
+    if (x.t === 'row' || x.t === 'copy') {
+      const name = x.t === 'row' ? x.section : x.dst
+      if (name !== lastName) {
+        if (alias.has(name) || (name === '' && alias.has(''))) {
+          const next = fresh(aliasOf(name).replace(/\d+$/, '') || 'A')
+          problems.push(`section ${name || '(unnamed)'} comes back after another section: written as ${next} (line ${x.line + 1})`)
+          alias.set(name, next)
+        } else alias.set(name, name === '' ? unnamed : name)
+        lastName = name
+      }
+      return x.t === 'row' ? { ...x, section: aliasOf(name) } : { ...x, src: aliasOf(x.src), dst: aliasOf(name) }
+    }
+    if (x.t === 'key' || x.t === 'context' || x.t === 'ending' || x.t === 'mark' || x.t === 'nav') return { ...x, section: aliasOf(x.section) }
+    return x
+  })
   // sections in order, from rows and @copy destinations
   const order: string[] = []
   const copyOf = new Map<string, Extract<Item, { t: 'copy' }>>()
@@ -97,18 +131,17 @@ export function migrateChart(text: string): Migration {
     const name = x.t === 'row' ? x.section : x.t === 'copy' ? x.dst : null
     if (name === null) continue
     if (x.t === 'copy') copyOf.set(x.dst, x)
-    if (order.at(-1) === name) continue
-    if (order.includes(name)) problems.push(`section ${name} appears again after another section (line ${x.line + 1})`)
-    else order.push(name)
+    if (!order.includes(name)) order.push(name)
   }
   // the rows as the old engine played them, @copy expanded
   const played: Played[] = []
   for (const x of items) {
-    if (x.t === 'row') played.push({ section: x.section, bar: String(x.bar), chord: x.cells[0] ?? '', scale: x.cells[1] ?? '' })
-    if (x.t === 'copy') played.push(...played.filter((r) => r.section === x.src).map((r) => ({ ...r, section: x.dst, bar: String(Number(r.bar) + x.offset) })))
+    if (x.t === 'row') played.push({ section: x.section, bar: x.barText ?? String(x.bar), chord: x.cells[0] ?? '', scale: x.cells[1] ?? '', fn: x.cells[2] ?? '', copied: false })
+    if (x.t === 'copy') played.push(...played.filter((r) => r.section === x.src).map((r) => ({ ...r, section: x.dst, bar: String(Number(r.bar) + x.offset), copied: true })))
   }
-  const start = new Map(order.map((s) => [s, Number(played.find((r) => r.section === s)?.bar ?? 1)]))
-  const lastBar = (s: string): number => Math.max(...played.filter((r) => r.section === s).map((r) => Number(r.bar)))
+  const whole = (r: Played): boolean => WHOLE.test(r.bar)
+  const start = new Map(order.map((s) => [s, Number(played.find((r) => r.section === s && whole(r))?.bar ?? 1)]))
+  const lastBar = (s: string): number => Math.max(start.get(s) ?? 1, ...played.filter((r) => r.section === s && whole(r)).map((r) => Number(r.bar)))
   const length = new Map<string, number>()
   order.forEach((s, k) => {
     const next = order[k + 1]
@@ -117,7 +150,8 @@ export function migrateChart(text: string): Migration {
     if (next !== undefined && formPart(next) === formPart(s)) end = start.get(next) ?? from + 1
     else {
       const part = played.filter((r) => formPart(r.section) === formPart(s))
-      end = Number(part.at(-1)?.bar ?? from) + legacyFinalBars(part)
+      const lastWhole = part.filter(whole).at(-1)
+      end = Number(lastWhole?.bar ?? from) + legacyFinalBars(part)
     }
     const min = lastBar(s) - from + 1
     if (end - from < min) problems.push(`section ${s} is shorter than its rows (bars out of order?)`)
@@ -149,6 +183,8 @@ export function migrateChart(text: string): Migration {
   const sourcePlan = (plans: Map<string, Plan>, s: string): Plan => plans.get(s) ?? { key: null, changes: [] }
   const writtenOut = new Set<string>()
   for (const [dst, c] of copyOf) {
+    // a repeat whose section also had rows of its own is written out, its own rows after the repeated ones
+    if (items.some((x) => x.t === 'row' && x.section === dst)) writtenOut.add(dst)
     for (const plans of [keys, contexts]) {
       const want = sourcePlan(plans, dst)
       const carried = sourcePlan(plans, c.src)
@@ -163,6 +199,7 @@ export function migrateChart(text: string): Migration {
     x.t === 'row' || x.t === 'key' || x.t === 'context' || x.t === 'ending' || x.t === 'mark' || x.t === 'nav' ? x.section : x.t === 'copy' ? x.dst : null
   const blockLines = new Map<string, Item[]>(order.map((s) => [s, []]))
   const header: Item[] = []
+  const lateMeta: Item[] = [] // a header field written among the rows goes up to the header
   const prose: string[] = []
   let pending: Item[] = []
   let prev: string | null = null
@@ -174,13 +211,14 @@ export function migrateChart(text: string): Migration {
       return
     }
     if (x.t === 'blank') return
+    if (x.t === 'meta') return void lateMeta.push(x)
     if (x.t === 'comment' && /^#\s*alt:\s*bars?\s+\d/.test(x.text)) {
       const n = Number(/(\d+)/.exec(x.text.replace(/^#\s*alt:\s*bars?\s+/, ''))?.[1])
       if (contains(prev, n) && prev !== null) return void blockLines.get(prev)?.push(x)
       pending.push(x)
       return
     }
-    if (x.t === 'comment' || x.t === 'other' || x.t === 'meta') {
+    if (x.t === 'comment' || x.t === 'other') {
       if (x.t === 'comment' && !/^#\s*area:/.test(x.text) && /\bbars?\s+\d/i.test(x.text)) prose.push(`line ${i + 1}: ${x.text}`)
       if (x.t === 'other') problems.push(`can't read line ${i + 1}: ${x.text}`)
       pending.push(x)
@@ -201,11 +239,11 @@ export function migrateChart(text: string): Migration {
   const out: { text: string; line?: number }[] = []
   let headerEnd = header.length
   while (headerEnd > 0 && header[headerEnd - 1]?.t === 'blank') headerEnd--
-  for (const x of header.slice(0, headerEnd)) {
+  for (const x of [...header.slice(0, headerEnd), ...lateMeta]) {
     const t = x.t === 'comment' ? x.text.replace(/^#\s*section\s*\|\s*/i, '# ') : 'text' in x ? x.text : ''
     out.push({ text: t, line: x.line })
   }
-  const rowText = (bar: number, cells: readonly string[], comment?: string): string =>
+  const rowText = (bar: number | string, cells: readonly string[], comment?: string): string =>
     `${bar} | ${cells.join(' | ')}${comment !== undefined ? `  #${comment ? ` ${comment}` : ''}` : ''}`
   const altText = (s: string, t: string): string =>
     t.replace(/^(#\s*alt:\s*bars?\s+)(\d+)(?:–(\d+))?/, (_m, p: string, a: string, b?: string) => `${p}${rel(s, Number(a))}${b ? `–${rel(s, Number(b))}` : ''}`)
@@ -221,22 +259,23 @@ export function migrateChart(text: string): Migration {
     if (k?.key && (own || k.key !== keys.get(copy?.src ?? '')?.key || keys.get(copy?.src ?? '')?.changes.length)) out.push({ text: `key: ${k.key}` })
     if (c?.key && (own || c.key !== contexts.get(copy?.src ?? '')?.key || contexts.get(copy?.src ?? '')?.changes.length)) out.push({ text: `context: ${c.key}` })
     const len = length.get(s) ?? 1
-    const written = own ? (copy ? lastBar(copy.src) - (start.get(copy.src) ?? 1) + 1 : lastBar(s) - (start.get(s) ?? 1) + 1) : srcLength
+    const written = own ? lastBar(s) - (start.get(s) ?? 1) + 1 : srcLength
     if (len !== written) out.push({ text: `bars: ${len}` })
     if (copy && !out1) out.push({ text: `copy: ${copy.src}`, line: copy.line })
     if (copy && out1) {
-      for (const r of played.filter((p) => p.section === s)) out.push({ text: rowText(rel(s, Number(r.bar)), r.scale ? [r.chord, r.scale] : [r.chord]) })
+      for (const r of played.filter((p) => p.section === s && p.copied))
+        out.push({ text: rowText(whole(r) ? rel(s, Number(r.bar)) : r.bar, r.fn ? [r.chord, r.scale, r.fn] : r.scale ? [r.chord, r.scale] : [r.chord]) })
     }
     // a written-out repeat states its changes after its rows; a written section keeps each where it stood
     if (copy && out1) for (const ch of k?.changes ?? []) out.push({ text: `@key ${ch.bar} ${ch.value}` })
     if (copy && out1) for (const ch of c?.changes ?? []) out.push({ text: `@context ${ch.bar} ${ch.value}` })
     for (const x of blockLines.get(s) ?? []) {
-      if (x.t === 'row') out.push({ text: rowText(rel(s, x.bar), x.cells, x.comment), line: x.line })
+      if (x.t === 'row') out.push({ text: rowText(x.barText ?? rel(s, x.bar), x.cells, x.comment), line: x.line })
       else if (x.t === 'ending') out.push({ text: `@ending ${x.n} ${rel(s, x.from)}${x.to !== x.from ? ` ${rel(s, x.to)}` : ''}`, line: x.line })
       else if (x.t === 'mark') out.push({ text: `@${x.mark} ${rel(s, x.bar)}`, line: x.line })
       else if (x.t === 'nav') out.push({ text: `@nav ${rel(s, x.bar)} ${x.text}`, line: x.line })
       else if (x.t === 'comment') out.push({ text: altText(s, x.text), line: x.line })
-      else if (x.t === 'other' || x.t === 'meta') out.push({ text: x.text, line: x.line })
+      else if (x.t === 'other') out.push({ text: x.text, line: x.line })
       else if ((x.t === 'key' || x.t === 'context') && !copy && rel(s, x.bar) > 1) out.push({ text: `@${x.t} ${rel(s, x.bar)} ${x.value}`, line: x.line })
       // a change on a section's first bar became its key: or context: field; a copy's own changes were written out above
     }

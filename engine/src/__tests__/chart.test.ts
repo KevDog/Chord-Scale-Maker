@@ -169,6 +169,7 @@ describe('section blocks', () => {
     ['@copy', 'section: A\n1 | C\n@copy A B 8\n', 3, '@copy is gone: write  copy: SRC  under the section’s section: line'],
     ['bars: under the last bar', 'section: A\nbars: 2\n1 | C\n3 | F\n', 2, 'bars: 2 is shorter than the section (its last bar is 3)'],
     ['bars: that is no number', 'section: A\nbars: x\n1 | C\n', 2, 'bars: a whole number of bars'],
+    ['bars: under the length a copy: carries', 'section: A\n1 | C\n2 | F\nsection: B\nbars: 1\ncopy: A\n', 5, 'bars: 1 is shorter than the section it repeats (2 bars)'],
     ['rows in a copy', 'section: A\n1 | C\nsection: B\ncopy: A\n1 | F\n', 5, 'a section with copy: has no bars of its own'],
     ['copy: of a later section', 'section: B\ncopy: A\nsection: A\n1 | C\n', 2, 'copy: A must name a section above it'],
     ['copy: of no section', 'section: B\ncopy: Z\n', 2, 'copy: Z must name a section above it'],

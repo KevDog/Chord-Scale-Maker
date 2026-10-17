@@ -21,20 +21,25 @@ const sameBar = (a: string, b: string): boolean => (WHOLE.test(a) && WHOLE.test(
 
 export type GuideEvent = Readonly<{ row: Row; chord: string; start: number; beats: number }> // in beats from 0
 
-/** when each chord starts and how long it lasts; lengths: each section's, in bars (else its last written bar) */
+/**
+ * when each chord starts and how long it lasts; lengths: each section's, in bars (else its last written bar), in
+ * chart order, so a section with no rows still takes its bars
+ */
 export function guideToneTimeline(rows: readonly Row[], beats: 2 | 3 | 4 = BEATS, lengths?: ReadonlyMap<string, number>): Readonly<{ events: readonly GuideEvent[]; diagnostics: readonly string[] }> {
-  const sections: Row[][] = []
+  const sections: { name: string; rows: Row[] }[] = lengths ? [...lengths.keys()].map((name) => ({ name, rows: [] })) : []
   for (const r of rows) {
+    const known = lengths ? sections.find((s) => s.name === r.section) : undefined
     const last = sections.at(-1)
-    if (last?.[0]?.section === r.section) last.push(r)
-    else sections.push([r])
+    if (known) known.rows.push(r)
+    else if (!lengths && last?.name === r.section) last.rows.push(r)
+    else sections.push({ name: r.section, rows: [r] })
   }
   const events: GuideEvent[] = []
   const diagnostics: string[] = []
   let cursor = 0
-  for (const rs of sections) {
+  for (const { name, rows: rs } of sections) {
     const lastBar = Math.max(1, ...rs.filter((r) => WHOLE.test(r.bar)).map((r) => Number(r.bar)))
-    const length = Math.max(lengths?.get(rs[0]?.section ?? '') ?? lastBar, lastBar)
+    const length = Math.max(lengths?.get(name) ?? lastBar, lastBar)
     const t = timeSection(rs, cursor, beats, length)
     events.push(...t.events)
     diagnostics.push(...t.diagnostics)

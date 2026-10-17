@@ -181,10 +181,16 @@ export function parseChart(text: string): Parsed<ChartDoc> {
   const diagnostics: Diagnostic[] = []
   const names = new Set<string>()
   let songTime = ''
-  let block: { name: string; copy: boolean; body: boolean; lastBar: number; bars: { line: number; value: number } | null } | null = null
+  const lengths = new Map<string, number>() // each block's length so far, for a copy: of it
+  let block: { name: string; copy: string | null; body: boolean; lastBar: number; bars: { line: number; value: number } | null } | null = null
   const closeBlock = (): void => {
-    if (block?.bars && block.bars.value < block.lastBar)
+    if (!block) return
+    const carried = block.copy ? lengths.get(block.copy) : undefined
+    if (block.bars && block.bars.value < block.lastBar)
       diagnostics.push({ line: block.bars.line, message: `bars: ${block.bars.value} is shorter than the section (its last bar is ${block.lastBar})` })
+    if (block.bars && carried !== undefined && block.bars.value < carried)
+      diagnostics.push({ line: block.bars.line, message: `bars: ${block.bars.value} is shorter than the section it repeats (${carried} bars)` })
+    lengths.set(block.name, Math.max(block.bars?.value ?? carried ?? 0, block.lastBar, carried ?? 0, 1))
   }
   const lines = text.split(/\r?\n/).map((raw, i): ChartLine => {
     const t = raw.trim()
@@ -198,7 +204,7 @@ export function parseChart(text: string): Parsed<ChartDoc> {
         else {
           closeBlock()
           names.add(parsed.name)
-          block = { name: parsed.name, copy: false, body: false, lastBar: 0, bars: null }
+          block = { name: parsed.name, copy: null, body: false, lastBar: 0, bars: null }
         }
       } else if (parsed.kind === 'sectionMeta' && block) {
         if (block.body) parsed = 'section fields go straight under section:, before its bars'
@@ -206,7 +212,7 @@ export function parseChart(text: string): Parsed<ChartDoc> {
           const { field, value } = parsed
           if (field === 'context' && value && !parseContext(value)) report('context: functional, modal or blues')
           if (field === 'copy') {
-            block.copy = true
+            block.copy = value
             if (!names.has(value) || value === block.name) report(`copy: ${value} must name a section above it`)
           }
           if (field === 'bars') block.bars = { line: i + 1, value: Number(value) }

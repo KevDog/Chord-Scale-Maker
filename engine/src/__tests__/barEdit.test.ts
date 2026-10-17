@@ -182,6 +182,10 @@ describe('deleteBar', () => {
     expect(deleteBar(doc, 'A1', 12)).toBe(doc)
   })
 
+  it('keeps a comment above the next section when it removes a section of one bar (review)', () => {
+    expect(out(deleteBar(text(['section: A', '1 | C', 'section: T', '1 | G7', '# about B', 'section: B', '1 | C']), 'T', 1))).toEqual(['section: A', '1 | C', '# about B', 'section: B', '1 | C'])
+  })
+
   it('removes a section of one bar, but not one a copy: repeats', () => {
     expect(out(deleteBar(text(['section: A', '1 | C', 'section: T', '1 | G7', 'section: B', '1 | C']), 'T', 1))).toEqual(['section: A', '1 | C', 'section: B', '1 | C'])
     const copied = text(['section: A', '1 | C', 'section: B', 'copy: A'])
@@ -286,6 +290,12 @@ describe('sections', () => {
     expect(spans(doc).at(-1)).toEqual(['A3', 1, 8])
     expect(barView(doc).sections.at(-1)?.copy).toMatchObject({ of: 'A1' })
     expect(barView(doc).unplaced).toEqual([])
+  })
+
+  it('repeats an outside: yes section under any name, outside the form too (review)', () => {
+    const d = repeatSection(text(['section: Vamp', 'outside: yes', '1 | Dm7', 'section: A', '1 | C']), 'Vamp', 'Vamp2')
+    expect(out(d)).toContain('section: Vamp2')
+    expect(barView(d).sections.find((x) => x.name === 'Vamp2')?.part).toBe('before')
   })
 
   it('refuses to repeat a missing section, or into a name that is taken', () => {
@@ -401,6 +411,11 @@ describe('splitSection', () => {
       ['A', 1, 4],
       ['B', 1, 4],
     ])
+  })
+
+  it('carries the context in force and outside: yes to the new section (review)', () => {
+    const d = splitSection(text(['section: V', 'outside: yes', 'context: modal', '1 | C', '@context 3 blues', '3 | F', '5 | G']), 'V', 5, 'V2')
+    expect(out(d).slice(-4)).toEqual(['section: V2', 'context: blues', 'outside: yes', '1 | G'])
   })
 
   it("refuses the section's first bar, a held bar, a name in use or of another part, an ending across the split, or a section another repeats", () => {
