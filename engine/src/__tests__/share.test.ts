@@ -27,8 +27,12 @@ describe('share links', () => {
     expect((await decodeShare(await encodeShare({ chart: CHART, view: auto })))?.view?.practice).toEqual({ preset: 'pentatonic', degree: 'auto' })
   })
 
+  it('refuse a version-1 link: its chart is in the retired row format (#329)', async () => {
+    expect(await decodeShare(await packed({ v: 1, chart: 'title: T\nA | 1 | C\n' }))).toBeNull()
+  })
+
   it('read an old link’s Pentatonic rank as Auto', async () => {
-    const old = await packed({ v: 1, chart: CHART, view: { sheet: 'scales', practice: { preset: 'pentatonic', rank: 4 } } })
+    const old = await packed({ v: 2, chart: CHART, view: { sheet: 'scales', practice: { preset: 'pentatonic', rank: 4 } } })
     expect((await decodeShare(old))?.view?.practice).toEqual({ preset: 'pentatonic', degree: 'auto' })
   })
 
@@ -47,7 +51,7 @@ describe('share links', () => {
     const pentatonic = Object.fromEntries(Array.from({ length: 800 }, (_, i) => [`A:${i + 1}:0`, { pc: 3, for: f }]))
     const hexatonic = Object.fromEntries(Array.from({ length: 800 }, (_, i) => [`A:${i + 1}:0`, { roots: [0, 2] as const, for: f }]))
     const view = { sheet: 'changes', picks: { pentatonic, hexatonic } } as const
-    expect(new TextEncoder().encode(JSON.stringify({ v: 1, chart: CHART, view })).length).toBeGreaterThan(SHARE_LIMITS.inflated)
+    expect(new TextEncoder().encode(JSON.stringify({ v: 2, chart: CHART, view })).length).toBeGreaterThan(SHARE_LIMITS.inflated)
     const back = await decodeShare(await encodeShare({ chart: CHART, view }))
     expect(back).toEqual({ chart: CHART, view: { sheet: 'changes' } })
     const small = { pentatonic: { 'A:1:0': { pc: 3, for: f } }, hexatonic: {} }
@@ -71,14 +75,14 @@ describe('share links', () => {
   it('open nothing from a damaged, foreign or oversized link', async () => {
     const good = await encodeShare({ chart: CHART })
     for (const bad of ['', 'not base64!', good.slice(0, -6), 'AAAA', 'x'.repeat(SHARE_LIMITS.encoded + 1)]) expect(await decodeShare(bad)).toBeNull()
-    expect(await decodeShare(await packed({ v: 2, chart: CHART }))).toBeNull() // a newer version
-    expect(await decodeShare(await packed({ v: 1, chart: 42 }))).toBeNull()
-    expect(await decodeShare(await packed({ v: 1, chart: 'x'.repeat(LIMITS.maxChars + 1) }))).toBeNull()
+    expect(await decodeShare(await packed({ v: 3, chart: CHART }))).toBeNull() // a newer version
+    expect(await decodeShare(await packed({ v: 2, chart: 42 }))).toBeNull()
+    expect(await decodeShare(await packed({ v: 2, chart: 'x'.repeat(LIMITS.maxChars + 1) }))).toBeNull()
     expect(await decodeShare(await packed([1, 2]))).toBeNull()
   })
 
   it('refuse a small link that would inflate past the limit', async () => {
-    const bomb = await packed({ v: 1, chart: ' '.repeat(SHARE_LIMITS.inflated) })
+    const bomb = await packed({ v: 2, chart: ' '.repeat(SHARE_LIMITS.inflated) })
     expect(bomb.length).toBeLessThan(2_000)
     expect(await decodeShare(bomb)).toBeNull()
   })
@@ -90,7 +94,7 @@ describe('share links', () => {
       start: 'F#',
       practice: { keys: ['b3'] },
     })
-    expect(await decodeShare(await packed({ v: 1, chart: CHART, view: { mode: 'root', bogus: true } }))).toEqual({ chart: CHART, view: { mode: 'root' } })
+    expect(await decodeShare(await packed({ v: 2, chart: CHART, view: { mode: 'root', bogus: true } }))).toEqual({ chart: CHART, view: { mode: 'root' } })
   })
 
   it("carry the Changes sheet's line: a guide tone line or an arpeggio pattern", async () => {
@@ -115,12 +119,12 @@ describe('share links', () => {
     for (const line of ['off', 'both', 'Up · root', true, 3, null]) expect(shareViewFrom({ sheet: 'changes', line })).toEqual({ sheet: 'changes' })
     expect(shareViewFrom({ sheet: 'changes', guideLine: 'third' })).toEqual({ sheet: 'changes' })
     expect(shareViewFrom({ fromThird: true, fromSeventh: true, guideThird: true, guideSeventh: true })).toBeUndefined()
-    expect(await decodeShare(await packed({ v: 1, chart: CHART, view: { sheet: 'changes', fromSeventh: true } }))).toEqual({ chart: CHART, view: { sheet: 'changes' } })
+    expect(await decodeShare(await packed({ v: 2, chart: CHART, view: { sheet: 'changes', fromSeventh: true } }))).toEqual({ chart: CHART, view: { sheet: 'changes' } })
   })
 
   it('drop the retired Guide tones sheet from an old link, keeping the rest of its view', async () => {
     expect(shareViewFrom({ sheet: 'guideTones', numerals: true })).toEqual({ numerals: true })
-    expect(await decodeShare(await packed({ v: 1, chart: CHART, view: { sheet: 'guideTones', mode: 'root' } }))).toEqual({ chart: CHART, view: { mode: 'root' } })
+    expect(await decodeShare(await packed({ v: 2, chart: CHART, view: { sheet: 'guideTones', mode: 'root' } }))).toEqual({ chart: CHART, view: { mode: 'root' } })
   })
 
   it('carry function cells and @key lines unchanged', async () => {

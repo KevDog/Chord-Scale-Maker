@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 import raw from '../../chord_scales.json'
 import { expandRows, parseChart } from '../chart'
 import { analyse } from '../analysis'
-import { ladderScale, type LevelState, scaleAtLevel, seededUnit, unlevel } from '../levels'
+import { ladderScale, type LevelState, remapOwned, scaleAtLevel, seededUnit, unlevel } from '../levels'
 import { resolveQuality } from '../qualities'
 import { samePitchScale, scaleKey } from '../scales'
 
@@ -151,6 +151,10 @@ describe('unlevel, the migration of a chart a level once wrote into', () => {
   it('blanks a tonic minor chord Basic made Aeolian', () => {
     const doc = parsed('key: Gm\n\nsection: A\nbars: 4\n1 | Am7b5\n2 | D7\n3 | Gm | G Aeolian\n')
     expect(cells(unlevel(doc, at('basic', 0, ['6:Gm'])).doc)).toEqual(['', '', ''])
+  })
+
+  it('remapOwned follows rows to their new lines and drops lines that went', () => {
+    expect(remapOwned(['2:Cm7', '5:F7', '9:G7', 'x'], [0, 1, 4, -1, 5, 6, 7, 8, 9, -1])).toEqual(['4:Cm7', '6:F7'])
   })
 
   it('changes nothing without owned rows', () => {

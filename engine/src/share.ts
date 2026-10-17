@@ -40,7 +40,8 @@ export type ShareView = Readonly<{
 }>
 export type SharePayload = Readonly<{ chart: string; view?: ShareView }>
 
-const VERSION = 1
+/** 2: section blocks (#329); a version-1 link's chart is in the retired row format and doesn't open */
+const VERSION = 2
 /** the longest link payload we read (characters after "#s="), and the most it may inflate to (bytes) */
 export const SHARE_LIMITS = { encoded: 64_000, inflated: LIMITS.maxChars * 4 + 4_000 } as const
 const START = /^[A-G](?:b|#)?$/

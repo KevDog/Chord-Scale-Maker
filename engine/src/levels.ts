@@ -115,6 +115,15 @@ const standardOf = (baseline: ChartDoc | undefined, i: number, chord: string): s
 // the rows that are a tonic minor chord, from the analysis (it reads the chords, so it's the same at every level)
 const tonicMinorOf = (doc: ChartDoc): ReadonlySet<number> => new Set(analyse(doc).rows.filter((r) => r.rule === 'm5').map((r) => r.line))
 
+/** `owned` keys (`line:chord`) moved to the lines a chart migration (migrateChart) put their rows on; a key whose line went is dropped */
+export function remapOwned(owned: readonly string[], lineMap: readonly number[]): string[] {
+  return owned.flatMap((k) => {
+    const m = /^(\d+):(.*)$/.exec(k)
+    const to = m ? lineMap[Number(m[1])] : undefined
+    return m && to !== undefined && to >= 0 ? [`${to}:${m[2]}`] : []
+  })
+}
+
 /**
  * the migration (docs/superpowers/specs/2026-10-11-proposed-scales-design.md §3): a chart a level once wrote its
  * scales into, with its cells blank again where they still hold the level's scale, so the resolver plays the level there.
