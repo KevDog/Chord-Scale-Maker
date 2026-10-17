@@ -1,4 +1,17 @@
-import type { ArpDirection } from './arpeggioSheet'
+import type { Key } from './analysis/keys'
+import { arpeggioTones } from './arpeggios'
+import type { ArpDirection, ArpeggioLineNotes, ArpeggioSheetModel, ArpeggioStaffModel } from './arpeggioSheet'
+import { type Row, qualityScale } from './chart'
+import { chordTokensOrNull, writtenChordRootLenient } from './chord'
+import { intervalLabels } from './intervals'
+import { accidentalsInBar, keySignature, octaveOf } from './keySignature'
+import { type Part, type Pitched, rangeOf, scaleLabel, writtenScale } from './part'
+import { mod, pcOf, type Spelled } from './pitch'
+import { resolveQuality } from './qualities'
+import type { Resolved } from './resolve'
+import { scaleLines } from './sheet'
+import type { Range } from './instruments'
+import { chunk, orNull } from './util'
 
 /** A pattern's moves: steps between neighbouring notes of a collection, up (+) or down (−). */
 export type Moves = readonly number[]
@@ -102,4 +115,108 @@ function upRun(size: number, moves: Moves): Readonly<{ steps: readonly number[];
   steps.push(size)
   groups.push(1)
   return { steps, groups }
+}
+
+/** what a pattern runs over: the chord's scale, or its chord tones */
+export type PatternNotes = 'scale' | 'chord'
+
+/** a run's start: the offsets (semitones from its first note) placed whole at the start with the fewest notes out of range, then the average nearest the centre (a tie: the higher) */
+function placeWhole(offsets: readonly number[], first: number, range: Range): readonly number[] {
+  const avg = (xs: readonly number[]): number => xs.reduce((a, b) => a + b, 0) / xs.length
+  const options: { midi: number[]; out: number }[] = []
+  for (let m = range.lo - 12; m <= range.hi + 12; m++) {
+    if (mod(m, 12) !== first) continue
+    const midi = offsets.map((o) => m + o)
+    options.push({ midi, out: midi.filter((x) => x < range.lo || x > range.hi).length })
+  }
+  const cost = (o: { midi: number[]; out: number }): readonly number[] => [o.out, Math.abs(avg(o.midi) - range.centre), -(o.midi[0] ?? 0)]
+  const cmp = (a: readonly number[], b: readonly number[]): number => a.reduce((r, x, i) => r || x - (b[i] ?? 0), 0)
+  return [...options].sort((a, b) => cmp(cost(a), cost(b)))[0]?.midi ?? offsets.map((o) => range.centre + o - (offsets[0] ?? 0))
+}
+
+/** one scale line's pattern: the moves over the scale or chord tones, placed whole in the part's range; an unreadable line is an error, never a throw */
+export function patternLine(
+  part: Part,
+  chord: string,
+  scale: string | null,
+  moves: Moves,
+  notes: PatternNotes,
+  dir: ArpDirection,
+): ArpeggioLineNotes | Readonly<{ error: string }> {
+  try {
+    return playPattern(part, chord, scale, moves, notes, dir)
+  } catch (e) {
+    return { error: e instanceof Error ? e.message : String(e) }
+  }
+}
+
+function playPattern(part: Part, chord: string, scale: string | null, moves: Moves, notes: PatternNotes, dir: ArpDirection): ArpeggioLineNotes | Readonly<{ error: string }> {
+  let collection: readonly Spelled[]
+  if (notes === 'scale') {
+    if (scale === null) return { error: 'Choose a scale' }
+    collection = writtenScale(part, scale).notes
+  } else {
+    const tones = arpeggioTones(part, chord, scale ?? undefined)
+    if (!tones) return { error: `No chord tones for ${chord}` }
+    collection = tones
+  }
+  const n = collection.length
+  const pcs = collection.map(pcOf)
+  // each collection note's semitones above the first, rising
+  const rel = pcs.reduce<number[]>((acc, pc, i) => (i === 0 ? [0] : [...acc, (acc[i - 1] ?? 0) + mod(pc - (pcs[i - 1] ?? pc) - 1, 12) + 1]), [])
+  const { steps, groups } = patternRun(n, moves, dir)
+  const offsets = steps.map((s) => (rel[mod(s, n)] ?? 0) + 12 * Math.floor(s / n))
+  const midi = placeWhole(offsets, pcs[0] ?? 0, rangeOf(part))
+  const placed = steps.map((s, i): Pitched => {
+    const note = collection[mod(s, n)] as Spelled
+    return { letter: note.letter, acc: note.acc, midi: midi[i] ?? 0 }
+  })
+  return { notes: placed, groups }
+}
+
+/**
+ * the Patterns sheet: the Scales sheet's lines (scaleLines), each its pattern, in pages of perPage; never throws.
+ * key and resolved as in buildArpeggioSheet.
+ */
+export function buildPatternSheet(
+  rows: readonly Row[],
+  part: Part,
+  perPage: number,
+  moves: Moves,
+  notes: PatternNotes,
+  dir: ArpDirection,
+  key?: Key | null,
+  resolved?: ReadonlyMap<number, Resolved>,
+): ArpeggioSheetModel {
+  const scaleOf = (r: Row, i: number): string | null => (resolved?.has(i) ? (resolved.get(i)?.scale ?? null) : qualityScale(r))
+  const lines = scaleLines(rows, scaleOf)
+  const keySig = key === undefined ? null : keySignature(key, part)
+  const range = rangeOf(part)
+  const staves = lines.map((l, n): ArpeggioStaffModel => {
+    const r = rows[l.row] as Row
+    const scale = scaleOf(r, l.row)
+    const showClefAndKey = key === undefined || n === 0
+    const id = [l.chords.join(' '), scale, part.clef, part.trans, `${range.lo}-${range.hi}-${range.centre}`, formatPattern(moves), notes, dir, keySig, showClefAndKey ? '' : 'bare'].join('|')
+    const base = {
+      id,
+      chords: l.chords.map((c) => chordTokensOrNull(part, c, scale)),
+      scale: orNull(() => (scale ? scaleLabel(part, scale) : null)),
+      keySig,
+      showClefAndKey,
+      last: n === lines.length - 1,
+    }
+    const played = patternLine(part, r.chord, scale, moves, notes, dir)
+    if ('error' in played) return { ...base, notes: [], groups: [], accidentals: [], intervals: null, error: played.error }
+    return {
+      ...base,
+      ...played,
+      accidentals: accidentalsInBar(
+        played.notes.map((p) => ({ letter: p.letter, acc: p.acc, octave: octaveOf(p) })),
+        keySig,
+      ),
+      intervals: orNull(() => intervalLabels(writtenChordRootLenient(part, r.chord, scale), played.notes, resolveQuality(r.chord)?.quality ?? null)),
+      error: null,
+    }
+  })
+  return { heading: 'Patterns', pages: chunk(staves, perPage) }
 }

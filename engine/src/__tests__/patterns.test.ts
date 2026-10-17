@@ -1,5 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { formatPattern, parsePattern, PATTERN_LIBRARY, patternRun } from '../patterns'
+import type { Row } from '../chart'
+import { noteName } from '../instruments'
+import { type Pitched, partFor, rangeOf } from '../part'
+import { rootName } from '../pitch'
+import { buildPatternSheet, formatPattern, parsePattern, PATTERN_LIBRARY, patternLine, patternRun } from '../patterns'
 
 describe('patterns', () => {
   it('parses moves with hyphen, minus or en dash, spaces or commas, a bare number up', () => {
@@ -70,5 +74,64 @@ describe('patterns', () => {
       expect(Math.min(...grp)).toBe(grp[0])
       i += g
     }
+  })
+})
+
+const CONCERT_PIANO = partFor('piano')
+const names = (r: ReturnType<typeof patternLine>) => ('error' in r ? r.error : r.notes.map((n) => noteName(n.midi)))
+
+describe('patternLine', () => {
+  it('runs 1 2 3 4 over C Ionian from C, in the piano range', () => {
+    expect(names(patternLine(CONCERT_PIANO, 'Cmaj7', 'C Ionian', [1, 1, 1, -2], 'scale', 'up')).slice(0, 8)).toEqual(['C4', 'D4', 'E4', 'F4', 'D4', 'E4', 'F4', 'G4'])
+  })
+  it('runs over Dm7’s chord tones', () => {
+    const r = names(patternLine(CONCERT_PIANO, 'Dm7', 'D Dorian', [1, 1, 1, -2], 'chord', 'up'))
+    expect((r as string[]).slice(0, 8).map((n) => n.replace(/\d/, ''))).toEqual(['D', 'F', 'A', 'C', 'F', 'A', 'C', 'D'])
+  })
+  it('spells for the part: tenor sax reads Cmaj7 as Dmaj7', () => {
+    const r = patternLine(partFor('tenor-sax'), 'Cmaj7', 'C Ionian', [1, 1, 1, -2], 'scale', 'up')
+    if ('error' in r) throw new Error(r.error)
+    expect(rootName(r.notes[0] as Pitched)).toBe('D')
+  })
+  it('keeps every note in the part’s range where the range can hold the run (a trombone, a player range)', () => {
+    for (const part of [partFor('trombone'), partFor('trumpet')]) {
+      const r = patternLine(part, 'Cmaj7', 'C Ionian', [1, 1, 1, -2], 'scale', 'up')
+      if ('error' in r) throw new Error(r.error)
+      const { lo, hi } = rangeOf(part)
+      for (const n of r.notes) expect(n.midi >= lo && n.midi <= hi).toBe(true)
+    }
+    const part = { ...partFor('trumpet'), range: { lo: 60, hi: 84, centre: 70 } }
+    const r = patternLine(part, 'Dm7', 'D Dorian', [2, -1], 'scale', 'down')
+    if ('error' in r) throw new Error(r.error)
+    for (const n of r.notes) expect(n.midi >= 60 && n.midi <= 84).toBe(true)
+  })
+  it('is an error, not a throw: no scale with Scale chosen, an unreadable chord with Chord tones', () => {
+    expect(patternLine(CONCERT_PIANO, 'Cmaj7', null, [1, 1, 1, -2], 'scale', 'up')).toHaveProperty('error')
+    expect(patternLine(CONCERT_PIANO, 'Hmaj7', 'C Ionian', [1, 1, 1, -2], 'chord', 'up')).toHaveProperty('error')
+  })
+  it('goes down by reflection and keeps the groups', () => {
+    const r = patternLine(CONCERT_PIANO, 'Cmaj7', 'C Ionian', [1, 1, 1, -2], 'scale', 'down')
+    if ('error' in r) throw new Error(r.error)
+    expect(r.groups).toEqual([4, 4, 4, 4, 4, 4, 4, 1])
+    expect(r.notes.length).toBe(29)
+    expect(r.notes[0]?.midi).toBeGreaterThan(r.notes.at(-1)?.midi ?? 0)
+  })
+})
+
+describe('buildPatternSheet', () => {
+  const row = (chord: string, scale = ''): Row => ({ section: 'A', bar: '1', chord, scale })
+  it('builds a sheet of one staff per scale line, headed Patterns', () => {
+    const moves = [1, 1, 1, -2]
+    const s = buildPatternSheet([row('Dm7', 'D Dorian'), row('G7', 'G Mixolydian')], CONCERT_PIANO, 12, moves, 'scale', 'up')
+    expect(s.heading).toBe('Patterns')
+    const staves = s.pages.flat()
+    expect(staves).toHaveLength(2)
+    for (const st of staves) {
+      expect(st.id).toContain(formatPattern(moves))
+      expect(st.id).toContain('scale')
+      expect(st.error).toBeNull()
+      expect(st.notes.length).toBeGreaterThan(0)
+    }
+    expect(new Set(staves.map((x) => x.id)).size).toBe(2)
   })
 })
