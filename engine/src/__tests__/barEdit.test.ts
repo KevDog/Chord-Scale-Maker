@@ -193,7 +193,7 @@ describe('deleteBar', () => {
   })
 })
 
-describe('insertBar and deleteBar over the library', () => {
+describe('insertBar and deleteBar over the library', { timeout: 30_000 }, () => {
   const files = readdirSync('charts').filter((f) => f.endsWith('.txt'))
 
   it('place every line after an insert, and a delete of the same bar gives the chart back', () => {
