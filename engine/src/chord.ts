@@ -12,6 +12,11 @@ import { orNull } from './util'
 const CHORD_RE = /^([A-G])([b#♭♯]?)(.*?)(?:\/([A-G])([b#♭♯]?))?$/
 
 export type ChordParts = Readonly<{ root: Spelled; quality: string; bass?: Spelled }>
+
+/** the rest symbol as the sheets draw it */
+export const REST = 'N.C.'
+/** a chord cell that is a rest ("N.C.", "NC", "N.C", any case): no chord, so no scale, no analysis and no staff */
+export const isRest = (chord: string): boolean => /^n\.?c\.?$/i.test(chord.trim())
 export type ChordToken = Readonly<{ kind: 'text'; text: string } | { kind: 'acc'; acc: 'b' | '#' }>
 
 export function parseChord(text: string): ChordParts {

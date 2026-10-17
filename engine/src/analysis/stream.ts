@@ -1,5 +1,5 @@
 import { type FormPart, formPart, type LinedRow } from '../chart'
-import { parseChord } from '../chord'
+import { isRest, parseChord } from '../chord'
 import { pcOf, type Spelled } from '../pitch'
 import { readChord } from '../qualities'
 
@@ -85,11 +85,12 @@ function timing(rows: readonly LinedRow[], formBars?: number): { start: number; 
 }
 
 export function buildStream(rows: readonly LinedRow[], formBars?: number): Entry[] {
-  // each part is timed on its own: the form to its stated length, an intro or coda to its own last bar
+  // each part is timed on its own: the form to its stated length, an intro or coda to its own last bar; a rest (N.C.)
+  // is no entry: the chords around it are neighbours, and the one before it lasts through it
   const parts = rows.map((r) => formPart(r.section))
   const times: { start: number; bars: number }[] = []
   for (const part of ['before', 'form', 'after'] as const) {
-    const idx = rows.flatMap((_, i) => (parts[i] === part ? [i] : []))
+    const idx = rows.flatMap((r, i) => (parts[i] === part && !isRest(r.chord) ? [i] : []))
     timing(
       idx.map((i) => rows[i] as LinedRow),
       part === 'form' ? formBars : undefined,
@@ -97,6 +98,7 @@ export function buildStream(rows: readonly LinedRow[], formBars?: number): Entry
   }
   const out: Entry[] = []
   rows.forEach((row, i) => {
+    if (isRest(row.chord)) return
     const t = times[i] ?? { start: 1, bars: 1 }
     const part = parts[i] ?? 'form'
     const prev = out[out.length - 1]

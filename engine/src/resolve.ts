@@ -1,5 +1,6 @@
 import { type Analysis, analyse } from './analysis'
 import { type ChartDoc, expandRowLines, qualityScale } from './chart'
+import { isRest } from './chord'
 import { type ScaleLevel, scaleAtLevel } from './levels'
 import { rootName } from './pitch'
 import { readChord } from './qualities'
@@ -10,9 +11,9 @@ import { readChord } from './qualities'
  * sheet's level; the quality's default only where the analysis doesn't reach the row. One resolver for every sheet.
  */
 export type Resolved = Readonly<{
-  /** null: the chord can't be read yet ("ask the user") */
+  /** null: the chord can't be read yet ("ask the user"), or it is a rest (N.C.) */
   scale: string | null
-  source: 'written' | 'function' | 'rules' | 'default'
+  source: 'written' | 'function' | 'rules' | 'default' | 'rest'
   /** the rule id, when the analysis chose the scale */
   rule?: string
   reason?: string
@@ -37,6 +38,7 @@ export function resolveScales(doc: ChartDoc, view: ScaleView, analysis: Analysis
   const byRow = new Map(analysis.rows.map((r) => [r.row, r]))
   const out = new Map<number, Resolved>()
   expandRowLines(doc).value.forEach((row, i) => {
+    if (isRest(row.chord)) return void out.set(i, { scale: null, source: 'rest' })
     if (row.scale) return void out.set(i, { scale: row.scale, source: 'written' })
     const r = byRow.get(i)
     if (r?.scale) return void out.set(i, { scale: atLevel(view, row.chord, r.scale, r.rule, row.line), source: r.stated ? 'function' : 'rules', rule: r.rule, reason: r.reason })

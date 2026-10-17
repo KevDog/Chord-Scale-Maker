@@ -1,4 +1,4 @@
-import { parseChord, writtenChordRootLenient } from './chord'
+import { isRest, parseChord, writtenChordRootLenient } from './chord'
 import { type Part, type Pitched, rangeOf } from './part'
 import { accidentalsInBar, octaveOf } from './keySignature'
 import { baseQuality } from './qualities'
@@ -143,7 +143,7 @@ export function guideVoices(
   if (line === 'off') return { bars, labels, missing }
   const tones = chords.map((c) => {
     const t = guideTonesFor(part, c.chord, c.scale)
-    if (!t) {
+    if (!t && !isRest(c.chord)) {
       const why = `no guide tones for ${c.chord || 'an empty chord'} (${readable(c.chord) ? 'unknown chord quality' : "can't read the chord"})`
       if (!missing.includes(why)) missing.push(why)
     }

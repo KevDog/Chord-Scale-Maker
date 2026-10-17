@@ -786,3 +786,12 @@ describe('refreshAnalysis', () => {
     expect(row).toMatchObject({ scale: 'D Phrygian', comment: 'keep: the melody’s Gb in Eb' })
   })
 })
+
+describe('N.C. in the analysis', () => {
+  it('leaves a rest out of the stream: it gets no row and no problem, and the chords around it are neighbours', () => {
+    const a = analyse(parseChart('title: T\nkey: F\n\nsection: A\nbars: 4\n1 | C7\n2 | N.C.\n3 | FMaj7\n').value)
+    expect(a.rows.map((r) => r.chord)).toEqual(['C7', 'FMaj7'])
+    expect(a.rows[0]).toMatchObject({ rule: 'D4', reason: 'V7 of F: natural tensions' })
+    expect(a.problems).toEqual([])
+  })
+})

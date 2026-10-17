@@ -2,7 +2,7 @@ import type { ChordAt } from './changes'
 import { type ChordPicks, livePicks, pickTarget } from './chordPicks'
 import type { Row } from './chart'
 import { qualityScale } from './chart'
-import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRoot, writtenChordRootLenient } from './chord'
+import { type ChordToken, chordTokensOrNull, isRest, parseChord, writtenChordRoot, writtenChordRootLenient } from './chord'
 import { intervalLabels } from './intervals'
 import { type HexPair, hexatonicPairs, hexatonicPick, type StaffHexatonic } from './hexatonics'
 import { isHexatonicSelection, isPentatonicSelection, type PracticeSelection, practiceKeys, selectedNotes, startReference } from './practice'
@@ -67,6 +67,7 @@ function lineKey(chord: string, scale: string | null): string {
 export function scaleLines(rows: readonly Row[], scaleOf: (row: Row, index: number) => string | null): ScaleLine[] {
   const lines = new Map<string, { row: number; rows: number[]; chords: string[] }>()
   rows.forEach((r, i) => {
+    if (isRest(r.chord)) return // a rest has no scale to practise
     const key = lineKey(r.chord, scaleOf(r, i))
     const line = lines.get(key)
     if (!line) lines.set(key, { row: i, rows: [i], chords: [r.chord] })

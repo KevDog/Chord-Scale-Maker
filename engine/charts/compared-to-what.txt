@@ -7,7 +7,7 @@ source:
 # analysis: 2026-10-12, rules v1; F
 
 # Intro bars 1–8 (and the pickup): N.C., the piano and bass figure
-# Intro bars 1–40: a piano solo; the drums play time from bar 17
+# Intro bars 9–48: a piano solo; the drums play time from bar 25
 # A bars 1, 5, 7, 9: the bar opens on its bass note alone (F, F#, F#, G bass), the chord comes on beat 3
 # printed C13sus (A bars 21–24): written C9sus4, the nearest symbol the library reads
 # B repeats for each verse (4x); C is the solo vamp (4x); after the fourth verse D.S. (fifth verse) al Coda
@@ -16,11 +16,12 @@ source:
 # bar | chord
 
 section: Intro
-bars: 36
-1  | Ebm7     # a borrowed minor chord: Dorian, its own key
-17 | Eb7      # tritone substitute: resolves down a half step to Dm7
-25 | Dm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-33 | F7       # static dominant: its own mode
+bars: 48
+1  | N.C.
+9  | Ebm7     # a borrowed minor chord: Dorian, its own key
+25 | Eb7      # tritone substitute: resolves down a half step to Dm7
+33 | Dm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+41 | F7       # static dominant: its own mode
 
 section: A
 1  | Gm7/F    # ii: Dorian, the key’s own notes

@@ -1,4 +1,4 @@
-import { parseChord, writtenChordRootLenient } from './chord'
+import { isRest, parseChord, writtenChordRootLenient } from './chord'
 import { type GuideInput, type GuideLine, type GuideNote, voiceAccidentals } from './guideTones'
 import type { Range } from './instruments'
 import { type Part, rangeOf } from './part'
@@ -193,7 +193,7 @@ export function cellVoices(
   const missing: string[] = []
   const cells = chords.map((c, i) => {
     const found = cellsOf(c, i)
-    if (!found && !missing.includes(noTonesFor(c.chord))) missing.push(noTonesFor(c.chord))
+    if (!found && !isRest(c.chord) && !missing.includes(noTonesFor(c.chord))) missing.push(noTonesFor(c.chord))
     return found
   })
   const segments: Segment[] = chords.flatMap((c, chord) => {

@@ -1,4 +1,5 @@
 import { readdirSync, readFileSync } from 'node:fs'
+import { isRest } from '../chord'
 import { describe, expect, it } from 'vitest'
 import { chartBeats, parseChart, qualityScale, type Row } from '../chart'
 import { guideTonesFor } from '../guideTones'
@@ -102,7 +103,7 @@ describe('the library', () => {
       const l = sectionLayout(doc).value
       const { events, diagnostics } = guideToneTimeline(l.rows, chartBeats(doc), l.lengths)
       expect(diagnostics, f).toEqual([])
-      expect(events.filter((e) => !guideTonesFor(CONCERT, e.chord, qualityScale(e.row) ?? undefined)).map((e) => e.chord), f).toEqual([])
+      expect(events.filter((e) => !isRest(e.chord) && !guideTonesFor(CONCERT, e.chord, qualityScale(e.row) ?? undefined)).map((e) => e.chord), f).toEqual([])
     }
   })
 })

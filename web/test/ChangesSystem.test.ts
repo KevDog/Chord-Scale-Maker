@@ -159,6 +159,15 @@ describe('ChangesSystem as the editor', () => {
     expect(pickers(adding)).toHaveLength(4)
   })
 
+  it('gives a rest (N.C.) no pickers: it has no function or scale to choose', async () => {
+    const rest = (): ChangesLine => ({ bars: [bar([at(chord(0, 'N.C.', ''), 2), at(chord(2, 'G7', ''), 3)], [])], sectionEnd: false })
+    const w = await mountSuspended(ChangesSystem, { props: { ...base, line: rest(), editing: null } })
+    expect(w.findAllComponents({ name: 'SheetLabelPicker' }).map((c) => [c.props('kind'), c.props('chord')])).toEqual([
+      ['numeral', 'G7'],
+      ['scale', 'G7'],
+    ])
+  })
+
   it('shows the bar toolbar for the bar under the pointer, named for the bar, and relays its changes', async () => {
     const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: null } })
     expect(w.find('[role=toolbar]').exists()).toBe(false)

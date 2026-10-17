@@ -1,4 +1,5 @@
 import { readdirSync, readFileSync } from 'node:fs'
+import { isRest } from '../chord'
 import { describe, expect, it } from 'vitest'
 import { type ChartDoc, chartBeats, expandRows, parseChart, qualityScale } from '../chart'
 import {
@@ -197,7 +198,8 @@ describe('guide tone lines over the library', () => {
           const chords = inputs(doc)
           const g = guideVoices(chords, part, chartBeats(doc), null, line)
           if (g.missing.length) faults.push(`${chart}: ${g.missing.join('; ')}`)
-          if (g.labels.size !== chords.length) faults.push(`${chart}: ${g.labels.size} of ${chords.length} chords labelled`)
+          const sounding = chords.filter((c) => !isRest(c.chord)).length // a rest (N.C.) gets no label
+          if (g.labels.size !== sounding) faults.push(`${chart}: ${g.labels.size} of ${sounding} chords labelled`)
           const bars = [...g.bars.entries()].sort(([a], [b]) => a - b)
           for (const [bar, voice] of bars)
             for (const n of voice)
