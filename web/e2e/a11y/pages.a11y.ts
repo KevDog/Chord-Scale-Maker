@@ -78,3 +78,13 @@ test.describe('phone', () => {
     await expectAccessible(page)
   })
 })
+
+// the prerendered page as it is before the app runs: its scripts emptied, not JavaScript off (axe needs it)
+test.describe('without the app', () => {
+  test('a song: its changes', async ({ page }) => {
+    await page.route(/\.m?js(\?|$)/, (route) => route.fulfill({ contentType: 'text/javascript', body: '' }))
+    await page.goto(SONG)
+    await expect(page.getByRole('list', { name: /bar by bar/ }).first()).toBeVisible()
+    await expectAccessible(page)
+  })
+})

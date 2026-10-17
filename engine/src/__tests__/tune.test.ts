@@ -2,7 +2,8 @@ import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { keyLabel, parseChart } from '../chart'
 import { LIMITS } from '../limits'
-import { tuneAdvice, tuneDescription, tuneGaps, tuneSummary } from '../tune'
+import type { ChordToken } from '../chord'
+import { chartOutline, tuneAdvice, tuneDescription, tuneGaps, tuneSummary } from '../tune'
 import { isSyncCopy } from '../util'
 
 const read = (name: string) => readFileSync(`charts/${name}`, 'utf8')
@@ -109,5 +110,35 @@ describe('tuneAdvice: what a song page could also use', () => {
       'no aka: add the tune’s other common titles, if it has any',
     ])
     expect(tuneAdvice(doc('title: X\nsource: Real Book\naka: Y'))).toEqual([])
+  })
+})
+
+describe('chartOutline', () => {
+  const text = (tokens: readonly ChordToken[]) => tokens.map((t) => (t.kind === 'text' ? t.text : t.acc === 'b' ? '♭' : '♯')).join('')
+  const bars = (chart: string) =>
+    chartOutline(chart).map((s) => ({ name: s.name, copyOf: s.copyOf, bars: s.bars.map((b) => b.chords.map(text)) }))
+
+  it('gives each bar its chords as the sheet draws them, a held bar as %', () => {
+    const [a] = bars(read('blue-trane.txt'))
+    expect(a).toMatchObject({ name: 'A', copyOf: null })
+    expect(a?.bars).toEqual([['E♭7(♯9)'], ['%'], ['%'], ['%'], ['A♭7(♯11)'], ['%'], ['E♭7(♯9)'], ['%'], ['B♭7(♯9)'], ['%'], ['E♭7(♯9)'], ['%']])
+  })
+
+  it('gives a bar of two chords both, in order', () => {
+    expect(bars('section: A\n1 | Dm7\n1 | G7\n2 | CMaj7')[0]?.bars).toEqual([['D–7', 'G7'], ['CMaj7']])
+  })
+
+  it('gives a copy: section as the one it repeats, with no bars', () => {
+    const s = bars('section: A1\n1 | C\n2 | G7\n\nsection: A2\ncopy: A1')
+    expect(s[1]).toEqual({ name: 'A2', copyOf: 'A1', bars: [] })
+  })
+
+  it('reads in concert pitch, as written', () => {
+    expect(bars('key: Bb\ninstrument: Tenor Sax\n\nsection: A\n1 | Bb7')[0]?.bars).toEqual([['B♭7']])
+  })
+
+  it('outlines every library chart with no bar left empty', () => {
+    for (const f of charts)
+      for (const s of chartOutline(read(f))) for (const b of s.bars) expect(b.chords.length, `${f} ${s.name} ${b.bar}`).toBeGreaterThan(0)
   })
 })

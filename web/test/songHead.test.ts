@@ -20,6 +20,11 @@ describe('songHead', () => {
     expect(ld.map((d) => d['@type'])).toEqual(['MusicComposition', 'BreadcrumbList'])
     expect(ld[0]?.url).toBe('https://www.chordscalemaker.com/song/blue-trane')
   })
+  it("gives a song's chord changes, section by section", () => {
+    const outline = songHead('blue-trane')?.outline
+    expect(outline?.map((s) => s.name)).toEqual(['A'])
+    expect(outline?.[0]?.bars).toHaveLength(12)
+  })
   it('is null for anything that is not a library chart', () => {
     expect(songHead('no-such-tune')).toBeNull()
   })
