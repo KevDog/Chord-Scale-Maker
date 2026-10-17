@@ -75,7 +75,7 @@ test.describe('a new browser', () => {
   test('that already has preferences starts at Everything', async ({ page }) => {
     await page.addInitScript(() => {
       try {
-        if (localStorage.getItem('csm-interface') === null) localStorage.setItem('csm-instrument', 'concert')
+        if (localStorage.getItem('csm-interface') === null) localStorage.setItem('csm-instrument', 'piano')
       } catch {
         // no storage on this page
       }

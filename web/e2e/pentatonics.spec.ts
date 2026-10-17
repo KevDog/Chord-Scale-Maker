@@ -247,7 +247,7 @@ test('the Line plays each chord’s labelled pentatonic in cells under the Penta
   await showPentatonicLine(page)
   await expect(page.getByRole('radio', { name: 'Pentatonic', exact: true })).toBeChecked() // the stored arpeggio line, read as Pentatonic
   await pentatonicLineDrawn(page)
-  await expect(line).toHaveAttribute('aria-label', /; pentatonic: C4 D4 E4 G4, E4 G4 C5 D5 \| C5 D5 E5 G5/) // Am less A, each cell from its note nearest the last
+  await expect(line).toHaveAttribute('aria-label', /; pentatonic: C5 D5 E5 G5, E5 D5 C5 G4 \| E4 G4 C5 D5/) // Am less A, from piano's centre (B♭4), each cell from its note nearest the last
   await pickOption(page, 'Leave out', '♭7')
   await expect(line).toHaveAttribute('aria-label', /; pentatonic: A4 C5 D5 E5, /)
   await pickOption(page, 'Pentatonic direction', 'Down')

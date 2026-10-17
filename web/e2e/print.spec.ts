@@ -5,8 +5,8 @@ const pdfPages = (pdf: Buffer): number => (pdf.toString('latin1').match(/\/Type\
 
 // 14 lines at 12 staves per letter page, even when every staff has ledger lines (trombone from B)
 for (const [instrument, start] of [
-  ['Concert', null],
-  ['Concert', 'C'],
+  ['Piano', null],
+  ['Piano', 'C'],
   ['Trombone', 'B'],
 ] as const) {
   test(`prints 12 staves per letter page (${instrument}, from ${start ?? 'the root'})`, async ({ page }) => {

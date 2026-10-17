@@ -120,12 +120,17 @@ test("one picker spells every scale from the chart's key (the default), any note
   const mode = page.getByRole('button', { name: 'Where each scale starts' })
   await expect(mode).toContainText('From key (C)') // the default
   await expect(staves(page)).toHaveCount(3)
-  await expect(page.locator('section header p').first()).toHaveText('C (Spelled from C)')
+  await expect(page.locator('section header p').first()).toHaveText('C – Piano (Spelled from C)')
   await pickOption(page, 'Where each scale starts', 'From E♭')
   await expect(mode).toContainText('From E♭')
-  await expect(page.locator('section header p').first()).toHaveText('C (Spelled from E♭)')
+  await expect(page.locator('section header p').first()).toHaveText('C – Piano (Spelled from E♭)')
   await pickOption(page, 'Where each scale starts', 'From root')
-  await expect(page.locator('section header p').first()).toHaveText('C (Spelled from the Root)')
+  await expect(page.locator('section header p').first()).toHaveText('C – Piano (Spelled from the Root)')
+})
+
+test('a first visit is a Piano sheet, and says so', async ({ page }) => {
+  await expect(page.getByRole('button', { name: 'Instrument' })).toContainText('Piano')
+  await expect(page.locator('section header p').first()).toContainText('Piano')
 })
 
 test('transposing rewrites the chart in another key', async ({ page }) => {
@@ -359,12 +364,17 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
   expect(stepped.rows, `Changes, Pentatonics stepped (${stepped.widths})`).toBeLessThanOrEqual(2)
   // a line's detail (From 3rd; under the Pentatonics, the Pentatonic line's direction and Leave out, #284) opens beneath the Line control: nothing moves
   const line = page.locator('#preview-toolbar [data-slot=label]').getByText('Line', { exact: true })
-  const at = await line.boundingBox()
+  // where the label sits in the toolbar (not the viewport: a shorter sheet below can scroll the page)
+  const place = async () => {
+    const [l, t] = await Promise.all([line.boundingBox(), page.locator('#preview-toolbar').boundingBox()])
+    return l && t ? { x: l.x - t.x, y: l.y - t.y } : null
+  }
+  const at = await place()
   for (const mode of ['Guide Tones', 'Pentatonic'] as const) {
     await showLine(page, mode)
     const { rows, widths } = await layout()
     expect(rows, `Changes, ${mode} (${widths})`).toBeLessThanOrEqual(2)
-    expect(await line.boundingBox(), mode).toEqual(at)
+    expect(await place(), mode).toEqual(at)
   }
 })
 
