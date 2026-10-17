@@ -181,46 +181,49 @@ function playPattern(part: Part, chord: string, scale: string | null, moves: Mov
 /** most notes a pattern stave carries before its run continues onto another */
 const PATTERN_STAVE_NOTES = 24
 
-/** a run's pieces as [first, end) group indexes: broken at `turn` (groups; 0 = none) when the run is too long for one stave, each half filled greedily by whole groups up to the cap (a group over the cap stands alone) */
-function splitRun(groups: readonly number[], turn: number): readonly (readonly [number, number])[] {
+/**
+ * a run's pieces as [first, end) group indexes. A run over the cap breaks at `turn` (a group index; 0 = none), then each
+ * half takes the fewest pieces of at most 24 notes (a lone group over the cap stands alone), then the smallest largest
+ * piece, then the longer piece first. Throws when `turn` is not a group boundary.
+ */
+export function splitRun(groups: readonly number[], turn: number): readonly (readonly [number, number])[] {
+  if (!Number.isInteger(turn) || turn < 0 || turn > groups.length) throw new Error(`splitRun: turn ${turn} is not a group boundary`)
   if (sum(groups) <= PATTERN_STAVE_NOTES) return [[0, groups.length]]
-  const fill = (from: number, to: number): [number, number][] => {
-    const total = sum(groups.slice(from, to))
-    const pieces = Math.ceil(total / PATTERN_STAVE_NOTES)
-    // cut each piece's end at the group boundary nearest an even share (a tie: the longer piece first)
-    const cuts: number[] = [from]
-    for (let j = 1; j < pieces; j++) {
-      const target = (j * total) / pieces
-      let best = (cuts.at(-1) as number) + 1
-      for (let b = best; b < to; b++) {
-        const d = Math.abs(sum(groups.slice(from, b)) - target)
-        const bd = Math.abs(sum(groups.slice(from, best)) - target)
-        if (d <= bd) best = b
-      }
-      cuts.push(best)
+  const half = (from: number, to: number): [number, number][] => {
+    // best[i]: the piece lengths of the best split of groups i..to
+    const best: (number[] | undefined)[] = Array.from({ length: to + 1 })
+    best[to] = []
+    const better = (a: readonly number[], b: readonly number[] | undefined): boolean => {
+      if (!b) return true
+      if (a.length !== b.length) return a.length < b.length
+      const [ma, mb] = [Math.max(...a), Math.max(...b)]
+      if (ma !== mb) return ma < mb
+      const at = a.findIndex((x, i) => x !== b[i])
+      return at >= 0 && (a[at] as number) > (b[at] as number)
     }
-    cuts.push(to)
-    const out = cuts.slice(0, -1).map((c, k): [number, number] => [c, cuts[k + 1] as number])
-    const ok = out.every(([x, y]) => y > x && sum(groups.slice(x, y)) <= PATTERN_STAVE_NOTES)
-    return ok || pieces === 1 ? out : greedy(from, to)
-  }
-  const greedy = (from: number, to: number): [number, number][] => {
+    for (let i = to - 1; i >= from; i--) {
+      let size = 0
+      for (let j = i + 1; j <= to; j++) {
+        size += groups[j - 1] as number
+        if (size > PATTERN_STAVE_NOTES && j > i + 1) break
+        const tail = best[j]
+        if (!tail) continue
+        const cand = [size, ...tail]
+        if (better(cand, best[i])) best[i] = cand
+      }
+    }
     const out: [number, number][] = []
-    let start = from
-    let count = 0
-    for (let i = from; i < to; i++) {
-      const g = groups[i] as number
-      if (i > start && count + g > PATTERN_STAVE_NOTES) {
-        out.push([start, i])
-        start = i
-        count = 0
-      }
-      count += g
+    let at = from
+    let g = from
+    for (const len of best[from] ?? []) {
+      let size = 0
+      while (size < len) size += groups[g++] as number
+      out.push([at, g])
+      at = g
     }
-    if (start < to) out.push([start, to])
     return out
   }
-  return turn > 0 ? [...fill(0, turn), ...fill(turn, groups.length)] : fill(0, groups.length)
+  return turn > 0 && turn < groups.length ? [...half(0, turn), ...half(turn, groups.length)] : half(0, groups.length)
 }
 
 /**
@@ -257,7 +260,7 @@ export function buildPatternSheet(
     if ('error' in played) return [{ ...base, id, last, notes: [], groups: [], accidentals: [], intervals: null, error: played.error }]
     const intervals = orNull(() => intervalLabels(writtenChordRootLenient(part, r.chord, scale), played.notes, resolveQuality(r.chord)?.quality ?? null))
     // Up & down has 2L-1 groups (L in Up with its lone octave): its Up half is the first L-1
-    const turn = dir === 'up-down' ? (played.groups.length + 1) / 2 - 1 : 0
+    const turn = dir === 'up-down' && played.groups.length % 2 === 1 ? (played.groups.length + 1) / 2 - 1 : 0
     const pieces = splitRun(played.groups, turn)
     return pieces.map(([g0, g1], p): ArpeggioStaffModel => {
       const n0 = sum(played.groups.slice(0, g0))
