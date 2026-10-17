@@ -80,7 +80,7 @@ web/                      # Nuxt app (Vercel root directory); imports @chord-sca
                           # field, table, interactive (Catalyst wiring),
                           # site (canonical URLs, page heads), structuredData (JSON-LD), sitemap (§7b)
     assets/css/main.css   # Tailwind, theme tokens, print rules
-  build/                  # csp.ts, headers.ts, analytics.ts, quotes.ts (+ tests, check-headers)
+  build/                  # csp.ts, headers.ts, analytics.ts, quotes.ts, sw.ts + service-worker.js (+ tests, check-headers)
   server/                 # routes/sitemap.xml.ts (prerendered, §7b), api/contact.post.ts, utils/contactMessage.ts (+ test: message and attachment checks), plugins/csp.ts
   public/theme-init.js    # applies the saved theme before first paint
   public/analytics-before-send.js  # strips a share link's #… before Web Analytics sends a page view
@@ -1066,6 +1066,13 @@ static file, §7b), so the attack surface is small. The measures:
     hashed at build time. There is no `'unsafe-inline'` for scripts.
   - **Styles:** `style-src` allows inline styles, because Vue and VexFlow set style attributes.
   - **Tests:** the E2E tests fail on any CSP violation.
+  - **Offline worker (#324, flag `offline`):** `public/sw.js` is written after prerendering by `web/build/sw.ts`
+    (from `build/service-worker.js` and the precache list: the `/_nuxt` chunks, the non-song pages and payloads, the
+    icons and `/200.html`, Nuxt's client-only shell). Same origin and registered from a plugin file
+    (`plugins/serviceWorker.client.ts`), so the CSP is unchanged: `worker-src` and `manifest-src` fall back to `'self'`.
+    Chunks are cache-first; pages and the rest network-first, cached as they arrive. Offline, a song not yet visited
+    opens from `/200.html` (its chart is in the chunks). The version hashes the precached files, so a new build
+    replaces the cache. The other e2e specs block service workers (`playwright.config.ts`); `e2e/offline.spec.ts` allows them.
   - **Error pages:** not-found and error pages use `app/error.vue`, because Nuxt's built-in error page injects an
     inline script, which the CSP blocks.
 - **Headers:**
