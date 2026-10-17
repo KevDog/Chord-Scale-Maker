@@ -1,4 +1,4 @@
-import { type ChartDoc, chartBeats, type ChartLine, formPart, type FormPart, isSectionName, lineSections, type MetaKey, parseChart, SECTION_FIELDS, type SectionField, serializeChart } from './chart'
+import { beatsPerBar, type ChartDoc, chartBeats, type ChartLine, formPart, type FormPart, isSectionName, lineSections, type MetaKey, parseChart, SECTION_FIELDS, type SectionField, serializeChart } from './chart'
 import { type BarSection, type BarView, barView, type ChartBar } from './bars'
 import { chordsAfterTyping, posOfLine } from './barGrid'
 import { sectionLayout, statedKeyAt } from './layout'
@@ -200,6 +200,7 @@ function shiftBars(doc: ChartDoc, view: BarView, section: string, at: number, de
         return n === null ? [] : [{ ...l, bar: n }]
       }
       case 'key':
+      case 'time':
       case 'context': {
         const n = map(l.bar)
         if (n !== null) return [{ ...l, bar: n }]
@@ -381,17 +382,17 @@ export function repeatSection(doc: ChartDoc, src: string, dst: string): ChartDoc
   return insertBlock(doc, partEnd(doc, view, from.part), block)
 }
 
-/** a repeat written out: its copy: becomes rows of its own, in its place, with what it carried (key, time, context, bars, key changes) */
+/** a repeat written out: its copy: becomes rows of its own, in its place, with what it carried (key, time, context, bars, key and metre changes) */
 export function writeOutCopy(doc: ChartDoc, section: string): ChartDoc {
   const layout = sectionLayout(doc).value
   const s = layout.sections.find((x) => x.name === section)
   const i = fieldIndex(doc, section, 'copy')
   if (!s || i < 0 || !s.rows.length) return doc
   const rows = s.rows.map(({ line: _l, at: _a, section: _s, ...r }): RowLine => ({ kind: 'row', ...r }))
-  // the key and context changes it carried: the layout gives them to it, but they're written in its source's block
+  // the key, metre and context changes it carried: the layout gives them to it, but they're written in its source's block
   const sections = lineSections(doc)
   const carried = layout.directives
-    .filter((d) => d.section === section && (d.kind === 'key' || d.kind === 'context') && sections[d.line] !== section)
+    .filter((d) => d.section === section && (d.kind === 'key' || d.kind === 'time' || d.kind === 'context') && sections[d.line] !== section)
     .map(({ section: _s, line: _l, ...d }) => d as ChartLine)
   let next: ChartDoc = { lines: [...doc.lines.slice(0, i), ...rows, ...carried, ...doc.lines.slice(i + 1)] }
   if (s.key && fieldIndex(next, section, 'key') < 0) next = setSectionField(next, section, 'key', s.key)
@@ -421,19 +422,21 @@ export function splitSection(doc: ChartDoc, section: string, bar: number, name: 
     mine(i) &&
     ((l.kind === 'row' && WHOLE.test(l.bar) && Number(l.bar) >= bar) ||
       (l.kind === 'ending' && l.from >= bar) ||
-      ((l.kind === 'key' || l.kind === 'context' || l.kind === 'mark' || l.kind === 'nav') && l.bar >= bar))
+      ((l.kind === 'key' || l.kind === 'time' || l.kind === 'context' || l.kind === 'mark' || l.kind === 'nav') && l.bar >= bar))
   const renumber = (l: ChartLine): ChartLine => {
     if (l.kind === 'row') return { ...l, bar: String(Number(l.bar) - bar + 1) }
     if (l.kind === 'ending') return { ...l, from: l.from - bar + 1, to: l.to - bar + 1 }
-    if (l.kind === 'key' || l.kind === 'context' || l.kind === 'mark' || l.kind === 'nav') return { ...l, bar: l.bar - bar + 1 }
+    if (l.kind === 'key' || l.kind === 'time' || l.kind === 'context' || l.kind === 'mark' || l.kind === 'nav') return { ...l, bar: l.bar - bar + 1 }
     return l
   }
   const key = statedKeyAt(sectionLayout(doc).value, section, bar)
-  // a key change on the split bar is the new section's key:
-  const moved = doc.lines.flatMap((l, i) => (moves(l, i) ? [renumber(l)] : [])).filter((l) => !(l.kind === 'key' && l.bar === 1))
+  // a key or metre change on the split bar is the new section's key: or time:
+  const moved = doc.lines.flatMap((l, i) => (moves(l, i) ? [renumber(l)] : [])).filter((l) => !((l.kind === 'key' || l.kind === 'time') && l.bar === 1))
   const removedBefore = doc.lines.slice(0, r.end).filter((l, i) => moves(l, i)).length
   const kept = doc.lines.filter((l, i) => !moves(l, i))
-  const time = doc.lines.find((l, i) => mine(i) && l.kind === 'sectionMeta' && l.field === 'time')
+  // the metre in force at the split, written where it isn't the song's or the section wrote its own
+  const ownTime = doc.lines.some((l, i) => mine(i) && l.kind === 'sectionMeta' && l.field === 'time')
+  const time: ChartLine | null = ownTime || found.bar.beats !== view.beats ? { kind: 'sectionMeta', field: 'time', value: `${found.bar.beats}/4` } : null
   // the context in force at the split: the last @context before it, else the section's context:
   const contextLine = doc.lines.findLast((l, i) => mine(i) && ((l.kind === 'context' && l.bar <= bar) || (l.kind === 'sectionMeta' && l.field === 'context')))
   const context = contextLine?.kind === 'context' ? contextLine.context : contextLine?.kind === 'sectionMeta' ? contextLine.value : null
@@ -448,6 +451,30 @@ export function splitSection(doc: ChartDoc, section: string, bar: number, name: 
   const length = found.section.bars.length
   const next = insertBlock({ lines: kept }, r.end - removedBefore, block)
   return tidyBars(tidyBars(next, section, bar - 1), name, length - bar + 1)
+}
+
+/**
+ * put one bar of a section in a metre (2/4 to 6/4), the bars after it keeping theirs: its @time, and one on the bar
+ * after to go back; a change the bar before already makes is dropped, and bar 1's is the section's time:. Not on a
+ * copy's bar, or in the metre it is in.
+ */
+export function setBarMetre(doc: ChartDoc, section: string, bar: number, time: string): ChartDoc {
+  const view = barView(doc)
+  const found = writtenBar(view, section, bar)
+  const beats = beatsPerBar(time)
+  if (!found || beats === null || !time.trim() || found.bar.beats === beats) return doc
+  const want = found.section.bars.map((b) => (b.bar === bar ? beats : b.beats))
+  const sections = lineSections(doc)
+  // its @time lines that still change the metre stay where they are; the rest go, and the new ones go at the block's end
+  const changesAt = (n: number): boolean => n > 1 && want[n - 1] !== want[n - 2]
+  const kept = doc.lines.filter((l, i) => !(sections[i] === section && l.kind === 'time' && (!changesAt(l.bar) || beatsPerBar(l.time) !== want[l.bar - 1])))
+  const have = new Set(kept.flatMap((l, i) => (sections[i] === section && l.kind === 'time' ? [l.bar] : [])))
+  let next: ChartDoc = { lines: kept }
+  want.forEach((b, j) => {
+    if (changesAt(j + 1) && !have.has(j + 1)) next = addDirective(next, section, { kind: 'time', bar: j + 1, time: `${b}/4` })
+  })
+  if (bar === 1) next = setSectionField(next, section, 'time', beats === view.beats ? null : `${beats}/4`)
+  return next
 }
 
 /** a directive for a section goes at the end of its block */

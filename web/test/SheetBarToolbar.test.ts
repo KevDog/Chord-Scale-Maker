@@ -59,7 +59,7 @@ describe('SheetBarToolbar', () => {
     await press(w, 'More actions for A bar 2')
     await nextTick()
     const items = [...document.querySelectorAll<HTMLElement>('[role=menuitem]')]
-    expect(items.map((m) => m.textContent?.trim())).toEqual(['Key change here', '1st ending', '2nd ending', 'Segno', 'Coda', 'Jump…', 'New section here…', 'Paste bars…'])
+    expect(items.map((m) => m.textContent?.trim())).toEqual(['Key change here', '1st ending', '2nd ending', 'Segno', 'Coda', 'Bar in 2/4', 'Bar in 3/4', 'Bar in 5/4', 'Bar in 6/4', 'Jump…', 'New section here…', 'Paste bars…'])
     items.at(-2)?.click()
     await nextTick()
     expect(w.emitted('dialog')?.[0]).toEqual(['split', 'A', 2])
@@ -68,6 +68,16 @@ describe('SheetBarToolbar', () => {
     ;[...document.querySelectorAll<HTMLElement>('[role=menuitem]')].at(-1)?.click()
     await nextTick()
     expect(w.emitted('dialog')?.[1]).toEqual(['paste', 'A', 2])
+  })
+
+  it('puts the bar in another metre from the menu, the bars after keeping theirs (#235)', async () => {
+    const w = await mount()
+    await press(w, 'More actions for A bar 2')
+    await nextTick()
+    ;[...document.querySelectorAll<HTMLElement>('[role=menuitem]')].find((m) => m.textContent?.trim() === 'Bar in 3/4')?.click()
+    await nextTick()
+    expect(serializeChart(next(w))).toContain('@time 2 3/4\n@time 3 4/4')
+    expect(w.emitted('said')?.at(-1)?.[0]).toBe('A: bar 2 in 3/4')
   })
 
   it('toggles an ending from the menu', async () => {

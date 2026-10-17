@@ -5,7 +5,7 @@ import { defaultScaleOrNull } from './qualities'
 /**
  * The chart text format (docs/design.md §4): a header of song fields, then section blocks: a `section:` line, its own
  * fields (key:, time:, context:, bars:, outside:, copy:), then its rows (`bar | chord [| scale [| function]]`, bars
- * from 1) and directives (@key, @context, @ending, @segno, @coda, @nav), until the next `section:`. A tolerant parser
+ * from 1) and directives (@key, @time, @context, @ending, @segno, @coda, @nav), until the next `section:`. A tolerant parser
  * to a ChartDoc that keeps every line, the canonical serializer and the default-scale lookup; layout.ts resolves the
  * blocks.
  */
@@ -31,12 +31,15 @@ export function parseContext(text: string): ChartContext | null {
   return t === 'functional' || t === 'modal' || t === 'blues' ? t : null
 }
 
-/** `time:` 2/4, 3/4 or 4/4 (the default): beats a bar for the Changes sheet and its guide tones; null if it's another */
-export function beatsPerBar(time: string): 2 | 3 | 4 | null {
+/** a bar's length in quarter-note beats: the metres a chart can be in */
+export type Beats = 2 | 3 | 4 | 5 | 6
+const METRES = 'time: 2/4, 3/4, 4/4, 5/4 or 6/4'
+/** `time:` or `@time` 2/4 to 6/4 (4/4, the default, when empty): beats a bar for the Changes sheet and its guide tones; null if it's another */
+export function beatsPerBar(time: string): Beats | null {
   const t = time.trim()
   if (!t) return 4
-  const m = /^([234])\/4$/.exec(t)
-  return m ? (Number(m[1]) as 2 | 3 | 4) : null
+  const m = /^([2-6])\/4$/.exec(t)
+  return m ? (Number(m[1]) as Beats) : null
 }
 /** a section block's own fields (docs/design.md §4), in the order the serializer writes them */
 export type SectionField = 'key' | 'time' | 'context' | 'bars' | 'outside' | 'copy'
@@ -57,6 +60,8 @@ export type ChartLine =
   | Readonly<{ kind: 'nav'; bar: number; text: string }>
   // the author's key area, from this bar to the end of its section
   | Readonly<{ kind: 'key'; bar: number; key: string }>
+  // the metre (2/4 to 6/4), from this bar to the end of its section (#235)
+  | Readonly<{ kind: 'time'; bar: number; time: string }>
   // the author's context, from this bar to the end of its section (parsed; the analyser doesn't use it yet)
   | Readonly<{ kind: 'context'; bar: number; context: ChartContext }>
   | Readonly<{ kind: 'comment'; text: string }>
@@ -107,6 +112,12 @@ function parseDirective(line: string, low: string): ChartLine | string | null {
     if (!m || !INT_RE.test(m[1] ?? '') || !matchKeyText(k)) return 'use  @key BAR KEY  (a key like Eb or Cm)'
     return { kind: 'key', bar: Number(m[1]), key: k }
   }
+  if (low.startsWith('@time')) {
+    const m = /^@time\s+(\S+)\s+(\S+)$/i.exec(line)
+    const time = (m?.[2] ?? '').trim()
+    if (!m || !INT_RE.test(m[1] ?? '') || !time || beatsPerBar(time) === null) return 'use  @time BAR METRE  (2/4, 3/4, 4/4, 5/4 or 6/4)'
+    return { kind: 'time', bar: Number(m[1]), time }
+  }
   if (low.startsWith('@context')) {
     const m = /^@context\s+(\S+)\s+(\S+)$/i.exec(line)
     const context = parseContext(m?.[2] ?? '')
@@ -119,7 +130,7 @@ function parseDirective(line: string, low: string): ChartLine | string | null {
 /** a section field's line, in a block */
 function parseSectionField(field: SectionField, value: string): ChartLine | string {
   if (field === 'key' && value && !matchKeyText(value)) return 'key: a key like Eb or Cm'
-  if (field === 'time' && beatsPerBar(value) === null) return 'time: 2/4, 3/4 or 4/4'
+  if (field === 'time' && beatsPerBar(value) === null) return METRES
   if (field === 'bars' && !(/^\d{1,4}$/.test(value) && Number(value) > 0)) return 'bars: a whole number of bars'
   if (field === 'outside') {
     const v = value.toLowerCase()
@@ -149,7 +160,7 @@ function parseLine(line: string, inSection: boolean): ChartLine | string {
       if (key === 'key' || key === 'time' || key === 'context' || key === 'bars') return parseSectionField(key, value)
       return `${key}: belongs in the header, before the first section:`
     }
-    if (key === 'time' && beatsPerBar(value) === null) return 'time: 2/4, 3/4 or 4/4'
+    if (key === 'time' && beatsPerBar(value) === null) return METRES
     if (key === 'kind' && value && !asKind(value)) return 'kind: tune, form or exercise'
     return { kind: 'meta', key, value }
   }
@@ -180,7 +191,6 @@ export function parseChart(text: string): Parsed<ChartDoc> {
     return { value: { lines: [] }, diagnostics: [{ line: 0, message: `chart longer than ${LIMITS.maxChars} characters`, fatal: true }] }
   const diagnostics: Diagnostic[] = []
   const names = new Set<string>()
-  let songTime = ''
   const lengths = new Map<string, number>() // each block's length so far, for a copy: of it
   let block: { name: string; copy: string | null; body: boolean; lastBar: number; bars: { line: number; value: number } | null } | null = null
   const closeBlock = (): void => {
@@ -198,7 +208,6 @@ export function parseChart(text: string): Parsed<ChartDoc> {
     const report = (message: string): void => void diagnostics.push({ line: i + 1, message })
     if (typeof parsed !== 'string') {
       if (parsed.kind === 'meta' && parsed.key === 'context' && parsed.value && !parseContext(parsed.value)) report('context: functional, modal or blues')
-      if (parsed.kind === 'meta' && parsed.key === 'time') songTime = parsed.value
       if (parsed.kind === 'section') {
         if (names.has(parsed.name)) parsed = `section ${parsed.name} is already in the chart`
         else {
@@ -216,7 +225,6 @@ export function parseChart(text: string): Parsed<ChartDoc> {
             if (!names.has(value) || value === block.name) report(`copy: ${value} must name a section above it`)
           }
           if (field === 'bars') block.bars = { line: i + 1, value: Number(value) }
-          if (field === 'time' && beatsPerBar(value) !== (beatsPerBar(songTime) ?? 4)) report("time: drawn in the song's metre until #235")
         }
       } else if (block && parsed.kind !== 'comment' && parsed.kind !== 'blank' && parsed.kind !== 'invalid') {
         block.body = true
@@ -282,6 +290,8 @@ export function serializeChart(doc: ChartDoc): string {
         return `@nav ${l.bar} ${l.text}`
       case 'key':
         return `@key ${l.bar} ${l.key}`
+      case 'time':
+        return `@time ${l.bar} ${l.time}`
       case 'context':
         return `@context ${l.bar} ${l.context}`
       case 'comment':
@@ -309,7 +319,7 @@ export const metaValue = (doc: ChartDoc, key: MetaKey, fallback = ''): string =>
   doc.lines.reduce((v, l) => (l.kind === 'meta' && l.key === key ? l.value : v), fallback)
 
 /** the chart's beats a bar, from its `time:` line (4 without one) */
-export const chartBeats = (doc: ChartDoc): 2 | 3 | 4 => beatsPerBar(metaValue(doc, 'time')) ?? 4
+export const chartBeats = (doc: ChartDoc): Beats => beatsPerBar(metaValue(doc, 'time')) ?? 4
 
 /** the title, subtitle and key as written (what the editor's fields edit) */
 export function chartMeta(doc: ChartDoc): Readonly<{ title: string; subtitle: string; key: string }> {

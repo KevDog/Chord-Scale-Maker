@@ -1,4 +1,4 @@
-import { beatsPerBar, type ChartContext, type ChartDoc, chartBeats, type Diagnostic, formPart, type FormPart, type LinedRow, parseContext, type Parsed, type SectionField } from './chart'
+import { type Beats, beatsPerBar, type ChartContext, type ChartDoc, chartBeats, type Diagnostic, formPart, type FormPart, type LinedRow, parseContext, type Parsed, type SectionField } from './chart'
 import { LIMITS } from './limits'
 
 /**
@@ -7,12 +7,13 @@ import { LIMITS } from './limits'
  * chart read this rather than walking doc.lines. Pure; no analysis.
  */
 
-/** a directive with the section it is in (or, for a key or context a copy: carries, the copy's) and its line */
+/** a directive with the section it is in (or, for a key, time or context a copy: carries, the copy's) and its line */
 export type Directive =
   | Readonly<{ kind: 'ending'; section: string; n: number; from: number; to: number; line: number }>
   | Readonly<{ kind: 'mark'; section: string; mark: 'segno' | 'coda'; bar: number; line: number }>
   | Readonly<{ kind: 'nav'; section: string; bar: number; text: string; line: number }>
   | Readonly<{ kind: 'key'; section: string; bar: number; key: string; line: number }>
+  | Readonly<{ kind: 'time'; section: string; bar: number; time: string; line: number }>
   | Readonly<{ kind: 'context'; section: string; bar: number; context: ChartContext; line: number }>
 
 export type LayoutSection = Readonly<{
@@ -23,8 +24,10 @@ export type LayoutSection = Readonly<{
   /** the copy: source and the copy: line; null for a section written out */
   copyOf: string | null
   copyLine: number | null
-  /** its metre as written or carried; the sheets still play the song's (drawn from #235) */
-  beats: 2 | 3 | 4
+  /** its metre at bar 1, as written or carried */
+  beats: Beats
+  /** each bar's beats: its metre, changed by each @time to the section's end (#235) */
+  metre: readonly Beats[]
   /** in bars: bars:, else a copy's source's length, else its last written bar */
   length: number
   /** the bars before it in its part */
@@ -44,6 +47,8 @@ export type Layout = Readonly<{
   /** own and carried directives, in chart order */
   directives: readonly Directive[]
   lengths: ReadonlyMap<string, number>
+  /** each section's metre (LayoutSection.metre) */
+  metres: ReadonlyMap<string, readonly Beats[]>
 }>
 
 const WHOLE = /^[+-]?\d{1,6}$/
@@ -58,14 +63,14 @@ export function sectionLayout(doc: ChartDoc): Parsed<Layout> {
     if (!b) return
     if (l.kind === 'sectionMeta') b.fields[l.field] = { value: l.value, line }
     else if (l.kind === 'row') b.rows.push({ section: b.name, bar: l.bar, chord: l.chord, scale: l.scale, ...(l.function ? { function: l.function } : {}), line, at: 0 })
-    else if (l.kind === 'ending' || l.kind === 'mark' || l.kind === 'nav' || l.kind === 'key' || l.kind === 'context') b.directives.push({ ...l, section: b.name, line })
+    else if (l.kind === 'ending' || l.kind === 'mark' || l.kind === 'nav' || l.kind === 'key' || l.kind === 'time' || l.kind === 'context') b.directives.push({ ...l, section: b.name, line })
   })
 
   const songBeats = chartBeats(doc)
   const diagnostics: Diagnostic[] = []
   const sections: LayoutSection[] = []
   const directives: Directive[] = []
-  // each section as resolved, with the key and context changes a copy of it carries
+  // each section as resolved, with the key, time and context changes a copy of it carries
   const byName = new Map<string, Readonly<{ section: LayoutSection; plan: readonly Directive[] }>>()
   const partBars: Record<FormPart, number> = { before: 0, form: 0, after: 0 }
   let seenForm = false
@@ -89,15 +94,21 @@ export function sectionLayout(doc: ChartDoc): Parsed<Layout> {
     const start = partBars[part]
     partBars[part] += length
     const rows = base.map((r): LinedRow => ({ ...r, section: b.name, at: start + (WHOLE.test(r.bar) ? Number(r.bar) : 1) }))
-    // a copy's own key: (or context:) replaces its source's, with the source's in-block changes
-    const carried = src ? src.plan.filter((d) => (d.kind === 'key' && !b.fields.key) || (d.kind === 'context' && !b.fields.context)).map((d) => ({ ...d, section: b.name })) : []
+    // a copy's own key: (or time:, context:) replaces its source's, with the source's in-block changes
+    const carried = src
+      ? src.plan.filter((d) => (d.kind === 'key' && !b.fields.key) || (d.kind === 'time' && !b.fields.time) || (d.kind === 'context' && !b.fields.context)).map((d) => ({ ...d, section: b.name }))
+      : []
+    const beats = b.fields.time ? (beatsPerBar(b.fields.time.value) ?? songBeats) : src ? src.section.beats : songBeats
+    const changes = [...carried, ...b.directives].filter((d): d is Extract<Directive, { kind: 'time' }> => d.kind === 'time').sort((x, y) => x.bar - y.bar)
+    const metre = Array.from({ length }, (_, j) => changes.reduce<Beats>((m, d) => (d.bar <= j + 1 ? (beatsPerBar(d.time) ?? m) : m), beats))
     const section: LayoutSection = {
       name: b.name,
       line: b.line,
       part,
       copyOf: b.fields.copy?.value ?? null,
       copyLine: b.fields.copy?.line ?? null,
-      beats: b.fields.time ? (beatsPerBar(b.fields.time.value) ?? songBeats) : src ? src.section.beats : songBeats,
+      beats,
+      metre,
       length,
       start,
       key: b.fields.key?.value || (b.fields.key ? null : (src?.section.key ?? null)),
@@ -105,12 +116,12 @@ export function sectionLayout(doc: ChartDoc): Parsed<Layout> {
       fieldLines: Object.fromEntries(Object.entries(b.fields).map(([f, v]) => [f, v.line])),
       rows,
     }
-    byName.set(b.name, { section, plan: [...carried, ...b.directives.filter((d) => d.kind === 'key' || d.kind === 'context')] })
+    byName.set(b.name, { section, plan: [...carried, ...b.directives.filter((d) => d.kind === 'key' || d.kind === 'time' || d.kind === 'context')] })
     sections.push(section)
     directives.push(...carried, ...b.directives)
   }
   return {
-    value: { sections, rows: sections.flatMap((s) => s.rows), directives, lengths: new Map(sections.map((s) => [s.name, s.length])) },
+    value: { sections, rows: sections.flatMap((s) => s.rows), directives, lengths: new Map(sections.map((s) => [s.name, s.length])), metres: new Map(sections.map((s) => [s.name, s.metre])) },
     diagnostics,
   }
 }

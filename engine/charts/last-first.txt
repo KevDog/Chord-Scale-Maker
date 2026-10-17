@@ -7,7 +7,6 @@ source:
 context: modal
 # analysis: 2026-10-12, rules v1; G, modal
 
-# metre: 4/4, except B bars 7–8 in 5/4 and B bar 15 in 3/4
 # book: use the G major scale on the Gsus chord for solos
 # bar | chord
 
@@ -30,13 +29,11 @@ section: B
 4  | FMaj7/E     # from the symbol: sus b9
 5  | Em7         # modal minor: Dorian
 6  | FMaj7/E     # from the symbol: sus b9
-# bar 7 in 5/4
 7  | Em7         # modal minor: Dorian
-# bar 8 in 5/4
 8  | C/D         # modal major: Lydian
 9  | D/E         # modal major: Lydian
 # alt (optional): bars 10, 11 and 12 each (D/C C/D D/E), bar 13 (D/E); the D/E of bar 9 is held through bar 15
-# bar 15 in 3/4: no chord symbol (a piano and bass figure over the held D/E)
+# bar 15: no chord symbol (a piano and bass figure over the held D/E)
 # bars 16–23: the bass plays on beat 1 (sample voicings printed)
 16 | Bm11        # modal minor: Dorian
 # bar 17: last time, fermata and Fine
@@ -50,6 +47,10 @@ section: B
 21 | CMaj7#5/B   # from the symbol: #5
 22 | Bm11        # modal minor: Dorian
 23 | Am11/B      # modal minor: Dorian
+@time 7 5/4
+@time 9 4/4
+@time 15 3/4
+@time 16 4/4
 
 section: C
 bars: 8

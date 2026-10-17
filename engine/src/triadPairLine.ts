@@ -3,6 +3,7 @@ import { arpeggioCells, type ArpeggioPattern, type Cells, cellVoices, nearestTon
 import type { GuideInput, GuideNote } from './guideTones'
 import type { ChainTriad, TriadQuality } from './hexatonics'
 import type { Range } from './instruments'
+import type { Metre } from './metre'
 import { type Part, rangeOf } from './part'
 import { nextCell, orderFrom } from './pentatonicLine'
 import type { Spelled } from './pitch'
@@ -51,7 +52,7 @@ function pairCells(pair: TriadPair, dir: ArpDirection, range: Range): Cells {
 export function triadPairVoices(
   chords: readonly GuideInput[],
   part: Part,
-  beats: 2 | 3 | 4,
+  beats: Metre,
   keySig: string | null,
   line: TriadPairLine,
   pairs: ReadonlyMap<number, TriadPair>,

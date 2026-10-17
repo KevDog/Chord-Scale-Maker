@@ -2,6 +2,7 @@ import type { ArpDirection } from './arpeggioSheet'
 import { arpeggioCells, type ArpeggioPattern, type Cells, cellVoices, nearestTone } from './arpeggios'
 import type { GuideInput, GuideNote } from './guideTones'
 import type { Range } from './instruments'
+import type { Metre } from './metre'
 import { type Part, rangeOf } from './part'
 import { mod, pcOf, type Spelled } from './pitch'
 import { SCALES, spellFrom } from './scales'
@@ -99,7 +100,7 @@ function pentatonicCells(tones: readonly Spelled[], dir: ArpDirection, range: Ra
 export function pentatonicVoices(
   chords: readonly GuideInput[],
   part: Part,
-  beats: 2 | 3 | 4,
+  beats: Metre,
   keySig: string | null,
   line: PentatonicLine,
   roots: ReadonlyMap<number, Spelled>,

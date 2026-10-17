@@ -247,8 +247,7 @@ import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/s
  */
 const props = defineProps<{
   line: ChangesLine
-  first: boolean // gets the time signature
-  beats: 2 | 3 | 4
+  first: boolean // starts with the clef
   barsPerLine: number
   numerals: boolean
   scales: boolean
@@ -306,7 +305,7 @@ const marks = computed(() => {
     if (e?.kind === 'slot' && last && last.at.section === e.section && last.at.bar === e.bar) {
       const prev = chords.at(-1)
       if (prev) prev.lastInBar = false
-      chords.push({ key: `${b}-slot`, barIndex: b, k: -1, beat: last.beat + 1, lastInBar: true, line: last.line, slot: true, x: last.beat + 1 < props.beats ? at(last.beat + 1) : (nameEnd.value ?? at(last.beat)), tokens: null, text: '', written: '', row: last.at, numeral: '', scale: null, reason: '', problem: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: '', keyArea: '', segno: false, coda: false, nav: '', pentatonic: null, hexatonic: null })
+      chords.push({ key: `${b}-slot`, barIndex: b, k: -1, beat: last.beat + 1, lastInBar: true, line: last.line, slot: true, x: last.beat + 1 < bar.beats ? at(last.beat + 1) : (nameEnd.value ?? at(last.beat)), tokens: null, text: '', written: '', row: last.at, numeral: '', scale: null, reason: '', problem: '', rule: '', fallback: false, heardIn: '', keyFrom: 'found' as const, guide: '', marker: '', keyArea: '', segno: false, coda: false, nav: '', pentatonic: null, hexatonic: null })
     }
     return chords
   })
@@ -366,7 +365,7 @@ const crowded = computed((): string | null => {
   if (e?.kind !== 'slot') return null
   const b = props.line.bars.findIndex((bar) => bar.chords.at(-1)?.at.section === e.section && bar.chords.at(-1)?.at.bar === e.bar)
   const k = (props.line.bars[b]?.chords.length ?? 0) - 1
-  return b >= 0 && (props.line.bars[b]?.chords[k]?.beat ?? 0) + 1 >= props.beats ? `${b}-${k}` : null
+  return b >= 0 && (props.line.bars[b]?.chords[k]?.beat ?? 0) + 1 >= (props.line.bars[b]?.beats ?? 4) ? `${b}-${k}` : null
 })
 /** where that chord's name ends, and a gap, as a fraction of the line; null until measured */
 const nameEnd = ref<number | null>(null)
@@ -457,7 +456,7 @@ async function draw(): Promise<void> {
     await document.fonts?.ready // names measured in their own font
     const names = measureNames()
     drawn = key(names)
-    const layout = drawChangesLine(vf, el.value, props.line, { timeSignature: props.first, beats: props.beats, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}), ...(props.arpeggio ? { arpeggio: true } : {}), ...(props.lineName ? { lineName: props.lineName } : {}), ...(names ? { names } : {}) })
+    const layout = drawChangesLine(vf, el.value, props.line, { first: props.first, barsPerLine: props.barsPerLine, ...(props.clef ? { clef: props.clef } : {}), ...(props.arpeggio ? { arpeggio: true } : {}), ...(props.lineName ? { lineName: props.lineName } : {}), ...(names ? { names } : {}) })
     xs.value = layout.xs
     ends.value = layout.ends
     nameScales.value = layout.scales
@@ -487,5 +486,5 @@ onBeforeUnmount(() => {
   observer?.disconnect()
   clearTimeout(resized)
 })
-watch(() => [props.line, props.first, props.beats, props.barsPerLine, props.clef, props.arpeggio, props.lineName], () => nextTick(draw))
+watch(() => [props.line, props.first, props.barsPerLine, props.clef, props.arpeggio, props.lineName], () => nextTick(draw))
 </script>

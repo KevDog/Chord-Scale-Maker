@@ -1,6 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, arpeggioOrder, arpeggioTones, arpeggioVoices, isArpeggioPattern, isSheetLine, noteValue } from '../arpeggios'
 import type { GuideInput, GuideNote } from '../guideTones'
+import { clockOf, type Metre } from '../metre'
 import { CONCERT, type Part } from '../part'
 import { rootName } from '../pitch'
 import chordScales from '../../chord_scales.json'
@@ -97,7 +98,7 @@ const seq = (...cs: readonly (readonly [string, number])[]): GuideInput[] => {
     return c
   })
 }
-const voice = (cs: readonly GuideInput[], pattern: Parameters<typeof arpeggioVoices>[4], part: Part = CONCERT, beats: 2 | 3 | 4 = 4) =>
+const voice = (cs: readonly GuideInput[], pattern: Parameters<typeof arpeggioVoices>[4], part: Part = CONCERT, beats: Metre = 4) =>
   arpeggioVoices(cs, part, beats, null, pattern)
 const pitches = (notes: readonly GuideNote[] | undefined) => (notes ?? []).map((n) => (n.pitch ? toVexKey(n.pitch) : 'r'))
 
@@ -182,6 +183,14 @@ describe('arpeggio voices', () => {
     const { bars } = arpeggioVoices(seq(['Ab7', 4]), TENOR, 4, null, 'up-root') // written Bb7
     expect(pitches(bars.get(0))).toEqual(['bb/4', 'd/5', 'f/5', 'ab/5'])
     expect(bars.get(0)?.map((n) => n.accidental)).toEqual(['b', null, null, 'b'])
+  })
+  it('fills each bar in its own metre: a 2/4 bar, then a 6/4 bar (#235)', () => {
+    const { bars } = arpeggioVoices(seq(['CMaj7', 8]), CONCERT, clockOf([2, 6], 4), null, 'up-root')
+    expect([bars.get(0)?.length, bars.get(1)?.length]).toEqual([4, 6])
+    expect(bars.get(0)?.map((n) => n.beats)).toEqual([0.5, 0.5, 0.5, 0.5])
+  })
+  it('rests a 5/4 bar as a dotted half and a half', () => {
+    expect(voice(seq(['N.C.', 5]), 'up-root', CONCERT, 5).bars.get(0)?.map((n) => [n.beat, n.beats])).toEqual([[0, 3], [3, 2]])
   })
   it('bass: stays inside the bass range', () => {
     expect(pitches(voice(seq(['CMaj7', 4]), 'up-root', BASS).bars.get(0))).toEqual(['c/3', 'e/3', 'g/3', 'b/3'])

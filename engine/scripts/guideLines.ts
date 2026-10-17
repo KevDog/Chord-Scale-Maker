@@ -16,7 +16,7 @@
  */
 import { readdirSync, readFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
-import { buildChanges, chartBeats, CONCERT, guideTonesFor, guideToneLine, guideToneTimeline, INSTRUMENTS, isInstrumentName, isSyncCopy, parseChart, partFor, rangeOf, qualityScale, rootName, voiceLead } from '../src'
+import { barAt, barStart, buildChanges, chartBeats, CONCERT, guideTonesFor, guideToneLine, guideToneTimeline, INSTRUMENTS, isInstrumentName, isSyncCopy, parseChart, partFor, rangeOf, qualityScale, rootName, voiceLead } from '../src'
 import type { Directive, GuideInput, LinedRow, Part, Pitched } from '../src'
 import { sectionLayout } from '../src/layout'
 import { octaveOf } from '../src/keySignature'
@@ -42,14 +42,15 @@ function drawnChords(text: string): Chord[] {
   const layout = sectionLayout(doc).value
   const rows = layout.rows
   const beats = chartBeats(doc)
-  const { events } = guideToneTimeline(rows, beats, layout.lengths)
+  const { events, clock } = guideToneTimeline(rows, beats, layout.lengths, layout.metres)
   const index = new Map<LinedRow, number>(rows.map((r, i) => [r, i]))
   const eventAt = new Map(events.map((e) => [index.get(e.row as LinedRow) ?? -1, e]))
   const barOf = (i: number): number | undefined => {
     const e = eventAt.get(i)
-    return e ? Math.floor(e.start / beats) : undefined
+    return e ? barAt(clock, e.start) : undefined
   }
-  const totalBars = Math.ceil(events.reduce((m, e) => Math.max(m, e.start + e.beats), 0) / beats)
+  const end = events.reduce((m, e) => Math.max(m, e.start + e.beats), 0)
+  const totalBars = barStart(clock, barAt(clock, end)) === end ? barAt(clock, end) : barAt(clock, end) + 1
   const rowIndexAt = new Map<string, number>()
   rows.forEach((r, i) => {
     const k = `${r.section}|${r.bar}`
@@ -96,12 +97,12 @@ function drawnChords(text: string): Chord[] {
     b.rows.flatMap((i): Chord[] => {
       const e = eventAt.get(i)
       if (!e) return []
-      const volta = voltaAt.get(Math.floor(e.start / beats)) ?? 0
+      const volta = voltaAt.get(barAt(clock, e.start)) ?? 0
       if (k !== from || (volta > 1 && volta !== ending)) block++
       from = k
       ending = volta
       const scale = qualityScale(e.row)
-      return [{ row: i, chord: e.chord, ...(scale ? { scale } : {}), start: e.start, beats: e.beats, block, at: `${e.row.section} ${e.row.bar}`, bar: Math.floor(e.start / beats) + 1 }]
+      return [{ row: i, chord: e.chord, ...(scale ? { scale } : {}), start: e.start, beats: e.beats, block, at: `${e.row.section} ${e.row.bar}`, bar: barAt(clock, e.start) + 1 }]
     }),
   )
 }

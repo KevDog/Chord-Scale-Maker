@@ -7,7 +7,6 @@ source:
 # analysis: 2026-10-17, rules v1; G
 # A–B is the head; C–D are the solo changes ("Solo on CD; after solos D.C. al Coda")
 # the head's A is engraved two bars to a measure in places; the bars here follow the solo section's barring
-# the 2nd endings of A and C are a 2/4 bar; B and D are in 4/4
 
 # bar | chord
 
@@ -38,9 +37,10 @@ section: A
 7  | EbmMaj7
 # bar 7 (1st ending): vibes fill over the held EbmMaj7
 8  | EbmMaj7
-# bar 8 (2nd ending): a 2/4 bar, EbmMaj7 held
+# bar 8 (2nd ending): EbmMaj7 held
 @ending 1 7
 @ending 2 8
+@time 8 2/4
 
 section: B
 1  | D         # a non-tonic major chord: Lydian
@@ -104,9 +104,9 @@ section: C
 7  | EbmMaj7
 # bar 7 (1st ending): EbmMaj7 held
 8  | EbmMaj7
-# bar 8 (2nd ending): a 2/4 bar
 @ending 1 7
 @ending 2 8
+@time 8 2/4
 
 section: D
 bars: 25

@@ -18,7 +18,6 @@
             :key="l.index"
             :line="l.line"
             :first="l.index === 0"
-            :beats="sheet.beats"
             :bars-per-line="barsPerLine"
             :numerals="numerals"
             :scales="scales"

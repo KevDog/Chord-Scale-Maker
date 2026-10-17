@@ -33,7 +33,7 @@ function lineBars(line: string): string[][] {
  * again (held after a bar of one chord). A chord that wouldn't read back as a chart cell, or more chords than `beats`
  * in a bar, is a diagnostic (line: the text's line, from 1); insert the bars only when there are none.
  */
-export function parseBarLine(text: string, beats: 2 | 3 | 4 = 4): Parsed<readonly (readonly string[])[]> {
+export function parseBarLine(text: string, beats: number = 4): Parsed<readonly (readonly string[])[]> {
   const value: (readonly string[])[] = []
   const diagnostics: Diagnostic[] = []
   for (const [i, line] of text.split(/\r?\n/).entries()) {

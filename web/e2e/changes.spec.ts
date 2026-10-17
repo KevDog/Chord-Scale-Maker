@@ -344,6 +344,18 @@ test('a waltz’s guide tones are in 3/4: a bar-long chord is a dotted half', as
   await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
 })
 
+test('a metre change partway: a time signature where it changes, each bar in its own metre (#235)', async ({ page }) => {
+  await writeChart(page, 'title: M\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | C6\n@time 2 3/4\n@time 3 6/4\n@time 4 5/4\n')
+  const line = lines(page).first()
+  await expect(line.locator('.vf-timesignature')).toHaveCount(4) // 4/4, 3/4, 6/4, 5/4
+  await showGuides(page, 'From 3rd')
+  await guidesDrawn(page)
+  const d = await drawn(line)
+  expect(d.heads).toHaveLength(5) // a note a bar, the 5/4 bar's a dotted half tied to a half
+  expect(d.dots).toBe(3) // 3/4's dotted half, 6/4's dotted whole, 5/4's dotted half
+  await expect(page.getByText(/Couldn.t draw/)).toHaveCount(0)
+})
+
 test('guide tone notes follow dark mode (no hard-coded black)', async ({ page }) => {
   await page.goto('/song/f-jazz-blues')
   await page.getByRole('button', { name: /Switch to dark mode/ }).click()

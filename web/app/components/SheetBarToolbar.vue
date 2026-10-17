@@ -20,6 +20,7 @@
             <template v-if="shows('form-editing')">
               <UiDropdownItem v-for="n in ENDINGS" :key="n" @click="change(toggleEnding(doc, section, n, bar), `${n === 1 ? '1st' : '2nd'} ending ${ending === n ? 'off' : 'on'}`, 'An ending can’t go over the other one.')">{{ n === 1 ? '1st' : '2nd' }} ending</UiDropdownItem>
               <UiDropdownItem v-for="m in MARKS" :key="m" @click="change(setMark(doc, section, bar, m, !hasMark(m)), `${MARK_LABELS[m]} ${hasMark(m) ? 'off' : 'on'}`, '')">{{ MARK_LABELS[m] }}</UiDropdownItem>
+              <UiDropdownItem v-for="t in metres" :key="t" @click="change(setBarMetre(doc, section, bar, t), `bar ${bar} in ${t}`, '')">Bar in {{ t }}</UiDropdownItem>
               <UiDropdownItem @click="emit('dialog', 'nav', section, bar)">Jump…</UiDropdownItem>
               <UiDropdownItem @click="emit('dialog', 'split', section, bar)">New section here…</UiDropdownItem>
               <UiDropdownItem @click="emit('dialog', 'paste', section, bar)">Paste bars…</UiDropdownItem>
@@ -34,7 +35,7 @@
 </template>
 
 <script setup lang="ts">
-import { barView, type ChartDoc, deleteBar, insertHeldBar, insertKeyChange, setBarChords, setMark, toggleEnding, writeOutCopy } from '@chord-scale-maker/engine'
+import { barView, type ChartDoc, deleteBar, insertHeldBar, insertKeyChange, setBarChords, setBarMetre, setMark, toggleEnding, writeOutCopy } from '@chord-scale-maker/engine'
 import { barFull, CANT_TAKE } from '~/utils/refusals'
 
 /**
@@ -51,9 +52,12 @@ const ITEM = 'rounded px-2 py-1 hover:bg-note-50 focus-visible:outline-2 focus-v
 const ENDINGS = [1, 2] as const
 const MARKS = ['segno', 'coda'] as const
 const MARK_LABELS = { segno: 'Segno', coda: 'Coda' } as const
+const METRES = ['2/4', '3/4', '4/4', '5/4', '6/4'] as const
 const cell = computed(() => barView(props.doc).sections.find((s) => s.name === props.section)?.bars.find((b) => b.bar === props.bar) ?? null)
 const chordLine = computed(() => cell.value?.chords[0]?.line ?? null)
 const ending = computed(() => cell.value?.ending?.n ?? null)
+/** the metres the bar can go into: all but its own (#235) */
+const metres = computed(() => METRES.filter((t) => t !== `${cell.value?.beats ?? 4}/4`))
 const hasMark = (m: 'segno' | 'coda'): boolean => !!cell.value?.marks.some((x) => x.mark === m)
 /** the last refusal, shown under the toolbar until the next action */
 const why = ref('')
@@ -76,6 +80,6 @@ function split(): void {
     why.value = 'A held bar has no chord to split.'
     return emit('refused', why.value)
   }
-  change(setBarChords(props.doc, props.section, props.bar, [...chords, last]), `bar ${props.bar} split`, barFull(barView(props.doc).beats))
+  change(setBarChords(props.doc, props.section, props.bar, [...chords, last]), `bar ${props.bar} split`, barFull(cell.value?.beats ?? barView(props.doc).beats))
 }
 </script>

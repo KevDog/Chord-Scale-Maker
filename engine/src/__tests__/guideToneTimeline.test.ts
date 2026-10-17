@@ -5,6 +5,7 @@ import { chartBeats, parseChart, qualityScale, type Row } from '../chart'
 import { guideTonesFor } from '../guideTones'
 import { guideToneTimeline } from '../guideToneTimeline'
 import { sectionLayout } from '../layout'
+import { clockOf } from '../metre'
 import { CONCERT } from '../part'
 import { isSyncCopy } from '../util'
 
@@ -83,6 +84,24 @@ describe('timeline', () => {
     expect(guideToneTimeline(l.rows, 3, l.lengths).events.map((e) => [e.chord, e.start, e.beats])).toEqual([
       ['Dm7', 0, 3], ['G7', 3, 2], ['C7', 5, 1], ['FMaj7', 6, 6], ['Bb', 12, 12], // Bb holds bars 5–8
     ])
+  })
+
+  it('times each bar in its own metre, and gives the clock (#235)', () => {
+    const text = 'section: A\n1 | Dm7\n2 | G7\n2 | C7\n3 | F\n5 | Bb\n5 | Eb\nsection: B\n1 | Ab\n'
+    const metres = new Map([['A', [4, 2, 4, 3, 6]], ['B', [5]]])
+    const l = sectionLayout(parseChart(text).value).value
+    const t = guideToneTimeline(l.rows, 4, l.lengths, metres)
+    expect(t.events.map((e) => [e.chord, e.start, e.beats])).toEqual([
+      ['Dm7', 0, 4], ['G7', 4, 1], ['C7', 5, 1], ['F', 6, 7], ['Bb', 13, 3], ['Eb', 16, 3], ['Ab', 19, 5],
+    ])
+    expect(t.clock).toEqual(clockOf([4, 2, 4, 3, 6, 5], 4))
+  })
+
+  it('splits a 5/4 bar 3 + 2 and a 6/4 bar 3 + 3', () => {
+    const two = [row('1', 'C'), row('1', 'F')]
+    expect(guideToneTimeline(two, 5).events.map((e) => e.beats)).toEqual([3, 2])
+    expect(guideToneTimeline(two, 6).events.map((e) => e.beats)).toEqual([3, 3])
+    expect(guideToneTimeline([...two, row('1', 'G')], 6).events.map((e) => e.beats)).toEqual([2, 2, 2])
   })
 
   it('times an intro, the form and a coda one after another, each numbered from bar 1', () => {

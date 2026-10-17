@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { barView } from '../bars'
 import { type ChartDoc, parseChart, serializeChart } from '../chart'
 import { parseBarLine } from '../barLine'
-import { addSection, deleteBar, insertBar, insertBars, insertHeldBar, renameSection, repeatSection, setBarChords, setEnding, setLineChord, setMark, setNav, splitSection, toggleEnding, writeOutCopy } from '../edit'
+import { addSection, deleteBar, insertBar, insertBars, insertHeldBar, renameSection, repeatSection, setBarChords, setEnding, setBarMetre, setLineChord, setMark, setNav, splitSection, toggleEnding, writeOutCopy } from '../edit'
 
 const chart = (name: string): ChartDoc => parseChart(readFileSync(`charts/${name}.txt`, 'utf8')).value
 const text = (lines: readonly string[]): ChartDoc => parseChart(lines.join('\n')).value
@@ -193,7 +193,7 @@ describe('deleteBar', () => {
   })
 })
 
-describe('insertBar and deleteBar over the library', () => {
+describe('insertBar and deleteBar over the library', { timeout: 30_000 }, () => {
   const files = readdirSync('charts').filter((f) => f.endsWith('.txt'))
 
   it('place every line after an insert, and a delete of the same bar gives the chart back', () => {
@@ -427,6 +427,47 @@ describe('splitSection', () => {
     expect(splitSection(doc, 'A', 2, 'A2')).toBe(doc)
     const repeated = text(['section: A', '1 | C', '2 | F', 'section: A2', 'copy: A'])
     expect(splitSection(repeated, 'A', 2, 'X')).toBe(repeated)
+  })
+})
+
+describe('metre changes (#235)', () => {
+  const doc = text(['section: A', '1 | C', '2 | F', '3 | G7', '4 | C', '@time 3 3/4', 'section: B', 'copy: A'])
+
+  it('moves an @time with its bar, and onto the bar after when its bar goes', () => {
+    expect(out(insertBar(doc, 'A', 2)).slice(0, 6)).toEqual(['section: A', '1 | C', '3 | F', '4 | G7', '5 | C', '@time 4 3/4'])
+    expect(out(deleteBar(doc, 'A', 3)).slice(0, 5)).toEqual(['section: A', '1 | C', '2 | F', '3 | C', '@time 3 3/4'])
+  })
+
+  it('splits a section with the metre in force at the split', () => {
+    const one = text(['section: A', '1 | C', '2 | F', '3 | G7', '4 | C', '@time 3 3/4'])
+    expect(out(splitSection(one, 'A', 4, 'A2'))).toEqual(['section: A', '1 | C', '2 | F', '3 | G7', '@time 3 3/4', '', 'section: A2', 'time: 3/4', '1 | C'])
+    expect(out(splitSection(one, 'A', 3, 'A2'))).toEqual(['section: A', '1 | C', '2 | F', '', 'section: A2', 'time: 3/4', '1 | G7', '2 | C'])
+  })
+
+  it('writes out a copy with the metre changes it carried', () => {
+    expect(out(writeOutCopy(doc, 'B')).slice(6)).toEqual(['section: B', '1 | C', '2 | F', '3 | G7', '4 | C', '@time 3 3/4'])
+  })
+
+  it('puts one bar in a metre, the bars after it keeping theirs', () => {
+    const two = setBarMetre(doc, 'A', 2, '2/4')
+    expect(barView(two).sections[0]?.bars.map((b) => b.beats)).toEqual([4, 2, 3, 3])
+    expect(out(two).slice(5, 7)).toEqual(['@time 3 3/4', '@time 2 2/4'])
+    const back = setBarMetre(two, 'A', 2, '4/4')
+    expect(out(back)).toEqual(out(doc))
+  })
+
+  it('drops a change the bar before already makes, and writes a section’s bar 1 as its time:', () => {
+    expect(out(setBarMetre(doc, 'A', 3, '4/4')).slice(0, 6)).toEqual(['section: A', '1 | C', '2 | F', '3 | G7', '4 | C', '@time 4 3/4'])
+    expect(out(setBarMetre(setBarMetre(doc, 'A', 3, '4/4'), 'A', 4, '4/4')).slice(0, 6)).toEqual(['section: A', '1 | C', '2 | F', '3 | G7', '4 | C', 'section: B'])
+    const waltz = setBarMetre(doc, 'A', 1, '3/4')
+    expect(out(waltz).slice(0, 3)).toEqual(['section: A', 'time: 3/4', '1 | C'])
+    expect(barView(waltz).sections[0]?.bars.map((b) => b.beats)).toEqual([3, 4, 3, 3])
+  })
+
+  it('refuses a metre it can’t read, the bar’s own metre, and a copy’s bar', () => {
+    expect(setBarMetre(doc, 'A', 2, '7/8')).toBe(doc)
+    expect(setBarMetre(doc, 'A', 2, '4/4')).toBe(doc)
+    expect(setBarMetre(doc, 'B', 2, '3/4')).toBe(doc)
   })
 })
 

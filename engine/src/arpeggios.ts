@@ -1,5 +1,6 @@
 import { isRest, parseChord, writtenChordRootLenient } from './chord'
-import { type GuideInput, type GuideLine, type GuideNote, voiceAccidentals } from './guideTones'
+import { drawnLengths, type GuideInput, type GuideLine, type GuideNote, voiceAccidentals } from './guideTones'
+import { barAt, barLength, barStart, type Metre } from './metre'
 import type { Range } from './instruments'
 import { type Part, rangeOf } from './part'
 import { pcOf, type Spelled } from './pitch'
@@ -185,7 +186,7 @@ type Carried = Readonly<{ chord: number; notes: readonly NonNullable<GuideNote['
 export function cellVoices(
   chords: readonly GuideInput[],
   part: Part,
-  beats: 2 | 3 | 4,
+  beats: Metre,
   keySig: string | null,
   cellsOf: (chord: GuideInput, index: number) => Cells | null,
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; missing: readonly string[] } {
@@ -199,9 +200,10 @@ export function cellVoices(
   const segments: Segment[] = chords.flatMap((c, chord) => {
     const out: Segment[] = []
     for (let at = c.start; at < c.start + c.beats; ) {
-      const bar = Math.floor(at / beats)
-      const length = Math.min(c.start + c.beats, (bar + 1) * beats) - at
-      out.push({ chord, bar, beat: at - bar * beats, length })
+      const bar = barAt(beats, at)
+      const from = barStart(beats, bar)
+      const length = Math.min(c.start + c.beats, from + barLength(beats, bar)) - at
+      out.push({ chord, bar, beat: at - from, length })
       at += length
     }
     return out
@@ -221,7 +223,11 @@ export function cellVoices(
   for (const s of segments) {
     const c = cells[s.chord]
     if (!c) {
-      push(s.bar, { pitch: null, beat: s.beat, beats: s.length as GuideNote['beats'], tie: false, tiedIn: false, accidental: null })
+      let beat = s.beat
+      for (const piece of drawnLengths(s.length)) {
+        push(s.bar, { pitch: null, beat, beats: piece, tie: false, tiedIn: false, accidental: null })
+        beat += piece
+      }
       prev = null
       last = null
       count = 0
@@ -266,7 +272,7 @@ export function cellVoices(
 export function arpeggioVoices(
   chords: readonly GuideInput[],
   part: Part,
-  beats: 2 | 3 | 4,
+  beats: Metre,
   keySig: string | null,
   pattern: ArpeggioPattern,
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; missing: readonly string[] } {

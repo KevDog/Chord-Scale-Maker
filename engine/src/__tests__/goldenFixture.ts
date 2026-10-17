@@ -134,7 +134,7 @@ export function playedRows(doc: ChartDoc): (string | null)[][] {
 export function chartTiming(doc: ChartDoc): { timing: (number | string | boolean)[][]; areas: (string | boolean)[][] } {
   const layout = sectionLayout(doc).value
   const rows = layout.rows
-  const eventOf = new Map(guideToneTimeline(rows, chartBeats(doc), layout.lengths).events.map((e) => [e.row, e]))
+  const eventOf = new Map(guideToneTimeline(rows, chartBeats(doc), layout.lengths, layout.metres).events.map((e) => [e.row, e]))
   const a = analyse(doc)
   const byRow = new Map(a.rows.map((r) => [r.row, r]))
   const areaOf = (i: number) => a.areas.filter((x) => x.row <= i).at(-1)

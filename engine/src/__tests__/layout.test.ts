@@ -42,6 +42,17 @@ describe('sectionLayout', () => {
     expect(l.directives.filter((d) => d.section === 'A2')).toEqual([])
   })
 
+  it('gives each bar its metre: the section’s time:, then each @time to the section’s end, carried by a copy (#235)', () => {
+    const l = layout('time: 4/4\nsection: A\nbars: 5\n1 | C\n@time 2 2/4\n@time 3 4/4\n@time 5 6/4\nsection: B\ntime: 3/4\n1 | F\n2 | G\nsection: C\ncopy: A\n')
+    expect([...l.metres]).toEqual([['A', [4, 2, 4, 4, 6]], ['B', [3, 3]], ['C', [4, 2, 4, 4, 6]]])
+    expect(l.directives.filter((d) => d.kind === 'time' && d.section === 'C').map((d) => d.line)).toEqual([4, 5, 6])
+  })
+
+  it('lets a copy’s own time: replace the source’s and its @time lines', () => {
+    const l = layout('section: A\n1 | C\n2 | F\n@time 2 2/4\nsection: B\ntime: 3/4\ncopy: A\n')
+    expect(l.metres.get('B')).toEqual([3, 3])
+  })
+
   it('carries through a copy of a copy', () => {
     const l = layout('section: A\nkey: Eb\n1 | C\nsection: B\ncopy: A\nsection: C\ncopy: B\n')
     expect(l.sections[2]?.rows.map((r) => r.line)).toEqual([2])

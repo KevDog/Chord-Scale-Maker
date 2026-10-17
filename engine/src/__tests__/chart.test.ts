@@ -144,9 +144,10 @@ describe('chart', () => {
   })
 
   it('reads a time: line, and flags one it can’t use', () => {
-    expect(['3/4', '2/4', '4/4', '', '6/8', 'waltz'].map(beatsPerBar)).toEqual([3, 2, 4, 4, null, null])
+    expect(['3/4', '2/4', '4/4', '5/4', '6/4', '', '6/8', '7/4', 'waltz'].map(beatsPerBar)).toEqual([3, 2, 4, 5, 6, 4, null, null, null])
     expect(chartBeats(parseChart('time: 3/4\nsection: A\n1 | C').value)).toBe(3)
-    expect(parseChart('time: 6/8\nsection: A\n1 | C').diagnostics.map((d) => d.message)).toEqual(['time: 2/4, 3/4 or 4/4'])
+    expect(chartBeats(parseChart('time: 6/4\nsection: A\n1 | C').value)).toBe(6)
+    expect(parseChart('time: 6/8\nsection: A\n1 | C').diagnostics.map((d) => d.message)).toEqual(['time: 2/4, 3/4, 4/4, 5/4 or 6/4'])
   })
 
   it('reads a kind: line (a tune without one), and flags one it can’t use', () => {
@@ -183,11 +184,10 @@ describe('section blocks', () => {
     expect(parseChart(text).diagnostics).toContainEqual({ line, message })
   })
 
-  it('keeps a section metre that differs from the song, with a diagnostic', () => {
+  it('keeps a section metre that differs from the song', () => {
     const { value, diagnostics } = parseChart('time: 4/4\nsection: B\ntime: 3/4\n1 | C\n')
     expect(value.lines[2]).toEqual({ kind: 'sectionMeta', field: 'time', value: '3/4' })
-    expect(diagnostics).toEqual([{ line: 3, message: "time: drawn in the song's metre until #235" }])
-    expect(parseChart('time: 3/4\nsection: B\ntime: 3/4\n1 | C\n').diagnostics).toEqual([])
+    expect(diagnostics).toEqual([])
   })
 
   it('reads key:, bars: and context: as section fields in a block and as meta in the header', () => {
@@ -325,6 +325,21 @@ describe('context: and @context (docs/superpowers/specs/2026-10-10-chart-context
       { kind: 'context', bar: 17, context: 'blues' },
     ])
     expect(serializeChart(value)).toBe('section: A\n@context 1 modal\n@context 17 blues\n')
+  })
+
+  it('reads @time BAR METRE and writes it back (#235)', () => {
+    const { value, diagnostics } = parseChart('section: A\n1 | C\n@time 3 2/4\n@time 4 6/4\n')
+    expect(diagnostics).toEqual([])
+    expect(value.lines.slice(2)).toEqual([
+      { kind: 'time', bar: 3, time: '2/4' },
+      { kind: 'time', bar: 4, time: '6/4' },
+    ])
+    expect(serializeChart(value)).toBe('section: A\n1 | C\n@time 3 2/4\n@time 4 6/4\n')
+  })
+
+  it('rejects a malformed @time', () => {
+    for (const bad of ['@time 1', '@time x 3/4', '@time 1 6/8', '@time 1 3/4 extra'])
+      expect(parseChart(`section: A\n${bad}`).diagnostics[0]?.message, bad).toBe('use  @time BAR METRE  (2/4, 3/4, 4/4, 5/4 or 6/4)')
   })
 
   it('rejects a malformed @context', () => {

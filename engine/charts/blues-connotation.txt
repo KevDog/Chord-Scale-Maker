@@ -7,7 +7,6 @@ source:
 # analysis: 2026-10-12, rules v1; Bb, blues
 # chords suggested only (no chordal instrument on the recording)
 # the pickup bar is a melodic figure with no chords
-# bar 11 is in 2/4; the rest is 4/4
 # solos in Bb, disregarding the form; after solos the head, then from bar 11 to the Coda
 
 # bar | chord
@@ -28,6 +27,8 @@ bars: 16
 @ending 1 12
 @ending 2 13
 @coda 11
+@time 11 2/4
+@time 12 4/4
 
 section: Coda
 bars: 4

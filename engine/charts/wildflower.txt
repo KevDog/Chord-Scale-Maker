@@ -3,10 +3,11 @@ composer: Wayne Shorter
 style: Medium swing
 key: Bb
 form: AB, 32 bars
+time: 6/4
 source: 
 # analysis: 2026-10-17, rules v1; Bb
 # style: the book says Medium Jazz 6/4, quarter = 160
-# time: the book is in 6/4 throughout (not supported); each bar here is one 6/4 bar, a second chord in a bar falls on beat 4 (EbMaj7 Cm7 in B bar 1: beat 3)
+# a second chord in a bar falls on beat 4, but Cm7 in B bar 1 on beat 3 (drawn on beat 4)
 # the whole form (A and B) is repeated; it ends at the Fine on B bar 15 (D7#9)
 
 # bar | chord

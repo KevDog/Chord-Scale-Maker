@@ -182,6 +182,7 @@ type ChartLine =
   | { kind: 'sectionMeta'; field: 'key' | 'time' | 'context' | 'bars' | 'outside' | 'copy'; value: string }
   | { kind: 'row'; bar: string; chord: string; scale: string; function?: string; comment?: string }  // bar from 1 in its section; scale '' = default; function: a stated function ('V7/ii', 'D: V7/ii'); comment: a trailing # …
   | { kind: 'key'; bar: number; key: string }  // @key 5 D: from that bar to the section's end
+  | { kind: 'time'; bar: number; time: string }  // @time 5 3/4: the metre from that bar to the section's end
   | { kind: 'context'; bar: number; context: ChartContext }  // @context 5 modal: parsed, not yet analysed
   | { kind: 'ending'; n: number; from: number; to: number }  // a 1st/2nd ending (volta) on the Changes sheet
   | { kind: 'mark'; mark: 'segno' | 'coda'; bar: number }     // a segno 𝄋 / coda ⊕ glyph
@@ -199,7 +200,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   diagnostic, never an exception. Block rules are diagnostics too: a song field after the first `section:`, a section
   field after the block's first row or directive, a second section of one name, a row or directive in the header (an
   old-format row says so), `bars:` under the last written bar, a `copy:` block with rows, a `copy:` of a section not
-  above it, and a section `time:` other than the song's ("drawn in the song's metre until #235"). `lineSections(doc)`
+  above it. `lineSections(doc)`
   names each line's block.
 - **Rests:** a row whose chord is `N.C.` (`isRest`: "NC", "N.C", any case; #336) is a bar with no chord. It takes its
   bars on the Changes sheet (its symbol over slashes, no numeral or scale, every line rests there), gets no staff on
@@ -212,15 +213,17 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Layout** (`sectionLayout(doc)`, `engine/src/layout.ts`): the one place blocks are resolved. Each section's rows
   with its name filled in and `at`, its bar counted through its part (Intro, form, Coda) from 1; its length (`bars:`,
   else a copy's source's, else its last written bar); its part (by name, or `outside: yes`: before the form if it
-  comes first, after it otherwise); its stated `key:` and `context:` at bar 1; its metre; its copy source. And a
-  flat list of directives with their section. A `copy:` repeats its source's rows (pointing at the source's lines),
-  `key:`, `time:`, `context:`, `bars:` and in-block `@key`/`@context`, except where it sets its own field (its own
-  `key:` replaces the source's key changes too); not endings, marks or nav. `statedKeyAt(layout, section, bar)` is
+  comes first, after it otherwise); its stated `key:` and `context:` at bar 1; its metre at bar 1 and each bar's
+  (`metre`, `layout.metres`: `time:`, then each `@time` to the section's end); its copy source. And a flat list of
+  directives with their section. A `copy:` repeats its source's rows (pointing at the source's lines), `key:`,
+  `time:`, `context:`, `bars:` and in-block `@key`/`@time`/`@context`, except where it sets its own field (its own
+  `key:` or `time:` replaces the source's in-block changes too); not endings, marks or nav. `statedKeyAt(layout, section, bar)` is
   the key an author stated there, else null. `expandRows`/`expandRowLines` are views of the layout's rows, capped
   at 1,000.
 - **Timing:** the guide tone timeline times sections one after another, each from its bar 1; a chord lasts until the
-  next change in its section, and a section's last chord lasts to the section's length. The whole chart is in the
-  song's metre (a section metre is drawn from #235).
+  next change in its section, and a section's last chord lasts to the section's length. Each bar is in its own metre
+  (#235): the timeline also gives the chart's `Clock` (`engine/src/metre.ts`: each bar's length; `barAt`, `barStart`,
+  `barLength`), which the bar view, the Changes sheet and every line's voices read instead of dividing by one metre.
 - **Navigation directives** (`@ending`, `@segno`, `@coda`, `@nav`): read only by the Changes sheet
   (`engine/src/changes.ts`) and the bar view, from the layout, which map them onto per-bar `volta`/`segno`/`coda`/`nav`
   fields. An `@ending` section is a 2× repeat with the two endings bracketed; `@segno`/`@coda` draw glyphs, `@nav` a
@@ -228,10 +231,14 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Outside the form** (`formPart`, or `outside: yes`): sections named `Intro`, `Coda`, `Tag` or `Ending` (with an
   optional number). They print where they stand; the analysis links an intro into the form's first chord and a coda
   after its last (the form itself wraps to its own top), and each is timed on its own.
-- **Metre:** a `time:` header line, `2/4`, `3/4` or `4/4` (the default; anything else is a diagnostic). `chartBeats`
-  gives the beats a bar; the guide tone timeline splits bars by it (3/4: one chord = 3 beats, two = 2 + 1) and the
-  Changes sheet draws its time signature, its slashes and, with guide tones on, its dotted halves. The scale sheet
-  doesn't depend on it.
+- **Metre:** a `time:` header line, `2/4` to `6/4` (`4/4` the default; anything else is a diagnostic); a section's
+  own `time:`, and `@time BAR METRE` from a bar to its section's end (#235, #234). `chartBeats` gives the song's;
+  each bar has its own (`ChartBar.beats`, `ChangesBar.beats`). The guide tone timeline splits a bar by its metre (3/4:
+  two chords = 2 + 1; 5/4: 3 + 2; 6/4: 3 + 3, three = 2 + 2 + 2), and the Changes sheet draws a time signature on its
+  first bar and wherever the metre changes (`ChangesBar.timeSignature`), its slashes and, with a line on, dotted
+  halves and dotted wholes (a 5-beat note is a dotted half tied to a half, `drawnLengths`). The bar menu's Bar in
+  2/4 … 6/4 (`setBarMetre`) puts one bar in a metre, the bars after it keeping theirs. The scale sheet doesn't
+  depend on it.
 - **Function cell, `key:` and `@key`:** a row may carry a fourth cell, the function the author states (`V7/ii`, or
   `D: V7/ii` for another key); empty means unstated. A section's `key:` states its key from its bar 1, an `@key` from
   its bar, each to the section's end; the next section is analysed afresh. Read by the analysis (§7a); a row with a

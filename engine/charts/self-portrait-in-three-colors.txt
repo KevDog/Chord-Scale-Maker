@@ -7,7 +7,6 @@ source:
 # analysis: 2026-10-17, rules v1; Eb
 
 # book tempo marking: Medium Swing Ballad
-# metre: 4/4, except A bar 6 in 2/4
 # played three times (no solos on the recording): 1st/2nd ending (B bars 8–9) twice, then the 3rd ending (B bars 10–11)
 # bar | chord
 
@@ -35,8 +34,8 @@ key: Gb
 4  | F7#5       # V7/V in Eb: #11 and b13 from the symbol
 5  | Ebm7       # ii of Ab13: Dorian
 5  | Ab13       # extended ii–V: a side-step, its own key
-# bar 6: 2/4
 6  | E13#11     # tritone substitute: resolves down a half step to EbMaj7
+@time 6 2/4
 
 section: B
 key: Eb
