@@ -20,15 +20,14 @@ describe('lineChoiceOf', () => {
 
 describe('the Cells line (#298)', () => {
   const base = { guide: 'third', arpeggio: 'down-2nd', leave: 'b3', dir: 'up' } as const
-  it('plays mode cells as the cells line whatever the overlay', () => {
-    for (const overlay of ['off', 'pentatonic', 'hexatonic'] as const)
-      expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay })).toEqual({ kind: 'cells', id: '1-2-3-5' })
+  it('plays mode cells as the cells line only with the Superimpose off: under an overlay the slot is the overlay line', () => {
+    expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'off' })).toEqual({ kind: 'cells', id: '1-2-3-5' })
+    expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'pentatonic' })).toEqual({ kind: 'pentatonic', leave: 'b3', dir: 'up', arpeggio: 'down-2nd' })
+    expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'hexatonic' })).toEqual({ kind: 'triad-pair', dir: 'up', arpeggio: 'down-2nd' })
     expect(changesLineOf({ ...base, mode: 'guide', cells: '1-2-3-5', overlay: 'off' })).toBe('third')
   })
-  it('offers Cells as a fourth mode only with the flag on, after the arpeggio slot', () => {
-    expect(lineModes('off', false).map((m) => m.value)).toEqual(['off', 'guide', 'arpeggio'])
-    expect(lineModes('pentatonic', true).map((m) => [m.value, m.label])).toEqual([['off', 'Off'], ['guide', 'Guide Tones'], ['arpeggio', 'Pentatonic'], ['cells', 'Cells']])
-    expect(lineModes('off', true)[3]?.title).toContain('Randy Vincent')
+  it('has no Cells radio: the Line control keeps three modes (the cells are in the 7th Chords listbox)', () => {
+    expect(lineModes('off').map((m) => m.value)).toEqual(['off', 'guide', 'arpeggio'])
   })
   it('puts cells in a share link as cells:<id>, and reads one back', () => {
     expect(shareLineOf('cells', 'third', 'up-root', '3rd-5th')).toBe('cells:3rd-5th')

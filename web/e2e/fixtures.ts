@@ -135,12 +135,12 @@ export async function inControls(page: Page, steps: () => Promise<void>): Promis
   if (await dialog.isVisible()) await dialog.getByRole('button', { name: 'Close', exact: true }).click()
 }
 
-/** choose the Changes sheet's line mode (Off · Guide Tones · 7th Chords, or Pentatonic under the Pentatonic overlay; Cells with its flag), confirmed checked (retried: a click before hydration is lost) */
-export async function showLine(page: Page, name: 'Off' | 'Guide Tones' | '7th Chords' | 'Pentatonic' | 'Cells'): Promise<void> {
+/** choose the Changes sheet's line mode (Off · Guide Tones · 7th Chords, or Pentatonic under the Pentatonic overlay), confirmed checked (retried: a click before hydration is lost) */
+export async function showLine(page: Page, name: 'Off' | 'Guide Tones' | '7th Chords' | 'Pentatonic'): Promise<void> {
   await inControls(page, () => pickLine(page, name))
 }
 
-async function pickLine(page: Page, name: 'Off' | 'Guide Tones' | '7th Chords' | 'Pentatonic' | 'Cells'): Promise<void> {
+async function pickLine(page: Page, name: 'Off' | 'Guide Tones' | '7th Chords' | 'Pentatonic'): Promise<void> {
   const radio = page.getByRole('radio', { name, exact: true })
   await expect(async () => {
     if (!(await radio.isChecked())) await page.locator('label').filter({ has: radio }).click({ timeout: 1000 })
@@ -161,6 +161,14 @@ export async function guidesDrawn(page: Page): Promise<void> {
   await expect
     .poll(() => page.locator('svg[aria-label^="Bars:"]').evaluateAll((els) => els.length > 0 && els.every((e) => e.getAttribute('aria-label')?.includes('; guide tones: '))))
     .toBe(true)
+}
+
+/** choose a melodic cell or system (#298, flag `cells`) from the 7th Chords' "Arpeggio pattern" listbox: "Root to root", "1 2 3 5", … */
+export async function showCell(page: Page, cell: string): Promise<void> {
+  await inControls(page, async () => {
+    await pickLine(page, '7th Chords')
+    await pickOption(page, 'Arpeggio pattern', cell)
+  })
 }
 
 /** choose 7th Chords with a pattern ("Up · root", "Voice-led", …) */

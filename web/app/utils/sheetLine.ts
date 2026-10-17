@@ -19,14 +19,15 @@ export const shareLineOf = (mode: LineMode, guide: GuideFrom, arpeggio: Arpeggio
  * Triad pair line (#325), each chord's labelled pair a triad at a time; both going `dir` (its pattern kept for a chord with none)
  */
 export function changesLineOf(c: Readonly<{ mode: LineMode; guide: GuideFrom; arpeggio: ArpeggioPattern; overlay: Overlay; leave: PentatonicLeave; dir: ArpDirection; cells: CellId }>): ChangesLineChoice {
-  if (c.mode === 'cells') return { kind: 'cells', id: c.cells }
-  if (c.mode === 'arpeggio' && c.overlay === 'pentatonic') return { kind: 'pentatonic', leave: c.leave, dir: c.dir, arpeggio: c.arpeggio }
-  if (c.mode === 'arpeggio' && c.overlay === 'hexatonic') return { kind: 'triad-pair', dir: c.dir, arpeggio: c.arpeggio }
+  if (c.mode === 'cells' && c.overlay === 'off') return { kind: 'cells', id: c.cells }
+  // a stored Cells line shares the 7th Chords slot (#298), so under an overlay the slot plays the overlay line
+  if ((c.mode === 'arpeggio' || c.mode === 'cells') && c.overlay === 'pentatonic') return { kind: 'pentatonic', leave: c.leave, dir: c.dir, arpeggio: c.arpeggio }
+  if ((c.mode === 'arpeggio' || c.mode === 'cells') && c.overlay === 'hexatonic') return { kind: 'triad-pair', dir: c.dir, arpeggio: c.arpeggio }
   return sheetLineOf(c.mode, c.guide, c.arpeggio)
 }
 
-/** the Line control's modes: the arpeggio slot reads Pentatonic under the Pentatonic overlay (#284), Triad pair under the Hexatonic (#325), 7th Chords otherwise; Cells (#298) is last, with its flag */
-export function lineModes(overlay: Overlay, cells: boolean): readonly { value: LineMode; label: string; title: string }[] {
+/** the Line control's modes: the arpeggio slot reads Pentatonic under the Pentatonic overlay (#284), Triad pair under the Hexatonic (#325), 7th Chords otherwise; the Cells line (#298) lives in that slot's listbox, not a mode of its own */
+export function lineModes(overlay: Overlay): readonly { value: LineMode; label: string; title: string }[] {
   return [
     { value: 'off', label: 'Off', title: 'No line: slashes' },
     { value: 'guide', label: 'Guide Tones', title: "A line that starts on the first chord's 3rd or 7th and moves to the nearest guide tone of each chord" },
@@ -35,7 +36,6 @@ export function lineModes(overlay: Overlay, cells: boolean): readonly { value: L
       : overlay === 'hexatonic'
         ? { value: 'arpeggio', label: 'Triad pair', title: "Each chord's triad pair, as its label shows it, a triad at a time: quarters, eighths or sixteenths as the bar has one, two or more chords" }
         : { value: 'arpeggio', label: '7th Chords', title: "Each chord's four chord tones, arpeggiated: quarters, eighths or sixteenths as the bar has one, two or more chords" },
-    ...(cells ? [{ value: 'cells' as const, label: 'Cells', title: "A melodic cell on each chord, two beats each, after Randy Vincent's Building Solo Lines From Cells" }] : []),
   ]
 }
 
