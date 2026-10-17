@@ -131,7 +131,7 @@ describe('buildPatternSheet', () => {
     const s = buildPatternSheet([row('Dm7', 'D Dorian'), row('G7', 'G Mixolydian')], CONCERT_PIANO, 12, moves, 'scale', 'up')
     expect(s.heading).toBe('Patterns')
     const staves = s.pages.flat()
-    // each 29-note Up run continues onto a second stave (24 + 5): two lines, four staves
+    // each 29-note Up run continues onto a second stave (16 + 13): two lines, four staves
     expect(staves).toHaveLength(4)
     for (const st of staves) {
       expect(st.id).toContain(formatPattern(moves))
@@ -165,6 +165,10 @@ describe('buildPatternSheet', () => {
       // Down starts on the octave, and a stave starts there: the break at the turn
       const octave = (full.notes[0]?.midi ?? 0) + 12
       expect(staves.findIndex((s, i) => i > 0 && s.notes[0]?.midi === octave)).toBeGreaterThan(0)
+    })
+    it('balances a run over the fewest staves instead of leaving an orphan', () => {
+      const staves = build('up').filter((s) => s.id.startsWith('Cmaj7'))
+      expect(staves.map((s) => s.notes.length)).toEqual([16, 13])
     })
     it('keeps a run of at most 24 notes on one stave', () => {
       const staves = build('up').filter((s) => s.id.startsWith('Cmaj7'))

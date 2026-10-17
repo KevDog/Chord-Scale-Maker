@@ -185,6 +185,26 @@ const PATTERN_STAVE_NOTES = 24
 function splitRun(groups: readonly number[], turn: number): readonly (readonly [number, number])[] {
   if (sum(groups) <= PATTERN_STAVE_NOTES) return [[0, groups.length]]
   const fill = (from: number, to: number): [number, number][] => {
+    const total = sum(groups.slice(from, to))
+    const pieces = Math.ceil(total / PATTERN_STAVE_NOTES)
+    // cut each piece's end at the group boundary nearest an even share (a tie: the longer piece first)
+    const cuts: number[] = [from]
+    for (let j = 1; j < pieces; j++) {
+      const target = (j * total) / pieces
+      let best = (cuts.at(-1) as number) + 1
+      for (let b = best; b < to; b++) {
+        const d = Math.abs(sum(groups.slice(from, b)) - target)
+        const bd = Math.abs(sum(groups.slice(from, best)) - target)
+        if (d <= bd) best = b
+      }
+      cuts.push(best)
+    }
+    cuts.push(to)
+    const out = cuts.slice(0, -1).map((c, k): [number, number] => [c, cuts[k + 1] as number])
+    const ok = out.every(([x, y]) => y > x && sum(groups.slice(x, y)) <= PATTERN_STAVE_NOTES)
+    return ok || pieces === 1 ? out : greedy(from, to)
+  }
+  const greedy = (from: number, to: number): [number, number][] => {
     const out: [number, number][] = []
     let start = from
     let count = 0
