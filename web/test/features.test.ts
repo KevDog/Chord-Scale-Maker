@@ -11,8 +11,8 @@ const myChartsLinks = (html: string) => html.match(/song\?new=1/g) ?? []
 describe('feature flags', () => {
   beforeEach(() => navigate.mockClear())
 
-  it('has its flags off until they ship: analyticsEvents (#149); offline (#324) and recordings are on; patterns (#298), cells, approaches and playerRange (#359) are off', () => {
-    expect(useRuntimeConfig().public.features).toEqual({ offline: true, analyticsEvents: false, recordings: true, patterns: false, cells: false, approaches: false, playerRange: false })
+  it('has its flags on but analyticsEvents (#149, off until Pro): offline (#324), recordings, patterns, cells, approaches (#298), playerRange (#359)', () => {
+    expect(useRuntimeConfig().public.features).toEqual({ offline: true, analyticsEvents: false, recordings: true, patterns: true, cells: true, approaches: true, playerRange: true })
   })
 
   it('offers New chart in the library, not the header', async () => {
