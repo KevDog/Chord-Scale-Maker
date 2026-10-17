@@ -201,6 +201,11 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   old-format row says so), `bars:` under the last written bar, a `copy:` block with rows, a `copy:` of a section not
   above it, and a section `time:` other than the song's ("drawn in the song's metre until #235"). `lineSections(doc)`
   names each line's block.
+- **Rests:** a row whose chord is `N.C.` (`isRest`: "NC", "N.C", any case; #336) is a bar with no chord. It takes its
+  bars on the Changes sheet (its symbol over slashes, no numeral or scale, every line rests there), gets no staff on
+  the Scales sheet, no entry in the analysis stream (the chords around it are neighbours, the one before it lasts
+  through it: `resolveScales` gives it `{ scale: null, source: 'rest' }`), no scale or function picker, and
+  transposes as itself.
 - **Fatal diagnostics** (`isFatal`) mean a hard input limit was exceeded: length, rows or expanded rows. The UI
   must not render or write back such a chart. Non-fatal diagnostics are per-line errors shown inline.
 - **Serializing:** `serializeChart(doc) → text` gives the canonical form, rows column-aligned across the chart.

@@ -141,3 +141,11 @@ describe('transpose', () => {
     expect(bad).toEqual([])
   })
 })
+
+describe('N.C. transposed', () => {
+  it('passes a rest through as it is, not skipped', () => {
+    const { doc, skipped } = transposeChart(parseChart('title: T\nkey: F\n\nsection: A\n1 | N.C.\n2 | C7\n').value, 'F', 'Bb')
+    expect(skipped).toBe(0)
+    expect(doc.lines.filter((l) => l.kind === 'row').map((l) => l.chord)).toEqual(['N.C.', 'F7'])
+  })
+})

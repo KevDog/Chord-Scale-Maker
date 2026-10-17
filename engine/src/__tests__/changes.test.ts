@@ -1,4 +1,5 @@
 import { readdirSync, readFileSync } from 'node:fs'
+import { isRest } from '../chord'
 import { describe, expect, it, vi } from 'vitest'
 import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, type PentatonicPlan, pickTargets, showHexatonics, showPentatonics } from '../changes'
 import { type ChartDoc, expandRowLines, parseChart } from '../chart'
@@ -338,7 +339,7 @@ describe('scale labels', () => {
     const doc = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Cmaj7\n2 | N.C.\n3 | Cmaj7').value
     const chords = flat(showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, chordPlan()).lines))
     expect(chords[1]?.pentatonic).toBeNull()
-    expect(chords.map((c) => c.pentatonic?.label ?? null)).toEqual(['Dm♪ 5', null, 'Dm♪ 5']) // a gap: the label prints again
+    expect(chords.map((c) => c.pentatonic?.label ?? null)).toEqual(['Am♪ 5', null, 'Am♪ 5']) // a gap: the label prints again (one static tonic, Lydian, across the rest)
   })
 
   it('keys each chord by its drawn bar and index, and keeps the key basis’s title and level', () => {
@@ -619,14 +620,21 @@ describe('guide tone lines over the library', { timeout: 30_000 }, () => {
       expect(docs.length).toBeGreaterThan(200)
       for (const { f, doc } of docs) {
         const sheet = on(f, doc, 4, line)
+        let resting = false // the chord sounding is a rest (N.C.): its notes are rests
         for (const bar of sheet.lines.flatMap((l) => l.bars)) {
+          const restAt = (beat: number): boolean => {
+            const c = bar.chords.filter((x) => x.beat <= beat).at(-1)
+            return c ? isRest(c.text) : resting
+          }
           const voice = bar.voice
           expect(voice.reduce((s, n) => s + n.beats, 0), f).toBe(sheet.beats)
           const beats = bar.chords.map((c) => c.beat) // a held chord's note starts on its beat, tied in
-          expect(voice.filter((n) => !n.tiedIn || beats.includes(n.beat)).map((n) => n.beat), f).toEqual(beats)
-          expect(voice.filter((n) => !n.tiedIn).every((n) => beats.includes(n.beat)), f).toBe(true)
-          expect(voice.every((n) => n.pitch !== null), f).toBe(true)
-          for (const c of bar.chords) expect(c.guide, `${f} ${c.text}`).not.toBe('')
+          const struck = voice.filter((n) => n.pitch !== null || !restAt(n.beat)) // a rest's bars rest again each bar
+          expect(struck.filter((n) => !n.tiedIn || beats.includes(n.beat)).map((n) => n.beat), f).toEqual(beats.filter((b) => !restAt(b)))
+          expect(struck.filter((n) => !n.tiedIn).every((n) => beats.includes(n.beat)), f).toBe(true)
+          expect(voice.every((n) => n.pitch !== null || restAt(n.beat)), f).toBe(true)
+          for (const c of bar.chords) if (!isRest(c.text)) expect(c.guide, `${f} ${c.text}`).not.toBe('')
+          resting = restAt(sheet.beats)
         }
         expect(sheet.diagnostics.filter((d) => d.startsWith('no guide tones')), f).toEqual([])
       }
@@ -989,5 +997,19 @@ describe('chord picks (#303)', () => {
   it('shows the hexatonic row idempotently, picks and runs included', () => {
     const once = showHexatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, { kind: 'hexatonic', picks: { 'A:1:0': { roots: [0, 2], for: target('A:1:0') } } }).lines)
     expect(showHexatonics(once)).toEqual(once)
+  })
+})
+
+describe('N.C. on the Changes sheet', () => {
+  it('draws a rest as its symbol with no numeral, scale or problem; the guide tone line rests there, with nothing to report', () => {
+    const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | N.C.\n3 | G7\n4 | CMaj7\n').value
+    const sheet = buildChanges(doc, CONCERT, 4, false, 'third')
+    const bars = sheet.lines.flatMap((l) => l.bars)
+    expect(bars.map((b) => b.at.bar)).toEqual(['1', '2', '3', '4'])
+    expect(bars[0]?.chords[0]).toMatchObject({ text: 'N.C.', written: 'N.C.', numeral: '', scale: null, problem: '', reason: '' })
+    expect(bars[0]?.voice.length).toBeGreaterThan(0)
+    expect([...(bars[0]?.voice ?? []), ...(bars[1]?.voice ?? [])].every((n) => n.pitch === null)).toBe(true)
+    expect(bars[2]?.chords[0]?.numeral).toBe('V7')
+    expect(sheet.diagnostics).toEqual([])
   })
 })

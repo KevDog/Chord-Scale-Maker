@@ -67,10 +67,11 @@ describe('triad pair voices (#325)', () => {
     const { bars } = voice(seq(['Cmaj7', 4], ['G7', 4]), pairs('G/Am', null))
     expect(pitches(bars.get(1))).toEqual(['g/4', 'b/4', 'd/5', 'f/5'])
   })
-  it('a chord with no pair and no tones rests', () => {
+  it('a chord with no pair and no tones rests: a rest (N.C.) with nothing to report, a chord it cannot read reported', () => {
     const { bars, missing } = voice(seq(['Cmaj7', 4], ['N.C.', 4]), pairs('G/Am', null))
     expect(bars.get(1)).toEqual([{ pitch: null, beat: 0, beats: 4, tie: false, tiedIn: false, accidental: null }])
-    expect(missing).toHaveLength(1)
+    expect(missing).toEqual([])
+    expect(voice(seq(['Cmaj7', 4], ['Xyz', 4]), pairs('G/Am', null)).missing).toHaveLength(1)
   })
   for (const [name, part] of [['concert', CONCERT], ['trumpet', partFor('trumpet')], ['bass', BASS]] as const) {
     for (const dir of ['up', 'down', 'up-down'] as const) {

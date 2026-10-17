@@ -76,7 +76,8 @@ section.
 | `#` | Comment line. A row may also end in a comment: `6 \| D7 \| D Phrygian Dominant  # V7 of G minor: b9 and b13 are in the key` (the `#` needs a space before it). |
 
 Chord symbols: `Cm7`, `C-7`, `Cmi7`, `Bbm7`, `Am7b5`, `D7#5`, `G7#9b13`, `EbMaj7`, `C9`, `Csus`, `C7sus4b9`,
-`D7/F#`, `Cm6/Eb`. Minor chords are shown with an en dash (`C–7`).
+`D7/F#`, `Cm6/Eb`. Minor chords are shown with an en dash (`C–7`). `N.C.` (no chord) is a rest: it is drawn on the
+Changes sheet, with no scale and no staff on the Scales sheet, and the analysis reads the chords around it as neighbours.
 
 Scales are written `<root> <name>`, such as `Bb Dorian`, `D Half-Whole` or `G Altered`: 26 scales plus aliases, in
 `engine/src/scales.ts`. Each chord quality's default and alternate scales are in `chord_scales.json`, with

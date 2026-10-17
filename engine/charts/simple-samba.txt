@@ -119,9 +119,10 @@ bars: 22
 
 section: Coda
 key: Eb
-bars: 8
-# Coda: bar 1 a rest (piano), the guitar's E9b5 on bar 2; bars 3–5 N.C. (melody, then drums); Eb hit on bar 6, beat 4
-# area: Eb major (Coda 1–5)
-1  | E9b5       # tritone substitute: resolves down a half step to Eb
+# bar 1 a rest (piano), the guitar's E9b5 on bar 2; bars 3–5 N.C. (melody, then drums); Eb hit on bar 6, beat 4
+1  | N.C.
 @coda 1
-5  | Eb         # tonic: the 4th is in the key
+# area: Eb major (Coda 2–6)
+2  | E9b5       # tritone substitute: resolves down a half step to Eb
+3  | N.C.
+6  | Eb         # tonic: the 4th is in the key

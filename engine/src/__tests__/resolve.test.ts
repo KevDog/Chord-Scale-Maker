@@ -85,3 +85,11 @@ describe('qualityScale', () => {
     expect(qualityScale({ section: 'A', bar: '1', chord: 'X', scale: '' })).toBeNull()
   })
 })
+
+describe('N.C.', () => {
+  it('plays nothing on a rest: no scale, from no source', () => {
+    const text = 'title: T\nkey: C\n\nsection: A\n1 | N.C.\n2 | G7\n3 | CMaj7\n'
+    expect(scales(text)).toEqual([null, 'G Mixolydian', 'C Ionian'])
+    expect(resolve(text)[0]).toEqual({ scale: null, source: 'rest' })
+  })
+})

@@ -365,3 +365,10 @@ describe('chord picks on the Scales sheet (#303)', () => {
     expect([copy.positions, copy.varies, copy.pentatonic?.picked]).toEqual([[], false, false])
   })
 })
+
+describe('N.C. on the Scales sheet', () => {
+  it('gives a rest no staff', () => {
+    const rows = [row('N.C.'), row('G7', '', '2'), row('CMaj7', '', '3')]
+    expect(scaleLines(rows, (r) => qualityScale(r)).map((l) => l.chords)).toEqual([['G7'], ['CMaj7']])
+  })
+})

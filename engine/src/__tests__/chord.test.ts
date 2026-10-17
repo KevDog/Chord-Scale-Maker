@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { type ChordToken, chordTokens, parseChord, writtenChordText } from '../chord'
+import { type ChordToken, chordTokens, isRest, parseChord, writtenChordText } from '../chord'
 import { type Part, CONCERT } from '../part'
 
 const BB: Part = { clef: 'treble', trans: 'Bb' }
@@ -35,5 +35,12 @@ describe('chord', () => {
     expect(writtenChordText(BB, 'Bm7', 'B Dorian')).toBe('C#m7')
     expect(writtenChordText(CONCERT, 'Am7b5')).toBe('Am7b5')
     expect(writtenChordText(CONCERT, 'C6/9/E')).toBe('C6/9/E')
+  })
+})
+
+describe('N.C.', () => {
+  it('reads N.C. (and NC, N.C, n.c.) as a rest, not a chord', () => {
+    expect(['N.C.', 'NC', 'N.C', 'n.c.', ' N.C. '].every(isRest)).toBe(true)
+    expect(['C7', '', 'N.C.7', 'N'].some(isRest)).toBe(false)
   })
 })

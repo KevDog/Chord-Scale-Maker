@@ -7,24 +7,27 @@ source:
 # analysis: 2026-10-17, rules v1; Bb
 
 # book tempo marking: Fast Bebop
-# solo on the form (ABC); after solos, D.S. (to A), play the head, then D.C. (to the intro) al Fine: the Fine is in Intro bar 14
+# solo on the form (ABC); after solos, D.S. (to A), play the head, then D.C. (to the intro) al Fine: the Fine is in Intro bar 18
 # bar | chord
 # Intro bars 1–4: N.C. (drums with piano), repeated
 
 section: Intro
 key: Bbm
-bars: 12
-# area: Bb minor (Intro 1–9)
-1  | BbmMaj7  # from the symbol: minor-major 7th
-3  | Cb/Eb    # a non-tonic major chord: Lydian
+bars: 18
+1  | N.C.
+# area: Bb minor (Intro 5–13)
 5  | BbmMaj7  # from the symbol: minor-major 7th
-7  | Cb7      # tritone substitute: resolves down a half step to Bbm
-9  | Bbm      # tonic minor: Dorian by convention
+7  | Cb/Eb    # a non-tonic major chord: Lydian
+9  | BbmMaj7  # from the symbol: minor-major 7th
+11 | Cb7      # tritone substitute: resolves down a half step to Bbm
+13 | Bbm      # tonic minor: Dorian by convention
+# bars 14–18: N.C. (hi-hat continues; drums in 17–18); bar 18: the Fine (fermata, to end)
+14 | N.C.
+@nav 18 Fine
+# alt (optional): bars 19–20 (Bb6), a break with a sample piano fill
 
 section: A
 key: Bb
-# Intro bars 10–14: N.C. (hi-hat continues; drums in 13–14); bar 14: the Fine (fermata, to end)
-# alt (optional): Intro bars 15–16 (Bb6), a break with a sample piano fill
 # area: Bb major (A 1 – C 8)
 1  | Bb6      # tonic: the 4th is in the key
 @segno 1

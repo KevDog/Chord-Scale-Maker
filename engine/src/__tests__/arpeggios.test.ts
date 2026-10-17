@@ -171,12 +171,12 @@ describe('arpeggio voices', () => {
     const { bars } = voice(seq(['Dm7', 4], ['Cdim7', 4]), 'voice-led') // C5 played: Eb5 and Bbb4 (A) are both 3 away
     expect(bars.get(1)?.[0]?.pitch?.midi).toBe(69)
   })
-  it('rests: a chord it cannot read rests and restarts the run near the centre', () => {
+  it('rests: N.C. rests and restarts the run near the centre, with nothing to report; a chord it cannot read is reported', () => {
     const { bars, missing } = voice(seq(['CMaj7', 4], ['N.C.', 4], ['CMaj7', 4]), 'up-root')
     expect(bars.get(1)).toEqual([{ pitch: null, beat: 0, beats: 4, tie: false, tiedIn: false, accidental: null }])
     expect(pitches(bars.get(2))).toEqual(['c/4', 'e/4', 'g/4', 'b/4'])
-    expect(missing).toHaveLength(1)
-    expect(missing[0]).toMatch(/^no chord tones for N\.C\. \(/)
+    expect(missing).toEqual([])
+    expect(voice(seq(['CMaj7', 4], ['Xyz', 4]), 'up-root').missing[0]).toMatch(/^no chord tones for Xyz \(/)
   })
   it('tenor: spells from the written root, with accidentals by the measure rule', () => {
     const { bars } = arpeggioVoices(seq(['Ab7', 4]), TENOR, 4, null, 'up-root') // written Bb7

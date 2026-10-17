@@ -1,6 +1,6 @@
 import type { ChartDoc, ChartLine } from './chart'
 import { matchKeyText, qualityScale } from './chart'
-import { parseChord } from './chord'
+import { isRest, parseChord } from './chord'
 import type { RowLine } from './edit'
 import { type Spelled, accFor, enharmonics, mod, parseRoot, pcOf, rootName, shiftBy, toLetter } from './pitch'
 import { cleanLettering, type ScaleKey, parseScale, SCALES, simplifyRoot, spellFrom, spellsCleanly } from './scales'
@@ -129,7 +129,7 @@ export function transposeChart(doc: ChartDoc, from: string, to: string): Readonl
   const lines = doc.lines.map((l): ChartLine => {
     if (l.kind === 'key') return { ...l, key: transposeKeyText(l.key, s, side) }
     if (l.kind === 'sectionMeta' && l.field === 'key' && l.value) return { ...l, value: transposeKeyText(l.value, s, side) }
-    if (l.kind !== 'row') return l
+    if (l.kind !== 'row' || isRest(l.chord)) return l
     try {
       return transposeRow(l, s, side)
     } catch {

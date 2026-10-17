@@ -90,7 +90,8 @@ describe('pentatonic voices', () => {
     const { bars, missing } = voice(seq(['Am7', 4], ['N.C.', 4], ['Am7', 4]), roots('A', null, 'A'))
     expect(bars.get(1)).toEqual([{ pitch: null, beat: 0, beats: 4, tie: false, tiedIn: false, accidental: null }])
     expect(pitches(bars.get(2))).toEqual(['c/4', 'd/4', 'e/4', 'g/4'])
-    expect(missing).toHaveLength(1)
+    expect(missing).toEqual([]) // a rest is nothing to report
+    expect(voice(seq(['Am7', 4], ['Xyz', 4]), roots('A', null)).missing).toHaveLength(1)
   })
   it('a transposing part: plays the written root it is given, accidentals by the measure rule', () => {
     const { bars } = voice(seq(['Am7', 4]), roots('B'), {}, TENOR) // concert Am, written Bm

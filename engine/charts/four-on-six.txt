@@ -9,21 +9,23 @@ source:
 
 # bar | chord
 # Intro bars 1–12: N.C., the bass and piano figure
-# Intro bar 1: the four chords fall on beats 1, 2½, 3½ and 4 (guitar)
+# Intro bar 13: the four chords fall on beats 1, 2½, 3½ and 4 (guitar)
 
 section: Intro
-bars: 4
-# area: G minor (Intro 1 – B 9)
-1  | BbMaj7    # bIII of G minor: the relative major itself
-1  | Gm11      # tonic minor: Dorian by convention
+bars: 16
+1  | N.C.
+# area: G minor (Intro 13 – B 9)
+13 | BbMaj7    # bIII of G minor: the relative major itself
+13 | Gm11      # tonic minor: Dorian by convention
 # book: Gm7 (add 11, omit 5), and the same on G#m7 and Am7
-1  | G#m11     # a borrowed minor chord: Dorian, its own key
-1  | Am11      # ii of the ii–V to G minor
-2  | D7alt     # from the symbol: altered
+13 | G#m11     # a borrowed minor chord: Dorian, its own key
+13 | Am11      # ii of the ii–V to G minor
+14 | D7alt     # from the symbol: altered
+# bars 15–16: the bass and piano figure again
+15 | N.C.
 
 section: A
 bars: 16
-# Intro bars 3–4: N.C., the bass and piano figure
 # A: bass line on the Gm7 C7 bars is like the intro's
 1  | Gm7       # ii of C7: Dorian
 1  | C7        # V7/bVII in G minor: natural tensions
@@ -84,7 +86,6 @@ section: B
 @nav 16 D.C. al Coda
 
 section: Coda
-bars: 4
 # B (solos) repeats; after solos, D.C. al Coda
 1  | Gm        # tonic minor: Dorian by convention
 # book: Coda bar 1 is N.C. (Gmi), a bass and piano vamp under a guitar solo, repeated till the cue (last time rit.)
