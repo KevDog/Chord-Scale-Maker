@@ -1,4 +1,4 @@
-import { type Row } from './chart'
+import type { Row } from './chart'
 
 /**
  * When each chord of the Changes sheet starts and how long it lasts, in beats (4/4 unless the chart says 3/4 or 2/4;

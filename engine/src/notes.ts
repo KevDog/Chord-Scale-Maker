@@ -1,4 +1,4 @@
-import { analyse, type Area, chartKeyOf, functionChoices, type FunctionChoice } from './analysis'
+import { analyse, chartKeyOf, functionChoices, type FunctionChoice } from './analysis'
 import { keyCode } from './analysis/keys'
 import { type ChartDoc, lineSections } from './chart'
 import { insertKeyBefore } from './edit'

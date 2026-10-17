@@ -391,7 +391,7 @@ export function changesSections(doc: ChartDoc): readonly ChangesSection[] {
 export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null): ChangesSheet {
   const pentatonic = overlay?.kind === 'pentatonic' ? overlay : null
   const { layout, rows, beats, timeline, t } = laidOut(doc)
-  const { events, diagnostics } = timeline
+  const { diagnostics } = timeline
   const analysis = analyse(doc)
   const resolved = resolveScales(doc, view, analysis)
   const keySig = signatures ? keySignature(chartKeyOf(doc), part) : null
