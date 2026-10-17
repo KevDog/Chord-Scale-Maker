@@ -7,6 +7,9 @@ view, with optional guide tones on the staff) and the Scales (one staff per chor
 README.md for the chart format. The original Python/LilyPond CLI was retired after the `v1-launch` tag.
 
 ## Working here
+- One worktree per session: start with `claude -w` (`.claude/worktrees/<name>/`, its own branch from origin/main);
+  sessions share the main checkout's branch, so never `git switch` there. The SessionStart hook says so in the main
+  checkout and runs `make setup` in a new worktree; `.worktreeinclude` copies the ignored files a worktree needs.
 - `make setup` once, then `make test` after changes (typecheck + vitest); `make lint`; `make e2e` (Playwright);
   `make a11y` (template lint + axe scans in `web/e2e/a11y/`, not in `make e2e`; the pre-push hook runs it when a push
   touches `web/app/`; known violations are exceptions in `web/e2e/a11y/axe.ts`, each with an issue); `make dev` / `make preview`.

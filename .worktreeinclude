@@ -1,0 +1,5 @@
+# git-ignored files Claude Code copies into each new worktree (claude -w, EnterWorktree); gitignore syntax
+.claude/settings.local.json
+web/.vercel/
+design/tailwind-plus/
+# not design/leadsheets/ or design/sources/ (~700 MB): read them from the main checkout
