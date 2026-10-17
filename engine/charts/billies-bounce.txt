@@ -4,7 +4,10 @@ style: Blues
 key: F
 form: A, 12 bars
 source: Colorado Cookbook, p. 34
+recording: Charlie Parker; New Sounds in Modern Music, Volume 2; Savoy; 1951
+youtube: gVVffSREjd4
 # analysis: 2026-10-11, rules v1; F, blues
+# recording: recorded 1945-11-26 (Charlie Parker's Re-Boppers), master take 5, first issued on 78 (Savoy 573), first LP 1951 (MG 9001; MusicBrainz says 1950) (jazzdisco, uDiscover); video: The Complete Savoy & Dial Master Takes, the same take
 
 # bar | chord | scale
 

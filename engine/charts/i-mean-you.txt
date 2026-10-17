@@ -4,7 +4,10 @@ style: Medium swing
 key: F
 form: AABCD head (36 bars), solos on EEFG (AABA, 32 bars)
 source: 
+recording: Thelonious Monk; Genius of Modern Music; Blue Note; 1951
+youtube: Lov30CfofmQ
 # analysis: 2026-10-12, rules v1; F
+# recording: recorded 1948-07-02, first issued on 78 (Blue Note 1564), LP 1951 (BLP 5002); Coleman Hawkins recorded it first, December 1946 (Wikipedia, jazzdisco); video: Genius Of Modern Music, Vol. 1 (2013)
 # the book: the parenthesised chords at the Intro, A, C and D are the bass's (the piano plays written notes); they are the changes
 # the head ends at D (Fine); solo on E E F G, then D.C. al Fine
 

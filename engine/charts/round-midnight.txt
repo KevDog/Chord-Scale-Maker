@@ -5,7 +5,10 @@ style: Ballad
 key: Ebm
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 181
+recording: Thelonious Monk; Genius of Modern Music; Blue Note; 1951
+youtube: V_h5P2meI5I
 # analysis: 2026-10-17, rules v1; Eb minor
+# recording: recorded 1947-11-21, first issued on 78 (Blue Note 543, as 'Round About Midnight), LP 1951 (BLP 5002) (Wikipedia, jazzdisco, MusicBrainz); video: Genius Of Modern Music, Vol. 1 (2013)
 
 # bar | chord | scale
 

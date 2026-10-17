@@ -4,7 +4,10 @@ style: Gospel ballad
 key: Bb
 form: AABC, 32 bars
 source: 
+recording: Duke Ellington and His Orchestra featuring Mahalia Jackson; Black, Brown and Beige; Columbia; 1958
+youtube: F_U2ItUzx5A
 # analysis: 2026-10-12, rules v1; Bb
+# recording: recorded February 1958; chosen over the 1944 Victor suite excerpt, since this album, with Mahalia Jackson's vocal and Ellington's lyric, made it a standard (Discogs, Wikipedia); video: The Essential Mahalia Jackson, the same take
 
 # the book marks it Med.-Slow Gospel Ballad
 # bar | chord
