@@ -394,6 +394,18 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   "Choose a scale"), and components only draw it. The live preview re-renders only staves that changed: each
   staff's `id` combines its line's chords and scale, the part and the mode, not its position.
 
+### Patterns sheet (flag `patterns`; [spec](superpowers/specs/2026-10-17-practice-patterns-design.md))
+
+- **What:** a pattern (moves between neighbouring notes of the scale or the chord tones, e.g. `+2 −1`) run over each
+  scale line, one stave a line, drawn by the Arpeggios sheet's staff. `buildPatternSheet` (`engine/src/patterns.ts`)
+  builds the model; `ArpeggioSheet` takes `moves` and draws it, headed Patterns.
+- **Controls (Pattern group, only on this sheet):** a listbox of the 13 library patterns plus Custom… (`aria-label="Pattern"`;
+  the shown entry is the library pattern whose canonical text equals the stored one, else Custom); under Custom, a text
+  box (`Custom pattern`) that writes the pattern only when `parsePattern` accepts it, else shows the error in
+  `#pattern-error` (its `aria-describedby`); Notes: Scale · Chord tones; direction listbox (`Pattern direction`).
+- **Preferences and links:** `csm-pattern` (canonical text), `csm-pattern-notes`, `csm-pattern-dir`; share links carry
+  `sheet: 'patterns'`, `pattern`, `patternNotes`, `patternDir`.
+
 ### Arpeggios sheet ([spec](superpowers/specs/2026-10-12-arpeggios-sheet-design.md))
 
 - **Lines:** exactly the Scales sheet's (`scaleLines`), in eighth notes, one stave each, no time signature. 12 lines a

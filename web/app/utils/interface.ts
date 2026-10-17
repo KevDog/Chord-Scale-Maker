@@ -18,6 +18,7 @@ export const CONTROL_TIERS = {
   line: 'intermediate', // Line modes, guide line, arpeggio pattern
   spell: 'intermediate', // Spell Scale
   practice: 'intermediate', // the Practice panel
+  patterns: 'intermediate', // the Patterns sheet (#298)
   'scale-choice': 'intermediate', // a chord's scale: the scale label picker, ChordChoices' Scale section
   'form-editing': 'intermediate', // Repeat a section, Write out, endings, segno, coda, Jump, New section here, Paste bars
   why: 'intermediate', // the "why" notes on numerals and scales, ChordChoices' why
@@ -36,7 +37,7 @@ export const shows = (level: InterfaceLevel, id: ControlId): boolean => rank(lev
 
 /** the sheet's settings a control governs: what decides the notice */
 export type ViewSettings = Readonly<{ sheet: SheetKind; scaleLevel: ScaleLevel; numerals: boolean; scaleNames: boolean; lineMode: LineMode; spell: Spell; practice: PracticeSelection | null; overlay: Overlay; picks: boolean }> // picks: live chord picks of the kind the sheet shows (#303)
-export type HiddenSetting = 'scale-level' | 'numerals' | 'scale-names' | 'line' | 'spell' | 'practice' | 'pentatonics' | 'chord-picks'
+export type HiddenSetting = 'scale-level' | 'numerals' | 'scale-names' | 'line' | 'spell' | 'practice' | 'pentatonics' | 'chord-picks' | 'patterns'
 
 /** each setting away from its default on this sheet, and the level its control needs */
 function setAway(v: ViewSettings): readonly (readonly [HiddenSetting, InterfaceLevel])[] {
@@ -50,6 +51,7 @@ function setAway(v: ViewSettings): readonly (readonly [HiddenSetting, InterfaceL
     ...(scales && v.spell !== 'key' ? [['spell', 'intermediate'] as const] : []),
     ...(scales && v.practice ? [['practice', isPentatonicSelection(v.practice) || isHexatonicSelection(v.practice) ? 'everything' : 'intermediate'] as const] : []),
     ...(changes && v.overlay !== 'off' ? [['pentatonics', 'everything'] as const] : []), // Superimpose's control id
+    ...(v.sheet === 'patterns' ? [['patterns', 'intermediate'] as const] : []),
     ...((changes || scales) && v.picks ? [['chord-picks', 'everything'] as const] : []),
   ]
 }

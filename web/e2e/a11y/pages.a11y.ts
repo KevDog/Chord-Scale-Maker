@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseSheet, expect, pentatonicPreset, showPentatonics, staves, test } from '../fixtures'
+import { chooseSheet, expect, pentatonicPreset, pickOption, showPentatonics, staves, test } from '../fixtures'
 import { expectAccessible } from './axe'
 
 const SONG = '/song/autumn-leaves'
@@ -64,6 +64,17 @@ for (const theme of ['light', 'dark'] as const) {
       // a pentatonic label: its ladder
       await showPentatonics(page)
       await opens(page, page.locator('[data-slot="pentatonic"] button').first(), page.getByRole('dialog', { name: / bar \d+$/ }))
+      await expectAccessible(page)
+    })
+
+    test('the Patterns sheet, with the Custom box open', async ({ page }) => {
+      await page.goto(SONG)
+      if (theme === 'dark') await darkMode(page)
+      await chooseSheet(page, 'Patterns')
+      await expect(staves(page).first()).toBeVisible()
+      await pickOption(page, /^Pattern$/, 'Custom…')
+      await page.getByLabel('Custom pattern').fill('+0')
+      await expect(page.locator('#pattern-error')).toBeVisible()
       await expectAccessible(page)
     })
 

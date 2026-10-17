@@ -59,6 +59,12 @@
           chord, with the scale that goes with it, in the order the tune runs. Each staff is labelled with where it is in
           the form, the chord and the scale. Practice works on this sheet.
         </UiText>
+        <UiText v-if="patternsOn">
+          <strong class="font-semibold text-zinc-950 dark:text-white">Patterns</strong> runs a scale sequence over each scale line,
+          one staff a line: 1 2 3 4, thirds, triads and more, or one of your own, written as steps (<UiCode>+2 −1</UiCode> is up a third, back a step).
+          <strong class="font-semibold text-zinc-950 dark:text-white">Scale</strong> steps through the scale and
+          <strong class="font-semibold text-zinc-950 dark:text-white">Chord tones</strong> through the chord. Up, Down or Up &amp; down.
+        </UiText>
 
         <UiSubheading id="guide-lines" :level="3" class="scroll-mt-6 pt-2">How a guide tone line is built</UiSubheading>
         <UiText>It's the way you'd build one by hand, a chord at a time.</UiText>
@@ -423,6 +429,7 @@ import { guideRanges } from '~/utils/instrumentChoices'
 import { PENT_INSIDE_HELP } from '~/utils/pentatonics'
 
 const offline = useFeature('offline')
+const patternsOn = useFeature('patterns')
 const GUIDE_RANGES = guideRanges()
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },
