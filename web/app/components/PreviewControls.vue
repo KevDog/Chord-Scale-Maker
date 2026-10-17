@@ -10,7 +10,7 @@
           <div class="flex items-center gap-2">
             <UiListbox v-model="sheet" class="w-full">
               <template #selected="{ value }"><UiListboxLabel>{{ sheetLabel(value) }}</UiListboxLabel></template>
-              <UiListboxOption v-for="s in SHEETS" :key="s.value" :value="s.value"><UiListboxLabel>{{ s.label }}</UiListboxLabel></UiListboxOption>
+              <UiListboxOption v-for="s in sheetsFor(patternsOn)" :key="s.value" :value="s.value"><UiListboxLabel>{{ s.label }}</UiListboxLabel></UiListboxOption>
             </UiListbox>
           </div>
         </UiField>
@@ -238,6 +238,7 @@
       { value: 'seventh', label: 'From 7th', title: "A line that starts on the first chord's 7th and moves to the nearest guide tone of each chord" },
     ] as const
     const guideLabel = (v: GuideFrom): string => GUIDE_LINES.find((g) => g.value === v)?.label ?? ''
-    const sheetLabel = (v: SheetKind): string => SHEETS.find((s) => s.value === v)?.label ?? ''
+    const patternsOn = useFeature('patterns')
+    const sheetLabel =(v: SheetKind): string => SHEETS.find((s) => s.value === v)?.label ?? ''
     const part = computed(() => partFor(instrument.value))
     </script>

@@ -162,6 +162,7 @@ exports[`exports the same names 1`] = `
   "isFatal",
   "isHexatonicSelection",
   "isInstrumentName",
+  "isPatternNotes",
   "isPentatonicLeave",
   "isPentatonicPathName",
   "isPentatonicPreset",

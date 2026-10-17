@@ -392,7 +392,7 @@ const keyStartNote = computed(() => keyStart(chartKeyOf(editor.doc.value), part.
 const spelled = computed(() => spellView(prefs.spell.value, keyStartNote.value))
 const mode = computed((): Mode => spelled.value.mode)
 const start = computed(() => spelled.value.start)
-const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet))
+const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, useFeature('patterns')))
 /** the Interface level (#273): which controls show */
 const ui = useInterface()
 /** the chart's sections as the Changes sheet draws them, for the path presets (#264) */
@@ -493,6 +493,7 @@ const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
     pentPath.reset() // this chart's stored path too; other charts' are their own settings (#291)
   },
   'chord-picks': () => chordPicks.clearAll(),
+  patterns: () => (sheet.value = 'changes'),
 }
 function resetHidden(): void {
   const inForce = mode.value

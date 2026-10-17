@@ -148,6 +148,27 @@ describe('linkPreferences', () => {
     expect([l.arpNotes.value, l.arpDir.value]).toEqual(['seventh', 'down'])
     expect(linked({}).arpNotes.value).toBe('extended')
   })
+
+  it('keeps the Patterns choices in canonical form; text that does not parse reads as the default; a link overrides them for the visit only', async () => {
+    const p = prefs()
+    expect([p.pattern.value, p.patternNotes.value, p.patternDir.value]).toEqual(['+1 +1 +1 −2', 'scale', 'up'])
+    p.pattern.value = '+2 -1'
+    p.patternNotes.value = 'chord'
+    p.patternDir.value = 'up-down'
+    await nextTick()
+    const again = prefs()
+    expect([again.pattern.value, again.patternNotes.value, again.patternDir.value]).toEqual(['+2 −1', 'chord', 'up-down'])
+    expect(localStorage.getItem('csm-pattern')).toBe('+2 −1')
+    localStorage.setItem('csm-pattern', '+0 +1')
+    localStorage.setItem('csm-pattern-notes', 'x')
+    localStorage.setItem('csm-pattern-dir', 'sideways')
+    const bad = prefs()
+    expect([bad.pattern.value, bad.patternNotes.value, bad.patternDir.value]).toEqual(['+1 +1 +1 −2', 'scale', 'up'])
+    const l = linked({ sheet: 'patterns', pattern: '+3 -1', patternNotes: 'chord', patternDir: 'down' })
+    expect([l.pattern.value, l.patternNotes.value, l.patternDir.value]).toEqual(['+3 −1', 'chord', 'down'])
+    expect(localStorage.getItem('csm-pattern')).toBe('+0 +1')
+    expect(linked({}).pattern.value).toBe('+1 +1 +1 −2')
+  })
 })
 
 describe('pentatonic preferences', () => {

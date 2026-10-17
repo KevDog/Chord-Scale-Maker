@@ -108,6 +108,11 @@ describe('share links', () => {
     }
   })
 
+  it('keeps the Patterns sheet and its choices in canonical form, dropping bad ones', () => {
+    expect(shareViewFrom({ sheet: 'patterns', pattern: '+2 -1', patternNotes: 'chord', patternDir: 'up-down' })).toEqual({ sheet: 'patterns', pattern: '+2 −1', patternNotes: 'chord', patternDir: 'up-down' })
+    expect(shareViewFrom({ sheet: 'patterns', pattern: '+0', patternNotes: 'x', patternDir: 'sideways' })).toEqual({ sheet: 'patterns' })
+  })
+
   it('keeps the Arpeggios sheet and its choices, dropping bad ones', () => {
     expect(shareViewFrom({ sheet: 'arpeggios', arpNotes: 'extended', arpDir: 'up-down' })).toEqual({ sheet: 'arpeggios', arpNotes: 'extended', arpDir: 'up-down' })
     expect(shareViewFrom({ sheet: 'arps', arpNotes: 'ninth', arpDir: 'sideways' })).toBeUndefined()

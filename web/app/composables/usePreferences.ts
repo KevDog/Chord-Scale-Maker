@@ -1,9 +1,17 @@
 import type { Ref } from 'vue'
-import { type ArpDirection, type ArpeggioPattern, type ArpNotes, type InstrumentName, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, isPentatonicLeave, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type ShareView } from '@chord-scale-maker/engine'
+import { type ArpDirection, formatPattern, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, isPatternNotes, isPentatonicLeave, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type ShareView } from '@chord-scale-maker/engine'
 import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
 import { isOverlay, type Overlay } from '~/utils/overlay'
+
+const DEFAULT_PATTERN = '+1 +1 +1 −2'
+
+/** a pattern's canonical text, or undefined when it doesn't parse */
+function canonicalPattern(text: string): string | undefined {
+  const parsed = parsePattern(text)
+  return 'moves' in parsed ? formatPattern(parsed.moves) : undefined
+}
 
 /** a ref kept in this browser's storage; a stored value that doesn't parse falls back */
 function storedRef<T>(key: string, parse: (raw: string) => T | undefined, fallback: T, store: (v: T) => string = String): Ref<T> {
@@ -29,6 +37,10 @@ export function usePreferences() {
   // the Arpeggios sheet: 7th chords or extended, and the direction
   const arpNotes = storedRef<ArpNotes>('csm-arp-notes', (s) => (isArpNotes(s) ? s : undefined), 'seventh')
   const arpDir = storedRef<ArpDirection>('csm-arp-dir', (s) => (isArpDirection(s) ? s : undefined), 'up')
+  // the Patterns sheet (#298): the moves (kept in canonical text; text that doesn't parse is the default), what they run over, the direction
+  const pattern = storedRef<string>('csm-pattern', canonicalPattern, DEFAULT_PATTERN, (v) => canonicalPattern(v) ?? v)
+  const patternNotes = storedRef<PatternNotes>('csm-pattern-notes', (s) => (isPatternNotes(s) ? s : undefined), 'scale')
+  const patternDir = storedRef<ArpDirection>('csm-pattern-dir', (s) => (isArpDirection(s) ? s : undefined), 'up')
   // the Changes sheet's overlay row: Off until chosen (a value it can't read is Off); the old Pentatonics toggle (#255), on, reads as Pentatonic
   const overlay = storedRef<Overlay>('csm-overlay', (s) => (isOverlay(s) ? s : 'off'), readStored('csm-pentatonics') === 'on' ? 'pentatonic' : 'off')
   // the Pentatonic overlay's rung (0 Home … 6) and side
@@ -43,7 +55,7 @@ export function usePreferences() {
   const source = storedRef<boolean>('csm-source', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the /functions page's key: C major until another is picked
   const functionsKey = storedRef<string>('csm-functions-key', (s) => (FUNCTIONS_KEYS.includes(s) ? s : undefined), 'C')
-  return { instrument, spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, arpeggio, arpNotes, arpDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, source, functionsKey }
+  return { instrument, spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, arpeggio, arpNotes, arpDir, pattern, patternNotes, patternDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, source, functionsKey }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
@@ -64,6 +76,9 @@ export function linkPreferences(view: ShareView) {
     arpeggio: ref<ArpeggioPattern>(choice.arpeggio ?? own.arpeggio.value),
     arpNotes: ref<ArpNotes>(view.arpNotes ?? own.arpNotes.value),
     arpDir: ref<ArpDirection>(view.arpDir ?? own.arpDir.value),
+    pattern: ref<string>((view.pattern && canonicalPattern(view.pattern)) || own.pattern.value),
+    patternNotes: ref<PatternNotes>(view.patternNotes ?? own.patternNotes.value),
+    patternDir: ref<ArpDirection>(view.patternDir ?? own.patternDir.value),
     overlay: own.overlay, // not in links: yours
     pentRung: own.pentRung,
     pentSide: own.pentSide,

@@ -119,6 +119,7 @@ function upRun(size: number, moves: Moves): Readonly<{ steps: readonly number[];
 
 /** what a pattern runs over: the chord's scale, or its chord tones */
 export type PatternNotes = 'scale' | 'chord'
+export const isPatternNotes = (x: unknown): x is PatternNotes => x === 'scale' || x === 'chord'
 
 /** a run's start: the offsets (semitones from its first note) placed whole at the start with the fewest notes out of range, then the average nearest the centre (a tie: the higher) */
 function placeWhole(offsets: readonly number[], first: number, range: Range): readonly number[] {

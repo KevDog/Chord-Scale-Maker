@@ -18,6 +18,7 @@ describe('interface levels', () => {
       line: 'intermediate',
       spell: 'intermediate',
       practice: 'intermediate',
+      patterns: 'intermediate',
       'scale-choice': 'intermediate',
       'form-editing': 'intermediate',
       why: 'intermediate',
@@ -58,6 +59,11 @@ describe('hiddenSettings', () => {
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'changes', spell: 'root', practice: { preset: 'chordTones' } })).toBeNull()
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'scales', spell: 'root' })).toEqual({ settings: ['spell'], needs: 'intermediate' })
     expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'arpeggios', scaleLevel: 'advanced', spell: 'root' })).toBeNull()
+  })
+
+  it('names a Patterns sheet at Essentials, and not at Intermediate', () => {
+    expect(hiddenSettings('essentials', { ...DEFAULTS, sheet: 'patterns' })).toEqual({ settings: ['patterns'], needs: 'intermediate' })
+    expect(hiddenSettings('intermediate', { ...DEFAULTS, sheet: 'patterns' })).toBeNull()
   })
 
   it('puts a pentatonic practice selection at Everything', () => {
