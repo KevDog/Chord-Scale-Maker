@@ -140,6 +140,18 @@ describe('approaches on the guide tone line', () => {
     const g = voices(['Dm7', 'G7'], 'diatonic-above')
     expect(bars(g)).toEqual(bars(voices(['Dm7', 'G7'], 'none')))
   })
+  it('a gap between chords (the next starts later than the last ends) gets no approach', () => {
+    const gapped: GuideInput[] = [
+      { row: 0, chord: 'Dm7', start: 0, beats: 4 },
+      { row: 1, chord: 'G7', start: 6, beats: 4 },
+    ]
+    expect(bars(guideVoices(gapped, CONCERT, 4, null, 'third', 'chromatic-below'))).toEqual(bars(guideVoices(gapped, CONCERT, 4, null, 'third')))
+  })
+  it('a figure the collapse shortens takes only its own beats: delayed into F over C is G E, one beat, not a beat and a half', () => {
+    const [c, dm] = chords(['CMaj7', 'Dm7'])
+    const g = guideVoices([{ ...c!, scale: 'C major' }, dm!], CONCERT, 4, null, 'third', 'delayed')
+    expect(bars(g)[0]).toBe('0:e/4/3 3:g/4/0.5 3.5:e/4/0.5')
+  })
   it('keeps every figure note in the part range', () => {
     const range = rangeOf(CONCERT)
     for (const a of ['chromatic-below', 'double-above', 'delayed'] as const) {

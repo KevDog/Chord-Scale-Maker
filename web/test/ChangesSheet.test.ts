@@ -3,13 +3,13 @@ import { nextTick } from 'vue'
 import { describe, expect, it } from 'vitest'
 import PentatonicLadder from '~/components/PentatonicLadder.vue'
 import ChangesSheet from '~/components/ChangesSheet.vue'
-import { buildChanges, type ChangesLineChoice, changesLinesPerPage, type ChartDoc, CONCERT, parseChart, type OverlayPlan, type PentatonicPlan, type ScaleView } from '@chord-scale-maker/engine'
+import { type Approach, buildChanges, type ChangesLineChoice, changesLinesPerPage, type ChartDoc, CONCERT, parseChart, type OverlayPlan, type PentatonicPlan, type ScaleView } from '@chord-scale-maker/engine'
 
 const doc = parseChart('title: T\nkey: Bb\n\nsection: A\nbars: 4\n1 | Cm7\n2 | F7\n').value
 // 64 bars: more lines than any page holds, at 2 or 4 bars a line
 const long = parseChart(`title: L\nkey: C\nsection: A\n${Array.from({ length: 64 }, (_, i) => `${i + 1} | ${['Dm7', 'G7', 'CMaj7', 'A7'][i % 4]}`).join('\n')}\n`).value
 
-const mountSheet = (over: Readonly<{ doc?: ChartDoc; line?: ChangesLineChoice; numerals?: boolean; scales?: boolean; editing?: null; overlay?: OverlayPlan | null }> = {}) =>
+const mountSheet = (over: Readonly<{ doc?: ChartDoc; line?: ChangesLineChoice; numerals?: boolean; scales?: boolean; editing?: null; overlay?: OverlayPlan | null; approach?: Approach }> = {}) =>
   mountSuspended(ChangesSheet, {
     props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: false, ...over },
     global: { stubs: { ChangesSystem: true } },
@@ -51,6 +51,13 @@ describe('ChangesSheet', () => {
   it('draws the Cells line as beamed cells named cells in the aria-label (#298)', async () => {
     const system = (await mountSheet({ line: { kind: 'cells', id: '3rd-3rd' } })).findComponent({ name: 'ChangesSystem' })
     expect([system.props('arpeggio'), system.props('lineName')]).toEqual([true, 'cells'])
+  })
+
+  it('gives the guide tone line its Approach (#298): a figure into the second chord, none without one', async () => {
+    const two = parseChart('title: T\nkey: C\n\nsection: A\nbars: 2\n1 | Dm7\n2 | G7\n').value
+    const notes = async (approach?: Approach) =>
+      (await mountSheet({ doc: two, line: 'third', ...(approach ? { approach } : {}) })).findComponent({ name: 'ChangesSystem' }).props('line').bars.flatMap((b: { voice: unknown[] }) => b.voice).length
+    expect(await notes('chromatic-below')).toBeGreaterThan(await notes())
   })
 
   it('plays a blank cell at the level it is given, Standard without one', async () => {

@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseInstrument, chooseInterface, chooseSheet, type Drawn, drawn, expect, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, sheetChord, showArpeggios, showCell, showGuides, test, writeChart } from './fixtures'
+import { chooseInstrument, chooseInterface, chooseSheet, type Drawn, drawn, expect, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, sheetChord, showArpeggios, showApproach, showCell, showGuides, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the controls above it (whose menus name the same scales) */
@@ -247,6 +247,31 @@ test('7th Chords in 3/4: six eighths for a bar of one chord, turning back after 
   await arpeggiosDrawn(page)
   await expect(line).toHaveAttribute('aria-label', /; 7th chords: C4 E4 G4 B4 G4 E4 \| D4 F4 A4 C5 A4 F4 \| /) // each next chord nearest the turn-back's last note
   await expect.poll(async () => (await drawn(line)).heads.length).toBe(4 * 6)
+})
+
+test('Approach (#298): an enclosure into each guide tone adds notes, the guide tones keep their beats, and the choice stays and rides a share link', async ({ page, browser }) => {
+  await page.goto('/song/autumn-leaves')
+  const line = lines(page).first()
+  await showGuides(page, 'From 3rd')
+  await guidesDrawn(page)
+  const labels = (await labelRow(line).textContent()) ?? ''
+  const plain = (await drawn(line)).heads.length
+  await showApproach(page, 'Diatonic above, chromatic below (enclosure)')
+  await expect.poll(async () => (await drawn(line)).heads.length).toBeGreaterThan(plain) // the figures are more noteheads than chords
+  await expect(labelRow(line)).toHaveText(labels) // each chord's first note is still its guide tone
+  await expectChordsOnHeads(line)
+  await page.reload()
+  await expect(page.getByLabel('Approach', { exact: true })).toContainText('enclosure') // remembered
+  await page.getByRole('button', { name: 'Share' }).click()
+  const box = page.getByRole('dialog').getByLabel('Link')
+  await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/)
+  const link = await box.inputValue()
+  const other = await browser.newContext()
+  await chooseInterface(other, 'everything')
+  const visitor = await other.newPage()
+  await visitor.goto(link)
+  await expect(visitor.getByLabel('Approach', { exact: true })).toContainText('enclosure')
+  await other.close()
 })
 
 test('Cells (#298): a cell on each beat 1 and 3 of a chord, eighths beamed by the beat, and the choice stays and rides a share link', async ({ page, browser }) => {

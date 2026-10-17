@@ -173,6 +173,12 @@
               and <strong class="font-semibold">Scales</strong>, which turn those rows on and off. <strong class="font-semibold">Guide Tones</strong>
               chooses <strong class="font-semibold">Off</strong>, <strong class="font-semibold">From 3rd</strong> or <strong class="font-semibold">From 7th</strong>, the guide tone
               line described above.
+              <template v-if="approachesOn">
+                Under Guide Tones, <strong class="font-semibold">Approach</strong> leads into each chord's guide tone with a short figure of
+                eighths, played at the end of the chord before: a note a semitone below or above, a pair from one side, an enclosure
+                (a step above in the chord's scale, then a semitone below) and more. The guide tone still lands on the chord's first
+                beat; the chord before gives up the last beat or two to make room. The first chord, and a chord after a rest, has no approach.
+              </template>
               <strong class="font-semibold">Superimpose</strong> puts a row under the chords: <strong class="font-semibold">Off</strong>,
               <strong class="font-semibold">Pentatonic</strong> (each key area's minor pentatonic, or, ranked against
               Chord, each chord's, <strong class="font-semibold">Built on</strong> the degree you choose) or
@@ -438,6 +444,7 @@ import { PENT_INSIDE_HELP } from '~/utils/pentatonics'
 const offline = useFeature('offline')
 const patternsOn = useFeature('patterns')
 const cellsOn = useFeature('cells')
+const approachesOn = useFeature('approaches')
 const GUIDE_RANGES = guideRanges()
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },

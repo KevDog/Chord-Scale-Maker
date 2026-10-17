@@ -1,4 +1,4 @@
-import { chooseSheet, expect, openEditor, pickOption, setScaleLevel, sheetChord, showLine, showPentatonics, staves, test, writeChart } from './fixtures'
+import { chooseSheet, expect, openEditor, pickOption, setScaleLevel, sheetChord, showApproach, showLine, showPentatonics, staves, test, writeChart } from './fixtures'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/song?new=1')
@@ -342,7 +342,8 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
       const row = el.querySelector('[aria-label="Sheet controls"]')?.firstElementChild as HTMLElement // the rail's wrapping left groups (the actions pinned right beside them)
       const kids = Array.from(row.children, (c) => c.getBoundingClientRect())
       // groups are top-aligned (items-start), so distinct tops = visual rows
-      return { rows: new Set(kids.map((r) => Math.round(r.top))).size, widths: `${row.clientWidth}: ${kids.map((r) => Math.round(r.width)).join(' + ')}` }
+      const lineGroup = Array.from(row.children).find((c) => c.querySelector('[data-slot=label]')?.textContent?.trim() === 'Line')?.getBoundingClientRect().width ?? 0
+      return { rows: new Set(kids.map((r) => Math.round(r.top))).size, lineGroup: Math.round(lineGroup), widths: `${row.clientWidth}: ${kids.map((r) => Math.round(r.width)).join(' + ')}` }
     })
   for (const sheet of ['Scales', 'Patterns', 'Changes']) {
     await chooseSheet(page, sheet)
@@ -384,6 +385,14 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
     expect(rows, `Changes, ${mode} (${widths})`).toBeLessThanOrEqual(2)
     expect(await place(), mode).toEqual(at)
   }
+  // the Approach (#298) is a listbox inside the Line group, under Guide tone line: the group keeps its width, the rail two rows
+  await showLine(page, 'Guide Tones') // under the Pentatonics row still: the most the Line group holds
+  const bare = await layout()
+  await showApproach(page, 'Diatonic above, chromatic below (enclosure)')
+  const approached = await layout()
+  expect(approached.rows, `Changes, Guide Tones with an Approach (${approached.widths})`).toBeLessThanOrEqual(2)
+  expect(approached.lineGroup, 'the Line group does not widen').toBeLessThanOrEqual(bare.lineGroup)
+  expect(await place(), 'Approach').toEqual(at)
 })
 
 

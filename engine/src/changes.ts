@@ -464,7 +464,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         from = k
         ending = volta
         const scale = scaleOf(i, e.row)
-        const shown = approach === 'none' ? undefined : resolved.get(i)?.scale // what an approach's diatonic steps follow
+        const shown = resolved.get(i)?.scale // what an approach's diatonic steps follow
         return [{ row: i, chord: e.chord, ...(scale ? { scale } : {}), ...(shown ? { shown } : {}), start: e.start, beats: e.beats, block }]
       }),
     )

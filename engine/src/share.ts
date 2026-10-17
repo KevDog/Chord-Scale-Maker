@@ -1,4 +1,5 @@
 import { isSheetLine, type SheetLine } from './arpeggios'
+import { type Approach, isApproach } from './approaches'
 import { type CellId, isCellId } from './cells'
 import { type ArpDirection, type ArpNotes, isArpDirection, isArpNotes } from './arpeggioSheet'
 import { type ChordPicks, chordPicksFrom, hasPicks } from './chordPicks'
@@ -32,6 +33,8 @@ export type ShareView = Readonly<{
   scaleNames?: boolean
   /** the Changes sheet's line: a guide tone line, an arpeggio pattern or a cells line; absent: off */
   line?: ShareLine
+  /** the guide tone line's Approach (#298); absent: none */
+  approach?: Approach
   sheet?: ShareSheet
   /** the Arpeggios sheet's choices: 7th Chord or Extended; Up, Down or Up & down */
   arpNotes?: ArpNotes
@@ -122,6 +125,7 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(typeof o.numerals === 'boolean' ? { numerals: o.numerals } : {}),
     ...(typeof o.scaleNames === 'boolean' ? { scaleNames: o.scaleNames } : {}),
     ...(line && line !== 'off' ? { line } : {}), // anything else: off
+    ...(isApproach(o.approach) ? { approach: o.approach } : {}),
     ...(o.sheet === 'scales' || o.sheet === 'changes' || o.sheet === 'arpeggios' || o.sheet === 'patterns' ? { sheet: o.sheet } : {}),
     ...(isArpNotes(o.arpNotes) ? { arpNotes: o.arpNotes } : {}),
     ...(isArpDirection(o.arpDir) ? { arpDir: o.arpDir } : {}),
