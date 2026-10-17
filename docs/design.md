@@ -1081,6 +1081,15 @@ static file, §7b), so the attack surface is small. The measures:
   - It's written as a plain tag because `@vercel/analytics` declares a peer dependency on vue-router 4, which
     conflicts with Nuxt 4's vue-router 5.
   - Web Analytics has to be enabled for the project in the Vercel dashboard.
+  - Page views carry routes (#149): the tag has `data-disable-auto-track`, and `app/plugins/analytics.client.ts`
+    sends `va('pageview', { route, path })` on each `page:finish`, the route in Vercel's form
+    (`utils/analyticsRoute.ts`: `/song/:slug?` → `/song/[slug]`). Pages still lists each song; Routes groups them.
+    `analytics-before-send.js` also defines the `window.va` queue stub (the package's would be inline).
+  - Six anonymous custom events (`utils/analytics.ts`: share created and opened, sheet, instrument once per song
+    visit, print, transpose), at most 2 properties each, the chart named only by library slug or `own`, never on
+    load. Behind the `analyticsEvents` flag, off until the project is on Pro (Hobby has no custom events; Pro bills
+    about $0.03 per 1K events from the usage credit). The privacy page mentions them only with the flag on.
+    Spec: `docs/superpowers/specs/2026-10-12-analytics-routes-events-design.md`.
 - **Content-Security-Policy:**
   - **Where:** `web/build/csp.ts`, run by a Nitro `prerender:generate` hook, gives each prerendered page a
     `<meta http-equiv="Content-Security-Policy">` as the first element of `<head>`:

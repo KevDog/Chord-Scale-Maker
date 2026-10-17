@@ -22,6 +22,10 @@
         <UiText>
           Page views are counted with Vercel Web Analytics. It uses no cookies, doesn't track you across sites or over
           time, and keeps no advertising profile.
+          <template v-if="eventsOn">
+            It also counts a few anonymous actions (which sheet, instrument, printing, transposing, sharing), never
+            your chart's contents.
+          </template>
         </UiText>
       </section>
 
@@ -75,6 +79,7 @@ const SECTIONS = [
   { id: 'questions', title: 'Questions' },
 ]
 const current = useCurrentSection(() => SECTIONS.map((s) => s.id))
+const eventsOn = useFeature('analyticsEvents')
 
 useSeoMeta(seoMeta(PAGE_HEAD.privacy))
 </script>

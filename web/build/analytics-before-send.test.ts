@@ -13,4 +13,11 @@ describe('public/analytics-before-send.js', () => {
       url: 'https://www.chordscalemaker.com/song?x=1',
     })
   })
+
+  it('defines the va queue stub, so calls made before the script loads wait in vaq', () => {
+    const window: { va?: (...a: unknown[]) => void; vaq?: unknown[][] } = {}
+    runInNewContext(readFileSync(new URL('../public/analytics-before-send.js', import.meta.url), 'utf8'), { window, URL, Object })
+    window.va?.('pageview', { route: '/song/[slug]', path: '/song/x' })
+    expect(Array.from(window.vaq?.[1] ?? [])).toEqual(['pageview', { route: '/song/[slug]', path: '/song/x' }])
+  })
 })
