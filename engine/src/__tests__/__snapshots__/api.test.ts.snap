@@ -192,6 +192,7 @@ exports[`exports the same names 1`] = `
   "nearDuplicateComposers",
   "nearestTone",
   "nextCell",
+  "noteName",
   "noteText",
   "noteValue",
   "notesFor",
