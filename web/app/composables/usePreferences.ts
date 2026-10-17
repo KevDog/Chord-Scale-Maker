@@ -1,5 +1,5 @@
-import type { Ref } from 'vue'
-import { type ArpDirection, type ArpeggioPattern, type ArpNotes, type InstrumentName, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, isPentatonicLeave, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type ShareView } from '@chord-scale-maker/engine'
+import type { Ref, WritableComputedRef } from 'vue'
+import { type ArpDirection, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, INSTRUMENTS, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, isPentatonicLeave, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, type ShareView } from '@chord-scale-maker/engine'
 import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
@@ -11,6 +11,23 @@ function storedRef<T>(key: string, parse: (raw: string) => T | undefined, fallba
   const value = ref((raw === null ? undefined : parse(raw)) ?? fallback) as Ref<T>
   watch(value, (v) => writeStored(key, store(v)))
   return value
+}
+
+/** #359: the player's range for the instrument, kept per instrument ("58-82" under csm-range-<name>, fitted when read); the preset's until set */
+function rangeRef(instrument: Ref<InstrumentName>): WritableComputedRef<Range> {
+  const read = (name: InstrumentName): Range => {
+    const m = /^(\d+)-(\d+)$/.exec(readStored(`csm-range-${name}`) ?? '')
+    return m ? fitRange(name, { lo: Number(m[1]), hi: Number(m[2]) }) : INSTRUMENTS[name].range
+  }
+  const range = ref(read(instrument.value))
+  watch(instrument, (name) => (range.value = read(name)))
+  return computed({
+    get: () => range.value,
+    set: (r) => {
+      range.value = r
+      writeStored(`csm-range-${instrument.value}`, `${r.lo}-${r.hi}`)
+    },
+  })
 }
 
 /** the preview's instrument, spelling (from the chart's key until another is picked) and interval labels, and whether the editor is shown, remembered in this browser (client-only) */
@@ -43,7 +60,7 @@ export function usePreferences() {
   const source = storedRef<boolean>('csm-source', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the /functions page's key: C major until another is picked
   const functionsKey = storedRef<string>('csm-functions-key', (s) => (FUNCTIONS_KEYS.includes(s) ? s : undefined), 'C')
-  return { instrument, spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, arpeggio, arpNotes, arpDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, source, functionsKey }
+  return { instrument, range: rangeRef(instrument), spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, arpeggio, arpNotes, arpDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, source, functionsKey }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
@@ -53,8 +70,10 @@ export function linkPreferences(view: ShareView) {
   // a link's spelling: from the root, its note, or (from, without a note) the key
   const note = PICKER_ROOTS.find((r) => r === view.start)
   const linked: Spell | undefined = view.mode === 'root' ? 'root' : view.mode === 'from' ? (note ?? 'key') : undefined
+  const instrument = ref<InstrumentName>(view.instrument ?? own.instrument.value)
   return {
-    instrument: ref<InstrumentName>(view.instrument ?? own.instrument.value),
+    instrument,
+    range: rangeRef(instrument), // not in links: yours, for the link's instrument (#359)
     spell: ref<Spell>(linked ?? own.spell.value),
     intervals: ref<boolean>(view.intervals ?? own.intervals.value),
     numerals: ref<boolean>(view.numerals ?? own.numerals.value),

@@ -99,6 +99,7 @@ export default defineNuxtConfig({
         // six anonymous Web Analytics events (#149; docs/superpowers/specs/2026-10-12-analytics-routes-events-design.md): Pro only
         analyticsEvents: false,
         recordings: false, // a library song's notable recording (docs/superpowers/specs/2026-10-17-notable-recordings.md)
+        playerRange: false, // the player's range by the Instrument (#359)
       },
     },
   },

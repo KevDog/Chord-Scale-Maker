@@ -332,6 +332,25 @@ test('guide tones are written for the part, in its range: a B♭ trumpet within 
   expect(Math.max(...ys)).toBeLessThanOrEqual(130) // E2, a ledger line below the bass staff
 })
 
+test('the player’s range moves the guide tones, and is kept for the instrument (#359)', async ({ page }) => {
+  await page.goto('/song/autumn-leaves')
+  await showGuides(page, 'From 3rd')
+  await chooseInstrument(page, 'Clarinet')
+  await guidesDrawn(page)
+  const heads = async () => (await Promise.all((await lines(page).all()).map(drawn))).flatMap((d) => d.heads.map((h) => h.y))
+  const before = await lines(page).evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')))
+  await page.getByRole('button', { name: 'Lowest note' }).click()
+  await page.getByRole('option', { name: 'F4', exact: true }).click()
+  await expect(page.getByRole('button', { name: 'Highest note' })).toHaveText('F6') // pushed along: two octaves
+  await expect.poll(() => lines(page).evaluateAll((els, b) => els.some((e, i) => e.getAttribute('aria-label') !== b[i]), before)).toBe(true)
+  expect(Math.max(...(await heads()))).toBeLessThanOrEqual(115) // F4, the treble staff's first space (lines at 80–120, 5 a step)
+  await page.reload()
+  await expect(page.getByRole('button', { name: 'Lowest note' })).toHaveText('F4')
+  await chooseInstrument(page, 'Tenor Sax')
+  await expect(page.getByRole('button', { name: 'Lowest note' })).toHaveText('B♭3') // the tenor's own: its preset
+  await expect(page.getByRole('button', { name: 'Highest note' })).toHaveText('C6')
+})
+
 test('a waltz’s guide tones are in 3/4: a bar-long chord is a dotted half', async ({ page }) => {
   await page.goto('/song/someday-my-prince-will-come')
   await showGuides(page, 'From 7th')

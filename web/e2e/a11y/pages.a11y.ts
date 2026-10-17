@@ -40,6 +40,10 @@ for (const theme of ['light', 'dark'] as const) {
       if (theme === 'dark') await darkMode(page)
       await expect(staves(page).first()).toBeVisible()
       await expectAccessible(page)
+      // the player's range (#359): a picker's notes
+      await opens(page, page.getByRole('button', { name: 'Lowest note' }), page.getByRole('listbox'))
+      await expectAccessible(page)
+      await page.keyboard.press('Escape')
       const scale = page.getByRole('button', { name: 'C Dorian', exact: true }).first()
       // a scale label: why the sheet plays it
       await opens(page, scale, page.getByRole('dialog', { name: /^Why: / }))

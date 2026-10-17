@@ -1053,6 +1053,13 @@ its reasons into a chart as comments.
 - **The instrument picker** only changes `part` and the subtitle label (`partFor` and `instrumentLabel` in the
   engine). Each option's line is the instrument's full written range, `compass` (`F3–F6`, named by `noteName`), with
   a note only where it tells the player something (`F3–E6 · right hand`); the lines keep to `range` inside it.
+- **The player's range** (#359, behind `playerRange`): two pickers under the Instrument, Lowest note and Highest note,
+  set the written range the lines keep to (`partFor(name, range)`, so guide tones, 7th chords, pentatonic and triad pair
+  lines and the Arpeggios sheet follow). `fitRange` (engine, `playerRange.ts`) keeps it inside the full range and the
+  staff's cap, two octaves at least (`MIN_SPAN`), or the preset's span where that is less (tuba 22, bass 20: presets
+  unchanged); moving one end pushes the other. The centre stays the preset's: every range the pickers allow holds it.
+  `rangeChoices` lists each end's notes. Kept per instrument in this browser (`csm-range-<name>`, `"58-82"`, fitted
+  when read); a share link carries none (it's the player's), and a link's instrument reads your range for it.
 - **Feature flags:**
   - Set in `runtimeConfig.public.features` in `nuxt.config.ts`, and read with `useFeature(name)`.
   - New flags start off, and every flag is fixed at build time. `NUXT_PUBLIC_FEATURES_<NAME>=true|false`

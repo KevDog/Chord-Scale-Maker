@@ -108,6 +108,7 @@
           <PreviewControls
             v-model:sheet="sheet"
             v-model:instrument="prefs.instrument.value"
+            v-model:range="prefs.range.value"
             v-model:spell="prefs.spell.value"
             v-model:intervals="prefs.intervals.value"
             v-model:numerals="prefs.numerals.value"
@@ -377,7 +378,9 @@ const editor = useChartEditor(openingText)
 const rendering = useRendering()
 /** under the heading: "Ballad · E♭ · AABA, 32 bars — Johnny Green" */
 const prefs = props.shared ? linkPreferences(props.shared) : usePreferences()
-const part = computed(() => partFor(prefs.instrument.value))
+/** #359: the player's range, behind its flag; the preset's without it */
+const playerRange = useFeature('playerRange')
+const part = computed(() => partFor(prefs.instrument.value, playerRange ? prefs.range.value : undefined))
 /** the editor: hidden by default (song-first), shown for a new chart or one over a size limit (only the text can fix it) */
 const bornNew = ref(false) // latches true for a new chart, so saving it (its URL becomes ?mine) doesn't hide the editor mid-edit
 watch(() => props.isNew, (v) => { if (v) bornNew.value = true }, { immediate: true })
