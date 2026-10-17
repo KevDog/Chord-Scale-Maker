@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { buildChartReport, type ChartReport, guidesText } from '~/utils/chartReport'
 
-const REPORT: ChartReport = { chart: 'key: C\nA | 1 | Dm7\n', slug: 'x', title: 'X', version: 'v1', instrument: 'Tenor Sax', sheet: 'Scales', guides: '', level: 'Standard', url: 'http://x/song?chart=x' }
+const REPORT: ChartReport = { chart: 'key: C\n\nsection: A\nbars: 4\n1 | Dm7\n', slug: 'x', title: 'X', version: 'v1', instrument: 'Tenor Sax', sheet: 'Scales', guides: '', level: 'Standard', url: 'http://x/song?chart=x' }
 
 describe('buildChartReport', () => {
   it('puts a prompt line, a debug block, then the chart text', () => {
@@ -9,7 +9,7 @@ describe('buildChartReport', () => {
     expect(msg).toMatch(/^What looks wrong/) // prompt first
     expect(msg).toContain('version: v1')
     expect(msg).toContain('instrument: Tenor Sax')
-    expect(msg).toContain('key: C\nA | 1 | Dm7') // chart text included
+    expect(msg).toContain('key: C\n\nsection: A\nbars: 4\n1 | Dm7') // chart text included
   })
 
   it('says which guide tones were shown, after the sheet', () => {

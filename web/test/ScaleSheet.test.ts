@@ -55,7 +55,7 @@ describe('ScaleSheet', () => {
   })
 
   it("gives each staff the chart's key signature when given its key, and none without", async () => {
-    const homeKey = chartKeyOf(parseChart('key: Bb\nA | 1 | Cm7\n').value)
+    const homeKey = chartKeyOf(parseChart('key: Bb\n\nsection: A\nbars: 4\n1 | Cm7\n').value)
     const props = { rows: rows.slice(0, 1), title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', start: 'C', mode: 'root' as const, perPage: 12 }
     const staffOf = async (extra: object) =>
       (await mountSuspended(ScaleSheet, { props: { ...props, ...extra }, global: { stubs } })).findComponent({ name: 'ScaleStaff' }).props('staff')
@@ -64,7 +64,7 @@ describe('ScaleSheet', () => {
   })
 
   it('plays the picks it is given at their positions, passes part and pickable down, and re-emits a staff’s pick', async () => {
-    const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\n').value
+    const doc = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\n').value
     const resolved = resolveScales(doc, { level: 'standard', seed: 0 })
     const positions = chordPositions(doc)
     const picks = withPick(NO_PICKS, 'pentatonic', ['A:1:0'], 4, pickTargets(doc, resolved))

@@ -44,7 +44,7 @@ describe('ScaleStaff', () => {
   })
 
   describe('the caption opens the chord pick popover (#303)', () => {
-    const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | Cmaj7\nA | 4 | Cmaj7\nB | 5 | Dm7\nB | 6 | G7\nB | 7 | Cmaj7\nB | 8 | Cmaj7\n').value
+    const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | Cmaj7\n4 | Cmaj7\n\nsection: B\n1 | Dm7\n2 | G7\n3 | Cmaj7\n4 | Cmaj7\n').value
     const res = resolveScales(doc, { level: 'standard', seed: 0 })
     const targets = pickTargets(doc, res)
     const PENT: PracticeSelection = { preset: 'pentatonic', degree: 'auto' }
@@ -68,8 +68,8 @@ describe('ScaleStaff', () => {
       expect(b.classes()).toContain('print:no-underline')
       expect(b.attributes('aria-label')).toBe('Pentatonic: D minor, built on 1, 5 of 5 notes in D Dorian. Show the choices')
       const d = await open(w)
-      expect(d.find(`[id="${d.attributes('aria-labelledby')}"]`).text()).toBe('Dm7 Dorian · bars 1, 5')
-      expect(d.text().endsWith('Sets bars 1 and 5 on the Changes sheet too.')).toBe(true)
+      expect(d.find(`[id="${d.attributes('aria-labelledby')}"]`).text()).toBe('Dm7 Dorian · A bar 1, B bar 1')
+      expect(d.text().endsWith('Sets A bar 1 and B bar 1 on the Changes sheet too.')).toBe(true)
       const rows = w.findAll('[data-choice]')
       expect(rows).toHaveLength(12)
       expect(rows[0]!.text()).toBe('Dm pent · on 1 · 5 shared')
@@ -80,10 +80,10 @@ describe('ScaleStaff', () => {
       const w = await mount(dm())
       await open(w)
       await w.findAll('[data-choice]').find((r) => r.text().startsWith('Em pent'))!.trigger('click')
-      expect(w.emitted('pick')?.[0]).toEqual(['pentatonic', ['A:1:0', 'B:5:0'], 4])
+      expect(w.emitted('pick')?.[0]).toEqual(['pentatonic', ['A:1:0', 'B:1:0'], 4])
       await open(w)
       await w.find('[data-sheet-choice]').trigger('click')
-      expect(w.emitted('pick')?.[1]).toEqual(['pentatonic', ['A:1:0', 'B:5:0'], null])
+      expect(w.emitted('pick')?.[1]).toEqual(['pentatonic', ['A:1:0', 'B:1:0'], null])
       w.unmount()
     })
 
@@ -92,31 +92,31 @@ describe('ScaleStaff', () => {
       const w = await mount(dm(NO_PICKS, PENT, chordPositions(doc), tenor), { part: tenor })
       expect(w.find('[data-slot="pentatonic"] button').attributes('aria-label')).toBe('Pentatonic: E minor, built on 1, 5 of 5 notes in E Dorian. Show the choices')
       const d = await open(w)
-      expect(d.find(`[id="${d.attributes('aria-labelledby')}"]`).text()).toBe('Em7 Dorian · bars 1, 5')
+      expect(d.find(`[id="${d.attributes('aria-labelledby')}"]`).text()).toBe('Em7 Dorian · A bar 1, B bar 1')
       await w.findAll('[data-choice]').find((r) => r.text().startsWith('F♯m pent'))!.trigger('click')
-      expect(w.emitted('pick')?.[0]).toEqual(['pentatonic', ['A:1:0', 'B:5:0'], 4]) // written F♯m sounds Em
+      expect(w.emitted('pick')?.[0]).toEqual(['pentatonic', ['A:1:0', 'B:1:0'], 4]) // written F♯m sounds Em
       w.unmount()
     })
 
     it('says varies, and that a pick replaces the different picks', async () => {
-      const w = await mount(dm(withPick(NO_PICKS, 'pentatonic', ['B:5:0'], 4, targets)))
+      const w = await mount(dm(withPick(NO_PICKS, 'pentatonic', ['B:1:0'], 4, targets)))
       expect(w.find('[data-slot="pentatonic"] button').attributes('aria-label')).toBe('Pentatonic: D minor, built on 1, 5 of 5 notes in D Dorian, varies. Show the choices')
       expect(w.find('[data-slot="pentatonic"] button').text()).toBe('Dm pent · 5 shared · varies')
       const d = await open(w)
-      expect(d.text().endsWith('Replaces the different picks in bars 1 and 5.')).toBe(true)
+      expect(d.text().endsWith('Replaces the different picks in A bar 1 and B bar 1.')).toBe(true)
       w.unmount()
     })
 
     it('makes the hexatonic caption a trigger too', async () => {
       const w = await mount(dm(NO_PICKS, HEX))
-      const picked = await mount(dm(withPick(NO_PICKS, 'hexatonic', ['A:1:0', 'B:5:0'], [0, 2], targets), HEX))
+      const picked = await mount(dm(withPick(NO_PICKS, 'hexatonic', ['A:1:0', 'B:1:0'], [0, 2], targets), HEX))
       expect(picked.find('[data-slot="hexatonic"] button').attributes('aria-label')).toMatch(/^Triad pair: C\/Dm, covers \d chord tones, your pick\. Show the choices$/)
       picked.unmount()
       await open(w)
       const rows = w.findAll('[data-choice]')
       expect(rows.every((r) => / · covers \d$/.test(r.text()))).toBe(true)
       await rows.find((r) => r.text().startsWith('C/Dm · covers'))!.trigger('click')
-      expect(w.emitted('pick')?.[0]).toEqual(['hexatonic', ['A:1:0', 'B:5:0'], [0, 2]])
+      expect(w.emitted('pick')?.[0]).toEqual(['hexatonic', ['A:1:0', 'B:1:0'], [0, 2]])
       w.unmount()
     })
 
@@ -132,7 +132,7 @@ describe('ScaleStaff', () => {
     })
 
     it('stays plain text under Hexatonic on a staff with no triad pair', async () => {
-      const wd = parseChart('title: T\nkey: C\nA | 1 | C7#5 | C Whole Tone\n').value
+      const wd = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C7#5 | C Whole Tone\n').value
       const wr = resolveScales(wd, { level: 'standard', seed: 0 })
       const staff = buildSheet(expandRows(wd).value, CONCERT, 'root', 'C', 12, HEX, undefined, wr, { picks: NO_PICKS, at: chordPositions(wd) })[0]!.pages.flat()[0]!
       const w = await mount(staff)

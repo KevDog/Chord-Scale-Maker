@@ -4,8 +4,8 @@ import { nextTick } from 'vue'
 import { type ChartDoc, parseChart, serializeChart } from '@chord-scale-maker/engine'
 import SheetBarToolbar from '~/components/SheetBarToolbar.vue'
 
-const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n@copy A B 4\n').value
-const rows = (d: ChartDoc) => serializeChart(d).split('\n').filter((l) => /^A \|/.test(l)).map((l) => l.replace(/\s+/g, ' ').trim())
+const doc = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\n3 | CMaj7\n\nsection: B\ncopy: A\n').value
+const rows = (d: ChartDoc) => serializeChart(d).split('\n').filter((l) => /^\d+ +\|/.test(l)).map((l) => l.replace(/\s+/g, ' ').trim())
 const mount = (over: Partial<{ bar: number; repeatOf: string | null }> = {}) =>
   mountSuspended(SheetBarToolbar, { props: { doc, section: 'A', bar: 2, repeatOf: null, ...over }, attachTo: document.body })
 type W = Awaited<ReturnType<typeof mount>>
@@ -23,23 +23,23 @@ describe('SheetBarToolbar', () => {
     const w = await mount()
     expect(w.find('[role=toolbar]').attributes('aria-label')).toBe('Bar 2 of A')
     await press(w, 'Insert a held bar before A bar 2')
-    expect(rows(next(w))).toEqual(['A | 1 | Dm7', 'A | 3 | G7', 'A | 4 | CMaj7'])
+    expect(rows(next(w))).toEqual(['1 | Dm7', '3 | G7', '4 | CMaj7'])
     await press(w, 'Insert a held bar after A bar 2')
-    expect(rows(next(w))).toEqual(['A | 1 | Dm7', 'A | 2 | G7', 'A | 4 | CMaj7'])
+    expect(rows(next(w))).toEqual(['1 | Dm7', '2 | G7', '4 | CMaj7'])
     expect(w.emitted('said')?.map((e) => e[0])).toEqual(['A: bar 2 added', 'A: bar 3 added'])
   })
 
   it('splits a bar into the chord twice', async () => {
     const w = await mount()
     await press(w, 'Split A bar 2')
-    expect(rows(next(w))).toEqual(['A | 1 | Dm7', 'A | 2 | G7', 'A | 2 | G7', 'A | 3 | CMaj7'])
+    expect(rows(next(w))).toEqual(['1 | Dm7', '2 | G7', '2 | G7', '3 | CMaj7'])
   })
 
   it('deletes a bar, and refuses to delete a section’s first with why', async () => {
     const w = await mount()
     await press(w, 'Delete A bar 2')
-    expect(rows(next(w))).toEqual(['A | 1 | Dm7', 'A | 2 | CMaj7'])
-    const held = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 3 | G7\n').value // bar 2 holds Dm7
+    expect(rows(next(w))).toEqual(['1 | Dm7', '2 | CMaj7'])
+    const held = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n3 | G7\n').value // bar 2 holds Dm7
     const first = await mountSuspended(SheetBarToolbar, { props: { doc: held, section: 'A', bar: 1, repeatOf: null } })
     await press(first, 'Delete A bar 1')
     expect(first.emitted('update:doc')).toBeUndefined()
@@ -76,7 +76,7 @@ describe('SheetBarToolbar', () => {
     await nextTick()
     ;[...document.querySelectorAll<HTMLElement>('[role=menuitem]')].find((m) => m.textContent?.trim() === '1st ending')?.click()
     await nextTick()
-    expect(serializeChart(next(w))).toContain('@ending 1 A 2')
+    expect(serializeChart(next(w))).toContain('@ending 1 2')
   })
 })
 

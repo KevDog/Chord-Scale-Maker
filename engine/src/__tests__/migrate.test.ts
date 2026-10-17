@@ -12,6 +12,11 @@ describe('migrateChart', () => {
     expect(migrateChart('title: T\n').text).toBe('title: T\n')
   })
 
+  it('leaves a chart over the size limit for the parser to refuse', () => {
+    const huge = `title: T\n${'A | 1 | Cm7\n'.repeat(3000)}`
+    expect(migrateChart(huge).text).toBe(huge)
+  })
+
   it('groups rows into blocks with bars from 1', () => {
     const m = migrateChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nB | 3 | CMaj7\nB | 4 | A7\n')
     expect(lines(m.text)).toEqual(['title: T', 'key: C', '', 'section: A', '1 | Dm7', '2 | G7', '', 'section: B', '1 | CMaj7', '2 | A7'])

@@ -5,7 +5,7 @@ const file = (body: string, name = 'tune.txt', type = 'text/plain'): File => new
 
 describe('chart files', () => {
   it('read a .txt chart, without a byte-order mark', async () => {
-    expect(await readChartFile(file('﻿title: Tune\nA | 1 | Cm7 | C Dorian\n'))).toEqual({ ok: true, text: 'title: Tune\nA | 1 | Cm7 | C Dorian\n' })
+    expect(await readChartFile(file('title: Tune\n\nsection: A\nbars: 4\n1 | Cm7 | C Dorian\n'))).toEqual({ ok: true, text: 'title: Tune\n\nsection: A\nbars: 4\n1 | Cm7 | C Dorian\n' })
     expect((await readChartFile(file('title: T\n', 'TUNE.TXT', ''))).ok).toBe(true)
   })
 

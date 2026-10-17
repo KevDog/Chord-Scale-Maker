@@ -29,7 +29,7 @@
 
 <script setup lang="ts">
 import { Dialog as HDialog, DialogPanel as HDialogPanel, DialogTitle as HDialogTitle } from '@headlessui/vue'
-import { cellError, type ChartDoc, type RowLine, setLineChord } from '@chord-scale-maker/engine'
+import { cellError, type ChartDoc, lineSections, type RowLine, setLineChord } from '@chord-scale-maker/engine'
 import ChordChoices from './ChordChoices.vue'
 import { CANT_TAKE, NO_FIRST_CHORD, notAChord } from '~/utils/refusals'
 import type { SheetChordEdit } from '~/utils/sheetChordEdit'
@@ -48,7 +48,10 @@ const row = computed((): RowLine | null => {
 })
 const place = computed(() => (props.target ? `${props.target.section}, bar ${props.target.bar}` : ''))
 /** the section a repeat's chord is written in: changing it changes that section */
-const repeatOf = computed(() => (row.value && props.target && row.value.section !== props.target.section ? row.value.section : ''))
+const repeatOf = computed(() => {
+  const written = props.target ? lineSections(props.doc)[props.target.line] : null
+  return row.value && props.target && written && written !== props.target.section ? written : ''
+})
 const known = computed(() => scaleChoices(row.value?.chord ?? '').known)
 
 const draft = ref('')

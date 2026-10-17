@@ -4,8 +4,8 @@ import { nextTick } from 'vue'
 import { type ChartDoc, parseChart } from '@chord-scale-maker/engine'
 import ChordChoices from '~/components/ChordChoices.vue'
 
-// lines: 0 title, 1 key, 2 A1 CMaj7, 3 A2 D7 (II7 in C, not resolving: ruling D5, a guess), 4 A3 Dm7, 5 A4 G7, 6 A5 CMaj7
-const doc = parseChart('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\nA | 5 | CMaj7\n').value
+// lines: 5 A1 CMaj7, 6 A2 D7 (II7 in C, not resolving: ruling D5, a guess), 7 A3 Dm7, 8 A4 G7, 9 A5 CMaj7
+const doc = parseChart('title: T\nkey: C\n\nsection: A\nbars: 8\n1 | CMaj7\n2 | D7\n3 | Dm7\n4 | G7\n5 | CMaj7\n').value
 const settle = async () => {
   for (let i = 0; i < 3; i++) await nextTick()
 }
@@ -14,7 +14,7 @@ const mount = (line: number, over: Partial<{ fallbackNote: string }> = {}) =>
 type W = Awaited<ReturnType<typeof mount>>
 const lastDoc = (w: W): ChartDoc | undefined => (w.emitted('update:doc')?.at(-1) as [ChartDoc] | undefined)?.[0]
 const fnOf = (w: W): string | undefined => {
-  const l = lastDoc(w)?.lines[3]
+  const l = lastDoc(w)?.lines[6]
   return l?.kind === 'row' ? l.function : undefined
 }
 const checked = (w: W): string => w.find('[role=radio][aria-checked=true]').text()
@@ -33,7 +33,7 @@ describe('ChordChoices: the function', () => {
 
   describe('Accept guess', () => {
     it('offers to accept a function the rules only guessed, and states it', async () => {
-      const w = await mount(3, { fallbackNote: 'The rules could only guess here; stating the function settles it.' })
+      const w = await mount(6, { fallbackNote: 'The rules could only guess here; stating the function settles it.' })
       const accept = w.findAll('button').find((b) => b.text() === 'Accept guess')
       expect(accept).toBeDefined()
       await accept?.trigger('click')
@@ -43,47 +43,47 @@ describe('ChordChoices: the function', () => {
     })
 
     it('leaves the scale cell blank: the function decides, the scale follows', async () => {
-      const w = await mount(3, { fallbackNote: 'guess' })
+      const w = await mount(6, { fallbackNote: 'guess' })
       await w.findAll('button').find((b) => b.text() === 'Accept guess')?.trigger('click')
-      const l = lastDoc(w)?.lines[3]
+      const l = lastDoc(w)?.lines[6]
       expect(l).toMatchObject({ kind: 'row', function: 'II7', scale: '' })
     })
 
     it('is not offered where the rules decided', async () => {
-      const w = await mount(5)
+      const w = await mount(8)
       expect(w.findAll('button').some((b) => b.text() === 'Accept guess')).toBe(false)
     })
   })
 
   describe('Other function', () => {
     it('writes a typed function on Enter, with the glyphs the sheet prints, and the list checks it', async () => {
-      const w = await mount(3)
+      const w = await mount(6)
       await type(w, 'subV7/bii')
       await enter(w)
       expect(fnOf(w)).toBe('subV7/♭ii')
       expect(field(w).element.value).toBe('')
-      const next = await mountSuspended(ChordChoices, { props: { doc: lastDoc(w) as ChartDoc, line: 3, part: 'function' }, attachTo: document.body })
+      const next = await mountSuspended(ChordChoices, { props: { doc: lastDoc(w) as ChartDoc, line: 6, part: 'function' }, attachTo: document.body })
       expect(checked(next)).toContain('subV7/♭ii (to Dbm)')
     })
 
     it('shows a function none of the listed ones match as its own checked option', async () => {
-      const w = await mount(3)
+      const w = await mount(6)
       await type(w, 'IV7')
       await enter(w)
       expect(fnOf(w)).toBe('IV7')
-      const next = await mountSuspended(ChordChoices, { props: { doc: lastDoc(w) as ChartDoc, line: 3, part: 'function' }, attachTo: document.body })
+      const next = await mountSuspended(ChordChoices, { props: { doc: lastDoc(w) as ChartDoc, line: 6, part: 'function' }, attachTo: document.body })
       expect(checked(next)).toBe('IV7')
     })
 
     it('keeps a key prefix as typed', async () => {
-      const w = await mount(3)
+      const w = await mount(6)
       await type(w, 'Eb: V7/ii')
       await enter(w)
       expect(fnOf(w)).toBe('Eb: V7/ii')
     })
 
     it("refuses what isn't a function, says why, and writes nothing", async () => {
-      const w = await mount(3)
+      const w = await mount(6)
       await type(w, 'banana')
       expect(w.text()).toContain('"banana" isn\'t a function')
       await enter(w)
@@ -92,7 +92,7 @@ describe('ChordChoices: the function', () => {
     })
 
     it("refuses a bad key and a cell that can't go in a chart", async () => {
-      const w = await mount(3)
+      const w = await mount(6)
       await type(w, 'Zz: V7')
       expect(w.text()).toContain('"Zz" isn\'t a key')
       await type(w, 'V7 | x')
@@ -102,7 +102,7 @@ describe('ChordChoices: the function', () => {
     })
 
     it('previews the scale the draft would give while it parses', async () => {
-      const w = await mount(3)
+      const w = await mount(6)
       await type(w, 'subV7/bII')
       expect(w.find('output').text()).toBe('→ D Lydian Dominant')
       await type(w, 'nonsense')
@@ -110,9 +110,9 @@ describe('ChordChoices: the function', () => {
     })
 
     it('clears the draft when the line changes', async () => {
-      const w = await mount(3)
+      const w = await mount(6)
       await type(w, 'V7/V')
-      await w.setProps({ line: 5 })
+      await w.setProps({ line: 8 })
       await settle()
       expect(field(w).element.value).toBe('')
     })
@@ -132,20 +132,20 @@ describe('ChordChoices interface levels', () => {
 
   it('shows the Function, Scale and why by level', async () => {
     at('everything')
-    const every = headings(await all(3))
+    const every = headings(await all(6))
     expect(every).toContain('Function')
     expect(every).toContain('Scale')
     at('intermediate')
-    const mid = headings(await all(3))
+    const mid = headings(await all(6))
     expect(mid).not.toContain('Function')
     expect(mid).toContain('Scale')
     at('essentials')
-    expect(headings(await all(3))).toEqual([])
+    expect(headings(await all(6))).toEqual([])
   })
 
   it('renders nothing, not an empty wrapper, when the level shows none of its parts (#291)', async () => {
     at('essentials')
-    const w = await all(3)
+    const w = await all(6)
     expect(w.html()).not.toContain('space-y-6')
     expect(w.element.nodeType).not.toBe(Node.ELEMENT_NODE)
   })

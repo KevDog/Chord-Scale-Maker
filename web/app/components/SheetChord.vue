@@ -63,7 +63,7 @@
 </template>
 
 <script setup lang="ts">
-import { barView, cellError, type ChartDoc, chordCompletions, chordPreview, type ChordPreview, chordsAfterTyping, type ChordToken, chordTokens, CONCERT, type GridPos, posOfLine, setBarChords, sheetScale } from '@chord-scale-maker/engine'
+import { barView, cellError, type ChartDoc, chordCompletions, chordPreview, type ChordPreview, chordsAfterTyping, type ChordToken, chordTokens, CONCERT, type GridPos, lineSections, posOfLine, setBarChords, sheetScale } from '@chord-scale-maker/engine'
 import type { SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 import { barFull, NO_FIRST_CHORD, notAChord } from '~/utils/refusals'
@@ -124,8 +124,8 @@ const pos = computed((): GridPos | null => {
 const barChords = computed((): string[] => (pos.value ? chordsAfterTyping(view.value, pos.value, props.adding ? '' : props.text, false) : []))
 /** the section a repeat's chord is written in (the drawn section differs): changing it changes that section */
 const repeatOf = computed(() => {
-  const l = props.doc.lines[props.line]
-  return l?.kind === 'row' && l.section !== props.section ? l.section : ''
+  const written = lineSections(props.doc)[props.line]
+  return props.doc.lines[props.line]?.kind === 'row' && written && written !== props.section ? written : ''
 })
 
 const draft = ref('')

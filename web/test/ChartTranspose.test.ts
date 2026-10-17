@@ -27,7 +27,7 @@ const transposeTo = async (w: { find: (s: string) => { trigger: (e: string) => P
 
 describe('ChartTranspose', () => {
   it("starts from the chart's key and emits the chart in the new key", async () => {
-    const doc = parseChart('title: F Blues\nkey: F\nA | 1 | F7\nA | 2 | Bb7 | Bb Mixolydian\nA | 3 | ???\n').value
+    const doc = parseChart('title: F Blues\nkey: F\n\nsection: A\nbars: 4\n1 | F7\n2 | Bb7 | Bb Mixolydian\n3 | ???\n').value
     const w = await mountSuspended(ChartTranspose, { props: { current: () => doc }, attachTo: document.body })
     await w.find('button').trigger('click')
     await settle()
@@ -40,13 +40,13 @@ describe('ChartTranspose', () => {
     button('Transpose')?.click()
     await settle()
     const [[out]] = w.emitted('update:doc') as [[typeof doc]]
-    expect(serializeChart(out)).toBe(serializeChart(parseChart('title: F Blues\nkey: Bb\nA | 1 | Bb7\nA | 2 | Eb7 | Eb Mixolydian\nA | 3 | ???\n').value))
+    expect(serializeChart(out)).toBe(serializeChart(parseChart('title: F Blues\nkey: Bb\n\nsection: A\nbars: 4\n1 | Bb7\n2 | Eb7 | Eb Mixolydian\n3 | ???\n').value))
     expect(w.emitted('transposed')).toEqual([['Transposed from F to B♭; 1 row could not be read and stayed as typed.']])
     w.unmount()
   })
 
   it('offers a minor-key chart the minor keys, starting at its own, and keeps it minor', async () => {
-    const doc = parseChart('title: Minor\nkey: Gm\nA | 1 | Gm7 | G Dorian\nA | 2 | D7\n').value
+    const doc = parseChart('title: Minor\nkey: Gm\n\nsection: A\nbars: 4\n1 | Gm7 | G Dorian\n2 | D7\n').value
     const w = await mountSuspended(ChartTranspose, { props: { current: () => doc }, attachTo: document.body })
     await w.find('button').trigger('click')
     await settle()
@@ -60,13 +60,13 @@ describe('ChartTranspose', () => {
     button('Transpose')?.click()
     await settle()
     const [[out]] = w.emitted('update:doc') as [[typeof doc]]
-    expect(serializeChart(out)).toBe(serializeChart(parseChart('title: Minor\nkey: Bbm\nA | 1 | Bbm7 | Bb Dorian\nA | 2 | F7\n').value))
+    expect(serializeChart(out)).toBe(serializeChart(parseChart('title: Minor\nkey: Bbm\n\nsection: A\nbars: 4\n1 | Bbm7 | Bb Dorian\n2 | F7\n').value))
     expect(w.emitted('transposed')).toEqual([['Transposed from G minor to B♭ minor.']])
     w.unmount()
   })
 
   it('rewrites a saved analysis for the new key', async () => {
-    const doc = parseChart('title: T\nkey: Eb\n# analysis: 2026-01-02, rules v1; Eb\nA | 1 | Fm7  # ii of Bb7\nA | 2 | Bb7\nA | 3 | EbMaj7\n').value
+    const doc = parseChart('title: T\nkey: Eb\n# analysis: 2026-01-02, rules v1; Eb\n\nsection: A\nbars: 4\n1 | Fm7  # ii of Bb7\n2 | Bb7\n3 | EbMaj7\n').value
     const w = await mountSuspended(ChartTranspose, { props: { current: () => doc }, attachTo: document.body })
     await w.find('button').trigger('click')
     await settle()
@@ -78,12 +78,12 @@ describe('ChartTranspose', () => {
     await settle()
     const [[out]] = w.emitted('update:doc') as [[typeof doc]]
     const text = serializeChart(out)
-    expect(text).toContain('# analysis: 2026-01-02, rules v1; C\nA | 1 | Dm7    # ii of the ii–V to C\n')
+    expect(text).toContain('# analysis: 2026-01-02, rules v1; C\n\nsection: A\nbars: 4\n1 | Dm7    # ii of the ii–V to C\n')
     expect(text).not.toMatch(/Eb|Bb7/)
     w.unmount()
   })
   it("names the chart's original key across transposes, and clears the message back in it", async () => {
-    let doc = parseChart('title: F Blues\nkey: F\nA | 1 | F7\n').value
+    let doc = parseChart('title: F Blues\nkey: F\n\nsection: A\nbars: 4\n1 | F7\n').value
     const w = await mountSuspended(ChartTranspose, {
       props: { current: () => doc, 'onUpdate:doc': (d: typeof doc) => void (doc = d) },
       attachTo: document.body,
@@ -96,13 +96,13 @@ describe('ChartTranspose', () => {
   })
 
   it('starts afresh when the key was changed some other way', async () => {
-    let doc = parseChart('title: F Blues\nkey: F\nA | 1 | F7\n').value
+    let doc = parseChart('title: F Blues\nkey: F\n\nsection: A\nbars: 4\n1 | F7\n').value
     const w = await mountSuspended(ChartTranspose, {
       props: { current: () => doc, 'onUpdate:doc': (d: typeof doc) => void (doc = d) },
       attachTo: document.body,
     })
     await transposeTo(w, 'Bb')
-    doc = parseChart('title: Other\nkey: D\nA | 1 | D7\n').value
+    doc = parseChart('title: Other\nkey: D\n\nsection: A\nbars: 4\n1 | D7\n').value
     await transposeTo(w, 'F')
     expect(w.emitted('transposed')).toEqual([['Transposed from F to B♭.'], ['Transposed from D to F.']])
     w.unmount()

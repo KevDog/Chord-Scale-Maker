@@ -65,8 +65,8 @@
           <div class="relative mb-3 flex items-center gap-2">
             <UiSubheading id="text-heading">Source</UiSubheading>
             <HelpTip label="How the text editor works">
-              <span class="block">One line per chord: <code class="font-mono text-xs whitespace-nowrap">section | bar | chord | scale | function</code>, in concert pitch. Leave the scale out to use the chord's default.</span>
-              <span class="mt-2 block"><code class="font-mono text-xs">title:</code>, <code class="font-mono text-xs">subtitle:</code>, <code class="font-mono text-xs">composer:</code>, <code class="font-mono text-xs">key:</code> and <code class="font-mono text-xs">form:</code> set the heading, lines starting with <code class="font-mono text-xs">#</code> are comments, and <code class="font-mono text-xs">@copy A B 8</code> repeats section A as B, 8 bars later, and <code class="font-mono text-xs">@key B 17 D</code> puts bars from B 17 in D until the next @key.</span>
+              <span class="block">A <code class="font-mono text-xs">section: A</code> line, then one line per chord: <code class="font-mono text-xs whitespace-nowrap">bar | chord | scale | function</code>, its bar counted from 1 in the section, in concert pitch. Leave the scale out to use the chord's default.</span>
+              <span class="mt-2 block"><code class="font-mono text-xs">title:</code>, <code class="font-mono text-xs">subtitle:</code>, <code class="font-mono text-xs">composer:</code>, <code class="font-mono text-xs">key:</code> and <code class="font-mono text-xs">form:</code> at the top set the heading, and lines starting with <code class="font-mono text-xs">#</code> are comments. Under a section line, <code class="font-mono text-xs">copy: A</code> repeats section A, <code class="font-mono text-xs">key: D</code> puts the section in D, and <code class="font-mono text-xs">@key 5 D</code> from its bar 5.</span>
               <span class="mt-2 block">The Source and the bars stay in sync: edit either one. Problems are listed under the text.</span>
             </HelpTip>
             <UiButton v-if="!editor.fatal.value" plain class="ml-auto" @click="prefs.source.value = false">Hide source</UiButton>
@@ -311,6 +311,9 @@ import {
   setMeta,
   type ShareView,
   unlevel,
+  lineSections,
+  migrateChart,
+  remapOwned,
 } from '@chord-scale-maker/engine'
 import BarDialog, { type BarDialogKind, type BarDialogSubmit } from './BarDialog.vue'
 import type { SaveTarget } from '~/composables/useSavedChart'
@@ -340,17 +343,21 @@ const baseline = ((): ChartDoc | undefined => {
   const text = slug ? findChart(slug)?.text : undefined
   return text === undefined ? undefined : parseChart(text).value
 })()
-const levelState = (): LevelState => ({ level: scaleLevel.level.value, seed: scaleLevel.seed.value, ...(scaleLevel.owned.value ? { owned: scaleLevel.owned.value } : {}) })
 /**
- * the migration (docs/superpowers/specs/2026-10-11-proposed-scales-design.md §3): a saved chart a level once wrote
- * its scales into has those cells blank again, so they follow the level; once, as it opens, then the rows it owned
- * are forgotten. A scale you chose stays.
+ * what opens: a chart in the retired row format (a saved chart, an old draft, a file from disk) migrated to section
+ * blocks (#329), then the Scale-level migration (docs/superpowers/specs/2026-10-11-proposed-scales-design.md §3): a
+ * chart a level once wrote its scales into has those cells blank again, so they follow the level; once, as it opens,
+ * then the rows it owned are forgotten. A scale you chose stays. Either change is saved back.
  */
 const openingText = ((): string => {
-  if (!scaleLevel.owned.value) return props.initialText
-  const { doc, blanked } = unlevel(parseChart(props.initialText).value, levelState(), baseline)
+  const migrated = migrateChart(props.initialText)
+  if (migrated.problems.length) console.info(`Chart format: ${migrated.problems.join('; ')}`)
+  const owned = scaleLevel.owned.value
+  if (!owned) return migrated.text
   scaleLevel.owned.value = undefined
-  if (!blanked) return props.initialText
+  const state: LevelState = { level: scaleLevel.level.value, seed: scaleLevel.seed.value, owned: remapOwned(owned, migrated.lineMap) }
+  const { doc, blanked } = unlevel(parseChart(migrated.text).value, state, baseline)
+  if (!blanked) return migrated.text
   console.info(`Scale level: ${blanked === 1 ? '1 scale' : `${blanked} scales`} a level wrote into this chart now follow the level`)
   return serializeChart(doc)
 })()
@@ -532,13 +539,15 @@ function sheetDone(then: SheetDone, taken?: GridPos): void {
   sheetPreview.value = null
   if (!e) return
   const doc = editor.doc.value
+  const sections = lineSections(doc)
   /** a row's place as written */
   const writtenAt = (line: number): SheetPlace | null => {
     const l = doc.lines[line]
-    return l?.kind === 'row' ? { section: l.section, bar: l.bar } : null
+    const section = sections[line]
+    return l?.kind === 'row' && section ? { section, bar: l.bar } : null
   }
   // the chord the field was on: a slot's is the bar's last row (the chord it added, or the one before it)
-  const line = e.kind === 'chord' ? e.line : doc.lines.findLastIndex((l) => l.kind === 'row' && l.section === e.section && l.bar === e.bar)
+  const line = e.kind === 'chord' ? e.line : doc.lines.findLastIndex((l, i) => l.kind === 'row' && sections[i] === e.section && l.bar === e.bar)
   const at = e.kind === 'chord' ? e.at : { section: e.section, bar: e.bar }
   if (line < 0) return void (sheetEdit.value = null)
   if (then === 'add' && !taken) {
@@ -615,7 +624,7 @@ function applySheetDialog(v: BarDialogSubmit): void {
 }
 /** the ghost bar: a bar after the section's last (before a part's rounding-out bars) */
 function sheetAddBar(section: string): void {
-  const last = sheetView.value.sections.find((x) => x.name === section)?.bars.findLast((b) => b.kind !== 'implied')?.bar
+  const last = sheetView.value.sections.find((x) => x.name === section)?.bars.at(-1)?.bar
   if (last === undefined) return
   const next = insertHeldBar(editor.doc.value, section, last + 1)
   if (next === editor.doc.value) return void (said.value = 'No bar can go there.')

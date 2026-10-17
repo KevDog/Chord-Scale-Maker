@@ -1,4 +1,5 @@
 import { formPart, META_KEYS } from './chart'
+import { LIMITS } from './limits'
 
 /**
  * The one-way migration from the retired row format (`SECTION | BAR | CHORD …` with absolute bars, `@copy SRC DST
@@ -80,6 +81,8 @@ type Plan = { key: string | null; changes: { bar: number; value: string }[] }
 const samePlan = (a: Plan, b: Plan): boolean => a.key === b.key && JSON.stringify(a.changes) === JSON.stringify(b.changes)
 
 export function migrateChart(text: string): Migration {
+  // a chart over the size limit is left for the parser to refuse
+  if (text.length > LIMITS.maxChars) return { text, lineMap: [], prose: [], problems: [] }
   const raw = text.split(/\r?\n/)
   if (raw.at(-1) === '') raw.pop()
   const items = raw.map(read)
