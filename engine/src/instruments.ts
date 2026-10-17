@@ -1,12 +1,14 @@
 /**
- * Instrument presets (clef, transposition, description) and clef ranges. Port of INSTRUMENTS and TRANSPOSITIONS.
+ * Instrument presets (clef, transposition, full and practice ranges, description) and clef ranges. Port of INSTRUMENTS and TRANSPOSITIONS.
  */
 
 export type Transposition = 'C' | 'Bb' | 'Eb' | 'F'
 export type Clef = 'treble' | 'bass'
 /** a guide tone line's written range (MIDI, C4 = 60): candidates lie in [lo, hi]; centre places a start and breaks ties */
 export type Range = Readonly<{ lo: number; hi: number; centre: number }>
-export type Instrument = Readonly<{ clef: Clef; trans: Transposition; description: string; range: Range }>
+/** an instrument's full written range (MIDI), what the picker shows; range is the lines' practice range inside it */
+export type Compass = Readonly<{ lo: number; hi: number }>
+export type Instrument = Readonly<{ clef: Clef; trans: Transposition; description: string; compass: Compass; range: Range }>
 
 /** the most a guide tone line may need on the staff: three ledger lines either side in treble (E3–F6), two in bass (B1–F4) */
 export const CAPS: Readonly<Record<Clef, Readonly<{ lo: number; hi: number }>>> = {
@@ -22,23 +24,34 @@ export const TRANSPOSITIONS: Readonly<Record<Transposition, readonly [number, nu
   F: [4, 7],
 }
 
+const NOTE = ['C', 'C♯', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'A♭', 'A', 'B♭', 'B'] as const
+/** 58 -> "B♭3" (middle C = C4) */
+export const noteName = (midi: number): string => `${NOTE[midi % 12]}${Math.floor(midi / 12) - 1}`
+
+type Preset = Omit<Instrument, 'description'>
+/** the picker's line: the full written range, then a note where it tells the player something ("F3–E6 · right hand") */
+const described = <P extends Preset>(p: P, note?: string): P & Readonly<{ description: string }> => ({
+  ...p,
+  description: [`${noteName(p.compass.lo)}–${noteName(p.compass.hi)}`, note].filter(Boolean).join(' · '),
+})
+
 /** octave transpositions (guitar, bass, tenor, bari) don't matter: scales sit in a fixed written range */
 export const INSTRUMENTS = {
-  piano: { clef: 'treble', trans: 'C', description: 'concert pitch, treble clef: the right hand', range: { lo: 53, hi: 88, centre: 70 } }, // F3–E6, centre B♭4
-  vibes: { clef: 'treble', trans: 'C', description: 'concert pitch, treble clef', range: { lo: 55, hi: 86, centre: 70 } }, // G3–D6, centre the middle B♭ (B♭4)
-  flute: { clef: 'treble', trans: 'C', description: 'concert pitch, treble clef; also oboe, violin and any other treble C instrument', range: { lo: 60, hi: 84, centre: 73 } }, // C4–C6, centre C♯5
-  guitar: { clef: 'treble', trans: 'C', description: 'concert pitch, treble clef (sounds an octave lower)', range: { lo: 57, hi: 81, centre: 66 } }, // A3–A5 written, centre F♯4
-  trumpet: { clef: 'treble', trans: 'Bb', description: 'Bb, written a major 2nd up', range: { lo: 55, hi: 79, centre: 70 } }, // G3–G5 written, centre B♭4
-  flugelhorn: { clef: 'treble', trans: 'Bb', description: 'same as trumpet', range: { lo: 55, hi: 79, centre: 70 } }, // G3–G5 written, centre B♭4
-  clarinet: { clef: 'treble', trans: 'Bb', description: 'same as trumpet', range: { lo: 57, hi: 84, centre: 66 } }, // A3–C6 written, centre F♯4
-  'soprano-sax': { clef: 'treble', trans: 'Bb', description: 'same as trumpet', range: { lo: 58, hi: 84, centre: 68 } }, // B♭3–C6 written, centre A♭4
-  'tenor-sax': { clef: 'treble', trans: 'Bb', description: 'same key as trumpet (sounds an octave lower)', range: { lo: 58, hi: 84, centre: 68 } }, // B♭3–C6 written, centre A♭4
-  'alto-sax': { clef: 'treble', trans: 'Eb', description: 'Eb, written a major 6th up', range: { lo: 58, hi: 84, centre: 68 } }, // B♭3–C6 written, centre A♭4
-  'bari-sax': { clef: 'treble', trans: 'Eb', description: 'same key as alto (sounds an octave lower)', range: { lo: 58, hi: 84, centre: 68 } }, // B♭3–C6 written, centre A♭4
-  horn: { clef: 'treble', trans: 'F', description: 'French horn in F, written a perfect 5th up', range: { lo: 55, hi: 79, centre: 70 } }, // G3–G5 written, centre B♭4
-  trombone: { clef: 'bass', trans: 'C', description: 'bass clef, concert pitch', range: { lo: 40, hi: 64, centre: 56 } }, // E2–E4, centre A♭3
-  tuba: { clef: 'bass', trans: 'C', description: 'bass clef, concert pitch', range: { lo: 36, hi: 58, centre: 47 } }, // C2–B♭3, centre B2
-  bass: { clef: 'bass', trans: 'C', description: 'bass clef, concert pitch', range: { lo: 40, hi: 60, centre: 49 } }, // E2–C4 written, centre C♯3
+  piano: described({ clef: 'treble', trans: 'C', compass: { lo: 53, hi: 88 }, range: { lo: 53, hi: 88, centre: 70 } }, 'right hand'), // F3–E6 (the treble staff's share), centre B♭4
+  vibes: described({ clef: 'treble', trans: 'C', compass: { lo: 53, hi: 89 }, range: { lo: 53, hi: 89, centre: 70 } }), // F3–F6, all three octaves, centre the middle B♭ (B♭4)
+  flute: described({ clef: 'treble', trans: 'C', compass: { lo: 60, hi: 96 }, range: { lo: 60, hi: 84, centre: 73 } }, 'also oboe, violin and any other treble C instrument'), // C4–C6, centre C♯5
+  guitar: described({ clef: 'treble', trans: 'C', compass: { lo: 52, hi: 86 }, range: { lo: 57, hi: 81, centre: 66 } }), // A3–A5 written, centre F♯4
+  trumpet: described({ clef: 'treble', trans: 'Bb', compass: { lo: 54, hi: 84 }, range: { lo: 55, hi: 79, centre: 70 } }), // G3–G5 written, centre B♭4
+  flugelhorn: described({ clef: 'treble', trans: 'Bb', compass: { lo: 54, hi: 84 }, range: { lo: 55, hi: 79, centre: 70 } }), // G3–G5 written, centre B♭4
+  clarinet: described({ clef: 'treble', trans: 'Bb', compass: { lo: 52, hi: 96 }, range: { lo: 57, hi: 84, centre: 66 } }), // A3–C6 written, centre F♯4
+  'soprano-sax': described({ clef: 'treble', trans: 'Bb', compass: { lo: 58, hi: 89 }, range: { lo: 58, hi: 84, centre: 68 } }), // B♭3–C6 written, centre A♭4
+  'tenor-sax': described({ clef: 'treble', trans: 'Bb', compass: { lo: 58, hi: 90 }, range: { lo: 58, hi: 84, centre: 68 } }), // B♭3–C6 written, centre A♭4
+  'alto-sax': described({ clef: 'treble', trans: 'Eb', compass: { lo: 58, hi: 90 }, range: { lo: 58, hi: 84, centre: 68 } }), // B♭3–C6 written, centre A♭4
+  'bari-sax': described({ clef: 'treble', trans: 'Eb', compass: { lo: 58, hi: 90 }, range: { lo: 58, hi: 84, centre: 68 } }), // B♭3–C6 written, centre A♭4
+  horn: described({ clef: 'treble', trans: 'F', compass: { lo: 42, hi: 84 }, range: { lo: 55, hi: 79, centre: 70 } }), // G3–G5 written, centre B♭4
+  trombone: described({ clef: 'bass', trans: 'C', compass: { lo: 40, hi: 77 }, range: { lo: 40, hi: 64, centre: 56 } }), // E2–E4, centre A♭3
+  tuba: described({ clef: 'bass', trans: 'C', compass: { lo: 26, hi: 65 }, range: { lo: 36, hi: 58, centre: 47 } }), // C2–B♭3, centre B2
+  bass: described({ clef: 'bass', trans: 'C', compass: { lo: 40, hi: 67 }, range: { lo: 40, hi: 60, centre: 49 } }), // E2–C4 written, centre C♯3
 } as const satisfies Record<string, Instrument>
 
 export type InstrumentName = keyof typeof INSTRUMENTS

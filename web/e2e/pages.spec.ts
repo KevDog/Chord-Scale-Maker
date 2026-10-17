@@ -125,7 +125,7 @@ test('Help is in the navbar and footer, and its contents jump to each section', 
   await page.getByRole('link', { name: 'How a line is built' }).click() // the link in The two sheets
   await expect(page).toHaveURL(/#guide-lines$/)
   await expect(page.getByRole('heading', { name: 'How a guide tone line is built', level: 3 })).toBeInViewport()
-  await expect(page.getByText('vibes G3–D6')).toBeVisible() // the ranges, from INSTRUMENTS
+  await expect(page.getByText('vibes F3–F6')).toBeVisible() // the ranges, from INSTRUMENTS
   await expect(page.getByRole('contentinfo').getByRole('link', { name: 'Help' })).toHaveAttribute('href', '/help')
   const footer = page.getByRole('contentinfo')
   await expect(footer.getByRole('link', { name: 'Support me on Ko-fi' })).toHaveAttribute('href', 'https://ko-fi.com/kcstevens90266')

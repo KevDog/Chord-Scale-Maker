@@ -1,4 +1,4 @@
-import { type InstrumentName, INSTRUMENTS } from '@chord-scale-maker/engine'
+import { type InstrumentName, INSTRUMENTS, noteName } from '@chord-scale-maker/engine'
 
 export type InstrumentGroup = Readonly<{ label: string; instruments: readonly InstrumentName[] }>
 
@@ -25,10 +25,6 @@ export const instrumentOption = (name: InstrumentName): string =>
     .split('-')
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ')
-
-const NOTE = ['C', 'C♯', 'D', 'E♭', 'E', 'F', 'F♯', 'G', 'A♭', 'A', 'B♭', 'B'] as const
-/** 58 -> "B♭3" (middle C = C4) */
-const noteName = (midi: number): string => `${NOTE[midi % 12]}${Math.floor(midi / 12) - 1}`
 /** ["a", "b", "c"] -> "a, b and c" */
 const listed = (xs: readonly string[]): string => (xs.length < 2 ? (xs[0] ?? '') : `${xs.slice(0, -1).join(', ')} and ${xs.at(-1)}`)
 

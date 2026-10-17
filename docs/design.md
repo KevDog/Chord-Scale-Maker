@@ -507,7 +507,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   run's starting octave looks ahead, as far as the next rest. The rules are numbered in the spec (rule 7, the lines
   taking different tones, is gone; G1–G3, D3 and P are the diverge note's). The candidates are both guide tones at every octave inside the
   part's written range, `rangeOf(part)`: its instrument's range from `INSTRUMENTS` (`{ lo, hi, centre }`, inside a
-  ledger-line cap, `CAPS`: treble E3–F6 (three lines), bass B1–F4 (two); piano F3–E6 around B♭4, vibes G3–D6, trumpet G3–G5, tuba C2–B♭3…), or,
+  ledger-line cap, `CAPS`: treble E3–F6 (three lines), bass B1–F4 (two); piano F3–E6 around B♭4, vibes F3–F6 (all of it), trumpet G3–G5, tuba C2–B♭3…), or,
   for a part without one (`CONCERT`), its clef's default (`RANGES`: treble C4–A5 around A4, bass E2–C4 around C♯3).
   A line takes the smaller move (a common tone before a step before a leap); equal moves go to the pitch nearer the
   centre, then the lower ([ranges](superpowers/specs/2026-10-10-guide-tone-ranges-design.md)).
@@ -1051,7 +1051,8 @@ its reasons into a chart as comments.
   nothing moves. Settings in force whose controls are hidden still render, with `InterfaceNotice` (Show controls /
   Reset) above the sheet. e2e specs start at Everything (`interfaceLevel` fixture, `chooseInterface` for new contexts).
 - **The instrument picker** only changes `part` and the subtitle label (`partFor` and `instrumentLabel` in the
-  engine).
+  engine). Each option's line is the instrument's full written range, `compass` (`F3–F6`, named by `noteName`), with
+  a note only where it tells the player something (`F3–E6 · right hand`); the lines keep to `range` inside it.
 - **Feature flags:**
   - Set in `runtimeConfig.public.features` in `nuxt.config.ts`, and read with `useFeature(name)`.
   - New flags start off, and every flag is fixed at build time. `NUXT_PUBLIC_FEATURES_<NAME>=true|false`

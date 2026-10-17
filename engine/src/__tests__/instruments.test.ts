@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { CAPS, INSTRUMENTS, instrumentLabel, isInstrumentName } from '../instruments'
+import { CAPS, INSTRUMENTS, instrumentLabel, isInstrumentName, noteName } from '../instruments'
 import { CONCERT, partFor, rangeOf } from '../part'
 import { RANGES } from '../voiceLeading'
 
@@ -25,7 +25,7 @@ describe('instruments', () => {
   it('gives every instrument the range the spec lists (written MIDI; C4 = 60)', () => {
     const ranges = Object.fromEntries(Object.entries(INSTRUMENTS).map(([name, i]) => [name, [i.range.lo, i.range.hi, i.range.centre]]))
     expect(ranges).toEqual({
-      piano: [53, 88, 70], vibes: [55, 86, 70], flute: [60, 84, 73], guitar: [57, 81, 66],
+      piano: [53, 88, 70], vibes: [53, 89, 70], flute: [60, 84, 73], guitar: [57, 81, 66],
       trumpet: [55, 79, 70], flugelhorn: [55, 79, 70], clarinet: [57, 84, 66],
       'soprano-sax': [58, 84, 68], 'alto-sax': [58, 84, 68], 'tenor-sax': [58, 84, 68], 'bari-sax': [58, 84, 68],
       horn: [55, 79, 70], trombone: [40, 64, 56], tuba: [36, 58, 47], bass: [40, 60, 49],
@@ -47,15 +47,36 @@ describe('instruments', () => {
     expect(rangeOf(CONCERT)).toEqual(RANGES.treble)
     expect(rangeOf({ clef: 'treble', trans: 'Bb' })).toEqual(RANGES.treble)
     expect(rangeOf({ clef: 'bass', trans: 'C' })).toEqual(RANGES.bass)
-    expect(rangeOf(partFor('vibes'))).toEqual({ lo: 55, hi: 86, centre: 70 })
+    expect(rangeOf(partFor('vibes'))).toEqual({ lo: 53, hi: 89, centre: 70 })
   })
 
-  it('describes each C treble instrument in its own words, flute standing in for violin and oboe', () => {
-    const c = Object.entries(INSTRUMENTS).filter(([, i]) => i.clef === 'treble' && i.trans === 'C')
-    expect(c.map(([n]) => n)).toEqual(['piano', 'vibes', 'flute', 'guitar'])
-    for (const [name, i] of c) expect(i.description, name).not.toMatch(/same as/)
-    expect(INSTRUMENTS.flute.description).toMatch(/violin/)
-    expect(INSTRUMENTS.flute.description).toMatch(/oboe/)
+  it('names a written pitch with its octave, middle C = C4, flats but F♯ and C♯', () => {
+    expect([60, 58, 66, 61, 63, 53, 89, 26, 96].map(noteName)).toEqual(['C4', 'B♭3', 'F♯4', 'C♯4', 'E♭4', 'F3', 'F6', 'D1', 'C7'])
+  })
+
+  it('gives every instrument its full written range (#358), holding its practice range', () => {
+    const compass = Object.fromEntries(Object.entries(INSTRUMENTS).map(([name, i]) => [name, `${noteName(i.compass.lo)}–${noteName(i.compass.hi)}`]))
+    expect(compass).toEqual({
+      piano: 'F3–E6', vibes: 'F3–F6', flute: 'C4–C7', guitar: 'E3–D6',
+      trumpet: 'F♯3–C6', flugelhorn: 'F♯3–C6', clarinet: 'E3–C7',
+      'soprano-sax': 'B♭3–F6', 'tenor-sax': 'B♭3–F♯6', 'alto-sax': 'B♭3–F♯6', 'bari-sax': 'B♭3–F♯6',
+      horn: 'F♯2–C6', trombone: 'E2–F5', tuba: 'D1–F4', bass: 'E2–G4',
+    })
+    for (const [name, { compass: c, range }] of Object.entries(INSTRUMENTS)) {
+      expect(range.lo, name).toBeGreaterThanOrEqual(c.lo)
+      expect(range.hi, name).toBeLessThanOrEqual(c.hi)
+    }
+    expect(INSTRUMENTS.vibes.range).toMatchObject(INSTRUMENTS.vibes.compass) // three octaves: all of it
+  })
+
+  it('describes each instrument by its full range, keeping a note only where it tells the player something', () => {
+    const descriptions = Object.fromEntries(Object.entries(INSTRUMENTS).map(([name, i]) => [name, i.description]))
+    expect(descriptions).toEqual({
+      piano: 'F3–E6 · right hand', vibes: 'F3–F6', flute: 'C4–C7 · also oboe, violin and any other treble C instrument', guitar: 'E3–D6',
+      trumpet: 'F♯3–C6', flugelhorn: 'F♯3–C6', clarinet: 'E3–C7',
+      'soprano-sax': 'B♭3–F6', 'tenor-sax': 'B♭3–F♯6', 'alto-sax': 'B♭3–F♯6', 'bari-sax': 'B♭3–F♯6',
+      horn: 'F♯2–C6', trombone: 'E2–F5', tuba: 'D1–F4', bass: 'E2–G4',
+    })
   })
 
   it('recognises instrument names safely', () => {
