@@ -1,7 +1,11 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { effectScope, nextTick } from 'vue'
 import { linkPreferences, usePreferences } from '~/composables/usePreferences'
 import type { ShareView } from '@chord-scale-maker/engine'
+
+const flags = vi.hoisted(() => ({ cells: true }))
+mockNuxtImport('useFeature', () => (name: string) => name === 'cells' && flags.cells)
 
 function prefs() {
   const scope = effectScope()
@@ -18,7 +22,10 @@ function linked(view: ShareView) {
 }
 
 describe('usePreferences', () => {
-  afterEach(() => localStorage.clear())
+  afterEach(() => {
+    localStorage.clear()
+    flags.cells = true
+  })
 
   it("defaults to piano spelled from the chart's key, with interval labels on", () => {
     const p = prefs()
@@ -71,6 +78,18 @@ describe('usePreferences', () => {
     expect([again.lineMode.value, again.cells.value]).toEqual(['cells', '1-2-3-5'])
     localStorage.setItem('csm-cells', '9-9-9-9')
     expect(prefs().cells.value).toBe('3rd-3rd')
+  })
+
+  it('shows a stored Cells line as Off with the cells flag off, and keeps it stored', async () => {
+    localStorage.setItem('csm-line', 'cells')
+    flags.cells = false
+    const p = prefs()
+    expect(p.lineMode.value).toBe('off')
+    await nextTick()
+    expect(localStorage.getItem('csm-line')).toBe('cells')
+    expect(linked({ line: 'cells:5-3-2-1' }).lineMode.value).toBe('off')
+    flags.cells = true
+    expect(prefs().lineMode.value).toBe('cells')
   })
 
   it('falls back from stored values it does not know, and ignores the old keys', () => {

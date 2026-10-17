@@ -399,8 +399,6 @@ const keyStartNote = computed(() => keyStart(chartKeyOf(editor.doc.value), part.
 const spelled = computed(() => spellView(prefs.spell.value, keyStartNote.value))
 const mode = computed((): Mode => spelled.value.mode)
 const start = computed(() => spelled.value.start)
-// a stored Cells line with the flag off (switched back off) is no line
-if (!useFeature('cells') && prefs.lineMode.value === 'cells') prefs.lineMode.value = 'off'
 const sheet = ref<SheetKind>(firstSheet(props.shared?.sheet, useFeature('patterns')))
 /** the Interface level (#273): which controls show */
 const ui = useInterface()

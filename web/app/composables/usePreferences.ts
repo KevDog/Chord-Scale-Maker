@@ -31,8 +31,10 @@ export function usePreferences() {
   // the Changes sheet's study rows: each chord's numeral and its scale, both on until turned off
   const numerals = storedRef<boolean>('csm-numerals', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
   const scaleNames = storedRef<boolean>('csm-scale-names', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
-  // the Changes sheet's line: off, guide tones (from the 3rd or the 7th) or 7th chord arpeggios (a pattern) or cells; off until chosen
-  const lineMode = storedRef<LineMode>('csm-line', (s) => (s === 'off' || s === 'guide' || s === 'arpeggio' || s === 'cells' ? s : undefined), 'off')
+  // the Changes sheet's line: off, guide tones (from the 3rd or the 7th) or 7th chord arpeggios (a pattern) or cells; off until
+  // chosen. A stored Cells line with the flag off reads as Off but stays stored, for when the flag is on again
+  const cellsOn = useFeature('cells')
+  const lineMode = storedRef<LineMode>('csm-line', (s) => (s === 'off' || s === 'guide' || s === 'arpeggio' || (s === 'cells' && cellsOn) ? s : undefined), 'off')
   const guideLine = storedRef<GuideFrom>('csm-guide-line', (s) => (s === 'third' || s === 'seventh' ? s : undefined), 'third')
   const arpeggio = storedRef<ArpeggioPattern>('csm-arpeggio', (s) => (isArpeggioPattern(s) ? s : undefined), 'up-root')
   // the Cells line's system or cell (#298)
@@ -74,7 +76,7 @@ export function linkPreferences(view: ShareView) {
     intervals: ref<boolean>(view.intervals ?? own.intervals.value),
     numerals: ref<boolean>(view.numerals ?? own.numerals.value),
     scaleNames: ref<boolean>(view.scaleNames ?? own.scaleNames.value),
-    lineMode: ref<LineMode>(choice.mode), // a link without a line shows none
+    lineMode: ref<LineMode>(choice.mode === 'cells' && !useFeature('cells') ? 'off' : choice.mode), // a link without a line (or a Cells line, the flag off) shows none
     guideLine: ref<GuideFrom>(choice.guide ?? own.guideLine.value),
     arpeggio: ref<ArpeggioPattern>(choice.arpeggio ?? own.arpeggio.value),
     cells: ref<CellId>(choice.cells ?? own.cells.value),
