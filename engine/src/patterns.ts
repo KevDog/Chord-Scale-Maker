@@ -21,7 +21,7 @@ const MAX_MOVES = 8
 const MAX_MOVE = 7
 const MAX_SUM = 4
 
-const sum = (moves: Moves): number => moves.reduce((a, b) => a + b, 0)
+const sum = (moves: readonly number[]): number => moves.reduce((a, b) => a + b, 0)
 
 /** The moves from text (`+1 +1 +1 −2`): hyphen, minus or en dash, spaces or commas, a bare number is up. */
 export function parsePattern(text: string): Readonly<{ moves: Moves }> | Readonly<{ error: string }> {
@@ -178,6 +178,54 @@ function playPattern(part: Part, chord: string, scale: string | null, moves: Mov
   return { notes: placed, groups }
 }
 
+/** most notes a pattern stave carries before its run continues onto another */
+const PATTERN_STAVE_NOTES = 24
+
+/**
+ * a run's pieces as [first, end) group indexes. A run over the cap breaks at `turn` (a group index; 0 = none), then each
+ * half takes the fewest pieces of at most 24 notes (a lone group over the cap stands alone), then the smallest largest
+ * piece, then the longer piece first. Throws when `turn` is not a group boundary.
+ */
+export function splitRun(groups: readonly number[], turn: number): readonly (readonly [number, number])[] {
+  if (!Number.isInteger(turn) || turn < 0 || turn > groups.length) throw new Error(`splitRun: turn ${turn} is not a group boundary`)
+  if (sum(groups) <= PATTERN_STAVE_NOTES) return [[0, groups.length]]
+  const half = (from: number, to: number): [number, number][] => {
+    // best[i]: the piece lengths of the best split of groups i..to
+    const best: (number[] | undefined)[] = Array.from({ length: to + 1 })
+    best[to] = []
+    const better = (a: readonly number[], b: readonly number[] | undefined): boolean => {
+      if (!b) return true
+      if (a.length !== b.length) return a.length < b.length
+      const [ma, mb] = [Math.max(...a), Math.max(...b)]
+      if (ma !== mb) return ma < mb
+      const at = a.findIndex((x, i) => x !== b[i])
+      return at >= 0 && (a[at] as number) > (b[at] as number)
+    }
+    for (let i = to - 1; i >= from; i--) {
+      let size = 0
+      for (let j = i + 1; j <= to; j++) {
+        size += groups[j - 1] as number
+        if (size > PATTERN_STAVE_NOTES && j > i + 1) break
+        const tail = best[j]
+        if (!tail) continue
+        const cand = [size, ...tail]
+        if (better(cand, best[i])) best[i] = cand
+      }
+    }
+    const out: [number, number][] = []
+    let at = from
+    let g = from
+    for (const len of best[from] ?? []) {
+      let size = 0
+      while (size < len) size += groups[g++] as number
+      out.push([at, g])
+      at = g
+    }
+    return out
+  }
+  return turn > 0 && turn < groups.length ? [...half(0, turn), ...half(turn, groups.length)] : half(0, groups.length)
+}
+
 /**
  * the Patterns sheet: the Scales sheet's lines (scaleLines), each its pattern, in pages of perPage; never throws.
  * key and resolved as in buildArpeggioSheet.
@@ -196,31 +244,43 @@ export function buildPatternSheet(
   const lines = scaleLines(rows, scaleOf)
   const keySig = key === undefined ? null : keySignature(key, part)
   const range = rangeOf(part)
-  const staves = lines.map((l, n): ArpeggioStaffModel => {
+  const staves = lines.flatMap((l, n): ArpeggioStaffModel[] => {
     const r = rows[l.row] as Row
     const scale = scaleOf(r, l.row)
     const showClefAndKey = key === undefined || n === 0
     const id = [l.chords.join(' '), scale, part.clef, part.trans, `${range.lo}-${range.hi}-${range.centre}`, formatPattern(moves), notes, dir, keySig, showClefAndKey ? '' : 'bare'].join('|')
+    const last = n === lines.length - 1
     const base = {
-      id,
       chords: l.chords.map((c) => chordTokensOrNull(part, c, scale)),
       scale: orNull(() => (scale ? scaleLabel(part, scale) : null)),
       keySig,
       showClefAndKey,
-      last: n === lines.length - 1,
     }
     const played = patternLine(part, r.chord, scale, moves, notes, dir)
-    if ('error' in played) return { ...base, notes: [], groups: [], accidentals: [], intervals: null, error: played.error }
-    return {
-      ...base,
-      ...played,
-      accidentals: accidentalsInBar(
-        played.notes.map((p) => ({ letter: p.letter, acc: p.acc, octave: octaveOf(p) })),
-        keySig,
-      ),
-      intervals: orNull(() => intervalLabels(writtenChordRootLenient(part, r.chord, scale), played.notes, resolveQuality(r.chord)?.quality ?? null)),
-      error: null,
-    }
+    if ('error' in played) return [{ ...base, id, last, notes: [], groups: [], accidentals: [], intervals: null, error: played.error }]
+    const intervals = orNull(() => intervalLabels(writtenChordRootLenient(part, r.chord, scale), played.notes, resolveQuality(r.chord)?.quality ?? null))
+    // Up & down has 2L-1 groups (L in Up with its lone octave): its Up half is the first L-1
+    const turn = dir === 'up-down' && played.groups.length % 2 === 1 ? (played.groups.length + 1) / 2 - 1 : 0
+    const pieces = splitRun(played.groups, turn)
+    return pieces.map(([g0, g1], p): ArpeggioStaffModel => {
+      const n0 = sum(played.groups.slice(0, g0))
+      const n1 = n0 + sum(played.groups.slice(g0, g1))
+      const piece = played.notes.slice(n0, n1)
+      return {
+        ...base,
+        ...(p === 0 ? {} : { chords: [], scale: null }),
+        id: `${id}|${p}`,
+        last: last && p === pieces.length - 1,
+        notes: piece,
+        groups: played.groups.slice(g0, g1),
+        accidentals: accidentalsInBar(
+          piece.map((q) => ({ letter: q.letter, acc: q.acc, octave: octaveOf(q) })),
+          keySig,
+        ),
+        intervals: intervals === null ? null : intervals.slice(n0, n1),
+        error: null,
+      }
+    })
   })
   return { heading: 'Patterns', pages: chunk(staves, perPage) }
 }
