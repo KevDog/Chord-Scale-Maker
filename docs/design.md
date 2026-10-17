@@ -89,6 +89,7 @@ web/                      # Nuxt app (Vercel root directory); imports @chord-sca
                           # by scripts/icons.mjs (`npm run icons`; needs rsvg-convert and ImageMagick); the navbar
                           # shows favicon.svg before the wordmark
   public/robots.txt       # allows everything, names the sitemap
+  public/<key>.txt        # the IndexNow key (§7b)
   public/og-image.png     # the 1200×630 link preview (Open Graph tags in nuxt.config.ts), drawn by the same script
   test/                   # app tests (@nuxt/test-utils, happy-dom)
   e2e/                    # Playwright tests against the production build
@@ -987,6 +988,12 @@ its reasons into a chart as comments.
   - `server/routes/sitemap.xml.ts` (`sitemapXml`, `utils/sitemap.ts`) is prerendered to a static file: each
     canonical URL once, no `lastmod` (Vercel's shallow clone has no history).
   - `public/robots.txt` allows everything and names the sitemap.
+- **IndexNow** (#167): after each production deploy, `.github/workflows/indexnow.yml` (on `deployment_status`)
+  POSTs the changed pages to `api.indexnow.org` (Bing and others recrawl them). `public/<key>.txt` holds the key
+  and proves the pings are ours. `build/indexnow.ts` (`urlsFor`) picks the URLs from `git diff` against the previous
+  production deploy: a chart → its song, composer and scale pages; `engine/src/` or `chord_scales.json` → every song
+  and scale page; a `web/app/pages/` file → the sitemap pages it draws; always `/sitemap.xml`; no previous deploy →
+  the whole sitemap (≤ 10,000 URLs). `npm run indexnow -- --from <sha>` prints them; a failed ping only warns.
 - **Privacy:** no third-party origins for any of it: no search-console tags, tracking pixels or social widgets. The
   link preview image is our own (`og-image.png`).
 - **Tests:** `web/e2e/seo.spec.ts` (song pages, canonicals, JSON-LD, the `/tunes` 301, the sitemap against `charts/`),
