@@ -130,7 +130,7 @@ function cellsOf(part: Part, chord: GuideInput, id: CellId, range: Range): Cells
   return {
     tones: [...ta, ...tb],
     carry: true,
-    turn: true,
+    turn: 'chord',
     next: (prev, count) => {
       const [tones, cell, at] = count % 2 === 0 ? ([ta, a, 0] as const) : ([tb, b, ta.length] as const)
       const midi = placeCell(tones, cell.contour, range, prev)
