@@ -41,10 +41,26 @@ describe('patterns', () => {
     const up = patternRun(4, [1, 1, 1, -2], 'up')
     const down = patternRun(4, [1, 1, 1, -2], 'down')
     expect(down.steps[0]).toBe(4)
-    expect(down.groups[0]).toBe(1)
+    expect(down.groups[0]).toBe(4)
     const both = patternRun(4, [1, 1, 1, -2], 'up-down')
     expect(both.steps.length).toBe(up.steps.length * 2 - 1)
     expect(both.groups.reduce((a, b) => a + b, 0)).toBe(both.steps.length)
+  })
+  it('writes Down exactly: Up reflected, groups kept, the lone note last', () => {
+    expect(patternRun(4, [1, 1, 1, -2], 'down')).toEqual({
+      steps: [4, 3, 2, 1, 3, 2, 1, 0, 2, 1, 0, -1, 1, 0, -1, -2, 0],
+      groups: [4, 4, 4, 4, 1],
+    })
+    expect(patternRun(7, [2, 2, -2], 'down')).toEqual({
+      steps: [7, 5, 3, 5, 3, 1, 3, 1, -1, 1, -1, -3, 0],
+      groups: [3, 3, 3, 3, 1],
+    })
+  })
+  it('writes Up & down exactly: Up without its octave, then Down', () => {
+    expect(patternRun(4, [1, 1, 1, -2], 'up-down')).toEqual({
+      steps: [0, 1, 2, 3, 1, 2, 3, 4, 2, 3, 4, 5, 3, 4, 5, 6, 4, 3, 2, 1, 3, 2, 1, 0, 2, 1, 0, -1, 1, 0, -1, -2, 0],
+      groups: [4, 4, 4, 4, 4, 4, 4, 4, 1],
+    })
   })
   it('never goes below a group’s first note', () => {
     const { steps, groups } = patternRun(7, [1, 1, 1, -2], 'up')

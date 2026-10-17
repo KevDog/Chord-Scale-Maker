@@ -71,7 +71,8 @@ export const PATTERN_LIBRARY: readonly Readonly<{ id: string; label: string; mov
 /**
  * The run of a pattern over a collection of `size` notes, as steps from its first note (0 = the first note, `size` =
  * its octave; a group may reach past the octave). `groups` are the beam lengths. Up starts a group on every
- * sum-th step below the octave, then the octave alone; Down is Up reflected; Up & down shares the octave.
+ * sum-th step below the octave, then the octave alone; Down is Up reflected step for step (same groups, the lone note last); Up & down is Up without its
+ * closing octave, then Down, which starts on it.
  */
 export function patternRun(
   size: number,
@@ -80,9 +81,9 @@ export function patternRun(
 ): Readonly<{ steps: readonly number[]; groups: readonly number[] }> {
   const up = upRun(size, moves)
   if (dir === 'up') return up
-  const down = { steps: up.steps.map((s) => size - s), groups: [...up.groups].reverse() }
+  const down = { steps: up.steps.map((s) => size - s), groups: up.groups }
   if (dir === 'down') return down
-  return { steps: [...up.steps, ...down.steps.slice(1)], groups: [...up.groups, ...down.groups.slice(1)] }
+  return { steps: [...up.steps.slice(0, -1), ...down.steps], groups: [...up.groups.slice(0, -1), ...down.groups] }
 }
 
 function upRun(size: number, moves: Moves): Readonly<{ steps: readonly number[]; groups: readonly number[] }> {
