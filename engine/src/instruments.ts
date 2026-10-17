@@ -24,11 +24,10 @@ export const TRANSPOSITIONS: Readonly<Record<Transposition, readonly [number, nu
 
 /** octave transpositions (guitar, bass, tenor, bari) don't matter: scales sit in a fixed written range */
 export const INSTRUMENTS = {
-  concert: { clef: 'treble', trans: 'C', description: 'any C instrument, treble clef (piano RH, vibes, flute, violin)', range: { lo: 60, hi: 81, centre: 69 } }, // C4–A5, centre A4
-  piano: { clef: 'treble', trans: 'C', description: 'same as concert', range: { lo: 60, hi: 84, centre: 70 } }, // C4–C6, centre B♭4
-  vibes: { clef: 'treble', trans: 'C', description: 'same as concert', range: { lo: 55, hi: 86, centre: 70 } }, // G3–D6, centre the middle B♭ (B♭4)
-  flute: { clef: 'treble', trans: 'C', description: 'same as concert', range: { lo: 60, hi: 84, centre: 73 } }, // C4–C6, centre C♯5
-  guitar: { clef: 'treble', trans: 'C', description: 'same as concert', range: { lo: 57, hi: 81, centre: 66 } }, // A3–A5 written, centre F♯4
+  piano: { clef: 'treble', trans: 'C', description: 'concert pitch, treble clef: the right hand', range: { lo: 60, hi: 84, centre: 70 } }, // C4–C6, centre B♭4
+  vibes: { clef: 'treble', trans: 'C', description: 'concert pitch, treble clef', range: { lo: 55, hi: 86, centre: 70 } }, // G3–D6, centre the middle B♭ (B♭4)
+  flute: { clef: 'treble', trans: 'C', description: 'concert pitch, treble clef; also oboe, violin and any other treble C instrument', range: { lo: 60, hi: 84, centre: 73 } }, // C4–C6, centre C♯5
+  guitar: { clef: 'treble', trans: 'C', description: 'concert pitch, treble clef (sounds an octave lower)', range: { lo: 57, hi: 81, centre: 66 } }, // A3–A5 written, centre F♯4
   trumpet: { clef: 'treble', trans: 'Bb', description: 'Bb, written a major 2nd up', range: { lo: 55, hi: 79, centre: 70 } }, // G3–G5 written, centre B♭4
   flugelhorn: { clef: 'treble', trans: 'Bb', description: 'same as trumpet', range: { lo: 55, hi: 79, centre: 70 } }, // G3–G5 written, centre B♭4
   clarinet: { clef: 'treble', trans: 'Bb', description: 'same as trumpet', range: { lo: 57, hi: 84, centre: 66 } }, // A3–C6 written, centre F♯4
@@ -46,9 +45,8 @@ export type InstrumentName = keyof typeof INSTRUMENTS
 
 export const isInstrumentName = (name: string): name is InstrumentName => Object.hasOwn(INSTRUMENTS, name)
 
-/** "tenor-sax" -> "Tenor Sax (Bb)"; concert -> "" (the page-subtitle label) */
+/** "tenor-sax" -> "Tenor Sax (Bb)", "piano" -> "Piano" (the page-subtitle label) */
 export function instrumentLabel(name: InstrumentName): string {
-  if (name === 'concert') return ''
   const words = name.split('-').map((w) => w.charAt(0).toUpperCase() + w.slice(1))
   const { trans } = INSTRUMENTS[name]
   return words.join(' ') + (trans === 'C' ? '' : ` (${trans})`)

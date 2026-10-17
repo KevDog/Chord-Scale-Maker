@@ -5,9 +5,9 @@ import { RANGES } from '../voiceLeading'
 
 describe('instruments', () => {
   it('labels every instrument for the page subtitle', () => {
-    // the name in title case, then the key unless it is C; concert -> ""
+    // the name in title case, then the key unless it is C
     const labels: Record<string, string> = {
-      concert: '', piano: 'Piano', vibes: 'Vibes', flute: 'Flute', guitar: 'Guitar',
+      piano: 'Piano', vibes: 'Vibes', flute: 'Flute', guitar: 'Guitar',
       trumpet: 'Trumpet (Bb)', flugelhorn: 'Flugelhorn (Bb)', clarinet: 'Clarinet (Bb)',
       'soprano-sax': 'Soprano Sax (Bb)', 'tenor-sax': 'Tenor Sax (Bb)', 'alto-sax': 'Alto Sax (Eb)',
       'bari-sax': 'Bari Sax (Eb)', horn: 'Horn (F)', trombone: 'Trombone', tuba: 'Tuba', bass: 'Bass',
@@ -25,7 +25,7 @@ describe('instruments', () => {
   it('gives every instrument the range the spec lists (written MIDI; C4 = 60)', () => {
     const ranges = Object.fromEntries(Object.entries(INSTRUMENTS).map(([name, i]) => [name, [i.range.lo, i.range.hi, i.range.centre]]))
     expect(ranges).toEqual({
-      concert: [60, 81, 69], piano: [60, 84, 70], vibes: [55, 86, 70], flute: [60, 84, 73], guitar: [57, 81, 66],
+      piano: [60, 84, 70], vibes: [55, 86, 70], flute: [60, 84, 73], guitar: [57, 81, 66],
       trumpet: [55, 79, 70], flugelhorn: [55, 79, 70], clarinet: [57, 84, 66],
       'soprano-sax': [58, 84, 68], 'alto-sax': [58, 84, 68], 'tenor-sax': [58, 84, 68], 'bari-sax': [58, 84, 68],
       horn: [55, 79, 70], trombone: [40, 64, 56], tuba: [36, 58, 47], bass: [40, 60, 49],
@@ -50,10 +50,19 @@ describe('instruments', () => {
     expect(rangeOf(partFor('vibes'))).toEqual({ lo: 55, hi: 86, centre: 70 })
   })
 
+  it('describes each C treble instrument in its own words, flute standing in for violin and oboe', () => {
+    const c = Object.entries(INSTRUMENTS).filter(([, i]) => i.clef === 'treble' && i.trans === 'C')
+    expect(c.map(([n]) => n)).toEqual(['piano', 'vibes', 'flute', 'guitar'])
+    for (const [name, i] of c) expect(i.description, name).not.toMatch(/same as/)
+    expect(INSTRUMENTS.flute.description).toMatch(/violin/)
+    expect(INSTRUMENTS.flute.description).toMatch(/oboe/)
+  })
+
   it('recognises instrument names safely', () => {
     expect(isInstrumentName('tenor-sax')).toBe(true)
     expect(isInstrumentName('kazoo')).toBe(false)
     expect(isInstrumentName('constructor')).toBe(false)
-    expect(Object.keys(INSTRUMENTS)).toHaveLength(16)
+    expect(isInstrumentName('concert')).toBe(false) // #332: retired, Piano instead
+    expect(Object.keys(INSTRUMENTS)).toHaveLength(15)
   })
 })
