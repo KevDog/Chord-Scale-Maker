@@ -4,7 +4,10 @@ style: Medium
 key: C
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 273
+recording: Charlie Parker; Alternate Masters Vol. 2; Dial; 1954
+youtube: 7W4zgeAYLrE
 # analysis: 2026-10-11, rules v1; C
+# recording: recorded 1946-03-28, master take 4, first issued on 78 (Dial 1003), first LP 1954 (LP 905; Dial LP 201, 1948, has take 1) (jazzdisco, Wikipedia); video: The Complete Savoy & Dial Master Takes, the same take
 
 # bar | chord | scale
 

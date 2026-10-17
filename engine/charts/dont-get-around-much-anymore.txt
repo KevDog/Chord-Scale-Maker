@@ -4,7 +4,10 @@ style: Medium
 key: C
 form: AABA
 source: Colorado Cookbook, p. 64
+recording: Duke Ellington; The Indispensable Duke Ellington; RCA Victor; 1961
+youtube: mjtlyqwQ4OY
 # analysis: 2026-10-11, rules v1; C
+# recording: recorded 1940-05-04 as Never No Lament (the same tune; the lyric came in 1942), first issued on 78 (Victor 26610), first US LP 1961 (LPM-6009; French HMV's Duke Ellington Masterpieces, 1952, came earlier) (Discogs, Wikipedia); video: Passion Flower 1940-46, the same take
 
 # bar | chord | scale
 # the standard changes; the sheet's alternate turnarounds are left out

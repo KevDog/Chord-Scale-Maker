@@ -4,7 +4,10 @@ style: Up
 key: Bb
 form: AABA, 32 bars
 source: 
+recording: Dizzy Gillespie; In the Beginning; Prestige; 1973
+youtube: VSD0UPQRvEE
 # analysis: 2026-10-17, rules v1; Bb
+# recording: recorded 1945-05-11 (Dizzy Gillespie and His All Stars, with Parker), only take, first issued on 78 (Guild 1002); no earlier LP found (jazzdisco, MusicBrainz); video: The Best Of Odyssey: 1945-1952, the same take
 
 # book tempo marking: Fast Bebop
 # solo on the form (ABC); after solos, D.S. (to A), play the head, then D.C. (to the intro) al Fine: the Fine is in Intro bar 18

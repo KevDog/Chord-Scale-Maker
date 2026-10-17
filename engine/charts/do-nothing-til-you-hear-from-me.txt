@@ -4,7 +4,9 @@ style: Medium ballad
 key: Bb
 form: AABA, 32 bars
 source: 
+recording: Duke Ellington; The Music of Duke Ellington Played by Duke Ellington; Columbia; 1954
 # analysis: 2026-10-12, rules v1; Bb
+# recording: recorded 1947-11-18, first issued on 78 (Columbia 38363, 1948), LP 1954 (CL 558) (Discogs); the 1940 Concerto for Cootie it grew from has other changes, so this is the song's first recording
 
 # bar | chord
 # pickup: (F7)

@@ -4,7 +4,10 @@ style: Blues
 key: Bb
 form: A, 12 bars
 source: Colorado Cookbook, p. 34
+recording: Thelonious Monk; Thelonious Monk Plays; Prestige; 1954
+youtube: BhuahN7Xjbg
 # analysis: 2026-10-11, rules v1; Bb, blues
+# recording: recorded 1954-09-22, trio with Percy Heath and Art Blakey, 10" PRLP 189; later on Thelonious Monk Trio (PRLP 7027) (Wikipedia, jazzdisco, MusicBrainz); video: The Thelonious Monk Trio, the same take
 
 # bar | chord | scale
 
