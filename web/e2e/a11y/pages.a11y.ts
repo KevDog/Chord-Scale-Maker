@@ -20,11 +20,19 @@ async function darkMode(page: Page): Promise<void> {
 for (const theme of ['light', 'dark'] as const) {
   test.describe(theme, () => {
     test('the pages', async ({ page }) => {
-      for (const path of ['/', '/library', '/about', '/help', '/functions', '/contact', '/privacy', '/scales', '/scales/dorian', '/composers', '/composers/thelonious-monk', '/song/blue-trane']) {
+      for (const path of ['/', '/library', '/about', '/help', '/functions', '/contact', '/privacy', '/scales', '/scales/dorian', '/composers', '/composers/thelonious-monk']) {
         await page.goto(path)
         if (theme === 'dark' && path === '/') await darkMode(page)
         await expectAccessible(page)
       }
+    })
+
+    // its own test: the page list runs close to the timeout in CI
+    test('a song with its recording', async ({ page }) => {
+      await page.goto('/song/blue-trane')
+      if (theme === 'dark') await darkMode(page)
+      await expect(page.getByRole('heading', { name: 'Recording', level: 2 })).toBeVisible()
+      await expectAccessible(page)
     })
 
     test('the Changes and its popovers', async ({ page }) => {
