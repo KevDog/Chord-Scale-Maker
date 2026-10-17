@@ -32,7 +32,7 @@ const noteName = (midi: number): string => `${NOTE[midi % 12]}${Math.floor(midi 
 /** ["a", "b", "c"] -> "a, b and c" */
 const listed = (xs: readonly string[]): string => (xs.length < 2 ? (xs[0] ?? '') : `${xs.slice(0, -1).join(', ')} and ${xs.at(-1)}`)
 
-/** each written guide tone range in INSTRUMENTS, instruments sharing one range together: "piano and flute C4–C6; vibes G3–D6; …" */
+/** each written guide tone range in INSTRUMENTS, instruments sharing one range together: "piano F3–E6; vibes G3–D6; …" */
 export function guideRanges(): string {
   const groups = new Map<string, string[]>()
   for (const n of Object.keys(INSTRUMENTS) as InstrumentName[]) {

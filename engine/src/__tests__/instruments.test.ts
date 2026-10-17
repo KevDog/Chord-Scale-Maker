@@ -25,15 +25,15 @@ describe('instruments', () => {
   it('gives every instrument the range the spec lists (written MIDI; C4 = 60)', () => {
     const ranges = Object.fromEntries(Object.entries(INSTRUMENTS).map(([name, i]) => [name, [i.range.lo, i.range.hi, i.range.centre]]))
     expect(ranges).toEqual({
-      piano: [60, 84, 70], vibes: [55, 86, 70], flute: [60, 84, 73], guitar: [57, 81, 66],
+      piano: [53, 88, 70], vibes: [55, 86, 70], flute: [60, 84, 73], guitar: [57, 81, 66],
       trumpet: [55, 79, 70], flugelhorn: [55, 79, 70], clarinet: [57, 84, 66],
       'soprano-sax': [58, 84, 68], 'alto-sax': [58, 84, 68], 'tenor-sax': [58, 84, 68], 'bari-sax': [58, 84, 68],
       horn: [55, 79, 70], trombone: [40, 64, 56], tuba: [36, 58, 47], bass: [40, 60, 49],
     })
   })
 
-  it('keeps every range inside its clef’s two-ledger-line cap, with its centre inside the range', () => {
-    expect(CAPS).toEqual({ treble: { lo: 55, hi: 86 }, bass: { lo: 35, hi: 65 } })
+  it('keeps every range inside its clef’s ledger-line cap (treble three, bass two), with its centre inside the range', () => {
+    expect(CAPS).toEqual({ treble: { lo: 52, hi: 89 }, bass: { lo: 35, hi: 65 } })
     for (const [name, { clef, range }] of Object.entries(INSTRUMENTS)) {
       expect(range.lo, name).toBeGreaterThanOrEqual(CAPS[clef].lo)
       expect(range.hi, name).toBeLessThanOrEqual(CAPS[clef].hi)

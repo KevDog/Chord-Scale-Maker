@@ -25,7 +25,7 @@ describe('instrumentChoices', () => {
 describe('guideRanges', () => {
   it('lists each written guide tone range from INSTRUMENTS, instruments sharing one range together, for the help page', () => {
     expect(guideRanges()).toBe(
-      'piano and flute C4–C6; vibes G3–D6; guitar A3–A5; trumpet, flugelhorn and horn G3–G5; clarinet A3–C6; soprano sax, tenor sax, alto sax and bari sax B♭3–C6; trombone E2–E4; tuba C2–B♭3; bass E2–C4',
+      'piano F3–E6; vibes G3–D6; flute C4–C6; guitar A3–A5; trumpet, flugelhorn and horn G3–G5; clarinet A3–C6; soprano sax, tenor sax, alto sax and bari sax B♭3–C6; trombone E2–E4; tuba C2–B♭3; bass E2–C4',
     )
   })
 })
