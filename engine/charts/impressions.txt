@@ -4,7 +4,10 @@ composer: John Coltrane
 style: Up
 form: AABA, 32 bars
 key: Dm
+recording: John Coltrane; Impressions; Impulse!; 1963
+youtube: MKXUF-nMnvU
 # analysis: 2026-10-11, rules v1; D minor, modal
+# recording: recorded live at the Village Vanguard 1961-11-03, released 1963 (Wikipedia); the video is that take, from Live at the Village Vanguard: The Master Takes
 
 # bar | chord | scale
 

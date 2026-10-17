@@ -5,7 +5,10 @@ style: Even 8ths
 key: Fm
 form: AAB, 24 bars
 source: Colorado Cookbook, p. 212
+recording: Horace Silver; Song for My Father; Blue Note; 1965
+youtube: mKf1x3CALAE
 # analysis: 2026-10-11, rules v1; F minor
+# recording: recorded 1964-10-26, released 1965 (Wikipedia; MusicBrainz says 1964-12)
 
 # bar | chord | scale
 
