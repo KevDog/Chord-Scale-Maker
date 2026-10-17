@@ -1,0 +1,35 @@
+name: IndexNow
+# after a production deploy, tell IndexNow (Bing and others) which pages changed: web/scripts/indexnow-urls.ts. A
+# failed ping only warns; the sitemap still lists every page
+on: deployment_status
+permissions:
+  contents: read
+  deployments: read
+jobs:
+  ping:
+    if: github.event.deployment_status.state == 'success' && github.event.deployment.environment == 'Production'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+          ref: ${{ github.event.deployment.sha }}
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+          cache: npm
+          cache-dependency-path: package-lock.json
+      - run: npm ci
+      # the production deployment before this one (the list is newest first); none on the first deploy
+      - name: Previous production commit
+        id: prev
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REPO: ${{ github.repository }}
+        run: echo "sha=$(gh api "repos/$REPO/deployments?environment=Production&per_page=2" --jq '.[1].sha // empty')" >> "$GITHUB_OUTPUT"
+      - name: Ping
+        working-directory: web
+        env:
+          FROM: ${{ steps.prev.outputs.sha }}
+          TO: ${{ github.event.deployment.sha }}
+        run: npm run indexnow -- --from "$FROM" --to "$TO" --ping || echo "::warning::IndexNow ping failed"
