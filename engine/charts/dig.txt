@@ -33,10 +33,10 @@ section: B
 15 | Eb7     # V7 of Ab: natural tensions
 @coda 15
 16 | Ab6     # tonic: the 4th is in the key
+# bar 16: solo break the 1st time
 
 section: Coda
 bars: 4
-# bar 32: solo break the 1st time
 1  | Bbm7    # ii of the ii–V to Ab
 1  | Eb7     # V7 of Ab: natural tensions
 2  | AbMaj7  # tonic: the 4th is in the key

@@ -24,10 +24,10 @@ bars: 16
 6 | Dbm7/F  # modal minor: Dorian
 # book: "Db dorian / F", placed on beat 4 of bar 5 (may be played on the and of 4); held to bar 8
 9 | Fm7     # modal minor: Dorian
+# bars 13–16: N.C. (drums tacet, bass and guitar figure); Fine at bar 15 on the last time
 
 section: B
 bars: 4
-# bars 13–16: N.C. (drums tacet, bass and guitar figure); Fine at bar 15 on the last time
 1 | Fm7
 # B: 4-bar Fm7 solo vamp, repeated till cue
 # On Cue (horns): 4 bars N.C., then back to B for the next solo; after solos, D.S. al Fine

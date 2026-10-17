@@ -8,7 +8,7 @@ source:
 # analysis: 2026-10-17, rules v1; D minor
 
 # A and B in D minor, C and D in D major
-# printed A13sus (bar 62): written A9sus4, the nearest symbol the library reads
+# printed A13sus (D bar 14): written A9sus4, the nearest symbol the library reads
 # bar | chord
 
 section: A
@@ -33,27 +33,26 @@ bars: 16
 
 section: B
 1  | Dm       # tonic minor: Dorian by convention
-# alt (optional): bar 18 (Dm7/C)
+# alt (optional): bar 2 (Dm7/C)
 3  | E7       # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key
-# alt (optional): bar 19 (E7/B)
+# alt (optional): bar 3 (E7/B)
 5  | A7b9#5   # V7 of D minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
-# alt (optional): bar 21 (Bbm6)
+# alt (optional): bar 5 (Bbm6)
 7  | Dm       # tonic minor: Dorian by convention
-# alt (optional): bar 23 (D7)
+# alt (optional): bar 7 (D7)
 8  | D7b9     # V7/iv in D minor: the b13 is in the key, the b9 from the symbol
 9  | Gm       # iv: Dorian, the key’s own notes
 10 | A7       # V7 of D minor: b9 and b13 are in the key
 11 | Dm       # tonic minor: Dorian by convention
-# alt (optional): bar 28 (Dm7/C)
+# alt (optional): bar 12 (Dm7/C)
 13 | E7b9     # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key
-# alt (optional): bar 29 (Bdim7)
+# alt (optional): bar 13 (Bdim7)
 14 | A7b9#5   # V7 of D minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
-# alt (optional): bar 30 (Bbm6)
+# alt (optional): bar 14 (Bbm6)
 15 | Dm       # tonic minor: Dorian by convention
 # area: D major (B 16 – D 19)
 16 | Em7      # ii of the ii–V to D
 16 | A7       # V7 of D: natural tensions
-# alt (optional): bar 68 (A7#5), back to the top
 @key 16 D
 
 section: C
@@ -91,8 +90,9 @@ bars: 20
 13 | E9       # extended dominant: V7 of A9sus4
 14 | A9sus4   # static sus: Mixolydian
 15 | F#m7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# alt (optional): bar 63 (F#7)
+# alt (optional): bar 15 (F#7)
 16 | B7#5     # extended dominant: V7 of E9; #11 and b13 from the symbol
 17 | E9       # extended dominant: V7 of A9sus
 18 | A9sus    # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 19 | D6       # tonic: the 4th is in the key
+# alt (optional): bar 20 (A7#5), back to the top

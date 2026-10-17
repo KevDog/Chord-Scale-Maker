@@ -79,4 +79,4 @@ bars: 8
 # area: C major (C 6–7)
 6  | G7      # V7 of C: natural tensions
 7  | C6      # tonic: the 4th is in the key
-# alt: bars 7–8 (Am7 | Dm7 G7), from beat 3 of bar 31
+# alt: bars 7–8 (Am7 | Dm7 G7), from beat 3 of bar 7

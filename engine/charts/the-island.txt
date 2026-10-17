@@ -51,7 +51,7 @@ section: A
 
 section: B
 1  | Bbm9       # tonic minor: Dorian by convention
-# alt (optional): bar 26, a hit late in the bar (DMaj7/E)
+# alt (optional): bar 2, a hit late in the bar (DMaj7/E)
 3  | DbMaj7/Eb  # bIII of Bb minor: the relative major itself
 4  | Eb13       # IV7 in Bb minor, not resolving: natural tensions
 5  | GbMaj7/Ab  # a non-tonic major chord: Lydian
@@ -85,7 +85,7 @@ section: B
 section: C
 bars: 12
 1  | Bm9        # ii: Dorian, the key’s own notes
-# alt (optional): bar 50, a hit late in the bar (EbMaj7/F)
+# alt (optional): bar 2, a hit late in the bar (EbMaj7/F)
 3  | DMaj7/E    # IV: the #4 is the key’s 7th
 4  | E13        # V7 in A, not resolving: natural tensions
 5  | GMaj7/A    # ♭VIImaj7, borrowed from A minor: Lydian (its ♯11 is in the key)

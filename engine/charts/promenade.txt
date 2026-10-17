@@ -7,7 +7,7 @@ source:
 # analysis: 2026-10-17, rules v1; G
 # book: head A–D: March-like (quarter = 90), B Freely, D a tempo, ending at (fine) on C6/9.
 # Solos: Med. Ballad (quarter = 69) on E F G H (F "Swing (in 2)", H "in 4"; F and G may also be swung in 4); after solos, D.C. al fine
-# 4/4 except bars 11 and 18, in 3/4
+# 4/4 except B bar 3 and C bar 3, in 3/4
 # the book's Ma13 chords are written Maj9 (FMa13 → FMaj9), 13sus → 9sus4, mi11(b5) → m7b5, B(add #11)/F# → B/F#
 
 # bar | chord
@@ -48,7 +48,7 @@ section: B
 # book: A13sus
 # area: D minor (B 2 – C 1)
 2  | A7b9b5      # V7 of D minor: the b9 is in the key, #11 and 13 from the symbol
-# bar 11: 3/4
+# bar 3: 3/4
 3  | Dm11        # tonic minor: Dorian by convention
 3  | A/C#        # a non-tonic major chord: Lydian
 3  | Dm11/C      # tonic minor: Dorian by convention
@@ -71,7 +71,7 @@ section: C
 # area: Bb minor (C 2–6)
 2  | Cm11        # ii of the ii–V to Bb minor
 2  | F7b9b5      # V7 of Bb minor: the b9 is in the key, #11 and 13 from the symbol
-# bar 18: 3/4
+# bar 3: 3/4
 3  | Bbm11       # tonic minor: Dorian by convention
 3  | F/A         # a non-tonic major chord: Lydian
 3  | Bbm11/Ab    # tonic minor: Dorian by convention
@@ -113,9 +113,9 @@ section: D
 8  | C69         # the G13b9 before it makes C the key of the moment: the 4th is in the key
 @nav 8 Fine
 # alt: bar 8 (D13) after C6/9, back to the top
+# book: bar 8 reads D9 sus4–3 (the sus resolving to the 3rd), G9sus, G13(b9), C6/9 (fine)
 
 section: E
-# book: bar 29 reads D9 sus4–3 (the sus resolving to the 3rd), G9sus, G13(b9), C6/9 (fine)
 # E–H: solos (Med. Ballad)
 1  | GMaj7       # tonic: the 4th is in the key
 2  | D/F#        # V without its 7th: Mixolydian, the key’s own notes
@@ -212,6 +212,6 @@ bars: 19
 15 | D9sus4      # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 15 | G9          # V7/IV in G: natural tensions
 16 | C69         # the G9 before it makes C the key of the moment: the 4th is in the key
-# alt (optional): bar 81 (Am7 D7) on beats 3–4, the turnaround
+# alt (optional): bar 16 (Am7 D7) on beats 3–4, the turnaround
 @nav 16 D.C. al Fine
 # book: solo on E F G H; after solos, D.C. al fine

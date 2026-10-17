@@ -47,6 +47,6 @@ section: B
 9  | Db7     # tritone substitute: resolves down a half step to C7#5
 10 | C7#5    # V7 of F: #11 and b13 from the symbol
 11 | F6      # tonic: the 4th is in the key
-# bar 24: solo break on F6
+# bar 12: solo break on F6
 12 | F6
 @nav 12 Fine

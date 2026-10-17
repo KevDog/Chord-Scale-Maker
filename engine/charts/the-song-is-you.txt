@@ -87,4 +87,4 @@ bars: 16
 11 | Dm7     # ii of the ii–V to C
 12 | G7      # V7 of C: natural tensions
 13 | C6      # tonic: the 4th is in the key
-# alt (optional): bars 62–64 (F7 | C6 | Dm7 G7), the turnaround
+# alt (optional): bars 14–16 (F7 | C6 | Dm7 G7), the turnaround

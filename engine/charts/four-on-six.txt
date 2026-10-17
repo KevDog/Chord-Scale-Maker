@@ -9,7 +9,7 @@ source:
 
 # bar | chord
 # Intro bars 1–12: N.C., the bass and piano figure
-# Intro bar 13: the four chords fall on beats 1, 2½, 3½ and 4 (guitar)
+# Intro bar 1: the four chords fall on beats 1, 2½, 3½ and 4 (guitar)
 
 section: Intro
 bars: 4
@@ -23,7 +23,7 @@ bars: 4
 
 section: A
 bars: 16
-# Intro bars 15–16: N.C., the bass and piano figure
+# Intro bars 3–4: N.C., the bass and piano figure
 # A: bass line on the Gm7 C7 bars is like the intro's
 1  | Gm7       # ii of C7: Dorian
 1  | C7        # V7/bVII in G minor: natural tensions

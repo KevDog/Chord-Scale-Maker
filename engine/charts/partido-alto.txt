@@ -27,11 +27,11 @@ section: A
 
 section: B
 bars: 20
-# book: Cm7 with the coda sign on the last eighth of bar 16 (the anticipation of B's Cm7); on the D.S., to the Coda from here
+# book: Cm7 with the coda sign on the last eighth of A bar 16 (the anticipation of B's Cm7); on the D.S., to the Coda from here
 1  | Cm7      # iv: Dorian, the key’s own notes
 2  | Bbm7     # a borrowed minor chord: Dorian, its own key
 3  | Am11     # ii of D9sus4: Dorian
-# bar 19: break
+# bar 3: break
 4  | D9sus4   # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 4  | D7#5/F#  # V7 of G minor: b9 and b13 are in the key, the #11 from the symbol
 5  | Gm11     # tonic minor: Dorian by convention
@@ -40,7 +40,7 @@ bars: 20
 10 | Bbm7     # a borrowed minor chord: Dorian, its own key
 11 | Am11     # ii of D9sus4: Dorian
 11 | D9sus4   # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-# bar 27: break; the book writes Am7(add 11) over the last eighth of bar 26 and D9sus over the hit in bar 27
+# bar 11: break; the book writes Am7(add 11) over the last eighth of bar 10 and D9sus over the hit in bar 11
 12 | D9sus4
 12 | D7#5/F#  # V7 of G minor: b9 and b13 are in the key, the #11 from the symbol
 13 | Gm11     # tonic minor: Dorian by convention
@@ -72,7 +72,7 @@ bars: 16
 
 section: E
 # book: C and D repeat for solos; after solos, continue to E
-# E: bass vamp, bars 69–70 played 4x, then bars 71–72 (repeated) and D.S. al Coda
+# E: bass vamp, bars 1–2 played 4x, then bars 3–4 (repeated) and D.S. al Coda
 1  | Gm11
 4  | Gm11
 @nav 4 D.S. al Coda

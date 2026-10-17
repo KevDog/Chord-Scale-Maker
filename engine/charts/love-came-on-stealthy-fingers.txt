@@ -93,4 +93,4 @@ section: B
 15 | Db7b5     # tritone substitute: resolves down a half step to C13
 15 | C13       # V7 of F: natural tensions
 16 | F6        # tonic: the 4th is in the key
-# alt (optional): bar 32 (C13)
+# alt (optional): bar 16 (C13)

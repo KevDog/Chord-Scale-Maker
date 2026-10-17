@@ -90,10 +90,10 @@ section: C
 7  | Ab9     # tritone substitute: resolves down a half step to G7#5
 7  | G7#5    # V7 of C minor: b9 and b13 are in the key, the #11 from the symbol
 8  | Cm      # tonic minor: Dorian by convention
+# alt (optional): bar 8 (Dm7b5 G7), the turnaround
 
 section: Ending
 bars: 4
-# alt (optional): bar 32 (Dm7b5 G7), the turnaround
 # Ending (freely), the last chord held
 1  | Ab9     # tritone substitute: resolves down a half step to G7#9
 2  | G7#9    # V7 of C minor: the b13 is in the key, b9, #9 and #11 from the symbol

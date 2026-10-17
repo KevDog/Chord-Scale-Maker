@@ -8,7 +8,7 @@ source: Colorado Cookbook, p. 149
 # analysis: 2026-10-11, rules v1; Bb
 
 # bar | chord | scale
-# the solo changes in bars 13–14 (the head has Dm7 Db7 | Csus4 C7)
+# the solo changes in B bars 5–6 (the head has Dm7 Db7 | Csus4 C7)
 
 section: A
 1 | BbMaj7    # tonic: the 4th is in the key

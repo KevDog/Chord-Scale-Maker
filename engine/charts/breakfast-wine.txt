@@ -66,7 +66,7 @@ bars: 18
 13 | Dm7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 14 | G13        # extended ii–V: a side-step, its own key
 14 | G7#5       # extended dominant: V7 of C9sus4; #11 and b13 from the symbol
-# bars 28, 30, 32: the chord is pushed in on the and of 4 of the bar before; bar 32: G7#5 on beat 4
+# bars 10, 12, 14: the chord is pushed in on the and of 4 of the bar before; bar 14: G7#5 on beat 4
 15 | C9sus4     # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 17 | F9sus4     # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 
@@ -88,7 +88,7 @@ bars: 16
 13 | EbMaj7     # IV: the #4 is the key’s 7th
 13 | Eb         # IV: the #4 is the key’s 7th
 13 | Abm6/Eb    # a minor sixth chord: Dorian
-# bar 49: EbMaj7 pushed in on the and of 4 of bar 48
+# bar 13: EbMaj7 pushed in on the and of 4 of bar 12
 15 | Eb         # IV: the #4 is the key’s 7th
 15 | G7#5       # V7/ii in Bb: the b13 is in the key, the #11 from the symbol
 
@@ -99,7 +99,7 @@ section: D
 4  | D7#5#9     # V7/vi in Bb: the b13 is in the key, b9, #9 and #11 from the symbol
 5  | Gm11       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 6  | Gm11/F     # ii of C9/E: Dorian
-# bars 57–58, 63: printed Gm7(add11), /F, Cm7(add11): add11 is not in the chord syntax, written m11
+# bars 5–6, 11: printed Gm7(add11), /F, Cm7(add11): add11 is not in the chord syntax, written m11
 7  | C9/E       # V7/V in Bb: natural tensions
 8  | Ebm6       # a minor sixth chord: Dorian
 9  | Dm7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)

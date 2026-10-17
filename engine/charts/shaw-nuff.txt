@@ -7,7 +7,7 @@ source:
 # analysis: 2026-10-17, rules v1; Bb
 
 # book tempo marking: Fast Bebop
-# solo on the form (ABC); after solos, D.S. (to A), play the head, then D.C. (to the intro) al Fine: the Fine is in Intro bar 18
+# solo on the form (ABC); after solos, D.S. (to A), play the head, then D.C. (to the intro) al Fine: the Fine is in Intro bar 14
 # bar | chord
 # Intro bars 1–4: N.C. (drums with piano), repeated
 
@@ -23,8 +23,8 @@ bars: 12
 
 section: A
 key: Bb
-# Intro bars 14–18: N.C. (hi-hat continues; drums in 17–18); bar 18: the Fine (fermata, to end)
-# alt (optional): Intro bars 19–20 (Bb6), a break with a sample piano fill
+# Intro bars 10–14: N.C. (hi-hat continues; drums in 13–14); bar 14: the Fine (fermata, to end)
+# alt (optional): Intro bars 15–16 (Bb6), a break with a sample piano fill
 # area: Bb major (A 1 – C 8)
 1  | Bb6      # tonic: the 4th is in the key
 @segno 1

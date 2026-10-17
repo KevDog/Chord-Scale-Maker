@@ -7,11 +7,11 @@ source:
 # analysis: 2026-10-12, rules v1; F
 
 # Intro bars 1–8 (and the pickup): N.C., the piano and bass figure
-# Intro bars 9–48: a piano solo; the drums play time from bar 25
+# Intro bars 1–40: a piano solo; the drums play time from bar 17
 # A bars 1, 5, 7, 9: the bar opens on its bass note alone (F, F#, F#, G bass), the chord comes on beat 3
-# printed C13sus (bars 21–24): written C9sus4, the nearest symbol the library reads
+# printed C13sus (A bars 21–24): written C9sus4, the nearest symbol the library reads
 # B repeats for each verse (4x); C is the solo vamp (4x); after the fourth verse D.S. (fifth verse) al Coda
-# B bars 41–42 and Coda bars 11–12: a drum break under the melody
+# B bars 13–14 and Coda bars 11–12: a drum break under the melody
 # Coda: bars 1–2 vamp till cue, then bars 3–14 on cue
 # bar | chord
 

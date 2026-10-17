@@ -7,7 +7,7 @@ source: Colorado Cookbook, p. 262
 # analysis: 2026-10-11, rules v1; C
 
 # bar | chord | scale
-# the "standard" chords; the lead sheet offers Bbm7 Eb7 | Am7 D7 | Abm7 Db7 | Gm7 C7 for bars 5–8
+# the "standard" chords; the lead sheet offers Bbm7 Eb7 | Am7 D7 | Abm7 Db7 | Gm7 C7 for A bars 5–8
 
 section: A1
 1  | CMaj7   # tonic: the 4th is in the key

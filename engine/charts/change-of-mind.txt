@@ -10,7 +10,7 @@ source:
 # the intro (4/4, 5/4, 3/4 horn and bass figures, repeated) is written out with no chord symbols: left out
 # the form is in 3/4; the head is ABCD, solos on ABC, then D (with pickup) and D.S. al Fine
 # chords in brackets are the solo changes
-# printed A13sus (bars 1, 17, 65) and Dm13 (bar 49): written A9sus4 and Dm9, the nearest symbols the library reads
+# printed A13sus (A bar 1, B bar 1, D bar 17) and Dm13 (D bar 1): written A9sus4 and Dm9, the nearest symbols the library reads
 # bar | chord
 
 section: A
@@ -30,11 +30,11 @@ bars: 16
 13 | Eb/G       # ♭II, borrowed from D Phrygian: Lydian (its ♯11 is in the key)
 13 | E/G#       # a non-tonic major chord: Lydian
 @segno 1
+# bar 13: Eb(add9)/G, E(add9)/G#, held to bar 16 (let ring)
+# alt (solos): bars 13–14 (E9sus), bars 15–16 (E7alt)
 
 section: B
 key: D
-# bar 13: Eb(add9)/G, E(add9)/G#, held to bar 16 (let ring)
-# alt (solos): bars 13–14 (E9sus), bars 15–16 (E7alt)
 1  | A9sus4     # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 2  | A13b9      # V7 of D: the b9 from the symbol
 3  | DMaj7#5    # from the symbol: #5
@@ -53,11 +53,11 @@ key: D
 15 | C/F        # ♭VII, borrowed from D minor: Lydian (its ♯11 is in the key)
 16 | F#/G       # a non-tonic major chord: Lydian
 16 | Bb/C       # ♭VI, borrowed from D minor: Lydian (its ♯11 is in the key)
+# bars 13, 14: Eb(add9)/G, E(add9)/G#, B(add9)/D#
+# alt (solos): bars 13–15 (E7alt), bar 16 (Gm7 C7#9)
 
 section: C
 key: F
-# bars 29, 30: Eb(add9)/G, E(add9)/G#, B(add9)/D#
-# alt (solos): bars 29–31 (E7alt), bar 32 (Gm7 C7#9)
 # area: F major (C 1 – D 20)
 1  | FMaj7      # tonic: the 4th is in the key
 2  | A7#9#5     # V7/vi in F: the b13 is in the key, b9, #9 and #11 from the symbol
@@ -76,11 +76,11 @@ key: F
 14 | C7#9#5     # V7 of F: b9, #9, #11 and b13 from the symbol
 15 | F          # tonic: the 4th is in the key
 16 | A/C#       # a non-tonic major chord: Lydian
+# bar 15: F(add9)
+# alt (solos): bar 16 (F(add9))
 
 section: D
 key: F
-# bar 47: F(add9)
-# alt (solos): bar 48 (F(add9))
 1  | Dm9        # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 2  | F/B        # tonic: the 4th is in the key
 2  | F/D        # tonic: the 4th is in the key
@@ -104,4 +104,4 @@ key: F
 20 | Gm9        # ii: Dorian, the key’s own notes
 20 | FMaj9      # tonic: the 4th is in the key
 @nav 20 Fine
-# Fine falls on bar 70; bars 69–70 hold FMaj9
+# the Fine falls on bar 22; bars 21–22 hold FMaj9

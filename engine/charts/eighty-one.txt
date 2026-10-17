@@ -22,9 +22,9 @@ bars: 12
 9  | C9sus4   # static sus: Mixolydian
 10 | Bb9sus4  # static sus: Mixolydian
 11 | F9sus4   # static sus: Mixolydian
+# alt (optional): bar 11 (DbMaj7b5/F)
 
 section: B
-# alt (optional): bar 11 (DbMaj7b5/F)
 1  | F9sus4
 2  | Bb9sus4  # static sus: Mixolydian
 3  | F9sus4   # static sus: Mixolydian
@@ -33,7 +33,7 @@ section: B
 9  | C9sus4   # static sus: Mixolydian
 10 | Bb9sus4  # static sus: Mixolydian
 11 | F9sus4   # static sus: Mixolydian
-# the coda sign stands at the end of bar 24 (F9sus held from bar 23)
+# the coda sign stands at the end of bar 12 (F9sus held from bar 11)
 12 | F9sus4
 @coda 12
 
@@ -45,7 +45,7 @@ section: C
 9  | C9sus4   # static sus: Mixolydian
 10 | Bb9sus4  # static sus: Mixolydian
 11 | F9sus4   # static sus: Mixolydian
-# D.C. al Coda at the end of bar 36 (F9sus held from bar 35)
+# D.C. al Coda at the end of bar 12 (F9sus held from bar 11)
 12 | F9sus4
 @nav 12 D.C. al Coda
 

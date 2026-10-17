@@ -7,7 +7,7 @@ source:
 # analysis: 2026-10-12, rules v1; D minor
 # the book: as played by Sphere; the head's B and the solos' E differ (the head's slash chords, the solos' 13sus chords)
 # head: A (repeated) B C, then the Interlude; solos on D (repeated) E F; Till Cue back to D, On Cue ending (Cue) to end each solo
-# after the solos, D.S. al Coda: A A B C, to the Coda after bar 30
+# after the solos, D.S. al Coda: A A B C, to the Coda after C bar 6
 
 # bar | chord
 
@@ -47,9 +47,9 @@ bars: 8
 7 | EbMaj7/Fb  # a non-tonic major chord: Lydian
 7 | GbMaj7/Ab  # a non-tonic major chord: Lydian
 7 | E/D        # a non-tonic major chord: Lydian
+# bar 7: E/D on beat 4, held through bar 8
 
 section: C
-# bar 23: E/D on beat 4, held through bar 24
 1 | Dm11       # tonic minor: Dorian by convention
 3 | BbMaj7#11  # from the symbol: #11
 5 | Gm7        # iv: Dorian, the key’s own notes
@@ -102,13 +102,13 @@ section: F
 5 | A7#5#9     # V7 in D minor, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
 6 | BbMaj7#11  # from the symbol: #11
 6 | A7#5#9     # V7 of D minor: the b13 is in the key, b9, #9 and #11 from the symbol
-# bars 69–70: Till Cue, back to D for more choruses
+# bars 7–8: Till Cue, back to D for more choruses
 7 | Dm11       # tonic minor: Dorian by convention
 8 | BbMaj7#11  # from the symbol: #11
 
 section: Cue
 bars: 6
-# On Cue ending (replaces bars 69–70 to end each solo): 4 bars, repeated; to D for more solos, after solos D.S. al Coda
+# On Cue ending (replaces F bars 7–8 to end each solo): 4 bars, repeated; to D for more solos, after solos D.S. al Coda
 1 | Dm9        # tonic minor: Dorian by convention
 2 | BbMaj7#11  # from the symbol: #11
 3 | Dm9        # tonic minor: Dorian by convention

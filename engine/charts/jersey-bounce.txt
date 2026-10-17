@@ -33,9 +33,9 @@ section: B
 5  | Db13    # tritone substitute: resolves down a half step to C7
 7  | C7      # V7 in F, not resolving: natural tensions
 8  | C7#5    # V7 of F: #11 and b13 from the symbol
+# alternate bridge (printed below, a melody variant): F13 Eb13 Db13 C7, two bars each (bar 8 C7, no C7#5)
 
 section: C
-# alternate bridge (printed below, a melody variant): F13 Eb13 Db13 C7, two bars each (bar 24 C7, no C7#5)
 1  | F6      # tonic: the 4th is in the key
 3  | G7      # II7 in F, not resolving: natural tensions
 5  | Gm7     # ii of the ii–V to F

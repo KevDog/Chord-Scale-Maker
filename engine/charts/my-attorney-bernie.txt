@@ -6,7 +6,7 @@ form: Interlude ABC, 54 bars
 source: 
 # analysis: 2026-10-17, rules v1; G minor
 # book: Med. Samba, half note = 92. The repeat runs from the Interlude to the end of C, 3 times in all
-# book: (3 verses); the 3rd time, take the Coda after bar 52.
+# book: (3 verses); the 3rd time, take the Coda after C bar 10.
 # book: arrows mark pushed chords; a chord pushed onto beat 4 is written in the bar it leads into
 
 # bar | chord
@@ -31,11 +31,11 @@ bars: 6
 # area: G major (Interlude 4 – A 10)
 4  | D7#9     # V7 of G: b9, #9 and #11 from the symbol
 5  | G        # tonic: the 4th is in the key
+# book: G(add9); bars 5–6: break
 
 section: A
-# book: G(add9); bars 5–6: break
 1  | Dm7b5/G  # vø7 in G: Locrian, its own mode (the chord is outside the key)
-# alt (optional): bar 13 (C#dim7), the piano and bass figure; bar 14: drum break
+# alt (optional): bar 7 (C#dim7), the piano and bass figure; bar 8: drum break
 9  | Fm7      # ii of the ii–V to Eb minor
 10 | Bb9      # V7/bvi in G: the #11 is in the key
 # area: Db major (A 11–14)
@@ -52,7 +52,7 @@ section: A
 
 section: B
 1  | Dm7b5/G  # vø7 in G minor: Locrian, its own mode (the chord is outside the key)
-# alt (optional): bar 31 (C#dim7), the piano and bass figure; bar 32: drum break
+# alt (optional): bar 7 (C#dim7), the piano and bass figure; bar 8: drum break
 9  | Fm7      # ii of the ii–V to Eb minor
 10 | Bb9      # V7/bvi in G minor: natural tensions
 # area: Db major (B 11–14)
@@ -65,23 +65,23 @@ section: B
 16 | F7b9     # V7/bIII in G minor: the b9 from the symbol
 17 | Ab9#11   # tritone substitute: resolves down a half step to G9
 18 | G9       # I7 in G minor, not resolving: the b13 is in the key
+# bar 18: break
 
 section: C
 bars: 14
-# bar 42: break
 1  | F9sus4   # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 2  | BbMaj7   # bIII of G minor: the relative major itself
-# book: BbMaj7 pushed onto beat 4 of bar 43; bar 44: break
+# book: BbMaj7 pushed onto beat 4 of bar 1; bar 2: break
 # area: G major (C 3–4)
 3  | D9sus4   # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 4  | GMaj7    # tonic: the 4th is in the key
-# bar 46: break
+# bar 4: break
 # area: G minor (C 5–9)
 5  | F9sus4   # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 6  | BbMaj7   # bIII of G minor: the relative major itself
-# book: BbMaj7 pushed onto beat 4 of bar 47; bar 48: break
+# book: BbMaj7 pushed onto beat 4 of bar 5; bar 6: break
 7  | D9sus4   # V7sus4 of Gm: the b13 is in the key
-# alt (optional): bar 50 beats 3–4 (D7#5)
+# alt (optional): bar 8 beats 3–4 (D7#5)
 9  | Gm       # tonic minor: Dorian by convention
 # area: Eb major (C 10–11)
 10 | Fm9      # ii of the ii–V to Eb

@@ -68,9 +68,9 @@ bars: 8
 6  | Db7     # tritone substitute: resolves down a half step to C9sus4
 # area: F major (B 7 – C 8)
 7  | C9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+# bar 8: break (C9sus held)
 
 section: C
-# bar 24: break (C9sus held)
 1  | FMaj7   # tonic: the 4th is in the key
 1  | Gm7     # ii: Dorian, the key’s own notes
 2  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)

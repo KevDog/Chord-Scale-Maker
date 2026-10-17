@@ -52,7 +52,7 @@ section: B
 15 | CMaj9    # tonic: the 4th is in the key
 # area: F major (B 17 – Coda 1)
 17 | C7b9#9   # V7 of F: b9, #9 and #11 from the symbol
-# bars 26–27: solo break
+# bars 17–18: solo break
 18 | C7b9#9
 19 | F        # tonic: the 4th is in the key
 # book: F(add 9)
@@ -60,7 +60,7 @@ section: B
 19 | CMaj7/D  # a non-tonic major chord: Lydian
 @ending 1 18
 @ending 2 19
-# book: bar 27 is "Till Cue" (repeat to A for solos), bar 28 "On Cue"
+# book: bar 18 is "Till Cue" (repeat to A for solos), bar 19 "On Cue"
 @nav 19 D.S. al Coda
 
 section: Coda

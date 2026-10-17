@@ -9,7 +9,7 @@ context: modal
 # analysis: 2026-10-12, rules v1; C, modal
 # book: Med. Latin, quarter = 152 (as played by Cal Tjader)
 # the pickup is vibes alone; bass and drums play a downbeat (C bass) on bar 1 of A every time but the first
-# the book's road map: A B C D, D.C. al Coda One (from the end of A, bar 8) to the solos; after solos, continue to E;
+# the book's road map: A B C D, D.C. al Coda One (from the end of A, bar 6) to the solos; after solos, continue to E;
 # E then D.C. al Coda Two (from the end of A again) to the Coda, vamp and fade
 
 # bar | chord
@@ -18,17 +18,17 @@ context: modal
 section: A
 bars: 22
 1 | C7       # modal: its own mode
-# bar 3: N.C. until the C7 stabs ("Wa-chi Wa-ra") late in the bar
+# bar 1: N.C. until the C7 stabs ("Wa-chi Wa-ra") late in the bar
 2 | C7
-# bars 5–6: N.C. (the vibes melody)
+# bars 3–4: N.C. (the vibes melody)
 5 | C7
 6 | C7
 @coda 6
 
 section: D
-# the coda sign (1, 2) stands at the end of bar 8
-# B, bars 9–16: N.C., a 4-bar bass line played twice (2nd time add congas, then cowbell)
-# C, bars 17–24: N.C., a 2-bar vibes figure played 3 times, then 2 more bars
+# the coda sign (1, 2) stands at the end of A bar 6
+# the book's B (A bars 7–14): N.C., a 4-bar bass line played twice (2nd time add congas, then cowbell)
+# the book's C (A bars 15–22): N.C., a 2-bar vibes figure played 3 times, then 2 more bars
 1 | C13      # modal: its own mode
 1 | Bb13     # modal: its own mode
 1 | Ab13     # modal: its own mode

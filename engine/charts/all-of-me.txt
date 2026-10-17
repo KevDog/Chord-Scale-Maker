@@ -36,4 +36,4 @@ bars: 16
 # alt: bar 13 (Dm7b5), "bar 13 of B may be played"
 14 | G13  # V7 of C: natural tensions
 15 | C6   # tonic: the 4th is in the key
-# alt (optional): bar 32 (Dm7 G7), the turnaround
+# alt (optional): bar 16 (Dm7 G7), the turnaround

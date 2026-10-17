@@ -6,7 +6,7 @@ form: AB, 20 bars
 source: 
 # analysis: 2026-10-17, rules v1; F
 # book: as played by Bill Evans
-# the whole form repeats; last time, to the Coda from bar 17
+# the whole form repeats; last time, to the Coda from B bar 7
 
 # bar | chord
 
@@ -43,9 +43,9 @@ bars: 10
 8  | Bbm7b5   # iiø7 of Eb7#5#9: Locrian, the key's own notes (its ♭2 is a passing note)
 # book: Bbm11(b5) (also in the Coda)
 9  | Eb7#5#9  # back door bVII7 to FMaj7: b9, #9, #11 and b13 from the symbol
+# alt (optional, "may also be played"): bars 7–10 (G7alt C7alt A13#11 —); they differ from the given changes only by the root
 
 section: Coda
-# alt (optional, "may also be played"): bars 17–20 (G7alt C7alt A13#11 —); they differ from the given changes only by the root
 @coda 1
 1  | Fm7b5    # iø7 in F minor: Locrian, its own mode (the chord is outside the key)
 2  | Bbm7b5   # iiø7 of Eb7#5#9: Locrian, the key's own notes (its ♭2 is a passing note)

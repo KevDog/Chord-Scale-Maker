@@ -65,4 +65,4 @@ bars: 16
 14 | Dm7     # ii of the ii–V to C
 14 | G7      # V7 of C: natural tensions
 15 | C6      # tonic: the 4th is in the key
-# alt (optional): bar 32 (Dm7 G7)
+# alt (optional): bar 16 (Dm7 G7)

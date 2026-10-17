@@ -6,15 +6,15 @@ form: ABC, 80 bars
 time: 3/4
 source: 
 # analysis: 2026-10-17, rules v1; F
-# book: Medium Jazz Waltz. Repeat signs around bars 1–80 (head, then solos in 3/4 on the same form, taking the
-# standard ending each time and ignoring the inversions, e.g. bars 5–12). After solos, D.C. al Coda (coda at bar 77).
-# bars 69–80 are the book's "Standard ending" (the end of the form).
-# the book also prints an "Alternate ending" (for soloing in 4/4, taken the first time through), in place of bars 69–80:
+# book: Medium Jazz Waltz. Repeat signs around the form (A–C) (head, then solos in 3/4 on the same form, taking the
+# standard ending each time and ignoring the inversions, e.g. bars 5–12). After solos, D.C. al Coda (coda at C bar 29).
+# C bars 21–32 are the book's "Standard ending" (the end of the form).
+# the book also prints an "Alternate ending" (for soloing in 4/4, taken the first time through), in place of C bars 21–32:
 # 3/4: Dm7 | G7alt | then 4/4: FMaj7/C Abdim7/C | Gm7/C Abdim7/C | FMaj7 Abdim7 Gm7 | Gm7 Abdim7 | FMaj7 Abdim7 |
 # Gm7 Abdim7 | FMaj7 Abdim7 Gm7 C7b9 | (C pedal) → the 4/4 solo chorus.
 # the book's 4/4 solo chorus (letters D–F, 40 bars of 4/4, two chords a bar) is this form at half the bar count, with
-# the inversions dropped and these differences: bar 1 (and 49) Am7 for FMaj7/A; bars 29–32 AMaj7; bar 40 Cm7;
-# bar 44 G7; F bars 11–12 G7 Abdim7 | Am7 Abdim7 for bars 71–74.
+# the inversions dropped and these differences: A bar 1 (and C bar 1) Am7 for FMaj7/A; A bars 29–32 AMaj7; B bar 8 Cm7;
+# B bar 12 G7; F bars 11–12 G7 Abdim7 | Am7 Abdim7 for C bars 23–26.
 # 4/4 solo chorus as printed:
 # D: Am7 Dm7 | Gm7 C7 | A7 D7 | G7 C7 | F7 Bb6 | Gm7b5 C7 | Am7 Dm7 | Gm7 C7 | Am7 Dm7 | Gm7 C7 | A7 D7 | G7 C7 |
 #    A7 Dm7 | B7 E7 | AMaj7 | AMaj7 |
@@ -62,9 +62,9 @@ section: A
 30 | Bm7       # ii: Dorian, the key’s own notes
 31 | AMaj7     # tonic: the 4th is in the key
 32 | AMaj7/G#  # from the symbol: sus b9
+# alt (solos): bars 29–32 (AMaj7)
 
 section: B
-# alt (solos): bars 29–32 (AMaj7)
 # area: F major (B 1 – Coda 11)
 1  | Gm7       # ii of C9: Dorian
 2  | C9        # V7/I in F: natural tensions
@@ -85,7 +85,7 @@ section: B
 
 section: C
 1  | FMaj7/A   # tonic: the 4th is in the key
-# alt (solos): bar 49 (Am7)
+# alt (solos): bar 1 (Am7)
 2  | Dm7       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 3  | Gm7       # ii of C7: Dorian
 4  | C7        # V7/I in F: natural tensions

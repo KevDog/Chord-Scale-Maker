@@ -6,8 +6,8 @@ form: ABCD, 54 bars
 source: 
 # analysis: 2026-10-17, rules v1; Db
 # book: as played by John Coltrane. A: freely (verse); B: faster; C–D: medium ballad (quarter = 58).
-# routing: A, B, C, D; repeat C–D for solos (double-time feel swing; the first solo begins at bars 53–54);
-# after solos, D.S. al Coda (from C to bar 50, then the Coda).
+# routing: A, B, C, D; repeat C–D for solos (double-time feel swing; the first solo begins at D bars 13–14);
+# after solos, D.S. al Coda (from C to D bar 10, then the Coda).
 
 # bar | chord
 
@@ -70,7 +70,7 @@ key: Fm
 # area: Db major (B 8 – Coda 2)
 8  | Ab13     # V7 in Db, not resolving: natural tensions
 9  | B9b5     # tritone substitute: resolves down a half step to Bb9
-# slower from bar 23
+# slower from bar 9
 10 | Bb9      # V7/ii in Db: the b13 is in the key
 11 | Ebm7     # ii: Dorian, the key’s own notes
 12 | A9b5     # ♭VI7 from the parallel minor: Lydian Dominant

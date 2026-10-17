@@ -69,10 +69,10 @@ bars: 16
 14 | C13     # V7 of F: natural tensions
 15 | F6      # tonic: the 4th is in the key
 # alt: bar 16 (Am7 D7)
+# bars 15–16: solo break
 
 section: Coda
 bars: 12
-# bars 31–32: solo break
 1  | Gm9     # ii: Dorian, the key’s own notes
 @coda 1
 # alt: bar 2 (C13)

@@ -27,7 +27,7 @@ bars: 2
 
 section: C
 1  | Am6/9  # a minor sixth chord: Dorian
-# book: D.S. at the end of C bar 28 (Am6/9 held from 27)
+# book: D.S. at the end of C bar 2 (Am6/9 held from bar 1)
 2  | Am6/9
 @nav 2 D.S. al Coda
 

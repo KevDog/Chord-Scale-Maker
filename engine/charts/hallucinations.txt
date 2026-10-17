@@ -6,7 +6,7 @@ key: F
 form: AABCD EEFG, 70 bars
 source: 
 # analysis: 2026-10-12, rules v1; F
-# book: Bright bebop. Head: A A B C D; solos on E E F G; after solos, D.C. al Coda (from bar 25).
+# book: Bright bebop. Head: A A B C D; solos on E E F G; after solos, D.C. al Coda (from C bar 8).
 # the pickup before A has no chord; chords the book pushes an eighth before a barline are written in the next bar
 
 # bar | chord
@@ -69,7 +69,7 @@ section: C
 7 | G7      # V7 of V7: the dominant of the dominant: natural tensions
 7 | C7b9    # V7 of F: the b9 from the symbol
 8 | F6      # tonic: the 4th is in the key
-# the coda sign stands over the start of bar 25: after solos the Coda replaces it
+# the coda sign stands over the start of bar 8: after solos the Coda replaces it
 @coda 8
 
 section: D
@@ -83,10 +83,10 @@ bars: 6
 4 | Bb9     # IV7 in F, not resolving: the #11 is in the key
 4 | Gb      # ♭II, borrowed from F Phrygian: Lydian (its ♯11 is in the key)
 4 | F       # tonic: the 4th is in the key
+# book, bar 4 (eighth-note hits): B9 Bb9 Abm Gm Gb F; Abm and Gm left out (at most 4 chords a bar)
+# bars 5–6: solo break; alt (optional): bars 5–6 (F6 | Gm7 C7)
 
 section: E
-# book, bar 29 (eighth-note hits): B9 Bb9 Abm Gm Gb F; Abm and Gm left out (at most 4 chords a bar)
-# bars 30–31: solo break; alt (optional): bars 30–31 (F6 | Gm7 C7)
 # alternate letter D (4 bars): Bm7b5 E7 | Am7b5 D7 | Gm7 C7 | F6 (solo break)
 1 | F6      # tonic: the 4th is in the key
 # alt: bar 1 (Bm7b5 for F6)
@@ -107,7 +107,7 @@ section: E
 8 | C7      # V7 of F: natural tensions
 @ending 1 8
 9 | F6      # tonic: the 4th is in the key
-# alt (optional): bar 40 (F6 Eb7)
+# alt (optional): bar 9 (F6 Eb7)
 @ending 2 9
 
 section: F

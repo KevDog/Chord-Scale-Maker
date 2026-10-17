@@ -89,4 +89,4 @@ bars: 20
 # book: Eb13sus
 18 | Eb13     # V7 of Ab: natural tensions
 19 | Ab6      # tonic: the 4th is in the key
-# alt: bars 19–20 (Ab6 BMaj7 | EMaj7 AMaj7): BMaj7 on beat 3 of bar 35
+# alt: bars 19–20 (Ab6 BMaj7 | EMaj7 AMaj7): BMaj7 on beat 3 of bar 19

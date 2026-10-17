@@ -55,4 +55,4 @@ bars: 10
 5  | G7      # V7 of V7: the dominant of the dominant: natural tensions
 6  | C7      # V7 of F: natural tensions
 7  | F       # tonic: the 4th is in the key
-# alt (optional): bar 34 (C7)
+# alt (optional): bar 8 (C7)

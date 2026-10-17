@@ -72,7 +72,7 @@ bars: 16
 # alt: bar 6 (Ab13)
 7  | Gm7     # tonic minor: Dorian by convention
 # alt: bars 7–8 (G7#9)
-# as in A: bars 33–37 in Bb, back to G minor at 38
+# as in A: bars 9–13 in Bb, back to G minor at 14
 @key 9 Bb
 # area: Bb major (C 9–13)
 9  | Cm7     # ii of the ii–V to Bb
