@@ -551,7 +551,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Tones:** each chord's four chord tones from its base quality (`DEGREES` in `engine/src/arpeggios.ts`): altered 5ths
   kept, extensions dropped; a triad's three, its first tone again as the fourth.
 - **Patterns** (ten): Up and Down from the root or the 1st, 2nd or 3rd inversion (Down reverses Up), Up & down
-  (alternating per arpeggio across the run), Voice-led (Up from the chord tone nearest the last note).
+  (alternating per arpeggio across the run; a Down starts on the chord tone just below the last note, never that note,
+  so the line keeps falling: #356), Voice-led (Up from the chord tone nearest the last note).
 - **Note value, per bar:** the longest of ♩ ♪ 𝅘𝅥𝅯 giving the bar's shortest chord four notes or more (4/4: one chord ♩,
   two ♪, three or four 𝅘𝅥𝅯; 3/4 and 2/4: one ♪, more 𝅘𝅥𝅯). Timing is the guide tone timeline's, so a last chord holds
   through the empty bars after it.
