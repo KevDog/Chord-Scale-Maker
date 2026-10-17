@@ -1,8 +1,9 @@
 import { describe, expect, it } from 'vitest'
-import { ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, arpeggioCells, arpeggioOrder, arpeggioTones, arpeggioVoices, cellVoices, isArpeggioPattern, isSheetLine, noteValue } from '../arpeggios'
+import { ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, arpeggioCells, arpeggioOrder, arpeggioTones, arpeggioVoices, cellVoices, comfortBand, isArpeggioPattern, isSheetLine, noteValue } from '../arpeggios'
 import type { GuideInput, GuideNote } from '../guideTones'
 import { clockOf, type Metre } from '../metre'
-import { CONCERT, type Part } from '../part'
+import { CONCERT, type Part, partFor } from '../part'
+import { INSTRUMENTS } from '../instruments'
 import { rootName } from '../pitch'
 import chordScales from '../../chord_scales.json'
 import { toVexKey } from '../sheet'
@@ -121,6 +122,24 @@ describe('cellVoices valueOf', () => {
     expect(seen.map(([, s]) => s)).toEqual([4, 2])
     expect(bars.get(1)?.every((n) => n.beats === 1)).toBe(true)
     expect(cellVoices(cs, CONCERT, 4, null, cells).bars).toEqual(arpeggioVoices(cs, CONCERT, 4, null, 'up-root').bars)
+  })
+})
+
+describe('the comfort band', () => {
+  it('is the range less a 4th below and a major 3rd above: vibes F3–F6 → B♭3–C♯6', () => {
+    expect(comfortBand(INSTRUMENTS.vibes.range)).toEqual({ lo: 58, hi: 85 })
+  })
+  it('is at least an octave, about the range\'s middle, when the range is narrow', () => {
+    expect(comfortBand({ lo: 40, hi: 60, centre: 49 })).toEqual({ lo: 44, hi: 56 })
+  })
+  it('keeps a one-way line from drifting out of it: vibes Fm7 Down repeats from E♭5 rather than fall to F3', () => {
+    const { bars } = voice(seq(['Fm7', 4], ['Fm7', 4]), 'down-root', partFor('vibes'))
+    expect(pitches(bars.get(0))).toEqual(['eb/5', 'c/5', 'ab/4', 'f/4'])
+    expect(pitches(bars.get(1))).toEqual(['eb/5', 'c/5', 'ab/4', 'f/4'])
+  })
+  it('still takes the nearest octave while it stays inside', () => {
+    const { bars } = voice(seq(['Fm7', 4], ['Bbm7', 4]), 'down-root', partFor('vibes'))
+    expect(pitches(bars.get(1))).toEqual(['ab/4', 'f/4', 'db/4', 'bb/3'])
   })
 })
 

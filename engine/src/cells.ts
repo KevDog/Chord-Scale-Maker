@@ -1,4 +1,4 @@
-import { arpeggioCells, arpeggioTones, type Cells, cellVoices, type NoteValue } from './arpeggios'
+import { arpeggioCells, arpeggioTones, type Cells, cellVoices, type NoteValue, placeWhole } from './arpeggios'
 import type { GuideInput, GuideNote } from './guideTones'
 import type { Range } from './instruments'
 import type { Metre } from './metre'
@@ -100,26 +100,9 @@ function pairOf(id: CellId): readonly [Cell, Cell] {
   return [single, single]
 }
 
-/**
- * a cell placed whole in the part's range: the first note with the fewest notes out of range, then nearest prev,
- * nearer the centre, the lower; with no prev (a run's start) the average nearest the centre, a tie the higher
- */
-function placeCell(tones: readonly Spelled[], contour: Contour, range: Range, prev: number | null): readonly number[] {
-  const first = pcOf(tones[0] as Spelled)
-  const options: { midi: readonly number[]; out: number }[] = []
-  for (let m = range.lo - 12; m <= range.hi + 12; m++) {
-    if (mod(m, 12) !== first) continue
-    const midi = cellPitches(tones, contour, m)
-    options.push({ midi, out: midi.filter((x) => x < range.lo || x > range.hi).length })
-  }
-  const avg = (xs: readonly number[]): number => xs.reduce((s, x) => s + x, 0) / xs.length
-  const key = (o: (typeof options)[number]): readonly number[] => {
-    const m = o.midi[0] ?? 0
-    return prev === null ? [o.out, Math.abs(avg(o.midi) - range.centre), -m] : [o.out, Math.abs(m - prev), Math.abs(m - range.centre), m]
-  }
-  const cmp = (a: readonly number[], b: readonly number[]): number => a.reduce((r, x, i) => r || x - (b[i] ?? 0), 0)
-  return [...options].sort((a, b) => cmp(key(a), key(b)))[0]?.midi ?? cellPitches(tones, contour, range.centre)
-}
+/** a cell placed whole in the part's range (placeWhole) */
+const placeCell = (tones: readonly Spelled[], contour: Contour, range: Range, prev: number | null): readonly number[] =>
+  placeWhole(pcOf(tones[0] as Spelled), (m) => cellPitches(tones, contour, m), range, prev)
 
 /**
  * a chord's cells: A then B by the run's count, each read through the chord's scale; a slot whose cell has no tones
