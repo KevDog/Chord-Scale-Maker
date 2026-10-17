@@ -1,5 +1,5 @@
 import { barView } from './bars'
-import { type ChartDoc, type ChartKind, chartAka, chartKind, keyLabel, metaValue, parseChart } from './chart'
+import { type ChartDoc, type ChartKind, chartAka, chartKind, chartRecording, keyLabel, metaValue, parseChart, type Recording } from './chart'
 import { type ChordToken, chordTokensOrNull } from './chord'
 import { CONCERT } from './part'
 
@@ -22,6 +22,9 @@ export type TuneSummary = Readonly<{
   form: string
   time: string
   source: string
+  /** one notable recording, and its YouTube video's ID ('' without one) */
+  recording: Recording | null
+  youtube: string
 }>
 
 export function tuneSummary(text: string): TuneSummary {
@@ -39,6 +42,8 @@ export function tuneSummary(text: string): TuneSummary {
     form: metaValue(doc, 'form'),
     time: metaValue(doc, 'time'),
     source: metaValue(doc, 'source'),
+    recording: chartRecording(doc),
+    youtube: metaValue(doc, 'youtube'),
   }
 }
 
@@ -84,6 +89,7 @@ export function tuneAdvice(doc: ChartDoc): readonly string[] {
   return [
     !metaValue(doc, 'source') && 'no source: say where the chart came from, if a book or recording',
     !metaValue(doc, 'aka') && 'no aka: add the tune’s other common titles, if it has any',
+    !metaValue(doc, 'recording') && chartKind(doc) === 'tune' && 'no recording: name one notable recording of the tune',
   ].filter((g): g is string => !!g)
 }
 

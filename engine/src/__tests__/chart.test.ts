@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { beatsPerBar, chartAka, chartBeats, chartKind, chartDetails, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, lineSections, parseChart, parseContext, qualityScale, serializeChart } from '../chart'
+import { beatsPerBar, chartAka, chartRecording, chartBeats, chartKind, chartDetails, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, lineSections, parseChart, parseContext, qualityScale, serializeChart } from '../chart'
 import { LIMITS } from '../limits'
 
 describe('isValidKey', () => {
@@ -345,5 +345,37 @@ describe('context: and @context (docs/superpowers/specs/2026-10-10-chart-context
   it('rejects a malformed @context', () => {
     for (const bad of ['@context 1', '@context x modal', '@context 1 bossa', '@context 1 modal extra'])
       expect(parseChart(`section: A\n${bad}`).diagnostics[0]?.message, bad).toBe('use  @context BAR CONTEXT  (functional, modal or blues)')
+  })
+})
+
+describe('chartRecording', () => {
+  const rec = (text: string) => chartRecording(parseChart(text).value)
+  const diags = (text: string) => parseChart(`${text}\n\nsection: A\nbars: 4\n1 | C`).diagnostics.map((d) => d.message)
+  const need = 'recording: artist; album; label; year (artist and album required)'
+
+  it('reads artist; album; label; year, keeping commas in the album', () => {
+    expect(rec('recording: John Coltrane; Blue Train; Blue Note; 1957')).toEqual({ artist: 'John Coltrane', album: 'Blue Train', label: 'Blue Note', year: '1957' })
+    expect(rec('recording: Bill Evans Trio; Sunday at the Village Vanguard, Live')).toEqual({ artist: 'Bill Evans Trio', album: 'Sunday at the Village Vanguard, Live', label: '', year: '' })
+    expect(rec('recording: Miles Davis; Kind of Blue; ; 1959')).toMatchObject({ label: '', year: '1959' })
+    expect(rec('title: X')).toBeNull()
+  })
+
+  it('reports a recording without artist and album, a bad year, extra fields', () => {
+    expect(diags('recording: John Coltrane, Blue Train')).toContain(need)
+    expect(diags('recording: ; Blue Train')).toContain(need)
+    expect(diags('recording: A; B; C; 57')).toContain('recording: the year is four digits')
+    expect(diags('recording: A; B; C; 1957; D')).toContain(need)
+    expect(diags('recording: A; B; Blue Note; 1957')).toEqual([])
+    expect(rec('recording: John Coltrane, Blue Train')).toBeNull()
+  })
+
+  it('checks youtube: is an 11-character ID, given with a recording', () => {
+    expect(diags('recording: A; B\nyoutube: XpZHUVjQydI')).toEqual([])
+    expect(diags('recording: A; B\nyoutube: https://youtu.be/XpZHUVjQydI')).toContain('youtube: the 11-character video ID')
+    expect(diags('youtube: XpZHUVjQydI')).toContain('youtube: needs a recording: line')
+  })
+
+  it('keeps recording: in the header', () => {
+    expect(parseChart('section: A\nrecording: A; B\n1 | C').diagnostics.map((d) => d.message)).toContain('recording: belongs in the header, before the first section:')
   })
 })
