@@ -142,6 +142,27 @@
                   </UiListbox>
                 </div>
               </UiField>
+              <UiField v-if="sheet === 'patterns' && shows('patterns')">
+                <UiLabel class="pl-3">Pattern</UiLabel>
+                <div class="flex flex-wrap items-start gap-2">
+                  <div class="flex w-44 flex-col gap-2">
+                    <UiListbox v-model="patternChoice" class="w-full" aria-label="Pattern">
+                      <template #selected="{ value }"><UiListboxLabel>{{ patternChoiceLabel(value) }}</UiListboxLabel></template>
+                      <UiListboxOption v-for="p in PATTERN_LIBRARY" :key="p.id" :value="p.id"><UiListboxLabel>{{ p.label }}</UiListboxLabel></UiListboxOption>
+                      <UiListboxOption value="custom"><UiListboxLabel>{{ patternChoiceLabel('custom') }}</UiListboxLabel></UiListboxOption>
+                    </UiListbox>
+                    <template v-if="patternChoice === 'custom'">
+                      <UiInput v-model="patternText" aria-label="Custom pattern" placeholder="+1 +1 −1" :invalid="!!patternError" :aria-describedby="patternError ? 'pattern-error' : undefined" />
+                      <p v-if="patternError" id="pattern-error" class="text-sm/5 text-red-700 dark:text-red-400">{{ patternError }}</p>
+                    </template>
+                  </div>
+                  <SegmentedControl v-model="patternNotes" legend="Notes" name="pattern-notes" :options="patternNoteOptions" />
+                  <UiListbox v-model="patternDir" class="w-28" aria-label="Pattern direction">
+                    <template #selected="{ value }"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[value] }}</UiListboxLabel></template>
+                    <UiListboxOption v-for="d in ARP_DIRECTIONS" :key="d" :value="d"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[d] }}</UiListboxLabel></UiListboxOption>
+                  </UiListbox>
+                </div>
+              </UiField>
               <Transition name="ease-fade">
                 <UiField v-if="sheet === 'scales' && shows('spell')">
                   <UiLabel class="pl-3">Spell Scale</UiLabel>
@@ -170,7 +191,7 @@
     </template>
 
     <script setup lang="ts">
-    import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, partFor, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
+    import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, formatPattern, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
     import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
@@ -211,6 +232,9 @@
     const arpeggio = defineModel<ArpeggioPattern>('arpeggio', { default: 'up-root' })
     const arpNotes = defineModel<ArpNotes>('arpNotes', { default: 'seventh' })
     const arpDir = defineModel<ArpDirection>('arpDir', { default: 'up' })
+    const pattern = defineModel<string>('pattern', { default: '+1 +1 +1 −2' })
+    const patternNotes = defineModel<PatternNotes>('patternNotes', { default: 'scale' })
+    const patternDir = defineModel<ArpDirection>('patternDir', { default: 'up' })
     const pentLeave = defineModel<PentatonicLeave>('pentLeave', { default: '1' })
     /** the sheet editor is open: numerals and scales are shown (they are the pickers), their toggles hide */
     /** keyStart: the chart's key, written for the instrument (what "From key" starts on) */
@@ -233,12 +257,39 @@
     const Passthrough: FunctionalComponent = (_, { slots }) => slots.default?.()
 
     const arpNoteOptions = ARP_NOTES.map((value) => ({ value, label: ARP_NOTES_LABELS[value] }))
+    const patternNoteOptions = [
+      { value: 'scale', label: 'Scale' },
+      { value: 'chord', label: 'Chord tones' },
+    ] as const
+    /** the library entry whose canonical text is the stored pattern, else Custom (the box shows the stored text) */
+    const libraryId = computed(() => PATTERN_LIBRARY.find((p) => formatPattern(p.moves) === pattern.value)?.id ?? 'custom')
+    const customChosen = ref(false)
+    const patternChoice = computed({
+      get: () => (customChosen.value ? 'custom' : libraryId.value),
+      set: (id: string) => {
+        customChosen.value = id === 'custom'
+        const entry = PATTERN_LIBRARY.find((p) => p.id === id)
+        if (entry) pattern.value = formatPattern(entry.moves)
+      },
+    })
+    const patternChoiceLabel = (id: string): string => (id === 'custom' ? 'Custom…' : (PATTERN_LIBRARY.find((p) => p.id === id)?.label ?? ''))
+    const patternText = ref(pattern.value)
+    const parsed = computed(() => parsePattern(patternText.value))
+    const patternError = computed(() => ('error' in parsed.value ? parsed.value.error : ''))
+    // a typed pattern that parses is stored (canonical); one that doesn't leaves the stored one as it was
+    watch(patternText, () => {
+      if ('moves' in parsed.value) pattern.value = formatPattern(parsed.value.moves)
+    })
+    // the stored pattern changed from outside (a library choice, a reset): the box follows, unless it already says the same
+    watch(pattern, (v) => {
+      if (!('moves' in parsed.value) || formatPattern(parsed.value.moves) !== v) patternText.value = v
+    })
     const GUIDE_LINES = [
       { value: 'third', label: 'From 3rd', title: "A line that starts on the first chord's 3rd and moves to the nearest guide tone of each chord" },
       { value: 'seventh', label: 'From 7th', title: "A line that starts on the first chord's 7th and moves to the nearest guide tone of each chord" },
     ] as const
     const guideLabel = (v: GuideFrom): string => GUIDE_LINES.find((g) => g.value === v)?.label ?? ''
     const patternsOn = useFeature('patterns')
-    const sheetLabel =(v: SheetKind): string => SHEETS.find((s) => s.value === v)?.label ?? ''
+    const sheetLabel = (v: SheetKind): string => SHEETS.find((s) => s.value === v)?.label ?? ''
     const part = computed(() => partFor(instrument.value))
     </script>

@@ -344,7 +344,7 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
       // groups are top-aligned (items-start), so distinct tops = visual rows
       return { rows: new Set(kids.map((r) => Math.round(r.top))).size, widths: `${row.clientWidth}: ${kids.map((r) => Math.round(r.width)).join(' + ')}` }
     })
-  for (const sheet of ['Scales', 'Changes']) {
+  for (const sheet of ['Scales', 'Patterns', 'Changes']) {
     await chooseSheet(page, sheet)
     const { rows, widths } = await layout()
     expect(rows, `${sheet} (${widths})`).toBeLessThanOrEqual(2)

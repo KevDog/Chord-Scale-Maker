@@ -10,7 +10,7 @@
 </template>
 
 <script setup lang="ts">
-import { type ArpDirection, type ArpNotes, buildArpeggioSheet, type Key, pageSubtitle, type Part, type Resolved, type Row } from '@chord-scale-maker/engine'
+import { type ArpDirection, type ArpNotes, buildArpeggioSheet, buildPatternSheet, type Key, type Moves, type PatternNotes, pageSubtitle, type Part, type Resolved, type Row } from '@chord-scale-maker/engine'
 
 const props = defineProps<{
   rows: readonly Row[]
@@ -21,7 +21,8 @@ const props = defineProps<{
   part: Part
   instrumentLabel: string
   perPage: number
-  notes: ArpNotes
+  notes: ArpNotes | PatternNotes
+  moves?: Moves // the Patterns sheet: this pattern over each line, in place of the arpeggio
   dir: ArpDirection
   intervals?: boolean
   homeKey?: Key | null
@@ -30,7 +31,9 @@ const props = defineProps<{
 
 /** every printed page, in order, with its heading */
 const pages = computed(() => {
-  const sheet = buildArpeggioSheet(props.rows, props.part, props.perPage, props.notes, props.dir, props.homeKey, props.resolved)
+  const sheet = props.moves
+    ? buildPatternSheet(props.rows, props.part, props.perPage, props.moves, props.notes as PatternNotes, props.dir, props.homeKey, props.resolved)
+    : buildArpeggioSheet(props.rows, props.part, props.perPage, props.notes as ArpNotes, props.dir, props.homeKey, props.resolved)
   return sheet.pages.map((staves) => ({ staves, subtitle: pageSubtitle(props.subtitle, props.instrumentLabel, sheet.heading) }))
 })
 </script>

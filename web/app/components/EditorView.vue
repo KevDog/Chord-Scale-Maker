@@ -125,6 +125,9 @@
             v-model:arpeggio="prefs.arpeggio.value"
             v-model:arp-notes="prefs.arpNotes.value"
             v-model:arp-dir="prefs.arpDir.value"
+            v-model:pattern="prefs.pattern.value"
+            v-model:pattern-notes="prefs.patternNotes.value"
+            v-model:pattern-dir="prefs.patternDir.value"
             v-model:pent-leave="prefs.pentLeave.value"
             :key-start="keyStartNote"
             :lock-labels="sheetEditor"
@@ -247,8 +250,9 @@
             :part="part"
             :instrument-label="instrumentLabel(prefs.instrument.value)"
             :per-page="PER_PAGE"
-            :notes="prefs.arpNotes.value"
-            :dir="prefs.arpDir.value"
+            :notes="sheet === 'patterns' ? prefs.patternNotes.value : prefs.arpNotes.value"
+            :moves="sheet === 'patterns' ? patternMoves : undefined"
+            :dir="sheet === 'patterns' ? prefs.patternDir.value : prefs.arpDir.value"
             :intervals="prefs.intervals.value"
             :home-key="homeKey"
             :resolved="resolved"
@@ -301,6 +305,8 @@ import {
   LIMITS,
   litKeys,
   type Mode,
+  parsePattern,
+  PATTERN_LIBRARY,
   partFor,
   practiceBoxes,
   resolveScales,
@@ -421,6 +427,11 @@ function onPick(kind: PickKind, positions: readonly ChordAt[], value: number | r
   else if (kind === 'pentatonic' && typeof value === 'number') chordPicks.pick('pentatonic', positions, value)
   else if (kind === 'hexatonic' && typeof value !== 'number') chordPicks.pick('hexatonic', positions, value)
 }
+/** the stored pattern's moves (the text is canonical; an unparseable one draws as Thirds rather than nothing) */
+const patternMoves = computed(() => {
+  const p = parsePattern(prefs.pattern.value)
+  return 'moves' in p ? p.moves : (PATTERN_LIBRARY.find((p) => p.id === 'thirds')?.moves ?? [])
+})
 const sheetLine = computed(() => sheetLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value))
 /** the line the Changes sheet draws: the stored one, the arpeggio slot read as the Pentatonic line under the Pentatonic overlay (#284) */
 const changesLine = computed(() => changesLineOf({ mode: prefs.lineMode.value, guide: prefs.guideLine.value, arpeggio: prefs.arpeggio.value, overlay: prefs.overlay.value, leave: prefs.pentLeave.value, dir: prefs.arpDir.value }))
@@ -714,6 +725,7 @@ async function shareUrl(): Promise<string> {
     scaleNames: prefs.scaleNames.value,
     ...(sheetLine.value !== 'off' ? { line: sheetLine.value } : {}), // absent: off
     sheet: sheet.value,
+    ...(sheet.value === 'patterns' ? { pattern: prefs.pattern.value, patternNotes: prefs.patternNotes.value, patternDir: prefs.patternDir.value } : {}),
     ...(sheet.value === 'arpeggios' ? { arpNotes: prefs.arpNotes.value, arpDir: prefs.arpDir.value } : {}),
     ...(sheet.value === 'changes' && prefs.lineMode.value === 'arpeggio' ? { arpDir: prefs.arpDir.value, pentLeave: prefs.pentLeave.value } : {}), // the Pentatonic (#284) and Triad pair (#325) lines', under the receiver's own overlay
     ...(selection.value ? { practice: selection.value } : {}),
