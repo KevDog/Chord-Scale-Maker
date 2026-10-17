@@ -119,7 +119,7 @@
             <UiTableRow v-for="r in groupRows(g.id)" :key="r.fn">
               <UiTableCell class="font-medium">{{ r.fn }}</UiTableCell>
               <UiTableCell>{{ glyphs(r.chord) }}</UiTableCell>
-              <UiTableCell>{{ r.scale ? glyphs(r.scale) : '—' }}</UiTableCell>
+              <UiTableCell><a v-if="r.scale && scaleLink(r.scale)" :href="scaleLink(r.scale) ?? undefined" :class="LINK">{{ glyphs(r.scale) }}</a><template v-else>{{ r.scale ? glyphs(r.scale) : '—' }}</template></UiTableCell>
               <UiTableCell>
                 <template v-for="(id, k) in ruleParts(r.rule)" :key="id"><template v-if="k">+</template><a :href="`#rule-${id}`" :class="LINK">{{ id }}</a></template><span v-if="r.fallback" class="text-zinc-500 dark:text-zinc-400"> (guess)</span>
               </UiTableCell>
@@ -185,7 +185,7 @@
             <UiTableCell>{{ slotText(d.n9) }}</UiTableCell>
             <UiTableCell>{{ slotText(d.n11) }}</UiTableCell>
             <UiTableCell>{{ slotText(d.n13) }}</UiTableCell>
-            <UiTableCell>{{ glyphs(d.scale) }}</UiTableCell>
+            <UiTableCell><a v-if="scaleLink(d.scale)" :href="scaleLink(d.scale) ?? undefined" :class="LINK">{{ glyphs(d.scale) }}</a><template v-else>{{ glyphs(d.scale) }}</template></UiTableCell>
           </UiTableRow>
         </UiTableBody>
       </UiTable>
@@ -213,6 +213,7 @@
 
 <script setup lang="ts">
 import { PAGE_HEAD, seoMeta } from '~/utils/site'
+import { scalePath } from '~/utils/scalePage'
 import {
   dominantScaleTable,
   FUNCTION_GROUPS,
@@ -241,6 +242,8 @@ const SECTIONS = [
   { id: 'rules', title: 'How the engine chooses a scale' },
   { id: 'report', title: 'Reporting a disagreement' },
 ]
+/** a scale's reference page, whether the text names its root ("D Dorian") or not ("Mixolydian") */
+const scaleLink = (scale: string): string | null => scalePath(scale) ?? scalePath(`C ${scale}`)
 const LINK = 'text-zinc-950 underline decoration-zinc-950/50 hover:decoration-zinc-950 dark:text-white dark:decoration-white/50 dark:hover:decoration-white'
 // printed, the tables keep their borders and wrap to the page instead of scrolling
 const PRINT_TABLE = 'print:[&_td]:border print:[&_td]:border-zinc-400 print:[&_th]:border print:[&_th]:border-zinc-400 print:[&_td]:min-w-0 print:[&_td]:whitespace-normal'

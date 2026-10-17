@@ -1,4 +1,4 @@
-import { isSyncCopy } from '@chord-scale-maker/engine'
+import { isSyncCopy, SCALES, type ScaleKey, scaleSlug } from '@chord-scale-maker/engine'
 import { canonicalUrl } from './site'
 
 const escapeXml = (s: string): string => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
@@ -17,5 +17,8 @@ export const sitemapXml = (paths: readonly string[]): string =>
 export const chartSlugsOf = (files: readonly string[]): string[] =>
   files.filter((f) => f.endsWith('.txt') && !isSyncCopy(f)).map((f) => f.replace(/\.txt$/, ''))
 
-/** the pages search engines should find, prerendered too: the site's, then each library song; never a bare /song (noindex) or /ui */
-export const sitemapPaths = (songPaths: readonly string[]): string[] => ['/', '/library', '/help', '/functions', '/about', '/contact', '/privacy', ...songPaths]
+/** the scale pages (/scales/<slug>), one per scale the engine knows (not scalePage.ts's scaleKeyPath: the config can't load the library) */
+const scalePaths = (): string[] => (Object.keys(SCALES) as ScaleKey[]).map((k) => `/scales/${scaleSlug(k)}`)
+
+/** the pages search engines should find, prerendered too: the site's, the scales, then each library song; never a bare /song (noindex) or /ui */
+export const sitemapPaths = (songPaths: readonly string[]): string[] => ['/', '/library', '/help', '/functions', '/about', '/contact', '/privacy', '/scales', ...scalePaths(), ...songPaths]

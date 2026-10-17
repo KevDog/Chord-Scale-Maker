@@ -133,7 +133,7 @@
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
         <template v-if="drafted(m)">{{ preview?.readable ? sheetScale(CONCERT, preview.scale) : '' }}</template>
-        <SheetLabelPicker v-else-if="editing !== undefined && shows('scale-choice') && doc && m.line >= 0 && !m.slot && !isRest(m.text)" :doc="doc" :line="m.line" kind="scale" :chord="m.text" :fallback="false" :blank="!m.scale" :pinned="notes?.get(m.line)?.source === 'written'" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.scale }}</SheetLabelPicker>
+        <SheetLabelPicker v-else-if="editing !== undefined && shows('scale-choice') && doc && m.line >= 0 && !m.slot && !isRest(m.text)" :doc="doc" :line="m.line" kind="scale" :chord="m.text" :fallback="false" :blank="!m.scale" :pinned="notes?.get(m.line)?.source === 'written'" :scale="notes?.get(m.line)?.scale" @update:doc="emit('update:doc', $event)" @said="emit('said', $event)">{{ m.scale }}</SheetLabelPicker>
         <ChangesNote v-else-if="notesOn && m.reason && m.scale" :reason="m.reason" :heard-in="m.heardIn" :key-from="m.keyFrom" :rule="m.rule" :fallback="m.fallback" :chord="m.written" :concert="m.text" :numeral="m.numeral" :scale="m.scale" :at="m.row" :problem="m.problem" wrap>{{ m.scale }}</ChangesNote>
         <template v-else>{{ m.scale }}</template>
       </span>

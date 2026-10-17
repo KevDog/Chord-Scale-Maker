@@ -44,6 +44,21 @@ describe('SheetLabelPicker', () => {
     expect(panel()?.textContent).toContain('Why')
   })
 
+  it("the scale's list links to the playing scale's page (#165)", async () => {
+    const w = await mountSuspended(SheetLabelPicker, { props: { doc, line: 6, kind: 'scale', chord: 'G7', fallback: false, pinned: false, scale: 'G Mixolydian' }, slots: { default: () => 'G Mixolydian' }, attachTo: document.body })
+    await w.find('button').trigger('click')
+    await settle()
+    const link = [...(panel()?.querySelectorAll('a') ?? [])].find((a) => a.textContent?.includes('About this scale'))
+    expect(link?.getAttribute('href')).toBe('/scales/mixolydian')
+  })
+
+  it('the numeral has no scale link', async () => {
+    const w = await mount('numeral')
+    await w.find('button').trigger('click')
+    await settle()
+    expect(panel()?.textContent).not.toContain('About this scale')
+  })
+
   it('the scale opens the scale list', async () => {
     const w = await mount('scale')
     await w.find('button').trigger('click')
