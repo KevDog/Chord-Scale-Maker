@@ -109,10 +109,25 @@ export function nearestTone(tones: readonly Spelled[], prev: number): number {
   return best?.i ?? 0
 }
 
+/** the tone nearest `prev` on its way (up: above it, else below), never prev itself, as an index into the tones */
+function toneBeyond(tones: readonly Spelled[], prev: number, up: boolean): number {
+  const gap = (t: Spelled): number => ((up ? pcOf(t) - prev : prev - pcOf(t)) % 12 + 23) % 12 // semitones away, less one
+  return tones.reduce((best, t, i) => (gap(t) < gap(tones[best] as Spelled) ? i : best), 0)
+}
+
+/** a Down arpeggio from tone `from`: it and the three tones below it, by index (a triad's from again last) */
+const downFrom = (n: 3 | 4, from: number): readonly number[] => [0, 1, 2, 3].map((k) => (from - k + 4 * n) % n)
+
 /** the order and direction of the next arpeggio: count is how many the run has played (for Up & down) */
 function orderFor(pattern: ArpeggioPattern, tones: readonly Spelled[], prev: number | null, count: number): Readonly<{ order: readonly number[]; up: boolean }> {
   const n = tones.length as 3 | 4
-  if (pattern === 'up-down') return { order: arpeggioOrder(n, 0, count % 2 === 0), up: count % 2 === 0 }
+  if (pattern === 'up-down') {
+    // after the run's first, each starts on the tone just past the last note its way, so the line keeps going (#356)
+    const up = count % 2 === 0
+    if (prev === null) return { order: arpeggioOrder(n, 0, up), up }
+    const from = toneBeyond(tones, prev, up)
+    return { order: up ? arpeggioOrder(n, from, true) : downFrom(n, from), up }
+  }
   if (pattern === 'voice-led') return { order: arpeggioOrder(n, prev === null ? 0 : nearestTone(tones, prev), true), up: true }
   const [dir = 'up', inv = 'root'] = pattern.split('-')
   return { order: arpeggioOrder(n, INVERSION[inv] ?? 0, dir === 'up'), up: dir === 'up' }

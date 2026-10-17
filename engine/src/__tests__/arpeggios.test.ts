@@ -158,7 +158,13 @@ describe('arpeggio voices', () => {
   it('Up & down: a turn-back is not an arpeggio of its own', () => {
     const { bars } = voice(seq(['Dm7', 3], ['G7', 3]), 'up-down', CONCERT, 3)
     expect(pitches(bars.get(0))).toEqual(['d/4', 'f/4', 'a/4', 'c/5', 'a/4', 'f/4'])
-    expect(pitches(bars.get(1)).slice(0, 4).map((p) => p[0])).toEqual(['f', 'd', 'b', 'g']) // down: the second arpeggio
+    expect(pitches(bars.get(1)).slice(0, 4).map((p) => p[0])).toEqual(['d', 'b', 'g', 'f']) // down: the second arpeggio, from below F4
+  })
+  it('Up & down: a Down arpeggio starts on the chord tone just below the last note, never that note (#356)', () => {
+    const piano: Part = { ...CONCERT, range: { lo: 53, hi: 88, centre: 70 } }
+    const { bars } = voice(seq(['FMaj7/A', 3], ['Dm7', 3]), 'up-down', piano, 3) // Waltz for Debby bars 1-2
+    expect(pitches(bars.get(0))).toEqual(['f/4', 'a/4', 'c/5', 'e/5', 'c/5', 'a/4'])
+    expect(pitches(bars.get(1))).toEqual(['f/4', 'd/4', 'c/4', 'a/3', 'c/4', 'd/4']) // A4 is a chord tone: F4 below it
   })
   it('splits that divide evenly never turn back', () => {
     expect(pitches(voice(seq(['CMaj7', 2], ['Dm7', 1]), 'up-root', CONCERT, 3).bars.get(0))).toHaveLength(12) // sixteenths
@@ -181,9 +187,14 @@ describe('arpeggio voices', () => {
     const { bars } = voice(seq(['Dm7', 4], ['G7', 4], ['CMaj7', 4]), 'up-down')
     expect([0, 1, 2].map((b) => pitches(bars.get(b)))).toEqual([
       ['d/4', 'f/4', 'a/4', 'c/5'],
-      ['f/5', 'd/5', 'b/4', 'g/4'],
-      ['c/4', 'e/4', 'g/4', 'b/4'],
+      ['b/4', 'g/4', 'f/4', 'd/4'], // down from the tone below C5
+      ['e/4', 'g/4', 'b/4', 'c/5'], // up from the tone above D4
     ])
+  })
+  it('Up & down: a later Up arpeggio starts on the chord tone just above the last note, never that note (#356)', () => {
+    const { bars } = voice(seq(['Dm7', 4], ['G7', 4], ['FMaj7', 4]), 'up-down')
+    expect(pitches(bars.get(2))).toEqual(['e/4', 'f/4', 'a/4', 'c/5']) // D4 just played: E4 above it, not F3
+    expect(pitches(voice(seq(['Dm7', 4], ['G7', 4], ['GMaj7', 4]), 'up-down').bars.get(2))).toEqual(['f#/4', 'g/4', 'b/4', 'd/5']) // D4 a chord tone: the next above
   })
   it('voice-led: starts each chord on its tone nearest the last note, going up', () => {
     const { bars } = voice(seq(['Dm7', 4], ['G7', 4]), 'voice-led')
