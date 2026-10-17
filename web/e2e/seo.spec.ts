@@ -23,7 +23,7 @@ test.describe('without JavaScript', () => {
   test('a song is all there in its HTML: heading, composer, lead-sheet note, structured data, canonical, indexable', async ({ page }) => {
     await page.goto('/song/blue-trane')
     await expect(page.getByRole('heading', { name: 'Blue Trane', level: 1 })).toBeVisible()
-    await expect(page.getByText('John Coltrane', { exact: true })).toBeVisible()
+    await expect(page.getByRole('link', { name: 'John Coltrane', exact: true })).toHaveAttribute('href', '/composers/john-coltrane')
     await expect(page.getByRole('heading', { name: 'Chord changes (lead-sheet style)', level: 2 })).toBeVisible()
     await expect(page.getByText(/without the melody/)).toContainText('also known as Blue Train')
     await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', `${SITE_URL}/song/blue-trane`)

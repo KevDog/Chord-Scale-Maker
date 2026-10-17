@@ -1,4 +1,4 @@
-import { readdirSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
@@ -13,6 +13,7 @@ import { writeServiceWorker } from './build/sw'
 import { buildVersion } from './build/version'
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL, songPath } from './app/utils/site'
 import { chartSlugsOf, sitemapPaths } from './app/utils/sitemap'
+import { composerIndex } from '@chord-scale-maker/engine'
 
 /** the link preview image's alt text (the image is scripts/icons.mjs's) */
 const OG_IMAGE_ALT = `${SITE_NAME}: ${SITE_TAGLINE.toLowerCase()}`
@@ -20,10 +21,11 @@ const OG_IMAGE_ALT = `${SITE_NAME}: ${SITE_TAGLINE.toLowerCase()}`
 /** the engine package's folder (engine/ in the workspace): its charts/ is the library */
 const ENGINE_DIR = dirname(createRequire(import.meta.url).resolve('@chord-scale-maker/engine/package.json'))
 
-/** the pages search engines should find (server/routes/sitemap.xml.ts): the site's, then every library song */
+/** the pages search engines should find (server/routes/sitemap.xml.ts): the site's, the scales, the composers, then every library song */
 // (the library's charts, by file name: the config can't load the #charts glob)
 const CHART_SLUGS = chartSlugsOf(readdirSync(join(ENGINE_DIR, 'charts')))
-const SITEMAP_PATHS = sitemapPaths(CHART_SLUGS.map((s) => songPath(s)))
+const COMPOSER_SLUGS = composerIndex(CHART_SLUGS.map((slug) => ({ slug, text: readFileSync(join(ENGINE_DIR, 'charts', `${slug}.txt`), 'utf8') }))).map((c) => c.slug)
+const SITEMAP_PATHS = sitemapPaths(CHART_SLUGS.map((s) => songPath(s)), COMPOSER_SLUGS)
 
 /** dev: the engine's charts/ and chord_scales.json sit outside Vite's root, so it doesn't watch them by itself
  *  (quotes.json is watched by its own plugin) */

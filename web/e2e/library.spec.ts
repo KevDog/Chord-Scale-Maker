@@ -39,7 +39,7 @@ test('finds a tune by its composer, and the sheet carries the composer and the t
   await page.getByRole('link', { name: 'On Green Dolphin Street', exact: true }).click()
   const header = page.locator('section header').first()
   await expect(header).toContainText('Latin / swing · C · ABCD, 32 bars')
-  await expect(header.getByText('Bronisław Kaper')).toBeVisible()
+  await expect(header.getByRole('link', { name: 'Bronisław Kaper' })).toHaveAttribute('href', '/composers/bronislaw-kaper')
 })
 
 test('every page carries a hashed Content-Security-Policy', async ({ page }) => {

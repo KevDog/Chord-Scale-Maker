@@ -13,10 +13,19 @@ describe('library page', () => {
 
   it('links each tune title to its song page, with no separate editor link', async () => {
     const w = await mountSuspended(Library)
-    const links = w.findAll('tbody a')
+    const links = w.findAll('tbody td:first-child a')
     expect(links.length).toBe(LIBRARY.length)
     for (const c of LIBRARY) expect(links.find((a) => a.text() === c.title && a.attributes('href') === `/song/${c.slug}`)).toBeDefined()
     expect(w.findAll('a').filter((a) => /^Open .* in the editor$/.test(a.attributes('aria-label') ?? ''))).toEqual([])
+  })
+
+  it("links each composer in a tune's credit to their page (#164)", async () => {
+    const w = await mountSuspended(Library)
+    const row = w.findAll('tbody tr').find((r) => r.find('td a').attributes('href') === '/song/round-midnight')
+    expect(row?.findAll('td')[1]?.findAll('a').map((a) => [a.text(), a.attributes('href')])).toEqual([
+      ['Thelonious Monk', '/composers/thelonious-monk'],
+      ['Cootie Williams', '/composers/cootie-williams'],
+    ])
   })
 })
 
