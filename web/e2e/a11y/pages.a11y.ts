@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseSheet, expect, pentatonicPreset, pickOption, showPentatonics, staves, test } from '../fixtures'
+import { chooseSheet, expect, pentatonicPreset, pickOption, showLine, showPentatonics, staves, test } from '../fixtures'
 import { expectAccessible } from './axe'
 
 const SONG = '/song/autumn-leaves'
@@ -75,6 +75,16 @@ for (const theme of ['light', 'dark'] as const) {
       await pickOption(page, /^Pattern$/, 'Custom…')
       await page.getByLabel('Custom pattern').fill('+0')
       await expect(page.locator('#pattern-error')).toBeVisible()
+      await expectAccessible(page)
+    })
+
+    test('the Changes sheet’s Cells line, with the Cell listbox open', async ({ page }) => {
+      await page.goto(SONG)
+      if (theme === 'dark') await darkMode(page)
+      await showLine(page, 'Cells')
+      await expect(page.getByRole('button', { name: 'Cell', exact: true })).toBeVisible()
+      await page.getByRole('button', { name: 'Cell', exact: true }).click()
+      await expect(page.getByRole('listbox')).toBeVisible()
       await expectAccessible(page)
     })
 

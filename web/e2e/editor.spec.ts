@@ -370,7 +370,7 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
     return l && t ? { x: l.x - t.x, y: l.y - t.y } : null
   }
   const at = await place()
-  for (const mode of ['Guide Tones', 'Pentatonic'] as const) {
+  for (const mode of ['Guide Tones', 'Pentatonic', 'Cells'] as const) {
     await showLine(page, mode)
     const { rows, widths } = await layout()
     expect(rows, `Changes, ${mode} (${widths})`).toBeLessThanOrEqual(2)

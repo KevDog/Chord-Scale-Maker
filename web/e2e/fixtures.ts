@@ -135,12 +135,12 @@ export async function inControls(page: Page, steps: () => Promise<void>): Promis
   if (await dialog.isVisible()) await dialog.getByRole('button', { name: 'Close', exact: true }).click()
 }
 
-/** choose the Changes sheet's line mode (Off · Guide Tones · 7th Chords, or Pentatonic under the Pentatonic overlay), confirmed checked (retried: a click before hydration is lost) */
-export async function showLine(page: Page, name: 'Off' | 'Guide Tones' | '7th Chords' | 'Pentatonic'): Promise<void> {
+/** choose the Changes sheet's line mode (Off · Guide Tones · 7th Chords, or Pentatonic under the Pentatonic overlay; Cells with its flag), confirmed checked (retried: a click before hydration is lost) */
+export async function showLine(page: Page, name: 'Off' | 'Guide Tones' | '7th Chords' | 'Pentatonic' | 'Cells'): Promise<void> {
   await inControls(page, () => pickLine(page, name))
 }
 
-async function pickLine(page: Page, name: 'Off' | 'Guide Tones' | '7th Chords' | 'Pentatonic'): Promise<void> {
+async function pickLine(page: Page, name: 'Off' | 'Guide Tones' | '7th Chords' | 'Pentatonic' | 'Cells'): Promise<void> {
   const radio = page.getByRole('radio', { name, exact: true })
   await expect(async () => {
     if (!(await radio.isChecked())) await page.locator('label').filter({ has: radio }).click({ timeout: 1000 })

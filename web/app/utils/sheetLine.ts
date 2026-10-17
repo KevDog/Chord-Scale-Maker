@@ -1,27 +1,32 @@
-import { type ArpDirection, type ArpeggioPattern, type ChangesLineChoice, isArpeggioPattern, type PentatonicLeave, type SheetLine } from '@chord-scale-maker/engine'
+import { type ArpDirection, type ArpeggioPattern, type CellId, type ChangesLineChoice, isArpeggioPattern, isCellId, type PentatonicLeave, type ShareLine, type SheetLine } from '@chord-scale-maker/engine'
 import type { Overlay } from '~/utils/overlay'
 
 /** the Changes sheet's line as the toolbar picks it: a mode, and each mode's own choice */
-export type LineMode = 'off' | 'guide' | 'arpeggio'
+export type LineMode = 'off' | 'guide' | 'arpeggio' | 'cells'
 export type GuideFrom = 'third' | 'seventh'
 
 /** the line shown: the mode with its choice */
 export const sheetLineOf = (mode: LineMode, guide: GuideFrom, arpeggio: ArpeggioPattern): SheetLine =>
   mode === 'guide' ? guide : mode === 'arpeggio' ? arpeggio : 'off'
 
+/** the line as a share link carries it: the Cells line is cells:<id> */
+export const shareLineOf = (mode: LineMode, guide: GuideFrom, arpeggio: ArpeggioPattern, cells: CellId): ShareLine =>
+  mode === 'cells' ? `cells:${cells}` : sheetLineOf(mode, guide, arpeggio)
+
 /**
  * the line the Changes sheet draws: the stored line, but the arpeggio slot under the Pentatonic overlay is the
  * Pentatonic line (#284), each chord's labelled pentatonic in cells less `leave`, and under the Hexatonic overlay the
  * Triad pair line (#325), each chord's labelled pair a triad at a time; both going `dir` (its pattern kept for a chord with none)
  */
-export function changesLineOf(c: Readonly<{ mode: LineMode; guide: GuideFrom; arpeggio: ArpeggioPattern; overlay: Overlay; leave: PentatonicLeave; dir: ArpDirection }>): ChangesLineChoice {
+export function changesLineOf(c: Readonly<{ mode: LineMode; guide: GuideFrom; arpeggio: ArpeggioPattern; overlay: Overlay; leave: PentatonicLeave; dir: ArpDirection; cells: CellId }>): ChangesLineChoice {
+  if (c.mode === 'cells') return { kind: 'cells', id: c.cells }
   if (c.mode === 'arpeggio' && c.overlay === 'pentatonic') return { kind: 'pentatonic', leave: c.leave, dir: c.dir, arpeggio: c.arpeggio }
   if (c.mode === 'arpeggio' && c.overlay === 'hexatonic') return { kind: 'triad-pair', dir: c.dir, arpeggio: c.arpeggio }
   return sheetLineOf(c.mode, c.guide, c.arpeggio)
 }
 
-/** the Line control's modes: the arpeggio slot reads Pentatonic under the Pentatonic overlay (#284), Triad pair under the Hexatonic (#325), 7th Chords otherwise */
-export function lineModes(overlay: Overlay): readonly { value: LineMode; label: string; title: string }[] {
+/** the Line control's modes: the arpeggio slot reads Pentatonic under the Pentatonic overlay (#284), Triad pair under the Hexatonic (#325), 7th Chords otherwise; Cells (#298) is last, with its flag */
+export function lineModes(overlay: Overlay, cells: boolean): readonly { value: LineMode; label: string; title: string }[] {
   return [
     { value: 'off', label: 'Off', title: 'No line: slashes' },
     { value: 'guide', label: 'Guide Tones', title: "A line that starts on the first chord's 3rd or 7th and moves to the nearest guide tone of each chord" },
@@ -30,11 +35,16 @@ export function lineModes(overlay: Overlay): readonly { value: LineMode; label: 
       : overlay === 'hexatonic'
         ? { value: 'arpeggio', label: 'Triad pair', title: "Each chord's triad pair, as its label shows it, a triad at a time: quarters, eighths or sixteenths as the bar has one, two or more chords" }
         : { value: 'arpeggio', label: '7th Chords', title: "Each chord's four chord tones, arpeggiated: quarters, eighths or sixteenths as the bar has one, two or more chords" },
+    ...(cells ? [{ value: 'cells' as const, label: 'Cells', title: "A melodic cell on each chord, two beats each, after Randy Vincent's Building Solo Lines From Cells" }] : []),
   ]
 }
 
 /** a line (a share link's) as the mode and the choice it sets */
-export function lineChoiceOf(line: SheetLine | undefined): Readonly<{ mode: LineMode; guide?: GuideFrom; arpeggio?: ArpeggioPattern }> {
+export function lineChoiceOf(line: ShareLine | undefined): Readonly<{ mode: LineMode; guide?: GuideFrom; arpeggio?: ArpeggioPattern; cells?: CellId }> {
+  if (typeof line === 'string' && line.startsWith('cells:')) {
+    const id = line.slice(6)
+    return isCellId(id) ? { mode: 'cells', cells: id } : { mode: 'off' }
+  }
   if (line === 'third' || line === 'seventh') return { mode: 'guide', guide: line }
   if (isArpeggioPattern(line)) return { mode: 'arpeggio', arpeggio: line }
   return { mode: 'off' }

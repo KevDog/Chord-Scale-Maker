@@ -96,7 +96,7 @@
                     <UiLabel class="pl-3">Line</UiLabel>
                     <!-- the detail opens beneath the modes, so the Line group keeps its width and place (#187) -->
                     <div class="flex flex-col gap-2">
-                      <SegmentedControl v-model="lineMode" legend="Line" name="line-mode" :options="lineModes(overlay)" />
+                      <SegmentedControl v-model="lineMode" legend="Line" name="line-mode" :options="lineModes(overlay, cellsOn)" />
                       <EaseReveal :show="lineMode === 'guide'">
                         <UiListbox v-model="guideLine" class="w-full" aria-label="Guide tone line">
                           <template #selected="{ value }"><UiListboxLabel>{{ guideLabel(value) }}</UiListboxLabel></template>
@@ -120,6 +120,18 @@
                         <UiListbox v-model="arpeggio" class="w-full" aria-label="Arpeggio pattern">
                           <template #selected="{ value }"><UiListboxLabel>{{ ARPEGGIO_LABELS[value] }}</UiListboxLabel></template>
                           <UiListboxOption v-for="p in ARPEGGIO_PATTERNS" :key="p" :value="p"><UiListboxLabel>{{ ARPEGGIO_LABELS[p] }}</UiListboxLabel></UiListboxOption>
+                        </UiListbox>
+                      </EaseReveal>
+                      <!-- the Cells line (#298): a system (A and B in turn) or one cell in every slot -->
+                      <EaseReveal :show="lineMode === 'cells' && shows('cells')">
+                        <UiListbox v-model="cells" class="w-full" aria-label="Cell">
+                          <template #selected="{ value }"><UiListboxLabel>{{ cellLabel(value) }}</UiListboxLabel></template>
+                          <UiListboxGroup label="Systems">
+                            <UiListboxOption v-for="id in SYSTEM_IDS" :key="id" :value="id"><UiListboxLabel>{{ cellLabel(id) }}</UiListboxLabel></UiListboxOption>
+                          </UiListboxGroup>
+                          <UiListboxGroup label="Cells">
+                            <UiListboxOption v-for="c in SINGLE_CELLS" :key="c.id" :value="c.id"><UiListboxLabel>{{ cellLabel(c.id) }}</UiListboxLabel></UiListboxOption>
+                          </UiListboxGroup>
                         </UiListbox>
                       </EaseReveal>
                     </div>
@@ -191,7 +203,7 @@
     </template>
 
     <script setup lang="ts">
-    import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, formatPattern, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
+    import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, formatPattern, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
     import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
@@ -230,6 +242,7 @@
     const lineMode = defineModel<LineMode>('lineMode', { default: 'off' })
     const guideLine = defineModel<GuideFrom>('guideLine', { default: 'third' })
     const arpeggio = defineModel<ArpeggioPattern>('arpeggio', { default: 'up-root' })
+    const cells = defineModel<CellId>('cells', { default: '3rd-3rd' })
     const arpNotes = defineModel<ArpNotes>('arpNotes', { default: 'seventh' })
     const arpDir = defineModel<ArpDirection>('arpDir', { default: 'up' })
     const pattern = defineModel<string>('pattern', { default: '+1 +1 +1 −2' })
@@ -295,6 +308,8 @@
     ] as const
     const guideLabel = (v: GuideFrom): string => GUIDE_LINES.find((g) => g.value === v)?.label ?? ''
     const patternsOn = useFeature('patterns')
+    const cellsOn = useFeature('cells')
+    const SYSTEM_IDS = Object.keys(CELL_SYSTEMS) as (keyof typeof CELL_SYSTEMS)[]
     const sheetLabel = (v: SheetKind): string => SHEETS.find((s) => s.value === v)?.label ?? ''
     const part = computed(() => partFor(instrument.value))
     </script>

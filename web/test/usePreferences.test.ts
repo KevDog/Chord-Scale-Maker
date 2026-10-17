@@ -60,6 +60,19 @@ describe('usePreferences', () => {
     expect(Object.keys(p)).not.toContain('fromThird')
   })
 
+  it('remembers the Cells line: the mode and the cell, 3rd to 3rd until chosen, and rejects an unknown cell', async () => {
+    const p = prefs()
+    expect(p.cells.value).toBe('3rd-3rd')
+    p.lineMode.value = 'cells'
+    p.cells.value = '1-2-3-5'
+    await nextTick()
+    expect([localStorage.getItem('csm-line'), localStorage.getItem('csm-cells')]).toEqual(['cells', '1-2-3-5'])
+    const again = prefs()
+    expect([again.lineMode.value, again.cells.value]).toEqual(['cells', '1-2-3-5'])
+    localStorage.setItem('csm-cells', '9-9-9-9')
+    expect(prefs().cells.value).toBe('3rd-3rd')
+  })
+
   it('falls back from stored values it does not know, and ignores the old keys', () => {
     localStorage.setItem('csm-line', 'both')
     localStorage.setItem('csm-guide-line', 'off')
@@ -110,6 +123,16 @@ describe('linkPreferences', () => {
     await nextTick()
     expect(localStorage.getItem('csm-line')).toBe('arpeggio')
     expect(localStorage.getItem('csm-guide-line')).toBe('seventh')
+  })
+
+  it("takes a link's cells line over your own, for this visit only", async () => {
+    localStorage.setItem('csm-cells', '1-3-5-7')
+    const p = linked({ line: 'cells:5-3-2-1' })
+    expect([p.lineMode.value, p.cells.value]).toEqual(['cells', '5-3-2-1'])
+    expect(linked({ line: 'third' }).cells.value).toBe('1-3-5-7')
+    p.cells.value = '1-2-3-5'
+    await nextTick()
+    expect(localStorage.getItem('csm-cells')).toBe('1-3-5-7')
   })
 
   it("reads a link's spelling: its start note, from the root, or the key when it has no note", () => {

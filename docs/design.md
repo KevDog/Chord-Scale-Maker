@@ -623,6 +623,18 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   (`aria-label="Triad pair direction"`) is `csm-arp-dir`, shared as `arpDir`; no Leave out. Print: lines a page as for
   an arpeggio line.
 
+### Cells line on Changes (#298, flag `cells`)
+
+- **What:** a fourth Line mode, **Cells** (`LineMode` `cells`, after 7th Chords; `lineModes(overlay, cells)` adds it only
+  with the flag), whatever the Superimpose: a four-note cell on each chord, a cell per two beats (`engine/src/cells.ts`,
+  after Randy Vincent's *Building Solo Lines From Cells*). `changesLineOf` gives `{ kind: 'cells', id }`.
+- **UI:** a **Cell** listbox (`aria-label="Cell"`) beneath the modes while the mode is Cells, in groups Systems (Root to
+  root, 3rd to 3rd, 3rd to 5th, 3rd to root: cells A and B in turn) and Cells (ten single cells, every slot the same).
+  `CONTROL_TIERS.cells` is `intermediate`. The rail keeps two rows with the fourth mode (`editor.spec.ts`).
+- **Preferences:** `csm-line` also takes `cells`; `csm-cells` is a `CellId` (`3rd-3rd`). Share links carry
+  `line: 'cells:<id>'` (dropped if the id is unknown). A stored `cells` mode with the flag off reads as Off.
+  Aria-label `; cells: C5 D5 E♭5 G5 | …`; the report's `guides` reads `cells: <label>`.
+
 ### Pentatonics on Changes ([spec](superpowers/specs/2026-10-13-pentatonic-ladders-design.md))
 
 - **Ladder** (`engine/src/pentatonics.ts`): a key area's 12 minor pentatonics round the circle of fifths from home

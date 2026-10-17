@@ -97,6 +97,12 @@ describe('cells line', () => {
     expect(bar.filter((n) => n.beat < 1).map((n) => n.beats)).toEqual([0.25, 0.25, 0.25, 0.25])
     expect(bar.filter((n) => n.beat >= 1).map((n) => n.beats)).toEqual([0.5, 0.5, 0.5, 0.5, 0.5, 0.5])
   })
+  it('a G7 of three beats from beat 3 plays its A cell cut after two eighths, and the cut ends in the next bar', () => {
+    const { bars } = cellsVoices(seq(['C7', 2], ['G7', 3]), CONCERT, 4, null, line('3rd-3rd'))
+    expect(noteNames(bars.get(0)).slice(4)).toEqual(['B', 'D', 'G', 'F']) // the chain's B cell on beats 3 and 4
+    expect(noteNames(bars.get(1))).toEqual(['B', 'A']) // then the next A cell, cut with the chord, on beat 1 of the next bar
+    expect(bars.get(1)?.map((n) => [n.beat, n.beats])).toEqual([[0, 0.5], [0.5, 0.5]])
+  })
   it('3/4, one chord a bar: six eighths, the second cell turned back', () => {
     const { bars } = cellsVoices(seq(['G7', 3]), CONCERT, 3, null, line('1-3-5-7'))
     expect(noteNames(bars.get(0))).toEqual(['G', 'B', 'D', 'F', 'D', 'B'])
