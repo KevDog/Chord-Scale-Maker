@@ -316,8 +316,11 @@
             not to the intro. <UiCode>outside: yes</UiCode> does the same for a section of any name.
           </li>
           <li>
-            <UiCode>time: 3/4</UiCode> makes it a waltz (<UiCode>2/4</UiCode> and <UiCode>4/4</UiCode> work too; 4/4 is
-            what you get without it). With a guide tone line on, the Changes sheet writes its guide tones in it.
+            <UiCode>time: 3/4</UiCode> makes it a waltz (<UiCode>2/4</UiCode>, <UiCode>4/4</UiCode>, <UiCode>5/4</UiCode>
+            and <UiCode>6/4</UiCode> work too; 4/4 is what you get without it). With a guide tone line on, the Changes
+            sheet writes its guide tones in it. Under a <UiCode>section:</UiCode> line, <UiCode>time:</UiCode> sets that
+            section's metre, and <UiCode>@time 11 2/4</UiCode> changes it from bar 11 to the section's end (follow it with
+            <UiCode>@time 12 4/4</UiCode> for a single 2/4 bar). The bar menu's Bar in 2/4 … 6/4 does it for you.
           </li>
           <li><UiCode>title:</UiCode> and <UiCode>subtitle:</UiCode> set the heading. <UiCode>composer:</UiCode>, <UiCode>style:</UiCode>, <UiCode>key:</UiCode> and <UiCode>form:</UiCode> fill in the line under it (the subtitle, if there is one, takes the style's place), <UiCode>aka:</UiCode> gives the tune's other titles (a <UiCode>;</UiCode> between them; the library search finds them too), <UiCode>kind:</UiCode> says whether the chart is a <UiCode>tune</UiCode> (without one), a <UiCode>form</UiCode> with no composer (F Blues, Rhythm Changes) or an <UiCode>exercise</UiCode>, and lines starting with <UiCode>#</UiCode> are notes to yourself. A row can end in a note too, after a space and a <UiCode>#</UiCode>: the library's say why each scale was chosen.</li>
           <li>Anything I can't make sense of is listed under the source, with the line number.</li>

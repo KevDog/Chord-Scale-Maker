@@ -5,6 +5,7 @@ style: Blues
 key: Cm
 context: modal
 form: A
+time: 6/4
 # analysis: 2026-10-11, rules v1; C minor, modal
 
 # bar | chord   | scale

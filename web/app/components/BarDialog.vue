@@ -51,14 +51,14 @@
 </template>
 
 <script setup lang="ts">
-import { parseBarLine } from '@chord-scale-maker/engine'
+import { type Beats, parseBarLine } from '@chord-scale-maker/engine'
 
 /**
  * The sheet editor's structure dialogs (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md §1.4, §1.5): a
  * new section, a new section from a bar, a jump, pasted bars, a repeat of a section and a section's new name. It
  * only collects the fields; the editor makes the change and passes back why it couldn't (`error`).
  */
-const props = defineProps<{ kind: BarDialogKind | null; sections: readonly string[]; section: string; bar: number; beats: 2 | 3 | 4; error: string; nav?: string }>()
+const props = defineProps<{ kind: BarDialogKind | null; sections: readonly string[]; section: string; bar: number; beats: Beats; error: string; nav?: string }>()
 const emit = defineEmits<{ close: []; submit: [value: BarDialogSubmit] }>()
 
 const TITLES: Readonly<Record<BarDialogKind, string>> = {

@@ -29,6 +29,8 @@ const bar = (chords: readonly ChangesChord[], voice: readonly GuideNote[]): Chan
   at: { section: chords[0]?.at?.section ?? 'A', bar: chords[0]?.at?.bar ?? '1' },
   repeatOf: null,
   keySig: null,
+  beats: 4,
+  timeSignature: null,
   chords,
   marker: '',
   keyArea: '',
@@ -43,7 +45,7 @@ const bar = (chords: readonly ChangesChord[], voice: readonly GuideNote[]): Chan
 })
 const note = (letter: Letter, midi: number, beat: number): GuideNote => ({ pitch: { letter, acc: 0, midi }, beat, beats: 2, tie: false, tiedIn: false, accidental: null })
 const mount = (line: ChangesLine) =>
-  mountSuspended(ChangesSystem, { props: { line, first: true, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const } })
+  mountSuspended(ChangesSystem, { props: { line, first: true, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const } })
 const labelsOf = (el: Element): string[] => [...el.children].map((m) => m.textContent ?? '')
 
 describe('ChangesSystem guide tone labels', () => {
@@ -78,7 +80,7 @@ describe('ChangesSystem chords while editing', () => {
   })
 
   it('makes each chord a button named for its place, asking to edit its chart line', async () => {
-    const w = await mountSuspended(ChangesSystem, { props: { line, first: true, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, editable: true, selectedLine: 5 } })
+    const w = await mountSuspended(ChangesSystem, { props: { line, first: true, barsPerLine: 4, numerals: false, scales: false, editable: true, selectedLine: 5 } })
     const buttons = w.findAll('button')
     expect(buttons.map((b) => b.attributes('aria-label'))).toEqual(['Edit Dm7, A bar 3', 'Edit A7 (concert G7), A bar 3'])
     expect(buttons[1]?.classes()).toContain('ring-2') // selected in the bar editor
@@ -91,7 +93,7 @@ describe('ChangesSystem as the editor', () => {
   const doc = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n1 | G7\n').value
   const at = (c: ChangesChord, line: number): ChangesChord => ({ ...c, at: { section: 'A', bar: '1' }, line, written: c.text })
   const line = (): ChangesLine => ({ bars: [bar([at(chord(0, 'Dm7', ''), 2), at(chord(2, 'G7', ''), 3)], [])], sectionEnd: false })
-  const base = { first: true, beats: 4 as const, barsPerLine: 4, numerals: true, scales: true, editable: true, doc }
+  const base = { first: true, barsPerLine: 4, numerals: true, scales: true, editable: true, doc }
 
   it('renders each chord as a SheetChord while editable, with the one being edited a field', async () => {
     const w = await mountSuspended(ChangesSystem, { props: { ...base, line: line(), editing: { kind: 'chord', line: 3, at: { section: 'A', bar: '1' } } } })
@@ -241,7 +243,7 @@ describe('ChangesSystem pentatonic ladders', () => {
     const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n\nsection: B\nbars: 3\n1 | Cmaj7').value
     const plan = { kind: 'pentatonic', bySection: { B: { rung: 5, side: 'flat' as const } }, fallback: { rung: 0, side: 'flat' as const }, counts: true }
     const line = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)[1]!
-    const w = await mountSuspended(ChangesSystem, { props: { line, part: CONCERT, first: true, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, overlay: plan, counted: true }, attachTo: document.body })
+    const w = await mountSuspended(ChangesSystem, { props: { line, part: CONCERT, first: true, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, overlay: plan, counted: true }, attachTo: document.body })
     const label = w.find('[data-slot="pentatonic"] [data-section="B"] button')
     expect(label.text()).toBe('B♭m♪ 1')
     await label.trigger('click')
@@ -254,7 +256,7 @@ describe('ChangesSystem pentatonic ladders', () => {
 
   const mountLine = async (text: string, plan: PentatonicPlan, index: number) => {
     const lines = showPentatonics(buildChanges(parseChart(text).value, CONCERT, 4, false, 'off', undefined, plan).lines)
-    return mountSuspended(ChangesSystem, { props: { line: lines[index]!, part: CONCERT, first: index === 0, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, overlay: plan, counted: plan.counts }, attachTo: document.body })
+    return mountSuspended(ChangesSystem, { props: { line: lines[index]!, part: CONCERT, first: index === 0, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, overlay: plan, counted: plan.counts }, attachTo: document.body })
   }
   const slip: PentatonicPlan = { kind: 'pentatonic', bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
   const AB = 'title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n\nsection: B\nbars: 3\n1 | Dm7\n1 | G7\n2 | Cmaj7'
@@ -280,7 +282,7 @@ describe('ChangesSystem interface levels', () => {
   const doc = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n1 | G7\n').value
   const at = (c: ChangesChord, line: number): ChangesChord => ({ ...c, at: { section: 'A', bar: '1' }, line, written: c.text })
   const withReason = (): ChangesLine => ({ bars: [bar([{ ...at(chord(2, 'G7', ''), 3), numeral: 'V7', scale: 'G Mixolydian', reason: 'the V of C', rule: 'D1' }], [])] })
-  const base = { first: true, beats: 4 as const, barsPerLine: 4, numerals: true, scales: true, editable: true, doc }
+  const base = { first: true, barsPerLine: 4, numerals: true, scales: true, editable: true, doc }
   const level = (l: 'essentials' | 'intermediate' | 'everything') => {
     useInterface().level.value = l
   }
@@ -317,7 +319,7 @@ describe('ChangesSystem pentatonic ladder by interface level', () => {
     const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n\nsection: B\nbars: 3\n1 | Cmaj7').value
     const plan = { kind: 'pentatonic', bySection: { B: { rung: 5, side: 'flat' as const } }, fallback: { rung: 0, side: 'flat' as const }, counts: true }
     const line = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)[1]!
-    const w = await mountSuspended(ChangesSystem, { props: { line, first: true, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, overlay: plan, counted: true } })
+    const w = await mountSuspended(ChangesSystem, { props: { line, first: true, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, overlay: plan, counted: true } })
     expect(w.findAllComponents({ name: 'PentatonicLadder' })).toHaveLength(0)
     expect(w.find('[data-slot="pentatonic"] [data-section="B"]').text()).toContain('B♭m')
   })
@@ -327,7 +329,7 @@ describe('ChangesSystem hexatonic row', () => {
   const HEX = { kind: 'hexatonic' } as const
   const mountHex = (text: string) => {
     const line = showHexatonics(buildChanges(parseChart(text).value, CONCERT, 4, false, 'off', undefined, HEX).lines)[0]!
-    return mountSuspended(ChangesSystem, { props: { line, first: true, beats: 4 as const, barsPerLine: 4, numerals: true, scales: true, clef: 'treble' as const, overlay: HEX } })
+    return mountSuspended(ChangesSystem, { props: { line, first: true, barsPerLine: 4, numerals: true, scales: true, clef: 'treble' as const, overlay: HEX } })
   }
 
   it('labels each chord with its pair where it changes, blank where the scale has none, and draws no pentatonic row', async () => {
@@ -342,7 +344,7 @@ describe('ChangesSystem hexatonic row', () => {
     const doc = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Cmaj7').value
     const plan: PentatonicPlan = { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false }
     const line = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)[0]!
-    const props = { line, first: true, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const }
+    const props = { line, first: true, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const }
     const pent = await mountSuspended(ChangesSystem, { props: { ...props, overlay: plan } })
     expect(pent.find('[data-slot="hexatonic"]').exists()).toBe(false)
     expect(pent.find('[data-slot="pentatonic"]').exists()).toBe(true)
@@ -360,7 +362,7 @@ describe('ChangesSystem chord picks (#303)', () => {
   const mountPlan = (text: string, plan: OverlayPlan, part: Part = CONCERT, index = 0) => {
     const built = buildChanges(parseChart(text).value, part, 4, false, 'off', undefined, plan).lines
     const lines = plan.kind === 'hexatonic' ? showHexatonics(built) : showPentatonics(built)
-    return mountSuspended(ChangesSystem, { props: { line: lines[index]!, part, first: true, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, overlay: plan }, attachTo: document.body })
+    return mountSuspended(ChangesSystem, { props: { line: lines[index]!, part, first: true, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, overlay: plan }, attachTo: document.body })
   }
   const open = async (w: Awaited<ReturnType<typeof mountPlan>>, sel: string) => {
     await w.find(sel).trigger('click')

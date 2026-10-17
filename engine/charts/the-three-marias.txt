@@ -4,9 +4,10 @@ style: Medium funk ballad
 key: Ab
 form: AABCDDEFG, 76 bars
 context: modal
+time: 6/4
 source: 
 # analysis: 2026-10-12, rules v1; Ab, modal
-# book: in 6/4 (quarter = 94); each bar is six beats (6/4 is not supported, written as 4/4); D1 bar 3, D2 bar 3 and F bar 15 are 3/4 bars
+# book: quarter = 94
 # the book prints separate bass and keyboard parts; where the lead sheet compresses a passage, the bar count follows them
 # "Ab bass": the bass alone on Ab (the keyboard part marks it N.C.) until Ab Eb7sus/Bb and the last chord on the last beats
 
@@ -106,7 +107,7 @@ section: D1
 2  | Ab          # modal major: Lydian
 2  | Eb7sus4/Bb  # static sus: Mixolydian
 2  | E/F#        # modal major: Lydian
-# bar 3: a 3/4 bar, E/F# held
+# bar 3: E/F# held
 4  | BMaj9       # modal major: Lydian
 # book: Bmaj9(add 13)
 4  | AMaj7/B     # modal major: Lydian
@@ -116,6 +117,8 @@ section: D1
 5  | Am9         # modal minor: Dorian
 6  | D/E         # modal major: Lydian
 7  | Ab/C        # modal major: Lydian
+@time 3 3/4
+@time 4 6/4
 
 section: D2
 copy: D1
@@ -172,7 +175,8 @@ section: F
 14 | Ab/C        # modal major: Lydian
 14 | Abm/Cb      # modal minor: Dorian
 15 | Bb7         # modal: its own mode
-# bar 15: a 3/4 bar; Bb7 enters on the last beat of bar 14 and is held through it
+# bar 15: Bb7 enters on the last beat of bar 14 and is held through it
+@time 15 3/4
 
 section: G
 bars: 7

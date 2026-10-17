@@ -59,15 +59,16 @@ section.
 | `bars: N` (in a section) | The section's length, when its last chord is held past its last written bar (`bars: 8` with the last chord on bar 7). Without it, the section ends with its last written bar. |
 | `key: KEY` (in a section) | The section's key area, from its bar 1 to its end, where the analyser's own key areas would be wrong; then the analysis finds the key again. It never writes one. |
 | `@key BAR KEY` | A key change inside a section, from that bar to the section's end (`@key 5 D`). |
-| `copy: SRC` (in a section) | The section repeats section `SRC` (above it): its rows, and its `key:`, `time:`, `context:`, `bars:` and key changes, unless this section sets its own `key:` (which replaces the source's key changes too). It has no rows of its own; it may have its own endings, marks and nav. |
+| `copy: SRC` (in a section) | The section repeats section `SRC` (above it): its rows, and its `key:`, `time:`, `context:`, `bars:`, key and metre changes, unless this section sets its own `key:` or `time:` (which replaces the source's changes of it too). It has no rows of its own; it may have its own endings, marks and nav. |
 | `outside: yes` (in a section) | The section is outside the form, as an `Intro` or `Coda` is: before the form if it comes before the first section in it, after it otherwise. |
-| `time: 3/4` (in a section) | The section's metre. Kept and carried by `copy:`, but drawn in the song's metre until #235 (the parser says so). |
+| `time: 3/4` (in a section) | The section's metre, from its bar 1; carried by `copy:`. |
+| `@time BAR METRE` | A metre change inside a section, from that bar to the section's end (`@time 11 2/4`, then `@time 12 4/4` for one 2/4 bar). |
 | `context: modal` | How the analyser reads the chart: `functional` (cadences and key areas, the usual), `modal` (each chord its own mode, no key areas) or `blues` (the I7 and IV7 of a blues by their degree, no key areas; the I is `key:`, else bar 1). Without it the analyser decides by detection, and says which in its report; write it where the detection is wrong or borderline (`npm run analyse -- … --ambiguous` names those). `minor:` is reserved: accepted and ignored. |
 | `context:` (in a section) / `@context BAR CONTEXT` | The context for a section, or from a bar to its section's end. Parsed and checked; the analyser does not use them yet (its report says so) and keeps the chart's context. |
 | `@ending N FIRST [LAST]` | A 1st/2nd ending (volta) over the section's bars `FIRST`..`LAST`; the section is played twice on the Changes sheet — repeat signs with the two endings bracketed. Write the two endings as sequential bars (e.g. 7–8 then 9–10). |
 | `@segno BAR` / `@coda BAR` | A segno (𝄋) or coda (⊕) glyph above that bar on the Changes sheet (the coda marks both the "to the coda" departure and the coda arrival). |
 | `@nav BAR TEXT` | A navigation instruction above that bar on the Changes sheet: `D.S. al Coda`, `D.C. al Fine`, `To Coda`, `Fine`. |
-| `time: 3/4` | The song's metre: `2/4`, `3/4` or `4/4` (the default). The Changes sheet writes its slashes and guide tones in it (the waltzes in the library say `3/4`). |
+| `time: 3/4` | The song's metre: `2/4`, `3/4`, `4/4` (the default), `5/4` or `6/4`. The Changes sheet writes its slashes and guide tones in it (the waltzes in the library say `3/4`), with a time signature wherever a bar's metre changes. |
 | `Intro`, `Coda`, `Tag`, `Ending` sections | Outside the form (`Tag2` too): they print where they stand, but the form's turnaround goes back to its own bar 1, and each is analysed and timed on its own. `form:` counts only the form. |
 | `title:`, `subtitle:` | The heading on each page. |
 | `composer:`, `style:`, `key:`, `form:`, `source:` | About the tune: who wrote it, the feel (`Ballad`, `Medium up`, `Latin`…), the key (`Eb`, `Fm`), the form (`AABA, 32 bars`) and where the chart came from. Kept with the chart, not shown; `key:` is the analyser's starting point. |

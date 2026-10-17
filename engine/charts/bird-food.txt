@@ -7,7 +7,7 @@ source:
 # analysis: 2026-10-12, rules v1; Bb
 
 # the intro is a melodic figure with no chords (4 bars N.C.)
-# the A's 1st ending (bar 10) is a 2/4 bar; the C is the A with its 2nd ending
+# the C is the A with its 2nd ending
 # solos in Bb, disregarding the form (as printed); the head ends at the coda
 # bar | chord
 
@@ -30,6 +30,8 @@ bars: 12
 11 | Bb6    # tonic: the 4th is in the key
 @ending 1 10
 @ending 2 11 12
+@time 10 2/4
+@time 11 4/4
 
 section: B
 bars: 8

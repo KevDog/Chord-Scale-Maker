@@ -7,7 +7,6 @@ source:
 # analysis: 2026-10-17, rules v1; G
 # book: head A–D: March-like (quarter = 90), B Freely, D a tempo, ending at (fine) on C6/9.
 # Solos: Med. Ballad (quarter = 69) on E F G H (F "Swing (in 2)", H "in 4"; F and G may also be swung in 4); after solos, D.C. al fine
-# 4/4 except B bar 3 and C bar 3, in 3/4
 # the book's Ma13 chords are written Maj9 (FMa13 → FMaj9), 13sus → 9sus4, mi11(b5) → m7b5, B(add #11)/F# → B/F#
 
 # bar | chord
@@ -48,7 +47,6 @@ section: B
 # book: A13sus
 # area: D minor (B 2 – C 1)
 2  | A7b9b5      # V7 of D minor: the b9 is in the key, #11 and 13 from the symbol
-# bar 3: 3/4
 3  | Dm11        # tonic minor: Dorian by convention
 3  | A/C#        # a non-tonic major chord: Lydian
 3  | Dm11/C      # tonic minor: Dorian by convention
@@ -64,6 +62,8 @@ section: B
 6  | C13b9       # extended dominant: V7 of Fsus; b9 from the symbol
 7  | Fsus        # static sus: Mixolydian
 7  | A9/E        # V7 in D minor, not resolving: the b13 is in the key, the 9 from the symbol
+@time 3 3/4
+@time 4 4/4
 
 section: C
 1  | Ebm11       # a borrowed minor chord: Dorian, its own key
@@ -71,7 +71,6 @@ section: C
 # area: Bb minor (C 2–6)
 2  | Cm11        # ii of the ii–V to Bb minor
 2  | F7b9b5      # V7 of Bb minor: the b9 is in the key, #11 and 13 from the symbol
-# bar 3: 3/4
 3  | Bbm11       # tonic minor: Dorian by convention
 3  | F/A         # a non-tonic major chord: Lydian
 3  | Bbm11/Ab    # tonic minor: Dorian by convention
@@ -85,6 +84,8 @@ section: C
 # area: G major (C 6 – E 10)
 6  | Am7         # ii of the ii–V to G
 6  | D7          # V7 of G: natural tensions
+@time 3 3/4
+@time 4 4/4
 
 section: D
 1  | G           # tonic: the 4th is in the key

@@ -7,7 +7,6 @@ form: AA, 38 bars
 source: 
 # analysis: 2026-10-12, rules v1; F# minor
 # form: A (8 bars) with a 1st ending of 8 bars and a 2nd ending of 14 bars
-# bar 4 is in 5/4; the rest is in 3/4
 # the book: "Chords in parentheses are used for solos."
 
 # bar | chord
@@ -19,7 +18,7 @@ bars: 32
 # alt (solos): bar 2 (B9)
 3  | F#m11        # tonic minor: Dorian by convention
 4  | Ebm11        # a borrowed minor chord: Dorian, its own key
-# book: Ebm13 (bar 4, in 5/4, a piano figure)
+# book: Ebm13 (bar 4, a piano figure)
 5  | AMaj9        # bIII of F# minor: the relative major itself
 6  | E/F#         # ♭VII of F♯ minor: E major, the notes of F♯ Dorian
 7  | Bm7b5        # ivø7 in F# minor: Locrian, its own mode (the chord is outside the key)
@@ -48,3 +47,5 @@ bars: 32
 # bars 28–30: GbMaj9 held
 30 | GbMaj9
 @ending 2 17 30
+@time 4 5/4
+@time 5 3/4

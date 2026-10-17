@@ -120,6 +120,11 @@ const pos = computed((): GridPos | null => {
   }
   return posOfLine(view.value, props.line)
 })
+/** the beats of the bar the chord is in: at most a chord a beat (#235) */
+const barBeats = computed(() => {
+  const p = pos.value
+  return (p && view.value.sections.find((s) => s.name === p.section)?.bars.find((b) => b.bar === p.bar)?.beats) ?? view.value.beats
+})
 /** the bar's chords as they are */
 const barChords = computed((): string[] => (pos.value ? chordsAfterTyping(view.value, pos.value, props.adding ? '' : props.text, false) : []))
 /** the section a repeat's chord is written in (the drawn section differs): changing it changes that section */
@@ -262,8 +267,8 @@ function onKey(e: KeyboardEvent): void {
   if (e.key === ' ') {
     e.preventDefault()
     if (!commit()) return
-    if (chordsWith(draft.value).length >= view.value.beats) {
-      emit('said', barFull(view.value.beats))
+    if (chordsWith(draft.value).length >= barBeats.value) {
+      emit('said', barFull(barBeats.value))
       finish('stay')
       return
     }

@@ -3,9 +3,10 @@ composer: Richie Beirach
 style: Medium swing
 key: Bbm
 form: A, 13 bars
+time: 6/4
 source: 
 # analysis: 2026-10-12, rules v1; Bb minor
-# book: Med. Swing 6/4 (quarter = 124), as played by John Abercrombie; each bar is six beats (6/4 is not supported, written as 4/4)
+# book: Med. Swing (quarter = 124), as played by John Abercrombie
 # book: head is played twice before and after solos
 
 # bar | chord

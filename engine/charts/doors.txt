@@ -59,9 +59,10 @@ section: C
 @nav 12 D.C. al Coda
 
 section: Coda
+time: 6/4
 bars: 4
 # play the head (ABC) twice, then solo on the form; after solos, D.C. al Coda
-# Coda bar 1 is in 6/4, vamped till cue (melody the first four times and the last); bars 2–3 back in 4/4, rall.
+# Coda bar 1 vamped till cue (melody the first four times and the last); bars 2–3, rall.
 1  | C/Ab         # tonic: the 4th is in the key
 1  | B/C#         # a non-tonic major chord: Lydian
 1  | Bb/Gb        # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
@@ -69,3 +70,4 @@ bars: 4
 2  | Ab/E         # ♭VI, borrowed from C minor: Lydian (its ♯11 is in the key)
 2  | GMaj7/A      # a non-tonic major chord: Lydian
 3  | F#/D         # a non-tonic major chord: Lydian
+@time 2 4/4
