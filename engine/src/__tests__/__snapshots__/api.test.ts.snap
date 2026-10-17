@@ -3,6 +3,8 @@
 exports[`exports the same names 1`] = `
 [
   "ALIASES",
+  "APPROACHES",
+  "APPROACH_LABELS",
   "ARPEGGIO_LABELS",
   "ARPEGGIO_PATTERNS",
   "ARP_DIRECTIONS",
@@ -163,6 +165,7 @@ exports[`exports the same names 1`] = `
   "instrumentLabel",
   "intervalLabel",
   "intervalLabels",
+  "isApproach",
   "isArpDirection",
   "isArpNotes",
   "isArpeggioPattern",
