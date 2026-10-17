@@ -1,4 +1,4 @@
-import { chooseSheet, expect, openEditor, pickOption, setScaleLevel, sheetChord, showApproach, showLine, showPentatonics, staves, test, writeChart } from './fixtures'
+import { chooseSheet, closePentatonicOptions, expect, openEditor, pickOption, setScaleLevel, sheetChord, showApproach, showLine, showPentatonics, staves, test, writeChart } from './fixtures'
 
 test.beforeEach(async ({ page }) => {
   await page.goto('/song?new=1')
@@ -388,6 +388,7 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
   // the Approach (#298) is a listbox inside the Line group, under Guide tone line: the group keeps its width, the rail two rows
   await showLine(page, 'Off') // the Line group without the Approach listbox: its width before the listbox could widen it
   const bare = await layout()
+  await closePentatonicOptions(page) // its popover, open from the Pentatonic path above, can cover the Line group's foot
   await showApproach(page, 'Diatonic above, chromatic below (enclosure)') // Guide Tones, under the Pentatonics row still: the most the Line group holds
   const approached = await layout()
   expect(approached.rows, `Changes, Guide Tones with an Approach (${approached.widths})`).toBeLessThanOrEqual(2)
