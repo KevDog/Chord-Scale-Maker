@@ -53,7 +53,7 @@ README.md for the chart format. The original Python/LilyPond CLI was retired aft
   `bar | chord` row per chord change with bars from 1 in each section, a repeat as `section: A2` + `copy: A1`, and
   `bars: N` where a section's last chord is held past its last written bar (README "Charts"); then `cd engine && npm run analyse --
   charts/<tune-name>.txt --save` to save the reasons, read the report (its Song page section must show no gaps: they
-  fail `make test`), then `--ambiguous`, and `make golden` (the fixtures cover every library chart). Leave the scale cells blank: they play the analysis. A scale the melody
+  fail `make test`), then `--ambiguous`, `make golden` (the fixtures cover every library chart), and `make og` (its link preview image; a test fails until it's drawn). Leave the scale cells blank: they play the analysis. A scale the melody
   demands over the rules: write it, with `# keep: …`. Otherwise, where the analyser can only guess, write the
   function (`| | V7/ii`), a section `key:` or an `@key` rather than a scale: a function lets the rules still choose the tensions.
 - Changing an analysis rule (`engine/src/analysis/`, docs/plan-analysis.md): a test first, then `make golden`, and

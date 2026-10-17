@@ -14,7 +14,8 @@
     "e2e": "NUXT_PUBLIC_FEATURES_OFFLINE=true nuxt build && playwright test --project chromium",
     "a11y": "NUXT_PUBLIC_FEATURES_OFFLINE=true nuxt build && playwright test --project a11y",
     "icons": "node scripts/icons.mjs",
-    "check:headers": "NITRO_PRESET=vercel nuxt build && node build/check-headers.ts"
+    "check:headers": "NITRO_PRESET=vercel nuxt build && node build/check-headers.ts",
+    "og": "vite-node scripts/og.ts --"
   },
   "devDependencies": {
     "@axe-core/playwright": "4.13.0",

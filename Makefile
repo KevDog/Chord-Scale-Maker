@@ -1,4 +1,4 @@
-.PHONY: setup test lint e2e a11y golden dev preview clean
+.PHONY: setup test lint e2e a11y golden og dev preview clean
 # installs the dependencies and the repo's git hooks (.githooks/pre-push runs `make a11y` when a push touches web/app/)
 setup:
 	npm ci
@@ -17,6 +17,9 @@ a11y:
 # rewrite engine/fixtures/golden.json and analysis.json from the engine after an intended change; review their diffs
 golden:
 	npm run golden -w engine
+# draw the link preview of each library song whose heading or first bars changed (web/public/og/); review a few by eye
+og:
+	cd web && npx playwright install chromium && npm run og
 # web app: live-reloading dev server at http://localhost:3000
 dev:
 	cd web && npm run dev

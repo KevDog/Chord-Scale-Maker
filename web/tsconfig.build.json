@@ -1,5 +1,5 @@
 {
-  // The build helpers and their tests (build/), outside Nuxt (the app's tsconfigs come from .nuxt/ via tsconfig.json).
+  // The build helpers and their tests (build/) and the scripts (scripts/), outside Nuxt (the app's tsconfigs come from .nuxt/ via tsconfig.json).
   // Same strictness as Nuxt's generated config, plus Node types for the tests.
   "compilerOptions": {
     "target": "ES2023",
@@ -18,5 +18,5 @@
     "allowImportingTsExtensions": true, // build/check-headers.ts runs directly under node
     "types": ["node"]
   },
-  "include": ["build/**/*.ts"]
+  "include": ["build/**/*.ts", "scripts/**/*.ts"]
 }
