@@ -21,6 +21,16 @@ describe('songHead', () => {
     expect(ld.map((d) => d['@type'])).toEqual(['MusicComposition', 'BreadcrumbList'])
     expect(ld[0]?.url).toBe('https://www.chordscalemaker.com/song/blue-trane')
   })
+  it("gives a song's notable recording only with the recordings flag", () => {
+    const on = songHead('blue-trane', { recordings: true })
+    expect(on?.recording).toEqual({ artist: 'John Coltrane', album: 'Blue Train', label: 'Blue Note', year: '1958' })
+    expect(on?.ld).toContain('"recordedAs"')
+    const off = songHead('blue-trane', { recordings: false })
+    expect(off?.recording).toBeNull()
+    expect(off?.youtube).toBe('')
+    expect(off?.ld).not.toContain('recordedAs')
+    expect(songHead('blue-trane')?.recording).toBeNull()
+  })
   it("gives a song's chord changes, section by section", () => {
     const outline = songHead('blue-trane')?.outline
     expect(outline?.map((s) => s.name)).toEqual(['A'])

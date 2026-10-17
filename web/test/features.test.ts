@@ -11,8 +11,8 @@ const myChartsLinks = (html: string) => html.match(/song\?new=1/g) ?? []
 describe('feature flags', () => {
   beforeEach(() => navigate.mockClear())
 
-  it('has one flag, off until it ships: offline (#324)', () => {
-    expect(useRuntimeConfig().public.features).toEqual({ offline: false })
+  it('has its flags off until they ship: offline (#324), recordings', () => {
+    expect(useRuntimeConfig().public.features).toEqual({ offline: false, recordings: false })
   })
 
   it('offers New chart in the library, not the header', async () => {

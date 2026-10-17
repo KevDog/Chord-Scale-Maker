@@ -20,7 +20,7 @@ async function darkMode(page: Page): Promise<void> {
 for (const theme of ['light', 'dark'] as const) {
   test.describe(theme, () => {
     test('the pages', async ({ page }) => {
-      for (const path of ['/', '/library', '/about', '/help', '/functions', '/contact', '/privacy', '/scales', '/scales/dorian', '/composers', '/composers/thelonious-monk']) {
+      for (const path of ['/', '/library', '/about', '/help', '/functions', '/contact', '/privacy', '/scales', '/scales/dorian', '/composers', '/composers/thelonious-monk', '/song/blue-trane']) {
         await page.goto(path)
         if (theme === 'dark' && path === '/') await darkMode(page)
         await expectAccessible(page)

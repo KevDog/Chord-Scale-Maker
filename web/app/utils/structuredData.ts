@@ -1,4 +1,5 @@
-import type { TuneSummary } from '@chord-scale-maker/engine'
+import type { Recording, TuneSummary } from '@chord-scale-maker/engine'
+import { youtubeUrl } from './recording'
 import { SITE_DESCRIPTION, SITE_NAME, canonicalUrl, libraryPath } from './site'
 
 /** schema.org structured data for search engines, as JSON-LD (docs/superpowers/plans/2026-10-12-seo-discoverability.md, Task 6) */
@@ -31,6 +32,15 @@ export const webAppLd = () => ({
 /** keyLabel reads "E♭" for a major key and "C minor" for a minor one */
 const musicalKey = (t: TuneSummary): string => (!t.keyLabel || t.keyLabel.endsWith(' minor') ? t.keyLabel : `${t.keyLabel} major`)
 
+/** a tune's notable recording: every artist a MusicGroup (schema.org allows one for a single performer); the label as text on the page only */
+const recordingLd = (r: Recording, youtube: string) => ({
+  '@type': 'MusicRecording',
+  byArtist: { '@type': 'MusicGroup', name: r.artist },
+  inAlbum: { '@type': 'MusicAlbum', name: r.album },
+  ...(r.year ? { datePublished: r.year } : {}),
+  ...(youtube ? { url: youtubeUrl(youtube) } : {}),
+})
+
 export const tuneLd = (t: TuneSummary, path: string) => {
   const key = musicalKey(t)
   return {
@@ -41,6 +51,7 @@ export const tuneLd = (t: TuneSummary, path: string) => {
     ...(t.aka.length ? { alternateName: t.aka } : {}),
     ...(t.composer ? { composer: { '@type': 'Person', name: t.composer } } : {}),
     ...(key ? { musicalKey: key } : {}),
+    ...(t.recording ? { recordedAs: recordingLd(t.recording, t.youtube) } : {}),
     url: canonicalUrl(path),
   }
 }

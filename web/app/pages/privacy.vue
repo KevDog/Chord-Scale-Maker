@@ -40,9 +40,9 @@
       </section>
 
       <section class="space-y-3" aria-labelledby="video">
-        <UiSubheading id="video" class="scroll-mt-6">The video on the About page</UiSubheading>
+        <UiSubheading id="video" class="scroll-mt-6">Videos</UiSubheading>
         <UiText>
-          Nothing loads from YouTube until you press play. It then plays from YouTube's privacy-enhanced domain, under
+          The About page and some song pages show a YouTube video. Nothing loads from YouTube until you press play. It then plays from YouTube's privacy-enhanced domain, under
           <UiTextLink href="https://policies.google.com/privacy" external>Google's privacy policy</UiTextLink>.
         </UiText>
       </section>
@@ -70,7 +70,7 @@ const SECTIONS = [
   { id: 'contact', title: 'The contact form' },
   { id: 'stats', title: 'Visitor statistics' },
   { id: 'browser', title: 'What stays in your browser' },
-  { id: 'video', title: 'The video on the About page' },
+  { id: 'video', title: 'Videos' },
   { id: 'support', title: 'Support links' },
   { id: 'questions', title: 'Questions' },
 ]
