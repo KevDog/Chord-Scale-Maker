@@ -701,9 +701,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   is in force in the bar (guide tones: the voice, against C without a signature). The first Changes line
   uses a taller crop band (`CLEF_BAND`).
 - **Shared helpers:** `svgContext`, `fitSvg` and `headCentre` in `utils/vexflow.ts`.
-- **Instrument choice:** 16 presets, grouped by what they read (C treble, B♭, E♭, F, bass clef). The
+- **Instrument choice:** 15 presets, grouped by what they read (C treble, B♭, E♭, F, bass clef). The
   choice sets the `Part` (clef + transposition) for the whole preview, so notes, chord symbols and scale names
-  are all written for that instrument. The chart stays in concert pitch.
+  are all written for that instrument. The chart stays in concert pitch. Piano is the default (#332 retired the
+  "Concert" choice: a stored or linked `concert` reads as `piano`); the subtitle names the instrument on every sheet.
 
 ## 6. Styling
 
@@ -994,7 +995,8 @@ its reasons into a chart as comments.
   - Immutable updates only. The sheet (the Changes, the default, or Scales) and the mode are page state.
 - **`usePreferences()`:** the instrument, the start note, the Intervals toggle and the Changes sheet's toggles
   (Numerals, Scales, and the Line, off until chosen, as `csm-line`, with `csm-guide-line` and `csm-arpeggio`), each a `storedRef` saved per browser. A
-  stored value that isn't a known instrument or picker root falls back to the default.
+  stored value that isn't a known instrument or picker root falls back to the default (the instrument's is `piano`;
+  the retired `concert` reads as `piano`).
 - **Browser storage** goes through `utils/storage.ts` (`readStored`, `writeStored`). It's best-effort, because
   storage can be blocked or full. It holds the theme, the preferences, practice picks and My charts. Nothing is
   sent anywhere.

@@ -97,6 +97,10 @@ describe('share links', () => {
     expect(await decodeShare(await packed({ v: 2, chart: CHART, view: { mode: 'root', bogus: true } }))).toEqual({ chart: CHART, view: { mode: 'root' } })
   })
 
+  it("read an old link's concert instrument as piano (#332)", () => {
+    expect(shareViewFrom({ instrument: 'concert', mode: 'root' })).toEqual({ instrument: 'piano', mode: 'root' })
+  })
+
   it("carry the Changes sheet's line: a guide tone line or an arpeggio pattern", async () => {
     for (const line of ['third', 'seventh', 'up-root', 'voice-led'] as const) {
       const view = { sheet: 'changes', numerals: true, line } as const

@@ -228,7 +228,7 @@ test('7th Chords arpeggiates each chord: quarters for one a bar, eighths for two
   const line = lines(page).first()
   await showArpeggios(page, 'Up · root')
   await arpeggiosDrawn(page)
-  await expect(line).toHaveAttribute('aria-label', /; 7th chords: C4 E4 G4 B4 \| D4 F4 A4 C5, G4 B4 D5 F5 \| /)
+  await expect(line).toHaveAttribute('aria-label', /; 7th chords: C4 E4 G4 B4 \| D5 F5 A5 C6, G4 B4 D5 F5 \| /) // each chord nearest the last note, in piano's range (to C6)
   await expect.poll(async () => (await drawn(line)).heads.length).toBe(4 + 8 + 16 + 4)
   expect((await drawn(line)).slashes).toBe(0)
   expect(await line.locator('.vf-beam').count()).toBeGreaterThan(0)
@@ -245,7 +245,7 @@ test('7th Chords in 3/4: six eighths for a bar of one chord', async ({ page }) =
   const line = lines(page).first()
   await showArpeggios(page, 'Up · root')
   await arpeggiosDrawn(page)
-  await expect(line).toHaveAttribute('aria-label', /; 7th chords: C4 E4 G4 B4 C4 E4 \| D4 F4 A4 C5 D4 F4 \| /) // the pattern restarts to fill the bar
+  await expect(line).toHaveAttribute('aria-label', /; 7th chords: C4 E4 G4 B4 C5 E5 \| D5 F5 A5 C6 D5 F5 \| /) // the pattern restarts to fill the bar, nearest the last note
   await expect.poll(async () => (await drawn(line)).heads.length).toBe(4 * 6)
 })
 
@@ -269,6 +269,7 @@ test('a share link carries the arpeggio pattern', async ({ page, browser }) => {
 
 test('one voice’s stems: up below the middle line, down above it', async ({ page }) => {
   await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | Dm7\n1 | G7\n2 | CMaj7\n2 | A7\n3 | Dm7\n3 | G7\n4 | CMaj7\n4 | Am7\n') // two chords a bar: half notes, which have stems
+  await chooseInstrument(page, 'Guitar') // a low centre (F♯4), so the two lines sit either side of the middle line
   const stems: { from: number; to: number }[] = []
   for (const choice of ['From 3rd', 'From 7th'] as const) { // the 3rd line sits low (F4, E4), the 7th line high (C5, B4)
     await showGuides(page, choice)

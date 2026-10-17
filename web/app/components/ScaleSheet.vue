@@ -19,7 +19,7 @@ const props = defineProps<{
   composer?: string
   headingLevel?: 1 | 2 // the title as the page's h1 (SheetPages)
   part: Part
-  instrumentLabel: string // e.g. "Tenor Sax (Bb)"; '' for concert
+  instrumentLabel: string // e.g. "Tenor Sax (Bb)"; '' while editing in concert pitch
   start: string // written start note for the "from" part
   mode: ModeChoice
   perPage: number

@@ -20,9 +20,14 @@ function linked(view: ShareView) {
 describe('usePreferences', () => {
   afterEach(() => localStorage.clear())
 
-  it("defaults to concert pitch spelled from the chart's key, with interval labels on", () => {
+  it("defaults to piano spelled from the chart's key, with interval labels on", () => {
     const p = prefs()
-    expect([p.instrument.value, p.spell.value, p.intervals.value]).toEqual(['concert', 'key', true])
+    expect([p.instrument.value, p.spell.value, p.intervals.value]).toEqual(['piano', 'key', true])
+  })
+
+  it('reads a stored concert instrument as piano, the choice that replaced it (#332)', () => {
+    localStorage.setItem('csm-instrument', 'concert')
+    expect(prefs().instrument.value).toBe('piano')
   })
 
   it('remembers spelling from the root', async () => {
@@ -79,7 +84,7 @@ describe('usePreferences', () => {
     localStorage.setItem('csm-instrument', 'kazoo')
     localStorage.setItem('csm-spell', 'H')
     const p = prefs()
-    expect([p.instrument.value, p.spell.value]).toEqual(['concert', 'key'])
+    expect([p.instrument.value, p.spell.value]).toEqual(['piano', 'key'])
   })
 
   it("remembers the functions page's key, C major until chosen", async () => {

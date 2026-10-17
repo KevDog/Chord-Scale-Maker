@@ -64,7 +64,7 @@ describe('issue report', () => {
     expect(issuePart('alto-sax')).toEqual({ name: 'E♭ Alto Sax', transposes: true })
     expect(issuePart('horn')).toEqual({ name: 'F Horn', transposes: true })
     expect(issuePart('trombone')).toEqual({ name: 'Trombone', transposes: false })
-    expect(issuePart('concert')).toEqual({ name: 'Concert', transposes: false })
+    expect(issuePart('piano')).toEqual({ name: 'Piano', transposes: false })
   })
 
   it('the GitHub link carries the title and the text while it fits', () => {
