@@ -98,11 +98,11 @@ export default defineNuxtConfig({
         offline: true, // the offline service worker and the Help page's install line (#324; build/sw.ts)
         // six anonymous Web Analytics events (#149; docs/superpowers/specs/2026-10-12-analytics-routes-events-design.md): Pro only
         analyticsEvents: false,
-        cells: false, // the Changes sheet's Cells line (#298)
-        approaches: false, // the guide tone line's Approach (#298)
-        patterns: false, // the Patterns sheet (#298; docs/superpowers/specs/2026-10-17-practice-patterns-design.md)
+        cells: true, // the Changes sheet's Cells line (#298)
+        approaches: true, // the guide tone line's Approach (#298)
+        patterns: true, // the Patterns sheet (#298; docs/superpowers/specs/2026-10-17-practice-patterns-design.md)
         recordings: true, // a library song's notable recording (docs/superpowers/specs/2026-10-17-notable-recordings.md)
-        playerRange: false, // the player's range by the Instrument (#359)
+        playerRange: true, // the player's range by the Instrument (#359)
       },
     },
   },

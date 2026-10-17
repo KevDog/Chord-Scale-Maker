@@ -394,7 +394,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   "Choose a scale"), and components only draw it. The live preview re-renders only staves that changed: each
   staff's `id` combines its line's chords and scale, the part and the mode, not its position.
 
-### Patterns sheet (flag `patterns`; [spec](superpowers/specs/2026-10-17-practice-patterns-design.md))
+### Patterns sheet (flag `patterns`, on; [spec](superpowers/specs/2026-10-17-practice-patterns-design.md))
 
 - **What:** a pattern (moves between neighbouring notes of the scale or the chord tones, e.g. `+2 −1`) run over each
   scale line, one stave a line, drawn by the Arpeggios sheet's staff. `buildPatternSheet` (`engine/src/patterns.ts`)
@@ -623,7 +623,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   (`aria-label="Triad pair direction"`) is `csm-arp-dir`, shared as `arpDir`; no Leave out. Print: lines a page as for
   an arpeggio line.
 
-### Cells line on Changes (#298, flag `cells`)
+### Cells line on Changes (#298, flag `cells`, on)
 
 - **What:** melodic cells in the 7th Chords slot's **Arpeggio pattern** listbox (no fourth Line mode: a fourth radio
   pushed the rail past two rows at 1440 px, so the spec's fallback applies). Choosing a cell sets `LineMode` `cells`
@@ -639,7 +639,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   `line: 'cells:<id>'` (dropped if the id is unknown). A stored `cells` mode with the flag off reads as Off.
   Aria-label `; cells: C5 D5 E♭5 G5 | …`; the report's `guides` reads `cells: <label>`.
 
-### Approaches on the guide tone line (#298, flag `approaches`)
+### Approaches on the guide tone line (#298, flag `approaches`, on)
 
 - **What:** under Guide Tones, a figure of eighths leads into each chord's guide tone from the end of the chord before
   (`engine/src/approaches.ts` the figures, `guideVoices` places them; `buildChanges(..., approach)`). The target keeps its
@@ -1100,7 +1100,7 @@ its reasons into a chart as comments.
 - **The instrument picker** only changes `part` and the subtitle label (`partFor` and `instrumentLabel` in the
   engine). Each option's line is the instrument's full written range, `compass` (`F3–F6`, named by `noteName`), with
   a note only where it tells the player something (`F3–E6 · right hand`); the lines keep to `range` inside it.
-- **The player's range** (#359, behind `playerRange`): two pickers under the Instrument, Lowest note and Highest note,
+- **The player's range** (#359, flag `playerRange`, on): two pickers under the Instrument, Lowest note and Highest note,
   set the written range the lines keep to (`partFor(name, range)`, so guide tones, 7th chords, pentatonic and triad pair
   lines and the Arpeggios sheet follow). `fitRange` (engine, `playerRange.ts`) keeps it inside the full range and the
   staff's cap, two octaves at least (`MIN_SPAN`), or the preset's span where that is less (tuba 22, bass 20: presets
