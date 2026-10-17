@@ -6,7 +6,10 @@ key: Fm
 context: blues
 form: A, 12 bars
 source: Colorado Cookbook, p. 35
+recording: Dizzy Gillespie; Dizzy Gillespie; Dee Gee; 1952
+youtube: wIpPOFOXYEg
 # analysis: 2026-10-11, rules v1; F minor, blues
+# recording: recorded 1951-03-01, Detroit (with John Coltrane, Milt Jackson); matrix 2040-X, first issued on 78 (Dee Gee 3600, with Tin Tin Deo), first LP 1952 (Dee Gee LP-1000, 10"), then Savoy MG 12047 The Champ (1956) (jazzdisco, MusicBrainz); video: The Champ, the same take
 
 # bar | chord | scale
 

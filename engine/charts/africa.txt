@@ -5,7 +5,10 @@ style: Even 8ths
 key: Dm
 form: AABC
 source: Colorado Cookbook, p. 13
+recording: John Coltrane Quartet; Africa/Brass; Impulse!; 1961
+youtube: x5HdhiQN3U4
 # analysis: 2026-10-11, rules v1; D minor, modal
+# recording: master take recorded 1961-06-07, Impulse! A-6, released 1961 (jazzdisco.org, MusicBrainz release group, Wikipedia); video: The Complete Africa / Brass Sessions, the same take (not the 1961-05-23 first version or the June 7 alternate)
 
 # bar | chord | scale
 # the intro is the same one-chord vamp as section A (Dm6/9 over E); it repeats on cue, then A (twice), B, C

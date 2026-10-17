@@ -6,7 +6,10 @@ key: Bb
 context: blues
 form: AABC, 44 bars
 source: Colorado Cookbook, p. 127
+recording: John Coltrane; Blue Train; Blue Note; 1958
+youtube: hkxI2jKlSvM
 # analysis: 2026-10-11, rules v1; Bb, blues
+# recording: recorded 1957-09-15, Blue Note BLP 1577, released 1958 (jazzdisco.org, MusicBrainz release group, Wikipedia)
 
 # bar | chord | scale
 
