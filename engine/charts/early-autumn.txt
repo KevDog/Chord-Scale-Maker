@@ -3,69 +3,80 @@ composer: Ralph Burns, Woody Herman
 style: Medium ballad
 key: C
 form: ABC, 32 bars
-source:
-# analysis: 2026-10-12, rules v1; C
+source: 
+# analysis: 2026-10-17, rules v1; C
 
-# section | bar | chord
+# bar | chord
 # the pickup bar before A
-# area: C major (bar 1)
-Intro | 1  | G7      # V7 of C: natural tensions
-A     | 1  | CMaj7   # tonic: the 4th is in the key
-# area: Bb major (bars 2–3)
-A     | 2  | B7      # tritone substitute: resolves down a half step to BbMaj7
-A     | 3  | BbMaj7  # tonic: the 4th is in the key
-# area: Ab major (bars 4–5)
-A     | 4  | A7      # tritone substitute: resolves down a half step to AbMaj7
-A     | 5  | AbMaj7  # tonic: the 4th is in the key
-# area: C major (bars 6–9)
-A     | 6  | G7      # V7 of C: natural tensions
-A     | 7  | CMaj7   # tonic: the 4th is in the key
-A     | 7  | Am7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A     | 8  | Dm7     # ii of the ii–V to C
-A     | 8  | G7      # V7 of C: natural tensions
-A     | 9  | CMaj7   # tonic: the 4th is in the key
-# area: Bb major (bars 10–11)
-A     | 10 | B7      # tritone substitute: resolves down a half step to BbMaj7
-A     | 11 | BbMaj7  # tonic: the 4th is in the key
-# area: Ab major (bars 12–13)
-A     | 12 | A7      # tritone substitute: resolves down a half step to AbMaj7
-A     | 13 | AbMaj7  # tonic: the 4th is in the key
-# area: C major (bars 14–20)
-A     | 14 | G7      # V7 of C: natural tensions
-A     | 15 | C6      # tonic: the 4th is in the key
-B     | 17 | Dm7     # ii of G13: Dorian
-B     | 17 | G13     # V7/I in C: natural tensions
-B     | 18 | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# alt: bar 18, beat 1 (CMaj7)
-B     | 18 | Ebdim7  # passing diminished: D7♭9 without its D, the G13's dominant (Dm7 its ii)
-# alt: bar 18, beat 3 (D13)
-B     | 19 | Dm7     # ii of the ii–V to C
-B     | 19 | G13     # V7 of C: natural tensions
-B     | 20 | CMaj9   # tonic: the 4th is in the key
-# area: Bb major (bars 21–22)
-B     | 21 | Cm7     # ii of the ii–V to Bb
-B     | 21 | F13     # V7 of Bb: natural tensions
-B     | 22 | BbMaj7  # tonic: the 4th is in the key
-# area: D major (bars 22–23)
-B     | 22 | Eb13    # tritone substitute: resolves down a half step to DMaj7
-B     | 23 | DMaj7   # tonic: the 4th is in the key
-B     | 23 | C#7     # tritone substitute: resolves down a half step to C9
-B     | 23 | C9      # tritone substitute: resolves down a half step to B7#9
-B     | 23 | B7#9    # tritone substitute: resolves down a half step to Bb7; b9 and #9 from the symbol
-# area: A major (bar 24)
-B     | 24 | Bb7     # tritone substitute: resolves down a half step to AMaj7
-B     | 24 | AMaj7   # tonic: the 4th is in the key
-B     | 24 | Ab7b9   # tritone substitute: resolves down a half step to G9; b9 from the symbol
-# area: C major (bars 24–25)
-B     | 24 | G9      # V7 of C: natural tensions
-C     | 25 | CMaj7   # tonic: the 4th is in the key
-# area: Bb major (bars 26–27)
-C     | 26 | B7      # tritone substitute: resolves down a half step to BbMaj7
-C     | 27 | BbMaj7  # tonic: the 4th is in the key
-# area: Ab major (bars 28–29)
-C     | 28 | A7      # tritone substitute: resolves down a half step to AbMaj7
-C     | 29 | AbMaj7  # tonic: the 4th is in the key
-# area: C major (bars 30–31)
-C     | 30 | G7      # V7 of C: natural tensions
-C     | 31 | C6      # tonic: the 4th is in the key
-# alt: bars 31–32 (Am7 | Dm7 G7), from beat 3 of bar 31
+
+section: Intro
+bars: 4
+# area: C major (Intro 1 – A 1)
+1  | G7      # V7 of C: natural tensions
+
+section: A
+bars: 16
+1  | CMaj7   # tonic: the 4th is in the key
+# area: Bb major (A 2–3)
+2  | B7      # tritone substitute: resolves down a half step to BbMaj7
+3  | BbMaj7  # tonic: the 4th is in the key
+# area: Ab major (A 4–5)
+4  | A7      # tritone substitute: resolves down a half step to AbMaj7
+5  | AbMaj7  # tonic: the 4th is in the key
+# area: C major (A 6–9)
+6  | G7      # V7 of C: natural tensions
+7  | CMaj7   # tonic: the 4th is in the key
+7  | Am7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+8  | Dm7     # ii of the ii–V to C
+8  | G7      # V7 of C: natural tensions
+9  | CMaj7   # tonic: the 4th is in the key
+# area: Bb major (A 10–11)
+10 | B7      # tritone substitute: resolves down a half step to BbMaj7
+11 | BbMaj7  # tonic: the 4th is in the key
+# area: Ab major (A 12–13)
+12 | A7      # tritone substitute: resolves down a half step to AbMaj7
+13 | AbMaj7  # tonic: the 4th is in the key
+# area: C major (A 14 – B 4)
+14 | G7      # V7 of C: natural tensions
+15 | C6      # tonic: the 4th is in the key
+
+section: B
+1  | Dm7     # ii of G13: Dorian
+1  | G13     # V7/I in C: natural tensions
+2  | Em7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+# alt: bar 2, beat 1 (CMaj7)
+2  | Ebdim7  # passing diminished: D7♭9 without its D, the G13's dominant (Dm7 its ii)
+# alt: bar 2, beat 3 (D13)
+3  | Dm7     # ii of the ii–V to C
+3  | G13     # V7 of C: natural tensions
+4  | CMaj9   # tonic: the 4th is in the key
+# area: Bb major (B 5–6)
+5  | Cm7     # ii of the ii–V to Bb
+5  | F13     # V7 of Bb: natural tensions
+6  | BbMaj7  # tonic: the 4th is in the key
+# area: D major (B 6–7)
+6  | Eb13    # tritone substitute: resolves down a half step to DMaj7
+7  | DMaj7   # tonic: the 4th is in the key
+7  | C#7     # tritone substitute: resolves down a half step to C9
+7  | C9      # tritone substitute: resolves down a half step to B7#9
+7  | B7#9    # tritone substitute: resolves down a half step to Bb7; b9 and #9 from the symbol
+# area: A major (B 8)
+8  | Bb7     # tritone substitute: resolves down a half step to AMaj7
+8  | AMaj7   # tonic: the 4th is in the key
+8  | Ab7b9   # tritone substitute: resolves down a half step to G9; b9 from the symbol
+# area: C major (B 8 – C 1)
+8  | G9      # V7 of C: natural tensions
+
+section: C
+bars: 8
+1  | CMaj7   # tonic: the 4th is in the key
+# area: Bb major (C 2–3)
+2  | B7      # tritone substitute: resolves down a half step to BbMaj7
+3  | BbMaj7  # tonic: the 4th is in the key
+# area: Ab major (C 4–5)
+4  | A7      # tritone substitute: resolves down a half step to AbMaj7
+5  | AbMaj7  # tonic: the 4th is in the key
+# area: C major (C 6–7)
+6  | G7      # V7 of C: natural tensions
+7  | C6      # tonic: the 4th is in the key
+# alt: bars 7–8 (Am7 | Dm7 G7), from beat 3 of bar 31

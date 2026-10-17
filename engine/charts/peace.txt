@@ -5,30 +5,33 @@ style: Ballad
 key: Bb
 form: A, 10 bars
 source: Colorado Cookbook, p. 173
-# analysis: 2026-10-11, rules v1; Bb
+# analysis: 2026-10-17, rules v1; Bb
 
-# section | bar | chord | scale
-# area: Bb major (bar 1)
-A | 1  | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 1  | D7b9    # V7/vi in Bb: b9 and b13 are in the key
-# area: Cb major (bars 2–3)
-A | 2  | Gm7     # ii of C7: Dorian
-A | 2  | C7      # tritone substitute: resolves down a half step to CbMaj7
-A | 3  | CbMaj7  # tonic: the 4th is in the key
-# area: Bb major (bars 4–5)
-A | 4  | Cm7b5   # iiø7 of Bb: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 4  | F7b9    # V7 of Bb: the b9 from the symbol
-A | 5  | BbMaj7  # tonic: the 4th is in the key
-# area: A major (bars 5–7)
-A | 5  | Bm7     # ii of the ii–V to A
-A | 5  | E9      # V7 of A: natural tensions
-A | 6  | AMaj7   # tonic: the 4th is in the key
-A | 6  | F#m7    # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A | 7  | Ebm7b5  # #ivø7 in A: Locrian, its own mode (the chord is outside the key)
-# area: Db major (bars 7–9)
-A | 7  | D7alt   # from the symbol: altered
-A | 8  | DbMaj7  # tonic: the 4th is in the key
-A | 9  | Cm7b5   # viiø7 in Db: Locrian, the key's own notes (its ♭2 is a passing note)
-# area: Bb major (bars 9–10)
-A | 9  | Cb7alt  # from the symbol: altered
-A | 10 | BbMaj7  # tonic: the 4th is in the key
+# bar | chord | scale
+
+section: A
+bars: 12
+# area: Bb major (A 1)
+1  | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+1  | D7b9    # V7/vi in Bb: b9 and b13 are in the key
+# area: Cb major (A 2–3)
+2  | Gm7     # ii of C7: Dorian
+2  | C7      # tritone substitute: resolves down a half step to CbMaj7
+3  | CbMaj7  # tonic: the 4th is in the key
+# area: Bb major (A 4–5)
+4  | Cm7b5   # iiø7 of Bb: Locrian, the key's own notes (its ♭2 is a passing note)
+4  | F7b9    # V7 of Bb: the b9 from the symbol
+5  | BbMaj7  # tonic: the 4th is in the key
+# area: A major (A 5–7)
+5  | Bm7     # ii of the ii–V to A
+5  | E9      # V7 of A: natural tensions
+6  | AMaj7   # tonic: the 4th is in the key
+6  | F#m7    # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+7  | Ebm7b5  # #ivø7 in A: Locrian, its own mode (the chord is outside the key)
+# area: Db major (A 7–9)
+7  | D7alt   # from the symbol: altered
+8  | DbMaj7  # tonic: the 4th is in the key
+9  | Cm7b5   # viiø7 in Db: Locrian, the key's own notes (its ♭2 is a passing note)
+# area: Bb major (A 9–10)
+9  | Cb7alt  # from the symbol: altered
+10 | BbMaj7  # tonic: the 4th is in the key

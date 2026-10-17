@@ -4,21 +4,30 @@ style: Funk
 key: Fm
 form: AB, 20 bars
 context: modal
-source:
+source: 
 # analysis: 2026-10-12, rules v1; F minor, modal
 # book: Half-Time Funk/Rock, half note = 82; as played by Freddie Hubbard
 # book: head A (repeated, segno at A); B is the solo vamp (vamp & solo till cue), then an "On Cue" horn figure,
 # book: N.C. for 4 bars: to B for the next solo; after solos, D.S. al Fine (Fine at A bar 15, last time)
 
-# section | bar | chord
+# bar | chord
 # Intro: a 2-bar Fm7 bass vamp played 7 times, then 2 bars of Fm7 with the horn pickup
-Intro | 1  | Fm7     # modal minor: Dorian
-A     | 1  | Fm7     # modal minor: Dorian
-@segno A 1
-A     | 6  | Dbm7/F  # modal minor: Dorian
+
+section: Intro
+bars: 4
+1 | Fm7     # modal minor: Dorian
+
+section: A
+bars: 16
+1 | Fm7     # modal minor: Dorian
+@segno 1
+6 | Dbm7/F  # modal minor: Dorian
 # book: "Db dorian / F", placed on beat 4 of bar 5 (may be played on the and of 4); held to bar 8
-A     | 9  | Fm7     # modal minor: Dorian
+9 | Fm7     # modal minor: Dorian
+
+section: B
+bars: 4
 # bars 13–16: N.C. (drums tacet, bass and guitar figure); Fine at bar 15 on the last time
-B     | 17 | Fm7
+1 | Fm7
 # B: 4-bar Fm7 solo vamp, repeated till cue
 # On Cue (horns): 4 bars N.C., then back to B for the next solo; after solos, D.S. al Fine

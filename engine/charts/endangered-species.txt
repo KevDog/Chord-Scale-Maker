@@ -5,242 +5,255 @@ style: Medium funk
 key: D
 form: ABCD, 64 bars
 source: 
-# analysis: 2026-10-12, rules v1; D
+# analysis: 2026-10-17, rules v1; D
 # the book prints a lead sheet plus bass and keyboard parts; the lead sheet's chords are used ("some chord names have
 # been simplified (see piano part)"). Bars the lead sheet leaves tacet (intro, C 33-37, D 53-56) take the keyboard
 # part's chords. Chords printed as anticipations (a 16th/8th before the bar line) stay in the bar where printed.
 # D(add9 omit3) (D, E, A, no third) is written D throughout.
 
-# section | bar | chord
+# bar | chord
 # intro from the keyboard part (the lead sheet has 4 bars rest)
-# area: D major (bar 1)
-Intro | 1  | G/A         # IV: the #4 is the key’s 7th
-Intro | 1  | A/B         # V without its 7th: Mixolydian, the key’s own notes
-Intro | 2  | FMaj7b5/B   # ♭IIImaj7, borrowed from D minor: Lydian (its ♯11 is in the key)
-Intro | 2  | F6/C        # ♭III6, borrowed from D minor: Lydian (its ♯11 is in the key)
-Intro | 3  | FMaj7b5/B   # ♭IIImaj7, borrowed from D minor: Lydian (its ♯11 is in the key)
-Intro | 3  | F6/C        # ♭III6, borrowed from D minor: Lydian (its ♯11 is in the key)
-Intro | 4  | B7b9        # VI7 in D, not resolving: the b13 is in the key, the b9 from the symbol
+
+section: Intro
+bars: 8
+# area: D major (Intro 1 – A 1)
+1  | G/A         # IV: the #4 is the key’s 7th
+1  | A/B         # V without its 7th: Mixolydian, the key’s own notes
+2  | FMaj7b5/B   # ♭IIImaj7, borrowed from D minor: Lydian (its ♯11 is in the key)
+2  | F6/C        # ♭III6, borrowed from D minor: Lydian (its ♯11 is in the key)
+3  | FMaj7b5/B   # ♭IIImaj7, borrowed from D minor: Lydian (its ♯11 is in the key)
+3  | F6/C        # ♭III6, borrowed from D minor: Lydian (its ♯11 is in the key)
+4  | B7b9        # VI7 in D, not resolving: the b13 is in the key, the b9 from the symbol
 # book: B7(b9 b5)
-Intro | 5  | D           # tonic: the 4th is in the key
+5  | D           # tonic: the 4th is in the key
+
+section: A
 # book: D(add9 omit3), a one-bar vamp played 4 times
-A     | 1  | F#13        # III7 in D, not resolving: the b9 is in the key, the 13 from the symbol
-# area: Eb major (bars 1–17)
-A     | 1  | E13         # tritone substitute: resolves down a half step to Eb69
+1  | F#13        # III7 in D, not resolving: the b9 is in the key, the 13 from the symbol
+# area: Eb major (A 1 – B 1)
+1  | E13         # tritone substitute: resolves down a half step to Eb69
 # alt: bar 2 (F#7)
-A     | 3  | Eb69        # tonic: the 4th is in the key
-A     | 3  | B/C#        # ♭VI, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+3  | Eb69        # tonic: the 4th is in the key
+3  | B/C#        # ♭VI, borrowed from Eb minor: Lydian (its ♯11 is in the key)
 # alt: bar 4 (F#7)
-A     | 5  | G/F         # a non-tonic major chord: Lydian
-A     | 5  | F/A         # a non-tonic major chord: Lydian
-A     | 5  | C/D         # a non-tonic major chord: Lydian
-A     | 5  | F#Maj7b5    # ♭IIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+5  | G/F         # a non-tonic major chord: Lydian
+5  | F/A         # a non-tonic major chord: Lydian
+5  | C/D         # a non-tonic major chord: Lydian
+5  | F#Maj7b5    # ♭IIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
 # book: F#Ma7(b5)sus
-A     | 6  | G/F         # a non-tonic major chord: Lydian
-A     | 6  | F/A         # a non-tonic major chord: Lydian
-A     | 6  | C/D         # a non-tonic major chord: Lydian
-A     | 6  | F#Maj7b5    # ♭IIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+6  | G/F         # a non-tonic major chord: Lydian
+6  | F/A         # a non-tonic major chord: Lydian
+6  | C/D         # a non-tonic major chord: Lydian
+6  | F#Maj7b5    # ♭IIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
 # book: F#Ma7(b5)sus
-A     | 7  | D/E         # a non-tonic major chord: Lydian
-A     | 7  | E/F#        # ♭II, borrowed from Eb Phrygian: Lydian (its ♯11 is in the key)
-A     | 8  | Eb/G        # tonic: the 4th is in the key
-A     | 8  | C/E         # a non-tonic major chord: Lydian
+7  | D/E         # a non-tonic major chord: Lydian
+7  | E/F#        # ♭II, borrowed from Eb Phrygian: Lydian (its ♯11 is in the key)
+8  | Eb/G        # tonic: the 4th is in the key
+8  | C/E         # a non-tonic major chord: Lydian
 # book: Eb(add9)/G C(add9)/E
-A     | 9  | A/C#        # a non-tonic major chord: Lydian
+9  | A/C#        # a non-tonic major chord: Lydian
 # book: A(add9)/C#
-A     | 10 | Am/G        # a borrowed minor chord: Dorian, its own key
-A     | 10 | Ab/G        # IV: the #4 is the key’s 7th
+10 | Am/G        # a borrowed minor chord: Dorian, its own key
+10 | Ab/G        # IV: the #4 is the key’s 7th
 # book: Ab(#11 omit3)/G
-A     | 10 | F#dim7      # passing diminished: a rootless dominant ♭9
-A     | 11 | BMaj9       # ♭VImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
-A     | 11 | G/Bb        # a non-tonic major chord: Lydian
-A     | 12 | Bb/C        # V without its 7th: Mixolydian, the key’s own notes
-A     | 12 | Ebm9        # a borrowed minor chord: Dorian, its own key
-A     | 12 | F7alt       # from the symbol: altered
-A     | 13 | Bm9         # a borrowed minor chord: Dorian, its own key
-A     | 14 | BmMaj7      # from the symbol: minor-major 7th
+10 | F#dim7      # passing diminished: a rootless dominant ♭9
+11 | BMaj9       # ♭VImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+11 | G/Bb        # a non-tonic major chord: Lydian
+12 | Bb/C        # V without its 7th: Mixolydian, the key’s own notes
+12 | Ebm9        # a borrowed minor chord: Dorian, its own key
+12 | F7alt       # from the symbol: altered
+13 | Bm9         # a borrowed minor chord: Dorian, its own key
+14 | BmMaj7      # from the symbol: minor-major 7th
 # book: Bm9(Ma7)
-A     | 15 | E/G#        # ♭II, borrowed from Eb Phrygian: Lydian (its ♯11 is in the key)
+15 | E/G#        # ♭II, borrowed from Eb Phrygian: Lydian (its ♯11 is in the key)
 # book: E(add9)/G#
-A     | 15 | F/G         # a non-tonic major chord: Lydian
-A     | 16 | F#m/E       # a borrowed minor chord: Dorian, its own key
-A     | 16 | C/D         # a non-tonic major chord: Lydian
-A     | 16 | Ab7/D       # IV7 in Eb, not resolving: the #11 is in the key
-@ending 1 A 7 9
-@ending 2 A 10 16
-B     | 17 | C7sus4/D    # static sus: Mixolydian
-@segno B 17
-# area: D major (bars 17–33)
-B     | 17 | A7b9/D      # V7 of D: the b9 from the symbol
-B     | 18 | D69         # tonic: the 4th is in the key
-B     | 18 | D9sus4      # static sus: Mixolydian
-B     | 18 | Ab7/D       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-B     | 19 | F/D         # ♭III, borrowed from D minor: Lydian (its ♯11 is in the key)
+15 | F/G         # a non-tonic major chord: Lydian
+16 | F#m/E       # a borrowed minor chord: Dorian, its own key
+16 | C/D         # a non-tonic major chord: Lydian
+16 | Ab7/D       # IV7 in Eb, not resolving: the #11 is in the key
+@ending 1 7 9
+@ending 2 10 16
+
+section: B
+1  | C7sus4/D    # static sus: Mixolydian
+@segno 1
+# area: D major (B 1 – C 1)
+1  | A7b9/D      # V7 of D: the b9 from the symbol
+2  | D69         # tonic: the 4th is in the key
+2  | D9sus4      # static sus: Mixolydian
+2  | Ab7/D       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+3  | F/D         # ♭III, borrowed from D minor: Lydian (its ♯11 is in the key)
 # book: F(add11)/D
-B     | 19 | C7/D        # V7 of the F/D before it: the #11 is in the key
-B     | 19 | A7b9/D      # V7 of D: the b9 from the symbol
-B     | 20 | D69         # tonic: the 4th is in the key
-B     | 20 | D9sus4      # static sus: Mixolydian
-B     | 20 | Ab7/D       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-B     | 21 | C7sus4/D    # static sus: Mixolydian
-B     | 21 | A7b9/D      # V7 of D: the b9 from the symbol
-B     | 22 | D69         # tonic: the 4th is in the key
-B     | 22 | D9sus4      # static sus: Mixolydian
-B     | 22 | Ab7/D       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-B     | 23 | F/D         # ♭III, borrowed from D minor: Lydian (its ♯11 is in the key)
+3  | C7/D        # V7 of the F/D before it: the #11 is in the key
+3  | A7b9/D      # V7 of D: the b9 from the symbol
+4  | D69         # tonic: the 4th is in the key
+4  | D9sus4      # static sus: Mixolydian
+4  | Ab7/D       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+5  | C7sus4/D    # static sus: Mixolydian
+5  | A7b9/D      # V7 of D: the b9 from the symbol
+6  | D69         # tonic: the 4th is in the key
+6  | D9sus4      # static sus: Mixolydian
+6  | Ab7/D       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+7  | F/D         # ♭III, borrowed from D minor: Lydian (its ♯11 is in the key)
 # book: F(add11)/D
-B     | 23 | C7/D        # V7 of the F/D before it: the #11 is in the key
-B     | 23 | A7b9/D      # V7 of D: the b9 from the symbol
-B     | 24 | D69         # tonic: the 4th is in the key
-B     | 24 | E7#5/G      # II7 in D, not resolving: #11 and b13 from the symbol
+7  | C7/D        # V7 of the F/D before it: the #11 is in the key
+7  | A7b9/D      # V7 of D: the b9 from the symbol
+8  | D69         # tonic: the 4th is in the key
+8  | E7#5/G      # II7 in D, not resolving: #11 and b13 from the symbol
 # book: E+/G (augmented triad; written E7#5/G)
 # bars 25-32 carry a written sample solo
-B     | 25 | CMaj9       # ♭VIImaj7, borrowed from D minor: Lydian (its ♯11 is in the key)
-B     | 26 | B7#5#9      # VI7 in D, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
-B     | 26 | B7b9        # V7/ii in D: the b13 is in the key, the b9 from the symbol
-B     | 27 | Em9         # ii of A13: Dorian
-B     | 28 | A13         # V7/I in D: natural tensions
-B     | 28 | A13b5       # V7 in D, not resolving: the #11 from the symbol
-B     | 29 | Gm9         # a borrowed minor chord: Dorian, its own key
-B     | 30 | A7#5#9      # V7 in D, not resolving: b9, #9, #11 and b13 from the symbol
-B     | 30 | A7b9        # V7 of D: the b9 from the symbol
-B     | 31 | Dm9         # ii of G13: Dorian
-B     | 32 | G13         # extended ii–V: a side-step, its own key
-B     | 32 | G13b5       # tritone substitute: resolves down a half step to F#13
+9  | CMaj9       # ♭VIImaj7, borrowed from D minor: Lydian (its ♯11 is in the key)
+10 | B7#5#9      # VI7 in D, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
+10 | B7b9        # V7/ii in D: the b13 is in the key, the b9 from the symbol
+11 | Em9         # ii of A13: Dorian
+12 | A13         # V7/I in D: natural tensions
+12 | A13b5       # V7 in D, not resolving: the #11 from the symbol
+13 | Gm9         # a borrowed minor chord: Dorian, its own key
+14 | A7#5#9      # V7 in D, not resolving: b9, #9, #11 and b13 from the symbol
+14 | A7b9        # V7 of D: the b9 from the symbol
+15 | Dm9         # ii of G13: Dorian
+16 | G13         # extended ii–V: a side-step, its own key
+16 | G13b5       # tritone substitute: resolves down a half step to F#13
+
+section: C
 # C: melody tacet for bars 33-37; chords from the keyboard part
-C     | 33 | F#13        # III7 in D, not resolving: the b9 is in the key, the 13 from the symbol
-# area: Eb major (bars 33–57)
-C     | 33 | E13         # tritone substitute: resolves down a half step to Eb69
-# alt: bar 34 (F#7)
-C     | 35 | Eb69        # tonic: the 4th is in the key
-C     | 35 | B/C#        # ♭VI, borrowed from Eb minor: Lydian (its ♯11 is in the key)
-# alt: bar 36 (F#7)
-C     | 37 | G/F         # a non-tonic major chord: Lydian
-C     | 37 | F/A         # a non-tonic major chord: Lydian
-C     | 37 | C/D         # a non-tonic major chord: Lydian
-C     | 37 | F#Maj7b5    # ♭IIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+1  | F#13        # III7 in D, not resolving: the b9 is in the key, the 13 from the symbol
+# area: Eb major (C 1 – D 9)
+1  | E13         # tritone substitute: resolves down a half step to Eb69
+# alt: bar 2 (F#7)
+3  | Eb69        # tonic: the 4th is in the key
+3  | B/C#        # ♭VI, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+# alt: bar 4 (F#7)
+5  | G/F         # a non-tonic major chord: Lydian
+5  | F/A         # a non-tonic major chord: Lydian
+5  | C/D         # a non-tonic major chord: Lydian
+5  | F#Maj7b5    # ♭IIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
 # book: F#Ma7sus(b5)
-C     | 38 | G/F         # a non-tonic major chord: Lydian
-C     | 38 | F/A         # a non-tonic major chord: Lydian
-C     | 38 | C/D         # a non-tonic major chord: Lydian
-C     | 38 | F/F#        # a non-tonic major chord: Lydian
-C     | 39 | G69         # a non-tonic major chord: Lydian
+6  | G/F         # a non-tonic major chord: Lydian
+6  | F/A         # a non-tonic major chord: Lydian
+6  | C/D         # a non-tonic major chord: Lydian
+6  | F/F#        # a non-tonic major chord: Lydian
+7  | G69         # a non-tonic major chord: Lydian
 # book (keyboard): G6/9(omit3)
-C     | 39 | Eb/B        # tonic: the 4th is in the key
-C     | 39 | CMaj7/F     # a non-tonic major chord: Lydian
-C     | 39 | E/G#        # ♭II, borrowed from Eb Phrygian: Lydian (its ♯11 is in the key)
+7  | Eb/B        # tonic: the 4th is in the key
+7  | CMaj7/F     # a non-tonic major chord: Lydian
+7  | E/G#        # ♭II, borrowed from Eb Phrygian: Lydian (its ♯11 is in the key)
 # book: E(add9)/G#
-C     | 40 | G69         # a non-tonic major chord: Lydian
-C     | 40 | Bb/B        # V without its 7th: Mixolydian, the key’s own notes
-C     | 40 | F69         # a non-tonic major chord: Lydian
-C     | 40 | E/G#        # ♭II, borrowed from Eb Phrygian: Lydian (its ♯11 is in the key)
+8  | G69         # a non-tonic major chord: Lydian
+8  | Bb/B        # V without its 7th: Mixolydian, the key’s own notes
+8  | F69         # a non-tonic major chord: Lydian
+8  | E/G#        # ♭II, borrowed from Eb Phrygian: Lydian (its ♯11 is in the key)
 # book: E(add9)/G#
-C     | 41 | D/G         # a non-tonic major chord: Lydian
+9  | D/G         # a non-tonic major chord: Lydian
 # bar 41: also Bb/B (after D/G) and F/F# (beat 4) (passing)
-C     | 41 | Eb/F        # tonic: the 4th is in the key
-C     | 41 | A7#5#9      # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b9, #9 and b13 from the symbol
-C     | 41 | A/D         # a non-tonic major chord: Lydian
-C     | 42 | Cm7         # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-C     | 42 | Eb7b5       # I7 in Eb, not resolving: the #11 from the symbol
-C     | 43 | E/D         # ♭II, borrowed from Eb Phrygian: Lydian (its ♯11 is in the key)
+9  | Eb/F        # tonic: the 4th is in the key
+9  | A7#5#9      # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b9, #9 and b13 from the symbol
+9  | A/D         # a non-tonic major chord: Lydian
+10 | Cm7         # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+10 | Eb7b5       # I7 in Eb, not resolving: the #11 from the symbol
+11 | E/D         # ♭II, borrowed from Eb Phrygian: Lydian (its ♯11 is in the key)
 # bar 43: the 16th-note anticipation E/D (the book repeats it in parentheses); also F# (passing)
-C     | 43 | F/D         # a non-tonic major chord: Lydian
-C     | 43 | G/C         # a non-tonic major chord: Lydian
-C     | 43 | F7#5/Eb     # II7 in Eb, not resolving: #11 and b13 from the symbol
+11 | F/D         # a non-tonic major chord: Lydian
+11 | G/C         # a non-tonic major chord: Lydian
+11 | F7#5/Eb     # II7 in Eb, not resolving: #11 and b13 from the symbol
 # book: F+/Eb (augmented triad; written F7#5/Eb)
-C     | 44 | D69         # a non-tonic major chord: Lydian
-C     | 44 | Bb/F#       # V without its 7th: Mixolydian, the key’s own notes
-C     | 44 | C69         # a non-tonic major chord: Lydian
-C     | 44 | B/D#        # ♭VI, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+12 | D69         # a non-tonic major chord: Lydian
+12 | Bb/F#       # V without its 7th: Mixolydian, the key’s own notes
+12 | C69         # a non-tonic major chord: Lydian
+12 | B/D#        # ♭VI, borrowed from Eb minor: Lydian (its ♯11 is in the key)
 # book: B(add9)/D#
-C     | 45 | A/D         # a non-tonic major chord: Lydian
-C     | 45 | F/F#        # a non-tonic major chord: Lydian
-C     | 45 | G/C         # a non-tonic major chord: Lydian
-C     | 45 | EbMaj7/F    # tonic: the 4th is in the key
-C     | 46 | C/F         # a non-tonic major chord: Lydian
-C     | 46 | Adim7       # vii°7 of Bb/Eb: F7♭9 without its root
-C     | 46 | Bb/Eb       # V without its 7th: Mixolydian, the key’s own notes
-C     | 46 | G13b9       # III7 in Eb, not resolving: the b9 is in the key, the 13 from the symbol
-@coda C 46
-C     | 47 | Am7         # a borrowed minor chord: Dorian, its own key
-C     | 47 | F7b9        # II7 in Eb, not resolving: the b9 from the symbol
-C     | 47 | EbMaj9      # tonic: the 4th is in the key
-C     | 47 | Gb/Ab       # ♭III, borrowed from Eb minor: Lydian (its ♯11 is in the key)
-C     | 48 | Gb/Ab
-D     | 49 | Bb69        # a non-tonic major chord: Lydian
-D     | 49 | Gb/Ab       # ♭III, borrowed from Eb minor: Lydian (its ♯11 is in the key)
-# alt: bar 49 beats 1-2 and bar 50 (Db7)
-D     | 51 | Bb69        # a non-tonic major chord: Lydian
-D     | 51 | Gb/Ab       # ♭III, borrowed from Eb minor: Lydian (its ♯11 is in the key)
-# alt: bar 52 (Db7)
+13 | A/D         # a non-tonic major chord: Lydian
+13 | F/F#        # a non-tonic major chord: Lydian
+13 | G/C         # a non-tonic major chord: Lydian
+13 | EbMaj7/F    # tonic: the 4th is in the key
+14 | C/F         # a non-tonic major chord: Lydian
+14 | Adim7       # vii°7 of Bb/Eb: F7♭9 without its root
+14 | Bb/Eb       # V without its 7th: Mixolydian, the key’s own notes
+14 | G13b9       # III7 in Eb, not resolving: the b9 is in the key, the 13 from the symbol
+@coda 14
+15 | Am7         # a borrowed minor chord: Dorian, its own key
+15 | F7b9        # II7 in Eb, not resolving: the b9 from the symbol
+15 | EbMaj9      # tonic: the 4th is in the key
+15 | Gb/Ab       # ♭III, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+16 | Gb/Ab
+
+section: D
+1  | Bb69        # a non-tonic major chord: Lydian
+1  | Gb/Ab       # ♭III, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+# alt: bar 1 beats 1-2 and bar 50 (Db7)
+3  | Bb69        # a non-tonic major chord: Lydian
+3  | Gb/Ab       # ♭III, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+# alt: bar 4 (Db7)
 # bars 53-56: melody tacet; chords from the keyboard part
-D     | 53 | D/C         # a non-tonic major chord: Lydian
-D     | 53 | C/E         # a non-tonic major chord: Lydian
-D     | 53 | G/A         # a non-tonic major chord: Lydian
-D     | 53 | C#Maj7b5    # ♭VIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+5  | D/C         # a non-tonic major chord: Lydian
+5  | C/E         # a non-tonic major chord: Lydian
+5  | G/A         # a non-tonic major chord: Lydian
+5  | C#Maj7b5    # ♭VIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
 # book: C#Ma7sus(b5)
-D     | 54 | D/C         # a non-tonic major chord: Lydian
-D     | 54 | C/E         # a non-tonic major chord: Lydian
-D     | 54 | G/A         # a non-tonic major chord: Lydian
-D     | 54 | C#m7b5      # bviiø7 in Eb: Locrian, its own mode (the chord is outside the key)
-D     | 55 | G/F         # a non-tonic major chord: Lydian
-D     | 55 | F/A         # a non-tonic major chord: Lydian
-D     | 55 | C/D         # a non-tonic major chord: Lydian
-D     | 55 | F#Maj7b5    # ♭IIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+6  | D/C         # a non-tonic major chord: Lydian
+6  | C/E         # a non-tonic major chord: Lydian
+6  | G/A         # a non-tonic major chord: Lydian
+6  | C#m7b5      # bviiø7 in Eb: Locrian, its own mode (the chord is outside the key)
+7  | G/F         # a non-tonic major chord: Lydian
+7  | F/A         # a non-tonic major chord: Lydian
+7  | C/D         # a non-tonic major chord: Lydian
+7  | F#Maj7b5    # ♭IIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
 # book: F#Ma7(b5)sus
-D     | 56 | G/F         # a non-tonic major chord: Lydian
-D     | 56 | F/A         # a non-tonic major chord: Lydian
-D     | 56 | C/D         # a non-tonic major chord: Lydian
-D     | 56 | F/F#        # a non-tonic major chord: Lydian
-D     | 57 | G69         # a non-tonic major chord: Lydian
-D     | 57 | Eb/B        # tonic: the 4th is in the key
-D     | 57 | Em/F        # a borrowed minor chord: Dorian, its own key
-# area: D major (bars 57–1)
-D     | 57 | Ab9#5       # tritone substitute: resolves down a half step to G69; b13 from the symbol
-D     | 58 | G69         # the Ab9#5 before it makes G the key of the moment: the 4th is in the key
-D     | 58 | Bb/B        # ♭VI, borrowed from D minor: Lydian (its ♯11 is in the key)
-D     | 58 | F69         # ♭III6, borrowed from D minor: Lydian (its ♯11 is in the key)
-D     | 58 | Ab9#5       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b13 from the symbol
-D     | 59 | D/G         # tonic: the 4th is in the key
+8  | G/F         # a non-tonic major chord: Lydian
+8  | F/A         # a non-tonic major chord: Lydian
+8  | C/D         # a non-tonic major chord: Lydian
+8  | F/F#        # a non-tonic major chord: Lydian
+9  | G69         # a non-tonic major chord: Lydian
+9  | Eb/B        # tonic: the 4th is in the key
+9  | Em/F        # a borrowed minor chord: Dorian, its own key
+# area: D major (D 9 – Coda 1)
+9  | Ab9#5       # tritone substitute: resolves down a half step to G69; b13 from the symbol
+10 | G69         # the Ab9#5 before it makes G the key of the moment: the 4th is in the key
+10 | Bb/B        # ♭VI, borrowed from D minor: Lydian (its ♯11 is in the key)
+10 | F69         # ♭III6, borrowed from D minor: Lydian (its ♯11 is in the key)
+10 | Ab9#5       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key; b13 from the symbol
+11 | D/G         # tonic: the 4th is in the key
 # bar 59: D/G is a 16th-note anticipation (the book repeats it in parentheses)
-D     | 59 | Bb/B        # ♭VI, borrowed from D minor: Lydian (its ♯11 is in the key)
-D     | 59 | Eb/F        # ♭II, borrowed from D Phrygian: Lydian (its ♯11 is in the key)
-D     | 59 | Ab13        # tritone substitute: resolves down a half step to G69
-D     | 60 | G69         # the Ab13 before it makes G the key of the moment: the 4th is in the key
-D     | 60 | Eb/B        # ♭II, borrowed from D Phrygian: Lydian (its ♯11 is in the key)
-D     | 60 | EbMaj7#5/F  # from the symbol: #5
-D     | 60 | A7alt       # from the symbol: altered
-D     | 61 | D69         # tonic: the 4th is in the key
-D     | 61 | GbMaj7b5    # a non-tonic major chord: Lydian
-D     | 61 | G/C         # IV: the #4 is the key’s 7th
-D     | 61 | B/D#        # a non-tonic major chord: Lydian
+11 | Bb/B        # ♭VI, borrowed from D minor: Lydian (its ♯11 is in the key)
+11 | Eb/F        # ♭II, borrowed from D Phrygian: Lydian (its ♯11 is in the key)
+11 | Ab13        # tritone substitute: resolves down a half step to G69
+12 | G69         # the Ab13 before it makes G the key of the moment: the 4th is in the key
+12 | Eb/B        # ♭II, borrowed from D Phrygian: Lydian (its ♯11 is in the key)
+12 | EbMaj7#5/F  # from the symbol: #5
+12 | A7alt       # from the symbol: altered
+13 | D69         # tonic: the 4th is in the key
+13 | GbMaj7b5    # a non-tonic major chord: Lydian
+13 | G/C         # IV: the #4 is the key’s 7th
+13 | B/D#        # a non-tonic major chord: Lydian
 # book: B(add9)/D#
-D     | 62 | D69         # tonic: the 4th is in the key
-D     | 62 | Csus/F#     # static sus: Mixolydian
-D     | 62 | C69         # ♭VII6, borrowed from D minor: Lydian (its ♯11 is in the key)
-D     | 62 | B/D#        # a non-tonic major chord: Lydian
+14 | D69         # tonic: the 4th is in the key
+14 | Csus/F#     # static sus: Mixolydian
+14 | C69         # ♭VII6, borrowed from D minor: Lydian (its ♯11 is in the key)
+14 | B/D#        # a non-tonic major chord: Lydian
 # book: B(add9)/D#
-D     | 63 | A/D         # V without its 7th: Mixolydian, the key’s own notes
-D     | 63 | F/F#        # ♭III, borrowed from D minor: Lydian (its ♯11 is in the key)
-D     | 63 | Bb/C        # ♭VI, borrowed from D minor: Lydian (its ♯11 is in the key)
-D     | 63 | Eb7#5       # tritone substitute: resolves down a half step to D69; b13 from the symbol
-D     | 64 | D69         # tonic: the 4th is in the key
-D     | 64 | F/F#        # ♭III, borrowed from D minor: Lydian (its ♯11 is in the key)
-D     | 64 | C69         # ♭VII6, borrowed from D minor: Lydian (its ♯11 is in the key)
-D     | 64 | EbMaj7/F    # ♭IImaj7, borrowed from D Phrygian: Lydian (its ♯11 is in the key)
-@nav D 64 D.S. al Coda
-Coda  | 1  | Am7         # a borrowed minor chord: Dorian, its own key
-@coda Coda 1
-# area: Bb minor (bars 1–4)
-Coda  | 1  | F7b9        # V7 of Bb minor: b9 and b13 are in the key
-Coda  | 1  | Bbm7        # tonic minor: Dorian by convention
-Coda  | 1  | Bm9b5       # a borrowed minor chord: Dorian, its own key
-Coda  | 2  | Am7         # a borrowed minor chord: Dorian, its own key
-Coda  | 2  | F7b9        # V7 of Bb minor: b9 and b13 are in the key
-Coda  | 2  | Bbm9        # tonic minor: Dorian by convention
-Coda  | 2  | Db/Eb       # bIII of Bb minor: the relative major itself
-Coda  | 3  | C/D         # a non-tonic major chord: Lydian
-Coda  | 3  | D           # a non-tonic major chord: Lydian
+15 | A/D         # V without its 7th: Mixolydian, the key’s own notes
+15 | F/F#        # ♭III, borrowed from D minor: Lydian (its ♯11 is in the key)
+15 | Bb/C        # ♭VI, borrowed from D minor: Lydian (its ♯11 is in the key)
+15 | Eb7#5       # tritone substitute: resolves down a half step to D69; b13 from the symbol
+16 | D69         # tonic: the 4th is in the key
+16 | F/F#        # ♭III, borrowed from D minor: Lydian (its ♯11 is in the key)
+16 | C69         # ♭VII6, borrowed from D minor: Lydian (its ♯11 is in the key)
+16 | EbMaj7/F    # ♭IImaj7, borrowed from D Phrygian: Lydian (its ♯11 is in the key)
+@nav 16 D.S. al Coda
+
+section: Coda
+1  | Am7         # a borrowed minor chord: Dorian, its own key
+@coda 1
+# area: Bb minor (Coda 1–4)
+1  | F7b9        # V7 of Bb minor: b9 and b13 are in the key
+1  | Bbm7        # tonic minor: Dorian by convention
+1  | Bm9b5       # a borrowed minor chord: Dorian, its own key
+2  | Am7         # a borrowed minor chord: Dorian, its own key
+2  | F7b9        # V7 of Bb minor: b9 and b13 are in the key
+2  | Bbm9        # tonic minor: Dorian by convention
+2  | Db/Eb       # bIII of Bb minor: the relative major itself
+3  | C/D         # a non-tonic major chord: Lydian
+3  | D           # a non-tonic major chord: Lydian
 # book: D(add9 omit3)
-Coda  | 4  | D
+4  | D
 # book: D(add9 omit3), repeated: vamp and fade

@@ -12,7 +12,7 @@ import { parseChart } from '../chart'
 /** the rows of a chart in `key`, one bar per chord: "Cmaj7 | D7 | G7 | Cmaj7" */
 function rows(key: string, chords: string): readonly RowAnalysis[] {
   const list = chords.split('|').map((c) => c.trim())
-  const text = `title: T\nkey: ${key}\nbars: ${list.length}\n${list.map((c, i) => `A | ${i + 1} | ${c}`).join('\n')}\n`
+  const text = `title: T\nkey: ${key}\nbars: ${list.length}\nsection: A\n${list.map((c, i) => `${i + 1} | ${c}`).join('\n')}\n`
   return analyse(parseChart(text).value).rows
 }
 
@@ -321,7 +321,7 @@ describe('L5 a sus before its own dominant is a suspension', () => {
     expect(label(row('C', 'Cmaj7 | G7sus4 | Fmaj7', 'G7sus4'))).toMatchObject({ scale: 'G Mixolydian', rule: 's3', fn: 'static sus', reason: 'static sus: Mixolydian' })
   })
   it('in a modal chart a sus before its own-root dominant stays static', () => {
-    const text = 'title: T\nkey: D\nbars: 16\nA | 1 | Dm7\nA | 5 | G7sus4\nA | 7 | G7\nA | 9 | Ebmaj7\nA | 13 | Dm7\n'
+    const text = 'title: T\nkey: D\nbars: 16\n\nsection: A\nbars: 16\n1 | Dm7\n5 | G7sus4\n7 | G7\n9 | Ebmaj7\n13 | Dm7\n'
     const a = analyse(parseChart(text).value)
     expect(a.context).toBe('modal')
     expect(label(a.rows.find((r) => r.chord === 'G7sus4') as RowAnalysis)).toMatchObject({ scale: 'G Mixolydian', rule: 's3', fn: 'static sus', reason: 'static sus: Mixolydian' })

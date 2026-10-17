@@ -3,57 +3,67 @@ composer: Harold Land
 style: Latin
 key: F
 form: AAB, 34 bars
-source:
-# analysis: 2026-10-12, rules v1; F
+source: 
+# analysis: 2026-10-17, rules v1; F
 # book: Medium Latin (half note = 122). Trumpet plays the melody throughout; chords in parentheses are used for solos.
 # Solo on form (AAB), taking the "On Cue" ending to end the last solo; then D.S. al Coda
 # the book's F(add 9) is written F, Bb13sus is written Bb9sus4
 
-# section | bar | chord
+# bar | chord
 # the intro opens with 7 bars of a bass and piano figure with no chords (N.C.); its last bar is Intro bar 1 here
-# area: F major (bars 1–16)
-Intro | 1  | F        # tonic: the 4th is in the key
+
+section: Intro
+bars: 4
+# area: F major (Intro 1 – B 7)
+1  | F        # tonic: the 4th is in the key
 # book: F(add 9)
-Intro | 1  | E7sus4   # static sus: Mixolydian
-Intro | 1  | CMaj7/D  # a non-tonic major chord: Lydian
-A     | 1  | DbMaj7   # ♭VImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
-@segno A 1
-A     | 5  | FMaj7    # tonic: the 4th is in the key
-A     | 8  | F        # tonic: the 4th is in the key
+1  | E7sus4   # static sus: Mixolydian
+1  | CMaj7/D  # a non-tonic major chord: Lydian
+
+section: A
+1  | DbMaj7   # ♭VImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
+@segno 1
+5  | FMaj7    # tonic: the 4th is in the key
+8  | F        # tonic: the 4th is in the key
 # book: F(add 9)
-A     | 8  | E7sus4   # static sus: Mixolydian
-A     | 8  | CMaj7/D  # a non-tonic major chord: Lydian
+8  | E7sus4   # static sus: Mixolydian
+8  | CMaj7/D  # a non-tonic major chord: Lydian
 # alt (solos): bar 8 (FMaj7)
-A     | 9  | F        # tonic: the 4th is in the key
+9  | F        # tonic: the 4th is in the key
 # alt (solos): bar 9 (FMaj7)
-@ending 1 A 8
-@ending 2 A 9
-B     | 10 | A13b9    # extended dominant: each one falls a fifth into the next, on the way to F minor: b9 and #11 are in the key, the 13 from…
-B     | 11 | D7#5#9   # extended dominant: each one falls a fifth into the next, on the way to F minor: the b13 is in the key, b9, #9 and #11 f…
-B     | 12 | G13b9    # V7 of V7: the dominant of the dominant, on the way to F minor: the b9 is in the key, the 13 from the symbol
-B     | 13 | C7#5#9   # V7 of F minor, the chain's last link: the b13 is in the key, b9, #9 and #11 from the symbol
-B     | 14 | Fm9      # ii of Bb9sus4: Dorian
-B     | 16 | Bb9sus4  # static sus: Mixolydian
+@ending 1 8
+@ending 2 9
+
+section: B
+1  | A13b9    # extended dominant: each one falls a fifth into the next, on the way to F minor: b9 and #11 are in the key, the 13 from…
+2  | D7#5#9   # extended dominant: each one falls a fifth into the next, on the way to F minor: the b13 is in the key, b9, #9 and #11 f…
+3  | G13b9    # V7 of V7: the dominant of the dominant, on the way to F minor: the b9 is in the key, the 13 from the symbol
+4  | C7#5#9   # V7 of F minor, the chain's last link: the b13 is in the key, b9, #9 and #11 from the symbol
+5  | Fm9      # ii of Bb9sus4: Dorian
+7  | Bb9sus4  # static sus: Mixolydian
 # book: Bb13sus
-# area: Eb major (bars 18–22)
-B     | 18 | Fm9      # ii of the ii–V to Eb
-B     | 20 | Bb13b9   # V7 of Eb: the b9 from the symbol
-B     | 22 | EbMaj9   # tonic: the 4th is in the key
-# area: C major (bars 23–24)
-B     | 23 | G7#5b9   # V7 of C: b9, #11 and b13 from the symbol
-@coda B 23
-B     | 24 | CMaj9    # tonic: the 4th is in the key
-# area: F major (bars 26–1)
-B     | 26 | C7b9#9   # V7 of F: b9, #9 and #11 from the symbol
+# area: Eb major (B 9–13)
+9  | Fm9      # ii of the ii–V to Eb
+11 | Bb13b9   # V7 of Eb: the b9 from the symbol
+13 | EbMaj9   # tonic: the 4th is in the key
+# area: C major (B 14–15)
+14 | G7#5b9   # V7 of C: b9, #11 and b13 from the symbol
+@coda 14
+15 | CMaj9    # tonic: the 4th is in the key
+# area: F major (B 17 – Coda 1)
+17 | C7b9#9   # V7 of F: b9, #9 and #11 from the symbol
 # bars 26–27: solo break
-B     | 27 | C7b9#9
-B     | 28 | F        # tonic: the 4th is in the key
+18 | C7b9#9
+19 | F        # tonic: the 4th is in the key
 # book: F(add 9)
-B     | 28 | E7sus4   # static sus: Mixolydian
-B     | 28 | CMaj7/D  # a non-tonic major chord: Lydian
-@ending 1 B 27
-@ending 2 B 28
+19 | E7sus4   # static sus: Mixolydian
+19 | CMaj7/D  # a non-tonic major chord: Lydian
+@ending 1 18
+@ending 2 19
 # book: bar 27 is "Till Cue" (repeat to A for solos), bar 28 "On Cue"
-@nav B 28 D.S. al Coda
-Coda  | 1  | CMaj9    # a non-tonic major chord: Lydian
+@nav 19 D.S. al Coda
+
+section: Coda
+bars: 4
+1  | CMaj9    # a non-tonic major chord: Lydian
 # book: CMaj9 for 4 bars, then a bass and piano vamp with no chords (N.C.), vamp and fade

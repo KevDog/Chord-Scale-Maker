@@ -6,38 +6,48 @@ form: ABCD, 32 bars
 source: Colorado Cookbook, p. 145
 # analysis: 2026-10-11, rules v1; Eb
 
-# section | bar | chord | scale
-A | 1  | EbMaj7    # tonic: the 4th is in the key
-A | 2  | Ab7#11    # IV7 in Eb, not resolving: the #11 is in the key
-A | 3  | EbMaj7    # tonic: the 4th is in the key
-A | 4  | Ab7#11    # IV7 in Eb, not resolving: the #11 is in the key
-A | 5  | EbMaj7/G  # tonic: the 4th is in the key
-A | 6  | Gbdim7    # passing diminished: a rootless dominant ♭9
-A | 7  | Fm        # ii: Dorian, the key’s own notes
-B | 9  | Dm7b5     # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 10 | G7        # V7/vi in Eb: b9 and b13 are in the key
-B | 11 | Cm        # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B | 12 | Dm7b5     # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 12 | G7        # V7/vi in Eb: b9 and b13 are in the key
-B | 13 | Cm        # ii of F7#11: Dorian
-B | 14 | F7#11     # V7/V in Eb: the #11 from the symbol
-B | 15 | Fm7       # ii of the ii–V to Eb
-B | 16 | Bb7       # V7 of Eb: natural tensions
-C | 17 | EbMaj7    # tonic: the 4th is in the key
-C | 18 | Ab7#11    # IV7 in Eb, not resolving: the #11 is in the key
-C | 19 | EbMaj7    # tonic: the 4th is in the key
-C | 20 | Ab7#11    # IV7 in Eb, not resolving: the #11 is in the key
-C | 21 | Gm7b5     # iiiø7 in Eb: Locrian, its own mode (the chord is outside the key)
-C | 22 | Gbdim7    # passing diminished: a rootless dominant ♭9
-C | 23 | Fm        # ii: Dorian, the key’s own notes
-D | 25 | AbMaj7    # IV: the #4 is the key’s 7th
-D | 26 | Am7b5     # iiø7 of D7: Locrian, the key's own notes (its ♭2 is a passing note)
-D | 26 | D7        # V7/iii in Eb: b9 and b13 are in the key
-D | 27 | Abm7      # ii of Db7: Dorian
-D | 27 | Db7       # extended ii–V: a side-step, its own key
-D | 28 | Gm7       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-D | 28 | C7        # V7/ii in Eb: the b13 is in the key
-D | 29 | Fm7       # ii of Bb7: Dorian
-D | 30 | Bb7       # V7/I in Eb: natural tensions
-D | 31 | EMaj7     # ♭IImaj7, borrowed from Eb Phrygian: Lydian (its ♯11 is in the key)
-D | 32 | EbMaj7    # tonic: the 4th is in the key
+# bar | chord | scale
+
+section: A
+bars: 8
+1 | EbMaj7    # tonic: the 4th is in the key
+2 | Ab7#11    # IV7 in Eb, not resolving: the #11 is in the key
+3 | EbMaj7    # tonic: the 4th is in the key
+4 | Ab7#11    # IV7 in Eb, not resolving: the #11 is in the key
+5 | EbMaj7/G  # tonic: the 4th is in the key
+6 | Gbdim7    # passing diminished: a rootless dominant ♭9
+7 | Fm        # ii: Dorian, the key’s own notes
+
+section: B
+1 | Dm7b5     # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2 | G7        # V7/vi in Eb: b9 and b13 are in the key
+3 | Cm        # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+4 | Dm7b5     # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4 | G7        # V7/vi in Eb: b9 and b13 are in the key
+5 | Cm        # ii of F7#11: Dorian
+6 | F7#11     # V7/V in Eb: the #11 from the symbol
+7 | Fm7       # ii of the ii–V to Eb
+8 | Bb7       # V7 of Eb: natural tensions
+
+section: C
+bars: 8
+1 | EbMaj7    # tonic: the 4th is in the key
+2 | Ab7#11    # IV7 in Eb, not resolving: the #11 is in the key
+3 | EbMaj7    # tonic: the 4th is in the key
+4 | Ab7#11    # IV7 in Eb, not resolving: the #11 is in the key
+5 | Gm7b5     # iiiø7 in Eb: Locrian, its own mode (the chord is outside the key)
+6 | Gbdim7    # passing diminished: a rootless dominant ♭9
+7 | Fm        # ii: Dorian, the key’s own notes
+
+section: D
+1 | AbMaj7    # IV: the #4 is the key’s 7th
+2 | Am7b5     # iiø7 of D7: Locrian, the key's own notes (its ♭2 is a passing note)
+2 | D7        # V7/iii in Eb: b9 and b13 are in the key
+3 | Abm7      # ii of Db7: Dorian
+3 | Db7       # extended ii–V: a side-step, its own key
+4 | Gm7       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+4 | C7        # V7/ii in Eb: the b13 is in the key
+5 | Fm7       # ii of Bb7: Dorian
+6 | Bb7       # V7/I in Eb: natural tensions
+7 | EMaj7     # ♭IImaj7, borrowed from Eb Phrygian: Lydian (its ♯11 is in the key)
+8 | EbMaj7    # tonic: the 4th is in the key

@@ -22,13 +22,13 @@ test('clicking a chord on the Changes sheet opens its field in place', async ({ 
   await expect(page.getByRole('heading', { name: 'Chart', exact: true })).toHaveCount(0) // the sheet is the editor: no bar grid
   await field.fill('Db7')
   await field.press('Enter')
-  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| Db7/)
+  await expect.poll(() => plain(page)).toMatch(/\n2 \| Db7/)
   await expect(page.getByRole('button', { name: 'Edit Db7, A bar 2' })).toBeVisible()
 })
 
 test('the new chord slot in a bar whose last chord is on its last beat sits past that chord’s name (#143)', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 1 | G7\nA | 1 | C7\nA | 2 | FMaj7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n1 | G7\n1 | C7\n2 | FMaj7\n')
   const last = page.getByRole('button', { name: 'Edit C7, A bar 1' })
   await last.click()
   await page.getByRole('combobox', { name: 'Chord, A bar 1' }).press(' ')
@@ -54,7 +54,7 @@ test('on a phone the grid gives way to light edits: tap a chord, change it in a 
   const input = editor.getByRole('textbox', { name: 'Chord' })
   await input.fill('Em7')
   await input.press('Enter')
-  await expect.poll(() => plain(page)).toMatch(/A \| 1 \| Em7/)
+  await expect.poll(() => plain(page)).toMatch(/\n1 \| Em7/)
   await page.keyboard.press('Escape')
   await expect(editor).toBeHidden()
   await expect(page.getByRole('button', { name: 'Edit Em7, A bar 1' })).toBeVisible()
@@ -74,7 +74,7 @@ test('the sheet is the editor: type into a chord with completions that read the 
   const reading = (await options.nth(1).textContent())?.split('→')[1]?.trim() ?? ''
   await field.press('ArrowDown')
   await field.press('Enter')
-  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| G7b9/)
+  await expect.poll(() => plain(page)).toMatch(/\n2 \| G7b9/)
   // the label under the chord now reads what the completion promised
   await expect(page.locator('[data-slot=scale]', { hasText: reading }).first()).toBeVisible()
 
@@ -89,7 +89,7 @@ test('the sheet is the editor: type into a chord with completions that read the 
   await expect(slot).toHaveValue('')
   await slot.fill('A7')
   await slot.press('Enter')
-  await expect.poll(() => plain(page)).toMatch(/A \| 1 \| Dm7\nA \| 1 \| A7/)
+  await expect.poll(() => plain(page)).toMatch(/\n1 \| Dm7\n1 \| A7/)
   await expect(page.getByRole('button', { name: 'Edit A7, A bar 1' })).toBeVisible()
 })
 
@@ -115,7 +115,7 @@ test('a refused chord keeps the field open and says why; Escape restores the cho
   await expect(page.locator('[aria-live]').getByText(/can’t go in a chart/)).toHaveCount(1) // said, too (#143)
   await field.press('Escape')
   await expect(page.getByRole('button', { name: 'Edit G7, A bar 2' })).toBeVisible()
-  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| G7\n/)
+  await expect.poll(() => plain(page)).toMatch(/\n2 \| G7\n/)
 })
 
 test('the numeral opens the function list and the scale label the scale list; a pinned scale shows its pin', async ({ page }) => {
@@ -129,21 +129,21 @@ test('the numeral opens the function list and the scale label the scale list; a 
   await page.getByRole('button', { name: 'G Mixo', exact: true }).first().click()
   const sc = page.getByRole('dialog', { name: 'Scale: G7' })
   await sc.getByRole('radiogroup', { name: 'Scale' }).getByRole('radio', { name: /^G Altered/ }).click()
-  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| G7 \| G Altered/)
+  await expect.poll(() => plain(page)).toMatch(/\n2 \| G7 \| G Altered/)
   await page.keyboard.press('Escape')
   await expect(page.getByRole('button', { name: 'G Altered', exact: true }).first().locator('[data-pin]')).toBeVisible()
 })
 
 test('the numeral picker accepts a guessed function, and takes any function typed in full', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\nA | 5 | CMaj7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 8\n1 | CMaj7\n2 | D7\n3 | Dm7\n4 | G7\n5 | CMaj7\n')
   const guessed = page.getByRole('button', { name: 'II7', exact: true }).first() // D7: II7 in C, not resolving (ruling D5, a guess)
   await expect(guessed).toHaveClass(/decoration-amber-500/)
   await guessed.click()
   const d7 = page.getByRole('dialog', { name: 'Function: D7' })
   await expect(d7).toContainText('could only guess here')
   await d7.getByRole('button', { name: 'Accept guess' }).click()
-  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| D7 \| +\| II7\n/)
+  await expect.poll(() => plain(page)).toMatch(/\n2 \| D7 \| +\| II7\n/)
   await expect(page.getByRole('button', { name: 'II7', exact: true }).first()).not.toHaveClass(/decoration-amber-500/)
   await page.keyboard.press('Escape')
   await page.getByRole('button', { name: 'V7', exact: true }).first().click()
@@ -152,11 +152,11 @@ test('the numeral picker accepts a guessed function, and takes any function type
   await other.fill('banana')
   await other.press('Enter')
   await expect(g7).toContainText("\"banana\" isn't a function")
-  await expect.poll(() => plain(page)).toMatch(/A \| 4 \| G7\n/)
+  await expect.poll(() => plain(page)).toMatch(/\n4 \| G7\n/)
   await other.fill('F: V7/V') // G7 heard in F: its key prefix stays as typed
   await expect(g7.getByRole('status', { name: 'The scale it gives' })).toContainText(/^→ G /)
   await other.press('Enter')
-  await expect.poll(() => plain(page)).toMatch(/A \| 4 \| G7 \| +\| F: V7\/V\n/)
+  await expect.poll(() => plain(page)).toMatch(/\n4 \| G7 \| +\| F: V7\/V\n/)
   await expect(page.getByRole('button', { name: 'V7/V', exact: true }).first()).toBeVisible()
 })
 
@@ -164,18 +164,18 @@ test('the bar toolbar inserts and deletes bars, the ghost bar adds one, + Sectio
   await page.setViewportSize({ width: 1280, height: 900 })
   await page.getByRole('button', { name: 'Edit G7, A bar 2' }).hover()
   await page.getByRole('button', { name: 'Insert a held bar after A bar 2' }).click()
-  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| G7\nA \| 4 \| CMaj7/)
+  await expect.poll(() => plain(page)).toMatch(/\n2 \| G7\n4 \| CMaj7/)
   await page.getByRole('button', { name: 'Edit CMaj7, A bar 4' }).hover()
   await page.getByRole('button', { name: 'Delete A bar 4' }).click()
   await expect.poll(() => plain(page)).not.toMatch(/CMaj7/)
   await page.getByRole('button', { name: 'Add a bar at the end of A' }).click()
-  await expect.poll(() => plain(page)).toMatch(/A \| 1 \| Dm7\nA \| 2 \| G7\nA \| 3 \| G7/) // at the part's end a held bar wouldn't count: the sounding chord is written
+  await expect.poll(() => plain(page)).toMatch(/section: A\nbars: 4\n(?:#.*\n)?1 \| Dm7\n2 \| G7\n/) // held bars at the section's end count through bars:
   await page.getByRole('button', { name: 'Add a section' }).click()
   const dialog = page.getByRole('dialog')
   await dialog.getByLabel('Section name').fill('B')
   await dialog.getByLabel('First chords').fill('Fm7 Bb7')
   await dialog.getByRole('button', { name: 'Add section' }).click()
-  await expect.poll(() => plain(page)).toMatch(/B \| 5 \| Fm7\nB \| 5 \| Bb7/) // numbered on from A's four bars
+  await expect.poll(() => plain(page)).toMatch(/section: B\n1 \| Fm7\n1 \| Bb7/) // numbered from 1
 })
 
 test('the toolbar’s menu sets a jump and starts a new section at a bar', async ({ page }) => {
@@ -186,14 +186,14 @@ test('the toolbar’s menu sets a jump and starts a new section at a bar', async
   const jump = page.getByRole('dialog')
   await jump.getByLabel('Jump').selectOption('Fine')
   await jump.getByRole('button', { name: 'Set' }).click()
-  await expect.poll(() => plain(page)).toMatch(/@nav A 3 Fine/)
+  await expect.poll(() => plain(page)).toMatch(/@nav 3 Fine/)
   await page.getByRole('button', { name: 'Edit G7, A bar 2' }).hover()
   await page.getByRole('button', { name: 'More actions for A bar 2' }).click()
   await page.getByRole('menuitem', { name: 'New section here…' }).click()
   const split = page.getByRole('dialog')
   await split.getByLabel('Section name').fill('B')
   await split.getByRole('button', { name: 'Start section' }).click()
-  await expect.poll(() => plain(page)).toMatch(/A \| 1 \| Dm7\nB \| 2 \| G7/)
+  await expect.poll(() => plain(page)).toMatch(/\n1 \| Dm7\n(?:.*\n)*?section: B\n1 \| G7/)
 })
 
 test('the toolbar’s menu pastes bars; a section is renamed from its marker and repeated from beside + Section', async ({ page }) => {
@@ -205,19 +205,19 @@ test('the toolbar’s menu pastes bars; a section is renamed from its marker and
   await paste.getByLabel('Bars').fill('| Fm7 | Bb7 Eb7 |')
   await expect(paste.getByText('2 bars')).toBeVisible()
   await paste.getByRole('button', { name: 'Insert after bar 2' }).click()
-  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| G7\nA \| 3 \| Fm7\nA \| 4 \| Bb7\nA \| 4 \| Eb7\nA \| 5 \| CMaj7/)
+  await expect.poll(() => plain(page)).toMatch(/\n2 \| G7\n3 \| Fm7\n4 \| Bb7\n4 \| Eb7\n5 \| CMaj7/)
   await page.getByRole('button', { name: 'Rename A' }).click()
   const rename = page.getByRole('dialog')
   await expect(rename.getByLabel('Section name')).toHaveValue('A')
   await rename.getByLabel('Section name').fill('Verse')
   await rename.getByRole('button', { name: 'Rename' }).click()
-  await expect.poll(() => plain(page)).toMatch(/Verse \| 1 \| Dm7/)
+  await expect.poll(() => plain(page)).toMatch(/section: Verse\n/)
   await page.getByRole('button', { name: 'Repeat a section…' }).click()
   const repeat = page.getByRole('dialog')
   await expect(repeat.getByLabel('Section to repeat')).toHaveValue('Verse')
   await repeat.getByLabel('Name of the repeat').fill('Verse2')
   await repeat.getByRole('button', { name: 'Repeat', exact: true }).click()
-  await expect.poll(() => plain(page)).toMatch(/@copy Verse Verse2 8/) // after the Verse's eight bars
+  await expect.poll(() => plain(page)).toMatch(/section: Verse2\ncopy: Verse/)
   await expect(page.getByText('Verse · Verse2')).toBeVisible() // the repeat straight after its source: one marker, ×2
 })
 
@@ -255,7 +255,7 @@ test('⇧Tab moves back a bar; Tab from the last chord returns focus to its butt
 
 test('a chord with no numeral or scale still opens its pickers, from a dash in each row (#143)', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | Hm7\nA | 3 | CMaj7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | Hm7\n3 | CMaj7\n')
   const fn = page.getByRole('button', { name: 'Function: Hm7' })
   await expect(fn).toHaveText('—')
   await expect(page.getByRole('button', { name: 'Scale: Hm7' })).toHaveText('—')
@@ -265,7 +265,7 @@ test('a chord with no numeral or scale still opens its pickers, from a dash in e
 
 test('blank + Tab takes a one-chord bar’s chord out and moves to the next bar, skipping none (#143)', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | Em7\nA | 2 | G7\nA | 3 | Dm7\nA | 4 | CMaj7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | Em7\n2 | G7\n3 | Dm7\n4 | CMaj7\n')
   await page.getByRole('button', { name: 'Edit G7, A bar 2' }).click()
   const field = page.getByRole('combobox', { name: 'Chord, A bar 2' })
   await field.fill('')
@@ -276,7 +276,7 @@ test('blank + Tab takes a one-chord bar’s chord out and moves to the next bar,
 
 test('→ and ← walk the chords: through a bar’s, then into the next or previous bar’s; inside the text they move the caret', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | Em7\nA | 2 | G7\nA | 2 | Db7\nA | 3 | CMaj7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Em7\n2 | G7\n2 | Db7\n3 | CMaj7\n')
   await page.getByRole('button', { name: 'Edit G7, A bar 2' }).click()
   const fields = page.getByRole('combobox', { name: /^Chord, / })
   await expect(fields).toHaveValue('G7') // selected: → is the next chord
@@ -298,7 +298,7 @@ test('→ and ← walk the chords: through a bar’s, then into the next or prev
   await expect(fields).toHaveJSProperty('selectionStart', 0)
   await page.keyboard.press('ArrowLeft') // at the start: commits, and opens the previous bar's chord
   await expect(fields).toHaveValue('Em7')
-  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| G13/)
+  await expect.poll(() => plain(page)).toMatch(/\n2 \| G13/)
   await page.keyboard.press('ArrowLeft') // the first chord: nowhere to go, focus back on its button
   await expect(page.getByRole('button', { name: 'Edit Em7, A bar 1' })).toBeFocused()
   await expect(fields).toHaveCount(0)
@@ -306,7 +306,7 @@ test('→ and ← walk the chords: through a bar’s, then into the next or prev
 
 test('a chord drawn twice (a written-out repeat) opens one field, where it was clicked (review)', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nB | 1 | Fm7\n@copy A C 0\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n\nsection: B\n1 | Fm7\n\nsection: C\ncopy: A\n')
   await page.getByRole('button', { name: 'Edit G7, C bar 2' }).click()
   const field = page.getByRole('combobox', { name: 'Chord, C bar 2' })
   await expect(field).toBeFocused()
@@ -314,6 +314,6 @@ test('a chord drawn twice (a written-out repeat) opens one field, where it was c
   await expect(page.getByText('C repeats A')).toBeVisible()
   await field.fill('Db7')
   await field.press('Enter')
-  await expect.poll(() => plain(page)).toMatch(/A \| 2 \| Db7/)
+  await expect.poll(() => plain(page)).toMatch(/\n2 \| Db7/)
   await expect(page.getByRole('button', { name: 'Edit Db7, C bar 2' })).toBeVisible()
 })

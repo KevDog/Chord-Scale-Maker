@@ -4,168 +4,177 @@ composer: Harold Arlen
 style: Medium ballad
 key: Eb
 form: ABCD, 57 bars
-source:
-# analysis: 2026-10-12, rules v1; Eb
+source: 
+# analysis: 2026-10-17, rules v1; Eb
 # book: Medium Ballad. A is in Eb; B, C and D are in G
 # book: alternate changes (in parentheses) are played on beat 3 (or beats 3 and 4) of the bars in which they appear
 # book: at letter C, Gm11 may be substituted for C9sus
 # the book's 13sus chords are written 9sus4 (D13sus → D9sus4)
 
-# section | bar | chord
-# area: Eb major (bars 1–15)
-A | 1  | EbMaj7   # tonic: the 4th is in the key
-A | 1  | Bbm7     # a borrowed minor chord: Dorian, its own key
+# bar | chord
+
+section: A
+# area: Eb major (A 1–15)
+1  | EbMaj7   # tonic: the 4th is in the key
+1  | Bbm7     # a borrowed minor chord: Dorian, its own key
 # alt: bar 1, beat 3 (Fm7)
-A | 2  | EbMaj7   # tonic: the 4th is in the key
-A | 2  | Fm7      # ii of the ii–V to Eb
-A | 2  | Bb7      # V7 of Eb: natural tensions
-A | 3  | EbMaj7   # tonic: the 4th is in the key
-A | 3  | Bbm7     # a borrowed minor chord: Dorian, its own key
+2  | EbMaj7   # tonic: the 4th is in the key
+2  | Fm7      # ii of the ii–V to Eb
+2  | Bb7      # V7 of Eb: natural tensions
+3  | EbMaj7   # tonic: the 4th is in the key
+3  | Bbm7     # a borrowed minor chord: Dorian, its own key
 # alt: bar 3, beat 3 (Fm7)
-A | 4  | EbMaj7   # tonic: the 4th is in the key
-A | 4  | Bbm7     # a borrowed minor chord: Dorian, its own key
+4  | EbMaj7   # tonic: the 4th is in the key
+4  | Bbm7     # a borrowed minor chord: Dorian, its own key
 # alt: bar 4, beats 3–4 (Fm7 Bb7)
-A | 5  | EbMaj7   # tonic: the 4th is in the key
-A | 5  | Bbm7     # a borrowed minor chord: Dorian, its own key
+5  | EbMaj7   # tonic: the 4th is in the key
+5  | Bbm7     # a borrowed minor chord: Dorian, its own key
 # alt: bar 5, beat 3 (Fm7)
-A | 6  | EbMaj7   # tonic: the 4th is in the key
-A | 6  | Fm7      # ii of the ii–V to Eb
-A | 6  | Bb7      # V7 of Eb: natural tensions
-A | 7  | EbMaj7   # tonic: the 4th is in the key
-A | 7  | Bbm7     # ii of the ii–V to Ab
-A | 8  | Bbm7
-A | 8  | Eb7      # V7/IV in Eb: natural tensions
-A | 9  | AbMaj7   # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
-A | 9  | GbMaj7   # ♭IIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
+6  | EbMaj7   # tonic: the 4th is in the key
+6  | Fm7      # ii of the ii–V to Eb
+6  | Bb7      # V7 of Eb: natural tensions
+7  | EbMaj7   # tonic: the 4th is in the key
+7  | Bbm7     # ii of the ii–V to Ab
+8  | Bbm7
+8  | Eb7      # V7/IV in Eb: natural tensions
+9  | AbMaj7   # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
+9  | GbMaj7   # ♭IIImaj7, borrowed from Eb minor: Lydian (its ♯11 is in the key)
 # alt: bar 9, beat 3 (Bbm7)
-A | 10 | AbMaj7   # IV: the #4 is the key’s 7th
-A | 10 | Db13     # back door bVII7 to EbMaj7: the #11 is in the key
-A | 11 | EbMaj7   # tonic: the 4th is in the key
-A | 11 | Fm7      # ii: Dorian, the key’s own notes
-A | 12 | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 12 | Fm7      # ii: Dorian, the key’s own notes
-A | 12 | EbMaj7   # tonic: the 4th is in the key
+10 | AbMaj7   # IV: the #4 is the key’s 7th
+10 | Db13     # back door bVII7 to EbMaj7: the #11 is in the key
+11 | EbMaj7   # tonic: the 4th is in the key
+11 | Fm7      # ii: Dorian, the key’s own notes
+12 | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+12 | Fm7      # ii: Dorian, the key’s own notes
+12 | EbMaj7   # tonic: the 4th is in the key
 # alt: bar 12, beats 3–4 (G7#5#9 C7#9)
-A | 13 | G7#5     # V7 of C7#9#11, on the way to F minor: b9 and b13 are in the key, the #11 from the symbol
-A | 13 | C7#9#11  # V7 of F minor, the chain's last link: b9, #9, #11 and 13 from the symbol
-A | 14 | Fm7      # ii: Dorian, the key’s own notes
-A | 14 | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 14 | Ab6      # IV: the #4 is the key’s 7th
-A | 14 | Bb9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+13 | G7#5     # V7 of C7#9#11, on the way to F minor: b9 and b13 are in the key, the #11 from the symbol
+13 | C7#9#11  # V7 of F minor, the chain's last link: b9, #9, #11 and 13 from the symbol
+14 | Fm7      # ii: Dorian, the key’s own notes
+14 | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+14 | Ab6      # IV: the #4 is the key’s 7th
+14 | Bb9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 # book: Bb9sus
-A | 15 | Eb6      # tonic: the 4th is in the key
-# area: G major (bars 16–57)
-A | 16 | Am7b5    # iiø7 of G: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 16 | D7       # V7 of G: natural tensions
-B | 17 | GMaj7    # tonic: the 4th is in the key
-B | 17 | Dm7      # a borrowed minor chord: Dorian, its own key
-# alt: bar 17, beat 3 (Am7)
-B | 18 | GMaj7    # tonic: the 4th is in the key
-B | 18 | Am7      # ii of the ii–V to G
-B | 18 | D7       # V7 of G: natural tensions
-B | 19 | GMaj7    # tonic: the 4th is in the key
-B | 19 | Dm7      # a borrowed minor chord: Dorian, its own key
-# alt: bar 19, beat 3 (Am7)
-B | 20 | GMaj7    # tonic: the 4th is in the key
-B | 20 | Dm7      # a borrowed minor chord: Dorian, its own key
-# alt: bar 20, beats 3–4 (Am7 D7)
-B | 21 | GMaj7    # tonic: the 4th is in the key
-B | 21 | Dm7      # a borrowed minor chord: Dorian, its own key
-# alt: bar 21, beat 3 (Am7)
-B | 22 | GMaj7    # tonic: the 4th is in the key
-B | 22 | Am7      # ii of the ii–V to G
-B | 22 | D7       # V7 of G: natural tensions
-B | 23 | GMaj7    # tonic: the 4th is in the key
-B | 23 | Dm7      # ii of the ii–V to C
-B | 24 | Dm7
-B | 24 | G7       # V7/IV in G: natural tensions
-B | 25 | CMaj7    # the G7 before it makes C the key of the moment: the 4th is in the key
-B | 25 | BbMaj7   # ♭IIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
-# alt: bar 25, beat 3 (Dm7)
-B | 26 | CMaj7    # IV: the #4 is the key’s 7th
-B | 26 | F13      # back door bVII7 to GMaj7: the #11 is in the key
-B | 27 | GMaj7    # tonic: the 4th is in the key
-B | 27 | Am7      # ii: Dorian, the key’s own notes
-B | 28 | Bm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B | 28 | Am7      # ii: Dorian, the key’s own notes
-B | 28 | GMaj7    # tonic: the 4th is in the key
-# alt: bar 28, beats 3–4 (B7#5#9 E7#9)
-B | 29 | B7#5     # V7 of E7#9#11, on the way to A minor: b9 and b13 are in the key, the #11 from the symbol
-B | 29 | E7#9#11  # V7 of A minor, the chain's last link: b9, #9, #11 and 13 from the symbol
-B | 30 | Am7      # ii: Dorian, the key’s own notes
-B | 30 | Bm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B | 30 | C6       # IV: the #4 is the key’s 7th
-B | 30 | D9sus4   # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+15 | Eb6      # tonic: the 4th is in the key
+# area: G major (A 16 – D 17)
+16 | Am7b5    # iiø7 of G: Locrian, the key's own notes (its ♭2 is a passing note)
+16 | D7       # V7 of G: natural tensions
+
+section: B
+1  | GMaj7    # tonic: the 4th is in the key
+1  | Dm7      # a borrowed minor chord: Dorian, its own key
+# alt: bar 1, beat 3 (Am7)
+2  | GMaj7    # tonic: the 4th is in the key
+2  | Am7      # ii of the ii–V to G
+2  | D7       # V7 of G: natural tensions
+3  | GMaj7    # tonic: the 4th is in the key
+3  | Dm7      # a borrowed minor chord: Dorian, its own key
+# alt: bar 3, beat 3 (Am7)
+4  | GMaj7    # tonic: the 4th is in the key
+4  | Dm7      # a borrowed minor chord: Dorian, its own key
+# alt: bar 4, beats 3–4 (Am7 D7)
+5  | GMaj7    # tonic: the 4th is in the key
+5  | Dm7      # a borrowed minor chord: Dorian, its own key
+# alt: bar 5, beat 3 (Am7)
+6  | GMaj7    # tonic: the 4th is in the key
+6  | Am7      # ii of the ii–V to G
+6  | D7       # V7 of G: natural tensions
+7  | GMaj7    # tonic: the 4th is in the key
+7  | Dm7      # ii of the ii–V to C
+8  | Dm7
+8  | G7       # V7/IV in G: natural tensions
+9  | CMaj7    # the G7 before it makes C the key of the moment: the 4th is in the key
+9  | BbMaj7   # ♭IIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+# alt: bar 9, beat 3 (Dm7)
+10 | CMaj7    # IV: the #4 is the key’s 7th
+10 | F13      # back door bVII7 to GMaj7: the #11 is in the key
+11 | GMaj7    # tonic: the 4th is in the key
+11 | Am7      # ii: Dorian, the key’s own notes
+12 | Bm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+12 | Am7      # ii: Dorian, the key’s own notes
+12 | GMaj7    # tonic: the 4th is in the key
+# alt: bar 12, beats 3–4 (B7#5#9 E7#9)
+13 | B7#5     # V7 of E7#9#11, on the way to A minor: b9 and b13 are in the key, the #11 from the symbol
+13 | E7#9#11  # V7 of A minor, the chain's last link: b9, #9, #11 and 13 from the symbol
+14 | Am7      # ii: Dorian, the key’s own notes
+14 | Bm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+14 | C6       # IV: the #4 is the key’s 7th
+14 | D9sus4   # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 # book: D9sus
-B | 31 | G6       # tonic: the 4th is in the key
-B | 32 | Dm7      # ii of G7: Dorian
-B | 32 | G7       # extended dominant: V7 of C9sus4
-C | 33 | C9sus4   # IV7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+15 | G6       # tonic: the 4th is in the key
+16 | Dm7      # ii of G7: Dorian
+16 | G7       # extended dominant: V7 of C9sus4
+
+section: C
+1  | C9sus4   # IV7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 # book: C9sus (Gm11 may be substituted, bars 33–38)
-C | 33 | C9       # IV7 in G, not resolving: the #11 is in the key
-C | 34 | C9sus4   # IV7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-C | 34 | C9       # tritone substitute: resolves down a half step to B7#5
-C | 35 | B7#5     # extended dominant: V7 of E7; #11 and b13 from the symbol
-C | 35 | E7       # extended dominant: V7 of A7
-C | 35 | A7       # extended dominant: V7 of D9sus4
-C | 35 | D9sus4   # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+1  | C9       # IV7 in G, not resolving: the #11 is in the key
+2  | C9sus4   # IV7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+2  | C9       # tritone substitute: resolves down a half step to B7#5
+3  | B7#5     # extended dominant: V7 of E7; #11 and b13 from the symbol
+3  | E7       # extended dominant: V7 of A7
+3  | A7       # extended dominant: V7 of D9sus4
+3  | D9sus4   # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 # book: D9sus
-C | 36 | G6       # tonic: the 4th is in the key
-C | 36 | G7       # extended dominant: V7 of C9sus4
-C | 37 | C9sus4   # IV7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-C | 37 | C9       # IV7 in G, not resolving: the #11 is in the key
-C | 38 | C9sus4   # IV7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-C | 38 | C9       # IV7 in G, not resolving: the #11 is in the key
-C | 39 | A7       # II7 in G, not resolving: natural tensions
-# alt: bar 39, beats 1–2 (Gm9)
-C | 39 | Eb9#11   # tritone substitute: resolves down a half step to D7#5
-C | 40 | D7#5     # V7 of G: #11 and b13 from the symbol
-D | 41 | GMaj7    # tonic: the 4th is in the key
-D | 41 | Dm7      # a borrowed minor chord: Dorian, its own key
-# alt: bar 41, beat 3 (Am7)
-D | 42 | GMaj7    # tonic: the 4th is in the key
-D | 42 | Am7      # ii of the ii–V to G
-D | 42 | D7       # V7 of G: natural tensions
-D | 43 | GMaj7    # tonic: the 4th is in the key
-D | 43 | Dm7      # a borrowed minor chord: Dorian, its own key
-# alt: bar 43, beat 3 (Am7)
-D | 44 | GMaj7    # tonic: the 4th is in the key
-D | 44 | Dm7      # a borrowed minor chord: Dorian, its own key
-# alt: bar 44, beats 3–4 (Am7 D7)
-D | 45 | GMaj7    # tonic: the 4th is in the key
-D | 45 | Dm7      # a borrowed minor chord: Dorian, its own key
-# alt: bar 45, beat 3 (Am7)
-D | 46 | GMaj7    # tonic: the 4th is in the key
-D | 46 | Am7      # ii of the ii–V to G
-D | 46 | D7       # V7 of G: natural tensions
-D | 47 | GMaj7    # tonic: the 4th is in the key
-D | 47 | Dm7      # ii of the ii–V to C
-D | 48 | Dm7
-D | 48 | G7       # V7/IV in G: natural tensions
-D | 49 | CMaj7    # the G7 before it makes C the key of the moment: the 4th is in the key
-D | 49 | BbMaj7   # ♭IIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
-# alt: bar 49, beat 3 (Dm7)
-D | 50 | CMaj7    # IV: the #4 is the key’s 7th
-D | 50 | F13      # back door bVII7 to GMaj7: the #11 is in the key
-D | 51 | GMaj7    # tonic: the 4th is in the key
-D | 51 | Am7      # ii: Dorian, the key’s own notes
-D | 52 | Bm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-D | 52 | Am7      # ii: Dorian, the key’s own notes
-D | 52 | GMaj7    # tonic: the 4th is in the key
-# alt: bar 52, beats 3–4 (B7#5#9 E7#9)
-D | 53 | B7#5     # V7 of E7#9#11, on the way to A minor: b9 and b13 are in the key, the #11 from the symbol
-D | 53 | E7#9#11  # V7 of A minor, the chain's last link: b9, #9, #11 and 13 from the symbol
-D | 54 | Am7      # ii: Dorian, the key’s own notes
-D | 54 | Bm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-D | 54 | C6       # IV: the #4 is the key’s 7th
-D | 54 | D9sus4   # static sus: Mixolydian
+4  | G6       # tonic: the 4th is in the key
+4  | G7       # extended dominant: V7 of C9sus4
+5  | C9sus4   # IV7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+5  | C9       # IV7 in G, not resolving: the #11 is in the key
+6  | C9sus4   # IV7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+6  | C9       # IV7 in G, not resolving: the #11 is in the key
+7  | A7       # II7 in G, not resolving: natural tensions
+# alt: bar 7, beats 1–2 (Gm9)
+7  | Eb9#11   # tritone substitute: resolves down a half step to D7#5
+8  | D7#5     # V7 of G: #11 and b13 from the symbol
+
+section: D
+bars: 20
+1  | GMaj7    # tonic: the 4th is in the key
+1  | Dm7      # a borrowed minor chord: Dorian, its own key
+# alt: bar 1, beat 3 (Am7)
+2  | GMaj7    # tonic: the 4th is in the key
+2  | Am7      # ii of the ii–V to G
+2  | D7       # V7 of G: natural tensions
+3  | GMaj7    # tonic: the 4th is in the key
+3  | Dm7      # a borrowed minor chord: Dorian, its own key
+# alt: bar 3, beat 3 (Am7)
+4  | GMaj7    # tonic: the 4th is in the key
+4  | Dm7      # a borrowed minor chord: Dorian, its own key
+# alt: bar 4, beats 3–4 (Am7 D7)
+5  | GMaj7    # tonic: the 4th is in the key
+5  | Dm7      # a borrowed minor chord: Dorian, its own key
+# alt: bar 5, beat 3 (Am7)
+6  | GMaj7    # tonic: the 4th is in the key
+6  | Am7      # ii of the ii–V to G
+6  | D7       # V7 of G: natural tensions
+7  | GMaj7    # tonic: the 4th is in the key
+7  | Dm7      # ii of the ii–V to C
+8  | Dm7
+8  | G7       # V7/IV in G: natural tensions
+9  | CMaj7    # the G7 before it makes C the key of the moment: the 4th is in the key
+9  | BbMaj7   # ♭IIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+# alt: bar 9, beat 3 (Dm7)
+10 | CMaj7    # IV: the #4 is the key’s 7th
+10 | F13      # back door bVII7 to GMaj7: the #11 is in the key
+11 | GMaj7    # tonic: the 4th is in the key
+11 | Am7      # ii: Dorian, the key’s own notes
+12 | Bm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+12 | Am7      # ii: Dorian, the key’s own notes
+12 | GMaj7    # tonic: the 4th is in the key
+# alt: bar 12, beats 3–4 (B7#5#9 E7#9)
+13 | B7#5     # V7 of E7#9#11, on the way to A minor: b9 and b13 are in the key, the #11 from the symbol
+13 | E7#9#11  # V7 of A minor, the chain's last link: b9, #9, #11 and 13 from the symbol
+14 | Am7      # ii: Dorian, the key’s own notes
+14 | Bm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+14 | C6       # IV: the #4 is the key’s 7th
+14 | D9sus4   # static sus: Mixolydian
 # book: D9sus
-D | 55 | B7#5     # III7 in G, not resolving: b9 and b13 are in the key, the #11 from the symbol
-D | 55 | B7       # extended dominant: V7 of E7b9
-D | 55 | E7b9     # extended dominant: V7 of A7; b9 from the symbol
-D | 55 | A7       # extended dominant: V7 of D9sus4
-D | 56 | D9sus4   # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+15 | B7#5     # III7 in G, not resolving: b9 and b13 are in the key, the #11 from the symbol
+15 | B7       # extended dominant: V7 of E7b9
+15 | E7b9     # extended dominant: V7 of A7; b9 from the symbol
+15 | A7       # extended dominant: V7 of D9sus4
+16 | D9sus4   # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 # book: D13sus
-D | 56 | D13      # V7 of G: natural tensions
-D | 57 | G6       # tonic: the 4th is in the key
+16 | D13      # V7 of G: natural tensions
+17 | G6       # tonic: the 4th is in the key
 # alt (optional): bar 58 (F9 Bb13), a turnaround back to the top (whole rest in the melody)

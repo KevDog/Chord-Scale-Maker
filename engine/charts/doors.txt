@@ -3,59 +3,69 @@ composer: Mike Nock
 style: Even 8ths
 key: C
 form: ABC, 28 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; C
 
-# section | bar | chord
+# bar | chord
 # book: "Med. Straight 8ths (quasi 16th-note March)"
 # book: Bb(#11)/D throughout A (a Bb triad with a #11 over D); written Bb/D
-A    | 1  | Bb/D         # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
-A    | 1  | CMaj7/D      # tonic: the 4th is in the key
-A    | 2  | Bb/D         # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
-A    | 3  | Bb/D
-A    | 3  | CMaj7/D      # tonic: the 4th is in the key
-A    | 4  | Bb/D         # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
+
+section: A
+1  | Bb/D         # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
+1  | CMaj7/D      # tonic: the 4th is in the key
+2  | Bb/D         # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
+3  | Bb/D
+3  | CMaj7/D      # tonic: the 4th is in the key
+4  | Bb/D         # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
+
+section: B
+bars: 12
 # alt: "Letter A may be played as Bb(#11)/D throughout for solos"
 # bars 5–8 and 17–20: the book's bracketed solo changes (one chord a bar); the head's staff chords move earlier:
 # head: bar 5 DbMaj7/F, EbMaj7/F (beat 2), held; bar 7 DbMaj7/F, EbMaj7/F (beat 3), held
-B    | 5  | DbMaj7/F     # ♭IImaj7, borrowed from C Phrygian: Lydian (its ♯11 is in the key)
-B    | 6  | EbMaj7/F     # ♭IIImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
-B    | 7  | DbMaj7/F     # ♭IImaj7, borrowed from C Phrygian: Lydian (its ♯11 is in the key)
-B    | 8  | EbMaj7/F     # ♭IIImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
-B    | 9  | EMaj9/G#     # a non-tonic major chord: Lydian
-B    | 9  | E/G#         # a non-tonic major chord: Lydian
+1  | DbMaj7/F     # ♭IImaj7, borrowed from C Phrygian: Lydian (its ♯11 is in the key)
+2  | EbMaj7/F     # ♭IIImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
+3  | DbMaj7/F     # ♭IImaj7, borrowed from C Phrygian: Lydian (its ♯11 is in the key)
+4  | EbMaj7/F     # ♭IIImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
+5  | EMaj9/G#     # a non-tonic major chord: Lydian
+5  | E/G#         # a non-tonic major chord: Lydian
 # book: E(add9)/G#
 # bars 11–12: piano fill (slashes, no new chord)
-B    | 13 | GMaj7/B      # a non-tonic major chord: Lydian
-B    | 13 | AMaj7/B      # a non-tonic major chord: Lydian
-B    | 15 | GMaj7/B      # a non-tonic major chord: Lydian
-B    | 15 | AMaj7/B      # a non-tonic major chord: Lydian
+9  | GMaj7/B      # a non-tonic major chord: Lydian
+9  | AMaj7/B      # a non-tonic major chord: Lydian
+11 | GMaj7/B      # a non-tonic major chord: Lydian
+11 | AMaj7/B      # a non-tonic major chord: Lydian
+
+section: C
 # head: bar 17 BbMaj7/D, CMaj7/D (beat 3), held; bar 19 the same
-C    | 17 | BbMaj7/D     # ♭VIImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
-C    | 18 | CMaj7/D      # tonic: the 4th is in the key
-C    | 19 | BbMaj7/D     # ♭VIImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
-C    | 20 | CMaj7/D      # tonic: the 4th is in the key
-C    | 21 | DbMaj9/F     # ♭IImaj7, borrowed from C Phrygian: Lydian (its ♯11 is in the key)
-C    | 21 | DbMaj7#11/F  # from the symbol: #11
+1  | BbMaj7/D     # ♭VIImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
+2  | CMaj7/D      # tonic: the 4th is in the key
+3  | BbMaj7/D     # ♭VIImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
+4  | CMaj7/D      # tonic: the 4th is in the key
+5  | DbMaj9/F     # ♭IImaj7, borrowed from C Phrygian: Lydian (its ♯11 is in the key)
+5  | DbMaj7#11/F  # from the symbol: #11
 # bars 23–24: piano fill (slashes, no new chord)
 # the coda sign stands at the end of bar 24 (DbMaj7#11/F held from bar 21)
-C    | 24 | DbMaj7#11/F
-@coda C 24
-C    | 25 | C/Ab         # tonic: the 4th is in the key
-C    | 25 | B/C#         # a non-tonic major chord: Lydian
-C    | 25 | Bb/Gb        # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
-C    | 26 | A/B          # a non-tonic major chord: Lydian
-C    | 26 | Ab/E         # ♭VI, borrowed from C minor: Lydian (its ♯11 is in the key)
-C    | 27 | GMaj7/A      # a non-tonic major chord: Lydian
+8  | DbMaj7#11/F
+@coda 8
+9  | C/Ab         # tonic: the 4th is in the key
+9  | B/C#         # a non-tonic major chord: Lydian
+9  | Bb/Gb        # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
+10 | A/B          # a non-tonic major chord: Lydian
+10 | Ab/E         # ♭VI, borrowed from C minor: Lydian (its ♯11 is in the key)
+11 | GMaj7/A      # a non-tonic major chord: Lydian
 # D.C. al Coda at the end of bar 28 (GMaj7/A held from bar 27)
-C    | 28 | GMaj7/A
-@nav C 28 D.C. al Coda
+12 | GMaj7/A
+@nav 12 D.C. al Coda
+
+section: Coda
+bars: 4
 # play the head (ABC) twice, then solo on the form; after solos, D.C. al Coda
 # Coda bar 1 is in 6/4, vamped till cue (melody the first four times and the last); bars 2–3 back in 4/4, rall.
-Coda | 1  | C/Ab         # tonic: the 4th is in the key
-Coda | 1  | B/C#         # a non-tonic major chord: Lydian
-Coda | 1  | Bb/Gb        # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
-Coda | 1  | A/B          # a non-tonic major chord: Lydian
-Coda | 2  | Ab/E         # ♭VI, borrowed from C minor: Lydian (its ♯11 is in the key)
-Coda | 2  | GMaj7/A      # a non-tonic major chord: Lydian
-Coda | 3  | F#/D         # a non-tonic major chord: Lydian
+1  | C/Ab         # tonic: the 4th is in the key
+1  | B/C#         # a non-tonic major chord: Lydian
+1  | Bb/Gb        # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
+1  | A/B          # a non-tonic major chord: Lydian
+2  | Ab/E         # ♭VI, borrowed from C minor: Lydian (its ♯11 is in the key)
+2  | GMaj7/A      # a non-tonic major chord: Lydian
+3  | F#/D         # a non-tonic major chord: Lydian

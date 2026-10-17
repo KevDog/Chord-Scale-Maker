@@ -6,9 +6,21 @@ form: AABBA, 40 bars
 key: Gm
 # analysis: 2026-10-11, rules v1; G minor, modal
 
-# section | bar | chord | scale
-A1 | 1  | Gm7  # modal minor: Dorian
-@copy A1 A2 8
-B1 | 17 | Am7 | A Aeolian  # keep: the bridge is A Aeolian; the melody says so
-@copy B1 B2 8
-@copy A1 A3 32
+# bar | chord | scale
+
+section: A1
+bars: 8
+1 | Gm7  # modal minor: Dorian
+
+section: A2
+copy: A1
+
+section: B1
+bars: 8
+1 | Am7 | A Aeolian  # keep: the bridge is A Aeolian; the melody says so
+
+section: B2
+copy: B1
+
+section: A3
+copy: A1

@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import { type ChartDoc, parseChart, serializeChart } from '@chord-scale-maker/engine'
 import ChartHeadingFields from '~/components/ChartHeadingFields.vue'
 
-const doc = parseChart('title: T\nkey: C\ncomposer: X\nA | 1 | C\n').value
+const doc = parseChart('title: T\nkey: C\ncomposer: X\n\nsection: A\nbars: 4\n1 | C\n').value
 const lastText = (w: { emitted: (e: string) => unknown[][] | undefined }): string => serializeChart(w.emitted('update:doc')?.at(-1)?.[0] as ChartDoc)
 
 describe('ChartHeadingFields', () => {

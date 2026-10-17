@@ -4,16 +4,16 @@ import { type ChartDoc, parseChart } from '../chart'
 import { deleteBar, insertBar, repeatSection, setBarChords, splitSection } from '../edit'
 import { carryChordPicks, carryPicks } from '../picks'
 
-const C4 = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | Cmaj7\nB | 5 | Em7\nB | 6 | A7').value
+const C4 = parseChart('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n2 | Dm7\n3 | G7\n4 | Cmaj7\n\nsection: B\nbars: 4\n1 | Em7\n2 | A7').value
 const carried = (before: ChartDoc, after: ChartDoc, picks: Record<string, number>) => carryPicks(drawnChords(before), drawnChords(after), picks)
 
 describe('carryPicks', () => {
   it('keeps picks on their chords when a bar goes in before them', () => {
-    expect(carried(C4, insertBar(C4, 'A', 2, ['F7']), { 'A:3:0': 7, 'B:6:0': 2 })).toEqual({ 'A:4:0': 7, 'B:7:0': 2 })
+    expect(carried(C4, insertBar(C4, 'A', 2, ['F7']), { 'A:3:0': 7, 'B:2:0': 2 })).toEqual({ 'A:4:0': 7, 'B:2:0': 2 })
   })
 
   it('keeps picks on their chords when a bar before them goes', () => {
-    expect(carried(C4, deleteBar(C4, 'A', 2), { 'A:1:0': 9, 'A:3:0': 7, 'B:5:0': 4 })).toEqual({ 'A:1:0': 9, 'A:2:0': 7, 'B:4:0': 4 })
+    expect(carried(C4, deleteBar(C4, 'A', 2), { 'A:1:0': 9, 'A:3:0': 7, 'B:1:0': 4 })).toEqual({ 'A:1:0': 9, 'A:2:0': 7, 'B:1:0': 4 })
   })
 
   it('drops a pick on a removed chord', () => {
@@ -25,11 +25,11 @@ describe('carryPicks', () => {
   })
 
   it('follows a chord into a section split off', () => {
-    expect(carried(C4, splitSection(C4, 'A', 3, 'A2'), { 'A:3:0': 7, 'A:1:0': 9 })).toEqual({ 'A2:3:0': 7, 'A:1:0': 9 })
+    expect(carried(C4, splitSection(C4, 'A', 3, 'A2'), { 'A:3:0': 7, 'A:1:0': 9 })).toEqual({ 'A2:1:0': 7, 'A:1:0': 9 })
   })
 
   it('keeps picks where a repeated section is added after them', () => {
-    expect(carried(C4, repeatSection(C4, 'B', 'B2'), { 'B:6:0': 2 })).toEqual({ 'B:6:0': 2 })
+    expect(carried(C4, repeatSection(C4, 'B', 'B2'), { 'B:2:0': 2 })).toEqual({ 'B:2:0': 2 })
   })
 
   it('keeps a pick in place when a copy of its chord goes in after it', () => {
@@ -41,14 +41,14 @@ describe('carryPicks', () => {
   })
 
   it('carries both kinds of chord picks, for and all', () => {
-    const picks = { pentatonic: { 'A:3:0': { pc: 7, for: 'G7|G Mixolydian' } }, hexatonic: { 'B:6:0': { roots: [0, 2] as const } } }
-    expect(carryChordPicks(drawnChords(C4), drawnChords(insertBar(C4, 'A', 2, ['F7'])), picks)).toEqual({ pentatonic: { 'A:4:0': { pc: 7, for: 'G7|G Mixolydian' } }, hexatonic: { 'B:7:0': { roots: [0, 2] } } })
+    const picks = { pentatonic: { 'A:3:0': { pc: 7, for: 'G7|G Mixolydian' } }, hexatonic: { 'B:2:0': { roots: [0, 2] as const } } }
+    expect(carryChordPicks(drawnChords(C4), drawnChords(insertBar(C4, 'A', 2, ['F7'])), picks)).toEqual({ pentatonic: { 'A:4:0': { pc: 7, for: 'G7|G Mixolydian' } }, hexatonic: { 'B:2:0': { roots: [0, 2] } } })
   })
 })
 
 describe('drawnChords', () => {
   it('lists each drawn chord by the key the Changes sheet gives it, with its text', () => {
-    const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 1 | Dm7\nB | 2 | G7').value
-    expect(drawnChords(doc)).toEqual([{ at: 'A:1:0', text: 'Cmaj7' }, { at: 'A:1:1', text: 'Dm7' }, { at: 'B:2:0', text: 'G7' }])
+    const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n1 | Dm7\n\nsection: B\nbars: 3\n1 | G7').value
+    expect(drawnChords(doc)).toEqual([{ at: 'A:1:0', text: 'Cmaj7' }, { at: 'A:1:1', text: 'Dm7' }, { at: 'B:1:0', text: 'G7' }])
   })
 })

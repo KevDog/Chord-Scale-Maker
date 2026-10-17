@@ -8,8 +8,8 @@ import { buildChanges, CONCERT, type ChangesPentatonic, parseChart, type Pentato
 
 const pentOf = (text: string, plan: PentatonicPlan): ChangesPentatonic =>
   showPentatonics(buildChanges(parseChart(text).value, CONCERT, 4, false, 'off', undefined, plan).lines)[0]!.bars[0]!.chords[0]!.pentatonic!
-const KEY = pentOf('title: T\nkey: C\nA | 1 | Cmaj7', { kind: 'pentatonic', bySection: {}, fallback: { rung: 2, side: 'flat' }, counts: false })
-const PICKED = pentOf('title: T\nkey: C\nA | 1 | Cmaj7', { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, picks: { 'A:1:0': { pc: 7 } } })
+const KEY = pentOf('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Cmaj7', { kind: 'pentatonic', bySection: {}, fallback: { rung: 2, side: 'flat' }, counts: false })
+const PICKED = pentOf('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Cmaj7', { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, picks: { 'A:1:0': { pc: 7 } } })
 const HEADER = 'Cmaj7 Ionian · bar 1'
 const FOOTER = 'Sets bar 1.'
 const props = { p: KEY, header: HEADER, footer: FOOTER }

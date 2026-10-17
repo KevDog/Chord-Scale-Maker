@@ -65,7 +65,7 @@ export function spellInKey(n: Spelled, scale: ScaleKey, side: KeySide): Spelled 
 
 /** the row's scale key when that scale is built on the chord root, else Ionian */
 function rootScaleKey(row: RowLine, root: Spelled): ScaleKey {
-  const text = qualityScale(row)
+  const text = qualityScale({ ...row, section: '' })
   if (!text) return 'ionian'
   const s = parseScale(text)
   return pcOf(s.root) === pcOf(root) ? s.key : 'ionian'
@@ -128,6 +128,7 @@ export function transposeChart(doc: ChartDoc, from: string, to: string): Readonl
   let skipped = 0
   const lines = doc.lines.map((l): ChartLine => {
     if (l.kind === 'key') return { ...l, key: transposeKeyText(l.key, s, side) }
+    if (l.kind === 'sectionMeta' && l.field === 'key' && l.value) return { ...l, value: transposeKeyText(l.value, s, side) }
     if (l.kind !== 'row') return l
     try {
       return transposeRow(l, s, side)

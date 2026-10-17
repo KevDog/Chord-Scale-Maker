@@ -5,8 +5,8 @@
  */
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { analyse } from '../analysis'
-import { parseChart } from '../chart'
+import { analyse, areaSpan } from '../analysis'
+import { expandRowLines, parseChart } from '../chart'
 import { isSyncCopy } from '../util'
 
 const FILE = new URL('../../fixtures/analysis.json', import.meta.url)
@@ -18,13 +18,15 @@ function build(): string {
     .sort()
   const report = Object.fromEntries(
     charts.map((f) => {
-      const a = analyse(parseChart(readFileSync(new URL(f, CHARTS), 'utf8')).value)
+      const doc = parseChart(readFileSync(new URL(f, CHARTS), 'utf8')).value
+      const a = analyse(doc)
+      const rows = expandRowLines(doc).value
       return [
         f.slice(0, -4),
         {
           key: `${a.key?.name ?? 'none'} (${a.keyFrom}, ${a.context})`,
-          areas: a.areas.map((x) => `${x.key.name} ${x.from}–${x.to}`),
-          rows: a.rows.map((r) => `${r.bar} ${r.chord} [${r.numeral}] → ${r.scale ?? '?'} (${r.rule}) ${r.reason.startsWith(r.fn) ? r.reason : `${r.fn} — ${r.reason}`}`),
+          areas: a.areas.map((x) => `${x.key.name} ${areaSpan(x)}`),
+          rows: a.rows.map((r) => `${rows[r.row]?.section} ${r.bar} ${r.chord} [${r.numeral}] → ${r.scale ?? '?'} (${r.rule}) ${r.reason.startsWith(r.fn) ? r.reason : `${r.fn} — ${r.reason}`}`),
         },
       ]
     }),

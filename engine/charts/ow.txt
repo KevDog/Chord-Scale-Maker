@@ -6,22 +6,31 @@ form: AABA, 32 bars
 source: Colorado Cookbook, p. 172
 # analysis: 2026-10-11, rules v1; Bb
 
-# section | bar | chord | scale
-A1 | 1  | BbMaj7  # tonic: the 4th is in the key
-A1 | 2  | Cm7     # ii of the ii–V to Bb
-A1 | 2  | F7      # V7 of Bb: natural tensions
-A1 | 3  | BbMaj7  # tonic: the 4th is in the key
-A1 | 4  | Cm7     # ii of the ii–V to Bb
-A1 | 4  | F7      # V7 of Bb: natural tensions
-A1 | 5  | BbMaj7  # tonic: the 4th is in the key
-A1 | 6  | Cm7     # ii of F7: Dorian
-A1 | 6  | F7      # V7/I in Bb: natural tensions
-A1 | 7  | Gb7     # tritone substitute: resolves down a half step to F7
-A1 | 7  | F7      # V7 of Bb: natural tensions
-A1 | 8  | BbMaj7  # tonic: the 4th is in the key
-@copy A1 A2 8
-B  | 17 | D7      # extended dominant: each one falls a fifth into the next: natural tensions
-B  | 19 | G7      # extended dominant: each one falls a fifth into the next: natural tensions
-B  | 21 | C7      # V7 of V7: the dominant of the dominant: natural tensions
-B  | 23 | F7      # V7 of Bb: natural tensions
-@copy A1 A3 24
+# bar | chord | scale
+
+section: A1
+1 | BbMaj7  # tonic: the 4th is in the key
+2 | Cm7     # ii of the ii–V to Bb
+2 | F7      # V7 of Bb: natural tensions
+3 | BbMaj7  # tonic: the 4th is in the key
+4 | Cm7     # ii of the ii–V to Bb
+4 | F7      # V7 of Bb: natural tensions
+5 | BbMaj7  # tonic: the 4th is in the key
+6 | Cm7     # ii of F7: Dorian
+6 | F7      # V7/I in Bb: natural tensions
+7 | Gb7     # tritone substitute: resolves down a half step to F7
+7 | F7      # V7 of Bb: natural tensions
+8 | BbMaj7  # tonic: the 4th is in the key
+
+section: A2
+copy: A1
+
+section: B
+bars: 8
+1 | D7      # extended dominant: each one falls a fifth into the next: natural tensions
+3 | G7      # extended dominant: each one falls a fifth into the next: natural tensions
+5 | C7      # V7 of V7: the dominant of the dominant: natural tensions
+7 | F7      # V7 of Bb: natural tensions
+
+section: A3
+copy: A1

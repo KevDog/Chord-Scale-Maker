@@ -6,65 +6,73 @@ form: AABC
 source: Colorado Cookbook, p. 77
 # analysis: 2026-10-11, rules v1; F
 
-# section | bar | chord | scale
-A1 | 1  | FMaj7  # tonic: the 4th is in the key
-A1 | 2  | Em7b5  # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A1 | 2  | A7b9   # V7/vi in F: b9 and b13 are in the key
-A1 | 3  | Dm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A1 | 3  | Dm/C   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A1 | 4  | Bm7b5  # #ivø7 in F: Locrian, its own mode (the chord is outside the key)
-A1 | 4  | Bbm7   # ii of Eb7: Dorian
-A1 | 4  | Eb7    # extended ii–V: a side-step, its own key
-A1 | 5  | Am7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1 | 5  | D7     # V7/ii in F: the b13 is in the key
-A1 | 6  | Gm7    # ii of C7: Dorian
-A1 | 6  | C7     # V7/I in F: natural tensions
-A1 | 7  | Am7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1 | 7  | D7     # V7/ii in F: the b13 is in the key
-A1 | 8  | Gm7    # ii of the ii–V to F
-A1 | 8  | C7alt  # from the symbol: altered
-A2 | 9  | FMaj7  # tonic: the 4th is in the key
-A2 | 10 | Em7b5  # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A2 | 10 | A7b9   # V7/vi in F: b9 and b13 are in the key
-A2 | 11 | Dm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A2 | 11 | Dm/C   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A2 | 12 | Bm7b5  # #ivø7 in F: Locrian, its own mode (the chord is outside the key)
-A2 | 12 | Bbm7   # ii of Eb7: Dorian
-A2 | 12 | Eb7    # extended ii–V: a side-step, its own key
-A2 | 13 | Am7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A2 | 13 | D7     # V7/ii in F: the b13 is in the key
-A2 | 14 | Gm7    # ii of the ii–V to F
-A2 | 14 | C7     # V7 of F: natural tensions
-A2 | 15 | FMaj7  # tonic: the 4th is in the key
-A2 | 16 | Em7b5  # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A2 | 16 | A7#9   # V7/vi in F: the b13 is in the key, b9, #9 and #11 from the symbol
-B  | 17 | Dm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B  | 18 | Bb7    # tritone substitute: resolves down a half step to A7
-B  | 18 | A7     # V7/vi in F: b9 and b13 are in the key
-B  | 19 | Dm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B  | 20 | Dm7    # ii of G7: Dorian
-B  | 20 | G7     # V7/V in F: natural tensions
-B  | 21 | Dm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B  | 21 | Dm/C#  # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B  | 22 | Dm/C   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B  | 22 | Bm7b5  # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B  | 22 | E7alt  # from the symbol: altered
-B  | 23 | Am7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B  | 23 | D7     # V7/ii in F: the b13 is in the key
-B  | 24 | Gm7    # ii of the ii–V to F
-B  | 24 | C7     # V7 of F: natural tensions
-C  | 25 | FMaj7  # tonic: the 4th is in the key
-C  | 26 | Em7b5  # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-C  | 26 | A7b9   # V7/vi in F: b9 and b13 are in the key
-C  | 27 | Dm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-C  | 27 | Dm/C   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-C  | 28 | Bm7b5  # #ivø7 in F: Locrian, its own mode (the chord is outside the key)
-C  | 28 | Bbm7   # ii of Eb7: Dorian
-C  | 28 | Eb7    # extended ii–V: a side-step, its own key
-C  | 29 | Am7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-C  | 29 | D7     # V7/ii in F: the b13 is in the key
-C  | 30 | Gm7    # ii of the ii–V to F
-C  | 30 | C7     # V7 of F: natural tensions
-C  | 31 | FMaj7  # tonic: the 4th is in the key
-C  | 32 | Gm7    # ii of the ii–V to F
-C  | 32 | C7     # V7 of F: natural tensions
+# bar | chord | scale
+
+section: A1
+1 | FMaj7  # tonic: the 4th is in the key
+2 | Em7b5  # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2 | A7b9   # V7/vi in F: b9 and b13 are in the key
+3 | Dm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3 | Dm/C   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+4 | Bm7b5  # #ivø7 in F: Locrian, its own mode (the chord is outside the key)
+4 | Bbm7   # ii of Eb7: Dorian
+4 | Eb7    # extended ii–V: a side-step, its own key
+5 | Am7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+5 | D7     # V7/ii in F: the b13 is in the key
+6 | Gm7    # ii of C7: Dorian
+6 | C7     # V7/I in F: natural tensions
+7 | Am7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+7 | D7     # V7/ii in F: the b13 is in the key
+8 | Gm7    # ii of the ii–V to F
+8 | C7alt  # from the symbol: altered
+
+section: A2
+1 | FMaj7  # tonic: the 4th is in the key
+2 | Em7b5  # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2 | A7b9   # V7/vi in F: b9 and b13 are in the key
+3 | Dm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3 | Dm/C   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+4 | Bm7b5  # #ivø7 in F: Locrian, its own mode (the chord is outside the key)
+4 | Bbm7   # ii of Eb7: Dorian
+4 | Eb7    # extended ii–V: a side-step, its own key
+5 | Am7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+5 | D7     # V7/ii in F: the b13 is in the key
+6 | Gm7    # ii of the ii–V to F
+6 | C7     # V7 of F: natural tensions
+7 | FMaj7  # tonic: the 4th is in the key
+8 | Em7b5  # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+8 | A7#9   # V7/vi in F: the b13 is in the key, b9, #9 and #11 from the symbol
+
+section: B
+1 | Dm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+2 | Bb7    # tritone substitute: resolves down a half step to A7
+2 | A7     # V7/vi in F: b9 and b13 are in the key
+3 | Dm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+4 | Dm7    # ii of G7: Dorian
+4 | G7     # V7/V in F: natural tensions
+5 | Dm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+5 | Dm/C#  # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+6 | Dm/C   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+6 | Bm7b5  # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+6 | E7alt  # from the symbol: altered
+7 | Am7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+7 | D7     # V7/ii in F: the b13 is in the key
+8 | Gm7    # ii of the ii–V to F
+8 | C7     # V7 of F: natural tensions
+
+section: C
+1 | FMaj7  # tonic: the 4th is in the key
+2 | Em7b5  # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2 | A7b9   # V7/vi in F: b9 and b13 are in the key
+3 | Dm     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3 | Dm/C   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+4 | Bm7b5  # #ivø7 in F: Locrian, its own mode (the chord is outside the key)
+4 | Bbm7   # ii of Eb7: Dorian
+4 | Eb7    # extended ii–V: a side-step, its own key
+5 | Am7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+5 | D7     # V7/ii in F: the b13 is in the key
+6 | Gm7    # ii of the ii–V to F
+6 | C7     # V7 of F: natural tensions
+7 | FMaj7  # tonic: the 4th is in the key
+8 | Gm7    # ii of the ii–V to F
+8 | C7     # V7 of F: natural tensions

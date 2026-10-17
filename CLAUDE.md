@@ -47,13 +47,15 @@ README.md for the chart format. The original Python/LilyPond CLI was retired aft
   is a pin and plays at every level. The level is a view preference, never written into rows.
 
 ## Typical requests
-- "Make a chart for <tune>": create `engine/charts/<tune-name>.txt` (lowercase, hyphens: `round-midnight.txt`) in concert pitch, one row per chord change, chords only, with
+- "Make a chart for <tune>": create `engine/charts/<tune-name>.txt` (lowercase, hyphens: `round-midnight.txt`) in concert pitch, chords only: a header with
   `key:`, `composer:`, `style:`, `form:` (and `source:` when known, `aka:` for its other common titles; `kind: form`
-  or `kind: exercise` for a chart with no composer, like F Blues); then `cd engine && npm run analyse --
+  or `kind: exercise` for a chart with no composer, like F Blues), then a `section: A1` block per section, one
+  `bar | chord` row per chord change with bars from 1 in each section, a repeat as `section: A2` + `copy: A1`, and
+  `bars: N` where a section's last chord is held past its last written bar (README "Charts"); then `cd engine && npm run analyse --
   charts/<tune-name>.txt --save` to save the reasons, read the report (its Song page section must show no gaps: they
   fail `make test`), then `--ambiguous`, and `make golden` (the fixtures cover every library chart). Leave the scale cells blank: they play the analysis. A scale the melody
   demands over the rules: write it, with `# keep: …`. Otherwise, where the analyser can only guess, write the
-  function (`| | V7/ii`) or an `@key` rather than a scale: a function lets the rules still choose the tensions.
+  function (`| | V7/ii`), a section `key:` or an `@key` rather than a scale: a function lets the rules still choose the tensions.
 - Changing an analysis rule (`engine/src/analysis/`, docs/plan-analysis.md): a test first, then `make golden`, and
   read the fixture's diff (it is the review: the library's blank cells follow the rules by themselves).
   `cd engine && npm run analyse -- --all --strip --save` re-saves the reasons and blanks any written scale the new

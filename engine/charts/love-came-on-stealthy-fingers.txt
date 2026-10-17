@@ -3,88 +3,94 @@ composer: Bob Dorough
 style: Ballad
 key: F
 form: AB, 32 bars
-source:
-# analysis: 2026-10-12, rules v1; F
+source: 
+# analysis: 2026-10-17, rules v1; F
 # book: Slow Ballad. The form repeats (repeat signs around A–B).
 # the Intro is a repeated 2-bar piano figure marked (C7); written out as 4 bars.
 # the 2nd time, C13(#11 b9) falls on the last beat of bar 4 (pickup to A).
 
-# section | bar | chord
-# area: F major (bars 1–5)
-Intro | 1  | C7        # V7 in F, not resolving: natural tensions
-Intro | 4  | C7
-Intro | 4  | C13#11b9  # V7 of F: b9 and #11 from the symbol
-A     | 1  | FMaj7     # tonic: the 4th is in the key
-A     | 1  | Am7b5     # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A     | 2  | Am7b5
-A     | 2  | D7b9      # V7/ii in F: the b13 is in the key, the b9 from the symbol
-A     | 3  | Gm7       # ii of the ii–V to F
-A     | 4  | C13b9     # V7 of F: the b9 from the symbol
-A     | 5  | FMaj7     # tonic: the 4th is in the key
-# area: G major (bars 5–8)
-A     | 5  | Am7b5     # iiø7 of G: Locrian, the key's own notes (its ♭2 is a passing note)
-A     | 6  | Am7b5
-A     | 6  | D7b9      # V7 of G: the b9 from the symbol
-A     | 7  | GMaj7     # tonic: the 4th is in the key
-A     | 7  | Am9       # ii of the ii–V to G
-A     | 7  | D13       # V7 of G: natural tensions
-A     | 8  | GMaj7     # tonic: the 4th is in the key
-A     | 8  | Bm7       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# area: Ab major (bars 9–10)
-A     | 9  | Bbm9      # ii of the ii–V to Ab
-A     | 9  | Eb7alt    # from the symbol: altered
-A     | 10 | AbMaj9    # tonic: the 4th is in the key
-# area: Gb major (bars 11–12)
-A     | 11 | Abm9      # ii of the ii–V to Gb
-A     | 11 | Db7alt    # from the symbol: altered
-A     | 12 | GbMaj9    # tonic: the 4th is in the key
-# area: E major (bars 13–14)
-A     | 13 | F#m9      # ii of the ii–V to E
-A     | 13 | B7alt     # from the symbol: altered
-A     | 14 | EMaj9     # tonic: the 4th is in the key
-A     | 14 | C#m7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-# area: Ab major (bars 15–16)
-A     | 15 | Bbm11     # ii of the ii–V to Ab
+# bar | chord
+
+section: Intro
+# area: F major (Intro 1 – A 5)
+1  | C7        # V7 in F, not resolving: natural tensions
+4  | C7
+4  | C13#11b9  # V7 of F: b9 and #11 from the symbol
+
+section: A
+1  | FMaj7     # tonic: the 4th is in the key
+1  | Am7b5     # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2  | Am7b5
+2  | D7b9      # V7/ii in F: the b13 is in the key, the b9 from the symbol
+3  | Gm7       # ii of the ii–V to F
+4  | C13b9     # V7 of F: the b9 from the symbol
+5  | FMaj7     # tonic: the 4th is in the key
+# area: G major (A 5–8)
+5  | Am7b5     # iiø7 of G: Locrian, the key's own notes (its ♭2 is a passing note)
+6  | Am7b5
+6  | D7b9      # V7 of G: the b9 from the symbol
+7  | GMaj7     # tonic: the 4th is in the key
+7  | Am9       # ii of the ii–V to G
+7  | D13       # V7 of G: natural tensions
+8  | GMaj7     # tonic: the 4th is in the key
+8  | Bm7       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+# area: Ab major (A 9–10)
+9  | Bbm9      # ii of the ii–V to Ab
+9  | Eb7alt    # from the symbol: altered
+10 | AbMaj9    # tonic: the 4th is in the key
+# area: Gb major (A 11–12)
+11 | Abm9      # ii of the ii–V to Gb
+11 | Db7alt    # from the symbol: altered
+12 | GbMaj9    # tonic: the 4th is in the key
+# area: E major (A 13–14)
+13 | F#m9      # ii of the ii–V to E
+13 | B7alt     # from the symbol: altered
+14 | EMaj9     # tonic: the 4th is in the key
+14 | C#m7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+# area: Ab major (A 15–16)
+15 | Bbm11     # ii of the ii–V to Ab
 # book: Bbmi7(add 11)
-A     | 15 | Eb7#5     # V7 of Ab: #11 and b13 from the symbol
-A     | 16 | AbMaj7    # tonic: the 4th is in the key
-# area: F major (bars 16–21)
-A     | 16 | Gm7       # ii of the ii–V to F
-A     | 16 | C13b9     # V7 of F: the b9 from the symbol
-B     | 17 | FMaj7     # tonic: the 4th is in the key
-B     | 17 | Am7b5     # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B     | 18 | Am7b5
-B     | 18 | D7b9      # V7/ii in F: the b13 is in the key, the b9 from the symbol
-B     | 19 | Gm7       # ii of the ii–V to F
-B     | 20 | C13b9     # V7 of F: the b9 from the symbol
-B     | 21 | FMaj7     # tonic: the 4th is in the key
-# area: G major (bars 21–23)
-B     | 21 | Am7b5     # iiø7 of G: Locrian, the key's own notes (its ♭2 is a passing note)
-B     | 22 | Am7b5
-B     | 22 | D7b9      # V7 of G: the b9 from the symbol
-B     | 23 | GMaj7     # tonic: the 4th is in the key
-B     | 23 | G#m7      # a borrowed minor chord: Dorian, its own key
-# area: F major (bars 24–32)
-B     | 24 | Gm7       # ii of C7: Dorian
-B     | 24 | C7        # V7/I in F: natural tensions
-B     | 24 | Dm        # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B     | 24 | Dm7/C     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B     | 25 | Bm7b5     # iiø7 of E7alt: Locrian, the key's own notes (its ♭2 is a passing note)
+15 | Eb7#5     # V7 of Ab: #11 and b13 from the symbol
+16 | AbMaj7    # tonic: the 4th is in the key
+# area: F major (A 16 – B 5)
+16 | Gm7       # ii of the ii–V to F
+16 | C13b9     # V7 of F: the b9 from the symbol
+
+section: B
+1  | FMaj7     # tonic: the 4th is in the key
+1  | Am7b5     # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2  | Am7b5
+2  | D7b9      # V7/ii in F: the b13 is in the key, the b9 from the symbol
+3  | Gm7       # ii of the ii–V to F
+4  | C13b9     # V7 of F: the b9 from the symbol
+5  | FMaj7     # tonic: the 4th is in the key
+# area: G major (B 5–7)
+5  | Am7b5     # iiø7 of G: Locrian, the key's own notes (its ♭2 is a passing note)
+6  | Am7b5
+6  | D7b9      # V7 of G: the b9 from the symbol
+7  | GMaj7     # tonic: the 4th is in the key
+7  | G#m7      # a borrowed minor chord: Dorian, its own key
+# area: F major (B 8–16)
+8  | Gm7       # ii of C7: Dorian
+8  | C7        # V7/I in F: natural tensions
+8  | Dm        # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+8  | Dm7/C     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+9  | Bm7b5     # iiø7 of E7alt: Locrian, the key's own notes (its ♭2 is a passing note)
 # book: Bmi7(b5 add 11)
-B     | 25 | E7alt     # from the symbol: altered
-B     | 26 | Am7b5     # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+9  | E7alt     # from the symbol: altered
+10 | Am7b5     # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 # book: Ami7(b5 add 11)
-B     | 26 | D7alt     # from the symbol: altered
-B     | 27 | Gm11      # ii: Dorian, the key’s own notes
+10 | D7alt     # from the symbol: altered
+11 | Gm11      # ii: Dorian, the key’s own notes
 # book: Gmi7(add 11)
-B     | 28 | Bbm7      # ii of Eb7#11: Dorian
-B     | 28 | Eb7#11    # back door bVII7 to FMaj7: the #11 is in the key
-B     | 29 | FMaj7     # tonic: the 4th is in the key
-B     | 29 | Am7b5     # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B     | 30 | Am7b5
-B     | 30 | D7b9      # V7/ii in F: the b13 is in the key, the b9 from the symbol
-B     | 31 | Gm7       # ii: Dorian, the key’s own notes
-B     | 31 | Db7b5     # tritone substitute: resolves down a half step to C13
-B     | 31 | C13       # V7 of F: natural tensions
-B     | 32 | F6        # tonic: the 4th is in the key
+12 | Bbm7      # ii of Eb7#11: Dorian
+12 | Eb7#11    # back door bVII7 to FMaj7: the #11 is in the key
+13 | FMaj7     # tonic: the 4th is in the key
+13 | Am7b5     # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+14 | Am7b5
+14 | D7b9      # V7/ii in F: the b13 is in the key, the b9 from the symbol
+15 | Gm7       # ii: Dorian, the key’s own notes
+15 | Db7b5     # tritone substitute: resolves down a half step to C13
+15 | C13       # V7 of F: natural tensions
+16 | F6        # tonic: the 4th is in the key
 # alt (optional): bar 32 (C13)

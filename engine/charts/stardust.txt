@@ -6,71 +6,78 @@ form: AA, 32 bars
 source: Colorado Cookbook, p. 219
 # analysis: 2026-10-11, rules v1; Db
 
-# section | bar | chord | scale
-Intro | 1  | DbMaj7   # tonic: the 4th is in the key
-Intro | 2  | Gb7#11   # tritone substitute: resolves down a half step to F7b9
-Intro | 3  | F7b9     # V7 of Bb7, on the way to Eb minor: b9 and b13 are in the key
-Intro | 4  | Bb7      # V7 of Eb minor, the chain's last link: b9 and b13 are in the key
-Intro | 5  | Ebm7     # ii of Ab7: Dorian
-Intro | 5  | Ab7      # V7/I in Db: natural tensions
-Intro | 6  | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-Intro | 6  | Bb7     | Bb Mixolydian b6  # keep: V7/ii in Db like the chorus's bar 6; the b13 Gb is in the key
-Intro | 7  | Gm7      # ii of C7: Dorian
-Intro | 7  | C7       # extended ii–V: a side-step, its own key
-Intro | 8  | Ebm7     # ii of Ab7: Dorian
-Intro | 8  | Ab7      # V7/I in Db: natural tensions
-Intro | 9  | Ebm7     # ii of the ii–V to Db
-Intro | 9  | Ab7      # V7 of Db: natural tensions
-Intro | 10 | DbMaj7   # tonic: the 4th is in the key
-Intro | 10 | Db7      # V7/IV in Db: natural tensions
-@ending 1 Intro 7 8
-@ending 2 Intro 9 10
+# bar | chord | scale
+
+section: Intro
+bars: 12
+1  | DbMaj7   # tonic: the 4th is in the key
+2  | Gb7#11   # tritone substitute: resolves down a half step to F7b9
+3  | F7b9     # V7 of Bb7, on the way to Eb minor: b9 and b13 are in the key
+4  | Bb7      # V7 of Eb minor, the chain's last link: b9 and b13 are in the key
+5  | Ebm7     # ii of Ab7: Dorian
+5  | Ab7      # V7/I in Db: natural tensions
+6  | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+6  | Bb7     | Bb Mixolydian b6  # keep: V7/ii in Db like the chorus's bar 6; the b13 Gb is in the key
+7  | Gm7      # ii of C7: Dorian
+7  | C7       # extended ii–V: a side-step, its own key
+8  | Ebm7     # ii of Ab7: Dorian
+8  | Ab7      # V7/I in Db: natural tensions
+9  | Ebm7     # ii of the ii–V to Db
+9  | Ab7      # V7 of Db: natural tensions
+10 | DbMaj7   # tonic: the 4th is in the key
+10 | Db7      # V7/IV in Db: natural tensions
+@ending 1 7 8
+@ending 2 9 10
+
+section: A1
 # the chorus with its 8-bar verse intro added; the verse repeats, taking the 1st ending (bars 7-8) then the
 # 2nd ending (bars 9-10) into the chorus
-A1    | 1  | GbMaj7   # the Db7b9 before it makes Gb the key of the moment: the 4th is in the key
-A1    | 3  | GbmMaj7  # from the symbol: minor-major 7th
-A1    | 4  | Gbm7     # ii of Cb7b9: Dorian
-A1    | 4  | Cb7b9    # back door bVII7 to DbMaj7: the #11 is in the key, the b9 from the symbol
-A1    | 5  | DbMaj7   # tonic: the 4th is in the key
-A1    | 6  | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1    | 6  | Bb7      # V7/ii in Db: the b13 is in the key
-A1    | 7  | Ebm7     # ii: Dorian, the key’s own notes
-A1    | 7  | Bb7      # V7/ii in Db: the b13 is in the key
-A1    | 8  | Ebm7     # ii of Ab7: Dorian
-A1    | 9  | Ab7      # V7/I in Db: natural tensions
-A1    | 10 | Ebm7     # ii of the ii–V to Db
-A1    | 10 | Ab7      # V7 of Db: natural tensions
-A1    | 11 | DbMaj7   # tonic: the 4th is in the key
-A1    | 11 | Ebm7     # ii: Dorian, the key’s own notes
-A1    | 11 | Edim7    # vii°7 of Fm7: C7♭9 without its root
-A1    | 12 | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1    | 12 | Bbm7     # ii of Eb9: Dorian
-A1    | 13 | Eb9      # V7/V in Db: natural tensions
-A1    | 14 | Bbm7     # ii of Eb7: Dorian
-A1    | 14 | Eb7      # V7 of V7: the dominant of the dominant: natural tensions
-A1    | 15 | Ab7      # V7 in Db, not resolving: natural tensions
-A1    | 15 | Ebm7     # ii of Ab7: Dorian
-A1    | 16 | Ab7      # V7/I in Db: natural tensions
-A1    | 16 | Dm7b5    # iiø7 of G7: Locrian, the key's own notes (its ♭2 is a passing note)
-A1    | 16 | G7       # tritone substitute: resolves down a half step to GbMaj7
-A2    | 17 | GbMaj7   # the G7 before it makes Gb the key of the moment: the 4th is in the key
-A2    | 19 | GbmMaj7  # from the symbol: minor-major 7th
-A2    | 20 | Gbm7     # ii of Cb7b9: Dorian
-A2    | 20 | Cb7b9    # back door bVII7 to DbMaj7: the #11 is in the key, the b9 from the symbol
-A2    | 21 | DbMaj7   # tonic: the 4th is in the key
-A2    | 22 | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A2    | 22 | Bb7      # V7/ii in Db: the b13 is in the key
-A2    | 23 | Ebm7     # ii: Dorian, the key’s own notes
-A2    | 23 | Bb7      # V7/ii in Db: the b13 is in the key
-A2    | 24 | Ebm7     # ii: Dorian, the key’s own notes
-A2    | 25 | Gbm7     # ii of Cb7b9: Dorian
-A2    | 26 | Cb7b9    # back door bVII7 to DbMaj7: the #11 is in the key, the b9 from the symbol
-A2    | 27 | DbMaj7   # tonic: the 4th is in the key
-A2    | 27 | Bbm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A2    | 28 | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A2    | 28 | Bb7b9    # V7/ii in Db: the b13 is in the key, the b9 from the symbol
-A2    | 29 | Ebm7     # ii of the ii–V to Db
-A2    | 30 | Ab7      # V7 of Db: natural tensions
-A2    | 31 | DbMaj7   # tonic: the 4th is in the key
-A2    | 32 | Abm7     # ii of the ii–V to Gb
-A2    | 32 | Db7b9    # V7/IV in Db: the b9 from the symbol
+1  | GbMaj7   # the Db7b9 before it makes Gb the key of the moment: the 4th is in the key
+3  | GbmMaj7  # from the symbol: minor-major 7th
+4  | Gbm7     # ii of Cb7b9: Dorian
+4  | Cb7b9    # back door bVII7 to DbMaj7: the #11 is in the key, the b9 from the symbol
+5  | DbMaj7   # tonic: the 4th is in the key
+6  | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+6  | Bb7      # V7/ii in Db: the b13 is in the key
+7  | Ebm7     # ii: Dorian, the key’s own notes
+7  | Bb7      # V7/ii in Db: the b13 is in the key
+8  | Ebm7     # ii of Ab7: Dorian
+9  | Ab7      # V7/I in Db: natural tensions
+10 | Ebm7     # ii of the ii–V to Db
+10 | Ab7      # V7 of Db: natural tensions
+11 | DbMaj7   # tonic: the 4th is in the key
+11 | Ebm7     # ii: Dorian, the key’s own notes
+11 | Edim7    # vii°7 of Fm7: C7♭9 without its root
+12 | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+12 | Bbm7     # ii of Eb9: Dorian
+13 | Eb9      # V7/V in Db: natural tensions
+14 | Bbm7     # ii of Eb7: Dorian
+14 | Eb7      # V7 of V7: the dominant of the dominant: natural tensions
+15 | Ab7      # V7 in Db, not resolving: natural tensions
+15 | Ebm7     # ii of Ab7: Dorian
+16 | Ab7      # V7/I in Db: natural tensions
+16 | Dm7b5    # iiø7 of G7: Locrian, the key's own notes (its ♭2 is a passing note)
+16 | G7       # tritone substitute: resolves down a half step to GbMaj7
+
+section: A2
+1  | GbMaj7   # the G7 before it makes Gb the key of the moment: the 4th is in the key
+3  | GbmMaj7  # from the symbol: minor-major 7th
+4  | Gbm7     # ii of Cb7b9: Dorian
+4  | Cb7b9    # back door bVII7 to DbMaj7: the #11 is in the key, the b9 from the symbol
+5  | DbMaj7   # tonic: the 4th is in the key
+6  | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+6  | Bb7      # V7/ii in Db: the b13 is in the key
+7  | Ebm7     # ii: Dorian, the key’s own notes
+7  | Bb7      # V7/ii in Db: the b13 is in the key
+8  | Ebm7     # ii: Dorian, the key’s own notes
+9  | Gbm7     # ii of Cb7b9: Dorian
+10 | Cb7b9    # back door bVII7 to DbMaj7: the #11 is in the key, the b9 from the symbol
+11 | DbMaj7   # tonic: the 4th is in the key
+11 | Bbm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+12 | Fm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+12 | Bb7b9    # V7/ii in Db: the b13 is in the key, the b9 from the symbol
+13 | Ebm7     # ii of the ii–V to Db
+14 | Ab7      # V7 of Db: natural tensions
+15 | DbMaj7   # tonic: the 4th is in the key
+16 | Abm7     # ii of the ii–V to Gb
+16 | Db7b9    # V7/IV in Db: the b9 from the symbol

@@ -4,42 +4,51 @@ style: Medium up
 key: Ab
 form: AABA, 56 bars
 source: Colorado Cookbook, p. 113
-# analysis: 2026-10-11, rules v1; Ab
+# analysis: 2026-10-17, rules v1; Ab
 
-# section | bar | chord | scale
+# bar | chord | scale
 # the standard 16-bar A; the lead sheet condenses the Ab minor vamp
-# area: Ab major (bar 1)
-A1 | 1  | Abm     # a borrowed minor chord: Dorian, its own key
-# area: E major (bars 9–12)
-A1 | 9  | F#m7    # ii of the ii–V to E
-A1 | 10 | B7      # V7 of E: natural tensions
-A1 | 11 | EMaj7   # tonic: the 4th is in the key
-A1 | 12 | A7#11   # IV7 in E, not resolving: the #11 is in the key
-# area: Ab major (bars 13–17)
-A1 | 13 | Bbm7    # ii of the ii–V to Ab
-A1 | 14 | Eb7     # V7 of Ab: natural tensions
-A1 | 15 | AbMaj7  # tonic: the 4th is in the key
-A2 | 17 | Abm     # a borrowed minor chord: Dorian, its own key
-# area: E major (bars 25–28)
-A2 | 25 | F#m7    # ii of the ii–V to E
-A2 | 26 | B7      # V7 of E: natural tensions
-A2 | 27 | EMaj7   # tonic: the 4th is in the key
-A2 | 28 | A7#11   # IV7 in E, not resolving: the #11 is in the key
-# area: Ab major (bars 29–33)
-A2 | 29 | Bbm7    # ii of the ii–V to Ab
-A2 | 30 | Eb7     # V7 of Ab: natural tensions
-A2 | 31 | AbMaj7  # tonic: the 4th is in the key
-A2 | 32 | Ebm7    # ii of the ii–V to Db
-A2 | 32 | Ab7     # V7/IV in Ab: natural tensions
-B  | 33 | DbMaj7  # the Ab7 before it makes Db the key of the moment: the 4th is in the key
-# area: F major (bars 35–36)
-B  | 35 | Gm7     # ii of the ii–V to F
-B  | 35 | C7      # V7 of F: natural tensions
-B  | 36 | FMaj7   # tonic: the 4th is in the key
-# area: Ab major (bar 38)
-B  | 38 | Fm7     # ii of Bb7: Dorian
-B  | 38 | Bb7     # V7/V in Ab: natural tensions
-# area: Ab minor (bars 39–41)
-B  | 39 | Bbm7    # ii of the ii–V to Ab minor
-B  | 40 | Eb7     # V7 of Ab minor: b9 and b13 are in the key
-@copy A1 A3 40
+
+section: A1
+bars: 16
+# area: Ab major (A1 1)
+1  | Abm     # a borrowed minor chord: Dorian, its own key
+# area: E major (A1 9–12)
+9  | F#m7    # ii of the ii–V to E
+10 | B7      # V7 of E: natural tensions
+11 | EMaj7   # tonic: the 4th is in the key
+12 | A7#11   # IV7 in E, not resolving: the #11 is in the key
+# area: Ab major (A1 13 – A2 1)
+13 | Bbm7    # ii of the ii–V to Ab
+14 | Eb7     # V7 of Ab: natural tensions
+15 | AbMaj7  # tonic: the 4th is in the key
+
+section: A2
+1  | Abm     # a borrowed minor chord: Dorian, its own key
+# area: E major (A2 9–12)
+9  | F#m7    # ii of the ii–V to E
+10 | B7      # V7 of E: natural tensions
+11 | EMaj7   # tonic: the 4th is in the key
+12 | A7#11   # IV7 in E, not resolving: the #11 is in the key
+# area: Ab major (A2 13 – B 1)
+13 | Bbm7    # ii of the ii–V to Ab
+14 | Eb7     # V7 of Ab: natural tensions
+15 | AbMaj7  # tonic: the 4th is in the key
+16 | Ebm7    # ii of the ii–V to Db
+16 | Ab7     # V7/IV in Ab: natural tensions
+
+section: B
+1  | DbMaj7  # the Ab7 before it makes Db the key of the moment: the 4th is in the key
+# area: F major (B 3–4)
+3  | Gm7     # ii of the ii–V to F
+3  | C7      # V7 of F: natural tensions
+4  | FMaj7   # tonic: the 4th is in the key
+# area: Ab major (B 6)
+6  | Fm7     # ii of Bb7: Dorian
+6  | Bb7     # V7/V in Ab: natural tensions
+# area: Ab minor (B 7 – A3 1)
+7  | Bbm7    # ii of the ii–V to Ab minor
+8  | Eb7     # V7 of Ab minor: b9 and b13 are in the key
+
+section: A3
+copy: A1

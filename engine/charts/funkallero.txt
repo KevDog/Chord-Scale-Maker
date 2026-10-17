@@ -3,58 +3,66 @@ composer: Bill Evans
 style: Medium up
 key: Cm
 form: AB, 32 bars
-source:
-# analysis: 2026-10-12, rules v1; C minor
+source: 
+# analysis: 2026-10-17, rules v1; C minor
 # the A (head) repeats; B is for solos; after solos D.C. al Coda, the head twice, to the coda on its repeat
 # bass plays in two for the heads, in four for solos
 
-# section | bar | chord
-# area: C minor (bars 1–7)
-A    | 1  | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
-A    | 2  | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
-A    | 3  | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-A    | 5  | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
-A    | 6  | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
-A    | 7  | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-# area: Ab major (bars 9–11)
-A    | 9  | Bbm9      # ii of the ii–V to Ab
+# bar | chord
+
+section: A
+bars: 16
+# area: C minor (A 1–7)
+1  | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
+2  | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
+3  | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+5  | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
+6  | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
+7  | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+# area: Ab major (A 9–11)
+9  | Bbm9      # ii of the ii–V to Ab
 # book: bar 9 is Bbm9 (add 11), Bbm9 (add #11), Bbm9: one chord, its voicing moving
-A    | 10 | Eb9       # V7 of Ab: natural tensions
-A    | 11 | AbMaj7    # tonic: the 4th is in the key
-# area: C minor (bars 11–23)
-A    | 11 | Db9       # tritone substitute: resolves down a half step to Cm7
-A    | 12 | Cm7       # tonic minor: Dorian by convention
-A    | 12 | Fm7       # iv: Dorian, the key’s own notes
-A    | 13 | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
-A    | 14 | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
-A    | 15 | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-@coda A 15
+10 | Eb9       # V7 of Ab: natural tensions
+11 | AbMaj7    # tonic: the 4th is in the key
+# area: C minor (A 11 – B 7)
+11 | Db9       # tritone substitute: resolves down a half step to Cm7
+12 | Cm7       # tonic minor: Dorian by convention
+12 | Fm7       # iv: Dorian, the key’s own notes
+13 | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
+14 | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
+15 | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+@coda 15
+
+section: B
 # the coda sign at bar 15 is taken on the repeat
-B    | 17 | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
-B    | 18 | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
-B    | 19 | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+1  | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
+2  | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
+3  | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
 # alt (optional): bar 20, beats 3–4 (A7#5)
-B    | 21 | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
-B    | 22 | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
-B    | 23 | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+5  | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
+6  | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
+7  | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
 # alt (optional): bar 24, beats 3–4 (Bm9)
-# area: Ab major (bars 25–27)
-B    | 25 | Bbm9      # ii of the ii–V to Ab
-B    | 26 | Bbm9
-B    | 26 | Eb9       # V7 of Ab: natural tensions
-B    | 27 | AbMaj7    # tonic: the 4th is in the key
-# area: C minor (bars 27–1)
-B    | 27 | Db9       # tritone substitute: resolves down a half step to Cm7
-B    | 28 | Cm7       # tonic minor: Dorian by convention
-B    | 28 | Fm7       # iv: Dorian, the key’s own notes
-B    | 29 | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
-B    | 30 | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
-B    | 31 | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+# area: Ab major (B 9–11)
+9  | Bbm9      # ii of the ii–V to Ab
+10 | Bbm9
+10 | Eb9       # V7 of Ab: natural tensions
+11 | AbMaj7    # tonic: the 4th is in the key
+# area: C minor (B 11 – Coda 1)
+11 | Db9       # tritone substitute: resolves down a half step to Cm7
+12 | Cm7       # tonic minor: Dorian by convention
+12 | Fm7       # iv: Dorian, the key’s own notes
+13 | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
+14 | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
+15 | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
 # alt (optional): bar 32, beats 3–4 (A7#5)
-B    | 32 | Cm6/9
-@nav B 32 D.C. al Coda
-Coda | 1  | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-Coda | 1  | Gb13      # tritone substitute: resolves down a half step to F13b9#11
-Coda | 1  | F13b9#11  # IV7 in C minor, not resolving: b9 and #11 from the symbol
+16 | Cm6/9
+@nav 16 D.C. al Coda
+
+section: Coda
+bars: 4
+1  | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+1  | Gb13      # tritone substitute: resolves down a half step to F13b9#11
+1  | F13b9#11  # IV7 in C minor, not resolving: b9 and #11 from the symbol
 # Coda: Gb13 on beat 3, F13(#11 b9) on beat 4 held into bar 2 (fermata, rit.)
-@coda Coda 1
+@coda 1

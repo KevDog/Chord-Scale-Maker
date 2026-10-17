@@ -6,39 +6,47 @@ form: AABA, 32 bars
 source: Colorado Cookbook, p. 171
 # analysis: 2026-10-11, rules v1; Ab
 
-# section | bar | chord | scale
-A1 | 1  | Bb13     # V7 of V7: the dominant of the dominant: natural tensions
-A1 | 2  | Eb7alt   # from the symbol: altered
-A1 | 3  | AbMaj7   # tonic: the 4th is in the key
-A1 | 4  | F7       # extended dominant: V7 of Bb7
-A1 | 5  | Bb7      # II7 in Ab, not resolving: natural tensions
-A1 | 6  | Bbm7     # ii: Dorian, the key’s own notes
-A1 | 6  | Bdim7    # vii°7 to Ab/C, up to its bass: G7♭9 without its root
-A1 | 7  | Ab/C     # tonic: the 4th is in the key
-A1 | 7  | Bdim7    # passing diminished: Bb7♭9 without its Bb, the Eb13's dominant (Bbm7 its ii)
-A1 | 8  | Bbm7     # ii of Eb13: Dorian
-A1 | 8  | Eb13     # V7/I in Ab: natural tensions
-A1 | 8  | B7#11    # tritone substitute: resolves down a half step to Bb13
-A2 | 9  | Bb13     # V7 of V7: the dominant of the dominant: natural tensions
-A2 | 10 | Eb7alt   # from the symbol: altered
-A2 | 11 | AbMaj7   # tonic: the 4th is in the key
-A2 | 12 | F7       # extended dominant: V7 of Bb7
-A2 | 13 | Bb7      # II7 in Ab, not resolving: natural tensions
-A2 | 14 | Bbm7     # ii: Dorian, the key’s own notes
-A2 | 14 | Bdim7    # vii°7 to Ab/C, up to its bass: G7♭9 without its root
-A2 | 15 | Ab/C     # tonic: the 4th is in the key
-A2 | 15 | Bdim7    # passing diminished: Bb7♭9 without its Bb, the Eb7sus4's dominant
-A2 | 16 | Eb7sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
-A2 | 16 | AbMaj7   # tonic: the 4th is in the key
-B  | 17 | Ebm7     # ii of the ii–V to Db
-B  | 18 | Ab7alt   # from the symbol: altered
-B  | 19 | DbMaj7   # the Ab7alt before it makes Db the key of the moment: the 4th is in the key
-B  | 21 | Dbm7     # ii of Gb7: Dorian
-B  | 21 | Gb7      # extended ii–V: a side-step, its own key
-B  | 22 | Cm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B  | 22 | F7       # extended ii–V: a side-step, its own key
-B  | 23 | Bm7      # ii of E7: Dorian
-B  | 23 | E7       # tritone substitute: resolves down a half step to Eb7
-B  | 24 | Eb7      # V7 in Ab, not resolving: natural tensions
-B  | 24 | B7#11    # tritone substitute: resolves down a half step to Bb13
-@copy A2 A3 16
+# bar | chord | scale
+
+section: A1
+1 | Bb13     # V7 of V7: the dominant of the dominant: natural tensions
+2 | Eb7alt   # from the symbol: altered
+3 | AbMaj7   # tonic: the 4th is in the key
+4 | F7       # extended dominant: V7 of Bb7
+5 | Bb7      # II7 in Ab, not resolving: natural tensions
+6 | Bbm7     # ii: Dorian, the key’s own notes
+6 | Bdim7    # vii°7 to Ab/C, up to its bass: G7♭9 without its root
+7 | Ab/C     # tonic: the 4th is in the key
+7 | Bdim7    # passing diminished: Bb7♭9 without its Bb, the Eb13's dominant (Bbm7 its ii)
+8 | Bbm7     # ii of Eb13: Dorian
+8 | Eb13     # V7/I in Ab: natural tensions
+8 | B7#11    # tritone substitute: resolves down a half step to Bb13
+
+section: A2
+1 | Bb13     # V7 of V7: the dominant of the dominant: natural tensions
+2 | Eb7alt   # from the symbol: altered
+3 | AbMaj7   # tonic: the 4th is in the key
+4 | F7       # extended dominant: V7 of Bb7
+5 | Bb7      # II7 in Ab, not resolving: natural tensions
+6 | Bbm7     # ii: Dorian, the key’s own notes
+6 | Bdim7    # vii°7 to Ab/C, up to its bass: G7♭9 without its root
+7 | Ab/C     # tonic: the 4th is in the key
+7 | Bdim7    # passing diminished: Bb7♭9 without its Bb, the Eb7sus4's dominant
+8 | Eb7sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+8 | AbMaj7   # tonic: the 4th is in the key
+
+section: B
+1 | Ebm7     # ii of the ii–V to Db
+2 | Ab7alt   # from the symbol: altered
+3 | DbMaj7   # the Ab7alt before it makes Db the key of the moment: the 4th is in the key
+5 | Dbm7     # ii of Gb7: Dorian
+5 | Gb7      # extended ii–V: a side-step, its own key
+6 | Cm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+6 | F7       # extended ii–V: a side-step, its own key
+7 | Bm7      # ii of E7: Dorian
+7 | E7       # tritone substitute: resolves down a half step to Eb7
+8 | Eb7      # V7 in Ab, not resolving: natural tensions
+8 | B7#11    # tritone substitute: resolves down a half step to Bb13
+
+section: A3
+copy: A2

@@ -15,7 +15,7 @@ const RULE_IDS = Array.from(
 /** a new chart is saved a moment after it is written and the address then becomes ?mine=: wait, or that rewrite undoes a navigation */
 const saved = (page: Page) => expect(page).toHaveURL(/[?&]mine=/)
 
-const CHART = 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n'
+const CHART = 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\n3 | CMaj7\n'
 
 test('the functions page renders its four sections and the C major table', async ({ page }) => {
   await page.goto('/functions')
@@ -142,7 +142,7 @@ test('on a phone the note is reachable by keyboard and closes on Escape and outs
 })
 
 test('the editor links to how to write a function', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | D7 | | X7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | D7 |  | X7\n')
   await saved(page)
   await page.getByRole('button', { name: 'II7', exact: true }).click() // the numeral on the sheet: the function list, with the link under it
   const link = page.getByRole('dialog', { name: 'Function: D7' }).getByRole('link', { name: 'How to write a function' })

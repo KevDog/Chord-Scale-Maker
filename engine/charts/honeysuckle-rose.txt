@@ -6,55 +6,65 @@ form: AABA
 source: Colorado Cookbook, p. 91
 # analysis: 2026-10-11, rules v1; F
 
-# section | bar | chord | scale
-A1 | 1  | Gm7    # ii of C7: Dorian
-A1 | 1  | C7     # V7/I in F: natural tensions
-A1 | 2  | Gm7    # ii of C7: Dorian
-A1 | 2  | C7     # V7/I in F: natural tensions
-A1 | 3  | Gm7    # ii of the ii–V to F
-A1 | 3  | C7     # V7 of F: natural tensions
-A1 | 4  | C7
-A1 | 5  | F6     # tonic: the 4th is in the key
-A1 | 5  | Gm7b5  # iiø7, borrowed from F minor: Locrian
-A1 | 5  | F6     # tonic: the 4th is in the key
-A1 | 6  | G7     # V7 of V7: the dominant of the dominant: natural tensions
-A1 | 6  | C7     # V7 of F: natural tensions
-A1 | 7  | F6     # tonic: the 4th is in the key
-A1 | 8  | Am7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1 | 8  | D7     # V7/ii in F: the b13 is in the key
-A2 | 9  | Gm7    # ii of C7: Dorian
-A2 | 9  | C7     # V7/I in F: natural tensions
-A2 | 10 | Gm7    # ii of C7: Dorian
-A2 | 10 | C7     # V7/I in F: natural tensions
-A2 | 11 | Gm7    # ii of the ii–V to F
-A2 | 11 | C7     # V7 of F: natural tensions
-A2 | 12 | C7
-A2 | 13 | F6     # tonic: the 4th is in the key
-A2 | 13 | Gm7b5  # iiø7, borrowed from F minor: Locrian
-A2 | 13 | F6     # tonic: the 4th is in the key
-A2 | 14 | G7     # V7 of V7: the dominant of the dominant: natural tensions
-A2 | 14 | C7     # V7 of F: natural tensions
-A2 | 15 | F6     # tonic: the 4th is in the key
-A2 | 15 | Gm7b5  # iiø7, borrowed from F minor: Locrian
-A2 | 15 | F6     # tonic: the 4th is in the key
-A2 | 16 | Gm7b5  # iiø7 of C7b9: Locrian, the key's own notes (its ♭2 is a passing note)
-A2 | 16 | C7b9   # extended dominant: V7 of F7; b9 from the symbol
-B  | 17 | F7     # extended dominant: V7 of Bb7
-B  | 19 | Bb7    # IV7 in F, not resolving: the #11 is in the key
-B  | 21 | G7     # V7 of V7: the dominant of the dominant: natural tensions
-B  | 23 | C7     # V7 in F, not resolving: natural tensions
-A3 | 25 | Gm7    # ii of C7: Dorian
-A3 | 25 | C7     # V7/I in F: natural tensions
-A3 | 26 | Gm7    # ii of C7: Dorian
-A3 | 26 | C7     # V7/I in F: natural tensions
-A3 | 27 | Gm7    # ii of the ii–V to F
-A3 | 27 | C7     # V7 of F: natural tensions
-A3 | 28 | C7
-A3 | 29 | F6     # tonic: the 4th is in the key
-A3 | 29 | Gm7b5  # iiø7, borrowed from F minor: Locrian
-A3 | 29 | F6     # tonic: the 4th is in the key
-A3 | 30 | G7     # V7 of V7: the dominant of the dominant: natural tensions
-A3 | 30 | C7     # V7 of F: natural tensions
-A3 | 31 | F6     # tonic: the 4th is in the key
-A3 | 31 | Gm7b5  # iiø7, borrowed from F minor: Locrian
-A3 | 31 | F6     # tonic: the 4th is in the key
+# bar | chord | scale
+
+section: A1
+1 | Gm7    # ii of C7: Dorian
+1 | C7     # V7/I in F: natural tensions
+2 | Gm7    # ii of C7: Dorian
+2 | C7     # V7/I in F: natural tensions
+3 | Gm7    # ii of the ii–V to F
+3 | C7     # V7 of F: natural tensions
+4 | C7
+5 | F6     # tonic: the 4th is in the key
+5 | Gm7b5  # iiø7, borrowed from F minor: Locrian
+5 | F6     # tonic: the 4th is in the key
+6 | G7     # V7 of V7: the dominant of the dominant: natural tensions
+6 | C7     # V7 of F: natural tensions
+7 | F6     # tonic: the 4th is in the key
+8 | Am7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+8 | D7     # V7/ii in F: the b13 is in the key
+
+section: A2
+1 | Gm7    # ii of C7: Dorian
+1 | C7     # V7/I in F: natural tensions
+2 | Gm7    # ii of C7: Dorian
+2 | C7     # V7/I in F: natural tensions
+3 | Gm7    # ii of the ii–V to F
+3 | C7     # V7 of F: natural tensions
+4 | C7
+5 | F6     # tonic: the 4th is in the key
+5 | Gm7b5  # iiø7, borrowed from F minor: Locrian
+5 | F6     # tonic: the 4th is in the key
+6 | G7     # V7 of V7: the dominant of the dominant: natural tensions
+6 | C7     # V7 of F: natural tensions
+7 | F6     # tonic: the 4th is in the key
+7 | Gm7b5  # iiø7, borrowed from F minor: Locrian
+7 | F6     # tonic: the 4th is in the key
+8 | Gm7b5  # iiø7 of C7b9: Locrian, the key's own notes (its ♭2 is a passing note)
+8 | C7b9   # extended dominant: V7 of F7; b9 from the symbol
+
+section: B
+bars: 8
+1 | F7     # extended dominant: V7 of Bb7
+3 | Bb7    # IV7 in F, not resolving: the #11 is in the key
+5 | G7     # V7 of V7: the dominant of the dominant: natural tensions
+7 | C7     # V7 in F, not resolving: natural tensions
+
+section: A3
+bars: 8
+1 | Gm7    # ii of C7: Dorian
+1 | C7     # V7/I in F: natural tensions
+2 | Gm7    # ii of C7: Dorian
+2 | C7     # V7/I in F: natural tensions
+3 | Gm7    # ii of the ii–V to F
+3 | C7     # V7 of F: natural tensions
+4 | C7
+5 | F6     # tonic: the 4th is in the key
+5 | Gm7b5  # iiø7, borrowed from F minor: Locrian
+5 | F6     # tonic: the 4th is in the key
+6 | G7     # V7 of V7: the dominant of the dominant: natural tensions
+6 | C7     # V7 of F: natural tensions
+7 | F6     # tonic: the 4th is in the key
+7 | Gm7b5  # iiø7, borrowed from F minor: Locrian
+7 | F6     # tonic: the 4th is in the key

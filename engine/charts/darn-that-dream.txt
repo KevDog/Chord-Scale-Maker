@@ -4,87 +4,95 @@ style: Ballad
 key: G
 form: AABC
 source: Colorado Cookbook, p. 61
-# analysis: 2026-10-11, rules v1; G
+# analysis: 2026-10-17, rules v1; G
 
-# section | bar | chord | scale
-# area: G major (bars 1–15)
-A1 | 1  | GMaj7   # tonic: the 4th is in the key
-A1 | 1  | Bbm7    # ii of Eb7: Dorian
-A1 | 1  | Eb7     # extended ii–V: a side-step, its own key
-A1 | 2  | Am7     # ii: Dorian, the key’s own notes
-A1 | 2  | B7      # V7/vi in G: b9 and b13 are in the key
-A1 | 3  | Em      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A1 | 3  | Em/D#   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A1 | 3  | D7      # V7 in G, not resolving: natural tensions
-A1 | 3  | D7/C    # V7 in G, not resolving: natural tensions
-A1 | 4  | Bm7b5   # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A1 | 4  | E7      # V7/ii in G: the b13 is in the key
-A1 | 5  | Am7     # ii: Dorian, the key’s own notes
-A1 | 5  | F9      # ♭VII7 from the parallel minor: Lydian Dominant
-A1 | 6  | Bm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1 | 6  | Bbm7    # a borrowed minor chord: Dorian, its own key
-A1 | 7  | Am7     # ii of D7: Dorian
-A1 | 7  | D7      # V7/I in G: natural tensions
-A1 | 8  | Bm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1 | 8  | Bb7     # tritone substitute: resolves down a half step to Am7
-A1 | 8  | Am7     # ii of the ii–V to G
-A1 | 8  | D7      # V7 of G: natural tensions
-A2 | 9  | GMaj7   # tonic: the 4th is in the key
-A2 | 9  | Bbm7    # ii of Eb7: Dorian
-A2 | 9  | Eb7     # extended ii–V: a side-step, its own key
-A2 | 10 | Am7     # ii: Dorian, the key’s own notes
-A2 | 10 | B7      # V7/vi in G: b9 and b13 are in the key
-A2 | 11 | Em      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A2 | 11 | Em/D#   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A2 | 11 | D7      # V7 in G, not resolving: natural tensions
-A2 | 11 | D7/C    # V7 in G, not resolving: natural tensions
-A2 | 12 | Bm7b5   # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A2 | 12 | E7      # V7/ii in G: the b13 is in the key
-A2 | 13 | Am7     # ii: Dorian, the key’s own notes
-A2 | 13 | F9      # ♭VII7 from the parallel minor: Lydian Dominant
-A2 | 14 | Bm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A2 | 14 | Bbm7    # a borrowed minor chord: Dorian, its own key
-A2 | 15 | Am7     # ii of D13: Dorian
-A2 | 15 | D13     # V7/I in G: natural tensions
-# area: Eb major (bars 16–22)
-A2 | 16 | Fm7     # ii of the ii–V to Eb
-A2 | 16 | Bb7     # V7 of Eb: natural tensions
-B  | 17 | EbMaj7  # tonic: the 4th is in the key
-B  | 17 | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B  | 18 | Fm7     # ii of Bb7: Dorian
-B  | 18 | Bb7     # V7/I in Eb: natural tensions
-B  | 19 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-B  | 19 | F#m7    # ii of B7: Dorian
-B  | 19 | B7      # extended ii–V: a side-step, its own key
-B  | 20 | Fm7     # ii of the ii–V to Eb
-B  | 20 | Bb7     # V7 of Eb: natural tensions
-B  | 21 | EbMaj7  # tonic: the 4th is in the key
-B  | 21 | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B  | 22 | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B  | 22 | D7      # V7/iii in Eb: b9 and b13 are in the key
-B  | 22 | Gm      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# area: G major (bars 23–32)
-B  | 23 | Am7     # ii of D7: Dorian
-B  | 23 | D7      # V7/I in G: natural tensions
-B  | 24 | Bbm7    # ii of Eb7: Dorian
-B  | 24 | Eb7     # extended ii–V: a side-step, its own key
-B  | 24 | Am9     # ii of the ii–V to G
-B  | 24 | D13     # V7 of G: natural tensions
-C  | 25 | GMaj7   # tonic: the 4th is in the key
-C  | 25 | Bbm7    # ii of Eb7: Dorian
-C  | 25 | Eb7     # extended ii–V: a side-step, its own key
-C  | 26 | Am7     # ii: Dorian, the key’s own notes
-C  | 26 | B7      # V7/vi in G: b9 and b13 are in the key
-C  | 27 | Em      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-C  | 27 | Em/D#   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-C  | 27 | D7      # V7 in G, not resolving: natural tensions
-C  | 27 | D7/C    # V7 in G, not resolving: natural tensions
-C  | 28 | Bm7b5   # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
-C  | 28 | E7      # V7/ii in G: the b13 is in the key
-C  | 29 | Am7     # ii: Dorian, the key’s own notes
-C  | 29 | F9      # ♭VII7 from the parallel minor: Lydian Dominant
-C  | 30 | Bm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-C  | 30 | Bbm7    # a borrowed minor chord: Dorian, its own key
-C  | 31 | Am7     # ii of the ii–V to G
-C  | 31 | D13     # V7 of G: natural tensions
-C  | 32 | GMaj7   # tonic: the 4th is in the key
+# bar | chord | scale
+
+section: A1
+# area: G major (A1 1 – A2 7)
+1 | GMaj7   # tonic: the 4th is in the key
+1 | Bbm7    # ii of Eb7: Dorian
+1 | Eb7     # extended ii–V: a side-step, its own key
+2 | Am7     # ii: Dorian, the key’s own notes
+2 | B7      # V7/vi in G: b9 and b13 are in the key
+3 | Em      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3 | Em/D#   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3 | D7      # V7 in G, not resolving: natural tensions
+3 | D7/C    # V7 in G, not resolving: natural tensions
+4 | Bm7b5   # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4 | E7      # V7/ii in G: the b13 is in the key
+5 | Am7     # ii: Dorian, the key’s own notes
+5 | F9      # ♭VII7 from the parallel minor: Lydian Dominant
+6 | Bm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+6 | Bbm7    # a borrowed minor chord: Dorian, its own key
+7 | Am7     # ii of D7: Dorian
+7 | D7      # V7/I in G: natural tensions
+8 | Bm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+8 | Bb7     # tritone substitute: resolves down a half step to Am7
+8 | Am7     # ii of the ii–V to G
+8 | D7      # V7 of G: natural tensions
+
+section: A2
+1 | GMaj7   # tonic: the 4th is in the key
+1 | Bbm7    # ii of Eb7: Dorian
+1 | Eb7     # extended ii–V: a side-step, its own key
+2 | Am7     # ii: Dorian, the key’s own notes
+2 | B7      # V7/vi in G: b9 and b13 are in the key
+3 | Em      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3 | Em/D#   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3 | D7      # V7 in G, not resolving: natural tensions
+3 | D7/C    # V7 in G, not resolving: natural tensions
+4 | Bm7b5   # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4 | E7      # V7/ii in G: the b13 is in the key
+5 | Am7     # ii: Dorian, the key’s own notes
+5 | F9      # ♭VII7 from the parallel minor: Lydian Dominant
+6 | Bm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+6 | Bbm7    # a borrowed minor chord: Dorian, its own key
+7 | Am7     # ii of D13: Dorian
+7 | D13     # V7/I in G: natural tensions
+# area: Eb major (A2 8 – B 6)
+8 | Fm7     # ii of the ii–V to Eb
+8 | Bb7     # V7 of Eb: natural tensions
+
+section: B
+1 | EbMaj7  # tonic: the 4th is in the key
+1 | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+2 | Fm7     # ii of Bb7: Dorian
+2 | Bb7     # V7/I in Eb: natural tensions
+3 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+3 | F#m7    # ii of B7: Dorian
+3 | B7      # extended ii–V: a side-step, its own key
+4 | Fm7     # ii of the ii–V to Eb
+4 | Bb7     # V7 of Eb: natural tensions
+5 | EbMaj7  # tonic: the 4th is in the key
+5 | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+6 | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+6 | D7      # V7/iii in Eb: b9 and b13 are in the key
+6 | Gm      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+# area: G major (B 7 – C 8)
+7 | Am7     # ii of D7: Dorian
+7 | D7      # V7/I in G: natural tensions
+8 | Bbm7    # ii of Eb7: Dorian
+8 | Eb7     # extended ii–V: a side-step, its own key
+8 | Am9     # ii of the ii–V to G
+8 | D13     # V7 of G: natural tensions
+
+section: C
+1 | GMaj7   # tonic: the 4th is in the key
+1 | Bbm7    # ii of Eb7: Dorian
+1 | Eb7     # extended ii–V: a side-step, its own key
+2 | Am7     # ii: Dorian, the key’s own notes
+2 | B7      # V7/vi in G: b9 and b13 are in the key
+3 | Em      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3 | Em/D#   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3 | D7      # V7 in G, not resolving: natural tensions
+3 | D7/C    # V7 in G, not resolving: natural tensions
+4 | Bm7b5   # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4 | E7      # V7/ii in G: the b13 is in the key
+5 | Am7     # ii: Dorian, the key’s own notes
+5 | F9      # ♭VII7 from the parallel minor: Lydian Dominant
+6 | Bm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+6 | Bbm7    # a borrowed minor chord: Dorian, its own key
+7 | Am7     # ii of the ii–V to G
+7 | D13     # V7 of G: natural tensions
+8 | GMaj7   # tonic: the 4th is in the key

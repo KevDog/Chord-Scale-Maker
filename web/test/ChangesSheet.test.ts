@@ -5,9 +5,9 @@ import PentatonicLadder from '~/components/PentatonicLadder.vue'
 import ChangesSheet from '~/components/ChangesSheet.vue'
 import { buildChanges, changesLinesPerPage, type ChartDoc, CONCERT, parseChart, type OverlayPlan, type PentatonicPlan, type ScaleView, type SheetLine } from '@chord-scale-maker/engine'
 
-const doc = parseChart('title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\n').value
+const doc = parseChart('title: T\nkey: Bb\n\nsection: A\nbars: 4\n1 | Cm7\n2 | F7\n').value
 // 64 bars: more lines than any page holds, at 2 or 4 bars a line
-const long = parseChart(`title: L\nkey: C\n${Array.from({ length: 64 }, (_, i) => `A | ${i + 1} | ${['Dm7', 'G7', 'CMaj7', 'A7'][i % 4]}`).join('\n')}\n`).value
+const long = parseChart(`title: L\nkey: C\nsection: A\n${Array.from({ length: 64 }, (_, i) => `${i + 1} | ${['Dm7', 'G7', 'CMaj7', 'A7'][i % 4]}`).join('\n')}\n`).value
 
 const mountSheet = (over: Readonly<{ doc?: ChartDoc; line?: SheetLine; numerals?: boolean; scales?: boolean; editing?: null; overlay?: OverlayPlan | null }> = {}) =>
   mountSuspended(ChangesSheet, {
@@ -64,14 +64,14 @@ describe('ChangesSheet', () => {
   })
 
   it("starts a new line where a line's names don't fit, until the chart changes", async () => {
-    const four = parseChart('title: F\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\nA | 4 | A7\n').value
+    const four = parseChart('title: F\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | A7\n').value
     const sheet = await mountSheet({ doc: four })
     const lines = () => sheet.findAllComponents({ name: 'ChangesSystem' }).map((s) => s.props('line').bars.map((b: { at: { bar: string } }) => b.at.bar).join(' '))
     expect(lines()).toEqual(['1 2', '3 4']) // 2 bars a line (a phone's width)
     sheet.findComponent({ name: 'ChangesSystem' }).vm.$emit('overfull', 'A 2')
     await nextTick()
     expect(lines()).toEqual(['1', '2', '3 4'])
-    await sheet.setProps({ doc: parseChart('title: F\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | C6\nA | 4 | A7\n').value })
+    await sheet.setProps({ doc: parseChart('title: F\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | C6\n4 | A7\n').value })
     expect(lines()).toEqual(['1 2', '3 4'])
   })
 
@@ -129,7 +129,7 @@ describe('ChangesSheet', () => {
 })
 
 describe('ChangesSheet pentatonic tints, no contour band (#265, #277)', () => {
-  const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Cmaj7\nA | 3 | Cmaj7').value
+  const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n3 | Cmaj7\n\nsection: B\nbars: 3\n1 | Cmaj7').value
   const plan: PentatonicPlan = { kind: 'pentatonic', bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
 
   it('tints the labels by rung and draws no band, the shared count carrying the rung without colour', async () => {
@@ -142,7 +142,7 @@ describe('ChangesSheet pentatonic tints, no contour band (#265, #277)', () => {
 })
 
 describe('ChangesSheet Hexatonic overlay', () => {
-  const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Cmaj7\nA | 3 | C7#5 | C Whole Tone\nA | 4 | Dm7').value
+  const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n2 | Cmaj7\n3 | C7#5 | C Whole Tone\n4 | Dm7').value
   const HEX = { kind: 'hexatonic' } as const
   const mountHex = (over: Readonly<Record<string, unknown>> = {}) => mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: true, scales: true, overlay: HEX, ...over } })
 
@@ -161,7 +161,7 @@ describe('ChangesSheet Hexatonic overlay', () => {
 })
 
 describe('ChangesSheet chord-basis tints (#272)', () => {
-  const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | Cmaj7').value
+  const doc = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\n3 | Cmaj7').value
   const base = { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, degree: 1 } as const
   const mountPlan = (pentatonic: PentatonicPlan) => mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: false, scales: false, overlay: pentatonic } })
   const hasRungLabel = (w: Awaited<ReturnType<typeof mountPlan>>) => w.findAll('[data-slot="pentatonic"] [data-chord]').some((e) => /text-rung-/.test(e.classes().join(' ')))

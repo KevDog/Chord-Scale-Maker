@@ -1,8 +1,9 @@
 import { analyse, chartKeyOf, parseKey } from './analysis'
-import { type ChartDoc, type ChartLine, chartBeats, expandRowLines, formPart, type FormPart, type LinedRow, qualityScale } from './chart'
+import { type ChartDoc, chartBeats, type FormPart, type LinedRow, qualityScale } from './chart'
 import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRootLenient, writtenChordTextOrNull } from './chord'
 import { type HexPair, hexatonicPairs, hexatonicRanking } from './hexatonics'
 import { guideToneTimeline } from './guideToneTimeline'
+import { type Directive, type Layout, sectionLayout } from './layout'
 import { type HexPick, livePick, type PentPick, pickTarget } from './chordPicks'
 import { arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
 import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
@@ -22,7 +23,7 @@ import { chunk, orNull } from './util'
  * (or, with a line on, a guide tone line from the 3rd or the 7th, a note a chord held for the chord's length, or a
  * 7th chord arpeggio line, each chord's tones struck in quarters, eighths or sixteenths),
  * each chord on its beat with its Roman numeral and its scale, a key-area label where the key changes, section
- * markers, and repeat signs for a @copy straight after its source. No DOM, like sheet.ts and guideTones.ts.
+ * markers, and repeat signs for a copy: straight after its source. No DOM, like sheet.ts and guideTones.ts.
  */
 
 export type ChordAt = string // `${section}:${bar}:${k}`: the drawn bar's at.section, at.bar, the chord's index in the bar
@@ -305,16 +306,17 @@ function timing(rows: readonly LinedRow[], events: readonly TimelineEvent[], bea
   return { eventAt, barOf, totalBars }
 }
 
-/** the blocks the sheet draws: runs of rows in a section, a @copy straight after its source folded into it as a repeat */
-function drawnBlocks(doc: ChartDoc, rows: readonly LinedRow[], t: Timing, sectionsWithEndings: ReadonlySet<string>): Run[] {
-  // runs of rows in one section; a run whose rows come from another section's lines is a @copy of it
+/** the blocks the sheet draws: runs of rows in a section, a copy: straight after its source folded into it as a repeat */
+function drawnBlocks(layout: Layout, t: Timing, sectionsWithEndings: ReadonlySet<string>): Run[] {
+  // runs of rows in one section, each with the section it copies
+  const copyOfName = new Map(layout.sections.flatMap((s) => (s.copyOf ? [[s.name, s.copyOf] as const] : [])))
+  const partOf = new Map(layout.sections.map((s) => [s.name, s.part] as const))
   const runs: Run[] = []
-  rows.forEach((r, i) => {
-    const source = doc.lines[r.line]
-    const copyOf = source?.kind === 'row' && source.section !== r.section ? source.section : null
+  layout.rows.forEach((r, i) => {
+    const copyOf = copyOfName.get(r.section) ?? null
     const last = runs.at(-1)
     if (last && last.section === r.section) last.rows.push(i)
-    else runs.push({ section: r.section, part: formPart(r.section), rows: [i], copyOf, from: 0, to: 0, times: 1, marker: r.section })
+    else runs.push({ section: r.section, part: partOf.get(r.section) ?? 'form', rows: [i], copyOf, from: 0, to: 0, times: 1, marker: r.section })
   })
   runs.forEach((run, k) => {
     run.from = t.barOf(run.rows[0] ?? 0) ?? 0
@@ -351,63 +353,62 @@ function chordKeys(rows: readonly LinedRow[], blocks: readonly Run[], barOf: (i:
   return keys
 }
 
+const endingsOf = (layout: Layout): Extract<Directive, { kind: 'ending' }>[] => layout.directives.filter((d): d is Extract<Directive, { kind: 'ending' }> => d.kind === 'ending')
+const sectionsWithEndingsOf = (layout: Layout): ReadonlySet<string> => new Set(endingsOf(layout).map((e) => e.section))
+/** the chart's layout, rows and their timing, as every view of the Changes sheet reads them */
+function laidOut(doc: ChartDoc) {
+  const layout = sectionLayout(doc).value
+  const beats = chartBeats(doc)
+  const timeline = guideToneTimeline(layout.rows, beats, layout.lengths)
+  return { layout, rows: layout.rows, beats, timeline, t: timing(layout.rows, timeline.events, beats) }
+}
+
 /** each drawn chord's position by its row in expandRowLines(doc); a folded repeat's rows have none (the sheet draws its source's) */
 export function chordPositions(doc: ChartDoc): ReadonlyMap<number, ChordAt> {
-  const rows = expandRowLines(doc).value
-  const beats = chartBeats(doc)
-  const t = timing(rows, guideToneTimeline(rows, beats).events, beats)
-  const withEndings = new Set(doc.lines.flatMap((l) => (l.kind === 'ending' ? [l.section] : [])))
-  return chordKeys(rows, drawnBlocks(doc, rows, t, withEndings), t.barOf)
+  const { layout, rows, t } = laidOut(doc)
+  return chordKeys(rows, drawnBlocks(layout, t, sectionsWithEndingsOf(layout)), t.barOf)
 }
 
 /** the chords the Changes sheet draws, in order, by ChordAt with their chart text: for carrying picks across an edit (#275) */
 export function drawnChords(doc: ChartDoc): readonly DrawnChord[] {
-  const rows = expandRowLines(doc).value
+  const rows = sectionLayout(doc).value.rows
   return [...chordPositions(doc)].sort(([a], [b]) => a - b).map(([i, at]) => ({ at, text: rows[i]?.chord ?? '' }))
 }
 
 /** what a pick at each drawn position is made for: its chord and the scale it plays at this view (#303) */
 export function pickTargets(doc: ChartDoc, resolved: ReadonlyMap<number, Resolved>): ReadonlyMap<ChordAt, string> {
-  const rows = expandRowLines(doc).value
+  const rows = sectionLayout(doc).value.rows
   return new Map([...chordPositions(doc)].map(([i, at]) => [at, pickTarget(rows[i]?.chord ?? '', resolved.get(i)?.scale ?? null)]))
 }
 
 /** the sections the Changes sheet draws, in order: a repeat drawn once (A1 · A2) or a section with endings is one (#264) */
 export function changesSections(doc: ChartDoc): readonly ChangesSection[] {
-  const rows = expandRowLines(doc).value
-  const beats = chartBeats(doc)
-  const t = timing(rows, guideToneTimeline(rows, beats).events, beats)
-  const withEndings = new Set(doc.lines.flatMap((l) => (l.kind === 'ending' ? [l.section] : [])))
-  return drawnBlocks(doc, rows, t, withEndings).map((b) => ({ key: b.section, marker: b.marker, part: b.part }))
+  const { layout, t } = laidOut(doc)
+  return drawnBlocks(layout, t, sectionsWithEndingsOf(layout)).map((b) => ({ key: b.section, marker: b.marker, part: b.part }))
 }
 
 /** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row) */
 export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null): ChangesSheet {
   const pentatonic = overlay?.kind === 'pentatonic' ? overlay : null
-  const rows = expandRowLines(doc).value
-  const beats = chartBeats(doc)
-  const { events, diagnostics } = guideToneTimeline(rows, beats)
+  const { layout, rows, beats, timeline, t } = laidOut(doc)
+  const { diagnostics } = timeline
   const analysis = analyse(doc)
   const resolved = resolveScales(doc, view, analysis)
   const keySig = signatures ? keySignature(chartKeyOf(doc), part) : null
   const byRow = new Map(analysis.rows.map((r) => [r.row, r]))
   const problemAt = new Map(analysis.problems.map((p) => [p.line, p.message]))
-  const t = timing(rows, events, beats)
   const { eventAt, barOf } = t
 
-  // directives read straight from doc.lines (like the @copy detection), keyed by section + written bar
-  const rowKey = (section: string, bar: number | string): string => `${section}|${bar}`
-  const rowIndexAt = new Map<string, number>()
-  rows.forEach((r, i) => {
-    const k = rowKey(r.section, r.bar)
-    if (!rowIndexAt.has(k)) rowIndexAt.set(k, i)
-  })
+  // directives from the layout, placed by their section's first bar (sections are timed one after another)
+  const sectionFirst = new Map<string, number>()
+  layout.sections.reduce((first, s) => (sectionFirst.set(s.name, first), first + s.length), 0)
   const layoutBar = (section: string, bar: number): number | undefined => {
-    const i = rowIndexAt.get(rowKey(section, bar))
-    return i === undefined ? undefined : barOf(i)
+    const f = sectionFirst.get(section)
+    const length = layout.lengths.get(section) ?? 0
+    return f === undefined || bar < 1 || bar > length ? undefined : f + bar - 1
   }
-  const endings = doc.lines.filter((l): l is Extract<ChartLine, { kind: 'ending' }> => l.kind === 'ending')
-  const sectionsWithEndings = new Set(endings.map((e) => e.section))
+  const endings = endingsOf(layout)
+  const sectionsWithEndings = sectionsWithEndingsOf(layout)
   const voltaAt = new Map<number, { n: number; start: boolean; end: boolean }>()
   const repeatEndBars = new Set<number>() // last layout bar of each section's 1st ending
   for (const e of endings) {
@@ -423,18 +424,18 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const segnoBars = new Set<number>()
   const codaBars = new Set<number>()
   const navAt = new Map<number, string[]>()
-  for (const l of doc.lines) {
-    if (l.kind === 'mark') {
-      const bar = layoutBar(l.section, l.bar)
-      if (bar !== undefined) (l.mark === 'segno' ? segnoBars : codaBars).add(bar)
+  for (const d of layout.directives) {
+    if (d.kind === 'mark') {
+      const bar = layoutBar(d.section, d.bar)
+      if (bar !== undefined) (d.mark === 'segno' ? segnoBars : codaBars).add(bar)
     }
-    if (l.kind === 'nav') {
-      const bar = layoutBar(l.section, l.bar)
-      if (bar !== undefined) navAt.set(bar, [...(navAt.get(bar) ?? []), l.text])
+    if (d.kind === 'nav') {
+      const bar = layoutBar(d.section, d.bar)
+      if (bar !== undefined) navAt.set(bar, [...(navAt.get(bar) ?? []), d.text])
     }
   }
 
-  const blocks = drawnBlocks(doc, rows, t, sectionsWithEndings)
+  const blocks = drawnBlocks(layout, t, sectionsWithEndings)
   const keyOf = chordKeys(rows, blocks, barOf)
 
   // guide tones, as a line over the rows as drawn (a folded repeat is drawn once, so it's voiced once), before the

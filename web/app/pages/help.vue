@@ -290,7 +290,8 @@
         <UiSubheading :level="3" class="pt-2">The source</UiSubheading>
         <UiText>
           Under the <strong class="font-semibold text-zinc-950 dark:text-white">⋯</strong> menu, <strong class="font-semibold text-zinc-950 dark:text-white">Show source</strong> opens the chart as plain
-          text, the same chart as the bars (edit either), one line per chord, always in concert pitch:
+          text, the same chart as the bars (edit either): a <UiCode>section:</UiCode> line for each section, then one line per
+          chord, its bar counted from 1 in the section, always in concert pitch:
         </UiText>
         <pre class="overflow-x-auto rounded-lg bg-zinc-950/2.5 p-4 font-mono text-sm/6 text-zinc-950 ring-1 ring-zinc-950/10 dark:bg-white/5 dark:text-white dark:ring-white/10">{{ EXAMPLE }}</pre>
         <ul class="list-disc space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
@@ -300,13 +301,18 @@
             <UiCode>Am7b5</UiCode>, <UiCode>G7#9b13</UiCode>, <UiCode>EbMaj7</UiCode>, <UiCode>D7/F#</UiCode>.
           </li>
           <li>
-            <UiCode>@copy A1 A2 8</UiCode> repeats section A1 as A2, eight bars later, which saves typing out every AABA
-            tune twice.
+            <UiCode>copy: A1</UiCode> under a <UiCode>section:</UiCode> line repeats section A1 there, which saves typing
+            out every AABA tune twice.
+          </li>
+          <li>
+            Under its <UiCode>section:</UiCode> line, a section can have its own <UiCode>key:</UiCode> (and
+            <UiCode>@key 5 D</UiCode> changes key from its bar 5), until the section ends. <UiCode>bars: 8</UiCode> says
+            how long it is when its last chord is held past its last written bar.
           </li>
           <li>
             Name a section <UiCode>Intro</UiCode>, <UiCode>Coda</UiCode>, <UiCode>Tag</UiCode> or <UiCode>Ending</UiCode>
             and it sits outside the form: it prints where it stands, but the tune's turnaround still goes back to bar 1,
-            not to the intro. Number its bars from 1 if you like.
+            not to the intro. <UiCode>outside: yes</UiCode> does the same for a section of any name.
           </li>
           <li>
             <UiCode>time: 3/4</UiCode> makes it a waltz (<UiCode>2/4</UiCode> and <UiCode>4/4</UiCode> work too; 4/4 is
@@ -423,12 +429,15 @@ const SECTIONS = [
 const EXAMPLE = `title: Autumn Leaves
 subtitle: Full Form
 
-# section | bar | chord | scale
-A1 | 1 | Cm7 | C Dorian
-A1 | 2 | F7  | F Mixolydian
-A1 | 3 | BbMaj7
-A1 | 4 | EbMaj7
-@copy A1 A2 4`
+section: A1
+# bar | chord | scale
+1 | Cm7 | C Dorian
+2 | F7  | F Mixolydian
+3 | BbMaj7
+4 | EbMaj7
+
+section: A2
+copy: A1`
 
 const current = useCurrentSection(() => SECTIONS.map((s) => s.id))
 

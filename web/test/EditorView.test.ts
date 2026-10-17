@@ -10,7 +10,7 @@ import { decodeShare, parseChart, practiceSelectionFrom, serializeChart, type Sh
 const { navigate } = vi.hoisted(() => ({ navigate: vi.fn() }))
 mockNuxtImport('navigateTo', () => navigate)
 
-const TEXT = 'title: T\nA | 1 | Cm7\n'
+const TEXT = 'title: T\n\nsection: A\nbars: 4\n1 | Cm7\n'
 const mount = (shared?: ShareView) =>
   mountSuspended(EditorView, {
     props: { initialText: TEXT, ...(shared ? { shared } : {}) },
@@ -75,10 +75,12 @@ async function showSource(w: Wrapper): Promise<void> {
 
 describe('EditorView help', () => {
   afterEach(() => localStorage.clear())
-  it('mentions functions and @key', async () => {
+  it('mentions sections, copy: and @key', async () => {
     const w = await mount()
     await showSource(w)
-    expect(w.html()).toContain('@key B 17 D')
+    expect(w.html()).toContain('section: A')
+    expect(w.html()).toContain('copy: A')
+    expect(w.html()).toContain('@key 5 D')
     w.unmount()
   })
 })
@@ -111,7 +113,7 @@ describe('EditorView', () => {
 
   it("follows the chart's key, written for the instrument, until a note is picked", async () => {
     const w = await mountSuspended(EditorView, {
-      props: { initialText: 'title: T\nkey: Eb\nA | 1 | Cm7\n' },
+      props: { initialText: 'title: T\nkey: Eb\n\nsection: A\nbars: 4\n1 | Cm7\n' },
       global: { stubs: { ScaleSheet: true, ChangesSheet: true } },
       attachTo: document.body,
     })
@@ -319,7 +321,7 @@ describe('EditorView guide tones', () => {
 })
 
 describe('EditorView key signatures', () => {
-  const KEYED = 'title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\n'
+  const KEYED = 'title: T\nkey: Bb\n\nsection: A\nbars: 4\n1 | Cm7\n2 | F7\n'
   const mountWith = (shared: { sheet: 'scales' | 'changes' }) =>
     mountSuspended(EditorView, {
       props: { initialText: KEYED, shared },
@@ -394,6 +396,7 @@ describe('EditorView scale level', () => {
     expect(sheet(w).props('resolved').get(0)).toMatchObject({ scale: 'C Minor Pentatonic' })
   })
 
+  // saved before section blocks (#329): the opening migrates it, and the level's owned rows (by line) follow it
   const LEVELLED = 'title: T\nA | 1 | Cm7 | C Minor Pentatonic\nA | 2 | F7 | F Lydian Dominant\nA | 3 | Bbmaj7 | Bb Major Pentatonic\n'
   const STORED = JSON.stringify({ level: 'basic', seed: 1, owned: ['1:Cm7', '2:F7'] }) // a level once wrote Cm7 and F7; F7 was changed by hand since; Bbmaj7 is a pick of your own
   const mountMine = () => {
@@ -406,11 +409,13 @@ describe('EditorView scale level', () => {
     })
   }
 
-  it('blanks the cells a level wrote into a saved chart, once, and forgets which rows it owned', async () => {
+  it('migrates an old saved chart and blanks the cells a level wrote into it, once, and forgets which rows it owned', async () => {
     const log = vi.spyOn(console, 'info').mockImplementation(() => {})
     const w = await mountMine()
     expect(cells(changesSheet(w).props('doc'))).toEqual(['', 'F Lydian Dominant', 'Bb Major Pentatonic'])
     expect(loadChart('abc123abc123')?.text).not.toContain('C Minor Pentatonic') // saved
+    expect(loadChart('abc123abc123')?.text).toContain('section: A\n') // in section blocks
+    expect(localStorage.getItem('csm-premigration:mine:abc123abc123')).toBe(LEVELLED) // the old text kept, in case
     expect(JSON.parse(localStorage.getItem('csm-level:mine:abc123abc123') ?? '{}')).toEqual({ level: 'basic', seed: 1 })
     expect(log).toHaveBeenCalledWith(expect.stringMatching(/1 scale/))
     await buttonCalled(w, 'Edit')?.trigger('click')
@@ -493,7 +498,7 @@ describe('EditorView lead-sheet editor', () => {
     expect(buttonCalled(w, 'Numerals')?.attributes('aria-pressed')).toBe('false')
   })
 
-  const THREE = 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n' // lines 2, 3, 4
+  const THREE = 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\n3 | CMaj7\n' // lines 5, 6, 7
   const mountThree = () => mountSuspended(EditorView, { props: { initialText: THREE }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
   const sheetEmit = async (w: Wrapper, event: string, ...args: unknown[]) => {
     changesSheet(w).vm.$emit(event, ...args)
@@ -503,32 +508,32 @@ describe('EditorView lead-sheet editor', () => {
   it('moves the field by bars, carries where the chord is drawn, and asks for focus back where there is nowhere to go', async () => {
     const w = await mountThree()
     await buttonCalled(w, 'Edit')?.trigger('click')
-    await sheetEmit(w, 'edit', { kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
-    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
+    await sheetEmit(w, 'edit', { kind: 'chord', line: 6, at: { section: 'A', bar: '2' } })
+    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 6, at: { section: 'A', bar: '2' } })
     await sheetEmit(w, 'done', 'next')
-    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 4, at: { section: 'A', bar: '3' } })
+    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 7, at: { section: 'A', bar: '3' } })
     await sheetEmit(w, 'done', 'next') // the last chord: nowhere to go
     expect(changesSheet(w).props('editing')).toBeNull()
-    expect(changesSheet(w).props('focusAt')).toMatchObject({ line: 4, at: { section: 'A', bar: '3' } })
+    expect(changesSheet(w).props('focusAt')).toMatchObject({ line: 7, at: { section: 'A', bar: '3' } })
   })
 
   it('moves the field by chords (← →): through a bar’s chords, then into the next or previous bar', async () => {
-    const TWO = 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 2 | Db7\nA | 3 | CMaj7\n' // lines 2, 3, 4, 5
+    const TWO = 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\n2 | Db7\n3 | CMaj7\n' // lines 5, 6, 7, 8
     const w = await mountSuspended(EditorView, { props: { initialText: TWO }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
     await buttonCalled(w, 'Edit')?.trigger('click')
-    await sheetEmit(w, 'edit', { kind: 'chord', line: 3, at: { section: 'A', bar: '2' } })
+    await sheetEmit(w, 'edit', { kind: 'chord', line: 6, at: { section: 'A', bar: '2' } })
     await sheetEmit(w, 'done', 'nextChord')
-    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 4, at: { section: 'A', bar: '2' } })
+    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 7, at: { section: 'A', bar: '2' } })
     await sheetEmit(w, 'done', 'nextChord')
-    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 5, at: { section: 'A', bar: '3' } })
+    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 8, at: { section: 'A', bar: '3' } })
     await sheetEmit(w, 'done', 'prevChord')
-    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 4, at: { section: 'A', bar: '2' } })
+    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 7, at: { section: 'A', bar: '2' } })
     await sheetEmit(w, 'done', 'prevChord')
     await sheetEmit(w, 'done', 'prevChord')
-    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 2, at: { section: 'A', bar: '1' } })
+    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 5, at: { section: 'A', bar: '1' } })
     await sheetEmit(w, 'done', 'prevChord') // the first chord: nowhere to go
     expect(changesSheet(w).props('editing')).toBeNull()
-    expect(changesSheet(w).props('focusAt')).toMatchObject({ line: 2, at: { section: 'A', bar: '1' } })
+    expect(changesSheet(w).props('focusAt')).toMatchObject({ line: 5, at: { section: 'A', bar: '1' } })
   })
 
   const docText = (w: Wrapper): string => serializeChart(changesSheet(w).props('doc')).replace(/[ \t]*\|[ \t]*/g, ' | ')
@@ -541,13 +546,13 @@ describe('EditorView lead-sheet editor', () => {
     expect(barDialog(w).props('kind')).toBe('paste')
     barDialog(w).vm.$emit('submit', { kind: 'paste', bars: [['Fm7'], ['Bb7', 'Eb7']], before: false })
     await nextTick()
-    expect(docText(w)).toMatch(/A \| 2 \| G7\nA \| 3 \| Fm7\nA \| 4 \| Bb7\nA \| 4 \| Eb7\nA \| 5 \| CMaj7/)
+    expect(docText(w)).toMatch(/2 \| G7\n3 \| Fm7\n4 \| Bb7\n4 \| Eb7\n5 \| CMaj7/)
     expect(barDialog(w).props('kind')).toBeNull()
     await sheetEmit(w, 'dialog', 'paste', 'A', 1)
     barDialog(w).vm.$emit('submit', { kind: 'paste', bars: [[]], before: true })
     await nextTick()
     expect(barDialog(w).props('error')).toMatch(/can’t start with a held bar/)
-    expect(docText(w)).toMatch(/A \| 1 \| Dm7/)
+    expect(docText(w)).toMatch(/\n1 \| Dm7/)
   })
 
   it('repeats a section as a new one after the last, and renames a section everywhere, refusing a name in use', async () => {
@@ -557,7 +562,7 @@ describe('EditorView lead-sheet editor', () => {
     expect(barDialog(w).props('kind')).toBe('repeat')
     barDialog(w).vm.$emit('submit', { kind: 'repeat', src: 'A', name: 'B' })
     await nextTick()
-    expect(docText(w)).toMatch(/@copy A B 4/) // after A's four bars (three written, one rounding out)
+    expect(docText(w)).toMatch(/section: B\ncopy: A/) // after A
     await sheetEmit(w, 'dialog', 'rename', 'A', 1)
     expect(barDialog(w).props('kind')).toBe('rename')
     barDialog(w).vm.$emit('submit', { kind: 'rename', name: 'B' })
@@ -565,8 +570,8 @@ describe('EditorView lead-sheet editor', () => {
     expect(barDialog(w).props('error')).toMatch(/no other section has/)
     barDialog(w).vm.$emit('submit', { kind: 'rename', name: 'Verse' })
     await nextTick()
-    expect(docText(w)).toMatch(/Verse \| 1 \| Dm7/)
-    expect(docText(w)).toMatch(/@copy Verse B 4/)
+    expect(docText(w)).toMatch(/section: Verse\n/)
+    expect(docText(w)).toMatch(/section: B\ncopy: Verse/)
     expect(barDialog(w).props('kind')).toBeNull()
   })
 
@@ -598,7 +603,7 @@ describe('EditorView lead-sheet editor', () => {
     const save = () => buttonCalled(w, 'Save')
     expect(save()?.attributes('disabled')).toBeDefined()
     expect(save()?.element.closest('div')?.textContent).toContain('Editing the sheet')
-    await sheetEmit(w, 'update:doc', parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | Db7\nA | 3 | CMaj7\n').value)
+    await sheetEmit(w, 'update:doc', parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | Db7\n3 | CMaj7\n').value)
     expect(loadChart('abc123abc123')?.text).not.toContain('Db7') // the autosave waits for a pause
     expect(save()?.attributes('disabled')).toBeUndefined()
     await save()?.trigger('click')
@@ -610,31 +615,31 @@ describe('EditorView lead-sheet editor', () => {
   it('from the new chord slot, Tab moves on and Enter gives focus to the bar’s last chord (review: Important 2)', async () => {
     const w = await mountThree()
     await buttonCalled(w, 'Edit')?.trigger('click')
-    await sheetEmit(w, 'edit', { kind: 'chord', line: 2, at: { section: 'A', bar: '1' } })
+    await sheetEmit(w, 'edit', { kind: 'chord', line: 5, at: { section: 'A', bar: '1' } })
     await sheetEmit(w, 'done', 'add')
     expect(changesSheet(w).props('editing')).toEqual({ kind: 'slot', section: 'A', bar: '1' })
-    await sheetEmit(w, 'update:doc', parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 1 | A7\nA | 2 | G7\nA | 3 | CMaj7\n').value)
+    await sheetEmit(w, 'update:doc', parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n1 | A7\n2 | G7\n3 | CMaj7\n').value)
     await sheetEmit(w, 'done', 'next')
-    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 4, at: { section: 'A', bar: '2' } })
+    expect(changesSheet(w).props('editing')).toEqual({ kind: 'chord', line: 7, at: { section: 'A', bar: '2' } })
     await sheetEmit(w, 'done', 'add')
     await sheetEmit(w, 'done', 'stay') // the slot closed empty
     expect(changesSheet(w).props('editing')).toBeNull()
-    expect(changesSheet(w).props('focusAt')).toMatchObject({ line: 4, at: { section: 'A', bar: '2' } })
+    expect(changesSheet(w).props('focusAt')).toMatchObject({ line: 7, at: { section: 'A', bar: '2' } })
   })
 
   it('undoes from the sheet: ⌘Z in the preview and the banner’s Undo (review: Important 4)', async () => {
     const w = await mountThree()
     await buttonCalled(w, 'Edit')?.trigger('click')
     const before = changesSheet(w).props('doc')
-    await sheetEmit(w, 'update:doc', parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | Db7\nA | 3 | CMaj7\n').value)
+    await sheetEmit(w, 'update:doc', parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | Db7\n3 | CMaj7\n').value)
     expect(changesSheet(w).props('doc')).not.toBe(before)
     await w.find('[aria-label="Preview"]').trigger('keydown', { key: 'z', metaKey: true })
     await nextTick()
-    expect(serializeChart(changesSheet(w).props('doc'))).toMatch(/A \| 2 \| G7/)
-    await sheetEmit(w, 'update:doc', parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | Db7\nA | 3 | CMaj7\n').value)
+    expect(serializeChart(changesSheet(w).props('doc'))).toMatch(/\n2 +\| G7/)
+    await sheetEmit(w, 'update:doc', parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | Db7\n3 | CMaj7\n').value)
     await w.find('button[aria-label="Undo the last change"]').trigger('click')
     await nextTick()
-    expect(serializeChart(changesSheet(w).props('doc'))).toMatch(/A \| 2 \| G7/)
+    expect(serializeChart(changesSheet(w).props('doc'))).toMatch(/\n2 +\| G7/)
   })
 
   it('shows no banner, and no field, on a chart over a size limit (Review Focus 5)', async () => {
@@ -726,7 +731,7 @@ describe('EditorView chord picks (#303)', () => {
     useInterface().level.value = 'everything'
     localStorage.clear()
   })
-  const KEYED = 'title: T\nkey: C\nA | 1 | Cm7\nA | 2 | Cm7\n'
+  const KEYED = 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Cm7\n2 | Cm7\n'
   const PICK = { 'A:1:0': { pc: 7, for: 'Cm7|C Dorian' } }
   const mountKeyed = (extra: object = {}) =>
     mountSuspended(EditorView, { props: { initialText: KEYED, ...extra }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
@@ -753,10 +758,10 @@ describe('EditorView chord picks (#303)', () => {
       await nextTick()
       expect(overlayPicks(w), model).toEqual(PICK)
     }
-    changesSheet(w).vm.$emit('update:doc', parseChart('title: T\nkey: C\nA | 1 | Cm7\nA | 2 | F7\n').value) // same key: kept
+    changesSheet(w).vm.$emit('update:doc', parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Cm7\n2 | F7\n').value) // same key: kept
     await nextTick()
     expect(overlayPicks(w)).toEqual(PICK)
-    changesSheet(w).vm.$emit('update:doc', parseChart('title: T\nkey: Bb\nA | 1 | Bbm7\nA | 2 | Eb7\n').value)
+    changesSheet(w).vm.$emit('update:doc', parseChart('title: T\nkey: Bb\n\nsection: A\nbars: 4\n1 | Bbm7\n2 | Eb7\n').value)
     await nextTick()
     expect(overlayPicks(w)).toEqual({})
   })
@@ -897,7 +902,7 @@ describe('EditorView interface notice', () => {
     localStorage.setItem('csm-overlay', 'pentatonic')
     localStorage.setItem('csm-pent-path:satin-doll', JSON.stringify({ path: 'side-slip', step: { unit: 'section', bars: 4 }, sections: {} }))
     localStorage.setItem('csm-pent-path:autumn-leaves', JSON.stringify({ path: 'fifths', step: { unit: 'section', bars: 4 }, sections: {} }))
-    const w = await mountSuspended(EditorView, { props: { initialText: 'title: T\nkey: C\nA | 1 | Cm7\n', practiceKey: 'satin-doll' }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    const w = await mountSuspended(EditorView, { props: { initialText: 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Cm7\n', practiceKey: 'satin-doll' }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
     changesSheet(w).vm.$emit('pick', 'pentatonic', ['A:1:0'], 7)
     await nextTick()
     expect(localStorage.getItem('csm-pent-picks:satin-doll')).not.toBeNull()
@@ -927,7 +932,7 @@ describe('EditorView interface fixes', () => {
 
   it('a chart whose text has a problem offers its Source at any level', async () => {
     useInterface().level.value = 'essentials'
-    const w = await mountSuspended(EditorView, { props: { initialText: 'title: T\nA | 1 | Cm7\nwhat is this\n' }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
+    const w = await mountSuspended(EditorView, { props: { initialText: 'title: T\n\nsection: A\nbars: 4\n1 | Cm7\nwhat is this\n' }, global: { stubs: { ScaleSheet: true, ChangesSheet: true } }, attachTo: document.body })
     await buttonCalled(w, 'Edit')?.trigger('click')
     await nextTick()
     expect(w.text()).toContain('Editing the sheet')

@@ -3,33 +3,39 @@ composer: Richie Beirach
 style: Medium swing
 key: Bbm
 form: A, 13 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; Bb minor
 # book: Med. Swing 6/4 (quarter = 124), as played by John Abercrombie; each bar is six beats (6/4 is not supported, written as 4/4)
 # book: head is played twice before and after solos
 
-# section | bar | chord
-A      | 1  | DbmMaj7    # from the symbol: minor-major 7th
+# bar | chord
+
+section: A
+bars: 16
+1  | DbmMaj7    # from the symbol: minor-major 7th
 # book: Dbm(b13 maj7)
-A      | 2  | FmMaj7     # from the symbol: minor-major 7th
+2  | FmMaj7     # from the symbol: minor-major 7th
 # book: Fm9(maj7)
-A      | 3  | Ab/E       # ♭VII of B♭ minor: A♭ major, the notes of B♭ Dorian
-A      | 4  | DbMaj7#11  # from the symbol: #11
-A      | 5  | Ddim7      # vii°7 to EMaj7/Eb, up to its bass: Bb7♭9 without its root
-A      | 6  | EMaj7/Eb   # a non-tonic major chord: Lydian
-A      | 7  | D/Eb       # a non-tonic major chord: Lydian
-A      | 8  | DbMaj7/Eb  # bIII of Bb minor: the relative major itself
-A      | 9  | F#mMaj7    # from the symbol: minor-major 7th
-A      | 9  | F7#5#9     # V7 of Bb minor: the b13 is in the key, b9, #9 and #11 from the symbol
-A      | 10 | Bbm        # tonic minor: Dorian by convention
+3  | Ab/E       # ♭VII of B♭ minor: A♭ major, the notes of B♭ Dorian
+4  | DbMaj7#11  # from the symbol: #11
+5  | Ddim7      # vii°7 to EMaj7/Eb, up to its bass: Bb7♭9 without its root
+6  | EMaj7/Eb   # a non-tonic major chord: Lydian
+7  | D/Eb       # a non-tonic major chord: Lydian
+8  | DbMaj7/Eb  # bIII of Bb minor: the relative major itself
+9  | F#mMaj7    # from the symbol: minor-major 7th
+9  | F7#5#9     # V7 of Bb minor: the b13 is in the key, b9, #9 and #11 from the symbol
+10 | Bbm        # tonic minor: Dorian by convention
 # book: Bbm(add9 add11)
-A      | 11 | F7#5#9     # V7 of Bb minor: the b13 is in the key, b9, #9 and #11 from the symbol
-A      | 12 | Bbm        # tonic minor: Dorian by convention
+11 | F7#5#9     # V7 of Bb minor: the b13 is in the key, b9, #9 and #11 from the symbol
+12 | Bbm        # tonic minor: Dorian by convention
 # book: Bbm(add9 add11)
-A      | 13 | F7#5#9     # V7 of the Bbm before it: the b13 is in the key, b9, #9 and #11 from the symbol
+13 | F7#5#9     # V7 of the Bbm before it: the b13 is in the key, b9, #9 and #11 from the symbol
 # alt: bar 13, second half (BMaj7/F)
-Ending | 1  | Bbm        # tonic minor: Dorian by convention
+
+section: Ending
+bars: 4
+1  | Bbm        # tonic minor: Dorian by convention
 # book: Bbm(add9 add11)
-Ending | 2  | F7#5#9     # V7 of the Bbm before it: the b13 is in the key, b9, #9 and #11 from the symbol
-Ending | 3  | Dm9        # a borrowed minor chord: Dorian, its own key
+2  | F7#5#9     # V7 of the Bbm before it: the b13 is in the key, b9, #9 and #11 from the symbol
+3  | Dm9        # a borrowed minor chord: Dorian, its own key
 # book: Ending bars 2–3 are fermatas, molto rit.

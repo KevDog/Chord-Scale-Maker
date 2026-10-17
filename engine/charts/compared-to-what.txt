@@ -13,107 +13,119 @@ source:
 # B repeats for each verse (4x); C is the solo vamp (4x); after the fourth verse D.S. (fifth verse) al Coda
 # B bars 41–42 and Coda bars 11–12: a drum break under the melody
 # Coda: bars 1–2 vamp till cue, then bars 3–14 on cue
-# section | bar | chord
-Intro | 9  | Ebm7     # a borrowed minor chord: Dorian, its own key
-Intro | 25 | Eb7      # tritone substitute: resolves down a half step to Dm7
-Intro | 33 | Dm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-Intro | 41 | F7       # static dominant: its own mode
-A     | 1  | Gm7/F    # ii: Dorian, the key’s own notes
-A     | 2  | Fdim7    # auxiliary diminished: it decorates the chord and returns to it
-A     | 2  | F7       # I7 in F, not resolving: natural tensions
-A     | 3  | Gm7/F    # ii: Dorian, the key’s own notes
-A     | 4  | Fdim7    # auxiliary diminished: it decorates the chord and returns to it
-A     | 4  | F7       # I7 in F, not resolving: natural tensions
-A     | 5  | G#m7/F#  # a borrowed minor chord: Dorian, its own key
-A     | 6  | F#dim7   # auxiliary diminished: it decorates the chord and returns to it; not functioning diatonically: the symmetric scale
-A     | 6  | F#7      # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-A     | 7  | G#m7/F#  # a borrowed minor chord: Dorian, its own key
-A     | 8  | F#dim7   # auxiliary diminished: it decorates the chord and returns to it; not functioning diatonically: the symmetric scale
-A     | 8  | F#7      # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-A     | 9  | Am7/G    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A     | 10 | Gdim7    # auxiliary diminished: it decorates the chord and returns to it; not functioning diatonically: the symmetric scale
-A     | 10 | G7       # II7 in F, not resolving: natural tensions
-A     | 11 | Am7/G    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A     | 12 | Gdim7    # auxiliary diminished: it decorates the chord and returns to it; not functioning diatonically: the symmetric scale
-A     | 12 | G7       # II7 in F, not resolving: natural tensions
-A     | 13 | Db/Ab    # ♭VI, borrowed from F minor: Lydian (its ♯11 is in the key)
-A     | 13 | Ab       # ♭III, borrowed from F minor: Lydian (its ♯11 is in the key)
-A     | 13 | Db/Ab    # ♭VI, borrowed from F minor: Lydian (its ♯11 is in the key)
-A     | 14 | Db/Ab
-A     | 15 | D/A      # a non-tonic major chord: Lydian
-A     | 15 | A        # a non-tonic major chord: Lydian
-A     | 15 | D/A      # a non-tonic major chord: Lydian
-A     | 16 | D/A
-A     | 17 | Eb/Bb    # ♭VII, borrowed from F minor: Lydian (its ♯11 is in the key)
-A     | 17 | Bb       # IV: the #4 is the key’s 7th
-A     | 17 | Eb/Bb    # ♭VII, borrowed from F minor: Lydian (its ♯11 is in the key)
-A     | 18 | Eb/Bb
-A     | 19 | E/B      # a non-tonic major chord: Lydian
-A     | 19 | B        # a non-tonic major chord: Lydian
-A     | 19 | E/B      # a non-tonic major chord: Lydian
-A     | 20 | E/B
-A     | 21 | C9sus4   # static sus: Mixolydian
-A     | 25 | F7       # V7/IV in F: natural tensions
-A     | 25 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-A     | 26 | F7       # V7/IV in F: natural tensions
-A     | 26 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-A     | 27 | F7       # V7/IV in F: natural tensions
-A     | 27 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-A     | 28 | F7       # V7/IV in F: natural tensions
-A     | 28 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-B     | 29 | F7       # V7/IV in F: natural tensions
-B     | 30 | F7
-B     | 30 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-B     | 31 | F7       # V7/IV in F: natural tensions
-B     | 32 | F7
-B     | 32 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-B     | 33 | F7       # V7/IV in F: natural tensions
-B     | 34 | F7
-B     | 34 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-B     | 35 | F7       # V7/IV in F: natural tensions
-B     | 36 | F7
-B     | 36 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-B     | 37 | F7       # V7/IV in F: natural tensions
-B     | 37 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-B     | 38 | F7       # V7/IV in F: natural tensions
-B     | 38 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-B     | 39 | F7       # V7/IV in F: natural tensions
-B     | 39 | Bb/F     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-B     | 39 | F7       # V7/IV in F: natural tensions
-B     | 43 | F7
-B     | 43 | Bb/F     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-B     | 43 | F7       # V7/IV in F: natural tensions
-B     | 44 | F7
-B     | 44 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-C     | 45 | F7       # V7/IV in F: natural tensions
-C     | 45 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-C     | 46 | F7       # V7/IV in F: natural tensions
-C     | 46 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-C     | 47 | F7       # V7/IV in F: natural tensions
-C     | 47 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-C     | 48 | F7       # V7/IV in F: natural tensions
-C     | 48 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-Coda  | 1  | F7       # V7/IV in F: natural tensions
-Coda  | 1  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-Coda  | 2  | F7       # V7/IV in F: natural tensions
-Coda  | 2  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-Coda  | 3  | F7       # V7/IV in F: natural tensions
-Coda  | 4  | F7
-Coda  | 4  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-Coda  | 5  | F7       # V7/IV in F: natural tensions
-Coda  | 6  | F7
-Coda  | 6  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-Coda  | 7  | F7       # V7/IV in F: natural tensions
-Coda  | 7  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-Coda  | 8  | F7       # V7/IV in F: natural tensions
-Coda  | 8  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-Coda  | 9  | F7       # V7/IV in F: natural tensions
-Coda  | 9  | Bb/F     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-Coda  | 9  | F7       # V7/IV in F: natural tensions
-Coda  | 13 | F7
-Coda  | 13 | Bb/F     # the F7 before it makes Bb the key of the moment: the 4th is in the key
-Coda  | 13 | F7       # V7 of the Bb/F before it: natural tensions
-@segno A 1
-@coda B 44
-@nav C 48 D.S. al Coda
-@coda Coda 1
+# bar | chord
+
+section: Intro
+bars: 36
+1  | Ebm7     # a borrowed minor chord: Dorian, its own key
+17 | Eb7      # tritone substitute: resolves down a half step to Dm7
+25 | Dm7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+33 | F7       # static dominant: its own mode
+
+section: A
+1  | Gm7/F    # ii: Dorian, the key’s own notes
+2  | Fdim7    # auxiliary diminished: it decorates the chord and returns to it
+2  | F7       # I7 in F, not resolving: natural tensions
+3  | Gm7/F    # ii: Dorian, the key’s own notes
+4  | Fdim7    # auxiliary diminished: it decorates the chord and returns to it
+4  | F7       # I7 in F, not resolving: natural tensions
+5  | G#m7/F#  # a borrowed minor chord: Dorian, its own key
+6  | F#dim7   # auxiliary diminished: it decorates the chord and returns to it; not functioning diatonically: the symmetric scale
+6  | F#7      # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+7  | G#m7/F#  # a borrowed minor chord: Dorian, its own key
+8  | F#dim7   # auxiliary diminished: it decorates the chord and returns to it; not functioning diatonically: the symmetric scale
+8  | F#7      # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+9  | Am7/G    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+10 | Gdim7    # auxiliary diminished: it decorates the chord and returns to it; not functioning diatonically: the symmetric scale
+10 | G7       # II7 in F, not resolving: natural tensions
+11 | Am7/G    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+12 | Gdim7    # auxiliary diminished: it decorates the chord and returns to it; not functioning diatonically: the symmetric scale
+12 | G7       # II7 in F, not resolving: natural tensions
+13 | Db/Ab    # ♭VI, borrowed from F minor: Lydian (its ♯11 is in the key)
+13 | Ab       # ♭III, borrowed from F minor: Lydian (its ♯11 is in the key)
+13 | Db/Ab    # ♭VI, borrowed from F minor: Lydian (its ♯11 is in the key)
+14 | Db/Ab
+15 | D/A      # a non-tonic major chord: Lydian
+15 | A        # a non-tonic major chord: Lydian
+15 | D/A      # a non-tonic major chord: Lydian
+16 | D/A
+17 | Eb/Bb    # ♭VII, borrowed from F minor: Lydian (its ♯11 is in the key)
+17 | Bb       # IV: the #4 is the key’s 7th
+17 | Eb/Bb    # ♭VII, borrowed from F minor: Lydian (its ♯11 is in the key)
+18 | Eb/Bb
+19 | E/B      # a non-tonic major chord: Lydian
+19 | B        # a non-tonic major chord: Lydian
+19 | E/B      # a non-tonic major chord: Lydian
+20 | E/B
+21 | C9sus4   # static sus: Mixolydian
+25 | F7       # V7/IV in F: natural tensions
+25 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+26 | F7       # V7/IV in F: natural tensions
+26 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+27 | F7       # V7/IV in F: natural tensions
+27 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+28 | F7       # V7/IV in F: natural tensions
+28 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+@segno 1
+
+section: B
+1  | F7       # V7/IV in F: natural tensions
+2  | F7
+2  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+3  | F7       # V7/IV in F: natural tensions
+4  | F7
+4  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+5  | F7       # V7/IV in F: natural tensions
+6  | F7
+6  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+7  | F7       # V7/IV in F: natural tensions
+8  | F7
+8  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+9  | F7       # V7/IV in F: natural tensions
+9  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+10 | F7       # V7/IV in F: natural tensions
+10 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+11 | F7       # V7/IV in F: natural tensions
+11 | Bb/F     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+11 | F7       # V7/IV in F: natural tensions
+15 | F7
+15 | Bb/F     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+15 | F7       # V7/IV in F: natural tensions
+16 | F7
+16 | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+@coda 16
+
+section: C
+1  | F7       # V7/IV in F: natural tensions
+1  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+2  | F7       # V7/IV in F: natural tensions
+2  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+3  | F7       # V7/IV in F: natural tensions
+3  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+4  | F7       # V7/IV in F: natural tensions
+4  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+@nav 4 D.S. al Coda
+
+section: Coda
+bars: 16
+1  | F7       # V7/IV in F: natural tensions
+1  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+2  | F7       # V7/IV in F: natural tensions
+2  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+3  | F7       # V7/IV in F: natural tensions
+4  | F7
+4  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+5  | F7       # V7/IV in F: natural tensions
+6  | F7
+6  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+7  | F7       # V7/IV in F: natural tensions
+7  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+8  | F7       # V7/IV in F: natural tensions
+8  | Bb/C     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+9  | F7       # V7/IV in F: natural tensions
+9  | Bb/F     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+9  | F7       # V7/IV in F: natural tensions
+13 | F7
+13 | Bb/F     # the F7 before it makes Bb the key of the moment: the 4th is in the key
+13 | F7       # V7 of the Bb/F before it: natural tensions
+@coda 1

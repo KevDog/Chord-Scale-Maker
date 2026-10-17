@@ -4,7 +4,7 @@ import { setRowField } from '@chord-scale-maker/engine'
 import { TEXT_DEBOUNCE_MS, useChartEditor } from '~/composables/useChartEditor'
 import { useChartHistory } from '~/composables/useChartHistory'
 
-const TEXT = 'title: T\nA | 1 | Cm7\n'
+const TEXT = 'title: T\n\nsection: A\nbars: 4\n1 | Cm7\n'
 
 function setup(text = TEXT, key?: string) {
   const scope = effectScope()
@@ -31,15 +31,15 @@ describe('useChartHistory', () => {
   it('undoes and redoes grid edits', async () => {
     const { e, h } = setup()
     expect(h.canUndo.value).toBe(false)
-    e.setDoc(setRowField(e.doc.value, 1, 'chord', 'Dm7'))
+    e.setDoc(setRowField(e.doc.value, 4, 'chord', 'Dm7'))
     await nextTick()
     expect(h.canUndo.value).toBe(true)
     h.undo()
     expect(e.text.value).toBe(TEXT)
-    expect(e.doc.value.lines[1]).toMatchObject({ chord: 'Cm7' })
+    expect(e.doc.value.lines[4]).toMatchObject({ chord: 'Cm7' })
     expect(h.canRedo.value).toBe(true)
     h.redo()
-    expect(e.doc.value.lines[1]).toMatchObject({ chord: 'Dm7' })
+    expect(e.doc.value.lines[4]).toMatchObject({ chord: 'Dm7' })
   })
 
   it('records typing once it is parsed, not every keystroke', async () => {
@@ -65,13 +65,13 @@ describe('useChartHistory', () => {
 
   it('maps ⌘Z and ⇧⌘Z (or Ctrl) to undo and redo, and stops the browser default', () => {
     const { e, h } = setup()
-    e.setDoc(setRowField(e.doc.value, 1, 'chord', 'Dm7'))
+    e.setDoc(setRowField(e.doc.value, 4, 'chord', 'Dm7'))
     const undo = key('z', { metaKey: true })
     h.onKeydown(undo)
     expect(undo.defaultPrevented).toBe(true)
     expect(e.text.value).toBe(TEXT)
     h.onKeydown(key('Z', { ctrlKey: true, shiftKey: true }))
-    expect(e.doc.value.lines[1]).toMatchObject({ chord: 'Dm7' })
+    expect(e.doc.value.lines[4]).toMatchObject({ chord: 'Dm7' })
     const plain = key('z')
     h.onKeydown(plain)
     expect(plain.defaultPrevented).toBe(false)
@@ -81,12 +81,12 @@ describe('useChartHistory', () => {
     const { e, h, rung, picks } = setup()
     rung.value = 3
     await nextTick()
-    e.setDoc(setRowField(e.doc.value, 1, 'chord', 'Dm7'))
+    e.setDoc(setRowField(e.doc.value, 4, 'chord', 'Dm7'))
     await nextTick()
     picks.value = { '0': 5 }
     await nextTick()
     h.undo()
-    expect([picks.value, rung.value, e.doc.value.lines[1]]).toMatchObject([{}, 3, { chord: 'Dm7' }])
+    expect([picks.value, rung.value, e.doc.value.lines[4]]).toMatchObject([{}, 3, { chord: 'Dm7' }])
     h.undo()
     expect([rung.value, e.text.value]).toEqual([3, TEXT])
     h.undo()
@@ -95,12 +95,12 @@ describe('useChartHistory', () => {
     h.redo()
     h.redo()
     h.redo()
-    expect([rung.value, picks.value, e.doc.value.lines[1]]).toMatchObject([3, { '0': 5 }, { chord: 'Dm7' }])
+    expect([rung.value, picks.value, e.doc.value.lines[4]]).toMatchObject([3, { '0': 5 }, { chord: 'Dm7' }])
   })
 
   it('takes a text edit and the choice it moved, in the same moment, as one step', async () => {
     const { e, h, picks } = setup()
-    e.setDoc(setRowField(e.doc.value, 1, 'chord', 'Dm7'))
+    e.setDoc(setRowField(e.doc.value, 4, 'chord', 'Dm7'))
     picks.value = { '1': 2 }
     await nextTick()
     h.undo()
@@ -120,7 +120,7 @@ describe('useChartHistory', () => {
 
   it('reads the stored history when the chart opens as it was left', async () => {
     const first = setup(TEXT, 'autumn-leaves')
-    first.e.setDoc(setRowField(first.e.doc.value, 1, 'chord', 'Dm7'))
+    first.e.setDoc(setRowField(first.e.doc.value, 4, 'chord', 'Dm7'))
     await nextTick()
     const text = first.e.text.value
     first.stop()
@@ -132,7 +132,7 @@ describe('useChartHistory', () => {
 
   it('drops a stored history the chart has moved on from, and stores none without a key', async () => {
     const first = setup(TEXT, 'so-what')
-    first.e.setDoc(setRowField(first.e.doc.value, 1, 'chord', 'Dm7'))
+    first.e.setDoc(setRowField(first.e.doc.value, 4, 'chord', 'Dm7'))
     await nextTick()
     first.stop()
     expect(setup(TEXT, 'so-what').h.canUndo.value).toBe(false) // opened with other text: its library chart changed

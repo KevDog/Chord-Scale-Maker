@@ -4,8 +4,8 @@ import { sheetScale } from '../changes'
 import { chordCompletions, chordPreview } from '../completions'
 import { CONCERT } from '../part'
 
-const C = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n').value
-const GM = parseChart('title: T\nkey: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm7\n').value
+const C = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\n3 | CMaj7\n').value
+const GM = parseChart('title: T\nkey: Gm\n\nsection: A\nbars: 4\n1 | Am7b5\n2 | D7\n3 | Gm7\n').value
 
 describe('chordCompletions', () => {
   it('puts the typed text first, then the root with each quality that starts with the suffix typed', () => {
@@ -53,7 +53,7 @@ describe('chordPreview', () => {
   })
 
   it('falls back to the quality’s default where the analysis doesn’t reach, and says when a chord can’t be read', () => {
-    const NOKEY = parseChart('title: T\nA | 1 | Cm7\n').value
+    const NOKEY = parseChart('title: T\n\nsection: A\nbars: 4\n1 | Cm7\n').value
     expect(chordPreview(NOKEY, 'A', 1, ['Cm7'], 0)).toMatchObject({ scale: 'C Dorian', readable: true })
     expect(chordPreview(C, 'A', 2, ['Gxyz'], 0)).toEqual({ numeral: null, scale: null, readable: false })
     expect(chordPreview(C, 'A', 2, [''], 0)).toEqual({ numeral: null, scale: null, readable: false })

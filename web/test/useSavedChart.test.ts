@@ -4,7 +4,7 @@ import { defineComponent, h, nextTick, ref } from 'vue'
 import { SAVE_DEBOUNCE_MS, type SaveTarget, useSavedChart } from '~/composables/useSavedChart'
 import { listCharts, loadChart, saveChart, versionOf } from '~/utils/myCharts'
 
-const LIB = 'title: Autumn Leaves\nA1 | 1 | Cm7\n'
+const LIB = 'title: Autumn Leaves\n\nsection: A1\nbars: 4\n1 | Cm7\n'
 const text = ref('')
 
 async function harness(target: SaveTarget, created?: (id: string) => void) {
@@ -59,10 +59,10 @@ describe('useSavedChart', () => {
     const created = vi.fn()
     const { api } = await harness({ kind: 'new', id: 'newchart01', savedKind: 'new' }, created)
     await type('title: My Tune\n')
-    await type('title: My Tune\nA | 1 | C\n')
+    await type('title: My Tune\n\nsection: A\nbars: 4\n1 | C\n')
     expect(created).toHaveBeenCalledTimes(1)
     expect(created).toHaveBeenCalledWith('newchart01')
-    expect(loadChart('newchart01')?.text).toContain('A | 1 | C')
+    expect(loadChart('newchart01')?.text).toContain('section: A\nbars: 4\n1 | C')
     expect(api.status.value.state).toBe('saved')
   })
 

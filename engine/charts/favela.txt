@@ -3,77 +3,87 @@ composer: Antonio Carlos Jobim
 style: Bossa nova
 key: Gm
 form: ABC, 40 bars
-source:
-# analysis: 2026-10-12, rules v1; G minor
+source: 
+# analysis: 2026-10-17, rules v1; G minor
 # the book: "Med. Bossa Nova"
 # the book: F/G may be replaced by Dm7 throughout
 
-# section | bar | chord
-# area: G minor (bars 1–7)
-A | 1  | Gm7     # tonic minor: Dorian by convention
+# bar | chord
+
+section: A
+bars: 16
+# area: G minor (A 1–7)
+1  | Gm7     # tonic minor: Dorian by convention
 # alt: bar 1 (G13)
-A | 2  | F/G     # ♭VII of G minor: F major, the notes of G Dorian
+2  | F/G     # ♭VII of G minor: F major, the notes of G Dorian
 # alt: bar 2 (F13)
-A | 3  | Gm7     # tonic minor: Dorian by convention
+3  | Gm7     # tonic minor: Dorian by convention
 # alt: bar 3 (G13)
-A | 4  | F/G     # ♭VII of G minor: F major, the notes of G Dorian
+4  | F/G     # ♭VII of G minor: F major, the notes of G Dorian
 # alt: bar 4 (F13)
-A | 5  | Gm7     # tonic minor: Dorian by convention
+5  | Gm7     # tonic minor: Dorian by convention
 # alt: bar 5 (G13)
-A | 6  | F/G     # ♭VII of G minor: F major, the notes of G Dorian
+6  | F/G     # ♭VII of G minor: F major, the notes of G Dorian
 # alt: bar 6 (F13)
-A | 7  | Gm7     # tonic minor: Dorian by convention
+7  | Gm7     # tonic minor: Dorian by convention
 # alt: bars 7–8 (G7#9)
-# area: Bb major (bars 9–13)
-A | 9  | Cm7     # ii of the ii–V to Bb
-A | 10 | F13     # V7 of Bb: natural tensions
-A | 11 | BbMaj7  # tonic: the 4th is in the key
+# area: Bb major (A 9–13)
+9  | Cm7     # ii of the ii–V to Bb
+10 | F13     # V7 of Bb: natural tensions
+11 | BbMaj7  # tonic: the 4th is in the key
 # alt: bar 11 (Bm7)
-A | 12 | Bb7     # I7 in Bb, not resolving: natural tensions
-A | 13 | Em7b5   # #ivø7 in Bb: Locrian, its own mode (the chord is outside the key)
-A | 13 | Ebm6    # a minor sixth chord: Dorian
+12 | Bb7     # I7 in Bb, not resolving: natural tensions
+13 | Em7b5   # #ivø7 in Bb: Locrian, its own mode (the chord is outside the key)
+13 | Ebm6    # a minor sixth chord: Dorian
 # the Gm7–Dm7–Gm7 cadence and B (Cm7–Gm7) are back in G minor
-@key A 14 Gm
-# area: G minor (bars 14–31)
-A | 14 | Gm7     # tonic minor: Dorian by convention
-A | 14 | Dm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
-A | 15 | Gm7     # tonic minor: Dorian by convention
-B | 17 | Cm7     # iv: Dorian, the key’s own notes
-B | 18 | Gm7     # tonic minor: Dorian by convention
-B | 19 | Cm7     # iv: Dorian, the key’s own notes
-B | 20 | Gm7     # tonic minor: Dorian by convention
-B | 21 | Cm7     # iv: Dorian, the key’s own notes
-B | 22 | Gm7     # tonic minor: Dorian by convention
-B | 23 | Eb7#9   # tritone substitute: resolves down a half step to D7#9; b9 and #9 from the symbol
-B | 23 | D7#9    # V7 in G minor, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
-B | 24 | C7#9    # IV7 in G minor, not resolving: b9, #9 and #11 from the symbol
-# alt: bar 24 (Cm7)
-C | 25 | Gm7     # tonic minor: Dorian by convention
-# alt: bar 25 (G13)
-C | 26 | F/G     # ♭VII of G minor: F major, the notes of G Dorian
-# alt: bar 26 (Ab13)
-C | 27 | Gm7     # tonic minor: Dorian by convention
-# alt: bar 27 (G13)
-C | 28 | F/G     # ♭VII of G minor: F major, the notes of G Dorian
-# alt: bar 28 (Ab13)
-C | 29 | Gm7     # tonic minor: Dorian by convention
-# alt: bar 29 (G13)
-C | 30 | F/G     # ♭VII of G minor: F major, the notes of G Dorian
-# alt: bar 30 (Ab13)
-C | 31 | Gm7     # tonic minor: Dorian by convention
-# alt: bars 31–32 (G7#9)
+@key 14 Gm
+# area: G minor (A 14 – C 7)
+14 | Gm7     # tonic minor: Dorian by convention
+14 | Dm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+15 | Gm7     # tonic minor: Dorian by convention
+
+section: B
+key: Gm
+1  | Cm7     # iv: Dorian, the key’s own notes
+2  | Gm7     # tonic minor: Dorian by convention
+3  | Cm7     # iv: Dorian, the key’s own notes
+4  | Gm7     # tonic minor: Dorian by convention
+5  | Cm7     # iv: Dorian, the key’s own notes
+6  | Gm7     # tonic minor: Dorian by convention
+7  | Eb7#9   # tritone substitute: resolves down a half step to D7#9; b9 and #9 from the symbol
+7  | D7#9    # V7 in G minor, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
+8  | C7#9    # IV7 in G minor, not resolving: b9, #9 and #11 from the symbol
+# alt: bar 8 (Cm7)
+
+section: C
+key: Gm
+bars: 16
+1  | Gm7     # tonic minor: Dorian by convention
+# alt: bar 1 (G13)
+2  | F/G     # ♭VII of G minor: F major, the notes of G Dorian
+# alt: bar 2 (Ab13)
+3  | Gm7     # tonic minor: Dorian by convention
+# alt: bar 3 (G13)
+4  | F/G     # ♭VII of G minor: F major, the notes of G Dorian
+# alt: bar 4 (Ab13)
+5  | Gm7     # tonic minor: Dorian by convention
+# alt: bar 5 (G13)
+6  | F/G     # ♭VII of G minor: F major, the notes of G Dorian
+# alt: bar 6 (Ab13)
+7  | Gm7     # tonic minor: Dorian by convention
+# alt: bars 7–8 (G7#9)
 # as in A: bars 33–37 in Bb, back to G minor at 38
-@key C 33 Bb
-# area: Bb major (bars 33–37)
-C | 33 | Cm7     # ii of the ii–V to Bb
-C | 34 | F13     # V7 of Bb: natural tensions
-C | 35 | BbMaj7  # tonic: the 4th is in the key
-# alt: bar 35 (Bm7)
-C | 36 | Bb7     # I7 in Bb, not resolving: natural tensions
-C | 37 | Em7b5   # #ivø7 in Bb: Locrian, its own mode (the chord is outside the key)
-C | 37 | Ebm6    # a minor sixth chord: Dorian
-@key C 38 Gm
-# area: G minor (bars 38–39)
-C | 38 | Gm7     # tonic minor: Dorian by convention
-C | 38 | Dm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
-C | 39 | Gm7     # tonic minor: Dorian by convention
+@key 9 Bb
+# area: Bb major (C 9–13)
+9  | Cm7     # ii of the ii–V to Bb
+10 | F13     # V7 of Bb: natural tensions
+11 | BbMaj7  # tonic: the 4th is in the key
+# alt: bar 11 (Bm7)
+12 | Bb7     # I7 in Bb, not resolving: natural tensions
+13 | Em7b5   # #ivø7 in Bb: Locrian, its own mode (the chord is outside the key)
+13 | Ebm6    # a minor sixth chord: Dorian
+@key 14 Gm
+# area: G minor (C 14–15)
+14 | Gm7     # tonic minor: Dorian by convention
+14 | Dm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+15 | Gm7     # tonic minor: Dorian by convention

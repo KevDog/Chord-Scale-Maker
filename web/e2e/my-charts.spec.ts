@@ -64,7 +64,7 @@ test('Download saves the chart as text, and Open brings it back as a new chart',
   const file = await downloading
   expect(file.suggestedFilename()).toBe('Blue Bossa.txt')
   const text = await (await file.createReadStream()).toArray().then((chunks) => Buffer.concat(chunks).toString('utf8'))
-  expect(text).toMatch(/^A \| 6 +\| G7#5#9 +# /m) // as the library has it: the analysis chooses the scale
+  expect(text).toMatch(/\n6 +\| G7#5#9 +# /m) // as the library has it: the analysis chooses the scale
   await page.goto('/library')
   const chooser = page.waitForEvent('filechooser')
   await page.getByRole('button', { name: 'Open chart…' }).click()
@@ -72,7 +72,7 @@ test('Download saves the chart as text, and Open brings it back as a new chart',
   await expect(page).toHaveURL(/\/song\?mine=/)
   await expect(page.getByRole('heading', { name: 'Blue Bossa (mine)', level: 1 })).toBeVisible()
   await openEditor(page)
-  await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 6 +\| G7#5#9 +# /)
+  await expect(page.getByLabel('Chart text')).toHaveValue(/\n6 +\| G7#5#9 +# /)
 })
 
 test('a file dropped on the library opens, and a wrong one says why', async ({ page }) => {
@@ -87,7 +87,7 @@ test('a file dropped on the library opens, and a wrong one says why', async ({ p
   }
   await drop('photo.png', 'x', 'image/png')
   await expect(page.getByRole('alert')).toHaveText('Please open a chart saved as a .txt file.')
-  await drop('tune.txt', 'title: Dropped\nA | 1 | Cm7\n', 'text/plain')
+  await drop('tune.txt', 'title: Dropped\n\nsection: A\nbars: 4\n1 | Cm7\n', 'text/plain')
   await expect(page.getByRole('heading', { name: 'Dropped', level: 1 })).toBeVisible()
 })
 
@@ -111,7 +111,7 @@ test('a share link carries the chart and the view to a browser that has never se
   await visitor.goto(link)
   await expect(visitor.getByRole('status').filter({ hasText: 'A shared chart' })).toBeVisible()
   await openEditor(visitor)
-  await expect(visitor.getByLabel('Chart text')).toHaveValue(/A1 \| 1 +\| Cm9/)
+  await expect(visitor.getByLabel('Chart text')).toHaveValue(/\n1 +\| Cm9/)
   await expect(visitor.locator('section header p').first()).toHaveText(/Tenor Sax \(Bb\) \(Spelled from C\)/)
   await expect(visitor.locator('.vf-selected').first()).toBeAttached() // the practice picks came too
   await visitor.getByRole('banner').getByRole('link', { name: 'Library' }).click()
@@ -119,7 +119,7 @@ test('a share link carries the chart and the view to a browser that has never se
   await expect(sheetChord(visitor, 'Dm7', 'A', 1)).toBeVisible()
   await visitor.goBack() // the library
   await visitor.goBack() // the shared chart again
-  await expect(visitor.getByLabel('Chart text')).toHaveValue(/A1 \| 1 +\| Cm9/)
+  await expect(visitor.getByLabel('Chart text')).toHaveValue(/\n1 +\| Cm9/)
   await visitor.getByRole('button', { name: 'Save to My charts' }).click()
   await expect(visitor).toHaveURL(/\/song\?mine=/)
   await visitor.goto('/song/so-what')
@@ -145,7 +145,7 @@ test('choosing a scale and then the analysed one again leaves the library chart 
   await list.getByRole('radio', { name: /^C Aeolian/ }).click()
   await expect(status(page)).toHaveText(/^Your edited version of Autumn Leaves/)
   await list.getByRole('radio', { name: /^C Dorian 1/ }).click() // the analysed option: blanks the cell, as the library has it
-  await expect(page.getByLabel('Chart text')).toHaveValue(/A1 \| 1 +\| Cm7 +#/)
+  await expect(page.getByLabel('Chart text')).toHaveValue(/\n1 +\| Cm7 +#/)
   await expect(status(page)).toHaveText('Edits are saved in this browser as your version.') // back to the library version
   await page.getByRole('button', { name: 'More actions', exact: true }).click()
   await expect(page.getByRole('menuitem', { name: 'Revert to library version' })).toHaveCount(0)
@@ -157,7 +157,7 @@ test('choosing a scale and then the analysed one again leaves the library chart 
   const again = await scaleList()
   await again.getByRole('searchbox', { name: 'Any scale' }).fill('C dor')
   await again.getByRole('list', { name: 'Scales found' }).getByRole('button', { name: /^C Dorian \d/ }).click()
-  await expect(page.getByLabel('Chart text')).toHaveValue(/A1 \| 1 +\| Cm7 +\| C Dorian/) // the name pins it, though the analyser agrees
+  await expect(page.getByLabel('Chart text')).toHaveValue(/\n1 +\| Cm7 +\| C Dorian/) // the name pins it, though the analyser agrees
   await expect(status(page)).toHaveText(/^Your edited version of Autumn Leaves/)
 })
 
@@ -165,7 +165,7 @@ test('an edited library chart and its scale level, saved under the chart’s old
   await page.goto('/help')
   await page.evaluate(() => {
     localStorage.setItem('csm-charts', JSON.stringify([{ id: 'oldname01', title: 'My Leaves', kind: 'edited', basedOn: 'autumn_leaves', createdAt: 1, updatedAt: 1 }]))
-    localStorage.setItem('csm-chart:oldname01', 'title: My Leaves\nkey: Gm\nA | 1 | Cm7')
+    localStorage.setItem('csm-chart:oldname01', 'title: My Leaves\nkey: Gm\n\nsection: A\nbars: 4\n1 | Cm7')
     localStorage.setItem('csm-level:autumn_leaves', JSON.stringify({ level: 'advanced', seed: 1 }))
   })
   await page.goto('/song/autumn-leaves')

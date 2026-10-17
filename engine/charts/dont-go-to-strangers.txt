@@ -3,67 +3,75 @@ composer: Arthur Kent, Dave Mason
 style: Medium ballad
 key: Bb
 form: AABC, 32 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; Bb
 
-# section | bar | chord
-A1 | 1  | BbMaj7  # tonic: the 4th is in the key
+# bar | chord
+
+section: A1
+1 | BbMaj7  # tonic: the 4th is in the key
 # alt: bar 1, beat 3 (Bb9)
-A1 | 2  | Eb9     # IV7 in Bb, not resolving: the #11 is in the key
-A1 | 3  | BbMaj7  # tonic: the 4th is in the key
-A1 | 4  | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A1 | 4  | G7      # V7/ii in Bb: the b13 is in the key
-A1 | 5  | Cm7     # ii of F9sus4: Dorian
+2 | Eb9     # IV7 in Bb, not resolving: the #11 is in the key
+3 | BbMaj7  # tonic: the 4th is in the key
+4 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4 | G7      # V7/ii in Bb: the b13 is in the key
+5 | Cm7     # ii of F9sus4: Dorian
 # alt: bar 5, beat 3 (Ebm6)
-A1 | 6  | F9sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+6 | F9sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 # book: F13sus
-A1 | 6  | F7      # V7 in Bb, not resolving: natural tensions
-A1 | 7  | Dm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A1 | 7  | G7      # V7/ii in Bb: the b13 is in the key
-A1 | 8  | Cm7     # ii of the ii–V to Bb
-A1 | 8  | F7      # V7 of Bb: natural tensions
-A2 | 9  | BbMaj7  # tonic: the 4th is in the key
-# alt: bar 9, beat 3 (Bb9)
-A2 | 10 | Eb9     # IV7 in Bb, not resolving: the #11 is in the key
-A2 | 11 | BbMaj7  # tonic: the 4th is in the key
-A2 | 12 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A2 | 12 | G7      # V7/ii in Bb: the b13 is in the key
-A2 | 13 | Cm7     # ii of F9sus4: Dorian
-# alt: bar 13, beat 3 (Ebm6)
-A2 | 14 | F9sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+6 | F7      # V7 in Bb, not resolving: natural tensions
+7 | Dm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+7 | G7      # V7/ii in Bb: the b13 is in the key
+8 | Cm7     # ii of the ii–V to Bb
+8 | F7      # V7 of Bb: natural tensions
+
+section: A2
+1 | BbMaj7  # tonic: the 4th is in the key
+# alt: bar 1, beat 3 (Bb9)
+2 | Eb9     # IV7 in Bb, not resolving: the #11 is in the key
+3 | BbMaj7  # tonic: the 4th is in the key
+4 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4 | G7      # V7/ii in Bb: the b13 is in the key
+5 | Cm7     # ii of F9sus4: Dorian
+# alt: bar 5, beat 3 (Ebm6)
+6 | F9sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 # book: F13sus
-A2 | 14 | F7      # V7 of Bb: natural tensions
-A2 | 15 | Bb6     # tonic: the 4th is in the key
-A2 | 15 | F9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
-A2 | 16 | Bb6     # tonic: the 4th is in the key
-B  | 17 | Fm7     # ii of Bb13: Dorian
-B  | 17 | Bb13    # V7/IV in Bb: natural tensions
-B  | 18 | Fm7     # ii of the ii–V to Eb
-B  | 18 | Bb13    # V7/IV in Bb: natural tensions
-B  | 19 | EbMaj7  # the Bb13 before it makes Eb the key of the moment: the 4th is in the key
-B  | 19 | Bb7     # V7/IV in Bb: natural tensions
-B  | 20 | EbMaj7  # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
-B  | 21 | Gm7     # ii of C13: Dorian
-B  | 21 | C13     # V7/V in Bb: natural tensions
-B  | 22 | Gm7     # ii of C13: Dorian
-B  | 22 | C13     # V7/V in Bb: natural tensions
-B  | 23 | C9sus4  # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-# alt: bar 23 (F9sus F9)
-B  | 23 | C9      # extended dominant: V7 of F9sus4
-B  | 24 | F9sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-B  | 24 | F13     # V7 of Bb: natural tensions
-C  | 25 | BbMaj7  # tonic: the 4th is in the key
-# alt: bar 25, beat 3 (Bb9)
-C  | 26 | Eb9     # IV7 in Bb, not resolving: the #11 is in the key
-C  | 27 | BbMaj7  # tonic: the 4th is in the key
-C  | 28 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-C  | 28 | G7      # V7/ii in Bb: the b13 is in the key
-C  | 29 | Cm7     # ii of F9sus4: Dorian
-# alt: bar 29, beat 3 (Ebm6)
-C  | 30 | F9sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+6 | F7      # V7 of Bb: natural tensions
+7 | Bb6     # tonic: the 4th is in the key
+7 | F9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+8 | Bb6     # tonic: the 4th is in the key
+
+section: B
+1 | Fm7     # ii of Bb13: Dorian
+1 | Bb13    # V7/IV in Bb: natural tensions
+2 | Fm7     # ii of the ii–V to Eb
+2 | Bb13    # V7/IV in Bb: natural tensions
+3 | EbMaj7  # the Bb13 before it makes Eb the key of the moment: the 4th is in the key
+3 | Bb7     # V7/IV in Bb: natural tensions
+4 | EbMaj7  # the Bb7 before it makes Eb the key of the moment: the 4th is in the key
+5 | Gm7     # ii of C13: Dorian
+5 | C13     # V7/V in Bb: natural tensions
+6 | Gm7     # ii of C13: Dorian
+6 | C13     # V7/V in Bb: natural tensions
+7 | C9sus4  # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+# alt: bar 7 (F9sus F9)
+7 | C9      # extended dominant: V7 of F9sus4
+8 | F9sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+8 | F13     # V7 of Bb: natural tensions
+
+section: C
+1 | BbMaj7  # tonic: the 4th is in the key
+# alt: bar 1, beat 3 (Bb9)
+2 | Eb9     # IV7 in Bb, not resolving: the #11 is in the key
+3 | BbMaj7  # tonic: the 4th is in the key
+4 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4 | G7      # V7/ii in Bb: the b13 is in the key
+5 | Cm7     # ii of F9sus4: Dorian
+# alt: bar 5, beat 3 (Ebm6)
+6 | F9sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 # book: F13sus
-C  | 30 | F9      # V7 of Bb: natural tensions
-C  | 31 | Bb6     # tonic: the 4th is in the key
-C  | 31 | F9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
-C  | 32 | Bb6     # tonic: the 4th is in the key
-# alt: bar 32, beat 3 (F7)
+6 | F9      # V7 of Bb: natural tensions
+7 | Bb6     # tonic: the 4th is in the key
+7 | F9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
+8 | Bb6     # tonic: the 4th is in the key
+# alt: bar 8, beat 3 (F7)

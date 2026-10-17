@@ -7,19 +7,24 @@ form: AB, 20 bars
 source: Colorado Cookbook, p. 201
 # analysis: 2026-10-11, rules v1; Bb minor, modal
 
-# section | bar | chord | scale
-A | 1  | EMaj7#11   # from the symbol: #11
-A | 3  | Ebm        # modal minor: Dorian
-A | 5  | BMaj7#11   # from the symbol: #11
-A | 7  | Bbm        # modal minor: Dorian
-B | 9  | Cm         # modal minor: Dorian
-B | 11 | AbMaj7#11  # from the symbol: #11
-B | 13 | Gm         # modal minor: Dorian
-B | 15 | Dm         # modal minor: Dorian
-B | 17 | BbMaj7     # modal major: Lydian
-B | 17 | A7         # modal: its own mode
-B | 18 | AbMaj7     # modal major: Lydian
-B | 18 | Gm         # modal minor: Dorian
-B | 19 | GbMaj7     # modal major: Lydian
-B | 19 | F7         # modal: its own mode
-B | 20 | Bbm        # modal minor: Dorian
+# bar | chord | scale
+
+section: A
+bars: 8
+1  | EMaj7#11   # from the symbol: #11
+3  | Ebm        # modal minor: Dorian
+5  | BMaj7#11   # from the symbol: #11
+7  | Bbm        # modal minor: Dorian
+
+section: B
+1  | Cm         # modal minor: Dorian
+3  | AbMaj7#11  # from the symbol: #11
+5  | Gm         # modal minor: Dorian
+7  | Dm         # modal minor: Dorian
+9  | BbMaj7     # modal major: Lydian
+9  | A7         # modal: its own mode
+10 | AbMaj7     # modal major: Lydian
+10 | Gm         # modal minor: Dorian
+11 | GbMaj7     # modal major: Lydian
+11 | F7         # modal: its own mode
+12 | Bbm        # modal minor: Dorian

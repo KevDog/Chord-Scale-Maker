@@ -4,78 +4,85 @@ style: Ballad
 # book: Med. Ballad
 key: Eb
 form: ABC, 36 bars
-source:
-# analysis: 2026-10-12, rules v1; Eb
+source: 
+# analysis: 2026-10-17, rules v1; Eb
 
 # the book's A is two 8-bar A's (AABA'); its C is the last A, 12 bars
 # a one-bar melodic pickup (no chords) leads into A
-# section | bar | chord
-# area: Eb major (bars 1–19)
-A | 1  | EbMaj7   # tonic: the 4th is in the key
-A | 1  | Edim7    # vii°7 of Fm7: C7♭9 without its root
-A | 2  | Fm7      # ii of the ii–V to Eb
-A | 2  | Bb7      # V7 of Eb: natural tensions
-A | 3  | EbMaj7   # tonic: the 4th is in the key
-A | 3  | AbMaj9   # IV: the #4 is the key’s 7th
-A | 4  | Gm7b5    # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 4  | C7       # V7/ii in Eb: the b13 is in the key
-A | 5  | Fm       # ii: Dorian, the key’s own notes
-A | 5  | C7#5     # V7/ii in Eb: the b13 is in the key, the #11 from the symbol
-A | 6  | Fm7      # ii of Bb7: Dorian
-A | 6  | Bb7      # V7/I in Eb: natural tensions
-A | 7  | G7       # V7 of C7, on the way to F minor: b9 and b13 are in the key
-A | 7  | C7       # V7 of F minor, the chain's last link: b9 and b13 are in the key
-A | 8  | Fm7      # ii of the ii–V to Eb
-A | 8  | Bb7      # V7 of Eb: natural tensions
-A | 9  | EbMaj7   # tonic: the 4th is in the key
-A | 9  | Edim7    # vii°7 of Fm7: C7♭9 without its root
-A | 10 | Fm7      # ii of the ii–V to Eb
-A | 10 | Bb7      # V7 of Eb: natural tensions
-A | 11 | EbMaj7   # tonic: the 4th is in the key
-A | 11 | AbMaj9   # IV: the #4 is the key’s 7th
-A | 12 | Gm7b5    # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 12 | C7       # V7/ii in Eb: the b13 is in the key
-A | 13 | Fm       # ii: Dorian, the key’s own notes
-A | 13 | C7#5     # V7/ii in Eb: the b13 is in the key, the #11 from the symbol
-A | 14 | Fm7      # ii of the ii–V to Eb
-A | 14 | Bb7      # V7 of Eb: natural tensions
-A | 15 | EbMaj7   # tonic: the 4th is in the key
-A | 16 | Bbm7     # ii of the ii–V to Ab
-A | 16 | Eb9      # V7/IV in Eb: natural tensions
-B | 17 | AbMaj7   # the Eb9 before it makes Ab the key of the moment: the 4th is in the key
-B | 17 | Fm7      # ii: Dorian, the key’s own notes
-B | 18 | Am7      # ii of the ii–V to G minor
-B | 18 | D7       # V7/iii in Eb: b9 and b13 are in the key
-B | 19 | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# area: D minor (bars 20–23)
-B | 20 | Em7b5    # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B | 20 | A7b9     # V7 of D minor: b9 and b13 are in the key
-B | 21 | Dm7      # tonic minor: Dorian by convention
-B | 21 | Gm7      # iv: Dorian, the key’s own notes
-B | 22 | Cm7      # ii of F7: Dorian
-B | 22 | F7       # extended dominant: V7 of Bb9sus4
-B | 23 | Bb9sus4  # ♭VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-# area: Eb major (bars 24–35)
-B | 24 | Bb7#5    # V7 of Eb: #11 and b13 from the symbol
-C | 25 | EbMaj7   # tonic: the 4th is in the key
-C | 25 | Edim7    # vii°7 of Fm7: C7♭9 without its root
-C | 26 | Fm7      # ii of the ii–V to Eb
-C | 26 | Bb7      # V7 of Eb: natural tensions
-C | 27 | EbMaj7   # tonic: the 4th is in the key
-C | 27 | AbMaj9   # IV: the #4 is the key’s 7th
-C | 28 | Gm7b5    # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
-C | 28 | C7       # V7/ii in Eb: the b13 is in the key
-C | 29 | Fm       # ii: Dorian, the key’s own notes
-C | 29 | C7#5     # V7/ii in Eb: the b13 is in the key, the #11 from the symbol
-C | 30 | Fm7      # ii of Bb7: Dorian
-C | 30 | Bb7      # V7/I in Eb: natural tensions
-C | 31 | G7       # III7 in Eb, not resolving: b9 and b13 are in the key
-C | 31 | Db7#11   # tritone substitute: resolves down a half step to C7
-# alt: bar 31 (Dm7 G7)
-C | 32 | C7       # V7/ii in Eb: the b13 is in the key
-C | 33 | Fm       # ii: Dorian, the key’s own notes
-C | 33 | B7b5     # tritone substitute: resolves down a half step to Bb9sus4
-C | 34 | Bb9sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-C | 34 | Bb7      # V7 of Eb: natural tensions
-C | 35 | Eb6      # tonic: the 4th is in the key
+# bar | chord
+
+section: A
+# area: Eb major (A 1 – B 3)
+1  | EbMaj7   # tonic: the 4th is in the key
+1  | Edim7    # vii°7 of Fm7: C7♭9 without its root
+2  | Fm7      # ii of the ii–V to Eb
+2  | Bb7      # V7 of Eb: natural tensions
+3  | EbMaj7   # tonic: the 4th is in the key
+3  | AbMaj9   # IV: the #4 is the key’s 7th
+4  | Gm7b5    # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4  | C7       # V7/ii in Eb: the b13 is in the key
+5  | Fm       # ii: Dorian, the key’s own notes
+5  | C7#5     # V7/ii in Eb: the b13 is in the key, the #11 from the symbol
+6  | Fm7      # ii of Bb7: Dorian
+6  | Bb7      # V7/I in Eb: natural tensions
+7  | G7       # V7 of C7, on the way to F minor: b9 and b13 are in the key
+7  | C7       # V7 of F minor, the chain's last link: b9 and b13 are in the key
+8  | Fm7      # ii of the ii–V to Eb
+8  | Bb7      # V7 of Eb: natural tensions
+9  | EbMaj7   # tonic: the 4th is in the key
+9  | Edim7    # vii°7 of Fm7: C7♭9 without its root
+10 | Fm7      # ii of the ii–V to Eb
+10 | Bb7      # V7 of Eb: natural tensions
+11 | EbMaj7   # tonic: the 4th is in the key
+11 | AbMaj9   # IV: the #4 is the key’s 7th
+12 | Gm7b5    # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
+12 | C7       # V7/ii in Eb: the b13 is in the key
+13 | Fm       # ii: Dorian, the key’s own notes
+13 | C7#5     # V7/ii in Eb: the b13 is in the key, the #11 from the symbol
+14 | Fm7      # ii of the ii–V to Eb
+14 | Bb7      # V7 of Eb: natural tensions
+15 | EbMaj7   # tonic: the 4th is in the key
+16 | Bbm7     # ii of the ii–V to Ab
+16 | Eb9      # V7/IV in Eb: natural tensions
+
+section: B
+1  | AbMaj7   # the Eb9 before it makes Ab the key of the moment: the 4th is in the key
+1  | Fm7      # ii: Dorian, the key’s own notes
+2  | Am7      # ii of the ii–V to G minor
+2  | D7       # V7/iii in Eb: b9 and b13 are in the key
+3  | Gm7      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+# area: D minor (B 4–7)
+4  | Em7b5    # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4  | A7b9     # V7 of D minor: b9 and b13 are in the key
+5  | Dm7      # tonic minor: Dorian by convention
+5  | Gm7      # iv: Dorian, the key’s own notes
+6  | Cm7      # ii of F7: Dorian
+6  | F7       # extended dominant: V7 of Bb9sus4
+7  | Bb9sus4  # ♭VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+# area: Eb major (B 8 – C 11)
+8  | Bb7#5    # V7 of Eb: #11 and b13 from the symbol
+
+section: C
+bars: 12
+1  | EbMaj7   # tonic: the 4th is in the key
+1  | Edim7    # vii°7 of Fm7: C7♭9 without its root
+2  | Fm7      # ii of the ii–V to Eb
+2  | Bb7      # V7 of Eb: natural tensions
+3  | EbMaj7   # tonic: the 4th is in the key
+3  | AbMaj9   # IV: the #4 is the key’s 7th
+4  | Gm7b5    # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4  | C7       # V7/ii in Eb: the b13 is in the key
+5  | Fm       # ii: Dorian, the key’s own notes
+5  | C7#5     # V7/ii in Eb: the b13 is in the key, the #11 from the symbol
+6  | Fm7      # ii of Bb7: Dorian
+6  | Bb7      # V7/I in Eb: natural tensions
+7  | G7       # III7 in Eb, not resolving: b9 and b13 are in the key
+7  | Db7#11   # tritone substitute: resolves down a half step to C7
+# alt: bar 7 (Dm7 G7)
+8  | C7       # V7/ii in Eb: the b13 is in the key
+9  | Fm       # ii: Dorian, the key’s own notes
+9  | B7b5     # tritone substitute: resolves down a half step to Bb9sus4
+10 | Bb9sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+10 | Bb7      # V7 of Eb: natural tensions
+11 | Eb6      # tonic: the 4th is in the key
 # alt (optional): bar 36 (Fm7 Bb7) turnaround

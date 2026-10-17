@@ -1,11 +1,11 @@
 import type { Page } from '@playwright/test'
 import { chooseInterface, chooseSheet, chooseSuperimpose, expect, moreAction, openPentatonicOptions, pentatonicPreset, pickOption, rankedAgainstChord, sheetChord, showPentatonics, test, typeChord } from './fixtures'
 
-// Blue Bossa (concert): G7♯5♯9, G Altered, in bars 6 and 14, and G7♯5 in bar 16 on the same Scales staff; the
+// Blue Bossa (concert): G7♯5♯9, G Altered, in A bar 6 and B bar 6, and G7♯5 in B bar 8 on the same Scales staff; the
 // Changes positions are A:6:0, B:14:0 and B:16:1. Its choices, inside to outside: B♭m (the sheet's), Cm, Fm, E♭m, …
 
 const BAR6 = 'A:6:0'
-const ALTERED = ['A:6:0', 'B:14:0', 'B:16:1']
+const ALTERED = ['A:6:0', 'B:6:0', 'B:8:1']
 
 /** a Changes pentatonic label at a chord position */
 const at = (page: Page, c: string) => page.locator(`[data-slot="pentatonic"] [data-chord="${c}"] button`)
@@ -23,7 +23,7 @@ async function changesByChord(page: Page): Promise<void> {
 /** on the Scales sheet's Pentatonic preset, pick the G Altered staff's nth choice */
 async function pickOnStaff(page: Page, n: number): Promise<void> {
   await alteredCaption(page).click()
-  await page.getByRole('dialog', { name: /· bars 6, 14, 16$/ }).locator('[data-choice]').nth(n).click()
+  await page.getByRole('dialog', { name: /· A bar 6, B bar 6, B bar 8$/ }).locator('[data-choice]').nth(n).click()
 }
 
 test('a pick on Changes bar 6 changes only that run', async ({ page }) => {
@@ -33,8 +33,8 @@ test('a pick on Changes bar 6 changes only that run', async ({ page }) => {
   await expect(at(page, BAR6)).toHaveText('B♭m♪ 5')
   const before = await labels.allTextContents()
   await at(page, BAR6).click()
-  const dialog = page.getByRole('dialog', { name: 'G7♯5♯9 Altered · bar 6' })
-  await expect(dialog).toContainText('Sets bar 6.')
+  const dialog = page.getByRole('dialog', { name: 'G7♯5♯9 Altered · A bar 6' })
+  await expect(dialog).toContainText('Sets A bar 6.')
   await dialog.locator('[data-choice]').nth(2).click()
   await expect(at(page, BAR6)).toHaveText('Fm♪ 4')
   const after = await labels.allTextContents()
@@ -47,8 +47,8 @@ test('a pick on a Scales staff sets its Changes bars, and the footer named them'
   await pentatonicPreset(page)
   await expect(alteredCaption(page)).toHaveText('B♭m pent · 5 shared')
   await alteredCaption(page).click()
-  const dialog = page.getByRole('dialog', { name: 'G7♯5♯9 Altered · bars 6, 14, 16' })
-  await expect(dialog).toContainText('Sets bars 6, 14 and 16 on the Changes sheet too.')
+  const dialog = page.getByRole('dialog', { name: 'G7♯5♯9 Altered · A bar 6, B bar 6, B bar 8' })
+  await expect(dialog).toContainText('Sets A bar 6, B bar 6 and B bar 8 on the Changes sheet too.')
   await dialog.locator('[data-choice]').nth(1).click()
   await expect(alteredCaption(page)).toHaveText('Cm pent · 4 shared')
   await expect(alteredCaption(page)).toHaveAttribute('aria-label', /your pick/)
@@ -62,15 +62,15 @@ test('a pick on a Scales staff sets its Changes bars, and the footer named them'
 test('different picks in the staff’s bars show varies', async ({ page }) => {
   await page.goto('/song/blue-bossa')
   await pentatonicPreset(page)
-  await pickOnStaff(page, 1) // Cm in bars 6, 14 and 16
+  await pickOnStaff(page, 1) // Cm in A bar 6, B bar 6 and B bar 8
   await changesByChord(page)
-  await at(page, 'B:14:0').click()
-  await page.getByRole('dialog', { name: /· bar 14$/ }).locator('[data-choice]').nth(2).click() // Fm in bar 14 only
-  await expect(at(page, 'B:14:0')).toHaveText('Fm♪ 4')
+  await at(page, 'B:6:0').click()
+  await page.getByRole('dialog', { name: /· B bar 6$/ }).locator('[data-choice]').nth(2).click() // Fm in B bar 6 only
+  await expect(at(page, 'B:6:0')).toHaveText('Fm♪ 4')
   await chooseSheet(page, 'Scales')
   await expect(alteredCaption(page)).toHaveText('Cm pent · 4 shared · varies') // the first position's pick
   await alteredCaption(page).click()
-  await expect(page.getByRole('dialog', { name: /· bars 6, 14, 16$/ })).toContainText('Replaces the different picks in bars 6, 14 and 16.')
+  await expect(page.getByRole('dialog', { name: /· A bar 6, B bar 6, B bar 8$/ })).toContainText('Replaces the different picks in A bar 6, B bar 6 and B bar 8.')
 })
 
 test('a share link reproduces the picks', async ({ page, browser }) => {
@@ -100,7 +100,7 @@ test('picks survive a Built on change; Reset chord picks clears them', async ({ 
   await page.goto('/song/blue-bossa')
   await changesByChord(page)
   await at(page, BAR6).click()
-  await page.getByRole('dialog', { name: /· bar 6$/ }).locator('[data-choice]').nth(2).click()
+  await page.getByRole('dialog', { name: /· A bar 6$/ }).locator('[data-choice]').nth(2).click()
   await expect(at(page, BAR6)).toHaveText('Fm♪ 4')
   await openPentatonicOptions(page)
   await pickOption(page, 'Pentatonic built on', '2')
@@ -119,8 +119,8 @@ test('the hexatonic label picks too', async ({ page }) => {
   await expect(label).toBeVisible()
   const before = await label.textContent()
   await label.click()
-  const dialog = page.getByRole('dialog', { name: 'G7♯5♯9 Altered · bar 6' })
-  await expect(dialog).toContainText('Sets bar 6.')
+  const dialog = page.getByRole('dialog', { name: 'G7♯5♯9 Altered · A bar 6' })
+  await expect(dialog).toContainText('Sets A bar 6.')
   const second = dialog.locator('[data-choice]').nth(1)
   const name = (await second.textContent())!.split(' · ')[0]!
   expect(name).not.toBe(before)
@@ -136,7 +136,7 @@ test('⌘Z steps back through a pick, a pentatonic setting and a chord edit, in 
   await expect(sheetChord(page, 'Fm6', 'A', 3)).toBeVisible()
   await changesByChord(page)
   await at(page, BAR6).click()
-  await page.getByRole('dialog', { name: 'G7♯5♯9 Altered · bar 6' }).locator('[data-choice]').nth(2).click()
+  await page.getByRole('dialog', { name: 'G7♯5♯9 Altered · A bar 6' }).locator('[data-choice]').nth(2).click()
   await expect(at(page, BAR6)).toHaveText('Fm♪ 4')
   await page.reload()
   await expect(at(page, BAR6)).toHaveText('Fm♪ 4')

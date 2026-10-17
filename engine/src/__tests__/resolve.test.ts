@@ -9,8 +9,8 @@ const resolve = (text: string, view = on()): readonly Resolved[] => [...resolveS
 const scales = (text: string, view = on()): readonly (string | null)[] => resolve(text, view).map((r) => r.scale)
 
 // in C: a written scale, a stated function (D7 subV7/♭II: Lydian Dominant), and the rules' own choices
-const C_TUNE = 'title: T\nkey: C\nA | 1 | CMaj7 | C Lydian\nA | 2 | D7 | | subV7/♭II\nA | 3 | Dm7\nA | 4 | G7\nA | 5 | CMaj7\n'
-const G_MINOR = 'title: T\nkey: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm7 | G Dorian\nA | 4 | Gm7\n'
+const C_TUNE = 'title: T\nkey: C\n\nsection: A\nbars: 8\n1 | CMaj7 | C Lydian\n2 | D7 |  | subV7/♭II\n3 | Dm7\n4 | G7\n5 | CMaj7\n'
+const G_MINOR = 'title: T\nkey: Gm\n\nsection: A\n1 | Am7b5\n2 | D7\n3 | Gm7 | G Dorian\n4 | Gm7\n'
 
 describe('resolveScales', () => {
   it('plays a written scale, else the stated function’s, else the rules’, keyed by expanded row', () => {
@@ -35,17 +35,17 @@ describe('resolveScales', () => {
   })
 
   it('changes the scale when a function is stated, with no scale written', () => {
-    const plain = C_TUNE.replace(' | | subV7/♭II', '')
+    const plain = C_TUNE.replace(' |  | subV7/♭II', '')
     expect(scales(plain)[1]).toBe('D Mixolydian')
     expect(scales(C_TUNE)[1]).toBe('D Lydian Dominant')
   })
 
   it('gives a chord the quality has no default for the analysed scale', () => {
-    expect(resolve('title: T\nkey: F\nA | 1 | FMaj7\nA | 2 | C7b9#11\nA | 3 | FMaj7\n')[1]).toMatchObject({ scale: 'C Half-Whole Diminished', source: 'rules' })
+    expect(resolve('title: T\nkey: F\n\nsection: A\nbars: 4\n1 | FMaj7\n2 | C7b9#11\n3 | FMaj7\n')[1]).toMatchObject({ scale: 'C Half-Whole Diminished', source: 'rules' })
   })
 
   it('is null for a chord that can’t be read yet', () => {
-    expect(resolve('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | Cm7#5#9x\nA | 3 | CMaj7\n')[1]).toEqual({ scale: null, source: 'default' })
+    expect(resolve('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | Cm7#5#9x\n3 | CMaj7\n')[1]).toEqual({ scale: null, source: 'default' })
   })
 
   it('moves the analysed rows with the level and leaves written ones', () => {
@@ -58,22 +58,22 @@ describe('resolveScales', () => {
   })
 
   it('deals Random the same for the same seed', () => {
-    const tune = 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\nA | 4 | A7\nA | 5 | Dm7\nA | 6 | G7\nA | 7 | CMaj7\nA | 8 | CMaj7 | C Ionian\n'
+    const tune = 'title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | A7\n5 | Dm7\n6 | G7\n7 | CMaj7\n8 | CMaj7 | C Ionian\n'
     for (const seed of [1, 2, 3]) expect(scales(tune, on('random', seed))).toEqual(scales(tune, on('random', seed)))
     expect(new Set([1, 2, 3, 4, 5].map((seed) => scales(tune, on('random', seed)).join())).size).toBeGreaterThan(1)
     expect(scales(tune, on('random', 4))[7]).toBe('C Ionian')
-    const copied = scales('title: T\nkey: C\nA | 1 | Dm7\n@copy A B 8\n', on('random', 7))
+    const copied = scales('title: T\nkey: C\n\nsection: A\nbars: 8\n1 | Dm7\n\nsection: B\ncopy: A\n', on('random', 7))
     expect(copied[1]).toBe(copied[0]) // a @copy repeat deals as its source row
   })
 
   it('resolves a @copy repeat on its own row', () => {
     // the A7 leads back to Dm7 the first time (V7/ii) and on to DMaj7 the second (V7)
-    const rows = resolve('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | A7\n@copy A A2 2\nB | 5 | DMaj7\n')
+    const rows = resolve('title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | A7\n\nsection: A2\ncopy: A\n\nsection: B\nbars: 4\n1 | DMaj7\n')
     expect(rows.map((r) => r.scale)).toEqual(['D Dorian', 'A Mixolydian b6', 'D Dorian', 'A Mixolydian', 'D Ionian'])
   })
 
   it('resolves a modal chart’s chords to their modes by the rules', () => {
-    const rows = resolve('title: T\ncontext: modal\nA | 1 | Dm7\nA | 2 | Dm7\nA | 3 | Ebm7\nA | 4 | Ebm7\n')
+    const rows = resolve('title: T\ncontext: modal\n\nsection: A\n1 | Dm7\n2 | Dm7\n3 | Ebm7\n4 | Ebm7\n')
     expect(rows).toEqual(Array.from({ length: 4 }, (_, i) => expect.objectContaining({ scale: i < 2 ? 'D Dorian' : 'Eb Dorian', source: 'rules', rule: 'm6' })))
   })
 })

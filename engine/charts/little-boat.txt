@@ -6,23 +6,25 @@ style: Latin
 key: Bb
 form: A, 16 bars
 source: Colorado Cookbook, p. 120
-# analysis: 2026-10-11, rules v1; Bb
+# analysis: 2026-10-17, rules v1; Bb
 
-# section | bar | chord | scale
-# area: Bb major (bar 1)
-A | 1  | BbMaj7  # tonic: the 4th is in the key
-# area: Ab major (bars 3–5)
-A | 3  | Em7     # ii of A7: Dorian
-A | 4  | A7      # tritone substitute: resolves down a half step to AbMaj7
-A | 5  | AbMaj7  # tonic: the 4th is in the key
-# area: Gb major (bars 7–9)
-A | 7  | Dm7     # ii of G7: Dorian
-A | 8  | G7      # tritone substitute: resolves down a half step to GbMaj7
-A | 9  | GbMaj7  # tonic: the 4th is in the key
-# area: Bb major (bars 11–16)
-A | 11 | Cm7     # ii of F7: Dorian
-A | 12 | F7      # V7/I in Bb: natural tensions
-A | 13 | Dm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A | 14 | G7b9    # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
-A | 15 | Cm7     # ii of the ii–V to Bb
-A | 16 | F7b9    # V7 of Bb: the b9 from the symbol
+# bar | chord | scale
+
+section: A
+# area: Bb major (A 1)
+1  | BbMaj7  # tonic: the 4th is in the key
+# area: Ab major (A 3–5)
+3  | Em7     # ii of A7: Dorian
+4  | A7      # tritone substitute: resolves down a half step to AbMaj7
+5  | AbMaj7  # tonic: the 4th is in the key
+# area: Gb major (A 7–9)
+7  | Dm7     # ii of G7: Dorian
+8  | G7      # tritone substitute: resolves down a half step to GbMaj7
+9  | GbMaj7  # tonic: the 4th is in the key
+# area: Bb major (A 11–16)
+11 | Cm7     # ii of F7: Dorian
+12 | F7      # V7/I in Bb: natural tensions
+13 | Dm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+14 | G7b9    # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+15 | Cm7     # ii of the ii–V to Bb
+16 | F7b9    # V7 of Bb: the b9 from the symbol

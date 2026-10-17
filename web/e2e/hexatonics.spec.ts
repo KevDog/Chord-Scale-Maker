@@ -3,7 +3,7 @@ import type { Page } from '@playwright/test'
 
 // one staff per chord: C Ionian, D Dorian, G Mixolydian, B Locrian (the chords' own scales in C), and two written
 // scales: whole tone (no triad pair) and half-whole (eight notes, Campbell's chain)
-const CHART = 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | Bm7b5\nA | 5 | C7 | C Whole Tone\nA | 6 | C7 | C Half-Whole'
+const CHART = 'title: T\nkey: C\n\nsection: A\nbars: 8\n1 | CMaj7\n2 | Dm7\n3 | G7\n4 | Bm7b5\n5 | C7 | C Whole Tone\n6 | C7 | C Half-Whole'
 
 type Row = Readonly<{ caption: string; notes: number; a: number; b: number }>
 
@@ -75,7 +75,7 @@ test('the Changes sheet’s Superimpose: Hexatonic shows each chord’s pair and
 })
 
 test('the Line plays each chord’s labelled triad pair under the Hexatonic overlay, and 7th Chords again without it (#325)', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Dm7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Cmaj7\n2 | Dm7\n')
   const line = page.locator('svg[aria-label^="Bars:"]').first()
   await showArpeggios(page, 'Up · root')
   await arpeggiosDrawn(page)

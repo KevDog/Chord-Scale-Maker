@@ -1,4 +1,5 @@
 import { chartMeta, LIMITS, MODES, parseChart } from '@chord-scale-maker/engine'
+import { LEGACY_STARTER_CHART } from '~/utils/starterChart'
 import { practiceKey } from '~/utils/practiceKey'
 
 /**
@@ -86,11 +87,12 @@ export function deleteChart(id: string): void {
   for (const mode of MODES) removeStored(practiceKey(`mine:${id}`, mode))
 }
 
-/** the old single draft (the hidden New chart's), moved into My charts once */
-export function migrateDraft(starter: string, now = Date.now()): void {
+/** the old single draft (the hidden New chart's), moved into My charts once; one still holding a starter is left behind */
+export function migrateDraft(starter: string, now = Date.now(), legacyStarter = LEGACY_STARTER_CHART): void {
   const draft = readStored('csm-draft')
   if (draft === null) return
-  if (draft.trim() && draft.trim() !== starter.trim() && !saveChart({ id: newChartId(), text: draft, kind: 'new' }, now).ok) return // keep it to try again
+  const untouched = [starter, legacyStarter].some((s) => draft.trim() === s.trim())
+  if (draft.trim() && !untouched && !saveChart({ id: newChartId(), text: draft, kind: 'new' }, now).ok) return // keep it to try again
   removeStored('csm-draft')
 }
 

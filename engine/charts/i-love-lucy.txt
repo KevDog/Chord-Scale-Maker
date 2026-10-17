@@ -3,67 +3,75 @@ composer: Eliot Daniel
 style: Bright samba
 key: F
 form: AA, 32 bars
-source:
-# analysis: 2026-10-12, rules v1; F
+source: 
+# analysis: 2026-10-17, rules v1; F
 # book: as played by Richie Cole; cut time (2/2)
 # solo on A (both endings); after solos, D.S. al Coda
 
-# section | bar | chord
+# bar | chord
 # Intro: vamp bars 1–2 till cue, then bar 3 on cue
-# area: F major (bars 1–10)
-Intro | 1  | FMaj9   # tonic: the 4th is in the key
-Intro | 1  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-Intro | 2  | Gm9     # ii of C7: Dorian
-Intro | 2  | C7      # V7/I in F: natural tensions
-@ending 1 Intro 2
-Intro | 3  | Gm9     # ii of the ii–V to F
-Intro | 3  | C7      # V7 of F: natural tensions
-@ending 2 Intro 3
-@segno A 1
-A     | 1  | FMaj7   # tonic: the 4th is in the key
-A     | 2  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-A     | 3  | Gm7     # ii of the ii–V to F
-A     | 4  | C7      # V7 of F: natural tensions
-A     | 5  | FMaj7   # tonic: the 4th is in the key
-A     | 6  | Dm7     # ii of G13#11: Dorian
-A     | 7  | G13#11  # V7/V in F: the #11 from the symbol
-A     | 8  | G#dim7  # vii°7 of Am7: E7♭9 without its root
-A     | 9  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A     | 10 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-# area: D major (bars 11–13)
-A     | 11 | Em7     # ii of the ii–V to D
-A     | 12 | A7      # V7 of D: natural tensions
-A     | 13 | DMaj7   # tonic: the 4th is in the key
-# area: F major (bars 15–9)
-A     | 15 | Gm9     # ii of C9sus4: Dorian
-A     | 16 | C9sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+
+section: Intro
+bars: 4
+# area: F major (Intro 1 – A 10)
+1  | FMaj9   # tonic: the 4th is in the key
+1  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+2  | Gm9     # ii of C7: Dorian
+2  | C7      # V7/I in F: natural tensions
+@ending 1 2
+3  | Gm9     # ii of the ii–V to F
+3  | C7      # V7 of F: natural tensions
+@ending 2 3
+
+section: A
+@segno 1
+1  | FMaj7   # tonic: the 4th is in the key
+2  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3  | Gm7     # ii of the ii–V to F
+4  | C7      # V7 of F: natural tensions
+5  | FMaj7   # tonic: the 4th is in the key
+6  | Dm7     # ii of G13#11: Dorian
+7  | G13#11  # V7/V in F: the #11 from the symbol
+8  | G#dim7  # vii°7 of Am7: E7♭9 without its root
+9  | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+10 | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+# area: D major (A 11–13)
+11 | Em7     # ii of the ii–V to D
+12 | A7      # V7 of D: natural tensions
+13 | DMaj7   # tonic: the 4th is in the key
+# area: F major (A 15 – Coda 9)
+15 | Gm9     # ii of C9sus4: Dorian
+16 | C9sus4  # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 # book: C13sus
-A     | 16 | C7      # V7 in F, not resolving: natural tensions
-@ending 1 A 9 16
-A     | 17 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-A     | 18 | Dm7     # ii of G7: Dorian
-A     | 19 | G7      # V7/V in F: natural tensions
-A     | 20 | G7
-@coda A 20
-A     | 21 | Gm7     # ii of the ii–V to F
-A     | 22 | C7      # V7 of F: natural tensions
-A     | 23 | F6      # tonic: the 4th is in the key
+16 | C7      # V7 in F, not resolving: natural tensions
+@ending 1 9 16
+17 | Am7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+18 | Dm7     # ii of G7: Dorian
+19 | G7      # V7/V in F: natural tensions
+20 | G7
+@coda 20
+21 | Gm7     # ii of the ii–V to F
+22 | C7      # V7 of F: natural tensions
+23 | F6      # tonic: the 4th is in the key
 # bars 23–24: solo break; alt (optional): bars 23–24 (Dm7 | Gm7 C7)
-A     | 24 | F6
-@ending 2 A 17 24
-@nav A 24 D.S. al Coda
-@coda Coda 1
-Coda  | 1  | Gm7     # ii of the ii–V to F
-Coda  | 3  | C7      # V7 of F: natural tensions
+24 | F6
+@ending 2 17 24
+@nav 24 D.S. al Coda
+
+section: Coda
+bars: 12
+@coda 1
+1  | Gm7     # ii of the ii–V to F
+3  | C7      # V7 of F: natural tensions
 # bars 5–6: alto solo, vamp till cue; bars 7–9 on cue
-Coda  | 5  | FMaj9   # tonic: the 4th is in the key
-Coda  | 5  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-Coda  | 6  | Gm9     # ii of the ii–V to F
-Coda  | 6  | C7      # V7 of F: natural tensions
-Coda  | 7  | FMaj9   # tonic: the 4th is in the key
-Coda  | 7  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-Coda  | 8  | Gm9     # ii of C7: Dorian
-Coda  | 8  | C7      # V7/I in F: natural tensions
-Coda  | 9  | Gm7     # ii of the ii–V to F
-Coda  | 9  | C7      # V7 of F: natural tensions
-Coda  | 9  | F6      # tonic: the 4th is in the key
+5  | FMaj9   # tonic: the 4th is in the key
+5  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+6  | Gm9     # ii of the ii–V to F
+6  | C7      # V7 of F: natural tensions
+7  | FMaj9   # tonic: the 4th is in the key
+7  | Dm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+8  | Gm9     # ii of C7: Dorian
+8  | C7      # V7/I in F: natural tensions
+9  | Gm7     # ii of the ii–V to F
+9  | C7      # V7 of F: natural tensions
+9  | F6      # tonic: the 4th is in the key

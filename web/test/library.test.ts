@@ -7,7 +7,7 @@ import { sitemapPaths, sitemapXml, chartSlugsOf } from '~/utils/sitemap'
 
 describe('library', () => {
   it('builds entries from chart files, sorted by title', () => {
-    const lib = toLibrary({ '../x/b.txt': 'title: Beta\nA | 1 | C', '../x/a.txt': 'title: Álpha\nsubtitle: S\nA | 1 | C' })
+    const lib = toLibrary({ '../x/b.txt': 'title: Beta\n\nsection: A\nbars: 4\n1 | C', '../x/a.txt': 'title: Álpha\nsubtitle: S\n\nsection: A\nbars: 4\n1 | C' })
     expect(lib.map((c) => [c.slug, c.title, c.subtitle])).toEqual([
       ['a', 'Álpha', 'S'],
       ['b', 'Beta', ''],
@@ -15,8 +15,8 @@ describe('library', () => {
   })
 
   it('leaves out the source: line, which is for internal use only', () => {
-    const [chart] = toLibrary({ 'a.txt': 'title: A\nsource: Some Book, p. 12\n# source: earlier from Another, p. 3\nkey: C\n\nA | 1 | C' })
-    expect(chart?.text).toBe('title: A\nkey: C\n\nA | 1 | C')
+    const [chart] = toLibrary({ 'a.txt': 'title: A\nsource: Some Book, p. 12\n# source: earlier from Another, p. 3\nkey: C\n\nsection: A\nbars: 4\n1 | C' })
+    expect(chart?.text).toBe('title: A\nkey: C\n\nsection: A\nbars: 4\n1 | C')
   })
 
   it('ships no library chart with a source: line', () => {

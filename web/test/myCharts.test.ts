@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { deleteChart, filenameFor, listCharts, loadChart, migrateChartNames, migrateDraft, MY_CHARTS_MAX, newChartId, saveChart, versionOf } from '~/utils/myCharts'
 
-const chart = (title: string, chord = 'Cm7'): string => `title: ${title}\nA | 1 | ${chord}\n`
+const chart = (title: string, chord = 'Cm7'): string => `title: ${title}\nsection: A\n1 | ${chord}\n`
 
 describe('My charts', () => {
   afterEach(() => {
@@ -60,6 +60,13 @@ describe('My charts', () => {
     localStorage.setItem('csm-draft', chart('Untitled'))
     migrateDraft(chart('Untitled'))
     expect(listCharts()).toHaveLength(1)
+  })
+
+  it('leaves behind an old draft still holding the starter from before section blocks', () => {
+    localStorage.setItem('csm-draft', 'title: Untitled\nA | 1 | Dm7\n')
+    migrateDraft(chart('Untitled'), Date.now(), 'title: Untitled\nA | 1 | Dm7\n')
+    expect(listCharts()).toEqual([])
+    expect(localStorage.getItem('csm-draft')).toBeNull()
   })
 
   it('makes URL-safe ids and safe file names', () => {

@@ -6,16 +6,18 @@ form: A, 12 bars
 key: Bb
 # analysis: 2026-10-11, rules v1; Bb, blues
 
-# section | bar | chord | scale
-A | 1  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 2  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A | 3  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 4  | Bb7
-A | 5  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A | 6  | Eb7
-A | 7  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 8  | Bb7
-A | 9  | F7   # V7 in Bb, not resolving: natural tensions
-A | 10 | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A | 11 | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 12 | F7   # extended dominant: V7 of Bb7
+# bar | chord | scale
+
+section: A
+1  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+2  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+3  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+4  | Bb7
+5  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | Eb7
+7  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+8  | Bb7
+9  | F7   # V7 in Bb, not resolving: natural tensions
+10 | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+11 | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+12 | F7   # extended dominant: V7 of Bb7

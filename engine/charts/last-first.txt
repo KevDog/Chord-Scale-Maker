@@ -3,68 +3,84 @@ composer: Gary Peacock
 style: Medium up straight eighths
 key: G
 form: AAB head (39 bars) + CCDEE solos (32 bars), 71 bars
-source:
+source: 
 context: modal
 # analysis: 2026-10-12, rules v1; G, modal
 
 # metre: 4/4, except B bars 16–17 in 5/4 and bar 24 in 3/4
 # book: use the G major scale on the Gsus chord for solos
-# section | bar | chord
-A | 1  | Gsus        # static sus: Mixolydian
-A | 3  | EbMaj7/G    # modal major: Lydian
-A | 5  | AbMaj7/G    # from the symbol: sus b9
-A | 6  | AbMaj7#5/G  # from the symbol: #5
-A | 7  | Gsus        # static sus: Mixolydian
+# bar | chord
+
+section: A
+1  | Gsus        # static sus: Mixolydian
+3  | EbMaj7/G    # modal major: Lydian
+5  | AbMaj7/G    # from the symbol: sus b9
+6  | AbMaj7#5/G  # from the symbol: #5
+7  | Gsus        # static sus: Mixolydian
 # bar 8 (1st ending): Gsus held
-A | 8  | Gsus
-@ending 1 A 8
-A | 9  | Gsus
-@ending 2 A 9
-B | 10 | Em7         # modal minor: Dorian
-B | 11 | FMaj7/E     # from the symbol: sus b9
-B | 12 | Em7         # modal minor: Dorian
-B | 13 | FMaj7/E     # from the symbol: sus b9
-B | 14 | Em7         # modal minor: Dorian
-B | 15 | FMaj7/E     # from the symbol: sus b9
+8  | Gsus
+@ending 1 8
+9  | Gsus
+@ending 2 9
+
+section: B
+1  | Em7         # modal minor: Dorian
+2  | FMaj7/E     # from the symbol: sus b9
+3  | Em7         # modal minor: Dorian
+4  | FMaj7/E     # from the symbol: sus b9
+5  | Em7         # modal minor: Dorian
+6  | FMaj7/E     # from the symbol: sus b9
 # bar 16 in 5/4
-B | 16 | Em7         # modal minor: Dorian
+7  | Em7         # modal minor: Dorian
 # bar 17 in 5/4
-B | 17 | C/D         # modal major: Lydian
-B | 18 | D/E         # modal major: Lydian
+8  | C/D         # modal major: Lydian
+9  | D/E         # modal major: Lydian
 # alt (optional): bars 19, 20 and 21 each (D/C C/D D/E), bar 22 (D/E); the D/E of bar 18 is held through bar 24
 # bar 24 in 3/4: no chord symbol (a piano and bass figure over the held D/E)
 # bars 25–32: the bass plays on beat 1 (sample voicings printed)
-B | 25 | Bm11        # modal minor: Dorian
+16 | Bm11        # modal minor: Dorian
 # bar 26: last time, fermata and Fine
 # book: CMaj9(#5)/B
-B | 26 | CMaj7#5/B   # from the symbol: #5
-@nav B 26 Fine
-B | 27 | Bm11        # modal minor: Dorian
+17 | CMaj7#5/B   # from the symbol: #5
+@nav 17 Fine
+18 | Bm11        # modal minor: Dorian
 # book: Am9(add13)/B
-B | 28 | Am11/B      # modal minor: Dorian
-B | 29 | Bm11        # modal minor: Dorian
-B | 30 | CMaj7#5/B   # from the symbol: #5
-B | 31 | Bm11        # modal minor: Dorian
-B | 32 | Am11/B      # modal minor: Dorian
+19 | Am11/B      # modal minor: Dorian
+20 | Bm11        # modal minor: Dorian
+21 | CMaj7#5/B   # from the symbol: #5
+22 | Bm11        # modal minor: Dorian
+23 | Am11/B      # modal minor: Dorian
+
+section: C
+bars: 8
 # solos on C C D, then E (repeated) to end each solo
-C | 33 | Gsus       | G Ionian  # keep: the book says to use the G major scale on Gsus for solos
-C | 35 | EbMaj7/G    # modal major: Lydian
-C | 37 | AbMaj7/G    # from the symbol: sus b9
-C | 39 | Gsus       | G Ionian  # keep: the book says to use the G major scale on Gsus for solos
-@copy C C2 8
-D | 49 | Em7         # modal minor: Dorian
-D | 50 | FMaj7/E     # from the symbol: sus b9
+1  | Gsus       | G Ionian  # keep: the book says to use the G major scale on Gsus for solos
+3  | EbMaj7/G    # modal major: Lydian
+5  | AbMaj7/G    # from the symbol: sus b9
+7  | Gsus       | G Ionian  # keep: the book says to use the G major scale on Gsus for solos
+
+section: C2
+copy: C
+
+section: D
+bars: 8
+1  | Em7         # modal minor: Dorian
+2  | FMaj7/E     # from the symbol: sus b9
 # bars 51–54: two 2-bar repeat signs (each marked (2)) repeat bars 49–50 twice
-D | 51 | Em7         # modal minor: Dorian
-D | 52 | FMaj7/E     # from the symbol: sus b9
-D | 53 | Em7         # modal minor: Dorian
-D | 54 | FMaj7/E     # from the symbol: sus b9
-D | 55 | Em7         # modal minor: Dorian
+3  | Em7         # modal minor: Dorian
+4  | FMaj7/E     # from the symbol: sus b9
+5  | Em7         # modal minor: Dorian
+6  | FMaj7/E     # from the symbol: sus b9
+7  | Em7         # modal minor: Dorian
+
+section: E
 # E: the bass plays on beat 1 (sample voicings printed)
-E | 57 | Bm11        # modal minor: Dorian
-E | 58 | CMaj7#5/B   # from the symbol: #5
-E | 59 | Bm11        # modal minor: Dorian
-E | 60 | Am11/B      # modal minor: Dorian
+1  | Bm11        # modal minor: Dorian
+2  | CMaj7#5/B   # from the symbol: #5
+3  | Bm11        # modal minor: Dorian
+4  | Am11/B      # modal minor: Dorian
 # return to C for more solos; after solos, D.C. al Fine
-@nav E 60 D.C. al Fine
-@copy E E2 4
+@nav 4 D.C. al Fine
+
+section: E2
+copy: E

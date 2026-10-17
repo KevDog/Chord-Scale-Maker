@@ -88,7 +88,7 @@ describe('ChangesSystem chords while editing', () => {
 })
 
 describe('ChangesSystem as the editor', () => {
-  const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 1 | G7\n').value
+  const doc = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n1 | G7\n').value
   const at = (c: ChangesChord, line: number): ChangesChord => ({ ...c, at: { section: 'A', bar: '1' }, line, written: c.text })
   const line = (): ChangesLine => ({ bars: [bar([at(chord(0, 'Dm7', ''), 2), at(chord(2, 'G7', ''), 3)], [])], sectionEnd: false })
   const base = { first: true, beats: 4 as const, barsPerLine: 4, numerals: true, scales: true, editable: true, doc }
@@ -229,7 +229,7 @@ describe('ChangesSystem as the editor', () => {
 
 describe('ChangesSystem pentatonic ladders', () => {
   it('opens a label’s ladder at its section’s rung, and a pick names the run', async () => {
-    const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Cmaj7').value
+    const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n\nsection: B\nbars: 3\n1 | Cmaj7').value
     const plan = { kind: 'pentatonic', bySection: { B: { rung: 5, side: 'flat' as const } }, fallback: { rung: 0, side: 'flat' as const }, counts: true }
     const line = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)[1]!
     const w = await mountSuspended(ChangesSystem, { props: { line, part: CONCERT, first: true, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, overlay: plan, counted: true }, attachTo: document.body })
@@ -239,7 +239,7 @@ describe('ChangesSystem pentatonic ladders', () => {
     await flushPromises()
     expect(w.find('[data-sheet-choice]').text()).toBe('Sheet’s choice (B♭m)')
     await w.findAll('[data-pent]').find((p) => p.text() === 'Gm')?.trigger('click')
-    expect(w.emitted('pick')?.[0]).toEqual(['pentatonic', ['B:2:0'], 7])
+    expect(w.emitted('pick')?.[0]).toEqual(['pentatonic', ['B:1:0'], 7])
     w.unmount()
   })
 
@@ -248,7 +248,7 @@ describe('ChangesSystem pentatonic ladders', () => {
     return mountSuspended(ChangesSystem, { props: { line: lines[index]!, part: CONCERT, first: index === 0, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, overlay: plan, counted: plan.counts }, attachTo: document.body })
   }
   const slip: PentatonicPlan = { kind: 'pentatonic', bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
-  const AB = 'title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Dm7\nB | 2 | G7\nB | 3 | Cmaj7'
+  const AB = 'title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n\nsection: B\nbars: 3\n1 | Dm7\n1 | G7\n2 | Cmaj7'
 
   it('tints a label by its rung, its shared count and accessible name saying the same without colour (#277)', async () => {
     const w = await mountLine(AB, slip, 1)
@@ -268,7 +268,7 @@ describe('ChangesSystem pentatonic ladders', () => {
 })
 
 describe('ChangesSystem interface levels', () => {
-  const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 1 | G7\n').value
+  const doc = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n1 | G7\n').value
   const at = (c: ChangesChord, line: number): ChangesChord => ({ ...c, at: { section: 'A', bar: '1' }, line, written: c.text })
   const withReason = (): ChangesLine => ({ bars: [bar([{ ...at(chord(2, 'G7', ''), 3), numeral: 'V7', scale: 'G Mixolydian', reason: 'the V of C', rule: 'D1' }], [])] })
   const base = { first: true, beats: 4 as const, barsPerLine: 4, numerals: true, scales: true, editable: true, doc }
@@ -305,7 +305,7 @@ describe('ChangesSystem pentatonic ladder by interface level', () => {
 
   it('below Everything the row prints its labels, no ladder to open', async () => {
     useInterface().level.value = 'intermediate'
-    const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Cmaj7').value
+    const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n\nsection: B\nbars: 3\n1 | Cmaj7').value
     const plan = { kind: 'pentatonic', bySection: { B: { rung: 5, side: 'flat' as const } }, fallback: { rung: 0, side: 'flat' as const }, counts: true }
     const line = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)[1]!
     const w = await mountSuspended(ChangesSystem, { props: { line, first: true, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, overlay: plan, counted: true } })
@@ -322,7 +322,7 @@ describe('ChangesSystem hexatonic row', () => {
   }
 
   it('labels each chord with its pair where it changes, blank where the scale has none, and draws no pentatonic row', async () => {
-    const w = await mountHex('title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Cmaj7\nA | 3 | C7#5 | C Whole Tone\nA | 4 | Dm7')
+    const w = await mountHex('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n2 | Cmaj7\n3 | C7#5 | C Whole Tone\n4 | Dm7')
     expect(w.findAll('[data-slot="hexatonic"] > span').map((s) => s.find('span').text())).toEqual(['G/Am', 'C/Dm'])
     expect(w.find('[data-slot="pentatonic"]').exists()).toBe(false)
     expect(w.findAllComponents({ name: 'PentatonicLadder' })).toHaveLength(0)
@@ -330,7 +330,7 @@ describe('ChangesSystem hexatonic row', () => {
   })
 
   it('has no hexatonic row under the Pentatonic overlay, or none', async () => {
-    const doc = parseChart('title: T\nkey: C\nA | 1 | Cmaj7').value
+    const doc = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Cmaj7').value
     const plan: PentatonicPlan = { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false }
     const line = showPentatonics(buildChanges(doc, CONCERT, 4, false, 'off', undefined, plan).lines)[0]!
     const props = { line, first: true, beats: 4 as const, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const }
@@ -342,12 +342,12 @@ describe('ChangesSystem hexatonic row', () => {
 })
 
 describe('ChangesSystem chord picks (#303)', () => {
-  const WT = 'title: T\nkey: C\nA | 1 | C7#5 | C Whole Tone\nA | 2 | Dm7\nA | 3 | C7#5 | C Whole Tone'
-  const RUN = 'title: T\nkey: C\nA | 1 | C7#5 | C Whole Tone\nA | 2 | Dm7\nA | 3 | Dm7\nA | 4 | C7#5 | C Whole Tone'
+  const WT = 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C7#5 | C Whole Tone\n2 | Dm7\n3 | C7#5 | C Whole Tone'
+  const RUN = 'title: T\nkey: C\n\nsection: A\n1 | C7#5 | C Whole Tone\n2 | Dm7\n3 | Dm7\n4 | C7#5 | C Whole Tone'
   const CHORD: PentatonicPlan = { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false, basis: 'chord' }
   const KEY: PentatonicPlan = { kind: 'pentatonic', bySection: { B: { rung: 5, side: 'flat' } }, fallback: { rung: 0, side: 'flat' }, counts: true }
   const HEX: OverlayPlan = { kind: 'hexatonic' }
-  const II_V = 'title: T\nkey: C\nA | 1 | Cmaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | Cmaj7'
+  const II_V = 'title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n2 | Dm7\n3 | G7\n4 | Cmaj7'
   const mountPlan = (text: string, plan: OverlayPlan, part: Part = CONCERT, index = 0) => {
     const built = buildChanges(parseChart(text).value, part, 4, false, 'off', undefined, plan).lines
     const lines = plan.kind === 'hexatonic' ? showHexatonics(built) : showPentatonics(built)
@@ -369,13 +369,13 @@ describe('ChangesSystem chord picks (#303)', () => {
     const b = w.find('[data-chord="A:2:0"] button')
     expect(b.attributes('aria-label')).toBe('Pentatonic: D minor, built on 1, 5 of 5 notes in D Dorian. Show the choices')
     const { header, footer } = await open(w, '[data-chord="A:2:0"] button')
-    expect([header, footer]).toEqual(['Dm7 Dorian · bar 2', 'Sets bar 2.'])
+    expect([header, footer]).toEqual(['Dm7 Dorian · A bar 2', 'Sets A bar 2.'])
     expect(w.findAll('[data-choice]')).toHaveLength(12)
     await w.findAll('[data-choice]').find((r) => r.text().startsWith('Em pent'))!.trigger('click')
     expect(w.emitted('pick')?.[0]).toEqual(['pentatonic', ['A:2:0'], 4])
     w.unmount()
     const two = await mountPlan(RUN, CHORD)
-    expect((await open(two, '[data-chord="A:2:0"] button')).footer).toBe('Sets bars 2 and 3.')
+    expect((await open(two, '[data-chord="A:2:0"] button')).footer).toBe('Sets A bar 2 and A bar 3.')
     await two.find('[data-sheet-choice]').trigger('click')
     expect(two.emitted('pick')?.[0]).toEqual(['pentatonic', ['A:2:0', 'A:3:0'], null])
     two.unmount()
@@ -384,29 +384,29 @@ describe('ChangesSystem chord picks (#303)', () => {
   it('Chord basis on a B♭ part: written header and rows, the pick still concert', async () => {
     const w = await mountPlan(WT, CHORD, partFor('tenor-sax'))
     const { header } = await open(w, '[data-chord="A:2:0"] button')
-    expect(header).toBe('Em7 Dorian · bar 2')
+    expect(header).toBe('Em7 Dorian · A bar 2')
     await w.findAll('[data-choice]').find((r) => r.text().startsWith('F♯m pent'))!.trigger('click')
     expect(w.emitted('pick')?.[0]).toEqual(['pentatonic', ['A:2:0'], 4]) // written F♯m sounds Em
     w.unmount()
   })
 
   it('Key basis: the ladder is headed by the chord, and its written pick is passed up concert', async () => {
-    const doc = 'title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | Cmaj7'
+    const doc = 'title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n\nsection: B\nbars: 3\n1 | Cmaj7'
     const w = await mountPlan(doc, KEY, partFor('tenor-sax'), 1)
     const { header, footer } = await open(w, '[data-section="B"] button')
-    expect([header, footer]).toEqual(['Dmaj7 Lydian · bar 2', 'Sets bar 2.'])
+    expect([header, footer]).toEqual(['Dmaj7 Lydian · B bar 1', 'Sets B bar 1.'])
     expect(w.find('[data-slot="pentatonic"] [data-section="B"] button').attributes('aria-label')).toMatch(/notes in D major\. Show the ladder$/)
     w.findComponent(PentatonicLadder).vm.$emit('pick', 6)
-    expect(w.emitted('pick')?.[0]).toEqual(['pentatonic', ['B:2:0'], 4])
+    expect(w.emitted('pick')?.[0]).toEqual(['pentatonic', ['B:1:0'], 4])
     w.findComponent(PentatonicLadder).vm.$emit('reset')
-    expect(w.emitted('pick')?.[1]).toEqual(['pentatonic', ['B:2:0'], null])
+    expect(w.emitted('pick')?.[1]).toEqual(['pentatonic', ['B:1:0'], null])
     w.unmount()
   })
 
   it('Key basis on a chord with no scale: the header is the chord, and the ladder’s title stays its sub-line', async () => {
-    const w = await mountPlan('title: T\nkey: C\nA | 1 | Cmaj7\nB | 2 | C5', KEY, partFor('tenor-sax'), 1)
+    const w = await mountPlan('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n\nsection: B\nbars: 3\n1 | C5', KEY, partFor('tenor-sax'), 1)
     const { d, header } = await open(w, '[data-section="B"] button')
-    expect(header).toBe('D5 · bar 2')
+    expect(header).toBe('D5 · B bar 1')
     expect(d.findAll('p').map((p) => p.text())).toContain('B · D major pentatonic ladder')
     w.unmount()
   })
@@ -420,7 +420,7 @@ describe('ChangesSystem chord picks (#303)', () => {
     expect(b.classes()).toContain('decoration-dotted')
     expect(label.find('.hidden').text()).toBe('C/Dm') // print: plain text
     const { header, footer } = await open(w, '[data-slot="hexatonic"] [data-chord="A:2:0"] button')
-    expect([header, footer]).toEqual(['Dm7 Dorian · bar 2', 'Sets bar 2.'])
+    expect([header, footer]).toEqual(['Dm7 Dorian · A bar 2', 'Sets A bar 2.'])
     expect(w.findAll('[data-choice]').every((r) => / · covers \d$/.test(r.text()))).toBe(true)
     await w.findAll('[data-choice]').find((r) => r.text().startsWith('F/G'))!.trigger('click')
     expect(w.emitted('pick')?.[0]).toEqual(['hexatonic', ['A:2:0'], [5, 7]])

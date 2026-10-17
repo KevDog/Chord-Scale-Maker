@@ -23,7 +23,7 @@ test('the editor is hidden until opened, remembered, and flags problems while hi
   await expect(banner).toBeVisible() // remembered (csm-editor)
   await expect(page.getByLabel('Chart text')).toBeVisible() // and the Source, opened in beforeEach (csm-source)
   // make a problem, then close the editor: it's flagged with an Edit prompt
-  await page.getByLabel('Chart text').fill('title: T\nA | 1 | Cm7 | C Dorian | ii7 | extra\n')
+  await page.getByLabel('Chart text').fill('title: T\nsection: A\n1 | Cm7 | C Dorian | ii7 | extra\n')
   await page.getByRole('button', { name: 'Done', exact: true }).click()
   await expect(page.getByLabel('Chart text')).toBeHidden()
   await expect(page.getByRole('status').filter({ hasText: 'text has a problem' })).toBeVisible()
@@ -38,7 +38,7 @@ test('entering a tune on the sheet is type, Space, type, Tab; → from the last 
   await page.keyboard.press('Tab') // commits, on to bar 2's chord
   await page.keyboard.type('%')
   await page.keyboard.press('Tab')
-  await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 1 \| Em7\s*\nA \| 1 \| A7\s*\nA \| 2 \| Em7\s*\nA \| 2 \| A7\s*\n/)
+  await expect(page.getByLabel('Chart text')).toHaveValue(/\n1 \| Em7\s*\n1 \| A7\s*\n2 \| Em7\s*\n2 \| A7\s*\n/)
   const last = page.getByRole('combobox', { name: 'Chord, A bar 3' })
   await expect(last).toBeFocused()
   await last.press('ArrowRight') // the text is selected: → asks for the next chord, and there is none
@@ -47,32 +47,32 @@ test('entering a tune on the sheet is type, Space, type, Tab; → from the last 
 
 test('a repeat’s bar offers Write out alone, and writes the section out', async ({ page }) => {
   const text = page.getByLabel('Chart text')
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | C\nA | 2 | F\nB | 3 | Em7\n@copy A A2 4\n')
-  await sheetChord(page, 'C', 'A2', 5).hover()
-  const toolbar = page.getByRole('toolbar', { name: 'Bar 5 of A2' })
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | C\n2 | F\n\nsection: B\nbars: 2\n1 | Em7\n\nsection: A2\nbars: 4\ncopy: A\n')
+  await sheetChord(page, 'C', 'A2', 1).hover()
+  const toolbar = page.getByRole('toolbar', { name: 'Bar 1 of A2' })
   await expect(toolbar.getByRole('button')).toHaveCount(1)
   await toolbar.getByRole('button', { name: 'Write out A2, which repeats A' }).click()
-  await expect.poll(() => plain(text)).toMatch(/A2 \| 5 \| C\s*\nA2 \| 6 \| F/)
-  await expect.poll(() => plain(text)).not.toMatch(/@copy/)
+  await expect.poll(() => plain(text)).toMatch(/section: A2\n(?:.*\n)*?1 \| C\s*\n2 \| F/)
+  await expect.poll(() => plain(text)).not.toMatch(/copy:/)
 })
 
 test('a bar’s menu on the sheet: an ending, a coda, and a jump', async ({ page }) => {
   const text = page.getByLabel('Chart text')
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | C\nA | 2 | F\nA | 3 | G7\nA | 4 | C\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | C\n2 | F\n3 | G7\n4 | C\n')
   const menu = async (item: string) => {
     await sheetChord(page, 'C', 'A', 4).hover()
     await page.getByRole('button', { name: 'More actions for A bar 4' }).click()
     await page.getByRole('menuitem', { name: item }).click()
   }
   await menu('2nd ending')
-  await expect.poll(() => plain(text)).toMatch(/@ending 2 A 4/)
+  await expect.poll(() => plain(text)).toMatch(/@ending 2 4/)
   await menu('Coda')
-  await expect.poll(() => plain(text)).toMatch(/@coda A 4/)
+  await expect.poll(() => plain(text)).toMatch(/@coda 4/)
   await menu('Jump…')
   const jump = page.getByRole('dialog')
   await jump.getByLabel('Jump').selectOption('D.C. al Fine')
   await jump.getByRole('button', { name: 'Set' }).click()
-  await expect.poll(() => plain(text)).toMatch(/@nav A 4 D\.C\. al Fine/)
+  await expect.poll(() => plain(text)).toMatch(/@nav 4 D\.C\. al Fine/)
 })
 
 test('a new chart starts in C, the key of its chords', async ({ page }) => {
@@ -85,15 +85,15 @@ test('⌘Z undoes an edit and ⇧⌘Z redoes it, wherever it was made', async ({
   await sheetChord(page, 'G7', 'A', 2).click()
   await page.keyboard.type('Db7')
   await page.keyboard.press('Enter') // the field closes, focus back on the chord
-  await expect(text).toHaveValue(/A \| 2 \| Db7/)
+  await expect(text).toHaveValue(/\n2 \| Db7/)
   await expect(sheetChord(page, 'Db7', 'A', 2)).toBeFocused()
   await page.keyboard.press('ControlOrMeta+z') // over the sheet
-  await expect(text).toHaveValue(/A \| 2 \| G7/)
+  await expect(text).toHaveValue(/\n2 \| G7/)
   await expect(sheetChord(page, 'G7', 'A', 2)).toBeVisible()
   await text.press('ControlOrMeta+Shift+z') // in the Source
-  await expect(text).toHaveValue(/A \| 2 \| Db7/)
+  await expect(text).toHaveValue(/\n2 \| Db7/)
   await page.getByRole('button', { name: 'Undo the last change' }).click() // the banner's
-  await expect(text).toHaveValue(/A \| 2 \| G7/)
+  await expect(text).toHaveValue(/\n2 \| G7/)
 })
 
 test('on a phone the page never scrolls sideways', async ({ page }) => {
@@ -106,10 +106,10 @@ test('on a phone the page never scrolls sideways', async ({ page }) => {
 
 test('text edits update the sheets; an unknown chord is flagged on the sheet, and draws once given a scale', async ({ page }) => {
   const text = page.getByLabel('Chart text')
-  await text.fill(`${await text.inputValue()}B | 9 | Cm7#5#9x\n`)
+  await text.fill(`${await text.inputValue()}section: B\n1 | Cm7#5#9x\n`)
   await expect(staves(page)).toHaveCount(3) // the new row has no scale yet, so it isn't drawn
   await chooseSheet(page, 'Changes')
-  await expect(sheetChord(page, 'Cm7#5#9x', 'B', 9)).toHaveClass(/decoration-amber-500/) // the amber underline
+  await expect(sheetChord(page, 'Cm7#5#9x', 'B', 1)).toHaveClass(/decoration-amber-500/) // the amber underline
   await text.fill((await text.inputValue()).replace(/Cm7#5#9x[ \t]*$/m, 'Cm7#5#9x | C Altered'))
   await expect(text).toHaveValue(/Cm7#5#9x +\| C Altered/)
   await chooseSheet(page, 'Scales')
@@ -137,7 +137,7 @@ test('transposing rewrites the chart in another key', async ({ page }) => {
   await expect(page.getByRole('status').filter({ hasText: 'Transposed' })).toHaveText('Transposed from F to B♭.')
   await openEditor(page)
   const text = page.getByLabel('Chart text')
-  await expect(text).toHaveValue(/A \| 6 +\| Edim7 +# /) // the analysis chooses its scale in the new key
+  await expect(text).toHaveValue(/\n6 +\| Edim7 +# /) // the analysis chooses its scale in the new key
   await expect(text).toHaveValue(/title: F Jazz Blues/) // titles stay as typed
   await expect(sheetChord(page, 'Bb7', 'A', 1)).toBeVisible()
   // back in the original key, the message clears
@@ -168,7 +168,7 @@ test('the text editor explains itself on hover and on focus', async ({ page }) =
   await expect(tip).toBeHidden()
   await help.hover()
   await expect(tip).toBeVisible()
-  await expect(tip).toContainText('section | bar | chord | scale')
+  await expect(tip).toContainText('bar | chord | scale | function')
   await page.mouse.move(0, 0)
   await expect(tip).toBeHidden()
   await help.focus()
@@ -267,7 +267,7 @@ test('on a phone, focus mode’s pages lay out as printed: four bars a line', as
 const scaleStaves = (page: import('@playwright/test').Page) => page.locator('.break-inside-avoid')
 
 test('the Scales sheet draws each scale once, naming the chords it covers', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\nA | 3 | Cm9\nA | 4 | F7\n')
+  await writeChart(page, 'title: T\nkey: Bb\n\nsection: A\n1 | Cm7\n2 | F7\n3 | Cm9\n4 | F7\n')
   await chooseSheet(page, 'Scales')
   await expect(scaleStaves(page)).toHaveCount(2)
   await expect(scaleStaves(page).nth(0)).toContainText('C–7, · C–9')
@@ -275,7 +275,7 @@ test('the Scales sheet draws each scale once, naming the chords it covers', asyn
 })
 
 test('the scale level plays on the sheets without editing the chart, and a scale you pinned stays', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: Bb\nA | 1 | Cm7\nA | 2 | F7\nA | 3 | BbMaj7\n')
+  await writeChart(page, 'title: T\nkey: Bb\n\nsection: A\nbars: 4\n1 | Cm7\n2 | F7\n3 | BbMaj7\n')
   const text = page.getByLabel('Chart text')
   await page.getByRole('button', { name: 'F Mixo', exact: true }).first().click() // F7's scale label: the scale list
   await page.getByRole('dialog', { name: 'Scale: F7' }).getByRole('radio', { name: /^F Lydian Dominant/ }).click() // a pick of your own
@@ -386,13 +386,13 @@ test('editing, the rail sticks over the sheet from lg, and a chord tapped under 
   await expect(rail).not.toHaveAttribute('data-stuck')
   await expect(rail.getByRole('button', { name: 'Print' })).toBeVisible()
   await rail.getByRole('button', { name: 'Edit' }).click()
-  await expect(sheetChord(page, 'Am7b5', 'B', 17)).toBeVisible()
+  await expect(sheetChord(page, 'Am7b5', 'B', 1)).toBeVisible()
   await page.evaluate(() => window.scrollTo(0, 800))
   await expect(rail).toHaveAttribute('data-stuck')
   const railBox = (await rail.boundingBox())!
   expect(Math.round(railBox.y)).toBeLessThanOrEqual(0)
-  await sheetChord(page, 'Am7b5', 'B', 17).click()
-  const field = page.getByLabel('Chord, B bar 17', { exact: true })
+  await sheetChord(page, 'Am7b5', 'B', 1).click()
+  const field = page.getByLabel('Chord, B bar 1', { exact: true })
   await expect(field).toBeFocused()
   expect((await field.boundingBox())!.y).toBeGreaterThanOrEqual(railBox.y + railBox.height)
   await page.keyboard.press('Escape')
@@ -400,7 +400,7 @@ test('editing, the rail sticks over the sheet from lg, and a chord tapped under 
   await page.evaluate(() => window.scrollTo(0, 0))
   await expect(rail).not.toHaveAttribute('data-stuck')
   await showLine(page, 'Guide Tones')
-  const chord = sheetChord(page, 'Am7b5', 'B', 29)
+  const chord = sheetChord(page, 'Am7b5', 'B', 13)
   await chord.evaluate((el) => window.scrollBy(0, el.getBoundingClientRect().top - 60)) // under the stuck rail
   await chord.focus()
   await expect(rail).toHaveAttribute('data-stuck')

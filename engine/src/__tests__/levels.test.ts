@@ -3,7 +3,7 @@ import { readFileSync } from 'node:fs'
 import raw from '../../chord_scales.json'
 import { expandRows, parseChart } from '../chart'
 import { analyse } from '../analysis'
-import { ladderScale, type LevelState, scaleAtLevel, seededUnit, unlevel } from '../levels'
+import { ladderScale, type LevelState, remapOwned, scaleAtLevel, seededUnit, unlevel } from '../levels'
 import { resolveQuality } from '../qualities'
 import { samePitchScale, scaleKey } from '../scales'
 
@@ -38,8 +38,9 @@ describe('scale levels', () => {
     const at = (level: 'basic' | 'advanced') => scaleAtLevel('Gbdim7', level, 0, '', 'F# Whole-Half Diminished')
     expect([at('basic'), at('advanced')]).toEqual(['F# Whole-Half Diminished', 'F# Whole-Half Diminished'])
     const tat = parseChart(readFileSync('charts/time-after-time.txt', 'utf8')).value
-    for (const bar of [26, 28]) {
-      const r = analyse(tat).rows.find((x) => `${x.bar} ${x.chord}` === `${bar} Gbdim7`)
+    const rows = expandRows(tat).value
+    for (const bar of [2, 4]) {
+      const r = analyse(tat).rows.find((x) => rows[x.row]?.section === 'D' && `${x.bar} ${x.chord}` === `${bar} Gbdim7`)
       expect(r?.scale, `bar ${bar}`).toBe('Gb Whole-Half Diminished') // G♭ now letters cleanly (#279): no respelling
       expect(scaleAtLevel('Gbdim7', 'advanced', 0, '', r?.scale ?? undefined), `bar ${bar}`).toBe('Gb Whole-Half Diminished')
     }
@@ -78,7 +79,7 @@ describe('scale levels', () => {
   })
 
   it('a V7 of a minor chord on Phrygian Dominant is Altered at Advanced; the 7 menu keeps Spanish Phrygian (R5)', () => {
-    const doc = parseChart('key: Cm\nA | 1 | Dm7b5\nA | 2 | G7\nA | 3 | Cm7\n').value
+    const doc = parseChart('key: Cm\n\nsection: A\nbars: 4\n1 | Dm7b5\n2 | G7\n3 | Cm7\n').value
     const standard = analyse(doc).rows.find((r) => r.chord === 'G7')?.scale ?? undefined
     expect(standard).toBe('G Phrygian Dominant')
     expect(scaleAtLevel('G7', 'advanced', 0, '', standard)).toBe('G Altered')
@@ -132,28 +133,32 @@ describe('unlevel, the migration of a chart a level once wrote into', () => {
 
   it('blanks the owned rows that still play the stored level’s scale, and only those', () => {
     // Basic wrote Cm7 and F7; F7 was changed by hand since; Bb Lydian is a pick of your own
-    const doc = parsed('A | 1 | Cm7 | C Minor Pentatonic\nA | 2 | F7 | F Lydian Dominant\nA | 3 | Bbmaj7 | Bb Lydian\n')
-    const out = unlevel(doc, at('basic', 0, ['0:Cm7', '1:F7']))
+    const doc = parsed('section: A\nbars: 4\n1 | Cm7 | C Minor Pentatonic\n2 | F7 | F Lydian Dominant\n3 | Bbmaj7 | Bb Lydian\n')
+    const out = unlevel(doc, at('basic', 0, ['2:Cm7', '3:F7']))
     expect(cells(out.doc)).toEqual(['', 'F Lydian Dominant', 'Bb Lydian'])
     expect(out.blanked).toBe(1)
   })
 
   it('blanks a library chart’s own choice moved by a level, and a Random deal, by its seed', () => {
-    const library = parsed('A | 1 | A7b9 | A Phrygian Dominant\nA | 2 | Dm7\n')
-    const owned = ['0:A7b9', '1:Dm7']
-    expect(cells(unlevel(parsed('A | 1 | A7b9 | A Altered\nA | 2 | Dm7 | D Bebop Dorian\n'), at('advanced', 0, owned), library).doc)).toEqual(['', ''])
-    const random = parsed('A | 1 | A7b9 | A Spanish Phrygian\nA | 2 | Dm7 | D Dorian\n') // Random, seed 9
-    expect(cells(unlevel(random, at('random', 8, owned), library).doc)).not.toEqual(['', '']) // another deal: not the level's
-    expect(cells(unlevel(random, at('random', 9, owned), library).doc)).toEqual(['', ''])
+    const library = parsed('section: A\nbars: 4\n1 | A7b9 | A Phrygian Dominant\n2 | Dm7\n')
+    const owned = ['2:A7b9', '3:Dm7']
+    expect(cells(unlevel(parsed('section: A\nbars: 4\n1 | A7b9 | A Altered\n2 | Dm7 | D Bebop Dorian\n'), at('advanced', 0, owned), library).doc)).toEqual(['', ''])
+    const random = parsed('section: A\nbars: 4\n1 | A7b9 | A Spanish Phrygian\n2 | Dm7 | D Dorian\n') // Random, seed 11
+    expect(cells(unlevel(random, at('random', 10, owned), library).doc)).not.toEqual(['', '']) // another deal: not the level's
+    expect(cells(unlevel(random, at('random', 11, owned), library).doc)).toEqual(['', ''])
   })
 
   it('blanks a tonic minor chord Basic made Aeolian', () => {
-    const doc = parsed('key: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm | G Aeolian\n')
-    expect(cells(unlevel(doc, at('basic', 0, ['3:Gm'])).doc)).toEqual(['', '', ''])
+    const doc = parsed('key: Gm\n\nsection: A\nbars: 4\n1 | Am7b5\n2 | D7\n3 | Gm | G Aeolian\n')
+    expect(cells(unlevel(doc, at('basic', 0, ['6:Gm'])).doc)).toEqual(['', '', ''])
+  })
+
+  it('remapOwned follows rows to their new lines and drops lines that went', () => {
+    expect(remapOwned(['2:Cm7', '5:F7', '9:G7', 'x'], [0, 1, 4, -1, 5, 6, 7, 8, 9, -1])).toEqual(['4:Cm7', '6:F7'])
   })
 
   it('changes nothing without owned rows', () => {
-    const doc = parsed('A | 1 | Cm7 | C Minor Pentatonic\n')
+    const doc = parsed('section: A\n1 | Cm7 | C Minor Pentatonic\n')
     expect(unlevel(doc, at('basic'))).toEqual({ doc, blanked: 0 })
     expect(unlevel(doc, at('basic', 0, [])).doc).toBe(doc)
   })

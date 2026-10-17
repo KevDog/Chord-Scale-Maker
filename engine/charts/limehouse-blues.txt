@@ -6,25 +6,36 @@ form: ABCD, 32 bars
 source: Colorado Cookbook, p. 125
 # analysis: 2026-10-11, rules v1; Ab
 
-# section | bar | chord | scale
+# bar | chord | scale
 # the parenthesised passing D7s are left out
-A | 1  | Db7     # static dominant: its own mode
-A | 5  | Bb7     # static dominant: its own mode
-B | 9  | AbMaj7  # tonic: the 4th is in the key
-B | 10 | DbMaj7  # IV: the #4 is the key’s 7th
-B | 11 | Gm7     # ii of the ii–V to F minor
-B | 11 | C7      # V7/vi in Ab: b9 and b13 are in the key
-B | 12 | Fm6     # a minor sixth chord: Dorian
-B | 13 | Bb7     # V7 of V7: the dominant of the dominant: natural tensions
-B | 15 | Eb7     # V7 in Ab, not resolving: natural tensions
-C | 17 | Db7     # static dominant: its own mode
-C | 21 | Bb7     # II7 in Ab, not resolving: natural tensions
-C | 24 | Dbm7    # ii of Gb7: Dorian
-C | 24 | Gb7     # extended ii–V: a side-step, its own key
-D | 25 | Ab7     # tritone substitute: resolves down a half step to G7
-D | 25 | G7      # tritone substitute: resolves down a half step to Gb7
-D | 26 | Gb7     # tritone substitute: resolves down a half step to F7
-D | 26 | F7      # V7/ii in Ab: the b13 is in the key
-D | 27 | Bbm7    # ii of Eb7: Dorian
-D | 30 | Eb7     # extended dominant: V7 of Ab7
-D | 31 | Ab7     # extended dominant: V7 of Db7
+
+section: A
+bars: 8
+1 | Db7     # static dominant: its own mode
+5 | Bb7     # static dominant: its own mode
+
+section: B
+bars: 8
+1 | AbMaj7  # tonic: the 4th is in the key
+2 | DbMaj7  # IV: the #4 is the key’s 7th
+3 | Gm7     # ii of the ii–V to F minor
+3 | C7      # V7/vi in Ab: b9 and b13 are in the key
+4 | Fm6     # a minor sixth chord: Dorian
+5 | Bb7     # V7 of V7: the dominant of the dominant: natural tensions
+7 | Eb7     # V7 in Ab, not resolving: natural tensions
+
+section: C
+1 | Db7     # static dominant: its own mode
+5 | Bb7     # II7 in Ab, not resolving: natural tensions
+8 | Dbm7    # ii of Gb7: Dorian
+8 | Gb7     # extended ii–V: a side-step, its own key
+
+section: D
+bars: 8
+1 | Ab7     # tritone substitute: resolves down a half step to G7
+1 | G7      # tritone substitute: resolves down a half step to Gb7
+2 | Gb7     # tritone substitute: resolves down a half step to F7
+2 | F7      # V7/ii in Ab: the b13 is in the key
+3 | Bbm7    # ii of Eb7: Dorian
+6 | Eb7     # extended dominant: V7 of Ab7
+7 | Ab7     # extended dominant: V7 of Db7

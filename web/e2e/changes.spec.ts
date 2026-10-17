@@ -84,7 +84,7 @@ test('a later copy is written out, a tag follows a double barline, and a share l
 })
 
 test('a numeral or scale with a note looks clickable on screen (dotted underline, pointer), and prints plain', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\n3 | CMaj7\n')
   const numeral = page.getByRole('button', { name: 'ii7', exact: true }).first()
   await expect(numeral).toHaveCSS('text-decoration-style', 'dotted')
   await expect(numeral).toHaveCSS('text-decoration-line', 'underline')
@@ -94,7 +94,7 @@ test('a numeral or scale with a note looks clickable on screen (dotted underline
 })
 
 test('a function from the numeral’s picker: the sheet shows it, its note opens on a click once done, and a key change comes from the bar’s menu', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | CMaj7\n2 | D7\n3 | Dm7\n4 | G7\n')
   const text = page.getByLabel('Chart text')
   const sheet = sheetOf(page)
   await sheet.getByRole('button', { name: 'II7', exact: true }).click() // D7's numeral: while editing, the function picker, with the why under it
@@ -103,7 +103,7 @@ test('a function from the numeral’s picker: the sheet shows it, its note opens
   await expect(fns.getByRole('radio').first()).toHaveAccessibleName(/^Auto: II7\s*→ D Mixolydian$/)
   await expect(picker.getByText('II7 in C, not resolving: natural tensions', { exact: true })).toBeVisible() // the Why (the default Changes sheet's tooltips say it too)
   await fns.getByRole('radio', { name: /^V7\/V \(to G\)\s*→ D Mixolydian$/ }).click()
-  await expect(text).toHaveValue(/A \| 2 \| D7\s+\|\s+\| V7\/V/)
+  await expect(text).toHaveValue(/\n2 \| D7\s+\|\s+\| V7\/V/)
   await expect(fns.getByRole('radio', { name: /^V7\/V \(to G\)/ })).toBeChecked()
   await page.keyboard.press('Escape')
   await expect(picker).toBeHidden()
@@ -117,7 +117,7 @@ test('a function from the numeral’s picker: the sheet shows it, its note opens
   await page.keyboard.press('Escape')
   await expect(note).toBeHidden()
   await openEditor(page)
-  await text.fill('title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7 | | Db: V7/ii\nA | 3 | Dm7\nA | 4 | G7\n')
+  await text.fill('title: T\nkey: C\n\nsection: A\n1 | CMaj7\n2 | D7 |  | Db: V7/ii\n3 | Dm7\n4 | G7\n')
   await expect(sheetChord(page, 'Dm7', 'A', 3)).toBeAttached() // parsed
   await expect(sheet.getByRole('button', { name: 'II7', exact: true })).toContainText('⚠') // marked: the written function doesn't fit
   await sheet.getByRole('button', { name: 'II7', exact: true }).click() // the sheet reads the analysis
@@ -126,14 +126,14 @@ test('a function from the numeral’s picker: the sheet shows it, its note opens
   await sheetChord(page, 'Dm7', 'A', 3).hover()
   await page.getByRole('button', { name: 'More actions for A bar 3' }).click()
   await page.getByRole('menuitem', { name: 'Key change here' }).click()
-  await expect(text).toHaveValue(/@key A 3 C\nA \| 3 \| Dm7/)
+  await expect(text).toHaveValue(/@key 3 C\n3 +\| Dm7/)
   await page.getByRole('button', { name: 'Done editing' }).click()
   await sheet.getByRole('button', { name: 'II7', exact: true }).click() // not editing: why opens, saying first what's wrong
   await expect(page.getByRole('dialog', { name: 'Why: D7' })).toContainText('⚠ V7/ii in Db is on Bb, not D7')
 })
 
 test('a function picked from the numeral changes the scale the Changes sheet plays on a blank cell', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | D7\nA | 3 | Dm7\nA | 4 | G7\nA | 5 | CMaj7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 8\n1 | CMaj7\n2 | D7\n3 | Dm7\n4 | G7\n5 | CMaj7\n')
   const sheet = sheetOf(page)
   await expect(sheet).toContainText('D Mixo') // the sheet's short names
   await sheet.getByRole('button', { name: 'D Mixo', exact: true }).click() // D7's scale label: the scale list
@@ -145,7 +145,7 @@ test('a function picked from the numeral changes the scale the Changes sheet pla
   await sheet.getByRole('button', { name: 'II7', exact: true }).click() // its numeral: the function list
   const fnPicker = page.getByRole('dialog', { name: 'Function: D7' })
   await fnPicker.getByRole('radiogroup', { name: 'Function' }).getByRole('radio').filter({ hasText: '→ D Lydian Dominant' }).first().click()
-  await expect(page.getByLabel('Chart text')).toHaveValue(/A \| 2 \| D7\s+\|\s+\| \S/) // the function written, the scale cell left blank
+  await expect(page.getByLabel('Chart text')).toHaveValue(/\n2 \| D7\s+\|\s+\| \S/) // the function written, the scale cell left blank
   await page.keyboard.press('Escape')
   await expect(sheet).toContainText('D Lyd Dom')
   await sheet.getByRole('button', { name: 'D Lyd Dom', exact: true }).click()
@@ -164,7 +164,7 @@ test('a chart opens on the Changes sheet, and Scales and Arpeggios are the other
 })
 
 test('From 3rd or From 7th puts each chord’s guide tone in place of its slashes, labelled, and stays chosen', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 1 | G7sus4\nA | 2 | C6\nA | 2 | C\nA | 3 | Em7\nA | 3 | A7\nA | 4 | Dm7\nA | 4 | G7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | Dm7\n1 | G7sus4\n2 | C6\n2 | C\n3 | Em7\n3 | A7\n4 | Dm7\n4 | G7\n')
   const line = lines(page).first()
   await expect(line).toHaveAttribute('aria-label', /^Bars: Dm7 G7sus4 \| C6 C \| Em7 A7 \| Dm7 G7$/) // no guide tones yet
   await expect(lineOff(page)).toBeChecked() // off until chosen
@@ -185,7 +185,7 @@ test('From 3rd or From 7th puts each chord’s guide tone in place of its slashe
 })
 
 test('choosing Off, From 3rd, From 7th and Off again redraws the line each time', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\n3 | CMaj7\n')
   const line = lines(page).first()
   await expect(line).not.toHaveAttribute('aria-label', /guide tones/)
   await showGuides(page, 'From 3rd')
@@ -205,7 +205,7 @@ test('choosing Off, From 3rd, From 7th and Off again redraws the line each time'
 })
 
 test('the guide tone choice survives a reload and rides a share link', async ({ page, browser }) => {
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\n3 | CMaj7\n')
   await showGuides(page, 'From 7th')
   await page.reload()
   await expect(guideLine(page)).toContainText('From 7th')
@@ -224,7 +224,7 @@ test('the guide tone choice survives a reload and rides a share link', async ({ 
 })
 
 test('7th Chords arpeggiates each chord: quarters for one a bar, eighths for two, sixteenths for more, beamed', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | Dm7\nA | 2 | G7\nA | 3 | Dm7\nA | 3 | G7\nA | 3 | C\nA | 4 | CMaj7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | CMaj7\n2 | Dm7\n2 | G7\n3 | Dm7\n3 | G7\n3 | C\n4 | CMaj7\n')
   const line = lines(page).first()
   await showArpeggios(page, 'Up · root')
   await arpeggiosDrawn(page)
@@ -241,7 +241,7 @@ test('7th Chords arpeggiates each chord: quarters for one a bar, eighths for two
 })
 
 test('7th Chords in 3/4: six eighths for a bar of one chord', async ({ page }) => {
-  await writeChart(page, 'title: W\nkey: C\ntime: 3/4\nA | 1 | CMaj7\nA | 2 | Dm7\nA | 3 | G7\nA | 4 | CMaj7\n') // a full line: a last chord holds through the empty bars after it
+  await writeChart(page, 'title: W\nkey: C\ntime: 3/4\n\nsection: A\n1 | CMaj7\n2 | Dm7\n3 | G7\n4 | CMaj7\n') // a full line: a last chord holds through the empty bars after it
   const line = lines(page).first()
   await showArpeggios(page, 'Up · root')
   await arpeggiosDrawn(page)
@@ -250,7 +250,7 @@ test('7th Chords in 3/4: six eighths for a bar of one chord', async ({ page }) =
 })
 
 test('a share link carries the arpeggio pattern', async ({ page, browser }) => {
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | CMaj7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | CMaj7\n')
   await showArpeggios(page, 'Voice-led')
   await arpeggiosDrawn(page)
   await page.getByRole('button', { name: 'Share' }).click()
@@ -268,7 +268,7 @@ test('a share link carries the arpeggio pattern', async ({ page, browser }) => {
 })
 
 test('one voice’s stems: up below the middle line, down above it', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 1 | G7\nA | 2 | CMaj7\nA | 2 | A7\nA | 3 | Dm7\nA | 3 | G7\nA | 4 | CMaj7\nA | 4 | Am7\n') // two chords a bar: half notes, which have stems
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | Dm7\n1 | G7\n2 | CMaj7\n2 | A7\n3 | Dm7\n3 | G7\n4 | CMaj7\n4 | Am7\n') // two chords a bar: half notes, which have stems
   const stems: { from: number; to: number }[] = []
   for (const choice of ['From 3rd', 'From 7th'] as const) { // the 3rd line sits low (F4, E4), the 7th line high (C5, B4)
     await showGuides(page, choice)
@@ -282,7 +282,7 @@ test('one voice’s stems: up below the middle line, down above it', async ({ pa
 })
 
 test('a guide tone line: the ii–V–I’s labels alternate, and each held chord ties', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 3 | G7\nA | 5 | CMaj7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 8\n1 | Dm7\n3 | G7\n5 | CMaj7\n')
   await expect(lines(page).first()).toHaveAttribute('aria-label', /^Bars: Dm7 \| – \| G7 \| –/)
   await showGuides(page, 'From 3rd')
   await guidesDrawn(page)
@@ -294,7 +294,7 @@ test('a guide tone line: the ii–V–I’s labels alternate, and each held chor
 })
 
 test('a chord held over a line break: an open tie ends line 1, a half-tie starts line 2', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 3 | G7\nA | 6 | CMaj7\n') // G7: bars 3-5, across the break after bar 4
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 8\n1 | Dm7\n3 | G7\n6 | CMaj7\n') // G7: bars 3-5, across the break after bar 4
   await showGuides(page, 'From 3rd')
   await guidesDrawn(page)
   const openTies = async () => {
@@ -359,7 +359,7 @@ for (const [width, bars, label] of [
 ] as const) {
   test(`four chords a bar, a guide tone line, ${bars} bars a line: no notehead or accidental collides, and each chord sits on its note`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 })
-    await writeChart(page, 'title: T\nkey: C\nA | 1 | Em7\nA | 1 | A7\nA | 1 | Dm7\nA | 1 | G7\nA | 2 | Ebm7\nA | 2 | Ab7\nA | 2 | Dbm7\nA | 2 | Gb7\nA | 3 | CMaj7\nA | 4 | C#m7b5\nA | 4 | F#7\n')
+    await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | Em7\n1 | A7\n1 | Dm7\n1 | G7\n2 | Ebm7\n2 | Ab7\n2 | Dbm7\n2 | Gb7\n3 | CMaj7\n4 | C#m7b5\n4 | F#7\n')
     await showGuides(page, 'From 3rd')
     const line = lines(page).first()
     await expect(line).toHaveAttribute('aria-label', label)
@@ -379,7 +379,7 @@ for (const [width, bars] of [
 ] as const) {
   test(`vibes, ${bars} bars a line: a line down to G3 draws two ledger lines below the staff, and nothing collides`, async ({ page }) => {
     await page.setViewportSize({ width, height: 1000 })
-    await writeChart(page, 'title: T\nkey: C\nA | 1 | Abm7\nA | 2 | D7\nA | 3 | Ebm7\nA | 4 | Gbm7\nA | 5 | Abm7\nA | 6 | BbMaj7\nA | 7 | Eb7\nA | 8 | Bm7\n') // from the 3rd: Cb4 C4 Db4 Fb4 Cb4 A3 G3 (at the Eb7) A3
+    await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | Abm7\n2 | D7\n3 | Ebm7\n4 | Gbm7\n5 | Abm7\n6 | BbMaj7\n7 | Eb7\n8 | Bm7\n') // from the 3rd: Cb4 C4 Db4 Fb4 Cb4 A3 G3 (at the Eb7) A3
     await chooseInstrument(page, 'Vibes')
     await showGuides(page, 'From 3rd')
     await guidesDrawn(page)
@@ -391,7 +391,7 @@ for (const [width, bars] of [
 }
 
 test('an unknown chord gets one rest, and a note above the sheet', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | Dm7\nA | 2 | Cm7#5#9x\nA | 3 | G7\nA | 4 | CMaj7\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | Cm7#5#9x\n3 | G7\n4 | CMaj7\n')
   const line = lines(page).first()
   await expect(line).toHaveAttribute('aria-label', /^Bars: Dm7 \| Cm7#5#9x \| G7 \| CMaj7/)
   const note = page.getByRole('listitem').filter({ hasText: 'no guide tones for Cm7#5#9x (unknown chord quality)' })
@@ -439,7 +439,7 @@ async function expectNamesApart(page: Page): Promise<void> {
   }).toPass({ timeout: 5000 })
 }
 
-const CROWDED = 'key: Bb\nA | 1 | Bbmaj7#11\nA | 1 | Eb7alt\nA | 1 | Abm7b5\nA | 1 | Db7sus4\nA | 2 | Dm7\nA | 2 | G7\nA | 3 | Cmaj7\nA | 4 | C7\n'
+const CROWDED = 'key: Bb\n\nsection: A\n1 | Bbmaj7#11\n1 | Eb7alt\n1 | Abm7b5\n1 | Db7sus4\n2 | Dm7\n2 | G7\n3 | Cmaj7\n4 | C7\n'
 test('chords on consecutive beats keep their names apart: the crowded bar widens', async ({ page }) => {
   await page.setViewportSize({ width: 1280, height: 900 })
   await writeChart(page, CROWDED)
@@ -449,7 +449,7 @@ test('chords on consecutive beats keep their names apart: the crowded bar widens
 
 test('on a phone, a line whose names would shrink too far breaks: the crowded bar on a line of its own', async ({ page }) => {
   await page.setViewportSize({ width: 390, height: 900 })
-  await writeChart(page, 'key: C\nA | 1 | Cmaj7\nA | 1 | A7b9\nA | 1 | Dm7\nA | 1 | G7sus4\nA | 2 | Em7b5\nA | 2 | A7\nA | 3 | Dm7\nA | 4 | G7\n')
+  await writeChart(page, 'key: C\n\nsection: A\n1 | Cmaj7\n1 | A7b9\n1 | Dm7\n1 | G7sus4\n2 | Em7b5\n2 | A7\n3 | Dm7\n4 | G7\n')
   await expectNamesApart(page)
   await expect(page.locator('[data-slot="system"]').first().locator('[data-name]')).toHaveCount(4)
 })

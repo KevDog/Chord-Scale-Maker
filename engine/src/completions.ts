@@ -1,4 +1,4 @@
-import type { ChartDoc } from './chart'
+import { type ChartDoc, lineSections } from './chart'
 import { setBarChords } from './edit'
 import { rowNotes } from './notes'
 import { defaultScaleOrNull, QUALITY_NAMES, readChord } from './qualities'
@@ -31,8 +31,10 @@ export type ChordPreview = Readonly<{ numeral: string | null; scale: string | nu
 const NONE: ChordPreview = { numeral: null, scale: null, readable: false }
 
 /** the doc lines of the rows written for a bar, in order */
-const rowsOf = (doc: ChartDoc, section: string, bar: number): number[] =>
-  doc.lines.flatMap((l, i) => (l.kind === 'row' && l.section === section && l.bar === String(bar) ? [i] : []))
+const rowsOf = (doc: ChartDoc, section: string, bar: number): number[] => {
+  const sections = lineSections(doc)
+  return doc.lines.flatMap((l, i) => (l.kind === 'row' && sections[i] === section && l.bar === String(bar) ? [i] : []))
+}
 
 /**
  * how the chart would read a bar once its chords are `chords`: the numeral and scale of the one at `index`, at the

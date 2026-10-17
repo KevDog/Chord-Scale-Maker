@@ -1,7 +1,7 @@
 import { pcOf } from '../pitch'
 import { readChord } from '../qualities'
 import { functionCandidates, impliedTarget, parseFunction } from './functions'
-import type { Analysis, Area } from './index'
+import { type Analysis, type Area, areaSpan } from './index'
 import { type Detection, keyCode, keyText, modalTests, sameKey } from './keys'
 import { ownNumeral } from './degrees'
 import { familyOf } from './stream'
@@ -16,12 +16,15 @@ export function ambiguities(a: Analysis): string[] {
   const home = a.key
   if (a.keyFrom === 'scored' && home) out.push(`no key: line; the analysis guessed ${keyText(home)}: add  key: ${keyCode(home)}`)
   if (a.keyFrom === 'none') out.push("no key: line, and the analysis couldn't guess one: add  key: …")
-  // an @key holds until the next, so a pin also returns to the area after it (unless an @key already starts that one)
-  const pin = (x: Area): string => `@key ${x.section} ${x.from} ${keyCode(x.key)}`
+  // a stated key holds to its section's end: an area that runs on into the next section is pinned there too, and a pin
+  // returns to the area after it only where that starts inside the section the area ends in
+  const at = (section: string, bar: string, x: Area): string => `in section ${section}: ${bar === '1' ? `key: ${keyCode(x.key)}` : `@key ${bar} ${keyCode(x.key)}`}`
+  const pin = (x: Area): string => [at(x.section, x.from, x), ...(x.toSection !== x.section ? [at(x.toSection, '1', x)] : [])].join('  and  ')
   a.areas.forEach((x, k) => {
     if (!home || x.stated || sameKey(x.key, home)) return
     const next = a.areas[k + 1]
-    out.push(`key area ${keyText(x.key)}, bars ${x.from}–${x.to}, found by cadence: pin it with  ${pin(x)}${next && !next.stated ? `  and  ${pin(next)}` : ''}`)
+    const back = next && !next.stated && next.section === x.toSection && next.from !== '1' ? `  and  ${at(next.section, next.from, next)}` : ''
+    out.push(`key area ${keyText(x.key)}, ${areaSpan(x)}, found by cadence: pin it with  ${pin(x)}${back}`)
   })
   const seen = new Set<number>()
   for (const r of a.rows) {

@@ -6,13 +6,15 @@ form: A, 12 bars
 source: Colorado Cookbook, p. 34
 # analysis: 2026-10-11, rules v1; Bb, blues
 
-# section | bar | chord | scale
-A | 1  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 2  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A | 3  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 5  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-A | 7  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 9  | Cm7  # ii of F7: Dorian
-A | 10 | F7   # extended dominant: V7 of Bb7
-A | 11 | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
-A | 12 | F7   # extended dominant: V7 of Bb7
+# bar | chord | scale
+
+section: A
+1  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+2  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+3  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+5  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+7  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+9  | Cm7  # ii of F7: Dorian
+10 | F7   # extended dominant: V7 of Bb7
+11 | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+12 | F7   # extended dominant: V7 of Bb7

@@ -7,9 +7,20 @@ form: AABC
 source: Colorado Cookbook, p. 13
 # analysis: 2026-10-11, rules v1; D minor, modal
 
-# section | bar | chord | scale
+# bar | chord | scale
 # the intro is the same one-chord vamp as section A (Dm6/9 over E); it repeats on cue, then A (twice), B, C
-A1 | 1  | Dm6/9/E  # a minor sixth chord: Dorian
-@copy A1 A2 8
-B  | 17 | Dm6/9/E
-C  | 25 | Dm6/9/E
+
+section: A1
+bars: 8
+1 | Dm6/9/E  # a minor sixth chord: Dorian
+
+section: A2
+copy: A1
+
+section: B
+bars: 8
+1 | Dm6/9/E
+
+section: C
+bars: 8
+1 | Dm6/9/E

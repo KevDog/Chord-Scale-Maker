@@ -52,7 +52,7 @@ test('the signature is written for the instrument', async ({ page }) => {
 })
 
 test('no key: line, no signature, and the clef still once, guide tones too', async ({ page }) => {
-  await writeChart(page, 'title: T\nA | 1 | C7 | C Half-Whole\nA | 2 | F7 | F Mixolydian\n')
+  await writeChart(page, 'title: T\n\nsection: A\nbars: 4\n1 | C7 | C Half-Whole\n2 | F7 | F Mixolydian\n')
   await chooseSheet(page, 'Scales')
   await expect(staves(page).nth(1)).toBeVisible()
   await expect(signatures(page.locator('body'))).toHaveCount(0)
@@ -67,18 +67,18 @@ test('no key: line, no signature, and the clef still once, guide tones too', asy
 })
 
 test('guide tones take their accidentals from the signature, and from C without a key:', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: F\nA | 1 | Gm7\nA | 2 | C7\nA | 3 | FMaj7\n')
+  await writeChart(page, 'title: T\nkey: F\n\nsection: A\nbars: 4\n1 | Gm7\n2 | C7\n3 | FMaj7\n')
   await showGuides(page, 'From 3rd')
   await expect(lines(page).first()).toHaveAttribute('aria-label', /^Bars: Gm7 \| C7 \| FMaj7.*; guide tones: /)
   await expect(glyphs(signatures(lines(page).first()))).toHaveCount(1) // F: one flat
   expect(await noteAccidentals(page)).toEqual([]) // the B♭s of Gm7 and C7 are in the signature
-  await page.getByLabel('Chart text').fill('title: T\nA | 1 | Gm7\nA | 2 | C7\nA | 3 | FMaj7\n')
+  await page.getByLabel('Chart text').fill('title: T\n\nsection: A\nbars: 4\n1 | Gm7\n2 | C7\n3 | FMaj7\n')
   await expect(signatures(page.locator('body'))).toHaveCount(0)
   await expect.poll(() => noteAccidentals(page)).toEqual([GLYPH.flat, GLYPH.flat]) // against C: a flat on each bar's B♭
 })
 
 test('an @key draws no second signature; the Changes sheet shows it as a key area', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: C\nA | 1 | CMaj7\nA | 2 | DMaj7\nA | 3 | EMaj7\n@key A 2 D\n')
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | CMaj7\n2 | DMaj7\n3 | EMaj7\n@key 2 D\n')
   await chooseSheet(page, 'Scales')
   await expect(staves(page).nth(2)).toBeVisible()
   await expect(signatures(page.locator('body'))).toHaveCount(1)
@@ -93,7 +93,7 @@ test('an @key draws no second signature; the Changes sheet shows it as a key are
 })
 
 test('sharp keys: the signature draws on the scale and Changes sheets', async ({ page }) => {
-  await writeChart(page, 'title: T\nkey: E\nA | 1 | EMaj7\nA | 2 | C#m7\nA | 3 | F#m7\nA | 4 | B7\n')
+  await writeChart(page, 'title: T\nkey: E\n\nsection: A\n1 | EMaj7\n2 | C#m7\n3 | F#m7\n4 | B7\n')
   await chooseSheet(page, 'Scales')
   await expect(glyphs(signatures(staves(page).first()))).toHaveCount(4)
   await chooseSheet(page, 'Changes')

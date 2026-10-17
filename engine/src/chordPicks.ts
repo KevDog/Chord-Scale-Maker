@@ -90,5 +90,12 @@ export function withoutPicks(picks: ChordPicks, kind: PickKind, positions: reado
 }
 export const hasPicks = (p: ChordPicks, kind?: PickKind): boolean => (kind ? Object.keys(p[kind]).length > 0 : hasPicks(p, 'pentatonic') || hasPicks(p, 'hexatonic'))
 
-/** the bar numbers positions are in, once each, in order */
-export const pickBars = (positions: readonly ChordAt[]): readonly string[] => [...new Set(positions.flatMap((at) => /:(\d+):\d+$/.exec(at)?.[1] ?? []))]
+/** the bars positions are in, as the pick popover names them ("A1 bar 6"), once each, in order */
+export const pickBars = (positions: readonly ChordAt[]): readonly string[] => [
+  ...new Set(
+    positions.flatMap((at) => {
+      const m = /^(.*):(\d+):\d+$/.exec(at)
+      return m ? [`${m[1]} bar ${m[2]}`] : []
+    }),
+  ),
+]

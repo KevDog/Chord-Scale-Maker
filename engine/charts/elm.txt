@@ -4,65 +4,73 @@ style: Medium slow
 # the book: "Med.-Slow Straight-Eighths", quarter = 110
 key: Gm
 form: A, 16 bars
-source:
-# analysis: 2026-10-12, rules v1; G minor
+source: 
+# analysis: 2026-10-17, rules v1; G minor
 
-# section | bar | chord
-# area: G minor (bars 1–2)
-Intro | 1  | F#dim7/G   # vii°7 of Gm: D7♭9 without its root
-Intro | 3  | Gm         # tonic minor: Dorian by convention
-Intro | 4  | Gm
+# bar | chord
+
+section: Intro
+bars: 8
+# area: G minor (Intro 1 – Coda 2)
+1  | F#dim7/G   # vii°7 of Gm: D7♭9 without its root
+3  | Gm         # tonic minor: Dorian by convention
+4  | Gm
 # the intro repeats: 1st ending bar 4, 2nd ending bar 5
-Intro | 5  | Gm
-@ending 1 Intro 4
-@ending 2 Intro 5
+5  | Gm
+@ending 1 4
+@ending 2 5
+
+section: A
 # head played twice (A repeats), then solos on A; after solos D.S. al Coda
-A     | 1  | F#dim7/G   # vii°7 of Gm: D7♭9 without its root
-@segno A 1
-A     | 3  | Gm         # tonic minor: Dorian by convention
-A     | 5  | F#dim7/G   # vii°7 of Gm: D7♭9 without its root
-A     | 7  | Gm         # tonic minor: Dorian by convention
-A     | 9  | Ab/C       # a non-tonic major chord: Lydian
-A     | 10 | D7/C       # V7 in G minor, not resolving: b9 and b13 are in the key
-A     | 11 | BbMaj9#5   # bIII of G minor: the relative major itself
-A     | 11 | E7#9       # tritone substitute: resolves down a half step to EbMaj9#11; b9 and #9 from the symbol
-A     | 12 | EbMaj9#11  # from the symbol: #11
-@coda A 12
-A     | 13 | Am7b5      # iiø7 in G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+1  | F#dim7/G   # vii°7 of Gm: D7♭9 without its root
+@segno 1
+3  | Gm         # tonic minor: Dorian by convention
+5  | F#dim7/G   # vii°7 of Gm: D7♭9 without its root
+7  | Gm         # tonic minor: Dorian by convention
+9  | Ab/C       # a non-tonic major chord: Lydian
+10 | D7/C       # V7 in G minor, not resolving: b9 and b13 are in the key
+11 | BbMaj9#5   # bIII of G minor: the relative major itself
+11 | E7#9       # tritone substitute: resolves down a half step to EbMaj9#11; b9 and #9 from the symbol
+12 | EbMaj9#11  # from the symbol: #11
+@coda 12
+13 | Am7b5      # iiø7 in G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 # book: Am7(add11 b5)
-A     | 14 | AbMaj9#11  # from the symbol: #11
-A     | 15 | Em11       # a borrowed minor chord: Dorian, its own key
-A     | 16 | Em11
-@nav A 16 D.S. al Coda
+14 | AbMaj9#11  # from the symbol: #11
+15 | Em11       # a borrowed minor chord: Dorian, its own key
+16 | Em11
+@nav 16 D.S. al Coda
+
+section: Coda
+bars: 20
 # the coda (to the end) includes the book's letter B, played once, from coda bar 5
-Coda  | 1  | Am7b5      # iiø7 in G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+1  | Am7b5      # iiø7 in G minor: Locrian, the key's own notes (its ♭2 is a passing note)
 # book: Am7(add11 b5)
-@coda Coda 1
-Coda  | 2  | AbMaj9#11  # from the symbol: #11
-# area: G major (bars 3–19)
-Coda  | 3  | G          # tonic: the 4th is in the key
+@coda 1
+2  | AbMaj9#11  # from the symbol: #11
+# area: G major (Coda 3–19)
+3  | G          # tonic: the 4th is in the key
 # key signature changes to G major here
-@key Coda 3 G
-Coda  | 5  | CMaj7/G    # IV: the #4 is the key’s 7th
-Coda  | 6  | F#dim7/G   # vii°7 of G: D7♭9 without its root
-Coda  | 7  | G          # tonic: the 4th is in the key
+@key 3 G
+5  | CMaj7/G    # IV: the #4 is the key’s 7th
+6  | F#dim7/G   # vii°7 of G: D7♭9 without its root
+7  | G          # tonic: the 4th is in the key
 # book: G(add9)
-Coda  | 9  | F#dim7/G   # passing diminished: D7♭9 without its D, the Gsus's dominant; not functioning diatonically: the symmetric scale
-Coda  | 11 | Gsus       # static sus: Mixolydian
+9  | F#dim7/G   # passing diminished: D7♭9 without its D, the Gsus's dominant; not functioning diatonically: the symmetric scale
+11 | Gsus       # static sus: Mixolydian
 # book: Gsus(add9)
-Coda  | 12 | G          # tonic: the 4th is in the key
-Coda  | 13 | FMaj7/C    # ♭VIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
-Coda  | 14 | D7/C       # V7 of G: natural tensions
-Coda  | 15 | G/B        # tonic: the 4th is in the key
-Coda  | 15 | B7#5       # III7 in G, not resolving: b9 and b13 are in the key, the #11 from the symbol
+12 | G          # tonic: the 4th is in the key
+13 | FMaj7/C    # ♭VIImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+14 | D7/C       # V7 of G: natural tensions
+15 | G/B        # tonic: the 4th is in the key
+15 | B7#5       # III7 in G, not resolving: b9 and b13 are in the key, the #11 from the symbol
 # book: B+ (augmented triad; written B7#5)
-Coda  | 16 | EbMaj7/Bb  # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
-Coda  | 17 | Am7b5      # iiø7, borrowed from G minor: Locrian
+16 | EbMaj7/Bb  # ♭VImaj7, borrowed from G minor: Lydian (its ♯11 is in the key)
+17 | Am7b5      # iiø7, borrowed from G minor: Locrian
 # book: Am7(add11 b5)
-Coda  | 18 | AbMaj9#11  # from the symbol: #11
-Coda  | 19 | Gsus       # static sus: Mixolydian
+18 | AbMaj9#11  # from the symbol: #11
+19 | Gsus       # static sus: Mixolydian
 # book: Gsus(add9)
-Coda  | 19 | G          # tonic: the 4th is in the key
+19 | G          # tonic: the 4th is in the key
 # book: G(add9)
-Coda  | 19 | G69        # tonic: the 4th is in the key
+19 | G69        # tonic: the 4th is in the key
 # book: G(add9 add13), fermata

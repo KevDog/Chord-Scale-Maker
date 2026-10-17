@@ -19,7 +19,7 @@ test('Transpose needs the chart key', async ({ page }) => {
   await expect(page.getByRole('button', { name: /Transpose/ }).first()).toBeEnabled()
   await page.goto('/song?new=1')
   await openEditor(page)
-  await page.getByLabel('Chart text').fill('title: T\nA | 1 | Dm7\n') // no key
+  await page.getByLabel('Chart text').fill('title: T\n\nsection: A\nbars: 4\n1 | Dm7\n') // no key
   await expect(page.getByRole('button', { name: /Transpose/ }).first()).toBeDisabled()
 })
 

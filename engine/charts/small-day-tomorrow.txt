@@ -3,106 +3,117 @@ composer: Bob Dorough
 style: Ballad
 key: Em
 form: ABC, 32 bars
-source:
+source: 
 # analysis: 2026-10-12, rules v1; E minor
 # book: Med. Jazz Ballad, quarter = 60
 # the book repeats A–C (a repeat sign at A and at the end of C); solos on A and B; after solos, D.S. al Coda
 # the book's footnote: bass may play F on the 4th beat of bar 7 of letter B (bar 23)
 
-# section | bar | chord
-Intro | 1  | Em        # tonic minor: Dorian by convention
-Intro | 2  | C#7#11#9  # tritone substitute: resolves down a half step to C13; b9 and #9 from the symbol
-Intro | 3  | C13       # tritone substitute: resolves down a half step to B7#5
-Intro | 4  | B7#5      # V7 of E minor: b9 and b13 are in the key, the #11 from the symbol
-@segno A 1
-A     | 1  | Em        # tonic minor: Dorian by convention
-A     | 1  | C/E       # a non-tonic major chord: Lydian
-A     | 2  | Em6       # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-A     | 2  | Em7       # tonic minor: Dorian by convention
-A     | 3  | CMaj7     # a non-tonic major chord: Lydian
-A     | 3  | CMaj7#11  # from the symbol: #11
-A     | 4  | F#m7b5    # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
+# bar | chord
+
+section: Intro
+1  | Em        # tonic minor: Dorian by convention
+2  | C#7#11#9  # tritone substitute: resolves down a half step to C13; b9 and #9 from the symbol
+3  | C13       # tritone substitute: resolves down a half step to B7#5
+4  | B7#5      # V7 of E minor: b9 and b13 are in the key, the #11 from the symbol
+
+section: A
+@segno 1
+1  | Em        # tonic minor: Dorian by convention
+1  | C/E       # a non-tonic major chord: Lydian
+2  | Em6       # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+2  | Em7       # tonic minor: Dorian by convention
+3  | CMaj7     # a non-tonic major chord: Lydian
+3  | CMaj7#11  # from the symbol: #11
+4  | F#m7b5    # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
 # book: F#m7(add11 b5)
-A     | 4  | B7b9      # V7 of E minor: b9 and b13 are in the key
-A     | 5  | Em        # tonic minor: Dorian by convention
-A     | 5  | C/E       # a non-tonic major chord: Lydian
-A     | 6  | Em6       # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-A     | 6  | Em7       # tonic minor: Dorian by convention
-A     | 7  | C7        # tritone substitute: resolves down a half step to B7b9
-A     | 7  | B7b9      # V7 of E minor: b9 and b13 are in the key
-A     | 8  | Em        # tonic minor: Dorian by convention
+4  | B7b9      # V7 of E minor: b9 and b13 are in the key
+5  | Em        # tonic minor: Dorian by convention
+5  | C/E       # a non-tonic major chord: Lydian
+6  | Em6       # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+6  | Em7       # tonic minor: Dorian by convention
+7  | C7        # tritone substitute: resolves down a half step to B7b9
+7  | B7b9      # V7 of E minor: b9 and b13 are in the key
+8  | Em        # tonic minor: Dorian by convention
 # alt: bar 8 (B7#5) on beat 3
-A     | 9  | Em
-A     | 9  | C/E       # a non-tonic major chord: Lydian
-A     | 10 | Em6       # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-A     | 10 | Em7       # tonic minor: Dorian by convention
-A     | 11 | CMaj7     # a non-tonic major chord: Lydian
-A     | 11 | CMaj7#11  # from the symbol: #11
-A     | 12 | F#m7b5    # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
+9  | Em
+9  | C/E       # a non-tonic major chord: Lydian
+10 | Em6       # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+10 | Em7       # tonic minor: Dorian by convention
+11 | CMaj7     # a non-tonic major chord: Lydian
+11 | CMaj7#11  # from the symbol: #11
+12 | F#m7b5    # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
 # book: F#m7(add11 b5)
-A     | 12 | B7b9      # V7 of E minor: b9 and b13 are in the key
-A     | 13 | Em        # tonic minor: Dorian by convention
-A     | 13 | C/E       # a non-tonic major chord: Lydian
-A     | 14 | Em6       # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-A     | 14 | Em7       # tonic minor: Dorian by convention
-A     | 15 | C7        # tritone substitute: resolves down a half step to B7b9
-A     | 15 | B7b9      # V7 of E minor: b9 and b13 are in the key
-A     | 16 | Em        # tonic minor: Dorian by convention
-B     | 17 | Gm7       # a borrowed minor chord: Dorian, its own key
-B     | 17 | Ebm9      # a borrowed minor chord: Dorian, its own key
-B     | 18 | Gm7       # a borrowed minor chord: Dorian, its own key
-B     | 18 | Ebm9      # a borrowed minor chord: Dorian, its own key
-B     | 19 | Gm7       # a borrowed minor chord: Dorian, its own key
-B     | 19 | Ebm9      # ii of Ab9sus4: Dorian
-B     | 19 | Ab9sus4   # static sus: Mixolydian
-B     | 20 | Am11      # ii of D7#5: Dorian
+12 | B7b9      # V7 of E minor: b9 and b13 are in the key
+13 | Em        # tonic minor: Dorian by convention
+13 | C/E       # a non-tonic major chord: Lydian
+14 | Em6       # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+14 | Em7       # tonic minor: Dorian by convention
+15 | C7        # tritone substitute: resolves down a half step to B7b9
+15 | B7b9      # V7 of E minor: b9 and b13 are in the key
+16 | Em        # tonic minor: Dorian by convention
+
+section: B
+1  | Gm7       # a borrowed minor chord: Dorian, its own key
+1  | Ebm9      # a borrowed minor chord: Dorian, its own key
+2  | Gm7       # a borrowed minor chord: Dorian, its own key
+2  | Ebm9      # a borrowed minor chord: Dorian, its own key
+3  | Gm7       # a borrowed minor chord: Dorian, its own key
+3  | Ebm9      # ii of Ab9sus4: Dorian
+3  | Ab9sus4   # static sus: Mixolydian
+4  | Am11      # ii of D7#5: Dorian
 # book: Am7(add11)
-B     | 20 | D7#5      # V7/bIII in E minor: #11 and b13 from the symbol
-B     | 21 | C#m7b5    # viø7 in E minor: Locrian, its own mode (the chord is outside the key)
-B     | 21 | C7        # bVI7 in E minor, not resolving: the #11 is in the key
-B     | 22 | C#m7b5    # viø7 in E minor: Locrian, its own mode (the chord is outside the key)
-B     | 22 | C7        # tritone substitute: resolves down a half step to Bm11
-B     | 23 | Bm11      # ii of E7#5#9: Dorian
+4  | D7#5      # V7/bIII in E minor: #11 and b13 from the symbol
+5  | C#m7b5    # viø7 in E minor: Locrian, its own mode (the chord is outside the key)
+5  | C7        # bVI7 in E minor, not resolving: the #11 is in the key
+6  | C#m7b5    # viø7 in E minor: Locrian, its own mode (the chord is outside the key)
+6  | C7        # tritone substitute: resolves down a half step to Bm11
+7  | Bm11      # ii of E7#5#9: Dorian
 # book: Bm7(add11)
-B     | 23 | E7#5#9    # extended ii–V: a side-step, its own key; b9, #9, #11 and b13 from the symbol
-B     | 24 | F#m7b5    # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B     | 24 | B7b5      # V7 of E minor: 9, #11 and 13 from the symbol
-C     | 25 | Em        # tonic minor: Dorian by convention
-C     | 25 | C/E       # a non-tonic major chord: Lydian
-C     | 26 | Em6       # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-C     | 26 | Em7       # tonic minor: Dorian by convention
-C     | 27 | CMaj7     # a non-tonic major chord: Lydian
-C     | 27 | CMaj7#11  # from the symbol: #11
-@coda C 27
+7  | E7#5#9    # extended ii–V: a side-step, its own key; b9, #9, #11 and b13 from the symbol
+8  | F#m7b5    # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
+8  | B7b5      # V7 of E minor: 9, #11 and 13 from the symbol
+
+section: C
+1  | Em        # tonic minor: Dorian by convention
+1  | C/E       # a non-tonic major chord: Lydian
+2  | Em6       # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+2  | Em7       # tonic minor: Dorian by convention
+3  | CMaj7     # a non-tonic major chord: Lydian
+3  | CMaj7#11  # from the symbol: #11
+@coda 3
 # to the coda after bar 27 (the sign stands after the CMaj7#11)
-C     | 28 | F#m7b5    # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4  | F#m7b5    # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
 # book: F#m7(add11 b5)
-C     | 28 | B7b9      # V7 of E minor: b9 and b13 are in the key
-C     | 29 | Em        # tonic minor: Dorian by convention
-C     | 29 | C/E       # a non-tonic major chord: Lydian
-C     | 30 | Em6       # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-C     | 30 | Em7       # tonic minor: Dorian by convention
-C     | 31 | F#m7b5    # iiø7 in E minor: Locrian, the key's own notes (its ♭2 is a passing note)
-C     | 31 | C7        # tritone substitute: resolves down a half step to B7#5
-C     | 31 | B7#5      # V7 of E minor: b9 and b13 are in the key, the #11 from the symbol
-C     | 32 | Em        # tonic minor: Dorian by convention
-# alt: bar 32 (B7#5) on beat 3
-@nav C 32 D.S. al Coda
-@coda Coda 1
-Coda  | 1  | F#m7b5    # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4  | B7b9      # V7 of E minor: b9 and b13 are in the key
+5  | Em        # tonic minor: Dorian by convention
+5  | C/E       # a non-tonic major chord: Lydian
+6  | Em6       # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+6  | Em7       # tonic minor: Dorian by convention
+7  | F#m7b5    # iiø7 in E minor: Locrian, the key's own notes (its ♭2 is a passing note)
+7  | C7        # tritone substitute: resolves down a half step to B7#5
+7  | B7#5      # V7 of E minor: b9 and b13 are in the key, the #11 from the symbol
+8  | Em        # tonic minor: Dorian by convention
+# alt: bar 8 (B7#5) on beat 3
+@nav 8 D.S. al Coda
+
+section: Coda
+bars: 12
+@coda 1
+1  | F#m7b5    # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
 # book: F#m7(add11 b5)
-Coda  | 1  | B7b9      # V7 of E minor: b9 and b13 are in the key
-Coda  | 2  | Em        # tonic minor: Dorian by convention
-Coda  | 2  | C/E       # a non-tonic major chord: Lydian
-Coda  | 3  | Em6       # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-Coda  | 3  | Em7       # tonic minor: Dorian by convention
-Coda  | 4  | C13       # tritone substitute: resolves down a half step to B7#5
+1  | B7b9      # V7 of E minor: b9 and b13 are in the key
+2  | Em        # tonic minor: Dorian by convention
+2  | C/E       # a non-tonic major chord: Lydian
+3  | Em6       # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+3  | Em7       # tonic minor: Dorian by convention
+4  | C13       # tritone substitute: resolves down a half step to B7#5
 # fermata on C13
-Coda  | 5  | B7#5      # V7 of E minor: b9 and b13 are in the key, the #11 from the symbol
+5  | B7#5      # V7 of E minor: b9 and b13 are in the key, the #11 from the symbol
 # bar 6: N.C. (fermata)
-Coda  | 7  | Em        # tonic minor: Dorian by convention
-Coda  | 7  | C#7#11#9  # tritone substitute: resolves down a half step to C9; b9 and #9 from the symbol
-Coda  | 8  | C9        # tritone substitute: resolves down a half step to B7#5#9
-Coda  | 8  | B7#5#9    # V7 in E minor, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
-Coda  | 9  | A9#11     # static dominant: its own mode; #11 from the symbol
+7  | Em        # tonic minor: Dorian by convention
+7  | C#7#11#9  # tritone substitute: resolves down a half step to C9; b9 and #9 from the symbol
+8  | C9        # tritone substitute: resolves down a half step to B7#5#9
+8  | B7#5#9    # V7 in E minor, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
+9  | A9#11     # static dominant: its own mode; #11 from the symbol
 # bars 7–9: a tempo (piano fill), rit.; fermata on A9#11

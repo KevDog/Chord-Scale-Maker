@@ -4,52 +4,61 @@ style: Medium
 key: Ab
 form: ABCD
 source: Colorado Cookbook, p. 19
-# analysis: 2026-10-11, rules v1; Ab
+# analysis: 2026-10-17, rules v1; Ab
 
-# section | bar | chord | scale
+# bar | chord | scale
 # as the lead sheet lays it out; the last bar is the turnaround into the top
-# area: Ab major (bars 1–3)
-A | 1  | Bbm7    # ii: Dorian, the key’s own notes
-A | 2  | Bm7     # a borrowed minor chord: Dorian, its own key
-A | 3  | Bbm7    # ii: Dorian, the key’s own notes
-# area: A major (bars 4–5)
-A | 4  | Bm7     # ii of the ii–V to A
-A | 4  | E7      # V7 of A: natural tensions
-A | 5  | AMaj7   # tonic: the 4th is in the key
-# area: G major (bars 6–11)
-A | 6  | Ab7     # tritone substitute: resolves down a half step to GMaj7
-A | 7  | GMaj7   # tonic: the 4th is in the key
-A | 8  | F#7     # VII7 in G, not resolving: b9 and b13 are in the key
-B | 9  | F#m7    # a borrowed minor chord: Dorian, its own key
-B | 10 | Gm7     # a borrowed minor chord: Dorian, its own key
-B | 11 | F#m7    # a borrowed minor chord: Dorian, its own key
-# area: F major (bars 12–14)
-B | 12 | Gm7     # ii of the ii–V to F
-B | 12 | C7#9    # V7 of F: b9, #9 and #11 from the symbol
-B | 13 | FMaj7   # tonic: the 4th is in the key
-B | 14 | A7#9    # V7/vi in F: the b13 is in the key, b9, #9 and #11 from the symbol
-# area: Ab major (bars 15–17)
-B | 15 | Dm7     # ii of the ii–V to C minor
-B | 16 | G9      # V7/iii in Ab: the b13 is in the key, the 9 from the symbol
-C | 17 | Cm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# area: G minor (bars 19–29)
-C | 19 | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
-C | 19 | D7#9    # V7 of G minor: the b13 is in the key, b9, #9 and #11 from the symbol
-C | 20 | Gm7     # tonic minor: Dorian by convention
-C | 21 | Em7b5   # iiø7 of A7: Locrian, the key's own notes (its ♭2 is a passing note)
-C | 21 | A7      # V7/v in G minor: b9 and b13 are in the key
-C | 22 | Fm7     # ii of Bb7: Dorian
-C | 23 | Bb7     # V7/bVI in G minor: natural tensions
-D | 24 | Bbm7    # a borrowed minor chord: Dorian, its own key
-D | 25 | Bm7     # a borrowed minor chord: Dorian, its own key
-D | 26 | Bbm7    # a borrowed minor chord: Dorian, its own key
-D | 27 | Bm7     # ii of E7: Dorian
-D | 27 | E7      # extended ii–V: a side-step, its own key
-D | 28 | Cm7b5   # iiø7 of F7#9: Locrian, the key's own notes (its ♭2 is a passing note)
-D | 29 | F7#9    # V7/biii in G minor: b9, #9 and #11 from the symbol
-# area: Ab major (bars 30–33)
-D | 30 | Bbm7b5  # iiø7 of Ab: Locrian, the key's own notes (its ♭2 is a passing note)
-D | 31 | Eb7#9   # V7 of Ab: b9, #9 and #11 from the symbol
-D | 32 | AbMaj7  # tonic: the 4th is in the key
-D | 33 | Bm7     # ii of E7: Dorian
-D | 33 | E7      # extended ii–V: a side-step, its own key
+
+section: A
+# area: Ab major (A 1–3)
+1  | Bbm7    # ii: Dorian, the key’s own notes
+2  | Bm7     # a borrowed minor chord: Dorian, its own key
+3  | Bbm7    # ii: Dorian, the key’s own notes
+# area: A major (A 4–5)
+4  | Bm7     # ii of the ii–V to A
+4  | E7      # V7 of A: natural tensions
+5  | AMaj7   # tonic: the 4th is in the key
+# area: G major (A 6 – B 3)
+6  | Ab7     # tritone substitute: resolves down a half step to GMaj7
+7  | GMaj7   # tonic: the 4th is in the key
+8  | F#7     # VII7 in G, not resolving: b9 and b13 are in the key
+
+section: B
+1  | F#m7    # a borrowed minor chord: Dorian, its own key
+2  | Gm7     # a borrowed minor chord: Dorian, its own key
+3  | F#m7    # a borrowed minor chord: Dorian, its own key
+# area: F major (B 4–6)
+4  | Gm7     # ii of the ii–V to F
+4  | C7#9    # V7 of F: b9, #9 and #11 from the symbol
+5  | FMaj7   # tonic: the 4th is in the key
+6  | A7#9    # V7/vi in F: the b13 is in the key, b9, #9 and #11 from the symbol
+# area: Ab major (B 7 – C 1)
+7  | Dm7     # ii of the ii–V to C minor
+8  | G9      # V7/iii in Ab: the b13 is in the key, the 9 from the symbol
+
+section: C
+1  | Cm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+# area: G minor (C 3 – D 6)
+3  | Am7b5   # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+3  | D7#9    # V7 of G minor: the b13 is in the key, b9, #9 and #11 from the symbol
+4  | Gm7     # tonic minor: Dorian by convention
+5  | Em7b5   # iiø7 of A7: Locrian, the key's own notes (its ♭2 is a passing note)
+5  | A7      # V7/v in G minor: b9 and b13 are in the key
+6  | Fm7     # ii of Bb7: Dorian
+7  | Bb7     # V7/bVI in G minor: natural tensions
+
+section: D
+bars: 13
+1  | Bbm7    # a borrowed minor chord: Dorian, its own key
+2  | Bm7     # a borrowed minor chord: Dorian, its own key
+3  | Bbm7    # a borrowed minor chord: Dorian, its own key
+4  | Bm7     # ii of E7: Dorian
+4  | E7      # extended ii–V: a side-step, its own key
+5  | Cm7b5   # iiø7 of F7#9: Locrian, the key's own notes (its ♭2 is a passing note)
+6  | F7#9    # V7/biii in G minor: b9, #9 and #11 from the symbol
+# area: Ab major (D 7–10)
+7  | Bbm7b5  # iiø7 of Ab: Locrian, the key's own notes (its ♭2 is a passing note)
+8  | Eb7#9   # V7 of Ab: b9, #9 and #11 from the symbol
+9  | AbMaj7  # tonic: the 4th is in the key
+10 | Bm7     # ii of E7: Dorian
+10 | E7      # extended ii–V: a side-step, its own key

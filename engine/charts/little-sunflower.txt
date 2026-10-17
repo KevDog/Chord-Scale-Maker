@@ -7,11 +7,26 @@ form: AABBA
 source: Colorado Cookbook, p. 126
 # analysis: 2026-10-11, rules v1; D minor, modal
 
-# section | bar | chord | scale
-A1 | 1  | Dm      # modal minor: Dorian
-A2 | 9  | Dm
-B1 | 17 | EbMaj7  # modal major: Lydian
-B1 | 21 | DMaj7   # modal major: Lydian
-B2 | 25 | EbMaj7  # modal major: Lydian
-B2 | 29 | DMaj7   # modal major: Lydian
-A3 | 33 | Dm      # modal minor: Dorian
+# bar | chord | scale
+
+section: A1
+bars: 8
+1 | Dm      # modal minor: Dorian
+
+section: A2
+bars: 8
+1 | Dm
+
+section: B1
+bars: 8
+1 | EbMaj7  # modal major: Lydian
+5 | DMaj7   # modal major: Lydian
+
+section: B2
+bars: 8
+1 | EbMaj7  # modal major: Lydian
+5 | DMaj7   # modal major: Lydian
+
+section: A3
+bars: 8
+1 | Dm      # modal minor: Dorian

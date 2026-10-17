@@ -8,10 +8,13 @@ form: A, 12 bars
 source: Colorado Cookbook, p. 141
 # analysis: 2026-10-11, rules v1; C minor, blues
 
-# section | bar | chord | scale
-A | 1  | Cm7    # tonic minor: Dorian by convention
-A | 5  | Fm7    # iv: Dorian, the key’s own notes
-A | 7  | Cm7    # tonic minor: Dorian by convention
-A | 9  | Dm7b5  # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A | 10 | G7alt  # from the symbol: altered
-A | 11 | Cm7    # tonic minor: Dorian by convention
+# bar | chord | scale
+
+section: A
+bars: 12
+1  | Cm7    # tonic minor: Dorian by convention
+5  | Fm7    # iv: Dorian, the key’s own notes
+7  | Cm7    # tonic minor: Dorian by convention
+9  | Dm7b5  # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+10 | G7alt  # from the symbol: altered
+11 | Cm7    # tonic minor: Dorian by convention

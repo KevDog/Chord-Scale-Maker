@@ -1,13 +1,14 @@
-import { type ChartDoc, type ChartLine, expandRowLines, formPart, type FormPart, type MetaKey, parseChart, serializeChart } from './chart'
+import { type ChartDoc, chartBeats, type ChartLine, formPart, type FormPart, isSectionName, lineSections, type MetaKey, parseChart, SECTION_FIELDS, type SectionField, serializeChart } from './chart'
 import { type BarSection, type BarView, barView, type ChartBar } from './bars'
-import { chordsAfterTyping, posOfLine, soundingChords } from './barGrid'
+import { chordsAfterTyping, posOfLine } from './barGrid'
+import { sectionLayout, statedKeyAt } from './layout'
 import { LIMITS } from './limits'
 import { defaultScaleOrNull } from './qualities'
 import { rootName } from './pitch'
 import { parseScale, samePitchScale, SCALES } from './scales'
 
 export type RowLine = Extract<ChartLine, { kind: 'row' }>
-export type RowField = 'section' | 'bar' | 'chord' | 'scale' | 'function'
+export type RowField = 'bar' | 'chord' | 'scale' | 'function'
 
 /**
  * why a grid cell value would not survive serialize -> parse as the same line, or null if fine
@@ -37,17 +38,24 @@ export function setRowField(doc: ChartDoc, i: number, field: RowField, value: st
   return { lines: replaceAt(doc.lines, i, { ...line, [field]: value }) }
 }
 
-/** set an @key line's key (a no-op if line i isn't one) */
+/** set an @key line's key, or a section's key: field's (a no-op if line i is neither) */
 export function setKeyLine(doc: ChartDoc, i: number, key: string): ChartDoc {
   const line = doc.lines[i]
-  return line?.kind === 'key' ? { lines: replaceAt(doc.lines, i, { ...line, key }) } : doc
+  if (line?.kind === 'key') return { lines: replaceAt(doc.lines, i, { ...line, key }) }
+  if (line?.kind === 'sectionMeta' && line.field === 'key') return { lines: replaceAt(doc.lines, i, { ...line, value: key }) }
+  return doc
 }
 
-/** an @key line just above the row at line i, from its section and bar (a no-op for a non-row or a bar like "1a") */
+/**
+ * a key stated at the row at line i: its section's key: when the row is on bar 1, else an @key line just above it (a
+ * no-op for a non-row, a row outside a section, or a bar like "1a")
+ */
 export function insertKeyBefore(doc: ChartDoc, i: number, key: string): ChartDoc {
   const line = doc.lines[i]
-  if (line?.kind !== 'row' || !/^\d{1,6}$/.test(line.bar)) return doc
-  return { lines: [...doc.lines.slice(0, i), { kind: 'key', section: line.section, bar: Number(line.bar), key }, ...doc.lines.slice(i)] }
+  const section = lineSections(doc)[i]
+  if (line?.kind !== 'row' || !section || !/^\d{1,6}$/.test(line.bar)) return doc
+  if (Number(line.bar) === 1) return setSectionField(doc, section, 'key', key)
+  return { lines: [...doc.lines.slice(0, i), { kind: 'key', bar: Number(line.bar), key }, ...doc.lines.slice(i)] }
 }
 
 
@@ -82,14 +90,16 @@ function withCanonicalScales(doc: ChartDoc): ChartDoc {
 export const sameChart = (a: string, b: string): boolean =>
   a === b || serializeChart(withCanonicalScales(parseChart(a).value)) === serializeChart(withCanonicalScales(parseChart(b).value))
 
-/** insert a row after line index i (-1 = at the top), copying section and bar from the row above */
+/** insert a row after line index i (-1 = at the top), with the bar of the row above; in the header, under a new section A */
 export function insertRowAfter(doc: ChartDoc, i: number): ChartDoc {
   const above = doc.lines
     .slice(0, i + 1)
     .reverse()
     .find((l): l is RowLine => l.kind === 'row')
-  const row: RowLine = { kind: 'row', section: above?.section ?? 'A', bar: above?.bar ?? '1', chord: '', scale: '' }
-  return { lines: [...doc.lines.slice(0, i + 1), row, ...doc.lines.slice(i + 1)] }
+  const row: RowLine = { kind: 'row', bar: above?.bar ?? '1', chord: '', scale: '' }
+  const inSection = i >= 0 && lineSections(doc)[i] !== null
+  const lines: ChartLine[] = inSection ? [row] : [{ kind: 'section', name: 'A' }, row]
+  return { lines: [...doc.lines.slice(0, i + 1), ...lines, ...doc.lines.slice(i + 1)] }
 }
 
 export function removeLine(doc: ChartDoc, i: number): ChartDoc {
@@ -104,14 +114,16 @@ export function setMeta(doc: ChartDoc, key: MetaKey, value: string): ChartDoc {
   return { lines: [...doc.lines.slice(0, at), { kind: 'meta', key, value }, ...doc.lines.slice(at)] }
 }
 
+
 /*
  * Bar operations for the bar editor (docs/superpowers/proposals/editor-ux/README.md §3). A bar is addressed as
- * barView gives it: a section and the bar's number in the chart. They edit written sections only (a @copy repeat
- * changes through the section it repeats); anything they can't do cleanly gives back the same doc.
+ * barView gives it: a section and the bar's number in it, from 1. They edit written sections only (a copy: repeat
+ * changes through the section it repeats); anything they can't do cleanly gives back the same doc. A section keeps
+ * its length with bars: only where that differs from its last written bar.
  */
 
 const chordsError = (chords: readonly string[]): boolean => chords.some((c) => !c || cellError(c) !== null)
-const sectionError = (name: string): boolean => !name || /\s/.test(name) || cellError(name) !== null
+const sectionError = (name: string): boolean => !isSectionName(name) || cellError(name) !== null
 /** the written (not repeated) section and its bar, from barView */
 function writtenBar(view: BarView, section: string, bar: number): Readonly<{ section: BarSection; bar: ChartBar }> | null {
   const s = view.sections.find((x) => x.name === section)
@@ -119,127 +131,158 @@ function writtenBar(view: BarView, section: string, bar: number): Readonly<{ sec
   return s && !s.copy && b ? { section: s, bar: b } : null
 }
 const WHOLE = /^[+-]?\d{1,6}$/
-const isRowOf = (l: ChartLine, section: string): l is RowLine => l.kind === 'row' && l.section === section
 
-/**
- * where every bar of the part goes when `section` gains (+1) or loses (−1) bar `at`: each repeat of the section
- * gains or loses it too, and every section after one of those moves along. A bar that's deleted maps to null.
- * Also each section's shift at its start, which moves a @copy's offset.
- */
-function barShift(doc: ChartDoc, view: BarView, section: string, at: number, delta: 1 | -1) {
-  const point = new Map<string, number>([[section, at]])
-  const before = new Map<string, number>()
-  const shift = new Map<FormPart, number>()
-  for (const s of view.sections) {
-    if (before.has(s.name)) continue
-    const c = shift.get(s.part) ?? 0
-    before.set(s.name, c)
-    const copy = s.copy ? doc.lines[s.copy.line] : undefined
-    const from = copy?.kind === 'copy' ? point.get(copy.src) : undefined
-    if (from !== undefined && copy?.kind === 'copy') point.set(s.name, from + copy.offset)
-    if (point.has(s.name)) shift.set(s.part, c + delta)
-  }
-  const map = (s: string, n: number): number | null => {
-    const c = before.get(s)
-    if (c === undefined) return n
-    const q = point.get(s)
-    if (q === undefined || n < q) return n + c
-    if (n === q && delta < 0) return null
-    return n + c + delta
-  }
-  return { map, point, before }
+/** a section's block: its section: line and the index just past its last line (blank lines before the next section: excluded) */
+function blockRange(doc: ChartDoc, name: string): Readonly<{ start: number; end: number }> | null {
+  const start = doc.lines.findIndex((l) => l.kind === 'section' && l.name === name)
+  if (start < 0) return null
+  const next = doc.lines.findIndex((l, i) => i > start && l.kind === 'section')
+  let end = next < 0 ? doc.lines.length : next
+  while (end > start + 1 && doc.lines[end - 1]?.kind === 'blank') end--
+  return { start, end }
 }
 
-function shiftBars(doc: ChartDoc, view: BarView, section: string, at: number, delta: 1 | -1): ChartLine[] {
-  const { map, point, before } = barShift(doc, view, section, at, delta)
-  const bars = new Map(view.sections.map((s) => [s.name, s.bars] as const))
-  /** a key or context on a deleted bar starts on the bar after it, if its section has one without its own */
-  const follows = (l: Extract<ChartLine, { kind: 'key' | 'context' }>): boolean => {
-    const next = bars.get(l.section)?.find((b) => b.bar === l.bar + 1)
-    return next !== undefined && next[l.kind] === null
+const fieldIndex = (doc: ChartDoc, name: string, field: SectionField): number => {
+  const r = blockRange(doc, name)
+  return r ? doc.lines.findIndex((l, i) => i > r.start && i < r.end && l.kind === 'sectionMeta' && l.field === field) : -1
+}
+
+/** set a section field (null removes it); a new one goes in its place among the block's fields */
+function setSectionField(doc: ChartDoc, name: string, field: SectionField, value: string | null): ChartDoc {
+  const r = blockRange(doc, name)
+  if (!r) return doc
+  const i = fieldIndex(doc, name, field)
+  if (value === null) return i < 0 ? doc : removeLine(doc, i)
+  const line: ChartLine = { kind: 'sectionMeta', field, value }
+  if (i >= 0) return { lines: replaceAt(doc.lines, i, line) }
+  const rank = SECTION_FIELDS.indexOf(field)
+  let at = r.start + 1
+  while (at < r.end) {
+    const l = doc.lines[at]
+    if (l?.kind !== 'sectionMeta' || SECTION_FIELDS.indexOf(l.field) > rank) break
+    at++
   }
-  return doc.lines.flatMap((l): ChartLine[] => {
+  return { lines: [...doc.lines.slice(0, at), line, ...doc.lines.slice(at)] }
+}
+
+/** keep a section `length` bars long, writing bars: only where that differs from the length it would have without one */
+function tidyBars(doc: ChartDoc, name: string, length: number): ChartDoc {
+  const bare = setSectionField(doc, name, 'bars', null)
+  const natural = sectionLayout(bare).value.lengths.get(name) ?? 0
+  return length === natural ? bare : setSectionField(bare, name, 'bars', String(length))
+}
+
+/** the section and every copy: that repeats it (directly or through another copy) */
+function withCopies(doc: ChartDoc, name: string): ReadonlySet<string> {
+  const names = new Set([name])
+  for (const s of sectionLayout(doc).value.sections) if (s.copyOf && names.has(s.copyOf)) names.add(s.name)
+  return names
+}
+
+/** bar `at` of `section` gained (+1) or lost (−1): its rows, and its and its copies' directives and bars:, move along */
+function shiftBars(doc: ChartDoc, view: BarView, section: string, at: number, delta: 1 | -1): ChartLine[] {
+  const sections = lineSections(doc)
+  const moved = withCopies(doc, section)
+  const map = (n: number): number | null => (n < at ? n : n === at && delta < 0 ? null : n + delta)
+  const bars = new Map(view.sections.map((s) => [s.name, s.bars] as const))
+  return doc.lines.flatMap((l, i): ChartLine[] => {
+    const s = sections[i]
+    if (!s || !moved.has(s)) return [l]
     switch (l.kind) {
       case 'row': {
-        if (!WHOLE.test(l.bar)) return [l]
-        const n = map(l.section, Number(l.bar))
+        if (s !== section || !WHOLE.test(l.bar)) return [l]
+        const n = map(Number(l.bar))
         return n === null ? [] : n === Number(l.bar) ? [l] : [{ ...l, bar: String(n) }]
       }
       case 'mark':
       case 'nav': {
-        const n = map(l.section, l.bar)
+        const n = map(l.bar)
         return n === null ? [] : [{ ...l, bar: n }]
       }
       case 'key':
       case 'context': {
-        const n = map(l.section, l.bar)
+        const n = map(l.bar)
         if (n !== null) return [{ ...l, bar: n }]
-        return follows(l) ? [{ ...l, bar: l.bar + (before.get(l.section) ?? 0) }] : []
+        // on a deleted bar: it starts on the bar after (now numbered as this one), if that bar has none of its own
+        const next = bars.get(s)?.find((b) => b.bar === l.bar + 1)
+        return next && next[l.kind] === null ? [l] : []
       }
       case 'ending': {
-        const q = point.get(l.section)
-        const c = before.get(l.section) ?? 0
-        if (q === undefined) return [{ ...l, from: map(l.section, l.from) ?? l.from, to: map(l.section, l.to) ?? l.to }]
-        if (delta < 0 && l.from === q && l.to === q) return []
-        const local = (n: number, first: boolean): number =>
-          delta > 0 ? (n >= q ? n + 1 : n) : n > q || (n === q && !first) ? n - 1 : n
-        return [{ ...l, from: local(l.from, true) + c, to: local(l.to, false) + c }]
+        if (delta < 0 && l.from === at && l.to === at) return []
+        const from = delta > 0 ? (l.from >= at ? l.from + 1 : l.from) : l.from > at ? l.from - 1 : l.from
+        const to = delta > 0 ? (l.to >= at ? l.to + 1 : l.to) : l.to >= at ? l.to - 1 : l.to
+        return [{ ...l, from, to }]
       }
-      case 'copy':
-        return [{ ...l, offset: l.offset + (before.get(l.dst) ?? 0) - (before.get(l.src) ?? 0) }]
+      case 'sectionMeta':
+        return l.field === 'bars' ? [{ ...l, value: String(Number(l.value) + delta) }] : [l]
       default:
         return [l]
     }
   })
 }
 
-const rowsFor = (section: string, bar: number, chords: readonly string[]): RowLine[] =>
-  chords.map((chord) => ({ kind: 'row', section, bar: String(bar), chord, scale: '' }))
+const rowsFor = (bar: number, chords: readonly string[]): RowLine[] => chords.map((chord) => ({ kind: 'row', bar: String(bar), chord, scale: '' }))
 
-/** where a bar's new rows go: before the section's first row on a later bar, else after its last row */
-function rowSlot(lines: readonly ChartLine[], section: string, bar: number): number {
-  const later = lines.findIndex((l) => isRowOf(l, section) && WHOLE.test(l.bar) && Number(l.bar) > bar)
-  return later >= 0 ? later : lines.findLastIndex((l) => isRowOf(l, section)) + 1
+/** where a bar's new rows go: before the block's first row on a later bar, else after its last row (or its fields) */
+function rowSlot(doc: ChartDoc, section: string, bar: number): number {
+  const r = blockRange(doc, section)
+  if (!r) return doc.lines.length
+  const inBlock = (i: number): boolean => i > r.start && i < r.end
+  const later = doc.lines.findIndex((l, i) => inBlock(i) && l.kind === 'row' && WHOLE.test(l.bar) && Number(l.bar) > bar)
+  if (later >= 0) return later
+  const lastRow = doc.lines.findLastIndex((l, i) => inBlock(i) && l.kind === 'row')
+  if (lastRow >= 0) return lastRow + 1
+  const lastField = doc.lines.findLastIndex((l, i) => inBlock(i) && l.kind === 'sectionMeta')
+  return (lastField >= 0 ? lastField : r.start) + 1
 }
 
 /**
  * a new bar in a section, numbered `bar` (the bar there moves up one; the bar after the section's last appends),
- * holding `chords`, or held (the chord before goes on) with none. Every later bar of the part moves up: rows, @key,
- * @context, @ending, @segno/@coda/@nav and @copy offsets; a repeat of the section gains the bar too. A section can't
- * start on a held bar, so an empty bar can't go first.
+ * holding `chords`, or held (the chord before goes on) with none. Later bars of the section move up, with its @key,
+ * @context, @ending, @segno/@coda/@nav, and those of its copies; the section is a bar longer. A section can't start
+ * on a held bar, so an empty bar can't go first.
  */
 export function insertBar(doc: ChartDoc, section: string, bar: number, chords: readonly string[] = []): ChartDoc {
   const view = barView(doc)
   const s = view.sections.find((x) => x.name === section)
-  const first = s?.bars[0]?.bar ?? 0
-  const last = s?.bars.at(-1)?.bar ?? 0
-  if (!s || s.copy || bar < first || bar > last + 1 || chordsError(chords) || (bar === first && !chords.length)) return doc
-  const lines = shiftBars(doc, view, section, bar, 1)
-  const at = rowSlot(lines, section, bar)
-  return { lines: [...lines.slice(0, at), ...rowsFor(section, bar, chords), ...lines.slice(at)] }
+  const length = s?.bars.length ?? 0
+  if (!s || s.copy || bar < 1 || bar > length + 1 || chordsError(chords) || (bar === 1 && !chords.length)) return doc
+  const shifted: ChartDoc = { lines: shiftBars(doc, view, section, bar, 1) }
+  const at = rowSlot(shifted, section, bar)
+  return tidyBars({ lines: [...shifted.lines.slice(0, at), ...rowsFor(bar, chords), ...shifted.lines.slice(at)] }, section, length + 1)
 }
 
 /**
- * remove a bar with its chords and marks; every later bar of the part moves back (see insertBar), and a repeat of the
- * section loses the bar too. A key or context change on it moves to the bar after; an ending shrinks. The first bar
- * of a section can't go if a held bar would then start it.
+ * remove a bar with its chords and marks; later bars of the section move back (see insertBar). A key or context
+ * change on it moves to the bar after; an ending shrinks. The first bar of a section can't go if a held bar would
+ * then start it. A section's only bar takes the section with it, unless a copy: repeats it.
  */
 export function deleteBar(doc: ChartDoc, section: string, bar: number): ChartDoc {
   const view = barView(doc)
   const found = writtenBar(view, section, bar)
   if (!found) return doc
   const bars = found.section.bars
-  if (bars[0]?.bar === bar && bars[1]?.kind === 'held') return doc
-  return { lines: shiftBars(doc, view, section, bar, -1) }
+  if (bar === 1 && bars[1]?.kind === 'held') return doc
+  if (bars.length === 1) {
+    if (view.sections.some((s) => s.copy?.of === section)) return doc
+    const r = blockRange(doc, section)
+    if (!r) return doc
+    let start = r.start
+    while (start > 0 && doc.lines[start - 1]?.kind === 'blank') start--
+    // a comment in it (often about the next section) stays
+    return { lines: doc.lines.filter((l, i) => i < start || i >= r.end || l.kind === 'comment') }
+  }
+  return tidyBars({ lines: shiftBars(doc, view, section, bar, -1) }, section, bars.length - 1)
 }
 
 /**
  * set a bar's chords: each takes the place of the one written there before, its scale following as setRowChord's
- * does; more chords add rows, fewer remove them. No chords leaves the bar held, but not a section's first bar.
+ * does; more chords add rows, fewer remove them. No chords leaves the bar held, but not a section's first bar. The
+ * section keeps its length.
  */
 export function setBarChords(doc: ChartDoc, section: string, bar: number, chords: readonly string[]): ChartDoc {
   const found = writtenBar(barView(doc), section, bar)
-  if (!found || chordsError(chords) || (!chords.length && found.section.bars[0]?.bar === bar)) return doc
+  if (!found || chordsError(chords) || (!chords.length && bar === 1)) return doc
   const old = found.bar.chords.map((c) => c.line)
   if (old.length === chords.length && old.every((line, k) => (doc.lines[line] as RowLine).chord === chords[k])) return doc
   let next: ChartDoc = doc
@@ -247,13 +290,14 @@ export function setBarChords(doc: ChartDoc, section: string, bar: number, chords
     const chord = chords[k] ?? ''
     if ((next.lines[line] as RowLine).chord !== chord) next = setRowChord(next, line, chord)
   })
-  const extra = rowsFor(section, bar, chords.slice(old.length))
+  const extra = rowsFor(bar, chords.slice(old.length))
+  const length = found.section.bars.length
   if (!old.length) {
-    const at = rowSlot(next.lines, section, bar)
-    return { lines: [...next.lines.slice(0, at), ...extra, ...next.lines.slice(at)] }
+    const at = rowSlot(next, section, bar)
+    return tidyBars({ lines: [...next.lines.slice(0, at), ...extra, ...next.lines.slice(at)] }, section, length)
   }
   const removed = new Set(old.slice(chords.length))
-  return { lines: next.lines.flatMap((l, i) => (removed.has(i) ? [] : i === old.at(-1) ? [l, ...extra] : [l])) }
+  return tidyBars({ lines: next.lines.flatMap((l, i) => (removed.has(i) ? [] : i === old.at(-1) ? [l, ...extra] : [l])) }, section, length)
 }
 
 /**
@@ -266,16 +310,9 @@ export function setLineChord(doc: ChartDoc, i: number, text: string): ChartDoc {
   return pos ? setBarChords(doc, pos.section, pos.bar, chordsAfterTyping(view, pos, text, false)) : doc
 }
 
-/**
- * a held bar at `bar` (see insertBar); at the end of a part, where a held bar wouldn't count, it holds the chord that
- * sounds there, written out
- */
+/** a held bar at `bar` (see insertBar): at the section's end too, where bars: then counts it */
 export function insertHeldBar(doc: ChartDoc, section: string, bar: number): ChartDoc {
-  const view = barView(doc)
-  const next = insertBar(doc, section, bar)
-  if (next === doc) return doc
-  const placed = barView(next).sections.find((s) => s.name === section)?.bars.find((b) => b.bar === bar)
-  return placed?.kind === 'held' ? next : insertBar(doc, section, bar, soundingChords(view, section, bar - 1))
+  return insertBar(doc, section, bar)
 }
 
 /**
@@ -283,125 +320,158 @@ export function insertHeldBar(doc: ChartDoc, section: string, bar: number): Char
  * bar along as insertBar does. All or nothing: the same doc if any bar would be refused.
  */
 export function insertBars(doc: ChartDoc, section: string, bar: number, bars: readonly (readonly string[])[]): ChartDoc {
-  if (!bars.length) return doc
-  // a held bar goes in holding a stand-in chord, cleared after the rest: an empty bar at the very end of a part
-  // wouldn't count, and the bars after it couldn't follow
-  const HOLD = '%'
   let next = doc
   for (const [k, chords] of bars.entries()) {
-    const step = insertBar(next, section, bar + k, chords.length ? chords : [HOLD])
-    if (step === next) return doc
-    next = step
-  }
-  for (const [k, chords] of bars.entries()) {
-    if (chords.length) continue
-    const step = setBarChords(next, section, bar + k, [])
+    const step = insertBar(next, section, bar + k, chords)
     if (step === next) return doc
     next = step
   }
   return next
 }
 
-/** rename a section on its rows and every directive that names it; not to a name in use, or into or out of the form */
+/** rename a section on its section: line and every copy: of it; not to a name in use, or into or out of the form */
 export function renameSection(doc: ChartDoc, from: string, to: string): ChartDoc {
   const names = new Set(barView(doc).sections.map((s) => s.name))
-  if (!names.has(from) || names.has(to) || sectionError(to) || formPart(to) !== formPart(from)) return doc
-  const name = (s: string): string => (s === from ? to : s)
+  const outside = fieldIndex(doc, from, 'outside') >= 0
+  if (!names.has(from) || names.has(to) || sectionError(to) || (!outside && formPart(to) !== formPart(from))) return doc
   return {
-    lines: doc.lines.map((l): ChartLine => {
-      switch (l.kind) {
-        case 'row':
-        case 'ending':
-        case 'mark':
-        case 'nav':
-        case 'key':
-        case 'context':
-          return l.section === from ? { ...l, section: to } : l
-        case 'copy':
-          return { ...l, src: name(l.src), dst: name(l.dst) }
-        default:
-          return l
-      }
-    }),
+    lines: doc.lines.map((l): ChartLine =>
+      l.kind === 'section' && l.name === from ? { ...l, name: to } : l.kind === 'sectionMeta' && l.field === 'copy' && l.value === from ? { ...l, value: to } : l,
+    ),
   }
 }
 
-/** where a new section of this part goes: the bar after the part's last, and the line after its last row or @copy */
-function partEnd(doc: ChartDoc, view: BarView, part: FormPart): Readonly<{ bar: number; line: number }> {
-  const sections = view.sections.filter((s) => s.part === part)
-  const names = new Set(sections.map((s) => s.name))
-  const bar = (sections.at(-1)?.bars.at(-1)?.bar ?? 0) + 1
-  const own = doc.lines.findLastIndex((l) => (l.kind === 'row' && names.has(l.section)) || (l.kind === 'copy' && names.has(l.dst)))
-  if (own >= 0) return { bar, line: own + 1 }
-  // a part with no sections yet: an intro goes before the first row, the form before any coda, a coda last
-  const partOf = (l: ChartLine): FormPart | null => (l.kind === 'copy' ? formPart(l.dst) : l.kind === 'row' ? formPart(l.section) : null)
-  const next = doc.lines.findIndex((l) => partOf(l) !== null && (part === 'before' || (part === 'form' && partOf(l) === 'after')))
-  return { bar, line: next >= 0 ? next : doc.lines.length }
+/** where a new section of this part goes: after the part's last block, else before the first block of a later part */
+function partEnd(doc: ChartDoc, view: BarView, part: FormPart): number {
+  const last = view.sections.filter((s) => s.part === part).at(-1)
+  const r = last ? blockRange(doc, last.name) : null
+  if (r) return r.end
+  const later = view.sections.find((s) => (part === 'before' ? true : part === 'form' ? s.part === 'after' : false))
+  const at = later ? doc.lines.findIndex((l) => l.kind === 'section' && l.name === later.name) : -1
+  if (at < 0) return doc.lines.length
+  let start = at
+  while (start > 0 && doc.lines[start - 1]?.kind === 'blank') start--
+  return start
+}
+
+/** a block inserted at a line, with a blank line above it when it doesn't open the chart's body */
+function insertBlock(doc: ChartDoc, at: number, block: readonly ChartLine[]): ChartDoc {
+  const lines: ChartLine[] = at > 0 ? [{ kind: 'blank' }, ...block] : [...block]
+  return { lines: [...doc.lines.slice(0, at), ...lines, ...doc.lines.slice(at)] }
 }
 
 /** a new section of one bar holding `chords`, after the last section of its part (the form, an intro or a coda) */
 export function addSection(doc: ChartDoc, name: string, chords: readonly string[]): ChartDoc {
   const view = barView(doc)
   if (view.sections.some((s) => s.name === name) || sectionError(name) || !chords.length || chordsError(chords)) return doc
-  const { bar, line } = partEnd(doc, view, formPart(name))
-  return { lines: [...doc.lines.slice(0, line), ...rowsFor(name, bar, chords), ...doc.lines.slice(line)] }
+  return insertBlock(doc, partEnd(doc, view, formPart(name)), [{ kind: 'section', name }, ...rowsFor(1, chords)])
 }
 
-/** repeat a section as a new one (`@copy SRC DST OFFSET`) after the last section of its part */
+/** repeat a section as a new one (`section: DST` and `copy: SRC`) after the last section of its part */
 export function repeatSection(doc: ChartDoc, src: string, dst: string): ChartDoc {
   const view = barView(doc)
   const from = view.sections.find((s) => s.name === src)
-  if (!from || view.sections.some((s) => s.name === dst) || sectionError(dst) || formPart(dst) !== from.part) return doc
-  const { bar, line } = partEnd(doc, view, from.part)
-  const copy: ChartLine = { kind: 'copy', src, dst, offset: bar - (from.bars[0]?.bar ?? 0) }
-  return { lines: [...doc.lines.slice(0, line), copy, ...doc.lines.slice(line)] }
+  const outside = fieldIndex(doc, src, 'outside') >= 0 && (doc.lines[fieldIndex(doc, src, 'outside')] as Extract<ChartLine, { kind: 'sectionMeta' }>).value === 'yes'
+  if (!from || view.sections.some((s) => s.name === dst) || sectionError(dst) || (!outside && formPart(dst) !== from.part)) return doc
+  const block: ChartLine[] = [
+    { kind: 'section', name: dst },
+    ...(outside ? [{ kind: 'sectionMeta', field: 'outside', value: 'yes' } as ChartLine] : []),
+    { kind: 'sectionMeta', field: 'copy', value: src },
+  ]
+  return insertBlock(doc, partEnd(doc, view, from.part), block)
 }
 
-/** a repeat written out: its @copy becomes rows of its own, in its place, as they play */
+/** a repeat written out: its copy: becomes rows of its own, in its place, with what it carried (key, time, context, bars, key changes) */
 export function writeOutCopy(doc: ChartDoc, section: string): ChartDoc {
-  const i = doc.lines.findIndex((l) => l.kind === 'copy' && l.dst === section)
-  const rows = expandRowLines(doc).value.filter((r) => r.section === section)
-  if (i < 0 || !rows.length) return doc
-  const written = rows.map(({ line: _, ...r }): RowLine => ({ kind: 'row', ...r }))
-  return { lines: [...doc.lines.slice(0, i), ...written, ...doc.lines.slice(i + 1)] }
+  const layout = sectionLayout(doc).value
+  const s = layout.sections.find((x) => x.name === section)
+  const i = fieldIndex(doc, section, 'copy')
+  if (!s || i < 0 || !s.rows.length) return doc
+  const rows = s.rows.map(({ line: _l, at: _a, section: _s, ...r }): RowLine => ({ kind: 'row', ...r }))
+  // the key and context changes it carried: the layout gives them to it, but they're written in its source's block
+  const sections = lineSections(doc)
+  const carried = layout.directives
+    .filter((d) => d.section === section && (d.kind === 'key' || d.kind === 'context') && sections[d.line] !== section)
+    .map(({ section: _s, line: _l, ...d }) => d as ChartLine)
+  let next: ChartDoc = { lines: [...doc.lines.slice(0, i), ...rows, ...carried, ...doc.lines.slice(i + 1)] }
+  if (s.key && fieldIndex(next, section, 'key') < 0) next = setSectionField(next, section, 'key', s.key)
+  if (s.beats !== chartBeats(doc) && fieldIndex(next, section, 'time') < 0) next = setSectionField(next, section, 'time', `${s.beats}/4`)
+  if (s.context && fieldIndex(next, section, 'context') < 0) next = setSectionField(next, section, 'context', s.context)
+  return tidyBars(next, section, s.length)
 }
 
 /**
- * a new section, `name`, from a bar to the end of its section, with the marks on those bars. Not at the section's
- * first bar or on a held one, across an ending, into another part, or in a section a @copy repeats.
+ * a new section, `name`, from a bar to the end of its section, with the rows and marks on those bars renumbered from
+ * 1, the key stated there and the section's metre. Not at the section's first bar or on a held one, across an ending,
+ * into another part, or in a section a copy: repeats.
  */
 export function splitSection(doc: ChartDoc, section: string, bar: number, name: string): ChartDoc {
   const view = barView(doc)
   const found = writtenBar(view, section, bar)
-  if (!found || found.bar.kind !== 'chords' || found.section.bars[0]?.bar === bar) return doc
-  if (view.sections.some((s) => s.name === name) || sectionError(name) || formPart(name) !== found.section.part) return doc
-  const across = (l: ChartLine): boolean => l.kind === 'ending' && l.section === section && l.from < bar && l.to >= bar
-  if (doc.lines.some((l) => across(l) || (l.kind === 'copy' && l.src === section))) return doc
-  const moves = (l: ChartLine): boolean => {
-    if (l.kind === 'row') return l.section === section && WHOLE.test(l.bar) && Number(l.bar) >= bar
-    if (l.kind === 'ending') return l.section === section && l.from >= bar
-    return (l.kind === 'key' || l.kind === 'context' || l.kind === 'mark' || l.kind === 'nav') && l.section === section && l.bar >= bar
+  if (!found || found.bar.kind !== 'chords' || bar === 1) return doc
+  const sections = lineSections(doc)
+  const mine = (i: number): boolean => sections[i] === section
+  const outside = doc.lines.some((l, i) => mine(i) && l.kind === 'sectionMeta' && l.field === 'outside' && l.value === 'yes')
+  if (view.sections.some((s) => s.name === name) || sectionError(name) || (!outside && formPart(name) !== found.section.part)) return doc
+  if (view.sections.some((s) => s.copy?.of === section)) return doc
+  if (doc.lines.some((l, i) => mine(i) && l.kind === 'ending' && l.from < bar && l.to >= bar)) return doc
+  const r = blockRange(doc, section)
+  if (!r) return doc
+  const moves = (l: ChartLine, i: number): boolean =>
+    mine(i) &&
+    ((l.kind === 'row' && WHOLE.test(l.bar) && Number(l.bar) >= bar) ||
+      (l.kind === 'ending' && l.from >= bar) ||
+      ((l.kind === 'key' || l.kind === 'context' || l.kind === 'mark' || l.kind === 'nav') && l.bar >= bar))
+  const renumber = (l: ChartLine): ChartLine => {
+    if (l.kind === 'row') return { ...l, bar: String(Number(l.bar) - bar + 1) }
+    if (l.kind === 'ending') return { ...l, from: l.from - bar + 1, to: l.to - bar + 1 }
+    if (l.kind === 'key' || l.kind === 'context' || l.kind === 'mark' || l.kind === 'nav') return { ...l, bar: l.bar - bar + 1 }
+    return l
   }
-  return { lines: doc.lines.map((l): ChartLine => (moves(l) && 'section' in l ? { ...l, section: name } : l)) }
+  const key = statedKeyAt(sectionLayout(doc).value, section, bar)
+  // a key change on the split bar is the new section's key:
+  const moved = doc.lines.flatMap((l, i) => (moves(l, i) ? [renumber(l)] : [])).filter((l) => !(l.kind === 'key' && l.bar === 1))
+  const removedBefore = doc.lines.slice(0, r.end).filter((l, i) => moves(l, i)).length
+  const kept = doc.lines.filter((l, i) => !moves(l, i))
+  const time = doc.lines.find((l, i) => mine(i) && l.kind === 'sectionMeta' && l.field === 'time')
+  // the context in force at the split: the last @context before it, else the section's context:
+  const contextLine = doc.lines.findLast((l, i) => mine(i) && ((l.kind === 'context' && l.bar <= bar) || (l.kind === 'sectionMeta' && l.field === 'context')))
+  const context = contextLine?.kind === 'context' ? contextLine.context : contextLine?.kind === 'sectionMeta' ? contextLine.value : null
+  const block: ChartLine[] = [
+    { kind: 'section', name },
+    ...(key ? [{ kind: 'sectionMeta', field: 'key', value: key } as ChartLine] : []),
+    ...(time ? [time] : []),
+    ...(context ? [{ kind: 'sectionMeta', field: 'context', value: context } as ChartLine] : []),
+    ...(outside ? [{ kind: 'sectionMeta', field: 'outside', value: 'yes' } as ChartLine] : []),
+    ...moved,
+  ]
+  const length = found.section.bars.length
+  const next = insertBlock({ lines: kept }, r.end - removedBefore, block)
+  return tidyBars(tidyBars(next, section, bar - 1), name, length - bar + 1)
 }
 
-/** a directive for a section goes after the last line that names it (its rows, its @copy, its other directives) */
+/** a directive for a section goes at the end of its block */
 function addDirective(doc: ChartDoc, section: string, line: ChartLine): ChartDoc {
-  const own = doc.lines.findLastIndex((l) => ('section' in l && l.section === section) || (l.kind === 'copy' && l.dst === section))
-  const at = own >= 0 ? own + 1 : doc.lines.length
+  const at = blockRange(doc, section)?.end ?? doc.lines.length
   return { lines: [...doc.lines.slice(0, at), line, ...doc.lines.slice(at)] }
+}
+
+/** the index of the first line in a section's block that matches */
+const lineIn = (doc: ChartDoc, section: string, match: (l: ChartLine) => boolean): number => {
+  const sections = lineSections(doc)
+  return doc.lines.findIndex((l, i) => sections[i] === section && match(l))
 }
 
 /** set ending n (1 or 2) of a section to bars from–to, or clear it with null; not off the section or over the other ending */
 export function setEnding(doc: ChartDoc, section: string, n: 1 | 2, span: Readonly<{ from: number; to: number }> | null): ChartDoc {
-  const i = doc.lines.findIndex((l) => l.kind === 'ending' && l.section === section && l.n === n)
+  const i = lineIn(doc, section, (l) => l.kind === 'ending' && l.n === n)
   if (!span) return i >= 0 ? removeLine(doc, i) : doc
   const s = barView(doc).sections.find((x) => x.name === section)
   const inside = (b: number): boolean => s?.bars.some((x) => x.bar === b) ?? false
-  const other = doc.lines.find((l) => l.kind === 'ending' && l.section === section && l.n !== n)
+  const other = doc.lines[lineIn(doc, section, (l) => l.kind === 'ending' && l.n !== n)]
   const overlaps = other?.kind === 'ending' && other.from <= span.to && span.from <= other.to
   if (span.to < span.from || !inside(span.from) || !inside(span.to) || overlaps) return doc
-  const ending: ChartLine = { kind: 'ending', n, section, from: span.from, to: span.to }
+  const ending: ChartLine = { kind: 'ending', n, from: span.from, to: span.to }
   return i >= 0 ? { lines: replaceAt(doc.lines, i, ending) } : addDirective(doc, section, ending)
 }
 
@@ -409,24 +479,26 @@ export function setEnding(doc: ChartDoc, section: string, n: 1 | 2, span: Readon
 export function setMark(doc: ChartDoc, section: string, bar: number, mark: 'segno' | 'coda', on: boolean): ChartDoc {
   const found = barView(doc).sections.find((s) => s.name === section)?.bars.find((b) => b.bar === bar)
   if (!found || found.marks.some((m) => m.mark === mark) === on) return doc
-  if (!on) return { lines: doc.lines.filter((l) => !(l.kind === 'mark' && l.mark === mark && l.section === section && l.bar === bar)) }
-  return addDirective(doc, section, { kind: 'mark', mark, section, bar })
+  if (on) return addDirective(doc, section, { kind: 'mark', mark, bar })
+  const sections = lineSections(doc)
+  return { lines: doc.lines.filter((l, i) => !(sections[i] === section && l.kind === 'mark' && l.mark === mark && l.bar === bar)) }
 }
 
 /** set a bar's nav text (D.S. al Coda, Fine, …), replacing what it had; '' takes it off */
 export function setNav(doc: ChartDoc, section: string, bar: number, text: string): ChartDoc {
   const found = barView(doc).sections.find((s) => s.name === section)?.bars.find((b) => b.bar === bar)
   if (!found || (text && cellError(text, LIMITS.maxMeta, true))) return doc
-  const isNav = (l: ChartLine): boolean => l.kind === 'nav' && l.section === section && l.bar === bar
+  const sections = lineSections(doc)
+  const isNav = (l: ChartLine, i: number): boolean => sections[i] === section && l.kind === 'nav' && l.bar === bar
   const first = doc.lines.findIndex(isNav)
-  const nav: ChartLine = { kind: 'nav', section, bar, text }
-  const lines = doc.lines.flatMap((l, i): ChartLine[] => (!isNav(l) ? [l] : i === first && text ? [nav] : []))
+  const nav: ChartLine = { kind: 'nav', bar, text }
+  const lines = doc.lines.flatMap((l, i): ChartLine[] => (!isNav(l, i) ? [l] : i === first && text ? [nav] : []))
   return first >= 0 || !text ? { lines } : addDirective(doc, section, nav)
 }
 
 /** ending n on a bar: off when the bar is in it, else grown onto the bar next to it, else just that bar */
 export function toggleEnding(doc: ChartDoc, section: string, n: 1 | 2, bar: number): ChartDoc {
-  const e = doc.lines.find((l) => l.kind === 'ending' && l.section === section && l.n === n)
+  const e = doc.lines[lineIn(doc, section, (l) => l.kind === 'ending' && l.n === n)]
   if (e?.kind !== 'ending') return setEnding(doc, section, n, { from: bar, to: bar })
   if (e.from <= bar && bar <= e.to) return setEnding(doc, section, n, null)
   if (bar === e.to + 1 || bar === e.from - 1) return setEnding(doc, section, n, { from: Math.min(e.from, bar), to: Math.max(e.to, bar) })

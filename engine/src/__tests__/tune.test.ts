@@ -26,9 +26,9 @@ describe('tuneSummary', () => {
   })
 
   it('gives each aka: name, split at semicolons (titles may hold commas)', () => {
-    expect(tuneSummary('aka: Blue Train; Blue Trane (alt take)\nA | 1 | C').aka).toEqual(['Blue Train', 'Blue Trane (alt take)'])
-    expect(tuneSummary('aka: Me, Myself and I\nA | 1 | C').aka).toEqual(['Me, Myself and I'])
-    expect(tuneSummary('aka: ;  \nA | 1 | C').aka).toEqual([])
+    expect(tuneSummary('aka: Blue Train; Blue Trane (alt take)\n\nsection: A\nbars: 4\n1 | C').aka).toEqual(['Blue Train', 'Blue Trane (alt take)'])
+    expect(tuneSummary('aka: Me, Myself and I\n\nsection: A\nbars: 4\n1 | C').aka).toEqual(['Me, Myself and I'])
+    expect(tuneSummary('aka: ;\n\nsection: A\nbars: 4\n1 | C').aka).toEqual([])
   })
 
   it('leaves the fields a chart lacks empty', () => {
@@ -45,14 +45,14 @@ describe('tuneDescription', () => {
   })
 
   it('has no "by" or empty commas without a composer or key', () => {
-    const d = tuneDescription(tuneSummary('title: Tune\nA | 1 | C'))
+    const d = tuneDescription(tuneSummary('title: Tune\n\nsection: A\nbars: 4\n1 | C'))
     expect(d).toBe(
       'Tune: the chord changes as a lead-sheet style practice chart, with guide tones and a scale, arpeggio and pentatonic for every chord. Chords only, no melody.',
     )
   })
 
   it('adds the other titles after the title when they fit with the composer and key', () => {
-    const t = tuneSummary('title: Tune\naka: Song; Ditty\ncomposer: Someone\nkey: C\nA | 1 | C')
+    const t = tuneSummary('title: Tune\naka: Song; Ditty\ncomposer: Someone\nkey: C\n\nsection: A\nbars: 4\n1 | C')
     expect(tuneDescription(t)).toMatch(/^Tune \(also Song or Ditty\) by Someone in C: /)
     const long = tuneSummary(`title: Tune\naka: ${'x'.repeat(120)}\ncomposer: Someone\nkey: C\nA | 1 | C`)
     expect(tuneDescription(long)).toMatch(/^Tune by Someone in C: /)
@@ -96,7 +96,7 @@ describe('tuneGaps: what a song page needs from its chart', () => {
   })
 
   it('asks every kind for its title, key, style and form', () => {
-    expect(tuneGaps(doc('kind: form\nA | 1 | C'))).toEqual(['no title:', 'no key:', 'no style:', 'no form:'])
+    expect(tuneGaps(doc('kind: form\n\nsection: A\nbars: 4\n1 | C'))).toEqual(['no title:', 'no key:', 'no style:', 'no form:'])
   })
 })
 

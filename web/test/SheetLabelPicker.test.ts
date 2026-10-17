@@ -4,14 +4,14 @@ import { nextTick } from 'vue'
 import { parseChart } from '@chord-scale-maker/engine'
 import SheetLabelPicker from '~/components/SheetLabelPicker.vue'
 
-// lines: 0 title, 1 key, 2 A1 Dm7, 3 A2 G7, 4 A3 CMaj7
-const doc = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | G7\nA | 3 | CMaj7\n').value
+// lines: 5 A1 Dm7, 6 A2 G7, 7 A3 CMaj7
+const doc = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\n3 | CMaj7\n').value
 const settle = async () => {
   for (let i = 0; i < 3; i++) await nextTick()
 }
 const mount = (kind: 'numeral' | 'scale', over: Partial<{ fallback: boolean; pinned: boolean; blank: boolean }> = {}) =>
   mountSuspended(SheetLabelPicker, {
-    props: { doc, line: 3, kind, chord: 'G7', fallback: false, pinned: false, ...over },
+    props: { doc, line: 6, kind, chord: 'G7', fallback: false, pinned: false, ...over },
     slots: { default: () => (kind === 'numeral' ? 'V7' : 'G Mixolydian') },
     attachTo: document.body,
   })
@@ -23,7 +23,7 @@ describe('SheetLabelPicker', () => {
   it('blank (no label to click): a dash named for its picker, which opens it (#143)', async () => {
     for (const [kind, name] of [['numeral', 'Function: G7'], ['scale', 'Scale: G7']] as const) {
       document.body.innerHTML = ''
-      const w = await mountSuspended(SheetLabelPicker, { props: { doc, line: 3, kind, chord: 'G7', fallback: false, pinned: false, blank: true }, attachTo: document.body })
+      const w = await mountSuspended(SheetLabelPicker, { props: { doc, line: 6, kind, chord: 'G7', fallback: false, pinned: false, blank: true }, attachTo: document.body })
       const button = w.find('button')
       expect(button.text()).toBe('—')
       expect(button.attributes('aria-label')).toBe(name)
@@ -75,7 +75,7 @@ describe('SheetLabelPicker', () => {
     alt.click()
     await settle()
     const next = (w.emitted('update:doc')?.[0] as [typeof doc])[0]
-    expect(next.lines[3]).toMatchObject({ kind: 'row', scale: 'G Altered' })
+    expect(next.lines[6]).toMatchObject({ kind: 'row', scale: 'G Altered' })
     expect(w.emitted('said')?.[0]?.[0]).toContain('G Altered')
   })
 })

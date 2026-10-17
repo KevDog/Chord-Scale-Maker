@@ -5,41 +5,46 @@ style: Latin
 key: Am
 form: AB, 30 bars
 source: Colorado Cookbook, p. 270
-# analysis: 2026-10-11, rules v1; A minor
+# analysis: 2026-10-17, rules v1; A minor
 
-# section | bar | chord | scale
-# area: A minor (bars 1–11)
-A | 1  | Dm7        # iv: Dorian, the key’s own notes
-A | 2  | E7         # V7 in A minor, not resolving: b9 and b13 are in the key
-A | 3  | F#m7b5     # viø7 in A minor: Locrian, its own mode (the chord is outside the key)
-A | 4  | Fm11       # a borrowed minor chord: Dorian, its own key
-A | 5  | Em7        # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
-A | 5  | Dm9        # iv: Dorian, the key’s own notes
-A | 6  | Bb7#11     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-A | 7  | Bm7        # a borrowed minor chord: Dorian, its own key
-A | 8  | C#7alt     # from the symbol: altered
-A | 9  | DMaj7#11   # from the symbol: #11
-A | 10 | B7/D#      # II7 in A minor, not resolving: b9 and b13 are in the key
-A | 11 | A/E        # a non-tonic major chord: Lydian
-# area: F# minor (bars 12–29)
-A | 12 | C#7alt/E#  # from the symbol: altered
-A | 12 | F#m        # tonic minor: Dorian by convention
-A | 13 | F#m
-A | 14 | GMaj7#11   # from the symbol: #11
-A | 15 | F#m        # tonic minor: Dorian by convention
-A | 16 | G7#11      # tritone substitute: resolves down a half step to F#m7
-B | 17 | F#m7       # tonic minor: Dorian by convention
-B | 17 | F#m7/E     # ii of B13b9/D#: Dorian
-B | 18 | B13b9/D#   # V7/bVII in F# minor: the b9 from the symbol
-B | 19 | Dm11       # ii of G7b9: Dorian
-B | 20 | G7b9       # extended ii–V: a side-step, its own key; b9 from the symbol
-B | 21 | AbMaj7#11  # from the symbol: #11
-B | 22 | Bb7sus4    # static sus: Mixolydian
-B | 23 | CMaj7      # a non-tonic major chord: Lydian
-B | 24 | FMaj7#11   # from the symbol: #11
-B | 25 | F#m11      # tonic minor: Dorian by convention
-B | 25 | F#m11/E    # tonic minor: Dorian by convention
-B | 26 | Ebdim7     # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
-B | 27 | Dm7        # a borrowed minor chord: Dorian, its own key
-B | 28 | Dm11       # a borrowed minor chord: Dorian, its own key
-B | 29 | Am9        # a borrowed minor chord: Dorian, its own key
+# bar | chord | scale
+
+section: A
+# area: A minor (A 1–11)
+1  | Dm7        # iv: Dorian, the key’s own notes
+2  | E7         # V7 in A minor, not resolving: b9 and b13 are in the key
+3  | F#m7b5     # viø7 in A minor: Locrian, its own mode (the chord is outside the key)
+4  | Fm11       # a borrowed minor chord: Dorian, its own key
+5  | Em7        # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+5  | Dm9        # iv: Dorian, the key’s own notes
+6  | Bb7#11     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+7  | Bm7        # a borrowed minor chord: Dorian, its own key
+8  | C#7alt     # from the symbol: altered
+9  | DMaj7#11   # from the symbol: #11
+10 | B7/D#      # II7 in A minor, not resolving: b9 and b13 are in the key
+11 | A/E        # a non-tonic major chord: Lydian
+# area: F# minor (A 12 – B 13)
+12 | C#7alt/E#  # from the symbol: altered
+12 | F#m        # tonic minor: Dorian by convention
+13 | F#m
+14 | GMaj7#11   # from the symbol: #11
+15 | F#m        # tonic minor: Dorian by convention
+16 | G7#11      # tritone substitute: resolves down a half step to F#m7
+
+section: B
+bars: 16
+1  | F#m7       # tonic minor: Dorian by convention
+1  | F#m7/E     # ii of B13b9/D#: Dorian
+2  | B13b9/D#   # V7/bVII in F# minor: the b9 from the symbol
+3  | Dm11       # ii of G7b9: Dorian
+4  | G7b9       # extended ii–V: a side-step, its own key; b9 from the symbol
+5  | AbMaj7#11  # from the symbol: #11
+6  | Bb7sus4    # static sus: Mixolydian
+7  | CMaj7      # a non-tonic major chord: Lydian
+8  | FMaj7#11   # from the symbol: #11
+9  | F#m11      # tonic minor: Dorian by convention
+9  | F#m11/E    # tonic minor: Dorian by convention
+10 | Ebdim7     # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
+11 | Dm7        # a borrowed minor chord: Dorian, its own key
+12 | Dm11       # a borrowed minor chord: Dorian, its own key
+13 | Am9        # a borrowed minor chord: Dorian, its own key

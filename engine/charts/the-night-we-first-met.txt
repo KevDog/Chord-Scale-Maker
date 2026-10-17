@@ -4,63 +4,72 @@ style: Ballad
 key: Fm
 form: AABC, 33 bars
 source: Colorado Cookbook, p. 237
-# analysis: 2026-10-11, rules v1; F minor
+# analysis: 2026-10-17, rules v1; F minor
 
-# section | bar | chord | scale
-# area: F minor (bars 1–16)
-A1 | 1  | Fm7      # tonic minor: Dorian by convention
-A1 | 2  | Bbm7     # iv: Dorian, the key’s own notes
-A1 | 3  | Ebm7     # a borrowed minor chord: Dorian, its own key
-A1 | 3  | D7#11    # tritone substitute: resolves down a half step to DbMaj7
-A1 | 4  | DbMaj7   # a non-tonic major chord: Lydian
-A1 | 4  | Gb7#11   # tritone substitute: resolves down a half step to Fm7
-A1 | 5  | Fm7      # tonic minor: Dorian by convention
-A1 | 5  | Fm7/Eb   # tonic minor: Dorian by convention
-A1 | 6  | DbMaj7   # a non-tonic major chord: Lydian
-A1 | 7  | Db7      # bVI7 in F minor, not resolving: the #11 is in the key
-A1 | 8  | Gm7b5    # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
-A1 | 8  | C7alt    # from the symbol: altered
-A2 | 9  | Fm7      # tonic minor: Dorian by convention
-A2 | 10 | Bbm7     # iv: Dorian, the key’s own notes
-A2 | 11 | Ebm7     # a borrowed minor chord: Dorian, its own key
-A2 | 11 | D7#11    # tritone substitute: resolves down a half step to DbMaj7
-A2 | 12 | DbMaj7   # a non-tonic major chord: Lydian
-A2 | 12 | Gb7#11   # tritone substitute: resolves down a half step to Fm7
-A2 | 13 | Fm7      # tonic minor: Dorian by convention
-A2 | 13 | Fm7/Eb   # tonic minor: Dorian by convention
-A2 | 14 | DbMaj7   # a non-tonic major chord: Lydian
-A2 | 15 | Db7      # tritone substitute: resolves down a half step to C7
-A2 | 15 | C7       # V7 of F minor: b9 and b13 are in the key
-A2 | 16 | Fm       # tonic minor: Dorian by convention
-# area: C major (bars 17–24)
-B  | 17 | Dm7      # ii of the ii–V to C
-B  | 17 | G7       # V7 of C: natural tensions
-B  | 18 | CMaj7    # tonic: the 4th is in the key
-B  | 18 | Am7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B  | 19 | Dm7      # ii of the ii–V to C
-B  | 19 | G7       # V7 of C: natural tensions
-B  | 20 | CMaj7    # tonic: the 4th is in the key
-B  | 20 | Gb7b9    # tritone substitute: resolves down a half step to FMaj7; b9 from the symbol
-B  | 21 | FMaj7    # the Gb7b9 before it makes F the key of the moment: the 4th is in the key
-B  | 21 | FMaj7/E  # from the symbol: sus b9
-B  | 22 | FMaj7/D  # IV: the #4 is the key’s 7th
-B  | 22 | FMaj7/C  # IV: the #4 is the key’s 7th
-B  | 23 | Bm7b5    # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
-B  | 23 | E7b13    # V7/vi in C: b9 and b13 are in the key
-B  | 24 | Am7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-B  | 24 | Abdim7   # passing diminished: G7♭9 without its G, the C7#11's dominant (Gm7 its ii)
-# area: F minor (bars 25–33)
-B  | 25 | Gm7      # ii of the ii–V to F minor
-B  | 25 | C7#11    # V7 of F minor: 9, #11 and 13 from the symbol
-C  | 26 | Fm7      # tonic minor: Dorian by convention
-C  | 27 | Bbm7     # iv: Dorian, the key’s own notes
-C  | 28 | Ebm7     # a borrowed minor chord: Dorian, its own key
-C  | 28 | D7#11    # tritone substitute: resolves down a half step to DbMaj7
-C  | 29 | DbMaj7   # a non-tonic major chord: Lydian
-C  | 29 | Gb7#11   # tritone substitute: resolves down a half step to Fm7
-C  | 30 | Fm7      # tonic minor: Dorian by convention
-C  | 30 | Fm7/Eb   # tonic minor: Dorian by convention
-C  | 31 | DbMaj7   # a non-tonic major chord: Lydian
-C  | 32 | Db7      # tritone substitute: resolves down a half step to C7
-C  | 32 | C7       # V7 of F minor: b9 and b13 are in the key
-C  | 33 | Fm       # tonic minor: Dorian by convention
+# bar | chord | scale
+
+section: A1
+# area: F minor (A1 1 – A2 8)
+1 | Fm7      # tonic minor: Dorian by convention
+2 | Bbm7     # iv: Dorian, the key’s own notes
+3 | Ebm7     # a borrowed minor chord: Dorian, its own key
+3 | D7#11    # tritone substitute: resolves down a half step to DbMaj7
+4 | DbMaj7   # a non-tonic major chord: Lydian
+4 | Gb7#11   # tritone substitute: resolves down a half step to Fm7
+5 | Fm7      # tonic minor: Dorian by convention
+5 | Fm7/Eb   # tonic minor: Dorian by convention
+6 | DbMaj7   # a non-tonic major chord: Lydian
+7 | Db7      # bVI7 in F minor, not resolving: the #11 is in the key
+8 | Gm7b5    # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
+8 | C7alt    # from the symbol: altered
+
+section: A2
+1 | Fm7      # tonic minor: Dorian by convention
+2 | Bbm7     # iv: Dorian, the key’s own notes
+3 | Ebm7     # a borrowed minor chord: Dorian, its own key
+3 | D7#11    # tritone substitute: resolves down a half step to DbMaj7
+4 | DbMaj7   # a non-tonic major chord: Lydian
+4 | Gb7#11   # tritone substitute: resolves down a half step to Fm7
+5 | Fm7      # tonic minor: Dorian by convention
+5 | Fm7/Eb   # tonic minor: Dorian by convention
+6 | DbMaj7   # a non-tonic major chord: Lydian
+7 | Db7      # tritone substitute: resolves down a half step to C7
+7 | C7       # V7 of F minor: b9 and b13 are in the key
+8 | Fm       # tonic minor: Dorian by convention
+
+section: B
+# area: C major (B 1–8)
+1 | Dm7      # ii of the ii–V to C
+1 | G7       # V7 of C: natural tensions
+2 | CMaj7    # tonic: the 4th is in the key
+2 | Am7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+3 | Dm7      # ii of the ii–V to C
+3 | G7       # V7 of C: natural tensions
+4 | CMaj7    # tonic: the 4th is in the key
+4 | Gb7b9    # tritone substitute: resolves down a half step to FMaj7; b9 from the symbol
+5 | FMaj7    # the Gb7b9 before it makes F the key of the moment: the 4th is in the key
+5 | FMaj7/E  # from the symbol: sus b9
+6 | FMaj7/D  # IV: the #4 is the key’s 7th
+6 | FMaj7/C  # IV: the #4 is the key’s 7th
+7 | Bm7b5    # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+7 | E7b13    # V7/vi in C: b9 and b13 are in the key
+8 | Am7      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+8 | Abdim7   # passing diminished: G7♭9 without its G, the C7#11's dominant (Gm7 its ii)
+# area: F minor (B 9 – C 8)
+9 | Gm7      # ii of the ii–V to F minor
+9 | C7#11    # V7 of F minor: 9, #11 and 13 from the symbol
+
+section: C
+bars: 11
+1 | Fm7      # tonic minor: Dorian by convention
+2 | Bbm7     # iv: Dorian, the key’s own notes
+3 | Ebm7     # a borrowed minor chord: Dorian, its own key
+3 | D7#11    # tritone substitute: resolves down a half step to DbMaj7
+4 | DbMaj7   # a non-tonic major chord: Lydian
+4 | Gb7#11   # tritone substitute: resolves down a half step to Fm7
+5 | Fm7      # tonic minor: Dorian by convention
+5 | Fm7/Eb   # tonic minor: Dorian by convention
+6 | DbMaj7   # a non-tonic major chord: Lydian
+7 | Db7      # tritone substitute: resolves down a half step to C7
+7 | C7       # V7 of F minor: b9 and b13 are in the key
+8 | Fm       # tonic minor: Dorian by convention

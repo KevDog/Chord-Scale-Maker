@@ -189,7 +189,7 @@ describe('sheet', () => {
   })
 
   describe('reading resolveScales', () => {
-    const doc = parseChart('title: T\nkey: Gm\nA | 1 | Am7b5\nA | 2 | D7\nA | 3 | Gm7 | G Dorian\n').value
+    const doc = parseChart('title: T\nkey: Gm\n\nsection: A\nbars: 4\n1 | Am7b5\n2 | D7\n3 | Gm7 | G Dorian\n').value
     const played = (level: ScaleLevel): (string | null)[] =>
       (buildSheet(expandRows(doc).value, CONCERT, 'root', 'C', 12, null, undefined, resolveScales(doc, { level, seed: 0 }))[0]?.pages.flat() ?? []).map((s) =>
         s.scale ? `${rootName(s.scale.root)} ${s.scale.name}` : null,
@@ -260,11 +260,11 @@ describe('scaleLines', () => {
 
 const FORM = [
   'title: T', 'key: C',
-  'A1 | 1 | Dm7 | D Dorian', 'A1 | 2 | G7 | G Mixolydian',
-  '@copy A1 A2 2', // straight after its source: folded, drawn once as A1 · A2
-  'B | 5 | Dm7 | D Dorian', 'B | 6 | E7 | E Phrygian Dominant', 'B | 7 | Am7 | A Aeolian', 'B | 8 | G7 | G Mixolydian',
-  '@ending 1 B 7 7', '@ending 2 B 8 8',
-  '@copy A1 A3 8', // after B: written out, A3 (= A1)
+  'section: A1', '1 | Dm7 | D Dorian', '2 | G7 | G Mixolydian',
+  'section: A2', 'copy: A1', // straight after its source: folded, drawn once as A1 · A2
+  'section: B', '1 | Dm7 | D Dorian', '2 | E7 | E Phrygian Dominant', '3 | Am7 | A Aeolian', '4 | G7 | G Mixolydian',
+  '@ending 1 3 3', '@ending 2 4 4',
+  'section: A3', 'copy: A1', // after B: written out, A3 (= A1)
 ].join('\n') + '\n'
 
 describe('linePositions', () => {
@@ -276,15 +276,15 @@ describe('linePositions', () => {
   const of = (chord: string) => linePositions(lines.find((l) => l.chords.includes(chord))!, at)
 
   it('covers every drawn position of its chord and scale, in form order: the source, a 2nd ending, a written-out copy', () => {
-    expect(of('Dm7')).toEqual(['A1:1:0', 'B:5:0', 'A3:9:0'])
-    expect(of('G7')).toEqual(['A1:2:0', 'B:8:0', 'A3:10:0'])
+    expect(of('Dm7')).toEqual(['A1:1:0', 'B:1:0', 'A3:1:0'])
+    expect(of('G7')).toEqual(['A1:2:0', 'B:4:0', 'A3:2:0'])
   })
   it('lists each row on its line', () => {
     expect(lines.find((l) => l.chords.includes('Dm7'))!.rows).toEqual([0, 2, 4, 8]) // A2's row 2 is folded: no position
   })
   it('gives a line whose rows are all in a folded repeat no positions', () => {
     // two bars (a one-bar copy is written out, not folded); blank cells: A2's G7 goes on to Cm7, so it resolves to its own scale
-    const d = parseChart('title: T\nkey: C\nA1 | 1 | Dm7\nA1 | 2 | G7\n@copy A1 A2 2\nB | 5 | Cm7\nB | 6 | Cm7\n').value
+    const d = parseChart('title: T\nkey: C\n\nsection: A1\n1 | Dm7\n2 | G7\n\nsection: A2\ncopy: A1\n\nsection: B\nbars: 4\n1 | Cm7\n2 | Cm7\n').value
     const r = resolveScales(d, { level: 'standard', seed: 0 })
     expect([r.get(1)?.scale, r.get(3)?.scale]).toEqual(['G Mixolydian', 'G Phrygian Dominant'])
     const only = scaleLines(expandRowLines(d).value, (_, i) => r.get(i)?.scale ?? null).find((l) => l.rows.includes(3))!
@@ -307,8 +307,8 @@ describe('chord picks on the Scales sheet (#303)', () => {
 
   it('lists the positions it covers and its concert source', () => {
     expect(rows.length).toBe(expandRowLines(doc).value.length)
-    expect(dm(staves(NO_PICKS))).toMatchObject({ positions: ['A1:1:0', 'B:5:0', 'A3:9:0'], varies: false, source: { chord: 'Dm7', scale: res.get(0)?.scale } })
-    expect(g7(staves(NO_PICKS))).toMatchObject({ positions: ['A1:2:0', 'B:8:0', 'A3:10:0'], source: { chord: 'G7', scale: 'G Mixolydian' } }) // a 2nd ending and a written-out copy
+    expect(dm(staves(NO_PICKS))).toMatchObject({ positions: ['A1:1:0', 'B:1:0', 'A3:1:0'], varies: false, source: { chord: 'Dm7', scale: res.get(0)?.scale } })
+    expect(g7(staves(NO_PICKS))).toMatchObject({ positions: ['A1:2:0', 'B:4:0', 'A3:2:0'], source: { chord: 'G7', scale: 'G Mixolydian' } }) // a 2nd ending and a written-out copy
     expect(dm(staves(NO_PICKS, PENT, TENOR)).source).toEqual({ chord: 'Dm7', scale: 'D Dorian' })
   })
   it('takes its first position’s pick', () => {
@@ -317,31 +317,31 @@ describe('chord picks on the Scales sheet (#303)', () => {
     expect(dm(staves(picks)).selected).toEqual(dm(staves(NO_PICKS, { preset: 'pentatonic', degree: 2 })).selected) // Em is on the 2 of D Dorian
   })
   it('varies where its positions’ picks differ (a pick and none count as different)', () => {
-    const picks = withPick(NO_PICKS, 'pentatonic', ['B:5:0'], 4, targets)
+    const picks = withPick(NO_PICKS, 'pentatonic', ['B:1:0'], 4, targets)
     const s = dm(staves(picks))
     expect([s.pentatonic?.name, s.pentatonic?.picked, s.varies]).toEqual(['Dm', false, true]) // first position A1:1:0 has none
     expect(dm(staves(withPick(picks, 'pentatonic', ['A1:1:0'], 9, targets))).varies).toBe(true) // two different picks
   })
   it('does not vary when every position has the same pick', () => {
-    expect(dm(staves(withPick(NO_PICKS, 'pentatonic', ['A1:1:0', 'B:5:0', 'A3:9:0'], 4, targets))).varies).toBe(false)
+    expect(dm(staves(withPick(NO_PICKS, 'pentatonic', ['A1:1:0', 'B:1:0', 'A3:1:0'], 4, targets))).varies).toBe(false)
   })
   it('ignores a stale pick and the other kind’s picks', () => {
     expect(dm(staves({ pentatonic: { 'A1:1:0': { pc: 4, for: 'Dm7|D Aeolian' } }, hexatonic: {} })).pentatonic?.picked).toBe(false)
-    expect(dm(staves({ pentatonic: { 'B:5:0': { pc: 4, for: 'Dm7|D Aeolian' } }, hexatonic: {} })).varies).toBe(false) // stale: counts as none
+    expect(dm(staves({ pentatonic: { 'B:1:0': { pc: 4, for: 'Dm7|D Aeolian' } }, hexatonic: {} })).varies).toBe(false) // stale: counts as none
     expect(dm(staves(withPick(NO_PICKS, 'hexatonic', ['A1:1:0'], [0, 2], targets))).varies).toBe(false)
   })
   it('applies a hexatonic pick under the Hexatonic preset', () => {
-    const s = dm(staves(withPick(NO_PICKS, 'hexatonic', ['A1:1:0', 'B:5:0', 'A3:9:0'], [5, 7], targets), { preset: 'hexatonic', pair: 0, grouping: 'triads' }))
+    const s = dm(staves(withPick(NO_PICKS, 'hexatonic', ['A1:1:0', 'B:1:0', 'A3:1:0'], [5, 7], targets), { preset: 'hexatonic', pair: 0, grouping: 'triads' }))
     expect(s.hexatonic).toMatchObject({ name: 'F/G', picked: true })
     expect(s.varies).toBe(false)
-    const one = dm(staves(withPick(NO_PICKS, 'hexatonic', ['B:5:0'], [5, 7], targets), { preset: 'hexatonic', pair: 0, grouping: 'triads' }))
+    const one = dm(staves(withPick(NO_PICKS, 'hexatonic', ['B:1:0'], [5, 7], targets), { preset: 'hexatonic', pair: 0, grouping: 'triads' }))
     expect([one.hexatonic?.picked, one.varies]).toEqual([false, true])
   })
   it('does not vary for a hexatonic pick whose roots are not among the staff’s pairs (it plays the sheet’s pair)', () => {
     const HEX = { preset: 'hexatonic', pair: 0, grouping: 'triads' } as const
-    const one = dm(staves(withPick(NO_PICKS, 'hexatonic', ['B:5:0'], [1, 3], targets), HEX))
+    const one = dm(staves(withPick(NO_PICKS, 'hexatonic', ['B:1:0'], [1, 3], targets), HEX))
     expect([one.hexatonic?.picked, one.varies]).toEqual([false, false])
-    const mixed = dm(staves(withPick(withPick(NO_PICKS, 'hexatonic', ['A1:1:0'], [1, 3], targets), 'hexatonic', ['B:5:0', 'A3:9:0'], [5, 7], targets), HEX))
+    const mixed = dm(staves(withPick(withPick(NO_PICKS, 'hexatonic', ['A1:1:0'], [1, 3], targets), 'hexatonic', ['B:1:0', 'A3:1:0'], [5, 7], targets), HEX))
     expect([mixed.hexatonic?.name, mixed.hexatonic?.picked, mixed.varies]).toEqual([dm(staves(NO_PICKS, HEX)).hexatonic?.name, false, true]) // the damaged one counts as none
   })
   it('keeps the sounding pick on a B♭ part', () => {
@@ -351,13 +351,13 @@ describe('chord picks on the Scales sheet (#303)', () => {
   it('without picks or positions, staves have positions [] and varies false; error staves too', () => {
     const s = buildSheet(rows, CONCERT, 'root', 'C', 12, PENT, undefined, res)[0]!.pages.flat()
     expect(s.every((x) => x.positions.length === 0 && !x.varies && x.source !== null)).toBe(true)
-    const bad = parseChart('title: T\nkey: C\nA | 1 | Dm7\nA | 2 | Xyz\n').value
+    const bad = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | Xyz\n').value
     const br = resolveScales(bad, { level: 'standard', seed: 0 })
     const err = buildSheet(expandRows(bad).value, CONCERT, 'root', 'C', 12, PENT, undefined, br, { picks: NO_PICKS, at: chordPositions(bad) })[0]!.pages.flat()
     expect(err.map((x) => [x.error !== null, x.positions, x.varies, x.source])).toEqual([[false, ['A:1:0'], false, { chord: 'Dm7', scale: 'D Dorian' }], [true, ['A:2:0'], false, null]])
   })
   it('gives a staff whose rows are all in a folded repeat no positions and no varies', () => {
-    const d = parseChart('title: T\nkey: C\nA1 | 1 | Dm7\nA1 | 2 | G7\n@copy A1 A2 2\nB | 5 | Cm7\nB | 6 | Cm7\n').value
+    const d = parseChart('title: T\nkey: C\n\nsection: A1\n1 | Dm7\n2 | G7\n\nsection: A2\ncopy: A1\n\nsection: B\nbars: 4\n1 | Cm7\n2 | Cm7\n').value
     const r = resolveScales(d, { level: 'standard', seed: 0 })
     const picks = withPick(NO_PICKS, 'pentatonic', ['A1:2:0'], 2, pickTargets(d, r))
     const s = buildSheet(expandRows(d).value, CONCERT, 'root', 'C', 12, PENT, undefined, r, { picks, at: chordPositions(d) })[0]!.pages.flat()
