@@ -95,10 +95,10 @@ describe('EditorView', () => {
     w.unmount()
   })
 
-  it("previews in concert pitch by default, spelled from the chart's key", async () => {
+  it("previews a Piano part by default, named on the sheet, spelled from the chart's key", async () => {
     const w = await mount()
     await chooseSheet(w, 'Scales')
-    expect(sheet(w).props()).toMatchObject({ part: { clef: 'treble', trans: 'C' }, instrumentLabel: '', start: 'C', mode: 'from' })
+    expect(sheet(w).props()).toMatchObject({ part: { clef: 'treble', trans: 'C' }, instrumentLabel: 'Piano', start: 'C', mode: 'from' })
     expect(w.text()).not.toContain('the preview is')
   })
 

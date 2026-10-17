@@ -72,7 +72,7 @@ const props = defineProps<{
   composer?: string
   headingLevel?: 1 | 2 // the title as the page's h1 (SheetPages)
   part: Part
-  instrumentLabel: string // '' for concert
+  instrumentLabel: string // '' while editing in concert pitch
   numerals: boolean
   scales: boolean
   line?: ChangesLineChoice // a guide tone, arpeggio or Pentatonic line, as notes in place of the slashes (the clef then always starts line 1)

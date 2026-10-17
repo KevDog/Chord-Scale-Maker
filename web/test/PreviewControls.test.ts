@@ -3,7 +3,7 @@ import { afterEach, describe, expect, it } from 'vitest'
 import PreviewControls from '~/components/PreviewControls.vue'
 
 const mount = (props: Record<string, unknown> = {}) =>
-  mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'concert', spell: 'key', intervals: true, keyStart: 'C', overlay: 'off', pentRung: 0, pentSide: 'flat', pentPath: 'one', pentBasis: 'key', pentDegree: 'auto', ...props } })
+  mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'piano', spell: 'key', intervals: true, keyStart: 'C', overlay: 'off', pentRung: 0, pentSide: 'flat', pentPath: 'one', pentBasis: 'key', pentDegree: 'auto', ...props } })
 
 /** mounted with the Pentatonic options' popover opened from its chevron (#293) */
 const opened = async (props: Record<string, unknown> = {}) => {
@@ -149,7 +149,7 @@ describe('the Line under the Pentatonic overlay (#284)', () => {
 
 describe('interface levels', () => {
   const withLevel = (props: Record<string, unknown> = {}) =>
-    mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'concert', spell: 'key', intervals: true, keyStart: 'C', ...props }, slots: { level: () => 'level-slot' } })
+    mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'piano', spell: 'key', intervals: true, keyStart: 'C', ...props }, slots: { level: () => 'level-slot' } })
   const at = (level: 'essentials' | 'intermediate' | 'everything') => {
     useInterface().level.value = level
   }

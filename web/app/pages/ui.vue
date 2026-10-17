@@ -66,7 +66,6 @@
           <UiListbox v-model="instrument">
             <template #selected="{ value }"><UiListboxLabel>{{ value }}</UiListboxLabel></template>
             <UiListboxGroup label="Concert pitch (C)">
-              <UiListboxOption value="concert"><UiListboxLabel>Concert</UiListboxLabel></UiListboxOption>
               <UiListboxOption value="piano"><UiListboxLabel>Piano</UiListboxLabel></UiListboxOption>
             </UiListboxGroup>
             <UiListboxGroup label="B♭ instruments">

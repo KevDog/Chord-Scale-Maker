@@ -6,7 +6,7 @@ import { ISSUE_CONTEXT } from '~/utils/issueReport'
 
 const M4_PROPS = { reason: 'ii of the ii–V to C', heardIn: 'C major', keyFrom: 'found' as const, rule: 'm4', fallback: false, chord: 'Dm7', concert: 'Dm7', numeral: 'ii7', scale: 'D Dorian' }
 const base = { reason: 'r', heardIn: 'C major', keyFrom: 'found' as const, rule: 'm4', fallback: false, chord: 'Dm7', concert: 'Dm7', numeral: 'ii7', scale: 'D Dorian', at: { section: 'A', bar: '1' } }
-const CONTEXT = { title: () => 'T', part: () => ({ name: 'Concert', transposes: false }), library: (): string | null => null, shareUrl: async () => 'https://x/song#s=1' }
+const CONTEXT = { title: () => 'T', part: () => ({ name: 'Piano', transposes: false }), library: (): string | null => null, shareUrl: async () => 'https://x/song#s=1' }
 const mountNote = (props: Partial<typeof base> & { wrap?: boolean } = {}, context: Partial<typeof CONTEXT> = {}) =>
   mountSuspended(ChangesNote, { props: { ...base, ...props }, slots: { default: () => 'x' }, attachTo: document.body, global: { provide: { [ISSUE_CONTEXT as symbol]: { ...CONTEXT, ...context } } } })
 /** a click as the browser gives it: synchronous, nothing awaited after it */
