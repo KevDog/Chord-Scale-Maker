@@ -10,6 +10,7 @@ describe('songHead', () => {
       description: expect.stringContaining('lead-sheet'),
       ogTitle: 'Blue Trane (John Coltrane) · Chord Scale Maker',
       robots: 'index, follow, max-image-preview:large',
+      image: { url: 'https://www.chordscalemaker.com/og/blue-trane.png', alt: 'Blue Trane, John Coltrane: chord changes' },
     })
     expect(h?.title).toBe('Blue Trane')
     expect(h?.composer).toBe('John Coltrane')
@@ -24,6 +25,9 @@ describe('songHead', () => {
     const outline = songHead('blue-trane')?.outline
     expect(outline?.map((s) => s.name)).toEqual(['A'])
     expect(outline?.[0]?.bars).toHaveLength(12)
+  })
+  it("names a song's preview image without a composer when it has none", () => {
+    expect(songHead('f-blues')?.head.image?.alt).toBe('F Blues: chord changes')
   })
   it('is null for anything that is not a library chart', () => {
     expect(songHead('no-such-tune')).toBeNull()

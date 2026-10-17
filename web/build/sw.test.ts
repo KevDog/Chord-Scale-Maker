@@ -23,6 +23,7 @@ const FILES = [
   'site.webmanifest',
   'theme-init.js',
   'og-image.png',
+  'og/autumn-leaves.png',
   'robots.txt',
   'sitemap.xml',
   'sw.js',
@@ -54,7 +55,7 @@ describe('precacheUrls', () => {
 
   it('leaves out the song pages (cached when visited) and what a page never loads', () => {
     const urls = precacheUrls(FILES)
-    for (const url of ['/song/f-blues', '/song/f-blues/_payload.json', '/og-image.png', '/robots.txt', '/sitemap.xml', '/sw.js'])
+    for (const url of ['/song/f-blues', '/song/f-blues/_payload.json', '/og-image.png', '/og/autumn-leaves.png', '/robots.txt', '/sitemap.xml', '/sw.js'])
       expect(urls).not.toContain(url)
   })
 

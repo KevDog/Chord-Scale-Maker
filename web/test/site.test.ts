@@ -77,6 +77,17 @@ describe('seoMeta', () => {
     expect(seoMeta(PAGE_HEAD.index).ogTitle).toBe('Chord Scale Maker: Endless Improvisation Practice Sheets for Jazz Standards')
     expect(seoMeta(PAGE_HEAD.song).robots).toBe('noindex')
   })
+  it('gives a page with its own preview image that image, 1200×630, for both previews', () => {
+    const image = { url: 'https://www.chordscalemaker.com/og/x.png', alt: 'X: chord changes' }
+    expect(seoMeta({ ...PAGE_HEAD.help, image })).toMatchObject({
+      ogImage: image.url,
+      ogImageWidth: 1200,
+      ogImageHeight: 630,
+      ogImageAlt: image.alt,
+      twitterImage: image.url,
+      twitterImageAlt: image.alt,
+    })
+  })
 })
 
 describe('song pages', () => {
