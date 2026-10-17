@@ -163,6 +163,14 @@ export async function guidesDrawn(page: Page): Promise<void> {
     .toBe(true)
 }
 
+/** choose a melodic cell or system (#298, flag `cells`) from the 7th Chords' "Arpeggio pattern" listbox: "Root to root", "1 2 3 5", … */
+export async function showCell(page: Page, cell: string): Promise<void> {
+  await inControls(page, async () => {
+    await pickLine(page, '7th Chords')
+    await pickOption(page, 'Arpeggio pattern', cell)
+  })
+}
+
 /** choose 7th Chords with a pattern ("Up · root", "Voice-led", …) */
 export async function showArpeggios(page: Page, pattern: string): Promise<void> {
   await inControls(page, async () => {

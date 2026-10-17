@@ -1,7 +1,11 @@
-import { afterEach, describe, expect, it } from 'vitest'
+import { mockNuxtImport } from '@nuxt/test-utils/runtime'
+import { afterEach, describe, expect, it, vi } from 'vitest'
 import { effectScope, nextTick } from 'vue'
 import { linkPreferences, usePreferences } from '~/composables/usePreferences'
 import type { ShareView } from '@chord-scale-maker/engine'
+
+const flags = vi.hoisted(() => ({ cells: true }))
+mockNuxtImport('useFeature', () => (name: string) => name === 'cells' && flags.cells)
 
 function prefs() {
   const scope = effectScope()
@@ -18,7 +22,10 @@ function linked(view: ShareView) {
 }
 
 describe('usePreferences', () => {
-  afterEach(() => localStorage.clear())
+  afterEach(() => {
+    localStorage.clear()
+    flags.cells = true
+  })
 
   it("defaults to piano spelled from the chart's key, with interval labels on", () => {
     const p = prefs()
@@ -58,6 +65,31 @@ describe('usePreferences', () => {
     const again = prefs()
     expect([again.lineMode.value, again.arpeggio.value, again.guideLine.value]).toEqual(['arpeggio', 'voice-led', 'seventh'])
     expect(Object.keys(p)).not.toContain('fromThird')
+  })
+
+  it('remembers the Cells line: the mode and the cell, 3rd to 3rd until chosen, and rejects an unknown cell', async () => {
+    const p = prefs()
+    expect(p.cells.value).toBe('3rd-3rd')
+    p.lineMode.value = 'cells'
+    p.cells.value = '1-2-3-5'
+    await nextTick()
+    expect([localStorage.getItem('csm-line'), localStorage.getItem('csm-cells')]).toEqual(['cells', '1-2-3-5'])
+    const again = prefs()
+    expect([again.lineMode.value, again.cells.value]).toEqual(['cells', '1-2-3-5'])
+    localStorage.setItem('csm-cells', '9-9-9-9')
+    expect(prefs().cells.value).toBe('3rd-3rd')
+  })
+
+  it('shows a stored Cells line as Off with the cells flag off, and keeps it stored', async () => {
+    localStorage.setItem('csm-line', 'cells')
+    flags.cells = false
+    const p = prefs()
+    expect(p.lineMode.value).toBe('off')
+    await nextTick()
+    expect(localStorage.getItem('csm-line')).toBe('cells')
+    expect(linked({ line: 'cells:5-3-2-1' }).lineMode.value).toBe('off')
+    flags.cells = true
+    expect(prefs().lineMode.value).toBe('cells')
   })
 
   it('falls back from stored values it does not know, and ignores the old keys', () => {
@@ -110,6 +142,16 @@ describe('linkPreferences', () => {
     await nextTick()
     expect(localStorage.getItem('csm-line')).toBe('arpeggio')
     expect(localStorage.getItem('csm-guide-line')).toBe('seventh')
+  })
+
+  it("takes a link's cells line over your own, for this visit only", async () => {
+    localStorage.setItem('csm-cells', '1-3-5-7')
+    const p = linked({ line: 'cells:5-3-2-1' })
+    expect([p.lineMode.value, p.cells.value]).toEqual(['cells', '5-3-2-1'])
+    expect(linked({ line: 'third' }).cells.value).toBe('1-3-5-7')
+    p.cells.value = '1-2-3-5'
+    await nextTick()
+    expect(localStorage.getItem('csm-cells')).toBe('1-3-5-7')
   })
 
   it("reads a link's spelling: its start note, from the root, or the key when it has no note", () => {

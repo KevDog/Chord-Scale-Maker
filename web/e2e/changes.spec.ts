@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseInstrument, chooseInterface, chooseSheet, type Drawn, drawn, expect, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, sheetChord, showArpeggios, showGuides, test, writeChart } from './fixtures'
+import { chooseInstrument, chooseInterface, chooseSheet, type Drawn, drawn, expect, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, sheetChord, showArpeggios, showCell, showGuides, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the controls above it (whose menus name the same scales) */
@@ -247,6 +247,34 @@ test('7th Chords in 3/4: six eighths for a bar of one chord, turning back after 
   await arpeggiosDrawn(page)
   await expect(line).toHaveAttribute('aria-label', /; 7th chords: C4 E4 G4 B4 G4 E4 \| D4 F4 A4 C5 A4 F4 \| /) // each next chord nearest the turn-back's last note
   await expect.poll(async () => (await drawn(line)).heads.length).toBe(4 * 6)
+})
+
+test('Cells (#298): a cell on each beat 1 and 3 of a chord, eighths beamed by the beat, and the choice stays and rides a share link', async ({ page, browser }) => {
+  await page.goto('/song/autumn-leaves')
+  const line = lines(page).first()
+  await showCell(page, 'Root to root')
+  await expect(line).toHaveAttribute('aria-label', /; cells: C5 D5 E♭5 G5 C6 B♭5 A5 G5 \| F5 /)
+  const bars = 4
+  const beats = 4 // Autumn Leaves is in 4/4
+  await expect.poll(async () => (await drawn(line)).heads.length).toBe(bars * beats * 2) // eighths throughout: every chord has a cell a two beats
+  expect((await drawn(line)).slashes).toBe(0)
+  expect(await line.locator('.vf-beam').count()).toBe(bars * beats) // a beam for each beat's pair of eighths (changesDrawing beams by the beat)
+  await expectChordsOnHeads(line) // each chord sits on a note, on its beat 1 or 3
+  await expect(labelRow(line)).toHaveCount(0)
+  await page.reload()
+  await expect(page.getByRole('radio', { name: '7th Chords', exact: true })).toBeChecked() // remembered: the cells share its slot
+  await expect(page.getByLabel('Arpeggio pattern', { exact: true })).toContainText('Root to root')
+  await page.getByRole('button', { name: 'Share' }).click()
+  const box = page.getByRole('dialog').getByLabel('Link')
+  await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/)
+  const link = await box.inputValue()
+  const other = await browser.newContext()
+  await chooseInterface(other, 'everything')
+  const visitor = await other.newPage()
+  await visitor.goto(link)
+  await expect(visitor.getByRole('radio', { name: '7th Chords', exact: true })).toBeChecked()
+  await expect(visitor.getByLabel('Arpeggio pattern', { exact: true })).toContainText('Root to root')
+  await other.close()
 })
 
 test('a share link carries the arpeggio pattern', async ({ page, browser }) => {

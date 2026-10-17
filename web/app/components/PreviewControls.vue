@@ -96,7 +96,7 @@
                     <UiLabel class="pl-3">Line</UiLabel>
                     <!-- the detail opens beneath the modes, so the Line group keeps its width and place (#187) -->
                     <div class="flex flex-col gap-2">
-                      <SegmentedControl v-model="lineMode" legend="Line" name="line-mode" :options="lineModes(overlay)" />
+                      <SegmentedControl v-model="lineRadio" legend="Line" name="line-mode" :options="lineModes(overlay)" />
                       <EaseReveal :show="lineMode === 'guide'">
                         <UiListbox v-model="guideLine" class="w-full" aria-label="Guide tone line">
                           <template #selected="{ value }"><UiListboxLabel>{{ guideLabel(value) }}</UiListboxLabel></template>
@@ -104,7 +104,7 @@
                         </UiListbox>
                       </EaseReveal>
                       <!-- the Pentatonic line (#284) and the Triad pair line (#325): the direction (the Arpeggios sheet's), and the Pentatonic's Leave out where the Superimpose shows -->
-                      <EaseReveal :show="lineMode === 'arpeggio' && overlay !== 'off'" inner-class="flex flex-col gap-2">
+                      <EaseReveal :show="inSlot && overlay !== 'off'" inner-class="flex flex-col gap-2">
                         <UiListbox v-model="arpDir" class="w-full" :aria-label="overlay === 'pentatonic' ? 'Pentatonic direction' : 'Triad pair direction'" title="Each cell up, down, or up and down by turns">
                           <template #selected="{ value }"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[value] }}</UiListboxLabel></template>
                           <UiListboxOption v-for="d in ARP_DIRECTIONS" :key="d" :value="d"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[d] }}</UiListboxLabel></UiListboxOption>
@@ -116,10 +116,19 @@
                           </UiListbox>
                         </EaseReveal>
                       </EaseReveal>
-                      <EaseReveal :show="lineMode === 'arpeggio' && overlay === 'off'">
-                        <UiListbox v-model="arpeggio" class="w-full" aria-label="Arpeggio pattern">
-                          <template #selected="{ value }"><UiListboxLabel>{{ ARPEGGIO_LABELS[value] }}</UiListboxLabel></template>
+                      <!-- the 7th Chords slot's pattern; with the Cells flag, also the melodic cells (#298): a system (A and B in turn) or one cell in every slot -->
+                      <EaseReveal :show="inSlot && overlay === 'off'">
+                        <UiListbox v-model="slotChoice" class="w-full" aria-label="Arpeggio pattern">
+                          <template #selected="{ value }"><UiListboxLabel>{{ slotLabel(value) }}</UiListboxLabel></template>
                           <UiListboxOption v-for="p in ARPEGGIO_PATTERNS" :key="p" :value="p"><UiListboxLabel>{{ ARPEGGIO_LABELS[p] }}</UiListboxLabel></UiListboxOption>
+                          <template v-if="cellsOn && shows('cells')">
+                            <UiListboxGroup label="Cell systems">
+                              <UiListboxOption v-for="id in SYSTEM_IDS" :key="id" :value="id"><UiListboxLabel>{{ cellLabel(id) }}</UiListboxLabel></UiListboxOption>
+                            </UiListboxGroup>
+                            <UiListboxGroup label="Cells">
+                              <UiListboxOption v-for="c in SINGLE_CELLS" :key="c.id" :value="c.id"><UiListboxLabel>{{ cellLabel(c.id) }}</UiListboxLabel></UiListboxOption>
+                            </UiListboxGroup>
+                          </template>
                         </UiListbox>
                       </EaseReveal>
                     </div>
@@ -191,7 +200,7 @@
     </template>
 
     <script setup lang="ts">
-    import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, formatPattern, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
+    import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, formatPattern, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
     import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
@@ -230,6 +239,7 @@
     const lineMode = defineModel<LineMode>('lineMode', { default: 'off' })
     const guideLine = defineModel<GuideFrom>('guideLine', { default: 'third' })
     const arpeggio = defineModel<ArpeggioPattern>('arpeggio', { default: 'up-root' })
+    const cells = defineModel<CellId>('cells', { default: '3rd-3rd' })
     const arpNotes = defineModel<ArpNotes>('arpNotes', { default: 'seventh' })
     const arpDir = defineModel<ArpDirection>('arpDir', { default: 'up' })
     const pattern = defineModel<string>('pattern', { default: '+1 +1 +1 −2' })
@@ -295,6 +305,22 @@
     ] as const
     const guideLabel = (v: GuideFrom): string => GUIDE_LINES.find((g) => g.value === v)?.label ?? ''
     const patternsOn = useFeature('patterns')
+    const cellsOn = useFeature('cells')
+    const SYSTEM_IDS = Object.keys(CELL_SYSTEMS) as (keyof typeof CELL_SYSTEMS)[]
+    // the Cells line shares the 7th Chords slot (#298): the radio reads 7th Chords while a cell is chosen, and picking
+    // a cell sets the mode and the cell, a pattern the mode and the pattern; leaving the slot for another mode and coming back restores 7th Chords
+    const inSlot = computed(() => lineMode.value === 'arpeggio' || lineMode.value === 'cells')
+    const lineRadio = computed<LineMode>({
+      get: () => (lineMode.value === 'cells' ? 'arpeggio' : lineMode.value),
+      set: (v) => { if (!(v === 'arpeggio' && inSlot.value)) lineMode.value = v },
+    })
+    const slotChoice = computed<ArpeggioPattern | CellId>({
+      get: () => (lineMode.value === 'cells' ? cells.value : arpeggio.value),
+      set: (v) => {
+        if (isCellId(v)) { cells.value = v; lineMode.value = 'cells' } else { arpeggio.value = v; lineMode.value = 'arpeggio' }
+      },
+    })
+    const slotLabel = (v: ArpeggioPattern | CellId): string => (isCellId(v) ? cellLabel(v) : ARPEGGIO_LABELS[v])
     const sheetLabel = (v: SheetKind): string => SHEETS.find((s) => s.value === v)?.label ?? ''
     const part = computed(() => partFor(instrument.value))
     </script>

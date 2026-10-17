@@ -187,6 +187,13 @@
               While Superimpose is Hexatonic, it becomes <strong class="font-semibold">Triad pair</strong>: each chord's
               labelled pair a triad at a time, its lower triad first (<UiCode>G/Am</UiCode> plays G B D, then A C E from
               the note nearest D), with the same direction, rhythm and turns.
+              <template v-if="cellsOn">
+                The 7th Chords pattern list also holds <strong class="font-semibold">Cells</strong>, which put a four-note cell on each chord, two beats each, after
+                Randy Vincent's <em>Building Solo Lines From Cells</em>. A cell is four scale degrees counted from the chord's root
+                (<UiCode>1 2 3 5</UiCode>), read through the chord's scale. Choose a cell system, whose cells A and B take turns so that
+                each ends a step from where the next begins, or a single cell that every two beats repeats. Under a Superimpose the slot
+                plays the Pentatonic or Triad pair line instead.
+              </template>
             </dd>
           </div>
           <div>
@@ -430,6 +437,7 @@ import { PENT_INSIDE_HELP } from '~/utils/pentatonics'
 
 const offline = useFeature('offline')
 const patternsOn = useFeature('patterns')
+const cellsOn = useFeature('cells')
 const GUIDE_RANGES = guideRanges()
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },

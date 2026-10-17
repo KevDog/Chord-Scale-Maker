@@ -1,5 +1,5 @@
 import type { Ref } from 'vue'
-import { type ArpDirection, formatPattern, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, isPatternNotes, isPentatonicLeave, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type ShareView } from '@chord-scale-maker/engine'
+import { type ArpDirection, type CellId, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, isPatternNotes, isPentatonicLeave, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type ShareView } from '@chord-scale-maker/engine'
 import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
@@ -31,10 +31,14 @@ export function usePreferences() {
   // the Changes sheet's study rows: each chord's numeral and its scale, both on until turned off
   const numerals = storedRef<boolean>('csm-numerals', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
   const scaleNames = storedRef<boolean>('csm-scale-names', (s) => s === 'on', true, (v) => (v ? 'on' : 'off'))
-  // the Changes sheet's line: off, guide tones (from the 3rd or the 7th) or 7th chord arpeggios (a pattern); off until chosen
-  const lineMode = storedRef<LineMode>('csm-line', (s) => (s === 'off' || s === 'guide' || s === 'arpeggio' ? s : undefined), 'off')
+  // the Changes sheet's line: off, guide tones (from the 3rd or the 7th) or 7th chord arpeggios (a pattern) or cells; off until
+  // chosen. A stored Cells line with the flag off reads as Off but stays stored, for when the flag is on again
+  const cellsOn = useFeature('cells')
+  const lineMode = storedRef<LineMode>('csm-line', (s) => (s === 'off' || s === 'guide' || s === 'arpeggio' || (s === 'cells' && cellsOn) ? s : undefined), 'off')
   const guideLine = storedRef<GuideFrom>('csm-guide-line', (s) => (s === 'third' || s === 'seventh' ? s : undefined), 'third')
   const arpeggio = storedRef<ArpeggioPattern>('csm-arpeggio', (s) => (isArpeggioPattern(s) ? s : undefined), 'up-root')
+  // the Cells line's system or cell (#298)
+  const cells = storedRef<CellId>('csm-cells', (s) => (isCellId(s) ? s : undefined), '3rd-3rd')
   // the Arpeggios sheet: 7th chords or extended, and the direction
   const arpNotes = storedRef<ArpNotes>('csm-arp-notes', (s) => (isArpNotes(s) ? s : undefined), 'seventh')
   const arpDir = storedRef<ArpDirection>('csm-arp-dir', (s) => (isArpDirection(s) ? s : undefined), 'up')
@@ -56,7 +60,7 @@ export function usePreferences() {
   const source = storedRef<boolean>('csm-source', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the /functions page's key: C major until another is picked
   const functionsKey = storedRef<string>('csm-functions-key', (s) => (FUNCTIONS_KEYS.includes(s) ? s : undefined), 'C')
-  return { instrument, spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, arpeggio, arpNotes, arpDir, pattern, patternNotes, patternDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, source, functionsKey }
+  return { instrument, spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, arpeggio, cells, arpNotes, arpDir, pattern, patternNotes, patternDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, source, functionsKey }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
@@ -72,9 +76,10 @@ export function linkPreferences(view: ShareView) {
     intervals: ref<boolean>(view.intervals ?? own.intervals.value),
     numerals: ref<boolean>(view.numerals ?? own.numerals.value),
     scaleNames: ref<boolean>(view.scaleNames ?? own.scaleNames.value),
-    lineMode: ref<LineMode>(choice.mode), // a link without a line shows none
+    lineMode: ref<LineMode>(choice.mode === 'cells' && !useFeature('cells') ? 'off' : choice.mode), // a link without a line (or a Cells line, the flag off) shows none
     guideLine: ref<GuideFrom>(choice.guide ?? own.guideLine.value),
     arpeggio: ref<ArpeggioPattern>(choice.arpeggio ?? own.arpeggio.value),
+    cells: ref<CellId>(choice.cells ?? own.cells.value),
     arpNotes: ref<ArpNotes>(view.arpNotes ?? own.arpNotes.value),
     arpDir: ref<ArpDirection>(view.arpDir ?? own.arpDir.value),
     pattern: ref<string>((view.pattern && canonicalPattern(view.pattern)) || own.pattern.value),

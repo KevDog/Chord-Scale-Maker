@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { changesLineOf, lineChoiceOf, lineModes, sheetLineOf } from '~/utils/sheetLine'
+import { changesLineOf, lineChoiceOf, lineModes, sheetLineOf, shareLineOf } from '~/utils/sheetLine'
 
 describe('sheetLineOf', () => {
   it('composes the mode with its own detail', () => {
@@ -15,6 +15,24 @@ describe('lineChoiceOf', () => {
     expect(lineChoiceOf('off')).toEqual({ mode: 'off' })
     expect(lineChoiceOf('third')).toEqual({ mode: 'guide', guide: 'third' })
     expect(lineChoiceOf('voice-led')).toEqual({ mode: 'arpeggio', arpeggio: 'voice-led' })
+  })
+})
+
+describe('the Cells line (#298)', () => {
+  const base = { guide: 'third', arpeggio: 'down-2nd', leave: 'b3', dir: 'up' } as const
+  it('plays mode cells as the cells line only with the Superimpose off: under an overlay the slot is the overlay line', () => {
+    expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'off' })).toEqual({ kind: 'cells', id: '1-2-3-5' })
+    expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'pentatonic' })).toEqual({ kind: 'pentatonic', leave: 'b3', dir: 'up', arpeggio: 'down-2nd' })
+    expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'hexatonic' })).toEqual({ kind: 'triad-pair', dir: 'up', arpeggio: 'down-2nd' })
+    expect(changesLineOf({ ...base, mode: 'guide', cells: '1-2-3-5', overlay: 'off' })).toBe('third')
+  })
+  it('has no Cells radio: the Line control keeps three modes (the cells are in the 7th Chords listbox)', () => {
+    expect(lineModes('off').map((m) => m.value)).toEqual(['off', 'guide', 'arpeggio'])
+  })
+  it('puts cells in a share link as cells:<id>, and reads one back', () => {
+    expect(shareLineOf('cells', 'third', 'up-root', '3rd-5th')).toBe('cells:3rd-5th')
+    expect(shareLineOf('guide', 'third', 'up-root', '3rd-5th')).toBe('third')
+    expect(lineChoiceOf('cells:3rd-5th')).toEqual({ mode: 'cells', cells: '3rd-5th' })
   })
 })
 

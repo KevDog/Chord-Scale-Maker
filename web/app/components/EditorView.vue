@@ -123,6 +123,7 @@
             v-model:line-mode="prefs.lineMode.value"
             v-model:guide-line="prefs.guideLine.value"
             v-model:arpeggio="prefs.arpeggio.value"
+            v-model:cells="prefs.cells.value"
             v-model:arp-notes="prefs.arpNotes.value"
             v-model:arp-dir="prefs.arpDir.value"
             v-model:pattern="prefs.pattern.value"
@@ -269,7 +270,7 @@
 import { ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, BookmarkIcon, CodeBracketIcon, EllipsisHorizontalIcon, LinkIcon, PencilSquareIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import { ISSUE_CONTEXT, issuePart } from '~/utils/issueReport'
 import { CHART_REPORT_KEY, type ChartReport, guidesText } from '~/utils/chartReport'
-import { changesLineOf, sheetLineOf } from '~/utils/sheetLine'
+import { changesLineOf, shareLineOf } from '~/utils/sheetLine'
 import { type HiddenSetting, hiddenSettings } from '~/utils/interface'
 import {
   addSection,
@@ -434,9 +435,9 @@ const patternMoves = computed(() => {
   const fallback = parsePattern(DEFAULT_PATTERN)
   return 'moves' in fallback ? fallback.moves : []
 })
-const sheetLine = computed(() => sheetLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value))
+const sheetLine = computed(() => shareLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value, prefs.cells.value))
 /** the line the Changes sheet draws: the stored one, the arpeggio slot read as the Pentatonic line under the Pentatonic overlay (#284) */
-const changesLine = computed(() => changesLineOf({ mode: prefs.lineMode.value, guide: prefs.guideLine.value, arpeggio: prefs.arpeggio.value, overlay: prefs.overlay.value, leave: prefs.pentLeave.value, dir: prefs.arpDir.value }))
+const changesLine = computed(() => changesLineOf({ mode: prefs.lineMode.value, guide: prefs.guideLine.value, arpeggio: prefs.arpeggio.value, overlay: prefs.overlay.value, leave: prefs.pentLeave.value, dir: prefs.arpDir.value, cells: prefs.cells.value }))
 /** chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor) */
 const sheetEditing = computed(() => editorShown.value && !editor.fatal.value)
 const sheetChord = ref<SheetChordEdit | null>(null)

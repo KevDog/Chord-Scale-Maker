@@ -1,4 +1,5 @@
 import { isSheetLine, type SheetLine } from './arpeggios'
+import { type CellId, isCellId } from './cells'
 import { type ArpDirection, type ArpNotes, isArpDirection, isArpNotes } from './arpeggioSheet'
 import { type ChordPicks, chordPicksFrom, hasPicks } from './chordPicks'
 import { type InstrumentName, isInstrumentName } from './instruments'
@@ -17,6 +18,10 @@ import { type PracticeSelection, practiceSelectionFrom } from './practice'
  * doesn't know, and returns null instead of throwing.
  */
 export type ShareSheet = 'scales' | 'changes' | 'arpeggios' | 'patterns' // a link from the retired Guide tones sheet drops its sheet and opens the default
+/** the Changes sheet's line in a link: a guide tone line, an arpeggio pattern, or cells:<id> (#298) */
+export type ShareLine = SheetLine | `cells:${CellId}`
+const lineFrom = (x: unknown): ShareLine | undefined =>
+  isSheetLine(x) ? x : typeof x === 'string' && x.startsWith('cells:') && isCellId(x.slice(6)) ? (x as `cells:${CellId}`) : undefined
 export type ShareView = Readonly<{
   instrument?: InstrumentName
   mode?: Mode
@@ -25,8 +30,8 @@ export type ShareView = Readonly<{
   /** the Changes sheet's numerals and scale rows */
   numerals?: boolean
   scaleNames?: boolean
-  /** the Changes sheet's line: a guide tone line or an arpeggio pattern; absent: off */
-  line?: SheetLine
+  /** the Changes sheet's line: a guide tone line, an arpeggio pattern or a cells line; absent: off */
+  line?: ShareLine
   sheet?: ShareSheet
   /** the Arpeggios sheet's choices: 7th Chord or Extended; Up, Down or Up & down */
   arpNotes?: ArpNotes
@@ -107,6 +112,7 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
   const practice = practiceSelectionFrom(o.practice)
   const picks = chordPicksFrom(Object.hasOwn(o, 'picks') ? o.picks : undefined)
   const instrument = o.instrument === 'concert' ? 'piano' : o.instrument // #332: links made before the concert choice was retired
+  const line = lineFrom(o.line)
   const parsed = typeof o.pattern === 'string' ? parsePattern(o.pattern) : undefined
   const view: ShareView = {
     ...(typeof instrument === 'string' && isInstrumentName(instrument) ? { instrument } : {}),
@@ -115,7 +121,7 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(typeof o.intervals === 'boolean' ? { intervals: o.intervals } : {}),
     ...(typeof o.numerals === 'boolean' ? { numerals: o.numerals } : {}),
     ...(typeof o.scaleNames === 'boolean' ? { scaleNames: o.scaleNames } : {}),
-    ...(isSheetLine(o.line) && o.line !== 'off' ? { line: o.line } : {}), // anything else: off
+    ...(line && line !== 'off' ? { line } : {}), // anything else: off
     ...(o.sheet === 'scales' || o.sheet === 'changes' || o.sheet === 'arpeggios' || o.sheet === 'patterns' ? { sheet: o.sheet } : {}),
     ...(isArpNotes(o.arpNotes) ? { arpNotes: o.arpNotes } : {}),
     ...(isArpDirection(o.arpDir) ? { arpDir: o.arpDir } : {}),

@@ -349,6 +349,21 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
     const { rows, widths } = await layout()
     expect(rows, `${sheet} (${widths})`).toBeLessThanOrEqual(2)
   }
+  // a line's detail (From 3rd; under the Pentatonics, the Pentatonic line's direction and Leave out, #284) opens beneath the Line control: nothing moves
+  const line = page.locator('#preview-toolbar [data-slot=label]').getByText('Line', { exact: true })
+  // where the label sits in the toolbar (not the viewport: a shorter sheet below can scroll the page)
+  const place = async () => {
+    const [l, t] = await Promise.all([line.boundingBox(), page.locator('#preview-toolbar').boundingBox()])
+    return l && t ? { x: l.x - t.x, y: l.y - t.y } : null
+  }
+  // the Cells (#298) are in the 7th Chords pattern listbox, not a fourth mode: with one chosen the rail keeps two rows and the label its place
+  const home = await place()
+  await showLine(page, '7th Chords')
+  await pickOption(page, 'Arpeggio pattern', 'Root to root')
+  const celled = await layout()
+  expect(celled.rows, `Changes, a cell (${celled.widths})`).toBeLessThanOrEqual(2)
+  expect(await place(), 'a cell').toEqual(home)
+  await showLine(page, 'Off')
   // the Pentatonics row on, at a rung with a side: its controls stack under Analysis, so the rail keeps two rows (#255)
   await showPentatonics(page)
   await pickOption(page, 'Pentatonic rung', '2 · 4 shared')
@@ -362,13 +377,6 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
   await expect(page.getByRole('group', { name: 'Bars a step' })).toBeVisible()
   const stepped = await layout()
   expect(stepped.rows, `Changes, Pentatonics stepped (${stepped.widths})`).toBeLessThanOrEqual(2)
-  // a line's detail (From 3rd; under the Pentatonics, the Pentatonic line's direction and Leave out, #284) opens beneath the Line control: nothing moves
-  const line = page.locator('#preview-toolbar [data-slot=label]').getByText('Line', { exact: true })
-  // where the label sits in the toolbar (not the viewport: a shorter sheet below can scroll the page)
-  const place = async () => {
-    const [l, t] = await Promise.all([line.boundingBox(), page.locator('#preview-toolbar').boundingBox()])
-    return l && t ? { x: l.x - t.x, y: l.y - t.y } : null
-  }
   const at = await place()
   for (const mode of ['Guide Tones', 'Pentatonic'] as const) {
     await showLine(page, mode)

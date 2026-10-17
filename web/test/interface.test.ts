@@ -19,6 +19,7 @@ describe('interface levels', () => {
       spell: 'intermediate',
       practice: 'intermediate',
       patterns: 'intermediate',
+      cells: 'intermediate',
       'scale-choice': 'intermediate',
       'form-editing': 'intermediate',
       why: 'intermediate',
