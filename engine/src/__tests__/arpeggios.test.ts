@@ -128,9 +128,41 @@ describe('arpeggio voices', () => {
     expect(bar.every((n) => n.beats === 0.25)).toBe(true)
     expect(bar.filter((n) => n.beat < 2)).toHaveLength(8)
   })
-  it('fills a 3/4 bar of one chord with six eighths, the pattern again from its start', () => {
+  it('fills a 3/4 bar of one chord with six eighths, turning back on the cell after it', () => {
     const { bars } = voice(seq(['CMaj7', 3]), 'up-root', CONCERT, 3)
-    expect(pitches(bars.get(0))).toEqual(['c/4', 'e/4', 'g/4', 'b/4', 'c/4', 'e/4']) // C5 up would leave the range
+    expect(pitches(bars.get(0))).toEqual(['c/4', 'e/4', 'g/4', 'b/4', 'g/4', 'e/4'])
+  })
+  it.each([
+    ['FMaj7/A', 'up-root', 'f a c e c a'],
+    ['Dm7', 'up-root', 'd f a c a f'],
+    ['C7', 'down-root', 'bb g e c e g'],
+    ['Gm7b5', 'up-2nd', 'db f g bb g f'],
+    ['F', 'up-root', 'f a c f c a'],
+  ] as const)('turns back in a 3/4 bar of %s, %s', (chord, pattern, notes) => {
+    const bar = voice(seq([chord, 3]), pattern, CONCERT, 3).bars.get(0) ?? []
+    expect(pitches(bar).map((p) => p.split('/')[0]).join(' ')).toBe(notes)
+    expect(bar.slice(4).map((n) => n.pitch?.midi)).toEqual([bar[2], bar[1]].map((n) => n?.pitch?.midi)) // the cell's own pitches
+  })
+  it('turns back in each bar of a chord held over two 3/4 bars', () => {
+    const { bars } = voice(seq(['Dm7', 6]), 'up-root', CONCERT, 3)
+    expect([0, 1].map((b) => pitches(bars.get(b)))).toEqual([
+      ['d/4', 'f/4', 'a/4', 'c/5', 'a/4', 'f/4'],
+      ['d/4', 'f/4', 'a/4', 'c/5', 'a/4', 'f/4'],
+    ])
+  })
+  it('places the next chord nearest the turn-back’s last note', () => {
+    const { bars } = voice(seq(['CMaj7', 5], ['Dm7', 5]), 'voice-led', CONCERT, 5) // quarters: one note left after the cell
+    expect(pitches(bars.get(0))).toEqual(['c/4', 'e/4', 'g/4', 'b/4', 'g/4'])
+    expect(pitches(bars.get(1))[0]).toBe('f/4') // F4 and A4 are both a step from G4: the lower
+  })
+  it('Up & down: a turn-back is not an arpeggio of its own', () => {
+    const { bars } = voice(seq(['Dm7', 3], ['G7', 3]), 'up-down', CONCERT, 3)
+    expect(pitches(bars.get(0))).toEqual(['d/4', 'f/4', 'a/4', 'c/5', 'a/4', 'f/4'])
+    expect(pitches(bars.get(1)).slice(0, 4).map((p) => p[0])).toEqual(['f', 'd', 'b', 'g']) // down: the second arpeggio
+  })
+  it('splits that divide evenly never turn back', () => {
+    expect(pitches(voice(seq(['CMaj7', 2], ['Dm7', 1]), 'up-root', CONCERT, 3).bars.get(0))).toHaveLength(12) // sixteenths
+    expect(pitches(voice(seq(['CMaj7', 4]), 'up-root').bars.get(0))).toEqual(['c/4', 'e/4', 'g/4', 'b/4'])
   })
   it("held chord: starts its pattern again in the next bar, at that bar's note value", () => {
     const { bars } = voice([{ row: 0, chord: 'Dm7', start: 0, beats: 2 }, { row: 1, chord: 'CMaj7', start: 2, beats: 6 }], 'up-root')
@@ -162,7 +194,7 @@ describe('arpeggio voices', () => {
     const { bars } = voice(seq(['Dm7', 8]), 'voice-led')
     expect(pitches(bars.get(0))).toEqual(['d/4', 'f/4', 'a/4', 'c/5'])
     expect(pitches(bars.get(1))[0]).toBe('d/4') // D, not C again (D5 up would leave the range)
-    expect(pitches(voice(seq(['Dm7', 3]), 'voice-led', CONCERT, 3).bars.get(0))).toEqual(['d/4', 'f/4', 'a/4', 'c/5', 'd/4', 'f/4'])
+    expect(pitches(voice(seq(['Dm7', 3]), 'voice-led', CONCERT, 3).bars.get(0))).toEqual(['d/4', 'f/4', 'a/4', 'c/5', 'a/4', 'f/4'])
   })
   it('voice-led: a chord sharing the last note starts on its next nearest tone', () => {
     const { bars } = voice(seq(['Dm7', 4], ['FMaj7', 4]), 'voice-led') // C5 just played: A4 is nearest of F A C E

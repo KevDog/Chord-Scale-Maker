@@ -555,8 +555,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Note value, per bar:** the longest of ♩ ♪ 𝅘𝅥𝅯 giving the bar's shortest chord four notes or more (4/4: one chord ♩,
   two ♪, three or four 𝅘𝅥𝅯; 3/4 and 2/4: one ♪, more 𝅘𝅥𝅯). Timing is the guide tone timeline's, so a last chord holds
   through the empty bars after it.
-- **Filling:** a chord's slots repeat its pattern from the start (6 eighths in 3/4: 1 3 5 7 1 3), again in each bar it
-  lasts into.
+- **Filling:** a chord's slots repeat its pattern from the start, again in each bar it lasts into; slots too few for
+  another whole arpeggio turn back on the last one from its second-to-last note (6 eighths in 3/4: 1 3 5 7 5 3, #348),
+  its own pitches, not counted as an arpeggio (Up & down). The Pentatonic and Triad Pair lines' 7th chord fallback
+  does the same; their own cells don't.
 - **Octave:** each arpeggio placed whole, its first note nearest the previous note among the octaves inside the part's
   range (`rangeOf`); a run's first nearest the centre.
 - **Rests:** a chord without chord tones (N.C.) rests and ends the run.
