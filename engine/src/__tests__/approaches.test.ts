@@ -48,4 +48,46 @@ describe('ids', () => {
     expect(isApproach('x')).toBe(false)
     expect(APPROACHES.every((a) => APPROACH_LABELS[a].length > 0)).toBe(true)
   })
+  it('lists the figures in the spec order', () =>
+    expect([...APPROACHES]).toEqual(['none', 'chromatic-below', 'chromatic-above', 'diatonic-above', 'double-below', 'double-above', 'above-below', 'enclosure', 'below-above', 'delayed']))
+})
+
+describe('double chromatic tie follows the target', () => {
+  it.each([
+    ['Db', 61, ['Eb', 'D']],
+    ['Ab', 68, ['Bb', 'A']],
+    ['Gb', 66, ['Ab', 'G']],
+  ] as const)('double-above into %s', (name, midi, outer) => {
+    expect(names(approachNotes(note(name, midi), 'double-above', null))).toEqual(outer)
+  })
+  it('sharp target goes sharp below', () => expect(names(approachNotes(note('G#', 68), 'double-below', null))).toEqual(['F#', 'G']))
+  it('natural target: flat below, sharp above', () => {
+    expect(names(approachNotes(note('C', 60), 'double-below', null))).toEqual(['Bb', 'B'])
+    expect(names(approachNotes(note('C', 60), 'double-above', null))).toEqual(['D', 'Db'])
+  })
+})
+
+describe('one semitone never needs a double accidental', () => {
+  it('into E# below is E', () => expect(names(approachNotes(note('E#', 65), 'chromatic-below', null))).toEqual(['E']))
+})
+
+describe('diatonic steps', () => {
+  const scaleOf = (root: string) => spellFrom(parseRoot(root), SCALES.ionian[0])
+  it('whole step above C over C Ionian is D', () => {
+    const r = approachNotes(note('C', 60), 'diatonic-above', cIonian)
+    expect(names(r)).toEqual(['D'])
+    expect(r?.map((n) => n.midi)).toEqual([62])
+  })
+  it('keeps the scale spelling: above D over Eb Ionian is Eb', () => expect(names(approachNotes(note('D', 62), 'diatonic-above', scaleOf('Eb')))).toEqual(['Eb']))
+  it('target outside the scale: C# above is D', () => expect(names(approachNotes(note('C#', 61), 'diatonic-above', cIonian))).toEqual(['D']))
+  it('wraps the octave: above B is C an octave up', () => {
+    const r = approachNotes(note('B', 71), 'diatonic-above', cIonian)
+    expect(names(r)).toEqual(['C'])
+    expect(r?.map((n) => n.midi)).toEqual([72])
+  })
+  it('delayed into F: G E E (the diatonic step below is a semitone)', () => {
+    const r = approachNotes(note('F', 65), 'delayed', cIonian)
+    expect(names(r)).toEqual(['G', 'E', 'E'])
+    expect(r?.map((n) => n.midi)).toEqual([67, 64, 64])
+  })
 })

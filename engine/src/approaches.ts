@@ -22,7 +22,7 @@ const FIGURES = {
 } as const satisfies Readonly<Record<string, Readonly<{ label: string; moves: readonly Move[] }>>>
 
 export type Approach = keyof typeof FIGURES
-export const APPROACHES = ['none', 'chromatic-below', 'chromatic-above', 'diatonic-above', 'double-below', 'double-above', 'above-below', 'enclosure', 'below-above', 'delayed'] as const satisfies readonly Approach[]
+export const APPROACHES = Object.keys(FIGURES) as readonly Approach[]
 export const isApproach = (x: unknown): x is Approach => typeof x === 'string' && x in FIGURES
 export const APPROACH_LABELS: Readonly<Record<Approach, string>> = Object.fromEntries(APPROACHES.map((a) => [a, FIGURES[a].label])) as Record<Approach, string>
 
@@ -34,9 +34,12 @@ function chromatic(target: Pitched, n: number): Pitched {
   const midi = target.midi + n
   if (Math.abs(n) === 1) {
     const letter = mod(target.letter + n, 7) as Letter
-    return { letter, acc: mod(midi - NAT_PC[letter] + 6, 12) - 6, midi }
+    const acc = mod(midi - NAT_PC[letter] + 6, 12) - 6
+    if (Math.abs(acc) <= 1) return { letter, acc, midi }
   }
-  const [best] = [...enharmonics({ letter: 0, acc: mod(midi, 12) })].sort((a, b) => Math.abs(a.acc) - Math.abs(b.acc) || (n < 0 ? a.acc - b.acc : b.acc - a.acc))
+  // a tie follows the target's accidental (flat target: flat), a natural target the direction
+  const flat = target.acc === 0 ? n < 0 : target.acc < 0
+  const [best] = [...enharmonics({ letter: 0, acc: mod(midi, 12) })].sort((a, b) => Math.abs(a.acc) - Math.abs(b.acc) || (flat ? a.acc - b.acc : b.acc - a.acc))
   return { ...best!, midi }
 }
 
