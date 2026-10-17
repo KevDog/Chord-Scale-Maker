@@ -98,6 +98,7 @@ export default defineNuxtConfig({
         offline: false, // the offline service worker and the Help page's install line (#324; build/sw.ts)
         // six anonymous Web Analytics events (#149; docs/superpowers/specs/2026-10-12-analytics-routes-events-design.md): Pro only
         analyticsEvents: false,
+        recordings: false, // a library song's notable recording (docs/superpowers/specs/2026-10-17-notable-recordings.md)
       },
     },
   },

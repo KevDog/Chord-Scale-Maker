@@ -14,6 +14,8 @@ const TUNE: TuneSummary = {
   form: 'A, 12 bars',
   time: '',
   source: '',
+  recording: null,
+  youtube: '',
 }
 const PATH = '/song/blue-trane'
 
@@ -49,6 +51,16 @@ describe('webAppLd', () => {
 })
 
 describe('tuneLd', () => {
+  const R = { artist: 'John Coltrane', album: 'Blue Train', label: 'Blue Note', year: '1958' }
+  const recordedAs = { '@type': 'MusicRecording', byArtist: { '@type': 'MusicGroup', name: 'John Coltrane' }, inAlbum: { '@type': 'MusicAlbum', name: 'Blue Train' }, datePublished: '1958' }
+
+  it('names its notable recording, with the video’s page when it has one', () => {
+    expect(tuneLd({ ...TUNE, recording: R }, PATH).recordedAs).toEqual(recordedAs)
+    expect(tuneLd({ ...TUNE, recording: R, youtube: 'XpZHUVjQydI' }, PATH).recordedAs).toEqual({ ...recordedAs, url: 'https://www.youtube.com/watch?v=XpZHUVjQydI' })
+    expect(tuneLd({ ...TUNE, recording: { ...R, year: '' } }, PATH).recordedAs).not.toHaveProperty('datePublished')
+    expect(tuneLd(TUNE, PATH)).not.toHaveProperty('recordedAs')
+  })
+
   it('is a composition with its composer, key and page', () => {
     expect(tuneLd(TUNE, PATH)).toEqual({
       '@context': 'https://schema.org',

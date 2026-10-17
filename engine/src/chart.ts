@@ -13,11 +13,12 @@ import { defaultScaleOrNull } from './qualities'
 /**
  * title: and subtitle: are the heading. key:, bars: and context: are hints for the analyser (docs/plan-analysis.md
  * §12; context: functional, modal or blues, §5.4); minor: is reserved (accepted, ignored); composer:, style:, form:
- * and source: describe the tune (where the chart came from); aka: lists its other titles, `;` between them; kind: says
+ * and source: describe the tune (where the chart came from); aka: lists its other titles, `;` between them; recording:
+ * names one notable recording (artist; album; label; year) and youtube: its video's ID; kind: says
  * whether it's a tune (the default), a form with no composer (F Blues) or an exercise. The site keeps the rest and shows only the heading.
  */
-export type MetaKey = 'title' | 'subtitle' | 'key' | 'bars' | 'time' | 'context' | 'minor' | 'composer' | 'style' | 'form' | 'source' | 'aka' | 'kind'
-export const META_KEYS: readonly MetaKey[] = ['title', 'subtitle', 'key', 'bars', 'time', 'context', 'minor', 'composer', 'style', 'form', 'source', 'aka', 'kind']
+export type MetaKey = 'title' | 'subtitle' | 'key' | 'bars' | 'time' | 'context' | 'minor' | 'composer' | 'style' | 'form' | 'source' | 'aka' | 'recording' | 'youtube' | 'kind'
+export const META_KEYS: readonly MetaKey[] = ['title', 'subtitle', 'key', 'bars', 'time', 'context', 'minor', 'composer', 'style', 'form', 'source', 'aka', 'recording', 'youtube', 'kind']
 
 export type ChartKind = 'tune' | 'form' | 'exercise'
 const CHART_KINDS: readonly ChartKind[] = ['tune', 'form', 'exercise']
@@ -140,6 +141,16 @@ function parseSectionField(field: SectionField, value: string): ChartLine | stri
   return { kind: 'sectionMeta', field, value }
 }
 
+const YOUTUBE_ID = /^[A-Za-z0-9_-]{11}$/
+const recordingFields = (value: string): string[] => value.split(';').map((s) => s.trim())
+
+/** what's wrong with a recording: value, or null */
+function recordingProblem(value: string): string | null {
+  const [artist = '', album = '', , year = '', ...rest] = recordingFields(value)
+  if (!artist || !album || rest.length) return 'recording: artist; album; label; year (artist and album required)'
+  return year && !/^\d{4}$/.test(year) ? 'recording: the year is four digits' : null
+}
+
 function parseLine(line: string, inSection: boolean): ChartLine | string {
   if (!line) return { kind: 'blank' }
   if (line.startsWith('#')) return { kind: 'comment', text: line }
@@ -162,6 +173,9 @@ function parseLine(line: string, inSection: boolean): ChartLine | string {
     }
     if (key === 'time' && beatsPerBar(value) === null) return METRES
     if (key === 'kind' && value && !asKind(value)) return 'kind: tune, form or exercise'
+    const problem = key === 'recording' && value ? recordingProblem(value) : null
+    if (problem) return problem
+    if (key === 'youtube' && value && !YOUTUBE_ID.test(value)) return 'youtube: the 11-character video ID'
     return { kind: 'meta', key, value }
   }
   if (line.startsWith('@')) {
@@ -239,6 +253,10 @@ export function parseChart(text: string): Parsed<ChartDoc> {
     return { kind: 'invalid', text: t }
   })
   closeBlock()
+  const recorded = lines.some((l) => l.kind === 'meta' && l.key === 'recording' && l.value)
+  lines.forEach((l, i) => {
+    if (!recorded && l.kind === 'meta' && l.key === 'youtube' && l.value) diagnostics.push({ line: i + 1, message: 'youtube: needs a recording: line' })
+  })
   if (lines.at(-1)?.kind === 'blank') lines.pop() // trailing newline
   if (lines.filter((l) => l.kind === 'row').length > LIMITS.maxRows)
     diagnostics.push({ line: 0, message: `more than ${LIMITS.maxRows} rows`, fatal: true })
@@ -332,6 +350,16 @@ export const chartKind = (doc: ChartDoc): ChartKind => asKind(metaValue(doc, 'ki
 /** the tune's other titles (aka:), `;` between them since a title may hold a comma */
 export const chartAka = (doc: ChartDoc): readonly string[] =>
   metaValue(doc, 'aka').split(';').map((s) => s.trim()).filter(Boolean)
+
+export type Recording = Readonly<{ artist: string; album: string; label: string; year: string }>
+
+/** the tune's notable recording (recording:, `;` between its fields since an album may hold a comma), null without a readable one */
+export function chartRecording(doc: ChartDoc): Recording | null {
+  const value = metaValue(doc, 'recording')
+  if (!value || recordingProblem(value)) return null
+  const [artist = '', album = '', label = '', year = ''] = recordingFields(value)
+  return { artist, album, label, year }
+}
 
 /** the time and the tune's details as written (what the editor's Details fields edit) */
 export function chartDetails(doc: ChartDoc): Readonly<{ time: string; composer: string; style: string; form: string }> {

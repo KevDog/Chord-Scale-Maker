@@ -27,6 +27,14 @@ for (const theme of ['light', 'dark'] as const) {
       }
     })
 
+    // its own test: the page list runs close to the timeout in CI
+    test('a song with its recording', async ({ page }) => {
+      await page.goto('/song/blue-trane')
+      if (theme === 'dark') await darkMode(page)
+      await expect(page.getByRole('heading', { name: 'Recording', level: 2 })).toBeVisible()
+      await expectAccessible(page)
+    })
+
     test('the Changes and its popovers', async ({ page }) => {
       await page.goto(SONG)
       if (theme === 'dark') await darkMode(page)

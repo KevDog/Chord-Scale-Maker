@@ -33,6 +33,14 @@ test.describe('without JavaScript', () => {
     expect(ld.map((d) => d['@type'])).toContain('MusicComposition')
   })
 
+  test('a song names its notable recording, in the page and its structured data', async ({ page }) => {
+    await page.goto('/song/blue-trane')
+    await expect(page.getByRole('heading', { name: 'Recording', level: 2 })).toBeVisible()
+    await expect(page.getByText('John Coltrane, Blue Train (Blue Note, 1958).')).toBeVisible()
+    const ld = JSON.parse((await page.locator('script[type="application/ld+json"]').last().textContent()) ?? '[]') as { '@type': string; recordedAs?: { inAlbum: { name: string } } }[]
+    expect(ld.find((d) => d['@type'] === 'MusicComposition')?.recordedAs?.inAlbum.name).toBe('Blue Train')
+  })
+
   test('a song gives its chord changes bar by bar', async ({ page }) => {
     await page.goto('/song/blue-trane')
     const bars = page.getByRole('list', { name: 'A, bar by bar' }).getByRole('listitem')

@@ -34,7 +34,13 @@ describe('tuneSummary', () => {
 
   it('leaves the fields a chart lacks empty', () => {
     const t = tuneSummary('A | 1 | C')
-    expect(t).toMatchObject({ title: 'Untitled', composer: '', key: '', keyLabel: '', form: '', source: '' })
+    expect(t).toMatchObject({ title: 'Untitled', composer: '', key: '', keyLabel: '', form: '', source: '', recording: null, youtube: '' })
+  })
+
+  it('gives the notable recording and its video', () => {
+    const t = tuneSummary('recording: John Coltrane; Blue Train; Blue Note; 1957\nyoutube: XpZHUVjQydI\n\nsection: A\nbars: 4\n1 | C')
+    expect(t.recording).toEqual({ artist: 'John Coltrane', album: 'Blue Train', label: 'Blue Note', year: '1957' })
+    expect(t.youtube).toBe('XpZHUVjQydI')
   })
 })
 
@@ -108,8 +114,13 @@ describe('tuneAdvice: what a song page could also use', () => {
     expect(tuneAdvice(doc('title: X'))).toEqual([
       'no source: say where the chart came from, if a book or recording',
       'no aka: add the tune’s other common titles, if it has any',
+      'no recording: name one notable recording of the tune',
     ])
-    expect(tuneAdvice(doc('title: X\nsource: Real Book\naka: Y'))).toEqual([])
+    expect(tuneAdvice(doc('title: X\nsource: Real Book\naka: Y\nrecording: A; B'))).toEqual([])
+  })
+
+  it('asks no form or exercise for a recording', () => {
+    expect(tuneAdvice(doc('title: X\nkind: form\nsource: S\naka: Y'))).toEqual([])
   })
 })
 

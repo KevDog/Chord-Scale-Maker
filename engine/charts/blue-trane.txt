@@ -6,7 +6,9 @@ style: Blues
 key: Eb
 form: A, 12 bars
 source: Colorado Cookbook, p. 33
+recording: John Coltrane; Blue Train; Blue Note; 1958
 # analysis: 2026-10-11, rules v1; Eb, blues
+# recording: recorded 1957-09-15, released 1958 (MusicBrainz release group, Wikipedia)
 
 # bar | chord | scale
 

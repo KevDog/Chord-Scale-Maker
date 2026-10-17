@@ -48,6 +48,7 @@
       <UiSubheading id="lead-sheet-heading" :level="2">Chord changes (lead-sheet style)</UiSubheading>
       <UiText class="mt-2">{{ song.leadSheet }}</UiText>
     </section>
+    <SongRecording v-if="song?.recording" :recording="song.recording" :youtube="song.youtube" :title="song.title" />
   </div>
 </template>
 
@@ -154,7 +155,7 @@ function reload(): void {
 }
 
 // the library head only at the clean address; null for /song, ?mine=, ?new=1, share links and old underscore addresses
-const song = route.path.replace(/\/$/, '') === songPath(slug()) ? songHead(slug()) : null
+const song = route.path.replace(/\/$/, '') === songPath(slug()) ? songHead(slug(), { recordings: useFeature('recordings') }) : null
 useSeoMeta(seoMeta(song?.head ?? PAGE_HEAD.song))
 if (song) useHead({ script: [{ type: 'application/ld+json', innerHTML: song.ld }] })
 // in the browser, the tab and history name the chart ("Blue Trane · Chord Scale Maker"); the prerender has none

@@ -990,6 +990,14 @@ its reasons into a chart as comments.
   - `server/routes/sitemap.xml.ts` (`sitemapXml`, `utils/sitemap.ts`) is prerendered to a static file: each
     canonical URL once, no `lastmod` (Vercel's shallow clone has no history).
   - `public/robots.txt` allows everything and names the sitemap.
+- **Notable recordings** ([spec](superpowers/specs/2026-10-17-notable-recordings.md), behind the `recordings` flag): a
+  chart's `recording:` (artist; album; label; year) and `youtube:` (an official upload's ID, only with `recording:`),
+  checked by the parser and read by `chartRecording`. The song page's Recording section (`SongRecording.vue`, outside
+  `<ClientOnly>`, so prerendered) reads "Artist, *Album* (Label, Year)."; with a video, a `<VideoEmbed>` that loads
+  nothing until played and a new-tab "Watch on YouTube" link (the fallback when a label blocks embedding). The
+  `MusicComposition` gains `recordedAs` (a `MusicRecording`, `url` with a video). `tuneAdvice` hints at tunes with none.
+  `npm run check-recordings -w engine` (by hand: it needs the network) asks YouTube's oEmbed whether each video still
+  plays embedded.
 - **IndexNow** (#167): after each production deploy, `.github/workflows/indexnow.yml` (on `deployment_status`)
   POSTs the changed pages to `api.indexnow.org` (Bing and others recrawl them). `public/<key>.txt` holds the key
   and proves the pings are ours. `build/indexnow.ts` (`urlsFor`) picks the URLs from `git diff` against the previous
