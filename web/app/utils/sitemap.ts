@@ -20,5 +20,9 @@ export const chartSlugsOf = (files: readonly string[]): string[] =>
 /** the scale pages (/scales/<slug>), one per scale the engine knows (not scalePage.ts's scaleKeyPath: the config can't load the library) */
 const scalePaths = (): string[] => (Object.keys(SCALES) as ScaleKey[]).map((k) => `/scales/${scaleSlug(k)}`)
 
-/** the pages search engines should find, prerendered too: the site's, the scales, then each library song; never a bare /song (noindex) or /ui */
-export const sitemapPaths = (songPaths: readonly string[]): string[] => ['/', '/library', '/help', '/functions', '/about', '/contact', '/privacy', '/scales', ...scalePaths(), ...songPaths]
+/** the pages search engines should find, prerendered too: the site's, the scales, the composers (by slug), then each
+ * library song; never a bare /song (noindex) or /ui */
+export const sitemapPaths = (songPaths: readonly string[], composerSlugs: readonly string[]): string[] => [
+  '/', '/library', '/help', '/functions', '/about', '/contact', '/privacy', '/scales', ...scalePaths(),
+  '/composers', ...composerSlugs.map((s) => `/composers/${s}`), ...songPaths,
+]

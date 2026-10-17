@@ -38,6 +38,10 @@ export const PAGE_HEAD = {
     title: 'Scales',
     description: 'Every scale Chord Scale Maker plays, by family: its formula, its notes, the chords it plays over and the jazz standards that use it.',
   },
+  composers: {
+    title: 'Composers',
+    description: 'The composers of the jazz standards in the library, by surname: each with their tunes, to practise with the scales, guide tones and arpeggios.',
+  },
   about: {
     title: 'About',
     description: 'What Chord Scale Maker is, how its sheets help you practise jazz improvisation, and the Jazz Lab video it started with.',

@@ -27,7 +27,7 @@
       <template #fallback>
         <div v-if="song" class="space-y-1">
           <UiHeading>{{ song.title }}</UiHeading>
-          <UiText v-if="song.composer">{{ song.composer }}</UiText>
+          <UiText v-if="song.composer"><ComposerCredit :credit="song.composer" /></UiText>
           <UiText>Loading the practice sheets…</UiText>
           <!-- the changes in the prerendered page, readable without JavaScript (#319); the sheet replaces them -->
           <div v-for="(s, i) in song.outline" :key="i" class="max-w-2xl pt-4">

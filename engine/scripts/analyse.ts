@@ -3,7 +3,7 @@
  * flags writes the result back. Each chart's report ends with its song page: what it lacks, and its search listing.
  *
  *   npm run analyse -- charts/autumn-leaves.txt      report one chart
- *   npm run analyse -- --all                          report every chart, then a summary
+ *   npm run analyse -- --all                          report every chart, then a summary (and composers who share a surname)
  *   --strip    blank every written scale the rules reproduce (not `# keep:` rows); list the ones they don't
  *   --save     write the analysis into the chart as comments (a reason per row, `# area:` lines, a header)
  *   --quiet    only the summary (and any song page's gaps: they fail the build)
@@ -12,7 +12,7 @@
 import { readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { basename, join, resolve } from 'node:path'
 import { ambiguities, analyse, applyAnalysis, type Analysis, contextLine } from '../src/analysis'
-import { type ChartDoc, isSyncCopy, parseChart, sameScale, serializeChart, tuneAdvice, tuneDescription, tuneGaps, tuneSummary } from '../src'
+import { type ChartDoc, composerIndex, isSyncCopy, nearDuplicateComposers, parseChart, sameScale, serializeChart, tuneAdvice, tuneDescription, tuneGaps, tuneSummary } from '../src'
 
 const args = process.argv.slice(2)
 const flag = (f: string): boolean => args.includes(f)
@@ -113,3 +113,9 @@ if (!ambiguous) {
 if (quiet && gaps.length) console.log(gaps.join('\n'))
 if (quiet && disagreements.length) console.log(disagreements.join('\n'))
 if (toReview.length) console.log(['left as written, without # keep: (add one with its reason, or blank the cell):', ...toReview.map((l) => `  ${l}`)].join('\n'))
+// one person under two spellings would get two composer pages: list them for the owner to check, never failing
+if (flag('--all')) {
+  const index = composerIndex(files.map((f) => ({ slug: basename(f, '.txt'), text: readFileSync(f, 'utf8') })))
+  const dupes = nearDuplicateComposers(index)
+  if (dupes.length) console.log(['composers who share a surname (one person spelt two ways? write it one way in the charts):', ...dupes.map((g) => `  ${g.join(' · ')}`)].join('\n'))
+}

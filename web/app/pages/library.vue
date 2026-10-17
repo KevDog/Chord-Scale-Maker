@@ -59,7 +59,7 @@
           <UiTableCell class="font-medium">
             <UiLink :href="songPath(chart.slug)" class="text-note-800 hover:underline dark:text-note-300">{{ chart.title }}</UiLink>
           </UiTableCell>
-          <UiTableCell class="text-zinc-500 dark:text-zinc-400">{{ chart.composer }}</UiTableCell>
+          <UiTableCell class="text-zinc-500 dark:text-zinc-400"><ComposerCredit :credit="chart.composer" /></UiTableCell>
           <UiTableCell class="text-zinc-500 dark:text-zinc-400">{{ chart.details }}</UiTableCell>
         </UiTableRow>
       </UiTableBody>

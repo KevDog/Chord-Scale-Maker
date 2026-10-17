@@ -30,7 +30,7 @@
                page only), on one line so a page holds as much music as without; on screen the composer goes under it -->
           <div :class="composer && 'print:flex print:items-baseline print:justify-between print:gap-6 print:text-left'">
             <p class="text-sm text-zinc-600 dark:text-zinc-400 print:text-neutral-700">{{ page?.subtitle }}</p>
-            <p v-if="composer && i === 0" class="mt-1 text-right text-sm text-zinc-600 italic dark:text-zinc-400 print:mt-0 print:shrink-0 print:text-neutral-700">{{ composer }}</p>
+            <p v-if="composer && i === 0" class="mt-1 text-right text-sm text-zinc-600 italic dark:text-zinc-400 print:mt-0 print:shrink-0 print:text-neutral-700"><ComposerCredit :credit="composer" /></p>
           </div>
         </div>
         <div v-if="$slots.status && i === 0" class="mt-2 print:hidden"><slot name="status" /></div>

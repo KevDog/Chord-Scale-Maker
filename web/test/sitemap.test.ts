@@ -27,12 +27,12 @@ describe('sitemap paths', () => {
     expect(chartSlugsOf(['blue-trane.txt', 'README.md', 'so-what 2.txt'])).toEqual(['blue-trane'])
   })
 
-  it('lists the site pages, then the scales, then the songs', () => {
-    const paths = sitemapPaths(['/song/a'])
+  it('lists the site pages, then the scales, the composers, then the songs', () => {
+    const paths = sitemapPaths(['/song/a'], ['thelonious-monk'])
     expect(paths.slice(0, 8)).toEqual(['/', '/library', '/help', '/functions', '/about', '/contact', '/privacy', '/scales'])
     expect(paths).toContain('/scales/dorian')
     expect(paths).toContain('/scales/diatonic-diminished-sharp-iv')
     expect(paths.filter((p) => p.startsWith('/scales/'))).toHaveLength(Object.keys(SCALES).length)
-    expect(paths.at(-1)).toBe('/song/a')
+    expect(paths.slice(-3)).toEqual(['/composers', '/composers/thelonious-monk', '/song/a'])
   })
 })

@@ -1,9 +1,10 @@
-import { readdirSync } from 'node:fs'
-import { isSyncCopy } from '@chord-scale-maker/engine'
+import { readdirSync, readFileSync } from 'node:fs'
+import { composerIndex, isSyncCopy } from '@chord-scale-maker/engine'
 import { describe, expect, it } from 'vitest'
 import { findChart, keyName, LIBRARY, matchSpan, searchLibrary, suggestTunes, toLibrary } from '~/utils/library'
 import { songPath } from '~/utils/site'
 import { sitemapPaths, sitemapXml, chartSlugsOf } from '~/utils/sitemap'
+import { COMPOSERS } from '~/utils/composerPage'
 
 describe('library', () => {
   it('builds entries from chart files, sorted by title', () => {
@@ -109,7 +110,7 @@ describe('library', () => {
 
   it('maps every library chart to its own song path, in the sitemap, and back', () => {
     const files = readdirSync('../engine/charts')
-    const paths = sitemapPaths(chartSlugsOf(files).map((s) => songPath(s)))
+    const paths = sitemapPaths(chartSlugsOf(files).map((s) => songPath(s)), [])
     expect(new Set(LIBRARY.map((c) => songPath(c.slug))).size).toBe(LIBRARY.length)
     for (const c of LIBRARY) {
       expect(paths).toContain(songPath(c.slug))
@@ -117,5 +118,10 @@ describe('library', () => {
     }
     const locs = [...sitemapXml(paths).matchAll(/<loc>https:\/\/[^/]+(\/song\/.*?)<\/loc>/g)].map((m) => m[1])
     expect(locs.sort()).toEqual(LIBRARY.map((c) => songPath(c.slug)).sort())
+  })
+
+  it("the config's composers, from the raw chart files, are the library's (nuxt.config.ts lists them for the sitemap)", () => {
+    const charts = chartSlugsOf(readdirSync('../engine/charts')).map((slug) => ({ slug, text: readFileSync(`../engine/charts/${slug}.txt`, 'utf8') }))
+    expect(composerIndex(charts).map((c) => c.slug)).toEqual(COMPOSERS.map((c) => c.slug))
   })
 })
