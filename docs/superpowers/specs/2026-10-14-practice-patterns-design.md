@@ -1,6 +1,6 @@
 # Practice patterns
 
-Status: spec only. An engine prototype was built and set aside; nothing is in the codebase yet.
+Status: superseded by [2026-10-17-practice-patterns-design.md](2026-10-17-practice-patterns-design.md) (#298).
 
 ## The idea
 
