@@ -5,7 +5,10 @@ key: Em
 form: AB + Interlude, 32 bars
 context: modal
 source: 
+recording: John Abercrombie Quartet; Abercrombie Quartet; ECM; 1980
+youtube: FjDRD5s7UxY
 # analysis: 2026-10-12, rules v1; E minor, modal
+# recording: recorded November 1979 (Richie Beirach, George Mraz, Peter Donald), ECM 1164; the chart follows Abercrombie's version (Wikipedia, MusicBrainz); video: The First Quartet, the same take
 # book: as played by John Abercrombie. A repeating piano figure (two bars, the second held) is played throughout,
 # solos too (with some variation).
 # routing: Intro (repeated), A1 and A2 (each repeated, 1st and 2nd endings), B, Interlude (repeated);

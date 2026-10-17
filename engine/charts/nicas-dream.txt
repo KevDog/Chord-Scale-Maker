@@ -5,7 +5,10 @@ style: Mixed
 key: Bbm
 form: AABBC, 64 bars
 source: Colorado Cookbook, p. 157
+recording: The Jazz Messengers; The Jazz Messengers; Columbia; 1956
+youtube: 8UZqmNHLbxg
 # analysis: 2026-10-17, rules v1; Bb minor
+# recording: recorded 1956-04-05 (jazzdisco; Wikipedia says April 6), matrix CO55746, Columbia CL 897; the first recording, by the Silver/Blakey co-op Jazz Messengers with Silver on piano (Byrd, Mobley, Watkins, Blakey); Silver recorded it under his own name on Horace-Scope (Blue Note BLP 4042, 1960) (jazzdisco.org, MusicBrainz release group, Wikipedia); video: This Is Jazz #28, the same take
 
 # bar | chord | scale
 

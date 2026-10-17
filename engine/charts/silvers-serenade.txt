@@ -4,7 +4,10 @@ style: Medium
 key: Em
 form: A, 16 bars
 source: Colorado Cookbook, p. 198
+recording: The Horace Silver Quintet; Silver's Serenade; Blue Note; 1963
+youtube: dXQC1JemiAQ
 # analysis: 2026-10-17, rules v1; E minor
+# recording: recorded 1963-05-07, take 7, Blue Note BLP 4131 (an April 11 attempt was rejected) (jazzdisco.org, Wikipedia)
 
 # bar | chord | scale
 

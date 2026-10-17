@@ -4,7 +4,10 @@ style: Blues
 key: Bb
 form: A, 12 bars
 source: Colorado Cookbook, p. 39
+recording: Clifford Brown & Max Roach; Clifford Brown & Max Roach; EmArcy; 1955
+youtube: stIhCBmhOXI
 # analysis: 2026-10-11, rules v1; Bb, blues
+# recording: recorded 1955-02-24 at Capitol Studios, NYC (master 11364-8), the first recording of it; issued as "The Blues Walk" on the 12" MG 36036, which added it to the 1954 10" album (jazzdisco.org, MusicBrainz release group, Wikipedia); video: Brownie: The Complete EmArcy Recordings of Clifford Brown, the same take (master, not the alternate)
 
 # bar | chord | scale
 
