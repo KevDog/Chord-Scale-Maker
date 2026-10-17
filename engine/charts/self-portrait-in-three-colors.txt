@@ -8,7 +8,7 @@ source:
 
 # book tempo marking: Medium Swing Ballad
 # metre: 4/4, except A bar 6 in 2/4
-# played three times (no solos on the recording): 1st/2nd ending (bars 14–15) twice, then the 3rd ending (bars 16–17)
+# played three times (no solos on the recording): 1st/2nd ending (B bars 8–9) twice, then the 3rd ending (B bars 10–11)
 # bar | chord
 
 section: Intro

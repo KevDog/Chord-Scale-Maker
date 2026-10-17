@@ -7,7 +7,7 @@ form: AABA, 32 bars
 source: 
 # analysis: 2026-10-17, rules v1; F
 # book: Med. Ballad
-# the book's footnote: alternate changes for bars 3–4 and 11–12 of A and bars 11–12 of B (bars 27–28)
+# the book's footnote: alternate changes for bars 3–4 of A1, A2 and A3 (the book's A bars 3–4 and 11–12, and B bars 11–12)
 
 # bar | chord
 
@@ -100,4 +100,4 @@ section: A3
 7 | Gm7      # ii of the ii–V to F
 7 | C7       # V7 of F: natural tensions
 8 | F6       # tonic: the 4th is in the key
-# alt (optional): bar 32 (Gm7 C7) on beats 3–4, the turnaround
+# alt (optional): bar 8 (Gm7 C7) on beats 3–4, the turnaround

@@ -98,5 +98,5 @@ bars: 24
 20 | C#7#5#9  # V7 of F# minor, the chain's last link: the b13 is in the key, b9, #9 and #11 from the symbol
 21 | F#m      # tonic minor: Dorian by convention
 22 | F#m
-# alt (optional): bar 66 (G#m7b5 C#7), back to the top
+# alt (optional): bar 22 (G#m7b5 C#7), back to the top
 @nav 22 Fine

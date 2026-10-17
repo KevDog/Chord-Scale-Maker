@@ -36,11 +36,11 @@ section: B
 5 | Cm7     # ii of F7: Dorian
 6 | F7      # V7/I in Bb: natural tensions
 6 | Ab13    # tritone substitute: resolves down a half step to G7#5
-# alt (optional): bar 22 (D7#9) for the Ab13
+# alt (optional): bar 6 (D7#9) for the Ab13
 6 | G7#5    # extended dominant: each one falls a fifth into the next: #11 and b13 from the symbol
 7 | C9      # V7 of V7: the dominant of the dominant: natural tensions
 8 | F7#5    # V7 in Bb, not resolving: #11 and b13 from the symbol
 
 section: C
 copy: A1
-# alt (optional): bar 27 (D7#5) for the Gb7
+# alt (optional): bar 3 (D7#5) for the Gb7

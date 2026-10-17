@@ -44,7 +44,7 @@ section: B
 11 | Bb13    # V7 of Eb: natural tensions
 13 | EbMaj7  # tonic: the 4th is in the key
 15 | Am9     # ii of D9sus4: Dorian
-# bar 32: Am9 held (repeated for the D.S. marker)
+# bar 16: Am9 held (repeated for the D.S. marker)
 16 | Am9
 @nav 16 D.S. al 2nd ending
 

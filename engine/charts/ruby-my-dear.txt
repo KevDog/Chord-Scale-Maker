@@ -72,14 +72,14 @@ section: B
 7 | Ebm7         # ii of Ab13b5: Dorian
 8 | Ab13b5       # extended ii–V: a side-step, its own key; #11 from the symbol
 8 | Eb           # tonic: the 4th is in the key
+# alt (optional): bar 8 beat 4 (Ab7)
 
 section: C
 bars: 11
-# alt (optional): bar 17 beat 4 (Ab7)
 1 | Fm7          # ii of the ii–V to Eb
 1 | Bb7b9        # V7 of Eb: the b9 from the symbol
 2 | EbMaj7       # tonic: the 4th is in the key
-# book: bar 19 then has a piano fill of passing chords on the last five eighths: Fm7 F#m7 Gm7 Ab6 Gb/Bb
+# book: bar 2 then has a piano fill of passing chords on the last five eighths: Fm7 F#m7 Gm7 Ab6 Gb/Bb
 # area: F major (C 3–4)
 3 | Gm7          # ii of the ii–V to F
 3 | C7b9         # V7 of F: the b9 from the symbol

@@ -43,14 +43,14 @@ bars: 8
 2  | G9         # tritone substitute: resolves down a half step to Gb13
 2  | Gb13       # tritone substitute: resolves down a half step to F9
 3  | F9         # IV7 in C minor, not resolving: natural tensions
-# bar 14: piano fill
+# bar 4: piano fill
 5  | Cm         # tonic minor: Dorian by convention
 5  | Bb13       # bVII7 in C minor, not resolving: natural tensions
 6  | Ab9        # tritone substitute: resolves down a half step to G9
 6  | G9         # tritone substitute: resolves down a half step to Gb13
 6  | Gb13       # tritone substitute: resolves down a half step to F9
 7  | F9         # IV7 in C minor, not resolving: natural tensions
-# bar 18: piano fill
+# bar 8: piano fill
 @coda 8
 @nav 8 To Coda (3rd time)
 

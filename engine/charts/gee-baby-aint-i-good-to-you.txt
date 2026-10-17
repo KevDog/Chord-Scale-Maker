@@ -43,4 +43,4 @@ section: B
 7 | F7      # V7 of V7: the dominant of the dominant: natural tensions
 7 | Bb7     # V7 of Eb: natural tensions
 8 | Eb6     # tonic: the 4th is in the key
-# alt (optional): bar 16, beats 3–4 (Ab7 G7)
+# alt (optional): bar 8, beats 3–4 (Ab7 G7)

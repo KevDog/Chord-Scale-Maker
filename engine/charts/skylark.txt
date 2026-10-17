@@ -97,4 +97,4 @@ section: C
 7  | Eb6     # tonic: the 4th is in the key
 7  | Bb7     # V7 of Eb: natural tensions
 8  | Eb6     # tonic: the 4th is in the key
-# alt (optional): bar 32 (Bb7) on beat 3, the turnaround
+# alt (optional): bar 8 (Bb7) on beat 3, the turnaround

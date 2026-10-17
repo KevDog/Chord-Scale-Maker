@@ -76,4 +76,4 @@ bars: 16
 14 | Fm7      # ii of the ii–V to Eb
 14 | Bb7      # V7 of Eb: natural tensions
 15 | Eb6      # tonic: the 4th is in the key
-# alt (optional): bars 31–32 (Cm7 | Fm7 Bb7), a turnaround after the Eb6
+# alt (optional): bars 15–16 (Cm7 | Fm7 Bb7), a turnaround after the Eb6

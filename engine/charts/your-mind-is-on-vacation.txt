@@ -47,7 +47,7 @@ bars: 16
 7  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
 7  | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
 8  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
-# bar 20: a piano figure at the end of the bar with no chord symbol (the other break bars print Db); Eb7 holds
+# bar 8: a piano figure at the end of the bar with no chord symbol (the other break bars print Db); Eb7 holds
 9  | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
 11 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
 13 | Bb7  # V7 in Eb, not resolving: natural tensions
@@ -64,7 +64,7 @@ section: C
 9  | B7   # tritone substitute: resolves down a half step to Bb7
 10 | Bb7  # extended dominant: V7 of Eb7
 11 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
-# bar 40: Eb7 held (repeated for the D.S. marker)
+# bar 12: Eb7 held (repeated for the D.S. marker)
 12 | Eb7
 @nav 12 D.S. al Coda
 

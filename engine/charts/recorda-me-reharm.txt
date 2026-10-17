@@ -35,9 +35,9 @@ section: A
 # alt: bar 14 (Gm7 C7)
 15 | FMaj7     # a non-tonic major chord: Lydian
 16 | E7#5#9    # V7 of A minor: the b13 is in the key, b9, #9 and #11 from the symbol
+# bar 16 is the 1st ending; the 2nd ending is one bar with no chord (a held B) leading into the solos at B
 
 section: B
-# bar 16 is the 1st ending; the 2nd ending is one bar with no chord (a held B) leading into the solos at B
 1  | Am7       # tonic minor: Dorian by convention
 5  | Cm7       # a borrowed minor chord: Dorian, its own key
 # alt: bar 8 (F13)
@@ -52,7 +52,7 @@ section: B
 13 | GbMaj7    # tonic: the 4th is in the key
 # area: A minor (B 14 – C 17)
 14 | Gb7#9#11  # tritone substitute: resolves down a half step to FMaj7; b9 and #9 from the symbol
-# book: bar 30 prints both (Gm7 C7) and (Gb7(#11 #9)) in parentheses; Gb7#9#11 as in the head, alt: (Gm7 C7)
+# book: bar 14 prints both (Gm7 C7) and (Gb7(#11 #9)) in parentheses; Gb7#9#11 as in the head, alt: (Gm7 C7)
 15 | FMaj7     # a non-tonic major chord: Lydian
 16 | E7#5#9    # V7 of A minor: the b13 is in the key, b9, #9 and #11 from the symbol
 
@@ -62,7 +62,7 @@ bars: 20
 1  | Am7       # tonic minor: Dorian by convention
 5  | Cm7       # a borrowed minor chord: Dorian, its own key
 9  | BbMaj7    # a non-tonic major chord: Lydian
-# book: bars 41–46 are breaks with ensemble hits; each new chord is anticipated on the and of 4
+# book: bars 9–14 are breaks with ensemble hits; each new chord is anticipated on the and of 4
 11 | AbMaj7    # a non-tonic major chord: Lydian
 13 | GbMaj7    # a non-tonic major chord: Lydian
 15 | FMaj7     # a non-tonic major chord: Lydian

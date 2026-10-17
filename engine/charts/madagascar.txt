@@ -43,7 +43,7 @@ section: A2
 3 | AmMaj7/C  # from the symbol: minor-major 7th
 3 | Db        # modal major: Lydian
 4 | Db
-# bar 9 (1st ending): Db held
+# bar 4 (1st ending): Db held
 @ending 1 4
 5 | Db
 5 | Dbsus4b9  # from the symbol: sus b9
@@ -59,11 +59,11 @@ bars: 8
 5 | Ebsus     # static sus: Mixolydian
 7 | Ebsus
 7 | EMaj7#11  # from the symbol: #11
+# alt (solos): bars 1–8 ([EMaj7b5] 2 bars, [Eb7sus] 2 bars, [EMaj7b5] 2 bars, [Eb7#9#5] 2 bars), the changes in brackets used for solos
 
 section: Interlude
 bars: 10
-# alt (solos): bars 11–18 ([EMaj7b5] 2 bars, [Eb7sus] 2 bars, [EMaj7b5] 2 bars, [Eb7#9#5] 2 bars), the changes in brackets used for solos
-# Interlude (ff): unlettered in the book, four bars played twice (bars 19–26)
+# Interlude (ff): unlettered in the book, four bars played twice (bars 1–8)
 1 | EmMaj7/G  # from the symbol: minor-major 7th
 1 | Ab        # modal major: Lydian
 3 | EmMaj7/G  # from the symbol: minor-major 7th

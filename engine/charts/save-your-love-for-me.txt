@@ -8,7 +8,7 @@ source:
 
 # as played by Cannonball Adderley and Nancy Wilson
 # the book writes "D Ami7" and "D B7(#9#5)": the chord over a D pedal (written as slash chords)
-# the form is repeated (A–C); the coda is taken from C bar 31 on the last time (the recording: one chorus, coda first time)
+# the form is repeated (A–C); the coda is taken from C bar 7 on the last time (the recording: one chorus, coda first time)
 # bar | chord
 # Intro: a bass pickup, then the pedal figure
 

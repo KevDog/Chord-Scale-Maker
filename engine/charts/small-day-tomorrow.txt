@@ -7,7 +7,7 @@ source:
 # analysis: 2026-10-12, rules v1; E minor
 # book: Med. Jazz Ballad, quarter = 60
 # the book repeats A–C (a repeat sign at A and at the end of C); solos on A and B; after solos, D.S. al Coda
-# the book's footnote: bass may play F on the 4th beat of bar 7 of letter B (bar 23)
+# the book's footnote: bass may play F on the 4th beat of bar 7 of letter B
 
 # bar | chord
 
@@ -82,7 +82,7 @@ section: C
 3  | CMaj7     # a non-tonic major chord: Lydian
 3  | CMaj7#11  # from the symbol: #11
 @coda 3
-# to the coda after bar 27 (the sign stands after the CMaj7#11)
+# to the coda after bar 3 (the sign stands after the CMaj7#11)
 4  | F#m7b5    # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
 # book: F#m7(add11 b5)
 4  | B7b9      # V7 of E minor: b9 and b13 are in the key

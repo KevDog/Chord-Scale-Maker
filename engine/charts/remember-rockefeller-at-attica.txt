@@ -5,7 +5,7 @@ key: Db
 form: ABC, 51 bars
 source: 
 # analysis: 2026-10-17, rules v1; Db
-# book: Medium-up swing (in 4); 2-beat feel from letter B, the original feel again at bar 33
+# book: Medium-up swing (in 4); 2-beat feel from letter B, the original feel again at B bar 9
 # book: the whole chart is in repeats; the last bar (51) is piano only every chorus, with a fermata the last time
 
 # bar | chord

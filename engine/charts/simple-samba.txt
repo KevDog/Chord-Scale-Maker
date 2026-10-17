@@ -26,10 +26,10 @@ bars: 14
 10 | Dm7b5      # iiø7, borrowed from C minor: Locrian
 # AMaj7 is anticipated on bar 10, beat 4
 11 | AMaj7      # a non-tonic major chord: Lydian
+# bars 11–14: drum fill (piano pickup in bar 14)
 
 section: B
 bars: 22
-# bars 11–14: drum fill (piano pickup in bar 14)
 1  | DMaj7      # a non-tonic major chord: Lydian
 3  | C#m7b5     # iiø7 of B minor: Locrian, the key's own notes (its ♭2 is a passing note)
 4  | F#7        # V7/vii in C: b9 and b13 are in the key
@@ -49,14 +49,14 @@ bars: 22
 16 | Eb7        # V7 of Ab: natural tensions
 17 | AbMaj7     # tonic: the 4th is in the key
 18 | Fm7b5      # viø7 in Ab: Locrian, its own mode (the chord is outside the key)
-# CMaj7 is anticipated on bar 32, beat 4
+# CMaj7 is anticipated on bar 18, beat 4
 @key 19 C
 # area: C major (B 19 – C 1)
 19 | CMaj7      # tonic: the 4th is in the key
+# bars 19–22: drum fill (guitar pickup in bar 22)
 
 section: C
 key: C
-# bars 33–36: drum fill (guitar pickup in bar 36)
 1  | FMaj7      # IV: the #4 is the key’s 7th
 @key 3 Eb
 # area: Eb major (C 3–5)
@@ -92,25 +92,25 @@ bars: 18
 12 | C7b9       # V7/ii in Eb: the b13 is in the key, the b9 from the symbol
 13 | Fm9b5      # ii of the ii–V to Eb
 14 | Bb7#5b9    # V7 of Eb: b9, #11 and b13 from the symbol
-# Eb69 is anticipated on bar 66, beat 4
+# Eb69 is anticipated on bar 14, beat 4
 15 | Eb69       # tonic: the 4th is in the key
+# bars 15–18: drum fill (piano with bass pickup in bar 18)
 
 section: E
 key: Ebm
 bars: 22
-# bars 67–70: drum fill (piano with bass pickup in bar 70)
 # E (head only): the book prints its chords in parentheses, (Ebm9) and (Dbm9), naming the written-out guitar voicings; they are its only chords, so they are rows here
 # area: Eb minor (E 1–7)
 1  | Ebm9       # ii of the ii–V to Db minor
-# book: "Ab bass" under the voicing, pushed on bar 76, beat 4 (written Ebm9/Ab)
+# book: "Ab bass" under the voicing, pushed on bar 6, beat 4 (written Ebm9/Ab)
 7  | Ebm9/Ab    # static sus: Mixolydian
-# bars 78–80: rests (a Db pickup on bar 80, beat 4)
+# bars 8–10: rests (a Db pickup on bar 10, beat 4)
 @key 11 Dbm
 # area: Db minor (E 11–20)
 11 | Dbm9       # ii of Dbm9/Gb: Dorian
-# book: "Gb bass" under the voicing, pushed on bar 86, beat 4 (written Dbm9/Gb)
+# book: "Gb bass" under the voicing, pushed on bar 16, beat 4 (written Dbm9/Gb)
 17 | Dbm9/Gb    # static sus: Mixolydian
-# bars 88–90: rests; the coda sign stands after bar 88
+# bars 18–20: rests; the coda sign stands after bar 18
 18 | Dbm9/Gb
 @coda 18
 @nav 18 To Coda

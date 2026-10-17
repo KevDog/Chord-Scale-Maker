@@ -54,18 +54,18 @@ section: A
 
 section: B
 1  | Eb7      # extended dominant: V7 of Ab7
-# alt (optional): bar 25 (Eb7#9)
+# alt (optional): bar 1 (Eb7#9)
 9  | Ab7      # IV7 in Eb, not resolving: the #11 is in the key
 10 | A7       # tritone substitute: resolves down a half step to Ab7
-# alt (optional): bars 34–35 (A7 Ab7); the book's plain chord is Ab7 throughout bars 33–36
+# alt (optional): bars 10–11 (A7 Ab7); the book's plain chord is Ab7 throughout bars 9–12
 11 | Ab7      # IV7 in Eb, not resolving: the #11 is in the key
 13 | Eb7      # I7 in Eb, not resolving: natural tensions
-# alt (optional): bar 37 (Eb7#9)
+# alt (optional): bar 13 (Eb7#9)
 16 | C7#9     # extended dominant: each one falls a fifth into the next: b9, #9 and #11 from the symbol
 17 | F7#9#11  # V7 of V7: the dominant of the dominant: b9, #9 and #11 from the symbol
 19 | Bb7#9    # extended dominant: V7 of Eb7; b9, #9 and #11 from the symbol
 21 | Eb7      # static dominant: its own mode
-# alt (optional): bar 45 (Eb7#9)
+# alt (optional): bar 21 (Eb7#9)
 24 | Eb7
 @nav 24 D.S. al Coda
 
@@ -73,13 +73,13 @@ section: C
 bars: 16
 # C: interlude, played before the 2nd solo
 1  | Eb       # tonic: the 4th is in the key
-# book: Eb bass (pedal under the horn voicings, bars 49–50)
+# book: Eb bass (pedal under the horn voicings, bars 1–2)
 3  | Eb7      # tritone substitute: resolves down a half step to D7b9
 3  | D7b9     # tritone substitute: resolves down a half step to Db7; b9 from the symbol
 3  | Db7      # tritone substitute: resolves down a half step to C7
 4  | C7       # VI7 in Eb, not resolving: the b13 is in the key
 5  | Bb       # V without its 7th: Mixolydian, the key’s own notes
-# book: Bb bass (pedal under the horn voicings, bars 53–54)
+# book: Bb bass (pedal under the horn voicings, bars 5–6)
 7  | Bb7      # tritone substitute: resolves down a half step to A7b9
 7  | A7b9     # tritone substitute: resolves down a half step to Ab7; b9 from the symbol
 7  | Ab7      # tritone substitute: resolves down a half step to G7

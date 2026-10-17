@@ -7,7 +7,7 @@ time: 3/4
 source: 
 # analysis: 2026-10-17, rules v1; Bb
 # book: Medium-Up Straight 1/8's, quarter = 184. Based on the chords of "Someday My Prince Will Come".
-# repeat signs around A–B; last time, bar 32 goes to the Coda (coda sign at bar 32).
+# repeat signs around A–B; last time, B bar 16 goes to the Coda (coda sign at B bar 16).
 
 # bar | chord
 

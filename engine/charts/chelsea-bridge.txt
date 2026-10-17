@@ -25,7 +25,6 @@ section: A
 # alt (optional): bar 8 (C7 B7) on beats 2 and 4
 9 | Db6
 9 | B7       # ♭VII7 from the parallel minor: Lydian Dominant
-# alt (optional): bar 25 (C7 B7) on beats 2 and 4
 @ending 1 8
 @ending 2 9
 
@@ -47,12 +46,12 @@ key: E
 7 | Gm       # ii of C9: Dorian
 7 | C9       # extended ii–V: a side-step, its own key
 8 | Db7#11   # VI7 in E, not resolving: #11 and 13 from the symbol
+# bar 8: a break
+# alt (optional): bar 8 (C7 B7) on beats 2 and 4
 
 section: C
 key: Db
 bars: 11
-# bar 17: a break
-# alt (optional): bar 17 (C7 B7) on beats 2 and 4
 # area: Db major (C 1–8)
 1 | BbmMaj7  # from the symbol: minor-major 7th
 2 | AbmMaj7  # from the symbol: minor-major 7th
@@ -63,3 +62,4 @@ bars: 11
 6 | Ab13     # V7 of Db: natural tensions
 7 | Db6      # tonic: the 4th is in the key
 8 | Db6
+# alt (optional): bar 8 (C7 B7) on beats 2 and 4

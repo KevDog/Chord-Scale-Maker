@@ -7,7 +7,7 @@ form: AABA, 32 bars
 source: 
 # analysis: 2026-10-17, rules v1; Eb
 # the book's letters: A (16 bars, the two A's), B, C (the last A)
-# alt (for soloing): bars 4, 12 and 28 (Cm9 F9 Bm9 E9)
+# alt (for soloing): A bars 4 and 12 and C bar 4 (Cm9 F9 Bm9 E9)
 
 # bar | chord
 

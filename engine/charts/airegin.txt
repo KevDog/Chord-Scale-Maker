@@ -62,7 +62,7 @@ section: C
 # area: F minor (C 8 – Coda 1)
 8  | Gm7b5   # iiø7 of F minor: Locrian, the key's own notes (its ♭2 is a passing note)
 8  | C7      # V7 of F minor: b9 and b13 are in the key
-# bars 35–36: solo break on the head
+# bars 7–8: solo break on the head
 @coda 6
 @nav 8 D.S. al Coda
 

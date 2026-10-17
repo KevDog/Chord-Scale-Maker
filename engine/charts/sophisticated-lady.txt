@@ -7,7 +7,7 @@ source: Colorado Cookbook, p. 213
 # analysis: 2026-10-17, rules v1; Ab
 
 # bar | chord | scale
-# bar 24 on the lead sheet passes through Cm7 Eb7 Db7 Cm7b5 F7b9
+# B bar 8 on the lead sheet passes through Cm7 Eb7 Db7 Cm7b5 F7b9
 
 section: A1
 # area: Ab major (A1 1 – A2 7)

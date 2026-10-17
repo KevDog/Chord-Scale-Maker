@@ -5,7 +5,7 @@ key: Db
 form: AB, 32 bars
 source: 
 # analysis: 2026-10-12, rules v1; Db
-# book: Med. Bossa Nova, quarter = 94. The form repeats (repeat signs around A–B); last time, to the Coda at bar 31.
+# book: Med. Bossa Nova, quarter = 94. The form repeats (repeat signs around A–B); last time, to the Coda at B bar 15.
 # the intro is a 2-bar guitar figure over an Eb bass, with no chord symbols
 
 # bar | chord

@@ -48,10 +48,10 @@ bars: 18
 15 | F7      # I7 in F, not resolving: natural tensions
 16 | F7
 @nav 16 D.S. al Coda
+# D.S. al Coda falls at the end of bar 16 (F7 held from bar 15)
 
 section: Coda
 bars: 4
-# D.S. al Coda falls at the end of bar 38 (F7 held from bar 37)
 # Coda: vamp, solo and fade
 1  | F13     # I7 in F, not resolving: natural tensions
 2  | F9sus4  # static sus: Mixolydian

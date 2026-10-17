@@ -49,6 +49,6 @@ bars: 8
 3  | G#dim7  # passing diminished: G7♭9 without its G, the C9sus4's dominant (Gm7 its ii)
 5  | Gm7     # ii of the ii–V to F
 6  | C9sus4  # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
-# alt (optional): bar 38, beat 3 (C7)
+# alt (optional): bar 6, beat 3 (C7)
 7  | F6      # tonic: the 4th is in the key
-# alt (optional): bar 40 (Gm7 C7)
+# alt (optional): bar 8 (Gm7 C7)

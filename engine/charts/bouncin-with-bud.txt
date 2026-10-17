@@ -5,7 +5,7 @@ key: Bb
 form: ABCD, 40 bars
 source: 
 # analysis: 2026-10-12, rules v1; Bb
-# intro and head as written; solo on ABC; after solos D.C. al Coda (to the Coda from C bar 32)
+# intro and head as written; solo on ABC; after solos D.C. al Coda (to the Coda from C bar 8)
 # the intro's chords are kicks pushed ahead of the bar (B7b5 on the and of 4 in bars 2 and 6, Bb6 on the and of 4 in bars 4 and 8): written on the bar they anticipate
 # D: the chords follow the bass rhythms
 
@@ -71,9 +71,7 @@ section: C
 7  | Cm7     # ii of the ii–V to Bb
 7  | F7      # V7 of Bb: natural tensions
 8  | Bb6     # tonic: the 4th is in the key
-# bar 38: printed F7(b9 b5) on beat 3 (b9b5 is not in the chord syntax: written F7b9), Bb6 on beat 4
-# bars 39–40: solo break (Bb6)
-# background echoes (Gm7, C#dim7) at A bars 5–6 and 13–14 and C bars 29–30
+# background echoes (Gm7, C#dim7) at A bars 5–6 and 13–14 and C bars 5–6
 @coda 8
 
 section: D
@@ -85,12 +83,14 @@ bars: 8
 3  | Bdim7   # vii°7 of Cm7: G7♭9 without its root
 3  | Cm7     # ii: Dorian, the key’s own notes
 3  | G7b9    # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
-# bar 35: G7b9 on the and of 4, tied into bar 36; bar 36: Cm7 on beat 3, Gb9 on beat 4; F9 pushed in on the and of 4 of bar 36
+# bar 3: G7b9 on the and of 4, tied into bar 4; bar 4: Cm7 on beat 3, Gb9 on beat 4; F9 pushed in on the and of 4 of bar 4
 4  | Cm7     # ii: Dorian, the key’s own notes
 4  | Gb9     # tritone substitute: resolves down a half step to F9
 5  | F9      # V7 in Bb, not resolving: natural tensions
 6  | F7b9    # V7 of Bb: the b9 from the symbol
 6  | Bb6     # tonic: the 4th is in the key
+# bar 6: printed F7(b9 b5) on beat 3 (b9b5 is not in the chord syntax: written F7b9), Bb6 on beat 4
+# bars 7–8: solo break (Bb6)
 
 section: Coda
 bars: 4

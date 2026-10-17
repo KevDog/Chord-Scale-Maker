@@ -66,12 +66,12 @@ key: F
 1 | Am7b5      # iiø7 of D7alt: Locrian, the key's own notes (its ♭2 is a passing note)
 1 | D7alt      # from the symbol: altered
 2 | FMaj7/G    # tonic: the 4th is in the key
-# alt (optional): bar 26, beat 2 (G9), then FMaj7/G again on beat 3
+# alt (optional): bar 2, beat 2 (G9), then FMaj7/G again on beat 3
 2 | G9         # II7 in F, not resolving: natural tensions
 3 | Am7b5      # iiø7 of D7alt: Locrian, the key's own notes (its ♭2 is a passing note)
 3 | D7alt      # from the symbol: altered
 4 | FMaj7/G    # tonic: the 4th is in the key
-# alt (optional): bar 28, beat 2 (G9), then FMaj7/G again on beat 3
+# alt (optional): bar 4, beat 2 (G9), then FMaj7/G again on beat 3
 4 | G9         # II7 in F, not resolving: natural tensions
 # book: Gm7(add11)
 5 | Gm11       # ii of the ii–V to F minor

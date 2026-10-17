@@ -6,7 +6,7 @@ form: AABCDDEFG, 76 bars
 context: modal
 source: 
 # analysis: 2026-10-12, rules v1; Ab, modal
-# book: in 6/4 (quarter = 94); each bar is six beats (6/4 is not supported, written as 4/4); bars 32, 39 and 65 are 3/4 bars
+# book: in 6/4 (quarter = 94); each bar is six beats (6/4 is not supported, written as 4/4); D1 bar 3, D2 bar 3 and F bar 15 are 3/4 bars
 # the book prints separate bass and keyboard parts; where the lead sheet compresses a passage, the bar count follows them
 # "Ab bass": the bass alone on Ab (the keyboard part marks it N.C.) until Ab Eb7sus/Bb and the last chord on the last beats
 
@@ -51,7 +51,7 @@ section: A
 @ending 2 8
 
 section: B
-# bars 9–14: the book writes Bm9 E13 | Bm9(b13) E13 with a repeat, 3 times
+# bars 1–6: the book writes Bm9 E13 | Bm9(b13) E13 with a repeat, 3 times
 1  | Bm9         # modal minor: Dorian
 1  | E13         # modal: its own mode
 2  | Bm9b13      # from the symbol: b6
@@ -97,16 +97,16 @@ bars: 7
 5  | Bbm9/Ab     # modal minor: Dorian
 6  | Ab/Db       # modal major: Lydian
 6  | BbMaj9/C    # modal major: Lydian
+# bar 7: BbMaj9/C held
 
 section: D1
-# bar 29: BbMaj9/C held
 1  | Ab          # modal major: Lydian
 1  | Eb7sus4/Bb  # static sus: Mixolydian
 1  | Db/Eb       # modal major: Lydian
 2  | Ab          # modal major: Lydian
 2  | Eb7sus4/Bb  # static sus: Mixolydian
 2  | E/F#        # modal major: Lydian
-# bar 32: a 3/4 bar, E/F# held
+# bar 3: a 3/4 bar, E/F# held
 4  | BMaj9       # modal major: Lydian
 # book: Bmaj9(add 13)
 4  | AMaj7/B     # modal major: Lydian
@@ -133,7 +133,7 @@ section: E
 7  | A/C#        # modal major: Lydian
 
 section: F
-# bars 51–56: the book writes Bm9 E13 | A13/B E13 and a 2-bar repeat twice
+# bars 1–6: the book writes Bm9 E13 | A13/B E13 and a 2-bar repeat twice
 1  | Bm9         # modal minor: Dorian
 1  | E13         # modal: its own mode
 2  | A13/B       # modal: its own mode
@@ -153,16 +153,16 @@ section: F
 10 | A/D         # modal major: Lydian
 10 | E/D         # modal major: Lydian
 10 | A/D         # modal major: Lydian
-# bar 60: the bass part writes C#m9 A/D only
+# bar 10: the bass part writes C#m9 A/D only
 11 | AMaj7/D     # modal major: Lydian
 11 | C#m7        # modal minor: Dorian
 11 | E/F#        # modal major: Lydian
 11 | C#m/F#      # modal minor: Dorian
-# book: bar 61 has E/F# E7/F# before C#m/F# (five chords; the bass part's four are written)
+# book: bar 11 has E/F# E7/F# before C#m/F# (five chords; the bass part's four are written)
 12 | F#m/E       # modal minor: Dorian
 12 | F#sus/E     # static sus: Mixolydian
 12 | Ab/C        # modal major: Lydian
-# alt (optional): bar 62, last beat (D/C)
+# alt (optional): bar 12, last beat (D/C)
 13 | F#m/E       # modal minor: Dorian
 13 | F#sus/E     # static sus: Mixolydian
 13 | Ab/C        # modal major: Lydian
@@ -172,10 +172,10 @@ section: F
 14 | Ab/C        # modal major: Lydian
 14 | Abm/Cb      # modal minor: Dorian
 15 | Bb7         # modal: its own mode
+# bar 15: a 3/4 bar; Bb7 enters on the last beat of bar 14 and is held through it
 
 section: G
 bars: 7
-# bar 65: a 3/4 bar; Bb7 enters on the last beat of bar 64 and is held through it
 1  | F/A         # modal major: Lydian
 1  | Ddim/A      # passing diminished: a rootless dominant ♭9; not functioning diatonically: the symmetric scale
 2  | GMaj7/A     # modal major: Lydian
@@ -191,10 +191,10 @@ bars: 7
 5  | Bbm9/Ab     # modal minor: Dorian
 6  | Ab/Db       # modal major: Lydian
 6  | BbMaj9/C    # modal major: Lydian
+# bar 7: BbMaj9/C held
 
 section: Ending
 bars: 4
-# bar 72: BbMaj9/C held
 # Ending bar 1: a vamp, played 7 times (flute tacet the 1st and 2nd times); bar 2 ends on E/F# with a fermata
 1  | Ab          # modal major: Lydian
 1  | Eb7sus4/Bb  # static sus: Mixolydian

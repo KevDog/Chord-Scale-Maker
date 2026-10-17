@@ -61,5 +61,5 @@ bars: 16
 13 | Dm7     # ii of the ii–V to C
 14 | G7      # V7 of C: natural tensions
 15 | C6      # tonic: the 4th is in the key
-# alt: bar 15 from beat 3 (F7), bar 32 (Em7 A7)
+# alt: bar 15 from beat 3 (F7), bar 16 (Em7 A7)
 # alt (may be played): bars 1–4 of A and B (F#7#9#11 B13b9 | E7#9 A13 | D7#9 G13 | CMaj7 F13#11)

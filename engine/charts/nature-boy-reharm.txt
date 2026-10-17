@@ -48,8 +48,8 @@ bars: 16
 8  | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 9  | A7      # V7 of D minor: b9 and b13 are in the key
 11 | Dm      # tonic minor: Dorian by convention
-# alt (optional): bar 28 (Bm7b5)
+# alt (optional): bar 12 (Bm7b5)
 13 | E7b9    # V7 of V7: the dominant of the dominant, on the way to D minor: b9 and b13 are in the key
 14 | A7#5    # V7 of D minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
 15 | Dm      # tonic minor: Dorian by convention
-# alt (optional): bar 32 (Em7b5 A7)
+# alt (optional): bar 16 (Em7b5 A7)

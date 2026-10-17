@@ -41,7 +41,7 @@ section: B
 2  | Em7       # ii of the ii–V to D
 2  | A7        # V7 of D: natural tensions
 3  | DMaj7     # tonic: the 4th is in the key
-# alt (optional): bar 20 (Em7 Eb7b5)
+# alt (optional): bar 4 (Em7 Eb7b5)
 5  | DMaj7
 # area: C major (B 6 – C 1)
 6  | Dm7       # ii of G7: Dorian

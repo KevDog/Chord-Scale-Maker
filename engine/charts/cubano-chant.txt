@@ -38,17 +38,17 @@ section: A
 1  | Ebm      # tonic minor: Dorian by convention
 2  | Bbm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
 2  | Ebm      # tonic minor: Dorian by convention
-# bars 5–6: N.C.
+# bars 3–4: N.C.
 5  | Db       # ♭VII of E♭ minor: D♭ major, the notes of E♭ Dorian
 5  | Abm7     # iv: Dorian, the key’s own notes
 6  | Bbm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
 6  | Ebm      # tonic minor: Dorian by convention
-# bars 9–10: N.C.
+# bars 7–8: N.C.
 9  | Db       # ♭VII of E♭ minor: D♭ major, the notes of E♭ Dorian
 9  | Ebm      # tonic minor: Dorian by convention
 10 | Bbm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
 10 | Ebm      # tonic minor: Dorian by convention
-# bars 13–14: N.C.
+# bars 11–12: N.C.
 13 | Db       # ♭VII of E♭ minor: D♭ major, the notes of E♭ Dorian
 13 | Abm7     # iv: Dorian, the key’s own notes
 14 | Bbm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
@@ -73,15 +73,15 @@ bars: 10
 8  | Gb7      # tritone substitute: resolves down a half step to F7
 8  | F7       # tritone substitute: resolves down a half step to E7
 8  | E7       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+# bar 8: then a Bb in the bass alone
 
 section: C
-# bar 24: then a Bb in the bass alone
 # bars 25–26: N.C.
 1  | Db       # ♭VII of E♭ minor: D♭ major, the notes of E♭ Dorian
 1  | Ebm      # tonic minor: Dorian by convention
 2  | Bbm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
 2  | Ebm      # tonic minor: Dorian by convention
-# bars 29–30: N.C.
+# bars 3–4: N.C.
 5  | Db       # ♭VII of E♭ minor: D♭ major, the notes of E♭ Dorian
 5  | Abm7     # iv: Dorian, the key’s own notes
 6  | Bbm7     # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
@@ -102,7 +102,7 @@ section: C
 11 | F7#5     # V7 of V7: the dominant of the dominant: #11 and b13 from the symbol
 11 | Bb7      # extended dominant: V7 of Eb7
 12 | Eb7      # I7 in Eb minor, not resolving: the b13 is in the key
-# bar 38: Eb7 pushed an eighth early from bar 37, then the solo break; the ⊕ (to Coda) is before bar 38
+# bar 12: Eb7 pushed an eighth early from bar 11, then the solo break; the ⊕ (to Coda) is before bar 12
 @coda 12
 
 section: D

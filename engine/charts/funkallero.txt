@@ -32,17 +32,17 @@ bars: 16
 14 | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
 15 | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
 @coda 15
+# the coda sign at bar 15 is taken on the repeat
 
 section: B
-# the coda sign at bar 15 is taken on the repeat
 1  | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
 2  | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
 3  | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-# alt (optional): bar 20, beats 3–4 (A7#5)
+# alt (optional): bar 4, beats 3–4 (A7#5)
 5  | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
 6  | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
 7  | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-# alt (optional): bar 24, beats 3–4 (Bm9)
+# alt (optional): bar 8, beats 3–4 (Bm9)
 # area: Ab major (B 9–11)
 9  | Bbm9      # ii of the ii–V to Ab
 10 | Bbm9
@@ -55,7 +55,7 @@ section: B
 13 | D7        # V7 of V7: the dominant of the dominant, on the way to C minor: b9 and b13 are in the key
 14 | G7#5      # V7 of C minor, the chain's last link: b9 and b13 are in the key, the #11 from the symbol
 15 | Cm6/9     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-# alt (optional): bar 32, beats 3–4 (A7#5)
+# alt (optional): bar 16, beats 3–4 (A7#5)
 16 | Cm6/9
 @nav 16 D.C. al Coda
 

@@ -48,7 +48,7 @@ section: B
 
 section: C
 1  | AbMaj7  # tonic: the 4th is in the key
-# alt (book footnote): bars 33–36 (Ab Ab+ | Ab6 Ab+ | Ab Ab+ | Ab6 Ab+)
+# alt (book footnote): bars 1–4 (Ab Ab+ | Ab6 Ab+ | Ab Ab+ | Ab6 Ab+)
 4  | Bbm7    # ii of the ii–V to Ab
 4  | Eb7     # V7 of Ab: natural tensions
 5  | AbMaj7  # tonic: the 4th is in the key

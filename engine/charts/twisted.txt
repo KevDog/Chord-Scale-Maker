@@ -92,7 +92,7 @@ bars: 15
 12 | Dm7     # ii of the ii–V to C
 12 | G7      # V7 of C: natural tensions
 13 | C6      # tonic: the 4th is in the key
-# bars 50–51: break
+# bars 13–14: break
 14 | C6
 @nav 14 D.S. al Coda
 
