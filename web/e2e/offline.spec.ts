@@ -19,6 +19,7 @@ test('is installable: a manifest with a standalone display and icons', async ({ 
   const href = await page.locator('link[rel="manifest"]').getAttribute('href')
   const manifest = await (await page.request.get(href ?? '')).json()
   expect(manifest.display).toBe('standalone')
+  expect(manifest.short_name).toBe('Chord Scale Maker') // the Home Screen label: iOS reads it over apple-mobile-web-app-title
   expect(manifest.icons.map((i: { sizes: string }) => i.sizes)).toEqual(expect.arrayContaining(['192x192', '512x512']))
 })
 
