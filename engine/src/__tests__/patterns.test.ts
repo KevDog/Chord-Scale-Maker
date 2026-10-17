@@ -131,13 +131,72 @@ describe('buildPatternSheet', () => {
     const s = buildPatternSheet([row('Dm7', 'D Dorian'), row('G7', 'G Mixolydian')], CONCERT_PIANO, 12, moves, 'scale', 'up')
     expect(s.heading).toBe('Patterns')
     const staves = s.pages.flat()
-    expect(staves).toHaveLength(2)
+    // each 29-note Up run continues onto a second stave (24 + 5): two lines, four staves
+    expect(staves).toHaveLength(4)
     for (const st of staves) {
       expect(st.id).toContain(formatPattern(moves))
       expect(st.id).toContain('scale')
       expect(st.error).toBeNull()
       expect(st.notes.length).toBeGreaterThan(0)
     }
-    expect(new Set(staves.map((x) => x.id)).size).toBe(2)
+    expect(new Set(staves.map((x) => x.id)).size).toBe(4)
+  })
+  describe('long runs', () => {
+    const moves = [1, 1, 1, -2]
+    const build = (dir: 'up' | 'down' | 'up-down', perPage = 12) =>
+      buildPatternSheet([row('Cmaj7', 'C Ionian'), row('Dm7', 'D Dorian')], CONCERT_PIANO, perPage, moves, 'scale', dir).pages.flat()
+    const whole = (chord: string, scale: string, dir: 'up' | 'down' | 'up-down') => {
+      const r = patternLine(CONCERT_PIANO, chord, scale, moves, 'scale', dir)
+      if ('error' in r) throw new Error(r.error)
+      return r
+    }
+    it('splits the default Up & down at the turn, then at whole groups of at most 24 notes', () => {
+      const staves = build('up-down').filter((s) => s.id.startsWith('Cmaj7'))
+      const full = whole('Cmaj7', 'C Ionian', 'up-down')
+      expect(full.notes).toHaveLength(57)
+      expect(staves.length).toBeGreaterThan(1)
+      for (const s of staves) {
+        expect(s.notes.length).toBeLessThanOrEqual(24)
+        expect(s.groups.reduce((a, b) => a + b, 0)).toBe(s.notes.length)
+        expect(s.intervals).toHaveLength(s.notes.length)
+      }
+      expect(staves.flatMap((s) => s.notes)).toEqual(full.notes)
+      expect(staves.flatMap((s) => s.groups)).toEqual(full.groups)
+      // Down starts on the octave, and a stave starts there: the break at the turn
+      const octave = (full.notes[0]?.midi ?? 0) + 12
+      expect(staves.findIndex((s, i) => i > 0 && s.notes[0]?.midi === octave)).toBeGreaterThan(0)
+    })
+    it('keeps a run of at most 24 notes on one stave', () => {
+      const staves = build('up').filter((s) => s.id.startsWith('Cmaj7'))
+      expect(staves).toHaveLength(2)
+      const short = buildPatternSheet([row('Cmaj7', 'C Ionian')], CONCERT_PIANO, 12, [2, -1], 'chord', 'up-down').pages.flat()
+      expect(short).toHaveLength(1)
+    })
+    it('labels the first stave only, ends on one last, and gives unique ids', () => {
+      const all = build('up-down')
+      const mine = all.filter((s) => s.id.startsWith('Cmaj7'))
+      expect(mine[0]?.chords).toHaveLength(1)
+      expect(mine[0]?.scale).not.toBeNull()
+      for (const s of mine.slice(1)) {
+        expect(s.chords).toEqual([])
+        expect(s.scale).toBeNull()
+      }
+      expect(all.filter((s) => s.last)).toEqual([all.at(-1)])
+      expect(new Set(all.map((s) => s.id)).size).toBe(all.length)
+    })
+    it('restarts accidentals on each stave', () => {
+      const staves = buildPatternSheet([row('Gmaj7', 'G Ionian')], CONCERT_PIANO, 12, moves, 'scale', 'up-down').pages.flat()
+      const sharpAt = (s: (typeof staves)[number]) => s.notes.findIndex((n) => n.acc === 1)
+      expect(staves.length).toBeGreaterThan(1)
+      // no key signature: every stave's first F sharp is written, as in a fresh bar
+      const withSharp = staves.filter((s) => sharpAt(s) >= 0)
+      expect(withSharp.length).toBeGreaterThan(1)
+      for (const s of withSharp) expect(s.accidentals[sharpAt(s)]).toBe('#')
+    })
+    it('pages the pieces', () => {
+      const pages = buildPatternSheet([row('Cmaj7', 'C Ionian')], CONCERT_PIANO, 2, moves, 'scale', 'up-down').pages
+      expect(pages.length).toBeGreaterThan(1)
+      expect(pages[0]).toHaveLength(2)
+    })
   })
 })
