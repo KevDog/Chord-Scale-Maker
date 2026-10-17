@@ -81,6 +81,12 @@ const CONCERT_PIANO = partFor('piano')
 const names = (r: ReturnType<typeof patternLine>) => ('error' in r ? r.error : r.notes.map((n) => noteName(n.midi)))
 
 describe('patternLine', () => {
+  it('returns an error rather than looping for moves that never advance', () => {
+    expect(() => patternRun(7, [1, -1], 'up')).toThrow(/advance/)
+    expect(() => patternRun(0, [1, 1], 'up')).toThrow(/size/)
+    expect(patternLine(CONCERT_PIANO, 'Cmaj7', 'C Ionian', [1, -1], 'scale', 'up')).toEqual({ error: expect.stringMatching(/advance/) })
+  })
+
   it('runs 1 2 3 4 over C Ionian from C, in the piano range', () => {
     expect(names(patternLine(CONCERT_PIANO, 'Cmaj7', 'C Ionian', [1, 1, 1, -2], 'scale', 'up')).slice(0, 8)).toEqual(['C4', 'D4', 'E4', 'F4', 'D4', 'E4', 'F4', 'G4'])
   })

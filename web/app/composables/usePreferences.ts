@@ -5,7 +5,8 @@ import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
 import { isOverlay, type Overlay } from '~/utils/overlay'
 
-const DEFAULT_PATTERN = '+1 +1 +1 −2'
+/** the pattern the Changes sheet and the Patterns sheet start with */
+export const DEFAULT_PATTERN = '+1 +1 +1 −2'
 
 /** a pattern's canonical text, or undefined when it doesn't parse */
 function canonicalPattern(text: string): string | undefined {

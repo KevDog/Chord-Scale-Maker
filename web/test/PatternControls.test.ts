@@ -1,6 +1,7 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import PreviewControls from '~/components/PreviewControls.vue'
+import { useInterface } from '~/composables/useInterface'
 
 mockNuxtImport('useFeature', () => (name: string) => name === 'patterns')
 
@@ -67,5 +68,30 @@ describe('the Patterns controls', () => {
     expect(w.text()).toContain('Chord tones')
     expect(w.find('[aria-label="Pattern direction"]').exists()).toBe(true)
     expect(w.find('[aria-label="Arpeggio direction"]').exists()).toBe(false)
+  })
+
+  it('forgets bad Custom text when the stored library entry is chosen again', async () => {
+    const w = await mount()
+    await (await options(w)).find((o) => o.text() === 'Custom…')!.trigger('click')
+    await w.find('input[aria-label="Custom pattern"]').setValue('+0')
+    await (await options(w)).find((o) => o.text() === '1 2 3 4')!.trigger('click')
+    await (await options(w)).find((o) => o.text() === 'Custom…')!.trigger('click')
+    expect((w.find('input[aria-label="Custom pattern"]').element as HTMLInputElement).value).toBe('+1 +1 +1 −2')
+    expect(w.find('#pattern-error').exists()).toBe(false)
+  })
+
+  it('offers Patterns in Work on from the Intermediate level, not at Essentials', async () => {
+    const sheetOptions = async (level: 'essentials' | 'intermediate') => {
+      useInterface().level.value = level
+      const w = await mount({ sheet: 'changes' })
+      await w.find('button[aria-haspopup="listbox"]').trigger('click')
+      return w.findAll('[role=option]').map((o) => o.text())
+    }
+    try {
+      expect(await sheetOptions('essentials')).not.toContain('Patterns')
+      expect(await sheetOptions('intermediate')).toContain('Patterns')
+    } finally {
+      useInterface().level.value = 'everything'
+    }
   })
 })

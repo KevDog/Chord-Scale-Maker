@@ -84,8 +84,9 @@ export const PATTERN_LIBRARY: readonly Readonly<{ id: string; label: string; mov
 /**
  * The run of a pattern over a collection of `size` notes, as steps from its first note (0 = the first note, `size` =
  * its octave; a group may reach past the octave). `groups` are the beam lengths. Up starts a group on every
- * sum-th step below the octave, then the octave alone; Down is Up reflected step for step (same groups, the lone note last); Up & down is Up without its
- * closing octave, then Down, which starts on it.
+ * sum-th step below the octave, then the octave alone; Down is Up reflected step for step (same groups, the lone note
+ * last); Up & down is Up without its closing octave, then Down, which starts on it. Throws when the moves don't
+ * advance (sum not above 0) or `size` is below 1.
  */
 export function patternRun(
   size: number,
@@ -101,6 +102,8 @@ export function patternRun(
 
 function upRun(size: number, moves: Moves): Readonly<{ steps: readonly number[]; groups: readonly number[] }> {
   const total = sum(moves)
+  if (!(total > 0)) throw new Error('A pattern must advance: its moves must add up to more than zero.')
+  if (!(size >= 1)) throw new Error('A pattern needs a collection of at least one note (size).')
   const steps: number[] = []
   const groups: number[] = []
   for (let start = 0; start < size; start += total) {

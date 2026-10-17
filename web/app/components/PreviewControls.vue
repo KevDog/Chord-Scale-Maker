@@ -10,7 +10,7 @@
           <div class="flex items-center gap-2">
             <UiListbox v-model="sheet" class="w-full">
               <template #selected="{ value }"><UiListboxLabel>{{ sheetLabel(value) }}</UiListboxLabel></template>
-              <UiListboxOption v-for="s in sheetsFor(patternsOn)" :key="s.value" :value="s.value"><UiListboxLabel>{{ s.label }}</UiListboxLabel></UiListboxOption>
+              <UiListboxOption v-for="s in sheetsFor(patternsOn && shows('patterns'))" :key="s.value" :value="s.value"><UiListboxLabel>{{ s.label }}</UiListboxLabel></UiListboxOption>
             </UiListbox>
           </div>
         </UiField>
@@ -269,7 +269,10 @@
       set: (id: string) => {
         customChosen.value = id === 'custom'
         const entry = PATTERN_LIBRARY.find((p) => p.id === id)
-        if (entry) pattern.value = formatPattern(entry.moves)
+        if (!entry) return
+        // also the box: re-picking the stored entry changes no `pattern`, so the watch below would not clear bad text
+        patternText.value = formatPattern(entry.moves)
+        pattern.value = patternText.value
       },
     })
     const patternChoiceLabel = (id: string): string => (id === 'custom' ? 'Custom…' : (PATTERN_LIBRARY.find((p) => p.id === id)?.label ?? ''))
@@ -282,7 +285,9 @@
     })
     // the stored pattern changed from outside (a library choice, a reset): the box follows, unless it already says the same
     watch(pattern, (v) => {
-      if (!('moves' in parsed.value) || formatPattern(parsed.value.moves) !== v) patternText.value = v
+      if ('moves' in parsed.value && formatPattern(parsed.value.moves) === v) return // typed here
+      patternText.value = v
+      if (PATTERN_LIBRARY.some((p) => formatPattern(p.moves) === v)) customChosen.value = false
     })
     const GUIDE_LINES = [
       { value: 'third', label: 'From 3rd', title: "A line that starts on the first chord's 3rd and moves to the nearest guide tone of each chord" },

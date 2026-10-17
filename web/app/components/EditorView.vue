@@ -306,7 +306,6 @@ import {
   litKeys,
   type Mode,
   parsePattern,
-  PATTERN_LIBRARY,
   partFor,
   practiceBoxes,
   resolveScales,
@@ -329,6 +328,7 @@ import type { SaveTarget } from '~/composables/useSavedChart'
 import { nextChordLine, type SheetChordEdit, type SheetDone, type SheetEdit, type SheetFocus, type SheetPlace } from '~/utils/sheetChordEdit'
 import { SCALE_VIEW } from '~/utils/scaleView'
 import { firstSheet, type SheetKind } from '~/utils/sheets'
+import { DEFAULT_PATTERN } from '~/composables/usePreferences'
 import { type MoreAction, moreMenuItems } from '~/utils/moreMenu'
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { spellView } from '~/utils/scaleChoices'
@@ -427,10 +427,12 @@ function onPick(kind: PickKind, positions: readonly ChordAt[], value: number | r
   else if (kind === 'pentatonic' && typeof value === 'number') chordPicks.pick('pentatonic', positions, value)
   else if (kind === 'hexatonic' && typeof value !== 'number') chordPicks.pick('hexatonic', positions, value)
 }
-/** the stored pattern's moves (the text is canonical; an unparseable one draws as Thirds rather than nothing) */
+/** the stored pattern's moves (the text is canonical; an unparseable one draws as the default pattern rather than nothing) */
 const patternMoves = computed(() => {
   const p = parsePattern(prefs.pattern.value)
-  return 'moves' in p ? p.moves : (PATTERN_LIBRARY.find((p) => p.id === 'thirds')?.moves ?? [])
+  if ('moves' in p) return p.moves
+  const fallback = parsePattern(DEFAULT_PATTERN)
+  return 'moves' in fallback ? fallback.moves : []
 })
 const sheetLine = computed(() => sheetLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value))
 /** the line the Changes sheet draws: the stored one, the arpeggio slot read as the Pentatonic line under the Pentatonic overlay (#284) */
