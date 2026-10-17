@@ -42,12 +42,19 @@ const line = (chord: string, scale: string | null, notes: 'seventh' | 'extended'
 }
 
 describe('arpeggioLine', () => {
-  it('plays the 7th chord up, down, and up and down without repeating the top', () => {
-    expect(line('Cm7', 'C Dorian', 'seventh', 'up').notes.map(rootName)).toEqual(['C', 'Eb', 'G', 'Bb'])
-    expect(line('Cm7', 'C Dorian', 'seventh', 'down').notes.map(rootName)).toEqual(['Bb', 'G', 'Eb', 'C'])
+  it('plays the 7th chord over two octaves up, down, and up and down without repeating the top (#227)', () => {
+    const up = line('Cm7', 'C Dorian', 'seventh', 'up')
+    expect(up.notes.map(rootName)).toEqual(['C', 'Eb', 'G', 'Bb', 'C', 'Eb', 'G', 'Bb', 'C'])
+    expect(up.groups).toEqual([4, 4, 1])
+    expect((up.notes[8]?.midi ?? 0) - (up.notes[0]?.midi ?? 0)).toBe(24)
+    expect(up.notes.every((n, i) => i === 0 || n.midi > (up.notes[i - 1]?.midi ?? 0))).toBe(true)
+    const down = line('Cm7', 'C Dorian', 'seventh', 'down')
+    expect(down.notes.map(rootName)).toEqual(['C', 'Bb', 'G', 'Eb', 'C', 'Bb', 'G', 'Eb', 'C'])
+    expect(down.notes.map((n) => n.midi)).toEqual([...up.notes.map((n) => n.midi)].reverse())
+    expect(down.groups).toEqual([4, 4, 1])
     const ud = line('Cm7', 'C Dorian', 'seventh', 'up-down')
-    expect(ud.notes.map(rootName)).toEqual(['C', 'Eb', 'G', 'Bb', 'G', 'Eb', 'C'])
-    expect(ud.groups).toEqual([4, 3])
+    expect(ud.notes.map(rootName)).toEqual(['C', 'Eb', 'G', 'Bb', 'C', 'Eb', 'G', 'Bb', 'C', 'Bb', 'G', 'Eb', 'C', 'Bb', 'G', 'Eb', 'C'])
+    expect(ud.groups).toEqual([4, 4, 4, 4, 1])
   })
 
   it('adds the tensions above, beamed apart', () => {
@@ -61,12 +68,15 @@ describe('arpeggioLine', () => {
     expect(ud.groups).toEqual([4, 3, 2, 4])
   })
 
-  it("plays a triad's root on top in 7th Chord mode", () => {
-    expect(line('C', 'C Ionian', 'seventh', 'up').notes.map(rootName)).toEqual(['C', 'E', 'G', 'C'])
+  it('plays a triad over two octaves in 7th Chord mode', () => {
+    const up = line('C', 'C Ionian', 'seventh', 'up')
+    expect(up.notes.map(rootName)).toEqual(['C', 'E', 'G', 'C', 'E', 'G', 'C'])
+    expect(up.groups).toEqual([3, 3, 1])
+    expect(line('C', 'C Ionian', 'seventh', 'up-down').groups).toEqual([3, 3, 3, 3, 1])
   })
 
   it('needs a scale only for Extended', () => {
-    expect(line('Cm7', null, 'seventh', 'up').notes).toHaveLength(4)
+    expect(line('Cm7', null, 'seventh', 'up').notes).toHaveLength(9)
     expect(arpeggioLine(CONCERT, 'Cm7', null, 'extended', 'up')).toEqual({ error: 'Choose a scale' })
     expect(arpeggioLine(CONCERT, 'Xyz', 'C Dorian', 'seventh', 'up')).toEqual({ error: 'No chord tones for Xyz' })
   })
@@ -81,6 +91,20 @@ describe('arpeggioLine', () => {
       expect(outBy(12)).toBeGreaterThanOrEqual(base)
       expect(outBy(-12)).toBeGreaterThanOrEqual(base)
     }
+  })
+
+  it('places a two-octave run at the fewest notes out of range, the rest on ledger lines', () => {
+    const tuba = { clef: 'bass', trans: 'C', range: { lo: 36, hi: 58, centre: 47 } } as const
+    const flute = { clef: 'treble', trans: 'C', range: { lo: 60, hi: 84, centre: 73 } } as const
+    for (const part of [tuba, flute]) {
+      const r = rangeOf(part)
+      const midis = line('Cm7', 'C Dorian', 'seventh', 'up', part).notes.map((n) => n.midi)
+      expect(midis).toHaveLength(9)
+      const outBy = (shift: number): number => midis.filter((m) => m + shift < r.lo || m + shift > r.hi).length
+      expect(outBy(12)).toBeGreaterThanOrEqual(outBy(0))
+      expect(outBy(-12)).toBeGreaterThanOrEqual(outBy(0))
+    }
+    expect(line('Cm7', 'C Dorian', 'seventh', 'up', flute).notes.map((n) => n.midi)).toEqual([60, 63, 67, 70, 72, 75, 79, 82, 84])
   })
 
   it('has labels and guards', () => {
@@ -132,8 +156,8 @@ describe('buildArpeggioSheet: errors, keys and the last line', () => {
     expect(ext).toMatchObject({ error: scalesError, notes: [], intervals: null })
     const sev = buildArpeggioSheet(rows, CONCERT, 12, 'seventh', 'up').pages.flat()[0]
     expect(sev?.error).toBeNull()
-    expect(sev?.notes).toHaveLength(4)
-    expect(sev?.intervals).toEqual(['1', 'b3', '5', 'b7'])
+    expect(sev?.notes).toHaveLength(9)
+    expect(sev?.intervals).toEqual(['1', 'b3', '5', 'b7', '1', 'b3', '5', 'b7', '1'])
   })
 
   it('says Choose a scale for an Extended line with no scale', () => {
@@ -173,10 +197,10 @@ describe('buildArpeggioSheet: range and the bar rule without a key', () => {
     expect(first(wide)?.id).not.toBe(a?.id)
   })
 
-  it('marks each flat once in Up & down with no key', () => {
+  it('marks each flat once per octave in Up & down with no key', () => {
     const [s] = buildArpeggioSheet([row('Cm7', 'C Dorian')], CONCERT, 12, 'seventh', 'up-down').pages.flat()
-    expect(s?.notes.map(rootName)).toEqual(['C', 'Eb', 'G', 'Bb', 'G', 'Eb', 'C'])
-    expect(s?.accidentals).toEqual([null, 'b', null, 'b', null, null, null])
+    expect(s?.accidentals.filter(Boolean)).toEqual(['b', 'b', 'b', 'b'])
+    expect(s?.accidentals.slice(9).every((a) => a === null)).toBe(true)
   })
 
   it('prints a natural for the B after a Bb in the same octave (bebop dominant, no key)', () => {

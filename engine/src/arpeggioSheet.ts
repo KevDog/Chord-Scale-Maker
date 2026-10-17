@@ -60,7 +60,7 @@ export type ArpeggioSheetModel = Readonly<{ heading: string; pages: readonly (re
 /** one line's notes, and the length of each beamed group in order */
 export type ArpeggioLineNotes = Readonly<{ notes: readonly Pitched[]; groups: readonly number[] }>
 
-/** one scale line's arpeggio: chord tones (a triad's root again on top in 7th Chord mode), Extended adds the tensions above; an unreadable scale is an error, never a throw */
+/** one scale line's arpeggio: 7th Chord mode, the chord tones over two octaves; Extended, the chord tones then the tensions above; an unreadable scale is an error, never a throw */
 export function arpeggioLine(part: Part, chord: string, scale: string | null, notes: ArpNotes, dir: ArpDirection): ArpeggioLineNotes | Readonly<{ error: string }> {
   try {
     return playLine(part, chord, scale, notes, dir)
@@ -73,18 +73,28 @@ function playLine(part: Part, chord: string, scale: string | null, notes: ArpNot
   const tones = arpeggioTones(part, chord, scale ?? undefined)
   if (!tones) return { error: `No chord tones for ${chord}` }
   if (notes === 'extended' && scale === null) return { error: 'Choose a scale' }
-  const chordPart = notes === 'seventh' && tones.length === 3 ? [...tones, tones[0] as Spelled] : tones
-  const upper = notes === 'extended' && scale !== null ? tensionsOf(part, chord, scale, tones) : []
-  const run = [...chordPart, ...upper]
-  const midi = placeRun(run.map(pcOf), true, rangeOf(part))
-  const asc: Pitched[] = run.map((n, i) => ({ letter: n.letter, acc: n.acc, midi: midi[i] ?? 0 }))
-  const groups = upper.length ? [chordPart.length, upper.length] : [chordPart.length]
+  const placed = (run: readonly Spelled[]): Pitched[] => {
+    const midi = placeRun(run.map(pcOf), true, rangeOf(part))
+    return run.map((n, i) => ({ letter: n.letter, acc: n.acc, midi: midi[i] ?? 0 }))
+  }
+  if (notes === 'seventh') return twoOctaves(placed([...tones, ...tones, tones[0] as Spelled]), tones.length, dir)
+  const upper = scale !== null ? tensionsOf(part, chord, scale, tones) : []
+  const asc = placed([...tones, ...upper])
+  const groups = upper.length ? [tones.length, upper.length] : [tones.length]
   if (dir === 'up') return { notes: asc, groups }
   const desc = [...asc].reverse()
   const descGroups = [...groups].reverse()
   if (dir === 'down') return { notes: desc, groups: descGroups }
   const turn = (descGroups[0] ?? 1) - 1
   return { notes: [...asc, ...desc.slice(1)], groups: [...groups, ...[turn, ...descGroups.slice(1)].filter((g) => g > 0)] }
+}
+
+/** 7th Chord mode (#227): the chord twice and its root on top, beamed a chord at a time with the closing root alone; Up & down shares the top */
+function twoOctaves(asc: readonly Pitched[], size: number, dir: ArpDirection): ArpeggioLineNotes {
+  const desc = [...asc].reverse()
+  if (dir === 'up') return { notes: asc, groups: [size, size, 1] }
+  if (dir === 'down') return { notes: desc, groups: [size, size, 1] }
+  return { notes: [...asc, ...desc.slice(1)], groups: [size, size, size, size, 1] }
 }
 
 /**
