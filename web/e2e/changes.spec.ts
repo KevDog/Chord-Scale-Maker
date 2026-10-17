@@ -228,7 +228,7 @@ test('7th Chords arpeggiates each chord: quarters for one a bar, eighths for two
   const line = lines(page).first()
   await showArpeggios(page, 'Up · root')
   await arpeggiosDrawn(page)
-  await expect(line).toHaveAttribute('aria-label', /; 7th chords: C4 E4 G4 B4 \| D5 F5 A5 C6, G4 B4 D5 F5 \| /) // each chord nearest the last note, in piano's range (to C6)
+  await expect(line).toHaveAttribute('aria-label', /; 7th chords: C4 E4 G4 B4 \| D5 F5 A5 C6, G4 B4 D5 F5 \| /) // each chord nearest the last note, in piano's range (to E6)
   await expect.poll(async () => (await drawn(line)).heads.length).toBe(4 + 8 + 16 + 4)
   expect((await drawn(line)).slashes).toBe(0)
   expect(await line.locator('.vf-beam').count()).toBeGreaterThan(0)
@@ -386,6 +386,23 @@ for (const [width, bars] of [
     await guidesDrawn(page)
     const all = await Promise.all((await lines(page).all()).map(drawn))
     expect(Math.max(...all.flatMap((d) => d.heads.map((h) => h.y)))).toBeGreaterThanOrEqual(145) // G3: two ledger lines below the staff (80–120, 5 a step)
+    for (const d of all) expectNoCollisions(d)
+    for (const line of await lines(page).all()) await expectChordsOnHeads(line)
+  })
+}
+
+for (const [width, bars] of [
+  [1400, 4],
+  [390, 2],
+] as const) {
+  test(`piano, ${bars} bars a line: a line up to E6 draws three ledger lines above the staff, and nothing collides (#331)`, async ({ page }) => {
+    await page.setViewportSize({ width, height: 1000 })
+    await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | CMaj7\n2 | Dm7\n3 | FMaj7\n4 | FMaj7\n')
+    await showArpeggios(page, 'Up · root')
+    await arpeggiosDrawn(page)
+    await expect(page.locator('svg[aria-label^="Bars:"][aria-label*="FMaj7"]').first()).toHaveAttribute('aria-label', /7th chords: (.* \| )?F5 A5 C6 E6/) // FMaj7 whole inside piano's range, its top E6
+    const all = await Promise.all((await lines(page).all()).map(drawn))
+    expect(Math.min(...all.flatMap((d) => d.heads.map((h) => h.y)))).toBeLessThanOrEqual(50) // E6: on the third ledger line above the staff (80–120, 5 a step)
     for (const d of all) expectNoCollisions(d)
     for (const line of await lines(page).all()) await expectChordsOnHeads(line)
   })

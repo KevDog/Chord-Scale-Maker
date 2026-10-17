@@ -30,7 +30,7 @@ The earlier "comfortable zone" is replaced by its centre: the lines only ever us
 | Scales sheet | Keeps its fixed written range; unchanged (the user's). |
 | Where the ranges come from | Proposed from standard practical ranges and reviewed by the user (the user's choice); vibes set by the user: G3–D6, centre B♭4. |
 | Approach | A range on `Part` (the user's): `partFor(instrument)` carries it; the lines read `part.range`. |
-| Readability cap | A line never needs more than two ledger lines: treble G3–D6, bass B1–F4 (written). Every instrument's range lies inside its clef's cap. |
+| Readability cap | A line never needs more than three ledger lines in treble (E3–F6, widened from two for piano, #331) or two in bass (B1–F4) (written). Every instrument’s range lies inside its clef’s cap. |
 | Fallback | A part without a range (`CONCERT`, a part built by hand) uses today's clef range and centre (treble C4–A5, A4; bass E2–C4, C♯3). |
 | The rules | Unchanged. |
 | Floors lowered after measuring | The user's: trumpet and flugelhorn C4 → G3 and trombone B♭2 → E2, after the first measurement showed their floors forcing leaps (moves over a tritone: trumpet 23 → 12, trombone 26 → 14); then horn C4 → G3 (20 → 9) and guitar's centre D♯4 → F♯4 (23 → 19; a lower guitar floor measured worse). |
@@ -43,7 +43,7 @@ the user may move any of them to a better marker, as for vibes.
 | Instrument | Clef | Line range | Centre |
 | --- | --- | --- | --- |
 | concert | treble | C4–A5 (60–81) | A4 (69, today's) |
-| piano | treble | C4–C6 (60–84) | B♭4 (70) |
+| piano | treble | F3–E6 (53–88; was C4–C6, #331) | B♭4 (70) |
 | vibes | treble | G3–D6 (55–86) | B♭4 (70) |
 | flute | treble | C4–C6 (60–84) | C♯5 (73) |
 | guitar | treble | A3–A5 (57–81) | F♯4 (66) |
@@ -61,7 +61,7 @@ transposition; the table is the written staff, which is what the lines are drawn
 ## 1. Engine
 
 - `engine/instruments.ts`: `Range = Readonly<{ lo: number; hi: number; centre: number }>` (MIDI, written); each
-  `INSTRUMENTS` entry gains `range: Range` from the table. `CAPS: Record<Clef, { lo, hi }>` = treble 55–86, bass
+  `INSTRUMENTS` entry gains `range: Range` from the table. `CAPS: Record<Clef, { lo, hi }>` = treble 52–89 (#331; was 55–86), bass
   35–65.
 - `engine/part.ts`: `Part` gains `range?: Range`; `partFor(name)` returns `{ clef, trans, range }`. `rangeOf(part)`:
   `part.range` or the clef default (`RANGES[clef]` as `{ lo, hi, centre }`). `CONCERT` is unchanged.
