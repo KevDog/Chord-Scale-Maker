@@ -9,6 +9,7 @@ import { chartsPlugin } from './build/charts'
 import { addCspMeta } from './build/csp'
 import { quotesPlugin } from './build/quotes'
 import { SECURITY_HEADERS } from './build/headers'
+import { writeServiceWorker } from './build/sw'
 import { buildVersion } from './build/version'
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL, songPath } from './app/utils/site'
 import { chartSlugsOf, sitemapPaths } from './app/utils/sitemap'
@@ -88,13 +89,20 @@ export default defineNuxtConfig({
     contact: { resendApiKey: '', to: '', from: '', dryRun: false },
     public: {
       version: buildVersion(process.env), // "2026.10.07 · 1e2bea5": the commit's date and the commit (build/version.ts)
-      // feature flags (useFeature): none now (#296). A new one starts off here; NUXT_PUBLIC_FEATURES_<NAME>=true|false
+      // feature flags (useFeature). A new one starts off here; NUXT_PUBLIC_FEATURES_<NAME>=true|false
       // overrides one, and the e2e script (package.json) builds with each on
-      features: {},
+      features: {
+        offline: false, // the offline service worker and the Help page's install line (#324; build/sw.ts)
+      },
     },
   },
   // '/_nuxt/**' too: Nitro emits a separate cache-header route for assets that ends Vercel's routing
   hooks: {
+    // the offline worker's sw.js (build/sw.ts), once the pages are prerendered and the chunks copied beside them, before
+    // the server lists its static files
+    'nitro:build:public-assets'(nitro) {
+      writeServiceWorker(nitro.options.output.publicDir)
+    },
     // the /ui component showcase is for development only
     'pages:extend'(pages) {
       if (process.env.NODE_ENV === 'production') pages.splice(0, pages.length, ...pages.filter((p) => p.path !== '/ui'))
@@ -108,7 +116,8 @@ export default defineNuxtConfig({
   nitro: {
     // every page is prerendered and served as a static file; only /api/contact (and unknown URLs) run on the server
     // the library songs are in the sitemap
-    prerender: { routes: [...SITEMAP_PATHS, '/song', '/sitemap.xml'] },
+    // + /200.html, Nuxt's client-only app shell: the offline worker's fallback for a page not yet visited (build/sw.ts)
+    prerender: { routes: [...SITEMAP_PATHS, '/song', '/200.html', '/sitemap.xml'] },
     virtual: { '#sitemap-paths': `export default ${JSON.stringify(SITEMAP_PATHS)}` },
     hooks: {
       // hash each page's inline scripts into a CSP <meta> (build/csp.ts)

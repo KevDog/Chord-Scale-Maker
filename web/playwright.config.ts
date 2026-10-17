@@ -11,7 +11,8 @@ export default defineConfig({
   failOnFlakyTests: !!process.env.CI, // a retry that passes still fails CI
   reporter: process.env.CI ? [['list'], ['html', { open: 'never' }]] : 'list',
   // reduced motion: controls that come and go (#297) only fade, so layout settles at once; e2e/easing.spec.ts turns it back on
-  use: { baseURL: `http://localhost:${PORT}`, trace: 'retain-on-failure', reducedMotion: 'reduce' },
+  // the offline worker (#324) would answer requests before page.route sees them; e2e/offline.spec.ts allows it
+  use: { baseURL: `http://localhost:${PORT}`, trace: 'retain-on-failure', reducedMotion: 'reduce', serviceWorkers: 'block' },
   // the axe scans (e2e/a11y/*.a11y.ts) are their own project, kept out of `npm run e2e`: `npm run a11y` runs them
   projects: [
     { name: 'chromium', testMatch: '**/*.spec.ts', use: { ...devices['Desktop Chrome'], viewport: { width: 1400, height: 1000 } } },

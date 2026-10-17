@@ -403,6 +403,10 @@
             in that note collects the details for the contact form.
           </li>
           <li>It works on a phone, but the staves are small. A tablet or a laptop is nicer.</li>
+          <li v-if="offline">
+            It works offline too. Add it to your home screen (on an iPad or iPhone, Share → Add to Home Screen) and it
+            opens like an app. Once you've opened the site, every tune in the library is there without a connection.
+          </li>
         </ul>
       </section>
     </article>
@@ -415,6 +419,7 @@ import { PAGE_HEAD, seoMeta } from '~/utils/site'
 import { guideRanges } from '~/utils/instrumentChoices'
 import { PENT_INSIDE_HELP } from '~/utils/pentatonics'
 
+const offline = useFeature('offline')
 const GUIDE_RANGES = guideRanges()
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },

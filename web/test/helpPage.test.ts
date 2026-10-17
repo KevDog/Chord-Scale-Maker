@@ -16,3 +16,9 @@ describe('the help page', () => {
     expect(text).toContain('Leave out picks the note each cell drops')
   })
 })
+
+describe('the help page, offline flag off', () => {
+  it('says nothing about installing it (#324)', async () => {
+    expect((await mountSuspended(Help)).text()).not.toContain('Add to Home Screen')
+  })
+})
