@@ -74,6 +74,13 @@ describe('cells line', () => {
   const noteNames = (ns: readonly GuideNote[] | undefined) => (ns ?? []).map((n) => (n.pitch ? rootName(n.pitch) : 'r'))
   const midis = (ns: readonly GuideNote[] | undefined) => (ns ?? []).map((n) => n.pitch?.midi ?? -1)
 
+  it('5 3 2 1 on vibes over Fm C7 Fm (Airegin) stays in the comfort band, B♭3 and up, rather than fall to F3', () => {
+    const fm = (start: number, beats: number): GuideInput => ({ row: start, chord: 'Fm', scale: 'F Aeolian', start, beats })
+    const chords = [fm(0, 4), { row: 4, chord: 'C7', scale: 'C Phrygian dominant', start: 4, beats: 4 }, fm(8, 4)]
+    const { bars } = cellsVoices(chords, partFor('vibes'), 4, null, line('5-3-2-1'))
+    expect(noteNames(bars.get(0))).toEqual(['C', 'Ab', 'G', 'F', 'C', 'Ab', 'G', 'F'])
+    expect([0, 1, 2].flatMap((b) => midis(bars.get(b))).every((m) => m >= 58)).toBe(true)
+  })
   it('3rd to 3rd over G7 C7 F7 Bb7 chains the cells, each starting a step from the last note', () => {
     const { bars } = cellsVoices(seq(['G7', 2], ['C7', 2], ['F7', 2], ['Bb7', 2]), CONCERT, 4, null, line('3rd-3rd'))
     expect(noteNames(bars.get(0))).toEqual(['B', 'A', 'G', 'F', 'E', 'G', 'C', 'Bb'])

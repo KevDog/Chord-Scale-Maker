@@ -573,7 +573,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   its own pitches, not counted as an arpeggio (Up & down). The Pentatonic and Triad Pair lines' 7th chord fallback
   does the same; their own cells don't.
 - **Octave:** each arpeggio placed whole, its first note nearest the previous note among the octaves inside the part's
-  range (`rangeOf`); a run's first nearest the centre.
+  range (`rangeOf`); a run's first nearest the centre. Before nearness (`placeWhole`, cells too): the octave with
+  the fewest notes outside the comfort band (`comfortBand`: the range less a 4th below and a major 3rd above, vibes
+  B♭3–C♯6, at least an octave), counted only when half the figure's notes or more are outside, so a line moving one
+  way turns back instead of drifting to the range's edge.
 - **Rests:** a chord without chord tones (N.C.) rests and ends the run.
 - **Model:** `arpeggioVoices` fills `ChangesBar.voice` (guide labels stay empty); `buildChanges` and
   `changesLinesPerPage` take a `SheetLine` (`off`, `third`, `seventh` or a pattern id).

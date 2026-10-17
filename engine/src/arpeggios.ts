@@ -134,10 +134,40 @@ function orderFor(pattern: ArpeggioPattern, tones: readonly Spelled[], prev: num
 }
 
 /**
- * one arpeggio's pitches: each note the next of its pitch class above (up) or below (down) the last, placed whole at
- * the octave with the fewest notes out of range, then (rule 4) its first note nearest prev, nearer the centre, the
- * lower; a run's start (prev null, rule 5) at the octave whose notes average nearest the centre (a tie: the higher)
+ * where a line likes to sit: the range less a 4th below and a major 3rd above (vibes F3–F6: B♭3–C♯6), at least an
+ * octave (a narrower one reaches down to the octave below its top)
  */
+export function comfortBand(range: Range): Readonly<{ lo: number; hi: number }> {
+  const hi = range.hi - 4
+  return { lo: Math.max(range.lo, Math.min(range.lo + 5, hi - 12)), hi }
+}
+
+/**
+ * a figure placed whole: of the octaves its first note (pitch class first) can start on, at(m) giving its pitches from
+ * m, the one with the fewest notes out of range, then the fewest out of the comfort band when half its notes or more
+ * are (so a line moving one way turns back rather than drift to the range's edge), then (rule 4) its first note
+ * nearest prev, nearer the centre, the lower; a run's start (prev null, rule 5) at the octave whose notes average
+ * nearest the centre (a tie: the higher)
+ */
+export function placeWhole(first: number, at: (m: number) => readonly number[], range: Range, prev: number | null): readonly number[] {
+  const band = comfortBand(range)
+  const drifted = (outside: number, of: number): number => (2 * outside >= of ? outside : 0) // a note or so past the band is the line's own reach
+  const options: { midi: readonly number[]; out: number; outBand: number }[] = []
+  for (let m = range.lo - 12; m <= range.hi + 12; m++) {
+    if (((m % 12) + 12) % 12 !== first) continue
+    const midi = at(m)
+    options.push({ midi, out: midi.filter((x) => x < range.lo || x > range.hi).length, outBand: drifted(midi.filter((x) => x < band.lo || x > band.hi).length, midi.length) })
+  }
+  const avg = (xs: readonly number[]): number => xs.reduce((s, x) => s + x, 0) / xs.length
+  const key = (o: (typeof options)[number]): readonly number[] => {
+    const m = o.midi[0] ?? 0
+    return prev === null ? [o.out, Math.abs(avg(o.midi) - range.centre), -m] : [o.out, o.outBand, Math.abs(m - prev), Math.abs(m - range.centre), m]
+  }
+  const cmp = (a: readonly number[], b: readonly number[]): number => a.reduce((r, x, i) => r || x - (b[i] ?? 0), 0)
+  return [...options].sort((a, b) => cmp(key(a), key(b)))[0]?.midi ?? at(range.centre)
+}
+
+/** one arpeggio's pitches: each note the next of its pitch class above (up) or below (down) the last, placed whole */
 function place(pcs: readonly number[], up: boolean, range: Range, prev: number | null): readonly number[] {
   const rel = pcs.reduce<number[]>((acc, pc, i) => {
     if (i === 0) return [0]
@@ -145,20 +175,7 @@ function place(pcs: readonly number[], up: boolean, range: Range, prev: number |
     const step = up ? ((pc - last + 11) % 12) + 1 : -(((last - pc + 11) % 12) + 1)
     return [...acc, (acc[i - 1] ?? 0) + step]
   }, [])
-  const first = pcs[0] ?? 0
-  const options: { midi: number[]; out: number }[] = []
-  for (let m = range.lo - 12; m <= range.hi + 12; m++) {
-    if (((m % 12) + 12) % 12 !== first) continue
-    const midi = rel.map((r) => m + r)
-    options.push({ midi, out: midi.filter((x) => x < range.lo || x > range.hi).length })
-  }
-  const avg = (xs: readonly number[]): number => xs.reduce((s, x) => s + x, 0) / xs.length
-  const key = (o: { midi: number[]; out: number }): readonly number[] => {
-    const m = o.midi[0] ?? 0
-    return prev === null ? [o.out, Math.abs(avg(o.midi) - range.centre), -m] : [o.out, Math.abs(m - prev), Math.abs(m - range.centre), m]
-  }
-  const cmp = (a: readonly number[], b: readonly number[]): number => a.reduce((r, x, i) => r || x - (b[i] ?? 0), 0)
-  return [...options].sort((a, b) => cmp(key(a), key(b)))[0]?.midi ?? rel.map((r) => range.centre + r)
+  return placeWhole(pcs[0] ?? 0, (m) => rel.map((r) => m + r), range, prev)
 }
 
 /** a run's start: the octave with the fewest notes out of range, then the average nearest the centre (a tie: the higher) */
