@@ -35,7 +35,7 @@ same treatment.
 
 ### Guide tone ranges per instrument
 
-Each instrument's guide tone lines use its own written range and centre, inside a two-ledger-line cap
+Each instrument's guide tone lines use its own written range and centre, inside a ledger-line cap (treble three, bass two)
 ([spec](superpowers/specs/2026-10-10-guide-tone-ranges-design.md)).
 
 ### The Changes sheet
