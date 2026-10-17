@@ -1102,7 +1102,7 @@ static file, §7b), so the attack surface is small. The measures:
     hashed at build time. There is no `'unsafe-inline'` for scripts.
   - **Styles:** `style-src` allows inline styles, because Vue and VexFlow set style attributes.
   - **Tests:** the E2E tests fail on any CSP violation.
-  - **Offline worker (#324, flag `offline`):** `public/sw.js` is written after prerendering by `web/build/sw.ts`
+  - **Offline worker (#324, flag `offline`, on):** `public/sw.js` is written after prerendering by `web/build/sw.ts`
     (from `build/service-worker.js` and the precache list: the `/_nuxt` chunks, the non-song pages and payloads, the
     icons and `/200.html`, Nuxt's client-only shell). Same origin and registered from a plugin file
     (`plugins/serviceWorker.client.ts`), so the CSP is unchanged: `worker-src` and `manifest-src` fall back to `'self'`.
