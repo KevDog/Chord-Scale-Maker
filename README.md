@@ -26,35 +26,54 @@ library on the next build (or at once in `make dev`).
 ```
 title: Autumn Leaves
 subtitle: Full Form, Alternate Changes
+key: Gm
 
-# section | bar | chord | scale
-A1 | 1 | Cm7   | C Dorian
-A1 | 2 | F7    | F Mixolydian
-A1 | 3 | Bm7   | B Dorian
-A1 | 3 | E7    | E Mixolydian
-@copy A1 A2 8
+section: A1
+# bar | chord | scale
+1 | Cm7   | C Dorian
+2 | F7    | F Mixolydian
+3 | Bm7   | B Dorian
+3 | E7    | E Mixolydian
+…
+
+section: A2
+copy: A1
+
+section: B
+bars: 16
+1 | Am7b5
+…
 ```
+
+The lines before the first `section:` are the header (the song's fields below). Each `section:` line opens a block:
+its own fields straight under it, then its rows and directives, until the next `section:`. Bars count from 1 in each
+section.
 
 | Element | Meaning |
 | --- | --- |
-| `section \| bar \| chord \| scale \| function` | One row per chord. Two chords in a bar are two rows with the same bar number. A chord lasts until the next bar number. |
-| `section \| bar \| chord` | Scale omitted: the analyser's choice, at the sheet's level: the stated function's scale if the row has one, else the rules'. Where the analysis doesn't reach the chord, the quality's default from `chord_scales.json` (`Cm7` → `C Dorian`). |
+| `section: NAME` | Opens a section block (a name without spaces). A second section of the same name is an error. |
+| `bar \| chord \| scale \| function` | One row per chord, its bar counted from 1 in its section. Two chords in a bar are two rows with the same bar number. A chord lasts until the next bar number in the section; the section's last chord lasts to the section's end. |
+| `bar \| chord` | Scale omitted: the analyser's choice, at the sheet's level: the stated function's scale if the row has one, else the rules'. Where the analysis doesn't reach the chord, the quality's default from `chord_scales.json` (`Cm7` → `C Dorian`). |
 | `… \| scale` | The scale as written, at every level: a pin, the player's choice over the analyser's. Say why with a `# keep: …` comment. |
 | `… \| function` | Optional: what the chord does, as the Changes sheet writes it (`V7/ii`, `subV7`, `ii7/V`, `♭VII7`, `IVmaj7`), in the key area, or in another key before a colon (`D: V7/ii`). The analyser takes it as given when it picks the scale; it never writes one. |
-| `@key SECTION BAR KEY` | The key from that bar until the next `@key` (`@key B 17 D`), where the analyser's own key areas would be wrong. It never writes one. It holds through an `@copy`: after `@key A1 5 C` and `@copy A1 A2 8`, all of A2 is in C, so write an `@key` at the copy's first bar to return. |
+| `bars: N` (in a section) | The section's length, when its last chord is held past its last written bar (`bars: 8` with the last chord on bar 7). Without it, the section ends with its last written bar. |
+| `key: KEY` (in a section) | The section's key area, from its bar 1 to its end, where the analyser's own key areas would be wrong; then the analysis finds the key again. It never writes one. |
+| `@key BAR KEY` | A key change inside a section, from that bar to the section's end (`@key 5 D`). |
+| `copy: SRC` (in a section) | The section repeats section `SRC` (above it): its rows, and its `key:`, `time:`, `context:`, `bars:` and key changes, unless this section sets its own `key:` (which replaces the source's key changes too). It has no rows of its own; it may have its own endings, marks and nav. |
+| `outside: yes` (in a section) | The section is outside the form, as an `Intro` or `Coda` is: before the form if it comes before the first section in it, after it otherwise. |
+| `time: 3/4` (in a section) | The section's metre. Kept and carried by `copy:`, but drawn in the song's metre until #235 (the parser says so). |
 | `context: modal` | How the analyser reads the chart: `functional` (cadences and key areas, the usual), `modal` (each chord its own mode, no key areas) or `blues` (the I7 and IV7 of a blues by their degree, no key areas; the I is `key:`, else bar 1). Without it the analyser decides by detection, and says which in its report; write it where the detection is wrong or borderline (`npm run analyse -- … --ambiguous` names those). `minor:` is reserved: accepted and ignored. |
-| `@context SECTION BAR CONTEXT` | The context from that bar until the next `@context` (`@context B 17 modal`). Parsed and checked; the analyser does not use it yet (its report says so) and keeps the chart's context. |
-| `@copy SRC DST OFFSET` | Repeat section `SRC` as `DST`, adding `OFFSET` to each bar number. |
-| `@ending N SECTION FIRST [LAST]` | A 1st/2nd ending (volta) over `SECTION` bars `FIRST`..`LAST`; the section is played twice on the Changes sheet — repeat signs with the two endings bracketed. Write the two endings as sequential bars (e.g. 7–8 then 9–10). |
-| `@segno SECTION BAR` / `@coda SECTION BAR` | A segno (𝄋) or coda (⊕) glyph above that bar on the Changes sheet (the coda marks both the "to the coda" departure and the coda arrival). |
-| `@nav SECTION BAR TEXT` | A navigation instruction above that bar on the Changes sheet: `D.S. al Coda`, `D.C. al Fine`, `To Coda`, `Fine`. |
-| `time: 3/4` | The metre: `2/4`, `3/4` or `4/4` (the default). The Changes sheet writes its slashes and guide tones in it (the waltzes in the library say `3/4`). |
-| `Intro`, `Coda`, `Tag`, `Ending` sections | Outside the form (`Tag 2` too): they print where they stand, but the form's turnaround goes back to its own bar 1, and each is analysed and timed on its own (its bars may be numbered from 1). `form:` counts only the form. |
+| `context:` (in a section) / `@context BAR CONTEXT` | The context for a section, or from a bar to its section's end. Parsed and checked; the analyser does not use them yet (its report says so) and keeps the chart's context. |
+| `@ending N FIRST [LAST]` | A 1st/2nd ending (volta) over the section's bars `FIRST`..`LAST`; the section is played twice on the Changes sheet — repeat signs with the two endings bracketed. Write the two endings as sequential bars (e.g. 7–8 then 9–10). |
+| `@segno BAR` / `@coda BAR` | A segno (𝄋) or coda (⊕) glyph above that bar on the Changes sheet (the coda marks both the "to the coda" departure and the coda arrival). |
+| `@nav BAR TEXT` | A navigation instruction above that bar on the Changes sheet: `D.S. al Coda`, `D.C. al Fine`, `To Coda`, `Fine`. |
+| `time: 3/4` | The song's metre: `2/4`, `3/4` or `4/4` (the default). The Changes sheet writes its slashes and guide tones in it (the waltzes in the library say `3/4`). |
+| `Intro`, `Coda`, `Tag`, `Ending` sections | Outside the form (`Tag2` too): they print where they stand, but the form's turnaround goes back to its own bar 1, and each is analysed and timed on its own. `form:` counts only the form. |
 | `title:`, `subtitle:` | The heading on each page. |
 | `composer:`, `style:`, `key:`, `form:`, `source:` | About the tune: who wrote it, the feel (`Ballad`, `Medium up`, `Latin`…), the key (`Eb`, `Fm`), the form (`AABA, 32 bars`) and where the chart came from. Kept with the chart, not shown; `key:` is the analyser's starting point. |
 | `aka:` | The tune's other titles, `;` between them (a title may hold a comma): `aka: Blue Train`. Shown on its song page and found by the library search. |
 | `kind:` | `tune` (the default), `form` (a progression with no composer: F Blues, Rhythm Changes) or `exercise`. A library chart needs `title:`, `key:`, `style:` and `form:`, and a tune its `composer:`; `make test` fails without them. |
-| `#` | Comment line. A row may also end in a comment: `A \| 6 \| D7 \| D Phrygian Dominant  # V7 of G minor: b9 and b13 are in the key` (the `#` needs a space before it). |
+| `#` | Comment line. A row may also end in a comment: `6 \| D7 \| D Phrygian Dominant  # V7 of G minor: b9 and b13 are in the key` (the `#` needs a space before it). |
 
 Chord symbols: `Cm7`, `C-7`, `Cmi7`, `Bbm7`, `Am7b5`, `D7#5`, `G7#9b13`, `EbMaj7`, `C9`, `Csus`, `C7sus4b9`,
 `D7/F#`, `Cm6/Eb`. Minor chords are shown with an en dash (`C–7`).
@@ -69,7 +88,7 @@ bass: `DbMaj7/C` is a sus♭9 chord on C, so it defaults to `C Phrygian` (`slash
 A blank scale cell plays a harmonic analysis of the chart (the rules are in
 [docs/plan-analysis.md](docs/plan-analysis.md)): each chord's function in its key decides its scale, at the level
 the sheet is set to (Basic, Standard, Advanced, Random). The level is the player's, not the chart's: it is never
-written into the rows. So a chart is written with chords only, plus a function (`| | V7/ii`) or an `@key` where the
+written into the rows. So a chart is written with chords only, plus a function (`| | V7/ii`), a section `key:` or an `@key` where the
 analyser would guess, and a scale only where the tune demands one over the rules. The analyser explains itself:
 
 ```sh
@@ -78,7 +97,7 @@ cd engine && npm run analyse -- charts/<tune>.txt --save
 
 Without flags it only reports. `--save` writes the reasons into the chart as comments; `--all` runs over every
 chart. `--ambiguous` lists the chords the rules could only guess at, each with the functions it might have, and the
-key areas an `@key` would pin. `--strip` blanks every written scale the rules already give (never a `# keep:` row)
+key areas a section `key:` or `@key` would pin. `--strip` blanks every written scale the rules already give (never a `# keep:` row)
 and lists the rest.
 
 ## Instruments
@@ -98,7 +117,7 @@ comfortable written range.
 
 Every sheet starts with a clef and the key signature as written for your instrument, once, at the start, as on a jazz
 lead sheet (a chart with no `key:` gets no signature). Key changes are written with accidentals only, and shown in the
-analysis: the Changes sheet labels each `@key` area. Accidentals the signature already supplies aren't repeated, and
+analysis: the Changes sheet labels each key area. Accidentals the signature already supplies aren't repeated, and
 one that is cancelled within a bar shows a natural.
 
 ## Developing

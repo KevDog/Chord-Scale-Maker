@@ -1,6 +1,6 @@
 # Chart format: section blocks (issue #329)
 
-**Status:** spec (branch `section-blocks`).
+**Status:** built (branch `section-blocks`).
 
 ## Goal
 

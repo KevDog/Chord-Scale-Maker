@@ -38,7 +38,9 @@ engine/                   # @chord-scale-maker/engine (superpowers/specs/2026-10
     part.ts               # writtenRoot, scaleNotes, scaleLabel, lilyNote, resolveStart (functional "Part")
     chord.ts              # parseChord -> ChordParts, chordTokens (+ lenient display variants)
     qualities.ts          # quality lookup via chord_scales.json, options + defaults, baseQuality
-    chart.ts              # parse/serialize chart text <-> ChartDoc, expand @copy
+    chart.ts              # parse/serialize chart text <-> ChartDoc (section blocks)
+    layout.ts             # sectionLayout: blocks resolved (rows, lengths, copies, stated keys)
+    migrate.ts            # migrateChart: the retired row format to section blocks
     edit.ts               # grid edits on a ChartDoc (pure), cell validation
     sheet.ts              # rows -> pages of StaffModel (labels, notes, intervals, errors), toVexKey
     transpose.ts          # move a whole chart to another key (editor "Transpose…")
@@ -168,18 +170,22 @@ type ChordToken =
 
 ## 4. Chart model and text ⇄ grid sync
 
-The text format needs a document model that preserves comments and `@copy`.
+The text format needs a document model that preserves comments and blocks (#329, the
+[section blocks spec](superpowers/specs/2026-10-16-section-blocks-design.md)): a header of song fields, then one block
+per section, opened by a `section:` line, with the section's own fields straight under it, then its rows and
+directives, until the next `section:`. Bars count from 1 in each section.
 
 ```ts
 type ChartLine =
-  | { kind: 'meta'; key: MetaKey; value: string }  // title, subtitle (the heading); key, bars, context (analyser hints); minor (reserved); time; composer, style, form, source
-  | { kind: 'row'; section: string; bar: string; chord: string; scale: string; function?: string; comment?: string }  // scale '' = default; function: the optional fifth cell, a stated function ('V7/ii', 'D: V7/ii'); comment: a trailing # …
-  | { kind: 'key'; section: string; bar: number; key: string }  // @key B 17 D: bars from there in that key, until the next @key
-  | { kind: 'context'; section: string; bar: number; context: ChartContext }  // @context B 17 modal: parsed, not yet analysed
-  | { kind: 'copy'; src: string; dst: string; offset: number }
-  | { kind: 'ending'; n: number; section: string; from: number; to: number }  // a 1st/2nd ending (volta) on the Changes sheet
-  | { kind: 'mark'; mark: 'segno' | 'coda'; section: string; bar: number }     // a segno 𝄋 / coda ⊕ glyph
-  | { kind: 'nav'; section: string; bar: number; text: string }                // "D.S. al Coda", "To Coda", "Fine"
+  | { kind: 'meta'; key: MetaKey; value: string }  // the header: title, subtitle; key, bars, context (analyser hints); minor (reserved); time; composer, style, form, source, aka, kind
+  | { kind: 'section'; name: string }              // opens a block
+  | { kind: 'sectionMeta'; field: 'key' | 'time' | 'context' | 'bars' | 'outside' | 'copy'; value: string }
+  | { kind: 'row'; bar: string; chord: string; scale: string; function?: string; comment?: string }  // bar from 1 in its section; scale '' = default; function: a stated function ('V7/ii', 'D: V7/ii'); comment: a trailing # …
+  | { kind: 'key'; bar: number; key: string }  // @key 5 D: from that bar to the section's end
+  | { kind: 'context'; bar: number; context: ChartContext }  // @context 5 modal: parsed, not yet analysed
+  | { kind: 'ending'; n: number; from: number; to: number }  // a 1st/2nd ending (volta) on the Changes sheet
+  | { kind: 'mark'; mark: 'segno' | 'coda'; bar: number }     // a segno 𝄋 / coda ⊕ glyph
+  | { kind: 'nav'; bar: number; text: string }                // "D.S. al Coda", "To Coda", "Fine"
   | { kind: 'comment'; text: string }
   | { kind: 'blank' }
   | { kind: 'invalid'; text: string }     // bad line, kept verbatim so text round-trips
@@ -190,35 +196,53 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 ```
 
 - **Parsing:** `parseChart(text) → Parsed<ChartDoc>` is tolerant. A bad line becomes an `invalid` line plus a
-  diagnostic, never an exception.
+  diagnostic, never an exception. Block rules are diagnostics too: a song field after the first `section:`, a section
+  field after the block's first row or directive, a second section of one name, a row or directive in the header (an
+  old-format row says so), `bars:` under the last written bar, a `copy:` block with rows, a `copy:` of a section not
+  above it, and a section `time:` other than the song's ("drawn in the song's metre until #235"). `lineSections(doc)`
+  names each line's block.
 - **Fatal diagnostics** (`isFatal`) mean a hard input limit was exceeded: length, rows or expanded rows. The UI
   must not render or write back such a chart. Non-fatal diagnostics are per-line errors shown inline.
-- **Serializing:** `serializeChart(doc) → text` gives the canonical, column-aligned form.
-- **Expanding:** `expandRows(doc) → Parsed<Row[]>` applies `@copy` in order, capped at 1,000 rows;
-  `expandRowLines` is the same with each row's source line (a repeat points at the row it copies). `ending`, `mark`
-  and `nav` lines carry no rows, so expansion ignores them.
+- **Serializing:** `serializeChart(doc) → text` gives the canonical form, rows column-aligned across the chart.
+- **Layout** (`sectionLayout(doc)`, `engine/src/layout.ts`): the one place blocks are resolved. Each section's rows
+  with its name filled in and `at`, its bar counted through its part (Intro, form, Coda) from 1; its length (`bars:`,
+  else a copy's source's, else its last written bar); its part (by name, or `outside: yes`: before the form if it
+  comes first, after it otherwise); its stated `key:` and `context:` at bar 1; its metre; its copy source. And a
+  flat list of directives with their section. A `copy:` repeats its source's rows (pointing at the source's lines),
+  `key:`, `time:`, `context:`, `bars:` and in-block `@key`/`@context`, except where it sets its own field (its own
+  `key:` replaces the source's key changes too); not endings, marks or nav. `statedKeyAt(layout, section, bar)` is
+  the key an author stated there, else null. `expandRows`/`expandRowLines` are views of the layout's rows, capped
+  at 1,000.
+- **Timing:** the guide tone timeline times sections one after another, each from its bar 1; a chord lasts until the
+  next change in its section, and a section's last chord lasts to the section's length. The whole chart is in the
+  song's metre (a section metre is drawn from #235).
 - **Navigation directives** (`@ending`, `@segno`, `@coda`, `@nav`): read only by the Changes sheet
-  (`engine/src/changes.ts`), which maps them onto per-bar `volta`/`segno`/`coda`/`nav` fields. An `@ending` section is a
-  2× repeat with the two endings bracketed; `@segno`/`@coda` draw glyphs, `@nav` a printed instruction. Parsing is
-  syntactic only; a directive naming a section/bar the chart lacks simply renders nothing (like a `@copy` of an
-  unknown section). See docs/plan-changes.md.
-- **Outside the form** (`isOutsideForm`, `formPart`): sections named `Intro`, `Coda`, `Tag` or `Ending` (with an
+  (`engine/src/changes.ts`) and the bar view, from the layout, which map them onto per-bar `volta`/`segno`/`coda`/`nav`
+  fields. An `@ending` section is a 2× repeat with the two endings bracketed; `@segno`/`@coda` draw glyphs, `@nav` a
+  printed instruction. A directive on a bar the section lacks renders nothing and is listed by the bar view.
+- **Outside the form** (`formPart`, or `outside: yes`): sections named `Intro`, `Coda`, `Tag` or `Ending` (with an
   optional number). They print where they stand; the analysis links an intro into the form's first chord and a coda
-  after its last (the form itself wraps to its own top), and the guide tone timeline times each on its own, so their
-  bars can be numbered from 1.
-- **Metre:** a `time:` meta line, `2/4`, `3/4` or `4/4` (the default; anything else is a diagnostic). `chartBeats`
+  after its last (the form itself wraps to its own top), and each is timed on its own.
+- **Metre:** a `time:` header line, `2/4`, `3/4` or `4/4` (the default; anything else is a diagnostic). `chartBeats`
   gives the beats a bar; the guide tone timeline splits bars by it (3/4: one chord = 3 beats, two = 2 + 1) and the
   Changes sheet draws its time signature, its slashes and, with guide tones on, its dotted halves. The scale sheet
   doesn't depend on it.
-- **Function cell and `@key`:** a row may carry a fifth cell, the function the author states (`V7/ii`, or
-  `D: V7/ii` for another key); empty means unstated. A `key` line pins the key area from its bar on. Both are
-  read by the analysis (§7a) and round-trip through the grid; a row with a function but no scale keeps its empty
-  scale cell (`A | 2 | D7 | | V7/V`).
-- **`context:` and `@context`:** `context: functional | modal | blues` states how the analysis reads the chart
-  (§7a; docs/plan-analysis.md §5.4); absent, it is detected. A value that is none of the three keeps its line (like a
-  bad `key:`) and is a diagnostic; the analysis then detects, and reports the bad line. `minor:` is reserved
-  (accepted, kept, reported as ignored). `@context SECTION BAR CONTEXT` is parsed, validated and serialised like
-  `@key`; the analysis reports it as not yet supported and keeps the chart's context. The site shows neither.
+- **Function cell, `key:` and `@key`:** a row may carry a fourth cell, the function the author states (`V7/ii`, or
+  `D: V7/ii` for another key); empty means unstated. A section's `key:` states its key from its bar 1, an `@key` from
+  its bar, each to the section's end; the next section is analysed afresh. Read by the analysis (§7a); a row with a
+  function but no scale keeps its empty scale cell (`2 | D7 | | V7/V`).
+- **`context:` and `@context`:** `context: functional | modal | blues` in the header states how the analysis reads
+  the chart (§7a; docs/plan-analysis.md §5.4); absent, it is detected. A value that is none of the three keeps its
+  line (like a bad `key:`) and is a diagnostic; the analysis then detects, and reports the bad line. `minor:` is
+  reserved (accepted, kept, reported as ignored). A section's `context:` and `@context BAR CONTEXT` are parsed,
+  validated and serialised; the analysis reports them as not yet supported and keeps the chart's context.
+- **Bar labels are section-relative everywhere** (`A2, bar 1`; a chord pick's popover lists `A1 bar 6, A2 bar 6`); no
+  display shows absolute bar numbers (decided 2026-10-16, #329).
+- **The retired row format** (`SECTION | BAR | CHORD …`, absolute bars, `@copy SRC DST OFFSET`) is migrated, never
+  read: `migrateChart(text)` (`engine/src/migrate.ts`) replays the old timing and `@key` rule into blocks (`bars:`
+  where a section's last chord was held into the next, `key:` on each section an old `@key` ran into), with a line map
+  for the Scale-level migration. The editor runs it on every chart it opens (a saved chart, an old draft, a file);
+  version-1 share links (old charts) no longer open.
 - **Trailing comments:** a row may end in `# …` (a `#` with space on both sides, so `F#m7` and `C# Lydian` are
   safe). It holds the analysis (§7a), is kept verbatim through every edit, and is column-aligned when serialized;
   the grid doesn't show it.
@@ -278,7 +302,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     with the parser's own message); a pinned scale shows its pin. The bar under the pointer
     gets a toolbar (`SheetBarToolbar`: the inspector's actions by name; Write out alone on a written-out repeat); a
     ghost "+ bar" ends each section (`ChangesLine.sectionEnd`, `ChangesBar.at`); + Section and Repeat a section…
-    (`repeatSection`: an `@copy` after the part's last section) follow the sheet; a section's marker is a button that
+    (`repeatSection`: a `copy:` block after the part's last section) follow the sheet; a section's marker is a button that
     renames it (`renameSection`). The toolbar's ⋯ menu also pastes bars (`parseBarLine`, then `insertBars` before or
     after the bar; refused while the text has diagnostics). The jump, the new section, the pasted bars, the repeat and
     the rename use `BarDialog`; a refused one stays open with why. The heading is edited where it prints
@@ -430,7 +454,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   out in lines of four bars (two on phones), each section on a new line, one slash a beat in the chart's metre.
   Chords sit on their beats (the guide tone timeline's timing), each with its Roman numeral (`analysis/numerals.ts`)
   and its scale, both written for the part (a written function that doesn't read or fit its chord is set aside: the
-  rules' numeral, marked ⚠, its note saying why first; #144); key-area labels where the key changes; section markers; a `@copy`
+  rules' numeral, marked ⚠, its note saying why first; #144); key-area labels where the key changes; section markers; a `copy:`
   straight after its source folded into repeat signs ("A1 · A2"), a later one written out ("A3 (= A1)"); a double
   barline at the end of the form when a tag or coda follows (a coda or ending headed "after the last chorus"), a
   final one at the end.
@@ -786,7 +810,7 @@ its reasons into a chart as comments.
   function.
 - **`analyse(doc)`** reports; **`applyAnalysis(doc, analysis, { scales: 'strip' | 'none', save, date })`** returns
   `{ doc, changes, conflicts, overrides }`. `strip` blanks a written scale the rules reproduce at Standard, only when
-  every occurrence of the line (`@copy` repeats too) has that scale, and never a `# keep:` row; every other written
+  every occurrence of the line (`copy:` repeats too) has that scale, and never a `# keep:` row; every other written
   scale that differs lands in `overrides`. `save` writes the reason as each row's trailing comment, `# area:` lines
   where the key area changes, and an `# analysis: <date>, rules v<N>; <key>` header (kept as it was when nothing
   else changed, so a rerun is a no-op). There is no fill: a blank cell already plays the analysis.
@@ -814,7 +838,7 @@ its reasons into a chart as comments.
   came from (a key the author set is starred).
 - **The scale played** (`engine/src/resolve.ts`, [proposed scales spec](superpowers/specs/2026-10-11-proposed-scales-design.md)
   §2): `resolveScales(doc, view, analysis?)` gives each expanded row (keyed by its
-  index in `expandRowLines`, so a `@copy` repeat resolves on its own row) a `Resolved` scale and its `source`:
+  index in `expandRowLines`, so a `copy:` repeat resolves on its own row) a `Resolved` scale and its `source`:
   `written` (the cell, at every level) > `function` (a stated function's scale) > `rules` > `default` (the quality's,
   where the analysis doesn't reach the row); null for a chord that can't be read. An analysed scale is moved to the
   view's level as the Level control moves one (`scaleAtLevel` on it, Aeolian for a tonic minor at Basic, Random by
@@ -1049,7 +1073,7 @@ static file, §7b), so the attack surface is small. The measures:
     - A `Permissions-Policy` that denies camera, microphone, geolocation, payment and USB.
     - `X-Frame-Options: DENY`.
     - `Content-Security-Policy: frame-ancestors 'none'`, which `<meta>` can't express.
-- **Input:** caps in `limits.ts`: 20,000 characters of text, 500 rows, 40 characters per cell, and `@copy`
+- **Input:** caps in `limits.ts`: 20,000 characters of text, 500 rows, 40 characters per cell, and `copy:`
   expansion of at most 1,000 rows. They're enforced in the parser before any work runs.
 - **XSS:** no `v-html` anywhere (lint rule `vue/no-v-html: error`). Chart text is only ever rendered as text nodes
   or VexFlow-escaped SVG text.
@@ -1119,7 +1143,7 @@ static file, §7b), so the attack surface is small. The measures:
   - the Changes sheet with guide tones: off is today's sheet, a folded copy is voiced once, a 2nd ending follows the
     1st ending's last chord, 2 and 4 bars a line give the same pitches, and `changesLinesPerPage`
   - the analyser: one test per rule (`analysis.test.ts`, named for the rule, from a real tune), key finding,
-    key areas and contexts, and writing back (fill, force, keep, save, rerun, `@copy` conflicts)
+    key areas and contexts, and writing back (fill, force, keep, save, rerun, `copy:` conflicts)
 - **App tests (`web/test/`):** `@nuxt/test-utils` (Nuxt runtime, happy-dom) with Vue Test Utils. They cover:
   - `useChartEditor` sync and debounce, and `useChartHistory` undo
   - library build and search
