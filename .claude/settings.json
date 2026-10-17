@@ -1,0 +1,18 @@
+{
+  "worktree": { "baseRef": "fresh" },
+  "hooks": {
+    "SessionStart": [
+      {
+        "matcher": "startup|resume|clear",
+        "hooks": [
+          {
+            "type": "command",
+            "command": "sh \"$CLAUDE_PROJECT_DIR/.claude/hooks/session-start.sh\"",
+            "timeout": 600,
+            "statusMessage": "Checking worktree"
+          }
+        ]
+      }
+    ]
+  }
+}

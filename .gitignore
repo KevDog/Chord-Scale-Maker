@@ -4,6 +4,8 @@ output/
 .venv/
 __pycache__/
 .claude/settings.local.json
+# one per concurrent Claude session (claude -w; .worktreeinclude, .claude/hooks/session-start.sh)
+.claude/worktrees/
 node_modules/
 web/.nuxt/
 web/.output/
