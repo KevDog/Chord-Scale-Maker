@@ -6,6 +6,7 @@ import { guideToneTimeline } from './guideToneTimeline'
 import { type Directive, type Layout, sectionLayout } from './layout'
 import { barAt, barLength, barStart, type Clock } from './metre'
 import { type HexPick, livePick, type PentPick, pickTarget } from './chordPicks'
+import type { Approach } from './approaches'
 import { arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
 import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
 import { keySignature } from './keySignature'
@@ -395,8 +396,8 @@ export function changesSections(doc: ChartDoc): readonly ChangesSection[] {
   return drawnBlocks(layout, t, sectionsWithEndingsOf(layout)).map((b) => ({ key: b.section, marker: b.marker, part: b.part }))
 }
 
-/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row) */
-export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null): ChangesSheet {
+/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row); approach: the figure into the guide tone line's notes */
+export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null, approach: Approach = 'none'): ChangesSheet {
   const pentatonic = overlay?.kind === 'pentatonic' ? overlay : null
   const { layout, rows, beats, timeline, clock, t } = laidOut(doc)
   const { diagnostics } = timeline
@@ -463,7 +464,8 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         from = k
         ending = volta
         const scale = scaleOf(i, e.row)
-        return [{ row: i, chord: e.chord, ...(scale ? { scale } : {}), start: e.start, beats: e.beats, block }]
+        const shown = approach === 'none' ? undefined : resolved.get(i)?.scale // what an approach's diatonic steps follow
+        return [{ row: i, chord: e.chord, ...(scale ? { scale } : {}), ...(shown ? { shown } : {}), start: e.start, beats: e.beats, block }]
       }),
     )
   }
@@ -606,7 +608,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
           }
         : isArpeggioPattern(line)
           ? { ...arpeggioVoices(drawn(), part, clock, keySig, line), labels: new Map() }
-          : guideVoices(drawn(), part, clock, keySig, line)
+          : guideVoices(drawn(), part, clock, keySig, line, approach)
 
   let lastKey = ''
   const lastForm = blocks.findLastIndex((b) => b.part === 'form')

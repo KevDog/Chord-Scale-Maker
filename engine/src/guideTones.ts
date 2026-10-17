@@ -1,5 +1,6 @@
 import { isRest, parseChord, writtenChordRootLenient } from './chord'
-import { type Part, type Pitched, rangeOf } from './part'
+import { type Approach, approachNotes } from './approaches'
+import { type Part, type Pitched, rangeOf, writtenScale } from './part'
 import { accidentalsInBar, octaveOf } from './keySignature'
 import { barAt, barLength, barStart, type Metre } from './metre'
 import { baseQuality } from './qualities'
@@ -99,7 +100,16 @@ export const guideLabel = (degree: string): string => degree.replace(/^[b#]+/, '
  * a chord to voice: row is the caller's index for its labels; start and beats are in beats from 0; block: where it is
  * drawn (a section, an ending), as a number that changes between blocks: a repeated chord is held only within one
  */
-export type GuideInput = Readonly<{ row: number; chord: string; scale?: string; start: number; beats: number; block?: number }>
+export type GuideInput = Readonly<{
+  row: number
+  chord: string
+  scale?: string
+  /** the scale the sheet shows over the chord, which an approach figure's diatonic steps follow (default: scale) */
+  shown?: string
+  start: number
+  beats: number
+  block?: number
+}>
 
 /**
  * split [start, start + length) at barlines (bars of the metre) into notes, and a length no one note draws (5 beats)
@@ -136,6 +146,9 @@ export function voiceAccidentals(voice: readonly GuideNote[], keySig: string | n
   return out
 }
 
+/** an approach figure's notes are eighths */
+const APPROACH_BEATS = 0.5
+
 const readable = (chord: string): boolean => orNull(() => parseChord(chord)) !== null
 
 /**
@@ -143,7 +156,9 @@ const readable = (chord: string): boolean => orNull(() => parseChord(chord)) !==
  * notes; by row, the chord's label (no entry for a rest); and a diagnostic for each chord without guide tones. The
  * line is one of the pair guideToneLine builds together (so they can go apart where they meet). A chord that repeats the guide tones in the same block is tied from the
  * one before; a chord without guide tones rests. keySig: the signature in force on every line (null: C). Nothing
- * when the line is 'off'.
+ * when the line is 'off'. approach: a figure into each chord's guide tone after the first, as eighths at the end of the
+ * chord before, which gives up that much of its note (and the tie into a held target); none where that chord rests or
+ * would keep less than an eighth, or the figure needs a scale the chord doesn't have.
  */
 export function guideVoices(
   chords: readonly GuideInput[],
@@ -151,6 +166,7 @@ export function guideVoices(
   beats: Metre,
   keySig: string | null,
   line: GuideLine,
+  approach: Approach = 'none',
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; labels: ReadonlyMap<number, string>; missing: readonly string[] } {
   const bars = new Map<number, GuideNote[]>()
   const labels = new Map<number, string>()
@@ -165,18 +181,34 @@ export function guideVoices(
     return t
   })
   const notes = guideToneLine(tones, rangeOf(part), line, chords.map((c) => c.block ?? 0))
+  const lead = chords.map((c, j) => {
+    const target = notes[j]?.pitch
+    const before = chords[j - 1]
+    if (approach === 'none' || !target || !before || !notes[j - 1] || before.start + before.beats !== c.start) return []
+    const text = before.shown ?? before.scale
+    const scale = text ? orNull(() => writtenScale(part, text).notes) : null
+    const figure = approachNotes(target, approach, scale) ?? []
+    return before.beats - figure.length * APPROACH_BEATS >= APPROACH_BEATS ? figure : []
+  })
   const voice: { bar: number; note: GuideNote }[] = []
   chords.forEach((c, j) => {
     const h = notes[j] ?? null
     if (h) labels.set(c.row, guideLabel(h.label))
-    const here = notesFor(h, c.start, c.beats, beats)
+    const figure = lead[j + 1] ?? []
+    const here = notesFor(h, c.start, c.beats - figure.length * APPROACH_BEATS, beats)
     const before = voice.at(-1)
     const first = here[0]
-    if (h?.held && before && first) {
+    if (h?.held && before && first && !lead[j]?.length) {
       voice[voice.length - 1] = { ...before, note: { ...before.note, tie: true } }
       here[0] = { ...first, note: { ...first.note, tiedIn: true } }
     }
     voice.push(...here)
+    const end = c.start + c.beats
+    figure.forEach((pitch, k) => {
+      const at = end - (figure.length - k) * APPROACH_BEATS
+      const bar = barAt(beats, at)
+      voice.push({ bar, note: { pitch, beat: at - barStart(beats, bar), beats: APPROACH_BEATS, tie: false, tiedIn: false, accidental: null } })
+    })
   })
   for (const { bar, note } of voice) bars.set(bar, [...(bars.get(bar) ?? []), note])
   for (const [bar, v] of bars) bars.set(bar, voiceAccidentals(v, keySig))
