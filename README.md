@@ -104,7 +104,7 @@ and lists the rest.
 
 | Instrument | Clef | Key |
 | --- | --- | --- |
-| Concert, piano, vibes, flute, guitar | treble | C |
+| Piano, vibes, flute, guitar (violin, oboe: choose Flute) | treble | C |
 | Trumpet, flugelhorn, clarinet, soprano sax, tenor sax | treble | B♭ |
 | Alto sax, bari sax | treble | E♭ |
 | Horn | treble | F |
