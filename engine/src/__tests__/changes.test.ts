@@ -6,6 +6,7 @@ import { type ChartDoc, expandRowLines, parseChart } from '../chart'
 import { NO_PICKS, pickTarget, withPick } from '../chordPicks'
 import { resolveScales } from '../resolve'
 import { type GuideLine, type GuideNote, guideVoices } from '../guideTones'
+import { barLength } from '../metre'
 import { CONCERT, concertPc, type Part, partFor, rangeOf } from '../part'
 import { parseRoot, pcOf, rootName, type Spelled } from '../pitch'
 import type { PentatonicLine } from '../pentatonicLine'
@@ -104,6 +105,19 @@ describe('the Changes sheet', () => {
 
   it('counts a waltz in 3', () => {
     expect(buildChanges(library('someday-my-prince-will-come'), CONCERT).beats).toBe(3)
+  })
+
+  it('times each bar in its own metre, with a time signature on the first bar and wherever the metre changes (#235)', () => {
+    const doc = parseChart('time: 4/4\nsection: A\n1 | C\n2 | F\n2 | G\n3 | Am\n@time 2 2/4\n@time 3 4/4\nsection: B\ntime: 6/4\n1 | Dm7\n1 | G7\n2 | C\nsection: C\n1 | F\n').value
+    const all = buildChanges(doc, CONCERT).lines.flatMap((l) => l.bars)
+    expect(all.map((b) => [b.beats, b.timeSignature])).toEqual([[4, '4/4'], [2, '2/4'], [4, '4/4'], [6, '6/4'], [6, null], [4, '4/4']])
+    expect(all.map((b) => b.chords.map((c) => c.beat))).toEqual([[0], [0, 1], [0], [0, 3], [0], [0]])
+  })
+
+  it('voices each bar to its own length', () => {
+    const doc = parseChart('section: A\n1 | Dm7\n2 | G7\n3 | CMaj7\n@time 2 5/4\n@time 3 3/4\n').value
+    const all = buildChanges(doc, CONCERT, 4, false, 'third').lines.flatMap((l) => l.bars)
+    expect(all.map((b) => b.voice.reduce((sum, n) => sum + n.beats, 0))).toEqual([4, 5, 3])
   })
 
   it('gives each chord its reason, the key it is heard in, and whether its function was stated', () => {
@@ -544,7 +558,7 @@ describe('guide tones on the Changes sheet', () => {
       [10, 'EbMaj7', 40, 4],
       [11, 'Ab7', 44, 4],
     ])
-    expect([beats, keySig, line]).toEqual([4, null, 'third'])
+    expect([barLength(beats, 0), barLength(beats, 11), keySig, line]).toEqual([4, 4, null, 'third'])
     expect(sheet.lines.flatMap((l) => l.bars).every((b) => b.voice.length > 0)).toBe(true)
   })
 
@@ -627,14 +641,14 @@ describe('guide tone lines over the library', { timeout: 30_000 }, () => {
             return c ? isRest(c.text) : resting
           }
           const voice = bar.voice
-          expect(voice.reduce((s, n) => s + n.beats, 0), f).toBe(sheet.beats)
+          expect(voice.reduce((s, n) => s + n.beats, 0), f).toBe(bar.beats)
           const beats = bar.chords.map((c) => c.beat) // a held chord's note starts on its beat, tied in
           const struck = voice.filter((n) => n.pitch !== null || !restAt(n.beat)) // a rest's bars rest again each bar
           expect(struck.filter((n) => !n.tiedIn || beats.includes(n.beat)).map((n) => n.beat), f).toEqual(beats.filter((b) => !restAt(b)))
           expect(struck.filter((n) => !n.tiedIn).every((n) => beats.includes(n.beat)), f).toBe(true)
           expect(voice.every((n) => n.pitch !== null || restAt(n.beat)), f).toBe(true)
           for (const c of bar.chords) if (!isRest(c.text)) expect(c.guide, `${f} ${c.text}`).not.toBe('')
-          resting = restAt(sheet.beats)
+          resting = restAt(bar.beats)
         }
         expect(sheet.diagnostics.filter((d) => d.startsWith('no guide tones')), f).toEqual([])
       }

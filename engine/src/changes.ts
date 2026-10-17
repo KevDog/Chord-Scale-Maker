@@ -1,9 +1,10 @@
 import { analyse, chartKeyOf, parseKey } from './analysis'
-import { type ChartDoc, chartBeats, type FormPart, type LinedRow, qualityScale } from './chart'
+import { type Beats, type ChartDoc, chartBeats, type FormPart, type LinedRow, qualityScale } from './chart'
 import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRootLenient, writtenChordTextOrNull } from './chord'
 import { type HexPair, hexatonicPairs, hexatonicRanking } from './hexatonics'
 import { guideToneTimeline } from './guideToneTimeline'
 import { type Directive, type Layout, sectionLayout } from './layout'
+import { barAt, barLength, barStart, type Clock } from './metre'
 import { type HexPick, livePick, type PentPick, pickTarget } from './chordPicks'
 import { arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
 import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
@@ -133,6 +134,10 @@ export type ChangesBar = Readonly<{
   /** the key, written for the part, where a key area starts: "B♭ major" */
   keyArea: string
   repeatStart: boolean
+  /** its metre's beats (#235) */
+  beats: Beats
+  /** the time signature drawn at its start ("3/4"): on the sheet's first bar and wherever the metre changes; null for none */
+  timeSignature: string | null
   /** the end of a repeated section, and how many times it's played in all (2 or more) */
   repeatEnd: number
   /** the barline after it: the end of the form, of an intro, or of the sheet */
@@ -149,7 +154,8 @@ export type ChangesBar = Readonly<{
 /** sectionEnd: the line is its section's last, where the editor offers a bar to add */
 export type ChangesLine = Readonly<{ bars: readonly ChangesBar[]; sectionEnd: boolean }>
 /** pentatonicCaption: the path a preset plays (#276), "Pentatonics: Fifths · every 4 bars"; null otherwise */
-export type ChangesSheet = Readonly<{ lines: readonly ChangesLine[]; beats: 2 | 3 | 4; diagnostics: readonly string[]; pentatonicCaption: string | null }>
+/** beats: the song's metre (each bar has its own, ChangesBar.beats) */
+export type ChangesSheet = Readonly<{ lines: readonly ChangesLine[]; beats: Beats; diagnostics: readonly string[]; pentatonicCaption: string | null }>
 
 /** a run of rows in one section, as the chart plays them; a copy names the section it repeats */
 type Run = { section: string; part: FormPart; rows: number[]; copyOf: string | null; from: number; to: number; times: number; marker: string }
@@ -295,15 +301,16 @@ export function showHexatonics(lines: readonly ChangesLine[]): readonly ChangesL
 
 type TimelineEvent = ReturnType<typeof guideToneTimeline>['events'][number]
 type Timing = Readonly<{ eventAt: ReadonlyMap<number, TimelineEvent>; barOf: (i: number) => number | undefined; totalBars: number }>
-function timing(rows: readonly LinedRow[], events: readonly TimelineEvent[], beats: number): Timing {
+function timing(rows: readonly LinedRow[], events: readonly TimelineEvent[], clock: Clock): Timing {
   const index = new Map<LinedRow, number>(rows.map((r, i) => [r, i]))
   const eventAt = new Map(events.map((e) => [index.get(e.row as LinedRow) ?? -1, e]))
   const barOf = (i: number): number | undefined => {
     const e = eventAt.get(i)
-    return e ? Math.floor(e.start / beats) : undefined
+    return e ? barAt(clock, e.start) : undefined
   }
-  const totalBars = Math.ceil(events.reduce((m, e) => Math.max(m, e.start + e.beats), 0) / beats)
-  return { eventAt, barOf, totalBars }
+  const end = events.reduce((m, e) => Math.max(m, e.start + e.beats), 0)
+  const last = barAt(clock, end)
+  return { eventAt, barOf, totalBars: barStart(clock, last) === end ? last : last + 1 }
 }
 
 /** the blocks the sheet draws: runs of rows in a section, a copy: straight after its source folded into it as a repeat */
@@ -359,8 +366,8 @@ const sectionsWithEndingsOf = (layout: Layout): ReadonlySet<string> => new Set(e
 function laidOut(doc: ChartDoc) {
   const layout = sectionLayout(doc).value
   const beats = chartBeats(doc)
-  const timeline = guideToneTimeline(layout.rows, beats, layout.lengths)
-  return { layout, rows: layout.rows, beats, timeline, t: timing(layout.rows, timeline.events, beats) }
+  const timeline = guideToneTimeline(layout.rows, beats, layout.lengths, layout.metres)
+  return { layout, rows: layout.rows, beats, timeline, clock: timeline.clock, t: timing(layout.rows, timeline.events, timeline.clock) }
 }
 
 /** each drawn chord's position by its row in expandRowLines(doc); a folded repeat's rows have none (the sheet draws its source's) */
@@ -390,7 +397,7 @@ export function changesSections(doc: ChartDoc): readonly ChangesSection[] {
 /** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row) */
 export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null): ChangesSheet {
   const pentatonic = overlay?.kind === 'pentatonic' ? overlay : null
-  const { layout, rows, beats, timeline, t } = laidOut(doc)
+  const { layout, rows, beats, timeline, clock, t } = laidOut(doc)
   const { diagnostics } = timeline
   const analysis = analyse(doc)
   const resolved = resolveScales(doc, view, analysis)
@@ -449,7 +456,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
       b.rows.flatMap((i): GuideInput[] => {
         const e = eventAt.get(i)
         if (!e) return []
-        const volta = voltaAt.get(Math.floor(e.start / beats))?.n ?? 0
+        const volta = voltaAt.get(barAt(clock, e.start))?.n ?? 0
         if (k !== from || (volta > 1 && volta !== ending)) block++
         from = k
         ending = volta
@@ -481,7 +488,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const preset = isPentatonicPreset(pentatonic?.path)
   const formBlocks = blocks.flatMap((b, k) => (b.part === 'form' ? [k] : []))
   const sectionUnit = new Map(formBlocks.map((k, n) => [k, n]))
-  const barStart = new Map<number, number>() // block → its first bar's index in the form
+  const formStart = new Map<number, number>() // block → its first bar's index in the form
   const areaUnit = new Map<number, number>() // row → its run of one key area
   {
     let formBars = 0
@@ -489,7 +496,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     let key: string | undefined
     for (const k of formBlocks) {
       const b = blocks[k]!
-      barStart.set(k, formBars)
+      formStart.set(k, formBars)
       formBars += Math.max(1, b.to - b.from + 1)
       for (const i of b.rows) {
         const here = byRow.get(i)?.key.name
@@ -504,7 +511,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     const n = sectionUnit.get(k)
     if (n === undefined) return null
     if (step.unit === 'section') return n
-    if (step.unit === 'bars') return Math.floor(((barStart.get(k) ?? 0) + j) / step.bars)
+    if (step.unit === 'bars') return Math.floor(((formStart.get(k) ?? 0) + j) / step.bars)
     return areaUnit.get(i) ?? 0
   }
   const ladders = new Map<string, ReturnType<typeof areaLadder>>()
@@ -587,10 +594,10 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     line === 'off'
       ? null
       : typeof line === 'object'
-        ? { ...(line.kind === 'pentatonic' ? pentatonicVoices(drawn(), part, beats, keySig, line, pentRoots) : triadPairVoices(drawn(), part, beats, keySig, line, hexPairs)), labels: new Map() }
+        ? { ...(line.kind === 'pentatonic' ? pentatonicVoices(drawn(), part, clock, keySig, line, pentRoots) : triadPairVoices(drawn(), part, clock, keySig, line, hexPairs)), labels: new Map() }
         : isArpeggioPattern(line)
-          ? { ...arpeggioVoices(drawn(), part, beats, keySig, line), labels: new Map() }
-          : guideVoices(drawn(), part, beats, keySig, line)
+          ? { ...arpeggioVoices(drawn(), part, clock, keySig, line), labels: new Map() }
+          : guideVoices(drawn(), part, clock, keySig, line)
 
   let lastKey = ''
   const lastForm = blocks.findLastIndex((b) => b.part === 'form')
@@ -606,7 +613,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
           const scale = resolved.get(i)?.scale ?? null
           const written = writtenChordTextOrNull(part, row.chord, scale) ?? row.chord
           return {
-            beat: (eventAt.get(i)?.start ?? bar * beats) - bar * beats,
+            beat: (eventAt.get(i)?.start ?? barStart(clock, bar)) - barStart(clock, bar),
             text: row.chord,
             written,
             at: { section: row.section, bar: row.bar },
@@ -635,6 +642,8 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         at: { section: block.section, bar: String(firstBar + j) },
         repeatOf: block.copyOf,
         keySig,
+        beats: barLength(clock, bar) as Beats,
+        timeSignature: null,
         chords,
         voice: voices?.bars.get(bar) ?? [],
         marker: j === 0 ? block.marker : '',
@@ -652,17 +661,24 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     return chunks.map((b, c): ChangesLine => ({ bars: b, sectionEnd: c === chunks.length - 1 }))
   })
 
-  // within each line, blank a chord's scale when it repeats the previous chord's (the first chord always shows its scale)
+  // within each line, blank a chord's scale when it repeats the previous chord's (the first chord always shows its scale);
+  // a time signature on the sheet's first bar and wherever the metre changes from the bar drawn before
+  let metre = 0
   const deduped = lines.map((line): ChangesLine => {
     let prev: string | null = null
-    const bars = line.bars.map((bar): ChangesBar => ({
-      ...bar,
-      chords: bar.chords.map((c): ChangesChord => {
-        if (c.scale && c.scale === prev) return { ...c, scale: null }
-        prev = c.scale
-        return c
-      }),
-    }))
+    const bars = line.bars.map((bar): ChangesBar => {
+      const timeSignature = bar.beats !== metre ? `${bar.beats}/4` : null
+      metre = bar.beats
+      return {
+        ...bar,
+        timeSignature,
+        chords: bar.chords.map((c): ChangesChord => {
+          if (c.scale && c.scale === prev) return { ...c, scale: null }
+          prev = c.scale
+          return c
+        }),
+      }
+    })
     return { bars, sectionEnd: line.sectionEnd }
   })
   const counts = !!pentatonic && (pentatonic.counts || basis === 'chord' || flatChords(deduped).some((c) => c.pentatonic?.picked))

@@ -1,6 +1,7 @@
 import { isRest, parseChord, writtenChordRootLenient } from './chord'
 import { type Part, type Pitched, rangeOf } from './part'
 import { accidentalsInBar, octaveOf } from './keySignature'
+import { barAt, barLength, barStart, type Metre } from './metre'
 import { baseQuality } from './qualities'
 import { spellFrom } from './scales'
 import { orNull } from './util'
@@ -62,13 +63,26 @@ export function guideTonesFor(part: Part, chord: string, scale?: string): GuideT
 /** the guide tone line the Changes sheet shows, at most one: none, line A (from the 3rd) or line B (from the 7th) */
 export type GuideLine = 'off' | 'third' | 'seventh'
 
+/** the lengths a note can be drawn at, in beats: up to a dotted whole (6/4, #234) */
+export type NoteBeats = 0.25 | 0.5 | 1 | 2 | 3 | 4 | 6
+const NOTE_BEATS: readonly NoteBeats[] = [6, 4, 3, 2, 1, 0.5, 0.25]
+/** a length as notes that can be drawn, tied: 5 beats as 3 + 2 (a 5/4 bar's grouping), else the longest first */
+export function drawnLengths(length: number): NoteBeats[] {
+  if (length <= 0) return []
+  const one = NOTE_BEATS.find((b) => b === length)
+  if (one) return [one]
+  if (length === 5) return [3, 2]
+  const first = NOTE_BEATS.find((b) => b < length) ?? 0.25
+  return [first, ...drawnLengths(length - first)]
+}
+
 /** one note (or rest) of a guide tone voice, within a bar */
 export type GuideNote = Readonly<{
   /** null: a rest */
   pitch: Pitched | null
   /** where it starts in the bar, from 0 */
   beat: number
-  beats: 0.25 | 0.5 | 1 | 2 | 3 | 4
+  beats: NoteBeats
   /** tied into this voice's next note (in the next bar, which may be on the next line) */
   tie: boolean
   /** continues the previous note: no accidental, no label */
@@ -87,22 +101,22 @@ export const guideLabel = (degree: string): string => degree.replace(/^[b#]+/, '
 export type GuideInput = Readonly<{ row: number; chord: string; scale?: string; start: number; beats: number; block?: number }>
 
 /**
- * split [start, start + length) at barlines into notes, tying a held pitch across them (a rest is split untied);
- * accidentals are left for voiceAccidentals
+ * split [start, start + length) at barlines (bars of the metre) into notes, and a length no one note draws (5 beats)
+ * into ones that do, tying a held pitch across them (a rest is split untied); accidentals are left for voiceAccidentals
  */
-export function notesFor(c: Candidate | null, start: number, length: number, beats: number): { bar: number; note: GuideNote }[] {
+export function notesFor(c: Candidate | null, start: number, length: number, metre: Metre): { bar: number; note: GuideNote }[] {
   const out: { bar: number; note: GuideNote }[] = []
   const pitch = c?.pitch ?? null
   const end = start + length
   let at = start
   while (at < end) {
-    const bar = Math.floor(at / beats)
-    const len = Math.min(end, (bar + 1) * beats) - at
-    out.push({
-      bar,
-      note: { pitch, beat: at - bar * beats, beats: len as 1 | 2 | 3 | 4, tie: !!pitch && at + len < end, tiedIn: !!pitch && at > start, accidental: null },
-    })
-    at += len
+    const bar = barAt(metre, at)
+    const from = barStart(metre, bar)
+    const len = Math.min(end, from + barLength(metre, bar)) - at
+    for (const piece of drawnLengths(len)) {
+      out.push({ bar, note: { pitch, beat: at - from, beats: piece, tie: !!pitch && at + piece < end, tiedIn: !!pitch && at > start, accidental: null } })
+      at += piece
+    }
   }
   return out
 }
@@ -124,7 +138,7 @@ export function voiceAccidentals(voice: readonly GuideNote[], keySig: string | n
 const readable = (chord: string): boolean => orNull(() => parseChord(chord)) !== null
 
 /**
- * the guide tone line's voice for chords in time order: by timeline bar (Math.floor(start / beats)), the bar's
+ * the guide tone line's voice for chords in time order: by timeline bar (barAt), the bar's
  * notes; by row, the chord's label (no entry for a rest); and a diagnostic for each chord without guide tones. The
  * line is one of the pair guideToneLine builds together (so they can go apart where they meet). A chord that repeats the guide tones in the same block is tied from the
  * one before; a chord without guide tones rests. keySig: the signature in force on every line (null: C). Nothing
@@ -133,7 +147,7 @@ const readable = (chord: string): boolean => orNull(() => parseChord(chord)) !==
 export function guideVoices(
   chords: readonly GuideInput[],
   part: Part,
-  beats: 2 | 3 | 4,
+  beats: Metre,
   keySig: string | null,
   line: GuideLine,
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; labels: ReadonlyMap<number, string>; missing: readonly string[] } {

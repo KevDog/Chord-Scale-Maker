@@ -137,6 +137,15 @@ describe('barView', () => {
     expect(view.sections[0]?.bars[0]?.chords.map((c) => c.beat)).toEqual([0, 2])
   })
 
+  it('gives each bar its own metre and beats, with an @time on its bar and a time: on bar 1 (#235)', () => {
+    const doc = text(['section: A', 'time: 3/4', '1 | C', '2 | F', '2 | G', '3 | D', '3 | E', '@time 2 2/4', '@time 3 6/4', 'section: B', 'copy: A'])
+    const a = barView(doc).sections[0]?.bars ?? []
+    expect(a.map((b) => b.beats)).toEqual([3, 2, 6])
+    expect(a.map((b) => b.time)).toEqual([{ time: '3/4', line: 1 }, { time: '2/4', line: 7 }, { time: '6/4', line: 8 }])
+    expect(a.map((b) => b.chords.map((c) => c.beat))).toEqual([[0], [0, 1], [0, 3]])
+    expect(barView(doc).sections[1]?.bars.map((b) => [b.beats, b.time?.line ?? null])).toEqual([[3, null], [2, 7], [6, 8]])
+  })
+
   it('lists what it cannot place, with the line and why, and leaves it out of the bars', () => {
     const doc = text([
       'section: A',
@@ -153,21 +162,22 @@ describe('barView', () => {
       '@segno 99',
       '@nav 99 Fine',
       '@context 99 blues',
+      '@time 99 3/4',
       'section: B',
       '1.5 | C',
       'section: C',
       'copy: B',
     ])
     const view = barView(doc)
-    expect(view.unplaced.map((u) => u.line)).toEqual([2, 7, 8, 9, 10, 11, 12, 13, 15])
+    expect(view.unplaced.map((u) => u.line)).toEqual([2, 7, 8, 9, 10, 11, 12, 13, 14, 16])
     expect(view.unplaced.every((u) => u.reason.length > 0)).toBe(true)
     expect(view.sections[0]?.bars.flatMap((b) => b.chords.map((c) => c.chord))).toEqual(['C', 'E', 'F', 'G', 'A'])
   })
 
-  it('lists a second @key, @context or ending on a bar that already has one', () => {
-    const doc = text(['section: A', '1 | C', '2 | F', '@key 1 C', '@key 1 G', '@context 1 modal', '@context 1 blues', '@ending 1 1 2', '@ending 2 2'])
+  it('lists a second @key, @time, @context or ending on a bar that already has one', () => {
+    const doc = text(['section: A', '1 | C', '2 | F', '@key 1 C', '@key 1 G', '@context 1 modal', '@context 1 blues', '@ending 1 1 2', '@ending 2 2', '@time 2 3/4', '@time 2 2/4'])
     const view = barView(doc)
-    expect(view.unplaced.map((u) => u.line)).toEqual([4, 6, 8])
+    expect(view.unplaced.map((u) => u.line)).toEqual([4, 6, 8, 10])
     expect(bar(doc, 'A', 1).key?.key).toBe('C')
   })
 

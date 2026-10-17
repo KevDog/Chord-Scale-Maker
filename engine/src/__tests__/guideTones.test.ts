@@ -10,6 +10,7 @@ import {
   guideVoices,
   voiceAccidentals,
 } from '../guideTones'
+import { clockOf } from '../metre'
 import { guideToneTimeline } from '../guideToneTimeline'
 import * as engine from '../index'
 import { CONCERT, type Part } from '../part'
@@ -150,6 +151,18 @@ describe('guideVoices', () => {
     const bass = inTurn(['Dm7', 'G7', 'CMaj7', 'C6', 'C7sus4', 'C'])
     expect(barsText(guideVoices(bass, BASS, 4, null, 'third'))).toEqual(['0:f/3/4', '0:f/3/4', '0:e/3/4', '0:e/3/4', '0:f/3/4', '0:e/3/4'])
     expect(barsText(guideVoices(bass, BASS, 4, null, 'seventh'))).toEqual(['0:c/3/4', '0:b/2/4', '0:b/2/4', '0:a/2/4', '0:bb/2/4b', '0:c/3/4'])
+  })
+})
+
+describe('guide tones in a changing metre (#235)', () => {
+  it('holds a note across bars of their own lengths, tied at each barline', () => {
+    const chords: GuideInput[] = [{ row: 0, chord: 'Dm7', start: 0, beats: 6 }, { row: 1, chord: 'G7', start: 6, beats: 3 }]
+    expect(barsText(guideVoices(chords, CONCERT, clockOf([2, 4, 3], 4), null, 'third'))).toEqual(['0:f/4/2~', '0:f/4/4^', '0:f/4/3'])
+  })
+
+  it('writes a 5/4 bar’s whole note as a dotted half tied to a half, and a 6/4 bar’s as a dotted whole', () => {
+    expect(barsText(guideVoices(inTurn(['Dm7'], 5), CONCERT, 5, null, 'third'))).toEqual(['0:f/4/3~ 3:f/4/2^'])
+    expect(barsText(guideVoices(inTurn(['Dm7'], 6), CONCERT, 6, null, 'third'))).toEqual(['0:f/4/6'])
   })
 })
 
