@@ -21,9 +21,9 @@ export type ScaleLabel = Readonly<{ root: Spelled; name: string }>
 
 export const CONCERT: Part = { clef: 'treble', trans: 'C' }
 
-/** the clef and transposition an instrument reads in */
-export const partFor = (name: InstrumentName): Part => {
-  const { clef, trans, range } = INSTRUMENTS[name]
+/** the clef and transposition an instrument reads in, with the player's range (#359) or its preset's */
+export const partFor = (name: InstrumentName, range: Range = INSTRUMENTS[name].range): Part => {
+  const { clef, trans } = INSTRUMENTS[name]
   return { clef, trans, range }
 }
 

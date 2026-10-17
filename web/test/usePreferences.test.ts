@@ -2,7 +2,7 @@ import { mockNuxtImport } from '@nuxt/test-utils/runtime'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { effectScope, nextTick } from 'vue'
 import { linkPreferences, usePreferences } from '~/composables/usePreferences'
-import type { ShareView } from '@chord-scale-maker/engine'
+import { INSTRUMENTS, type ShareView } from '@chord-scale-maker/engine'
 
 const flags = vi.hoisted(() => ({ cells: true, approaches: true }))
 mockNuxtImport('useFeature', () => (name: string) => (name === 'cells' && flags.cells) || (name === 'approaches' && flags.approaches))
@@ -332,5 +332,37 @@ describe('pentatonic preferences', () => {
   it('reads an old stored rank as Auto', () => {
     localStorage.setItem('csm-pent-rank', '7')
     expect(prefs().pentDegree.value).toBe('auto')
+  })
+
+  it("keeps the player's range per instrument, the preset's until set (#359)", async () => {
+    const p = prefs()
+    expect(p.range.value).toEqual(INSTRUMENTS.piano.range)
+    p.instrument.value = 'trumpet'
+    await nextTick()
+    expect(p.range.value).toEqual(INSTRUMENTS.trumpet.range)
+    p.range.value = { lo: 58, hi: 82, centre: 70 }
+    await nextTick()
+    expect(localStorage.getItem('csm-range-trumpet')).toBe('58-82')
+    p.instrument.value = 'piano'
+    await nextTick()
+    expect(p.range.value).toEqual(INSTRUMENTS.piano.range)
+    expect(prefs().range.value).toEqual(INSTRUMENTS.piano.range)
+    p.instrument.value = 'trumpet'
+    await nextTick()
+    expect(p.range.value).toEqual({ lo: 58, hi: 82, centre: 70 })
+  })
+
+  it("fits a stored range it can't use into the instrument's, and ignores junk", () => {
+    localStorage.setItem('csm-instrument', 'trumpet')
+    localStorage.setItem('csm-range-trumpet', '40-99')
+    expect(prefs().range.value).toEqual({ lo: 54, hi: 84, centre: 70 })
+    localStorage.setItem('csm-range-trumpet', 'high')
+    expect(prefs().range.value).toEqual(INSTRUMENTS.trumpet.range)
+  })
+
+  it("keeps a share link's instrument at your range for it; the link carries none", async () => {
+    localStorage.setItem('csm-range-tenor-sax', '60-86')
+    const p = linked({ instrument: 'tenor-sax' })
+    expect(p.range.value).toMatchObject({ lo: 60, hi: 86 })
   })
 })

@@ -102,6 +102,7 @@ export default defineNuxtConfig({
         approaches: false, // the guide tone line's Approach (#298)
         patterns: false, // the Patterns sheet (#298; docs/superpowers/specs/2026-10-17-practice-patterns-design.md)
         recordings: true, // a library song's notable recording (docs/superpowers/specs/2026-10-17-notable-recordings.md)
+        playerRange: false, // the player's range by the Instrument (#359)
       },
     },
   },

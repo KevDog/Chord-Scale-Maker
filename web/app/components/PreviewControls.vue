@@ -14,7 +14,7 @@
             </UiListbox>
           </div>
         </UiField>
-        <UiField class="w-36">
+        <UiField :class="playerRange && range ? 'w-40' : 'w-36'">
           <UiLabel class="pl-3">Instrument</UiLabel>
           <div class="flex items-center gap-2">
             <UiListbox v-model="instrument" class="w-full">
@@ -25,6 +25,17 @@
                   <UiListboxDescription>{{ INSTRUMENTS[name].description }}</UiListboxDescription>
                 </UiListboxOption>
               </UiListboxGroup>
+            </UiListbox>
+          </div>
+          <!-- #359: the player's range under it, the written notes the lines keep to (moving one end pushes the other to keep two octaves); stacked, so the rail keeps its two rows -->
+          <div v-if="playerRange && range" class="mt-2 flex items-center gap-1">
+            <UiListbox :model-value="range.lo" class="min-w-0 flex-1" aria-label="Lowest note" title="The lowest written note the lines use" @update:model-value="(lo) => lo !== undefined && setRange({ lo, hi: range!.hi }, 'lo')">
+              <template #selected="{ value }"><UiListboxLabel>{{ noteName(value) }}</UiListboxLabel></template>
+              <UiListboxOption v-for="n in rangeNotes.lows" :key="n" :value="n"><UiListboxLabel>{{ noteName(n) }}</UiListboxLabel></UiListboxOption>
+            </UiListbox>
+            <UiListbox :model-value="range.hi" class="min-w-0 flex-1" aria-label="Highest note" title="The highest written note the lines use" @update:model-value="(hi) => hi !== undefined && setRange({ lo: range!.lo, hi }, 'hi')">
+              <template #selected="{ value }"><UiListboxLabel>{{ noteName(value) }}</UiListboxLabel></template>
+              <UiListboxOption v-for="n in rangeNotes.highs" :key="n" :value="n"><UiListboxLabel>{{ noteName(n) }}</UiListboxLabel></UiListboxOption>
             </UiListbox>
           </div>
         </UiField>
@@ -205,7 +216,7 @@
     </template>
 
     <script setup lang="ts">
-    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, formatPattern, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
+    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, INSTRUMENTS, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
     import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
@@ -332,4 +343,10 @@
     const slotLabel = (v: ArpeggioPattern | CellId): string => (isCellId(v) ? cellLabel(v) : ARPEGGIO_LABELS[v])
     const sheetLabel = (v: SheetKind): string => SHEETS.find((s) => s.value === v)?.label ?? ''
     const part = computed(() => partFor(instrument.value))
+
+    /** #359: the player's range for the instrument (none: no pickers) */
+    const range = defineModel<Range>('range')
+    const playerRange = useFeature('playerRange')
+    const rangeNotes = computed(() => rangeChoices(instrument.value))
+    const setRange = (want: { lo: number; hi: number }, moved: 'lo' | 'hi'): void => void (range.value = fitRange(instrument.value, want, moved))
     </script>
