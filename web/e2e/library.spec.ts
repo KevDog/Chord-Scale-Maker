@@ -108,6 +108,19 @@ test('pages carry a link preview: Open Graph tags and a 1200×630 image', async 
   expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1200, 630]) // the PNG header's width and height
 })
 
+test('a library song’s link preview is its own image: its heading and first bars', async ({ page, request }) => {
+  await page.goto('/song/autumn-leaves')
+  const meta = (attr: string, name: string) => page.locator(`head meta[${attr}="${name}"]`)
+  await expect(meta('property', 'og:image')).toHaveAttribute('content', 'https://www.chordscalemaker.com/og/autumn-leaves.png')
+  await expect(meta('property', 'og:image')).toHaveCount(1)
+  await expect(meta('property', 'og:image:alt')).toHaveAttribute('content', 'Autumn Leaves, Joseph Kosma: chord changes')
+  await expect(meta('name', 'twitter:image')).toHaveAttribute('content', 'https://www.chordscalemaker.com/og/autumn-leaves.png')
+  const image = await request.get('/og/autumn-leaves.png')
+  expect(image.status()).toBe(200)
+  const png = await image.body()
+  expect([png.readUInt32BE(16), png.readUInt32BE(20)]).toEqual([1200, 630])
+})
+
 test('a library chart’s practice sheets live at /song/<name>: indexable, its own canonical, its tab naming the chart', async ({ page }) => {
   await page.goto('/song/autumn-leaves')
   await expect(page).toHaveTitle('Autumn Leaves · Chord Scale Maker')

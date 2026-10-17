@@ -14,7 +14,8 @@ export function canonicalUrl(path: string): string {
 export const pageTitle = (title: string | undefined): string => (!title ? SITE_NAME : title.startsWith(SITE_NAME) ? title : `${title} · ${SITE_NAME}`)
 
 /** title without the site name (the template adds it), unless it leads with it; ogTitle when the preview's differs */
-export type PageHead = Readonly<{ title?: string; description: string; ogTitle?: string; robots?: 'noindex' | 'index, follow, max-image-preview:large' }>
+/** image: the page's own link preview (1200×630), in place of the site's og-image.png */
+export type PageHead = Readonly<{ title?: string; description: string; ogTitle?: string; robots?: 'noindex' | 'index, follow, max-image-preview:large'; image?: Readonly<{ url: string; alt: string }> }>
 
 export const PAGE_HEAD = {
   index: {
@@ -69,6 +70,9 @@ export const seoMeta = (head: PageHead) => ({
   ogDescription: head.description,
   twitterDescription: head.description,
   ...(head.robots ? { robots: head.robots } : {}),
+  ...(head.image
+    ? { ogImage: head.image.url, ogImageWidth: 1200, ogImageHeight: 630, ogImageAlt: head.image.alt, twitterImage: head.image.url, twitterImageAlt: head.image.alt }
+    : {}),
 })
 
 /** the library page, searching for `query` when there is one */

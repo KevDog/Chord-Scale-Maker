@@ -59,7 +59,8 @@ export default defineNuxtConfig({
         { name: 'application-name', content: SITE_NAME },
         { name: 'apple-mobile-web-app-title', content: SITE_NAME },
         // the link preview on Facebook, Slack, iMessage and the like (Open Graph); the image is drawn by
-        // scripts/icons.mjs. Pages set og:title and og:description; app.vue sets og:url to the canonical URL.
+        // scripts/icons.mjs; a library song's own is drawn by scripts/og.ts (utils/songHead.ts). Pages set og:title and
+        // og:description; app.vue sets og:url to the canonical URL.
         { property: 'og:type', content: 'website' },
         { property: 'og:site_name', content: SITE_NAME },
         { property: 'og:locale', content: 'en_US' },
