@@ -101,8 +101,9 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
   const o = v as Record<string, unknown>
   const practice = practiceSelectionFrom(o.practice)
   const picks = chordPicksFrom(Object.hasOwn(o, 'picks') ? o.picks : undefined)
+  const instrument = o.instrument === 'concert' ? 'piano' : o.instrument // #332: links made before the concert choice was retired
   const view: ShareView = {
-    ...(typeof o.instrument === 'string' && isInstrumentName(o.instrument) ? { instrument: o.instrument } : {}),
+    ...(typeof instrument === 'string' && isInstrumentName(instrument) ? { instrument } : {}),
     ...(o.mode === 'root' || o.mode === 'from' ? { mode: o.mode } : {}),
     ...(typeof o.start === 'string' && START.test(o.start) ? { start: o.start } : {}),
     ...(typeof o.intervals === 'boolean' ? { intervals: o.intervals } : {}),
