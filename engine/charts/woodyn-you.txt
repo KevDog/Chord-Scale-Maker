@@ -6,7 +6,10 @@ style: Medium up
 key: Db
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 271
+recording: Dizzy Gillespie; Dizzy Gillespie; RCA Victor; 1966
+youtube: 5EQXuTqCcOU
 # analysis: 2026-10-11, rules v1; Db
+# recording: recorded 1947-12-22 by the big band with Chano Pozo, issued as Algo Bueno; take 1 (D7VB2932-1), first issued on 78 (RCA Victor 20-3186, with Minor Walk), first LP 1966 (LPV-530) (jazzdisco); the tune was first recorded 1944-02-16 by Coleman Hawkins with Gillespie (Apollo 751); a "Woody'n You" (D7VB3091, 1947-12-30) appears only on LJM-1009 Dizzier and Dizzier (1954) and may be the same performance; video: The Complete RCA Victor Recordings, the same take
 
 # bar | chord | scale
 # the bridge can also start Am7 D7 | Bm7 E7 over its first and fifth bars

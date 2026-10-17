@@ -4,7 +4,10 @@ style: Up
 key: F
 form: ABC, 32 bars
 source: Colorado Cookbook, p. 193
+recording: Miles Davis; Seven Steps to Heaven; Columbia; 1963
+youtube: pQMJv3HuZdU
 # analysis: 2026-10-17, rules v1; F
+# recording: recorded 1963-05-14, NYC (George Coleman, Herbie Hancock, Ron Carter, Tony Williams), take 3, CL 2051 / CS 8851; the 1963-04-17 Los Angeles takes with Victor Feldman stayed unissued until 2004 (jazzdisco)
 
 # bar | chord | scale
 

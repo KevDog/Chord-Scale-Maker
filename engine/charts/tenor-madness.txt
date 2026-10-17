@@ -5,7 +5,10 @@ style: Blues
 key: Bb
 form: A, 12 bars
 source: Colorado Cookbook, p. 141
+recording: Sonny Rollins; Tenor Madness; Prestige; 1956
+youtube: WpN1dt7n_jw
 # analysis: 2026-10-11, rules v1; Bb, blues
+# recording: recorded 1956-05-24, with John Coltrane on the title track, PRLP 7047 (jazzdisco)
 
 # bar | chord | scale
 

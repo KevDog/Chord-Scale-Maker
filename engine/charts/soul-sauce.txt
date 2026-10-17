@@ -6,7 +6,10 @@ key: C
 form: ABCD + solos, 32 bars
 source: 
 context: modal
+recording: Cal Tjader; Soul Sauce; Verve; 1965
+youtube: NZPJI2xGwkM
 # analysis: 2026-10-12, rules v1; C, modal
+# recording: the chart follows Tjader's version (its book marking: "as played by Cal Tjader"), a remake of Gillespie and Pozo's Guarachi Guaro (RCA Victor 20-3370, 1948); recorded 1964-11-20, A&R Studios, NYC; matrix 64VK601, first issued on LP (Verve V/V6-8614) (jazzdisco, Wikipedia)
 # book: Med. Latin, quarter = 152 (as played by Cal Tjader)
 # the pickup is vibes alone; bass and drums play a downbeat (C bass) on bar 1 of A every time but the first
 # the book's road map: A B C D, D.C. al Coda One (from the end of A, bar 8) to the solos; after solos, continue to E;

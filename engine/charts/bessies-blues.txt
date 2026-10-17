@@ -5,7 +5,10 @@ style: Blues
 key: Eb
 form: A, 12 bars
 source: Colorado Cookbook, p. 33
+recording: John Coltrane Quartet; Crescent; Impulse!; 1964
+youtube: 16AqebffhWM
 # analysis: 2026-10-11, rules v1; Eb, blues
+# recording: master take recorded 1964-06-01, Impulse! A-66, released 1964 (jazzdisco.org, MusicBrainz release group, Wikipedia); video: The Classic Quartet: Complete Impulse! Studio Recordings, the same take (not the 1964-04-27 first version)
 
 # bar | chord | scale
 

@@ -6,7 +6,10 @@ key: Cm
 context: blues
 form: A, 12 bars
 source: Colorado Cookbook, p. 141
+recording: John Coltrane; Giant Steps; Atlantic; 1960
+youtube: PttNMqbNMOI
 # analysis: 2026-10-11, rules v1; C minor, blues
+# recording: recorded 1959-05-05, Atlantic 1311, released 1960 (jazzdisco.org, MusicBrainz release group, Wikipedia)
 
 # bar | chord | scale
 

@@ -6,7 +6,10 @@ key: Fm
 context: blues
 form: A, 12 bars
 source: Colorado Cookbook, p. 278
+recording: John Coltrane Quartet; Africa/Brass; Impulse!; 1961
+youtube: kJcJXsHXhAM
 # analysis: 2026-10-11, rules v1; F minor, blues
+# recording: recorded 1961-06-07, Impulse! A-6, released 1961 (jazzdisco.org, MusicBrainz release group, Wikipedia); video: The Complete Africa / Brass Sessions, the same take
 
 # bar | chord | scale
 

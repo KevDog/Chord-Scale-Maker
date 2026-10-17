@@ -4,7 +4,10 @@ style: Medium up
 key: Ab
 form: AB, 32 bars
 source: 
+recording: Miles Davis; The New Sounds; Prestige; 1951
+youtube: zQH022AoPEs
 # analysis: 2026-10-12, rules v1; Ab
+# recording: recorded 1951-10-05 (sextet with Sonny Rollins, Jackie McLean), first issued on 78 (Prestige 777, Dig Parts 1 & 2) and 10" LP PRLP 124 (jazzdisco, Wikipedia); video: Dig (1956), the same take
 # based on "Sweet Georgia Brown" changes
 
 # bar | chord
