@@ -85,9 +85,9 @@ describe('diatonic steps', () => {
     expect(names(r)).toEqual(['C'])
     expect(r?.map((n) => n.midi)).toEqual([72])
   })
-  it('delayed into F: G E E (the diatonic step below is a semitone)', () => {
+  it('delayed into F: G E (the repeated E collapses)', () => {
     const r = approachNotes(note('F', 65), 'delayed', cIonian)
-    expect(names(r)).toEqual(['G', 'E', 'E'])
-    expect(r?.map((n) => n.midi)).toEqual([67, 64, 64])
+    expect(names(r)).toEqual(['G', 'E'])
+    expect(r?.map((n) => n.midi)).toEqual([67, 64])
   })
 })

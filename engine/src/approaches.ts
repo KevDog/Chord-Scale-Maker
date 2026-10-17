@@ -61,7 +61,7 @@ export function approachNotes(target: Pitched, figure: Approach, scale: readonly
   for (const [kind, n] of FIGURES[figure].moves) {
     const note = kind === 'c' ? chromatic(target, n) : diatonic(target, scale, n)
     if (!note) return null
-    notes.push(note)
+    if (notes.at(-1)?.midi !== note.midi) notes.push(note) // consecutive equal notes collapse to one
   }
   return notes
 }
