@@ -20,7 +20,8 @@
     "guide-lines": "vite-node scripts/guideLines.ts --",
     "fixture-scales": "vite-node scripts/fixtureScales.ts --",
     "migrate-charts": "vite-node scripts/migrate-charts.ts",
-    "compare-golden": "vite-node scripts/compare-golden.ts --"
+    "compare-golden": "vite-node scripts/compare-golden.ts --",
+    "check-recordings": "vite-node scripts/check-recordings.ts"
   },
   "devDependencies": {
     "@nuxt/eslint-config": "1.17.0",
