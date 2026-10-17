@@ -69,16 +69,14 @@ section: B
 4  | C#m7b5     # iiø7 of B minor: Locrian, the key's own notes (its ♭2 is a passing note)
 4  | F#7#5b9    # V7/vi in D: b9 and b13 are in the key, the #11 from the symbol
 5  | BmMaj7     # from the symbol: minor-major 7th
-5  | Bm7        # ii of E9sus4: Dorian
-6  | E9sus4     # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-# book: E13sus
-6  | E13#11     # extended dominant: V7 of A9sus4; #11 from the symbol
+5  | Bm7        # ii of E13sus: Dorian
+6  | E13sus     # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+6  | E13#11     # extended dominant: V7 of A13sus; #11 from the symbol
 @segno 1
 
 section: C
 bars: 21
-1  | A9sus4     # static sus: Mixolydian
-# book: A13sus
+1  | A13sus     # static sus: Mixolydian
 2  | Am9        # a borrowed minor chord: Dorian, its own key
 3  | DMaj7/A    # tonic: the 4th is in the key
 4  | B9sus4     # VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
@@ -91,11 +89,9 @@ bars: 21
 8  | Am11       # a borrowed minor chord: Dorian, its own key
 9  | DMaj7/A    # tonic: the 4th is in the key
 10 | Am11       # a borrowed minor chord: Dorian, its own key
-11 | F9sus4     # static sus: Mixolydian
-# book: F13sus
+11 | F13sus     # static sus: Mixolydian
 12 | Fm11       # a borrowed minor chord: Dorian, its own key
-13 | Ab9sus4    # static sus: Mixolydian
-# book: Ab13sus
+13 | Ab13sus    # static sus: Mixolydian
 14 | Abm11      # a borrowed minor chord: Dorian, its own key
 # area: Bb major (C 15 – Coda 1)
 15 | Gm7        # ii of C7: Dorian

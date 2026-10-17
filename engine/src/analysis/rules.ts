@@ -255,13 +255,23 @@ function dominant(ctx: Context, i: number): Decision {
 
 // —— the other families ——
 
+/** a triad with a #11 written (Bb(#11)) is Lydian: the other rules' reason where they give Lydian too, else M1 */
 function major(ctx: Context, i: number): Decision {
+  const e = ctx.stream[i] as Entry
+  const d = majorRules(ctx, i)
+  if (e.quality !== 'maj' || !/#11/.test(e.symbol) || d.scale === named(e, NAME.lydian)) return d
+  const key = ctx.keys[i] ?? ctx.global
+  return { scale: named(e, NAME.lydian), rule: 'M1', fn: `${roman(e, key)} in ${keyText(key)}`, reason: 'from the symbol: #11' }
+}
+
+function majorRules(ctx: Context, i: number): Decision {
   const e = ctx.stream[i] as Entry
   const key = ctx.keys[i] ?? ctx.global
   const d = degree(e, key)
   const fn = `${roman(e, key)} in ${keyText(key)}`
   if (e.quality === 'Maj7#11') return { scale: named(e, NAME.lydian), rule: 'M1', fn, reason: 'from the symbol: #11' }
   if (e.quality === 'Maj7#5') return { scale: named(e, NAME.lydianAugmented), rule: 'M2', fn, reason: 'from the symbol: #5' }
+  if (e.quality === 'aug') return { scale: named(e, NAME.wholeTone), rule: 'M2', fn, reason: 'from the symbol: augmented' }
   if (ctx.modal) return { scale: named(e, NAME.lydian), rule: 'M5', fn: 'modal major', reason: 'modal major: Lydian' }
   if (!key.minor && d === 0) return { scale: named(e, NAME.ionian), rule: 'M3', fn, reason: 'tonic: the 4th is in the key' }
   if (key.minor && d === 3) return { scale: named(e, NAME.ionian), rule: 'M3', fn, reason: `bIII of ${keyText(key)}: the relative major itself` }
@@ -487,8 +497,8 @@ export const RULES: readonly RuleInfo[] = [
   { id: 'D4', family: 'dominant', tier: 4, scale: 'derived from the key', looksAt: 'the chord it resolves to, a fifth down; the major or minor chord before it that it is the V of; or the ii before it', summary: 'A resolving dominant takes each tension (9, 11, 13) in the form the key holds.' },
   { id: 'D5', family: 'dominant', tier: 3, scale: 'derived from the key (Mixolydian for a blues IV7)', looksAt: 'its degree: the blues I7 or IV7 (before the chords around it), the back door, or a diatonic dominant', summary: 'A blues I7 (a tonic with dominant colour) takes its tensions from the key and a blues IV7 is Mixolydian, whatever follows them; a dominant a whole step below a major chord (the back door, ♭VII7), or a diatonic dominant that does not resolve, takes its tensions from the key.', guess: 'a diatonic dominant that does not resolve' },
   { id: 'D6', family: 'dominant', tier: 4, scale: 'Lydian Dominant', looksAt: 'a non-diatonic dominant with nowhere to go', summary: 'A non-diatonic dominant that does not resolve is Lydian Dominant: in a major key, ♭VII7, ♭VI7 or ♭III7 borrowed from the parallel minor; any other, a chromatic dominant in its own key.', guess: 'a chromatic dominant (not ♭VII7, ♭VI7 or ♭III7 in a major key)' },
-  { id: 'M1', family: 'major', tier: 1, scale: 'Lydian', looksAt: 'a #11 in the symbol', summary: 'A maj7#11 is Lydian.' },
-  { id: 'M2', family: 'major', tier: 1, scale: 'Lydian Augmented', looksAt: 'a #5 in the symbol', summary: 'A maj7#5 is Lydian Augmented.' },
+  { id: 'M1', family: 'major', tier: 1, scale: 'Lydian', looksAt: 'a #11 in the symbol', summary: 'A maj7#11, or a triad with a #11 (Bb(#11)), is Lydian.' },
+  { id: 'M2', family: 'major', tier: 1, scale: 'Lydian Augmented', looksAt: 'a #5 in the symbol', summary: 'A maj7#5 is Lydian Augmented; an augmented triad, Whole Tone.' },
   { id: 'M5', family: 'major', tier: 2, scale: 'Lydian', looksAt: 'a modal chart', summary: 'A major chord in a modal chart is Lydian.' },
   { id: 'M3', family: 'major', tier: 3, scale: 'Ionian (Mixolydian for a V triad)', looksAt: 'its degree: the tonic, ♭III or ♭VII in a minor key, a V triad, or IV after its own dominant', summary: 'The tonic major chord (or ♭III, the relative major, in a minor key) is Ionian; so is ♭VII of a minor key, the notes of the tonic’s Dorian, and a IV reached by its own dominant (V7/IV, or subV7/IV a half step above), the key of the moment; a V triad without its 7th is Mixolydian.' },
   { id: 'M4', family: 'major', tier: 3, scale: 'Lydian', looksAt: 'its degree: any other major chord', summary: 'Any other major chord is Lydian (♭VI of a minor key among them; on a IV not reached by its own dominant, the #4 is the key’s 7th; on ♭II, ♭III, ♭VI or ♭VII of a major key, borrowed by modal interchange, its ♯11 is in the key).' },

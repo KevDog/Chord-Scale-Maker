@@ -4,19 +4,18 @@ style: Even 8ths
 key: C
 form: ABC, 28 bars
 source: 
-# analysis: 2026-10-12, rules v1; C
+# analysis: 2026-10-17, rules v1; C
 
 # bar | chord
 # book: "Med. Straight 8ths (quasi 16th-note March)"
-# book: Bb(#11)/D throughout A (a Bb triad with a #11 over D); written Bb/D
 
 section: A
-1  | Bb/D         # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
+1  | Bb(#11)/D    # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
 1  | CMaj7/D      # tonic: the 4th is in the key
-2  | Bb/D         # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
-3  | Bb/D
+2  | Bb(#11)/D    # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
+3  | Bb(#11)/D
 3  | CMaj7/D      # tonic: the 4th is in the key
-4  | Bb/D         # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
+4  | Bb(#11)/D    # ♭VII, borrowed from C minor: Lydian (its ♯11 is in the key)
 
 section: B
 bars: 12
@@ -28,8 +27,7 @@ bars: 12
 3  | DbMaj7/F     # ♭IImaj7, borrowed from C Phrygian: Lydian (its ♯11 is in the key)
 4  | EbMaj7/F     # ♭IIImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
 5  | EMaj9/G#     # a non-tonic major chord: Lydian
-5  | E/G#         # a non-tonic major chord: Lydian
-# book: E(add9)/G#
+5  | E(add9)/G#   # a non-tonic major chord: Lydian
 # bars 7–8: piano fill (slashes, no new chord)
 9  | GMaj7/B      # a non-tonic major chord: Lydian
 9  | AMaj7/B      # a non-tonic major chord: Lydian

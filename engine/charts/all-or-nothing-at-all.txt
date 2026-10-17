@@ -10,76 +10,74 @@ source:
 
 section: A
 # area: A minor (A 1 – B 15)
-1  | Am      # tonic minor: Dorian by convention
-2  | AmMaj7  # from the symbol: minor-major 7th
-3  | Am7     # tonic minor: Dorian by convention
-4  | Am6     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-5  | Am      # tonic minor: Dorian by convention
+1  | Am          # tonic minor: Dorian by convention
+2  | AmMaj7      # from the symbol: minor-major 7th
+3  | Am7         # tonic minor: Dorian by convention
+4  | Am6         # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+5  | Am          # tonic minor: Dorian by convention
 # alt: bar 6 (Gm7 C7)
-7  | Bb9     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-9  | Gm7     # a borrowed minor chord: Dorian, its own key
-11 | Dm7     # iv: Dorian, the key’s own notes
+7  | Bb9         # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+9  | Gm7         # a borrowed minor chord: Dorian, its own key
+11 | Dm7         # iv: Dorian, the key’s own notes
 # alt: bar 12 (D#dim7)
-13 | Dm11    # iv: Dorian, the key’s own notes
-# book: Dm7(add11)
-14 | Db9#11  # tritone substitute: resolves down a half step to CMaj7
-15 | CMaj7   # bIII of A minor: the relative major itself
-16 | Bm7b5   # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
-16 | E7      # V7 of A minor: b9 and b13 are in the key
+13 | Dm7(add11)  # iv: Dorian, the key’s own notes
+14 | Db9#11      # tritone substitute: resolves down a half step to CMaj7
+15 | CMaj7       # bIII of A minor: the relative major itself
+16 | Bm7b5       # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+16 | E7          # V7 of A minor: b9 and b13 are in the key
 
 section: B
-1  | Am      # tonic minor: Dorian by convention
-2  | AmMaj7  # from the symbol: minor-major 7th
-3  | Am7     # tonic minor: Dorian by convention
-4  | Am6     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-5  | Am      # tonic minor: Dorian by convention
+1  | Am          # tonic minor: Dorian by convention
+2  | AmMaj7      # from the symbol: minor-major 7th
+3  | Am7         # tonic minor: Dorian by convention
+4  | Am6         # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+5  | Am          # tonic minor: Dorian by convention
 # alt: bar 6 (Gm7 C7)
-7  | Bb9     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-9  | Gm7     # a borrowed minor chord: Dorian, its own key
-11 | Dm7     # iv: Dorian, the key’s own notes
+7  | Bb9         # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+9  | Gm7         # a borrowed minor chord: Dorian, its own key
+11 | Dm7         # iv: Dorian, the key’s own notes
 # alt: bar 12 (D#dim7)
-13 | Dm11    # iv: Dorian, the key’s own notes
-# book: Dm7(add11)
-14 | Db9#11  # tritone substitute: resolves down a half step to CMaj7
-15 | CMaj7   # bIII of A minor: the relative major itself
+13 | Dm7(add11)  # iv: Dorian, the key’s own notes
+14 | Db9#11      # tritone substitute: resolves down a half step to CMaj7
+15 | CMaj7       # bIII of A minor: the relative major itself
 # area: Ab major (B 16 – C 15)
-16 | Bbm7    # ii of the ii–V to Ab
-16 | Eb7     # V7 of Ab: natural tensions
+16 | Bbm7        # ii of the ii–V to Ab
+16 | Eb7         # V7 of Ab: natural tensions
 
 section: C
-1  | AbMaj7  # tonic: the 4th is in the key
+1  | AbMaj7      # tonic: the 4th is in the key
 # alt (book footnote): bars 1–4 (Ab Ab+ | Ab6 Ab+ | Ab Ab+ | Ab6 Ab+)
-4  | Bbm7    # ii of the ii–V to Ab
-4  | Eb7     # V7 of Ab: natural tensions
-5  | AbMaj7  # tonic: the 4th is in the key
-6  | Db/Ab   # IV: the #4 is the key’s 7th
-6  | AbMaj7  # tonic: the 4th is in the key
-7  | Eb7     # V7 of the AbMaj7 before it: natural tensions
-9  | Bbm7    # ii of Eb7: Dorian
-10 | Eb7     # V7/I in Ab: natural tensions
-11 | Bbm7    # ii of Eb7: Dorian
-12 | Eb7     # V7/I in Ab: natural tensions
-12 | C7      # V7/vi in Ab: b9 and b13 are in the key
-13 | Fm      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-13 | Fm7/Eb  # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-14 | Db9     # tritone substitute: resolves down a half step to C7
-15 | C7      # III7 in Ab, not resolving: b9 and b13 are in the key
+4  | Bbm7        # ii of the ii–V to Ab
+4  | Eb7         # V7 of Ab: natural tensions
+5  | AbMaj7      # tonic: the 4th is in the key
+6  | Db/Ab       # IV: the #4 is the key’s 7th
+6  | AbMaj7      # tonic: the 4th is in the key
+7  | Eb7         # V7 of the AbMaj7 before it: natural tensions
+9  | Bbm7        # ii of Eb7: Dorian
+10 | Eb7         # V7/I in Ab: natural tensions
+11 | Bbm7        # ii of Eb7: Dorian
+12 | Eb7         # V7/I in Ab: natural tensions
+12 | C7          # V7/vi in Ab: b9 and b13 are in the key
+13 | Fm          # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+13 | Fm7/Eb      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+14 | Db9         # tritone substitute: resolves down a half step to C7
+15 | C7          # III7 in Ab, not resolving: b9 and b13 are in the key
 # area: A minor (C 16 – D 15)
-16 | E7      # V7 of A minor: b9 and b13 are in the key
+16 | E7          # V7 of A minor: b9 and b13 are in the key
 
 section: D
 bars: 16
-1  | Am      # tonic minor: Dorian by convention
-2  | AmMaj7  # from the symbol: minor-major 7th
-3  | Am7     # tonic minor: Dorian by convention
-4  | Am6     # tonic minor sixth chord: melodic minor, the raised 7th is a tension
-5  | Am      # tonic minor: Dorian by convention
+1  | Am          # tonic minor: Dorian by convention
+2  | AmMaj7      # from the symbol: minor-major 7th
+3  | Am7         # tonic minor: Dorian by convention
+4  | Am6         # tonic minor sixth chord: melodic minor, the raised 7th is a tension
+5  | Am          # tonic minor: Dorian by convention
 # alt: bar 6 (Gm7 C7)
-7  | Bb9     # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-9  | Gm7     # a borrowed minor chord: Dorian, its own key
-11 | Dm7     # iv: Dorian, the key’s own notes
-12 | E7      # V7 of A minor: b9 and b13 are in the key
-13 | Am      # tonic minor: Dorian by convention
-14 | Fm6     # a minor sixth chord: Dorian
-15 | C6      # bIII of A minor: the relative major itself
+7  | Bb9         # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+9  | Gm7         # a borrowed minor chord: Dorian, its own key
+11 | Dm7         # iv: Dorian, the key’s own notes
+12 | E7          # V7 of A minor: b9 and b13 are in the key
+13 | Am          # tonic minor: Dorian by convention
+14 | Fm6         # a minor sixth chord: Dorian
+15 | C6          # bIII of A minor: the relative major itself
 # alt: bar 16 (E7)

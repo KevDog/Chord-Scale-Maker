@@ -1,18 +1,19 @@
 {
   "$schema_note": "Chord-scale options keyed by chord quality. Each option's root is an interval above the chord root ('1' = same root). Scale names match SCALES in engine/src/scales.ts. The first option with default=true is used when a chart row omits the scale. outside=true marks a deliberate outside sound (tension to resolve); the editor lists those separately. level=basic|advanced marks a quality's simpler or richer choice for the Level control (the default is Standard; a quality without one keeps its default). functional=true marks a scale that fits one function only (a °7's diatonic diminished scales): offered in the menu, never dealt by the Random level. slash_chords: a chord of `quality` whose bass is the interval `bass` above its root takes its scale options from quality `as` on the bass note (the chord symbol itself is unchanged). ladders: when a row's Standard scale is not its quality's default (the analysis chose it: D7 → D Phrygian Dominant), the Level control takes Basic and Advanced from the Standard scale's ladder instead of the quality's level tags; each rung is [interval above the Standard root, scale], and a missing rung keeps the Standard scale (docs/plan-analysis.md §11). quality_ladders: per-quality overrides of a ladder (m and m7 on Phrygian: Dorian at Advanced, where sus ♭9 keeps Dorian ♭2; a tonic m6 on Melodic Minor stays there at Advanced, as Harmonic Minor's ♭6 would clash with its 6th).",
   "quality_aliases": {
-    "maj": ["", "M", "ma", "major"],
-    "m": ["-", "mi", "min"],
+    "maj": ["", "M", "ma", "major", "add9", "(add9)"],
+    "m": ["-", "mi", "min", "madd9", "m(add9)", "-(add9)", "mi(add9)"],
     "Maj7": ["ma7", "MA7", "M7", "maj7", "Δ7", "∆7", "Δ", "∆", "maj9", "Maj9"],
     "Maj7#11": ["maj7#11", "M7#11", "Δ#11", "∆#11", "Maj7+11", "maj7+11", "Maj7(#11)", "Maj9#11"],
     "Maj7#5": ["maj7#5", "M7#5", "Δ#5", "∆#5", "Maj7+5", "maj7+5", "Maj7+", "Δ+5", "∆+5", "Δ+", "∆+", "+Maj7"],
+    "aug": ["+", "augmented", "(#5)"],
     "6": ["maj6", "Maj6", "6/9", "69"],
-    "m7": ["-7", "mi7", "min7", "m9", "-9", "mi9", "m11", "-11"],
+    "m7": ["-7", "mi7", "min7", "m9", "-9", "mi9", "m11", "-11", "m13", "-13", "mi13", "m7add11", "m7(add11)", "-7(add11)", "mi7(add11)"],
     "m6": ["-6", "mi6", "min6", "m6/9"],
     "mMaj7": ["-Maj7", "mM7", "-Δ7", "-∆7", "miMa7", "minMaj7"],
     "7": ["9", "13", "7(13)", "9(13)"],
-    "7sus4": ["sus", "sus4", "7sus", "9sus4", "9sus", "11"],
-    "7sus4b9": ["7susb9", "susb9", "sus4b9", "7sus4(b9)", "7sus(b9)", "sus(b9)", "9sus4b9", "phryg"],
+    "7sus4": ["sus", "sus4", "7sus", "9sus4", "9sus", "11", "13sus", "13sus4"],
+    "7sus4b9": ["7susb9", "susb9", "sus4b9", "7sus4(b9)", "7sus(b9)", "sus(b9)", "9sus4b9", "phryg", "13susb9", "13sus(b9)", "13sus4b9"],
     "7b9": ["7(b9)", "13b9"],
     "7b9b13": ["7(b9,b13)", "7b13b9", "7(b13,b9)"],
     "7b13": ["7(b13)", "9b13", "9(b13)"],
@@ -52,6 +53,10 @@
     "Maj7#5": [
       { "root": "1",  "scale": "Lydian Augmented",  "default": true },
       { "root": "1",  "scale": "Lydian" }
+    ],
+    "aug": [
+      { "root": "1", "scale": "Whole Tone", "default": true },
+      { "root": "1", "scale": "Lydian Augmented", "note": "a I+ (C C+ C6): the major 7th" }
     ],
     "6": [
       { "root": "1",  "scale": "Ionian",            "default": true },

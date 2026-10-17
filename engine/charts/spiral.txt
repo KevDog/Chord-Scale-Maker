@@ -12,115 +12,109 @@ source:
 # bar | chord
 
 section: Intro
-1 | Dm9        # tonic minor: Dorian by convention
-2 | BbMaj7#11  # from the symbol: #11
-3 | Dm9        # tonic minor: Dorian by convention
-4 | BbMaj7#11  # from the symbol: #11
-5 | Dm9        # tonic minor: Dorian by convention
-6 | BbMaj7#11  # from the symbol: #11
-7 | Dm9        # tonic minor: Dorian by convention
-8 | BbMaj7#11  # from the symbol: #11
+1 | Dm9         # tonic minor: Dorian by convention
+2 | BbMaj7#11   # from the symbol: #11
+3 | Dm9         # tonic minor: Dorian by convention
+4 | BbMaj7#11   # from the symbol: #11
+5 | Dm9         # tonic minor: Dorian by convention
+6 | BbMaj7#11   # from the symbol: #11
+7 | Dm9         # tonic minor: Dorian by convention
+8 | BbMaj7#11   # from the symbol: #11
 
 section: A1
 @segno 1
-1 | Dm11       # tonic minor: Dorian by convention
-3 | BbMaj7#11  # from the symbol: #11
-5 | Gm7        # iv: Dorian, the key’s own notes
-5 | Am11       # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
-# book: Am7(add 11)
-6 | BbMaj7#11  # from the symbol: #11
-7 | Dm9        # tonic minor: Dorian by convention
-8 | BbMaj7#11  # from the symbol: #11
+1 | Dm11        # tonic minor: Dorian by convention
+3 | BbMaj7#11   # from the symbol: #11
+5 | Gm7         # iv: Dorian, the key’s own notes
+5 | Am7(add11)  # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+6 | BbMaj7#11   # from the symbol: #11
+7 | Dm9         # tonic minor: Dorian by convention
+8 | BbMaj7#11   # from the symbol: #11
 
 section: A2
 copy: A1
 
 section: B
 bars: 8
-1 | F7sus4     # static sus: Mixolydian
-2 | A/F        # a non-tonic major chord: Lydian
-4 | F7sus4b9   # from the symbol: sus b9
-5 | AMaj7/B    # a non-tonic major chord: Lydian
-5 | CMaj7/D    # ♭VII of D minor: C major, the notes of D Dorian
-6 | GbMaj7/Ab  # a non-tonic major chord: Lydian
-6 | AMaj7/B    # a non-tonic major chord: Lydian
-7 | EbMaj7/Fb  # a non-tonic major chord: Lydian
-7 | GbMaj7/Ab  # a non-tonic major chord: Lydian
-7 | E/D        # a non-tonic major chord: Lydian
+1 | F7sus4      # static sus: Mixolydian
+2 | A/F         # a non-tonic major chord: Lydian
+4 | F7sus4b9    # from the symbol: sus b9
+5 | AMaj7/B     # a non-tonic major chord: Lydian
+5 | CMaj7/D     # ♭VII of D minor: C major, the notes of D Dorian
+6 | GbMaj7/Ab   # a non-tonic major chord: Lydian
+6 | AMaj7/B     # a non-tonic major chord: Lydian
+7 | EbMaj7/Fb   # a non-tonic major chord: Lydian
+7 | GbMaj7/Ab   # a non-tonic major chord: Lydian
+7 | E/D         # a non-tonic major chord: Lydian
 # bar 7: E/D on beat 4, held through bar 8
 
 section: C
-1 | Dm11       # tonic minor: Dorian by convention
-3 | BbMaj7#11  # from the symbol: #11
-5 | Gm7        # iv: Dorian, the key’s own notes
-5 | Am11       # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
-# book: Am7(add 11)
-6 | BbMaj7#11  # from the symbol: #11
+1 | Dm11        # tonic minor: Dorian by convention
+3 | BbMaj7#11   # from the symbol: #11
+5 | Gm7         # iv: Dorian, the key’s own notes
+5 | Am7(add11)  # v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)
+6 | BbMaj7#11   # from the symbol: #11
 @coda 6
 
 section: Interlude
-1 | Dm9        # tonic minor: Dorian by convention
-2 | BbMaj7#11  # from the symbol: #11
-3 | Dm9        # tonic minor: Dorian by convention
-4 | BbMaj7#11  # from the symbol: #11
-5 | Dm9        # tonic minor: Dorian by convention
-6 | BbMaj7#11  # from the symbol: #11
-7 | Dm9        # tonic minor: Dorian by convention
-8 | BbMaj7#11  # from the symbol: #11
+1 | Dm9         # tonic minor: Dorian by convention
+2 | BbMaj7#11   # from the symbol: #11
+3 | Dm9         # tonic minor: Dorian by convention
+4 | BbMaj7#11   # from the symbol: #11
+5 | Dm9         # tonic minor: Dorian by convention
+6 | BbMaj7#11   # from the symbol: #11
+7 | Dm9         # tonic minor: Dorian by convention
+8 | BbMaj7#11   # from the symbol: #11
 
 section: D1
 # solos
-1 | Dm11       # tonic minor: Dorian by convention
-3 | BbMaj7#11  # from the symbol: #11
-5 | Gm11       # iv: Dorian, the key’s own notes
-# book: Gm7(add 11)
-5 | A7#5#9     # V7 in D minor, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
-6 | BbMaj7#11  # from the symbol: #11
-6 | A7#5#9     # V7 of D minor: the b13 is in the key, b9, #9 and #11 from the symbol
-7 | Dm11       # tonic minor: Dorian by convention
-8 | BbMaj7#11  # from the symbol: #11
+1 | Dm11        # tonic minor: Dorian by convention
+3 | BbMaj7#11   # from the symbol: #11
+5 | Gm7(add11)  # iv: Dorian, the key’s own notes
+5 | A7#5#9      # V7 in D minor, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
+6 | BbMaj7#11   # from the symbol: #11
+6 | A7#5#9      # V7 of D minor: the b13 is in the key, b9, #9 and #11 from the symbol
+7 | Dm11        # tonic minor: Dorian by convention
+8 | BbMaj7#11   # from the symbol: #11
 
 section: D2
 copy: D1
 
 section: E
-1 | F7sus4b9   # from the symbol: sus b9
-2 | A/F        # a non-tonic major chord: Lydian
-4 | F7sus4b9   # from the symbol: sus b9
-5 | D9sus4     # static sus: Mixolydian
-# book: D13sus
-6 | B13        # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-7 | Ab9sus4    # static sus: Mixolydian
-# book: Ab13sus
-8 | E/D        # a non-tonic major chord: Lydian
+1 | F7sus4b9    # from the symbol: sus b9
+2 | A/F         # a non-tonic major chord: Lydian
+4 | F7sus4b9    # from the symbol: sus b9
+5 | D13sus      # static sus: Mixolydian
+6 | B13         # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+7 | Ab13sus     # static sus: Mixolydian
+8 | E/D         # a non-tonic major chord: Lydian
 
 section: F
-1 | Dm11       # tonic minor: Dorian by convention
-3 | BbMaj7#11  # from the symbol: #11
-5 | Gm11       # iv: Dorian, the key’s own notes
-# book: Gm7(add 11)
-5 | A7#5#9     # V7 in D minor, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
-6 | BbMaj7#11  # from the symbol: #11
-6 | A7#5#9     # V7 of D minor: the b13 is in the key, b9, #9 and #11 from the symbol
+1 | Dm11        # tonic minor: Dorian by convention
+3 | BbMaj7#11   # from the symbol: #11
+5 | Gm7(add11)  # iv: Dorian, the key’s own notes
+5 | A7#5#9      # V7 in D minor, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
+6 | BbMaj7#11   # from the symbol: #11
+6 | A7#5#9      # V7 of D minor: the b13 is in the key, b9, #9 and #11 from the symbol
 # bars 7–8: Till Cue, back to D for more choruses
-7 | Dm11       # tonic minor: Dorian by convention
-8 | BbMaj7#11  # from the symbol: #11
+7 | Dm11        # tonic minor: Dorian by convention
+8 | BbMaj7#11   # from the symbol: #11
 
 section: Cue
 bars: 6
 # On Cue ending (replaces F bars 7–8 to end each solo): 4 bars, repeated; to D for more solos, after solos D.S. al Coda
-1 | Dm9        # tonic minor: Dorian by convention
-2 | BbMaj7#11  # from the symbol: #11
-3 | Dm9        # tonic minor: Dorian by convention
-4 | BbMaj7#11  # from the symbol: #11
+1 | Dm9         # tonic minor: Dorian by convention
+2 | BbMaj7#11   # from the symbol: #11
+3 | Dm9         # tonic minor: Dorian by convention
+4 | BbMaj7#11   # from the symbol: #11
 @nav 4 D.S. al Coda
 
 section: Coda
 bars: 8
 @coda 1
-1 | Dm9        # tonic minor: Dorian by convention
-2 | BbMaj7#11  # from the symbol: #11
-3 | Dm9        # tonic minor: Dorian by convention
-4 | BbMaj7#11  # from the symbol: #11
+1 | Dm9         # tonic minor: Dorian by convention
+2 | BbMaj7#11   # from the symbol: #11
+3 | Dm9         # tonic minor: Dorian by convention
+4 | BbMaj7#11   # from the symbol: #11
 # Coda bars 1–4 repeated, then Dm11 with a fermata
-5 | Dm11       # tonic minor: Dorian by convention
+5 | Dm11        # tonic minor: Dorian by convention

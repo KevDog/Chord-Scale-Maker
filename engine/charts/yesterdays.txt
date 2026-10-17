@@ -4,7 +4,7 @@ style: Medium swing
 key: Dm
 form: AB, 32 bars
 source: 
-# analysis: 2026-10-12, rules v1; D minor
+# analysis: 2026-10-17, rules v1; D minor
 # Med. swing (or ballad); solo on the form (AB); after solos, D.C. al Fine (the Ending)
 
 # bar | chord
@@ -17,7 +17,7 @@ section: A
 4  | Em7b5   # iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)
 4  | A7      # V7 of D minor: b9 and b13 are in the key
 5  | Dm      # tonic minor: Dorian by convention
-5  | C#7#5   # VII7 in D minor, not resolving: b9 and #11 are in the key, the b13 from the symbol
+5  | C#+     # from the symbol: augmented
 # book: C#+ (augmented triad; written C#7#5)
 6  | Dm7/C   # tonic minor: Dorian by convention
 # alt: bars 5–6 of A and B (Dm A7/C# Dm7/C G/B | Bb7 Dm/A G#dim7 C7/G), etc.

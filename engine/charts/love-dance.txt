@@ -13,123 +13,120 @@ source:
 section: Intro
 bars: 4
 # area: Eb major (Intro 1 – B 2)
-1  | F6/Eb      # a non-tonic major chord: Lydian
-1  | Abm7/Eb    # a borrowed minor chord: Dorian, its own key
-2  | F6/Eb      # a non-tonic major chord: Lydian
-2  | Db9sus4    # static sus: Mixolydian
+1  | F6/Eb        # a non-tonic major chord: Lydian
+1  | Abm7/Eb      # a borrowed minor chord: Dorian, its own key
+2  | F6/Eb        # a non-tonic major chord: Lydian
+2  | Db13sus      # static sus: Mixolydian
 # book: Db13sus (all the 13sus chords below)
 @ending 1 2
-3  | F6/Eb      # a non-tonic major chord: Lydian
-3  | Db9sus4    # static sus: Mixolydian
+3  | F6/Eb        # a non-tonic major chord: Lydian
+3  | Db9sus4      # static sus: Mixolydian
 @ending 2 3
 
 section: A
-1  | EbMaj7     # tonic: the 4th is in the key
-1  | Fm7        # ii: Dorian, the key’s own notes
-1  | Gm7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-1  | AbMaj7     # IV: the #4 is the key’s 7th
-2  | Db9sus4    # ♭VII7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-2  | Db13       # ♭VII7 from the parallel minor: Lydian Dominant
-3  | Gm7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-3  | Cm7        # ii of F9sus4: Dorian
-4  | F9sus4     # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-4  | F13        # extended dominant: V7 of Bb9sus4
-5  | Bb9sus4    # static sus: Mixolydian
-5  | Bb/Ab      # V without its 7th: Mixolydian, the key’s own notes
-6  | G13        # III7 in Eb, not resolving: the b9 is in the key, the 13 from the symbol
-6  | G7#5       # extended dominant: V7 of C9sus4; #11 and b13 from the symbol
-7  | C9sus4     # VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-7  | C7#5#9     # extended dominant: V7 of F9sus4; b9, #9, #11 and b13 from the symbol
-8  | F9sus4     # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-8  | F13        # extended dominant: V7 of Bb9sus4
-9  | Bb9sus4    # static sus: Mixolydian
-9  | Bb7sus4b9  # from the symbol: sus b9
-# book: Bb13sus(b9)
-10 | F6/Eb      # a non-tonic major chord: Lydian
-10 | Abm7/Eb    # a borrowed minor chord: Dorian, its own key
-11 | F6/Eb      # a non-tonic major chord: Lydian
-11 | Db9sus4    # static sus: Mixolydian
+1  | EbMaj7       # tonic: the 4th is in the key
+1  | Fm7          # ii: Dorian, the key’s own notes
+1  | Gm7          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+1  | AbMaj7       # IV: the #4 is the key’s 7th
+2  | Db9sus4      # ♭VII7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+2  | Db13         # ♭VII7 from the parallel minor: Lydian Dominant
+3  | Gm7          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+3  | Cm7          # ii of F9sus4: Dorian
+4  | F9sus4       # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+4  | F13          # extended dominant: V7 of Bb9sus4
+5  | Bb9sus4      # static sus: Mixolydian
+5  | Bb/Ab        # V without its 7th: Mixolydian, the key’s own notes
+6  | G13          # III7 in Eb, not resolving: the b9 is in the key, the 13 from the symbol
+6  | G7#5         # extended dominant: V7 of C9sus4; #11 and b13 from the symbol
+7  | C9sus4       # VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+7  | C7#5#9       # extended dominant: V7 of F9sus4; b9, #9, #11 and b13 from the symbol
+8  | F9sus4       # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+8  | F13          # extended dominant: V7 of Bb9sus4
+9  | Bb9sus4      # static sus: Mixolydian
+9  | Bb13sus(b9)  # from the symbol: sus b9
+10 | F6/Eb        # a non-tonic major chord: Lydian
+10 | Abm7/Eb      # a borrowed minor chord: Dorian, its own key
+11 | F6/Eb        # a non-tonic major chord: Lydian
+11 | Db9sus4      # static sus: Mixolydian
 @ending 1 11
-12 | F6/Eb      # a non-tonic major chord: Lydian
-12 | Db9sus4    # static sus: Mixolydian
-12 | A7b5       # V7/vii in Eb: 9, #11 and 13 from the symbol
+12 | F6/Eb        # a non-tonic major chord: Lydian
+12 | Db9sus4      # static sus: Mixolydian
+12 | A7b5         # V7/vii in Eb: 9, #11 and 13 from the symbol
 @ending 2 12
 
 section: B
 @segno 1
-1  | Dm7b5      # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
-1  | G7#5       # V7/vi in Eb: b9 and b13 are in the key, the #11 from the symbol
-2  | Cm11       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-# book: Cmi7(add 11)
-2  | Cm7/Bb     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+1  | Dm7b5        # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+1  | G7#5         # V7/vi in Eb: b9 and b13 are in the key, the #11 from the symbol
+2  | Cm7(add11)   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+2  | Cm7/Bb       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 @key 3 G
 # area: G major (B 3–8)
-3  | Am7b5      # iiø7 of G: Locrian, the key's own notes (its ♭2 is a passing note)
+3  | Am7b5        # iiø7 of G: Locrian, the key's own notes (its ♭2 is a passing note)
 # book: Ami7(b5 add 11)
-3  | D7alt      # from the symbol: altered
-4  | GMaj7      # tonic: the 4th is in the key
-5  | F#m7b5     # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
-5  | B7#5       # V7/vi in G: b9 and b13 are in the key, the #11 from the symbol
-6  | Em11       # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-# book: Emi7(add 11)
-6  | Em7/D      # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-7  | F9sus4     # ♭VII7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-7  | F13        # extended dominant: V7 of Bb9sus4
-8  | Bb9sus4    # static sus: Mixolydian
-8  | Bb7sus4b9  # from the symbol: sus b9
+3  | D7alt        # from the symbol: altered
+4  | GMaj7        # tonic: the 4th is in the key
+5  | F#m7b5       # iiø7 of E minor: Locrian, the key's own notes (its ♭2 is a passing note)
+5  | B7#5         # V7/vi in G: b9 and b13 are in the key, the #11 from the symbol
+6  | Em7(add11)   # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+6  | Em7/D        # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+7  | F9sus4       # ♭VII7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+7  | F13          # extended dominant: V7 of Bb9sus4
+8  | Bb9sus4      # static sus: Mixolydian
+8  | Bb7sus4b9    # from the symbol: sus b9
 
 section: C
 key: Eb
 bars: 16
 # book: Bb13sus(b9); "end solo" here on the D.S.
 # area: Eb major (C 1 – Coda 8)
-1  | EbMaj7     # tonic: the 4th is in the key
-1  | Fm7        # ii: Dorian, the key’s own notes
-1  | Gm7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-1  | AbMaj7     # IV: the #4 is the key’s 7th
-2  | Db9sus4    # ♭VII7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-2  | Db13       # ♭VII7 from the parallel minor: Lydian Dominant
-3  | Gm7        # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-3  | Cm7        # ii of F9sus4: Dorian
-4  | F9sus4     # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-4  | F13        # extended dominant: V7 of Bb9sus4
-5  | Bb9sus4    # static sus: Mixolydian
-5  | Bb/Ab      # V without its 7th: Mixolydian, the key’s own notes
-6  | G13        # III7 in Eb, not resolving: the b9 is in the key, the 13 from the symbol
-6  | G7#5       # extended dominant: V7 of C9sus4; #11 and b13 from the symbol
-7  | C9sus4     # VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-7  | C7#5#9     # extended dominant: V7 of F9sus4; b9, #9, #11 and b13 from the symbol
-8  | F9sus4     # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-8  | F13        # extended dominant: V7 of Bb9sus4
-9  | Bb9sus4    # static sus: Mixolydian
-9  | Bb7sus4b9  # from the symbol: sus b9
+1  | EbMaj7       # tonic: the 4th is in the key
+1  | Fm7          # ii: Dorian, the key’s own notes
+1  | Gm7          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+1  | AbMaj7       # IV: the #4 is the key’s 7th
+2  | Db9sus4      # ♭VII7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+2  | Db13         # ♭VII7 from the parallel minor: Lydian Dominant
+3  | Gm7          # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+3  | Cm7          # ii of F9sus4: Dorian
+4  | F9sus4       # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+4  | F13          # extended dominant: V7 of Bb9sus4
+5  | Bb9sus4      # static sus: Mixolydian
+5  | Bb/Ab        # V without its 7th: Mixolydian, the key’s own notes
+6  | G13          # III7 in Eb, not resolving: the b9 is in the key, the 13 from the symbol
+6  | G7#5         # extended dominant: V7 of C9sus4; #11 and b13 from the symbol
+7  | C9sus4       # VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+7  | C7#5#9       # extended dominant: V7 of F9sus4; b9, #9, #11 and b13 from the symbol
+8  | F9sus4       # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+8  | F13          # extended dominant: V7 of Bb9sus4
+9  | Bb9sus4      # static sus: Mixolydian
+9  | Bb7sus4b9    # from the symbol: sus b9
 @coda 9
-10 | F6/Eb      # a non-tonic major chord: Lydian
-10 | Abm7/Eb    # a borrowed minor chord: Dorian, its own key
-11 | F6/Eb      # a non-tonic major chord: Lydian
-11 | Db9sus4    # static sus: Mixolydian
-12 | F6/Eb      # a non-tonic major chord: Lydian
-12 | Abm7/Eb    # a borrowed minor chord: Dorian, its own key
-13 | F6/Eb      # a non-tonic major chord: Lydian
-13 | Db9sus4    # static sus: Mixolydian
-13 | A7b5       # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+10 | F6/Eb        # a non-tonic major chord: Lydian
+10 | Abm7/Eb      # a borrowed minor chord: Dorian, its own key
+11 | F6/Eb        # a non-tonic major chord: Lydian
+11 | Db9sus4      # static sus: Mixolydian
+12 | F6/Eb        # a non-tonic major chord: Lydian
+12 | Abm7/Eb      # a borrowed minor chord: Dorian, its own key
+13 | F6/Eb        # a non-tonic major chord: Lydian
+13 | Db9sus4      # static sus: Mixolydian
+13 | A7b5         # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
 @nav 13 D.S. al Coda
 
 section: Coda
 key: Eb
 @coda 1
-1  | F6/Eb      # a non-tonic major chord: Lydian
-1  | Db9sus4    # static sus: Mixolydian
-2  | C9sus4     # VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-2  | C7b9#11    # extended dominant: V7 of F9sus4; b9 and #11 from the symbol
+1  | F6/Eb        # a non-tonic major chord: Lydian
+1  | Db9sus4      # static sus: Mixolydian
+2  | C9sus4       # VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+2  | C7b9#11      # extended dominant: V7 of F9sus4; b9 and #11 from the symbol
 # book: C7(#11 b9), molto rit.
-3  | F9sus4     # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-3  | F13        # extended dominant: V7 of Bb9sus4
-4  | Bb9sus4    # static sus: Mixolydian
-4  | Bb7sus4b9  # from the symbol: sus b9
-5  | D7#5#9     # VII7 in Eb, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
+3  | F9sus4       # II7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
+3  | F13          # extended dominant: V7 of Bb9sus4
+4  | Bb9sus4      # static sus: Mixolydian
+4  | Bb7sus4b9    # from the symbol: sus b9
+5  | D7#5#9       # VII7 in Eb, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
 # a tempo
-6  | F6/Eb      # a non-tonic major chord: Lydian
+6  | F6/Eb        # a non-tonic major chord: Lydian
 # bars 7–8: repeated vamp (tenor solo), vamp, solo and fade
-7  | D7#5#9     # VII7 in Eb, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
-8  | F6/Eb      # a non-tonic major chord: Lydian
+7  | D7#5#9       # VII7 in Eb, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol
+8  | F6/Eb        # a non-tonic major chord: Lydian

@@ -20,8 +20,7 @@ section: A
 # book: FMa13
 2  | Em11        # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 3  | Dm11        # ii of the ii–V to C
-3  | G9sus4      # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
-# book: G13sus
+3  | G13sus      # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 3  | CMaj9       # IV: the #4 is the key’s 7th
 # book: CMa13
 4  | EbMaj9#11   # from the symbol: #11
@@ -43,8 +42,7 @@ section: A
 
 section: B
 1  | E7alt       # from the symbol: altered
-2  | A9sus4      # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-# book: A13sus
+2  | A13sus      # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 # area: D minor (B 2 – C 1)
 2  | A7b9b5      # V7 of D minor: the b9 is in the key, #11 and 13 from the symbol
 3  | Dm11        # tonic minor: Dorian by convention
@@ -94,8 +92,7 @@ section: D
 # book: FMa13
 2  | Em11        # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
 3  | Dm11        # ii of the ii–V to C
-3  | G9sus4      # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
-# book: G13sus
+3  | G13sus      # V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here
 3  | CMaj9       # IV: the #4 is the key’s 7th
 # book: CMa13
 4  | EbMaj9#11   # from the symbol: #11
@@ -146,8 +143,7 @@ section: E
 section: F
 # F: Swing (in 2)
 1  | E7alt       # from the symbol: altered
-3  | A9sus4      # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-# book: A13sus
+3  | A13sus      # V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 # area: D minor (F 4 – G 1)
 4  | A7b9b5      # V7 of D minor: the b9 is in the key, #11 and 13 from the symbol
 5  | Dm11        # tonic minor: Dorian by convention

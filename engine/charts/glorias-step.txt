@@ -32,8 +32,7 @@ section: B
 bars: 10
 1  | Em7      # a borrowed minor chord: Dorian, its own key
 2  | FMaj7    # a non-tonic major chord: Lydian
-3  | Am11     # a borrowed minor chord: Dorian, its own key
-# book: Am13
+3  | Am13     # a borrowed minor chord: Dorian, its own key
 4  | Em7b5    # viiø7 in F minor: Locrian, its own mode (the chord is outside the key)
 5  | Gm7b5    # iiø7 in F minor: Locrian, the key's own notes (its ♭2 is a passing note)
 6  | Dm7b5    # viø7 in F minor: Locrian, its own mode (the chord is outside the key)

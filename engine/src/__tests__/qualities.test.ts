@@ -3,9 +3,10 @@ import { describe, expect, it } from 'vitest'
 import { analyse } from '../analysis'
 import { parseChart } from '../chart'
 import { enharmonics, type Spelled } from '../pitch'
-import { baseQuality, defaultScale, defaultScaleOrNull, QUALITY_NAMES, resolveQuality } from '../qualities'
+import { baseQuality, CHORD_TONES, defaultScale, defaultScaleOrNull, QUALITY_NAMES, resolveQuality } from '../qualities'
 import { parseScale, sameScale, samePitches, type ScaleKey, SCALES, spellFrom } from '../scales'
 import { isSyncCopy } from '../util'
+import raw from '../../chord_scales.json'
 
 describe('defaultScaleOrNull', () => {
   it('is defaultScale, but returns null instead of throwing on an unparseable chord', () => {
@@ -58,6 +59,49 @@ describe('qualities', () => {
       'Maj7', '7sus4', 'Maj7', 'm7', 'Maj7', 'm7b5', '7', 'Maj7', 'm7', null, 'maj', null,
     ])
     expect(['Maj7#11', 'Maj7#5', 'Δ+', 'Maj9#11'].map(baseQuality)).toEqual(['Maj7#11', 'Maj7#5', 'Maj7#5', 'Maj7#11']) // their own qualities
+  })
+
+  it('reads the New Real Book’s symbols (#217): 13sus, m13, add9, m7add11', () => {
+    expect(['13sus(b9)', '13susb9'].map(baseQuality)).toEqual(['7sus4b9', '7sus4b9'])
+    expect(['13sus', '13sus4', 'm13', '-13', 'mi13', 'add9', '(add9)', 'madd9', 'm(add9)', 'm7add11', 'm7(add11)', 'mi7(add11)'].map(baseQuality)).toEqual([
+      '7sus4', '7sus4', 'm7', 'm7', 'm7', 'maj', 'maj', 'm', 'm', 'm7', 'm7', 'm7',
+    ])
+  })
+
+  it('reads an augmented triad as its own chord: Whole Tone, or Lydian Augmented (#217)', () => {
+    expect(['+', 'aug', '(#5)'].map(baseQuality)).toEqual(['aug', 'aug', 'aug'])
+    expect(resolveQuality('B+')?.options.map((o) => [o.scale, o.default])).toEqual([['B Whole Tone', true], ['B Lydian Augmented', false]])
+    expect(CHORD_TONES.aug).toEqual(['1', '3', '#5'])
+    const scaleOf = (chord: string) => analyse(parseChart(`key: C\n\nsection: A\n1 | C\n2 | ${chord}\n3 | F`).value).rows[1]?.scale
+    expect(['C+', 'Caug'].map(scaleOf)).toEqual(['C Whole Tone', 'C Whole Tone'])
+    expect(analyse(parseChart('key: C\n\nsection: A\n1 | C\n2 | E+\n3 | Am').value).rows[1]?.numeral).toBe('III+')
+  })
+
+  it('reads a stack of alterations in any order, in or out of parentheses (#217)', () => {
+    expect(['7b9b5', '7b5b9', '7(b9 b5)', '7(b5,b9)'].map(baseQuality)).toEqual(['7b9', '7b9', '7b9', '7b9'])
+    expect(['7#5#9', '7#9#5', '7(#9 #5)'].map(baseQuality)).toEqual(['7alt', '7alt', '7alt'])
+    expect(['7b13b9', '7(b13, b9)'].map(baseQuality)).toEqual(['7b9b13', '7b9b13'])
+    expect(['Maj7#11#9', 'Maj7#9#11', 'm7b5b9', '9#11b13'].map(baseQuality)).toEqual(['Maj7#11', 'Maj7#11', 'm7b5', '7#11']) // the most alterations a quality names
+    const scaleOf = (dominant: string) =>
+      analyse(parseChart(`key: Bb\n\nsection: A\n1 | Cm7\n2 | ${dominant}\n3 | BbMaj7`).value).rows[1]?.scale
+    expect(['F7b9b5', 'F7b5b9', 'F7(b9 b5)'].map(scaleOf)).toEqual(Array(3).fill('F Half-Whole Diminished'))
+  })
+
+  it('reads a triad with alterations in parentheses as the triad (#217)', () => {
+    expect(['(#11)', 'm(#11)', '#11', 'b5'].map(baseQuality)).toEqual(['maj', 'm', null, null])
+    const scaleOf = (tonic: string) => analyse(parseChart(`key: Bb\n\nsection: A\n1 | Cm7\n2 | F7\n3 | ${tonic}`).value).rows[2]?.scale
+    expect(['Bb(#11)', 'Bb(#11)/D'].map(scaleOf)).toEqual(['Bb Lydian', 'Bb Lydian'])
+    // a #11 the other rules already give keeps their reason (♭VII borrowed from C minor is Lydian)
+    const row = analyse(parseChart('key: C\n\nsection: A\n1 | Bb(#11)/D\n2 | CMaj7/D').value).rows[0]
+    expect(row?.scale).toBe('Bb Lydian')
+    expect(row?.rule).not.toBe('M1')
+  })
+
+  it('reads no two symbols as different qualities once their alterations are put in order', () => {
+    const qualities = new Map<string, string>()
+    for (const q of QUALITY_NAMES) expect(baseQuality(q)).toBe(q)
+    for (const [q, names] of Object.entries(raw.quality_aliases)) for (const n of names) qualities.set(n, q)
+    for (const [n, q] of qualities) expect(baseQuality(n), n).toBe(q)
   })
 
   it('pairs Spanish Phrygian with dominant and sus chords, and reads sus b9 as its own chord', () => {

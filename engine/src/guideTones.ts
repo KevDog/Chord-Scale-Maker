@@ -25,6 +25,7 @@ const TONES: Readonly<Record<string, readonly [string, string]>> = {
   Maj7: ['3', '7'],
   'Maj7#11': ['3', '7'],
   'Maj7#5': ['3', '7'],
+  aug: ['3', '#5'], // the #5 is the tone that moves (C+ -> F: G# -> A)
   '6': ['3', '6'],
   m7: ['b3', 'b7'],
   m6: ['b3', '6'],

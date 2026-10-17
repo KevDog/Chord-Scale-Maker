@@ -19,10 +19,25 @@ type QualityData = Readonly<{
 
 const DATA: QualityData = raw
 
-/** chord-symbol quality text ("-7", "m7", "min7") -> canonical quality ("m7") */
+/** a tension's place in a stack: 9, 11, 13, the 5th, then any other; a flat before a sharp */
+const tensionRank = (t: string): number => {
+  const place = [9, 11, 13, 5].indexOf(Number(t.slice(1)))
+  return (place < 0 ? 4 : place) * 2 + (t[0] === '#' ? 1 : 0)
+}
+const ALTERATION = /[b#]\d{1,2}/g
+/**
+ * a quality text with its alterations in one order, out of parentheses ("7b5b9", "7(b9 b5)" -> "7b9b5"), so a stack
+ * reads the same however it's written; natural tensions keep their parentheses ("7(13)": not 7 + 13)
+ */
+function inOrder(text: string): string {
+  const sorted = (run: string) => (run.match(ALTERATION) ?? []).sort((a, b) => tensionRank(a) - tensionRank(b)).join('')
+  return text.replace(/\(((?:[b#]\d{1,2}[ ,]*)+)\)/g, (_, run: string) => sorted(run)).replace(/(?:[b#]\d{1,2})+/g, sorted)
+}
+
+/** chord-symbol quality text ("-7", "m7", "min7") -> canonical quality ("m7"), keyed by inOrder */
 const LOOKUP: ReadonlyMap<string, string> = new Map([
-  ...Object.keys(DATA.qualities).map((q) => [q, q] as const),
-  ...Object.entries(DATA.quality_aliases).flatMap(([q, names]) => names.map((n) => [n, q] as const)),
+  ...Object.keys(DATA.qualities).map((q) => [inOrder(q), q] as const),
+  ...Object.entries(DATA.quality_aliases).flatMap(([q, names]) => names.map((n) => [inOrder(n), q] as const)),
 ])
 
 /**
@@ -47,7 +62,7 @@ function slashReading(quality: string, root: Spelled, bass: Spelled | undefined)
  */
 export function resolveQuality(chord: string): QualityMatch | null {
   const c = parseChord(chord)
-  const quality = LOOKUP.get(c.quality)
+  const quality = LOOKUP.get(inOrder(c.quality))
   if (quality === undefined) return null
   const reading = slashReading(quality, c.root, c.bass)
   const options = (DATA.qualities[reading.quality] ?? []).map((opt): ScaleOption => {
@@ -65,17 +80,32 @@ export function resolveQuality(chord: string): QualityMatch | null {
   return { quality, options: options.filter((o, i) => options.findIndex((x) => x.scale === o.scale) === i) }
 }
 
+/** natural tensions only in parentheses: M9 is not M + 9 */
+const ALTERATIONS = /(?:[b#]\d{1,2}|\((?:[b#]?\d{1,2},?)+\))+$/
+type Stemmed = Readonly<{ stem: string; alts: readonly string[]; quality: string }>
+/** an inOrder text's quality before its alterations, and the alterations ("7b9b5" -> "7", [b9, b5]) */
+function split(text: string): Readonly<{ stem: string; alts: readonly string[] }> {
+  const tail = ALTERATIONS.exec(text)?.[0] ?? ''
+  return { stem: text.slice(0, text.length - tail.length), alts: tail.match(ALTERATION) ?? [] }
+}
+const STEMMED: readonly Stemmed[] = [...LOOKUP].map(([k, quality]) => ({ ...split(k), quality }))
+
 /**
- * a quality symbol read as the known quality it starts with, when the rest is only alterations
- * ("Maj7#11" -> "Maj7", "7sus4#9" -> "7sus4"); exact names win. null if it doesn't fit ("m7#5#9x").
+ * a quality symbol read as the known quality whose alterations it has, in any order, when the rest is only alterations
+ * ("Maj7#9" -> "Maj7", "7sus4#9" -> "7sus4", "Maj7#9#11" -> "Maj7#11"); exact names win. null if it doesn't fit ("m7#5#9x").
  */
-export function baseQuality(text: string): string | null {
+export function baseQuality(written: string): string | null {
+  const text = inOrder(written)
   const exact = LOOKUP.get(text)
   if (exact !== undefined) return exact
-  const alterations = /^(?:[b#]\d{1,2}|\((?:[b#]?\d{1,2},?)+\))+$/ // natural tensions only in parentheses: M9 is not M + 9
-  const prefixes = [...LOOKUP.keys()].filter((k) => k && text.startsWith(k) && alterations.test(text.slice(k.length)))
-  const longest = prefixes.sort((a, b) => b.length - a.length)[0]
-  return longest === undefined ? null : (LOOKUP.get(longest) ?? null)
+  const { stem, alts } = split(text)
+  // a triad takes alterations only in parentheses: "(#11)" is a triad with a #11, "b5" is no chord
+  if (stem === '' && !written.startsWith('(')) return null
+  const fits = STEMMED.filter((k) => k.stem === stem && k.alts.every((a) => alts.includes(a)))
+  // the most alterations a quality names; of two, the one nearer the 9 (7b9b5: 7b9's Half-Whole, not 7b5's)
+  const rank = (k: Stemmed) => -k.alts.length * 100 + Math.min(99, ...k.alts.map(tensionRank))
+  const best = fits.sort((a, b) => rank(a) - rank(b))[0]
+  return best?.quality ?? null
 }
 
 /**
@@ -121,6 +151,7 @@ export const CHORD_TONES: Readonly<Record<string, readonly string[]>> = {
   Maj7: ['1', '3', '5', '7'],
   'Maj7#11': ['1', '3', '5', '7'],
   'Maj7#5': ['1', '3', '#5', '7'],
+  aug: ['1', '3', '#5'],
   '6': ['1', '3', '5', '6'],
   m7: ['1', 'b3', '5', 'b7'],
   m6: ['1', 'b3', '5', '6'],
