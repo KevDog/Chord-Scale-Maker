@@ -140,7 +140,7 @@
               <UiButton v-if="scaleLevel.level.value === 'random'" outline aria-label="Shuffle" title="Deal a new random scale for each chord" @click="scaleLevel.shuffle"><ArrowPathIcon data-slot="icon" /></UiButton>
             </template>
             <template v-if="!editor.fatal.value" #transpose>
-              <ChartTranspose :current="currentDoc" @update:doc="editor.setDoc" @transposed="transposed = $event" />
+              <ChartTranspose :current="currentDoc" @update:doc="onTransposed" @transposed="transposed = $event" />
             </template>
             <!-- the actions: Edit, Share, Focus, Print (the view's one primary), the rest under More; on a phone (compact)
                  Edit, Share and Focus are in the Controls dialog -->
@@ -274,6 +274,7 @@ import {
   buildSheet,
   chartKeyOf,
   type ChartDoc,
+  chartMeta,
   type ChordAt,
   type ChordPreview,
   chordPositions,
@@ -326,6 +327,7 @@ import { type MoreAction, moreMenuItems } from '~/utils/moreMenu'
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { spellView } from '~/utils/scaleChoices'
 import { writeStored } from '~/utils/storage'
+import { type AnalyticsEvent, sendEvent, songOf } from '~/utils/analytics'
 
 /**
  * practiceKey: what practice selections are remembered under (a library slug, or mine:<id>); none for the visit only.
@@ -724,6 +726,7 @@ async function openShare(): Promise<void> {
   shareLink.value = null
   shareOpen.value = true
   shareLink.value = await shareUrl()
+  send({ name: 'Share created', data: { song: song() } })
 }
 
 /** the library chart's slug while the chart is that chart as published: a report names it by slug and bar, no share link */
@@ -778,8 +781,35 @@ function enterFocus(): void {
 
 function print(): void {
   editor.flush() // include anything typed in the last moment
+  send({ name: 'Printed', data: { sheet: sheet.value, song: song() } })
   nextTick(() => window.print())
 }
+
+/** a transposed library chart is no longer the one published: it's named as it was before */
+function onTransposed(doc: ChartDoc): void {
+  const was = song()
+  editor.setDoc(doc)
+  send({ name: 'Transposed', data: { song: was, to: chartMeta(doc).key } })
+}
+
+/** anonymous Web Analytics events (#149, off until on Pro): changes only, never on load; the chart by library slug or "own" */
+const eventsOn = useFeature('analyticsEvents')
+const song = (): string => songOf(props.saveTarget, editor.text.value, props.shared !== undefined)
+const send = (e: AnalyticsEvent): void => sendEvent(e, eventsOn)
+onMounted(() => {
+  if (props.shared) send({ name: 'Shared link opened', data: { song: song() } })
+})
+watch(sheet, (s) => send({ name: 'Sheet chosen', data: { sheet: s } }))
+// once per visit: a new chart remounts this view (the song page's editorKey), so flipping through parts counts once
+let instrumentSent = false
+watch(
+  () => prefs.instrument.value,
+  (i) => {
+    if (instrumentSent) return
+    instrumentSent = true
+    send({ name: 'Instrument chosen', data: { instrument: i } })
+  },
+)
 
 /** send the chart and its context to the contact form (via sessionStorage), pre-filled for a bug report */
 /** the rail's More menu: what this chart offers now */
