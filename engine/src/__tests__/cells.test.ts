@@ -122,6 +122,13 @@ describe('cells line', () => {
     const { bars } = cellsVoices([{ row: 0, chord: 'C7', start: 0, beats: 4 }], CONCERT, 4, null, line('1-2-3-5'))
     expect(noteNames(bars.get(0)).slice(0, 4)).toEqual(['C', 'E', 'G', 'Bb'])
   })
+  it('needs tones only for the cells a chord plays: over C minor pentatonic (no 9) 3rd to 5th’s B cell still plays', () => {
+    const cm = (start: number, beats: number): GuideInput => ({ row: 1, chord: 'Cm7', scale: 'C minor pentatonic', start, beats })
+    const two = cellsVoices([{ row: 0, chord: 'G7', scale: 'G Mixolydian', start: 0, beats: 2 }, cm(2, 2)], CONCERT, 4, null, line('3rd-5th'))
+    expect(noteNames(two.bars.get(0)).slice(4)).toEqual(['G', 'Eb', 'C', 'Bb']) // B: 5 3 1 7
+    const four = cellsVoices([cm(0, 4)], CONCERT, 4, null, line('3rd-5th'))
+    expect(noteNames(four.bars.get(0))).toEqual(['C', 'Eb', 'G', 'Bb', 'G', 'Eb', 'C', 'Bb']) // A (no 9): the arpeggio up from the root, then B
+  })
   it.each(['tenor-sax', 'trombone'] as const)('keeps %s inside its range', (inst) => {
     const part = partFor(inst)
     const r = rangeOf(part)

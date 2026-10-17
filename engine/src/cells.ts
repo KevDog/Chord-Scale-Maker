@@ -121,20 +121,31 @@ function placeCell(tones: readonly Spelled[], contour: Contour, range: Range, pr
   return [...options].sort((a, b) => cmp(key(a), key(b)))[0]?.midi ?? cellPitches(tones, contour, range.centre)
 }
 
-/** a chord's cells: A then B by the run's count, each read through the chord's scale; null if either has no tones */
+/**
+ * a chord's cells: A then B by the run's count, each read through the chord's scale; a slot whose cell has no tones
+ * plays the 7th chord arpeggio up from the root (with none, the other cell); null if neither cell has tones
+ */
 function cellsOf(part: Part, chord: GuideInput, id: CellId, range: Range): Cells | null {
   const [a, b] = pairOf(id)
   const ta = cellTones(part, chord.chord, chord.scale, a.degrees)
   const tb = cellTones(part, chord.chord, chord.scale, b.degrees)
-  if (!ta || !tb) return null
+  if (!ta && !tb) return null
+  const arpeggio = arpeggioCells(part, chord, 'up-root')
+  const fromB = ta?.length ?? 0
+  const fromArpeggio = fromB + (tb?.length ?? 0)
+  const own = (tones: readonly Spelled[], c: Cell, from: number, prev: number | null) => ({ order: tones.map((_, i) => i + from), up: true, midi: placeCell(tones, c.contour, range, prev) })
   return {
-    tones: [...ta, ...tb],
+    tones: [...(ta ?? []), ...(tb ?? []), ...(arpeggio?.tones ?? [])],
     carry: true,
     turn: 'chord',
-    next: (prev, count) => {
-      const [tones, cell, at] = count % 2 === 0 ? ([ta, a, 0] as const) : ([tb, b, ta.length] as const)
-      const midi = placeCell(tones, cell.contour, range, prev)
-      return { order: tones.map((_, i) => i + at), up: true, midi }
+    next: (prev, count, last, nth) => {
+      const [tones, c, from] = count % 2 === 0 ? ([ta, a, 0] as const) : ([tb, b, fromB] as const)
+      if (tones) return own(tones, c, from, prev)
+      if (arpeggio) {
+        const { order, up } = arpeggio.next(prev, count, last, nth)
+        return { order: order.map((i) => i + fromArpeggio), up }
+      }
+      return ta ? own(ta, a, 0, prev) : own(tb ?? [], b, fromB, prev)
     },
   }
 }
