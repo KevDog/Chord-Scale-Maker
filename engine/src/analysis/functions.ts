@@ -70,11 +70,13 @@ export const SUFFIXES: Readonly<Record<string, string>> = {
   '7sus': '7sus4',
   sus4: '7sus4',
   sus: '7sus4',
+  '+': '+',
+  aug: '+',
 }
 const SUFFIX = Object.keys(SUFFIXES)
   .filter(Boolean)
   .sort((a, b) => b.length - a.length)
-  .map((s) => s.replace(/[()]/g, '\\$&'))
+  .map((s) => s.replace(/[()+]/g, '\\$&'))
   .join('|')
 const FUNCTION_RE = new RegExp(`^(sub)?([b#]?)(${NUMERAL})(${SUFFIX})?(?:/([b#]?)(${NUMERAL}))?$`)
 
@@ -97,7 +99,7 @@ const degreeOf = (acc: string, numeral: string): Degree => {
 const HALFDIM: ReadonlySet<string> = new Set(['ø7', 'ø', 'm7b5', 'm7(b5)', '-7b5', '-7(b5)'])
 const DIM: ReadonlySet<string> = new Set(['o7', 'o', 'dim7'])
 const MINOR: ReadonlySet<string> = new Set(['(maj7)', 'mMaj7', 'm', 'm7', 'm6', '-', '-7', '-6', '-(maj7)', '-Maj7'])
-const MAJOR: ReadonlySet<string> = new Set(['maj7', 'Maj7', 'M7', 'maj', 'maj7#5'])
+const MAJOR: ReadonlySet<string> = new Set(['maj7', 'Maj7', 'M7', 'maj', 'maj7#5', '+', 'aug'])
 
 function familyOf(suffix: string, upper: boolean): Family {
   if (HALFDIM.has(suffix)) return 'halfdim'

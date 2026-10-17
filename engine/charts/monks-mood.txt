@@ -12,79 +12,72 @@ source:
 
 section: A
 # area: Db major (A 1–6)
-1  | Fm11       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# book: Fmi7(add 11)
-1  | Bb7b9#11   # back door bVII7 to CMaj9: b9, #11 and 13 from the symbol
-1  | CMaj9      # a non-tonic major chord: Lydian
+1  | Fm7(add11)      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+1  | Bb7b9#11        # back door bVII7 to CMaj9: b9, #11 and 13 from the symbol
+1  | CMaj9           # a non-tonic major chord: Lydian
 # bar 2: the book repeats (CMa9) in parentheses as a reminder; held
-3  | Dm7b5      # iiø7 of G13#11: Locrian, the key's own notes (its ♭2 is a passing note)
-3  | G13#11     # extended ii–V: a side-step, its own key: 9, #11 and 13 from the symbol
-4  | DbMaj7     # tonic: the 4th is in the key
-4  | C          # a non-tonic major chord: Lydian
-4  | Cb         # ♭VII, borrowed from Db minor: Lydian (its ♯11 is in the key)
-5  | Bb7        # tritone substitute: resolves down a half step to A7
-5  | A7         # ♭VI7 from the parallel minor: Lydian Dominant
-6  | E7b9       # tritone substitute: resolves down a half step to Eb7; b9 from the symbol
+3  | Dm7b5           # iiø7 of G13#11: Locrian, the key's own notes (its ♭2 is a passing note)
+3  | G13#11          # extended ii–V: a side-step, its own key: 9, #11 and 13 from the symbol
+4  | DbMaj7          # tonic: the 4th is in the key
+4  | C               # a non-tonic major chord: Lydian
+4  | Cb              # ♭VII, borrowed from Db minor: Lydian (its ♯11 is in the key)
+5  | Bb7             # tritone substitute: resolves down a half step to A7
+5  | A7              # ♭VI7 from the parallel minor: Lydian Dominant
+6  | E7b9            # tritone substitute: resolves down a half step to Eb7; b9 from the symbol
 # area: D minor (A 6–8)
-6  | Eb7        # tritone substitute: resolves down a half step to Dm11
-7  | Dm11       # tonic minor: Dorian by convention
-# book: Dmi7(add 11)
-7  | E9sus4     # static sus: Mixolydian
-8  | Dm11       # tonic minor: Dorian by convention
-# book: Dmi7(add 11)
-8  | Bb7b9#11   # bVI7 in D minor, not resolving: the #11 is in the key, the b9 from the symbol
+6  | Eb7             # tritone substitute: resolves down a half step to Dm7(add11)
+7  | Dm7(add11)      # tonic minor: Dorian by convention
+7  | E9sus4          # static sus: Mixolydian
+8  | Dm7(add11)      # tonic minor: Dorian by convention
+8  | Bb7b9#11        # bVI7 in D minor, not resolving: the #11 is in the key, the b9 from the symbol
 @ending 1 7 8
 @key 9 Db
 # area: Db major (A 9 – B 1)
-9  | Ab7b5      # tritone substitute: resolves down a half step to G13b5
-9  | G13b5      # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-10 | DbMaj7#11  # from the symbol: #11
+9  | Ab7b5           # tritone substitute: resolves down a half step to G13b5
+9  | G13b5           # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+10 | DbMaj7#11       # from the symbol: #11
 @ending 2 9 10
 
 section: B
 key: Db
-1  | Bb/C       # a non-tonic major chord: Lydian
-1  | A/C        # ♭VI, borrowed from Db minor: Lydian (its ♯11 is in the key)
+1  | Bb/C            # a non-tonic major chord: Lydian
+1  | A/C             # ♭VI, borrowed from Db minor: Lydian (its ♯11 is in the key)
 @key 2 E
 # area: E major (B 2–4)
-2  | Bb/C       # a non-tonic major chord: Lydian
-2  | F#m7       # ii of the ii–V to E
+2  | Bb/C            # a non-tonic major chord: Lydian
+2  | F#m7            # ii of the ii–V to E
 3  | F#m7
-3  | B13b9      # V7 of E: the b9 from the symbol
-4  | E6         # tonic: the 4th is in the key
+3  | B13b9           # V7 of E: the b9 from the symbol
+4  | E6              # tonic: the 4th is in the key
 @key 5 Db
 # area: Db major (B 5 – C 8)
-5  | Am7b5      # bviø7 in Db: Locrian, its own mode (the chord is outside the key)
-5  | Ab9        # tritone substitute: resolves down a half step to G7sus4
-5  | G7sus4     # static sus: Mixolydian
-5  | G#dim7     # passing diminished: E7♭9 without its E, the Am7b5's dominant; not functioning diatonically: the symmetric scale
-6  | Am7b5      # bviø7 in Db: Locrian, its own mode (the chord is outside the key)
-6  | F13#11     # III7 in Db, not resolving: 9, #11 and 13 from the symbol
-7  | Fm11       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# book: Fmi7(add 11)
-7  | Ebm11/Bb   # ii: Dorian, the key’s own notes
-# book: Ebmi7(add 11)/Bb
-8  | Dm11       # a borrowed minor chord: Dorian, its own key
-# book: Dmi7(add 11)
-8  | Bb7b9#11   # VI7 in Db, not resolving: b9, #11 and 13 from the symbol
+5  | Am7b5           # bviø7 in Db: Locrian, its own mode (the chord is outside the key)
+5  | Ab9             # tritone substitute: resolves down a half step to G7sus4
+5  | G7sus4          # static sus: Mixolydian
+5  | G#dim7          # passing diminished: E7♭9 without its E, the Am7b5's dominant; not functioning diatonically: the symmetric scale
+6  | Am7b5           # bviø7 in Db: Locrian, its own mode (the chord is outside the key)
+6  | F13#11          # III7 in Db, not resolving: 9, #11 and 13 from the symbol
+7  | Fm7(add11)      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+7  | Ebm7(add11)/Bb  # ii: Dorian, the key’s own notes
+8  | Dm7(add11)      # a borrowed minor chord: Dorian, its own key
+8  | Bb7b9#11        # VI7 in Db, not resolving: b9, #11 and 13 from the symbol
 
 section: C
 key: Db
 bars: 10
-1  | Fm11       # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
-# book: Fmi7(add 11)
-1  | Bb7b9#11   # back door bVII7 to CMaj9: b9, #11 and 13 from the symbol
-1  | CMaj9      # a non-tonic major chord: Lydian
+1  | Fm7(add11)      # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+1  | Bb7b9#11        # back door bVII7 to CMaj9: b9, #11 and 13 from the symbol
+1  | CMaj9           # a non-tonic major chord: Lydian
 # bar 2: (CMa9) repeated in parentheses as a reminder; held
-3  | Dm7b5      # iiø7 of G13#11: Locrian, the key's own notes (its ♭2 is a passing note)
-3  | G13#11     # extended ii–V: a side-step, its own key: 9, #11 and 13 from the symbol
-4  | DbMaj7     # tonic: the 4th is in the key
-4  | C          # a non-tonic major chord: Lydian
-4  | Cb         # ♭VII, borrowed from Db minor: Lydian (its ♯11 is in the key)
-5  | Bb7        # tritone substitute: resolves down a half step to A7
-5  | A7         # ♭VI7 from the parallel minor: Lydian Dominant
-6  | E7b9       # tritone substitute: resolves down a half step to Eb7; b9 from the symbol
-6  | Eb7        # V7 of V7: the dominant of the dominant: natural tensions
-7  | Ab7b5      # tritone substitute: resolves down a half step to G13b5
-7  | G13b5      # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-8  | DbMaj7#11  # from the symbol: #11
+3  | Dm7b5           # iiø7 of G13#11: Locrian, the key's own notes (its ♭2 is a passing note)
+3  | G13#11          # extended ii–V: a side-step, its own key: 9, #11 and 13 from the symbol
+4  | DbMaj7          # tonic: the 4th is in the key
+4  | C               # a non-tonic major chord: Lydian
+4  | Cb              # ♭VII, borrowed from Db minor: Lydian (its ♯11 is in the key)
+5  | Bb7             # tritone substitute: resolves down a half step to A7
+5  | A7              # ♭VI7 from the parallel minor: Lydian Dominant
+6  | E7b9            # tritone substitute: resolves down a half step to Eb7; b9 from the symbol
+6  | Eb7             # V7 of V7: the dominant of the dominant: natural tensions
+7  | Ab7b5           # tritone substitute: resolves down a half step to G13b5
+7  | G13b5           # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
+8  | DbMaj7#11       # from the symbol: #11

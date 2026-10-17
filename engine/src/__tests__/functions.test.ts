@@ -28,6 +28,11 @@ const libraryRows = () =>
     .flatMap((f) => analyse(parseChart(readFileSync(new URL(f, LIBRARY), 'utf8')).value).rows.map((r) => ({ f, r })))
 
 describe('parseFunction', () => {
+  it('reads an augmented triad as V+ (#217)', () => {
+    expect(['V+', 'Vaug', 'bIII+'].map((t) => ((f) => (typeof f === 'string' ? f : [f.text, f.family]))(parseFunction(t)))).toEqual([
+      ['V+', 'major'], ['V+', 'major'], ['♭III+', 'major'],
+    ])
+  })
   it("reads the Changes sheet's numerals and their ASCII spellings into one form", () => {
     const cases: [string, string][] = [
       ['V7/ii', 'V7/ii'],

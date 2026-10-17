@@ -13,8 +13,7 @@ source:
 
 section: Intro
 1  | F13     # I7 in F, not resolving: natural tensions
-2  | F9sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-# book: F13sus
+2  | F13sus  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 3  | F13     # I7 in F, not resolving: natural tensions
 4  | F9sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 
@@ -31,11 +30,9 @@ section: A
 13 | C7      # extended dominant: V7 of F7
 15 | F7      # static dominant: its own mode
 19 | F13     # I7 in F, not resolving: natural tensions
-20 | F9sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-# book: F13sus
+20 | F13sus  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 21 | F13     # I7 in F, not resolving: natural tensions
-22 | F9sus4  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
-# book: F13sus
+22 | F13sus  # I7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 @segno 1
 @coda 21
 
@@ -54,5 +51,4 @@ section: Coda
 bars: 4
 # Coda: vamp, solo and fade
 1  | F13     # I7 in F, not resolving: natural tensions
-2  | F9sus4  # static sus: Mixolydian
-# book: F13sus
+2  | F13sus  # static sus: Mixolydian

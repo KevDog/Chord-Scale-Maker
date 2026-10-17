@@ -4,7 +4,7 @@ style: Medium swing
 key: C
 form: A, 16 bars
 source: 
-# analysis: 2026-10-12, rules v1; C
+# analysis: 2026-10-17, rules v1; C
 # book: the 16 bars are in repeats; to the coda after bar 12 on the last time; the coda is played freely
 # book: (add 9) chords are written as triads here; the augmented triads in bars 2–3 as CMaj7#5 and C9#5
 
@@ -13,16 +13,13 @@ source:
 section: A
 1  | C69         # tonic: the 4th is in the key
 2  | CMaj7#5     # from the symbol: #5
-# book: C+(add 9); no augmented triad in the library: C E G# D read as a Lydian augmented chord
-3  | C9#5        # I7 in C, not resolving: #11 and b13 from the symbol
-# book: F#+/C (F# A# D over C, the whole-tone sound); no augmented triad in the library
+# book: C+(add 9): C E G# D, read as a Lydian augmented chord
+3  | F#+/C       # from the symbol: augmented
 4  | BbMaj7/C    # ♭VIImaj7, borrowed from C minor: Lydian (its ♯11 is in the key)
 5  | Fm7/C       # a borrowed minor chord: Dorian, its own key
-7  | Cm          # a borrowed minor chord: Dorian, its own key
-# book: Cmi(add 9)
+7  | Cm(add9)    # a borrowed minor chord: Dorian, its own key
 9  | FmMaj7/C    # from the symbol: minor-major 7th
-10 | Cm          # a borrowed minor chord: Dorian, its own key
-# book: Cmi(add 9)
+10 | Cm(add9)    # a borrowed minor chord: Dorian, its own key
 11 | Fm7/C       # a borrowed minor chord: Dorian, its own key
 12 | BbMaj7#5/C  # from the symbol: #5
 @coda 12

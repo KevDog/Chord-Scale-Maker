@@ -53,15 +53,12 @@ section: A
 22 | C#m11     # a borrowed minor chord: Dorian, its own key
 22 | C#dim7    # passing diminished: C7♭9 without its C, the F7#5#9's dominant; not functioning diatonically: the symmetric scale
 23 | Cm7b5     # iiø7 of F7#5#9: Locrian, the key's own notes (its ♭2 is a passing note)
-24 | F7#5#9    # extended dominant: V7 of Bb9sus4; b9, #9, #11 and b13 from the symbol
-# book: Bb13sus
-25 | Bb9sus4   # static sus: Mixolydian
+24 | F7#5#9    # extended dominant: V7 of Bb13sus; b9, #9, #11 and b13 from the symbol
+25 | Bb13sus   # static sus: Mixolydian
 @nav 25 Fine
 # bars 26–28: piano fill back to the top (no D.C. printed); end at Fine
-# book: Ab13sus
-26 | Ab9sus4   # static sus: Mixolydian
-# book: Gb13sus
-27 | Gb9sus4   # static sus: Mixolydian
+26 | Ab13sus   # static sus: Mixolydian
+27 | Gb13sus   # static sus: Mixolydian
 # book: F13sus F13
 28 | F9sus4    # ♭VI7sus4 before its dominant: Mixolydian, the 4th is a chord tone here
 # area: Bb major (A 28)

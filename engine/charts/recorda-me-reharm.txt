@@ -14,11 +14,9 @@ source:
 
 section: A
 # area: A minor (A 1–9)
-1  | D9sus4    # static sus: Mixolydian
-# book: D13sus
+1  | D13sus    # static sus: Mixolydian
 3  | Am7       # tonic minor: Dorian by convention
-5  | F9sus4    # static sus: Mixolydian
-# book: F13sus
+5  | F13sus    # static sus: Mixolydian
 7  | Cm7       # a borrowed minor chord: Dorian, its own key
 # alt: bar 8 (F13)
 9  | BbMaj7    # a non-tonic major chord: Lydian

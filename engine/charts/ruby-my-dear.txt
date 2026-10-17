@@ -42,15 +42,12 @@ section: A
 6 | Bbm7         # a borrowed minor chord: Dorian, its own key
 6 | Bm7          # a borrowed minor chord: Dorian, its own key
 6 | Cm7          # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
-7 | Bbm11        # a borrowed minor chord: Dorian, its own key
-# book: Bbmi7(add 11)
-7 | A            # a non-tonic major chord: Lydian
-# book: A(add 9)
+7 | Bbm7(add11)  # a borrowed minor chord: Dorian, its own key
+7 | A(add9)      # a non-tonic major chord: Lydian
 8 | E7sus4       # static sus: Mixolydian
 8 | Bb7b5        # V7 in Eb, not resolving: the #11 from the symbol
 @ending 1 8
-9 | Bm11         # a borrowed minor chord: Dorian, its own key
-# book: Bmi7(add 11)
+9 | Bm7(add11)   # a borrowed minor chord: Dorian, its own key
 # area: A major (A 9 – B 4)
 9 | Bb7b5        # tritone substitute: resolves down a half step to AMaj7
 @ending 2 9

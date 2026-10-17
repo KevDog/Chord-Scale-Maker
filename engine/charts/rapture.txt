@@ -15,8 +15,7 @@ source:
 section: Intro
 bars: 4
 # area: F major (Intro 1 – B 7)
-1  | F        # tonic: the 4th is in the key
-# book: F(add 9)
+1  | F(add9)  # tonic: the 4th is in the key
 1  | E7sus4   # static sus: Mixolydian
 1  | CMaj7/D  # a non-tonic major chord: Lydian
 
@@ -24,8 +23,7 @@ section: A
 1  | DbMaj7   # ♭VImaj7, borrowed from F minor: Lydian (its ♯11 is in the key)
 @segno 1
 5  | FMaj7    # tonic: the 4th is in the key
-8  | F        # tonic: the 4th is in the key
-# book: F(add 9)
+8  | F(add9)  # tonic: the 4th is in the key
 8  | E7sus4   # static sus: Mixolydian
 8  | CMaj7/D  # a non-tonic major chord: Lydian
 # alt (solos): bar 8 (FMaj7)
@@ -39,9 +37,8 @@ section: B
 2  | D7#5#9   # extended dominant: each one falls a fifth into the next, on the way to F minor: the b13 is in the key, b9, #9 and #11 f…
 3  | G13b9    # V7 of V7: the dominant of the dominant, on the way to F minor: the b9 is in the key, the 13 from the symbol
 4  | C7#5#9   # V7 of F minor, the chain's last link: the b13 is in the key, b9, #9 and #11 from the symbol
-5  | Fm9      # ii of Bb9sus4: Dorian
-7  | Bb9sus4  # static sus: Mixolydian
-# book: Bb13sus
+5  | Fm9      # ii of Bb13sus: Dorian
+7  | Bb13sus  # static sus: Mixolydian
 # area: Eb major (B 9–13)
 9  | Fm9      # ii of the ii–V to Eb
 11 | Bb13b9   # V7 of Eb: the b9 from the symbol
@@ -54,8 +51,7 @@ section: B
 17 | C7b9#9   # V7 of F: b9, #9 and #11 from the symbol
 # bars 17–18: solo break
 18 | C7b9#9
-19 | F        # tonic: the 4th is in the key
-# book: F(add 9)
+19 | F(add9)  # tonic: the 4th is in the key
 19 | E7sus4   # static sus: Mixolydian
 19 | CMaj7/D  # a non-tonic major chord: Lydian
 @ending 1 18

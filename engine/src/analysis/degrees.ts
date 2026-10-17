@@ -19,6 +19,7 @@ export const SUFFIX: Readonly<Record<string, string>> = {
   Maj7: 'maj7',
   'Maj7#11': 'maj7',
   'Maj7#5': 'maj7♯5',
+  aug: '+',
   '6': '6',
   m: '',
   m7: '7',

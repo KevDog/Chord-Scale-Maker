@@ -6,7 +6,7 @@ key: Dm
 form: ABCD head + EFGH solos, 80 bars
 source: 
 context: modal
-# analysis: 2026-10-12, rules v1; D minor, modal
+# analysis: 2026-10-17, rules v1; D minor, modal
 
 # bar | chord
 # intro played 4 times (solo piano first; bass and drums added); the piano's voicings are marked (G(add9 sus)) and (A(add9 sus))
@@ -22,9 +22,8 @@ section: A
 bars: 20
 1  | BbMaj9#11  # from the symbol: #11
 2  | A9sus4     # static sus: Mixolydian
-# book: G13sus
-2  | G9sus4     # static sus: Mixolydian
-3  | G9sus4
+2  | G13sus     # static sus: Mixolydian
+3  | G9sus4     # static sus: Mixolydian
 4  | A9sus4     # static sus: Mixolydian
 5  | G9sus4     # static sus: Mixolydian
 6  | A9sus4     # static sus: Mixolydian
@@ -78,10 +77,8 @@ section: C
 
 section: D
 # D: double-time feel (piano solo)
-# book: Db13sus
-1  | Db9sus4    # static sus: Mixolydian
-# book: B13sus
-4  | B9sus4     # static sus: Mixolydian
+1  | Db13sus    # static sus: Mixolydian
+4  | B13sus     # static sus: Mixolydian
 5  | Db9sus4    # static sus: Mixolydian
 # bar 8: B13sus, then a solo break
 8  | B9sus4     # static sus: Mixolydian

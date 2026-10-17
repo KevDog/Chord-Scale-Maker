@@ -16,6 +16,7 @@ const FAMILY: Readonly<Record<string, Family>> = {
   Maj7: 'major',
   'Maj7#11': 'major',
   'Maj7#5': 'major',
+  aug: 'major',
   '6': 'major',
   m: 'minor',
   m7: 'minor',
