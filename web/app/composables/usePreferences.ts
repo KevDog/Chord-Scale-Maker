@@ -15,7 +15,7 @@ function storedRef<T>(key: string, parse: (raw: string) => T | undefined, fallba
 
 /** the preview's instrument, spelling (from the chart's key until another is picked) and interval labels, and whether the editor is shown, remembered in this browser (client-only) */
 export function usePreferences() {
-  const instrument = storedRef<InstrumentName>('csm-instrument', (s) => (isInstrumentName(s) ? s : undefined), 'concert')
+  const instrument = storedRef<InstrumentName>('csm-instrument', (s) => (s === 'concert' ? 'piano' : isInstrumentName(s) ? s : undefined), 'piano') // #332: 'concert', the retired choice, reads as piano
   const spell = storedRef<Spell>('csm-spell', (s) => (isSpell(s) ? s : undefined), 'key') // csm-start, the old note, is ignored
   const intervals = storedRef<boolean>('csm-intervals', (s) => s === 'on', true, (v) => (v ? 'on' : 'off')) // on until turned off: they show each note's job over the chord
   const showEditor = storedRef<boolean>('csm-editor', (s) => s === 'on', false, (v) => (v ? 'on' : 'off')) // the editor: hidden until shown, song-first
