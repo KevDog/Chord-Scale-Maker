@@ -94,6 +94,7 @@ exports[`exports the same names 1`] = `
   "chartKeyOf",
   "chartKind",
   "chartMeta",
+  "chartOutline",
   "chordCompletions",
   "chordPicksFrom",
   "chordPositions",

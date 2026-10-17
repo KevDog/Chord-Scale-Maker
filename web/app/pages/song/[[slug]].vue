@@ -29,6 +29,16 @@
           <UiHeading>{{ song.title }}</UiHeading>
           <UiText v-if="song.composer">{{ song.composer }}</UiText>
           <UiText>Loading the practice sheets…</UiText>
+          <!-- the changes in the prerendered page, readable without JavaScript (#319); the sheet replaces them -->
+          <div v-for="(s, i) in song.outline" :key="i" class="max-w-2xl pt-4">
+            <UiSubheading :level="2">{{ s.name }}</UiSubheading>
+            <UiText v-if="s.copyOf">As {{ s.copyOf }}</UiText>
+            <ol v-else :aria-label="`${s.name}, bar by bar`" class="mt-1 grid grid-cols-4 text-base/7 text-zinc-950 dark:text-white">
+              <li v-for="b in s.bars" :key="b.bar" class="flex gap-3 border-l border-zinc-950/20 px-2 dark:border-white/20">
+                <ChordSymbol v-for="(c, j) in b.chords" :key="j" :tokens="c" />
+              </li>
+            </ol>
+          </div>
         </div>
         <p v-else class="text-zinc-600 dark:text-zinc-400">Loading editor…</p>
       </template>

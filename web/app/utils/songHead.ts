@@ -1,10 +1,10 @@
-import { tuneDescription, tuneSummary } from '@chord-scale-maker/engine'
+import { chartOutline, type OutlineSection, tuneDescription, tuneSummary } from '@chord-scale-maker/engine'
 import { findChart } from './library'
 import { type PageHead, pageTitle, songPath, tuneName, tuneTitle } from './site'
 import { breadcrumbLd, jsonLd, tuneLd } from './structuredData'
 
-/** a library song's head (indexable: the one page per tune), its heading and what its sheet is, or null for any other /song address */
-export function songHead(slug: string): Readonly<{ head: PageHead; ld: string; title: string; composer: string; leadSheet: string }> | null {
+/** a library song's head (indexable: the one page per tune), its heading, its changes and what its sheet is, or null for any other /song address */
+export function songHead(slug: string): Readonly<{ head: PageHead; ld: string; title: string; composer: string; leadSheet: string; outline: readonly OutlineSection[] }> | null {
   const chart = findChart(slug)
   if (!chart) return null
   const summary = tuneSummary(chart.text)
@@ -22,5 +22,6 @@ export function songHead(slug: string): Readonly<{ head: PageHead; ld: string; t
     leadSheet:
       `${tuneName(summary)}${summary.aka.length ? `, also known as ${summary.aka.join(' or ')},` : ''} as a lead sheet gives it: the chord changes bar by bar, ` +
       'without the melody. The sheets add a scale, guide tones, arpeggios and pentatonics for every chord, written for your instrument.',
+    outline: chartOutline(chart.text),
   }
 }

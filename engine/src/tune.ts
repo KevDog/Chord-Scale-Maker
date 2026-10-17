@@ -1,4 +1,7 @@
+import { barView } from './bars'
 import { type ChartDoc, type ChartKind, chartAka, chartKind, keyLabel, metaValue, parseChart } from './chart'
+import { type ChordToken, chordTokensOrNull } from './chord'
+import { CONCERT } from './part'
 
 /**
  * What a song page shows (docs/superpowers/plans/2026-10-12-seo-discoverability.md): a chart's heading fields as
@@ -82,4 +85,24 @@ export function tuneAdvice(doc: ChartDoc): readonly string[] {
     !metaValue(doc, 'source') && 'no source: say where the chart came from, if a book or recording',
     !metaValue(doc, 'aka') && 'no aka: add the tune’s other common titles, if it has any',
   ].filter((g): g is string => !!g)
+}
+
+export type OutlineBar = Readonly<{ bar: number; chords: readonly (readonly ChordToken[])[] }>
+/** copyOf: the section a copy: repeats (its bars are that one's, so none are given) */
+export type OutlineSection = Readonly<{ name: string; copyOf: string | null; bars: readonly OutlineBar[] }>
+
+const HELD: readonly ChordToken[] = [{ kind: 'text', text: '%' }]
+
+/** a song page's chord changes, readable without the sheet (#319): concert pitch, a held bar as % */
+export function chartOutline(text: string): readonly OutlineSection[] {
+  return barView(parseChart(text).value).sections.map((s) => ({
+    name: s.name,
+    copyOf: s.copy?.of ?? null,
+    bars: s.copy
+      ? []
+      : s.bars.map((b) => ({
+          bar: b.bar,
+          chords: b.kind === 'held' ? [HELD] : b.chords.map((c) => chordTokensOrNull(CONCERT, c.chord) ?? [{ kind: 'text', text: c.chord }]),
+        })),
+  }))
 }

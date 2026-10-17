@@ -32,6 +32,14 @@ test.describe('without JavaScript', () => {
     const ld = JSON.parse((await page.locator('script[type="application/ld+json"]').last().textContent()) ?? '[]') as { '@type': string }[]
     expect(ld.map((d) => d['@type'])).toContain('MusicComposition')
   })
+
+  test('a song gives its chord changes bar by bar', async ({ page }) => {
+    await page.goto('/song/blue-trane')
+    const bars = page.getByRole('list', { name: 'A, bar by bar' }).getByRole('listitem')
+    await expect(bars).toHaveCount(12)
+    await expect(bars.first()).toHaveText('E♭7(♯9)')
+    await expect(bars.nth(1)).toHaveText('%')
+  })
 })
 
 test('/song itself, a new chart and a share link stay out of search; a query keeps the clean canonical', async ({ page, request }) => {
