@@ -5,7 +5,10 @@ style: Medium slow
 key: Gm
 form: A, 16 bars
 source: 
+recording: Richard Beirach; Elm; ECM; 1979
+youtube: cu6YUA7QxZk
 # analysis: 2026-10-17, rules v1; G minor
+# recording: recorded May 1979 (George Mraz, Jack DeJohnette), ECM 1142, the first recording of it (Wikipedia, MusicBrainz release group)
 
 # bar | chord
 

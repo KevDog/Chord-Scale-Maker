@@ -4,7 +4,10 @@ style: Blues
 key: F
 form: A, 12 bars
 source: Colorado Cookbook, p. 93
+recording: Fats Navarro; Fats Navarro Memorial Album; Blue Note; 1951
+youtube: qaVXfs_UHxM
 # analysis: 2026-10-11, rules v1; F, blues
+# recording: recorded 1947-09-26 by the Tadd Dameron Sextet with Fats Navarro, the first recording of it (master BN305-1), first issued on 78 as "The Squirrel" (Blue Note 540, with Our Delight), first LP 10" BLP 5004 (MusicBrainz 1951, jazzdisco 1952) (jazzdisco.org, MusicBrainz release group); video: The Complete Blue Note and Capitol Recordings, the same take (master, not the alternate)
 
 # bar | chord | scale
 

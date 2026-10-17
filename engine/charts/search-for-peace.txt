@@ -4,7 +4,10 @@ style: Medium ballad
 key: F
 form: AABC, 32 bars
 source: 
+recording: McCoy Tyner; The Real McCoy; Blue Note; 1967
+youtube: 9XVNzU9OqMc
 # analysis: 2026-10-12, rules v1; F
+# recording: recorded 1967-04-21, take 18, Blue Note BLP 4264, with Joe Henderson, Ron Carter, Elvin Jones (jazzdisco.org, MusicBrainz release group)
 
 # the book's Gm7(add11) is written Gm11
 # the chords in parentheses (G9) are not used during solos

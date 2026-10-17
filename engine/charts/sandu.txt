@@ -5,7 +5,10 @@ style: Blues
 key: Eb
 form: A, 12 bars
 source: Colorado Cookbook, p. 188
+recording: Clifford Brown & Max Roach; Study in Brown; EmArcy; 1955
+youtube: 0wpcrWCutFQ
 # analysis: 2026-10-11, rules v1; Eb, blues
+# recording: recorded 1955-02-25 at Capitol Studios, NYC (master 11368-4), the first recording of it, MG 36037 (jazzdisco.org, MusicBrainz release group, Wikipedia)
 
 # bar | chord | scale
 

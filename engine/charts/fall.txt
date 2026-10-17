@@ -5,7 +5,10 @@ style: Ballad
 key: Em
 form: A, 16 bars
 source: 
+recording: Miles Davis; Nefertiti; Columbia; 1968
+youtube: BmWX1erp_u4
 # analysis: 2026-10-17, rules v1; E minor
+# recording: recorded 1967-07-19 (Miles Davis Quintet, Shorter on tenor), the first recording of it, CS 9594, released March 1968 (jazzdisco.org, Wikipedia)
 
 # bar | chord
 
