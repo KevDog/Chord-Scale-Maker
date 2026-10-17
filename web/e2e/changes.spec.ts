@@ -240,12 +240,12 @@ test('7th Chords arpeggiates each chord: quarters for one a bar, eighths for two
   await expect(page.getByLabel('Arpeggio pattern')).toContainText('Down · root')
 })
 
-test('7th Chords in 3/4: six eighths for a bar of one chord', async ({ page }) => {
+test('7th Chords in 3/4: six eighths for a bar of one chord, turning back after the arpeggio', async ({ page }) => {
   await writeChart(page, 'title: W\nkey: C\ntime: 3/4\n\nsection: A\n1 | CMaj7\n2 | Dm7\n3 | G7\n4 | CMaj7\n') // a full line: a last chord holds through the empty bars after it
   const line = lines(page).first()
   await showArpeggios(page, 'Up · root')
   await arpeggiosDrawn(page)
-  await expect(line).toHaveAttribute('aria-label', /; 7th chords: C4 E4 G4 B4 C5 E5 \| D5 F5 A5 C6 D5 F5 \| /) // the pattern restarts to fill the bar, nearest the last note
+  await expect(line).toHaveAttribute('aria-label', /; 7th chords: C4 E4 G4 B4 G4 E4 \| D4 F4 A4 C5 A4 F4 \| /) // each next chord nearest the turn-back's last note
   await expect.poll(async () => (await drawn(line)).heads.length).toBe(4 * 6)
 })
 

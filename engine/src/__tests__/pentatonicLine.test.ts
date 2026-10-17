@@ -86,6 +86,9 @@ describe('pentatonic voices', () => {
     expect(pitches(bars.get(1))).toEqual(['g/4', 'b/4', 'd/5', 'f/5'])
     expect(pitches(voice(seq(['G7', 4]), roots(null), { arpeggio: 'down-root' }).bars.get(0))).toEqual(['f/5', 'd/5', 'b/4', 'g/4'])
   })
+  it('the 7th chord arpeggio turns back in a 3/4 bar, as on the 7th Chords line', () => {
+    expect(pitches(voice(seq(['G7', 3]), roots(null), {}, CONCERT, 3).bars.get(0))).toEqual(['g/4', 'b/4', 'd/5', 'f/5', 'd/5', 'b/4'])
+  })
   it('a chord with no pentatonic and no tones rests, and restarts the run near the centre', () => {
     const { bars, missing } = voice(seq(['Am7', 4], ['N.C.', 4], ['Am7', 4]), roots('A', null, 'A'))
     expect(bars.get(1)).toEqual([{ pitch: null, beat: 0, beats: 4, tie: false, tiedIn: false, accidental: null }])

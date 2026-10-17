@@ -159,18 +159,20 @@ const noTonesFor = (chord: string): string => `no chord tones for ${chord || 'an
 /**
  * a chord's cells: its tones, and the next cell's order (indexes into them) and direction, given the last note, the
  * run's count, the last cell's pitches and how many cells the chord has played; midi: its pitches where the cell placed
- * itself; carry: a cell the bar line cuts goes on into the chord's next bar (else it is dropped)
+ * itself; carry: a cell the bar line cuts goes on into the chord's next bar (else it is dropped); turn: slots too few
+ * for another whole cell turn back on the last one instead, from its second-to-last note (a 3/4 bar: 1 3 5 7 5 3, #348)
  */
 export type Cells = Readonly<{
   tones: readonly Spelled[]
   next: (prev: number | null, count: number, last: readonly number[] | null, nth: number) => Readonly<{ order: readonly number[]; up: boolean; midi?: readonly number[] }>
   carry?: boolean
+  turn?: boolean
 }>
 
 /** a chord's 7th chord arpeggio cells in a pattern; null if it has no tones */
 export function arpeggioCells(part: Part, chord: GuideInput, pattern: ArpeggioPattern): Cells | null {
   const tones = arpeggioTones(part, chord.chord, chord.scale)
-  return tones && { tones, next: (prev, count) => orderFor(pattern, tones, prev, count) }
+  return tones && { tones, next: (prev, count) => orderFor(pattern, tones, prev, count), turn: true }
 }
 
 type Segment = Readonly<{ chord: number; bar: number; beat: number; length: number }>
@@ -251,13 +253,22 @@ export function cellVoices(
       if (take < held.notes.length) carried = { ...held, notes: held.notes.slice(take) }
       else last = held.midi
     }
+    let whole: readonly NonNullable<GuideNote['pitch']>[] | null = null // this bar's last whole cell
     while (k < slots) {
+      if (c.turn && whole && slots - k < whole.length) {
+        // the turn-back: not an arpeggio of its own, so the count and the chord's cells stay
+        const back = whole.slice(0, -1).reverse().slice(0, slots - k)
+        play(back)
+        prev = back.at(-1)?.midi ?? prev
+        break
+      }
       const n = nth.get(s.chord) ?? 0
       const { order, up, midi: placed } = c.next(prev, count, last, n)
       const midi: readonly number[] = placed ?? place(order.map((i) => pcOf(t[i] ?? (t[0] as Spelled))), up, range, prev)
       const cell = order.map((i, j) => ({ ...(t[i] ?? (t[0] as Spelled)), midi: midi[j] ?? 0 }))
       const take = Math.min(cell.length, slots - k)
       play(cell.slice(0, take))
+      whole = take === cell.length ? cell : null
       carried = c.carry && take < cell.length ? { chord: s.chord, notes: cell.slice(take), midi } : null
       prev = midi[take - 1] ?? prev
       last = midi.slice(0, take)
