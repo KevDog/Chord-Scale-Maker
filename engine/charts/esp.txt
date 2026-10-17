@@ -5,6 +5,8 @@ style: Up
 key: F
 form: AB, 32 bars
 source: 
+recording: Miles Davis; E.S.P.; Columbia; 1965
+youtube: lRhqn21-xeg
 # analysis: 2026-10-17, rules v1; F
 
 # bar | chord

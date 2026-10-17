@@ -7,6 +7,8 @@ form: AB, 48 bars
 time: 3/4
 context: blues
 source: 
+recording: Wes Montgomery; The Incredible Jazz Guitar of Wes Montgomery; Riverside; 1960
+youtube: VSkVxeJTiX8
 # analysis: 2026-10-12, rules v1; Bb, blues
 # book: Medium Jazz Waltz, quarter = 152. A is the head (a 24-bar blues in 3/4, guitar), B the solo changes;
 # repeat signs around each. After solos, D.C. al Coda (coda sign at the end of bar 24). Bass walks for solos, not head.

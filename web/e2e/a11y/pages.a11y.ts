@@ -35,6 +35,13 @@ for (const theme of ['light', 'dark'] as const) {
       await expectAccessible(page)
     })
 
+    test('a song with its recording on video', async ({ page }) => {
+      await page.goto('/song/so-what')
+      if (theme === 'dark') await darkMode(page)
+      await expect(page.getByRole('button', { name: /Play the video/ })).toBeVisible()
+      await expectAccessible(page)
+    })
+
     test('the Changes and its popovers', async ({ page }) => {
       await page.goto(SONG)
       if (theme === 'dark') await darkMode(page)

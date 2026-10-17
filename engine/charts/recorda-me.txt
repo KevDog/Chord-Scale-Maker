@@ -5,6 +5,8 @@ style: Latin
 key: Am
 form: AB, 16 bars
 source: Colorado Cookbook, p. 178
+recording: Joe Henderson; Page One; Blue Note; 1963
+youtube: 3c9zSAVWKEs
 # analysis: 2026-10-17, rules v1; A minor
 
 # bar | chord | scale

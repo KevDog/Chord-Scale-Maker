@@ -6,6 +6,8 @@ key: F
 context: blues
 form: A, 16 bars
 source: Colorado Cookbook, p. 260
+recording: Herbie Hancock; Takin' Off; Blue Note; 1962
+youtube: _QkGAaYtXA0
 # analysis: 2026-10-11, rules v1; F, blues
 
 # bar | chord | scale
