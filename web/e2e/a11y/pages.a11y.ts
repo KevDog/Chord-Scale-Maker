@@ -48,7 +48,7 @@ for (const theme of ['light', 'dark'] as const) {
       await page.getByRole('button', { name: 'Done editing' }).click()
       // a pentatonic label: its ladder
       await showPentatonics(page)
-      await opens(page, page.locator('[data-slot="pentatonic"] button').first(), page.getByRole('dialog', { name: /· bars? [\d, ]+$/ }))
+      await opens(page, page.locator('[data-slot="pentatonic"] button').first(), page.getByRole('dialog', { name: / bar \d+$/ }))
       await expectAccessible(page)
     })
 
@@ -59,7 +59,7 @@ for (const theme of ['light', 'dark'] as const) {
       await expect(staves(page).first()).toBeVisible()
       await expectAccessible(page)
       await pentatonicPreset(page)
-      await opens(page, page.locator('div.text-right [data-slot="pentatonic"] button').first(), page.getByRole('dialog', { name: /· bars? [\d, ]+$/ }))
+      await opens(page, page.locator('div.text-right [data-slot="pentatonic"] button').first(), page.getByRole('dialog', { name: / bar \d+$/ }))
       await expectAccessible(page, '[role="dialog"]')
     })
   })

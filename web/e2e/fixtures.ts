@@ -121,7 +121,8 @@ export async function writeChart(page: Page, text: string): Promise<void> {
   await openEditor(page)
   await page.getByLabel('Chart text').fill(text)
   // the text is parsed after a short pause (useChartEditor): wait until the sheet shows the first chord written
-  const [, section = '', bar = '', chord = ''] = text.match(/^([^#|\n][^|\n]*?)\s*\|\s*(\d+)\s*\|\s*([^|\n]+?)\s*(?:\||$)/m) ?? []
+  const section = /^section:\s*(\S+)/m.exec(text)?.[1] ?? ''
+  const [, bar = '', chord = ''] = text.match(/^(\d+)\s*\|\s*([^|\n]+?)\s*(?:\||\s#|$)/m) ?? []
   if (chord) await expect(sheetChord(page, chord, section, Number(bar))).toBeAttached()
 }
 

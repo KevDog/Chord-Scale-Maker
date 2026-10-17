@@ -229,8 +229,8 @@ test('prints 12 staves per letter page with the Hexatonic preset, each caption o
 const AUTUMN_LINES = ['Cm7 | C Dorian', 'F7 | F Mixolydian', 'Bm7 | B Dorian', 'E7 | E Mixolydian', 'Bbm7 | Bb Dorian', 'Eb7 | Eb Mixolydian', 'Am7b5 | A Locrian', 'D7 | D Phrygian Dominant', 'Gm | G Dorian', 'E7 | E Lydian Dominant', 'EbMaj7 | Eb Lydian', 'Fm7 | F Dorian', 'Bb7 | Bb Mixolydian']
 for (const [count, pages] of [[12, 1], [13, 2]] as const) {
   test(`prints ${count} staves with the Hexatonic preset, ${pages} letter page${pages > 1 ? 's' : ''}`, async ({ page }) => {
-    const rows = AUTUMN_LINES.slice(0, count).map((line, i) => `A | ${i + 1} | ${line}`)
-    await writeChart(page, `title: T\nkey: Gm\n${rows.join('\n')}`)
+    const rows = AUTUMN_LINES.slice(0, count).map((line, i) => `${i + 1} | ${line}`)
+    await writeChart(page, `title: T\nkey: Gm\nsection: A\n${rows.join('\n')}`)
     await hexatonicPreset(page)
     await expect(page.locator('[data-slot="hexatonic"]')).toHaveCount(count)
     await page.emulateMedia({ media: 'print' })
@@ -247,8 +247,8 @@ for (const [count, pages] of [[12, 1], [13, 2]] as const) {
 test('prints the longest hexatonic captions on one line', async ({ page }) => {
   const kinds = ['7 | {} Whole Tone', 'mMaj7 | {} Melodic Minor', 'm6 | {} Harmonic Minor', '7 | {} Half-Whole', '7 | {} Bebop Dominant']
   const roots = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']
-  const rows = roots.map((r, i) => `A | ${i + 1} | ${r}${kinds[i % kinds.length]!.replace('{}', r)}`)
-  await writeChart(page, `title: T\nkey: C\n${rows.join('\n')}`)
+  const rows = roots.map((r, i) => `${i + 1} | ${r}${kinds[i % kinds.length]!.replace('{}', r)}`)
+  await writeChart(page, `title: T\nkey: C\nsection: A\n${rows.join('\n')}`)
   await hexatonicPreset(page)
   await pickOption(page, 'Hexatonic pair', '3') // E♭+/F on melodic and harmonic minor
   await expect(page.locator('[data-slot="hexatonic"]', { hasText: '+/' }).first()).toBeVisible()
@@ -269,7 +269,7 @@ async function pickOnChanges(page: Page, kind: 'pentatonic' | 'hexatonic', chord
     await rankedAgainstChord(page)
   } else await chooseSuperimpose(page, 'Hexatonic')
   await page.locator(`[data-slot="${kind}"] [data-chord="${chord}"] button`).click()
-  await page.getByRole('dialog', { name: /· bars? [\d, ]+$/ }).locator('[data-choice]').nth(1).click()
+  await page.getByRole('dialog', { name: / bar \d+$/ }).locator('[data-choice]').nth(1).click()
   await expect(page.locator(`[data-slot="${kind}"] [data-chord="${chord}"] button`)).toHaveAttribute('aria-label', /your pick/)
   await chooseSheet(page, 'Scales')
 }
@@ -287,8 +287,8 @@ const overflowingCaptions = (page: Page, slot: 'hexatonic' | 'pentatonic'): Prom
 for (const kind of ['pentatonic', 'hexatonic'] as const) {
   // Autumn Leaves' 12 lines, its Cm7 again in bar 13 (the first staff's), so 12 staves on one page
   test(`prints 12 staves on a letter page with a ${kind} caption that varies`, async ({ page }) => {
-    const rows = [...AUTUMN_LINES.slice(0, 12), AUTUMN_LINES[0]!].map((line, i) => `A | ${i + 1} | ${line}`)
-    await writeChart(page, `title: T\nkey: Gm\n${rows.join('\n')}`)
+    const rows = [...AUTUMN_LINES.slice(0, 12), AUTUMN_LINES[0]!].map((line, i) => `${i + 1} | ${line}`)
+    await writeChart(page, `title: T\nkey: Gm\nsection: A\n${rows.join('\n')}`)
     await pickOnChanges(page, kind, 'A:13:0')
     await (kind === 'pentatonic' ? pentatonicPreset(page) : hexatonicPreset(page))
     await expect(page.locator(`[data-slot="${kind}"]`)).toHaveCount(12)
@@ -307,7 +307,7 @@ test('prints the longest captions that vary on one line', async ({ page }) => {
   const kinds = ['7 | {} Whole Tone', 'mMaj7 | {} Melodic Minor', 'm6 | {} Harmonic Minor', '7 | {} Half-Whole', '7 | {} Bebop Dominant']
   const roots = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']
   const rows = [...roots.map((r, i) => `${r}${kinds[i % kinds.length]!.replace('{}', r)}`), 'F#7 | F# Half-Whole', 'C7 | C Whole Tone', 'F#7 | F# Half-Whole', 'CmMaj7 | C Melodic Minor', 'C7 | C Whole Tone', 'CmMaj7 | C Melodic Minor']
-  await writeChart(page, `title: T\nkey: C\n${rows.map((row, i) => `A | ${i + 1} | ${row}`).join('\n')}`)
+  await writeChart(page, `title: T\nkey: C\nsection: A\n${rows.map((row, i) => `${i + 1} | ${row}`).join('\n')}`)
   await pickOnChanges(page, 'pentatonic', 'A:15:0')
   await pentatonicPreset(page)
   await expect(page.locator('[data-slot="pentatonic"]', { hasText: 'F♯m pent · 4 shared · varies' })).toHaveCount(1)
