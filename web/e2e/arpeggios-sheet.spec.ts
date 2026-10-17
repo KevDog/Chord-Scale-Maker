@@ -6,7 +6,10 @@ test('the Arpeggios sheet draws each scale line as an arpeggio', async ({ page }
   await page.goto('/song/autumn-leaves')
   await chooseSheet(page, 'Arpeggios')
   await expect(staves(page)).toHaveCount(14)
-  await expect(heads(page)).toHaveCount(4) // Cm7, up
+  await expect(heads(page)).toHaveCount(9) // Cm7, up, two octaves (#227)
+  await pickOption(page, 'Arpeggio direction', 'Up & down')
+  await expect(heads(page)).toHaveCount(17)
+  await pickOption(page, 'Arpeggio direction', 'Up')
   await page.locator('label', { hasText: 'Extended' }).click()
   await expect(heads(page)).toHaveCount(7)
   await pickOption(page, 'Arpeggio direction', 'Up & down')
@@ -34,8 +37,7 @@ test('a share link reopens the Arpeggios sheet with its choices', async ({ page,
 test('prints 12 lines a page and fits a phone', async ({ page }) => {
   await page.goto('/song/autumn-leaves')
   await chooseSheet(page, 'Arpeggios')
-  await page.locator('label', { hasText: 'Extended' }).click()
-  await pickOption(page, 'Arpeggio direction', 'Up & down')
+  await pickOption(page, 'Arpeggio direction', 'Up & down') // 7th Chord: the longest line, 17 notes
   await page.emulateMedia({ media: 'print' })
   expect((await page.pdf({ format: 'Letter' })).toString('latin1').match(/\/Type\s*\/Page[^s]/g)?.length).toBe(2)
   await page.emulateMedia({ media: 'screen' })

@@ -398,13 +398,14 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Lines:** exactly the Scales sheet's (`scaleLines`), in eighth notes, one stave each, no time signature. 12 lines a
   printed page. Controls (Arpeggio group): 7th Chord · Extended, and a direction listbox Up · Down · Up & down
   (`aria-label="Arpeggio direction"`); Show: Intervals as on the Scales; no Spell Scale, no practice panel.
-- **Notes:** the line's first chord's tones (`arpeggioTones`: 1 3 5 7; a triad plays 1 3 5 8 in 7th Chord mode). Extended
-  stacks the scale's other notes above (`tensionsOf`): 7ths (triads and 6 chords only), then 9s, 11s, 13s by compound
+- **Notes:** the line's first chord's tones (`arpeggioTones`: 1 3 5 7). 7th Chord mode runs them over two octaves, closing
+  on the root (1 3 5 7 1 3 5 7 1; a triad 1 3 5 1 3 5 1; #227), beamed a chord at a time with the top root alone. Extended
+  plays them once and stacks the scale's other notes above (`tensionsOf`): 7ths (triads and 6 chords only), then 9s, 11s, 13s by compound
   degree of the interval label, ties by pitch.
 - **Direction:** Up is chord tones then tensions, each the next of its pitch class above the last; Down reverses it; Up &
   down plays both without repeating the top note. Placed as one run by `placeRun` (fewest notes out of range, then
-  nearest the range's centre).
-- **Drawing:** `drawArpeggioStaff` beams eighths by group (the chord tones, then the tensions; a group of one gets a
+  nearest the range's centre); two octaves outrun most ranges, so the rest go on ledger lines.
+- **Drawing:** `drawArpeggioStaff` beams eighths by group (7th Chord: each octave's chord tones, then the closing root; Extended: the chord tones, then the tensions; a group of one gets a
   flag; each beamed group takes one stem direction); accidentals by the measure rule over the whole line, with or
   without a key signature. `buildArpeggioSheet` (`engine/src/arpeggioSheet.ts`)
   builds the model; the components only draw it.

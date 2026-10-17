@@ -55,7 +55,7 @@ useHead({ script: [{ type: 'application/ld+json', innerHTML: jsonLd([websiteLd()
 const USES = [
   { title: 'Follow the changes', text: 'The Changes is a study lead sheet: the tune’s chords bar by bar. Put a guide tone line from the 3rd or the 7th on the staff, or run a 7th chord arpeggio through every change: up, down, from an inversion, or voice-led.' },
   { title: 'Learn a scale for every chord', text: 'The Scales gives each chord its own staff with the scale that fits it, chosen from how the chord works in the key. Spell them all from one note, or highlight a few notes and improvise with just those.' },
-  { title: 'Run the arpeggios', text: 'The Arpeggios sheet gives each chord its arpeggio on its own staff: the four chord tones, or extended up through the 9th, 11th and 13th from its scale. Play them up, down, or up and down.' },
+  { title: 'Run the arpeggios', text: 'The Arpeggios sheet gives each chord its arpeggio on its own staff: the chord tones over two octaves, or extended up through the 9th, 11th and 13th from its scale. Play them up, down, or up and down.' },
 ] as const
 
 // an old library link (/#letter-R): the library has moved (the hash as the page arrived: the router drops it while
