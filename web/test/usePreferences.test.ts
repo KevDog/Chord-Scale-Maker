@@ -4,8 +4,8 @@ import { effectScope, nextTick } from 'vue'
 import { linkPreferences, usePreferences } from '~/composables/usePreferences'
 import type { ShareView } from '@chord-scale-maker/engine'
 
-const flags = vi.hoisted(() => ({ cells: true }))
-mockNuxtImport('useFeature', () => (name: string) => name === 'cells' && flags.cells)
+const flags = vi.hoisted(() => ({ cells: true, approaches: true }))
+mockNuxtImport('useFeature', () => (name: string) => (name === 'cells' && flags.cells) || (name === 'approaches' && flags.approaches))
 
 function prefs() {
   const scope = effectScope()
@@ -25,6 +25,7 @@ describe('usePreferences', () => {
   afterEach(() => {
     localStorage.clear()
     flags.cells = true
+    flags.approaches = true
   })
 
   it("defaults to piano spelled from the chart's key, with interval labels on", () => {
@@ -78,6 +79,38 @@ describe('usePreferences', () => {
     expect([again.lineMode.value, again.cells.value]).toEqual(['cells', '1-2-3-5'])
     localStorage.setItem('csm-cells', '9-9-9-9')
     expect(prefs().cells.value).toBe('3rd-3rd')
+  })
+
+  it('remembers the Approach: None until chosen, rejects an unknown one', async () => {
+    const p = prefs()
+    expect(p.approach.value).toBe('none')
+    p.approach.value = 'enclosure'
+    await nextTick()
+    expect(localStorage.getItem('csm-approach')).toBe('enclosure')
+    expect(prefs().approach.value).toBe('enclosure')
+    localStorage.setItem('csm-approach', 'sideways')
+    expect(prefs().approach.value).toBe('none')
+  })
+
+  it('reads a stored Approach as None with the approaches flag off, and keeps it stored', async () => {
+    localStorage.setItem('csm-approach', 'enclosure')
+    flags.approaches = false
+    expect(prefs().approach.value).toBe('none')
+    expect(linked({ approach: 'delayed' }).approach.value).toBe('none')
+    await nextTick()
+    expect(localStorage.getItem('csm-approach')).toBe('enclosure')
+    flags.approaches = true
+    expect(prefs().approach.value).toBe('enclosure')
+  })
+
+  it("takes a link's Approach over your own, None when the link has none, for this visit only", async () => {
+    localStorage.setItem('csm-approach', 'enclosure')
+    const p = linked({ line: 'third', approach: 'delayed' })
+    expect(p.approach.value).toBe('delayed')
+    expect(linked({ line: 'third' }).approach.value).toBe('none')
+    p.approach.value = 'double-below'
+    await nextTick()
+    expect(localStorage.getItem('csm-approach')).toBe('enclosure')
   })
 
   it('shows a stored Cells line as Off with the cells flag off, and keeps it stored', async () => {

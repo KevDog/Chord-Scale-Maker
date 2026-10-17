@@ -639,6 +639,25 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   `line: 'cells:<id>'` (dropped if the id is unknown). A stored `cells` mode with the flag off reads as Off.
   Aria-label `; cells: C5 D5 E♭5 G5 | …`; the report's `guides` reads `cells: <label>`.
 
+### Approaches on the guide tone line (#298, flag `approaches`)
+
+- **What:** under Guide Tones, a figure of eighths leads into each chord's guide tone from the end of the chord before
+  (`engine/src/approaches.ts` the figures, `guideVoices` places them; `buildChanges(..., approach)`). The target keeps its
+  beat 1; the chord before gives up the figure's beats, and a held target's tie is broken. None for the first chord, after a
+  rest, across a gap, or where the chord before would keep under an eighth. Diatonic steps follow the scale the sheet shows
+  over the chord before; consecutive equal notes collapse (delayed into F over C is G E), across the join too: a figure's
+  first note that is the chord before's guide tone is left to it (Dm7 G7 CMaj7 from the 3rd, chromatic above: G7 holds
+  its F, no figure into E). No figure where any of its notes is outside the part's range. A chromatic note is never
+  B♯/E♯/C♭/F♭ (into B♭ above: B).
+- **UI:** a second listbox (`aria-label="Approach"`) in the Line group under the Guide tone line listbox, shown only with
+  Guide Tones chosen, the flag on and `CONTROL_TIERS.approaches` (`intermediate`). It sits inside the Line group, `w-0
+  min-w-full` (`w-full` let the longest figure name widen the group, to 327px), so a long name truncates and its tooltip
+  is the whole name; never a rail group of its own: the rail stays at two rows on CI's wider fonts (`editor.spec.ts`
+  measures the Line group with Line Off, then with Guide Tones and the enclosure).
+- **Preferences:** `csm-approach` is an `Approach` (`none`); with the flag off a stored one reads as None and stays stored.
+  Share links carry `approach` (only with a guide line, absent: None; dropped if unknown). Away from None it raises the
+  hidden-settings notice below Intermediate (`setAway`, `approaches`).
+
 ### Pentatonics on Changes ([spec](superpowers/specs/2026-10-13-pentatonic-ladders-design.md))
 
 - **Ladder** (`engine/src/pentatonics.ts`): a key area's 12 minor pentatonics round the circle of fifths from home

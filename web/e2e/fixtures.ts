@@ -163,6 +163,14 @@ export async function guidesDrawn(page: Page): Promise<void> {
     .toBe(true)
 }
 
+/** with Guide Tones chosen, pick the guide tone line's Approach (#298, flag `approaches`) from its listbox: "None", "Chromatic below", "Diatonic above, chromatic below (enclosure)", … */
+export async function showApproach(page: Page, name: string): Promise<void> {
+  await inControls(page, async () => {
+    await pickLine(page, 'Guide Tones')
+    await pickOption(page, 'Approach', name)
+  })
+}
+
 /** choose a melodic cell or system (#298, flag `cells`) from the 7th Chords' "Arpeggio pattern" listbox: "Root to root", "1 2 3 5", … */
 export async function showCell(page: Page, cell: string): Promise<void> {
   await inControls(page, async () => {

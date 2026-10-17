@@ -97,10 +97,15 @@
                     <!-- the detail opens beneath the modes, so the Line group keeps its width and place (#187) -->
                     <div class="flex flex-col gap-2">
                       <SegmentedControl v-model="lineRadio" legend="Line" name="line-mode" :options="lineModes(overlay)" />
-                      <EaseReveal :show="lineMode === 'guide'">
+                      <EaseReveal :show="lineMode === 'guide'" inner-class="flex flex-col gap-2">
                         <UiListbox v-model="guideLine" class="w-full" aria-label="Guide tone line">
                           <template #selected="{ value }"><UiListboxLabel>{{ guideLabel(value) }}</UiListboxLabel></template>
                           <UiListboxOption v-for="g in GUIDE_LINES" :key="g.value" :value="g.value" :title="g.title"><UiListboxLabel>{{ g.label }}</UiListboxLabel></UiListboxOption>
+                        </UiListbox>
+                        <!-- the figure into each guide tone (#298): under the guide tone listbox, so the Line group keeps its width (w-0 min-w-full: the long figure names truncate rather than widen it, the tooltip the whole name) -->
+                        <UiListbox v-if="approachesOn && shows('approaches')" v-model="approach" class="w-0 min-w-full" aria-label="Approach" :title="approachLabel(approach)">
+                          <template #selected="{ value }"><UiListboxLabel>{{ approachLabel(value) }}</UiListboxLabel></template>
+                          <UiListboxOption v-for="a in APPROACHES" :key="a" :value="a"><UiListboxLabel>{{ APPROACH_LABELS[a] }}</UiListboxLabel></UiListboxOption>
                         </UiListbox>
                       </EaseReveal>
                       <!-- the Pentatonic line (#284) and the Triad pair line (#325): the direction (the Arpeggios sheet's), and the Pentatonic's Leave out where the Superimpose shows -->
@@ -200,7 +205,7 @@
     </template>
 
     <script setup lang="ts">
-    import { ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, formatPattern, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
+    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, INSTRUMENTS, type InstrumentName, formatPattern, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
     import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
@@ -238,6 +243,7 @@
     const overlayShown = computed(() => shows('pentatonics'))
     const lineMode = defineModel<LineMode>('lineMode', { default: 'off' })
     const guideLine = defineModel<GuideFrom>('guideLine', { default: 'third' })
+    const approach = defineModel<Approach>('approach', { default: 'none' })
     const arpeggio = defineModel<ArpeggioPattern>('arpeggio', { default: 'up-root' })
     const cells = defineModel<CellId>('cells', { default: '3rd-3rd' })
     const arpNotes = defineModel<ArpNotes>('arpNotes', { default: 'seventh' })
@@ -306,6 +312,9 @@
     const guideLabel = (v: GuideFrom): string => GUIDE_LINES.find((g) => g.value === v)?.label ?? ''
     const patternsOn = useFeature('patterns')
     const cellsOn = useFeature('cells')
+    const approachesOn = useFeature('approaches')
+    /** the closed listbox reads Approach: None, not a bare None */
+    const approachLabel = (a: Approach): string => (a === 'none' ? 'Approach: None' : APPROACH_LABELS[a])
     const SYSTEM_IDS = Object.keys(CELL_SYSTEMS) as (keyof typeof CELL_SYSTEMS)[]
     // the Cells line shares the 7th Chords slot (#298): the radio reads 7th Chords while a cell is chosen, and picking
     // a cell sets the mode and the cell, a pattern the mode and the pattern; leaving the slot for another mode and coming back restores 7th Chords

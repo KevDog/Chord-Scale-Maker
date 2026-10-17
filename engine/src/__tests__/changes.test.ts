@@ -120,6 +120,13 @@ describe('the Changes sheet', () => {
     expect(all.map((b) => b.voice.reduce((sum, n) => sum + n.beats, 0))).toEqual([4, 5, 3])
   })
 
+  it('puts an approach figure on the guide tone line, stepping in the scale the sheet shows', () => {
+    const doc = parseChart('section: A\n1 | Dm7\n2 | G7\n').value
+    const voice = (approach: 'none' | 'diatonic-above') => buildChanges(doc, CONCERT, 4, false, 'third', undefined, null, approach).lines.flatMap((l) => l.bars)[0]!.voice
+    expect(voice('none').map((n) => n.beats)).toEqual([4])
+    expect(voice('diatonic-above').map((n) => n.beats)).toEqual([3, 0.5, 0.5])
+  })
+
   it('gives each chord its reason, the key it is heard in, and whether its function was stated', () => {
     const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | CMaj7\n2 | Bb7 |  | D: ♭VI7\n3 | G7\n4 | CMaj7\n').value
     const chords = buildChanges(doc, CONCERT).lines.flatMap((l) => l.bars).flatMap((b) => b.chords)

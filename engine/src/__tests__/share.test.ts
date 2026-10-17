@@ -116,6 +116,14 @@ describe('share links', () => {
     for (const line of ['cells:x', 'cells:', 'cells:1-2-3-4', 'cells']) expect(shareViewFrom({ sheet: 'changes', line })).toEqual({ sheet: 'changes' })
   })
 
+  it("carries the Changes sheet's Approach (#298), dropping an unknown one", async () => {
+    for (const approach of ['enclosure', 'chromatic-below', 'none'] as const) {
+      const view = { sheet: 'changes', line: 'third', approach } as const
+      expect(await decodeShare(await encodeShare({ chart: CHART, view }))).toEqual({ chart: CHART, view })
+    }
+    for (const approach of ['x', '', 3, null, true]) expect(shareViewFrom({ sheet: 'changes', approach })).toEqual({ sheet: 'changes' })
+  })
+
   it('keeps the Patterns sheet and its choices in canonical form, dropping bad ones', () => {
     expect(shareViewFrom({ sheet: 'patterns', pattern: '+2 -1', patternNotes: 'chord', patternDir: 'up-down' })).toEqual({ sheet: 'patterns', pattern: '+2 −1', patternNotes: 'chord', patternDir: 'up-down' })
     expect(shareViewFrom({ sheet: 'patterns', pattern: '+0', patternNotes: 'x', patternDir: 'sideways' })).toEqual({ sheet: 'patterns' })
