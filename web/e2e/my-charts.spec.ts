@@ -86,7 +86,7 @@ test('a file dropped on the library opens, and a wrong one says why', async ({ p
     await page.getByRole('heading', { name: 'Library', level: 1 }).dispatchEvent('drop', { dataTransfer: dt })
   }
   await drop('photo.png', 'x', 'image/png')
-  await expect(page.getByRole('alert')).toHaveText('Please open a chart saved as a .txt file.')
+  await expect(page.getByRole('alert')).toHaveText('Please open a chart saved as a .txt file, or an iReal Pro export (.html).')
   await drop('tune.txt', 'title: Dropped\n\nsection: A\nbars: 4\n1 | Cm7\n', 'text/plain')
   await expect(page.getByRole('heading', { name: 'Dropped', level: 1 })).toBeVisible()
 })

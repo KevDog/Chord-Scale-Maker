@@ -111,6 +111,18 @@ for (const theme of ['light', 'dark'] as const) {
       await opens(page, page.locator('div.text-right [data-slot="pentatonic"] button').first(), page.getByRole('dialog', { name: / bar \d+$/ }))
       await expectAccessible(page, '[role="dialog"]')
     })
+
+    test('the library’s Import iReal link… dialog', async ({ page }) => {
+      await page.goto('/library')
+      if (theme === 'dark') await darkMode(page)
+      const dialog = page.getByRole('dialog', { name: 'Import from iReal Pro' })
+      // a click before hydration is lost; once the dialog is up the page behind it is inert, so click only while it is absent
+      await expect(async () => {
+        if ((await page.getByRole('dialog').count()) === 0) await page.getByRole('button', { name: 'Import iReal link…' }).click({ timeout: 1000 })
+        await expect(dialog.getByRole('heading', { name: 'Import from iReal Pro' })).toBeVisible({ timeout: 3000 })
+      }).toPass({ timeout: 10_000 })
+      await expectAccessible(page, '[role="dialog"]')
+    })
   })
 }
 

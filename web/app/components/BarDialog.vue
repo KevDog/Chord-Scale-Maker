@@ -30,12 +30,15 @@
         <UiField v-if="kind === 'paste'">
           <UiLabel>Bars</UiLabel>
           <UiDescription>Chords between bar lines, in concert pitch: <UiCode>| Cm7 | F7 | Bm7 E7 |</UiCode>. An empty bar holds the chord before.</UiDescription>
-          <UiTextarea v-model="text" rows="4" autofocus :invalid="!!pasted.diagnostics.length" class="font-mono" />
+          <UiTextarea v-model="text" rows="4" autofocus :invalid="!linked && !!pasted.diagnostics.length" class="font-mono" />
+          <UiSelect v-if="linked && linked.value.songs.length > 1" v-model="song" aria-label="Song">
+            <option v-for="(s, i) in linked.value.songs" :key="i" :value="String(i)">{{ s.title }}</option>
+          </UiSelect>
         </UiField>
-        <ul v-if="kind === 'paste' && pasted.diagnostics.length" role="alert" class="list-disc pl-5 text-sm/6 text-red-700 dark:text-red-400">
-          <li v-for="(d, i) in pasted.diagnostics" :key="i">Line {{ d.line }}: {{ d.message }}</li>
+        <ul v-if="kind === 'paste' && pasted.diagnostics.length" :role="linked ? undefined : 'alert'" :class="['list-disc pl-5 text-sm/6', linked ? 'text-zinc-600 dark:text-zinc-400' : 'text-red-700 dark:text-red-400']">
+          <li v-for="(d, i) in pasted.diagnostics" :key="i">{{ linked ? d.message : `Line ${d.line}: ${d.message}` }}</li>
         </ul>
-        <UiText v-else-if="kind === 'paste' && pasted.value.length" class="text-sm/6!">{{ pasted.value.length === 1 ? '1 bar' : `${pasted.value.length} bars` }}</UiText>
+        <UiText v-if="kind === 'paste' && pasted.value.length && (linked || !pasted.diagnostics.length)" class="text-sm/6!">{{ pasted.value.length === 1 ? '1 bar' : `${pasted.value.length} bars` }}</UiText>
         <UiText v-if="error" role="alert" class="text-sm/6! text-red-700! dark:text-red-400!">{{ error }}</UiText>
       </UiDialogBody>
       <UiDialogActions>
@@ -51,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { type Beats, parseBarLine } from '@chord-scale-maker/engine'
+import { type Beats, decodeIReal, irealBars, parseBarLine } from '@chord-scale-maker/engine'
 
 /**
  * The sheet editor's structure dialogs (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md §1.4, §1.5): a
@@ -104,8 +107,18 @@ watch(
   { immediate: true },
 )
 
-const pasted = computed(() => parseBarLine(text.value, props.beats))
-const canPaste = computed(() => !!pasted.value.value.length && !pasted.value.diagnostics.length)
+const ireal = useFeature('ireal')
+/** an iReal Pro link in the paste field: its songs, and which one (a playlist's) */
+const linked = computed(() => (ireal && /irealb(ook)?:\/\//.test(text.value) ? decodeIReal(text.value) : null))
+const song = ref('0')
+watch(linked, () => (song.value = '0'))
+const pasted = computed(() => {
+  const s = linked.value?.value.songs[Number(song.value)]
+  if (linked.value && !s) return { value: [], diagnostics: linked.value.diagnostics }
+  return s ? irealBars(s) : parseBarLine(text.value, props.beats)
+})
+/** an iReal song's report is what it left out: shown, not blocking */
+const canPaste = computed(() => !!pasted.value.value.length && (!!linked.value?.value.songs.length || !pasted.value.diagnostics.length))
 
 function submit(before = false): void {
   const n = name.value.trim()
