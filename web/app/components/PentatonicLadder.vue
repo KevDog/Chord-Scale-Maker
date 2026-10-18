@@ -33,7 +33,7 @@
           >{{ x.name }}</button>
         </li>
       </ul>
-      <p class="px-2 pt-2 pb-1 text-xs/4 text-zinc-600 dark:text-zinc-300">{{ footer }}</p>
+      <p class="px-2 pt-2 pb-1 text-xs/4 text-zinc-600 dark:text-zinc-300">{{ footer }} <DecisionLink id="pick.order">Why this order?</DecisionLink></p>
     </HPopoverPanel>
   </HPopover>
 </template>

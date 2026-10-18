@@ -69,7 +69,7 @@ describe('ScaleStaff', () => {
       expect(b.attributes('aria-label')).toBe('Pentatonic: D minor, built on 1, 5 of 5 notes in D Dorian. Show the choices')
       const d = await open(w)
       expect(d.find(`[id="${d.attributes('aria-labelledby')}"]`).text()).toBe('Dm7 Dorian · A bar 1, B bar 1')
-      expect(d.text().endsWith('Sets A bar 1 and B bar 1 on the Changes sheet too.')).toBe(true)
+      expect(d.text().endsWith('Sets A bar 1 and B bar 1 on the Changes sheet too. Why this order?')).toBe(true)
       const rows = w.findAll('[data-choice]')
       expect(rows).toHaveLength(12)
       expect(rows[0]!.text()).toBe('Dm pent · on 1 · 5 shared')
@@ -103,7 +103,7 @@ describe('ScaleStaff', () => {
       expect(w.find('[data-slot="pentatonic"] button').attributes('aria-label')).toBe('Pentatonic: D minor, built on 1, 5 of 5 notes in D Dorian, varies. Show the choices')
       expect(w.find('[data-slot="pentatonic"] button').text()).toBe('Dm pent · 5 shared · varies')
       const d = await open(w)
-      expect(d.text().endsWith('Replaces the different picks in A bar 1 and B bar 1.')).toBe(true)
+      expect(d.text().endsWith('Replaces the different picks in A bar 1 and B bar 1. Why this order?')).toBe(true)
       w.unmount()
     })
 

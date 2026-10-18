@@ -108,3 +108,14 @@ describe('ChartTranspose', () => {
     w.unmount()
   })
 })
+
+describe('ChartTranspose’s dialog', () => {
+  it('links its description to how a new key is spelled', async () => {
+    const doc = parseChart('title: F Blues\nkey: F\n\nsection: A\nbars: 4\n1 | F7\n').value
+    const w = await mountSuspended(ChartTranspose, { props: { current: () => doc }, attachTo: document.body })
+    await w.find('button').trigger('click')
+    await settle()
+    expect(document.querySelector('[role=dialog] a[href="/how-it-decides#spell.transpose"]')).not.toBeNull()
+    w.unmount()
+  })
+})

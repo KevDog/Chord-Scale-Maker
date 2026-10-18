@@ -11,6 +11,8 @@ import { CONCERT } from './part'
 export type TuneSummary = Readonly<{
   title: string
   subtitle: string
+  /** which version of the tune ('' : the main chart) */
+  version: string
   composer: string
   /** other titles the tune goes by */
   aka: readonly string[]
@@ -38,6 +40,7 @@ export function tuneSummary(text: string): TuneSummary {
   return {
     title: metaValue(doc, 'title', 'Untitled'),
     subtitle: metaValue(doc, 'subtitle'),
+    version: metaValue(doc, 'version'),
     composer: metaValue(doc, 'composer'),
     aka: chartAka(doc),
     kind: chartKind(doc),

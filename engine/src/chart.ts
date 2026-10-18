@@ -17,8 +17,8 @@ import { defaultScaleOrNull } from './qualities'
  * names one notable recording (artist; album; label; year) and youtube: its video's ID; kind: says
  * whether it's a tune (the default), a form with no composer (F Blues) or an exercise; contributor: credits who sent the chart (shown on its song page). The site keeps the rest and shows only the heading.
  */
-export type MetaKey = 'title' | 'subtitle' | 'key' | 'bars' | 'time' | 'context' | 'minor' | 'composer' | 'style' | 'form' | 'source' | 'aka' | 'recording' | 'youtube' | 'kind' | 'contributor'
-export const META_KEYS: readonly MetaKey[] = ['title', 'subtitle', 'key', 'bars', 'time', 'context', 'minor', 'composer', 'style', 'form', 'source', 'aka', 'recording', 'youtube', 'kind', 'contributor']
+export type MetaKey = 'title' | 'subtitle' | 'version' | 'key' | 'bars' | 'time' | 'context' | 'minor' | 'composer' | 'style' | 'form' | 'source' | 'aka' | 'recording' | 'youtube' | 'kind' | 'contributor'
+export const META_KEYS: readonly MetaKey[] = ['title', 'subtitle', 'version', 'key', 'bars', 'time', 'context', 'minor', 'composer', 'style', 'form', 'source', 'aka', 'recording', 'youtube', 'kind', 'contributor']
 
 export type ChartKind = 'tune' | 'form' | 'exercise'
 const CHART_KINDS: readonly ChartKind[] = ['tune', 'form', 'exercise']

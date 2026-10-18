@@ -20,6 +20,7 @@ async function darkMode(page: Page): Promise<void> {
 for (const theme of ['light', 'dark'] as const) {
   test.describe(theme, () => {
     test('the pages', async ({ page }) => {
+      test.setTimeout(90_000) // 13 pages: past 30 s in CI
       for (const path of ['/', '/library', '/about', '/help', '/how-it-decides', '/release-notes', '/functions', '/contact', '/privacy', '/scales', '/scales/dorian', '/composers', '/composers/thelonious-monk']) {
         await page.goto(path)
         if (theme === 'dark' && path === '/') await darkMode(page)

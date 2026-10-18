@@ -147,6 +147,17 @@ describe('the Changes sheet', () => {
     expect(chords.find((c) => c.text === 'G7')).toMatchObject({ stated: false, heardIn: 'C major', reason: 'V7 of C: natural tensions' })
   })
 
+  it('says whether a chord’s scale is written in the chart, and whether a slash chord is read on its bass', () => {
+    const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Dm7 | D Dorian\n2 | G7\n3 | DbMaj7/C\n4 | CMaj7/E\n').value
+    const chords = buildChanges(doc, CONCERT).lines.flatMap((l) => l.bars).flatMap((b) => b.chords)
+    expect(chords.map((c) => [c.text, c.pinned, c.slash])).toEqual([
+      ['Dm7', true, false],
+      ['G7', false, false],
+      ['DbMaj7/C', false, true],
+      ['CMaj7/E', false, false],
+    ])
+  })
+
   it("keeps the rules' numeral on a chord whose written function doesn't fit, and says why", () => {
     const doc = parseChart('title: T\nkey: Eb\n\nsection: A\n1 | EbMaj7\n2 | G7 |  | Eb: V7/ii\n3 | Fm7\n4 | Bb7 |  | V7/q\n').value
     const chords = buildChanges(doc, CONCERT).lines.flatMap((l) => l.bars).flatMap((b) => b.chords)

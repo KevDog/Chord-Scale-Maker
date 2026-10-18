@@ -29,7 +29,7 @@ describe('the pentatonic ladder popover', () => {
     expect(d.attributes('aria-label')).toBeUndefined()
     expect(d.find(`[id="${d.attributes('aria-labelledby')}"]`).text()).toBe(HEADER)
     expect(d.text().startsWith(`${HEADER}${KEY.title}`)).toBe(true)
-    expect(d.text().endsWith(FOOTER)).toBe(true)
+    expect(d.text().endsWith(`${FOOTER} Why this order?`)).toBe(true)
     expect(w.findAll('[data-pent]')).toHaveLength(12)
     expect(w.findAll('[aria-current]').map((x) => x.attributes('data-sheet-choice'))).toEqual(['']) // nothing picked: only the sheet's choice is current
     await w.findAll('[data-pent]').find((x) => x.text() === 'F♯m')?.trigger('click')
@@ -70,5 +70,15 @@ describe('the pentatonic ladder popover', () => {
     }
     expect(await panelStyle(0.5)).toContain('zoom: 2')
     expect(await panelStyle()).not.toContain('zoom')
+  })
+})
+
+describe('the pentatonic ladder’s footer', () => {
+  it('links to why the list runs in its order', async () => {
+    const w = await mountSuspended(PentatonicLadder, { props, attachTo: document.body })
+    await w.find('button').trigger('click')
+    await flushPromises()
+    expect(w.find('[role=dialog] a[href="/how-it-decides#pick.order"]').text()).toBe('Why this order?')
+    w.unmount()
   })
 })

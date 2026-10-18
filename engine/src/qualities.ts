@@ -111,16 +111,17 @@ export function baseQuality(written: string): string | null {
 /**
  * a chord as the ear hears it: its root and canonical quality, read on the bass when a slash chord is another chord
  * there (DbMaj7/C -> C 7sus4b9), and the quality text whose tensions the symbol pins ("7#9b13"; for a slash reading,
- * the reading's own quality). null if the chord can't be read or its quality is unknown.
+ * the reading's own quality). slash: read on its bass. null if the chord can't be read or its quality is unknown.
  */
-export type ChordReading = Readonly<{ root: Spelled; quality: string; symbol: string }>
+export type ChordReading = Readonly<{ root: Spelled; quality: string; symbol: string; slash: boolean }>
 export function readChord(chord: string): ChordReading | null {
   try {
     const c = parseChord(chord)
     const quality = baseQuality(c.quality)
     if (quality === null) return null
     const reading = slashReading(quality, c.root, c.bass)
-    return { root: reading.root, quality: reading.quality, symbol: reading.quality === quality ? c.quality : reading.quality }
+    const slash = reading.quality !== quality
+    return { root: reading.root, quality: reading.quality, symbol: slash ? reading.quality : c.quality, slash }
   } catch {
     return null
   }

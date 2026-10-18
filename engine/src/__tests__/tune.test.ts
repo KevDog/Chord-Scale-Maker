@@ -1,6 +1,6 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
-import { keyLabel, parseChart } from '../chart'
+import { keyLabel, parseChart, serializeChart } from '../chart'
 import { LIMITS } from '../limits'
 import type { ChordToken } from '../chord'
 import { chartOutline, tuneAdvice, tuneDescription, tuneGaps, tuneSummary } from '../tune'
@@ -10,6 +10,16 @@ const read = (name: string) => readFileSync(`charts/${name}`, 'utf8')
 const charts = readdirSync('charts').filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
 
 describe('tuneSummary', () => {
+  it('reads the version, trimmed; none is the main chart', () => {
+    expect(tuneSummary('title: Summertime\nversion:  Jazz Lab Accelerator \n\nsection: A\nbars: 4\n1 | C').version).toBe('Jazz Lab Accelerator')
+    expect(tuneSummary('title: Summertime\n\nsection: A\nbars: 4\n1 | C').version).toBe('')
+  })
+
+  it('keeps version: through parse and serialize', () => {
+    const text = 'title: Summertime\nversion: Jazz Lab Accelerator\n\nsection: A\nbars: 4\n1 | C\n'
+    expect(serializeChart(parseChart(text).value)).toBe(text)
+  })
+
   it('gives the heading fields as written', () => {
     const t = tuneSummary(read('blue-trane.txt'))
     expect(t).toMatchObject({

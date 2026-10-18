@@ -3,7 +3,7 @@
 
   <UiDialog :open="open" size="md" @close="open = false">
     <UiDialogTitle>Transpose chart</UiDialogTitle>
-    <UiDialogDescription>Moves every chord and scale to a new concert key. The title and subtitle stay as they are; transpose back to undo.</UiDialogDescription>
+    <UiDialogDescription>Moves every chord and scale to a new concert key. The title and subtitle stay as they are; transpose back to undo. <DecisionLink id="spell.transpose">How the new key is spelled</DecisionLink>.</UiDialogDescription>
     <UiDialogBody>
       <div class="grid grid-cols-2 gap-4">
         <UiField>

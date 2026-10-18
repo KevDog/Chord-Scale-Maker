@@ -4,8 +4,8 @@
     <UiText class="-mt-1">
       Pick the notes to improvise with; the rest are dimmed, on screen and in print.
       {{ mode === 'root' ? 'Boxes are intervals from each chord’s root, even when its scale starts elsewhere: over B♭–7, B♭ is 1.' : `Boxes are pitches spelled from ${startName}.` }}
-      <template v-if="pentatonicShown"> Pentatonic lights the minor pentatonic <em>Built on</em> a degree of each chord (Auto: the one sharing the most): the notes its scale shares, and its others added in a second colour; each staff’s caption says how many it shares. {{ PENT_INSIDE_HELP }}</template>
-      <template v-if="hexatonicShown"> Hexatonic lights two triads from each scale, six notes in two groups. Pair <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff’s scale; on a seven-note scale it leaves out degree <em>n</em> − 1 (Pair 1 leaves out the 7th).</template>
+      <template v-if="pentatonicShown"> Pentatonic lights the minor pentatonic <em>Built on</em> a degree of each chord (Auto: the one sharing the most): the notes its scale shares, and its others added in a second colour; each staff’s caption says how many it shares. {{ PENT_INSIDE_HELP }} <DecisionLink id="pent.auto">How Auto picks a pentatonic</DecisionLink>.</template>
+      <template v-if="hexatonicShown"> Hexatonic lights two triads from each scale, six notes in two groups. Pair <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff’s scale; on a seven-note scale it leaves out degree <em>n</em> − 1 (Pair 1 leaves out the 7th). <DecisionLink id="hex.auto">How Auto picks a pair</DecisionLink>.</template>
     </UiText>
 
     <!-- the presets come and go with the Interface level: the rest slide over (#297) -->

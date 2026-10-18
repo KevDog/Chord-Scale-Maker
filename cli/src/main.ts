@@ -1,7 +1,8 @@
 import { spawnSync } from 'node:child_process'
-import { existsSync, readFileSync, writeFileSync } from 'node:fs'
+import { existsSync, readdirSync, readFileSync, writeFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { dirname, resolve } from 'node:path'
+import { isSyncCopy } from '@chord-scale-maker/engine'
 import { add, type Effects } from './add'
 import { parseAddArgs, USAGE } from './args'
 
@@ -33,6 +34,10 @@ export const realEffects = (): Effects => ({
   err: (l) => console.error(l),
   chartsDir: `${ENGINE}/charts/`,
   date: new Date().toISOString().slice(0, 10),
+  library: () =>
+    readdirSync(`${ENGINE}/charts`)
+      .filter((f) => f.endsWith('.txt') && !isSyncCopy(f))
+      .map((f) => ({ slug: f.slice(0, -4), text: readFileSync(`${ENGINE}/charts/${f}`, 'utf8') })),
 })
 
 // bin/csm.mjs sets CSM_MAIN; the tests import main alone
