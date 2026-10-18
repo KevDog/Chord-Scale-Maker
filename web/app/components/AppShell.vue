@@ -55,6 +55,7 @@
         <nav aria-label="Site" class="flex flex-wrap gap-x-4 gap-y-1">
           <NuxtLink to="/help" class="hover:text-zinc-950 dark:hover:text-white">Help</NuxtLink>
           <NuxtLink to="/how-it-decides" class="hover:text-zinc-950 dark:hover:text-white">How it decides</NuxtLink>
+          <NuxtLink to="/release-notes" class="hover:text-zinc-950 dark:hover:text-white">Release notes</NuxtLink>
           <NuxtLink to="/functions" class="hover:text-zinc-950 dark:hover:text-white">Functions</NuxtLink>
           <NuxtLink to="/scales" class="hover:text-zinc-950 dark:hover:text-white">Scales</NuxtLink>
           <NuxtLink to="/composers" class="hover:text-zinc-950 dark:hover:text-white">Composers</NuxtLink>

@@ -10,7 +10,7 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-17-user-docs-restructure-design.md` §3, §4, §5.2–5.3, §8, §9 Phase 2, §11 (rulings win). Facts for each section: `docs/design.md` §5 and §7a (subsections named per task).
 
-**Two PRs.** PR A = Tasks 1–6 (page, content, Help, nav). PR B = Task 7 (interface links), branched after PR A merges. PR B's gate passes by touching `how-it-decides.vue` or with `Docs: none — links to existing sections only`.
+**Three PRs.** PR A = Tasks 1–6 (page, content, Help, nav). PR B = Task 7 (release notes and their gate). PR C = Task 8 (interface links), which writes a release note under the new gate and passes the docs part by touching `how-it-decides.vue` or with `Docs: none — links to existing sections only`.
 
 ## Global Constraints
 
@@ -149,7 +149,21 @@ Sources: design.md §5 "Practice selection" (Pentatonic, Hexatonic), "Pentatonic
 - [ ] **Step 6:** File one GH issue, "Docs gate: review minors from #398", listing: PR template implies `Docs changed:` satisfies the gate; gate rejects an en dash / no space; `rules.ts` not counted as docs by the gate (the hook counts it); `links.ts` second `#` and bare `#top`; Dependabot skip uses `github.actor`, not the PR author; pre-push builds twice when docs and app both change.
 - [ ] **Step 7:** Update `docs/design.md` §5 Documentation (Phase 2: the page, `DecisionSection`, the reverse check, Help's stub). Push, open PR A with `Docs changed: how-it-decides.vue, help.vue, decisions.ts`.
 
-### Task 7 (PR B): Links where the choice is shown
+### Task 7 (PR B): Release notes, and the gate requires one (spec §12)
+
+**Files:** Create `web/app/utils/releaseNotes.ts`, `web/app/pages/release-notes.vue`, `web/test/releaseNotes.test.ts`, `web/e2e/release-notes.spec.ts`; Modify `web/build/docsGate.ts` (+ test), `.github/pull_request_template.md`, `.githooks/pre-push` (`DOCS` list), `web/app/utils/sitemap.ts`, `web/app/utils/site.ts` (`PAGE_HEAD['release-notes']`), `AppShell.vue` (footer), `help.vue` (`#odds` link), `web/e2e/a11y/pages.a11y.ts`, `docs/design.md` §5 Documentation.
+
+**Interfaces:**
+- Produces: `type ReleaseItem = Readonly<{ text: string; pr?: number }>`, `type ReleaseNote = Readonly<{ date: string; items: readonly ReleaseItem[] }>`, `RELEASE_NOTES: readonly ReleaseNote[]` (newest first), `RELEASE_NOTES_FILE = 'web/app/utils/releaseNotes.ts'`.
+- Produces: `docsGate(files, body)` also requires, when user-facing, a change to `RELEASE_NOTES_FILE` or a body line `^Release notes: none (?:—|--) <reason>$`; the failure message names whichever requirement is missing.
+
+- [ ] **Step 1: Failing tests.** `releaseNotes.test.ts`: dates `YYYY-MM-DD`, strictly descending, unique; every item's text non-empty and ends in `.`; `pr` a positive integer. `docsGate.test.ts`: user-facing + docs but no note → fails, message contains `Release notes: none — `; + note file → passes; + note escape (em dash or `--`, CRLF) → passes; docs escape alone → still fails on the note; charts-only → passes with neither. Page test: one `section` per entry, `id` = date, PR links `https://github.com/KevDog/Chord-Scale-Maker/pull/<n>`.
+- [ ] **Step 2:** Run → FAIL.
+- [ ] **Step 3:** Implement. Page: owner's voice intro, `PageIndex` by month, each date a `UiSubheading` (`id` = date, text the date written out: 18 October 2026), items as a list, `(#N)` links. Seed from merged PRs since 2026-10-04 that touch user-facing paths: a day's highlights in plain words, internal work left out.
+- [ ] **Step 4:** `make test`, `make lint`, `make docs`, `make a11y`, `make e2e` → green.
+- [ ] **Step 5:** Commit, push, PR B (its own note in `RELEASE_NOTES`).
+
+### Task 8 (PR C): Links where the choice is shown
 
 **Files:** Modify `ChangesNote.vue`, `PracticePanel.vue`, `ChordPickPopover.vue`, `PentatonicLadder.vue`, `ChartTranspose.vue`; tests beside each (`web/test/ChangesNote.test.ts`, …).
 
@@ -163,7 +177,7 @@ Sources: design.md §5 "Practice selection" (Pentatonic, Hexatonic), "Pentatonic
 - [ ] **Step 2:** Run → FAIL.
 - [ ] **Step 3:** Add `<DecisionLink>`s. ChangesNote decides pinned/slash from the chord's resolved scale source (the same field that chooses its "why" text today; `written` → `scale.level`, a `slash_chords` reading → `scale.slash`).
 - [ ] **Step 4:** `make test`, `make e2e`, `make a11y` → green.
-- [ ] **Step 5:** Commit, push, PR B with `Docs: none — links to existing How it decides sections only` (or touch the page if copy changes).
+- [ ] **Step 5:** Commit, push, PR C with a release note and `Docs: none — links to existing How it decides sections only` (or touch the page if copy changes).
 
 ## After this
 

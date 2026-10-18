@@ -4,7 +4,7 @@
 # (web/app/); other pushes go straight through. Installed by `make setup` (git config core.hooksPath .githooks); skip
 # once with `git push --no-verify`
 zero=0000000000000000000000000000000000000000
-DOCS="web/app/pages/help.vue web/app/pages/functions.vue web/app/pages/how-it-decides.vue web/app/pages/chart-format.vue web/app/pages/glossary.vue engine/src/decisions.ts engine/src/analysis/rules.ts"
+DOCS="web/app/pages/help.vue web/app/pages/functions.vue web/app/pages/how-it-decides.vue web/app/pages/release-notes.vue web/app/utils/releaseNotes.ts web/app/pages/chart-format.vue web/app/pages/glossary.vue engine/src/decisions.ts engine/src/analysis/rules.ts"
 app=""
 docs=""
 while read -r _local_ref local_sha _remote_ref remote_sha; do

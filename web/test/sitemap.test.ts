@@ -29,7 +29,7 @@ describe('sitemap paths', () => {
 
   it('lists the site pages, then the scales, the composers, then the songs', () => {
     const paths = sitemapPaths(['/song/a'], ['thelonious-monk'])
-    expect(paths.slice(0, 9)).toEqual(['/', '/library', '/help', '/how-it-decides', '/functions', '/about', '/contact', '/privacy', '/scales'])
+    expect(paths.slice(0, 10)).toEqual(['/', '/library', '/help', '/how-it-decides', '/release-notes', '/functions', '/about', '/contact', '/privacy', '/scales'])
     expect(paths).toContain('/scales/dorian')
     expect(paths).toContain('/scales/diatonic-diminished-sharp-iv')
     expect(paths.filter((p) => p.startsWith('/scales/'))).toHaveLength(Object.keys(SCALES).length)
