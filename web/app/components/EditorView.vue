@@ -182,14 +182,14 @@
         <div class="relative mt-4">
           <div v-if="rendering.busy.value" role="status" aria-label="Loading" class="pointer-events-none absolute inset-0 z-10 flex items-start justify-center pt-10 print:hidden"><UiSpinner /></div>
           <template v-if="editor.fatal.value">
-            <UiHeading class="mb-1">{{ editor.meta.value.title || 'Untitled' }}</UiHeading>
+            <UiHeading class="mb-1">{{ sheetTitle }}</UiHeading>
             <SheetStatus v-if="statusText || copyError" :text="statusText" :failed="saveFailed" :error="copyError" class="mb-2 print:hidden" />
             <UiText class="text-red-600! dark:text-red-400!">Preview paused: the chart is over a size limit.</UiText>
           </template>
           <ChangesSheet
             v-else-if="sheet === 'changes'"
             :doc="editor.doc.value"
-            :title="editor.meta.value.title"
+            :title="sheetTitle"
             :heading-level="1"
             :subtitle="editor.heading.value.subtitle"
             :composer="editor.heading.value.composer"
@@ -224,7 +224,7 @@
           <ScaleSheet
             v-else-if="sheet === 'scales'"
             :rows="editor.rows.value"
-            :title="editor.meta.value.title"
+            :title="sheetTitle"
             :heading-level="1"
             :subtitle="editor.heading.value.subtitle"
             :composer="editor.heading.value.composer"
@@ -247,7 +247,7 @@
           <ArpeggioSheet
             v-else
             :rows="editor.rows.value"
-            :title="editor.meta.value.title"
+            :title="sheetTitle"
             :heading-level="1"
             :subtitle="editor.heading.value.subtitle"
             :composer="editor.heading.value.composer"
@@ -326,6 +326,7 @@ import {
   lineSections,
   migrateChart,
   remapOwned,
+  chartName,
 } from '@chord-scale-maker/engine'
 import BarDialog, { type BarDialogKind, type BarDialogSubmit } from './BarDialog.vue'
 import type { SaveTarget } from '~/composables/useSavedChart'
@@ -394,6 +395,8 @@ const part = computed(() => partFor(prefs.instrument.value, playerRange ? prefs.
 /** the editor: hidden by default (song-first), shown for a new chart or one over a size limit (only the text can fix it) */
 const bornNew = ref(false) // latches true for a new chart, so saving it (its URL becomes ?mine) doesn't hide the editor mid-edit
 watch(() => props.isNew, (v) => { if (v) bornNew.value = true }, { immediate: true })
+// the sheets' heading: a version's carries its label (#411)
+const sheetTitle = computed(() => chartName(editor.doc.value))
 const editorShown = computed(() => prefs.showEditor.value || bornNew.value || editor.fatal.value)
 /** Edit and Done; Done closes a new chart's editor too */
 function toggleEditor(): void {

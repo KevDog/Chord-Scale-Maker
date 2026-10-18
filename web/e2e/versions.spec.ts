@@ -21,6 +21,9 @@ test('the version picker switches between a tune\'s charts', async ({ page }) =>
   await expect(page).toHaveURL(/\/song\/summertime-jazz-lab-accelerator$/)
   await expect(page.getByRole('button', { name: 'Version' })).toContainText('Jazz Lab Accelerator')
   await expect(staves(page).first()).toBeVisible()
+  // the label stays in the heading and the tab once the app runs
+  await expect(page.getByRole('heading', { name: 'Summertime (Jazz Lab Accelerator)', level: 1 })).toBeVisible()
+  await expect(page).toHaveTitle(/^Summertime \(Jazz Lab Accelerator\)/)
 })
 
 test.describe('without JavaScript', () => {

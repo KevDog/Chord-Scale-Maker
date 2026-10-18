@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { beatsPerBar, chartAka, chartRecording, chartBeats, chartKind, chartDetails, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, lineSections, parseChart, parseContext, qualityScale, serializeChart } from '../chart'
+import { beatsPerBar, chartAka, chartName, chartRecording, chartBeats, chartKind, chartDetails, chartHeading, chartMeta, expandRowLines, expandRows, isFatal, isValidKey, keyLabel, lineSections, parseChart, parseContext, qualityScale, serializeChart } from '../chart'
 import { LIMITS } from '../limits'
 
 describe('isValidKey', () => {
@@ -57,6 +57,13 @@ describe('chart', () => {
     expect(heading('subtitle: S\n')).toEqual({ title: 'Untitled', subtitle: 'S', composer: '' })
     expect(heading('title: T\nkey: G modal\n').subtitle).toBe('G modal')
     expect(['C', 'F#', 'Ebm', 'f', 'Dorian'].map(keyLabel)).toEqual(['C', 'F♯', 'E♭ minor', 'f', 'Dorian'])
+  })
+
+  it('names a version of a tune by its label (#411)', () => {
+    const name = (text: string) => chartName(parseChart(text).value)
+    expect(name('title: Summertime\nversion: Jazz Lab Accelerator\n')).toBe('Summertime (Jazz Lab Accelerator)')
+    expect(name('title: Summertime\n')).toBe('Summertime')
+    expect(name('version: Mine\n')).toBe('Untitled (Mine)')
   })
 
   it('expands copy: with bars from 1 and the source lines', () => {

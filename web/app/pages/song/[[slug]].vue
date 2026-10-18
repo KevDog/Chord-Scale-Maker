@@ -58,7 +58,7 @@
 import { canonicalUrl, libraryPath, PAGE_HEAD, seoMeta } from '~/utils/site'
 import { rememberRecent } from '~/utils/recentCharts'
 import { songHead } from '~/utils/songHead'
-import { chartHeading, decodeShare, parseChart, type ShareView } from '@chord-scale-maker/engine'
+import { chartName, decodeShare, parseChart, type ShareView } from '@chord-scale-maker/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 
 /**
@@ -169,6 +169,6 @@ if (song?.canonical) {
 }
 const versions = useFeature('versions')
 // in the browser, the tab and history name the chart ("Blue Trane · Chord Scale Maker"); the prerender has none
-const chartTitle = computed(() => (import.meta.client && source.value.kind === 'chart' ? chartHeading(parseChart(source.value.text).value).title : ''))
+const chartTitle = computed(() => (import.meta.client && source.value.kind === 'chart' ? chartName(parseChart(source.value.text).value) : ''))
 useHead({ title: () => chartTitle.value || (song?.head ?? PAGE_HEAD.song).title })
 </script>
