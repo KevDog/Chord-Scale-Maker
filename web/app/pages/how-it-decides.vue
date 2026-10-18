@@ -324,6 +324,100 @@
 
       <section class="scroll-mt-6 space-y-8" aria-labelledby="superimposing">
         <UiSubheading id="superimposing" class="scroll-mt-6">Superimposing</UiSubheading>
+        <UiText>
+          Superimpose (on the Changes) and the Practice panel's Pentatonic and Hexatonic (on the Scales) lay a smaller set
+          of notes over each chord. Both sheets choose them the same way.
+        </UiText>
+
+        <DecisionSection id="pent.auto">
+          <UiText>
+            Each chord's scale is set against all twelve minor pentatonics. They're ranked by how many notes they share with
+            the scale, and among those that share as many, the one fewest fifths from the chord's root comes first, the flat
+            side before the sharp. <strong :class="EM">Auto</strong> plays the top one. Over <UiCode>Cmaj7</UiCode>
+            (C Ionian), the top three:
+          </UiText>
+          <UiTable dense>
+            <UiTableHead>
+              <UiTableRow>
+                <UiTableHeader>Pentatonic</UiTableHeader>
+                <UiTableHeader>Notes shared</UiTableHeader>
+              </UiTableRow>
+            </UiTableHead>
+            <UiTableBody>
+              <UiTableRow v-for="p in PENT_EXAMPLE" :key="p.name">
+                <UiTableCell>{{ p.name }}</UiTableCell>
+                <UiTableCell>{{ p.shared }}</UiTableCell>
+              </UiTableRow>
+            </UiTableBody>
+          </UiTable>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> Built on picks a degree of every chord instead (on 2 over
+            Cmaj7 is Dm, over G7 it's Am), and a chord pick changes one chord.
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection id="pent.inside">
+          <UiText>
+            Five notes shared is wholly inside: every note of the pentatonic is in the scale. {{ PENT_INSIDE_HELP }} Fewer
+            shared is further out, so a pick from lower in the list is a deliberate step outside.
+          </UiText>
+          <UiText>
+            On the Changes, Ranked against Key sets each key area's twelve on a ladder round the circle of fifths from home
+            (its tonic minor: Am in C major), each rung sharing fewer notes with the key: 5, 5, 4, 3, 2, 1, 0. Rung, Side
+            and Path move along it.
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection id="pent.line">
+          <UiText>
+            While Superimpose is Pentatonic, the Line's 7th Chords slot plays each chord's pentatonic, the one its label
+            shows, in four-note cells: the pentatonic less the note <strong :class="EM">Leave out</strong> chooses (leave
+            out 1 and Am pentatonic plays C D E G). The first cell starts on its bottom note going up (its top going down);
+            each later one starts on its note nearest the last one played and goes the way you chose, unless it would run past
+            your range, when it turns the other way. A chord with no pentatonic plays its 7th chord arpeggio.
+          </UiText>
+          <UiText><strong :class="EM">What you can change:</strong> Leave out, and the direction.</UiText>
+        </DecisionSection>
+
+        <DecisionSection id="hex.auto">
+          <UiText>
+            A triad pair is two triads from the chord's scale with no note in common: six notes, after Gary Campbell's
+            <em>Triad Pairs for Jazz</em>. Pair <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of the
+            scale. <strong :class="EM">Auto</strong> takes the pair that covers the most chord tones, then one whose
+            triads are both major or minor, then the one nearest the chord's root by fifths. Over <UiCode>Cmaj7</UiCode>
+            that's <UiCode>{{ HEX_EXAMPLE }}</UiCode>.
+          </UiText>
+          <UiText><strong :class="EM">What you can change:</strong> Pair, and a chord pick for one chord.</UiText>
+        </DecisionSection>
+
+        <DecisionSection id="hex.group">
+          <UiText>
+            On the Scales sheet the six notes are split in two and tinted apart, by the grouping you choose: the two triads,
+            the chord tones and the colour notes, a pentatonic and one more, or the lowest three and highest three.
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection id="hex.line">
+          <UiText>
+            While Superimpose is Hexatonic, the 7th Chords slot plays each chord's pair a triad at a time, its lower triad
+            first: <UiCode>G/Am</UiCode> plays G B D, then A C E from the note nearest D. The direction, the starts and the
+            turns at your range's edges are the Pentatonic line's. A chord with no pair plays its 7th chord arpeggio.
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection id="pick.order">
+          <UiText>
+            Click a chord's pentatonic or triad pair to pick another; the list runs from inside to outside, in the order
+            above (most shared, or most chord tones covered, first), with the sheet's own choice at the top. A pick holds for
+            that chord on both sheets, through changes of Built on, Pair, Path, Rung or Side, and goes with a share link. It
+            isn't written into the chart. Rewrite the chord, or move the level so it gets another scale, and the pick rests
+            until it fits again; change the chart's key and the picks clear.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> Sheet's choice undoes one pick; ⋯ More actions → Reset chord
+            picks undoes them all.
+          </UiText>
+        </DecisionSection>
       </section>
 
       <section class="scroll-mt-6 space-y-8" aria-labelledby="spelling">
@@ -399,13 +493,18 @@
 </template>
 
 <script setup lang="ts">
-import { INSTRUMENTS, type InstrumentName, LEVEL_LABELS, noteName, scaleAtLevel, type ScaleLevel } from '@chord-scale-maker/engine'
+import { CONCERT, hexatonicChoices, INSTRUMENTS, type InstrumentName, LEVEL_LABELS, noteName, pentatonicChoices, scaleAtLevel, type ScaleLevel } from '@chord-scale-maker/engine'
 import { instrumentOption } from '~/utils/instrumentChoices'
+import { PENT_INSIDE_HELP } from '~/utils/pentatonics'
 import { PAGE_HEAD, seoMeta } from '~/utils/site'
 
 const cellsOn = useFeature('cells')
 const approachesOn = useFeature('approaches')
 const patternsOn = useFeature('patterns')
+
+/** the ranking examples, from the engine as the sheets rank them */
+const PENT_EXAMPLE = pentatonicChoices('Cmaj7', 'C Ionian', CONCERT).slice(0, 3)
+const HEX_EXAMPLE = hexatonicChoices('Cmaj7', 'C Ionian', CONCERT)[0]?.name ?? ''
 
 const RANGES = (Object.keys(INSTRUMENTS) as InstrumentName[]).map((n) => ({
   name: instrumentOption(n),

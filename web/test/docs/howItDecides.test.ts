@@ -1,6 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
-import { INSTRUMENTS, noteName, scaleAtLevel } from '@chord-scale-maker/engine'
+import { CONCERT, hexatonicChoices, INSTRUMENTS, noteName, pentatonicChoices, scaleAtLevel } from '@chord-scale-maker/engine'
 import { instrumentOption } from '~/utils/instrumentChoices'
 import HowItDecides from '~/pages/how-it-decides.vue'
 
@@ -23,6 +23,13 @@ describe('How it decides', () => {
     } finally {
       Object.assign(features, was)
     }
+  })
+
+  it('ranks the pentatonics and triad pairs over Cmaj7 from the engine', async () => {
+    const page = await mountSuspended(HowItDecides)
+    const pent = page.findAll('[data-decision="pent.auto"] tbody tr').map((tr) => tr.findAll('td').map((td) => td.text()))
+    expect(pent).toEqual(pentatonicChoices('Cmaj7', 'C Ionian', CONCERT).slice(0, 3).map((c) => [c.name, String(c.shared)]))
+    expect(page.find('[data-decision="hex.auto"]').text()).toContain(hexatonicChoices('Cmaj7', 'C Ionian', CONCERT)[0]!.name)
   })
 
   it('lists every instrument’s written range', async () => {
