@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { composerIndex, isSyncCopy } from '@chord-scale-maker/engine'
 import { describe, expect, it } from 'vitest'
-import { findChart, keyName, LIBRARY, matchSpan, searchLibrary, suggestTunes, toLibrary } from '~/utils/library'
+import { findChart, keyName, LIBRARY, matchSpan, searchLibrary, suggestTunes, toLibrary, toTunes, tuneDetails, TUNES } from '~/utils/library'
 import { songPath } from '~/utils/site'
 import { sitemapPaths, sitemapXml, chartSlugsOf } from '~/utils/sitemap'
 import { COMPOSERS } from '~/utils/composerPage'
@@ -123,5 +123,38 @@ describe('library', () => {
   it("the config's composers, from the raw chart files, are the library's (nuxt.config.ts lists them for the sitemap)", () => {
     const charts = chartSlugsOf(readdirSync('../engine/charts')).map((slug) => ({ slug, text: readFileSync(`../engine/charts/${slug}.txt`, 'utf8') }))
     expect(composerIndex(charts).map((c) => c.slug)).toEqual(COMPOSERS.map((c) => c.slug))
+  })
+})
+
+describe('tunes (#411): one row per tune, its versions folded in', () => {
+  const body = '\n\nsection: A\nbars: 4\n1 | C'
+  const lib = toLibrary({
+    'summertime.txt': `title: Summertime\ncomposer: George Gershwin${body}`,
+    'summertime-jla.txt': `title: Summertime\naka: Summer Time\nversion: Jazz Lab Accelerator${body}`,
+    'autumn-leaves.txt': `title: Autumn Leaves${body}`,
+  })
+
+  it('keeps the main chart, in library order, with its count of versions', () => {
+    expect(toTunes(lib).map((t) => [t.slug, t.versions])).toEqual([
+      ['autumn-leaves', 1],
+      ['summertime', 2],
+    ])
+  })
+
+  it('finds a tune once by any version\'s title or aka:', () => {
+    expect(searchLibrary(toTunes(lib), 'summer time').map((t) => t.slug)).toEqual(['summertime'])
+    expect(suggestTunes(toTunes(lib), 'summer', 10).tunes.map((t) => t.slug)).toEqual(['summertime'])
+  })
+
+  it('says how many versions a row stands for', () => {
+    const [autumn, summertime] = toTunes(lib)
+    expect(tuneDetails(summertime!)).toBe('2 versions')
+    expect(tuneDetails({ ...summertime!, details: 'Ballad · Am' })).toBe('Ballad · Am · 2 versions')
+    expect(tuneDetails(autumn!)).toBe(autumn!.details)
+  })
+
+  it('is the library itself while no chart has a version:', () => {
+    expect(TUNES.map((t) => t.slug)).toEqual(LIBRARY.map((c) => c.slug))
+    expect(TUNES.every((t) => t.versions === 1)).toBe(true)
   })
 })
