@@ -10,6 +10,8 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-18',
     items: [
+      { text: '18 charts from the Jazz Mind Accelerator backing tracks: versions of 15 library tunes, and Fly Me to the Moon, Mack the Knife and A Child Is Born.', pr: 421 },
+      { text: 'Versions: a tune with more than one chart has a Version menu above its sheet, your own charts of it included.', pr: 419 },
       { text: 'The Instrument picker in two steps: the pitch (Concert, B♭, E♭, F, Bass), then your instrument.', pr: 420 },
       { text: 'Links from where a choice shows (a chord’s why note, Practice, chord picks, Transpose) to How it decides.', pr: 412 },
       { text: 'Release notes: this page.' },
