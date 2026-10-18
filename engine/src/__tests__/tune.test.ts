@@ -54,7 +54,7 @@ describe('tuneSummary', () => {
 describe('tuneDescription', () => {
   it('names the tune, its other title, its composer and its key, as a lead-sheet style chart with no melody', () => {
     expect(tuneDescription(tuneSummary(read('blue-trane.txt')))).toBe(
-      'Blue Trane (also Blue Train) by John Coltrane in E♭: the chord changes as a lead-sheet style practice chart, with guide tones. Chords only, no melody.',
+      'Blue Trane (also Blue Train) by John Coltrane in E♭: the chord changes as a lead-sheet style practice chart. Chords only, no melody.',
     )
   })
 
@@ -70,6 +70,16 @@ describe('tuneDescription', () => {
     expect(tuneDescription(t)).toMatch(/^Tune \(also Song or Ditty\) by Someone in C: /)
     const long = tuneSummary(`title: Tune\naka: ${'x'.repeat(120)}\ncomposer: Someone\nkey: C\nA | 1 | C`)
     expect(tuneDescription(long)).toMatch(/^Tune by Someone in C: /)
+  })
+
+  it('names the notable recording after the key, kept over the guide tones, the other titles kept over it', () => {
+    const head = 'title: Tune\ncomposer: Someone\nkey: C\nrecording: Miles Davis; Kind of Blue; Columbia'
+    expect(tuneDescription(tuneSummary(`${head}; 1959\nA | 1 | C`))).toMatch(/^Tune by Someone in C, as recorded by Miles Davis \(1959\): the chord changes/)
+    expect(tuneDescription(tuneSummary(`${head}\nA | 1 | C`))).toMatch(/^Tune by Someone in C, as recorded by Miles Davis: /)
+    const mid = tuneDescription(tuneSummary(`title: Tune\naka: Song\ncomposer: Someone\nkey: C\nrecording: ${'x'.repeat(15)}; Album; Label; 1959\nA | 1 | C`))
+    expect(mid).toMatch(/^Tune \(also Song\) by Someone in C, as recorded by x+ \(1959\): the chord changes as a lead-sheet style practice chart\. Chords only/)
+    const long = tuneDescription(tuneSummary(`title: Tune\naka: Song\ncomposer: Someone\nkey: C\nrecording: ${'x'.repeat(80)}; Album; Label; 1959\nA | 1 | C`))
+    expect(long).toBe('Tune (also Song) by Someone in C: the chord changes as a lead-sheet style practice chart. Chords only, no melody.')
   })
 
   it('drops clauses from the end to fit, the lead-sheet clause last but for the title', () => {

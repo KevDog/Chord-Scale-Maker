@@ -89,7 +89,7 @@ In `web/app/utils/structuredData.ts`, the `MusicComposition` gains `recordedAs` 
 
 ## 6. Page description
 
-`tuneDescription` may gain a clause such as `, as recorded by John Coltrane (1957)`, given the lowest priority so that it is the first clause dropped. This is optional and should be decided after viewing real descriptions against the 160-character limit.
+`tuneDescription` gains `, as recorded by <Artist> (<year>)` after the key, only with the recordings flag (#364). Given the lowest priority, it fitted none of the 105 recorded tunes, so it drops after the guide tones and before the other titles (which now outlast the guide tones too) and "Chords only, no melody": 67 of 105 show it, and tunes losing their other titles fall from 22 to 6 (2026-10-17).
 
 ## 7. Curation rules
 
