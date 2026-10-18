@@ -1,4 +1,4 @@
-import { expect, staves, test } from './fixtures'
+import { chooseInstrument, expect, staves, test } from './fixtures'
 
 test.use({ viewport: { width: 390, height: 844 } })
 
@@ -11,8 +11,7 @@ test('on a phone the music starts on the first screen, the other controls in a s
   for (const name of ['Work on', 'Instrument', 'Controls', 'Print', 'More actions']) await expect(rail.getByRole('button', { name, exact: true })).toBeVisible()
   await expect(rail.getByRole('button', { name: 'Level' })).toHaveCount(0)
   // the instrument, from the rail, redraws the sheet
-  await rail.getByRole('button', { name: 'Instrument' }).click()
-  await page.getByRole('option', { name: /^Tenor Sax/ }).click()
+  await chooseInstrument(page, 'Tenor Sax')
   await expect(page.getByText('the preview is transposed for tenor sax')).toBeVisible()
   // the rest in a dialog: Level, Analysis, Line, Transpose, and Edit, Share, Focus
   await rail.getByRole('button', { name: 'Controls' }).click()

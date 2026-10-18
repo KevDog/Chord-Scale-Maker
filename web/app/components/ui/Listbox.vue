@@ -1,7 +1,7 @@
 <template>
   <HListbox v-model="model" :disabled="isDisabled" as="div" data-slot="control" class="relative">
     <HListboxButton
-      :id="field?.controlId"
+      :id="ariaLabel ? undefined : field?.controlId"
       v-slot="{ open }"
       v-interactive
       :aria-label="ariaLabel"
@@ -41,7 +41,7 @@ import { dataFlag, vInteractive } from '~/utils/interactive'
 /**
  * Catalyst Listbox on @headlessui/vue. Options are UiListboxOption children (optionally inside
  * UiListboxGroup); the button shows the #selected slot ({ value }). Inside a UiField the label
- * names the button. Headless UI Vue has no anchor positioning, so the menu opens below.
+ * names the button, unless it has its own ariaLabel (a second control in the field). Headless UI Vue has no anchor positioning, so the menu opens below.
  */
 const props = defineProps<{ placeholder?: string; ariaLabel?: string; invalid?: boolean; disabled?: boolean }>()
 const model = defineModel<T>()

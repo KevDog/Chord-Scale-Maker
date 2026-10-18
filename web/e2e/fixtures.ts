@@ -48,8 +48,24 @@ export { expect }
 /** count of drawn staves (VexFlow SVGs) */
 export const staves = (page: import('@playwright/test').Page) => page.locator('svg[role=img]')
 
-/** pick an instrument from the editor's Instrument listbox by its visible name */
+/** each Pitch's instruments as the picker names them (Playwright can't load the engine: its JSON import) */
+const PITCHES: Readonly<Record<string, readonly string[]>> = {
+  Concert: ['Piano', 'Vibes', 'Flute', 'Guitar'],
+  'B♭': ['Trumpet', 'Flugelhorn', 'Clarinet', 'Soprano Sax', 'Tenor Sax'],
+  'E♭': ['Alto Sax', 'Bari Sax'],
+  F: ['Horn'],
+  Bass: ['Trombone', 'Tuba', 'Bass'],
+}
+
+/** pick an instrument by its visible name: its Pitch first, then the Instrument listbox (#417) */
 export async function chooseInstrument(page: import('@playwright/test').Page, name: string): Promise<void> {
+  const pitch = Object.keys(PITCHES).find((p) => PITCHES[p]!.some((n) => n.startsWith(name)))
+  if (!pitch) throw new Error(`no instrument ${name}`)
+  const current = await page.getByRole('button', { name: 'Pitch' }).textContent()
+  if (current?.trim() !== pitch) {
+    await page.getByRole('button', { name: 'Pitch' }).click()
+    await page.getByRole('listbox', { name: 'Pitch' }).getByRole('option', { name: pitch, exact: true }).click()
+  }
   await page.getByRole('button', { name: 'Instrument' }).click()
   await page.getByRole('option', { name: new RegExp(`^${name}`) }).click()
 }
