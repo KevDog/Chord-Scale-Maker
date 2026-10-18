@@ -1052,10 +1052,10 @@ its reasons into a chart as comments.
     second chart of a tune (file `<title>-<version>.txt`); a chart without one is the tune's main chart. `tuneGroups`
     (engine `versions.ts`) gathers charts by `tuneKey` of their title or `aka:`; `versionProblems` (two mains, a repeated
     label, a version titled unlike its main) fails `libraryMeta.test.ts`.
-    The Library lists one row per tune (`TUNES`, `utils/library.ts`). A version's page is titled "Summertime (Jazz Lab
+    The Library lists one row per tune (`TUNES`, `utils/library.ts`). A version's page is titled "Summertime (Jazz Mind
     Accelerator)" with its canonical on the main chart; it's prerendered but left out of the sitemap and IndexNow
     (`songSlugs`, `utils/sitemap.ts`), and its OG card carries the label. Scale pages list a tune once. The song page's
-    version picker (`SongVersions.vue`, `versionChoices`) is behind the `versions` flag: the library's charts ("Main"
+    version picker (`SongVersions.vue`, `versionChoices`) (flag `versions`, on) lists the library's charts ("Main"
     first), then a "Mine" group of your saved charts of the tune (`basedOn` one of its charts, or titled as its main),
     oldest first, by their `version:` or "My chart" ("(mine)" after a label the library has, numbered when several
     share one), re-read on each save (`savedRevision`); it shows on those charts' `?mine=` pages too. Your edits

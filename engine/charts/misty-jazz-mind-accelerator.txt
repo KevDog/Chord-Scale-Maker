@@ -1,0 +1,57 @@
+title: Misty
+composer: Erroll Garner
+style: Ballad
+key: Eb
+form: AABA, 32 bars
+source: Jazz Mind Accelerator
+version: Jazz Mind Accelerator
+# analysis: 2026-10-18, rules v1; Eb
+
+section: A1
+1  | EbMaj7  # tonic: the 4th is in the key
+2  | Bbm7    # ii of the ii–V to Ab
+2  | Eb7     # V7/IV in Eb: natural tensions
+3  | AbMaj7  # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
+4  | Abm7    # ii of Db7: Dorian
+4  | Db7     # back door bVII7 to EbMaj7: the #11 is in the key
+5  | EbMaj7  # tonic: the 4th is in the key
+5  | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+6  | Fm7     # ii of Bb7: Dorian
+6  | Bb7     # V7/I in Eb: natural tensions
+7  | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+7  | C7      # V7/ii in Eb: the b13 is in the key
+8  | Fm7     # ii of the ii–V to Eb
+8  | Bb7     # V7 of Eb: natural tensions
+9  | Eb6     # tonic: the 4th is in the key
+9  | Ab6     # IV: the #4 is the key’s 7th
+10 | Eb6     # tonic: the 4th is in the key
+10 | Eb6
+@ending 1 7 8
+@ending 2 9 10
+
+section: B
+1  | Bbm7    # ii of the ii–V to Ab
+2  | Eb7b9   # V7/IV in Eb: the b9 from the symbol
+3  | AbMaj7  # the Eb7b9 before it makes Ab the key of the moment: the 4th is in the key
+4  | AbMaj7
+5  | Am7     # ii of the ii–V to G minor
+6  | D7b9    # V7/iii in Eb: b9 and b13 are in the key
+7  | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+7  | C7      # V7/ii in Eb: the b13 is in the key
+8  | Fm7     # ii of the ii–V to Eb
+8  | Bb7     # V7 of Eb: natural tensions
+
+section: A2
+1  | EbMaj7  # tonic: the 4th is in the key
+2  | Bbm7    # ii of the ii–V to Ab
+2  | Eb7     # V7/IV in Eb: natural tensions
+3  | AbMaj7  # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
+4  | Abm7    # ii of Db7: Dorian
+4  | Db7     # back door bVII7 to EbMaj7: the #11 is in the key
+5  | EbMaj7  # tonic: the 4th is in the key
+5  | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+6  | Fm7     # ii of the ii–V to Eb
+6  | Bb7     # V7 of Eb: natural tensions
+7  | Eb6     # tonic: the 4th is in the key
+8  | Fm7     # ii of the ii–V to Eb
+8  | Bb7     # V7 of Eb: natural tensions

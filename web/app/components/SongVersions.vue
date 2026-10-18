@@ -1,7 +1,8 @@
 <template>
   <!-- a tune with more than one chart, the library's and yours: pick which version the sheets show (#411) -->
-  <div v-if="all.length" class="mb-4 flex items-center gap-3 print:hidden">
-    <UiText class="shrink-0" aria-hidden="true">Version</UiText>
+  <!-- on a phone, tight above the sheet so its music still starts on the first screen (phone.spec.ts) -->
+  <div v-if="all.length" class="mb-1 flex items-center gap-3 sm:mb-4 print:hidden">
+    <UiText class="hidden shrink-0 sm:block" aria-hidden="true">Version</UiText>
     <UiListbox :model-value="current" class="w-64" aria-label="Version" @update:model-value="(p) => p && p !== current && navigateTo(p)">
       <template #selected="{ value }"><UiListboxLabel>{{ labelOf(value) }}</UiListboxLabel></template>
       <UiListboxOption v-for="c in choices.library" :key="c.path" :value="c.path"><UiListboxLabel>{{ c.label }}</UiListboxLabel></UiListboxOption>

@@ -2,14 +2,14 @@ import { describe, expect, it } from 'vitest'
 import { ofTune, type SavedVersion, savedVersion, tuneAt, versionChoices } from '~/utils/songVersions'
 
 const MAIN = { path: '/song/summertime', label: 'Main' }
-const JLA = { path: '/song/summertime-jazz-lab-accelerator', label: 'Jazz Lab Accelerator' }
+const JLA = { path: '/song/summertime-jazz-mind-accelerator', label: 'Jazz Mind Accelerator' }
 const saved = (id: string, title: string, more: Partial<SavedVersion> = {}): SavedVersion => ({ id, title, kind: 'copy', createdAt: 1, version: '', ...more })
 const choices = (slug: string, mine: readonly SavedVersion[] = []) => versionChoices(tuneAt({ slug }), mine)
 
 describe('versionChoices (#411)', () => {
   it('lists a tune\'s library versions, the main first as "Main"', () => {
     expect(choices('summertime')).toEqual({ library: [MAIN, JLA], mine: [] })
-    expect(choices('summertime-jazz-lab-accelerator')).toEqual({ library: [MAIN, JLA], mine: [] })
+    expect(choices('summertime-jazz-mind-accelerator')).toEqual({ library: [MAIN, JLA], mine: [] })
   })
 
   it('offers nothing for a tune with one chart, or no library chart', () => {
@@ -22,7 +22,7 @@ describe('versionChoices (#411)', () => {
   it('adds your saved charts of the tune, by what they are based on or by title, labelled by version: or "My chart"', () => {
     const mine = [
       saved('aaaaaa', 'Summertime', { kind: 'new', version: 'Ballad' }),
-      saved('bbbbbb', 'Mine', { basedOn: 'summertime-jazz-lab-accelerator', createdAt: 2 }),
+      saved('bbbbbb', 'Mine', { basedOn: 'summertime-jazz-mind-accelerator', createdAt: 2 }),
       saved('cccccc', 'Blue Trane'),
     ]
     expect(choices('summertime', mine).mine).toEqual([
@@ -41,12 +41,12 @@ describe('versionChoices (#411)', () => {
 
   it('tells your charts apart from the library\'s and from each other when they share a label', () => {
     const mine = [
-      saved('aaaaaa', 'Summertime', { version: 'Jazz Lab Accelerator', createdAt: 1 }),
+      saved('aaaaaa', 'Summertime', { version: 'Jazz Mind Accelerator', createdAt: 1 }),
       saved('bbbbbb', 'Summertime', { version: 'Ballad', createdAt: 2 }),
       saved('cccccc', 'Summertime', { version: 'Ballad', createdAt: 3 }),
       saved('dddddd', 'Summertime', { version: 'Main', createdAt: 4 }),
     ]
-    expect(choices('summertime', mine).mine.map((c) => c.label)).toEqual(['Jazz Lab Accelerator (mine)', 'Ballad 1', 'Ballad 2', 'Main (mine)'])
+    expect(choices('summertime', mine).mine.map((c) => c.label)).toEqual(['Jazz Mind Accelerator (mine)', 'Ballad 1', 'Ballad 2', 'Main (mine)'])
   })
 
   it('leaves out your edits of a library chart: its own page already shows them', () => {
@@ -76,7 +76,7 @@ describe('versionChoices (#411)', () => {
   it('picks a tune\'s saved charts from their index entries alone, before any text is read', () => {
     const tune = tuneAt({ slug: 'summertime' })!
     expect(ofTune(tune, saved('a', 'Summertime'))).toBe(true)
-    expect(ofTune(tune, saved('b', 'Other', { basedOn: 'summertime-jazz-lab-accelerator' }))).toBe(true)
+    expect(ofTune(tune, saved('b', 'Other', { basedOn: 'summertime-jazz-mind-accelerator' }))).toBe(true)
     expect(ofTune(tune, saved('c', 'Blue Trane'))).toBe(false)
     expect(ofTune(tune, saved('d', 'Summertime', { kind: 'edited', basedOn: 'summertime' }))).toBe(false)
   })

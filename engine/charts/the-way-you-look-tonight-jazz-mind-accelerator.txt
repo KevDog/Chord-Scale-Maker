@@ -1,0 +1,53 @@
+title: The Way You Look Tonight
+composer: Jerome Kern
+style: Medium Swing
+key: F
+form: AAB, 48 bars
+source: Jazz Mind Accelerator
+version: Jazz Mind Accelerator
+# analysis: 2026-10-18, rules v1; F
+
+section: A
+# area: F major (A 1–16)
+1  | FMaj7   # tonic: the 4th is in the key
+2  | D7b9    # V7/ii in F: the b13 is in the key, the b9 from the symbol
+3  | Gm7     # ii of the ii–V to F
+4  | C7      # V7 of F: natural tensions
+5  | FMaj7   # tonic: the 4th is in the key
+6  | D7b9    # V7/ii in F: the b13 is in the key, the b9 from the symbol
+7  | Gm7     # ii of C7: Dorian
+8  | C7      # V7/I in F: natural tensions
+9  | Cm7     # ii of the ii–V to Bb
+10 | F7      # V7/IV in F: natural tensions
+11 | BbMaj7  # the F7 before it makes Bb the key of the moment: the 4th is in the key
+12 | Bbm6    # a minor sixth chord: Dorian
+13 | F6      # tonic: the 4th is in the key
+14 | D7b9    # V7/ii in F: the b13 is in the key, the b9 from the symbol
+15 | Gm7     # ii of C7: Dorian
+16 | C7      # V7/I in F: natural tensions
+# area: Ab major (A 17 – B 14)
+17 | Bbm7    # ii of the ii–V to Ab
+17 | Eb7     # V7 of Ab: natural tensions
+@nav 16 Fine
+@ending 1 16
+@ending 2 17
+
+section: B
+1  | AbMaj7  # tonic: the 4th is in the key
+2  | Adim7   # vii°7 of Bbm7: F7♭9 without its root
+3  | Bbm7    # ii of the ii–V to Ab
+4  | Eb7     # V7 of Ab: natural tensions
+5  | AbMaj7  # tonic: the 4th is in the key
+6  | Adim7   # vii°7 of Bbm7: F7♭9 without its root
+7  | Bbm7    # ii of the ii–V to Ab
+8  | Eb7     # V7 of Ab: natural tensions
+9  | AbMaj7  # tonic: the 4th is in the key
+10 | Adim7   # vii°7 of Bbm7: F7♭9 without its root
+11 | Bbm7    # ii of the ii–V to Ab
+12 | Eb7     # V7 of Ab: natural tensions
+13 | AbMaj7  # tonic: the 4th is in the key
+14 | F7b9    # VI7 in Ab, not resolving: the b13 is in the key, the b9 from the symbol
+# area: F major (B 15–16)
+15 | Gm7     # ii of the ii–V to F
+16 | C7      # V7 of F: natural tensions
+@nav 16 D.C. al Fine

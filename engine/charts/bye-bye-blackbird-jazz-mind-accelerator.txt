@@ -1,0 +1,50 @@
+title: Bye Bye Blackbird
+composer: Ray Henderson
+style: Medium Swing
+key: F
+form: AB, 32 bars
+source: Jazz Mind Accelerator
+version: Jazz Mind Accelerator
+# analysis: 2026-10-18, rules v1; F
+
+section: A
+1  | FMaj7  # tonic: the 4th is in the key
+2  | Gm7    # ii of the ii–V to F
+2  | C7     # V7 of F: natural tensions
+3  | FMaj7  # tonic: the 4th is in the key
+4  | Gm7    # ii of the ii–V to F
+4  | C7     # V7 of F: natural tensions
+5  | FMaj7  # tonic: the 4th is in the key
+6  | Am7b5  # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+6  | D7b9   # V7/ii in F: the b13 is in the key, the b9 from the symbol
+7  | Gm7    # ii of C7: Dorian
+8  | C7     # V7/I in F: natural tensions
+9  | Gm7    # ii: Dorian, the key’s own notes
+10 | D7b9   # V7/ii in F: the b13 is in the key, the b9 from the symbol
+11 | Gm7    # ii of C7: Dorian
+12 | C7     # V7/I in F: natural tensions
+13 | Gm7    # ii of the ii–V to F
+14 | C7     # V7 of F: natural tensions
+15 | F6     # tonic: the 4th is in the key
+16 | F6
+
+section: B
+1  | F7     # tritone substitute: resolves down a half step to E7
+2  | E7     # tritone substitute: resolves down a half step to Eb7
+3  | Eb7    # tritone substitute: resolves down a half step to D7b9
+4  | D7b9   # V7/ii in F: the b13 is in the key, the b9 from the symbol
+5  | Gm7    # ii: Dorian, the key’s own notes
+6  | Gm7
+7  | Db7    # tritone substitute: resolves down a half step to C7
+8  | C7     # V7 of F: natural tensions
+9  | FMaj7  # tonic: the 4th is in the key
+10 | Gm7    # ii of the ii–V to F
+10 | C7     # V7 of F: natural tensions
+11 | FMaj7  # tonic: the 4th is in the key
+12 | Am7b5  # iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)
+12 | D7b9   # V7/ii in F: the b13 is in the key, the b9 from the symbol
+13 | Gm7    # ii of the ii–V to F
+14 | C7     # V7 of F: natural tensions
+15 | F6     # tonic: the 4th is in the key
+16 | Gm7    # ii of the ii–V to F
+16 | C7     # V7 of F: natural tensions

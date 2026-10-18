@@ -1,0 +1,44 @@
+title: Nardis
+composer: Miles Davis
+style: Medium Swing
+key: Em
+form: AABA, 32 bars
+source: Jazz Mind Accelerator
+version: Jazz Mind Accelerator
+# analysis: 2026-10-18, rules v1; E minor
+
+section: A1
+# area: E minor (A1 1 – B 4)
+1 | Em7    # tonic minor: Dorian by convention
+2 | FMaj7  # a non-tonic major chord: Lydian
+3 | B7b9   # V7 in E minor, not resolving: b9 and b13 are in the key
+4 | CMaj7  # a non-tonic major chord: Lydian
+5 | Am7    # iv: Dorian, the key’s own notes
+6 | FMaj7  # a non-tonic major chord: Lydian
+7 | EMaj7  # a non-tonic major chord: Lydian
+8 | Em7    # tonic minor: Dorian by convention
+
+section: A2
+copy: A1
+
+section: B
+1 | Am7    # iv: Dorian, the key’s own notes
+2 | FMaj7  # a non-tonic major chord: Lydian
+3 | Am7    # iv: Dorian, the key’s own notes
+4 | FMaj7  # a non-tonic major chord: Lydian
+# area: C major (B 5–8)
+5 | Dm7    # ii of the ii–V to C
+6 | G7     # V7 of C: natural tensions
+7 | CMaj7  # tonic: the 4th is in the key
+8 | FMaj7  # IV: the #4 is the key’s 7th
+
+section: A3
+# area: E minor (A3 1–8)
+1 | Em7    # tonic minor: Dorian by convention
+2 | FMaj7  # a non-tonic major chord: Lydian
+3 | B7b9   # V7 in E minor, not resolving: b9 and b13 are in the key
+4 | CMaj7  # a non-tonic major chord: Lydian
+5 | Am7    # iv: Dorian, the key’s own notes
+6 | FMaj7  # a non-tonic major chord: Lydian
+7 | EMaj7  # a non-tonic major chord: Lydian
+8 | Em7    # tonic minor: Dorian by convention

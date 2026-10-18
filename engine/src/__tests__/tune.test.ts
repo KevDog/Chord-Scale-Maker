@@ -11,12 +11,12 @@ const charts = readdirSync('charts').filter((f) => f.endsWith('.txt') && !isSync
 
 describe('tuneSummary', () => {
   it('reads the version, trimmed; none is the main chart', () => {
-    expect(tuneSummary('title: Summertime\nversion:  Jazz Lab Accelerator \n\nsection: A\nbars: 4\n1 | C').version).toBe('Jazz Lab Accelerator')
+    expect(tuneSummary('title: Summertime\nversion:  Jazz Mind Accelerator \n\nsection: A\nbars: 4\n1 | C').version).toBe('Jazz Mind Accelerator')
     expect(tuneSummary('title: Summertime\n\nsection: A\nbars: 4\n1 | C').version).toBe('')
   })
 
   it('keeps version: through parse and serialize', () => {
-    const text = 'title: Summertime\nversion: Jazz Lab Accelerator\n\nsection: A\nbars: 4\n1 | C\n'
+    const text = 'title: Summertime\nversion: Jazz Mind Accelerator\n\nsection: A\nbars: 4\n1 | C\n'
     expect(serializeChart(parseChart(text).value)).toBe(text)
   })
 

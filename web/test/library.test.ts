@@ -130,7 +130,7 @@ describe('tunes (#411): one row per tune, its versions folded in', () => {
   const body = '\n\nsection: A\nbars: 4\n1 | C'
   const lib = toLibrary({
     'summertime.txt': `title: Summertime\ncomposer: George Gershwin${body}`,
-    'summertime-jla.txt': `title: Summertime\naka: Summer Time\nversion: Jazz Lab Accelerator${body}`,
+    'summertime-jla.txt': `title: Summertime\naka: Summer Time\nversion: Jazz Mind Accelerator${body}`,
     'autumn-leaves.txt': `title: Autumn Leaves${body}`,
   })
 
@@ -153,13 +153,13 @@ describe('tunes (#411): one row per tune, its versions folded in', () => {
     expect(tuneDetails(autumn!)).toBe(autumn!.details)
   })
 
-  it('lists Summertime once, with its Jazz Lab Accelerator version', () => {
+  it('lists Summertime once, with its Jazz Mind Accelerator version', () => {
     expect(TUNES.filter((t) => t.title === 'Summertime').map((t) => [t.slug, t.versions])).toEqual([['summertime', 2]])
-    expect(TUNES.length).toBe(LIBRARY.length - 1)
+    expect(TUNES.length).toBe(LIBRARY.filter((c) => !/^version:\s*\S/m.test(c.text)).length) // one row per main chart
   })
 
   it('gives a chart its tune: the main and every version', () => {
-    expect(tuneOf('summertime-jazz-lab-accelerator')).toEqual({ main: 'summertime', versions: [{ slug: 'summertime', label: '' }, { slug: 'summertime-jazz-lab-accelerator', label: 'Jazz Lab Accelerator' }] })
+    expect(tuneOf('summertime-jazz-mind-accelerator')).toEqual({ main: 'summertime', versions: [{ slug: 'summertime', label: '' }, { slug: 'summertime-jazz-mind-accelerator', label: 'Jazz Mind Accelerator' }] })
     expect(tuneOf('blue-trane')?.versions).toHaveLength(1)
     expect(tuneOf('nope')).toBeNull()
   })

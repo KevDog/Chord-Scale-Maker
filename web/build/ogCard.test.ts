@@ -7,7 +7,7 @@ const chart = (slug: string): string => libraryCharts().find((c) => c.slug === s
 
 describe('ogCard', () => {
   it('names a version in its title', () => {
-    expect(ogCard(chart('summertime-jazz-lab-accelerator')).title).toBe('Summertime (Jazz Lab Accelerator)')
+    expect(ogCard(chart('summertime-jazz-mind-accelerator')).title).toBe('Summertime (Jazz Mind Accelerator)')
     expect(ogCard(chart('summertime')).title).toBe('Summertime')
   })
 

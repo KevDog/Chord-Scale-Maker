@@ -1,0 +1,48 @@
+title: Perdido
+composer: Juan Tizol
+style: Latin
+key: Bb
+form: AABA, 32 bars
+source: Jazz Mind Accelerator
+version: Jazz Mind Accelerator
+# analysis: 2026-10-18, rules v1; Bb
+
+section: A1
+1 | Cm7   # ii of the ii–V to Bb
+2 | F7    # V7 of Bb: natural tensions
+3 | Bb6   # tonic: the 4th is in the key
+4 | G7b9  # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+5 | Cm7   # ii of the ii–V to Bb
+6 | F7    # V7 of Bb: natural tensions
+7 | Bb6   # tonic: the 4th is in the key
+8 | G7b9  # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+
+section: A2
+1 | Cm7   # ii of the ii–V to Bb
+2 | F7    # V7 of Bb: natural tensions
+3 | Bb6   # tonic: the 4th is in the key
+4 | G7b9  # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+5 | Cm7   # ii of the ii–V to Bb
+6 | F7    # V7 of Bb: natural tensions
+7 | Bb6   # tonic: the 4th is in the key
+8 | G7b9  # VI7 in Bb, not resolving: the b13 is in the key, the b9 from the symbol
+
+section: B
+1 | D7    # extended dominant: each one falls a fifth into the next: natural tensions
+2 | D7
+3 | G7    # extended dominant: each one falls a fifth into the next: natural tensions
+4 | G7
+5 | C7    # V7 of V7: the dominant of the dominant: natural tensions
+6 | C7
+7 | F7    # V7 in Bb, not resolving: natural tensions
+8 | F7
+
+section: A3
+1 | Cm7   # ii of the ii–V to Bb
+2 | F7    # V7 of Bb: natural tensions
+3 | Bb6   # tonic: the 4th is in the key
+4 | G7b9  # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
+5 | Cm7   # ii of the ii–V to Bb
+6 | F7    # V7 of Bb: natural tensions
+7 | Bb6   # tonic: the 4th is in the key
+8 | G7b9  # V7/ii in Bb: the b13 is in the key, the b9 from the symbol

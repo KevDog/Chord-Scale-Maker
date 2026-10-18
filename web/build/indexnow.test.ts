@@ -61,8 +61,8 @@ describe('urlsFor: the pages a deploy changed, for IndexNow', () => {
 describe('versions (#411)', () => {
   it('leaves a version out of the sitemap, and pings its main page when it changes', () => {
     expect(lib.sitemap).toContain('/song/summertime')
-    expect(lib.sitemap).not.toContain('/song/summertime-jazz-lab-accelerator')
-    expect(urlsFor(['engine/charts/summertime-jazz-lab-accelerator.txt'], lib)).toContain(site('/song/summertime'))
-    expect(urlsFor(['engine/charts/summertime-jazz-lab-accelerator.txt'], lib)).not.toContain(site('/song/summertime-jazz-lab-accelerator'))
+    expect(lib.sitemap).not.toContain('/song/summertime-jazz-mind-accelerator')
+    expect(urlsFor(['engine/charts/summertime-jazz-mind-accelerator.txt'], lib)).toContain(site('/song/summertime'))
+    expect(urlsFor(['engine/charts/summertime-jazz-mind-accelerator.txt'], lib)).not.toContain(site('/song/summertime-jazz-mind-accelerator'))
   })
 })

@@ -1,0 +1,52 @@
+title: Fly Me to the Moon
+composer: Bart Howard
+style: Medium Swing
+key: C
+form: AB, 32 bars
+source: Jazz Mind Accelerator
+aka: In Other Words
+recording: Frank Sinatra & Count Basie; It Might as Well Be Swing; Reprise; 1964
+# analysis: 2026-10-18, rules v1; C
+
+section: A
+1  | Am7    # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+2  | Dm7    # ii of the ii–V to C
+3  | G7     # V7 of C: natural tensions
+4  | CMaj7  # tonic: the 4th is in the key
+4  | C7     # V7/IV in C: natural tensions
+5  | FMaj7  # the C7 before it makes F the key of the moment: the 4th is in the key
+6  | Bm7b5  # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+7  | E7b9   # V7/vi in C: b9 and b13 are in the key
+8  | Am7    # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+8  | A7     # V7/ii in C: the b13 is in the key
+9  | Dm7    # ii of the ii–V to C
+10 | G7     # V7 of C: natural tensions
+11 | CMaj7  # tonic: the 4th is in the key
+12 | Em7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+12 | A7b9   # V7/ii in C: the b13 is in the key, the b9 from the symbol
+13 | Dm7    # ii of the ii–V to C
+14 | G7     # V7 of C: natural tensions
+15 | CMaj7  # tonic: the 4th is in the key
+16 | Bm7b5  # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+16 | E7b9   # V7/vi in C: b9 and b13 are in the key
+
+section: B
+1  | Am7    # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+2  | Dm7    # ii of the ii–V to C
+3  | G7     # V7 of C: natural tensions
+4  | CMaj7  # tonic: the 4th is in the key
+4  | C7     # V7/IV in C: natural tensions
+5  | FMaj7  # the C7 before it makes F the key of the moment: the 4th is in the key
+6  | Bm7b5  # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+7  | E7b9   # V7/vi in C: b9 and b13 are in the key
+8  | Am7    # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+8  | A7b9   # V7/ii in C: the b13 is in the key, the b9 from the symbol
+9  | Dm7    # ii of G7: Dorian
+10 | G7     # V7/I in C: natural tensions
+11 | Em7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+12 | A7b9   # V7/ii in C: the b13 is in the key, the b9 from the symbol
+13 | Dm7    # ii of the ii–V to C
+14 | G7     # V7 of C: natural tensions
+15 | CMaj7  # tonic: the 4th is in the key
+16 | Bm7b5  # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+16 | E7b9   # V7/vi in C: b9 and b13 are in the key

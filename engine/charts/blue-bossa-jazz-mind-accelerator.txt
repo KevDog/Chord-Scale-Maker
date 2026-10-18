@@ -1,0 +1,29 @@
+title: Blue Bossa
+composer: Kenny Dorham
+style: Bossa Nova
+key: Cm
+form: A, 16 bars
+source: Jazz Mind Accelerator
+version: Jazz Mind Accelerator
+# analysis: 2026-10-18, rules v1; C minor
+
+section: A
+# area: C minor (A 1–8)
+1  | Cm7     # tonic minor: Dorian by convention
+2  | Cm7
+3  | Fm7     # iv: Dorian, the key’s own notes
+4  | Fm7
+5  | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+6  | G7b9    # V7 of C minor: b9 and b13 are in the key
+7  | Cm7     # tonic minor: Dorian by convention
+8  | Cm7
+# area: Db major (A 9–12)
+9  | Ebm7    # ii of the ii–V to Db
+10 | Ab7     # V7 of Db: natural tensions
+11 | DbMaj7  # tonic: the 4th is in the key
+12 | DbMaj7
+# area: C minor (A 13–16)
+13 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+14 | G7b9    # V7 of C minor: b9 and b13 are in the key
+15 | Cm7     # tonic minor: Dorian by convention
+16 | G7b9    # V7 of C minor: b9 and b13 are in the key

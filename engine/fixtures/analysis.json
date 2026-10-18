@@ -1,4 +1,42 @@
 {
+ "a-child-is-born": {
+  "key": "Bb major (key:, functional)",
+  "areas": [
+   "Bb major A 1 – B 14"
+  ],
+  "rows": [
+   "A 1 BbMaj7 [Imaj7] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key",
+   "A 2 Ebm/Bb [iv] → Eb Dorian (m8) borrowed iv in Bb — a borrowed minor chord: Dorian, its own key",
+   "A 3 BbMaj7 [Imaj7] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key",
+   "A 4 Ebm/Bb [iv] → Eb Dorian (m8) borrowed iv in Bb — a borrowed minor chord: Dorian, its own key",
+   "A 5 BbMaj7 [Imaj7] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key",
+   "A 6 Ebm/Bb [iv] → Eb Dorian (m8) borrowed iv in Bb — a borrowed minor chord: Dorian, its own key",
+   "A 7 Am7b5 [viiø7] → A Locrian (h2) iiø7 of the ii–V to G minor; also viiø7 of Bb — iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A 8 D7b9 [V7/vi] → D Phrygian Dominant (D4) V7/vi in Bb: b9 and b13 are in the key",
+   "A 9 Gm7 [vi7] → G Aeolian (m7) vi in Bb — vi: Aeolian, the key's own notes (the ♭6 is a passing note)",
+   "A 10 D7b9 [V7/vi] → D Phrygian Dominant (D4) V7/vi in Bb: b9 and b13 are in the key",
+   "A 11 Gm7 [vi7] → G Aeolian (m7) vi in Bb — vi: Aeolian, the key's own notes (the ♭6 is a passing note)",
+   "A 12 D7b9 [V7/vi] → D Phrygian Dominant (D4) V7/vi in Bb: b9 and b13 are in the key",
+   "A 13 Gm7 [vi7] → G Dorian (m4) ii of C7; also vi of Bb — ii of C7: Dorian",
+   "A 14 C7 [II7] → C Mixolydian (D3) extended dominant (V7 of Cm7/F) — extended dominant: V7 of Cm7/F",
+   "A 15 Cm7/F [V7sus4] → F Mixolydian (s3) V7sus4 before its dominant: a subdominant suspension — V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here",
+   "A 16 F7 [V7] → F Mixolydian (D4) V7 of Bb: natural tensions",
+   "B 1 BbMaj7 [Imaj7] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key",
+   "B 2 Ebm/Bb [iv] → Eb Dorian (m8) borrowed iv in Bb — a borrowed minor chord: Dorian, its own key",
+   "B 3 BbMaj7 [Imaj7] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key",
+   "B 4 Ebm/Bb [iv] → Eb Dorian (m8) borrowed iv in Bb — a borrowed minor chord: Dorian, its own key",
+   "B 5 BbMaj7 [Imaj7] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key",
+   "B 6 D7b9 [III7] → D Phrygian Dominant (D5) III7 in Bb, not resolving: b9 and b13 are in the key",
+   "B 7 EbMaj7 [IVmaj7] → Eb Lydian (M4) IV in Bb — IV: the #4 is the key’s 7th",
+   "B 8 Ab7 [♭VII7] → Ab Lydian Dominant (D5) back door bVII7 to Bb/F: the #11 is in the key",
+   "B 9 Bb/F [I] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key",
+   "B 10 Gb6 [♭VI6] → Gb Lydian (M4) ♭VI6, borrowed (modal interchange) — ♭VI6, borrowed from Bb minor: Lydian (its ♯11 is in the key)",
+   "B 11 Gm7 [vi7] → G Dorian (m4) ii of C7; also vi of Bb — ii of C7: Dorian",
+   "B 12 C7 [II7] → C Mixolydian (D3) extended dominant (V7 of Cm7/F) — extended dominant: V7 of Cm7/F",
+   "B 13 Cm7/F [V7sus4] → F Mixolydian (s3) V7sus4 before its dominant: a subdominant suspension — V7sus4 before its dominant: Mixolydian, the 4th is a chord tone here",
+   "B 14 F7 [V7] → F Mixolydian (D4) V7 of Bb: natural tensions"
+  ]
+ },
  "a-little-tear": {
   "key": "Db major (key:, functional)",
   "areas": [
@@ -377,6 +415,48 @@
    "A 10 Eb7#9 [subV7/V] → Eb Half-Whole Diminished (D1+D2) subV7 of D7#9 — tritone substitute: resolves down a half step to D7#9; b9 and #9 from the symbol",
    "A 10 D7#9 [V7] → D Half-Whole Diminished (D1+D3) extended dominant (V7 of G7) — extended dominant: V7 of G7; b9, #9 and #11 from the symbol",
    "A 11 G7 [I7] → G Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions"
+  ]
+ },
+ "all-of-me-jazz-mind-accelerator": {
+  "key": "C major (key:, functional)",
+  "areas": [
+   "C major A1 1 – C 8"
+  ],
+  "rows": [
+   "A1 1 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A1 2 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A1 3 E7 [III7] → E Phrygian Dominant (D8) extended dominant into D minor — V7 of A7b9, on the way to D minor: b9 and b13 are in the key",
+   "A1 4 E7 [III7] → E Phrygian Dominant (D8) extended dominant into D minor — V7 of A7b9, on the way to D minor: b9 and b13 are in the key",
+   "A1 5 A7b9 [V7/ii] → A Phrygian Dominant (D8) V7 of D minor, at the end of a chain of dominants — V7 of D minor, the chain's last link: b9 and b13 are in the key",
+   "A1 6 A7b9 [V7/ii] → A Phrygian Dominant (D8) V7 of D minor, at the end of a chain of dominants — V7 of D minor, the chain's last link: b9 and b13 are in the key",
+   "A1 7 Dm7 [ii7] → D Dorian (m7) ii in C — ii: Dorian, the key’s own notes",
+   "A1 8 Dm7 [ii7] → D Dorian (m7) ii in C — ii: Dorian, the key’s own notes",
+   "B 1 E7 [V7/vi] → E Phrygian Dominant (D4) V7/vi in C: b9 and b13 are in the key",
+   "B 2 E7 [V7/vi] → E Phrygian Dominant (D4) V7/vi in C: b9 and b13 are in the key",
+   "B 3 Am7 [vi7] → A Dorian (m4) ii of D7; also vi of C — ii of D7: Dorian",
+   "B 4 Am7 [vi7] → A Dorian (m4) ii of D7; also vi of C — ii of D7: Dorian",
+   "B 5 D7 [V7/V] → D Mixolydian (D4) V7/V in C (the V never arrives) — V7/V in C: natural tensions",
+   "B 6 D7 [V7/V] → D Mixolydian (D4) V7/V in C (the V never arrives) — V7/V in C: natural tensions",
+   "B 7 Dm7 [ii7] → D Dorian (m4) ii of the ii–V to C",
+   "B 8 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "A2 1 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A2 2 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A2 3 E7 [III7] → E Phrygian Dominant (D8) extended dominant into D minor — V7 of A7b9, on the way to D minor: b9 and b13 are in the key",
+   "A2 4 E7 [III7] → E Phrygian Dominant (D8) extended dominant into D minor — V7 of A7b9, on the way to D minor: b9 and b13 are in the key",
+   "A2 5 A7b9 [V7/ii] → A Phrygian Dominant (D8) V7 of D minor, at the end of a chain of dominants — V7 of D minor, the chain's last link: b9 and b13 are in the key",
+   "A2 6 A7b9 [V7/ii] → A Phrygian Dominant (D8) V7 of D minor, at the end of a chain of dominants — V7 of D minor, the chain's last link: b9 and b13 are in the key",
+   "A2 7 Dm7 [ii7] → D Dorian (m7) ii in C — ii: Dorian, the key’s own notes",
+   "A2 8 Dm7 [ii7] → D Dorian (m7) ii in C — ii: Dorian, the key’s own notes",
+   "C 1 FMaj7 [IVmaj7] → F Lydian (M4) IV in C — IV: the #4 is the key’s 7th",
+   "C 2 Fm6 [iv6] → F Dorian (m2) iv in C — a minor sixth chord: Dorian",
+   "C 3 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "C 4 A7b9 [V7/ii] → A Phrygian Dominant (D1+D4) V7/ii in C: the b13 is in the key, the b9 from the symbol",
+   "C 5 Dm7 [ii7] → D Dorian (m4) ii of the ii–V to C",
+   "C 6 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "C 7 C6 [I6] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "C 7 A7b9 [V7/ii] → A Phrygian Dominant (D1+D4) V7/ii in C: the b13 is in the key, the b9 from the symbol",
+   "C 8 Dm7 [ii7] → D Dorian (m4) ii of the ii–V to C",
+   "C 8 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions"
   ]
  },
  "all-of-me": {
@@ -951,6 +1031,55 @@
    "C 8 A7 [V7/vi] → A Phrygian Dominant (D4) V7/vi in F: b9 and b13 are in the key"
   ]
  },
+ "autumn-leaves-jazz-mind-accelerator": {
+  "key": "G minor (key:, functional)",
+  "areas": [
+   "Bb major A1 1–4",
+   "G minor A1 5–8",
+   "Bb major A2 1–4",
+   "G minor A2 5 – B 4",
+   "Bb major B 5–8",
+   "G minor C 1–3",
+   "F minor C 3–5",
+   "G minor C 6–8"
+  ],
+  "rows": [
+   "A1 1 Cm7 [ii7] → C Dorian (m4) ii of the ii–V to Bb",
+   "A1 2 F7 [V7] → F Mixolydian (D4) V7 of Bb: natural tensions",
+   "A1 3 BbMaj7 [Imaj7] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key",
+   "A1 4 EbMaj7 [IVmaj7] → Eb Lydian (M4) IV in Bb — IV: the #4 is the key’s 7th",
+   "A1 5 Am7b5 [iiø7] → A Locrian (h2) iiø7 of the ii–V to G minor — iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A1 6 D7b13 [V7] → D Phrygian Dominant (D4) V7 of G minor: b9 and b13 are in the key",
+   "A1 7 Gm6 [i6] → G Melodic Minor (m2) i in G minor — tonic minor sixth chord: melodic minor, the raised 7th is a tension",
+   "A1 8 Gm6 [i6] → G Melodic Minor (m2) i in G minor — tonic minor sixth chord: melodic minor, the raised 7th is a tension",
+   "A2 1 Cm7 [ii7] → C Dorian (m4) ii of the ii–V to Bb",
+   "A2 2 F7 [V7] → F Mixolydian (D4) V7 of Bb: natural tensions",
+   "A2 3 BbMaj7 [Imaj7] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key",
+   "A2 4 EbMaj7 [IVmaj7] → Eb Lydian (M4) IV in Bb — IV: the #4 is the key’s 7th",
+   "A2 5 Am7b5 [iiø7] → A Locrian (h2) iiø7 of the ii–V to G minor — iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A2 6 D7b13 [V7] → D Phrygian Dominant (D4) V7 of G minor: b9 and b13 are in the key",
+   "A2 7 Gm6 [i6] → G Melodic Minor (m2) i in G minor — tonic minor sixth chord: melodic minor, the raised 7th is a tension",
+   "A2 8 Gm6 [i6] → G Melodic Minor (m2) i in G minor — tonic minor sixth chord: melodic minor, the raised 7th is a tension",
+   "B 1 Am7b5 [iiø7] → A Locrian (h2) iiø7 of the ii–V to G minor — iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "B 2 D7b13 [V7] → D Phrygian Dominant (D4) V7 of G minor: b9 and b13 are in the key",
+   "B 3 Gm6 [i6] → G Melodic Minor (m2) i in G minor — tonic minor sixth chord: melodic minor, the raised 7th is a tension",
+   "B 4 Gm6 [i6] → G Melodic Minor (m2) i in G minor — tonic minor sixth chord: melodic minor, the raised 7th is a tension",
+   "B 5 Cm7 [ii7] → C Dorian (m4) ii of the ii–V to Bb",
+   "B 6 F7 [V7] → F Mixolydian (D4) V7 of Bb: natural tensions",
+   "B 7 BbMaj7 [Imaj7] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key",
+   "B 8 EbMaj7 [IVmaj7] → Eb Lydian (M4) IV in Bb — IV: the #4 is the key’s 7th",
+   "C 1 Am7b5 [iiø7] → A Locrian (h2) iiø7 of the ii–V to G minor — iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "C 2 D7b13 [V7] → D Phrygian Dominant (D4) V7 of G minor: b9 and b13 are in the key",
+   "C 3 Gm7 [i7] → G Dorian (m5) i in G minor — tonic minor: Dorian by convention",
+   "C 3 Gb7 [subV7] → Gb Lydian Dominant (D2) subV7 of Fm7 — tritone substitute: resolves down a half step to Fm7",
+   "C 4 Fm7 [i7] → F Dorian (m5) i in F minor — tonic minor: Dorian by convention",
+   "C 4 E7 [subV7/♭VII] → E Lydian Dominant (D2) subV7 of Eb7#11 — tritone substitute: resolves down a half step to Eb7#11",
+   "C 5 Eb7#11 [subV7/VI] → Eb Lydian Dominant (D2) subV7 of D7b13 — tritone substitute: resolves down a half step to D7b13",
+   "C 6 D7b13 [V7] → D Phrygian Dominant (D4) V7 of G minor: b9 and b13 are in the key",
+   "C 7 Gm6 [i6] → G Melodic Minor (m2) i in G minor — tonic minor sixth chord: melodic minor, the raised 7th is a tension",
+   "C 8 Gm6 [i6] → G Melodic Minor (m2) i in G minor — tonic minor sixth chord: melodic minor, the raised 7th is a tension"
+  ]
+ },
  "autumn-leaves": {
   "key": "G minor (key:, functional)",
   "areas": [
@@ -1309,6 +1438,43 @@
    "A 14 GbMaj7 [IIImaj7] → Gb Lydian (M4) III in D minor — a non-tonic major chord: Lydian",
    "A 15 Fm [♭iii] → F Dorian (m8) borrowed biii in D minor — a borrowed minor chord: Dorian, its own key",
    "A 16 GbMaj7 [IIImaj7] → Gb Lydian (M4) III in D minor — a non-tonic major chord: Lydian"
+  ]
+ },
+ "beautiful-love-jazz-mind-accelerator": {
+  "key": "D minor (key:, functional)",
+  "areas": [
+   "D minor A 1–4",
+   "F major A 5–7",
+   "D minor A 8 – C 8"
+  ],
+  "rows": [
+   "A 1 Em7b5 [iiø7] → E Locrian (h2) iiø7 of the ii–V to D minor — iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A 2 A7b9 [V7] → A Phrygian Dominant (D4) V7 of D minor: b9 and b13 are in the key",
+   "A 3 Dm [i] → D Dorian (m5) i in D minor — tonic minor: Dorian by convention",
+   "A 4 D7b9 [V7/iv] → D Phrygian Dominant (D1+D4) V7/iv in D minor: the b13 is in the key, the b9 from the symbol",
+   "A 5 Gm7 [ii7] → G Dorian (m4) ii of the ii–V to F",
+   "A 6 C7 [V7] → C Mixolydian (D4) V7 of F: natural tensions",
+   "A 7 FMaj7 [Imaj7] → F Ionian (M3) I in F — tonic: the 4th is in the key",
+   "A 8 Em7b5 [iiø7] → E Locrian (h2) iiø7 of the ii–V to D minor — iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A 8 A7b9 [V7] → A Phrygian Dominant (D4) V7 of D minor: b9 and b13 are in the key",
+   "B 1 Dm [i] → D Dorian (m5) i in D minor — tonic minor: Dorian by convention",
+   "B 2 Gm7 [iv7] → G Dorian (m7) iv in D minor — iv: Dorian, the key’s own notes",
+   "B 3 Bb7 [subV7/V] → Bb Lydian Dominant (D2) subV7 of A7b9 — tritone substitute: resolves down a half step to A7b9",
+   "B 4 A7b9 [V7] → A Phrygian Dominant (D4) V7 of D minor: b9 and b13 are in the key",
+   "B 5 Dm [ii/♭VII] → D Dorian (m4) ii of G7#11: Dorian",
+   "B 6 G7#11 [V7/♭VII] → G Lydian Dominant (D1+D4) V7/bVII in D minor (the bVII never arrives) — V7/bVII in D minor: the #11 from the symbol",
+   "B 7 Em7b5 [iiø7] → E Locrian (h2) iiø7 of the ii–V to D minor — iiø7 of D minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "B 8 A7b9 [V7] → A Phrygian Dominant (D4) V7 of D minor: b9 and b13 are in the key",
+   "C 1 Dm [i] → D Dorian (m5) i in D minor — tonic minor: Dorian by convention",
+   "C 2 Gm7 [iv7] → G Dorian (m7) iv in D minor — iv: Dorian, the key’s own notes",
+   "C 3 Bb7 [subV7/V] → Bb Lydian Dominant (D2) subV7 of A7b9 — tritone substitute: resolves down a half step to A7b9",
+   "C 4 A7b9 [V7] → A Phrygian Dominant (D4) V7 of D minor: b9 and b13 are in the key",
+   "C 5 Dm [i] → D Dorian (m5) i in D minor — tonic minor: Dorian by convention",
+   "C 6 Bb7#11 [subV7/V] → Bb Lydian Dominant (D2) subV7 of A7b9 — tritone substitute: resolves down a half step to A7b9",
+   "C 6 A7b9 [V7] → A Phrygian Dominant (D4) V7 of D minor: b9 and b13 are in the key",
+   "C 7 Dm [i] → D Dorian (m5) i in D minor — tonic minor: Dorian by convention",
+   "C 8 Em7b5 [iiø7] → E Locrian (h2) iiø7 of A7b9: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "C 8 A7b9 [V7] → A Phrygian Dominant (D4) V7/i in D minor (the i never arrives) — V7/i in D minor: b9 and b13 are in the key"
   ]
  },
  "beautiful-love": {
@@ -1700,6 +1866,32 @@
    "Coda 10 Ab9 [V7/♭II] → Ab Lydian Dominant (D4) V7/bII in C minor: the #11 is in the key",
    "Coda 12 DbMaj9#11 [♭IImaj7] → Db Lydian (M1) bII in C minor — from the symbol: #11",
    "Coda 13 Cm [i] → C Dorian (m5) i in C minor — tonic minor: Dorian by convention"
+  ]
+ },
+ "blue-bossa-jazz-mind-accelerator": {
+  "key": "C minor (key:, functional)",
+  "areas": [
+   "C minor A 1–8",
+   "Db major A 9–12",
+   "C minor A 13–16"
+  ],
+  "rows": [
+   "A 1 Cm7 [i7] → C Dorian (m5) i in C minor — tonic minor: Dorian by convention",
+   "A 2 Cm7 [i7] → C Dorian (m5) i in C minor — tonic minor: Dorian by convention",
+   "A 3 Fm7 [iv7] → F Dorian (m7) iv in C minor — iv: Dorian, the key’s own notes",
+   "A 4 Fm7 [iv7] → F Dorian (m7) iv in C minor — iv: Dorian, the key’s own notes",
+   "A 5 Dm7b5 [iiø7] → D Locrian (h2) iiø7 of the ii–V to C minor — iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A 6 G7b9 [V7] → G Phrygian Dominant (D4) V7 of C minor: b9 and b13 are in the key",
+   "A 7 Cm7 [i7] → C Dorian (m5) i in C minor — tonic minor: Dorian by convention",
+   "A 8 Cm7 [i7] → C Dorian (m5) i in C minor — tonic minor: Dorian by convention",
+   "A 9 Ebm7 [ii7] → Eb Dorian (m4) ii of the ii–V to Db",
+   "A 10 Ab7 [V7] → Ab Mixolydian (D4) V7 of Db: natural tensions",
+   "A 11 DbMaj7 [Imaj7] → Db Ionian (M3) I in Db — tonic: the 4th is in the key",
+   "A 12 DbMaj7 [Imaj7] → Db Ionian (M3) I in Db — tonic: the 4th is in the key",
+   "A 13 Dm7b5 [iiø7] → D Locrian (h2) iiø7 of the ii–V to C minor — iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A 14 G7b9 [V7] → G Phrygian Dominant (D4) V7 of C minor: b9 and b13 are in the key",
+   "A 15 Cm7 [i7] → C Dorian (m5) i in C minor — tonic minor: Dorian by convention",
+   "A 16 G7b9 [V7] → G Phrygian Dominant (D4) V7 of C minor: b9 and b13 are in the key"
   ]
  },
  "blue-bossa": {
@@ -2325,6 +2517,52 @@
    "B 14 Am7 [ii7] → A Dorian (m4) ii of the ii–V to G",
    "B 14 D7 [V7] → D Mixolydian (D4) V7 of G: natural tensions",
    "B 15 G6 [I6] → G Ionian (M3) I in G — tonic: the 4th is in the key"
+  ]
+ },
+ "bye-bye-blackbird-jazz-mind-accelerator": {
+  "key": "F major (key:, functional)",
+  "areas": [
+   "F major A 1 – B 16"
+  ],
+  "rows": [
+   "A 1 FMaj7 [Imaj7] → F Ionian (M3) I in F — tonic: the 4th is in the key",
+   "A 2 Gm7 [ii7] → G Dorian (m4) ii of the ii–V to F",
+   "A 2 C7 [V7] → C Mixolydian (D4) V7 of F: natural tensions",
+   "A 3 FMaj7 [Imaj7] → F Ionian (M3) I in F — tonic: the 4th is in the key",
+   "A 4 Gm7 [ii7] → G Dorian (m4) ii of the ii–V to F",
+   "A 4 C7 [V7] → C Mixolydian (D4) V7 of F: natural tensions",
+   "A 5 FMaj7 [Imaj7] → F Ionian (M3) I in F — tonic: the 4th is in the key",
+   "A 6 Am7b5 [iiø7/ii] → A Locrian (h2) iiø7 of the ii–V to G minor — iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A 6 D7b9 [V7/ii] → D Phrygian Dominant (D1+D4) V7/ii in F: the b13 is in the key, the b9 from the symbol",
+   "A 7 Gm7 [ii7] → G Dorian (m4) ii of C7: Dorian",
+   "A 8 C7 [V7] → C Mixolydian (D4) V7/I in F (the I never arrives) — V7/I in F: natural tensions",
+   "A 9 Gm7 [ii7] → G Dorian (m7) ii in F — ii: Dorian, the key’s own notes",
+   "A 10 D7b9 [V7/ii] → D Phrygian Dominant (D1+D4) V7/ii in F: the b13 is in the key, the b9 from the symbol",
+   "A 11 Gm7 [ii7] → G Dorian (m4) ii of C7: Dorian",
+   "A 12 C7 [V7] → C Mixolydian (D4) V7/I in F (the I never arrives) — V7/I in F: natural tensions",
+   "A 13 Gm7 [ii7] → G Dorian (m4) ii of the ii–V to F",
+   "A 14 C7 [V7] → C Mixolydian (D4) V7 of F: natural tensions",
+   "A 15 F6 [I6] → F Ionian (M3) I in F — tonic: the 4th is in the key",
+   "A 16 F6 [I6] → F Ionian (M3) I in F — tonic: the 4th is in the key",
+   "B 1 F7 [subV7/VII] → F Lydian Dominant (D2) subV7 of E7 — tritone substitute: resolves down a half step to E7",
+   "B 2 E7 [subV7/♭VII] → E Lydian Dominant (D2) subV7 of Eb7 — tritone substitute: resolves down a half step to Eb7",
+   "B 3 Eb7 [subV7/VI] → Eb Lydian Dominant (D2) subV7 of D7b9 — tritone substitute: resolves down a half step to D7b9",
+   "B 4 D7b9 [V7/ii] → D Phrygian Dominant (D1+D4) V7/ii in F: the b13 is in the key, the b9 from the symbol",
+   "B 5 Gm7 [ii7] → G Dorian (m7) ii in F — ii: Dorian, the key’s own notes",
+   "B 6 Gm7 [ii7] → G Dorian (m7) ii in F — ii: Dorian, the key’s own notes",
+   "B 7 Db7 [subV7/V] → Db Lydian Dominant (D2) subV7 of C7 — tritone substitute: resolves down a half step to C7",
+   "B 8 C7 [V7] → C Mixolydian (D4) V7 of F: natural tensions",
+   "B 9 FMaj7 [Imaj7] → F Ionian (M3) I in F — tonic: the 4th is in the key",
+   "B 10 Gm7 [ii7] → G Dorian (m4) ii of the ii–V to F",
+   "B 10 C7 [V7] → C Mixolydian (D4) V7 of F: natural tensions",
+   "B 11 FMaj7 [Imaj7] → F Ionian (M3) I in F — tonic: the 4th is in the key",
+   "B 12 Am7b5 [iiø7/ii] → A Locrian (h2) iiø7 of the ii–V to G minor — iiø7 of G minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "B 12 D7b9 [V7/ii] → D Phrygian Dominant (D1+D4) V7/ii in F: the b13 is in the key, the b9 from the symbol",
+   "B 13 Gm7 [ii7] → G Dorian (m4) ii of the ii–V to F",
+   "B 14 C7 [V7] → C Mixolydian (D4) V7 of F: natural tensions",
+   "B 15 F6 [I6] → F Ionian (M3) I in F — tonic: the 4th is in the key",
+   "B 16 Gm7 [ii7] → G Dorian (m4) ii of the ii–V to F",
+   "B 16 C7 [V7] → C Mixolydian (D4) V7 of F: natural tensions"
   ]
  },
  "bye-bye-blackbird": {
@@ -5055,6 +5293,53 @@
    "A 10 F7 [V7] → F Mixolydian (D3) extended dominant (V7 of Bb7) — extended dominant: V7 of Bb7",
    "A 11 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
    "A 12 F7 [V7] → F Mixolydian (D3) extended dominant (V7 of Bb7) — extended dominant: V7 of Bb7"
+  ]
+ },
+ "fly-me-to-the-moon": {
+  "key": "C major (key:, functional)",
+  "areas": [
+   "C major A 1 – B 16"
+  ],
+  "rows": [
+   "A 1 Am7 [vi7] → A Aeolian (m7) vi in C — vi: Aeolian, the key's own notes (the ♭6 is a passing note)",
+   "A 2 Dm7 [ii7] → D Dorian (m4) ii of the ii–V to C",
+   "A 3 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "A 4 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 4 C7 [V7/IV] → C Mixolydian (D4) V7/IV in C: natural tensions",
+   "A 5 FMaj7 [IVmaj7] → F Ionian (M3) IV in C — the C7 before it makes F the key of the moment: the 4th is in the key",
+   "A 6 Bm7b5 [viiø7] → B Locrian (h2) iiø7 of the ii–V to A minor; also viiø7 of C — iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A 7 E7b9 [V7/vi] → E Phrygian Dominant (D4) V7/vi in C: b9 and b13 are in the key",
+   "A 8 Am7 [vi7] → A Aeolian (m7) vi in C — vi: Aeolian, the key's own notes (the ♭6 is a passing note)",
+   "A 8 A7 [V7/ii] → A Mixolydian b6 (D4) V7/ii in C: the b13 is in the key",
+   "A 9 Dm7 [ii7] → D Dorian (m4) ii of the ii–V to C",
+   "A 10 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "A 11 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 12 Em7 [iii7] → E Phrygian (m9) ii of the ii–V to D minor; also iii of C — iii: Phrygian, the key's own notes (the ♭2 is a passing note)",
+   "A 12 A7b9 [V7/ii] → A Phrygian Dominant (D1+D4) V7/ii in C: the b13 is in the key, the b9 from the symbol",
+   "A 13 Dm7 [ii7] → D Dorian (m4) ii of the ii–V to C",
+   "A 14 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "A 15 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 16 Bm7b5 [viiø7] → B Locrian (h2) iiø7 of the ii–V to A minor; also viiø7 of C — iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A 16 E7b9 [V7/vi] → E Phrygian Dominant (D4) V7/vi in C: b9 and b13 are in the key",
+   "B 1 Am7 [vi7] → A Aeolian (m7) vi in C — vi: Aeolian, the key's own notes (the ♭6 is a passing note)",
+   "B 2 Dm7 [ii7] → D Dorian (m4) ii of the ii–V to C",
+   "B 3 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "B 4 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "B 4 C7 [V7/IV] → C Mixolydian (D4) V7/IV in C: natural tensions",
+   "B 5 FMaj7 [IVmaj7] → F Ionian (M3) IV in C — the C7 before it makes F the key of the moment: the 4th is in the key",
+   "B 6 Bm7b5 [viiø7] → B Locrian (h2) iiø7 of the ii–V to A minor; also viiø7 of C — iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "B 7 E7b9 [V7/vi] → E Phrygian Dominant (D4) V7/vi in C: b9 and b13 are in the key",
+   "B 8 Am7 [vi7] → A Aeolian (m7) vi in C — vi: Aeolian, the key's own notes (the ♭6 is a passing note)",
+   "B 8 A7b9 [V7/ii] → A Phrygian Dominant (D1+D4) V7/ii in C: the b13 is in the key, the b9 from the symbol",
+   "B 9 Dm7 [ii7] → D Dorian (m4) ii of G7: Dorian",
+   "B 10 G7 [V7] → G Mixolydian (D4) V7/I in C (the I never arrives) — V7/I in C: natural tensions",
+   "B 11 Em7 [iii7] → E Phrygian (m9) ii of the ii–V to D minor; also iii of C — iii: Phrygian, the key's own notes (the ♭2 is a passing note)",
+   "B 12 A7b9 [V7/ii] → A Phrygian Dominant (D1+D4) V7/ii in C: the b13 is in the key, the b9 from the symbol",
+   "B 13 Dm7 [ii7] → D Dorian (m4) ii of the ii–V to C",
+   "B 14 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "B 15 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "B 16 Bm7b5 [viiø7] → B Locrian (h2) iiø7 of the ii–V to A minor; also viiø7 of C — iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "B 16 E7b9 [V7/vi] → E Phrygian Dominant (D4) V7/vi in C: b9 and b13 are in the key"
   ]
  },
  "foolkiller": {
@@ -8717,6 +9002,62 @@
    "A 16 F7b9 [V7] → F Half-Whole Diminished (D1+D4) V7 of Bb: the b9 from the symbol"
   ]
  },
+ "little-sunflower-jazz-mind-accelerator": {
+  "key": "D minor (key:, modal)",
+  "areas": [
+   "D minor A1 1 – A2 16"
+  ],
+  "rows": [
+   "A1 1 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A1 2 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A1 3 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A1 4 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A1 5 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A1 6 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A1 7 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A1 8 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A1 9 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A1 10 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A1 11 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A1 12 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A1 13 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A1 14 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A1 15 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A1 16 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "B 1 EbMaj7#11 [♭IImaj7] → Eb Lydian (M1) bII in D minor — from the symbol: #11",
+   "B 2 EbMaj7#11 [♭IImaj7] → Eb Lydian (M1) bII in D minor — from the symbol: #11",
+   "B 3 EbMaj7#11 [♭IImaj7] → Eb Lydian (M1) bII in D minor — from the symbol: #11",
+   "B 4 EbMaj7#11 [♭IImaj7] → Eb Lydian (M1) bII in D minor — from the symbol: #11",
+   "B 5 DMaj7#11 [Imaj7] → D Lydian (M1) I in D minor — from the symbol: #11",
+   "B 6 DMaj7#11 [Imaj7] → D Lydian (M1) I in D minor — from the symbol: #11",
+   "B 7 DMaj7#11 [Imaj7] → D Lydian (M1) I in D minor — from the symbol: #11",
+   "B 8 DMaj7#11 [Imaj7] → D Lydian (M1) I in D minor — from the symbol: #11",
+   "B 9 EbMaj7#11 [♭IImaj7] → Eb Lydian (M1) bII in D minor — from the symbol: #11",
+   "B 10 EbMaj7#11 [♭IImaj7] → Eb Lydian (M1) bII in D minor — from the symbol: #11",
+   "B 11 EbMaj7#11 [♭IImaj7] → Eb Lydian (M1) bII in D minor — from the symbol: #11",
+   "B 12 EbMaj7#11 [♭IImaj7] → Eb Lydian (M1) bII in D minor — from the symbol: #11",
+   "B 13 DMaj7#11 [Imaj7] → D Lydian (M1) I in D minor — from the symbol: #11",
+   "B 14 DMaj7#11 [Imaj7] → D Lydian (M1) I in D minor — from the symbol: #11",
+   "B 15 DMaj7#11 [Imaj7] → D Lydian (M1) I in D minor — from the symbol: #11",
+   "B 16 DMaj7#11 [Imaj7] → D Lydian (M1) I in D minor — from the symbol: #11",
+   "A2 1 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A2 2 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A2 3 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A2 4 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A2 5 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A2 6 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A2 7 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A2 8 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A2 9 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A2 10 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A2 11 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A2 12 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A2 13 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A2 14 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A2 15 Dm7 [i7] → D Dorian (m6) modal minor: Dorian",
+   "A2 16 Dm7 [i7] → D Dorian (m6) modal minor: Dorian"
+  ]
+ },
  "little-sunflower": {
   "key": "D minor (key:, modal)",
   "areas": [
@@ -9257,6 +9598,31 @@
    "Coda 2 DbMaj7 [Imaj7] → Db Ionian (M3) I in Db — tonic: the 4th is in the key"
   ]
  },
+ "mack-the-knife": {
+  "key": "C major (key:, functional)",
+  "areas": [
+   "C major A 1–16"
+  ],
+  "rows": [
+   "A 1 C6 [I6] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 2 C#dim7 [♯i°7] → C# Diatonic Diminished (d1) vii°7 of Dm7: A7♭9 without its root",
+   "A 3 Dm7 [ii7] → D Dorian (m4) ii of the ii–V to C",
+   "A 4 Dm7 [ii7] → D Dorian (m4) ii of the ii–V to C",
+   "A 5 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "A 6 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "A 7 C6 [I6] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 8 C6 [I6] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 9 Am7 [vi7] → A Aeolian (m7) vi in C — vi: Aeolian, the key's own notes (the ♭6 is a passing note)",
+   "A 10 Am7 [vi7] → A Aeolian (m7) vi in C — vi: Aeolian, the key's own notes (the ♭6 is a passing note)",
+   "A 11 Dm7 [ii7] → D Dorian (m4) ii of the ii–V to C",
+   "A 12 Dm7 [ii7] → D Dorian (m4) ii of the ii–V to C",
+   "A 13 Dm7 [ii7] → D Dorian (m4) ii of the ii–V to C",
+   "A 14 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "A 15 C6 [I6] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 16 C9 [I7] → C Mixolydian (D5) I7 in C, not resolving: natural tensions",
+   "A 16 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions"
+  ]
+ },
  "madagascar": {
   "key": "E minor (key:, modal)",
   "areas": [
@@ -9579,6 +9945,55 @@
    "B 14 AbMaj7 [♯IVmaj7] → Ab Lydian (M4) #IV in D — a non-tonic major chord: Lydian",
    "B 14 DbMaj7#11 [VIImaj7] → Db Lydian (M1) VII in D — from the symbol: #11",
    "B 15 EMaj7#11 [IImaj7] → E Lydian (M1) II in D — from the symbol: #11"
+  ]
+ },
+ "misty-jazz-mind-accelerator": {
+  "key": "Eb major (key:, functional)",
+  "areas": [
+   "Eb major A1 1 – A2 8"
+  ],
+  "rows": [
+   "A1 1 EbMaj7 [Imaj7] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "A1 2 Bbm7 [ii7/IV] → Bb Dorian (m4) ii of the ii–V to Ab",
+   "A1 2 Eb7 [V7/IV] → Eb Mixolydian (D4) V7/IV in Eb: natural tensions",
+   "A1 3 AbMaj7 [IVmaj7] → Ab Ionian (M3) IV in Eb — the Eb7 before it makes Ab the key of the moment: the 4th is in the key",
+   "A1 4 Abm7 [iv7] → Ab Dorian (m4) ii of Db7: Dorian",
+   "A1 4 Db7 [♭VII7] → Db Lydian Dominant (D5) back door bVII7 to EbMaj7: the #11 is in the key",
+   "A1 5 EbMaj7 [Imaj7] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "A1 5 Cm7 [vi7] → C Aeolian (m7) vi in Eb — vi: Aeolian, the key's own notes (the ♭6 is a passing note)",
+   "A1 6 Fm7 [ii7] → F Dorian (m4) ii of Bb7: Dorian",
+   "A1 6 Bb7 [V7] → Bb Mixolydian (D4) V7/I in Eb (the I never arrives) — V7/I in Eb: natural tensions",
+   "A1 7 Gm7 [iii7] → G Phrygian (m9) ii of the ii–V to F minor; also iii of Eb — iii: Phrygian, the key's own notes (the ♭2 is a passing note)",
+   "A1 7 C7 [V7/ii] → C Mixolydian b6 (D4) V7/ii in Eb: the b13 is in the key",
+   "A1 8 Fm7 [ii7] → F Dorian (m4) ii of the ii–V to Eb",
+   "A1 8 Bb7 [V7] → Bb Mixolydian (D4) V7 of Eb: natural tensions",
+   "A1 9 Eb6 [I6] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "A1 9 Ab6 [IV6] → Ab Lydian (M4) IV in Eb — IV: the #4 is the key’s 7th",
+   "A1 10 Eb6 [I6] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "A1 10 Eb6 [I6] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "B 1 Bbm7 [ii7/IV] → Bb Dorian (m4) ii of the ii–V to Ab",
+   "B 2 Eb7b9 [V7/IV] → Eb Half-Whole Diminished (D1+D4) V7/IV in Eb: the b9 from the symbol",
+   "B 3 AbMaj7 [IVmaj7] → Ab Ionian (M3) IV in Eb — the Eb7b9 before it makes Ab the key of the moment: the 4th is in the key",
+   "B 4 AbMaj7 [IVmaj7] → Ab Ionian (M3) IV in Eb — the Eb7b9 before it makes Ab the key of the moment: the 4th is in the key",
+   "B 5 Am7 [ii7/iii] → A Dorian (m4) ii of the ii–V to G minor",
+   "B 6 D7b9 [V7/iii] → D Phrygian Dominant (D4) V7/iii in Eb: b9 and b13 are in the key",
+   "B 7 Gm7 [iii7] → G Phrygian (m9) ii of the ii–V to F minor; also iii of Eb — iii: Phrygian, the key's own notes (the ♭2 is a passing note)",
+   "B 7 C7 [V7/ii] → C Mixolydian b6 (D4) V7/ii in Eb: the b13 is in the key",
+   "B 8 Fm7 [ii7] → F Dorian (m4) ii of the ii–V to Eb",
+   "B 8 Bb7 [V7] → Bb Mixolydian (D4) V7 of Eb: natural tensions",
+   "A2 1 EbMaj7 [Imaj7] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "A2 2 Bbm7 [ii7/IV] → Bb Dorian (m4) ii of the ii–V to Ab",
+   "A2 2 Eb7 [V7/IV] → Eb Mixolydian (D4) V7/IV in Eb: natural tensions",
+   "A2 3 AbMaj7 [IVmaj7] → Ab Ionian (M3) IV in Eb — the Eb7 before it makes Ab the key of the moment: the 4th is in the key",
+   "A2 4 Abm7 [iv7] → Ab Dorian (m4) ii of Db7: Dorian",
+   "A2 4 Db7 [♭VII7] → Db Lydian Dominant (D5) back door bVII7 to EbMaj7: the #11 is in the key",
+   "A2 5 EbMaj7 [Imaj7] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "A2 5 Cm7 [vi7] → C Aeolian (m7) vi in Eb — vi: Aeolian, the key's own notes (the ♭6 is a passing note)",
+   "A2 6 Fm7 [ii7] → F Dorian (m4) ii of the ii–V to Eb",
+   "A2 6 Bb7 [V7] → Bb Mixolydian (D4) V7 of Eb: natural tensions",
+   "A2 7 Eb6 [I6] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "A2 8 Fm7 [ii7] → F Dorian (m4) ii of the ii–V to Eb",
+   "A2 8 Bb7 [V7] → Bb Mixolydian (D4) V7 of Eb: natural tensions"
   ]
  },
  "misty": {
@@ -10516,6 +10931,48 @@
    "C 3 B7#11 [♭III7] → B Lydian Dominant (D6) ♭III7, borrowed from the parallel minor — ♭III7 from the parallel minor: Lydian Dominant",
    "C 3 A7#11 [subV7] → A Lydian Dominant (D2) subV7 of AbMaj7 — tritone substitute: resolves down a half step to AbMaj7",
    "C 4 AbMaj7 [Imaj7] → Ab Ionian (M3) I in Ab — tonic: the 4th is in the key"
+  ]
+ },
+ "nardis-jazz-mind-accelerator": {
+  "key": "E minor (key:, functional)",
+  "areas": [
+   "E minor A1 1 – B 4",
+   "C major B 5–8",
+   "E minor A3 1–8"
+  ],
+  "rows": [
+   "A1 1 Em7 [i7] → E Dorian (m5) i in E minor — tonic minor: Dorian by convention",
+   "A1 2 FMaj7 [♭IImaj7] → F Lydian (M4) bII in E minor — a non-tonic major chord: Lydian",
+   "A1 3 B7b9 [V7] → B Phrygian Dominant (D5) V7 in E minor, not resolving: b9 and b13 are in the key",
+   "A1 4 CMaj7 [♭VImaj7] → C Lydian (M4) bVI in E minor — a non-tonic major chord: Lydian",
+   "A1 5 Am7 [iv7] → A Dorian (m7) iv in E minor — iv: Dorian, the key’s own notes",
+   "A1 6 FMaj7 [♭IImaj7] → F Lydian (M4) bII in E minor — a non-tonic major chord: Lydian",
+   "A1 7 EMaj7 [Imaj7] → E Lydian (M4) I in E minor — a non-tonic major chord: Lydian",
+   "A1 8 Em7 [i7] → E Dorian (m5) i in E minor — tonic minor: Dorian by convention",
+   "A2 1 Em7 [i7] → E Dorian (m5) i in E minor — tonic minor: Dorian by convention",
+   "A2 2 FMaj7 [♭IImaj7] → F Lydian (M4) bII in E minor — a non-tonic major chord: Lydian",
+   "A2 3 B7b9 [V7] → B Phrygian Dominant (D5) V7 in E minor, not resolving: b9 and b13 are in the key",
+   "A2 4 CMaj7 [♭VImaj7] → C Lydian (M4) bVI in E minor — a non-tonic major chord: Lydian",
+   "A2 5 Am7 [iv7] → A Dorian (m7) iv in E minor — iv: Dorian, the key’s own notes",
+   "A2 6 FMaj7 [♭IImaj7] → F Lydian (M4) bII in E minor — a non-tonic major chord: Lydian",
+   "A2 7 EMaj7 [Imaj7] → E Lydian (M4) I in E minor — a non-tonic major chord: Lydian",
+   "A2 8 Em7 [i7] → E Dorian (m5) i in E minor — tonic minor: Dorian by convention",
+   "B 1 Am7 [iv7] → A Dorian (m7) iv in E minor — iv: Dorian, the key’s own notes",
+   "B 2 FMaj7 [♭IImaj7] → F Lydian (M4) bII in E minor — a non-tonic major chord: Lydian",
+   "B 3 Am7 [iv7] → A Dorian (m7) iv in E minor — iv: Dorian, the key’s own notes",
+   "B 4 FMaj7 [♭IImaj7] → F Lydian (M4) bII in E minor — a non-tonic major chord: Lydian",
+   "B 5 Dm7 [ii7] → D Dorian (m4) ii of the ii–V to C",
+   "B 6 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "B 7 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "B 8 FMaj7 [IVmaj7] → F Lydian (M4) IV in C — IV: the #4 is the key’s 7th",
+   "A3 1 Em7 [i7] → E Dorian (m5) i in E minor — tonic minor: Dorian by convention",
+   "A3 2 FMaj7 [♭IImaj7] → F Lydian (M4) bII in E minor — a non-tonic major chord: Lydian",
+   "A3 3 B7b9 [V7] → B Phrygian Dominant (D5) V7 in E minor, not resolving: b9 and b13 are in the key",
+   "A3 4 CMaj7 [♭VImaj7] → C Lydian (M4) bVI in E minor — a non-tonic major chord: Lydian",
+   "A3 5 Am7 [iv7] → A Dorian (m7) iv in E minor — iv: Dorian, the key’s own notes",
+   "A3 6 FMaj7 [♭IImaj7] → F Lydian (M4) bII in E minor — a non-tonic major chord: Lydian",
+   "A3 7 EMaj7 [Imaj7] → E Lydian (M4) I in E minor — a non-tonic major chord: Lydian",
+   "A3 8 Em7 [i7] → E Dorian (m5) i in E minor — tonic minor: Dorian by convention"
   ]
  },
  "nardis": {
@@ -11852,6 +12309,46 @@
    "C 3 GMaj7 [Imaj7] → G Ionian (M3) I in G — tonic: the 4th is in the key"
   ]
  },
+ "perdido-jazz-mind-accelerator": {
+  "key": "Bb major (key:, functional)",
+  "areas": [
+   "Bb major A1 1 – A3 8"
+  ],
+  "rows": [
+   "A1 1 Cm7 [ii7] → C Dorian (m4) ii of the ii–V to Bb",
+   "A1 2 F7 [V7] → F Mixolydian (D4) V7 of Bb: natural tensions",
+   "A1 3 Bb6 [I6] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key",
+   "A1 4 G7b9 [V7/ii] → G Phrygian Dominant (D1+D4) V7/ii in Bb: the b13 is in the key, the b9 from the symbol",
+   "A1 5 Cm7 [ii7] → C Dorian (m4) ii of the ii–V to Bb",
+   "A1 6 F7 [V7] → F Mixolydian (D4) V7 of Bb: natural tensions",
+   "A1 7 Bb6 [I6] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key",
+   "A1 8 G7b9 [V7/ii] → G Phrygian Dominant (D1+D4) V7/ii in Bb: the b13 is in the key, the b9 from the symbol",
+   "A2 1 Cm7 [ii7] → C Dorian (m4) ii of the ii–V to Bb",
+   "A2 2 F7 [V7] → F Mixolydian (D4) V7 of Bb: natural tensions",
+   "A2 3 Bb6 [I6] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key",
+   "A2 4 G7b9 [V7/ii] → G Phrygian Dominant (D1+D4) V7/ii in Bb: the b13 is in the key, the b9 from the symbol",
+   "A2 5 Cm7 [ii7] → C Dorian (m4) ii of the ii–V to Bb",
+   "A2 6 F7 [V7] → F Mixolydian (D4) V7 of Bb: natural tensions",
+   "A2 7 Bb6 [I6] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key",
+   "A2 8 G7b9 [VI7] → G Phrygian Dominant (D1+D5) VI7 in Bb, not resolving: the b13 is in the key, the b9 from the symbol",
+   "B 1 D7 [→] → D Mixolydian (D3) extended dominant: each one falls a fifth into the next: natural tensions",
+   "B 2 D7 [→] → D Mixolydian (D3) extended dominant: each one falls a fifth into the next: natural tensions",
+   "B 3 G7 [→] → G Mixolydian (D3) extended dominant: each one falls a fifth into the next: natural tensions",
+   "B 4 G7 [→] → G Mixolydian (D3) extended dominant: each one falls a fifth into the next: natural tensions",
+   "B 5 C7 [V7/V] → C Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "B 6 C7 [V7/V] → C Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "B 7 F7 [V7] → F Mixolydian (D5) V7 in Bb, not resolving: natural tensions",
+   "B 8 F7 [V7] → F Mixolydian (D5) V7 in Bb, not resolving: natural tensions",
+   "A3 1 Cm7 [ii7] → C Dorian (m4) ii of the ii–V to Bb",
+   "A3 2 F7 [V7] → F Mixolydian (D4) V7 of Bb: natural tensions",
+   "A3 3 Bb6 [I6] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key",
+   "A3 4 G7b9 [V7/ii] → G Phrygian Dominant (D1+D4) V7/ii in Bb: the b13 is in the key, the b9 from the symbol",
+   "A3 5 Cm7 [ii7] → C Dorian (m4) ii of the ii–V to Bb",
+   "A3 6 F7 [V7] → F Mixolydian (D4) V7 of Bb: natural tensions",
+   "A3 7 Bb6 [I6] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key",
+   "A3 8 G7b9 [V7/ii] → G Phrygian Dominant (D1+D4) V7/ii in Bb: the b13 is in the key, the b9 from the symbol"
+  ]
+ },
  "perdido": {
   "key": "Bb major (key:, functional)",
   "areas": [
@@ -13067,6 +13564,83 @@
    "D 4 Cm7 [ii7/♭III] → C Dorian (m4) ii of F7: Dorian",
    "D 4 F7 [V7/♭III] → F Mixolydian (D4) extended ii–V: a side-step, its own notes — extended ii–V: a side-step, its own key",
    "D 5 D9sus4 [V7sus4] → D Mixolydian (s3) static sus: Mixolydian"
+  ]
+ },
+ "satin-doll-jazz-mind-accelerator-exercise": {
+  "key": "C major (key:, functional)",
+  "areas": [
+   "C major A 1–12"
+  ],
+  "rows": [
+   "A 1 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 2 D7 [V7/V] → D Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "A 3 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "A 4 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 5 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 6 D7 [subV7/♭II] → D Lydian Dominant (D2) subV7 of Db7 — tritone substitute: resolves down a half step to Db7",
+   "A 7 Db7 [subV7] → Db Lydian Dominant (D2) subV7 of CMaj7 — tritone substitute: resolves down a half step to CMaj7",
+   "A 8 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 9 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 10 Am7 [vi7] → A Dorian (m4) ii of D7; also vi of C — ii of D7: Dorian",
+   "A 10 D7 [V7/V] → D Mixolydian (D4) V7/V in C (the V never arrives) — V7/V in C: natural tensions",
+   "A 11 Abm7 [ii7/♯IV] → Ab Dorian (m4) ii of Db7: Dorian",
+   "A 11 Db7 [subV7] → Db Lydian Dominant (D2) subV7 of CMaj7 — tritone substitute: resolves down a half step to CMaj7",
+   "A 12 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key"
+  ]
+ },
+ "satin-doll-jazz-mind-accelerator": {
+  "key": "C major (key:, functional)",
+  "areas": [
+   "C major A1 1 – A2 8"
+  ],
+  "rows": [
+   "A1 1 Dm7 [ii7] → D Dorian (m4) ii of G7: Dorian",
+   "A1 1 G7 [V7] → G Mixolydian (D4) V7/I in C (the I never arrives) — V7/I in C: natural tensions",
+   "A1 2 Dm7 [ii7] → D Dorian (m4) ii of G7: Dorian",
+   "A1 2 G7 [V7] → G Mixolydian (D4) V7/I in C (the I never arrives) — V7/I in C: natural tensions",
+   "A1 3 Em7 [iii7] → E Phrygian (m9) ii of A7; also iii of C — iii: Phrygian, the key's own notes (the ♭2 is a passing note)",
+   "A1 3 A7 [V7/II] → A Mixolydian (D4) extended ii–V: a side-step, its own notes — extended ii–V: a side-step, its own key",
+   "A1 4 Em7 [iii7] → E Phrygian (m9) ii of A7; also iii of C — iii: Phrygian, the key's own notes (the ♭2 is a passing note)",
+   "A1 4 A7 [V7/II] → A Mixolydian (D4) extended ii–V: a side-step, its own notes — extended ii–V: a side-step, its own key",
+   "A1 5 Am7 [vi7] → A Dorian (m4) ii of D7; also vi of C — ii of D7: Dorian",
+   "A1 5 D7 [V7/V] → D Mixolydian (D4) V7/V in C (the V never arrives) — V7/V in C: natural tensions",
+   "A1 6 Abm7 [ii7/♯IV] → Ab Dorian (m4) ii of Db7: Dorian",
+   "A1 6 Db7 [subV7] → Db Lydian Dominant (D2) subV7 of CMaj7 — tritone substitute: resolves down a half step to CMaj7",
+   "A1 7 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A1 7 F7 [subV7/iii] → F Lydian Dominant (D2) subV7 of Em7 — tritone substitute: resolves down a half step to Em7",
+   "A1 8 Em7 [iii7] → E Phrygian (m9) ii of A7; also iii of C — iii: Phrygian, the key's own notes (the ♭2 is a passing note)",
+   "A1 8 A7 [V7/II] → A Mixolydian (D4) extended ii–V: a side-step, its own notes — extended ii–V: a side-step, its own key",
+   "A1 9 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A1 10 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "B 1 Gm7 [ii7/IV] → G Dorian (m4) ii of C7: Dorian",
+   "B 1 C7 [V7/IV] → C Mixolydian (D4) V7/IV in C (the IV never arrives) — V7/IV in C: natural tensions",
+   "B 2 Gm7 [ii7/IV] → G Dorian (m4) ii of the ii–V to F",
+   "B 2 C7 [V7/IV] → C Mixolydian (D4) V7/IV in C: natural tensions",
+   "B 3 FMaj7 [IVmaj7] → F Ionian (M3) IV in C — the C7 before it makes F the key of the moment: the 4th is in the key",
+   "B 4 FMaj7 [IVmaj7] → F Ionian (M3) IV in C — the C7 before it makes F the key of the moment: the 4th is in the key",
+   "B 5 Am7 [vi7] → A Dorian (m4) ii of D7; also vi of C — ii of D7: Dorian",
+   "B 5 D7 [V7/V] → D Mixolydian (D4) V7/V in C (the V never arrives) — V7/V in C: natural tensions",
+   "B 6 Am7 [vi7] → A Dorian (m4) ii of D7; also vi of C — ii of D7: Dorian",
+   "B 6 D7 [V7/V] → D Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "B 7 G7 [V7] → G Mixolydian (D5) V7 in C, not resolving: natural tensions",
+   "B 8 Em7 [iii7] → E Phrygian (m9) ii of the ii–V to D minor; also iii of C — iii: Phrygian, the key's own notes (the ♭2 is a passing note)",
+   "B 8 A7 [V7/ii] → A Mixolydian b6 (D4) V7/ii in C: the b13 is in the key",
+   "A2 1 Dm7 [ii7] → D Dorian (m4) ii of G7: Dorian",
+   "A2 1 G7 [V7] → G Mixolydian (D4) V7/I in C (the I never arrives) — V7/I in C: natural tensions",
+   "A2 2 Dm7 [ii7] → D Dorian (m4) ii of G7: Dorian",
+   "A2 2 G7 [V7] → G Mixolydian (D4) V7/I in C (the I never arrives) — V7/I in C: natural tensions",
+   "A2 3 Em7 [iii7] → E Phrygian (m9) ii of A7; also iii of C — iii: Phrygian, the key's own notes (the ♭2 is a passing note)",
+   "A2 3 A7 [V7/II] → A Mixolydian (D4) extended ii–V: a side-step, its own notes — extended ii–V: a side-step, its own key",
+   "A2 4 Em7 [iii7] → E Phrygian (m9) ii of A7; also iii of C — iii: Phrygian, the key's own notes (the ♭2 is a passing note)",
+   "A2 4 A7 [V7/II] → A Mixolydian (D4) extended ii–V: a side-step, its own notes — extended ii–V: a side-step, its own key",
+   "A2 5 Am7 [vi7] → A Dorian (m4) ii of D7; also vi of C — ii of D7: Dorian",
+   "A2 5 D7 [V7/V] → D Mixolydian (D4) V7/V in C (the V never arrives) — V7/V in C: natural tensions",
+   "A2 6 Abm7 [ii7/♯IV] → Ab Dorian (m4) ii of Db7: Dorian",
+   "A2 6 Db7 [subV7] → Db Lydian Dominant (D2) subV7 of CMaj7 — tritone substitute: resolves down a half step to CMaj7",
+   "A2 7 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A2 7 F7 [subV7/iii] → F Lydian Dominant (D2) subV7 of Em7 — tritone substitute: resolves down a half step to Em7",
+   "A2 8 Em7 [iii7] → E Phrygian (m9) ii of the ii–V to D minor; also iii of C — iii: Phrygian, the key's own notes (the ♭2 is a passing note)",
+   "A2 8 A7 [V7/ii] → A Mixolydian b6 (D4) V7/ii in C: the b13 is in the key"
   ]
  },
  "satin-doll": {
@@ -15193,7 +15767,7 @@
    "A 15 Ab7#11 [♭VI7] → Ab Lydian Dominant (D5) bVI7 in C minor, not resolving: the #11 is in the key"
   ]
  },
- "summertime-jazz-lab-accelerator": {
+ "summertime-jazz-mind-accelerator": {
   "key": "A minor (key:, functional)",
   "areas": [
    "A minor A 1–10",
@@ -15551,6 +16125,26 @@
    "B 14 Fm9 [ii7] → F Dorian (m4) ii of the ii–V to Eb",
    "B 14 Bb7 [V7] → Bb Mixolydian (D4) V7 of Eb: natural tensions",
    "B 15 Eb6 [I6] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key"
+  ]
+ },
+ "tenor-madness-jazz-mind-accelerator": {
+  "key": "Bb major (key:, blues)",
+  "areas": [
+   "Bb major A 1–12"
+  ],
+  "rows": [
+   "A 1 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "A 2 Eb7 [IV7] → Eb Mixolydian (D5) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 3 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "A 4 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "A 5 Eb7 [IV7] → Eb Mixolydian (D5) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 Eb7 [IV7] → Eb Mixolydian (D5) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "A 8 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "A 9 Cm7 [ii7] → C Dorian (m4) ii of F7: Dorian",
+   "A 10 F7 [V7] → F Mixolydian (D3) extended dominant (V7 of Bb7) — extended dominant: V7 of Bb7",
+   "A 11 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions",
+   "A 12 Bb7 [I7] → Bb Mixolydian (D5) I7 of the blues: a tonic with dominant colour, natural tensions"
   ]
  },
  "tenor-madness": {
@@ -16424,6 +17018,50 @@
    "Ending 2 E/F# [♭VI] → E Lydian (M5) modal major: Lydian"
   ]
  },
+ "the-way-you-look-tonight-jazz-mind-accelerator": {
+  "key": "F major (key:, functional)",
+  "areas": [
+   "F major A 1–16",
+   "Ab major A 17 – B 14",
+   "F major B 15–16"
+  ],
+  "rows": [
+   "A 1 FMaj7 [Imaj7] → F Ionian (M3) I in F — tonic: the 4th is in the key",
+   "A 2 D7b9 [V7/ii] → D Phrygian Dominant (D1+D4) V7/ii in F: the b13 is in the key, the b9 from the symbol",
+   "A 3 Gm7 [ii7] → G Dorian (m4) ii of the ii–V to F",
+   "A 4 C7 [V7] → C Mixolydian (D4) V7 of F: natural tensions",
+   "A 5 FMaj7 [Imaj7] → F Ionian (M3) I in F — tonic: the 4th is in the key",
+   "A 6 D7b9 [V7/ii] → D Phrygian Dominant (D1+D4) V7/ii in F: the b13 is in the key, the b9 from the symbol",
+   "A 7 Gm7 [ii7] → G Dorian (m4) ii of C7: Dorian",
+   "A 8 C7 [V7] → C Mixolydian (D4) V7/I in F (the I never arrives) — V7/I in F: natural tensions",
+   "A 9 Cm7 [ii7/IV] → C Dorian (m4) ii of the ii–V to Bb",
+   "A 10 F7 [V7/IV] → F Mixolydian (D4) V7/IV in F: natural tensions",
+   "A 11 BbMaj7 [IVmaj7] → Bb Ionian (M3) IV in F — the F7 before it makes Bb the key of the moment: the 4th is in the key",
+   "A 12 Bbm6 [iv6] → Bb Dorian (m2) iv in F — a minor sixth chord: Dorian",
+   "A 13 F6 [I6] → F Ionian (M3) I in F — tonic: the 4th is in the key",
+   "A 14 D7b9 [V7/ii] → D Phrygian Dominant (D1+D4) V7/ii in F: the b13 is in the key, the b9 from the symbol",
+   "A 15 Gm7 [ii7] → G Dorian (m4) ii of C7: Dorian",
+   "A 16 C7 [V7] → C Mixolydian (D4) V7/I in F (the I never arrives) — V7/I in F: natural tensions",
+   "A 17 Bbm7 [ii7] → Bb Dorian (m4) ii of the ii–V to Ab",
+   "A 17 Eb7 [V7] → Eb Mixolydian (D4) V7 of Ab: natural tensions",
+   "B 1 AbMaj7 [Imaj7] → Ab Ionian (M3) I in Ab — tonic: the 4th is in the key",
+   "B 2 Adim7 [♯i°7] → A Diatonic Diminished (d1) vii°7 of Bbm7: F7♭9 without its root",
+   "B 3 Bbm7 [ii7] → Bb Dorian (m4) ii of the ii–V to Ab",
+   "B 4 Eb7 [V7] → Eb Mixolydian (D4) V7 of Ab: natural tensions",
+   "B 5 AbMaj7 [Imaj7] → Ab Ionian (M3) I in Ab — tonic: the 4th is in the key",
+   "B 6 Adim7 [♯i°7] → A Diatonic Diminished (d1) vii°7 of Bbm7: F7♭9 without its root",
+   "B 7 Bbm7 [ii7] → Bb Dorian (m4) ii of the ii–V to Ab",
+   "B 8 Eb7 [V7] → Eb Mixolydian (D4) V7 of Ab: natural tensions",
+   "B 9 AbMaj7 [Imaj7] → Ab Ionian (M3) I in Ab — tonic: the 4th is in the key",
+   "B 10 Adim7 [♯i°7] → A Diatonic Diminished (d1) vii°7 of Bbm7: F7♭9 without its root",
+   "B 11 Bbm7 [ii7] → Bb Dorian (m4) ii of the ii–V to Ab",
+   "B 12 Eb7 [V7] → Eb Mixolydian (D4) V7 of Ab: natural tensions",
+   "B 13 AbMaj7 [Imaj7] → Ab Ionian (M3) I in Ab — tonic: the 4th is in the key",
+   "B 14 F7b9 [VI7] → F Phrygian Dominant (D1+D5) VI7 in Ab, not resolving: the b13 is in the key, the b9 from the symbol",
+   "B 15 Gm7 [ii7] → G Dorian (m4) ii of the ii–V to F",
+   "B 16 C7 [V7] → C Mixolydian (D4) V7 of F: natural tensions"
+  ]
+ },
  "the-way-you-look-tonight": {
   "key": "F major (key:, functional)",
   "areas": [
@@ -16629,6 +17267,51 @@
    "A3 5 C7 [V7/V] → C Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
    "A3 6 F7 [V7] → F Mixolydian (D4) V7 of Bb: natural tensions",
    "A3 7 BbMaj7 [Imaj7] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key"
+  ]
+ },
+ "there-will-never-be-another-you-jazz-mind-accelerator": {
+  "key": "Eb major (key:, functional)",
+  "areas": [
+   "Eb major A1 1 – C 8"
+  ],
+  "rows": [
+   "A1 1 EbMaj7 [Imaj7] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "A1 2 EbMaj7 [Imaj7] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "A1 3 Dm7b5 [viiø7] → D Locrian (h2) iiø7 of the ii–V to C minor; also viiø7 of Eb — iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A1 4 G7b9 [V7/vi] → G Phrygian Dominant (D4) V7/vi in Eb: b9 and b13 are in the key",
+   "A1 5 Cm7 [vi7] → C Aeolian (m7) vi in Eb — vi: Aeolian, the key's own notes (the ♭6 is a passing note)",
+   "A1 6 Cm7 [vi7] → C Aeolian (m7) vi in Eb — vi: Aeolian, the key's own notes (the ♭6 is a passing note)",
+   "A1 7 Bbm7 [ii7/IV] → Bb Dorian (m4) ii of the ii–V to Ab",
+   "A1 8 Eb7 [V7/IV] → Eb Mixolydian (D4) V7/IV in Eb: natural tensions",
+   "B 1 AbMaj7 [IVmaj7] → Ab Ionian (M3) IV in Eb — the Eb7 before it makes Ab the key of the moment: the 4th is in the key",
+   "B 2 Abm6 [iv6] → Ab Dorian (m2) iv in Eb — a minor sixth chord: Dorian",
+   "B 3 EbMaj7 [Imaj7] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "B 4 Cm7 [vi7] → C Dorian (m4) ii of F7; also vi of Eb — ii of F7: Dorian",
+   "B 5 F7 [V7/V] → F Mixolydian (D4) V7/V in Eb (the V never arrives) — V7/V in Eb: natural tensions",
+   "B 6 F7 [V7/V] → F Mixolydian (D4) V7/V in Eb (the V never arrives) — V7/V in Eb: natural tensions",
+   "B 7 Fm7 [ii7] → F Dorian (m4) ii of the ii–V to Eb",
+   "B 8 Bb7 [V7] → Bb Mixolydian (D4) V7 of Eb: natural tensions",
+   "A2 1 EbMaj7 [Imaj7] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "A2 2 EbMaj7 [Imaj7] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "A2 3 Dm7b5 [viiø7] → D Locrian (h2) iiø7 of the ii–V to C minor; also viiø7 of Eb — iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A2 4 G7b9 [V7/vi] → G Phrygian Dominant (D4) V7/vi in Eb: b9 and b13 are in the key",
+   "A2 5 Cm7 [vi7] → C Aeolian (m7) vi in Eb — vi: Aeolian, the key's own notes (the ♭6 is a passing note)",
+   "A2 6 Cm7 [vi7] → C Aeolian (m7) vi in Eb — vi: Aeolian, the key's own notes (the ♭6 is a passing note)",
+   "A2 7 Bbm7 [ii7/IV] → Bb Dorian (m4) ii of the ii–V to Ab",
+   "A2 8 Eb7 [V7/IV] → Eb Mixolydian (D4) V7/IV in Eb: natural tensions",
+   "C 1 AbMaj7 [IVmaj7] → Ab Ionian (M3) IV in Eb — the Eb7 before it makes Ab the key of the moment: the 4th is in the key",
+   "C 2 Abm6 [iv6] → Ab Dorian (m2) iv in Eb — a minor sixth chord: Dorian",
+   "C 3 EbMaj7 [Imaj7] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "C 4 Gm7 [iii7] → G Phrygian (m9) ii of C7; also iii of Eb — iii: Phrygian, the key's own notes (the ♭2 is a passing note)",
+   "C 4 C7 [V7/II] → C Mixolydian (D4) extended ii–V: a side-step, its own notes — extended ii–V: a side-step, its own key",
+   "C 5 EbMaj7 [Imaj7] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "C 5 D7 [V7/iii] → D Phrygian Dominant (D4) V7/iii in Eb: b9 and b13 are in the key",
+   "C 6 Gm7 [iii7] → G Phrygian (m9) ii of the ii–V to F minor; also iii of Eb — iii: Phrygian, the key's own notes (the ♭2 is a passing note)",
+   "C 6 C7 [V7/ii] → C Mixolydian b6 (D4) V7/ii in Eb: the b13 is in the key",
+   "C 7 Fm7 [ii7] → F Dorian (m4) ii of the ii–V to Eb",
+   "C 7 Bb7 [V7] → Bb Mixolydian (D4) V7 of Eb: natural tensions",
+   "C 8 Eb6 [I6] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
+   "C 8 Bb7 [V7] → Bb Mixolydian (D4) V7 of Eb: natural tensions"
   ]
  },
  "there-will-never-be-another-you": {

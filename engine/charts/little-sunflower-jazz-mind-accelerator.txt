@@ -1,0 +1,62 @@
+title: Little Sunflower
+composer: Freddie Hubbard
+style: Even 8th's
+key: Dm
+form: ABA, 48 bars
+source: Jazz Mind Accelerator
+version: Jazz Mind Accelerator
+# analysis: 2026-10-18, rules v1; D minor, modal
+
+section: A1
+1  | Dm7        # modal minor: Dorian
+2  | Dm7
+3  | Dm7
+4  | Dm7
+5  | Dm7
+6  | Dm7
+7  | Dm7
+8  | Dm7
+9  | Dm7
+10 | Dm7
+11 | Dm7
+12 | Dm7
+13 | Dm7
+14 | Dm7
+15 | Dm7
+16 | Dm7
+
+section: B
+1  | EbMaj7#11  # from the symbol: #11
+2  | EbMaj7#11
+3  | EbMaj7#11
+4  | EbMaj7#11
+5  | DMaj7#11   # from the symbol: #11
+6  | DMaj7#11
+7  | DMaj7#11
+8  | DMaj7#11
+9  | EbMaj7#11  # from the symbol: #11
+10 | EbMaj7#11
+11 | EbMaj7#11
+12 | EbMaj7#11
+13 | DMaj7#11   # from the symbol: #11
+14 | DMaj7#11
+15 | DMaj7#11
+16 | DMaj7#11
+
+section: A2
+1  | Dm7        # modal minor: Dorian
+2  | Dm7
+3  | Dm7
+4  | Dm7
+5  | Dm7
+6  | Dm7
+7  | Dm7
+8  | Dm7
+9  | Dm7
+10 | Dm7
+11 | Dm7
+12 | Dm7
+13 | Dm7
+14 | Dm7
+15 | Dm7
+16 | Dm7

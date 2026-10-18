@@ -327,7 +327,7 @@
           </li>
           <li>
             <strong class="font-semibold text-zinc-950 dark:text-white">Versions:</strong> when a tune has more than one
-            chart, like Summertime and its Jazz Lab Accelerator version, the <strong class="font-semibold">Version</strong>
+            chart, like Summertime and its Jazz Mind Accelerator version, the <strong class="font-semibold">Version</strong>
             menu above the sheet switches between them. Your own charts of the tune (a copy, or a chart with its title)
             are listed there too, under Mine; add a <UiCode>version:</UiCode> line to give yours a name.
           </li>

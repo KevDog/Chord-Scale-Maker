@@ -61,7 +61,7 @@ describe('chart', () => {
 
   it('names a version of a tune by its label (#411)', () => {
     const name = (text: string) => chartName(parseChart(text).value)
-    expect(name('title: Summertime\nversion: Jazz Lab Accelerator\n')).toBe('Summertime (Jazz Lab Accelerator)')
+    expect(name('title: Summertime\nversion: Jazz Mind Accelerator\n')).toBe('Summertime (Jazz Mind Accelerator)')
     expect(name('title: Summertime\n')).toBe('Summertime')
     expect(name('version: Mine\n')).toBe('Untitled (Mine)')
   })
