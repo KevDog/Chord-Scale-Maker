@@ -1,0 +1,25 @@
+{
+  "name": "@chord-scale-maker/cli",
+  "version": "0.0.0",
+  "private": true,
+  "description": "csm: the repo's admin CLI (docs/superpowers/specs/2026-10-18-csm-add-design.md)",
+  "license": "MIT",
+  "type": "module",
+  "bin": {
+    "csm": "./bin/csm.mjs"
+  },
+  "scripts": {
+    "test": "vitest run",
+    "typecheck": "tsc -p tsconfig.json",
+    "lint": "eslint ."
+  },
+  "devDependencies": {
+    "@chord-scale-maker/engine": "*",
+    "@nuxt/eslint-config": "1.17.0",
+    "@types/node": "26.6.4",
+    "eslint": "10.12.0",
+    "typescript": "5.9.3",
+    "vite-node": "6.0.0",
+    "vitest": "5.0.3"
+  }
+}

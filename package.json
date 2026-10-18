@@ -2,7 +2,7 @@
   "name": "chord-scale-maker",
   "description": "Chord Scale Maker: endless improvisation practice sheets for jazz standards",
   "private": true,
-  "workspaces": ["engine", "web"],
+  "workspaces": ["engine", "web", "cli"],
   "scripts": {
     "test": "npm test --workspaces",
     "typecheck": "npm run typecheck --workspaces",
