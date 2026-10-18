@@ -48,7 +48,7 @@
       <UiSubheading id="lead-sheet-heading" :level="2">Chord changes (lead-sheet style)</UiSubheading>
       <UiText class="mt-2">{{ song.leadSheet }}</UiText>
     </section>
-    <SongRecording v-if="song?.recording" :recording="song.recording" :youtube="song.youtube" :title="song.title" />
+    <SongRecording v-if="song?.recording" :recording="song.recording" :youtube="song.youtube" :embeddable="song.embeddable" :title="song.title" />
   </div>
 </template>
 
