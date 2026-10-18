@@ -28,7 +28,7 @@ Decided with the user 2026-10-18.
 chart has the tune's title or `aka:` (the version would stand as a tune of its own). Header flags are trimmed; a blank
 one is not given.
 
-## Library and composer pages (flag `versions`)
+## Library and composer pages (no flag: decided 2026-10-18, while no chart has `version:` this is the library as it was)
 - One row per group, linking to its main; "· N versions" in its details when N > 1.
 - Search (`searchLibrary`, `suggestTunes`) matches any version's title or `aka:`, and lists the group once.
 - The A–Z index, the library count, composer pages and tune of the day count groups, not files.
@@ -43,7 +43,8 @@ one is not given.
   - `<link rel="canonical">` to the main's page (`app.vue` takes a page's override);
   - left out of the sitemap and IndexNow (`chartSlugsOf`, `indexNowLibrary`);
   - its OG card's title carries the label.
-- Flag off: no picker, versions list as their own rows and pages as today (a version is just a chart).
+- Flag off: no picker and no version-page changes; the Library already lists one row per tune (step 2, unflagged),
+  so a version is reached by its URL only.
 
 ## Order of work (one PR each, or fewer if small)
 1. Engine: `version:`, `tuneKey`, `tuneGroups`, `versionProblems` in the library test; `csm add --version`.

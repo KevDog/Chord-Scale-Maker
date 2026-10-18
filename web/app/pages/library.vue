@@ -57,7 +57,7 @@
       <li v-for="chart in charts" :key="chart.slug" :data-letter="firstOf[chart.slug]" class="relative scroll-mt-4 py-3">
         <!-- the whole row is the link's tap target -->
         <UiLink :href="songPath(chart.slug)" class="text-[15px]/6 font-semibold text-note-800 after:absolute after:inset-0 dark:text-note-300">{{ chart.title }}</UiLink>
-        <p class="truncate text-sm/5 text-zinc-500 dark:text-zinc-400">{{ [chart.composer, chart.details].filter(Boolean).join(' · ') }}</p>
+        <p class="truncate text-sm/5 text-zinc-500 dark:text-zinc-400">{{ [chart.composer, tuneDetails(chart)].filter(Boolean).join(' · ') }}</p>
       </li>
     </ul>
 
@@ -75,7 +75,7 @@
             <UiLink :href="songPath(chart.slug)" class="text-note-800 hover:underline dark:text-note-300">{{ chart.title }}</UiLink>
           </UiTableCell>
           <UiTableCell class="text-zinc-500 dark:text-zinc-400"><ComposerCredit :credit="chart.composer" /></UiTableCell>
-          <UiTableCell class="text-zinc-500 dark:text-zinc-400">{{ chart.details }}</UiTableCell>
+          <UiTableCell class="text-zinc-500 dark:text-zinc-400">{{ tuneDetails(chart) }}</UiTableCell>
         </UiTableRow>
       </UiTableBody>
     </UiTable>
@@ -105,10 +105,11 @@ const route = useRoute()
 onMounted(() => {
   if (typeof route.query.q === 'string') query.value = route.query.q
 })
-const charts = computed(() => searchLibrary(LIBRARY, query.value))
+// one row per tune, its versions folded in (#411)
+const charts = computed(() => searchLibrary(TUNES, query.value))
 /** how many of My charts show above the library (0: none, so no second "Library") */
 const mine = ref(0)
-const letters = letterIndex(LIBRARY)
+const letters = letterIndex(TUNES)
 /** the first tune of each letter (slug → letter), the A–Z bar's targets */
 const firstOf: Readonly<Record<string, string>> = Object.fromEntries(letters.map((l) => [l.slug, l.letter]))
 /** to a letter's first tune, in whichever of the table or the list is showing */

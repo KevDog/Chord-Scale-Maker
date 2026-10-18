@@ -1,5 +1,5 @@
 import { composerIndex, type ComposerEntry, composersOf } from '@chord-scale-maker/engine'
-import { LIBRARY } from './library'
+import { LIBRARY, TUNES } from './library'
 import { canonicalUrl, type PageHead, songPath } from './site'
 import { jsonLd } from './structuredData'
 
@@ -8,8 +8,8 @@ import { jsonLd } from './structuredData'
 export const COMPOSERS_PATH = '/composers'
 export const composerPath = (slug: string): string => `${COMPOSERS_PATH}/${slug}`
 
-/** every library composer, filed by surname */
-export const COMPOSERS: readonly ComposerEntry[] = composerIndex(LIBRARY)
+/** every library composer, filed by surname, with their tunes (a tune's versions listed once, #411) */
+export const COMPOSERS: readonly ComposerEntry[] = composerIndex(TUNES)
 const BY_SLUG = new Map(COMPOSERS.map((c) => [c.slug, c]))
 const CHARTS = new Map(LIBRARY.map((c) => [c.slug, c]))
 

@@ -3,7 +3,7 @@
     <div class="max-w-2xl">
       <h1 class="font-display text-[34px]/[1.05] font-semibold tracking-[-0.025em] text-zinc-900 sm:text-[44px]/[1.05] dark:text-white">What are you playing?</h1>
       <p class="mt-3.5 max-w-[34em] text-base/6 text-pretty text-zinc-500 dark:text-zinc-400">
-        <strong class="font-semibold text-zinc-800 tabular-nums dark:text-zinc-200">{{ LIBRARY.length }}</strong> standards as practice sheets: the changes with their guide tones, and a scale and an arpeggio for every chord, written for your instrument.
+        <strong class="font-semibold text-zinc-800 tabular-nums dark:text-zinc-200">{{ TUNES.length }}</strong> standards as practice sheets: the changes with their guide tones, and a scale and an arpeggio for every chord, written for your instrument.
       </p>
       <TuneSearch class="mt-9" />
     </div>
@@ -42,7 +42,7 @@
 </template>
 
 <script setup lang="ts">
-import { LIBRARY } from '~/utils/library'
+import { TUNES } from '~/utils/library'
 import { letterRedirect, PAGE_HEAD, seoMeta } from '~/utils/site'
 import { jsonLd, webAppLd, websiteLd } from '~/utils/structuredData'
 

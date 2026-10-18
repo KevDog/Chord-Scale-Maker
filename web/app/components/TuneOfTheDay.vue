@@ -26,7 +26,7 @@
 
 <script setup lang="ts">
 import { INSTRUMENTS, writtenKey } from '@chord-scale-maker/engine'
-import { keyName, LIBRARY, type LibraryChart } from '~/utils/library'
+import { keyName, type LibraryChart, TUNES } from '~/utils/library'
 import { songPath } from '~/utils/site'
 import { anotherTune, tuneOfTheDay } from '~/utils/tuneOfTheDay'
 
@@ -37,8 +37,8 @@ const transposing = computed(() => INSTRUMENTS[instrument.value].trans !== 'C')
 const written = (key: string): string => writtenKey(key, INSTRUMENTS[instrument.value])
 const details = computed(() => (tune.value ? [tune.value.style, tune.value.form].filter(Boolean).join(' · ') : ''))
 
-onMounted(() => (tune.value = tuneOfTheDay(LIBRARY, new Date())))
+onMounted(() => (tune.value = tuneOfTheDay(TUNES, new Date())))
 function another(): void {
-  if (tune.value) tune.value = anotherTune(LIBRARY, tune.value, Math.random()) ?? tune.value
+  if (tune.value) tune.value = anotherTune(TUNES, tune.value, Math.random()) ?? tune.value
 }
 </script>

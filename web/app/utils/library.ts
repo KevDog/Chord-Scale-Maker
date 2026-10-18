@@ -1,4 +1,4 @@
-import { chartAka, chartHeading, isSyncCopy, parseChart, tuneSummary } from '@chord-scale-maker/engine'
+import { chartAka, chartHeading, isSyncCopy, parseChart, tuneGroups, tuneSummary } from '@chord-scale-maker/engine'
 import { filingTitle, libraryDetails } from './libraryIndex'
 import { publishedChart } from './published'
 
@@ -24,18 +24,38 @@ export function toLibrary(entries: Readonly<Record<string, string>>): LibraryCha
 
 export const LIBRARY: readonly LibraryChart[] = toLibrary(files)
 
+/** a tune as the library lists it (#411): its main chart, how many versions it has, and in aka every other title its
+ * versions go by, so a search finds the tune once */
+export type LibraryTune = LibraryChart & Readonly<{ versions: number }>
+
+export function toTunes(charts: readonly LibraryChart[]): LibraryTune[] {
+  const bySlug = new Map(charts.map((c) => [c.slug, c]))
+  const groups = new Map(tuneGroups(charts).map((g) => [g.main, g.versions.map((v) => bySlug.get(v.slug)!)]))
+  return charts.flatMap((c) => {
+    const group = groups.get(c.slug)
+    if (!group) return []
+    const aka = [...new Set(group.flatMap((v) => [v.title, ...v.aka]))].filter((t) => t !== c.title)
+    return [{ ...c, aka, versions: group.length }]
+  })
+}
+
+export const TUNES: readonly LibraryTune[] = toTunes(LIBRARY)
+
+/** a tune row's details: style · key · form, then its count of versions when it has more than one */
+export const tuneDetails = (t: LibraryTune): string => [t.details, t.versions > 1 ? `${t.versions} versions` : ''].filter(Boolean).join(' · ')
+
 /** by title, other title or composer, case- and accent-insensitive */
 const fold = (s: string): string => s.normalize('NFD').replace(/\p{Diacritic}/gu, '').toLowerCase()
 
-export const searchLibrary = (charts: readonly LibraryChart[], query: string): LibraryChart[] =>
+export const searchLibrary = <T extends LibraryChart>(charts: readonly T[], query: string): T[] =>
   charts.filter((c) => [c.title, ...c.aka, c.composer].some((s) => fold(s).includes(fold(query.trim()))))
 
 /** the home page's suggestions: title starts, then a title word's start, then elsewhere in a title or other title,
  * then composers; in library order within each; at most `limit`, and how many match in all */
-export function suggestTunes(charts: readonly LibraryChart[], query: string, limit: number): Readonly<{ tunes: LibraryChart[]; total: number }> {
+export function suggestTunes<T extends LibraryChart>(charts: readonly T[], query: string, limit: number): Readonly<{ tunes: T[]; total: number }> {
   const q = fold(query.trim())
   if (!q) return { tunes: [], total: 0 }
-  const rank = (c: LibraryChart): number => {
+  const rank = (c: T): number => {
     const title = fold(c.title)
     if (title.startsWith(q)) return 0
     if (title.includes(` ${q}`)) return 1

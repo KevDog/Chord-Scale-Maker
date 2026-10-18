@@ -61,7 +61,7 @@ import { INSTRUMENTS, writtenKey } from '@chord-scale-maker/engine'
 import { Combobox as HCombobox, ComboboxInput as HComboboxInput, ComboboxOption as HComboboxOption, ComboboxOptions as HComboboxOptions } from '@headlessui/vue'
 import { MagnifyingGlassIcon } from '@heroicons/vue/20/solid'
 import { INSTRUMENT_GROUPS, instrumentOption } from '~/utils/instrumentChoices'
-import { keyName, LIBRARY, matchSpan, suggestTunes } from '~/utils/library'
+import { keyName, matchSpan, suggestTunes, TUNES } from '~/utils/library'
 import { libraryPath, songPath } from '~/utils/site'
 
 /** the home page's search: tunes as you type, each in its key written for this browser's instrument (issue #243) */
@@ -71,7 +71,7 @@ const ALL = '#all'
 
 const query = ref('')
 const picked = ref<string | null>(null)
-const found = computed(() => suggestTunes(LIBRARY, query.value, SHOWN))
+const found = computed(() => suggestTunes(TUNES, query.value, SHOWN))
 const { instrument } = usePreferences()
 const transposing = computed(() => INSTRUMENTS[instrument.value].trans !== 'C')
 const written = (key: string): string => writtenKey(key, INSTRUMENTS[instrument.value])
