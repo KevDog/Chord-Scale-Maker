@@ -49,6 +49,7 @@
       <UiText class="mt-2">{{ song.leadSheet }}</UiText>
     </section>
     <SongRecording v-if="song?.recording" :recording="song.recording" :youtube="song.youtube" :embeddable="song.embeddable" :title="song.title" />
+    <UiText v-if="song?.contributor" class="mt-6 text-sm/6! print:hidden">Chart contributed by {{ song.contributor }}</UiText>
   </div>
 </template>
 
@@ -145,6 +146,8 @@ watch(
 
 /** a new chart was saved: give it its address without restarting the editor */
 function adopt(id: string): void {
+  // saved as the editor closes, on the way to another page (Send to the library, Report a chart error): stay there
+  if (router.currentRoute.value.path.replace(/\/$/, '') !== '/song') return
   adopted = id
   router.replace({ path: '/song', query: { mine: id } })
 }

@@ -28,6 +28,16 @@ for (const theme of ['light', 'dark'] as const) {
       }
     })
 
+    test('the contact page with a chart for the library (#153)', async ({ page }) => {
+      await page.goto('/contact')
+      if (theme === 'dark') await darkMode(page)
+      await page.evaluate(() => sessionStorage.setItem('csm-chart-submission', JSON.stringify({ text: 'title: T\n\nsection: A\n1 | Cm7\n', title: 'T', mode: 'new' })))
+      await page.reload()
+      await expect(page.getByText('attached as t.txt')).toBeVisible()
+      await page.getByRole('checkbox', { name: /^Credit me as/ }).check()
+      await expectAccessible(page)
+    })
+
     // its own test: the page list runs close to the timeout in CI
     test('a song with its recording', async ({ page }) => {
       await page.goto('/song/blue-trane')

@@ -25,3 +25,13 @@ describe('moreMenuItems', () => {
     expect(moreMenuItems({ ...at, edited: true, picks: true })).toEqual(['copy', 'download', 'revert', 'reset-picks', 'report'])
   })
 })
+
+describe('moreMenuItems, with chart submissions', () => {
+  it('a new chart: Send to the library, before the report', () => {
+    expect(moreMenuItems({ ...at, chart: { send: true, suggest: false, report: true } })).toEqual(['copy', 'download', 'send', 'report'])
+  })
+
+  it('an edited library chart: Suggest these changes, in place of the report', () => {
+    expect(moreMenuItems({ ...at, edited: true, chart: { send: false, suggest: true, report: false } })).toEqual(['copy', 'download', 'revert', 'suggest'])
+  })
+})

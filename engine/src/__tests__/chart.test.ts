@@ -92,6 +92,12 @@ describe('chart', () => {
     expect(serializeChart(doc)).toBe(text)
   })
 
+  it('reads and keeps a contributor: line', () => {
+    const text = 'title: T\ncontributor: Bill Evans\nsection: A\n1 | Cm7\n'
+    expect(parseChart(text).value.lines[1]).toEqual({ kind: 'meta', key: 'contributor', value: 'Bill Evans' })
+    expect(serializeChart(parseChart(text).value)).toBe(text)
+  })
+
   it('serializes canonically and round-trips', () => {
     const doc = parseChart(SAMPLE).value
     const text = serializeChart(doc)

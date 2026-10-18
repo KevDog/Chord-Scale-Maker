@@ -42,6 +42,10 @@ describe('songHead', () => {
   it("names a song's preview image without a composer when it has none", () => {
     expect(songHead('f-blues')?.head.image?.alt).toBe('F Blues: chord changes')
   })
+  it('credits no contributor where the chart names none', () => {
+    expect(songHead('autumn-leaves')?.contributor).toBe('')
+  })
+
   it('is null for anything that is not a library chart', () => {
     expect(songHead('no-such-tune')).toBeNull()
   })
