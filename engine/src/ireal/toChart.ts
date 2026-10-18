@@ -47,6 +47,7 @@ function play(bars: readonly IRealBar[], at: readonly string[]): Parsed<readonly
   for (const [i, bar] of bars.entries()) {
     const n = i + 1
     const report = (message: string) => diagnostics.push(diag(n, `${at[i]}: ${message}`))
+    if (pending && bar.items.length) report('a two-bar repeat cut short by chords in its second bar')
     const chords: string[] = pending && !bar.items.length ? [...pending] : []
     pending = null
     for (const item of bar.items) {
@@ -90,6 +91,7 @@ function sections(played: readonly Played[]): readonly Section[] {
 }
 
 type Ending = Readonly<{ n: number; first: number; last: number }>
+const ordinal = (n: number): string => (n === 3 ? '3rd' : `${n}th`)
 type Block = Readonly<{ sec: Section; copy?: true; endings?: readonly Ending[] }>
 
 /** a section as written: with its endings, or followed by a copy of it when { } repeats it whole */
@@ -99,14 +101,23 @@ function blocksOf(sec: Section, at: readonly string[]): Parsed<readonly Block[]>
   const report = (p: Played, message: string) => diagnostics.push(diag(p.n, `${at[p.n - 1]}: ${message}`))
   const counted = bars.find((p) => p.bar.count !== undefined && p.bar.count !== 2)
   if (counted) report(counted, `played ${counted.bar.count} times; written as twice`)
-  const starts = bars.flatMap((p, i) => (p.bar.ending ? [{ n: p.bar.ending, i }] : []))
+  // N0 shows no number: it follows the ending before it
+  const starts = bars.reduce<readonly Readonly<{ n: number; i: number; p: Played }>[]>(
+    (out, p, i) => (p.bar.ending === undefined ? out : [...out, { n: p.bar.ending || (out.at(-1)?.n ?? 0) + 1, i, p }]),
+    [],
+  )
   const opens = bars[0]?.bar.open === true
   if (opens && starts.length) {
-    const endings = starts.map(({ n, i }, j) => ({ n, first: i + 1, last: starts[j + 1]?.i ?? bars.length }))
+    for (const { n, p } of starts) {
+      if (p.bar.ending === 0) report(p, `an unnumbered ending read as ending ${n}`)
+      // our endings are a 1st and a 2nd: a later one's bars stay as plain bars after the 2nd
+      if (n > 2) report(p, `a ${ordinal(n)} ending is written as plain bars after the 2nd`)
+    }
+    const endings = starts.map(({ n, i }, j) => ({ n, first: i + 1, last: starts[j + 1]?.i ?? bars.length })).filter((e) => e.n <= 2)
     return { value: [{ sec, endings }], diagnostics }
   }
   if (opens && bars.at(-1)?.bar.close) return { value: [{ sec }, { sec, copy: true }], diagnostics }
-  const partial = bars.find((p) => p.bar.open || p.bar.close || p.bar.ending)
+  const partial = bars.find((p) => p.bar.open || p.bar.close || p.bar.ending !== undefined)
   if (partial) report(partial, 'a repeat that isn’t a whole section is written out once')
   return { value: [{ sec }], diagnostics }
 }
@@ -176,9 +187,9 @@ function formOf(blocks: readonly Block[]): string | undefined {
   const letters = inForm.flatMap((b) => Array<string>(b.endings?.length ?? 1).fill(b.sec.base)).join('')
   const bars = inForm.reduce((sum, b) => {
     const length = b.sec.bars.length
-    if (!b.endings) return sum + length
-    const endingBars = b.endings.reduce((s, e) => s + e.last - e.first + 1, 0)
-    return sum + (length - endingBars) * b.endings.length + endingBars
+    // the bars before the 1st ending once per pass; the endings, and any bars after them, once
+    const body = (b.endings?.[0]?.first ?? 1) - 1
+    return sum + length + body * ((b.endings?.length ?? 1) - 1)
   }, 0)
   return `${letters}, ${bars} ${bars === 1 ? 'bar' : 'bars'}`
 }

@@ -117,6 +117,28 @@ describe('irealToChart', () => {
     expect(irealToChart(song('{*A<2x>C7 |F7 }Z')).diagnostics).toEqual([])
   })
 
+  it('a 3rd ending is plain bars after the 2nd; the form plays the section twice and those bars once', () => {
+    const { value, diagnostics } = irealToChart(song('{*AC7 |F7 |N1G7 }|N2D7 }|N3C7 Z'))
+    expect(value).toContain('section: A\n1 | C7\n2 | F7\n3 | G7\n4 | D7\n5 | C7\n@ending 1 3\n@ending 2 4\n')
+    expect(value).not.toContain('@ending 3')
+    expect(value).toContain('form: AA, 7 bars') // 2 body bars twice, each ending once, the 3rd ending's bar once
+    expect(diagnostics).toEqual([{ line: 5, message: 'A bar 5: a 3rd ending is written as plain bars after the 2nd' }])
+    expect(parseChart(value).diagnostics).toEqual([])
+  })
+
+  it('an unnumbered ending (N0) takes the next number', () => {
+    const { value, diagnostics } = irealToChart(song('{*AC7 |F7 |N1G7 }|N0D7 Z'))
+    expect(value).toContain('@ending 1 3\n@ending 2 4\n')
+    expect(diagnostics).toEqual([{ line: 4, message: 'A bar 4: an unnumbered ending read as ending 2' }])
+    valid(value)
+  })
+
+  it('an r whose second bar has chords of its own is cut short, and said so', () => {
+    const { value, diagnostics } = irealToChart(song('[*AC7 |F7 |r|G7 Z'))
+    expect(value).toContain('3 | C7\n4 | G7\n')
+    expect(diagnostics).toEqual([{ line: 4, message: 'A bar 4: a two-bar repeat cut short by chords in its second bar' }])
+  })
+
   it('a minor key and no composer', () => {
     const { value } = irealToChart(song('[*AC-7 Z', { key: 'Cm', composer: '' }))
     expect(value).toMatch(/^title: Tune\nstyle: Medium Swing\nkey: Cm\n/)
