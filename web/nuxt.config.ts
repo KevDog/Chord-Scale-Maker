@@ -103,7 +103,7 @@ export default defineNuxtConfig({
         patterns: true, // the Patterns sheet (#298; docs/superpowers/specs/2026-10-17-practice-patterns-design.md)
         recordings: true, // a library song's notable recording (docs/superpowers/specs/2026-10-17-notable-recordings.md)
         playerRange: true, // the player's range by the Instrument (#359)
-        ireal: false, // iReal Pro import: Library's Open chart… and Import iReal link…, Paste bars (#261; docs/superpowers/specs/2026-10-17-ireal-import-design.md)
+        ireal: true, // iReal Pro import: Library's Open chart… and Import iReal link…, Paste bars (#261; docs/superpowers/specs/2026-10-17-ireal-import-design.md)
       },
     },
   },
