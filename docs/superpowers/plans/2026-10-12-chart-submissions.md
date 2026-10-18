@@ -10,6 +10,24 @@
 
 **Spec:** `docs/superpowers/specs/2026-10-12-chart-submissions-design.md` (issue #153).
 
+**Refreshed against main (2026-10-18).** The code moved since the plan was written; where it forces a change, the
+smallest one that keeps the spec:
+
+- The tune page is `web/app/pages/song/[[slug]].vue`, and a library song's prerendered parts come from `songHead`
+  (`web/app/utils/songHead.ts`): `songHead` passes `contributor` through, and the page shows the credit line after
+  `SongRecording`.
+- **Report a chart error** is no longer a button under the editor: it is an item of the rail's More menu
+  (`MoreMenu.vue`, `moreMenuItems` in `web/app/utils/moreMenu.ts`). The two new entry points are More menu items
+  too: `MoreAction` gains `'send' | 'suggest'`, `MoreMenuState` an optional `chart: ChartActions` (absent: report
+  only, as today), and `moreMenuItems` lists `send`/`suggest`/`report` as it says.
+- Chart text is written in section blocks now (`section: A` then `1 | Cm7`), not `A | 1 | Cm7` rows: the tests use
+  the current format.
+- There is no Catalyst checkbox in `web/app/components/ui/`: Task 4 ports one (`UiCheckbox`, a label around a native
+  checkbox styled as Catalyst's), with a test.
+- The flag list for the browser builds is the `e2e` and `a11y` scripts' env in `web/package.json`.
+- The docs gate (`web/build/docsGate.ts`): behind a flag that is off, the PR says `Docs: none — …` and
+  `Release notes: none — …`.
+
 ## Global Constraints
 
 - Behind a new flag `chartSubmissions` (off; e2e builds with it on); with it off nothing changes.
@@ -32,7 +50,7 @@
 
 ### Task 1: the `contributor:` header
 
-**Files:** Modify `engine/src/chart.ts` (`MetaKey`, `META_KEYS`, the file comment), `engine/src/tune.ts`, `web/app/pages/tunes/[slug].vue`, `README.md` (chart format list); Test `engine/src/__tests__/tune.test.ts`, `engine/src/__tests__/chart.test.ts`.
+**Files:** Modify `engine/src/chart.ts` (`MetaKey`, `META_KEYS`, the file comment), `engine/src/tune.ts`, `web/app/utils/songHead.ts`, `web/app/pages/song/[[slug]].vue`, `README.md` (chart format table); Test `engine/src/__tests__/tune.test.ts`, `engine/src/__tests__/chart.test.ts`, `web/test/songHead.test.ts`.
 
 **Interfaces:** Produces `TuneSummary.contributor: string`.
 
@@ -40,23 +58,23 @@
 
 ```ts
   it('names the contributor, when the chart has one', () => {
-    expect(tuneSummary('title: T\ncontributor: Bill Evans\nA | 1 | Cm7\n').contributor).toBe('Bill Evans')
-    expect(tuneSummary('title: T\nA | 1 | Cm7\n').contributor).toBe('')
+    expect(tuneSummary('title: T\ncontributor: Bill Evans\nsection: A\n1 | Cm7\n').contributor).toBe('Bill Evans')
+    expect(tuneSummary('title: T\nsection: A\n1 | Cm7\n').contributor).toBe('')
   })
 ```
 `chart.test.ts` (in the meta/round-trip describe):
 
 ```ts
   it('reads and keeps a contributor: line', () => {
-    const text = 'title: T\ncontributor: Bill Evans\nA | 1 | Cm7\n'
-    expect(metaValue(parseChart(text).value, 'contributor')).toBe('Bill Evans')
+    const text = 'title: T\ncontributor: Bill Evans\nsection: A\n1 | Cm7\n'
+    expect(parseChart(text).value.lines[1]).toEqual({ kind: 'meta', key: 'contributor', value: 'Bill Evans' })
     expect(serializeChart(parseChart(text).value)).toBe(text)
   })
 ```
-(`serializeChart` from `../chart`).
+(`serializeChart` from `../chart`). `songHead.test.ts`: a library chart's head has `contributor: ''` (none has the header).
 
 - [ ] **Step 2:** `cd engine && npx vitest run src/__tests__/tune.test.ts src/__tests__/chart.test.ts` → FAIL.
-- [ ] **Step 3:** add `'contributor'` to `MetaKey` and at the end of `META_KEYS`; extend the file comment ("contributor: credits who sent the chart"); in `TuneSummary` add `/** who sent the chart, credited on its tune page */ contributor: string` and in `tuneSummary` `contributor: metaValue(doc, 'contributor'),`. In `[slug].vue` after the Source line: `<UiText v-if="summary.contributor" class="text-sm/6!">Chart contributed by {{ summary.contributor }}</UiText>`. README: add `contributor:` to the header list.
+- [ ] **Step 3:** add `'contributor'` to `MetaKey` and at the end of `META_KEYS`; extend the file comment ("contributor: credits who sent the chart"); in `TuneSummary` add `/** who sent the chart, credited on its tune page */ contributor: string` and in `tuneSummary` `contributor: metaValue(doc, 'contributor'),`. `songHead` returns `contributor: summary.contributor`; in `song/[[slug]].vue` after `<SongRecording>`: `<UiText v-if="song?.contributor" class="mt-6 text-sm/6! print:hidden">Chart contributed by {{ song.contributor }}</UiText>`. README: add a `contributor:` row to the header table.
 - [ ] **Step 4:** PASS; `make test`; `make golden` shows no diff (no chart has the header).
 - [ ] **Step 5:** commit, "contributor: header, credited on the tune page (#153)".
 
@@ -179,7 +197,7 @@ For long charts, `String.fromCharCode(...bytes)` can exceed the argument limit: 
 
 ### Task 3: which action shows, and the handoff
 
-**Files:** Create `web/app/utils/chartSubmission.ts`; Modify `web/nuxt.config.ts` (flag), `web/app/composables/useFeature.ts` (`Feature`), the e2e flag list if it's separate (grep `arpeggios: true` under `web/`); Test `web/test/chartSubmission.test.ts`.
+**Files:** Create `web/app/utils/chartSubmission.ts`; Modify `web/nuxt.config.ts` (flag), `web/app/composables/useFeature.ts` (`Feature`), `web/package.json` (`NUXT_PUBLIC_FEATURES_CHART_SUBMISSIONS=true` in the `e2e` and `a11y` scripts); Test `web/test/chartSubmission.test.ts`.
 
 **Interfaces:**
 - Produces:
@@ -198,19 +216,19 @@ For long charts, `String.fromCharCode(...bytes)` can exceed the argument limit: 
 import { describe, expect, it } from 'vitest'
 import { chartSubmissionFrom, submissionAction, submissionMessage } from '~/utils/chartSubmission'
 
-const lib = { kind: 'library', slug: 'autumn-leaves', libraryText: 'A | 1 | Cm7\n' } as const
+const lib = { kind: 'library', slug: 'autumn-leaves', libraryText: 'section: A\n1 | Cm7\n' } as const
 
 describe('submissionAction', () => {
   it('reports a library chart as published, and suggests changes once it is edited', () => {
     expect(submissionAction(lib, lib.libraryText, true)).toEqual({ send: false, suggest: false, report: true })
-    expect(submissionAction(lib, 'A | 1 | Cm9\n', true)).toEqual({ send: false, suggest: true, report: false })
+    expect(submissionAction(lib, 'section: A\n1 | Cm9\n', true)).toEqual({ send: false, suggest: true, report: false })
   })
   it('sends your own and shared charts, beside the report', () => {
     for (const t of [{ kind: 'mine', id: 'x' } as const, { kind: 'new', id: 'y', savedKind: 'new' } as const, undefined])
-      expect(submissionAction(t as never, 'A | 1 | C\n', true)).toEqual({ send: true, suggest: false, report: true })
+      expect(submissionAction(t, 'section: A\n1 | C\n', true)).toEqual({ send: true, suggest: false, report: true })
   })
   it('only reports with the flag off', () => {
-    expect(submissionAction(lib, 'A | 1 | Cm9\n', false)).toEqual({ send: false, suggest: false, report: true })
+    expect(submissionAction(lib, 'section: A\n1 | Cm9\n', false)).toEqual({ send: false, suggest: false, report: true })
   })
 })
 
@@ -256,7 +274,9 @@ export function chartSubmissionFrom(raw: string | null): ChartSubmission | null 
   }
 }
 ```
-Flag: `chartSubmissions: false, // send a chart to the library from the editor (docs/superpowers/specs/2026-10-12-chart-submissions-design.md)` in `nuxt.config.ts`; add `'chartSubmissions'` to `Feature`; turn it on wherever e2e turns the others on.
+Flag: `chartSubmissions: false, // send a chart to the library from the editor (docs/superpowers/specs/2026-10-12-chart-submissions-design.md)` in `nuxt.config.ts`; add `'chartSubmissions'` to `Feature`; turn it on in `web/package.json`'s `e2e` and `a11y` scripts.
+
+The More menu (`web/app/utils/moreMenu.ts`, test `web/test/moreMenu.test.ts`): `MoreAction` gains `'send' | 'suggest'`; `MoreMenuState` gains `chart?: ChartActions`; `moreMenuItems` ends with `send` and `suggest` where `chart` says, then `report` unless `chart.report` is false (no `chart`: `report`, as today). Tests: a new chart lists `send` before `report`; an edited library chart lists `suggest` and no `report`.
 
 - [ ] **Step 4:** PASS; `make test`. **Step 5:** commit, "submissionAction: which chart action the editor offers (#153)".
 
@@ -264,7 +284,7 @@ Flag: `chartSubmissions: false, // send a chart to the library from the editor (
 
 ### Task 4: the editor and the contact page
 
-**Files:** Modify `web/app/components/EditorView.vue`, `web/app/pages/contact.vue`, `web/app/pages/privacy.vue`; Test `web/test/EditorView.test.ts` (if it covers the Report button; else rely on Task 5).
+**Files:** Modify `web/app/components/EditorView.vue`, `web/app/components/MoreMenu.vue`, `web/app/pages/contact.vue`, `web/app/pages/privacy.vue`; Create `web/app/components/ui/Checkbox.vue`; Test `web/test/Checkbox.test.ts` (the flag is off in unit tests, so the editor's entry points are covered by Task 5).
 
 **Interfaces:** consumes Tasks 2–3.
 
@@ -284,16 +304,9 @@ function sendChart(): void {
   navigateTo('/contact')
 }
 ```
-(call `useFeature` once at setup, like `arpeggiosOn`). Template, replacing the Report button's `div`:
+(call `useFeature` once at setup, like `playerRange`). The More menu: `moreItems` passes `chart: actions.value`; `onMore` sends `'send'` and `'suggest'` to `sendChart` (the `else` stays `reportError`). `MoreMenu.vue`'s `ITEMS` gains `send: { label: 'Send to the library', icon: PaperAirplaneIcon }` and `suggest: { label: 'Suggest these changes', icon: PaperAirplaneIcon }`.
 
-```vue
-          <div class="flex flex-wrap gap-x-2 pt-1">
-            <UiButton v-if="actions.send" plain class="text-sm!" title="Send this chart to be added to the library" @click="sendChart"><PaperAirplaneIcon data-slot="icon" />Send to the library</UiButton>
-            <UiButton v-if="actions.suggest" plain class="text-sm!" title="Send your changes to this library chart" @click="sendChart"><PaperAirplaneIcon data-slot="icon" />Suggest these changes</UiButton>
-            <UiButton v-if="actions.report" plain class="text-sm!" title="Something wrong with this chart? Send it over with the details" @click="reportError"><FlagIcon data-slot="icon" />Report a chart error</UiButton>
-          </div>
-```
-(add `PaperAirplaneIcon` to the `@heroicons/vue/16/solid` import).
+`UiCheckbox` (`components/ui/Checkbox.vue`): a `<label>` holding a visually hidden native checkbox (`v-model` through `defineModel<boolean>()`), Catalyst's box drawn with `has-checked:`/`has-focus-visible:` in the note colour, and the label text in the slot. Test: clicking the label toggles the model; the checkbox is named by the slot text.
 
 - [ ] **Step 2: Contact page** — script additions:
 
@@ -321,14 +334,10 @@ In `send`, the body: `{ ...form, startedAt, attachment: attachment.value?.attach
               <UiText><strong>{{ chart.title }}</strong> · {{ lines }} lines, attached as {{ fileName }}</UiText>
               <UiButton plain class="text-sm!" @click="chart = null">Remove</UiButton>
             </div>
-            <UiCheckboxField>
-              <UiCheckbox v-model="credit" name="credit" />
-              <UiLabel>Credit me as {{ form.name.trim() || 'you' }} on the tune page</UiLabel>
-            </UiCheckboxField>
+            <UiCheckbox v-model="credit" name="credit">Credit me as {{ form.name.trim() || 'you' }} on the tune page</UiCheckbox>
             <UiErrorMessage v-if="errors.chart">{{ errors.chart }}</UiErrorMessage>
           </div>
-```
-(check the Catalyst checkbox component names in `web/app/components/ui/`; use what's there). Before the submit row: `<UiText v-if="chart" class="text-sm/6!">By sending, you agree I may add this chart to the library, edit it, and publish it on the site.</UiText>`.
+``` Before the submit row: `<UiText v-if="chart" class="text-sm/6!">By sending, you agree I may add this chart to the library, edit it, and publish it on the site.</UiText>`.
 
 - [ ] **Step 3: Privacy** — in `privacy.vue`'s contact form paragraph add: "A chart you send from the editor is emailed with your message, as a text file."
 
@@ -343,11 +352,11 @@ In `send`, the body: `{ ...form, startedAt, attachment: attachment.value?.attach
 - [ ] **Step 1: e2e**
 
 ```ts
-import { expect, openEditor, test, typeChord, writeChart } from './fixtures'
+import { expect, moreAction, openEditor, test, typeChord, writeChart } from './fixtures'
 
 test('a new chart is sent to the library, with credit', async ({ page }) => {
-  await writeChart(page, 'title: Bb Blues\nkey: Bb\nA | 1 | Bb7\nA | 2 | Eb7\n')
-  await page.getByRole('button', { name: 'Send to the library' }).click()
+  await writeChart(page, 'title: Bb Blues\nkey: Bb\n\nsection: A\n1 | Bb7\n2 | Eb7\n')
+  await moreAction(page, 'Send to the library')
   await expect(page).toHaveURL(/\/contact/)
   await expect(page.getByRole('textbox', { name: 'Message' })).toHaveValue(/^A chart for the library: Bb Blues/)
   await expect(page.getByText('attached as bb-blues.txt')).toBeVisible()
@@ -359,24 +368,35 @@ test('a new chart is sent to the library, with credit', async ({ page }) => {
   await page.getByRole('button', { name: 'Send message' }).click()
   const { chart } = (await request).postDataJSON() as { chart: { text: string; title: string; credit: boolean; slug?: string } }
   expect(chart).toMatchObject({ title: 'Bb Blues', credit: true })
-  expect(chart.text).toContain('A | 2 | Eb7')
+  expect(chart.text).toContain('2 | Eb7')
   expect(chart.slug).toBeUndefined()
   await expect(page.getByRole('status')).toContainText('your message is on its way')
 })
 
 test('an edited library chart suggests its changes in place of the report', async ({ page }) => {
   await page.goto('/song/autumn-leaves')
-  await expect(page.getByRole('button', { name: 'Report a chart error' })).toBeVisible()
+  await page.getByRole('button', { name: 'More actions', exact: true }).click()
+  await expect(page.getByRole('menuitem', { name: 'Report a chart error' })).toBeVisible()
+  await expect(page.getByRole('menuitem', { name: 'Suggest these changes' })).toHaveCount(0)
+  await page.keyboard.press('Escape')
   await openEditor(page)
   await typeChord(page, 'A1', 1, 'Cm7', 'Cm9')
-  await expect(page.getByRole('button', { name: 'Report a chart error' })).toHaveCount(0)
-  await page.getByRole('button', { name: 'Suggest these changes' }).click()
+  await page.getByRole('button', { name: 'More actions', exact: true }).click()
+  await expect(page.getByRole('menuitem', { name: 'Report a chart error' })).toHaveCount(0)
+  await page.getByRole('menuitem', { name: 'Suggest these changes' }).click()
   await expect(page.getByText('attached as autumn-leaves.txt')).toBeVisible()
+  await expect(page.getByRole('textbox', { name: 'Message' })).toHaveValue(/^Suggested changes to Autumn Leaves/)
+  await page.getByLabel('Name').fill('Bill')
+  await page.getByLabel('Email').fill('bill@example.com')
+  await page.waitForTimeout(2600)
+  const request = page.waitForRequest('**/api/contact')
+  await page.getByRole('button', { name: 'Send message' }).click()
+  expect((await request).postDataJSON()).toMatchObject({ chart: { slug: 'autumn-leaves', credit: false } })
 })
 
 test('Remove sends a plain message', async ({ page }) => {
-  await writeChart(page, 'title: T\nA | 1 | Cm7\n')
-  await page.getByRole('button', { name: 'Send to the library' }).click()
+  await writeChart(page, 'title: T\n\nsection: A\n1 | Cm7\n')
+  await moreAction(page, 'Send to the library')
   await page.getByRole('button', { name: 'Remove' }).click()
   await page.getByLabel('Name').fill('Bill')
   await page.getByLabel('Email').fill('bill@example.com')
@@ -386,6 +406,6 @@ test('Remove sends a plain message', async ({ page }) => {
   expect((await request).postDataJSON()).not.toHaveProperty('chart')
 })
 ```
-- [ ] **Step 2:** `make e2e` → green (the existing "Report a chart error" test in `pages.spec.ts` must still pass).
+- [ ] **Step 2:** `make e2e` → green (the existing "Report a chart error" test in `pages.spec.ts` must still pass); `make a11y` (the contact page with a chart: add it to the axe scans in `web/e2e/a11y/`).
 - [ ] **Step 3: `docs/design.md`:** in the contact form section, the chart block (limits, the attachment name rule, the subjects, credit); `contributor:` in the chart format; `chartSubmissions` in the flags list.
 - [ ] **Step 4:** commit `web/e2e/chart-submission.spec.ts docs/design.md`, "Browser tests and design notes for chart submissions (#153)".
