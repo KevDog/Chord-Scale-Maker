@@ -22,8 +22,10 @@ jobs:
       - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
         with:
           node-version: '24'
-      # the description comes in through the environment, never into the script's text
-      - env:
+      # the description comes in through the environment, never into the script's text; bash brings pipefail, so a
+      # failing git diff fails the check instead of passing an empty list
+      - shell: bash
+        env:
           BASE_REF: ${{ github.base_ref }}
           PR_BODY: ${{ github.event.pull_request.body }}
         run: git diff --name-only "origin/$BASE_REF...HEAD" | node web/build/check-docs.ts
