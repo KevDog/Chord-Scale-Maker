@@ -1,5 +1,5 @@
 name: ci
-# pull requests only (checks run locally first; the merge needs no second run). engine (both packages' lint, typecheck
+# pull requests only (checks run locally first; the merge needs no second run). engine (every package's lint, typecheck
 # and tests, then the site's build, headers and audit) and e2e are required checks on main, so the workflow always
 # runs: a docs-only change skips them by condition, which reports success
 on:
@@ -53,7 +53,7 @@ jobs:
           cache-dependency-path: package-lock.json
       - run: npm ci
         working-directory: .
-      # both packages: the engine (engine/) and the app (web/)
+      # every package: the engine (engine/), the app (web/) and the admin CLI (cli/)
       - run: npm run lint
         working-directory: .
       - run: npm run typecheck

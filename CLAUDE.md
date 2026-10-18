@@ -18,9 +18,10 @@ README.md for the chart format. The original Python/LilyPond CLI was retired aft
   the song page) touches a docs page (Help, Functions, …) or `decisions.ts`, or its description carries
   `Docs: none — <reason>`: the `docs` check fails otherwise. `make docs` runs the anchor test and the link check.
 - The design is in `docs/design.md` (kept current; the `docs/plan-*.md` files are historical).
-- Two npm workspace packages: `engine/` (`@chord-scale-maker/engine`: the engine in `engine/src/`, pure TypeScript,
-  with its data `chord_scales.json`, `charts/`, `fixtures/` and its tools in `engine/scripts/`) and `web/` (the Nuxt
-  app). The app imports the engine only as `@chord-scale-maker/engine`; `engine/src/index.ts` is its public API, and
+- Three npm workspace packages: `engine/` (`@chord-scale-maker/engine`: the engine in `engine/src/`, pure TypeScript,
+  with its data `chord_scales.json`, `charts/`, `fixtures/` and its tools in `engine/scripts/`), `web/` (the Nuxt
+  app) and `cli/` (`csm`, the repo's admin CLI: dev only, the engine's public API only; `npx csm add …`). The app
+  imports the engine only as `@chord-scale-maker/engine`; `engine/src/index.ts` is its public API, and
   `engine/src/__tests__/api.test.ts` snapshots the exported names. `engine/fixtures/golden.json` freezes its answers
   over a wide input set (`engine/src/__tests__/goldenFixture.ts`); after an intended change to the engine,
   `chord_scales.json` or `charts/`, run `make golden` and review the fixture's diff. The golden test fails until then.
@@ -63,9 +64,10 @@ README.md for the chart format. The original Python/LilyPond CLI was retired aft
   fail `make test`), then `--ambiguous`, `make golden` (the fixtures cover every library chart), and `make og` (its link preview image; a test fails until it's drawn). Leave the scale cells blank: they play the analysis. A scale the melody
   demands over the rules: write it, with `# keep: …`. Otherwise, where the analyser can only guess, write the
   function (`| | V7/ii`), a section `key:` or an `@key` rather than a scale: a function lets the rules still choose the tensions.
-- "Import <tune> from iReal": `cd engine && npm run import-ireal -- <irealb:// link | export.html> --song <n | title> --save`
-  (`--list` lists a playlist) writes `engine/charts/<slug>.txt` and prints what it couldn't map; check `composer:`
-  and `form:`, add `recording:`/`aka:`, then the "Make a chart" steps from `npm run analyse` on.
+- "Import <tune> from iReal": `npx csm add <irealb:// link | export.html> --song <n | title> --composer … --form …
+  --aka … --recording …` (`--list` lists a playlist, `--print` previews, `--force` replaces) writes
+  `engine/charts/<slug>.txt` with its analysis saved, prints what it couldn't map and the `--ambiguous` report, stops on
+  Song page gaps (naming the flag for each), then runs `make golden` and `make og`; review the fixtures' diff.
 - Changing an analysis rule (`engine/src/analysis/`, docs/plan-analysis.md): a test first, then `make golden`, and
   read the fixture's diff (it is the review: the library's blank cells follow the rules by themselves).
   `cd engine && npm run analyse -- --all --strip --save` re-saves the reasons and blanks any written scale the new

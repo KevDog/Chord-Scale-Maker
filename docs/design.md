@@ -1313,7 +1313,7 @@ static file, §7b), so the attack surface is small. The measures:
   runs it when the pushed commits touch `web/app/`, and CI's a11y job (not required) on PRs that do.
 - **CI (GitHub Actions):**
   - The jobs: lint, typecheck (the engine's `tsc`, `nuxt typecheck`, the build and e2e tsconfigs) and vitest for
-    both packages, then `nuxt build`, the header check, `npm audit --omit=dev` (gating), and an e2e job.
+    every package (engine, web, cli), then `nuxt build`, the header check, `npm audit --omit=dev` (gating), and an e2e job.
   - The Playwright report is uploaded when the e2e job fails.
   - A full `npm audit` is reported but doesn't block, because build-tooling advisories don't ship.
   - Vercel's Git integration builds a preview deploy per PR.
