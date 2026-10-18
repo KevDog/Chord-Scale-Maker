@@ -26,6 +26,9 @@ export function changesLineOf(c: Readonly<{ mode: LineMode; guide: GuideFrom; ar
   return sheetLineOf(c.mode, c.guide, c.arpeggio)
 }
 
+/** whether the Approach leads the line (#381): the guide tone line, and the 7th Chords and Cells lines while no Superimpose takes their slot */
+export const approachApplies = (mode: LineMode, overlay: Overlay): boolean => mode === 'guide' || ((mode === 'arpeggio' || mode === 'cells') && overlay === 'off')
+
 /** the Line control's modes: the arpeggio slot reads Pentatonic under the Pentatonic overlay (#284), Triad pair under the Hexatonic (#325), 7th Chords otherwise; the Cells line (#298) lives in that slot's listbox, not a mode of its own */
 export function lineModes(overlay: Overlay): readonly { value: LineMode; label: string; title: string }[] {
   return [

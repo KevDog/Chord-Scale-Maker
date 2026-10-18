@@ -177,7 +177,9 @@
                 Under Guide Tones, <strong class="font-semibold">Approach</strong> leads into each chord's guide tone with a short figure of
                 eighths, played at the end of the chord before: a note a semitone below or above, a pair from one side, an enclosure
                 (a step above in the chord's scale, then a semitone below) and more. The guide tone still lands on the chord's first
-                beat; the chord before gives up the last beat or two to make room. The first chord, and a chord after a rest, has no approach.
+                beat; the chord before gives up the last beat or two to make room. Under 7th Chords and the cells, with Superimpose
+                off, it leads into each chord's first note the same way, the figure taking the place of the chord before's last notes
+                in the line's own rhythm. The first chord, and a chord after a rest, has no approach.
               </template>
               <strong class="font-semibold">Superimpose</strong> puts a row under the chords: <strong class="font-semibold">Off</strong>,
               <strong class="font-semibold">Pentatonic</strong> (each key area's minor pentatonic, or, ranked against

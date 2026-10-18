@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { changesLineOf, lineChoiceOf, lineModes, sheetLineOf, shareLineOf } from '~/utils/sheetLine'
+import { approachApplies, changesLineOf, lineChoiceOf, lineModes, sheetLineOf, shareLineOf } from '~/utils/sheetLine'
 
 describe('sheetLineOf', () => {
   it('composes the mode with its own detail', () => {
@@ -56,5 +56,14 @@ describe('the Triad pair line (#325)', () => {
   })
   it("names the slot Triad pair under the Hexatonic overlay; the value stays 'arpeggio'", () => {
     expect(lineModes('hexatonic').map((m) => [m.value, m.label])).toEqual([['off', 'Off'], ['guide', 'Guide Tones'], ['arpeggio', 'Triad pair']])
+  })
+})
+
+describe('approachApplies (#381)', () => {
+  it('leads the guide tone line under any Superimpose, the 7th Chords and Cells lines with none, never no line', () => {
+    expect((['off', 'pentatonic', 'hexatonic'] as const).map((o) => approachApplies('guide', o))).toEqual([true, true, true])
+    expect([approachApplies('arpeggio', 'off'), approachApplies('cells', 'off')]).toEqual([true, true])
+    expect((['pentatonic', 'hexatonic'] as const).flatMap((o) => [approachApplies('arpeggio', o), approachApplies('cells', o)])).toEqual([false, false, false, false])
+    expect(approachApplies('off', 'off')).toBe(false)
   })
 })

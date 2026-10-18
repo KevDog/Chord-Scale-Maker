@@ -198,7 +198,7 @@
             :numerals="showNumerals"
             :scales="showScaleNames"
             :line="changesLine"
-            :approach="prefs.approach.value"
+            :approach="approachShown"
             :editable="sheetEditing && !focus.on.value"
             :selected-line="selectedLine"
             :view="scaleView"
@@ -273,7 +273,7 @@
 import { ArrowPathIcon, ArrowsPointingOutIcon, ArrowUturnLeftIcon, ArrowUturnRightIcon, BookmarkIcon, CodeBracketIcon, EllipsisHorizontalIcon, LinkIcon, PencilSquareIcon, PrinterIcon, XMarkIcon } from '@heroicons/vue/16/solid'
 import { ISSUE_CONTEXT, issuePart } from '~/utils/issueReport'
 import { CHART_REPORT_KEY, type ChartReport, guidesText } from '~/utils/chartReport'
-import { changesLineOf, shareLineOf } from '~/utils/sheetLine'
+import { approachApplies, changesLineOf, shareLineOf } from '~/utils/sheetLine'
 import { type HiddenSetting, hiddenSettings } from '~/utils/interface'
 import {
   addSection,
@@ -495,9 +495,11 @@ const picksInForce = computed((): boolean => {
     : sheet.value === 'scales' && s ? (isPentatonicSelection(s) ? 'pentatonic' : isHexatonicSelection(s) ? 'hexatonic' : null) : null
   return kind !== null && hasPicks(chordPicks.live.value, kind)
 })
+/** the Approach the sheet plays: none where the line takes none (approachApplies, #381) */
+const approachShown = computed(() => (approachApplies(prefs.lineMode.value, prefs.overlay.value) ? prefs.approach.value : 'none'))
 /** settings in force whose controls this Interface level hides (a share link, a stored preference): the notice offers to show them or reset them */
 const hidden = computed(() =>
-  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: showNumerals.value, scaleNames: showScaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value, approach: prefs.lineMode.value === 'guide' ? prefs.approach.value : 'none' }),
+  hiddenSettings(ui.level.value, { sheet: sheet.value, scaleLevel: scaleLevel.level.value, numerals: showNumerals.value, scaleNames: showScaleNames.value, lineMode: prefs.lineMode.value, spell: prefs.spell.value, practice: selection.value, overlay: prefs.overlay.value, picks: picksInForce.value, approach: approachShown.value }),
 )
 /** each reset, given the mode in force before any of them ran (resetting the spelling changes the mode) */
 const RESETS: Readonly<Record<HiddenSetting, (inForce: Mode) => void>> = {
@@ -734,7 +736,7 @@ async function shareUrl(): Promise<string> {
     scaleNames: prefs.scaleNames.value,
     ...(sheetLine.value !== 'off' ? { line: sheetLine.value } : {}), // absent: off
     sheet: sheet.value,
-    ...(sheet.value === 'changes' && prefs.lineMode.value === 'guide' && prefs.approach.value !== 'none' ? { approach: prefs.approach.value } : {}), // the guide tone line's Approach (#298)
+    ...(sheet.value === 'changes' && approachShown.value !== 'none' ? { approach: approachShown.value } : {}), // the line's Approach (#298, #381)
     ...(sheet.value === 'patterns' ? { pattern: prefs.pattern.value, patternNotes: prefs.patternNotes.value, patternDir: prefs.patternDir.value } : {}),
     ...(sheet.value === 'arpeggios' ? { arpNotes: prefs.arpNotes.value, arpDir: prefs.arpDir.value } : {}),
     ...(sheet.value === 'changes' && prefs.lineMode.value === 'arpeggio' ? { arpDir: prefs.arpDir.value, pentLeave: prefs.pentLeave.value } : {}), // the Pentatonic (#284) and Triad pair (#325) lines', under the receiver's own overlay

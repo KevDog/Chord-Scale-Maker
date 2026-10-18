@@ -365,6 +365,11 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
   const celled = await layout()
   expect(celled.rows, `Changes, a cell (${celled.widths})`).toBeLessThanOrEqual(2)
   expect(await place(), 'a cell').toEqual(home)
+  // its Approach (#381) opens under the pattern listbox: still two rows, the label in its place
+  await showApproach(page, 'Diatonic above, chromatic below (enclosure)', '7th Chords')
+  const celledApproach = await layout()
+  expect(celledApproach.rows, `Changes, a cell with an Approach (${celledApproach.widths})`).toBeLessThanOrEqual(2)
+  expect(await place(), 'a cell with an Approach').toEqual(home)
   await showLine(page, 'Off')
   // the Pentatonics row on, at a rung with a side: its controls stack under Analysis, so the rail keeps two rows (#255)
   await showPentatonics(page)
