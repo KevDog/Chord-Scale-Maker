@@ -1,0 +1,53 @@
+import { expect, moreAction, openEditor, test, typeChord, writeChart } from './fixtures'
+
+test('a new chart is sent to the library, with credit', async ({ page }) => {
+  await writeChart(page, 'title: Bb Blues\nkey: Bb\n\nsection: A\n1 | Bb7\n2 | Eb7\n')
+  await moreAction(page, 'Send to the library')
+  await expect(page).toHaveURL(/\/contact/)
+  await expect(page.getByRole('textbox', { name: 'Message' })).toHaveValue(/^A chart for the library: Bb Blues/)
+  await expect(page.getByText('attached as bb-blues.txt')).toBeVisible()
+  await page.getByLabel('Name').fill('Bill Evans')
+  await page.getByLabel('Email').fill('bill@example.com')
+  await page.getByRole('checkbox', { name: 'Credit me as Bill Evans on the tune page' }).check()
+  await page.waitForTimeout(2600) // the server treats an instant submit as a bot
+  const request = page.waitForRequest('**/api/contact')
+  await page.getByRole('button', { name: 'Send message' }).click()
+  const { chart } = (await request).postDataJSON() as { chart: { text: string; title: string; credit: boolean; slug?: string } }
+  expect(chart).toMatchObject({ title: 'Bb Blues', credit: true })
+  expect(chart.text).toContain('2 | Eb7')
+  expect(chart.slug).toBeUndefined()
+  await expect(page.getByRole('status')).toContainText('your message is on its way')
+})
+
+test('an edited library chart suggests its changes in place of the report', async ({ page }) => {
+  await page.goto('/song/autumn-leaves')
+  await page.getByRole('button', { name: 'More actions', exact: true }).click()
+  await expect(page.getByRole('menuitem', { name: 'Report a chart error' })).toBeVisible()
+  await expect(page.getByRole('menuitem', { name: 'Suggest these changes' })).toHaveCount(0)
+  await page.keyboard.press('Escape')
+  await openEditor(page)
+  await typeChord(page, 'A1', 1, 'Cm7', 'Cm9')
+  await page.getByRole('button', { name: 'More actions', exact: true }).click()
+  await expect(page.getByRole('menuitem', { name: 'Report a chart error' })).toHaveCount(0)
+  await page.getByRole('menuitem', { name: 'Suggest these changes' }).click()
+  await expect(page.getByText('attached as autumn-leaves.txt')).toBeVisible()
+  await expect(page.getByRole('textbox', { name: 'Message' })).toHaveValue(/^Suggested changes to Autumn Leaves/)
+  await page.getByLabel('Name').fill('Bill')
+  await page.getByLabel('Email').fill('bill@example.com')
+  await page.waitForTimeout(2600)
+  const request = page.waitForRequest('**/api/contact')
+  await page.getByRole('button', { name: 'Send message' }).click()
+  expect((await request).postDataJSON()).toMatchObject({ chart: { slug: 'autumn-leaves', credit: false } })
+})
+
+test('Remove sends a plain message', async ({ page }) => {
+  await writeChart(page, 'title: T\n\nsection: A\n1 | Cm7\n')
+  await moreAction(page, 'Send to the library')
+  await page.getByRole('button', { name: 'Remove' }).click()
+  await page.getByLabel('Name').fill('Bill')
+  await page.getByLabel('Email').fill('bill@example.com')
+  await page.waitForTimeout(2600)
+  const request = page.waitForRequest('**/api/contact')
+  await page.getByRole('button', { name: 'Send message' }).click()
+  expect((await request).postDataJSON()).not.toHaveProperty('chart')
+})

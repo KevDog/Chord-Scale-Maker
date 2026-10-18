@@ -1082,6 +1082,9 @@ its reasons into a chart as comments.
   `MusicComposition` gains `recordedAs` (a `MusicRecording`, `url` with a video). `tuneAdvice` hints at tunes with none.
   `npm run check-recordings -w engine` (by hand: it needs the network) asks YouTube's oEmbed whether each video still
   plays embedded.
+- **Contributors** (#153): a chart's `contributor:` names who sent it for the library (the contact form's credit,
+  written by the owner when adding the chart). `tuneSummary.contributor` and `songHead` carry it; the song page says
+  "Chart contributed by <name>" under the Recording section, prerendered.
 - **IndexNow** (#167): after each production deploy, `.github/workflows/indexnow.yml` (on `deployment_status`)
   POSTs the changed pages to `api.indexnow.org` (Bing and others recrawl them). `public/<key>.txt` holds the key
   and proves the pings are ours. `build/indexnow.ts` (`urlsFor`) picks the URLs from `git diff` against the previous
@@ -1148,6 +1151,8 @@ its reasons into a chart as comments.
   - New flags start off, and every flag is fixed at build time. `NUXT_PUBLIC_FEATURES_<NAME>=true|false`
     overrides one for a build or `make dev`.
   - `npm run e2e` builds with every flag on.
+  - Now: `chartSubmissions` (off; Send to the library, §9) and `analyticsEvents` (off), and `offline`, `cells`,
+    `approaches`, `patterns`, `recordings`, `playerRange`, `ireal` (on).
   - There are none now: #296 turned the last ones on for good and removed them with their flag-off code (`myCharts`,
     `practice`, `changes`, `keySignatures`, `arpeggios`, `compactRail`, `functions`, `pentatonics`, `hexatonics`,
     `interfaceLevels`); `Feature` is `never` until a new flag names itself. The bar editor shipped behind `barEditor`; at its sign-off
@@ -1226,8 +1231,21 @@ static file, §7b), so the attack surface is small. The measures:
     `@heroicons/vue` and `@fontsource-variable/jost` (the heading font). Everything else (Nuxt, Tailwind, the test and lint tools) is a build-time `devDependency`.
 - **The contact function** (`server/api/contact.post.ts`):
   - **Validation:** a pure, tested `checkContact` checks the length and form of name, email and message.
-  - **Requests:** posts from another site are refused (403), as are bodies over about 4 MB (413): 16 KB of text
-    plus one base64 attachment. Vercel's own cap is 4.5 MB.
+  - **Requests:** posts from another site are refused (403), as are bodies over about 4 MB (413): 16 KB of text,
+    90 KB for a chart, plus one base64 attachment. Vercel's own cap is 4.5 MB.
+  - **A chart for the library** ([spec](superpowers/specs/2026-10-12-chart-submissions-design.md), #153, flag
+    `chartSubmissions`): the More menu's **Send to the library** (a new, My charts or shared chart, beside Report a
+    chart error) or **Suggest these changes** (a library chart you've edited, in place of the report;
+    `submissionAction`, `utils/chartSubmission.ts`) hands the chart to the contact page through sessionStorage
+    (`csm-chart-submission`), read once. The page pre-fills the first line, shows the chart as a card (title, lines,
+    the file name; Remove goes back to a plain message), a "Credit me as <name> on the tune page" checkbox
+    (unticked) and the permission line, and posts `chart: { text, title, slug?, credit }`. `checkChart` takes text
+    of 1 to `LIMITS.maxChars` (20,000) characters, a one-line title of at most 120 ("Untitled" when empty), a
+    library slug (`/^[a-z0-9]+(?:-[a-z0-9]+)*$/`, at most 80) for a suggestion only, and `credit` true or false.
+    The email's subject is `Chord Scale Maker: chart for the library: <title>` or `…: suggested changes to <slug>`;
+    the chart is attached first, UTF-8 base64, as `<slug>.txt` (`chartFilename`: a suggestion's slug, else the title
+    folded to ASCII, apostrophes dropped, the rest to `-`, at most 60, `chart` when empty), beside the form's own
+    file; the body adds `Credit: <name>` or `Credit: none`. The owner adds the chart by hand; nothing is published.
   - **Attachment** (optional, `FileDrop`, `utils/attachment.ts`): one JPG, PNG or PDF, browsed for or dropped,
     up to 10 MB as chosen. At most 3 MB is sent: the browser shrinks a bigger photo (2500 px on its long side,
     JPEG on white, the best quality that fits) and turns away a bigger PDF. The server checks the type against the
