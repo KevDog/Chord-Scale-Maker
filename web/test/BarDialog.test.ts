@@ -1,7 +1,10 @@
-import { mountSuspended } from '@nuxt/test-utils/runtime'
+import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { beforeEach, describe, expect, it } from 'vitest'
 import { nextTick } from 'vue'
 import BarDialog from '~/components/BarDialog.vue'
+import { irealLink } from '../../engine/src/ireal/__tests__/link'
+
+mockNuxtImport('useFeature', () => () => true)
 
 describe('BarDialog', () => {
   beforeEach(() => (document.body.innerHTML = ''))
@@ -83,5 +86,22 @@ describe('BarDialog', () => {
     button('Rename')?.click()
     await nextTick()
     expect(w.emitted('submit')?.[0]).toEqual([{ kind: 'rename', name: 'Verse' }])
+  })
+
+  it('the paste kind takes an iReal link: a song’s bars, a playlist’s song by choice, its report shown but not blocking', async () => {
+    const { w, dialog, button } = await open('paste')
+    const area = dialog.querySelector('textarea') as HTMLTextAreaElement
+    await type(area, irealLink([{ title: 'One', music: '[*AC7 |x |F7(Gb7) Z' }, { title: 'Two', music: '[*AG7 Z' }], 'Set'))
+    const select = dialog.querySelector('select') as HTMLSelectElement
+    expect([...select.options].map((o) => o.textContent)).toEqual(['One', 'Two'])
+    expect(dialog.textContent).toContain('3 bars')
+    expect(dialog.textContent).toContain('the alternate chord Gb7 is left out')
+    button('Insert after bar 2')?.click()
+    await nextTick()
+    expect(w.emitted('submit')?.[0]).toEqual([{ kind: 'paste', bars: [['C7'], ['C7'], ['F7']], before: false }])
+    select.value = '1'
+    select.dispatchEvent(new Event('change'))
+    await nextTick()
+    expect(dialog.textContent).toContain('1 bar')
   })
 })
