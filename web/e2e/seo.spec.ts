@@ -83,6 +83,12 @@ test('old tune pages move to the song', async ({ request }) => {
   expect(res.headers().location).toMatch(/\/song\/autumn-leaves$/)
 })
 
+test('a retitled song moves to its new slug', async ({ request }) => {
+  const res = await request.get('/song/yes-and-no', { maxRedirects: 0 })
+  expect(res.status()).toBe(301)
+  expect(res.headers().location).toMatch(/\/song\/yes-or-no$/)
+})
+
 test('every sitemap URL is a page: 200, its own canonical, indexable, its own title and a description', async ({ request }) => {
   const sitemap = await request.get('/sitemap.xml')
   expect(sitemap.status()).toBe(200)

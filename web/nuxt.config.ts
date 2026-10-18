@@ -122,6 +122,8 @@ export default defineNuxtConfig({
     '/**': { headers: SECURITY_HEADERS },
     '/_nuxt/**': { headers: SECURITY_HEADERS },
     '/tunes/**': { redirect: { to: '/song/**', statusCode: 301 } },
+    // a retitled song keeps its old link (#372)
+    '/song/yes-and-no': { redirect: { to: '/song/yes-or-no', statusCode: 301 } },
   },
   nitro: {
     // every page is prerendered and served as a static file; only /api/contact (and unknown URLs) run on the server

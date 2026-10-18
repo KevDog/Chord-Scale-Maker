@@ -1,4 +1,5 @@
-title: Yes and No
+title: Yes or No
+aka: Yes and No
 composer: Wayne Shorter
 style: Up
 key: Em
