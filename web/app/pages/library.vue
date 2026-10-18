@@ -8,12 +8,27 @@
       </div>
       <div class="flex flex-wrap gap-3">
         <UiButton outline href="/contact">Request a chart</UiButton>
-        <UiButton outline :disabled="opener.busy.value" title="Open a chart saved as a .txt file (or drop one on this page)" @click="fileInput?.click()"><FolderOpenIcon data-slot="icon" />Open chart…</UiButton>
+        <UiButton outline :disabled="opener.busy.value" :title="ireal ? 'Open a chart saved as a .txt file, or an iReal Pro export (or drop one on this page)' : 'Open a chart saved as a .txt file (or drop one on this page)'" @click="fileInput?.click()"><FolderOpenIcon data-slot="icon" />Open chart…</UiButton>
+        <UiButton v-if="ireal" outline :disabled="opener.busy.value" @click="opener.cancel(); linkOpen = true"><ArrowDownTrayIcon data-slot="icon" />Import iReal link…</UiButton>
         <UiButton color="note" href="/song?new=1" class="max-md:hidden"><PlusIcon data-slot="icon" />New chart</UiButton>
       </div>
     </div>
-    <input ref="fileInput" type="file" accept=".txt,text/plain" class="sr-only" tabindex="-1" aria-hidden="true" @change="pick">
-    <UiText v-if="opener.error.value" role="alert" class="mt-3 text-red-700! dark:text-red-400!">{{ opener.error.value }}</UiText>
+    <input ref="fileInput" type="file" :accept="ireal ? '.txt,text/plain,.html,.htm,text/html' : '.txt,text/plain'" class="sr-only" tabindex="-1" aria-hidden="true" @change="pick">
+    <UiText v-if="opener.error.value && !linkOpen" role="alert" class="mt-3 text-red-700! dark:text-red-400!">{{ opener.error.value }}</UiText>
+    <!-- Import iReal link…, and a playlist's picker or a song's report from either way in -->
+    <IRealImportDialog
+      v-if="ireal"
+      :open="linkOpen || opener.songs.value.length > 1 || opener.report.value.length > 0"
+      :songs="opener.songs.value"
+      :playlist="opener.playlist.value"
+      :report="opener.report.value"
+      :error="linkOpen ? opener.error.value : ''"
+      :busy="opener.busy.value"
+      @link="opener.openIReal($event)"
+      @choose="opener.choose($event)"
+      @confirm="linkOpen = false; opener.confirm()"
+      @close="linkOpen = false; opener.cancel()"
+    />
 
     <div class="mt-8 max-w-md">
       <UiInputGroup>
@@ -79,7 +94,7 @@
 <script setup lang="ts">
 import { PAGE_HEAD, seoMeta, songPath } from '~/utils/site'
 import { letterIndex } from '~/utils/libraryIndex'
-import { FolderOpenIcon, MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/16/solid'
+import { ArrowDownTrayIcon, FolderOpenIcon, MagnifyingGlassIcon, PlusIcon } from '@heroicons/vue/16/solid'
 import { MusicalNoteIcon } from '@heroicons/vue/24/outline'
 
 useSeoMeta(seoMeta(PAGE_HEAD.library))
@@ -112,6 +127,9 @@ onMounted(() => {
   if (letter) nextTick(() => jump(letter))
 })
 const opener = useOpenChart()
+const ireal = useFeature('ireal')
+/** the Import iReal link… dialog's link step */
+const linkOpen = ref(false)
 const fileInput = ref<HTMLInputElement | null>(null)
 
 function pick(e: Event): void {

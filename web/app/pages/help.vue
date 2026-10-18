@@ -375,7 +375,7 @@
           <li>
             <strong class="font-semibold text-zinc-950 dark:text-white">Download</strong> saves the chart as a plain
             <UiCode>.txt</UiCode> file you can keep anywhere. <strong class="font-semibold">Open chart…</strong> in the
-            library (or dropping the file on it) brings it back.
+            library (or dropping the file on it) brings it back.<template v-if="ireal"> It also opens an iReal Pro export (.html), and <strong class="font-semibold">Import iReal link…</strong> takes a song or playlist link: the chords come across in concert pitch, and it lists anything it leaves out.</template>
           </li>
           <li>
             <strong class="font-semibold text-zinc-950 dark:text-white">Share</strong> makes a link with the whole chart
@@ -447,6 +447,7 @@ const offline = useFeature('offline')
 const patternsOn = useFeature('patterns')
 const cellsOn = useFeature('cells')
 const approachesOn = useFeature('approaches')
+const ireal = useFeature('ireal')
 const GUIDE_RANGES = guideRanges()
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },
