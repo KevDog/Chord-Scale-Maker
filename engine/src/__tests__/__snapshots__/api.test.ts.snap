@@ -106,6 +106,7 @@ exports[`exports the same names 1`] = `
   "chartKeyOf",
   "chartKind",
   "chartMeta",
+  "chartName",
   "chartOutline",
   "chartRecording",
   "chartYoutube",

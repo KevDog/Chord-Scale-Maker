@@ -1,5 +1,5 @@
 import { CONCERT, glyphs, noteText, parseRoot, parseScale, type PlaysOver, playsOver, rootName, SCALES, type ScaleKey, scaleFromSlug, scaleNotes, scaleSlug, scaleTitle, scaleUsage, spellFrom } from '@chord-scale-maker/engine'
-import { LIBRARY } from './library'
+import { LIBRARY, tuneOf } from './library'
 import { canonicalUrl, type PageHead, songPath } from './site'
 import { jsonLd } from './structuredData'
 
@@ -48,7 +48,8 @@ export function scalePage(slug: string): ScalePage | null {
   const key = scaleFromSlug(slug)
   if (!key) return null
   const titles = new Map(LIBRARY.map((c) => [c.slug, c.title]))
-  const using = scaleUsage(LIBRARY).get(key) ?? []
+  // a tune once, at its main chart, however many of its versions use the scale (#411)
+  const using = [...new Set((scaleUsage(LIBRARY).get(key) ?? []).map((s) => tuneOf(s)?.main ?? s))]
   return {
     key,
     title: scaleTitle(key),

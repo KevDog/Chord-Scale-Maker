@@ -1,7 +1,7 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { flushPromises } from '@vue/test-utils'
 import { describe, expect, it } from 'vitest'
-import { LIBRARY } from '~/utils/library'
+import { LIBRARY, TUNES } from '~/utils/library'
 import Library from '~/pages/library.vue'
 
 describe('library page', () => {
@@ -14,8 +14,8 @@ describe('library page', () => {
   it('links each tune title to its song page, with no separate editor link', async () => {
     const w = await mountSuspended(Library)
     const links = w.findAll('tbody td:first-child a')
-    expect(links.length).toBe(LIBRARY.length)
-    for (const c of LIBRARY) expect(links.find((a) => a.text() === c.title && a.attributes('href') === `/song/${c.slug}`)).toBeDefined()
+    expect(links.length).toBe(TUNES.length) // one row per tune, its versions folded in (#411)
+    for (const c of TUNES) expect(links.find((a) => a.text() === c.title && a.attributes('href') === `/song/${c.slug}`)).toBeDefined()
     expect(w.findAll('a').filter((a) => /^Open .* in the editor$/.test(a.attributes('aria-label') ?? ''))).toEqual([])
   })
 

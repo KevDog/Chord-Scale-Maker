@@ -18,6 +18,15 @@ describe('SheetHeading', () => {
     expect(value(w, 'select[aria-label=Key]')).toBe('Gm')
   })
 
+  it("names a version's heading by its label, and shows the label under the title (#411)", async () => {
+    const w = await mount(parseChart('title: Summertime\nversion: Jazz Lab Accelerator\nkey: Am\n\nsection: A\nbars: 4\n1 | Am6\n').value)
+    expect(w.find('h2').attributes('aria-label')).toBe('Summertime (Jazz Lab Accelerator)')
+    expect(value(w, 'input[aria-label=Title]')).toBe('Summertime')
+    expect(w.text()).toContain('Jazz Lab Accelerator')
+    const plain = await mount()
+    expect(plain.find('h2').attributes('aria-label')).toBe('Autumn Leaves')
+  })
+
   it('shows the time next to the key, 4/4 when the chart has none, and writes a change', async () => {
     const w = await mount()
     expect(value(w, 'select[aria-label=Time]')).toBe('4/4')

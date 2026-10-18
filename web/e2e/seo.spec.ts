@@ -1,4 +1,4 @@
-import { readdirSync } from 'node:fs'
+import { readdirSync, readFileSync } from 'node:fs'
 import { createRequire } from 'node:module'
 import { pathToFileURL } from 'node:url'
 import { SITE_URL, songPath } from '../app/utils/site'
@@ -6,9 +6,11 @@ import { expect, test } from './fixtures'
 
 // the engine can't be imported here (its JSON import needs a bundler): read its charts/ through the package
 const CHARTS = new URL('charts/', pathToFileURL(createRequire(import.meta.url).resolve('@chord-scale-maker/engine/package.json')))
-const SLUGS = readdirSync(CHARTS)
-  .filter((f) => f.endsWith('.txt') && !/ \d+\.txt$/.test(f)) // not an iCloud sync copy (isSyncCopy)
-  .map((f) => f.replace(/\.txt$/, ''))
+const FILES = readdirSync(CHARTS).filter((f) => f.endsWith('.txt') && !/ \d+\.txt$/.test(f)) // not an iCloud sync copy (isSyncCopy)
+// a tune's other versions (a version: line) stay out of the sitemap: their canonical is the main chart's (#411)
+const isVersion = (f: string): boolean => /^version:\s*\S/m.test(readFileSync(new URL(f, CHARTS), 'utf8'))
+const SLUGS = FILES.filter((f) => !isVersion(f)).map((f) => f.replace(/\.txt$/, ''))
+const VERSIONS = FILES.filter(isVersion).map((f) => f.replace(/\.txt$/, ''))
 
 const ENTITIES: Record<string, string> = { '&amp;': '&', '&quot;': '"', '&#39;': "'", '&lt;': '<', '&gt;': '>' }
 const attr = (html: string, tag: RegExp, name: string): string | undefined =>
@@ -94,6 +96,7 @@ test('every sitemap URL is a page: 200, its own canonical, indexable, its own ti
   expect(sitemap.status()).toBe(200)
   const locs = Array.from((await sitemap.text()).matchAll(/<loc>([^<]+)<\/loc>/g), (m) => m[1] as string)
   for (const slug of SLUGS) expect(locs, slug).toContain(`${SITE_URL}${songPath(slug)}`)
+  for (const slug of VERSIONS) expect(locs, slug).not.toContain(`${SITE_URL}${songPath(slug)}`)
 
   const titles = new Map<string, string>()
   for (const loc of locs) {

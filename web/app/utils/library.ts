@@ -1,4 +1,4 @@
-import { chartAka, chartHeading, isSyncCopy, parseChart, tuneGroups, tuneSummary } from '@chord-scale-maker/engine'
+import { chartAka, chartHeading, isSyncCopy, parseChart, type TuneGroup, tuneGroups, tuneSummary } from '@chord-scale-maker/engine'
 import { filingTitle, libraryDetails } from './libraryIndex'
 import { publishedChart } from './published'
 
@@ -40,6 +40,14 @@ export function toTunes(charts: readonly LibraryChart[]): LibraryTune[] {
 }
 
 export const TUNES: readonly LibraryTune[] = toTunes(LIBRARY)
+
+const GROUP_OF = new Map(tuneGroups(LIBRARY).flatMap((g) => g.versions.map((v) => [v.slug, g] as const)))
+
+/** a library chart's tune (#411): its main chart and every version, main first; null for no library chart */
+export const tuneOf = (slug: string): Pick<TuneGroup, 'main' | 'versions'> | null => {
+  const g = GROUP_OF.get(slug)
+  return g ? { main: g.main, versions: g.versions } : null
+}
 
 /** a tune row's details: style · key · form, then its count of versions when it has more than one */
 export const tuneDetails = (t: LibraryTune): string => [t.details, t.versions > 1 ? `${t.versions} versions` : ''].filter(Boolean).join(' · ')

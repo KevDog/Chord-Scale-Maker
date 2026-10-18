@@ -1,7 +1,7 @@
 <template>
   <div class="mb-4 space-y-1 text-center">
     <!-- the title field is the sheet's heading, at its level (the page's h1 on the song page) -->
-    <component :is="level === 1 ? 'h1' : 'h2'" :aria-label="shown('title') || 'Untitled'">
+    <component :is="level === 1 ? 'h1' : 'h2'" :aria-label="name">
       <input
         :value="shown('title')"
         type="text"
@@ -15,6 +15,8 @@
         @input="edit('title', ($event.target as HTMLInputElement).value)"
       >
     </component>
+    <!-- a version's label (#411), read in the heading's name above -->
+    <p v-if="version" aria-hidden="true" class="text-sm text-zinc-600 dark:text-zinc-400">{{ version }}</p>
     <div class="flex items-baseline justify-center gap-3 text-sm text-zinc-600 dark:text-zinc-400">
       <input
         :value="shown('subtitle')"
@@ -58,7 +60,7 @@
 </template>
 
 <script setup lang="ts">
-import { cellError, type ChartDoc, chartDetails, chartHeading, chartMeta, isValidKey, keyLabel, LIMITS, type MetaKey, setMeta } from '@chord-scale-maker/engine'
+import { cellError, type ChartDoc, chartDetails, chartHeading, chartMeta, isValidKey, keyLabel, LIMITS, type MetaKey, metaValue, setMeta } from '@chord-scale-maker/engine'
 import { KEY_OPTIONS } from '~/utils/keyOptions'
 
 /**
@@ -91,6 +93,8 @@ const errors = computed((): Partial<Record<Field, string>> => {
 })
 watch(values, () => (drafts.value = {}))
 const shown = (k: Field): string => drafts.value[k] ?? values.value[k]
+const version = computed(() => metaValue(props.doc, 'version'))
+const name = computed(() => (version.value ? `${shown('title') || 'Untitled'} (${version.value})` : shown('title') || 'Untitled'))
 function edit(k: Field, v: string): void {
   if (cellError(v, LIMITS.maxMeta, true)) {
     drafts.value = { ...drafts.value, [k]: v }

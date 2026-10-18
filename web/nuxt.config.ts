@@ -12,7 +12,7 @@ import { SECURITY_HEADERS } from './build/headers'
 import { writeServiceWorker } from './build/sw'
 import { buildVersion } from './build/version'
 import { SITE_DESCRIPTION, SITE_NAME, SITE_TAGLINE, SITE_URL, songPath } from './app/utils/site'
-import { chartSlugsOf, sitemapPaths } from './app/utils/sitemap'
+import { chartSlugsOf, sitemapPaths, songSlugs } from './app/utils/sitemap'
 import { composerIndex } from '@chord-scale-maker/engine'
 
 /** the link preview image's alt text (the image is scripts/icons.mjs's) */
@@ -23,9 +23,11 @@ const ENGINE_DIR = dirname(createRequire(import.meta.url).resolve('@chord-scale-
 
 /** the pages search engines should find (server/routes/sitemap.xml.ts): the site's, the scales, the composers, then every library song */
 // (the library's charts, by file name: the config can't load the #charts glob)
-const CHART_SLUGS = chartSlugsOf(readdirSync(join(ENGINE_DIR, 'charts')))
-const COMPOSER_SLUGS = composerIndex(CHART_SLUGS.map((slug) => ({ slug, text: readFileSync(join(ENGINE_DIR, 'charts', `${slug}.txt`), 'utf8') }))).map((c) => c.slug)
-const SITEMAP_PATHS = sitemapPaths(CHART_SLUGS.map((s) => songPath(s)), COMPOSER_SLUGS)
+const CHARTS = chartSlugsOf(readdirSync(join(ENGINE_DIR, 'charts'))).map((slug) => ({ slug, text: readFileSync(join(ENGINE_DIR, 'charts', `${slug}.txt`), 'utf8') }))
+// a tune's other versions are prerendered but not listed: their canonical is the main chart's (#411)
+const SONGS = songSlugs(CHARTS)
+const COMPOSER_SLUGS = composerIndex(CHARTS.filter((c) => SONGS.main.includes(c.slug))).map((c) => c.slug)
+const SITEMAP_PATHS = sitemapPaths(SONGS.main.map((s) => songPath(s)), COMPOSER_SLUGS)
 
 /** dev: the engine's charts/ and chord_scales.json sit outside Vite's root, so it doesn't watch them by itself
  *  (quotes.json is watched by its own plugin) */
@@ -104,6 +106,7 @@ export default defineNuxtConfig({
         recordings: true, // a library song's notable recording (docs/superpowers/specs/2026-10-17-notable-recordings.md)
         playerRange: true, // the player's range by the Instrument (#359)
         chartSubmissions: false, // send a chart to the library from the editor (#153; docs/superpowers/specs/2026-10-12-chart-submissions-design.md)
+        versions: false, // a song's version picker (#411; docs/superpowers/specs/2026-10-18-tune-versions-design.md)
         ireal: true, // iReal Pro import: Library's Open chart… and Import iReal link…, Paste bars (#261; docs/superpowers/specs/2026-10-17-ireal-import-design.md)
       },
     },
@@ -131,7 +134,7 @@ export default defineNuxtConfig({
     // every page is prerendered and served as a static file; only /api/contact (and unknown URLs) run on the server
     // the library songs are in the sitemap
     // + /200.html, Nuxt's client-only app shell: the offline worker's fallback for a page not yet visited (build/sw.ts)
-    prerender: { routes: [...SITEMAP_PATHS, '/song', '/200.html', '/sitemap.xml'] },
+    prerender: { routes: [...SITEMAP_PATHS, ...SONGS.versions.map((s) => songPath(s)), '/song', '/200.html', '/sitemap.xml'] },
     virtual: { '#sitemap-paths': `export default ${JSON.stringify(SITEMAP_PATHS)}` },
     hooks: {
       // hash each page's inline scripts into a CSP <meta> (build/csp.ts)

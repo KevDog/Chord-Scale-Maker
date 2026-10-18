@@ -393,6 +393,13 @@ export function chartHeading(doc: ChartDoc): Readonly<{ title: string; subtitle:
   return { title: metaValue(doc, 'title', 'Untitled'), subtitle: line.filter(Boolean).join(' · '), composer: metaValue(doc, 'composer') }
 }
 
+/** what a chart is called: its title, a version's label after it, "Summertime (Jazz Lab Accelerator)" (#411) */
+export function chartName(doc: ChartDoc): string {
+  const title = metaValue(doc, 'title', 'Untitled')
+  const version = metaValue(doc, 'version')
+  return version ? `${title} (${version})` : title
+}
+
 /**
  * an expanded row, the line it came from (a copy: repeat points at its source row's line) and `at`, its bar counted
  * through its part (intro, form or coda) from 1: where the analysis stream places it

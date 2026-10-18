@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { composerIndex, isSyncCopy } from '@chord-scale-maker/engine'
 import { describe, expect, it } from 'vitest'
-import { findChart, keyName, LIBRARY, matchSpan, searchLibrary, suggestTunes, toLibrary, toTunes, tuneDetails, TUNES } from '~/utils/library'
+import { findChart, keyName, LIBRARY, matchSpan, searchLibrary, suggestTunes, toLibrary, toTunes, tuneDetails, tuneOf, TUNES } from '~/utils/library'
 import { songPath } from '~/utils/site'
 import { sitemapPaths, sitemapXml, chartSlugsOf } from '~/utils/sitemap'
 import { COMPOSERS } from '~/utils/composerPage'
@@ -153,8 +153,14 @@ describe('tunes (#411): one row per tune, its versions folded in', () => {
     expect(tuneDetails(autumn!)).toBe(autumn!.details)
   })
 
-  it('is the library itself while no chart has a version:', () => {
-    expect(TUNES.map((t) => t.slug)).toEqual(LIBRARY.map((c) => c.slug))
-    expect(TUNES.every((t) => t.versions === 1)).toBe(true)
+  it('lists Summertime once, with its Jazz Lab Accelerator version', () => {
+    expect(TUNES.filter((t) => t.title === 'Summertime').map((t) => [t.slug, t.versions])).toEqual([['summertime', 2]])
+    expect(TUNES.length).toBe(LIBRARY.length - 1)
+  })
+
+  it('gives a chart its tune: the main and every version', () => {
+    expect(tuneOf('summertime-jazz-lab-accelerator')).toEqual({ main: 'summertime', versions: [{ slug: 'summertime', label: '' }, { slug: 'summertime-jazz-lab-accelerator', label: 'Jazz Lab Accelerator' }] })
+    expect(tuneOf('blue-trane')?.versions).toHaveLength(1)
+    expect(tuneOf('nope')).toBeNull()
   })
 })

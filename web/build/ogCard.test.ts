@@ -6,6 +6,11 @@ import { libraryCharts, ogCard, ogHash, OG_DIR } from './ogCard'
 const chart = (slug: string): string => libraryCharts().find((c) => c.slug === slug)?.text ?? ''
 
 describe('ogCard', () => {
+  it('names a version in its title', () => {
+    expect(ogCard(chart('summertime-jazz-lab-accelerator')).title).toBe('Summertime (Jazz Lab Accelerator)')
+    expect(ogCard(chart('summertime')).title).toBe('Summertime')
+  })
+
   it('gives what a song’s preview image shows: title, composer, details and the first four bars', () => {
     const card = ogCard(chart('autumn-leaves'))
     expect(card).toMatchObject({ title: 'Autumn Leaves', composer: 'Joseph Kosma', details: 'Medium · G minor · AAB', beats: 4 })

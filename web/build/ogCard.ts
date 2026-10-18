@@ -21,7 +21,8 @@ export const libraryCharts = (): readonly Readonly<{ slug: string; text: string 
 export function ogCard(text: string): OgCard {
   const summary = tuneSummary(text)
   return {
-    title: summary.title,
+    // a version is named by its label, as on its page (#411)
+    title: summary.version ? `${summary.title} (${summary.version})` : summary.title,
     composer: summary.composer,
     details: libraryDetails(summary),
     beats: Number(/^(\d+)\//.exec(summary.time)?.[1] ?? 4),

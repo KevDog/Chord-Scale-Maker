@@ -1,5 +1,5 @@
 import { chartOutline, type OutlineSection, type Recording, tuneDescription, tuneSummary } from '@chord-scale-maker/engine'
-import { findChart } from './library'
+import { findChart, tuneOf } from './library'
 import { type PageHead, pageTitle, SITE_URL, songPath, tuneName, tuneTitle } from './site'
 import { breadcrumbLd, jsonLd, tuneLd } from './structuredData'
 
@@ -17,6 +17,8 @@ type SongHead = Readonly<{
   embeddable: boolean
   /** who sent the chart, credited on the page ('' without one) */
   contributor: string
+  /** a version's canonical page: its tune's main chart ('' for a main chart, #411) */
+  canonical: string
 }>
 
 /** a library song's head (indexable: the one page per tune), its heading, its changes and what its sheet is, or null
@@ -24,8 +26,11 @@ type SongHead = Readonly<{
 export function songHead(slug: string, opts: Readonly<{ recordings: boolean }> = { recordings: false }): SongHead | null {
   const chart = findChart(slug)
   if (!chart) return null
-  const tune = tuneSummary(chart.text)
+  const read = tuneSummary(chart.text)
+  // a version is named by its label: "Summertime (Jazz Lab Accelerator)" (#411)
+  const tune = read.version ? { ...read, title: `${read.title} (${read.version})` } : read
   const summary = opts.recordings ? tune : { ...tune, recording: null, youtube: '' }
+  const main = tuneOf(slug)?.main ?? slug
   const path = songPath(slug)
   return {
     head: {
@@ -47,5 +52,6 @@ export function songHead(slug: string, opts: Readonly<{ recordings: boolean }> =
     youtube: summary.recording ? summary.youtube : '',
     embeddable: summary.embeddable,
     contributor: summary.contributor,
+    canonical: main === slug ? '' : songPath(main),
   }
 }
