@@ -15,22 +15,25 @@ export function downloadText(filename: string, text: string): void {
   setTimeout(() => URL.revokeObjectURL(url), 0)
 }
 
-export type ChartFileResult = Readonly<{ ok: true; text: string }> | Readonly<{ ok: false; error: string }>
+export type ChartFileResult = Readonly<{ ok: true; text: string; kind: 'chart' | 'ireal' }> | Readonly<{ ok: false; error: string }>
 
 const isText = (f: Pick<File, 'name' | 'type'>): boolean => /\.txt$/i.test(f.name) || f.type === 'text/plain' || f.type === ''
+const isHtml = (f: Pick<File, 'name' | 'type'>): boolean => /\.html?$/i.test(f.name) || f.type === 'text/html'
 
-/** a chart file's text, or why it can't be opened */
-export async function readChartFile(file: File): Promise<ChartFileResult> {
-  if (!isText(file)) return { ok: false, error: 'Please open a chart saved as a .txt file.' }
-  if (file.size > LIMITS.maxChars * 4) return { ok: false, error: `That file is too big for a chart (over ${LIMITS.maxChars.toLocaleString()} characters).` }
+/** a chart file's text, or an iReal Pro export's (when iReal import is on), or why it can't be opened */
+export async function readChartFile(file: File, opts: Readonly<{ ireal?: boolean }> = {}): Promise<ChartFileResult> {
+  const ireal = opts.ireal === true && isHtml(file)
+  if (!isText(file) && !ireal) return { ok: false, error: opts.ireal ? 'Please open a chart saved as a .txt file, or an iReal Pro export (.html).' : 'Please open a chart saved as a .txt file.' }
+  // an iReal playlist can be far bigger than a chart; the link inside is what's read
+  if (file.size > (ireal ? 4_000_000 : LIMITS.maxChars * 4)) return { ok: false, error: `That file is too big for a chart (over ${LIMITS.maxChars.toLocaleString()} characters).` }
   let text: string
   try {
     text = (await file.text()).replace(/^\uFEFF/, '') // a byte-order mark from some editors
   } catch {
     return { ok: false, error: "That file couldn't be read. Please try it again." }
   }
-  if (text.length > LIMITS.maxChars) return { ok: false, error: `That file is too big for a chart (over ${LIMITS.maxChars.toLocaleString()} characters).` }
+  if (!ireal && text.length > LIMITS.maxChars) return { ok: false, error: `That file is too big for a chart (over ${LIMITS.maxChars.toLocaleString()} characters).` }
   if (!text.trim()) return { ok: false, error: 'That file is empty.' }
   if (text.includes('\u0000')) return { ok: false, error: 'That doesn’t look like a chart: it isn’t plain text.' }
-  return { ok: true, text }
+  return { ok: true, text, kind: ireal ? 'ireal' : 'chart' }
 }
