@@ -9,7 +9,7 @@ export type IRealSong = Readonly<{ title: string; composer: string; style: strin
 export type IRealPlaylist = Readonly<{ name?: string; songs: readonly IRealSong[] }>
 
 export const IREAL_PREFIX = '1r34LbKcu7'
-const LINK = /irealb(ook)?:\/\/([^\s"'<>]+)/
+const LINK = /irealb(ook)?:\/\/([^\s"<>]+)/ // not stopping at ': titles have them and encodeURI leaves them
 
 /** each 50-character block swaps b[i] with b[49-i] for i in 0–4 and 10–23 while more than 51 remain; self-inverse */
 export function unscramble(music: string): string {
@@ -56,11 +56,13 @@ export function decodeIReal(text: string): Parsed<IRealPlaylist> {
   const songs: IRealSong[] = []
   const diagnostics: Diagnostic[] = []
   let i = 0
+  let block = 0 // 1-based position of the song in the link, for diagnostics
   while (fields.length - i >= width) {
+    block++
     const f = fields.slice(i, i + width)
     const raw = f[legacy ? 5 : 6] ?? ''
     if (!legacy && !raw.startsWith(IREAL_PREFIX)) {
-      diagnostics.push({ line: songs.length + 1, message: `"${f[0]}": not an iReal Pro song (its music is missing)` })
+      diagnostics.push({ line: block, message: `"${f[0]}": not an iReal Pro song (its music is missing)` })
     } else {
       const music = legacy ? raw : expand(unscramble(raw.slice(IREAL_PREFIX.length)))
       songs.push({ title: title(f[0] ?? ''), composer: composer(f[1] ?? ''), style: (f[legacy ? 2 : 3] ?? '').trim(), key: key(f[legacy ? 3 : 4] ?? ''), music })

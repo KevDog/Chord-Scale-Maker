@@ -12,6 +12,27 @@ describe('decodeIReal', () => {
     expect(unscramble(s.slice(0, 52)).slice(0, 5)).toBe(s.slice(45, 50).split('').reverse().join(''))
   })
 
+  it('unscramble matches a hand-worked vector (swaps 0–4 and 10–23)', () => {
+    expect(unscramble('0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQR')).toBe('NMLKJ56789DCBAzyxwvutsrqopnmlkjihgfedcbaEFGHI43210OPQR')
+  })
+
+  it('keeps an apostrophe in a title, encoded or not, bare or in an href', () => {
+    const t = 'Don\'t Get Around Much Anymore'
+    for (const encode of [false, true]) {
+      const link = irealLink([{ title: t, music: BLUES }], undefined, encode)
+      expect(decodeIReal(link).value.songs.map((s) => s.title)).toEqual([t])
+      expect(decodeIReal(`<a href="${link}">x</a>`).value.songs.map((s) => s.title)).toEqual([t])
+    }
+  })
+
+  it('reports each bad song at its position in the link', () => {
+    const bad = (t: string) => encodeURI([t, 'C', '', 'Swing', 'C', '', 'nope', '', '0', '0'].join('='))
+    const good = irealLink([{ title: 'Good', music: BLUES }]).slice('irealb://'.length)
+    const { value, diagnostics } = decodeIReal(`irealb://${bad('A')}===${good}===${bad('B')}`)
+    expect(value.songs.map((s) => s.title)).toEqual(['Good'])
+    expect(diagnostics.map((d) => d.line)).toEqual([1, 3])
+  })
+
   it('reads one song: title and composer tidied, key, music unscrambled', () => {
     const { value, diagnostics } = decodeIReal(irealLink([{ title: 'Gentle Rain, The', composer: 'Bonfa Luiz', key: 'A-', style: 'Bossa Nova', music: BLUES }]))
     expect(diagnostics).toEqual([])
