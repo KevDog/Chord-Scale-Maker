@@ -25,7 +25,8 @@ export async function readChartFile(file: File, opts: Readonly<{ ireal?: boolean
   const ireal = opts.ireal === true && isHtml(file)
   if (!isText(file) && !ireal) return { ok: false, error: opts.ireal ? 'Please open a chart saved as a .txt file, or an iReal Pro export (.html).' : 'Please open a chart saved as a .txt file.' }
   // an iReal playlist can be far bigger than a chart; the link inside is what's read
-  if (file.size > (ireal ? 4_000_000 : LIMITS.maxChars * 4)) return { ok: false, error: `That file is too big for a chart (over ${LIMITS.maxChars.toLocaleString()} characters).` }
+  if (ireal && file.size > 4_000_000) return { ok: false, error: 'That file is too big for an iReal Pro export (over 4 MB).' }
+  if (!ireal && file.size > LIMITS.maxChars * 4) return { ok: false, error: `That file is too big for a chart (over ${LIMITS.maxChars.toLocaleString()} characters).` }
   let text: string
   try {
     text = (await file.text()).replace(/^\uFEFF/, '') // a byte-order mark from some editors

@@ -23,6 +23,11 @@ describe('chart files', () => {
     expect(await readChartFile(file('title: T\n'), { ireal: true })).toMatchObject({ ok: true, kind: 'chart' })
   })
 
+  it('an iReal export over 4 MB is too big, and says so in its own terms', async () => {
+    const big = new File(['x'.repeat(4_000_001)], 'Set.html', { type: 'text/html' })
+    expect(await readChartFile(big, { ireal: true })).toEqual({ ok: false, error: 'That file is too big for an iReal Pro export (over 4 MB).' })
+  })
+
   it('.htm is an export too', async () => {
     expect(await readChartFile(file('<html>', 'x.htm', 'text/html'), { ireal: true })).toMatchObject({ ok: true, kind: 'ireal' })
   })

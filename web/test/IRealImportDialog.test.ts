@@ -30,7 +30,8 @@ describe('IRealImportDialog', () => {
 
   it('a playlist: pick a song by title', async () => {
     const { w, dialog, button } = await mount({ songs: [song('One'), song('Two')], playlist: 'Set' })
-    expect(dialog.textContent).toContain('Set')
+    expect(dialog.textContent).toContain('Set has 2 songs. Import one at a time.')
+    expect(dialog.querySelector('label')?.textContent).toBe('Song')
     const select = dialog.querySelector('select') as HTMLSelectElement
     expect([...select.options].map((o) => o.textContent)).toEqual(['One', 'Two'])
     select.value = '1'

@@ -51,5 +51,23 @@ describe('useOpenChart with iReal', () => {
     const o = useOpenChart()
     await o.openIReal('irealb://%E0%A4%A')
     expect(o.error.value).toMatch(/damaged/)
+    o.cancel()
+    expect(o.error.value).toBe('')
+  })
+
+  it('an iReal export opened as a file becomes a chart', async () => {
+    const o = useOpenChart()
+    const html = `<a href="${irealLink([{ title: 'Blues', music: BLUES }], undefined, true)}">Blues</a>`
+    await o.open(new File([html], 'Blues.html', { type: 'text/html' }))
+    expect(o.error.value).toBe('')
+    expect(loadChart(mineId())?.text).toMatch(/^title: Blues\n/)
+  })
+
+  it('cancel puts a playlist away', async () => {
+    const o = useOpenChart()
+    await o.openIReal(irealLink([{ title: 'One', music: BLUES }, { title: 'Two', music: BLUES }], 'Set'))
+    expect(o.songs.value).toHaveLength(2)
+    o.cancel()
+    expect(o.songs.value).toEqual([])
   })
 })

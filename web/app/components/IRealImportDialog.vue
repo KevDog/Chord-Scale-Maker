@@ -3,14 +3,14 @@
     <form @submit.prevent="submit">
       <UiDialogTitle>{{ report.length ? 'Some of it didn’t come across' : songs.length > 1 ? 'Choose a song' : 'Import from iReal Pro' }}</UiDialogTitle>
       <UiDialogDescription v-if="report.length">The chart opens without these. Charts are in concert pitch, as iReal Pro stores them.</UiDialogDescription>
-      <UiDialogDescription v-else-if="songs.length > 1">This playlist has {{ songs.length }} songs. Import one at a time.</UiDialogDescription>
+      <UiDialogDescription v-else-if="songs.length > 1">{{ playlist || 'This playlist' }} has {{ songs.length }} songs. Import one at a time.</UiDialogDescription>
       <UiDialogDescription v-else>Paste a song or playlist link (irealb://…), copied from iReal Pro or its forums.</UiDialogDescription>
       <UiDialogBody>
         <ul v-if="report.length" class="list-disc space-y-1 pl-5 text-sm/6 text-zinc-700 dark:text-zinc-300">
           <li v-for="(d, i) in report" :key="i">{{ d.message }}</li>
         </ul>
         <UiField v-else-if="songs.length > 1">
-          <UiLabel>{{ playlist || 'Song' }}</UiLabel>
+          <UiLabel>Song</UiLabel>
           <UiSelect v-model="index" autofocus>
             <option v-for="(s, i) in songs" :key="i" :value="String(i)">{{ s.title }}</option>
           </UiSelect>

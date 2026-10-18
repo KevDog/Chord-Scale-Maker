@@ -9,7 +9,7 @@
       <div class="flex flex-wrap gap-3">
         <UiButton outline href="/contact">Request a chart</UiButton>
         <UiButton outline :disabled="opener.busy.value" :title="ireal ? 'Open a chart saved as a .txt file, or an iReal Pro export (or drop one on this page)' : 'Open a chart saved as a .txt file (or drop one on this page)'" @click="fileInput?.click()"><FolderOpenIcon data-slot="icon" />Open chart…</UiButton>
-        <UiButton v-if="ireal" outline :disabled="opener.busy.value" @click="linkOpen = true"><ArrowDownTrayIcon data-slot="icon" />Import iReal link…</UiButton>
+        <UiButton v-if="ireal" outline :disabled="opener.busy.value" @click="opener.cancel(); linkOpen = true"><ArrowDownTrayIcon data-slot="icon" />Import iReal link…</UiButton>
         <UiButton color="note" href="/song?new=1" class="max-md:hidden"><PlusIcon data-slot="icon" />New chart</UiButton>
       </div>
     </div>

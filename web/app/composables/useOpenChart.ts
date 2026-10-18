@@ -55,6 +55,7 @@ export function useOpenChart() {
 
   function cancel(): void {
     pending = ''
+    error.value = ''
     report.value = []
     songs.value = []
   }
