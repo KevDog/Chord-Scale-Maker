@@ -37,7 +37,7 @@
           <strong class="font-semibold text-zinc-950 dark:text-white">From 7th</strong> put guide tones on the Changes staff in
           place of the slashes: one note a chord, the 3rd or 7th that tells you which chord you're on, moving as little as
           it can. Only one line shows at a time. Try singing or playing one line all the way through the tune; it's a great
-          way to learn the changes. <UiTextLink href="#guide-lines">How a line is built</UiTextLink> is below.
+          way to learn the changes. <DecisionLink id="guide.tones">How a line is built</DecisionLink> is in How it decides.
         </UiText>
         <UiText>
           <strong class="font-semibold text-zinc-950 dark:text-white">Scales</strong> is one staff per
@@ -52,80 +52,7 @@
         </UiText>
 
         <UiSubheading id="guide-lines" :level="3" class="scroll-mt-6 pt-2">How a guide tone line is built</UiSubheading>
-        <UiText>It's the way you'd build one by hand, a chord at a time.</UiText>
-        <ul class="list-disc space-y-2 pl-5 text-base/6 text-zinc-600 sm:text-sm/6 dark:text-zinc-400">
-          <li>
-            <strong class="font-semibold text-zinc-950 dark:text-white">The guide tones.</strong> Each chord's 3rd and 7th.
-            Where a chord has no 7th or no 3rd, something else stands in: a 6 chord uses its 6th, a sus chord its 4th, and a
-            plain triad its root. (A diminished 7th's 7th is its double-flat 7th.) The label under the note is that degree
-            without its flat or sharp: 3, 7, 6, 4 or 1.
-          </li>
-          <li>
-            <strong class="font-semibold text-zinc-950 dark:text-white">The start.</strong> From 3rd begins on the first
-            chord's 3rd, From 7th on its 7th, in whichever octave keeps the line, up to the next rest, closest on average to
-            the middle of your instrument's range. So a line doesn't start in the middle and drift to the bottom.
-          </li>
-          <li>
-            <strong class="font-semibold text-zinc-950 dark:text-white">The moves.</strong> At each new chord the line goes
-            to whichever of its two guide tones is nearer: a common tone first, then a half step, a whole step, and only then
-            a leap. That's why it swaps between 3rd and 7th when the roots move by 4ths and 5ths. When both are equally near,
-            it takes the one nearer the middle of the range, then the lower. A chord that repeats the last one's guide tones
-            (C7 to C7♭9) ties the note over; a common tone on a different chord is played again.
-          </li>
-          <li>
-            <strong class="font-semibold text-zinc-950 dark:text-white">The range.</strong> The line only uses notes your
-            instrument can comfortably play, so at the floor or the ceiling it turns back toward the middle. Written ranges:
-            {{ GUIDE_RANGES }}.
-          </li>
-          <li>
-            <strong class="font-semibold text-zinc-950 dark:text-white">When the two lines meet.</strong> You see one line at
-            a time, but the other is worked out alongside it. If both land on the same note, they part at the next new chord.
-            If that chord has the note too, the line that was lower keeps it and the other moves to the chord's other guide
-            tone, upward if that's no more than a tritone away. Otherwise the one that was higher goes up to the nearest
-            guide tone above and the other down to the nearest below. Neither leaps more than a tritone just to get away:
-            a line with nothing that close on its side moves as it would on its own, so now and then the two stay together
-            for another chord. So From 3rd and From 7th may touch, but they rarely stay together.
-          </li>
-          <li>
-            <strong class="font-semibold text-zinc-950 dark:text-white">Rests, repeats and spelling.</strong> A chord with no
-            guide tones (one I can't read, or a chord quality I don't know) gets a rest, and the line starts again after it, placed the same way as at the
-            start. Repeats and endings are played in the order they're written: a second ending carries on from the chord
-            before it, and the last bar doesn't lead back to the top. Each note keeps its chord's spelling: the 7th of G♭7 is
-            F♭, not E.
-          </li>
-        </ul>
-        <UiText>A ii–V–I in C, concert pitch, a chord a bar:</UiText>
-        <UiTable dense>
-          <UiTableHead>
-            <UiTableRow>
-              <UiTableHeader>Line</UiTableHeader>
-              <UiTableHeader>Dm7</UiTableHeader>
-              <UiTableHeader>G7</UiTableHeader>
-              <UiTableHeader>Cmaj7</UiTableHeader>
-              <UiTableHeader>Cmaj7</UiTableHeader>
-            </UiTableRow>
-          </UiTableHead>
-          <UiTableBody>
-            <UiTableRow>
-              <UiTableCell class="font-semibold">From 3rd</UiTableCell>
-              <UiTableCell>F4 (3)</UiTableCell>
-              <UiTableCell>F4 (7)</UiTableCell>
-              <UiTableCell>E4 (3)</UiTableCell>
-              <UiTableCell>E4, tied</UiTableCell>
-            </UiTableRow>
-            <UiTableRow>
-              <UiTableCell class="font-semibold">From 7th</UiTableCell>
-              <UiTableCell>C5 (7)</UiTableCell>
-              <UiTableCell>B4 (3)</UiTableCell>
-              <UiTableCell>B4 (7)</UiTableCell>
-              <UiTableCell>B4, tied</UiTableCell>
-            </UiTableRow>
-          </UiTableBody>
-        </UiTable>
-        <UiText>
-          From 3rd keeps the F as G7's 7th, then falls a half step to E. From 7th falls a half step to B and keeps it as the
-          Cmaj7's 7th. The repeated Cmaj7 ties both over.
-        </UiText>
+        <UiText>It's moved to <DecisionLink id="guide.tones">How it decides</DecisionLink>, with the rest of the app's choices.</UiText>
       </section>
 
       <section class="scroll-mt-6 space-y-4" aria-labelledby="controls">
@@ -425,7 +352,6 @@
 
 <script setup lang="ts">
 import { PAGE_HEAD, seoMeta } from '~/utils/site'
-import { guideRanges } from '~/utils/instrumentChoices'
 import { PENT_INSIDE_HELP } from '~/utils/pentatonics'
 
 const offline = useFeature('offline')
@@ -433,7 +359,6 @@ const patternsOn = useFeature('patterns')
 const cellsOn = useFeature('cells')
 const approachesOn = useFeature('approaches')
 const ireal = useFeature('ireal')
-const GUIDE_RANGES = guideRanges()
 const SECTIONS = [
   { id: 'quick', title: 'The short version' },
   { id: 'sheets', title: 'The two sheets' },

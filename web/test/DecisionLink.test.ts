@@ -6,7 +6,7 @@ import DecisionLink from '~/components/DecisionLink.vue'
 describe('DecisionLink', () => {
   it('links to the decision’s anchor, its summary as the title', async () => {
     const a = (await mountSuspended(DecisionLink, { props: { id: 'guide.move' } })).find('a')
-    expect(a.attributes('href')).toBe('/help#guide-lines')
+    expect(a.attributes('href')).toBe('/how-it-decides#guide.move')
     expect(a.attributes('title')).toBe(decisionOf('guide.move').summary)
     expect(a.text()).toBe('How this is chosen')
   })
