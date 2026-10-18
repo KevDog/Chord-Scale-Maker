@@ -106,7 +106,7 @@ export default defineNuxtConfig({
         recordings: true, // a library song's notable recording (docs/superpowers/specs/2026-10-17-notable-recordings.md)
         playerRange: true, // the player's range by the Instrument (#359)
         chartSubmissions: false, // send a chart to the library from the editor (#153; docs/superpowers/specs/2026-10-12-chart-submissions-design.md)
-        versions: false, // a song's version picker (#411; docs/superpowers/specs/2026-10-18-tune-versions-design.md)
+        versions: true, // a song's version picker (#411; docs/superpowers/specs/2026-10-18-tune-versions-design.md)
         ireal: true, // iReal Pro import: Library's Open chart… and Import iReal link…, Paste bars (#261; docs/superpowers/specs/2026-10-17-ireal-import-design.md)
       },
     },
