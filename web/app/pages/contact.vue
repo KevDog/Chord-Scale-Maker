@@ -30,6 +30,15 @@
             <UiTextarea v-model="form.message" name="message" rows="6" :invalid="!!errors.message" :maxlength="CONTACT_LIMITS.message" required />
             <UiErrorMessage v-if="errors.message">{{ errors.message }}</UiErrorMessage>
           </UiField>
+          <!-- a chart from the editor, for the library (#153): attached as text, with an optional credit -->
+          <div v-if="chart" class="space-y-3 rounded-lg p-4 ring-1 ring-zinc-950/10 dark:ring-white/10">
+            <div class="flex items-start justify-between gap-4">
+              <UiText><UiStrong>{{ chart.title }}</UiStrong> · {{ lines }} {{ lines === 1 ? 'line' : 'lines' }}, attached as {{ fileName }}</UiText>
+              <UiButton plain class="text-sm!" :aria-label="`Remove the chart ${chart.title}`" @click="chart = null">Remove</UiButton>
+            </div>
+            <UiCheckbox v-model="credit" name="credit">Credit me as {{ form.name.trim() || 'you' }} on the tune page</UiCheckbox>
+            <UiErrorMessage v-if="errors.chart">{{ errors.chart }}</UiErrorMessage>
+          </div>
           <FileDrop v-model="attachment" v-model:preparing="preparing" :disabled="sending" :error="errors.attachment" />
         </UiFieldGroup>
       </UiFieldset>
@@ -39,6 +48,7 @@
         <label>Website <input v-model="form.website" name="website" type="text" tabindex="-1" autocomplete="off"></label>
       </div>
 
+      <UiText v-if="chart" class="text-sm/6!">By sending, you agree I may add this chart to the library, edit it, and publish it on the site.</UiText>
       <div class="flex flex-wrap items-center gap-4">
         <UiButton type="submit" color="note" :disabled="sending || preparing">{{ sending ? 'Sending…' : 'Send message' }}</UiButton>
         <UiText v-if="failure" role="alert" class="text-red-700! dark:text-red-400!">{{ failure }}</UiText>
@@ -52,8 +62,9 @@
 import { PAGE_HEAD, seoMeta } from '~/utils/site'
 import type { ReadyAttachment } from '~/utils/attachment'
 import { ISSUE_TEXT_KEY } from '~/utils/issueReport'
-import { CONTACT_LIMITS, type ContactField as Field, EMAIL } from '../../server/utils/contactMessage'
+import { chartFilename, CONTACT_LIMITS, type ContactField as Field, EMAIL } from '../../server/utils/contactMessage'
 import { buildChartReport, CHART_REPORT_KEY } from '~/utils/chartReport'
+import { CHART_SUBMISSION_KEY, type ChartSubmission, chartSubmissionFrom, submissionMessage } from '~/utils/chartSubmission'
 
 /** the contact form: posts to /api/contact, which emails the message (server/api/contact.post.ts) */
 const blank = () => ({ name: '', email: '', message: '', website: '' })
@@ -65,6 +76,12 @@ const sending = ref(false)
 const sent = ref(false)
 const failure = ref('')
 let startedAt = 0
+/** a chart handed over from the editor to send for the library, and whether to credit the sender */
+const chart = ref<ChartSubmission | null>(null)
+const credit = ref(false)
+const lines = computed(() => chart.value?.text.trimEnd().split('\n').length ?? 0)
+// the server's own rule, so the name shown is the name sent
+const fileName = computed(() => (chart.value ? chartFilename({ text: '', title: chart.value.title, slug: chart.value.slug ?? null, credit: false }) : ''))
 
 watch(attachment, () => {
   const { attachment: _, ...rest } = errors.value
@@ -73,6 +90,13 @@ watch(attachment, () => {
 
 onMounted(() => {
   startedAt = Date.now()
+  // a chart to send for the library (from the editor), once, then cleared
+  const submission = chartSubmissionFrom(sessionStorage.getItem(CHART_SUBMISSION_KEY))
+  sessionStorage.removeItem(CHART_SUBMISSION_KEY)
+  if (submission) {
+    chart.value = submission
+    form.message = submissionMessage(submission)
+  }
   // a chart-error report (from the editor) pre-fills the message, once, then is cleared
   const raw = sessionStorage.getItem(CHART_REPORT_KEY)
   if (raw) {
@@ -107,7 +131,8 @@ async function send(): Promise<void> {
   if (Object.keys(errors.value).length || preparing.value) return
   sending.value = true
   try {
-    await $fetch('/api/contact', { method: 'POST', body: { ...form, startedAt, attachment: attachment.value?.attachment } })
+    const sentChart = chart.value ? { chart: { text: chart.value.text, title: chart.value.title, slug: chart.value.slug, credit: credit.value } } : {}
+    await $fetch('/api/contact', { method: 'POST', body: { ...form, startedAt, attachment: attachment.value?.attachment, ...sentChart } })
     sent.value = true
   } catch (e: unknown) {
     // a 400 carries the server's field errors (the error's data); anything else is a sending problem
@@ -122,6 +147,8 @@ async function send(): Promise<void> {
 function reset(): void {
   Object.assign(form, blank())
   attachment.value = null
+  chart.value = null
+  credit.value = false
   errors.value = {}
   sent.value = false
   startedAt = Date.now()

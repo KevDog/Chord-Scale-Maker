@@ -15,6 +15,7 @@
           (sent through the email service Resend) so I can read and answer it. Nothing is kept on this site. They
           aren't used for anything else, added to a mailing list or shared.
         </UiText>
+        <UiText v-if="chartSubmissions">A chart you send from the editor is emailed with your message, as a text file.</UiText>
       </section>
 
       <section class="space-y-3" aria-labelledby="stats">
@@ -70,6 +71,7 @@
 
 <script setup lang="ts">
 import { PAGE_HEAD, seoMeta } from '~/utils/site'
+const chartSubmissions = useFeature('chartSubmissions')
 const SECTIONS = [
   { id: 'contact', title: 'The contact form' },
   { id: 'stats', title: 'Visitor statistics' },

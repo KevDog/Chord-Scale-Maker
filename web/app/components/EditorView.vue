@@ -334,6 +334,7 @@ import { SCALE_VIEW } from '~/utils/scaleView'
 import { firstSheet, type SheetKind } from '~/utils/sheets'
 import { DEFAULT_PATTERN } from '~/composables/usePreferences'
 import { type MoreAction, moreMenuItems } from '~/utils/moreMenu'
+import { CHART_SUBMISSION_KEY, type ChartSubmission, submissionAction } from '~/utils/chartSubmission'
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { spellView } from '~/utils/scaleChoices'
 import { writeStored } from '~/utils/storage'
@@ -836,9 +837,13 @@ watch(
   },
 )
 
-/** send the chart and its context to the contact form (via sessionStorage), pre-filled for a bug report */
+/** Send to the library, Suggest these changes or Report a chart error, by what the chart is (#153) */
+const submissionsOn = useFeature('chartSubmissions')
+const chartActions = computed(() => submissionAction(props.saveTarget, editor.text.value, submissionsOn))
 /** the rail's More menu: what this chart offers now */
-const moreItems = computed(() => moreMenuItems({ saved: !!saved, edited: !!saved?.edited.value, fatal: editor.fatal.value, picks: hasPicks(chordPicks.live.value) }))
+const moreItems = computed(() =>
+  moreMenuItems({ saved: !!saved, edited: !!saved?.edited.value, fatal: editor.fatal.value, picks: hasPicks(chordPicks.live.value), chart: chartActions.value }),
+)
 function onMore(action: MoreAction): void {
   if (action === 'copy') saveCopy()
   else if (action === 'download') download()
@@ -847,8 +852,22 @@ function onMore(action: MoreAction): void {
     chordPicks.clearAll()
     said.value = 'Chord picks reset'
   }
+  else if (action === 'send' || action === 'suggest') sendChart()
   else reportError()
 }
+
+/** hand the chart to the contact form (via sessionStorage), to send for the library: a library chart's as its changes */
+function sendChart(): void {
+  editor.flush()
+  const t = props.saveTarget
+  const title = editor.heading.value.title
+  const submission: ChartSubmission =
+    t?.kind === 'library' ? { text: editor.text.value, title, slug: t.slug, mode: 'suggest' } : { text: editor.text.value, title, mode: 'new' }
+  sessionStorage.setItem(CHART_SUBMISSION_KEY, JSON.stringify(submission))
+  navigateTo('/contact')
+}
+
+/** send the chart and its context to the contact form (via sessionStorage), pre-filled for a bug report */
 
 function reportError(): void {
   editor.flush()
