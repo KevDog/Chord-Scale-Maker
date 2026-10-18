@@ -44,6 +44,7 @@ describe('csm add', () => {
     expect(Object.keys(log.written)).toEqual(['/repo/engine/charts/tune.txt'])
     expect(log.ran).toEqual([])
     expect(log.err.join('\n')).toMatch(/no composer:.*--composer/)
+    expect(log.err.at(-1)).toMatch(/rerun with --force/)
   })
 
   it('header flags fill the gaps', () => {

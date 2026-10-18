@@ -18,9 +18,10 @@ README.md for the chart format. The original Python/LilyPond CLI was retired aft
   the song page) touches a docs page (Help, Functions, …) or `decisions.ts`, or its description carries
   `Docs: none — <reason>`: the `docs` check fails otherwise. `make docs` runs the anchor test and the link check.
 - The design is in `docs/design.md` (kept current; the `docs/plan-*.md` files are historical).
-- Two npm workspace packages: `engine/` (`@chord-scale-maker/engine`: the engine in `engine/src/`, pure TypeScript,
-  with its data `chord_scales.json`, `charts/`, `fixtures/` and its tools in `engine/scripts/`) and `web/` (the Nuxt
-  app). The app imports the engine only as `@chord-scale-maker/engine`; `engine/src/index.ts` is its public API, and
+- Three npm workspace packages: `engine/` (`@chord-scale-maker/engine`: the engine in `engine/src/`, pure TypeScript,
+  with its data `chord_scales.json`, `charts/`, `fixtures/` and its tools in `engine/scripts/`), `web/` (the Nuxt
+  app) and `cli/` (`csm`, the repo's admin CLI: dev only, the engine's public API only; `npx csm add …`). The app
+  imports the engine only as `@chord-scale-maker/engine`; `engine/src/index.ts` is its public API, and
   `engine/src/__tests__/api.test.ts` snapshots the exported names. `engine/fixtures/golden.json` freezes its answers
   over a wide input set (`engine/src/__tests__/goldenFixture.ts`); after an intended change to the engine,
   `chord_scales.json` or `charts/`, run `make golden` and review the fixture's diff. The golden test fails until then.

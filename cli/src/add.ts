@@ -72,7 +72,10 @@ export function add(args: AddArgs, fx: Effects): number {
   fx.write(path, p.chart)
   fx.out(`📁 charts/${named.slug}.txt`)
   report()
-  if (p.gaps.length) return 1
+  if (p.gaps.length) {
+    fx.err('rerun with --force and the flags above (or edit the chart, then make golden and make og)')
+    return 1
+  }
   for (const target of ['golden', 'og'] as const) {
     const code = fx.run(target)
     if (code !== 0) return code
