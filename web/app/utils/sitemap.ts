@@ -1,4 +1,4 @@
-import { isSyncCopy, SCALES, type ScaleKey, scaleSlug } from '@chord-scale-maker/engine'
+import { isSyncCopy, SCALES, type ScaleKey, scaleSlug, tuneGroups } from '@chord-scale-maker/engine'
 import { canonicalUrl } from './site'
 
 const escapeXml = (s: string): string => s.replaceAll('&', '&amp;').replaceAll('<', '&lt;').replaceAll('>', '&gt;')
@@ -16,6 +16,13 @@ export const sitemapXml = (paths: readonly string[]): string =>
 /** every chart file's name, from a listing of the engine's charts/ (the config can't load the library's #charts glob) */
 export const chartSlugsOf = (files: readonly string[]): string[] =>
   files.filter((f) => f.endsWith('.txt') && !isSyncCopy(f)).map((f) => f.replace(/\.txt$/, ''))
+
+/** the library's songs (#411): each tune's main chart, which the sitemap lists, and its other versions, prerendered but
+ * not listed (their pages' canonical is the main's) */
+export function songSlugs(charts: readonly Readonly<{ slug: string; text: string }>[]): Readonly<{ main: string[]; versions: string[] }> {
+  const groups = tuneGroups(charts)
+  return { main: groups.map((g) => g.main), versions: groups.flatMap((g) => g.versions.map((v) => v.slug).filter((s) => s !== g.main)) }
+}
 
 /** the scale pages (/scales/<slug>), one per scale the engine knows (not scalePage.ts's scaleKeyPath: the config can't load the library) */
 const scalePaths = (): string[] => (Object.keys(SCALES) as ScaleKey[]).map((k) => `/scales/${scaleSlug(k)}`)

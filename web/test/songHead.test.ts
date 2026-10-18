@@ -3,6 +3,14 @@ import { PAGE_HEAD } from '~/utils/site'
 import { songHead } from '~/utils/songHead'
 
 describe('songHead', () => {
+  it('names a version in its title, and points its canonical at the main chart', () => {
+    const v = songHead('summertime-jazz-lab-accelerator')
+    expect(v?.title).toBe('Summertime (Jazz Lab Accelerator)')
+    expect(v?.head.title).toMatch(/^Summertime \(Jazz Lab Accelerator\)/)
+    expect(v?.canonical).toBe('/song/summertime')
+    expect(songHead('summertime')?.canonical).toBe('')
+  })
+
   it("gives a library song its title, description and structured data, indexable", () => {
     const h = songHead('blue-trane')
     expect(h?.head).toEqual({

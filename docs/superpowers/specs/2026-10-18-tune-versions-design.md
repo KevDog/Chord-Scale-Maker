@@ -33,7 +33,7 @@ one is not given.
 - Search (`searchLibrary`, `suggestTunes`) matches any version's title or `aka:`, and lists the group once.
 - The A–Z index, the library count, composer pages and tune of the day count groups, not files.
 
-## Song page (flag `versions`)
+## Song page (the picker behind flag `versions`; the version page's title, canonical, sitemap, IndexNow and OG unflagged, decided 2026-10-18: they keep a version from competing in search as soon as it lands)
 - **Picker:** a `UiListbox` by the title, shown when the options number 2 or more:
   library versions (the main labelled "Main", others by `version:`), then a "Mine" group of saved charts whose
   `basedOn` is one of the group's slugs or whose title's `tuneKey` is the group's key (label: its own `version:`, else

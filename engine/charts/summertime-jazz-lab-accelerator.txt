@@ -1,0 +1,34 @@
+title: Summertime
+composer: George Gershwin
+style: Slow Swing
+key: Am
+form: A, 16 bars
+source: iReal Pro
+version: Jazz Lab Accelerator
+# analysis: 2026-10-18, rules v1; A minor
+
+section: A
+# area: A minor (A 1–10)
+1  | Am7    # tonic minor: Dorian by convention
+2  | Bm7b5  # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+2  | E7b9   # V7 of A minor: b9 and b13 are in the key
+3  | Am7    # tonic minor: Dorian by convention
+4  | A7b9   # V7/iv in A minor: the b13 is in the key, the b9 from the symbol
+5  | Dm7    # iv: Dorian, the key’s own notes
+6  | F7     # bVI7 in A minor, not resolving: the #11 is in the key
+7  | Bm7b5  # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+8  | E7b9   # V7 of A minor: b9 and b13 are in the key
+9  | Am7    # tonic minor: Dorian by convention
+10 | Bm7b5  # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+10 | E7b9   # V7 of A minor: b9 and b13 are in the key
+# area: C major (A 11–13)
+11 | Am7    # ii of D7: Dorian
+12 | D7     # V7 of V7: the dominant of the dominant: natural tensions
+12 | G7     # V7 of C: natural tensions
+13 | CMaj7  # tonic: the 4th is in the key
+# area: A minor (A 14–16)
+14 | Bm7b5  # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+14 | E7b9   # V7 of A minor: b9 and b13 are in the key
+15 | Am7    # tonic minor: Dorian by convention
+16 | Bm7b5  # iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)
+16 | E7b9   # V7 of A minor: b9 and b13 are in the key

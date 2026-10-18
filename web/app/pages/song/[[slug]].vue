@@ -1,6 +1,7 @@
 <template>
   <div>
     <ClientOnly>
+      <SongVersions v-if="versions && song && source.kind === 'chart'" :slug="slug()" />
       <div v-if="source.kind === 'missing'" class="max-w-xl space-y-4">
         <UiHeading>That chart isn’t here</UiHeading>
         <UiText>It isn’t saved in this browser. Saved charts stay in the browser they were made in; on another device, open it from a share link or a downloaded file.</UiText>
@@ -54,7 +55,7 @@
 </template>
 
 <script setup lang="ts">
-import { libraryPath, PAGE_HEAD, seoMeta } from '~/utils/site'
+import { canonicalUrl, libraryPath, PAGE_HEAD, seoMeta } from '~/utils/site'
 import { rememberRecent } from '~/utils/recentCharts'
 import { songHead } from '~/utils/songHead'
 import { chartHeading, decodeShare, parseChart, type ShareView } from '@chord-scale-maker/engine'
@@ -161,6 +162,12 @@ function reload(): void {
 const song = route.path.replace(/\/$/, '') === songPath(slug()) ? songHead(slug(), { recordings: useFeature('recordings') }) : null
 useSeoMeta(seoMeta(song?.head ?? PAGE_HEAD.song))
 if (song) useHead({ script: [{ type: 'application/ld+json', innerHTML: song.ld }] })
+// a version's canonical is its tune's main chart (#411): the near-duplicate pages don't compete in search
+if (song?.canonical) {
+  useHead({ link: [{ rel: 'canonical', href: canonicalUrl(song.canonical), key: 'canonical' }] })
+  useSeoMeta({ ogUrl: canonicalUrl(song.canonical) })
+}
+const versions = useFeature('versions')
 // in the browser, the tab and history name the chart ("Blue Trane · Chord Scale Maker"); the prerender has none
 const chartTitle = computed(() => (import.meta.client && source.value.kind === 'chart' ? chartHeading(parseChart(source.value.text).value).title : ''))
 useHead({ title: () => chartTitle.value || (song?.head ?? PAGE_HEAD.song).title })

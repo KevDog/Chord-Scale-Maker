@@ -15193,6 +15193,37 @@
    "A 15 Ab7#11 [♭VI7] → Ab Lydian Dominant (D5) bVI7 in C minor, not resolving: the #11 is in the key"
   ]
  },
+ "summertime-jazz-lab-accelerator": {
+  "key": "A minor (key:, functional)",
+  "areas": [
+   "A minor A 1–10",
+   "C major A 11–13",
+   "A minor A 14–16"
+  ],
+  "rows": [
+   "A 1 Am7 [i7] → A Dorian (m5) i in A minor — tonic minor: Dorian by convention",
+   "A 2 Bm7b5 [iiø7] → B Locrian (h2) iiø7 of the ii–V to A minor — iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A 2 E7b9 [V7] → E Phrygian Dominant (D4) V7 of A minor: b9 and b13 are in the key",
+   "A 3 Am7 [i7] → A Dorian (m5) i in A minor — tonic minor: Dorian by convention",
+   "A 4 A7b9 [V7/iv] → A Phrygian Dominant (D1+D4) V7/iv in A minor: the b13 is in the key, the b9 from the symbol",
+   "A 5 Dm7 [iv7] → D Dorian (m7) iv in A minor — iv: Dorian, the key’s own notes",
+   "A 6 F7 [♭VI7] → F Lydian Dominant (D5) bVI7 in A minor, not resolving: the #11 is in the key",
+   "A 7 Bm7b5 [iiø7] → B Locrian (h2) iiø7 of the ii–V to A minor — iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A 8 E7b9 [V7] → E Phrygian Dominant (D4) V7 of A minor: b9 and b13 are in the key",
+   "A 9 Am7 [i7] → A Dorian (m5) i in A minor — tonic minor: Dorian by convention",
+   "A 10 Bm7b5 [iiø7] → B Locrian (h2) iiø7 of the ii–V to A minor — iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A 10 E7b9 [V7] → E Phrygian Dominant (D4) V7 of A minor: b9 and b13 are in the key",
+   "A 11 Am7 [vi7] → A Dorian (m4) ii of D7; also vi of C — ii of D7: Dorian",
+   "A 12 D7 [V7/V] → D Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "A 12 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "A 13 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 14 Bm7b5 [iiø7] → B Locrian (h2) iiø7 of the ii–V to A minor — iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A 14 E7b9 [V7] → E Phrygian Dominant (D4) V7 of A minor: b9 and b13 are in the key",
+   "A 15 Am7 [i7] → A Dorian (m5) i in A minor — tonic minor: Dorian by convention",
+   "A 16 Bm7b5 [iiø7] → B Locrian (h2) iiø7 of the ii–V to A minor — iiø7 of A minor: Locrian, the key's own notes (its ♭2 is a passing note)",
+   "A 16 E7b9 [V7] → E Phrygian Dominant (D4) V7 of A minor: b9 and b13 are in the key"
+  ]
+ },
  "summertime": {
   "key": "D minor (key:, functional)",
   "areas": [

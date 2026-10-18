@@ -1,7 +1,7 @@
 import { SCALES } from '@chord-scale-maker/engine'
 import { describe, expect, it } from 'vitest'
 import { canonicalUrl } from '~/utils/site'
-import { chartSlugsOf, sitemapPaths, sitemapXml } from '~/utils/sitemap'
+import { chartSlugsOf, sitemapPaths, sitemapXml, songSlugs } from '~/utils/sitemap'
 
 describe('sitemapXml', () => {
   it('is an XML urlset in the sitemap namespace', () => {
@@ -34,5 +34,12 @@ describe('sitemap paths', () => {
     expect(paths).toContain('/scales/diatonic-diminished-sharp-iv')
     expect(paths.filter((p) => p.startsWith('/scales/'))).toHaveLength(Object.keys(SCALES).length)
     expect(paths.slice(-3)).toEqual(['/composers', '/composers/thelonious-monk', '/song/a'])
+  })
+})
+
+describe('songSlugs (#411)', () => {
+  const chart = (slug: string, head: string) => ({ slug, text: `${head}\n\nsection: A\nbars: 4\n1 | C\n` })
+  it('lists each tune\'s main chart for the sitemap, and its versions apart (prerendered, not listed)', () => {
+    expect(songSlugs([chart('b', 'title: B'), chart('a-v', 'title: A\nversion: V'), chart('a', 'title: A')])).toEqual({ main: ['a', 'b'], versions: ['a-v'] })
   })
 })

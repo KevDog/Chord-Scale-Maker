@@ -1052,6 +1052,10 @@ its reasons into a chart as comments.
     second chart of a tune (file `<title>-<version>.txt`); a chart without one is the tune's main chart. `tuneGroups`
     (engine `versions.ts`) gathers charts by `tuneKey` of their title or `aka:`; `versionProblems` (two mains, a repeated
     label, a version titled unlike its main) fails `libraryMeta.test.ts`.
+    The Library lists one row per tune (`TUNES`, `utils/library.ts`). A version's page is titled "Summertime (Jazz Lab
+    Accelerator)" with its canonical on the main chart; it's prerendered but left out of the sitemap and IndexNow
+    (`songSlugs`, `utils/sitemap.ts`), and its OG card carries the label. Scale pages list a tune once. The song page's
+    version picker (`SongVersions.vue`, `versionChoices`) is behind the `versions` flag.
   - An unknown name (`findChart` in `utils/library.ts`) goes to the library.
 - **Head tags** (`utils/site.ts`):
   - The tagline is `SITE_TAGLINE`, "Endless improvisation practice sheets for jazz standards"; it opens
