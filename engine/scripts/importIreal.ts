@@ -6,7 +6,7 @@
  */
 import { existsSync, readFileSync, writeFileSync } from 'node:fs'
 import { decodeIReal, irealToChart } from '../src'
-import { chartSlug, parseImportArgs, pickSong } from './importIrealArgs'
+import { parseImportArgs, pickSong, saveName } from './importIrealArgs'
 
 const CHARTS = new URL('../charts/', import.meta.url).pathname
 
@@ -15,10 +15,19 @@ if (typeof args === 'string') {
   console.error(args)
   process.exit(1)
 }
-const text = /^irealb(ook)?:\/\//.test(args.input) ? args.input : readFileSync(args.input, 'utf8')
+let text: string
+try {
+  text = /^irealb(ook)?:\/\//.test(args.input) ? args.input : readFileSync(args.input, 'utf8')
+} catch {
+  console.error(`can't read ${args.input}`)
+  process.exit(1)
+}
 const { value: playlist, diagnostics } = decodeIReal(text)
 for (const d of diagnostics) console.error(`${d.fatal ? '✗' : '⚠️'} ${d.message}`)
-if (!playlist.songs.length) process.exit(1)
+if (!playlist.songs.length) {
+  if (!diagnostics.length) console.error('no songs in it')
+  process.exit(1)
+}
 
 if (args.list) {
   if (playlist.name) console.log(playlist.name)
@@ -32,8 +41,13 @@ if (typeof pick === 'string') {
 }
 const song = playlist.songs[pick]!
 const chart = irealToChart(song)
-const slug = chartSlug(song.title)
 if (args.save) {
+  const named = saveName(song.title)
+  if ('error' in named) {
+    console.error(named.error)
+    process.exit(1)
+  }
+  const { slug } = named
   const path = `${CHARTS}${slug}.txt`
   if (existsSync(path) && !args.force) {
     console.error(`charts/${slug}.txt exists: --force to replace it`)
@@ -41,6 +55,9 @@ if (args.save) {
   }
   writeFileSync(path, chart.value)
   console.log(`📁 charts/${slug}.txt`)
-} else console.log(chart.value)
-for (const d of chart.diagnostics) console.log(`⚠️ ${d.message}`)
-if (args.save) console.log(`next: check composer:/form:, add recording:/aka:, then npm run analyse -- charts/${slug}.txt --save`)
+  for (const d of chart.diagnostics) console.error(`⚠️ ${d.message}`)
+  console.log(`next: check composer:/form:, add recording:/aka:, then npm run analyse -- charts/${slug}.txt --save`)
+} else {
+  console.log(chart.value)
+  for (const d of chart.diagnostics) console.error(`⚠️ ${d.message}`)
+}

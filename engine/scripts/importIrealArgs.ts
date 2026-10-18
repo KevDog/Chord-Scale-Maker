@@ -15,7 +15,7 @@ export function parseImportArgs(argv: readonly string[]): ImportArgs | string {
     else if (a === '--force') flags.force = true
     else if (a === '--song') {
       song = argv[++i]
-      if (song === undefined) return '--song needs a number or a title'
+      if (song === undefined || song.startsWith('--')) return '--song needs a number or a title'
     } else if (a.startsWith('--')) return `unknown option ${a}\n${USAGE}`
     else input ??= a
   }
@@ -26,8 +26,9 @@ export function parseImportArgs(argv: readonly string[]): ImportArgs | string {
 export function pickSong(playlist: IRealPlaylist, song: string | undefined): number | string {
   const n = playlist.songs.length
   if (song === undefined) return n === 1 ? 0 : `${n} songs here: say which with --song <n | title> (--list lists them)`
-  const i = /^\d+$/.test(song) ? Number(song) - 1 : playlist.songs.findIndex((s) => s.title.toLowerCase() === song.toLowerCase())
-  return i >= 0 && i < n ? i : `no song ${JSON.stringify(song)} here (--list lists them)`
+  const byNumber = /^\d+$/.test(song) ? Number(song) - 1 : -1
+  const i = byNumber >= 0 && byNumber < n ? byNumber : playlist.songs.findIndex((s) => s.title.toLowerCase() === song.toLowerCase())
+  return i >= 0 ? i : `no song ${JSON.stringify(song)} here (--list lists them)`
 }
 
 /** as the library's files are named: lowercase, hyphens, no punctuation */
@@ -39,3 +40,9 @@ export const chartSlug = (title: string): string =>
     .replace(/['’]/g, '')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
+
+/** the slug to save under, or why there is none (a title with no ASCII letters or digits) */
+export const saveName = (title: string): { slug: string } | { error: string } => {
+  const slug = chartSlug(title)
+  return slug ? { slug } : { error: `no file name from the title "${title}"` }
+}
