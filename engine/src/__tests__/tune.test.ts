@@ -41,6 +41,13 @@ describe('tuneSummary', () => {
     const t = tuneSummary('recording: John Coltrane; Blue Train; Blue Note; 1957\nyoutube: XpZHUVjQydI\n\nsection: A\nbars: 4\n1 | C')
     expect(t.recording).toEqual({ artist: 'John Coltrane', album: 'Blue Train', label: 'Blue Note', year: '1957' })
     expect(t.youtube).toBe('XpZHUVjQydI')
+    expect(t.embeddable).toBe(true)
+  })
+
+  it('gives a (link only) video its ID, not embeddable', () => {
+    const t = tuneSummary('recording: John Coltrane; Blue Train\nyoutube: XpZHUVjQydI (link only)\n\nsection: A\nbars: 4\n1 | C')
+    expect(t.youtube).toBe('XpZHUVjQydI')
+    expect(t.embeddable).toBe(false)
   })
 })
 

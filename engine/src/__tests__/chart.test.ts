@@ -375,6 +375,11 @@ describe('chartRecording', () => {
     expect(diags('youtube: XpZHUVjQydI')).toContain('youtube: needs a recording: line')
   })
 
+  it('takes (link only) after a youtube: ID that will not play embedded', () => {
+    expect(diags('recording: A; B\nyoutube: XpZHUVjQydI (link only)')).toEqual([])
+    expect(diags('recording: A; B\nyoutube: XpZHUVjQydI (no embed)')).toContain('youtube: the 11-character video ID')
+  })
+
   it('keeps recording: in the header', () => {
     expect(parseChart('section: A\nrecording: A; B\n1 | C').diagnostics.map((d) => d.message)).toContain('recording: belongs in the header, before the first section:')
   })

@@ -13,6 +13,8 @@ type SongHead = Readonly<{
   /** its notable recording and video ('' without one), with the recordings flag */
   recording: Recording | null
   youtube: string
+  /** false when the video won't play embedded: only a link to it */
+  embeddable: boolean
 }>
 
 /** a library song's head (indexable: the one page per tune), its heading, its changes and what its sheet is, or null
@@ -41,5 +43,6 @@ export function songHead(slug: string, opts: Readonly<{ recordings: boolean }> =
     outline: chartOutline(chart.text),
     recording: summary.recording,
     youtube: summary.recording ? summary.youtube : '',
+    embeddable: summary.embeddable,
   }
 }
