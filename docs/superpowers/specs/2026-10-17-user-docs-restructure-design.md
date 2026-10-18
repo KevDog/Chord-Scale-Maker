@@ -187,3 +187,12 @@ The owner's answers to §10 and to gaps found while planning Phase 1. Where they
 - **More ids.** The registry adds what the app gained after this spec was drafted: `cells.line`, `cells.system` (the Cells line, #298), `approach.figures`, `approach.place` (approaches, #298, #381), `arp.sheet` (the Arpeggios sheet) and `patterns.run` (the Patterns sheet). The sheets are now four (Changes, Scales, Arpeggios, Patterns).
 - **Entries carry an anchor.** `DecisionInfo` gains `anchor`, and `page` gains `help`, so Phase 1 entries point at today's Help sections (`help#guide-lines`) until Phase 2 moves each to `how-it-decides#<id>`.
 - **Where the checks run.** The link check runs in the `engine` job after its build (no second build). The gate is its own workflow, `docs.yml`, also triggered on `edited`, so adding the escape line re-runs it without re-running `engine` and `e2e`. Required checks on `main` today are changes, engine, e2e and a11y (ruleset "Main"); adding `docs` is the owner's step after Phase 1 merges.
+
+## 12. Rulings (2026-10-18)
+
+- **Release notes are back** (overrides §11 "What changed is dropped"). `/release-notes`, from a typed list,
+  `RELEASE_NOTES` in `web/app/utils/releaseNotes.ts` (date, then one line per change with its PR), newest first,
+  seeded with the user-facing PRs since 2026-10-04. In the footer and linked from Help, not the top navigation.
+- **The docs gate requires a note.** A PR the gate counts as user-facing (§7.3 `needs_docs`) must change
+  `releaseNotes.ts` or carry `Release notes: none — <reason>`, in addition to the docs requirement. Charts-only and
+  Dependabot PRs stay exempt.

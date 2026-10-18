@@ -380,6 +380,7 @@
             you'd choose differently, <strong class="font-semibold text-zinc-950 dark:text-white">Report issue</strong>
             in that note collects the details for the contact form.
           </li>
+          <li>What's new? The <UiTextLink href="/release-notes">release notes</UiTextLink> list every change, newest first.</li>
           <li>It works on a phone, but the staves are small. A tablet or a laptop is nicer.</li>
           <li v-if="offline">
             It works offline too. Add it to your home screen (on an iPad or iPhone, Share → Add to Home Screen) and it

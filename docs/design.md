@@ -756,6 +756,10 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   `INSTRUMENTS`). A flag-gated section keeps its heading and anchor with the flag off. Help is the how-to: its
   controls are grouped by task, each group ending with its link here, and `#guide-lines` stays as a stub pointing
   here so old links hold. In the navigation beside Help, and in the sitemap.
+- **Release notes** (`pages/release-notes.vue`, spec §12): `RELEASE_NOTES` (`utils/releaseNotes.ts`), newest first,
+  a date (`YYYY-MM-DD`, its section's id, written out as 18 October 2026) and one line per change with its PR number,
+  linked to its pull request; the index by month. In the footer and linked from Help's Odds and ends, not the top
+  navigation.
 - **Checks:** `web/test/docs/decisions.test.ts` mounts each page and finds each decision's anchor once, and warns of
   a section on How it decides the registry doesn't name (in `make test`); `npm run check:links` walks `.output/public` after the build and fails on an internal link whose page or
   `#fragment` is missing (CI's `engine` job); `make docs` runs both, and the pre-push hook runs it when a push touches
@@ -763,7 +767,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Docs gate:** `.github/workflows/docs.yml` (its own workflow, so editing the PR description re-runs only it): a PR
   touching `engine/src/` (not its tests), `chord_scales.json`, `web/app/components/`, `composables/` or
   `pages/song/` must touch a docs page (`help`, `how-it-decides`, `functions`, `chart-format`, `glossary`) or
-  `decisions.ts`, or carry `Docs: none — <reason>` (or `--`) on a line of its description, outside a comment.
+  `decisions.ts`, or carry `Docs: none — <reason>` (or `--`) on a line of its description, outside a comment; and
+  must add a release note (`releaseNotes.ts`) or carry `Release notes: none — <reason>`. The docs files themselves
+  (`decisions.ts`) don't count as user-facing.
   Dependabot is skipped. The PR template offers both lines.
 
 ### Shared

@@ -35,6 +35,10 @@ export const PAGE_HEAD = {
     title: 'How it decides',
     description: 'Why Chord Scale Maker chose what it did: scale levels, guide tone lines, pentatonics, triad pairs, spelling and ranges, each rule with an example.',
   },
+  'release-notes': {
+    title: 'Release notes',
+    description: 'What’s new in Chord Scale Maker, newest first: new sheets, lines and controls, and fixes, each linked to its change.',
+  },
   functions: {
     title: 'Functions and rules',
     description: 'How to write a chord’s function in a chart, the scale every function gets in any key, and the rules that choose it.',
