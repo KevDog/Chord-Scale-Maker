@@ -61,18 +61,8 @@ origins; we read only what the user supplies), bulk import of a playlist.
   an empty composer, every token, every mapping and every report), plus one short real-shaped `.html` export written
   for the test. No forum playlists in the repo.
 
-## CLI: `engine/scripts/importIreal.ts`
-`cd engine && npm run import-ireal -- <link | file.html> …`
-- `--list`: the playlist's songs, numbered.
-- `--song <n | title>`: which song (required when there are several; a title matches case-insensitively).
-- No `--save`: prints the chart and the report.
-- `--save`: writes `engine/charts/<slug>.txt` (slug as CLAUDE.md names charts: lowercase, hyphens, no punctuation)
-  and prints the report; refuses to overwrite an existing chart without `--force`.
-- Exit code 1 on an unreadable input or a missing `--song`; reports alone don't fail it.
-
-Then the usual new-chart steps (CLAUDE.md "Make a chart"): check the header by hand (`composer:`, `form:`, add
-`recording:` / `aka:`), `npm run analyse -- charts/<slug>.txt --save`, `--ambiguous`, `make golden`, `make og`.
-CLAUDE.md's "Typical requests" gains a line for it.
+## CLI
+Superseded by `csm add` (docs/superpowers/specs/2026-10-18-csm-add-design.md, #402).
 
 ## Web (flag `ireal`, off; e2e builds with all on)
 - `web/app/utils/chartFile.ts`: `readChartFile` also takes a `.html`/`.htm` file (under the flag); its text goes to

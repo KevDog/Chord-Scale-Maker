@@ -63,9 +63,10 @@ README.md for the chart format. The original Python/LilyPond CLI was retired aft
   fail `make test`), then `--ambiguous`, `make golden` (the fixtures cover every library chart), and `make og` (its link preview image; a test fails until it's drawn). Leave the scale cells blank: they play the analysis. A scale the melody
   demands over the rules: write it, with `# keep: …`. Otherwise, where the analyser can only guess, write the
   function (`| | V7/ii`), a section `key:` or an `@key` rather than a scale: a function lets the rules still choose the tensions.
-- "Import <tune> from iReal": `cd engine && npm run import-ireal -- <irealb:// link | export.html> --song <n | title> --save`
-  (`--list` lists a playlist) writes `engine/charts/<slug>.txt` and prints what it couldn't map; check `composer:`
-  and `form:`, add `recording:`/`aka:`, then the "Make a chart" steps from `npm run analyse` on.
+- "Import <tune> from iReal": `npx csm add <irealb:// link | export.html> --song <n | title> --composer … --form …
+  --aka … --recording …` (`--list` lists a playlist, `--print` previews, `--force` replaces) writes
+  `engine/charts/<slug>.txt` with its analysis saved, prints what it couldn't map and the `--ambiguous` report, stops on
+  Song page gaps (naming the flag for each), then runs `make golden` and `make og`; review the fixtures' diff.
 - Changing an analysis rule (`engine/src/analysis/`, docs/plan-analysis.md): a test first, then `make golden`, and
   read the fixture's diff (it is the review: the library's blank cells follow the rules by themselves).
   `cd engine && npm run analyse -- --all --strip --save` re-saves the reasons and blanks any written scale the new
