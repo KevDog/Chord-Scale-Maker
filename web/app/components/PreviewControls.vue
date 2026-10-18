@@ -65,8 +65,9 @@
                     <ToggleButton v-model="scaleNames" title="Each chord's scale, under its numeral">Scales</ToggleButton>
                   </EaseReveal>
                   <!-- the row under the chords: Off, each key area's or chord's minor pentatonic, or each chord's hexatonic pair; the Pentatonic options open to its right, over the sheet, so the rail keeps its two rows (#293), stacked under it in the Controls dialog -->
-                  <EaseReveal :show="overlayShown" :inner-class="compact ? 'flex flex-col items-start gap-2' : 'flex items-start gap-1'">
-                    <UiListbox v-model="overlay" class="w-60" aria-label="Superimpose" :title="OVERLAY_TITLE">
+                  <!-- in the rail, a fixed width that holds the options' chevron whether or not it shows, so choosing an option never rewraps the rail (#387) -->
+                  <EaseReveal :show="overlayShown" :inner-class="compact ? 'flex flex-col items-start gap-2' : 'flex w-66 items-start gap-1'">
+                    <UiListbox v-model="overlay" :class="compact ? 'w-60' : 'w-56'" aria-label="Superimpose" :title="OVERLAY_TITLE">
                       <template #selected="{ value }"><UiListboxLabel>Superimpose: {{ overlayLabel(value) }}</UiListboxLabel></template>
                       <UiListboxOption v-for="o in OVERLAY_CHOICES" :key="o.value" :value="o.value"><UiListboxLabel>{{ o.label }}</UiListboxLabel></UiListboxOption>
                     </UiListbox>
