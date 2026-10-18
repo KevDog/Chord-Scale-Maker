@@ -262,6 +262,7 @@ exports[`exports the same names 1`] = `
   "practiceBoxes",
   "practiceKeys",
   "practiceSelectionFrom",
+  "prepareChart",
   "proseGlyphs",
   "qualityScale",
   "rangeChoices",
