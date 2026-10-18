@@ -10,6 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-18',
     items: [
+      { text: 'Links from where a choice shows (a chord’s why note, Practice, chord picks, Transpose) to How it decides.' },
       { text: 'Release notes: this page.' },
       { text: 'How it decides: every choice the app makes for you, the rule behind it, and an example.', pr: 408 },
       { text: 'Approaches now lead the 7th Chords and Cells lines into each chord, not only the guide tones.', pr: 393 },

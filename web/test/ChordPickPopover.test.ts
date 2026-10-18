@@ -44,7 +44,7 @@ describe('the chord pick popover', () => {
     expect(d.find(`[id="${id}"]`).text()).toBe(base.header)
     expect(d.classes()).toEqual(expect.arrayContaining(['print:hidden', 'text-left'])) // left-aligned under a right-aligned Scales caption
     expect(d.text().startsWith(base.header)).toBe(true)
-    expect(d.text().endsWith(base.footer)).toBe(true)
+    expect(d.text().endsWith(`${base.footer} Why this order?`)).toBe(true)
     const sheet = w.find('[data-sheet-choice]')
     expect(sheet.text()).toBe('Sheet’s choice (Dm)')
     expect(sheet.attributes('aria-current')).toBe('true')
@@ -77,6 +77,14 @@ describe('the chord pick popover', () => {
     await flushPromises()
     expect(w.emitted('clear')).toHaveLength(1)
     expect(w.find('[role="dialog"]').exists()).toBe(false)
+    w.unmount()
+  })
+})
+
+describe('the chord pick popover’s footer', () => {
+  it('links to why the list runs in its order', async () => {
+    const w = await open()
+    expect(w.find('[role=dialog] a[href="/how-it-decides#pick.order"]').text()).toBe('Why this order?')
     w.unmount()
   })
 })

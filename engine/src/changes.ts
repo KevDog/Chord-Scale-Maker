@@ -16,7 +16,7 @@ import { type TriadPairLine, triadPairVoices } from './triadPairLine'
 import { concertPc, type Part, scaleLabel, writtenRoot, writtenScale } from './part'
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled, shiftBy } from './pitch'
 import { isPentatonicPreset, type PentatonicDegree, pentatonicDegreeFrom, PENTATONIC_HOME, PENTATONIC_STEP, pentatonicAt, pentatonicCycle, pentatonicPathCaption, type PentatonicPathName, type PentatonicStep, pentatonicLadder, pentatonicRanking, type RankedPentatonic, type PentatonicRung, type PentatonicView } from './pentatonics'
-import { baseQuality } from './qualities'
+import { baseQuality, readChord } from './qualities'
 import { type Resolved, resolveScales, type ScaleView } from './resolve'
 import { abbreviateScale } from './scales'
 import { chunk, orNull } from './util'
@@ -108,6 +108,10 @@ export type ChangesChord = Readonly<{
   fallback: boolean
   /** its function was written in the chart, not found */
   stated: boolean
+  /** its scale is written in the chart: it plays at every level */
+  pinned: boolean
+  /** a slash chord that takes its scales from another chord on its bass (DbMaj7/C → C 7sus4♭9) */
+  slash: boolean
   /** why its written function was set aside (it doesn't read, or doesn't fit the chord); '' when it has none or it fits */
   problem: string
   /** the key it's heard in, written for the part ("B♭ major"); '' when the analysis doesn't reach it */
@@ -636,6 +640,8 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             rule: a?.rule && a.rule !== '?' ? a.rule : '',
             fallback: !!a?.fallback && !a?.stated,
             stated: a?.stated ?? false,
+            pinned: resolved.get(i)?.source === 'written',
+            slash: readChord(row.chord)?.slash ?? false,
             problem: problemAt.get(row.line) ?? '',
             heardIn: a ? keyName((a.statedKey ?? a.key).name, part) : '',
             keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',

@@ -218,3 +218,18 @@ describe('ChangesNote', () => {
     w.unmount()
   })
 })
+
+describe('ChangesNote’s links to How it decides', () => {
+  it('links a written scale to the levels, a slash chord read on its bass to slash chords, and neither otherwise', async () => {
+    const hrefs = async (props: { pinned?: boolean; slash?: boolean }) => {
+      const w = await mountNote(props)
+      await w.find('button').trigger('click')
+      const out = w.findAll('[role=dialog] a[href^="/how-it-decides"]').map((a) => a.attributes('href'))
+      w.unmount()
+      return out
+    }
+    expect(await hrefs({})).toEqual([])
+    expect(await hrefs({ pinned: true })).toEqual(['/how-it-decides#scale.level'])
+    expect(await hrefs({ slash: true })).toEqual(['/how-it-decides#scale.slash'])
+  })
+})

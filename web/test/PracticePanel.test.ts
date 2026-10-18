@@ -175,3 +175,11 @@ describe('PracticePanel’s Hexatonic preset and interface levels', () => {
     expect((await mount({})).text()).toContain('Hexatonic')
   })
 })
+
+describe('PracticePanel’s links to How it decides', () => {
+  it('links the Pentatonic and Hexatonic text to how Auto chooses', async () => {
+    const w = await mount({})
+    expect(w.find('a[href="/how-it-decides#pent.auto"]').exists()).toBe(true)
+    expect(w.find('a[href="/how-it-decides#hex.auto"]').exists()).toBe(true)
+  })
+})
