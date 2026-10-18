@@ -1,6 +1,7 @@
 <template>
   <label data-slot="field" class="grid cursor-default grid-cols-[1.125rem_1fr] gap-x-4 sm:grid-cols-[1rem_1fr]">
-    <input v-model="checked" type="checkbox" :name="name" class="peer sr-only">
+    <!-- the native checkbox, invisible over the drawn box: it takes the clicks, the focus and the name -->
+    <input v-model="checked" type="checkbox" :name="name" class="peer z-10 col-start-1 row-start-1 mt-0.75 size-4.5 appearance-none opacity-0 sm:mt-1 sm:size-4">
     <span aria-hidden="true" :class="[BASE, COLOR, 'mt-0.75 sm:mt-1']">
       <svg class="size-4 stroke-(--checkbox-check) opacity-0 sm:h-3.5 sm:w-3.5" viewBox="0 0 14 14" fill="none">
         <path d="M3 8L6 11L11 3.5" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
@@ -25,8 +26,8 @@ const BASE = [
   'dark:before:hidden',
   'dark:bg-white/5 dark:peer-checked:bg-(--checkbox-checked-bg)',
   // Border
-  'border border-zinc-950/15 peer-checked:border-transparent peer-checked:bg-(--checkbox-checked-border) hover:border-zinc-950/30',
-  'dark:border-white/15 dark:peer-checked:border-white/5 dark:hover:border-white/30',
+  'border border-zinc-950/15 peer-checked:border-transparent peer-checked:bg-(--checkbox-checked-border) peer-hover:border-zinc-950/30',
+  'dark:border-white/15 dark:peer-checked:border-white/5 dark:peer-hover:border-white/30',
   // Inner highlight shadow
   'after:absolute after:inset-0 after:rounded-[calc(0.3125rem-1px)] after:shadow-[inset_0_1px_--theme(--color-white/15%)]',
   'dark:after:-inset-px dark:after:hidden dark:after:rounded-[0.3125rem] dark:peer-checked:after:block',

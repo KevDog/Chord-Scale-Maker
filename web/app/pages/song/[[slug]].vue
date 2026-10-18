@@ -146,6 +146,8 @@ watch(
 
 /** a new chart was saved: give it its address without restarting the editor */
 function adopt(id: string): void {
+  // saved as the editor closes, on the way to another page (Send to the library, Report a chart error): stay there
+  if (router.currentRoute.value.path.replace(/\/$/, '') !== '/song') return
   adopted = id
   router.replace({ path: '/song', query: { mine: id } })
 }
