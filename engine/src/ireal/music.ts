@@ -40,7 +40,8 @@ const TOKENS: readonly (readonly [RegExp, (m: RegExpExecArray, d: Draft) => void
   }],
   [/S/y, (_, d) => (d.segno = true)],
   [/Q/y, (_, d) => (d.coda = true)],
-  [/[slfUY]|p/y, (_, d) => (d.text = true)], // layout, and the slash that holds the chord
+  [/[slfUY]/y, () => {}], // layout only
+  [/p/y, (_, d) => (d.text = true)], // the slash that holds the chord
   [/x/y, (_, d) => d.items.push({ kind: 'repeat', bars: 1 })],
   [/r/y, (_, d) => d.items.push({ kind: 'repeat', bars: 2 })],
   [/n/y, (_, d) => d.items.push({ kind: 'rest' })],
@@ -66,6 +67,15 @@ export function readMusic(music: string): Parsed<readonly IRealBar[]> {
       const { text: _text, ...bar } = d
       bars.push({ ...bar, ...(line === '}' ? { close: true as const } : {}), ...(line === 'Z' ? { final: true as const } : {}) })
       d = fresh()
+    } else if (line === '' && marks) {
+      // marks after the last bar line belong to the last bar written
+      const last = bars[bars.length - 1]
+      if (last) {
+        const { text: _text, items: _items, comments, ...rest } = d
+        bars[bars.length - 1] = { ...last, ...rest, comments: [...last.comments, ...comments] }
+      } else {
+        diagnostics.push({ line: 1, message: `marks with no bar: "${music.trim()}"` })
+      }
     } else if (line === '}' && bars.length) bars[bars.length - 1] = { ...bars[bars.length - 1]!, close: true }
     else if (line === 'Z' && bars.length) bars[bars.length - 1] = { ...bars[bars.length - 1]!, final: true }
     spaces = false
@@ -86,7 +96,7 @@ export function readMusic(music: string): Parsed<readonly IRealBar[]> {
       return m ? ([m, act] as const) : null
     }).find(Boolean)
     if (!hit) {
-      const bad = /\S+?(?=[\s|[\]{}Z]|$)/y
+      const bad = /\S+?(?=[\s|[\]{}Z,(<]|$)/y
       bad.lastIndex = i
       const tok = bad.exec(music)?.[0] ?? c
       diagnostics.push({ line: bars.length + 1, message: `bar ${bars.length + 1}: "${tok}" not read` })

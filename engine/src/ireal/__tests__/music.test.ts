@@ -38,6 +38,28 @@ describe('readMusic', () => {
     expect(r.value[2]?.comments).toEqual(['Fine'])
   })
 
+  it('a layout mark alone between bar lines is not a bar; p slashes are', () => {
+    expect(chords('[C7 |Y|D7 Z')).toEqual([['C7'], ['D7']])
+    expect(readMusic('[C7 |p|D7 Z').value).toHaveLength(3)
+  })
+
+  it('marks after the last bar line join the last bar; with no bar they are a diagnostic', () => {
+    const bars = readMusic('[C7 |D7 |<Fine>').value
+    expect(bars).toHaveLength(2)
+    expect(bars[1]).toMatchObject({ comments: ['Fine'] })
+    expect(readMusic('[C7 |D7 |Q').value[1]).toMatchObject({ coda: true })
+    const none = readMusic('<Fine>')
+    expect(none.value).toEqual([])
+    expect(none.diagnostics).toHaveLength(1)
+    expect(none.diagnostics[0]?.message).toMatch(/^marks with no bar/)
+  })
+
+  it('an unreadable token stops at a comma, bracket or comment so the next chord is read', () => {
+    const r = readMusic('[??,D7 Z')
+    expect(r.value.map((b) => b.items.length)).toEqual([1])
+    expect(r.diagnostics).toEqual([{ line: 1, message: 'bar 1: "??" not read' }])
+  })
+
   it('an unreadable token is a diagnostic naming its bar', () => {
     const r = readMusic('[C7 |F7 ?? Z')
     expect(r.diagnostics).toEqual([{ line: 2, message: 'bar 2: "??" not read' }])
