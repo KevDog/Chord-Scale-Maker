@@ -163,10 +163,10 @@ export async function guidesDrawn(page: Page): Promise<void> {
     .toBe(true)
 }
 
-/** with Guide Tones chosen, pick the guide tone line's Approach (#298, flag `approaches`) from its listbox: "None", "Chromatic below", "Diatonic above, chromatic below (enclosure)", … */
-export async function showApproach(page: Page, name: string): Promise<void> {
+/** with Guide Tones (or 7th Chords, #381) chosen, pick the line's Approach (#298, flag `approaches`) from its listbox: "None", "Chromatic below", "Diatonic above, chromatic below (enclosure)", … */
+export async function showApproach(page: Page, name: string, line: 'Guide Tones' | '7th Chords' = 'Guide Tones'): Promise<void> {
   await inControls(page, async () => {
-    await pickLine(page, 'Guide Tones')
+    await pickLine(page, line)
     await pickOption(page, 'Approach', name)
   })
 }

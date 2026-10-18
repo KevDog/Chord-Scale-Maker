@@ -1,3 +1,4 @@
+import type { Approach } from './approaches'
 import { arpeggioCells, arpeggioTones, type Cells, cellVoices, type NoteValue, placeWhole } from './arpeggios'
 import type { GuideInput, GuideNote } from './guideTones'
 import type { Range } from './instruments'
@@ -136,7 +137,7 @@ function cellsOf(part: Part, chord: GuideInput, id: CellId, range: Range): Cells
 /**
  * the Cells line's voice for chords in time order: a cell per two beats (cellVoices, in CELL_VALUE's note value),
  * A then B for a system, each placed whole nearest the last note in the part's range; a chord whose cells have no
- * tones plays its 7th chord arpeggio up from the root
+ * tones plays its 7th chord arpeggio up from the root; approach: a figure into each chord's first note (cellVoices)
  */
 export function cellsVoices(
   chords: readonly GuideInput[],
@@ -144,7 +145,8 @@ export function cellsVoices(
   beats: Metre,
   keySig: string | null,
   line: CellsLine,
+  approach: Approach = 'none',
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; missing: readonly string[] } {
   const range = rangeOf(part)
-  return cellVoices(chords, part, beats, keySig, (c) => cellsOf(part, c, line.id, range) ?? arpeggioCells(part, c, 'up-root'), CELL_VALUE)
+  return cellVoices(chords, part, beats, keySig, (c) => cellsOf(part, c, line.id, range) ?? arpeggioCells(part, c, 'up-root'), CELL_VALUE, approach)
 }

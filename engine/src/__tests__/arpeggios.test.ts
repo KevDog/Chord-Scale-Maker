@@ -278,3 +278,79 @@ describe('arpeggio voices', () => {
     expect(notes.some((n) => n.tie || n.tiedIn)).toBe(false)
   })
 })
+
+describe('approaches (#381)', () => {
+  type Bars = ReturnType<typeof arpeggioVoices>['bars']
+  const first = (bars: Bars, bar: number) => bars.get(bar)![0]!.pitch!
+  const rhythm = (notes: readonly GuideNote[] | undefined) => (notes ?? []).map((n) => [n.beat, n.beats])
+  const line = (cs: readonly GuideInput[], approach?: Parameters<typeof arpeggioVoices>[5], part: Part = CONCERT) => arpeggioVoices(cs, part, 4, null, 'up-root', approach).bars
+  /** chords in time order, each showing a scale (a figure's diatonic steps need one) */
+  const shown = (...cs: readonly (readonly [string, number, string])[]): GuideInput[] => seq(...cs.map(([c, b]) => [c, b] as const)).map((c, i) => ({ ...c, shown: cs[i]![2] }))
+
+  it('swaps the chord before’s last note for a figure into the next chord’s first note, on its beat', () => {
+    const cs = seq(['CMaj7', 4], ['FMaj7', 4])
+    const plain = line(cs)
+    const led = line(cs, 'chromatic-below')
+    expect(led.get(1)).toEqual(plain.get(1))
+    expect(led.get(0)!.slice(0, 3)).toEqual(plain.get(0)!.slice(0, 3))
+    expect(led.get(0)![3]).toMatchObject({ beat: 3, beats: 1, pitch: { letter: 2, acc: 0, midi: first(plain, 1).midi - 1 } }) // E into F
+  })
+
+  it('leaves the line as it is with none', () => {
+    const cs = seq(['Dm7', 4], ['G7', 4], ['CMaj7', 4])
+    expect(line(cs, 'none')).toEqual(line(cs))
+  })
+
+  it('plays a three-note figure in the line’s own rhythm', () => {
+    const cs = shown(['Dm7', 2, 'D Dorian'], ['G7', 2, 'G Mixolydian']) // D F A C | G B D F
+    const plain = line(cs).get(0)!
+    const led = line(cs, 'delayed').get(0)!
+    expect(rhythm(led)).toEqual(rhythm(plain))
+    expect(led[0]).toEqual(plain[0])
+    expect(led.slice(4)).toEqual(plain.slice(4))
+    expect(led.slice(1, 4).map((n) => n.pitch?.midi)).toEqual([69, 65, 66]) // A F F♯ into G (67)
+  })
+
+  it('leaves no figure after a rest, into a rest, or across a gap', () => {
+    const gap: GuideInput[] = [{ row: 0, chord: 'CMaj7', start: 0, beats: 2 }, { row: 1, chord: 'FMaj7', start: 4, beats: 4 }]
+    for (const cs of [seq(['NC', 4], ['FMaj7', 4]), seq(['CMaj7', 4], ['NC', 4]), gap]) expect(line(cs, 'chromatic-below')).toEqual(line(cs))
+  })
+
+  it('leaves the chord before at least one note of its own', () => {
+    const cs = seq(['CMaj7', 3], ['Dm7', 0.5], ['G7', 4.5]) // Dm7: two sixteenths, too few for a three-note figure
+    const dm = (bars: Bars) => bars.get(0)!.filter((n) => n.beat >= 3)
+    expect(dm(line(cs, 'delayed'))).toEqual(dm(line(cs)))
+  })
+
+  it('carries a figure across the bar line', () => {
+    const cs = shown(['Dm7', 4.5, 'D Dorian'], ['G7', 3.5, 'G Mixolydian']) // Dm7's last notes: one in bar 0, two in bar 1; Delayed into G: A F F♯
+    const plain = line(cs)
+    const led = line(cs, 'delayed')
+    expect(rhythm(led.get(0))).toEqual(rhythm(plain.get(0)))
+    expect(rhythm(led.get(1))).toEqual(rhythm(plain.get(1)))
+    expect(led.get(0)!.at(-1)).not.toEqual(plain.get(0)!.at(-1))
+    expect(led.get(1)!.slice(0, 2)).not.toEqual(plain.get(1)!.slice(0, 2))
+    expect(led.get(1)!.slice(2)).toEqual(plain.get(1)!.slice(2))
+  })
+
+  it('drops a figure that would leave the part’s range', () => {
+    const cs = seq(['CMaj7', 4], ['FMaj7', 4])
+    const lo = first(line(cs), 1).midi
+    const part: Part = { ...CONCERT, range: { lo, hi: lo + 12, centre: lo + 6 } }
+    const plain = line(cs, undefined, part)
+    expect(first(plain, 1).midi).toBe(lo) // the target is the floor
+    expect(line(cs, 'chromatic-below', part)).toEqual(plain)
+  })
+
+  it('steps in the scale the sheet shows over the chord before', () => {
+    const step = (scale: string) => line(shown(['CMaj7', 4, scale], ['FMaj7', 4, 'F Ionian']), 'diatonic-above').get(0)![3]!.pitch
+    expect(line(seq(['CMaj7', 4], ['FMaj7', 4]), 'diatonic-above')).toEqual(line(seq(['CMaj7', 4], ['FMaj7', 4]))) // no scale: no figure
+    expect(step('C Ionian')).toMatchObject({ letter: 4, acc: 0 }) // G above F
+    expect(step('C Lydian')).toMatchObject({ letter: 3, acc: 1 }) // F♯ above F
+  })
+
+  it('sets the figure’s accidentals by the measure', () => {
+    const led = line(seq(['CMaj7', 2], ['Em7', 2]), 'chromatic-below').get(0)!
+    expect(led[3]).toMatchObject({ pitch: { letter: 1, acc: 1 }, accidental: '#' }) // D♯ into E
+  })
+})

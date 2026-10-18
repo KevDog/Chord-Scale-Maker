@@ -60,6 +60,13 @@ describe('ChangesSheet', () => {
     expect(await notes('chromatic-below')).toBeGreaterThan(await notes())
   })
 
+  it('gives the 7th Chords line its Approach (#381): the first chord’s last note leads into the second', async () => {
+    const two = parseChart('title: T\nkey: C\n\nsection: A\nbars: 2\n1 | Dm7\n2 | G7\n').value
+    const last = async (approach?: Approach) =>
+      (await mountSheet({ doc: two, line: 'up-root', ...(approach ? { approach } : {}) })).findComponent({ name: 'ChangesSystem' }).props('line').bars[0].voice.at(-1).pitch.midi
+    expect(await last('chromatic-below')).not.toBe(await last())
+  })
+
   it('plays a blank cell at the level it is given, Standard without one', async () => {
     const scaleAt = async (view?: ScaleView) =>
       (await mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: { clef: 'bass', trans: 'C' }, instrumentLabel: '', numerals: false, scales: true, ...(view ? { view } : {}) }, global: { stubs: { ChangesSystem: true } } }))

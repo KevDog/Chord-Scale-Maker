@@ -146,3 +146,18 @@ describe('cells line', () => {
     }
   })
 })
+
+describe('approaches into the Cells line (#381)', () => {
+  const at = (row: number, chord: string, scale: string, start: number): GuideInput => ({ row, chord, shown: scale, start, beats: 2 })
+  const cs = [at(0, 'G7', 'G Mixolydian', 0), at(1, 'C7', 'C Mixolydian', 2)]
+  const bar = (approach?: Parameters<typeof cellsVoices>[5]) => cellsVoices(cs, CONCERT, 4, null, { kind: 'cells', id: '3rd-3rd' }, approach).bars.get(0)!
+
+  it('leads the cell before into the next cell’s first note, in its eighths', () => {
+    const plain = bar()
+    const led = bar('chromatic-below')
+    expect(led.map((n) => [n.beat, n.beats])).toEqual(plain.map((n) => [n.beat, n.beats]))
+    expect(led.slice(0, 3)).toEqual(plain.slice(0, 3))
+    expect(led.slice(4)).toEqual(plain.slice(4))
+    expect(led[3]!.pitch).toMatchObject({ letter: 1, acc: 1, midi: plain[4]!.pitch!.midi - 1 }) // D♯ into E
+  })
+})

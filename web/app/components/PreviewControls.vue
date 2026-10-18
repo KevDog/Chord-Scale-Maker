@@ -114,11 +114,6 @@
                           <template #selected="{ value }"><UiListboxLabel>{{ guideLabel(value) }}</UiListboxLabel></template>
                           <UiListboxOption v-for="g in GUIDE_LINES" :key="g.value" :value="g.value" :title="g.title"><UiListboxLabel>{{ g.label }}</UiListboxLabel></UiListboxOption>
                         </UiListbox>
-                        <!-- the figure into each guide tone (#298): under the guide tone listbox, so the Line group keeps its width (w-0 min-w-full: the long figure names truncate rather than widen it, the tooltip the whole name) -->
-                        <UiListbox v-if="approachesOn && shows('approaches')" v-model="approach" class="w-0 min-w-full" aria-label="Approach" :title="approachLabel(approach)">
-                          <template #selected="{ value }"><UiListboxLabel>{{ approachLabel(value) }}</UiListboxLabel></template>
-                          <UiListboxOption v-for="a in APPROACHES" :key="a" :value="a"><UiListboxLabel>{{ APPROACH_LABELS[a] }}</UiListboxLabel></UiListboxOption>
-                        </UiListbox>
                       </EaseReveal>
                       <!-- the Pentatonic line (#284) and the Triad pair line (#325): the direction (the Arpeggios sheet's), and the Pentatonic's Leave out where the Superimpose shows -->
                       <EaseReveal :show="inSlot && overlay !== 'off'" inner-class="flex flex-col gap-2">
@@ -146,6 +141,13 @@
                               <UiListboxOption v-for="c in SINGLE_CELLS" :key="c.id" :value="c.id"><UiListboxLabel>{{ cellLabel(c.id) }}</UiListboxLabel></UiListboxOption>
                             </UiListboxGroup>
                           </template>
+                        </UiListbox>
+                      </EaseReveal>
+                      <!-- the figure into each chord's first note (#298, #381): under the line's own listbox, so the Line group keeps its width (w-0 min-w-full: the long figure names truncate rather than widen it, the tooltip the whole name) -->
+                      <EaseReveal :show="approachesOn && shows('approaches') && approachApplies(lineMode, overlay)">
+                        <UiListbox v-model="approach" class="w-0 min-w-full" aria-label="Approach" :title="approachLabel(approach)">
+                          <template #selected="{ value }"><UiListboxLabel>{{ approachLabel(value) }}</UiListboxLabel></template>
+                          <UiListboxOption v-for="a in APPROACHES" :key="a" :value="a"><UiListboxLabel>{{ APPROACH_LABELS[a] }}</UiListboxLabel></UiListboxOption>
                         </UiListbox>
                       </EaseReveal>
                     </div>
@@ -219,7 +221,7 @@
     <script setup lang="ts">
     import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, INSTRUMENTS, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
-    import { type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
+    import { approachApplies, type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
     import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
     import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
     import type { SheetKind } from '~/utils/sheets'

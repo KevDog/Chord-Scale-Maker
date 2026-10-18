@@ -396,7 +396,7 @@ export function changesSections(doc: ChartDoc): readonly ChangesSection[] {
   return drawnBlocks(layout, t, sectionsWithEndingsOf(layout)).map((b) => ({ key: b.section, marker: b.marker, part: b.part }))
 }
 
-/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row); approach: the figure into the guide tone line's notes */
+/** view: the level the sheet plays blank cells at (resolve.ts); the guide tones read the chords only; overlay: the row under the chords, the pentatonics' rungs by section or the hexatonics (null: no row); approach: the figure into the guide tone line's notes, and the 7th Chords and Cells lines' first note over each chord (#381) */
 export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatures = false, line: ChangesLineChoice = 'off', view: ScaleView = STANDARD, overlay: OverlayPlan | null = null, approach: Approach = 'none'): ChangesSheet {
   const pentatonic = overlay?.kind === 'pentatonic' ? overlay : null
   const { layout, rows, beats, timeline, clock, t } = laidOut(doc)
@@ -602,12 +602,12 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             ...(line.kind === 'pentatonic'
               ? pentatonicVoices(drawn(), part, clock, keySig, line, pentRoots)
               : line.kind === 'cells'
-                ? cellsVoices(drawn((i, row) => resolved.get(i)?.scale ?? qualityScale(row)), part, clock, keySig, line) // the scale the sheet shows
+                ? cellsVoices(drawn((i, row) => resolved.get(i)?.scale ?? qualityScale(row)), part, clock, keySig, line, approach) // the scale the sheet shows
                 : triadPairVoices(drawn(), part, clock, keySig, line, hexPairs)),
             labels: new Map(),
           }
         : isArpeggioPattern(line)
-          ? { ...arpeggioVoices(drawn(), part, clock, keySig, line), labels: new Map() }
+          ? { ...arpeggioVoices(drawn(), part, clock, keySig, line, approach), labels: new Map() }
           : guideVoices(drawn(), part, clock, keySig, line, approach)
 
   let lastKey = ''

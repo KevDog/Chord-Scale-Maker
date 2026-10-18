@@ -1,8 +1,9 @@
+import { type Approach, approachNotes } from './approaches'
 import { isRest, parseChord, writtenChordRootLenient } from './chord'
 import { drawnLengths, type GuideInput, type GuideLine, type GuideNote, voiceAccidentals } from './guideTones'
 import { barAt, barLength, barStart, type Metre } from './metre'
 import type { Range } from './instruments'
-import { type Part, rangeOf } from './part'
+import { type Part, rangeOf, writtenScale } from './part'
 import { pcOf, type Spelled } from './pitch'
 import { baseQuality } from './qualities'
 import { spellFrom } from './scales'
@@ -220,7 +221,8 @@ type Carried = Readonly<{ chord: number; notes: readonly NonNullable<GuideNote['
  * cell (rule 3, again in each bar it lasts into), each placed whole nearest the last note in the part's range; a chord
  * without cells rests and ends the run (rule 6); accidentals by the measure rule against keySig (null: C).
  * missing: a diagnostic per chord without cells. valueOf: a chord's note value from its whole length and its bar's
- * shortest segment (default: the bar's, noteValue).
+ * shortest segment (default: the bar's, noteValue). approach: a figure into each chord's first note in place of the
+ * chord before's last notes (withApproach).
  */
 export function cellVoices(
   chords: readonly GuideInput[],
@@ -229,6 +231,7 @@ export function cellVoices(
   keySig: string | null,
   cellsOf: (chord: GuideInput, index: number) => Cells | null,
   valueOf: (chordBeats: number, barShortest: number) => NoteValue = (_, shortest) => noteValue(shortest),
+  approach: Approach = 'none',
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; missing: readonly string[] } {
   const range = rangeOf(part)
   const missing: string[] = []
@@ -251,10 +254,7 @@ export function cellVoices(
   const shortest = new Map<number, number>()
   for (const s of segments) shortest.set(s.bar, Math.min(shortest.get(s.bar) ?? Infinity, s.length))
 
-  const bars = new Map<number, GuideNote[]>()
-  const push = (bar: number, note: GuideNote): void => {
-    bars.set(bar, [...(bars.get(bar) ?? []), note])
-  }
+  const played: Played[] = []
   let prev: number | null = null
   let last: readonly number[] | null = null
   let count = 0
@@ -267,7 +267,7 @@ export function cellVoices(
     if (!c) {
       let beat = s.beat
       for (const piece of drawnLengths(s.length)) {
-        push(s.bar, { pitch: null, beat, beats: piece, tie: false, tiedIn: false, accidental: null })
+        played.push({ chord: s.chord, bar: s.bar, note: { pitch: null, beat, beats: piece, tie: false, tiedIn: false, accidental: null } })
         beat += piece
       }
       prev = null
@@ -285,7 +285,7 @@ export function cellVoices(
     const end = (chords[s.chord]?.start ?? 0) + (chords[s.chord]?.beats ?? 0)
     let k = 0
     const play = (notes: readonly NonNullable<GuideNote['pitch']>[]): void => {
-      for (const pitch of notes) push(s.bar, { pitch, beat: s.beat + k++ * v, beats: v, tie: false, tiedIn: false, accidental: null })
+      for (const pitch of notes) played.push({ chord: s.chord, bar: s.bar, note: { pitch, beat: s.beat + k++ * v, beats: v, tie: false, tiedIn: false, accidental: null } })
     }
     const held: Carried | null = carried?.chord === s.chord ? carried : null
     carried = null
@@ -324,8 +324,41 @@ export function cellVoices(
       nth.set(s.chord, n + 1)
     }
   }
+  const bars = new Map<number, GuideNote[]>()
+  for (const { bar, note } of approach === 'none' ? played : withApproach(played, chords, part, approach)) bars.set(bar, [...(bars.get(bar) ?? []), note])
   for (const [bar, v] of bars) bars.set(bar, voiceAccidentals(v, keySig))
   return { bars, missing }
+}
+
+type Played = Readonly<{ chord: number; bar: number; note: GuideNote }>
+
+/**
+ * a line's notes with a figure into each chord's first note (#381) in place of the chord before's last notes, each
+ * keeping that note's beat and length (the whole figure, though a note of it repeats the one before: the slots are
+ * the line's); none for the first chord, after or into a rest, across a gap, where the chord before would keep none of its own notes,
+ * the figure needs a scale the chord before doesn't have, or a note of it is out of the part's range
+ */
+function withApproach(played: readonly Played[], chords: readonly GuideInput[], part: Part, approach: Approach): readonly Played[] {
+  const range = rangeOf(part)
+  const out = [...played]
+  chords.forEach((c, j) => {
+    const before = chords[j - 1]
+    if (!before || isRest(c.chord) || isRest(before.chord) || before.start + before.beats !== c.start) return
+    const target = out.find((p) => p.chord === j)?.note.pitch
+    const own = out.flatMap((p, i) => (p.chord === j - 1 && p.note.pitch ? [i] : []))
+    if (!target) return
+    const text = before.shown ?? before.scale
+    const all = approachNotes(target, approach, text ? orNull(() => writtenScale(part, text).notes) : null)
+    if (!all || all.some((n) => n.midi < range.lo || n.midi > range.hi)) return
+    const figure = all
+    if (!figure.length || own.length - figure.length < 1) return
+    figure.forEach((pitch, k) => {
+      const i = own[own.length - figure.length + k] as number
+      const p = out[i] as Played
+      out[i] = { ...p, note: { ...p.note, pitch } }
+    })
+  })
+  return out
 }
 
 /** the arpeggio line's voice: each chord's 7th chord arpeggio cells in the pattern (cellVoices) */
@@ -335,6 +368,7 @@ export function arpeggioVoices(
   beats: Metre,
   keySig: string | null,
   pattern: ArpeggioPattern,
+  approach: Approach = 'none',
 ): { bars: ReadonlyMap<number, readonly GuideNote[]>; missing: readonly string[] } {
-  return cellVoices(chords, part, beats, keySig, (c) => arpeggioCells(part, c, pattern))
+  return cellVoices(chords, part, beats, keySig, (c) => arpeggioCells(part, c, pattern), undefined, approach)
 }
