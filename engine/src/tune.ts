@@ -1,5 +1,5 @@
 import { barView } from './bars'
-import { type ChartDoc, type ChartKind, chartAka, chartKind, chartRecording, keyLabel, metaValue, parseChart, type Recording } from './chart'
+import { type ChartDoc, type ChartKind, chartAka, chartKind, chartRecording, chartYoutube, keyLabel, metaValue, parseChart, type Recording } from './chart'
 import { type ChordToken, chordTokensOrNull } from './chord'
 import { CONCERT } from './part'
 
@@ -25,11 +25,14 @@ export type TuneSummary = Readonly<{
   /** one notable recording, and its YouTube video's ID ('' without one) */
   recording: Recording | null
   youtube: string
+  /** false when the video won't play embedded: the song page only links to it */
+  embeddable: boolean
 }>
 
 export function tuneSummary(text: string): TuneSummary {
   const doc = parseChart(text).value
   const key = metaValue(doc, 'key')
+  const video = chartYoutube(doc)
   return {
     title: metaValue(doc, 'title', 'Untitled'),
     subtitle: metaValue(doc, 'subtitle'),
@@ -43,7 +46,8 @@ export function tuneSummary(text: string): TuneSummary {
     time: metaValue(doc, 'time'),
     source: metaValue(doc, 'source'),
     recording: chartRecording(doc),
-    youtube: metaValue(doc, 'youtube'),
+    youtube: video?.id ?? '',
+    embeddable: video?.embeddable ?? true,
   }
 }
 

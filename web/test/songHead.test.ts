@@ -25,6 +25,7 @@ describe('songHead', () => {
     const on = songHead('blue-trane', { recordings: true })
     expect(on?.recording).toEqual({ artist: 'John Coltrane', album: 'Blue Train', label: 'Blue Note', year: '1958' })
     expect(on?.ld).toContain('"recordedAs"')
+    expect(on?.embeddable).toBe(true)
     const off = songHead('blue-trane', { recordings: false })
     expect(off?.recording).toBeNull()
     expect(off?.youtube).toBe('')

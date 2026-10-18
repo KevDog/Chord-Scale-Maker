@@ -141,7 +141,8 @@ function parseSectionField(field: SectionField, value: string): ChartLine | stri
   return { kind: 'sectionMeta', field, value }
 }
 
-const YOUTUBE_ID = /^[A-Za-z0-9_-]{11}$/
+// the video's ID, `(link only)` after it when it won't play embedded (the song page then links to it, no player)
+const YOUTUBE = /^([A-Za-z0-9_-]{11})( \(link only\))?$/
 const recordingFields = (value: string): string[] => value.split(';').map((s) => s.trim())
 
 /** what's wrong with a recording: value, or null */
@@ -175,7 +176,7 @@ function parseLine(line: string, inSection: boolean): ChartLine | string {
     if (key === 'kind' && value && !asKind(value)) return 'kind: tune, form or exercise'
     const problem = key === 'recording' && value ? recordingProblem(value) : null
     if (problem) return problem
-    if (key === 'youtube' && value && !YOUTUBE_ID.test(value)) return 'youtube: the 11-character video ID'
+    if (key === 'youtube' && value && !YOUTUBE.test(value)) return 'youtube: the 11-character video ID'
     return { kind: 'meta', key, value }
   }
   if (line.startsWith('@')) {
@@ -359,6 +360,12 @@ export function chartRecording(doc: ChartDoc): Recording | null {
   if (!value || recordingProblem(value)) return null
   const [artist = '', album = '', label = '', year = ''] = recordingFields(value)
   return { artist, album, label, year }
+}
+
+/** the tune's YouTube video (youtube:), and whether it plays embedded; null without a readable one */
+export function chartYoutube(doc: ChartDoc): Readonly<{ id: string; embeddable: boolean }> | null {
+  const m = YOUTUBE.exec(metaValue(doc, 'youtube'))
+  return m ? { id: m[1] as string, embeddable: !m[2] } : null
 }
 
 /** the time and the tune's details as written (what the editor's Details fields edit) */

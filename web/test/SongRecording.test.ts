@@ -3,7 +3,7 @@ import { describe, expect, it } from 'vitest'
 import SongRecording from '~/components/SongRecording.vue'
 
 const recording = { artist: 'John Coltrane', album: 'Blue Train', label: 'Blue Note', year: '1958' }
-const mount = (youtube = '') => mountSuspended(SongRecording, { props: { recording, youtube, title: 'Blue Trane' } })
+const mount = (youtube = '', embeddable = true) => mountSuspended(SongRecording, { props: { recording, youtube, embeddable, title: 'Blue Trane' } })
 
 describe('SongRecording', () => {
   it('names the recording, the album in italics', async () => {
@@ -25,5 +25,14 @@ describe('SongRecording', () => {
     expect(a.attributes('rel')).toBe('noopener noreferrer')
     await w.find('button').trigger('click')
     expect(w.find('iframe').attributes('src')).toContain('youtube-nocookie.com/embed/XpZHUVjQydI')
+  })
+
+  it('with a video that will not play embedded: only a link that opens a new tab, no player', async () => {
+    const w = await mount('XpZHUVjQydI', false)
+    expect(w.find('button').exists()).toBe(false)
+    const a = w.find('a[href="https://www.youtube.com/watch?v=XpZHUVjQydI"]')
+    expect(a.text()).toContain('Listen on YouTube')
+    expect(a.attributes('target')).toBe('_blank')
+    expect(a.attributes('rel')).toBe('noopener noreferrer')
   })
 })

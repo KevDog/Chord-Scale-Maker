@@ -99,7 +99,7 @@ In `web/app/utils/structuredData.ts`, the `MusicComposition` gains `recordedAs` 
    3. otherwise, the recording jazz players treat as the reference, for standards from musicals and the songbook (Kern, Arlen, Porter and so on).
 2. **Facts from a primary or authoritative source:** the album's own credits, the label's catalogue, or Discogs or MusicBrainz. The year is the release year, not the session date. Where these differ, use the release year and note the session date in a `#` comment.
 3. **YouTube only from official uploads:** the label's channel, the artist's official channel, or YouTube's auto-generated "Provided to YouTube by …" Topic uploads. Unofficial uploads are not used, because they are taken down and the site should not send visitors to them.
-4. **Confirm embedded playback during curation.** Many label uploads disable playback on other sites. Before writing `youtube:`, confirm that the video plays when embedded. If it does not, keep the `youtube:` ID only if the plain link is wanted without a player (see open question 2); otherwise omit it.
+4. **Confirm embedded playback during curation.** Many label uploads disable playback on other sites. Before writing `youtube:`, confirm that the video plays when embedded. If it does not, write `(link only)` after the ID (`youtube: AbCdEfGhIjK (link only)`): the song page then shows only a plain "Listen on YouTube ↗" link, opening in a new tab, with no player (§11.2, #363). `check-recordings` expects oEmbed's 401 for such a video and reports one that now embeds.
 5. **Kept in the chart file**, reviewed in the commit diff like any other header change.
 
 **Tooling.** An optional script, `engine/scripts/check-recordings.ts`, run by hand rather than in CI because it needs the network, would:
