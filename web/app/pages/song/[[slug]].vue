@@ -49,6 +49,7 @@
       <UiText class="mt-2">{{ song.leadSheet }}</UiText>
     </section>
     <SongRecording v-if="song?.recording" :recording="song.recording" :youtube="song.youtube" :embeddable="song.embeddable" :title="song.title" />
+    <UiText v-if="song?.contributor" class="mt-6 text-sm/6! print:hidden">Chart contributed by {{ song.contributor }}</UiText>
   </div>
 </template>
 

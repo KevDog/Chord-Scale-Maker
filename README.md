@@ -75,6 +75,7 @@ section.
 | `aka:` | The tune's other titles, `;` between them (a title may hold a comma): `aka: Blue Train`. Shown on its song page and found by the library search. |
 | `recording:` | One notable recording: artist; album; label; year, `;` between them (an album may hold a comma); the label and year may be left empty: `recording: John Coltrane; Blue Train; Blue Note; 1958`. The year is the release year. Shown on its song page. |
 | `youtube:` | The 11-character YouTube video ID of that recording, from an official upload (`youtube: AbCdEfGhIjK`); `(link only)` after one that won't play embedded (`youtube: AbCdEfGhIjK (link only)`): the song page then links to it, with no player. Only with `recording:`. |
+| `contributor:` | Who sent the chart for the library (the contact form's credit, when they asked for it): `contributor: Bill Evans`. Shown on its song page as "Chart contributed by …". |
 | `kind:` | `tune` (the default), `form` (a progression with no composer: F Blues, Rhythm Changes) or `exercise`. A library chart needs `title:`, `key:`, `style:` and `form:`, and a tune its `composer:`; `make test` fails without them. |
 | `#` | Comment line. A row may also end in a comment: `6 \| D7 \| D Phrygian Dominant  # V7 of G minor: b9 and b13 are in the key` (the `#` needs a space before it). |
 

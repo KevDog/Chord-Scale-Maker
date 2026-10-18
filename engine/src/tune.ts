@@ -27,6 +27,8 @@ export type TuneSummary = Readonly<{
   youtube: string
   /** false when the video won't play embedded: the song page only links to it */
   embeddable: boolean
+  /** who sent the chart, credited on its song page ('' without one) */
+  contributor: string
 }>
 
 export function tuneSummary(text: string): TuneSummary {
@@ -48,6 +50,7 @@ export function tuneSummary(text: string): TuneSummary {
     recording: chartRecording(doc),
     youtube: video?.id ?? '',
     embeddable: video?.embeddable ?? true,
+    contributor: metaValue(doc, 'contributor'),
   }
 }
 

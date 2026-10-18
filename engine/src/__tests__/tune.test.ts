@@ -32,6 +32,11 @@ describe('tuneSummary', () => {
     expect(tuneSummary('aka: ;\n\nsection: A\nbars: 4\n1 | C').aka).toEqual([])
   })
 
+  it('names the contributor, when the chart has one', () => {
+    expect(tuneSummary('title: T\ncontributor: Bill Evans\nsection: A\n1 | Cm7\n').contributor).toBe('Bill Evans')
+    expect(tuneSummary('title: T\nsection: A\n1 | Cm7\n').contributor).toBe('')
+  })
+
   it('leaves the fields a chart lacks empty', () => {
     const t = tuneSummary('A | 1 | C')
     expect(t).toMatchObject({ title: 'Untitled', composer: '', key: '', keyLabel: '', form: '', source: '', recording: null, youtube: '' })
