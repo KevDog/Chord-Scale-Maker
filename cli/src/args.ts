@@ -2,15 +2,15 @@ import { parseArgs } from 'node:util'
 import type { IRealPlaylist } from '@chord-scale-maker/engine'
 
 /** the header lines csm add can set, one flag each */
-export type HeaderFlag = 'composer' | 'form' | 'style' | 'kind' | 'aka' | 'recording' | 'source'
-export const HEADER_FLAGS: readonly HeaderFlag[] = ['composer', 'form', 'style', 'kind', 'aka', 'recording', 'source']
+export type HeaderFlag = 'composer' | 'form' | 'style' | 'kind' | 'aka' | 'recording' | 'source' | 'version'
+export const HEADER_FLAGS: readonly HeaderFlag[] = ['composer', 'form', 'style', 'kind', 'aka', 'recording', 'source', 'version']
 const KINDS = ['tune', 'form', 'exercise']
 
 export type AddArgs = Readonly<{ input: string; list: boolean; song?: string; force: boolean; print: boolean; overrides: Readonly<Partial<Record<HeaderFlag, string>>> }>
 
 export const USAGE = [
   'usage: csm add <irealb:// link | export.html> [--list] [--song <n | title>] [--force] [--print]',
-  '               [--composer …] [--form …] [--style …] [--kind tune|form|exercise] [--aka …] [--recording …] [--source …]',
+  '               [--composer …] [--form …] [--style …] [--kind tune|form|exercise] [--aka …] [--recording …] [--source …] [--version …]',
 ].join('\n')
 
 /** csm add's arguments, or the usage error */
@@ -36,7 +36,8 @@ export function parseAddArgs(argv: readonly string[]): AddArgs | string {
   const input = positionals[0]
   if (input === undefined) return USAGE
   const all: Readonly<Record<string, string | boolean | undefined>> = values
-  const str = (k: string): string | undefined => (typeof all[k] === 'string' ? all[k] : undefined)
+  // a flag left blank (or spaces) is not given
+  const str = (k: string): string | undefined => (typeof all[k] === 'string' && all[k].trim() ? all[k].trim() : undefined)
   const song = str('song')
   const kind = str('kind')
   if (kind !== undefined && !KINDS.includes(kind)) return `--kind is tune, form or exercise\n${USAGE}`

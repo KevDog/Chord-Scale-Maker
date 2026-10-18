@@ -1048,6 +1048,10 @@ its reasons into a chart as comments.
   - **The gate:** `tuneGaps` lists what a library chart's song page lacks (`title:`, `key:`, `style:`, `form:`, and
     `composer:` unless `kind:` is `form` or `exercise`); `libraryMeta.test.ts` fails on any. `tuneAdvice` (no
     `source:`, no `aka:`) is only reported, by `npm run analyse`.
+  - **Versions** (#411, docs/superpowers/specs/2026-10-18-tune-versions-design.md): `version: <label>` marks a
+    second chart of a tune (file `<title>-<version>.txt`); a chart without one is the tune's main chart. `tuneGroups`
+    (engine `versions.ts`) gathers charts by `tuneKey` of their title or `aka:`; `versionProblems` (two mains, a repeated
+    label, a version titled unlike its main) fails `libraryMeta.test.ts`.
   - An unknown name (`findChart` in `utils/library.ts`) goes to the library.
 - **Head tags** (`utils/site.ts`):
   - The tagline is `SITE_TAGLINE`, "Endless improvisation practice sheets for jazz standards"; it opens

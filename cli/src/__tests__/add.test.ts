@@ -22,6 +22,7 @@ function fake(over: Partial<Effects> = {}, files: Record<string, string> = {}) {
     err: (l) => void log.err.push(l),
     chartsDir: '/repo/engine/charts/',
     date: '2026-10-18',
+    library: () => [{ slug: 'tune', text: 'title: Tune\n\nsection: A\nbars: 4\n1 | C\n' }],
     ...over,
   }
   return { fx, log }
@@ -51,6 +52,29 @@ describe('csm add', () => {
     const { fx, log } = fake()
     expect(add(args({ input: irealLink([{ title: 'Tune', composer: '', music: '[*AC^7 |C^7 Z' }]), overrides: { composer: 'Jim Hall' } }), fx)).toBe(0)
     expect(log.written['/repo/engine/charts/tune.txt']).toContain('composer: Jim Hall\n')
+  })
+
+  it('--version: writes version: and names the file after it', () => {
+    const { fx, log } = fake()
+    expect(add(args({ overrides: { version: 'Jazz Lab Accelerator' } }), fx)).toBe(0)
+    expect(Object.keys(log.written)).toEqual(['/repo/engine/charts/tune-jazz-lab-accelerator.txt'])
+    expect(log.written['/repo/engine/charts/tune-jazz-lab-accelerator.txt']).toContain('version: Jazz Lab Accelerator\n')
+  })
+
+  it('--version of a tune the library lacks: warns that it stands alone', () => {
+    const { fx, log } = fake({ library: () => [] })
+    expect(add(args({ overrides: { version: 'Jazz Lab Accelerator' } }), fx)).toBe(0)
+    expect(log.err.join('\n')).toMatch(/no library chart of "Tune"/)
+    const known = fake()
+    expect(add(args({ overrides: { version: 'Jazz Lab Accelerator' } }), known.fx)).toBe(0)
+    expect(known.log.err.join('\n')).not.toMatch(/no library chart/)
+  })
+
+  it('an empty --version is not given', () => {
+    const { fx, log } = fake()
+    expect(add(args({ overrides: { version: '' } }), fx)).toBe(0)
+    expect(Object.keys(log.written)).toEqual(['/repo/engine/charts/tune.txt'])
+    expect(log.written['/repo/engine/charts/tune.txt']).not.toMatch(/^version:/m)
   })
 
   it('--print: prints the chart and the report, writes and runs nothing', () => {

@@ -14,9 +14,14 @@ describe('csm add arguments', () => {
   })
 
   it('takes the header flags as overrides', () => {
-    expect(parseAddArgs(['x', '--composer', 'Jim Hall', '--form', 'AABA', '--aka', 'Other', '--recording', 'A; B; C; 1961', '--source', 'Book', '--style', 'Ballad', '--kind', 'form'])).toMatchObject({
-      overrides: { composer: 'Jim Hall', form: 'AABA', aka: 'Other', recording: 'A; B; C; 1961', source: 'Book', style: 'Ballad', kind: 'form' },
+    expect(parseAddArgs(['x', '--composer', 'Jim Hall', '--form', 'AABA', '--aka', 'Other', '--recording', 'A; B; C; 1961', '--source', 'Book', '--style', 'Ballad', '--kind', 'form', '--version', 'JLA'])).toMatchObject({
+      overrides: { composer: 'Jim Hall', form: 'AABA', aka: 'Other', recording: 'A; B; C; 1961', source: 'Book', style: 'Ballad', kind: 'form', version: 'JLA' },
     })
+  })
+
+  it('trims the header flags, and drops one left empty', () => {
+    expect(parseAddArgs(['x', '--version', '  ', '--composer', ' Jim Hall '])).toMatchObject({ overrides: { composer: 'Jim Hall' } })
+    expect((parseAddArgs(['x', '--version', '  ']) as { overrides: object }).overrides).toEqual({})
   })
 
   it('refuses a kind that is not tune, form or exercise', () => {

@@ -1,4 +1,4 @@
-import { decodeIReal, irealToChart, prepareChart } from '@chord-scale-maker/engine'
+import { decodeIReal, irealToChart, prepareChart, tuneGroups } from '@chord-scale-maker/engine'
 import { type AddArgs, HEADER_FLAGS, type HeaderFlag, pickSong, saveName } from './args'
 
 /** what csm add does to the world, passed in so the sequence is testable without disk or make */
@@ -11,6 +11,8 @@ export type Effects = Readonly<{
   err: (line: string) => void
   chartsDir: string
   date: string
+  /** the library's charts, for --version's check that the tune is there */
+  library: () => readonly Readonly<{ slug: string; text: string }>[]
 }>
 
 /** the flag that fills a song page's gap, when there is one (`no composer:` → --composer) */
@@ -59,7 +61,8 @@ export function add(args: AddArgs, fx: Effects): number {
     for (const a of p.advice) fx.out(`· ${a}`)
     return 0
   }
-  const named = saveName(song.title)
+  // a version is filed under its title and label (summertime-jazz-lab-accelerator.txt, #411)
+  const named = saveName(args.overrides.version ? `${song.title} ${args.overrides.version}` : song.title)
   if ('error' in named) {
     fx.err(named.error)
     return 1
@@ -68,6 +71,10 @@ export function add(args: AddArgs, fx: Effects): number {
   if (fx.exists(path) && !args.force) {
     fx.err(`charts/${named.slug}.txt exists: --force to replace it`)
     return 1
+  }
+  if (args.overrides.version) {
+    const group = tuneGroups([...fx.library().filter((c) => c.slug !== named.slug), { slug: named.slug, text: p.chart }]).find((g) => g.versions.some((v) => v.slug === named.slug))
+    if (group?.versions.length === 1) fx.err(`⚠️ no library chart of "${song.title}" (by title or aka:): this version stands as a tune of its own`)
   }
   fx.write(path, p.chart)
   fx.out(`📁 charts/${named.slug}.txt`)
