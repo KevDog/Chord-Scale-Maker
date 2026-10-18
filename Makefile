@@ -1,5 +1,5 @@
-.PHONY: setup test lint e2e a11y golden og dev preview clean
-# installs the dependencies and the repo's git hooks (.githooks/pre-push runs `make a11y` when a push touches web/app/)
+.PHONY: setup test lint e2e a11y docs golden og dev preview clean
+# installs the dependencies and the repo's git hooks (.githooks/pre-push runs `make docs` and `make a11y` when a push touches what they check)
 setup:
 	npm ci
 	git config core.hooksPath .githooks
@@ -14,6 +14,9 @@ e2e:
 a11y:
 	npm run lint -w web
 	cd web && npx playwright install chromium && npm run a11y
+# documentation: each decision's anchor is on its page (web/test/docs/), and every internal link on the built site resolves
+docs:
+	cd web && npx vitest run test/docs && npm run build && npm run check:links
 # rewrite engine/fixtures/golden.json and analysis.json from the engine after an intended change; review their diffs
 golden:
 	npm run golden -w engine
