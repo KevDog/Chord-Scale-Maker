@@ -10,6 +10,7 @@
         <UiNavbarSection class="max-lg:hidden" aria-label="Main">
           <UiNavbarItem href="/library" :current="route.path === '/library'">Library</UiNavbarItem>
           <UiNavbarItem href="/help" :current="route.path === '/help'">Help</UiNavbarItem>
+          <UiNavbarItem href="/how-it-decides" :current="route.path === '/how-it-decides'">How it decides</UiNavbarItem>
           <UiNavbarItem href="/about" :current="route.path === '/about'">About</UiNavbarItem>
           <UiNavbarItem href="/contact" :current="route.path === '/contact'">Contact</UiNavbarItem>
         </UiNavbarSection>
@@ -26,6 +27,7 @@
     <template #sidebar>
       <UiNavbarItem href="/library"><BookOpenIcon data-slot="icon" />Library</UiNavbarItem>
       <UiNavbarItem href="/help"><QuestionMarkCircleIcon data-slot="icon" />Help</UiNavbarItem>
+      <UiNavbarItem href="/how-it-decides"><LightBulbIcon data-slot="icon" />How it decides</UiNavbarItem>
       <UiNavbarItem href="/about"><InformationCircleIcon data-slot="icon" />About</UiNavbarItem>
       <UiNavbarItem href="/contact"><EnvelopeIcon data-slot="icon" />Contact</UiNavbarItem>
     </template>
@@ -52,6 +54,7 @@
         </div>
         <nav aria-label="Site" class="flex flex-wrap gap-x-4 gap-y-1">
           <NuxtLink to="/help" class="hover:text-zinc-950 dark:hover:text-white">Help</NuxtLink>
+          <NuxtLink to="/how-it-decides" class="hover:text-zinc-950 dark:hover:text-white">How it decides</NuxtLink>
           <NuxtLink to="/functions" class="hover:text-zinc-950 dark:hover:text-white">Functions</NuxtLink>
           <NuxtLink to="/scales" class="hover:text-zinc-950 dark:hover:text-white">Scales</NuxtLink>
           <NuxtLink to="/composers" class="hover:text-zinc-950 dark:hover:text-white">Composers</NuxtLink>
@@ -65,7 +68,7 @@
 </template>
 
 <script setup lang="ts">
-import { BookOpenIcon, EnvelopeIcon, InformationCircleIcon, MoonIcon, QuestionMarkCircleIcon, SunIcon } from '@heroicons/vue/20/solid'
+import { BookOpenIcon, EnvelopeIcon, InformationCircleIcon, LightBulbIcon, MoonIcon, QuestionMarkCircleIcon, SunIcon } from '@heroicons/vue/20/solid'
 
 /** the site chrome (Catalyst StackedLayout): navbar, mobile menu, theme toggle, footer */
 const route = useRoute()

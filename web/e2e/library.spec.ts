@@ -91,7 +91,7 @@ test('Request a chart opens the contact form', async ({ page }) => {
 
 test('pages carry a link preview: Open Graph tags and a 1200×630 image', async ({ page, request }) => {
   const home = ['Chord Scale Maker: Endless Practice Sheets for Jazz Standards', 'Chord Scale Maker: Endless Improvisation Practice Sheets for Jazz Standards']
-  for (const [path, title, ogTitle = title] of [['/', ...home], ['/library', 'Library · Chord Scale Maker'], ['/help', 'Help · Chord Scale Maker'], ['/about', 'About · Chord Scale Maker']] as const) {
+  for (const [path, title, ogTitle = title] of [['/', ...home], ['/library', 'Library · Chord Scale Maker'], ['/help', 'Help · Chord Scale Maker'], ['/how-it-decides', 'How it decides · Chord Scale Maker'], ['/about', 'About · Chord Scale Maker']] as const) {
     await page.goto(path)
     const og = (p: string) => page.locator(`head meta[property="${p}"]`).getAttribute('content')
     await expect(page).toHaveTitle(title)
