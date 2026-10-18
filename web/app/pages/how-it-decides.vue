@@ -230,6 +230,96 @@
 
       <section class="scroll-mt-6 space-y-8" aria-labelledby="lines">
         <UiSubheading id="lines" class="scroll-mt-6">The other lines</UiSubheading>
+        <UiText>
+          The Changes sheet's Line has two more modes than guide tones, and the Arpeggios and Patterns sheets run their own
+          figures over each scale. They share their rhythm, their turns and their ranges.
+        </UiText>
+
+        <DecisionSection id="arp.line">
+          <UiText>
+            <strong :class="EM">7th Chords</strong> plays each chord's four chord tones: its 7th chord as written, altered
+            5ths kept and extensions left off (<UiCode>G7♭9</UiCode> plays G B D F), and a triad's root again as its fourth
+            note. The pattern list chooses the order: up or down from the root or an inversion, up and down by turns, or
+            voice-led, each arpeggio starting on the chord tone nearest the last note.
+          </UiText>
+          <UiText>
+            The note value is set bar by bar: the longest that gives the bar's shortest chord four notes. In 4/4 one chord
+            gets quarters, two get eighths, three or four get sixteenths. A chord that lasts longer repeats its arpeggio; one
+            with too few slots for another whole one turns back on it (six eighths in 3/4: 1 3 5 7 5 3).
+          </UiText>
+          <UiText>
+            Each arpeggio is placed whole, in the octave that starts it nearest the last note, but never so it runs mostly
+            outside the comfortable middle of your range: a line climbing chord after chord turns back rather than drifting
+            to the top.
+          </UiText>
+          <UiText><strong :class="EM">What you can change:</strong> the pattern, and the range under Instrument.</UiText>
+        </DecisionSection>
+
+        <DecisionSection id="cells.line">
+          <UiText v-if="cellsOn">
+            <strong :class="EM">Cells</strong>, in the 7th Chords pattern list, put a four-note cell on each chord, two beats
+            each, after Randy Vincent's <em>Building Solo Lines From Cells</em>. A cell is four scale degrees counted from the
+            chord's root (<UiCode>1 2 3 5</UiCode>), read through the chord's scale, so it bends to fit each chord. A single
+            cell plays in every two beats; a system takes turns (below). Under a Superimpose the slot plays the Pentatonic or
+            Triad pair line instead.
+          </UiText>
+          <UiText v-else>Cells aren't switched on yet.</UiText>
+        </DecisionSection>
+
+        <DecisionSection id="cells.system">
+          <UiText v-if="cellsOn">
+            A cell system has two cells, A and B, that take turns, chosen so that each ends a step from where the next begins:
+            root to root, 3rd to 3rd, 3rd to 5th or 3rd to root. Played through a tune, the line keeps moving by step across
+            every chord change.
+          </UiText>
+          <UiText v-else>Cells aren't switched on yet.</UiText>
+        </DecisionSection>
+
+        <DecisionSection id="approach.figures">
+          <UiText v-if="approachesOn">
+            <strong :class="EM">Approach</strong>, under Guide Tones, leads into each chord's note with a short figure of
+            eighths: a note a semitone below or above, a pair from one side, an enclosure (a step above in the chord's scale,
+            then a semitone below) and more. A step in the scale is spelled from the scale the sheet shows over the chord
+            before; a chromatic note is never B♯, E♯, C♭ or F♭ (into B♭ from above, it's B). Two equal notes in a row
+            become one.
+          </UiText>
+          <UiText v-else>Approaches aren't switched on yet.</UiText>
+        </DecisionSection>
+
+        <DecisionSection id="approach.place">
+          <UiText v-if="approachesOn">
+            The target note still lands on its chord's first beat; the chord before gives up its last beat or two to make
+            room, and a note tied over is broken. Under 7th Chords and the cells (with Superimpose off) the figure takes the
+            place of the chord before's last notes, in the line's own rhythm. There's no approach into the first chord, after
+            a rest, where the chord before would keep less than an eighth, or where a note of the figure would leave your
+            range. A figure whose first note is the one the line is already on leaves it there: from the 3rd through
+            <UiCode>Dm7 G7 Cmaj7</UiCode>, a chromatic approach from above into E is just G7's F, held.
+          </UiText>
+          <UiText v-else>Approaches aren't switched on yet.</UiText>
+          <UiText v-if="approachesOn"><strong :class="EM">What you can change:</strong> the figure, or None.</UiText>
+        </DecisionSection>
+
+        <DecisionSection id="arp.sheet">
+          <UiText>
+            The Arpeggios sheet has one staff for each of the Scales sheet's lines, in eighths. <strong :class="EM">7th
+            Chord</strong> runs the chord tones over two octaves and closes on the root (1 3 5 7 1 3 5 7 1; a triad
+            1 3 5 1 3 5 1). <strong :class="EM">Extended</strong> plays the chord tones once and stacks the scale's other
+            notes above them: the 9th, 11th and 13th, in that order. Up, Down, or Up &amp; down, which doesn't repeat the top
+            note. The run is placed with the fewest notes out of your range; two octaves outrun most, so the rest go on
+            ledger lines.
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection id="patterns.run">
+          <UiText v-if="patternsOn">
+            A pattern is a list of steps between neighbouring notes: <UiCode>+2 −1</UiCode> is up a third, back a step. The
+            Patterns sheet runs it over each scale line, through the scale or through the chord tones: the group starts again
+            from each next note up an octave, then the octave itself closes the run. Down is the same run reflected; Up &amp;
+            down goes up and comes back from the top. Each run is placed whole with the fewest notes out of your range.
+          </UiText>
+          <UiText v-else>Patterns aren't switched on yet.</UiText>
+          <UiText v-if="patternsOn"><strong :class="EM">What you can change:</strong> the pattern (or write your own), Scale or Chord tones, and the direction.</UiText>
+        </DecisionSection>
       </section>
 
       <section class="scroll-mt-6 space-y-8" aria-labelledby="superimposing">
@@ -277,6 +367,31 @@
 
       <section class="scroll-mt-6 space-y-8" aria-labelledby="ranges">
         <UiSubheading id="ranges" class="scroll-mt-6">Ranges</UiSubheading>
+
+        <DecisionSection id="range.instrument">
+          <UiText>
+            Every line keeps to a comfortable written range for your instrument, not its whole compass. Guide tone lines turn
+            back at its floor and ceiling; arpeggio and cell lines turn back sooner, keeping mostly between a 4th above the
+            lowest note and a major 3rd below the highest.
+          </UiText>
+          <UiTable dense>
+            <UiTableHead>
+              <UiTableRow>
+                <UiTableHeader>Instrument</UiTableHeader>
+                <UiTableHeader>Written range</UiTableHeader>
+              </UiTableRow>
+            </UiTableHead>
+            <UiTableBody>
+              <UiTableRow v-for="r in RANGES" :key="r.name">
+                <UiTableCell>{{ r.name }}</UiTableCell>
+                <UiTableCell>{{ r.range }}</UiTableCell>
+              </UiTableRow>
+            </UiTableBody>
+          </UiTable>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> Lowest and Highest note, under Instrument, for every line.
+          </UiText>
+        </DecisionSection>
       </section>
     </article>
     <PageIndex :sections="SECTIONS" column :current="current" />
@@ -284,8 +399,18 @@
 </template>
 
 <script setup lang="ts">
-import { LEVEL_LABELS, scaleAtLevel, type ScaleLevel } from '@chord-scale-maker/engine'
+import { INSTRUMENTS, type InstrumentName, LEVEL_LABELS, noteName, scaleAtLevel, type ScaleLevel } from '@chord-scale-maker/engine'
+import { instrumentOption } from '~/utils/instrumentChoices'
 import { PAGE_HEAD, seoMeta } from '~/utils/site'
+
+const cellsOn = useFeature('cells')
+const approachesOn = useFeature('approaches')
+const patternsOn = useFeature('patterns')
+
+const RANGES = (Object.keys(INSTRUMENTS) as InstrumentName[]).map((n) => ({
+  name: instrumentOption(n),
+  range: `${noteName(INSTRUMENTS[n].range.lo)}–${noteName(INSTRUMENTS[n].range.hi)}`,
+}))
 
 /** a run-in label in the prose: "What you can change:" */
 const EM = 'font-semibold text-zinc-950 dark:text-white'
