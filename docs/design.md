@@ -741,15 +741,23 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **Tier:** the popovers are at Everything (`CONTROL_TIERS` `chord-picks`); picks in force at a lower level are named
   by the notice (`HiddenSetting` `chord-picks`).
 
-### Documentation ([spec](superpowers/specs/2026-10-17-user-docs-restructure-design.md), Phase 1)
+### Documentation ([spec](superpowers/specs/2026-10-17-user-docs-restructure-design.md), Phases 1–2)
 
 - **Decision registry:** `DECISIONS` (`engine/src/decisions.ts`) names every heuristic the app applies when it chooses
   something for the user (`guide.move`, `pent.auto`, `spell.transpose`, …), each with its page and anchor. The analysis
   rules keep their own ids and rows (`rule-M3` → `/functions#rule-M3`). `decisionHref` / `decisionOf` give the link;
-  `<DecisionLink id="…">` renders it with the summary as its title. Until How it decides exists (Phase 2) the
-  anchors are Help's and Functions' sections. Adding a heuristic adds a row.
-- **Checks:** `web/test/docs/decisions.test.ts` mounts each page and finds each decision's anchor once (in `make
-  test`); `npm run check:links` walks `.output/public` after the build and fails on an internal link whose page or
+  `<DecisionLink id="…">` renders it with the summary as its title. Every entry's anchor is its own id on
+  `/how-it-decides`. Adding a heuristic adds a row and a section.
+- **How it decides** (`pages/how-it-decides.vue`): the disclaimer, then seven groups (Scales, Keys, Guide tone lines,
+  The other lines, Superimposing, Spelling, Ranges; the `PageIndex` lists these), each holding a `<DecisionSection
+  id="…">` per decision, its heading the registry's title and its element `data-decision`. Each section: what it
+  decides, the rule, an example, what you can change. The examples that can drift come from the engine at render
+  (`scaleAtLevel` for G7 and D7 at each level, `pentatonicChoices` / `hexatonicChoices` over Cmaj7, the ranges from
+  `INSTRUMENTS`). A flag-gated section keeps its heading and anchor with the flag off. Help is the how-to: its
+  controls are grouped by task, each group ending with its link here, and `#guide-lines` stays as a stub pointing
+  here so old links hold. In the navigation beside Help, and in the sitemap.
+- **Checks:** `web/test/docs/decisions.test.ts` mounts each page and finds each decision's anchor once, and warns of
+  a section on How it decides the registry doesn't name (in `make test`); `npm run check:links` walks `.output/public` after the build and fails on an internal link whose page or
   `#fragment` is missing (CI's `engine` job); `make docs` runs both, and the pre-push hook runs it when a push touches
   the docs pages, `decisions.ts` or `rules.ts`.
 - **Docs gate:** `.github/workflows/docs.yml` (its own workflow, so editing the PR description re-runs only it): a PR

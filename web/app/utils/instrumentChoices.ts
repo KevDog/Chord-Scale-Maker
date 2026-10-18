@@ -1,4 +1,4 @@
-import { type InstrumentName, INSTRUMENTS, noteName } from '@chord-scale-maker/engine'
+import { type InstrumentName, INSTRUMENTS } from '@chord-scale-maker/engine'
 
 export type InstrumentGroup = Readonly<{ label: string; instruments: readonly InstrumentName[] }>
 
@@ -25,16 +25,3 @@ export const instrumentOption = (name: InstrumentName): string =>
     .split('-')
     .map((w) => w.charAt(0).toUpperCase() + w.slice(1))
     .join(' ')
-/** ["a", "b", "c"] -> "a, b and c" */
-const listed = (xs: readonly string[]): string => (xs.length < 2 ? (xs[0] ?? '') : `${xs.slice(0, -1).join(', ')} and ${xs.at(-1)}`)
-
-/** each written guide tone range in INSTRUMENTS, instruments sharing one range together: "piano F3–E6; vibes G3–D6; …" */
-export function guideRanges(): string {
-  const groups = new Map<string, string[]>()
-  for (const n of Object.keys(INSTRUMENTS) as InstrumentName[]) {
-    const { lo, hi } = INSTRUMENTS[n].range
-    const key = `${noteName(lo)}–${noteName(hi)}`
-    groups.set(key, [...(groups.get(key) ?? []), n.replace(/-/g, ' ')])
-  }
-  return [...groups].map(([range, names]) => `${listed(names)} ${range}`).join('; ')
-}

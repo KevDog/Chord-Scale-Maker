@@ -29,8 +29,8 @@ describe('the decision registry', () => {
   })
 
   it('links a decision to its page and anchor', () => {
-    expect(decisionHref('guide.move')).toBe('/help#guide-lines')
-    expect(decisionHref('key.area')).toBe('/functions#rules')
+    expect(decisionHref('guide.move')).toBe('/how-it-decides#guide.move')
+    expect(decisionHref('key.area')).toBe('/how-it-decides#key.area')
   })
 
   it('links an analysis rule to its row on Functions', () => {
