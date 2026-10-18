@@ -326,6 +326,12 @@
             library.
           </li>
           <li>
+            <strong class="font-semibold text-zinc-950 dark:text-white">Versions:</strong> when a tune has more than one
+            chart, like Summertime and its Jazz Lab Accelerator version, the <strong class="font-semibold">Version</strong>
+            menu above the sheet switches between them. Your own charts of the tune (a copy, or a chart with its title)
+            are listed there too, under Mine; add a <UiCode>version:</UiCode> line to give yours a name.
+          </li>
+          <li>
             <strong class="font-semibold text-zinc-950 dark:text-white">Download</strong> saves the chart as a plain
             <UiCode>.txt</UiCode> file you can keep anywhere. <strong class="font-semibold">Open chart…</strong> in the
             library (or dropping the file on it) brings it back.<template v-if="ireal"> It also opens an iReal Pro export (.html), and <strong class="font-semibold">Import iReal link…</strong> takes a song or playlist link: the chords come across in concert pitch, and it lists anything it leaves out.</template>
