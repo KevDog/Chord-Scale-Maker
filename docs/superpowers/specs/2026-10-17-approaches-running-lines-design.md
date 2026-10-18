@@ -53,8 +53,9 @@ than None, after the line is built and before accidentals are set (`voiceAcciden
 3. The figure's notes **replace the previous chord's last k notes** (k = the figure's length), each keeping the
    replaced note's beat and length. The figure therefore plays in the line's own note value: eighths in a Cells line,
    sixteenths over a short chord, quarters in a 7th Chords bar of quarters.
-4. Leading figure notes equal to the note just before them are dropped (it goes on into the figure), as the guide tone
-   line does; k shrinks with them.
+4. The whole figure plays, even where its first note repeats the line's note before it (C E G B → F with Diatonic
+   above plays C E G G F). Unlike the guide tone line, a running line has no held note to go on into the figure, and
+   dropping that note would leave the slot playing the old note and no approach at all.
 5. No approach where the previous chord would keep fewer than one of its own notes (its notes count ≤ k), or where a
    figure note is out of the part's range.
 

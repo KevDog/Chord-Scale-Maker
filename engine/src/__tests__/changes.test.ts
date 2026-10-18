@@ -127,6 +127,17 @@ describe('the Changes sheet', () => {
     expect(voice('diatonic-above').map((n) => n.beats)).toEqual([3, 0.5, 0.5])
   })
 
+  it('puts an approach figure on the 7th Chords and Cells lines, not the Superimpose lines (#381)', () => {
+    const doc = parseChart('section: A\n1 | Dm7\n2 | G7\n').value
+    const bar = (line: Parameters<typeof buildChanges>[4], approach: 'none' | 'chromatic-below') => buildChanges(doc, CONCERT, 4, false, line, undefined, null, approach).lines.flatMap((l) => l.bars)[0]!.voice
+    for (const line of ['up-root', { kind: 'cells', id: 'root-root' }] as const) {
+      expect(bar(line, 'chromatic-below').at(-1)).not.toEqual(bar(line, 'none').at(-1))
+      expect(bar(line, 'chromatic-below').slice(0, -1)).toEqual(bar(line, 'none').slice(0, -1))
+    }
+    const pent = { kind: 'pentatonic', leave: '1', dir: 'up', arpeggio: 'up-root' } as const
+    expect(bar(pent, 'chromatic-below')).toEqual(bar(pent, 'none'))
+  })
+
   it('gives each chord its reason, the key it is heard in, and whether its function was stated', () => {
     const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | CMaj7\n2 | Bb7 |  | D: ♭VI7\n3 | G7\n4 | CMaj7\n').value
     const chords = buildChanges(doc, CONCERT).lines.flatMap((l) => l.bars).flatMap((b) => b.chords)
