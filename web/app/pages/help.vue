@@ -113,7 +113,7 @@
                 <template v-if="approachesOn">
                   Under Guide Tones, <strong class="font-semibold">Approach</strong> leads into each chord's guide tone with a
                   short figure of eighths, played at the end of the chord before: a semitone below or above, an enclosure and
-                  more. Under 7th Chords and the cells, with Superimpose off, it leads into each chord's first note the same way.
+                  more. Under 7th Chords<template v-if="cellsOn"> and the cells</template>, with Superimpose off, it leads into each chord's first note the same way.
                 </template>
               </dd>
             </div>
@@ -164,7 +164,7 @@
                 How fancy the scales get. <strong class="font-semibold">Basic</strong> leans on pentatonics,
                 <strong class="font-semibold">Standard</strong> is the usual chord-scale for each chord,
                 <strong class="font-semibold">Advanced</strong> reaches for bebop, Lydian and altered colours, and
-                <strong class="font-semibold">Random</strong> deals a different inside scale to every chord;
+                <strong class="font-semibold">Random</strong> deals every chord its own inside scale;
                 <strong class="font-semibold">Shuffle</strong> deals a new hand. It's a view setting, like the instrument:
                 it isn't saved into the chart, and a scale you picked yourself plays at every level.
               </dd>

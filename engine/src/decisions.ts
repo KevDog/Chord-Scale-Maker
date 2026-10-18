@@ -38,7 +38,7 @@ export const DECISIONS = [
   { id: 'hex.group', title: 'Hexatonic groupings', page: 'how-it-decides', anchor: 'hex.group', summary: 'How the six notes of a triad pair are split in two and tinted apart.' },
   { id: 'hex.line', title: 'The Triad pair line', page: 'how-it-decides', anchor: 'hex.line', summary: 'Each chord’s triad pair a triad at a time, its lower triad first.' },
   { id: 'pick.order', title: 'The order of chord picks', page: 'how-it-decides', anchor: 'pick.order', summary: 'A chord pick’s list runs from inside to outside.' },
-  { id: 'spell.root', title: 'Spelling a scale', page: 'how-it-decides', anchor: 'spell.root', summary: 'Each scale takes the spelling with no double flats or sharps, no B♯, E♯, C♭ or F♭, then the fewest accidentals, then the sharp or flat side it was written on.' },
+  { id: 'spell.root', title: 'Spelling a scale', page: 'how-it-decides', anchor: 'spell.root', summary: 'Each scale takes the spelling with no double flats or sharps, as few B♯, E♯, C♭ and F♭ as it can, then the fewest accidentals, then the sharp or flat side it was written on.' },
   { id: 'spell.transpose', title: 'Spelling a new key', page: 'how-it-decides', anchor: 'spell.transpose', summary: 'Transposing spells roots on the new key’s side: D♭–7 G♭7 in B♭, not C♯–7 F♯7.' },
   { id: 'spell.chord', title: 'Spelling a chord symbol', page: 'how-it-decides', anchor: 'spell.chord', summary: 'A chord symbol follows its scale’s spelling, and a slash bass keeps its interval from the root.' },
 ] as const satisfies readonly DecisionInfo[]

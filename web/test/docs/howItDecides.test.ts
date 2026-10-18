@@ -32,6 +32,21 @@ describe('How it decides', () => {
     expect(page.find('[data-decision="hex.auto"]').text()).toContain(hexatonicChoices('Cmaj7', 'C Ionian', CONCERT)[0]!.name)
   })
 
+  describe('says only what the sheets do (review)', () => {
+    const section = async (id: string) => (await mountSuspended(HowItDecides)).find(`[data-decision="${id}"]`).text().replace(/\s+/g, ' ')
+
+    it('says Auto is per chord, and the Changes ranks by key area until Ranked against is Chord', async () => {
+      const page = await mountSuspended(HowItDecides)
+      expect(page.find('[aria-labelledby="superimposing"]').text()).not.toContain('the same way')
+      expect(await section('pent.auto')).toContain('Ranked against Key')
+    })
+    it('avoids B♯, E♯, C♭ and F♭ where it can, not always', async () => expect(await section('spell.root')).toContain('as few'))
+    it('names the augmented triad’s 5th', async () => expect(await section('guide.tones')).toMatch(/augmented triad its 5th.*3, 7, 6, 4, 5 or 1/))
+    it('spells an enclosure’s step from the chord before', async () => expect(await section('approach.figures')).not.toContain("in the chord's scale"))
+    it('says the Arpeggios sheet runs past the range', async () => expect(await section('range.instrument')).toContain('Arpeggios sheet'))
+    it('says Random deals each chord its own scale', async () => expect(await section('scale.level')).toContain('its own inside scale'))
+  })
+
   it('lists every instrument’s written range', async () => {
     const page = await mountSuspended(HowItDecides)
     const rows = page.findAll('[data-decision="range.instrument"] tbody tr')

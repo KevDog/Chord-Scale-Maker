@@ -25,6 +25,17 @@ describe('Help', () => {
     for (const g of groups.slice(0, 4)) expect(g.findAll('a').at(-1)?.attributes('href'), g.find('h3').text()).toMatch(/^\/how-it-decides#/)
   })
 
+  it('doesn’t name the cells while they’re off (review)', async () => {
+    const features = useRuntimeConfig().public.features as Record<string, unknown>
+    const was = { ...features }
+    Object.assign(features, { cells: false, approaches: true })
+    try {
+      expect((await mountSuspended(Help)).find('[aria-labelledby="controls"]').text()).not.toContain('the cells')
+    } finally {
+      Object.assign(features, was)
+    }
+  })
+
   it('links the Practice and editing choices to their reasons', async () => {
     const hrefs = (await mountSuspended(Help)).findAll('a').map((a) => a.attributes('href'))
     for (const id of ['pent.auto', 'hex.auto', 'pick.order', 'scale.unknown', 'spell.transpose']) expect(hrefs, id).toContain(`/how-it-decides#${id}`)

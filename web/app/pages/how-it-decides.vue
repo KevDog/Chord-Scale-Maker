@@ -62,8 +62,8 @@
           </UiTable>
           <UiText>
             The first row is G7 going home to C; the second is D7 as the V7 of G minor, where the analysis has already chosen
-            Phrygian Dominant. <strong :class="EM">Random</strong> deals a different inside scale to every chord (never an
-            outside one), so you can't coast; <strong :class="EM">Shuffle</strong> deals a new hand.
+            Phrygian Dominant. <strong :class="EM">Random</strong> deals every chord its own inside scale (never an outside
+            one), so you can't coast; <strong :class="EM">Shuffle</strong> deals a new hand.
           </UiText>
           <UiText>
             A level is a view setting, like the instrument: it isn't written into the chart. The level and its shuffle are
@@ -133,8 +133,8 @@
         <DecisionSection id="guide.tones">
           <UiText>
             Each chord's 3rd and 7th. Where a chord has no 7th or no 3rd, something else stands in: a 6 chord uses its 6th, a
-            sus chord its 4th, and a plain triad its root. (A diminished 7th's 7th is its double-flat 7th.) The label under
-            the note is that degree without its flat or sharp: 3, 7, 6, 4 or 1.
+            sus chord its 4th, an augmented triad its 5th, and any other plain triad its root. (A diminished 7th's 7th is its
+            double-flat 7th.) The label under the note is that degree without its flat or sharp: 3, 7, 6, 4, 5 or 1.
           </UiText>
           <UiText>
             <strong :class="EM">What you can change:</strong> the chord. <UiCode>C6</UiCode> in place of
@@ -278,8 +278,8 @@
         <DecisionSection id="approach.figures">
           <UiText v-if="approachesOn">
             <strong :class="EM">Approach</strong>, under Guide Tones, leads into each chord's note with a short figure of
-            eighths: a note a semitone below or above, a pair from one side, an enclosure (a step above in the chord's scale,
-            then a semitone below) and more. A step in the scale is spelled from the scale the sheet shows over the chord
+            eighths: a note a semitone below or above, a pair from one side, an enclosure (a step above in the scale, then a
+            semitone below) and more. A step in the scale is spelled from the scale the sheet shows over the chord
             before; a chromatic note is never B♯, E♯, C♭ or F♭ (into B♭ from above, it's B). Two equal notes in a row
             become one.
           </UiText>
@@ -289,8 +289,8 @@
         <DecisionSection id="approach.place">
           <UiText v-if="approachesOn">
             The target note still lands on its chord's first beat; the chord before gives up its last beat or two to make
-            room, and a note tied over is broken. Under 7th Chords and the cells (with Superimpose off) the figure takes the
-            place of the chord before's last notes, in the line's own rhythm. There's no approach into the first chord, after
+            room, and a note tied over is broken. Under 7th Chords<template v-if="cellsOn"> and the cells</template> (with
+            Superimpose off) the figure takes the place of the chord before's last notes, in the line's own rhythm. There's no approach into the first chord, after
             a rest, where the chord before would keep less than an eighth, or where a note of the figure would leave your
             range. A figure whose first note is the one the line is already on leaves it there: from the 3rd through
             <UiCode>Dm7 G7 Cmaj7</UiCode>, a chromatic approach from above into E is just G7's F, held.
@@ -326,15 +326,17 @@
         <UiSubheading id="superimposing" class="scroll-mt-6">Superimposing</UiSubheading>
         <UiText>
           Superimpose (on the Changes) and the Practice panel's Pentatonic and Hexatonic (on the Scales) lay a smaller set
-          of notes over each chord. Both sheets choose them the same way.
+          of notes over each chord. A chord pick made on one sheet plays on the other.
         </UiText>
 
         <DecisionSection id="pent.auto">
           <UiText>
             Each chord's scale is set against all twelve minor pentatonics. They're ranked by how many notes they share with
             the scale, and among those that share as many, the one fewest fifths from the chord's root comes first, the flat
-            side before the sharp. <strong :class="EM">Auto</strong> plays the top one. Over <UiCode>Cmaj7</UiCode>
-            (C Ionian), the top three:
+            side before the sharp. <strong :class="EM">Auto</strong> plays the top one. That's the Scales sheet's rule, and
+            the Changes sheet's with Ranked against Chord; with Ranked against Key, where the Changes starts, each key area
+            has one pentatonic for all its chords (<UiTextLink href="#pent.inside">the ladder</UiTextLink>). Over
+            <UiCode>Cmaj7</UiCode> (C Ionian), the top three:
           </UiText>
           <UiTable dense>
             <UiTableHead>
@@ -425,10 +427,10 @@
 
         <DecisionSection id="spell.root">
           <UiText>
-            Every scale is worked out from its formula, then spelled the easiest way to read: no double flats or sharps, no
-            B♯, E♯, C♭ or F♭, then the fewest accidentals, and on a tie the sharp or flat side it was written on. So a
-            scale on the ♭2 of B♭ starts on B, not C♭, and G♭ Ionian (six flats) stays G♭, not F♯ (six sharps), because you wrote
-            it flat.
+            Every scale is worked out from its formula, then spelled the easiest way to read: no double flats or sharps, as
+            few B♯s, E♯s, C♭s and F♭s as it can, then the fewest accidentals, and on a tie the sharp or flat side it was written on. So a
+            scale on the ♭2 of B♭ starts on B, not C♭, and G♭ Ionian (six flats, a C♭ among them) stays G♭, not F♯ (six sharps, an
+            E♯ among them), because you wrote it flat.
           </UiText>
           <UiText>
             <strong :class="EM">What you can change:</strong> Spell Scale on the Scales sheet starts every scale on another
@@ -464,9 +466,10 @@
 
         <DecisionSection id="range.instrument">
           <UiText>
-            Every line keeps to a comfortable written range for your instrument, not its whole compass. Guide tone lines turn
-            back at its floor and ceiling; arpeggio and cell lines turn back sooner, keeping mostly between a 4th above the
-            lowest note and a major 3rd below the highest.
+            Every line on the Changes keeps to a comfortable written range for your instrument, not its whole compass. Guide
+            tone lines turn back at its floor and ceiling; arpeggio and cell lines turn back sooner, keeping mostly between a
+            4th above the lowest note and a major 3rd below the highest. The Arpeggios sheet's two-octave runs are placed
+            with as few notes outside it as they can, and the rest go on ledger lines.
           </UiText>
           <UiTable dense>
             <UiTableHead>
