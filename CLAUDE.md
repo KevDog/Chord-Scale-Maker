@@ -65,7 +65,8 @@ README.md for the chart format. The original Python/LilyPond CLI was retired aft
   demands over the rules: write it, with `# keep: …`. Otherwise, where the analyser can only guess, write the
   function (`| | V7/ii`), a section `key:` or an `@key` rather than a scale: a function lets the rules still choose the tensions.
 - "Import <tune> from iReal": `npx csm add <irealb:// link | export.html> --song <n | title> --composer … --form …
-  --aka … --recording …` (`--list` lists a playlist, `--print` previews, `--force` replaces) writes
+  --aka … --recording … [--version …]` (`--version`: a second chart of a tune already in the library, filed as
+  `<title>-<version>.txt`; `--list` lists a playlist, `--print` previews, `--force` replaces) writes
   `engine/charts/<slug>.txt` with its analysis saved, prints what it couldn't map and the `--ambiguous` report, stops on
   Song page gaps (naming the flag for each), then runs `make golden` and `make og`; review the fixtures' diff.
 - Changing an analysis rule (`engine/src/analysis/`, docs/plan-analysis.md): a test first, then `make golden`, and

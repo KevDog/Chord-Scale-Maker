@@ -59,7 +59,8 @@ export function add(args: AddArgs, fx: Effects): number {
     for (const a of p.advice) fx.out(`· ${a}`)
     return 0
   }
-  const named = saveName(song.title)
+  // a version is filed under its title and label (summertime-jazz-lab-accelerator.txt, #411)
+  const named = saveName(args.overrides.version ? `${song.title} ${args.overrides.version}` : song.title)
   if ('error' in named) {
     fx.err(named.error)
     return 1

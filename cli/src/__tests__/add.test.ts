@@ -53,6 +53,20 @@ describe('csm add', () => {
     expect(log.written['/repo/engine/charts/tune.txt']).toContain('composer: Jim Hall\n')
   })
 
+  it('--version: writes version: and names the file after it', () => {
+    const { fx, log } = fake()
+    expect(add(args({ overrides: { version: 'Jazz Lab Accelerator' } }), fx)).toBe(0)
+    expect(Object.keys(log.written)).toEqual(['/repo/engine/charts/tune-jazz-lab-accelerator.txt'])
+    expect(log.written['/repo/engine/charts/tune-jazz-lab-accelerator.txt']).toContain('version: Jazz Lab Accelerator\n')
+  })
+
+  it('an empty --version is not given', () => {
+    const { fx, log } = fake()
+    expect(add(args({ overrides: { version: '' } }), fx)).toBe(0)
+    expect(Object.keys(log.written)).toEqual(['/repo/engine/charts/tune.txt'])
+    expect(log.written['/repo/engine/charts/tune.txt']).not.toMatch(/^version:/m)
+  })
+
   it('--print: prints the chart and the report, writes and runs nothing', () => {
     const { fx, log } = fake()
     expect(add(args({ print: true }), fx)).toBe(0)

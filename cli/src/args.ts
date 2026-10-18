@@ -2,15 +2,15 @@ import { parseArgs } from 'node:util'
 import type { IRealPlaylist } from '@chord-scale-maker/engine'
 
 /** the header lines csm add can set, one flag each */
-export type HeaderFlag = 'composer' | 'form' | 'style' | 'kind' | 'aka' | 'recording' | 'source'
-export const HEADER_FLAGS: readonly HeaderFlag[] = ['composer', 'form', 'style', 'kind', 'aka', 'recording', 'source']
+export type HeaderFlag = 'composer' | 'form' | 'style' | 'kind' | 'aka' | 'recording' | 'source' | 'version'
+export const HEADER_FLAGS: readonly HeaderFlag[] = ['composer', 'form', 'style', 'kind', 'aka', 'recording', 'source', 'version']
 const KINDS = ['tune', 'form', 'exercise']
 
 export type AddArgs = Readonly<{ input: string; list: boolean; song?: string; force: boolean; print: boolean; overrides: Readonly<Partial<Record<HeaderFlag, string>>> }>
 
 export const USAGE = [
   'usage: csm add <irealb:// link | export.html> [--list] [--song <n | title>] [--force] [--print]',
-  '               [--composer …] [--form …] [--style …] [--kind tune|form|exercise] [--aka …] [--recording …] [--source …]',
+  '               [--composer …] [--form …] [--style …] [--kind tune|form|exercise] [--aka …] [--recording …] [--source …] [--version …]',
 ].join('\n')
 
 /** csm add's arguments, or the usage error */
