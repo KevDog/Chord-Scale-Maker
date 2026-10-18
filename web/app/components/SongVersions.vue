@@ -13,24 +13,22 @@
 </template>
 
 <script setup lang="ts">
-import { tuneNamed } from '~/utils/library'
-import { listCharts, loadChart } from '~/utils/myCharts'
+import { chartText, listCharts, savedRevision } from '~/utils/myCharts'
 import { songPath } from '~/utils/site'
-import { type ChartAt, savedVersion, type SavedVersion, versionChoices } from '~/utils/songVersions'
+import { type ChartAt, ofTune, savedVersion, tuneAt, versionChoices } from '~/utils/songVersions'
 
 const props = defineProps<{ at: ChartAt }>()
 
-/** your saved charts that could be a library tune's: only these are read in full, for their version: line */
-function savedOfLibrary(): SavedVersion[] {
-  return listCharts()
-    .filter((m) => m.kind !== 'edited' && (m.basedOn || tuneNamed(m.title)))
-    .flatMap((m) => {
-      const c = loadChart(m.id)
-      return c ? [savedVersion(c)] : []
-    })
-}
-
-const choices = computed(() => versionChoices(props.at, savedOfLibrary()))
+// the tune first, then only its saved charts' texts are read (for their version: lines); a save or delete re-reads
+const choices = computed(() => {
+  void savedRevision.value
+  const tune = tuneAt(props.at)
+  const mine = tune ? listCharts().filter((m) => ofTune(tune, m)) : []
+  return versionChoices(tune, mine.flatMap((m) => {
+    const text = chartText(m.id)
+    return text === null ? [] : [savedVersion(m, text)]
+  }))
+})
 const all = computed(() => [...choices.value.library, ...choices.value.mine])
 const current = computed(() => ('slug' in props.at ? songPath(props.at.slug) : `/song?mine=${props.at.mine.id}`))
 const labelOf = (path: string): string => all.value.find((c) => c.path === path)?.label ?? ''

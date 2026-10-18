@@ -1,4 +1,5 @@
 import { chartMeta, LIMITS, MODES, parseChart } from '@chord-scale-maker/engine'
+import { ref } from 'vue'
 import { LEGACY_STARTER_CHART } from '~/utils/starterChart'
 import { practiceKey } from '~/utils/practiceKey'
 
@@ -60,6 +61,12 @@ export function loadChart(id: string): SavedChart | null {
   return meta && text !== null ? { meta, text } : null
 }
 
+/** a saved chart's text alone, without reading the index (null for none) */
+export const chartText = (id: string): string | null => readStored(textKey(id))
+
+/** counts this tab's saves and deletes: a view of your charts reads it to follow them (the version picker, #411) */
+export const savedRevision = ref(0)
+
 /** your edited version of a library chart, if you've made one */
 export const versionOf = (slug: string): SavedMeta | null => readIndex().find((m) => m.kind === 'edited' && m.basedOn === slug) ?? null
 
@@ -77,6 +84,7 @@ export function saveChart(input: Readonly<{ id: string; text: string; kind: Save
     : { id: input.id, title: titleOf(input.text), kind: input.kind, ...(input.basedOn ? { basedOn: input.basedOn } : {}), createdAt: now, updatedAt: now }
   const next = old ? index.map((m) => (m.id === meta.id ? meta : m)) : [...index, meta]
   if (!tryWriteStored(textKey(meta.id), input.text) || !tryWriteStored(INDEX, JSON.stringify(next))) return { ok: false, reason: 'full' }
+  savedRevision.value++
   return { ok: true, meta }
 }
 
@@ -85,6 +93,7 @@ export function deleteChart(id: string): void {
   writeStored(INDEX, JSON.stringify(readIndex().filter((m) => m.id !== id)))
   removeStored(textKey(id))
   for (const mode of MODES) removeStored(practiceKey(`mine:${id}`, mode))
+  savedRevision.value++
 }
 
 /** the old single draft (the hidden New chart's), moved into My charts once; one still holding a starter is left behind */

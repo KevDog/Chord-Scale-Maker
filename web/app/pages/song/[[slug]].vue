@@ -58,7 +58,7 @@
 import { canonicalUrl, libraryPath, PAGE_HEAD, seoMeta } from '~/utils/site'
 import { rememberRecent } from '~/utils/recentCharts'
 import { songHead } from '~/utils/songHead'
-import { type ChartAt, savedVersion } from '~/utils/songVersions'
+import type { ChartAt } from '~/utils/songVersions'
 import { chartName, decodeShare, parseChart, type ShareView } from '@chord-scale-maker/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 
@@ -174,8 +174,10 @@ const versionsAt = computed((): ChartAt | null => {
   const s = source.value
   if (s.kind !== 'chart') return null
   if (song) return { slug: slug() }
-  const saved = s.target?.kind === 'mine' ? loadChart(s.target.id) : null
-  return saved ? { mine: savedVersion(saved) } : null
+  void savedRevision.value // its title can change as you edit it
+  const id = s.target?.kind === 'mine' ? s.target.id : ''
+  const saved = id ? listCharts().find((m) => m.id === id) : undefined
+  return saved ? { mine: saved } : null
 })
 // in the browser, the tab and history name the chart ("Blue Trane · Chord Scale Maker"); the prerender has none
 const chartTitle = computed(() => (import.meta.client && source.value.kind === 'chart' ? chartName(parseChart(source.value.text).value) : ''))

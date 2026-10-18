@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from 'vitest'
-import { deleteChart, filenameFor, listCharts, loadChart, migrateChartNames, migrateDraft, MY_CHARTS_MAX, newChartId, saveChart, versionOf } from '~/utils/myCharts'
+import { chartText, deleteChart, filenameFor, listCharts, loadChart, migrateChartNames, migrateDraft, MY_CHARTS_MAX, newChartId, saveChart, savedRevision, versionOf } from '~/utils/myCharts'
 
 const chart = (title: string, chord = 'Cm7'): string => `title: ${title}\nsection: A\n1 | ${chord}\n`
 
@@ -18,6 +18,16 @@ describe('My charts', () => {
     deleteChart('aaaaaa1')
     expect(loadChart('aaaaaa1')).toBeNull()
     expect(localStorage.getItem('csm-chart:aaaaaa1')).toBeNull()
+  })
+
+  it('counts each save and delete, so a view of your charts can follow them, and reads a chart\'s text alone', () => {
+    const before = savedRevision.value
+    saveChart({ id: 'aaaaaa1', text: chart('Alpha'), kind: 'new' }, 1)
+    expect(savedRevision.value).toBe(before + 1)
+    expect(chartText('aaaaaa1')).toBe(chart('Alpha'))
+    deleteChart('aaaaaa1')
+    expect(savedRevision.value).toBe(before + 2)
+    expect(chartText('aaaaaa1')).toBeNull()
   })
 
   it('updates a chart in place, keeping its kind and origin', () => {

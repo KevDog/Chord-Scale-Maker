@@ -1057,7 +1057,8 @@ its reasons into a chart as comments.
     (`songSlugs`, `utils/sitemap.ts`), and its OG card carries the label. Scale pages list a tune once. The song page's
     version picker (`SongVersions.vue`, `versionChoices`) is behind the `versions` flag: the library's charts ("Main"
     first), then a "Mine" group of your saved charts of the tune (`basedOn` one of its charts, or titled as its main),
-    by their `version:` or "My chart", numbered when several; it shows on those charts' `?mine=` pages too. Your edits
+    oldest first, by their `version:` or "My chart" ("(mine)" after a label the library has, numbered when several
+    share one), re-read on each save (`savedRevision`); it shows on those charts' `?mine=` pages too. Your edits
     of a library chart are left out: that chart's own page shows them.
   - An unknown name (`findChart` in `utils/library.ts`) goes to the library.
 - **Head tags** (`utils/site.ts`):

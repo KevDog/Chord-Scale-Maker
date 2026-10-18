@@ -1,5 +1,5 @@
 import { SITE_URL } from '../app/utils/site'
-import { expect, staves, test } from './fixtures'
+import { expect, staves, test, writeChart } from './fixtures'
 
 // a tune with two library charts: Summertime and its Jazz Lab Accelerator version (#411)
 
@@ -44,6 +44,14 @@ test('your saved charts of a tune join its picker, under Mine, and open there', 
   await page.getByRole('option', { name: 'Main' }).click()
   await expect(page).toHaveURL(/\/song\/summertime$/)
   await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', `${SITE_URL}/song/summertime`)
+})
+
+test('the picker follows your chart as you write it: a new chart titled as a tune, then its version: line', async ({ page }) => {
+  await writeChart(page, 'title: Summertime\nkey: Am\n\nsection: A\nbars: 4\n1 | Am6\n')
+  const picker = page.getByRole('button', { name: 'Version' })
+  await expect(picker).toContainText('My chart')
+  await page.getByLabel('Chart text').fill('title: Summertime\nversion: Ballad\nkey: Am\n\nsection: A\nbars: 4\n1 | Am6\n')
+  await expect(picker).toContainText('Ballad')
 })
 
 test.describe('without JavaScript', () => {
