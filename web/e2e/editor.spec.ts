@@ -354,8 +354,9 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
   const line = page.locator('#preview-toolbar [data-slot=label]').getByText('Line', { exact: true })
   // where the label sits in the toolbar (not the viewport: a shorter sheet below can scroll the page)
   const place = async () => {
-    const [l, t] = await Promise.all([line.boundingBox(), page.locator('#preview-toolbar').boundingBox()])
-    return l && t ? { x: l.x - t.x, y: l.y - t.y } : null
+    const [l, t] = await Promise.all([line.boundingBox(), page.getByRole('group', { name: 'Sheet controls' }).boundingBox()])
+    if (!l || !t) throw new Error('the Line label or the rail has no box')
+    return { x: l.x - t.x, y: l.y - t.y }
   }
   // the Cells (#298) are in the 7th Chords pattern listbox, not a fourth mode: with one chosen the rail keeps two rows and the label its place
   const home = await place()
@@ -394,6 +395,23 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
   expect(approached.rows, `Changes, Guide Tones with an Approach (${approached.widths})`).toBeLessThanOrEqual(2)
   expect(approached.lineGroup, 'the Line group does not widen').toBeLessThanOrEqual(bare.lineGroup)
   expect(await place(), 'Approach').toEqual(at)
+})
+
+test('choosing a Superimpose option leaves the Superimpose in its place (#387)', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/song/autumn-leaves')
+  const superimpose = page.getByRole('button', { name: 'Superimpose', exact: true })
+  // where it sits in the toolbar (not the viewport: a shorter sheet below can scroll the page)
+  const place = async () => {
+    const [s, t] = await Promise.all([superimpose.boundingBox(), page.getByRole('group', { name: 'Sheet controls' }).boundingBox()])
+    if (!s || !t) throw new Error('the Superimpose or the rail has no box')
+    return { x: s.x - t.x, y: s.y - t.y }
+  }
+  const home = await place()
+  for (const option of ['Pentatonic', 'Hexatonic', 'Pentatonic', 'Off']) {
+    await pickOption(page, 'Superimpose', new RegExp(`^${option}`))
+    expect(await place(), option).toEqual(home)
+  }
 })
 
 
