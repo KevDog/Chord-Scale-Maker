@@ -13,6 +13,10 @@ README.md for the chart format. The original Python/LilyPond CLI was retired aft
 - `make setup` once, then `make test` after changes (typecheck + vitest); `make lint`; `make e2e` (Playwright);
   `make a11y` (template lint + axe scans in `web/e2e/a11y/`, not in `make e2e`; the pre-push hook runs it when a push
   touches `web/app/`; known violations are exceptions in `web/e2e/a11y/axe.ts`, each with an issue); `make dev` / `make preview`.
+- Docs: a new heuristic (anything the app chooses for the user) adds a row to `DECISIONS` (`engine/src/decisions.ts`)
+  with its doc anchor. A PR that changes user-facing behaviour (engine, `chord_scales.json`, components, composables,
+  the song page) touches a docs page (Help, Functions, …) or `decisions.ts`, or its description carries
+  `Docs: none — <reason>`: the `docs` check fails otherwise. `make docs` runs the anchor test and the link check.
 - The design is in `docs/design.md` (kept current; the `docs/plan-*.md` files are historical).
 - Two npm workspace packages: `engine/` (`@chord-scale-maker/engine`: the engine in `engine/src/`, pure TypeScript,
   with its data `chord_scales.json`, `charts/`, `fixtures/` and its tools in `engine/scripts/`) and `web/` (the Nuxt

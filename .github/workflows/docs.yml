@@ -1,0 +1,31 @@
+name: docs
+# the docs gate (web/build/docsGate.ts): a PR that changes user-facing behaviour changes the docs, or its description
+# says why not (`Docs: none — <reason>`). Its own workflow, not a job in ci.yml, so that editing the description
+# (`edited`) re-runs this check alone, not engine and e2e
+on:
+  pull_request:
+    types: [opened, synchronize, reopened, edited]
+permissions:
+  contents: read
+concurrency:
+  group: docs-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+jobs:
+  docs:
+    # Dependabot's bumps change no behaviour a user reads about; a skipped required check reports success
+    if: github.actor != 'dependabot[bot]'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          fetch-depth: 0
+      - uses: actions/setup-node@949feb2413d6458794dcd2491c4babbbce0c15c1 # v7.1.0
+        with:
+          node-version: '24'
+      # the description comes in through the environment, never into the script's text; bash brings pipefail, so a
+      # failing git diff fails the check instead of passing an empty list
+      - shell: bash
+        env:
+          BASE_REF: ${{ github.base_ref }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: git diff --name-only "origin/$BASE_REF...HEAD" | node web/build/check-docs.ts

@@ -61,6 +61,8 @@ jobs:
       - run: npm test
         working-directory: .
       - run: npm run build
+      # every internal link and #fragment on the prerendered site resolves (build/links.ts)
+      - run: npm run check:links
       # what Vercel will serve: headers on pages and assets, CSP meta on every page
       - run: npm run check:headers
       # gate on what ships to browsers (vue, vexflow, the engine); build tooling advisories are reported, not blocking

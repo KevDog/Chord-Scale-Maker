@@ -51,6 +51,7 @@ engine/                   # @chord-scale-maker/engine (superpowers/specs/2026-10
     arpeggios.ts          # 7th chord arpeggios for the Changes sheet (arpeggioVoices)
     voiceLeading.ts       #   RANGES (the clefs' default ranges), and voiceLead (Viterbi over pairs), kept only to compare
     tune.ts               # tuneSummary, tuneDescription (a song page's text), tuneGaps/tuneAdvice (§7b)
+    decisions.ts          # DECISIONS (every heuristic's id and doc anchor), decisionHref, decisionOf (§5 Documentation)
     util.ts               # orNull, chunk
     limits.ts             # input caps
     index.ts
@@ -80,7 +81,8 @@ web/                      # Nuxt app (Vercel root directory); imports @chord-sca
                           # field, table, interactive (Catalyst wiring),
                           # site (canonical URLs, page heads), structuredData (JSON-LD), sitemap (§7b)
     assets/css/main.css   # Tailwind, theme tokens, print rules
-  build/                  # csp.ts, headers.ts, analytics.ts, quotes.ts, sw.ts + service-worker.js (+ tests, check-headers)
+  build/                  # csp.ts, headers.ts, analytics.ts, quotes.ts, sw.ts + service-worker.js (+ tests, check-headers);
+                          # links.ts + check-links (the link check), docsGate.ts + check-docs (the docs gate) (§5 Documentation)
   server/                 # routes/sitemap.xml.ts (prerendered, §7b), api/contact.post.ts, utils/contactMessage.ts (+ test: message and attachment checks), plugins/csp.ts
   public/theme-init.js    # applies the saved theme before first paint
   public/analytics-before-send.js  # strips a share link's #… before Web Analytics sends a page view
@@ -738,6 +740,23 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
   Where picks would make a link too big to open, `encodeShare` leaves them out. Old links open with none.
 - **Tier:** the popovers are at Everything (`CONTROL_TIERS` `chord-picks`); picks in force at a lower level are named
   by the notice (`HiddenSetting` `chord-picks`).
+
+### Documentation ([spec](superpowers/specs/2026-10-17-user-docs-restructure-design.md), Phase 1)
+
+- **Decision registry:** `DECISIONS` (`engine/src/decisions.ts`) names every heuristic the app applies when it chooses
+  something for the user (`guide.move`, `pent.auto`, `spell.transpose`, …), each with its page and anchor. The analysis
+  rules keep their own ids and rows (`rule-M3` → `/functions#rule-M3`). `decisionHref` / `decisionOf` give the link;
+  `<DecisionLink id="…">` renders it with the summary as its title. Until How it decides exists (Phase 2) the
+  anchors are Help's and Functions' sections. Adding a heuristic adds a row.
+- **Checks:** `web/test/docs/decisions.test.ts` mounts each page and finds each decision's anchor once (in `make
+  test`); `npm run check:links` walks `.output/public` after the build and fails on an internal link whose page or
+  `#fragment` is missing (CI's `engine` job); `make docs` runs both, and the pre-push hook runs it when a push touches
+  the docs pages, `decisions.ts` or `rules.ts`.
+- **Docs gate:** `.github/workflows/docs.yml` (its own workflow, so editing the PR description re-runs only it): a PR
+  touching `engine/src/` (not its tests), `chord_scales.json`, `web/app/components/`, `composables/` or
+  `pages/song/` must touch a docs page (`help`, `how-it-decides`, `functions`, `chart-format`, `glossary`) or
+  `decisions.ts`, or carry `Docs: none — <reason>` (or `--`) on a line of its description, outside a comment.
+  Dependabot is skipped. The PR template offers both lines.
 
 ### Shared
 
