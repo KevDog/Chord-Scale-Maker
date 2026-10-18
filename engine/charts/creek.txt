@@ -3,7 +3,7 @@ composer: Victor Brasil
 style: Up samba
 key: F
 form: AB, 38 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; F
 # A is played twice before the solos (2nd time the solo starts at bar 19), once after; B is the solo section
 # the B solo chorus repeats; after solos, D.S. al Coda

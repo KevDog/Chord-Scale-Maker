@@ -6,7 +6,7 @@ key: G#m
 # key: the book writes Ab minor; G#m is the key signature the app offers
 form: AB, 24 bars
 context: modal
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; G# minor, modal
 
 # the head is played twice before and after the solos; Fine at the end of B

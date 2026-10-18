@@ -3,7 +3,7 @@ composer: Joe Henderson
 style: Medium Latin
 key: Am
 form: ABC, 28 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; A minor, modal
 # the book: "Med. Latin", half note = 110
 # the intro is a bass figure with no chords (N.C., vamp till cue; bass simile till B)

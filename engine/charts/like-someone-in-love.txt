@@ -3,7 +3,7 @@ composer: Jimmy Van Heusen
 style: Medium swing
 key: C
 form: AB, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: John Coltrane; Lush Life; Prestige; 1961
 youtube: 0x_GC01P_Ig
 # analysis: 2026-10-17, rules v1; C

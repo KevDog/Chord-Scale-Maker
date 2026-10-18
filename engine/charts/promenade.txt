@@ -3,7 +3,7 @@ composer: Denny Zeitlin
 style: Medium ballad
 key: G
 form: ABCDEFGH, 81 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; G
 # book: head A–D: March-like (quarter = 90), B Freely, D a tempo, ending at (fine) on C6/9.
 # Solos: Med. Ballad (quarter = 69) on E F G H (F "Swing (in 2)", H "in 4"; F and G may also be swung in 4); after solos, D.C. al fine

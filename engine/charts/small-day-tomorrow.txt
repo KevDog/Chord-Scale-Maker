@@ -3,7 +3,7 @@ composer: Bob Dorough
 style: Ballad
 key: Em
 form: ABC, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; E minor
 # book: Med. Jazz Ballad, quarter = 60
 # the book repeats A–C (a repeat sign at A and at the end of C); solos on A and B; after solos, D.S. al Coda

@@ -3,7 +3,7 @@ composer: Josef Zawinul
 style: Medium slow funky rock
 key: Bb
 form: A, 20 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; Bb
 # book: as played by Cannonball Adderley. One unlettered 20-bar section, repeated; last time, after bar 16, to the Coda.
 # bars 9–12: the last chord of each odd bar is pushed on the "and" of 4 and held into the next bar

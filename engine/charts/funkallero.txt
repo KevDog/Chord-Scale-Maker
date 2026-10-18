@@ -3,7 +3,7 @@ composer: Bill Evans
 style: Medium up
 key: Cm
 form: AB, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Bill Evans; The Interplay Sessions; Milestone; 1982
 youtube: JYxHWQ_dIP0
 # analysis: 2026-10-17, rules v1; C minor

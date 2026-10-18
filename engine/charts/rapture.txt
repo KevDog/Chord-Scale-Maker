@@ -3,7 +3,7 @@ composer: Harold Land
 style: Latin
 key: F
 form: AAB, 34 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; F
 # book: Medium Latin (half note = 122). Trumpet plays the melody throughout; chords in parentheses are used for solos.
 # Solo on form (AAB), taking the "On Cue" ending to end the last solo; then D.S. al Coda

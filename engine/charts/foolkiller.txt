@@ -3,7 +3,7 @@ composer: Mose Allison
 style: Medium up Latin
 key: Eb
 form: AB, 30 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; Eb
 # the book: "Medium-Up Funky Latin", quarter = 174
 # intro: piano solo, repeated with 1st and 2nd endings

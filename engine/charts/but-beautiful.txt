@@ -3,7 +3,7 @@ composer: Jimmy Van Heusen
 style: Medium ballad
 key: G
 form: AB, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Billie Holiday; Lady in Satin; Columbia; 1958
 youtube: SRJNVJv-3xY
 # analysis: 2026-10-12, rules v1; G

@@ -4,7 +4,7 @@ style: Medium swing
 key: Bb
 form: AB, 32 bars
 time: 6/4
-source: 
+source: The New Real Book, Vol. 1
 recording: Wayne Shorter; Speak No Evil; Blue Note; 1966
 youtube: CjGEYuITiVM
 # analysis: 2026-10-17, rules v1; Bb

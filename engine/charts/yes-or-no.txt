@@ -4,7 +4,7 @@ composer: Wayne Shorter
 style: Up
 key: Em
 form: AABA, 58 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Wayne Shorter; JuJu; Blue Note; 1965
 youtube: fK9CiB1Tu24
 # analysis: 2026-10-17, rules v1; E minor

@@ -3,7 +3,7 @@ composer: Thelonious Monk, Coleman Hawkins
 style: Medium swing
 key: F
 form: AABCD head (36 bars), solos on EEFG (AABA, 32 bars)
-source: 
+source: The New Real Book, Vol. 1
 recording: Thelonious Monk; Genius of Modern Music; Blue Note; 1951
 youtube: Lov30CfofmQ
 # analysis: 2026-10-12, rules v1; F

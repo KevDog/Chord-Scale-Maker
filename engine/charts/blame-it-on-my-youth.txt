@@ -3,7 +3,7 @@ composer: Oscar Levant
 style: Ballad
 key: Eb
 form: AB, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; Eb
 
 # bar | chord

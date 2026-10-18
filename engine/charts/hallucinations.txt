@@ -4,7 +4,7 @@ composer: Bud Powell
 style: Up
 key: F
 form: AABCD EEFG, 70 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; F
 # book: Bright bebop. Head: A A B C D; solos on E E F G; after solos, D.C. al Coda (from C bar 8).
 # the pickup before A has no chord; chords the book pushes an eighth before a barline are written in the next bar

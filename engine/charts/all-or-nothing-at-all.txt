@@ -3,7 +3,7 @@ composer: Arthur Altman
 style: Medium swing
 key: Am
 form: AABA, 64 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; A minor
 
 # bar | chord

@@ -3,7 +3,7 @@ composer: McCoy Tyner
 style: Medium ballad
 key: F
 form: AABC, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: McCoy Tyner; The Real McCoy; Blue Note; 1967
 youtube: 9XVNzU9OqMc
 # analysis: 2026-10-12, rules v1; F

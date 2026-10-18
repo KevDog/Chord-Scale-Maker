@@ -4,7 +4,7 @@ composer: Ron Carter
 style: Medium Latin rock
 key: F
 form: ABC, 36 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; F, modal
 
 # bar | chord

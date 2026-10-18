@@ -4,7 +4,7 @@ style: Medium swing
 # book: Med. Bounce (Swing)
 key: F
 form: ABC, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; F
 
 # the book's A is two 8-bar A's (AABA); its C is the last A

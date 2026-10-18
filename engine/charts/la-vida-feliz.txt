@@ -4,7 +4,7 @@ composer: McCoy Tyner
 style: Medium Latin
 key: Dm
 form: ABCD head + EFGH solos, 80 bars
-source: 
+source: The New Real Book, Vol. 1
 context: modal
 recording: McCoy Tyner; La Leyenda de la Hora; Columbia; 1981
 # analysis: 2026-10-17, rules v1; D minor, modal

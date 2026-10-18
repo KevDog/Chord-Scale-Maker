@@ -4,7 +4,7 @@ style: Medium swing
 key: Eb
 form: ABC, 40 bars
 context: blues
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; Eb, blues
 # Med. swing (blues); A is a 12-bar blues verse, B a 16-bar verse (segno), C the 12-bar solo blues (repeated)
 # after solos, D.S. (3rd verse) al Coda

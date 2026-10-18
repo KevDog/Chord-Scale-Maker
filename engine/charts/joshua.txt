@@ -3,7 +3,7 @@ composer: Victor Feldman
 style: Up
 key: Dm
 form: AABC head + DDEEEF solos, 104 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; D minor
 
 # the intro is a bass figure with no chords (the bass vamp continues under A and C)

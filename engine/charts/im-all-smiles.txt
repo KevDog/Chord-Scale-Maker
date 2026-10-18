@@ -5,7 +5,7 @@ style: Jazz waltz
 key: D
 form: AABC, 78 bars
 time: 3/4
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; D
 
 # the C section is 30 bars, as printed

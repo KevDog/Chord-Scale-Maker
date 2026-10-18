@@ -3,7 +3,7 @@ composer: Bill Evans
 style: Medium ballad
 key: Bb
 form: A with 1st and 2nd endings, 42 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Bill Evans; We Will Meet Again; Warner Bros.; 1980
 youtube: hna_0xsPlaE
 # analysis: 2026-10-17, rules v1; Bb

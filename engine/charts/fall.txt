@@ -4,7 +4,7 @@ style: Ballad
 # the book: "Medium Ballad (with triplet undercurrent)", quarter = 82 ("As played by Miles Davis")
 key: Em
 form: A, 16 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Miles Davis; Nefertiti; Columbia; 1968
 youtube: BmWX1erp_u4
 # analysis: 2026-10-17, rules v1; E minor

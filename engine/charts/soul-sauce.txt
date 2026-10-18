@@ -4,7 +4,7 @@ composer: Dizzy Gillespie, Chano Pozo
 style: Latin
 key: C
 form: ABCD + solos, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 context: modal
 recording: Cal Tjader; Soul Sauce; Verve; 1965
 youtube: NZPJI2xGwkM

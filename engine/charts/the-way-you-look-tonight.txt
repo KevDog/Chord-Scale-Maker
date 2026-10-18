@@ -3,7 +3,7 @@ composer: Jerome Kern
 style: Medium up
 key: F
 form: AABC, 68 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Ella Fitzgerald; Ella Fitzgerald Sings the Jerome Kern Song Book; Verve; 1963
 youtube: -F9vX3uNjXU
 # analysis: 2026-10-17, rules v1; F

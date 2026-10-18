@@ -3,7 +3,7 @@ composer: Jerome Kern
 style: Medium swing
 key: Dm
 form: AB, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Clifford Brown; Clifford Brown with Strings; EmArcy; 1955
 youtube: ugiwi7AGEgM
 # analysis: 2026-10-17, rules v1; D minor

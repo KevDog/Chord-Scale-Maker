@@ -3,7 +3,7 @@ composer: Art Farmer
 style: Medium up
 key: F
 form: AB, 24 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; F
 # the book: "Med.-Up Swing"
 # the intro (optional, N.C.) is a melodic figure with no chords

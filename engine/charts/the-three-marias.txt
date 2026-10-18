@@ -5,7 +5,7 @@ key: Ab
 form: AABCDDEFG, 76 bars
 context: modal
 time: 6/4
-source: 
+source: The New Real Book, Vol. 1
 recording: Wayne Shorter; Atlantis; Columbia; 1985
 youtube: bYjfHviuOGM
 # analysis: 2026-10-12, rules v1; Ab, modal

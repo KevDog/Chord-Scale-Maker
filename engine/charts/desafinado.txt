@@ -4,7 +4,7 @@ composer: Antonio Carlos Jobim
 style: Bossa nova
 key: F
 form: AABC, 68 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: João Gilberto; Chega de Saudade; Odeon; 1959
 youtube: cPavMxC5Uic
 # analysis: 2026-10-17, rules v1; F

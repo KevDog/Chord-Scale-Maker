@@ -3,7 +3,7 @@ composer: Bill Evans
 style: Medium swing
 key: C
 form: A, 16 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Bill Evans Trio; Moon Beams; Riverside; 1962
 youtube: Rbl_8k5v9x4
 # analysis: 2026-10-17, rules v1; C

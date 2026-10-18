@@ -3,7 +3,7 @@ composer: Billy Strayhorn
 style: Medium ballad
 key: Db
 form: AABC, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; Db
 
 # the pickup bar is N.C.

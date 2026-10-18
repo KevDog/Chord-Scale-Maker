@@ -3,7 +3,7 @@ composer: Seymour Simons, Gerald Marks
 style: Medium swing
 key: C
 form: AB, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; C
 
 # bar | chord

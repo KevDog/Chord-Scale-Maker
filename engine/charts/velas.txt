@@ -4,7 +4,7 @@ composer: Ivan Lins
 style: Medium slow Latin funk
 key: Bb
 form: AABC, 56 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; Bb
 # as played by Quincy Jones; D.S. (to B) al Coda; the coda vamps and fades
 # the intro is from the Bobbi Norris LP, played on bass; on the Quincy Jones version guitar improvises over it

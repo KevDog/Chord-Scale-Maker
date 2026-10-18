@@ -3,7 +3,7 @@ composer: Sonny Rollins
 style: Medium up Latin
 key: Fm
 form: ABAC, 36 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Miles Davis; Miles Davis with Sonny Rollins; Prestige; 1954
 youtube: xxop4KMVPpY
 # analysis: 2026-10-17, rules v1; F minor

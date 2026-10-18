@@ -3,7 +3,7 @@ composer: Makoto Ozone
 style: Medium straight eighths
 key: G
 form: ABCD, 62 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; G
 # A–B is the head; C–D are the solo changes ("Solo on CD; after solos D.C. al Coda")
 # the head's A is engraved two bars to a measure in places; the bars here follow the solo section's barring

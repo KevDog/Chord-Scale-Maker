@@ -4,7 +4,7 @@ style: Bright jazz waltz
 key: Eb
 time: 3/4
 form: ABCD, 112 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; Eb
 # book: as played by Cannonball Adderley
 # routing: Intro vamp, A (head), D.S. al solos; solo form is A (once), B (indefinitely, till cue);
