@@ -6,7 +6,10 @@ style: Latin
 key: D
 form: AABC, 44 bars
 source: Songbook Tom Jobim vol. 2 (Chediak), pp. 109–110
+recording: Antonio Carlos Jobim; Wave; A&M; 1967
+youtube: JGqzKmp_5Bg
 # analysis: 2026-10-17, rules v1; D
+# recording: recorded May 1967, Van Gelder Studio, Englewood Cliffs, Jobim with Claus Ogerman (arr.), Ron Carter, Urbie Green, prod. Creed Taylor (A&M/CTI SP 3002); the title track, Jobim's own first recording; sources: Wikipedia; video: Universal Music Group "Provided to YouTube" upload, album Wave, released 1967-06-15, 2:57
 # source: earlier from the Colorado Cookbook, p. 261; now the Songbook's chords, with the tensions the format writes
 
 # bar | chord | scale

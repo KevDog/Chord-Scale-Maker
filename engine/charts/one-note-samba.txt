@@ -6,7 +6,10 @@ style: Latin
 key: Bb
 form: ABC, 40 bars
 source: Colorado Cookbook, p. 170
+recording: Antonio Carlos Jobim; The Composer of Desafinado, Plays; Verve; 1963
+youtube: nwerSLDhqZo
 # analysis: 2026-10-17, rules v1; Bb
+# recording: recorded May 1963, New York, Jobim with Claus Ogerman's orchestra, prod. Creed Taylor (Verve V6-8547); Jobim's own first recording as leader; first recorded by João Gilberto on O Amor, o Sorriso e a Flor (Odeon 1960, Jobim arranging), and Getz/Byrd's Jazz Samba (Verve 1962) brought it to jazz players, but this is Jobim's own; sources: Wikipedia; video: Zebralution "Provided to YouTube" upload of the same album track (remastered), 2:14
 
 # bar | chord | scale
 

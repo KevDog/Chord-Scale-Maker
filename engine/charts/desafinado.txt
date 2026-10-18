@@ -5,7 +5,10 @@ style: Bossa nova
 key: F
 form: AABC, 68 bars
 source: 
+recording: João Gilberto; Chega de Saudade; Odeon; 1959
+youtube: cPavMxC5Uic
 # analysis: 2026-10-17, rules v1; F
+# recording: recorded 1958-11-10, arranged by Jobim, first issued on the Odeon 78 14.426 (with "Hô-Ba-La-Lá"), first LP Odeon MOFB 3073 (1959); the first recording, with Jobim as arranger, weighed over his own instrumental on The Composer of Desafinado, Plays (Verve 1963) as the definitive reading of the song; Getz/Byrd's Jazz Samba (Verve 1962) was the US hit; sources Wikipedia (Desafinado, Chega de Saudade album), MusicBrainz; video: Topic upload, "Chega de Saudade" ℗ 1959 Odeon MOFB 3073, 1:59 against the LP's 1:58, the same take
 
 # bar | chord
 

@@ -4,7 +4,10 @@ style: Medium swing
 key: C
 form: AB, 32 bars
 source: 
+recording: John Coltrane; Lush Life; Prestige; 1961
+youtube: 0x_GC01P_Ig
 # analysis: 2026-10-17, rules v1; C
+# recording: recorded 1957-08-16, Van Gelder Studio, Hackensack, Coltrane, Earl May, Art Taylor (pianoless trio); chart follows no version, so a reference jazz reading; Prestige PRLP 7188, released Feb/Mar 1961; Bill Evans (New Jazz Conceptions) and Art Blakey are the other common references; sources: Wikipedia (Lush Life (John Coltrane album)); video: "Provided to YouTube by Universal Music Group" Lush Life track, the same take
 # book: letters A (16 bars) and B (16 bars); all changes get 2 beats each when 2 to the bar.
 
 # bar | chord

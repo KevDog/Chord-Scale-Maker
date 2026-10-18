@@ -5,7 +5,10 @@ style: Latin
 key: Bb
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 251
+recording: Antonio Carlos Jobim; Wave; A&M; 1967
+youtube: vhTH-Fv-c-g
 # analysis: 2026-10-17, rules v1; Bb
+# recording: recorded May 1967, Van Gelder Studio, Englewood Cliffs, Jobim with Claus Ogerman (arr.), Ron Carter, Urbie Green, prod. Creed Taylor (A&M/CTI SP 3002); Jobim's own first recording of the tune; sources: Wikipedia; video: Universal Music Group "Provided to YouTube" upload, album Wave, released 1967-06-15, 2:10
 
 # bar | chord | scale
 # the lead sheet repeats Bbm7 Eb7 for two more bars before going back to the top

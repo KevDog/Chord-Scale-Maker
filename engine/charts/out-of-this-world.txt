@@ -4,7 +4,9 @@ style: Medium Latin
 key: Eb
 form: ABCD, 74 bars
 source: 
+recording: John Coltrane; Coltrane; Impulse!; 1962
 # analysis: 2026-10-12, rules v1; Eb
+# recording: recorded June 1962 at Van Gelder Studio, Coltrane with McCoy Tyner, Jimmy Garrison, Elvin Jones; chart follows no named version; songbook standard: the classic quartet's reading is the jazz reference for this Arlen–Mercer song (film Out of This World, 1945); Impulse! A-21, released July 1962; sources: Wikipedia
 # book: Med. Latin; may also be played as Med. Swing, or letter C and the solos may swing
 # book: the last 2 bars of letter C (C bars 17–18) may be omitted
 

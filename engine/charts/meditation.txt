@@ -6,7 +6,10 @@ style: Latin
 key: C
 form: ABCD, 40 bars
 source: Colorado Cookbook, p. 133
+recording: Antonio Carlos Jobim; The Composer of Desafinado, Plays; Verve; 1963
+youtube: twQMpcoSjwQ
 # analysis: 2026-10-11, rules v1; C
+# recording: recorded May 1963, Jobim guitar/piano, Claus Ogerman arranger, Creed Taylor producer; Jobim's own first recording as performer; the first recording was João Gilberto's "Meditação" on O Amor, o Sorriso e a Flor (Odeon MOFB 3151, 1960), Jobim as arranger, but the Verve instrumental is the version a jazz player knows; sources Wikipedia (The Composer of Desafinado, Plays), MusicBrainz track lists (Meditation 3:15; MOFB 3151); video: Universal Music Group Topic upload ℗ 1964 The Verve Music Group, on the compilation Antonio Carlos Jobim's Finest Hour, 3:18, the same take
 
 # bar | chord | scale
 
