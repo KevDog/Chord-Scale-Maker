@@ -16,17 +16,7 @@
         </UiField>
         <UiField :class="playerRange && range ? 'w-40' : 'w-36'">
           <UiLabel class="pl-3">Instrument</UiLabel>
-          <div class="flex items-center gap-2">
-            <UiListbox v-model="instrument" class="w-full">
-              <template #selected="{ value }"><UiListboxLabel>{{ instrumentOption(value) }}</UiListboxLabel></template>
-              <UiListboxGroup v-for="g in INSTRUMENT_GROUPS" :key="g.label" :label="g.label">
-                <UiListboxOption v-for="name in g.instruments" :key="name" :value="name">
-                  <UiListboxLabel>{{ instrumentOption(name) }}:</UiListboxLabel>
-                  <UiListboxDescription>{{ INSTRUMENTS[name].description }}</UiListboxDescription>
-                </UiListboxOption>
-              </UiListboxGroup>
-            </UiListbox>
-          </div>
+          <InstrumentPicker v-model="instrument" stacked @chosen="emit('instrumentChosen', $event)" />
           <!-- #359: the player's range under it, the written notes the lines keep to (moving one end pushes the other to keep two octaves); stacked, so the rail keeps its two rows -->
           <div v-if="playerRange && range" class="mt-2 flex items-center gap-1">
             <UiListbox :model-value="range.lo" class="min-w-0 flex-1" aria-label="Lowest note" title="The lowest written note the lines use" @update:model-value="(lo) => lo !== undefined && setRange({ lo, hi: range!.hi }, 'lo')">
@@ -219,7 +209,7 @@
     </template>
 
     <script setup lang="ts">
-    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, INSTRUMENTS, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
+    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { approachApplies, type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
     import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
@@ -233,6 +223,8 @@
     /** the preview toolbar, in labelled groups: Work on (sheet), Instrument, #level, Show (on the Changes: Analysis, Guide Tones), Transposition (+ #transpose), in the rail, with #actions at its right */
     const sheet = defineModel<SheetKind>('sheet', { required: true })
     const instrument = defineModel<InstrumentName>('instrument', { required: true })
+    /** instrumentChosen: picked from the instrument listbox, not as a pitch's first (InstrumentPicker) */
+    const emit = defineEmits<{ instrumentChosen: [InstrumentName] }>()
     const spell = defineModel<Spell>('spell', { required: true })
     const intervals = defineModel<boolean>('intervals', { required: true })
     const numerals = defineModel<boolean>('numerals', { default: true })

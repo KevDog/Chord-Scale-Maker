@@ -67,8 +67,8 @@
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
                 Charts are always written in concert pitch, and the sheet is transposed for you: trumpet, clarinet, tenor
                 and soprano in B♭, alto and bari in E♭, horn in F, and trombone, tuba and bass in bass clef. Piano, vibes,
-                guitar and flute read concert; for oboe, violin or any other treble C instrument, choose Flute. Piano until
-                you choose; your choice is remembered. Lowest and Highest note, under it, set the range every line keeps to.
+                guitar and flute read concert; for oboe, violin or any other treble C instrument, choose Flute. Pick the pitch
+                first (Concert, B♭, E♭, F or Bass), then your instrument in it. Piano until you choose; your choice is remembered. Lowest and Highest note, under it, set the range every line keeps to.
               </dd>
             </div>
             <div>

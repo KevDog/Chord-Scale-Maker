@@ -4,6 +4,7 @@ import { nextTick } from 'vue'
 import { parseChart, setMeta } from '@chord-scale-maker/engine'
 import EditorView from '~/components/EditorView.vue'
 import { LIBRARY } from '~/utils/library'
+import { INSTRUMENT_GROUPS, instrumentOption } from '~/utils/instrumentChoices'
 
 mockNuxtImport('useFeature', () => (name: string) => name === 'analyticsEvents')
 
@@ -34,6 +35,17 @@ const control = (w: Wrapper, label: string) => {
   return el
 }
 async function choose(w: Wrapper, label: string, name: string): Promise<void> {
+  if (label === 'Instrument') {
+    // its pitch first (#417)
+    const pitch = INSTRUMENT_GROUPS.find((g) => g.instruments.some((n) => instrumentOption(n).startsWith(name)))?.pitch
+    const button = w.findAll('button').find((b) => b.attributes('aria-label') === 'Pitch')
+    if (pitch && button && button.text() !== pitch) {
+      await button.trigger('click')
+      await nextTick()
+      await w.findAll('[role=option]').find((o) => o.text() === pitch)?.trigger('click')
+      await nextTick()
+    }
+  }
   await control(w, label).trigger('click')
   await nextTick()
   const option = w.findAll('[role=option]').find((o) => o.text().startsWith(name))

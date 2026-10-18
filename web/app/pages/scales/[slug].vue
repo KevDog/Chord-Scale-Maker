@@ -55,19 +55,9 @@
         <ClientOnly>
           <SheetRail>
             <template #left>
-              <UiField class="w-36">
+              <UiField class="w-64">
                 <UiLabel class="pl-3">Instrument</UiLabel>
-                <div class="flex items-center gap-2">
-                  <UiListbox v-model="prefs.instrument.value" class="w-full">
-                    <template #selected="{ value }"><UiListboxLabel>{{ instrumentOption(value) }}</UiListboxLabel></template>
-                    <UiListboxGroup v-for="g in INSTRUMENT_GROUPS" :key="g.label" :label="g.label">
-                      <UiListboxOption v-for="name in g.instruments" :key="name" :value="name">
-                        <UiListboxLabel>{{ instrumentOption(name) }}:</UiListboxLabel>
-                        <UiListboxDescription>{{ INSTRUMENTS[name].description }}</UiListboxDescription>
-                      </UiListboxOption>
-                    </UiListboxGroup>
-                  </UiListbox>
-                </div>
+                <InstrumentPicker v-model="prefs.instrument.value" />
               </UiField>
               <UiField>
                 <UiLabel class="pl-3">Spell Scale</UiLabel>
@@ -92,8 +82,7 @@
 </template>
 
 <script setup lang="ts">
-import { buildSheet, INSTRUMENTS, keyStart, parseKey, partFor, type PlaysOverTag, type Row } from '@chord-scale-maker/engine'
-import { INSTRUMENT_GROUPS, instrumentOption } from '~/utils/instrumentChoices'
+import { buildSheet, keyStart, parseKey, partFor, type PlaysOverTag, type Row } from '@chord-scale-maker/engine'
 import { spellLabel, SPELLS, spellView } from '~/utils/scaleChoices'
 import { scaleGroupOf } from '~/utils/scaleGroups'
 import { SCALES_PATH, scaleHead, scalePage } from '~/utils/scalePage'

@@ -10,6 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-18',
     items: [
+      { text: 'The Instrument picker in two steps: the pitch (Concert, B♭, E♭, F, Bass), then your instrument.', pr: 420 },
       { text: 'Links from where a choice shows (a chord’s why note, Practice, chord picks, Transpose) to How it decides.', pr: 412 },
       { text: 'Release notes: this page.' },
       { text: 'How it decides: every choice the app makes for you, the rule behind it, and an example.', pr: 408 },

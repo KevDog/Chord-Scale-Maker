@@ -136,6 +136,7 @@
             :lock-labels="sheetEditor"
             :compact="compactRail"
             :sticky-rail="sheetEditing"
+            @instrument-chosen="instrumentChosen"
           >
             <!-- Level: how sophisticated each chord's scale is (engine/src/levels.ts); a dropdown in the toolbar -->
             <template v-if="!editor.fatal.value" #level>
@@ -327,6 +328,7 @@ import {
   migrateChart,
   remapOwned,
   chartName,
+  type InstrumentName,
 } from '@chord-scale-maker/engine'
 import BarDialog, { type BarDialogKind, type BarDialogSubmit } from './BarDialog.vue'
 import type { SaveTarget } from '~/composables/useSavedChart'
@@ -829,16 +831,14 @@ onMounted(() => {
   if (props.shared) send({ name: 'Shared link opened', data: { song: song() } })
 })
 watch(sheet, (s) => send({ name: 'Sheet chosen', data: { sheet: s } }))
-// once per visit: a new chart remounts this view (the song page's editorKey), so flipping through parts counts once
+// once per visit: a new chart remounts this view (the song page's editorKey), so flipping through parts counts once;
+// an instrument picked, not a pitch's first on the way to it (#417)
 let instrumentSent = false
-watch(
-  () => prefs.instrument.value,
-  (i) => {
-    if (instrumentSent) return
-    instrumentSent = true
-    send({ name: 'Instrument chosen', data: { instrument: i } })
-  },
-)
+function instrumentChosen(i: InstrumentName): void {
+  if (instrumentSent) return
+  instrumentSent = true
+  send({ name: 'Instrument chosen', data: { instrument: i } })
+}
 
 /** Send to the library, Suggest these changes or Report a chart error, by what the chart is (#153) */
 const submissionsOn = useFeature('chartSubmissions')
