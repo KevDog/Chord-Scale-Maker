@@ -6,7 +6,10 @@ style: Latin
 key: F
 form: AAB, 44 bars
 source: Colorado Cookbook, p. 168
+recording: Antonio Carlos Jobim; The Composer of Desafinado, Plays; Verve; 1963
+youtube: JfehlQeuEVk
 # analysis: 2026-10-17, rules v1; F
+# recording: recorded May 1963, New York, Jobim (piano, guitar) with Claus Ogerman's orchestra, prod. Creed Taylor (Verve V6-8547); Jobim's own first recording as leader under the title; João Gilberto's 1961 Odeon LP João Gilberto sang it first, but jazz players learned it from this LP; chart follows the Colorado Cookbook, no specific version; sources: Wikipedia; video: Zebralution "Provided to YouTube" upload of the same album track (remastered), 3:36
 
 # bar | chord | scale
 

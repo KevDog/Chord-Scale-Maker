@@ -4,7 +4,9 @@ style: Medium swing
 key: Ab
 form: AB, 36 bars
 source: 
+recording: Bill Evans; Bill Evans at the Montreux Jazz Festival; Verve; 1968
 # analysis: 2026-10-17, rules v1; Ab
+# recording: recorded live 1968-06-15 at Montreux, Bill Evans with Eddie Gómez and Jack DeJohnette, the album's opener; chart follows no named version; songbook standard: the trio reading jazz players know best (1969 Grammy, Best Jazz Instrumental Album), over the House of Flowers cast (Diahann Carroll, 1954); Evans first recorded it on At Shelly's Manne-Hole (Riverside, 1963); sources: Wikipedia
 # book: Med. Swing
 
 # bar | chord

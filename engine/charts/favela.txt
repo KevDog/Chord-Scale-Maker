@@ -4,7 +4,10 @@ style: Bossa nova
 key: Gm
 form: ABC, 40 bars
 source: 
+recording: Antonio Carlos Jobim; The Composer of Desafinado, Plays; Verve; 1963
+youtube: RRXHk3idJUo
 # analysis: 2026-10-17, rules v1; G minor
+# recording: recorded May 1963, Jobim guitar/piano, Claus Ogerman arranger, Creed Taylor producer; Jobim's own first recording of "O Morro Não Tem Vez" (a.k.a. Favela), an instrumental on his first album; he recorded it again with a vocal as "Favela" on The Wonderful World of Antonio Carlos Jobim (Warner Bros. 1965); sources Wikipedia (The Composer of Desafinado, Plays), MusicBrainz track list ("O morro não tem vez (a.k.a. Favela)" 3:20); video: Universal Music Group Topic upload ℗ 1963 UMG, on the compilation The Man From Ipanema, 3:20, the same take
 # the book: "Med. Bossa Nova"
 # the book: F/G may be replaced by Dm7 throughout
 
