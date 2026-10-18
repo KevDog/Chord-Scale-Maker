@@ -29,6 +29,8 @@ describe('songHead', () => {
     expect(off?.recording).toBeNull()
     expect(off?.youtube).toBe('')
     expect(off?.ld).not.toContain('recordedAs')
+    expect(songHead('all-blues', { recordings: true })?.head.description).toContain(', as recorded by Miles Davis (1959)')
+    expect(songHead('all-blues', { recordings: false })?.head.description).not.toContain('as recorded by')
     expect(songHead('blue-trane')?.recording).toBeNull()
   })
   it("gives a song's chord changes, section by section", () => {

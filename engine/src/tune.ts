@@ -52,18 +52,20 @@ const DESCRIPTION_MAX = 160
 
 /**
  * a song page's description, clauses dropped to fit (a title of LIMITS.maxMeta fits alone): the closing ones from
- * the end first, then the other titles, the guide tones, "no melody", the key, the composer and the lead sheet's
+ * the end first, then the guide tones, the notable recording, the other titles, "no melody", the key, the composer and
+ * the lead sheet's
  */
 export function tuneDescription(t: TuneSummary): string {
   // [text, the order it drops in]
   const clauses: readonly (readonly [string, number])[] = [
-    [t.aka.length ? ` (also ${t.aka.join(' or ')})` : '', 6],
+    [t.aka.length ? ` (also ${t.aka.join(' or ')})` : '', 5],
     [t.composer && ` by ${t.composer}`, 2],
     [t.keyLabel && ` in ${t.keyLabel}`, 3],
+    [t.recording ? `, as recorded by ${t.recording.artist}${t.recording.year && ` (${t.recording.year})`}` : '', 6],
     [': the chord changes as a lead-sheet style practice chart', 1],
-    [', with guide tones', 5],
-    [' and a scale, arpeggio and pentatonic for every chord', 7],
-    [', for your instrument', 8],
+    [', with guide tones', 7],
+    [' and a scale, arpeggio and pentatonic for every chord', 8],
+    [', for your instrument', 9],
     ['. Chords only, no melody', 4],
   ]
   const sentence = (keep: number): string => `${t.title}${clauses.map(([text, rank]) => (rank <= keep ? text : '')).join('')}.`
