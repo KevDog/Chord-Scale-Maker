@@ -1,6 +1,6 @@
 # Several versions of one tune (#411)
 
-The library will hold more than one chart of a tune: Summertime as it is, and Summertime from the Jazz Lab
+The library will hold more than one chart of a tune: Summertime as it is, and Summertime from the Jazz Mind
 Accelerator iReal playlist. A user's saved charts of a tune, and accepted submissions (#153), are versions too.
 Decided with the user 2026-10-18.
 
@@ -9,7 +9,7 @@ Decided with the user 2026-10-18.
   A chart without one is the tune's **main** chart.
 - Each file stands alone: its full header (composer, `aka:`, `recording:`, style…); nothing is inherited.
 - `tuneSummary` gains `version: string` (`''` when absent).
-- File name: `<title slug>-<version slug>` (`summertime-jazz-lab-accelerator.txt`).
+- File name: `<title slug>-<version slug>` (`summertime-jazz-mind-accelerator.txt`).
 
 ## Grouping (engine, pure: `engine/src/versions.ts`)
 - `tuneKey(title)`: the title as compared across charts: NFD, diacritics dropped, lowercase, apostrophes dropped,
@@ -39,7 +39,7 @@ one is not given.
   `basedOn` is one of the group's slugs or whose title's `tuneKey` is the group's key (label: its own `version:`, else
   "My chart", numbered when several). Choosing one navigates to its page (`/song/<slug>` or `/song?mine=<id>`).
 - **A version page** (library, with `version:`):
-  - heading and `<title>`: "Summertime (Jazz Lab Accelerator)";
+  - heading and `<title>`: "Summertime (Jazz Mind Accelerator)";
   - `<link rel="canonical">` to the main's page (`app.vue` takes a page's override);
   - left out of the sitemap and IndexNow (`chartSlugsOf`, `indexNowLibrary`);
   - its OG card's title carries the label.
@@ -50,7 +50,7 @@ one is not given.
 1. Engine: `version:`, `tuneKey`, `tuneGroups`, `versionProblems` in the library test; `csm add --version`.
 2. Library, search, A–Z, composer pages, tune of the day.
 3. Song page: picker (library versions), version-page title, canonical, sitemap, IndexNow, OG; and the first
-   versioned chart, Summertime (Jazz Lab Accelerator), via `csm add --version`, so the e2e has real data.
+   versioned chart, Summertime (Jazz Mind Accelerator), via `csm add --version`, so the e2e has real data.
 4. Saved charts in the picker.
 
 ## Testing
@@ -60,5 +60,5 @@ one is not given.
 - cli: `--version` sets the line and the slug.
 - web unit: grouped library rows and counts, search once per group, picker options (library + Mine, labels,
   numbering, hidden under 2), version-page head and canonical, sitemap/IndexNow exclusion.
-- e2e (flag on, step 3, over Summertime and its Jazz Lab Accelerator version): picker switches pages; Library shows
+- e2e (flag on, step 3, over Summertime and its Jazz Mind Accelerator version): picker switches pages; Library shows
   one Summertime row with "2 versions"; the version page's canonical points to `/song/summertime`.

@@ -3,8 +3,8 @@ composer: George Gershwin
 style: Slow Swing
 key: Am
 form: A, 16 bars
-source: iReal Pro
-version: Jazz Lab Accelerator
+source: Jazz Mind Accelerator
+version: Jazz Mind Accelerator
 # analysis: 2026-10-18, rules v1; A minor
 
 section: A

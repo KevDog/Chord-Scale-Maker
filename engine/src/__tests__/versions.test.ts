@@ -3,7 +3,7 @@ import { tuneGroups, tuneKey, versionProblems } from '../versions'
 
 const chart = (slug: string, head: string) => ({ slug, text: `${head}\n\nsection: A\nbars: 4\n1 | C\n` })
 const main = chart('summertime', 'title: Summertime')
-const jla = chart('summertime-jazz-lab-accelerator', 'title: Summertime\nversion: Jazz Lab Accelerator')
+const jla = chart('summertime-jazz-mind-accelerator', 'title: Summertime\nversion: Jazz Mind Accelerator')
 const alt = chart('summertime-alt', 'title: Summertime\nversion: Alt')
 
 describe('tuneKey', () => {
@@ -18,7 +18,7 @@ describe('tuneGroups', () => {
   it('gathers a main and its versions, main first, then by label', () => {
     expect(tuneGroups([jla, chart('autumn-leaves', 'title: Autumn Leaves'), alt, main])).toEqual([
       { key: 'autumn leaves', main: 'autumn-leaves', versions: [{ slug: 'autumn-leaves', label: '' }] },
-      { key: 'summertime', main: 'summertime', versions: [{ slug: 'summertime', label: '' }, { slug: 'summertime-alt', label: 'Alt' }, { slug: 'summertime-jazz-lab-accelerator', label: 'Jazz Lab Accelerator' }] },
+      { key: 'summertime', main: 'summertime', versions: [{ slug: 'summertime', label: '' }, { slug: 'summertime-alt', label: 'Alt' }, { slug: 'summertime-jazz-mind-accelerator', label: 'Jazz Mind Accelerator' }] },
     ])
   })
 
@@ -64,7 +64,7 @@ describe('versionProblems', () => {
 
   it('names two mains, a repeated label, and a version titled unlike its main', () => {
     expect(versionProblems([main, chart('summertime-2', 'title: Summertime')])).toEqual(['summertime, summertime-2: two charts of "Summertime" without version: (give all but one a version:)'])
-    expect(versionProblems([main, jla, chart('summertime-jla', 'title: Summertime\nversion: Jazz Lab Accelerator')])).toEqual(['summertime-jazz-lab-accelerator, summertime-jla: two versions of "Summertime" labelled "Jazz Lab Accelerator"'])
+    expect(versionProblems([main, jla, chart('summertime-jla', 'title: Summertime\nversion: Jazz Mind Accelerator')])).toEqual(['summertime-jazz-mind-accelerator, summertime-jla: two versions of "Summertime" labelled "Jazz Mind Accelerator"'])
     expect(versionProblems([main, chart('summertime-x', 'title: Summertime!\nversion: X')])).toEqual(['summertime-x: title "Summertime!" differs from its main chart\'s "Summertime"'])
   })
 })

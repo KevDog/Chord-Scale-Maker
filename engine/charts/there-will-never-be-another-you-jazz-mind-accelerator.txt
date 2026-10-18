@@ -1,0 +1,53 @@
+title: There Will Never Be Another You
+composer: Harry Warren
+style: Medium Up Swing
+key: Eb
+form: ABAC, 32 bars
+source: Jazz Mind Accelerator
+version: Jazz Mind Accelerator
+# analysis: 2026-10-18, rules v1; Eb
+
+section: A1
+1 | EbMaj7  # tonic: the 4th is in the key
+2 | EbMaj7
+3 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4 | G7b9    # V7/vi in Eb: b9 and b13 are in the key
+5 | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+6 | Cm7
+7 | Bbm7    # ii of the ii–V to Ab
+8 | Eb7     # V7/IV in Eb: natural tensions
+
+section: B
+1 | AbMaj7  # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
+2 | Abm6    # a minor sixth chord: Dorian
+3 | EbMaj7  # tonic: the 4th is in the key
+4 | Cm7     # ii of F7: Dorian
+5 | F7      # V7/V in Eb: natural tensions
+6 | F7
+7 | Fm7     # ii of the ii–V to Eb
+8 | Bb7     # V7 of Eb: natural tensions
+
+section: A2
+1 | EbMaj7  # tonic: the 4th is in the key
+2 | EbMaj7
+3 | Dm7b5   # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
+4 | G7b9    # V7/vi in Eb: b9 and b13 are in the key
+5 | Cm7     # vi: Aeolian, the key's own notes (the ♭6 is a passing note)
+6 | Cm7
+7 | Bbm7    # ii of the ii–V to Ab
+8 | Eb7     # V7/IV in Eb: natural tensions
+
+section: C
+1 | AbMaj7  # the Eb7 before it makes Ab the key of the moment: the 4th is in the key
+2 | Abm6    # a minor sixth chord: Dorian
+3 | EbMaj7  # tonic: the 4th is in the key
+4 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+4 | C7      # extended ii–V: a side-step, its own key
+5 | EbMaj7  # tonic: the 4th is in the key
+5 | D7      # V7/iii in Eb: b9 and b13 are in the key
+6 | Gm7     # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
+6 | C7      # V7/ii in Eb: the b13 is in the key
+7 | Fm7     # ii of the ii–V to Eb
+7 | Bb7     # V7 of Eb: natural tensions
+8 | Eb6     # tonic: the 4th is in the key
+8 | Bb7     # V7 of Eb: natural tensions

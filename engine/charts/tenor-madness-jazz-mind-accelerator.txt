@@ -1,0 +1,22 @@
+title: Tenor Madness
+composer: Sonny Rollins
+style: Medium Up Swing
+key: Bb
+form: A, 12 bars
+source: Jazz Mind Accelerator
+version: Jazz Mind Accelerator
+# analysis: 2026-10-18, rules v1; Bb, blues
+
+section: A
+1  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+2  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+3  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+4  | Bb7
+5  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | Eb7
+7  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+8  | Bb7
+9  | Cm7  # ii of F7: Dorian
+10 | F7   # extended dominant: V7 of Bb7
+11 | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+12 | Bb7

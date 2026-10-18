@@ -27,7 +27,7 @@ export function songHead(slug: string, opts: Readonly<{ recordings: boolean }> =
   const chart = findChart(slug)
   if (!chart) return null
   const read = tuneSummary(chart.text)
-  // a version is named by its label: "Summertime (Jazz Lab Accelerator)" (#411)
+  // a version is named by its label: "Summertime (Jazz Mind Accelerator)" (#411)
   const tune = read.version ? { ...read, title: `${read.title} (${read.version})` } : read
   const summary = opts.recordings ? tune : { ...tune, recording: null, youtube: '' }
   const main = tuneOf(slug)?.main ?? slug

@@ -6,7 +6,9 @@ test('on a phone the music starts on the first screen, the other controls in a s
   await page.goto('/song/autumn-leaves')
   await expect(staves(page).first()).toBeVisible()
   const h1 = page.getByRole('heading', { level: 1 })
-  expect((await h1.boundingBox())!.y).toBeLessThan(400)
+  expect((await h1.boundingBox())!.y).toBeLessThan(440) // Autumn Leaves has versions: the picker takes a row above (#411)
+  const staff = (await staves(page).first().boundingBox())!
+  expect(staff.y + staff.height).toBeLessThan(844) // its first staff whole on the first screen
   const rail = page.getByRole('group', { name: 'Sheet controls' })
   for (const name of ['Work on', 'Instrument', 'Controls', 'Print', 'More actions']) await expect(rail.getByRole('button', { name, exact: true })).toBeVisible()
   await expect(rail.getByRole('button', { name: 'Level' })).toHaveCount(0)

@@ -34,14 +34,14 @@
 - [ ] **Step 1: failing test** — add to `tune.test.ts`'s describe:
 ```ts
   it('reads the version, trimmed; none is the main chart', () => {
-    expect(tuneSummary('title: Summertime\nversion:  Jazz Lab Accelerator \n\nsection: A\nbars: 4\n1 | C').version).toBe('Jazz Lab Accelerator')
+    expect(tuneSummary('title: Summertime\nversion:  Jazz Mind Accelerator \n\nsection: A\nbars: 4\n1 | C').version).toBe('Jazz Mind Accelerator')
     expect(tuneSummary('title: Summertime\n\nsection: A\nbars: 4\n1 | C').version).toBe('')
   })
 ```
 And a round-trip test in the same file:
 ```ts
   it('keeps version: through parse and serialize', () => {
-    const text = 'title: Summertime\nversion: Jazz Lab Accelerator\n\nsection: A\nbars: 4\n1 | C\n'
+    const text = 'title: Summertime\nversion: Jazz Mind Accelerator\n\nsection: A\nbars: 4\n1 | C\n'
     expect(serializeChart(parseChart(text).value)).toBe(text)
   })
 ```
@@ -49,7 +49,7 @@ And a round-trip test in the same file:
 - [ ] **Step 2:** `cd engine && npx vitest run src/__tests__/tune.test.ts` → FAIL (version undefined / not a meta key).
 - [ ] **Step 3:** `chart.ts`: add `'version'` after `'subtitle'` in both `MetaKey` and `META_KEYS`. `tune.ts`: `version: string` in `TuneSummary` (after `subtitle`, doc comment `/** which version of the tune ('' : the main chart) */`), `version: metaValue(doc, 'version'),` in `tuneSummary`.
 - [ ] **Step 4:** test → PASS; `npx tsc -p tsconfig.json` clean.
-- [ ] **Step 5:** README row after `aka:`: `` | `version:` | Which version of the tune this chart is, when the library holds several: `version: Jazz Lab Accelerator`. A chart without one is the tune's main chart; a version's file is named `<title>-<version>.txt`. | ``; the same line in `docs/design.md`'s header list.
+- [ ] **Step 5:** README row after `aka:`: `` | `version:` | Which version of the tune this chart is, when the library holds several: `version: Jazz Mind Accelerator`. A chart without one is the tune's main chart; a version's file is named `<title>-<version>.txt`. | ``; the same line in `docs/design.md`'s header list.
 - [ ] **Step 6:** commit `chart.ts tune.ts tune.test.ts README.md docs/design.md`: "Chart format: version: (#411)".
 
 ---
@@ -74,7 +74,7 @@ import { tuneGroups, tuneKey, versionProblems } from '../versions'
 
 const chart = (slug: string, head: string) => ({ slug, text: `${head}\n\nsection: A\nbars: 4\n1 | C\n` })
 const main = chart('summertime', 'title: Summertime')
-const jla = chart('summertime-jazz-lab-accelerator', 'title: Summertime\nversion: Jazz Lab Accelerator')
+const jla = chart('summertime-jazz-mind-accelerator', 'title: Summertime\nversion: Jazz Mind Accelerator')
 const alt = chart('summertime-alt', 'title: Summertime\nversion: Alt')
 
 describe('tuneKey', () => {
@@ -88,7 +88,7 @@ describe('tuneKey', () => {
 describe('tuneGroups', () => {
   it('gathers a main and its versions, main first, then by label', () => {
     expect(tuneGroups([jla, chart('autumn-leaves', 'title: Autumn Leaves'), alt, main])).toEqual([
-      { key: 'summertime', main: 'summertime', versions: [{ slug: 'summertime', label: '' }, { slug: 'summertime-alt', label: 'Alt' }, { slug: 'summertime-jazz-lab-accelerator', label: 'Jazz Lab Accelerator' }] },
+      { key: 'summertime', main: 'summertime', versions: [{ slug: 'summertime', label: '' }, { slug: 'summertime-alt', label: 'Alt' }, { slug: 'summertime-jazz-mind-accelerator', label: 'Jazz Mind Accelerator' }] },
       { key: 'autumn leaves', main: 'autumn-leaves', versions: [{ slug: 'autumn-leaves', label: '' }] },
     ])
   })
@@ -110,7 +110,7 @@ describe('versionProblems', () => {
   })
   it('names two mains, a repeated label, and a version titled unlike its main', () => {
     expect(versionProblems([main, chart('summertime-2', 'title: Summertime')])).toEqual(['summertime, summertime-2: two charts of "Summertime" without version: (give all but one a version:)'])
-    expect(versionProblems([main, jla, chart('summertime-jla', 'title: Summertime\nversion: Jazz Lab Accelerator')])).toEqual(['summertime-jazz-lab-accelerator, summertime-jla: two versions of "Summertime" labelled "Jazz Lab Accelerator"'])
+    expect(versionProblems([main, jla, chart('summertime-jla', 'title: Summertime\nversion: Jazz Mind Accelerator')])).toEqual(['summertime-jazz-mind-accelerator, summertime-jla: two versions of "Summertime" labelled "Jazz Mind Accelerator"'])
     expect(versionProblems([main, chart('summertime-x', "title: Summertime!\nversion: X")])).toEqual(['summertime-x: title "Summertime!" differs from its main chart\'s "Summertime"'])
   })
 })
@@ -187,9 +187,9 @@ Rule: every title key opens a group (in order); a chart joins its own title's gr
 ```ts
   it('--version: writes version: and names the file after it', () => {
     const { fx, log } = fake()
-    expect(add(args({ overrides: { version: 'Jazz Lab Accelerator' } }), fx)).toBe(0)
-    expect(Object.keys(log.written)).toEqual(['/repo/engine/charts/tune-jazz-lab-accelerator.txt'])
-    expect(log.written['/repo/engine/charts/tune-jazz-lab-accelerator.txt']).toContain('version: Jazz Lab Accelerator\n')
+    expect(add(args({ overrides: { version: 'Jazz Mind Accelerator' } }), fx)).toBe(0)
+    expect(Object.keys(log.written)).toEqual(['/repo/engine/charts/tune-jazz-mind-accelerator.txt'])
+    expect(log.written['/repo/engine/charts/tune-jazz-mind-accelerator.txt']).toContain('version: Jazz Mind Accelerator\n')
   })
 
   it('an empty --version is not given', () => {

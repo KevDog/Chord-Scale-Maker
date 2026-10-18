@@ -4,9 +4,9 @@ import { songHead } from '~/utils/songHead'
 
 describe('songHead', () => {
   it('names a version in its title, and points its canonical at the main chart', () => {
-    const v = songHead('summertime-jazz-lab-accelerator')
-    expect(v?.title).toBe('Summertime (Jazz Lab Accelerator)')
-    expect(v?.head.title).toMatch(/^Summertime \(Jazz Lab Accelerator\)/)
+    const v = songHead('summertime-jazz-mind-accelerator')
+    expect(v?.title).toBe('Summertime (Jazz Mind Accelerator)')
+    expect(v?.head.title).toMatch(/^Summertime \(Jazz Mind Accelerator\)/)
     expect(v?.canonical).toBe('/song/summertime')
     expect(songHead('summertime')?.canonical).toBe('')
   })

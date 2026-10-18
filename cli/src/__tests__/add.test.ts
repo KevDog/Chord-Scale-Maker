@@ -56,17 +56,17 @@ describe('csm add', () => {
 
   it('--version: writes version: and names the file after it', () => {
     const { fx, log } = fake()
-    expect(add(args({ overrides: { version: 'Jazz Lab Accelerator' } }), fx)).toBe(0)
-    expect(Object.keys(log.written)).toEqual(['/repo/engine/charts/tune-jazz-lab-accelerator.txt'])
-    expect(log.written['/repo/engine/charts/tune-jazz-lab-accelerator.txt']).toContain('version: Jazz Lab Accelerator\n')
+    expect(add(args({ overrides: { version: 'Jazz Mind Accelerator' } }), fx)).toBe(0)
+    expect(Object.keys(log.written)).toEqual(['/repo/engine/charts/tune-jazz-mind-accelerator.txt'])
+    expect(log.written['/repo/engine/charts/tune-jazz-mind-accelerator.txt']).toContain('version: Jazz Mind Accelerator\n')
   })
 
   it('--version of a tune the library lacks: warns that it stands alone', () => {
     const { fx, log } = fake({ library: () => [] })
-    expect(add(args({ overrides: { version: 'Jazz Lab Accelerator' } }), fx)).toBe(0)
+    expect(add(args({ overrides: { version: 'Jazz Mind Accelerator' } }), fx)).toBe(0)
     expect(log.err.join('\n')).toMatch(/no library chart of "Tune"/)
     const known = fake()
-    expect(add(args({ overrides: { version: 'Jazz Lab Accelerator' } }), known.fx)).toBe(0)
+    expect(add(args({ overrides: { version: 'Jazz Mind Accelerator' } }), known.fx)).toBe(0)
     expect(known.log.err.join('\n')).not.toMatch(/no library chart/)
   })
 

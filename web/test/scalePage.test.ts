@@ -58,7 +58,7 @@ describe('scalePage and versions (#411)', () => {
   it('lists a tune once, at its main chart', () => {
     for (const key of Object.keys(SCALES) as ScaleKey[]) {
       const tunes = scalePage(scaleSlug(key))?.tunes ?? []
-      expect(tunes.map((t) => t.path)).not.toContain('/song/summertime-jazz-lab-accelerator')
+      expect(tunes.map((t) => t.path)).not.toContain('/song/summertime-jazz-mind-accelerator')
       expect(new Set(tunes.map((t) => t.path)).size).toBe(tunes.length)
     }
   })
