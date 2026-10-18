@@ -19,6 +19,11 @@ describe('csm add arguments', () => {
     })
   })
 
+  it('trims the header flags, and drops one left empty', () => {
+    expect(parseAddArgs(['x', '--version', '  ', '--composer', ' Jim Hall '])).toMatchObject({ overrides: { composer: 'Jim Hall' } })
+    expect((parseAddArgs(['x', '--version', '  ']) as { overrides: object }).overrides).toEqual({})
+  })
+
   it('refuses a kind that is not tune, form or exercise', () => {
     expect(parseAddArgs(['x', '--kind', 'song'])).toMatch(/--kind/)
   })

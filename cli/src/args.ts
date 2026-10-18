@@ -36,7 +36,8 @@ export function parseAddArgs(argv: readonly string[]): AddArgs | string {
   const input = positionals[0]
   if (input === undefined) return USAGE
   const all: Readonly<Record<string, string | boolean | undefined>> = values
-  const str = (k: string): string | undefined => (typeof all[k] === 'string' ? all[k] : undefined)
+  // a flag left blank (or spaces) is not given
+  const str = (k: string): string | undefined => (typeof all[k] === 'string' && all[k].trim() ? all[k].trim() : undefined)
   const song = str('song')
   const kind = str('kind')
   if (kind !== undefined && !KINDS.includes(kind)) return `--kind is tune, form or exercise\n${USAGE}`

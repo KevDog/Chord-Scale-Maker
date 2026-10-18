@@ -22,21 +22,25 @@ const read = (c: Source): Read => {
   return { slug: c.slug, title, label: metaValue(doc, 'version'), key: tuneKey(title), aka: chartAka(doc).map(tuneKey) }
 }
 
+const byText = (a: string, b: string): number => (a < b ? -1 : a > b ? 1 : 0)
+
 /**
- * charts gathered into tunes, in the order their titles first come: each title opens a group; a chart joins its own
- * title's group, unless that one is still empty and an aka: names another group (Blue Trane aka Blue Train joins Blue
- * Train's). Each group's main chart first, then its versions by label.
+ * charts gathered into tunes: an aka: means the same tune, so a chart's title and every aka: that is another chart's
+ * title join one group (a chain or a pair naming each other included), whatever order the charts come in. Each group:
+ * its main charts first, then its versions by label; groups by key, the main's title (else the first version's)
  */
 function grouped(charts: readonly Source[]): readonly (readonly [string, readonly Read[]])[] {
-  const all = charts.map(read)
-  const groups = new Map<string, Read[]>(all.map((c) => [c.key, []]))
-  for (const c of all) {
-    const own = groups.get(c.key)!
-    const other = own.length ? undefined : c.aka.find((k) => k !== c.key && groups.has(k))
-    ;(other ? groups.get(other)! : own).push(c)
+  const all = charts.map(read).sort((a, b) => byText(a.slug, b.slug))
+  const parent = new Map(all.map((c) => [c.key, c.key]))
+  const root = (k: string): string => {
+    while (parent.get(k) !== k) k = parent.get(k)!
+    return k
   }
-  const order = (a: Read, b: Read): number => Number(!!a.label) - Number(!!b.label) || a.label.localeCompare(b.label)
-  return [...groups].filter(([, cs]) => cs.length).map(([key, cs]) => [key, [...cs].sort(order)] as const)
+  for (const c of all) for (const k of c.aka) if (parent.has(k)) parent.set(root(k), root(c.key))
+  const groups = new Map<string, Read[]>()
+  for (const c of all) groups.set(root(c.key), [...(groups.get(root(c.key)) ?? []), c])
+  const order = (a: Read, b: Read): number => Number(!!a.label) - Number(!!b.label) || byText(a.label, b.label) || byText(a.slug, b.slug)
+  return [...groups.values()].map((cs) => [...cs].sort(order)).map((cs) => [cs[0]!.key, cs] as const).sort(([a], [b]) => byText(a, b))
 }
 
 export function tuneGroups(charts: readonly Source[]): readonly TuneGroup[] {

@@ -14,16 +14,19 @@ Decided with the user 2026-10-18.
 ## Grouping (engine, pure: `engine/src/versions.ts`)
 - `tuneKey(title)`: the title as compared across charts: NFD, diacritics dropped, lowercase, apostrophes dropped,
   other non-alphanumerics to one space, trimmed (`'Round Midnight` = `Round Midnight`).
-- `tuneGroups(charts: { slug; text }[])` → `{ key; main: slug; versions: { slug; label }[] }[]`: charts gather by
-  `tuneKey` of their title or any `aka:`; a chart joins the first group it matches (title before aka). `main` is the
-  chart without `version:`, else the first version by label; `versions` lists every chart of the group, main first,
-  then by label.
-- `versionProblems(charts)` → messages: two mains for one key; two versions with one label in a group; a version whose
-  title differs from its main's. `engine/src/__tests__/libraryMeta.test.ts` fails on any (as on song page gaps).
+- `tuneGroups(charts: { slug; text }[])` → `{ key; main: slug; versions: { slug; label }[] }[]`: an `aka:` means the
+  same tune, so a chart's title and each `aka:` that is another chart's title join one group (chains and pairs
+  naming each other included), whatever order the charts come in. `main` is the chart without `version:`, else the
+  first version by label; `versions` lists every chart of the group, mains first, then by label; groups sort by key.
+- `versionProblems(charts)` → messages: two mains in one group; two versions with one label in a group; a version
+  whose title shares its main's key but is spelt otherwise (an `aka:`-joined version may have another title).
+  `engine/src/__tests__/libraryMeta.test.ts` fails on any (as on song page gaps).
 - The matcher is the one #403 (skip songs already in the library) and #404 (`csm check`) use.
 
 ## csm add
-`--version "<label>"`: sets `version:` and names the file `<title slug>-<version slug>.txt`.
+`--version "<label>"`: sets `version:` and names the file `<title slug>-<version slug>.txt`; warns when no library
+chart has the tune's title or `aka:` (the version would stand as a tune of its own). Header flags are trimmed; a blank
+one is not given.
 
 ## Library and composer pages (flag `versions`)
 - One row per group, linking to its main; "· N versions" in its details when N > 1.

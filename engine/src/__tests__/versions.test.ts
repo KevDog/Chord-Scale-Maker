@@ -17,8 +17,8 @@ describe('tuneKey', () => {
 describe('tuneGroups', () => {
   it('gathers a main and its versions, main first, then by label', () => {
     expect(tuneGroups([jla, chart('autumn-leaves', 'title: Autumn Leaves'), alt, main])).toEqual([
-      { key: 'summertime', main: 'summertime', versions: [{ slug: 'summertime', label: '' }, { slug: 'summertime-alt', label: 'Alt' }, { slug: 'summertime-jazz-lab-accelerator', label: 'Jazz Lab Accelerator' }] },
       { key: 'autumn leaves', main: 'autumn-leaves', versions: [{ slug: 'autumn-leaves', label: '' }] },
+      { key: 'summertime', main: 'summertime', versions: [{ slug: 'summertime', label: '' }, { slug: 'summertime-alt', label: 'Alt' }, { slug: 'summertime-jazz-lab-accelerator', label: 'Jazz Lab Accelerator' }] },
     ])
   })
 
@@ -27,6 +27,28 @@ describe('tuneGroups', () => {
     const trane = chart('blue-trane', 'title: Blue Trane\naka: Blue Train\nversion: Book')
     expect(tuneGroups([blueTrain, trane]).map((g) => g.versions.map((v) => v.slug))).toEqual([['blue-train', 'blue-trane']])
     expect(tuneGroups([trane, blueTrain]).map((g) => g.versions.map((v) => v.slug))).toEqual([['blue-train', 'blue-trane']])
+  })
+
+  const orders = <T,>(xs: readonly T[]): T[][] => (xs.length <= 1 ? [[...xs]] : xs.flatMap((x, i) => orders([...xs.slice(0, i), ...xs.slice(i + 1)]).map((r) => [x, ...r])))
+
+  it('does not depend on the order charts come in', () => {
+    const m = chart('blue-trane', 'title: Blue Trane')
+    const v = chart('blue-trane-book', 'title: Blue Trane\naka: Blue Train\nversion: Book')
+    const t = chart('blue-train', 'title: Blue Train')
+    const a = chart('alpha', 'title: Alpha\naka: Beta')
+    const b = chart('beta', 'title: Beta\naka: Alpha')
+    for (const set of [[m, v, t], [a, b], [chart('c', 'title: C\naka: A'), chart('a', 'title: A\naka: B'), chart('b', 'title: B')]]) {
+      const all = orders(set)
+      for (const o of all) {
+        expect(tuneGroups(o)).toEqual(tuneGroups(all[0]!))
+        expect(versionProblems(o)).toEqual(versionProblems(all[0]!))
+      }
+    }
+  })
+
+  it('aka: means one tune: a chain or a pair of charts naming each other is one group', () => {
+    expect(tuneGroups([chart('c', 'title: C\naka: A'), chart('a', 'title: A\naka: B'), chart('b', 'title: B')]).map((g) => g.versions.length)).toEqual([3])
+    expect(versionProblems([chart('alpha', 'title: Alpha\naka: Beta'), chart('beta', 'title: Beta\naka: Alpha')])).toHaveLength(1)
   })
 
   it('a group of versions only: the first by label is its main', () => {

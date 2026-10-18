@@ -18,6 +18,7 @@ const fx = (out: string[], err: string[]): Effects => ({
   err: (l) => void err.push(l),
   chartsDir: '/repo/engine/charts/',
   date: '2026-10-18',
+  library: () => [],
 })
 
 it('dispatches add, and prints the usage for anything else with exit 2', () => {

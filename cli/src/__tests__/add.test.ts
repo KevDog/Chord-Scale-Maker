@@ -22,6 +22,7 @@ function fake(over: Partial<Effects> = {}, files: Record<string, string> = {}) {
     err: (l) => void log.err.push(l),
     chartsDir: '/repo/engine/charts/',
     date: '2026-10-18',
+    library: () => [{ slug: 'tune', text: 'title: Tune\n\nsection: A\nbars: 4\n1 | C\n' }],
     ...over,
   }
   return { fx, log }
@@ -58,6 +59,15 @@ describe('csm add', () => {
     expect(add(args({ overrides: { version: 'Jazz Lab Accelerator' } }), fx)).toBe(0)
     expect(Object.keys(log.written)).toEqual(['/repo/engine/charts/tune-jazz-lab-accelerator.txt'])
     expect(log.written['/repo/engine/charts/tune-jazz-lab-accelerator.txt']).toContain('version: Jazz Lab Accelerator\n')
+  })
+
+  it('--version of a tune the library lacks: warns that it stands alone', () => {
+    const { fx, log } = fake({ library: () => [] })
+    expect(add(args({ overrides: { version: 'Jazz Lab Accelerator' } }), fx)).toBe(0)
+    expect(log.err.join('\n')).toMatch(/no library chart of "Tune"/)
+    const known = fake()
+    expect(add(args({ overrides: { version: 'Jazz Lab Accelerator' } }), known.fx)).toBe(0)
+    expect(known.log.err.join('\n')).not.toMatch(/no library chart/)
   })
 
   it('an empty --version is not given', () => {
