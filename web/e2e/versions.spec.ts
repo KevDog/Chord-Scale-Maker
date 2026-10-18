@@ -26,6 +26,26 @@ test('the version picker switches between a tune\'s charts', async ({ page }) =>
   await expect(page).toHaveTitle(/^Summertime \(Jazz Lab Accelerator\)/)
 })
 
+test('your saved charts of a tune join its picker, under Mine, and open there', async ({ page }) => {
+  await page.goto('/help')
+  await page.evaluate(() => {
+    localStorage.setItem('csm-charts', JSON.stringify([{ id: 'mysummer01', title: 'Summertime', kind: 'copy', basedOn: 'summertime', createdAt: 1, updatedAt: 1 }]))
+    localStorage.setItem('csm-chart:mysummer01', 'title: Summertime\nversion: Ballad\nkey: Am\n\nsection: A\nbars: 4\n1 | Am6')
+  })
+  await page.goto('/song/summertime')
+  await expect(staves(page).first()).toBeVisible()
+  await page.getByRole('button', { name: 'Version' }).click()
+  await expect(page.getByRole('option')).toHaveText(['Main', 'Jazz Lab Accelerator', 'Ballad'])
+  await expect(page.getByRole('group', { name: 'Mine' }).getByRole('option')).toHaveText(['Ballad'])
+  await page.getByRole('option', { name: 'Ballad' }).click()
+  await expect(page).toHaveURL(/\/song\?mine=mysummer01$/)
+  await expect(page.getByRole('button', { name: 'Version' })).toContainText('Ballad')
+  await page.getByRole('button', { name: 'Version' }).click()
+  await page.getByRole('option', { name: 'Main' }).click()
+  await expect(page).toHaveURL(/\/song\/summertime$/)
+  await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', `${SITE_URL}/song/summertime`)
+})
+
 test.describe('without JavaScript', () => {
   test.use({ javaScriptEnabled: false })
 

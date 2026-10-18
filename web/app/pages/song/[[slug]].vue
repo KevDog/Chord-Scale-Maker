@@ -1,7 +1,7 @@
 <template>
   <div>
     <ClientOnly>
-      <SongVersions v-if="versions && song && source.kind === 'chart'" :slug="slug()" />
+      <SongVersions v-if="versions && versionsAt" :at="versionsAt" />
       <div v-if="source.kind === 'missing'" class="max-w-xl space-y-4">
         <UiHeading>That chart isn’t here</UiHeading>
         <UiText>It isn’t saved in this browser. Saved charts stay in the browser they were made in; on another device, open it from a share link or a downloaded file.</UiText>
@@ -58,6 +58,7 @@
 import { canonicalUrl, libraryPath, PAGE_HEAD, seoMeta } from '~/utils/site'
 import { rememberRecent } from '~/utils/recentCharts'
 import { songHead } from '~/utils/songHead'
+import { type ChartAt, savedVersion } from '~/utils/songVersions'
 import { chartName, decodeShare, parseChart, type ShareView } from '@chord-scale-maker/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 
@@ -168,6 +169,14 @@ if (song?.canonical) {
   useSeoMeta({ ogUrl: canonicalUrl(song.canonical) })
 }
 const versions = useFeature('versions')
+// the picker's place: a library chart at its own address, or one of your saved charts
+const versionsAt = computed((): ChartAt | null => {
+  const s = source.value
+  if (s.kind !== 'chart') return null
+  if (song) return { slug: slug() }
+  const saved = s.target?.kind === 'mine' ? loadChart(s.target.id) : null
+  return saved ? { mine: savedVersion(saved) } : null
+})
 // in the browser, the tab and history name the chart ("Blue Trane · Chord Scale Maker"); the prerender has none
 const chartTitle = computed(() => (import.meta.client && source.value.kind === 'chart' ? chartName(parseChart(source.value.text).value) : ''))
 useHead({ title: () => chartTitle.value || (song?.head ?? PAGE_HEAD.song).title })
