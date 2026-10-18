@@ -34,7 +34,7 @@
           <div v-if="chart" class="space-y-3 rounded-lg p-4 ring-1 ring-zinc-950/10 dark:ring-white/10">
             <div class="flex items-start justify-between gap-4">
               <UiText><UiStrong>{{ chart.title }}</UiStrong> · {{ lines }} {{ lines === 1 ? 'line' : 'lines' }}, attached as {{ fileName }}</UiText>
-              <UiButton plain class="text-sm!" :aria-label="`Remove the chart ${chart.title}`" @click="chart = null">Remove</UiButton>
+              <UiButton plain class="text-sm!" :aria-label="`Remove the chart ${chart.title}`" @click="removeChart">Remove</UiButton>
             </div>
             <UiCheckbox v-model="credit" name="credit">Credit me as {{ form.name.trim() || 'you' }} on the tune page</UiCheckbox>
             <UiErrorMessage v-if="errors.chart">{{ errors.chart }}</UiErrorMessage>
@@ -62,9 +62,10 @@
 import { PAGE_HEAD, seoMeta } from '~/utils/site'
 import type { ReadyAttachment } from '~/utils/attachment'
 import { ISSUE_TEXT_KEY } from '~/utils/issueReport'
-import { chartFilename, CONTACT_LIMITS, type ContactField as Field, EMAIL } from '../../server/utils/contactMessage'
+import { chartFilename, chartTitle, CONTACT_LIMITS, type ContactField as Field, EMAIL } from '../../server/utils/contactMessage'
 import { buildChartReport, CHART_REPORT_KEY } from '~/utils/chartReport'
 import { CHART_SUBMISSION_KEY, type ChartSubmission, chartSubmissionFrom, submissionMessage } from '~/utils/chartSubmission'
+import { readSession, removeSession } from '~/utils/storage'
 
 /** the contact form: posts to /api/contact, which emails the message (server/api/contact.post.ts) */
 const blank = () => ({ name: '', email: '', message: '', website: '' })
@@ -91,11 +92,12 @@ watch(attachment, () => {
 onMounted(() => {
   startedAt = Date.now()
   // a chart to send for the library (from the editor), once, then cleared
-  const submission = chartSubmissionFrom(sessionStorage.getItem(CHART_SUBMISSION_KEY))
-  sessionStorage.removeItem(CHART_SUBMISSION_KEY)
+  const submission = chartSubmissionFrom(readSession(CHART_SUBMISSION_KEY))
+  removeSession(CHART_SUBMISSION_KEY)
   if (submission) {
-    chart.value = submission
-    form.message = submissionMessage(submission)
+    // its title as the server will send it, so the card, the message and the file name agree with the email
+    chart.value = { ...submission, title: chartTitle(submission.title) }
+    form.message = submissionMessage(chart.value)
   }
   // a chart-error report (from the editor) pre-fills the message, once, then is cleared
   const raw = sessionStorage.getItem(CHART_REPORT_KEY)
@@ -142,6 +144,12 @@ async function send(): Promise<void> {
   } finally {
     sending.value = false
   }
+}
+
+/** back to a plain message: the pre-filled line goes too, unless it has been written over */
+function removeChart(): void {
+  if (chart.value && form.message.trim() === submissionMessage(chart.value).trim()) form.message = ''
+  chart.value = null
 }
 
 function reset(): void {

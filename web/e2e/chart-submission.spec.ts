@@ -1,4 +1,4 @@
-import { expect, moreAction, openEditor, test, typeChord, writeChart } from './fixtures'
+import { expect, moreAction, openEditor, sheetChord, test, typeChord, writeChart } from './fixtures'
 
 test('a new chart is sent to the library, with credit', async ({ page }) => {
   await writeChart(page, 'title: Bb Blues\nkey: Bb\n\nsection: A\n1 | Bb7\n2 | Eb7\n')
@@ -44,10 +44,31 @@ test('Remove sends a plain message', async ({ page }) => {
   await writeChart(page, 'title: T\n\nsection: A\n1 | Cm7\n')
   await moreAction(page, 'Send to the library')
   await page.getByRole('button', { name: 'Remove' }).click()
+  await expect(page.getByRole('textbox', { name: 'Message' })).toHaveValue('') // the pre-filled line goes with the chart
+  await page.getByLabel('Message').fill('Just a question')
   await page.getByLabel('Name').fill('Bill')
   await page.getByLabel('Email').fill('bill@example.com')
   await page.waitForTimeout(2600)
   const request = page.waitForRequest('**/api/contact')
   await page.getByRole('button', { name: 'Send message' }).click()
   expect((await request).postDataJSON()).not.toHaveProperty('chart')
+})
+
+test('back from the contact page is the new chart just sent, saved at its own address', async ({ page }) => {
+  await page.goto('/song?new=1')
+  await typeChord(page, 'A', 1, 'Dm7', 'F7')
+  await moreAction(page, 'Send to the library') // within the save's pause: the first save comes on the way out
+  await expect(page).toHaveURL(/\/contact/)
+  await page.goBack()
+  await expect(page).toHaveURL(/\/song\?mine=[a-f0-9]{12}$/)
+  await openEditor(page)
+  await expect(sheetChord(page, 'F7', 'A', 1)).toBeVisible()
+})
+
+test('a chart handed over with a blank title shows the title and file name the server gives it', async ({ page }) => {
+  await page.goto('/contact')
+  await page.evaluate(() => sessionStorage.setItem('csm-chart-submission', JSON.stringify({ text: 'section: A\n1 | Cm7\n', title: ' \n ', mode: 'new' })))
+  await page.reload()
+  await expect(page.getByText('attached as untitled.txt')).toBeVisible()
+  await expect(page.getByRole('textbox', { name: 'Message' })).toHaveValue(/^A chart for the library: Untitled/)
 })

@@ -45,3 +45,28 @@ export function storedKeys(): string[] {
     return []
   }
 }
+
+/** this tab's sessionStorage (a handoff between pages, read once): the same fallbacks as above */
+export function readSession(key: string): string | null {
+  try {
+    return sessionStorage.getItem(key)
+  } catch {
+    return null
+  }
+}
+
+export function writeSession(key: string, value: string): void {
+  try {
+    sessionStorage.setItem(key, value)
+  } catch {
+    // unavailable or full: the next page opens without it
+  }
+}
+
+export function removeSession(key: string): void {
+  try {
+    sessionStorage.removeItem(key)
+  } catch {
+    // unavailable: nothing was stored
+  }
+}

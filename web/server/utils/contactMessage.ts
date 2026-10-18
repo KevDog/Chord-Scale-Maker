@@ -124,9 +124,11 @@ export function checkChart(v: unknown): ContactChart | null | string {
   if (chartText.length > LIMITS.maxChars) return `The chart can be at most ${LIMITS.maxChars} characters.`
   const slug = c.slug ?? null
   if (slug !== null && (typeof slug !== 'string' || !SLUG.test(slug) || slug.length > CHART_LIMITS.slug)) return "The chart couldn't be read. Please try again."
-  const title = oneLine(typeof c.title === 'string' ? c.title : '').slice(0, CHART_LIMITS.title).trim() || 'Untitled'
-  return { text: chartText, title, slug, credit: c.credit === true }
+  return { text: chartText, title: chartTitle(typeof c.title === 'string' ? c.title : ''), slug, credit: c.credit === true }
 }
+
+/** a chart's title as sent: one line, at most CHART_LIMITS.title characters, "Untitled" when empty (the contact page shows the same) */
+export const chartTitle = (title: string): string => oneLine(title).slice(0, CHART_LIMITS.title).trim() || 'Untitled'
 
 /** the attachment's name: a suggestion's slug, else the title as library charts are named ('Round Midnight -> round-midnight.txt) */
 export function chartFilename(c: ContactChart): string {

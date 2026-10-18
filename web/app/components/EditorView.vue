@@ -337,7 +337,7 @@ import { type MoreAction, moreMenuItems } from '~/utils/moreMenu'
 import { CHART_SUBMISSION_KEY, type ChartSubmission, submissionAction } from '~/utils/chartSubmission'
 import { SHEET_PAGED } from '~/utils/sheetPaged'
 import { spellView } from '~/utils/scaleChoices'
-import { writeStored } from '~/utils/storage'
+import { writeSession, writeStored } from '~/utils/storage'
 import { type AnalyticsEvent, sendEvent, songOf } from '~/utils/analytics'
 
 /**
@@ -852,25 +852,38 @@ function onMore(action: MoreAction): void {
     chordPicks.clearAll()
     said.value = 'Chord picks reset'
   }
-  else if (action === 'send' || action === 'suggest') sendChart()
-  else reportError()
+  else if (action === 'send' || action === 'suggest') void sendChart()
+  else void reportError()
+}
+
+const router = useRouter()
+/**
+ * open the contact form with the chart saved: a new chart's first save gives it its own address (/song?mine=) first,
+ * waited for, so Back comes to it and not to a blank /song?new=1
+ */
+async function toContact(): Promise<void> {
+  saved?.flush()
+  const id = saved?.id()
+  if (props.saveTarget?.kind === 'new' && id && router.currentRoute.value.query.mine !== id) await router.replace({ path: '/song', query: { mine: id } })
+  await navigateTo('/contact')
 }
 
 /** hand the chart to the contact form (via sessionStorage), to send for the library: a library chart's as its changes */
-function sendChart(): void {
+async function sendChart(): Promise<void> {
   editor.flush()
+  await nextTick() // the flushed text reaches the save
   const t = props.saveTarget
   const title = editor.heading.value.title
   const submission: ChartSubmission =
     t?.kind === 'library' ? { text: editor.text.value, title, slug: t.slug, mode: 'suggest' } : { text: editor.text.value, title, mode: 'new' }
-  sessionStorage.setItem(CHART_SUBMISSION_KEY, JSON.stringify(submission))
-  navigateTo('/contact')
+  writeSession(CHART_SUBMISSION_KEY, JSON.stringify(submission))
+  await toContact()
 }
 
 /** send the chart and its context to the contact form (via sessionStorage), pre-filled for a bug report */
-
-function reportError(): void {
+async function reportError(): Promise<void> {
   editor.flush()
+  await nextTick()
   const report: ChartReport = {
     chart: editor.text.value,
     slug: props.saveTarget && 'slug' in props.saveTarget ? props.saveTarget.slug : '',
@@ -882,7 +895,7 @@ function reportError(): void {
     level: scaleLevel.level.value,
     url: location.href,
   }
-  sessionStorage.setItem(CHART_REPORT_KEY, JSON.stringify(report))
-  navigateTo('/contact')
+  writeSession(CHART_REPORT_KEY, JSON.stringify(report))
+  await toContact()
 }
 </script>

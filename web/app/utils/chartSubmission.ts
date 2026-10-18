@@ -1,3 +1,4 @@
+import { sameChart } from '@chord-scale-maker/engine'
 import type { SaveTarget } from '~/composables/useSavedChart'
 
 /**
@@ -11,10 +12,10 @@ export type ChartActions = Readonly<{ send: boolean; suggest: boolean; report: b
 
 const REPORT_ONLY: ChartActions = { send: false, suggest: false, report: true }
 
-/** a library chart as published is reported; edited, its changes are suggested instead; any other chart is sent, beside the report */
+/** a library chart as published is reported; edited (not sameChart, as its saving decides), its changes are suggested instead; any other chart is sent, beside the report */
 export function submissionAction(target: SaveTarget | undefined, text: string, on: boolean): ChartActions {
   if (!on) return REPORT_ONLY
-  if (target?.kind === 'library') return text === target.libraryText ? REPORT_ONLY : { send: false, suggest: true, report: false }
+  if (target?.kind === 'library') return sameChart(text, target.libraryText) ? REPORT_ONLY : { send: false, suggest: true, report: false }
   return { send: true, suggest: false, report: true }
 }
 

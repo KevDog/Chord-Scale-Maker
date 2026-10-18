@@ -14,6 +14,10 @@ describe('submissionAction', () => {
       expect(submissionAction(t, 'section: A\n1 | C\n', true)).toEqual({ send: true, suggest: false, report: true })
   })
 
+  it('treats a library chart edited only in its spacing as published, as its saving does (sameChart)', () => {
+    expect(submissionAction(lib, 'section: A\n1  |  Cm7\n', true)).toEqual({ send: false, suggest: false, report: true })
+  })
+
   it('only reports with the flag off', () => {
     expect(submissionAction(lib, 'section: A\n1 | Cm9\n', false)).toEqual({ send: false, suggest: false, report: true })
     expect(submissionAction({ kind: 'mine', id: 'x' }, 'section: A\n1 | C\n', false)).toEqual({ send: false, suggest: false, report: true })

@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ATTACHMENT_LIMITS, attachmentType, CONTACT_LIMITS, chartFilename, checkAttachment, checkChart, checkContact, contactEmail, safeFilename } from './contactMessage'
+import { ATTACHMENT_LIMITS, attachmentType, CONTACT_LIMITS, chartFilename, chartTitle, checkAttachment, checkChart, checkContact, contactEmail, safeFilename } from './contactMessage'
 
 const now = 1_000_000
 const b64 = (bytes: readonly number[], pad = 0): string => btoa(String.fromCharCode(...bytes, ...Array<number>(pad).fill(0)))
@@ -114,6 +114,15 @@ describe('checkChart', () => {
 
   it('leaves room in the request for the largest chart', () => {
     expect(CONTACT_LIMITS.maxBytes).toBe(16_000 + 90_000 + Math.ceil(ATTACHMENT_LIMITS.bytes / 3) * 4)
+  })
+})
+
+describe('chartTitle', () => {
+  it('is one line of at most 120 characters, Untitled when empty, as the server and the contact page show it', () => {
+    expect(chartTitle(' Eve\r\nBcc: x ')).toBe('Eve Bcc: x')
+    expect(chartTitle('  ')).toBe('Untitled')
+    expect(chartTitle('x'.repeat(200))).toBe('x'.repeat(120))
+    expect(chartFilename({ text: '', title: chartTitle(''), slug: null, credit: false })).toBe('untitled.txt')
   })
 })
 
