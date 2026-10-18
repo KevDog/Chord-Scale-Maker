@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { ATTACHMENT_LIMITS, attachmentType, CONTACT_LIMITS, checkAttachment, checkContact, contactEmail, safeFilename } from './contactMessage'
+import { ATTACHMENT_LIMITS, attachmentType, CONTACT_LIMITS, chartFilename, checkAttachment, checkChart, checkContact, contactEmail, safeFilename } from './contactMessage'
 
 const now = 1_000_000
 const b64 = (bytes: readonly number[], pad = 0): string => btoa(String.fromCharCode(...bytes, ...Array<number>(pad).fill(0)))
@@ -10,7 +10,7 @@ const ok = { name: 'Bill', email: 'bill@example.com', message: 'Hello', website:
 
 describe('checkContact', () => {
   it('accepts a real message, trimmed', () => {
-    expect(checkContact({ ...ok, name: '  Bill ' }, now)).toEqual({ ok: true, value: { name: 'Bill', email: 'bill@example.com', message: 'Hello', attachment: null } })
+    expect(checkContact({ ...ok, name: '  Bill ' }, now)).toEqual({ ok: true, value: { name: 'Bill', email: 'bill@example.com', message: 'Hello', attachment: null, chart: null } })
   })
 
   it('treats a filled honeypot, a too-quick submit or a missing timestamp as spam', () => {
@@ -30,7 +30,7 @@ describe('checkContact', () => {
 
 describe('contactEmail', () => {
   it('is plain text with a single-line subject and the sender as reply-to', () => {
-    const e = contactEmail({ name: 'Eve\r\nBcc: victim@example.com', email: 'eve@example.com', message: 'Hi <b>there</b>', attachment: null })
+    const e = contactEmail({ name: 'Eve\r\nBcc: victim@example.com', email: 'eve@example.com', message: 'Hi <b>there</b>', attachment: null, chart: null })
     expect(e.subject).toBe('Chord Scale Maker: message from Eve Bcc: victim@example.com')
     expect(e.subject).not.toMatch(/[\r\n]/)
     expect(e.text).toContain('Hi <b>there</b>')
@@ -40,10 +40,10 @@ describe('contactEmail', () => {
 
   it('carries the attachment and names it in the text', () => {
     const attachment = { filename: 'chart.pdf', type: 'application/pdf', content: PDF } as const
-    const e = contactEmail({ name: 'Bill', email: 'bill@example.com', message: 'Here', attachment })
+    const e = contactEmail({ name: 'Bill', email: 'bill@example.com', message: 'Here', attachment, chart: null })
     expect(e.attachments).toEqual([{ filename: 'chart.pdf', content: PDF }])
     expect(e.text).toContain('Attached: chart.pdf')
-    expect(contactEmail({ name: 'Bill', email: 'bill@example.com', message: 'Hi', attachment: null }, '2026.10.07 · 1e2bea5').text).toContain(
+    expect(contactEmail({ name: 'Bill', email: 'bill@example.com', message: 'Hi', attachment: null, chart: null }, '2026.10.07 · 1e2bea5').text).toContain(
       'chordscalemaker.com (version 2026.10.07 · 1e2bea5)',
     )
   })
@@ -83,5 +83,82 @@ describe('checkAttachment', () => {
 
   it('reads a type from an extension', () => {
     expect(['a.JPG', 'b.jpeg', 'c.png', 'd.pdf', 'e.gif', 'f'].map(attachmentType)).toEqual(['image/jpeg', 'image/jpeg', 'image/png', 'application/pdf', null, null])
+  })
+})
+
+const chart = { text: 'title: Bb Blues\n\nsection: A\n1 | B♭7\n', title: 'Bb Blues', credit: true }
+const fromBase64 = (b: string): string => new TextDecoder().decode(Uint8Array.from(atob(b), (c) => c.charCodeAt(0)))
+
+describe('checkChart', () => {
+  it('takes none, or a chart with its title, slug and credit', () => {
+    expect(checkChart(undefined)).toBeNull()
+    expect(checkChart(chart)).toEqual({ ...chart, slug: null })
+    expect(checkChart({ ...chart, slug: 'f-blues', credit: 'yes' })).toEqual({ ...chart, slug: 'f-blues', credit: false })
+    expect(checkChart({ ...chart, title: ' Eve\r\nBcc: x ' })).toMatchObject({ title: 'Eve Bcc: x' })
+    expect(checkChart({ ...chart, title: '' })).toMatchObject({ title: 'Untitled' })
+    expect(checkChart({ ...chart, title: 'x'.repeat(200) })).toMatchObject({ title: 'x'.repeat(120) })
+  })
+
+  it('turns away an empty or oversized chart and a bad slug', () => {
+    expect(checkChart({ ...chart, text: '  ' })).toBe('The chart is empty.')
+    expect(checkChart('a chart')).toBe('The chart is empty.')
+    expect(checkChart({ ...chart, text: 'x'.repeat(20_001) })).toBe('The chart can be at most 20000 characters.')
+    for (const slug of ['../etc', 'Autumn', 'a--b', 7, 'a'.repeat(81)]) expect(checkChart({ ...chart, slug })).toBe("The chart couldn't be read. Please try again.")
+  })
+
+  it('is reported with the other fields', () => {
+    const r = checkContact({ ...ok, chart: { ...chart, text: '' } }, now)
+    expect(r.ok === false && !r.spam && r.errors.chart).toBe('The chart is empty.')
+    expect(checkContact({ ...ok, chart }, now)).toMatchObject({ ok: true, value: { chart: { ...chart, slug: null } } })
+  })
+
+  it('leaves room in the request for the largest chart', () => {
+    expect(CONTACT_LIMITS.maxBytes).toBe(16_000 + 90_000 + Math.ceil(ATTACHMENT_LIMITS.bytes / 3) * 4)
+  })
+})
+
+describe('chartFilename', () => {
+  it('names a suggestion by its slug, a new chart by its title', () => {
+    expect(chartFilename({ ...chart, slug: 'autumn-leaves' })).toBe('autumn-leaves.txt')
+    expect(chartFilename({ ...chart, title: "'Round Midnight", slug: null })).toBe('round-midnight.txt')
+    expect(chartFilename({ ...chart, title: 'Ça c’est bon!', slug: null })).toBe('ca-cest-bon.txt')
+    expect(chartFilename({ ...chart, title: '♭♯', slug: null })).toBe('chart.txt')
+    expect(chartFilename({ ...chart, title: 'x'.repeat(100), slug: null })).toBe(`${'x'.repeat(60)}.txt`)
+    expect(chartFilename({ ...chart, title: `${'x'.repeat(59)} y`, slug: null })).toBe(`${'x'.repeat(59)}.txt`)
+  })
+})
+
+describe('contactEmail with a chart', () => {
+  const base = { name: 'Bill', email: 'bill@example.com', message: 'A chart for the library: Bb Blues', attachment: null }
+
+  it('attaches the chart as UTF-8 text and names the credit', () => {
+    const e = contactEmail({ ...base, chart: { ...chart, slug: null } })
+    expect(e.subject).toBe('Chord Scale Maker: chart for the library: Bb Blues')
+    expect(e.attachments[0]?.filename).toBe('bb-blues.txt')
+    expect(fromBase64(e.attachments[0]?.content ?? '')).toBe(chart.text)
+    expect(e.text).toContain('Credit: Bill')
+    expect(e.text).toContain('Attached: bb-blues.txt')
+  })
+
+  it('subjects a suggestion by slug, without credit when unticked', () => {
+    const e = contactEmail({ ...base, chart: { ...chart, slug: 'autumn-leaves', credit: false } })
+    expect(e.subject).toBe('Chord Scale Maker: suggested changes to autumn-leaves')
+    expect(e.text).toContain('Credit: none')
+  })
+
+  it('keeps the subject one line whatever the title', () => {
+    expect(contactEmail({ ...base, chart: { ...chart, title: 'Eve\r\nBcc: x', slug: null } }).subject).toBe('Chord Scale Maker: chart for the library: Eve Bcc: x')
+  })
+
+  it("attaches the form's own file after the chart", () => {
+    const attachment = { filename: 'lead-sheet.pdf', type: 'application/pdf', content: PDF } as const
+    const e = contactEmail({ ...base, attachment, chart: { ...chart, slug: null } })
+    expect(e.attachments.map((a) => a.filename)).toEqual(['bb-blues.txt', 'lead-sheet.pdf'])
+    expect(e.text).toContain('Attached: bb-blues.txt\nAttached: lead-sheet.pdf')
+  })
+
+  it('encodes the largest chart, accidentals and all', () => {
+    const text = '♭'.repeat(20_000)
+    expect(fromBase64(contactEmail({ ...base, chart: { ...chart, text, slug: null } }).attachments[0]?.content ?? '')).toBe(text)
   })
 })

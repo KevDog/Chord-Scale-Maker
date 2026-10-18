@@ -1,7 +1,8 @@
 import { CONTACT_LIMITS, checkContact, contactEmail } from '../utils/contactMessage'
 
 /**
- * The contact form's endpoint: validate, then email the site owner through Resend's API. The destination address,
+ * The contact form's endpoint: validate, then email the site owner through Resend's API (with a chart for the library,
+ * attached as text, when one is sent from the editor). The destination address,
  * sender and API key live in runtime config (NUXT_CONTACT_* environment variables on Vercel), never in the page.
  * NUXT_CONTACT_DRY_RUN=true (local builds and the e2e tests) validates without sending. A Vercel Firewall rule
  * rate-limits this path (docs/design.md §9).
