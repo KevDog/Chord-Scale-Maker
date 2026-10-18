@@ -31,10 +31,96 @@
 
       <section class="scroll-mt-6 space-y-8" aria-labelledby="scales">
         <UiSubheading id="scales" class="scroll-mt-6">Scales</UiSubheading>
+        <UiText>
+          A chord's scale comes from what it does in its key: a scale you wrote first, then a function you wrote
+          (<UiCode>V7/ii</UiCode>), then the analysis rules, and only where those don't reach, the chord's usual scale.
+          <UiTextLink href="/functions#rules">Functions and rules</UiTextLink> lists the rules; the note under a chord on
+          the Changes sheet names the one that chose its scale.
+        </UiText>
+
+        <DecisionSection id="scale.level">
+          <UiText>
+            How fancy the scales get. <strong :class="EM">Basic</strong> leans on pentatonics (five notes, hard to land on a
+            wrong one), <strong :class="EM">Standard</strong> is the usual chord-scale for each chord, and
+            <strong :class="EM">Advanced</strong> reaches for bebop, Lydian and altered colours. Each level moves the
+            scale the analysis chose, so a dominant resolving to minor climbs a different ladder from one resolving to major.
+            A tonic minor chord is Aeolian at Basic.
+          </UiText>
+          <UiTable dense>
+            <UiTableHead>
+              <UiTableRow>
+                <UiTableHeader>Chord</UiTableHeader>
+                <UiTableHeader v-for="l in LEVELS_SHOWN" :key="l">{{ LEVEL_LABELS[l] }}</UiTableHeader>
+              </UiTableRow>
+            </UiTableHead>
+            <UiTableBody>
+              <UiTableRow v-for="ex in LEVEL_EXAMPLES" :key="ex.chord + ex.standard">
+                <UiTableCell>{{ ex.chord }}</UiTableCell>
+                <UiTableCell v-for="l in LEVELS_SHOWN" :key="l">{{ ex.scales[l] }}</UiTableCell>
+              </UiTableRow>
+            </UiTableBody>
+          </UiTable>
+          <UiText>
+            The first row is G7 going home to C; the second is D7 as the V7 of G minor, where the analysis has already chosen
+            Phrygian Dominant. <strong :class="EM">Random</strong> deals a different inside scale to every chord (never an
+            outside one), so you can't coast; <strong :class="EM">Shuffle</strong> deals a new hand.
+          </UiText>
+          <UiText>
+            A level is a view setting, like the instrument: it isn't written into the chart. The level and its shuffle are
+            remembered for each chart in this browser and go with a share link. A scale you write or pick for a chord is a
+            pin, and plays at every level.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> the level, and any chord's scale (pick it in the editor, or
+            write it in the source).
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection id="scale.unknown">
+          <UiText>
+            A chord I can't read, say <UiCode>Cmj7</UiCode> or a quality I don't know, comes up amber in the editor. It has no
+            numeral and no scale until you pick one, its staff on the Scales sheet asks you to choose a scale, and every
+            line rests on it and starts again after.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> fix the chord (<UiCode>Cmaj7</UiCode>), or pick a scale for it
+            and it'll draw.
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection id="scale.slash">
+          <UiText>
+            Some slash chords are really another chord on their bass, and take their scales from it. A major 7th over the
+            note a half step below (<UiCode>D♭maj7/C</UiCode>) plays as C 7sus4♭9; a minor 7th over the note a 4th above
+            its root (<UiCode>Am7/D</UiCode>) plays as D 9sus4. The chord symbol stays as you wrote it, and its labels and
+            the Practice presets still read it as written. Any other slash chord takes its root's scales, its bass keeping
+            its interval from the root.
+          </UiText>
+          <UiText><strong :class="EM">What you can change:</strong> pick another of the chord's scales in the editor.</UiText>
+        </DecisionSection>
       </section>
 
       <section class="scroll-mt-6 space-y-8" aria-labelledby="keys">
         <UiSubheading id="keys" class="scroll-mt-6">Keys</UiSubheading>
+
+        <DecisionSection id="key.area">
+          <UiText>
+            The key of the moment is found from the cadences: a ii–V or a V landing on its I says where the tune is, and
+            where nothing does, the chart's own key holds. The Changes sheet writes a key change in wherever that key moves,
+            and every numeral and scale after it is read in the new key. A run of chords that only borrows from the next
+            key, such as a <UiCode>V7/ii</UiCode>, stays in the old one.
+          </UiText>
+          <UiText>
+            Tune Up is in D, but it's three ii–V–Is a whole step apart: <UiCode>Em7 A7 Dmaj7</UiCode>, then
+            <UiCode>Dm7 G7 Cmaj7</UiCode>, then <UiCode>Cm7 F7 B♭maj7</UiCode>. So the sheet writes C major over bar 5 and
+            B♭ major over bar 9, and reads the <UiCode>Dm7</UiCode> as ii in C, not as i in D.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> a key change of your own (Key change here, in a bar's menu,
+            or <UiCode>@key</UiCode> in the source), a section's <UiCode>key:</UiCode>, or a chord's function, which
+            settles the rules without pinning a scale. See <UiTextLink href="/functions#writing">Functions and rules</UiTextLink>.
+          </UiText>
+        </DecisionSection>
       </section>
 
       <section class="scroll-mt-6 space-y-8" aria-labelledby="guide-tones">
@@ -152,6 +238,41 @@
 
       <section class="scroll-mt-6 space-y-8" aria-labelledby="spelling">
         <UiSubheading id="spelling" class="scroll-mt-6">Spelling</UiSubheading>
+
+        <DecisionSection id="spell.root">
+          <UiText>
+            Every scale is worked out from its formula, then spelled the easiest way to read: no double flats or sharps, no
+            B♯, E♯, C♭ or F♭, then the fewest accidentals, and on a tie the sharp or flat side it was written on. So a
+            scale on the ♭2 of B♭ starts on B, not C♭, and G♭ Ionian (six flats) stays G♭, not F♯ (six sharps), because you wrote
+            it flat.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> Spell Scale on the Scales sheet starts every scale on another
+            note; the spelling rule still applies.
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection id="spell.chord">
+          <UiText>
+            A chord symbol follows its scale's spelling when they share a root, so the chord and the staff under it agree.
+            Each guide tone and arpeggio note keeps its chord's spelling too: the 7th of G♭7 is F♭, not E. A slash bass
+            keeps its interval from the root: in <UiCode>D7/F♯</UiCode> the bass is D's major 3rd, so it's F♯, never G♭.
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection id="spell.transpose">
+          <UiText>
+            Transpose… moves the chart to a new concert key and spells each root on that key's side: in B♭ a ii–V is
+            <UiCode>D♭–7 G♭7</UiCode>, not <UiCode>C♯–7 F♯7</UiCode>, even when a scale then has a C♭ or F♭ in it. In C
+            and A minor, which have no side, and wherever that side would need double flats or sharps, the plain rule above
+            decides.
+          </UiText>
+          <UiText>
+            That's different from the Instrument setting, which never changes the chart, only how it's written for you; the
+            written parts use the plain rule alone.
+          </UiText>
+          <UiText><strong :class="EM">What you can change:</strong> transpose back to undo.</UiText>
+        </DecisionSection>
       </section>
 
       <section class="scroll-mt-6 space-y-8" aria-labelledby="ranges">
@@ -163,10 +284,18 @@
 </template>
 
 <script setup lang="ts">
+import { LEVEL_LABELS, scaleAtLevel, type ScaleLevel } from '@chord-scale-maker/engine'
 import { PAGE_HEAD, seoMeta } from '~/utils/site'
 
 /** a run-in label in the prose: "What you can change:" */
 const EM = 'font-semibold text-zinc-950 dark:text-white'
+
+/** the level table, from the engine so it can't drift: G7 on its usual scale, D7 where the analysis chose Phrygian Dominant */
+const LEVELS_SHOWN = ['basic', 'standard', 'advanced'] as const satisfies readonly ScaleLevel[]
+const LEVEL_EXAMPLES = [
+  { chord: 'G7', standard: '' },
+  { chord: 'D7', standard: 'D Phrygian Dominant' },
+].map((ex) => ({ ...ex, scales: Object.fromEntries(LEVELS_SHOWN.map((l) => [l, scaleAtLevel(ex.chord, l, 0, '', ex.standard || undefined)])) }))
 
 const SECTIONS = [
   { id: 'scales', title: 'Scales' },

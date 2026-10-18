@@ -13,10 +13,10 @@ export type DocPage = 'help' | 'how-it-decides' | 'functions'
 export type DecisionInfo = Readonly<{ id: string; title: string; page: DocPage; anchor: string; summary: string }>
 
 export const DECISIONS = [
-  { id: 'scale.level', title: 'Scale levels', page: 'help', anchor: 'controls', summary: 'What Basic, Standard, Advanced and Random reach for, and why a scale you wrote plays at every level.' },
-  { id: 'scale.unknown', title: 'Chords it can’t read', page: 'help', anchor: 'editing', summary: 'A chord it can’t read is shown in amber, has no scale, and rests in a line.' },
-  { id: 'scale.slash', title: 'Slash chords', page: 'functions', anchor: 'rules', summary: 'Some slash chords take their scale from another chord on their bass: D♭maj7/C plays as C 7sus4♭9.' },
-  { id: 'key.area', title: 'Key areas', page: 'functions', anchor: 'rules', summary: 'How the key of the moment is found, and where a key change is written in.' },
+  { id: 'scale.level', title: 'Scale levels', page: 'how-it-decides', anchor: 'scale.level', summary: 'What Basic, Standard, Advanced and Random reach for, and why a scale you wrote plays at every level.' },
+  { id: 'scale.unknown', title: 'Chords it can’t read', page: 'how-it-decides', anchor: 'scale.unknown', summary: 'A chord it can’t read is shown in amber, has no scale until you pick one, and rests in a line.' },
+  { id: 'scale.slash', title: 'Slash chords', page: 'how-it-decides', anchor: 'scale.slash', summary: 'Some slash chords take their scale from another chord on their bass: D♭maj7/C plays as C 7sus4♭9.' },
+  { id: 'key.area', title: 'Key areas', page: 'how-it-decides', anchor: 'key.area', summary: 'How the key of the moment is found, and where a key change is written in.' },
   { id: 'guide.tones', title: 'The guide tones', page: 'how-it-decides', anchor: 'guide.tones', summary: 'Each chord’s 3rd and 7th, or its 6th, 4th or root where it has no 7th or 3rd.' },
   { id: 'guide.start', title: 'Where a line starts', page: 'how-it-decides', anchor: 'guide.start', summary: 'A line starts in the octave that keeps it nearest the middle of your range up to the next rest.' },
   { id: 'guide.move', title: 'How a line moves', page: 'how-it-decides', anchor: 'guide.move', summary: 'At each chord the line takes the nearer guide tone: a common tone, then a half step, a whole step, then a leap.' },
@@ -38,9 +38,9 @@ export const DECISIONS = [
   { id: 'hex.group', title: 'Hexatonic groupings', page: 'help', anchor: 'practice', summary: 'How the six notes of a triad pair are split in two and tinted apart.' },
   { id: 'hex.line', title: 'The Triad pair line', page: 'help', anchor: 'controls', summary: 'Each chord’s triad pair a triad at a time, its lower triad first.' },
   { id: 'pick.order', title: 'The order of chord picks', page: 'help', anchor: 'practice', summary: 'A chord pick’s list runs from inside to outside.' },
-  { id: 'spell.root', title: 'Spelling a scale', page: 'help', anchor: 'editing', summary: 'Each scale takes the spelling with no double flats or sharps and the fewest accidentals.' },
-  { id: 'spell.transpose', title: 'Spelling a new key', page: 'help', anchor: 'editing', summary: 'Transposing spells roots on the new key’s side: D♭–7 G♭7 in B♭, not C♯–7 F♯7.' },
-  { id: 'spell.chord', title: 'Spelling a chord symbol', page: 'help', anchor: 'editing', summary: 'A chord symbol follows its scale’s spelling, and a slash bass keeps its interval from the root.' },
+  { id: 'spell.root', title: 'Spelling a scale', page: 'how-it-decides', anchor: 'spell.root', summary: 'Each scale takes the spelling with no double flats or sharps, no B♯, E♯, C♭ or F♭, then the fewest accidentals, then the sharp or flat side it was written on.' },
+  { id: 'spell.transpose', title: 'Spelling a new key', page: 'how-it-decides', anchor: 'spell.transpose', summary: 'Transposing spells roots on the new key’s side: D♭–7 G♭7 in B♭, not C♯–7 F♯7.' },
+  { id: 'spell.chord', title: 'Spelling a chord symbol', page: 'how-it-decides', anchor: 'spell.chord', summary: 'A chord symbol follows its scale’s spelling, and a slash bass keeps its interval from the root.' },
 ] as const satisfies readonly DecisionInfo[]
 
 export type DecisionId = (typeof DECISIONS)[number]['id'] | `rule-${string}`
