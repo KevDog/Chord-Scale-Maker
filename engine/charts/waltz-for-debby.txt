@@ -4,7 +4,7 @@ style: Jazz waltz
 key: F
 form: ABC, 80 bars
 time: 3/4
-source: 
+source: The New Real Book, Vol. 1
 recording: Bill Evans Trio; Waltz for Debby; Riverside; 1962
 youtube: wCINvavqFXk
 # analysis: 2026-10-17, rules v1; F

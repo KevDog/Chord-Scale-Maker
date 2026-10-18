@@ -3,7 +3,7 @@ composer: Antonio Carlos Jobim
 style: Slow bossa nova
 key: Eb
 form: ABC, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Antonio Carlos Jobim; The Wonderful World of Antonio Carlos Jobim; Warner Bros.; 1965
 youtube: zvQDKv6KHeI
 # analysis: 2026-10-12, rules v1; Eb

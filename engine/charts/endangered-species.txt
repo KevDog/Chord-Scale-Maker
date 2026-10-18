@@ -4,7 +4,7 @@ style: Medium funk
 # the book: "Medium Funk", quarter = 110
 key: D
 form: ABCD, 64 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Wayne Shorter; Atlantis; Columbia; 1985
 youtube: qUDRRCQj0TE
 # analysis: 2026-10-17, rules v1; D

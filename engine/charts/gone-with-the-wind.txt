@@ -3,7 +3,7 @@ composer: Allie Wrubel
 style: Medium swing
 key: Eb
 form: AB, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; Eb
 
 # bar | chord

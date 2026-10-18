@@ -4,7 +4,7 @@ style: Ballad
 # book: Med. Ballad
 key: Eb
 form: ABC, 36 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Art Pepper; Art Pepper Meets the Rhythm Section; Contemporary; 1957
 youtube: 6v-9wu_0twY
 # analysis: 2026-10-17, rules v1; Eb

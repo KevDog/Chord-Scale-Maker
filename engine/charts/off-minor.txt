@@ -3,7 +3,7 @@ composer: Thelonious Monk
 style: Medium swing
 key: Gm
 form: AABC, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Thelonious Monk; Genius of Modern Music; Blue Note; 1951
 youtube: njJtE9citu4
 # analysis: 2026-10-17, rules v1; G minor

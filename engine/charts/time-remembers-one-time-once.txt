@@ -4,7 +4,7 @@ style: Medium jazz waltz
 key: F#m
 time: 3/4
 form: AA, 38 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; F# minor
 # form: A (8 bars) with a 1st ending of 8 bars and a 2nd ending of 14 bars
 # the book: "Chords in parentheses are used for solos."

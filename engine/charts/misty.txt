@@ -3,7 +3,7 @@ composer: Erroll Garner
 style: Medium Ballad
 key: Eb
 form: AABA, 32 bars
-source: The New Real Book, Vol. 1, p. 434
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-11, rules v1; Eb
 # Bars 17, 19 and 32: the book's parenthesised chords are kept. Bars 5, 13 and 29: EbMaj7 may be played as Gm7.
 

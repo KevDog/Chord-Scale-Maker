@@ -4,7 +4,7 @@ style: Medium slow, straight eighths
 key: Em
 form: AB + Interlude, 32 bars
 context: modal
-source: 
+source: The New Real Book, Vol. 1
 recording: John Abercrombie Quartet; Abercrombie Quartet; ECM; 1980
 youtube: FjDRD5s7UxY
 # analysis: 2026-10-12, rules v1; E minor, modal

@@ -3,7 +3,7 @@ composer: Victor Young, Wayne King, Egbert Van Alstyne
 style: Medium swing
 key: Dm
 form: ABAC, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; D minor
 # as played by Bill Evans; originally written in 3/4
 # the book: a 16-bar form with 1st and 2nd endings; the pickup bar has no chord

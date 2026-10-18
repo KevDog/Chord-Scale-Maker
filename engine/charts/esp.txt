@@ -4,7 +4,7 @@ style: Up
 # the book: "Fast Swing", half note = 268 ("As played by Miles Davis"); bass in 2 for the head, 4 for solos
 key: F
 form: AB, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Miles Davis; E.S.P.; Columbia; 1965
 youtube: lRhqn21-xeg
 # analysis: 2026-10-17, rules v1; F

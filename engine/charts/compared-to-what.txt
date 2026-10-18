@@ -3,7 +3,7 @@ composer: Eugene McDaniels
 style: Medium gospel rock
 key: F
 form: ABC, 48 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; F
 
 # Intro bars 1–8 (and the pickup): N.C., the piano and bass figure

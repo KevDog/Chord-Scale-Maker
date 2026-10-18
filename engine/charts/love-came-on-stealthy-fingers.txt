@@ -3,7 +3,7 @@ composer: Bob Dorough
 style: Ballad
 key: F
 form: AB, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; F
 # book: Slow Ballad. The form repeats (repeat signs around A–B).
 # the Intro is a repeated 2-bar piano figure marked (C7); written out as 4 bars.

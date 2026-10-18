@@ -3,7 +3,7 @@ composer: Thelonious Monk
 style: Ballad
 key: Db
 form: AABA, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Thelonious Monk; Genius of Modern Music, Volume 2; Blue Note; 1956
 youtube: sTVZBl5AUfo
 # analysis: 2026-10-17, rules v1; Db

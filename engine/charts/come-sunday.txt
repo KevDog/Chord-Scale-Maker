@@ -3,7 +3,7 @@ composer: Duke Ellington
 style: Gospel ballad
 key: Bb
 form: AABC, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Duke Ellington and His Orchestra featuring Mahalia Jackson; Black, Brown and Beige; Columbia; 1958
 youtube: F_U2ItUzx5A
 # analysis: 2026-10-12, rules v1; Bb

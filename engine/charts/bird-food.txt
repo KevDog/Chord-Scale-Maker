@@ -3,7 +3,7 @@ composer: Ornette Coleman
 style: Up
 key: Bb
 form: AABC, 40 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; Bb
 
 # the intro is a melodic figure with no chords (4 bars N.C.)

@@ -4,7 +4,7 @@ style: Medium up straight eighths
 key: Bb
 form: AB, 32 bars
 time: 3/4
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; Bb
 # book: Medium-Up Straight 1/8's, quarter = 184. Based on the chords of "Someday My Prince Will Come".
 # repeat signs around A–B; last time, B bar 16 goes to the Coda (coda sign at B bar 16).

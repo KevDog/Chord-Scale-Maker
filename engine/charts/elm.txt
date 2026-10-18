@@ -4,7 +4,7 @@ style: Medium slow
 # the book: "Med.-Slow Straight-Eighths", quarter = 110
 key: Gm
 form: A, 16 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Richard Beirach; Elm; ECM; 1979
 youtube: cu6YUA7QxZk
 # analysis: 2026-10-17, rules v1; G minor

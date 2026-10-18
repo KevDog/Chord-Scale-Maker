@@ -3,7 +3,7 @@ composer: Charlie Parker, Dizzy Gillespie
 style: Up
 key: Bb
 form: AABA, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Dizzy Gillespie; In the Beginning; Prestige; 1973
 youtube: VSD0UPQRvEE
 # analysis: 2026-10-17, rules v1; Bb

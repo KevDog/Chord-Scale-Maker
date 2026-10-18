@@ -3,7 +3,7 @@ composer: Wardell Gray
 style: Medium swing
 key: C
 form: AABCD, 62 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; C
 # form: four 12-bar blues choruses (A repeated with 1st/2nd endings), D extended to 14 bars;
 # D.S. al Coda: play A twice, take the coda from bar 9 the 2nd time

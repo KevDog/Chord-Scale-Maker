@@ -3,7 +3,7 @@ composer: Billy Strayhorn
 style: Ballad
 key: Db
 form: ABCD, 54 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; Db
 # book: as played by John Coltrane. A: freely (verse); B: faster; C–D: medium ballad (quarter = 58).
 # routing: A, B, C, D; repeat C–D for solos (double-time feel swing; the first solo begins at D bars 13–14);

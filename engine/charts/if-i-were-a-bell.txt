@@ -3,7 +3,7 @@ composer: Frank Loesser
 style: Medium swing
 key: F
 form: AB, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; F
 # the book: as played by Miles Davis; in 2 for the head
 # the intro is a melodic figure with no chords (N.C., four bars with 1st and 2nd endings)

@@ -3,7 +3,7 @@ composer: Jerome Kern
 style: Medium up
 key: C
 form: AABA, 64 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Charlie Parker; Charlie Parker; Clef; 1954
 youtube: WECmIiUVA9E
 # analysis: 2026-10-17, rules v1; C

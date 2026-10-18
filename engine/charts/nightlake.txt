@@ -4,7 +4,7 @@ style: Medium swing
 key: Bbm
 form: A, 13 bars
 time: 6/4
-source: 
+source: The New Real Book, Vol. 1
 recording: John Abercrombie Quartet; Arcade; ECM; 1979
 youtube: 0DyMCwg1qVs
 # analysis: 2026-10-12, rules v1; Bb minor

@@ -3,7 +3,7 @@ composer: Walter Gross
 style: Medium ballad
 key: Eb
 form: AB, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; Eb
 # the book: may be played in 3/4 (subtract one beat from the first note in each bar)
 

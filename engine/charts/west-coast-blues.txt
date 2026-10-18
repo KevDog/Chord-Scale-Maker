@@ -6,7 +6,7 @@ key: Bb
 form: AB, 48 bars
 time: 3/4
 context: blues
-source: 
+source: The New Real Book, Vol. 1
 recording: Wes Montgomery; The Incredible Jazz Guitar of Wes Montgomery; Riverside; 1960
 youtube: VSkVxeJTiX8
 # analysis: 2026-10-12, rules v1; Bb, blues

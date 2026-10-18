@@ -3,7 +3,7 @@ composer: Antonio Carlos Jobim
 style: Bossa nova
 key: Gm
 form: ABC, 40 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Antonio Carlos Jobim; The Composer of Desafinado, Plays; Verve; 1963
 youtube: RRXHk3idJUo
 # analysis: 2026-10-17, rules v1; G minor

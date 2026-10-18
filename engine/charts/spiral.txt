@@ -3,7 +3,7 @@ composer: Kenny Barron
 style: Medium straight eighths
 key: Dm
 form: AABC head (30 bars) + 8-bar Interlude, solos on DDEF (AABA, 32 bars) + 4-bar Cue ending, 74 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; D minor
 # the book: as played by Sphere; the head's B and the solos' E differ (the head's slash chords, the solos' 13sus chords)
 # head: A (repeated) B C, then the Interlude; solos on D (repeated) E F; Till Cue back to D, On Cue ending (Cue) to end each solo

@@ -3,7 +3,7 @@ composer: Miles Davis
 style: Medium up
 key: Ab
 form: AB, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Miles Davis; The New Sounds; Prestige; 1951
 youtube: zQH022AoPEs
 # analysis: 2026-10-12, rules v1; Ab

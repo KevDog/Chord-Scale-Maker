@@ -3,7 +3,7 @@ composer: Wayne Shorter
 style: Bossa nova
 key: G
 form: ABC, 50 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Wayne Shorter; Native Dancer; Columbia; 1975
 youtube: IrftwtFICbI
 # analysis: 2026-10-17, rules v1; G

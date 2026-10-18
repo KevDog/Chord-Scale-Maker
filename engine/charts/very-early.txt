@@ -4,7 +4,7 @@ style: Medium jazz waltz
 key: C
 time: 3/4
 form: AAB, 48 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Bill Evans Trio; Moon Beams; Riverside; 1962
 youtube: KKe5A1iCPGo
 # analysis: 2026-10-17, rules v1; C

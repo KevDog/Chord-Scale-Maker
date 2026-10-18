@@ -4,7 +4,7 @@ style: Medium jazz waltz
 key: C
 time: 3/4
 form: ABC, 64 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: Bill Evans; The Tokyo Concert; Fantasy; 1974
 youtube: ts3QHuGJHcs
 # analysis: 2026-10-17, rules v1; C

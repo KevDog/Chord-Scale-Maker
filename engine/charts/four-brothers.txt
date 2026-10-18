@@ -3,7 +3,7 @@ composer: Jimmy Giuffre
 style: Medium up
 key: Ab
 form: AABA, 32 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; Ab
 # book: as played by Woody Herman
 

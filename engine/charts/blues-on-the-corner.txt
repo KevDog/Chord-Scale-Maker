@@ -3,7 +3,7 @@ composer: McCoy Tyner
 style: Medium swing
 key: Bb
 form: Blues, 12 bars
-source: 
+source: The New Real Book, Vol. 1
 recording: McCoy Tyner; The Real McCoy; Blue Note; 1967
 youtube: aQFZNm7JGqg
 # analysis: 2026-10-12, rules v1; Bb, blues

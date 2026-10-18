@@ -3,7 +3,7 @@ composer: Jim Hall
 style: Up samba
 key: C
 form: ABCDE, 90 bars (solos on ABCD, 70 bars)
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; C
 
 # book tempo marking: Fast Samba, in cut time

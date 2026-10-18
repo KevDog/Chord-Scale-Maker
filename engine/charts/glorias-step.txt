@@ -3,7 +3,7 @@ composer: Scott LaFaro
 style: Medium swing
 key: F
 form: AB, 20 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; F
 # book: as played by Bill Evans
 # the whole form repeats; last time, to the Coda from B bar 7

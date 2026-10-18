@@ -3,7 +3,7 @@ composer: Dave Frishberg
 style: Medium swing
 key: Cm
 form: ABC, 30 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; C minor
 
 # the book's 13sus chords are written 9sus4 (Bb13sus → Bb9sus4); its Cm(add9) as Cm

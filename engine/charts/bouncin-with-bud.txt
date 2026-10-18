@@ -3,7 +3,7 @@ composer: Bud Powell
 style: Medium up
 key: Bb
 form: ABCD, 40 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-12, rules v1; Bb
 # intro and head as written; solo on ABC; after solos D.C. al Coda (to the Coda from C bar 8)
 # the intro's chords are kicks pushed ahead of the bar (B7b5 on the and of 4 in bars 2 and 6, Bb6 on the and of 4 in bars 4 and 8): written on the bar they anticipate

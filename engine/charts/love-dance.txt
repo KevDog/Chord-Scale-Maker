@@ -3,7 +3,7 @@ composer: Ivan Lins, Gilson Peranzzetta
 style: Medium funk ballad
 key: Eb
 form: AABC, 43 bars
-source: 
+source: The New Real Book, Vol. 1
 # analysis: 2026-10-17, rules v1; Eb
 # routing: Intro, A (repeated, 1st and 2nd endings), B, C, D.S. (tenor solo over B, end solo), C al Coda;
 # the Coda ends in a two-bar vamp (bars 7–8: vamp, solo and fade).
