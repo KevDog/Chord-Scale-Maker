@@ -1,5 +1,5 @@
 import type { Page } from '@playwright/test'
-import { chooseInterface, chooseSheet, chooseSuperimpose, expect, moreAction, openPentatonicOptions, pentatonicPreset, pickOption, rankedAgainstChord, sheetChord, showPentatonics, test, typeChord } from './fixtures'
+import { chooseInterface, chooseSheet, chooseSuperimpose, expect, moreAction, openPentatonicOptions, pentatonicPreset, pickOption, rankedAgainstChord, sheetChord, showPentatonics, test, typeChord, closePentatonicOptions } from './fixtures'
 
 // Blue Bossa (concert): G7♯5♯9, G Altered, in A bar 6 and B bar 6, and G7♯5 in B bar 8 on the same Scales staff; the
 // Changes positions are A:6:0, B:14:0 and B:16:1. Its choices, inside to outside: B♭m (the sheet's), Cm, Fm, E♭m, …
@@ -106,6 +106,7 @@ test('picks survive a Built on change; Reset chord picks clears them', async ({ 
   await pickOption(page, 'Pentatonic built on', '2')
   await expect(at(page, BAR6)).toHaveText('Fm♪ 4')
   await expect(at(page, BAR6)).toHaveAttribute('aria-label', /your pick/)
+  await closePentatonicOptions(page) // its panel can cover the actions, on the rail's row with it
   await moreAction(page, 'Reset chord picks')
   await expect(page.locator('[data-slot="pentatonic"] button[aria-label*="your pick"]')).toHaveCount(0)
   await expect(at(page, BAR6)).not.toHaveText('Fm♪ 4')

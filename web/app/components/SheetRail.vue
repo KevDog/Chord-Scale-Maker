@@ -8,11 +8,13 @@
     aria-label="Sheet controls"
     :data-stuck="sticky && stuck ? '' : undefined"
     :class="[
-      '-mx-3 flex flex-wrap items-end justify-between gap-x-4 gap-y-3 rounded-paper p-3 transition-shadow',
+      '-mx-3 flex flex-wrap items-end gap-x-4 gap-y-3 rounded-paper p-3 transition-shadow',
       sticky && 'lg:sticky lg:top-0 lg:z-10 lg:has-[[aria-haspopup][aria-expanded=true]]:z-40 lg:data-stuck:bg-raised lg:data-stuck:shadow-raised',
     ]"
   >
-    <div class="flex min-w-0 grow basis-80 flex-wrap items-start gap-x-4 gap-y-3"><slot name="left" /></div>
+    <!-- the groups and the actions wrap as one row (the groups' box is display: contents), the actions pushed right
+         wherever they land: beside the groups, they'd leave them half the width and three rows -->
+    <div class="contents"><slot name="left" /></div>
     <div class="ml-auto flex min-w-0 flex-wrap justify-end gap-2 *:whitespace-nowrap sm:shrink-0"><slot name="right" /></div>
   </div>
 </template>

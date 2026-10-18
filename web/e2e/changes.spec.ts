@@ -1,11 +1,15 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseInstrument, chooseInterface, chooseSheet, type Drawn, drawn, expect, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, sheetChord, showArpeggios, showApproach, showCell, showGuides, test, writeChart } from './fixtures'
+import { chooseInstrument, chooseInterface, chooseSheet, closePanel, type Drawn, drawn, expect, openPanel, GLYPH, arpeggiosDrawn, guidesDrawn, openEditor, sheetChord, showArpeggios, showApproach, showCell, showGuides, test, writeChart } from './fixtures'
 
 const lines = (page: Page) => page.locator('svg[aria-label^="Bars:"]')
 /** the sheet itself, not the controls above it (whose menus name the same scales) */
 const sheetOf = (page: Page) => lines(page).first().locator('xpath=ancestor::div[@data-slot="paper"][1]')
 const lineOff = (page: Page) => page.getByRole('radio', { name: 'Off', exact: true })
-const guideLine = (page: Page) => page.getByLabel('Guide tone line')
+/** the guide tone line's listbox, in Line options */
+const guideLine = async (page: Page) => {
+  await openPanel(page, 'Line options')
+  return page.getByLabel('Guide tone line')
+}
 /** a line's guide tone labels: the row between its staff and its numerals */
 const labelRow = (line: Locator) => line.locator('xpath=ancestor::*[@data-slot="system"][1]//*[@data-slot="guides"]')
 /** each chord's x on a line, as a fraction of its width (ChangesSystem sets a mark's left 0.012 before its beat) */
@@ -175,12 +179,12 @@ test('From 3rd or From 7th puts each chord’s guide tone in place of its slashe
   expect((await drawn(line)).slashes).toBe(0)
   await expect(labelRow(line)).toHaveText(/^\s*3\s*7\s*3\s*3\s*7\s*7\s*3\s*7\s*$/) // from the Dm7's 3rd (F5, the run placed nearest the centre): F5 F5 E5 E5 D5 G5 F5 F5. G7sus4's nearest guide tone is its 7th (the F, a common tone); the lines meet on D5 at Em7, and A, above before, goes up to G5 at A7 (G2: D is not a guide tone of A7; alone it would take C#5); at the last G7, F5 again
   await showGuides(page, 'From 7th')
-  await expect(guideLine(page)).toContainText('From 7th')
+  await expect(await guideLine(page)).toContainText('From 7th')
   await expect(labelRow(line)).toHaveText(/^\s*7\s*4\s*6\s*1\s*7\s*3\s*7\s*3\s*$/) // from the Dm7's 7th: a sus chord's 4th, a 6 chord's 6th, a triad's root
   await expect.poll(async () => (await drawn(line)).heads.length).toBe(8) // one line at a time
   await expectChordsOnHeads(line)
   await page.reload()
-  await expect(guideLine(page)).toContainText('From 7th') // remembered
+  await expect(await guideLine(page)).toContainText('From 7th') // remembered
   await expect(lines(page).first()).toHaveAttribute('aria-label', /; guide tones: /)
 })
 
@@ -208,7 +212,7 @@ test('the guide tone choice survives a reload and rides a share link', async ({ 
   await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\n3 | CMaj7\n')
   await showGuides(page, 'From 7th')
   await page.reload()
-  await expect(guideLine(page)).toContainText('From 7th')
+  await expect(await guideLine(page)).toContainText('From 7th')
   await expect(labelRow(lines(page).first())).toHaveText(/^\s*7\s*3\s*7\s*$/)
   await page.getByRole('button', { name: 'Share' }).click()
   const box = page.getByRole('dialog').getByLabel('Link')
@@ -218,7 +222,7 @@ test('the guide tone choice survives a reload and rides a share link', async ({ 
   await chooseInterface(other, 'everything')
   const visitor = await other.newPage()
   await visitor.goto(link)
-  await expect(guideLine(visitor)).toContainText('From 7th')
+  await expect(await guideLine(visitor)).toContainText('From 7th')
   await expect(labelRow(lines(visitor).first())).toHaveText(/^\s*7\s*3\s*7\s*$/)
   await other.close()
 })
@@ -237,6 +241,7 @@ test('7th Chords arpeggiates each chord: quarters for one a bar, eighths for two
   await expect(line).toHaveAttribute('aria-label', /; 7th chords: B4 G4 E4 C4 \|/)
   await page.reload()
   await expect(page.getByRole('radio', { name: '7th Chords', exact: true })).toBeChecked() // remembered
+  await openPanel(page, 'Line options')
   await expect(page.getByLabel('Arpeggio pattern')).toContainText('Down · root')
 })
 
@@ -261,8 +266,10 @@ test('Approach (#298): an enclosure into each guide tone adds notes, the guide t
   await expect(labelRow(line)).toHaveText(labels) // each chord's first note is still its guide tone
   await expectChordsOnHeads(line)
   await page.reload()
+  await openPanel(page, 'Line options')
   await expect(page.getByLabel('Approach', { exact: true })).toContainText('enclosure') // remembered
   await expect(page.getByLabel('Approach', { exact: true }).locator('..')).toHaveAttribute('title', 'Diatonic above, chromatic below (enclosure)') // the listbox's tooltip: the whole name, which the button truncates
+  await closePanel(page, 'Line options')
   await page.getByRole('button', { name: 'Share' }).click()
   const box = page.getByRole('dialog').getByLabel('Link')
   await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/)
@@ -271,6 +278,7 @@ test('Approach (#298): an enclosure into each guide tone adds notes, the guide t
   await chooseInterface(other, 'everything')
   const visitor = await other.newPage()
   await visitor.goto(link)
+  await openPanel(visitor, 'Line options')
   await expect(visitor.getByLabel('Approach', { exact: true })).toContainText('enclosure')
   await other.close()
 })
@@ -289,7 +297,9 @@ test('Cells (#298): a cell on each beat 1 and 3 of a chord, eighths beamed by th
   await expect(labelRow(line)).toHaveCount(0)
   await page.reload()
   await expect(page.getByRole('radio', { name: '7th Chords', exact: true })).toBeChecked() // remembered: the cells share its slot
+  await openPanel(page, 'Line options')
   await expect(page.getByLabel('Arpeggio pattern', { exact: true })).toContainText('Root to root')
+  await closePanel(page, 'Line options')
   await page.getByRole('button', { name: 'Share' }).click()
   const box = page.getByRole('dialog').getByLabel('Link')
   await expect(box).toHaveValue(/\/song#s=[A-Za-z0-9_-]+$/)
@@ -299,6 +309,7 @@ test('Cells (#298): a cell on each beat 1 and 3 of a chord, eighths beamed by th
   const visitor = await other.newPage()
   await visitor.goto(link)
   await expect(visitor.getByRole('radio', { name: '7th Chords', exact: true })).toBeChecked()
+  await openPanel(visitor, 'Line options')
   await expect(visitor.getByLabel('Arpeggio pattern', { exact: true })).toContainText('Root to root')
   await other.close()
 })
@@ -316,7 +327,9 @@ test('a share link carries the arpeggio pattern', async ({ page, browser }) => {
   const visitor = await other.newPage()
   await visitor.goto(link)
   await expect(visitor.getByRole('radio', { name: '7th Chords', exact: true })).toBeChecked()
+  await openPanel(visitor, 'Line options')
   await expect(visitor.getByLabel('Arpeggio pattern')).toContainText('Voice-led')
+  await closePanel(visitor, 'Line options')
   await arpeggiosDrawn(visitor)
   await other.close()
 })
@@ -393,12 +406,14 @@ test('the player’s range moves the guide tones, and is kept for the instrument
   await guidesDrawn(page)
   const heads = async () => (await Promise.all((await lines(page).all()).map(drawn))).flatMap((d) => d.heads.map((h) => h.y))
   const before = await lines(page).evaluateAll((els) => els.map((e) => e.getAttribute('aria-label')))
+  await openPanel(page, 'Instrument')
   await page.getByRole('button', { name: 'Lowest note' }).click()
   await page.getByRole('option', { name: 'F4', exact: true }).click()
   await expect(page.getByRole('button', { name: 'Highest note' })).toHaveText('F6') // pushed along: two octaves
   await expect.poll(() => lines(page).evaluateAll((els, b) => els.some((e, i) => e.getAttribute('aria-label') !== b[i]), before)).toBe(true)
   expect(Math.max(...(await heads()))).toBeLessThanOrEqual(115) // F4, the treble staff's first space (lines at 80–120, 5 a step)
   await page.reload()
+  await openPanel(page, 'Instrument')
   await expect(page.getByRole('button', { name: 'Lowest note' })).toHaveText('F4')
   await chooseInstrument(page, 'Tenor Sax')
   await expect(page.getByRole('button', { name: 'Lowest note' })).toHaveText('B♭3') // the tenor's own: its preset

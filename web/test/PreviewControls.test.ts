@@ -1,5 +1,6 @@
 import { mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, describe, expect, it } from 'vitest'
+import { openPanel } from './railPanels'
 import PreviewControls from '~/components/PreviewControls.vue'
 
 const mount = (props: Record<string, unknown> = {}) =>
@@ -112,6 +113,7 @@ describe('the Line under the Pentatonic overlay (#284)', () => {
 
   it('offers the direction, and no Leave out, in place of the arpeggio pattern while the line is Triad pair (#325)', async () => {
     const w = await mount({ overlay: 'hexatonic', lineMode: 'arpeggio', arpDir: 'up-down' })
+    await openPanel(w, 'Line options')
     expect(w.find('[aria-label="Triad pair direction"]').text()).toBe('Up & down')
     expect(w.find('[aria-label="Leave out"]').exists()).toBe(false)
     expect(w.find('[aria-label="Arpeggio pattern"]').exists()).toBe(false)
@@ -119,6 +121,7 @@ describe('the Line under the Pentatonic overlay (#284)', () => {
 
   it('offers Leave out and the direction in place of the arpeggio pattern while the line is Pentatonic', async () => {
     const w = await mount({ overlay: 'pentatonic', lineMode: 'arpeggio', pentLeave: 'b3', arpDir: 'down' })
+    await openPanel(w, 'Line options')
     expect(w.find('[aria-label="Leave out"]').text()).toBe('Leave out: ♭3')
     expect(w.find('[aria-label="Pentatonic direction"]').text()).toBe('Down')
     expect(w.find('[aria-label="Arpeggio pattern"]').exists()).toBe(false)
@@ -128,6 +131,7 @@ describe('the Line under the Pentatonic overlay (#284)', () => {
 
   it('keeps the arpeggio pattern, and no Leave out, under 7th Chords', async () => {
     const w = await mount({ overlay: 'off', lineMode: 'arpeggio' })
+    await openPanel(w, 'Line options')
     expect(w.find('[aria-label="Arpeggio pattern"]').exists()).toBe(true)
     expect(w.find('[aria-label="Leave out"]').exists()).toBe(false)
     expect((await mount({ overlay: 'pentatonic', lineMode: 'guide' })).find('[aria-label="Leave out"]').exists()).toBe(false)
@@ -141,6 +145,7 @@ describe('the Line under the Pentatonic overlay (#284)', () => {
 
   it('picks a Leave out', async () => {
     const w = await mount({ overlay: 'pentatonic', lineMode: 'arpeggio' })
+    await openPanel(w, 'Line options')
     await w.find('[aria-label="Leave out"]').trigger('click')
     await w.findAll('[role=option]')[4]?.trigger('click')
     expect(w.emitted('update:pentLeave')?.[0]).toEqual(['b7'])

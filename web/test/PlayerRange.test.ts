@@ -1,11 +1,16 @@
 import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { describe, expect, it } from 'vitest'
 import PreviewControls from '~/components/PreviewControls.vue'
+import { openPanel } from './railPanels'
 
 mockNuxtImport('useFeature', () => (name: string) => name === 'playerRange')
 
-const mount = (props: Record<string, unknown> = {}) =>
-  mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'trumpet', range: { lo: 55, hi: 79, centre: 70 }, spell: 'key', intervals: true, keyStart: 'C', ...props } })
+// the range is in the Instrument's panel: open it
+const mount = async (props: Record<string, unknown> = {}) => {
+  const w = await mountSuspended(PreviewControls, { props: { sheet: 'changes', instrument: 'trumpet', range: { lo: 55, hi: 79, centre: 70 }, spell: 'key', intervals: true, keyStart: 'C', ...props } })
+  await openPanel(w, 'Instrument')
+  return w
+}
 
 describe('the player’s range (#359)', () => {
   const low = (w: Awaited<ReturnType<typeof mount>>) => w.find('[aria-label="Lowest note"]')

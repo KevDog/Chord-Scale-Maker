@@ -10,7 +10,7 @@ test('on a phone the music starts on the first screen, the other controls in a s
   const staff = (await staves(page).first().boundingBox())!
   expect(staff.y + staff.height).toBeLessThan(844) // its first staff whole on the first screen
   const rail = page.getByRole('group', { name: 'Sheet controls' })
-  for (const name of ['Work on', 'Instrument', 'Controls', 'Print', 'More actions']) await expect(rail.getByRole('button', { name, exact: true })).toBeVisible()
+  for (const name of ['Work on', /^Instrument: /, 'Controls', 'Print', 'More actions']) await expect(rail.getByRole('button', { name, exact: typeof name === 'string' })).toBeVisible()
   await expect(rail.getByRole('button', { name: 'Level' })).toHaveCount(0)
   // the instrument, from the rail, redraws the sheet
   await chooseInstrument(page, 'Tenor Sax')

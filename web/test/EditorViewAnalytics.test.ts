@@ -4,6 +4,7 @@ import { nextTick } from 'vue'
 import { parseChart, setMeta } from '@chord-scale-maker/engine'
 import EditorView from '~/components/EditorView.vue'
 import { LIBRARY } from '~/utils/library'
+import { openPanel } from './railPanels'
 import { INSTRUMENT_GROUPS, instrumentOption } from '~/utils/instrumentChoices'
 
 mockNuxtImport('useFeature', () => (name: string) => name === 'analyticsEvents')
@@ -36,7 +37,8 @@ const control = (w: Wrapper, label: string) => {
 }
 async function choose(w: Wrapper, label: string, name: string): Promise<void> {
   if (label === 'Instrument') {
-    // its pitch first (#417)
+    // in its panel, its pitch first (#417)
+    await openPanel(w, 'Instrument')
     const pitch = INSTRUMENT_GROUPS.find((g) => g.instruments.some((n) => instrumentOption(n).startsWith(name)))?.pitch
     const button = w.findAll('button').find((b) => b.attributes('aria-label') === 'Pitch')
     if (pitch && button && button.text() !== pitch) {
@@ -46,7 +48,7 @@ async function choose(w: Wrapper, label: string, name: string): Promise<void> {
       await nextTick()
     }
   }
-  await control(w, label).trigger('click')
+  await (label === 'Instrument' ? w.findAll('button').find((b) => b.attributes('aria-label') === 'Instrument')! : control(w, label)).trigger('click')
   await nextTick()
   const option = w.findAll('[role=option]').find((o) => o.text().startsWith(name))
   if (!option) throw new Error(`no option ${name}`)

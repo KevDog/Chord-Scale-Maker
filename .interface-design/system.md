@@ -86,7 +86,12 @@ phone).
   under it (`SheetStatus`, 14/24 zinc-500).
 - **Rail** (`SheetRail`, a labelled group "Sheet controls", above the paper, on the stand): left = Work on ·
   Instrument · Level (Shuffle) · the sheet's own controls · Transpose; right = Edit (toggle) · Share · Focus · Print
-  (primary) · ⋯ More. `-mx-3 flex flex-wrap items-end gap-x-4 gap-y-3 p-3`; 16 px to the paper. Sticky from `lg`
+  (primary) · ⋯ More. `-mx-3 flex flex-wrap items-end gap-x-4 gap-y-3 p-3`; 16 px to the paper. Groups and actions
+  wrap as one row (the left slot `display: contents`, the actions `ml-auto`). Each group is one control tall: details
+  go in a `RailPopover` panel (`bg-raised shadow-raised rounded-paper p-3`, closes on a click outside or Escape) —
+  Instrument as a summary button styled as a listbox ("Piano · F3–E6", panel below: pitch, instrument, range); a
+  line's details behind a plain › "Line options" (panel to its right, below on a phone). Inside the phone's Controls
+  dialog the panels are inline. Sticky from `lg`
   while editing only (practising, it scrolls away): `bg-raised shadow-raised rounded-paper` once stuck (a sentinel's
   IntersectionObserver), no shadow at rest; z-10, z-40 while one of its menus is open. Its parents up to the Preview
   section are `display: contents` so it sticks the sheet's length.
