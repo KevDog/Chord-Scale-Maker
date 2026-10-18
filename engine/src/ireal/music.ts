@@ -2,7 +2,8 @@ import type { Diagnostic, Parsed } from '../chart'
 
 /*
  * An unscrambled iReal music string as bars (spec "The format", "Tokens"). Bar lines | [ ] { } Z; marks between them
- * belong to the next bar written. Layout-only tokens (sizes, spacing, fermata, End) are read and dropped.
+ * belong to the next bar written; an opening [ or { right after a bar's chords closes that bar too. Layout-only tokens
+ * (sizes, spacing, fermata, End) are read and dropped. An alternate chord in ( ) is kept to be reported.
  */
 
 export type IRealItem =
@@ -10,6 +11,7 @@ export type IRealItem =
   | Readonly<{ kind: 'repeat'; bars: 1 | 2 }>
   | Readonly<{ kind: 'rest' }>
   | Readonly<{ kind: 'bass'; bass: string }>
+  | Readonly<{ kind: 'alt'; alt: string }> // an alternate chord in ( ) on its own
 
 export type IRealBar = Readonly<{
   items: readonly IRealItem[]
@@ -18,6 +20,7 @@ export type IRealBar = Readonly<{
   ending?: number
   open?: true
   close?: true
+  end?: true // a ] closes it
   count?: number
   segno?: true
   coda?: true
@@ -45,6 +48,7 @@ const TOKENS: readonly (readonly [RegExp, (m: RegExpExecArray, d: Draft) => void
   [/x/y, (_, d) => d.items.push({ kind: 'repeat', bars: 1 })],
   [/r/y, (_, d) => d.items.push({ kind: 'repeat', bars: 2 })],
   [/n/y, (_, d) => d.items.push({ kind: 'rest' })],
+  [/\(([^)]*)\)/y, (m, d) => d.items.push({ kind: 'alt', alt: m[1] ?? '' })],
   [/W\/([A-G][b#]?)/y, (m, d) => d.items.push({ kind: 'bass', bass: m[1] ?? '' })],
   [/([A-G][b#]?(?:sus|alt|add|[+\-^\dhob#])*(?:\/[A-G][b#]?)?)(?:\(([^)]*)\))?/y, (m, d) => d.items.push(m[2] ? { kind: 'chord', text: m[1] ?? '', alt: m[2] } : { kind: 'chord', text: m[1] ?? '' })],
 ]
@@ -65,7 +69,7 @@ export function readMusic(music: string): Parsed<readonly IRealBar[]> {
     const held = spaces && OPENS.has(before) && CLOSES.has(line) // `|    |`: a bar of the chord before
     if (d.items.length || d.text || held || (marks && line !== '')) {
       const { text: _text, ...bar } = d
-      bars.push({ ...bar, ...(line === '}' ? { close: true as const } : {}), ...(line === 'Z' ? { final: true as const } : {}) })
+      bars.push({ ...bar, ...(line === '}' ? { close: true as const } : {}), ...(line === ']' ? { end: true as const } : {}), ...(line === 'Z' ? { final: true as const } : {}) })
       d = fresh()
     } else if (line === '' && marks) {
       // marks after the last bar line belong to the last bar written
@@ -77,6 +81,7 @@ export function readMusic(music: string): Parsed<readonly IRealBar[]> {
         diagnostics.push({ line: 1, message: `marks with no bar: "${music.trim()}"` })
       }
     } else if (line === '}' && bars.length) bars[bars.length - 1] = { ...bars[bars.length - 1]!, close: true }
+    else if (line === ']' && bars.length) bars[bars.length - 1] = { ...bars[bars.length - 1]!, end: true }
     else if (line === 'Z' && bars.length) bars[bars.length - 1] = { ...bars[bars.length - 1]!, final: true }
     spaces = false
   }
@@ -84,6 +89,8 @@ export function readMusic(music: string): Parsed<readonly IRealBar[]> {
     const c = music[i] as string
     if (OPENS.has(c) || CLOSES.has(c)) {
       if (CLOSES.has(c)) close(c)
+      // `F#7 [*D…`: no bar line before the opening one, but the bar is done; marks alone (`*A{`) wait for the next bar
+      else if (c !== '|' && (d.items.length || d.text)) close('|')
       if (c === '{') d.open = true
       before = c
       spaces = false

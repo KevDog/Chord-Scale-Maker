@@ -39,9 +39,12 @@ origins; we read only what the user supplies), bulk import of a playlist.
   - Header: `title:`, `composer:`, `style:`, `key:` (`A-` → `Am`), `time:` when not 4/4, `form:` computed from the form
     sections (`AABA, 32 bars`), `source: iReal Pro`.
   - Sections: each `*X` opens one; a repeated letter is numbered (`A1`, `A2`; the first renamed `A1` once a second
-    appears); bars before any mark are `A`; `*i` → `Intro`, `*V` → `Verse` with `outside: yes`.
+    appears); bars before any mark are `A`; `*i` → `Intro`, `*v` (or `*V`) → `Verse` with `outside: yes`.
+    A coda after the form (a stretch after `]`, `}` or `Z` that opens on `Q` with no letter, no lettered section after
+    it) → its own `Coda` section (`Coda1`, `Coda2` if more), outside the form by name.
   - Repeats: `{ … }` with `N1`/`N2` → `@ending` in that section (endings as sequential bars); `{ … }` without endings
-    → the section, then a second section of it with `copy:`. A count other than 2 (`<3x>`) is reported.
+    → the section, then a second section of it with `copy:`. A `}` with no `{` before it in its section repeats
+    from the section's start (iReal's convention). A count other than 2 (`<3x>`) is reported.
   - Bars: `x` repeats the bar before, `r` the two before; `p` or an empty cell holds the chord; `n` → `N.C.`; a bar
     with no chord holds the one before; a section whose last chord is held past its last written bar gets `bars: N`.
     Two chords in a bar → two rows with that bar number.

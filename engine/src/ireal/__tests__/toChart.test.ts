@@ -42,6 +42,69 @@ describe('irealToChart', () => {
     valid(value)
   })
 
+  it('a verse marked *v (as iReal writes it) is outside the form too', () => {
+    const { value } = irealToChart(song('[*vG7 |C7 ][*AC^7 |D-7 G7 Z'))
+    expect(value).toContain('section: Verse\noutside: yes\n')
+    expect(value).toContain('form: A, 2 bars')
+    valid(value)
+  })
+
+  it('a } with no { before it repeats from the section’s start (Five Brothers: AABA, not ABA)', () => {
+    const music = '[*AC^7 |D-7 G7 |N1C^7 }|N2C^7 ][*BE^7 |E-7 A7 ][*AC^7 |D-7 G7 |C^7 |x Z'
+    const { value, diagnostics } = irealToChart(song(music))
+    expect(diagnostics).toEqual([])
+    expect(value).toContain('section: A1\n1 | CMaj7\n2 | Dm7\n2 | G7\n3 | CMaj7\n4 | CMaj7\n@ending 1 3\n@ending 2 4\n')
+    expect(value).toContain('form: AABA, 12 bars') // A1: body 2 twice + endings 1 + 1; B 2; A2 4
+    valid(value)
+  })
+
+  it('a } with no { before it and no endings is the section then a copy', () => {
+    const { value } = irealToChart(song('[*AC7 |F7 }[*BG7 |C7 Z'))
+    expect(value).toContain('section: A1\n1 | C7\n2 | F7\n\nsection: A2\ncopy: A1\n')
+    expect(value).toContain('form: AAB, 6 bars')
+  })
+
+  it('a { that spans sections is still written out once, and said so', () => {
+    const { diagnostics } = irealToChart(song('{*AC7 |F7 ][*BG7 |C7 }Z'))
+    expect(diagnostics.map((d) => d.message)).toEqual([
+      'A bar 1: a repeat that isn’t a whole section is written out once',
+      'B bar 2: a repeat that isn’t a whole section is written out once',
+    ])
+  })
+
+  it('a coda after the form (a Q stretch with no section letter) is its own Coda section, outside the form', () => {
+    const music = '{*ASC^7 |A-7 |D-7 |G7 |C^7 |A-7 |D-7 |N1G7 }|N2C^7 ][*BE-7 |A7 |D-7 |G7 |E-7 |A7 |D-7 |G7 ]'
+      + '[*AC^7 |A-7 |D-7 |G7 |C^7 |A-7 |D-7 |G7 <D.S. al Coda>]Y[QD-7 |G7 |C^7 |x Z'
+    const { value } = irealToChart(song(music))
+    expect(value).toContain('section: Coda\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | CMaj7\n@coda 1\n')
+    expect(value).toContain('form: AABA, 32 bars')
+    valid(value)
+  })
+
+  it('two coda stretches are Coda1 and Coda2', () => {
+    const { value } = irealToChart(song('[*AC7 |F7 Z[QG7 |C7 ][QD7 |G7 Z'))
+    expect(value).toContain('section: Coda1\n1 | G7\n2 | C7\n@coda 1\n\nsection: Coda2\n1 | D7\n2 | G7\n@coda 1\n')
+    expect(value).toContain('form: A, 2 bars')
+    valid(value)
+  })
+
+  it('a Q bar with a section after it stays in its section', () => {
+    const { value } = irealToChart(song('[*AC7 |F7 ][QG7 |C7 ][*BD7 Z'))
+    expect(value).not.toContain('Coda')
+    expect(value).toContain('form: AB, 5 bars')
+  })
+
+  it('a stand-alone alternate chord is reported as left out; the chord after it is read', () => {
+    const { value, diagnostics } = irealToChart(song('[*A(C7)F7 |(Db7)Q G7 Z'))
+    expect(value).toContain('1 | F7\n2 | G7\n')
+    expect(diagnostics.map((d) => d.message)).toEqual(['A bar 1: the alternate chord C7 is left out', 'A bar 2: the alternate chord Db7 is left out'])
+  })
+
+  it('a token it can’t read is reported by section and bar', () => {
+    const { diagnostics } = irealToChart(song('[*AC7 ][*BF7 ?? Z'))
+    expect(diagnostics).toEqual([{ line: 2, message: 'B bar 1: "??" not read' }])
+  })
+
   it('held chords: an empty bar writes no row, a held last chord gives bars: N, slashes hold', () => {
     const { value } = irealToChart(song('[*AC7 p p p|    |F7 |    Z'))
     expect(value).toContain('section: A\nbars: 4\n1 | C7\n3 | F7\n')

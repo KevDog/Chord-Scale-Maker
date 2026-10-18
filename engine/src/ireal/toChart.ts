@@ -6,29 +6,51 @@ import { type IRealBar, readMusic } from './music'
 
 /*
  * An iReal song as our chart text (spec "Engine", toChart.ts). Bars are played first (x/r filled in, chords mapped,
- * metres and comments read), then cut into sections at each *X mark; a { } section with endings gets @ending, one
- * without them a copy: section after it. Each step returns its own diagnostics; the song's bar number is their line.
+ * metres and comments read), then cut into sections at each *X mark, and at a coda: a stretch after the form that
+ * opens on a Q with no letter. A { } section with endings gets @ending, one without them a copy: section after it; a }
+ * with no { before it repeats from the section's start. Each step returns its own diagnostics; the song's bar number
+ * is their line.
  */
 
 const METRES = new Set(['2/4', '3/4', '4/4', '5/4', '6/4'])
 const NAV: readonly string[] = ['D.S. al Coda', 'D.S. al Fine', 'D.C. al Coda', 'D.C. al Fine', 'To Coda', 'Fine']
 const navOf = (comment: string): string | undefined => NAV.find((n) => n.toLowerCase() === comment.replace(/\s+/g, ' ').trim().toLowerCase())
 
-const baseName = (mark: string): string => (mark === 'i' ? 'Intro' : mark === 'V' ? 'Verse' : mark.toUpperCase())
-const isOutside = (base: string): boolean => base === 'Intro' || base === 'Verse'
+const baseName = (mark: string): string => (mark === 'i' ? 'Intro' : mark === 'V' || mark === 'v' ? 'Verse' : mark.toUpperCase())
+const isOutside = (base: string): boolean => base === 'Intro' || base === 'Verse' || base === 'Coda'
 const diag = (line: number, message: string): Diagnostic => ({ line, message })
 
-/** each bar's place for a report, "A bar 3", by its section's letter (before A1/A2 numbering) */
+/**
+ * where each section starts, and its name (before A1/A2 numbering): at a *X mark, and at a coda, a bar marked Q with
+ * no letter that opens a stretch after a ] } or Z, when no lettered section follows (it's after the form)
+ */
+function starts(bars: readonly IRealBar[]): readonly (string | undefined)[] {
+  const lastLetter = bars.findLastIndex((b) => b.section !== undefined)
+  return bars.map((b, i) => {
+    if (b.section !== undefined) return baseName(b.section)
+    if (i === 0) return 'A'
+    const before = bars[i - 1] as IRealBar
+    return b.coda && i > lastLetter && (before.end || before.close || before.final) ? 'Coda' : undefined
+  })
+}
+
+/** each bar's place for a report, "A bar 3", by its section's name (before A1/A2 numbering) */
 function labels(bars: readonly IRealBar[]): readonly string[] {
   let section = 'A'
   let k = 0
-  return bars.map((b, i) => {
-    if (b.section !== undefined || i === 0) {
-      section = baseName(b.section ?? 'A')
+  return starts(bars).map((start) => {
+    if (start !== undefined) {
+      section = start
       k = 0
     }
     return `${section} bar ${++k}`
   })
+}
+
+/** readMusic's "bar N: …" as "A bar 3: …" */
+const relabel = (d: Diagnostic, at: readonly string[]): Diagnostic => {
+  const place = at[d.line - 1]
+  return place && d.message.startsWith(`bar ${d.line}: `) ? { ...d, message: `${place}: ${d.message.slice(`bar ${d.line}: `.length)}` } : d
 }
 
 type Played = Readonly<{
@@ -60,6 +82,7 @@ function play(bars: readonly IRealBar[], at: readonly string[]): Parsed<readonly
         }
       } else if (item.kind === 'rest') chords.push(REST)
       else if (item.kind === 'bass') report(`a bass note with no chord (W/${item.bass}) is left out`)
+      else if (item.kind === 'alt') report(`the alternate chord ${item.alt} is left out`)
       else {
         if (item.alt) report(`the alternate chord ${item.alt} is left out`)
         const m = irealChord(item.text)
@@ -83,8 +106,10 @@ function play(bars: readonly IRealBar[], at: readonly string[]): Parsed<readonly
 type Section = Readonly<{ base: string; bars: readonly Played[] }>
 
 function sections(played: readonly Played[]): readonly Section[] {
+  const opens = starts(played.map((p) => p.bar))
   return played.reduce<Section[]>((out, p, i) => {
-    if (p.bar.section !== undefined || i === 0) return [...out, { base: baseName(p.bar.section ?? 'A'), bars: [p] }]
+    const start = opens[i]
+    if (start !== undefined) return [...out, { base: start, bars: [p] }]
     const last = out.at(-1) as Section
     return [...out.slice(0, -1), { ...last, bars: [...last.bars, p] }]
   }, [])
@@ -94,8 +119,26 @@ type Ending = Readonly<{ n: number; first: number; last: number }>
 const ordinal = (n: number): string => (n === 3 ? '3rd' : `${n}th`)
 type Block = Readonly<{ sec: Section; copy?: true; endings?: readonly Ending[] }>
 
+/**
+ * whether each section's } (with no { before it in the section) repeats from the section's start, as iReal reads it:
+ * not when a { left open in a section before is still open
+ */
+function fromStart(secs: readonly Section[]): readonly boolean[] {
+  let open = false // a { not yet closed
+  return secs.map((sec) => {
+    const inherited = open
+    const firstOpen = sec.bars.findIndex((p) => p.bar.open)
+    const firstClose = sec.bars.findIndex((p) => p.bar.close)
+    for (const p of sec.bars) {
+      if (p.bar.open) open = true
+      if (p.bar.close) open = false
+    }
+    return !inherited && firstClose >= 0 && (firstOpen < 0 || firstOpen > firstClose)
+  })
+}
+
 /** a section as written: with its endings, or followed by a copy of it when { } repeats it whole */
-function blocksOf(sec: Section, at: readonly string[]): Parsed<readonly Block[]> {
+function blocksOf(sec: Section, at: readonly string[], repeatsFromStart: boolean): Parsed<readonly Block[]> {
   const bars = sec.bars
   const diagnostics: Diagnostic[] = []
   const report = (p: Played, message: string) => diagnostics.push(diag(p.n, `${at[p.n - 1]}: ${message}`))
@@ -106,7 +149,7 @@ function blocksOf(sec: Section, at: readonly string[]): Parsed<readonly Block[]>
     (out, p, i) => (p.bar.ending === undefined ? out : [...out, { n: p.bar.ending || (out.at(-1)?.n ?? 0) + 1, i, p }]),
     [],
   )
-  const opens = bars[0]?.bar.open === true
+  const opens = bars[0]?.bar.open === true || repeatsFromStart
   if (opens && starts.length) {
     for (const { n, p } of starts) {
       if (p.bar.ending === 0) report(p, `an unnumbered ending read as ending ${n}`)
@@ -198,7 +241,9 @@ export function irealToChart(song: IRealSong): Parsed<string> {
   const read = readMusic(song.music)
   const at = labels(read.value)
   const played = play(read.value, at)
-  const blocked = sections(played.value).map((sec) => blocksOf(sec, at))
+  const secs = sections(played.value)
+  const repeats = fromStart(secs)
+  const blocked = secs.map((sec, j) => blocksOf(sec, at, repeats[j] === true))
   const blocks = blocked.flatMap((b) => b.value)
   const named = names(blocks)
   const songTime = played.value[0]?.time ?? '4/4'
@@ -222,7 +267,7 @@ export function irealToChart(song: IRealSong): Parsed<string> {
     ...(form ? [`form: ${form}`] : []),
     'source: iReal Pro',
   ]
-  const diagnostics = [...read.diagnostics, ...played.diagnostics, ...blocked.flatMap((b) => b.diagnostics)]
+  const diagnostics = [...read.diagnostics.map((d) => relabel(d, at)), ...played.diagnostics, ...blocked.flatMap((b) => b.diagnostics)]
   // in bar order; a stable sort keeps one bar's in the order found
   return { value: [...header, '', written.texts.join('\n')].join('\n'), diagnostics: [...diagnostics].sort((a, b) => a.line - b.line) }
 }
@@ -230,6 +275,7 @@ export function irealToChart(song: IRealSong): Parsed<string> {
 /** the song's bars, flat, as Paste bars inserts them (parseBarLine's shape): repeats filled in, sections and endings gone */
 export function irealBars(song: IRealSong): Parsed<readonly (readonly string[])[]> {
   const read = readMusic(song.music)
-  const played = play(read.value, labels(read.value))
-  return { value: played.value.map((p) => p.chords), diagnostics: [...read.diagnostics, ...played.diagnostics].sort((a, b) => a.line - b.line) }
+  const at = labels(read.value)
+  const played = play(read.value, at)
+  return { value: played.value.map((p) => p.chords), diagnostics: [...read.diagnostics.map((d) => relabel(d, at)), ...played.diagnostics].sort((a, b) => a.line - b.line) }
 }

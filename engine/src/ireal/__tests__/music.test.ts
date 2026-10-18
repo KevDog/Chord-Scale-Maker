@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest'
 import { readMusic } from '../music'
 
-const chords = (music: string) => readMusic(music).value.map((b) => b.items.map((i) => (i.kind === 'chord' ? i.text : i.kind === 'repeat' ? `x${i.bars}` : i.kind === 'rest' ? 'NC' : `W/${i.bass}`)))
+const chords = (music: string) => readMusic(music).value.map((b) => b.items.map((i) => (i.kind === 'chord' ? i.text : i.kind === 'repeat' ? `x${i.bars}` : i.kind === 'rest' ? 'NC' : i.kind === 'alt' ? `(${i.alt})` : `W/${i.bass}`)))
 
 describe('readMusic', () => {
   it('splits bars on every bar line; commas and spaces separate chords', () => {
@@ -58,6 +58,30 @@ describe('readMusic', () => {
     const r = readMusic('[??,D7 Z')
     expect(r.value.map((b) => b.items.length)).toEqual([1])
     expect(r.diagnostics).toEqual([{ line: 1, message: 'bar 1: "??" not read' }])
+  })
+
+  it('an opening [ or { with no bar line before it closes the bar before', () => {
+    const r = readMusic('[*CC#-7   |F#7   [*DD^7/E |C^7/E Z')
+    expect(chords('[*CC#-7   |F#7   [*DD^7/E |C^7/E Z')).toEqual([['C#-7'], ['F#7'], ['D^7/E'], ['C^7/E']])
+    expect(r.value[2]).toMatchObject({ section: 'D' })
+    expect(r.value[1]?.section).toBeUndefined()
+    expect(chords('[C7 {F7 }Z')).toEqual([['C7'], ['F7']])
+    expect(readMusic('[C7 {F7 }Z').value[1]).toMatchObject({ open: true, close: true })
+    // marks before an opening bar line belong to the bar after it
+    expect(readMusic('*A{C7 |F7 }Z').value[0]).toMatchObject({ section: 'A', open: true })
+    expect(chords('*A{C7 |F7 }Z')).toEqual([['C7'], ['F7']])
+  })
+
+  it('an alternate chord in ( ) on its own is an alternate in its bar; the token after it still reads', () => {
+    expect(chords('[(C7)F7 |(Db7)Q G7 |(Bb7)x Z')).toEqual([['(C7)', 'F7'], ['(Db7)', 'G7'], ['(Bb7)', 'x1']])
+    const r = readMusic('[(C7)F7 |(Db7)Q G7 |(Bb7)x Z')
+    expect(r.diagnostics).toEqual([])
+    expect(r.value[1]).toMatchObject({ coda: true })
+  })
+
+  it('a ] marks the bar it closes as ending a block', () => {
+    const bars = readMusic('[C7 |F7 ] [G7 Z').value
+    expect(bars.map((b) => b.end)).toEqual([undefined, true, undefined])
   })
 
   it('an unreadable token is a diagnostic naming its bar', () => {
