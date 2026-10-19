@@ -17,7 +17,7 @@ import { concertPc, type Part, rangeOf, scaleLabel, writtenRoot, writtenScale } 
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled, shiftBy } from './pitch'
 import { isPentatonicPreset, type PentatonicDegree, pentatonicDegreeFrom, PENTATONIC_HOME, PENTATONIC_STEP, pentatonicAt, pentatonicCycle, pentatonicPathCaption, type PentatonicPathName, type PentatonicStep, pentatonicLadder, pentatonicRanking, type RankedPentatonic, type PentatonicRung, type PentatonicView } from './pentatonics'
 import { baseQuality, readChord } from './qualities'
-import { type Resolved, resolveScales, type ScaleView } from './resolve'
+import { bluesTonic, isBluesRule, type Resolved, resolveScales, type ScaleView } from './resolve'
 import { abbreviateScale } from './scales'
 import { type QuartalNotesChoice, type QuartalStack, rankedStacks } from './quartal'
 import { type QuartalLine, quartalVoices } from './quartalLine'
@@ -123,6 +123,8 @@ export type ChangesChord = Readonly<{
   problem: string
   /** the key it's heard in, written for the part ("B♭ major"); '' when the analysis doesn't reach it */
   heardIn: string
+  /** at Basic, a blues chord's level note ("Basic: the E Blues scale over the whole blues"); '' otherwise */
+  levelNote: string
   /** where that key came from: the key before its function's colon, an @key over its area, or the analysis */
   keyFrom: 'found' | 'area' | 'function'
   /** its guide tone's label ("3", "7"; "4" on a sus chord); '' with the line off or none found */
@@ -426,6 +428,8 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const { diagnostics } = timeline
   const analysis = analyse(doc)
   const resolved = resolveScales(doc, view, analysis)
+  // at Basic, the blues key's note as the part reads it, for a blues chord's Why note
+  const bluesNote = view.level === 'basic' && bluesTonic(analysis) ? (sheetScale(part, `${bluesTonic(analysis)} Blues`) ?? '') : '' // spelled as the label
   const keySig = signatures ? keySignature(chartKeyOf(doc), part) : null
   const byRow = new Map(analysis.rows.map((r) => [r.row, r]))
   const problemAt = new Map(analysis.problems.map((p) => [p.line, p.message]))
@@ -701,6 +705,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             slash: readChord(row.chord)?.slash ?? false,
             problem: problemAt.get(row.line) ?? '',
             heardIn: a ? keyName((a.statedKey ?? a.key).name, part) : '',
+            levelNote: bluesNote && a && !a.stated && resolved.get(i)?.source !== 'written' && isBluesRule(a.rule) ? `Basic: the ${bluesNote} scale over the whole blues` : '',
             keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',
             guide: voices?.labels.get(i) ?? '',
             pentatonic: pentAt.get(i) ?? null,

@@ -6,7 +6,7 @@ key: F
 time: 3/4
 form: AA, 32 bars
 source: Colorado Cookbook, p. 211
-# analysis: 2026-10-11, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 
 # bar | chord | scale
 

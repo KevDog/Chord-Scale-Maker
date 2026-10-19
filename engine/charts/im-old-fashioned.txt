@@ -6,7 +6,7 @@ form: ABCD, 36 bars
 source: Colorado Cookbook, p. 102
 recording: John Coltrane; Blue Train; Blue Note; 1958
 youtube: eMqOA7qN9B4
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # recording: recorded 1957-09-15, Van Gelder Studio, Hackensack; Coltrane, Lee Morgan, Curtis Fuller, Kenny Drew, Paul Chambers, Philly Joe Jones; songbook standard → the canonical jazz version; released January 1958 (Wikipedia); sources: Wikipedia; video: "Provided to YouTube by Universal Music Group", Blue Train (RVG Edition 2003 remaster), 7:58, the same take
 
 # bar | chord | scale

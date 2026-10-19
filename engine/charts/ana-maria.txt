@@ -6,7 +6,7 @@ form: ABC, 50 bars
 source: The New Real Book, Vol. 1
 recording: Wayne Shorter; Native Dancer; Columbia; 1975
 youtube: IrftwtFICbI
-# analysis: 2026-10-17, rules v1; G
+# analysis: 2026-10-19, rules v2; G
 # recording: recorded 1974-09-12, released 1975, the first recording of it; with Milton Nascimento, Herbie Hancock, Airto Moreira (Wikipedia, YouTube Topic credits)
 # the book: intro "Half-time Rock Feel", A–C "(Bossa Nova)" with "(Rock Feel)" bars; rock feel is half time (backbeat on 3)
 # the book's "(2)" bars are two-bar repeats, written out here

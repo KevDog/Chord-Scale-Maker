@@ -5,7 +5,7 @@ style: Medium up
 key: Eb
 form: ABCD, 43 bars
 source: Colorado Cookbook, p. 276
-# analysis: 2026-10-17, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 
 # bar | chord | scale
 

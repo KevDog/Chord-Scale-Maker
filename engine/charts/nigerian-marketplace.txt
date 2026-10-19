@@ -4,7 +4,7 @@ style: Latin
 key: Eb
 form: AABBC, 64 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 # book: Medium Latin, half note = 114. Head: Intro, A A, B B (segno at B), C (Fine).
 # book: solo on form (AABBC); after solos, D.S. al Fine. Solos evolve into a funky boogaloo feel.
 # key: no key signature; the A and C sections step down Am9 Gm9 Fm9 to Eb, and B cadences in Eb

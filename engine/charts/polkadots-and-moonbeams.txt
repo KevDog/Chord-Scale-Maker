@@ -7,7 +7,7 @@ form: AABA, 32 bars
 source: The New Real Book, Vol. 1
 recording: Wes Montgomery; The Incredible Jazz Guitar of Wes Montgomery; Riverside; 1960
 youtube: ZBmYMYldecA
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # recording: recorded January 1960, Reeves Sound Studios, NYC, Montgomery, Tommy Flanagan, Percy Heath, Albert Heath; chart follows no version, so the jazz reference reading over the 1940 Dorsey/Sinatra pop hit; released April 1960, Penguin Guide core collection; Bill Evans' Moon Beams (1962) the main alternative; sources: Wikipedia (The Incredible Jazz Guitar of Wes Montgomery, Polka Dots and Moonbeams); video: "Provided to YouTube by Universal Music Group" 2025 Craft remaster of the same take
 # book: Med. Ballad
 # the book's footnote: alternate changes for bars 3–4 of A1, A2 and A3 (the book's A bars 3–4 and 11–12, and B bars 11–12)

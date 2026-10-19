@@ -6,7 +6,7 @@ form: AABA, 32 bars
 source: Colorado Cookbook, p. 171
 recording: Fats Navarro; Fats Navarro Memorial Album; Blue Note; 1951
 youtube: 4_fDRupI2l0
-# analysis: 2026-10-11, rules v1; Ab
+# analysis: 2026-10-19, rules v2; Ab
 # recording: recorded 1947-09-26 by the Tadd Dameron Sextet with Fats Navarro (master BN306-5), first issued on 78 (Blue Note 540, with The Squirrel), first LP 10" BLP 5004 (MusicBrainz 1951, jazzdisco 1952); Dizzy Gillespie's big band recorded it first, 1946 (Musicraft) (jazzdisco.org, MusicBrainz release group, Wikipedia); video: The Complete Blue Note and Capitol Recordings, the same take (master, not the alternate)
 
 # bar | chord | scale

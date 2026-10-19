@@ -8,7 +8,7 @@ form: A
 time: 6/4
 recording: Wayne Shorter; Adam's Apple; Blue Note; 1967
 youtube: LgaIUqH0w6c
-# analysis: 2026-10-11, rules v1; C minor, modal
+# analysis: 2026-10-19, rules v2; C minor, modal
 # recording: recorded 1966-02-24, released 1967 (MusicBrainz release group, Wikipedia)
 
 # bar | chord   | scale

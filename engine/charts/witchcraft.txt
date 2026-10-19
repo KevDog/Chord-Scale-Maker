@@ -4,7 +4,7 @@ style: Medium swing
 key: F
 form: ABC, 40 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # the head is played in 2 (letter B may be in 4); solos in 4
 
 # bar | chord

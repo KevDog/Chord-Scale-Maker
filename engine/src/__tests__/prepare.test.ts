@@ -34,3 +34,11 @@ describe('prepareChart', () => {
     expect(Array.isArray(p.ambiguities)).toBe(true)
   })
 })
+
+describe('--context', () => {
+  const blues = chart.replace('key: C\n', 'key: C\ncontext: blues\n')
+  it('auto removes the line; a context writes it', () => {
+    expect(prepareChart(blues, { context: 'auto' }, '2026-10-18').chart).not.toMatch(/^context:/m)
+    expect(prepareChart(chart, { context: 'modal' }, '2026-10-18').chart).toMatch(/^context: modal$/m)
+  })
+})

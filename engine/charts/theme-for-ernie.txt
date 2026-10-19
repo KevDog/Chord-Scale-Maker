@@ -4,7 +4,7 @@ style: Medium ballad
 key: Ab
 form: AABC, 35 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; Ab
+# analysis: 2026-10-19, rules v2; Ab
 # the book: as played by John Coltrane; melody is freely interpreted
 # last time: from C bar 10 to the Coda
 

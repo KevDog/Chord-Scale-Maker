@@ -6,7 +6,7 @@ form: AB, 32 bars
 source: The New Real Book, Vol. 1
 recording: Clifford Brown; Clifford Brown with Strings; EmArcy; 1955
 youtube: ugiwi7AGEgM
-# analysis: 2026-10-17, rules v1; D minor
+# analysis: 2026-10-19, rules v2; D minor
 # recording: recorded 1955-01-18/20, NYC; Brown with Richie Powell, Barry Galbraith, George Morrow, Max Roach and strings arranged and conducted by Neal Hefti; EmArcy MG 36005; songbook standard → a widely cited jazz reading, the album's opening track; sources: Wikipedia; video: "Provided to YouTube by Universal Music Group", Brownie: The Complete EmArcy Recordings (℗ 1955), 2:59, the same take
 # Med. swing (or ballad); solo on the form (AB); after solos, D.C. al Fine (the Ending)
 

@@ -4,7 +4,7 @@ style: Ballad
 key: C
 form: ABB, 40 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 # style: the book says Medium Ballad
 # B is repeated (a second verse of lyrics): written out as B1 and B2
 

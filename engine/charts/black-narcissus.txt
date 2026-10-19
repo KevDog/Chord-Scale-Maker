@@ -7,7 +7,7 @@ key: G#m
 form: AB, 24 bars
 context: modal
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; G# minor, modal
+# analysis: 2026-10-19, rules v2; G# minor, modal
 
 # the head is played twice before and after the solos; Fine at the end of B
 # bar | chord

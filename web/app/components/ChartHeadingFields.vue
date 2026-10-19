@@ -27,6 +27,13 @@
         <UiLabel class="capitalize">{{ key }}</UiLabel>
         <MetaInput :value="more[key]" @update="(v) => emitDoc(setMeta(doc, key, v))" />
       </UiField>
+      <UiField>
+        <UiLabel>Read as</UiLabel>
+        <UiListbox :model-value="readAs" aria-label="Read as" @update:model-value="setReadAs">
+          <template #selected="{ value }"><UiListboxLabel>{{ READ_AS_LABELS[value as ReadAs] }}</UiListboxLabel></template>
+          <UiListboxOption v-for="r in READ_AS" :key="r" :value="r"><UiListboxLabel>{{ READ_AS_LABELS[r] }}</UiListboxLabel></UiListboxOption>
+        </UiListbox>
+      </UiField>
     </div>
   </div>
 </template>
@@ -35,8 +42,9 @@
 import { ChevronRightIcon } from '@heroicons/vue/16/solid'
 import { type ChartDoc, chartDetails, chartMeta, isValidKey, keyLabel, type MetaKey, setMeta } from '@chord-scale-maker/engine'
 import { KEY_OPTIONS } from '~/utils/keyOptions'
+import { READ_AS, READ_AS_LABELS, type ReadAs, readAsOf, withReadAs } from '~/utils/readAs'
 
-/** the chart's heading as fields: title, subtitle, key and time and, folded away, the composer, style and form (the rest stays in the text) */
+/** the chart's heading as fields: title, subtitle, key and time and, folded away, the composer, style, form and Read as (the rest stays in the text) */
 const props = defineProps<{ doc: ChartDoc }>()
 const emit = defineEmits<{ 'update:doc': [doc: ChartDoc] }>()
 
@@ -50,4 +58,10 @@ const more = computed(() => chartDetails(props.doc))
 const time = computed(() => more.value.time || '4/4')
 const open = ref(false)
 const emitDoc = (doc: ChartDoc): void => emit('update:doc', doc)
+
+const readAs = computed(() => readAsOf(props.doc))
+function setReadAs(v: ReadAs | undefined): void {
+  const next = v && withReadAs(props.doc, v)
+  if (next) emitDoc(next)
+}
 </script>

@@ -4,7 +4,7 @@ style: Medium ballad
 key: Eb
 form: AB, 15 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 
 # book tempo marking: Medium Swing Ballad
 # played three times (no solos on the recording): 1st/2nd ending (B bars 8–9) twice, then the 3rd ending (B bars 10–11)

@@ -6,7 +6,7 @@ form: A, 16 bars
 source: Colorado Cookbook, p. 78
 recording: John Coltrane; Giant Steps; Atlantic; 1960
 youtube: KwIC6B_dvW4
-# analysis: 2026-10-17, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 # recording: recorded 1959-05-05, released 1960 (MusicBrainz release group, Wikipedia)
 
 # bar | chord | scale

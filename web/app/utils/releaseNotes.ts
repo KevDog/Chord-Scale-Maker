@@ -23,6 +23,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
       { text: 'Hexatonic: Ranked against Key gives every chord in a key area the same triad pair, its IV and V triads (F/G across Dm7 G7 Cmaj7 in C), after Walt Weiskopf. On the Changes under Hexatonic options, and in the Scales sheet’s Hexatonic preset.', pr: 439 },
       { text: 'Triad pairs on the Arpeggios sheet: each chord’s triad pair as six triads through their inversions, arpeggiated or as block chords. Click the pair under the chord to pick another.', pr: 438 },
       { text: 'The Triad pair line’s Up & down now alternates chord by chord; with four notes a chord it only went up.', pr: 434 },
+      { text: 'Blues read as blues: Mixolydian on the I, IV and V (Dorian on a minor blues’ i and iv), the key’s Blues scale at Basic, and Read as in the heading to say a chart is a blues whatever its form.', pr: 437 },
       { text: 'Transpose… moves beside Edit: both rewrite the chart. Print is lighter, its label in the accent colour.', pr: 431 },
       { text: 'The controls above the sheet take two rows instead of four: the Instrument button shows your instrument and range and opens them in a panel, and a line’s details open from Line options beside it.', pr: 429 },
       { text: 'Patterns: Stacked fourths, two fourths stacked from each scale note.', pr: 435 },

@@ -6,7 +6,7 @@ form: ABC, 32 bars
 source: The New Real Book, Vol. 1
 recording: Antonio Carlos Jobim; The Wonderful World of Antonio Carlos Jobim; Warner Bros.; 1965
 youtube: zvQDKv6KHeI
-# analysis: 2026-10-12, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 # recording: recorded 1965, Jobim vocal and guitar, Nelson Riddle arranger/conductor, Jimmy Hilliard producer; Jobim's own first recording of the tune; first recorded by Sylvia Telles on Amor de Gente Moça (Odeon 1959), Jobim's 1980 Terra Brasilis remake is a different recording; sources Wikipedia (Dindi, The Wonderful World of Antonio Carlos Jobim), MusicBrainz track list (Dindi 2:35); video: Universal Music Group Topic upload of the Brazilian issue "Antonio Carlos Jobim Com Nelson Riddle E Sua Orquestra" ℗ 1965, 2:37, the same take
 
 # bar | chord

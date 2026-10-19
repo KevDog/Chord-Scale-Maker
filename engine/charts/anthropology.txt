@@ -7,7 +7,7 @@ form: AABA
 source: Colorado Cookbook, p. 21
 recording: Dizzy Gillespie; The Greatest of Dizzy Gillespie; RCA Victor; 1961
 youtube: 8N5FTqeinkQ
-# analysis: 2026-10-11, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 # recording: recorded 1946-02-22, the first recording under this title (Parker's 1945-11-26 Savoy side of the tune is Thriving from a Riff); take 1, first issued on 78 (RCA Victor 40-0132), first LP 1961 (LPM-2398) (jazzdisco)
 
 # bar | chord | scale

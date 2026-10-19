@@ -5,7 +5,7 @@ style: Medium Latin rock
 key: F
 form: ABC, 36 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; F, modal
+# analysis: 2026-10-19, rules v2; F, modal
 
 # bar | chord
 # book: "As played by Miles Davis". Each solo moves from Latin to swing feel; sus chords are sometimes played

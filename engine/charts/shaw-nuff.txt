@@ -6,7 +6,7 @@ form: AABA, 32 bars
 source: The New Real Book, Vol. 1
 recording: Dizzy Gillespie; In the Beginning; Prestige; 1973
 youtube: VSD0UPQRvEE
-# analysis: 2026-10-17, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 # recording: recorded 1945-05-11 (Dizzy Gillespie and His All Stars, with Parker), only take, first issued on 78 (Guild 1002); no earlier LP found (jazzdisco, MusicBrainz); video: The Best Of Odyssey: 1945-1952, the same take
 
 # book tempo marking: Fast Bebop

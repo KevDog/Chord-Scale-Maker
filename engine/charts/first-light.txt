@@ -4,7 +4,7 @@ style: Medium Latin
 key: G#m
 form: ABC, 34 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; G# minor
+# analysis: 2026-10-19, rules v2; G# minor
 # the book: "Medium Latin", quarter = 154; key signature of 6 flats, the tonic chord is Abm7 (key: G#m stands for Ab minor)
 # intro: bars 1–2 played 7 times (add drums 5th time), then bars 3–4
 # A and B repeat (|: at A, :| at the end of B); flute solos over B, drums fill

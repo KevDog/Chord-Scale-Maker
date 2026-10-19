@@ -4,7 +4,7 @@ style: Medium gospel rock
 key: F
 form: ABC, 48 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 
 # Intro bars 1–8 (and the pickup): N.C., the piano and bass figure
 # Intro bars 9–48: a piano solo; the drums play time from bar 25

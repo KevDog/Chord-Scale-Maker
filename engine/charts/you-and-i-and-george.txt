@@ -5,7 +5,7 @@ style: Ballad
 key: C
 form: AB, 18 bars
 source: Colorado Cookbook, p. 274
-# analysis: 2026-10-11, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 
 # bar | chord | scale
 

@@ -5,7 +5,7 @@ style: Christmas
 key: F
 form: BBC, 24 bars
 source: Colorado Cookbook, p. 280
-# analysis: 2026-10-11, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 
 # bar | chord | scale
 # the 16-bar verse (F | Bb | C7 | F …) is left out

@@ -4,7 +4,7 @@ style: Latin
 key: F
 form: AAB, 34 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # book: Medium Latin (half note = 122). Trumpet plays the melody throughout; chords in parentheses are used for solos.
 # Solo on form (AAB), taking the "On Cue" ending to end the last solo; then D.S. al Coda
 # the book's F(add 9) is written F, Bb13sus is written Bb9sus4

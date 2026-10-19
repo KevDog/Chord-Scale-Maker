@@ -4,7 +4,7 @@ style: Bossa nova
 key: Db
 form: AB, 32 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; Db
+# analysis: 2026-10-19, rules v2; Db
 # book: Med. Bossa Nova, quarter = 94. The form repeats (repeat signs around A–B); last time, to the Coda at B bar 15.
 # the intro is a 2-bar guitar figure over an Eb bass, with no chord symbols
 

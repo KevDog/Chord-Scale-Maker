@@ -5,7 +5,7 @@ time: 3/4
 key: D
 form: AA, 28 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; D
+# analysis: 2026-10-19, rules v2; D
 
 # the book's A13sus is written A9sus4, the nearest symbol the library reads
 # the 14-bar A is repeated; the Ending follows the last time

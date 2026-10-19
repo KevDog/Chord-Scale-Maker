@@ -6,7 +6,7 @@ form: AABA, 32 bars
 source: Colorado Cookbook, p. 192
 recording: Charlie Parker; Collectors' Items; Dial; 1951
 youtube: 43cpnCNLBbA
-# analysis: 2026-10-11, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # recording: recorded 1947-11-04, master take C, first issued on 78 (Dial 1021), first LP 1951 (LP 904; Dial LP 203, 1949, has take B) (jazzdisco); video: The Complete Savoy & Dial Master Takes, the same take
 
 # bar | chord | scale

@@ -39,6 +39,11 @@
       <select :value="time" aria-label="Time" :class="[FIELD, 'cursor-pointer appearance-none pr-1']" @change="emit('update:doc', setMeta(doc, 'time', ($event.target as HTMLSelectElement).value))">
         <option v-for="t in TIMES" :key="t" :value="t">{{ t }}</option>
       </select>
+      <span aria-hidden="true">·</span>
+      <!-- how the analysis reads it (context:): a blues whatever its form, say -->
+      <select :value="readAs" aria-label="Read as" :class="[FIELD, 'cursor-pointer appearance-none pr-1']" @change="setReadAs(($event.target as HTMLSelectElement).value as ReadAs)">
+        <option v-for="r in READ_AS" :key="r" :value="r">Read: {{ READ_AS_LABELS[r] }}</option>
+      </select>
     </div>
     <div class="flex justify-end">
       <input
@@ -62,10 +67,11 @@
 <script setup lang="ts">
 import { cellError, type ChartDoc, chartDetails, chartHeading, chartMeta, isValidKey, keyLabel, LIMITS, type MetaKey, metaValue, setMeta } from '@chord-scale-maker/engine'
 import { KEY_OPTIONS } from '~/utils/keyOptions'
+import { READ_AS, READ_AS_LABELS, type ReadAs, readAsOf, withReadAs } from '~/utils/readAs'
 
 /**
  * The chart's heading edited where it prints (docs/superpowers/specs/2026-10-11-lead-sheet-editor-design.md §1.5):
- * the title, subtitle, key, time and composer as fields laid out as the printed heading is, a dashed underline the one
+ * the title, subtitle, key, time, Read as (context:) and composer as fields laid out as the printed heading is, a dashed underline the one
  * hint they take typing. A value the chart can't hold stays in its field, flagged with why; the doc keeps the last
  * good one (as MetaInput does).
  */
@@ -94,6 +100,11 @@ const errors = computed((): Partial<Record<Field, string>> => {
 watch(values, () => (drafts.value = {}))
 const shown = (k: Field): string => drafts.value[k] ?? values.value[k]
 const version = computed(() => metaValue(props.doc, 'version'))
+const readAs = computed(() => readAsOf(props.doc))
+function setReadAs(v: ReadAs): void {
+  const next = withReadAs(props.doc, v)
+  if (next) emit('update:doc', next)
+}
 const name = computed(() => (version.value ? `${shown('title') || 'Untitled'} (${version.value})` : shown('title') || 'Untitled'))
 function edit(k: Field, v: string): void {
   if (cellError(v, LIMITS.maxMeta, true)) {

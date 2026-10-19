@@ -8,19 +8,19 @@ form: A, 16 bars
 source: Colorado Cookbook, p. 260
 recording: Herbie Hancock; Takin' Off; Blue Note; 1962
 youtube: _QkGAaYtXA0
-# analysis: 2026-10-11, rules v1; F, blues
+# analysis: 2026-10-19, rules v2; F, blues
 
 # bar | chord | scale
 
 section: A
 bars: 16
-1  | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
+1  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
 5  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
-9  | C7   # V7 in F, not resolving: natural tensions
+7  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+9  | C7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 10 | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | C7   # V7 in F, not resolving: natural tensions
+11 | C7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 12 | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-13 | C7   # V7 in F, not resolving: natural tensions
+13 | C7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 14 | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-15 | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
+15 | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian

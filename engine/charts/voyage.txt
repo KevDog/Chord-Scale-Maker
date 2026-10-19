@@ -5,7 +5,7 @@ key: Fm
 # key: the book's index says Ab; the lead sheet is in Fm (four flats, F- to F-)
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 254
-# analysis: 2026-10-17, rules v1; F minor
+# analysis: 2026-10-19, rules v2; F minor
 
 # bar | chord | scale
 

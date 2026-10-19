@@ -6,7 +6,7 @@ form: ABCD, 32 bars
 source: Colorado Cookbook, p. 137
 recording: Duke Ellington; Ellingtonia, Volume One; Brunswick; 1950
 youtube: DMUrAD7EXJQ
-# analysis: 2026-10-11, rules v1; Ab
+# analysis: 2026-10-19, rules v2; Ab
 # recording: recorded 1930-10-17 as Dreamy Blues (credited to The Jungle Band, Ellington's band), first issued on 78 (Brunswick 4952, 1930), LP 1950 (BL 58002) (Discogs, Wikipedia); video: Early Ellington: The Complete Brunswick and Vocalion Recordings 1926-1931, the same take
 
 # bar | chord | scale

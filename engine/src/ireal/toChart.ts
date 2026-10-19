@@ -262,6 +262,7 @@ export function irealToChart(song: IRealSong): Parsed<string> {
     `title: ${song.title}`,
     ...(song.composer ? [`composer: ${song.composer}`] : []),
     ...(song.style ? [`style: ${song.style}`] : []),
+    ...(song.style && /blues/i.test(song.style) ? ['context: blues'] : []), // a blues whatever its form (blues spec §1)
     ...(song.key ? [`key: ${song.key}`] : []),
     ...(songTime !== '4/4' ? [`time: ${songTime}`] : []),
     ...(form ? [`form: ${form}`] : []),

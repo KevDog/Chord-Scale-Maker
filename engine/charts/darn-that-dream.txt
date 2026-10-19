@@ -6,7 +6,7 @@ form: AABC
 source: Colorado Cookbook, p. 61
 recording: Bill Evans & Jim Hall; Undercurrent; United Artists; 1962
 youtube: 0mBpd5X-slQ
-# analysis: 2026-10-17, rules v1; G
+# analysis: 2026-10-19, rules v2; G
 # recording: recorded 1962-05-14, NYC, Evans piano, Hall guitar duo; chart follows no specific version, so the canonical jazz reading; Birth of the Cool (Kenny Hagood vocal, 1950 78) is the older jazz alternative but a vocal side; released August 1962, later Solid State/Blue Note reissues; sources: Wikipedia (Undercurrent, Darn That Dream); video: "Provided to YouTube by Universal Music Group" Undercurrent track, the same take
 
 # bar | chord | scale

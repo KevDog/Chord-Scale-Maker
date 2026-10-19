@@ -5,7 +5,7 @@ style: Medium samba
 key: Am
 form: AABCC, 80 bars
 source: 
-# analysis: 2026-10-17, rules v1; A minor
+# analysis: 2026-10-19, rules v2; A minor
 # book: Med. Samba (half note = 114). Head A played twice; B is for solos (repeated); after solos C (twice), then head A twice, then D.C. al fine (the intro, ending at its 2nd ending)
 # the intro (8 bars with 1st/2nd endings, horns 2nd time only, ending at "fine") is a horn and bass figure with no chords
 # the book's 13sus chords are written 9sus4 (D13sus → D9sus4)

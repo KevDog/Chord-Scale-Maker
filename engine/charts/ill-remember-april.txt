@@ -5,7 +5,7 @@ style: Mixed
 key: G
 form: ABA, 48 bars
 source: Colorado Cookbook, p. 100
-# analysis: 2026-10-17, rules v1; G
+# analysis: 2026-10-19, rules v2; G
 
 # bar | chord | scale
 # the standard 48-bar form; the lead sheet condenses the A sections

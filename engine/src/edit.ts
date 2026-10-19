@@ -114,6 +114,12 @@ export function setMeta(doc: ChartDoc, key: MetaKey, value: string): ChartDoc {
   return { lines: [...doc.lines.slice(0, at), { kind: 'meta', key, value }, ...doc.lines.slice(at)] }
 }
 
+/** remove a header line (every copy of it): a chart without one comes back as it was */
+export function clearMeta(doc: ChartDoc, key: MetaKey): ChartDoc {
+  const lines = doc.lines.filter((l) => !(l.kind === 'meta' && l.key === key))
+  return lines.length === doc.lines.length ? doc : { lines }
+}
+
 
 /*
  * Bar operations for the bar editor (docs/superpowers/proposals/editor-ux/README.md §3). A bar is addressed as

@@ -5,7 +5,7 @@ key: F
 form: AB, 32 bars
 source: Jazz Mind Accelerator
 version: Jazz Mind Accelerator
-# analysis: 2026-10-18, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 
 section: A
 1  | FMaj7  # tonic: the 4th is in the key

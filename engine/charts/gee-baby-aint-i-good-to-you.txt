@@ -4,7 +4,7 @@ style: Medium slow
 key: Eb
 form: AB, 16 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 # book: Med.-Slow Swing (Bluesy); the melody is freely interpreted, in a blues style
 
 # bar | chord

@@ -4,7 +4,7 @@ style: Ballad
 key: G
 form: AABC, 32 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; G
+# analysis: 2026-10-19, rules v2; G
 # style: the book says Med. Ballad
 # book: bars 3–4 of A and C may also be played G6 C7 | G6 Db7#5#9
 

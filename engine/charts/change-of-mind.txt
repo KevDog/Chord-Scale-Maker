@@ -5,7 +5,7 @@ time: 3/4
 key: F
 form: ABCD, 70 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 
 # the intro (4/4, 5/4, 3/4 horn and bass figures, repeated) is written out with no chord symbols: left out
 # the form is in 3/4; the head is ABCD, solos on ABC, then D (with pickup) and D.S. al Fine

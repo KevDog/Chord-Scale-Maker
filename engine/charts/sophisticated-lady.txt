@@ -6,7 +6,7 @@ form: AABA, 32 bars
 source: Colorado Cookbook, p. 213
 recording: Duke Ellington; The Music of Duke Ellington Played by Duke Ellington; Columbia; 1954
 youtube: s5DjHrKXccI
-# analysis: 2026-10-17, rules v1; Ab
+# analysis: 2026-10-19, rules v2; Ab
 # recording: recorded 1933-05-16, first issued on 78 (Brunswick 6600, 1933); a 1933-02-15 take was issued only in the UK; LP 1954 (CL 558) (Discogs); video: Ken Burns Jazz: Duke Ellington, the same take
 
 # bar | chord | scale

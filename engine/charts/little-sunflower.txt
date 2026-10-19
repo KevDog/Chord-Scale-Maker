@@ -6,7 +6,7 @@ key: Dm
 form: AABBA
 source: Colorado Cookbook, p. 126
 recording: Freddie Hubbard; Backlash; Atlantic; 1967
-# analysis: 2026-10-11, rules v1; D minor, modal
+# analysis: 2026-10-19, rules v2; D minor, modal
 # recording: recorded 1966-10, released 1967 (MusicBrainz release group, Wikipedia); no official upload of this version found
 
 # bar | chord | scale

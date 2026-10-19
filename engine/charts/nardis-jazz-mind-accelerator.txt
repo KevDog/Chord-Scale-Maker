@@ -5,7 +5,7 @@ key: Em
 form: AABA, 32 bars
 source: Jazz Mind Accelerator
 version: Jazz Mind Accelerator
-# analysis: 2026-10-18, rules v1; E minor
+# analysis: 2026-10-19, rules v2; E minor
 
 section: A1
 # area: E minor (A1 1 – B 4)

@@ -4,7 +4,7 @@ style: Medium ballad
 key: Db
 form: AABC, 32 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; Db
+# analysis: 2026-10-19, rules v2; Db
 
 # the pickup bar is N.C.
 # Eb9#11 may be played for BbmMaj7 and Db9#11 for AbmMaj7 throughout; then bar 8 of A, B and C may be Db C7 B7 Bb7

@@ -5,7 +5,7 @@ key: Fm
 form: AB, 20 bars
 context: modal
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; F minor, modal
+# analysis: 2026-10-19, rules v2; F minor, modal
 # book: Half-Time Funk/Rock, half note = 82; as played by Freddie Hubbard
 # book: head A (repeated, segno at A); B is the solo vamp (vamp & solo till cue), then an "On Cue" horn figure,
 # book: N.C. for 4 bars: to B for the next solo; after solos, D.S. al Fine (Fine at A bar 15, last time)

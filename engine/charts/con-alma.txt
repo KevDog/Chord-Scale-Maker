@@ -7,7 +7,7 @@ form: AABA
 source: Colorado Cookbook, p. 53
 recording: Dizzy Gillespie; Afro; Norgran; 1954
 youtube: EItHa5XodWQ
-# analysis: 2026-10-17, rules v1; D
+# analysis: 2026-10-19, rules v2; D
 # recording: recorded 1954-06-03 with his Latin American rhythm section; matrix 1740-3, first issued on LP (Norgran MGN-1003) (jazzdisco, Wikipedia)
 
 # bar | chord | scale

@@ -6,7 +6,7 @@ form: AABC, 32 bars
 source: The New Real Book, Vol. 1
 recording: Thelonious Monk; Genius of Modern Music; Blue Note; 1951
 youtube: U-N4w9LVGpw
-# analysis: 2026-10-17, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 # recording: recorded 1947-10-24, first issued on 78 (Blue Note 549), LP 1951 (BLP 5002) (Wikipedia, jazzdisco)
 # book: Med. Ballad; melody played with straight eighths; the intro is solo piano
 # book: solo on the form (AABC); after the solos, D.S. al Coda; the coda is played freely

@@ -5,7 +5,7 @@ style: Mixed
 key: Bbm
 form: AABC, 64 bars
 source: Colorado Cookbook, p. 129
-# analysis: 2026-10-17, rules v1; Bb minor
+# analysis: 2026-10-19, rules v2; Bb minor
 
 # bar | chord | scale
 # the lead sheet offers Eb7 for EbMaj7 and Bb7 for Bbm in the A sections; the Maj7 / minor reading is written

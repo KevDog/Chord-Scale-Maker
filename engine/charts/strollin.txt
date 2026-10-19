@@ -6,7 +6,7 @@ form: AB, 32 bars
 source: Colorado Cookbook, p. 226
 recording: The Horace Silver Quintet; Horace-Scope; Blue Note; 1960
 youtube: SBvY_bkRad0
-# analysis: 2026-10-11, rules v1; Db
+# analysis: 2026-10-19, rules v2; Db
 # recording: recorded 1960-07-08, take 14, Blue Note BLP 4042; also on single 45-1784 (with Nica's Dream) (jazzdisco.org, MusicBrainz release group)
 
 # bar | chord | scale

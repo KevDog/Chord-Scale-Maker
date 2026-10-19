@@ -5,7 +5,7 @@ key: Dm
 # key: the book's index says Bb; the lead sheet is in Dm (one flat, D- to D-)
 form: AABA
 source: Colorado Cookbook, p. 31
-# analysis: 2026-10-17, rules v1; D minor
+# analysis: 2026-10-19, rules v2; D minor
 
 # bar | chord | scale
 

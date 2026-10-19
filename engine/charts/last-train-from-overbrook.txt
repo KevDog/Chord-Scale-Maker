@@ -4,7 +4,7 @@ style: Medium swing
 key: Gb
 form: A, 12 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; Gb
+# analysis: 2026-10-19, rules v2; Gb
 
 # head is played twice before solos, once after
 # bar | chord

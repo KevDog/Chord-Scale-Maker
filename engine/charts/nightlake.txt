@@ -7,7 +7,7 @@ time: 6/4
 source: The New Real Book, Vol. 1
 recording: John Abercrombie Quartet; Arcade; ECM; 1979
 youtube: 0DyMCwg1qVs
-# analysis: 2026-10-12, rules v1; Bb minor
+# analysis: 2026-10-19, rules v2; Bb minor
 # recording: recorded December 1978 (Richie Beirach, George Mraz, Peter Donald), ECM 1133; the chart follows Abercrombie's version (Wikipedia, MusicBrainz); video: Works, the same take
 # book: Med. Swing (quarter = 124), as played by John Abercrombie
 # book: head is played twice before and after solos

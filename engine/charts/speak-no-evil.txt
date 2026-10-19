@@ -7,7 +7,7 @@ form: AABC, 50 bars
 source: Colorado Cookbook, p. 217
 recording: Wayne Shorter; Speak No Evil; Blue Note; 1966
 youtube: Vdc3KJVopU4
-# analysis: 2026-10-11, rules v1; C minor
+# analysis: 2026-10-19, rules v2; C minor
 # recording: recorded 1964-12-24, released 1966 (Wikipedia, Blue Note's own release date; MusicBrainz says 1965)
 
 # bar | chord | scale

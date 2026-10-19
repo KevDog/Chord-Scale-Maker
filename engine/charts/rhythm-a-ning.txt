@@ -7,7 +7,7 @@ form: AABA, 32 bars
 source: Colorado Cookbook, p. 180
 recording: Art Blakey's Jazz Messengers with Thelonious Monk; Art Blakey's Jazz Messengers with Thelonious Monk; Atlantic; 1958
 youtube: c5w2yOryQx8
-# analysis: 2026-10-11, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 # recording: recorded 1957-05-15, the tune's first recording (Wikipedia, jazzdisco, MusicBrainz)
 
 # bar | chord | scale

@@ -6,7 +6,7 @@ form: AA, 32 bars
 source: Colorado Cookbook, p. 82
 recording: Dizzy Gillespie; Groovin' High; Savoy; 1955
 youtube: K5yTYt-XqBA
-# analysis: 2026-10-11, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 # recording: recorded 1945-02-28 with Charlie Parker (the issued remake; the 1945-02-09 take with Dexter Gordon stayed unissued until CD); matrix G554A-1, first issued on 78 (Guild 1001, later Musicraft 485 and the 1947 Musicraft album Dizzy Gillespie and His All Stars), first LP 1955 (Savoy MG 12020) (jazzdisco, Wikipedia, MusicBrainz)
 
 # bar | chord | scale

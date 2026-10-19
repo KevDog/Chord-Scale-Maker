@@ -4,7 +4,7 @@ style: Bossa nova
 key: A
 form: AB, 32 bars
 source: 
-# analysis: 2026-10-17, rules v1; A
+# analysis: 2026-10-19, rules v2; A
 
 # bar | chord
 

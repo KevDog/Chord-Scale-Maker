@@ -213,3 +213,10 @@ describe('irealBars', () => {
     expect(irealBars(song('{*AC7 |x |N1F7 }|N2G7 |    Z')).value).toEqual([['C7'], ['C7'], ['F7'], ['G7'], []])
   })
 })
+
+describe('a blues style (blues spec §1)', () => {
+  it('writes context: blues, whatever the form; another style writes none', () => {
+    expect(irealToChart(song('[*AT44C7 |F7 |C7 |x Z', { style: 'Medium Blues' })).value).toMatch(/^context: blues$/m)
+    expect(irealToChart(song('[*AT44C7 |F7 |C7 |x Z')).value).not.toMatch(/^context:/m)
+  })
+})

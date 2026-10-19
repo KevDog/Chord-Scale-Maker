@@ -4,7 +4,7 @@ style: Ballad
 key: Fm
 form: AABC, 33 bars
 source: Colorado Cookbook, p. 237
-# analysis: 2026-10-17, rules v1; F minor
+# analysis: 2026-10-19, rules v2; F minor
 
 # bar | chord | scale
 

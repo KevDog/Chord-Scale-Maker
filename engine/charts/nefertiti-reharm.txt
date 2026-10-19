@@ -4,7 +4,7 @@ style: Medium swing
 key: C
 form: A, 16 bars
 source: 
-# analysis: 2026-10-17, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 
 # book: "As played by Miles Davis". No solos; melody is repeated many times; fade on cue to end.
 # book: tritone substitutions may be used: Ab13(#11) → D7(alt), Eb13(b5) → A7(alt)

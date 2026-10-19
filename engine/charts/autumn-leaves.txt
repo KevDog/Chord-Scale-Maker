@@ -5,7 +5,7 @@ composer: Joseph Kosma
 style: Medium
 key: Gm
 form: AAB
-# analysis: 2026-10-11, rules v1; G minor
+# analysis: 2026-10-19, rules v2; G minor
 
 # bar | chord | scale
 

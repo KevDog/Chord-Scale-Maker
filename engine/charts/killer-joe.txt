@@ -4,7 +4,7 @@ style: Medium
 key: C
 form: AABA
 source: Colorado Cookbook, p. 119
-# analysis: 2026-10-11, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 
 # bar | chord | scale
 

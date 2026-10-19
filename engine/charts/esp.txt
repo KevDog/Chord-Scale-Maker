@@ -7,7 +7,7 @@ form: AB, 32 bars
 source: The New Real Book, Vol. 1
 recording: Miles Davis; E.S.P.; Columbia; 1965
 youtube: lRhqn21-xeg
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 
 # bar | chord
 

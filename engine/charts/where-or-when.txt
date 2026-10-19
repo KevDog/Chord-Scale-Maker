@@ -5,7 +5,7 @@ style: Medium
 key: Eb
 form: AABC, 40 bars
 source: Colorado Cookbook, p. 268
-# analysis: 2026-10-11, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 
 # bar | chord | scale
 

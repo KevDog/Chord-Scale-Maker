@@ -4,7 +4,7 @@ subtitle: C Major from Each Degree
 style: Study
 form: 7 bars, a mode each
 key: C
-# analysis: 2026-10-11, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 
 # bar | chord | scale
 # "bar" is the scale degree. "From C" shows all seven share one set of notes; "From root" shows each mode

@@ -8,7 +8,7 @@ form: AABA
 source: Colorado Cookbook, p. 56
 recording: Duke Ellington; In a Mellotone; RCA Victor; 1956
 youtube: Bq5LRQIJx3k
-# analysis: 2026-10-11, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 # recording: recorded 1940-05-04, first issued on 78 (Victor 26610), first US LP 1956 (LPM-1364; French HMV's Duke Ellington Masterpieces, 1952, came earlier) (Discogs, Wikipedia); video: Never No Lament: The Blanton-Webster Band, the same take
 
 # bar | chord | scale

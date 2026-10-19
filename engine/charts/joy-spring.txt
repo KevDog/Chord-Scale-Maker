@@ -6,7 +6,7 @@ form: ABCD, 32 bars
 source: Colorado Cookbook, p. 115
 recording: Clifford Brown & Max Roach; Clifford Brown & Max Roach; EmArcy; 1954
 youtube: mmxqWLHEt1A
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # recording: recorded 1954-08-06 at Capitol Studios, Los Angeles (master 10877-4), first issued on the 10" MG 26043 (December 1954), then the 12" MG 36036 (1955); Brown also recorded it for Pacific Jazz with Jack Montrose's arrangement (PJLP 19, Clifford Brown Ensemble; 1954-08-12 per Wikipedia, 1954-07-12 per jazzdisco) (Wikipedia, jazzdisco.org, MusicBrainz release group); video: Brownie: The Complete EmArcy Recordings of Clifford Brown, the same take (master, not the alternate)
 
 # bar | chord | scale

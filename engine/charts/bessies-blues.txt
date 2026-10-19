@@ -7,18 +7,18 @@ form: A, 12 bars
 source: Colorado Cookbook, p. 33
 recording: John Coltrane Quartet; Crescent; Impulse!; 1964
 youtube: 16AqebffhWM
-# analysis: 2026-10-11, rules v1; Eb, blues
+# analysis: 2026-10-19, rules v2; Eb, blues
 # recording: master take recorded 1964-06-01, Impulse! A-66, released 1964 (jazzdisco.org, MusicBrainz release group, Wikipedia); video: The Classic Quartet: Complete Impulse! Studio Recordings, the same take (not the 1964-04-27 first version)
 
 # bar | chord | scale
 
 section: A
-1  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+1  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 2  | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+3  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 5  | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
-9  | Bb7  # V7 in Eb, not resolving: natural tensions
+7  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+9  | Bb7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 10 | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
-12 | Bb7  # extended dominant: V7 of Eb7
+11 | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+12 | Bb7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian

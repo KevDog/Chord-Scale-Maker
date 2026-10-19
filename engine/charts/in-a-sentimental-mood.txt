@@ -6,7 +6,7 @@ form: AABC
 source: Colorado Cookbook, p. 108
 recording: Duke Ellington; The Music of Duke Ellington Played by Duke Ellington; Columbia; 1954
 youtube: qV3ysN2MHWk
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # recording: recorded 1935-04-30, first issued on 78 (Brunswick 7461, 1935), LP 1954 (CL 558) (Discogs); video: The Duke: The Columbia Years (1927-1962), the same take
 
 # bar | chord | scale

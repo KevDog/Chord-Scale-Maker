@@ -7,7 +7,7 @@ form: ABC, 36 bars
 source: The New Real Book, Vol. 1
 recording: Art Pepper; Art Pepper Meets the Rhythm Section; Contemporary; 1957
 youtube: 6v-9wu_0twY
-# analysis: 2026-10-17, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 # recording: recorded 1957-01-19, Contemporary's studio, Los Angeles, Pepper with Red Garland, Paul Chambers, Philly Joe Jones; chart follows no version, so the best-known jazz reading over the 1940 Dorsey/Sinatra and Ella Fitzgerald 78s; Penguin Guide core album; sources: Wikipedia (Art Pepper Meets the Rhythm Section, Imagination (1940 song)); video: "Provided to YouTube by Universal Music Group" album track, the same take
 
 # the book's A is two 8-bar A's (AABA'); its C is the last A, 12 bars

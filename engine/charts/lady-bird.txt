@@ -6,7 +6,7 @@ key: C
 form: A
 recording: Fats Navarro; Fats Navarro Memorial Album; Blue Note; 1951
 youtube: iWQHoLqB8U8
-# analysis: 2026-10-17, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 # recording: recorded 1948-09-13 by the Tadd Dameron Septet with Fats Navarro, Wardell Gray and Allen Eager, the first recording of it (master BN333-0), first issued on 78 (Blue Note 559, with Jahbero, credited Tadd Dameron), first LP 10" BLP 5004 (MusicBrainz 1951, jazzdisco 1952); later on The Fabulous Fats Navarro, Vol. 2 (BLP 1532) (jazzdisco.org, MusicBrainz release group, Wikipedia)
 
 # bar | chord | scale

@@ -4,7 +4,7 @@ style: Up
 key: Bb
 form: AABA, 32 bars
 source: 
-# analysis: 2026-10-12, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 # the book marks it Fast Bebop; its letters are A (repeated, 1st and 2nd endings), B, C
 
 # bar | chord

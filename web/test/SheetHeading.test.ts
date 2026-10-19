@@ -56,4 +56,15 @@ describe('SheetHeading', () => {
     expect(w.text()).toContain('Pick the chart’s key')
     expect(w.find('input[aria-label=Composer]').attributes('placeholder')).toBe('Composer')
   })
+
+  it('Read as writes context:, and Auto removes it (or writes nothing)', async () => {
+    const w = await mount()
+    const read = w.find('select[aria-label="Read as"]')
+    expect((read.element as HTMLSelectElement).value).toBe('auto')
+    await read.setValue('blues')
+    expect(serializeChart(w.emitted('update:doc')?.at(-1)?.[0] as ChartDoc)).toMatch(/^context: blues$/m)
+    const v = await mount(parseChart('title: T\nkey: F\ncontext: blues\n').value)
+    await v.find('select[aria-label="Read as"]').setValue('auto')
+    expect(serializeChart(v.emitted('update:doc')?.at(-1)?.[0] as ChartDoc)).not.toMatch(/context:/)
+  })
 })

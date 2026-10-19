@@ -8,7 +8,7 @@ time: 6/4
 source: The New Real Book, Vol. 1
 recording: Wayne Shorter; Atlantis; Columbia; 1985
 youtube: bYjfHviuOGM
-# analysis: 2026-10-12, rules v1; Ab, modal
+# analysis: 2026-10-19, rules v2; Ab, modal
 # recording: recorded and released 1985, the first recording of it (Wikipedia, YouTube Topic credits)
 # book: quarter = 94
 # the book prints separate bass and keyboard parts; where the lead sheet compresses a passage, the bar count follows them

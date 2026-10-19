@@ -4,7 +4,7 @@ style: Medium
 key: Ab
 form: ABCD
 source: Colorado Cookbook, p. 19
-# analysis: 2026-10-17, rules v1; Ab
+# analysis: 2026-10-19, rules v2; Ab
 
 # bar | chord | scale
 # as the lead sheet lays it out; the last bar is the turnaround into the top

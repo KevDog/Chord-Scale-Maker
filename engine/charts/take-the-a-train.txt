@@ -5,7 +5,7 @@ style: Latin
 key: C
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 231
-# analysis: 2026-10-11, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 
 # bar | chord | scale
 

@@ -5,7 +5,7 @@ style: Latin
 key: Ab
 form: AB, 32 bars
 source: Colorado Cookbook, p. 51
-# analysis: 2026-10-11, rules v1; Ab
+# analysis: 2026-10-19, rules v2; Ab
 
 # bar | chord | scale
 

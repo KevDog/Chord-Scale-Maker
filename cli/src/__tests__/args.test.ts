@@ -55,3 +55,10 @@ describe('csm add arguments', () => {
     expect(saveName('Blue Bossa')).toEqual({ slug: 'blue-bossa' })
   })
 })
+
+describe('--context', () => {
+  it('takes auto, functional, modal or blues', () => {
+    expect(parseAddArgs(['x.html', '--context', 'blues'])).toMatchObject({ overrides: { context: 'blues' } })
+    expect(parseAddArgs(['x.html', '--context', 'jazz'])).toMatch(/--context is auto, functional, modal or blues/)
+  })
+})

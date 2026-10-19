@@ -6,7 +6,7 @@ form: AB, 32 bars
 source: The New Real Book, Vol. 1
 recording: Miles Davis; Someday My Prince Will Come; Columbia; 1961
 youtube: gOnqdc5wLfo
-# analysis: 2026-10-12, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # recording: recorded March 1961, 30th Street Studio, NYC, Davis, Hank Mobley, Wynton Kelly, Paul Chambers, Jimmy Cobb; the jazz reference version of this songbook standard (Gioia's Jazz Standards); Columbia CL 1656 / CS 8456, released 1961-12-11; sources: Wikipedia (Someday My Prince Will Come, I Thought About You); video: "Provided to YouTube by Columbia/Legacy" album track, the same take
 # the book: Med. Ballad
 

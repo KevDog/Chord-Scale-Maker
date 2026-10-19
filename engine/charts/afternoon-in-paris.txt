@@ -4,7 +4,7 @@ style: Medium
 key: C
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 14
-# analysis: 2026-10-17, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 
 # bar | chord | scale
 # the bridge's standard chords; the sheet's alternates (Fm7 Bb7, Em7 A7, Dbm7 Gb7) are left out

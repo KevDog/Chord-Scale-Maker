@@ -21,6 +21,7 @@
           · rule <template v-for="(id, k) in parts" :key="id"><template v-if="k">+</template><NuxtLink :to="`/functions#rule-${id}`" class="underline decoration-zinc-950/30 hover:decoration-zinc-950 dark:decoration-white/30 dark:hover:decoration-white">{{ id }}</NuxtLink></template><template v-if="fallback">, a guess — an @key or a function would settle it</template>
         </template>
       </span>
+      <span v-if="levelNote" class="mt-1 block"><DecisionLink id="scale.blues">{{ levelNote }}</DecisionLink></span>
       <span v-if="pinned" class="mt-1 block"><DecisionLink id="scale.level">Written in the chart: it plays at every level</DecisionLink></span>
       <span v-if="slash" class="mt-1 block"><DecisionLink id="scale.slash">Its scale is read on the bass</DecisionLink></span>
       <span class="mt-1 block text-xs text-zinc-500 dark:text-zinc-400">{{ keyFrom === 'found' ? '' : '* ' }}in {{ heardIn }}</span>
@@ -58,8 +59,8 @@ import { ISSUE_CONTEXT, ISSUE_TEXT_KEY, issueText, issueTitle, issueUrl } from '
  * pinned (its scale written in the chart) and slash (read on its bass) link to How it decides.
  */
 const props = withDefaults(
-  defineProps<{ reason: string; heardIn: string; keyFrom: ChangesChord['keyFrom']; rule: string; fallback: boolean; chord: string; concert: string; numeral: string; scale: string | null; at: Readonly<{ section: string; bar: string }>; problem?: string; wrap?: boolean; pinned?: boolean; slash?: boolean }>(),
-  { problem: '', wrap: false, pinned: false, slash: false },
+  defineProps<{ reason: string; heardIn: string; keyFrom: ChangesChord['keyFrom']; rule: string; fallback: boolean; chord: string; concert: string; numeral: string; scale: string | null; at: Readonly<{ section: string; bar: string }>; problem?: string; wrap?: boolean; pinned?: boolean; slash?: boolean; levelNote?: string }>(),
+  { problem: '', wrap: false, pinned: false, slash: false, levelNote: '' },
 )
 const shift = ref(0)
 /** in focus mode's zoomed page, the panel undoes the zoom, to read at full size */

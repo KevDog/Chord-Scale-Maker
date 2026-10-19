@@ -4,7 +4,7 @@ style: Medium up Latin
 key: Eb
 form: AB, 30 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 # the book: "Medium-Up Funky Latin", quarter = 174
 # intro: piano solo, repeated with 1st and 2nd endings
 # A repeats (verse 2) with the 1st ending; the 2nd ending is letter B (piano solo)

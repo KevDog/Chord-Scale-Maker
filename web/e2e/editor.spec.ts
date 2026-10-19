@@ -493,3 +493,16 @@ test('editing, the rail sticks over the sheet from lg, and a chord tapped under 
   const tall = (await rail.boundingBox())!
   expect((await chord.boundingBox())!.y).toBeGreaterThanOrEqual(tall.y + tall.height)
 })
+
+test('Read as Blues reads a 13-bar chart as a blues; at Basic its labels are the key’s Blues scale', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await writeChart(page, 'title: T\nkey: E\nform: A, 13 bars\n\nsection: A\nbars: 13\n1 | E\n5 | A\n7 | E\n9 | B\n10 | A\n11 | E\n13 | B\n')
+  await chooseSheet(page, 'Changes')
+  await expect(sheetChord(page, 'A', 'A', 5)).toBeVisible()
+  await page.getByRole('combobox', { name: 'Read as' }).selectOption('blues')
+  await expect(page.getByLabel('Chart text')).toHaveValue(/^context: blues$/m)
+  await expect(page.getByRole('button', { name: 'A Mixo', exact: true }).first()).toBeVisible() // the sheet's short name for Mixolydian
+  await setScaleLevel(page, 'Basic')
+  await expect(page.getByRole('button', { name: 'E Blues', exact: true }).first()).toBeVisible()
+})
+

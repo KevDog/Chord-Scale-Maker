@@ -4,7 +4,7 @@ style: Medium up Latin
 key: Ebm
 form: ABCDEF, 64 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; Eb minor
+# analysis: 2026-10-19, rules v2; Eb minor
 # head ABC; solos on D D E F (D has 1st/2nd endings); after solos, D.S. al Coda
 # chords pushed an eighth early are written on the bar they land in
 

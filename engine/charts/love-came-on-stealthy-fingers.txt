@@ -4,7 +4,7 @@ style: Ballad
 key: F
 form: AB, 32 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # book: Slow Ballad. The form repeats (repeat signs around A–B).
 # the Intro is a repeated 2-bar piano figure marked (C7); written out as 4 bars.
 # the 2nd time, C13(#11 b9) falls on the last beat of bar 4 (pickup to A).

@@ -4,7 +4,7 @@ style: Medium
 key: Eb
 form: ABAB
 source: Colorado Cookbook, p. 101
-# analysis: 2026-10-11, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 
 # bar | chord | scale
 

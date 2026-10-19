@@ -4,7 +4,7 @@ style: Medium up
 key: Db
 form: ABC, 51 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; Db
+# analysis: 2026-10-19, rules v2; Db
 # book: Medium-up swing (in 4); 2-beat feel from letter B, the original feel again at B bar 9
 # book: the whole chart is in repeats; the last bar (51) is piano only every chorus, with a fermata the last time
 

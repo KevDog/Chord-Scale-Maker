@@ -6,7 +6,7 @@ form: AABA
 source: Colorado Cookbook, p. 109
 recording: Thelonious Monk; Genius of Modern Music, Vol. 2; Blue Note; 1952
 youtube: BIdz11_E-vQ
-# analysis: 2026-10-11, rules v1; Ab
+# analysis: 2026-10-19, rules v2; Ab
 # recording: recorded 1947-11-21, first issued on 78 (Blue Note 548), LP 1952 (BLP 5009) (Wikipedia, jazzdisco, MusicBrainz); video: Genius Of Modern Music, Vol. 1 (2013)
 
 # bar | chord | scale

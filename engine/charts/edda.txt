@@ -8,7 +8,7 @@ form: ABCD, 32 bars
 source: Colorado Cookbook, p. 67
 recording: Lee Morgan; The Rumproller; Blue Note; 1966
 youtube: e038nE1XJnQ
-# analysis: 2026-10-11, rules v1; G
+# analysis: 2026-10-19, rules v2; G
 # recording: recorded 1965-04-21 (Lee Morgan Quintet, Joe Henderson on tenor), the first recording of it, BLP 4199; Shorter never recorded it himself (jazzdisco.org, Wikipedia)
 
 # bar | chord | scale

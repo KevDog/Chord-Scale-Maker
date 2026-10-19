@@ -5,7 +5,7 @@ key: Bb
 # key: the book's index says Ab; the lead sheet is in Bb (two flats, Bb to Bb)
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 247
-# analysis: 2026-10-11, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 
 # bar | chord | scale
 # the A sections sit over an F pedal

@@ -7,7 +7,7 @@ key: Eb
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 209
 recording: Ella Fitzgerald; Ella Fitzgerald Sings the Harold Arlen Song Book; Verve; 1961
-# analysis: 2026-10-11, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 # recording: recorded 1960-08-01 to 1961-01-14 in Hollywood, arranged and conducted by Billy May; chart (Colorado Cookbook) follows no named version; songbook standard: no single instrumental reading is the jazz reference and the Judy Garland film/Decca side (1939) is the pop original, so Ella's Arlen Song Book reading is taken as the canonical jazz vocal; Verve MG V-4046-2; sources: Wikipedia (Over the Rainbow, the Song Book album)
 
 # bar | chord | scale

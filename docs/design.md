@@ -344,6 +344,8 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     `m6` on Melodic Minor stays there. The Level control's Random pool leaves out options marked `functional: true`
     (the °7 scales that fit one function only).
   - A tonic minor chord (the analysis's rule m5) is Aeolian at Basic.
+  - Over a blues (`context: blues`), a chord the blues rules decide (D9, M6, m10, s4) plays the key's Blues scale at
+    Basic (`atLevel`, `engine/src/resolve.ts`); Standard plays the rule's own scale.
   - `useScaleLevel` remembers the level and seed per chart in this browser (Save as a copy and Save to My charts
     carry them; Revert keeps them). Share links carry the level and seed, as a view preference for the recipient.
 - **Slash readings** (`slash_chords` in `chord_scales.json`): a chord whose bass makes it another
@@ -999,8 +1001,8 @@ its reasons into a chart as comments.
 - **The rules on one page** (the second pass, "analysis rules from sources", checked against Nettles and Graf,
   Mulholland and Hojnacki, Levine and Chediak; [spec](superpowers/specs/2026-10-10-analysis-rules-from-sources-design.md),
   decisions in plan-analysis.md §10, 11–17):
-  - **Dominant:** a blues I7 (derived) and IV7 (Mixolydian) are decided by their degree, D5 before D3; a V7 into a
-    minor chord is Phrygian Dominant, Altered at Advanced.
+  - **Dominant:** a blues I7, IV7 and (in a major key, outside a ii–V) V7 are Mixolydian, decided by their degree (D9,
+    before D3); a V7 into a minor chord is Phrygian Dominant, Altered at Advanced.
   - **Major:** a IV reached by its own dominant (V7/IV, or subV7/IV) is Ionian, otherwise Lydian; ♭VII of a minor key
     is Ionian. The rule reads the previous chord and wraps the form, so a bar-1 IV is prepared by the last chord.
   - **Minor:** iii7 is Phrygian (also as a related ii), Dorian at Advanced; the tonic m6 of a minor key is Melodic

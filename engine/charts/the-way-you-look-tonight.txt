@@ -6,7 +6,7 @@ form: AABC, 68 bars
 source: The New Real Book, Vol. 1
 recording: Ella Fitzgerald; Ella Fitzgerald Sings the Jerome Kern Song Book; Verve; 1963
 youtube: -F9vX3uNjXU
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # recording: recorded 1963-01-05/07, Radio Recorders, Los Angeles, with Nelson Riddle & His Orchestra; Verve V6-4060; songbook standard → Ella's reading; jazzstandards.com also names Billie Holiday/Teddy Wilson (1936), Art Blakey's A Night at Birdland (1954) and Johnny Griffin's A Blowin' Session (1957), none a clear single reference; sources: Wikipedia, jazzstandards.com; video: "Provided to YouTube by Universal Music Group", the album track (4:28), the same take
 # book: Med-Up Swing. Solo on form (AABC); after solos, D.S. al Fine. The last four bars of C (C bars 17–20) may be
 # omitted for solos. The intro is repeated (written out here).

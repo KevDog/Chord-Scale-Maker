@@ -6,7 +6,7 @@ form: ABC, 16 bars
 source: Colorado Cookbook, p. 174
 recording: Sonny Rollins; Sonny Rollins Plus 4; Prestige; 1956
 youtube: pUgq0_ckXGA
-# analysis: 2026-10-11, rules v1; G
+# analysis: 2026-10-19, rules v2; G
 # recording: recorded 1956-03-22 with Clifford Brown, Richie Powell, George Morrow and Max Roach, PRLP 7038 (jazzdisco)
 
 # bar | chord | scale

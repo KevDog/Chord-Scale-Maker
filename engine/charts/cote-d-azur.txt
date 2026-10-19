@@ -6,16 +6,16 @@ key: Bbm
 context: blues
 form: A, 12 bars
 source: Colorado Cookbook, p. 73
-# analysis: 2026-10-11, rules v1; Bb minor, blues
+# analysis: 2026-10-19, rules v2; Bb minor, blues
 
 # bar | chord | scale
 
 section: A
-1  | Bbm    # tonic minor: Dorian by convention
-5  | Ebm    # iv: Dorian, the key’s own notes
-7  | Bbm    # tonic minor: Dorian by convention
+1  | Bbm    # i of the minor blues: Dorian
+5  | Ebm    # iv of the minor blues: Dorian
+7  | Bbm    # i of the minor blues: Dorian
 9  | Cm7b5  # iiø7 of Bb minor: Locrian, the key's own notes (its ♭2 is a passing note)
 10 | F7     # V7 of Bb minor: b9 and b13 are in the key
-11 | Bbm    # tonic minor: Dorian by convention
+11 | Bbm    # i of the minor blues: Dorian
 12 | Cm7b5  # iiø7 of Bb minor: Locrian, the key's own notes (its ♭2 is a passing note)
 12 | F7     # V7 of Bb minor: b9 and b13 are in the key

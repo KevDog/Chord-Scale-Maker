@@ -5,7 +5,7 @@ style: Medium
 key: Bbm
 form: AB, 20 bars
 source: Colorado Cookbook, p. 201
-# analysis: 2026-10-11, rules v1; Bb minor, modal
+# analysis: 2026-10-19, rules v2; Bb minor, modal
 
 # bar | chord | scale
 

@@ -6,6 +6,13 @@ import ChartHeadingFields from '~/components/ChartHeadingFields.vue'
 const doc = parseChart('title: T\nkey: C\ncomposer: X\n\nsection: A\nbars: 4\n1 | C\n').value
 const lastText = (w: { emitted: (e: string) => unknown[][] | undefined }): string => serializeChart(w.emitted('update:doc')?.at(-1)?.[0] as ChartDoc)
 
+type Mounted = Awaited<ReturnType<typeof mountSuspended>>
+const openDetails = async (w: Mounted): Promise<void> => void (await w.findAll('button').find((b) => b.text() === 'Details')?.trigger('click'))
+const readAs = async (w: Mounted, label: string): Promise<void> => {
+  await w.find('button[aria-label="Read as"]').trigger('click')
+  await w.findAll('[role=option]').find((o) => o.text() === label)?.trigger('click')
+}
+
 describe('ChartHeadingFields', () => {
   it('shows the time and, folded away, the details', async () => {
     const w = await mountSuspended(ChartHeadingFields, { props: { doc } })
@@ -35,5 +42,22 @@ describe('ChartHeadingFields', () => {
     await title.setValue('A # B') // a # is fine in a heading
     expect(lastText(w)).toMatch(/^title: A # B$/m)
     expect(title.attributes('aria-invalid')).toBeUndefined()
+  })
+
+  it('Read as writes context:, and Auto removes it (or writes nothing)', async () => {
+    const w = await mountSuspended(ChartHeadingFields, { props: { doc } })
+    await openDetails(w)
+    expect(w.find('button[aria-label="Read as"]').text()).toBe('Auto')
+    await readAs(w, 'Blues')
+    expect(lastText(w)).toMatch(/^context: blues$/m)
+    const v = await mountSuspended(ChartHeadingFields, { props: { doc: parseChart('title: T\nkey: F\ncontext: blues\n').value } })
+    await openDetails(v)
+    expect(v.find('button[aria-label="Read as"]').text()).toBe('Blues')
+    await readAs(v, 'Auto')
+    expect(lastText(v)).not.toMatch(/context:/)
+    const n = await mountSuspended(ChartHeadingFields, { props: { doc } })
+    await openDetails(n)
+    await readAs(n, 'Auto')
+    expect(n.emitted('update:doc')).toBeUndefined() // already Auto: nothing to write
   })
 })

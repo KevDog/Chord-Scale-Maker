@@ -8,7 +8,7 @@ form: AABA
 source: Colorado Cookbook, p. 79
 recording: Antonio Carlos Jobim; The Composer of Desafinado, Plays; Verve; 1963
 youtube: YSDmKeSpSv8
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # recording: recorded May 1963, New York, Jobim with Claus Ogerman's orchestra, prod. Creed Taylor (Verve V6-8547); Jobim's own first recording as leader, issued 1963, before Getz/Gilberto (rec. March 1963, released 1964); chart follows the Colorado Cookbook and Chediak's Songbook Tom Jobim, not a specific record; Getz/Gilberto is the famous alternative; sources: Wikipedia; video: Zebralution "Provided to YouTube" upload of the same album track (remastered), 2:42
 # source: bars 7–8 and the bridge follow Songbook Tom Jobim vol. 3 (Chediak), pp. 61–62
 

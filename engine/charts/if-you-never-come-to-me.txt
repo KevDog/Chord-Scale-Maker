@@ -7,7 +7,7 @@ form: AA, 32 bars
 source: The New Real Book, Vol. 1
 recording: Antonio Carlos Jobim; The Wonderful World of Antonio Carlos Jobim; Warner Bros.; 1965
 youtube: dzjH5P2J10E
-# analysis: 2026-10-12, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 # recording: recorded 1965, Jobim vocal and guitar (Ray Gilbert's English lyric, titled "Useless Landscape"), Nelson Riddle arranger; the first album of Jobim's own with the song; his earlier 1964 appearances were as a guest on others' Elenco LPs (Caymmi Visita Tom, Sergio Mendes's Bossa Nova York); sources Wikipedia (Inútil Paisagem, The Wonderful World of Antonio Carlos Jobim), MusicBrainz track list (2:18); video: Rhino/Warner Records Topic upload ℗ 1965 Warner Records, 2:17, the same take
 # the book: Med.-Slow Bossa Nova; the two sections are marked A and B but are the same changes
 

@@ -7,7 +7,7 @@ form: ABCD, 32 bars
 source: Colorado Cookbook, p. 62
 recording: Sonny Rollins; The Sound of Sonny; Riverside; 1957
 youtube: DhIaD0DDodg
-# analysis: 2026-10-11, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 # recording: recorded June 1957 (sessions 11, 12, 19), Reeves Sound Studios, NYC; Rollins, Sonny Clark, Percy Heath, Roy Haynes; his first Riverside LP, released November 1957; songbook standard → the best-known jazz reading; Rollins re-recorded it on Our Man in Jazz (RCA Victor 1963); sources: Wikipedia; video: "Provided to YouTube by Universal Music Group", The Sound of Sonny (Fantasy ℗ 1957), 3:02 vs 3:05 listed, the same take
 
 # bar | chord | scale

@@ -4,7 +4,7 @@ style: Medium
 key: Ab
 form: AABC, 32 bars
 source: Colorado Cookbook, p. 160
-# analysis: 2026-10-17, rules v1; Ab
+# analysis: 2026-10-19, rules v2; Ab
 
 # bar | chord | scale
 

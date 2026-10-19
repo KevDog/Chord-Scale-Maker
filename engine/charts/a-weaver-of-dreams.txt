@@ -4,7 +4,7 @@ style: Medium
 key: C
 form: AA, 32 bars
 source: Colorado Cookbook, p. 262
-# analysis: 2026-10-11, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 
 # bar | chord | scale
 # the "standard" chords; the lead sheet offers Bbm7 Eb7 | Am7 D7 | Abm7 Db7 | Gm7 C7 for A bars 5–8

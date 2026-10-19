@@ -6,7 +6,7 @@ form: AABA, 64 bars
 source: The New Real Book, Vol. 1
 recording: Charlie Parker; Charlie Parker; Clef; 1954
 youtube: WECmIiUVA9E
-# analysis: 2026-10-17, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 # recording: recorded 1952-12-30, Fulton Recording, NYC; Parker, Hank Jones, Teddy Kotick, Max Roach; master 1118-3; songbook standard → Parker's quartet version, the jazz reference (jazzstandards.com: "epitomized by Charlie Parker's burning 1952 performance"); first LP Clef MGC-157 (10", 1954), single Clef 89144 (1955, mistitled "I Hear Music"), later Verve MGV-8005 Now's the Time; sources: jazzdisco.org, jazzstandards.com; video: "Provided to YouTube by Universal Music Group", Bird: The Complete Charlie Parker on Verve (℗ 1953), 2:57, the same master
 # book: Med.-Up Swing
 # the book's letters: A, B (the second A), C (the bridge), D (the last A)
