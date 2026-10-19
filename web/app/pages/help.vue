@@ -156,7 +156,9 @@
                 While Superimpose is Pentatonic, the Line's <strong class="font-semibold">7th Chords</strong> becomes
                 <strong class="font-semibold">Pentatonic</strong>: each chord's labelled pentatonic in four-note cells;
                 <strong class="font-semibold">Leave out</strong> picks the note each cell drops. While it's Hexatonic, it
-                becomes <strong class="font-semibold">Triad pair</strong>: each chord's labelled pair a triad at a time.
+                becomes <strong class="font-semibold">Triad pair</strong>: each chord's labelled pair a triad at a time,
+                from the note nearest the last, or in Walt Weiskopf's <strong class="font-semibold">Climb</strong> or
+                <strong class="font-semibold">Arpeggios 1 3 5 8</strong> shape (<DecisionLink id="hex.line">how</DecisionLink>).
                 While it's Quartal, it becomes <strong class="font-semibold">Quartal</strong>: each chord's labelled stack
                 of fourths, whole, then its next stacks (<DecisionLink id="quartal.line">how</DecisionLink>). Each goes up,
                 down or both by turns.

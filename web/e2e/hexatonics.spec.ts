@@ -90,3 +90,15 @@ test('the Line plays each chord’s labelled triad pair under the Hexatonic over
   await arpeggiosDrawn(page)
   await expect(line).toHaveAttribute('aria-label', /; 7th chords: C4 E4 G4 B4/)
 })
+
+test('the Triad pair line’s Shape: Climb rises through the triads from each start, Arpeggios plays 1 3 5 8 (#432)', async ({ page }) => {
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Cmaj7\n2 | Dm7\n')
+  const line = page.locator('svg[aria-label^="Bars:"]').first()
+  await showArpeggios(page, 'Up · root')
+  await arpeggiosDrawn(page)
+  await chooseSuperimpose(page, 'Hexatonic')
+  await pickOption(page, 'Triad pair shape', 'Climb')
+  await expect(line).toHaveAttribute('aria-label', /; triad pair: G4 B4 D5 A4 \| /) // G/Am: G B D, then A C E from the A above G4
+  await pickOption(page, 'Triad pair shape', 'Arpeggios 1 3 5 8')
+  await expect(line).toHaveAttribute('aria-label', /; triad pair: G4 B4 D5 G5 \| /)
+})

@@ -272,6 +272,15 @@ describe('pentatonic preferences', () => {
     expect(prefs().pentLeave.value).toBe('1')
   })
 
+  it("keeps the Triad pair line's shape at Nearest until chosen, a bad one as Nearest; a link's for the visit, else yours (#432)", async () => {
+    expect(prefs().pairLine.value).toBe('nearest')
+    localStorage.setItem('csm-pair-line', 'climb')
+    expect(prefs().pairLine.value).toBe('climb')
+    expect([linked({ line: 'up-root', pairLine: 'arpeggios' }).pairLine.value, linked({ line: 'up-root' }).pairLine.value]).toEqual(['arpeggios', 'climb'])
+    localStorage.setItem('csm-pair-line', 'Climb')
+    expect(prefs().pairLine.value).toBe('nearest')
+  })
+
   it("takes a link's Leave out for the visit; a link without one keeps your own, as arpDir does", async () => {
     localStorage.setItem('csm-pent-leave', '5')
     expect(linked({ line: 'up-root', pentLeave: 'b3' }).pentLeave.value).toBe('b3')

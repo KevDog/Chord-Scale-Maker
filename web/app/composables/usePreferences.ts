@@ -1,5 +1,5 @@
 import type { Ref, WritableComputedRef } from 'vue'
-import { type Approach, type ArpDirection, type CellId, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, isPairShape, isPatternNotes, isPentatonicLeave, type HexatonicBasis, type PairShape, type QuartalNotesChoice, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, type ShareView } from '@chord-scale-maker/engine'
+import { type Approach, type ArpDirection, type CellId, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, isPairLineShape, isPairShape, isPatternNotes, isPentatonicLeave, type HexatonicBasis, type PairLineShape, type PairShape, type QuartalNotesChoice, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, type ShareView } from '@chord-scale-maker/engine'
 import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
@@ -82,11 +82,13 @@ export function usePreferences() {
   const pentDegree = storedRef<PentatonicDegree>('csm-pent-degree', (s) => pentatonicDegreeFrom(/^\d+$/.test(s) ? Number(s) : s), 'auto')
   // #284: the Pentatonic line's Leave out (its direction is arpDir's)
   const pentLeave = storedRef<PentatonicLeave>('csm-pent-leave', (s) => (isPentatonicLeave(s) ? s : undefined), PENTATONIC_LEAVE)
+  // #432: the Triad pair line's shape (its direction is arpDir's): Nearest until chosen
+  const pairLine = storedRef<PairLineShape>('csm-pair-line', (s) => (isPairLineShape(s) ? s : undefined), 'nearest')
   // the editor's Source (the chart's text): hidden until shown
   const source = storedRef<boolean>('csm-source', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   // the /functions page's key: C major until another is picked
   const functionsKey = storedRef<string>('csm-functions-key', (s) => (FUNCTIONS_KEYS.includes(s) ? s : undefined), 'C')
-  return { instrument, range: rangeRef(instrument), spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, approach, arpeggio, cells, arpNotes, arpDir, arpShape, pattern, patternNotes, patternDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, hexBasis, quartNotes, quartPerfect, source, functionsKey }
+  return { instrument, range: rangeRef(instrument), spell, intervals, showEditor, numerals, scaleNames, lineMode, guideLine, approach, arpeggio, cells, arpNotes, arpDir, arpShape, pattern, patternNotes, patternDir, overlay, pentRung, pentSide, pentBasis, pentDegree, pentLeave, pairLine, hexBasis, quartNotes, quartPerfect, source, functionsKey }
 }
 
 /** the same choices, starting from a share link's view over your own, for this visit only (nothing is saved) */
@@ -124,6 +126,7 @@ export function linkPreferences(view: ShareView) {
     quartNotes: own.quartNotes,
     quartPerfect: own.quartPerfect,
     pentLeave: ref<PentatonicLeave>(view.pentLeave ?? own.pentLeave.value), // the link's, else yours (an old link has none), as arpDir
+    pairLine: ref<PairLineShape>(view.pairLine ?? own.pairLine.value), // likewise
     showEditor: own.showEditor, // whether the editor is open: yours, and remembered
     source: own.source,
   }

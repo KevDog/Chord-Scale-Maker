@@ -1,4 +1,4 @@
-import { type ArpDirection, type ArpeggioPattern, type CellId, type ChangesLineChoice, isArpeggioPattern, isCellId, type PentatonicLeave, type ShareLine, type SheetLine } from '@chord-scale-maker/engine'
+import { type ArpDirection, type ArpeggioPattern, type CellId, type ChangesLineChoice, isArpeggioPattern, isCellId, type PairLineShape, type PentatonicLeave, type ShareLine, type SheetLine } from '@chord-scale-maker/engine'
 import type { Overlay } from '~/utils/overlay'
 
 /** the Changes sheet's line as the toolbar picks it: a mode, and each mode's own choice */
@@ -16,13 +16,13 @@ export const shareLineOf = (mode: LineMode, guide: GuideFrom, arpeggio: Arpeggio
 /**
  * the line the Changes sheet draws: the stored line, but the arpeggio slot under the Pentatonic overlay is the
  * Pentatonic line (#284), each chord's labelled pentatonic in cells less `leave`, and under the Hexatonic overlay the
- * Triad pair line (#325), each chord's labelled pair a triad at a time, and under the Quartal the Quartal line (#432); all going `dir` (its pattern kept for a chord with none)
+ * Triad pair line (#325), each chord's labelled pair a triad at a time in its shape (#432), and under the Quartal the Quartal line (#432); all going `dir` (its pattern kept for a chord with none)
  */
-export function changesLineOf(c: Readonly<{ mode: LineMode; guide: GuideFrom; arpeggio: ArpeggioPattern; overlay: Overlay; leave: PentatonicLeave; dir: ArpDirection; cells: CellId }>): ChangesLineChoice {
+export function changesLineOf(c: Readonly<{ mode: LineMode; guide: GuideFrom; arpeggio: ArpeggioPattern; overlay: Overlay; leave: PentatonicLeave; dir: ArpDirection; cells: CellId; shape?: PairLineShape }>): ChangesLineChoice {
   if (c.mode === 'cells' && c.overlay === 'off') return { kind: 'cells', id: c.cells }
   // a stored Cells line shares the 7th Chords slot (#298), so under an overlay the slot plays the overlay line
   if ((c.mode === 'arpeggio' || c.mode === 'cells') && c.overlay === 'pentatonic') return { kind: 'pentatonic', leave: c.leave, dir: c.dir, arpeggio: c.arpeggio }
-  if ((c.mode === 'arpeggio' || c.mode === 'cells') && c.overlay === 'hexatonic') return { kind: 'triad-pair', dir: c.dir, arpeggio: c.arpeggio }
+  if ((c.mode === 'arpeggio' || c.mode === 'cells') && c.overlay === 'hexatonic') return { kind: 'triad-pair', dir: c.dir, arpeggio: c.arpeggio, shape: c.shape ?? 'nearest' }
   if ((c.mode === 'arpeggio' || c.mode === 'cells') && c.overlay === 'quartal') return { kind: 'quartal', dir: c.dir, arpeggio: c.arpeggio }
   return sheetLineOf(c.mode, c.guide, c.arpeggio)
 }

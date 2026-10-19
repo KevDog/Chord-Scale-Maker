@@ -142,6 +142,12 @@ describe('share links', () => {
     for (const pentLeave of ['3', '♭3', 1, null]) expect(shareViewFrom({ sheet: 'changes', pentLeave })).toEqual({ sheet: 'changes' })
   })
 
+  it("carries the Triad pair line's shape with an arpeggio line (#432); a bad one, or an old link's none, is absent", async () => {
+    const view = { sheet: 'changes', line: 'up-root', arpDir: 'up', pairLine: 'climb' } as const
+    expect(await decodeShare(await encodeShare({ chart: CHART, view }))).toEqual({ chart: CHART, view })
+    for (const pairLine of ['Climb', 'block', 1, null]) expect(shareViewFrom({ sheet: 'changes', pairLine })).toEqual({ sheet: 'changes' })
+  })
+
   it('read any other line as none (absent), and the old guideLine not at all', async () => {
     for (const line of ['off', 'both', 'Up · root', true, 3, null]) expect(shareViewFrom({ sheet: 'changes', line })).toEqual({ sheet: 'changes' })
     expect(shareViewFrom({ sheet: 'changes', guideLine: 'third' })).toEqual({ sheet: 'changes' })

@@ -134,6 +134,12 @@
                               <template #selected="{ value }"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[value] }}</UiListboxLabel></template>
                               <UiListboxOption v-for="d in ARP_DIRECTIONS" :key="d" :value="d"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[d] }}</UiListboxLabel></UiListboxOption>
                             </UiListbox>
+                            <EaseReveal :show="overlayShown && overlay === 'hexatonic'">
+                              <UiListbox v-model="pairLine" class="w-full" aria-label="Triad pair shape" title="Nearest: each triad from its note nearest the last. Climb: both triads in root position, then 1st and 2nd inversion, rising. Arpeggios: the climb with each triad 1 3 5 8 (after Walt Weiskopf)">
+                                <template #selected="{ value }"><UiListboxLabel>Shape: {{ PAIR_LINE_SHAPE_LABELS[value] }}</UiListboxLabel></template>
+                                <UiListboxOption v-for="s in PAIR_LINE_SHAPES" :key="s" :value="s"><UiListboxLabel>{{ PAIR_LINE_SHAPE_LABELS[s] }}</UiListboxLabel></UiListboxOption>
+                              </UiListbox>
+                            </EaseReveal>
                             <EaseReveal :show="overlayShown && overlay === 'pentatonic'">
                               <UiListbox v-model="pentLeave" class="w-full" aria-label="Leave out" title="The minor pentatonic's degree each four-note cell leaves out; 1: ♭3 4 5 ♭7, the relative major's 1 2 3 5">
                                 <template #selected="{ value }"><UiListboxLabel>Leave out: {{ PENTATONIC_LEAVE_LABELS[value] }}</UiListboxLabel></template>
@@ -230,7 +236,7 @@
     </template>
 
     <script setup lang="ts">
-    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type HexatonicBasis, type QuartalNotesChoice, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PairShape, PAIR_SHAPE_LABELS, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
+    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type HexatonicBasis, type QuartalNotesChoice, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PairShape, PAIR_SHAPE_LABELS, type PairLineShape, PAIR_LINE_SHAPE_LABELS, PAIR_LINE_SHAPES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { approachApplies, type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
     import { HEX_BASES } from '~/utils/hexatonics'
@@ -294,6 +300,7 @@
     const patternNotes = defineModel<PatternNotes>('patternNotes', { default: 'scale' })
     const patternDir = defineModel<ArpDirection>('patternDir', { default: 'up' })
     const pentLeave = defineModel<PentatonicLeave>('pentLeave', { default: '1' })
+    const pairLine = defineModel<PairLineShape>('pairLine', { default: 'nearest' })
     /** the sheet editor is open: numerals and scales are shown (they are the pickers), their toggles hide */
     /** keyStart: the chart's key, written for the instrument (what "From key" starts on) */
     /** compact: a phone with compactRail on: the rail keeps Work on, Instrument and the slot's rail actions; Controls opens the rest */
