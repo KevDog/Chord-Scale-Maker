@@ -1,0 +1,28 @@
+title: Back Door Man
+composer: Willie Dixon
+style: Blues Shuffle
+context: blues
+key: E
+form: AB, 16 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; E, blues
+
+section: A
+1 | E7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+2 | E7
+3 | E7
+4 | E7
+5 | E7
+6 | E7
+7 | E7
+8 | E7
+
+section: B
+1 | E7
+2 | E7
+3 | E7
+4 | E7
+5 | E7
+6 | E7
+7 | E7
+8 | E7

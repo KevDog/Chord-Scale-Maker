@@ -1,0 +1,32 @@
+title: Folsom Prison Blues
+composer: Johnny Cash
+style: Country Blues
+context: blues
+key: F
+form: A, 22 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; F, blues
+
+section: A
+1  | F   # I of the blues: a triad here implies its ♭7, Mixolydian
+2  | F
+3  | F
+4  | F
+5  | F
+6  | F
+7  | F
+8  | F7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+9  | Bb  # IV of the blues: a triad here implies its ♭7, Mixolydian
+10 | Bb
+11 | Bb
+12 | Bb
+13 | F   # I of the blues: a triad here implies its ♭7, Mixolydian
+14 | F
+15 | F
+16 | F
+17 | C7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+18 | C7
+19 | C7
+20 | C7
+21 | F   # I of the blues: a triad here implies its ♭7, Mixolydian
+22 | F

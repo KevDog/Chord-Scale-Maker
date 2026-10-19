@@ -1,0 +1,25 @@
+title: Blues and Booze
+composer: Ma Rainey
+style: Medium Blues
+context: blues
+key: D
+form: AA, 24 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; D, blues
+
+section: A
+1  | D   # I of the blues: a triad here implies its ♭7, Mixolydian
+2  | G7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+3  | D   # I of the blues: a triad here implies its ♭7, Mixolydian
+4  | D7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+5  | G7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | G7
+7  | D   # I of the blues: a triad here implies its ♭7, Mixolydian
+8  | D
+9  | A7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+10 | G   # IV of the blues: a triad here implies its ♭7, Mixolydian
+11 | D7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+12 | A7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+13 | D7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+@ending 1 12
+@ending 2 13

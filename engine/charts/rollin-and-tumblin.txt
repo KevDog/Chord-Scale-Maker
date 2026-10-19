@@ -1,0 +1,60 @@
+title: Rollin' and Tumblin'
+composer: McKinley Morganfield
+style: Fast Blues
+context: blues
+key: A
+form: ABC, 33 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; A, blues
+
+section: Intro
+1  | A     # I of the blues: a triad here implies its ♭7, Mixolydian
+2  | A
+3  | A7/C  # I7 of the blues: a tonic with dominant colour, Mixolydian
+4  | A7/D  # I7 of the blues: a tonic with dominant colour, Mixolydian
+5  | A     # I of the blues: a triad here implies its ♭7, Mixolydian
+6  | A
+7  | A
+8  | A
+9  | A
+10 | A
+11 | A7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+
+section: A
+1  | A     # I of the blues: a triad here implies its ♭7, Mixolydian
+2  | A
+3  | A7/C  # I7 of the blues: a tonic with dominant colour, Mixolydian
+4  | A7/D  # I7 of the blues: a tonic with dominant colour, Mixolydian
+5  | A     # I of the blues: a triad here implies its ♭7, Mixolydian
+6  | A
+7  | A
+8  | A
+9  | A
+10 | A
+11 | A7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+
+section: B
+1  | D7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+2  | D7
+3  | D7
+4  | D7
+5  | A     # I of the blues: a triad here implies its ♭7, Mixolydian
+6  | A
+7  | A
+8  | A
+9  | A
+10 | A
+11 | A7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+
+section: C
+1  | E7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+2  | E7
+3  | D7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+4  | D7
+5  | A     # I of the blues: a triad here implies its ♭7, Mixolydian
+6  | A
+7  | A
+8  | A
+9  | A
+10 | A
+11 | A7    # I7 of the blues: a tonic with dominant colour, Mixolydian

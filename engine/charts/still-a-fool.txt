@@ -1,0 +1,52 @@
+title: Still a Fool
+composer: McKinley Morganfield
+style: Medium Blues
+context: blues
+key: F
+form: ABAB, 26 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; F, blues
+
+section: A1
+1 | F7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+2 | F7
+3 | F7
+4 | F7
+5 | F7
+6 | F7
+7 | F7
+8 | F7
+
+section: B1
+1 | F7
+2 | F7
+3 | F7
+4 | F7
+5 | F7
+
+section: A2
+1 | F7
+2 | F7
+3 | F7
+4 | F7
+5 | F7
+6 | F7
+7 | F7
+8 | F7
+@coda 5
+
+section: B2
+1 | F7
+2 | F7
+3 | F7
+4 | F7
+5 | F7
+@nav 5 D.C. al Coda
+
+section: Coda
+1 | F7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+2 | F7
+3 | F7
+4 | F7
+5 | F7
+@coda 1

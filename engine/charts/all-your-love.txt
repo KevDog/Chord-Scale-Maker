@@ -1,0 +1,42 @@
+title: All Your Love
+composer: Otis Rush
+style: Slow Blues
+context: blues
+key: Em
+form: AAB, 36 bars
+source: iReal Pro
+aka: All Your Love (I Miss Loving)
+# analysis: 2026-10-19, rules v2; E minor, blues
+
+section: A1
+1  | Em  # i of the minor blues: Dorian
+2  | Em
+3  | Em
+4  | Em
+5  | Am  # iv of the minor blues: Dorian
+6  | Am
+7  | Em  # i of the minor blues: Dorian
+8  | Em
+9  | B7  # V7 of the Em before it: b9 and b13 are in the key
+10 | Am  # iv of the minor blues: Dorian
+11 | Em  # i of the minor blues: Dorian
+12 | Em
+@nav 12 Fine
+
+section: A2
+copy: A1
+
+section: B
+1  | E   # I of the blues: a triad here implies its ♭7, Mixolydian
+2  | E
+3  | E
+4  | E
+5  | A9  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | A7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+7  | E   # I of the blues: a triad here implies its ♭7, Mixolydian
+8  | E
+9  | B7 | B Mixolydian  # keep: the B section is in E major, so the V7 has the G♯
+10 | A7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+11 | E   # I of the blues: a triad here implies its ♭7, Mixolydian
+12 | E
+@nav 12 D.C. al Fine

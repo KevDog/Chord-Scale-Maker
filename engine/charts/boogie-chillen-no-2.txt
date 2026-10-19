@@ -1,0 +1,22 @@
+title: Boogie Chillen No. 2
+composer: John Lee Hooker, Bernard Besman
+style: Electric Blues
+context: blues
+key: A
+form: A, 12 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; A, blues
+
+section: A
+1  | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | A7
+3  | A7
+4  | A7
+5  | A7
+6  | A7
+7  | A7
+8  | A7
+9  | A7
+10 | A7
+11 | A7
+12 | A7

@@ -1,0 +1,26 @@
+title: Everyday (I Have the Blues)
+composer: Peter Chatman
+style: Medium Shuffle
+key: Bb
+form: AA, 24 bars
+context: blues
+source: iReal Pro
+aka: Every Day I Have the Blues
+# analysis: 2026-10-19, rules v2; Bb, blues
+
+section: A1
+1  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | Bb7
+3  | Bb7
+4  | Bb7
+5  | Eb9  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | Eb9
+7  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+8  | Bb7
+9  | F7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+10 | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+11 | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+12 | Bb7
+
+section: A2
+copy: A1

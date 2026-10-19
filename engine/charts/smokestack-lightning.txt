@@ -1,0 +1,22 @@
+title: Smokestack Lightning
+composer: Chester Burnett
+style: Blues
+context: blues
+key: Em
+form: A, 12 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; E minor, blues
+
+section: A
+1  | Em  # i of the minor blues: Dorian
+2  | Em
+3  | Em
+4  | Em
+5  | Em
+6  | Em
+7  | Em
+8  | Em
+9  | Em
+10 | Em
+11 | Em
+12 | Em

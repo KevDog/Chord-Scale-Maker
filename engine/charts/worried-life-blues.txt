@@ -1,0 +1,37 @@
+title: Worried Life Blues
+composer: Major Merriweather
+style: Slow Blues
+context: blues
+key: C
+form: AB, 17 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; C, blues
+
+section: A
+1 | C    # I of the blues: a triad here implies its ♭7, Mixolydian
+2 | C
+3 | F7   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+4 | F7
+5 | C    # I of the blues: a triad here implies its ♭7, Mixolydian
+6 | G7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+7 | C    # I of the blues: a triad here implies its ♭7, Mixolydian
+7 | C7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+7 | F    # IV of the blues: a triad here implies its ♭7, Mixolydian
+7 | Fm7  # a borrowed minor chord: Dorian, its own key
+8 | C    # I of the blues: a triad here implies its ♭7, Mixolydian
+8 | G7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+
+section: B
+1 | C    # I of the blues: a triad here implies its ♭7, Mixolydian
+2 | C
+3 | F7   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+4 | F7
+5 | C    # I of the blues: a triad here implies its ♭7, Mixolydian
+6 | G7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+7 | C    # I of the blues: a triad here implies its ♭7, Mixolydian
+7 | C7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+7 | F    # IV of the blues: a triad here implies its ♭7, Mixolydian
+7 | Fm7  # a borrowed minor chord: Dorian, its own key
+8 | C    # I of the blues: a triad here implies its ♭7, Mixolydian
+8 | G7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+9 | C7   # I7 of the blues: a tonic with dominant colour, Mixolydian

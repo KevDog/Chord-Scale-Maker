@@ -1,0 +1,28 @@
+title: Red House
+composer: Jimi Hendrix
+style: Shuffle
+key: B
+form: AA, 24 bars
+context: blues
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; B, blues
+
+section: A
+1  | B7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | E7   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+3  | B7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+4  | B7
+5  | E7   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | E7
+7  | B7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+8  | B7
+9  | F#7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+10 | E7   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+11 | B7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+12 | F#7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+13 | B7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+14 | F#7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+14 | C7   # tritone substitute: resolves down a half step to B7
+14 | B7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+@ending 1 11 12
+@ending 2 13 14

@@ -1,0 +1,47 @@
+title: Hellhound on My Trail
+composer: Robert Johnson
+style: Slow Blues
+context: blues
+key: E
+time: 2/4
+form: AA, 34 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; E, blues
+
+section: Intro
+1  | E7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | E7
+2  | Am/E  # a borrowed minor chord: Dorian, its own key
+3  | E7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+4  | E7
+5  | E7/D  # I7 of the blues: a tonic with dominant colour, Mixolydian
+@time 2 4/4
+@time 5 2/4
+
+section: A1
+time: 4/4
+1  | E7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | B7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+3  | B7
+4  | E7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+5  | E7
+6  | E7
+7  | E7
+8  | E7
+9  | E7
+10 | E7
+11 | E7
+12 | B7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+13 | B7
+14 | E7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+15 | E7
+16 | E7
+17 | E7
+@time 6 2/4
+@time 7 4/4
+@time 11 2/4
+@time 12 4/4
+@time 17 2/4
+
+section: A2
+copy: A1

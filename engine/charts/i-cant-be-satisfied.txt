@@ -1,0 +1,36 @@
+title: I Can't Be Satisfied
+composer: McKinley Morganfield
+style: Medium Blues
+context: blues
+key: G
+form: AA, 46 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; G, blues
+
+section: A1
+1  | G7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | G7
+3  | G7
+4  | G7
+5  | G7
+6  | G7
+7  | G7
+8  | G7
+9  | G7
+10 | G7
+11 | G7
+12 | G7
+13 | G7
+14 | G7
+15 | G7
+16 | D7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+17 | D7
+18 | C7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+19 | C7
+20 | G   # I of the blues: a triad here implies its ♭7, Mixolydian
+21 | G
+22 | G7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+23 | G7
+
+section: A2
+copy: A1

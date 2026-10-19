@@ -603,6 +603,50 @@
    "C 12 C7 [V7/vi] → C Phrygian Dominant (D4) V7/vi in Ab: b9 and b13 are in the key"
   ]
  },
+ "all-your-love": {
+  "key": "E minor (key:, blues)",
+  "areas": [
+   "E minor A1 1 – B 12"
+  ],
+  "rows": [
+   "A1 1 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A1 2 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A1 3 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A1 4 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A1 5 Am [iv] → A Dorian (m10) iv of the minor blues: Dorian",
+   "A1 6 Am [iv] → A Dorian (m10) iv of the minor blues: Dorian",
+   "A1 7 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A1 8 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A1 9 B7 [V7] → B Phrygian Dominant (D4) V7 of the Em before it: b9 and b13 are in the key",
+   "A1 10 Am [iv] → A Dorian (m10) iv of the minor blues: Dorian",
+   "A1 11 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A1 12 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A2 1 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A2 2 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A2 3 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A2 4 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A2 5 Am [iv] → A Dorian (m10) iv of the minor blues: Dorian",
+   "A2 6 Am [iv] → A Dorian (m10) iv of the minor blues: Dorian",
+   "A2 7 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A2 8 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A2 9 B7 [V7] → B Phrygian Dominant (D4) V7 of the Em before it: b9 and b13 are in the key",
+   "A2 10 Am [iv] → A Dorian (m10) iv of the minor blues: Dorian",
+   "A2 11 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A2 12 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "B 1 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 2 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 3 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 4 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 5 A9 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 6 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 7 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 8 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 9 B7 [V7] → B Phrygian Dominant (D4) V7 of the E before it: b9 and b13 are in the key",
+   "B 10 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 11 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 12 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian"
+  ]
+ },
  "alone-together": {
   "key": "D minor (key:, functional)",
   "areas": [
@@ -1157,6 +1201,23 @@
    "D 7 FMaj7 [Imaj7] → F Ionian (M3) I in F — tonic: the 4th is in the key"
   ]
  },
+ "baby-please-dont-go": {
+  "key": "Bb major (key:, blues)",
+  "areas": [
+   "Bb major A 1–9"
+  ],
+  "rows": [
+   "A 1 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 3 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 6 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 7 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 F7 [V7] → F Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian"
+  ]
+ },
  "baby-steps": {
   "key": "Eb major (key:, functional)",
   "areas": [
@@ -1238,6 +1299,30 @@
    "B 7 EbMaj7 [Imaj7] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
    "B 8 C#m7 [ii7] → C# Dorian (m4) ii of the ii–V to B",
    "B 8 F#7 [V7] → F# Mixolydian (D4) V7 of B: natural tensions"
+  ]
+ },
+ "back-door-man": {
+  "key": "E major (key:, blues)",
+  "areas": [
+   "E major A 1 – B 8"
+  ],
+  "rows": [
+   "A 1 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 3 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 6 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 7 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 1 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 2 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 3 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 4 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 5 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 6 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 7 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 8 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
   ]
  },
  "bags-groove": {
@@ -1868,6 +1953,38 @@
    "Coda 13 Cm [i] → C Dorian (m5) i in C minor — tonic minor: Dorian by convention"
   ]
  },
+ "blow-wind-blow": {
+  "key": "G major (key:, blues)",
+  "areas": [
+   "G major A1 1 – A2 12"
+  ],
+  "rows": [
+   "A1 1 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A1 2 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 3 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A1 4 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A1 5 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 6 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 7 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A1 8 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A1 9 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 10 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 11 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A1 12 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 1 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 2 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 3 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 4 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 5 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 6 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 7 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 8 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 9 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 10 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 11 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 12 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian"
+  ]
+ },
  "blue-bossa-jazz-mind-accelerator": {
   "key": "C minor (key:, functional)",
   "areas": [
@@ -2022,6 +2139,27 @@
    "A 7 Eb7#9 [I7] → Eb Half-Whole Diminished (D1+D9) I7 of the blues: a tonic with dominant colour; b9, #9 and #11 from the symbol",
    "A 9 Bb7#9 [V7] → Bb Half-Whole Diminished (D1+D9) V7 of the blues: a dominant that needn’t resolve; b9, #9 and #11 from the symbol",
    "A 11 Eb7#9 [I7] → Eb Half-Whole Diminished (D1+D9) I7 of the blues: a tonic with dominant colour; b9, #9 and #11 from the symbol"
+  ]
+ },
+ "blues-and-booze": {
+  "key": "D major (key:, blues)",
+  "areas": [
+   "D major A 1–13"
+  ],
+  "rows": [
+   "A 1 D [I] → D Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 2 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 3 D [I] → D Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 4 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 D [I] → D Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 8 D [I] → D Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 9 A7 [V7] → A Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 G [IV] → G Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 11 D7 [V7/IV] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 A7 [V7] → A Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 13 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
   ]
  },
  "blues-connotation": {
@@ -2283,6 +2421,141 @@
    "B 14 B7b9 [subV7/IV] → B Half-Whole Diminished (D1+D2) subV7 of BbMaj7 — tritone substitute: resolves down a half step to BbMaj7; b9 from the symbol",
    "B 15 BbMaj7 [IVmaj7] → Bb Ionian (M3) IV in F — the B7b9 before it makes Bb the key of the moment: the 4th is in the key",
    "B 16 A7#9 [III7] → A Altered (D1+D5) III7 in F, not resolving: the b13 is in the key, b9, #9 and #11 from the symbol"
+  ]
+ },
+ "boogie-chillen-no-2": {
+  "key": "A major (key:, blues)",
+  "areas": [
+   "A major A 1–12"
+  ],
+  "rows": [
+   "A 1 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 3 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 6 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 7 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 10 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 11 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
+ "boom-boom": {
+  "key": "E major (key:, blues)",
+  "areas": [
+   "E major Intro 1 – Coda 9"
+  ],
+  "rows": [
+   "Intro 1 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Intro 2 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Intro 3 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Intro 4 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Intro 5 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "Intro 6 A [IV] → A Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "Intro 7 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Intro 8 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 1 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 2 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 3 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 4 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 5 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 A [IV] → A Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 7 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 8 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 9 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 12 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 13 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 14 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 15 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 16 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 17 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 18 A [IV] → A Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "B1 1 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B1 2 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B1 3 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B1 4 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B2 1 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B2 2 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B2 3 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B2 4 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Coda 1 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Coda 2 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Coda 3 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Coda 4 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Coda 5 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "Coda 6 A [IV] → A Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "Coda 7 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Coda 8 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Coda 9 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
+ "born-under-a-bad-sign": {
+  "key": "Db major (key:, blues)",
+  "areas": [
+   "Db major Intro 1 – A3 12"
+  ],
+  "rows": [
+   "Intro 1 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Intro 2 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Intro 3 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Intro 4 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Intro 5 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Intro 6 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Intro 7 Ab7 [V7] → Ab Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "Intro 8 Gb7 [IV7] → Gb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "Intro 9 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Intro 10 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 1 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 2 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 3 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 4 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 5 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 6 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 7 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 8 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 9 Ab7 [V7] → Ab Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 10 Gb7 [IV7] → Gb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 11 Db [I] → Db Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A1 12 Db [I] → Db Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 1 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 2 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 3 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 4 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 5 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 6 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 7 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 8 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 9 Ab7 [V7] → Ab Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 10 Gb7 [IV7] → Gb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 11 Db [I] → Db Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 12 Db [I] → Db Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 1 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 2 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 3 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 4 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 5 Ab7 [V7] → Ab Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 6 Gb7 [IV7] → Gb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 7 Ab7 [V7] → Ab Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 8 Gb7 [IV7] → Gb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 9 Db [I] → Db Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 10 Db [I] → Db Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A3 1 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A3 2 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A3 3 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A3 4 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A3 5 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A3 6 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A3 7 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A3 8 Db7 [I7] → Db Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A3 9 Ab7 [V7] → Ab Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A3 10 Gb7 [IV7] → Gb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A3 11 Db [I] → Db Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A3 12 Db [I] → Db Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian"
   ]
  },
  "bouncin-with-bud": {
@@ -2957,6 +3230,64 @@
    "A3 13 BbMaj7 [Imaj7] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key"
   ]
  },
+ "come-back-baby": {
+  "key": "Eb major (key:, blues)",
+  "areas": [
+   "Eb major A 1–9"
+  ],
+  "rows": [
+   "A 1 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 3 Ab9 [IV7] → Ab Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 3 Gb7 [subV7/II] → Gb Lydian Dominant (D2) subV7 of F7 — tritone substitute: resolves down a half step to F7",
+   "A 4 F7 [II7] → F Mixolydian (D5) II7 in Eb, not resolving: natural tensions",
+   "A 4 Ab9 [IV7] → Ab Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 4 Adim [♯iv°7] → A Diatonic Diminished #IV (d1) ♯IV°7 to I over its 5th: D7♭9 without its root, the ♯II°7's notes",
+   "A 5 Eb/Bb [I] → Eb Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 5 Cm7 [vi7] → C Dorian (m4) ii of F7; also vi of Eb — ii of F7: Dorian",
+   "A 6 F7 [V7/V] → F Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "A 6 Bb13 [V7] → Bb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 7 Eb7 [V7/IV] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 7 Ab [IV] → Ab Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 8 Eb [I] → Eb Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 8 Bb7#5 [V7] → Bb Whole Tone (D1+D9) V7 of the blues: a dominant that needn’t resolve; #11 and b13 from the symbol",
+   "A 9 Eb [I] → Eb Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 9 E9 [subV7] → E Lydian Dominant (D2) subV7 of Eb — tritone substitute: resolves down a half step to Eb",
+   "A 9 Eb [I] → Eb Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian"
+  ]
+ },
+ "come-on-in-my-kitchen": {
+  "key": "Bb major (key:, blues)",
+  "areas": [
+   "Bb major A1 1 – A2 11"
+  ],
+  "rows": [
+   "A1 1 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 2 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 3 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 4 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 5 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 6 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 7 F7 [V7] → F Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 8 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 8 F7 [V7] → F Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 9 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 10 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 11 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 1 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 2 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 3 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 4 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 5 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 6 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 7 F7 [V7] → F Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 8 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 8 F7 [V7] → F Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 9 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 10 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 11 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
  "come-sunday": {
   "key": "Bb major (key:, functional)",
   "areas": [
@@ -3196,6 +3527,38 @@
    "A3 8 CMaj7 [Imaj7] → C Ionian (M3) I in C — tonic: the 4th is in the key"
   ]
  },
+ "confessin-the-blues": {
+  "key": "G major (key:, blues)",
+  "areas": [
+   "G major A1 1 – A2 12"
+  ],
+  "rows": [
+   "A1 1 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 2 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 3 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 4 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 5 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 6 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 7 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 8 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 9 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 10 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 11 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 12 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 1 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 2 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 3 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 4 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 5 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 6 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 7 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 8 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 9 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 10 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 11 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 12 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
  "confirmation": {
   "key": "F major (key:, functional)",
   "areas": [
@@ -3401,6 +3764,89 @@
    "A3 7 Bb [I] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key"
   ]
  },
+ "crazy-blues": {
+  "key": "E major (key:, blues)",
+  "areas": [
+   "E major A 1 – D2 12"
+  ],
+  "rows": [
+   "A 1 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 2 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 3 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 4 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 5 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 6 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 7 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 8 E7 [V7/IV] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 A [IV] → A Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 10 Am [iv] → A Dorian (m8) borrowed iv in E — a borrowed minor chord: Dorian, its own key",
+   "A 11 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 12 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 13 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 14 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 15 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 16 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 1 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 2 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 3 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 4 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 5 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 6 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 7 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 8 Fdim7 [♯i°7] → E# Diatonic Diminished (d1) vii°7 of F#m7: C#7♭9 without its root",
+   "B 9 F#m7 [ii7] → F# Dorian (m4) ii of the ii–V to E",
+   "B 9 B7 [V7] → B Mixolydian (D4) V7 of E: natural tensions",
+   "B 11 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 11 A [IV] → A Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 11 Am [iv] → A Dorian (m8) borrowed iv in E — a borrowed minor chord: Dorian, its own key",
+   "B 12 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 12 C7 [subV7/V] → C Lydian Dominant (D2) subV7 of B7 — tritone substitute: resolves down a half step to B7",
+   "B 12 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "C 1 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "C 2 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 3 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "C 4 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "C 5 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "C 6 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 7 F#7 [V7/V] → F# Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "C 8 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "C 9 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "C 10 Em [i] → E Dorian (m8) borrowed i in E — a borrowed minor chord: Dorian, its own key",
+   "C 11 A [IV] → A Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "C 12 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "C 13 C#m [vi] → C# Aeolian (m7) vi in E — vi: Aeolian, the key's own notes (the ♭6 is a passing note)",
+   "C 13 C#mMaj7 [vi(maj7)] → C# Melodic Minor (m1) vi in E — from the symbol: minor-major 7th",
+   "C 14 C#m7 [vi7] → C# Dorian (m4) ii of F#7; also vi of E — ii of F#7: Dorian",
+   "C 14 F#7 [V7/V] → F# Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "C 15 F#7 [V7/V] → F# Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "C 15 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "C 16 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "D1 1 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "D1 2 E/B [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "D1 3 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "D1 4 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 5 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D1 6 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "D1 7 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "D1 8 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "D1 9 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "D1 10 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "D1 11 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "D1 12 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "D2 1 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "D2 2 E/B [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "D2 3 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "D2 4 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 5 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D2 6 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "D2 7 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "D2 8 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "D2 9 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "D2 10 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "D2 11 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "D2 12 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian"
+  ]
+ },
  "creek": {
   "key": "F major (key:, functional)",
   "areas": [
@@ -3433,6 +3879,38 @@
    "B 16 F7 [I7] → F Mixolydian (D5) I7 in F, not resolving: natural tensions",
    "Coda 1 F13 [I7] → F Mixolydian (D5) I7 in F, not resolving: natural tensions",
    "Coda 2 F13sus [I7sus4] → F Mixolydian (s3) static sus: Mixolydian"
+  ]
+ },
+ "crossroads": {
+  "key": "A major (key:, blues)",
+  "areas": [
+   "A major A1 1 – A2 12"
+  ],
+  "rows": [
+   "A1 1 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 2 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 3 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 4 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 5 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 6 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 7 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 8 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 9 E7 [V7] → E Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 10 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 11 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 12 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 1 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 2 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 3 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 4 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 5 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 6 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 7 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 8 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 9 E7 [V7] → E Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 10 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 11 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 12 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
   ]
  },
  "crystal-love": {
@@ -4410,6 +4888,30 @@
    "C 7 C6 [I6] → C Ionian (M3) I in C — tonic: the 4th is in the key"
   ]
  },
+ "easy-rider": {
+  "key": "C major (key:, blues)",
+  "areas": [
+   "C major A 1–16"
+  ],
+  "rows": [
+   "A 1 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 2 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 3 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 4 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 5 F [IV] → F Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 6 F [IV] → F Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 7 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 8 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 9 F [IV] → F Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 10 F [IV] → F Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 11 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 12 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 13 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 14 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 15 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 16 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian"
+  ]
+ },
  "edda": {
   "key": "G major (key:, functional)",
   "areas": [
@@ -4805,6 +5307,38 @@
    "A 20 FMaj7 [Imaj7] → F Ionian (M3) I in F — tonic: the 4th is in the key"
   ]
  },
+ "everyday-i-have-the-blues": {
+  "key": "Bb major (key:, blues)",
+  "areas": [
+   "Bb major A1 1 – A2 12"
+  ],
+  "rows": [
+   "A1 1 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 2 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 3 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 4 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 5 Eb9 [IV7] → Eb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 6 Eb9 [IV7] → Eb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 7 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 8 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 9 F7 [V7] → F Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 10 Eb7 [IV7] → Eb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 11 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 12 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 1 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 2 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 3 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 4 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 5 Eb9 [IV7] → Eb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 6 Eb9 [IV7] → Eb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 7 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 8 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 9 F7 [V7] → F Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 10 Eb7 [IV7] → Eb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 11 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 12 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
  "everything-happens-to-me": {
   "key": "Bb major (key:, functional)",
   "areas": [
@@ -4926,6 +5460,38 @@
    "D 7 EbMaj7 [Imaj7] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key",
    "D 8 Fm7 [ii7] → F Dorian (m7) ii in Eb — ii: Dorian, the key’s own notes",
    "D 8 E7 [subV7] → E Lydian Dominant (D2) subV7 of Eb — tritone substitute: resolves down a half step to Eb"
+  ]
+ },
+ "evil-is-going-on": {
+  "key": "G major (key:, blues)",
+  "areas": [
+   "G major A1 1 – A2 12"
+  ],
+  "rows": [
+   "A1 1 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 2 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 3 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 4 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 5 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 6 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 7 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 8 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 9 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 10 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 11 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A1 12 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 1 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 2 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 3 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 4 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 5 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 6 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 7 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 8 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 9 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 10 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 11 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 12 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian"
   ]
  },
  "f-bird-blues": {
@@ -5121,6 +5687,38 @@
    "C 15 Gm7 [i7] → G Dorian (m5) i in G minor — tonic minor: Dorian by convention"
   ]
  },
+ "feel-like-going-home": {
+  "key": "G major (key:, blues)",
+  "areas": [
+   "G major A1 1 – A2 12"
+  ],
+  "rows": [
+   "A1 1 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 2 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 3 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 4 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 5 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 6 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 7 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 8 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 9 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 10 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 11 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 12 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 1 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 2 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 3 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 4 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 5 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 6 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 7 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 8 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 9 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 10 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 11 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 12 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
  "fingers": {
   "key": "Bb major (key:, functional)",
   "areas": [
@@ -5229,6 +5827,38 @@
    "C 2 Bbm7 [ii7] → Bb Dorian (m8) borrowed ii in G# minor — a borrowed minor chord: Dorian, its own key",
    "Coda 1 Abm7 [i7] → Ab Dorian (m5) i in G# minor — tonic minor: Dorian by convention",
    "Coda 2 Bbm7 [ii7] → Bb Dorian (m8) borrowed ii in G# minor — a borrowed minor chord: Dorian, its own key"
+  ]
+ },
+ "five-long-years": {
+  "key": "D major (key:, blues)",
+  "areas": [
+   "D major A1 1 – A2 12"
+  ],
+  "rows": [
+   "A1 1 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 2 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 3 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 4 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 5 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 6 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 7 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 8 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 9 A7 [V7] → A Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 10 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 11 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 12 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 1 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 2 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 3 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 4 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 5 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 6 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 7 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 8 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 9 A7 [V7] → A Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 10 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 11 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 12 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
   ]
  },
  "flintstones": {
@@ -5342,6 +5972,36 @@
    "B 16 E7b9 [V7/vi] → E Phrygian Dominant (D4) V7/vi in C: b9 and b13 are in the key"
   ]
  },
+ "folsom-prison-blues": {
+  "key": "F major (key:, blues)",
+  "areas": [
+   "F major A 1–22"
+  ],
+  "rows": [
+   "A 1 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 2 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 3 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 4 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 5 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 6 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 7 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 8 F7 [V7/IV] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 Bb [IV] → Bb Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 10 Bb [IV] → Bb Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 11 Bb [IV] → Bb Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 12 Bb [IV] → Bb Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 13 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 14 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 15 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 16 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 17 C7 [V7] → C Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 18 C7 [V7] → C Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 19 C7 [V7] → C Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 20 C7 [V7] → C Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 21 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 22 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian"
+  ]
+ },
  "foolkiller": {
   "key": "Eb major (key:, functional)",
   "areas": [
@@ -5390,6 +6050,77 @@
    "A 10 E7alt [III7] → E Altered (D1) altered dominant — from the symbol: altered",
    "A 10 A7alt [VI7] → A Altered (D1) altered dominant — from the symbol: altered",
    "A 11 Cm7 [i7] → C Dorian (m6) modal minor: Dorian"
+  ]
+ },
+ "forty-days-and-forty-nights": {
+  "key": "A major (key:, blues)",
+  "areas": [
+   "A major A 1 – D2 12"
+  ],
+  "rows": [
+   "A 1 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 3 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 E7 [V7] → E Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 1 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 2 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 3 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 4 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 5 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 6 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 7 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 8 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 9 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 10 E7 [V7] → E Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 11 D [IV] → D Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 12 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 13 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 1 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 2 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 3 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 4 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 5 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 6 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 7 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "C 8 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "C 9 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 10 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 11 E7 [V7] → E Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "C 12 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "C 13 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 14 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 1 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 2 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 3 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 4 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 5 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D1 6 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D1 7 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 8 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 9 E7 [V7] → E Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "D1 10 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D1 11 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 12 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 1 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 2 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 3 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 4 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 5 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D2 6 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D2 7 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 8 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 9 E7 [V7] → E Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "D2 10 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D2 11 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 12 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
   ]
  },
  "four-brothers": {
@@ -5591,6 +6322,26 @@
    "Coda 1 Cm6/9 [i6] → C Melodic Minor (m2) i in C minor — tonic minor sixth chord: melodic minor, the raised 7th is a tension",
    "Coda 1 Gb13 [subV7/IV] → Gb Lydian Dominant (D2) subV7 of F13b9#11 — tritone substitute: resolves down a half step to F13b9#11",
    "Coda 1 F13b9#11 [IV7] → F Half-Whole Diminished (D1+D5) IV7 in C minor, not resolving: b9 and #11 from the symbol"
+  ]
+ },
+ "further-on-up-the-road": {
+  "key": "G major (key:, blues)",
+  "areas": [
+   "G major A 1–12"
+  ],
+  "rows": [
+   "A 1 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 2 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 3 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 4 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 5 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 8 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 9 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 12 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian"
   ]
  },
  "gaviota": {
@@ -5987,6 +6738,29 @@
    "Coda 4 Eb7#5#9 [V7/♭iii] → Eb Altered (D1+D4) extended ii–V: a side-step, its own notes — extended ii–V: a side-step, its own key: the b13 is in the key, b9, #9 and #11 from the symbol"
   ]
  },
+ "going-down-slow": {
+  "key": "C major (key:, blues)",
+  "areas": [
+   "C major A 1–13"
+  ],
+  "rows": [
+   "A 1 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 3 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 11 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 12 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 13 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
  "gone-with-the-wind": {
   "key": "Eb major (key:, functional)",
   "areas": [
@@ -6118,6 +6892,52 @@
    "C 7 Gm7 [ii7] → G Dorian (m4) ii of the ii–V to F",
    "C 7 C13 [V7] → C Mixolydian (D4) V7 of F: natural tensions",
    "C 8 F6 [I6] → F Ionian (M3) I in F — tonic: the 4th is in the key"
+  ]
+ },
+ "good-morning-little-schoolgirl": {
+  "key": "C major (key:, blues)",
+  "areas": [
+   "C major A1 1 – A2 19"
+  ],
+  "rows": [
+   "A1 1 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 2 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 3 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 4 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 5 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 6 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 7 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 8 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 9 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 10 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 11 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 12 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 13 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 14 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 15 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 16 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 17 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 18 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 19 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 1 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 2 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 3 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 4 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 5 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 6 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 7 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 8 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 9 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 10 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 11 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 12 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 13 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 14 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 15 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 16 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 17 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 18 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 19 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
   ]
  },
  "got-eyes-for-you": {
@@ -6382,6 +7202,54 @@
    "C 8 C7 [V7] → C Mixolydian (D4) V7 of F: natural tensions"
   ]
  },
+ "hellhound-on-my-trail": {
+  "key": "E major (key:, blues)",
+  "areas": [
+   "E major Intro 1 – A2 17"
+  ],
+  "rows": [
+   "Intro 1 E7 [V7/iv] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Intro 2 E7 [V7/iv] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Intro 2 Am/E [iv] → A Dorian (m8) borrowed iv in E — a borrowed minor chord: Dorian, its own key",
+   "Intro 3 E7 [V7/iv] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Intro 4 E7 [V7/iv] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Intro 5 E7/D [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 1 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 2 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 3 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 4 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 5 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 6 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 7 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 8 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 9 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 10 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 11 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 12 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 13 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 14 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 15 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 16 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 17 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 1 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 2 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 3 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 4 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 5 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 6 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 7 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 8 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 9 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 10 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 11 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 12 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 13 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 14 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 15 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 16 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 17 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
  "heres-that-rainy-day": {
   "key": "G major (key:, functional)",
   "areas": [
@@ -6498,6 +7366,41 @@
    "C 8 B7 [♭II7] → B Lydian Dominant (D6) chromatic dominant — a chromatic dominant with nowhere to go: Lydian Dominant, its own key"
   ]
  },
+ "honey-bee": {
+  "key": "F major (key:, blues)",
+  "areas": [
+   "F major A1 1 – Coda 2"
+  ],
+  "rows": [
+   "A1 1 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 2 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 3 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 4 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 5 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 6 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 7 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 8 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 9 C7 [V7] → C Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 10 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 11 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 12 C7 [V7] → C Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 1 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 2 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 3 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 4 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 5 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 6 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 7 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 8 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 9 C7 [V7] → C Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 10 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 11 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 12 C7 [V7] → C Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "Coda 1 F6 [I6] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Coda 1 F9 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 2 F9 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
  "honeysuckle-rose": {
   "key": "F major (key:, functional)",
   "areas": [
@@ -6555,6 +7458,92 @@
    "A3 7 F6 [I6] → F Ionian (M3) I in F — tonic: the 4th is in the key",
    "A3 7 Gm7b5 [iiø7] → G Locrian (h2) iiø7, borrowed from F minor: Locrian",
    "A3 7 F6 [I6] → F Ionian (M3) I in F — tonic: the 4th is in the key"
+  ]
+ },
+ "i-aint-superstitious": {
+  "key": "D major (key:, blues)",
+  "areas": [
+   "D major A1 1 – A2 12"
+  ],
+  "rows": [
+   "A1 1 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 2 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 3 D [I] → D Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A1 4 D [I] → D Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A1 5 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 6 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 7 D [I] → D Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A1 8 D [I] → D Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A1 9 A7 [V7] → A Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 10 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 11 D [I] → D Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A1 12 D [I] → D Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 1 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 2 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 3 D [I] → D Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 4 D [I] → D Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 5 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 6 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 7 D [I] → D Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 8 D [I] → D Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 9 A7 [V7] → A Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 10 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 11 D [I] → D Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 12 D [I] → D Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian"
+  ]
+ },
+ "i-cant-be-satisfied": {
+  "key": "G major (key:, blues)",
+  "areas": [
+   "G major A1 1 – A2 23"
+  ],
+  "rows": [
+   "A1 1 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 2 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 3 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 4 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 5 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 6 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 7 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 8 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 9 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 10 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 11 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 12 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 13 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 14 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 15 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 16 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 17 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 18 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 19 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 20 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A1 21 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A1 22 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 23 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 1 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 2 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 3 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 4 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 5 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 6 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 7 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 8 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 9 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 10 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 11 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 12 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 13 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 14 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 15 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 16 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 17 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 18 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 19 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 20 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 21 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A2 22 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 23 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
   ]
  },
  "i-cant-get-started": {
@@ -6641,6 +7630,29 @@
    "C 8 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions"
   ]
  },
+ "i-cant-quit-you-baby": {
+  "key": "A major (key:, blues)",
+  "areas": [
+   "A major A 1–13"
+  ],
+  "rows": [
+   "A 1 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 D9 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 3 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 E7 [V7] → E Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 11 Bb [♭II] → Bb Lydian (M4) ♭II, borrowed (modal interchange) — ♭II, borrowed from A Phrygian: Lydian (its ♯11 is in the key)",
+   "A 12 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 Bb [♭II] → Bb Lydian (M4) ♭II, borrowed (modal interchange) — ♭II, borrowed from A Phrygian: Lydian (its ♯11 is in the key)",
+   "A 13 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
  "i-fall-in-love-too-easily": {
   "key": "Eb major (key:, functional)",
   "areas": [
@@ -6673,6 +7685,34 @@
    "B 7 Fm7 [ii7] → F Dorian (m4) ii of the ii–V to Eb",
    "B 7 Bb13 [V7] → Bb Mixolydian (D4) V7 of Eb: natural tensions",
    "B 8 Eb6/9 [I6] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key"
+  ]
+ },
+ "i-just-want-to-make-love-to-you": {
+  "key": "D major (key:, blues)",
+  "areas": [
+   "D major A1 1 – Coda 4"
+  ],
+  "rows": [
+   "A1 1 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 2 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 3 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 4 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 5 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 6 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 7 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 8 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 1 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 2 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 3 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 4 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 5 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 6 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 7 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 8 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 1 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 2 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 3 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 4 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
   ]
  },
  "i-love-lucy": {
@@ -7525,6 +8565,173 @@
    "D 12 C7 [V7] → C Mixolydian (D4) V7 of F: natural tensions"
   ]
  },
+ "im-ready": {
+  "key": "Eb major (key:, blues)",
+  "areas": [
+   "Eb major A 1 – Coda 1"
+  ],
+  "rows": [
+   "A 1 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 3 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 Ab7 [IV7] → Ab Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 Ab7 [IV7] → Ab Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 Bb7 [V7] → Bb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 Ab7 [IV7] → Ab Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 Bb7 [V7] → Bb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B1 1 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B1 2 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B1 3 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B1 4 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B1 5 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B1 6 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B1 7 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B1 8 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B1 9 Ab7 [IV7] → Ab Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B1 10 Ab7 [IV7] → Ab Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B1 11 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B1 12 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B1 13 Bb7 [V7] → Bb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B1 14 Ab7 [IV7] → Ab Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B1 15 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B1 16 Bb7 [V7] → Bb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B2 1 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B2 2 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B2 3 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B2 4 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B2 5 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B2 6 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B2 7 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B2 8 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B2 9 Ab7 [IV7] → Ab Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B2 10 Ab7 [IV7] → Ab Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B2 11 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B2 12 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B2 13 Bb7 [V7] → Bb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B2 14 Ab7 [IV7] → Ab Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B2 15 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B2 16 Bb7 [V7] → Bb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "Coda 1 Bb7 [V7] → Bb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "Coda 1 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
+ "im-tore-down": {
+  "key": "C major (key:, blues)",
+  "areas": [
+   "C major Intro 1 – Coda 12"
+  ],
+  "rows": [
+   "Intro 1 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "Intro 2 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "Intro 3 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Intro 4 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 1 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 3 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 1 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 1 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 2 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 3 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 3 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 4 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 4 Gb7 [subV7/IV] → Gb Lydian Dominant (D2) subV7 of F7 — tritone substitute: resolves down a half step to F7",
+   "B 5 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 6 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 7 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 8 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 9 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 10 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 11 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 12 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 1 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 2 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 2 Db7 [subV7] → Db Lydian Dominant (D2) subV7 of C7 — tritone substitute: resolves down a half step to C7",
+   "C 3 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 4 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 4 Db7 [♭II7] → Db Lydian Dominant (D6) chromatic dominant — a chromatic dominant with nowhere to go: Lydian Dominant, its own key",
+   "C 5 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "C 6 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "C 7 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 8 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 9 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "C 10 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "C 11 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 12 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 1 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 2 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 3 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 4 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 5 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D1 6 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D1 7 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 8 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 9 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "D1 10 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D1 11 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 12 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 1 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 2 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 3 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 4 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 5 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D2 6 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D2 7 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 8 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 9 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "D2 10 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D2 11 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 12 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 1 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 2 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 3 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 4 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 5 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "Coda 6 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "Coda 7 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 8 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 9 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "Coda 10 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "Coda 11 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 12 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
+ "im-your-hoochie-coochie-man": {
+  "key": "A major (key:, blues)",
+  "areas": [
+   "A major A 1 – B 8"
+  ],
+  "rows": [
+   "A 1 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 2 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 3 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 4 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 5 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 6 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 7 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 8 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 1 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 2 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 3 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 4 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 5 E7 [V7] → E Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 6 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 7 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 8 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
  "imagination": {
   "key": "Eb major (key:, functional)",
   "areas": [
@@ -7806,6 +9013,27 @@
    "F 6 EbmMaj7 [i(maj7)] → Eb Melodic Minor (m1) i in Eb minor — from the symbol: minor-major 7th",
    "F 8 D7#9 [VII7] → D Altered (D1+D8) extended dominant into C minor — V7 of G7#9, on the way to C minor: the b13 is in the key, b9, #9 and #11 from the symbol",
    "F 8 G7#9 [V7/vi] → G Altered (D1+D8) V7 of C minor, at the end of a chain of dominants — V7 of C minor, the chain's last link: the b13 is in the key, b9, #9 and #11 from the symbol"
+  ]
+ },
+ "its-my-own-fault": {
+  "key": "E major (key:, blues)",
+  "areas": [
+   "E major A 1–12"
+  ],
+  "rows": [
+   "A 1 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 3 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian"
   ]
  },
  "its-you-or-no-one": {
@@ -8416,6 +9644,38 @@
    "D 8 C7 [V7] → C Mixolydian (D4) V7 of F: natural tensions"
   ]
  },
+ "juke": {
+  "key": "E major (key:, blues)",
+  "areas": [
+   "E major A 1 – B 12"
+  ],
+  "rows": [
+   "A 1 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 2 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 3 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 4 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 5 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 8 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 9 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 12 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 1 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 2 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 3 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 4 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 5 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 6 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 7 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 8 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 9 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 10 A7 [IV7] → A Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 11 E [I] → E Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 12 B7 [V7] → B Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian"
+  ]
+ },
  "just-around-the-corner": {
   "key": "Bb major (key:, blues)",
   "areas": [
@@ -8517,6 +9777,27 @@
    "A3 6 Bb7 [♭VII7] → Bb Lydian Dominant (D6) ♭VII7, borrowed from the parallel minor (subdominant minor) — ♭VII7 from the parallel minor: Lydian Dominant",
    "A3 7 C7 [I7] → C Mixolydian (D5) I7 in C, not resolving: natural tensions",
    "A3 8 Bb7 [♭VII7] → Bb Lydian Dominant (D6) ♭VII7, borrowed from the parallel minor (subdominant minor) — ♭VII7 from the parallel minor: Lydian Dominant"
+  ]
+ },
+ "kind-hearted-woman-blues": {
+  "key": "B major (key:, blues)",
+  "areas": [
+   "B major A 1–13"
+  ],
+  "rows": [
+   "A 1 B7 [I7] → B Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 B7 [I7] → B Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 3 B7 [I7] → B Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 B7 [I7] → B Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 E7 [IV7] → E Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 E7 [IV7] → E Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 B7 [I7] → B Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 B7 [I7] → B Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 F#7 [V7] → F# Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 E7 [IV7] → E Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 B [I] → B Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 12 F#7 [V7] → F# Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 13 B7 [I7] → B Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
   ]
  },
  "la-vida-feliz": {
@@ -9217,6 +10498,38 @@
    "D 8 C7 [V7] → C Mixolydian (D4) V7 of F: natural tensions"
   ]
  },
+ "long-distance-call": {
+  "key": "F major (key:, blues)",
+  "areas": [
+   "F major A1 1 – A2 12"
+  ],
+  "rows": [
+   "A1 1 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 2 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 3 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 4 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 5 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 6 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 7 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 8 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 9 C7 [V7] → C Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A1 10 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A1 11 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 12 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 1 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 2 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 3 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 4 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 5 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 6 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 7 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 8 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 9 C7 [V7] → C Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A2 10 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A2 11 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 12 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
  "love-came-on-stealthy-fingers": {
   "key": "F major (key:, functional)",
   "areas": [
@@ -9462,6 +10775,79 @@
    "C 13 Cm7b5 [iiø7] → C Locrian (h2) iiø7 of the ii–V to Bb minor — iiø7 of Bb minor: Locrian, the key's own notes (its ♭2 is a passing note)",
    "C 14 F7alt [V7] → F Altered (D1) altered dominant — from the symbol: altered",
    "C 15 Bbm [i] → Bb Dorian (m5) i in Bb minor — tonic minor: Dorian by convention"
+  ]
+ },
+ "love-struck-baby": {
+  "key": "Ab major (key:, blues)",
+  "areas": [
+   "Ab major A 1 – Coda 5"
+  ],
+  "rows": [
+   "A 1 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 3 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 Eb7 [V7] → Eb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 Eb7 [V7] → Eb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 11 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 Eb7#9 [V7] → Eb Half-Whole Diminished (D1+D9) V7 of the blues: a dominant that needn’t resolve; b9, #9 and #11 from the symbol",
+   "B 1 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 2 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 3 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 4 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 5 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 6 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 7 Eb7 [V7] → Eb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 8 Eb7 [V7] → Eb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 9 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 10 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 11 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 12 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 13 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 14 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 15 Eb7 [V7] → Eb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 16 Eb7 [V7] → Eb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "C 1 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 2 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 3 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "C 4 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "C 5 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 6 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 7 Eb7 [V7] → Eb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "C 8 Eb7 [V7] → Eb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "D1 1 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 2 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 3 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 4 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 5 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D1 6 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D1 7 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 8 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 9 Eb7 [V7] → Eb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "D1 10 Eb7 [V7] → Eb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "D1 11 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D1 12 Eb7 [V7] → Eb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "D2 1 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 2 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 3 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 4 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 5 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D2 6 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "D2 7 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 8 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 9 Eb7 [V7] → Eb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "D2 10 Eb7 [V7] → Eb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "D2 11 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "D2 12 Eb7 [V7] → Eb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "Coda 1 Eb7 [V7] → Eb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "Coda 2 Db7 [IV7] → Db Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "Coda 3 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 4 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 5 Ab7 [I7] → Ab Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
   ]
  },
  "lush-life": {
@@ -11328,6 +12714,96 @@
    "Ending 3 Dm9 [iii7] → D Dorian (m8) borrowed iii in Bb minor — a borrowed minor chord: Dorian, its own key"
   ]
  },
+ "nobody-knows-you-when-youre-down-and-out": {
+  "key": "C major (key:, functional)",
+  "areas": [
+   "C major A 1 – B2 18"
+  ],
+  "rows": [
+   "A 1 C [I] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 1 E7 [III7] → E Phrygian Dominant (D8) extended dominant into D minor — V7 of A7, on the way to D minor: b9 and b13 are in the key",
+   "A 2 A7 [V7/ii] → A Phrygian Dominant (D8) V7 of D minor, at the end of a chain of dominants — V7 of D minor, the chain's last link: b9 and b13 are in the key",
+   "A 3 Dm [ii] → D Dorian (m7) ii in C — ii: Dorian, the key’s own notes",
+   "A 3 A7 [V7/ii] → A Mixolydian b6 (D4) V7/ii in C: the b13 is in the key",
+   "A 4 Dm [ii] → D Dorian (m7) ii in C — ii: Dorian, the key’s own notes",
+   "A 5 F [IV] → F Lydian (M4) IV in C — IV: the #4 is the key’s 7th",
+   "A 5 B7 [VII7] → B Phrygian Dominant (D5) VII7 in C, not resolving: b9 and b13 are in the key",
+   "A 6 C [I] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 6 A7 [→] → A Mixolydian (D3) extended dominant: each one falls a fifth into the next: natural tensions",
+   "A 7 D7 [V7/V] → D Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "A 8 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "A 9 C [I] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 9 E7 [III7] → E Phrygian Dominant (D8) extended dominant into D minor — V7 of A7, on the way to D minor: b9 and b13 are in the key",
+   "A 10 A7 [V7/ii] → A Phrygian Dominant (D8) V7 of D minor, at the end of a chain of dominants — V7 of D minor, the chain's last link: b9 and b13 are in the key",
+   "A 11 Dm [ii] → D Dorian (m7) ii in C — ii: Dorian, the key’s own notes",
+   "A 11 A7 [V7/ii] → A Mixolydian b6 (D4) V7/ii in C: the b13 is in the key",
+   "A 12 Dm [ii] → D Dorian (m7) ii in C — ii: Dorian, the key’s own notes",
+   "A 13 F [IV] → F Lydian (M4) IV in C — IV: the #4 is the key’s 7th",
+   "A 13 B7 [VII7] → B Phrygian Dominant (D5) VII7 in C, not resolving: b9 and b13 are in the key",
+   "A 14 C [I] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "A 14 A7 [→] → A Mixolydian (D3) extended dominant: each one falls a fifth into the next: natural tensions",
+   "A 15 D7 [V7/V] → D Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "A 16 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "B1 1 C [I] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "B1 1 E7 [III7] → E Phrygian Dominant (D8) extended dominant into D minor — V7 of A7, on the way to D minor: b9 and b13 are in the key",
+   "B1 2 A7 [V7/ii] → A Phrygian Dominant (D8) V7 of D minor, at the end of a chain of dominants — V7 of D minor, the chain's last link: b9 and b13 are in the key",
+   "B1 3 Dm [ii] → D Dorian (m7) ii in C — ii: Dorian, the key’s own notes",
+   "B1 3 A7 [V7/ii] → A Mixolydian b6 (D4) V7/ii in C: the b13 is in the key",
+   "B1 4 Dm [ii] → D Dorian (m7) ii in C — ii: Dorian, the key’s own notes",
+   "B1 5 F [IV] → F Lydian (M4) IV in C — IV: the #4 is the key’s 7th",
+   "B1 5 B7 [VII7] → B Phrygian Dominant (D5) VII7 in C, not resolving: b9 and b13 are in the key",
+   "B1 6 C [I] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "B1 6 A7 [→] → A Mixolydian (D3) extended dominant: each one falls a fifth into the next: natural tensions",
+   "B1 7 D7 [V7/V] → D Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "B1 8 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "B1 9 C [I] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "B1 9 E7 [III7] → E Phrygian Dominant (D8) extended dominant into D minor — V7 of A7, on the way to D minor: b9 and b13 are in the key",
+   "B1 10 A7 [V7/ii] → A Phrygian Dominant (D8) V7 of D minor, at the end of a chain of dominants — V7 of D minor, the chain's last link: b9 and b13 are in the key",
+   "B1 11 Dm [ii] → D Dorian (m7) ii in C — ii: Dorian, the key’s own notes",
+   "B1 11 A7 [V7/ii] → A Mixolydian b6 (D4) V7/ii in C: the b13 is in the key",
+   "B1 12 Dm [ii] → D Dorian (m7) ii in C — ii: Dorian, the key’s own notes",
+   "B1 13 F [IV] → F Lydian (M4) IV in C — IV: the #4 is the key’s 7th",
+   "B1 13 B7 [VII7] → B Phrygian Dominant (D5) VII7 in C, not resolving: b9 and b13 are in the key",
+   "B1 14 C [I] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "B1 14 A7 [→] → A Mixolydian (D3) extended dominant: each one falls a fifth into the next: natural tensions",
+   "B1 15 D7 [V7/V] → D Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "B1 16 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "B1 16 C [I] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "B1 16 A7 [→] → A Mixolydian (D3) extended dominant: each one falls a fifth into the next: natural tensions",
+   "B1 17 D7 [V7/V] → D Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "B1 17 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "B1 18 C [I] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "B2 1 C [I] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "B2 1 E7 [III7] → E Phrygian Dominant (D8) extended dominant into D minor — V7 of A7, on the way to D minor: b9 and b13 are in the key",
+   "B2 2 A7 [V7/ii] → A Phrygian Dominant (D8) V7 of D minor, at the end of a chain of dominants — V7 of D minor, the chain's last link: b9 and b13 are in the key",
+   "B2 3 Dm [ii] → D Dorian (m7) ii in C — ii: Dorian, the key’s own notes",
+   "B2 3 A7 [V7/ii] → A Mixolydian b6 (D4) V7/ii in C: the b13 is in the key",
+   "B2 4 Dm [ii] → D Dorian (m7) ii in C — ii: Dorian, the key’s own notes",
+   "B2 5 F [IV] → F Lydian (M4) IV in C — IV: the #4 is the key’s 7th",
+   "B2 5 B7 [VII7] → B Phrygian Dominant (D5) VII7 in C, not resolving: b9 and b13 are in the key",
+   "B2 6 C [I] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "B2 6 A7 [→] → A Mixolydian (D3) extended dominant: each one falls a fifth into the next: natural tensions",
+   "B2 7 D7 [V7/V] → D Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "B2 8 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "B2 9 C [I] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "B2 9 E7 [III7] → E Phrygian Dominant (D8) extended dominant into D minor — V7 of A7, on the way to D minor: b9 and b13 are in the key",
+   "B2 10 A7 [V7/ii] → A Phrygian Dominant (D8) V7 of D minor, at the end of a chain of dominants — V7 of D minor, the chain's last link: b9 and b13 are in the key",
+   "B2 11 Dm [ii] → D Dorian (m7) ii in C — ii: Dorian, the key’s own notes",
+   "B2 11 A7 [V7/ii] → A Mixolydian b6 (D4) V7/ii in C: the b13 is in the key",
+   "B2 12 Dm [ii] → D Dorian (m7) ii in C — ii: Dorian, the key’s own notes",
+   "B2 13 F [IV] → F Lydian (M4) IV in C — IV: the #4 is the key’s 7th",
+   "B2 13 B7 [VII7] → B Phrygian Dominant (D5) VII7 in C, not resolving: b9 and b13 are in the key",
+   "B2 14 C [I] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "B2 14 A7 [→] → A Mixolydian (D3) extended dominant: each one falls a fifth into the next: natural tensions",
+   "B2 15 D7 [V7/V] → D Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "B2 16 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "B2 16 C [I] → C Ionian (M3) I in C — tonic: the 4th is in the key",
+   "B2 16 A7 [→] → A Mixolydian (D3) extended dominant: each one falls a fifth into the next: natural tensions",
+   "B2 17 D7 [V7/V] → D Mixolydian (D3) V7 of V7: the dominant of the dominant: natural tensions",
+   "B2 17 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
+   "B2 18 C [I] → C Ionian (M3) I in C — tonic: the 4th is in the key"
+  ]
+ },
  "off-minor": {
   "key": "G minor (key:, functional)",
   "areas": [
@@ -12395,6 +13871,28 @@
    "A3 8 F7 [V7] → F Mixolydian (D4) V7/I in Bb (the I never arrives) — V7/I in Bb: natural tensions"
   ]
  },
+ "pinetops-blues": {
+  "key": "F major (key:, blues)",
+  "areas": [
+   "F major A 1–13"
+  ],
+  "rows": [
+   "A 1 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 2 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 3 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 4 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 C7 [V7] → C Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 11 Db7 [subV7/V] → Db Lydian Dominant (D2) subV7 of C7 — tritone substitute: resolves down a half step to C7",
+   "A 12 C7 [V7] → C Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 13 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
  "polkadots-and-moonbeams": {
   "key": "F major (key:, functional)",
   "areas": [
@@ -12790,6 +14288,47 @@
    "Coda 4 Db/C [♭II] → Db Lydian (M4) ♭II, borrowed (modal interchange) — ♭II, borrowed from C Phrygian: Lydian (its ♯11 is in the key)"
   ]
  },
+ "reconsider-baby": {
+  "key": "G major (key:, blues)",
+  "areas": [
+   "G major A 1 – B 14"
+  ],
+  "rows": [
+   "A 1 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 3 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 4 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 5 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 8 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 8 G#dim [♯i°7] → G# Diatonic Diminished (d1) vii°7 of Am7: E7♭9 without its root",
+   "A 9 Am7 [ii7] → A Dorian (m4) ii of the ii–V to G",
+   "A 10 D7 [V7] → D Mixolydian (D4) V7 of G: natural tensions",
+   "A 11 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 12 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 1 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 2 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 3 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 4 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 5 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 6 C7 [IV7] → C Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 7 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 8 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 8 G#dim [♯i°7] → G# Diatonic Diminished (d1) vii°7 of Am7: E7♭9 without its root",
+   "B 9 Am7 [ii7] → A Dorian (m4) ii of the ii–V to G",
+   "B 10 D7 [V7] → D Mixolydian (D4) V7 of G: natural tensions",
+   "B 11 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 12 D7 [V7] → D Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 13 G [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 13 G7 [V7/IV] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 13 C [IV] → C Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 13 C#m7b5 [♯ivø7] → C# Locrian (h2) #ivø7 in G: Locrian, its own mode (the chord is outside the key)",
+   "B 14 G/D [I] → G Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 14 Ab13 [subV7] → Ab Lydian Dominant (D2) subV7 of G7 — tritone substitute: resolves down a half step to G7",
+   "B 14 G7 [I7] → G Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
  "recorda-me-reharm": {
   "key": "A minor (key:, functional)",
   "areas": [
@@ -12864,6 +14403,30 @@
    "B 6 C7 [V7/♭VI] → C Mixolydian (D4) V7/bVI in A minor: natural tensions",
    "B 7 FMaj7 [♭VImaj7] → F Lydian (M4) bVI in A minor — a non-tonic major chord: Lydian",
    "B 8 E7alt [V7] → E Altered (D1) altered dominant — from the symbol: altered"
+  ]
+ },
+ "red-house": {
+  "key": "B major (key:, blues)",
+  "areas": [
+   "B major A 1–14"
+  ],
+  "rows": [
+   "A 1 B7 [I7] → B Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 E7 [IV7] → E Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 3 B7 [I7] → B Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 B7 [I7] → B Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 E7 [IV7] → E Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 E7 [IV7] → E Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 B7 [I7] → B Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 B7 [I7] → B Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 F#7 [V7] → F# Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 E7 [IV7] → E Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 B7 [I7] → B Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 F#7 [V7] → F# Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 13 B7 [I7] → B Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 14 F#7 [V7] → F# Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 14 C7 [subV7] → C Lydian Dominant (D2) subV7 of B7 — tritone substitute: resolves down a half step to B7",
+   "A 14 B7 [I7] → B Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
   ]
  },
  "reincarnation-of-a-lovebird": {
@@ -13183,6 +14746,115 @@
    "C 7 Bb7 [V7/ii] → Bb Mixolydian b6 (D4) V7/ii in Db: the b13 is in the key",
    "C 8 Ebm7 [ii7] → Eb Dorian (m4) ii of the ii–V to Db",
    "C 8 Ab7 [V7] → Ab Mixolydian (D4) V7 of Db: natural tensions"
+  ]
+ },
+ "rock-me-baby": {
+  "key": "C major (key:, blues)",
+  "areas": [
+   "C major A 1–12"
+  ],
+  "rows": [
+   "A 1 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 3 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 G7#9 [V7] → G Half-Whole Diminished (D1+D9) V7 of the blues: a dominant that needn’t resolve; b9, #9 and #11 from the symbol"
+  ]
+ },
+ "rollin-and-tumblin": {
+  "key": "A major (key:, blues)",
+  "areas": [
+   "A major Intro 1 – C 11"
+  ],
+  "rows": [
+   "Intro 1 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Intro 2 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Intro 3 A7/C [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Intro 4 A7/D [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Intro 5 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Intro 6 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Intro 7 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Intro 8 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Intro 9 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Intro 10 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "Intro 11 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 1 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 2 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 3 A7/C [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 A7/D [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 6 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 7 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 8 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 9 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 10 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 11 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 1 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 2 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 3 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 4 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 5 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 6 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 7 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 8 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 9 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 10 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 11 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "C 1 E7 [V7] → E Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "C 2 E7 [V7] → E Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "C 3 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "C 4 D7 [IV7] → D Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "C 5 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "C 6 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "C 7 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "C 8 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "C 9 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "C 10 A [I] → A Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "C 11 A7 [I7] → A Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
+ "rollin-stone": {
+  "key": "E major (key:, blues)",
+  "areas": [
+   "E major A1 1 – A2 14"
+  ],
+  "rows": [
+   "A1 1 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 2 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 3 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 4 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 5 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 6 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 7 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 8 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 9 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 10 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 11 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 12 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 13 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 14 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 1 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 2 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 3 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 4 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 5 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 6 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 7 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 8 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 9 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 10 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 11 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 12 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 13 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 14 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
   ]
  },
  "round-midnight": {
@@ -14545,6 +16217,26 @@
    "D 7 F [I] → F Ionian (M3) I in F — tonic: the 4th is in the key"
   ]
  },
+ "smokestack-lightning": {
+  "key": "E minor (key:, blues)",
+  "areas": [
+   "E minor A 1–12"
+  ],
+  "rows": [
+   "A 1 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A 2 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A 3 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A 4 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A 5 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A 6 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A 7 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A 8 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A 9 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A 10 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A 11 Em [i] → E Dorian (m10) i of the minor blues: Dorian",
+   "A 12 Em [i] → E Dorian (m10) i of the minor blues: Dorian"
+  ]
+ },
  "snapper": {
   "key": "F minor (key:, functional)",
   "areas": [
@@ -15268,6 +16960,40 @@
    "Coda 5 Dm11 [i7] → D Dorian (m5) i in D minor — tonic minor: Dorian by convention"
   ]
  },
+ "spoonful": {
+  "key": "E major (key:, blues)",
+  "areas": [
+   "E major A 1–20"
+  ],
+  "rows": [
+   "A 1 E7b5 [I7] → E Lydian Dominant (D1+D9) I7 of the blues: a tonic with dominant colour; #11 from the symbol",
+   "A 1 E7sus [I7sus4] → E Mixolydian (s4) I7sus of the blues: Mixolydian",
+   "A 2 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 3 E7b5 [I7] → E Lydian Dominant (D1+D9) I7 of the blues: a tonic with dominant colour; #11 from the symbol",
+   "A 3 E7sus [I7sus4] → E Mixolydian (s4) I7sus of the blues: Mixolydian",
+   "A 4 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 E7b5 [I7] → E Lydian Dominant (D1+D9) I7 of the blues: a tonic with dominant colour; #11 from the symbol",
+   "A 5 E7sus [I7sus4] → E Mixolydian (s4) I7sus of the blues: Mixolydian",
+   "A 6 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 7 E7b5 [I7] → E Lydian Dominant (D1+D9) I7 of the blues: a tonic with dominant colour; #11 from the symbol",
+   "A 7 E7sus [I7sus4] → E Mixolydian (s4) I7sus of the blues: Mixolydian",
+   "A 8 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 E7b5 [I7] → E Lydian Dominant (D1+D9) I7 of the blues: a tonic with dominant colour; #11 from the symbol",
+   "A 9 E7sus [I7sus4] → E Mixolydian (s4) I7sus of the blues: Mixolydian",
+   "A 10 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 11 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 13 E7b5 [I7] → E Lydian Dominant (D1+D9) I7 of the blues: a tonic with dominant colour; #11 from the symbol",
+   "A 13 E7sus [I7sus4] → E Mixolydian (s4) I7sus of the blues: Mixolydian",
+   "A 14 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 15 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 16 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 17 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 18 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 19 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 20 E7 [I7] → E Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
  "squeeze-me": {
   "key": "F major (key:, functional)",
   "areas": [
@@ -15373,6 +17099,28 @@
    "C 3 C/G [I] → C Ionian (M3) I in C — tonic: the 4th is in the key",
    "C 3 G7 [V7] → G Mixolydian (D4) V7 of C: natural tensions",
    "C 4 C6/9 [I6] → C Ionian (M3) I in C — tonic: the 4th is in the key"
+  ]
+ },
+ "standing-around-crying": {
+  "key": "F major (key:, blues)",
+  "areas": [
+   "F major A 1–13"
+  ],
+  "rows": [
+   "A 1 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 2 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 3 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 4 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 8 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 9 C7 [V7] → C Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 12 F [I] → F Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 12 C7 [V7] → C Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 13 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
   ]
  },
  "star-eyes": {
@@ -15515,6 +17263,26 @@
    "A2 16 Db7b9 [V7/IV] → Db Half-Whole Diminished (D1+D4) V7/IV in Db: the b9 from the symbol"
   ]
  },
+ "statesboro-blues": {
+  "key": "D major (key:, blues)",
+  "areas": [
+   "D major A 1–12"
+  ],
+  "rows": [
+   "A 1 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 3 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 A7 [V7] → A Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 G7 [IV7] → G Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 D7 [I7] → D Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
  "stella-by-starlight": {
   "key": "Bb major (key:, functional)",
   "areas": [
@@ -15551,6 +17319,45 @@
    "D 5 Cm7b5 [iiø7] → C Locrian (h2) iiø7 of the ii–V to Bb — iiø7 of Bb: Locrian, the key's own notes (its ♭2 is a passing note)",
    "D 6 F7b9 [V7] → F Half-Whole Diminished (D1+D4) V7 of Bb: the b9 from the symbol",
    "D 7 BbMaj7 [Imaj7] → Bb Ionian (M3) I in Bb — tonic: the 4th is in the key"
+  ]
+ },
+ "still-a-fool": {
+  "key": "F major (key:, blues)",
+  "areas": [
+   "F major A1 1 – Coda 5"
+  ],
+  "rows": [
+   "A1 1 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 2 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 3 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 4 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 5 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 6 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 7 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A1 8 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B1 1 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B1 2 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B1 3 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B1 4 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B1 5 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 1 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 2 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 3 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 4 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 5 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 6 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 7 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A2 8 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B2 1 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B2 2 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B2 3 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B2 4 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B2 5 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 1 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 2 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 3 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 4 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "Coda 5 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
   ]
  },
  "stompin-at-the-savoy": {
@@ -15884,6 +17691,26 @@
    "A3 8 C6/9 [I6] → C Ionian (M3) I in C — tonic: the 4th is in the key"
   ]
  },
+ "sweet-home-chicago": {
+  "key": "F major (key:, blues)",
+  "areas": [
+   "F major A 1–12"
+  ],
+  "rows": [
+   "A 1 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 3 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 C7 [V7] → C Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 Bb7 [IV7] → Bb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 F7 [I7] → F Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
  "take-the-a-train": {
   "key": "C major (key:, functional)",
   "areas": [
@@ -16162,6 +17989,27 @@
    "A 10 F7 [V7] → F Mixolydian (D3) extended dominant (V7 of Bb7) — extended dominant: V7 of Bb7",
    "A 11 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
    "A 12 F7 [V7] → F Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian"
+  ]
+ },
+ "texas-flood": {
+  "key": "C major (key:, blues)",
+  "areas": [
+   "C major A 1–12"
+  ],
+  "rows": [
+   "A 1 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 3 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 G7#5 [V7] → G Whole Tone (D1+D9) V7 of the blues: a dominant that needn’t resolve; #11 and b13 from the symbol"
   ]
  },
  "the-christmas-song": {
@@ -17650,6 +19498,27 @@
    "D 5 Bbm7 [ii7] → Bb Dorian (m4) ii of the ii–V to Ab minor",
    "D 6 Eb7alt [V7] → Eb Altered (D1) altered dominant — from the symbol: altered",
    "D 7 Abm [i] → Ab Dorian (m5) i in Ab minor — tonic minor: Dorian by convention"
+  ]
+ },
+ "three-oclock-blues": {
+  "key": "Bb major (key:, blues)",
+  "areas": [
+   "Bb major A 1–13"
+  ],
+  "rows": [
+   "A 1 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 Eb7 [IV7] → Eb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 3 Bb [I] → Bb Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 4 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 Eb7 [IV7] → Eb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 Eb7 [IV7] → Eb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 F7 [V7] → F Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 Eb7 [IV7] → Eb Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 F7 [V7] → F Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 13 Bb7 [I7] → Bb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
   ]
  },
  "time-after-time": {
@@ -19625,6 +21494,39 @@
    "A 16 Fm [i] → F Dorian (m5) i in F minor — tonic minor: Dorian by convention"
   ]
  },
+ "worried-life-blues": {
+  "key": "C major (key:, blues)",
+  "areas": [
+   "C major A 1 – B 9"
+  ],
+  "rows": [
+   "A 1 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 2 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 3 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 4 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 5 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 6 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 7 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 7 C7 [V7/IV] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 7 F [IV] → F Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 7 Fm7 [iv7] → F Dorian (m8) borrowed iv in C — a borrowed minor chord: Dorian, its own key",
+   "A 8 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "A 8 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 1 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 2 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 3 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 4 F7 [IV7] → F Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "B 5 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 6 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 7 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 7 C7 [V7/IV] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "B 7 F [IV] → F Mixolydian (M6) IV of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 7 Fm7 [iv7] → F Dorian (m8) borrowed iv in C — a borrowed minor chord: Dorian, its own key",
+   "B 8 C [I] → C Mixolydian (M6) I of the blues: a triad here implies its ♭7, Mixolydian",
+   "B 8 G7 [V7] → G Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "B 9 C7 [I7] → C Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
+  ]
+ },
  "wrong-together": {
   "key": "F major (key:, functional)",
   "areas": [
@@ -19924,6 +21826,27 @@
    "D 5 Fm7 [ii7] → F Dorian (m4) ii of the ii–V to Eb",
    "D 6 Bb7b9 [V7] → Bb Half-Whole Diminished (D1+D4) V7 of Eb: the b9 from the symbol",
    "D 7 EbMaj7 [Imaj7] → Eb Ionian (M3) I in Eb — tonic: the 4th is in the key"
+  ]
+ },
+ "you-gonna-need-my-help": {
+  "key": "Eb major (key:, blues)",
+  "areas": [
+   "Eb major A 1–13"
+  ],
+  "rows": [
+   "A 1 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 2 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 3 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 4 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 5 Ab7 [IV7] → Ab Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 6 Ab7 [IV7] → Ab Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 7 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 8 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 9 Bb7 [V7] → Bb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 10 Ab7 [IV7] → Ab Mixolydian (D9) IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)",
+   "A 11 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian",
+   "A 12 Bb7 [V7] → Bb Mixolydian (D9) V7 of the blues: a dominant that needn’t resolve, Mixolydian",
+   "A 13 Eb7 [I7] → Eb Mixolydian (D9) I7 of the blues: a tonic with dominant colour, Mixolydian"
   ]
  },
  "youll-never-believe": {

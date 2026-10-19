@@ -1,0 +1,36 @@
+title: Juke
+composer: Walter Jacobs
+style: Medium Blues
+context: blues
+key: E
+form: AB, 24 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; E, blues
+
+section: A
+1  | E   # I of the blues: a triad here implies its ♭7, Mixolydian
+2  | E
+3  | E
+4  | E
+5  | A7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | A7
+7  | E   # I of the blues: a triad here implies its ♭7, Mixolydian
+8  | E
+9  | B7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+10 | A7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+11 | E   # I of the blues: a triad here implies its ♭7, Mixolydian
+12 | B7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+
+section: B
+1  | E   # I of the blues: a triad here implies its ♭7, Mixolydian
+2  | E
+3  | E
+4  | E
+5  | A7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | A7
+7  | E   # I of the blues: a triad here implies its ♭7, Mixolydian
+8  | E
+9  | B7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+10 | A7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+11 | E   # I of the blues: a triad here implies its ♭7, Mixolydian
+12 | B7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian

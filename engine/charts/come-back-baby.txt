@@ -1,0 +1,30 @@
+title: Come Back Baby
+composer: Mance Lipscomb
+style: Slow Blues
+context: blues
+key: Eb
+form: AA, 16 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; Eb, blues
+
+section: A
+1 | Eb7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+2 | Eb7
+3 | Ab9    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+3 | Gb7    # tritone substitute: resolves down a half step to F7
+4 | F7     # II7 in Eb, not resolving: natural tensions
+4 | Ab9    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+4 | Adim   # ♯IV°7 to I over its 5th: D7♭9 without its root, the ♯II°7's notes
+5 | Eb/Bb  # I of the blues: a triad here implies its ♭7, Mixolydian
+5 | Cm7    # ii of F7: Dorian
+6 | F7     # V7 of V7: the dominant of the dominant: natural tensions
+6 | Bb13   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+7 | Eb7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+7 | Ab     # IV of the blues: a triad here implies its ♭7, Mixolydian
+8 | Eb     # I of the blues: a triad here implies its ♭7, Mixolydian
+8 | Bb7#5  # V7 of the blues: a dominant that needn’t resolve; #11 and b13 from the symbol
+9 | Eb     # I of the blues: a triad here implies its ♭7, Mixolydian
+9 | E9     # tritone substitute: resolves down a half step to Eb
+9 | Eb     # I of the blues: a triad here implies its ♭7, Mixolydian
+@ending 1 8
+@ending 2 9
