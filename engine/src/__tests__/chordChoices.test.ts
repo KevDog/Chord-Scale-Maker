@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { hexatonicChoices, pentatonicChoices, pickHeading } from '../chordChoices'
+import { hexatonicChoices, pentatonicChoices, pickHeading , quartalChoices } from '../chordChoices'
 import { CONCERT, type Part } from '../part'
 
 const TENOR: Part = { clef: 'treble', trans: 'Bb' }
@@ -24,6 +24,20 @@ describe('pentatonicChoices', () => {
   })
   it('gives nothing for a scale it cannot read', () => {
     expect(pentatonicChoices('Cmaj7', 'C Nonsense', CONCERT)).toEqual([])
+  })
+})
+
+describe('quartalChoices (#432)', () => {
+  it('lists the stacks in Auto order, by their bottom note concert, with the guide tones each holds', () => {
+    const c = quartalChoices('G7', 'G Mixolydian', CONCERT, 4, false)
+    expect(c[0]).toMatchObject({ pc: 5, name: 'F B E A', degree: 7, guides: 2, label: 'F B E A · on 7 · 2 guide tones' })
+    expect(quartalChoices('G7', 'G Mixolydian', CONCERT, 3, true).map((x) => x.name)).not.toContain('F B E')
+  })
+  it('keeps concert bottoms on a B♭ part', () => {
+    expect(quartalChoices('G7', 'G Mixolydian', TENOR, 4, false)[0]).toMatchObject({ pc: 5, name: 'G C♯ F♯ B' })
+  })
+  it('gives nothing on a scale with no stacks', () => {
+    expect(quartalChoices('C7', 'C Half-Whole', CONCERT, 4, false)).toEqual([])
   })
 })
 

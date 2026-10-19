@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { isRest } from '../chord'
 import { describe, expect, it, vi } from 'vitest'
-import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, type PentatonicPlan, pickTargets, showHexatonics, showPentatonics } from '../changes'
+import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, type PentatonicPlan, pickTargets, showHexatonics, showPentatonics, showQuartals } from '../changes'
 import { type ChartDoc, expandRowLines, parseChart } from '../chart'
 import { NO_PICKS, pickTarget, withPick } from '../chordPicks'
 import { resolveScales } from '../resolve'
@@ -982,6 +982,47 @@ describe('the Hexatonic overlay', () => {
           expect(changesLinesPerPage(line, { numerals, scales, hexatonics: true })).toBe(want)
           expect(changesLinesPerPage(line, { numerals, scales, pentatonics: false, hexatonics: true })).toBe(want)
         }
+  })
+})
+
+describe('the Quartal overlay (#432)', () => {
+  const Q = { kind: 'quartal' } as const
+  const flat = (lines: readonly ChangesLine[]) => lines.flatMap((l) => l.bars.flatMap((b) => b.chords))
+  const II_V_I = 'title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | Cmaj7\n4 | Cmaj7'
+  const quartals = (text: string, plan: Parameters<typeof buildChanges>[6] = Q, part = CONCERT) => flat(showQuartals(buildChanges(parseChart(text).value, part, 4, false, 'off', undefined, plan).lines)).map((c) => c.quartal)
+
+  it("gives each chord its scale's Auto stack, printed where it changes", () => {
+    expect(quartals(II_V_I).map((q) => [q?.name, q?.label])).toEqual([['D G C F', 'D G C F'], ['F B E A', 'F B E A'], ['B E A D', 'B E A D'], ['B E A D', '']])
+    const chords = flat(buildChanges(parseChart(II_V_I).value, CONCERT, 4, false, 'off', undefined, Q).lines)
+    expect(chords.every((c) => c.hexatonic === null && c.pentatonic === null)).toBe(true)
+  })
+
+  it('stacks three notes, or perfect fourths only, as the plan asks', () => {
+    expect(quartals(II_V_I, { kind: 'quartal', notes: 3 }).map((q) => q?.name)).toEqual(['G C F', 'F B E', 'B E A', 'B E A']) // Dm7: G C F holds both guide tones, D G C one
+    expect(quartals(II_V_I, { kind: 'quartal', perfect: true })[1]?.name).toBe('B E A D')
+  })
+
+  it('names the written stack for a transposing part', () => {
+    expect(quartals('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7', Q, TENOR).map((q) => q?.name)).toEqual(['E A D G'])
+  })
+
+  it('has none with another overlay, or on a scale with no stacks', () => {
+    expect(flat(buildChanges(parseChart(II_V_I).value, CONCERT, 4, false, 'off', undefined, { kind: 'hexatonic' }).lines).every((c) => c.quartal === null)).toBe(true)
+    expect(quartals('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C7 | C Half-Whole')).toEqual([null])
+  })
+
+  it("plays a live pick (its bottom note, concert) over Auto, and runs a printed label's chords", () => {
+    const doc = parseChart(II_V_I).value
+    const targets = pickTargets(doc, resolveScales(doc, { level: 'standard', seed: 0 }))
+    const picks = withPick(NO_PICKS, 'quartal', ['A:2:0'], 4, targets).quartal // G7: E A D G
+    const q = flat(showQuartals(buildChanges(doc, CONCERT, 4, false, 'off', undefined, { kind: 'quartal', picks }).lines)).map((c) => c.quartal)
+    expect(q[1]).toMatchObject({ name: 'E A D G', picked: true, sheet: 'F B E A', run: ['A:2:0'] })
+    expect(q[2]).toMatchObject({ label: 'B E A D', run: ['A:3:0', 'A:4:0'] })
+    expect(showQuartals(showQuartals(buildChanges(doc, CONCERT, 4, false, 'off', undefined, { kind: 'quartal', picks }).lines))).toEqual(showQuartals(buildChanges(doc, CONCERT, 4, false, 'off', undefined, { kind: 'quartal', picks }).lines))
+  })
+
+  it('counts the quartal row as the pentatonic row', () => {
+    for (const line of ['off', 'third'] as const) expect(changesLinesPerPage(line, { numerals: true, scales: true, quartals: true })).toBe(changesLinesPerPage(line, { numerals: true, scales: true, pentatonics: true }))
   })
 })
 

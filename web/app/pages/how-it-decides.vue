@@ -455,7 +455,11 @@
             <UiCode>F B E A</UiCode> on G7 (its tritone holds both guide tones) and <UiCode>B E A D</UiCode> on Cmaj7.
             A scale that isn't seven notes has no stack.
           </UiText>
-          <UiText><strong :class="EM">What you can change:</strong> Built on (a degree of each scale), Notes (3 or 4), and Perfect only.</UiText>
+          <UiText>
+            The Scales sheet's Quartal preset lights it on each staff; the Changes sheet's Quartal Superimpose names it under
+            each chord, where the stack changes. Click a name there to pick another stack: the list runs in Auto's order.
+          </UiText>
+          <UiText><strong :class="EM">What you can change:</strong> Built on (a degree of each scale, on the Scales sheet), Notes (3 or 4), Perfect only, and a pick on the Changes sheet.</UiText>
         </DecisionSection>
 
         <DecisionSection id="pick.order">

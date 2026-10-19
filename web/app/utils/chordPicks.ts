@@ -10,4 +10,5 @@ export const pickFooter = (sheet: 'changes' | 'scales', b: readonly string[], va
 export const choiceId = {
   pent: (pc: number): string => `p${pc}`,
   hex: (r: readonly [number, number]): string => `h${r[0]}-${r[1]}`,
+  quart: (pc: number): string => `q${pc}`,
 }
