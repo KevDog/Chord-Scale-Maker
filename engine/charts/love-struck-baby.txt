@@ -1,0 +1,78 @@
+title: Love Struck Baby
+composer: Stevie Ray Vaughan
+style: Fast Blues
+context: blues
+key: Ab
+form: ABCDD, 60 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; Ab, blues
+
+section: A
+1  | Ab7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | Ab7
+3  | Ab7
+4  | Ab7
+5  | Db7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | Db7
+7  | Ab7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+8  | Ab7
+9  | Eb7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+10 | Eb7
+11 | Ab7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+12 | Eb7#9  # V7 of the blues: a dominant that needn’t resolve; b9, #9 and #11 from the symbol
+
+section: B
+1  | Db7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+2  | Db7
+3  | Ab7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+4  | Ab7
+5  | Db7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | Db7
+7  | Eb7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+8  | Eb7
+9  | Db7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+10 | Db7
+11 | Ab7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+12 | Ab7
+13 | Db7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+14 | Db7
+15 | Eb7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+16 | Eb7
+@segno 9
+
+section: C
+1  | Ab7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | Ab7
+3  | Db7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+4  | Db7
+5  | Ab7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+6  | Ab7
+7  | Eb7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+8  | Eb7
+@coda 8
+
+section: D1
+1  | Ab7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | Ab7
+3  | Ab7
+4  | Ab7
+5  | Db7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | Db7
+7  | Ab7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+8  | Ab7
+9  | Eb7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+10 | Eb7
+11 | Ab7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+12 | Eb7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+@nav 12 D.S. al Coda
+
+section: D2
+copy: D1
+
+section: Coda
+1  | Eb7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+2  | Db7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+3  | Ab7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+4  | Ab7
+5  | Ab7
+@coda 1

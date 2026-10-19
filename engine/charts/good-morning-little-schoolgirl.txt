@@ -1,0 +1,33 @@
+title: Good Morning Little Schoolgirl
+composer: John Lee Williamson
+style: Fast Blues
+context: blues
+key: C
+form: AA, 38 bars
+source: iReal Pro
+aka: Good Morning, School Girl
+# analysis: 2026-10-19, rules v2; C, blues
+
+section: A1
+1  | C7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | C7
+3  | C7
+4  | C7
+5  | F7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | F7
+7  | F7
+8  | C7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+9  | C7
+10 | C7
+11 | C7
+12 | G7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+13 | G7
+14 | F7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+15 | F7
+16 | C7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+17 | C7
+18 | C7
+19 | C7
+
+section: A2
+copy: A1

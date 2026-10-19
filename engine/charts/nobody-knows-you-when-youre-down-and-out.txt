@@ -1,0 +1,67 @@
+title: Nobody Knows You When You're Down and Out
+composer: Jimmy Cox
+style: Medium Blues
+key: C
+form: ABB, 52 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; C
+
+section: A
+1  | C   # tonic: the 4th is in the key
+1  | E7  # V7 of A7, on the way to D minor: b9 and b13 are in the key
+2  | A7  # V7 of D minor, the chain's last link: b9 and b13 are in the key
+3  | Dm  # ii: Dorian, the key’s own notes
+3  | A7  # V7/ii in C: the b13 is in the key
+4  | Dm  # ii: Dorian, the key’s own notes
+5  | F   # IV: the #4 is the key’s 7th
+5  | B7  # VII7 in C, not resolving: b9 and b13 are in the key
+6  | C   # tonic: the 4th is in the key
+6  | A7  # extended dominant: each one falls a fifth into the next: natural tensions
+7  | D7  # V7 of V7: the dominant of the dominant: natural tensions
+8  | G7  # V7 of C: natural tensions
+9  | C   # tonic: the 4th is in the key
+9  | E7  # V7 of A7, on the way to D minor: b9 and b13 are in the key
+10 | A7  # V7 of D minor, the chain's last link: b9 and b13 are in the key
+11 | Dm  # ii: Dorian, the key’s own notes
+11 | A7  # V7/ii in C: the b13 is in the key
+12 | Dm  # ii: Dorian, the key’s own notes
+13 | F   # IV: the #4 is the key’s 7th
+13 | B7  # VII7 in C, not resolving: b9 and b13 are in the key
+14 | C   # tonic: the 4th is in the key
+14 | A7  # extended dominant: each one falls a fifth into the next: natural tensions
+15 | D7  # V7 of V7: the dominant of the dominant: natural tensions
+16 | G7  # V7 of C: natural tensions
+
+section: B1
+1  | C   # tonic: the 4th is in the key
+1  | E7  # V7 of A7, on the way to D minor: b9 and b13 are in the key
+2  | A7  # V7 of D minor, the chain's last link: b9 and b13 are in the key
+3  | Dm  # ii: Dorian, the key’s own notes
+3  | A7  # V7/ii in C: the b13 is in the key
+4  | Dm  # ii: Dorian, the key’s own notes
+5  | F   # IV: the #4 is the key’s 7th
+5  | B7  # VII7 in C, not resolving: b9 and b13 are in the key
+6  | C   # tonic: the 4th is in the key
+6  | A7  # extended dominant: each one falls a fifth into the next: natural tensions
+7  | D7  # V7 of V7: the dominant of the dominant: natural tensions
+8  | G7  # V7 of C: natural tensions
+9  | C   # tonic: the 4th is in the key
+9  | E7  # V7 of A7, on the way to D minor: b9 and b13 are in the key
+10 | A7  # V7 of D minor, the chain's last link: b9 and b13 are in the key
+11 | Dm  # ii: Dorian, the key’s own notes
+11 | A7  # V7/ii in C: the b13 is in the key
+12 | Dm  # ii: Dorian, the key’s own notes
+13 | F   # IV: the #4 is the key’s 7th
+13 | B7  # VII7 in C, not resolving: b9 and b13 are in the key
+14 | C   # tonic: the 4th is in the key
+14 | A7  # extended dominant: each one falls a fifth into the next: natural tensions
+15 | D7  # V7 of V7: the dominant of the dominant: natural tensions
+16 | G7  # V7 of C: natural tensions
+16 | C   # tonic: the 4th is in the key
+16 | A7  # extended dominant: each one falls a fifth into the next: natural tensions
+17 | D7  # V7 of V7: the dominant of the dominant: natural tensions
+17 | G7  # V7 of C: natural tensions
+18 | C   # tonic: the 4th is in the key
+
+section: B2
+copy: B1

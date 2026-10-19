@@ -1,0 +1,77 @@
+title: Boom Boom
+composer: John Lee Hooker
+style: Blues
+context: blues
+key: E
+form: ABB, 26 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; E, blues
+
+section: Intro
+1  | E     # I of the blues: a triad here implies its ♭7, Mixolydian
+2  | E
+2  | N.C.
+3  | E
+4  | E
+4  | N.C.
+5  | A7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | A     # IV of the blues: a triad here implies its ♭7, Mixolydian
+6  | N.C.
+7  | E     # I of the blues: a triad here implies its ♭7, Mixolydian
+8  | E
+8  | N.C.
+
+section: A
+1  | E     # I of the blues: a triad here implies its ♭7, Mixolydian
+2  | E
+2  | N.C.
+3  | E
+4  | E
+4  | N.C.
+5  | A7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | A     # IV of the blues: a triad here implies its ♭7, Mixolydian
+6  | N.C.
+7  | E     # I of the blues: a triad here implies its ♭7, Mixolydian
+8  | E
+8  | N.C.
+9  | B7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+10 | A7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+10 | N.C.
+11 | E     # I of the blues: a triad here implies its ♭7, Mixolydian
+12 | E
+12 | N.C.
+13 | E
+14 | E
+14 | N.C.
+15 | E
+16 | E
+16 | N.C.
+17 | A7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+18 | A     # IV of the blues: a triad here implies its ♭7, Mixolydian
+18 | N.C.
+@coda 12
+
+section: B1
+1  | E     # I of the blues: a triad here implies its ♭7, Mixolydian
+2  | E
+3  | E
+4  | E
+@nav 4 D.C. al Coda
+
+section: B2
+copy: B1
+
+section: Coda
+1  | E     # I of the blues: a triad here implies its ♭7, Mixolydian
+2  | E
+2  | N.C.
+3  | E
+4  | E
+4  | N.C.
+5  | A7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | A     # IV of the blues: a triad here implies its ♭7, Mixolydian
+6  | N.C.
+7  | E     # I of the blues: a triad here implies its ♭7, Mixolydian
+8  | E
+9  | E7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+@coda 1

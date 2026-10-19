@@ -1,0 +1,36 @@
+title: Spoonful
+composer: Willie Dixon
+style: Medium Blues
+context: blues
+key: E
+form: A, 20 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; E, blues
+
+section: A
+1  | E7b5   # I7 of the blues: a tonic with dominant colour; #11 from the symbol
+1  | E7sus  # I7sus of the blues: Mixolydian
+2  | E7     # I7 of the blues: a tonic with dominant colour, Mixolydian
+3  | E7b5   # I7 of the blues: a tonic with dominant colour; #11 from the symbol
+3  | E7sus  # I7sus of the blues: Mixolydian
+4  | E7     # I7 of the blues: a tonic with dominant colour, Mixolydian
+5  | E7b5   # I7 of the blues: a tonic with dominant colour; #11 from the symbol
+5  | E7sus  # I7sus of the blues: Mixolydian
+6  | E7     # I7 of the blues: a tonic with dominant colour, Mixolydian
+7  | E7b5   # I7 of the blues: a tonic with dominant colour; #11 from the symbol
+7  | E7sus  # I7sus of the blues: Mixolydian
+8  | E7     # I7 of the blues: a tonic with dominant colour, Mixolydian
+9  | E7b5   # I7 of the blues: a tonic with dominant colour; #11 from the symbol
+9  | E7sus  # I7sus of the blues: Mixolydian
+10 | E7     # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | E7
+12 | E7
+13 | E7b5   # I7 of the blues: a tonic with dominant colour; #11 from the symbol
+13 | E7sus  # I7sus of the blues: Mixolydian
+14 | E7     # I7 of the blues: a tonic with dominant colour, Mixolydian
+15 | E7
+16 | E7
+17 | E7
+18 | E7
+19 | E7
+20 | E7

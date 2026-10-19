@@ -1,0 +1,26 @@
+title: Crossroads
+composer: Robert Johnson
+style: Medium Blues
+context: blues
+key: A
+form: AA, 24 bars
+source: iReal Pro
+aka: Cross Road Blues
+# analysis: 2026-10-19, rules v2; A, blues
+
+section: A1
+1  | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | D7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+3  | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+4  | A7
+5  | D7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | D7
+7  | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+8  | A7
+9  | E7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+10 | A7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+11 | A7
+12 | A7
+
+section: A2
+copy: A1

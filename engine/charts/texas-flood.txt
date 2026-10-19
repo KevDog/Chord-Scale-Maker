@@ -1,0 +1,23 @@
+title: Texas Flood
+composer: Larry Davis, Joseph Scott
+style: Slow Blues
+context: blues
+key: C
+form: A, 12 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; C, blues
+
+section: A
+1  | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | F7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+3  | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+4  | C7
+5  | F7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | F7
+7  | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+8  | C7
+9  | G7    # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+10 | F7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+11 | C7    # I7 of the blues: a tonic with dominant colour, Mixolydian
+12 | C7
+12 | G7#5  # V7 of the blues: a dominant that needn’t resolve; #11 and b13 from the symbol

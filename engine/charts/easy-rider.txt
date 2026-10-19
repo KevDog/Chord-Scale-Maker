@@ -1,0 +1,26 @@
+title: Easy Rider
+composer: Huddie Ledbetter
+style: Fast Blues
+context: blues
+key: C
+form: A, 16 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; C, blues
+
+section: A
+1  | C   # I of the blues: a triad here implies its ♭7, Mixolydian
+2  | C
+3  | C
+4  | C
+5  | F   # IV of the blues: a triad here implies its ♭7, Mixolydian
+6  | F
+7  | C   # I of the blues: a triad here implies its ♭7, Mixolydian
+8  | C
+9  | F   # IV of the blues: a triad here implies its ♭7, Mixolydian
+10 | F
+11 | C   # I of the blues: a triad here implies its ♭7, Mixolydian
+12 | C
+13 | C
+14 | F7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+15 | C   # I of the blues: a triad here implies its ♭7, Mixolydian
+16 | C

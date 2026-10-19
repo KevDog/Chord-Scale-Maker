@@ -1,0 +1,25 @@
+title: Long Distance Call
+composer: McKinley Morganfield
+style: Slow Blues
+context: blues
+key: F
+form: AA, 24 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; F, blues
+
+section: A1
+1  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | F7
+3  | F7
+4  | F7
+5  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | Bb7
+7  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+8  | F7
+9  | C7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+10 | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+11 | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
+12 | F7
+
+section: A2
+copy: A1

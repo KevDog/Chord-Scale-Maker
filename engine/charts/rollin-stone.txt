@@ -1,0 +1,28 @@
+title: Rollin' Stone
+composer: McKinley Morganfield
+style: Medium Blues
+context: blues
+key: E
+form: AA, 28 bars
+source: iReal Pro
+aka: Catfish Blues
+# analysis: 2026-10-19, rules v2; E, blues
+
+section: A1
+1  | E7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | E7
+3  | E7
+4  | E7
+5  | E7
+6  | E7
+7  | E7
+8  | E7
+9  | E7
+10 | E7
+11 | E7
+12 | E7
+13 | E7
+14 | E7
+
+section: A2
+copy: A1

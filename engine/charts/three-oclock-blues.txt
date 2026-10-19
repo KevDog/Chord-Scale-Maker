@@ -1,0 +1,23 @@
+title: Three O'Clock Blues
+composer: B.B. King, Jules Taub
+style: Medium Blues
+context: blues
+key: Bb
+form: A, 13 bars
+source: iReal Pro
+# analysis: 2026-10-19, rules v2; Bb, blues
+
+section: A
+1  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+2  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+3  | Bb   # I of the blues: a triad here implies its ♭7, Mixolydian
+4  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+5  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+6  | Eb7
+7  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+8  | Bb7
+9  | F7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+10 | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
+11 | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+12 | F7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
+13 | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
