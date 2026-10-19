@@ -5,8 +5,9 @@ import { qualityScale } from './chart'
 import { type ChordToken, chordTokensOrNull, isRest, parseChord, writtenChordRoot, writtenChordRootLenient } from './chord'
 import { intervalLabels } from './intervals'
 import { type HexPair, hexatonicPairs, hexatonicPick, type StaffHexatonic, writtenKeyPair } from './hexatonics'
-import { isHexatonicSelection, isPentatonicSelection, type PracticeSelection, practiceKeys, selectedNotes, startReference } from './practice'
+import { isHexatonicSelection, isPentatonicSelection, isQuartalSelection, type PracticeSelection, practiceKeys, selectedNotes, startReference } from './practice'
 import { outsideNotes, pentatonicPick, type StaffPentatonic } from './pentatonics'
+import { quartalPick, type StaffQuartal } from './quartal'
 import { baseQuality, resolveQuality } from './qualities'
 import { parseScale } from './scales'
 import type { Key } from './analysis/keys'
@@ -35,6 +36,7 @@ export type StaffModel = Readonly<{
   selected: readonly boolean[] | null // practice: which notes are picked; null when practice is off
   pentatonic: StaffPentatonic | null // the Pentatonic preset's pick for this staff (#266); null otherwise
   hexatonic: StaffHexatonic | null // the Hexatonic preset's pair for this staff; null otherwise, and where the scale has none
+  quartal: StaffQuartal | null // the Quartal preset's stack for this staff (#432); null otherwise, and where the scale has none
   second: readonly boolean[] | null // the Hexatonic preset: which selected notes are in group B; null otherwise
   outside: readonly boolean[] | null // the Pentatonic preset (#308): which notes are its pentatonic's, added from outside the scale; null otherwise
   positions: readonly ChordAt[] // the drawn chords it covers (#303), in form order; [] without picks given, or all in a folded repeat
@@ -123,12 +125,12 @@ function practiceFor(
   pick: StaffPick,
   low: number,
   keyName: string | undefined,
-): Pick<StaffModel, 'notes' | 'keys' | 'selected' | 'pentatonic' | 'hexatonic' | 'second' | 'outside'> & Readonly<{ degrees: readonly Pitched[] }> {
+): Pick<StaffModel, 'notes' | 'keys' | 'selected' | 'pentatonic' | 'hexatonic' | 'quartal' | 'second' | 'outside'> & Readonly<{ degrees: readonly Pitched[] }> {
   const reference = mode === 'from' ? startReference(startText) : orNull(() => writtenChordRootLenient(part, row.chord, scale))
   // from the root, a key is the note's degree: in the formula's letters, whatever letters the staff shows (#279)
   const keysOf = (ns: readonly Pitched[], ds: readonly Pitched[]) => (reference ? practiceKeys(reference, mode === 'root' ? ds : ns, mode === 'root' ? (resolveQuality(row.chord)?.quality ?? null) : null) : null)
   const keys = keysOf(notes, degrees)
-  const none = { notes, degrees, pentatonic: null, hexatonic: null, second: null, outside: null }
+  const none = { notes, degrees, pentatonic: null, hexatonic: null, quartal: null, second: null, outside: null }
   const chordRoot = () => orNull(() => writtenChordRootLenient(part, row.chord, scale)) ?? scaleLabel(part, scale).root
   if (isPentatonicSelection(practice)) {
     const pcs = notes.map((n) => pcOf(n))
@@ -145,6 +147,11 @@ function practiceFor(
     const key = practice.basis === 'key' && keyName !== undefined ? writtenKeyPair(keyName, part) : undefined
     const { hexatonic, lit, second } = hexatonicPick(writtenScale(part, scale).notes, chordRoot(), quality, practice.pair, practice.grouping, pcs, Array.isArray(pick) ? (pick as readonly [number, number]) : null, key)
     return { ...none, keys, selected: lit, hexatonic, second }
+  }
+  if (isQuartalSelection(practice)) {
+    const quality = orNull(() => baseQuality(parseChord(row.chord).quality))
+    const { quartal, lit } = quartalPick(writtenScale(part, scale).notes, chordRoot(), quality, practice.degree, practice.notes, !!practice.perfect, notes.map((n) => pcOf(n)))
+    return { ...none, keys, selected: lit, quartal }
   }
   return { ...none, keys, selected: practice && keys ? selectedNotes(practice, row.chord, keys) : null }
 }
@@ -169,7 +176,7 @@ function staff(
   const id = [chordTexts.join(' '), scale, part.clef, part.trans, mode, startKey, keySig, showClefAndKey ? '' : 'bare'].join('|')
   const base = { id, last, keySig, showClefAndKey, positions: covers.positions, source: scale === null ? null : { chord: row.chord, scale } }
   const chords = chordTexts.map((c) => chordTokensOrNull(part, c, scale))
-  const none = { notes: [], accidentals: [], intervals: null, keys: null, selected: null, pentatonic: null, hexatonic: null, second: null, outside: null, varies: false }
+  const none = { notes: [], accidentals: [], intervals: null, keys: null, selected: null, pentatonic: null, hexatonic: null, quartal: null, second: null, outside: null, varies: false }
   if (scale === null) return { ...base, ...none, chords, scale: null, error: chords[0] ? 'Choose a scale' : "Can't read this chord" }
   try {
     const label = scaleLabel(part, scale)

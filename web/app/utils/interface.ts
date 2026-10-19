@@ -28,6 +28,7 @@ export const CONTROL_TIERS = {
   'chord-picks': 'everything', // the chord pick popovers on both sheets (#303)
   'practice-pentatonic': 'everything', // the Practice panel's Pentatonic preset
   'practice-hexatonic': 'everything', // the Practice panel's Hexatonic preset, its Pair and grouping
+  'practice-quartal': 'everything', // the Practice panel's Quartal preset, its Built on, Notes and Perfect only (#432)
   'key-change': 'everything', // Key change here
   'function-choice': 'everything', // the numeral label picker, ChordChoices' Function section
   source: 'everything', // Show/Hide source, Source, Chart text

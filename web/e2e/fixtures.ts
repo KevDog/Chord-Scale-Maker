@@ -377,7 +377,11 @@ export async function hexatonicPreset(page: Page): Promise<void> {
   await practicePreset(page, 'Hexatonic')
 }
 
-async function practicePreset(page: Page, name: 'Pentatonic' | 'Hexatonic'): Promise<void> {
+export async function quartalPreset(page: Page): Promise<void> {
+  await practicePreset(page, 'Quartal')
+}
+
+async function practicePreset(page: Page, name: 'Pentatonic' | 'Hexatonic' | 'Quartal'): Promise<void> {
   await chooseSheet(page, 'Scales')
   await pickOption(page, 'Where each scale starts', 'From root')
   await page.locator('fieldset', { hasText: 'Practice' }).getByRole('button', { name, exact: true }).click()

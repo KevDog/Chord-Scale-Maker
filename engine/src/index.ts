@@ -48,6 +48,7 @@ export { dominantScale, dominantScaleTable, FUNCTION_ERRORS, parseFunction, RULE
 export * from './ladder'
 export * from './pentatonics'
 export * from './hexatonics'
+export * from './quartal'
 export * from './picks'
 export * from './chordPicks'
 export * from './chordChoices'

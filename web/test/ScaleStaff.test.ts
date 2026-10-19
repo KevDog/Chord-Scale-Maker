@@ -43,6 +43,16 @@ describe('ScaleStaff', () => {
     expect(none.find('[data-slot="hexatonic"]').exists()).toBe(false)
   })
 
+  it('captions the staff with its stack of fourths under the Quartal preset, or says it has none (#432)', async () => {
+    const quartal = { preset: 'quartal', degree: 'auto', notes: 4 } as const
+    const staffOf = (chord: string, scale = '') => buildSheet([{ section: 'A', bar: '1', chord, scale }], CONCERT, 'root', 'C', 12, quartal)[0]?.pages.flat()[0]
+    const g7 = await mountSuspended(ScaleStaff, { props: { staff: staffOf('G7'), clef: 'treble', quartal: true } })
+    expect(g7.find('[data-slot="quartal"]').text()).toBe('F B E A · 4ths')
+    const hw = await mountSuspended(ScaleStaff, { props: { staff: staffOf('C7', 'C Half-Whole'), clef: 'treble', quartal: true } })
+    expect(hw.find('[data-slot="quartal"]').text()).toBe('no 4ths stack')
+    expect((await mountSuspended(ScaleStaff, { props: { staff: staffOf('G7'), clef: 'treble' } })).find('[data-slot="quartal"]').exists()).toBe(false)
+  })
+
   describe('the caption opens the chord pick popover (#303)', () => {
     const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | Cmaj7\n4 | Cmaj7\n\nsection: B\n1 | Dm7\n2 | G7\n3 | Cmaj7\n4 | Cmaj7\n').value
     const res = resolveScales(doc, { level: 'standard', seed: 0 })

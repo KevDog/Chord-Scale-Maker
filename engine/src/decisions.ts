@@ -38,6 +38,7 @@ export const DECISIONS = [
   { id: 'hex.key', title: 'Hexatonic pairs by key area', page: 'how-it-decides', anchor: 'hex.key', summary: 'Pairs by key area: the IV and V triads of the key, one pair for every chord in it.' },
   { id: 'hex.group', title: 'Hexatonic groupings', page: 'how-it-decides', anchor: 'hex.group', summary: 'How the six notes of a triad pair are split in two and tinted apart.' },
   { id: 'hex.sheet', title: 'Triad pairs on the Arpeggios sheet', page: 'how-it-decides', anchor: 'hex.sheet', summary: 'Each line’s triad pair as six triads, lower and upper in turn through their inversions, arpeggiated or as block chords.' },
+  { id: 'quartal.auto', title: 'Quartal Auto', page: 'how-it-decides', anchor: 'quartal.auto', summary: 'Auto picks the stack of fourths with no avoid note that holds the most guide tones, perfect fourths first.' },
   { id: 'hex.line', title: 'The Triad pair line', page: 'how-it-decides', anchor: 'hex.line', summary: 'Each chord’s triad pair a triad at a time, its lower triad first.' },
   { id: 'pick.order', title: 'The order of chord picks', page: 'how-it-decides', anchor: 'pick.order', summary: 'A chord pick’s list runs from inside to outside.' },
   { id: 'spell.root', title: 'Spelling a scale', page: 'how-it-decides', anchor: 'spell.root', summary: 'Each scale takes the spelling with no double flats or sharps, as few B♯, E♯, C♭ and F♭ as it can, then the fewest accidentals, then the sharp or flat side it was written on.' },
