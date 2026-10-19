@@ -232,4 +232,15 @@ describe('ChangesNote’s links to How it decides', () => {
     expect(await hrefs({ pinned: true })).toEqual(['/how-it-decides#scale.level'])
     expect(await hrefs({ slash: true })).toEqual(['/how-it-decides#scale.slash'])
   })
+
+  it('names Basic’s Blues scale when the level gives it one', async () => {
+    const w = await mountNote({ levelNote: 'Basic: the E Blues scale over the whole blues' } as Partial<typeof base>)
+    await w.find('button').trigger('click')
+    expect(w.find('[role=dialog]').text()).toContain('Basic: the E Blues scale over the whole blues')
+    w.unmount()
+    const v = await mountNote()
+    await v.find('button').trigger('click')
+    expect(v.find('[role=dialog]').text()).not.toContain('Blues scale')
+    v.unmount()
+  })
 })

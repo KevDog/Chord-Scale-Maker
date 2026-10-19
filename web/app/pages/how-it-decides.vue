@@ -44,7 +44,8 @@
             wrong one), <strong :class="EM">Standard</strong> is the usual chord-scale for each chord, and
             <strong :class="EM">Advanced</strong> reaches for bebop, Lydian and altered colours. Each level moves the
             scale the analysis chose, so a dominant resolving to minor climbs a different ladder from one resolving to major.
-            A tonic minor chord is Aeolian at Basic.
+            A tonic minor chord is Aeolian at Basic, and in a blues the I, IV and V play the key's Blues scale
+            (<UiTextLink href="#scale.blues">a blues</UiTextLink>).
           </UiText>
           <UiTable dense>
             <UiTableHead>
@@ -73,6 +74,27 @@
           <UiText>
             <strong :class="EM">What you can change:</strong> the level, and any chord's scale (pick it in the editor, or
             write it in the source).
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection id="scale.blues">
+          <UiText>
+            A chart reads as a blues when its form is a 12- or 24-bar blues, or its header says
+            <UiCode>context: blues</UiCode> (<strong :class="EM">Read as: Blues</strong> under the editor's Details), whatever
+            its form: a 9-, 13- or 16-bar Delta blues too.
+          </UiText>
+          <UiText>
+            In a blues the I7, the IV7 and a V7 with nowhere it must go are Mixolydian, and so is a triad or 6 chord on I, IV
+            or V (a maj7 says its 7th is major, and keeps the major rules). In a minor blues the i and iv are Dorian; its V7
+            takes the minor key's scale. At <strong :class="EM">Basic</strong> each of those plays the key's Blues scale,
+            1 ♭3 4 ♭5 5 ♭7: E Blues over E7, A7 and B7, the way blues players start. <strong :class="EM">Advanced</strong>
+            climbs each chord's own ladder, Mixolydian to Bebop Dominant.
+          </UiText>
+          <UiText>
+            Chords that leave the blues, a ii–V or a turnaround's VI7, keep their own rules at every level.
+          </UiText>
+          <UiText>
+            <strong :class="EM">What you can change:</strong> Read as, a chord's scale, or its function.
           </UiText>
         </DecisionSection>
 

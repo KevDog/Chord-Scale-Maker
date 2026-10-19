@@ -14,6 +14,7 @@ export type DecisionInfo = Readonly<{ id: string; title: string; page: DocPage; 
 
 export const DECISIONS = [
   { id: 'scale.level', title: 'Scale levels', page: 'how-it-decides', anchor: 'scale.level', summary: 'What Basic, Standard, Advanced and Random reach for, and why a scale you wrote plays at every level.' },
+  { id: 'scale.blues', title: 'A blues', page: 'how-it-decides', anchor: 'scale.blues', summary: 'In a blues the I, IV and V (and a minor blues’ i and iv) play Mixolydian or Dorian at Standard and the key’s Blues scale at Basic.' },
   { id: 'scale.unknown', title: 'Chords it can’t read', page: 'how-it-decides', anchor: 'scale.unknown', summary: 'A chord it can’t read is shown in amber, has no scale until you pick one, and rests in a line.' },
   { id: 'scale.slash', title: 'Slash chords', page: 'how-it-decides', anchor: 'scale.slash', summary: 'Some slash chords take their scale from another chord on their bass: D♭maj7/C plays as C 7sus4♭9.' },
   { id: 'key.area', title: 'Key areas', page: 'how-it-decides', anchor: 'key.area', summary: 'How the key of the moment is found, and where a key change is written in.' },
