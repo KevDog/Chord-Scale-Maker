@@ -23,7 +23,7 @@ export type { Detection } from './keys'
 
 /** bumped when a rule changes what it gives; saved in each chart's `# analysis:` line */
 export { CATALOGUE_KEYS, FUNCTION_GROUPS, type FunctionGroup, type FunctionRow, functionsTable } from './catalogue'
-export const RULES_VERSION = 1
+export const RULES_VERSION = 2
 
 /**
  * held: a later row of a chord held over several (Gm | Gm), which shares the first row's reason. numeral: the chord's

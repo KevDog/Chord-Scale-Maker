@@ -1,6 +1,6 @@
 import { proseGlyphs, rootName, shiftBy } from '../pitch'
 import { cleanLettering, scaleKey } from '../scales'
-import { degree, diatonic, hasRelatedII, impliedDiatonic, isDominantLike, type Key, keyText, makeKey, reference, tonicName } from './keys'
+import { degree, diatonic, hasRelatedII, impliedDiatonic, isDominantLike, type Key, keyText, makeKey, reference, sameKey, tonicName } from './keys'
 import { ownNumeral, roman } from './degrees'
 import { bassOf, bassPc, downFifth, downHalf, type Entry, type Family, interval, nextOf, prevOf } from './stream'
 
@@ -51,6 +51,11 @@ const NAME = {
 } as const
 
 const named = (e: Entry, scale: string): string => `${e.root ? rootName(e.root) : '?'} ${scale}`
+
+/** the blues key when this chord is a blues chord's home: a blues context, and the chord not under an @key or section key: */
+const bluesAt = (ctx: Context, i: number): Key | null => (ctx.blues && sameKey(ctx.keys[i] ?? ctx.global, ctx.blues) ? ctx.blues : null)
+/** the chord's step above the blues tonic, named when it is the I, IV or V */
+const BLUES_STEP: Readonly<Record<number, 'I' | 'IV' | 'V'>> = { 0: 'I', 5: 'IV', 7: 'V' }
 
 // —— dominants: tension slots ——
 
@@ -140,6 +145,15 @@ function dominantDecision(e: Entry, rule: string, fn: string, base: Slots, why: 
   return { scale: named(e, dominantScale(slots)), rule: moved ? `D1+${rule}` : rule, fn, reason }
 }
 
+const BLUES_ROLE = { I: 'a tonic with dominant colour', IV: 'a subdominant with dominant colour', V: 'a dominant that needn’t resolve' } as const
+/** D9: a blues dominant, Mixolydian; written tensions still move it (D1+D9) */
+function bluesDominant(e: Entry, step: 'I' | 'IV' | 'V'): Decision {
+  const why = `${step}7 of the blues: ${BLUES_ROLE[step]}`
+  const moved = dominantScale({ ...NATURAL, ...pins(e.symbol) }) !== NAME.mixolydian // the symbol's notes then name the scale
+  const extra = step === 'IV' ? ' (the #11 is an extra colour)' : ''
+  return dominantDecision(e, 'D9', `${step}7 of the blues`, NATURAL, moved ? why : `${why}, Mixolydian${extra}`, false)
+}
+
 /** the end of a chain of dominants each resolving down a fifth into the next */
 function chainEnd(ctx: Context, i: number): Entry | undefined {
   let j: number | null = i
@@ -184,16 +198,12 @@ function dominant(ctx: Context, i: number): Decision {
   const pin = pins(e.symbol)
   if (pin.all) return { scale: named(e, NAME.altered), rule: 'D1', fn: 'altered dominant', reason: 'from the symbol: altered' }
   if (ctx.modal) return dominantDecision(e, 'D7', 'modal dominant', NATURAL, 'modal: its own mode', false)
-  // R2: the blues I7 and IV7 are decided by their degree before the chords around them (M&H p. 137: "I7 should not be
-  // confused with V7/IV"); IV7 is Mixolydian, though the key holds its #11 (principle 4 yields, N&G p. 105). A stated
+  // D9: the blues I7 and IV7 are decided by their degree before the chords around them (M&H p. 137: "I7 should not be
+  // confused with V7/IV"): Mixolydian, though the key holds the IV7's #11 (principle 4 yields, N&G p. 105). A stated
   // function that names a target wins (principle 1): a stated V7/IV goes the usual way, to its target
-  const blues = ctx.statedTarget[i] ? null : ctx.blues
-  if (blues && e.pc === blues.tonic) return dominantDecision(e, 'D5', 'I7 of the blues', derive(e, blues), 'I7 of the blues: a tonic with dominant colour', true, ', ')
-  if (blues && interval(blues.tonic, e.pc) === 5) {
-    const why = 'IV7 of the blues: a subdominant with dominant colour'
-    const moved = dominantScale({ ...NATURAL, ...pin }) !== NAME.mixolydian // the symbol's notes then name the scale
-    return dominantDecision(e, 'D5', 'IV7 of the blues', NATURAL, moved ? why : `${why}, Mixolydian (the #11 is an extra colour)`, false)
-  }
+  const blues = ctx.statedTarget[i] ? null : bluesAt(ctx, i)
+  const step = blues ? BLUES_STEP[interval(blues.tonic, e.pc)] : undefined
+  if (step === 'I' || step === 'IV') return bluesDominant(e, step)
   // a tritone substitute lands on a chord of its own; into a ø7 or °7 it is the V of what follows (Fm7 Bb7 | Aø7)
   if (n && downHalf(e, n) && n.family !== 'halfdim' && n.family !== 'dim') return dominantDecision(e, 'D2', `subV7 of ${n.chord}`, LYDIAN_DOMINANT, `tritone substitute: resolves down a half step to ${n.chord}`, false)
   if (n && downFifth(e, n) && isDominantLike(n)) {
@@ -237,6 +247,9 @@ function dominant(ctx: Context, i: number): Decision {
     }
     return dominantDecision(e, 'D4', `V7/${roman(implied, key)} in ${keyText(key)} (the ${roman(implied, key)} never arrives)`, derive(e, key), `V7/${roman(implied, key)} in ${keyText(key)}`, true)
   }
+  // D9: a blues V7 that resolves nowhere is the blues' own V, not a guess (a resolving one took D3 or D4 above); a minor
+  // blues' V7 keeps the minor key's rules
+  if (step === 'V' && !blues?.minor) return bluesDominant(e, 'V')
   if (e.bars >= 4) return dominantDecision(e, 'D7', 'static dominant', NATURAL, 'static dominant: its own mode', false)
   if (reference(key).includes(e.pc) || reference(key, true).includes(e.pc)) {
     const fn = `${roman(e, key)}7 in ${keyText(key)}, not resolving`
@@ -272,6 +285,11 @@ function majorRules(ctx: Context, i: number): Decision {
   if (e.quality === 'Maj7#11') return { scale: named(e, NAME.lydian), rule: 'M1', fn, reason: 'from the symbol: #11' }
   if (e.quality === 'Maj7#5') return { scale: named(e, NAME.lydianAugmented), rule: 'M2', fn, reason: 'from the symbol: #5' }
   if (e.quality === 'aug') return { scale: named(e, NAME.wholeTone), rule: 'M2', fn, reason: 'from the symbol: augmented' }
+  const blues = bluesAt(ctx, i)
+  const bluesStep = blues ? BLUES_STEP[interval(blues.tonic, e.pc)] : undefined
+  if (bluesStep && (e.quality === 'maj' || e.quality === '6')) {
+    return { scale: named(e, NAME.mixolydian), rule: 'M6', fn: `${bluesStep} of the blues`, reason: `${bluesStep} of the blues: a triad here implies its ♭7, Mixolydian` }
+  }
   if (ctx.modal) return { scale: named(e, NAME.lydian), rule: 'M5', fn: 'modal major', reason: 'modal major: Lydian' }
   if (!key.minor && d === 0) return { scale: named(e, NAME.ionian), rule: 'M3', fn, reason: 'tonic: the 4th is in the key' }
   if (key.minor && d === 3) return { scale: named(e, NAME.ionian), rule: 'M3', fn, reason: `bIII of ${keyText(key)}: the relative major itself` }
@@ -311,6 +329,12 @@ function minor(ctx: Context, i: number): Decision {
   const d = degree(e, key)
   const fn = `${roman(e, key)} in ${keyText(key)}`
   if (e.quality === 'mMaj7') return { scale: named(e, NAME.melodicMinor), rule: 'm1', fn, reason: 'from the symbol: minor-major 7th' }
+  const blues = bluesAt(ctx, i)
+  const bluesStep = blues?.minor ? BLUES_STEP[interval(blues.tonic, e.pc)] : undefined
+  if ((bluesStep === 'I' || bluesStep === 'IV') && ['m', 'm7', 'm6'].includes(e.quality) && !/b6|b13/.test(e.symbol)) {
+    const which = bluesStep === 'I' ? 'i' : 'iv'
+    return { scale: named(e, NAME.dorian), rule: 'm10', fn: `${which} of the minor blues`, reason: `${which} of the minor blues: Dorian` }
+  }
   if (e.quality === 'm6') {
     // R6: the tonic m6 of a minor key takes melodic minor (M&H pp. 85–86; Chediak vol. 1 p. 341); a modal chart has no tonic function (§5.4)
     if (!ctx.modal && key.minor && d === 0) return { scale: named(e, NAME.melodicMinor), rule: 'm2', fn, reason: 'tonic minor sixth chord: melodic minor, the raised 7th is a tension' }
@@ -434,6 +458,9 @@ function sus(ctx: Context, i: number): Decision {
   const e = ctx.stream[i] as Entry
   const key = ctx.keys[i] ?? ctx.global
   if (e.quality === '7sus4b9') return { scale: named(e, NAME.phrygian), rule: 's1', fn: 'sus b9', reason: 'from the symbol: sus b9' }
+  const blues = bluesAt(ctx, i)
+  const bluesStep = blues ? BLUES_STEP[interval(blues.tonic, e.pc)] : undefined
+  if (bluesStep) return { scale: named(e, NAME.mixolydian), rule: 's4', fn: `${bluesStep}7sus of the blues`, reason: `${bluesStep}7sus of the blues: Mixolydian` }
   const n = nextOf(ctx.stream, i)
   if (!ctx.modal && n && downFifth(e, n) && e.bars < 4) {
     const harmonic = key.minor && n.pc === key.tonic && n.family === 'minor'
@@ -493,19 +520,22 @@ export const RULES: readonly RuleInfo[] = [
   { id: 'D7', family: 'dominant', tier: 3, scale: 'Mixolydian', looksAt: 'a modal chart, or a dominant that resolves nowhere and is held four bars or more', summary: 'A static or modal dominant is its own mode: Mixolydian.' },
   { id: 'D2', family: 'dominant', tier: 4, scale: 'Lydian Dominant', looksAt: 'the next chord, a half step down (not a ø7 or °7)', summary: 'A tritone substitute resolves down a half step: Lydian Dominant.' },
   { id: 'D8', family: 'dominant', tier: 4, scale: 'derived from the minor key', looksAt: 'a chain of dominants that ends on a minor chord, or its last link', summary: 'An extended dominant on its way into a minor key, or the last link of the chain, takes its tensions from that key. A link into the key’s own V7 is V7/V, the links before it arrows.' },
-  { id: 'D3', family: 'dominant', tier: 4, scale: 'Mixolydian', looksAt: 'the next chord, another dominant a fifth down', summary: 'An extended dominant (V7 of another V7) keeps natural tensions: Mixolydian (a blues I7 before its IV7 is not one: D5). A link into the key’s own V7 is V7/V (the dominant of the dominant), the links before it arrows; a chain that never reaches the key’s V7 keeps each chord’s own degree.' },
+  { id: 'D3', family: 'dominant', tier: 4, scale: 'Mixolydian', looksAt: 'the next chord, another dominant a fifth down', summary: 'An extended dominant (V7 of another V7) keeps natural tensions: Mixolydian (a blues I7 before its IV7 is not one: D9). A link into the key’s own V7 is V7/V (the dominant of the dominant), the links before it arrows; a chain that never reaches the key’s V7 keeps each chord’s own degree.' },
   { id: 'D4', family: 'dominant', tier: 4, scale: 'derived from the key', looksAt: 'the chord it resolves to, a fifth down; the major or minor chord before it that it is the V of; or the ii before it', summary: 'A resolving dominant takes each tension (9, 11, 13) in the form the key holds.' },
-  { id: 'D5', family: 'dominant', tier: 3, scale: 'derived from the key (Mixolydian for a blues IV7)', looksAt: 'its degree: the blues I7 or IV7 (before the chords around it), the back door, or a diatonic dominant', summary: 'A blues I7 (a tonic with dominant colour) takes its tensions from the key and a blues IV7 is Mixolydian, whatever follows them; a dominant a whole step below a major chord (the back door, ♭VII7), or a diatonic dominant that does not resolve, takes its tensions from the key.', guess: 'a diatonic dominant that does not resolve' },
+  { id: 'D5', family: 'dominant', tier: 3, scale: 'derived from the key', looksAt: 'its degree: the back door, or a diatonic dominant', summary: 'A dominant a whole step below a major chord (the back door, ♭VII7), or a diatonic dominant that does not resolve, takes its tensions from the key.', guess: 'a diatonic dominant that does not resolve' },
+  { id: 'D9', family: 'dominant', tier: 3, scale: 'Mixolydian', looksAt: 'a blues: its degree, the I7 or IV7 (before the chords around it), or a V7 that does not resolve', summary: 'In a blues the I7 (a tonic with dominant colour), the IV7 and a V7 with nowhere it must go are Mixolydian; at Basic they play the key’s Blues scale. A minor blues’ V7 keeps the minor key’s rules.' },
   { id: 'D6', family: 'dominant', tier: 4, scale: 'Lydian Dominant', looksAt: 'a non-diatonic dominant with nowhere to go', summary: 'A non-diatonic dominant that does not resolve is Lydian Dominant: in a major key, ♭VII7, ♭VI7 or ♭III7 borrowed from the parallel minor; any other, a chromatic dominant in its own key.', guess: 'a chromatic dominant (not ♭VII7, ♭VI7 or ♭III7 in a major key)' },
   { id: 'M1', family: 'major', tier: 1, scale: 'Lydian', looksAt: 'a #11 in the symbol', summary: 'A maj7#11, or a triad with a #11 (Bb(#11)), is Lydian.' },
   { id: 'M2', family: 'major', tier: 1, scale: 'Lydian Augmented', looksAt: 'a #5 in the symbol', summary: 'A maj7#5 is Lydian Augmented; an augmented triad, Whole Tone.' },
   { id: 'M5', family: 'major', tier: 2, scale: 'Lydian', looksAt: 'a modal chart', summary: 'A major chord in a modal chart is Lydian.' },
+  { id: 'M6', family: 'major', tier: 2, scale: 'Mixolydian', looksAt: 'a blues: a major triad or 6 chord on I, IV or V', summary: 'In a blues a triad on I, IV or V implies its ♭7: Mixolydian (a maj7 says otherwise, and keeps the major rules); at Basic, the key’s Blues scale.' },
   { id: 'M3', family: 'major', tier: 3, scale: 'Ionian (Mixolydian for a V triad)', looksAt: 'its degree: the tonic, ♭III or ♭VII in a minor key, a V triad, or IV after its own dominant', summary: 'The tonic major chord (or ♭III, the relative major, in a minor key) is Ionian; so is ♭VII of a minor key, the notes of the tonic’s Dorian, and a IV reached by its own dominant (V7/IV, or subV7/IV a half step above), the key of the moment; a V triad without its 7th is Mixolydian.' },
   { id: 'M4', family: 'major', tier: 3, scale: 'Lydian', looksAt: 'its degree: any other major chord', summary: 'Any other major chord is Lydian (♭VI of a minor key among them; on a IV not reached by its own dominant, the #4 is the key’s 7th; on ♭II, ♭III, ♭VI or ♭VII of a major key, borrowed by modal interchange, its ♯11 is in the key).' },
   { id: 'm1', family: 'minor', tier: 1, scale: 'Melodic Minor', looksAt: 'a major 7th in the symbol', summary: 'A minor-major 7th is Melodic Minor.' },
   { id: 'm2', family: 'minor', tier: 3, scale: 'Melodic Minor or Dorian', looksAt: 'a 6 in the symbol, and its degree: the tonic of a minor key', summary: 'A minor sixth chord on the tonic of a minor key is Melodic Minor, the raised 7th a tension; any other (iv6, ii6, or any in a modal chart) is Dorian.' },
   { id: 'm3', family: 'minor', tier: 1, scale: 'Aeolian', looksAt: 'a b6 or b13 in the symbol', summary: 'A minor chord with a written b6 or b13 is Aeolian.' },
   { id: 'm6', family: 'minor', tier: 2, scale: 'Dorian', looksAt: 'a modal chart', summary: 'A minor chord in a modal chart is Dorian.' },
+  { id: 'm10', family: 'minor', tier: 2, scale: 'Dorian', looksAt: 'a minor blues: the i or iv (triad, m7 or m6)', summary: 'In a minor blues the i and iv are Dorian; at Basic, the key’s Blues scale.' },
   { id: 'm4', family: 'minor', tier: 4, scale: 'Dorian', looksAt: 'the next chord, a dominant a fourth up', summary: 'The ii of a ii–V is Dorian (a diatonic iii keeps its Phrygian, m9).' },
   { id: 'm5', family: 'minor', tier: 3, scale: 'Dorian', looksAt: 'its degree: the tonic of a minor key', summary: 'The tonic minor chord of a minor key is Dorian, by convention.' },
   { id: 'm9', family: 'minor', tier: 3, scale: 'Phrygian', looksAt: 'its degree: iii in a major key, also as the ii of the next dominant', summary: 'iii in a major key is Phrygian, the key’s own notes (the ♭2 is a passing note); Dorian at Advanced.' },
@@ -514,6 +544,7 @@ export const RULES: readonly RuleInfo[] = [
   { id: 'h2', family: 'halfdim', tier: 4, scale: 'Locrian', looksAt: 'the next chord, a dominant a fourth up', summary: 'A half-diminished chord is Locrian (Locrian ♮2 at Advanced), in a modal chart too; with a dominant after it, it is the iiø7 of that minor ii–V; without one, iiø7 in a major key is borrowed from the parallel minor.', guess: 'no related dominant follows (but iiø7 in a major key)' },
   { id: 'd1', family: 'dim', tier: 4, scale: 'Diatonic Diminished, or Whole-Half Diminished', looksAt: 'the next chord (its root or bass), and its degree in the key', summary: 'A diminished seventh chord takes the diatonic diminished scale of its function: a vii°7 leading up a half step (to the next chord’s root or bass: ♯II°7 to I/3), the V7♭9♯9♭13 of the chord it leads to, from its own root; in a major key, ♯IV°7 to I (over its 5th or not), the ♯II°7’s notes; a passing ♭III°7 or ♭VI°7 or an auxiliary I°7 or V°7 (one that returns to a chord on its own root), its chord tones plus the key’s notes. Any other is not functioning diatonically: Whole-Half Diminished, the symmetric scale. Whole-Half at Basic and Advanced.', guess: 'a passing diminished chord' },
   { id: 's1', family: 'sus', tier: 1, scale: 'Phrygian', looksAt: 'a b9 in the symbol', summary: 'A sus b9 is Phrygian.' },
+  { id: 's4', family: 'sus', tier: 2, scale: 'Mixolydian', looksAt: 'a blues: a sus chord on I, IV or V', summary: 'In a blues a sus chord on I, IV or V is Mixolydian; at Basic, the key’s Blues scale.' },
   { id: 's2', family: 'sus', tier: 4, scale: 'Mixolydian or Mixolydian b6', looksAt: 'the next chord, a fifth down (in a chart that is not modal, held under four bars)', summary: 'A resolving sus takes its 13 from the key: Mixolydian, or Mixolydian b6 when the key holds the b13.' },
   { id: 's3', family: 'sus', tier: 4, scale: 'Mixolydian', looksAt: 'no resolution: a modal chart, a sus held four bars or more, or none that falls a fifth; or, outside a modal chart, the dominant on its own root next', summary: 'A static sus is Mixolydian; so is a sus before its dominant on the same root, a subdominant suspension (its 4th a chord tone).' },
 ]

@@ -20,7 +20,7 @@ describe('RULES', () => {
     const ids = RULES.map((r) => r.id)
     expect(new Set(ids).size).toBe(ids.length)
     for (const r of RULES) {
-      expect(r.id).toMatch(/^[DMmhds]\d$/)
+      expect(r.id).toMatch(/^[DMmhds]\d+$/) // m10: the minor rules passed nine
       expect(Object.keys(TIERS)).toContain(String(r.tier))
       expect(r.scale && r.looksAt && r.summary).toBeTruthy()
     }

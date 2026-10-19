@@ -53,12 +53,12 @@ describe('a stated context (§2)', () => {
     expect(a.rows.some((r) => r.reason.startsWith('I7 of the blues'))).toBe(false)
   })
 
-  it('blues: the I is key:, else bar 1, and I7 and IV7 are D5 (Watermelon Man, 16 bars)', () => {
+  it('blues: the I is key:, else bar 1, and I7 and IV7 are D9 (Watermelon Man, 16 bars)', () => {
     const rows = '1 F7, 5 Bb7, 7 F7, 9 C7, 10 Bb7, 11 C7, 12 Bb7, 13 C7, 14 Bb7, 15 F7'
     const stated = read(chart('', rows, 'form: A, 16 bars\ncontext: blues\n'))
     expect([stated.context, stated.contextSource, stated.key?.name, stated.keyFrom]).toEqual(['blues', 'stated', 'F major', 'blues'])
-    expect(verdict(chart('', rows, 'form: A, 16 bars\ncontext: blues\n'), '5 Bb7')).toBe('Bb Mixolydian (D5)')
-    expect(verdict(chart('', rows, 'form: A, 16 bars\ncontext: blues\n'), '1 F7')).toBe('F Mixolydian (D5)')
+    expect(verdict(chart('', rows, 'form: A, 16 bars\ncontext: blues\n'), '5 Bb7')).toBe('Bb Mixolydian (D9)')
+    expect(verdict(chart('', rows, 'form: A, 16 bars\ncontext: blues\n'), '1 F7')).toBe('F Mixolydian (D9)')
     expect(read(chart('Bb', rows, 'form: A, 16 bars\ncontext: blues\n')).key?.name).toBe('Bb major')
   })
 
@@ -140,8 +140,8 @@ describe('the detection (§2)', () => {
   it('Locomotion without context: is not modal; its first 12-bar section is a blues', () => {
     const a = read(undeclared('locomotion'))
     expect([a.context, a.contextSource, a.detection.blues]).toEqual(['blues', 'detected', 'section'])
-    expect(verdict(undeclared('locomotion'), '5 Eb7')).toBe('Eb Mixolydian (D5)')
-    expect(verdict(undeclared('locomotion'), '1 Bb7')).toBe('Bb Mixolydian (D5)')
+    expect(verdict(undeclared('locomotion'), '5 Eb7')).toBe('Eb Mixolydian (D9)')
+    expect(verdict(undeclared('locomotion'), '1 Bb7')).toBe('Bb Mixolydian (D9)')
   })
 
   it('Tee Pee Time (12-12-8-12) is a blues by its first section', () => {

@@ -118,9 +118,9 @@ describe('analysis: dominants (§7.1)', () => {
     expect(verdict(chart('C', '1 CMaj7, 3 Fm7, 4 Bb7, 5 CMaj7, 7 Dm7, 8 G7'), '4 Bb7')).toBe('Bb Lydian Dominant (D5)')
   })
 
-  it('D5 IV7 of a blues is Mixolydian, I7 Mixolydian, both D5 (R2)', () => {
+  it('D9 IV7 of a blues is Mixolydian, I7 Mixolydian, both D9 (R2)', () => {
     const v = verdicts(library('f-blues'))
-    expect([v['1 F7'], v['2 Bb7']]).toEqual(['F Mixolydian (D5)', 'Bb Mixolydian (D5)'])
+    expect([v['1 F7'], v['2 Bb7']]).toEqual(['F Mixolydian (D9)', 'Bb Mixolydian (D9)'])
     expect(analyse(parseChart(library('f-blues')).value).context).toBe('blues')
   })
 
@@ -380,30 +380,30 @@ describe('R1: a IV reached by its own dominant is Ionian (docs/superpowers/specs
   })
 })
 
-describe('R2: the blues I7 and IV7 by D5 before D3 (docs/superpowers/specs/2026-10-10-analysis-rules-from-sources-design.md)', () => {
+describe('R2: the blues I7 and IV7 by D9 before D3 (docs/superpowers/specs/2026-10-10-analysis-rules-from-sources-design.md)', () => {
   const reasoned = (text: string, barChord: string): string | undefined => {
     const r = findRow(text, barChord)
     return r && `${r.scale} (${r.rule}): ${r.reason}`
   }
   const fJazzBlues = library('f-jazz-blues')
 
-  it('I7 of the blues is D5, not an extended dominant (F Jazz Blues bar 1)', () => {
-    expect(reasoned(fJazzBlues, '1 F7')).toBe('F Mixolydian (D5): I7 of the blues: a tonic with dominant colour, natural tensions')
+  it('I7 of the blues is D9, not an extended dominant (F Jazz Blues bar 1)', () => {
+    expect(reasoned(fJazzBlues, '1 F7')).toBe('F Mixolydian (D9): I7 of the blues: a tonic with dominant colour, Mixolydian')
   })
 
-  it('IV7 of the blues is Mixolydian, D5 (F Jazz Blues bar 5)', () => {
-    expect(reasoned(fJazzBlues, '5 Bb7')).toBe('Bb Mixolydian (D5): IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)')
+  it('IV7 of the blues is Mixolydian, D9 (F Jazz Blues bar 5)', () => {
+    expect(reasoned(fJazzBlues, '5 Bb7')).toBe('Bb Mixolydian (D9): IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)')
   })
 
   it('a IV7 whose symbol moves it off Mixolydian drops the Mixolydian clause (Ab7#11 in an Eb blues)', () => {
     const text = chart('', '1 Eb7, 5 Ab7#11, 7 Eb7, 9 Bb7, 10 Ab7, 11 Eb7, 12 Bb7')
     expect(analyse(parseChart(text).value).context).toBe('blues')
-    expect(reasoned(text, '5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D5): IV7 of the blues: a subdominant with dominant colour; #11 from the symbol')
-    expect(reasoned(library('blue-trane'), 'A 5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D5): IV7 of the blues: a subdominant with dominant colour; #11 from the symbol')
+    expect(reasoned(text, '5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D9): IV7 of the blues: a subdominant with dominant colour; #11 from the symbol')
+    expect(reasoned(library('blue-trane'), 'A 5 Ab7#11')).toBe('Ab Lydian Dominant (D1+D9): IV7 of the blues: a subdominant with dominant colour; #11 from the symbol')
   })
 
   it('an I7 whose symbol moves it names the symbol’s notes, not natural tensions (Eb7#9)', () => {
-    expect(reasoned(library('blue-trane'), 'A 1 Eb7#9')).toBe('Eb Half-Whole Diminished (D1+D5): I7 of the blues: a tonic with dominant colour, b9, #9 and #11 from the symbol')
+    expect(reasoned(library('blue-trane'), 'A 1 Eb7#9')).toBe('Eb Half-Whole Diminished (D1+D9): I7 of the blues: a tonic with dominant colour; b9, #9 and #11 from the symbol')
   })
 
   it('no I7 row of any library blues is reasoned by D3', () => {
@@ -422,14 +422,14 @@ describe('R2: the blues I7 and IV7 by D5 before D3 (docs/superpowers/specs/2026-
     const r = analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === '4 F7')
     expect([r?.scale, r?.rule, r?.fn, r?.numeral, r?.stated]).toEqual(['F Mixolydian', 'D4', 'V7/IV in F', 'V7/IV', true])
     expect(r?.reason).toMatch(/^\* V7\/IV in F: /)
-    expect(verdict(text, '1 F7')).toBe('F Mixolydian (D5)') // the unstated I7s keep R2
+    expect(verdict(text, '1 F7')).toBe('F Mixolydian (D9)') // the unstated I7s keep R2
   })
 
   it('a stated function that names no target leaves R2 its degree: a stated I7 is still the blues I7', () => {
     const text = fJazzBlues.replace(/^(1 +\| F7) +#.*$/m, '$1 | | I7')
     expect(parseChart(text).diagnostics).toEqual([])
     const r = analyse(parseChart(text).value).rows.find((x) => `${x.bar} ${x.chord}` === '1 F7')
-    expect([r?.scale, r?.rule, r?.fn, r?.stated]).toEqual(['F Mixolydian', 'D5', 'I7 of the blues', true])
+    expect([r?.scale, r?.rule, r?.fn, r?.stated]).toEqual(['F Mixolydian', 'D9', 'I7 of the blues', true])
   })
 
   it('a # keep: Bb Lydian Dominant on the blues IV7 stays', () => {
@@ -634,7 +634,7 @@ describe('analysis: writing it back (§12.1)', () => {
 
   it('saves reasons, marks where a written scale differs, and reruns as a no-op', () => {
     const saved = serializeChart(run(written, 'none', true).doc)
-    expect(saved).toContain('# analysis: 2026-10-08, rules v1; C')
+    expect(saved).toContain('# analysis: 2026-10-08, rules v2; C')
     expect(saved).toMatch(/Dm7\s+\| D Dorian\s+# ii of the ii–V to C\n/)
     expect(saved).toMatch(/G Bebop Dominant\s+# ≠ rules: G Mixolydian \(V7 of C: natural tensions\)/)
     expect(serializeChart(run(saved, 'none', true, '2027-01-01').doc)).toBe(saved) // same analysis: the old date stays
@@ -766,7 +766,7 @@ describe('refreshAnalysis', () => {
     const doc = refreshAnalysis(moved(library('round-midnight'), 'Ebm', 'Cm'))
     const text = comments(doc)
     const date = /# analysis: ([^,]+),/.exec(library('round-midnight'))?.[1]
-    expect(text).toContain(`# analysis: ${date}, rules v1; C minor`)
+    expect(text).toContain(`# analysis: ${date}, rules v2; C minor`)
     expect(text).toContain('# area: C minor (Intro 1–3)')
     expect(text).toContain('# area: C major (Intro 3–4)')
     expect(text).toContain('# area: Eb major (A1 5–6)') // was Gb major
