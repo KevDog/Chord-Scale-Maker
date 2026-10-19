@@ -3,14 +3,14 @@
     <template v-if="$slots.status" #status><slot name="status" /></template>
     <template #default="{ page }">
       <div class="space-y-1 print:space-y-2">
-        <ScaleStaff v-for="s in page.staves" :key="s.id" :staff="s" :clef="part.clef" :intervals="intervals" :part="part" :pickable="pickable" @pick="(...a) => emit('pick', ...a)" />
+        <ScaleStaff v-for="s in page.staves" :key="s.id" :staff="s" :clef="part.clef" :intervals="intervals" :part="part" :pickable="pickable" :quartal="isQuartalSelection(practice ?? null)" @pick="(...a) => emit('pick', ...a)" />
       </div>
     </template>
   </SheetPages>
 </template>
 
 <script setup lang="ts">
-import { buildSheet, type ChordAt, type ChordPicks, type Key, type PickKind, type ModeChoice, type Part, pageSubtitle, type PracticeSelection, type Resolved, type Row } from '@chord-scale-maker/engine'
+import { buildSheet, type ChordAt, isQuartalSelection, type ChordPicks, type Key, type PickKind, type ModeChoice, type Part, pageSubtitle, type PracticeSelection, type Resolved, type Row } from '@chord-scale-maker/engine'
 
 const props = defineProps<{
   rows: readonly Row[]

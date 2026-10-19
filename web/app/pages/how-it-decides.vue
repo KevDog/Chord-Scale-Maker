@@ -325,7 +325,7 @@
       <section class="scroll-mt-6 space-y-8" aria-labelledby="superimposing">
         <UiSubheading id="superimposing" class="scroll-mt-6">Superimposing</UiSubheading>
         <UiText>
-          Superimpose (on the Changes) and the Practice panel's Pentatonic and Hexatonic (on the Scales) lay a smaller set
+          Superimpose (on the Changes) and the Practice panel's Pentatonic, Hexatonic and Quartal (on the Scales) lay a smaller set
           of notes over each chord. A chord pick made on one sheet plays on the other.
         </UiText>
 
@@ -434,6 +434,20 @@
             Up, Down, or Up &amp; down, which doesn't repeat the top note. A chord with no pair plays its 7th chord
             arpeggio.
           </UiText>
+        </DecisionSection>
+
+        <DecisionSection id="quartal.auto">
+          <UiText>
+            A quartal stack is a seven-note scale's notes three steps apart, so each two a fourth apart, from one degree:
+            three or four notes. A stack keeps perfect fourths and at most one augmented fourth (none with
+            <strong :class="EM">Perfect only</strong>); a diminished fourth rules it out. <strong :class="EM">Auto</strong>
+            takes a stack without an avoid note (a scale note a half step above a chord tone, like F over Cmaj7), then the
+            one holding the most guide tones, then perfect fourths before an augmented one, then the most chord tones, then
+            the bottom note nearest the chord's root by fifths. Over the ii–V–I in C: <UiCode>D G C F</UiCode> on Dm7,
+            <UiCode>F B E A</UiCode> on G7 (its tritone holds both guide tones) and <UiCode>B E A D</UiCode> on Cmaj7.
+            A scale that isn't seven notes has no stack.
+          </UiText>
+          <UiText><strong :class="EM">What you can change:</strong> Built on (a degree of each scale), Notes (3 or 4), and Perfect only.</UiText>
         </DecisionSection>
 
         <DecisionSection id="pick.order">

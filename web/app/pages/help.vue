@@ -240,6 +240,15 @@
             caption under each chord names the pair.
           </li>
           <li>
+            <strong class="font-semibold text-zinc-950 dark:text-white">Quartal</strong> lights a stack of fourths from each
+            seven-note scale: its notes three steps apart, <strong class="font-semibold">Built on</strong> the degree you
+            choose, three or four <strong class="font-semibold">Notes</strong>. <strong class="font-semibold">Auto</strong>
+            picks the stack that holds the guide tones without an avoid note (<DecisionLink id="quartal.auto">how</DecisionLink>):
+            <UiCode>F B E A</UiCode> over G7. A stack may hold one augmented fourth;
+            <strong class="font-semibold">Perfect only</strong> allows none. The caption names the stack
+            (<UiCode>D G C F · 4ths</UiCode>).
+          </li>
+          <li>
             Click a chord's pentatonic or triad pair (Changes) or a staff's caption (Scales) to pick another for that chord; the list runs from <DecisionLink id="pick.order">inside to outside</DecisionLink>. A pick on the Scales sheet sets every bar that staff covers. <strong class="font-semibold text-zinc-950 dark:text-white">Sheet’s choice</strong> undoes it; <strong class="font-semibold text-zinc-950 dark:text-white">⋯ More actions → Reset chord picks</strong> undoes them all.
             Picks are the same on both sheets, survive a change of Built on or Pair, and go with a share link.
           </li>

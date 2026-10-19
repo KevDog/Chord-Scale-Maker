@@ -28,6 +28,7 @@ describe('interface levels', () => {
       'chord-picks': 'everything',
       'practice-pentatonic': 'everything',
       'practice-hexatonic': 'everything',
+      'practice-quartal': 'everything',
       'key-change': 'everything',
       'function-choice': 'everything',
       source: 'everything',

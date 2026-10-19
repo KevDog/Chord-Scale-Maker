@@ -22,6 +22,8 @@
         />
         <template v-else>{{ caption }}</template>
       </div>
+      <!-- the Quartal preset's stack of fourths, or none (#432) -->
+      <div v-if="quartal" data-slot="quartal" class="text-sm text-zinc-500 dark:text-zinc-400 print:text-[0.625rem] print:leading-none print:tracking-tight print:whitespace-nowrap print:text-neutral-600">{{ quartalCaption(staff.quartal) }}</div>
     </div>
     <div v-if="staff.error || drawError" class="rounded border border-dashed border-amber-500 px-3 py-6 text-sm text-amber-700 dark:text-amber-400">
       {{ staff.error || drawError }}
@@ -43,12 +45,12 @@
 </template>
 
 <script setup lang="ts">
-import { type ChordAt, glyphs, hexatonicCaption, hexatonicChoices, type Part, PENTATONIC_DEGREE_LABELS, pentatonicCaption, pentatonicChoices, pickBars, pickHeading, type PickKind, rootName, type StaffModel } from '@chord-scale-maker/engine'
+import { type ChordAt, glyphs, hexatonicCaption, hexatonicChoices, type Part, PENTATONIC_DEGREE_LABELS, pentatonicCaption, pentatonicChoices, pickBars, pickHeading, type PickKind, quartalCaption, rootName, type StaffModel } from '@chord-scale-maker/engine'
 import { choiceId, pickFooter, pickHeader } from '~/utils/chordPicks'
 import type { ChoiceRow } from './ChordPickPopover.vue'
 
-/** intervals: label each note against the chord root (b9, #11…); part and pickable: the caption picks for every bar it covers (#303) */
-const props = defineProps<{ staff: StaffModel; clef: 'treble' | 'bass'; intervals?: boolean; part?: Part; pickable?: boolean }>()
+/** intervals: label each note against the chord root (b9, #11…); part and pickable: the caption picks for every bar it covers (#303); quartal: the Quartal preset is on, so its caption shows (#432) */
+const props = defineProps<{ staff: StaffModel; clef: 'treble' | 'bass'; intervals?: boolean; part?: Part; pickable?: boolean; quartal?: boolean }>()
 const emit = defineEmits<{ pick: [kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null] }>()
 
 const kind = computed((): PickKind | null => (props.staff.pentatonic ? 'pentatonic' : props.staff.second ? 'hexatonic' : null))
