@@ -158,7 +158,7 @@
                 <UiButton v-if="!editor.fatal.value" outline title="Show only the sheet music (Esc to leave)" @click="after(enterFocus)"><ArrowsPointingOutIcon data-slot="icon" />Focus</UiButton>
               </template>
               <template v-if="place === 'rail'">
-                <UiButton v-if="!editor.fatal.value" color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
+                <UiButton v-if="!editor.fatal.value" outline color="note" title="Print, or save a PDF from the print dialog" @click="print"><PrinterIcon data-slot="icon" />Print</UiButton>
                 <MoreMenu :items="moreItems" @action="onMore" />
               </template>
             </template>

@@ -44,6 +44,13 @@ export const buttonStyles = {
     // Icon
     '[--btn-icon:var(--color-zinc-500)] data-active:[--btn-icon:var(--color-zinc-700)] data-hover:[--btn-icon:var(--color-zinc-700)] dark:data-active:[--btn-icon:var(--color-zinc-400)] dark:data-hover:[--btn-icon:var(--color-zinc-400)]',
   ],
+  // outline with color="note": the quiet primary (Print), the outline's edge with the accent's text and icon; not the
+  // toggle's tint, which reads as on
+  outlineNote: [
+    'border-zinc-950/10 text-note-700 data-active:bg-note-50 data-hover:bg-note-50',
+    'dark:border-white/15 dark:text-note-200 dark:[--btn-bg:transparent] dark:data-active:bg-note-300/10 dark:data-hover:bg-note-300/10',
+    '[--btn-icon:var(--color-note-600)] dark:[--btn-icon:var(--color-note-300)]',
+  ],
   plain: [
     // Base
     'border-transparent text-zinc-950 data-active:bg-zinc-950/5 data-hover:bg-zinc-950/5',

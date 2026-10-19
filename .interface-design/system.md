@@ -52,7 +52,9 @@ Catalyst's buttons, toggles and segmented controls keep its `rounded-lg` (8 px) 
 
 ## Buttons, by role
 
-- **primary** (solid navy, `color="note"`): one per view. Song page: Print; library: New chart; dialogs: the confirm.
+- **primary** (solid navy, `color="note"`): one per view. Library: New chart; dialogs: the confirm.
+- **quiet primary** (`outline color="note"`: the outline's edge, note-700 text and note-600 icon; dark note-200/note-300): the
+  song page's Print, in a row of actions where a solid button weighed too much. No fill, so it never reads as a toggle on.
 - **action** (`outline`): Share, Transpose, Focus.
 - **toggle** (`ToggleButton`, `aria-pressed`): off = outline; on = accent tint (`note-100` bg, `note-800` text,
   `note-500` edge; dark: `note-300/15` bg, `note-200` text, `note-300` edge). Numerals, Scales, Intervals, the
@@ -86,7 +88,7 @@ phone).
   under it (`SheetStatus`, 14/24 zinc-500).
 - **Rail** (`SheetRail`, a labelled group "Sheet controls", above the paper, on the stand): left = Work on ·
   Instrument · Level (Shuffle) · the sheet's own controls; right = Edit (toggle) · Transpose… · Share · Focus · Print
-  (primary) · ⋯ More. `-mx-3 flex flex-wrap items-end gap-x-4 gap-y-3 p-3`; 16 px to the paper. Groups and actions
+  (quiet primary) · ⋯ More. `-mx-3 flex flex-wrap items-end gap-x-4 gap-y-3 p-3`; 16 px to the paper. Groups and actions
   wrap as one row (the left slot `display: contents`, the actions `ml-auto`). Each group is one control tall: details
   go in a `RailPopover` panel (`bg-raised shadow-raised rounded-paper p-3`, closes on a click outside or Escape) —
   Instrument as a summary button styled as a listbox ("Piano · F3–E6", panel below: pitch, instrument, range); a
