@@ -1,4 +1,4 @@
-import { chooseSuperimpose, expect, pickOption, quartalPreset, staves, test, writeChart } from './fixtures'
+import { arpeggiosDrawn, chooseSuperimpose, expect, pickOption, showArpeggios, quartalPreset, staves, test, writeChart } from './fixtures'
 
 // the ii–V–I in C, and a half-whole staff, which has no stack (#432)
 const CHART = 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7\n2 | G7\n3 | CMaj7\n4 | C7 | C Half-Whole'
@@ -32,4 +32,19 @@ test('the Changes sheet’s Superimpose: Quartal names each chord’s stack; its
   await expect(labels.first()).toHaveText('D G C', { useInnerText: true })
   await chooseSuperimpose(page, 'Off')
   await expect(page.locator('[data-slot="quartal"]')).toHaveCount(0)
+})
+
+test('the Line plays each chord’s labelled stack under the Quartal overlay, and 7th Chords again without it (#432)', async ({ page }) => {
+  await writeChart(page, CHART)
+  const line = page.locator('svg[aria-label^="Bars:"]').first()
+  await showArpeggios(page, 'Up · root')
+  await arpeggiosDrawn(page)
+  await chooseSuperimpose(page, 'Quartal')
+  await expect(page.getByRole('radio', { name: 'Quartal', exact: true })).toBeChecked() // the stored arpeggio line, read as Quartal
+  await expect(line).toHaveAttribute('aria-label', /; quartal: D\d G\d C\d F\d \| /) // Dm7's stack, whole
+  await pickOption(page, 'Quartal direction', 'Down')
+  await expect(line).toHaveAttribute('aria-label', /; quartal: F\d C\d G\d D\d \| /)
+  await chooseSuperimpose(page, 'Off')
+  await expect(page.getByRole('radio', { name: '7th Chords', exact: true })).toBeChecked()
+  await arpeggiosDrawn(page)
 })

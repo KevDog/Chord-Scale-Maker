@@ -282,7 +282,7 @@ const props = defineProps<{
   scales: boolean
   clef?: 'treble' | 'bass' // with key signatures or a guide tone on: the part's clef, drawn (with any signature) on the first line only
   arpeggio?: boolean // the voice is an arpeggio line: beamed, no label row
-  lineName?: string // that arpeggio line's name in the aria-label: 'pentatonic' (#284), 'triad pair' (#325); else 7th chords
+  lineName?: string // that arpeggio line's name in the aria-label: 'pentatonic' (#284), 'triad pair' (#325), 'quartal' (#432); else 7th chords
   editable?: boolean // each chord a button that asks to edit it
   selectedLine?: number | null // the chart line of the chord the editor is on, outlined
   doc?: ChartDoc // the chart, for the sheet editor's field
@@ -392,7 +392,7 @@ const hexLabel = (h: ChangesHexatonic): string => {
 /** the Quartal overlay's stacks: its notes a stack and perfect-only setting, from the plan */
 const quartMemo = computed(() => {
   const plan = props.overlay?.kind === 'quartal' ? props.overlay : null
-  const notes = plan?.notes ?? 4
+  const notes = plan?.notes ?? 'auto'
   const perfect = plan?.perfect ?? false
   return memo((chord, scale, part) => quartalChoices(chord, scale, part, notes, perfect))
 })

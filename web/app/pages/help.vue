@@ -151,13 +151,15 @@
               </dd>
             </div>
             <div>
-              <dt class="font-semibold text-zinc-950 dark:text-white">Pentatonic and Triad pair lines</dt>
+              <dt class="font-semibold text-zinc-950 dark:text-white">Pentatonic, Triad pair and Quartal lines</dt>
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
                 While Superimpose is Pentatonic, the Line's <strong class="font-semibold">7th Chords</strong> becomes
                 <strong class="font-semibold">Pentatonic</strong>: each chord's labelled pentatonic in four-note cells;
                 <strong class="font-semibold">Leave out</strong> picks the note each cell drops. While it's Hexatonic, it
                 becomes <strong class="font-semibold">Triad pair</strong>: each chord's labelled pair a triad at a time.
-                Either goes up, down or both by turns.
+                While it's Quartal, it becomes <strong class="font-semibold">Quartal</strong>: each chord's labelled stack
+                of fourths, whole, then its next stacks (<DecisionLink id="quartal.line">how</DecisionLink>). Each goes up,
+                down or both by turns.
                 <template v-if="cellsOn">
                   The 7th Chords pattern list also holds <strong class="font-semibold">Cells</strong>, after Randy Vincent's
                   <em>Building Solo Lines From Cells</em>: a four-note cell on each chord, two beats each, read through its scale.

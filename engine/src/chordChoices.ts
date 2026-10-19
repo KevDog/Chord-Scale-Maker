@@ -1,9 +1,9 @@
 import { parseChord, writtenChordRootLenient, writtenChordTextOrNull } from './chord'
 import { hexatonicPairs, hexatonicRanking } from './hexatonics'
-import { concertPc, type Part, scaleLabel, writtenScale } from './part'
+import { concertPc, type Part, rangeOf, scaleLabel, writtenScale } from './part'
 import { PENTATONIC_DEGREE_LABELS, pentatonicRanking } from './pentatonics'
 import { glyphs, mod, pcOf } from './pitch'
-import { type QuartalNotes, quartalRanking, quartalStacks } from './quartal'
+import { type QuartalNotesChoice, rankedStacks } from './quartal'
 import { baseQuality } from './qualities'
 import { orNull } from './util'
 
@@ -46,11 +46,11 @@ export function hexatonicChoices(chord: string, scale: string, part: Part): read
 }
 
 /** the scale's quartal stacks (#432) in Auto's order, by their bottom note concert, with the guide tones each holds; [] if none */
-export function quartalChoices(chord: string, scale: string, part: Part, notes: QuartalNotes, perfectOnly: boolean): readonly QuartChoice[] {
+export function quartalChoices(chord: string, scale: string, part: Part, notes: QuartalNotesChoice, perfectOnly: boolean): readonly QuartChoice[] {
   const r = read(chord, scale, part)
   if (!r) return []
   const quality = orNull(() => baseQuality(parseChord(chord).quality))
-  return quartalRanking(quartalStacks(r.w.notes, r.root, quality, notes, perfectOnly), r.root).map((s) => ({
+  return rankedStacks(r.w.notes, r.root, quality, notes, perfectOnly, rangeOf(part)).map((s) => ({
     pc: concertPc(part, s.pcs[0]!),
     name: s.name,
     degree: s.degree,

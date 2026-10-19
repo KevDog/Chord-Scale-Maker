@@ -105,7 +105,7 @@ const barsPerLine = computed(() => (wide.value || paged.value ? 4 : 2))
 
 const line = computed((): ChangesLineChoice => props.line ?? 'off')
 /** an arpeggio, Pentatonic, Triad pair or Cells line: beamed cells, no label row; lineName: the latter three's, for the aria-label */
-const lineName = computed(() => (typeof line.value === 'object' ? ({ pentatonic: 'pentatonic', 'triad-pair': 'triad pair', cells: 'cells' } as const)[line.value.kind] : undefined))
+const lineName = computed(() => (typeof line.value === 'object' ? ({ pentatonic: 'pentatonic', 'triad-pair': 'triad pair', quartal: 'quartal', cells: 'cells' } as const)[line.value.kind] : undefined))
 const arpeggio = computed(() => !!lineName.value || isArpeggioPattern(line.value))
 const built = computed(() => buildChanges(props.doc, props.part, barsPerLine.value, true, line.value, props.view, props.overlay ?? null, props.approach ?? 'none'))
 /** the bars that start a line because the names before them didn't fit (ChangesSystem measures): until the sheet changes */

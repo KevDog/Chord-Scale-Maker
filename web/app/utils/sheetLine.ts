@@ -16,20 +16,21 @@ export const shareLineOf = (mode: LineMode, guide: GuideFrom, arpeggio: Arpeggio
 /**
  * the line the Changes sheet draws: the stored line, but the arpeggio slot under the Pentatonic overlay is the
  * Pentatonic line (#284), each chord's labelled pentatonic in cells less `leave`, and under the Hexatonic overlay the
- * Triad pair line (#325), each chord's labelled pair a triad at a time; both going `dir` (its pattern kept for a chord with none)
+ * Triad pair line (#325), each chord's labelled pair a triad at a time, and under the Quartal the Quartal line (#432); all going `dir` (its pattern kept for a chord with none)
  */
 export function changesLineOf(c: Readonly<{ mode: LineMode; guide: GuideFrom; arpeggio: ArpeggioPattern; overlay: Overlay; leave: PentatonicLeave; dir: ArpDirection; cells: CellId }>): ChangesLineChoice {
-  if (c.mode === 'cells' && (c.overlay === 'off' || c.overlay === 'quartal')) return { kind: 'cells', id: c.cells }
+  if (c.mode === 'cells' && c.overlay === 'off') return { kind: 'cells', id: c.cells }
   // a stored Cells line shares the 7th Chords slot (#298), so under an overlay the slot plays the overlay line
   if ((c.mode === 'arpeggio' || c.mode === 'cells') && c.overlay === 'pentatonic') return { kind: 'pentatonic', leave: c.leave, dir: c.dir, arpeggio: c.arpeggio }
   if ((c.mode === 'arpeggio' || c.mode === 'cells') && c.overlay === 'hexatonic') return { kind: 'triad-pair', dir: c.dir, arpeggio: c.arpeggio }
+  if ((c.mode === 'arpeggio' || c.mode === 'cells') && c.overlay === 'quartal') return { kind: 'quartal', dir: c.dir, arpeggio: c.arpeggio }
   return sheetLineOf(c.mode, c.guide, c.arpeggio)
 }
 
-/** whether the Approach leads the line (#381): the guide tone line, and the 7th Chords and Cells lines while no Superimpose takes their slot (the Quartal row doesn't yet, #432) */
-export const approachApplies = (mode: LineMode, overlay: Overlay): boolean => mode === 'guide' || ((mode === 'arpeggio' || mode === 'cells') && (overlay === 'off' || overlay === 'quartal'))
+/** whether the Approach leads the line (#381): the guide tone line, and the 7th Chords and Cells lines while no Superimpose takes their slot */
+export const approachApplies = (mode: LineMode, overlay: Overlay): boolean => mode === 'guide' || ((mode === 'arpeggio' || mode === 'cells') && overlay === 'off')
 
-/** the Line control's modes: the arpeggio slot reads Pentatonic under the Pentatonic overlay (#284), Triad pair under the Hexatonic (#325), 7th Chords otherwise; the Cells line (#298) lives in that slot's listbox, not a mode of its own */
+/** the Line control's modes: the arpeggio slot reads Pentatonic under the Pentatonic overlay (#284), Triad pair under the Hexatonic (#325), Quartal under the Quartal (#432), 7th Chords otherwise; the Cells line (#298) lives in that slot's listbox, not a mode of its own */
 export function lineModes(overlay: Overlay): readonly { value: LineMode; label: string; title: string }[] {
   return [
     { value: 'off', label: 'Off', title: 'No line: slashes' },
@@ -38,7 +39,9 @@ export function lineModes(overlay: Overlay): readonly { value: LineMode; label: 
       ? { value: 'arpeggio', label: 'Pentatonic', title: "Each chord's pentatonic, as its label shows it, in four-note cells: quarters, eighths or sixteenths as the bar has one, two or more chords" }
       : overlay === 'hexatonic'
         ? { value: 'arpeggio', label: 'Triad pair', title: "Each chord's triad pair, as its label shows it, a triad at a time: quarters, eighths or sixteenths as the bar has one, two or more chords" }
-        : { value: 'arpeggio', label: '7th Chords', title: "Each chord's four chord tones, arpeggiated: quarters, eighths or sixteenths as the bar has one, two or more chords" },
+        : overlay === 'quartal'
+          ? { value: 'arpeggio', label: 'Quartal', title: "Each chord's stack of fourths, as its label shows it, then its next stacks, each played whole: quarters, eighths or sixteenths as the bar has one, two or more chords" }
+          : { value: 'arpeggio', label: '7th Chords', title: "Each chord's four chord tones, arpeggiated: quarters, eighths or sixteenths as the bar has one, two or more chords" },
   ]
 }
 

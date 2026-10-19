@@ -104,7 +104,7 @@
                     </Transition>
                     <Transition name="ease-fade">
                       <RailPopover v-if="overlay === 'quartal'" v-model:open="quartOptionsOpen" :inline="compact" label="Quartal options">
-                        <SegmentedControl v-model="quartNotesText" legend="Notes" name="quart-notes" aria-label="Quartal notes" :options="QUARTAL_NOTE_CHOICES" />
+                        <SegmentedControl v-model="quartNotesText" legend="Notes" name="quart-notes" aria-label="Quartal notes" :options="QUARTAL_LINE_NOTE_CHOICES" />
                         <ToggleButton v-model="quartPerfect" title="Perfect fourths only: no augmented fourth in a stack">Perfect only</ToggleButton>
                       </RailPopover>
                     </Transition>
@@ -128,9 +128,9 @@
                               <UiListboxOption v-for="g in GUIDE_LINES" :key="g.value" :value="g.value" :title="g.title"><UiListboxLabel>{{ g.label }}</UiListboxLabel></UiListboxOption>
                             </UiListbox>
                           </EaseReveal>
-                          <!-- the Pentatonic line (#284) and the Triad pair line (#325): the direction (the Arpeggios sheet's), and the Pentatonic's Leave out where the Superimpose shows -->
+                          <!-- the Pentatonic line (#284), the Triad pair line (#325) and the Quartal line (#432): the direction (the Arpeggios sheet's), and the Pentatonic's Leave out where the Superimpose shows -->
                           <EaseReveal :show="inSlot && overlay !== 'off'" inner-class="flex flex-col gap-2">
-                            <UiListbox v-model="arpDir" class="w-full" :aria-label="overlay === 'pentatonic' ? 'Pentatonic direction' : 'Triad pair direction'" title="Each cell up, down, or up and down by turns">
+                            <UiListbox v-model="arpDir" class="w-full" :aria-label="DIRECTION_LABEL[overlay]" title="Each cell up, down, or up and down by turns">
                               <template #selected="{ value }"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[value] }}</UiListboxLabel></template>
                               <UiListboxOption v-for="d in ARP_DIRECTIONS" :key="d" :value="d"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[d] }}</UiListboxLabel></UiListboxOption>
                             </UiListbox>
@@ -230,11 +230,11 @@
     </template>
 
     <script setup lang="ts">
-    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type HexatonicBasis, type QuartalNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PairShape, PAIR_SHAPE_LABELS, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
+    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type HexatonicBasis, type QuartalNotesChoice, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PairShape, PAIR_SHAPE_LABELS, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { approachApplies, type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
     import { HEX_BASES } from '~/utils/hexatonics'
-    import { QUARTAL_NOTE_CHOICES } from '~/utils/quartal'
+    import { QUARTAL_LINE_NOTE_CHOICES, quartalNotesOf, type QuartalNotesText } from '~/utils/quartal'
     import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
     import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
     import type { SheetKind } from '~/utils/sheets'
@@ -258,10 +258,12 @@
     const pentBasis = defineModel<PentatonicBasis>('pentBasis', { default: 'key' })
     const pentDegree = defineModel<PentatonicDegree>('pentDegree', { default: 'auto' })
     const hexBasis = defineModel<HexatonicBasis>('hexBasis', { default: 'chord' })
-    const quartNotes = defineModel<QuartalNotes>('quartNotes', { default: 4 })
+    const quartNotes = defineModel<QuartalNotesChoice>('quartNotes', { default: 'auto' })
     const quartPerfect = defineModel<boolean>('quartPerfect', { default: false })
     /** SegmentedControl's values are strings */
-    const quartNotesText = computed({ get: () => String(quartNotes.value) as '3' | '4', set: (v) => (quartNotes.value = Number(v) as QuartalNotes) })
+    const quartNotesText = computed({ get: () => String(quartNotes.value) as QuartalNotesText, set: (v) => (quartNotes.value = quartalNotesOf(v)) })
+    /** the line's direction listbox, named for the line in the slot */
+    const DIRECTION_LABEL: Readonly<Record<Overlay, string>> = { off: 'Direction', pentatonic: 'Pentatonic direction', hexatonic: 'Triad pair direction', quartal: 'Quartal direction' }
     const pentPath = defineModel<PentatonicPathName>('pentPath', { default: 'one' })
     const pathChoices = computed(() => PENT_PATHS.filter((p) => p.value !== 'custom' || pentPath.value === 'custom'))
     const pentStepUnit = defineModel<PentatonicStepUnit>('pentStepUnit', { default: 'section' })

@@ -24,7 +24,8 @@ describe('the Cells line (#298)', () => {
     expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'off' })).toEqual({ kind: 'cells', id: '1-2-3-5' })
     expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'pentatonic' })).toEqual({ kind: 'pentatonic', leave: 'b3', dir: 'up', arpeggio: 'down-2nd' })
     expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'hexatonic' })).toEqual({ kind: 'triad-pair', dir: 'up', arpeggio: 'down-2nd' })
-    expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'quartal' })).toEqual({ kind: 'cells', id: '1-2-3-5' }) // #432: no Quartal line yet
+    expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'quartal' })).toEqual({ kind: 'quartal', dir: 'up', arpeggio: 'down-2nd' })
+    expect(changesLineOf({ ...base, mode: 'arpeggio', overlay: 'quartal' })).toEqual({ kind: 'quartal', dir: 'up', arpeggio: 'down-2nd' })
     expect(changesLineOf({ ...base, mode: 'guide', cells: '1-2-3-5', overlay: 'off' })).toBe('third')
   })
   it('has no Cells radio: the Line control keeps three modes (the cells are in the 7th Chords listbox)', () => {
@@ -57,7 +58,7 @@ describe('the Triad pair line (#325)', () => {
   })
   it("names the slot Triad pair under the Hexatonic overlay; the value stays 'arpeggio'", () => {
     expect(lineModes('hexatonic').map((m) => [m.value, m.label])).toEqual([['off', 'Off'], ['guide', 'Guide Tones'], ['arpeggio', 'Triad pair']])
-    expect(lineModes('quartal').map((m) => m.label)).toEqual(['Off', 'Guide Tones', '7th Chords']) // #432: its line is to come
+    expect(lineModes('quartal').map((m) => [m.value, m.label])).toEqual([['off', 'Off'], ['guide', 'Guide Tones'], ['arpeggio', 'Quartal']]) // #432
   })
 })
 
@@ -67,6 +68,6 @@ describe('approachApplies (#381)', () => {
     expect([approachApplies('arpeggio', 'off'), approachApplies('cells', 'off')]).toEqual([true, true])
     expect((['pentatonic', 'hexatonic'] as const).flatMap((o) => [approachApplies('arpeggio', o), approachApplies('cells', o)])).toEqual([false, false, false, false])
     expect(approachApplies('off', 'off')).toBe(false)
-    expect([approachApplies('arpeggio', 'quartal'), approachApplies('cells', 'quartal')]).toEqual([true, true]) // #432: the Quartal row leaves the slot its line
+    expect([approachApplies('guide', 'quartal'), approachApplies('arpeggio', 'quartal'), approachApplies('cells', 'quartal')]).toEqual([true, false, false]) // #432
   })
 })

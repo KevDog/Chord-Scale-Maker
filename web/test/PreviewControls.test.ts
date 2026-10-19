@@ -106,7 +106,7 @@ describe('the pentatonic controls', () => {
     const w = await mount({ overlay: 'quartal', quartNotes: 4, quartPerfect: false })
     await w.find('button[aria-label="Quartal options"]').trigger('click')
     const notes = w.find('[aria-label="Quartal notes"]')
-    expect(notes.findAll('label').map((l) => l.text())).toEqual(['3', '4'])
+    expect(notes.findAll('label').map((l) => l.text())).toEqual(['Auto', '3', '4'])
     await notes.find('input[value="3"]').setValue(true)
     expect(w.emitted('update:quartNotes')).toEqual([[3]])
     const perfect = w.findAll('button').find((b) => b.text() === 'Perfect only')!
@@ -138,6 +138,15 @@ describe('the Line under the Pentatonic overlay (#284)', () => {
     const w = await mount({ overlay: 'hexatonic', lineMode: 'arpeggio', arpDir: 'up-down' })
     await openPanel(w, 'Line options')
     expect(w.find('[aria-label="Triad pair direction"]').text()).toBe('Up & down')
+    expect(w.find('[aria-label="Leave out"]').exists()).toBe(false)
+    expect(w.find('[aria-label="Arpeggio pattern"]').exists()).toBe(false)
+  })
+
+  it('offers the direction in place of the arpeggio pattern while the line is Quartal (#432)', async () => {
+    const w = await mount({ overlay: 'quartal', lineMode: 'arpeggio', arpDir: 'down' })
+    expect(w.text()).toContain('Quartal')
+    await openPanel(w, 'Line options')
+    expect(w.find('[aria-label="Quartal direction"]').text()).toBe('Down')
     expect(w.find('[aria-label="Leave out"]').exists()).toBe(false)
     expect(w.find('[aria-label="Arpeggio pattern"]').exists()).toBe(false)
   })

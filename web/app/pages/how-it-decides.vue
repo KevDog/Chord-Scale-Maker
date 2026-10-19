@@ -462,6 +462,24 @@
           <UiText><strong :class="EM">What you can change:</strong> Built on (a degree of each scale, on the Scales sheet), Notes (3 or 4), Perfect only, and a pick on the Changes sheet.</UiText>
         </DecisionSection>
 
+        <DecisionSection id="quartal.line">
+          <UiText>
+            While Superimpose is Quartal, the 7th Chords slot plays each chord's stack of fourths, the one its label names,
+            whole: bottom up or top down, never turned inside out. Each later stack on the same chord is the next one in
+            Auto's order that isn't the stack just played, so a held chord planes from stack to stack. Each is placed nearest
+            the last note; a stack that fits no octave of your range gives way to the next, and a chord never starts on the
+            note the last one ended on. Over the ii–V–I in C: <UiCode>D4 G4 C5 F5</UiCode>, then <UiCode>A5 E5 B4 F4</UiCode>
+            down, then <UiCode>E4 A4 D5 G5</UiCode> (<UiCode>B E A D</UiCode> doesn't fit C4–A5). A three-note stack the
+            beat cuts goes on into the next beat, as the Triad pair line's triads do. A chord with no stack plays its 7th
+            chord arpeggio.
+          </UiText>
+          <UiText>
+            <strong :class="EM">Notes</strong> (Quartal options): Auto stacks four notes where two of the chord's
+            four-note stacks fit your range (a four-note stack spans an octave and a minor third, or a major third with an augmented fourth), else three.
+          </UiText>
+          <UiText><strong :class="EM">What you can change:</strong> the direction (Line options), Notes, Perfect only, and a pick.</UiText>
+        </DecisionSection>
+
         <DecisionSection id="pick.order">
           <UiText>
             Click a chord's pentatonic or triad pair to pick another; the list runs from inside to outside, in the order

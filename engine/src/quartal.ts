@@ -1,4 +1,5 @@
 import { guideToneDegrees } from './guideTones'
+import type { Range } from './instruments'
 import { chordTonePcs } from './hexatonics'
 import { fifthsFrom } from './ladder'
 import { glyphs, mod, pcOf, rootName, type Spelled } from './pitch'
@@ -55,6 +56,26 @@ export function quartalRanking(stacks: readonly QuartalStack[], chordRoot: Spell
   }
   const cmp = (a: readonly number[], b: readonly number[]): number => a.reduce((d, x, j) => d || x - b[j]!, 0)
   return [...stacks].sort((a, b) => cmp(key(a), key(b)))
+}
+
+/** the Changes sheet's Notes: 3, 4, or Auto, by the part's range (#432) */
+export type QuartalNotesChoice = 'auto' | QuartalNotes
+
+/** a stack's span bottom to top, in semitones */
+const spanOf = (s: QuartalStack): number => s.pcs.slice(1).reduce((sum, pc, k) => sum + mod(pc - s.pcs[k]!, 12), 0)
+
+/** whether some octave of a stack (its pitch classes written) lies inside a range */
+export function stackFits(s: QuartalStack, range: Range): boolean {
+  for (let m = range.lo; m + spanOf(s) <= range.hi; m++) if (mod(m, 12) === s.pcs[0]) return true
+  return false
+}
+
+/** a chord's stacks in Auto's order; Notes Auto stacks four where two of its four-note stacks fit the range, else three */
+export function rankedStacks(scale: readonly Spelled[], chordRoot: Spelled, quality: string | null, notes: QuartalNotesChoice, perfectOnly: boolean, range: Range): readonly QuartalStack[] {
+  const ranked = (n: QuartalNotes) => quartalRanking(quartalStacks(scale, chordRoot, quality, n, perfectOnly), chordRoot)
+  if (notes !== 'auto') return ranked(notes)
+  const four = ranked(4)
+  return four.filter((s) => stackFits(s, range)).length >= 2 ? four : ranked(3)
 }
 
 /** a staff's stack under the Quartal preset: its name, the degree it's built on, how many notes; picked and sheet as the other presets' */
