@@ -2,8 +2,8 @@ import { arpeggiosDrawn, chooseSuperimpose, expect, hexatonicPreset, pickOption,
 import type { Page } from '@playwright/test'
 
 // one staff per chord: C Ionian, D Dorian, G Mixolydian, B Locrian (the chords' own scales in C), and two written
-// scales: whole tone (no triad pair) and half-whole (eight notes, Campbell's chain)
-const CHART = 'title: T\nkey: C\n\nsection: A\nbars: 8\n1 | CMaj7\n2 | Dm7\n3 | G7\n4 | Bm7b5\n5 | C7 | C Whole Tone\n6 | C7 | C Half-Whole'
+// scales: major pentatonic (no triad pair) and half-whole (eight notes, Campbell's chain and its tritone pairs, #432)
+const CHART = 'title: T\nkey: C\n\nsection: A\nbars: 8\n1 | CMaj7\n2 | Dm7\n3 | G7\n4 | Bm7b5\n5 | C6 | C Major Pentatonic\n6 | C7 | C Half-Whole'
 
 type Row = Readonly<{ caption: string; notes: number; a: number; b: number }>
 
@@ -20,13 +20,13 @@ const rows = (page: Page): Promise<Row[]> =>
 
 // Auto's pair on each staff, and its groups' sizes, hand-derived from each pair (the engine tests check the notes):
 // Chord tones + color: the chord's four tones are all in each Auto pair; Pentatonic + 1: a minor pentatonic wholly
-// inside the seven-note pairs (B the one note left), but on half-whole the best (Am or Cm) shares 4, so B is two
-const CAPTIONS = ['G/Am hex', 'C/Dm hex', 'Dm/Em hex', 'Dm/Em hex', 'no triad pair', 'E♭/Am hex']
-const NOTES = [7, 7, 7, 7, 6, 8]
+// inside the seven-note pairs (B the one note left), but on half-whole's C/F♯ the best shares 3, so B is three
+const CAPTIONS = ['G/Am hex', 'C/Dm hex', 'Dm/Em hex', 'Dm/Em hex', 'no triad pair', 'C/F♯ hex']
+const NOTES = [7, 7, 7, 7, 5, 8]
 const GROUPS: Readonly<Record<string, readonly (readonly [number, number])[]>> = {
   'Triad pair': [[3, 3], [3, 3], [3, 3], [3, 3], [0, 0], [3, 3]],
   'Chord tones + color': [[4, 2], [4, 2], [4, 2], [4, 2], [0, 0], [4, 2]],
-  'Pentatonic + 1': [[5, 1], [5, 1], [5, 1], [5, 1], [0, 0], [4, 2]],
+  'Pentatonic + 1': [[5, 1], [5, 1], [5, 1], [5, 1], [0, 0], [3, 3]],
   'Trichords 3+3': [[3, 3], [3, 3], [3, 3], [3, 3], [0, 0], [3, 3]],
 }
 
@@ -62,7 +62,7 @@ test('the Changes sheet’s Superimpose: Hexatonic shows each chord’s pair and
   await chooseSuperimpose(page, 'Hexatonic')
   const labels = page.locator('[data-slot="hexatonic"] > span') // each label's inner text: on screen its trigger, in print plain text (#303)
   await expect(labels.first()).toHaveText('G/Am', { useInnerText: true })
-  await expect.poll(() => labels.allInnerTexts()).toEqual(['G/Am', 'C/Dm', 'Dm/Em', 'E♭/Am']) // Bm7♭5 repeats Dm/Em; whole tone has none
+  await expect.poll(() => labels.allInnerTexts()).toEqual(['G/Am', 'C/Dm', 'Dm/Em', 'C/F♯']) // Bm7♭5 repeats Dm/Em; major pentatonic has none
   await expect(page.locator('[data-slot="pentatonic"]')).toHaveCount(0)
   await expect(page.locator('[data-slot="contour"]')).toHaveCount(0)
   await expect(page.getByRole('button', { name: 'Pentatonic rung' })).toHaveCount(0)
