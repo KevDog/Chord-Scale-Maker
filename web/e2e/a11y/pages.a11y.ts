@@ -116,7 +116,8 @@ for (const theme of ['light', 'dark'] as const) {
       await openPanel(page, 'Line options')
       await page.getByRole('button', { name: 'Approach', exact: true }).click()
       await expect(page.getByRole('listbox')).toBeVisible()
-      await expectAccessible(page)
+      // its panel: the open list lies over the sheet's labels, which the other scans cover
+      await expectAccessible(page, '[role="dialog"]')
     })
 
     test('the Scales and a staff’s chord picks', async ({ page }) => {
