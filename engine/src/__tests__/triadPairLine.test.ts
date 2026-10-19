@@ -63,6 +63,14 @@ describe('triad pair voices (#325)', () => {
     expect(pitches(bars.get(0))).toEqual(['g/4', 'b/4', 'd/5', 'c/5'])
     expect(pitches(bars.get(1))).toEqual(['a/4', 'e/4', 'd/4', 'g/4']) // C5 A4 E4 down, then up from D4, 2 below E4
   })
+  it('Up & down turns chord by chord when a chord holds one cell and a note of the next (#433)', () => {
+    const { bars } = voice(seq(['Cmaj7', 4], ['Fmaj7', 4], ['Cmaj7', 4]), pairs('G/Am', 'C/Dm', 'G/Am'), { dir: 'up-down' })
+    const contour = (b: readonly GuideNote[] | undefined) => {
+      const m = (b ?? []).slice(0, 3).map((n) => n.pitch!.midi)
+      return m[0]! < m[2]! ? 'up' : 'down'
+    }
+    expect([0, 1, 2].map((i) => contour(bars.get(i)))).toEqual(['up', 'down', 'up'])
+  })
   it('a chord with no pair plays its 7th chord arpeggio, in the line’s pattern', () => {
     const { bars } = voice(seq(['Cmaj7', 4], ['G7', 4]), pairs('G/Am', null))
     expect(pitches(bars.get(1))).toEqual(['g/4', 'b/4', 'd/5', 'f/5'])
