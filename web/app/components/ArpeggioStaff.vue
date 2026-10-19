@@ -5,6 +5,23 @@
       <div class="text-sm text-zinc-500 dark:text-zinc-400 print:text-neutral-600">
         <template v-for="(tokens, i) in staff.chords" :key="i"><template v-if="i"><span class="sr-only">,</span><span aria-hidden="true"> · </span></template><ChordSymbol v-if="tokens" :tokens="tokens" /><span v-else>—</span></template>
       </div>
+      <!-- Triad pairs (#436): the pair and what it covers, or none; a trigger for every bar it covers, as on the Scales sheet -->
+      <div v-if="pair" data-slot="hexatonic" class="text-sm text-zinc-500 dark:text-zinc-400 print:text-[0.625rem] print:leading-none print:tracking-tight print:whitespace-nowrap print:text-neutral-600">
+        <ChordPickPopover
+          v-if="canPick"
+          :text="caption"
+          :trigger-label="triggerLabel"
+          :header="header"
+          :footer="footer"
+          :sheet-choice="pair.hexatonic?.sheet ?? 'no triad pair'"
+          :picked="!!pair.hexatonic?.picked"
+          :rows="rows"
+          trigger-class="text-right"
+          @choose="choose"
+          @clear="emit('pick', 'hexatonic', pair.positions, null)"
+        />
+        <template v-else>{{ caption }}</template>
+      </div>
     </div>
     <div v-if="staff.error || drawError" class="rounded border border-dashed border-amber-500 px-3 py-6 text-sm text-amber-700 dark:text-amber-400">
       {{ staff.error || drawError }}
@@ -26,10 +43,32 @@
 </template>
 
 <script setup lang="ts">
-import { glyphs, type ArpeggioStaffModel } from '@chord-scale-maker/engine'
+import { type ArpeggioStaffModel, type ChordAt, glyphs, hexatonicChoices, pairCaption, pickBars, pickHeading, type Part, type PickKind } from '@chord-scale-maker/engine'
+import { choiceId, pickFooter, pickHeader } from '~/utils/chordPicks'
+import type { ChoiceRow } from './ChordPickPopover.vue'
 
-/** intervals: label each note against the chord root (b9, #11…) */
-const props = defineProps<{ staff: ArpeggioStaffModel; clef: 'treble' | 'bass'; intervals?: boolean }>()
+/** intervals: label each note against the chord root (b9, #11…); part and pickable: Triad pairs' caption picks for every bar it covers (#436) */
+const props = defineProps<{ staff: ArpeggioStaffModel; clef: 'treble' | 'bass'; intervals?: boolean; part?: Part; pickable?: boolean }>()
+const emit = defineEmits<{ pick: [kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null] }>()
+
+const pair = computed(() => props.staff.pair ?? null)
+const caption = computed(() => (pair.value ? pairCaption(pair.value) : ''))
+const canPick = computed(() => !!props.pickable && !!props.part && !!pair.value?.source && !!pair.value.hexatonic && pair.value.positions.length > 0)
+const bars = computed(() => pickBars(pair.value?.positions ?? []))
+const header = computed(() => (pair.value?.source && props.part ? pickHeader(pickHeading(props.part, pair.value.source.chord, pair.value.source.scale), bars.value) : ''))
+const footer = computed(() => pickFooter('scales', bars.value, !!pair.value?.varies))
+const choices = computed(() => (canPick.value ? hexatonicChoices(pair.value!.source!.chord, pair.value!.source!.scale, props.part!) : []))
+const rows = computed((): readonly ChoiceRow[] => choices.value.map((c) => ({ id: choiceId.hex(c.roots), label: c.label, current: c.name === pair.value?.hexatonic?.name })))
+/** the caption in words, as the Scales sheet's Hexatonic caption says it; the popover adds ', your pick' */
+const triggerLabel = computed((): string => {
+  const h = pair.value?.hexatonic
+  if (!h) return 'Triad pair: none'
+  return `Triad pair: ${glyphs(h.name)}, covers ${pair.value?.coverage} chord tones${pair.value?.varies ? ', varies' : ''}`
+})
+function choose(id: string): void {
+  const c = choices.value.find((x) => choiceId.hex(x.roots) === id)
+  if (c && pair.value) emit('pick', 'hexatonic', pair.value.positions, c.roots)
+}
 const el = useTemplateRef<HTMLDivElement>('el')
 const drawError = ref<string | null>(null)
 const xs = ref<number[]>([])

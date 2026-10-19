@@ -44,6 +44,14 @@
           chord, with the scale that goes with it, in the order the tune runs. Each staff is labelled with where it is in
           the form, the chord and the scale. Practice works on this sheet.
         </UiText>
+        <UiText>
+          <strong class="font-semibold text-zinc-950 dark:text-white">Arpeggios</strong> is one staff per scale line, its
+          chord's arpeggio: <strong class="font-semibold text-zinc-950 dark:text-white">7th Chord</strong> over two octaves,
+          <strong class="font-semibold text-zinc-950 dark:text-white">Extended</strong> up through the 9th, 11th and 13th, or
+          <strong class="font-semibold text-zinc-950 dark:text-white">Triad pairs</strong>, the chord's triad pair as six
+          triads through their inversions, arpeggiated or as block chords. <DecisionLink id="hex.sheet">How the triads are
+          ordered</DecisionLink> is in How it decides.
+        </UiText>
         <UiText v-if="patternsOn">
           <strong class="font-semibold text-zinc-950 dark:text-white">Patterns</strong> runs a scale sequence over each scale line,
           one staff a line: 1 2 3 4, thirds, triads, stacked fourths and more, or one of your own, written as steps (<UiCode>+2 −1</UiCode> is up a third, back a step).

@@ -409,6 +409,20 @@
           </UiText>
         </DecisionSection>
 
+        <DecisionSection id="hex.sheet">
+          <UiText>
+            The Arpeggios sheet's <strong :class="EM">Triad pairs</strong> writes each line's pair as six triads, the lower
+            and the upper in turn through root position, 1st and 2nd inversion, after Weiskopf's <em>Intervalic
+            Improvisation</em>: <UiCode>F/G</UiCode> plays F A C, G B D, A C F, B D G, C F A, D G B. The pair is the one the
+            Changes sheet's Hexatonic shows: Auto, or your chord pick, which you can make from the staff's caption. Each
+            triad's next inversion starts on the next note up of its own triad, and the upper triad starts nearest the
+            lower. The figure is placed whole with the fewest notes out of your range, nearest its middle; a triad still
+            out moves an octave, whole. <strong :class="EM">Block</strong> writes the six triads as chords; otherwise
+            Up, Down, or Up &amp; down, which doesn't repeat the top note. A chord with no pair plays its 7th chord
+            arpeggio.
+          </UiText>
+        </DecisionSection>
+
         <DecisionSection id="pick.order">
           <UiText>
             Click a chord's pentatonic or triad pair to pick another; the list runs from inside to outside, in the order

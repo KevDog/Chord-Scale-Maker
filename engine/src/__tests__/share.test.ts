@@ -131,6 +131,8 @@ describe('share links', () => {
 
   it('keeps the Arpeggios sheet and its choices, dropping bad ones', () => {
     expect(shareViewFrom({ sheet: 'arpeggios', arpNotes: 'extended', arpDir: 'up-down' })).toEqual({ sheet: 'arpeggios', arpNotes: 'extended', arpDir: 'up-down' })
+    expect(shareViewFrom({ sheet: 'arpeggios', arpNotes: 'pairs', arpShape: 'block' })).toEqual({ sheet: 'arpeggios', arpNotes: 'pairs', arpShape: 'block' }) // #436
+    expect(shareViewFrom({ sheet: 'arpeggios', arpShape: 'stacked' })).toEqual({ sheet: 'arpeggios' })
     expect(shareViewFrom({ sheet: 'arps', arpNotes: 'ninth', arpDir: 'sideways' })).toBeUndefined()
   })
 
