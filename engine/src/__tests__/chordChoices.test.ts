@@ -37,7 +37,7 @@ describe('hexatonicChoices', () => {
     expect(hexatonicChoices('Cmaj7', 'C Ionian', TENOR)[0]).toMatchObject({ name: 'A/Bm', roots: [7, 9] })
   })
   it('gives nothing where the scale has no pairs', () => {
-    expect(hexatonicChoices('C7#5', 'C Whole Tone', CONCERT)).toEqual([])
+    expect(hexatonicChoices('C6', 'C Major Pentatonic', CONCERT)).toEqual([])
   })
 })
 

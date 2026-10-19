@@ -909,7 +909,7 @@ describe('the Hexatonic overlay', () => {
     expect(flat(buildChanges(doc, CONCERT).lines)[0]?.hexatonic).toBeNull()
     expect(flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, one(0, 'flat')).lines)[0]?.hexatonic).toBeNull()
     expect(labels('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | N.C.')).toEqual([null])
-    expect(labels('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C7#5 | C Whole Tone')).toEqual([null])
+    expect(labels('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C6 | C Major Pentatonic')).toEqual([null])
   })
 
   it('leaves the pentatonic plan as it was', () => {
@@ -1077,8 +1077,8 @@ describe('chord picks (#303)', () => {
   })
 
   it('gives a hexatonic pick on a chord whose scale has no pairs nothing to play', () => {
-    const wt = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C7#5 | C Whole Tone').value
-    const sheet = showHexatonics(buildChanges(wt, CONCERT, 4, false, 'off', undefined, { kind: 'hexatonic', picks: { 'A:1:0': { roots: [0, 2], for: 'C7#5|C Whole Tone' } } }).lines)
+    const wt = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C6 | C Major Pentatonic').value
+    const sheet = showHexatonics(buildChanges(wt, CONCERT, 4, false, 'off', undefined, { kind: 'hexatonic', picks: { 'A:1:0': { roots: [0, 2], for: 'C6|C Major Pentatonic' } } }).lines)
     expect(flat(sheet)[0]?.hexatonic).toBeNull()
   })
 

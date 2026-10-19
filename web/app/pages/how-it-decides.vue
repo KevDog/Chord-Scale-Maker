@@ -389,6 +389,14 @@
             triads are both major or minor, then the one nearest the chord's root by fifths. Over <UiCode>Cmaj7</UiCode>
             that's <UiCode>{{ HEX_EXAMPLE }}</UiCode>.
           </UiText>
+          <UiText>
+            A symmetric scale has pairs its chain of triads doesn't reach, after Walt Weiskopf's <em>Intervalic
+            Improvisation</em>; they join the list after the chain's. On a diminished scale: its major triads a tritone
+            apart, then its minor ones (<UiCode>C/F♯</UiCode> over <UiCode>C7♭9</UiCode>, which Auto now picks: it
+            covers as many chord tones as <UiCode>E♭/Am</UiCode> and sits on the root). On the whole-tone scale, which has
+            no chain: its two augmented triads, a whole step apart (<UiCode>C+/D+</UiCode> over <UiCode>C7♯5</UiCode>).
+            Pair <em>n</em> counts the chain's pairs only; pick an off-chain pair from the chord's list.
+          </UiText>
           <UiText><strong :class="EM">What you can change:</strong> Pair, Ranked against, and a chord pick for one chord.</UiText>
         </DecisionSection>
 
