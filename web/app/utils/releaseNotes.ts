@@ -10,7 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-18',
     items: [
-      { text: 'Triad pairs on the Arpeggios sheet: each chord’s triad pair as six triads through their inversions, arpeggiated or as block chords. Click the pair under the chord to pick another.' },
+      { text: 'Triad pairs on the Arpeggios sheet: each chord’s triad pair as six triads through their inversions, arpeggiated or as block chords. Click the pair under the chord to pick another.', pr: 438 },
       { text: 'The Triad pair line’s Up & down now alternates chord by chord; with four notes a chord it only went up.', pr: 434 },
       { text: 'Transpose… moves beside Edit: both rewrite the chart. Print is lighter, its label in the accent colour.', pr: 431 },
       { text: 'The controls above the sheet take two rows instead of four: the Instrument button shows your instrument and range and opens them in a panel, and a line’s details open from Line options beside it.', pr: 429 },
