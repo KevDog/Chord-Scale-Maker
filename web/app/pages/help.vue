@@ -68,7 +68,7 @@
                 Charts are always written in concert pitch, and the sheet is transposed for you: trumpet, clarinet, tenor
                 and soprano in B♭, alto and bari in E♭, horn in F, and trombone, tuba and bass in bass clef. Piano, vibes,
                 guitar and flute read concert; for oboe, violin or any other treble C instrument, choose Flute. Pick the pitch
-                first (Concert, B♭, E♭, F or Bass), then your instrument in it. Piano until you choose; your choice is remembered. Lowest and Highest note, under it, set the range every line keeps to.
+                first (Concert, B♭, E♭, F or Bass), then your instrument in it. Piano until you choose; your choice is remembered. The Instrument button shows what's set (Piano · F3–E6) and opens a panel with the pitch, the instrument and Lowest and Highest note, the range every line keeps to.
               </dd>
             </div>
             <div>
@@ -109,7 +109,8 @@
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
                 <strong class="font-semibold">Off</strong>, <strong class="font-semibold">Guide Tones</strong> (From 3rd or
                 From 7th) or <strong class="font-semibold">7th Chords</strong>, each chord's arpeggio in the pattern you
-                choose, in quarters, eighths or sixteenths as the chords allow.
+                choose, in quarters, eighths or sixteenths as the chords allow. A line's details (From 3rd or From 7th, the
+                pattern, Approach) open from the <strong class="font-semibold">›</strong> beside it, Line options.
                 <template v-if="approachesOn">
                   Under Guide Tones, <strong class="font-semibold">Approach</strong> leads into each chord's guide tone with a
                   short figure of eighths, played at the end of the chord before: a semitone below or above, an enclosure and

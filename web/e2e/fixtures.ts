@@ -61,19 +61,66 @@ const PITCHES: Readonly<Record<string, readonly string[]>> = {
 export async function chooseInstrument(page: import('@playwright/test').Page, name: string): Promise<void> {
   const pitch = Object.keys(PITCHES).find((p) => PITCHES[p]!.some((n) => n.startsWith(name)))
   if (!pitch) throw new Error(`no instrument ${name}`)
+  const opened = await reveal(page, 'Pitch')
   const current = await page.getByRole('button', { name: 'Pitch' }).textContent()
   if (current?.trim() !== pitch) {
     await page.getByRole('button', { name: 'Pitch' }).click()
     await page.getByRole('listbox', { name: 'Pitch' }).getByRole('option', { name: pitch, exact: true }).click()
   }
-  await page.getByRole('button', { name: 'Instrument' }).click()
+  await page.getByRole('button', { name: 'Instrument', exact: true }).click()
   await page.getByRole('option', { name: new RegExp(`^${name}`) }).click()
+  if (opened) await closePanel(page, 'Instrument')
 }
 
-/** open a listbox (by its current button name) and choose an option by exact label */
+/**
+ * the rail keeps each group one control tall: the instrument's pitch and range sit in its panel (the "Instrument: …"
+ * button), the line's detail in Line options. Open the one holding this control, if it's tucked away.
+ */
+async function reveal(page: Page, button: string | RegExp): Promise<Locator | null> {
+  // a panel closing (a click outside it) fades out: wait it out, or its controls look there and vanish under the click
+  for (const panel of ['Instrument', 'Line options'] as const) {
+    const opener = panelButton(page, panel)
+    if ((await opener.count()) && (await opener.getAttribute('aria-expanded')) !== 'true') await expect(page.getByRole('dialog', { name: panel })).toHaveCount(0)
+  }
+  if (await page.getByRole('button', { name: button }).first().isVisible()) return null
+  const name = typeof button === 'string' ? button : button.source
+  for (const panel of ['Instrument', 'Line options'] as const) {
+    if (panel === 'Instrument' && !/^(Pitch|Instrument|Lowest note|Highest note)$/.test(name)) continue
+    const opener = panelButton(page, panel)
+    if (!(await opener.isVisible()) || (await opener.getAttribute('aria-expanded')) === 'true') continue
+    await opener.click()
+    if (await page.getByRole('button', { name: button }).first().isVisible()) return opener
+    await closePanel(page, panel)
+  }
+  return null
+}
+
+const panelButton = (page: Page, panel: 'Instrument' | 'Line options'): Locator =>
+  page.getByRole('button', { name: panel === 'Instrument' ? /^Instrument: / : 'Line options' }).first()
+
+/** open the Instrument's panel (its pitch, instrument and range) or Line options, to read what's set there */
+export async function openPanel(page: Page, panel: 'Instrument' | 'Line options'): Promise<void> {
+  const opener = panelButton(page, panel)
+  await expect(async () => {
+    if ((await opener.getAttribute('aria-expanded')) !== 'true') await opener.click({ timeout: 1000 })
+    await expect(page.getByRole('dialog', { name: panel })).toBeVisible({ timeout: 1000 })
+  }).toPass({ timeout: 10_000 })
+  await expect(page.locator('.ease-fade-enter-active')).toHaveCount(0) // settled: faded in
+}
+
+/** close that panel, so it covers nothing under it */
+export async function closePanel(page: Page, panel: 'Instrument' | 'Line options'): Promise<void> {
+  const opener = panelButton(page, panel)
+  if ((await opener.count()) && (await opener.getAttribute('aria-expanded')) === 'true') await opener.click()
+  await expect(page.getByRole('dialog', { name: panel })).toHaveCount(0)
+}
+
+/** open a listbox (by its current button name) and choose an option by exact label; a panel opened to reach it is closed after */
 export async function pickOption(page: import('@playwright/test').Page, button: string | RegExp, option: string | RegExp): Promise<void> {
+  const opened = await reveal(page, button)
   await page.getByRole('button', { name: button }).click()
   await page.getByRole('option', { name: option, exact: typeof option === 'string' }).click()
+  if (opened) await opened.click()
 }
 
 /** set the scale level from its toolbar "Level" dropdown */

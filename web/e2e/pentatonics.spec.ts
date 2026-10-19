@@ -1,4 +1,4 @@
-import { arpeggiosDrawn, chooseInstrument, chooseSheet, chooseSuperimpose, expect, openPentatonicOptions, pentatonicLineDrawn, pickOption, rankedAgainstChord, showArpeggios, showPentatonicLine, showPentatonics, test, writeChart } from './fixtures'
+import { arpeggiosDrawn, chooseInstrument, chooseSheet, chooseSuperimpose, closePanel, expect, openPanel, openPentatonicOptions, pentatonicLineDrawn, pickOption, rankedAgainstChord, showArpeggios, showPentatonicLine, showPentatonics, test, writeChart } from './fixtures'
 import type { Page } from '@playwright/test'
 
 const labels = (page: Page) => page.locator('[data-slot="pentatonic"] button')
@@ -253,7 +253,9 @@ test('the Line plays each chord’s labelled pentatonic in cells under the Penta
   await pickOption(page, 'Pentatonic direction', 'Down')
   await expect(line).toHaveAttribute('aria-label', /; pentatonic: E5 D5 C5 A4, /)
   await page.reload()
+  await openPanel(page, 'Line options')
   await expect(page.getByLabel('Leave out')).toContainText('Leave out: ♭7') // remembered
+  await closePanel(page, 'Line options')
   await pentatonicLineDrawn(page)
   await chooseSuperimpose(page, 'Off')
   await expect(page.getByRole('radio', { name: '7th Chords', exact: true })).toBeChecked()

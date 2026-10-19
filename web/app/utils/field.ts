@@ -13,7 +13,7 @@ export type FieldContext = Readonly<{
   disabled: Ref<boolean>
 }>
 
-export const FIELD: InjectionKey<FieldContext> = Symbol('field')
+export const FIELD: InjectionKey<FieldContext | undefined> = Symbol('field') // undefined: a panel inside a field whose controls name themselves (RailPopover)
 
 /** aria-describedby for a control inside a field: its description and error, if present */
 export function describedBy(field: FieldContext | undefined, own?: unknown): string | undefined {

@@ -402,6 +402,32 @@ test('the preview toolbar stays tidy (at most two rows), in every sheet', async 
   expect(await place(), 'Approach').toEqual(at)
 })
 
+test('every group in the rail is one control tall: a group\'s details open beside it, so the rail stays two rows at most', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/song/autumn-leaves')
+  const rail = page.getByRole('group', { name: 'Sheet controls' })
+  // the tallest group: label + one control; the instrument's pitch and range, and the line's detail, behind their buttons
+  const groups = () => rail.locator('> div').first().evaluate((row) => Array.from(row.children, (c) => [c.querySelector('[data-slot=label]')?.textContent?.trim() ?? '', Math.round(c.getBoundingClientRect().height)] as const))
+  const tallest = async () => Math.max(...(await groups()).map(([, h]) => h))
+  await showApproach(page, 'Diatonic above, chromatic below (enclosure)')
+  await showPentatonics(page)
+  await closePentatonicOptions(page)
+  expect(await tallest(), JSON.stringify(await groups())).toBeLessThan(80)
+  expect((await rail.boundingBox())!.height).toBeLessThan(180)
+  // the instrument's summary names it and its range; its panel holds the pitch, the instrument and the range
+  const instrument = rail.getByRole('button', { name: /^Instrument: / })
+  await expect(instrument).toContainText(/Piano · \S+–\S+/)
+  await instrument.click()
+  const panel = page.getByRole('dialog', { name: 'Instrument' })
+  for (const name of ['Pitch', 'Instrument', 'Lowest note', 'Highest note']) await expect(panel.getByRole('button', { name, exact: true })).toBeVisible()
+  await page.keyboard.press('Escape')
+  await expect(panel).toHaveCount(0)
+  // the line's detail behind Line options
+  await rail.getByRole('button', { name: 'Line options' }).click()
+  const options = page.getByRole('dialog', { name: 'Line options' })
+  for (const name of ['Guide tone line', 'Approach']) await expect(options.getByRole('button', { name, exact: true })).toBeVisible()
+})
+
 test('choosing a Superimpose option leaves the Superimpose in its place (#387)', async ({ page }) => {
   await page.setViewportSize({ width: 1440, height: 900 })
   await page.goto('/song/autumn-leaves')

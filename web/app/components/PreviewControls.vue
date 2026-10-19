@@ -14,20 +14,28 @@
             </UiListbox>
           </div>
         </UiField>
-        <UiField :class="playerRange && range ? 'w-40' : 'w-36'">
+        <!-- one control: what's set ("Piano · F3–E6"), its pitch, instrument and range in a panel below (set once, so a click away) -->
+        <UiField class="w-44">
           <UiLabel class="pl-3">Instrument</UiLabel>
-          <InstrumentPicker v-model="instrument" stacked @chosen="emit('instrumentChosen', $event)" />
-          <!-- #359: the player's range under it, the written notes the lines keep to (moving one end pushes the other to keep two octaves); stacked, so the rail keeps its two rows -->
-          <div v-if="playerRange && range" class="mt-2 flex items-center gap-1">
-            <UiListbox :model-value="range.lo" class="min-w-0 flex-1" aria-label="Lowest note" title="The lowest written note the lines use" @update:model-value="(lo) => lo !== undefined && setRange({ lo, hi: range!.hi }, 'lo')">
-              <template #selected="{ value }"><UiListboxLabel>{{ noteName(value) }}</UiListboxLabel></template>
-              <UiListboxOption v-for="n in rangeNotes.lows" :key="n" :value="n"><UiListboxLabel>{{ noteName(n) }}</UiListboxLabel></UiListboxOption>
-            </UiListbox>
-            <UiListbox :model-value="range.hi" class="min-w-0 flex-1" aria-label="Highest note" title="The highest written note the lines use" @update:model-value="(hi) => hi !== undefined && setRange({ lo: range!.lo, hi }, 'hi')">
-              <template #selected="{ value }"><UiListboxLabel>{{ noteName(value) }}</UiListboxLabel></template>
-              <UiListboxOption v-for="n in rangeNotes.highs" :key="n" :value="n"><UiListboxLabel>{{ noteName(n) }}</UiListboxLabel></UiListboxOption>
-            </UiListbox>
-          </div>
+          <RailPopover v-model:open="instrumentOpen" label="Instrument" :summary="instrumentSummary">
+            <span class="text-xs/5 font-medium text-zinc-500 dark:text-zinc-400">Pitch and instrument</span>
+            <InstrumentPicker v-model="instrument" class="w-72" @chosen="emit('instrumentChosen', $event)" />
+            <!-- #359: the player's range, the written notes the lines keep to (moving one end pushes the other to keep two octaves) -->
+            <template v-if="playerRange && range">
+              <span class="mt-1 text-xs/5 font-medium text-zinc-500 dark:text-zinc-400">Range</span>
+              <div class="flex w-72 items-center gap-2">
+                <UiListbox :model-value="range.lo" class="min-w-0 flex-1" aria-label="Lowest note" title="The lowest written note the lines use" @update:model-value="(lo) => lo !== undefined && setRange({ lo, hi: range!.hi }, 'lo')">
+                  <template #selected="{ value }"><UiListboxLabel>{{ noteName(value) }}</UiListboxLabel></template>
+                  <UiListboxOption v-for="n in rangeNotes.lows" :key="n" :value="n"><UiListboxLabel>{{ noteName(n) }}</UiListboxLabel></UiListboxOption>
+                </UiListbox>
+                <span class="text-zinc-500" aria-hidden="true">–</span>
+                <UiListbox :model-value="range.hi" class="min-w-0 flex-1" aria-label="Highest note" title="The highest written note the lines use" @update:model-value="(hi) => hi !== undefined && setRange({ lo: range!.lo, hi }, 'hi')">
+                  <template #selected="{ value }"><UiListboxLabel>{{ noteName(value) }}</UiListboxLabel></template>
+                  <UiListboxOption v-for="n in rangeNotes.highs" :key="n" :value="n"><UiListboxLabel>{{ noteName(n) }}</UiListboxLabel></UiListboxOption>
+                </UiListbox>
+              </div>
+            </template>
+          </RailPopover>
         </UiField>
         <!-- the other groups: in the rail, or on a phone (compact) in the Controls dialog -->
         <component :is="compact ? ControlsDialog : Passthrough" v-bind="compact ? { open: controlsOpen, onClose: () => (controlsOpen = false), onClosed: runAfterClose } : {}">
@@ -48,8 +56,8 @@
             <Transition name="ease-fade">
               <UiField v-if="analysisShown || overlayShown">
                 <UiLabel class="pl-3">Analysis</UiLabel>
-                <!-- stacked, so the group keeps the width of Numerals and Scales and the rail its two rows (#255) -->
-                <div class="flex flex-col items-start gap-2">
+                <!-- one row, so the group is one control tall; stacked in the Controls dialog -->
+                <div :class="compact ? 'flex flex-col items-start gap-2' : 'flex items-start gap-2'">
                   <EaseReveal :show="analysisShown" inner-class="flex flex-wrap gap-2 *:whitespace-nowrap">
                     <ToggleButton v-model="numerals" title="Each chord's Roman numeral in its key">Numerals</ToggleButton>
                     <ToggleButton v-model="scaleNames" title="Each chord's scale, under its numeral">Scales</ToggleButton>
@@ -96,50 +104,57 @@
                 <Transition name="ease-fade">
                   <UiField v-if="shows('line')">
                     <UiLabel class="pl-3">Line</UiLabel>
-                    <!-- the detail opens beneath the modes, so the Line group keeps its width and place (#187) -->
-                    <div class="flex flex-col gap-2">
+                    <!-- the modes on the rail; their detail (From 3rd, the pattern, the direction, the Approach) behind Line options, so the group is one control tall and never moves (#187); stacked under the modes in the Controls dialog -->
+                    <div :class="compact ? 'flex flex-col gap-2' : 'flex items-center gap-1'">
                       <SegmentedControl v-model="lineRadio" legend="Line" name="line-mode" :options="lineModes(overlay)" />
-                      <EaseReveal :show="lineMode === 'guide'" inner-class="flex flex-col gap-2">
-                        <UiListbox v-model="guideLine" class="w-full" aria-label="Guide tone line">
-                          <template #selected="{ value }"><UiListboxLabel>{{ guideLabel(value) }}</UiListboxLabel></template>
-                          <UiListboxOption v-for="g in GUIDE_LINES" :key="g.value" :value="g.value" :title="g.title"><UiListboxLabel>{{ g.label }}</UiListboxLabel></UiListboxOption>
-                        </UiListbox>
-                      </EaseReveal>
-                      <!-- the Pentatonic line (#284) and the Triad pair line (#325): the direction (the Arpeggios sheet's), and the Pentatonic's Leave out where the Superimpose shows -->
-                      <EaseReveal :show="inSlot && overlay !== 'off'" inner-class="flex flex-col gap-2">
-                        <UiListbox v-model="arpDir" class="w-full" :aria-label="overlay === 'pentatonic' ? 'Pentatonic direction' : 'Triad pair direction'" title="Each cell up, down, or up and down by turns">
-                          <template #selected="{ value }"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[value] }}</UiListboxLabel></template>
-                          <UiListboxOption v-for="d in ARP_DIRECTIONS" :key="d" :value="d"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[d] }}</UiListboxLabel></UiListboxOption>
-                        </UiListbox>
-                        <EaseReveal :show="overlayShown && overlay === 'pentatonic'">
-                          <UiListbox v-model="pentLeave" class="w-full" aria-label="Leave out" title="The minor pentatonic's degree each four-note cell leaves out; 1: ♭3 4 5 ♭7, the relative major's 1 2 3 5">
-                            <template #selected="{ value }"><UiListboxLabel>Leave out: {{ PENTATONIC_LEAVE_LABELS[value] }}</UiListboxLabel></template>
-                            <UiListboxOption v-for="d in PENTATONIC_LEAVES" :key="d" :value="d"><UiListboxLabel>{{ PENTATONIC_LEAVE_LABELS[d] }}</UiListboxLabel></UiListboxOption>
-                          </UiListbox>
-                        </EaseReveal>
-                      </EaseReveal>
-                      <!-- the 7th Chords slot's pattern; with the Cells flag, also the melodic cells (#298): a system (A and B in turn) or one cell in every slot -->
-                      <EaseReveal :show="inSlot && overlay === 'off'">
-                        <UiListbox v-model="slotChoice" class="w-full" aria-label="Arpeggio pattern">
-                          <template #selected="{ value }"><UiListboxLabel>{{ slotLabel(value) }}</UiListboxLabel></template>
-                          <UiListboxOption v-for="p in ARPEGGIO_PATTERNS" :key="p" :value="p"><UiListboxLabel>{{ ARPEGGIO_LABELS[p] }}</UiListboxLabel></UiListboxOption>
-                          <template v-if="cellsOn && shows('cells')">
-                            <UiListboxGroup label="Cell systems">
-                              <UiListboxOption v-for="id in SYSTEM_IDS" :key="id" :value="id"><UiListboxLabel>{{ cellLabel(id) }}</UiListboxLabel></UiListboxOption>
-                            </UiListboxGroup>
-                            <UiListboxGroup label="Cells">
-                              <UiListboxOption v-for="c in SINGLE_CELLS" :key="c.id" :value="c.id"><UiListboxLabel>{{ cellLabel(c.id) }}</UiListboxLabel></UiListboxOption>
-                            </UiListboxGroup>
-                          </template>
-                        </UiListbox>
-                      </EaseReveal>
-                      <!-- the figure into each chord's first note (#298, #381): under the line's own listbox, so the Line group keeps its width (w-0 min-w-full: the long figure names truncate rather than widen it, the tooltip the whole name) -->
-                      <EaseReveal :show="approachesOn && shows('approaches') && approachApplies(lineMode, overlay)">
-                        <UiListbox v-model="approach" class="w-0 min-w-full" aria-label="Approach" :title="approachLabel(approach)">
-                          <template #selected="{ value }"><UiListboxLabel>{{ approachLabel(value) }}</UiListboxLabel></template>
-                          <UiListboxOption v-for="a in APPROACHES" :key="a" :value="a"><UiListboxLabel>{{ APPROACH_LABELS[a] }}</UiListboxLabel></UiListboxOption>
-                        </UiListbox>
-                      </EaseReveal>
+                      <!-- a fixed slot for its button, there or not, so choosing a mode never rewraps the rail -->
+                      <div :class="compact ? 'contents' : 'flex size-9 items-center justify-center'">
+                        <RailPopover v-if="lineHasOptions" v-model:open="lineOptionsOpen" :inline="compact" label="Line options">
+                          <div :class="compact ? 'flex w-full flex-col gap-2' : 'flex w-64 flex-col gap-2'">
+                          <EaseReveal :show="lineMode === 'guide'" inner-class="flex flex-col gap-2">
+                            <UiListbox v-model="guideLine" class="w-full" aria-label="Guide tone line">
+                              <template #selected="{ value }"><UiListboxLabel>{{ guideLabel(value) }}</UiListboxLabel></template>
+                              <UiListboxOption v-for="g in GUIDE_LINES" :key="g.value" :value="g.value" :title="g.title"><UiListboxLabel>{{ g.label }}</UiListboxLabel></UiListboxOption>
+                            </UiListbox>
+                          </EaseReveal>
+                          <!-- the Pentatonic line (#284) and the Triad pair line (#325): the direction (the Arpeggios sheet's), and the Pentatonic's Leave out where the Superimpose shows -->
+                          <EaseReveal :show="inSlot && overlay !== 'off'" inner-class="flex flex-col gap-2">
+                            <UiListbox v-model="arpDir" class="w-full" :aria-label="overlay === 'pentatonic' ? 'Pentatonic direction' : 'Triad pair direction'" title="Each cell up, down, or up and down by turns">
+                              <template #selected="{ value }"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[value] }}</UiListboxLabel></template>
+                              <UiListboxOption v-for="d in ARP_DIRECTIONS" :key="d" :value="d"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[d] }}</UiListboxLabel></UiListboxOption>
+                            </UiListbox>
+                            <EaseReveal :show="overlayShown && overlay === 'pentatonic'">
+                              <UiListbox v-model="pentLeave" class="w-full" aria-label="Leave out" title="The minor pentatonic's degree each four-note cell leaves out; 1: ♭3 4 5 ♭7, the relative major's 1 2 3 5">
+                                <template #selected="{ value }"><UiListboxLabel>Leave out: {{ PENTATONIC_LEAVE_LABELS[value] }}</UiListboxLabel></template>
+                                <UiListboxOption v-for="d in PENTATONIC_LEAVES" :key="d" :value="d"><UiListboxLabel>{{ PENTATONIC_LEAVE_LABELS[d] }}</UiListboxLabel></UiListboxOption>
+                              </UiListbox>
+                            </EaseReveal>
+                          </EaseReveal>
+                          <!-- the 7th Chords slot's pattern; with the Cells flag, also the melodic cells (#298): a system (A and B in turn) or one cell in every slot -->
+                          <EaseReveal :show="inSlot && overlay === 'off'">
+                            <UiListbox v-model="slotChoice" class="w-full" aria-label="Arpeggio pattern">
+                              <template #selected="{ value }"><UiListboxLabel>{{ slotLabel(value) }}</UiListboxLabel></template>
+                              <UiListboxOption v-for="p in ARPEGGIO_PATTERNS" :key="p" :value="p"><UiListboxLabel>{{ ARPEGGIO_LABELS[p] }}</UiListboxLabel></UiListboxOption>
+                              <template v-if="cellsOn && shows('cells')">
+                                <UiListboxGroup label="Cell systems">
+                                  <UiListboxOption v-for="id in SYSTEM_IDS" :key="id" :value="id"><UiListboxLabel>{{ cellLabel(id) }}</UiListboxLabel></UiListboxOption>
+                                </UiListboxGroup>
+                                <UiListboxGroup label="Cells">
+                                  <UiListboxOption v-for="c in SINGLE_CELLS" :key="c.id" :value="c.id"><UiListboxLabel>{{ cellLabel(c.id) }}</UiListboxLabel></UiListboxOption>
+                                </UiListboxGroup>
+                              </template>
+                            </UiListbox>
+                          </EaseReveal>
+                          <!-- the figure into each chord's first note (#298, #381): under the line's own listbox, so the Line group keeps its width (w-0 min-w-full: the long figure names truncate rather than widen it, the tooltip the whole name) -->
+                          <EaseReveal :show="approachesOn && shows('approaches') && approachApplies(lineMode, overlay)">
+                            <UiListbox v-model="approach" class="w-0 min-w-full" aria-label="Approach" :title="approachLabel(approach)">
+                              <template #selected="{ value }"><UiListboxLabel>{{ approachLabel(value) }}</UiListboxLabel></template>
+                              <UiListboxOption v-for="a in APPROACHES" :key="a" :value="a"><UiListboxLabel>{{ APPROACH_LABELS[a] }}</UiListboxLabel></UiListboxOption>
+                            </UiListbox>
+                          </EaseReveal>
+                          </div>
+                        </RailPopover>
+                      </div>
                     </div>
                   </UiField>
                 </Transition>
@@ -241,6 +256,9 @@
     /** SegmentedControl's values are strings */
     const pentStepBarsText = computed({ get: () => String(pentStepBars.value) as '2' | '4' | '8', set: (v) => (pentStepBars.value = Number(v) as 2 | 4 | 8) })
     /** the Pentatonic options' popover: it opens as Superimpose turns to Pentatonic, and closes as it leaves (#293) */
+    const instrumentOpen = ref(false)
+    const lineOptionsOpen = ref(false)
+    const instrumentSummary = computed(() => [instrumentOption(instrument.value), playerRange && range.value ? `${noteName(range.value.lo)}–${noteName(range.value.hi)}` : ''].filter(Boolean).join(' · '))
     const pentOptionsOpen = ref(false)
     watch(overlay, (o) => (pentOptionsOpen.value = o === 'pentatonic'))
     const { shows } = useInterface()
@@ -325,6 +343,8 @@
     // the Cells line shares the 7th Chords slot (#298): the radio reads 7th Chords while a cell is chosen, and picking
     // a cell sets the mode and the cell, a pattern the mode and the pattern; leaving the slot for another mode and coming back restores 7th Chords
     const inSlot = computed(() => lineMode.value === 'arpeggio' || lineMode.value === 'cells')
+    /** the line has detail to set (Line options): the guide tone line, a slot's pattern or direction, an Approach */
+    const lineHasOptions = computed(() => lineMode.value === 'guide' || inSlot.value || (approachesOn && shows('approaches') && approachApplies(lineMode.value, overlay.value)))
     const lineRadio = computed<LineMode>({
       get: () => (lineMode.value === 'cells' ? 'arpeggio' : lineMode.value),
       set: (v) => { if (!(v === 'arpeggio' && inSlot.value)) lineMode.value = v },

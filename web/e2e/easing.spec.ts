@@ -37,15 +37,20 @@ test.describe('with motion', () => {
     expect(await eased(page)).toEqual(expect.arrayContaining(['enter grid-template-rows', 'enter opacity', 'leave grid-template-rows', 'leave opacity']))
   })
 
-  test('a line’s detail opens beneath the Line control: once it settles, nothing has moved', async ({ page }) => {
+  test('a line’s detail (Line options) comes in beside the Line control: once it settles, nothing has moved', async ({ page }) => {
     await page.setViewportSize({ width: 1440, height: 900 })
     await page.goto('/song/autumn-leaves')
     await chooseSheet(page, 'Changes')
     const line = page.locator('#preview-toolbar [data-slot=label]').getByText('Line', { exact: true })
-    const at = await line.boundingBox()
+    // where the label sits in the rail (not the viewport: the page can scroll as the sheet redraws)
+    const place = async () => {
+      const [l, r] = await Promise.all([line.boundingBox(), page.getByRole('group', { name: 'Sheet controls' }).boundingBox()])
+      return { x: l!.x - r!.x, y: l!.y - r!.y }
+    }
+    const at = await place()
     await showLine(page, 'Guide Tones')
     await expect(page.locator('.ease-enter-active, .ease-leave-active')).toHaveCount(0)
-    expect(await line.boundingBox()).toEqual(at)
+    expect(await place()).toEqual(at)
   })
 })
 

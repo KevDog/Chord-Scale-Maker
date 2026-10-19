@@ -1,5 +1,5 @@
 import type { Locator, Page } from '@playwright/test'
-import { chooseSheet, expect, pentatonicPreset, pickOption, showApproach, showCell, showPentatonics, staves, test } from '../fixtures'
+import { chooseSheet, closePanel, closePentatonicOptions, expect, openPanel, pentatonicPreset, pickOption, showApproach, showCell, showPentatonics, staves, test } from '../fixtures'
 import { expectAccessible } from './axe'
 
 const SONG = '/song/autumn-leaves'
@@ -58,10 +58,13 @@ for (const theme of ['light', 'dark'] as const) {
       if (theme === 'dark') await darkMode(page)
       await expect(staves(page).first()).toBeVisible()
       await expectAccessible(page)
-      // the player's range (#359): a picker's notes
+      // the player's range (#359): a picker's notes, in the Instrument panel
+      await openPanel(page, 'Instrument')
+      await expectAccessible(page)
       await opens(page, page.getByRole('button', { name: 'Lowest note' }), page.getByRole('listbox'))
       await expectAccessible(page)
       await page.keyboard.press('Escape')
+      await closePanel(page, 'Instrument')
       const scale = page.getByRole('button', { name: 'C Dorian', exact: true }).first()
       // a scale label: why the sheet plays it
       await opens(page, scale, page.getByRole('dialog', { name: /^Why: / }))
@@ -78,6 +81,7 @@ for (const theme of ['light', 'dark'] as const) {
       await page.getByRole('button', { name: 'Done editing' }).click()
       // a pentatonic label: its ladder
       await showPentatonics(page)
+      await closePentatonicOptions(page) // its panel would cover the actions
       await opens(page, page.locator('[data-slot="pentatonic"] button').first(), page.getByRole('dialog', { name: / bar \d+$/ }))
       await expectAccessible(page)
     })
@@ -97,19 +101,23 @@ for (const theme of ['light', 'dark'] as const) {
       await page.goto(SONG)
       if (theme === 'dark') await darkMode(page)
       await showCell(page, 'Root to root')
+      await openPanel(page, 'Line options')
       await expect(page.getByRole('button', { name: 'Arpeggio pattern', exact: true })).toBeVisible()
       await page.getByRole('button', { name: 'Arpeggio pattern', exact: true }).click()
       await expect(page.getByRole('listbox')).toBeVisible()
-      await expectAccessible(page)
+      // its panel: the open list lies over the sheet's labels, which the other scans cover
+      await expectAccessible(page, '[role="dialog"]')
     })
 
     test('the Changes sheet’s Guide Tones with the Approach listbox open', async ({ page }) => {
       await page.goto(SONG)
       if (theme === 'dark') await darkMode(page)
       await showApproach(page, 'Diatonic above, chromatic below (enclosure)')
+      await openPanel(page, 'Line options')
       await page.getByRole('button', { name: 'Approach', exact: true }).click()
       await expect(page.getByRole('listbox')).toBeVisible()
-      await expectAccessible(page)
+      // its panel: the open list lies over the sheet's labels, which the other scans cover
+      await expectAccessible(page, '[role="dialog"]')
     })
 
     test('the Scales and a staff’s chord picks', async ({ page }) => {

@@ -6,6 +6,7 @@ import EditorView from '~/components/EditorView.vue'
 import { CHART_REPORT_KEY } from '~/utils/chartReport'
 import { loadChart, saveChart } from '~/utils/myCharts'
 import { decodeShare, parseChart, practiceSelectionFrom, serializeChart, type ShareView } from '@chord-scale-maker/engine'
+import { openPanel } from './railPanels'
 import { INSTRUMENT_GROUPS, instrumentOption } from '~/utils/instrumentChoices'
 
 const { navigate } = vi.hoisted(() => ({ navigate: vi.fn() }))
@@ -39,6 +40,7 @@ const control = (w: Wrapper, label: string) => {
 /** set the Pitch listbox to the pitch an instrument (by its visible name) reads in (#417) */
 async function choosePitch(w: Wrapper, name: string): Promise<void> {
   const pitch = INSTRUMENT_GROUPS.find((g) => g.instruments.some((n) => instrumentOption(n).startsWith(name)))?.pitch
+  await openPanel(w, 'Instrument')
   const button = w.findAll('button').find((b) => b.attributes('aria-label') === 'Pitch')
   if (!pitch || !button) throw new Error(`no pitch for ${name}`)
   if (button.text() === pitch) return
@@ -50,7 +52,7 @@ async function choosePitch(w: Wrapper, name: string): Promise<void> {
 /** open the Instrument listbox and pick an option by its visible name */
 async function chooseInstrument(w: Wrapper, name: string): Promise<void> {
   await choosePitch(w, name)
-  await control(w, 'Instrument').trigger('click')
+  await w.findAll('button').find((b) => b.attributes('aria-label') === 'Instrument')!.trigger('click')
   await nextTick()
   const option = w.findAll('[role=option]').find((o) => o.text().startsWith(name))
   if (!option) throw new Error(`no option ${name}`)
@@ -202,6 +204,7 @@ describe('EditorView guide tones', () => {
   }
   /** open the Guide tone line listbox and pick From 3rd or From 7th */
   async function chooseGuide(w: Wrapper, label: string): Promise<void> {
+    await openPanel(w, 'Line options')
     const btn = w.findAll('button').find((b) => b.attributes('aria-label') === 'Guide tone line')
     if (!btn) throw new Error('no guide tone line control')
     await btn.trigger('click')
