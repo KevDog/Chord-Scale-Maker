@@ -4,7 +4,7 @@ style: Medium Latin
 key: Cm
 form: ABC, 34 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; C minor
+# analysis: 2026-10-19, rules v2; C minor
 # book: Medium Latin (Bolero-Guajira)
 # head is AB; 1st solo on C (indefinitely), 2nd solo on ABC; after solos play the head (AB), then vamp, solo and fade on C
 

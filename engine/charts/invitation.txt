@@ -5,7 +5,7 @@ style: Mixed
 key: Ebm
 form: ABCDEF, 48 bars
 source: Colorado Cookbook, p. 110
-# analysis: 2026-10-17, rules v1; Eb minor
+# analysis: 2026-10-19, rules v2; Eb minor
 
 # bar | chord | scale
 

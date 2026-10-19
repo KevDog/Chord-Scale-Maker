@@ -4,7 +4,7 @@ style: Ballad
 key: Eb
 form: AB, 32 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 # style: the book says Med. Ballad, also played as Medium Swing
 # book: the first 4 bars of A and B and the last 2 bars of B may be played over a Bb pedal
 

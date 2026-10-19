@@ -4,7 +4,7 @@ style: Medium up
 key: F
 form: AB, 24 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # the book: "Med.-Up Swing"
 # the intro (optional, N.C.) is a melodic figure with no chords
 # solos on F blues; after solos, D.S. al Fine (final lyric)

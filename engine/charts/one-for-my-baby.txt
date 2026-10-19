@@ -6,7 +6,7 @@ key: Eb
 form: ABCD, 57 bars
 source: The New Real Book, Vol. 1
 recording: Frank Sinatra; Frank Sinatra Sings for Only the Lonely; Capitol; 1958
-# analysis: 2026-10-17, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 # recording: recorded June 1958 (album sessions May 29, June 24 and 26) with Bill Miller (piano) and Nelson Riddle's orchestra; chart follows no named version; songbook standard: Sinatra's saloon-song reading on Only the Lonely is the reference version jazz players and singers learn it from, over Fred Astaire's film introduction (The Sky's the Limit, 1943); Capitol, released 1958-09-08; sources: Wikipedia
 # book: Medium Ballad. A is in Eb; B, C and D are in G
 # book: alternate changes (in parentheses) are played on beat 3 (or beats 3 and 4) of the bars in which they appear

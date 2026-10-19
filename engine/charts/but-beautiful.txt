@@ -6,7 +6,7 @@ form: AB, 32 bars
 source: The New Real Book, Vol. 1
 recording: Billie Holiday; Lady in Satin; Columbia; 1958
 youtube: SRJNVJv-3xY
-# analysis: 2026-10-12, rules v1; G
+# analysis: 2026-10-19, rules v2; G
 # recording: recorded 1958-02-19/21 with the Ray Ellis Orchestra (take 2); chart names no version, so the jazz reference reading of this songbook standard, over the 1947 Crosby film/Sinatra pop hits; Columbia CL 1157 / CS 8048, released June 1958, Grammy Hall of Fame; Getz/Evans (1974, issued 1996) the other strong candidate; sources: Wikipedia (Lady in Satin, But Beautiful); video: "Provided to YouTube by OKEH" Lady in Satin track, the same take
 # the pickup is melody only
 

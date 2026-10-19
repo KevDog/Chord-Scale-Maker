@@ -6,7 +6,7 @@ form: ABCD
 source: Colorado Cookbook, p. 69
 recording: Thelonious Monk; Genius of Modern Music, Volume 1; Blue Note; 1956
 youtube: gLqp9cSmfPQ
-# analysis: 2026-10-11, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 # recording: recorded 1948-07-02, first issued on 78 (Blue Note 548), first LP 1956 (BLP 1510; not on the 10" LPs) (Wikipedia, jazzdisco); video: Wizard Of The Vibes (2001), the same take
 
 # bar | chord | scale

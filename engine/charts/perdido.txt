@@ -4,7 +4,7 @@ style: Up
 key: Bb
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 175
-# analysis: 2026-10-11, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 
 # bar | chord | scale
 # the horn intro is a melody line (no chords), so it is left out

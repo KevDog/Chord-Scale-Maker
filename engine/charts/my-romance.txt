@@ -5,7 +5,7 @@ style: Medium
 key: Bb
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 149
-# analysis: 2026-10-11, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 
 # bar | chord | scale
 # the solo changes in B bars 5–6 (the head has Dm7 Db7 | Csus4 C7)

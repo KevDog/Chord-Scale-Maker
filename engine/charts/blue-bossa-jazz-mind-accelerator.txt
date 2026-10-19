@@ -5,7 +5,7 @@ key: Cm
 form: A, 16 bars
 source: Jazz Mind Accelerator
 version: Jazz Mind Accelerator
-# analysis: 2026-10-18, rules v1; C minor
+# analysis: 2026-10-19, rules v2; C minor
 
 section: A
 # area: C minor (A 1–8)

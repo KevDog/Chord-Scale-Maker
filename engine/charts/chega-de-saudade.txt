@@ -7,7 +7,7 @@ form: ABCD, 68 bars
 source: The New Real Book, Vol. 1
 recording: João Gilberto; Chega de Saudade; Odeon; 1959
 youtube: Y0a0QuLEC8A
-# analysis: 2026-10-17, rules v1; D minor
+# analysis: 2026-10-19, rules v2; D minor
 # recording: recorded 1958-07-10, arranged by Jobim, first issued on the Odeon 78 14.360 (with "Bim Bom"), first LP Odeon MOFB 3073 (1959); Jobim's first recording of it was as arranger for Elizete Cardoso (Canção do Amor Demais, Festa 1958), but João Gilberto's is the definitive reference jazz players know; chart names no version; sources Wikipedia (Chega de Saudade album), MusicBrainz (MOFB 3073 track list); video: Topic upload, album "João Gilberto Apresenta Chega de Saudade" ℗ 1959, 2:03 against the LP's 2:02, the same take
 
 # A and B in D minor, C and D in D major

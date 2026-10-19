@@ -7,16 +7,16 @@ form: A, 12 bars
 source: Colorado Cookbook, p. 15
 recording: Miles Davis; Kind of Blue; Columbia; 1959
 youtube: -488UORrfJ0
-# analysis: 2026-10-11, rules v1; G, blues
+# analysis: 2026-10-19, rules v2; G, blues
 
 # bar | chord | scale
 
 section: A
 bars: 12
-1  | G7     # I7 of the blues: a tonic with dominant colour, natural tensions
+1  | G7     # I7 of the blues: a tonic with dominant colour, Mixolydian
 5  | C7/G   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | G7     # I7 of the blues: a tonic with dominant colour, natural tensions
-9  | D7#9   # V7 in G, not resolving: b9, #9 and #11 from the symbol
+7  | G7     # I7 of the blues: a tonic with dominant colour, Mixolydian
+9  | D7#9   # V7 of the blues: a dominant that needn’t resolve; b9, #9 and #11 from the symbol
 10 | Eb7#9  # tritone substitute: resolves down a half step to D7#9; b9 and #9 from the symbol
 10 | D7#9   # extended dominant: V7 of G7; b9, #9 and #11 from the symbol
-11 | G7     # I7 of the blues: a tonic with dominant colour, natural tensions
+11 | G7     # I7 of the blues: a tonic with dominant colour, Mixolydian

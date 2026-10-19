@@ -4,7 +4,7 @@ style: Even 8ths
 key: C
 form: ABC, 28 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 
 # bar | chord
 # book: "Med. Straight 8ths (quasi 16th-note March)"

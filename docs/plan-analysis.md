@@ -144,7 +144,7 @@ modal | blues`, as it states a key (principle 1); a written context always wins,
 | --- | --- | --- |
 | `functional` | cadences, functions, areas (the default) | on |
 | `modal` | each chord its own mode: M5, m6, D7, s3 | off |
-| `blues` | the I7 and IV7 by their degree (R2: D5 before D3; IV7 Mixolydian) | off |
+| `blues` | the I, IV and V by their degree (docs/superpowers/specs/2026-10-18-blues-analysis-design.md): D9 (I7, IV7, a V7 that doesn't resolve), M6 (a triad or 6 on I, IV or V), m10 (a minor blues' i and iv), s4 (sus); Basic plays the key's Blues scale on them | off |
 
 - **Blues (detected):** a dominant 7th on one root in bar 1 and the dominant a fourth above it in bar 5, in a
   12-bar (or 24-bar) form, or in the first section of a form of 12-bar sections or of a 12-12-8-12 one (`AABC, 44
@@ -154,8 +154,9 @@ modal | blues`, as it states a key (principle 1); a written context always wins,
   The key: `key:` beats the blues key (`stated ?? blues ?? scored`); with no `key:` a blues form's key is its
   bar-1 root, major, whatever the context (a 12-bar B♭ blues stated `functional` is still in B♭, its blues rules
   off), and for a stated blues the detection missed, the bar-1 chord's root and mode. The tonic and subdominant are
-  dominant 7ths by nature, not by function (§7.1, R2). A minor blues is `context: blues` with the minor-key rules
-  inside: it changes the label and the key source, not the scales (Levine p. 225; M&H pp. 143–144).
+  dominant 7ths by nature, not by function (§7.1, R2). A minor blues is `context: blues` too: its i and iv are
+  Dorian (m10), its V7 keeps the minor-key rules (Levine p. 225; M&H pp. 143–144). A blues of any other form (a 9-,
+  13- or 16-bar Delta blues) says `context: blues`; `csm add` writes it from an iReal style containing "Blues".
 - **Modal (detected):** fewer than a third of the chords take part in cadences, and the median chord lasts two bars
   or more, unless more than half the chords are dominant 7ths on more than one root (modal music is poor in
   dominants, M&H p. 187, N&G p. 153; an all-dominant tune has no cadences by §5.1's definition, and read modal
@@ -259,8 +260,9 @@ The rules, in priority order. The first that applies decides.
 | D3 | **extended:** resolves down a fifth to another dominant, in a chain that ends on a **major** tonic | Mixolydian | "extended dominant: V7 of the next dominant" |
 | D8 | **extended**, in a chain that ends on a **minor** tonic (`D7♭9 G7♯5 → Cm7` in Stella), the last link included | derive each link from that minor key (harmonic minor for the last) | "V7 of the V7 of C minor: ♭9 and ♭13 are in the key" |
 | D4 | **V7, V7/x, V7 of the chord before, cadence to a new key:** resolves down a fifth to a non-dominant chord | derive from the reference | "V7 of G minor: ♭9 and ♭13 are in the key" / "V7/ii in C: the 9 is in the key, the 13 isn't" |
-| D5 | The **back door** (♭VII7 up a whole step to a major chord), **I7 / IV7 in a blues** (decided by their degree, before D3 and D7), or a **non-resolving** dominant whose root is diatonic (deceptive V7) | derive from the local key; a blues IV7 is Mixolydian | "I7 of the blues: a tonic with dominant colour, natural tensions" / "IV7 of the blues: a subdominant with dominant colour, Mixolydian (the ♯11 is an extra colour)" / "back door ♭VII7 to …" |
+| D5 | The **back door** (♭VII7 up a whole step to a major chord), or a **non-resolving** dominant whose root is diatonic (deceptive V7) | derive from the local key | "back door ♭VII7 to …" |
 | D6 | **Non-resolving with a chromatic root** (♭VI7 that doesn't resolve, ♭II7 sitting) | Lydian Dominant | "a chromatic dominant with nowhere to go: Lydian Dominant, its own key" |
+| D9 | **In a blues:** the I7 and IV7 (decided by their degree, before D3), or a V7 that doesn't resolve (after D3/D4; not in a minor blues) | Mixolydian (written tensions move it: D1+D9); Basic: the key's Blues scale | "I7 of the blues: a tonic with dominant colour, Mixolydian" / "IV7 of the blues: a subdominant with dominant colour, Mixolydian (the ♯11 is an extra colour)" / "V7 of the blues: a dominant that needn't resolve, Mixolydian" |
 | D7 | **Modal or static** (a modal tune, or any dominant lasting four bars or more) | Mixolydian, or Lydian Dominant if the symbol says ♯11 | "static dominant: its own mode" |
 
 What D4 yields in a major key, for the record (the derivation, not a lookup):
@@ -308,6 +310,7 @@ different chord).
 | M3 | The natural 11 is in the local key's reference (this is the **tonic I**, and ♭III in a minor area, where ♭IIIMaj7 shares the key's notes); **♭VII of a minor key**, the notes of the tonic's Dorian (R6; N&G pp. 85, 88, 91); a **V triad** without its 7th, which is Mixolydian; a **IV reached by its own dominant** (R1, below) | Ionian (Mixolydian for the V triad) | "tonic: the 4th is in the key" / "♭III of G minor is B♭ major itself" / "♭VII of C minor: B♭ major, the notes of C Dorian" / "V without its 7th: Mixolydian, the key's own notes" / "the B♭7 before it makes E♭ the key of the moment: the 4th is in the key" |
 | M4 | Otherwise (IV not so prepared, ♭II, ♭III in major, ♭VI, ♭VII of a major key, any chromatic major chord) | Lydian | "IV: the natural 4th would be the key's ♭7" / "a borrowed major chord: Lydian, as all non-tonic major chords" |
 | M5 | Modal tune | Lydian, unless the symbol has a natural 11 (`Maj7sus`, rare) | "modal major: Lydian" |
+| M6 | A blues: a major triad or 6 chord on I, IV or V (not a maj7) | Mixolydian; Basic: the key's Blues scale | "IV of the blues: a triad here implies its ♭7, Mixolydian" |
 
 R1 is the one exception to "IV is Lydian". A major chord that is IV of the local key and whose previous chord is its
 own dominant, a fifth above (V7/IV) or a half step above (subV7/IV), is the key of the moment: the 4th is in that
@@ -330,6 +333,7 @@ A♭Maj7) stays Lydian.
 | m4 | **Related ii** of any ii–V (a dominant a fourth above follows) | Dorian | "ii of the ii–V to …" |
 | m5 | **Tonic minor** (i of a minor area) | Dorian | "tonic minor: Dorian by convention" |
 | m6 | Modal tune | Dorian | "modal minor: Dorian" |
+| m10 | A minor blues: the i or iv (triad, m7 or m6) | Dorian; Basic: the key's Blues scale | "i of the minor blues: Dorian" |
 | m7 | Diatonic, by derivation from the local key: ii → Dorian; vi → Aeolian; iv of minor → Dorian; v of minor → Phrygian | as derived | "vi: Aeolian, the key's own notes (the ♭6 is a passing note)" / "v of a minor key: Phrygian, the key's own notes (its ♭2 is a passing note)" |
 | m9 | **iii** of a major key, also as the related ii of the next dominant (R4) | Phrygian (Dorian at Advanced) | "iii: Phrygian, the key's own notes (the ♭2 is a passing note)" |
 | m8 | Borrowed or chromatic (iv7 in major, ♭vi7…) | Dorian | "a borrowed minor chord: Dorian, its own key" |
@@ -429,6 +433,7 @@ F → Mixolydian ♭6), and the next pair, a half step down, is its tritone subs
 | s1 | `7sus4♭9` | Phrygian |
 | s2 | V7sus4 resolving down a fifth | as a dominant (§7.1), with the 11 in place of the 3rd: Mixolydian, or Mixolydian ♭6 if the ♭13 is in the key. Reason: "V7sus4 resolving down a fifth: Mixolydian, the 4th is a chord tone here" (the ♭13 branch keeps "the b13 is in the key") |
 | s3 | Static or modal (Maiden Voyage) | Mixolydian |
+| s4 | A blues: a sus chord on I, IV or V | Mixolydian; Basic: the key's Blues scale |
 
 ### 7.7 Fallback
 
@@ -656,10 +661,12 @@ the places a future rule change is most likely to revisit.
 3. **A V7 after its own tonic, in a bass line (`Gm D7/F♯ Fm7`): treat as V7 of the chord before?** *Yes.* It is
    heard as the dominant of the Gm it leaves. The alternative, "non-resolving, derive from the key", gives the
    same scale here (G minor, natural minor: ♭9 ♭13) but a different reason.
-4. **IV7 in a blues: Lydian Dominant or Mixolydian?** ~~*Lydian Dominant.*~~ **Revised (R2): Mixolydian.** The
+4. **The blues chords: IV7 Lydian Dominant or Mixolydian?** ~~*Lydian Dominant.*~~ **Revised (R2): Mixolydian**, and
+   since rules v2 (D9, M6, m10, s4) every I, IV and V of a blues is Mixolydian (a minor blues' i and iv Dorian), the
+   key's Blues scale at Basic. The
    first answer was Lydian Dominant, the ♯11 (E over B♭7 in F) being the key's major 7th. The sources write the
    blues IV7 as Mixolydian (N&G p. 105; M&H pp. 93, 125), which is what most people play, so principle 4 yields
-   for the blues subdominant, exactly the exception this entry foresaw; the I7 is decided by D5 before D3 (M&H
+   for the blues subdominant, exactly the exception this entry foresaw; the I7 is decided by D9 before D3 (M&H
    p. 137). Lydian Dominant stays in the `7` menu, and the back-door ♭VII7 and Rhythm Changes' IV7 (not a blues) stay
    Lydian Dominant; the Bird Blues' bar 5 B♭7 is Mixolydian once the chart says `context: blues` (§5.4).
 5. **The Bird Blues chain (bars 6–8): analyse each pair, or treat the chain as passing ii–Vs (all Mixolydian)?**
@@ -757,8 +764,9 @@ ladder (`engine/levels.ts`, `ladderScale`), after the chord quality's own overri
 quality, not by a slash reading. The default is compared by pitch: a Standard the analysis only respelled (G♭°7's
 F♯ Whole-Half, R9) is still the default, and keeps its spelling at Basic and Advanced. Scales that fit one function
 only (the diatonic diminished family) carry `functional: true` and are never dealt by Random, which picks among the
-quality's other inside options. A tonic minor chord (rule m5) is Aeolian at Basic (decision 7): the level control
-runs the analysis on the chart to find those rows. Lydian's and Lydian Dominant's Advanced rungs are blank, as in
+quality's other inside options. A tonic minor chord (rule m5) is Aeolian at Basic (decision 7), and a blues chord
+(D9, M6, m10, s4) plays the key's Blues scale at Basic: the level control runs the analysis on the chart to find those
+rows. Lydian's and Lydian Dominant's Advanced rungs are blank, as in
 the table.
 
 ## 12. The tool

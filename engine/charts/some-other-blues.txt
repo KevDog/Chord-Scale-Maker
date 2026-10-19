@@ -7,19 +7,19 @@ form: A, 12 bars
 source: Colorado Cookbook, p. 208
 recording: John Coltrane; Coltrane Jazz; Atlantic; 1961
 youtube: YlI6pxpqTGc
-# analysis: 2026-10-11, rules v1; F, blues
+# analysis: 2026-10-19, rules v2; F, blues
 # recording: recorded 1959-12-02, Atlantic 1354, released 1961 (jazzdisco.org, MusicBrainz release group, Wikipedia); a 1959-11-24 take is unissued
 
 # bar | chord | scale
 
 section: A
-1  | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
+1  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
 2  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
+3  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
 5  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
+7  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
 8  | D7   # V7/ii in F: the b13 is in the key
 9  | Gm7  # ii of C7: Dorian
 10 | C7   # extended dominant: V7 of F7
-11 | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
+11 | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
 12 | C7   # extended dominant: V7 of F7

@@ -4,7 +4,7 @@ style: Medium up
 key: Ab
 form: AABA, 56 bars
 source: Colorado Cookbook, p. 113
-# analysis: 2026-10-17, rules v1; Ab
+# analysis: 2026-10-19, rules v2; Ab
 
 # bar | chord | scale
 # the standard 16-bar A; the lead sheet condenses the Ab minor vamp

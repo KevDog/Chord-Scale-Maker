@@ -4,7 +4,7 @@ style: Bright samba
 key: F
 form: AA, 32 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # book: as played by Richie Cole; cut time (2/2)
 # solo on A (both endings); after solos, D.S. al Coda
 

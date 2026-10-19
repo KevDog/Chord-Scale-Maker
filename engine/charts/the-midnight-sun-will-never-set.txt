@@ -4,7 +4,7 @@ style: Ballad
 key: F
 form: AABA, 32 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # book: Medium Ballad; melody in straight eighths. Letters A (16 bars: two 8-bar A's), B, C (the last A).
 # the book's pickup bar carries C9sus; written as a one-bar Intro
 

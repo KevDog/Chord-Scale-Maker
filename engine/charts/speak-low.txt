@@ -4,7 +4,7 @@ style: Up
 key: F
 form: AABC, 56 bars
 source: Colorado Cookbook, p. 215
-# analysis: 2026-10-11, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 
 # bar | chord | scale
 # the solo changes; the bridge's last two bars can also be Db7 | C7

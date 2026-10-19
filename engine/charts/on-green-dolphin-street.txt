@@ -5,7 +5,7 @@ style: Mixed
 key: C
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 165
-# analysis: 2026-10-17, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 
 # bar | chord | scale
 

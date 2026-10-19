@@ -5,7 +5,7 @@ style: Mixed
 key: G
 form: AB, 24 bars
 source: Colorado Cookbook, p. 42
-# analysis: 2026-10-17, rules v1; G
+# analysis: 2026-10-19, rules v2; G
 
 # bar | chord | scale
 

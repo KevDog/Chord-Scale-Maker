@@ -5,7 +5,7 @@ style: Medium
 key: C
 form: AABA, 33 bars
 source: Colorado Cookbook, p. 233
-# analysis: 2026-10-11, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 
 # bar | chord | scale
 

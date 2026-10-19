@@ -5,7 +5,7 @@ style: Blues
 form: A, 12 bars
 key: Bb
 context: blues
-# analysis: 2026-10-11, rules v1; Bb, blues
+# analysis: 2026-10-19, rules v2; Bb, blues
 
 # bar | chord | scale
 
@@ -16,7 +16,7 @@ section: A
 3  | Gm7     # ii of the ii–V to F minor
 3  | C7      # V7/v in Bb: natural tensions
 4  | Fm7     # ii of Bb7: Dorian
-4  | Bb7     # I7 of the blues: a tonic with dominant colour, natural tensions
+4  | Bb7     # I7 of the blues: a tonic with dominant colour, Mixolydian
 5  | Eb7     # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
 6  | Ebm7    # ii of Ab7: Dorian
 6  | Ab7     # extended ii–V: a side-step, its own key

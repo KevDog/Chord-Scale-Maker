@@ -7,7 +7,7 @@ form: ABCD, 32 bars
 source: Colorado Cookbook, p. 86
 recording: Bill Evans; Alone; Verve; 1970
 youtube: YNdr78_fRG4
-# analysis: 2026-10-17, rules v1; G
+# analysis: 2026-10-19, rules v2; G
 # recording: recorded Sept–Oct 1968, Webster Hall, NYC, solo piano; chart follows no version, so the jazz reference reading, over Sinatra's No One Cares (1959) which Gioia credits with popularising it; Verve V6-8792, released April 1970; performance later transcribed (Jed Distler); sources: Wikipedia (Alone, Here's That Rainy Day); video: "Provided to YouTube by Universal Music Group" Alone track, the same take
 
 # bar | chord | scale

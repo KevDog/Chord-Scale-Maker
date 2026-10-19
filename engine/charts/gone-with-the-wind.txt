@@ -4,7 +4,7 @@ style: Medium swing
 key: Eb
 form: AB, 32 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 
 # bar | chord
 

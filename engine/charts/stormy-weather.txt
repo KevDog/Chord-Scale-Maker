@@ -5,7 +5,7 @@ key: G
 form: AABA, 36 bars
 source: The New Real Book, Vol. 1
 recording: Ella Fitzgerald; Ella Fitzgerald Sings the Harold Arlen Song Book; Verve; 1961
-# analysis: 2026-10-12, rules v1; G
+# analysis: 2026-10-19, rules v2; G
 # recording: recorded 1960-08-01 to 1961-01-14 in Hollywood, arranged and conducted by Billy May; chart follows no named version; songbook standard: the Ethel Waters (Brunswick, 1933) and Lena Horne (1943 film) versions are the pop originals, so Ella's Arlen Song Book reading is taken as the canonical jazz version; Verve MG V-4046-2; sources: Wikipedia (Stormy Weather, the Song Book album)
 
 # book letters: A (bars 1–18 = A 8 + A 10), B (8), C (10)

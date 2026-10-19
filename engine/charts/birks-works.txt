@@ -8,18 +8,18 @@ form: A, 12 bars
 source: Colorado Cookbook, p. 35
 recording: Dizzy Gillespie; Dizzy Gillespie; Dee Gee; 1952
 youtube: wIpPOFOXYEg
-# analysis: 2026-10-11, rules v1; F minor, blues
+# analysis: 2026-10-19, rules v2; F minor, blues
 # recording: recorded 1951-03-01, Detroit (with John Coltrane, Milt Jackson); matrix 2040-X, first issued on 78 (Dee Gee 3600, with Tin Tin Deo), first LP 1952 (Dee Gee LP-1000, 10"), then Savoy MG 12047 The Champ (1956) (jazzdisco, MusicBrainz); video: The Champ, the same take
 
 # bar | chord | scale
 
 section: A
 bars: 12
-1  | Fm    # tonic minor: Dorian by convention
+1  | Fm    # i of the minor blues: Dorian
 6  | Db7   # bVI7 in F minor, not resolving: the #11 is in the key
-8  | Fm    # tonic minor: Dorian by convention
+8  | Fm    # i of the minor blues: Dorian
 9  | Abm7  # ii of Db7: Dorian
 9  | Db7   # extended ii–V: a side-step, its own key
 10 | Gm7   # ii of the ii–V to F minor
 10 | C7    # V7 of F minor: b9 and b13 are in the key
-11 | Fm    # tonic minor: Dorian by convention
+11 | Fm    # i of the minor blues: Dorian

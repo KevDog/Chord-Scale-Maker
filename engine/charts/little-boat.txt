@@ -6,7 +6,7 @@ style: Latin
 key: Bb
 form: A, 16 bars
 source: Colorado Cookbook, p. 120
-# analysis: 2026-10-17, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 
 # bar | chord | scale
 

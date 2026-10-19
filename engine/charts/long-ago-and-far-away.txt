@@ -6,7 +6,7 @@ form: ABCD, 32 bars
 source: Colorado Cookbook, p. 128
 recording: Chet Baker; Chet Baker Sings and Plays; Pacific Jazz; 1955
 youtube: PABzN7U8OBY
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # recording: recorded 1955-03-07, Los Angeles; Baker, Russ Freeman, Carson Smith, Bob Neel; Pacific Jazz PJ 1202; songbook standard → a widely known jazz reading (jazzstandards.com lists Chet Baker among its versions; no single canonical jazz version stands out); sources: Wikipedia, jazzstandards.com; video: "Provided to YouTube by Universal Music Group", Chet Baker Sings and Plays (2004 remaster), 3:58 vs 3:57 listed, the same take
 
 # bar | chord | scale

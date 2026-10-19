@@ -4,7 +4,7 @@ style: Latin
 key: Eb
 form: AABC, 36 bars
 source: Colorado Cookbook, p. 220
-# analysis: 2026-10-17, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 
 # bar | chord | scale
 # the intro and coda vamps are melody only (no chords) and are left out

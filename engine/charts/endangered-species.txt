@@ -7,7 +7,7 @@ form: ABCD, 64 bars
 source: The New Real Book, Vol. 1
 recording: Wayne Shorter; Atlantis; Columbia; 1985
 youtube: qUDRRCQj0TE
-# analysis: 2026-10-17, rules v1; D
+# analysis: 2026-10-19, rules v2; D
 # recording: recorded and released 1985, the first recording of it; composed with Joseph Vitarelli, who plays keyboards on it (Wikipedia, YouTube Topic credits)
 # the book prints a lead sheet plus bass and keyboard parts; the lead sheet's chords are used ("some chord names have
 # been simplified (see piano part)"). Bars the lead sheet leaves tacet (intro, C 33-37, D 53-56) take the keyboard

@@ -7,7 +7,7 @@ form: ABC, 64 bars
 source: The New Real Book, Vol. 1
 recording: Bill Evans; The Tokyo Concert; Fantasy; 1974
 youtube: ts3QHuGJHcs
-# analysis: 2026-10-17, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 # recording: recorded live 1973-01-20, Yubin Chokin Hall, Tokyo; Evans, Eddie Gomez, Marty Morell; Fantasy F-9457, released August 1974 (also CBS/Sony SOPM-40 in Japan as Live in Tokyo); chart is "as played by Bill Evans", and this is his first issued recording of the tune; sources: Wikipedia, jazzdisco.org; video: "Provided to YouTube by Universal Music Group", Tokyo Concert (Fantasy ℗ 1974), 6:47 vs 6:36 listed for the LP, the same performance
 # as played by Bill Evans; solos on the form (ABC); after solos, D.S. al Coda
 # the book: "Use chords in parentheses for solos."

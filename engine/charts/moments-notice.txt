@@ -6,7 +6,7 @@ form: AA, 30 bars
 source: Colorado Cookbook, p. 136
 recording: John Coltrane; Blue Train; Blue Note; 1958
 youtube: zbkLmwLzU6g
-# analysis: 2026-10-17, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 # recording: recorded 1957-09-15, released 1958 (MusicBrainz release group, Wikipedia)
 
 # bar | chord | scale

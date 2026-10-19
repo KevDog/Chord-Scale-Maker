@@ -7,7 +7,7 @@ time: 6/4
 source: The New Real Book, Vol. 1
 recording: Wayne Shorter; Speak No Evil; Blue Note; 1966
 youtube: CjGEYuITiVM
-# analysis: 2026-10-17, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 # recording: recorded 1964-12-24 (Freddie Hubbard, Herbie Hancock, Ron Carter, Elvin Jones), the first recording of it, BLP 4194, released June 1966; titled "Wild Flower" on the LP (jazzdisco.org, Wikipedia); video: Rudy Van Gelder Edition remaster, the same take
 # style: the book says Medium Jazz 6/4, quarter = 160
 # a second chord in a bar falls on beat 4, but Cm7 in B bar 1 on beat 3 (drawn on beat 4)

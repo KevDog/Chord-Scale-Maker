@@ -6,7 +6,7 @@ form: AABC, 16 bars
 source: Colorado Cookbook, p. 65
 recording: Sonny Rollins; Saxophone Colossus; Prestige; 1957
 youtube: fdakJqKPRDE
-# analysis: 2026-10-11, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 # recording: recorded 1956-06-22, released 1957 (MusicBrainz release group, Wikipedia)
 
 # bar | chord | scale

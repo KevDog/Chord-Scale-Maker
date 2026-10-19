@@ -4,7 +4,7 @@ style: Medium up
 key: Eb
 form: AB, 32 bars
 source: Colorado Cookbook, p. 242
-# analysis: 2026-10-11, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 
 # bar | chord | scale
 # the "standard" chords; the lead sheet offers Ebm7 Ab7 Dm7 G7 (bars 3–4), Db7#11 (14) and F#m7 B7 Fm7 Bb7 (15–16)

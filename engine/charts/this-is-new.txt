@@ -4,7 +4,7 @@ style: Medium up
 key: Cm
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 248
-# analysis: 2026-10-17, rules v1; C minor
+# analysis: 2026-10-19, rules v2; C minor
 
 # bar | chord | scale
 

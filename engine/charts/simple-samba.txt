@@ -4,7 +4,7 @@ style: Up samba
 key: C
 form: ABCDE, 90 bars (solos on ABCD, 70 bars)
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 
 # book tempo marking: Fast Samba, in cut time
 # solo on ABCD (play through the drum fills); after solos, D.C. al Coda: the coda is taken in E after bar 18

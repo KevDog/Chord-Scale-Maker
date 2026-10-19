@@ -5,7 +5,7 @@ key: Eb
 form: ABC, 40 bars
 context: blues
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; Eb, blues
+# analysis: 2026-10-19, rules v2; Eb, blues
 # Med. swing (blues); A is a 12-bar blues verse, B a 16-bar verse (segno), C the 12-bar solo blues (repeated)
 # after solos, D.S. (3rd verse) al Coda
 # the pickup bar is a piano Db figure, not a bar of the form
@@ -14,45 +14,45 @@ source: The New Real Book, Vol. 1
 # bar | chord
 
 section: A
-1  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+1  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 1  | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
-2  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+2  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 2  | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
-3  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+3  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 3  | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
-4  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+4  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 4  | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
 5  | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
-9  | Bb7  # V7 in Eb, not resolving: natural tensions
+7  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+9  | Bb7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 10 | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+11 | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 12 | Eb7
 12 | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
 
 section: B
 bars: 16
-1  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+1  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 1  | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
-2  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+2  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 2  | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
-3  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+3  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 3  | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
-4  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+4  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 4  | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
-5  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+5  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 5  | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
-6  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+6  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 6  | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
-7  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+7  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 7  | Db   # ♭VII, borrowed from Eb minor: Lydian (its ♯11 is in the key)
-8  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+8  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 # bar 8: a piano figure at the end of the bar with no chord symbol (the other break bars print Db); Eb7 holds
 9  | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
-13 | Bb7  # V7 in Eb, not resolving: natural tensions
+11 | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
+13 | Bb7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 14 | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-15 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+15 | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 # alt: bar 16, beats 3–4 (Bb7)
 @segno 1
 @coda 15
@@ -60,18 +60,18 @@ bars: 16
 section: C
 1  | Eb7
 5  | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+7  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 9  | B7   # tritone substitute: resolves down a half step to Bb7
 10 | Bb7  # extended dominant: V7 of Eb7
-11 | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+11 | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 # bar 12: Eb7 held (repeated for the D.S. marker)
 12 | Eb7
 @nav 12 D.S. al Coda
 
 section: Coda
 bars: 4
-1  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+1  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 1  | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
 2  | Bb7  # extended dominant: V7 of Eb7
-2  | Eb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+2  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 @coda 1

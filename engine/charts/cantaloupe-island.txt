@@ -7,7 +7,7 @@ form: A, 16 bars
 source: Colorado Cookbook, p. 47
 recording: Herbie Hancock; Empyrean Isles; Blue Note; 1964
 youtube: otFVFLtRF_s
-# analysis: 2026-10-11, rules v1; F minor, modal
+# analysis: 2026-10-19, rules v2; F minor, modal
 
 # bar | chord | scale
 

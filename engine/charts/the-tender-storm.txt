@@ -5,7 +5,7 @@ style: Medium up
 key: D
 form: A, 20 bars
 source: Colorado Cookbook, p. 239
-# analysis: 2026-10-17, rules v1; D
+# analysis: 2026-10-19, rules v2; D
 
 # bar | chord | scale
 

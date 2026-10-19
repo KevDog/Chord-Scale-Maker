@@ -4,7 +4,7 @@ style: Ballad
 key: Dm
 form: AB, 32 bars
 source: 
-# analysis: 2026-10-12, rules v1; D minor
+# analysis: 2026-10-19, rules v2; D minor
 
 # The book is in 4/4 ("Med. Ballad; may be played rubato, in time, or as a bossa nova").
 # The book notes: the 7th bar of A and B was originally 2 bars each.

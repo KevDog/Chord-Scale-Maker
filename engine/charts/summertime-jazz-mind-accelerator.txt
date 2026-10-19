@@ -5,7 +5,7 @@ key: Am
 form: A, 16 bars
 source: Jazz Mind Accelerator
 version: Jazz Mind Accelerator
-# analysis: 2026-10-18, rules v1; A minor
+# analysis: 2026-10-19, rules v2; A minor
 
 section: A
 # area: A minor (A 1–10)

@@ -7,7 +7,7 @@ form: AABA, 32 bars
 source: Colorado Cookbook, p. 240
 recording: Miles Davis; Miles: The New Miles Davis Quintet; Prestige; 1956
 youtube: Hp7qGCoyTnY
-# analysis: 2026-10-11, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 # recording: recorded 1955-11-16 (John Coltrane, Red Garland, Paul Chambers, Philly Joe Jones), PRLP 7014, the first studio recording; the two later takes (1956-05-11) are on Workin' (jazzdisco, Wikipedia)
 
 # bar | chord | scale

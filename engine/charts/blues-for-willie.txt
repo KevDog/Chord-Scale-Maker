@@ -5,16 +5,16 @@ style: Blues
 key: Bb
 form: A, 12 bars
 source: Colorado Cookbook, p. 38
-# analysis: 2026-10-11, rules v1; Bb, blues
+# analysis: 2026-10-19, rules v2; Bb, blues
 
 # bar | chord | scale
 
 section: A
-1  | Bb7    # I7 of the blues: a tonic with dominant colour, natural tensions
+1  | Bb7    # I7 of the blues: a tonic with dominant colour, Mixolydian
 2  | Eb7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | Bb7    # I7 of the blues: a tonic with dominant colour, natural tensions
+3  | Bb7    # I7 of the blues: a tonic with dominant colour, Mixolydian
 5  | Eb7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | Bb7    # I7 of the blues: a tonic with dominant colour, natural tensions
+7  | Bb7    # I7 of the blues: a tonic with dominant colour, Mixolydian
 9  | Dbm7   # ii of Gb7: Dorian
 9  | Gb7    # extended ii–V: a side-step, its own key
 10 | Cm7    # ii of F7: Dorian

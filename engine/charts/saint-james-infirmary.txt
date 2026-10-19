@@ -5,7 +5,7 @@ style: Medium
 key: Dm
 form: A, 8 bars
 source: Colorado Cookbook, p. 199
-# analysis: 2026-10-11, rules v1; D minor
+# analysis: 2026-10-19, rules v2; D minor
 
 # bar | chord | scale
 

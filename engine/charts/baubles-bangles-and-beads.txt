@@ -6,7 +6,7 @@ key: Ab
 time: 3/4
 form: ABCD, 36 bars
 source: Colorado Cookbook, p. 28
-# analysis: 2026-10-17, rules v1; Ab
+# analysis: 2026-10-19, rules v2; Ab
 
 # bar | chord | scale
 

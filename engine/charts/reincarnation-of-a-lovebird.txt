@@ -4,7 +4,7 @@ style: Medium up
 key: F#m
 form: ABCDE, 66 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; F# minor
+# analysis: 2026-10-19, rules v2; F# minor
 # book: Medium-up swing; letter C is a half-time ballad (half note = quarter), letter D back to the original tempo
 # book: the whole chart (A to E) is in repeats; Fine at the end of E; last time: molto rit. in the last two bars
 

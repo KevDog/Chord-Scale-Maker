@@ -6,7 +6,7 @@ key: Eb
 form: AB, 32 bars
 source: Colorado Cookbook, p. 150
 recording: John Coltrane; Coltrane Jazz; Atlantic; 1961
-# analysis: 2026-10-11, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 # recording: recorded 1959-11-24, Coltrane with Wynton Kelly, Paul Chambers, Jimmy Cobb; chart (Colorado Cookbook, samba feel) follows no named version; songbook standard: Coltrane's is the jazz reference, over the film (Fred Astaire, The Sky's the Limit, 1943) and the Glen Gray hit (1944); Atlantic SD 1354, released early 1961; sources: Wikipedia (Coltrane Jazz, My Shining Hour)
 
 # bar | chord | scale

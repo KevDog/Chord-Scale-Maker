@@ -4,7 +4,7 @@ style: Up
 key: Bb
 form: A, 12 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; Bb, blues
+# analysis: 2026-10-19, rules v2; Bb, blues
 # chords suggested only (no chordal instrument on the recording)
 # the pickup bar is a melodic figure with no chords
 # solos in Bb, disregarding the form; after solos the head, then from bar 11 to the Coda
@@ -13,17 +13,17 @@ source: The New Real Book, Vol. 1
 
 section: A
 bars: 16
-1  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+1  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 2  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+3  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 5  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+7  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 9  | Cm7  # ii of F7: Dorian
 10 | F7   # extended dominant: V7 of Bb7
-11 | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+11 | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 12 | F7   # extended dominant: V7 of Bb7
 # bar 12: F7 on beat 3 (Bb7 continues on beats 1–2)
-13 | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+13 | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 @ending 1 12
 @ending 2 13
 @coda 11
@@ -33,5 +33,5 @@ bars: 16
 section: Coda
 bars: 4
 @coda 1
-1  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+1  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 # Coda: Bb7 held 4 bars

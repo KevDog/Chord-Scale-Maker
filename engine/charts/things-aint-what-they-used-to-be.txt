@@ -6,17 +6,17 @@ style: Blues
 key: Db
 form: A, 12 bars
 source: Colorado Cookbook, p. 235
-# analysis: 2026-10-11, rules v1; Db, blues
+# analysis: 2026-10-19, rules v2; Db, blues
 
 # bar | chord | scale
 
 section: A
-1  | Db7   # I7 of the blues: a tonic with dominant colour, natural tensions
+1  | Db7   # I7 of the blues: a tonic with dominant colour, Mixolydian
 5  | Gb7   # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | Db7   # I7 of the blues: a tonic with dominant colour, natural tensions
+7  | Db7   # I7 of the blues: a tonic with dominant colour, Mixolydian
 9  | Ebm7  # ii of Ab7: Dorian
 10 | Ab7   # extended dominant: V7 of Db7
-11 | Db7   # I7 of the blues: a tonic with dominant colour, natural tensions
+11 | Db7   # I7 of the blues: a tonic with dominant colour, Mixolydian
 11 | E7    # tritone substitute: resolves down a half step to Eb7
 12 | Eb7   # tritone substitute: resolves down a half step to D7
 12 | D7    # tritone substitute: resolves down a half step to Db7

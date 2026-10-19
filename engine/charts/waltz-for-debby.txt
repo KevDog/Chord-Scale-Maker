@@ -7,7 +7,7 @@ time: 3/4
 source: The New Real Book, Vol. 1
 recording: Bill Evans Trio; Waltz for Debby; Riverside; 1962
 youtube: wCINvavqFXk
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # recording: recorded live at the Village Vanguard 1961-06-25 (Scott LaFaro, Paul Motian), the LP take, RLP 399; the trio's full form with solos, as the chart is laid out; Evans's first recording of it is a 1:19 solo-piano statement of the theme on New Jazz Conceptions (RLP 12-223, rec. 1956) (jazzdisco.org, Wikipedia)
 # book: Medium Jazz Waltz. Repeat signs around the form (A–C) (head, then solos in 3/4 on the same form, taking the
 # standard ending each time and ignoring the inversions, e.g. bars 5–12). After solos, D.C. al Coda (coda at C bar 29).

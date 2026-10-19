@@ -6,7 +6,7 @@ key: Ab
 form: AABC
 recording: Ella Fitzgerald; Ella Fitzgerald Sings the Jerome Kern Song Book; Verve; 1963
 youtube: ASNSS_G62zw
-# analysis: 2026-10-17, rules v1; Ab
+# analysis: 2026-10-19, rules v2; Ab
 # recording: recorded 1963-01-05/07, Radio Recorders, Los Angeles, with Nelson Riddle & His Orchestra; Verve V6-4060; songbook standard → Ella's reading as the reference; the Dizzy Gillespie Sextet/Charlie Parker 1945 Guild 78 is the bop landmark but its first LP issue could not be confirmed; sources: Wikipedia; video: "Provided to YouTube by Universal Music Group", the album track (3:16), the same take
 
 # bar | chord | scale

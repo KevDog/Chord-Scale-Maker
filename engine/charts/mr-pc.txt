@@ -8,16 +8,16 @@ form: A, 12 bars
 source: Colorado Cookbook, p. 141
 recording: John Coltrane; Giant Steps; Atlantic; 1960
 youtube: PttNMqbNMOI
-# analysis: 2026-10-11, rules v1; C minor, blues
+# analysis: 2026-10-19, rules v2; C minor, blues
 # recording: recorded 1959-05-05, Atlantic 1311, released 1960 (jazzdisco.org, MusicBrainz release group, Wikipedia)
 
 # bar | chord | scale
 
 section: A
 bars: 12
-1  | Cm7    # tonic minor: Dorian by convention
-5  | Fm7    # iv: Dorian, the key’s own notes
-7  | Cm7    # tonic minor: Dorian by convention
+1  | Cm7    # i of the minor blues: Dorian
+5  | Fm7    # iv of the minor blues: Dorian
+7  | Cm7    # i of the minor blues: Dorian
 9  | Dm7b5  # iiø7 of C minor: Locrian, the key's own notes (its ♭2 is a passing note)
 10 | G7alt  # from the symbol: altered
-11 | Cm7    # tonic minor: Dorian by convention
+11 | Cm7    # i of the minor blues: Dorian

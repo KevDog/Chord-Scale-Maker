@@ -4,7 +4,7 @@ style: Up
 key: F
 form: ABCD, 32 bars
 source: Colorado Cookbook, p. 111
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 
 # bar | chord | scale
 

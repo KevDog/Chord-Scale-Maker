@@ -4,7 +4,7 @@ style: Ballad
 key: F
 form: AABC, 32 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # book: Med. Ballad (quarter = 57); melody is freely interpreted. Solo on form (AABC); after solos, D.S. al Coda
 
 # bar | chord

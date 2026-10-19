@@ -6,7 +6,7 @@ form: AABC, 32 bars
 source: Jazz Mind Accelerator
 aka: Les Feuilles mortes
 version: Jazz Mind Accelerator
-# analysis: 2026-10-18, rules v1; G minor
+# analysis: 2026-10-19, rules v2; G minor
 
 section: A1
 # area: Bb major (A1 1–4)

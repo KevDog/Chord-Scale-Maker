@@ -4,20 +4,20 @@ subtitle: Basic 12-Bar Blues
 style: Blues
 form: A, 12 bars
 key: F
-# analysis: 2026-10-11, rules v1; F, blues
+# analysis: 2026-10-19, rules v2; F, blues
 
 # bar | chord | scale
 
 section: A
-1  | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
+1  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
 2  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
+3  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
 4  | F7
 5  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
 6  | Bb7
-7  | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
+7  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
 8  | F7
-9  | C7   # V7 in F, not resolving: natural tensions
+9  | C7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 10 | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-11 | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
+11 | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
 12 | C7   # extended dominant: V7 of F7

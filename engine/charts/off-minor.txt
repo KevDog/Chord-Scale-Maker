@@ -6,7 +6,7 @@ form: AABC, 32 bars
 source: The New Real Book, Vol. 1
 recording: Thelonious Monk; Genius of Modern Music; Blue Note; 1951
 youtube: njJtE9citu4
-# analysis: 2026-10-17, rules v1; G minor
+# analysis: 2026-10-19, rules v2; G minor
 # recording: recorded 1947-10-24, first issued on 78 (Blue Note 547), LP 1951 (BLP 5002); Bud Powell recorded it first, 1947-01-10 (Wikipedia, jazzdisco); video: Genius Of Modern Music, Vol. 1 (2013)
 # book: Med. Swing. Solo on form (AABC); after solos D.S., play head, then D.C. al fine (the intro, ending at bar 4)
 # book: chords in parentheses are not played by piano during the head; they are the changes (the intro's Gm and Bb13, A bar 7 and C bar 7's D13, B bar 3's Bm7), so they are rows here

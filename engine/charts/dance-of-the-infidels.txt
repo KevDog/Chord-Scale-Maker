@@ -5,7 +5,7 @@ style: Medium up
 key: F
 form: A
 source: Colorado Cookbook, p. 58
-# analysis: 2026-10-11, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 
 # bar | chord | scale
 

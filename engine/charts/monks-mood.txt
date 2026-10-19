@@ -6,7 +6,7 @@ form: AABA, 32 bars
 source: The New Real Book, Vol. 1
 recording: Thelonious Monk; Genius of Modern Music, Volume 2; Blue Note; 1956
 youtube: sTVZBl5AUfo
-# analysis: 2026-10-17, rules v1; Db
+# analysis: 2026-10-19, rules v2; Db
 # recording: recorded 1947-11-21 (the session index; Wikipedia says 10-24), first issued on 78 (Blue Note 1565), first LP 1956 (BLP 1511) (Wikipedia, jazzdisco)
 # book: Med. Ballad. Anticipated chords at letter B are played on the beat for solos.
 # book: m7(add 11) chords are written m11 here

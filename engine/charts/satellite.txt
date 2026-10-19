@@ -6,7 +6,7 @@ form: ABCD, 32 bars
 source: Colorado Cookbook, p. 190
 recording: John Coltrane; Coltrane's Sound; Atlantic; 1964
 youtube: _X4a4Nct3R8
-# analysis: 2026-10-17, rules v1; G
+# analysis: 2026-10-19, rules v2; G
 # recording: recorded 1960-10-24, Atlantic 1419, released 1964 (jazzdisco.org, MusicBrainz release group, Wikipedia)
 
 # bar | chord | scale

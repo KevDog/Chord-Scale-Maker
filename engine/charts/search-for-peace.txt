@@ -6,7 +6,7 @@ form: AABC, 32 bars
 source: The New Real Book, Vol. 1
 recording: McCoy Tyner; The Real McCoy; Blue Note; 1967
 youtube: 9XVNzU9OqMc
-# analysis: 2026-10-12, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 # recording: recorded 1967-04-21, take 18, Blue Note BLP 4264, with Joe Henderson, Ron Carter, Elvin Jones (jazzdisco.org, MusicBrainz release group)
 
 # the book's Gm7(add11) is written Gm11

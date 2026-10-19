@@ -7,7 +7,7 @@ form: A, 16 bars
 source: Colorado Cookbook, p. 207
 recording: Miles Davis; Miles Davis Quartet; Prestige; 1954
 youtube: 1ezOYc3UEts
-# analysis: 2026-10-17, rules v1; D
+# analysis: 2026-10-19, rules v2; D
 # recording: recorded 1953-05-19 (John Lewis, Percy Heath, Max Roach), first issued on EP prEP 1326 (1953) and 78 Prestige 884, first LP 10" PRLP 161; 12" reissue Blue Haze (PRLP 7054, 1956) (jazzdisco, Wikipedia); video: Blue Haze, the same take
 
 # bar | chord | scale

@@ -7,7 +7,7 @@ form: AA, 32 bars
 source: Colorado Cookbook, p. 75
 recording: Miles Davis; Miles Davis Quartet; Prestige; 1954
 youtube: 6621nE8BitY
-# analysis: 2026-10-11, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 # recording: recorded 1954-03-15 (Horace Silver, Percy Heath, Art Blakey), the composer's first recording; 78 Prestige 898, first LP 10" PRLP 161; 12" reissue Blue Haze (PRLP 7054, 1956) (jazzdisco, Wikipedia); video: Miles '54: The Prestige Recordings, the same take
 
 # bar | chord | scale

@@ -6,7 +6,7 @@ style: Up
 key: Bb
 form: AABA
 source: Colorado Cookbook, p. 104
-# analysis: 2026-10-11, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 
 # bar | chord | scale
 

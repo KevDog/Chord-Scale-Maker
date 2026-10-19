@@ -5,7 +5,7 @@ style: Medium swing
 key: F
 form: ABC, 32 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; F
+# analysis: 2026-10-19, rules v2; F
 
 # the book's A is two 8-bar A's (AABA); its C is the last A
 # bar | chord

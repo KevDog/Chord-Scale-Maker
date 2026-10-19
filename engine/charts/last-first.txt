@@ -5,7 +5,7 @@ key: G
 form: AAB head (39 bars) + CCDEE solos (32 bars), 71 bars
 source: The New Real Book, Vol. 1
 context: modal
-# analysis: 2026-10-12, rules v1; G, modal
+# analysis: 2026-10-19, rules v2; G, modal
 
 # book: use the G major scale on the Gsus chord for solos
 # bar | chord

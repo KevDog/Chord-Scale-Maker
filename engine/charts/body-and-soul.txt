@@ -4,7 +4,7 @@ style: Ballad
 key: Db
 form: AABC
 source: Colorado Cookbook, p. 41
-# analysis: 2026-10-17, rules v1; Db
+# analysis: 2026-10-19, rules v2; Db
 
 # bar | chord | scale
 

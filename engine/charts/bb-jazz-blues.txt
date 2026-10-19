@@ -4,24 +4,24 @@ subtitle: 12-Bar Blues with ii–V Turnarounds
 style: Blues
 form: A, 12 bars
 key: Bb
-# analysis: 2026-10-11, rules v1; Bb, blues
+# analysis: 2026-10-19, rules v2; Bb, blues
 
 # bar | chord | scale
 
 section: A
-1  | Bb7    # I7 of the blues: a tonic with dominant colour, natural tensions
+1  | Bb7    # I7 of the blues: a tonic with dominant colour, Mixolydian
 2  | Eb7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | Bb7    # I7 of the blues: a tonic with dominant colour, natural tensions
+3  | Bb7    # I7 of the blues: a tonic with dominant colour, Mixolydian
 4  | Fm7    # ii of Bb7: Dorian
-4  | Bb7    # I7 of the blues: a tonic with dominant colour, natural tensions
+4  | Bb7    # I7 of the blues: a tonic with dominant colour, Mixolydian
 5  | Eb7    # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
 6  | Edim7  # ♯IV°7 to I: A7♭9 without its root, the ♯II°7's notes
-7  | Bb7    # I7 of the blues: a tonic with dominant colour, natural tensions
+7  | Bb7    # I7 of the blues: a tonic with dominant colour, Mixolydian
 8  | Dm7    # iii: Phrygian, the key's own notes (the ♭2 is a passing note)
 8  | G7b9   # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
 9  | Cm7    # ii of F7: Dorian
 10 | F7     # extended dominant: V7 of Bb7
-11 | Bb7    # I7 of the blues: a tonic with dominant colour, natural tensions
+11 | Bb7    # I7 of the blues: a tonic with dominant colour, Mixolydian
 11 | G7b9   # V7/ii in Bb: the b13 is in the key, the b9 from the symbol
 12 | Cm7    # ii of F7: Dorian
 12 | F7     # extended dominant: V7 of Bb7

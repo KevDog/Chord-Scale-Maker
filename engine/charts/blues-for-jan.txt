@@ -5,17 +5,17 @@ style: Blues
 key: F
 form: A, 12 bars
 source: Colorado Cookbook, p. 38
-# analysis: 2026-10-11, rules v1; F, blues
+# analysis: 2026-10-19, rules v2; F, blues
 
 # bar | chord | scale
 
 section: A
 bars: 12
-1  | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
+1  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
 2  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
+3  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
 5  | Bb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
+7  | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian
 9  | Gm7  # ii of C7: Dorian
 10 | C7   # extended dominant: V7 of F7
-11 | F7   # I7 of the blues: a tonic with dominant colour, natural tensions
+11 | F7   # I7 of the blues: a tonic with dominant colour, Mixolydian

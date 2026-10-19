@@ -4,7 +4,7 @@ style: Medium swing
 key: G
 form: AABC, 32 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; G
+# analysis: 2026-10-19, rules v2; G
 # book: head is in 2, solos are in 4. Solo on form (AABC); after solos, D.C. al Coda.
 # A is played twice (1st and 2nd endings): bars 1–6, 1st ending 7–8, 2nd ending 9–10.
 

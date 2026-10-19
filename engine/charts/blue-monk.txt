@@ -6,18 +6,18 @@ form: A, 12 bars
 source: Colorado Cookbook, p. 34
 recording: Thelonious Monk; Thelonious Monk Plays; Prestige; 1954
 youtube: BhuahN7Xjbg
-# analysis: 2026-10-11, rules v1; Bb, blues
+# analysis: 2026-10-19, rules v2; Bb, blues
 # recording: recorded 1954-09-22, trio with Percy Heath and Art Blakey, 10" PRLP 189; later on Thelonious Monk Trio (PRLP 7027) (Wikipedia, jazzdisco, MusicBrainz); video: The Thelonious Monk Trio, the same take
 
 # bar | chord | scale
 
 section: A
-1  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+1  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 2  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-3  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+3  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 5  | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-7  | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+7  | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 9  | Cm7  # ii of F7: Dorian
 10 | F7   # extended dominant: V7 of Bb7
-11 | Bb7  # I7 of the blues: a tonic with dominant colour, natural tensions
+11 | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 12 | F7   # extended dominant: V7 of Bb7

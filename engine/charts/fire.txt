@@ -4,7 +4,7 @@ style: Medium Latin
 key: Am
 form: ABC, 28 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; A minor, modal
+# analysis: 2026-10-19, rules v2; A minor, modal
 # the book: "Med. Latin", half note = 110
 # the intro is a bass figure with no chords (N.C., vamp till cue; bass simile till B)
 # A is Am6/9 throughout (24 bars, the chord reprinted in parentheses as a reminder)

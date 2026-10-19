@@ -4,7 +4,7 @@ style: Medium up
 key: Bb
 form: AABCD + Interlude, 98 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 # as played by Bobby Shew
 # the Bb and Eb chords falling on beat 3 in the head are played on beat 1 for solos (the book's (Bb) on beat 1);
 # in the head the slash chord comes on the and of 3 and is tied into the next bar

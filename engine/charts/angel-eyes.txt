@@ -4,7 +4,7 @@ style: Medium ballad
 key: Cm
 form: AABA, 32 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; C minor
+# analysis: 2026-10-19, rules v2; C minor
 # the book letters the form A (two 8-bar A's, written out), B, C
 # alt: bars 1–2, 5–6, 9–10, 13–14, 25–26, 29–30 (Cm Cm/Bb Adim7 Abdim7 | Cm/G) or (Cm Eb/C D/C Db/C | Cm)
 

@@ -6,7 +6,7 @@ style: Medium Latin
 key: C
 form: ABC, 57 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 
 # through-composed; B is A a half step up from its bar 9; melodic rhythm freely interpreted
 # bar | chord

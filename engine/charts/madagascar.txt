@@ -7,7 +7,7 @@ context: modal
 source: The New Real Book, Vol. 1
 recording: John Abercrombie Quartet; Abercrombie Quartet; ECM; 1980
 youtube: FjDRD5s7UxY
-# analysis: 2026-10-12, rules v1; E minor, modal
+# analysis: 2026-10-19, rules v2; E minor, modal
 # recording: recorded November 1979 (Richie Beirach, George Mraz, Peter Donald), ECM 1164; the chart follows Abercrombie's version (Wikipedia, MusicBrainz); video: The First Quartet, the same take
 # book: as played by John Abercrombie. A repeating piano figure (two bars, the second held) is played throughout,
 # solos too (with some variation).

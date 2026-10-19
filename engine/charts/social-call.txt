@@ -4,7 +4,7 @@ style: Medium
 key: Db
 form: AABA, 32 bars
 source: Colorado Cookbook, p. 204
-# analysis: 2026-10-17, rules v1; Db
+# analysis: 2026-10-19, rules v2; Db
 
 # bar | chord | scale
 # the head ends with two extra bars (Ebm7 Ab7 | Db) and a drum tag; the solo form is written

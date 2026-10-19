@@ -5,7 +5,7 @@ style: Up
 key: Gm
 form: A
 source: Colorado Cookbook, p. 43
-# analysis: 2026-10-11, rules v1; G minor
+# analysis: 2026-10-19, rules v2; G minor
 
 # bar | chord | scale
 # the head's pedal intro and horn line are left out; these are the solo changes

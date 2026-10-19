@@ -6,7 +6,7 @@ form: A, 16 bars
 source: Colorado Cookbook, p. 155
 recording: Miles Davis; Nefertiti; Columbia; 1968
 youtube: F2zUua79c6U
-# analysis: 2026-10-17, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 # recording: recorded 1967-06-07, released 1968 (MusicBrainz release group, Wikipedia)
 
 # bar | chord | scale

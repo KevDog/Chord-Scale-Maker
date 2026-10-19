@@ -6,7 +6,7 @@ form: AABA, 32 bars
 source: Colorado Cookbook, p. 164
 recording: Tadd Dameron with John Coltrane; Mating Call; Prestige; 1957
 youtube: 26I18e3YAJo
-# analysis: 2026-10-11, rules v1; Eb
+# analysis: 2026-10-19, rules v2; Eb
 # recording: recorded 1956-11-30 at Van Gelder Studio, the first recording of it, PRLP 7070; reissued 1962 as John Coltrane with Tadd Dameron (PRLP 7247) (jazzdisco.org, MusicBrainz release group, Wikipedia); video: Side Steps, the same take (one take only)
 
 # bar | chord | scale

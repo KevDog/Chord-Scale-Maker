@@ -4,7 +4,7 @@ style: Medium swing
 key: Db
 form: AABC, 32 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; Db
+# analysis: 2026-10-19, rules v2; Db
 # book: composers printed as "Illinois" Batiste Jacquet, Sir Charles Thompson
 # book: solo on the form (AABC); after the solos, D.S. al Coda
 

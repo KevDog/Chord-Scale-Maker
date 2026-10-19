@@ -4,7 +4,7 @@ style: Medium ballad
 key: D
 form: AABC, 32 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; D
+# analysis: 2026-10-19, rules v2; D
 
 # as played by Cannonball Adderley and Nancy Wilson
 # the book writes "D Ami7" and "D B7(#9#5)": the chord over a D pedal (written as slash chords)

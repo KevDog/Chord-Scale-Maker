@@ -4,7 +4,7 @@ style: Up
 key: Bb
 form: AABC, 40 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-12, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 
 # the intro is a melodic figure with no chords (4 bars N.C.)
 # the C is the A with its 2nd ending

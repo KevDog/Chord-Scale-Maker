@@ -6,7 +6,7 @@ form: A with 1st and 2nd endings, 42 bars
 source: The New Real Book, Vol. 1
 recording: Bill Evans; We Will Meet Again; Warner Bros.; 1980
 youtube: hna_0xsPlaE
-# analysis: 2026-10-17, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 # recording: recorded 1979-08-06/09, NYC (quintet with Tom Harrell, Larry Schneider, Marc Johnson, Joe LaBarbera), BSK 3411; Evans' last studio album, the first recording of it (Wikipedia, MusicBrainz)
 
 # melody is freely interpreted rhythmically

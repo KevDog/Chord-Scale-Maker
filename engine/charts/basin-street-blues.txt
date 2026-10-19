@@ -5,7 +5,7 @@ style: Medium
 key: Bb
 form: BC
 source: Colorado Cookbook, p. 27
-# analysis: 2026-10-11, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 
 # bar | chord | scale
 # the head's call-and-response A section is left out; solos are on B and C

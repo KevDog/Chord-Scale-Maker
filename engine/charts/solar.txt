@@ -7,7 +7,7 @@ form: A, 12 bars
 source: Colorado Cookbook, p. 207
 recording: Miles Davis; Miles Davis Quintet; Prestige; 1954
 youtube: uf1_AEOvE5E
-# analysis: 2026-10-17, rules v1; C minor
+# analysis: 2026-10-19, rules v2; C minor
 # recording: recorded 1954-04-03 (Horace Silver, Percy Heath, Kenny Clarke), first issued on 10" LP PRLP 185; 12" reissue Walkin' (PRLP 7076, 1957) (jazzdisco, Wikipedia); video: Walkin', the same take
 
 # bar | chord | scale

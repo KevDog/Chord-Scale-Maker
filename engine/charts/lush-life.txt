@@ -4,7 +4,7 @@ style: Ballad
 key: Db
 form: ABCD, 54 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; Db
+# analysis: 2026-10-19, rules v2; Db
 # book: as played by John Coltrane. A: freely (verse); B: faster; C–D: medium ballad (quarter = 58).
 # routing: A, B, C, D; repeat C–D for solos (double-time feel swing; the first solo begins at D bars 13–14);
 # after solos, D.S. al Coda (from C to D bar 10, then the Coda).

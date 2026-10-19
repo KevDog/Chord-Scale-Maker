@@ -5,7 +5,7 @@ style: Medium
 key: Gb
 form: ABC, 24 bars
 source: Colorado Cookbook, p. 142
-# analysis: 2026-10-11, rules v1; Gb
+# analysis: 2026-10-19, rules v2; Gb
 
 # bar | chord | scale
 

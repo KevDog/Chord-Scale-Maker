@@ -7,7 +7,7 @@ form: AAB, 48 bars
 source: The New Real Book, Vol. 1
 recording: Bill Evans Trio; Moon Beams; Riverside; 1962
 youtube: KKe5A1iCPGo
-# analysis: 2026-10-17, rules v1; C
+# analysis: 2026-10-19, rules v2; C
 # recording: recorded 1962-05-29, NYC (Chuck Israels, Paul Motian), RLP 428 / RLP 9428, released December 1962; written while Evans was at Southeastern Louisiana College; take 10 issued later (jazzdisco.org, Wikipedia)
 
 # bar | chord

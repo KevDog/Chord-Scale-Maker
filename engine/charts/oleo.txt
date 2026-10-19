@@ -7,7 +7,7 @@ form: AABA, 32 bars
 source: Colorado Cookbook, p. 163
 recording: Miles Davis; Miles Davis with Sonny Rollins; Prestige; 1954
 youtube: RJUZroNIbYM
-# analysis: 2026-10-11, rules v1; Bb
+# analysis: 2026-10-19, rules v2; Bb
 # recording: recorded 1954-06-29 (Miles Davis Quintet, Rollins on tenor), the first recording of it, 10" PRLP 187; later on Bags' Groove (LP 7109) (jazzdisco); video: Bags' Groove, the same take
 
 # bar | chord | scale

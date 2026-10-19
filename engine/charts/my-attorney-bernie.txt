@@ -4,7 +4,7 @@ style: Medium samba
 key: Gm
 form: Interlude ABC, 54 bars
 source: The New Real Book, Vol. 1
-# analysis: 2026-10-17, rules v1; G minor
+# analysis: 2026-10-19, rules v2; G minor
 # book: Med. Samba, half note = 92. The repeat runs from the Interlude to the end of C, 3 times in all
 # book: (3 verses); the 3rd time, take the Coda after C bar 10.
 # book: arrows mark pushed chords; a chord pushed onto beat 4 is written in the bar it leads into
