@@ -9,7 +9,7 @@ import { mod, pcOf, type Spelled } from './pitch'
 import { resolveQuality } from './qualities'
 import type { Resolved } from './resolve'
 import type { ChordAt } from './changes'
-import { type HexPair, hexatonicAuto, type StaffHexatonic } from './hexatonics'
+import { type HexPair, hexatonicAuto, keyedPair, offKeyNote, type StaffHexatonic, writtenKeyPair } from './hexatonics'
 import { type Cover, lineCovers, type SheetPicks, scaleLines, staffPairs } from './sheet'
 import { type PairShape, triadPairFigure } from './triadPairSheet'
 import { chunk, orNull } from './util'
@@ -57,7 +57,7 @@ export type ArpeggioPair = Readonly<{
 }>
 
 /** "F/G · covers 4", or "no triad pair"; " · varies" where the staff's chords have different picks */
-export const pairCaption = (p: ArpeggioPair): string => (p.hexatonic ? `${p.hexatonic.name} · covers ${p.coverage}${p.varies ? ' · varies' : ''}` : 'no triad pair')
+export const pairCaption = (p: ArpeggioPair): string => (p.hexatonic ? `${p.hexatonic.name} · covers ${p.coverage}${offKeyNote(p.hexatonic)}${p.varies ? ' · varies' : ''}` : 'no triad pair')
 
 /** one staff on the Arpeggios sheet: the Scales sheet's line, its arpeggio's notes and beam groups, or the error that stands in for them */
 export type ArpeggioStaffModel = Readonly<{
@@ -123,19 +123,21 @@ function twoOctaves(asc: readonly Pitched[], size: number, dir: ArpDirection): A
  * a line's pair under Triad pairs: its first position's pick where that is one of its pairs (cover.pick, written),
  * else Auto, as the Changes sheet's Hexatonic overlay chooses; null where its scale has none
  */
-function pairFor(part: Part, row: Row, scale: string | null, cover: Cover): Readonly<{ pair: HexPair; hexatonic: StaffHexatonic }> | null {
+function pairFor(part: Part, row: Row, scale: string | null, cover: Cover, keyName: string | undefined): Readonly<{ pair: HexPair; hexatonic: StaffHexatonic }> | null {
   const pairs = staffPairs(row, scale, part)
   if (scale === null || !pairs.length) return null
   const chordRoot = orNull(() => writtenChordRootLenient(part, row.chord, scale)) ?? scaleLabel(part, scale).root
   const pick = Array.isArray(cover.pick) ? cover.pick : null
-  const auto = hexatonicAuto(pairs, chordRoot)
+  const key = keyName === undefined ? null : writtenKeyPair(keyName, part)
+  const keyed = key && keyedPair(pairs, key)
+  const sheet = keyed ?? hexatonicAuto(pairs, chordRoot)
   const found = pick ? pairs.find((p) => pcOf(p.lower.root) === pick[0] && pcOf(p.upper.root) === pick[1]) : undefined
-  const used = found ?? auto
-  return used && { pair: used, hexatonic: { name: used.name, link: used.link, picked: !!found, sheet: auto?.name ?? '' } }
+  const used = found ?? sheet
+  return used && { pair: used, hexatonic: { name: used.name, link: used.link, picked: !!found, sheet: sheet?.name ?? '', offKey: keyName !== undefined && !keyed } }
 }
 
-/** Triad pairs: the shape (Arpeggiated or Block) and the chord picks (#303), as the Scales sheet takes them */
-export type PairOptions = Readonly<{ shape?: PairShape; picks?: SheetPicks }>
+/** Triad pairs: the shape (Arpeggiated or Block) and the chord picks (#303), as the Scales sheet takes them; keys: each row's key area (rowKeys), given when the Changes sheet's pairs rank against the key (#432) */
+export type PairOptions = Readonly<{ shape?: PairShape; picks?: SheetPicks; keys?: ReadonlyMap<number, string> }>
 
 /**
  * the Arpeggios sheet: the Scales sheet's lines (scaleLines), each its arpeggio, in pages of perPage; never throws.
@@ -163,7 +165,7 @@ export function buildArpeggioSheet(
     const showClefAndKey = key === undefined || n === 0
     const range = rangeOf(part)
     const cover = covers[n]
-    const used = cover ? pairFor(part, r, scale, cover) : null
+    const used = cover ? pairFor(part, r, scale, cover, opts.keys ? (opts.keys.get(l.row) ?? '') : undefined) : null
     const pairKey = cover ? `${used?.pair.name ?? '-'}|${shape}` : ''
     const id = [l.chords.join(' '), scale, part.clef, part.trans, `${range.lo}-${range.hi}-${range.centre}`, notes, dir, pairKey, keySig, showClefAndKey ? '' : 'bare'].join('|')
     const block = !!used && shape === 'block'

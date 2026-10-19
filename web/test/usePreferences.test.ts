@@ -327,6 +327,14 @@ describe('pentatonic preferences', () => {
     expect(prefs().overlay.value).toBe('off')
   })
 
+  it('reads the Hexatonic basis (#432): Chord until Key is stored, junk as Chord, yours through a share link', () => {
+    expect(prefs().hexBasis.value).toBe('chord')
+    localStorage.setItem('csm-hex-basis', 'key')
+    expect([prefs().hexBasis.value, linked({}).hexBasis.value]).toEqual(['key', 'key'])
+    localStorage.setItem('csm-hex-basis', 'junk')
+    expect(prefs().hexBasis.value).toBe('chord')
+  })
+
   it('reads a stored basis and Built on degree, rejecting junk, and keeps them through a share link', () => {
     localStorage.setItem('csm-pent-basis', 'chord')
     localStorage.setItem('csm-pent-degree', '11')

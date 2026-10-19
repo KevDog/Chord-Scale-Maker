@@ -2,7 +2,7 @@ import { parseChord } from './chord'
 import { guideToneDegrees } from './guideTones'
 import { spelledInterval } from './intervals'
 import type { Mode } from './part'
-import { HEX_GROUPINGS, HEX_PAIRS, type HexGrouping } from './hexatonics'
+import { HEX_GROUPINGS, HEX_PAIRS, type HexatonicBasis, type HexGrouping } from './hexatonics'
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled } from './pitch'
 import { type PentatonicDegree, pentatonicDegreeFrom } from './pentatonics'
 import { baseQuality, CHORD_TONES } from './qualities'
@@ -19,8 +19,8 @@ export type Preset = 'chordTones' | 'guideTones' | 'tensions' | 'all' | 'pentato
 type KeyPreset = Exclude<Preset, 'pentatonic' | 'hexatonic'>
 /** Pentatonic: the degree each staff's minor pentatonic is built on (#286), or Auto */
 export type PentatonicSelection = Readonly<{ preset: 'pentatonic'; degree: PentatonicDegree }>
-/** Hexatonic: pair 0 (Auto) or 1 … HEX_PAIRS on each staff's chain, and how its six notes divide into groups A and B */
-export type HexatonicSelection = Readonly<{ preset: 'hexatonic'; pair: number; grouping: HexGrouping }>
+/** Hexatonic: pair 0 (Auto) or 1 … HEX_PAIRS on each staff's chain, and how its six notes divide into groups A and B; basis 'key' (#432): each staff's key area's pair where its chain has it, the pair unused */
+export type HexatonicSelection = Readonly<{ preset: 'hexatonic'; pair: number; grouping: HexGrouping; basis?: HexatonicBasis }>
 /**
  * a preset, or explicit keys; keys are relative to the mode's reference, so they survive instrument changes.
  * Pentatonic: a degree from each chord root, or Auto (#266, #286); Hexatonic: a pair and a grouping, lit per staff
@@ -39,7 +39,10 @@ const PRACTICE_KEY = /^(?:b{1,2}|#{1,2})?[1-7]$/
 export function practiceSelectionFrom(v: unknown): PracticeSelection | null {
   if (!v || typeof v !== 'object') return null
   if ('preset' in v && v.preset === 'pentatonic') return { preset: 'pentatonic', degree: pentatonicDegreeFrom('degree' in v ? v.degree : undefined) } // the old { rank } reads as Auto
-  if ('preset' in v && v.preset === 'hexatonic') return { preset: 'hexatonic', pair: pairFrom('pair' in v ? v.pair : undefined), grouping: groupingFrom('grouping' in v ? v.grouping : undefined) }
+  if ('preset' in v && v.preset === 'hexatonic') {
+    const basis = 'basis' in v && v.basis === 'key' ? { basis: 'key' as const } : {}
+    return { preset: 'hexatonic', pair: pairFrom('pair' in v ? v.pair : undefined), grouping: groupingFrom('grouping' in v ? v.grouping : undefined), ...basis }
+  }
   if ('preset' in v && typeof v.preset === 'string' && Object.values(PRESETS).flat().includes(v.preset as Preset)) return { preset: v.preset as KeyPreset }
   if ('keys' in v && Array.isArray(v.keys)) {
     const keys = v.keys.filter((k): k is string => typeof k === 'string' && PRACTICE_KEY.test(k))

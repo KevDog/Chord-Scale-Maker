@@ -118,6 +118,7 @@
             v-model:pent-side="prefs.pentSide.value"
             v-model:pent-basis="prefs.pentBasis.value"
             v-model:pent-degree="prefs.pentDegree.value"
+            v-model:hex-basis="prefs.hexBasis.value"
             v-model:pent-path="pentPathModel"
             v-model:pent-step-unit="pentStepUnit"
             v-model:pent-step-bars="pentStepBars"
@@ -237,6 +238,7 @@
             :practice="selection"
             :home-key="homeKey"
             :resolved="resolved"
+            :keys="keysNow"
             :picks="chordPicks.picks.value"
             :positions="positionsNow"
             :pickable="ui.shows('chord-picks')"
@@ -261,6 +263,7 @@
             :home-key="homeKey"
             :resolved="resolved"
             :shape="prefs.arpShape.value"
+            :keys="prefs.hexBasis.value === 'key' ? keysNow : undefined"
             :picks="chordPicks.picks.value"
             :positions="positionsNow"
             :pickable="ui.shows('chord-picks')"
@@ -318,6 +321,7 @@ import {
   partFor,
   practiceBoxes,
   resolveScales,
+  rowKeys,
   SCALE_LEVELS,
   type LevelState,
   type OverlayPlan,
@@ -427,6 +431,8 @@ const pentStepBars = computed({ get: () => pentPath.step.value.bars, set: (bars)
 const scaleView = computed((): ScaleView => ({ level: scaleLevel.level.value, seed: scaleLevel.seed.value }))
 provide(SCALE_VIEW, scaleView)
 const resolved = computed(() => resolveScales(editor.doc.value, scaleView.value))
+/** each row's key area, for pairs ranked against the key (#432) */
+const keysNow = computed(() => rowKeys(editor.doc.value))
 /** the chord picks (#272, #303): one set for both sheets, matched to what each drawn chord plays now */
 const pickTargetsNow = computed(() => pickTargets(editor.doc.value, resolved.value))
 const positionsNow = computed(() => chordPositions(editor.doc.value))
@@ -435,7 +441,7 @@ const chordPicks = useChordPicks(props.practiceKey, pickTargetsNow, props.shared
 const pentatonicPlan = computed((): PentatonicPlan | null => (prefs.overlay.value === 'pentatonic'
   ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, degree: prefs.pentDegree.value, picks: chordPicks.picks.value.pentatonic } // the Changes sheet ignores stale picks by their for
   : null))
-const hexatonicPlan = computed((): OverlayPlan => ({ kind: 'hexatonic', picks: chordPicks.picks.value.hexatonic }))
+const hexatonicPlan = computed((): OverlayPlan => ({ kind: 'hexatonic', basis: prefs.hexBasis.value, picks: chordPicks.picks.value.hexatonic }))
 const overlayPlan = computed((): OverlayPlan | null => (prefs.overlay.value === 'hexatonic' ? hexatonicPlan.value : pentatonicPlan.value))
 /** a popover's pick (concert) for its chords on either sheet; null: back to the sheet's choice */
 function onPick(kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null): void {
@@ -483,6 +489,7 @@ const chartHistory = useChartHistory(editor, {
   pentSide: refChoice(prefs.pentSide),
   pentBasis: refChoice(prefs.pentBasis),
   pentDegree: refChoice(prefs.pentDegree),
+  hexBasis: refChoice(prefs.hexBasis),
   practiceRoot: choice(() => practice.selection('root'), (s) => practice.setSelection('root', s)),
   practiceFrom: choice(() => practice.selection('from'), (s) => practice.setSelection('from', s)),
 }, props.practiceKey)
@@ -492,7 +499,7 @@ watch(() => JSON.stringify(chartKeyOf(editor.doc.value)), () => { if (!chartHist
 watch(() => editor.doc.value, (doc, old) => { if (!chartHistory.restoring.value && hasPicks(chordPicks.picks.value)) chordPicks.carry(drawnChords(old), drawnChords(doc)) }) // a bar in or out moves later chords' keys (#275)
 // every staff with its practice keys, for the panel's boxes and what the selection lights
 const practiceStaves = computed(() =>
-  buildSheet(editor.rows.value, part.value, mode.value, start.value, LIMITS.maxExpandedRows, selection.value, undefined, resolved.value, { picks: chordPicks.picks.value, at: positionsNow.value }).flatMap((p) => p.pages.flat()),
+  buildSheet(editor.rows.value, part.value, mode.value, start.value, LIMITS.maxExpandedRows, selection.value, undefined, resolved.value, { picks: chordPicks.picks.value, at: positionsNow.value }, keysNow.value).flatMap((p) => p.pages.flat()),
 )
 const practiceBoxesNow = computed(() => practiceBoxes(practiceStaves.value, mode.value, start.value))
 const litNow = computed(() => litKeys(practiceStaves.value))

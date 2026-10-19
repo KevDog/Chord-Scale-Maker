@@ -143,7 +143,8 @@
                 <strong class="font-semibold">Pentatonic</strong> (each key area's minor pentatonic, or, ranked against
                 Chord, each chord's, <strong class="font-semibold">Built on</strong> the degree you choose) or
                 <strong class="font-semibold">Hexatonic</strong> (each chord's best triad pair from its scale, such as
-                <UiCode>G/Am</UiCode> over Cmaj7).
+                <UiCode>G/Am</UiCode> over Cmaj7, or, ranked against Key, one pair for each key area, its IV and V triads:
+                <UiCode>F/G</UiCode> in C; <DecisionLink id="hex.key">how</DecisionLink>).
               </dd>
             </div>
             <div>
@@ -232,7 +233,9 @@
             scale, six notes, after Gary Campbell's <em>Triad Pairs for Jazz</em>. <strong class="font-semibold">Pair</strong>
             <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff's scale; on a seven-note scale
             that leaves out degree <em>n</em> − 1 (Pair 1 leaves out the 7th). Pair 5 over C major is G/Am, without the F. <strong class="font-semibold">Auto</strong>
-            picks the pair that covers the most chord tones (<DecisionLink id="hex.auto">how</DecisionLink>). The grouping splits the six notes in two (the two triads,
+            picks the pair that covers the most chord tones (<DecisionLink id="hex.auto">how</DecisionLink>); ranked against
+            <strong class="font-semibold">Key</strong>, each staff takes its key area's IV and V triads where its scale holds
+            them, and the caption says <em>off key</em> where it doesn't. The grouping splits the six notes in two (the two triads,
             chord tones and colour, a pentatonic and one more, or the lowest three and highest three), tinted apart; the
             caption under each chord names the pair.
           </li>

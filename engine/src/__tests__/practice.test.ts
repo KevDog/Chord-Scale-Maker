@@ -252,6 +252,11 @@ describe('the Hexatonic selection', () => {
     for (const grouping of ['x', 3, null, 'Triads']) expect(practiceSelectionFrom({ preset: 'hexatonic', pair: 1, grouping })).toEqual({ preset: 'hexatonic', pair: 1, grouping: 'triads' })
   })
 
+  it('reads the basis (#432): key kept, anything else ranks against the chord and leaves no basis', () => {
+    expect(practiceSelectionFrom({ preset: 'hexatonic', pair: 2, grouping: 'tones', basis: 'key' })).toEqual({ preset: 'hexatonic', pair: 2, grouping: 'tones', basis: 'key' })
+    for (const basis of ['chord', 'Key', 3, null]) expect(practiceSelectionFrom({ preset: 'hexatonic', pair: 2, grouping: 'tones', basis })).toEqual({ preset: 'hexatonic', pair: 2, grouping: 'tones' })
+  })
+
   it('is told apart from the other selections', () => {
     expect(isHexatonicSelection({ preset: 'hexatonic', pair: 0, grouping: 'triads' })).toBe(true)
     expect(isHexatonicSelection({ preset: 'pentatonic', degree: 'auto' })).toBe(false)

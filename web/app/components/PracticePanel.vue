@@ -5,7 +5,7 @@
       Pick the notes to improvise with; the rest are dimmed, on screen and in print.
       {{ mode === 'root' ? 'Boxes are intervals from each chord’s root, even when its scale starts elsewhere: over B♭–7, B♭ is 1.' : `Boxes are pitches spelled from ${startName}.` }}
       <template v-if="pentatonicShown"> Pentatonic lights the minor pentatonic <em>Built on</em> a degree of each chord (Auto: the one sharing the most): the notes its scale shares, and its others added in a second colour; each staff’s caption says how many it shares. {{ PENT_INSIDE_HELP }} <DecisionLink id="pent.auto">How Auto picks a pentatonic</DecisionLink>.</template>
-      <template v-if="hexatonicShown"> Hexatonic lights two triads from each scale, six notes in two groups. Pair <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff’s scale; on a seven-note scale it leaves out degree <em>n</em> − 1 (Pair 1 leaves out the 7th). <DecisionLink id="hex.auto">How Auto picks a pair</DecisionLink>.</template>
+      <template v-if="hexatonicShown"> Hexatonic lights two triads from each scale, six notes in two groups. Pair <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff’s scale; on a seven-note scale it leaves out degree <em>n</em> − 1 (Pair 1 leaves out the 7th). Ranked against <em>Key</em>, each staff lights its key area’s IV and V triads where its scale holds them (<DecisionLink id="hex.key">pairs by key area</DecisionLink>). <DecisionLink id="hex.auto">How Auto picks a pair</DecisionLink>.</template>
     </UiText>
 
     <!-- the presets come and go with the Interface level: the rest slide over (#297) -->
@@ -27,7 +27,8 @@
     </EaseReveal>
     <EaseReveal :show="!!hex" inner-class="flex flex-wrap items-center gap-2">
       <template v-if="hex">
-        <UiListbox :model-value="hex.pair" class="w-36" aria-label="Hexatonic pair" @update:model-value="pickHex({ pair: $event })">
+        <SegmentedControl :model-value="hex.basis ?? 'chord'" legend="Ranked against" name="practice-hex-basis" aria-label="Hexatonics ranked against" :options="HEX_BASES" @update:model-value="pickHex({ basis: $event })" />
+        <UiListbox v-if="hex.basis !== 'key'" :model-value="hex.pair" class="w-36" aria-label="Hexatonic pair" @update:model-value="pickHex({ pair: $event })">
           <template #selected="{ value }"><UiListboxLabel>Pair: {{ hexPairLabel(value) }}</UiListboxLabel></template>
           <UiListboxOption v-for="p in HEX_PAIR_CHOICES" :key="p" :value="p"><UiListboxLabel>{{ hexPairLabel(p) }}</UiListboxLabel></UiListboxOption>
         </UiListbox>
@@ -56,9 +57,9 @@
 </template>
 
 <script setup lang="ts">
-import { groupingLabel, HEX_GROUP_NAMES, HEX_GROUPING_CHOICES, HEX_PAIR_CHOICES, hexPairLabel } from '~/utils/hexatonics'
+import { groupingLabel, HEX_BASES, HEX_GROUP_NAMES, HEX_GROUPING_CHOICES, HEX_PAIR_CHOICES, hexPairLabel } from '~/utils/hexatonics'
 import { degreeLabel, PENT_DEGREE_CHOICES, PENT_INSIDE_HELP } from '~/utils/pentatonics'
-import { compareKeys, type HexGrouping, isHexatonicSelection, isPentatonicSelection, type Mode, noteText, type PentatonicDegree, type PracticeBox, type PracticeSelection, type Preset, PRESET_LABELS, PRESETS } from '@chord-scale-maker/engine'
+import { compareKeys, type HexatonicBasis, type HexGrouping, isHexatonicSelection, isPentatonicSelection, type Mode, noteText, type PentatonicDegree, type PracticeBox, type PracticeSelection, type Preset, PRESET_LABELS, PRESETS } from '@chord-scale-maker/engine'
 
 /**
  * the practice controls: per-chord presets (From root) or All (From X), a box per spelled interval or pitch in the
@@ -100,10 +101,11 @@ function pickDegree(degree: PentatonicDegree | undefined): void {
   if (degree !== undefined) emit('update:selection', { preset: 'pentatonic', degree })
 }
 
-function pickHex(change: Readonly<{ pair?: number; grouping?: HexGrouping }>): void {
+function pickHex(change: Readonly<{ pair?: number; grouping?: HexGrouping; basis?: HexatonicBasis }>): void {
   const s = props.selection
   if (!isHexatonicSelection(s) || Object.values(change).some((v) => v === undefined)) return
-  emit('update:selection', { preset: 'hexatonic', pair: change.pair ?? s.pair, grouping: change.grouping ?? s.grouping })
+  const basis = (change.basis ?? s.basis) === 'key' ? { basis: 'key' as const } : {}
+  emit('update:selection', { preset: 'hexatonic', pair: change.pair ?? s.pair, grouping: change.grouping ?? s.grouping, ...basis })
 }
 
 function toggle(key: string): void {

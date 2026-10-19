@@ -2,7 +2,7 @@ import { readFileSync } from 'node:fs'
 import { describe, expect, it } from 'vitest'
 import { arpeggioTones } from '../arpeggios'
 import { expandRows, parseChart, type Row } from '../chart'
-import { resolveScales } from '../resolve'
+import { resolveScales, rowKeys } from '../resolve'
 import { buildSheet } from '../sheet'
 import { CONCERT, type Part, rangeOf } from '../part'
 import { rootName } from '../pitch'
@@ -262,9 +262,18 @@ describe('buildArpeggioSheet: Triad pairs (#436)', () => {
     expect(pairCaption(s!.pair!)).toBe('no triad pair')
   })
 
+  it("plays the key area's pair ranked against the key (#432), as the Changes sheet does", () => {
+    const keys = rowKeys(doc)
+    const [dm, g7] = staves({ keys })
+    expect([dm?.pair?.hexatonic?.name, g7?.pair?.hexatonic?.name, dm?.pair?.hexatonic?.offKey]).toEqual(['F/G', 'F/G', false])
+    expect(dm?.notes).toHaveLength(18)
+    expect(staves({ keys }, 'up', { clef: 'treble', trans: 'Bb' })[0]?.pair?.hexatonic?.name).toBe('G/A')
+  })
+
   it('captions the pair and what it covers', () => {
-    const p = { hexatonic: { name: 'F/G', link: 3, picked: false, sheet: 'F/G' }, coverage: 4, positions: [], varies: false, source: null }
+    const p = { hexatonic: { name: 'F/G', link: 3, picked: false, sheet: 'F/G', offKey: false }, coverage: 4, positions: [], varies: false, source: null }
     expect(pairCaption(p)).toBe('F/G · covers 4')
     expect(pairCaption({ ...p, varies: true })).toBe('F/G · covers 4 · varies')
+    expect(pairCaption({ ...p, hexatonic: { ...p.hexatonic, offKey: true } })).toBe('F/G · covers 4 · off key')
   })
 })

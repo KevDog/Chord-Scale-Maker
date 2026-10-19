@@ -27,6 +27,7 @@ const props = defineProps<{
   practice?: PracticeSelection | null // highlight these notes, dim the rest
   homeKey?: Key | null // the chart's key, for the key signature (null: no key: line); undefined: none
   resolved?: ReadonlyMap<number, Resolved> // what each row plays (resolveScales); undefined: its own scale or its quality's default
+  keys?: ReadonlyMap<number, string> // each row's key area (rowKeys), for the Hexatonic preset ranked against the key (#432)
   picks?: ChordPicks // the chord picks (#303), played where positions are given too
   positions?: ReadonlyMap<number, ChordAt> // each row's drawn position (chordPositions)
   pickable?: boolean // captions open the chord pick popover
@@ -35,7 +36,7 @@ const emit = defineEmits<{ pick: [kind: PickKind, positions: readonly ChordAt[],
 
 /** every printed page, in order, with its own heading */
 const pages = computed(() =>
-  buildSheet(props.rows, props.part, props.mode, props.start, props.perPage, props.practice ?? null, props.homeKey, props.resolved, props.picks && props.positions ? { picks: props.picks, at: props.positions } : undefined)
+  buildSheet(props.rows, props.part, props.mode, props.start, props.perPage, props.practice ?? null, props.homeKey, props.resolved, props.picks && props.positions ? { picks: props.picks, at: props.positions } : undefined, props.keys)
     .flatMap((sheetPart) =>
       sheetPart.pages.map((staves) => ({
         mode: sheetPart.mode,

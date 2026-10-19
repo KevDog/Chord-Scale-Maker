@@ -28,6 +28,7 @@ const props = defineProps<{
   homeKey?: Key | null
   resolved?: ReadonlyMap<number, Resolved>
   shape?: PairShape // Triad pairs (#436): Arpeggiated or Block
+  keys?: ReadonlyMap<number, string> // Triad pairs ranked against the key (#432): each row's key area (rowKeys); undefined: each chord's Auto
   picks?: ChordPicks // Triad pairs: the chord picks (#303), played where positions are given too
   positions?: ReadonlyMap<number, ChordAt> // each row's drawn position (chordPositions)
   pickable?: boolean // Triad pairs' captions open the chord pick popover
@@ -40,6 +41,7 @@ const pages = computed(() => {
     ? buildPatternSheet(props.rows, props.part, props.perPage, props.moves, props.notes as PatternNotes, props.dir, props.homeKey, props.resolved)
     : buildArpeggioSheet(props.rows, props.part, props.perPage, props.notes as ArpNotes, props.dir, props.homeKey, props.resolved, {
         shape: props.shape,
+        keys: props.keys,
         picks: props.picks && props.positions ? { picks: props.picks, at: props.positions } : undefined,
       })
   return sheet.pages.map((staves) => ({ staves, subtitle: pageSubtitle(props.subtitle, props.instrumentLabel, sheet.heading) }))

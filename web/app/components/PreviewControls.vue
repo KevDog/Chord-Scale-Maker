@@ -97,6 +97,11 @@
                         </EaseReveal>
                       </RailPopover>
                     </Transition>
+                    <Transition name="ease-fade">
+                      <RailPopover v-if="overlay === 'hexatonic'" v-model:open="hexOptionsOpen" :inline="compact" label="Hexatonic options">
+                        <SegmentedControl v-model="hexBasis" legend="Ranked against" name="hex-basis" aria-label="Hexatonics ranked against" :options="HEX_BASES" />
+                      </RailPopover>
+                    </Transition>
                     </EaseReveal>
                   </div>
                 </UiField>
@@ -219,9 +224,10 @@
     </template>
 
     <script setup lang="ts">
-    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PairShape, PAIR_SHAPE_LABELS, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
+    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type HexatonicBasis, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PairShape, PAIR_SHAPE_LABELS, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { approachApplies, type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
+    import { HEX_BASES } from '~/utils/hexatonics'
     import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
     import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
     import type { SheetKind } from '~/utils/sheets'
@@ -244,6 +250,7 @@
     const pentSide = defineModel<PentatonicSide>('pentSide', { default: 'flat' })
     const pentBasis = defineModel<PentatonicBasis>('pentBasis', { default: 'key' })
     const pentDegree = defineModel<PentatonicDegree>('pentDegree', { default: 'auto' })
+    const hexBasis = defineModel<HexatonicBasis>('hexBasis', { default: 'chord' })
     const pentPath = defineModel<PentatonicPathName>('pentPath', { default: 'one' })
     const pathChoices = computed(() => PENT_PATHS.filter((p) => p.value !== 'custom' || pentPath.value === 'custom'))
     const pentStepUnit = defineModel<PentatonicStepUnit>('pentStepUnit', { default: 'section' })
@@ -255,6 +262,7 @@
     const lineOptionsOpen = ref(false)
     const instrumentSummary = computed(() => [instrumentOption(instrument.value), playerRange && range.value ? `${noteName(range.value.lo)}–${noteName(range.value.hi)}` : ''].filter(Boolean).join(' · '))
     const pentOptionsOpen = ref(false)
+    const hexOptionsOpen = ref(false)
     watch(overlay, (o) => (pentOptionsOpen.value = o === 'pentatonic'))
     const { shows } = useInterface()
     /** what this Interface level shows (#273): Numerals and Scales (hidden while editing too), Superimpose */

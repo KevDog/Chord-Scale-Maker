@@ -704,7 +704,13 @@ describe('EditorView overlay', () => {
 
   it('hands the Changes sheet the Hexatonic overlay', async () => {
     localStorage.setItem('csm-overlay', 'hexatonic')
-    expect(await overlayOf()).toEqual({ kind: 'hexatonic', picks: {} })
+    expect(await overlayOf()).toEqual({ kind: 'hexatonic', basis: 'chord', picks: {} })
+  })
+
+  it('hands it the stored Hexatonic basis (#432)', async () => {
+    localStorage.setItem('csm-overlay', 'hexatonic')
+    localStorage.setItem('csm-hex-basis', 'key')
+    expect(await overlayOf()).toMatchObject({ kind: 'hexatonic', basis: 'key' })
   })
 
   it('reads an old Pentatonics row turned on as the Pentatonic overlay', async () => {
@@ -798,7 +804,7 @@ describe('EditorView chord picks (#303)', () => {
     expect(overlayPicks(w)).toEqual(PICK)
     w.findComponent({ name: 'PreviewControls' }).vm.$emit('update:overlay', 'hexatonic')
     await nextTick()
-    expect(changesSheet(w).props('overlay')).toEqual({ kind: 'hexatonic', picks: { 'A:2:0': { roots: [5, 7], for: 'Cm7|C Dorian' } } })
+    expect(changesSheet(w).props('overlay')).toEqual({ kind: 'hexatonic', basis: 'chord', picks: { 'A:2:0': { roots: [5, 7], for: 'Cm7|C Dorian' } } })
   })
 
   it('makes the Scales captions pickable only at Everything', async () => {

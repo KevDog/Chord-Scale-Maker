@@ -4,7 +4,7 @@ import type { Row } from './chart'
 import { qualityScale } from './chart'
 import { type ChordToken, chordTokensOrNull, isRest, parseChord, writtenChordRoot, writtenChordRootLenient } from './chord'
 import { intervalLabels } from './intervals'
-import { type HexPair, hexatonicPairs, hexatonicPick, type StaffHexatonic } from './hexatonics'
+import { type HexPair, hexatonicPairs, hexatonicPick, type StaffHexatonic, writtenKeyPair } from './hexatonics'
 import { isHexatonicSelection, isPentatonicSelection, type PracticeSelection, practiceKeys, selectedNotes, startReference } from './practice'
 import { outsideNotes, pentatonicPick, type StaffPentatonic } from './pentatonics'
 import { baseQuality, resolveQuality } from './qualities'
@@ -122,6 +122,7 @@ function practiceFor(
   practice: PracticeSelection | null,
   pick: StaffPick,
   low: number,
+  keyName: string | undefined,
 ): Pick<StaffModel, 'notes' | 'keys' | 'selected' | 'pentatonic' | 'hexatonic' | 'second' | 'outside'> & Readonly<{ degrees: readonly Pitched[] }> {
   const reference = mode === 'from' ? startReference(startText) : orNull(() => writtenChordRootLenient(part, row.chord, scale))
   // from the root, a key is the note's degree: in the formula's letters, whatever letters the staff shows (#279)
@@ -141,7 +142,8 @@ function practiceFor(
   if (isHexatonicSelection(practice)) {
     const quality = orNull(() => baseQuality(parseChord(row.chord).quality))
     const pcs = notes.map((n) => pcOf(n))
-    const { hexatonic, lit, second } = hexatonicPick(writtenScale(part, scale).notes, chordRoot(), quality, practice.pair, practice.grouping, pcs, Array.isArray(pick) ? (pick as readonly [number, number]) : null)
+    const key = practice.basis === 'key' && keyName !== undefined ? writtenKeyPair(keyName, part) : undefined
+    const { hexatonic, lit, second } = hexatonicPick(writtenScale(part, scale).notes, chordRoot(), quality, practice.pair, practice.grouping, pcs, Array.isArray(pick) ? (pick as readonly [number, number]) : null, key)
     return { ...none, keys, selected: lit, hexatonic, second }
   }
   return { ...none, keys, selected: practice && keys ? selectedNotes(practice, row.chord, keys) : null }
@@ -160,6 +162,7 @@ function staff(
   key: Key | null | undefined,
   showClefAndKey: boolean,
   covers: Cover,
+  keyName?: string,
 ): StaffModel {
   const startKey = 'midi' in start ? start.midi : start.error
   const keySig = key === undefined ? null : keySignature(key, part)
@@ -173,7 +176,7 @@ function staff(
     if ('error' in start) return { ...base, ...none, chords, scale: label, error: start.error }
     const scaleOnly = scaleNotes(part, scale, mode, start.midi)
     const low = mode === 'root' ? (scaleOnly[0]?.midi ?? 0) : start.midi
-    const { degrees, ...practiced } = practiceFor(row, part, mode, startText, scale, scaleOnly, scaleNotes(part, scale, mode, start.midi, 'degrees'), practice, covers.pick, low)
+    const { degrees, ...practiced } = practiceFor(row, part, mode, startText, scale, scaleOnly, scaleNotes(part, scale, mode, start.midi, 'degrees'), practice, covers.pick, low, keyName)
     const { notes } = practiced
     return {
       ...base,
@@ -215,7 +218,8 @@ export function pageSubtitle(subtitle: string, instrument: string, heading: stri
  * signatures, only each part's first staff starts with the clef and signature, and every staff's accidentals go against it.
  * resolved: resolveScales over the document the rows come from, at the sheet's level; without it each row plays its
  * own scale or its quality's default. picks (#303): each staff plays its first position's live pick of the preset's
- * kind, and varies where its positions' picks differ.
+ * kind, and varies where its positions' picks differ. keys (#432): each row's key area (rowKeys), which the Hexatonic
+ * preset ranked against the key reads from each line's first row; without them it plays Auto.
  */
 export function buildSheet(
   rows: readonly Row[],
@@ -227,6 +231,7 @@ export function buildSheet(
   key?: Key | null,
   resolved?: ReadonlyMap<number, Resolved>,
   picks?: SheetPicks,
+  keys?: ReadonlyMap<number, string>,
 ): SheetPart[] {
   const scaleOf = (r: Row, i: number): string | null => (resolved?.has(i) ? (resolved.get(i)?.scale ?? null) : qualityScale(r))
   const lines = scaleLines(rows, scaleOf)
@@ -240,7 +245,7 @@ export function buildSheet(
       pages: chunk(
         lines.map((l, n) => {
           const r = rows[l.row] as Row
-          return staff(r, l.chords, scaleOf(r, l.row), part, mode, start, n === lines.length - 1, startText, practice, key, key === undefined || n === 0, covers[n]!)
+          return staff(r, l.chords, scaleOf(r, l.row), part, mode, start, n === lines.length - 1, startText, practice, key, key === undefined || n === 0, covers[n]!, keys ? (keys.get(l.row) ?? '') : undefined)
         }),
         perPage,
       ),

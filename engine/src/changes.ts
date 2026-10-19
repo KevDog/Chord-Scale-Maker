@@ -1,7 +1,7 @@
 import { analyse, chartKeyOf, parseKey } from './analysis'
 import { type Beats, type ChartDoc, chartBeats, type FormPart, type LinedRow, qualityScale, type Row } from './chart'
 import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRootLenient, writtenChordTextOrNull } from './chord'
-import { type HexPair, hexatonicPairs, hexatonicRanking } from './hexatonics'
+import { type HexatonicBasis, type HexPair, hexatonicPairs, hexatonicRanking, keyedPair, writtenKeyPair } from './hexatonics'
 import { guideToneTimeline } from './guideToneTimeline'
 import { type Directive, type Layout, sectionLayout } from './layout'
 import { barAt, barLength, barStart, type Clock } from './metre'
@@ -74,15 +74,16 @@ export type PentatonicPlan = Readonly<{
   path?: PentatonicPathName // a preset (#276): each chord plays its unit's step of it; bySection and fallback then unused
   step?: PentatonicStep // what a preset steps by; default PENTATONIC_STEP
 }>
-/** the Hexatonic overlay: each chord's Auto pair on its resolved scale, or its live pick (#303) */
-export type HexatonicPlan = Readonly<{ kind: 'hexatonic'; picks?: Readonly<Record<ChordAt, HexPick>> }>
+/** the Hexatonic overlay: each chord's Auto pair on its resolved scale (basis 'chord', the default) or its key area's pair (basis 'key', #432), or its live pick (#303) */
+export type HexatonicPlan = Readonly<{ kind: 'hexatonic'; basis?: HexatonicBasis; picks?: Readonly<Record<ChordAt, HexPick>> }>
 /** the row under the chords (Off | Pentatonic | Hexatonic): null for none */
 export type OverlayPlan = PentatonicPlan | HexatonicPlan
 /**
  * a chord's hexatonic: the pair it plays ("G/Am", its pick or else Auto), and its label (the name; '' where
- * showHexatonics leaves it unprinted); run and picked as the pentatonic row's (#303); sheet: Auto's name
+ * showHexatonics leaves it unprinted); run and picked as the pentatonic row's (#303); sheet: the name it plays without
+ * a pick; offKey: ranked against the key, its chain lacks the key's pair, so it plays its Auto (#432)
  */
-export type ChangesHexatonic = Readonly<{ label: string; name: string; chord: ChordAt; picked: boolean; run: readonly ChordAt[]; sheet: string; source: PickSource }>
+export type ChangesHexatonic = Readonly<{ label: string; name: string; chord: ChordAt; picked: boolean; run: readonly ChordAt[]; sheet: string; source: PickSource; offKey: boolean }>
 
 export type ChangesChord = Readonly<{
   /** the beat it starts on, from 0 */
@@ -554,7 +555,8 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
 
   const hexRankings = new Map<string, readonly HexPair[]>()
   /** a chord's hexatonic and the pair it plays */
-  const hexatonicOf = (scale: string | null, chordText: string, at: ChordAt, target: string): Readonly<{ hex: ChangesHexatonic; pair: HexPair }> | null => {
+  const keyPairs = new Map<string, ReturnType<typeof writtenKeyPair>>()
+  const hexatonicOf = (scale: string | null, chordText: string, at: ChordAt, target: string, keyName: string | undefined): Readonly<{ hex: ChangesHexatonic; pair: HexPair }> | null => {
     if (overlay?.kind !== 'hexatonic' || !scale) return null
     const k = `${scale}|${chordText}`
     if (!hexRankings.has(k)) {
@@ -569,18 +571,22 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     const ranking = hexRankings.get(k)!
     const auto = ranking[0]
     if (!auto) return null
+    const byKey = overlay.basis === 'key'
+    if (byKey && keyName !== undefined && !keyPairs.has(keyName)) keyPairs.set(keyName, writtenKeyPair(keyName, part))
+    const keyed = byKey && keyName !== undefined ? keyPairs.get(keyName) : null
+    const sheet = (keyed && keyedPair(ranking, keyed)) || auto
     const pick = livePick(overlay.picks ?? {}, at, target)
     const want = pick ? pick.roots.map((pc) => mod(pc + toWritten, 12)) : null // the pick, written
     const found = want ? ranking.find((p) => pcOf(p.lower.root) === want[0] && pcOf(p.upper.root) === want[1]) : undefined
-    const used = found ?? auto
-    return { hex: { label: used.name, name: used.name, chord: at, picked: !!found, run: [], sheet: auto.name, source: { chord: chordText, scale } }, pair: used }
+    const used = found ?? sheet
+    return { hex: { label: used.name, name: used.name, chord: at, picked: !!found, run: [], sheet: sheet.name, source: { chord: chordText, scale }, offKey: byKey && sheet === auto }, pair: used }
   }
   // each row's hexatonic, worked out before the line, which plays its pair (#325)
   const hexAt = new Map(
     blocks.flatMap((b) => b.rows).map((i) => {
       const row = rows[i] as LinedRow
       const scale = resolved.get(i)?.scale ?? null
-      return [i, hexatonicOf(scale, row.chord, keyOf.get(i) ?? '', pickTarget(row.chord, scale))] as const
+      return [i, hexatonicOf(scale, row.chord, keyOf.get(i) ?? '', pickTarget(row.chord, scale), byRow.get(i)?.key.name)] as const
     }),
   )
   const hexPairs = new Map([...hexAt].flatMap(([i, h]) => (h ? [[i, h.pair] as const] : [])))

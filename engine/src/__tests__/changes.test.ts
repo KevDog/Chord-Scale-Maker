@@ -939,6 +939,41 @@ describe('the Hexatonic overlay', () => {
     expect(flat(showHexatonics(breakLines(once, new Set(['A 2'])))).map((c) => c.hexatonic?.label)).toEqual(['G/Am', 'G/Am', ''])
   })
 
+  describe('ranked against the key (#432)', () => {
+    const KEY = { kind: 'hexatonic', basis: 'key' } as const
+    const hexes = (text: string, part = CONCERT) => flat(showHexatonics(buildChanges(parseChart(text).value, part, 4, false, 'off', undefined, KEY).lines)).map((c) => c.hexatonic)
+
+    it("gives every chord of a major key area the key's IV and V triads, printed once for the run", () => {
+      const h = hexes('title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | Cmaj7\n4 | Cmaj7')
+      expect(h.map((x) => [x?.name, x?.label, x?.offKey])).toEqual([['F/G', 'F/G', false], ['F/G', '', false], ['F/G', '', false], ['F/G', '', false]])
+      expect(h[0]?.sheet).toBe('F/G')
+    })
+
+    it("names the key's pair written for a transposing part", () => {
+      expect(hexes('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7', TENOR).map((x) => x?.name)).toEqual(['G/A'])
+    })
+
+    it("takes harmonic minor's pair in a minor key, and plays the chord's Auto, off key, where its chain lacks the pair", () => {
+      const h = hexes('title: T\nkey: Dm\n\nsection: A\n1 | Em7b5\n2 | A7b9\n3 | Dm6\n4 | Dm6')
+      expect(h[1]).toMatchObject({ name: 'Gm/A+', offKey: false })
+      const auto = flat(buildChanges(parseChart('title: T\nkey: Dm\n\nsection: A\n1 | Em7b5\n2 | A7b9\n3 | Dm6\n4 | Dm6').value, CONCERT, 4, false, 'off', undefined, HEX).lines)[2]?.hexatonic?.name
+      expect(h[2]).toMatchObject({ name: auto, offKey: true })
+    })
+
+    it('keeps a live pick over the key pair', () => {
+      const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | Cmaj7\n4 | Cmaj7').value
+      const targets = pickTargets(doc, resolveScales(doc, { level: 'standard', seed: 0 }))
+      const picks = withPick(NO_PICKS, 'hexatonic', ['A:2:0'], [7, 9], targets).hexatonic // G7: G/Am
+      const h = flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, { ...KEY, picks }).lines).map((c) => c.hexatonic)
+      expect(h[1]).toMatchObject({ name: 'G/Am', picked: true, sheet: 'F/G' })
+    })
+
+    it('ranks against the chord without a basis', () => {
+      expect(hexes('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7').map((x) => x?.name)).toEqual(['F/G'])
+      expect(labels('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7')).toEqual(['C/Dm'])
+    })
+  })
+
   it('counts the hexatonic row as the pentatonic row', () => {
     for (const line of ['off', 'third', 'seventh', 'up-root'] as const)
       for (const numerals of [true, false])

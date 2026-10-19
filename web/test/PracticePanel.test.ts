@@ -144,6 +144,18 @@ describe('PracticePanel’s Hexatonic preset', () => {
     expect(w.emitted('update:selection')).toEqual([[{ preset: 'hexatonic', pair: 5, grouping: 'pent' }], [{ preset: 'hexatonic', pair: 3, grouping: 'trichords' }]])
   })
 
+  it('ranks against Chord until Key is chosen, which hides Pair and keeps the grouping (#432)', async () => {
+    const w = await mount({ ...hex(3, 'tones') })
+    const basis = w.find('[aria-label="Hexatonics ranked against"]')
+    expect(basis.find('input[value="chord"]').element).toHaveProperty('checked', true)
+    await basis.find('input[value="key"]').setValue(true)
+    expect(w.emitted('update:selection')).toEqual([[{ preset: 'hexatonic', pair: 3, grouping: 'tones', basis: 'key' }]])
+    const key = await mount({ selection: { preset: 'hexatonic', pair: 3, grouping: 'tones', basis: 'key' }, lit: [] })
+    expect(key.find('[aria-label="Hexatonic pair"]').exists()).toBe(false)
+    await key.find('[aria-label="Hexatonics ranked against"] input[value="chord"]').setValue(true)
+    expect(key.emitted('update:selection')).toEqual([[{ preset: 'hexatonic', pair: 3, grouping: 'tones' }]])
+  })
+
   it('names the grouping’s two groups in a legend (never “+1”)', async () => {
     const legend = async (grouping: string) => (await mount({ ...hex(0, grouping) })).findAll('[data-slot="hex-legend"] li').map((l) => l.text())
     expect(await legend('triads')).toEqual(['Lower triad', 'Upper triad'])
