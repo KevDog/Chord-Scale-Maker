@@ -2,7 +2,7 @@ import { analyse, chartKeyOf, functionChoices, type FunctionChoice } from './ana
 import { keyCode } from './analysis/keys'
 import { type ChartDoc, lineSections } from './chart'
 import { insertKeyBefore } from './edit'
-import { atLevel, type Resolved, resolveScales, type ScaleView } from './resolve'
+import { atLevel, bluesTonic, type Resolved, resolveScales, type ScaleView } from './resolve'
 import { sameScale } from './scales'
 
 export { chartKeyOf, functionChoices, type FunctionChoice }
@@ -48,7 +48,7 @@ export function rowNotes(doc: ChartDoc, view: ScaleView = STANDARD): ReadonlyMap
       numeral: r.numeral === '?' ? '' : r.numeral,
       scale: played.scale ?? r.scale ?? '',
       source: played.source,
-      analysed: r.scale ? atLevel(view, r.chord, r.scale, r.rule, r.line) : '',
+      analysed: r.scale ? atLevel(view, r.chord, r.scale, r.rule, r.line, bluesTonic(a)) : '',
       rule: r.scale ? r.rule : '',
     })
   }

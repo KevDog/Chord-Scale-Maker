@@ -80,6 +80,7 @@ exports[`exports the same names 1`] = `
   "barView",
   "baseQuality",
   "beatsPerBar",
+  "bluesTonic",
   "breakLines",
   "buildArpeggioSheet",
   "buildChanges",

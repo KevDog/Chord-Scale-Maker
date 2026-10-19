@@ -93,3 +93,25 @@ describe('N.C.', () => {
     expect(resolve(text)[0]).toEqual({ scale: null, source: 'rest' })
   })
 })
+
+describe('Basic over a blues (blues spec §3)', () => {
+  const E_BLUES = 'title: T\nkey: E\ncontext: blues\nform: A, 12 bars\n\nsection: A\nbars: 12\n1 | E7\n5 | A7\n7 | E7\n9 | B7#9\n10 | A7\n11 | E7\n12 | C#7\n'
+  it('plays the key’s Blues scale on every blues chord, D1+D9 included', () => {
+    expect(scales(E_BLUES, on('basic')).slice(0, 6)).toEqual(['E Blues', 'E Blues', 'E Blues', 'E Blues', 'E Blues', 'E Blues'])
+  })
+  it('leaves a chord outside the blues on its ladder', () => {
+    expect(scales(E_BLUES, on('basic'))[6]).not.toBe('E Blues')
+  })
+  it('Advanced of a D9 row is Bebop Dominant', () => {
+    expect(scales(E_BLUES, on('advanced'))[0]).toBe('E Bebop Dominant')
+  })
+  it('a minor blues’ V7 is not a blues chord at Basic', () => {
+    const s = scales('title: T\nkey: Cm\ncontext: blues\nform: A, 12 bars\n\nsection: A\nbars: 12\n1 | Cm7\n5 | Fm7\n7 | Cm7\n9 | G7\n11 | Cm7\n', on('basic'))
+    expect(s[0]).toBe('C Blues')
+    expect(s[3]).not.toBe('C Blues')
+  })
+  it('a chord under @key is not either', () => {
+    const s = scales('title: T\nkey: F\ncontext: blues\nform: A, 12 bars\n\nsection: A\nbars: 12\n1 | F7\n5 | Bb7\n@key 7 Ab\n7 | AbMaj7\n9 | C7\n11 | F7\n', on('basic'))
+    expect(s[2]).not.toBe('F Blues')
+  })
+})

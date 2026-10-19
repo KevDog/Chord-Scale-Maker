@@ -1066,3 +1066,18 @@ describe('N.C. on the Changes sheet', () => {
     expect(sheet.diagnostics).toEqual([])
   })
 })
+
+describe('the Why note over a blues at Basic (blues spec §5)', () => {
+  const doc = parseChart('title: T\nkey: E\ncontext: blues\nform: A, 12 bars\n\nsection: A\nbars: 12\n1 | E7\n5 | A7\n7 | E7\n9 | B7\n11 | E7\n12 | C#7\n').value
+  const chords = (level: ScaleView['level'], part = CONCERT) => buildChanges(doc, part, 4, false, 'off', { level, seed: 0 }).lines.flatMap((l) => l.bars).flatMap((b) => b.chords)
+  it('names the key’s Blues scale on a blues chord, at Basic only', () => {
+    expect(chords('basic')[0]?.levelNote).toBe('Basic: the E Blues scale over the whole blues')
+    expect(chords('standard')[0]?.levelNote).toBe('')
+  })
+  it('says nothing on a chord outside the blues', () => {
+    expect(chords('basic').find((c) => c.text === 'C#7')?.levelNote).toBe('')
+  })
+  it('names the note as the part reads it', () => {
+    expect(chords('basic', partFor('tenor-sax'))[0]?.levelNote).toMatch(/^Basic: the F[#♯] Blues scale over the whole blues$/)
+  })
+})

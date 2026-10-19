@@ -78,7 +78,7 @@ describe('ChartTranspose', () => {
     await settle()
     const [[out]] = w.emitted('update:doc') as [[typeof doc]]
     const text = serializeChart(out)
-    expect(text).toContain('# analysis: 2026-01-02, rules v1; C\n\nsection: A\nbars: 4\n1 | Dm7    # ii of the ii–V to C\n')
+    expect(text).toContain('# analysis: 2026-01-02, rules v2; C\n\nsection: A\nbars: 4\n1 | Dm7    # ii of the ii–V to C\n')
     expect(text).not.toMatch(/Eb|Bb7/)
     w.unmount()
   })
