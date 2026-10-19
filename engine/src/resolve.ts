@@ -30,6 +30,9 @@ export function atLevel(view: ScaleView, chord: string, scale: string, rule: str
   return scaleAtLevel(chord, view.level, view.seed, `${line}:${chord}`, scale) ?? scale
 }
 
+/** each analysed row's key area ('F major', concert), by its expanded row: what the Key basis ranks against (#432); pass the analysis the caller has already made to share it */
+export const rowKeys = (doc: ChartDoc, analysis: Analysis = analyse(doc)): ReadonlyMap<number, string> => new Map(analysis.rows.map((r) => [r.row, r.key.name]))
+
 /**
  * each expanded row's scale (in expandRowLines order, @copy repeats on their own rows), from one analysis: pass the
  * one the caller has already made to share it

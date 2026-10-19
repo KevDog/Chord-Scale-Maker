@@ -389,7 +389,20 @@
             triads are both major or minor, then the one nearest the chord's root by fifths. Over <UiCode>Cmaj7</UiCode>
             that's <UiCode>{{ HEX_EXAMPLE }}</UiCode>.
           </UiText>
-          <UiText><strong :class="EM">What you can change:</strong> Pair, and a chord pick for one chord.</UiText>
+          <UiText><strong :class="EM">What you can change:</strong> Pair, Ranked against, and a chord pick for one chord.</UiText>
+        </DecisionSection>
+
+        <DecisionSection id="hex.key">
+          <UiText>
+            Ranked against <strong :class="EM">Key</strong>, every chord in a key area takes the same pair, after Walt
+            Weiskopf's <em>Intervalic Improvisation</em>: the major triads on 4 and 5 of a major key (<UiCode>F/G</UiCode>
+            across <UiCode>Dm7 G7 Cmaj7</UiCode> in C), and harmonic minor's minor iv and augmented V in a minor key
+            (<UiCode>Gm/A+</UiCode> in D minor). Where a chord's scale doesn't hold the key's pair (a Dm6's scale, with its
+            B♮, holds no G minor triad), it plays its own Auto pair, greyed. The label prints once for the run, as the
+            pentatonics' do. On the Scales sheet the Hexatonic preset ranks each staff likewise, by the key area of the
+            first chord it covers; the Arpeggios sheet's Triad pairs follow the Changes sheet's choice.
+          </UiText>
+          <UiText><strong :class="EM">What you can change:</strong> Ranked against (Key or Chord), and a chord pick for one chord.</UiText>
         </DecisionSection>
 
         <DecisionSection id="hex.group">
@@ -414,7 +427,7 @@
             The Arpeggios sheet's <strong :class="EM">Triad pairs</strong> writes each line's pair as six triads, the lower
             and the upper in turn through root position, 1st and 2nd inversion, after Weiskopf's <em>Intervalic
             Improvisation</em>: <UiCode>F/G</UiCode> plays F A C, G B D, A C F, B D G, C F A, D G B. The pair is the one the
-            Changes sheet's Hexatonic shows: Auto, or your chord pick, which you can make from the staff's caption. Each
+            Changes sheet's Hexatonic shows: Auto (or the key's pair, ranked against Key), or your chord pick, which you can make from the staff's caption. Each
             triad's next inversion starts on the next note up of its own triad, and the upper triad starts nearest the
             lower. The figure is placed whole with the fewest notes out of your range, nearest its middle; a triad still
             out moves an octave, whole. <strong :class="EM">Block</strong> writes the six triads as chords; otherwise

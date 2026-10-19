@@ -340,6 +340,18 @@ describe('ChangesSystem hexatonic row', () => {
     expect(w.find('[data-slot="hexatonic"]').html()).not.toMatch(/text-rung-/)
   })
 
+  it('greys a label ranked against the key that is not the key’s pair (#432)', async () => {
+    const KEY = { kind: 'hexatonic', basis: 'key' } as const
+    const line = showHexatonics(buildChanges(parseChart('title: T\nkey: Dm\n\nsection: A\n1 | Em7b5\n2 | A7b9\n3 | Dm6\n4 | Dm6').value, CONCERT, 4, false, 'off', undefined, KEY).lines)[0]!
+    const w = await mountSuspended(ChangesSystem, { props: { line, first: true, barsPerLine: 4, numerals: true, scales: true, clef: 'treble' as const, overlay: KEY } })
+    const marks = w.findAll('[data-slot="hexatonic"] > span')
+    const a7 = marks.find((m) => m.attributes('data-chord') === 'A:2:0')!
+    const dm = marks.find((m) => m.attributes('data-chord') === 'A:3:0')!
+    expect([a7.find('span').text(), a7.attributes('data-off-key')]).toEqual(['Gm/A+', undefined])
+    expect(dm.attributes('data-off-key')).toBe('true')
+    expect(dm.attributes('title')).toContain('Not the key’s pair')
+  })
+
   it('has no hexatonic row under the Pentatonic overlay, or none', async () => {
     const doc = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Cmaj7').value
     const plan: PentatonicPlan = { kind: 'pentatonic', bySection: {}, fallback: { rung: 0, side: 'flat' }, counts: false }

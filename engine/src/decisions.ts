@@ -35,6 +35,7 @@ export const DECISIONS = [
   { id: 'pent.inside', title: 'Inside and outside pentatonics', page: 'how-it-decides', anchor: 'pent.inside', summary: 'How pentatonics are ranked from inside to outside against each chord.' },
   { id: 'pent.line', title: 'The Pentatonic line', page: 'how-it-decides', anchor: 'pent.line', summary: 'Each chord’s pentatonic in four-note cells, with the note left out and the turns at your range’s edges.' },
   { id: 'hex.auto', title: 'Hexatonic Auto', page: 'how-it-decides', anchor: 'hex.auto', summary: 'Auto picks the triad pair that covers the most chord tones.' },
+  { id: 'hex.key', title: 'Hexatonic pairs by key area', page: 'how-it-decides', anchor: 'hex.key', summary: 'Pairs by key area: the IV and V triads of the key, one pair for every chord in it.' },
   { id: 'hex.group', title: 'Hexatonic groupings', page: 'how-it-decides', anchor: 'hex.group', summary: 'How the six notes of a triad pair are split in two and tinted apart.' },
   { id: 'hex.sheet', title: 'Triad pairs on the Arpeggios sheet', page: 'how-it-decides', anchor: 'hex.sheet', summary: 'Each line’s triad pair as six triads, lower and upper in turn through their inversions, arpeggiated or as block chords.' },
   { id: 'hex.line', title: 'The Triad pair line', page: 'how-it-decides', anchor: 'hex.line', summary: 'Each chord’s triad pair a triad at a time, its lower triad first.' },

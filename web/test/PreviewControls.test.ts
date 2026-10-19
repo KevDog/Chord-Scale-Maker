@@ -91,6 +91,16 @@ describe('the pentatonic controls', () => {
     expect(key.find('[aria-label="Pentatonic path"]').exists()).toBe(true)
   })
 
+  it('offers Hexatonic options, Ranked against Key or Chord, only under the Hexatonic overlay (#432)', async () => {
+    expect((await mount({ overlay: 'pentatonic' })).find('button[aria-label="Hexatonic options"]').exists()).toBe(false)
+    const w = await mount({ overlay: 'hexatonic', hexBasis: 'chord' })
+    await w.find('button[aria-label="Hexatonic options"]').trigger('click')
+    const basis = w.find('[aria-label="Hexatonics ranked against"]')
+    expect(basis.findAll('label').map((l) => l.text())).toEqual(['Key', 'Chord'])
+    await basis.find('input[value="key"]').setValue(true)
+    expect(w.emitted('update:hexBasis')).toEqual([['key']])
+  })
+
   it('keeps the Superimpose while editing, when Numerals and Scales hide', async () => {
     const w = await mount({ lockLabels: true })
     expect(overlay(w).exists()).toBe(true)

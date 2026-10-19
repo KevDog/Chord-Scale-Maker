@@ -180,8 +180,10 @@
       <span
         v-for="m in hexatonicMarks"
         :key="`h${m.key}`"
-        class="absolute whitespace-nowrap text-[0.8rem]/4 text-zinc-600 dark:text-zinc-400 print:text-[0.6rem]/3 print:text-neutral-700"
+        :class="['absolute whitespace-nowrap text-[0.8rem]/4 print:text-[0.6rem]/3', offKey(m.h) ? 'text-zinc-400 italic dark:text-zinc-500 print:text-neutral-500' : 'text-zinc-600 dark:text-zinc-400 print:text-neutral-700']"
+        :title="offKey(m.h) ? 'Not the key’s pair: this chord’s scale doesn’t hold it, so it plays its own' : undefined"
         :data-chord="m.h.chord"
+        :data-off-key="offKey(m.h) || undefined"
         :style="{ left: `${m.x * 100}%`, maxWidth: `${m.room * 100}%` }"
       >
         <span :class="hexPickable(m.h) && 'hidden print:inline'">{{ m.h.label }}</span>
@@ -313,6 +315,8 @@ const marks = computed(() => {
 })
 /** the marks that print a pentatonic label (#255) */
 const pentatonicMarks = computed(() => marks.value.flatMap((m) => (m.pentatonic?.label ? [{ key: m.key, x: m.x, room: m.room, written: m.written, p: m.pentatonic }] : [])))
+/** ranked against the key, a pair that isn't the key's (#432): drawn greyed */
+const offKey = (h: ChangesHexatonic): boolean => h.offKey && !h.picked
 /** the marks that print a hexatonic label */
 const hexatonicMarks = computed(() => marks.value.flatMap((m) => (m.hexatonic?.label ? [{ key: m.key, x: m.x, room: m.room, h: m.hexatonic }] : [])))
 

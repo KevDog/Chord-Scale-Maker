@@ -7,7 +7,7 @@ import { expandRowLines, expandRows, parseChart, qualityScale, type Row } from '
 import type { ScaleLevel } from '../levels'
 import { CONCERT, type Part } from '../part'
 import { rootName } from '../pitch'
-import { resolveScales } from '../resolve'
+import { resolveScales, rowKeys } from '../resolve'
 import { type ModeChoice, type StaffModel, buildSheet, linePositions, noteText, pageSubtitle, scaleLines, toVexKey } from '../sheet'
 import { parseKey } from '../analysis/keys'
 
@@ -370,5 +370,31 @@ describe('N.C. on the Scales sheet', () => {
   it('gives a rest no staff', () => {
     const rows = [row('N.C.'), row('G7', '', '2'), row('CMaj7', '', '3')]
     expect(scaleLines(rows, (r) => qualityScale(r)).map((l) => l.chords)).toEqual([['G7'], ['CMaj7']])
+  })
+})
+
+describe('the Hexatonic preset ranked against the key (#432)', () => {
+  const text = 'title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | Cmaj7\n4 | Cmaj7\n\nsection: B\nkey: Dm\n1 | Em7b5\n2 | A7b9\n3 | Dm6\n4 | Dm6\n'
+  const doc = parseChart(text).value
+  const rows = expandRowLines(doc).value
+  const res = resolveScales(doc, { level: 'standard', seed: 0 })
+  const keys = rowKeys(doc)
+  const KEY = { preset: 'hexatonic', pair: 0, grouping: 'triads', basis: 'key' } as const
+  const staves = (practice: PracticeSelection, part: Part = CONCERT) => buildSheet(rows, part, 'root', 'C', 12, practice, undefined, res, undefined, keys)[0]!.pages.flat()
+
+  it("lights each staff's key pair, under the key's name", () => {
+    expect(staves(KEY).map((s) => [s.chords.length, s.hexatonic?.name, s.hexatonic?.offKey])).toEqual([
+      [1, 'F/G', false], [1, 'F/G', false], [1, 'F/G', false], [1, expect.any(String), true], [1, 'Gm/A+', false], [1, expect.any(String), true],
+    ])
+  })
+
+  it("plays the staff's Auto where its chain lacks the key pair, and Auto everywhere without keys", () => {
+    const auto = staves({ preset: 'hexatonic', pair: 0, grouping: 'triads' })
+    expect(staves(KEY)[5]?.hexatonic?.name).toBe(auto[5]?.hexatonic?.name)
+    expect(buildSheet(rows, CONCERT, 'root', 'C', 12, KEY, undefined, res)[0]!.pages.flat().map((s) => s.hexatonic?.name)).toEqual(auto.map((s) => s.hexatonic?.name))
+  })
+
+  it('names the written key pair on a B♭ part', () => {
+    expect(staves(KEY, TENOR)[0]?.hexatonic?.name).toBe('G/A')
   })
 })
