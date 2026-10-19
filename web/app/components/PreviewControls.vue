@@ -1,7 +1,7 @@
 <template>
   <!-- display: contents, so the rail's sticky box is the whole Preview section -->
   <div id="preview-toolbar" class="contents space-y-4">
-    <!-- the rail: labelled groups wrap on the left (Work on · Instrument · Level · Show (on the Changes: Analysis · Line) · Transposition · Spell Scale), the actions pinned right (on their own line, still right, once the row is too narrow); top-aligned so every label sits on one line -->
+    <!-- the rail: labelled groups wrap on the left (Work on · Instrument · Level · Show (on the Changes: Analysis · Line) · Spell Scale), the actions pinned right (on their own line, still right, once the row is too narrow); top-aligned so every label sits on one line -->
     <SheetRail :sticky="stickyRail">
       <template #left>
         <UiField class="w-36">
@@ -159,12 +159,6 @@
                   </UiField>
                 </Transition>
               </template>
-              <UiField>
-                <UiLabel class="pl-3">Transposition</UiLabel>
-                <div class="flex flex-wrap items-center gap-2">
-                  <slot name="transpose" />
-                </div>
-              </UiField>
               <UiField v-if="sheet === 'arpeggios'">
                 <UiLabel class="pl-3">Arpeggio</UiLabel>
                 <div class="flex flex-wrap items-center gap-2">
@@ -235,7 +229,7 @@
     import ControlsDialog from './ControlsDialog.vue'
     import RailPopover from './RailPopover.vue'
 
-    /** the preview toolbar, in labelled groups: Work on (sheet), Instrument, #level, Show (on the Changes: Analysis, Guide Tones), Transposition (+ #transpose), in the rail, with #actions at its right */
+    /** the preview toolbar, in labelled groups: Work on (sheet), Instrument, #level, Show (on the Changes: Analysis, Guide Tones), in the rail, with #actions at its right */
     const sheet = defineModel<SheetKind>('sheet', { required: true })
     const instrument = defineModel<InstrumentName>('instrument', { required: true })
     /** instrumentChosen: picked from the instrument listbox, not as a pitch's first (InstrumentPicker) */
@@ -281,7 +275,7 @@
     /** compact: a phone with compactRail on: the rail keeps Work on, Instrument and the slot's rail actions; Controls opens the rest */
     /** stickyRail: the rail sticks over the sheet (lg up): while editing */
     const props = defineProps<{ lockLabels?: boolean; keyStart: string; compact?: boolean; stickyRail?: boolean }>()
-    defineSlots<{ level?: () => unknown; transpose?: () => unknown; actions?: (p: { place: 'rail' | 'dialog'; after: (run: () => void) => void }) => unknown }>()
+    defineSlots<{ level?: () => unknown; actions?: (p: { place: 'rail' | 'dialog'; after: (run: () => void) => void }) => unknown }>()
     const controlsOpen = ref(false)
     watch(() => props.compact, () => (controlsOpen.value = false))
     /** an action chosen in the dialog runs once it has closed (Headless UI then returns focus to Controls first); in the rail, now */

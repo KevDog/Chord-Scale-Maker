@@ -324,7 +324,7 @@ test('a level leaves a library chart as published', async ({ page }) => {
 
 test('the toolbar groups the controls under labels, with the scale level as a dropdown', async ({ page }) => {
   await page.goto('/song/autumn-leaves')
-  for (const label of ['Work on', 'Instrument', 'Level', 'Analysis', 'Guide Tones', 'Transposition']) await expect(page.getByText(label, { exact: true }).first()).toBeVisible()
+  for (const label of ['Work on', 'Instrument', 'Level', 'Analysis', 'Guide Tones']) await expect(page.getByText(label, { exact: true }).first()).toBeVisible()
   await chooseSheet(page, 'Scales')
   await expect(page.getByText('Show', { exact: true }).first()).toBeVisible() // Intervals, in place of Analysis and Guide Tones
   await expect(page.getByText('Guide Tones', { exact: true })).toHaveCount(0)
@@ -426,6 +426,15 @@ test('every group in the rail is one control tall: a group\'s details open besid
   await rail.getByRole('button', { name: 'Line options' }).click()
   const options = page.getByRole('dialog', { name: 'Line options' })
   for (const name of ['Guide tone line', 'Approach']) await expect(options.getByRole('button', { name, exact: true })).toBeVisible()
+})
+
+test('Transpose… is an action, beside Edit: it rewrites the chart, as Edit does', async ({ page }) => {
+  await page.setViewportSize({ width: 1440, height: 900 })
+  await page.goto('/song/autumn-leaves')
+  const rail = page.getByRole('group', { name: 'Sheet controls' })
+  await expect(rail.getByText('Transposition', { exact: true })).toHaveCount(0)
+  const actions = await rail.getByRole('button').evaluateAll((bs) => bs.map((b) => b.textContent?.trim()).filter((t) => t === 'Edit' || t === 'Transpose…' || t === 'Share'))
+  expect(actions).toEqual(['Edit', 'Transpose…', 'Share'])
 })
 
 test('choosing a Superimpose option leaves the Superimpose in its place (#387)', async ({ page }) => {

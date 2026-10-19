@@ -85,7 +85,7 @@ phone).
 - **Heading:** the sheet's title is the page's only `h1` (Jost 24/32 700, balanced); the save status one muted line
   under it (`SheetStatus`, 14/24 zinc-500).
 - **Rail** (`SheetRail`, a labelled group "Sheet controls", above the paper, on the stand): left = Work on ·
-  Instrument · Level (Shuffle) · the sheet's own controls · Transpose; right = Edit (toggle) · Share · Focus · Print
+  Instrument · Level (Shuffle) · the sheet's own controls; right = Edit (toggle) · Transpose… · Share · Focus · Print
   (primary) · ⋯ More. `-mx-3 flex flex-wrap items-end gap-x-4 gap-y-3 p-3`; 16 px to the paper. Groups and actions
   wrap as one row (the left slot `display: contents`, the actions `ml-auto`). Each group is one control tall: details
   go in a `RailPopover` panel (`bg-raised shadow-raised rounded-paper p-3`, closes on a click outside or Escape) —
