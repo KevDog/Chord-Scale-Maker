@@ -37,10 +37,20 @@ describe('ScaleStaff', () => {
     const staffOf = (chord: string, scale = '') => buildSheet([{ section: 'A', bar: '1', chord, scale }], CONCERT, 'root', 'C', 12, hex)[0]?.pages.flat()[0]
     const g7 = await mountSuspended(ScaleStaff, { props: { staff: staffOf('G7'), clef: 'treble' } })
     expect(g7.find('[data-slot="hexatonic"]').text()).toBe('Dm/Em hex')
-    const wt = await mountSuspended(ScaleStaff, { props: { staff: staffOf('C7#5', 'C Whole Tone'), clef: 'treble' } })
+    const wt = await mountSuspended(ScaleStaff, { props: { staff: staffOf('C6', 'C Major Pentatonic'), clef: 'treble' } })
     expect(wt.find('[data-slot="hexatonic"]').text()).toBe('no triad pair')
     const none = await mountSuspended(ScaleStaff, { props: { staff: buildSheet([row('Dm7', '1')], CONCERT, 'root', 'C', 12)[0]?.pages.flat()[0], clef: 'treble' } })
     expect(none.find('[data-slot="hexatonic"]').exists()).toBe(false)
+  })
+
+  it('captions the staff with its stack of fourths under the Quartal preset, or says it has none (#432)', async () => {
+    const quartal = { preset: 'quartal', degree: 'auto', notes: 4 } as const
+    const staffOf = (chord: string, scale = '') => buildSheet([{ section: 'A', bar: '1', chord, scale }], CONCERT, 'root', 'C', 12, quartal)[0]?.pages.flat()[0]
+    const g7 = await mountSuspended(ScaleStaff, { props: { staff: staffOf('G7'), clef: 'treble', quartal: true } })
+    expect(g7.find('[data-slot="quartal"]').text()).toBe('F B E A · 4ths')
+    const hw = await mountSuspended(ScaleStaff, { props: { staff: staffOf('C7', 'C Half-Whole'), clef: 'treble', quartal: true } })
+    expect(hw.find('[data-slot="quartal"]').text()).toBe('no 4ths stack')
+    expect((await mountSuspended(ScaleStaff, { props: { staff: staffOf('G7'), clef: 'treble' } })).find('[data-slot="quartal"]').exists()).toBe(false)
   })
 
   describe('the caption opens the chord pick popover (#303)', () => {
@@ -132,7 +142,7 @@ describe('ScaleStaff', () => {
     })
 
     it('stays plain text under Hexatonic on a staff with no triad pair', async () => {
-      const wd = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C7#5 | C Whole Tone\n').value
+      const wd = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C6 | C Major Pentatonic\n').value
       const wr = resolveScales(wd, { level: 'standard', seed: 0 })
       const staff = buildSheet(expandRows(wd).value, CONCERT, 'root', 'C', 12, HEX, undefined, wr, { picks: NO_PICKS, at: chordPositions(wd) })[0]!.pages.flat()[0]!
       const w = await mount(staff)

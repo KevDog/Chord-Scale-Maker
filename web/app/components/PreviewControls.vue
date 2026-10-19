@@ -97,6 +97,17 @@
                         </EaseReveal>
                       </RailPopover>
                     </Transition>
+                    <Transition name="ease-fade">
+                      <RailPopover v-if="overlay === 'hexatonic'" v-model:open="hexOptionsOpen" :inline="compact" label="Hexatonic options">
+                        <SegmentedControl v-model="hexBasis" legend="Ranked against" name="hex-basis" aria-label="Hexatonics ranked against" :options="HEX_BASES" />
+                      </RailPopover>
+                    </Transition>
+                    <Transition name="ease-fade">
+                      <RailPopover v-if="overlay === 'quartal'" v-model:open="quartOptionsOpen" :inline="compact" label="Quartal options">
+                        <SegmentedControl v-model="quartNotesText" legend="Notes" name="quart-notes" aria-label="Quartal notes" :options="QUARTAL_LINE_NOTE_CHOICES" />
+                        <ToggleButton v-model="quartPerfect" title="Perfect fourths only: no augmented fourth in a stack">Perfect only</ToggleButton>
+                      </RailPopover>
+                    </Transition>
                     </EaseReveal>
                   </div>
                 </UiField>
@@ -117,12 +128,18 @@
                               <UiListboxOption v-for="g in GUIDE_LINES" :key="g.value" :value="g.value" :title="g.title"><UiListboxLabel>{{ g.label }}</UiListboxLabel></UiListboxOption>
                             </UiListbox>
                           </EaseReveal>
-                          <!-- the Pentatonic line (#284) and the Triad pair line (#325): the direction (the Arpeggios sheet's), and the Pentatonic's Leave out where the Superimpose shows -->
+                          <!-- the Pentatonic line (#284), the Triad pair line (#325) and the Quartal line (#432): the direction (the Arpeggios sheet's), and the Pentatonic's Leave out where the Superimpose shows -->
                           <EaseReveal :show="inSlot && overlay !== 'off'" inner-class="flex flex-col gap-2">
-                            <UiListbox v-model="arpDir" class="w-full" :aria-label="overlay === 'pentatonic' ? 'Pentatonic direction' : 'Triad pair direction'" title="Each cell up, down, or up and down by turns">
+                            <UiListbox v-model="arpDir" class="w-full" :aria-label="DIRECTION_LABEL[overlay]" title="Each cell up, down, or up and down by turns">
                               <template #selected="{ value }"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[value] }}</UiListboxLabel></template>
                               <UiListboxOption v-for="d in ARP_DIRECTIONS" :key="d" :value="d"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[d] }}</UiListboxLabel></UiListboxOption>
                             </UiListbox>
+                            <EaseReveal :show="overlayShown && overlay === 'hexatonic'">
+                              <UiListbox v-model="pairLine" class="w-full" aria-label="Triad pair shape" title="Nearest: each triad from its note nearest the last. Climb: both triads in root position, then 1st and 2nd inversion, rising. Arpeggios: the climb with each triad 1 3 5 8 (after Walt Weiskopf)">
+                                <template #selected="{ value }"><UiListboxLabel>Shape: {{ PAIR_LINE_SHAPE_LABELS[value] }}</UiListboxLabel></template>
+                                <UiListboxOption v-for="s in PAIR_LINE_SHAPES" :key="s" :value="s"><UiListboxLabel>{{ PAIR_LINE_SHAPE_LABELS[s] }}</UiListboxLabel></UiListboxOption>
+                              </UiListbox>
+                            </EaseReveal>
                             <EaseReveal :show="overlayShown && overlay === 'pentatonic'">
                               <UiListbox v-model="pentLeave" class="w-full" aria-label="Leave out" title="The minor pentatonic's degree each four-note cell leaves out; 1: ♭3 4 5 ♭7, the relative major's 1 2 3 5">
                                 <template #selected="{ value }"><UiListboxLabel>Leave out: {{ PENTATONIC_LEAVE_LABELS[value] }}</UiListboxLabel></template>
@@ -163,9 +180,10 @@
                 <UiLabel class="pl-3">Arpeggio</UiLabel>
                 <div class="flex flex-wrap items-center gap-2">
                   <SegmentedControl v-model="arpNotes" legend="Arpeggio" name="arp-notes" :options="arpNoteOptions" />
-                  <UiListbox v-model="arpDir" class="w-32" aria-label="Arpeggio direction">
-                    <template #selected="{ value }"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[value] }}</UiListboxLabel></template>
-                    <UiListboxOption v-for="d in ARP_DIRECTIONS" :key="d" :value="d"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[d] }}</UiListboxLabel></UiListboxOption>
+                  <!-- Triad pairs (#436): Block joins the directions, as it takes none -->
+                  <UiListbox v-model="arpMotion" class="w-32" aria-label="Arpeggio direction">
+                    <template #selected="{ value }"><UiListboxLabel>{{ motionLabel(value) }}</UiListboxLabel></template>
+                    <UiListboxOption v-for="d in arpMotions" :key="d" :value="d"><UiListboxLabel>{{ motionLabel(d) }}</UiListboxLabel></UiListboxOption>
                   </UiListbox>
                 </div>
               </UiField>
@@ -218,9 +236,11 @@
     </template>
 
     <script setup lang="ts">
-    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
+    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type HexatonicBasis, type QuartalNotesChoice, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PairShape, PAIR_SHAPE_LABELS, type PairLineShape, PAIR_LINE_SHAPE_LABELS, PAIR_LINE_SHAPES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { approachApplies, type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
+    import { HEX_BASES } from '~/utils/hexatonics'
+    import { QUARTAL_LINE_NOTE_CHOICES, quartalNotesOf, type QuartalNotesText } from '~/utils/quartal'
     import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
     import { type Spell, spellLabel, SPELLS } from '~/utils/scaleChoices'
     import type { SheetKind } from '~/utils/sheets'
@@ -243,6 +263,13 @@
     const pentSide = defineModel<PentatonicSide>('pentSide', { default: 'flat' })
     const pentBasis = defineModel<PentatonicBasis>('pentBasis', { default: 'key' })
     const pentDegree = defineModel<PentatonicDegree>('pentDegree', { default: 'auto' })
+    const hexBasis = defineModel<HexatonicBasis>('hexBasis', { default: 'chord' })
+    const quartNotes = defineModel<QuartalNotesChoice>('quartNotes', { default: 'auto' })
+    const quartPerfect = defineModel<boolean>('quartPerfect', { default: false })
+    /** SegmentedControl's values are strings */
+    const quartNotesText = computed({ get: () => String(quartNotes.value) as QuartalNotesText, set: (v) => (quartNotes.value = quartalNotesOf(v)) })
+    /** the line's direction listbox, named for the line in the slot */
+    const DIRECTION_LABEL: Readonly<Record<Overlay, string>> = { off: 'Direction', pentatonic: 'Pentatonic direction', hexatonic: 'Triad pair direction', quartal: 'Quartal direction' }
     const pentPath = defineModel<PentatonicPathName>('pentPath', { default: 'one' })
     const pathChoices = computed(() => PENT_PATHS.filter((p) => p.value !== 'custom' || pentPath.value === 'custom'))
     const pentStepUnit = defineModel<PentatonicStepUnit>('pentStepUnit', { default: 'section' })
@@ -254,6 +281,8 @@
     const lineOptionsOpen = ref(false)
     const instrumentSummary = computed(() => [instrumentOption(instrument.value), playerRange && range.value ? `${noteName(range.value.lo)}–${noteName(range.value.hi)}` : ''].filter(Boolean).join(' · '))
     const pentOptionsOpen = ref(false)
+    const hexOptionsOpen = ref(false)
+    const quartOptionsOpen = ref(false)
     watch(overlay, (o) => (pentOptionsOpen.value = o === 'pentatonic'))
     const { shows } = useInterface()
     /** what this Interface level shows (#273): Numerals and Scales (hidden while editing too), Superimpose */
@@ -266,10 +295,12 @@
     const cells = defineModel<CellId>('cells', { default: '3rd-3rd' })
     const arpNotes = defineModel<ArpNotes>('arpNotes', { default: 'seventh' })
     const arpDir = defineModel<ArpDirection>('arpDir', { default: 'up' })
+    const arpShape = defineModel<PairShape>('arpShape', { default: 'arpeggiated' })
     const pattern = defineModel<string>('pattern', { default: '+1 +1 +1 −2' })
     const patternNotes = defineModel<PatternNotes>('patternNotes', { default: 'scale' })
     const patternDir = defineModel<ArpDirection>('patternDir', { default: 'up' })
     const pentLeave = defineModel<PentatonicLeave>('pentLeave', { default: '1' })
+    const pairLine = defineModel<PairLineShape>('pairLine', { default: 'nearest' })
     /** the sheet editor is open: numerals and scales are shown (they are the pickers), their toggles hide */
     /** keyStart: the chart's key, written for the instrument (what "From key" starts on) */
     /** compact: a phone with compactRail on: the rail keeps Work on, Instrument and the slot's rail actions; Controls opens the rest */
@@ -291,6 +322,21 @@
     const Passthrough: FunctionalComponent = (_, { slots }) => slots.default?.()
 
     const arpNoteOptions = ARP_NOTES.map((value) => ({ value, label: ARP_NOTES_LABELS[value] }))
+    /** the Arpeggios sheet's direction listbox: a direction, or under Triad pairs Block (#436) */
+    type ArpMotion = ArpDirection | 'block'
+    const arpMotions = computed((): readonly ArpMotion[] => (arpNotes.value === 'pairs' ? [...ARP_DIRECTIONS, 'block'] : ARP_DIRECTIONS))
+    const motionLabel = (m: ArpMotion): string => (m === 'block' ? PAIR_SHAPE_LABELS.block : ARP_DIRECTION_LABELS[m])
+    const arpMotion = computed<ArpMotion>({
+      get: () => (arpNotes.value === 'pairs' && arpShape.value === 'block' ? 'block' : arpDir.value),
+      set: (m) => {
+        if (m === 'block') {
+          arpShape.value = 'block'
+          return
+        }
+        if (arpShape.value === 'block') arpShape.value = 'arpeggiated'
+        arpDir.value = m
+      },
+    })
     const patternNoteOptions = [
       { value: 'scale', label: 'Scale' },
       { value: 'chord', label: 'Chord tones' },

@@ -8,7 +8,10 @@ import { type Part, type Pitched, type ScaleLabel, rangeOf, scaleLabel, writtenS
 import { mod, pcOf, type Spelled } from './pitch'
 import { resolveQuality } from './qualities'
 import type { Resolved } from './resolve'
-import { scaleLines } from './sheet'
+import type { ChordAt } from './changes'
+import { type HexPair, hexatonicAuto, keyedPair, offKeyNote, type StaffHexatonic, writtenKeyPair } from './hexatonics'
+import { type Cover, lineCovers, type SheetPicks, scaleLines, staffPairs } from './sheet'
+import { type PairShape, triadPairFigure } from './triadPairSheet'
 import { chunk, orNull } from './util'
 
 /**
@@ -32,14 +35,29 @@ export function tensionsOf(part: Part, chord: string, scale: string, tones: read
     .map((t) => t.note)
 }
 
-export const ARP_NOTES = ['seventh', 'extended'] as const
+export const ARP_NOTES = ['seventh', 'extended', 'pairs'] as const
 export type ArpNotes = (typeof ARP_NOTES)[number]
 export const ARP_DIRECTIONS = ['up', 'down', 'up-down'] as const
 export type ArpDirection = (typeof ARP_DIRECTIONS)[number]
 export const isArpNotes = (x: unknown): x is ArpNotes => (ARP_NOTES as readonly unknown[]).includes(x)
 export const isArpDirection = (x: unknown): x is ArpDirection => (ARP_DIRECTIONS as readonly unknown[]).includes(x)
-export const ARP_NOTES_LABELS: Readonly<Record<ArpNotes, string>> = { seventh: '7th Chord', extended: 'Extended' }
+export const ARP_NOTES_LABELS: Readonly<Record<ArpNotes, string>> = { seventh: '7th Chord', extended: 'Extended', pairs: 'Triad pairs' }
 export const ARP_DIRECTION_LABELS: Readonly<Record<ArpDirection, string>> = { up: 'Up', down: 'Down', 'up-down': 'Up & down' }
+
+/**
+ * a Triad pairs staff's pair (#436): the one it plays (null: none, so its 7th chord arpeggio), the chord tones it
+ * covers, and what a chord pick on it needs (as StaffModel's positions, varies and source)
+ */
+export type ArpeggioPair = Readonly<{
+  hexatonic: StaffHexatonic | null
+  coverage: number | null
+  positions: readonly ChordAt[]
+  varies: boolean
+  source: Readonly<{ chord: string; scale: string }> | null
+}>
+
+/** "F/G · covers 4", or "no triad pair"; " · varies" where the staff's chords have different picks */
+export const pairCaption = (p: ArpeggioPair): string => (p.hexatonic ? `${p.hexatonic.name} · covers ${p.coverage}${offKeyNote(p.hexatonic)}${p.varies ? ' · varies' : ''}` : 'no triad pair')
 
 /** one staff on the Arpeggios sheet: the Scales sheet's line, its arpeggio's notes and beam groups, or the error that stands in for them */
 export type ArpeggioStaffModel = Readonly<{
@@ -54,8 +72,12 @@ export type ArpeggioStaffModel = Readonly<{
   intervals: readonly string[] | null // each note against the chord root; null if the chord can't be read
   error: string | null
   last: boolean
+  pair?: ArpeggioPair // Triad pairs only
+  block?: boolean // Triad pairs, Block: each beamed group is one chord
 }>
 export type ArpeggioSheetModel = Readonly<{ heading: string; pages: readonly (readonly ArpeggioStaffModel[])[] }>
+
+const HEADINGS: Readonly<Record<ArpNotes, string>> = { seventh: 'Arpeggios', extended: 'Extended arpeggios', pairs: 'Triad pairs' }
 
 /** one line's notes, and the length of each beamed group in order */
 export type ArpeggioLineNotes = Readonly<{ notes: readonly Pitched[]; groups: readonly number[] }>
@@ -98,8 +120,29 @@ function twoOctaves(asc: readonly Pitched[], size: number, dir: ArpDirection): A
 }
 
 /**
+ * a line's pair under Triad pairs: its first position's pick where that is one of its pairs (cover.pick, written),
+ * else Auto, as the Changes sheet's Hexatonic overlay chooses; null where its scale has none
+ */
+function pairFor(part: Part, row: Row, scale: string | null, cover: Cover, keyName: string | undefined): Readonly<{ pair: HexPair; hexatonic: StaffHexatonic }> | null {
+  const pairs = staffPairs(row, scale, part)
+  if (scale === null || !pairs.length) return null
+  const chordRoot = orNull(() => writtenChordRootLenient(part, row.chord, scale)) ?? scaleLabel(part, scale).root
+  const pick = Array.isArray(cover.pick) ? cover.pick : null
+  const key = keyName === undefined ? null : writtenKeyPair(keyName, part)
+  const keyed = key && keyedPair(pairs, key)
+  const sheet = keyed ?? hexatonicAuto(pairs, chordRoot)
+  const found = pick ? pairs.find((p) => pcOf(p.lower.root) === pick[0] && pcOf(p.upper.root) === pick[1]) : undefined
+  const used = found ?? sheet
+  return used && { pair: used, hexatonic: { name: used.name, link: used.link, picked: !!found, sheet: sheet?.name ?? '', offKey: keyName !== undefined && !keyed } }
+}
+
+/** Triad pairs: the shape (Arpeggiated or Block) and the chord picks (#303), as the Scales sheet takes them; keys: each row's key area (rowKeys), given when the Changes sheet's pairs rank against the key (#432) */
+export type PairOptions = Readonly<{ shape?: PairShape; picks?: SheetPicks; keys?: ReadonlyMap<number, string> }>
+
+/**
  * the Arpeggios sheet: the Scales sheet's lines (scaleLines), each its arpeggio, in pages of perPage; never throws.
- * key and resolved as in buildSheet: the signature (undefined: off) and the scale each row plays.
+ * key and resolved as in buildSheet: the signature (undefined: off) and the scale each row plays. Triad pairs (#436):
+ * each line's pair as triadPairFigure, or its 7th chord arpeggio where it has none.
  */
 export function buildArpeggioSheet(
   rows: readonly Row[],
@@ -109,16 +152,23 @@ export function buildArpeggioSheet(
   dir: ArpDirection,
   key?: Key | null,
   resolved?: ReadonlyMap<number, Resolved>,
+  opts: PairOptions = {},
 ): ArpeggioSheetModel {
   const scaleOf = (r: Row, i: number): string | null => (resolved?.has(i) ? (resolved.get(i)?.scale ?? null) : qualityScale(r))
   const lines = scaleLines(rows, scaleOf)
+  const shape = opts.shape ?? 'arpeggiated'
+  const covers = notes === 'pairs' ? lineCovers(rows, lines, part, scaleOf, 'hexatonic', opts.picks) : []
   const keySig = key === undefined ? null : keySignature(key, part)
   const staves = lines.map((l, n): ArpeggioStaffModel => {
     const r = rows[l.row] as Row
     const scale = scaleOf(r, l.row)
     const showClefAndKey = key === undefined || n === 0
     const range = rangeOf(part)
-    const id = [l.chords.join(' '), scale, part.clef, part.trans, `${range.lo}-${range.hi}-${range.centre}`, notes, dir, keySig, showClefAndKey ? '' : 'bare'].join('|')
+    const cover = covers[n]
+    const used = cover ? pairFor(part, r, scale, cover, opts.keys ? (opts.keys.get(l.row) ?? '') : undefined) : null
+    const pairKey = cover ? `${used?.pair.name ?? '-'}|${shape}` : ''
+    const id = [l.chords.join(' '), scale, part.clef, part.trans, `${range.lo}-${range.hi}-${range.centre}`, notes, dir, pairKey, keySig, showClefAndKey ? '' : 'bare'].join('|')
+    const block = !!used && shape === 'block'
     const base = {
       id,
       chords: l.chords.map((c) => chordTokensOrNull(part, c, scale)),
@@ -126,8 +176,12 @@ export function buildArpeggioSheet(
       keySig,
       showClefAndKey,
       last: n === lines.length - 1,
+      ...(cover && {
+        pair: { hexatonic: used?.hexatonic ?? null, coverage: used?.pair.coverage ?? null, positions: cover.positions, varies: cover.varies, source: scale === null ? null : { chord: r.chord, scale } },
+        block,
+      }),
     }
-    const played = arpeggioLine(part, r.chord, scale, notes, dir)
+    const played = used ? triadPairFigure(used.pair, shape, dir, range) : arpeggioLine(part, r.chord, scale, notes === 'pairs' ? 'seventh' : notes, dir)
     if ('error' in played) return { ...base, notes: [], groups: [], accidentals: [], intervals: null, error: played.error }
     return {
       ...base,
@@ -136,9 +190,9 @@ export function buildArpeggioSheet(
         played.notes.map((p) => ({ letter: p.letter, acc: p.acc, octave: octaveOf(p) })),
         keySig,
       ),
-      intervals: orNull(() => intervalLabels(writtenChordRootLenient(part, r.chord, scale), played.notes, resolveQuality(r.chord)?.quality ?? null)),
+      intervals: block ? null : orNull(() => intervalLabels(writtenChordRootLenient(part, r.chord, scale), played.notes, resolveQuality(r.chord)?.quality ?? null)),
       error: null,
     }
   })
-  return { heading: notes === 'extended' ? 'Extended arpeggios' : 'Arpeggios', pages: chunk(staves, perPage) }
+  return { heading: HEADINGS[notes], pages: chunk(staves, perPage) }
 }

@@ -224,6 +224,18 @@ describe('linkPreferences', () => {
     expect(linked({}).arpNotes.value).toBe('extended')
   })
 
+  it('keeps the Triad pairs shape, Arpeggiated by default, and a link overrides it for the visit only (#436)', async () => {
+    const p = prefs()
+    expect(p.arpShape.value).toBe('arpeggiated')
+    p.arpShape.value = 'block'
+    await nextTick()
+    expect(localStorage.getItem('csm-arp-shape')).toBe('block')
+    expect(prefs().arpShape.value).toBe('block')
+    localStorage.setItem('csm-arp-shape', 'stacked')
+    expect(prefs().arpShape.value).toBe('arpeggiated')
+    expect(linked({ sheet: 'arpeggios', arpNotes: 'pairs', arpShape: 'block' }).arpShape.value).toBe('block')
+  })
+
   it('keeps the Patterns choices in canonical form; text that does not parse reads as the default; a link overrides them for the visit only', async () => {
     const p = prefs()
     expect([p.pattern.value, p.patternNotes.value, p.patternDir.value]).toEqual(['+1 +1 +1 −2', 'scale', 'up'])
@@ -258,6 +270,15 @@ describe('pentatonic preferences', () => {
     expect(prefs().pentLeave.value).toBe('b7')
     localStorage.setItem('csm-pent-leave', '♭7')
     expect(prefs().pentLeave.value).toBe('1')
+  })
+
+  it("keeps the Triad pair line's shape at Nearest until chosen, a bad one as Nearest; a link's for the visit, else yours (#432)", async () => {
+    expect(prefs().pairLine.value).toBe('nearest')
+    localStorage.setItem('csm-pair-line', 'climb')
+    expect(prefs().pairLine.value).toBe('climb')
+    expect([linked({ line: 'up-root', pairLine: 'arpeggios' }).pairLine.value, linked({ line: 'up-root' }).pairLine.value]).toEqual(['arpeggios', 'climb'])
+    localStorage.setItem('csm-pair-line', 'Climb')
+    expect(prefs().pairLine.value).toBe('nearest')
   })
 
   it("takes a link's Leave out for the visit; a link without one keeps your own, as arpDir does", async () => {
@@ -313,6 +334,27 @@ describe('pentatonic preferences', () => {
     localStorage.clear()
     localStorage.setItem('csm-pentatonics', 'off')
     expect(prefs().overlay.value).toBe('off')
+  })
+
+  it('reads the Hexatonic basis (#432): Chord until Key is stored, junk as Chord, yours through a share link', () => {
+    expect(prefs().hexBasis.value).toBe('chord')
+    localStorage.setItem('csm-hex-basis', 'key')
+    expect([prefs().hexBasis.value, linked({}).hexBasis.value]).toEqual(['key', 'key'])
+    localStorage.setItem('csm-hex-basis', 'junk')
+    expect(prefs().hexBasis.value).toBe('chord')
+  })
+
+  it('reads the Quartal overlay\'s notes and Perfect only (#432): Auto and off until stored, junk as the default, yours through a share link', async () => {
+    expect([prefs().quartNotes.value, prefs().quartPerfect.value]).toEqual(['auto', false])
+    localStorage.setItem('csm-quart-notes', '3')
+    localStorage.setItem('csm-quart-perfect', 'on')
+    expect([prefs().quartNotes.value, prefs().quartPerfect.value, linked({}).quartNotes.value, linked({}).quartPerfect.value]).toEqual([3, true, 3, true])
+    localStorage.setItem('csm-quart-notes', '5')
+    expect(prefs().quartNotes.value).toBe('auto')
+    const p = prefs()
+    p.quartPerfect.value = false
+    await nextTick()
+    expect(localStorage.getItem('csm-quart-perfect')).toBe('off')
   })
 
   it('reads a stored basis and Built on degree, rejecting junk, and keeps them through a share link', () => {

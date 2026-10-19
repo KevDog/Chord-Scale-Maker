@@ -320,7 +320,9 @@ export function cellVoices(
       carried = c.carry && take < cell.length ? { chord: s.chord, notes: cell.slice(take), midi, cell } : null
       prev = midi[take - 1] ?? prev
       last = midi.slice(0, take)
-      count++
+      // a cell cut off (not carried on) before half of it is heard isn't a turn: Up & down picks up its direction (#433)
+      const dropped = take < cell.length && !(carried && s.at + s.length < end)
+      if (!dropped || take * 2 >= cell.length) count++
       nth.set(s.chord, n + 1)
     }
   }

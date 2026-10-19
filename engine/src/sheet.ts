@@ -1,12 +1,13 @@
 import type { ChordAt } from './changes'
-import { type ChordPicks, livePicks, pickTarget } from './chordPicks'
+import { type ChordPicks, livePicks, type PickKind, pickTarget } from './chordPicks'
 import type { Row } from './chart'
 import { qualityScale } from './chart'
 import { type ChordToken, chordTokensOrNull, isRest, parseChord, writtenChordRoot, writtenChordRootLenient } from './chord'
 import { intervalLabels } from './intervals'
-import { type HexPair, hexatonicPairs, hexatonicPick, type StaffHexatonic } from './hexatonics'
-import { isHexatonicSelection, isPentatonicSelection, type PracticeSelection, practiceKeys, selectedNotes, startReference } from './practice'
+import { type HexPair, hexatonicPairs, hexatonicPick, type StaffHexatonic, writtenKeyPair } from './hexatonics'
+import { isHexatonicSelection, isPentatonicSelection, isQuartalSelection, type PracticeSelection, practiceKeys, selectedNotes, startReference } from './practice'
 import { outsideNotes, pentatonicPick, type StaffPentatonic } from './pentatonics'
+import { quartalPick, type StaffQuartal } from './quartal'
 import { baseQuality, resolveQuality } from './qualities'
 import { parseScale } from './scales'
 import type { Key } from './analysis/keys'
@@ -35,6 +36,7 @@ export type StaffModel = Readonly<{
   selected: readonly boolean[] | null // practice: which notes are picked; null when practice is off
   pentatonic: StaffPentatonic | null // the Pentatonic preset's pick for this staff (#266); null otherwise
   hexatonic: StaffHexatonic | null // the Hexatonic preset's pair for this staff; null otherwise, and where the scale has none
+  quartal: StaffQuartal | null // the Quartal preset's stack for this staff (#432); null otherwise, and where the scale has none
   second: readonly boolean[] | null // the Hexatonic preset: which selected notes are in group B; null otherwise
   outside: readonly boolean[] | null // the Pentatonic preset (#308): which notes are its pentatonic's, added from outside the scale; null otherwise
   positions: readonly ChordAt[] // the drawn chords it covers (#303), in form order; [] without picks given, or all in a folded repeat
@@ -122,12 +124,13 @@ function practiceFor(
   practice: PracticeSelection | null,
   pick: StaffPick,
   low: number,
-): Pick<StaffModel, 'notes' | 'keys' | 'selected' | 'pentatonic' | 'hexatonic' | 'second' | 'outside'> & Readonly<{ degrees: readonly Pitched[] }> {
+  keyName: string | undefined,
+): Pick<StaffModel, 'notes' | 'keys' | 'selected' | 'pentatonic' | 'hexatonic' | 'quartal' | 'second' | 'outside'> & Readonly<{ degrees: readonly Pitched[] }> {
   const reference = mode === 'from' ? startReference(startText) : orNull(() => writtenChordRootLenient(part, row.chord, scale))
   // from the root, a key is the note's degree: in the formula's letters, whatever letters the staff shows (#279)
   const keysOf = (ns: readonly Pitched[], ds: readonly Pitched[]) => (reference ? practiceKeys(reference, mode === 'root' ? ds : ns, mode === 'root' ? (resolveQuality(row.chord)?.quality ?? null) : null) : null)
   const keys = keysOf(notes, degrees)
-  const none = { notes, degrees, pentatonic: null, hexatonic: null, second: null, outside: null }
+  const none = { notes, degrees, pentatonic: null, hexatonic: null, quartal: null, second: null, outside: null }
   const chordRoot = () => orNull(() => writtenChordRootLenient(part, row.chord, scale)) ?? scaleLabel(part, scale).root
   if (isPentatonicSelection(practice)) {
     const pcs = notes.map((n) => pcOf(n))
@@ -141,8 +144,14 @@ function practiceFor(
   if (isHexatonicSelection(practice)) {
     const quality = orNull(() => baseQuality(parseChord(row.chord).quality))
     const pcs = notes.map((n) => pcOf(n))
-    const { hexatonic, lit, second } = hexatonicPick(writtenScale(part, scale).notes, chordRoot(), quality, practice.pair, practice.grouping, pcs, Array.isArray(pick) ? (pick as readonly [number, number]) : null)
+    const key = practice.basis === 'key' && keyName !== undefined ? writtenKeyPair(keyName, part) : undefined
+    const { hexatonic, lit, second } = hexatonicPick(writtenScale(part, scale).notes, chordRoot(), quality, practice.pair, practice.grouping, pcs, Array.isArray(pick) ? (pick as readonly [number, number]) : null, key)
     return { ...none, keys, selected: lit, hexatonic, second }
+  }
+  if (isQuartalSelection(practice)) {
+    const quality = orNull(() => baseQuality(parseChord(row.chord).quality))
+    const { quartal, lit } = quartalPick(writtenScale(part, scale).notes, chordRoot(), quality, practice.degree, practice.notes, !!practice.perfect, notes.map((n) => pcOf(n)))
+    return { ...none, keys, selected: lit, quartal }
   }
   return { ...none, keys, selected: practice && keys ? selectedNotes(practice, row.chord, keys) : null }
 }
@@ -160,20 +169,21 @@ function staff(
   key: Key | null | undefined,
   showClefAndKey: boolean,
   covers: Cover,
+  keyName?: string,
 ): StaffModel {
   const startKey = 'midi' in start ? start.midi : start.error
   const keySig = key === undefined ? null : keySignature(key, part)
   const id = [chordTexts.join(' '), scale, part.clef, part.trans, mode, startKey, keySig, showClefAndKey ? '' : 'bare'].join('|')
   const base = { id, last, keySig, showClefAndKey, positions: covers.positions, source: scale === null ? null : { chord: row.chord, scale } }
   const chords = chordTexts.map((c) => chordTokensOrNull(part, c, scale))
-  const none = { notes: [], accidentals: [], intervals: null, keys: null, selected: null, pentatonic: null, hexatonic: null, second: null, outside: null, varies: false }
+  const none = { notes: [], accidentals: [], intervals: null, keys: null, selected: null, pentatonic: null, hexatonic: null, quartal: null, second: null, outside: null, varies: false }
   if (scale === null) return { ...base, ...none, chords, scale: null, error: chords[0] ? 'Choose a scale' : "Can't read this chord" }
   try {
     const label = scaleLabel(part, scale)
     if ('error' in start) return { ...base, ...none, chords, scale: label, error: start.error }
     const scaleOnly = scaleNotes(part, scale, mode, start.midi)
     const low = mode === 'root' ? (scaleOnly[0]?.midi ?? 0) : start.midi
-    const { degrees, ...practiced } = practiceFor(row, part, mode, startText, scale, scaleOnly, scaleNotes(part, scale, mode, start.midi, 'degrees'), practice, covers.pick, low)
+    const { degrees, ...practiced } = practiceFor(row, part, mode, startText, scale, scaleOnly, scaleNotes(part, scale, mode, start.midi, 'degrees'), practice, covers.pick, low, keyName)
     const { notes } = practiced
     return {
       ...base,
@@ -215,7 +225,8 @@ export function pageSubtitle(subtitle: string, instrument: string, heading: stri
  * signatures, only each part's first staff starts with the clef and signature, and every staff's accidentals go against it.
  * resolved: resolveScales over the document the rows come from, at the sheet's level; without it each row plays its
  * own scale or its quality's default. picks (#303): each staff plays its first position's live pick of the preset's
- * kind, and varies where its positions' picks differ.
+ * kind, and varies where its positions' picks differ. keys (#432): each row's key area (rowKeys), which the Hexatonic
+ * preset ranked against the key reads from each line's first row; without them it plays Auto.
  */
 export function buildSheet(
   rows: readonly Row[],
@@ -227,19 +238,12 @@ export function buildSheet(
   key?: Key | null,
   resolved?: ReadonlyMap<number, Resolved>,
   picks?: SheetPicks,
+  keys?: ReadonlyMap<number, string>,
 ): SheetPart[] {
   const scaleOf = (r: Row, i: number): string | null => (resolved?.has(i) ? (resolved.get(i)?.scale ?? null) : qualityScale(r))
   const lines = scaleLines(rows, scaleOf)
-  const live = picks && livePicks(picks.picks, new Map(rows.flatMap((r, i) => {
-    const at = picks.at.get(i)
-    return at === undefined ? [] : [[at, pickTarget(r.chord, scaleOf(r, i))] as const]
-  })))
-  const toWritten = pcOf(writtenRoot(part, parseRoot('C'), 'ionian')) // concert pc + this = written pc
-  const covers = lines.map((l) => {
-    if (!picks || !live) return NO_COVER
-    const r = rows[l.row] as Row
-    return coverOf(l, picks.at, live, toWritten, practice, () => staffPairs(r, scaleOf(r, l.row), part))
-  })
+  const kind = isPentatonicSelection(practice) ? 'pentatonic' : isHexatonicSelection(practice) ? 'hexatonic' : null
+  const covers = lineCovers(rows, lines, part, scaleOf, kind, picks)
   return modesFor(choice).map((mode) => {
     const start = startFor(part, mode, startText)
     return {
@@ -248,7 +252,7 @@ export function buildSheet(
       pages: chunk(
         lines.map((l, n) => {
           const r = rows[l.row] as Row
-          return staff(r, l.chords, scaleOf(r, l.row), part, mode, start, n === lines.length - 1, startText, practice, key, key === undefined || n === 0, covers[n]!)
+          return staff(r, l.chords, scaleOf(r, l.row), part, mode, start, n === lines.length - 1, startText, practice, key, key === undefined || n === 0, covers[n]!, keys ? (keys.get(l.row) ?? '') : undefined)
         }),
         perPage,
       ),
@@ -256,10 +260,26 @@ export function buildSheet(
   })
 }
 
-type Cover = Readonly<{ positions: readonly ChordAt[]; varies: boolean; pick: StaffPick }>
+/** a line's picks of one kind (#303): the positions it covers, whether their picks differ, its first position's pick (written) */
+export type Cover = Readonly<{ positions: readonly ChordAt[]; varies: boolean; pick: StaffPick }>
 const NO_COVER: Cover = { positions: [], varies: false, pick: null }
+
+/** each line's Cover of the picks of a kind (none: positions only); without picks, none */
+export function lineCovers(rows: readonly Row[], lines: readonly ScaleLine[], part: Part, scaleOf: (r: Row, i: number) => string | null, kind: PickKind | null, picks?: SheetPicks): readonly Cover[] {
+  if (!picks) return lines.map(() => NO_COVER)
+  const live = livePicks(picks.picks, new Map(rows.flatMap((r, i) => {
+    const at = picks.at.get(i)
+    return at === undefined ? [] : [[at, pickTarget(r.chord, scaleOf(r, i))] as const]
+  })))
+  const toWritten = pcOf(writtenRoot(part, parseRoot('C'), 'ionian')) // concert pc + this = written pc
+  return lines.map((l) => {
+    const r = rows[l.row] as Row
+    return coverOf(l, picks.at, live, toWritten, kind, () => staffPairs(r, scaleOf(r, l.row), part))
+  })
+}
+
 /** a staff's triad pairs, as practiceFor reads them; [] when its scale can't be read */
-const staffPairs = (row: Row, scale: string | null, part: Part): readonly HexPair[] =>
+export const staffPairs = (row: Row, scale: string | null, part: Part): readonly HexPair[] =>
   (scale === null ? null : orNull(() => {
     const chordRoot = orNull(() => writtenChordRootLenient(part, row.chord, scale)) ?? scaleLabel(part, scale).root
     const quality = orNull(() => baseQuality(parseChord(row.chord).quality))
@@ -267,9 +287,8 @@ const staffPairs = (row: Row, scale: string | null, part: Part): readonly HexPai
   })) ?? []
 
 /** the line's positions, whether their picks differ, and its first position's pick (written); a hexatonic pick not among the staff's pairs plays the sheet's pair, so counts as none */
-function coverOf(line: ScaleLine, at: ReadonlyMap<number, ChordAt>, live: ChordPicks, toWritten: number, practice: PracticeSelection | null, pairsOf: () => readonly HexPair[]): Cover {
+function coverOf(line: ScaleLine, at: ReadonlyMap<number, ChordAt>, live: ChordPicks, toWritten: number, kind: PickKind | null, pairsOf: () => readonly HexPair[]): Cover {
   const positions = linePositions(line, at)
-  const kind = isPentatonicSelection(practice) ? 'pentatonic' : isHexatonicSelection(practice) ? 'hexatonic' : null
   if (!kind || !positions.length) return { positions, varies: false, pick: null }
   const written = (pc: number): number => mod(pc + toWritten, 12)
   const pairs = kind === 'hexatonic' ? pairsOf() : []

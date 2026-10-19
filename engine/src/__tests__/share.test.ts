@@ -131,6 +131,8 @@ describe('share links', () => {
 
   it('keeps the Arpeggios sheet and its choices, dropping bad ones', () => {
     expect(shareViewFrom({ sheet: 'arpeggios', arpNotes: 'extended', arpDir: 'up-down' })).toEqual({ sheet: 'arpeggios', arpNotes: 'extended', arpDir: 'up-down' })
+    expect(shareViewFrom({ sheet: 'arpeggios', arpNotes: 'pairs', arpShape: 'block' })).toEqual({ sheet: 'arpeggios', arpNotes: 'pairs', arpShape: 'block' }) // #436
+    expect(shareViewFrom({ sheet: 'arpeggios', arpShape: 'stacked' })).toEqual({ sheet: 'arpeggios' })
     expect(shareViewFrom({ sheet: 'arps', arpNotes: 'ninth', arpDir: 'sideways' })).toBeUndefined()
   })
 
@@ -138,6 +140,12 @@ describe('share links', () => {
     const view = { sheet: 'changes', line: 'up-root', arpDir: 'down', pentLeave: 'b3' } as const
     expect(await decodeShare(await encodeShare({ chart: CHART, view }))).toEqual({ chart: CHART, view })
     for (const pentLeave of ['3', '♭3', 1, null]) expect(shareViewFrom({ sheet: 'changes', pentLeave })).toEqual({ sheet: 'changes' })
+  })
+
+  it("carries the Triad pair line's shape with an arpeggio line (#432); a bad one, or an old link's none, is absent", async () => {
+    const view = { sheet: 'changes', line: 'up-root', arpDir: 'up', pairLine: 'climb' } as const
+    expect(await decodeShare(await encodeShare({ chart: CHART, view }))).toEqual({ chart: CHART, view })
+    for (const pairLine of ['Climb', 'block', 1, null]) expect(shareViewFrom({ sheet: 'changes', pairLine })).toEqual({ sheet: 'changes' })
   })
 
   it('read any other line as none (absent), and the old guideLine not at all', async () => {

@@ -8,11 +8,25 @@ export type ReleaseNote = Readonly<{ date: string; items: readonly ReleaseItem[]
 
 export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
+    date: '2026-10-19',
+    items: [
+      { text: 'Triad pair line: a Shape in Line options, after Walt Weiskopf: Climb (both triads in root position, then 1st and 2nd inversion, rising: F A C, G B D, A C F, …) and Arpeggios 1 3 5 8. Nearest is the line as it was.', pr: 444 },
+      { text: 'Line: under Superimpose: Quartal the 7th Chords slot plays Quartal, each chord’s stack of fourths whole, then its next stacks, up, down or both. Quartal options’ Notes gains Auto: four notes a stack where your range has room, else three.', pr: 443 },
+    ],
+  },
+  {
     date: '2026-10-18',
     items: [
+      { text: 'Superimpose: Quartal names each chord’s stack of fourths under it on the Changes sheet (D G C F over Dm7); click one to pick another. Quartal options set three or four notes and perfect fourths only.', pr: 442 },
+      { text: 'Practice: a Quartal preset lights a stack of fourths from each scale (D G C F over Dm7, F B E A over G7), Built on a degree you choose, of three or four notes, perfect fourths only if you like.', pr: 441 },
+      { text: 'Hexatonic: the diminished scales gain the pairs a tritone apart (C/F♯ over C7♭9, now its Auto pair), and the whole-tone scale its two augmented triads (C+/D+), after Walt Weiskopf.', pr: 440 },
+      { text: 'Hexatonic: Ranked against Key gives every chord in a key area the same triad pair, its IV and V triads (F/G across Dm7 G7 Cmaj7 in C), after Walt Weiskopf. On the Changes under Hexatonic options, and in the Scales sheet’s Hexatonic preset.', pr: 439 },
+      { text: 'Triad pairs on the Arpeggios sheet: each chord’s triad pair as six triads through their inversions, arpeggiated or as block chords. Click the pair under the chord to pick another.', pr: 438 },
+      { text: 'The Triad pair line’s Up & down now alternates chord by chord; with four notes a chord it only went up.', pr: 434 },
       { text: 'Blues read as blues: Mixolydian on the I, IV and V (Dorian on a minor blues’ i and iv), the key’s Blues scale at Basic, and Read as in the heading to say a chart is a blues whatever its form.', pr: 437 },
       { text: 'Transpose… moves beside Edit: both rewrite the chart. Print is lighter, its label in the accent colour.', pr: 431 },
       { text: 'The controls above the sheet take two rows instead of four: the Instrument button shows your instrument and range and opens them in a panel, and a line’s details open from Line options beside it.', pr: 429 },
+      { text: 'Patterns: Stacked fourths, two fourths stacked from each scale note.', pr: 435 },
       { text: '18 charts from the Jazz Mind Accelerator backing tracks: versions of 15 library tunes, and Fly Me to the Moon, Mack the Knife and A Child Is Born.', pr: 421 },
       { text: 'Versions: a tune with more than one chart has a Version menu above its sheet, your own charts of it included.', pr: 419 },
       { text: 'The Instrument picker in two steps: the pitch (Concert, B♭, E♭, F, Bass), then your instrument.', pr: 420 },

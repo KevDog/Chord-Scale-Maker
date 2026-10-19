@@ -15,8 +15,8 @@ describe('patterns', () => {
     }
   })
   it('writes the canonical text', () => expect(formatPattern([1, 1, 1, -2])).toBe('+1 +1 +1 −2'))
-  it('holds the 13 library patterns, each one the parser accepts', () => {
-    expect(PATTERN_LIBRARY).toHaveLength(13)
+  it('holds the 14 library patterns, each one the parser accepts', () => {
+    expect(PATTERN_LIBRARY).toHaveLength(14)
     for (const p of PATTERN_LIBRARY) expect(parsePattern(formatPattern(p.moves))).toEqual({ moves: p.moves })
     expect(PATTERN_LIBRARY.find((p) => p.id === 'thirds')?.moves).toEqual([2, -1])
   })
@@ -25,6 +25,13 @@ describe('patterns', () => {
     expect(label('1-2-4-3')).toBe('1 2 4 3')
     expect(label('1-3-2-1')).toBe('1 3 2 1')
     expect(label('triads-turn')).toBe('Triads with a turn')
+    expect(label('stacked-fourths')).toBe('Stacked fourths')
+  })
+  it('stacks two fourths and climbs a step: C F B, D G C over C major (#432)', () => {
+    const moves = PATTERN_LIBRARY.find((p) => p.id === 'stacked-fourths')!.moves
+    const r = patternRun(7, moves, 'up')
+    expect(r.steps.slice(0, 6)).toEqual([0, 3, 6, 1, 4, 7])
+    expect(r.groups.slice(0, 2)).toEqual([3, 3])
   })
   it('runs each stepwise library label as its first group', () => {
     for (const p of PATTERN_LIBRARY.filter((q) => /^\d/.test(q.label))) {

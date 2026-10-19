@@ -69,3 +69,22 @@ it('names the bars positions cover, once each, in order', () => {
   expect(pickBars(['A1:6:0', 'A1:6:1', 'A3:6:0'])).toEqual(['A1 bar 6', 'A3 bar 6'])
   expect(pickTarget('Db7', null)).toBe('Db7|')
 })
+
+describe('quartal picks (#432)', () => {
+  const targets = new Map([['A:1:0', 'Dm7|D Dorian'], ['A:2:0', 'G7|G Mixolydian']])
+  it('stores a stack by its bottom note, concert, stamped with its target', () => {
+    const p = withPick(NO_PICKS, 'quartal', ['A:1:0'], 9, targets)
+    expect(p.quartal).toEqual({ 'A:1:0': { pc: 9, for: 'Dm7|D Dorian' } })
+    expect(hasPicks(p, 'quartal')).toBe(true)
+    expect(hasPicks(p)).toBe(true)
+    expect(withoutPicks(p, 'quartal', ['A:1:0'], targets).quartal).toEqual({})
+  })
+  it('reads them from untrusted data, dropping bad entries; none without the key', () => {
+    expect(chordPicksFrom({ pentatonic: {}, hexatonic: {}, quartal: { 'A:1:0': { pc: 9, for: 'Dm7|D Dorian' }, 'A:2:0': { pc: 12 }, bad: { pc: 1 } } }).quartal).toEqual({ 'A:1:0': { pc: 9, for: 'Dm7|D Dorian' } })
+    expect(chordPicksFrom({ pentatonic: {}, hexatonic: {} }).quartal).toBeUndefined()
+  })
+  it('keeps live ones only', () => {
+    const picks: ChordPicks = { pentatonic: {}, hexatonic: {}, quartal: { 'A:1:0': { pc: 9, for: 'Dm7|D Aeolian' }, 'A:2:0': { pc: 5, for: 'G7|G Mixolydian' } } }
+    expect(livePicks(picks, targets).quartal).toEqual({ 'A:2:0': { pc: 5, for: 'G7|G Mixolydian' } })
+  })
+})

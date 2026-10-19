@@ -305,7 +305,7 @@ export const drawn = (svg: Locator): Promise<Drawn> =>
   })
 
 /** choose the Changes sheet's Superimpose (inside Controls on a phone), retried until the page has hydrated and the listbox reads it */
-export async function chooseSuperimpose(page: Page, name: 'Off' | 'Pentatonic' | 'Hexatonic'): Promise<void> {
+export async function chooseSuperimpose(page: Page, name: 'Off' | 'Pentatonic' | 'Hexatonic' | 'Quartal'): Promise<void> {
   await inControls(page, async () => {
     const listbox = page.getByRole('button', { name: 'Superimpose', exact: true })
     await expect(async () => {
@@ -377,7 +377,11 @@ export async function hexatonicPreset(page: Page): Promise<void> {
   await practicePreset(page, 'Hexatonic')
 }
 
-async function practicePreset(page: Page, name: 'Pentatonic' | 'Hexatonic'): Promise<void> {
+export async function quartalPreset(page: Page): Promise<void> {
+  await practicePreset(page, 'Quartal')
+}
+
+async function practicePreset(page: Page, name: 'Pentatonic' | 'Hexatonic' | 'Quartal'): Promise<void> {
   await chooseSheet(page, 'Scales')
   await pickOption(page, 'Where each scale starts', 'From root')
   await page.locator('fieldset', { hasText: 'Practice' }).getByRole('button', { name, exact: true }).click()

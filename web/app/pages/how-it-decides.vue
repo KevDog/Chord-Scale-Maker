@@ -347,7 +347,7 @@
       <section class="scroll-mt-6 space-y-8" aria-labelledby="superimposing">
         <UiSubheading id="superimposing" class="scroll-mt-6">Superimposing</UiSubheading>
         <UiText>
-          Superimpose (on the Changes) and the Practice panel's Pentatonic and Hexatonic (on the Scales) lay a smaller set
+          Superimpose (on the Changes) and the Practice panel's Pentatonic, Hexatonic and Quartal (on the Scales) lay a smaller set
           of notes over each chord. A chord pick made on one sheet plays on the other.
         </UiText>
 
@@ -411,7 +411,28 @@
             triads are both major or minor, then the one nearest the chord's root by fifths. Over <UiCode>Cmaj7</UiCode>
             that's <UiCode>{{ HEX_EXAMPLE }}</UiCode>.
           </UiText>
-          <UiText><strong :class="EM">What you can change:</strong> Pair, and a chord pick for one chord.</UiText>
+          <UiText>
+            A symmetric scale has pairs its chain of triads doesn't reach, after Walt Weiskopf's <em>Intervalic
+            Improvisation</em>; they join the list after the chain's. On a diminished scale: its major triads a tritone
+            apart, then its minor ones (<UiCode>C/F♯</UiCode> over <UiCode>C7♭9</UiCode>, which Auto now picks: it
+            covers as many chord tones as <UiCode>E♭/Am</UiCode> and sits on the root). On the whole-tone scale, which has
+            no chain: its two augmented triads, a whole step apart (<UiCode>C+/D+</UiCode> over <UiCode>C7♯5</UiCode>).
+            Pair <em>n</em> counts the chain's pairs only; pick an off-chain pair from the chord's list.
+          </UiText>
+          <UiText><strong :class="EM">What you can change:</strong> Pair, Ranked against, and a chord pick for one chord.</UiText>
+        </DecisionSection>
+
+        <DecisionSection id="hex.key">
+          <UiText>
+            Ranked against <strong :class="EM">Key</strong>, every chord in a key area takes the same pair, after Walt
+            Weiskopf's <em>Intervalic Improvisation</em>: the major triads on 4 and 5 of a major key (<UiCode>F/G</UiCode>
+            across <UiCode>Dm7 G7 Cmaj7</UiCode> in C), and harmonic minor's minor iv and augmented V in a minor key
+            (<UiCode>Gm/A+</UiCode> in D minor). Where a chord's scale doesn't hold the key's pair (a Dm6's scale, with its
+            B♮, holds no G minor triad), it plays its own Auto pair, greyed. The label prints once for the run, as the
+            pentatonics' do. On the Scales sheet the Hexatonic preset ranks each staff likewise, by the key area of the
+            first chord it covers; the Arpeggios sheet's Triad pairs follow the Changes sheet's choice.
+          </UiText>
+          <UiText><strong :class="EM">What you can change:</strong> Ranked against (Key or Chord), and a chord pick for one chord.</UiText>
         </DecisionSection>
 
         <DecisionSection id="hex.group">
@@ -425,8 +446,71 @@
           <UiText>
             While Superimpose is Hexatonic, the 7th Chords slot plays each chord's pair a triad at a time, its lower triad
             first: <UiCode>G/Am</UiCode> plays G B D, then A C E from the note nearest D. The direction, the starts and the
-            turns at your range's edges are the Pentatonic line's. A chord with no pair plays its 7th chord arpeggio.
+            turns at your range's edges are the Pentatonic line's. Up &amp; down turns with each triad; where a chord has room
+            for one triad and a note of the next, the cut triad doesn't count, so the chords alternate up and down. A chord
+            with no pair plays its 7th chord arpeggio.
           </UiText>
+          <UiText>
+            That is the <strong :class="EM">Nearest</strong> shape. Two more follow Walt Weiskopf's exercises in
+            <em>Intervalic Improvisation</em>. <strong :class="EM">Climb</strong> plays both triads in root position, then
+            both in first inversion, then second, each starting on its note just above the last triad's start:
+            <UiCode>F/G</UiCode> plays F A C, G B D, A C F, B D G, C F A, D G B. Down mirrors it, from the upper triad's
+            second inversion top down; Up &amp; down climbs the six triads up, then six down.
+            <strong :class="EM">Arpeggios</strong> is the Climb with each triad 1 3 5 8 (F A C F, G B D G, …), four notes, so
+            each lands on the beat; one whose octave fits nowhere in your range drops its 8. A triad that would leave the
+            range is placed nearest the last note instead, and the climb goes on from there.
+          </UiText>
+          <UiText><strong :class="EM">What you can change:</strong> the shape and the direction (Line options).</UiText>
+        </DecisionSection>
+
+        <DecisionSection id="hex.sheet">
+          <UiText>
+            The Arpeggios sheet's <strong :class="EM">Triad pairs</strong> writes each line's pair as six triads, the lower
+            and the upper in turn through root position, 1st and 2nd inversion, after Weiskopf's <em>Intervalic
+            Improvisation</em>: <UiCode>F/G</UiCode> plays F A C, G B D, A C F, B D G, C F A, D G B. The pair is the one the
+            Changes sheet's Hexatonic shows: Auto (or the key's pair, ranked against Key), or your chord pick, which you can make from the staff's caption. Each
+            triad's next inversion starts on the next note up of its own triad, and the upper triad starts nearest the
+            lower. The figure is placed whole with the fewest notes out of your range, nearest its middle; a triad still
+            out moves an octave, whole. <strong :class="EM">Block</strong> writes the six triads as chords; otherwise
+            Up, Down, or Up &amp; down, which doesn't repeat the top note. A chord with no pair plays its 7th chord
+            arpeggio.
+          </UiText>
+        </DecisionSection>
+
+        <DecisionSection id="quartal.auto">
+          <UiText>
+            A quartal stack is a seven-note scale's notes three steps apart, so each two a fourth apart, from one degree:
+            three or four notes. A stack keeps perfect fourths and at most one augmented fourth (none with
+            <strong :class="EM">Perfect only</strong>); a diminished fourth rules it out. <strong :class="EM">Auto</strong>
+            takes a stack without an avoid note (a scale note a half step above a chord tone, like F over Cmaj7), then the
+            one holding the most guide tones, then perfect fourths before an augmented one, then the most chord tones, then
+            the bottom note nearest the chord's root by fifths. Over the ii–V–I in C: <UiCode>D G C F</UiCode> on Dm7,
+            <UiCode>F B E A</UiCode> on G7 (its tritone holds both guide tones) and <UiCode>B E A D</UiCode> on Cmaj7.
+            A scale that isn't seven notes has no stack.
+          </UiText>
+          <UiText>
+            The Scales sheet's Quartal preset lights it on each staff; the Changes sheet's Quartal Superimpose names it under
+            each chord, where the stack changes. Click a name there to pick another stack: the list runs in Auto's order.
+          </UiText>
+          <UiText><strong :class="EM">What you can change:</strong> Built on (a degree of each scale, on the Scales sheet), Notes (3 or 4), Perfect only, and a pick on the Changes sheet.</UiText>
+        </DecisionSection>
+
+        <DecisionSection id="quartal.line">
+          <UiText>
+            While Superimpose is Quartal, the 7th Chords slot plays each chord's stack of fourths, the one its label names,
+            whole: bottom up or top down, never turned inside out. Each later stack on the same chord is the next one in
+            Auto's order that isn't the stack just played, so a held chord planes from stack to stack. Each is placed nearest
+            the last note; a stack that fits no octave of your range gives way to the next, and a chord never starts on the
+            note the last one ended on. Over the ii–V–I in C: <UiCode>D4 G4 C5 F5</UiCode>, then <UiCode>A5 E5 B4 F4</UiCode>
+            down, then <UiCode>E4 A4 D5 G5</UiCode> (<UiCode>B E A D</UiCode> doesn't fit C4–A5). A three-note stack the
+            beat cuts goes on into the next beat, as the Triad pair line's triads do. A chord with no stack plays its 7th
+            chord arpeggio.
+          </UiText>
+          <UiText>
+            <strong :class="EM">Notes</strong> (Quartal options): Auto stacks four notes where two of the chord's
+            four-note stacks fit your range (a four-note stack spans an octave and a minor third, or a major third with an augmented fourth), else three.
+          </UiText>
+          <UiText><strong :class="EM">What you can change:</strong> the direction (Line options), Notes, Perfect only, and a pick.</UiText>
         </DecisionSection>
 
         <DecisionSection id="pick.order">

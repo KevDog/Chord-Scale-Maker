@@ -2,7 +2,7 @@ import { describe, expect, it } from 'vitest'
 import type { Row } from '../chart'
 import { CONCERT, type Part } from '../part'
 import { parseRoot, rootName } from '../pitch'
-import { compareKeys, isHexatonicSelection, isPentatonicSelection, litKeys, type PracticeSelection, practiceBoxes, practiceKeys, practiceSelectionFrom, PRESET_LABELS, PRESETS, selectedNotes, startReference } from '../practice'
+import { compareKeys, isHexatonicSelection, isQuartalSelection, isPentatonicSelection, litKeys, type PracticeSelection, practiceBoxes, practiceKeys, practiceSelectionFrom, PRESET_LABELS, PRESETS, selectedNotes, startReference } from '../practice'
 import { buildSheet, type StaffModel } from '../sheet'
 
 const row = (chord: string, scale = '', bar = '1'): Row => ({ section: 'A', bar, chord, scale })
@@ -116,8 +116,8 @@ describe('practice boxes', () => {
 
 describe('the Pentatonic selection (#266)', () => {
   it('is offered in both modes, last', () => {
-    expect(PRESETS.root.at(-2)).toBe('pentatonic')
-    expect(PRESETS.from).toEqual(['all', 'pentatonic', 'hexatonic'])
+    expect(PRESETS.root.at(-3)).toBe('pentatonic')
+    expect(PRESETS.from).toEqual(['all', 'pentatonic', 'hexatonic', 'quartal'])
   })
 
   it('reads from untrusted data with a degree 0–11 or Auto; a missing or bad degree reads as Auto', () => {
@@ -238,9 +238,9 @@ describe('the Pentatonic preset on the Scales sheet (#266)', () => {
 })
 
 describe('the Hexatonic selection', () => {
-  it('is offered in both modes, last', () => {
-    expect(PRESETS.root.at(-1)).toBe('hexatonic')
-    expect(PRESETS.from.at(-1)).toBe('hexatonic')
+  it('is offered in both modes, before Quartal', () => {
+    expect(PRESETS.root.at(-2)).toBe('hexatonic')
+    expect(PRESETS.from.at(-2)).toBe('hexatonic')
     expect(PRESET_LABELS.hexatonic).toBe('Hexatonic')
   })
 
@@ -250,6 +250,11 @@ describe('the Hexatonic selection', () => {
     expect(practiceSelectionFrom({ preset: 'hexatonic' })).toEqual({ preset: 'hexatonic', pair: 0, grouping: 'triads' })
     for (const pair of [9, -1, 2.5, '3', null]) expect(practiceSelectionFrom({ preset: 'hexatonic', pair, grouping: 'tones' })).toEqual({ preset: 'hexatonic', pair: 0, grouping: 'tones' })
     for (const grouping of ['x', 3, null, 'Triads']) expect(practiceSelectionFrom({ preset: 'hexatonic', pair: 1, grouping })).toEqual({ preset: 'hexatonic', pair: 1, grouping: 'triads' })
+  })
+
+  it('reads the basis (#432): key kept, anything else ranks against the chord and leaves no basis', () => {
+    expect(practiceSelectionFrom({ preset: 'hexatonic', pair: 2, grouping: 'tones', basis: 'key' })).toEqual({ preset: 'hexatonic', pair: 2, grouping: 'tones', basis: 'key' })
+    for (const basis of ['chord', 'Key', 3, null]) expect(practiceSelectionFrom({ preset: 'hexatonic', pair: 2, grouping: 'tones', basis })).toEqual({ preset: 'hexatonic', pair: 2, grouping: 'tones' })
   })
 
   it('is told apart from the other selections', () => {
@@ -305,7 +310,7 @@ describe('the Hexatonic preset on the Scales sheet', () => {
   })
 
   it('lights nothing where the scale has no pair', () => {
-    const [s] = staves([row('C7#5', 'C Whole Tone')], 'root', hex())
+    const [s] = staves([row('C6', 'C Major Pentatonic')], 'root', hex())
     expect(s?.hexatonic).toBeNull()
     expect(s?.selected?.some(Boolean)).toBe(false)
     expect(s?.second?.some(Boolean)).toBe(false)
@@ -321,5 +326,53 @@ describe('the Hexatonic preset on the Scales sheet', () => {
     expect(bad?.error).not.toBeNull()
     expect(bad?.hexatonic).toBeNull()
     expect(bad?.second).toBeNull()
+  })
+})
+
+describe('the Quartal selection (#432)', () => {
+  const quartal = (degree: number | 'auto' = 'auto', notes: 3 | 4 = 4, perfect = false): PracticeSelection => ({ preset: 'quartal', degree, notes, ...(perfect ? { perfect: true } : {}) })
+
+  it('is offered in both modes, last', () => {
+    expect(PRESETS.root.at(-1)).toBe('quartal')
+    expect(PRESETS.from.at(-1)).toBe('quartal')
+    expect(PRESET_LABELS.quartal).toBe('Quartal')
+    expect(isQuartalSelection(quartal())).toBe(true)
+    expect(isQuartalSelection({ preset: 'hexatonic', pair: 0, grouping: 'triads' })).toBe(false)
+  })
+
+  it('reads from untrusted data: degree Auto or 1–7, notes 3 or 4 (else 4), perfect only when true', () => {
+    expect(practiceSelectionFrom({ preset: 'quartal', degree: 3, notes: 3, perfect: true })).toEqual({ preset: 'quartal', degree: 3, notes: 3, perfect: true })
+    expect(practiceSelectionFrom({ preset: 'quartal' })).toEqual({ preset: 'quartal', degree: 'auto', notes: 4 })
+    for (const degree of [0, 8, 2.5, '3', null]) expect(practiceSelectionFrom({ preset: 'quartal', degree, notes: 4 })).toEqual({ preset: 'quartal', degree: 'auto', notes: 4 })
+    for (const notes of [5, '3', null]) expect(practiceSelectionFrom({ preset: 'quartal', degree: 1, notes })).toEqual({ preset: 'quartal', degree: 1, notes: 4 })
+    expect(practiceSelectionFrom({ preset: 'quartal', degree: 1, notes: 4, perfect: 'yes' })).toEqual({ preset: 'quartal', degree: 1, notes: 4 })
+  })
+
+  it("lights each staff's Auto stack and captions it", () => {
+    const [dm, g7, c] = staves([row('Dm7'), row('G7', '', '2'), row('CMaj7', '', '3')], 'root', quartal())
+    expect([dm?.quartal?.name, g7?.quartal?.name, c?.quartal?.name]).toEqual(['D G C F', 'F B E A', 'B E A D'])
+    expect(picked([dm!])[0]).toEqual(['D', 'F', 'G', 'C'])
+    expect(dm?.hexatonic).toBeNull()
+    expect(dm?.pentatonic).toBeNull()
+  })
+
+  it('stacks three notes, perfect fourths only, or from the degree asked for', () => {
+    expect(staves([row('G7')], 'root', quartal('auto', 3))[0]?.quartal?.name).toBe('F B E')
+    expect(staves([row('G7')], 'root', quartal('auto', 4, true))[0]?.quartal?.name).toBe('B E A D')
+    expect(staves([row('Dm7')], 'root', quartal(5))[0]?.quartal?.name).toBe('A D G C')
+  })
+
+  it('names the written stack for a transposing part', () => {
+    expect(staves([row('Dm7')], 'root', quartal(), 'C', TENOR)[0]?.quartal?.name).toBe('E A D G')
+  })
+
+  it('lights nothing on a scale with no stacks', () => {
+    const [s] = staves([row('C7', 'C Half-Whole')], 'root', quartal())
+    expect(s?.quartal).toBeNull()
+    expect(s?.selected?.some(Boolean)).toBe(false)
+  })
+
+  it('selects nothing by keys', () => {
+    expect(selectedNotes(quartal(), 'Dm7', ['1', 'b3'])).toEqual([false, false])
   })
 })

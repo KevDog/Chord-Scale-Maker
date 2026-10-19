@@ -128,16 +128,22 @@ export function drawArpeggioStaff(vf: VexFlowModule, el: HTMLElement, staff: Arp
   if (staff.showClefAndKey && staff.keySig) stave.addKeySignature(staff.keySig)
   stave.setEndBarType(staff.last ? vf.BarlineType.END : vf.BarlineType.DOUBLE)
   stave.setContext(ctx).draw()
-  const notes = staff.notes.map((n, i) => {
-    const note = new vf.StaveNote({ keys: [toVexKey(n)], duration: '8', clef, autoStem: true })
-    const acc = staff.accidentals[i]
-    if (acc) note.addModifier(new vf.Accidental(acc), 0)
+  // Triad pairs' Block (#436): each group one chord, unbeamed
+  const chords = staff.block
+    ? staff.groups.reduce<{ at: number; idx: number[][] }>((acc, g) => ({ at: acc.at + g, idx: [...acc.idx, Array.from({ length: g }, (_, k) => acc.at + k)] }), { at: 0, idx: [] }).idx
+    : staff.notes.map((_, i) => [i])
+  const notes = chords.map((idx) => {
+    const note = new vf.StaveNote({ keys: idx.map((i) => toVexKey(staff.notes[i]!)), duration: staff.block ? 'q' : '8', clef, autoStem: true })
+    idx.forEach((i, k) => {
+      const acc = staff.accidentals[i]
+      if (acc) note.addModifier(new vf.Accidental(acc), k)
+    })
     return note
   })
   if (notes.length > 0) {
-    const voice = new vf.Voice({ numBeats: notes.length, beatValue: 8 }).setMode(vf.Voice.Mode.SOFT).addTickables(notes)
+    const voice = new vf.Voice({ numBeats: notes.length, beatValue: staff.block ? 4 : 8 }).setMode(vf.Voice.Mode.SOFT).addTickables(notes)
     // beams are made before the notes draw, so the notes leave their flags to them; autoStem gives a group one stem direction
-    const beams = staff.groups.reduce<{ at: number; beams: InstanceType<VexFlowModule['Beam']>[] }>(
+    const beams = staff.block ? [] : staff.groups.reduce<{ at: number; beams: InstanceType<VexFlowModule['Beam']>[] }>(
       (acc, g) => ({ at: acc.at + g, beams: g > 1 ? [...acc.beams, new vf.Beam(notes.slice(acc.at, acc.at + g), true)] : acc.beams }),
       { at: 0, beams: [] },
     ).beams

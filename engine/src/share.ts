@@ -2,9 +2,11 @@ import { isSheetLine, type SheetLine } from './arpeggios'
 import { type Approach, isApproach } from './approaches'
 import { type CellId, isCellId } from './cells'
 import { type ArpDirection, type ArpNotes, isArpDirection, isArpNotes } from './arpeggioSheet'
+import { isPairShape, type PairShape } from './triadPairSheet'
 import { type ChordPicks, chordPicksFrom, hasPicks } from './chordPicks'
 import { type InstrumentName, isInstrumentName } from './instruments'
 import { isPentatonicLeave, type PentatonicLeave } from './pentatonicLine'
+import { isPairLineShape, type PairLineShape } from './triadPairLine'
 import { isScaleLevel, type ScaleLevel } from './levels'
 import { LIMITS } from './limits'
 import type { Mode } from './part'
@@ -36,15 +38,18 @@ export type ShareView = Readonly<{
   /** the guide tone line's Approach (#298); absent: none */
   approach?: Approach
   sheet?: ShareSheet
-  /** the Arpeggios sheet's choices: 7th Chord or Extended; Up, Down or Up & down */
+  /** the Arpeggios sheet's choices: 7th Chord, Extended or Triad pairs; Up, Down or Up & down; Triad pairs' shape (#436) */
   arpNotes?: ArpNotes
   arpDir?: ArpDirection
+  arpShape?: PairShape
   /** the Patterns sheet's choices (#298): the moves in canonical text, what they run over, the direction (arpDir's values) */
   pattern?: string
   patternNotes?: PatternNotes
   patternDir?: ArpDirection
   /** the Changes sheet's Pentatonic line (#284), with an arpeggio line: its Leave out (its direction is arpDir); an old link has none */
   pentLeave?: PentatonicLeave
+  /** the Triad pair line's shape (#432), with an arpeggio line; an old link has none */
+  pairLine?: PairLineShape
   practice?: PracticeSelection
   level?: ScaleLevel
   seed?: number
@@ -129,10 +134,12 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(o.sheet === 'scales' || o.sheet === 'changes' || o.sheet === 'arpeggios' || o.sheet === 'patterns' ? { sheet: o.sheet } : {}),
     ...(isArpNotes(o.arpNotes) ? { arpNotes: o.arpNotes } : {}),
     ...(isArpDirection(o.arpDir) ? { arpDir: o.arpDir } : {}),
+    ...(isPairShape(o.arpShape) ? { arpShape: o.arpShape } : {}),
     ...(parsed && 'moves' in parsed ? { pattern: formatPattern(parsed.moves) } : {}),
     ...(isPatternNotes(o.patternNotes) ? { patternNotes: o.patternNotes } : {}),
     ...(isArpDirection(o.patternDir) ? { patternDir: o.patternDir } : {}),
     ...(isPentatonicLeave(o.pentLeave) ? { pentLeave: o.pentLeave } : {}),
+    ...(isPairLineShape(o.pairLine) ? { pairLine: o.pairLine } : {}),
     ...(practice ? { practice } : {}),
     ...(isScaleLevel(o.level) ? { level: o.level } : {}),
     ...(Number.isInteger(o.seed) && (o.seed as number) >= 0 && (o.seed as number) < 2 ** 32 ? { seed: o.seed as number } : {}),

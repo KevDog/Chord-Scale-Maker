@@ -63,6 +63,14 @@ describe('triad pair voices (#325)', () => {
     expect(pitches(bars.get(0))).toEqual(['g/4', 'b/4', 'd/5', 'c/5'])
     expect(pitches(bars.get(1))).toEqual(['a/4', 'e/4', 'd/4', 'g/4']) // C5 A4 E4 down, then up from D4, 2 below E4
   })
+  it('Up & down turns chord by chord when a chord holds one cell and a note of the next (#433)', () => {
+    const { bars } = voice(seq(['Cmaj7', 4], ['Fmaj7', 4], ['Cmaj7', 4]), pairs('G/Am', 'C/Dm', 'G/Am'), { dir: 'up-down' })
+    const contour = (b: readonly GuideNote[] | undefined) => {
+      const m = (b ?? []).slice(0, 3).map((n) => n.pitch!.midi)
+      return m[0]! < m[2]! ? 'up' : 'down'
+    }
+    expect([0, 1, 2].map((i) => contour(bars.get(i)))).toEqual(['up', 'down', 'up'])
+  })
   it('a chord with no pair plays its 7th chord arpeggio, in the line’s pattern', () => {
     const { bars } = voice(seq(['Cmaj7', 4], ['G7', 4]), pairs('G/Am', null))
     expect(pitches(bars.get(1))).toEqual(['g/4', 'b/4', 'd/5', 'f/5'])
@@ -93,4 +101,41 @@ describe('triad pair voices (#325)', () => {
   it('never ties', () => {
     expect([...voice(seq(['Cmaj7', 2], ['Fmaj7', 2]), pairs('G/Am', 'C/Dm')).bars.values()].flat().some((n) => n.tie || n.tiedIn)).toBe(false)
   })
+})
+
+describe('the Triad pair line’s shapes, after Weiskopf’s exercises 1–6 (#432)', () => {
+  /** each note of a held chord's line, bar after bar */
+  const flat = (over: Partial<TriadPairLine>, beats = 12) => {
+    const { bars } = voice(seq(['Dm7', beats]), pairs('F/G'), over)
+    return [...bars.values()].flatMap((b) => pitches(b))
+  }
+  it('Nearest is the line as it was', () => {
+    expect(flat({ shape: 'nearest' })).toEqual(flat({}))
+  })
+  it('Climb: both triads in root position, then first inversion, then second, each from the note above the last start', () => {
+    expect(flat({ shape: 'climb' }).slice(0, 12)).toEqual(['f/4', 'a/4', 'c/5', 'g/4', 'b/4', 'd/5', 'a/4', 'c/5', 'f/5', 'b/4', 'd/5', 'g/5'])
+  })
+  it('Climb down mirrors it: from the upper triad’s second inversion, top down, each from the note below the last start', () => {
+    expect(flat({ shape: 'climb', dir: 'down' }).slice(0, 6)).toEqual(['b/4', 'g/4', 'd/4', 'a/4', 'f/4', 'c/4'])
+  })
+  it('Arpeggios: 1 3 5 8 through the inversions, four notes to the beat', () => {
+    expect(flat({ shape: 'arpeggios' }).slice(0, 12)).toEqual(['f/4', 'a/4', 'c/5', 'f/5', 'g/4', 'b/4', 'd/5', 'g/5', 'a/4', 'c/5', 'f/5', 'a/5'])
+  })
+  it('Arpeggios: a 1 3 5 8 that fits no octave of the range drops its 8', () => {
+    expect(flat({ shape: 'arpeggios' }, 16).slice(12, 15)).toEqual(['b/4', 'd/5', 'g/5']) // B4–B5 passes A5, B3–B4 is below C4
+  })
+  it('Climb Up & down climbs the six triads up, then six down', () => {
+    const notes = flat({ shape: 'climb', dir: 'up-down' }, 36).map((k) => k.split('/')[0])
+    expect(notes.slice(18, 21)).toEqual(['b', 'g', 'd']) // the seventh triad: down from the upper's second inversion
+  })
+  for (const shape of ['climb', 'arpeggios'] as const) {
+    for (const dir of ['up', 'down', 'up-down'] as const) {
+      it(`${shape}, ${dir}: keeps in range, every note in the pair`, () => {
+        const range = rangeOf(CONCERT)
+        const { bars } = voice(seq(['Dm7', 32]), pairs('F/G'), { shape, dir })
+        const notes = [...bars.values()].flat()
+        expect(notes.every((n) => n.pitch && n.pitch.midi >= range.lo && n.pitch.midi <= range.hi && [5, 9, 0, 7, 11, 2].includes(n.pitch.midi % 12))).toBe(true)
+      })
+    }
+  }
 })

@@ -1,7 +1,7 @@
 import { readdirSync, readFileSync } from 'node:fs'
 import { isRest } from '../chord'
 import { describe, expect, it, vi } from 'vitest'
-import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, type PentatonicPlan, pickTargets, showHexatonics, showPentatonics } from '../changes'
+import { breakLines, buildChanges, type ChangesLine, type ChangesSheet, changesLinesPerPage, changesSections, chordPositions, drawnChords, type PentatonicPlan, pickTargets, showHexatonics, showPentatonics, showQuartals } from '../changes'
 import { type ChartDoc, expandRowLines, parseChart } from '../chart'
 import { NO_PICKS, pickTarget, withPick } from '../chordPicks'
 import { resolveScales } from '../resolve'
@@ -11,6 +11,7 @@ import { CONCERT, concertPc, type Part, partFor, rangeOf } from '../part'
 import { parseRoot, pcOf, rootName, type Spelled } from '../pitch'
 import type { PentatonicLine } from '../pentatonicLine'
 import type { TriadPairLine } from '../triadPairLine'
+import type { QuartalLine } from '../quartalLine'
 import { toVexKey } from '../sheet'
 import type { ScaleView } from '../resolve'
 import { type PentatonicDegree, PENTATONIC_HOME, type PentatonicPathName, type PentatonicStep } from '../pentatonics'
@@ -848,6 +849,25 @@ describe('buildChanges with a Pentatonic line (#284)', () => {
   })
 })
 
+describe('buildChanges with a Quartal line (#432)', () => {
+  const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | Cmaj7\n4 | C7 | C Half-Whole\n').value
+  const Q = { kind: 'quartal' } as const
+  const LINE: QuartalLine = { kind: 'quartal', dir: 'up-down', arpeggio: 'up-root' }
+  const keys = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars.map((b) => b.voice.map((n) => (n.pitch ? toVexKey(n.pitch) : 'r'))))
+  it("plays each chord's labelled stack, whole; a chord with none its 7th chord arpeggio", () => {
+    const bars = keys(buildChanges(doc, CONCERT, 4, false, LINE, undefined, Q))
+    expect(bars.slice(0, 3)).toEqual([['d/4', 'g/4', 'c/5', 'f/5'], ['a/5', 'e/5', 'b/4', 'f/4'], ['e/4', 'a/4', 'd/5', 'g/5']])
+    expect(bars[3]!.map((k) => k.replace(/\/\d/, ''))).toEqual(['c', 'e', 'g', 'bb']) // half-whole: no stack
+  })
+  it('plays a pick: the stack its label names', () => {
+    const targets = pickTargets(doc, resolveScales(doc, { level: 'standard', seed: 0 }))
+    const picks = withPick(NO_PICKS, 'quartal', ['A:1:0'], 4, targets).quartal // Dm7: E A D G
+    const sheet = buildChanges(doc, CONCERT, 4, false, LINE, undefined, { kind: 'quartal', picks })
+    expect(sheet.lines[0]!.bars[0]!.chords[0]!.quartal!.name).toBe('E A D G')
+    expect(keys(sheet)[0]).toEqual(['e/4', 'a/4', 'd/5', 'g/5'])
+  })
+})
+
 describe('buildChanges with a Triad pair line (#325)', () => {
   const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n2 | Dm7\n3 | G7\n4 | Cmaj7\n').value
   const HEX = { kind: 'hexatonic' } as const
@@ -909,7 +929,7 @@ describe('the Hexatonic overlay', () => {
     expect(flat(buildChanges(doc, CONCERT).lines)[0]?.hexatonic).toBeNull()
     expect(flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, one(0, 'flat')).lines)[0]?.hexatonic).toBeNull()
     expect(labels('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | N.C.')).toEqual([null])
-    expect(labels('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C7#5 | C Whole Tone')).toEqual([null])
+    expect(labels('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C6 | C Major Pentatonic')).toEqual([null])
   })
 
   it('leaves the pentatonic plan as it was', () => {
@@ -939,6 +959,41 @@ describe('the Hexatonic overlay', () => {
     expect(flat(showHexatonics(breakLines(once, new Set(['A 2'])))).map((c) => c.hexatonic?.label)).toEqual(['G/Am', 'G/Am', ''])
   })
 
+  describe('ranked against the key (#432)', () => {
+    const KEY = { kind: 'hexatonic', basis: 'key' } as const
+    const hexes = (text: string, part = CONCERT) => flat(showHexatonics(buildChanges(parseChart(text).value, part, 4, false, 'off', undefined, KEY).lines)).map((c) => c.hexatonic)
+
+    it("gives every chord of a major key area the key's IV and V triads, printed once for the run", () => {
+      const h = hexes('title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | Cmaj7\n4 | Cmaj7')
+      expect(h.map((x) => [x?.name, x?.label, x?.offKey])).toEqual([['F/G', 'F/G', false], ['F/G', '', false], ['F/G', '', false], ['F/G', '', false]])
+      expect(h[0]?.sheet).toBe('F/G')
+    })
+
+    it("names the key's pair written for a transposing part", () => {
+      expect(hexes('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7', TENOR).map((x) => x?.name)).toEqual(['G/A'])
+    })
+
+    it("takes harmonic minor's pair in a minor key, and plays the chord's Auto, off key, where its chain lacks the pair", () => {
+      const h = hexes('title: T\nkey: Dm\n\nsection: A\n1 | Em7b5\n2 | A7b9\n3 | Dm6\n4 | Dm6')
+      expect(h[1]).toMatchObject({ name: 'Gm/A+', offKey: false })
+      const auto = flat(buildChanges(parseChart('title: T\nkey: Dm\n\nsection: A\n1 | Em7b5\n2 | A7b9\n3 | Dm6\n4 | Dm6').value, CONCERT, 4, false, 'off', undefined, HEX).lines)[2]?.hexatonic?.name
+      expect(h[2]).toMatchObject({ name: auto, offKey: true })
+    })
+
+    it('keeps a live pick over the key pair', () => {
+      const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | Cmaj7\n4 | Cmaj7').value
+      const targets = pickTargets(doc, resolveScales(doc, { level: 'standard', seed: 0 }))
+      const picks = withPick(NO_PICKS, 'hexatonic', ['A:2:0'], [7, 9], targets).hexatonic // G7: G/Am
+      const h = flat(buildChanges(doc, CONCERT, 4, false, 'off', undefined, { ...KEY, picks }).lines).map((c) => c.hexatonic)
+      expect(h[1]).toMatchObject({ name: 'G/Am', picked: true, sheet: 'F/G' })
+    })
+
+    it('ranks against the chord without a basis', () => {
+      expect(hexes('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7').map((x) => x?.name)).toEqual(['F/G'])
+      expect(labels('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7')).toEqual(['C/Dm'])
+    })
+  })
+
   it('counts the hexatonic row as the pentatonic row', () => {
     for (const line of ['off', 'third', 'seventh', 'up-root'] as const)
       for (const numerals of [true, false])
@@ -947,6 +1002,47 @@ describe('the Hexatonic overlay', () => {
           expect(changesLinesPerPage(line, { numerals, scales, hexatonics: true })).toBe(want)
           expect(changesLinesPerPage(line, { numerals, scales, pentatonics: false, hexatonics: true })).toBe(want)
         }
+  })
+})
+
+describe('the Quartal overlay (#432)', () => {
+  const Q = { kind: 'quartal' } as const
+  const flat = (lines: readonly ChangesLine[]) => lines.flatMap((l) => l.bars.flatMap((b) => b.chords))
+  const II_V_I = 'title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | Cmaj7\n4 | Cmaj7'
+  const quartals = (text: string, plan: Parameters<typeof buildChanges>[6] = Q, part = CONCERT) => flat(showQuartals(buildChanges(parseChart(text).value, part, 4, false, 'off', undefined, plan).lines)).map((c) => c.quartal)
+
+  it("gives each chord its scale's Auto stack, printed where it changes", () => {
+    expect(quartals(II_V_I).map((q) => [q?.name, q?.label])).toEqual([['D G C F', 'D G C F'], ['F B E A', 'F B E A'], ['B E A D', 'B E A D'], ['B E A D', '']])
+    const chords = flat(buildChanges(parseChart(II_V_I).value, CONCERT, 4, false, 'off', undefined, Q).lines)
+    expect(chords.every((c) => c.hexatonic === null && c.pentatonic === null)).toBe(true)
+  })
+
+  it('stacks three notes, or perfect fourths only, as the plan asks', () => {
+    expect(quartals(II_V_I, { kind: 'quartal', notes: 3 }).map((q) => q?.name)).toEqual(['G C F', 'F B E', 'B E A', 'B E A']) // Dm7: G C F holds both guide tones, D G C one
+    expect(quartals(II_V_I, { kind: 'quartal', perfect: true })[1]?.name).toBe('B E A D')
+  })
+
+  it('names the written stack for a transposing part', () => {
+    expect(quartals('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | Dm7', Q, TENOR).map((q) => q?.name)).toEqual(['E A D G'])
+  })
+
+  it('has none with another overlay, or on a scale with no stacks', () => {
+    expect(flat(buildChanges(parseChart(II_V_I).value, CONCERT, 4, false, 'off', undefined, { kind: 'hexatonic' }).lines).every((c) => c.quartal === null)).toBe(true)
+    expect(quartals('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C7 | C Half-Whole')).toEqual([null])
+  })
+
+  it("plays a live pick (its bottom note, concert) over Auto, and runs a printed label's chords", () => {
+    const doc = parseChart(II_V_I).value
+    const targets = pickTargets(doc, resolveScales(doc, { level: 'standard', seed: 0 }))
+    const picks = withPick(NO_PICKS, 'quartal', ['A:2:0'], 4, targets).quartal // G7: E A D G
+    const q = flat(showQuartals(buildChanges(doc, CONCERT, 4, false, 'off', undefined, { kind: 'quartal', picks }).lines)).map((c) => c.quartal)
+    expect(q[1]).toMatchObject({ name: 'E A D G', picked: true, sheet: 'F B E A', run: ['A:2:0'] })
+    expect(q[2]).toMatchObject({ label: 'B E A D', run: ['A:3:0', 'A:4:0'] })
+    expect(showQuartals(showQuartals(buildChanges(doc, CONCERT, 4, false, 'off', undefined, { kind: 'quartal', picks }).lines))).toEqual(showQuartals(buildChanges(doc, CONCERT, 4, false, 'off', undefined, { kind: 'quartal', picks }).lines))
+  })
+
+  it('counts the quartal row as the pentatonic row', () => {
+    for (const line of ['off', 'third'] as const) expect(changesLinesPerPage(line, { numerals: true, scales: true, quartals: true })).toBe(changesLinesPerPage(line, { numerals: true, scales: true, pentatonics: true }))
   })
 })
 
@@ -1042,8 +1138,8 @@ describe('chord picks (#303)', () => {
   })
 
   it('gives a hexatonic pick on a chord whose scale has no pairs nothing to play', () => {
-    const wt = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C7#5 | C Whole Tone').value
-    const sheet = showHexatonics(buildChanges(wt, CONCERT, 4, false, 'off', undefined, { kind: 'hexatonic', picks: { 'A:1:0': { roots: [0, 2], for: 'C7#5|C Whole Tone' } } }).lines)
+    const wt = parseChart('title: T\nkey: C\n\nsection: A\nbars: 4\n1 | C6 | C Major Pentatonic').value
+    const sheet = showHexatonics(buildChanges(wt, CONCERT, 4, false, 'off', undefined, { kind: 'hexatonic', picks: { 'A:1:0': { roots: [0, 2], for: 'C6|C Major Pentatonic' } } }).lines)
     expect(flat(sheet)[0]?.hexatonic).toBeNull()
   })
 

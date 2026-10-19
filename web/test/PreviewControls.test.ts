@@ -20,8 +20,8 @@ describe('the pentatonic controls', () => {
     return w.findAll('[role=option]').map((o) => o.text())
   }
 
-  it('offers Off, Pentatonic and Hexatonic', async () => {
-    expect(await options(await mount())).toEqual(['Off', 'Pentatonic', 'Hexatonic'])
+  it('offers Off, Pentatonic, Hexatonic and Quartal', async () => {
+    expect(await options(await mount())).toEqual(['Off', 'Pentatonic', 'Hexatonic', 'Quartal'])
   })
 
   it('adds no control for Hexatonic', async () => {
@@ -91,6 +91,29 @@ describe('the pentatonic controls', () => {
     expect(key.find('[aria-label="Pentatonic path"]').exists()).toBe(true)
   })
 
+  it('offers Hexatonic options, Ranked against Key or Chord, only under the Hexatonic overlay (#432)', async () => {
+    expect((await mount({ overlay: 'pentatonic' })).find('button[aria-label="Hexatonic options"]').exists()).toBe(false)
+    const w = await mount({ overlay: 'hexatonic', hexBasis: 'chord' })
+    await w.find('button[aria-label="Hexatonic options"]').trigger('click')
+    const basis = w.find('[aria-label="Hexatonics ranked against"]')
+    expect(basis.findAll('label').map((l) => l.text())).toEqual(['Key', 'Chord'])
+    await basis.find('input[value="key"]').setValue(true)
+    expect(w.emitted('update:hexBasis')).toEqual([['key']])
+  })
+
+  it('offers Quartal options, Notes and Perfect only, only under the Quartal overlay (#432)', async () => {
+    expect((await mount({ overlay: 'hexatonic' })).find('button[aria-label="Quartal options"]').exists()).toBe(false)
+    const w = await mount({ overlay: 'quartal', quartNotes: 4, quartPerfect: false })
+    await w.find('button[aria-label="Quartal options"]').trigger('click')
+    const notes = w.find('[aria-label="Quartal notes"]')
+    expect(notes.findAll('label').map((l) => l.text())).toEqual(['Auto', '3', '4'])
+    await notes.find('input[value="3"]').setValue(true)
+    expect(w.emitted('update:quartNotes')).toEqual([[3]])
+    const perfect = w.findAll('button').find((b) => b.text() === 'Perfect only')!
+    await perfect.trigger('click')
+    expect(w.emitted('update:quartPerfect')).toEqual([[true]])
+  })
+
   it('keeps the Superimpose while editing, when Numerals and Scales hide', async () => {
     const w = await mount({ lockLabels: true })
     expect(overlay(w).exists()).toBe(true)
@@ -115,6 +138,24 @@ describe('the Line under the Pentatonic overlay (#284)', () => {
     const w = await mount({ overlay: 'hexatonic', lineMode: 'arpeggio', arpDir: 'up-down' })
     await openPanel(w, 'Line options')
     expect(w.find('[aria-label="Triad pair direction"]').text()).toBe('Up & down')
+    expect(w.find('[aria-label="Leave out"]').exists()).toBe(false)
+    expect(w.find('[aria-label="Arpeggio pattern"]').exists()).toBe(false)
+  })
+
+  it('offers the Triad pair line’s shape while the line is Triad pair, and not under another overlay (#432)', async () => {
+    const w = await mount({ overlay: 'hexatonic', lineMode: 'arpeggio', pairLine: 'nearest' })
+    await openPanel(w, 'Line options')
+    expect(w.find('[aria-label="Triad pair shape"]').text()).toBe('Shape: Nearest')
+    const q = await mount({ overlay: 'quartal', lineMode: 'arpeggio' })
+    await openPanel(q, 'Line options')
+    expect(q.find('[aria-label="Triad pair shape"]').exists()).toBe(false)
+  })
+
+  it('offers the direction in place of the arpeggio pattern while the line is Quartal (#432)', async () => {
+    const w = await mount({ overlay: 'quartal', lineMode: 'arpeggio', arpDir: 'down' })
+    expect(w.text()).toContain('Quartal')
+    await openPanel(w, 'Line options')
+    expect(w.find('[aria-label="Quartal direction"]').text()).toBe('Down')
     expect(w.find('[aria-label="Leave out"]').exists()).toBe(false)
     expect(w.find('[aria-label="Arpeggio pattern"]').exists()).toBe(false)
   })
@@ -183,5 +224,40 @@ describe('interface levels', () => {
   it('Everything shows the Superimpose', async () => {
     at('everything')
     expect((await withLevel()).find('[aria-label="Superimpose"]').exists()).toBe(true)
+  })
+})
+
+describe('the Arpeggios sheet’s Triad pairs (#436)', () => {
+  const dir = (w: Awaited<ReturnType<typeof mount>>) => w.find('[aria-label="Arpeggio direction"]')
+
+  it('offers Triad pairs beside 7th Chord and Extended', async () => {
+    const w = await mount({ sheet: 'arpeggios', arpNotes: 'seventh', arpDir: 'up' })
+    expect(w.find('fieldset').text()).toContain('Triad pairs')
+  })
+
+  it('adds Block to the direction under Triad pairs only', async () => {
+    const seventh = await mount({ sheet: 'arpeggios', arpNotes: 'seventh', arpDir: 'up' })
+    await dir(seventh).trigger('click')
+    expect(seventh.findAll('[role=option]').map((o) => o.text())).toEqual(['Up', 'Down', 'Up & down'])
+    const pairs = await mount({ sheet: 'arpeggios', arpNotes: 'pairs', arpDir: 'up', arpShape: 'arpeggiated' })
+    await dir(pairs).trigger('click')
+    expect(pairs.findAll('[role=option]').map((o) => o.text())).toEqual(['Up', 'Down', 'Up & down', 'Block'])
+  })
+
+  it('shows Block while the shape is Block, and sets the shape or the direction', async () => {
+    const block = await mount({ sheet: 'arpeggios', arpNotes: 'pairs', arpDir: 'down', arpShape: 'block' })
+    expect(dir(block).text()).toBe('Block')
+    await dir(block).trigger('click')
+    await block.findAll('[role=option]')[2]?.trigger('click')
+    expect([block.emitted('update:arpShape')?.[0], block.emitted('update:arpDir')?.[0]]).toEqual([['arpeggiated'], ['up-down']])
+    const w = await mount({ sheet: 'arpeggios', arpNotes: 'pairs', arpDir: 'up', arpShape: 'arpeggiated' })
+    await dir(w).trigger('click')
+    await w.findAll('[role=option]')[3]?.trigger('click')
+    expect(w.emitted('update:arpShape')?.[0]).toEqual(['block'])
+    expect(w.emitted('update:arpDir')).toBeUndefined()
+  })
+
+  it('shows the direction, not Block, under 7th Chord whatever the shape', async () => {
+    expect(dir(await mount({ sheet: 'arpeggios', arpNotes: 'seventh', arpDir: 'down', arpShape: 'block' })).text()).toBe('Down')
   })
 })

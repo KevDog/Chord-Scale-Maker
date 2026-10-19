@@ -1,14 +1,16 @@
 import { parseChord, writtenChordRootLenient, writtenChordTextOrNull } from './chord'
 import { hexatonicPairs, hexatonicRanking } from './hexatonics'
-import { concertPc, type Part, scaleLabel, writtenScale } from './part'
+import { concertPc, type Part, rangeOf, scaleLabel, writtenScale } from './part'
 import { PENTATONIC_DEGREE_LABELS, pentatonicRanking } from './pentatonics'
 import { glyphs, mod, pcOf } from './pitch'
+import { type QuartalNotesChoice, rankedStacks } from './quartal'
 import { baseQuality } from './qualities'
 import { orNull } from './util'
 
 /** a popover's rows (#303): one chord's choices from inside to outside, written for the part; pitch classes concert, as picks store them */
 export type PentChoice = Readonly<{ pc: number; name: string; degree: number; shared: number; label: string }>
 export type HexChoice = Readonly<{ roots: readonly [number, number]; name: string; coverage: number; label: string }>
+export type QuartChoice = Readonly<{ pc: number; name: string; degree: number; guides: number; label: string }>
 
 const read = (chord: string, scale: string, part: Part) =>
   orNull(() => {
@@ -40,6 +42,20 @@ export function hexatonicChoices(chord: string, scale: string, part: Part): read
     name: p.name,
     coverage: p.coverage,
     label: `${p.name} · covers ${p.coverage}`,
+  }))
+}
+
+/** the scale's quartal stacks (#432) in Auto's order, by their bottom note concert, with the guide tones each holds; [] if none */
+export function quartalChoices(chord: string, scale: string, part: Part, notes: QuartalNotesChoice, perfectOnly: boolean): readonly QuartChoice[] {
+  const r = read(chord, scale, part)
+  if (!r) return []
+  const quality = orNull(() => baseQuality(parseChord(chord).quality))
+  return rankedStacks(r.w.notes, r.root, quality, notes, perfectOnly, rangeOf(part)).map((s) => ({
+    pc: concertPc(part, s.pcs[0]!),
+    name: s.name,
+    degree: s.degree,
+    guides: s.guides,
+    label: `${s.name} · on ${s.degree} · ${s.guides} guide tone${s.guides === 1 ? '' : 's'}`,
   }))
 }
 

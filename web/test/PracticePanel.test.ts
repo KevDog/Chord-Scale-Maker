@@ -14,9 +14,9 @@ const mount = (props: Record<string, unknown>) =>
 
 describe('PracticePanel', () => {
   it('offers per-chord presets from the root, All from a start note', async () => {
-    expect((await mount({})).findAll('button').map((b) => b.text())).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Pentatonic', 'Hexatonic', 'Clear'])
+    expect((await mount({})).findAll('button').map((b) => b.text())).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Pentatonic', 'Hexatonic', 'Quartal', 'Clear'])
     const from = await mount({ mode: 'from', startText: 'Eb' })
-    expect(from.findAll('button').map((b) => b.text())).toEqual(['All', 'Pentatonic', 'Hexatonic', 'Clear'])
+    expect(from.findAll('button').map((b) => b.text())).toEqual(['All', 'Pentatonic', 'Hexatonic', 'Quartal', 'Clear'])
     expect(from.text()).toContain('pitches spelled from E♭')
   })
 
@@ -115,8 +115,8 @@ describe('PracticePanel’s Hexatonic preset', () => {
   const hex = (pair: number, grouping: string) => ({ selection: { preset: 'hexatonic', pair, grouping }, lit: ['1', '3'] })
 
   it('is offered after Pentatonic', async () => {
-    expect(await texts({})).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Pentatonic', 'Hexatonic'])
-    expect(await texts({ mode: 'from', startText: 'Eb' })).toEqual(['All', 'Pentatonic', 'Hexatonic'])
+    expect(await texts({})).toEqual(['Chord tones', 'Guide tones', 'Tensions', 'Pentatonic', 'Hexatonic', 'Quartal'])
+    expect(await texts({ mode: 'from', startText: 'Eb' })).toEqual(['All', 'Pentatonic', 'Hexatonic', 'Quartal'])
   })
 
   it('starts at Auto and Triad pair, and shows its two listboxes only while it is the selection', async () => {
@@ -142,6 +142,18 @@ describe('PracticePanel’s Hexatonic preset', () => {
     expect(w.findAll('[role=option]').map((o) => o.text())).toEqual(['Triad pair', 'Chord tones + color', 'Pentatonic + 1', 'Trichords 3+3'])
     await w.findAll('[role=option]')[3]?.trigger('click')
     expect(w.emitted('update:selection')).toEqual([[{ preset: 'hexatonic', pair: 5, grouping: 'pent' }], [{ preset: 'hexatonic', pair: 3, grouping: 'trichords' }]])
+  })
+
+  it('ranks against Chord until Key is chosen, which hides Pair and keeps the grouping (#432)', async () => {
+    const w = await mount({ ...hex(3, 'tones') })
+    const basis = w.find('[aria-label="Hexatonics ranked against"]')
+    expect(basis.find('input[value="chord"]').element).toHaveProperty('checked', true)
+    await basis.find('input[value="key"]').setValue(true)
+    expect(w.emitted('update:selection')).toEqual([[{ preset: 'hexatonic', pair: 3, grouping: 'tones', basis: 'key' }]])
+    const key = await mount({ selection: { preset: 'hexatonic', pair: 3, grouping: 'tones', basis: 'key' }, lit: [] })
+    expect(key.find('[aria-label="Hexatonic pair"]').exists()).toBe(false)
+    await key.find('[aria-label="Hexatonics ranked against"] input[value="chord"]').setValue(true)
+    expect(key.emitted('update:selection')).toEqual([[{ preset: 'hexatonic', pair: 3, grouping: 'tones' }]])
   })
 
   it('names the grouping’s two groups in a legend (never “+1”)', async () => {
@@ -181,5 +193,33 @@ describe('PracticePanel’s links to How it decides', () => {
     const w = await mount({})
     expect(w.find('a[href="/how-it-decides#pent.auto"]').exists()).toBe(true)
     expect(w.find('a[href="/how-it-decides#hex.auto"]').exists()).toBe(true)
+  })
+})
+
+describe('PracticePanel’s Quartal preset (#432)', () => {
+  const quartal = (over: Record<string, unknown> = {}) => ({ selection: { preset: 'quartal', degree: 'auto', notes: 4, ...over }, lit: [] })
+
+  it('starts at Auto, four notes, augmented allowed; its controls show only while it is the selection', async () => {
+    const off = await mount({})
+    expect(off.find('[aria-label="Quartal built on"]').exists()).toBe(false)
+    await off.findAll('button').find((b) => b.text() === 'Quartal')?.trigger('click')
+    expect(off.emitted('update:selection')).toEqual([[{ preset: 'quartal', degree: 'auto', notes: 4 }]])
+    const on = await mount(quartal())
+    expect(on.find('[aria-label="Quartal built on"]').text()).toContain('Built on: Auto')
+    expect(on.find('[aria-label="Quartal notes"] input[value="4"]').element).toHaveProperty('checked', true)
+  })
+
+  it('offers Auto and degrees 1 … 7; a change keeps the other values', async () => {
+    const w = await mount(quartal({ notes: 3, perfect: true }))
+    await w.find('[aria-label="Quartal built on"]').trigger('click')
+    expect(w.findAll('[role=option]').map((o) => o.text())).toEqual(['Auto', '1', '2', '3', '4', '5', '6', '7'])
+    await w.findAll('[role=option]')[2]?.trigger('click')
+    await w.find('[aria-label="Quartal notes"] input[value="4"]').setValue(true)
+    await w.findAll('button').find((b) => b.text() === 'Perfect only')?.trigger('click')
+    expect(w.emitted('update:selection')).toEqual([
+      [{ preset: 'quartal', degree: 2, notes: 3, perfect: true }],
+      [{ preset: 'quartal', degree: 'auto', notes: 4, perfect: true }],
+      [{ preset: 'quartal', degree: 'auto', notes: 3 }],
+    ])
   })
 })

@@ -64,7 +64,7 @@ function formatLabel(moves: Moves): string {
   return notes.join(' ')
 }
 
-/** The 13 library patterns, each stored as its moves. */
+/** The 14 library patterns, each stored as its moves. */
 export const PATTERN_LIBRARY: readonly Readonly<{ id: string; label: string; moves: Moves }>[] = [
   stepwise('1-2-3', [1, 1, -1]),
   stepwise('1-2-3-4', [1, 1, 1, -2]),
@@ -79,6 +79,7 @@ export const PATTERN_LIBRARY: readonly Readonly<{ id: string; label: string; mov
   { id: 'triads', label: 'Triads', moves: [2, 2, -3] },
   { id: 'triads-turn', label: 'Triads with a turn', moves: [2, 2, -2, -1] },
   { id: 'sevenths', label: 'Sevenths', moves: [2, 2, 2, -5] },
+  { id: 'stacked-fourths', label: 'Stacked fourths', moves: [3, 3, -5] },
 ]
 
 /**

@@ -16,11 +16,12 @@ const options = async (w: Wrapper) => {
 }
 
 describe('the Patterns controls', () => {
-  it('lists the 13 library patterns and Custom', async () => {
+  it('lists the 14 library patterns and Custom', async () => {
     const labels = (await options(await mount())).map((o) => o.text())
-    expect(labels).toHaveLength(14)
+    expect(labels).toHaveLength(15)
     expect(labels.at(-1)).toBe('Custom…')
     expect(labels).toContain('Thirds')
+    expect(labels).toContain('Stacked fourths')
   })
 
   it('shows the library entry the stored pattern is, and Custom for any other', async () => {

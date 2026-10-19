@@ -1,5 +1,6 @@
 import { fifthsFrom, pitchClasses, rankByFifths } from './ladder'
-import { glyphs, mod, pcOf, rootName, type Spelled } from './pitch'
+import { type Part, writtenRoot } from './part'
+import { glyphs, mod, parseRoot, pcOf, rootName, shiftBy, type Spelled } from './pitch'
 import { CHORD_TONES } from './qualities'
 import { SCALES, spellFrom } from './scales'
 
@@ -71,7 +72,29 @@ export const chordTonePcs = (chordRoot: Spelled, quality: string | null): Readon
   return new Set(degrees ? spellFrom(chordRoot, degrees.join(' ')).map(pcOf) : [])
 }
 
-/** a staff's pairs: the chain's links whose triads are both standard and share no note, in chain order from 1, with chord-tone coverage */
+/** the scale's notes repeat a step of `by` semitones round the octave (diminished: 3, whole tone: 2) */
+const symmetric = (pcs: ReadonlySet<number>, size: number, by: number): boolean => pcs.size === size && [...pcs].every((pc) => pcs.has(mod(pc + by, 12)))
+
+/**
+ * a symmetric scale's pairs off its chain (#432), after Weiskopf, Intervalic Improvisation, pp. 12, 16: on a diminished
+ * scale the major triads a tritone apart, then the minor ones, each lower root first in scale order; on whole tone its
+ * two augmented triads, a whole step apart; none on any other scale
+ */
+function offChainLinks(scale: readonly Spelled[]): readonly Readonly<{ lower: ChainTriad; upper: ChainTriad }>[] {
+  const pcs = new Set(scale.map(pcOf))
+  if (symmetric(pcs, 6, 2)) return [{ lower: chainTriad(scale[0]!, 'aug'), upper: chainTriad(scale[1]!, 'aug') }]
+  if (!symmetric(pcs, 8, 3)) return []
+  return (['maj', 'min'] as const).flatMap((quality) =>
+    scale.flatMap((root, i) => {
+      const lower = chainTriad(root, quality)
+      const j = scale.findIndex((n) => pcOf(n) === mod(pcOf(root) + 6, 12))
+      if (j <= i || !lower.pcs.every((pc) => pcs.has(pc))) return []
+      return [{ lower, upper: chainTriad(scale[j]!, quality) }]
+    }),
+  )
+}
+
+/** a staff's pairs: the chain's links whose triads are both standard and share no note, in chain order from 1, then a symmetric scale's off-chain pairs (offChainLinks), with chord-tone coverage */
 export function hexatonicPairs(scale: readonly Spelled[], chordRoot: Spelled, quality: string | null): readonly HexPair[] {
   const chain = triadChain(scale)
   const tones = chordTonePcs(chordRoot, quality)
@@ -80,7 +103,7 @@ export function hexatonicPairs(scale: readonly Spelled[], chordRoot: Spelled, qu
     if (lower === null || upper === null || upper.pcs.some((pc) => lower.pcs.includes(pc))) return []
     return [{ lower, upper }]
   })
-  return links.map(({ lower, upper }, i) => {
+  return [...links, ...offChainLinks(scale)].map(({ lower, upper }, i) => {
     const base = lower.pcs[0]!
     const six = [...lower.pcs, ...upper.pcs].sort((a, b) => mod(a - base, 12) - mod(b - base, 12))
     return { link: i + 1, lower, upper, name: `${lower.name}/${upper.name}`, tones: six, coverage: six.filter((pc) => tones.has(pc)).length }
@@ -105,6 +128,37 @@ export function hexatonicRanking(pairs: readonly HexPair[], chordRoot: Spelled):
 
 /** Auto: the first pair in hexatonicRanking's order; null if there are no pairs */
 export const hexatonicAuto = (pairs: readonly HexPair[], chordRoot: Spelled): HexPair | null => hexatonicRanking(pairs, chordRoot)[0] ?? null
+
+/** what a chord's pair is ranked against (#432): its own scale's chain (Auto), or its key area (keyPair) */
+export type HexatonicBasis = 'chord' | 'key'
+/** a key area's pair: two triads and their name, lower first */
+export type KeyPair = Readonly<{ lower: ChainTriad; upper: ChainTriad; name: string }>
+
+/**
+ * a key area's pair, after Weiskopf, Intervalic Improvisation (1995), pp. 5–10: the major triads on 4 and 5 of a
+ * major key (F/G in C), harmonic minor's minor iv and augmented V in a minor one (Gm/A+ in D minor)
+ */
+export function keyPair(tonic: Spelled, mode: 'major' | 'minor'): KeyPair {
+  const lower = chainTriad(shiftBy(tonic, 3, 5), mode === 'major' ? 'maj' : 'min')
+  const upper = chainTriad(shiftBy(tonic, 4, 7), mode === 'major' ? 'maj' : 'aug')
+  return { lower, upper, name: `${lower.name}/${upper.name}` }
+}
+
+/** a key area's pair ('F major', 'D minor', concert) written for the part; null where the name doesn't read */
+export function writtenKeyPair(keyName: string, part: Part): KeyPair | null {
+  const m = /^([A-G][b#]?) (major|minor)$/.exec(keyName)
+  if (!m) return null
+  const mode = m[2] as 'major' | 'minor'
+  return keyPair(writtenRoot(part, parseRoot(m[1]!), mode === 'major' ? 'ionian' : 'aeolian'), mode)
+}
+
+const sameTriad = (a: ChainTriad, b: ChainTriad): boolean => a.pcs.every((pc) => b.pcs.includes(pc))
+
+/** the chain's pair made of the key pair's two triads (by their notes, so an augmented triad matches however the chain spells it), named as the key names it; null where the chain lacks it */
+export function keyedPair(pairs: readonly HexPair[], key: KeyPair): HexPair | null {
+  const found = pairs.find((p) => (sameTriad(p.lower, key.lower) && sameTriad(p.upper, key.upper)) || (sameTriad(p.lower, key.upper) && sameTriad(p.upper, key.lower)))
+  return found ? { ...found, name: key.name } : null
+}
 
 /** the Pair control's choices: 0 is Auto, 1 … HEX_PAIRS a link (eight-note scales have eight) */
 export const HEX_PAIRS = 8
@@ -146,13 +200,14 @@ function groupB(pair: HexPair, grouping: HexGrouping, chordRoot: Spelled, qualit
   }
 }
 
-/** a staff's hexatonic under the preset: the pair used, and its link number; picked: a chord pick (#303); sheet: the Pair control's pair */
-export type StaffHexatonic = Readonly<{ name: string; link: number; picked: boolean; sheet: string }>
+/** a staff's hexatonic under the preset: the pair used, and its link number; picked: a chord pick (#303); sheet: the Pair control's pair (or the key's); offKey: ranked against the key, its chain lacks the key's pair (#432) */
+export type StaffHexatonic = Readonly<{ name: string; link: number; picked: boolean; sheet: string; offKey: boolean }>
 
 /**
  * the hexatonic for the Pair control's value on a staff's scale (its notes from the root, spelled as written), and
  * which of the staff's notes (`pcs`, the scale's own by default) it lights; second: the lit notes in group B. A pick
- * (#303, its triads' written root pcs, lower first) plays over the control where it is one of the scale's pairs
+ * (#303, its triads' written root pcs, lower first) plays over the control where it is one of the scale's pairs. key
+ * (#432): ranked against a key area, its pair over the control where the chain has it (null: no key, so Auto)
  */
 export function hexatonicPick(
   scale: readonly Spelled[],
@@ -162,15 +217,19 @@ export function hexatonicPick(
   grouping: HexGrouping,
   pcs: readonly number[] = scale.map(pcOf),
   picked: readonly [number, number] | null = null,
+  key?: KeyPair | null,
 ): Readonly<{ hexatonic: StaffHexatonic | null; lit: boolean[]; second: boolean[] }> {
   const pairs = hexatonicPairs(scale, chordRoot, quality)
-  const auto = resolvePair(pairs, pair, chordRoot)
+  const keyed = key ? keyedPair(pairs, key) : null
+  const auto = keyed ?? resolvePair(pairs, key === undefined ? pair : 0, chordRoot)
   const found = picked === null ? undefined : pairs.find((p) => pcOf(p.lower.root) === picked[0] && pcOf(p.upper.root) === picked[1])
   const used = found ?? auto
   if (used === null) return { hexatonic: null, lit: pcs.map(() => false), second: pcs.map(() => false) }
   const b = groupB(used, grouping, chordRoot, quality)
-  return { hexatonic: { name: used.name, link: used.link, picked: !!found, sheet: auto?.name ?? '' }, lit: pcs.map((pc) => used.tones.includes(pc)), second: pcs.map((pc) => b.has(pc)) }
+  return { hexatonic: { name: used.name, link: used.link, picked: !!found, sheet: auto?.name ?? '', offKey: key !== undefined && !keyed }, lit: pcs.map((pc) => used.tones.includes(pc)), second: pcs.map((pc) => b.has(pc)) }
 }
 
-/** "G/Am hex", or "no triad pair"; " · varies" where the staff's chords have different picks */
-export const hexatonicCaption = (h: StaffHexatonic | null, varies = false): string => (h ? `${h.name} hex${varies ? ' · varies' : ''}` : 'no triad pair')
+/** "G/Am hex", or "no triad pair"; " · off key" where it isn't the key's pair (#432), " · varies" where the staff's chords have different picks */
+export const hexatonicCaption = (h: StaffHexatonic | null, varies = false): string => (h ? `${h.name} hex${offKeyNote(h)}${varies ? ' · varies' : ''}` : 'no triad pair')
+/** " · off key" on a pair ranked against the key that isn't the key's (#432), else '' */
+export const offKeyNote = (h: StaffHexatonic): string => (h.offKey && !h.picked ? ' · off key' : '')

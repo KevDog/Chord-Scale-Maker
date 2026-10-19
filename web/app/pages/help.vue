@@ -44,9 +44,17 @@
           chord, with the scale that goes with it, in the order the tune runs. Each staff is labelled with where it is in
           the form, the chord and the scale. Practice works on this sheet.
         </UiText>
+        <UiText>
+          <strong class="font-semibold text-zinc-950 dark:text-white">Arpeggios</strong> is one staff per scale line, its
+          chord's arpeggio: <strong class="font-semibold text-zinc-950 dark:text-white">7th Chord</strong> over two octaves,
+          <strong class="font-semibold text-zinc-950 dark:text-white">Extended</strong> up through the 9th, 11th and 13th, or
+          <strong class="font-semibold text-zinc-950 dark:text-white">Triad pairs</strong>, the chord's triad pair as six
+          triads through their inversions, arpeggiated or as block chords. <DecisionLink id="hex.sheet">How the triads are
+          ordered</DecisionLink> is in How it decides.
+        </UiText>
         <UiText v-if="patternsOn">
           <strong class="font-semibold text-zinc-950 dark:text-white">Patterns</strong> runs a scale sequence over each scale line,
-          one staff a line: 1 2 3 4, thirds, triads and more, or one of your own, written as steps (<UiCode>+2 −1</UiCode> is up a third, back a step).
+          one staff a line: 1 2 3 4, thirds, triads, stacked fourths and more, or one of your own, written as steps (<UiCode>+2 −1</UiCode> is up a third, back a step).
           <strong class="font-semibold text-zinc-950 dark:text-white">Scale</strong> steps through the scale and
           <strong class="font-semibold text-zinc-950 dark:text-white">Chord tones</strong> through the chord. Up, Down or Up &amp; down.
         </UiText>
@@ -135,17 +143,25 @@
                 <strong class="font-semibold">Pentatonic</strong> (each key area's minor pentatonic, or, ranked against
                 Chord, each chord's, <strong class="font-semibold">Built on</strong> the degree you choose) or
                 <strong class="font-semibold">Hexatonic</strong> (each chord's best triad pair from its scale, such as
-                <UiCode>G/Am</UiCode> over Cmaj7).
+                <UiCode>G/Am</UiCode> over Cmaj7, or, ranked against Key, one pair for each key area, its IV and V triads:
+                <UiCode>F/G</UiCode> in C; <DecisionLink id="hex.key">how</DecisionLink>) or
+                <strong class="font-semibold">Quartal</strong> (each chord's best stack of fourths from its scale, such as
+                <UiCode>D G C F</UiCode> over Dm7, of three or four notes, perfect fourths only if you like, under Quartal
+                options; <DecisionLink id="quartal.auto">how</DecisionLink>).
               </dd>
             </div>
             <div>
-              <dt class="font-semibold text-zinc-950 dark:text-white">Pentatonic and Triad pair lines</dt>
+              <dt class="font-semibold text-zinc-950 dark:text-white">Pentatonic, Triad pair and Quartal lines</dt>
               <dd class="mt-1 text-zinc-600 dark:text-zinc-400">
                 While Superimpose is Pentatonic, the Line's <strong class="font-semibold">7th Chords</strong> becomes
                 <strong class="font-semibold">Pentatonic</strong>: each chord's labelled pentatonic in four-note cells;
                 <strong class="font-semibold">Leave out</strong> picks the note each cell drops. While it's Hexatonic, it
-                becomes <strong class="font-semibold">Triad pair</strong>: each chord's labelled pair a triad at a time.
-                Either goes up, down or both by turns.
+                becomes <strong class="font-semibold">Triad pair</strong>: each chord's labelled pair a triad at a time,
+                from the note nearest the last, or in Walt Weiskopf's <strong class="font-semibold">Climb</strong> or
+                <strong class="font-semibold">Arpeggios 1 3 5 8</strong> shape (<DecisionLink id="hex.line">how</DecisionLink>).
+                While it's Quartal, it becomes <strong class="font-semibold">Quartal</strong>: each chord's labelled stack
+                of fourths, whole, then its next stacks (<DecisionLink id="quartal.line">how</DecisionLink>). Each goes up,
+                down or both by turns.
                 <template v-if="cellsOn">
                   The 7th Chords pattern list also holds <strong class="font-semibold">Cells</strong>, after Randy Vincent's
                   <em>Building Solo Lines From Cells</em>: a four-note cell on each chord, two beats each, read through its scale.
@@ -224,9 +240,20 @@
             scale, six notes, after Gary Campbell's <em>Triad Pairs for Jazz</em>. <strong class="font-semibold">Pair</strong>
             <em>n</em> is the triads on degrees <em>n</em> and <em>n</em> + 1 of each staff's scale; on a seven-note scale
             that leaves out degree <em>n</em> − 1 (Pair 1 leaves out the 7th). Pair 5 over C major is G/Am, without the F. <strong class="font-semibold">Auto</strong>
-            picks the pair that covers the most chord tones (<DecisionLink id="hex.auto">how</DecisionLink>). The grouping splits the six notes in two (the two triads,
+            picks the pair that covers the most chord tones (<DecisionLink id="hex.auto">how</DecisionLink>); ranked against
+            <strong class="font-semibold">Key</strong>, each staff takes its key area's IV and V triads where its scale holds
+            them, and the caption says <em>off key</em> where it doesn't. The grouping splits the six notes in two (the two triads,
             chord tones and colour, a pentatonic and one more, or the lowest three and highest three), tinted apart; the
             caption under each chord names the pair.
+          </li>
+          <li>
+            <strong class="font-semibold text-zinc-950 dark:text-white">Quartal</strong> lights a stack of fourths from each
+            seven-note scale: its notes three steps apart, <strong class="font-semibold">Built on</strong> the degree you
+            choose, three or four <strong class="font-semibold">Notes</strong>. <strong class="font-semibold">Auto</strong>
+            picks the stack that holds the guide tones without an avoid note (<DecisionLink id="quartal.auto">how</DecisionLink>):
+            <UiCode>F B E A</UiCode> over G7. A stack may hold one augmented fourth;
+            <strong class="font-semibold">Perfect only</strong> allows none. The caption names the stack
+            (<UiCode>D G C F · 4ths</UiCode>).
           </li>
           <li>
             Click a chord's pentatonic or triad pair (Changes) or a staff's caption (Scales) to pick another for that chord; the list runs from <DecisionLink id="pick.order">inside to outside</DecisionLink>. A pick on the Scales sheet sets every bar that staff covers. <strong class="font-semibold text-zinc-950 dark:text-white">Sheet’s choice</strong> undoes it; <strong class="font-semibold text-zinc-950 dark:text-white">⋯ More actions → Reset chord picks</strong> undoes them all.
