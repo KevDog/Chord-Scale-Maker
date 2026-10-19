@@ -428,6 +428,17 @@
             for one triad and a note of the next, the cut triad doesn't count, so the chords alternate up and down. A chord
             with no pair plays its 7th chord arpeggio.
           </UiText>
+          <UiText>
+            That is the <strong :class="EM">Nearest</strong> shape. Two more follow Walt Weiskopf's exercises in
+            <em>Intervalic Improvisation</em>. <strong :class="EM">Climb</strong> plays both triads in root position, then
+            both in first inversion, then second, each starting on its note just above the last triad's start:
+            <UiCode>F/G</UiCode> plays F A C, G B D, A C F, B D G, C F A, D G B. Down mirrors it, from the upper triad's
+            second inversion top down; Up &amp; down climbs the six triads up, then six down.
+            <strong :class="EM">Arpeggios</strong> is the Climb with each triad 1 3 5 8 (F A C F, G B D G, …), four notes, so
+            each lands on the beat; one whose octave fits nowhere in your range drops its 8. A triad that would leave the
+            range is placed nearest the last note instead, and the climb goes on from there.
+          </UiText>
+          <UiText><strong :class="EM">What you can change:</strong> the shape and the direction (Line options).</UiText>
         </DecisionSection>
 
         <DecisionSection id="hex.sheet">

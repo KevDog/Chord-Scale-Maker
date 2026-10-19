@@ -142,6 +142,15 @@ describe('the Line under the Pentatonic overlay (#284)', () => {
     expect(w.find('[aria-label="Arpeggio pattern"]').exists()).toBe(false)
   })
 
+  it('offers the Triad pair line’s shape while the line is Triad pair, and not under another overlay (#432)', async () => {
+    const w = await mount({ overlay: 'hexatonic', lineMode: 'arpeggio', pairLine: 'nearest' })
+    await openPanel(w, 'Line options')
+    expect(w.find('[aria-label="Triad pair shape"]').text()).toBe('Shape: Nearest')
+    const q = await mount({ overlay: 'quartal', lineMode: 'arpeggio' })
+    await openPanel(q, 'Line options')
+    expect(q.find('[aria-label="Triad pair shape"]').exists()).toBe(false)
+  })
+
   it('offers the direction in place of the arpeggio pattern while the line is Quartal (#432)', async () => {
     const w = await mount({ overlay: 'quartal', lineMode: 'arpeggio', arpDir: 'down' })
     expect(w.text()).toContain('Quartal')

@@ -23,7 +23,8 @@ describe('the Cells line (#298)', () => {
   it('plays mode cells as the cells line only with the Superimpose off: under an overlay the slot is the overlay line', () => {
     expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'off' })).toEqual({ kind: 'cells', id: '1-2-3-5' })
     expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'pentatonic' })).toEqual({ kind: 'pentatonic', leave: 'b3', dir: 'up', arpeggio: 'down-2nd' })
-    expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'hexatonic' })).toEqual({ kind: 'triad-pair', dir: 'up', arpeggio: 'down-2nd' })
+    expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'hexatonic' })).toEqual({ kind: 'triad-pair', dir: 'up', arpeggio: 'down-2nd', shape: 'nearest' })
+    expect(changesLineOf({ ...base, mode: 'arpeggio', cells: '1-2-3-5', overlay: 'hexatonic', shape: 'climb' })).toEqual({ kind: 'triad-pair', dir: 'up', arpeggio: 'down-2nd', shape: 'climb' })
     expect(changesLineOf({ ...base, mode: 'cells', cells: '1-2-3-5', overlay: 'quartal' })).toEqual({ kind: 'quartal', dir: 'up', arpeggio: 'down-2nd' })
     expect(changesLineOf({ ...base, mode: 'arpeggio', overlay: 'quartal' })).toEqual({ kind: 'quartal', dir: 'up', arpeggio: 'down-2nd' })
     expect(changesLineOf({ ...base, mode: 'guide', cells: '1-2-3-5', overlay: 'off' })).toBe('third')
@@ -53,7 +54,7 @@ describe('the Pentatonic line (#284)', () => {
 
 describe('the Triad pair line (#325)', () => {
   it('plays the arpeggio slot as the Triad pair line while Superimpose is Hexatonic', () => {
-    expect(changesLineOf({ mode: 'arpeggio', guide: 'third', arpeggio: 'down-2nd', overlay: 'hexatonic', leave: 'b3', dir: 'up-down' })).toEqual({ kind: 'triad-pair', dir: 'up-down', arpeggio: 'down-2nd' })
+    expect(changesLineOf({ mode: 'arpeggio', guide: 'third', arpeggio: 'down-2nd', overlay: 'hexatonic', leave: 'b3', dir: 'up-down' })).toEqual({ kind: 'triad-pair', dir: 'up-down', arpeggio: 'down-2nd', shape: 'nearest' })
     expect(changesLineOf({ mode: 'guide', guide: 'seventh', arpeggio: 'down-2nd', overlay: 'hexatonic', leave: '1', dir: 'up' })).toBe('seventh')
   })
   it("names the slot Triad pair under the Hexatonic overlay; the value stays 'arpeggio'", () => {

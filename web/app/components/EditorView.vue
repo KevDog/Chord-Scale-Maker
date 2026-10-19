@@ -136,6 +136,7 @@
             v-model:pattern-notes="prefs.patternNotes.value"
             v-model:pattern-dir="prefs.patternDir.value"
             v-model:pent-leave="prefs.pentLeave.value"
+            v-model:pair-line="prefs.pairLine.value"
             :key-start="keyStartNote"
             :lock-labels="sheetEditor"
             :compact="compactRail"
@@ -462,7 +463,7 @@ const patternMoves = computed(() => {
 })
 const sheetLine = computed(() => shareLineOf(prefs.lineMode.value, prefs.guideLine.value, prefs.arpeggio.value, prefs.cells.value))
 /** the line the Changes sheet draws: the stored one, the arpeggio slot read as the Pentatonic line under the Pentatonic overlay (#284) */
-const changesLine = computed(() => changesLineOf({ mode: prefs.lineMode.value, guide: prefs.guideLine.value, arpeggio: prefs.arpeggio.value, overlay: prefs.overlay.value, leave: prefs.pentLeave.value, dir: prefs.arpDir.value, cells: prefs.cells.value }))
+const changesLine = computed(() => changesLineOf({ mode: prefs.lineMode.value, guide: prefs.guideLine.value, arpeggio: prefs.arpeggio.value, overlay: prefs.overlay.value, leave: prefs.pentLeave.value, dir: prefs.arpDir.value, cells: prefs.cells.value, shape: prefs.pairLine.value }))
 /** chords on the Changes sheet open the chord editor while the editor is shown (on a phone, the whole editor) */
 const sheetEditing = computed(() => editorShown.value && !editor.fatal.value)
 const sheetChord = ref<SheetChordEdit | null>(null)
@@ -761,7 +762,7 @@ async function shareUrl(): Promise<string> {
     ...(sheet.value === 'changes' && approachShown.value !== 'none' ? { approach: approachShown.value } : {}), // the line's Approach (#298, #381)
     ...(sheet.value === 'patterns' ? { pattern: prefs.pattern.value, patternNotes: prefs.patternNotes.value, patternDir: prefs.patternDir.value } : {}),
     ...(sheet.value === 'arpeggios' ? { arpNotes: prefs.arpNotes.value, arpDir: prefs.arpDir.value, ...(prefs.arpNotes.value === 'pairs' ? { arpShape: prefs.arpShape.value } : {}) } : {}),
-    ...(sheet.value === 'changes' && prefs.lineMode.value === 'arpeggio' ? { arpDir: prefs.arpDir.value, pentLeave: prefs.pentLeave.value } : {}), // the Pentatonic (#284) and Triad pair (#325) lines', under the receiver's own overlay
+    ...(sheet.value === 'changes' && prefs.lineMode.value === 'arpeggio' ? { arpDir: prefs.arpDir.value, pentLeave: prefs.pentLeave.value, pairLine: prefs.pairLine.value } : {}), // the Pentatonic (#284), Triad pair (#325, #432) and Quartal lines', under the receiver's own overlay
     ...(selection.value ? { practice: selection.value } : {}),
     ...(scaleLevel.level.value !== 'standard' ? { level: scaleLevel.level.value, seed: scaleLevel.seed.value } : {}),
     ...(hasPicks(chordPicks.live.value) ? { picks: chordPicks.live.value } : {}), // too big a link leaves them out (encodeShare)
