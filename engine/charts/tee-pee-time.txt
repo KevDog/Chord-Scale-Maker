@@ -38,7 +38,7 @@ bars: 8
 1  | D7   # extended dominant: each one falls a fifth into the next: natural tensions
 3  | G7   # extended dominant: each one falls a fifth into the next: natural tensions
 5  | C7   # V7 of V7: the dominant of the dominant: natural tensions
-7  | F7   # extended dominant: V7 of Bb7
+7  | F7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 
 section: C
 copy: A1

@@ -410,7 +410,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   const analysis = analyse(doc)
   const resolved = resolveScales(doc, view, analysis)
   // at Basic, the blues key's note as the part reads it, for a blues chord's Why note
-  const bluesNote = view.level === 'basic' && bluesTonic(analysis) && analysis.key ? (keyName(analysis.key.name, part).split(' ')[0] ?? '') : ''
+  const bluesNote = view.level === 'basic' && bluesTonic(analysis) ? (sheetScale(part, `${bluesTonic(analysis)} Blues`) ?? '') : '' // spelled as the label
   const keySig = signatures ? keySignature(chartKeyOf(doc), part) : null
   const byRow = new Map(analysis.rows.map((r) => [r.row, r]))
   const problemAt = new Map(analysis.problems.map((p) => [p.line, p.message]))
@@ -648,7 +648,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             slash: readChord(row.chord)?.slash ?? false,
             problem: problemAt.get(row.line) ?? '',
             heardIn: a ? keyName((a.statedKey ?? a.key).name, part) : '',
-            levelNote: bluesNote && a && !a.stated && resolved.get(i)?.source !== 'written' && isBluesRule(a.rule) ? `Basic: the ${bluesNote} Blues scale over the whole blues` : '',
+            levelNote: bluesNote && a && !a.stated && resolved.get(i)?.source !== 'written' && isBluesRule(a.rule) ? `Basic: the ${bluesNote} scale over the whole blues` : '',
             keyFrom: a?.statedKey ? 'function' : analysis.areas.findLast((x) => x.row <= i)?.stated ? 'area' : 'found',
             guide: voices?.labels.get(i) ?? '',
             pentatonic: pentAt.get(i) ?? null,

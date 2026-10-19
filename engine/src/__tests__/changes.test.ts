@@ -1080,4 +1080,9 @@ describe('the Why note over a blues at Basic (blues spec §5)', () => {
   it('names the note as the part reads it', () => {
     expect(chords('basic', partFor('tenor-sax'))[0]?.levelNote).toMatch(/^Basic: the F[#♯] Blues scale over the whole blues$/)
   })
+  it('spells the note as the scale label does, on a B♭ part in B', () => {
+    const inB = parseChart('title: T\nkey: B\ncontext: blues\nform: A, 12 bars\n\nsection: A\nbars: 12\n1 | B7\n5 | E7\n7 | B7\n9 | F#7\n11 | B7\n').value
+    const first = buildChanges(inB, partFor('trumpet'), 4, false, 'off', { level: 'basic', seed: 0 }).lines[0]?.bars[0]?.chords[0]
+    expect(first?.levelNote).toBe(`Basic: the ${first?.scale} scale over the whole blues`)
+  })
 })

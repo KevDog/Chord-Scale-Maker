@@ -21,4 +21,4 @@ section: A
 9  | Fm7  # ii of Bb7: Dorian
 10 | Bb7  # extended dominant: V7 of Eb7
 11 | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-12 | Bb7  # extended dominant: V7 of Eb7
+12 | Bb7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian

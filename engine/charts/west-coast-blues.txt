@@ -49,7 +49,7 @@ section: B
 21 | Bb6        # I of the blues: a triad here implies its ♭7, Mixolydian
 22 | Db7        # V7/bVI in Bb: the #11 is in the key
 23 | Gb6        # ♭VI6, borrowed from Bb minor: Lydian (its ♯11 is in the key)
-24 | F7         # extended dominant: V7 of Bb7
+24 | F7         # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 @nav 24 D.C. al Coda
 
 section: Coda

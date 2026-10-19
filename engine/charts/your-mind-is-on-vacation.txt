@@ -62,7 +62,7 @@ section: C
 5  | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
 7  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 9  | B7   # tritone substitute: resolves down a half step to Bb7
-10 | Bb7  # extended dominant: V7 of Eb7
+10 | Bb7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 11 | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 # bar 12: Eb7 held (repeated for the D.S. marker)
 12 | Eb7
@@ -72,6 +72,6 @@ section: Coda
 bars: 4
 1  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 1  | Ab7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
-2  | Bb7  # extended dominant: V7 of Eb7
+2  | Bb7  # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 2  | Eb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
 @coda 1

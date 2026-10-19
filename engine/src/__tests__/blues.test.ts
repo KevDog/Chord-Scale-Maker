@@ -44,6 +44,12 @@ describe('D9: the blues dominants', () => {
     expect(verdict(jazz, '9 Gm7')).toMatch(/\(m4\)$/)
     expect(verdict(jazz, '10 C7')).toBe('C Mixolydian (D3)') // resolving into the I7: an extended dominant, not D9
   })
+  it('the turnaround V7 back to the I7 is the blues V, not an extended dominant', () => {
+    expect(verdict(chart('F', '1 F7, 5 Bb7, 7 F7, 9 C7, 10 Bb7, 11 F7, 12 C7', BLUES), '12 C7')).toBe('C Mixolydian (D9)')
+  })
+  it('a V7 after the I triad is the blues V, not V7 of the chord before it', () => {
+    expect(verdict(chart('E', '1 E, 5 A, 7 E, 9 B7, 10 A, 11 E', BLUES), '9 B7')).toBe('B Mixolydian (D9)')
+  })
 })
 
 describe('M6: triads in a blues', () => {

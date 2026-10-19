@@ -20,4 +20,4 @@ section: A
 9  | F7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian
 10 | Eb7  # IV7 of the blues: a subdominant with dominant colour, Mixolydian (the #11 is an extra colour)
 11 | Bb7  # I7 of the blues: a tonic with dominant colour, Mixolydian
-12 | F7   # extended dominant: V7 of Bb7
+12 | F7   # V7 of the blues: a dominant that needn’t resolve, Mixolydian

@@ -80,7 +80,7 @@
         <DecisionSection id="scale.blues">
           <UiText>
             A chart reads as a blues when its form is a 12- or 24-bar blues, or its header says
-            <UiCode>context: blues</UiCode> (<strong :class="EM">Read as: Blues</strong> under the editor's Details), whatever
+            <UiCode>context: blues</UiCode> (<strong :class="EM">Read: Blues</strong> beside the editor's Key, or Read as under Details on a phone), whatever
             its form: a 9-, 13- or 16-bar Delta blues too.
           </UiText>
           <UiText>

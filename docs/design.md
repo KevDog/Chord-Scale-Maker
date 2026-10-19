@@ -1001,7 +1001,7 @@ its reasons into a chart as comments.
 - **The rules on one page** (the second pass, "analysis rules from sources", checked against Nettles and Graf,
   Mulholland and Hojnacki, Levine and Chediak; [spec](superpowers/specs/2026-10-10-analysis-rules-from-sources-design.md),
   decisions in plan-analysis.md §10, 11–17):
-  - **Dominant:** a blues I7, IV7 and (in a major key) unresolved V7 are Mixolydian, decided by their degree (D9,
+  - **Dominant:** a blues I7, IV7 and (in a major key, outside a ii–V) V7 are Mixolydian, decided by their degree (D9,
     before D3); a V7 into a minor chord is Phrygian Dominant, Altered at Advanced.
   - **Major:** a IV reached by its own dominant (V7/IV, or subV7/IV) is Ionian, otherwise Lydian; ♭VII of a minor key
     is Ionian. The rule reads the previous chord and wraps the form, so a bar-1 IV is prepared by the last chord.

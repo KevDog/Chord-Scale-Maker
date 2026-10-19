@@ -144,7 +144,7 @@ modal | blues`, as it states a key (principle 1); a written context always wins,
 | --- | --- | --- |
 | `functional` | cadences, functions, areas (the default) | on |
 | `modal` | each chord its own mode: M5, m6, D7, s3 | off |
-| `blues` | the I, IV and V by their degree (docs/superpowers/specs/2026-10-18-blues-analysis-design.md): D9 (I7, IV7, a V7 that doesn't resolve), M6 (a triad or 6 on I, IV or V), m10 (a minor blues' i and iv), s4 (sus); Basic plays the key's Blues scale on them | off |
+| `blues` | the I, IV and V by their degree (docs/superpowers/specs/2026-10-18-blues-analysis-design.md): D9 (I7, IV7, and a V7 that isn't half of a ii–V), M6 (a triad or 6 on I, IV or V), m10 (a minor blues' i and iv), s4 (sus); Basic plays the key's Blues scale on them | off |
 
 - **Blues (detected):** a dominant 7th on one root in bar 1 and the dominant a fourth above it in bar 5, in a
   12-bar (or 24-bar) form, or in the first section of a form of 12-bar sections or of a 12-12-8-12 one (`AABC, 44
@@ -262,7 +262,7 @@ The rules, in priority order. The first that applies decides.
 | D4 | **V7, V7/x, V7 of the chord before, cadence to a new key:** resolves down a fifth to a non-dominant chord | derive from the reference | "V7 of G minor: ♭9 and ♭13 are in the key" / "V7/ii in C: the 9 is in the key, the 13 isn't" |
 | D5 | The **back door** (♭VII7 up a whole step to a major chord), or a **non-resolving** dominant whose root is diatonic (deceptive V7) | derive from the local key | "back door ♭VII7 to …" |
 | D6 | **Non-resolving with a chromatic root** (♭VI7 that doesn't resolve, ♭II7 sitting) | Lydian Dominant | "a chromatic dominant with nowhere to go: Lydian Dominant, its own key" |
-| D9 | **In a blues:** the I7 and IV7 (decided by their degree, before D3), or a V7 that doesn't resolve (after D3/D4; not in a minor blues) | Mixolydian (written tensions move it: D1+D9); Basic: the key's Blues scale | "I7 of the blues: a tonic with dominant colour, Mixolydian" / "IV7 of the blues: a subdominant with dominant colour, Mixolydian (the ♯11 is an extra colour)" / "V7 of the blues: a dominant that needn't resolve, Mixolydian" |
+| D9 | **In a blues:** the I7, IV7 and V7, decided by their degree before D2–D4 (a V7 with its ii before it is a ii–V and goes the usual way; not in a minor blues) | Mixolydian (written tensions move it: D1+D9); Basic: the key's Blues scale | "I7 of the blues: a tonic with dominant colour, Mixolydian" / "IV7 of the blues: a subdominant with dominant colour, Mixolydian (the ♯11 is an extra colour)" / "V7 of the blues: a dominant that needn't resolve, Mixolydian" |
 | D7 | **Modal or static** (a modal tune, or any dominant lasting four bars or more) | Mixolydian, or Lydian Dominant if the symbol says ♯11 | "static dominant: its own mode" |
 
 What D4 yields in a major key, for the record (the derivation, not a lookup):

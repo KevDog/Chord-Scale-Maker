@@ -20,4 +20,4 @@ section: A
 10 | Cm7    # ii of F7: Dorian
 10 | F7     # V7/I in Bb: natural tensions
 11 | B7#11  # a chromatic dominant with nowhere to go: Lydian Dominant, its own key
-12 | F13    # extended dominant: V7 of Bb7
+12 | F13    # V7 of the blues: a dominant that needn’t resolve, Mixolydian

@@ -17,5 +17,5 @@ bars: 12
 1  | Eb7#9   # I7 of the blues: a tonic with dominant colour; b9, #9 and #11 from the symbol
 5  | Ab7#11  # IV7 of the blues: a subdominant with dominant colour; #11 from the symbol
 7  | Eb7#9   # I7 of the blues: a tonic with dominant colour; b9, #9 and #11 from the symbol
-9  | Bb7#9   # extended dominant: V7 of Eb7#9; b9, #9 and #11 from the symbol
+9  | Bb7#9   # V7 of the blues: a dominant that needn’t resolve; b9, #9 and #11 from the symbol
 11 | Eb7#9   # I7 of the blues: a tonic with dominant colour; b9, #9 and #11 from the symbol

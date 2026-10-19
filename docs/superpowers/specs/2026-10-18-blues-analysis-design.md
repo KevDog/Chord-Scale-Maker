@@ -57,9 +57,10 @@ Order and precedence:
 - D9 takes the place of D5's blues clause (D5 keeps the back door and the unresolved diatonic dominant). Like today's
   D5 it is decided by degree before the chords around it, so a blues I7 before its IV7 is not an extended dominant. A
   stated function that names a target (V7/IV) still goes the usual way.
-- A V7 that resolves (a ii–V–I inside a jazz blues) keeps D4: in a major key its tensions from the key are the
-  Mixolydian ones, so the scale doesn't change; only the unresolved V7 moves from the D5 fallback to D9, and it is no
-  longer a fallback (no ❓).
+- A V7 with its ii before it (a ii–V–I inside a jazz blues) keeps D3/D4: in a major key its tensions from the key are
+  the Mixolydian ones, so the scale doesn't change. Any other blues V7 (bar 9, the bar-12 turnaround, a V7 after the I
+  triad) is D9, decided by its degree like the I7 and IV7, and no longer a fallback (no ❓). (Amended after review:
+  the first cut let a turnaround V7 take D3 and leave the Blues scale at Basic.)
 - A maj7 or mMaj7 chord is not a blues chord (the symbol says the 7th is major): the major and minor rules keep it.
 - A minor blues' V7 keeps the minor-key rules (D4 from the minor key: Phrygian Dominant).
 - In a minor key, a major triad on I (All Your Love's E major section in E minor) is still a blues chord: M6.

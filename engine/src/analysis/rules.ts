@@ -204,6 +204,9 @@ function dominant(ctx: Context, i: number): Decision {
   const blues = ctx.statedTarget[i] ? null : bluesAt(ctx, i)
   const step = blues ? BLUES_STEP[interval(blues.tonic, e.pc)] : undefined
   if (step === 'I' || step === 'IV') return bluesDominant(e, step)
+  // a blues V7 is decided by its degree too, unless its ii makes it a ii–V (Gm7 C7 | F7 goes the usual way); a minor
+  // blues' V7 keeps the minor key's rules
+  if (step === 'V' && !blues?.minor && !hasRelatedII(ctx.stream, i)) return bluesDominant(e, 'V')
   // a tritone substitute lands on a chord of its own; into a ø7 or °7 it is the V of what follows (Fm7 Bb7 | Aø7)
   if (n && downHalf(e, n) && n.family !== 'halfdim' && n.family !== 'dim') return dominantDecision(e, 'D2', `subV7 of ${n.chord}`, LYDIAN_DOMINANT, `tritone substitute: resolves down a half step to ${n.chord}`, false)
   if (n && downFifth(e, n) && isDominantLike(n)) {
@@ -247,9 +250,6 @@ function dominant(ctx: Context, i: number): Decision {
     }
     return dominantDecision(e, 'D4', `V7/${roman(implied, key)} in ${keyText(key)} (the ${roman(implied, key)} never arrives)`, derive(e, key), `V7/${roman(implied, key)} in ${keyText(key)}`, true)
   }
-  // D9: a blues V7 that resolves nowhere is the blues' own V, not a guess (a resolving one took D3 or D4 above); a minor
-  // blues' V7 keeps the minor key's rules
-  if (step === 'V' && !blues?.minor) return bluesDominant(e, 'V')
   if (e.bars >= 4) return dominantDecision(e, 'D7', 'static dominant', NATURAL, 'static dominant: its own mode', false)
   if (reference(key).includes(e.pc) || reference(key, true).includes(e.pc)) {
     const fn = `${roman(e, key)}7 in ${keyText(key)}, not resolving`
@@ -523,7 +523,7 @@ export const RULES: readonly RuleInfo[] = [
   { id: 'D3', family: 'dominant', tier: 4, scale: 'Mixolydian', looksAt: 'the next chord, another dominant a fifth down', summary: 'An extended dominant (V7 of another V7) keeps natural tensions: Mixolydian (a blues I7 before its IV7 is not one: D9). A link into the key’s own V7 is V7/V (the dominant of the dominant), the links before it arrows; a chain that never reaches the key’s V7 keeps each chord’s own degree.' },
   { id: 'D4', family: 'dominant', tier: 4, scale: 'derived from the key', looksAt: 'the chord it resolves to, a fifth down; the major or minor chord before it that it is the V of; or the ii before it', summary: 'A resolving dominant takes each tension (9, 11, 13) in the form the key holds.' },
   { id: 'D5', family: 'dominant', tier: 3, scale: 'derived from the key', looksAt: 'its degree: the back door, or a diatonic dominant', summary: 'A dominant a whole step below a major chord (the back door, ♭VII7), or a diatonic dominant that does not resolve, takes its tensions from the key.', guess: 'a diatonic dominant that does not resolve' },
-  { id: 'D9', family: 'dominant', tier: 3, scale: 'Mixolydian', looksAt: 'a blues: its degree, the I7 or IV7 (before the chords around it), or a V7 that does not resolve', summary: 'In a blues the I7 (a tonic with dominant colour), the IV7 and a V7 with nowhere it must go are Mixolydian; at Basic they play the key’s Blues scale. A minor blues’ V7 keeps the minor key’s rules.' },
+  { id: 'D9', family: 'dominant', tier: 3, scale: 'Mixolydian', looksAt: 'a blues: its degree, the I7, IV7 or V7 (before the chords around it), and for the V7 the chord before it', summary: 'In a blues the I7 (a tonic with dominant colour), the IV7 and the V7 are Mixolydian, unless a ii before the V7 makes it a ii–V; at Basic they play the key’s Blues scale. A minor blues’ V7 keeps the minor key’s rules.' },
   { id: 'D6', family: 'dominant', tier: 4, scale: 'Lydian Dominant', looksAt: 'a non-diatonic dominant with nowhere to go', summary: 'A non-diatonic dominant that does not resolve is Lydian Dominant: in a major key, ♭VII7, ♭VI7 or ♭III7 borrowed from the parallel minor; any other, a chromatic dominant in its own key.', guess: 'a chromatic dominant (not ♭VII7, ♭VI7 or ♭III7 in a major key)' },
   { id: 'M1', family: 'major', tier: 1, scale: 'Lydian', looksAt: 'a #11 in the symbol', summary: 'A maj7#11, or a triad with a #11 (Bb(#11)), is Lydian.' },
   { id: 'M2', family: 'major', tier: 1, scale: 'Lydian Augmented', looksAt: 'a #5 in the symbol', summary: 'A maj7#5 is Lydian Augmented; an augmented triad, Whole Tone.' },
