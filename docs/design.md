@@ -401,7 +401,7 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
 - **What:** a pattern (moves between neighbouring notes of the scale or the chord tones, e.g. `+2 −1`) run over each
   scale line, one stave a line, drawn by the Arpeggios sheet's staff. `buildPatternSheet` (`engine/src/patterns.ts`)
   builds the model; `ArpeggioSheet` takes `moves` and draws it, headed Patterns.
-- **Controls (Pattern group, only on this sheet):** a listbox of the 13 library patterns plus Custom… (`aria-label="Pattern"`;
+- **Controls (Pattern group, only on this sheet):** a listbox of the 14 library patterns plus Custom… (`aria-label="Pattern"`;
   the shown entry is the library pattern whose canonical text equals the stored one, else Custom); under Custom, a text
   box (`Custom pattern`) that writes the pattern only when `parsePattern` accepts it, else shows the error in
   `#pattern-error` (its `aria-describedby`); Notes: Scale · Chord tones; direction listbox (`Pattern direction`).

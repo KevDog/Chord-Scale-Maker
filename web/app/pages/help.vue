@@ -46,7 +46,7 @@
         </UiText>
         <UiText v-if="patternsOn">
           <strong class="font-semibold text-zinc-950 dark:text-white">Patterns</strong> runs a scale sequence over each scale line,
-          one staff a line: 1 2 3 4, thirds, triads and more, or one of your own, written as steps (<UiCode>+2 −1</UiCode> is up a third, back a step).
+          one staff a line: 1 2 3 4, thirds, triads, stacked fourths and more, or one of your own, written as steps (<UiCode>+2 −1</UiCode> is up a third, back a step).
           <strong class="font-semibold text-zinc-950 dark:text-white">Scale</strong> steps through the scale and
           <strong class="font-semibold text-zinc-950 dark:text-white">Chord tones</strong> through the chord. Up, Down or Up &amp; down.
         </UiText>
