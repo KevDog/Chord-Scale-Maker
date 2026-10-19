@@ -10,7 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-18',
     items: [
-      { text: 'Hexatonic: the diminished scales gain the pairs a tritone apart (C/F♯ over C7♭9, now its Auto pair), and the whole-tone scale its two augmented triads (C+/D+), after Walt Weiskopf.' },
+      { text: 'Hexatonic: the diminished scales gain the pairs a tritone apart (C/F♯ over C7♭9, now its Auto pair), and the whole-tone scale its two augmented triads (C+/D+), after Walt Weiskopf.', pr: 440 },
       { text: 'Hexatonic: Ranked against Key gives every chord in a key area the same triad pair, its IV and V triads (F/G across Dm7 G7 Cmaj7 in C), after Walt Weiskopf. On the Changes under Hexatonic options, and in the Scales sheet’s Hexatonic preset.', pr: 439 },
       { text: 'Triad pairs on the Arpeggios sheet: each chord’s triad pair as six triads through their inversions, arpeggiated or as block chords. Click the pair under the chord to pick another.', pr: 438 },
       { text: 'The Triad pair line’s Up & down now alternates chord by chord; with four notes a chord it only went up.', pr: 434 },
