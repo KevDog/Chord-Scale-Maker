@@ -224,6 +224,18 @@ describe('linkPreferences', () => {
     expect(linked({}).arpNotes.value).toBe('extended')
   })
 
+  it('keeps the Triad pairs shape, Arpeggiated by default, and a link overrides it for the visit only (#436)', async () => {
+    const p = prefs()
+    expect(p.arpShape.value).toBe('arpeggiated')
+    p.arpShape.value = 'block'
+    await nextTick()
+    expect(localStorage.getItem('csm-arp-shape')).toBe('block')
+    expect(prefs().arpShape.value).toBe('block')
+    localStorage.setItem('csm-arp-shape', 'stacked')
+    expect(prefs().arpShape.value).toBe('arpeggiated')
+    expect(linked({ sheet: 'arpeggios', arpNotes: 'pairs', arpShape: 'block' }).arpShape.value).toBe('block')
+  })
+
   it('keeps the Patterns choices in canonical form; text that does not parse reads as the default; a link overrides them for the visit only', async () => {
     const p = prefs()
     expect([p.pattern.value, p.patternNotes.value, p.patternDir.value]).toEqual(['+1 +1 +1 −2', 'scale', 'up'])

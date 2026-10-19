@@ -185,3 +185,38 @@ describe('interface levels', () => {
     expect((await withLevel()).find('[aria-label="Superimpose"]').exists()).toBe(true)
   })
 })
+
+describe('the Arpeggios sheet’s Triad pairs (#436)', () => {
+  const dir = (w: Awaited<ReturnType<typeof mount>>) => w.find('[aria-label="Arpeggio direction"]')
+
+  it('offers Triad pairs beside 7th Chord and Extended', async () => {
+    const w = await mount({ sheet: 'arpeggios', arpNotes: 'seventh', arpDir: 'up' })
+    expect(w.find('fieldset').text()).toContain('Triad pairs')
+  })
+
+  it('adds Block to the direction under Triad pairs only', async () => {
+    const seventh = await mount({ sheet: 'arpeggios', arpNotes: 'seventh', arpDir: 'up' })
+    await dir(seventh).trigger('click')
+    expect(seventh.findAll('[role=option]').map((o) => o.text())).toEqual(['Up', 'Down', 'Up & down'])
+    const pairs = await mount({ sheet: 'arpeggios', arpNotes: 'pairs', arpDir: 'up', arpShape: 'arpeggiated' })
+    await dir(pairs).trigger('click')
+    expect(pairs.findAll('[role=option]').map((o) => o.text())).toEqual(['Up', 'Down', 'Up & down', 'Block'])
+  })
+
+  it('shows Block while the shape is Block, and sets the shape or the direction', async () => {
+    const block = await mount({ sheet: 'arpeggios', arpNotes: 'pairs', arpDir: 'down', arpShape: 'block' })
+    expect(dir(block).text()).toBe('Block')
+    await dir(block).trigger('click')
+    await block.findAll('[role=option]')[2]?.trigger('click')
+    expect([block.emitted('update:arpShape')?.[0], block.emitted('update:arpDir')?.[0]]).toEqual([['arpeggiated'], ['up-down']])
+    const w = await mount({ sheet: 'arpeggios', arpNotes: 'pairs', arpDir: 'up', arpShape: 'arpeggiated' })
+    await dir(w).trigger('click')
+    await w.findAll('[role=option]')[3]?.trigger('click')
+    expect(w.emitted('update:arpShape')?.[0]).toEqual(['block'])
+    expect(w.emitted('update:arpDir')).toBeUndefined()
+  })
+
+  it('shows the direction, not Block, under 7th Chord whatever the shape', async () => {
+    expect(dir(await mount({ sheet: 'arpeggios', arpNotes: 'seventh', arpDir: 'down', arpShape: 'block' })).text()).toBe('Down')
+  })
+})

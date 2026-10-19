@@ -1,5 +1,5 @@
 import type { ChordAt } from './changes'
-import { type ChordPicks, livePicks, pickTarget } from './chordPicks'
+import { type ChordPicks, livePicks, type PickKind, pickTarget } from './chordPicks'
 import type { Row } from './chart'
 import { qualityScale } from './chart'
 import { type ChordToken, chordTokensOrNull, isRest, parseChord, writtenChordRoot, writtenChordRootLenient } from './chord'
@@ -230,16 +230,8 @@ export function buildSheet(
 ): SheetPart[] {
   const scaleOf = (r: Row, i: number): string | null => (resolved?.has(i) ? (resolved.get(i)?.scale ?? null) : qualityScale(r))
   const lines = scaleLines(rows, scaleOf)
-  const live = picks && livePicks(picks.picks, new Map(rows.flatMap((r, i) => {
-    const at = picks.at.get(i)
-    return at === undefined ? [] : [[at, pickTarget(r.chord, scaleOf(r, i))] as const]
-  })))
-  const toWritten = pcOf(writtenRoot(part, parseRoot('C'), 'ionian')) // concert pc + this = written pc
-  const covers = lines.map((l) => {
-    if (!picks || !live) return NO_COVER
-    const r = rows[l.row] as Row
-    return coverOf(l, picks.at, live, toWritten, practice, () => staffPairs(r, scaleOf(r, l.row), part))
-  })
+  const kind = isPentatonicSelection(practice) ? 'pentatonic' : isHexatonicSelection(practice) ? 'hexatonic' : null
+  const covers = lineCovers(rows, lines, part, scaleOf, kind, picks)
   return modesFor(choice).map((mode) => {
     const start = startFor(part, mode, startText)
     return {
@@ -256,10 +248,26 @@ export function buildSheet(
   })
 }
 
-type Cover = Readonly<{ positions: readonly ChordAt[]; varies: boolean; pick: StaffPick }>
+/** a line's picks of one kind (#303): the positions it covers, whether their picks differ, its first position's pick (written) */
+export type Cover = Readonly<{ positions: readonly ChordAt[]; varies: boolean; pick: StaffPick }>
 const NO_COVER: Cover = { positions: [], varies: false, pick: null }
+
+/** each line's Cover of the picks of a kind (none: positions only); without picks, none */
+export function lineCovers(rows: readonly Row[], lines: readonly ScaleLine[], part: Part, scaleOf: (r: Row, i: number) => string | null, kind: PickKind | null, picks?: SheetPicks): readonly Cover[] {
+  if (!picks) return lines.map(() => NO_COVER)
+  const live = livePicks(picks.picks, new Map(rows.flatMap((r, i) => {
+    const at = picks.at.get(i)
+    return at === undefined ? [] : [[at, pickTarget(r.chord, scaleOf(r, i))] as const]
+  })))
+  const toWritten = pcOf(writtenRoot(part, parseRoot('C'), 'ionian')) // concert pc + this = written pc
+  return lines.map((l) => {
+    const r = rows[l.row] as Row
+    return coverOf(l, picks.at, live, toWritten, kind, () => staffPairs(r, scaleOf(r, l.row), part))
+  })
+}
+
 /** a staff's triad pairs, as practiceFor reads them; [] when its scale can't be read */
-const staffPairs = (row: Row, scale: string | null, part: Part): readonly HexPair[] =>
+export const staffPairs = (row: Row, scale: string | null, part: Part): readonly HexPair[] =>
   (scale === null ? null : orNull(() => {
     const chordRoot = orNull(() => writtenChordRootLenient(part, row.chord, scale)) ?? scaleLabel(part, scale).root
     const quality = orNull(() => baseQuality(parseChord(row.chord).quality))
@@ -267,9 +275,8 @@ const staffPairs = (row: Row, scale: string | null, part: Part): readonly HexPai
   })) ?? []
 
 /** the line's positions, whether their picks differ, and its first position's pick (written); a hexatonic pick not among the staff's pairs plays the sheet's pair, so counts as none */
-function coverOf(line: ScaleLine, at: ReadonlyMap<number, ChordAt>, live: ChordPicks, toWritten: number, practice: PracticeSelection | null, pairsOf: () => readonly HexPair[]): Cover {
+function coverOf(line: ScaleLine, at: ReadonlyMap<number, ChordAt>, live: ChordPicks, toWritten: number, kind: PickKind | null, pairsOf: () => readonly HexPair[]): Cover {
   const positions = linePositions(line, at)
-  const kind = isPentatonicSelection(practice) ? 'pentatonic' : isHexatonicSelection(practice) ? 'hexatonic' : null
   if (!kind || !positions.length) return { positions, varies: false, pick: null }
   const written = (pc: number): number => mod(pc + toWritten, 12)
   const pairs = kind === 'hexatonic' ? pairsOf() : []

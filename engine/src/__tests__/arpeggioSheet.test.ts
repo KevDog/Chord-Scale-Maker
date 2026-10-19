@@ -4,9 +4,12 @@ import { arpeggioTones } from '../arpeggios'
 import { expandRows, parseChart, type Row } from '../chart'
 import { resolveScales } from '../resolve'
 import { buildSheet } from '../sheet'
-import { CONCERT, rangeOf } from '../part'
+import { CONCERT, type Part, rangeOf } from '../part'
 import { rootName } from '../pitch'
-import { arpeggioLine, ARP_DIRECTION_LABELS, ARP_NOTES_LABELS, buildArpeggioSheet, isArpDirection, isArpNotes, tensionsOf } from '../arpeggioSheet'
+import { arpeggioLine, ARP_DIRECTION_LABELS, ARP_NOTES_LABELS, buildArpeggioSheet, isArpDirection, isArpNotes, pairCaption, tensionsOf } from '../arpeggioSheet'
+import { chordPositions, pickTargets } from '../changes'
+import { hexatonicChoices } from '../chordChoices'
+import { NO_PICKS, withPick } from '../chordPicks'
 
 const names = (chord: string, scale: string): string[] =>
   tensionsOf(CONCERT, chord, scale, arpeggioTones(CONCERT, chord, scale) ?? []).map(rootName)
@@ -108,7 +111,7 @@ describe('arpeggioLine', () => {
   })
 
   it('has labels and guards', () => {
-    expect(Object.values(ARP_NOTES_LABELS)).toEqual(['7th Chord', 'Extended'])
+    expect(Object.values(ARP_NOTES_LABELS)).toEqual(['7th Chord', 'Extended', 'Triad pairs'])
     expect(Object.values(ARP_DIRECTION_LABELS)).toEqual(['Up', 'Down', 'Up & down'])
     expect([isArpNotes('extended'), isArpNotes('up'), isArpDirection('up-down'), isArpDirection('x')]).toEqual([true, false, true, false])
   })
@@ -209,5 +212,59 @@ describe('buildArpeggioSheet: range and the bar rule without a key', () => {
     const i = ns.findIndex((n) => rootName(n) === 'B')
     expect(i).toBeGreaterThan(0)
     expect(s?.accidentals[i]).toBe('n')
+  })
+})
+
+describe('buildArpeggioSheet: Triad pairs (#436)', () => {
+  const FORM = ['title: T', 'key: C', 'section: A', '1 | Dm7 | D Dorian', '2 | G7 | G Mixolydian', 'section: B', '1 | Dm7 | D Dorian'].join('\n') + '\n'
+  const doc = parseChart(FORM).value
+  const rows = expandRows(doc).value
+  const res = resolveScales(doc, { level: 'standard', seed: 0 })
+  const at = chordPositions(doc)
+  const targets = pickTargets(doc, res)
+  const staves = (opts: Parameters<typeof buildArpeggioSheet>[7] = {}, dir: 'up' | 'down' = 'up', part: Part = CONCERT) =>
+    buildArpeggioSheet(rows, part, 12, 'pairs', dir, undefined, res, opts).pages.flat()
+
+  it("plays each line's Auto pair, the Changes sheet's, as the six-triad figure", () => {
+    const [dm] = staves()
+    const auto = hexatonicChoices('Dm7', 'D Dorian', CONCERT)[0]!
+    expect(dm?.pair).toMatchObject({ hexatonic: { name: auto.name, picked: false }, coverage: auto.coverage, varies: false })
+    expect(dm?.notes).toHaveLength(18)
+    expect(dm?.groups).toEqual([3, 3, 3, 3, 3, 3])
+    expect(buildArpeggioSheet(rows, CONCERT, 12, 'pairs', 'up').heading).toBe('Triad pairs')
+  })
+
+  it('spells the pair for the part', () => {
+    const tenor: Part = { clef: 'treble', trans: 'Bb' }
+    expect(staves({}, 'up', tenor)[0]?.pair?.hexatonic?.name).toBe(hexatonicChoices('Dm7', 'D Dorian', tenor)[0]!.name)
+  })
+
+  it('takes the first position’s chord pick, and varies where they differ', () => {
+    const all = withPick(NO_PICKS, 'hexatonic', ['A:1:0', 'B:1:0'], [5, 7], targets)
+    expect(staves({ picks: { picks: all, at } })[0]?.pair).toMatchObject({ hexatonic: { name: 'F/G', picked: true }, varies: false, positions: ['A:1:0', 'B:1:0'], source: { chord: 'Dm7', scale: 'D Dorian' } })
+    const one = withPick(NO_PICKS, 'hexatonic', ['B:1:0'], [5, 7], targets)
+    expect(staves({ picks: { picks: one, at } })[0]?.pair).toMatchObject({ hexatonic: { picked: false }, varies: true })
+  })
+
+  it('writes block chords whatever the direction, and changes the id with the shape', () => {
+    const [block] = staves({ shape: 'block' }, 'down')
+    const [arp] = staves({ shape: 'arpeggiated' })
+    expect(block?.block).toBe(true)
+    expect(block?.notes).toEqual(arp?.notes)
+    expect(block?.id).not.toBe(arp?.id)
+  })
+
+  it("plays a chord with no pair as its 7th chord arpeggio, captioned 'no triad pair'", () => {
+    const [s] = buildArpeggioSheet([row('C6', 'C Major Pentatonic')], CONCERT, 12, 'pairs', 'up').pages.flat()
+    expect(s?.pair?.hexatonic).toBeNull()
+    expect(s?.block).toBeFalsy()
+    expect(s?.notes).toEqual(line('C6', 'C Major Pentatonic', 'seventh', 'up').notes)
+    expect(pairCaption(s!.pair!)).toBe('no triad pair')
+  })
+
+  it('captions the pair and what it covers', () => {
+    const p = { hexatonic: { name: 'F/G', link: 3, picked: false, sheet: 'F/G' }, coverage: 4, positions: [], varies: false, source: null }
+    expect(pairCaption(p)).toBe('F/G · covers 4')
+    expect(pairCaption({ ...p, varies: true })).toBe('F/G · covers 4 · varies')
   })
 })

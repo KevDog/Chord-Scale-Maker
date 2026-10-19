@@ -3,14 +3,14 @@
     <template v-if="$slots.status" #status><slot name="status" /></template>
     <template #default="{ page }">
       <div class="space-y-1 print:space-y-2">
-        <ArpeggioStaff v-for="s in page.staves" :key="s.id" :staff="s" :clef="part.clef" :intervals="intervals" />
+        <ArpeggioStaff v-for="s in page.staves" :key="s.id" :staff="s" :clef="part.clef" :intervals="intervals" :part="part" :pickable="pickable" @pick="(...a) => emit('pick', ...a)" />
       </div>
     </template>
   </SheetPages>
 </template>
 
 <script setup lang="ts">
-import { type ArpDirection, type ArpNotes, buildArpeggioSheet, buildPatternSheet, type Key, type Moves, type PatternNotes, pageSubtitle, type Part, type Resolved, type Row } from '@chord-scale-maker/engine'
+import { type ArpDirection, type ArpNotes, buildArpeggioSheet, buildPatternSheet, type ChordAt, type ChordPicks, type Key, type Moves, type PairShape, type PatternNotes, pageSubtitle, type Part, type PickKind, type Resolved, type Row } from '@chord-scale-maker/engine'
 
 const props = defineProps<{
   rows: readonly Row[]
@@ -27,13 +27,21 @@ const props = defineProps<{
   intervals?: boolean
   homeKey?: Key | null
   resolved?: ReadonlyMap<number, Resolved>
+  shape?: PairShape // Triad pairs (#436): Arpeggiated or Block
+  picks?: ChordPicks // Triad pairs: the chord picks (#303), played where positions are given too
+  positions?: ReadonlyMap<number, ChordAt> // each row's drawn position (chordPositions)
+  pickable?: boolean // Triad pairs' captions open the chord pick popover
 }>()
+const emit = defineEmits<{ pick: [kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null] }>()
 
 /** every printed page, in order, with its heading */
 const pages = computed(() => {
   const sheet = props.moves
     ? buildPatternSheet(props.rows, props.part, props.perPage, props.moves, props.notes as PatternNotes, props.dir, props.homeKey, props.resolved)
-    : buildArpeggioSheet(props.rows, props.part, props.perPage, props.notes as ArpNotes, props.dir, props.homeKey, props.resolved)
+    : buildArpeggioSheet(props.rows, props.part, props.perPage, props.notes as ArpNotes, props.dir, props.homeKey, props.resolved, {
+        shape: props.shape,
+        picks: props.picks && props.positions ? { picks: props.picks, at: props.positions } : undefined,
+      })
   return sheet.pages.map((staves) => ({ staves, subtitle: pageSubtitle(props.subtitle, props.instrumentLabel, sheet.heading) }))
 })
 </script>

@@ -128,6 +128,7 @@
             v-model:cells="prefs.cells.value"
             v-model:arp-notes="prefs.arpNotes.value"
             v-model:arp-dir="prefs.arpDir.value"
+            v-model:arp-shape="prefs.arpShape.value"
             v-model:pattern="prefs.pattern.value"
             v-model:pattern-notes="prefs.patternNotes.value"
             v-model:pattern-dir="prefs.patternDir.value"
@@ -259,6 +260,11 @@
             :intervals="prefs.intervals.value"
             :home-key="homeKey"
             :resolved="resolved"
+            :shape="prefs.arpShape.value"
+            :picks="chordPicks.picks.value"
+            :positions="positionsNow"
+            :pickable="ui.shows('chord-picks')"
+            @pick="onPick"
           >
             <template v-if="!focus.on.value && (statusText || copyError)" #status><SheetStatus :text="statusText" :failed="saveFailed" :error="copyError" /></template>
           </ArpeggioSheet>
@@ -491,12 +497,13 @@ const practiceStaves = computed(() =>
 const practiceBoxesNow = computed(() => practiceBoxes(practiceStaves.value, mode.value, start.value))
 const litNow = computed(() => litKeys(practiceStaves.value))
 const transposed = ref('')
-/** live chord picks of the kind the sheet shows: the Changes sheet's overlay, the Scales sheet's practice preset */
+/** live chord picks of the kind the sheet shows: the Changes sheet's overlay, the Scales sheet's practice preset, the Arpeggios sheet's Triad pairs */
 const picksInForce = computed((): boolean => {
   const s = selection.value
   const kind: PickKind | null = sheet.value === 'changes'
     ? (prefs.overlay.value === 'off' ? null : prefs.overlay.value)
-    : sheet.value === 'scales' && s ? (isPentatonicSelection(s) ? 'pentatonic' : isHexatonicSelection(s) ? 'hexatonic' : null) : null
+    : sheet.value === 'scales' && s ? (isPentatonicSelection(s) ? 'pentatonic' : isHexatonicSelection(s) ? 'hexatonic' : null)
+    : sheet.value === 'arpeggios' && prefs.arpNotes.value === 'pairs' ? 'hexatonic' : null
   return kind !== null && hasPicks(chordPicks.live.value, kind)
 })
 /** the Approach the sheet plays: none where the line takes none (approachApplies, #381) */
@@ -742,7 +749,7 @@ async function shareUrl(): Promise<string> {
     sheet: sheet.value,
     ...(sheet.value === 'changes' && approachShown.value !== 'none' ? { approach: approachShown.value } : {}), // the line's Approach (#298, #381)
     ...(sheet.value === 'patterns' ? { pattern: prefs.pattern.value, patternNotes: prefs.patternNotes.value, patternDir: prefs.patternDir.value } : {}),
-    ...(sheet.value === 'arpeggios' ? { arpNotes: prefs.arpNotes.value, arpDir: prefs.arpDir.value } : {}),
+    ...(sheet.value === 'arpeggios' ? { arpNotes: prefs.arpNotes.value, arpDir: prefs.arpDir.value, ...(prefs.arpNotes.value === 'pairs' ? { arpShape: prefs.arpShape.value } : {}) } : {}),
     ...(sheet.value === 'changes' && prefs.lineMode.value === 'arpeggio' ? { arpDir: prefs.arpDir.value, pentLeave: prefs.pentLeave.value } : {}), // the Pentatonic (#284) and Triad pair (#325) lines', under the receiver's own overlay
     ...(selection.value ? { practice: selection.value } : {}),
     ...(scaleLevel.level.value !== 'standard' ? { level: scaleLevel.level.value, seed: scaleLevel.seed.value } : {}),

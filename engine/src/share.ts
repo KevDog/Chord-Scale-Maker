@@ -2,6 +2,7 @@ import { isSheetLine, type SheetLine } from './arpeggios'
 import { type Approach, isApproach } from './approaches'
 import { type CellId, isCellId } from './cells'
 import { type ArpDirection, type ArpNotes, isArpDirection, isArpNotes } from './arpeggioSheet'
+import { isPairShape, type PairShape } from './triadPairSheet'
 import { type ChordPicks, chordPicksFrom, hasPicks } from './chordPicks'
 import { type InstrumentName, isInstrumentName } from './instruments'
 import { isPentatonicLeave, type PentatonicLeave } from './pentatonicLine'
@@ -36,9 +37,10 @@ export type ShareView = Readonly<{
   /** the guide tone line's Approach (#298); absent: none */
   approach?: Approach
   sheet?: ShareSheet
-  /** the Arpeggios sheet's choices: 7th Chord or Extended; Up, Down or Up & down */
+  /** the Arpeggios sheet's choices: 7th Chord, Extended or Triad pairs; Up, Down or Up & down; Triad pairs' shape (#436) */
   arpNotes?: ArpNotes
   arpDir?: ArpDirection
+  arpShape?: PairShape
   /** the Patterns sheet's choices (#298): the moves in canonical text, what they run over, the direction (arpDir's values) */
   pattern?: string
   patternNotes?: PatternNotes
@@ -129,6 +131,7 @@ export function shareViewFrom(v: unknown): ShareView | undefined {
     ...(o.sheet === 'scales' || o.sheet === 'changes' || o.sheet === 'arpeggios' || o.sheet === 'patterns' ? { sheet: o.sheet } : {}),
     ...(isArpNotes(o.arpNotes) ? { arpNotes: o.arpNotes } : {}),
     ...(isArpDirection(o.arpDir) ? { arpDir: o.arpDir } : {}),
+    ...(isPairShape(o.arpShape) ? { arpShape: o.arpShape } : {}),
     ...(parsed && 'moves' in parsed ? { pattern: formatPattern(parsed.moves) } : {}),
     ...(isPatternNotes(o.patternNotes) ? { patternNotes: o.patternNotes } : {}),
     ...(isArpDirection(o.patternDir) ? { patternDir: o.patternDir } : {}),

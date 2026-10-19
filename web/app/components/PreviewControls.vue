@@ -163,9 +163,10 @@
                 <UiLabel class="pl-3">Arpeggio</UiLabel>
                 <div class="flex flex-wrap items-center gap-2">
                   <SegmentedControl v-model="arpNotes" legend="Arpeggio" name="arp-notes" :options="arpNoteOptions" />
-                  <UiListbox v-model="arpDir" class="w-32" aria-label="Arpeggio direction">
-                    <template #selected="{ value }"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[value] }}</UiListboxLabel></template>
-                    <UiListboxOption v-for="d in ARP_DIRECTIONS" :key="d" :value="d"><UiListboxLabel>{{ ARP_DIRECTION_LABELS[d] }}</UiListboxLabel></UiListboxOption>
+                  <!-- Triad pairs (#436): Block joins the directions, as it takes none -->
+                  <UiListbox v-model="arpMotion" class="w-32" aria-label="Arpeggio direction">
+                    <template #selected="{ value }"><UiListboxLabel>{{ motionLabel(value) }}</UiListboxLabel></template>
+                    <UiListboxOption v-for="d in arpMotions" :key="d" :value="d"><UiListboxLabel>{{ motionLabel(d) }}</UiListboxLabel></UiListboxOption>
                   </UiListbox>
                 </div>
               </UiField>
@@ -218,7 +219,7 @@
     </template>
 
     <script setup lang="ts">
-    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
+    import { type Approach, APPROACH_LABELS, APPROACHES, ARP_DIRECTION_LABELS, ARP_DIRECTIONS, ARP_NOTES, ARP_NOTES_LABELS, ARPEGGIO_LABELS, ARPEGGIO_PATTERNS, type ArpDirection, CELL_SYSTEMS, type CellId, cellLabel, isCellId, SINGLE_CELLS, type ArpeggioPattern, type ArpNotes, fitRange, type InstrumentName, formatPattern, noteName, parsePattern, partFor, PATTERN_LIBRARY, type PatternNotes, type PentatonicBasis, type PentatonicDegree, PENTATONIC_LEAVE_LABELS, PENTATONIC_LEAVES, type PairShape, PAIR_SHAPE_LABELS, type PentatonicLeave, type PentatonicPathName, type PentatonicSide, type PentatonicStepUnit, type Range, rangeChoices } from '@chord-scale-maker/engine'
     import { degreeLabel, PENT_BASES, PENT_DEGREE_CHOICES, PENT_PATHS, PENT_RUNGS, PENT_SIDES, PENT_STEP_BARS, PENT_STEP_UNITS, pathLabel, rungLabel, sideShown } from '~/utils/pentatonics'
     import { approachApplies, type GuideFrom, type LineMode, lineModes } from '~/utils/sheetLine'
     import { type Overlay, OVERLAY_CHOICES, OVERLAY_TITLE, overlayLabel } from '~/utils/overlay'
@@ -266,6 +267,7 @@
     const cells = defineModel<CellId>('cells', { default: '3rd-3rd' })
     const arpNotes = defineModel<ArpNotes>('arpNotes', { default: 'seventh' })
     const arpDir = defineModel<ArpDirection>('arpDir', { default: 'up' })
+    const arpShape = defineModel<PairShape>('arpShape', { default: 'arpeggiated' })
     const pattern = defineModel<string>('pattern', { default: '+1 +1 +1 −2' })
     const patternNotes = defineModel<PatternNotes>('patternNotes', { default: 'scale' })
     const patternDir = defineModel<ArpDirection>('patternDir', { default: 'up' })
@@ -291,6 +293,21 @@
     const Passthrough: FunctionalComponent = (_, { slots }) => slots.default?.()
 
     const arpNoteOptions = ARP_NOTES.map((value) => ({ value, label: ARP_NOTES_LABELS[value] }))
+    /** the Arpeggios sheet's direction listbox: a direction, or under Triad pairs Block (#436) */
+    type ArpMotion = ArpDirection | 'block'
+    const arpMotions = computed((): readonly ArpMotion[] => (arpNotes.value === 'pairs' ? [...ARP_DIRECTIONS, 'block'] : ARP_DIRECTIONS))
+    const motionLabel = (m: ArpMotion): string => (m === 'block' ? PAIR_SHAPE_LABELS.block : ARP_DIRECTION_LABELS[m])
+    const arpMotion = computed<ArpMotion>({
+      get: () => (arpNotes.value === 'pairs' && arpShape.value === 'block' ? 'block' : arpDir.value),
+      set: (m) => {
+        if (m === 'block') {
+          arpShape.value = 'block'
+          return
+        }
+        if (arpShape.value === 'block') arpShape.value = 'arpeggiated'
+        arpDir.value = m
+      },
+    })
     const patternNoteOptions = [
       { value: 'scale', label: 'Scale' },
       { value: 'chord', label: 'Chord tones' },
