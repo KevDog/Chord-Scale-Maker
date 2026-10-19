@@ -303,7 +303,7 @@
 
         <UiSubheading :level="3" class="pt-2">Transposing</UiSubheading>
         <UiText>
-          <strong class="font-semibold text-zinc-950 dark:text-white">Transpose…</strong> moves the whole chart to another
+          <strong class="font-semibold text-zinc-950 dark:text-white">Transpose…</strong>, beside Edit, moves the whole chart to another
           key, so you can work on a tune in all twelve. It spells things sensibly for the new key (D♭–7 G♭7 in B♭, not
           C♯–7 F♯7: <DecisionLink id="spell.transpose">why</DecisionLink>). To undo it, transpose back. That's different from the Instrument setting, which only changes how the
           sheet is written.
