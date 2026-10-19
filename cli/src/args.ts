@@ -2,15 +2,17 @@ import { parseArgs } from 'node:util'
 import type { IRealPlaylist } from '@chord-scale-maker/engine'
 
 /** the header lines csm add can set, one flag each */
-export type HeaderFlag = 'composer' | 'form' | 'style' | 'kind' | 'aka' | 'recording' | 'source' | 'version'
-export const HEADER_FLAGS: readonly HeaderFlag[] = ['composer', 'form', 'style', 'kind', 'aka', 'recording', 'source', 'version']
+export type HeaderFlag = 'composer' | 'form' | 'style' | 'kind' | 'aka' | 'recording' | 'source' | 'version' | 'context'
+export const HEADER_FLAGS: readonly HeaderFlag[] = ['composer', 'form', 'style', 'kind', 'aka', 'recording', 'source', 'version', 'context']
 const KINDS = ['tune', 'form', 'exercise']
+const CONTEXTS = ['auto', 'functional', 'modal', 'blues']
 
 export type AddArgs = Readonly<{ input: string; list: boolean; song?: string; force: boolean; print: boolean; overrides: Readonly<Partial<Record<HeaderFlag, string>>> }>
 
 export const USAGE = [
   'usage: csm add <irealb:// link | export.html> [--list] [--song <n | title>] [--force] [--print]',
   '               [--composer …] [--form …] [--style …] [--kind tune|form|exercise] [--aka …] [--recording …] [--source …] [--version …]',
+  '               [--context auto|functional|modal|blues]',
 ].join('\n')
 
 /** csm add's arguments, or the usage error */
@@ -41,6 +43,8 @@ export function parseAddArgs(argv: readonly string[]): AddArgs | string {
   const song = str('song')
   const kind = str('kind')
   if (kind !== undefined && !KINDS.includes(kind)) return `--kind is tune, form or exercise\n${USAGE}`
+  const context = str('context')
+  if (context !== undefined && !CONTEXTS.includes(context)) return `--context is auto, functional, modal or blues\n${USAGE}`
   const overrides = Object.fromEntries(HEADER_FLAGS.flatMap((f) => (str(f) === undefined ? [] : [[f, str(f)]])))
   return { input, list: !!values.list, ...(song === undefined ? {} : { song }), force: !!values.force, print: !!values.print, overrides }
 }

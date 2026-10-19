@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { type ChartDoc, chartMeta, parseChart, serializeChart } from '../chart'
-import { cellError, insertKeyBefore, insertRowAfter, removeLine, sameChart, setKeyLine, setMeta, setRowChord, setRowField } from '../edit'
+import { cellError, clearMeta, insertKeyBefore, insertRowAfter, removeLine, sameChart, setKeyLine, setMeta, setRowChord, setRowField } from '../edit'
 
 const doc = parseChart('title: T\n\nsection: A\nbars: 4\n1 | Cm7\n# note\n2 | F7 | F Mixolydian\n').value
 
@@ -109,5 +109,14 @@ describe('key changes', () => {
     expect(insertKeyBefore(doc, 0, 'D')).toBe(doc)
     expect(insertKeyBefore(doc, 2, 'D')).toBe(doc)
     expect(setKeyLine(doc, 2, 'D')).toBe(doc)
+  })
+})
+
+describe('clearMeta', () => {
+  it('removes the line, and leaves a chart without one as it is', () => {
+    const doc = parseChart('title: T\ncontext: blues\nkey: F\n').value
+    expect(serializeChart(clearMeta(doc, 'context'))).not.toMatch(/context:/)
+    const none = parseChart('title: T\nkey: F\n').value
+    expect(clearMeta(none, 'context')).toBe(none)
   })
 })

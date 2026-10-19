@@ -121,6 +121,7 @@ exports[`exports the same names 1`] = `
   "chordsAfterTyping",
   "chunk",
   "cleanLettering",
+  "clearMeta",
   "clockOf",
   "comfortBand",
   "compareKeys",
