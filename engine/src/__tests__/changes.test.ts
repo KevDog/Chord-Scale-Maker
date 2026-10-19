@@ -11,6 +11,7 @@ import { CONCERT, concertPc, type Part, partFor, rangeOf } from '../part'
 import { parseRoot, pcOf, rootName, type Spelled } from '../pitch'
 import type { PentatonicLine } from '../pentatonicLine'
 import type { TriadPairLine } from '../triadPairLine'
+import type { QuartalLine } from '../quartalLine'
 import { toVexKey } from '../sheet'
 import type { ScaleView } from '../resolve'
 import { type PentatonicDegree, PENTATONIC_HOME, type PentatonicPathName, type PentatonicStep } from '../pentatonics'
@@ -845,6 +846,25 @@ describe('buildChanges with a Pentatonic line (#284)', () => {
   it('gives a Pentatonic line the page count of an arpeggio line', () => {
     const rows = { numerals: true, scales: true, pentatonics: true }
     expect(changesLinesPerPage(PENT, rows)).toBe(changesLinesPerPage('up-root', rows))
+  })
+})
+
+describe('buildChanges with a Quartal line (#432)', () => {
+  const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Dm7\n2 | G7\n3 | Cmaj7\n4 | C7 | C Half-Whole\n').value
+  const Q = { kind: 'quartal' } as const
+  const LINE: QuartalLine = { kind: 'quartal', dir: 'up-down', arpeggio: 'up-root' }
+  const keys = (sheet: ChangesSheet) => sheet.lines.flatMap((l) => l.bars.map((b) => b.voice.map((n) => (n.pitch ? toVexKey(n.pitch) : 'r'))))
+  it("plays each chord's labelled stack, whole; a chord with none its 7th chord arpeggio", () => {
+    const bars = keys(buildChanges(doc, CONCERT, 4, false, LINE, undefined, Q))
+    expect(bars.slice(0, 3)).toEqual([['d/4', 'g/4', 'c/5', 'f/5'], ['a/5', 'e/5', 'b/4', 'f/4'], ['e/4', 'a/4', 'd/5', 'g/5']])
+    expect(bars[3]!.map((k) => k.replace(/\/\d/, ''))).toEqual(['c', 'e', 'g', 'bb']) // half-whole: no stack
+  })
+  it('plays a pick: the stack its label names', () => {
+    const targets = pickTargets(doc, resolveScales(doc, { level: 'standard', seed: 0 }))
+    const picks = withPick(NO_PICKS, 'quartal', ['A:1:0'], 4, targets).quartal // Dm7: E A D G
+    const sheet = buildChanges(doc, CONCERT, 4, false, LINE, undefined, { kind: 'quartal', picks })
+    expect(sheet.lines[0]!.bars[0]!.chords[0]!.quartal!.name).toBe('E A D G')
+    expect(keys(sheet)[0]).toEqual(['e/4', 'a/4', 'd/5', 'g/5'])
   })
 })
 

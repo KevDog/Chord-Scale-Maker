@@ -1,5 +1,5 @@
 import type { Ref, WritableComputedRef } from 'vue'
-import { type Approach, type ArpDirection, type CellId, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, isPairShape, isPatternNotes, isPentatonicLeave, type HexatonicBasis, type PairShape, type QuartalNotes, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, type ShareView } from '@chord-scale-maker/engine'
+import { type Approach, type ArpDirection, type CellId, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isInstrumentName, isPairShape, isPatternNotes, isPentatonicLeave, type HexatonicBasis, type PairShape, type QuartalNotesChoice, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, type ShareView } from '@chord-scale-maker/engine'
 import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
@@ -76,8 +76,8 @@ export function usePreferences() {
   const pentBasis = storedRef<PentatonicBasis>('csm-pent-basis', (s) => (s === 'key' || s === 'chord' ? s : undefined), 'key')
   // #432: what the Hexatonic pairs rank against: each chord's scale (Auto) until Key is chosen
   const hexBasis = storedRef<HexatonicBasis>('csm-hex-basis', (s) => (s === 'key' || s === 'chord' ? s : undefined), 'chord')
-  // #432: the Quartal overlay's stacks: notes a stack (4 until 3 is chosen), and perfect fourths only (off until on)
-  const quartNotes = storedRef<QuartalNotes>('csm-quart-notes', (s) => (s === '3' ? 3 : s === '4' ? 4 : undefined), 4)
+  // #432: the Quartal overlay's stacks: notes a stack (Auto, by the range, until 3 or 4 is chosen), and perfect fourths only (off until on)
+  const quartNotes = storedRef<QuartalNotesChoice>('csm-quart-notes', (s) => (s === '3' ? 3 : s === '4' ? 4 : s === 'auto' ? 'auto' : undefined), 'auto')
   const quartPerfect = storedRef<boolean>('csm-quart-perfect', (s) => s === 'on', false, (v) => (v ? 'on' : 'off'))
   const pentDegree = storedRef<PentatonicDegree>('csm-pent-degree', (s) => pentatonicDegreeFrom(/^\d+$/.test(s) ? Number(s) : s), 'auto')
   // #284: the Pentatonic line's Leave out (its direction is arpDir's)

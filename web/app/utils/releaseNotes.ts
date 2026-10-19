@@ -8,6 +8,12 @@ export type ReleaseNote = Readonly<{ date: string; items: readonly ReleaseItem[]
 
 export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
+    date: '2026-10-19',
+    items: [
+      { text: 'Line: under Superimpose: Quartal the 7th Chords slot plays Quartal, each chord’s stack of fourths whole, then its next stacks, up, down or both. Quartal options’ Notes gains Auto: four notes a stack where your range has room, else three.', pr: 443 },
+    ],
+  },
+  {
     date: '2026-10-18',
     items: [
       { text: 'Superimpose: Quartal names each chord’s stack of fourths under it on the Changes sheet (D G C F over Dm7); click one to pick another. Quartal options set three or four notes and perfect fourths only.', pr: 442 },

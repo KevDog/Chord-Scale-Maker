@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { parseRoot, pcOf, type Spelled } from '../pitch'
-import { quartalCaption, quartalPick, quartalRanking, quartalStacks } from '../quartal'
+import { quartalCaption, quartalPick, quartalRanking, quartalStacks, rankedStacks, stackFits } from '../quartal'
 import { type ScaleKey, spellScale } from '../scales'
 
 const scale = (root: string, key: ScaleKey): readonly Spelled[] => spellScale(parseRoot(root), key)
@@ -85,5 +85,22 @@ describe('quartalPick', () => {
   it('captions the stack and its kind', () => {
     expect(quartalCaption({ name: 'D G C F', degree: 2, notes: 4, picked: false, sheet: 'D G C F' })).toBe('D G C F · 4ths')
     expect(quartalCaption(null)).toBe('no 4ths stack')
+  })
+})
+
+describe('Notes Auto (#432)', () => {
+  const TREBLE = { lo: 60, hi: 81, centre: 69 } // C4–A5
+  const NARROW = { lo: 60, hi: 74, centre: 67 } // C4–D5: no 4-note stack fits
+  it('fits a stack where some octave of it lies in the range', () => {
+    const [cfbe, dgcf, , , gcfb] = stacks('C', 'ionian', null)
+    expect([dgcf, cfbe, gcfb].map((s) => stackFits(s!, TREBLE))).toEqual([true, true, false]) // D4–F5, C4–E5 (16 semitones); G4–B5 is out, G3 too
+    expect(stackFits(dgcf!, NARROW)).toBe(false)
+  })
+
+  it('stacks four notes where two of the chord’s four-note stacks fit the range, else three', () => {
+    const ranked = (range: typeof TREBLE) => rankedStacks(scale('D', 'dorian'), parseRoot('D'), 'm7', 'auto', false, range).map((s) => s.name)
+    expect(ranked(TREBLE)[0]).toBe('D G C F')
+    expect(ranked(NARROW)[0]).toBe('G C F')
+    expect(rankedStacks(scale('D', 'dorian'), parseRoot('D'), 'm7', 3, false, TREBLE)[0]?.name).toBe('G C F') // a set number is kept
   })
 })

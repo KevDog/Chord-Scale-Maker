@@ -13,13 +13,14 @@ import { keySignature } from './keySignature'
 import { type CellsLine, cellsVoices } from './cells'
 import { type PentatonicLine, pentatonicVoices } from './pentatonicLine'
 import { type TriadPairLine, triadPairVoices } from './triadPairLine'
-import { concertPc, type Part, scaleLabel, writtenRoot, writtenScale } from './part'
+import { concertPc, type Part, rangeOf, scaleLabel, writtenRoot, writtenScale } from './part'
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled, shiftBy } from './pitch'
 import { isPentatonicPreset, type PentatonicDegree, pentatonicDegreeFrom, PENTATONIC_HOME, PENTATONIC_STEP, pentatonicAt, pentatonicCycle, pentatonicPathCaption, type PentatonicPathName, type PentatonicStep, pentatonicLadder, pentatonicRanking, type RankedPentatonic, type PentatonicRung, type PentatonicView } from './pentatonics'
 import { baseQuality, readChord } from './qualities'
 import { type Resolved, resolveScales, type ScaleView } from './resolve'
 import { abbreviateScale } from './scales'
-import { type QuartalNotes, quartalRanking, type QuartalStack, quartalStacks } from './quartal'
+import { type QuartalNotesChoice, type QuartalStack, rankedStacks } from './quartal'
+import { type QuartalLine, quartalVoices } from './quartalLine'
 import { chunk, orNull } from './util'
 
 /**
@@ -60,7 +61,7 @@ export type ChangesPentatonic = Readonly<{
   source: PickSource
 }>
 /** the line the Changes sheet draws: off, a guide tone line, a 7th chord arpeggio pattern, the Pentatonic line (#284) or the Triad pair line (#325) */
-export type ChangesLineChoice = SheetLine | PentatonicLine | TriadPairLine | CellsLine
+export type ChangesLineChoice = SheetLine | PentatonicLine | TriadPairLine | QuartalLine | CellsLine
 /** a section the Changes sheet draws (a block): its key (its first section's name), its marker, its place in the form */
 export type ChangesSection = Readonly<{ key: string; marker: string; part: FormPart }>
 /** the pentatonic row's rungs (#264): a section's own view, else fallback; counts: the shared count follows each label */
@@ -78,7 +79,7 @@ export type PentatonicPlan = Readonly<{
 /** the Hexatonic overlay: each chord's Auto pair on its resolved scale (basis 'chord', the default) or its key area's pair (basis 'key', #432), or its live pick (#303) */
 export type HexatonicPlan = Readonly<{ kind: 'hexatonic'; basis?: HexatonicBasis; picks?: Readonly<Record<ChordAt, HexPick>> }>
 /** the Quartal overlay (#432): each chord's Auto stack of fourths on its resolved scale (notes: 3 or 4, default 4; perfect: perfect fourths only), or its live pick */
-export type QuartalPlan = Readonly<{ kind: 'quartal'; notes?: QuartalNotes; perfect?: boolean; picks?: Readonly<Record<ChordAt, QuartPick>> }>
+export type QuartalPlan = Readonly<{ kind: 'quartal'; notes?: QuartalNotesChoice; perfect?: boolean; picks?: Readonly<Record<ChordAt, QuartPick>> }>
 /** the row under the chords (Off | Pentatonic | Hexatonic | Quartal): null for none */
 export type OverlayPlan = PentatonicPlan | HexatonicPlan | QuartalPlan
 /**
@@ -610,7 +611,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
 
   const quartRankings = new Map<string, readonly QuartalStack[]>()
   /** a chord's quartal stack (#432): its live pick (a bottom note, concert) where its scale has that stack, else Auto */
-  const quartalOf = (scale: string | null, chordText: string, at: ChordAt, target: string): Readonly<{ q: ChangesQuartal; stack: QuartalStack }> | null => {
+  const quartalOf = (scale: string | null, chordText: string, at: ChordAt, target: string): Readonly<{ q: ChangesQuartal; stacks: readonly QuartalStack[] }> | null => {
     if (overlay?.kind !== 'quartal' || !scale) return null
     const k = `${scale}|${chordText}`
     if (!quartRankings.has(k)) {
@@ -618,7 +619,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         const w = writtenScale(part, scale)
         const chordRoot = orNull(() => writtenChordRootLenient(part, chordText, scale)) ?? w.root
         const quality = orNull(() => baseQuality(parseChord(chordText).quality))
-        return quartalRanking(quartalStacks(w.notes, chordRoot, quality, overlay.notes ?? 4, !!overlay.perfect), chordRoot)
+        return rankedStacks(w.notes, chordRoot, quality, overlay.notes ?? 'auto', !!overlay.perfect, rangeOf(part))
       })
       quartRankings.set(k, ranking ?? [])
     }
@@ -628,15 +629,16 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     const pick = livePick(overlay.picks ?? {}, at, target)
     const found = pick ? ranking.find((s) => s.pcs[0] === mod(pick.pc + toWritten, 12)) : undefined
     const used = found ?? auto
-    return { q: { label: used.name, name: used.name, chord: at, picked: !!found, run: [], sheet: auto.name, source: { chord: chordText, scale }, degree: used.degree }, stack: used }
+    return { q: { label: used.name, name: used.name, chord: at, picked: !!found, run: [], sheet: auto.name, source: { chord: chordText, scale }, degree: used.degree }, stacks: [used, ...ranking.filter((s) => s !== used)] }
   }
-  const quartAt = new Map(
+  const quartAt: ReadonlyMap<number, Readonly<{ q: ChangesQuartal; stacks: readonly QuartalStack[] }> | null> = new Map(
     blocks.flatMap((b) => b.rows).map((i) => {
       const row = rows[i] as LinedRow
       const scale = resolved.get(i)?.scale ?? null
       return [i, quartalOf(scale, row.chord, keyOf.get(i) ?? '', pickTarget(row.chord, scale))] as const
     }),
   )
+  const quartStacks = new Map([...quartAt].flatMap(([i, q]) => (q ? [[i, q.stacks] as const] : [])))
 
   // each drawn chord's pentatonic (its label's, picks and all), worked out before the line, which plays it (#284)
   const pentAt = new Map<number, ChangesPentatonic | null>()
@@ -660,7 +662,9 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
               ? pentatonicVoices(drawn(), part, clock, keySig, line, pentRoots)
               : line.kind === 'cells'
                 ? cellsVoices(drawn((i, row) => resolved.get(i)?.scale ?? qualityScale(row)), part, clock, keySig, line, approach) // the scale the sheet shows
-                : triadPairVoices(drawn(), part, clock, keySig, line, hexPairs)),
+                : line.kind === 'quartal'
+                  ? quartalVoices(drawn(), part, clock, keySig, line, quartStacks)
+                  : triadPairVoices(drawn(), part, clock, keySig, line, hexPairs)),
             labels: new Map(),
           }
         : isArpeggioPattern(line)
