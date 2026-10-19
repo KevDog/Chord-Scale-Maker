@@ -403,7 +403,9 @@
           <UiText>
             While Superimpose is Hexatonic, the 7th Chords slot plays each chord's pair a triad at a time, its lower triad
             first: <UiCode>G/Am</UiCode> plays G B D, then A C E from the note nearest D. The direction, the starts and the
-            turns at your range's edges are the Pentatonic line's. A chord with no pair plays its 7th chord arpeggio.
+            turns at your range's edges are the Pentatonic line's. Up &amp; down turns with each triad; where a chord has room
+            for one triad and a note of the next, the cut triad doesn't count, so the chords alternate up and down. A chord
+            with no pair plays its 7th chord arpeggio.
           </UiText>
         </DecisionSection>
 
