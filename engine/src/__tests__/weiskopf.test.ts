@@ -50,9 +50,6 @@ const AUTO_DIFFERS = new Set([
   'Dm(maj7), first cousin',
   'Dm',
   'A7♭9',
-  'G7♭9',
-  'D°7',
-  'G7♯5',
 ])
 
 describe("Weiskopf's Table of Triad Pairs (pp. 20–22) against Auto", () => {

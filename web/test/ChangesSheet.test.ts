@@ -161,7 +161,7 @@ describe('ChangesSheet pentatonic tints, no contour band (#265, #277)', () => {
 })
 
 describe('ChangesSheet Hexatonic overlay', () => {
-  const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n2 | Cmaj7\n3 | C7#5 | C Whole Tone\n4 | Dm7').value
+  const doc = parseChart('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n2 | Cmaj7\n3 | C6 | C Major Pentatonic\n4 | Dm7').value
   const HEX = { kind: 'hexatonic' } as const
   const mountHex = (over: Readonly<Record<string, unknown>> = {}) => mountSuspended(ChangesSheet, { props: { doc, title: 'T', subtitle: '', part: CONCERT, instrumentLabel: '', numerals: true, scales: true, overlay: HEX, ...over } })
 

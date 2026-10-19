@@ -72,7 +72,29 @@ export const chordTonePcs = (chordRoot: Spelled, quality: string | null): Readon
   return new Set(degrees ? spellFrom(chordRoot, degrees.join(' ')).map(pcOf) : [])
 }
 
-/** a staff's pairs: the chain's links whose triads are both standard and share no note, in chain order from 1, with chord-tone coverage */
+/** the scale's notes repeat a step of `by` semitones round the octave (diminished: 3, whole tone: 2) */
+const symmetric = (pcs: ReadonlySet<number>, size: number, by: number): boolean => pcs.size === size && [...pcs].every((pc) => pcs.has(mod(pc + by, 12)))
+
+/**
+ * a symmetric scale's pairs off its chain (#432), after Weiskopf, Intervalic Improvisation, pp. 12, 16: on a diminished
+ * scale the major triads a tritone apart, then the minor ones, each lower root first in scale order; on whole tone its
+ * two augmented triads, a whole step apart; none on any other scale
+ */
+function offChainLinks(scale: readonly Spelled[]): readonly Readonly<{ lower: ChainTriad; upper: ChainTriad }>[] {
+  const pcs = new Set(scale.map(pcOf))
+  if (symmetric(pcs, 6, 2)) return [{ lower: chainTriad(scale[0]!, 'aug'), upper: chainTriad(scale[1]!, 'aug') }]
+  if (!symmetric(pcs, 8, 3)) return []
+  return (['maj', 'min'] as const).flatMap((quality) =>
+    scale.flatMap((root, i) => {
+      const lower = chainTriad(root, quality)
+      const j = scale.findIndex((n) => pcOf(n) === mod(pcOf(root) + 6, 12))
+      if (j <= i || !lower.pcs.every((pc) => pcs.has(pc))) return []
+      return [{ lower, upper: chainTriad(scale[j]!, quality) }]
+    }),
+  )
+}
+
+/** a staff's pairs: the chain's links whose triads are both standard and share no note, in chain order from 1, then a symmetric scale's off-chain pairs (offChainLinks), with chord-tone coverage */
 export function hexatonicPairs(scale: readonly Spelled[], chordRoot: Spelled, quality: string | null): readonly HexPair[] {
   const chain = triadChain(scale)
   const tones = chordTonePcs(chordRoot, quality)
@@ -81,7 +103,7 @@ export function hexatonicPairs(scale: readonly Spelled[], chordRoot: Spelled, qu
     if (lower === null || upper === null || upper.pcs.some((pc) => lower.pcs.includes(pc))) return []
     return [{ lower, upper }]
   })
-  return links.map(({ lower, upper }, i) => {
+  return [...links, ...offChainLinks(scale)].map(({ lower, upper }, i) => {
     const base = lower.pcs[0]!
     const six = [...lower.pcs, ...upper.pcs].sort((a, b) => mod(a - base, 12) - mod(b - base, 12))
     return { link: i + 1, lower, upper, name: `${lower.name}/${upper.name}`, tones: six, coverage: six.filter((pc) => tones.has(pc)).length }

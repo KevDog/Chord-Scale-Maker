@@ -333,7 +333,7 @@ describe('ChangesSystem hexatonic row', () => {
   }
 
   it('labels each chord with its pair where it changes, blank where the scale has none, and draws no pentatonic row', async () => {
-    const w = await mountHex('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n2 | Cmaj7\n3 | C7#5 | C Whole Tone\n4 | Dm7')
+    const w = await mountHex('title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n2 | Cmaj7\n3 | C6 | C Major Pentatonic\n4 | Dm7')
     expect(w.findAll('[data-slot="hexatonic"] > span').map((s) => s.find('span').text())).toEqual(['G/Am', 'C/Dm'])
     expect(w.find('[data-slot="pentatonic"]').exists()).toBe(false)
     expect(w.findAllComponents({ name: 'PentatonicLadder' })).toHaveLength(0)

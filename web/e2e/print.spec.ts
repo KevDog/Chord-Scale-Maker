@@ -245,7 +245,7 @@ for (const [count, pages] of [[12, 1], [13, 2]] as const) {
 // in the label column, so the label, not the staff, sets those lines' height, and 12 of them end within a few px of
 // the page's foot: whether the 12th fits depends on the platform's font metrics (on macOS, not on Linux CI)
 test('prints the longest hexatonic captions on one line', async ({ page }) => {
-  const kinds = ['7 | {} Whole Tone', 'mMaj7 | {} Melodic Minor', 'm6 | {} Harmonic Minor', '7 | {} Half-Whole', '7 | {} Bebop Dominant']
+  const kinds = ['6 | {} Major Pentatonic', 'mMaj7 | {} Melodic Minor', 'm6 | {} Harmonic Minor', '7 | {} Half-Whole', '7 | {} Bebop Dominant']
   const roots = ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B']
   const rows = roots.map((r, i) => `${i + 1} | ${r}${kinds[i % kinds.length]!.replace('{}', r)}`)
   await writeChart(page, `title: T\nkey: C\nsection: A\n${rows.join('\n')}`)

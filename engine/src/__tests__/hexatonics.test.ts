@@ -40,7 +40,24 @@ describe('the triad chain', () => {
 
   it('has no chain on whole tone, and no pairs on blues or the pentatonics', () => {
     expect(triadChain(scale('C', 'whole tone'))).toEqual([])
-    for (const key of ['whole tone', 'blues', 'major pentatonic', 'minor pentatonic'] as const) expect(pairNames('C', key)).toEqual([])
+    for (const key of ['blues', 'major pentatonic', 'minor pentatonic'] as const) expect(pairNames('C', key)).toEqual([])
+  })
+
+  it('adds the off-chain pairs of a diminished scale after its chain (#432): the major triads a tritone apart, then the minor ones', () => {
+    expect(pairNames('C', 'half whole diminished').slice(8)).toEqual(['C/F♯', 'E♭/A', 'Cm/F♯m', 'E♭m/Am'])
+    expect(pairNames('C', 'whole half diminished').slice(8)).toEqual(['D/A♭', 'F/B', 'Dm/A♭m', 'Fm/Bm'])
+    expect(hexatonicPairs(scale('C', 'half whole diminished'), C, null).map((p) => p.link)).toEqual([1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12])
+  })
+
+  it('pairs the whole-tone scale’s two augmented triads, a whole step apart (#432)', () => {
+    expect(pairNames('C', 'whole tone')).toEqual(['C+/D+'])
+    expect(pairNames('G', 'whole tone', 'G', '7')).toEqual(['G+/A+'])
+    expect(hexatonicPairs(scale('G', 'whole tone'), parseRoot('G'), '7')[0]?.coverage).toBe(3) // G B, and F of A+ (A C♯ F)
+  })
+
+  it('adds no off-chain pairs to a scale that is not symmetric', () => {
+    expect(pairNames('C', 'bebop major')).toHaveLength(4)
+    expect(pairNames('C', 'ionian')).toHaveLength(7)
   })
 
   it("lists major's seven pairs in chain order", () => {
@@ -107,7 +124,7 @@ describe('Auto', () => {
     expect(auto('C', 'ionian', 'Maj7')).toBe('G/Am')
     expect(auto('D', 'dorian', 'm7')).toBe('C/Dm')
     expect(auto('G', 'mixolydian', '7')).toBe('Dm/Em')
-    expect(auto('C', 'half whole diminished', '7')).toBe('E♭/Am')
+    expect(auto('C', 'half whole diminished', '7')).toBe('C/F♯') // Campbell's table gives E♭/Am; the tritone pair (#432) covers as many and sits on the root
   })
 
   it("matches the table's coverage-4 pairs", () => {
@@ -115,7 +132,7 @@ describe('Auto', () => {
     expect(four('C', 'ionian', 'Maj7')).toEqual(['Em/F', 'G/Am', 'B°/C'])
     expect(four('D', 'dorian', 'm7')).toEqual(['F/G', 'Am/B°', 'C/Dm'])
     expect(four('G', 'mixolydian', '7')).toEqual(['B°/C', 'Dm/Em', 'F/G'])
-    expect(four('C', 'half whole diminished', '7')).toEqual(['E♭/Am', 'E♭m/C'])
+    expect(four('C', 'half whole diminished', '7')).toEqual(['E♭/Am', 'E♭m/C', 'C/F♯'])
   })
 
   it('ranks a pair of major and minor triads ahead of a coverage tie with a diminished one', () => {
@@ -141,7 +158,7 @@ describe('hexatonicRanking', () => {
     ['C', 'ionian', 'Maj7', 'G/Am'],
     ['D', 'dorian', 'm7', 'C/Dm'],
     ['G', 'mixolydian', '7', 'Dm/Em'],
-    ['C', 'half whole diminished', '7', 'E♭/Am'],
+    ['C', 'half whole diminished', '7', 'C/F♯'],
   ]
   it('puts Auto’s pair first on the worked table, and is a permutation of the pairs', () => {
     for (const [root, key, q, first] of TABLE) {

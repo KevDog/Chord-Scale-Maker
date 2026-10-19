@@ -310,7 +310,7 @@ describe('the Hexatonic preset on the Scales sheet', () => {
   })
 
   it('lights nothing where the scale has no pair', () => {
-    const [s] = staves([row('C7#5', 'C Whole Tone')], 'root', hex())
+    const [s] = staves([row('C6', 'C Major Pentatonic')], 'root', hex())
     expect(s?.hexatonic).toBeNull()
     expect(s?.selected?.some(Boolean)).toBe(false)
     expect(s?.second?.some(Boolean)).toBe(false)
