@@ -20,8 +20,8 @@ describe('the pentatonic controls', () => {
     return w.findAll('[role=option]').map((o) => o.text())
   }
 
-  it('offers Off, Pentatonic and Hexatonic', async () => {
-    expect(await options(await mount())).toEqual(['Off', 'Pentatonic', 'Hexatonic'])
+  it('offers Off, Pentatonic, Hexatonic and Quartal', async () => {
+    expect(await options(await mount())).toEqual(['Off', 'Pentatonic', 'Hexatonic', 'Quartal'])
   })
 
   it('adds no control for Hexatonic', async () => {
@@ -99,6 +99,19 @@ describe('the pentatonic controls', () => {
     expect(basis.findAll('label').map((l) => l.text())).toEqual(['Key', 'Chord'])
     await basis.find('input[value="key"]').setValue(true)
     expect(w.emitted('update:hexBasis')).toEqual([['key']])
+  })
+
+  it('offers Quartal options, Notes and Perfect only, only under the Quartal overlay (#432)', async () => {
+    expect((await mount({ overlay: 'hexatonic' })).find('button[aria-label="Quartal options"]').exists()).toBe(false)
+    const w = await mount({ overlay: 'quartal', quartNotes: 4, quartPerfect: false })
+    await w.find('button[aria-label="Quartal options"]').trigger('click')
+    const notes = w.find('[aria-label="Quartal notes"]')
+    expect(notes.findAll('label').map((l) => l.text())).toEqual(['3', '4'])
+    await notes.find('input[value="3"]').setValue(true)
+    expect(w.emitted('update:quartNotes')).toEqual([[3]])
+    const perfect = w.findAll('button').find((b) => b.text() === 'Perfect only')!
+    await perfect.trigger('click')
+    expect(w.emitted('update:quartPerfect')).toEqual([[true]])
   })
 
   it('keeps the Superimpose while editing, when Numerals and Scales hide', async () => {

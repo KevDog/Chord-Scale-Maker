@@ -119,6 +119,8 @@
             v-model:pent-basis="prefs.pentBasis.value"
             v-model:pent-degree="prefs.pentDegree.value"
             v-model:hex-basis="prefs.hexBasis.value"
+            v-model:quart-notes="prefs.quartNotes.value"
+            v-model:quart-perfect="prefs.quartPerfect.value"
             v-model:pent-path="pentPathModel"
             v-model:pent-step-unit="pentStepUnit"
             v-model:pent-step-bars="pentStepBars"
@@ -442,12 +444,14 @@ const pentatonicPlan = computed((): PentatonicPlan | null => (prefs.overlay.valu
   ? { ...pentPath.plan.value, basis: prefs.pentBasis.value, degree: prefs.pentDegree.value, picks: chordPicks.picks.value.pentatonic } // the Changes sheet ignores stale picks by their for
   : null))
 const hexatonicPlan = computed((): OverlayPlan => ({ kind: 'hexatonic', basis: prefs.hexBasis.value, picks: chordPicks.picks.value.hexatonic }))
-const overlayPlan = computed((): OverlayPlan | null => (prefs.overlay.value === 'hexatonic' ? hexatonicPlan.value : pentatonicPlan.value))
+const quartalPlan = computed((): OverlayPlan => ({ kind: 'quartal', notes: prefs.quartNotes.value, perfect: prefs.quartPerfect.value, picks: chordPicks.picks.value.quartal ?? {} }))
+const overlayPlan = computed((): OverlayPlan | null => (prefs.overlay.value === 'hexatonic' ? hexatonicPlan.value : prefs.overlay.value === 'quartal' ? quartalPlan.value : pentatonicPlan.value))
 /** a popover's pick (concert) for its chords on either sheet; null: back to the sheet's choice */
 function onPick(kind: PickKind, positions: readonly ChordAt[], value: number | readonly [number, number] | null): void {
   if (value === null) chordPicks.clear(kind, positions)
   else if (kind === 'pentatonic' && typeof value === 'number') chordPicks.pick('pentatonic', positions, value)
   else if (kind === 'hexatonic' && typeof value !== 'number') chordPicks.pick('hexatonic', positions, value)
+  else if (kind === 'quartal' && typeof value === 'number') chordPicks.pick('quartal', positions, value)
 }
 /** the stored pattern's moves (the text is canonical; an unparseable one draws as the default pattern rather than nothing) */
 const patternMoves = computed(() => {

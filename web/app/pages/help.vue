@@ -144,7 +144,10 @@
                 Chord, each chord's, <strong class="font-semibold">Built on</strong> the degree you choose) or
                 <strong class="font-semibold">Hexatonic</strong> (each chord's best triad pair from its scale, such as
                 <UiCode>G/Am</UiCode> over Cmaj7, or, ranked against Key, one pair for each key area, its IV and V triads:
-                <UiCode>F/G</UiCode> in C; <DecisionLink id="hex.key">how</DecisionLink>).
+                <UiCode>F/G</UiCode> in C; <DecisionLink id="hex.key">how</DecisionLink>) or
+                <strong class="font-semibold">Quartal</strong> (each chord's best stack of fourths from its scale, such as
+                <UiCode>D G C F</UiCode> over Dm7, of three or four notes, perfect fourths only if you like, under Quartal
+                options; <DecisionLink id="quartal.auto">how</DecisionLink>).
               </dd>
             </div>
             <div>

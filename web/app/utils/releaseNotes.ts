@@ -10,6 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-18',
     items: [
+      { text: 'Superimpose: Quartal names each chord’s stack of fourths under it on the Changes sheet (D G C F over Dm7); click one to pick another. Quartal options set three or four notes and perfect fourths only.', pr: 0 },
       { text: 'Practice: a Quartal preset lights a stack of fourths from each scale (D G C F over Dm7, F B E A over G7), Built on a degree you choose, of three or four notes, perfect fourths only if you like.', pr: 441 },
       { text: 'Hexatonic: the diminished scales gain the pairs a tritone apart (C/F♯ over C7♭9, now its Auto pair), and the whole-tone scale its two augmented triads (C+/D+), after Walt Weiskopf.', pr: 440 },
       { text: 'Hexatonic: Ranked against Key gives every chord in a key area the same triad pair, its IV and V triads (F/G across Dm7 G7 Cmaj7 in C), after Walt Weiskopf. On the Changes under Hexatonic options, and in the Scales sheet’s Hexatonic preset.', pr: 439 },

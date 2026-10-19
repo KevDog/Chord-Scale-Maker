@@ -31,8 +31,9 @@ export function carryPicks<T>(before: Drawn, after: Drawn, picks: Readonly<Recor
   return moved
 }
 
-/** both kinds carried across an edit; each pick keeps what it was made for */
+/** every kind carried across an edit; each pick keeps what it was made for */
 export const carryChordPicks = (before: Drawn, after: Drawn, picks: ChordPicks): ChordPicks => ({
   pentatonic: carryPicks(before, after, picks.pentatonic),
   hexatonic: carryPicks(before, after, picks.hexatonic),
+  ...(picks.quartal ? { quartal: carryPicks(before, after, picks.quartal) } : {}),
 })

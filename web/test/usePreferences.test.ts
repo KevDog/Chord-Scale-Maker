@@ -335,6 +335,19 @@ describe('pentatonic preferences', () => {
     expect(prefs().hexBasis.value).toBe('chord')
   })
 
+  it('reads the Quartal overlay\'s notes and Perfect only (#432): 4 and off until stored, junk as the default, yours through a share link', async () => {
+    expect([prefs().quartNotes.value, prefs().quartPerfect.value]).toEqual([4, false])
+    localStorage.setItem('csm-quart-notes', '3')
+    localStorage.setItem('csm-quart-perfect', 'on')
+    expect([prefs().quartNotes.value, prefs().quartPerfect.value, linked({}).quartNotes.value, linked({}).quartPerfect.value]).toEqual([3, true, 3, true])
+    localStorage.setItem('csm-quart-notes', '5')
+    expect(prefs().quartNotes.value).toBe(4)
+    const p = prefs()
+    p.quartPerfect.value = false
+    await nextTick()
+    expect(localStorage.getItem('csm-quart-perfect')).toBe('off')
+  })
+
   it('reads a stored basis and Built on degree, rejecting junk, and keeps them through a share link', () => {
     localStorage.setItem('csm-pent-basis', 'chord')
     localStorage.setItem('csm-pent-degree', '11')

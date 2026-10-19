@@ -5,7 +5,7 @@ import { type HexatonicBasis, type HexPair, hexatonicPairs, hexatonicRanking, ke
 import { guideToneTimeline } from './guideToneTimeline'
 import { type Directive, type Layout, sectionLayout } from './layout'
 import { barAt, barLength, barStart, type Clock } from './metre'
-import { type HexPick, livePick, type PentPick, pickTarget } from './chordPicks'
+import { type HexPick, livePick, type PentPick, pickTarget, type QuartPick } from './chordPicks'
 import type { Approach } from './approaches'
 import { arpeggioVoices, isArpeggioPattern, type SheetLine } from './arpeggios'
 import { type GuideInput, type GuideNote, guideVoices } from './guideTones'
@@ -19,6 +19,7 @@ import { isPentatonicPreset, type PentatonicDegree, pentatonicDegreeFrom, PENTAT
 import { baseQuality, readChord } from './qualities'
 import { type Resolved, resolveScales, type ScaleView } from './resolve'
 import { abbreviateScale } from './scales'
+import { type QuartalNotes, quartalRanking, type QuartalStack, quartalStacks } from './quartal'
 import { chunk, orNull } from './util'
 
 /**
@@ -76,14 +77,18 @@ export type PentatonicPlan = Readonly<{
 }>
 /** the Hexatonic overlay: each chord's Auto pair on its resolved scale (basis 'chord', the default) or its key area's pair (basis 'key', #432), or its live pick (#303) */
 export type HexatonicPlan = Readonly<{ kind: 'hexatonic'; basis?: HexatonicBasis; picks?: Readonly<Record<ChordAt, HexPick>> }>
-/** the row under the chords (Off | Pentatonic | Hexatonic): null for none */
-export type OverlayPlan = PentatonicPlan | HexatonicPlan
+/** the Quartal overlay (#432): each chord's Auto stack of fourths on its resolved scale (notes: 3 or 4, default 4; perfect: perfect fourths only), or its live pick */
+export type QuartalPlan = Readonly<{ kind: 'quartal'; notes?: QuartalNotes; perfect?: boolean; picks?: Readonly<Record<ChordAt, QuartPick>> }>
+/** the row under the chords (Off | Pentatonic | Hexatonic | Quartal): null for none */
+export type OverlayPlan = PentatonicPlan | HexatonicPlan | QuartalPlan
 /**
  * a chord's hexatonic: the pair it plays ("G/Am", its pick or else Auto), and its label (the name; '' where
  * showHexatonics leaves it unprinted); run and picked as the pentatonic row's (#303); sheet: the name it plays without
  * a pick; offKey: ranked against the key, its chain lacks the key's pair, so it plays its Auto (#432)
  */
 export type ChangesHexatonic = Readonly<{ label: string; name: string; chord: ChordAt; picked: boolean; run: readonly ChordAt[]; sheet: string; source: PickSource; offKey: boolean }>
+/** a chord's quartal stack (#432): the stack it plays ('D G C F', its pick or else Auto) and its label, run, picked and sheet as the hexatonic row's; degree: the scale degree it's built on */
+export type ChangesQuartal = Readonly<{ label: string; name: string; chord: ChordAt; picked: boolean; run: readonly ChordAt[]; sheet: string; source: PickSource; degree: number }>
 
 export type ChangesChord = Readonly<{
   /** the beat it starts on, from 0 */
@@ -125,6 +130,8 @@ export type ChangesChord = Readonly<{
   pentatonic: ChangesPentatonic | null
   /** its hexatonic (the Auto pair of its resolved scale, written for the part); null with the overlay not Hexatonic, no scale, or no pairs */
   hexatonic: ChangesHexatonic | null
+  /** its quartal stack (#432); null with the overlay not Quartal, no scale, or no stacks */
+  quartal: ChangesQuartal | null
 }>
 export type ChangesBar = Readonly<{
   /** the bar's place in the chart, held bars too: the section as drawn (a repeat's own name) and its bar number */
@@ -206,8 +213,8 @@ function areaLadder(name: string, part: Part): Readonly<{ ladder: readonly Penta
  * 7th), the documented worst case, and print.spec checks it. With Pentatonics plus Numerals or Scales, 8 and 6 hold
  * (measured with the contour band #265 drew, since removed: #277).
  */
-export function changesLinesPerPage(line: ChangesLineChoice, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean; hexatonics?: boolean }>): number {
-  const overlay = !!(rows.pentatonics || rows.hexatonics) // the hexatonic row takes the pentatonic row's place and height
+export function changesLinesPerPage(line: ChangesLineChoice, rows: Readonly<{ numerals: boolean; scales: boolean; pentatonics?: boolean; hexatonics?: boolean; quartals?: boolean }>): number {
+  const overlay = !!(rows.pentatonics || rows.hexatonics || rows.quartals) // the hexatonic and quartal rows take the pentatonic row's place and height
   const all = overlay && rows.numerals && rows.scales
   if (line === 'off') return all ? 7 : 8
   if (all) return 5
@@ -272,39 +279,49 @@ export function showPentatonics(lines: readonly ChangesLine[]): readonly Changes
   })
 }
 
+/** a row label the hexatonic and quartal rows share */
+type RowLabel = Readonly<{ label: string; name: string; chord: ChordAt; picked: boolean; run: readonly ChordAt[] }>
+
 /**
- * the hexatonic row as printed, run after breakLines: a label where its name differs from the last one on the line; a
- * chord with none ends it. A printed label's run is its chord and the unprinted ones after it, picked when any in it
- * is (#303). Idempotent: a label reads its name, and a run its chords' own picks
+ * a named row as printed, run after breakLines: a label where its name differs from the last one on the line; a chord
+ * with none ends it. A printed label's run is its chord and the unprinted ones after it, picked when any in it is
+ * (#303). Idempotent: a label reads its name, and a run its chords' own picks
  */
-export function showHexatonics(lines: readonly ChangesLine[]): readonly ChangesLine[] {
+function showNamed<T extends RowLabel>(lines: readonly ChangesLine[], get: (c: ChangesChord) => T | null, set: (c: ChangesChord, v: T) => ChangesChord): readonly ChangesLine[] {
   return lines.map((line): ChangesLine => {
     const all = line.bars.flatMap((b) => b.chords)
     let last: string | null = null
     const printed = all.map((c) => {
-      if (!c.hexatonic) {
+      const v = get(c)
+      if (!v) {
         last = null
         return false
       }
-      const shown = c.hexatonic.name !== last
-      last = c.hexatonic.name
+      const shown = v.name !== last
+      last = v.name
       return shown
     })
-    const runAt = (i: number): ChangesHexatonic[] => {
-      const out = [all[i]!.hexatonic!]
-      for (let j = i + 1; j < all.length && all[j]!.hexatonic && !printed[j]; j++) out.push(all[j]!.hexatonic!)
+    const runAt = (i: number): T[] => {
+      const out = [get(all[i]!)!]
+      for (let j = i + 1; j < all.length && get(all[j]!) && !printed[j]; j++) out.push(get(all[j]!)!)
       return out
     }
     let n = 0
     return mapChords(line, (c) => {
       const i = n++
-      if (!c.hexatonic) return c
-      if (!printed[i]) return { ...c, hexatonic: { ...c.hexatonic, label: '' } }
+      const v = get(c)
+      if (!v) return c
+      if (!printed[i]) return set(c, { ...v, label: '' })
       const run = runAt(i)
-      return { ...c, hexatonic: { ...c.hexatonic, label: c.hexatonic.name, run: run.map((h) => h.chord), picked: run.some((h) => h.picked) } }
+      return set(c, { ...v, label: v.name, run: run.map((h) => h.chord), picked: run.some((h) => h.picked) })
     })
   })
 }
+
+/** the hexatonic row as printed (showNamed) */
+export const showHexatonics = (lines: readonly ChangesLine[]): readonly ChangesLine[] => showNamed(lines, (c) => c.hexatonic, (c, hexatonic) => ({ ...c, hexatonic }))
+/** the quartal row as printed (showNamed, #432) */
+export const showQuartals = (lines: readonly ChangesLine[]): readonly ChangesLine[] => showNamed(lines, (c) => c.quartal, (c, quartal) => ({ ...c, quartal }))
 
 type TimelineEvent = ReturnType<typeof guideToneTimeline>['events'][number]
 type Timing = Readonly<{ eventAt: ReadonlyMap<number, TimelineEvent>; barOf: (i: number) => number | undefined; totalBars: number }>
@@ -591,6 +608,36 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
   )
   const hexPairs = new Map([...hexAt].flatMap(([i, h]) => (h ? [[i, h.pair] as const] : [])))
 
+  const quartRankings = new Map<string, readonly QuartalStack[]>()
+  /** a chord's quartal stack (#432): its live pick (a bottom note, concert) where its scale has that stack, else Auto */
+  const quartalOf = (scale: string | null, chordText: string, at: ChordAt, target: string): Readonly<{ q: ChangesQuartal; stack: QuartalStack }> | null => {
+    if (overlay?.kind !== 'quartal' || !scale) return null
+    const k = `${scale}|${chordText}`
+    if (!quartRankings.has(k)) {
+      const ranking = orNull(() => {
+        const w = writtenScale(part, scale)
+        const chordRoot = orNull(() => writtenChordRootLenient(part, chordText, scale)) ?? w.root
+        const quality = orNull(() => baseQuality(parseChord(chordText).quality))
+        return quartalRanking(quartalStacks(w.notes, chordRoot, quality, overlay.notes ?? 4, !!overlay.perfect), chordRoot)
+      })
+      quartRankings.set(k, ranking ?? [])
+    }
+    const ranking = quartRankings.get(k)!
+    const auto = ranking[0]
+    if (!auto) return null
+    const pick = livePick(overlay.picks ?? {}, at, target)
+    const found = pick ? ranking.find((s) => s.pcs[0] === mod(pick.pc + toWritten, 12)) : undefined
+    const used = found ?? auto
+    return { q: { label: used.name, name: used.name, chord: at, picked: !!found, run: [], sheet: auto.name, source: { chord: chordText, scale }, degree: used.degree }, stack: used }
+  }
+  const quartAt = new Map(
+    blocks.flatMap((b) => b.rows).map((i) => {
+      const row = rows[i] as LinedRow
+      const scale = resolved.get(i)?.scale ?? null
+      return [i, quartalOf(scale, row.chord, keyOf.get(i) ?? '', pickTarget(row.chord, scale))] as const
+    }),
+  )
+
   // each drawn chord's pentatonic (its label's, picks and all), worked out before the line, which plays it (#284)
   const pentAt = new Map<number, ChangesPentatonic | null>()
   blocks.forEach((block, k) => {
@@ -654,6 +701,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
             guide: voices?.labels.get(i) ?? '',
             pentatonic: pentAt.get(i) ?? null,
             hexatonic: hexAt.get(i)?.hex ?? null,
+            quartal: quartAt.get(i)?.q ?? null,
           }
         })
       const firstKey = block.rows.map((i) => byRow.get(i)).find((a) => a && barOf(a.row) === bar)?.key.name

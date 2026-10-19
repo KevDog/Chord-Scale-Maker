@@ -2,7 +2,7 @@ import { mockNuxtImport, mountSuspended } from '@nuxt/test-utils/runtime'
 import { afterEach, describe, expect, it, vi } from 'vitest'
 import { flushPromises } from '@vue/test-utils'
 import ChangesSystem from '~/components/ChangesSystem.vue'
-import { buildChanges, type ChangesBar, type ChangesChord, type ChangesLine, type GuideNote, type Letter, CONCERT, hexatonicChoices, type OverlayPlan, type Part, parseChart, partFor, type PentatonicPlan, showHexatonics, showPentatonics } from '@chord-scale-maker/engine'
+import { buildChanges, type ChangesBar, type ChangesChord, type ChangesLine, type GuideNote, type Letter, CONCERT, hexatonicChoices, type OverlayPlan, type Part, parseChart, partFor, type PentatonicPlan, showHexatonics, showPentatonics, showQuartals } from '@chord-scale-maker/engine'
 import PentatonicLadder from '~/components/PentatonicLadder.vue'
 
 vi.mock('~/utils/changesDrawing', async (importOriginal) => ({
@@ -23,7 +23,7 @@ const chord = (beat: number, text: string, guide: string): ChangesChord => ({
   keyFrom: 'found',
   guide,
   pentatonic: null,
-  hexatonic: null,
+  hexatonic: null, quartal: null,
 })
 const bar = (chords: readonly ChangesChord[], voice: readonly GuideNote[]): ChangesBar => ({
   at: { section: chords[0]?.at?.section ?? 'A', bar: chords[0]?.at?.bar ?? '1' },
@@ -361,6 +361,50 @@ describe('ChangesSystem hexatonic row', () => {
     expect(pent.find('[data-slot="hexatonic"]').exists()).toBe(false)
     expect(pent.find('[data-slot="pentatonic"]').exists()).toBe(true)
     expect((await mountSuspended(ChangesSystem, { props })).find('[data-slot="hexatonic"]').exists()).toBe(false)
+  })
+})
+
+describe('ChangesSystem quartal row (#432)', () => {
+  const II_V = 'title: T\nkey: C\n\nsection: A\n1 | Cmaj7\n2 | Dm7\n3 | G7\n4 | C7 | C Half-Whole'
+  const mountQ = (plan: OverlayPlan) => {
+    const line = showQuartals(buildChanges(parseChart(II_V).value, CONCERT, 4, false, 'off', undefined, plan).lines)[0]!
+    return mountSuspended(ChangesSystem, { props: { line, first: true, barsPerLine: 4, numerals: false, scales: false, clef: 'treble' as const, overlay: plan }, attachTo: document.body })
+  }
+  afterEach(() => {
+    useInterface().level.value = 'everything'
+  })
+
+  it('labels each chord with its stack, blank where the scale has none, and draws no other row', async () => {
+    const w = await mountQ({ kind: 'quartal' })
+    expect(w.findAll('[data-slot="quartal"] > span').map((s) => s.find('span').text())).toEqual(['B E A D', 'D G C F', 'F B E A'])
+    expect(w.find('[data-slot="hexatonic"]').exists()).toBe(false)
+    expect(w.find('[data-slot="pentatonic"]').exists()).toBe(false)
+    w.unmount()
+  })
+
+  it('opens the chord’s stacks as the plan asks; a pick is its bottom note, concert, the sheet’s choice null', async () => {
+    const w = await mountQ({ kind: 'quartal', notes: 3 })
+    const b = w.find('[data-slot="quartal"] [data-chord="A:2:0"] button')
+    expect(b.attributes('aria-label')).toBe('Fourths: G C F, built on 4, 2 guide tones. Show the choices')
+    await b.trigger('click')
+    await flushPromises()
+    const rows = w.findAll('[data-choice]')
+    expect(rows.every((r) => /^\S+ \S+ \S+ · on \d · \d guide tones?$/.test(r.text()))).toBe(true)
+    await rows.find((r) => r.text().startsWith('E A D'))!.trigger('click')
+    expect(w.emitted('pick')?.[0]).toEqual(['quartal', ['A:2:0'], 4])
+    await w.find('[data-slot="quartal"] [data-chord="A:2:0"] button').trigger('click')
+    await flushPromises()
+    await w.find('[data-sheet-choice]').trigger('click')
+    expect(w.emitted('pick')?.[1]).toEqual(['quartal', ['A:2:0'], null])
+    w.unmount()
+  })
+
+  it('below Everything every label is plain text', async () => {
+    useInterface().level.value = 'intermediate'
+    const w = await mountQ({ kind: 'quartal' })
+    expect(w.find('[data-slot="quartal"] button').exists()).toBe(false)
+    expect(w.find('[data-slot="quartal"] [data-chord="A:2:0"]').text()).toBe('D G C F')
+    w.unmount()
   })
 })
 

@@ -44,6 +44,10 @@ describe('carryPicks', () => {
     const picks = { pentatonic: { 'A:3:0': { pc: 7, for: 'G7|G Mixolydian' } }, hexatonic: { 'B:2:0': { roots: [0, 2] as const } } }
     expect(carryChordPicks(drawnChords(C4), drawnChords(insertBar(C4, 'A', 2, ['F7'])), picks)).toEqual({ pentatonic: { 'A:4:0': { pc: 7, for: 'G7|G Mixolydian' } }, hexatonic: { 'B:2:0': { roots: [0, 2] } } })
   })
+  it('carries quartal picks too, where there are any (#432)', () => {
+    const picks = { pentatonic: {}, hexatonic: {}, quartal: { 'A:3:0': { pc: 5 } } }
+    expect(carryChordPicks(drawnChords(C4), drawnChords(insertBar(C4, 'A', 2, ['F7'])), picks).quartal).toEqual({ 'A:4:0': { pc: 5 } })
+  })
 })
 
 describe('drawnChords', () => {

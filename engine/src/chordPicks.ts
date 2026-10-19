@@ -6,11 +6,14 @@ import { LIMITS } from './limits'
  * for one drawn chord, overriding the sheet's choice on both sheets. Each pick remembers the chord and scale it was
  * made for; where its position now plays something else it is ignored.
  */
-export type PickKind = 'pentatonic' | 'hexatonic'
+export type PickKind = 'pentatonic' | 'hexatonic' | 'quartal'
 export type PentPick = Readonly<{ pc: number; for?: string }>
 export type HexPick = Readonly<{ roots: readonly [number, number]; for?: string }>
-export type ChordPicks = Readonly<{ pentatonic: Readonly<Record<ChordAt, PentPick>>; hexatonic: Readonly<Record<ChordAt, HexPick>> }>
-export type PickValue = Readonly<{ pentatonic: number; hexatonic: readonly [number, number] }>
+/** a quartal stack (#432), by its bottom note's pitch class, concert */
+export type QuartPick = Readonly<{ pc: number; for?: string }>
+/** quartal: absent until a stack is picked (#432) */
+export type ChordPicks = Readonly<{ pentatonic: Readonly<Record<ChordAt, PentPick>>; hexatonic: Readonly<Record<ChordAt, HexPick>>; quartal?: Readonly<Record<ChordAt, QuartPick>> }>
+export type PickValue = Readonly<{ pentatonic: number; hexatonic: readonly [number, number]; quartal: number }>
 export const NO_PICKS: ChordPicks = { pentatonic: {}, hexatonic: {} }
 
 /** what a pick was made for: the position's chord text and resolved scale, concert */
@@ -54,7 +57,10 @@ function entries<T>(v: unknown, read: (x: unknown) => T | null): Readonly<Record
 /** picks read from untrusted data (storage, a share link): bad entries dropped; a #272 map of bare numbers is pentatonic picks */
 export function chordPicksFrom(v: unknown): ChordPicks {
   if (!isObject(v)) return NO_PICKS
-  if (Object.hasOwn(v, 'pentatonic') || Object.hasOwn(v, 'hexatonic')) return { pentatonic: entries(own(v, 'pentatonic'), pentFrom), hexatonic: entries(own(v, 'hexatonic'), hexFrom) }
+  if (Object.hasOwn(v, 'pentatonic') || Object.hasOwn(v, 'hexatonic')) {
+    const quartal = Object.hasOwn(v, 'quartal') ? { quartal: entries(own(v, 'quartal'), (x) => (isObject(x) ? pentFrom(x) : null)) } : {}
+    return { pentatonic: entries(own(v, 'pentatonic'), pentFrom), hexatonic: entries(own(v, 'hexatonic'), hexFrom), ...quartal }
+  }
   return { pentatonic: entries(v, (x) => (isPc(x) ? { pc: x } : null)), hexatonic: {} }
 }
 
@@ -69,6 +75,7 @@ const keepLive = <T extends { for?: string }>(m: Readonly<Record<ChordAt, T>>, t
 export const livePicks = (picks: ChordPicks, targets: ReadonlyMap<ChordAt, string>): ChordPicks => ({
   pentatonic: keepLive(picks.pentatonic, targets),
   hexatonic: keepLive(picks.hexatonic, targets),
+  ...(picks.quartal ? { quartal: keepLive(picks.quartal, targets) } : {}),
 })
 
 /** `value` picked at each drawn position, stamped with its target; stale picks go on the write */
@@ -78,7 +85,7 @@ export function withPick<K extends PickKind>(picks: ChordPicks, kind: K, positio
     positions.flatMap((at) => {
       const t = targets.get(at)
       if (t === undefined) return []
-      return [[at, kind === 'pentatonic' ? { pc: value as number, for: t } : { roots: value as readonly [number, number], for: t }]]
+      return [[at, kind === 'hexatonic' ? { roots: value as readonly [number, number], for: t } : { pc: value as number, for: t }]]
     }),
   )
   return { ...live, [kind]: { ...live[kind], ...made } }
@@ -86,9 +93,9 @@ export function withPick<K extends PickKind>(picks: ChordPicks, kind: K, positio
 /** the sheet's choice again at these positions; stale picks go on the write */
 export function withoutPicks(picks: ChordPicks, kind: PickKind, positions: readonly ChordAt[], targets: ReadonlyMap<ChordAt, string>): ChordPicks {
   const live = livePicks(picks, targets)
-  return { ...live, [kind]: Object.fromEntries(Object.entries(live[kind]).filter(([at]) => !positions.includes(at))) }
+  return { ...live, [kind]: Object.fromEntries(Object.entries(live[kind] ?? {}).filter(([at]) => !positions.includes(at))) }
 }
-export const hasPicks = (p: ChordPicks, kind?: PickKind): boolean => (kind ? Object.keys(p[kind]).length > 0 : hasPicks(p, 'pentatonic') || hasPicks(p, 'hexatonic'))
+export const hasPicks = (p: ChordPicks, kind?: PickKind): boolean => (kind ? Object.keys(p[kind] ?? {}).length > 0 : hasPicks(p, 'pentatonic') || hasPicks(p, 'hexatonic') || hasPicks(p, 'quartal'))
 
 /** the bars positions are in, as the pick popover names them ("A1 bar 6"), once each, in order */
 export const pickBars = (positions: readonly ChordAt[]): readonly string[] => [
