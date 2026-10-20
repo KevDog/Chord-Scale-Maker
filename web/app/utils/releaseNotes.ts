@@ -10,7 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-19',
     items: [
-      { text: 'A new scale, Augmented (1 ♯2 3 5 ♯5 7: two augmented triads a minor third apart): the Advanced level’s scale over maj7♯5 and augmented chords, and an option over maj7. Its triad pair is those two triads (C+/D♯+), after Walt Weiskopf.' },
+      { text: 'A new scale, Augmented (1 ♯2 3 5 ♯5 7: two augmented triads a minor third apart): the Advanced level’s scale over maj7♯5 and augmented chords, and an option over maj7. Its triad pair is those two triads (C+/D♯+), after Walt Weiskopf.', pr: 447 },
       { text: '54 blues from iReal Pro’s Blues 50: Muddy Waters, Howlin’ Wolf, Robert Johnson, B.B. King, Willie Dixon and more, each read as a blues (the key’s Blues scale at Basic).', pr: 445 },
       { text: 'Triad pair line: a Shape in Line options, after Walt Weiskopf: Climb (both triads in root position, then 1st and 2nd inversion, rising: F A C, G B D, A C F, …) and Arpeggios 1 3 5 8. Nearest is the line as it was.', pr: 444 },
       { text: 'Line: under Superimpose: Quartal the 7th Chords slot plays Quartal, each chord’s stack of fourths whole, then its next stacks, up, down or both. Quartal options’ Notes gains Auto: four notes a stack where your range has room, else three.', pr: 443 },
