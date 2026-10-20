@@ -65,6 +65,13 @@ test.describe('without JavaScript', () => {
     await expect(page.locator('head link[rel="canonical"]')).toHaveCount(1)
     await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', `${SITE_URL}/song/summertime`)
   })
+
+  test("a version's card is its own; its composition is the main chart's (#424)", async ({ page }) => {
+    await page.goto('/song/summertime-jazz-mind-accelerator')
+    await expect(page.locator('head meta[property="og:url"]')).toHaveAttribute('content', `${SITE_URL}/song/summertime-jazz-mind-accelerator`)
+    const ld = JSON.parse((await page.locator('script[type="application/ld+json"]').last().textContent()) ?? '[]') as { '@type': string; name?: string; url?: string }[]
+    expect(ld[0]).toMatchObject({ '@type': 'MusicComposition', name: 'Summertime', url: `${SITE_URL}/song/summertime` })
+  })
 })
 
 test('a version page keeps its canonical once the app runs', async ({ page }) => {

@@ -163,11 +163,9 @@ function reload(): void {
 const song = route.path.replace(/\/$/, '') === songPath(slug()) ? songHead(slug(), { recordings: useFeature('recordings') }) : null
 useSeoMeta(seoMeta(song?.head ?? PAGE_HEAD.song))
 if (song) useHead({ script: [{ type: 'application/ld+json', innerHTML: song.ld }] })
-// a version's canonical is its tune's main chart (#411): the near-duplicate pages don't compete in search
-if (song?.canonical) {
-  useHead({ link: [{ rel: 'canonical', href: canonicalUrl(song.canonical), key: 'canonical' }] })
-  useSeoMeta({ ogUrl: canonicalUrl(song.canonical) })
-}
+// a version's canonical is its tune's main chart (#411): the near-duplicate pages don't compete in search.
+// Its og:url stays its own (app.vue), so a shared link's card matches its title and image (#424)
+if (song?.canonical) useHead({ link: [{ rel: 'canonical', href: canonicalUrl(song.canonical), key: 'canonical' }] })
 const versions = useFeature('versions')
 // the picker's place: a library chart at its own address, or one of your saved charts
 const versionsAt = computed((): ChartAt | null => {

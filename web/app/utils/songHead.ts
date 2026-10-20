@@ -41,7 +41,8 @@ export function songHead(slug: string, opts: Readonly<{ recordings: boolean }> =
       // drawn by scripts/og.ts (make og)
       image: { url: `${SITE_URL}/og/${slug}.png`, alt: `${[summary.title, summary.composer].filter(Boolean).join(', ')}: chord changes` },
     },
-    ld: jsonLd([tuneLd(summary, path), breadcrumbLd(summary, path)]),
+    // a version is its tune's composition: the main title and canonical; its label only in the breadcrumb (#424)
+    ld: jsonLd([tuneLd({ ...summary, title: read.title }, songPath(main)), breadcrumbLd(summary, path)]),
     title: summary.title,
     composer: summary.composer,
     leadSheet:
