@@ -221,9 +221,13 @@
               </Transition>
               <template v-if="compact" #actions><slot name="actions" place="dialog" :after="afterClose" /></template>
             </component>
+            <!-- the tune's versions (#411): the last group, so where the rail is full it wraps beside the actions,
+                 on a phone too (#427) -->
+            <slot name="version" />
           </template>
           <template #right>
-            <UiButton v-if="compact" id="controls-button" outline aria-haspopup="dialog" @click="controlsOpen = true"><AdjustmentsHorizontalIcon data-slot="icon" />Controls</UiButton>
+            <!-- its icon alone, so a version picker fits beside the actions (#427) -->
+            <UiButton v-if="compact" id="controls-button" outline aria-haspopup="dialog" aria-label="Controls" title="Controls" @click="controlsOpen = true"><AdjustmentsHorizontalIcon data-slot="icon" /></UiButton>
             <slot name="actions" place="rail" :after="now" />
           </template>
         </SheetRail>
@@ -249,7 +253,7 @@
     import ControlsDialog from './ControlsDialog.vue'
     import RailPopover from './RailPopover.vue'
 
-    /** the preview toolbar, in labelled groups: Work on (sheet), Instrument, #level, Show (on the Changes: Analysis, Guide Tones), in the rail, with #actions at its right */
+    /** the preview toolbar, in labelled groups: Work on (sheet), Instrument, #version, #level, Show (on the Changes: Analysis, Guide Tones), in the rail, with #actions at its right */
     const sheet = defineModel<SheetKind>('sheet', { required: true })
     const instrument = defineModel<InstrumentName>('instrument', { required: true })
     /** instrumentChosen: picked from the instrument listbox, not as a pitch's first (InstrumentPicker) */
@@ -306,7 +310,7 @@
     /** compact: a phone with compactRail on: the rail keeps Work on, Instrument and the slot's rail actions; Controls opens the rest */
     /** stickyRail: the rail sticks over the sheet (lg up): while editing */
     const props = defineProps<{ lockLabels?: boolean; keyStart: string; compact?: boolean; stickyRail?: boolean }>()
-    defineSlots<{ level?: () => unknown; actions?: (p: { place: 'rail' | 'dialog'; after: (run: () => void) => void }) => unknown }>()
+    defineSlots<{ version?: () => unknown; level?: () => unknown; actions?: (p: { place: 'rail' | 'dialog'; after: (run: () => void) => void }) => unknown }>()
     const controlsOpen = ref(false)
     watch(() => props.compact, () => (controlsOpen.value = false))
     /** an action chosen in the dialog runs once it has closed (Headless UI then returns focus to Controls first); in the rail, now */

@@ -1,7 +1,6 @@
 <template>
   <div>
     <ClientOnly>
-      <SongVersions v-if="versions && versionsAt" :at="versionsAt" />
       <div v-if="source.kind === 'missing'" class="max-w-xl space-y-4">
         <UiHeading>That chart isn’t here</UiHeading>
         <UiText>It isn’t saved in this browser. Saved charts stay in the browser they were made in; on another device, open it from a share link or a downloaded file.</UiText>
@@ -24,7 +23,9 @@
         :is-new="source.target?.kind === 'new'"
         @created="adopt"
         @reload="reload"
-      />
+      >
+        <template v-if="versions && versionsAt" #version><SongVersions :at="versionsAt" /></template>
+      </EditorView>
       <template #fallback>
         <div v-if="song" class="space-y-1">
           <UiHeading>{{ song.title }}</UiHeading>

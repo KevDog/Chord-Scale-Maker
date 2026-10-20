@@ -43,14 +43,20 @@ export const TUNES: readonly LibraryTune[] = toTunes(LIBRARY)
 
 const GROUP_OF = new Map(tuneGroups(LIBRARY).flatMap((g) => g.versions.map((v) => [v.slug, g] as const)))
 
-const GROUP_NAMED = new Map(tuneGroups(LIBRARY).map((g) => [g.key, g] as const))
+// every title and aka: of a tune's charts names it (#426); a tune's own title wins over another's aka:
+const CHART_OF = new Map(LIBRARY.map((c) => [c.slug, c]))
+const named = (pick: (c: LibraryChart) => readonly string[]) =>
+  tuneGroups(LIBRARY).flatMap((g) => g.versions.flatMap((v) => pick(CHART_OF.get(v.slug)!).map((t) => [tuneKey(t), g] as const)))
+const GROUP_NAMED = new Map([...named((c) => c.aka), ...named((c) => [c.title])])
 const tuneView = (g: TuneGroup | undefined): Pick<TuneGroup, 'main' | 'versions'> | null => (g ? { main: g.main, versions: g.versions } : null)
 
 /** a library chart's tune (#411): its main chart and every version, main first; null for no library chart */
 export const tuneOf = (slug: string): Pick<TuneGroup, 'main' | 'versions'> | null => tuneView(GROUP_OF.get(slug))
 
-/** the library tune a title names, compared as `tuneKey` does ("summertime" is Summertime); null for none */
-export const tuneNamed = (title: string): Pick<TuneGroup, 'main' | 'versions'> | null => tuneView(GROUP_NAMED.get(tuneKey(title)))
+/** the library tune a title names, by any of its charts' titles or aka:, compared as `tuneKey` does ("summertime" is
+ * Summertime), a copy's " (copy)" aside; null for none */
+export const tuneNamed = (title: string): Pick<TuneGroup, 'main' | 'versions'> | null =>
+  tuneView(GROUP_NAMED.get(tuneKey(title.replace(/(\s*\(copy\))+\s*$/i, ''))))
 
 /** a tune row's details: style · key · form, then its count of versions when it has more than one */
 export const tuneDetails = (t: LibraryTune): string => [t.details, t.versions > 1 ? `${t.versions} versions` : ''].filter(Boolean).join(' · ')

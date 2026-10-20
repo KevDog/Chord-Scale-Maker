@@ -69,6 +69,15 @@ describe('versionChoices (#411)', () => {
     expect(versionChoices(tuneAt({ mine: mine[1]! }), mine).library).toEqual([MAIN, JLA])
   })
 
+  it('knows a saved chart titled by one of the tune\'s other titles, or as a copy (#426)', () => {
+    const tune = tuneAt({ slug: 'autumn-leaves' })!
+    expect(ofTune(tune, saved('a', 'Les Feuilles mortes'))).toBe(true)
+    expect(ofTune(tune, saved('b', 'les feuilles mortes (copy)'))).toBe(true)
+    expect(ofTune(tuneAt({ slug: 'summertime' })!, saved('c', 'Summertime (copy) (copy)'))).toBe(true)
+    expect(ofTune(tune, saved('d', 'Autumn Leaves copy'))).toBe(false)
+    expect(tuneAt({ mine: saved('e', 'Les Feuilles mortes') })?.main).toBe('autumn-leaves')
+  })
+
   it('has no tune on the page of your edit of a library chart (its own page shows it)', () => {
     expect(tuneAt({ mine: saved('aaaaaa', 'Summertime', { kind: 'edited', basedOn: 'summertime' }) })).toBeNull()
   })
