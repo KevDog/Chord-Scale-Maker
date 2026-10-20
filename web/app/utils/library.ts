@@ -1,10 +1,10 @@
-import { chartAka, chartHeading, isSyncCopy, parseChart, type TuneGroup, tuneGroups, tuneKey, tuneSummary } from '@chord-scale-maker/engine'
+import { chartAka, chartHeading, chartName, isSyncCopy, parseChart, type TuneGroup, tuneGroups, tuneKey, tuneSummary } from '@chord-scale-maker/engine'
 import { filingTitle, libraryDetails } from './libraryIndex'
 import { publishedChart } from './published'
 
-/** subtitle: the heading line (subtitle or style, key, form), as on the sheet; details: style · key · form, the same
+/** name: the title with a version's label, "Summertime (Jazz Mind Accelerator)" (chartName); subtitle: the heading line (subtitle or style, key, form), as on the sheet; details: style · key · form, the same
  * for every row; key: as the chart writes it ("Ebm"); style, form: the chart's headers; aka: the tune's other titles */
-export type LibraryChart = Readonly<{ slug: string; title: string; subtitle: string; details: string; key: string; style: string; form: string; composer: string; aka: readonly string[]; text: string }>
+export type LibraryChart = Readonly<{ slug: string; title: string; name: string; subtitle: string; details: string; key: string; style: string; form: string; composer: string; aka: readonly string[]; text: string }>
 
 /** build-time: every chart in the engine package's charts/ folder (the #charts alias, nuxt.config.ts), as raw text */
 const files = import.meta.glob<string>('#charts/*.txt', { query: '?raw', import: 'default', eager: true })
@@ -16,7 +16,7 @@ export function toLibrary(entries: Readonly<Record<string, string>>): LibraryCha
       const text = publishedChart(raw) // the build already strips it (build/charts.ts); this keeps toLibrary honest
       const doc = parseChart(text).value
       const summary = tuneSummary(text)
-      return { slug: path.slice(path.lastIndexOf('/') + 1).replace(/\.txt$/, ''), ...chartHeading(doc), details: libraryDetails(summary), key: summary.key, style: summary.style, form: summary.form, aka: chartAka(doc), text }
+      return { slug: path.slice(path.lastIndexOf('/') + 1).replace(/\.txt$/, ''), ...chartHeading(doc), name: chartName(doc), details: libraryDetails(summary), key: summary.key, style: summary.style, form: summary.form, aka: chartAka(doc), text }
     })
     // fixed locale: same order in prerender and browser; a leading apostrophe files under the letter after it
     .sort((a, b) => filingTitle(a.title).localeCompare(filingTitle(b.title), 'en') || a.slug.localeCompare(b.slug, 'en'))

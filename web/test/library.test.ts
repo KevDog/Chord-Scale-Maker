@@ -15,6 +15,11 @@ describe('library', () => {
     ])
   })
 
+  it('names a version by its label after the title (#423)', () => {
+    const lib = toLibrary({ 'a.txt': 'title: A', 'a-v.txt': 'title: A\nversion: Some Book' })
+    expect(lib.map((c) => c.name)).toEqual(['A', 'A (Some Book)'])
+  })
+
   it('leaves out the source: line, which is for internal use only', () => {
     const [chart] = toLibrary({ 'a.txt': 'title: A\nsource: Some Book, p. 12\n# source: earlier from Another, p. 3\nkey: C\n\nsection: A\nbars: 4\n1 | C' })
     expect(chart?.text).toBe('title: A\nkey: C\n\nsection: A\nbars: 4\n1 | C')

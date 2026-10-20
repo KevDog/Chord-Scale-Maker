@@ -8,6 +8,10 @@ export type ReleaseNote = Readonly<{ date: string; items: readonly ReleaseItem[]
 
 export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
+    date: '2026-10-20',
+    items: [{ text: 'Recently opened names a tune’s other versions by their label, “Summertime (Jazz Mind Accelerator)”, so two versions no longer read alike.', pr: 450 }],
+  },
+  {
     date: '2026-10-19',
     items: [
       { text: 'The Scales, Arpeggios and Patterns sheets start every line with the clef and key signature, so a line read on its own is in its key. A Patterns run that continues onto a second staff starts that staff bare.', pr: 448 },
