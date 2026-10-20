@@ -11,6 +11,17 @@ describe('songHead', () => {
     expect(songHead('summertime')?.canonical).toBe('')
   })
 
+  it("gives a version's composition the main title and canonical, its label only in the breadcrumb (#424)", () => {
+    const ld = JSON.parse(songHead('summertime-jazz-mind-accelerator')?.ld ?? '[]') as Record<string, unknown>[]
+    expect(ld[0]).toMatchObject({ '@type': 'MusicComposition', name: 'Summertime', url: 'https://www.chordscalemaker.com/song/summertime' })
+    expect(ld[1]?.itemListElement).toContainEqual({
+      '@type': 'ListItem',
+      position: 2,
+      name: 'Summertime (Jazz Mind Accelerator)',
+      item: 'https://www.chordscalemaker.com/song/summertime-jazz-mind-accelerator',
+    })
+  })
+
   it("gives a library song its title, description and structured data, indexable", () => {
     const h = songHead('blue-trane')
     expect(h?.head).toEqual({
