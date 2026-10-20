@@ -44,6 +44,24 @@ describe('UiListbox', () => {
     w.unmount()
   })
 
+  it('names its button by a label and its value, so a screen reader hears both (#425)', async () => {
+    const Labelled = defineComponent({
+      components: { UiListbox, UiListboxOption, UiListboxLabel },
+      setup: () => ({ value: ref('ballad') }),
+      template: `<span id="version-label">Version</span><UiListbox v-model="value" labelled-by="version-label">
+          <template #selected="{ value }"><UiListboxLabel>{{ value }}</UiListboxLabel></template>
+          <UiListboxOption value="ballad"><UiListboxLabel>Ballad</UiListboxLabel></UiListboxOption>
+        </UiListbox>`,
+    })
+    const w = await mountSuspended(Labelled, { attachTo: document.body })
+    const button = w.find('button')
+    const id = button.attributes('id')
+    expect(id).toBeTruthy()
+    expect(button.attributes('aria-labelledby')).toBe(`version-label ${id}`)
+    expect(button.attributes('aria-label')).toBeUndefined()
+    w.unmount()
+  })
+
   it('selects with the keyboard, skipping group headings', async () => {
     const w = await mountSuspended(Picker, { attachTo: document.body })
     const button = w.find('button')

@@ -9,7 +9,10 @@ export type ReleaseNote = Readonly<{ date: string; items: readonly ReleaseItem[]
 export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-20',
-    items: [{ text: 'Recently opened names a tune’s other versions by their label, “Summertime (Jazz Mind Accelerator)”, so two versions no longer read alike.', pr: 450 }],
+    items: [
+      { text: 'The Version menu reads its version aloud with its name, “Version, Ballad”, to a screen reader, and once you have a chart of the tune its library versions sit under Library, beside Mine.', pr: 451 },
+      { text: 'Recently opened names a tune’s other versions by their label, “Summertime (Jazz Mind Accelerator)”, so two versions no longer read alike.', pr: 450 },
+    ],
   },
   {
     date: '2026-10-19',

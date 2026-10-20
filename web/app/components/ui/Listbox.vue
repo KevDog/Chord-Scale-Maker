@@ -1,10 +1,11 @@
 <template>
   <HListbox v-model="model" :disabled="isDisabled" as="div" data-slot="control" class="relative">
     <HListboxButton
-      :id="ariaLabel ? undefined : field?.controlId"
+      :id="labelledBy ? buttonId : ariaLabel ? undefined : field?.controlId"
       v-slot="{ open }"
       v-interactive
       :aria-label="ariaLabel"
+      :aria-labelledby="labelledBy ? `${labelledBy} ${buttonId}` : undefined"
       :aria-invalid="invalid ? 'true' : undefined"
       :aria-describedby="describedBy(field)"
       :data-invalid="dataFlag(invalid)"
@@ -42,11 +43,13 @@ import { dataFlag, vInteractive } from '~/utils/interactive'
 /**
  * Catalyst Listbox on @headlessui/vue. Options are UiListboxOption children (optionally inside
  * UiListboxGroup); the button shows the #selected slot ({ value }). Inside a UiField the label
- * names the button, unless it has its own ariaLabel (a second control in the field). Headless UI Vue has no anchor positioning, so the menu opens below.
+ * names the button, unless it has its own ariaLabel (a second control in the field). `labelledBy` (an element's id)
+ * names it by that element and its value, as a field's label can't: aria-label hides the value (#425). Headless UI Vue has no anchor positioning, so the menu opens below.
  */
-const props = defineProps<{ placeholder?: string; ariaLabel?: string; invalid?: boolean; disabled?: boolean }>()
+const props = defineProps<{ placeholder?: string; ariaLabel?: string; labelledBy?: string; invalid?: boolean; disabled?: boolean }>()
 const model = defineModel<T>()
 const field = inject(FIELD, undefined)
+const buttonId = useId()
 const isDisabled = computed(() => props.disabled || !!field?.disabled.value)
 
 const BUTTON = LISTBOX_BUTTON

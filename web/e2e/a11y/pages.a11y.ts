@@ -53,6 +53,19 @@ for (const theme of ['light', 'dark'] as const) {
       await expectAccessible(page)
     })
 
+    test('a song’s version picker open, with your chart under Mine (#425)', async ({ page }) => {
+      await page.goto('/help')
+      await page.evaluate(() => {
+        localStorage.setItem('csm-charts', JSON.stringify([{ id: 'mysummer01', title: 'Summertime', kind: 'copy', basedOn: 'summertime', createdAt: 1, updatedAt: 1 }]))
+        localStorage.setItem('csm-chart:mysummer01', 'title: Summertime\nversion: Ballad\nkey: Am\n\nsection: A\nbars: 4\n1 | Am6')
+      })
+      await page.goto('/song/summertime')
+      if (theme === 'dark') await darkMode(page)
+      await expect(staves(page).first()).toBeVisible()
+      await opens(page, page.getByRole('button', { name: 'Version' }), page.getByRole('group', { name: 'Mine' }))
+      await expectAccessible(page)
+    })
+
     test('the Changes and its popovers', async ({ page }) => {
       await page.goto(SONG)
       if (theme === 'dark') await darkMode(page)
