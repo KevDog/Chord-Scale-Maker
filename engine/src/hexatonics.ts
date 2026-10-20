@@ -72,17 +72,18 @@ export const chordTonePcs = (chordRoot: Spelled, quality: string | null): Readon
   return new Set(degrees ? spellFrom(chordRoot, degrees.join(' ')).map(pcOf) : [])
 }
 
-/** the scale's notes repeat a step of `by` semitones round the octave (diminished: 3, whole tone: 2) */
+/** the scale's notes repeat a step of `by` semitones round the octave (diminished: 3, whole tone: 2, augmented: 4) */
 const symmetric = (pcs: ReadonlySet<number>, size: number, by: number): boolean => pcs.size === size && [...pcs].every((pc) => pcs.has(mod(pc + by, 12)))
 
 /**
  * a symmetric scale's pairs off its chain (#432), after Weiskopf, Intervalic Improvisation, pp. 12, 16: on a diminished
  * scale the major triads a tritone apart, then the minor ones, each lower root first in scale order; on whole tone its
- * two augmented triads, a whole step apart; none on any other scale
+ * two augmented triads, a whole step apart; on the augmented scale its two, a minor third apart; none on any other scale
  */
 function offChainLinks(scale: readonly Spelled[]): readonly Readonly<{ lower: ChainTriad; upper: ChainTriad }>[] {
   const pcs = new Set(scale.map(pcOf))
   if (symmetric(pcs, 6, 2)) return [{ lower: chainTriad(scale[0]!, 'aug'), upper: chainTriad(scale[1]!, 'aug') }]
+  if (symmetric(pcs, 6, 4)) return [{ lower: chainTriad(scale[0]!, 'aug'), upper: chainTriad(scale.find((n) => pcOf(n) === mod(pcOf(scale[0]!) + 3, 12))!, 'aug') }]
   if (!symmetric(pcs, 8, 3)) return []
   return (['maj', 'min'] as const).flatMap((quality) =>
     scale.flatMap((root, i) => {

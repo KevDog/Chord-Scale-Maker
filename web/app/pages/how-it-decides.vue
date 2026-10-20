@@ -416,7 +416,9 @@
             Improvisation</em>; they join the list after the chain's. On a diminished scale: its major triads a tritone
             apart, then its minor ones (<UiCode>C/F♯</UiCode> over <UiCode>C7♭9</UiCode>, which Auto now picks: it
             covers as many chord tones as <UiCode>E♭/Am</UiCode> and sits on the root). On the whole-tone scale, which has
-            no chain: its two augmented triads, a whole step apart (<UiCode>C+/D+</UiCode> over <UiCode>C7♯5</UiCode>).
+            no chain: its two augmented triads, a whole step apart (<UiCode>C+/D+</UiCode> over <UiCode>C7♯5</UiCode>). On
+            the augmented scale (1 ♯2 3 5 ♯5 7, the Advanced level's scale over <UiCode>Cmaj7♯5</UiCode> and
+            <UiCode>C+</UiCode>): its two augmented triads, a minor third apart (<UiCode>C+/D♯+</UiCode>).
             Pair <em>n</em> counts the chain's pairs only; pick an off-chain pair from the chord's list.
           </UiText>
           <UiText><strong :class="EM">What you can change:</strong> Pair, Ranked against, and a chord pick for one chord.</UiText>

@@ -55,6 +55,12 @@ describe('the triad chain', () => {
     expect(hexatonicPairs(scale('G', 'whole tone'), parseRoot('G'), '7')[0]?.coverage).toBe(3) // G B, and F of A+ (A C♯ F)
   })
 
+  it('pairs the augmented scale’s two augmented triads, a minor third apart (#432)', () => {
+    expect(chainNames(scale('C', 'augmented'))).toEqual(['C', '·', 'E', '·', 'G♯', '·'])
+    expect(pairNames('C', 'augmented')).toEqual(['C+/D♯+'])
+    expect(hexatonicPairs(scale('C', 'augmented'), C, 'Maj7#5')[0]?.coverage).toBe(4)
+  })
+
   it('adds no off-chain pairs to a scale that is not symmetric', () => {
     expect(pairNames('C', 'bebop major')).toHaveLength(4)
     expect(pairNames('C', 'ionian')).toHaveLength(7)

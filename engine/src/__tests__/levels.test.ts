@@ -17,6 +17,8 @@ describe('scale levels', () => {
     expect(at('Bm7b5')).toEqual(['G Major Pentatonic', 'B Locrian', 'B Locrian natural 2'])
     expect(at('C7sus4')).toEqual(['Bb Major Pentatonic', 'C Mixolydian', 'C Dorian'])
     expect(at('Cm6')).toEqual(['C Minor Pentatonic', 'C Dorian', 'C Melodic Minor']) // Dorian is m6's standard now
+    expect(at('CMaj7#5')).toEqual(['C Lydian Augmented', 'C Lydian Augmented', 'C Augmented']) // #432
+    expect(at('C+')).toEqual(['C Whole Tone', 'C Whole Tone', 'C Augmented'])
     expect(at('Cdim7')).toEqual(['C Whole-Half Diminished', 'C Whole-Half Diminished', 'C Whole-Half Diminished']) // Harmonic Minor is a menu option (R3b)
     expect(scaleAtLevel('Cm7#5#9x', 'basic')).toBeNull()
   })
