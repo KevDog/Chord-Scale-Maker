@@ -174,13 +174,14 @@ describe('buildArpeggioSheet: errors, keys and the last line', () => {
     expect(pages.map((s) => s.last)).toEqual([false, true])
   })
 
-  it('draws the key signature on the first line only, and marks accidentals by the measure rule', () => {
+  it('draws the clef and key signature on every line, and marks accidentals by the measure rule', () => {
     const eb = { tonic: 3, minor: false, name: 'Eb' } as const
     const rows = [row('Cm7', 'C Dorian'), row('Fm7', 'F Dorian')]
     const plain = buildArpeggioSheet(rows, CONCERT, 12, 'seventh', 'up').pages.flat()
     expect(plain[0]?.accidentals).toContain('b')
     const keyed = buildArpeggioSheet(rows, CONCERT, 12, 'seventh', 'up', eb).pages.flat()
-    expect(keyed.map((s) => s.showClefAndKey)).toEqual([true, false])
+    expect(keyed.map((s) => s.showClefAndKey)).toEqual([true, true])
+    expect(keyed.map((s) => s.keySig)).toEqual([keyed[0]?.keySig, keyed[0]?.keySig])
     expect(keyed[0]?.keySig).not.toBeNull()
     expect(keyed[0]?.accidentals).not.toContain('b')
     expect(keyed[0]?.accidentals).toEqual(keyed[0]?.notes.map(() => null))

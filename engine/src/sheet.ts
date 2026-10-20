@@ -29,7 +29,7 @@ export type StaffModel = Readonly<{
   scale: ScaleLabel | null
   notes: readonly Pitched[]
   keySig: string | null // VexFlow major spec for the staff's key signature; null: none drawn
-  showClefAndKey: boolean // draw the clef (and keySig) at its start: every staff without signatures, each part's first with them
+  showClefAndKey: boolean // draw the clef (and keySig) at its start: every staff, each a line of its own
   accidentals: readonly (string | null)[] // per note: the accidental to draw ("#", "b", "n"…) or null
   intervals: readonly string[] | null // each note against the chord root (b9, #11…); null if the chord can't be read
   keys: readonly string[] | null // practice keys: each note's spelled interval from the mode's reference
@@ -167,14 +167,13 @@ function staff(
   startText: string,
   practice: PracticeSelection | null,
   key: Key | null | undefined,
-  showClefAndKey: boolean,
   covers: Cover,
   keyName?: string,
 ): StaffModel {
   const startKey = 'midi' in start ? start.midi : start.error
   const keySig = key === undefined ? null : keySignature(key, part)
-  const id = [chordTexts.join(' '), scale, part.clef, part.trans, mode, startKey, keySig, showClefAndKey ? '' : 'bare'].join('|')
-  const base = { id, last, keySig, showClefAndKey, positions: covers.positions, source: scale === null ? null : { chord: row.chord, scale } }
+  const id = [chordTexts.join(' '), scale, part.clef, part.trans, mode, startKey, keySig, ].join('|')
+  const base = { id, last, keySig, showClefAndKey: true, positions: covers.positions, source: scale === null ? null : { chord: row.chord, scale } }
   const chords = chordTexts.map((c) => chordTokensOrNull(part, c, scale))
   const none = { notes: [], accidentals: [], intervals: null, keys: null, selected: null, pentatonic: null, hexatonic: null, quartal: null, second: null, outside: null, varies: false }
   if (scale === null) return { ...base, ...none, chords, scale: null, error: chords[0] ? 'Choose a scale' : "Can't read this chord" }
@@ -252,7 +251,7 @@ export function buildSheet(
       pages: chunk(
         lines.map((l, n) => {
           const r = rows[l.row] as Row
-          return staff(r, l.chords, scaleOf(r, l.row), part, mode, start, n === lines.length - 1, startText, practice, key, key === undefined || n === 0, covers[n]!, keys ? (keys.get(l.row) ?? '') : undefined)
+          return staff(r, l.chords, scaleOf(r, l.row), part, mode, start, n === lines.length - 1, startText, practice, key, covers[n]!, keys ? (keys.get(l.row) ?? '') : undefined)
         }),
         perPage,
       ),

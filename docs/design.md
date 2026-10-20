@@ -790,8 +790,9 @@ type Parsed<T> = Readonly<{ value: T; diagnostics: readonly Diagnostic[] }>
     its noteheads and stem tips, never inside `CLEF_BAND`, and takes in a raised ending bracket.
 - **Clefs and key signatures:** the clef and the chart's key as written for the instrument
   (`keySignature` in `engine/src/keySignature.ts`; a minor key by its relative major, none without a `key:`), once at the
-  start, as on a jazz lead sheet: the first staff of each scale sheet part (`StaffModel.showClefAndKey`) and the
-  first Changes line; every other staff and line has neither. The first Changes line always gets the clef, even
+  start, as on a jazz lead sheet, on the Changes: its first line has them, every other line neither. The Scales,
+  Arpeggios and Patterns sheets (`StaffModel.showClefAndKey`) start every line with them, since each line is read on
+  its own; a Patterns line whose run continues onto further staves has them on its first staff only (#446). The first Changes line always gets the clef, even
   without a `key:`. The key is the chart's `key:` (`chartKeyOf`) throughout: key
   changes go by accidentals only, and show in the analysis (the Changes sheet's key-area labels), never as a new
   signature. Notes follow the measure rule (`accidentalsInBar`): an accidental shows only where it differs from what

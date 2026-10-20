@@ -175,17 +175,14 @@ describe('sheet', () => {
     const [staff] = buildSheet(rows, { clef: 'treble', trans: 'Bb' }, 'root', 'C', 12, null, parseKey('Eb')).flatMap((p) => p.pages.flat())
     expect([staff?.keySig, staff?.accidentals.every((a) => a === null)]).toEqual(['F', true]) // F Ionian in F: no accidentals
   })
-  it("with the chart's key, starts only each part's first staff with the clef and signature", () => {
+  it('starts every staff with the clef, and the signature when there is a key, on every page', () => {
     const rows = [row('Cm7'), row('F7', '', '2'), row('BbMaj7', '', '3')]
     const shown = (key?: ReturnType<typeof parseKey>) =>
-      buildSheet(rows, CONCERT, 'both', 'C', 2, null, key).map((p) => p.pages.flat().map((s) => s.showClefAndKey))
-    expect(shown(parseKey('Bb'))).toEqual([[true, false, false], [true, false, false]])
-    expect(shown(null)).toEqual([[true, false, false], [true, false, false]]) // no key: line: the clef once, no signature
-    expect(shown()).toEqual([[true, true, true], [true, true, true]]) // signatures off: a clef on every staff, as before
-  })
-  it('gives a staff a new id when its clef comes or goes', () => {
-    const ids = (key?: null) => buildSheet([row('Cm7'), row('F7', '', '2')], CONCERT, 'root', 'C', 12, null, key).flatMap((p) => p.pages.flat().map((s) => s.id))
-    expect(ids(null)[1]).not.toBe(ids()[1])
+      buildSheet(rows, CONCERT, 'both', 'C', 2, null, key).map((p) => p.pages.map((page) => page.map((s) => s.showClefAndKey)))
+    const all = [[[true, true], [true]], [[true, true], [true]]]
+    expect(shown(parseKey('Bb'))).toEqual(all)
+    expect(shown(null)).toEqual(all) // no key: line: a clef on every staff, no signature
+    expect(shown()).toEqual(all)
   })
 
   describe('reading resolveScales', () => {

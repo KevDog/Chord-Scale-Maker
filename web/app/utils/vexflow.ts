@@ -89,7 +89,7 @@ export function drawStaff(vf: VexFlowModule, el: HTMLElement, staff: StaffModel,
   const ctx = svgContext(vf, el, STAFF_WIDTH)
 
   const stave = inkStave(vf, 0, STAVE_Y, STAFF_WIDTH - 1)
-  if (staff.showClefAndKey) stave.addClef(clef) // with key signatures: each part's first staff only
+  if (staff.showClefAndKey) stave.addClef(clef) // every line's first staff (a Patterns continuation has neither)
   if (staff.showClefAndKey && staff.keySig) stave.addKeySignature(staff.keySig)
   stave.setEndBarType(staff.last ? vf.BarlineType.END : vf.BarlineType.DOUBLE)
   stave.setContext(ctx).draw()

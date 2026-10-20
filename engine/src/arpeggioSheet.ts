@@ -162,19 +162,18 @@ export function buildArpeggioSheet(
   const staves = lines.map((l, n): ArpeggioStaffModel => {
     const r = rows[l.row] as Row
     const scale = scaleOf(r, l.row)
-    const showClefAndKey = key === undefined || n === 0
     const range = rangeOf(part)
     const cover = covers[n]
     const used = cover ? pairFor(part, r, scale, cover, opts.keys ? (opts.keys.get(l.row) ?? '') : undefined) : null
     const pairKey = cover ? `${used?.pair.name ?? '-'}|${shape}` : ''
-    const id = [l.chords.join(' '), scale, part.clef, part.trans, `${range.lo}-${range.hi}-${range.centre}`, notes, dir, pairKey, keySig, showClefAndKey ? '' : 'bare'].join('|')
+    const id = [l.chords.join(' '), scale, part.clef, part.trans, `${range.lo}-${range.hi}-${range.centre}`, notes, dir, pairKey, keySig].join('|')
     const block = !!used && shape === 'block'
     const base = {
       id,
       chords: l.chords.map((c) => chordTokensOrNull(part, c, scale)),
       scale: orNull(() => (scale ? scaleLabel(part, scale) : null)),
       keySig,
-      showClefAndKey,
+      showClefAndKey: true,
       last: n === lines.length - 1,
       ...(cover && {
         pair: { hexatonic: used?.hexatonic ?? null, coverage: used?.pair.coverage ?? null, positions: cover.positions, varies: cover.varies, source: scale === null ? null : { chord: r.chord, scale } },

@@ -1,4 +1,5 @@
 import { describe, expect, it } from 'vitest'
+import type { Key } from '../analysis/keys'
 import type { Row } from '../chart'
 import { noteName } from '../instruments'
 import { type Pitched, partFor, rangeOf } from '../part'
@@ -234,6 +235,17 @@ describe('buildPatternSheet', () => {
       const withSharp = staves.filter((s) => sharpAt(s) >= 0)
       expect(withSharp.length).toBeGreaterThan(1)
       for (const s of withSharp) expect(s.accidentals[sharpAt(s)]).toBe('#')
+    })
+    it("starts each line's first stave with the clef and signature, its continuations with neither", () => {
+      const rows = [row('Cmaj7', 'C Ionian'), row('Dm7', 'D Dorian')]
+      const shown = (key?: Key | null) =>
+        buildPatternSheet(rows, CONCERT_PIANO, 1, moves, 'scale', 'up-down', key).pages.flat().map((s) => ({ first: s.chords.length > 0, clef: s.showClefAndKey }))
+      for (const key of [{ tonic: 0, minor: false, name: 'C' } as const, null, undefined]) {
+        const staves = shown(key) // one stave a page
+        expect(staves.length).toBeGreaterThan(2)
+        expect(staves.filter((s) => s.first)).toHaveLength(2) // two lines, each wrapped
+        for (const s of staves) expect(s.clef).toBe(s.first)
+      }
     })
     it('pages the pieces', () => {
       const pages = buildPatternSheet([row('Cmaj7', 'C Ionian')], CONCERT_PIANO, 2, moves, 'scale', 'up-down').pages

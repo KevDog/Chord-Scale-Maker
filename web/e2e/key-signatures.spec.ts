@@ -9,17 +9,39 @@ const glyphs = (group: ReturnType<Page['locator']>) => group.locator('path, text
 /** the accidentals drawn on notes, every line in order (not the signature's) */
 const noteAccidentals = async (page: Page): Promise<number[]> => (await Promise.all((await lines(page).all()).map(drawn))).flatMap((d) => d.accidentals.map((a) => a.code))
 
-test('each sheet draws the clef and key signature once, at its start, guide tones or not', async ({ page }) => {
+/** every staff of the sheet starts with one clef and one key signature */
+async function everyStaffSigned(page: Page): Promise<void> {
+  await expect(staves(page).nth(1)).toBeVisible()
+  const n = await staves(page).count()
+  await expect(clefs(page.locator('body'))).toHaveCount(n)
+  await expect(signatures(page.locator('body'))).toHaveCount(n)
+  await expect(clefs(staves(page).nth(1))).toHaveCount(1)
+  await expect(signatures(staves(page).nth(1))).toHaveCount(1)
+}
+
+test('the Scales and Arpeggios sheets start every line with the clef and key signature', async ({ page }) => {
   await page.goto('/song/misty')
   await chooseSheet(page, 'Scales')
-  await expect(staves(page).first()).toBeVisible()
+  await everyStaffSigned(page)
+  await chooseSheet(page, 'Arpeggios')
+  await everyStaffSigned(page)
+})
+
+test("the Patterns sheet signs each line's first stave, not its continuation", async ({ page }) => {
+  await page.goto('/song/autumn-leaves')
+  await chooseSheet(page, 'Patterns')
+  await expect(staves(page)).toHaveCount(28) // the default run continues onto a second stave: 14 lines
   await expect(clefs(staves(page).first())).toHaveCount(1)
   await expect(signatures(staves(page).first())).toHaveCount(1)
   await expect(clefs(staves(page).nth(1))).toHaveCount(0)
   await expect(signatures(staves(page).nth(1))).toHaveCount(0)
-  await expect(clefs(page.locator('body'))).toHaveCount(1)
-  await expect(signatures(page.locator('body'))).toHaveCount(1)
+  await expect(clefs(staves(page).nth(2))).toHaveCount(1)
+  await expect(clefs(page.locator('body'))).toHaveCount(14)
+  await expect(signatures(page.locator('body'))).toHaveCount(14)
+})
 
+test('the Changes sheet draws the clef and key signature once, at its start, guide tones or not', async ({ page }) => {
+  await page.goto('/song/misty')
   await chooseSheet(page, 'Changes')
   await expect(lines(page).nth(1)).toBeVisible()
   await expect(clefs(lines(page).first())).toHaveCount(1)
@@ -48,16 +70,16 @@ test('the signature is written for the instrument', async ({ page }) => {
   await expect(glyphs(signatures(first))).toHaveCount(3) // E♭: three flats
   await chooseInstrument(page, 'Tenor')
   await expect(glyphs(signatures(staves(page).first()))).toHaveCount(1) // F: one flat
-  await expect(signatures(page.locator('body'))).toHaveCount(1)
+  await expect(glyphs(signatures(staves(page).nth(1)))).toHaveCount(1)
 })
 
-test('no key: line, no signature, and the clef still once, guide tones too', async ({ page }) => {
+test('no key: line, no signature; the clef on every Scales staff, once on the Changes, guide tones too', async ({ page }) => {
   await writeChart(page, 'title: T\n\nsection: A\nbars: 4\n1 | C7 | C Half-Whole\n2 | F7 | F Mixolydian\n')
   await chooseSheet(page, 'Scales')
   await expect(staves(page).nth(1)).toBeVisible()
   await expect(signatures(page.locator('body'))).toHaveCount(0)
-  await expect(clefs(staves(page).first())).toHaveCount(1)
-  await expect(clefs(page.locator('body'))).toHaveCount(1)
+  await expect(clefs(staves(page).nth(1))).toHaveCount(1)
+  await expect(clefs(page.locator('body'))).toHaveCount(2)
   await chooseSheet(page, 'Changes')
   await showGuides(page, 'From 3rd')
   await expect(lines(page).first()).toHaveAttribute('aria-label', /^Bars: C7 \| F7.*; guide tones: /)
@@ -77,11 +99,12 @@ test('guide tones take their accidentals from the signature, and from C without 
   await expect.poll(() => noteAccidentals(page)).toEqual([GLYPH.flat, GLYPH.flat]) // against C: a flat on each bar's B♭
 })
 
-test('an @key draws no second signature; the Changes sheet shows it as a key area', async ({ page }) => {
+test('an @key draws no new signature; the Changes sheet shows it as a key area', async ({ page }) => {
   await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | CMaj7\n2 | DMaj7\n3 | EMaj7\n@key 2 D\n')
   await chooseSheet(page, 'Scales')
   await expect(staves(page).nth(2)).toBeVisible()
-  await expect(signatures(page.locator('body'))).toHaveCount(1)
+  await expect(signatures(page.locator('body'))).toHaveCount(3) // the chart's C on every staff
+  await expect(glyphs(signatures(page.locator('body')))).toHaveCount(0) // not D's two sharps from bar 2
   await chooseSheet(page, 'Changes')
   await expect(lines(page).first()).toBeVisible()
   await expect(signatures(page.locator('body'))).toHaveCount(1)
