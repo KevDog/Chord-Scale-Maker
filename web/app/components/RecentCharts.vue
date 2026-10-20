@@ -32,7 +32,7 @@ onMounted(() => {
     const when = openedWhen(r.at, now)
     if (r.kind === 'library') {
       const c = findChart(r.id)
-      return c ? [{ href: songPath(c.slug), title: c.title, composer: c.composer, mine: false, when }] : []
+      return c ? [{ href: songPath(c.slug), title: c.name, composer: c.composer, mine: false, when }] : []
     }
     const c = mine.find((m) => m.id === r.id) // deleted since: dropped
     return c ? [{ href: `/song?mine=${c.id}`, title: c.title, composer: '', mine: true, when }] : []
