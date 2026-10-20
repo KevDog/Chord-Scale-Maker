@@ -247,6 +247,11 @@ describe('buildArpeggioSheet: Triad pairs (#436)', () => {
     expect(staves({ picks: { picks: one, at } })[0]?.pair).toMatchObject({ hexatonic: { picked: false }, varies: true })
   })
 
+  it("plays a dominant's tritone sub pair as a pick (#432)", () => {
+    const picks = withPick(NO_PICKS, 'hexatonic', ['A:2:0'], [11, 1], targets)
+    expect(staves({ picks: { picks, at } })[1]?.pair).toMatchObject({ hexatonic: { name: 'B/D♭', picked: true } })
+  })
+
   it('writes block chords whatever the direction, and changes the id with the shape', () => {
     const [block] = staves({ shape: 'block' }, 'down')
     const [arp] = staves({ shape: 'arpeggiated' })

@@ -424,6 +424,18 @@
           <UiText><strong :class="EM">What you can change:</strong> Pair, Ranked against, and a chord pick for one chord.</UiText>
         </DecisionSection>
 
+        <DecisionSection id="hex.sub">
+          <UiText>
+            Over a dominant chord, a pair can come from its tritone substitute, after Walt Weiskopf's <em>Intervalic
+            Improvisation</em>: <UiCode>B/D♭</UiCode> over <UiCode>G7</UiCode> takes its triads from D♭7's Mixolydian. B is
+            G7's 3rd; D♭, F and A♭ its ♭5, 7th and ♭9. A dominant's pick list ends, under <em>From the tritone sub</em>,
+            with up to two such pairs of major and minor triads: those covering the most of the chord's tones, a pair
+            holding the sub's own triad first. A pair the chord's scale already has isn't repeated. They're never Auto and
+            Pair <em>n</em> doesn't count them; pick one for a chord and it lights the notes of it the staff holds.
+          </UiText>
+          <UiText><strong :class="EM">What you can change:</strong> a chord pick for one chord.</UiText>
+        </DecisionSection>
+
         <DecisionSection id="hex.key">
           <UiText>
             Ranked against <strong :class="EM">Key</strong>, every chord in a key area takes the same pair, after Walt

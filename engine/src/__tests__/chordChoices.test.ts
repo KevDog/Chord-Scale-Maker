@@ -53,6 +53,14 @@ describe('hexatonicChoices', () => {
   it('gives nothing where the scale has no pairs', () => {
     expect(hexatonicChoices('C6', 'C Major Pentatonic', CONCERT)).toEqual([])
   })
+  it("ends a dominant's list with its tritone sub's pairs, concert roots, named for the part (#432)", () => {
+    const own = hexatonicChoices('G7', 'G Mixolydian', CONCERT).filter((c) => !c.from)
+    const subs = hexatonicChoices('G7', 'G Mixolydian', CONCERT).slice(own.length)
+    expect(subs.map((c) => c.label)).toEqual(['from D♭7: B/D♭ · covers 2', 'from D♭7: B♭m/B · covers 2'])
+    expect(subs[0]).toMatchObject({ roots: [11, 1], from: 'D♭7', name: 'B/D♭' })
+    expect(hexatonicChoices('G7', 'G Mixolydian', TENOR).find((c) => c.from)).toMatchObject({ roots: [11, 1], from: 'E♭7', name: 'D♭/E♭' })
+    expect(hexatonicChoices('Cmaj7', 'C Ionian', CONCERT).some((c) => c.from)).toBe(false)
+  })
 })
 
 it('heads a popover with the written chord and its scale’s name', () => {

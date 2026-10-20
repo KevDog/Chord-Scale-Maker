@@ -1122,6 +1122,11 @@ describe('chord picks (#303)', () => {
     expect(hex({ 'A:1:0': { roots: [0, 2], for: 'Cmaj7|C Lydian' } })[0]).toMatchObject({ name: 'G/Am', picked: false })
   })
 
+  it("applies a dominant's tritone sub pair as a hexatonic pick (#432)", () => {
+    expect(hex({ 'A:3:0': { roots: [11, 1], for: target('A:3:0') } })[2]).toMatchObject({ name: 'B/D♭', picked: true })
+    expect(hex({ 'A:3:0': { roots: [11, 1], for: target('A:3:0') } }, TENOR)[2]).toMatchObject({ name: 'D♭/E♭', picked: true })
+  })
+
   it('keeps a hexatonic pick’s sounding pair on a B♭ part', () => {
     expect(hex({ 'A:1:0': { roots: [0, 2], for: target('A:1:0') } }, TENOR)[0]).toMatchObject({ name: 'D/Em', picked: true })
   })
