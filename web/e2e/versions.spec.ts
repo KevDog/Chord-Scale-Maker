@@ -47,6 +47,18 @@ test('your saved charts of a tune join its picker, under Mine, and open there', 
   await expect(page.locator('head link[rel="canonical"]')).toHaveAttribute('href', `${SITE_URL}/song/summertime`)
 })
 
+test('a saved chart titled by one of the tune\'s other titles joins its picker, under Mine (#426)', async ({ page }) => {
+  await page.goto('/help')
+  await page.evaluate(() => {
+    localStorage.setItem('csm-charts', JSON.stringify([{ id: 'myleaves01', title: 'Les Feuilles mortes (copy)', kind: 'copy', createdAt: 1, updatedAt: 1 }]))
+    localStorage.setItem('csm-chart:myleaves01', 'title: Les Feuilles mortes (copy)\nkey: Gm\n\nsection: A\nbars: 4\n1 | Cm7')
+  })
+  await page.goto('/song/autumn-leaves')
+  await expect(staves(page).first()).toBeVisible()
+  await page.getByRole('button', { name: 'Version' }).click()
+  await expect(page.getByRole('group', { name: 'Mine' }).getByRole('option')).toHaveText(['My chart'])
+})
+
 test('the picker follows your chart as you write it: a new chart titled as a tune, then its version: line', async ({ page }) => {
   await writeChart(page, 'title: Summertime\nkey: Am\n\nsection: A\nbars: 4\n1 | Am6\n')
   const picker = page.getByRole('button', { name: 'Version' })

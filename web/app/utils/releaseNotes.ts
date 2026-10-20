@@ -10,6 +10,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-20',
     items: [
+      { text: 'The Version menu moves onto the row of sheet controls, so on a phone the music starts higher (Controls is its icon there). It also lists your saved charts titled by a tune’s other name, Les Feuilles mortes, or as a copy, “Autumn Leaves (copy)”.', pr: 453 },
       { text: 'A shared link to a tune’s other version, Summertime (Jazz Mind Accelerator), now opens that version, matching its preview card’s title and image.', pr: 452 },
       { text: 'The Version menu reads its version aloud with its name, “Version, Ballad”, to a screen reader, and once you have a chart of the tune its library versions sit under Library, beside Mine.', pr: 451 },
       { text: 'Recently opened names a tune’s other versions by their label, “Summertime (Jazz Mind Accelerator)”, so two versions no longer read alike.', pr: 450 },

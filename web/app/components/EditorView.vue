@@ -153,6 +153,8 @@
             </template>
             <!-- the actions: Edit, Transpose… (both rewrite the chart), Share, Focus, Print (the view's one primary), the rest under More; on a phone (compact)
                  Edit, Transpose…, Share and Focus are in the Controls dialog -->
+            <!-- the version picker (#411), by the sheet's other choices (#427) -->
+            <template v-if="$slots.version" #version><slot name="version" /></template>
             <template #actions="{ place, after }">
               <!-- Edit: in the rail, or on a phone in the dialog, but in the rail while editing (its Done the way out) -->
               <ToggleButton v-if="!editor.fatal.value && (place === 'rail') === (!compactRail || editorShown)" :model-value="editorShown" expands title="Show or hide the chart editor" @update:model-value="toggleEditor"><PencilSquareIcon data-slot="icon" />{{ editorShown ? 'Done' : 'Edit' }}</ToggleButton>
