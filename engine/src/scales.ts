@@ -27,6 +27,7 @@ export const SCALES = {
   'half whole diminished': ['1 b2 b3 3 #4 5 6 b7', 'Half-Whole Dim.'],
   'whole half diminished': ['1 2 b3 4 b5 b6 6 7', 'Whole-Half Dim.'],
   'whole tone': ['1 2 3 #4 #5 b7', 'Whole Tone'],
+  augmented: ['1 #2 3 5 #5 7', 'Augmented'], // two augmented triads a minor third apart (Weiskopf, Intervalic Improvisation, p. 16)
   'major pentatonic': ['1 2 3 5 6', 'Major Pentatonic'],
   'minor pentatonic': ['1 b3 4 5 b7', 'Minor Pentatonic'],
   'spanish phrygian': ['1 b2 b3 3 4 5 b6 b7', 'Spanish Phrygian'],
@@ -58,6 +59,7 @@ export const ALIASES: Readonly<Record<string, ScaleKey>> = {
   'locrian #2': 'locrian natural 2',
   'lydian b7': 'lydian dominant',
   'lydian #5': 'lydian augmented',
+  'symmetric augmented': 'augmented',
   'super locrian': 'altered',
   'diminished whole half': 'whole half diminished',
   'half whole': 'half whole diminished',
@@ -154,8 +156,8 @@ function minBy<T>(xs: readonly T[], key: (x: T) => readonly number[]): T {
   return rest.reduce((best, x) => (lexLess(key(x), key(best)) ? x : best), first)
 }
 
-/** the symmetric diminished scales: their root keeps the written side (F♯°7: F♯), not the fewest accidentals */
-const SYMMETRIC: ReadonlySet<ScaleKey> = new Set<ScaleKey>(['half whole diminished', 'whole half diminished'])
+/** the symmetric diminished and augmented scales: their root keeps the written side (F♯°7: F♯), not the fewest accidentals */
+const SYMMETRIC: ReadonlySet<ScaleKey> = new Set<ScaleKey>(['half whole diminished', 'whole half diminished', 'augmented'])
 
 /** the eight-note scales (#279, #281): players letter their notes as they spell best (D♭ D E F G A♭ B♭ B; D♭7 bebop's
  * ♭7 and 7 as B C, not C♭ C), not one letter per degree */
@@ -187,7 +189,7 @@ const letteringsOf = (key: ScaleKey): readonly string[] => {
 }
 
 /**
- * #279: a scale's notes on a root as written. The formula's letters, unless the scale has eight notes and they
+ * #279: a scale's notes on a root as written. The formula's letters, unless the scale is RELETTERED and they
  * spell badly: then the same notes lettered with the fewest double accidentals, then B♯/E♯/C♭/F♭, then accidentals, then
  * accidentals against the root's side, then closest to the formula.
  */

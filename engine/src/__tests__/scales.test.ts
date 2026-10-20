@@ -30,6 +30,7 @@ describe('scales', () => {
     expect(spelled('D Dorian b2')).toBe('D Eb F G A B C')
     expect(spelled('G Mixolydian b6')).toBe('G A B C D Eb F') // mode 5 of melodic minor, not Phrygian Dominant
     expect(spelled('E Spanish Phrygian')).toBe('E F G G# A B C D') // Phrygian with the major 3rd too
+    expect(spelled('C Augmented')).toBe('C D# E G G# B') // two augmented triads a minor third apart (#432)
   })
 
   it('spells the diatonic diminished scales as M&H’s figures (R3b)', () => {
@@ -137,6 +138,16 @@ describe('symmetric diminished scales: lettered without double accidentals (#279
         const notes = spellScale(simplifyRoot(parseRoot(name), key), key)
         expect(notes.filter(ugly).map(rootName), `${name} ${key}`).toEqual([])
       }
+  })
+
+  it('letters the augmented scale cleanly on every root, keeping the written side (#432)', () => {
+    expect(spelled('A Augmented')).toBe('A C C# E F G#') // not B♯ and E♯
+    expect(spelled('Db Augmented')).toBe('Db E F Ab A C')
+    for (const name of ROOTS) {
+      const notes = spellScale(simplifyRoot(parseRoot(name), 'augmented'), 'augmented')
+      expect(notes.filter(ugly).map(rootName), name).toEqual([])
+      expect(simplifyRoot(parseRoot(name), 'augmented').acc, name).toBe(parseRoot(name).acc)
+    }
   })
 
   it('never spells a written root worse than its formula does', () => {

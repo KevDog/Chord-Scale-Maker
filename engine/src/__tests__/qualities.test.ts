@@ -70,11 +70,16 @@ describe('qualities', () => {
 
   it('reads an augmented triad as its own chord: Whole Tone, or Lydian Augmented (#217)', () => {
     expect(['+', 'aug', '(#5)'].map(baseQuality)).toEqual(['aug', 'aug', 'aug'])
-    expect(resolveQuality('B+')?.options.map((o) => [o.scale, o.default])).toEqual([['B Whole Tone', true], ['B Lydian Augmented', false]])
+    expect(resolveQuality('B+')?.options.map((o) => [o.scale, o.default])).toEqual([['B Whole Tone', true], ['B Lydian Augmented', false], ['B Augmented', false]])
     expect(CHORD_TONES.aug).toEqual(['1', '3', '#5'])
     const scaleOf = (chord: string) => analyse(parseChart(`key: C\n\nsection: A\n1 | C\n2 | ${chord}\n3 | F`).value).rows[1]?.scale
     expect(['C+', 'Caug'].map(scaleOf)).toEqual(['C Whole Tone', 'C Whole Tone'])
     expect(analyse(parseChart('key: C\n\nsection: A\n1 | C\n2 | E+\n3 | Am').value).rows[1]?.numeral).toBe('III+')
+  })
+
+  it('offers the Augmented scale over Maj7 and Maj7#5 (#432)', () => {
+    expect(resolveQuality('CMaj7')?.options.map((o) => o.scale)).toContain('C Augmented')
+    expect(resolveQuality('CMaj7#5')?.options.map((o) => o.scale)).toContain('C Augmented')
   })
 
   it('reads a stack of alterations in any order, in or out of parentheses (#217)', () => {

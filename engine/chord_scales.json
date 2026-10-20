@@ -44,7 +44,8 @@
       { "root": "5",  "scale": "Major Pentatonic",  "note": "no 4th; 7 and 9 emphasised" },
       { "root": "6",  "scale": "Minor Pentatonic" },
       { "root": "1",  "scale": "Bebop Major" },
-      { "root": "1",  "scale": "Lydian Augmented",  "note": "for Maj7#5" }
+      { "root": "1",  "scale": "Lydian Augmented",  "note": "for Maj7#5" },
+      { "root": "1",  "scale": "Augmented",         "note": "the #2 and #5: for Maj7#5" }
     ],
     "Maj7#11": [
       { "root": "1",  "scale": "Lydian",            "default": true },
@@ -52,11 +53,13 @@
     ],
     "Maj7#5": [
       { "root": "1",  "scale": "Lydian Augmented",  "default": true },
-      { "root": "1",  "scale": "Lydian" }
+      { "root": "1",  "scale": "Lydian" },
+      { "root": "1",  "scale": "Augmented", "level": "advanced" }
     ],
     "aug": [
       { "root": "1", "scale": "Whole Tone", "default": true },
-      { "root": "1", "scale": "Lydian Augmented", "note": "a I+ (C C+ C6): the major 7th" }
+      { "root": "1", "scale": "Lydian Augmented", "note": "a I+ (C C+ C6): the major 7th" },
+      { "root": "1", "scale": "Augmented", "level": "advanced" }
     ],
     "6": [
       { "root": "1",  "scale": "Ionian",            "default": true },
