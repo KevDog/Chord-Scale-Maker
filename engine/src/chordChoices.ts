@@ -1,5 +1,5 @@
 import { parseChord, writtenChordRootLenient, writtenChordTextOrNull } from './chord'
-import { hexatonicPairs, hexatonicRanking } from './hexatonics'
+import { hexatonicPairs, hexatonicRanking, tritoneSubPairs } from './hexatonics'
 import { concertPc, type Part, rangeOf, scaleLabel, writtenScale } from './part'
 import { PENTATONIC_DEGREE_LABELS, pentatonicRanking } from './pentatonics'
 import { glyphs, mod, pcOf } from './pitch'
@@ -9,7 +9,7 @@ import { orNull } from './util'
 
 /** a popover's rows (#303): one chord's choices from inside to outside, written for the part; pitch classes concert, as picks store them */
 export type PentChoice = Readonly<{ pc: number; name: string; degree: number; shared: number; label: string }>
-export type HexChoice = Readonly<{ roots: readonly [number, number]; name: string; coverage: number; label: string }>
+export type HexChoice = Readonly<{ roots: readonly [number, number]; name: string; coverage: number; label: string; from?: string }>
 export type QuartChoice = Readonly<{ pc: number; name: string; degree: number; guides: number; label: string }>
 
 const read = (chord: string, scale: string, part: Part) =>
@@ -32,16 +32,19 @@ export function pentatonicChoices(chord: string, scale: string, part: Part): rea
   }))
 }
 
-/** the scale's triad pairs in Auto's order, with chord-tone coverage; [] if none */
+/** the scale's triad pairs in Auto's order, with chord-tone coverage, then a dominant's tritone sub's (from: 'D♭7', #432); [] if the scale has none */
 export function hexatonicChoices(chord: string, scale: string, part: Part): readonly HexChoice[] {
   const r = read(chord, scale, part)
   if (!r) return []
   const quality = orNull(() => baseQuality(parseChord(chord).quality))
-  return hexatonicRanking(hexatonicPairs(r.w.notes, r.root, quality), r.root).map((p) => ({
+  const pairs = hexatonicPairs(r.w.notes, r.root, quality)
+  if (!pairs.length) return []
+  return [...hexatonicRanking(pairs, r.root), ...tritoneSubPairs(r.root, quality, pairs)].map((p) => ({
     roots: [concertPc(part, pcOf(p.lower.root)), concertPc(part, pcOf(p.upper.root))] as const,
     name: p.name,
     coverage: p.coverage,
-    label: `${p.name} · covers ${p.coverage}`,
+    label: `${p.from ? `from ${p.from}: ` : ''}${p.name} · covers ${p.coverage}`,
+    ...(p.from ? { from: p.from } : {}),
   }))
 }
 

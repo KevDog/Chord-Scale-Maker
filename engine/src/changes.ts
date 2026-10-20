@@ -1,7 +1,7 @@
 import { analyse, chartKeyOf, parseKey } from './analysis'
 import { type Beats, type ChartDoc, chartBeats, type FormPart, type LinedRow, qualityScale, type Row } from './chart'
 import { type ChordToken, chordTokensOrNull, parseChord, writtenChordRootLenient, writtenChordTextOrNull } from './chord'
-import { type HexatonicBasis, type HexPair, hexatonicPairs, hexatonicRanking, keyedPair, writtenKeyPair } from './hexatonics'
+import { type HexatonicBasis, type HexPair, hexatonicPairs, hexatonicRanking, keyedPair, pickablePairs, writtenKeyPair } from './hexatonics'
 import { guideToneTimeline } from './guideToneTimeline'
 import { type Directive, type Layout, sectionLayout } from './layout'
 import { barAt, barLength, barStart, type Clock } from './metre'
@@ -575,7 +575,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     return { ...common, sheet: sheet.name, label: `${p.name}♪`, basis, title: `${section} · ${area.key} pentatonic ladder`, key: area.key, scale: sheetScale(part, scale) ?? '', ladder: area.ladder, ranking: [], view, degree: null, root: p.root, name: p.name, shared: p.shared, level: p.rung, pc: concertPc(part, pcOf(p.root)), picked: !!found }
   }
 
-  const hexRankings = new Map<string, readonly HexPair[]>()
+  const hexRankings = new Map<string, Readonly<{ ranking: readonly HexPair[]; pickable: readonly HexPair[] }>>()
   /** a chord's hexatonic and the pair it plays */
   const keyPairs = new Map<string, ReturnType<typeof writtenKeyPair>>()
   const hexatonicOf = (scale: string | null, chordText: string, at: ChordAt, target: string, keyName: string | undefined): Readonly<{ hex: ChangesHexatonic; pair: HexPair }> | null => {
@@ -586,11 +586,12 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
         const w = writtenScale(part, scale)
         const chordRoot = orNull(() => writtenChordRootLenient(part, chordText, scale)) ?? w.root
         const quality = orNull(() => baseQuality(parseChord(chordText).quality))
-        return hexatonicRanking(hexatonicPairs(w.notes, chordRoot, quality), chordRoot)
+        const ranking = hexatonicRanking(hexatonicPairs(w.notes, chordRoot, quality), chordRoot)
+        return { ranking, pickable: pickablePairs(ranking, chordRoot, quality) }
       })
-      hexRankings.set(k, ranking ?? [])
+      hexRankings.set(k, ranking ?? { ranking: [], pickable: [] })
     }
-    const ranking = hexRankings.get(k)!
+    const { ranking, pickable } = hexRankings.get(k)!
     const auto = ranking[0]
     if (!auto) return null
     const byKey = overlay.basis === 'key'
@@ -599,7 +600,7 @@ export function buildChanges(doc: ChartDoc, part: Part, barsPerLine = 4, signatu
     const sheet = (keyed && keyedPair(ranking, keyed)) || auto
     const pick = livePick(overlay.picks ?? {}, at, target)
     const want = pick ? pick.roots.map((pc) => mod(pc + toWritten, 12)) : null // the pick, written
-    const found = want ? ranking.find((p) => pcOf(p.lower.root) === want[0] && pcOf(p.upper.root) === want[1]) : undefined
+    const found = want ? pickable.find((p) => pcOf(p.lower.root) === want[0] && pcOf(p.upper.root) === want[1]) : undefined
     const used = found ?? sheet
     return { hex: { label: used.name, name: used.name, chord: at, picked: !!found, run: [], sheet: sheet.name, source: { chord: chordText, scale }, offKey: byKey && sheet === auto }, pair: used }
   }

@@ -196,7 +196,7 @@
           :footer="pickFooter('changes', pickBars(m.h.run), false)"
           :sheet-choice="m.h.sheet"
           :picked="m.h.picked"
-          :rows="hexChoiceRows(m.h)"
+          :rows="hexPickRows(m.h)"
           @choose="(id) => chooseHex(m.h, id)"
           @clear="emit('pick', 'hexatonic', m.h.run, null)"
         />
@@ -264,7 +264,7 @@ import {
   rowNotes,
   sheetScale,
 } from '@chord-scale-maker/engine'
-import { choiceId, pickFooter, pickHeader } from '~/utils/chordPicks'
+import { choiceId, hexChoiceRows, pickFooter, pickHeader } from '~/utils/chordPicks'
 import { drawChangesLine, type NamedBeat } from '~/utils/changesDrawing'
 import { DEFAULT_VIEW, SCALE_VIEW } from '~/utils/scaleView'
 import type { SheetChordEdit, SheetDone, SheetEdit, SheetFocus } from '~/utils/sheetChordEdit'
@@ -379,7 +379,7 @@ function choosePent(p: ChangesPentatonic, id: string): void {
 const pentLabel = (p: ChangesPentatonic): string =>
   `Pentatonic: ${glyphs(`${rootName(p.root)} minor`)}, built on ${PENTATONIC_DEGREE_LABELS[p.degree ?? 0]}, ${p.shared} of 5 notes in ${glyphs(p.scale)}`
 const hexRows = (h: ChangesHexatonic) => hexMemo.value(h.source)
-const hexChoiceRows = (h: ChangesHexatonic) => hexRows(h).map((c) => ({ id: choiceId.hex(c.roots), label: c.label, current: c.name === h.name }))
+const hexPickRows = (h: ChangesHexatonic) => hexChoiceRows(hexRows(h), h.name)
 const hexPickable = (h: ChangesHexatonic): boolean => shows('chord-picks') && !!h.source && h.run.length > 0
 function chooseHex(h: ChangesHexatonic, id: string): void {
   const c = hexRows(h).find((x) => choiceId.hex(x.roots) === id)

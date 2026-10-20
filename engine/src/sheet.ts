@@ -4,7 +4,7 @@ import type { Row } from './chart'
 import { qualityScale } from './chart'
 import { type ChordToken, chordTokensOrNull, isRest, parseChord, writtenChordRoot, writtenChordRootLenient } from './chord'
 import { intervalLabels } from './intervals'
-import { type HexPair, hexatonicPairs, hexatonicPick, type StaffHexatonic, writtenKeyPair } from './hexatonics'
+import { type HexPair, hexatonicPairs, hexatonicPick, pickablePairs, type StaffHexatonic, writtenKeyPair } from './hexatonics'
 import { isHexatonicSelection, isPentatonicSelection, isQuartalSelection, type PracticeSelection, practiceKeys, selectedNotes, startReference } from './practice'
 import { outsideNotes, pentatonicPick, type StaffPentatonic } from './pentatonics'
 import { quartalPick, type StaffQuartal } from './quartal'
@@ -273,19 +273,20 @@ export function lineCovers(rows: readonly Row[], lines: readonly ScaleLine[], pa
   const toWritten = pcOf(writtenRoot(part, parseRoot('C'), 'ionian')) // concert pc + this = written pc
   return lines.map((l) => {
     const r = rows[l.row] as Row
-    return coverOf(l, picks.at, live, toWritten, kind, () => staffPairs(r, scaleOf(r, l.row), part))
+    return coverOf(l, picks.at, live, toWritten, kind, () => staffPairs(r, scaleOf(r, l.row), part).pickable)
   })
 }
 
-/** a staff's triad pairs, as practiceFor reads them; [] when its scale can't be read */
-export const staffPairs = (row: Row, scale: string | null, part: Part): readonly HexPair[] =>
+/** a staff's triad pairs, as practiceFor reads them, and the pairs a pick may name (pickablePairs); [] when its scale can't be read */
+export const staffPairs = (row: Row, scale: string | null, part: Part): Readonly<{ pairs: readonly HexPair[]; pickable: readonly HexPair[] }> =>
   (scale === null ? null : orNull(() => {
     const chordRoot = orNull(() => writtenChordRootLenient(part, row.chord, scale)) ?? scaleLabel(part, scale).root
     const quality = orNull(() => baseQuality(parseChord(row.chord).quality))
-    return hexatonicPairs(writtenScale(part, scale).notes, chordRoot, quality)
-  })) ?? []
+    const pairs = hexatonicPairs(writtenScale(part, scale).notes, chordRoot, quality)
+    return { pairs, pickable: pickablePairs(pairs, chordRoot, quality) }
+  })) ?? { pairs: [], pickable: [] }
 
-/** the line's positions, whether their picks differ, and its first position's pick (written); a hexatonic pick not among the staff's pairs plays the sheet's pair, so counts as none */
+/** the line's positions, whether their picks differ, and its first position's pick (written); a hexatonic pick not among the pairs it may name plays the sheet's pair, so counts as none */
 function coverOf(line: ScaleLine, at: ReadonlyMap<number, ChordAt>, live: ChordPicks, toWritten: number, kind: PickKind | null, pairsOf: () => readonly HexPair[]): Cover {
   const positions = linePositions(line, at)
   if (!kind || !positions.length) return { positions, varies: false, pick: null }

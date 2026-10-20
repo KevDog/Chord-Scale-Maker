@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { HEX_GROUPINGS, HEX_PAIRS, hexatonicAuto, hexatonicCaption, hexatonicPick, type HexGrouping, hexatonicPairs, hexatonicRanking, resolvePair, triadChain, type ChainTriad } from '../hexatonics'
+import { chainTriad, HEX_GROUPINGS, HEX_PAIRS, hexatonicAuto, hexatonicCaption, hexatonicPick, type HexGrouping, type HexPair, hexatonicPairs, hexatonicRanking, resolvePair, triadChain, tritoneSubPairs, type ChainTriad } from '../hexatonics'
 import { glyphs, mod, parseRoot, pcOf, rootName, type Spelled } from '../pitch'
 import { SCALES, type ScaleKey, spellScale } from '../scales'
 
@@ -305,5 +305,49 @@ describe('hexatonicPick', () => {
     for (const roots of [[1, 3], [2, 0], [0, 4]] as const) expect(hexatonicPick(s, C, 'Maj7', 8, 'triads', undefined, roots).hexatonic).toEqual({ name: 'C/Dm', link: 1, picked: false, sheet: 'C/Dm', offKey: false })
     expect(hexatonicPick(s, C, 'Maj7', 0, 'triads', undefined, null).hexatonic).toMatchObject({ name: 'G/Am', picked: false })
     expect(hexatonicPick(scale('C', 'blues'), C, '7', 0, 'triads', undefined, [0, 2]).hexatonic).toBeNull() // no pairs: no pick lands
+  })
+})
+
+describe('tritoneSubPairs (#432)', () => {
+  const G = parseRoot('G')
+  const names = (root: string, quality: string | null, own: readonly HexPair[] = []): string[] => tritoneSubPairs(parseRoot(root), quality, own).map((p) => `${p.from}: ${p.name}`)
+
+  it("offers the tritone sub's Mixolydian pairs that cover most of a dominant's tones, the sub's own triad's first: B/D♭ over G7 (Weiskopf p. 19)", () => {
+    expect(names('G', '7')).toEqual(['D♭7: B/D♭', 'D♭7: B♭m/B']) // A♭m/B♭m covers as many, left out
+    expect(tritoneSubPairs(G, '7')[0]).toMatchObject({ coverage: 2, tones: [11, 1, 3, 5, 6, 8] })
+  })
+
+  it('spells the sub root as a key would, the triads without C♭ or F♭', () => {
+    expect(names('Db', '7')[0]).toMatch(/^G7: /)
+    expect(names('F#', '7alt')[0]).toMatch(/^C7: /)
+    expect(names('C', '7')).toEqual(['G♭7: E/G♭', 'G♭7: E♭m/E'])
+  })
+
+  it('pairs major and minor triads only', () => {
+    for (const root of ['C', 'Db', 'D', 'Eb', 'E', 'F', 'F#', 'G', 'Ab', 'A', 'Bb', 'B'])
+      for (const p of tritoneSubPairs(parseRoot(root), '7alt', hexatonicPairs(scale(root, 'altered'), parseRoot(root), '7alt'))) expect([p.lower.quality, p.upper.quality].every((q) => q === 'maj' || q === 'min')).toBe(true)
+  })
+
+  it('offers none off a dominant (no 3rd and ♭7)', () => {
+    for (const q of ['Maj7', 'm7', '7sus4', 'm7b5', null]) expect(names('G', q)).toEqual([])
+  })
+
+  it("leaves out a pair the staff's own scale already has", () => {
+    const own = hexatonicPairs(scale('G', 'mixolydian'), G, '7')
+    const subs = tritoneSubPairs(G, '7', [...own, { ...own[0]!, lower: chainTriad(parseRoot('B'), 'maj'), upper: chainTriad(parseRoot('Db'), 'maj') }])
+    expect(subs.map((p) => p.name)).toEqual(['B♭m/B', 'A♭m/B♭m'])
+  })
+
+  it("plays as a pick over a dominant's staff, and only there", () => {
+    const s = scale('G', 'mixolydian')
+    const picked = hexatonicPick(s, G, '7', 0, 'triads', undefined, [11, 1])
+    expect(picked.hexatonic).toMatchObject({ name: 'B/D♭', picked: true })
+    expect(picked.lit).toEqual(s.map((n) => [11, 5].includes(pcOf(n)))) // its notes in G Mixolydian: B and F
+    expect(hexatonicPick(scale('G', 'dorian'), G, 'm7', 0, 'triads', undefined, [11, 1]).hexatonic).toMatchObject({ picked: false })
+  })
+
+  it("doesn't change Auto or the Pair control", () => {
+    const s = scale('G', 'mixolydian')
+    expect(hexatonicPick(s, G, '7', 0, 'triads').hexatonic?.name).toBe(hexatonicAuto(hexatonicPairs(s, G, '7'), G)?.name)
   })
 })

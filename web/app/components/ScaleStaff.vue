@@ -46,7 +46,7 @@
 
 <script setup lang="ts">
 import { type ChordAt, glyphs, hexatonicCaption, hexatonicChoices, type Part, PENTATONIC_DEGREE_LABELS, pentatonicCaption, pentatonicChoices, pickBars, pickHeading, type PickKind, quartalCaption, rootName, type StaffModel } from '@chord-scale-maker/engine'
-import { choiceId, pickFooter, pickHeader } from '~/utils/chordPicks'
+import { choiceId, hexChoiceRows, pickFooter, pickHeader } from '~/utils/chordPicks'
 import type { ChoiceRow } from './ChordPickPopover.vue'
 
 /** intervals: label each note against the chord root (b9, #11…); part and pickable: the caption picks for every bar it covers (#303); quartal: the Quartal preset is on, so its caption shows (#432) */
@@ -66,7 +66,7 @@ const hexRows = computed(() => (canPick.value && kind.value === 'hexatonic' ? he
 const rows = computed((): readonly ChoiceRow[] =>
   kind.value === 'pentatonic'
     ? pentRows.value.map((c) => ({ id: choiceId.pent(c.pc), label: c.label, current: c.name === props.staff.pentatonic?.name }))
-    : hexRows.value.map((c) => ({ id: choiceId.hex(c.roots), label: c.label, current: c.name === props.staff.hexatonic?.name })))
+    : hexChoiceRows(hexRows.value, props.staff.hexatonic?.name))
 /** the caption in words, as the Changes labels say it (#303); the popover adds ', your pick' */
 const triggerLabel = computed((): string => {
   const p = props.staff.pentatonic

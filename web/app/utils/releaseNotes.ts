@@ -14,6 +14,7 @@ export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
     date: '2026-10-19',
     items: [
+      { text: 'Triad pairs from the tritone sub: a dominant chord’s pick list ends with pairs from its tritone substitute’s scale, B/D♭ over G7 (from D♭7), after Walt Weiskopf. On the Changes, Scales and Arpeggios sheets.', pr: 449 },
       { text: 'The Scales, Arpeggios and Patterns sheets start every line with the clef and key signature, so a line read on its own is in its key. A Patterns run that continues onto a second staff starts that staff bare.', pr: 448 },
       { text: 'A new scale, Augmented (1 ♯2 3 5 ♯5 7: two augmented triads a minor third apart): the Advanced level’s scale over maj7♯5 and augmented chords, and an option over maj7. Its triad pair is those two triads (C+/D♯+), after Walt Weiskopf.', pr: 447 },
       { text: '54 blues from iReal Pro’s Blues 50: Muddy Waters, Howlin’ Wolf, Robert Johnson, B.B. King, Willie Dixon and more, each read as a blues (the key’s Blues scale at Basic).', pr: 445 },

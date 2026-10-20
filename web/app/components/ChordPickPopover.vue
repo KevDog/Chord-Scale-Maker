@@ -11,7 +11,10 @@
       <p :id="headerId" class="px-2 pt-1 pb-2 text-xs/4 font-medium text-zinc-500 dark:text-zinc-400">{{ header }}</p>
       <ul class="border-y border-zinc-950/5 py-1 dark:border-white/10">
         <li><button type="button" data-sheet-choice :aria-current="picked ? undefined : 'true'" :class="rowClass(!picked)" @click="clear(close)">Sheet’s choice ({{ sheetChoice }})</button></li>
-        <li v-for="r in rows" :key="r.id"><button type="button" data-choice :aria-current="picked && r.current ? 'true' : undefined" :class="rowClass(picked && r.current)" @click="choose(r.id, close)">{{ r.label }}</button></li>
+        <template v-for="(r, i) in rows" :key="r.id">
+          <li v-if="r.group && r.group !== rows[i - 1]?.group" class="mt-1 border-t border-zinc-950/5 px-2 pt-1.5 pb-0.5 text-xs/4 font-medium text-zinc-500 dark:border-white/10 dark:text-zinc-400">{{ r.group }}</li>
+          <li><button type="button" data-choice :aria-current="picked && r.current ? 'true' : undefined" :class="rowClass(picked && r.current)" @click="choose(r.id, close)">{{ r.label }}</button></li>
+        </template>
       </ul>
       <p class="px-2 pt-2 pb-1 text-xs/4 text-zinc-600 dark:text-zinc-300">{{ footer }} <DecisionLink id="pick.order">Why this order?</DecisionLink></p>
     </HPopoverPanel>
@@ -23,8 +26,8 @@ import { Popover as HPopover, PopoverButton as HPopoverButton, PopoverPanel as H
 import { panelShift } from '~/utils/notePlacement'
 import { PAGE_ZOOM } from '~/utils/sheetPaged'
 
-/** current: the row the chord plays; marked only under a pick (with none, the sheet's choice is the one current) */
-export type ChoiceRow = Readonly<{ id: string; label: string; current: boolean }>
+/** current: the row the chord plays; marked only under a pick (with none, the sheet's choice is the one current); group: a heading the row and those after it with the same group sit under (#432) */
+export type ChoiceRow = Readonly<{ id: string; label: string; current: boolean; group?: string }>
 const props = defineProps<{ text: string; triggerLabel: string; header: string; footer: string; sheetChoice: string; picked: boolean; rows: readonly ChoiceRow[]; triggerClass?: string }>()
 const emit = defineEmits<{ choose: [id: string]; clear: [] }>()
 /** triggerLabel: what the trigger shows, in words ('Pentatonic: D minor, …'); a pick and the action follow */

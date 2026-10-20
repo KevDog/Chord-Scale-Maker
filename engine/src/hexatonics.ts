@@ -2,7 +2,7 @@ import { fifthsFrom, pitchClasses, rankByFifths } from './ladder'
 import { type Part, writtenRoot } from './part'
 import { glyphs, mod, parseRoot, pcOf, rootName, shiftBy, type Spelled } from './pitch'
 import { CHORD_TONES } from './qualities'
-import { SCALES, spellFrom } from './scales'
+import { SCALES, simplifyRoot, spellFrom, spellScale } from './scales'
 
 /**
  * Hexatonics (docs/superpowers/specs/2026-10-14-hexatonic-practice-design.md): six-note sets made of two triads from a
@@ -12,8 +12,8 @@ import { SCALES, spellFrom } from './scales'
 export type TriadQuality = 'maj' | 'min' | 'dim' | 'aug'
 /** a triad on a scale note: its root as the staff spells it, and its pitch classes root, third, fifth */
 export type ChainTriad = Readonly<{ root: Spelled; quality: TriadQuality; pcs: readonly number[]; name: string }>
-/** a valid link of the chain: link numbers the staff's pairs from 1; tones: the six pcs ascending from the lower root */
-export type HexPair = Readonly<{ link: number; lower: ChainTriad; upper: ChainTriad; name: string; tones: readonly number[]; coverage: number }>
+/** a valid link of the chain: link numbers the staff's pairs from 1; tones: the six pcs ascending from the lower root; from: a tritone sub's pair, the sub chord it comes from ('D♭7', tritoneSubPairs) */
+export type HexPair = Readonly<{ link: number; lower: ChainTriad; upper: ChainTriad; name: string; tones: readonly number[]; coverage: number; from?: string }>
 
 /** [third, fifth] above the root, by quality */
 const SHAPES: readonly (readonly [TriadQuality, number, number])[] = [
@@ -95,16 +95,23 @@ function offChainLinks(scale: readonly Spelled[]): readonly Readonly<{ lower: Ch
   )
 }
 
-/** a staff's pairs: the chain's links whose triads are both standard and share no note, in chain order from 1, then a symmetric scale's off-chain pairs (offChainLinks), with chord-tone coverage */
-export function hexatonicPairs(scale: readonly Spelled[], chordRoot: Spelled, quality: string | null): readonly HexPair[] {
+/** a chain's links whose triads share no note */
+function chainLinks(scale: readonly Spelled[]): readonly Readonly<{ lower: ChainTriad; upper: ChainTriad }>[] {
   const chain = triadChain(scale)
-  const tones = chordTonePcs(chordRoot, quality)
-  const links = chain.flatMap((lower, i) => {
+  return chain.flatMap((lower, i) => {
     const upper = chain[(i + 1) % chain.length] ?? null
     if (lower === null || upper === null || upper.pcs.some((pc) => lower.pcs.includes(pc))) return []
     return [{ lower, upper }]
   })
-  return [...links, ...offChainLinks(scale)].map(({ lower, upper }, i) => {
+}
+
+/** a staff's pairs: the chain's links whose triads are both standard and share no note, in chain order from 1, then a symmetric scale's off-chain pairs (offChainLinks), with chord-tone coverage */
+export function hexatonicPairs(scale: readonly Spelled[], chordRoot: Spelled, quality: string | null): readonly HexPair[] {
+  return pairsOf([...chainLinks(scale), ...offChainLinks(scale)], chordTonePcs(chordRoot, quality))
+}
+
+function pairsOf(links: readonly Readonly<{ lower: ChainTriad; upper: ChainTriad }>[], tones: ReadonlySet<number>): readonly HexPair[] {
+  return links.map(({ lower, upper }, i) => {
     const base = lower.pcs[0]!
     const six = [...lower.pcs, ...upper.pcs].sort((a, b) => mod(a - base, 12) - mod(b - base, 12))
     return { link: i + 1, lower, upper, name: `${lower.name}/${upper.name}`, tones: six, coverage: six.filter((pc) => tones.has(pc)).length }
@@ -126,6 +133,40 @@ export function hexatonicRanking(pairs: readonly HexPair[], chordRoot: Spelled):
   const cmp = (a: readonly number[], b: readonly number[]): number => a.reduce((d, x, j) => d || x - b[j]!, 0)
   return [...pairs].sort((a, b) => cmp(key(a), key(b)))
 }
+
+/** the most a dominant's popover offers from its tritone sub */
+const SUB_PAIRS = 2
+const dominant = (quality: string | null): boolean => {
+  const degrees = quality === null ? undefined : CHORD_TONES[quality]
+  return !!degrees && degrees.includes('3') && degrees.includes('b7')
+}
+/** B, not C♭: a triad root without a double accidental or B♯ E♯ C♭ F♭ */
+const ugly = ({ letter, acc }: Spelled): boolean => Math.abs(acc) > 1 || (acc === 1 && (letter === 2 || letter === 6)) || (acc === -1 && (letter === 0 || letter === 3))
+const cleanTriad = (t: ChainTriad): ChainTriad => (ugly(t.root) ? chainTriad(simplifyRoot(t.root), t.quality) : t)
+
+/**
+ * a dominant's pairs from its tritone sub (#432), after Weiskopf, Intervalic Improvisation, p. 19 (B/D♭ over G7): the
+ * sub's Mixolydian pairs of major and minor triads (G7 → D♭7, its root spelled as a key's) covering the most of the
+ * written chord's tones, a pair holding the sub's own
+ * triad first, then as hexatonicRanking ranks against the written chord; up to SUB_PAIRS, leaving out any the staff's
+ * own pairs (own) have; none off a dominant
+ */
+export function tritoneSubPairs(chordRoot: Spelled, quality: string | null, own: readonly HexPair[] = []): readonly HexPair[] {
+  if (!dominant(quality)) return []
+  const sub = simplifyRoot(shiftBy(chordRoot, 4, 6))
+  const from = glyphs(`${rootName(sub)}7`)
+  const has = (p: HexPair): boolean => own.some((o) => pcOf(o.lower.root) === pcOf(p.lower.root) && pcOf(o.upper.root) === pcOf(p.upper.root))
+  const links = chainLinks(spellScale(sub, 'mixolydian'))
+    .filter(({ lower, upper }) => standard(lower) && standard(upper))
+    .map(({ lower, upper }) => ({ lower: cleanTriad(lower), upper: cleanTriad(upper) }))
+  const ranked = hexatonicRanking(pairsOf(links, chordTonePcs(chordRoot, quality)), chordRoot).filter((p) => !has(p))
+  const onSub = (p: HexPair): number => (pcOf(p.lower.root) === pcOf(sub) || pcOf(p.upper.root) === pcOf(sub) ? 0 : 1)
+  const best = ranked.filter((p) => p.coverage === ranked[0]!.coverage)
+  return [...best].sort((a, b) => onSub(a) - onSub(b)).slice(0, SUB_PAIRS).map((p) => ({ ...p, from }))
+}
+
+/** the pairs a pick may name (#303): the staff's own, then a dominant's tritone sub's (tritoneSubPairs); none where it has none of its own */
+export const pickablePairs = (pairs: readonly HexPair[], chordRoot: Spelled, quality: string | null): readonly HexPair[] => (pairs.length ? [...pairs, ...tritoneSubPairs(chordRoot, quality, pairs)] : [])
 
 /** Auto: the first pair in hexatonicRanking's order; null if there are no pairs */
 export const hexatonicAuto = (pairs: readonly HexPair[], chordRoot: Spelled): HexPair | null => hexatonicRanking(pairs, chordRoot)[0] ?? null
@@ -223,7 +264,7 @@ export function hexatonicPick(
   const pairs = hexatonicPairs(scale, chordRoot, quality)
   const keyed = key ? keyedPair(pairs, key) : null
   const auto = keyed ?? resolvePair(pairs, key === undefined ? pair : 0, chordRoot)
-  const found = picked === null ? undefined : pairs.find((p) => pcOf(p.lower.root) === picked[0] && pcOf(p.upper.root) === picked[1])
+  const found = picked === null ? undefined : pickablePairs(pairs, chordRoot, quality).find((p) => pcOf(p.lower.root) === picked[0] && pcOf(p.upper.root) === picked[1])
   const used = found ?? auto
   if (used === null) return { hexatonic: null, lit: pcs.map(() => false), second: pcs.map(() => false) }
   const b = groupB(used, grouping, chordRoot, quality)

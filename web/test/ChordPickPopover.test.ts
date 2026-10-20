@@ -35,6 +35,19 @@ describe('the chord pick popover', () => {
     expect(p.find('button').classes()).toContain('decoration-solid')
   })
 
+  it('heads a group of rows once, before its first (#432)', async () => {
+    const rows = [
+      { id: 'h7-9', label: 'G/Am · covers 3', current: false },
+      { id: 'h11-1', label: 'from D♭7: B/D♭ · covers 2', current: false, group: 'From the tritone sub' },
+      { id: 'h10-11', label: 'from D♭7: B♭m/B · covers 2', current: false, group: 'From the tritone sub' },
+    ]
+    const w = await open({ rows })
+    const items = w.findAll('[role="dialog"] li').map((li) => li.text())
+    expect(items.slice(1)).toEqual(['G/Am · covers 3', 'From the tritone sub', 'from D♭7: B/D♭ · covers 2', 'from D♭7: B♭m/B · covers 2'])
+    expect(w.findAll('[data-choice]')).toHaveLength(3)
+    w.unmount()
+  })
+
   it('heads the dialog, offers the sheet’s choice, then each row, then the footer', async () => {
     const w = await open()
     const d = w.find('[role="dialog"]')

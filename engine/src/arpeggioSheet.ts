@@ -120,18 +120,18 @@ function twoOctaves(asc: readonly Pitched[], size: number, dir: ArpDirection): A
 }
 
 /**
- * a line's pair under Triad pairs: its first position's pick where that is one of its pairs (cover.pick, written),
+ * a line's pair under Triad pairs: its first position's pick where that is one it may name (cover.pick, written; pickablePairs),
  * else Auto, as the Changes sheet's Hexatonic overlay chooses; null where its scale has none
  */
 function pairFor(part: Part, row: Row, scale: string | null, cover: Cover, keyName: string | undefined): Readonly<{ pair: HexPair; hexatonic: StaffHexatonic }> | null {
-  const pairs = staffPairs(row, scale, part)
+  const { pairs, pickable } = staffPairs(row, scale, part)
   if (scale === null || !pairs.length) return null
   const chordRoot = orNull(() => writtenChordRootLenient(part, row.chord, scale)) ?? scaleLabel(part, scale).root
   const pick = Array.isArray(cover.pick) ? cover.pick : null
   const key = keyName === undefined ? null : writtenKeyPair(keyName, part)
   const keyed = key && keyedPair(pairs, key)
   const sheet = keyed ?? hexatonicAuto(pairs, chordRoot)
-  const found = pick ? pairs.find((p) => pcOf(p.lower.root) === pick[0] && pcOf(p.upper.root) === pick[1]) : undefined
+  const found = pick ? pickable.find((p) => pcOf(p.lower.root) === pick[0] && pcOf(p.upper.root) === pick[1]) : undefined
   const used = found ?? sheet
   return used && { pair: used, hexatonic: { name: used.name, link: used.link, picked: !!found, sheet: sheet?.name ?? '', offKey: keyName !== undefined && !keyed } }
 }

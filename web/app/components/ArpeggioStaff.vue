@@ -44,7 +44,7 @@
 
 <script setup lang="ts">
 import { type ArpeggioStaffModel, type ChordAt, glyphs, hexatonicChoices, pairCaption, pickBars, pickHeading, type Part, type PickKind } from '@chord-scale-maker/engine'
-import { choiceId, pickFooter, pickHeader } from '~/utils/chordPicks'
+import { choiceId, hexChoiceRows, pickFooter, pickHeader } from '~/utils/chordPicks'
 import type { ChoiceRow } from './ChordPickPopover.vue'
 
 /** intervals: label each note against the chord root (b9, #11…); part and pickable: Triad pairs' caption picks for every bar it covers (#436) */
@@ -58,7 +58,7 @@ const bars = computed(() => pickBars(pair.value?.positions ?? []))
 const header = computed(() => (pair.value?.source && props.part ? pickHeader(pickHeading(props.part, pair.value.source.chord, pair.value.source.scale), bars.value) : ''))
 const footer = computed(() => pickFooter('scales', bars.value, !!pair.value?.varies))
 const choices = computed(() => (canPick.value ? hexatonicChoices(pair.value!.source!.chord, pair.value!.source!.scale, props.part!) : []))
-const rows = computed((): readonly ChoiceRow[] => choices.value.map((c) => ({ id: choiceId.hex(c.roots), label: c.label, current: c.name === pair.value?.hexatonic?.name })))
+const rows = computed((): readonly ChoiceRow[] => hexChoiceRows(choices.value, pair.value?.hexatonic?.name))
 /** the caption in words, as the Scales sheet's Hexatonic caption says it; the popover adds ', your pick' */
 const triggerLabel = computed((): string => {
   const h = pair.value?.hexatonic
