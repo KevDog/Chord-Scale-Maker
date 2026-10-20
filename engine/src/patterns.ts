@@ -248,14 +248,13 @@ export function buildPatternSheet(
   const staves = lines.flatMap((l, n): ArpeggioStaffModel[] => {
     const r = rows[l.row] as Row
     const scale = scaleOf(r, l.row)
-    const showClefAndKey = key === undefined || n === 0
-    const id = [l.chords.join(' '), scale, part.clef, part.trans, `${range.lo}-${range.hi}-${range.centre}`, formatPattern(moves), notes, dir, keySig, showClefAndKey ? '' : 'bare'].join('|')
+    const id = [l.chords.join(' '), scale, part.clef, part.trans, `${range.lo}-${range.hi}-${range.centre}`, formatPattern(moves), notes, dir, keySig].join('|')
     const last = n === lines.length - 1
     const base = {
       chords: l.chords.map((c) => chordTokensOrNull(part, c, scale)),
       scale: orNull(() => (scale ? scaleLabel(part, scale) : null)),
       keySig,
-      showClefAndKey,
+      showClefAndKey: true,
     }
     const played = patternLine(part, r.chord, scale, moves, notes, dir)
     if ('error' in played) return [{ ...base, id, last, notes: [], groups: [], accidentals: [], intervals: null, error: played.error }]
@@ -269,7 +268,7 @@ export function buildPatternSheet(
       const piece = played.notes.slice(n0, n1)
       return {
         ...base,
-        ...(p === 0 ? {} : { chords: [], scale: null }),
+        ...(p === 0 ? {} : { chords: [], scale: null, showClefAndKey: false }), // a continuation: no clef or signature
         id: `${id}|${p}`,
         last: last && p === pieces.length - 1,
         notes: piece,
