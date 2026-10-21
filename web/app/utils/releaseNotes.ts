@@ -8,6 +8,12 @@ export type ReleaseNote = Readonly<{ date: string; items: readonly ReleaseItem[]
 
 export const RELEASE_NOTES: readonly ReleaseNote[] = [
   {
+    date: '2026-10-21',
+    items: [
+      { text: 'iReal Pro import plays out a repeat over several sections: A Foggy Day comes in as A B A C, its second A a copy of the first, where it used to be written out once with a report.', pr: 456 },
+    ],
+  },
+  {
     date: '2026-10-20',
     items: [
       { text: 'The Version menu moves onto the row of sheet controls, so on a phone the music starts higher (Controls is its icon there). It also lists your saved charts titled by a tune’s other name, Les Feuilles mortes, or as a copy, “Autumn Leaves (copy)”.', pr: 453 },
