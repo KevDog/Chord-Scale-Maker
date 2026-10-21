@@ -165,6 +165,11 @@
                 <template v-if="cellsOn">
                   The 7th Chords pattern list also holds <strong class="font-semibold">Cells</strong>, after Randy Vincent's
                   <em>Building Solo Lines From Cells</em>: a four-note cell on each chord, two beats each, read through its scale.
+                  <template v-if="phraseCellsOn">
+                    <strong class="font-semibold">Order</strong> plays each cell as written, reversed, rotated or with its pairs
+                    swapped. For a cell system, <strong class="font-semibold">Phrase</strong> is on: each cell is chosen to step into
+                    the next chord's target note. Turn it off to play the system as written.
+                  </template>
                 </template>
               </dd>
             </div>
@@ -434,6 +439,7 @@ import { PENT_INSIDE_HELP } from '~/utils/pentatonics'
 const offline = useFeature('offline')
 const patternsOn = useFeature('patterns')
 const cellsOn = useFeature('cells')
+const phraseCellsOn = useFeature('phraseCells')
 const approachesOn = useFeature('approaches')
 const ireal = useFeature('ireal')
 const SECTIONS = [
