@@ -95,6 +95,12 @@ describe('cell phrase: the Cells line aims each cell at the next chord (#379, #3
   ] as const)('%s, %s', (_, id, chords, expected) => {
     expect(slots(notes(chords, phrase(id)))).toEqual(expected)
   })
+  it('with Approach (enclosure) the figure replaces the tail of the aimed last cell; the next chord’s first note is still the target', () => {
+    const cs = seq(['Cmaj7', 2], ['Eb7', 2])
+    const approach = (a: 'none' | 'enclosure') => cellsVoices(cs, CONCERT, 4, null, phrase('root-root'), a).bars.get(0)?.map((n) => (n.pitch ? rootName(n.pitch) : 'r')) ?? []
+    expect(approach('none')).toEqual(['C', 'A', 'G', 'E', 'Eb', 'Db', 'C', 'Bb'])
+    expect(approach('enclosure')).toEqual(['C', 'A', 'E', 'D', 'Eb', 'Db', 'C', 'Bb']) // G E become E D: a figure into the target E♭ (D a half step below it); C A and E♭'s cell stay
+  })
   it('the slot before a rest plays the system’s cell: C D E G, though into E♭7 it would be C A G E', () => {
     expect(slots(notes(seq(['Cmaj7', 2], ['N.C.', 2], ['Eb7', 2]), phrase('root-root')))[0]).toBe('C D E G')
     expect(slots(notes(seq(['Cmaj7', 2], ['Eb7', 2]), phrase('root-root')))[0]).toBe('C A G E')

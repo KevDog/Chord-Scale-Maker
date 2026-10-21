@@ -100,7 +100,7 @@ export function fillContour(tones: readonly Spelled[], contour: PartialContour):
   })
 }
 
-/** the Changes sheet's Cells line (#298): which system or single cell the line plays; order (#376) re-reads every cell; phrase (#378) aims them at the next chord */
+/** the Changes sheet's Cells line (#298): which system or single cell the line plays; order (#376) re-reads every cell; phrase (#379, #380) aims them at the next chord */
 export type CellsLine = Readonly<{ kind: 'cells'; id: CellId; order?: CellOrder; phrase?: boolean }>
 
 /** a cell's note value: sixteenths in a chord shorter than two beats, else eighths (four notes make two beats) */

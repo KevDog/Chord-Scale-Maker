@@ -168,7 +168,7 @@
                   <template v-if="phraseCellsOn">
                     <strong class="font-semibold">Order</strong> plays each cell as written, reversed, rotated or with its pairs
                     swapped. For a cell system, <strong class="font-semibold">Phrase</strong> is on: each cell is chosen to step into
-                    the next chord's target note. Turn it off to play the system as written.
+                    the next cell's first note, across the chord change too. Turn it off to play the system as written.
                   </template>
                 </template>
               </dd>

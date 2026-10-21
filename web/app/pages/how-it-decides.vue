@@ -294,9 +294,10 @@
             root to root, 3rd to 3rd, 3rd to 5th or 3rd to root. Played through a tune, the line keeps moving by step across
             every chord change.
             <template v-if="phraseCellsOn">
-              With <strong :class="EM">Phrase</strong> on, the default for a system, each cell is instead chosen to end a
-              step from the first note of what follows it, the next chord's target. If no cell fits, or the cell is
-              followed by its own turn-back, it plays as the system has it. Off plays the system as written.
+              With <strong :class="EM">Phrase</strong> on, the default for a system, each cell is chosen to end a
+              step from the first note of what follows it, the next chord's target (the system's own cell when it already
+              does). If no cell fits, the cell is followed by its own turn-back, or the slot isn't a whole cell of eighths,
+              it plays as the system has it. Off plays the system as written.
               <strong :class="EM">Order</strong> then plays each cell as written, reversed, rotated or with its pairs swapped.
             </template>
           </UiText>
