@@ -208,6 +208,23 @@ describe('cell phrase: substitutes over a long dominant (#378)', () => {
     expect(line).toEqual(['F A C E', 'D B A G', 'F Ab Cb Eb', 'F D Bb Ab', 'F Db Cb Ab', 'G E C B'])
   })
   it.each([
+    // G7 BREAKs into D♭7's F; D♭7 3 5 7 9 into B♭7's D (CHANGED); B♭7 3 2 1 7 (its 2, ♭2: C♭) BREAKs into D♭7's F
+    // (the 3rd's cells end A♭, C♭, A♭, F); D♭7 3 5 7 9 into C's E (CHANGED)
+    ['3rd-3rd', ['B A G F', 'F Ab Cb Eb', 'D Cb Bb Ab', 'F Ab Cb Eb', 'E D C B']],
+    // G7 1 2 3 5 into D♭; D♭7 1 7 6 5 into B♭; B♭7 1 6 5 3 into D♭ (CHANGED); D♭7 1 3 5 7 into C (CHANGED)
+    ['root-root', ['G A B D', 'Db Cb Bb Ab', 'Bb G F D', 'Db F Ab Cb', 'C D E G']],
+  ] as const)('G7 for eight beats → C, %s: the third slot B♭7’s, every degree read (Half-Whole’s 2 is its ♭2)', (id, expected) => {
+    expect(slots(notes(seq(['G7', 8], ['C', 2]), phrase(id)))).toEqual(expected)
+  })
+  it('a dominant restated bar by bar is one chord for substitutes: G7 | G7 | C plays G7 (8 beats) | C', () => {
+    for (const id of Object.keys(CELL_SYSTEMS) as CellId[]) expect(notes(seq(['G7', 4], ['G7', 4], ['C', 2]), phrase(id))).toEqual(notes(seq(['G7', 8], ['C', 2]), phrase(id)))
+  })
+  it('3/4, G7 for two bars → C: the second bar’s turn-back replays its substitute cell’s notes', () => {
+    const on = notes(seq(['G7', 6], ['C', 3]), phrase('3rd-3rd'), 3)
+    expect(on.slice(6, 10)).toEqual(['F', 'Ab', 'Db', 'Cb']) // D♭7's B, 3 5 1 7 (not aimed: a turn-back follows)
+    expect(on.slice(10, 12)).toEqual(['Db', 'Ab'])
+  })
+  it.each([
     ['G7 → E♭maj7 (no resolution)', seq(['G7', 4], ['Ebmaj7', 2])],
     ['G7 last in the run', seq(['G7', 4])],
     ['G7 before a rest', seq(['G7', 4], ['N.C.', 2], ['C', 2])],

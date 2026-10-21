@@ -65,7 +65,10 @@ const MINOR_THIRD: Sub = { steps: 2, semis: 3, key: 'half whole diminished' }
 /** by the chord's slot, from its first: own, the tritone sub, the minor-3rd dominant, the tritone sub, and again */
 const SUBS: readonly (Sub | null)[] = [null, TRITONE, MINOR_THIRD, TRITONE]
 
-/** two four-note cells in eighths (CELL_VALUE): a shorter chord has one slot, or plays sixteenths */
+/**
+ * two four-note cells in eighths (CELL_VALUE in cells.ts, not imported here: cells.ts imports this module): a shorter
+ * chord has one slot, or plays sixteenths; keep in step with CELL_VALUE
+ */
 const LONG = 4
 
 /**
