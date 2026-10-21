@@ -3,7 +3,7 @@ import { composerIndex, isSyncCopy } from '@chord-scale-maker/engine'
 import { describe, expect, it } from 'vitest'
 import { findChart, keyName, LIBRARY, matchSpan, searchLibrary, suggestTunes, toLibrary, toTunes, tuneDetails, tuneOf, TUNES } from '~/utils/library'
 import { songPath } from '~/utils/site'
-import { sitemapPaths, sitemapXml, chartSlugsOf } from '~/utils/sitemap'
+import { chartSlugsOf, sitemapPaths, sitemapXml, songSlugs } from '~/utils/sitemap'
 import { COMPOSERS } from '~/utils/composerPage'
 
 describe('library', () => {
@@ -113,21 +113,24 @@ describe('library', () => {
     expect(bad).toEqual([])
   })
 
-  it('maps every library chart to its own song path, in the sitemap, and back', () => {
-    const files = readdirSync('../engine/charts')
-    const paths = sitemapPaths(chartSlugsOf(files).map((s) => songPath(s)), [])
+  // the config's view (nuxt.config.ts): the raw chart files, then songSlugs' main charts for the sitemap and composers (#428)
+  const raw = (): { slug: string; text: string }[] => chartSlugsOf(readdirSync('../engine/charts')).map((slug) => ({ slug, text: readFileSync(`../engine/charts/${slug}.txt`, 'utf8') }))
+
+  it("maps every library chart to its own song path, and lists each tune's main chart in the sitemap, its versions not", () => {
+    const songs = songSlugs(raw())
+    const paths = sitemapPaths(songs.main.map((s) => songPath(s)), [])
     expect(new Set(LIBRARY.map((c) => songPath(c.slug))).size).toBe(LIBRARY.length)
-    for (const c of LIBRARY) {
-      expect(paths).toContain(songPath(c.slug))
-      expect(findChart(c.slug)).toBe(c)
-    }
+    for (const c of LIBRARY) expect(findChart(c.slug)).toBe(c)
+    for (const v of songs.versions) expect(paths).not.toContain(songPath(v))
+    expect([...songs.main, ...songs.versions].sort()).toEqual(LIBRARY.map((c) => c.slug).sort())
     const locs = [...sitemapXml(paths).matchAll(/<loc>https:\/\/[^/]+(\/song\/.*?)<\/loc>/g)].map((m) => m[1])
-    expect(locs.sort()).toEqual(LIBRARY.map((c) => songPath(c.slug)).sort())
+    expect(locs.sort()).toEqual(TUNES.map((t) => songPath(t.slug)).sort())
   })
 
-  it("the config's composers, from the raw chart files, are the library's (nuxt.config.ts lists them for the sitemap)", () => {
-    const charts = chartSlugsOf(readdirSync('../engine/charts')).map((slug) => ({ slug, text: readFileSync(`../engine/charts/${slug}.txt`, 'utf8') }))
-    expect(composerIndex(charts).map((c) => c.slug)).toEqual(COMPOSERS.map((c) => c.slug))
+  it("the config's composers, from the main charts' files, are the library's (nuxt.config.ts lists them for the sitemap)", () => {
+    const charts = raw()
+    const main = new Set(songSlugs(charts).main)
+    expect(composerIndex(charts.filter((c) => main.has(c.slug))).map((c) => c.slug)).toEqual(COMPOSERS.map((c) => c.slug))
   })
 })
 
