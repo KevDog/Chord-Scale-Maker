@@ -208,6 +208,21 @@ describe('chromatic cells (#377)', () => {
     expect(names(cellTones(partFor('tenor-sax'), 'G7', 'G Mixolydian', [{ n: 9, semis: 1 }, 1]))).toEqual(['Bb', 'A'])
   })
 
+  it.each([
+    ['G7b13', 'G Mixolydian b6', ['G', 'B', 'D', 'F']],
+    ['G7alt', 'G Altered', ['G', 'B', 'D#', 'F']], // the arpeggio's 5th as the scale has it
+  ] as const)('never doubles a note: 5 ♯5 6 7 over %s (%s) plays the 7th chord arpeggio up instead, %j', (chord, scale, arpeggio) => {
+    expect(noteNames(play([at(0, chord, scale, 0)], '5-s5-6-7'))).toEqual(arpeggio)
+  })
+
+  it('1 ♮7 7 6 over G7alt has no doubled neighbours: G F♯ F E♭', () => {
+    expect(noteNames(play([at(0, 'G7alt', 'G Altered', 0)], '1-n7-7-6'))).toEqual(['G', 'F#', 'F', 'Eb'])
+  })
+
+  it('counts a chromatic degree from the chord’s root, not a scale on another root: ♭9 of G7 over C Ionian is A♭', () => {
+    expect(names(cellTones(CONCERT, 'G7', 'C Ionian', [{ n: 9, semis: 1 }]))).toEqual(['Ab'])
+  })
+
   it('takes the Order: 1 ♮7 7 6 reversed over G7 is E F F♯ G, rising', () => {
     const bar = play([at(0, 'G7', 'G Mixolydian', 0)], '1-n7-7-6', { order: 'reversed' })
     expect(noteNames(bar)).toEqual(['E', 'F', 'F#', 'G'])

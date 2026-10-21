@@ -94,7 +94,7 @@ const CHORD_TONE: Readonly<Record<number, number>> = { 1: 0, 3: 1, 5: 2, 7: 3 }
 /**
  * a cell's notes over a chord: degree d is the written scale's note d-1 letters above its root; with no such note (or
  * two) the chord tone of that number (1, 3, 5, 7); with none, null. A chromatic degree (#377) is absolute: its
- * semitones above the root (the scale's, else the chord's), on the letter n-1 above it
+ * semitones above the root (the chord's as written, else the scale's), on the letter n-1 above it
  */
 export function cellTones(part: Part, chord: string, scale: string | undefined, degrees: readonly Degree[]): readonly Spelled[] | null {
   let root: Spelled | undefined
@@ -109,7 +109,7 @@ export function cellTones(part: Part, chord: string, scale: string | undefined, 
     }
   }
   const chordTones = arpeggioTones(part, chord, scale)
-  const from = root ?? orNull(() => writtenChordRootLenient(part, chord, scale))
+  const from = orNull(() => writtenChordRootLenient(part, chord, scale)) ?? root
   const out: Spelled[] = []
   for (const d of degrees) {
     if (typeof d !== 'number') {
@@ -170,6 +170,9 @@ export type CellsLine = Readonly<{ kind: 'cells'; id: CellId; order?: CellOrder;
 
 /** a cell's note value: sixteenths in a chord shorter than two beats, else eighths (four notes make two beats) */
 export const CELL_VALUE = (chordBeats: number): NoteValue => (chordBeats < 2 ? 0.25 : 0.5)
+
+/** two neighbouring notes on one pitch class */
+const doubled = (tones: readonly Spelled[]): boolean => tones.some((t, i) => i > 0 && pcOf(t) === pcOf(tones[i - 1] as Spelled))
 
 /** a dominant 7th chord, by the analysis's family (not sus) */
 const isDominant = (chord: string): boolean => familyOf(readChord(chord)?.quality ?? '') === 'dominant'
@@ -249,6 +252,8 @@ function cellsOf(part: Part, chords: readonly GuideInput[], index: number, line:
     return reads
   }
   const own = readThrough(chord)
+  // a chromatic cell that doubles a note (5 ♯5 6 7 over Mixolydian ♭6: D D♯ E♭ F) plays the arpeggio instead (#377)
+  if (chromaticOf(line.id) && own.some((r) => doubled(r.tones))) return null
   const subs = new Map<string, readonly Read[]>()
   for (const s of [subAt(1), subAt(2)]) if (s) subs.set(s.chord, readThrough(s))
   /** the reads a slot plays: its substitute's when that reads the slot's system cell, else the chord's own */

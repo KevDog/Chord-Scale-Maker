@@ -368,8 +368,10 @@ test('Chromatic cells (#377): ♭9 1 3 5 plays A♭ G B D over G7 and C’s arpe
   const line = lines(page).first()
   await showCell(page, '♭9 1 3 5')
   await expect(line).toHaveAttribute('aria-label', /; cells: A♭\d G\d B\d D\d A♭\d G\d B\d D\d \| C\d E\d G\d /)
+  // the chart's save is debounced (useSavedChart): wait for it before reloading
+  await expect.poll(() => page.evaluate(() => Object.keys(localStorage).some((k) => k.startsWith('csm-chart:') && (localStorage.getItem(k) ?? '').includes('2 | C')))).toBe(true)
   await page.reload()
-  await expect(line).toHaveAttribute('aria-label', /; cells: .*A♭\d G\d B\d D\d A♭\d G\d B\d D\d/) // remembered (G7's bar, whichever chart the reload shows)
+  await expect(line).toHaveAttribute('aria-label', /; cells: A♭\d G\d B\d D\d A♭\d G\d B\d D\d \| C\d E\d G\d /) // remembered
   await openPanel(page, 'Line options')
   await expect(page.getByLabel('Arpeggio pattern', { exact: true })).toContainText('♭9 1 3 5')
   await expect(page.getByRole('button', { name: 'Phrase', exact: true })).toHaveCount(0) // a single cell: phrase leaves it as chosen
