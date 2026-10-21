@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest'
 import { aimedCell, isStep, PALETTE, substituteFor } from '../cellPhrase'
-import { CELL_SYSTEMS, type CellId, type CellsLine, cellsVoices, cellTones, SINGLE_CELLS } from '../cells'
+import { CELL_SYSTEMS, type CellId, type CellsLine, cellsVoices, cellTones, type Degree, SINGLE_CELLS } from '../cells'
 import type { GuideInput } from '../guideTones'
 import { CONCERT } from '../part'
 import { rootName } from '../pitch'
@@ -51,7 +51,7 @@ describe('cell phrase: the palette and a step', () => {
     expect(isStep(11, 1)).toBe(true)
   })
   it('keeps its own cell when the last note steps; else the first palette cell on the same first degree that does; else its own', () => {
-    const toneOf = (c: { degrees: readonly number[] }) => cellTones(CONCERT, 'G7', 'G Mixolydian', c.degrees)
+    const toneOf = (c: { degrees: readonly Degree[] }) => cellTones(CONCERT, 'G7', 'G Mixolydian', c.degrees)
     const a = CELL_SYSTEMS['3rd-3rd'].a // 3 2 1 7 over G7: B A G F
     expect(aimedCell(a, toneOf(a)!, 4, toneOf)).toBe(a) // F into E
     expect(aimedCell(a, toneOf(a)!, 11, toneOf).degrees).toEqual([3, 5, 7, 9]) // into B: 3 5 7 9 ends on A

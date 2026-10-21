@@ -363,6 +363,18 @@ test('Phrase (#378): G7 for a whole bar → C reads its second cell through D♭
   await expect(line).toHaveAttribute('aria-label', /; cells: B\d A\d G\d F\d B\d D\d G\d F\d \| E\d /)
 })
 
+test('Chromatic cells (#377): ♭9 1 3 5 plays A♭ G B D over G7 and C’s arpeggio over C, and the choice stays', async ({ page }) => {
+  await writeChart(page, 'title: T\nkey: C\n\nsection: A\n1 | G7\n2 | C\n')
+  const line = lines(page).first()
+  await showCell(page, '♭9 1 3 5')
+  await expect(line).toHaveAttribute('aria-label', /; cells: A♭\d G\d B\d D\d A♭\d G\d B\d D\d \| C\d E\d G\d /)
+  await page.reload()
+  await expect(line).toHaveAttribute('aria-label', /; cells: .*A♭\d G\d B\d D\d A♭\d G\d B\d D\d/) // remembered (G7's bar, whichever chart the reload shows)
+  await openPanel(page, 'Line options')
+  await expect(page.getByLabel('Arpeggio pattern', { exact: true })).toContainText('♭9 1 3 5')
+  await expect(page.getByRole('button', { name: 'Phrase', exact: true })).toHaveCount(0) // a single cell: phrase leaves it as chosen
+})
+
 test('a share link carries the arpeggio pattern', async ({ page, browser }) => {
   await writeChart(page, 'title: T\nkey: C\n\nsection: A\nbars: 4\n1 | CMaj7\n')
   await showArpeggios(page, 'Voice-led')

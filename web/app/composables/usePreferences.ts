@@ -1,5 +1,5 @@
 import type { Ref, WritableComputedRef } from 'vue'
-import { type Approach, type ArpDirection, type CellId, type CellOrder, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isCellOrder, isInstrumentName, isPairLineShape, isPairShape, isPatternNotes, isPentatonicLeave, type HexatonicBasis, type PairLineShape, type PairShape, type QuartalNotesChoice, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, type ShareView } from '@chord-scale-maker/engine'
+import { type Approach, type ArpDirection, type CellId, type CellOrder, CHROMATIC_CELLS, fitRange, formatPattern, isCellId, parsePattern, type PatternNotes, type ArpeggioPattern, type ArpNotes, type InstrumentName, INSTRUMENTS, isApproach, isArpDirection, isArpeggioPattern, isArpNotes, isCellOrder, isInstrumentName, isPairLineShape, isPairShape, isPatternNotes, isPentatonicLeave, type HexatonicBasis, type PairLineShape, type PairShape, type QuartalNotesChoice, type PentatonicBasis, PENTATONIC_LEAVE, type PentatonicLeave, type PentatonicDegree, pentatonicDegreeFrom, type PentatonicSide, type Range, type ShareView } from '@chord-scale-maker/engine'
 import { type GuideFrom, type LineMode, lineChoiceOf } from '~/utils/sheetLine'
 import { FUNCTIONS_KEYS } from '~/utils/functionsKey'
 import { isSpell, type Spell } from '~/utils/scaleChoices'
@@ -7,6 +7,12 @@ import { isOverlay, type Overlay } from '~/utils/overlay'
 
 /** the pattern the Changes sheet and the Patterns sheet start with */
 export const DEFAULT_PATTERN = '+1 +1 +1 −2'
+
+/** the Cells line's cell until another is picked */
+const DEFAULT_CELLS: CellId = '3rd-3rd'
+
+/** a chromatic cell (#377): under the phraseCells flag */
+const isChromatic = (id: CellId): boolean => CHROMATIC_CELLS.some((c) => c.id === id)
 
 /** a pattern's canonical text, or undefined when it doesn't parse */
 function canonicalPattern(text: string): string | undefined {
@@ -57,10 +63,10 @@ export function usePreferences() {
   // the guide tone line's Approach (#298): None until chosen; with the flag off a stored one reads as None but stays stored
   const approachesOn = useFeature('approaches')
   const approach = storedRef<Approach>('csm-approach', (s) => (isApproach(s) && approachesOn ? s : undefined), 'none')
-  // the Cells line's system or cell (#298)
-  const cells = storedRef<CellId>('csm-cells', (s) => (isCellId(s) ? s : undefined), '3rd-3rd')
-  // its Order and Phrase (#376): as written and on until chosen; with the flag off stored ones read as those but stay stored
+  // the Cells line's system or cell (#298); a chromatic cell (#377) with the flag off reads as the default but stays stored
   const phraseOn = useFeature('phraseCells')
+  const cells = storedRef<CellId>('csm-cells', (s) => (isCellId(s) && (phraseOn || !isChromatic(s)) ? s : undefined), DEFAULT_CELLS)
+  // its Order and Phrase (#376): as written and on until chosen; with the flag off stored ones read as those but stay stored
   const cellsOrder = storedRef<CellOrder>('csm-cells-order', (s) => (isCellOrder(s) && phraseOn ? s : undefined), 'as-written')
   const cellsPhrase = storedRef<boolean>('csm-cells-phrase', (s) => (phraseOn && (s === 'on' || s === 'off') ? s === 'on' : undefined), true, (v) => (v ? 'on' : 'off'))
   // the Arpeggios sheet: 7th chords, extended or triad pairs, the direction, and Triad pairs' shape (#436)
@@ -115,7 +121,7 @@ export function linkPreferences(view: ShareView) {
     guideLine: ref<GuideFrom>(choice.guide ?? own.guideLine.value),
     approach: ref<Approach>(useFeature('approaches') ? (view.approach ?? 'none') : 'none'), // a link shows what it was sent with: none without
     arpeggio: ref<ArpeggioPattern>(choice.arpeggio ?? own.arpeggio.value),
-    cells: ref<CellId>(choice.cells ?? own.cells.value),
+    cells: ref<CellId>(choice.cells === undefined ? own.cells.value : phraseOn || !isChromatic(choice.cells) ? choice.cells : DEFAULT_CELLS), // a chromatic cell (#377), the flag off: the default
     cellsOrder: ref<CellOrder>(phraseOn ? (choice.order ?? 'as-written') : 'as-written'), // a link shows what it was sent with: as written and on without (#376)
     cellsPhrase: ref<boolean>(phraseOn ? (choice.phrase ?? true) : true),
     arpNotes: ref<ArpNotes>(view.arpNotes ?? own.arpNotes.value),

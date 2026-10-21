@@ -2,12 +2,14 @@ import type { Approach } from './approaches'
 import { arpeggioCells, arpeggioTones, type Cells, cellVoices, type Follows, type NoteValue, placeWhole } from './arpeggios'
 import { type CellOrder, orderCell, type PartialContour } from './cellOrder'
 import { aimedCell, PALETTE, substituteFor } from './cellPhrase'
-import { isRest } from './chord'
+import { familyOf } from './analysis/stream'
+import { isRest, writtenChordRootLenient } from './chord'
 import type { GuideInput, GuideNote } from './guideTones'
 import type { Range } from './instruments'
 import type { Metre } from './metre'
 import { type Part, rangeOf, writtenScale } from './part'
-import { mod, pcOf, type Spelled } from './pitch'
+import { mod, pcOf, shiftBy, type Spelled } from './pitch'
+import { readChord } from './qualities'
 import { SCALES } from './scales'
 import { orNull } from './util'
 
@@ -17,9 +19,22 @@ import { orNull } from './util'
  */
 
 export type Contour = readonly ('u' | 'd')[]
-export type Cell = Readonly<{ degrees: readonly number[]; contour: Contour }>
+/** a degree: a number, read through the chord's scale; or chromatic (#377), semis semitones above the root on the letter n names */
+export type Degree = number | Readonly<{ n: number; semis: number }>
+export type Cell = Readonly<{ degrees: readonly Degree[]; contour: Contour }>
 
-const cell = (degrees: string, contour: string): Cell => ({ degrees: degrees.split(' ').map(Number), contour: [...contour] as Contour })
+const MAJOR = [0, 2, 4, 5, 7, 9, 11] as const
+const ACCIDENTAL: Readonly<Record<string, number>> = { b: -1, s: 1, n: 0 }
+
+/** "7" as 7; "b9", "s5", "n7" as ♭9, ♯5, ♮7: the major scale's degree, flattened, sharpened or natural */
+function degreeOf(token: string): Degree {
+  const m = /^([bsn])(\d+)$/.exec(token)
+  if (!m) return Number(token)
+  const n = Number(m[2])
+  return { n, semis: mod((MAJOR[(n - 1) % 7] as number) + (ACCIDENTAL[m[1] as string] as number), 12) }
+}
+
+const cell = (degrees: string, contour: string): Cell => ({ degrees: degrees.split(' ').map(degreeOf), contour: [...contour] as Contour })
 
 /** the four systems: a pair of cells, A and B, alternating from slot to slot so each cell's last note steps into the next's target */
 export const CELL_SYSTEMS = {
@@ -48,18 +63,40 @@ const SINGLES = [
 /** single cells: every slot plays the same one */
 export const SINGLE_CELLS = SINGLES.map(([degrees, contour]) => ({ id: degrees.replaceAll(' ', '-') as Dashed<typeof degrees>, cell: cell(degrees, contour) }))
 
-export type CellId = keyof typeof CELL_SYSTEMS | (typeof SINGLE_CELLS)[number]['id']
+const DOMINANT_ONLY = [
+  ['1 n7 7 6', 'ddd'],
+  ['5 s5 6 7', 'uuu'],
+  ['b9 1 3 5', 'duu'],
+  ['3 5 7 b9', 'uuu'],
+] as const
+
+/** "b9 1 3 5" as "♭9 1 3 5" */
+const glyphed = (degrees: string): string => degrees.replace(/b/g, '♭').replace(/s/g, '♯').replace(/n/g, '♮')
+
+/**
+ * chromatic cells (#377): single cells for dominants (any other chord plays its 7th chord arpeggio up from the root);
+ * II–V chromatic plays its cell over dominants and `others` over every other chord
+ */
+export const CHROMATIC_CELLS: readonly Readonly<{ id: Dashed<(typeof DOMINANT_ONLY)[number][0]> | 'ii-v-chromatic'; label: string; cell: Cell; dominantOnly: boolean; others?: Cell }>[] = [
+  ...DOMINANT_ONLY.map(([degrees, contour]) => ({ id: degrees.replaceAll(' ', '-') as Dashed<typeof degrees>, label: glyphed(degrees), cell: cell(degrees, contour), dominantOnly: true })),
+  { id: 'ii-v-chromatic', label: 'II–V chromatic', cell: cell('3 5 7 b9', 'uuu'), dominantOnly: false, others: cell('1 3 5 7', 'uuu') },
+]
+
+export type CellId = keyof typeof CELL_SYSTEMS | (typeof SINGLE_CELLS)[number]['id'] | (typeof CHROMATIC_CELLS)[number]['id']
 const isSystemId = (id: CellId): id is keyof typeof CELL_SYSTEMS => id in CELL_SYSTEMS
-export const isCellId = (x: unknown): x is CellId => typeof x === 'string' && (x in CELL_SYSTEMS || SINGLE_CELLS.some((c) => c.id === x))
-export const cellLabel = (id: CellId): string => (isSystemId(id) ? CELL_SYSTEMS[id].label : id.replaceAll('-', ' '))
+const chromaticOf = (id: string) => CHROMATIC_CELLS.find((c) => c.id === id)
+export const isCellId = (x: unknown): x is CellId =>
+  typeof x === 'string' && (x in CELL_SYSTEMS || SINGLE_CELLS.some((c) => c.id === x) || chromaticOf(x) !== undefined)
+export const cellLabel = (id: CellId): string => (isSystemId(id) ? CELL_SYSTEMS[id].label : (chromaticOf(id)?.label ?? id.replaceAll('-', ' ')))
 
 const CHORD_TONE: Readonly<Record<number, number>> = { 1: 0, 3: 1, 5: 2, 7: 3 }
 
 /**
  * a cell's notes over a chord: degree d is the written scale's note d-1 letters above its root; with no such note (or
- * two) the chord tone of that number (1, 3, 5, 7); with none, null
+ * two) the chord tone of that number (1, 3, 5, 7); with none, null. A chromatic degree (#377) is absolute: its
+ * semitones above the root (the scale's, else the chord's), on the letter n-1 above it
  */
-export function cellTones(part: Part, chord: string, scale: string | undefined, degrees: readonly number[]): readonly Spelled[] | null {
+export function cellTones(part: Part, chord: string, scale: string | undefined, degrees: readonly Degree[]): readonly Spelled[] | null {
   let root: Spelled | undefined
   let notes: readonly Spelled[] = []
   if (scale !== undefined) {
@@ -72,8 +109,14 @@ export function cellTones(part: Part, chord: string, scale: string | undefined, 
     }
   }
   const chordTones = arpeggioTones(part, chord, scale)
+  const from = root ?? orNull(() => writtenChordRootLenient(part, chord, scale))
   const out: Spelled[] = []
   for (const d of degrees) {
+    if (typeof d !== 'number') {
+      if (!from) return null
+      out.push(shiftBy(from, d.n - 1, d.semis))
+      continue
+    }
     const found = root ? notes.filter((n) => n.letter === mod(root.letter + d - 1, 7)) : []
     const tone = found.length === 1 ? found[0] : chordTones?.[CHORD_TONE[d] ?? -1]
     if (!tone) return null
@@ -87,14 +130,14 @@ export function cellTones(part: Part, chord: string, scale: string | undefined, 
  * number when it has just one (Half-Whole's 2, its ♭2, though its lettering gives no note a 2nd's letter); null if a
  * degree has neither
  */
-function substituteTones(part: Part, chord: string, scale: string | undefined, degrees: readonly number[]): readonly Spelled[] | null {
+function substituteTones(part: Part, chord: string, scale: string | undefined, degrees: readonly Degree[]): readonly Spelled[] | null {
   const formula = scale === undefined ? null : orNull(() => {
     const w = writtenScale(part, scale)
     return (SCALES[w.key][0] as string).split(' ').map((f, i) => ({ n: Number(f.replace(/[b#]/g, '')), note: w.degrees[i] }))
   })
   const out: Spelled[] = []
   for (const d of degrees) {
-    const numbered = formula?.filter((f) => f.n === mod(d - 1, 7) + 1) ?? []
+    const numbered = typeof d === 'number' ? (formula?.filter((f) => f.n === mod(d - 1, 7) + 1) ?? []) : []
     const tone = cellTones(part, chord, scale, [d])?.[0] ?? (numbered.length === 1 ? numbered[0]?.note : undefined)
     if (!tone) return null
     out.push({ letter: tone.letter, acc: tone.acc })
@@ -128,11 +171,18 @@ export type CellsLine = Readonly<{ kind: 'cells'; id: CellId; order?: CellOrder;
 /** a cell's note value: sixteenths in a chord shorter than two beats, else eighths (four notes make two beats) */
 export const CELL_VALUE = (chordBeats: number): NoteValue => (chordBeats < 2 ? 0.25 : 0.5)
 
-/** the pair of cells a line alternates: a system's A and B, or a single cell twice */
-function pairOf(id: CellId): readonly [Cell, Cell] {
+/** a dominant 7th chord, by the analysis's family (not sus) */
+const isDominant = (chord: string): boolean => familyOf(readChord(chord)?.quality ?? '') === 'dominant'
+
+/**
+ * the pair of cells a line alternates over a chord: a system's A and B, or a single cell twice; a chromatic cell (#377)
+ * by the chord's quality, null where it has none (a dominant-only cell over another chord)
+ */
+function pairOf(id: CellId, chord: string): readonly [Cell, Cell] | null {
   if (isSystemId(id)) return [CELL_SYSTEMS[id].a, CELL_SYSTEMS[id].b]
-  const single = SINGLE_CELLS.find((c) => c.id === id)?.cell ?? SINGLE_CELLS[0]!.cell
-  return [single, single]
+  const chromatic = chromaticOf(id)
+  const single = chromatic ? (isDominant(chord) ? chromatic.cell : chromatic.others) : (SINGLE_CELLS.find((c) => c.id === id)?.cell ?? SINGLE_CELLS[0]!.cell)
+  return single ? [single, single] : null
 }
 
 type Ordered = ReturnType<typeof orderCell>
@@ -166,7 +216,7 @@ function restated(chords: readonly GuideInput[], index: number): Readonly<{ chor
 /**
  * a chord's cells (the index-th of chords): A then B by the run's count, each read through the chord's scale; a slot
  * whose cell has no tones plays the 7th chord arpeggio up from the root (with none, the other cell); null if neither cell
- * has tones. With phrase on and a system, a whole eighth-note cell is aimed at the next slot's target (aimedCell): the
+ * has tones, or the line's chromatic cell has none for this chord (pairOf). With phrase on and a system, a whole eighth-note cell is aimed at the next slot's target (aimedCell): the
  * first note of the next slot's system cell, over this chord or the next by what follows it (Follows); over a long
  * dominant that resolves, a slot is read through its substitute (substituteFor, #378), else (no tones there) its own;
  * a dominant restated row by row counts its slots on across the rows (restated). cellCounts: the cells each row has
@@ -175,7 +225,8 @@ function restated(chords: readonly GuideInput[], index: number): Readonly<{ chor
 function cellsOf(part: Part, chords: readonly GuideInput[], index: number, line: CellsLine, range: Range, cellCounts: Map<number, number>): Cells | null {
   const chord = chords[index] as GuideInput
   const order = line.order ?? 'as-written'
-  const pair = pairOf(line.id)
+  const pair = pairOf(line.id, chord.chord)
+  if (!pair) return null
   const aims = line.phrase === true && isSystemId(line.id) && CELL_VALUE(chord.beats) === 0.5
   const run = restated(chords, index)
   /** the run's slot of this row's nth cell: the cells its rows before this one played, and nth */

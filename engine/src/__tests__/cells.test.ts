@@ -1,5 +1,5 @@
 import { describe, expect, it } from 'vitest'
-import { CELL_SYSTEMS, type CellId, type CellsLine, cellLabel, cellPitches, cellsVoices, cellTones, isCellId, SINGLE_CELLS } from '../cells'
+import { CELL_SYSTEMS, CHROMATIC_CELLS, type CellId, type CellsLine, cellLabel, cellPitches, cellsVoices, cellTones, isCellId, SINGLE_CELLS } from '../cells'
 import type { GuideInput, GuideNote } from '../guideTones'
 import { CONCERT, partFor, rangeOf } from '../part'
 import { rootName } from '../pitch'
@@ -170,5 +170,63 @@ describe('approaches into the Cells line (#381)', () => {
     expect(led.slice(0, 3)).toEqual(plain.slice(0, 3))
     expect(led.slice(4)).toEqual(plain.slice(4))
     expect(led[3]!.pitch).toMatchObject({ letter: 1, acc: 1, midi: plain[4]!.pitch!.midi - 1 }) // D♯ into E
+  })
+})
+
+describe('chromatic cells (#377)', () => {
+  const at = (row: number, chord: string, scale: string | undefined, start: number, beats = 2): GuideInput => ({ row, chord, scale, start, beats })
+  const noteNames = (ns: readonly GuideNote[] | undefined) => (ns ?? []).map((n) => (n.pitch ? rootName(n.pitch) : 'r'))
+  const moves = (ns: readonly GuideNote[]) => ns.slice(1).map((n, i) => (n.pitch!.midi > ns[i]!.pitch!.midi ? 'u' : 'd')).join('')
+  const play = (chords: readonly GuideInput[], id: CellId, more: Partial<CellsLine> = {}) =>
+    cellsVoices(chords, CONCERT, 4, null, { kind: 'cells', id, ...more }).bars.get(0) ?? []
+
+  it.each([
+    ['1-n7-7-6', ['G', 'F#', 'F', 'E'], 'ddd'],
+    ['5-s5-6-7', ['D', 'D#', 'E', 'F'], 'uuu'],
+    ['b9-1-3-5', ['Ab', 'G', 'B', 'D'], 'duu'],
+    ['3-5-7-b9', ['B', 'D', 'F', 'Ab'], 'uuu'],
+  ] as const)('%s over G7 plays %j, %s', (id, notes, contour) => {
+    const bar = play([at(0, 'G7', 'G Mixolydian', 0)], id)
+    expect(noteNames(bar)).toEqual(notes)
+    expect(moves(bar)).toBe(contour)
+  })
+
+  it('II–V chromatic over Dm7 G7: D F A C, then B D F A♭', () => {
+    expect(noteNames(play([at(0, 'Dm7', 'D Dorian', 0), at(1, 'G7', 'G Mixolydian', 2)], 'ii-v-chromatic'))).toEqual(['D', 'F', 'A', 'C', 'B', 'D', 'F', 'Ab'])
+  })
+
+  it('a dominant-only cell over Cmaj7 plays its 7th chord arpeggio up from the root', () => {
+    expect(noteNames(play([at(0, 'Cmaj7', 'C Ionian', 0)], 'b9-1-3-5'))).toEqual(['C', 'E', 'G', 'B'])
+  })
+
+  it('spells a chromatic degree on the letter its number names: ♭9 of E♭7 is F♭, never E', () => {
+    expect(noteNames(play([at(0, 'Eb7', 'Eb Mixolydian', 0)], 'b9-1-3-5'))).toEqual(['Fb', 'Eb', 'G', 'Bb'])
+    expect(names(cellTones(CONCERT, 'Eb7', undefined, [{ n: 9, semis: 1 }]))).toEqual(['Fb'])
+  })
+
+  it('reads it from the written root: ♭9 of G7 on a tenor sax (A7) is B♭', () => {
+    expect(names(cellTones(partFor('tenor-sax'), 'G7', 'G Mixolydian', [{ n: 9, semis: 1 }, 1]))).toEqual(['Bb', 'A'])
+  })
+
+  it('takes the Order: 1 ♮7 7 6 reversed over G7 is E F F♯ G, rising', () => {
+    const bar = play([at(0, 'G7', 'G Mixolydian', 0)], '1-n7-7-6', { order: 'reversed' })
+    expect(noteNames(bar)).toEqual(['E', 'F', 'F#', 'G'])
+    expect(moves(bar)).toBe('uuu')
+  })
+
+  it('is left as chosen by phrase: the same line, phrase on or off', () => {
+    const cs = [at(0, 'Dm7', 'D Dorian', 0, 4), at(1, 'G7', 'G Mixolydian', 4, 8), at(2, 'Cmaj7', 'C Ionian', 12, 4)]
+    const on = cellsVoices(cs, CONCERT, 4, null, { kind: 'cells', id: '3-5-7-b9', phrase: true })
+    expect(on).toEqual(cellsVoices(cs, CONCERT, 4, null, { kind: 'cells', id: '3-5-7-b9' }))
+    expect(noteNames(on.bars.get(1))).toEqual(['B', 'D', 'F', 'Ab', 'B', 'D', 'F', 'Ab'])
+  })
+
+  it('knows the ids and labels', () => {
+    expect(CHROMATIC_CELLS.map((c) => c.id)).toEqual(['1-n7-7-6', '5-s5-6-7', 'b9-1-3-5', '3-5-7-b9', 'ii-v-chromatic'])
+    expect(CHROMATIC_CELLS.map((c) => cellLabel(c.id))).toEqual(['1 ♮7 7 6', '5 ♯5 6 7', '♭9 1 3 5', '3 5 7 ♭9', 'II–V chromatic'])
+    expect(CHROMATIC_CELLS.filter((c) => c.dominantOnly).map((c) => c.id)).toEqual(['1-n7-7-6', '5-s5-6-7', 'b9-1-3-5', '3-5-7-b9'])
+    expect(isCellId('b9-1-3-5')).toBe(true)
+    expect(isCellId('ii-v-chromatic')).toBe(true)
+    expect(isCellId('b9-1-3-4')).toBe(false)
   })
 })
